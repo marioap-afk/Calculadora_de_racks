@@ -19,6 +19,9 @@ namespace RackCad.Plugin.Workspace
     /// host of the panel calls when the panel is first opened. Ordinary handlers only forward the notification to the
     /// core (which enqueues a hint on the right session); they open no transaction, lock no document, read no stored
     /// data, ask for nothing, write no selection or view, and never let an exception reach AutoCAD.
+    /// The callback of the Idle event only asks the <see cref="WorkspaceIdleScheduler"/> to schedule the idle pass: the
+    /// scheduler posts the continuation once, with BeginInvoke at background priority, to the dispatcher of the main thread,
+    /// and the continuation (the idle pass, with every read of the drawing) runs after the callback has returned.
     /// The class keeps no document, no transaction and no database object: a per-document hookup finds its document
     /// only while attaching and keeps just the delegate that undoes the hookup.
     /// </summary>
@@ -276,7 +279,7 @@ namespace RackCad.Plugin.Workspace
         // INV-14 (Debug only), once every subscriber of the drain, the summary read of the panel included, has finished.
         private void RunIdleContinuation()
         {
-            Contain("IdleContinuation", OnIdle);
+            Contain("IdleContinuation.Pass", OnIdle);
             CheckNoOpenTransactionAfterTheDrain();
         }
 
@@ -290,7 +293,7 @@ namespace RackCad.Plugin.Workspace
                 var document = AcApplication.DocumentManager.MdiActiveDocument;
                 var open = document?.TransactionManager.TopTransaction;
                 if (open != null)
-                    LogFault("AutoCadEventBridge.IdleContinuation", new InvalidOperationException("A transaction was still open when the drain of the panel ended; it may belong to another add-in running a nested loop."));
+                    LogFault("AutoCadEventBridge.IdleContinuation.OpenTransaction", new InvalidOperationException("A transaction was still open when the drain of the panel ended; it may belong to another add-in running a nested loop."));
             }
             catch (System.Exception ex)
             {

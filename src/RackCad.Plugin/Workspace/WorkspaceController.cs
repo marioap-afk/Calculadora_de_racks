@@ -27,7 +27,10 @@ namespace RackCad.Plugin.Workspace
         private readonly WorkspaceHostCore _host;
         private readonly IWorkspaceHostPort _port;
         private readonly NavigationEcho _echo;
+        private readonly WorkspaceNoticeDepth _noticeDepth = new WorkspaceNoticeDepth();
+        private readonly IWorkspacePilotEditPort _pilotEdit;
         private WorkspaceNavigationHost _navigation;
+        private WorkspacePanelModalScope _modalScope;
 
         private WorkspaceController()
         {
@@ -41,6 +44,9 @@ namespace RackCad.Plugin.Workspace
                 LogFault,
                 _echo);
             _port = new WorkspaceHostPort(_host);
+
+            // The edit port of the pilot (I-64 F4-T3A): the panel never receives the host core, only an adapter over the gate of notices.
+            _pilotEdit = new PilotEditAdapter(new WorkspacePilotEditGate(_host, _noticeDepth));
 
             // The lifecycle of the drafts (I-64 F4-T2B2B): the bridge asks the host, as its advisor, about the close and the destruction of a
             // document. It is wired by assignment, so the constructor of the core and the subscriptions of the bridge do not change.
@@ -96,11 +102,29 @@ namespace RackCad.Plugin.Workspace
         /// </summary>
         public IWorkspaceBrowserSummaryPort BrowserSummary => (IWorkspaceBrowserSummaryPort)Navigation;
 
-        /// <summary>The edit port of the bounded Push Back pilot (I-64 F4-T3A). In this first step it is an inert adapter.</summary>
-        public IWorkspacePilotEditPort PilotEdit => new InertPilotEdit();
+        /// <summary>
+        /// The edit port of the bounded Push Back pilot (I-64 F4-T3A, D-T3-06). It is the gate of notices over the host: inside a notice
+        /// of the panel the operations that read the drawing answer Waiting. Reading it makes sure the navigation host exists, so the
+        /// reader of the edit intention is assigned. It writes nothing and subscribes to nothing.
+        /// </summary>
+        public IWorkspacePilotEditPort PilotEdit
+        {
+            get
+            {
+                _ = Navigation;
+                return _pilotEdit;
+            }
+        }
 
-        /// <summary>The scope of a modal window of RackCad opened by the panel (I-64 F4-T3A). In this first step it does nothing.</summary>
-        public IDisposable EnterPanelModal() => new WorkspacePanelModalScope(active => { }).Enter();
+        /// <summary>
+        /// Opens the scope of a modal window of RackCad opened by the panel (I-64 F4-T3A, D-T3-05): the host is told that a modal is
+        /// active before this returns, and the last scope that is disposed tells it that it ended, also when the body throws.
+        /// </summary>
+        public IDisposable EnterPanelModal()
+        {
+            _modalScope ??= new WorkspacePanelModalScope(active => _host.SetModalRackCadActive(active));
+            return _modalScope.Enter();
+        }
 
         public bool PanelVisible => _host.PanelVisible;
 
@@ -177,8 +201,11 @@ namespace RackCad.Plugin.Workspace
         }
 
         // The one place that raises the notice; a failing subscriber is logged and never reaches the bridge or AutoCAD.
+        // While the notice is delivered the depth is above zero (I-64 F4-T3A, D-T3-06): the gate of the edit port makes every read of the
+        // pilot answer Waiting, so a handler of the notice can never start one.
         private void NotifyStateChanged()
         {
+            _noticeDepth.Enter();
             try
             {
                 StateChanged?.Invoke();
@@ -186,6 +213,10 @@ namespace RackCad.Plugin.Workspace
             catch (System.Exception ex)
             {
                 LogFault("WorkspaceController.StateChanged", ex);
+            }
+            finally
+            {
+                _noticeDepth.Leave();
             }
         }
 
@@ -199,34 +230,41 @@ namespace RackCad.Plugin.Workspace
 
         private static void LogFault(string context, System.Exception exception) => RackLog.Exception(context, exception);
 
-        // The first step of F4-T3A: the edit port of the panel is inert. It answers neutral values and never throws.
-        private sealed class InertPilotEdit : IWorkspacePilotEditPort
+        // The adapter that the panel receives as the edit port: it only forwards to the gate of notices.
+        private sealed class PilotEditAdapter : IWorkspacePilotEditPort
         {
-            public EditIntentOutcome TryBeginEdit(EditIntentRequest request) => EditIntentOutcome.Unavailable("Not implemented yet.");
+            private readonly IWorkspacePilotEditPort _gate;
 
-            public EditCheckOutcome TryCheckNow(EditIntentRequest request) => EditCheckOutcome.Unavailable("Not implemented yet.");
+            public PilotEditAdapter(IWorkspacePilotEditPort gate)
+            {
+                _gate = gate;
+            }
 
-            public EditIntentOutcome TryReload(EditIntentRequest request) => EditIntentOutcome.Unavailable("Not implemented yet.");
+            public EditIntentOutcome TryBeginEdit(EditIntentRequest request) => _gate.TryBeginEdit(request);
 
-            public PilotFieldView GetField(WorkspaceRequest origin, string rackId) => default;
+            public EditCheckOutcome TryCheckNow(EditIntentRequest request) => _gate.TryCheckNow(request);
+
+            public EditIntentOutcome TryReload(EditIntentRequest request) => _gate.TryReload(request);
+
+            public PilotFieldView GetField(WorkspaceRequest origin, string rackId) => _gate.GetField(origin, rackId);
 
             public PilotFieldResult SetPendingText(WorkspaceRequest origin, string rackId, string text) =>
-                PilotFieldResult.Rejected("Not implemented yet.");
+                _gate.SetPendingText(origin, rackId, text);
 
-            public PilotFieldResult CommitField(WorkspaceRequest origin, string rackId) => PilotFieldResult.Rejected("Not implemented yet.");
+            public PilotFieldResult CommitField(WorkspaceRequest origin, string rackId) => _gate.CommitField(origin, rackId);
 
             public PilotBoundaryResult CrossBoundary(WorkspaceRequest origin, string rackId, PilotBoundaryKind kind) =>
-                new PilotBoundaryResult(kind, PilotBoundaryDecision.Aborted, false, Array.Empty<PilotFieldProblem>(), "Not implemented yet.");
+                _gate.CrossBoundary(origin, rackId, kind);
 
-            public EditDiscardOutcome DiscardRack(WorkspaceRequest origin, string rackId) => EditDiscardOutcome.Rejected("Not implemented yet.");
+            public EditDiscardOutcome DiscardRack(WorkspaceRequest origin, string rackId) => _gate.DiscardRack(origin, rackId);
 
-            public EditDiscardOutcome DiscardDocument(WorkspaceRequest origin) => EditDiscardOutcome.Rejected("Not implemented yet.");
+            public EditDiscardOutcome DiscardDocument(WorkspaceRequest origin) => _gate.DiscardDocument(origin);
 
-            public PilotRiskView GetRacksAtRisk(WorkspaceRequest origin) => default;
+            public PilotRiskView GetRacksAtRisk(WorkspaceRequest origin) => _gate.GetRacksAtRisk(origin);
 
-            public System.Collections.Generic.IReadOnlyList<PilotLossView> TakeLossNotices() => Array.Empty<PilotLossView>();
+            public System.Collections.Generic.IReadOnlyList<PilotLossView> TakeLossNotices() => _gate.TakeLossNotices();
 
-            public System.Collections.Generic.IReadOnlyList<PilotCloseView> TakeCloseNotices() => Array.Empty<PilotCloseView>();
+            public System.Collections.Generic.IReadOnlyList<PilotCloseView> TakeCloseNotices() => _gate.TakeCloseNotices();
         }
 
         // The link of the pure host core to the single bridge: forwards to its facades and nothing else.

@@ -79,7 +79,12 @@ namespace RackCad.Application.Workspace
         /// <summary>No reader of the edit intention was assigned: nothing was read.</summary>
         Unavailable,
 
-        /// <summary>No active document, a RackCad modal, a command or no rest: the intention waits. Nothing was read.</summary>
+        /// <summary>
+        /// The intention waits: no active document, a RackCad modal, a command or no rest, or (through the edit port of the panel) a
+        /// read of the pilot already in progress or a notice of the panel being delivered. In all those cases nothing was read. In the
+        /// reload it can also arrive AFTER the read: the draft was being applied or was no longer registered when the read came back,
+        /// and then it was not replaced.
+        /// </summary>
         Waiting,
 
         /// <summary>
@@ -94,7 +99,10 @@ namespace RackCad.Application.Workspace
         /// <summary>There is already a draft for (session, rack): nothing was read.</summary>
         AlreadyOpen,
 
-        /// <summary>The read was not admitted: no draft exists, and the outcome carries the diagnostic.</summary>
+        /// <summary>
+        /// The read was not admitted and the outcome carries the diagnostic. In the intention no draft exists; in the reload the draft
+        /// that was there is kept as it was.
+        /// </summary>
         NotAdmitted,
 
         /// <summary>The draft was born from the one read.</summary>
@@ -255,27 +263,27 @@ namespace RackCad.Application.Workspace
     }
 
     /// <summary>
-    /// How the explicit discard of the drafts of a session ended (I-64 F4-T2B2B, D-T2B2-15). The order is fixed and the default value
-    /// is Rejected: it is inert, it means that nothing was done.
+    /// How the explicit discard of the drafts of a session, or of one draft, ended (I-64 F4-T2B2B, D-T2B2-15; F4-T3A, D-T3-02). The
+    /// order is fixed and the default value is Rejected: it is inert, it means that nothing was done.
     /// </summary>
     public enum EditDiscardStatus
     {
         /// <summary>The request does not belong to the active document (INV-22): nothing was done. It is also the default value.</summary>
         Rejected,
 
-        /// <summary>Every draft of the session was removed (possibly none): nothing was read and nothing was written.</summary>
+        /// <summary>One draft, or every draft of the session, was removed (possibly none): nothing was read and nothing was written.</summary>
         Discarded,
 
         /// <summary>A failure of the host during the operation: contained, and the session is not degraded.</summary>
         Failed,
 
-        /// <summary>A read of the pilot is in progress.</summary>
+        /// <summary>A read of the pilot is in progress (edit port of the panel): nothing was done.</summary>
         Busy,
     }
 
     /// <summary>
-    /// I-64 F4-T2B2B (D-T2B2-15) — the answer of the host to the explicit discard of every draft of a session. A value: the racks are
-    /// text, so it names no draft type. Both lists are never null, also for a default value of this struct.
+    /// I-64 F4-T2B2B (D-T2B2-15) — the answer of the host to the explicit discard of one draft or of every draft of a session. A value:
+    /// the racks are text, so it names no draft type. Both lists are never null, also for a default value of this struct.
     /// </summary>
     public readonly struct EditDiscardOutcome
     {

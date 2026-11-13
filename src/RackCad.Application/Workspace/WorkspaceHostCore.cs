@@ -37,6 +37,14 @@ namespace RackCad.Application.Workspace
     /// </summary>
     public sealed class WorkspaceHostCore : IWorkspaceLifecycleAdvisor, IWorkspacePilotEditPort
     {
+        // I-64 F4-T3A (D-T3-02): the one adapter of the pending text of the pilot. It keeps no state, so it is shared; it is never an
+        // instance field of the host.
+        private static readonly PushBackPilotFieldAdapter PilotFieldAdapter = new();
+
+        private const string PilotReadInProgressReason = "A read of the pilot is in progress.";
+        private const string NotThisDocumentReason = "The request does not belong to the active document.";
+        private const string NoDraftReason = "There is no draft for the rack.";
+
         /// <summary>Native identity used when no document is open: it matches no session.</summary>
         private const long NoDocumentNativeId = -1;
 
@@ -55,6 +63,11 @@ namespace RackCad.Application.Workspace
         // clean" mark, in memory only), and the notices of loss that nobody consumed yet.
         private readonly HashSet<SessionId> _knownClean = new();
         private readonly Queue<DraftLossNotice> _lossNotices = new();
+
+        // I-64 F4-T3A (D-T3-02, D-T3-07): the notices of a vetoed close, at most one per session (the last), and the mark that a read of
+        // the pilot is in progress (set with try/finally around the three reads of the edit port).
+        private readonly List<PilotCloseView> _closeNotices = new();
+        private bool _pilotReadInProgress;
         private IWorkspaceEditIntentReader? _editIntentReader;
         private bool _started;
         private bool _panelVisible;
@@ -530,55 +543,403 @@ namespace RackCad.Application.Workspace
         public void NotePilotEdit(SessionId session) => _knownClean.Remove(session);
 
         // ---------------------------------------------------------------- the edit port of the pilot (I-64 F4-T3A, D-T3-02)
-        // The first step of the task: every operation is inert. It changes nothing, reads nothing and never throws.
+        //
+        // Every operation below is implemented explicitly, so the public surface of the host does not grow. None of them writes the
+        // drawing: the three that read go through the operations of F4-T2B2A and F4-T2B2B, the rest only touch memory. Every exception
+        // is contained as a value and the session is never degraded. NotePilotEdit is called by every operation that changes a draft.
 
-        EditIntentOutcome IWorkspacePilotEditPort.TryBeginEdit(EditIntentRequest request) => EditIntentOutcome.Unavailable("Not implemented yet.");
+        // The three reads: the mark of "read in progress" is set with try/finally around each one, and a second read that arrives while
+        // it is set answers Waiting without reading.
+        EditIntentOutcome IWorkspacePilotEditPort.TryBeginEdit(EditIntentRequest request)
+        {
+            if (_pilotReadInProgress) return EditIntentOutcome.Waiting(PilotReadInProgressReason);
+            _pilotReadInProgress = true;
+            try
+            {
+                return TryBeginPilotEdit(request);
+            }
+            finally
+            {
+                _pilotReadInProgress = false;
+            }
+        }
 
-        EditCheckOutcome IWorkspacePilotEditPort.TryCheckNow(EditIntentRequest request) => EditCheckOutcome.Unavailable("Not implemented yet.");
+        EditCheckOutcome IWorkspacePilotEditPort.TryCheckNow(EditIntentRequest request)
+        {
+            if (_pilotReadInProgress) return EditCheckOutcome.Waiting(PilotReadInProgressReason);
+            _pilotReadInProgress = true;
+            try
+            {
+                return TryCheckPilotEdit(request);
+            }
+            finally
+            {
+                _pilotReadInProgress = false;
+            }
+        }
 
-        EditIntentOutcome IWorkspacePilotEditPort.TryReload(EditIntentRequest request) => EditIntentOutcome.Unavailable("Not implemented yet.");
+        EditIntentOutcome IWorkspacePilotEditPort.TryReload(EditIntentRequest request)
+        {
+            if (_pilotReadInProgress) return EditIntentOutcome.Waiting(PilotReadInProgressReason);
+            _pilotReadInProgress = true;
+            try
+            {
+                return TryReloadPilotEdit(request);
+            }
+            finally
+            {
+                _pilotReadInProgress = false;
+            }
+        }
 
-        PilotFieldView IWorkspacePilotEditPort.GetField(WorkspaceRequest origin, string rackId) => default;
+        // Memory only: no authorization, no read, never throws.
+        PilotFieldView IWorkspacePilotEditPort.GetField(WorkspaceRequest origin, string rackId)
+        {
+            try
+            {
+                var draft = FindPilotDraft(origin.Origin, rackId);
+                return draft == null ? default : ViewOfPilotDraft(draft);
+            }
+            catch (Exception ex)
+            {
+                Report("WorkspaceHostCore.GetField", ex);
+                return new PilotFieldView(true, PilotFieldState.Error, false, true, false, null, "The state of the field could not be read.", null, null);
+            }
+        }
 
-        PilotFieldResult IWorkspacePilotEditPort.SetPendingText(WorkspaceRequest origin, string rackId, string text) =>
-            PilotFieldResult.Rejected("Not implemented yet.");
+        // Only an edit of the user calls it. It keeps the text exactly as typed, with the one key of the adapter of the pilot.
+        PilotFieldResult IWorkspacePilotEditPort.SetPendingText(WorkspaceRequest origin, string rackId, string text)
+        {
+            try
+            {
+                if (Authorize(origin) != RequestDecision.Accepted) return PilotFieldResult.Rejected(NotThisDocumentReason);
+                if (_pilotReadInProgress) return PilotFieldResult.Busy(PilotReadInProgressReason);
+                if (text == null) return PilotFieldResult.Rejected("The text is required.");
 
-        PilotFieldResult IWorkspacePilotEditPort.CommitField(WorkspaceRequest origin, string rackId) =>
-            PilotFieldResult.Rejected("Not implemented yet.");
+                var draft = FindPilotDraft(origin.Origin, rackId);
+                if (draft == null) return PilotFieldResult.NotEditable(NoDraftReason, default);
+                var before = ViewOfPilotDraft(draft);
+                if (!before.CanEdit) return PilotFieldResult.NotEditable("The field cannot be edited now.", before);
 
-        PilotBoundaryResult IWorkspacePilotEditPort.CrossBoundary(WorkspaceRequest origin, string rackId, PilotBoundaryKind kind) =>
-            new PilotBoundaryResult(kind, PilotBoundaryDecision.Aborted, false, Array.Empty<PilotFieldProblem>(), "Not implemented yet.");
+                var edit = draft.SetPendingText(PushBackPilotFieldAdapter.AnnotationScaleKey, text);
+                if (edit.Status != DraftEditStatus.Updated) return PilotFieldResult.NotEditable("The field cannot be edited now.", before);
 
-        EditDiscardOutcome IWorkspacePilotEditPort.DiscardRack(WorkspaceRequest origin, string rackId) =>
-            EditDiscardOutcome.Rejected("Not implemented yet.");
+                NotePilotEdit(origin.Origin);
+                return PilotFieldResult.Applied(ViewOfPilotDraft(draft));
+            }
+            catch (Exception ex)
+            {
+                Report("WorkspaceHostCore.SetPendingText", ex);
+                return PilotFieldResult.Rejected(ex.Message);
+            }
+        }
 
-        EditDiscardOutcome IWorkspacePilotEditPort.DiscardDocument(WorkspaceRequest origin) =>
-            EditDiscardOutcome.Rejected("Not implemented yet.");
+        // The gesture of the field itself: the same two-phase step as a blocking boundary, run on the draft with the adapter of the pilot.
+        PilotFieldResult IWorkspacePilotEditPort.CommitField(WorkspaceRequest origin, string rackId)
+        {
+            try
+            {
+                if (Authorize(origin) != RequestDecision.Accepted) return PilotFieldResult.Rejected(NotThisDocumentReason);
+                if (_pilotReadInProgress) return PilotFieldResult.Busy(PilotReadInProgressReason);
 
-        PilotRiskView IWorkspacePilotEditPort.GetRacksAtRisk(WorkspaceRequest origin) => default;
+                var draft = FindPilotDraft(origin.Origin, rackId);
+                if (draft == null) return PilotFieldResult.NotEditable(NoDraftReason, default);
+                var before = ViewOfPilotDraft(draft);
+                if (!before.CanEdit) return PilotFieldResult.NotEditable("The field cannot be edited now.", before);
 
-        IReadOnlyList<PilotLossView> IWorkspacePilotEditPort.TakeLossNotices() => Array.Empty<PilotLossView>();
+                var crossed = draft.CrossBoundary(DraftBoundary.TabChange, PilotFieldAdapter);
+                switch (crossed.Decision)
+                {
+                    case DraftBoundaryDecision.Proceeded:
+                        if (crossed.CurrentStateChanged) NotePilotEdit(origin.Origin);
+                        return PilotFieldResult.Applied(ViewOfPilotDraft(draft));
+                    case DraftBoundaryDecision.Aborted:
+                        var view = ViewOfPilotDraft(draft);
+                        var message = crossed.InvalidFields.Count > 0 ? crossed.InvalidFields[0].Message : view.PendingMessage;
+                        return PilotFieldResult.Invalid(view, message);
+                    default:
+                        return PilotFieldResult.NotEditable("The field cannot be edited now.", ViewOfPilotDraft(draft));
+                }
+            }
+            catch (Exception ex)
+            {
+                Report("WorkspaceHostCore.CommitField", ex);
+                return PilotFieldResult.Rejected(ex.Message);
+            }
+        }
 
-        IReadOnlyList<PilotCloseView> IWorkspacePilotEditPort.TakeCloseNotices() => Array.Empty<PilotCloseView>();
+        PilotBoundaryResult IWorkspacePilotEditPort.CrossBoundary(WorkspaceRequest origin, string rackId, PilotBoundaryKind kind)
+        {
+            var none = Array.Empty<PilotFieldProblem>();
+            try
+            {
+                switch (kind)
+                {
+                    case PilotBoundaryKind.TabChange:
+                    case PilotBoundaryKind.RackChange:
+                        break;
+                    case PilotBoundaryKind.DocumentChange:
+                    case PilotBoundaryKind.PanelHide:
+                    case PilotBoundaryKind.Dematerialize:
+                    case PilotBoundaryKind.DocumentClose:
+                        // Non-blocking: the session may no longer be the active one, so nothing is authorized, validated or applied.
+                        // The pending text of the draft stays exactly as it is.
+                        return new PilotBoundaryResult(kind, PilotBoundaryDecision.Kept, false, none, null);
+                    default:
+                        return new PilotBoundaryResult(kind, PilotBoundaryDecision.Aborted, false, none, "The boundary is not known.");
+                }
+
+                if (Authorize(origin) != RequestDecision.Accepted)
+                    return new PilotBoundaryResult(kind, PilotBoundaryDecision.Aborted, false, none, NotThisDocumentReason);
+                if (_pilotReadInProgress)
+                    return new PilotBoundaryResult(kind, PilotBoundaryDecision.Busy, false, none, PilotReadInProgressReason);
+
+                var draft = FindPilotDraft(origin.Origin, rackId);
+                if (draft == null) return new PilotBoundaryResult(kind, PilotBoundaryDecision.Proceeded, false, none, null);
+
+                var boundary = kind == PilotBoundaryKind.TabChange ? DraftBoundary.TabChange : DraftBoundary.RackChange;
+                var crossed = draft.CrossBoundary(boundary, PilotFieldAdapter);
+                switch (crossed.Decision)
+                {
+                    case DraftBoundaryDecision.Proceeded:
+                        if (crossed.CurrentStateChanged) NotePilotEdit(origin.Origin);
+                        return new PilotBoundaryResult(kind, PilotBoundaryDecision.Proceeded, crossed.CurrentStateChanged, none, null);
+                    case DraftBoundaryDecision.Aborted:
+                        var problems = crossed.InvalidFields.Select(f => new PilotFieldProblem(f.FieldKey, f.Message)).ToArray();
+                        return new PilotBoundaryResult(kind, PilotBoundaryDecision.Aborted, false, problems, null);
+                    default:
+                        return new PilotBoundaryResult(kind, PilotBoundaryDecision.Kept, false, none, null);
+                }
+            }
+            catch (Exception ex)
+            {
+                Report("WorkspaceHostCore.CrossBoundary", ex);
+                return new PilotBoundaryResult(kind, PilotBoundaryDecision.Aborted, false, none, ex.Message);
+            }
+        }
+
+        // The explicit discard of ONE draft: no comparer is called, nothing is written, the others are not touched.
+        EditDiscardOutcome IWorkspacePilotEditPort.DiscardRack(WorkspaceRequest origin, string rackId)
+        {
+            try
+            {
+                if (Authorize(origin) != RequestDecision.Accepted) return EditDiscardOutcome.Rejected(NotThisDocumentReason);
+                if (_pilotReadInProgress) return EditDiscardOutcome.Busy(PilotReadInProgressReason);
+
+                var session = origin.Origin;
+                if (string.IsNullOrWhiteSpace(rackId)) return EditDiscardOutcome.Discarded(Array.Empty<string>(), Array.Empty<string>());
+
+                var discarded = _drafts.DiscardByUser(session, rackId);
+                NotePilotEdit(session);
+                if (!SessionStillAtRisk(session)) DropCloseNotice(session);
+                return EditDiscardOutcome.Discarded(
+                    discarded.Removed ? new[] { rackId } : Array.Empty<string>(),
+                    discarded.HadPendingText ? new[] { rackId } : Array.Empty<string>());
+            }
+            catch (Exception ex)
+            {
+                Report("WorkspaceHostCore.DiscardRack", ex);
+                return EditDiscardOutcome.Failed(ex.Message);
+            }
+        }
+
+        EditDiscardOutcome IWorkspacePilotEditPort.DiscardDocument(WorkspaceRequest origin)
+        {
+            try
+            {
+                if (Authorize(origin) != RequestDecision.Accepted) return EditDiscardOutcome.Rejected(NotThisDocumentReason);
+                if (_pilotReadInProgress) return EditDiscardOutcome.Busy(PilotReadInProgressReason);
+
+                var outcome = DiscardPilotEdits(origin.Origin);
+                if (outcome.Status == EditDiscardStatus.Discarded) DropCloseNotice(origin.Origin);
+                return outcome;
+            }
+            catch (Exception ex)
+            {
+                Report("WorkspaceHostCore.DiscardDocument", ex);
+                return EditDiscardOutcome.Failed(ex.Message);
+            }
+        }
+
+        // Memory only: no authorization (the veto of a close can belong to a document that is not the active one), never throws.
+        PilotRiskView IWorkspacePilotEditPort.GetRacksAtRisk(WorkspaceRequest origin)
+        {
+            try
+            {
+                var session = origin.Origin;
+                try
+                {
+                    return new PilotRiskView(_drafts.RacksAtRiskOf(session), Array.Empty<string>());
+                }
+                catch (Exception)
+                {
+                    // A comparer failed: decide draft by draft, and let the ones that cannot be decided count as at risk, apart.
+                }
+
+                var atRisk = new List<string>();
+                var uncertain = new List<string>();
+                foreach (var rackId in _drafts.RackIdsOf(session))
+                {
+                    var draft = _drafts.Find<PushBackPilotDraftState>(session, rackId);
+                    if (draft == null)
+                    {
+                        uncertain.Add(rackId);
+                        continue;
+                    }
+
+                    try
+                    {
+                        if (draft.HasPendingText || draft.IsDirty) atRisk.Add(rackId);
+                    }
+                    catch (Exception)
+                    {
+                        uncertain.Add(rackId);
+                    }
+                }
+
+                return new PilotRiskView(atRisk, uncertain);
+            }
+            catch (Exception ex)
+            {
+                Report("WorkspaceHostCore.GetRacksAtRisk", ex);
+                return default;
+            }
+        }
+
+        IReadOnlyList<PilotLossView> IWorkspacePilotEditPort.TakeLossNotices()
+        {
+            var taken = new List<PilotLossView>();
+            while (_lossNotices.Count > 0)
+            {
+                var notice = _lossNotices.Dequeue();
+                taken.Add(new PilotLossView(notice.Session, notice.LostRackIds, notice.UncertainRackIds, notice.UncertainReasons));
+            }
+
+            return taken;
+        }
+
+        IReadOnlyList<PilotCloseView> IWorkspacePilotEditPort.TakeCloseNotices()
+        {
+            var taken = _closeNotices.ToArray();
+            _closeNotices.Clear();
+            return taken;
+        }
+
+        private DraftSession<PushBackPilotDraftState>? FindPilotDraft(SessionId session, string rackId) =>
+            string.IsNullOrWhiteSpace(rackId) ? null : _drafts.Find<PushBackPilotDraftState>(session, rackId);
+
+        // True when the session still has racks at risk, or when that cannot be decided (a comparer failed): then the notice stays.
+        private bool SessionStillAtRisk(SessionId session)
+        {
+            try
+            {
+                return _drafts.RacksAtRiskOf(session).Count > 0;
+            }
+            catch (Exception)
+            {
+                return true;
+            }
+        }
+
+        private static PilotFieldView ViewOfPilotDraft(DraftSession<PushBackPilotDraftState> draft)
+        {
+            PilotFieldState state;
+            try
+            {
+                state = StateOfDraft(draft.Status);
+            }
+            catch (Exception)
+            {
+                state = PilotFieldState.Undecidable;
+            }
+
+            bool isProtected;
+            if (state == PilotFieldState.Undecidable)
+            {
+                isProtected = true;
+            }
+            else
+            {
+                try
+                {
+                    isProtected = draft.IsDirty;
+                }
+                catch (Exception)
+                {
+                    isProtected = true;
+                }
+            }
+
+            var canEdit = draft.IsRegistered
+                && (state == PilotFieldState.Clean || state == PilotFieldState.Dirty || state == PilotFieldState.Conflict);
+
+            string? committed = null;
+            string? reason;
+            var annotations = draft.CurrentDraftState.Inputs.Annotations;
+            if (annotations == null) reason = "The rack has no annotation scale.";
+            else committed = WorkspacePilotValueText.Show(annotations.AnnotationScale, out reason);
+
+            string? pending = null;
+            string? message = null;
+            if (draft.PendingText.TryGetValue(PushBackPilotFieldAdapter.AnnotationScaleKey, out var typed))
+            {
+                pending = typed;
+                var verdict = PilotFieldAdapter.Validate(PushBackPilotFieldAdapter.AnnotationScaleKey, typed);
+                message = verdict.IsValid ? null : verdict.Message;
+            }
+
+            return new PilotFieldView(true, state, draft.IsPossiblyStale, isProtected, canEdit, committed, reason, pending, message);
+        }
+
+        private static PilotFieldState StateOfDraft(DraftStatus status)
+        {
+            switch (status)
+            {
+                case DraftStatus.Clean: return PilotFieldState.Clean;
+                case DraftStatus.Dirty: return PilotFieldState.Dirty;
+                case DraftStatus.Conflict: return PilotFieldState.Conflict;
+                case DraftStatus.Applying: return PilotFieldState.Applying;
+                case DraftStatus.Unknown: return PilotFieldState.Unknown;
+                default: return PilotFieldState.Error;
+            }
+        }
 
         // The advice for one attempt to close the document of the session (D-T2B2-09, D-T2B2-10): the verdict of the close policy,
         // and nothing else. It reads nothing, authorizes nothing, discards nothing and retires nothing. A Veto or a failure leaves the
         // session without the mark; an Allow puts it as the very last action, only when the evaluation worked.
+        // Since F4-T3A (D-T3-07) every way to a Veto also queues, in memory, the notice of the veto for the panel: the racks at risk of the
+        // decision, or the uncertain flag without a list when the evaluation failed. An Allow takes the notice of the session away.
         CloseDecision IWorkspaceLifecycleAdvisor.AdviseClose(SessionId session)
         {
             _knownClean.Remove(session);
             try
             {
-                if (_closePolicy.EvaluateClose(session).IsVeto) return CloseDecision.Veto;
+                var decision = _closePolicy.EvaluateClose(session);
+                if (decision.IsVeto)
+                {
+                    QueueCloseNotice(session, decision.RackIds, false);
+                    return CloseDecision.Veto;
+                }
+
+                DropCloseNotice(session);
                 _knownClean.Add(session);
                 return CloseDecision.Allow;
             }
             catch (Exception ex)
             {
                 Report("WorkspaceHostCore.AdviseClose", ex);
+                QueueCloseNotice(session, Array.Empty<string>(), true);
                 return CloseDecision.Veto;
             }
         }
+
+        private void QueueCloseNotice(SessionId session, IReadOnlyList<string> rackIds, bool uncertain)
+        {
+            DropCloseNotice(session);
+            _closeNotices.Add(new PilotCloseView(session, rackIds, uncertain));
+        }
+
+        private void DropCloseNotice(SessionId session) => _closeNotices.RemoveAll(notice => notice.Session == session);
 
         // The session was destroyed (D-T2B2-10, D-T2B2-13). It always retires the drafts: without the comparer only when the mark of the
         // host and the intact close sequence of the bridge both hold, conservatively in any other case. Afterwards, and only when work
@@ -586,6 +947,7 @@ namespace RackCad.Application.Workspace
         void IWorkspaceLifecycleAdvisor.SessionDestroyed(SessionId session, bool closeSequenceIntact)
         {
             var marked = _knownClean.Remove(session);
+            DropCloseNotice(session);
             DraftLossNotice? notice = null;
             try
             {
