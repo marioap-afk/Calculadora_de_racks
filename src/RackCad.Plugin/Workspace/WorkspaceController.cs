@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using Autodesk.AutoCAD.ApplicationServices;
 using RackCad.Application.Diagnostics;
 using RackCad.Application.Workspace;
 using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
@@ -29,6 +30,7 @@ namespace RackCad.Plugin.Workspace
         private readonly NavigationEcho _echo;
         private readonly WorkspaceNoticeDepth _noticeDepth = new WorkspaceNoticeDepth();
         private readonly IWorkspacePilotEditPort _pilotEdit;
+        private readonly WorkspaceCloseAdvisorRelay _closeAdvisor;
         private WorkspaceNavigationHost _navigation;
         private WorkspacePanelModalScope _modalScope;
 
@@ -48,9 +50,17 @@ namespace RackCad.Plugin.Workspace
             // The edit port of the pilot (I-64 F4-T3A): the panel never receives the host core, only an adapter over the gate of notices.
             _pilotEdit = new PilotEditAdapter(new WorkspacePilotEditGate(_host, _noticeDepth));
 
-            // The lifecycle of the drafts (I-64 F4-T2B2B): the bridge asks the host, as its advisor, about the close and the destruction of a
-            // document. It is wired by assignment, so the constructor of the core and the subscriptions of the bridge do not change.
-            _bridge.SetLifecycleAdvisor(_host);
+            // The lifecycle of the drafts (I-64 F4-T2B2B, F4-T3C2): the bridge asks one advisor about the close and the destruction of a
+            // document. That advisor is the wrapper over the host: every decision is the host's, and the wrapper only adds the notices of
+            // the command line. It is wired by assignment, so the constructor of the core and the subscriptions of the bridge do not change.
+            _closeAdvisor = new WorkspaceCloseAdvisorRelay(
+                _host,
+                _pilotEdit,
+                DocumentNameOf,
+                id => _bridge.ActiveSession == id,
+                WorkspacePanelCommand.WriteToCommandLine,
+                LogFault);
+            _bridge.SetLifecycleAdvisor(_closeAdvisor);
             _bridge.Drained += OnDrained;
             _bridge.ActiveSessionChanged += OnActiveSessionChanged;
             _bridge.CommandStateChanged += OnCommandStateChanged;
@@ -68,6 +78,9 @@ namespace RackCad.Plugin.Workspace
 
         /// <summary>Whether the first RACKPANEL already created the controller.</summary>
         public static bool IsCreated => Holder.IsCreated;
+
+        /// <summary>The controller that was already created, or null. It never creates one (I-64 F4-T3C2).</summary>
+        public static WorkspaceController Existing => Holder.Existing;
 
         /// <summary>The read-only port the panel talks to.</summary>
         public IWorkspaceHostPort Port => _port;
@@ -167,7 +180,38 @@ namespace RackCad.Plugin.Workspace
                 LogFault("WorkspaceController.OnActiveSessionChanged", ex);
             }
 
+            WriteCloseMessages();
             NotifyStateChanged();
+        }
+
+        // The notices of the lifecycle advisor that waited for an active document (a veto is written at once; a loss waits here). The
+        // advisor keeps them until it is asked with an active session; a failure is logged and never reaches the bridge.
+        private void WriteCloseMessages()
+        {
+            try
+            {
+                foreach (var text in _closeAdvisor.TakeMessages(_bridge.ActiveSession))
+                    WorkspacePanelCommand.WriteToCommandLine(text);
+            }
+            catch (System.Exception ex)
+            {
+                LogFault("WorkspaceController.WriteCloseMessages", ex);
+            }
+        }
+
+        // The file name of the document of a session, from memory only (the session record and the document manager); null when the
+        // session or the document is gone. No document is kept.
+        private string DocumentNameOf(SessionId id)
+        {
+            if (!_bridge.TryGetSession(id, out var session) || session.IsDestroyed) return null;
+
+            var nativeId = session.NativeInstanceId;
+            foreach (Document candidate in AcApplication.DocumentManager)
+            {
+                if (candidate.UnmanagedObject.ToInt64() == nativeId) return candidate.Name;
+            }
+
+            return null;
         }
 
         // A command started or the document came back to rest (I-64 F1-T3-HOST-C2): the visual host only pulls a fresh

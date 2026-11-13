@@ -353,6 +353,7 @@ namespace RackCad.UI.Workspace
         /// The Discard button of the drafts of the document (I-64 F4-T3B2, R-B2-2): reads the racks at risk of the presented session.
         /// With none the notice says nothing was discarded and nothing happens; otherwise it asks, inline, listing the racks by their title
         /// and, apart, the ones that could not be decided, and it keeps both lists for the second look of <see cref="ConfirmDiscard"/>.
+        /// When the risk is unknown (or its read throws) it asks nothing and discards nothing: the notice says that it could not be decided.
         /// </summary>
         public void RequestDocumentDiscard()
         {
@@ -404,6 +405,7 @@ namespace RackCad.UI.Workspace
         /// closes the tab; with another answer the tab stays and a notice says why. For the field it discards and the tab stays. For the
         /// document it reads the racks at risk again and compares both lists in order and by ordinal text: if they changed nothing is
         /// discarded and the new list is shown to be reviewed; if not, it discards the drafts of the whole session, closing no tab.
+        /// An unknown second reading (or one that throws) discards nothing either.
         /// </summary>
         public void ConfirmDiscard()
         {
@@ -1132,12 +1134,12 @@ namespace RackCad.UI.Workspace
 
             var close = stored.Close;
             if (!_session.HasValue || close.Session != _session.Value)
-                return new WorkspaceBrowserNoticeItem(stored.Key, "No se cerró otro documento con borradores sin aplicar; actívalo para descartarlos.", false);
+                return new WorkspaceBrowserNoticeItem(stored.Key, "No se cerró otro documento con borradores sin aplicar; actívalo para descartarlos con el panel o con el comando RACKPANELDESCARTAR.", false);
 
             var head = close.IsUncertain || close.RackIds.Count == 0
                 ? "No se cerró el documento: no se pudo decidir qué borradores están en riesgo."
                 : "No se cerró el documento: hay borradores sin aplicar en " + TitlesOf(close.RackIds) + ".";
-            var text = head + " Descártalos con \"Descartar borradores de este documento\"; cada pestaña también se descarta con su \"Cerrar\".";
+            var text = head + " Descártalos con \"Descartar borradores de este documento\" o con el comando RACKPANELDESCARTAR; cada pestaña también se descarta con su \"Cerrar\".";
             return new WorkspaceBrowserNoticeItem(stored.Key, text, true);
         }
 

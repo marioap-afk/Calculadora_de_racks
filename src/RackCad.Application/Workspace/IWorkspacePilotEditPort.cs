@@ -69,10 +69,16 @@ namespace RackCad.Application.Workspace
         /// </summary>
         PilotRiskView GetRacksAtRisk(WorkspaceRequest origin);
 
-        /// <summary>Takes, oldest first, every notice of lost work that nobody consumed, and leaves the queue empty.</summary>
+        /// <summary>
+        /// Takes, oldest first, every notice of lost work that nobody consumed, and leaves the queue empty. A notice whose conversion
+        /// fails is lost: it is taken out of the queue and stays only in the log, and the next ones are still taken.
+        /// </summary>
         IReadOnlyList<PilotLossView> TakeLossNotices();
 
-        /// <summary>Takes, oldest first, every notice of a vetoed close that nobody consumed, and leaves the queue empty.</summary>
+        /// <summary>
+        /// Takes, oldest first, every notice of a vetoed close that nobody consumed, and leaves the queue empty. If taking them fails it
+        /// answers an empty list and the queue is NOT emptied: the notices are taken again at the next presentation.
+        /// </summary>
         IReadOnlyList<PilotCloseView> TakeCloseNotices();
     }
 

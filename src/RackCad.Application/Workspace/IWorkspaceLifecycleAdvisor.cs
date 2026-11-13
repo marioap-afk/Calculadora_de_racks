@@ -4,7 +4,8 @@ namespace RackCad.Application.Workspace
     /// <summary>
     /// I-64 F4-T2B2B (D-T2B2-09): the one seam through which the pure bridge core asks the host what to do with the close and the
     /// destruction of a document. The core owns no state of drafts: it asks, and it keeps only what it can observe itself. Both calls
-    /// are synchronous and in memory: they read nothing of the drawing, write nothing and open no dialog.
+    /// are synchronous and in memory: they neither read nor write the drawing and open no dialog. A decorator may write a notice on the
+    /// command line (I-64 F4-T3C2).
     /// </summary>
     public interface IWorkspaceLifecycleAdvisor
     {

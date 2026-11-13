@@ -77,12 +77,12 @@ namespace RackCad.Plugin.Views
             {
                 var catalog = LateralHeaderDrawService.LoadCatalog();
                 return catalog == null
-                    ? new RackPilotCatalogResult(null, "The catalog is not available.")
+                    ? new RackPilotCatalogResult(null, "El catálogo no está disponible.")
                     : new RackPilotCatalogResult(catalog, null);
             }
             catch (System.Exception ex)
             {
-                return new RackPilotCatalogResult(null, "The catalog could not be loaded: " + ex.Message);
+                return new RackPilotCatalogResult(null, "No se pudo cargar el catálogo: " + ex.Message);
             }
         }
 
@@ -109,13 +109,13 @@ namespace RackCad.Plugin.Views
                 if (witnessKey != null)
                 {
                     if (string.IsNullOrWhiteSpace(witnessKey))
-                        return new RackPilotIntentReadResult(null, "The preview witness has no key.");
+                        return new RackPilotIntentReadResult(null, "El testigo de la vista previa no tiene clave.");
                     witness = new PushBackPilotPreviewWitness(witnessKey, witnessText);
                 }
 
                 var scan = RackSiblingScan.CaptureDrawing(document);
                 if (scan.RawEnvelopes == null)
-                    return new RackPilotIntentReadResult(null, "The scan of the drawing carries no raw envelopes.");
+                    return new RackPilotIntentReadResult(null, "La exploración del dibujo no trajo las envolventes en bruto.");
 
                 var input = new PushBackPilotIntentScan(rackId, originKey, scan.Facts, scan.RawEnvelopes, CompletenessEvidence, witness);
                 var read = PushBackPilotIntentReader.Read(input, catalog);
@@ -124,15 +124,15 @@ namespace RackCad.Plugin.Views
             }
             catch (Autodesk.AutoCAD.Runtime.Exception ex) when (ex.ErrorStatus == ErrorStatus.LockViolation)
             {
-                return new RackPilotIntentReadResult(null, "The document is locked by another operation.");
+                return new RackPilotIntentReadResult(null, "El documento está bloqueado por otra operación.");
             }
             catch (Autodesk.AutoCAD.Runtime.Exception ex)
             {
-                return new RackPilotIntentReadResult(null, "The drawing could not be read: " + ex.Message);
+                return new RackPilotIntentReadResult(null, "No se pudo leer el dibujo: " + ex.Message);
             }
             catch (System.Exception ex)
             {
-                return new RackPilotIntentReadResult(null, "The edit intention could not be read: " + ex.Message);
+                return new RackPilotIntentReadResult(null, "No se pudo leer la intención de edición: " + ex.Message);
             }
             finally
             {

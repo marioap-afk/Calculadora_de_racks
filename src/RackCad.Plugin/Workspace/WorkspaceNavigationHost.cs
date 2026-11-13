@@ -221,9 +221,9 @@ namespace RackCad.Plugin.Workspace
             {
                 var document = AcApplication.DocumentManager.MdiActiveDocument;
                 if (document == null)
-                    return EditIntentReadResult.NoActiveDocument("There is no active document.");
+                    return EditIntentReadResult.NoActiveDocument("No hay documento activo.");
                 if (!string.IsNullOrEmpty(document.CommandInProgress) || !document.Editor.IsQuiescent)
-                    return EditIntentReadResult.Busy("A command is in progress.");
+                    return EditIntentReadResult.Busy("Hay un comando en curso.");
 
                 var catalog = RackPilotIntentAdapter.LoadCatalog();
                 if (!catalog.Succeeded)
@@ -233,7 +233,7 @@ namespace RackCad.Plugin.Workspace
                 {
                     var decision = _authorize(new WorkspaceRequest(session), document.UnmanagedObject.ToInt64());
                     if (decision != RequestDecision.Accepted)
-                        return EditIntentReadResult.Rejected("The request does not belong to the active document.");
+                        return EditIntentReadResult.Rejected("La petición no es del documento activo.");
 
                     var expected = chosenReference.HasValue ? new[] { chosenReference.Value } : Array.Empty<long>();
                     var revalidation = _targets.Revalidate(session, rackId, expected);
