@@ -6778,3 +6778,15 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
   - el fallo de `GetRacksAtRisk` no se acepta como comportamiento final: F4-T3C lo endurece.
 
 **Límites:** solo documentación; sin AutoCAD.
+
+## 175. Contrato de F4-T3B2-EDIT-CLOSE-SYNC
+
+**Contrato:** `I-64-pilot/F4-T3B2-EDIT-CLOSE-SYNC/coordinator/gate-contract.json` (F4-E44).
+- **Alcance:** lista blanca exacta de 13 rutas, tres de ellas archivos de prueba nuevos; cambios declarados de pruebas existentes: solo P-01 y P-05.
+- **`ForbiddenWriteScope`:** 102 entradas.
+- **Invariantes y paradas:** 15 invariantes y 8 paradas propias, entre ellas C08 (replanificación reforzada única; el segundo fallo de fidelidad es STOP al Coordinator).
+- **Líneas base:** `RackCad.Tests.Workspace` 2300 y `RackCad.UI.Tests.Workspace` 352, las dos con `ExpectRed` true.
+- **Revisiones:** `AuthorityRevision` `41ca9a52ba0974da32aab4bc6f5ec0ef4e88e276` y `MainSha` `812baf879612320653094a8aaf46aca0bac81383`.
+- **`attempts`:** 1 de 3.
+
+**Límites:** solo documentación en este paso; sin AutoCAD.

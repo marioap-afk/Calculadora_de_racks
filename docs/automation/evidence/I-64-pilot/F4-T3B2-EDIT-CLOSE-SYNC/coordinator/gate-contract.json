@@ -1,0 +1,458 @@
+{
+  "Schema": "rackcad-gate-contract/v1",
+  "Unit": "I-64",
+  "Gate": "F4",
+  "TaskId": "F4-T3B2-EDIT-CLOSE-SYNC",
+  "Objective": "Completar la superficie de edicion del piloto acotado de Push Back en el panel sobre el codigo de F4-T3B1: el cierre de pestanas con Descartar o Cancelar en linea, el descarte del campo en Error, el descarte de los borradores del documento con su comprobacion TOCTOU, los avisos de veto y de perdida consumidos solo en la presentacion, la retencion de la pestana activa con texto pendiente ante una seleccion (keepActive) y los arrastres N-1 y N-3 de F4-T3B1, segun el paquete de F4-T3B2 (subtarea B2 de dos, por decision del Owner). Sin escritura authored, sin comando nuevo y sin AutoCAD.",
+  "AuthorityRevision": "41ca9a52ba0974da32aab4bc6f5ec0ef4e88e276",
+  "MainSha": "812baf879612320653094a8aaf46aca0bac81383",
+  "Authorities": [
+    {
+      "Path": "docs/initiatives/I-64-f4-t3b2-gate-contract-package.md",
+      "Section": "archivo completo (v3 con F4-E43); sus section 2, section 3 (D-T3B2-01 a D-T3B2-09), section 4, section 5 y section 9 fijan esta subtarea",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-f4-t3b-gate-contract-package.md",
+      "Section": "section 6 (R-B2-1 a R-B2-6)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-f4-t3-gate-contract-package.md",
+      "Section": "section 2 (tabla K = 1) y section 7 (R-B6 a R-B9, R-C2)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-proposal-v5.md",
+      "Section": "D-08, D-17 y P5",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-T3B1-EDIT-SURFACE/task-close-package.md",
+      "Section": "section 5: menores y riesgos de Smoke-2",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/state/I-64.yml",
+      "Section": "estado vigente completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-evidence.md",
+      "Section": "section 171 y siguientes",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/f4-dispositions.md",
+      "Section": "archivo completo, en particular F4-E28, F4-E29, F4-E31 y F4-E42 y siguientes",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4t3-authorization.md",
+      "Section": "archivo completo: autorizacion de F4-T3, requisitos y cobertura 11-14",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4t3b-decomposition-decision.md",
+      "Section": "archivo completo: division de F4-T3B en dos subtareas",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4t3a-close-decision.md",
+      "Section": "archivo completo: los menores 4 y 6 de F4-T3A siguen en F4-T3C",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4t3a-nc2-decision.md",
+      "Section": "archivo completo: la regla de nc2 para F4-T3B y F4-T3C",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4t2b2a-replanning.md",
+      "Section": "archivo completo: regla de replanificacion de F4 (F4-E31)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4t3b1-close-disposition.md",
+      "Section": "archivo completo: cierre de F4-T3B1, autorizacion de F4-T3B2, tratamiento aceptado 1-3, N-1 y N-3, regla de replanificacion y F4-T3C",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-T3B2-EDIT-CLOSE-SYNC/coordinator/gate-contract.json",
+      "Section": "este contrato",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/WorkspaceHostCore.cs",
+      "Section": "la implementacion explicita del puerto (GetField, DiscardRack, DiscardDocument, GetRacksAtRisk, TakeLossNotices, TakeCloseNotices, AdviseClose y SessionDestroyed); solo lectura",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs",
+      "Section": "el puerto y sus valores; solo lectura",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/WorkspaceEditIntent.cs",
+      "Section": "EditDiscardOutcome y EditDiscardStatus; solo lectura",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/BrowserSessionRegistry.cs",
+      "Section": "Destroy y KnownSessions; solo lectura",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Plugin/Workspace/WorkspaceController.cs",
+      "Section": "los reenvios de las colas; solo lectura",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "tests/RackCad.UI.Tests/Workspace/WorkspaceBrowserViewTests.cs",
+      "Section": "el patron de las pruebas de vista del navegador; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "tests/RackCad.UI.Tests/Workspace/WorkspacePortDouble.cs",
+      "Section": "el patron de los dobles de la UI; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "tests/RackCad.UI.Tests/StaTestRunner.cs",
+      "Section": "el hilo STA de las pruebas de vista; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "tests/RackCad.Tests/Workspace/WorkspaceHostSourceSupport.cs",
+      "Section": "las utilidades de las guardas de fuente; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "section 16.1 a section 16.10",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "section 4 (A1-A8) y section 10 (nc1..nc4)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/routing.md",
+      "Section": "archivo completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/model-catalog.md",
+      "Section": "celdas medidas y vigentes para Controller y Worker",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/WORKFLOW.md",
+      "Section": "relevo, Git e integracion",
+      "Class": "EXTERNAL"
+    }
+  ],
+  "AllowedWriteScope": [
+    "src/RackCad.Application/Workspace/BrowserSession.cs",
+    "src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs",
+    "src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs",
+    "src/RackCad.UI/Workspace/WorkspacePanelView.xaml",
+    "src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs",
+    "src/RackCad.UI/Workspace/WorkspacePanelViewModel.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBrowserSessionTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotCloseSyncGuardTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotEditPortDouble.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotFieldViewTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotFieldViewModelTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotCloseSyncTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotCloseSyncViewTests.cs"
+  ],
+  "ForbiddenWriteScope": [
+    "src/RackCad.Application/Bom/",
+    "src/RackCad.Application/Catalogs/",
+    "src/RackCad.Application/ComputedParameters/",
+    "src/RackCad.Application/CustomProperties/",
+    "src/RackCad.Application/Diagnostics/",
+    "src/RackCad.Application/Drawing/",
+    "src/RackCad.Application/Expressions/",
+    "src/RackCad.Application/Formatting/",
+    "src/RackCad.Application/Geometry/",
+    "src/RackCad.Application/Layout/",
+    "src/RackCad.Application/Persistence/",
+    "src/RackCad.Application/ProjectVariables/",
+    "src/RackCad.Application/RackFrames/",
+    "src/RackCad.Application/Settings/",
+    "src/RackCad.Application/StructuralAnalysis/",
+    "src/RackCad.Application/StructuralSections/",
+    "src/RackCad.Application/Systems/",
+    "src/RackCad.Application/Units/",
+    "src/RackCad.Application/Views/",
+    "src/RackCad.Application/Workspace/Drafts/",
+    "src/RackCad.Application/BlockNaming.cs",
+    "src/RackCad.Application/RackCad.Application.csproj",
+    "src/RackCad.Application/Workspace/WorkspaceHostCore.cs",
+    "src/RackCad.Application/Workspace/WorkspacePilotSupport.cs",
+    "src/RackCad.Application/Workspace/BrowserSessionRegistry.cs",
+    "src/RackCad.Application/Workspace/EventBridgeCore.cs",
+    "src/RackCad.Application/Workspace/IWorkspaceHostPort.cs",
+    "src/RackCad.Application/Workspace/IWorkspaceBrowserSummaryPort.cs",
+    "src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs",
+    "src/RackCad.Application/Workspace/WorkspaceEditIntent.cs",
+    "src/RackCad.Domain/",
+    "src/RackCad.UI/Controls/",
+    "src/RackCad.UI/Editor/",
+    "src/RackCad.UI/Preview/",
+    "src/RackCad.UI/RackFrames/",
+    "src/RackCad.UI/Shell/",
+    "src/RackCad.UI/StructuralSections/",
+    "src/RackCad.UI/Systems/",
+    "src/RackCad.UI/Themes/",
+    "src/RackCad.UI/Views/",
+    "src/RackCad.UI/RackCad.UI.csproj",
+    "src/RackCad.UI/ObservableObject.cs",
+    "src/RackCad.UI/Workspace/WorkspaceNavigationViewModel.cs",
+    "src/RackCad.UI/Workspace/WorkspacePanelState.cs",
+    "src/RackCad.UI/Workspace/WorkspaceMeasurementRow.cs",
+    "src/RackCad.Plugin/Drawing/",
+    "src/RackCad.Plugin/KindHandlers/",
+    "src/RackCad.Plugin/Systems/",
+    "src/RackCad.Plugin/Views/",
+    "src/RackCad.Plugin/RackCad.Plugin.csproj",
+    "src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceController.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceHostPort.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceNavigationEffects.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceNavigationFacts.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs",
+    "src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs",
+    "src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceSelectionReader.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeFacadeSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBrowserHostGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostC2SourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostPortGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceIdleSchedulingGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceNavigationPrivacyGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotSurfaceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceSourceGuardExceptionTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBrowserBoundaryTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostSourceSupport.cs",
+    "tests/RackCad.Tests/RackCad.Tests.csproj",
+    "tests/RackCad.Tests/CustomPropertiesCommandGuardTests.cs",
+    "tests/RackCad.Tests/SelectiveEditorOpenTests.cs",
+    "tests/RackCad.Tests/BomExcel/",
+    "tests/RackCad.Tests/ComputedParameters/",
+    "tests/RackCad.Tests/Fixtures/",
+    "tests/RackCad.Tests/Golden/",
+    "tests/RackCad.Tests/StructuralAnalysis/",
+    "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+    "tests/RackCad.UI.Tests/StaTestRunner.cs",
+    "tests/RackCad.UI.Tests/WindowCensusGuardTests.cs",
+    "tests/RackCad.UI.Tests/UiSystemBoundaryGuardTests.cs",
+    "docs/",
+    ".github/",
+    "eng/",
+    "tools/",
+    "assets/",
+    "deploy/",
+    "RackCad.sln",
+    "Directory.Build.props",
+    "Directory.Build.targets",
+    "global.json",
+    "NuGet.Config",
+    "README.md"
+  ],
+  "Invariants": [
+    "INV-F4T3B2-01 (sin puerto, D-T3B2-01 y D-T3B2-04): sin el puerto de edicion del piloto, CloseTab cierra como antes y Present no consume colas ni pasa keepActive; ninguna llamada al puerto.",
+    "INV-F4T3B2-02 (cerrar una pestana, D-T3B2-01): con el puerto, CloseTab clasifica la pestana con GetField de la sesion presentada. Sin borrador (Exists falso) se cierra sin descarte (desviacion de letra declarada de R-B2-1, aceptada por el Owner en F4-E43: sin borrador ni pendiente en memoria y sin escritura authored). Con borrador no protegido llama a DiscardRack y se cierra siempre; si el descarte no da Discarded o lanza, el aviso del navegador dice que la pestana se cerro y su borrador limpio quedo en memoria, con el motivo. Protegida (la regla de IsProtected, tambien con un fallo del puerto): no se cierra y se abre la confirmacion de esa pestana. Cerrar nunca escribe ni hace Actualizar.",
+    "INV-F4T3B2-03 (confirmacion, D-T3B2-07): a lo sumo una confirmacion en linea, de tres tipos (cerrar una pestana, descartar el campo, descartar el documento), con exactamente los botones Descartar y Cancelar, sin subdialogo, sin EnterPanelModal y sin IsDefault ni IsCancel. Una peticion nueva la sustituye; se quita con Cancelar, con su resultado, con un cambio de la sesion presentada, si su pestana deja de existir o, la del campo, si cambia la superficie viva. Descartar de la confirmacion de una pestana llama a DiscardRack con esa sesion y ese rack; con Discarded la pestana se cierra; con otro resultado no se cierra y hay aviso.",
+    "INV-F4T3B2-04 (cancelar): Cancelar no llama a ninguna operacion del puerto y solo quita la confirmacion.",
+    "INV-F4T3B2-05 (sin lecturas de la intencion ni escritura): cerrar y descartar no llaman a TryBeginEdit, TryReload ni TryCheckNow y no escriben nada; la lectura del resumen de la nueva superficie activa tras cerrar la activa es la de F3 y no cambia.",
+    "INV-F4T3B2-06 (descartar el documento, D-T3B2-03): RequestDocumentDiscard lee GetRacksAtRisk de la sesion presentada; con las dos listas vacias, aviso sin efecto; si no, la confirmacion lista los racks en riesgo por su titulo (Name del registro de la pestana, o RackId) y aparte los inciertos, y guarda las dos listas. ConfirmDiscard vuelve a leer GetRacksAtRisk y compara las dos listas en orden y con comparacion ordinal: si cambiaron no descarta y muestra la lista nueva con un aviso (o, vacia, el aviso sin efecto); si no, DiscardDocument; con Discarded, aviso con los confirmados y aparte el numero de limpios retirados, se quita el aviso de veto de esa sesion y se recalculan las marcas y el campo. Las pestanas no se cierran. El fallo de GetRacksAtRisk indistinguible de nada en riesgo es una limitacion declarada hasta F4-T3C, no aceptada como comportamiento final: F4-T3C la endurece (F4-E43).",
+    "INV-F4T3B2-07 (consumo de las colas, D-T3B2-04): con el puerto, Present llama al metodo privado TakeNotices, el unico que llama a TakeCloseNotices y TakeLossNotices, cada una en su try; ningun gesto consume las colas; un fallo deja un aviso del navegador y no detiene la presentacion. El Present del constructor del panel tambien consume (memoria) y la documentacion de pilotEdit del VM del panel lo dice.",
+    "INV-F4T3B2-08 (avisos, D-T3B2-04): las filas Notices (WorkspaceBrowserNoticeItem) se recalculan desde los avisos guardados y conservan su instancia si no cambian por valor. Un aviso de veto por sesion, clasificado al mostrarlo contra la sesion presentada: de la presentada, con los titulos o el texto de incierto y el boton Descartar borradores de este documento; de otra, con el texto de activarla y sin boton. El texto nombra solo la accion del panel (desviacion transitoria declarada de D-17, aceptada por el Owner en F4-E43; F4-T3C debe nombrar el comando cuando exista) y no menciona ninguna via de aplicar. La perdida nombra los RackId perdidos y aparte los inciertos con su motivo. Entendido quita una fila; DiscardDocument con Discarded quita el veto de esa sesion; el veto de una sesion que deja de vivir se purga en el mismo bucle de PurgeDeadSessions con una sola llamada a IsSessionAlive; la perdida solo se quita con Entendido; tras DiscardRack con Discarded, el rack sale del veto de su sesion y la fila se quita si queda vacia y no es incierta. El veto no emite StateChanged (limitacion declarada).",
+    "INV-F4T3B2-09 (retencion por seleccion, D-T3B2-05): BrowserSession.ApplySelectionContext(SelectionContext context, bool keepActive = false); sin keepActive o sin pestana activa es el de hoy; con keepActive y pestana activa, tras consumir el contexto: R abierta da None sin activarla; R sin pestana con una preview que no es la activa la reemplaza en su sitio (Replaced) sin cambiar ActiveRackId; con la preview activa da None (nunca se reemplaza la activa); sin preview anade una preview al final (Created) sin cambiar ActiveRackId. Sin sobrecargas, sin valores nuevos de BrowserChange, sin tipos nuevos y con el vocabulario de las guardas de BrowserSession. El VM pasa keepActive solo con el puerto y verdadero si la pestana activa tiene PendingText o si GetField lanza. Con la pestana solo dirty, R se activa y la anterior cruza Dematerialize como en F4-T3B1.",
+    "INV-F4T3B2-10 (aviso de la retencion, D-T3B2-05): con keepActive y un contexto de un solo rack R distinto de la activa y distinto del contexto de la presentacion anterior, el aviso del navegador dice que la seleccion abrio R en segundo plano (Created o Replaced) o que no cambio la pestana activa (R abierta), y que la activa conserva su texto pendiente.",
+    "INV-F4T3B2-11 (descartar el campo, D-T3B2-02): Field.ShowDiscardButton es ShowReloadButton con el borrador mostrado existente; Browser.DiscardField sigue la regla de cerrar sin cerrar la pestana; con Discarded la pestana se queda, el campo sale del Error y se muestra desde la memoria, y la marca se recalcula.",
+    "INV-F4T3B2-12 (forma de la UI y contencion, D-T3B2-07): el VM del navegador gana exactamente DiscardField, RequestDocumentDiscard, ConfirmDiscard, CancelDiscard, DismissNotice(string key), CanDiscardDocument, HasConfirmation, ConfirmationText, NoticeText, Notices y HasNotices, y el record public sealed record WorkspaceBrowserNoticeItem(string Key, string Text, bool CanDiscardDocument) en su archivo; el XAML gana BrowserDiscardDocumentButton, BrowserConfirmationPanel, BrowserConfirmationText, BrowserConfirmDiscardButton, BrowserCancelDiscardButton, BrowserNoticeText y BrowserNoticeList entre la tira y la superficie, fuera de BrowserTabStrip, y BrowserFieldDiscardButton en la superficie, con los contenidos y nombres de automatizacion del paquete y manejadores que delegan en Contained. El aviso del navegador se quita al empezar cada gesto de F4-T3B2 y cuando cambia la superficie viva, tambien por un gesto de F4-T3B1. Una excepcion del puerto en un gesto de F4-T3B2 deja el aviso con el motivo y quita la confirmacion; Field.Fail solo con la pestana afectada abierta y viva y antes de cualquier cierre; nunca ContainFailure ni el Error del panel.",
+    "INV-F4T3B2-13 (arrastres de F4-T3B1, D-T3B2-06): N-1, el doble responde Kept sin mutar a una frontera bloqueante sobre un borrador con pendiente y CanEdit falso, y la mitad Kept de T06 recorre Kept; N-3, el code-behind recuerda la tecla que lanzo el primer gesto desde la caja en solo lectura y, en la caja editable, marca Handled las repeticiones de esa tecla hasta la primera pulsacion no repetida, solo con e.Key y e.IsRepeat y sin KeyUp (cambio declarado de INV-F4T3B1-04: en la caja editable quedan marcados Enter, Esc y esas repeticiones). N-2 queda como desviacion declarada.",
+    "INV-F4T3B2-14 (regla RED): el commit RED lleva el esqueleto completo y compilable que no lanza: ApplySelectionContext con keepActive que ignora el parametro; los miembros nuevos del VM del navegador inertes, sin llamadas al puerto; ShowDiscardButton falso; el record; los elementos del XAML con sus nombres, enlaces y manejadores; el doble ampliado (respondedores DiscardRackResponder, DiscardDocumentResponder y RisksResponder, colas LossQueue y CloseQueue, el ayudante DiscardAsTheHostDoes, ThrowIfAsked en las cinco operaciones, las respuestas por defecto sin cambio, y N-1); y los cambios declarados de pruebas existentes: la asercion de WorkspacePilotFieldViewTests.cs que excluye TakeLossNotices y TakeCloseNotices, y T06. En el RED fallan solo pruebas nuevas, por asercion; todas las existentes pasan. El GREEN no toca ningun archivo de tests/.",
+    "INV-F4T3B2-15 (limites y limitaciones): sin cambio del host, del puerto, del Plugin, de la paleta, de BrowserSessionRegistry ni de un comando; el VM del panel solo cambia la documentacion de pilotEdit; sin +=, evento, Dispatcher, Timer, Task, async, API de foco, Registry ni RackLog nuevos en la UI; sin subdialogo y sin escritura authored; sin cambiar el comportamiento cerrado de F3, F4-T1, F4-T2, F4-T3A ni F4-T3B1 salvo N-3. Limitaciones declaradas: el fallo de GetRacksAtRisk, el veto sin StateChanged, el compromiso por LostFocus antes de Cerrar, el clic perdido de la tira y la reversion del pendiente solo por Cerrar y Descartar."
+  ],
+  "RequiredTests": [
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.Workspace",
+      "MinSelected": 2300,
+      "ExpectRed": true
+    },
+    {
+      "Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.UI.Tests.Workspace",
+      "MinSelected": 352,
+      "ExpectRed": true
+    }
+  ],
+  "ExpectedEvidence": [
+    "gate-contract valido; delegacion del Controller valida; comparacion byte a byte y aceptacion A1-A8, y nc4 (primera delegacion de la cadena F4-T3B2), antes del Worker.",
+    "AllowedWriteScope de la delegacion = exactamente el AllowedWriteScope del contrato.",
+    "Commit RED y push propios antes del GREEN: pruebas que compilan; las existentes pasan y solo las nuevas fallan, por asercion; ChainRedSha y ChainRedFiles acreditados.",
+    "Commit GREEN y push con cambios solo dentro del AllowedWriteScope; ningun archivo de tests/ del RED cambia.",
+    "Filtros FullyQualifiedName~RackCad.Tests.Workspace y FullyQualifiedName~RackCad.UI.Tests.Workspace en verde sobre el GREEN; suites completas de los dos proyectos en verde en Debug; build Release de la solucion, Plugin incluido, sin avisos nuevos.",
+    "CI push del SHA exacto GREEN con los cuatro jobs en success, y del RED con los jobs de Core y de UI en failure.",
+    "worker-handoff.json conforme a su esquema con RED, GREEN, alcance real, trailer, conteos de los filtros, mapa evidencia-por-invariante y OpenQuestions vacia salvo ambiguedad material real.",
+    "Controller verification valida; nc1..nc3 segun README section 10, con su oraculo ordinario (y, con la firma exacta de PD-F4-04 o de PD-F4-01, el sustituto de la subtarea por las reglas de F4 de las ordenes del Owner); revision directa de la sesion y revision adversarial independiente del diff.",
+    "Sin AutoCAD: la UI se prueba con pruebas de VM y de vista (STA) con dobles; el teclado, el foco y el modal de AutoCAD quedan para Smoke-2."
+  ],
+  "StopConditions": [
+    {
+      "Id": "S-02",
+      "Text": "architecture outside Freeze"
+    },
+    {
+      "Id": "S-03",
+      "Text": "material ambiguity"
+    },
+    {
+      "Id": "S-04",
+      "Text": "contradictory evidence"
+    },
+    {
+      "Id": "S-05",
+      "Text": "destructive or irreversible action not authorized"
+    },
+    {
+      "Id": "S-07",
+      "Text": "conflict with another active owner"
+    },
+    {
+      "Id": "S-08",
+      "Text": "branch or worktree ownership conflict"
+    },
+    {
+      "Id": "S-12",
+      "Text": "Worker loses context or cannot verify AuthorityRevision"
+    },
+    {
+      "Id": "S-13",
+      "Text": "origin/main movement invalidates exact-SHA assumptions; apply AUTOMATION_PLAN 16.7"
+    },
+    {
+      "Id": "S-14",
+      "Text": "I-64 Freeze or contract explicitly says STOP"
+    },
+    {
+      "Id": "P-01",
+      "Text": "config.toml no longer matches accepted Snapshot A, B, C or D"
+    },
+    {
+      "Id": "P-02",
+      "Text": "foreign live participant, unattributable process or more than one open delegation"
+    },
+    {
+      "Id": "P-03",
+      "Text": "delegation outside gate contract"
+    },
+    {
+      "Id": "P-04",
+      "Text": "BLOCKED cap reached"
+    },
+    {
+      "Id": "P-05",
+      "Text": "invocation differs from accepted delegation package"
+    },
+    {
+      "Id": "P-06",
+      "Text": "usage or credit-limit warning"
+    },
+    {
+      "Id": "P-07",
+      "Text": "another invocation would exceed the invocation budget"
+    },
+    {
+      "Id": "P-08",
+      "Text": "responsible session operates the worktree during cession"
+    },
+    {
+      "Id": "F4T3B2-C01",
+      "Text": "a file outside the AllowedWriteScope would have to change, or a new file other than the three new test files of the AllowedWriteScope would be needed"
+    },
+    {
+      "Id": "F4T3B2-C02",
+      "Text": "an existing guard or test would have to change other than the declared changes of INV-F4T3B2-14; in a correction attempt, files created by this task in an earlier attempt are not existing guards or tests"
+    },
+    {
+      "Id": "F4T3B2-C03",
+      "Text": "a path would write authored state of the drawing, call one of the three operations of the edit intention, or open a subdialog"
+    },
+    {
+      "Id": "F4T3B2-C04",
+      "Text": "BrowserSession would need a change other than the optional parameter keepActive, or the host, the port, the Plugin, the palette or a command would have to change"
+    },
+    {
+      "Id": "F4T3B2-C05",
+      "Text": "a new subscription, +=, event, Dispatcher, Timer, Task or focus call would be needed in the UI"
+    },
+    {
+      "Id": "F4T3B2-C06",
+      "Text": "the frozen semantics of D-08, D-17 or P5, or the closed behavior of F3, F4-T1, F4-T2, F4-T3A or F4-T3B1 other than N-3 would have to change, a test needs AutoCAD, or a csproj or the CI workflow would have to change"
+    },
+    {
+      "Id": "F4T3B2-C07",
+      "Text": "the task evaluates Long-horizon"
+    },
+    {
+      "Id": "F4T3B2-C08",
+      "Text": "a planning output rejected only by the literal byte-fidelity comparison of the collections before the Worker allows ONE replanning with a reinforced prompt, without consuming a product attempt; a second planning fidelity failure is STOP to the Coordinator (F4-E31, F4-E43)"
+    }
+  ],
+  "EligibleCells": [
+    {
+      "Cell": "anthropic/subagent/claude-sonnet-5-5",
+      "Provider": "Anthropic",
+      "Model": "claude-sonnet-5-5",
+      "Transport": "subagent",
+      "Capabilities": [
+        "read",
+        "tool-use",
+        "write-commit-push",
+        "effort-applied"
+      ],
+      "TestedEfforts": [
+        "high"
+      ],
+      "Source": "docs/automation/agent-execution/model-catalog.md: celda write-commit-push medida por U-04; effort high medido y usada como Worker real",
+      "VerifiedOn": "2026-09-30"
+    },
+    {
+      "Cell": "openai/process/gpt-6-luna",
+      "Provider": "OpenAI",
+      "Model": "gpt-6-luna",
+      "Transport": "process",
+      "Capabilities": [
+        "read",
+        "tool-use",
+        "effort-applied"
+      ],
+      "TestedEfforts": [
+        "high"
+      ],
+      "Source": "sonda neutra de F4 R20261111T180028Z-32f7 (PASS; gpt-6-luna/high efectivos; read-only; oraculo Git exacto; sin aviso de uso; config.toml SNAPSHOT G 7C1516A9135D59FA38F6004D56B71C7E1313502D6C6BFEA6FB5D8F97A62DD723 antes y despues; F4-E13) sobre codex-cli 0.167.0-alpha.3.2, bin 5449c1f0f26f1f98, codex.exe SHA-256 4F91AE86895FF124760D70ED1630E2354CA874765C9BB61AE524B600327EFC17; acreditacion del binario: sonda R20261110T034758Z-6a68",
+      "VerifiedOn": "2026-11-11"
+    }
+  ],
+  "RoutingEnforcement": "required",
+  "CorrectionsAuthorized": true,
+  "IssuedBy": "Sesion principal de I-64 (Claude) por la orden del Owner I-64 F4-T2 CLOSE RATIFICATION / F4-T3 AUTHORIZATION (docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4t3-authorization.md), su decision de division de F4-T3B en dos subtareas (owner-f4t3b-decomposition-decision.md) y la disposicion del Owner y del Coordinator sobre el cierre de F4-T3B1 (owner-f4t3b1-close-disposition.md, F4-E43)",
+  "IssuedUtc": "2026-11-13T11:25:13Z"
+}
