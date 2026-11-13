@@ -6857,3 +6857,34 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **`attempts`:** 1 de 3.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 181. F4-T3C1-HOST-HARDENING: planificación, entrega y verificación
+
+**Decisión:** F4-E48.
+- **Planificación** `8f54`: aceptada a la primera, con fidelidad PASS, A1-A8 8/8 y nc4 `95e5`.
+- **Worker** `f35e`:
+  - RED `b845b9a6`: fallan 29 ejecuciones de pruebas nuevas, ninguna existente;
+  - GREEN `7bd275e4`: 12 rutas, sin Plugin.
+- **CI:** `43477341374` 4/4, con 2517/2517 en Core y 454/454 en UI en los filtros.
+- **Verificación** `979b`: `EXECUTION_VERIFIED`, 14/14. Su prompt corrige un hecho viejo de la Snapshot, que se declara en F4-E48.
+- **Revisiones:**
+  - la directa: producto conforme, sin hallazgos;
+  - la independiente: ACEPTABLE CON MENORES (0/0/6).
+
+**Límites:** sin AutoCAD. Quedan para Smoke-2 el despliegue conjunto, la recreación de la paleta con un veto en cola y la mezcla de idiomas del campo.
+
+## 182. Controles de F4-T3C1 y cierre
+
+| Control | Corrida | Resultado |
+|---|---|---|
+| nc1 | `f473` | CONTROL PASS (Identity) |
+| nc2 | `95b0` | CONTROL NOT PASSED (firma exacta de PD-F4-01); se conserva tal cual |
+| sustituto de nc2 | `a04c` | PASS (F4T3C1-NC2-EXACT-WHITELIST-01); nc2 = SATISFIED_UNDER_F4T3C1_EXACT_WHITELIST_SUBSTITUTE |
+| nc3 | `f4c5` | CONTROL PASS (FreeText) |
+
+- **Decisión del Owner:** «Cerrar y arrastrar».
+- **F4-T3C1-HOST-HARDENING = CLOSED / PASS WITH LIMITATIONS** sobre `7bd275e4`, en el intento 1 de 3.
+- **Menores:** R-1, R-2 y R-4 pasan a F4-T3C2, y R-3 a F4-T4.
+- **Siguiente:** el paquete de F4-T3C2.
+
+**Límites:** solo custodia y documentación; sin AutoCAD.

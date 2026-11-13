@@ -1502,3 +1502,60 @@ F4-T4 no empieza antes del cierre de F4-T3.
 - nc4 en la primera delegación de la cadena, y nc1..nc3 con su oráculo ordinario.
 - Las firmas exactas de PD-F4-04 y PD-F4-01 reutilizan el sustituto de la subtarea.
 - Las de PD-F4-05 y PD-F4-06 vuelven al Owner.
+
+## F4-E48. F4-T3C1-HOST-HARDENING: entrega, verificación, controles y cierre
+
+**Planificación** `R20261113T164804Z-8f54`, sobre la BaseSha `c04ddfb3`:
+- se aceptó a la primera: fidelidad PASS en las ocho colecciones, A1-A8 8/8 y Horizonte Medium;
+- los tres paquetes de nombre casi igual iban fijados por índice desde el primer prompt (lección de F4-T3B2);
+- nc4 `R20261113T165109Z-95e5` cumplió su oráculo, con solo A3 en fail.
+
+**Worker** `R20261113T165143Z-f35e`: subagente `claude-sonnet-5-5`/high, 282 turnos y 0 denegaciones.
+- **RED** `b845b9a6`: fallan 29 ejecuciones (15 de Core y 14 de UI), todas de métodos nuevos del RED. Ninguna existente falla.
+- **GREEN** `7bd275e4`: exactamente las 12 rutas del contrato, sin Plugin. El GREEN no toca `tests/`.
+- **CI:**
+  - el GREEN `43477341374` tiene los cuatro jobs en success: 2517/2517 en Core y 454/454 en UI en los filtros, y 18055/18055 en la suite completa de Core;
+  - el RED `43472387303` tiene Core y UI en failure, como piden los dos `ExpectRed` true.
+
+**Revisiones:**
+- **La directa** (`direct-review.md`): producto conforme, sin hallazgos.
+  - Comprobó mecánicamente los 28 literales de H-07.
+  - Comprobó que las guardas reescritas por M-5 no pierden ninguna aserción ni alternativa.
+- **La adversarial independiente** (`independent-review.md`): ACEPTABLE CON MENORES (0/0/6), R-1 a R-6, sin ningún escenario de producto que falle.
+
+**Un hecho viejo, corregido antes de lanzar la verificación.** El prompt de verificación clonado de F4-T3B2 decía que el config era la «SNAPSHOT G» de F4-E13; desde F4-E46 es la Snapshot H. La sesión lo corrigió antes de la primera verificación de T3C1.
+- Las verificaciones `f5e9` y `4f9b` de F4-T3B2 y sus controles llevaban ese mismo hecho viejo.
+- Sus registros de relevo midieron el hash real H, aceptado, y no causó ningún fallo.
+- No se reabre F4-T3B2 ni se altera su evidencia.
+
+**Verificación** `R20261113T181650Z-979b`: `EXECUTION_VERIFIED` 14/14 sobre `7bd275e4`.
+
+**Decisión del Owner** (`owner-f4t3c1-close-decision.md`), tomada durante nc1: «Cerrar y arrastrar».
+- R-1, R-2 y R-4, que son huecos de prueba y documentación sobre código correcto, pasan a F4-T3C2.
+- R-3, «`ErrorReason` solo en Error», latente, pasa a F4-T4.
+- R-5 y R-6 quedan declarados en el cierre.
+
+**Controles** sobre las entradas de `979b`, con su oráculo ordinario:
+- nc1 `R20261113T182131Z-f473`: CONTROL PASS (Identity, BLOCKED/STOP);
+- nc2 `R20261113T182403Z-95b0`: CONTROL NOT PASSED con la firma exacta de PD-F4-01: Scope en fail sobre `IWorkspacePilotEditPort.cs` con F4T3C1-C01; Contract en fail solo por la exactitud; `EXECUTION_BLOCKED` / STOP; ninguna otra comprobación distinta de la verificación real.
+  - Se conserva tal cual.
+  - Por la regla de nc2 de la orden del Owner de cierre de F4-T3A, vigente para F4-T3B y F4-T3C: **sustituto F4T3C1-NC2-EXACT-WHITELIST-01** (`F4-T3C1-HOST-HARDENING-nc2-substitute/1/R20261113T182852Z-a04c`): **PASS**, con autoprueba determinista de 14 casos y las 10 propiedades. Es una copia del de F4-T3B1 con solo el identificador y el ámbito cambiados.
+  - Registro: nc2 = SATISFIED_UNDER_F4T3C1_EXACT_WHITELIST_SUBSTITUTE. Es el segundo uso de la regla.
+  - PD-F4-01 registra su recurrencia: es su cuarta aparición, tras F4-T2B1, F4-T3A y F4-T3B1.
+- nc3 `R20261113T182900Z-f4c5`: CONTROL PASS (FreeText única en fail, REWORK).
+
+**Procesos:** 0 participantes en todas las comprobaciones de la cadena. El contador de límites del registro de nc3 da 1 «limit reached»: es el texto de la parada S-11 de AUTOMATION_PLAN que leyó el Controller, no un límite de uso.
+
+**Cierre:** **F4-T3C1-HOST-HARDENING = CLOSED / PASS WITH LIMITATIONS** sobre `7bd275e4`, en el intento 1 de 3 (`F4-T3C1-HOST-HARDENING/task-close-package.md`).
+- F4-T3C1 cierra el endurecimiento del desconocido de `GetRacksAtRisk` que F4-E43 asignó a F4-T3C, junto con los menores 4 y 6 de F4-T3A, el menor 6 de F4-T3B1 y M-1 a M-5 y M-7 de F4-T3B2.
+
+**Siguiente:** el paquete de F4-T3C2-COMMAND-ADVISOR sobre el código de `7bd275e4`, con revisión independiente y emisión. Sus obligaciones:
+- `RACKPANELDESCARTAR`;
+- el envoltorio del asesor;
+- el aviso del panel con la vía del comando;
+- los censos;
+- M-1 de F4-T2B2B;
+- R-C14;
+- R-1, R-2 y R-4.
+
+F4-T4 no empieza antes del cierre de F4-T3.
