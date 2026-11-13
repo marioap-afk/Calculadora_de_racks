@@ -6830,3 +6830,18 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **Siguiente:** el paquete de F4-T3C.
 
 **Límites:** solo custodia y documentación; sin AutoCAD.
+
+## 179. División de F4-T3C y paquete de F4-T3C1
+
+**Decisión:** F4-E47.
+- **Mapa** del código real (`23f67f56`) con cuatro exploraciones de solo lectura. Medido: T3C tocaría unos 28 archivos, con seis guardas de censo de comandos.
+- **Orden del Owner:** dos subtareas, en orden C1 → C2, cada una con 1 de 3:
+  - T3C1-HOST-HARDENING, sin Plugin;
+  - T3C2-COMMAND-ADVISOR.
+- **Paquete** `docs/initiatives/I-64-f4-t3c-gate-contract-package.md` v3:
+  - revisión de la v1: EMITIBLE TRAS CORRECCIONES (1/4/10);
+  - re-revisión de la v2: EMITIBLE TRAS CORRECCIONES (0/1/6);
+  - todo aceptado.
+- **Validación determinista final:** PASS en sus siete comprobaciones, idéntica en dos corridas.
+
+**Límites:** solo documentación; sin AutoCAD.

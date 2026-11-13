@@ -1,0 +1,50 @@
+{
+ "1_CodeUnchangedSinceT3B2Green": true,
+ "2_FileLineRefsResolve": true,
+ "3_CitedFilesExistOrAreTheThreeNew": true,
+ "4_PackageAndContractAgree": true,
+ "5_ReviewsIncorporated": true,
+ "6_NoLocalPaths": true,
+ "7_AuthoritiesExist": true,
+ "AddedByEmissionCommit": [
+  "owner-f4t3c-decomposition-decision.md"
+ ],
+ "BadRefs": [],
+ "ContractAllowed": [
+  "IWorkspacePilotEditPort.cs",
+  "WorkspaceBrowserViewModel.cs",
+  "WorkspaceHostCore.cs",
+  "WorkspaceHostHardeningGuardTests.cs",
+  "WorkspacePanelViewModel.cs",
+  "WorkspacePilotCloseSyncGuardTests.cs",
+  "WorkspacePilotCloseSyncTests.cs",
+  "WorkspacePilotEditHostTests.cs",
+  "WorkspacePilotEditPortDouble.cs",
+  "WorkspacePilotFieldViewModel.cs",
+  "WorkspacePilotFieldViewModelTests.cs",
+  "WorkspacePilotSupport.cs"
+ ],
+ "ContractDry": "DRY allowed 12 forbidden 103 inv 12 stops 25 bytes 24636",
+ "FileLineRefs": 27,
+ "Head": "7895f397a377c0081996c6b7efbe390e81c674b0",
+ "Missing": [],
+ "MissingAuthorities": [
+  "owner-f4t3c-decomposition-decision.md"
+ ],
+ "NewAlreadyPresent": [],
+ "PackageAllowed": [
+  "IWorkspacePilotEditPort.cs",
+  "WorkspaceBrowserViewModel.cs",
+  "WorkspaceHostCore.cs",
+  "WorkspaceHostHardeningGuardTests.cs",
+  "WorkspacePanelViewModel.cs",
+  "WorkspacePilotCloseSyncGuardTests.cs",
+  "WorkspacePilotCloseSyncTests.cs",
+  "WorkspacePilotEditHostTests.cs",
+  "WorkspacePilotEditPortDouble.cs",
+  "WorkspacePilotFieldViewModel.cs",
+  "WorkspacePilotFieldViewModelTests.cs",
+  "WorkspacePilotSupport.cs"
+ ],
+ "Result": "PASS"
+}

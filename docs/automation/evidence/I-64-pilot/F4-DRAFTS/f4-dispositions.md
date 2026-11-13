@@ -1442,3 +1442,63 @@ Medido: T3B tocaría unos 22 archivos, frente a los 12 de T3A, con cambios decla
 - los menores arrastrados.
 
 F4-T4 no empieza antes del cierre de F4-T3.
+
+## F4-E47. División de F4-T3C en dos subtareas, paquete v3 y emisión de F4-T3C1-HOST-HARDENING
+
+**Origen:** la disposición del Owner y del Coordinator (F4-E43): «After T3B2 closes: prepare F4-T3C». Según esa disposición, F4-T3C es dueña de:
+- `RACKPANELDESCARTAR`;
+- el aviso con la vía del comando;
+- el endurecimiento del fallo o desconocido de `GetRacksAtRisk`;
+- la integración modal y de foco que quede;
+- los menores arrastrados.
+
+**Mapa previo:** cuatro exploraciones de solo lectura sobre el código de `23f67f56`. Los mapas están en `F4-T3C1-HOST-HARDENING/coordinator/`.
+- **Medido:** T3C tocaría unos 28 archivos de Application, UI, Plugin y pruebas, con seis guardas de censo de comandos.
+- Los dos proyectos de prueba no referencian el Plugin.
+- Ningún contrato concreta una obligación de código de modal o de foco: queda Smoke-2.
+
+**Orden del Owner** (`F4-DRAFTS/coordinator/owner-f4t3c-decomposition-decision.md`, pregunta y respuesta literales): «Dos subtareas», cada una con 1 de 3 intentos y en orden C1 → C2.
+- **F4-T3C1-HOST-HARDENING, sin Plugin:**
+  - el desconocido explícito de `GetRacksAtRisk` (`PilotRiskView.IsKnown`) y sus consumidores en la UI;
+  - las colas con `try` y `DropCloseNotice` dentro de la contención (menores 4 y 6 de F4-T3A);
+  - los motivos del puerto en español (menor 6 de F4-T3B1);
+  - el motivo del Error a través del puerto;
+  - los menores M-1 a M-5 y M-7 de F4-T3B2.
+- **F4-T3C2-COMMAND-ADVISOR:**
+  - `RACKPANELDESCARTAR`;
+  - el envoltorio del asesor;
+  - el aviso del panel con la vía del comando;
+  - los censos de R-C3;
+  - M-1 de F4-T2B2B;
+  - los motivos del Plugin que llegan al campo.
+
+**Paquete** (`docs/initiatives/I-64-f4-t3c-gate-contract-package.md`):
+- **v1:** la revisión adversarial independiente dio EMITIBLE TRAS CORRECCIONES (1/4/10).
+  - **El bloqueante:** la contención de M-3 que proponía rompía la prueba cerrada de F3 `WorkspaceBrowserViewModelTests.cs:1006-1019`. El paquete afirmaba que `ThrowOnAlive` no lo usaba ninguna prueba: era falso, porque la búsqueda de la sesión no excluyó los binarios.
+  - **La v2** contiene solo el `Present` del constructor del panel, con `EnterError`.
+  - **Los importantes:**
+    - el `catch` de `GetRacksAtRisk` es inalcanzable; queda declarado como endurecimiento estructural, se cubre con una guarda por cuerpo y quedan prohibidas las costuras;
+    - los textos estaban sin cerrar; la tabla H-07 fija 28 literales con su español exacto;
+    - los motivos del Plugin se aplazaban a F7 sin decisión del Owner; pasan a T3C2;
+    - dos textos de M-2 quedaban sin mecanismo.
+- **v2:** su re-revisión dio EMITIBLE TRAS CORRECCIONES (0/1/6), con 13 de los 15 hallazgos de la v1 resueltos. El importante: la expresión de M-4 contradecía su propia autoprueba. La v3 usa la expresión medida con .NET.
+- **v3:** todo aceptado. Las dos revisiones están en `F4-T3C1-HOST-HARDENING/coordinator/`.
+- **Validación determinista final** (`package-validation.json`): PASS en sus siete comprobaciones, idéntica en dos corridas.
+
+**Emisión de F4-T3C1-HOST-HARDENING:**
+- el contrato `I-64-pilot/F4-T3C1-HOST-HARDENING/coordinator/gate-contract.json`;
+- 12 rutas exactas, una de ellas un archivo de guarda nuevo;
+- 12 invariantes y 8 paradas propias;
+- líneas base `RackCad.Tests.Workspace` 2331 y `RackCad.UI.Tests.Workspace` 431, medidas en la CI de `23f67f56`, las dos con `ExpectRed` true;
+- `attempts` 1 de 3.
+
+**Lecciones de F4-T3B2 aplicadas a los prompts de la cadena:**
+- los paquetes de nombre casi igual (`t3c`, `t3` y `t3b2`) van fijados por índice desde la primera planificación;
+- se refutan de antemano los conflictos inexistentes;
+- el hecho de la BaseSha y de su diff se mide en la emisión;
+- la línea de Scope no fija conteos.
+
+**Controles:**
+- nc4 en la primera delegación de la cadena, y nc1..nc3 con su oráculo ordinario.
+- Las firmas exactas de PD-F4-04 y PD-F4-01 reutilizan el sustituto de la subtarea.
+- Las de PD-F4-05 y PD-F4-06 vuelven al Owner.
