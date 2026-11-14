@@ -7075,3 +7075,15 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 **Validación determinista final:** PASS en sus ocho comprobaciones, idéntica en dos corridas.
 
 **Límites:** solo documentación; sin AutoCAD.
+
+## 194. Contrato de F4-T4A2-PREPARE-UI
+
+**Contrato:** `I-64-pilot/F4-T4A2-PREPARE-UI/coordinator/gate-contract.json` (F4-E54).
+- **Alcance:** lista blanca exacta de 15 rutas, cinco de ellas nuevas (pruebas); el producto toca el VM del campo, la vista del panel y dos archivos del host (solo D-T4A2-04 del paquete). Cambio declarado de una prueba existente (`WorkspacePilotPrepareTests.cs:993`) y de cuatro guardas.
+- **`ForbiddenWriteScope`:** 129 entradas, por raíces.
+- **Invariantes y paradas:** 17 invariantes y 9 paradas propias, entre ellas C08 (replanificación reforzada única; el segundo fallo de fidelidad es STOP) y C09 (el arrastre (5) falla en Windows).
+- **Líneas base:** `RackCad.Tests.Workspace` 2843 y `RackCad.UI.Tests.Workspace` 458, las dos con `ExpectRed` true (medidas en la CI de `bbd9a35e`).
+- **Revisiones:** `AuthorityRevision` `509622ffc170717be8a2f947180cd812bf51a347` y `MainSha` `812baf879612320653094a8aaf46aca0bac81383`.
+- **`attempts`:** 1 de 3.
+
+**Límites:** solo documentación en este paso; sin AutoCAD.

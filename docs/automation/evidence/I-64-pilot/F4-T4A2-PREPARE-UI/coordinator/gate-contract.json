@@ -1,0 +1,533 @@
+{
+  "Schema": "rackcad-gate-contract/v1",
+  "Unit": "I-64",
+  "Gate": "F4",
+  "TaskId": "F4-T4A2-PREPARE-UI",
+  "Objective": "Implementar en el panel la parte visible de solo lectura de F4-T4 segun el paquete de F4-T4A2 y la orden del Owner: \"Comprobar ahora\" en el VM del campo con el despacho de D-T4A1-03, la presentacion de las clases del Owner sobre los nombres existentes sin falso limpio, la reconciliacion explicita (\"Descartar y recargar\", \"Conservar mi borrador\" solo con un cambio comprometido y sin pendiente, y \"No\") con una confirmacion Si/No en linea, el diagnostico de admision y la pista del editor clasico en el Conflicto y en la confirmacion (unico cambio del host), los avisos de INV-31 y de D-13, las guardas endurecidas (C2-M-1, C2-M-2, Authorize por forma exacta, M-2, M-3, M-4, M-8 y M-9) y el arrastre (5) de F4-E25. Cero escrituras authored, sin MUTATE, POST, Undo ni Actualizar, y sin AutoCAD.",
+  "AuthorityRevision": "509622ffc170717be8a2f947180cd812bf51a347",
+  "MainSha": "812baf879612320653094a8aaf46aca0bac81383",
+  "Authorities": [
+    {
+      "Path": "docs/initiatives/I-64-f4-t4a2-gate-contract-package.md",
+      "Section": "archivo completo; sus section 2 (hechos H-01 a H-21), section 3, section 4 (D-T4A2-01 a D-T4A2-11 con la tabla T-A2), section 5 y section 6 fijan esta subtarea",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-f4-t4-gate-contract-package.md",
+      "Section": "section 4 (D-T4A1-01 a D-T4A1-03) y section 6 (R-A2-01 a R-A2-06)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-f4-t3-gate-contract-package.md",
+      "Section": "la tabla de transiciones (73-83) y D-T3-08",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-proposal-v5.md",
+      "Section": "D-10 a D-14, INV-06, INV-18, INV-26 e INV-31",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-implementation-clarifications.md",
+      "Section": "IC-07",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-T4A1-PREPARE-CORE/task-close-package.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-T3C2-COMMAND-ADVISOR/task-close-package.md",
+      "Section": "C2-M-1 y C2-M-2",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/state/I-64.yml",
+      "Section": "estado vigente completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-evidence.md",
+      "Section": "section 191 y siguientes",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/f4-dispositions.md",
+      "Section": "archivo completo, en particular F4-E25, F4-E31, F4-E43 y F4-E51 a F4-E54",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4t4a2-authorization.md",
+      "Section": "archivo completo: autorizacion de F4-T4A2",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4t4a2-overnight-decisions.md",
+      "Section": "archivo completo: decisiones del Owner para la noche",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4t2b2a-replanning.md",
+      "Section": "archivo completo: regla de replanificacion de F4 (F4-E31)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-T4A2-PREPARE-UI/coordinator/gate-contract.json",
+      "Section": "este contrato",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs",
+      "Section": "el puerto, PilotFieldView, PilotFieldState y PilotUnknownOrigin; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/WorkspacePilotSupport.cs",
+      "Section": "la compuerta de avisos; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs",
+      "Section": "el navegador, su hueco de confirmacion y su forma de 33 firmas; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.UI/Workspace/WorkspacePanelViewModel.cs",
+      "Section": "el VM del panel; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs",
+      "Section": "el lector de la intencion (196-254); no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs",
+      "Section": "RACKPANELDESCARTAR, objeto de las guardas C2-M-1 y C2-M-2 (43-49 y 60-69); no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentReader.cs",
+      "Section": "los diagnosticos de admision y la pista del editor clasico; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs",
+      "Section": "KeepPilotEditsOn, ComposeForWrite y Materialize; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/Drafts/DraftSession.cs",
+      "Section": "ConfirmBase, CheckNow, KeepMineOnCurrentVersion, DiscardAndReload e IsDirty; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "tests/RackCad.Tests/Workspace/WorkspacePilotCloseSyncGuardTests.cs",
+      "Section": "la guarda 849, la gemela de G-04, M-6 y la forma del navegador; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "tests/RackCad.Tests/Workspace/WorkspacePilotSurfaceGuardTests.cs",
+      "Section": "las reglas de quien lee en la UI; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "tests/RackCad.Tests/Workspace/WorkspaceBrowserHostGuardTests.cs",
+      "Section": "G-04 y el vocabulario del XAML; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs",
+      "Section": "el vocabulario prohibido de la UI; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "tests/RackCad.Tests/Workspace/WorkspaceHostSourceSupport.cs",
+      "Section": "las utilidades de las guardas de fuente; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs",
+      "Section": "EditIntentKit (lecturas dobles, MemberBecameBlocking); no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs",
+      "Section": "PilotKit y el corpus canonico; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "tests/RackCad.UI.Tests/Workspace/WorkspacePilotFieldViewModelTests.cs",
+      "Section": "el comportamiento existente del campo (Conflict editable, T15, estados); no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs",
+      "Section": "la lectura de las fijaciones por ruta y la composicion del piloto; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "section 16.1 a section 16.10",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "section 4 (A1-A8) y section 10 (nc1..nc4)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/routing.md",
+      "Section": "archivo completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/model-catalog.md",
+      "Section": "celdas medidas y vigentes para Controller y Worker",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/WORKFLOW.md",
+      "Section": "relevo, Git e integracion",
+      "Class": "EXTERNAL"
+    }
+  ],
+  "AllowedWriteScope": [
+    "src/RackCad.Application/Workspace/WorkspaceEditIntent.cs",
+    "src/RackCad.Application/Workspace/WorkspaceHostCore.cs",
+    "src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs",
+    "src/RackCad.UI/Workspace/WorkspacePanelView.xaml",
+    "src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotEditPortDouble.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationViewTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotCanonicalLineEndingTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardTests.cs"
+  ],
+  "ForbiddenWriteScope": [
+    "src/RackCad.Application/Bom/",
+    "src/RackCad.Application/Catalogs/",
+    "src/RackCad.Application/ComputedParameters/",
+    "src/RackCad.Application/CustomProperties/",
+    "src/RackCad.Application/Diagnostics/",
+    "src/RackCad.Application/Drawing/",
+    "src/RackCad.Application/Expressions/",
+    "src/RackCad.Application/Formatting/",
+    "src/RackCad.Application/Geometry/",
+    "src/RackCad.Application/Layout/",
+    "src/RackCad.Application/Persistence/",
+    "src/RackCad.Application/ProjectVariables/",
+    "src/RackCad.Application/RackFrames/",
+    "src/RackCad.Application/Settings/",
+    "src/RackCad.Application/StructuralAnalysis/",
+    "src/RackCad.Application/StructuralSections/",
+    "src/RackCad.Application/Systems/",
+    "src/RackCad.Application/Units/",
+    "src/RackCad.Application/Views/",
+    "src/RackCad.Application/BlockNaming.cs",
+    "src/RackCad.Application/RackCad.Application.csproj",
+    "src/RackCad.Application/Workspace/Drafts/",
+    "src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs",
+    "src/RackCad.Application/Workspace/WorkspacePilotSupport.cs",
+    "src/RackCad.Application/Workspace/IWorkspaceEditIntentReader.cs",
+    "src/RackCad.Application/Workspace/EventBridgeCore.cs",
+    "src/RackCad.Application/Workspace/WorkspaceSession.cs",
+    "src/RackCad.Application/Workspace/BrowserSession.cs",
+    "src/RackCad.Application/Workspace/BrowserSessionRegistry.cs",
+    "src/RackCad.Application/Workspace/IWorkspaceHostPort.cs",
+    "src/RackCad.Application/Workspace/IWorkspaceBrowserSummaryPort.cs",
+    "src/RackCad.Application/Workspace/IWorkspaceLifecycleAdvisor.cs",
+    "src/RackCad.Application/Workspace/WorkspaceDocumentDiscardCommand.cs",
+    "src/RackCad.Application/Workspace/WorkspaceCloseAdvisorRelay.cs",
+    "src/RackCad.Domain/",
+    "src/RackCad.UI/Controls/",
+    "src/RackCad.UI/Editor/",
+    "src/RackCad.UI/Preview/",
+    "src/RackCad.UI/RackFrames/",
+    "src/RackCad.UI/Shell/",
+    "src/RackCad.UI/StructuralSections/",
+    "src/RackCad.UI/Systems/",
+    "src/RackCad.UI/Themes/",
+    "src/RackCad.UI/Views/",
+    "src/RackCad.UI/RackCad.UI.csproj",
+    "src/RackCad.UI/ObservableObject.cs",
+    "src/RackCad.UI/UiSupport.cs",
+    "src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs",
+    "src/RackCad.UI/Workspace/WorkspaceMeasurementRow.cs",
+    "src/RackCad.UI/Workspace/WorkspaceNavigationViewModel.cs",
+    "src/RackCad.UI/Workspace/WorkspacePanelState.cs",
+    "src/RackCad.UI/Workspace/WorkspacePanelViewModel.cs",
+    "src/RackCad.Plugin/",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeFacadeSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBrowserHostGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostC2SourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostHardeningGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostPortGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceIdleSchedulingGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceNavigationPrivacyGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotCloseSyncGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotSurfaceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceSourceGuardExceptionTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostSourceSupport.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftSessionTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftApplyTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceLifecycleHostTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostAuthorizationTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs",
+    "tests/RackCad.Tests/RackCad.Tests.csproj",
+    "tests/RackCad.Tests/SiblingRedrawSeamGuardTests.cs",
+    "tests/RackCad.Tests/CustomPropertiesEnvelopeGuardTests.cs",
+    "tests/RackCad.Tests/NamespaceFolderGuardTests.cs",
+    "tests/RackCad.Tests/LengthUnitsAuthorityGuardTests.cs",
+    "tests/RackCad.Tests/SelectiveEditorOpenTests.cs",
+    "tests/RackCad.Tests/BomExcel/",
+    "tests/RackCad.Tests/ComputedParameters/",
+    "tests/RackCad.Tests/Fixtures/",
+    "tests/RackCad.Tests/Golden/",
+    "tests/RackCad.Tests/StructuralAnalysis/",
+    "tests/RackCad.UI.Tests/Workspace/WorkspaceBrowserScenarioHarnessTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspaceBrowserSummaryPortDouble.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspaceBrowserViewModelTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspaceBrowserViewTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspaceNavigationPortDouble.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspaceNavigationViewModelTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspaceNavigationViewTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePanelContextTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePanelErrorTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePanelInstrumentationTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePanelNoWorkTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePanelStateTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePanelViewTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotCloseSyncTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotCloseSyncViewTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotFieldViewModelTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotFieldViewTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePortDouble.cs",
+    "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+    "tests/RackCad.UI.Tests/StaTestRunner.cs",
+    "tests/RackCad.UI.Tests/WindowCensusGuardTests.cs",
+    "tests/RackCad.UI.Tests/UiSystemBoundaryGuardTests.cs",
+    "tests/RackCad.UI.Tests/PendingTextFieldTests.cs",
+    "tests/RackCad.UI.Tests/EditorWindowTestSupport.cs",
+    "docs/",
+    ".github/",
+    "eng/",
+    "tools/",
+    "assets/",
+    "deploy/",
+    "RackCad.sln",
+    "Directory.Build.props",
+    "Directory.Build.targets",
+    "global.json",
+    "NuGet.Config",
+    "README.md"
+  ],
+  "Invariants": [
+    "INV-F4T4A2-01 (cero escrituras authored): \"Comprobar ahora\", \"Descartar y recargar\", \"Conservar mi borrador\" y \"No\" no escriben nada del dibujo, no abren transaccion ni bloqueo y no hacen Commit; ningun archivo de la UI nombra una API de escritura del dibujo; las guardas existentes de la via de lectura (H-16) y de la UI siguen en verde y la regla 1 de D-T4A2-07 limita las cuatro lecturas al VM del campo.",
+    "INV-F4T4A2-02 (accion explicita, D-T4A2-01 y reglas 1 y 2 de D-T4A2-07): en los .cs de src/RackCad.UI/, por token, TryConfirmBase y TryCheckNow aparecen solo en el VM del campo, una vez cada uno, dentro del cuerpo de CheckNow, y TryKeepMine y TryDiscardAndReload solo en el VM del campo, una vez cada uno, dentro del cuerpo de ConfirmChoice; CheckNow, ConfirmChoice, CancelChoice, RequestDiscardAndReload y RequestKeepMine solo aparecen en su declaracion public void del VM del campo y en su manejador exacto del codigo subyacente, una vez cada uno: OnBrowserFieldCheckClick con CheckNow, OnBrowserFieldDiscardAndReloadClick con RequestDiscardAndReload, OnBrowserFieldKeepMineClick con RequestKeepMine, OnBrowserFieldChoiceYesClick con ConfirmChoice y OnBrowserFieldChoiceNoClick con CancelChoice, cada uno de la forma private void X(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.Field.Y());; ninguna presentacion, setter, constructor, el navegador, el panel ni la navegacion comprueba ni reconcilia; la UI es el unico llamador de TryKeepMine y TryDiscardAndReload.",
+    "INV-F4T4A2-03 (despacho, D-T4A2-01): \"Comprobar ahora\" se ofrece (ShowCheckButton) sin fallo de la superficie, sin eleccion pendiente, con borrador y en una pestana fijada, en Clean, Dirty o Conflict (despacha TryConfirmBase) y en Unknown con UnknownOrigin CommitThrew (despacha TryCheckNow); en cualquier otro estado no se ofrece; con un diagnostico persistente si se ofrece; CheckNow hace ClearNotices (que nunca toca el diagnostico persistente), una lectura de la vista, UNA operacion con new EditIntentRequest(session, rack, null, null), el aviso existente si la superficie cambio (IsMine), la presentacion, Render y _changed, y contiene toda excepcion como Error del campo.",
+    "INV-F4T4A2-04 (clases y sin falso limpio, section 3 del paquete): las dos tablas de section 3 (TryConfirmBase y TryCheckNow) con los textos de la tabla T-A2; A2-01 solo con Confirmed, AdmissionDiagnostic null y la vista releida en Clean o Dirty (A2-35 si el borrador cambio durante la comprobacion y sigue existiendo, A2-37 si ya no existe); A2-07 solo con Recovered; cualquier otro estado, el valor por defecto, un valor desconocido del enumerado o una excepcion del puerto nunca dan A2-01 ni A2-07 ni un estado mas limpio; el texto de A2-01 vive en una constante privada referenciada una sola vez (caso Confirmed) y, con comparacion ordinal, ninguna otra aparicion de \"Sin cambios\", de la segunda mitad de A2-01 ni de su concatenacion en src/RackCad.UI/Workspace/; limitacion declarada: en la via TryCheckNow, NOT_FOUND y NO_LONGER_EDITABLE se ven como Conflict (A2-09) hasta la eleccion, asignado a F4-T4B.",
+    "INV-F4T4A2-05 (confirmacion Si/No, D-T4A2-03): una sola eleccion pendiente en el VM del campo (enumerado privado None, DiscardAndReload, KeepMine) con la sesion, el rack y la instantanea de la vista (State, IsProtected, PendingText, CommittedText, UnknownOrigin); RequestDiscardAndReload y RequestKeepMine no llaman al puerto; ConfirmChoice toma y retira la eleccion, revalida la vista contra la instantanea (si difiere: A2-34 y ninguna llamada), llama UNA vez a la operacion elegida y presenta Reloaded solo para Descartar y recargar y Kept solo para Conservar; CancelChoice no llama al puerto (A2-36); RequestDiscardAndReload y RequestKeepMine leen la vista con GetField (memoria del puerto) y no llaman a ninguna otra operacion; la eleccion se retira con un gesto nuevo, en silencio con un cambio de superficie, Clear y Fail, y en Apply con A2-34 si la vista ya no la ofrece segun la oferta de D-T4A2-02 sin la clausula de la eleccion pendiente; con una eleccion pendiente la caja es de solo lectura y solo se ofrecen Si y No; en el XAML, los cinco botones de la tabla de T-A2 con su x:Name, Content, AutomationProperties.Name y Click exactos; Comprobar ahora, Descartar y recargar y Conservar mi borrador con su Visibility propio; BrowserFieldChoicePanel (Visibility enlazada a HasChoice) con Si (Confirmar la eleccion, OnBrowserFieldChoiceYesClick) y No (Cancelar la eleccion, OnBrowserFieldChoiceNoClick) en ese orden y sin Visibility propio; sin IsDefault ni IsCancel ni teclado; pruebas de inversion de VM (cero llamadas a la otra operacion), de vista (clic real) y de fuente (reglas 2 y 3 con autopruebas de intercambio).",
+    "INV-F4T4A2-06 (Conservar, D-T4A2-02): \"Descartar y recargar\" se ofrece en Conflict y en Unknown con PostReread (con A2-23); \"Conservar mi borrador\" solo en Conflict con IsProtected verdadero y PendingText null; los dos solo en una pestana fijada, sin fallo, sin diagnostico persistente y sin eleccion pendiente; en Dirty posiblemente obsoleto no se ofrece ninguno; sin reversion en silencio de un cambio externo; el rotulo de Unknown con PostReread es una desviacion declarada de D-T4A1-03.",
+    "INV-F4T4A2-07 (recarga y Conservar): solo por TryDiscardAndReload y TryKeepMine del host de F4-T4A1, sin cambiar su semantica (StaleBase e InitialDraftState desde una sola lectura; IC-07 punto 2); ninguna fusion automatica ni cuarta opcion.",
+    "INV-F4T4A2-08 (texto pendiente, D-T4A2-05): \"Comprobar ahora\" conserva el pendiente byte a byte; \"Conservar\" no se ofrece con pendiente (A2-05b); \"Descartar y recargar\" lo pierde solo tras una confirmacion que lo dice (A2-20); \"No\" no toca nada; la reconciliacion no cruza fronteras ni compromete; el compromiso al perder el foco de T3B1 no cambia.",
+    "INV-F4T4A2-09 (diagnostico persistente, D-T4A2-06): CheckNow (Confirmed o Conflict con diagnostico) y ConfirmChoice (NotAdmitted) guardan el diagnostico y la pista en un campo propio de la superficie, que ClearNotices nunca toca; solo lo sustituye un resultado que releyo el dibujo (Confirmed o Conflict de TryConfirmBase, que ponen el suyo o ninguno, y Recovered o Conflict de TryCheckNow, que lo retiran), y un Waiting, Rejected, Unavailable, NotFound, NotApplicable, Failed o una excepcion lo conservan; tambien lo quitan Reloaded, Kept, un cambio de superficie, Clear y Apply cuando la vista ya no tiene borrador; mientras existe, la caja es de solo lectura, sin Editar, sin apertura por gesto y sin opciones; NotEditableText y ClassicEditorHintText muestran el de BeginEdit si existe y si no el persistente; ReconcileText (A2-10 con A2-14 si hay pendiente y no hay diagnostico persistente ni eleccion pendiente, A2-11, A2-12) en BrowserFieldReconcileText; StateText no cambia; limitacion declarada: es memoria de la superficie.",
+    "INV-F4T4A2-10 (unico cambio del host, D-T4A2-04): EditConfirmOutcome gana string? ClassicEditorHint; Confirmed(string? admissionDiagnostic = null, string? classicEditorHint = null) y Conflict(IReadOnlyList<string> differences, string? admissionDiagnostic = null, string? classicEditorHint = null); en TryConfirmPilotBase, justo despues de ConfirmBase, exactamente var admission = pilot.Read.IsAdmitted ? null : pilot.Read.Admission.Diagnostic; y var hint = admission == null ? null : pilot.ClassicEditorHint;, con Confirmed(admission, hint) y Conflict(DescribeDifferences(confirm.Differences), admission, hint); WorkspacePilotPrepareTests.cs:993 pasa a Assert.Equal(PushBackPilotIntentReader.UnreadableDiagnostic, outcome.AdmissionDiagnostic), unica linea que cambia en ese archivo y sin renombrar la prueba; los resumenes de M-8 (Waiting y NotApplicable de EditConfirmStatus) y de los dos campos; nada mas del host, ningun texto nuevo, la tabla de 30 filas sin cambio, TryCheckPilotEdit sin cambio; los comentarios respetan H-20.",
+    "INV-F4T4A2-11 (C2-M-1 y C2-M-2, D-T4A2-07): en WorkspaceCommandAdvisorGuardTests.cs, la guarda de ConfirmOnCommandLine fija var answer = document.Editor.GetKeywords(options); y return answer.Status == PromptStatus.OK && string.Equals(answer.StringResult, \"Si\", System.StringComparison.Ordinal); con if (document == null) return false; como unico otro return, y la de RackPanelDiscard fija var controller = WorkspaceController.Existing; y la llamada completa a WorkspaceDocumentDiscardCommand.Run de H-17 con espacios flexibles; las 15 mutaciones M1a-M1f, M2a-M2f y M3a-M3c de map-2 B.3, cada una por un Replace del archivo real, hacen fallar la guarda; se conservan las cuentas de map-2 B.2; sin cambio de producto en el Plugin.",
+    "INV-F4T4A2-12 (Authorize por forma exacta, regla 5): en PassGate, if (Authorize(new WorkspaceRequest(session)) != RequestDecision.Accepted) { reason = \"La peticion no es del documento activo.\" (con su tilde real); return EditGate.Rejected; } como unica aparicion de Authorize( en su cuerpo; en WorkspaceNavigationHost.cs, dentro de la clase anidada PilotIntentReader, toda aparicion de _authorize( sigue var decision = _authorize(new WorkspaceRequest(session), document.UnmanagedObject.ToInt64()); seguida de if (decision != RequestDecision.Accepted) y del Rejected, sin exigir unicidad (las llamadas de la lectura del resumen y de la navegacion quedan fuera); autopruebas dentro de ReadOnActiveDocument: == por !=, otro RequestDecision, default u otra sesion, el documento equivocado (0L), el resultado ignorado y || true, y una positiva con el archivo real.",
+    "INV-F4T4A2-13 (menores de F4-T4A1 como cambios declarados): M-2 (BaseOrReadUse anade la alternativa de pilot con ? o ! y espacios y conserva la de result; regla nueva: el identificador pilot solo en las formas de H-19, sin cuentas, con las seis autopruebas); M-3 (una sola aparicion del patron del diagnostico en todo el nucleo); M-4 (la guarda del nucleo de R-3 reconoce this., ??=, += y la deconstruccion, con autopruebas); M-9 (Reads() con las tres lecturas nuevas, el resumen de ReadHook, CheckNowResponder y los tres parametros opcionales de View, sin cambiar aserciones existentes); D-1 sin cambio; los demas menores con el dueno de D-T4A2-10.",
+    "INV-F4T4A2-14 (regla RED): el commit RED lleva el esqueleto: los miembros publicos nuevos del VM del campo con cuerpos TODOS inertes (falsos, vacios o sin efecto), y la propiedad y los parametros nuevos de EditConfirmOutcome sin uso en el host; el XAML y el codigo subyacente pueden ir en el RED o en el GREEN; en el RED fallan solo pruebas nuevas o la cambiada, por asercion; las guardas nuevas sobre codigo existente pueden pasar ya en el RED.",
+    "INV-F4T4A2-15 (arrastre (5) de F4-E25, D-T4A2-08): WorkspaceDraftPilotCanonicalLineEndingTests.cs, sobre los ocho disenos canonicos nombrados de H-18: el documento persistido que da el piloto sin edicion es byte a byte el diseno interior del sobre sin normalizar, y contiene \\r\\n; los archivos se leen por ruta desde la raiz del repositorio.",
+    "INV-F4T4A2-16 (TOCTOU, D-T4A2-09): T4A2 no produce plan ni autorizacion de escritura; EditConfirmOutcome solo lleva estado, cadenas y listas de cadenas; el plan de F4-T4A1 no cambia; T4B vuelve a releer dentro de MUTATE.",
+    "INV-F4T4A2-17 (limites): sin AutoCAD; no cambian la via de lectura, el lector, RackSiblingScan, el navegador (su forma de 33 firmas), el panel, la navegacion, ningun archivo del Plugin ni de Drafts; sin Window, dialogo, EnterPanelModal, teclado, foco, Dispatcher, Task, temporizadores, += ni event nuevos; ningun texto nuevo del host; ninguna semantica de MUTATE, POST, Undo ni de la UI de Actualizar; las clases de prueba nuevas son public class con nombre Workspace* en namespace RackCad.Tests; (archivo) o namespace RackCad.UI.Tests (bloque)."
+  ],
+  "RequiredTests": [
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.Workspace",
+      "MinSelected": 2843,
+      "ExpectRed": true
+    },
+    {
+      "Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.UI.Tests.Workspace",
+      "MinSelected": 458,
+      "ExpectRed": true
+    }
+  ],
+  "ExpectedEvidence": [
+    "gate-contract valido; delegacion del Controller valida; comparacion byte a byte y aceptacion A1-A8, y nc4 (primera delegacion de la cadena F4-T4A2), antes del Worker.",
+    "AllowedWriteScope de la delegacion = exactamente el AllowedWriteScope del contrato.",
+    "Commit RED y push propios antes del GREEN: pruebas que compilan; las existentes pasan y solo las nuevas o la cambiada fallan, por asercion; ChainRedSha y ChainRedFiles acreditados.",
+    "Commit GREEN y push con cambios solo dentro del AllowedWriteScope; ningun archivo de tests/ del RED cambia.",
+    "Filtros FullyQualifiedName~RackCad.Tests.Workspace y FullyQualifiedName~RackCad.UI.Tests.Workspace en verde sobre el GREEN; suites completas de los dos proyectos en verde en Debug; build Release de la solucion, Plugin incluido, sin avisos nuevos (tambien con el esqueleto del RED, en local).",
+    "CI push del SHA exacto GREEN con los cuatro jobs en success, y del RED con los jobs de Core y de UI en failure (ExpectRed true en los dos).",
+    "worker-handoff.json conforme a su esquema con RED, GREEN, alcance real, trailer, conteos de los filtros, mapa evidencia-por-invariante y por cada una de las 18 pruebas de la orden (section 5.2 del paquete) y OpenQuestions vacia salvo ambiguedad material real.",
+    "Controller verification valida; nc1..nc3 segun README section 10 con su oraculo ordinario, conservando cada salida ordinaria de control; deuda de controles (orden del Owner): un sustituto local solo con la firma EXACTA de sus condiciones aceptadas (PD-F4-01 para nc2, lista blanca exacta, Contract antes que Scope; PD-F4-04 o PD-F4-05 para nc1, Handoff o Identity; PD-F4-06, Ci o Trailer sin relacion con la mutacion); nunca se infiere un sustituto porque falle la misma comprobacion; una firma nueva para esa linea y vuelve al Owner; PD-F4-06 nunca debilita Ci ni Trailer en la verificacion real; revision directa de la sesion y revision adversarial independiente del diff.",
+    "Sin AutoCAD: el VM, la vista y el host se prueban en UI.Tests y en Core con el doble del puerto, la vista WPF real y el host real con el lector doble; el Plugin solo lo cubren las guardas de fuente; los escenarios de reconciliacion con racks reales son de Smoke-2 (section 7 del paquete), despues de cerrar F4-T4B."
+  ],
+  "StopConditions": [
+    {
+      "Id": "S-02",
+      "Text": "architecture outside Freeze"
+    },
+    {
+      "Id": "S-03",
+      "Text": "material ambiguity"
+    },
+    {
+      "Id": "S-04",
+      "Text": "contradictory evidence"
+    },
+    {
+      "Id": "S-05",
+      "Text": "destructive or irreversible action not authorized"
+    },
+    {
+      "Id": "S-07",
+      "Text": "conflict with another active owner"
+    },
+    {
+      "Id": "S-08",
+      "Text": "branch or worktree ownership conflict"
+    },
+    {
+      "Id": "S-12",
+      "Text": "Worker loses context or cannot verify AuthorityRevision"
+    },
+    {
+      "Id": "S-13",
+      "Text": "origin/main movement invalidates exact-SHA assumptions; apply AUTOMATION_PLAN 16.7"
+    },
+    {
+      "Id": "S-14",
+      "Text": "I-64 Freeze or contract explicitly says STOP"
+    },
+    {
+      "Id": "P-01",
+      "Text": "config.toml no longer matches accepted Snapshot A, B, C or D"
+    },
+    {
+      "Id": "P-02",
+      "Text": "foreign live participant, unattributable process or more than one open delegation"
+    },
+    {
+      "Id": "P-03",
+      "Text": "delegation outside gate contract"
+    },
+    {
+      "Id": "P-04",
+      "Text": "BLOCKED cap reached"
+    },
+    {
+      "Id": "P-05",
+      "Text": "invocation differs from accepted delegation package"
+    },
+    {
+      "Id": "P-06",
+      "Text": "usage or credit-limit warning"
+    },
+    {
+      "Id": "P-07",
+      "Text": "another invocation would exceed the invocation budget"
+    },
+    {
+      "Id": "P-08",
+      "Text": "responsible session operates the worktree during cession"
+    },
+    {
+      "Id": "F4T4A2-C01",
+      "Text": "a file outside the AllowedWriteScope would have to change, or a new file other than the five declared new files would be needed"
+    },
+    {
+      "Id": "F4T4A2-C02",
+      "Text": "an existing guard or test would have to change other than the changes declared in D-T4A2-04 and D-T4A2-07 of the package; in a correction attempt, files created by this task in an earlier attempt are not existing guards or tests"
+    },
+    {
+      "Id": "F4T4A2-C03",
+      "Text": "a path would write authored state of the drawing, open a transaction or a lock, or implement MUTATE, POST, Undo or the Update UI"
+    },
+    {
+      "Id": "F4T4A2-C04",
+      "Text": "the browser view-model (its 33-signature public shape), the panel view-model, the navigation view-model, any Plugin file, the read path (the edit intention reader, its adapter or RackSiblingScan), the Themes or Controls folders of the T1B closure, or any file of Drafts would have to change"
+    },
+    {
+      "Id": "F4T4A2-C05",
+      "Text": "a Window, a dialog, EnterPanelModal, a second PreviewKeyDown attribute, KeyUp, IsDefault or IsCancel, keyboard handling or focus handling would be needed"
+    },
+    {
+      "Id": "F4T4A2-C06",
+      "Text": "a new status, a new enum value or a new host text would be needed in src/RackCad.Application/, or a fourth reconciliation option in any layer"
+    },
+    {
+      "Id": "F4T4A2-C07",
+      "Text": "the task evaluates Long-horizon"
+    },
+    {
+      "Id": "F4T4A2-C08",
+      "Text": "a planning output rejected only by the literal byte-fidelity comparison of the collections before the Worker allows ONE replanning with a reinforced prompt, without consuming a product attempt; a second planning fidelity failure is STOP to the Coordinator (F4-E31, F4-E43, authorization of F4-T4A2)"
+    },
+    {
+      "Id": "F4T4A2-C09",
+      "Text": "the byte-exact round trip of the canonical corpus without line-ending normalization (D-T4A2-08) fails on Windows: it is a characterization finding and the assertion is not weakened"
+    }
+  ],
+  "EligibleCells": [
+    {
+      "Cell": "anthropic/subagent/claude-sonnet-5-5",
+      "Provider": "Anthropic",
+      "Model": "claude-sonnet-5-5",
+      "Transport": "subagent",
+      "Capabilities": [
+        "read",
+        "tool-use",
+        "write-commit-push",
+        "effort-applied"
+      ],
+      "TestedEfforts": [
+        "high"
+      ],
+      "Source": "docs/automation/agent-execution/model-catalog.md: celda write-commit-push medida por U-04; effort high medido y usada como Worker real",
+      "VerifiedOn": "2026-09-30"
+    },
+    {
+      "Cell": "openai/process/gpt-6-luna",
+      "Provider": "OpenAI",
+      "Model": "gpt-6-luna",
+      "Transport": "process",
+      "Capabilities": [
+        "read",
+        "tool-use",
+        "effort-applied"
+      ],
+      "TestedEfforts": [
+        "high"
+      ],
+      "Source": "sonda neutra de F4 R20261111T180028Z-32f7 (PASS; gpt-6-luna/high efectivos; read-only; oraculo Git exacto; sin aviso de uso; config.toml SNAPSHOT G 7C1516A9135D59FA38F6004D56B71C7E1313502D6C6BFEA6FB5D8F97A62DD723 antes y despues; F4-E13) sobre codex-cli 0.167.0-alpha.3.2, bin 5449c1f0f26f1f98, codex.exe SHA-256 4F91AE86895FF124760D70ED1630E2354CA874765C9BB61AE524B600327EFC17; acreditacion del binario: sonda R20261110T034758Z-6a68",
+      "VerifiedOn": "2026-11-11"
+    }
+  ],
+  "RoutingEnforcement": "required",
+  "CorrectionsAuthorized": true,
+  "IssuedBy": "Sesion principal de I-64 (Claude) por la ratificacion del cierre de F4-T4A1 y la autorizacion de F4-T4A2 del Owner y por sus decisiones de la noche (docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4t4a2-authorization.md y owner-f4t4a2-overnight-decisions.md: paquete, revision independiente, re-revision, correcciones y emision sin mas aprobacion del Owner)",
+  "IssuedUtc": "2026-11-14T14:45:51Z"
+}

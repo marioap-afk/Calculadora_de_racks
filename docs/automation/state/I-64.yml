@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: none
   attempts: 1
-  next_action: "F4-T4A2-PREPARE-UI: emitir el contrato (attempts 1 de 3, F4-E54) y ejecutar la cadena: planificacion del Controller, comparacion byte a byte, A1-A8, nc4, Worker RED/GREEN, CI, revisiones directa e independiente, verificacion y nc1..nc3; despues la custodia y el cierre, y entonces solo los paquetes de F4-T1B y F4-T4B (decision del Owner)"
+  next_action: "F4-T4A2-PREPARE-UI: contrato emitido (AuthorityRevision 509622ff); siguiente: planificacion del Controller, comparacion byte a byte, A1-A8, nc4 y Worker"
   last_evidence_commit: 0f49f69160cdffc1d2933d6165d5f472b5793d84
 execution_context:
   mode: manual
