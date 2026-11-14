@@ -1,0 +1,75 @@
+{
+  "AllowedExact": true,
+  "ExactCopy.Authorities": true,
+  "ExactCopy.ForbiddenWriteScope": true,
+  "ExactCopy.Invariants": true,
+  "ExactCopy.RequiredTests": true,
+  "ExactCopy.ExpectedEvidence": true,
+  "ExactCopy.StopConditions": true,
+  "ExactCopy.Objective": true,
+  "NonAsciiBytes": 0,
+  "BackslashU": 0,
+  "ControlCharsInStrings": 0,
+  "CorrectionOf": {
+    "RunId": "R20261114T160452Z-872b",
+    "FailureClass": "Tests",
+    "AnalysisSha256": "e9afc1f5372849b3f26c86ffd08c85007d26bd00bf9af566a017c5bba2812cdc"
+  },
+  "TaskClass": "Implementacion transversal a capas (corta)",
+  "TaskClassExact": true,
+  "PromptProfile": "ROUTINE_IMPLEMENTATION",
+  "PromptProfileExact": true,
+  "Effort": {
+    "Semantic": "Deep",
+    "Provider": "high"
+  },
+  "Executor": {
+    "Provider": "Anthropic",
+    "Transport": "subagent",
+    "Role": "Worker",
+    "Cell": "anthropic/subagent/claude-sonnet-5-5"
+  },
+  "Model": "claude-sonnet-5-5",
+  "EffortExact": true,
+  "ModelEscalationReason": null,
+  "Dimensions": {
+    "Ambiguity": "Medium",
+    "ArchitecturalSensitivity": "High",
+    "Breadth": "High",
+    "ToolUse": "High",
+    "FailureCost": "High",
+    "MechanicalRepetition": "Medium",
+    "Horizon": "Medium"
+  },
+  "BaseSha": "f8ccef4678bbe78d520550aea515481e5b2209c6",
+  "AuthorityRevision": "192103f845ad3143fdc8add9aa4239babddd17ee",
+  "MainSha": "812baf879612320653094a8aaf46aca0bac81383",
+  "ChainFields": {
+    "ChainBaseSha": "4eb7e9247c3ad942feea1b6a695d7ad79377a4ee",
+    "ChainRedSha": "1fe36cf9cddc2bb67f1795175c2e818e6569e177",
+    "ChainRedFiles": [
+      "tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotCanonicalLineEndingTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePilotEditPortDouble.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationViewTests.cs"
+    ]
+  },
+  "AttemptFields": {
+    "Attempt": 2,
+    "AttemptsRemaining": 1,
+    "MaxReworkLoops": 3
+  },
+  "ExpectedHandoffPath": "artifacts/orchestration/I-64/F4-T4A2-PREPARE-UI/2/{WorkRunId}/worker-handoff.json",
+  "Owner": {
+    "Kind": "subagent",
+    "Id": "subagent:R20261114T161620Z-f15d"
+  },
+  "AcceptanceCriteriaCount": 7,
+  "IssuedBy": "Controller Codex (planificacion de la correccion F4-T4A2-PREPARE-UI, intento 2, F4-E55, CONTROLLER_PLANNING)"
+}

@@ -7110,3 +7110,16 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **`attempts`:** 2 de 3.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 197. F4-T4A2-PREPARE-UI, intento 2: entrega, revisiones y parada de la verificación
+
+**Decisión:** F4-E56.
+
+- **Planificación** `f15d`: fidelidad PASS y A1-A8 8/8.
+- **Worker** `b48d`: RED `f2bb4d6f`, solo con pruebas, y GREEN `ae0a7b40`, solo en el VM del campo.
+- **CI:** `43617317131` 4/4, con 2923/2923 en Core y 601/601 en UI en los filtros.
+- **Revisiones:** la directa, conforme; la re-revisión independiente, ACEPTABLE CON MENORES (0/0/1).
+- **Verificación** `4b2a`: EXECUTION_BLOCKED / STOP con `F4T4A2-C04`. El Controller lee como contraria al paquete la desviación de M-3 que el contrato del intento 2 declara.
+- **Estado:** a la espera de la decisión del Owner; sin nc1..nc3.
+
+**Límites:** solo documentación; sin AutoCAD.

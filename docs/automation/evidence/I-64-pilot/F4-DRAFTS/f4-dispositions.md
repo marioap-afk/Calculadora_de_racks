@@ -1913,3 +1913,32 @@ La mutación authored no empieza sin su contrato. Smoke-2 sigue pendiente de Aut
 **Nota para el paquete de F4-T4B:** prever los cambios de guarda que exigirá llevar el diagnóstico de admisión a la vía de `TryCheckNow` (M-3 del paquete y las cuentas de `CheckBody`).
 
 **Límites:** este paso es solo documentación; sin AutoCAD.
+
+## F4-E56. Intento 2 de F4-T4A2-PREPARE-UI: entrega, revisiones y parada de la verificación
+
+**Hechos del intento 2:**
+- **Planificación** `R20261114T161620Z-f15d`:
+  - fidelidad PASS a la primera; A1-A8 8/8, con la cadena y `CorrectionOf` exactos; sin nc4, que se hizo en la primera delegación de la cadena.
+  - **Una corrección de la sesión:** la evaluación se cortó en sus comprobaciones extra por el mismo defecto del script que en F4-T4A1. Se corrigió y se reejecutó, con el mismo resultado y sin invocar ningún modelo.
+- **Worker** `R20261114T162137Z-b48d`:
+  - `claude-sonnet-5-5`/high, 176 turnos y 0 denegaciones;
+  - RED `f2bb4d6f`, solo con pruebas y guardas: Core pasa entero y UI falla por aserción solo en las 3 pruebas nuevas de M-1;
+  - GREEN `ae0a7b40`, solo en `WorkspacePilotFieldViewModel.cs`.
+- **CI:** GREEN `43617317131` 4/4 (filtros 2923/2923 y 601/601; Core completo 18461/18461) y RED `43616238873` con UI en failure y Core en success, como pide el contrato del intento 2.
+- **Una corrección de la sesión en el relevo del trabajo:** su primera nota nombraba el contrato del intento 1 y nc4. Se corrigió la plantilla y se regeneró el registro, sin invocar ningún modelo.
+- **Revisiones:**
+  - la directa de la sesión: la corrección es conforme (2 menores);
+  - la re-revisión independiente: **ACEPTABLE CON MENORES (0/0/1)**. I-1 y M-1 a M-9 están resueltos y las cuatro desviaciones declaradas son aceptables. El menor nuevo: la salida temprana de M-1 se salta `_changed` si la relectura falla después de un cambio del host, una ruta defensiva.
+- **Verificación** `R20261114T165017Z-4b2a`: **EXECUTION_BLOCKED / STOP**, con `F4T4A2-C04`. Tests está en fail y las otras 13 en pass.
+  - El Controller lee la desviación declarada de M-3 (tras un descarte del navegador, la elección se retira sin A2-34) como contraria al paquete y como si exigiera cambiar el navegador.
+  - El contrato del intento 2 declara esa misma desviación en la corrección de INV-F4T4A2-05. Scope está en pass y el navegador no cambió.
+  - El análisis está en `F4-T4A2-PREPARE-UI/2/R20261114T165017Z-4b2a/analysis.md`.
+
+**Disposición:** parada de la verificación; la línea de F4-T4A2 **espera la decisión del Owner** (`owner-f4t4a2-overnight-decisions.md`, pregunta 3; F4-E28: la sesión no se dispensa controles).
+- Opción recomendada: (a) repetir la verificación con una nota aclaratoria que cite la corrección de INV-F4T4A2-05.
+- Las otras dos: (b) dispensar la parada; (c) el intento 3, que no resuelve nada.
+- `attempts` sigue en 2 de 3, y no se ejecutan nc1..nc3.
+
+**Mientras tanto:** la sesión prepara el paquete de F4-T1B sin emitirlo (preguntas 3 y 4 de la noche).
+
+**Límites:** este paso es solo documentación; sin AutoCAD.
