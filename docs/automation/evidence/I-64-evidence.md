@@ -6989,3 +6989,20 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **`attempts`:** 1 de 3.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 189. F4-T4A1-PREPARE-CORE, intento 1: parada del Worker y decisión de corregir
+
+**Decisión:** F4-E52.
+
+**Planificación** `R20261114T023014Z-4765`: fidelidad PASS y A1-A8 8/8. nc4 `R20261114T023355Z-3201` cumple su oráculo.
+
+**Worker** `R20261114T023526Z-9d4c`:
+- BLOCKED/STOP con F4T4A1-C01 y C02, sin commits;
+- motivo: dos pruebas existentes fuera del alcance, comprobadas por la sesión (`WorkspaceDraftRegistryTests.cs:130-136` y `CustomPropertiesEnvelopeTests.cs:708`);
+- es un defecto de mapeo del paquete.
+
+**Análisis y parche:** custodiados con el Worker del intento 1.
+
+**Owner:** «Corrección, intento 2 (Recommended)»; `attempts` 2 de 3.
+
+**Límites:** solo documentación; sin AutoCAD.

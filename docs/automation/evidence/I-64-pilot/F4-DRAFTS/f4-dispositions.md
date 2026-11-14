@@ -1764,3 +1764,44 @@ La mutación authored no empieza sin su contrato. Smoke-2 sigue pendiente de Aut
 - no se publicó ninguna ruta personal ni local.
 
 **Límites:** este paso es solo documentación; sin AutoCAD.
+
+## F4-E52. Intento 1 de F4-T4A1-PREPARE-CORE: parada del Worker antes del RED, decisión del Owner y contrato del intento 2
+
+**Hechos del intento 1:**
+- **Planificación** `R20261114T023014Z-4765`:
+  - fidelidad byte a byte PASS a la primera en las ocho colecciones;
+  - A1-A8 8/8 y Horizonte Medium;
+  - nc4 `R20261114T023355Z-3201`, con solo A3 en fail.
+  - Una primera llamada a la evaluación con `python -I` falló al importar `yaml` antes de evaluar. Después, la evaluación determinista se ejecutó completa dos veces con resultado idéntico, sin invocar ningún modelo.
+- **Worker** `R20261114T023526Z-9d4c`: subagente con `claude-sonnet-5-5`/high, 297 turnos y 0 denegaciones.
+  - **Entrega:** BLOCKED/STOP con F4T4A1-C01 y F4T4A1-C02, **sin commits, push ni CI**. En la entrada, `HEAD = remoto = 7f8f9aa7` y el árbol está limpio.
+  - **Motivo:** el contrato obligaba a cambiar dos pruebas existentes fuera de su alcance. La sesión las comprobó en el código:
+    - `WorkspaceDraftRegistryTests.cs:130-136`: solo admite `CheckNow` con una `DraftStaleBase` sola;
+    - `CustomPropertiesEnvelopeTests.cs:708`: fija en 10 las llamadas a `Compose`.
+  - **Implementación:** quedó en `work-in-progress.patch`. Con el parche, Core da 18371 de 18373 (los dos fallos son esas pruebas), UI 2112 sin fallos y el Plugin compila en Release.
+  - **Desviaciones:**
+    - suites en segundo plano, con seis procesos no atribuibles que desaparecieron en la relectura;
+    - un rodeo de la guarda del uso de la base mediante el nombre de una variable, declarado por el propio Worker.
+- **El análisis** está en `F4-T4A1-PREPARE-CORE/1/R20261114T023526Z-9d4c/analysis.md`. La causa es un defecto de mapeo del paquete, no del Worker.
+  - **Lección:** al tocar la API pública del núcleo o una API censada, hay que buscar sus nombres y sus cuentas exactas en todo `tests/`.
+- **Sin verificación ni controles:** la verificación del Controller no se ejecuta sobre esta entrega, porque no hay producto (`CurrentSha = BaseSha`, sin RED, GREEN ni CI). nc1..nc3 no proceden.
+
+**Decisión del Owner** (`F4-DRAFTS/coordinator/owner-f4t4a1-attempt2-decision.md`, pregunta y respuesta literales): «Corrección, intento 2 (Recommended)».
+- `attempts` pasa a 2 de 3, y el intento 1 se conserva como historia.
+
+**Contrato del intento 2** (`F4-T4A1-PREPARE-CORE/coordinator/gate-contract-attempt2.json`). Parte del contrato del intento 1:
+- **Alcance:** `AllowedWriteScope` gana las dos pruebas (de 19 a 21 rutas).
+- **Invariantes:**
+  - INV-F4T4A1-04: el diagnóstico de admisión de `TryConfirmPilotBase` se lee como `pilot.Read.IsAdmitted` y `pilot.Read.Admission.Diagnostic`, con la guarda extendida, y ningún alias puede eludir una guarda;
+  - INV-F4T4A1-10: TEnv12 pasa de 10 a 11;
+  - INV-F4T4A1-12: `ConfirmBase` queda exento por nombre, como `CheckNow`;
+  - INV-F4T4A1-15 (nuevo): es el primer RED de la cadena. El parche del intento 1 es solo un punto de partida revisable, y no se admite nada en segundo plano.
+- **Sin cambios:** `ForbiddenWriteScope` (106), `RequiredTests` (2668 y 458) y las paradas.
+- **Autoridades:** se añaden el análisis, el parche y la decisión.
+
+**Cadena de la corrección:**
+- planificación y Worker nuevos, sin nc4, que ya se hizo en la primera delegación de la cadena;
+- `ChainRedSha` nulo, porque no hay ningún RED acreditado;
+- `CorrectionOf` es el Worker del intento 1, con FailureClass StopCondition.
+
+**Límites:** este paso es solo documentación; sin AutoCAD.
