@@ -45,7 +45,7 @@ namespace RackCad.Plugin
             try
             {
                 var window = new RackPushBackSystemWindow(canInsertInAutoCad: true);
-                AcApplication.ShowModalWindow(window);
+                AcApplication.ShowModalWindow((System.Windows.Window)window);
 
                 if (!(window.InsertionRequest is PushBackInsertionRequest request))
                 {
@@ -54,7 +54,7 @@ namespace RackCad.Plugin
 
                 // I-05: warn once if the drawing is not in inches, right before the first block is drawn.
                 RackUnitsGuard.WarnIfNotInches(document);
-                DrawPushBackView(
+                RackPushBackCommands.DrawPushBackView(
                     request.View,
                     request.Section,
                     request.System,
@@ -276,7 +276,7 @@ namespace RackCad.Plugin
                 if (decoded.Address.Kind == DimensionViewKind.Planta)
                 {
                     var payload = BuildPushBackPayload(design, id, name, RackEmbedDocument.ViewPlanta, -1, viewBlock.Embed, preflight.ResolvedByBlock[viewBlock.BlockId]);
-                    result = new PushBackPlantaDrawService().RedrawInPlace(document, viewBlock.BlockId, system, payload, regen: false);
+                    result = new PushBackPlantaDrawService().RedrawInPlace(document, viewBlock.BlockId, system, payload, regen: (false));
                     if (result != null && result.Success)
                     {
                         RackBlockRenamer.SyncName(document, viewBlock.BlockId, RackViewBaseName.LinkedPlanta(baseName));
@@ -458,6 +458,11 @@ namespace RackCad.Plugin
                 source, RackEmbedDocument.KindPushBack, id, name,
                 string.IsNullOrWhiteSpace(view) ? RackEmbedDocument.ViewLateral : view, section, designJson);
             return new RackEmbedStore().Serialize(embed);
+        }
+
+        private static void DeadCallerOwnedProbe(Database database, ObjectId blockId, PushBackSystem system)
+        {
+            new PushBackPlantaDrawService().PrepareRedraw(database, blockId, system, null);
         }
 
         private static bool IsPushBackFrontal(RackEmbedDocument embed)

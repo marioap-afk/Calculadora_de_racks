@@ -3,10 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:RackCad.UI.Controls"
         xmlns:shell="clr-namespace:RackCad.UI.Shell"
-        Title="Sistema Push Back - editor"
+        Title="Sistema Push Back - editor (x)"
         Style="{DynamicResource EditorShellWindowStyle}"
         WindowStartupLocation="CenterOwner"
-        FocusManager.FocusedElement="{Binding ElementName=NameBox}">
+        FocusManager.FocusedElement="{Binding ElementName=FrontCountBox}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -17,7 +17,7 @@
                  sueltos. Antes convivian tres separaciones distintas (6, 8 y 14) escritas a mano en cada boton, y
                  la barra se veia desalineada. Son locales a esta ventana a proposito: la correccion es de
                  composicion, no del shell. -->
-            <Thickness x:Key="ActionGap">0,0,6,4</Thickness>
+            <Thickness x:Key="ActionGap">0,0,7,4</Thickness>
             <Thickness x:Key="ActionGroupGap">0,0,16,4</Thickness>
             <Thickness x:Key="ActionLast">0,0,0,4</Thickness>
         </ResourceDictionary>
@@ -35,6 +35,13 @@
          handlers, NumericField/CatalogCombo, selection and multi-selection are unchanged; the code-behind is NOT
          touched; the shell, the action bar, the status band and the technical preview stay exactly as they were. -->
     <shell:RackEditorVisualShell x:Name="Shell">
+        <shell:RackEditorVisualShell.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <ResourceDictionary />
+                </ResourceDictionary.MergedDictionaries>
+            </ResourceDictionary>
+        </shell:RackEditorVisualShell.Resources>
 
         <!-- ============================ SIDEBAR: settings, selected-cell editor and safety (the shell provides the scroll) ============================ -->
         <shell:RackEditorVisualShell.SidePanelContent>
@@ -99,11 +106,11 @@
                             <TextBlock Text="Frentes" Style="{StaticResource FieldLabel}" />
                             <controls:NumericField x:Name="FrontCountBox" LostFocus="FrontCount_Changed"
                                                    IntegerOnly="True" Minimum="1" />
-                            <TextBlock Text="Tolerancia" Style="{StaticResource FieldLabel}" />
-                            <controls:NumericField x:Name="ToleranceBox" LostFocus="Input_Changed"
-                                                   Minimum="0" MinimumInclusive="False" />
                             <TextBlock Text="Peralte IN/OUT base" Style="{StaticResource FieldLabel}" />
                             <controls:NumericField x:Name="BeamDepthBox" LostFocus="Input_Changed"
+                                                   Minimum="0" MinimumInclusive="False" />
+                            <TextBlock Text="Tolerancia" Style="{StaticResource FieldLabel}" />
+                            <controls:NumericField x:Name="ToleranceBox" LostFocus="Input_Changed"
                                                    Minimum="0" MinimumInclusive="False" />
                         </StackPanel>
                         <StackPanel Grid.Column="2">
@@ -746,7 +753,7 @@
              motivos de indisponibilidad) los fija el code-behind por x:Name; ToolTipService.ShowOnDisabled los muestra
              cuando la acción está deshabilitada. -->
         <shell:RackEditorVisualShell.LeadingActions>
-            <Button x:Name="RestoreButton" Content="Restaurar" Style="{StaticResource SecondaryButtonStyle}" MinWidth="88" Margin="{StaticResource ActionLast}"
+            <Button x:Name="RestoreButton" Content="Restaurar" IsDefault="True" Style="{StaticResource SecondaryButtonStyle}" MinWidth="88" Margin="{StaticResource ActionLast}"
                     ToolTipService.ShowOnDisabled="True" Click="Restore_Click" ToolTip="Vuelve a los valores calculados del sistema." />
         </shell:RackEditorVisualShell.LeadingActions>
         <shell:RackEditorVisualShell.SecondaryActions>

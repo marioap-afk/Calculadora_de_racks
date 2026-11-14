@@ -78,7 +78,7 @@ namespace RackCad.UI
                 InitialDirectory = libraryFolder
             };
 
-            return dialog.ShowDialog(owner) == true ? dialog.FileName : null;
+            return dialog.ShowDialog((System.Windows.Window)owner) == true ? dialog.FileName : null;
         }
         /// <summary>Loads the catalog, or an empty one if the files are missing/corrupt (UI keeps working).</summary>
         public static RackCatalog LoadCatalogSafe()

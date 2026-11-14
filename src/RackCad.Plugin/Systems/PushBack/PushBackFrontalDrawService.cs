@@ -41,7 +41,7 @@ namespace RackCad.Plugin.Systems.PushBack
             PushBackSystem system,
             PushBackFrontalEnd end,
             string payloadJson,
-            bool regen = true,
+            bool regen = (true),
             PushBackSide side = PushBackSide.A)
             => ViewBlockDraw.RedrawInPlace(
                 document,
