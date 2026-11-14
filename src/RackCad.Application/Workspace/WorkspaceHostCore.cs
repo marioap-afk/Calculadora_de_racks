@@ -44,6 +44,8 @@ namespace RackCad.Application.Workspace
         private const string PilotReadInProgressReason = "Hay una lectura del piloto en curso.";
         private const string NotThisDocumentReason = "La petición no es del documento activo.";
         private const string NoDraftReason = "No hay borrador para el rack.";
+        private const string NotCheckableReason = "El borrador no admite comprobación en su estado actual.";
+        private const string NotKeepableReason = "Solo se conserva un borrador en conflicto o con cambios marcados como posiblemente obsoletos.";
 
         /// <summary>Native identity used when no document is open: it matches no session.</summary>
         private const long NoDocumentNativeId = -1;
@@ -511,6 +513,46 @@ namespace RackCad.Application.Workspace
             }
         }
 
+        // ---------------------------------------------------------------- the explicit reconciliation of the pilot (I-64 F4-T4A1)
+        //
+        // The three operations below follow steps 1 to 8 of the check and of the reload: the errors of the request, the gate, a missing draft,
+        // then WHETHER THE OPERATION APPLIES to the status of the draft (all of it before anything is read), the one read, the consumption of
+        // the read and the end of the mark of "known clean" when the draft changed. None of them reads the drawing more than once, and none
+        // writes anything. Every exception is contained as Failed and the session is not degraded.
+
+        /// <summary>
+        /// The general "check now" of one rack of the pilot (D-12, D-T4A1-03): it serves a draft that is clean, dirty or in conflict,
+        /// rereads once and compares the new base with the one of the draft. A difference puts the draft in conflict; a match never takes
+        /// it out of conflict.
+        /// </summary>
+        public EditConfirmOutcome TryConfirmPilotBase(EditIntentRequest request)
+        {
+            // RED skeleton (INV-F4T4A1-13): inert, it answers the default value of its status and reads nothing.
+            return default;
+        }
+
+        /// <summary>
+        /// "Keep my work" for one rack of the pilot (D-T4A1-02, D-T4A1-03): it serves a draft in conflict, or a dirty one marked as possibly
+        /// stale. A draft that is being applied waits; any other draft is not needed. It rereads once and, with the read admitted, the
+        /// draft stays on the current version with its edits and its pending text.
+        /// </summary>
+        public EditIntentOutcome TryKeepPilotEdit(EditIntentRequest request)
+        {
+            // RED skeleton (INV-F4T4A1-13): inert, it answers the default value of its status and reads nothing.
+            return default;
+        }
+
+        /// <summary>
+        /// The explicit "discard and reload" of one rack of the pilot (D-T4A1-03): the work of the draft goes away and the draft is replaced
+        /// from ONE read. It serves every status but the one of being applied, which waits. A read that is not admitted keeps the draft as it
+        /// was.
+        /// </summary>
+        public EditIntentOutcome TryDiscardAndReloadPilotEdit(EditIntentRequest request)
+        {
+            // RED skeleton (INV-F4T4A1-13): inert, it answers the default value of its status and reads nothing.
+            return default;
+        }
+
         /// <summary>
         /// The explicit discard of every draft of a session (D-T2B2-15), for the command that F4-T3 will expose. The only gate is the
         /// authorization of the session against the active document (INV-22): it needs no reader, no rest, no absence of command and no
@@ -585,6 +627,50 @@ namespace RackCad.Application.Workspace
             try
             {
                 return TryReloadPilotEdit(request);
+            }
+            finally
+            {
+                _pilotReadInProgress = false;
+            }
+        }
+
+        // I-64 F4-T4A1: the three reads of the explicit reconciliation (the general check, keep my work and discard with a reload) go
+        // through the same mark of "read in progress", with the same try/finally.
+        EditConfirmOutcome IWorkspacePilotEditPort.TryConfirmBase(EditIntentRequest request)
+        {
+            if (_pilotReadInProgress) return EditConfirmOutcome.Waiting(PilotReadInProgressReason);
+            _pilotReadInProgress = true;
+            try
+            {
+                return TryConfirmPilotBase(request);
+            }
+            finally
+            {
+                _pilotReadInProgress = false;
+            }
+        }
+
+        EditIntentOutcome IWorkspacePilotEditPort.TryKeepMine(EditIntentRequest request)
+        {
+            if (_pilotReadInProgress) return EditIntentOutcome.Waiting(PilotReadInProgressReason);
+            _pilotReadInProgress = true;
+            try
+            {
+                return TryKeepPilotEdit(request);
+            }
+            finally
+            {
+                _pilotReadInProgress = false;
+            }
+        }
+
+        EditIntentOutcome IWorkspacePilotEditPort.TryDiscardAndReload(EditIntentRequest request)
+        {
+            if (_pilotReadInProgress) return EditIntentOutcome.Waiting(PilotReadInProgressReason);
+            _pilotReadInProgress = true;
+            try
+            {
+                return TryDiscardAndReloadPilotEdit(request);
             }
             finally
             {

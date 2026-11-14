@@ -966,8 +966,20 @@ public class WorkspaceEditIntentHostTests
         Assert.Equal(new[] { typeof(EditIntentRequest) }, begin.GetParameters().Select(p => p.ParameterType).ToArray());
         Assert.Equal(new[] { typeof(EditIntentRequest) }, check.GetParameters().Select(p => p.ParameterType).ToArray());
 
+        // I-64 F4-T4A1: the three public operations of the explicit reconciliation have the same shape and answer values of the workspace.
+        foreach (var (name, returns) in new[]
+                 {
+                     ("TryConfirmPilotBase", typeof(EditConfirmOutcome)), ("TryKeepPilotEdit", typeof(EditIntentOutcome)), ("TryDiscardAndReloadPilotEdit", typeof(EditIntentOutcome)),
+                 })
+        {
+            var method = typeof(WorkspaceHostCore).GetMethod(name, BindingFlags.Public | BindingFlags.Instance);
+            Assert.NotNull(method);
+            Assert.Equal(returns, method!.ReturnType);
+            Assert.Equal(new[] { typeof(EditIntentRequest) }, method.GetParameters().Select(p => p.ParameterType).ToArray());
+        }
+
         var types = new List<Type>();
-        foreach (var carrier in new[] { typeof(EditIntentRequest), typeof(EditIntentWitness), typeof(EditIntentOutcome), typeof(EditCheckOutcome) })
+        foreach (var carrier in new[] { typeof(EditIntentRequest), typeof(EditIntentWitness), typeof(EditIntentOutcome), typeof(EditCheckOutcome), typeof(EditConfirmOutcome) })
         {
             foreach (var property in carrier.GetProperties(BindingFlags.Public | BindingFlags.Instance)) types.AddRange(Flatten(property.PropertyType));
             foreach (var method in carrier.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly))
@@ -1020,6 +1032,19 @@ public class WorkspaceEditIntentHostTests
         Assert.Equal(new[] { "Unavailable", "Waiting", "Rejected", "AlreadyOpen", "NotAdmitted", "Admitted", "Failed" }, Enum.GetNames<EditIntentStatus>().Take(7).ToArray());
         Assert.Equal(EditIntentStatus.Unavailable, default(EditIntentStatus));
         Assert.Equal(new[] { "Unavailable", "Waiting", "Rejected", "NotFound", "NotApplicable", "Conflict", "Recovered", "Failed" }, Enum.GetNames<EditCheckStatus>());
+
+        // I-64 F4-T4A1 (D-T4A1-03): the outcome of the general check is a value with the exact names of the package, and its default is inert.
+        Assert.True(typeof(EditConfirmOutcome).IsValueType);
+        Assert.Equal(
+            new[] { "Unavailable", "Waiting", "Rejected", "NotFound", "NotApplicable", "Confirmed", "Conflict", "Failed" },
+            Enum.GetNames<EditConfirmStatus>());
+        Assert.Equal(EditConfirmStatus.Unavailable, default(EditConfirmStatus));
+        Assert.Equal(EditConfirmStatus.Unavailable, default(EditConfirmOutcome).Status);
+        Assert.Null(default(EditConfirmOutcome).AdmissionDiagnostic);
+        Assert.Empty(default(EditConfirmOutcome).Differences);
+        // Kept is the one new state of the intention and it comes last, after the ten that stay as an ordered prefix.
+        Assert.Equal("Kept", Enum.GetNames<EditIntentStatus>()[10]);
+        Assert.Equal(EditIntentStatus.Kept, EditIntentOutcome.Kept(EditWitnessStatus.NotSupplied).Status);
     }
 
     [Fact]

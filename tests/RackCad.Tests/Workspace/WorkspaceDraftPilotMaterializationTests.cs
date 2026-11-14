@@ -760,4 +760,190 @@ public class WorkspaceDraftPilotMaterializationTests
             LegacyDeltas[fixture].Concat(new[] { ScalePath + ": 1.5 -> 4.125" }).OrderBy(line => line, StringComparer.Ordinal),
             delta.OrderBy(line => line, StringComparer.Ordinal));
     }
+
+    // ------------------------------------------------------------------ I-64 F4-T4A1 (D-T4A1-05, D-T4A1-02): the carry-overs of F4-E25
+
+    [Fact]
+    public void CarryOver1_TheRejectionComparesTheCurrentStateAsItIsAgainstACopyOfTheInitialOneWithItsScaleNeutralizedAndMutatesNeitherState()
+    {
+        var initial = PilotKit.State("pb-01-base");
+        var edits = new Dictionary<string, Action<PushBackPilotDraftState>>
+        {
+            ["PalletTolerance"] = state => state.Inputs.PalletTolerance += 1.0,
+            ["PostPeralte"] = state => state.Inputs.PostPeralte += 0.5,
+            ["RearTopeSaque"] = state => state.Editor.SideA.RearTopeSaque += 1.5,
+            ["PalletHeightOfACell"] = state => state.Editor.SideA.Structure.Fronts[0].Cells[0].PalletHeight += 2.0,
+        };
+
+        foreach (var (name, edit) in edits)
+        {
+            // The edit is in the current state, together with a valid and different scale: never written in silence.
+            var current = PilotKit.State("pb-01-base");
+            current.Inputs.Annotations.AnnotationScale = 3.25;
+            edit(current);
+            var initialBefore = PushBackPilotStateComparer.Copy(initial);
+            var currentBefore = PushBackPilotStateComparer.Copy(current);
+
+            var composition = PushBackPilotMaterializer.ComposeForWrite(initial, current, PilotKit.Catalog);
+
+            Assert.False(composition.IsComposed, name);
+            Assert.Equal(PushBackPilotMaterializer.NonPilotContentReason, composition.Reason);
+            Assert.True(Comparer.Equals(initialBefore, initial), name);
+            Assert.True(Comparer.Equals(currentBefore, current), name);
+            Assert.Equal(3.25, current.Inputs.Annotations.AnnotationScale);
+            Assert.Equal(1.5, initial.Inputs.Annotations.AnnotationScale);
+
+            // The same edit in the INITIAL state only is a difference too, seen from the other side.
+            var editedInitial = PilotKit.State("pb-01-base");
+            edit(editedInitial);
+            var untouched = PilotKit.State("pb-01-base");
+            untouched.Inputs.Annotations.AnnotationScale = 3.25;
+            Assert.False(PushBackPilotMaterializer.ComposeForWrite(editedInitial, untouched, PilotKit.Catalog).IsComposed, name);
+        }
+
+        // The scale alone, in either direction, is the one difference that is composed.
+        foreach (var scale in new[] { 0.25, 3.25, 1.5 })
+        {
+            var onlyScale = PilotKit.State("pb-01-base");
+            onlyScale.Inputs.Annotations.AnnotationScale = scale;
+            Assert.True(PushBackPilotMaterializer.ComposeForWrite(initial, onlyScale, PilotKit.Catalog).IsComposed, scale.ToString());
+        }
+    }
+
+    [Fact]
+    public void CarryOver3_ABaseThatMaterializedAgainIsNotTheInitialStateIsRejectedBeforeComposingAndANormalBaseStillComposes()
+    {
+        // The initial and the current state carry the SAME edit of content that the pilot does not edit, as if the base had been
+        // materialized with another catalog than the one that materializes it now: the origin gives another state, and nothing is composed.
+        var initial = PilotKit.State("pb-01-base");
+        initial.Inputs.PalletTolerance += 1.0;
+        var current = PilotKit.State("pb-01-base");
+        current.Inputs.PalletTolerance += 1.0;
+        current.Inputs.Annotations.AnnotationScale = 2.5;
+        Assert.True(Comparer.Equals(initial, PushBackPilotMaterializer.KeepPilotEditsOn(current, initial)));
+        var initialBefore = PushBackPilotStateComparer.Copy(initial);
+        var currentBefore = PushBackPilotStateComparer.Copy(current);
+
+        var composition = PushBackPilotMaterializer.ComposeForWrite(initial, current, PilotKit.Catalog);
+
+        Assert.False(composition.IsComposed);
+        Assert.Null(composition.Editor);
+        Assert.Null(composition.Inputs);
+        Assert.Equal(PushBackPilotMaterializer.BaseChangedReason, composition.Reason);
+        Assert.True(Comparer.Equals(initialBefore, initial));
+        Assert.True(Comparer.Equals(currentBefore, current));
+
+        var normal = PilotKit.State("pb-01-base");
+        var edited = PilotKit.State("pb-01-base");
+        edited.Inputs.Annotations.AnnotationScale = 2.5;
+        Assert.True(PushBackPilotMaterializer.ComposeForWrite(normal, edited, PilotKit.Catalog).IsComposed);
+    }
+
+    [Fact]
+    public void CarryOver6_AScaleThatIsNotAFiniteNumberGreaterThanZeroIsRejectedAndNeverComposedAndTheInfiniteOneIsADeclaredExtension()
+    {
+        var initial = PilotKit.State("pb-01-base");
+
+        foreach (var scale in new[] { double.NaN, double.PositiveInfinity, double.NegativeInfinity, 0.0, -0.0, -1.0, -1e-9 })
+        {
+            var current = PilotKit.State("pb-01-base");
+            current.Inputs.Annotations.AnnotationScale = scale;
+            PushBackPilotComposition? composition = null;
+
+            var thrown = Record.Exception(() => composition = PushBackPilotMaterializer.ComposeForWrite(initial, current, PilotKit.Catalog));
+
+            Assert.Null(thrown);
+            Assert.False(composition!.IsComposed, scale.ToString());
+            Assert.Equal(PushBackPilotMaterializer.InvalidScaleReason, composition.Reason);
+            Assert.Null(composition.Editor);
+            Assert.Null(composition.Inputs);
+        }
+
+        foreach (var scale in new[] { 1e-9, 0.25, 12.5, double.MaxValue })
+        {
+            var current = PilotKit.State("pb-01-base");
+            current.Inputs.Annotations.AnnotationScale = scale;
+
+            Assert.True(PushBackPilotMaterializer.ComposeForWrite(initial, current, PilotKit.Catalog).IsComposed, scale.ToString());
+        }
+    }
+
+    [Fact]
+    public void CarryOver2_KeepAfterAnExternalModuleChangeIsOneAtomicStepThatComposesTheNewModulesAndTheScaleOfTheDraft()
+    {
+        var v1 = PilotKit.Text("pb-01-base");
+        var v2 = PilotKit.Text("pb-31-v2-modulos");
+        var draft = BeginOn(v1);
+        draft.CurrentDraftState.Inputs.Annotations.AnnotationScale = 2.25;
+        draft.SetPendingText("AnnotationScale", "typed");
+        var second = PilotKit.Admitted(v2);
+
+        // ONE call: the initial state moves to V2 and the current state is V2 plus the scale of the draft; there is no step in between.
+        var keep = draft.KeepMineOnCurrentVersion(
+            DraftIntentRead<PushBackPilotDraftState>.Admitted(DraftKit.DefaultBase(), second), PushBackPilotMaterializer.KeepPilotEditsOn, confirmed: true);
+
+        Assert.Equal(DraftReloadStatus.Reloaded, keep.Status);
+        Assert.Equal(v2, draft.InitialDraftState.Origin);
+        Assert.True(draft.IsDirty);
+        Assert.Equal(2.25, draft.CurrentDraftState.Inputs.Annotations.AnnotationScale);
+        Assert.Equal("typed", draft.PendingText["AnnotationScale"]);
+        draft.RemovePendingText("AnnotationScale");
+        var composed = WriteFrom(draft.InitialDraftState, draft.CurrentDraftState);
+        Assert.Equal(new[] { ScalePath + ": 1.5 -> 2.25" }, PilotKit.JsonDiff(PilotKit.DesignOf(v2), composed));
+        Assert.Contains(PilotKit.JsonDiff(PilotKit.DesignOf(v1), composed), difference => difference.StartsWith("$.PushBack.Structure.Modules[2]", StringComparison.Ordinal));
+
+        draft.CurrentDraftState.Inputs.Annotations.AnnotationScale = 1.5;
+        Assert.False(draft.IsDirty);
+        Assert.Equal(DraftStatus.Clean, draft.Status);
+        Assert.Equal(PilotKit.DesignOf(v2), WriteFrom(draft.InitialDraftState, draft.CurrentDraftState));
+    }
+
+    [Fact]
+    public void CarryOver2_KeepAfterAnExternalChangeOfContentThePilotDoesNotEditNeverLeavesTheStepThatWouldRevertItAndComposesAtOnce()
+    {
+        var v1 = PilotKit.Text("pb-01-base");
+        var v2 = Variant("pb-01-base", state =>
+        {
+            state.Inputs.PalletTolerance += 2.0;
+            state.Editor.SideA.Structure.Fronts[0].Cells[0].PalletHeight += 3.0;
+            state.Inputs.Annotations.DimensionStyle = "SIMPLEX";
+        });
+        var second = PilotKit.Admitted(v2);
+        var draft = BeginOn(v1);
+        draft.CurrentDraftState.Inputs.Annotations.AnnotationScale = 2.25;
+
+        var keep = draft.KeepMineOnCurrentVersion(
+            DraftIntentRead<PushBackPilotDraftState>.Admitted(DraftKit.DefaultBase(), second), PushBackPilotMaterializer.KeepPilotEditsOn, confirmed: true);
+
+        Assert.Equal(DraftReloadStatus.Reloaded, keep.Status);
+        // With the two-parameter version this is the moment of a typed rejection, until the surface rebases the current state; here the
+        // very same call already did it, so composing now carries the new content plus the scale.
+        var composition = PushBackPilotMaterializer.ComposeForWrite(draft.InitialDraftState, draft.CurrentDraftState, PilotKit.Catalog);
+        Assert.True(composition.IsComposed, composition.Reason);
+        Assert.Equal(new[] { ScalePath + ": 1.5 -> 2.25" }, PilotKit.JsonDiff(PilotKit.DesignOf(v2), WriteFrom(draft.InitialDraftState, draft.CurrentDraftState)));
+        Assert.True(Comparer.Equals(PushBackPilotMaterializer.KeepPilotEditsOn(second, PilotKit.State("pb-01-base")), PushBackPilotMaterializer.KeepPilotEditsOn(second, second)));
+    }
+
+    [Fact]
+    public void CarryOver2_AKeepOnThatFailsLeavesTheDraftWithoutTheIntermediateStateAndThePendingTextStays()
+    {
+        var v1 = PilotKit.Text("pb-01-base");
+        var second = PilotKit.Admitted(PilotKit.Text("pb-31-v2-modulos"));
+        var draft = BeginOn(v1);
+        draft.CurrentDraftState.Inputs.Annotations.AnnotationScale = 2.25;
+        draft.SetPendingText("AnnotationScale", "typed");
+        var baseBefore = draft.StaleBase;
+        var originBefore = draft.InitialDraftState.Origin;
+
+        var thrown = Record.Exception(() => draft.KeepMineOnCurrentVersion(
+            DraftIntentRead<PushBackPilotDraftState>.Admitted(DraftKit.DefaultBase(), second),
+            (initial, current) => throw new InvalidOperationException("keep-on-boom"),
+            confirmed: true));
+
+        Assert.Equal("keep-on-boom", thrown?.Message);
+        Assert.Same(baseBefore, draft.StaleBase);
+        Assert.Equal(originBefore, draft.InitialDraftState.Origin);
+        Assert.Equal(2.25, draft.CurrentDraftState.Inputs.Annotations.AnnotationScale);
+        Assert.Equal("typed", draft.PendingText["AnnotationScale"]);
+    }
 }

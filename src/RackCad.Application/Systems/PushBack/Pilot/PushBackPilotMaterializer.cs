@@ -111,6 +111,10 @@ namespace RackCad.Application.Systems.PushBack.Pilot
 
         public const string NonPilotContentReason = "El borrador cambia contenido que el piloto no edita: no se compone.";
 
+        public const string InvalidScaleReason = "La escala de anotación no es un número finito mayor que cero: no se compone.";
+
+        public const string BaseChangedReason = "La base ya no coincide al materializarla de nuevo: no se compone.";
+
         public const string MaterializeFailurePrefix = "No se pudo materializar el diseño: ";
 
         public const string ComposeFailurePrefix = "No se pudo componer el diseño: ";

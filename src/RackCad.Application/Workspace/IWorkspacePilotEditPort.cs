@@ -16,11 +16,11 @@ namespace RackCad.Application.Workspace
     /// - no type of the in-memory work and no type of the pilot crosses it, and the racks are plain strings;
     /// - the session travels in the request (<see cref="WorkspaceRequest"/> or <see cref="EditIntentRequest"/>), except for
     ///   <see cref="TakeLossNotices"/>, whose notices belong to sessions that no longer exist;
-    /// - only the three operations of the edit intention read the drawing, each in one action of the user; none of the operations
-    ///   writes anything;
+    /// - only the six operations of the edit intention read the drawing, each in one action of the user: the three of F4-T3A and, since
+    ///   F4-T4A1, the general check, "keep my work" and the explicit discard with a reload; none of the operations writes anything;
     /// - every exception is contained as a value with a reason and the session is not degraded; the one of <see cref="GetRacksAtRisk"/>
     ///   is contained as the unknown value (<see cref="PilotRiskView.IsKnown"/> false) and its reason goes to the log;
-    /// - while one of the three reads is in progress, every operation that changes something answers Busy and a second read answers
+    /// - while one of the six reads is in progress, every operation that changes something answers Busy and a second read answers
     ///   Waiting, all without effect, so a key pressed during a read is never lost in silence.
     /// </summary>
     public interface IWorkspacePilotEditPort
@@ -33,6 +33,25 @@ namespace RackCad.Application.Workspace
 
         /// <summary>The lazy reload of one rack of the pilot. Same contract as the host operation it delegates to.</summary>
         EditIntentOutcome TryReload(EditIntentRequest request);
+
+        /// <summary>
+        /// The general "check now" of one rack of the pilot: it rereads once and compares the new base with the one of the work, whatever
+        /// the work is (clean, dirty or in conflict). It reads only for those three states. A difference puts the work in conflict;
+        /// a match never takes it out of conflict. Same contract as the host operation it delegates to.
+        /// </summary>
+        EditConfirmOutcome TryConfirmBase(EditIntentRequest request);
+
+        /// <summary>
+        /// "Keep my work" for one rack of the pilot: after an explicit confirmation of the user, the work stays on the current version of
+        /// the drawing. It is served for work in conflict or for dirty work marked as possibly stale. Same contract as the host operation.
+        /// </summary>
+        EditIntentOutcome TryKeepMine(EditIntentRequest request);
+
+        /// <summary>
+        /// The explicit discard of the work of one rack, followed by its reload from the drawing. It is served for every state but the one
+        /// of being applied. Same contract as the host operation it delegates to.
+        /// </summary>
+        EditIntentOutcome TryDiscardAndReload(EditIntentRequest request);
 
         /// <summary>The state of the field of one rack. Memory only: it authorizes nothing, reads nothing and never throws.</summary>
         PilotFieldView GetField(WorkspaceRequest origin, string rackId);
@@ -155,6 +174,17 @@ namespace RackCad.Application.Workspace
         DocumentClose,
     }
 
+    /// <summary>
+    /// Why the work of a rack is Unknown, as the port reports it (I-64 F4-T4A1, D-T4A1-03): the write may have failed at its end, or its
+    /// reread failed. The panel decides the gesture from it. The default value is None, and it is also the value in every other state.
+    /// </summary>
+    public enum PilotUnknownOrigin
+    {
+        None,
+        CommitThrew,
+        PostReread,
+    }
+
     /// <summary>One field whose pending text is not valid, with the message of the validation.</summary>
     public readonly record struct PilotFieldProblem(string FieldKey, string? Message);
 
@@ -174,7 +204,10 @@ namespace RackCad.Application.Workspace
             string? committedTextReason,
             string? pendingText,
             string? pendingMessage,
-            string? errorReason = null)
+            string? errorReason = null,
+            PilotUnknownOrigin unknownOrigin = PilotUnknownOrigin.None,
+            string? conflictText = null,
+            string? lastCause = null)
         {
             Exists = exists;
             State = state;
@@ -186,6 +219,9 @@ namespace RackCad.Application.Workspace
             PendingText = pendingText;
             PendingMessage = pendingMessage;
             ErrorReason = errorReason;
+            UnknownOrigin = unknownOrigin;
+            ConflictText = conflictText;
+            LastCause = lastCause;
         }
 
         /// <summary>True when there is work for the rack.</summary>
@@ -215,6 +251,15 @@ namespace RackCad.Application.Workspace
         /// given.
         /// </summary>
         public string? ErrorReason { get; }
+
+        /// <summary>Why the work is Unknown; <see cref="PilotUnknownOrigin.None"/> in every other state.</summary>
+        public PilotUnknownOrigin UnknownOrigin { get; }
+
+        /// <summary>What differs from the drawing, as text, only while the work is in conflict; null otherwise.</summary>
+        public string? ConflictText { get; }
+
+        /// <summary>The cause of the last attempt to update that did not apply, or of an unknown outcome, exactly as the work holds it; null when there is none.</summary>
+        public string? LastCause { get; }
     }
 
     /// <summary>The answer to an operation on the field. The view is set for Applied and Invalid; the reason for the other statuses.</summary>

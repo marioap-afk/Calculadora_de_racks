@@ -39,12 +39,16 @@ public class WorkspacePilotEditGuardTests
 
     private static string? TryBody(string code, string signature) => Regex.IsMatch(code, signature) ? Src.BodyOf(code, signature) : null;
 
-    // The twelve operations of the table of D-T3-02: the name, the signature in the interface and the signature of the explicit implementation.
+    // The twelve operations of the table of D-T3-02 and, since F4-T4A1 (D-T4A1-03), the three of the explicit reconciliation: the name and the
+    // signature in the interface. The twelve are a lower bound of the port and the fifteen are what this task adds to it.
     private static readonly (string Name, string Interface)[] Operations =
     {
         ("TryBeginEdit", @"EditIntentOutcome\s+TryBeginEdit\s*\(\s*EditIntentRequest\s+\w+\s*\)\s*;"),
         ("TryCheckNow", @"EditCheckOutcome\s+TryCheckNow\s*\(\s*EditIntentRequest\s+\w+\s*\)\s*;"),
         ("TryReload", @"EditIntentOutcome\s+TryReload\s*\(\s*EditIntentRequest\s+\w+\s*\)\s*;"),
+        ("TryConfirmBase", @"EditConfirmOutcome\s+TryConfirmBase\s*\(\s*EditIntentRequest\s+\w+\s*\)\s*;"),
+        ("TryKeepMine", @"EditIntentOutcome\s+TryKeepMine\s*\(\s*EditIntentRequest\s+\w+\s*\)\s*;"),
+        ("TryDiscardAndReload", @"EditIntentOutcome\s+TryDiscardAndReload\s*\(\s*EditIntentRequest\s+\w+\s*\)\s*;"),
         ("GetField", @"PilotFieldView\s+GetField\s*\(\s*WorkspaceRequest\s+\w+\s*,\s*string\s+\w+\s*\)\s*;"),
         ("SetPendingText", @"PilotFieldResult\s+SetPendingText\s*\(\s*WorkspaceRequest\s+\w+\s*,\s*string\s+\w+\s*,\s*string\s+\w+\s*\)\s*;"),
         ("CommitField", @"PilotFieldResult\s+CommitField\s*\(\s*WorkspaceRequest\s+\w+\s*,\s*string\s+\w+\s*\)\s*;"),
@@ -56,7 +60,8 @@ public class WorkspacePilotEditGuardTests
         ("TakeCloseNotices", @"IReadOnlyList<PilotCloseView>\s+TakeCloseNotices\s*\(\s*\)\s*;"),
     };
 
-    private static readonly string[] ReadOperations = { "TryBeginEdit", "TryCheckNow", "TryReload" };
+    // The six operations that read the drawing: the three of F4-T3A and the three of the explicit reconciliation of F4-T4A1.
+    private static readonly string[] ReadOperations = { "TryBeginEdit", "TryCheckNow", "TryReload", "TryConfirmBase", "TryKeepMine", "TryDiscardAndReload" };
 
     private static readonly string[] MemoryOperations = { "GetField", "GetRacksAtRisk", "TakeLossNotices", "TakeCloseNotices" };
 
@@ -92,7 +97,7 @@ public class WorkspacePilotEditGuardTests
         if (!Regex.IsMatch(port, @"\bpublic\s+interface\s+IWorkspacePilotEditPort\b")) yield return "the interface is missing";
         if (Src.Count(port, @"\bnamespace\s+RackCad\.Application\.Workspace\s*\{") != 1) yield return "the namespace is not the one of the workspace";
 
-        // The twelve operations are a lower bound: a later task may add its own to this port.
+        // The fifteen operations are a lower bound: a later task may add its own to this port.
         foreach (var (name, signature) in Operations)
             if (Src.Count(port, signature) != 1) yield return "the port lacks " + name;
 
@@ -116,7 +121,7 @@ public class WorkspacePilotEditGuardTests
     }
 
     [Fact]
-    public void ThePortDeclaresTheTwelveOperationsWithTheEnumsAsOrderedPrefixesAndNamesNoTypeOfTheDraftsNorOfThePilot()
+    public void ThePortDeclaresTheFifteenOperationsWithTheEnumsAsOrderedPrefixesAndNamesNoTypeOfTheDraftsNorOfThePilot()
     {
         Assert.Empty(PortViolations(Port()));
         Assert.StartsWith("#nullable enable", Src.Text(PortPath).TrimStart((char)0xFEFF));
@@ -125,6 +130,10 @@ public class WorkspacePilotEditGuardTests
     [Theory]
     [InlineData("PilotFieldView GetField(WorkspaceRequest origin, string rackId);", "")]
     [InlineData("IReadOnlyList<PilotCloseView> TakeCloseNotices();", "")]
+    [InlineData("EditConfirmOutcome TryConfirmBase(EditIntentRequest request);", "")]
+    [InlineData("EditIntentOutcome TryKeepMine(EditIntentRequest request);", "")]
+    [InlineData("EditIntentOutcome TryDiscardAndReload(EditIntentRequest request);", "")]
+    [InlineData("EditConfirmOutcome TryConfirmBase(EditIntentRequest request);", "EditCheckOutcome TryConfirmBase(EditIntentRequest request);")]
     [InlineData("PilotFieldView GetField(WorkspaceRequest origin, string rackId);", "PilotFieldView GetField(WorkspaceRequest origin, int rackId);")]
     [InlineData("TabChange,", "RackChange,")]
     [InlineData("Proceeded,", "Aborted,")]
@@ -356,7 +365,11 @@ public class WorkspacePilotEditGuardTests
 
     private static IEnumerable<string> ReadGateViolations(string host)
     {
-        var table = new[] { ("TryBeginEdit", "EditIntentOutcome", "TryBeginPilotEdit"), ("TryCheckNow", "EditCheckOutcome", "TryCheckPilotEdit"), ("TryReload", "EditIntentOutcome", "TryReloadPilotEdit") };
+        var table = new[]
+        {
+            ("TryBeginEdit", "EditIntentOutcome", "TryBeginPilotEdit"), ("TryCheckNow", "EditCheckOutcome", "TryCheckPilotEdit"), ("TryReload", "EditIntentOutcome", "TryReloadPilotEdit"),
+            ("TryConfirmBase", "EditConfirmOutcome", "TryConfirmPilotBase"), ("TryKeepMine", "EditIntentOutcome", "TryKeepPilotEdit"), ("TryDiscardAndReload", "EditIntentOutcome", "TryDiscardAndReloadPilotEdit"),
+        };
         foreach (var (name, outcome, inner) in table)
         {
             var body = TryBody(host, HostSignature(name));
@@ -369,13 +382,13 @@ public class WorkspacePilotEditGuardTests
             if (Src.Count(body, @"\b" + inner + @"\s*\(") != 1) yield return name + " does not call " + inner + " exactly once";
         }
 
-        // The mark is a bool in memory and the three reads are its only writers (a lower bound: later tasks may read too).
+        // The mark is a bool in memory and the six reads are its only writers (a lower bound: later tasks may read too).
         if (Src.Count(host, @"private\s+bool\s+_pilotReadInProgress\s*;") != 1) yield return "the mark of the reads is not one private bool";
-        if (Src.Count(host, @"_pilotReadInProgress\s*=\s*true") < 3) yield return "the three reads do not set the mark";
+        if (Src.Count(host, @"_pilotReadInProgress\s*=\s*true") < 6) yield return "the six reads do not set the mark";
     }
 
     [Fact]
-    public void TheMarkOfReadInProgressWrapsEachOfTheThreeReadsWithTryFinallyAndAnsweredWaitingForANestedRead()
+    public void TheMarkOfReadInProgressWrapsEachOfTheSixReadsWithTryFinallyAndAnsweredWaitingForANestedRead()
     {
         Assert.Empty(ReadGateViolations(Host()));
     }
@@ -384,6 +397,9 @@ public class WorkspacePilotEditGuardTests
     [InlineData("_pilotReadInProgress = false;\r\n            }", "}")]
     [InlineData("if (_pilotReadInProgress) return EditCheckOutcome.Waiting(PilotReadInProgressReason);", "")]
     [InlineData("return TryReloadPilotEdit(request);", "return TryBeginPilotEdit(request);")]
+    [InlineData("if (_pilotReadInProgress) return EditConfirmOutcome.Waiting(PilotReadInProgressReason);", "")]
+    [InlineData("if (_pilotReadInProgress) return EditIntentOutcome.Waiting(PilotReadInProgressReason);\r\n            _pilotReadInProgress = true;\r\n            try\r\n            {\r\n                return TryKeepPilotEdit(request);", "_pilotReadInProgress = true;\r\n            try\r\n            {\r\n                return TryKeepPilotEdit(request);")]
+    [InlineData("return TryDiscardAndReloadPilotEdit(request);", "return TryKeepPilotEdit(request);")]
     public void TheReadGuardTripsWithoutTheFinallyWithoutTheWaitingAnswerOrWithAnotherRead(string from, string to)
     {
         var host = Host();
@@ -448,6 +464,9 @@ public class WorkspacePilotEditGuardTests
     [InlineData("_depth.IsInside ? EditIntentOutcome.Waiting(InsideNoticeReason) : _inner.TryBeginEdit(request)", "_inner.TryBeginEdit(request)")]
     [InlineData("_depth.IsInside ? EditCheckOutcome.Waiting(InsideNoticeReason) : _inner.TryCheckNow(request)", "_inner.TryCheckNow(request)")]
     [InlineData("_depth.IsInside ? EditIntentOutcome.Waiting(InsideNoticeReason) : _inner.TryReload(request)", "_inner.TryReload(request)")]
+    [InlineData("_depth.IsInside ? EditConfirmOutcome.Waiting(InsideNoticeReason) : _inner.TryConfirmBase(request)", "_inner.TryConfirmBase(request)")]
+    [InlineData("_depth.IsInside ? EditIntentOutcome.Waiting(InsideNoticeReason) : _inner.TryKeepMine(request)", "_inner.TryKeepMine(request)")]
+    [InlineData("_depth.IsInside ? EditIntentOutcome.Waiting(InsideNoticeReason) : _inner.TryDiscardAndReload(request)", "_inner.TryDiscardAndReload(request)")]
     [InlineData("=> _inner.DiscardRack(origin, rackId);", "=> _depth.IsInside ? default : _inner.DiscardRack(origin, rackId);")]
     [InlineData("public WorkspacePilotEditGate(", "private static int _x; public WorkspacePilotEditGate(")]
     public void TheGateGuardTripsWhenAReadIsNotGatedOrAnotherOperationIsNotAPlainDelegation(string from, string to)
@@ -522,6 +541,9 @@ public class WorkspacePilotEditGuardTests
     [InlineData("_ = Navigation;", "")]
     [InlineData("_pilotEdit = new PilotEditAdapter(new WorkspacePilotEditGate(_host, _noticeDepth));", "_pilotEdit = new PilotEditAdapter(_host);")]
     [InlineData("public EditIntentOutcome TryReload(EditIntentRequest request) => _gate.TryReload(request);", "public EditIntentOutcome TryReload(EditIntentRequest request) => _gate.TryReload(request) with { };")]
+    [InlineData("public EditConfirmOutcome TryConfirmBase(EditIntentRequest request) => _gate.TryConfirmBase(request);", "public EditConfirmOutcome TryConfirmBase(EditIntentRequest request) => _gate.TryConfirmBase(request) with { };")]
+    [InlineData("public EditIntentOutcome TryKeepMine(EditIntentRequest request) => _gate.TryKeepMine(request);", "public EditIntentOutcome TryKeepMine(EditIntentRequest request) => _gate.TryKeepMine(request) with { };")]
+    [InlineData("public EditIntentOutcome TryDiscardAndReload(EditIntentRequest request) => _gate.TryDiscardAndReload(request);", "public EditIntentOutcome TryDiscardAndReload(EditIntentRequest request) => _gate.TryDiscardAndReload(request) with { };")]
     [InlineData("public IWorkspacePilotEditPort PilotEdit", "public WorkspaceHostCore Host => _host;\n        public IWorkspacePilotEditPort PilotEdit")]
     [InlineData("_bridge.CommandStateChanged += OnCommandStateChanged;", "_bridge.CommandStateChanged += OnCommandStateChanged; StateChanged += OnTheSide;")]
     public void TheControllerGuardTripsWithoutTheDepthTheNavigationTheDecoratorOrWhenTheHostIsExposedOrASubscriptionIsAdded(string from, string to)
@@ -661,6 +683,13 @@ public class WorkspacePilotEditGuardTests
 
     // ------------------------------------------------------------------ INV-F4T3A-10: zero authored writes, by body
 
+    private static readonly string[] ReconciliationBodies =
+    {
+        @"public\s+EditConfirmOutcome\s+TryConfirmPilotBase\s*\(",
+        @"public\s+EditIntentOutcome\s+TryKeepPilotEdit\s*\(",
+        @"public\s+EditIntentOutcome\s+TryDiscardAndReloadPilotEdit\s*\(",
+    };
+
     private static IEnumerable<string> WriteViolations(string host, string support)
     {
         foreach (var (name, _) in Operations)
@@ -683,6 +712,15 @@ public class WorkspacePilotEditGuardTests
             }
         }
 
+        // The three public bodies of the explicit reconciliation (F4-T4A1) write nothing either: with the explicit ones above, this is the
+        // oracle of the zero writes of PREPARE (D-T4A1-07).
+        foreach (var signature in ReconciliationBodies)
+        {
+            var body = TryBody(host, signature);
+            if (body == null) { yield return "the host lacks " + signature; continue; }
+            foreach (Match match in Regex.Matches(body, WriteApis)) yield return "the public body " + signature + " names " + match.Value;
+        }
+
         // The helpers that the operations use, and the value helpers of the support file, write nothing either.
         foreach (var helper in new[] { @"private\s+DraftSession<PushBackPilotDraftState>\?\s+FindPilotDraft\b", @"private\s+static\s+PilotFieldView\s+ViewOfPilotDraft\b", @"private\s+bool\s+SessionStillAtRisk\b" })
         {
@@ -702,6 +740,9 @@ public class WorkspacePilotEditGuardTests
 
     [Theory]
     [InlineData("TryBeginEdit")]
+    [InlineData("TryConfirmBase")]
+    [InlineData("TryKeepMine")]
+    [InlineData("TryDiscardAndReload")]
     [InlineData("GetField")]
     [InlineData("SetPendingText")]
     [InlineData("CommitField")]
@@ -718,6 +759,21 @@ public class WorkspacePilotEditGuardTests
         var mutated = host.Replace(body, body.TrimEnd('}') + "\n tr.Commit(); btr.AppendEntity(e); \n}", StringComparison.Ordinal);
 
         Assert.NotEqual(host, mutated);
+        Assert.NotEmpty(WriteViolations(mutated, Support()));
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    public void TheWriteGuardTripsOnAWriteInEachPublicBodyOfTheExplicitReconciliation(int which)
+    {
+        var host = Host();
+        var body = Src.BodyOf(host, ReconciliationBodies[which]);
+        var mutated = host.Replace(body, body.TrimEnd('}') + "\n var tr = doc.TransactionManager.StartTransaction(); btr.AppendEntity(e); tr.Commit(); \n}", StringComparison.Ordinal);
+
+        Assert.NotEqual(host, mutated);
+        Assert.Empty(WriteViolations(host, Support()));
         Assert.NotEmpty(WriteViolations(mutated, Support()));
     }
 
@@ -813,6 +869,39 @@ public class WorkspacePilotEditGuardTests
 
         Assert.NotEmpty(TrapViolations(Port() + "\n" + injected, Support(), Host()));
         Assert.NotEmpty(TrapViolations(Port(), Support() + "\n" + injected, Host()));
+    }
+
+    [Fact]
+    public void TheNewTypeNamesOfTheReconciliationAvoidTheForbiddenPartsAndTheWordsOfTheDraftsAndAreDeclaredWhereThePackageSaysTheyAre()
+    {
+        var reserved = WordsOf(Src.Files(DraftsFolder).Select(f => f.Code).Append(Src.Code(BrowserSessionPath)));
+        var declared = DeclaredTypeNames(Port()).Concat(DeclaredTypeNames(Src.Code(IntentPath))).ToHashSet(StringComparer.Ordinal);
+
+        foreach (var name in new[] { "EditConfirmOutcome", "EditConfirmStatus", "PilotUnknownOrigin" })
+        {
+            Assert.Contains(name, declared);
+            Assert.Empty(NameViolations(new[] { name }, reserved));
+            Assert.DoesNotContain(name, reserved);
+        }
+
+        Assert.Contains("PilotUnknownOrigin", DeclaredTypeNames(Port()));
+        Assert.Contains("EditConfirmOutcome", DeclaredTypeNames(Src.Code(IntentPath)));
+        // The three of them are values or enums of the workspace namespace and none of them names a type of the drafts or of the pilot.
+        foreach (var type in new[] { typeof(EditConfirmOutcome), typeof(EditConfirmStatus), typeof(PilotUnknownOrigin) })
+            Assert.Equal("RackCad.Application.Workspace", type.Namespace);
+        Assert.True(typeof(EditConfirmOutcome).IsValueType);
+        Assert.NotEmpty(NameViolations(new[] { "DraftConfirmStatus", "EditorConfirm", "TabConfirm" }, reserved));
+    }
+
+    [Fact]
+    public void TheCommentOfThePortSaysThatSixOperationsReadTheDrawing()
+    {
+        var text = Src.Text(PortPath);
+
+        Assert.Contains("only the six operations of the edit intention read the drawing", text, StringComparison.Ordinal);
+        Assert.Contains("while one of the six reads is in progress", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("only the three operations", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("one of the three reads", text, StringComparison.Ordinal);
     }
 
     [Fact]

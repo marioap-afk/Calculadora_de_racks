@@ -27,6 +27,9 @@ namespace RackCad.UI.Tests
         public const string BeginOp = "TryBeginEdit";
         public const string CheckOp = "TryCheckNow";
         public const string ReloadOp = "TryReload";
+        public const string ConfirmBaseOp = "TryConfirmBase";
+        public const string KeepMineOp = "TryKeepMine";
+        public const string DiscardAndReloadOp = "TryDiscardAndReload";
         public const string GetFieldOp = "GetField";
         public const string SetPendingOp = "SetPendingText";
         public const string CommitOp = "CommitField";
@@ -66,6 +69,15 @@ namespace RackCad.UI.Tests
         public Func<EditIntentRequest, EditIntentOutcome>? BeginResponder { get; set; }
 
         public Func<EditIntentRequest, EditIntentOutcome>? ReloadResponder { get; set; }
+
+        /// <summary>I-64 F4-T4A1: what TryConfirmBase answers. Without it the double answers Unavailable and changes nothing.</summary>
+        public Func<EditIntentRequest, EditConfirmOutcome>? ConfirmBaseResponder { get; set; }
+
+        /// <summary>I-64 F4-T4A1: what TryKeepMine answers. Without it the double answers Unavailable and changes nothing.</summary>
+        public Func<EditIntentRequest, EditIntentOutcome>? KeepMineResponder { get; set; }
+
+        /// <summary>I-64 F4-T4A1: what TryDiscardAndReload answers. Without it the double answers Unavailable and changes nothing.</summary>
+        public Func<EditIntentRequest, EditIntentOutcome>? DiscardAndReloadResponder { get; set; }
 
         public Func<WorkspaceRequest, string, string, PilotFieldResult>? SetPendingResponder { get; set; }
 
@@ -176,6 +188,33 @@ namespace RackCad.UI.Tests
             if (!_fields.TryGetValue(key, out var view)) return EditIntentOutcome.NotFound("There is no draft.");
             _fields[key] = View(view.State, view.CommittedText, view.PendingText, view.PendingMessage, false, view.IsProtected, view.CanEdit);
             return EditIntentOutcome.Reloaded(EditWitnessStatus.NotSupplied);
+        }
+
+        public EditConfirmOutcome TryConfirmBase(EditIntentRequest request)
+        {
+            var call = Record(ConfirmBaseOp, request.Session, request.RackId);
+            ReadHook?.Invoke(call);
+            ThrowIfAsked(ConfirmBaseOp);
+            if (ConfirmBaseResponder != null) return ConfirmBaseResponder(request);
+            return EditConfirmOutcome.Unavailable("The double does not confirm.");
+        }
+
+        public EditIntentOutcome TryKeepMine(EditIntentRequest request)
+        {
+            var call = Record(KeepMineOp, request.Session, request.RackId);
+            ReadHook?.Invoke(call);
+            ThrowIfAsked(KeepMineOp);
+            if (KeepMineResponder != null) return KeepMineResponder(request);
+            return EditIntentOutcome.Unavailable("The double does not keep.");
+        }
+
+        public EditIntentOutcome TryDiscardAndReload(EditIntentRequest request)
+        {
+            var call = Record(DiscardAndReloadOp, request.Session, request.RackId);
+            ReadHook?.Invoke(call);
+            ThrowIfAsked(DiscardAndReloadOp);
+            if (DiscardAndReloadResponder != null) return DiscardAndReloadResponder(request);
+            return EditIntentOutcome.Unavailable("The double does not discard and reload.");
         }
 
         public PilotFieldView GetField(WorkspaceRequest origin, string rackId)

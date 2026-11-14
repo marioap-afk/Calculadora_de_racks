@@ -122,6 +122,14 @@ namespace RackCad.Application.Workspace
 
         /// <summary>The draft was replaced from the one read: its stale base, initial state and current state are the new ones.</summary>
         Reloaded,
+
+        // The state below belongs to "keep my draft" (I-64 F4-T4A1, D-T4A1-03). It comes AFTER the ten above, which stay as an ordered prefix.
+
+        /// <summary>
+        /// The draft was kept on the current version, after an explicit confirmation: its stale base and initial state are the new ones and
+        /// its edits and its pending text stay.
+        /// </summary>
+        Kept,
     }
 
     /// <summary>
@@ -187,6 +195,9 @@ namespace RackCad.Application.Workspace
 
         public static EditIntentOutcome Reloaded(EditWitnessStatus witness) =>
             new(EditIntentStatus.Reloaded, witness, null, null, null, null);
+
+        public static EditIntentOutcome Kept(EditWitnessStatus witness) =>
+            new(EditIntentStatus.Kept, witness, null, null, null, null);
 
         private static EditIntentOutcome Without(EditIntentStatus status, string? reason) =>
             new(status, EditWitnessStatus.NotEvaluated, reason, null, null, null);
@@ -266,6 +277,84 @@ namespace RackCad.Application.Workspace
 
         private static EditCheckOutcome Without(EditCheckStatus status, string? reason) =>
             new(status, reason, Array.Empty<string>());
+    }
+
+    public enum EditConfirmStatus
+    {
+        /// <summary>No reader of the edit intention was assigned: nothing was read. It is also the default value.</summary>
+        Unavailable,
+
+        /// <summary>The check waits and nothing was read (no active document, a RackCad modal, a command, a read or a notice in progress), or the draft was being applied.</summary>
+        Waiting,
+
+        /// <summary>The session of the request is not the one of the active document: nothing was read.</summary>
+        Rejected,
+
+        /// <summary>There is no draft for (session, rack): nothing was read.</summary>
+        NotFound,
+
+        /// <summary>The draft is not clean, dirty or in conflict, so it is not checked: nothing was read.</summary>
+        NotApplicable,
+
+        /// <summary>The reread matches the base of the draft. A draft in conflict stays in conflict.</summary>
+        Confirmed,
+
+        /// <summary>The reread differs from the base of the draft: the draft is now in conflict, with the differences.</summary>
+        Conflict,
+
+        /// <summary>A failure of the host during the operation: contained, and the session is not degraded.</summary>
+        Failed,
+    }
+
+    /// <summary>
+    /// I-64 F4-T4A1 (D-T4A1-03) — the answer of the host to the general "check now". A value: the differences are text, so it names no
+    /// draft type and no type of the pilot. The default value is Unavailable, which says that nothing was done.
+    /// </summary>
+    public readonly struct EditConfirmOutcome
+    {
+        private readonly IReadOnlyList<string>? _differences;
+
+        private EditConfirmOutcome(EditConfirmStatus status, string? reason, IReadOnlyList<string> differences, string? admissionDiagnostic)
+        {
+            Status = status;
+            Reason = reason;
+            _differences = differences;
+            AdmissionDiagnostic = admissionDiagnostic;
+        }
+
+        public EditConfirmStatus Status { get; }
+
+        public string? Reason { get; }
+
+        /// <summary>What differs, as "key:kind" lines; empty unless the status is Conflict. Never null, also for a default value.</summary>
+        public IReadOnlyList<string> Differences => _differences ?? Array.Empty<string>();
+
+        /// <summary>The diagnostic of the admission of the read; set only for a Confirmed whose read was not admitted, null otherwise.</summary>
+        public string? AdmissionDiagnostic { get; }
+
+        public static EditConfirmOutcome Unavailable(string reason) => Without(EditConfirmStatus.Unavailable, reason);
+
+        public static EditConfirmOutcome Waiting(string reason) => Without(EditConfirmStatus.Waiting, reason);
+
+        public static EditConfirmOutcome Rejected(string reason) => Without(EditConfirmStatus.Rejected, reason);
+
+        public static EditConfirmOutcome NotFound(string reason) => Without(EditConfirmStatus.NotFound, reason);
+
+        public static EditConfirmOutcome NotApplicable(string reason) => Without(EditConfirmStatus.NotApplicable, reason);
+
+        public static EditConfirmOutcome Confirmed(string? admissionDiagnostic = null) =>
+            new(EditConfirmStatus.Confirmed, null, Array.Empty<string>(), admissionDiagnostic);
+
+        public static EditConfirmOutcome Conflict(IReadOnlyList<string> differences)
+        {
+            if (differences == null) throw new ArgumentNullException(nameof(differences));
+            return new EditConfirmOutcome(EditConfirmStatus.Conflict, null, differences, null);
+        }
+
+        public static EditConfirmOutcome Failed(string reason) => Without(EditConfirmStatus.Failed, reason);
+
+        private static EditConfirmOutcome Without(EditConfirmStatus status, string? reason) =>
+            new(status, reason, Array.Empty<string>(), null);
     }
 
     /// <summary>

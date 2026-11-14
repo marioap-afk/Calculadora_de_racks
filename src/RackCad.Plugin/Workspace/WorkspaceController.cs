@@ -290,6 +290,12 @@ namespace RackCad.Plugin.Workspace
 
             public EditIntentOutcome TryReload(EditIntentRequest request) => _gate.TryReload(request);
 
+            public EditConfirmOutcome TryConfirmBase(EditIntentRequest request) => _gate.TryConfirmBase(request);
+
+            public EditIntentOutcome TryKeepMine(EditIntentRequest request) => _gate.TryKeepMine(request);
+
+            public EditIntentOutcome TryDiscardAndReload(EditIntentRequest request) => _gate.TryDiscardAndReload(request);
+
             public PilotFieldView GetField(WorkspaceRequest origin, string rackId) => _gate.GetField(origin, rackId);
 
             public PilotFieldResult SetPendingText(WorkspaceRequest origin, string rackId, string text) =>

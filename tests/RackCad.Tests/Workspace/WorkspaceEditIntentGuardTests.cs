@@ -48,6 +48,13 @@ public class WorkspaceEditIntentGuardTests
 
     private static string CheckBody() => Src.BodyOf(Core(), @"public\s+EditCheckOutcome\s+TryCheckPilotEdit\s*\(");
 
+    // I-64 F4-T4A1 (D-T4A1-03): the three bodies of the explicit reconciliation of the host.
+    private static string ConfirmBody() => Src.BodyOf(Core(), @"public\s+EditConfirmOutcome\s+TryConfirmPilotBase\s*\(");
+
+    private static string KeepBody() => Src.BodyOf(Core(), @"public\s+EditIntentOutcome\s+TryKeepPilotEdit\s*\(");
+
+    private static string DiscardAndReloadBody() => Src.BodyOf(Core(), @"public\s+EditIntentOutcome\s+TryDiscardAndReloadPilotEdit\s*\(");
+
     private static int IndexOf(string text, string needle) => text.IndexOf(needle, StringComparison.Ordinal);
 
     private static void AssertInOrder(string text, params string[] needles)
@@ -575,7 +582,7 @@ public class WorkspaceEditIntentGuardTests
     [Fact]
     public void EveryExceptionOfAnOperationIsContainedAsFailedWithoutDegradingTheSession()
     {
-        foreach (var body in new[] { IntentBody(), CheckBody() })
+        foreach (var body in new[] { IntentBody(), CheckBody(), ConfirmBody(), KeepBody(), DiscardAndReloadBody() })
         {
             Assert.Matches(@"catch\s*\(\s*Exception\s+ex\s*\)", body);
             Assert.Contains("Report(", body);
@@ -594,20 +601,20 @@ public class WorkspaceEditIntentGuardTests
         // Only the names of this task are prohibited in the drain and the idle (the operations, their reader, the gate and the
         // read); what F4-T2B2B does with the drafts in the drain is not decided here.
         var drain = Src.BodyOf(Core(), @"public\s+void\s+OnDrained\s*\(\s*DrainOutcome\s+\w+\s*\)");
-        Assert.DoesNotMatch(new Regex(@"TryBeginPilotEdit|TryCheckPilotEdit|_editIntentReader|ReadIntent|PassGate"), drain);
+        Assert.DoesNotMatch(new Regex(@"TryBeginPilotEdit|TryCheckPilotEdit|TryConfirmPilotBase|TryKeepPilotEdit|TryDiscardAndReloadPilotEdit|_editIntentReader|ReadIntent|PassGate"), drain);
         Assert.Contains("_reader.Read(", drain);
 
         var idleOfTheCore = Src.BodyOf(Src.Code(BridgeCorePath), @"public\s+IReadOnlyList<DrainOutcome>\s+OnIdle\s*\(\s*\)");
-        Assert.DoesNotMatch(new Regex(@"TryBeginPilotEdit|TryCheckPilotEdit|_editIntentReader|ReadIntent|PassGate|RackPilotIntentAdapter"), idleOfTheCore);
+        Assert.DoesNotMatch(new Regex(@"TryBeginPilotEdit|TryCheckPilotEdit|TryConfirmPilotBase|TryKeepPilotEdit|TryDiscardAndReloadPilotEdit|_editIntentReader|ReadIntent|PassGate|RackPilotIntentAdapter"), idleOfTheCore);
         var idleOfTheBridge = Src.BodyOf(Src.Code(BridgePath), @"private\s+void\s+OnIdle\s*\(\s*\)");
-        Assert.DoesNotMatch(new Regex(@"TryBeginPilotEdit|TryCheckPilotEdit|_editIntentReader|ReadIntent|PassGate|RackPilotIntentAdapter"), idleOfTheBridge);
+        Assert.DoesNotMatch(new Regex(@"TryBeginPilotEdit|TryCheckPilotEdit|TryConfirmPilotBase|TryKeepPilotEdit|TryDiscardAndReloadPilotEdit|_editIntentReader|ReadIntent|PassGate|RackPilotIntentAdapter"), idleOfTheBridge);
 
         var hostDrain = Src.BodyOf(Host(), @"public\s+void\s+OnDrained\s*\(\s*DrainOutcome\s+\w+\s*\)");
         Assert.DoesNotMatch(new Regex(@"EditIntent|ReadIntent|RackPilotIntentAdapter|_targets"), hostDrain);
 
         var controller = Src.Code(ControllerPath);
         var controllerDrain = Src.BodyOf(controller, @"private\s+void\s+OnDrained\s*\(\s*DrainOutcome\s+\w+\s*\)");
-        Assert.DoesNotMatch(new Regex(@"EditIntent|ReadIntent|SetEditIntentReader|TryBeginPilotEdit|TryCheckPilotEdit"), controllerDrain);
+        Assert.DoesNotMatch(new Regex(@"EditIntent|ReadIntent|SetEditIntentReader|TryBeginPilotEdit|TryCheckPilotEdit|TryConfirmPilotBase|TryKeepPilotEdit|TryDiscardAndReloadPilotEdit"), controllerDrain);
 
         // The callers of the nested reader are in the host core. Who calls the two operations is not fixed here: the drain and the idle
         // do not (above); since F4-T3A the edit port of the pilot exposes them to the UI, and since F4-T3B1 the panel calls that port.
@@ -620,9 +627,12 @@ public class WorkspaceEditIntentGuardTests
     [InlineData("var again = TryBeginPilotEdit(request);")]
     [InlineData("_editIntentReader.ReadIntent(session, rackId, null, null);")]
     [InlineData("var gate = PassGate(session, out var reason);")]
+    [InlineData("var confirmed = TryConfirmPilotBase(request);")]
+    [InlineData("var kept = TryKeepPilotEdit(request);")]
+    [InlineData("var reloaded = TryDiscardAndReloadPilotEdit(request);")]
     public void TheDrainGuardDetectsACallOfTheIntentionInTheRealTextOfTheDrainOfTheHostCore(string injected)
     {
-        var pattern = new Regex(@"TryBeginPilotEdit|TryCheckPilotEdit|_editIntentReader|ReadIntent|PassGate");
+        var pattern = new Regex(@"TryBeginPilotEdit|TryCheckPilotEdit|TryConfirmPilotBase|TryKeepPilotEdit|TryDiscardAndReloadPilotEdit|_editIntentReader|ReadIntent|PassGate");
         var drain = Src.BodyOf(Core(), @"public\s+void\s+OnDrained\s*\(\s*DrainOutcome\s+\w+\s*\)");
 
         Assert.DoesNotMatch(pattern, drain);
@@ -634,10 +644,19 @@ public class WorkspaceEditIntentGuardTests
     // The ways to use the base or the read of a result of the pilot: the base, the initial state, the read itself and its entries.
     private static readonly Regex BaseOrReadUse = new(@"\.StaleBase\b|\.InitialState\b|\b(?:pilot|result)\.Read\b|\.Entries\b");
 
-    // The three consumers that the obligation allows: the registry (Begin), the draft (CheckNow) and the reload of F4-T2B2B.
-    private static readonly Regex AllowedConsumers = new(@"\.(?:Begin|DiscardAndReload)\s*\([^;]*\)\s*;|\.CheckNow\s*\([^;]*\)\s*;");
+    // The consumers that the obligation allows: the registry (Begin), the draft (CheckNow), the reload of F4-T2B2B and, since F4-T4A1
+    // (D-T4A1-07), the general check (ConfirmBase) and the atomic keep (KeepMineOnCurrentVersion).
+    private static readonly Regex AllowedConsumers = new(@"\.(?:Begin|DiscardAndReload|ConfirmBase|KeepMineOnCurrentVersion)\s*\([^;]*\)\s*;|\.CheckNow\s*\([^;]*\)\s*;");
 
-    private static string WithoutTheAllowedConsumers(string code) => AllowedConsumers.Replace(code, string.Empty);
+    // The ONE other use of a read that the obligation allows, since F4-T4A1 (M-5): the diagnostic of the admission of a confirmed check, read
+    // as pilot.Read.IsAdmitted and pilot.Read.Admission.Diagnostic and nothing else of the read. It is explicit and it is counted per
+    // operation (only the body of the general check has it); no alias and no renamed variable stands for it.
+    private const string AdmissionDiagnosticPattern = @"\bpilot\.Read\.IsAdmitted\s*\?\s*null\s*:\s*pilot\.Read\.Admission\.Diagnostic\b";
+
+    private static readonly Regex AllowedAdmissionDiagnostic = new(AdmissionDiagnosticPattern);
+
+    private static string WithoutTheAllowedConsumers(string code) =>
+        AllowedAdmissionDiagnostic.Replace(AllowedConsumers.Replace(code, string.Empty), string.Empty);
 
     [Fact]
     public void TheBaseOfAResultOfThePilotOnlyReachesBeginCheckNowOrDiscardAndReloadInTheHostCoreAndTheTwoOperationsCountTheirOwnUses()
@@ -662,12 +681,103 @@ public class WorkspaceEditIntentGuardTests
         Assert.Equal(0, Src.Count(check, @"\bpilot\.Read\b|\.Begin\s*\("));
     }
 
+    [Fact]
+    public void ThePerOperationCountsOfTheBaseAndOfTheReadInTheThreeBodiesOfTheReconciliationAreTheirOwnConsumer()
+    {
+        var confirm = ConfirmBody();
+        Assert.Equal(1, Src.Count(confirm, @"\.StaleBase\b"));
+        Assert.Matches(@"\.ConfirmBase\s*\(\s*\w+\.StaleBase\s*\)", confirm);
+        Assert.Equal(0, Src.Count(confirm, @"\.Begin\s*\(|\.CheckNow\s*\("));
+        // The one use of the read in the general check is the diagnostic of the admission of a confirmed check (M-5), and it is counted:
+        // the read is named exactly twice in the body (IsAdmitted and Admission.Diagnostic), both inside that one explicit expression.
+        Assert.Equal(1, Src.Count(confirm, AdmissionDiagnosticPattern));
+        Assert.Equal(2, Src.Count(confirm, @"\bpilot\.Read\b"));
+        Assert.Equal(0, Src.Count(WithoutTheAllowedConsumers(confirm), @"\bpilot\.Read\b"));
+        foreach (var other in new[] { IntentBody(), CheckBody(), KeepBody(), DiscardAndReloadBody() })
+            Assert.Equal(0, Src.Count(other, AdmissionDiagnosticPattern));
+
+        var keep = KeepBody();
+        Assert.Equal(1, Src.Count(keep, @"\bpilot\.Read\b"));
+        Assert.Matches(@"\.KeepMineOnCurrentVersion\s*\(\s*pilot\.Read\s*,\s*PushBackPilotMaterializer\.KeepPilotEditsOn\s*,\s*confirmed\s*:\s*true\s*\)", keep);
+        Assert.Equal(0, Src.Count(keep, @"\.StaleBase\b|\.InitialState\b|\.Begin\s*\("));
+
+        var discard = DiscardAndReloadBody();
+        Assert.Equal(1, Src.Count(discard, @"\bpilot\.Read\b"));
+        Assert.Matches(@"\.DiscardAndReload\s*\(\s*pilot\.Read\s*\)", discard);
+        Assert.Equal(0, Src.Count(discard, @"\.StaleBase\b|\.InitialState\b|\.Begin\s*\("));
+
+        // The host never names the initial state of a draft: the keep gets it through the draft and the function of the pilot.
+        Assert.DoesNotMatch(new Regex(@"\.InitialState\b|\.InitialDraftState\b"), Core());
+    }
+
+    // The read of a result of the pilot has ONE name in the host core, "pilot", and it is only ever assigned by one statement. So no alias
+    // or renamed variable can stand for it and escape the guard of the use of the base (F4-T4A1, INV-F4T4A1-04).
+    private static readonly Regex PilotReadAssignment = new(@"var\s+pilot\s*=\s*read\.PilotRead\s*;");
+
+    [Fact]
+    public void TheResultOfThePilotIsOnlyEverNamedPilotInTheHostCoreSoNoAliasEscapesTheGuardOfTheUseOfTheBase()
+    {
+        var core = Core();
+        var withoutTheAssignments = PilotReadAssignment.Replace(core, string.Empty);
+
+        Assert.DoesNotMatch(new Regex(@"\.PilotRead\b"), withoutTheAssignments);
+        // One assignment per operation that reads: the intention, the check, the reload, the general check, the keep and the discard.
+        Assert.Equal(6, PilotReadAssignment.Matches(core).Count);
+        Assert.Equal(6, Src.Count(core, @"\.ReadIntent\s*\("));
+    }
+
+    [Theory]
+    [InlineData("var reread = read.PilotRead;")]
+    [InlineData("return read.PilotRead is { } reread && !reread.Read.IsAdmitted ? reread.Read.Admission.Diagnostic : null;")]
+    [InlineData("var other = pilot; var s = other.StaleBase;")]
+    public void TheAliasGuardDetectsARenamedWayToReachTheReadOrTheBaseInTheRealTextOfTheCore(string injected)
+    {
+        var core = Core();
+        var real = PilotReadAssignment.Replace(core, string.Empty);
+
+        Assert.DoesNotMatch(new Regex(@"\.PilotRead\b"), real);
+        var injectedText = PilotReadAssignment.Replace(core + "\n" + injected, string.Empty);
+        var detected = Regex.IsMatch(injectedText, @"\.PilotRead\b") || Regex.IsMatch(WithoutTheAllowedConsumers(injectedText), BaseOrReadUse.ToString());
+        Assert.True(detected, injected);
+    }
+
+    [Fact]
+    public void TheThreeBodiesOfTheReconciliationFollowTheStepsOfTheCheckAndTheReloadWithTheApplicabilityBeforeTheOneRead()
+    {
+        var confirm = ConfirmBody();
+        var keep = KeepBody();
+        var discard = DiscardAndReloadBody();
+
+        AssertInOrder(confirm, "string.IsNullOrWhiteSpace(request.RackId)", "HasWitnessWithoutKey(request)", "PassGate(", "_drafts.Find<", "NotCheckableReason", "_editIntentReader!.ReadIntent(", ".ConfirmBase(");
+        AssertInOrder(keep, "string.IsNullOrWhiteSpace(request.RackId)", "HasWitnessWithoutKey(request)", "PassGate(", "_drafts.Find<", "DraftStatus.Applying", "NotKeepableReason", "_editIntentReader!.ReadIntent(", ".KeepMineOnCurrentVersion(");
+        AssertInOrder(discard, "string.IsNullOrWhiteSpace(request.RackId)", "HasWitnessWithoutKey(request)", "PassGate(", "_drafts.Find<", "DraftStatus.Applying", "_editIntentReader!.ReadIntent(", ".DiscardAndReload(");
+        foreach (var body in new[] { confirm, keep, discard })
+        {
+            Assert.Equal(1, Src.Count(body, @"\.ReadIntent\s*\("));
+            Assert.Equal(1, Src.Count(body, @"_editIntentReader\s*[.!]"));
+            // The mark of known clean is removed in the result that changed the draft, never before the read.
+            Assert.True(IndexOf(body, "_knownClean.Remove(") > IndexOf(body, "_editIntentReader!.ReadIntent("));
+        }
+
+        Assert.Equal(1, Src.Count(confirm, @"_knownClean\.Remove\s*\("));
+        Assert.Equal(1, Src.Count(keep, @"_knownClean\.Remove\s*\("));
+        Assert.Equal(1, Src.Count(discard, @"_knownClean\.Remove\s*\("));
+        // The keep is called with the function of the pilot and the confirmation that the gesture already is.
+        Assert.Contains("PushBackPilotMaterializer.KeepPilotEditsOn", keep);
+        Assert.Contains("confirmed: true", keep);
+    }
+
     [Theory]
     [InlineData("var copy = pilot.StaleBase;")]
     [InlineData("var initial = pilot.Read.InitialState;")]
     [InlineData("var state = result.Read;")]
     [InlineData("var text = baseOfRead.Entries;")]
     [InlineData("var kept = _kept = pilot.StaleBase;")]
+    [InlineData("var s = pilot.StaleBase; draft.ConfirmBase(s);")]
+    [InlineData("var r = pilot.Read; draft.KeepMineOnCurrentVersion(r, keepOn, true);")]
+    [InlineData("var d = pilot.Read.Admission.Diagnostic;")]
+    [InlineData("var d = pilot.Read.IsAdmitted ? null : pilot.Read.Admission.Message;")]
+    [InlineData("var a = !pilot.Read.IsAdmitted;")]
     public void TheBaseGuardDetectsAnotherUseOfTheBaseOrOfTheReadInTheRealTextOfTheCore(string injected)
     {
         var real = Core();
@@ -681,7 +791,10 @@ public class WorkspaceEditIntentGuardTests
     [InlineData("draft.DiscardAndReload(reload.Read, pilot.StaleBase);")]
     [InlineData("var check = draft.CheckNow(pilot.StaleBase);")]
     [InlineData("var begun = _drafts.Begin(session, rack, pilot.Read, comparer, copy);")]
-    public void TheBaseGuardAllowsTheThreeConsumersOfTheObligation(string injected)
+    [InlineData("var confirmed = draft.ConfirmBase(pilot.StaleBase);")]
+    [InlineData("var kept = draft.KeepMineOnCurrentVersion(pilot.Read, PushBackPilotMaterializer.KeepPilotEditsOn, confirmed: true);")]
+    [InlineData("return EditConfirmOutcome.Confirmed(pilot.Read.IsAdmitted ? null : pilot.Read.Admission.Diagnostic);")]
+    public void TheBaseGuardAllowsTheConsumersOfTheObligation(string injected)
     {
         Assert.DoesNotMatch(BaseOrReadUse, WithoutTheAllowedConsumers(Core() + "\n" + injected));
     }

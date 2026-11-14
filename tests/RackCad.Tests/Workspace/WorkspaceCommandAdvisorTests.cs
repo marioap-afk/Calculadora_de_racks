@@ -58,6 +58,12 @@ internal sealed class CommandAdvisorPortDouble : IWorkspacePilotEditPort
 
     public EditIntentOutcome TryReload(EditIntentRequest request) => Refuse<EditIntentOutcome>("TryReload", request.Session);
 
+    public EditConfirmOutcome TryConfirmBase(EditIntentRequest request) => Refuse<EditConfirmOutcome>("TryConfirmBase", request.Session);
+
+    public EditIntentOutcome TryKeepMine(EditIntentRequest request) => Refuse<EditIntentOutcome>("TryKeepMine", request.Session);
+
+    public EditIntentOutcome TryDiscardAndReload(EditIntentRequest request) => Refuse<EditIntentOutcome>("TryDiscardAndReload", request.Session);
+
     public PilotFieldView GetField(WorkspaceRequest origin, string rackId) => Refuse<PilotFieldView>("GetField", origin.Origin);
 
     public PilotFieldResult SetPendingText(WorkspaceRequest origin, string rackId, string text) =>
@@ -369,13 +375,11 @@ public class WorkspaceCommandAdvisorTests
         Assert.Equal(1, rig.Port.Count(CommandAdvisorPortDouble.DiscardDocumentOp));
     }
 
-    [Theory]
-    [InlineData("no")]
-    [InlineData("enter")]
-    [InlineData("cancel")]
-    public void AnythingButAYesDiscardsNothing(string kind)
+    [Fact]
+    public void AnythingButAYesDiscardsNothing()
     {
-        // The command line maps No, Enter, Escape and cancel to a false answer: here the three are the same false.
+        // The command line maps No, Enter, Escape and cancel to a false answer: here they are all the same false (C2-M-8). Enter and
+        // Escape themselves are observed in Smoke-2.
         var rig = new CommandRig { Answer = _ => false };
         rig.Port.Risks = _ => Risk(new[] { "R-1" });
 
@@ -388,7 +392,6 @@ public class WorkspaceCommandAdvisorTests
         Assert.Equal(new[] { Q }, rig.Questions.ToArray());
         Assert.Equal(1, rig.Port.Count(CommandAdvisorPortDouble.RisksOp));
         Assert.Equal(0, rig.Port.Count(CommandAdvisorPortDouble.DiscardDocumentOp));
-        Assert.NotNull(kind);
     }
 
     [Fact]
@@ -1123,6 +1126,12 @@ public class WorkspaceCommandAdvisorTests
         public EditCheckOutcome TryCheckNow(EditIntentRequest request) => _calls.TryCheckNow(request);
 
         public EditIntentOutcome TryReload(EditIntentRequest request) => _calls.TryReload(request);
+
+        public EditConfirmOutcome TryConfirmBase(EditIntentRequest request) => _calls.TryConfirmBase(request);
+
+        public EditIntentOutcome TryKeepMine(EditIntentRequest request) => _calls.TryKeepMine(request);
+
+        public EditIntentOutcome TryDiscardAndReload(EditIntentRequest request) => _calls.TryDiscardAndReload(request);
 
         public PilotFieldView GetField(WorkspaceRequest origin, string rackId) => _calls.GetField(origin, rackId);
 

@@ -444,8 +444,9 @@ public class WorkspaceLifecycleGuardTests
 
         Assert.Matches(@"private\s+readonly\s+HashSet<SessionId>\s+_knownClean\s*=\s*new\s*\(\s*\)\s*;", host);
         // Advice (1), destruction (1), intention (1), check (2), reload (1), discard (1), note (1), drain (1): nine is a LOWER bound since
-        // F4-T3A (M-2). A new operation that changes a draft must call NotePilotEdit or remove the mark itself (guard below).
-        Assert.True(Src.Count(host, @"_knownClean\.Remove\s*\(") >= 9);
+        // F4-T3A (M-2). A new operation that changes a draft must call NotePilotEdit or remove the mark itself (guard below). Since F4-T4A1
+        // (D-T4A1-07) the conflict of the general check, the keep and the discard with a reload add three more: twelve.
+        Assert.True(Src.Count(host, @"_knownClean\.Remove\s*\(") >= 12);
 
         var intent = Src.BodyOf(host, @"public\s+EditIntentOutcome\s+TryBeginPilotEdit\s*\(");
         Assert.Equal(1, Src.Count(intent, @"_knownClean"));
@@ -466,9 +467,13 @@ public class WorkspaceLifecycleGuardTests
         @"PilotBoundaryResult\s+IWorkspacePilotEditPort\.CrossBoundary\s*\(",
         @"EditDiscardOutcome\s+IWorkspacePilotEditPort\.DiscardRack\s*\(",
         @"EditDiscardOutcome\s+IWorkspacePilotEditPort\.DiscardDocument\s*\(",
+        // F4-T4A1 (D-T4A1-07): the three public bodies of the explicit reconciliation of the host change a draft too.
+        @"public\s+EditConfirmOutcome\s+TryConfirmPilotBase\s*\(",
+        @"public\s+EditIntentOutcome\s+TryKeepPilotEdit\s*\(",
+        @"public\s+EditIntentOutcome\s+TryDiscardAndReloadPilotEdit\s*\(",
     };
 
-    private static readonly Regex ChangesADraft = new(@"\.SetPendingText\s*\(|\.RemovePendingText\s*\(|\.CrossBoundary\s*\(|\.SetCurrentDraftState\s*\(|\.Discard\w*\s*\(|DiscardPilotEdits\s*\(");
+    private static readonly Regex ChangesADraft = new(@"\.SetPendingText\s*\(|\.RemovePendingText\s*\(|\.CrossBoundary\s*\(|\.SetCurrentDraftState\s*\(|\.Discard\w*\s*\(|DiscardPilotEdits\s*\(|\.KeepMineOnCurrentVersion\s*\(|\.ConfirmBase\s*\(");
 
     private static readonly Regex EndsTheMark = new(@"NotePilotEdit\s*\(|_knownClean\.Remove\s*\(|DiscardPilotEdits\s*\(");
 
@@ -508,6 +513,25 @@ public class WorkspaceLifecycleGuardTests
         }
 
         Assert.True(withoutNote >= 4);
+    }
+
+    [Fact]
+    public void TheMarkGuardRecognizesTheKeepAndTheGeneralCheckAsOperationsThatChangeADraft()
+    {
+        Assert.False(MutationEndsTheMark("{ var c = draft.ConfirmBase(pilot.StaleBase); return c; }"));
+        Assert.False(MutationEndsTheMark("{ var k = draft.KeepMineOnCurrentVersion(pilot.Read, keepOn, confirmed: true); return k; }"));
+        Assert.False(MutationEndsTheMark("{ var r = draft.DiscardAndReload(pilot.Read); return r; }"));
+        Assert.True(MutationEndsTheMark("{ var c = draft.ConfirmBase(pilot.StaleBase); _knownClean.Remove(request.Session); return c; }"));
+        Assert.True(MutationEndsTheMark("{ var k = draft.KeepMineOnCurrentVersion(pilot.Read, keepOn, confirmed: true); _knownClean.Remove(request.Session); return k; }"));
+
+        // The three real bodies change a draft and each one ends the mark in the result that changed it (the lower bound of the removals above).
+        var host = Host();
+        foreach (var signature in PortMutatingOperations.Skip(5))
+        {
+            var body = Src.BodyOf(host, signature);
+            Assert.Matches(ChangesADraft, body);
+            Assert.Matches(@"_knownClean\.Remove\s*\(\s*request\.Session\s*\)", body);
+        }
     }
 
     [Fact]

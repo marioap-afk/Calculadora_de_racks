@@ -146,9 +146,9 @@ namespace RackCad.Application.Workspace
     }
 
     /// <summary>
-    /// I-64 F4-T3A (D-T3-06): the decorator of the port that the panel receives. Inside a notice of the panel the three operations that
-    /// read the drawing answer Waiting without delegating and without reading; everything else is delegated as it is. So a handler of
-    /// a state notice can never start a read, however it is written.
+    /// I-64 F4-T3A (D-T3-06): the decorator of the port that the panel receives. Inside a notice of the panel the operations that
+    /// read the drawing (three since F4-T3A, six since F4-T4A1) answer Waiting without delegating and without reading; everything else
+    /// is delegated as it is. So a handler of a state notice can never start a read, however it is written.
     /// </summary>
     public sealed class WorkspacePilotEditGate : IWorkspacePilotEditPort
     {
@@ -172,6 +172,15 @@ namespace RackCad.Application.Workspace
 
         public EditIntentOutcome TryReload(EditIntentRequest request) =>
             _depth.IsInside ? EditIntentOutcome.Waiting(InsideNoticeReason) : _inner.TryReload(request);
+
+        public EditConfirmOutcome TryConfirmBase(EditIntentRequest request) =>
+            _depth.IsInside ? EditConfirmOutcome.Waiting(InsideNoticeReason) : _inner.TryConfirmBase(request);
+
+        public EditIntentOutcome TryKeepMine(EditIntentRequest request) =>
+            _depth.IsInside ? EditIntentOutcome.Waiting(InsideNoticeReason) : _inner.TryKeepMine(request);
+
+        public EditIntentOutcome TryDiscardAndReload(EditIntentRequest request) =>
+            _depth.IsInside ? EditIntentOutcome.Waiting(InsideNoticeReason) : _inner.TryDiscardAndReload(request);
 
         public PilotFieldView GetField(WorkspaceRequest origin, string rackId) => _inner.GetField(origin, rackId);
 

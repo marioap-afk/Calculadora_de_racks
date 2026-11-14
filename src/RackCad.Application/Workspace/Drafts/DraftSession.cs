@@ -201,6 +201,21 @@ namespace RackCad.Application.Workspace.Drafts
 
     public readonly record struct DraftCheckResult(DraftCheckStatus Status, DraftStatus DraftStatus, IReadOnlyList<DraftDifference> Differences);
 
+    public enum DraftConfirmStatus
+    {
+        /// <summary>The draft is not registered, or it is Applying, Unknown or in Error: nothing changed.</summary>
+        NotApplicable,
+
+        /// <summary>The re-read matches the base of the draft. In Conflict the draft stays in Conflict.</summary>
+        Confirmed,
+
+        /// <summary>The re-read differs: the draft is in Conflict and carries the differences, ordered.</summary>
+        Conflict,
+    }
+
+    /// <summary>The result of <see cref="DraftSession{TState}.ConfirmBase"/>: what happened, the status of the draft afterwards and the differences.</summary>
+    public readonly record struct DraftConfirmResult(DraftConfirmStatus Status, DraftStatus DraftStatus, IReadOnlyList<DraftDifference> Differences);
+
     internal interface IDraftEntry
     {
         SessionId Session { get; }
@@ -442,6 +457,19 @@ namespace RackCad.Application.Workspace.Drafts
             return new DraftReloadResult(DraftReloadStatus.Reloaded, read.Admission);
         }
 
+        /// <summary>
+        /// The atomic form of "keep my draft" (D-T4A1-02): like the overload above, but the current state is REPLACED by what
+        /// <paramref name="keepOn"/> makes of the new initial state and the current one (IC-07 point 2), in the same step. A null
+        /// <paramref name="keepOn"/> throws before anything else. The checks go in the same order as the overload above and, without
+        /// admission, <paramref name="keepOn"/> is never called. Every copy and the call of <paramref name="keepOn"/> are made BEFORE
+        /// anything is assigned, so if one of them throws the draft stays exactly as it was. The pending text stays.
+        /// </summary>
+        public DraftReloadResult KeepMineOnCurrentVersion(DraftIntentRead<TState> read, Func<TState, TState, TState> keepOn, bool confirmed)
+        {
+            // RED skeleton (INV-F4T4A1-13): inert, it never throws and it changes nothing.
+            return new DraftReloadResult(DraftReloadStatus.NotAllowed, read == null ? default : read.Admission);
+        }
+
         /// <summary>Assigns the stale base and the already copied initial state together; nothing here can throw.</summary>
         private void Rebase(DraftIntentRead<TState> read, TState initial)
         {
@@ -586,6 +614,21 @@ namespace RackCad.Application.Workspace.Drafts
             _explicitStatus = DraftStatus.Conflict;
             ConflictDifferences = comparison.Differences;
             return new DraftCheckResult(DraftCheckStatus.Conflict, Status, comparison.Differences);
+        }
+
+        /// <summary>
+        /// The general "check now" (D-12, D-T4A1-01), for a draft that is Clean, Dirty or in Conflict: it compares the base of the draft
+        /// with a re-read, exactly and with no normalization. A match in Clean or Dirty only clears the mark of possibly stale; a
+        /// difference puts the draft in Conflict with the differences, ordered; a match in Conflict says so and the draft STAYS in
+        /// Conflict (it only leaves through a reload or a confirmed keep), and a difference there replaces the differences. It never
+        /// changes the base, the initial or the current state, the pending text, the cause or the warnings, never cleans Dirty, never
+        /// reads the drawing and never takes the slot of the update. Any other state, or a draft that is no longer registered, is
+        /// not applicable and nothing changes.
+        /// </summary>
+        public DraftConfirmResult ConfirmBase(DraftStaleBase reread)
+        {
+            // RED skeleton (INV-F4T4A1-13): inert, it never throws and it changes nothing.
+            return new DraftConfirmResult(DraftConfirmStatus.NotApplicable, Status, Array.Empty<DraftDifference>());
         }
 
         /// <summary>The status the draft had when the current or last attempt began.</summary>

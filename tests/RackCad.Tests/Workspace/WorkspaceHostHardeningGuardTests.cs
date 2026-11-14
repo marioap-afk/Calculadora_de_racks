@@ -358,62 +358,85 @@ public class WorkspaceHostHardeningGuardTests
         Assert.NotEmpty(KnownViolations("class C { }"));
     }
 
-    // ------------------------------------------------------------------ the two additions to the port: the optional ErrorReason and IsKnown, nothing else
+    // ------------------------------------------------------------------ the additions to the port: the optional ErrorReason, IsKnown and (F4-T4A1) three optional values, nothing else
 
+    // I-64 F4-T4A1 (D-T4A1-03): after errorReason, which stays optional, PilotFieldView gains EXACTLY unknownOrigin, conflictText and lastCause, in
+    // that order, each optional and kept by its own read-only property, and it keeps its one constructor.
     private static IEnumerable<string> PortAdditionViolations(string port)
     {
-        if (Count(port, @"string\?\s+errorReason\s*=\s*null\s*\)\s*\{") != 1) yield return "the last parameter of PilotFieldView is not string? errorReason = null";
+        if (Count(port, @"string\?\s+errorReason\s*=\s*null\s*,\s*PilotUnknownOrigin\s+unknownOrigin\s*=\s*PilotUnknownOrigin\.None\s*,\s*string\?\s+conflictText\s*=\s*null\s*,\s*string\?\s+lastCause\s*=\s*null\s*\)\s*\{") != 1)
+            yield return "the last parameters of PilotFieldView are not errorReason, unknownOrigin, conflictText and lastCause, optional and in that order";
         if (Count(port, @"public\s+string\?\s+ErrorReason\s*\{\s*get;\s*\}") != 1) yield return "PilotFieldView has no string? ErrorReason";
+        if (Count(port, @"public\s+PilotUnknownOrigin\s+UnknownOrigin\s*\{\s*get;\s*\}") != 1) yield return "PilotFieldView has no PilotUnknownOrigin UnknownOrigin";
+        if (Count(port, @"public\s+string\?\s+ConflictText\s*\{\s*get;\s*\}") != 1) yield return "PilotFieldView has no string? ConflictText";
+        if (Count(port, @"public\s+string\?\s+LastCause\s*\{\s*get;\s*\}") != 1) yield return "PilotFieldView has no string? LastCause";
         if (Count(port, @"\bErrorReason\s*=\s*errorReason\s*;") != 1) yield return "the constructor of PilotFieldView does not keep errorReason";
+        if (Count(port, @"\bUnknownOrigin\s*=\s*unknownOrigin\s*;") != 1) yield return "the constructor of PilotFieldView does not keep unknownOrigin";
+        if (Count(port, @"\bConflictText\s*=\s*conflictText\s*;") != 1) yield return "the constructor of PilotFieldView does not keep conflictText";
+        if (Count(port, @"\bLastCause\s*=\s*lastCause\s*;") != 1) yield return "the constructor of PilotFieldView does not keep lastCause";
         if (Count(port, @"public\s+PilotFieldView\s*\(") != 1) yield return "PilotFieldView does not have exactly one constructor";
+        if (Count(port, @"public\s+enum\s+PilotUnknownOrigin\s*\{\s*None\s*,\s*CommitThrew\s*,\s*PostReread\s*,?\s*\}") != 1) yield return "PilotUnknownOrigin is not { None, CommitThrew, PostReread }";
     }
 
     private const string GoodField =
-        "public readonly struct PilotFieldView { public PilotFieldView(bool exists, string? pendingMessage, string? errorReason = null) { Exists = exists; ErrorReason = errorReason; } "
-        + "public string? ErrorReason { get; } }";
+        "public enum PilotUnknownOrigin { None, CommitThrew, PostReread, } "
+        + "public readonly struct PilotFieldView { public PilotFieldView(bool exists, string? pendingMessage, string? errorReason = null, PilotUnknownOrigin unknownOrigin = PilotUnknownOrigin.None, string? conflictText = null, string? lastCause = null) "
+        + "{ Exists = exists; ErrorReason = errorReason; UnknownOrigin = unknownOrigin; ConflictText = conflictText; LastCause = lastCause; } "
+        + "public string? ErrorReason { get; } public PilotUnknownOrigin UnknownOrigin { get; } public string? ConflictText { get; } public string? LastCause { get; } }";
 
     [Fact]
-    public void PilotFieldViewGainsOnlyTheLastOptionalErrorReason()
+    public void PilotFieldViewGainsOnlyTheOptionalValuesAfterErrorReasonInTheirOrderAndKeepsOneConstructor()
     {
         Assert.Empty(PortAdditionViolations(Src.Code(PortPath)));
         Assert.Empty(PortAdditionViolations(GoodField));
     }
 
     [Theory]
-    [InlineData("string? errorReason = null)", "string? errorReason)")]
-    [InlineData("string? errorReason = null)", "string errorReason = null)")]
+    [InlineData("string? errorReason = null,", "string? errorReason,")]
+    [InlineData("string? errorReason = null,", "string errorReason = null,")]
+    [InlineData("PilotUnknownOrigin unknownOrigin = PilotUnknownOrigin.None,", "PilotUnknownOrigin unknownOrigin,")]
+    [InlineData("string? conflictText = null, string? lastCause = null)", "string? lastCause = null, string? conflictText = null)")]
+    [InlineData("string? lastCause = null) {", "string? lastCause = null, string? another = null) {")]
+    [InlineData("string? lastCause = null) {", "string? lastCause) {")]
     [InlineData("public string? ErrorReason { get; }", "public string? ErrorReason { get; set; }")]
+    [InlineData("public string? ConflictText { get; }", "public string? ConflictText { get; set; }")]
     [InlineData("ErrorReason = errorReason;", "ErrorReason = null;")]
+    [InlineData("UnknownOrigin = unknownOrigin;", "UnknownOrigin = PilotUnknownOrigin.None;")]
+    [InlineData("ConflictText = conflictText;", "")]
+    [InlineData("LastCause = lastCause;", "LastCause = null;")]
+    [InlineData("None, CommitThrew, PostReread,", "None, CommitThrew,")]
     [InlineData("public readonly struct PilotFieldView {", "public readonly struct PilotFieldView { public PilotFieldView(bool a) { }")]
-    public void TheGuardOfThePortAdditionTripsOnARequiredParameterAMutableOrUnkeptReasonOrASecondConstructor(string from, string to)
+    public void TheGuardOfThePortAdditionTripsOnARequiredParameterAMutableOrUnkeptValueAWrongOrderOrASecondConstructor(string from, string to)
     {
         Assert.Contains(from, GoodField);
 
         Assert.NotEmpty(PortAdditionViolations(GoodField.Replace(from, to, StringComparison.Ordinal)));
     }
 
-    // ------------------------------------------------------------------ H-07: the 28 literals of the port of the pilot are in Spanish
+    // ------------------------------------------------------------------ H-07: the 30 literals of the port of the pilot are in Spanish
 
-    // The table of the package (H-07): the literal in English, its Spanish text and how many times it stands in the host and the support.
+    // The table of the package (H-07, and the two rows A1-01 and A1-02 of F4-T4A1): the literal in English, its Spanish text and how many times it
+    // stands in the host and the support. Since F4-T4A1 the three operations of the reconciliation reuse the texts of the others, and the count of each
+    // one is the EXACT number of its occurrences now (the value before the task is in the comment of each row that changed).
     private static readonly (string English, string Spanish, int Times)[] Table =
     {
         ("A read of the pilot is in progress.", "Hay una lectura del piloto en curso.", 1),
         ("The request does not belong to the active document.", "La petición no es del documento activo.", 6),
         ("There is no draft for the rack.", "No hay borrador para el rack.", 3),
-        ("The preview witness has no key.", "El testigo de la vista previa no tiene clave.", 3),
-        ("The drawing is not ready to be read.", "El dibujo no está listo para leerse.", 3),
+        ("The preview witness has no key.", "El testigo de la vista previa no tiene clave.", 6), // before 3
+        ("The drawing is not ready to be read.", "El dibujo no está listo para leerse.", 6), // before 3
         ("The read of the edit intention failed.", "Falló la lectura de la intención de edición.", 1),
         ("The read of the edit intention carries no result.", "La lectura de la intención de edición no trajo resultado.", 1),
         ("The session was retired.", "La sesión se retiró.", 1),
-        ("A blank rack has no draft.", "Un rack sin identificador no tiene borrador.", 1),
+        ("A blank rack has no draft.", "Un rack sin identificador no tiene borrador.", 2), // before 1
         ("The draft is not unknown after a commit that threw.", "El borrador no quedó desconocido tras una aplicación fallida.", 2),
-        ("The reread failed.", "Falló la relectura.", 1),
-        ("The reread carries no result.", "La relectura no trajo resultado.", 1),
+        ("The reread failed.", "Falló la relectura.", 2), // before 1
+        ("The reread carries no result.", "La relectura no trajo resultado.", 2), // before 1
         ("The draft does not need to be reloaded.", "El borrador no necesita recargarse.", 1),
-        ("The read for the reload failed.", "Falló la lectura para la recarga.", 1),
-        ("The read for the reload carries no result.", "La lectura para la recarga no trajo resultado.", 1),
-        ("The draft is being applied or is no longer registered.", "El borrador se está aplicando o ya no está registrado.", 1),
-        ("The draft was not reloaded.", "El borrador no se recargó.", 1),
+        ("The read for the reload failed.", "Falló la lectura para la recarga.", 3), // before 1
+        ("The read for the reload carries no result.", "La lectura para la recarga no trajo resultado.", 3), // before 1
+        ("The draft is being applied or is no longer registered.", "El borrador se está aplicando o ya no está registrado.", 5), // before 1
+        ("The draft was not reloaded.", "El borrador no se recargó.", 3), // before 1
         ("The state of the field could not be read.", "No se pudo leer el estado del campo.", 1),
         ("The text is required.", "El texto es obligatorio.", 1),
         ("The field cannot be edited now.", "El campo no se puede editar ahora.", 4),
@@ -425,6 +448,9 @@ public class WorkspaceHostHardeningGuardTests
         ("A command is in progress.", "Hay un comando en curso.", 1),
         ("The value is not a finite number greater than zero.", "El valor no es un número finito mayor que cero.", 1),
         ("A notice of the panel is being delivered.", "Se está entregando un aviso del panel.", 1),
+        // The two rows that F4-T4A1 adds (table T-A1 of the package), each one declared as a private constant of the host.
+        ("The draft cannot be checked in its current status.", "El borrador no admite comprobación en su estado actual.", 1),
+        ("Only a draft in conflict or with edits marked as possibly stale is kept.", "Solo se conserva un borrador en conflicto o con cambios marcados como posiblemente obsoletos.", 1),
     };
 
     // The four identifiers that stay (two held by the guards of the port, two by decision) with the Spanish text each one carries.
@@ -444,7 +470,7 @@ public class WorkspaceHostHardeningGuardTests
     private static IEnumerable<string> LiteralViolations(string host, string support)
     {
         var all = host + "\n" + support;
-        if (Table.Length != 28) yield return "the table does not have its 28 literals";
+        if (Table.Length != 30) yield return "the table does not have its 30 literals";
 
         foreach (var (english, spanish, times) in Table)
         {
@@ -463,11 +489,11 @@ public class WorkspaceHostHardeningGuardTests
     }
 
     [Fact]
-    public void NoneOfThe28LiteralsInEnglishStaysInTheHostOrTheSupportAndTheFourIdentifiersAreKept()
+    public void NoneOfThe30LiteralsInEnglishStaysInTheHostOrTheSupportAndTheFourIdentifiersAreKept()
     {
-        Assert.Equal(28, Table.Length);
-        Assert.Equal(28, Table.Select(t => t.English).Distinct().Count());
-        Assert.Equal(28, Table.Select(t => t.Spanish).Distinct().Count());
+        Assert.Equal(30, Table.Length);
+        Assert.Equal(30, Table.Select(t => t.English).Distinct().Count());
+        Assert.Equal(30, Table.Select(t => t.Spanish).Distinct().Count());
 
         Assert.Empty(LiteralViolations(Src.Code(HostPath), Src.Code(SupportPath)));
     }
@@ -487,9 +513,24 @@ public class WorkspaceHostHardeningGuardTests
         // A lost identifier.
         Assert.NotEmpty(LiteralViolations(host.Replace("NoDraftReason", "NoBorradorReason", StringComparison.Ordinal), support));
         Assert.NotEmpty(LiteralViolations(host, support.Replace("InsideNoticeReason", "DentroDelAvisoReason", StringComparison.Ordinal)));
+        // The two new texts: an English original that comes back, and a Spanish text that goes away.
+        Assert.NotEmpty(LiteralViolations(host + " \"The draft cannot be checked in its current status.\"", support));
+        Assert.NotEmpty(LiteralViolations(host + " \"Only a draft in conflict or with edits marked as possibly stale is kept.\"", support));
+        Assert.NotEmpty(LiteralViolations(host.Replace("El borrador no admite comprobación en su estado actual.", "Otra cosa.", StringComparison.Ordinal), support));
+        Assert.NotEmpty(LiteralViolations(host.Replace("Solo se conserva un borrador en conflicto", "Se conserva un borrador en conflicto", StringComparison.Ordinal), support));
+        // A reused text that one operation of the reconciliation stops using changes its exact count.
+        Assert.NotEmpty(LiteralViolations(host.Replace("\"El testigo de la vista previa no tiene clave.\"", "\"Otro.\"", StringComparison.Ordinal), support));
         // The text of the record or of the differences changes.
         Assert.NotEmpty(LiteralViolations(host.Replace("(variable registry)", "(registro de variables)", StringComparison.Ordinal), support));
         Assert.NotEmpty(LiteralViolations(host.Replace("Uncertain racks", "Racks inciertos", StringComparison.Ordinal), support));
+    }
+
+    [Fact]
+    public void TheTwoNewTextsOfTheTableCarryNoSubstringThatTheGuardsOfThePortForbid()
+    {
+        Assert.DoesNotMatch(ForbiddenSubstrings, "El borrador no admite comprobación en su estado actual.");
+        Assert.DoesNotMatch(ForbiddenSubstrings, "Solo se conserva un borrador en conflicto o con cambios marcados como posiblemente obsoletos.");
+        Assert.All(Table, row => Assert.DoesNotMatch(ForbiddenSubstrings, row.Spanish));
     }
 
     [Theory]
@@ -500,6 +541,62 @@ public class WorkspaceHostHardeningGuardTests
     public void TheForbiddenSubstringsOfThePortTripOnASpanishTextThatCarriesOne(string text)
     {
         Assert.Matches(ForbiddenSubstrings, text);
+    }
+
+    // ------------------------------------------------------------------ R-3 (D-T4A1-06): the reason of the error only travels in the state Error
+
+    // The body of ViewOfPilotDraft reads the reason of the draft in ONE place, and there only under the condition that the state is Error; the
+    // constructor receives that value. A second reading, or one under another condition, would show a reason of the Error in another state.
+    private const string ViewSignature = @"private\s+static\s+PilotFieldView\s+ViewOfPilotDraft\s*\(";
+
+    private static IEnumerable<string> ErrorReasonViolations(string host)
+    {
+        var body = BodyOrNull(host, ViewSignature);
+        if (body == null)
+        {
+            yield return "ViewOfPilotDraft does not exist";
+            yield break;
+        }
+
+        var reads = Count(body, @"\.ErrorReason\b");
+        if (reads != 1) yield return "ViewOfPilotDraft reads ErrorReason " + reads + " times; it must read it exactly once";
+        if (Count(body, @"\bvar\s+errorReason\s*=\s*state\s*==\s*PilotFieldState\.Error\s*\?\s*draft\.ErrorReason\s*:\s*null\s*;") != 1)
+            yield return "the reason is not read under the condition that the state is Error, and null otherwise";
+        if (Count(body, @"\bnew\s+PilotFieldView\s*\([^;]*\berrorReason\b[^;]*\)\s*;") != 1) yield return "the view is not built with errorReason";
+        if (Regex.IsMatch(body, @"state\s*(?:!=|==)\s*PilotFieldState\.(?!Error\b)\w+\s*\?\s*draft\.ErrorReason")) yield return "the reason is read under another state";
+    }
+
+    private const string GoodView =
+        "private static PilotFieldView ViewOfPilotDraft(DraftSession<PushBackPilotDraftState> draft) { var state = StateOfDraft(draft.Status); "
+        + "var errorReason = state == PilotFieldState.Error ? draft.ErrorReason : null; "
+        + "return new PilotFieldView(true, state, draft.IsPossiblyStale, isProtected, canEdit, committed, reason, pending, message, errorReason); }";
+
+    [Fact]
+    public void TheViewOfADraftReadsTheReasonOfTheErrorOnlyUnderTheStateErrorAndPassesItAsErrorReason()
+    {
+        Assert.Empty(ErrorReasonViolations(Src.Code(HostPath)));
+        Assert.Empty(ErrorReasonViolations(GoodView));
+    }
+
+    [Theory]
+    [InlineData("var errorReason = state == PilotFieldState.Error ? draft.ErrorReason : null;", "var errorReason = draft.ErrorReason;")]
+    [InlineData("var errorReason = state == PilotFieldState.Error ? draft.ErrorReason : null;", "var errorReason = state != PilotFieldState.Error ? draft.ErrorReason : null;")]
+    [InlineData("var errorReason = state == PilotFieldState.Error ? draft.ErrorReason : null;", "var errorReason = state == PilotFieldState.Conflict ? draft.ErrorReason : null;")]
+    [InlineData("var errorReason = state == PilotFieldState.Error ? draft.ErrorReason : null;", "var errorReason = state == PilotFieldState.Error ? draft.ErrorReason : draft.ErrorReason;")]
+    [InlineData("message, errorReason); }", "message, draft.ErrorReason); }")]
+    [InlineData("message, errorReason); }", "message, null); }")]
+    [InlineData("return new PilotFieldView(", "var again = draft.ErrorReason; return new PilotFieldView(")]
+    public void TheGuardOfTheReasonOfTheErrorTripsOnAReadWithoutTheConditionUnderAnotherStateOrASecondRead(string from, string to)
+    {
+        Assert.Contains(from, GoodView);
+
+        Assert.NotEmpty(ErrorReasonViolations(GoodView.Replace(from, to, StringComparison.Ordinal)));
+    }
+
+    [Fact]
+    public void TheGuardOfTheReasonOfTheErrorTripsWhenTheMemberIsMissing()
+    {
+        Assert.NotEmpty(ErrorReasonViolations("class C { }"));
     }
 
     // ------------------------------------------------------------------ the UI: consumers of the unknown, M-1, M-2 and M-3

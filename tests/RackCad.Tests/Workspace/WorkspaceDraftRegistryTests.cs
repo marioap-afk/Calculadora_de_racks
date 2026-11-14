@@ -118,7 +118,7 @@ public class WorkspaceDraftRegistryTests
     }
 
     [Fact]
-    public void NoOperationOfTheCoreButTheReadFactoryAndCheckNowTakesAStaleBaseAlone()
+    public void NoOperationOfTheCoreButTheReadFactoryCheckNowAndConfirmBaseTakesAStaleBaseAlone()
     {
         var types = typeof(DraftRegistry).Assembly.GetTypes().Where(t => t.Namespace == "RackCad.Application.Workspace.Drafts" && t.IsPublic).ToArray();
 
@@ -127,11 +127,13 @@ public class WorkspaceDraftRegistryTests
             .Select(m => m.Name).OrderBy(n => n, StringComparer.Ordinal).ToArray();
         Assert.Equal(new[] { "Admitted", "NotAdmitted" }, readFactories);
 
-        // The base alone is never accepted by an operation that creates, replaces or reloads a draft.
+        // The base alone is never accepted by an operation that creates, replaces or reloads a draft. CheckNow and, since F4-T4A1
+        // (D-T4A1-01), ConfirmBase are the only exceptions, and they are exempt by name: each one only COMPARES the base of a draft with a
+        // re-read, and neither creates, replaces nor reloads a draft.
         foreach (var type in types)
             foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly))
             {
-                if (type == typeof(DraftStaleBase) || method.Name == "CheckNow") continue;
+                if (type == typeof(DraftStaleBase) || method.Name == "CheckNow" || method.Name == "ConfirmBase") continue;
                 Assert.DoesNotContain(method.GetParameters(), p => p.ParameterType == typeof(DraftStaleBase) && method.Name != "Admitted");
             }
 
