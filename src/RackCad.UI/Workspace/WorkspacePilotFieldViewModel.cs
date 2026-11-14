@@ -679,6 +679,9 @@ namespace RackCad.UI.Workspace
             }
 
             Render();
+            // The memory of the port could not be read again: the field stays in its Error and the answer is not presented against the old view.
+            if (_failure != null) return;
+
             _noticeText = ConfirmNoticeOf(outcome);
             RaiseAll();
             _changed?.Invoke();
@@ -715,6 +718,9 @@ namespace RackCad.UI.Workspace
             }
 
             Render();
+            // The memory of the port could not be read again: the field stays in its Error and the answer is not presented against the old view.
+            if (_failure != null) return;
+
             _noticeText = CheckNoticeOf(outcome);
             RaiseAll();
             _changed?.Invoke();
@@ -736,29 +742,34 @@ namespace RackCad.UI.Workspace
         // The answer of the operation that was chosen. A reload or a keep that does not match the choice is never presented as done.
         private void PresentChoice(ChoiceKind kind, EditIntentOutcome outcome)
         {
+            string notice;
             switch (outcome.Status)
             {
                 case EditIntentStatus.Reloaded when kind == ChoiceKind.DiscardAndReload:
                     _persistDiagnostic = null;
                     _persistHint = null;
-                    _noticeText = ReloadedText;
+                    notice = ReloadedText;
                     break;
                 case EditIntentStatus.Kept when kind == ChoiceKind.KeepMine:
                     _persistDiagnostic = null;
                     _persistHint = null;
-                    _noticeText = KeptText;
+                    notice = KeptText;
                     break;
                 case EditIntentStatus.NotAdmitted:
                     _persistDiagnostic = outcome.Diagnostic ?? string.Empty;
                     _persistHint = outcome.ClassicEditorHint ?? string.Empty;
-                    _noticeText = NotAppliedChoiceText;
+                    notice = NotAppliedChoiceText;
                     break;
                 default:
-                    _noticeText = ChoicePrefixOf(outcome.Status) + DetailOf(outcome.Reason) + NothingDoneSuffix;
+                    notice = ChoicePrefixOf(outcome.Status) + DetailOf(outcome.Reason) + NothingDoneSuffix;
                     break;
             }
 
             Render();
+            // The memory of the port could not be read again: the field stays in its Error and the answer is not presented as done.
+            if (_failure != null) return;
+
+            _noticeText = notice;
             RaiseAll();
             _changed?.Invoke();
         }
