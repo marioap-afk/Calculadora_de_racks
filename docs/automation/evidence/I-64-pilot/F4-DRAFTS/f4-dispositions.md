@@ -2006,3 +2006,40 @@ La mutación authored no empieza sin su contrato. Smoke-2 sigue pendiente de Aut
 **Siguiente:** emitir y ejecutar F4-T1B v5.
 
 **Límites:** sin AutoCAD; este paso es solo documentación y evidencia.
+
+## F4-E58. Autorización de F4-T1B v5 (emisión y ejecución) y emisión de F4-T1B-PILOT-CHARACTERIZATION
+
+**Origen:** la autorización del Owner y del Coordinator «F4-T1B v5 OWNER / COORDINATOR AUTHORIZATION» (`F4-DRAFTS/coordinator/owner-f4t1b-authorization.md`, texto pegado literal), dada sobre la rama en `a332df7a` y `main` en `812baf87`.
+
+**Lo que autoriza:**
+- F4-T4A queda COMPLETA: F4-T4A1 y F4-T4A2 están CLOSED / PASS WITH LIMITATIONS.
+- **EMISIÓN + EJECUCIÓN** de F4-T1B con el paquete v5 y `attempts` 1 de 3.
+- T1B es caracterización: congela el comportamiento observable actual del editor clásico de Push Back antes de que T4B y T4C dependan de sus costuras de escritura. No lo rediseña ni lo limpia.
+
+**Lo que fija (vinculante):**
+- **El RED** lleva las pruebas definitivas y SOLO las mutaciones temporales del producto enumeradas en la tabla de la v5. **La tabla es CERRADA:** cualquier otra mutación es STOP, y el Worker no inventa un mutante porque una prueba no falle.
+- **El GREEN** revierte todas las mutaciones y conserva las pruebas. **Condición dura:** en cada archivo de producto mutado en el RED, los bytes del GREEN son iguales a los de la BaseSha; no se admite ningún cambio residual de producto.
+- **No se corrige nada durante T1B:** Enter, Escape y el cierre, el foco, la tabulación, «Insertar varias» siempre habilitado, las rarezas de confirmar y cancelar, el cierre del configurador de cabeceras, los dueños actuales de los subdiálogos ni ninguna otra rareza caracterizada. Todo eso se registra como deuda.
+- **La contención de la v5:** el configurador de cabeceras real no se instancia en la CI si escribe en el `%LOCALAPPDATA%` real. Ese comportamiento lo cubren una guarda de fuente, la caracterización del contrato que lo rodea y una limitación declarada. No se cambia producto solo para hacerlo redirigible.
+- **Tres clases de escritura**, que no se confunden: (A) las de la propia ventana o editor; (B) la intención que la ventana solo expone y otro consume después; (C) las escrituras reales del DWG que hace el Plugin después de cerrar la ventana. Una escritura del Plugin no se caracteriza como de la ventana. T1B no necesita ninguna mutación real de AutoCAD; lo que ocurre en el Plugin tras el cierre se fija con guardas y pruebas, y el comportamiento físico se valida en Smoke-2.
+- **Se caracteriza lo real:** la UX no se deduce de los valores por defecto de WPF. Donde la prueba puede ejercer WPF real sin UI modal incontrolada, lo hace; donde no, guarda de fuente o estructural y limitación declarada.
+- **Ninguna prueba de caracterización puede** quedarse esperando un diálogo real, dejar vivo un dispatcher o un modal, escribir datos reales del perfil del usuario, necesitar AutoCAD ni depender de rutas propias de la máquina. Cualquiera de esas conductas es STOP.
+- **El contrato define los fallos esperados por mutante**, no solo un recuento total. Para cada mutación del RED hay que demostrar que la caracterización la detecta; un mutante sin prueba que lo discrimine es un defecto del contrato y STOP.
+- **Evidencia exigida:** las pruebas permanentes añadidas, cada mutación revertida, los bytes finales del producto iguales a la BaseSha y solo pruebas y documentación autorizadas cambiadas. Esa prueba de identidad es central para el cierre de T1B.
+- **La cadena:** fidelidad de la planificación; A1-A8; nc4 en la primera delegación; Worker RED/GREEN; CI del SHA exacto; revisión directa; revisión adversarial independiente; verificación del Controller; nc1/nc2/nc3; custodia. **La verificación 14/14 del Controller sola no basta.**
+- **Si T1B cierra:** el comportamiento caracterizado del editor clásico pasa a ser la línea base de compatibilidad de T4B y T4C, sin que eso apruebe sus rarezas.
+- **Después de cerrar T1B:** se vuelve al paquete v3 de F4-T4B, se repiten su validación y su revisión contra la rama posterior a T1B, se incorporan los hallazgos de T1B a sus supuestos y solo entonces se puede emitir T4B.
+- **Sigue vigente la decisión anterior del Owner:** la vía de escritura PROPIA DEL PILOTO. Application orquesta y clasifica; el Plugin expone primitivas de AutoCAD con ámbito de ejecución; T4B es dueño de la semántica de mutación; T4C, después, del contexto de orden y del `DocumentLock`. No se vuelve a la costura gruesa de I-55 porque T1B caracterice el camino heredado.
+- **Estados:** F4-T4A COMPLETA; F4-T1B AUTORIZADA PARA EMISIÓN, 1 de 3; F4-T4B ESPERA EL CIERRE DE T1B; F4-T4C ESPERA; Smoke-2 OBLIGATORIO; F5-F7 PENDIENTES.
+
+**Cómo lo aplica la sesión al emitir:**
+- **Paquete:** `docs/initiatives/I-64-f4-t1b-gate-contract-package.md` v5, el borrador custodiado en `F4-DRAFTS/t1b/` (`a332df7a`). Solo cambia su párrafo de estado, que pasa a decir que está emitido.
+- **Base:** entre `c3ae1c97`, la base medida del paquete, y la emisión no cambia nada en `src/` ni en `tests/`. Lo comprueba el script de emisión, así que los hechos del §2 y la clausura del §3 siguen valiendo.
+- **Contrato** (`I-64-pilot/F4-T1B-PILOT-CHARACTERIZATION/coordinator/gate-contract.json`):
+  - `AllowedWriteScope` de 21 rutas: los siete archivos nuevos de prueba y los 14 de `MutantScope`, que el RED muta y el GREEN revierte, con neto cero;
+  - los invariantes INV-F4T1B-01 a INV-F4T1B-13 con la numeración del §6 del paquete;
+  - **tres invariantes nuevos por la autorización:** INV-F4T1B-14, la tabla CERRADA, con las pruebas que tienen que fallar con cada mutante; INV-F4T1B-15, la prueba por mutante, con cada mutante solo sobre la BaseSha; e INV-F4T1B-16, las tres clases de escritura;
+  - la contención y la prueba de limpieza en INV-F4T1B-06;
+  - **dos paradas nuevas:** F4T1B-C09 (cuelgue, modal vivo, escritura del perfil, AutoCAD o rutas de la máquina) y F4T1B-C10 (un mutante de la tabla sin prueba que lo discrimine);
+  - los dos filtros `PushBackClassicCharacterization`, Core con `MinSelected` 4 y UI con 22, los dos con `ExpectRed` true.
+- **La cadena:** la de F4-T4A2, con la planificación del Controller `gpt-6-luna`/high, el Worker Sonnet/high y nc4 en la primera delegación. La sesión comprueba además en el relevo del trabajo, con git, la identidad de bytes de cada archivo mutado.

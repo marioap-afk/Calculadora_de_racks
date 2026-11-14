@@ -7137,3 +7137,28 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **Resultado:** F4-T4A2 **CLOSED / PASS WITH LIMITATIONS**, intentos 2 de 3. F4-T4A queda completa.
 
 **Límites:** solo documentación; sin AutoCAD.
+
+## 199. Autorización de F4-T1B v5 y paquete emitido
+
+**Decisión:** F4-E58.
+
+**Autorización del Owner y del Coordinator** (`F4-DRAFTS/coordinator/owner-f4t1b-authorization.md`):
+- F4-T4A queda completa.
+- F4-T1B se autoriza para emisión y ejecución, con 1 de 3 y el paquete v5.
+- La tabla de mutantes es cerrada, y los bytes del producto del GREEN son iguales a los de la BaseSha en cada archivo mutado.
+- Se aplican la contención del configurador y las tres clases de escritura (de la ventana, la intención expuesta y las del Plugin tras el cierre).
+- Los fallos esperados se fijan por mutante.
+- Ninguna prueba cuelga, deja modales vivos, escribe en el perfil, necesita AutoCAD ni depende de la máquina.
+- La cadena es completa, y la verificación 14/14 sola no basta.
+- F4-T4B espera al cierre de T1B y conserva la vía propia del piloto.
+
+**Paquete** `docs/initiatives/I-64-f4-t1b-gate-contract-package.md` v5:
+- es el borrador custodiado en `F4-DRAFTS/t1b/` (`a332df7a`), idéntico salvo el párrafo de estado de la emisión;
+- revisión de la v1: EMITIBLE TRAS CORRECCIONES (2/13/20);
+- comprobación de la v2: EMITIBLE TRAS CORRECCIONES (1/7/11);
+- comprobación de la v3: EMITIBLE TRAS CORRECCIONES (0/2/11);
+- todas aplicadas en la v4, y las interpretaciones del Owner en la v5 (§10.4).
+
+**Base:** entre `c3ae1c97`, la base medida del paquete, y la emisión no cambia nada en `src/` ni en `tests/` (comprobado al emitir).
+
+**Límites:** solo documentación; sin AutoCAD.
