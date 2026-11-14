@@ -6977,3 +6977,15 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 **Nota de custodia de F4-T3C2:** está en F4-E51; no reescribe F4-E50.
 
 **Límites:** solo documentación; sin AutoCAD.
+
+## 188. Contrato de F4-T4A1-PREPARE-CORE
+
+**Contrato:** `I-64-pilot/F4-T4A1-PREPARE-CORE/coordinator/gate-contract.json` (F4-E51).
+- **Alcance:** lista blanca exacta de 19 rutas, tres de ellas nuevas (el plan del piloto y dos archivos de pruebas); cambios declarados de pruebas existentes: el censo de `Compose`, `PilotFieldView`, la tabla de literales, la marca de conocido limpio y las guardas del puerto de D-T4A1-07.
+- **`ForbiddenWriteScope`:** 106 entradas, por raíces.
+- **Invariantes y paradas:** 14 invariantes y 8 paradas propias, entre ellas C08 (replanificación reforzada única; el segundo fallo de fidelidad es STOP al Coordinator).
+- **Líneas base:** `RackCad.Tests.Workspace` 2668 con `ExpectRed` true y `RackCad.UI.Tests.Workspace` 458 con `ExpectRed` false (medidas en la CI de `4e34bb56`).
+- **Revisiones:** `AuthorityRevision` `c76f01dadf1679db3fdc827ce63a9cf758d664e8` y `MainSha` `812baf879612320653094a8aaf46aca0bac81383`.
+- **`attempts`:** 1 de 3.
+
+**Límites:** solo documentación en este paso; sin AutoCAD.
