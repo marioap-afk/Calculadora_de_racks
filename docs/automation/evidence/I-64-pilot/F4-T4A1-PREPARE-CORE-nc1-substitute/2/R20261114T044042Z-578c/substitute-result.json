@@ -1,0 +1,162 @@
+{
+  "Id": "F4T4A1-NC1-IDENTITY-SIGNAL-01",
+  "NotA4": true,
+  "Scope": "solo F4-T4A1-PREPARE-CORE, intento 2; no reemplaza al Controller ni a nc1 en otras tareas",
+  "SelfTest": [
+    {
+      "Case": "A",
+      "Description": "CurrentSha falso detectado; Handoff primera en fail y cascada de consumidores (la corrida real)",
+      "Result": "PASS",
+      "Expected": "PASS",
+      "Ok": true
+    },
+    {
+      "Case": "A2",
+      "Description": "CurrentSha falso detectado; solo Identity en fail (el oraculo ordinario)",
+      "Result": "PASS",
+      "Expected": "PASS",
+      "Ok": true
+    },
+    {
+      "Case": "B",
+      "Description": "la mutacion cambia un segundo campo de la entrega",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "C",
+      "Description": "el SHA sustituido existe en el repositorio",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "D",
+      "Description": "hash derivado incoherente",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "E",
+      "Description": "cambia otra entrada ademas de las derivadas",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "F",
+      "Description": "el Controller dio Identity = pass",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "G",
+      "Description": "clasificacion REWORK en lugar de BLOCKED/STOP",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "H",
+      "Description": "falla tambien una comprobacion ajena al CurrentSha (Scope)",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "I",
+      "Description": "la Evidence de Identity no nombra el SHA falso",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "J",
+      "Description": "FailureClass que no es la primera en fail",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "K",
+      "Description": "FailureClass Handoff sin nombrar el SHA falso en su Evidence",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    }
+  ],
+  "SelfTestPass": true,
+  "SelfTestDeterministic": true,
+  "RealVerification": "artifacts/orchestration/I-64/F4-T4A1-PREPARE-CORE/2/R20261114T043231Z-623b",
+  "Nc1Run": "artifacts/orchestration/I-64/F4-T4A1-PREPARE-CORE-nc1/2/R20261114T043649Z-86d0",
+  "Head": "bbd9a35e242788f7fa5864dccb3e9d3353b043ee",
+  "RealVerificationClassification": "EXECUTION_VERIFIED",
+  "Nc1ControllerEvidence": {
+    "Handoff": "worker-handoff.json matches the relay OutputSha256, and TaskId, RunId, DelegationRunId, Attempt, branch, worktree and output time are consistent. Its CurrentSha is deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, which does not identify the delivered Git commit.",
+    "Identity": "git rev-parse HEAD = bbd9a35e242788f7fa5864dccb3e9d3353b043ee; branch = architecture/workspace-persistente-rackcad; remote-tracking branch = bbd9a35e242788f7fa5864dccb3e9d3353b043ee. BaseSha is an ancestor of observed HEAD and RedSha is an ancestor of observed HEAD (both merge-base checks exited 0). Handoff CurrentSha is deadbeefdeadbeefdeadbeefdeadbeefdeadbeef and therefore does not equal HEAD or the remote-tracking SHA."
+  },
+  "Measured": {
+    "RealCurrentSha": "bbd9a35e242788f7fa5864dccb3e9d3353b043ee",
+    "MutatedCurrentSha": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+    "Head": "bbd9a35e242788f7fa5864dccb3e9d3353b043ee",
+    "HandoffFieldsChanged": [
+      ".CurrentSha"
+    ],
+    "ChangedInputs": [
+      "relay-record-work.json",
+      "worker-handoff.json"
+    ],
+    "Controller": {
+      "Classification": "EXECUTION_BLOCKED",
+      "Disposition": "STOP",
+      "FailureClass": "Handoff",
+      "TriggeredStopConditions": [
+        "S-04"
+      ],
+      "Results": {
+        "Termination": "pass",
+        "Handoff": "fail",
+        "Authority": "pass",
+        "Contract": "pass",
+        "Identity": "fail",
+        "Remote": "pass",
+        "Scope": "pass",
+        "CleanTree": "pass",
+        "Ci": "pass",
+        "Tests": "pass",
+        "Trailer": "pass",
+        "Routing": "pass",
+        "FreeText": "pass",
+        "Denials": "pass"
+      }
+    },
+    "DiffersFromReal": [
+      "Handoff",
+      "Identity"
+    ],
+    "FirstNotPass": "Handoff",
+    "FakeShaExistsInRepo": false
+  },
+  "Properties": {
+    "1_MutationIsExactlyCurrentShaToANonexistentSha": true,
+    "2_DerivedHashesConsistent": true,
+    "3_IdentityMustFail": true,
+    "4_ControllerReportedIdentityFailBlockedStop": true,
+    "5_IdentityEvidenceNamesFakeShaAndHead": true,
+    "6_OnlyCurrentShaConsumersDiffer": true,
+    "7_FailureClassFirstNotPassHandoffOrIdentity": true
+  },
+  "SubstituteResult": "PASS",
+  "Notes": {
+    "SignalDemonstrated": "el Controller detecto la mutacion: su Evidence de Identity nombra el CurrentSha falso y el HEAD real, y la de Handoff dice que el SHA falso no resuelve en Git y contradice el relevo de entrada",
+    "OrdinaryOracleNotMet": "la primera comprobacion en fail es Handoff (AUTOMATION_PLAN 16.9: Salida conforme pero vacia o falsa -> Handoff), no Identity como fija README section 10; Remote, Ci y Tests fallan en cascada porque consumen CurrentSha",
+    "ProtocolDebt": "PD-F4-04: README section 10 (nc1 -> Identity) y AUTOMATION_PLAN 16.9 (salida falsa -> Handoff) admiten dos primeras comprobaciones para un CurrentSha inexistente; deuda de protocolo, sin solucion global dentro de I-64"
+  },
+  "Record": {
+    "Nc1OrdinaryRun": "ORACULO NO CUMPLIDO / SENAL DEMOSTRADA (se conserva tal cual)",
+    "nc1": "SATISFIED_UNDER_F4T4A1_NC1_IDENTITY_SIGNAL_SUBSTITUTE"
+  }
+}

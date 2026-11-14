@@ -7018,3 +7018,33 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **`attempts`:** 2 de 3.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 191. F4-T4A1-PREPARE-CORE, intento 2: planificación, entrega y verificación
+
+**Decisión:** F4-E53.
+
+- **Planificación** `81dc`: fidelidad PASS y A1-A8 8/8.
+- **Worker** `deb3`: RED `921e3a36` con 97 fallos de Core por aserción y UI en verde; GREEN `bbd9a35e` con las 21 rutas y sin tocar `tests/`.
+- **CI:** `43554278196` 4/4, con 2843/2843 en Core y 458/458 en UI en los filtros.
+- **Verificación** `623b`: `EXECUTION_VERIFIED` 14/14 sobre `bbd9a35e`.
+
+**Límites:** solo documentación; sin AutoCAD.
+
+## 192. Controles de F4-T4A1, revisiones y cierre
+
+**Revisiones:**
+- la directa, sin bloqueantes ni importantes;
+- la independiente, ACEPTABLE CON MENORES (0/0/11).
+
+**Controles:**
+- nc1 NOT PASSED, con la firma exacta de PD-F4-04; su sustituto da PASS en 7/7;
+- nc2 NOT PASSED, con la firma exacta de PD-F4-01; su sustituto da PASS en 10/10;
+- nc3 CONTROL PASS.
+
+**Owner:** «Cerrar y arrastrar».
+
+**Decisión:** F4-T4A1-PREPARE-CORE **CLOSED / PASS WITH LIMITATIONS** sobre `bbd9a35e`, en el intento 2 de 3. Los menores pasan a F4-T4A2 o a F4-T4B.
+
+**Siguiente:** el paquete de F4-T4A2-PREPARE-UI.
+
+**Límites:** solo documentación; sin AutoCAD.

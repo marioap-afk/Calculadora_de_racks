@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T4A1-PREPARE-CORE",
+  "RunId": "R20261114T044552Z-d471",
+  "DelegationRunId": "R20261114T033032Z-81dc",
+  "WorkRunId": "R20261114T033524Z-deb3",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Outcome.Kind=COMPLETED and DeathConfirmed=true; OutputWrittenUtc is later than Cession.StartUtc."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json matches TaskId F4-T4A1-PREPARE-CORE, Attempt 2, DelegationRunId R20261114T033032Z-81dc and RunId R20261114T033524Z-deb3; output time follows cession start."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha and git diff --name-only AuthorityRevision BaseSha passed: the three changed paths are docs/automation/evidence/I-64-evidence.md, docs/automation/evidence/I-64-pilot/F4-T4A1-PREPARE-CORE/coordinator/gate-contract-attempt2.json and docs/automation/state/I-64.yml; no EXTERNAL or UNIT_CHANGE authority path is changed."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "byte-fidelity-check.json reports PASS with byte equality for all eight collections; delegation scope matches the contract and A1-A8 are recorded 8/8 pass in relay-record-planning.json."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse confirms branch architecture/workspace-persistente-rackcad, HEAD and its origin remote ref equal CurrentSha bbd9a35e242788f7fa5864dccb3e9d3353b043ee; merge-base ancestor checks pass for AuthorityRevision..BaseSha, BaseSha..RedSha and RedSha..CurrentSha. Worktree path matches the handoff."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json records ls-remote equal to CurrentSha and origin/main equal to MainSha 812baf879612320653094a8aaf46aca0bac81383; no main movement is recorded."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha returns 21 paths; each is an exact entry in delegation.json AllowedWriteScope, none is outside that list, and none matches ForbiddenWriteScope."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain is empty; git check-ignore confirms the supplied gate-contract.json input path is ignored."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts records CurrentRun 43554278196 as push on refs/heads/architecture/workspace-persistente-rackcad at CurrentSha, completed successfully; all four required jobs are success. RedRun 43553634960 is a push of RedSha on the same ref, with the Core job failure required for RED."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX selection by full test name contains RackCad.Tests.Workspace or RackCad.UI.Tests.Workspace. Current Core: 2843 selected, 0 failed; current UI: 458 selected, 0 failed. Red Core: 2843 selected, 97 failed; Red UI: 458 selected, 0 failed. Counts meet RequiredTests minima 2668 and 458 and match the handoff. git diff --name-only BaseSha RedSha -- tests/ lists 13 RT paths; git diff --name-only RedSha CurrentSha -- tests/ is empty, so ChainRedFiles is those 13 paths."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha shows both commits carry Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching worker-handoff.json Worker.Trailer and the effective model in the work record."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 with required routing; relay-record-work.json records effective model claude-sonnet-5-5 and effective effort high, matching the request."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "The 16.10 scan of worker-handoff.json free-text fields finds a prohibited gate phrase in WorkCompleted."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes report zero permission denials and zero tool errors, with none pending."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "The nc3 handoff contains a prohibited gate phrase in WorkCompleted, so FreeText fails; the remaining 13 checks pass.",
+    "Git confirms the 21 changed paths are within the exact allowed list. The GREEN commit changes no tests/ paths."
+  ],
+  "RecommendedNextAction": "Correct the handoff free text and submit a new verification run."
+}

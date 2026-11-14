@@ -1805,3 +1805,37 @@ La mutación authored no empieza sin su contrato. Smoke-2 sigue pendiente de Aut
 - `CorrectionOf` es el Worker del intento 1, con FailureClass StopCondition.
 
 **Límites:** este paso es solo documentación; sin AutoCAD.
+
+## F4-E53. Intento 2 de F4-T4A1-PREPARE-CORE: entrega, verificación, revisiones, controles y cierre
+
+**Hechos del intento 2:**
+- **Planificación** `R20261114T033032Z-81dc`:
+  - fidelidad PASS a la primera, con las 21 rutas;
+  - A1-A8 8/8, con `CorrectionOf`;
+  - sin nc4, que se hizo en la primera delegación de la cadena.
+- **Una corrección de la sesión:** la evaluación se cortó en sus comprobaciones extra por un defecto del script de la sesión (una variable sin definir al quitar el bloque de nc4). Se corrigió y se reejecutó, con el mismo resultado de A1-A8 y sin invocar ningún modelo.
+- **Worker** `R20261114T033524Z-deb3`:
+  - `claude-sonnet-5-5`/high, 182 turnos, 0 denegaciones y sin procesos en segundo plano;
+  - RED `921e3a36`: 97 fallos por aserción en Core, dentro del filtro, y UI entera en verde;
+  - GREEN `bbd9a35e`: las 21 rutas, sin tocar `tests/`.
+- **CI:** GREEN `43554278196` 4/4 (2843/2843 en Core y 458/458 en UI) y RED `43553634960` con Core en failure.
+- **Verificación** `R20261114T043231Z-623b`: `EXECUTION_VERIFIED`, 14/14, `VerifiedSha` `bbd9a35e`.
+  - **Una corrección de la sesión:** su prompt se generó primero con la ruta del intento 1, por un defecto del generador de la cadena del intento 2. Se retiró el directorio vacío creado, se corrigió la ruta y se generó de nuevo antes de lanzar nada.
+- **Revisiones:**
+  - la directa de la sesión, sin bloqueantes ni importantes (3 menores);
+  - la adversarial independiente, ACEPTABLE CON MENORES (0/0/11). El análisis conjunto está en `analysis.md`, junto a la verificación.
+- **Controles:**
+  - nc1 `86d0`, CONTROL NOT PASSED con la firma exacta de PD-F4-04. Su sustituto `578c` da PASS en 7/7;
+  - nc2 `a383`, CONTROL NOT PASSED con la firma exacta de PD-F4-01. Su sustituto `e01a` da PASS en 10/10;
+  - nc3 `d471`, CONTROL PASS.
+  - Las salidas ordinarias se conservan. Las reglas de sustitución las fija la ExpectedEvidence del contrato.
+
+**Orden del Owner** (`F4-DRAFTS/coordinator/owner-f4t4a1-close-decision.md`, pregunta y respuesta literales): «Cerrar y arrastrar (Recommended)».
+- Los 14 menores pasan a cambios declarados de F4-T4A2, o de F4-T4B si es la primera que toca esa superficie. M-1 a M-4, de calidad de guardas, se corrigen allí.
+- M-7 (el texto del registro en la base esperada del plan) y M-11 (miembros del RED no del todo inertes) se aceptan como desviaciones menores declaradas.
+
+**Decisión:** F4-T4A1-PREPARE-CORE = **CLOSED / PASS WITH LIMITATIONS** sobre `bbd9a35e`, en el intento 2 de 3.
+- El intento 1 se conserva como historia.
+- La siguiente subtarea es F4-T4A2-PREPARE-UI, que empieza en 1 de 3. Su paquete se fija sobre el código de `bbd9a35e`.
+
+**Límites:** este paso es solo documentación; sin AutoCAD.
