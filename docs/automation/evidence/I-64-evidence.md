@@ -6947,3 +6947,33 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **Siguiente:** el paquete de F4-T4.
 
 **Límites:** solo custodia y documentación; sin AutoCAD.
+
+## 187. Ratificación de F4-T3, preparación de F4-T4 y su paquete
+
+**Decisión:** F4-E51.
+
+**Ratificación y autorización del Owner y del Coordinator:**
+- F4-T3 queda completa en el nivel de subtareas.
+- Se autoriza preparar F4-T4 como tareas con contrato propio, cada una con 1 de 3.
+- PREPARE es de solo lectura.
+- `ExecuteInCommandContextAsync` queda ratificado para los archivos exactos del adaptador de mutación.
+- Smoke-2 es obligatorio antes de cerrar F4.
+
+**Decisiones del Owner:**
+- T4A se divide en T4A1 (núcleo) y T4A2 (UI).
+- T4B y T4C, ya.
+- Se acepta `LegacyDeltas`.
+- La lectura caller-owned va en T4B.
+
+**Mapa:** tres exploraciones de solo lectura del código real (`4e34bb56`).
+
+**Paquete** `docs/initiatives/I-64-f4-t4-gate-contract-package.md` v3:
+- revisión de la v1: EMITIBLE TRAS CORRECCIONES (1/12/14);
+- re-revisión de la v2: descomposición EMITIBLE y contrato de T4A1 EMITIBLE TRAS CORRECCIONES (1/3/11);
+- todo aceptado; N-1 a N-4 comprobados por la sesión sobre el código.
+
+**Validación determinista final:** PASS en sus ocho comprobaciones, idéntica en dos corridas.
+
+**Nota de custodia de F4-T3C2:** está en F4-E51; no reescribe F4-E50.
+
+**Límites:** solo documentación; sin AutoCAD.

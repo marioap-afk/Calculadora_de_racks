@@ -1680,3 +1680,87 @@ F4-T4 no empieza antes del cierre de F4-T3.
 - además, R-3 de F4-T3C1 y C2-M-1 a C2-M-8.
 
 La mutación authored no empieza sin su contrato. Smoke-2 sigue pendiente de AutoCAD real.
+
+## F4-E51. Ratificación de F4-T3, preparación de F4-T4, paquete v3 y emisión de F4-T4A1-PREPARE-CORE
+
+**Origen:** dos documentos del Owner.
+
+**1. La ratificación y la autorización** del Owner y del Coordinator (`F4-DRAFTS/coordinator/owner-f4t4-preparation-authorization.md`, texto pegado literal):
+- F4-T3 queda COMPLETE AT SUBTASK LEVEL, sobre el producto `4e34bb56` y la custodia `7297e1f1`. No se reabre T3 porque T4 ejercite sus interfaces.
+- Autoriza **preparar** F4-T4 sin emitir un contrato monolítico:
+  - al menos dos tareas con contrato propio: T4A, PREPARE/STALE/CONFLICT, y T4B, MUTATE/POST/UNDO;
+  - T4C solo si la evidencia del código lo justifica;
+  - cada una con `attempts` 1 de 3.
+- PREPARE es de solo lectura. `ExecuteInCommandContextAsync` queda ratificado y limitado a los archivos exactos del adaptador de mutación.
+- Fija el oráculo de T4B y el carácter declarado de R-3 de F4-T3C1. Arrastra los ocho menores de F4-T3C2, con prioridad para las guardas del Sí/No y de `Authorize`.
+- Smoke-2 en AutoCAD real, con 30 puntos y dibujos representativos, es obligatorio antes de cerrar F4.
+- Fija los pasos 1 a 10, con emisión de T4A tras la revisión y sus correcciones. Enumera los casos en que hay que volver al Owner.
+
+**2. Las decisiones del Owner** tomadas tras la revisión de la v1 (`F4-DRAFTS/coordinator/owner-f4t4-decomposition-decision.md`, preguntas y respuestas literales):
+1. T4A se divide en T4A1-PREPARE-CORE y T4A2-PREPARE-UI.
+2. T4B y T4C se separan ya: T4B-MUTATE-POST y T4C-HOST-UNDO. La medición en host de Undo es el primer paso de T4C.
+3. Se acepta la canonicalización `LegacyDeltas` como en la ruta de Application. Se declara en T4B y se observa en Smoke-2.
+4. La lectura caller-owned va en T4B, que la usa dentro de MUTATE. T4A entrega O-04, la comparación, el plan y la clasificación.
+
+**Mapa previo:** tres exploraciones de solo lectura sobre el código de `4e34bb56`, con los mapas en `F4-T4A1-PREPARE-CORE/coordinator/`. Lo medido:
+- el Actualizar heredado de Push Back no es atómico y compone desde la ventana (`RackPushBackCommands.cs:198-384`);
+- no hay ninguna API de Undo ni de contexto de comando;
+- `ComposeForWrite` solo es seguro tras un MATCH crudo;
+- el lector de la intención no vale ni en el contexto de comando ni dentro de MUTATE;
+- Push Back tiene hechos de disponibilidad, y RACKEDITAR borra fantasmas;
+- I-54 fija con igualdad exacta el censo de `RackEmbedComposer.Compose`.
+
+**Paquete** (`docs/initiatives/I-64-f4-t4-gate-contract-package.md`):
+- **v1:** la revisión adversarial independiente dio EMITIBLE TRAS CORRECCIONES (1/12/14). El bloqueante era que `Prepare` respondía NotApplicable bajo Applying.
+- **v2:** aplicó la revisión y las cuatro decisiones del Owner. La re-revisión independiente dio la descomposición como EMITIBLE y el contrato de T4A1 como EMITIBLE TRAS CORRECCIONES (1/3/11):
+  - N-1: el censo exacto de `Compose` estaba fuera del alcance;
+  - N-2: «Comprobar ahora» sacaba de Conflicto, contra INV-F4T1-11;
+  - N-3: faltaban dos guardas del puerto;
+  - N-4: un fantasma preexistente daba un borrado que el piloto no posee.
+  
+  La re-revisión indicó que bastaba con que la sesión comprobara N-1 a N-4 en la v3, sin otra ronda completa.
+- **v3:** aplica los 15 hallazgos. La sesión comprobó N-1 a N-4 sobre el código:
+  - el censo y su exigencia de parámetro (`CustomPropertiesEnvelopeGuardTests.cs:69-107`);
+  - INV-F4T1-11 y su prueba;
+  - las dos guardas;
+  - `PushBackViewAvailabilityFacts`.
+- **Las dos revisiones** están en `F4-T4A1-PREPARE-CORE/coordinator/`.
+- **Validación determinista final** (`package-validation.json`): PASS en sus ocho comprobaciones, idéntica en dos corridas.
+
+**Disposiciones de la sesión** (se registran aquí, antes de emitir):
+- **(a) Reubicación de T1B.**
+  - La regla nueva: T1B se ejecuta antes de la primera tarea que use las fachadas de Push Back para escribir o que modifique un archivo de la clausura de la ventana clásica (§3 del paquete de F4-T2), es decir, antes de F4-T4B.
+  - Sustituye el «como muy tarde antes de T4A» de F4-E18, que suponía un T4A que tocaba las fachadas. A1 y A2 no las tocan.
+  - `src/RackCad.Application/Systems/PushBack/Pilot/` queda fuera de la clausura.
+- **(b) Reasignaciones frente al paquete de F4:**
+  - la importación de biblioteca sale de PREPARE y pasa a T4B, por la orden del Owner. Queda declarado que un Conflicto que solo detecte MUTATE deja residuo, como admite D-13;
+  - la lectura caller-owned pasa a T4B (decisión 4);
+  - O-04 queda en T4A, sin sustituir la autoridad de D-12, que sigue en la relectura dentro de MUTATE.
+- **(c) Presupuesto:** la división duplica la capacidad de intentos de T4A (de 3 a 6) y la de T4B (de 3 a 6, con T4C), por decisión del Owner. Cada subtarea empieza en 1 de 3, y el agotamiento de cualquiera es S-11.
+- **(d) Invariantes de F4-T1:**
+  - INV-F4T1-11 no cambia: con un MATCH, «Comprobar ahora» deja un Conflicto en Conflicto (N-2, opción (a));
+  - la sobrecarga de «Conservar» con `keepOn` es una ampliación declarada de INV-F4T1-04 (IC-07 punto 2).
+- **(e) El piloto nunca borra una vista** (N-4): un miembro no disponible en el sistema saliente da Invalid. No va al Owner, porque el piloto no gana ninguna escritura.
+- **(f) El `ForbiddenWriteScope` de T4A1 va por raíces** (106 entradas), por el riesgo de copia del Controller (F4-E25). Lo que no se enumera lo cubre la lista blanca exacta.
+
+**Emisión de F4-T4A1-PREPARE-CORE:**
+- el contrato `I-64-pilot/F4-T4A1-PREPARE-CORE/coordinator/gate-contract.json`;
+- 19 rutas exactas, tres de ellas nuevas;
+- 106 entradas prohibidas;
+- 14 invariantes y 8 paradas propias;
+- líneas base: `RackCad.Tests.Workspace` 2668 con `ExpectRed` true, y `RackCad.UI.Tests.Workspace` 458 con `ExpectRed` false. Se midieron en la CI `43510803096` de `4e34bb56`;
+- `attempts` 1 de 3.
+
+**Controles:**
+- nc4 va en la primera delegación de la cadena;
+- nc1..nc3 con su oráculo ordinario, conservando cada salida;
+- solo se aplica una regla local con la firma exacta de PD-F4-01, PD-F4-04/05 o PD-F4-06;
+- una firma nueva vuelve al Owner.
+
+**Nota de custodia de F4-T3C2** (orden del Owner; no reescribe F4-E50):
+- el script auxiliar del Worker que contenía una ruta local se excluyó de la custodia pública;
+- solo se conservó su SHA-256;
+- las rutas sintéticas de las pruebas se redactaron según las reglas de custodia;
+- no se publicó ninguna ruta personal ni local.
+
+**Límites:** este paso es solo documentación; sin AutoCAD.
