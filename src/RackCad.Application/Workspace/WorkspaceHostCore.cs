@@ -527,8 +527,68 @@ namespace RackCad.Application.Workspace
         /// </summary>
         public EditConfirmOutcome TryConfirmPilotBase(EditIntentRequest request)
         {
-            // RED skeleton (INV-F4T4A1-13): inert, it answers the default value of its status and reads nothing.
-            return default;
+            try
+            {
+                if (request == null) throw new ArgumentNullException(nameof(request));
+
+                // 1: a blank RackId has no draft, and the registry would throw on it.
+                if (string.IsNullOrWhiteSpace(request.RackId))
+                    return EditConfirmOutcome.NotFound("Un rack sin identificador no tiene borrador.");
+
+                // 1, continued: the same request error as the other operations; nothing is read.
+                if (HasWitnessWithoutKey(request))
+                    return EditConfirmOutcome.Failed("El testigo de la vista previa no tiene clave.");
+
+                // 2 to 5: the same gate; nothing is read.
+                var gate = PassGate(request.Session, out var reason);
+                if (gate == EditGate.Unavailable) return EditConfirmOutcome.Unavailable(reason);
+                if (gate == EditGate.Waiting) return EditConfirmOutcome.Waiting(reason);
+                if (gate == EditGate.Rejected) return EditConfirmOutcome.Rejected(reason);
+
+                // 3 and 4: a missing draft, and a draft whose status is not clean, dirty or in conflict, read nothing.
+                var draft = _drafts.Find<PushBackPilotDraftState>(request.Session, request.RackId);
+                if (draft == null) return EditConfirmOutcome.NotFound(NoDraftReason);
+                var before = draft.Status;
+                if (before != DraftStatus.Clean && before != DraftStatus.Dirty && before != DraftStatus.Conflict)
+                    return EditConfirmOutcome.NotApplicable(NotCheckableReason);
+
+                // 6: the one reread.
+                var read = _editIntentReader!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.Witness);
+                switch (read.Status)
+                {
+                    case EditIntentReadStatus.Read:
+                        break;
+                    case EditIntentReadStatus.NoActiveDocument:
+                    case EditIntentReadStatus.Busy:
+                        return EditConfirmOutcome.Waiting(read.Reason ?? "El dibujo no está listo para leerse.");
+                    case EditIntentReadStatus.Rejected:
+                        return EditConfirmOutcome.Rejected(read.Reason ?? NotThisDocumentReason);
+                    default:
+                        return EditConfirmOutcome.Failed(read.Reason ?? "Falló la relectura.");
+                }
+
+                var pilot = read.PilotRead;
+                if (pilot == null) return EditConfirmOutcome.Failed("La relectura no trajo resultado.");
+
+                // 7: the base of the reread only goes to ConfirmBase.
+                var confirm = draft.ConfirmBase(pilot.StaleBase);
+                switch (confirm.Status)
+                {
+                    case DraftConfirmStatus.Confirmed:
+                        // M-5: a confirmed check whose read was not admitted still carries the diagnostic of the admission.
+                        return EditConfirmOutcome.Confirmed(pilot.Read.IsAdmitted ? null : pilot.Read.Admission.Diagnostic);
+                    case DraftConfirmStatus.Conflict:
+                        _knownClean.Remove(request.Session);
+                        return EditConfirmOutcome.Conflict(DescribeDifferences(confirm.Differences));
+                    default:
+                        return EditConfirmOutcome.NotApplicable(NotCheckableReason);
+                }
+            }
+            catch (Exception ex)
+            {
+                Report("WorkspaceHostCore.TryConfirmPilotBase", ex);
+                return EditConfirmOutcome.Failed(ex.Message);
+            }
         }
 
         /// <summary>
@@ -538,8 +598,82 @@ namespace RackCad.Application.Workspace
         /// </summary>
         public EditIntentOutcome TryKeepPilotEdit(EditIntentRequest request)
         {
-            // RED skeleton (INV-F4T4A1-13): inert, it answers the default value of its status and reads nothing.
-            return default;
+            try
+            {
+                if (request == null) throw new ArgumentNullException(nameof(request));
+
+                // 1: a blank RackId has no identity, and the registry would throw on it.
+                if (string.IsNullOrWhiteSpace(request.RackId))
+                {
+                    return EditIntentOutcome.NotAdmitted(
+                        PushBackPilotIntentReader.NoIdentityDiagnostic,
+                        null,
+                        PushBackPilotIntentReader.ClassicEditorHint,
+                        EditWitnessStatus.NotEvaluated);
+                }
+
+                // 1, continued: the same request error as the other operations; nothing is read.
+                if (HasWitnessWithoutKey(request))
+                    return EditIntentOutcome.Failed("El testigo de la vista previa no tiene clave.");
+
+                // 2 to 5: the same gate; nothing is read.
+                var gate = PassGate(request.Session, out var reason);
+                if (gate == EditGate.Unavailable) return EditIntentOutcome.Unavailable(reason);
+                if (gate == EditGate.Waiting) return EditIntentOutcome.Waiting(reason);
+                if (gate == EditGate.Rejected) return EditIntentOutcome.Rejected(reason);
+
+                // 3 and 4: a missing draft is NotFound, a draft that is being applied waits and one that does not need to be kept is not
+                // needed; none of them reads anything.
+                var draft = _drafts.Find<PushBackPilotDraftState>(request.Session, request.RackId);
+                if (draft == null) return EditIntentOutcome.NotFound(NoDraftReason);
+                var before = draft.Status;
+                if (before == DraftStatus.Applying) return EditIntentOutcome.Waiting("El borrador se está aplicando o ya no está registrado.");
+                if (before != DraftStatus.Conflict && !(before == DraftStatus.Dirty && draft.IsPossiblyStale))
+                    return EditIntentOutcome.NotNeeded(NotKeepableReason);
+
+                // 6: the one read.
+                var read = _editIntentReader!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.Witness);
+                switch (read.Status)
+                {
+                    case EditIntentReadStatus.Read:
+                        break;
+                    case EditIntentReadStatus.NoActiveDocument:
+                    case EditIntentReadStatus.Busy:
+                        return EditIntentOutcome.Waiting(read.Reason ?? "El dibujo no está listo para leerse.");
+                    case EditIntentReadStatus.Rejected:
+                        return EditIntentOutcome.Rejected(read.Reason ?? NotThisDocumentReason);
+                    default:
+                        return EditIntentOutcome.Failed(read.Reason ?? "Falló la lectura para la recarga.");
+                }
+
+                var pilot = read.PilotRead;
+                if (pilot == null) return EditIntentOutcome.Failed("La lectura para la recarga no trajo resultado.");
+                var witness = WorkspaceEditIntent.WitnessStatusOf(pilot.PreviewWitness);
+
+                // 7: the read only goes to the atomic form of KeepMineOnCurrentVersion, which has been confirmed by the gesture itself.
+                var kept = draft.KeepMineOnCurrentVersion(pilot.Read, PushBackPilotMaterializer.KeepPilotEditsOn, confirmed: true);
+                switch (kept.Status)
+                {
+                    case DraftReloadStatus.Reloaded:
+                        _knownClean.Remove(request.Session);
+                        return EditIntentOutcome.Kept(witness);
+                    case DraftReloadStatus.NotAdmitted:
+                        return EditIntentOutcome.NotAdmitted(
+                            kept.Admission.Diagnostic ?? PushBackPilotIntentReader.MaterializeDiagnostic,
+                            pilot.Detail,
+                            pilot.ClassicEditorHint,
+                            witness);
+                    case DraftReloadStatus.NotAllowed:
+                        return EditIntentOutcome.Waiting("El borrador se está aplicando o ya no está registrado.");
+                    default:
+                        return EditIntentOutcome.Failed("El borrador no se recargó.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Report("WorkspaceHostCore.TryKeepPilotEdit", ex);
+                return EditIntentOutcome.Failed(ex.Message);
+            }
         }
 
         /// <summary>
@@ -549,8 +683,78 @@ namespace RackCad.Application.Workspace
         /// </summary>
         public EditIntentOutcome TryDiscardAndReloadPilotEdit(EditIntentRequest request)
         {
-            // RED skeleton (INV-F4T4A1-13): inert, it answers the default value of its status and reads nothing.
-            return default;
+            try
+            {
+                if (request == null) throw new ArgumentNullException(nameof(request));
+
+                // 1: a blank RackId has no identity, and the registry would throw on it.
+                if (string.IsNullOrWhiteSpace(request.RackId))
+                {
+                    return EditIntentOutcome.NotAdmitted(
+                        PushBackPilotIntentReader.NoIdentityDiagnostic,
+                        null,
+                        PushBackPilotIntentReader.ClassicEditorHint,
+                        EditWitnessStatus.NotEvaluated);
+                }
+
+                // 1, continued: the same request error as the other operations; nothing is read.
+                if (HasWitnessWithoutKey(request))
+                    return EditIntentOutcome.Failed("El testigo de la vista previa no tiene clave.");
+
+                // 2 to 5: the same gate; nothing is read.
+                var gate = PassGate(request.Session, out var reason);
+                if (gate == EditGate.Unavailable) return EditIntentOutcome.Unavailable(reason);
+                if (gate == EditGate.Waiting) return EditIntentOutcome.Waiting(reason);
+                if (gate == EditGate.Rejected) return EditIntentOutcome.Rejected(reason);
+
+                // 3 and 4: a missing draft is NotFound and a draft that is being applied waits; none of them reads anything.
+                var draft = _drafts.Find<PushBackPilotDraftState>(request.Session, request.RackId);
+                if (draft == null) return EditIntentOutcome.NotFound(NoDraftReason);
+                if (draft.Status == DraftStatus.Applying) return EditIntentOutcome.Waiting("El borrador se está aplicando o ya no está registrado.");
+
+                // 6: the one read.
+                var read = _editIntentReader!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.Witness);
+                switch (read.Status)
+                {
+                    case EditIntentReadStatus.Read:
+                        break;
+                    case EditIntentReadStatus.NoActiveDocument:
+                    case EditIntentReadStatus.Busy:
+                        return EditIntentOutcome.Waiting(read.Reason ?? "El dibujo no está listo para leerse.");
+                    case EditIntentReadStatus.Rejected:
+                        return EditIntentOutcome.Rejected(read.Reason ?? NotThisDocumentReason);
+                    default:
+                        return EditIntentOutcome.Failed(read.Reason ?? "Falló la lectura para la recarga.");
+                }
+
+                var pilot = read.PilotRead;
+                if (pilot == null) return EditIntentOutcome.Failed("La lectura para la recarga no trajo resultado.");
+                var witness = WorkspaceEditIntent.WitnessStatusOf(pilot.PreviewWitness);
+
+                // 7: the read only goes to DiscardAndReload; the status is the one of the reload of the lazy kind.
+                var reloaded = draft.DiscardAndReload(pilot.Read);
+                switch (reloaded.Status)
+                {
+                    case DraftReloadStatus.Reloaded:
+                        _knownClean.Remove(request.Session);
+                        return EditIntentOutcome.Reloaded(witness);
+                    case DraftReloadStatus.NotAdmitted:
+                        return EditIntentOutcome.NotAdmitted(
+                            reloaded.Admission.Diagnostic ?? PushBackPilotIntentReader.MaterializeDiagnostic,
+                            pilot.Detail,
+                            pilot.ClassicEditorHint,
+                            witness);
+                    case DraftReloadStatus.NotAllowed:
+                        return EditIntentOutcome.Waiting("El borrador se está aplicando o ya no está registrado.");
+                    default:
+                        return EditIntentOutcome.Failed("El borrador no se recargó.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Report("WorkspaceHostCore.TryDiscardAndReloadPilotEdit", ex);
+                return EditIntentOutcome.Failed(ex.Message);
+            }
         }
 
         /// <summary>
@@ -993,7 +1197,20 @@ namespace RackCad.Application.Workspace
 
             // The reason of the Error travels only in the state Error, exactly as the draft holds it.
             var errorReason = state == PilotFieldState.Error ? draft.ErrorReason : null;
-            return new PilotFieldView(true, state, draft.IsPossiblyStale, isProtected, canEdit, committed, reason, pending, message, errorReason);
+
+            // I-64 F4-T4A1 (D-T4A1-03): why the work is Unknown (only in that state), what differs (only in Conflict) and the cause of the
+            // last attempt, exactly as the draft holds it.
+            var unknownOrigin = PilotUnknownOrigin.None;
+            if (state == PilotFieldState.Unknown)
+            {
+                if (draft.UnknownOrigin == DraftUnknownOrigin.CommitThrew) unknownOrigin = PilotUnknownOrigin.CommitThrew;
+                else if (draft.UnknownOrigin == DraftUnknownOrigin.PostReread) unknownOrigin = PilotUnknownOrigin.PostReread;
+            }
+
+            var conflictText = state == PilotFieldState.Conflict ? string.Join(", ", DescribeDifferences(draft.ConflictDifferences)) : null;
+            return new PilotFieldView(
+                true, state, draft.IsPossiblyStale, isProtected, canEdit, committed, reason, pending, message, errorReason,
+                unknownOrigin, conflictText, draft.LastApplyCause);
         }
 
         private static PilotFieldState StateOfDraft(DraftStatus status)

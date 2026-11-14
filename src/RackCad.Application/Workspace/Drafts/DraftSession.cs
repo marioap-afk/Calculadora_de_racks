@@ -466,8 +466,21 @@ namespace RackCad.Application.Workspace.Drafts
         /// </summary>
         public DraftReloadResult KeepMineOnCurrentVersion(DraftIntentRead<TState> read, Func<TState, TState, TState> keepOn, bool confirmed)
         {
-            // RED skeleton (INV-F4T4A1-13): inert, it never throws and it changes nothing.
-            return new DraftReloadResult(DraftReloadStatus.NotAllowed, read == null ? default : read.Admission);
+            if (keepOn == null) throw new ArgumentNullException(nameof(keepOn));
+            if (read == null) throw new ArgumentNullException(nameof(read));
+            var status = Status;
+            if (!_registered || (status != DraftStatus.Dirty && status != DraftStatus.Conflict))
+                return new DraftReloadResult(DraftReloadStatus.NotAllowed, read.Admission);
+            if (!confirmed)
+                return new DraftReloadResult(DraftReloadStatus.NotConfirmed, read.Admission);
+            if (!read.IsAdmitted)
+                return new DraftReloadResult(DraftReloadStatus.NotAdmitted, read.Admission);
+
+            var initial = _copy(read.InitialState!);
+            var current = _copy(keepOn(_copy(read.InitialState!), _current));
+            Rebase(read, initial);
+            _current = current;
+            return new DraftReloadResult(DraftReloadStatus.Reloaded, read.Admission);
         }
 
         /// <summary>Assigns the stale base and the already copied initial state together; nothing here can throw.</summary>
@@ -627,8 +640,22 @@ namespace RackCad.Application.Workspace.Drafts
         /// </summary>
         public DraftConfirmResult ConfirmBase(DraftStaleBase reread)
         {
-            // RED skeleton (INV-F4T4A1-13): inert, it never throws and it changes nothing.
-            return new DraftConfirmResult(DraftConfirmStatus.NotApplicable, Status, Array.Empty<DraftDifference>());
+            if (reread == null) throw new ArgumentNullException(nameof(reread));
+            var none = Array.Empty<DraftDifference>();
+            var status = Status;
+            if (!_registered || (status != DraftStatus.Clean && status != DraftStatus.Dirty && status != DraftStatus.Conflict))
+                return new DraftConfirmResult(DraftConfirmStatus.NotApplicable, status, none);
+
+            var comparison = StaleBase.CompareWith(reread);
+            if (comparison.IsMatch)
+            {
+                if (_explicitStatus == null) IsPossiblyStale = false;
+                return new DraftConfirmResult(DraftConfirmStatus.Confirmed, Status, none);
+            }
+
+            _explicitStatus = DraftStatus.Conflict;
+            ConflictDifferences = comparison.Differences;
+            return new DraftConfirmResult(DraftConfirmStatus.Conflict, Status, comparison.Differences);
         }
 
         /// <summary>The status the draft had when the current or last attempt began.</summary>

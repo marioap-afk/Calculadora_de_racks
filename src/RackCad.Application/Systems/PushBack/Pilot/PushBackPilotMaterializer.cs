@@ -189,6 +189,9 @@ namespace RackCad.Application.Systems.PushBack.Pilot
         /// a fresh module authority — and applies to it ONLY the scale of <paramref name="current"/>. It returns the pair
         /// <see cref="PushBackCompositeEditorAssembler.BuildDesign"/> consumes. Pure and total: it mutates neither state, it
         /// ignores <c>current.Origin</c> and it never throws; a base that no longer materializes gives a typed rejection.
+        /// Since F4-T4A1 (D-T4A1-05, the carry-overs of F4-E25) the comparison of (1) is made on the current state as it is, a scale that
+        /// is not finite or not greater than zero is rejected (6), and so is a base that, materialized again, no longer equals the
+        /// initial state (3). It is only safe AFTER a match of the base with a re-read (H-06): the plan of an update calls it then.
         /// </summary>
         public static PushBackPilotComposition ComposeForWrite(
             PushBackPilotDraftState initial, PushBackPilotDraftState current, RackCatalog catalog)
@@ -199,14 +202,26 @@ namespace RackCad.Application.Systems.PushBack.Pilot
                 if (initial.Inputs.Annotations == null || current.Inputs.Annotations == null)
                     return PushBackPilotComposition.Rejected(NonPilotContentReason);
 
-                var neutral = PushBackPilotStateComparer.Copy(current);
-                neutral.Inputs.Annotations.AnnotationScale = initial.Inputs.Annotations.AnnotationScale;
-                if (!PushBackPilotStateComparer.Instance.Equals(initial, neutral))
+                // (6) An invalid scale that arrived by an edit in place is never written: not a number, infinite, zero or negative.
+                var scale = current.Inputs.Annotations.AnnotationScale;
+                if (double.IsNaN(scale) || double.IsInfinity(scale) || scale <= 0.0)
+                    return PushBackPilotComposition.Rejected(InvalidScaleReason);
+
+                // (1) The current state is compared as it is, never normalized: it is the copy of the INITIAL state that has its scale
+                // neutralized (it takes the scale of the current one), so nothing of the current state is hidden by a copy.
+                var neutralInitial = PushBackPilotStateComparer.Copy(initial);
+                neutralInitial.Inputs.Annotations.AnnotationScale = scale;
+                if (!PushBackPilotStateComparer.Instance.Equals(neutralInitial, current))
                     return PushBackPilotComposition.Rejected(NonPilotContentReason);
 
                 var fresh = Materialize(initial.Origin, catalog);
                 if (!fresh.IsAdmitted || fresh.State == null)
                     return PushBackPilotComposition.Rejected(fresh.Reason ?? UnreadableOrFutureDiagnostic);
+
+                // (3) The base that is materialized AGAIN must still be the initial state: if the catalog changed in the meantime, the
+                // base is no longer the one the user saw and nothing is composed over it.
+                if (!PushBackPilotStateComparer.Instance.Equals(initial, fresh.State))
+                    return PushBackPilotComposition.Rejected(BaseChangedReason);
 
                 if (fresh.State.Inputs.Annotations == null) return PushBackPilotComposition.Rejected(NonPilotContentReason);
                 fresh.State.Inputs.Annotations.AnnotationScale = current.Inputs.Annotations.AnnotationScale;

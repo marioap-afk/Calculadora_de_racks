@@ -296,8 +296,117 @@ namespace RackCad.Application.Systems.PushBack.Pilot
         /// </summary>
         public static PushBackPilotPrepareResult Prepare(PushBackPilotPrepareInput input, PushBackPilotIntentResult reread, RackCatalog catalog)
         {
-            // RED skeleton (INV-F4T4A1-13): inert, it never throws and it always answers NotApplicable.
-            return PushBackPilotPrepareResult.Without(PushBackPilotPrepareKind.NotApplicable);
+            try
+            {
+                if (input == null) return PushBackPilotPrepareResult.WithInvalid(MissingInputReason);
+
+                if (input.ConsideredStatus != DraftStatus.Clean && input.ConsideredStatus != DraftStatus.Dirty)
+                    return PushBackPilotPrepareResult.Without(PushBackPilotPrepareKind.NotApplicable);
+                if (input.HasPendingText) return PushBackPilotPrepareResult.Without(PushBackPilotPrepareKind.PendingText);
+                if (input.ConsideredStatus == DraftStatus.Clean) return PushBackPilotPrepareResult.Without(PushBackPilotPrepareKind.NothingToApply);
+
+                if (reread == null || catalog == null) return PushBackPilotPrepareResult.WithInvalid(MissingInputReason);
+
+                var comparison = input.StaleBase.CompareWith(reread.StaleBase);
+                if (!comparison.IsMatch) return PushBackPilotPrepareResult.WithConflict(comparison.Differences);
+
+                if (!reread.Read.IsAdmitted)
+                    return PushBackPilotPrepareResult.WithNotAdmitted(reread.Read.Admission.Diagnostic ?? PushBackPilotIntentReader.MaterializeDiagnostic);
+
+                return Build(input, reread, catalog);
+            }
+            catch (Exception ex)
+            {
+                return PushBackPilotPrepareResult.WithInvalid(PrepareFailurePrefix + ex.Message);
+            }
+        }
+
+        // The base of the draft and the re-read match here, and the re-read is admitted: the plan can be built, or it is Invalid.
+        private static PushBackPilotPrepareResult Build(PushBackPilotPrepareInput input, PushBackPilotIntentResult reread, RackCatalog catalog)
+        {
+            // (a) The current state is composed over the base that matches the re-read (H-06), with the carry-overs of D-T4A1-05.
+            var composition = PushBackPilotMaterializer.ComposeForWrite(input.InitialDraftState, input.CurrentDraftState, catalog);
+            if (!composition.IsComposed) return PushBackPilotPrepareResult.WithInvalid(composition.Reason ?? PushBackPilotMaterializer.NonPilotContentReason);
+
+            // The members that the pilot may change, from the RE-READ and by key (ordinal), each with the envelope that was re-read.
+            var envelopes = new RackEmbedStore();
+            var members = new List<(DraftStaleBaseEntry Entry, RackEmbedDocument Embed)>();
+            foreach (var entry in reread.StaleBase.Entries.Values.Where(e => e.Membership == DraftMembership.Mutable).OrderBy(e => e.Key, StringComparer.Ordinal))
+            {
+                var embed = entry.EnvelopeText == null ? null : envelopes.Deserialize(entry.EnvelopeText);
+                if (embed == null) return PushBackPilotPrepareResult.WithInvalid(UnreadableViewPrefix + entry.Key + ".");
+                members.Add((entry, embed));
+            }
+
+            // (b) Exactly one of them is the origin: its text is, byte for byte, the origin of the draft.
+            var origin = input.InitialDraftState.Origin;
+            var origins = members.Where(m => string.Equals(m.Entry.EnvelopeText, origin, StringComparison.Ordinal)).ToList();
+            if (origins.Count == 0) return PushBackPilotPrepareResult.WithInvalid(NoOriginReason);
+            if (origins.Count > 1) return PushBackPilotPrepareResult.WithInvalid(SeveralOriginsReason);
+
+            // (c) The inner designs of every member, as RACKEDITAR resolves them, with the one of the origin as the initiating project.
+            var store = new RackProjectStore();
+            if (!store.TryDeserialize(origins[0].Embed.Design, out var initiating, out _))
+                return PushBackPilotPrepareResult.WithInvalid(UnreadableOriginReason);
+
+            var preflight = store.PreflightInnerSources(members.Select(m => m.Embed.Design).ToList(), RackSystemKind.PushBack, initiating);
+            if (preflight.Aborted)
+            {
+                return PushBackPilotPrepareResult.WithInvalid(
+                    preflight.BlockingOutcome == InnerSourceOutcome.IncompatibleMajor ? InnerMajorReason : InnerKindReason);
+            }
+
+            // (d) The outgoing design and its system, built by the builders of Application. A failure is typed and nothing was written.
+            PushBackDesign design;
+            PushBackViewAvailabilityFacts facts;
+            try
+            {
+                design = new PushBackCompositeEditorAssembler(catalog).BuildDesign(composition.Editor!, composition.Inputs!);
+                var system = new PushBackResolver(catalog).Resolve(design);
+                var cortes = new PushBackSystemLateralBuilder().Cortes(system, catalog);
+                facts = new PushBackViewAvailabilityFacts(cortes.Select(corte => corte.PostIndex), system.IsComposite);
+            }
+            catch (Exception ex)
+            {
+                return PushBackPilotPrepareResult.WithInvalid(SystemFailurePrefix + ex.Message);
+            }
+
+            // (e) The pilot never erases a view: a member that is not available in the outgoing system makes the update Invalid.
+            var plans = new List<PushBackPilotMemberPlan>(members.Count);
+            for (var index = 0; index < members.Count; index++)
+            {
+                var (entry, embed) = members[index];
+                var decoded = RackViewCodec.Decode(embed.Kind, embed.View, embed.Section);
+                if (RackViewAvailability.Evaluate(decoded, facts).Status != RackViewAvailabilityStatus.Available)
+                    return PushBackPilotPrepareResult.WithInvalid(ViewUnavailablePrefix + entry.Key + ViewUnavailableSuffix);
+
+                string view;
+                int section;
+                switch (decoded.Address.Kind)
+                {
+                    case DimensionViewKind.Planta:
+                        view = RackEmbedDocument.ViewPlanta;
+                        section = -1;
+                        break;
+                    case DimensionViewKind.Frontal:
+                        view = RackEmbedDocument.ViewFrontal;
+                        section = embed.Section;
+                        break;
+                    default:
+                        view = RackEmbedDocument.ViewLateral;
+                        section = decoded.Address.Variant.Index;
+                        break;
+                }
+
+                var designText = store.Serialize(RackProject.ForPushBack(design).WithSourceMetadataFrom(preflight.ResolvedSources[index]));
+                plans.Add(new PushBackPilotMemberPlan(entry.Key, view, section, designText, ComposeMemberEnvelope(embed, view, section, designText)));
+            }
+
+            var scale = input.CurrentDraftState.Inputs.Annotations.AnnotationScale;
+            var expectedBase = input.StaleBase.Entries.Values.OrderBy(e => e.Key, StringComparer.Ordinal).ToList();
+            var expectation = new PushBackPilotPostExpectation(scale, plans.Select(plan => new PushBackPilotKeyedText(plan.Key, plan.EnvelopeText)));
+            return PushBackPilotPrepareResult.WithPlan(new PushBackPilotUpdatePlan(
+                input.RackId, origins[0].Entry.Key, expectedBase, input.StaleBase.VariableRegistryText, scale, plans, expectation));
         }
 
         // The ONE place of this file that composes an envelope: it composes over the envelope that was re-read for that view, never
