@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: none
   attempts: 2
-  next_action: "F4-T4A1-PREPARE-CORE: emitir el contrato del intento 2 (correccion, attempts 2 de 3, F4-E52) y ejecutar su cadena: planificacion del Controller, comparacion byte a byte, A1-A8, Worker RED/GREEN, CI, revisiones directa e independiente, verificacion y nc1..nc3; despues la custodia y el cierre"
+  next_action: "F4-T4A1-PREPARE-CORE: contrato del intento 2 emitido (AuthorityRevision 6d7c2223); siguiente: planificacion del Controller, comparacion byte a byte, A1-A8 y Worker"
   last_evidence_commit: 0f49f69160cdffc1d2933d6165d5f472b5793d84
 execution_context:
   mode: manual

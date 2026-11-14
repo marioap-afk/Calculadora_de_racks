@@ -7006,3 +7006,15 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 **Owner:** «Corrección, intento 2 (Recommended)»; `attempts` 2 de 3.
 
 **Límites:** solo documentación; sin AutoCAD.
+
+## 190. Contrato del intento 2 de F4-T4A1-PREPARE-CORE
+
+**Contrato:** `I-64-pilot/F4-T4A1-PREPARE-CORE/coordinator/gate-contract-attempt2.json` (F4-E52).
+- **Alcance:** lista blanca exacta de 21 rutas: las 19 del intento 1 y las dos pruebas de F4-E52.
+- **`ForbiddenWriteScope`:** 106 entradas, sin cambio.
+- **Invariantes:** 15. Cambian INV-F4T4A1-04, 10 y 12, y se añade INV-F4T4A1-15 (la regla de la corrección).
+- **Líneas base:** sin cambio (2668 con `ExpectRed` true y 458 con `ExpectRed` false).
+- **Revisiones:** `AuthorityRevision` `6d7c222350791e4ac53961bde05e1e2926641bb5` y `MainSha` `812baf879612320653094a8aaf46aca0bac81383`.
+- **`attempts`:** 2 de 3.
+
+**Límites:** solo documentación en este paso; sin AutoCAD.
