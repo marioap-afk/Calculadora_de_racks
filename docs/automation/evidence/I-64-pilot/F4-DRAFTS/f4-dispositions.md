@@ -1942,3 +1942,67 @@ La mutación authored no empieza sin su contrato. Smoke-2 sigue pendiente de Aut
 **Mientras tanto:** la sesión prepara el paquete de F4-T1B sin emitirlo (preguntas 3 y 4 de la noche).
 
 **Límites:** este paso es solo documentación; sin AutoCAD.
+
+## F4-E57. Disposición del Owner, reverificación de F4-T4A2, Snapshot I, controles y cierre de F4-T4A2
+
+**Autoridad:** `F4-DRAFTS/coordinator/owner-f4t4-disposition-reverify-t1b-t4b.md` (texto literal).
+- **T4A2:** opción (a), una sola reverificación con una nota aclaratoria; sin dispensa, sin el intento 3, sin tocar producto ni pruebas y sin otro Worker. Si da VERIFIED 14/14, nc1..nc3 y cierre; si falla por otra causa, STOP.
+- **T1B:** autoriza emitir el paquete v4 con sus interpretaciones. Son el RED por mutantes revertidos, con los bytes idénticos por archivo; la clausura medida; el configurador con contención; y no arreglar mientras se caracteriza.
+- **T4B:**
+  - no emitir la v1;
+  - vía propia del piloto, en la que OV-RED no valida el escritor nuevo y Smoke-2 es su primera validación física;
+  - Application decide y el Plugin solo hace operaciones primitivas;
+  - el movimiento del barrido, como refactorización;
+  - la purga solo va al registro, salvo que deje incierto lo authored;
+  - T4B es la semántica y la implementación, y T4C la integración del contexto de ejecución;
+  - no emitir T4B antes de cerrar T1B.
+- **La nota pendiente de F4-E51:** ya está registrada en F4-E51 («Nota de custodia de F4-T3C2»), y F4-E50 no se reescribe.
+
+**Identity tras la custodia:**
+- **El problema:** después de `4b2a` la sesión custodió el intento 2 en commits solo de `docs/`, y HEAD = remoto = `c3ae1c97` quedó por encima de CurrentSha `ae0a7b40`.
+- **La medición:** `ae0a7b40` es ancestro de HEAD, con 46 rutas entre los dos, todas de `docs/` (0 en `src/` y `tests/`).
+- **La sustitución:** el Owner autorizó la misma sustitución acotada A–I de F4-T1 (`owner-f4t4a2-post-custody-identity.md`) para esta reverificación y nc1..nc3. No modifica el AUTOMATION_PLAN.
+
+**`config.toml`:**
+- **El cambio:** a las 17:36Z pasó de H a `0B47701A…`, con los mismos 104 nombres en el mismo orden. La app de Codex se actualizó a 26.1111.21308 y el binario acreditado no cambió.
+- **La decisión del Owner:** «Sonda neutra, luego I» (`owner-f4-config-snapshot-i-decision.md`).
+- **La sonda** `R20261114T204534Z-6603`: **PASS**.
+  - `gpt-6-luna`/high, de solo lectura, con red restringida y oráculo Git exacto.
+  - `turn_context` idéntico al de la sonda `3082` salvo `root_turn_id`.
+  - 0 participantes; la config y el binario no cambiaron durante la sonda.
+- **La Snapshot I queda aceptada** (`F4-ENVIRONMENT/snapshot-I/snapshot-i.json`). Frente al inventario de la G solo cambian `BROWSER_USE_CODEX_APP_VERSION` y la ruta versionada de `NODE_REPL_TRUSTED_SERVICES`, sin claves añadidas ni retiradas. La H nunca se inventarió.
+- **La carpeta `R20261114T204205Z-0846`** se creó para la reverificación, pero su relevo de salida dio el STOP de config. Se borró sin ninguna invocación de modelo, porque el prompt debía nombrar la I.
+
+**Reverificación** `R20261114T204712Z-88aa`: **EXECUTION_VERIFIED / NONE, 14/14** sobre `ae0a7b40`.
+- Entradas: las de `4b2a` más `clarification-note.md` (las citas literales de F4T4A2-C04 y de la corrección de INV-F4T4A2-05, y las condiciones A–I con las 46 rutas).
+- Hallazgos del Controller: el diff de producto de 7 rutas está dentro de la lista exacta; el RED de la corrección queda acreditado; la custodia solo añade rutas de `docs/`.
+
+**Controles:**
+- **nc1** `aa8a`: CONTROL PASS (Identity, STOP).
+  - En su copia, el literal del CurrentSha real de la nota y de su línea del prompt se generalizó al CurrentSha de la entrega.
+  - Es un ajuste derivado y declarado: la condición de nc1 que fijó el Owner en F4-T1.
+- **nc2** `7e23`: CONTROL NOT PASSED, con la firma exacta de PD-F4-01 (Contract primera, Scope en fail sobre la ruta quitada, STOP), y se conserva.
+  - El sustituto `F4T4A2-NC2-EXACT-WHITELIST-01` (`35ca`) da PASS, con 10/10 y autoprueba determinista: nc2 = SATISFIED_UNDER_F4T4A2_EXACT_WHITELIST_SUBSTITUTE.
+- **nc3** `f8f7`: CONTROL PASS (FreeText, REWORK).
+- 0 participantes en todos.
+
+**Decisión:** F4-T4A2-PREPARE-UI = **CLOSED / PASS WITH LIMITATIONS** sobre `ae0a7b40`, con `attempts` 2 de 3. Lo dispuso el Owner en la opción (a); el detalle está en `F4-T4A2-PREPARE-UI/task-close-package.md`. **F4-T4A (PREPARE) queda completa.**
+
+**Limitaciones:**
+- m-1 pasa a la próxima tarea que toque el VM del campo;
+- D2-1 y D2-2 quedan aceptados;
+- la desviación declarada de M-3 se mantiene;
+- el diagnóstico de `TryCheckNow` queda a decisión del Owner con el paquete de T4B;
+- M-1, M-5, M-6, M-10 y D-1 van a T4B.
+
+**Error de plantilla de la sesión:** el registro de relevo de `4b2a` dice en su nota «intento 1 … primera delegación». Se conserva y se corrigió para `88aa`.
+
+**Borradores custodiados** (sin emitir), para que no dependan del scratchpad:
+- **`F4-DRAFTS/t1b/`:** el paquete v5, los mapas 1 a 3, las tres revisiones y la clausura medida.
+  - La comprobación de la v3 va con una ruta de ejemplo de la CI redactada.
+  - `closure-measured.json` y la re-revisión se custodian en LF, porque llegaron con CRLF.
+- **`F4-DRAFTS/t4b/`:** el paquete v3, la v1, los mapas 1 a 3 y las dos revisiones. La comprobación dirigida de la v3 se detuvo antes de terminar, para liberar el worktree antes de la cesión de la reverificación, y se repetirá tras T1B, en el orden del Owner.
+
+**Siguiente:** emitir y ejecutar F4-T1B v5.
+
+**Límites:** sin AutoCAD; este paso es solo documentación y evidencia.

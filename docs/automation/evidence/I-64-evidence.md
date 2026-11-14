@@ -7123,3 +7123,17 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **Estado:** a la espera de la decisión del Owner; sin nc1..nc3.
 
 **Límites:** solo documentación; sin AutoCAD.
+
+## 198. Reverificación, Snapshot I, controles y cierre de F4-T4A2-PREPARE-UI
+
+**Decisión:** F4-E57 y la disposición del Owner (opción (a)).
+
+- **Sonda neutra** `6603`: PASS. Queda aceptada la Snapshot I (`0B47701A…`), por la actualización de la app de Codex.
+- **Reverificación** `88aa`: `EXECUTION_VERIFIED` 14/14 sobre `ae0a7b40`. Lleva la nota aclaratoria y la sustitución A–I de Identity tras la custodia (HEAD `c3ae1c97`, solo rutas de `docs/`). `4b2a` se conserva.
+- **Controles:**
+  - nc1 `aa8a`: CONTROL PASS;
+  - nc2 `7e23`: CONTROL NOT PASSED con la firma de PD-F4-01, satisfecho por el sustituto `35ca` (PASS);
+  - nc3 `f8f7`: CONTROL PASS.
+- **Resultado:** F4-T4A2 **CLOSED / PASS WITH LIMITATIONS**, intentos 2 de 3. F4-T4A queda completa.
+
+**Límites:** solo documentación; sin AutoCAD.

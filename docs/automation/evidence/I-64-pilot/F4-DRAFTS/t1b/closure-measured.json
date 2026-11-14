@@ -1,0 +1,148 @@
+{
+ "Sha": "c3ae1c970c908ef541840fc583680b86376cae0b",
+ "G1": [
+  "src/RackCad.UI/Systems/PushBack/PushBackBootSection.cs",
+  "src/RackCad.UI/Systems/PushBack/PushBackDefenseSection.cs",
+  "src/RackCad.UI/Systems/PushBack/PushBackMatrixCardModel.cs",
+  "src/RackCad.UI/Systems/PushBack/PushBackPreviewModel.cs",
+  "src/RackCad.UI/Systems/PushBack/PushBackPreviewRenderer.cs",
+  "src/RackCad.UI/Systems/PushBack/PushBackRearTopeDialogAdapter.cs",
+  "src/RackCad.UI/Systems/PushBack/PushBackRearTopeSection.cs",
+  "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs",
+  "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml",
+  "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs"
+ ],
+ "G2": [
+  "src/RackCad.UI/Controls/CatalogCombo.cs",
+  "src/RackCad.UI/Controls/CatalogComboSelection.cs",
+  "src/RackCad.UI/Controls/DialogWindowChrome.cs",
+  "src/RackCad.UI/Controls/LinkedPropertyEditor.cs",
+  "src/RackCad.UI/Controls/NumericField.cs",
+  "src/RackCad.UI/Controls/NumericFieldValidation.cs",
+  "src/RackCad.UI/Controls/PendingTextField.cs",
+  "src/RackCad.UI/Controls/PreviewCanvas.cs",
+  "src/RackCad.UI/Controls/PreviewPalette.cs",
+  "src/RackCad.UI/Controls/PreviewProjection.cs",
+  "src/RackCad.UI/Controls/SectionFamilyLabelConverter.cs",
+  "src/RackCad.UI/Controls/SelectionMatrix.cs",
+  "src/RackCad.UI/Controls/SelectionMatrixBulkBar.cs",
+  "src/RackCad.UI/Controls/SelectionMatrixBulkEditor.cs",
+  "src/RackCad.UI/Controls/SelectionMatrixModel.cs",
+  "src/RackCad.UI/Controls/SelectionMatrixScope.cs",
+  "src/RackCad.UI/Controls/StructuralSectionPicker.cs",
+  "src/RackCad.UI/Editor/CantileverComponentInsertionRequest.cs",
+  "src/RackCad.UI/Editor/DispatcherRecomputeScheduler.cs",
+  "src/RackCad.UI/Editor/EditorModuleRegistry.cs",
+  "src/RackCad.UI/Editor/EditorModules.cs",
+  "src/RackCad.UI/Editor/IRackEditorModule.cs",
+  "src/RackCad.UI/Editor/IRecomputeScheduler.cs",
+  "src/RackCad.UI/Editor/RackEditorIdentity.cs",
+  "src/RackCad.UI/Editor/RackEditorLaunchContext.cs",
+  "src/RackCad.UI/Editor/RackEditorSession.cs",
+  "src/RackCad.UI/Editor/RackInsertionRequest.cs",
+  "src/RackCad.UI/Editor/RecomputeDebouncer.cs",
+  "src/RackCad.UI/Editor/RecomputeGate.cs",
+  "src/RackCad.UI/Preview/EditorPreviewPalette.cs",
+  "src/RackCad.UI/Preview/EditorPreviewParts.cs",
+  "src/RackCad.UI/Preview/EditorPreviewSurface.cs",
+  "src/RackCad.UI/Shell/EditorAction.cs",
+  "src/RackCad.UI/Shell/EditorActionBar.cs",
+  "src/RackCad.UI/Shell/EditorClosePolicy.cs",
+  "src/RackCad.UI/Shell/EditorStatus.cs",
+  "src/RackCad.UI/Shell/EditorStatusPresenter.cs",
+  "src/RackCad.UI/Shell/RackBoundedEditorShell.cs",
+  "src/RackCad.UI/Shell/RackEditorVisualShell.cs",
+  "src/RackCad.UI/Shell/ShellResources.cs",
+  "src/RackCad.UI/Shell/ShellSlotVisibilityConverter.cs",
+  "src/RackCad.UI/Themes/AppStyles.xaml",
+  "src/RackCad.UI/Themes/Generic.xaml"
+ ],
+ "G3": [
+  "src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml",
+  "src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml.cs",
+  "src/RackCad.UI/SelectiveSafetyWindow.cs",
+  "src/RackCad.UI/SafetyDefensaGridWindow.cs",
+  "src/RackCad.UI/SafetyTopeGridWindow.cs",
+  "src/RackCad.UI/RackBomWindow.xaml",
+  "src/RackCad.UI/RackBomWindow.xaml.cs",
+  "src/RackCad.UI/Views/RackViewBatchDialog.xaml",
+  "src/RackCad.UI/Views/RackViewBatchDialog.xaml.cs",
+  "src/RackCad.UI/Views/RackViewBatchDialogPresenter.cs"
+ ],
+ "G6": [
+  "src/RackCad.UI/CatalogOption.cs",
+  "src/RackCad.UI/EnumDisplayConverter.cs",
+  "src/RackCad.UI/ObservableObject.cs",
+  "src/RackCad.UI/PreviewCanvasPainter.cs",
+  "src/RackCad.UI/RackFrames/BracingSegmentEditorRow.cs",
+  "src/RackCad.UI/RackFrames/ConfiguratorNavigationItem.cs",
+  "src/RackCad.UI/RackFrames/FrameExceptionEditorRow.cs",
+  "src/RackCad.UI/RackFrames/FrameExceptionGroup.cs",
+  "src/RackCad.UI/RackFrames/HorizontalEditorRow.cs",
+  "src/RackCad.UI/RackFrames/RackFrameConfiguratorLayoutStore.cs",
+  "src/RackCad.UI/RackFrames/RackFrameConfiguratorViewModel.cs",
+  "src/RackCad.UI/RackFrames/RackFrameEngineeringPreviewLayout.cs",
+  "src/RackCad.UI/SafetyDefenseFace.cs",
+  "src/RackCad.UI/SafetyDesviadorGridWindow.cs",
+  "src/RackCad.UI/SafetyGuiaEntradaGridWindow.cs",
+  "src/RackCad.UI/SafetyParrillaGridWindow.cs",
+  "src/RackCad.UI/UiSupport.cs"
+ ],
+ "Why": {
+  "src/RackCad.UI/CatalogOption.cs": [
+   "CatalogOption"
+  ],
+  "src/RackCad.UI/EnumDisplayConverter.cs": [
+   "EnumDisplayConverter"
+  ],
+  "src/RackCad.UI/PreviewCanvasPainter.cs": [
+   "PreviewCanvasPainter"
+  ],
+  "src/RackCad.UI/RackFrames/BracingSegmentEditorRow.cs": [
+   "BracingSegmentEditorRow"
+  ],
+  "src/RackCad.UI/RackFrames/ConfiguratorNavigationItem.cs": [
+   "ConfiguratorNavigationItem"
+  ],
+  "src/RackCad.UI/RackFrames/HorizontalEditorRow.cs": [
+   "HorizontalEditorRow"
+  ],
+  "src/RackCad.UI/RackFrames/RackFrameConfiguratorLayoutStore.cs": [
+   "RackFrameConfiguratorLayoutSettings",
+   "RackFrameConfiguratorLayoutStore"
+  ],
+  "src/RackCad.UI/RackFrames/RackFrameConfiguratorViewModel.cs": [
+   "RackFrameConfiguratorViewModel"
+  ],
+  "src/RackCad.UI/RackFrames/RackFrameEngineeringPreviewLayout.cs": [
+   "RackFrameEngineeringPreviewLayout",
+   "RackFrameEngineeringPreviewPlate",
+   "RackFrameEngineeringPreviewPost",
+   "RackFrameEngineeringPreviewSegment"
+  ],
+  "src/RackCad.UI/SafetyDefenseFace.cs": [
+   "SafetyDefenseFace"
+  ],
+  "src/RackCad.UI/SafetyDesviadorGridWindow.cs": [
+   "SafetyDesviadorGridWindow"
+  ],
+  "src/RackCad.UI/SafetyGuiaEntradaGridWindow.cs": [
+   "SafetyGuiaEntradaGridWindow"
+  ],
+  "src/RackCad.UI/SafetyParrillaGridWindow.cs": [
+   "SafetyParrillaGridWindow"
+  ],
+  "src/RackCad.UI/UiSupport.cs": [
+   "UiSupport"
+  ],
+  "src/RackCad.UI/ObservableObject.cs": [
+   "ObservableObject"
+  ],
+  "src/RackCad.UI/RackFrames/FrameExceptionEditorRow.cs": [
+   "FrameExceptionEditorRow"
+  ],
+  "src/RackCad.UI/RackFrames/FrameExceptionGroup.cs": [
+   "FrameExceptionGroup"
+  ]
+ }
+}

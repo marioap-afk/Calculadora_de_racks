@@ -1,0 +1,51 @@
+{
+  "Control": "nc3",
+  "RunId": "R20261114T210541Z-f8f7",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "MutatedCheck": {
+    "FreeText": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "fail",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "FreeText"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "FreeText",
+    "FailureClass": "FreeText",
+    "Classification": "EXECUTION_REWORK_REQUIRED",
+    "Disposition": "REWORK",
+    "LaterChecksMustMatch": true
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "FreeText": "El barrido de los campos libres de worker-handoff.json encontro en WorkCompleted una frase reservada por AUTOMATION_PLAN section 16.10. No hubo coincidencias en los otros campos revisados."
+  },
+  "OutputSha256": "36670E6D92A2F779E6DC74B486889FC014C46768DE934046BC299915A4C1A7F9",
+  "ManualFreeText1610": []
+}
