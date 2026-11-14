@@ -57,8 +57,13 @@ public class WorkspacePilotReconciliationHostTests
     }
 
     // What the three operations must leave alone when they do not apply.
+    // The base and the current state are held by reference. The initial state is a COPY by contract of the draft (N-2: every read of
+    // InitialDraftState makes a new one), so its reference can never be the same: it is held as the copy that was made when it was
+    // held and compared with the pilot's own comparer, which is the equality the draft itself uses to decide that it is dirty.
     private sealed record Held(
         DraftStaleBase Base,
+        PushBackPilotDraftState Initial,
+        PushBackPilotDraftState Current,
         string InitialOrigin,
         double Scale,
         IReadOnlyList<KeyValuePair<string, string>> Pending,
@@ -68,6 +73,8 @@ public class WorkspacePilotReconciliationHostTests
 
     private static Held Hold(DraftSession<PushBackPilotDraftState> draft) => new(
         draft.StaleBase,
+        draft.InitialDraftState,
+        draft.CurrentDraftState,
         draft.InitialDraftState.Origin,
         draft.CurrentDraftState.Inputs.Annotations.AnnotationScale,
         draft.PendingText.OrderBy(p => p.Key, StringComparer.Ordinal).ToArray(),
@@ -78,6 +85,8 @@ public class WorkspacePilotReconciliationHostTests
     private static void AssertHeld(Held before, DraftSession<PushBackPilotDraftState> draft)
     {
         Assert.Same(before.Base, draft.StaleBase);
+        Assert.Same(before.Current, draft.CurrentDraftState);
+        Assert.True(PushBackPilotStateComparer.Instance.Equals(before.Initial, draft.InitialDraftState), "the initial state of the draft changed");
         Assert.Equal(before.InitialOrigin, draft.InitialDraftState.Origin);
         Assert.Equal(before.Scale, draft.CurrentDraftState.Inputs.Annotations.AnnotationScale);
         Assert.Equal(before.Pending, draft.PendingText.OrderBy(p => p.Key, StringComparer.Ordinal).ToArray());

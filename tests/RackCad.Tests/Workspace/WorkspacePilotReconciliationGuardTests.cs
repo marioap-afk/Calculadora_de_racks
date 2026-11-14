@@ -83,11 +83,20 @@ public class WorkspacePilotReconciliationGuardTests
                 continue;
             }
 
+            // M-4 (correction): the form of the invocation, and not only the token. A capture as a method group (for example into a field)
+            // names the token once and never invokes it in this form, so it is seen.
+            var invocation = @"\b_port\s*\.\s*" + token + @"\s*\(\s*request\s*\)";
+
             var fieldCode = field[0].Code;
             if (Src.Count(fieldCode, pattern) != 1) yield return "the field view-model does not name " + token + " exactly once";
+            if (Src.Count(fieldCode, invocation) != 1) yield return "the field view-model does not invoke _port." + token + "(request) exactly once";
             if (!Regex.IsMatch(fieldCode, @"public\s+void\s+" + body + @"\s*\(\s*\)")) yield return "the field view-model has no " + body;
-            else if (Src.Count(Src.BodyOf(fieldCode, @"public\s+void\s+" + body + @"\s*\(\s*\)"), pattern) != 1)
-                yield return token + " is not inside " + body;
+            else
+            {
+                var gesture = Src.BodyOf(fieldCode, @"public\s+void\s+" + body + @"\s*\(\s*\)");
+                if (Src.Count(gesture, pattern) != 1) yield return token + " is not inside " + body;
+                if (Src.Count(gesture, invocation) != 1) yield return "_port." + token + "(request) is not invoked inside " + body;
+            }
         }
     }
 
@@ -111,6 +120,28 @@ public class WorkspacePilotReconciliationGuardTests
         Assert.NotEmpty(ReaderViolations(With(files, FieldPath, Mutate(field, "private const string SurfaceChangedText", "private static readonly string Aliased = nameof(IWorkspacePilotEditPort.TryKeepMine); private const string SurfaceChangedText"))));
         foreach (var token in TheFourReads.Select(r => r.Token))
             Assert.NotEmpty(ReaderViolations(With(files, BrowserPath, Mutate(browser, "public void ReloadField() => Field.Rematerialize();", "public void ReloadField() { _pilotEdit." + token + "(null); }"))));
+    }
+
+    // M-4 (correction): the operation captured as a method group inside the right body, and invoked through the capture. The token is named once
+    // and it is inside the body, so only the form of the invocation can see it. Each is ONE Replace of the real text.
+    [Fact]
+    public void TheGuardOfWhoReadsSeesAnOperationCapturedAsAMethodGroupInsideItsOwnGesture()
+    {
+        var files = UiFiles();
+        var field = CodeOf(files, FieldPath);
+        const string choice = "var outcome = kind == ChoiceKind.KeepMine ? _port.TryKeepMine(request) : _port.TryDiscardAndReload(request);";
+        const string confirm = "var outcome = _port.TryConfirmBase(request);";
+        const string check = "var outcome = _port.TryCheckNow(request);";
+
+        Assert.Empty(ReaderViolations(files));
+
+        var keep = Mutate(field, choice, "_keep = _port.TryKeepMine; var outcome = kind == ChoiceKind.KeepMine ? _keep(request) : _port.TryDiscardAndReload(request);");
+        Assert.Equal(1, Src.Count(Src.BodyOf(keep, @"public\s+void\s+ConfirmChoice\s*\(\s*\)"), @"\bTryKeepMine\b"));
+        Assert.NotEmpty(ReaderViolations(With(files, FieldPath, keep)));
+
+        Assert.NotEmpty(ReaderViolations(With(files, FieldPath, Mutate(field, choice, "_discard = _port.TryDiscardAndReload; var outcome = kind == ChoiceKind.KeepMine ? _port.TryKeepMine(request) : _discard(request);"))));
+        Assert.NotEmpty(ReaderViolations(With(files, FieldPath, Mutate(field, confirm, "_confirm = _port.TryConfirmBase; var outcome = _confirm(request);"))));
+        Assert.NotEmpty(ReaderViolations(With(files, FieldPath, Mutate(field, check, "_check = _port.TryCheckNow; var outcome = _check(request);"))));
     }
 
     [Fact]
@@ -274,11 +305,44 @@ public class WorkspacePilotReconciliationGuardTests
         var yes = order.FirstOrDefault(o => o.Name == "BrowserFieldChoiceYesButton");
         var no = order.FirstOrDefault(o => o.Name == "BrowserFieldChoiceNoButton");
         if (yes.Name != null && no.Name != null && yes.Index >= no.Index) yield return "Yes does not come before No";
+        foreach (var violation in QuestionOrderViolations(xaml)) yield return violation;
 
         var text = ElementNamed(xaml, "BrowserFieldChoiceText");
         if (text == null || !Regex.IsMatch(text.Value.StartTag, @"Text=""\{Binding\s+Browser\.Field\.ChoiceText\s*\}""")) yield return "the question is not bound to ChoiceText";
         var reconcile = ElementNamed(xaml, "BrowserFieldReconcileText");
         if (reconcile == null || !Regex.IsMatch(reconcile.Value.StartTag, @"Text=""\{Binding\s+Browser\.Field\.ReconcileText\s*\}""")) yield return "the line is not bound to ReconcileText";
+    }
+
+    // M-5 (correction): the question of the choice is inside the choice panel and comes BEFORE Yes (and so before No).
+    private static IEnumerable<string> QuestionOrderViolations(string xaml)
+    {
+        var choicePanel = ElementNamed(xaml, "BrowserFieldChoicePanel");
+        var question = ElementNamed(xaml, "BrowserFieldChoiceText");
+        var yes = ElementNamed(xaml, "BrowserFieldChoiceYesButton");
+        if (choicePanel == null || question == null || yes == null) { yield return "the question, Yes or the choice panel is missing"; yield break; }
+
+        if (question.Value.Start < choicePanel.Value.Start || question.Value.End > choicePanel.Value.End) yield return "the question is not inside the choice panel";
+        if (question.Value.Start >= yes.Value.Start) yield return "the question does not come before Yes";
+    }
+
+    [Fact]
+    public void TheQuestionOfTheChoiceComesBeforeYesInsideTheChoicePanel()
+    {
+        Assert.Empty(QuestionOrderViolations(XamlWithoutComments()));
+    }
+
+    [Fact]
+    public void TheGuardOfTheQuestionSeesItAfterYesAndOutsideTheChoicePanel()
+    {
+        var xaml = XamlWithoutComments();
+
+        Assert.Contains(
+            "the question does not come before Yes",
+            QuestionOrderViolations(Swap(xaml, "x:Name=\"BrowserFieldChoiceText\"", "x:Name=\"BrowserFieldChoiceYesButton\"")));
+        // The name of the panel on another element: the question is no longer inside what is named the choice panel.
+        Assert.Contains(
+            "the question is not inside the choice panel",
+            QuestionOrderViolations(Swap(xaml, "x:Name=\"BrowserFieldChoicePanel\"", "x:Name=\"BrowserFieldReconcileText\"")));
     }
 
     [Fact]
@@ -314,9 +378,31 @@ public class WorkspacePilotReconciliationGuardTests
 
     // ================================================================== rule 4: no false clean
 
+    // The .xaml of the folder, every one of them (M-5, correction): a new one is read by the rule without anyone naming it.
+    private static IEnumerable<string> XamlFiles()
+    {
+        var dir = System.IO.Path.Combine(Src.RepoRoot(), WorkspaceUiFolder.TrimEnd('/').Replace('/', System.IO.Path.DirectorySeparatorChar));
+        var separator = System.IO.Path.DirectorySeparatorChar;
+        return System.IO.Directory.GetFiles(dir, "*.xaml", System.IO.SearchOption.AllDirectories)
+            .Where(f => !f.Contains(separator + "obj" + separator) && !f.Contains(separator + "bin" + separator))
+            .Select(f => System.IO.Path.GetRelativePath(Src.RepoRoot(), f).Replace(separator, '/'))
+            .OrderBy(f => f, StringComparer.Ordinal)
+            .ToList();
+    }
+
     private static string FolderText() =>
         string.Concat(Src.Files(WorkspaceUiFolder).Select(f => Src.Text(f.Path).Replace("\r\n", "\n")))
-        + string.Concat(new[] { XamlPath }.Select(RealText));
+        + string.Concat(XamlFiles().Select(RealText));
+
+    [Fact]
+    public void TheFolderOfTheRuleReadsEveryXamlOfTheWorkspaceFolderOfTheUi()
+    {
+        var files = XamlFiles().ToList();
+
+        Assert.Contains(XamlPath, files);
+        Assert.All(files, f => Assert.EndsWith(".xaml", f, StringComparison.Ordinal));
+        foreach (var file in files) Assert.Contains(RealText(file), FolderText(), StringComparison.Ordinal);
+    }
 
     private static int CountOrdinal(string text, string needle)
     {
@@ -392,18 +478,48 @@ public class WorkspacePilotReconciliationGuardTests
     }
 
     [Fact]
-    public void TheGuardOfNoFalseCleanSeesTheTextOrItsHalvesAnywhereElseInTheFolderOfTheUi()
+    public void TheGuardOfNoFalseCleanSeesTheReferenceMovedOutOfTheCaseThatSaysItWithoutRemovingTheLabelOfTheCase()
     {
         var field = Real(FieldPath);
         var folder = FolderText();
 
-        Assert.NotEmpty(NoChangesViolations(field, folder + "\nSin cambios."));
-        Assert.NotEmpty(NoChangesViolations(field, folder + "\n<TextBlock Text=\"Sin cambios: el dibujo coincide con la base del borrador.\" />"));
-        Assert.NotEmpty(NoChangesViolations(field, folder + "\nel dibujo coincide con la base del borrador"));
-        Assert.NotEmpty(NotAppliedViolations(field, folder + "\nEl cambio no llegó a aplicarse."));
-        Assert.NotEmpty(NotAppliedViolations(field, folder + "\nel borrador recupera el estado que tenía antes"));
+        // The reference of the constant of "no changes" leaves the case of Confirmed for the case of Conflict. The label of the case stays, so
+        // the guard cannot fail because "there is no case": it fails because the constant is not referenced inside the case.
+        var moved = Mutate(
+            field,
+            "if (_view.State == PilotFieldState.Clean || _view.State == PilotFieldState.Dirty) return UnchangedText;\n"
+            + "                    return ChangedDuringCheckText;\n"
+            + "                case EditConfirmStatus.Conflict:\n"
+            + "                    if (outcome.AdmissionDiagnostic != null) return NotEditableConflictText;",
+            "if (_view.State == PilotFieldState.Clean || _view.State == PilotFieldState.Dirty) return ChangedDuringCheckText;\n"
+            + "                    return ChangedDuringCheckText;\n"
+            + "                case EditConfirmStatus.Conflict:\n"
+            + "                    if (outcome.AdmissionDiagnostic != null) return UnchangedText;");
+
+        Assert.Contains("case EditConfirmStatus.Confirmed:", moved, StringComparison.Ordinal);
+        var violations = NoChangesViolations(moved, folder).ToList();
+        Assert.Contains(violations, v => v.Contains("is not referenced inside case EditConfirmStatus.Confirmed:", StringComparison.Ordinal));
+        Assert.DoesNotContain(violations, v => v.StartsWith("there is no", StringComparison.Ordinal));
+    }
+
+    // The text, or a half of it, anywhere else of the folder of the UI: each is ONE Replace of the real text of the folder (the content of the
+    // button of the XAML), so the guard is run on text that is the real one but for that.
+    [Fact]
+    public void TheGuardOfNoFalseCleanSeesTheTextOrItsHalvesAnywhereElseInTheFolderOfTheUi()
+    {
+        var field = Real(FieldPath);
+        var folder = FolderText();
+        const string real = "Content=\"Comprobar ahora\"";
+
+        Assert.NotEmpty(NoChangesViolations(field, Mutate(folder, real, "Content=\"Sin cambios\"")));
+        Assert.NotEmpty(NoChangesViolations(field, Mutate(folder, real, "Content=\"Sin cambios: el dibujo coincide con la base del borrador.\"")));
+        Assert.NotEmpty(NoChangesViolations(field, Mutate(folder, real, "Content=\"el dibujo coincide con la base del borrador\"")));
+        Assert.NotEmpty(NotAppliedViolations(field, Mutate(folder, real, "Content=\"El cambio no llegó a aplicarse\"")));
+        Assert.NotEmpty(NotAppliedViolations(field, Mutate(folder, real, "Content=\"El cambio no llegó a aplicarse: el borrador recupera el estado que tenía antes.\"")));
+        Assert.NotEmpty(NotAppliedViolations(field, Mutate(folder, real, "Content=\"el borrador recupera el estado que tenía antes\"")));
         // The comparison is ordinal: the same words in another case are another text and are not flagged.
-        Assert.Empty(NoChangesViolations(field, folder + "\nsin cambios\nCabecera sin cambios."));
+        Assert.Empty(NoChangesViolations(field, Mutate(folder, real, "Content=\"sin cambios\"")));
+        Assert.Empty(NoChangesViolations(field, Mutate(folder, real, "Content=\"Cabecera sin cambios.\"")));
     }
 
     // ================================================================== rule 5: Authorize by exact form
@@ -458,8 +574,13 @@ public class WorkspacePilotReconciliationGuardTests
         var host = Real(NavigationHostPath);
 
         Assert.Empty(ReaderAuthorizeViolations(host));
-        Assert.Equal(1, Src.Count(Src.BodyOf(host, @"private\s+sealed\s+class\s+PilotIntentReader\s*:\s*IWorkspaceEditIntentReader"), @"\b_authorize\s*\("));
-        Assert.Equal(3, Src.Count(host, @"\b_authorize\s*\("));
+
+        // No exact count of the calls of the file (I-1, correction): a later read can add its own call, inside the class or outside it, and
+        // the guard of the form is the one that sees it. What is proved here is only that both kinds of call exist and that the file is read.
+        var inside = Src.Count(Src.BodyOf(host, @"private\s+sealed\s+class\s+PilotIntentReader\s*:\s*IWorkspaceEditIntentReader"), @"\b_authorize\s*\(");
+        var inFile = Src.Count(host, @"\b_authorize\s*\(");
+        Assert.True(inside >= 1, "no call of _authorize inside PilotIntentReader");
+        Assert.True(inFile - inside >= 1, "no call of _authorize outside PilotIntentReader");
     }
 
     [Fact]

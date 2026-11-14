@@ -229,7 +229,13 @@ namespace RackCad.UI.Tests
         [Fact]
         public void AMatchOfACleanOrDirtyDraftIsTheTextOfNoChangesAndOnlyThenAndTheMarkOfStalenessStillComesFromTheView()
         {
-            foreach (var view in new[] { Clean(), Dirty(), Dirty(stale: true), Clean(stale: false) })
+            // The check never clears the mark by itself: the state text still carries the one of the view that was read again.
+            foreach (var (view, state) in new[]
+            {
+                (Clean(), "Limpio"),
+                (Dirty(), "Modificado"),
+                (Dirty(stale: true), "Modificado (posiblemente obsoleto)"),
+            })
             {
                 var rig = new Rig(view);
                 rig.Port.ConfirmBaseResponder = _ => EditConfirmOutcome.Confirmed();
@@ -237,6 +243,7 @@ namespace RackCad.UI.Tests
                 rig.Field.CheckNow();
 
                 Assert.Equal(A201, rig.Field.NoticeText);
+                Assert.Equal(state, rig.Field.StateText);
                 Assert.Equal(string.Empty, rig.Field.NotEditableText);
             }
         }
@@ -433,6 +440,88 @@ namespace RackCad.UI.Tests
             Assert.False(thrown.Field.ShowCheckButton);
             Assert.DoesNotContain("Sin cambios", thrown.Field.NoticeText, StringComparison.Ordinal);
             Assert.True(thrown.Port.Current(A, Rack).IsPossiblyStale);
+        }
+
+        // I-64 F4-T4A2 (correction, M-1): the memory of the port that cannot be read again after the operation leaves the field in its Error.
+        // The answer is not presented against the view of before: no text of the tables of section 3 is shown and the state starts with Error.
+        private static void AssertOnlyTheErrorIsShown(WorkspacePilotFieldViewModel field)
+        {
+            foreach (var text in new[] { A201, A202, A235, A237, A207, A230, A231 })
+                Assert.NotEqual(text, field.NoticeText);
+
+            Assert.DoesNotContain("Sin cambios", field.NoticeText, StringComparison.Ordinal);
+            Assert.StartsWith("Error: ", field.StateText, StringComparison.Ordinal);
+            Assert.True(field.IsReadOnly);
+            Assert.False(field.HasChoice);
+        }
+
+        [Fact]
+        public void ACheckWhoseMemoryCannotBeReadAgainAfterTheMatchIsNeverNoChangesAndLeavesTheErrorOfTheField()
+        {
+            foreach (var before in new[] { Clean(), Dirty(stale: true), Conflict(true) })
+            {
+                var rig = new Rig(before);
+                rig.Port.ConfirmBaseResponder = _ => EditConfirmOutcome.Confirmed();
+                rig.Port.ReadHook = _ => rig.Port.Throws[WorkspacePilotEditPortDouble.GetFieldOp] = new InvalidOperationException("boom");
+
+                rig.Field.CheckNow();
+
+                Assert.Equal(1, rig.Count(WorkspacePilotEditPortDouble.ConfirmBaseOp));
+                AssertOnlyTheErrorIsShown(rig.Field);
+            }
+        }
+
+        [Fact]
+        public void ACheckOfAnUnknownDraftWhoseMemoryCannotBeReadAgainAfterTheRecoveryIsNeverPresentedAsRecovered()
+        {
+            var rig = new Rig(Unknown(PilotUnknownOrigin.CommitThrew));
+            rig.Port.CheckNowResponder = _ => EditCheckOutcome.Recovered();
+            rig.Port.ReadHook = _ => rig.Port.Throws[WorkspacePilotEditPortDouble.GetFieldOp] = new InvalidOperationException("boom");
+
+            rig.Field.CheckNow();
+
+            Assert.Equal(1, rig.Count(WorkspacePilotEditPortDouble.CheckOp));
+            AssertOnlyTheErrorIsShown(rig.Field);
+        }
+
+        [Fact]
+        public void AChoiceWhoseMemoryCannotBeReadAgainAfterTheOperationIsNeverPresentedAsDone()
+        {
+            var discard = new Rig(Conflict(true));
+            discard.Port.DiscardAndReloadResponder = _ => EditIntentOutcome.Reloaded(EditWitnessStatus.NotSupplied);
+            discard.Port.ReadHook = _ => discard.Port.Throws[WorkspacePilotEditPortDouble.GetFieldOp] = new InvalidOperationException("boom");
+            discard.Field.RequestDiscardAndReload();
+            Assert.True(discard.Field.HasChoice);
+            discard.Field.ConfirmChoice();
+            Assert.Equal(1, discard.Count(WorkspacePilotEditPortDouble.DiscardAndReloadOp));
+            AssertOnlyTheErrorIsShown(discard.Field);
+
+            var keep = new Rig(Conflict(true));
+            keep.Port.KeepMineResponder = _ => EditIntentOutcome.Kept(EditWitnessStatus.NotSupplied);
+            keep.Port.ReadHook = _ => keep.Port.Throws[WorkspacePilotEditPortDouble.GetFieldOp] = new InvalidOperationException("boom");
+            keep.Field.RequestKeepMine();
+            Assert.True(keep.Field.HasChoice);
+            keep.Field.ConfirmChoice();
+            Assert.Equal(1, keep.Count(WorkspacePilotEditPortDouble.KeepMineOp));
+            AssertOnlyTheErrorIsShown(keep.Field);
+        }
+
+        // I-64 F4-T4A2 (correction, M-2): a declared deviation of the package. When the state changed between the offer of the button
+        // and the read of the view, nothing is asked of the drawing and the notice of the situation that changed is the one shown.
+        [Fact]
+        public void IfTheMemoryChangedBetweenTheOfferAndTheReadTheCheckReadsNothingAndSaysTheSituationChanged()
+        {
+            var rig = new Rig(Clean());
+            Assert.True(rig.Field.ShowCheckButton);
+            rig.Port.ConfirmBaseResponder = _ => EditConfirmOutcome.Confirmed();
+            rig.Port.CheckNowResponder = _ => EditCheckOutcome.Recovered();
+            rig.Set(OfState(PilotFieldState.Applying));
+
+            rig.Field.CheckNow();
+
+            Assert.Empty(rig.Port.Reads());
+            Assert.Equal(A234, rig.Field.NoticeText);
+            Assert.Equal("Aplicando", rig.Field.StateText);
         }
 
         [Fact]
@@ -783,6 +872,27 @@ namespace RackCad.UI.Tests
             Assert.Equal(A230, rig.Field.NoticeText);
         }
 
+        // I-64 F4-T4A2 (correction, M-6): the third choice, the reload of an unknown draft that was applied, is answered No too.
+        [Fact]
+        public void NoOnTheChoiceOfAnUnknownDraftThatWasAppliedCallsNothingChangesNothingAndKeepsTheTextOfTheApplication()
+        {
+            var rig = new Rig(Unknown(PilotUnknownOrigin.PostReread));
+            rig.Field.RequestDiscardAndReload();
+            Assert.True(rig.Field.HasChoice);
+            var before = rig.Port.Current(A, Rack);
+            rig.Port.Calls.Clear();
+
+            rig.Field.CancelChoice();
+
+            Assert.Empty(rig.Port.Calls);
+            Assert.Equal(before, rig.Port.Current(A, Rack));
+            Assert.False(rig.Field.HasChoice);
+            Assert.Equal(string.Empty, rig.Field.ChoiceText);
+            Assert.Equal(A236, rig.Field.NoticeText);
+            Assert.Equal(A212, rig.Field.ReconcileText);
+            Assert.Equal("Desconocido", rig.Field.StateText);
+        }
+
         [Fact]
         public void NoCallsNothingChangesNothingAndSaysSoForEachOfTheTwoChoices()
         {
@@ -791,6 +901,7 @@ namespace RackCad.UI.Tests
                 var rig = new Rig(Conflict(true, committed: "2.5"));
                 if (keep) rig.Field.RequestKeepMine();
                 else rig.Field.RequestDiscardAndReload();
+                Assert.True(rig.Field.HasChoice);
                 var before = rig.Port.Current(A, Rack);
                 rig.Port.Calls.Clear();
 
@@ -865,6 +976,7 @@ namespace RackCad.UI.Tests
         {
             var rig = new Rig(change == "origin" ? Unknown(PilotUnknownOrigin.PostReread) : Conflict(true, committed: "2.5"));
             rig.Field.RequestDiscardAndReload();
+            Assert.True(rig.Field.HasChoice);
             rig.Port.Calls.Clear();
             rig.Set(change switch
             {
@@ -887,6 +999,7 @@ namespace RackCad.UI.Tests
         {
             var rig = new Rig(Conflict(true, committed: "2.5"));
             rig.Field.RequestKeepMine();
+            Assert.True(rig.Field.HasChoice);
             rig.Set(Conflict(true, committed: "3.0"));
 
             rig.Field.ConfirmChoice();
@@ -901,6 +1014,7 @@ namespace RackCad.UI.Tests
         {
             var surface = new Rig(Conflict(true));
             surface.Field.RequestKeepMine();
+            Assert.True(surface.Field.HasChoice);
             surface.Field.Show(B, "R-2", false);
             Assert.False(surface.Field.HasChoice);
             Assert.Equal(string.Empty, surface.Field.NoticeText);
@@ -908,12 +1022,14 @@ namespace RackCad.UI.Tests
 
             var cleared = new Rig(Conflict(true));
             cleared.Field.RequestDiscardAndReload();
+            Assert.True(cleared.Field.HasChoice);
             cleared.Field.Clear();
             Assert.False(cleared.Field.HasChoice);
             Assert.Equal(string.Empty, cleared.Field.NoticeText);
 
             var failed = new Rig(Conflict(true));
             failed.Field.RequestDiscardAndReload();
+            Assert.True(failed.Field.HasChoice);
             failed.Field.Fail(new InvalidOperationException("boom"));
             Assert.False(failed.Field.HasChoice);
             Assert.Equal(string.Empty, failed.Field.NoticeText);
@@ -943,6 +1059,7 @@ namespace RackCad.UI.Tests
         {
             var gone = new Rig(Conflict(true));
             gone.Field.RequestKeepMine();
+            Assert.True(gone.Field.HasChoice);
             gone.Port.Remove(A, Rack);
             gone.Field.Show(A, Rack, false);
             Assert.False(gone.Field.HasChoice);
@@ -950,6 +1067,7 @@ namespace RackCad.UI.Tests
 
             var changed = new Rig(Conflict(true));
             changed.Field.RequestDiscardAndReload();
+            Assert.True(changed.Field.HasChoice);
             changed.Set(Dirty());
             changed.Field.Show(A, Rack, false);
             Assert.False(changed.Field.HasChoice);
@@ -980,6 +1098,10 @@ namespace RackCad.UI.Tests
 
             Assert.False(browser.Field.HasChoice);
             Assert.Equal(0, port.Count(WorkspacePilotEditPortDouble.KeepMineOp));
+
+            // A declared deviation of the package (M-3): the browser rebuilds the field and then rematerializes it, and that last gesture
+            // withdraws the choice in silence, so the notice of the situation that changed (A2-34) is never seen in this flow.
+            Assert.Equal(string.Empty, browser.Field.NoticeText);
         }
 
         // ------------------------------------------------------------------ the answer of the choice (D-T4A2-03, step 5)

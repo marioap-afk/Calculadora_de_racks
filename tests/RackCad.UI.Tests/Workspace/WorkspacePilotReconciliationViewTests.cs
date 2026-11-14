@@ -287,7 +287,9 @@ namespace RackCad.UI.Tests
                 Assert.Equal("Qué cambió: A1:EnvelopeText Con texto pendiente no se puede conservar el borrador: aplícalo o corrígelo antes.", Named<TextBlock>(view, "BrowserFieldReconcileText").Text);
 
                 Click(Named<Button>(view, "BrowserFieldDiscardAndReloadButton"));
-                view.ViewModel.Browser.Field.CommitPending();
+                // The box of the view loses the focus as the input system raises it: the wiring of the XAML runs the commit of the pending text.
+                var box = Named<TextBox>(view, "BrowserFieldBox");
+                box.RaiseEvent(new RoutedEventArgs(UIElement.LostFocusEvent, box));
                 Lay(view);
 
                 Assert.Equal(0, pilot.Count(WorkspacePilotEditPortDouble.CommitOp));

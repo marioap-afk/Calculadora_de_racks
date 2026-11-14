@@ -41,23 +41,14 @@ namespace RackCad.UI.Tests
             return File.ReadAllText(path);
         }
 
-        [Fact]
-        public void TheCorpusIsTheEightCanonicalDesignsOfTheCharacterizationByName()
-        {
-            Assert.Equal(8, Canonical.Length);
-            Assert.Equal(8, Canonical.Distinct(StringComparer.Ordinal).Count());
-            foreach (var name in Canonical) Assert.StartsWith("pb-0", name, StringComparison.Ordinal);
-        }
-
-        [Theory]
-        [MemberData(nameof(Designs))]
-        public void ThePersistedDocumentOfThePilotWithoutAnEditIsTheInnerDesignOfTheEnvelopeByteForByteWithoutNormalizingTheLineEndings(string fixture)
+        // The round trip of one fixture: the document that the pilot persists without an edit against the inner design of the envelope, with
+        // no normalization of the line endings. The two carry CRLF, so the comparison is not vacuous.
+        private static void AssertRoundTripByteForByte(string fixture)
         {
             var text = Fixture(fixture);
             var catalog = JsonRackCatalogProvider.FromBaseDirectory().Load();
             var inner = new RackEmbedStore().Deserialize(text).Design;
 
-            // The comparison is not vacuous on Windows: the inner design of the fixtures carries CRLF.
             Assert.Contains("\r\n", inner, StringComparison.Ordinal);
 
             var materialized = PushBackPilotMaterializer.Materialize(text, catalog);
@@ -70,5 +61,25 @@ namespace RackCad.UI.Tests
             Assert.Contains("\r\n", persisted, StringComparison.Ordinal);
             Assert.True(string.Equals(inner, persisted, StringComparison.Ordinal), fixture + ": the persisted document is not the inner design byte for byte");
         }
+
+        [Fact]
+        public void EachOfTheEightCanonicalDesignsIsAFileOfTheFixturesFolderAndItsRoundTripIsByteForByte()
+        {
+            Assert.Equal(8, Canonical.Length);
+            Assert.Equal(8, Canonical.Distinct(StringComparer.Ordinal).Count());
+
+            var folder = Path.Combine(RepoRoot().FullName, "tests", "RackCad.Tests", "Fixtures", "I64");
+            foreach (var name in Canonical)
+            {
+                Assert.StartsWith("pb-0", name, StringComparison.Ordinal);
+                Assert.True(File.Exists(Path.Combine(folder, name + ".json")), "the canonical design " + name + " is not a file of " + folder);
+                AssertRoundTripByteForByte(name);
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(Designs))]
+        public void ThePersistedDocumentOfThePilotWithoutAnEditIsTheInnerDesignOfTheEnvelopeByteForByteWithoutNormalizingTheLineEndings(string fixture) =>
+            AssertRoundTripByteForByte(fixture);
     }
 }

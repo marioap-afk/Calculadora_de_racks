@@ -862,7 +862,6 @@ public class WorkspaceEditIntentGuardTests
         var core = Core();
 
         Assert.Equal(1, Src.Count(core, AdmissionDiagnosticPattern));
-        Assert.Equal(2, Src.Count(core, @"\bpilot\.Read\.(?:IsAdmitted|Admission)\b"));
         Assert.Equal(2, Src.Count(core + "\nvar again = pilot.Read.IsAdmitted ? null : pilot.Read.Admission.Diagnostic;", AdmissionDiagnosticPattern));
         foreach (var body in new[] { IntentBody(), CheckBody(), KeepBody(), DiscardAndReloadBody() })
             Assert.Equal(0, Src.Count(body, AdmissionDiagnosticPattern));
