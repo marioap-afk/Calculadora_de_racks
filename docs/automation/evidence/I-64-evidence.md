@@ -7048,3 +7048,30 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 **Siguiente:** el paquete de F4-T4A2-PREPARE-UI.
 
 **Límites:** solo documentación; sin AutoCAD.
+
+## 193. Ratificación de F4-T4A1 y paquete de F4-T4A2
+
+**Decisión:** F4-E54.
+
+**Ratificación y autorización del Owner:**
+- F4-T4A1 queda CLOSED / PASS WITH LIMITATIONS sobre `bbd9a35e`.
+- F4-T4A2 queda autorizada con 1 de 3.
+- Los 14 menores se asignan por dueño de su superficie.
+
+**Decisiones del Owner para la noche:**
+- el diseño con la opción recomendada;
+- la cadena hasta el cierre;
+- ante un imprevisto, parar esa línea;
+- después, solo los paquetes de T1B y T4B.
+
+**Mapa:** tres exploraciones de solo lectura del código real (`bbd9a35e`).
+
+**Paquete** `docs/initiatives/I-64-f4-t4a2-gate-contract-package.md` v3:
+- revisión de la v1: EMITIBLE TRAS CORRECCIONES (1/5/16);
+- re-revisión de la v2: EMITIBLE TRAS CORRECCIONES (1/1/11);
+- comprobación focalizada de la v3: EMITIBLE;
+- todo aceptado.
+
+**Validación determinista final:** PASS en sus ocho comprobaciones, idéntica en dos corridas.
+
+**Límites:** solo documentación; sin AutoCAD.

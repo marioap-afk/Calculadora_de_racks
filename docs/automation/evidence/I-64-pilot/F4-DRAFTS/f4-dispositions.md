@@ -1839,3 +1839,50 @@ La mutación authored no empieza sin su contrato. Smoke-2 sigue pendiente de Aut
 - La siguiente subtarea es F4-T4A2-PREPARE-UI, que empieza en 1 de 3. Su paquete se fija sobre el código de `bbd9a35e`.
 
 **Límites:** este paso es solo documentación; sin AutoCAD.
+
+## F4-E54. Ratificación de F4-T4A1, paquete de F4-T4A2 y emisión de F4-T4A2-PREPARE-UI
+
+**Origen:** dos documentos del Owner.
+
+**1. La ratificación y la autorización** (`F4-DRAFTS/coordinator/owner-f4t4a2-authorization.md`, texto pegado literal):
+- F4-T4A1 queda CLOSED / PASS WITH LIMITATIONS sobre `bbd9a35e`, con la custodia `b9e1ed5a`: el intento 1 fue REWORK y el intento 2 cerró, sin usar el intento 3.
+- Los 14 menores de F4-T4A1 siguen abiertos como obligaciones de calidad, y cada uno se asigna a T4A2, a T4B o a un endurecimiento posterior según quién posee su superficie. Los de prioridad son el arrastre (1), los huecos antialias y las formas de R-3.
+- Autoriza **F4-T4A2 — CHECK-NOW / RECONCILIATION** con `attempts` 1 de 3, sin más aprobación para el paquete, la revisión, la emisión, la planificación ni el Worker.
+- Fija el flujo, los diez puntos de «Comprobar ahora», las clases de resultado, «sin falso limpio», las opciones sin una cuarta política, la confirmación con la prueba de inversión de Sí/No, el endurecimiento de `Authorize`, las reglas de «Conservar» y de la recarga, el texto pendiente, cero escrituras, las 18 pruebas, TOCTOU, el plan inmutable, el proceso, la cadena, la regla de copia y la deuda de controles.
+
+**2. Las decisiones del Owner para la noche** (`F4-DRAFTS/coordinator/owner-f4t4a2-overnight-decisions.md`, preguntas y respuestas literales):
+1. Las decisiones de diseño, «Lo que recomiendes»: la sesión toma las recomendadas y las registra como delegadas.
+2. La cadena de F4-T4A2, «Hasta el cierre».
+3. Ante un imprevisto (un modo de fallo nuevo de nc1..nc3, una segunda falla de fidelidad o un hash nuevo de `config.toml`), «Parar esa línea y esperar».
+4. Después de cerrar F4-T4A2, «Solo paquetes» de F4-T1B y F4-T4B, sin emitir.
+
+**Mapa previo:** tres exploraciones de solo lectura sobre el código de `bbd9a35e`, con los mapas en `F4-T4A2-PREPARE-UI/coordinator/`.
+
+**Paquete** `docs/initiatives/I-64-f4-t4a2-gate-contract-package.md` v3:
+- **revisión adversarial de la v1:** EMITIBLE TRAS CORRECCIONES (1/5/16);
+- **re-revisión de la v2:** EMITIBLE TRAS CORRECCIONES (1/1/11);
+- **comprobación focalizada de la v3:** EMITIBLE, sin bloqueantes ni importantes; sus cuatro menores se aplicaron en la emisión (`package-rereview-v2.md`, §5);
+- todo aceptado.
+
+**Decisiones delegadas de la sesión** (pregunta 1), comunicadas al Owner en el §9 del paquete:
+- ninguna acción de la reconciliación es una frontera bloqueable en el Freeze; el bloqueo por pendiente se aplica a «Conservar» en su oferta;
+- «Conservar» solo se ofrece con un cambio comprometido y sin pendiente, para que no revierta en silencio un cambio externo de la escala;
+- el Conflicto y la confirmación de «Comprobar ahora» llevan el diagnóstico de admisión y la pista del editor clásico: es el único cambio del host, un cambio declarado de D-T4A1-03;
+- el diagnóstico persistente de la superficie deja la caja de solo lectura, y solo lo sustituye un resultado que releyó;
+- en Desconocido tras la relectura de POST, el rótulo es «Descartar y recargar», una desviación de rótulo de D-T4A1-03;
+- **limitaciones declaradas:**
+  - en la vía de `TryCheckNow`, un rack borrado o ya no editable se ve como Conflicto hasta la elección (asignado a F4-T4B);
+  - el diagnóstico persistente es memoria de la superficie.
+
+**Los menores de F4-T4A1:**
+- a F4-T4A2, M-2, M-3, M-4, M-8 y M-9;
+- a F4-T4B, M-1, M-5, M-6 y M-10;
+- D-1 a F4-T4B y F4-T4C;
+- M-7 y M-11, ya aceptados en F4-E53;
+- D-2 y D-3, a un endurecimiento posterior.
+
+**Validación determinista final:** PASS en sus ocho comprobaciones, idéntica en dos corridas.
+
+**Emisión:** contrato de F4-T4A2-PREPARE-UI con 15 rutas, 17 invariantes y las paradas C01 a C09; `RequiredTests` 2843 y 458, las dos con `ExpectRed` true; `attempts` 1 de 3.
+
+**Límites:** solo documentación; sin AutoCAD.
