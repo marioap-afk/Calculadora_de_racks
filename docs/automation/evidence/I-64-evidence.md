@@ -7162,3 +7162,15 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 **Base:** entre `c3ae1c97`, la base medida del paquete, y la emisión no cambia nada en `src/` ni en `tests/` (comprobado al emitir).
 
 **Límites:** solo documentación; sin AutoCAD.
+
+## 200. Contrato de F4-T1B-PILOT-CHARACTERIZATION
+
+**Contrato:** `I-64-pilot/F4-T1B-PILOT-CHARACTERIZATION/coordinator/gate-contract.json` (F4-E58).
+- **Alcance:** lista blanca exacta de 21 rutas: los siete archivos nuevos de prueba y los 14 de `MutantScope`, que el RED muta y el GREEN revierte con neto cero (INV-F4T1B-01: los bytes del producto del GREEN son los de `ChainBaseSha`).
+- **`ForbiddenWriteScope`:** 152 entradas, por raíces de `src/` sin los archivos de `MutantScope`, más los ayudantes de prueba existentes por nombre.
+- **Invariantes y paradas:** 16 invariantes (01 a 13 con la numeración del §6 del paquete; 14, la tabla cerrada de mutantes con sus fallos esperados; 15, la prueba por mutante; 16, las tres clases de escritura) y 10 paradas propias, entre ellas C09 (cuelgue, modal vivo, escritura del perfil, AutoCAD o rutas de la máquina) y C10 (mutante sin prueba que lo discrimine).
+- **Filtros:** `RackCad.Tests.PushBackClassicCharacterization` (`MinSelected` 4) y `RackCad.UI.Tests.PushBackClassicCharacterization` (`MinSelected` 22), los dos con `ExpectRed` true; hoy seleccionan 0 pruebas.
+- **Revisiones:** `AuthorityRevision` `24e3f4140543a09f8a7114abffaf06844abc9f94` y `MainSha` `812baf879612320653094a8aaf46aca0bac81383`.
+- **`attempts`:** 1 de 3.
+
+**Límites:** solo documentación en este paso; sin AutoCAD.
