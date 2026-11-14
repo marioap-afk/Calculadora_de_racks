@@ -84,6 +84,18 @@ namespace RackCad.UI.Workspace
 
         private void OnBrowserFieldReloadClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.ReloadField());
 
+        // The reconciliation of the field (I-64 F4-T4A2): each click is one explicit interaction of the user, and each handler only calls its own
+        // member of the field. The two options only ask for the confirmation; the check and the answer Yes are the ones that reach the port.
+        private void OnBrowserFieldCheckClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.Field.CheckNow());
+
+        private void OnBrowserFieldDiscardAndReloadClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.Field.RequestDiscardAndReload());
+
+        private void OnBrowserFieldKeepMineClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.Field.RequestKeepMine());
+
+        private void OnBrowserFieldChoiceYesClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.Field.ConfirmChoice());
+
+        private void OnBrowserFieldChoiceNoClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.Field.CancelChoice());
+
         // Closing and discarding (I-64 F4-T3B2): each click is one explicit interaction that only changes memory. The inline confirmation has
         // exactly these two buttons; the buttons of a row of notice find their row in their own data context.
         private void OnBrowserFieldDiscardClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.DiscardField());

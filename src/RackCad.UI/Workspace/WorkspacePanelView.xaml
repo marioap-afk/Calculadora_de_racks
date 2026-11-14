@@ -211,6 +211,10 @@
                                    Foreground="{DynamicResource ShellStatusWarningBrush}" />
                         <TextBlock x:Name="BrowserFieldHintText" Text="{Binding Browser.Field.ClassicEditorHintText}" Style="{StaticResource OptionalText}"
                                    Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                        <!-- Reconciliation of the draft (I-64 F4-T4A2): what changed, the check, the two options and ONE inline choice with Si and No.
+                             Memory only: the check rereads the drawing without writing it, and no control here writes it. -->
+                        <TextBlock x:Name="BrowserFieldReconcileText" Text="{Binding Browser.Field.ReconcileText}" Style="{StaticResource OptionalText}"
+                                   Foreground="{DynamicResource ShellTextSecondaryBrush}" />
                         <WrapPanel Margin="0,4,0,0">
                             <Button x:Name="BrowserFieldEditButton" Content="Editar" Margin="0,2,6,0" Padding="10,3"
                                     Style="{StaticResource SecondaryButtonStyle}"
@@ -227,7 +231,41 @@
                                     AutomationProperties.Name="Descartar el borrador"
                                     Visibility="{Binding Browser.Field.ShowDiscardButton, Converter={StaticResource FlagToVisibility}}"
                                     Click="OnBrowserFieldDiscardClick" />
+                            <Button x:Name="BrowserFieldCheckButton" Content="Comprobar ahora" Margin="0,2,6,0" Padding="10,3"
+                                    Style="{StaticResource SecondaryButtonStyle}"
+                                    AutomationProperties.Name="Comprobar el borrador ahora"
+                                    Visibility="{Binding Browser.Field.ShowCheckButton, Converter={StaticResource FlagToVisibility}}"
+                                    Click="OnBrowserFieldCheckClick" />
+                            <Button x:Name="BrowserFieldDiscardAndReloadButton" Content="Descartar y recargar" Margin="0,2,6,0" Padding="10,3"
+                                    Style="{StaticResource SecondaryButtonStyle}"
+                                    AutomationProperties.Name="Descartar el borrador y recargarlo"
+                                    Visibility="{Binding Browser.Field.ShowDiscardAndReloadButton, Converter={StaticResource FlagToVisibility}}"
+                                    Click="OnBrowserFieldDiscardAndReloadClick" />
+                            <Button x:Name="BrowserFieldKeepMineButton" Content="Conservar mi borrador" Margin="0,2,6,0" Padding="10,3"
+                                    Style="{StaticResource SecondaryButtonStyle}"
+                                    AutomationProperties.Name="Conservar el borrador sobre la versión actual"
+                                    Visibility="{Binding Browser.Field.ShowKeepMineButton, Converter={StaticResource FlagToVisibility}}"
+                                    Click="OnBrowserFieldKeepMineClick" />
                         </WrapPanel>
+                        <!-- The inline confirmation of the field: exactly Si and No, in that order, with no default or cancel button and no keyboard handling. -->
+                        <Border x:Name="BrowserFieldChoicePanel" Margin="0,6,0,0" Padding="8" BorderThickness="1"
+                                BorderBrush="{DynamicResource ShellStatusWarningBrush}"
+                                Visibility="{Binding Browser.Field.HasChoice, Converter={StaticResource FlagToVisibility}}">
+                            <StackPanel>
+                                <TextBlock x:Name="BrowserFieldChoiceText" Text="{Binding Browser.Field.ChoiceText}" TextWrapping="Wrap"
+                                           Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                <WrapPanel Margin="0,6,0,0">
+                                    <Button x:Name="BrowserFieldChoiceYesButton" Content="Sí" Margin="0,0,6,0" Padding="10,3"
+                                            Style="{StaticResource SecondaryButtonStyle}"
+                                            AutomationProperties.Name="Confirmar la elección"
+                                            Click="OnBrowserFieldChoiceYesClick" />
+                                    <Button x:Name="BrowserFieldChoiceNoButton" Content="No" Padding="10,3"
+                                            Style="{StaticResource SecondaryButtonStyle}"
+                                            AutomationProperties.Name="Cancelar la elección"
+                                            Click="OnBrowserFieldChoiceNoClick" />
+                                </WrapPanel>
+                            </StackPanel>
+                        </Border>
                     </StackPanel>
                     <!-- Explicit reread of the summary of the active tab, from any state of the surface. It is the surface's own button:
                          there is still one surface and it is reused by every tab. -->

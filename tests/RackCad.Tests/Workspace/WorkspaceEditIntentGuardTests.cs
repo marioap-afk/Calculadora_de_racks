@@ -642,7 +642,9 @@ public class WorkspaceEditIntentGuardTests
     // ------------------------------------------------------------------ obligation 10: the base of a result only reaches Begin, CheckNow or DiscardAndReload
 
     // The ways to use the base or the read of a result of the pilot: the base, the initial state, the read itself and its entries.
-    private static readonly Regex BaseOrReadUse = new(@"\.StaleBase\b|\.InitialState\b|\b(?:pilot|result)\.Read\b|\.Entries\b");
+    // M-2 (I-64 F4-T4A2): besides the form without spaces, the read through the name of the pilot is seen with a null-conditional or a null-forgiving
+    // operator and with spaces or line breaks (pilot?.Read, pilot!.Read, pilot . Read). The alternative of result is kept as it was.
+    private static readonly Regex BaseOrReadUse = new(@"\.StaleBase\b|\.InitialState\b|\b(?:pilot|result)\.Read\b|\bpilot\s*[?!]?\s*\.\s*Read\b|\.Entries\b");
 
     // The consumers that the obligation allows: the registry (Begin), the draft (CheckNow), the reload of F4-T2B2B and, since F4-T4A1
     // (D-T4A1-07), the general check (ConfirmBase) and the atomic keep (KeepMineOnCurrentVersion).
@@ -797,6 +799,73 @@ public class WorkspaceEditIntentGuardTests
     public void TheBaseGuardAllowsTheConsumersOfTheObligation(string injected)
     {
         Assert.DoesNotMatch(BaseOrReadUse, WithoutTheAllowedConsumers(Core() + "\n" + injected));
+    }
+
+    // M-2 (I-64 F4-T4A2): the read of a result of the pilot is also seen through the null-conditional and the null-forgiving operators and with spaces.
+    [Theory]
+    [InlineData("var a = pilot?.Read.IsAdmitted;")]
+    [InlineData("var a = pilot!.Read;")]
+    [InlineData("var a = pilot . Read;")]
+    [InlineData("var a = pilot ?. Read.Admission;")]
+    [InlineData("var a = pilot\n    .Read;")]
+    public void TheBaseGuardDetectsTheReadThroughTheNameOfThePilotWithAnOperatorOrWithSpaces(string injected)
+    {
+        var real = Core();
+
+        Assert.DoesNotMatch(BaseOrReadUse, WithoutTheAllowedConsumers(real));
+        Assert.Matches(BaseOrReadUse, WithoutTheAllowedConsumers(real + "\n" + injected));
+        // The alternative of result is kept: the form that the guard saw before is still seen.
+        Assert.Matches(BaseOrReadUse, WithoutTheAllowedConsumers(real + "\nvar state = result.Read;"));
+    }
+
+    // M-2, the new rule: in the host core the name of the pilot only appears in the forms that were measured. Once those forms are taken away,
+    // no word "pilot" is left, so no alias, no call that hands it over and no other member of it can escape the guards of the use of the base.
+    private static readonly Regex PilotForms = new(
+        @"var pilot = read\.PilotRead;|\bpilot == null\b|\bpilot\.(?:StaleBase|Read|PreviewWitness|Detail|ClassicEditorHint)\b");
+
+    private static IEnumerable<string> PilotNameViolations(string core)
+    {
+        var rest = PilotForms.Replace(core, string.Empty);
+        var left = Regex.Match(rest, @"\bpilot\b");
+        if (left.Success) yield return "the name of the pilot is used outside its forms: " + rest.Substring(Math.Max(0, left.Index - 20), Math.Min(60, rest.Length - Math.Max(0, left.Index - 20)));
+    }
+
+    [Fact]
+    public void TheNameOfThePilotInTheHostCoreOnlyAppearsInTheMeasuredFormsAndNothingIsLeftOnceTheyAreTakenAway()
+    {
+        var core = Core();
+
+        // The rule fixes no counts: the counts of each body are fixed by the guards that already exist.
+        Assert.Empty(PilotNameViolations(core));
+        Assert.NotEmpty(PilotForms.Matches(core));
+    }
+
+    [Theory]
+    [InlineData("var p = pilot; var d = p.Read.Admission.Diagnostic;")]
+    [InlineData("var a = pilot?.Read.IsAdmitted;")]
+    [InlineData("var a = pilot!.Read;")]
+    [InlineData("Use(pilot);")]
+    [InlineData("var a = (pilot).Read;")]
+    [InlineData("var a = pilot.Other;")]
+    [InlineData("var a = pilot.ReadX;")]
+    [InlineData("var a = pilot . Read;")]
+    public void TheGuardOfTheNameOfThePilotSeesAnAliasAHandOverAnOperatorAnotherMemberAndAMemberThatOnlyStartsLikeAnAllowedOne(string injected)
+    {
+        Assert.NotEmpty(PilotNameViolations(Core() + "\n" + injected));
+    }
+
+    // M-3 (I-64 F4-T4A2): the expression of the diagnostic of the admission is in the whole host core exactly once, not only in the body of the
+    // general check, so no other operation and no helper can reach the diagnostic of a read.
+    [Fact]
+    public void TheExpressionOfTheDiagnosticOfTheAdmissionIsInTheWholeHostCoreExactlyOnce()
+    {
+        var core = Core();
+
+        Assert.Equal(1, Src.Count(core, AdmissionDiagnosticPattern));
+        Assert.Equal(2, Src.Count(core, @"\bpilot\.Read\.(?:IsAdmitted|Admission)\b"));
+        Assert.Equal(2, Src.Count(core + "\nvar again = pilot.Read.IsAdmitted ? null : pilot.Read.Admission.Diagnostic;", AdmissionDiagnosticPattern));
+        foreach (var body in new[] { IntentBody(), CheckBody(), KeepBody(), DiscardAndReloadBody() })
+            Assert.Equal(0, Src.Count(body, AdmissionDiagnosticPattern));
     }
 
     [Fact]

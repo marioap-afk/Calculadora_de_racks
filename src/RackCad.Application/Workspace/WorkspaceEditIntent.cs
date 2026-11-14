@@ -284,7 +284,11 @@ namespace RackCad.Application.Workspace
         /// <summary>No reader of the edit intention was assigned: nothing was read. It is also the default value.</summary>
         Unavailable,
 
-        /// <summary>The check waits and nothing was read (no active document, a RackCad modal, a command, a read or a notice in progress), or the draft was being applied.</summary>
+        /// <summary>
+        /// The check waits and nothing was read: no active document, a RackCad modal, a command, or a read or a notice in progress. The
+        /// reload and the keep answer Waiting for a draft that is being applied; this check answers NotApplicable for it instead, and the
+        /// panel presents both as "not checked".
+        /// </summary>
         Waiting,
 
         /// <summary>The session of the request is not the one of the active document: nothing was read.</summary>
@@ -293,7 +297,10 @@ namespace RackCad.Application.Workspace
         /// <summary>There is no draft for (session, rack): nothing was read.</summary>
         NotFound,
 
-        /// <summary>The draft is not clean, dirty or in conflict, so it is not checked: nothing was read.</summary>
+        /// <summary>
+        /// The draft is not clean, dirty or in conflict, so it is not checked. A draft that is being applied answers this before anything is
+        /// read; a draft that starts to be applied, or leaves the registry, while the one read is in progress answers this after the read.
+        /// </summary>
         NotApplicable,
 
         /// <summary>The reread matches the base of the draft. A draft in conflict stays in conflict.</summary>
@@ -314,12 +321,18 @@ namespace RackCad.Application.Workspace
     {
         private readonly IReadOnlyList<string>? _differences;
 
-        private EditConfirmOutcome(EditConfirmStatus status, string? reason, IReadOnlyList<string> differences, string? admissionDiagnostic)
+        private EditConfirmOutcome(
+            EditConfirmStatus status,
+            string? reason,
+            IReadOnlyList<string> differences,
+            string? admissionDiagnostic,
+            string? classicEditorHint)
         {
             Status = status;
             Reason = reason;
             _differences = differences;
             AdmissionDiagnostic = admissionDiagnostic;
+            ClassicEditorHint = classicEditorHint;
         }
 
         public EditConfirmStatus Status { get; }
@@ -329,8 +342,11 @@ namespace RackCad.Application.Workspace
         /// <summary>What differs, as "key:kind" lines; empty unless the status is Conflict. Never null, also for a default value.</summary>
         public IReadOnlyList<string> Differences => _differences ?? Array.Empty<string>();
 
-        /// <summary>The diagnostic of the admission of the read; set only for a Confirmed whose read was not admitted, null otherwise.</summary>
+        /// <summary>The diagnostic of the admission of the read; set for a Confirmed or a Conflict whose read was not admitted, null otherwise.</summary>
         public string? AdmissionDiagnostic { get; }
+
+        /// <summary>The hint to the classic editor; set for a Confirmed or a Conflict whose read was not admitted (and so only next to a diagnostic), null otherwise.</summary>
+        public string? ClassicEditorHint { get; }
 
         public static EditConfirmOutcome Unavailable(string reason) => Without(EditConfirmStatus.Unavailable, reason);
 
@@ -342,19 +358,19 @@ namespace RackCad.Application.Workspace
 
         public static EditConfirmOutcome NotApplicable(string reason) => Without(EditConfirmStatus.NotApplicable, reason);
 
-        public static EditConfirmOutcome Confirmed(string? admissionDiagnostic = null) =>
-            new(EditConfirmStatus.Confirmed, null, Array.Empty<string>(), admissionDiagnostic);
+        public static EditConfirmOutcome Confirmed(string? admissionDiagnostic = null, string? classicEditorHint = null) =>
+            new(EditConfirmStatus.Confirmed, null, Array.Empty<string>(), admissionDiagnostic, classicEditorHint);
 
-        public static EditConfirmOutcome Conflict(IReadOnlyList<string> differences)
+        public static EditConfirmOutcome Conflict(IReadOnlyList<string> differences, string? admissionDiagnostic = null, string? classicEditorHint = null)
         {
             if (differences == null) throw new ArgumentNullException(nameof(differences));
-            return new EditConfirmOutcome(EditConfirmStatus.Conflict, null, differences, null);
+            return new EditConfirmOutcome(EditConfirmStatus.Conflict, null, differences, admissionDiagnostic, classicEditorHint);
         }
 
         public static EditConfirmOutcome Failed(string reason) => Without(EditConfirmStatus.Failed, reason);
 
         private static EditConfirmOutcome Without(EditConfirmStatus status, string? reason) =>
-            new(status, reason, Array.Empty<string>(), null);
+            new(status, reason, Array.Empty<string>(), null, null);
     }
 
     /// <summary>

@@ -58,9 +58,15 @@ namespace RackCad.UI.Tests
         /// <summary>The operations that were called at least once.</summary>
         public HashSet<string> Operations() => Calls.Select(c => c.Operation).ToHashSet(StringComparer.Ordinal);
 
-        public IEnumerable<Call> Reads() => Calls.Where(c => c.Operation == BeginOp || c.Operation == CheckOp || c.Operation == ReloadOp);
+        /// <summary>
+        /// The calls that read the drawing: the three of F4-T3A and, since F4-T4A2 (M-9), the general check, the keep and the discard with a
+        /// reload (F4-T4A1).
+        /// </summary>
+        public IEnumerable<Call> Reads() => Calls.Where(c =>
+            c.Operation == BeginOp || c.Operation == CheckOp || c.Operation == ReloadOp
+            || c.Operation == ConfirmBaseOp || c.Operation == KeepMineOp || c.Operation == DiscardAndReloadOp);
 
-        /// <summary>Runs inside TryBeginEdit, TryCheckNow and TryReload, as a read that pumps messages would.</summary>
+        /// <summary>Runs inside the six reads (TryBeginEdit, TryCheckNow, TryReload, TryConfirmBase, TryKeepMine and TryDiscardAndReload), as a read that pumps messages would.</summary>
         public Action<Call>? ReadHook { get; set; }
 
         /// <summary>The validation of the text: the message when it is not valid, null when it is. Valid by default.</summary>
@@ -69,6 +75,9 @@ namespace RackCad.UI.Tests
         public Func<EditIntentRequest, EditIntentOutcome>? BeginResponder { get; set; }
 
         public Func<EditIntentRequest, EditIntentOutcome>? ReloadResponder { get; set; }
+
+        /// <summary>I-64 F4-T4A2: what TryCheckNow answers. By default, the answer of before: Unavailable and nothing changes.</summary>
+        public Func<EditIntentRequest, EditCheckOutcome>? CheckNowResponder { get; set; }
 
         /// <summary>I-64 F4-T4A1: what TryConfirmBase answers. Without it the double answers Unavailable and changes nothing.</summary>
         public Func<EditIntentRequest, EditConfirmOutcome>? ConfirmBaseResponder { get; set; }
@@ -114,8 +123,11 @@ namespace RackCad.UI.Tests
             bool isProtected = false,
             bool canEdit = true,
             string? committedReason = null,
-            string? errorReason = null) =>
-            new PilotFieldView(true, state, stale, isProtected, canEdit, committed, committedReason, pending, message, errorReason);
+            string? errorReason = null,
+            PilotUnknownOrigin unknownOrigin = PilotUnknownOrigin.None,
+            string? conflictText = null,
+            string? lastCause = null) =>
+            new PilotFieldView(true, state, stale, isProtected, canEdit, committed, committedReason, pending, message, errorReason, unknownOrigin, conflictText, lastCause);
 
         /// <summary>F4-T3C1: the unknown answer of GetRacksAtRisk (it could not be decided), the default value of the port.</summary>
         public static PilotRiskView UnknownRisk() => default;
@@ -174,6 +186,7 @@ namespace RackCad.UI.Tests
             var call = Record(CheckOp, request.Session, request.RackId);
             ReadHook?.Invoke(call);
             ThrowIfAsked(CheckOp);
+            if (CheckNowResponder != null) return CheckNowResponder(request);
             return EditCheckOutcome.Unavailable("The double does not check.");
         }
 

@@ -254,9 +254,20 @@ public class WorkspacePilotPrepareGuardTests
 
     // ErrorReason is only assigned together with the explicit status Error, or to null: the statement that precedes the assignment, inside
     // its block, sets _explicitStatus to DraftStatus.Error.
+    // M-4 (I-64 F4-T4A2): the forms of an assignment that the guard recognizes. Besides the plain one, the assignment through this, the compound
+    // forms (the null-coalescing assignment and the addition) and a deconstruction that has ErrorReason among its targets. Group 1 is the value.
+    private static readonly string[] ErrorReasonAssignmentForms =
+    {
+        @"(?<![\w.])ErrorReason\s*=(?![=>])\s*([^;]+);",
+        @"\bthis\s*\.\s*ErrorReason\s*=(?![=>])\s*([^;]+);",
+        @"(?<![\w.])ErrorReason\s*\?\?=\s*([^;]+);",
+        @"(?<![\w.])ErrorReason\s*\+=\s*([^;]+);",
+        @"\(\s*[^()]*\bErrorReason\b[^()]*\)\s*=(?![=>])\s*([^;]+);",
+    };
+
     private static IEnumerable<string> ErrorReasonCoreViolations(string code)
     {
-        var assignments = Regex.Matches(code, @"(?<![\w.])ErrorReason\s*=(?![=>])\s*([^;]+);");
+        var assignments = ErrorReasonAssignmentForms.SelectMany(form => Regex.Matches(code, form).Cast<Match>()).ToList();
         if (assignments.Count == 0) yield return "no assignment of ErrorReason: the guard would be empty";
 
         foreach (Match assignment in assignments)
@@ -299,6 +310,28 @@ public class WorkspacePilotPrepareGuardTests
         Assert.Contains(from, session);
 
         Assert.NotEmpty(ErrorReasonCoreViolations(session.Replace(from, to, StringComparison.Ordinal)));
+    }
+
+    // M-4: the same guard trips on the forms of assignment that it did not see before, each one outside the status Error. The real block that
+    // resets the reason to null is the place of the mutation, so each text is the real file with ONE Replace.
+    [Theory]
+    [InlineData("this.ErrorReason = \"left over\";")]
+    [InlineData("this . ErrorReason = \"left over\";")]
+    [InlineData("ErrorReason ??= \"left over\";")]
+    [InlineData("ErrorReason += \"left over\";")]
+    [InlineData("(ErrorReason, _) = (\"left over\", 0);")]
+    [InlineData("(var other, ErrorReason) = (0, \"left over\");")]
+    public void TheGuardOfTheReasonOfTheErrorTripsOnTheFormsThatAssignItThroughThisCompoundlyOrByDeconstructionOutsideTheStatusError(string assignment)
+    {
+        const string block = "LastApplyCause = null;\n            Warnings = Array.Empty<string>();\n            ErrorReason = null;";
+        var session = Session().Replace("\r\n", "\n");
+        Assert.Contains(block, session);
+        Assert.Empty(ErrorReasonCoreViolations(session));
+
+        var mutated = session.Replace(block, "LastApplyCause = null;\n            Warnings = Array.Empty<string>();\n            " + assignment, StringComparison.Ordinal);
+
+        Assert.NotEqual(session, mutated);
+        Assert.NotEmpty(ErrorReasonCoreViolations(mutated));
     }
 
     [Fact]

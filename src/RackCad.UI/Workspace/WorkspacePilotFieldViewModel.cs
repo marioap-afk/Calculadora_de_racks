@@ -133,6 +133,39 @@ namespace RackCad.UI.Workspace
         /// <summary>The hint of the classic editor that comes with a diagnostic; it is shown, never launched.</summary>
         public string ClassicEditorHintText => _hint ?? string.Empty;
 
+        // The skeleton of I-64 F4-T4A2 (INV-F4T4A2-14): the members of the reconciliation exist and do nothing.
+        public bool ShowCheckButton => false;
+
+        public bool ShowDiscardAndReloadButton => false;
+
+        public bool ShowKeepMineButton => false;
+
+        public bool HasChoice => false;
+
+        public string ChoiceText => string.Empty;
+
+        public string ReconcileText => string.Empty;
+
+        public void CheckNow()
+        {
+        }
+
+        public void RequestDiscardAndReload()
+        {
+        }
+
+        public void RequestKeepMine()
+        {
+        }
+
+        public void ConfirmChoice()
+        {
+        }
+
+        public void CancelChoice()
+        {
+        }
+
         // ------------------------------------------------------------------ what the browser tells it
 
         /// <summary>

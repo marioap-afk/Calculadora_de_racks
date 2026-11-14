@@ -990,7 +990,7 @@ public class WorkspacePilotPrepareTests
 
         Assert.Equal(EditConfirmStatus.Conflict, outcome.Status);
         Assert.Equal(expected, outcome.Differences.ToArray());
-        Assert.Null(outcome.AdmissionDiagnostic);
+        Assert.Equal(PushBackPilotIntentReader.UnreadableDiagnostic, outcome.AdmissionDiagnostic);
         Assert.Equal(DraftStatus.Conflict, draft.Status);
         Assert.Same(before, draft.StaleBase);
         Assert.Equal(2.25, draft.CurrentDraftState.Inputs.Annotations.AnnotationScale);

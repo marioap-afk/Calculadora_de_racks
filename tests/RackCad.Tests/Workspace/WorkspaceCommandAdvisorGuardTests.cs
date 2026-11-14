@@ -108,6 +108,61 @@ public class WorkspaceCommandAdvisorGuardTests
             yield return "it does not report through the shared reporter";
         var forbidden = Regex.Match(body, @"\b(?:GetOrCreate|OpenPanel|Show|IsCreated)\b");
         if (forbidden.Success) yield return "it names " + forbidden.Value;
+
+        // C2-M-2 (I-64 F4-T4A2): the target of the discard is fixed by exact form, with flexible spaces and line breaks. The controller is the
+        // existing one, and the call of the core has the five arguments in their place: the edit port of that controller, the active session of its
+        // port, the authorization of THAT session against the document with the comparison to Accepted, the question and the writer.
+        if (!Regex.IsMatch(body, @"var\s+controller\s*=\s*WorkspaceController\s*\.\s*Existing\s*;"))
+            yield return "it does not take the existing controller by the exact form";
+        if (!Regex.IsMatch(body, DiscardCallForm)) yield return "the call of the core of the command is not of the exact form";
+    }
+
+    private const string DiscardCallForm =
+        @"WorkspaceDocumentDiscardCommand\s*\.\s*Run\s*\(\s*controller\s*\?\s*\.\s*PilotEdit\s*,\s*\(\s*\)\s*=>\s*controller\s*\?\s*\.\s*Port\s*\.\s*GetSnapshot\s*\(\s*\)\s*\.\s*ActiveSession\s*,"
+        + @"\s*session\s*=>\s*controller\s*\.\s*Port\s*\.\s*Authorize\s*\(\s*new\s+WorkspaceRequest\s*\(\s*session\s*\)\s*\)\s*==\s*RequestDecision\s*\.\s*Accepted\s*,"
+        + @"\s*ConfirmOnCommandLine\s*,\s*WriteToCommandLine\s*\)\s*;";
+
+    // The fifteen mutants of the real file that the guard of the presence of C2 accepted (map-2, B.3), each one a single Replace.
+    private const string TargetCall = "session => controller.Port.Authorize(new WorkspaceRequest(session)) == RequestDecision.Accepted,";
+    private const string Argument1 = "controller?.PilotEdit,";
+    private const string Argument2 = "() => controller?.Port.GetSnapshot().ActiveSession,";
+
+    public static IEnumerable<object[]> TheMutantsOfTheDiscardCall() => new[]
+    {
+        new object[] { "M2a", TargetCall, "session => controller.Port.Authorize(new WorkspaceRequest(session)) != RequestDecision.Accepted," },
+        new object[] { "M2b", TargetCall, "session => controller.Port.Authorize(new WorkspaceRequest(session)) == RequestDecision.RejectedSessionMismatch," },
+        new object[] { "M2c", TargetCall, "session => { controller.Port.Authorize(new WorkspaceRequest(session)); return true; }," },
+        new object[] { "M2d", TargetCall, "session => controller.Port.Authorize(new WorkspaceRequest(default)) == RequestDecision.Accepted," },
+        new object[] { "M2e", TargetCall, "session => controller.Port.Authorize(new WorkspaceRequest(new SessionId(1))) == RequestDecision.Accepted," },
+        new object[] { "M2f", TargetCall, "session => controller.Port.Authorize(new WorkspaceRequest(session)) == RequestDecision.Accepted || true," },
+        new object[] { "M3a", Argument1, "null," },
+        new object[] { "M3b", Argument2, "() => null," },
+        new object[] { "M3c", Argument2, "() => new SessionId(1)," },
+    };
+
+    [Theory]
+    [MemberData(nameof(TheMutantsOfTheDiscardCall))]
+    public void TheDiscardBodyGuardFlagsEachMutantOfTheRealFileThatTheGuardOfPresenceAccepted(string mutant, string from, string to)
+    {
+        var real = Src.Code(CommandPath);
+        Assert.Contains(from, real, StringComparison.Ordinal);
+        Assert.Empty(DiscardBodyViolations(real));
+
+        var mutated = real.Replace(from, to, StringComparison.Ordinal);
+
+        Assert.NotEqual(real, mutated);
+        Assert.True(DiscardBodyViolations(mutated).Any(), mutant + " passes the guard");
+    }
+
+    [Fact]
+    public void TheDiscardBodyGuardAlsoFlagsTheControllerThatIsNotTheExistingOneByTheExactForm()
+    {
+        var real = Src.Code(CommandPath);
+        const string from = "var controller = WorkspaceController.Existing;";
+        Assert.Contains(from, real, StringComparison.Ordinal);
+
+        Assert.NotEmpty(DiscardBodyViolations(real.Replace(from, "var controller = other.Existing;", StringComparison.Ordinal)));
+        Assert.NotEmpty(DiscardBodyViolations(real.Replace(from, "var controller = WorkspaceController.Existing ?? fallback;", StringComparison.Ordinal)));
     }
 
     [Fact]
@@ -144,6 +199,58 @@ public class WorkspaceCommandAdvisorGuardTests
             if (!Regex.IsMatch(body, needle)) yield return "ConfirmOnCommandLine lacks " + needle;
         // The answer of GetKeywords is read with Status and StringResult only: nothing is named Result (a property of other types is banned).
         if (Regex.IsMatch(code, @"\bResult\b")) yield return "an identifier is named Result";
+
+        // C2-M-1 (I-64 F4-T4A2): the question and its mapping are fixed by exact form, with flexible spaces and line breaks. Only yes, answered with
+        // the keyword Si (ordinal) and with the status OK, is true; the one other return of the member is the one of a missing document, false.
+        if (!Regex.IsMatch(body, AnswerForm)) yield return "the answer is not taken by the exact form";
+        if (!Regex.IsMatch(body, YesForm)) yield return "the mapping of the answer is not the exact form of yes";
+        if (!Regex.IsMatch(body, @"if\s*\(\s*document\s*==\s*null\s*\)\s*return\s+false\s*;")) yield return "a missing document is not false by the exact form";
+        if (Src.Count(body, @"\breturn\b") != 2) yield return "the member does not have exactly two returns";
+    }
+
+    private const string AnswerForm = @"var\s+answer\s*=\s*document\s*\.\s*Editor\s*\.\s*GetKeywords\s*\(\s*options\s*\)\s*;";
+
+    private const string YesForm =
+        @"return\s+answer\s*\.\s*Status\s*==\s*PromptStatus\s*\.\s*OK\s*&&\s*string\s*\.\s*Equals\s*\(\s*answer\s*\.\s*StringResult\s*,\s*""Si""\s*,\s*System\s*\.\s*StringComparison\s*\.\s*Ordinal\s*\)\s*;";
+
+    private const string RealYes = "return answer.Status == PromptStatus.OK && string.Equals(answer.StringResult, \"Si\", System.StringComparison.Ordinal);";
+
+    public static IEnumerable<object[]> TheMutantsOfTheYesAnswer() => new[]
+    {
+        new object[] { "M1a", "return !(answer.Status == PromptStatus.OK && string.Equals(answer.StringResult, \"Si\", System.StringComparison.Ordinal));" },
+        new object[] { "M1b", "return answer.Status != PromptStatus.OK || !string.Equals(answer.StringResult, \"Si\", System.StringComparison.Ordinal);" },
+        new object[] { "M1c", "return answer.Status == PromptStatus.OK && string.Equals(answer.StringResult, \"No\", System.StringComparison.Ordinal);" },
+        new object[] { "M1d", "return answer.Status == PromptStatus.OK || string.Equals(answer.StringResult, \"Si\", System.StringComparison.Ordinal);" },
+        new object[] { "M1e", "return answer.Status != PromptStatus.OK && string.Equals(answer.StringResult, \"Si\", System.StringComparison.Ordinal);" },
+        new object[] { "M1f", "return answer.Status == PromptStatus.OK && !string.Equals(answer.StringResult, \"Si\", System.StringComparison.Ordinal);" },
+    };
+
+    [Theory]
+    [MemberData(nameof(TheMutantsOfTheYesAnswer))]
+    public void TheKeywordsGuardFlagsEachMutantOfTheRealFileThatTheGuardOfPresenceAccepted(string mutant, string to)
+    {
+        var real = Src.Code(CommandPath);
+        Assert.Contains(RealYes, real, StringComparison.Ordinal);
+        Assert.Empty(KeywordsViolations(real));
+
+        var mutated = real.Replace(RealYes, to, StringComparison.Ordinal);
+
+        Assert.NotEqual(real, mutated);
+        Assert.True(KeywordsViolations(mutated).Any(), mutant + " passes the guard");
+    }
+
+    [Fact]
+    public void TheKeywordsGuardAlsoFlagsAnExtraReturnAnAnswerThatIsNotTakenFromTheDocumentAndAMissingDocumentThatIsNotFalse()
+    {
+        var real = Src.Code(CommandPath);
+        const string answer = "var answer = document.Editor.GetKeywords(options);";
+        const string missing = "if (document == null) return false;";
+        Assert.Contains(answer, real, StringComparison.Ordinal);
+        Assert.Contains(missing, real, StringComparison.Ordinal);
+
+        Assert.NotEmpty(KeywordsViolations(real.Replace(answer, "var answer = other.Editor.GetKeywords(options);", StringComparison.Ordinal)));
+        Assert.NotEmpty(KeywordsViolations(real.Replace(missing, "if (document == null) return true;", StringComparison.Ordinal)));
+        Assert.NotEmpty(KeywordsViolations(real.Replace(missing, "if (document == null) return false; if (options == null) return true;", StringComparison.Ordinal)));
     }
 
     [Fact]
