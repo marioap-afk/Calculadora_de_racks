@@ -1886,3 +1886,30 @@ La mutación authored no empieza sin su contrato. Smoke-2 sigue pendiente de Aut
 **Emisión:** contrato de F4-T4A2-PREPARE-UI con 15 rutas, 17 invariantes y las paradas C01 a C09; `RequiredTests` 2843 y 458, las dos con `ExpectRed` true; `attempts` 1 de 3.
 
 **Límites:** solo documentación; sin AutoCAD.
+
+## F4-E55. Intento 1 de F4-T4A2-PREPARE-UI: entrega, verificación, revisiones y corrección en el intento 2
+
+**Hechos del intento 1:**
+- **Planificación** `R20261114T144612Z-2d7d`: fidelidad PASS a la primera en las ocho colecciones; A1-A8 8/8, con horizonte Medium; nc4 `R20261114T145003Z-3ce4` con su oráculo (solo A3 en fail).
+  - La primera medición de procesos de salida contó dos participantes que eran el shell de la propia sesión (falso P-02 conocido); la comprobación se repitió desde su script, con 0 participantes, antes de lanzar.
+- **Una preparación descartada antes de invocar nada:** el primer prompt del Worker (`R20261114T145054Z-a227`) decía que el nombre de la prueba de `WorkspacePilotPrepareTests.cs:993` podía cambiar, contra el paquete v3. La sesión corrigió el generador, borró esa carpeta de `artifacts/` y generó el prompt con un RunId nuevo.
+- **Worker** `R20261114T145121Z-eba2`:
+  - `claude-sonnet-5-5`/high, 293 turnos, 0 denegaciones y sin procesos en segundo plano;
+  - RED `1fe36cf9`: fallan solo pruebas nuevas y la declarada, por aserción (10 en Core y 95 en UI);
+  - GREEN `9333396d`: las 15 rutas; entre el RED y el GREEN solo cambian `WorkspacePilotFieldViewModel.cs` y `WorkspaceHostCore.cs`.
+- **CI:** GREEN `43610599173` 4/4 (filtros 2918/2918 y 596/596; Core completo 18456/18456) y RED `43610560838` con Core y UI en failure.
+- **Verificación** `R20261114T160452Z-872b`: `EXECUTION_VERIFIED`, 14/14, `VerifiedSha` `9333396d`, con el RED acreditado (10 rutas de `tests/`).
+
+**Revisiones** (análisis conjunto en `F4-T4A2-PREPARE-UI/1/R20261114T160452Z-872b/analysis.md`):
+- **la directa de la sesión:** el producto cumple el contrato, sin bloqueantes ni importantes (3 menores);
+- **la adversarial independiente:** **NO ACEPTABLE (0/1/9)**. El producto es correcto. El importante I-1 es que la prueba positiva de la regla 5 fija cuentas exactas de `_authorize`, contra el «sin exigir unicidad» de INV-F4T4A2-12, y congelaría la lectura nueva de F4-T4B. Hay además nueve menores de pruebas, guardas y declaración, y uno de producto: un falso limpio defensivo si `GetField` lanza.
+
+**Decisión:** corrección en el intento 2 de 3, que el Owner decidió de antemano para la noche (`owner-f4t4a2-overnight-decisions.md`, pregunta 2).
+- El contrato del intento 2 (`gate-contract-attempt2.json`) conserva el alcance de 15 rutas, la lista prohibida y las paradas. Añade las correcciones de I-1 y de M-1 a M-9 a sus invariantes, y un INV-18.
+- **Cambio declarado:** el filtro de Core pasa a `ExpectRed` false, porque el RED de la corrección solo puede fallar en UI.
+- La cadena sigue con ChainBaseSha `4eb7e924` y ChainRedSha `1fe36cf9`.
+- El intento 3 no se gasta sin el Owner.
+
+**Nota para el paquete de F4-T4B:** prever los cambios de guarda que exigirá llevar el diagnóstico de admisión a la vía de `TryCheckNow` (M-3 del paquete y las cuentas de `CheckBody`).
+
+**Límites:** este paso es solo documentación; sin AutoCAD.

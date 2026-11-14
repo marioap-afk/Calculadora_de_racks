@@ -7087,3 +7087,16 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **`attempts`:** 1 de 3.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 195. F4-T4A2-PREPARE-UI, intento 1: planificación, entrega, verificación y revisiones
+
+**Decisión:** F4-E55.
+
+- **Planificación** `2d7d`: fidelidad PASS y A1-A8 8/8; nc4 `3ce4` con su oráculo.
+- **Worker** `eba2`: RED `1fe36cf9` y GREEN `9333396d`, con las 15 rutas.
+- **CI:** `43610599173` 4/4, con 2918/2918 en Core y 596/596 en UI en los filtros.
+- **Verificación** `872b`: `EXECUTION_VERIFIED` 14/14 sobre `9333396d`.
+- **Revisiones:** la directa, el producto conforme; la independiente, NO ACEPTABLE (0/1/9) por una prueba positiva que fija cuentas exactas contra INV-F4T4A2-12.
+- **Disposición:** corrección en el intento 2 de 3, decidida de antemano por el Owner.
+
+**Límites:** solo documentación; sin AutoCAD.

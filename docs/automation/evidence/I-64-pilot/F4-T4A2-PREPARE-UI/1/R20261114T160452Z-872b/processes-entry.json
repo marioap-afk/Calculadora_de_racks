@@ -1,0 +1,67 @@
+{
+  "CheckedUtc": "2026-11-14T16:09:13.5412322Z",
+  "CheckerPid": 24428,
+  "Rows": [
+    {
+      "Pid": 8712,
+      "ParentPid": 1336,
+      "Name": "codex-windows-sandbox-service.exe",
+      "CreationDateUtc": "2026-11-13T14:39:03.6404780Z",
+      "Classification": "nominal-exclusion",
+      "Reread": null,
+      "SessionOwned": false
+    },
+    {
+      "Pid": 24940,
+      "ParentPid": 30024,
+      "Name": "bash.exe",
+      "CreationDateUtc": "2026-11-14T16:09:08.7196630Z",
+      "Classification": "own-tree",
+      "Reread": null,
+      "SessionOwned": false
+    },
+    {
+      "Pid": 4900,
+      "ParentPid": 24940,
+      "Name": "bash.exe",
+      "CreationDateUtc": "2026-11-14T16:09:10.1482330Z",
+      "Classification": "own-tree",
+      "Reread": null,
+      "SessionOwned": false
+    },
+    {
+      "Pid": 24428,
+      "ParentPid": 4900,
+      "Name": "pwsh.exe",
+      "CreationDateUtc": "2026-11-14T16:09:10.2800610Z",
+      "Classification": "own-tree",
+      "Reread": null,
+      "SessionOwned": false
+    },
+    {
+      "Pid": 25776,
+      "ParentPid": 21924,
+      "Name": "git.exe",
+      "CreationDateUtc": "2026-11-14T16:09:10.9413990Z",
+      "Classification": "unattributable",
+      "Reread": "GONE",
+      "SessionOwned": false
+    },
+    {
+      "Pid": 31296,
+      "ParentPid": 21924,
+      "Name": "git.exe",
+      "CreationDateUtc": "2026-11-14T16:09:10.9464120Z",
+      "Classification": "unattributable",
+      "Reread": "GONE",
+      "SessionOwned": false
+    }
+  ],
+  "ReadableNonParticipants": 27,
+  "Participants": 0,
+  "ParticipantsSessionOwned": 0,
+  "ParticipantsForeign": 0,
+  "SessionPid": 99012,
+  "UnattributablePersistent": 0,
+  "UnattributableCleared": 2
+}
