@@ -572,14 +572,17 @@ namespace RackCad.Application.Workspace
 
                 // 7: the base of the reread only goes to ConfirmBase.
                 var confirm = draft.ConfirmBase(pilot.StaleBase);
+                var admission = pilot.Read.IsAdmitted ? null : pilot.Read.Admission.Diagnostic;
+                var hint = admission == null ? null : pilot.ClassicEditorHint;
                 switch (confirm.Status)
                 {
                     case DraftConfirmStatus.Confirmed:
-                        // M-5: a confirmed check whose read was not admitted still carries the diagnostic of the admission.
-                        return EditConfirmOutcome.Confirmed(pilot.Read.IsAdmitted ? null : pilot.Read.Admission.Diagnostic);
+                        // M-5: a confirmed check whose read was not admitted still carries the diagnostic of the admission and the hint of the classic editor.
+                        return EditConfirmOutcome.Confirmed(admission, hint);
                     case DraftConfirmStatus.Conflict:
+                        // A difference found with a read that was not admitted carries them too, so the panel never takes "gone" or "not editable" for an outside change.
                         _knownClean.Remove(request.Session);
-                        return EditConfirmOutcome.Conflict(DescribeDifferences(confirm.Differences));
+                        return EditConfirmOutcome.Conflict(DescribeDifferences(confirm.Differences), admission, hint);
                     default:
                         return EditConfirmOutcome.NotApplicable(NotCheckableReason);
                 }
