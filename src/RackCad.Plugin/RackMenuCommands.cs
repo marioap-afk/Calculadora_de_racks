@@ -133,7 +133,7 @@ namespace RackCad.Plugin
                         var pushBackName = Systems.Shared.RackNewRackName.Resolve(
                             document, global::RackCad.Domain.Systems.Shared.RackSystemKind.PushBack, pushBack.RackName);
                         if (pushBack.System != null) pushBack.System.Name = pushBackName;
-                        var pushBackProducts = global::RackCad.Plugin.Views.RackViewBatchProducts.PushBack(document, pushBack.System, pushBack.Design,
+                        var pushBackProducts = RackViewBatchProducts.PushBack(document, pushBack.System, pushBack.Design,
                             pushBack.RackId, pushBackName, null, pushBack.SourceProject, null);
                         RackViewBatchExecution.Run(document, pushBackProducts,
                             RackViewBatchProductSession<RackCad.Domain.Systems.PushBack.PushBackDesign,

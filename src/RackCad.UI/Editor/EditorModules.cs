@@ -111,14 +111,14 @@ namespace RackCad.UI.Editor
 
         public RackInsertionRequest OpenForNew(RackEditorLaunchContext context)
         {
-            var window = new RackPushBackSystemWindow(context.CanInsertInAutoCad) { Owner = (context.Owner) };
+            var window = new RackPushBackSystemWindow(context.CanInsertInAutoCad) { Owner = context.Owner };
             window.ShowDialog();
             return Build(window);
         }
 
         public RackInsertionRequest OpenFromLibrary(RackProject project, RackDesignLibraryEntry entry, RackEditorLaunchContext context)
         {
-            var window = new RackPushBackSystemWindow(context.CanInsertInAutoCad) { Owner = (context.Owner) };
+            var window = new RackPushBackSystemWindow(context.CanInsertInAutoCad) { Owner = context.Owner };
             // Pass the source project so a re-save preserves its wrapper metadata (I-11); a fresh GUID is minted on insert
             // (the library entry's GUID is never reused as the new rack's identity).
             window.LoadDesignForNew(project.PushBackDesign, entry.Name, project);

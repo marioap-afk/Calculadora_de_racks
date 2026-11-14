@@ -91,7 +91,7 @@ namespace RackCad.Plugin.Views
             return new RackViewBatchProductSession<PushBackDesign, PushBackSystem, HeaderRunPlan>(
                 RackSystemKind.PushBack, facts, preparer, RackAuthoredComparatorPorts.PushBack(), comparison,
                 source, design, rackId, rackName, Project(RackProject.ForPushBack(design), innerSource),
-                product => RackViewPlacement.PlacePushBack(document, product, regen: (false)));
+                product => RackViewPlacement.PlacePushBack(document, product, regen: false));
         }
 
         internal static RackViewBatchProductSession<RackFrameConfiguration, RackFrameConfiguration, HeaderRunPlan> Header(

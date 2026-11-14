@@ -312,7 +312,7 @@ namespace RackCad.UI.Systems.PushBack
             this.sourceProject = sourceProject;
             isEditingExisting = true;
             session.Identity.Adopt(rackId, rackName);
-            LoadFromModel(inputs, rackName + "*");
+            LoadFromModel(inputs, rackName);
         }
 
         /// <summary>
@@ -1201,7 +1201,7 @@ namespace RackCad.UI.Systems.PushBack
         private void Name_Changed(object sender, RoutedEventArgs e)
         {
             if (suppressSync) return;
-            session.Identity.SetName(NameBox.Text);
+            session.Identity.SetName(NameBox.Text?.Trim());
         }
 
         private void Input_Changed(object sender, RoutedEventArgs e) => RequestRecompute();
@@ -2423,7 +2423,7 @@ namespace RackCad.UI.Systems.PushBack
         /// </summary>
         private RackFrameConfiguration ShowHeaderConfigurator(RackFrameConfiguration copy, bool alreadyCustom)
         {
-            var window = new RackFrameConfiguratorWindow(copy) { Owner = (Window)this };
+            var window = new RackFrameConfiguratorWindow(copy) { Owner = this };
 
             // REGRESION I-40 (ronda 2 del Owner): una cabecera YA personalizada se abre en el editor AVANZADO.
             // El configurador siempre arranca en «Configuracion rapida», y en ese modo la unica forma de cambiar el
@@ -2443,7 +2443,7 @@ namespace RackCad.UI.Systems.PushBack
                 window.ShowDialog();
             }
 
-            return (window.Configuration) ?? copy;
+            return window.Configuration ?? copy;
         }
 
         private RackFrameConfiguration HeaderConfigurationFromLastComputation(string moduleId)
@@ -2617,7 +2617,6 @@ namespace RackCad.UI.Systems.PushBack
                 : ShowSafetyDialog(elements, levels, postCount, composed);
             if (chosen == null)
             {
-                RequestRecompute();
                 return;
             }
 
@@ -2720,7 +2719,6 @@ namespace RackCad.UI.Systems.PushBack
                 BootPlacements.To(section.Placement),
                 current,
                 PushBackBootSection.ModeLabels) { Owner = this };
-            dialog.WindowStartupLocation = WindowStartupLocation.Manual;
             var accepted = BootPerPostWindowDialog != null ? BootPerPostWindowDialog(dialog) : dialog.ShowDialog();
             if (accepted != true)
             {
@@ -2864,7 +2862,7 @@ namespace RackCad.UI.Systems.PushBack
                 autoPerEnd: true,
                 face: section.Face())
             {
-                Owner = (Window)this
+                Owner = this
             };
             return dialog.ShowDialog() == true ? dialog.Result : null;
         }
@@ -3017,7 +3015,6 @@ namespace RackCad.UI.Systems.PushBack
             {
                 Owner = this
             };
-            dialog.WindowStartupLocation = WindowStartupLocation.Manual;
             var accepted = SafetyWindowDialog != null ? SafetyWindowDialog(dialog) : dialog.ShowDialog();
             return accepted == true ? dialog.Result : null;
         }
@@ -3047,7 +3044,7 @@ namespace RackCad.UI.Systems.PushBack
                 // pick, so neither control is offered. The adapter never read them either.
                 showSharedAndSide: false)
             {
-                Owner = (Window)this
+                Owner = this
             };
             return dialog.ShowDialog() == true ? dialog.Result : null;
         }
@@ -3214,7 +3211,7 @@ namespace RackCad.UI.Systems.PushBack
         // PB-VAL-01: the four linked views are FIRST-CLASS buttons in the action bar (the dynamic editor offers the same
         // flow), not one hidden combo. Each selects its view — so the preview follows along and the embed View/Section
         // contract stays the single source — and then inserts through the very same path as "Insertar vista actual".
-        private void InsertLateral_Click(object sender, RoutedEventArgs e) => InsertViewAt(1);
+        private void InsertLateral_Click(object sender, RoutedEventArgs e) => InsertViewAt(0);
 
         /// <summary>
         /// I-42 — el lado que el CORTE FRONTAL muestra. Es una eleccion del boton que se pulsa, no el «lado activo»
@@ -3227,10 +3224,10 @@ namespace RackCad.UI.Systems.PushBack
         internal PushBackSide FrontalSideForTest => frontalSide;
 
         private void InsertFrontalEntrada_Click(object sender, RoutedEventArgs e)
-            => InsertViewAt(2);
+            => InsertViewAt(1);
 
         private void InsertFrontalPosterior_Click(object sender, RoutedEventArgs e)
-            => InsertViewAt(3);
+            => InsertViewAt(2);
 
         /// <summary>
         /// El lado de los CORTES FRONTALES lo declara su propio selector, no el lado que se este editando: el usuario
@@ -3251,7 +3248,7 @@ namespace RackCad.UI.Systems.PushBack
             RenderPreview();
         }
 
-        private void InsertPlanta_Click(object sender, RoutedEventArgs e) => InsertViewAt(0);
+        private void InsertPlanta_Click(object sender, RoutedEventArgs e) => InsertViewAt(3);
 
         private void InsertViewAt(int viewIndex)
         {
@@ -3294,23 +3291,9 @@ namespace RackCad.UI.Systems.PushBack
 
         private void Update_Click(object sender, RoutedEventArgs e) => RequestDraw(null, -1, updateOnly: true);
 
-        private void DeadSubscriptionProbe()
-        {
-            session.InsertRequestedRaised += (sender, args) => { };
-        }
-
-        private bool? DeadDialogResultProbe()
-        {
-            return DialogResult;
-        }
-
-        private void DeadFocusProbe()
-        {
-            NameBox.Focus();
-        }
-
         private void InsertBatch_Click(object sender, RoutedEventArgs e)
         {
+            if (moduleOwner.ModuleSession.HasPendingChanges) moduleOwner.CommitModuleEdits();
             RequestRecompute();
             if (!currentInputsAreValid || lastComputation?.System == null
                 || OutputBlockedAfterRecompute("Corrige los datos: no se puede dibujar un modelo bloqueado.")) return;
@@ -3325,7 +3308,7 @@ namespace RackCad.UI.Systems.PushBack
             foreach (var cut in new PushBackSystemLateralBuilder().Cortes(lastComputation.System, catalog))
                 options.Insert(0, new Views.RackViewBatchOption(
                     "Lateral · poste " + (cut.PostIndex + 1), RackViewAddress.Post(cut.PostIndex)));
-            if (!Views.RackViewBatchDialogPresenter.TryShow((Window)this, RackSystemKind.PushBack, options, out var views)) return;
+            if (!Views.RackViewBatchDialogPresenter.TryShow(this, RackSystemKind.PushBack, options, out var views)) return;
             session.Identity.SetName(NameBox.Text?.Trim());
             session.SetModel(lastComputation.Design, lastComputation.System);
             session.RequestInsertViews(views, ctx =>
@@ -3339,20 +3322,15 @@ namespace RackCad.UI.Systems.PushBack
 
         private void RequestDraw(string view, int section, bool updateOnly)
         {
-            if (moduleOwner.ModuleSession.HasPendingChanges)
-            {
-                moduleOwner.CommitModuleEdits();
-            }
-
             if (!canInsertInAutoCad)
             {
-                SetStatus("El dibujo en AutoCAD solo está disponible cuando la ventana se abre desde AutoCAD (x).", true);
+                SetStatus("El dibujo en AutoCAD solo está disponible cuando la ventana se abre desde AutoCAD.", true);
                 return;
             }
 
             if (updateOnly && !isEditingExisting)
             {
-                SetStatus("Solo un sistema abierto con RACKEDITAR puede actualizarse en sitio (x).", true);
+                SetStatus("Solo un sistema abierto con RACKEDITAR puede actualizarse en sitio.", true);
                 return;
             }
 
@@ -3373,7 +3351,7 @@ namespace RackCad.UI.Systems.PushBack
             RequestRecompute(); // synchronous validate + build
             if (!currentInputsAreValid || session.System == null)
             {
-                SetStatus("Corrige los datos: no se puede insertar un modelo inválido (x).", true);
+                SetStatus("Corrige los datos: no se puede insertar un modelo inválido.", true);
                 return; // never fall back to the previous valid model
             }
 
@@ -3396,9 +3374,11 @@ namespace RackCad.UI.Systems.PushBack
                 session.RequestInsert(view, section, ctx => new PushBackInsertionRequest(
                     lastComputation.System, lastComputation.Design, ctx.Id, ctx.Name, ctx.View, ctx.Section, sourceProject));
             }
+
+            Close();
         }
 
-        private void Close_Click(object sender, RoutedEventArgs e) { }
+        private void Close_Click(object sender, RoutedEventArgs e) => Close();
 
         /// <summary>
         /// El unico punto por el que pasan los CUATRO caminos de cierre (ADR-0029 D7): el boton Cerrar, Escape —que
@@ -3414,7 +3394,6 @@ namespace RackCad.UI.Systems.PushBack
         /// </summary>
         protected override void OnClosing(CancelEventArgs e)
         {
-            RequestRecompute();
             if (!InsertRequested && !EditorClosePolicy.MayClose(PendingWork()))
             {
                 e.Cancel = true;
@@ -3437,7 +3416,7 @@ namespace RackCad.UI.Systems.PushBack
         /// </summary>
         internal EditorPendingWork PendingWork() => EditorPendingWork.When(
             moduleOwner.ModuleSession != null && moduleOwner.ModuleSession.HasPendingChanges,
-            "Hay cambios de módulo sin confirmar que se perderán al cerrar. ¿Deseas seguir?");
+            "Hay cambios de módulo sin confirmar que se perderán al cerrar. ¿Deseas continuar?");
 
         // ---- BOM + library ---------------------------------------------------------------------------------------
 
@@ -3456,7 +3435,7 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
-            new RackBomWindow(lastComputation.Bom) { Owner = (Window)this }.ShowDialog();
+            new RackBomWindow(lastComputation.Bom) { Owner = this }.ShowDialog();
         }
 
         private void SaveLibrary_Click(object sender, RoutedEventArgs e)
@@ -3476,7 +3455,7 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
-            var path = UiSupport.PromptSaveToLibrary((Window)this, NameBox.Text, "sistema");
+            var path = UiSupport.PromptSaveToLibrary(this, NameBox.Text, "sistema");
             if (path == null) return;
 
             try
@@ -3547,11 +3526,10 @@ namespace RackCad.UI.Systems.PushBack
             InsertButton.IsEnabled = canInsertInAutoCad && canOutput;
             UpdateButton.IsEnabled = canInsertInAutoCad && canOutput && isEditingExisting;
             BomButton.IsEnabled = canOutput;
-            InsertBatchButton.IsEnabled = canOutput;
             SaveLibraryButton.IsEnabled = currentInputsAreValid;
             if (!canInsertInAutoCad)
             {
-                InsertButton.ToolTip = "Disponible solo cuando la ventana se abre desde AutoCAD (x).";
+                InsertButton.ToolTip = "Disponible solo cuando la ventana se abre desde AutoCAD.";
                 UpdateButton.ToolTip = InsertButton.ToolTip;
             }
             else
@@ -3559,7 +3537,7 @@ namespace RackCad.UI.Systems.PushBack
                 InsertButton.ToolTip = outputIsBlocked
                     ? "Corrige el diagnóstico bloqueante: el rack no puede dibujarse ni cotizarse así."
                     : currentInputsAreValid
-                        ? "Inserta la vista seleccionada enlazada al sistema (x)."
+                        ? "Inserta la vista seleccionada enlazada al sistema."
                         : "Corrige los campos numéricos marcados.";
                 UpdateButton.ToolTip = isEditingExisting
                     ? "Redibuja en sitio todas las vistas del sistema."

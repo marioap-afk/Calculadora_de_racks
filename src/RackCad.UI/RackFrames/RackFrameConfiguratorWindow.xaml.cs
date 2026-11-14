@@ -601,7 +601,7 @@ namespace RackCad.UI.RackFrames
 
         protected override void OnClosed(EventArgs e)
         {
-            this.SaveCurrentLayout();
+            SaveCurrentLayout();
             Loaded -= RackFrameConfiguratorWindow_Loaded;
             Dispatcher.UnhandledException -= Dispatcher_UnhandledException;
 

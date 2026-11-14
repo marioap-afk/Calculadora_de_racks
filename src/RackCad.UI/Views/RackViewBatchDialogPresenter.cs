@@ -56,7 +56,7 @@ namespace RackCad.UI.Views
             out IReadOnlyList<RackViewAddress> views)
         {
             var presenter = new RackViewBatchDialogPresenter(kind, candidates);
-            var dialog = new RackViewBatchDialog(presenter) { Owner = (Window)owner };
+            var dialog = new RackViewBatchDialog(presenter) { Owner = owner };
             var accepted = dialog.ShowDialog() == true;
             views = accepted ? presenter.Result : Array.Empty<RackViewAddress>();
             return accepted;

@@ -43,7 +43,7 @@ namespace RackCad.Plugin.Systems.PushBack
             ObjectId blockId,
             PushBackSystem system,
             string payloadJson,
-            bool regen = (true),
+            bool regen = true,
             int postIndex = -1)
             => ViewBlockDraw.RedrawInPlace(
                 document,

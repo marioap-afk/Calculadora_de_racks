@@ -36,7 +36,7 @@ namespace RackCad.Plugin.Views
         internal static RackSingleViewPlacementResult<ObjectId> PlacePushBack(Document document, RackPreparedProductView<HeaderRunPlan> product)
             => PlaceHeader(document, product, RackEmbedDocument.KindPushBack);
         internal static RackSingleViewPlacementResult<ObjectId> PlacePushBack(Document document, RackPreparedProductView<HeaderRunPlan> product, bool regen)
-            => RackViewPlacement.PlaceHeader(document, product, RackEmbedDocument.KindPushBack, regen: regen);
+            => PlaceHeader(document, product, RackEmbedDocument.KindPushBack, regen: regen);
         internal static RackSingleViewPlacementResult<ObjectId> PlaceHeader(Document document, RackPreparedProductView<HeaderRunPlan> product)
             => PlaceHeader(document, product, RackEmbedDocument.KindCabecera);
         internal static RackSingleViewPlacementResult<ObjectId> PlaceHeader(Document document, RackPreparedProductView<HeaderRunPlan> product, bool regen)
