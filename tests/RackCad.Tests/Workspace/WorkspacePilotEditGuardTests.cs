@@ -688,6 +688,8 @@ public class WorkspacePilotEditGuardTests
         @"public\s+EditConfirmOutcome\s+TryConfirmPilotBase\s*\(",
         @"public\s+EditIntentOutcome\s+TryKeepPilotEdit\s*\(",
         @"public\s+EditIntentOutcome\s+TryDiscardAndReloadPilotEdit\s*\(",
+        // F4-T4B (D-T4B-07): the body of the update of the pilot writes nothing to the drawing by itself: it only goes through the port.
+        @"public\s+EditUpdateOutcome\s+TryUpdatePilot\s*\(",
     };
 
     private static IEnumerable<string> WriteViolations(string host, string support)
@@ -766,6 +768,7 @@ public class WorkspacePilotEditGuardTests
     [InlineData(0)]
     [InlineData(1)]
     [InlineData(2)]
+    [InlineData(3)]
     public void TheWriteGuardTripsOnAWriteInEachPublicBodyOfTheExplicitReconciliation(int which)
     {
         var host = Host();

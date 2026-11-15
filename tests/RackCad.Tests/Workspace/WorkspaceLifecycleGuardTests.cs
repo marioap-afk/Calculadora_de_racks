@@ -471,9 +471,13 @@ public class WorkspaceLifecycleGuardTests
         @"public\s+EditConfirmOutcome\s+TryConfirmPilotBase\s*\(",
         @"public\s+EditIntentOutcome\s+TryKeepPilotEdit\s*\(",
         @"public\s+EditIntentOutcome\s+TryDiscardAndReloadPilotEdit\s*\(",
+        // F4-T4B (D-T4B-07): the update of the pilot changes a draft too. It goes LAST, so the cut of the three bodies of the reconciliation that
+        // skips the first five (below) now covers four bodies.
+        @"public\s+EditUpdateOutcome\s+TryUpdatePilot\s*\(",
     };
 
-    private static readonly Regex ChangesADraft = new(@"\.SetPendingText\s*\(|\.RemovePendingText\s*\(|\.CrossBoundary\s*\(|\.SetCurrentDraftState\s*\(|\.Discard\w*\s*\(|DiscardPilotEdits\s*\(|\.KeepMineOnCurrentVersion\s*\(|\.ConfirmBase\s*\(");
+    // F4-T4B (D-T4B-07): the two calls of the state machine of the update, which take the slot and close it with a new state, are changes of a draft.
+    private static readonly Regex ChangesADraft = new(@"\.SetPendingText\s*\(|\.RemovePendingText\s*\(|\.CrossBoundary\s*\(|\.SetCurrentDraftState\s*\(|\.Discard\w*\s*\(|DiscardPilotEdits\s*\(|\.KeepMineOnCurrentVersion\s*\(|\.ConfirmBase\s*\(|\.TryBeginApply\s*\(|\.CompleteApply\s*\(");
 
     private static readonly Regex EndsTheMark = new(@"NotePilotEdit\s*\(|_knownClean\.Remove\s*\(|DiscardPilotEdits\s*\(");
 
@@ -524,8 +528,16 @@ public class WorkspaceLifecycleGuardTests
         Assert.True(MutationEndsTheMark("{ var c = draft.ConfirmBase(pilot.StaleBase); _knownClean.Remove(request.Session); return c; }"));
         Assert.True(MutationEndsTheMark("{ var k = draft.KeepMineOnCurrentVersion(pilot.Read, keepOn, confirmed: true); _knownClean.Remove(request.Session); return k; }"));
 
-        // The three real bodies change a draft and each one ends the mark in the result that changed it (the lower bound of the removals above).
+        // F4-T4B: the two calls of the update are recognized as changes of a draft, and a body that has them without ending the mark trips the guard.
+        Assert.False(MutationEndsTheMark("{ var a = draft.TryBeginApply(); return a; }"));
+        Assert.False(MutationEndsTheMark("{ var c = draft.CompleteApply(outcome); return c; }"));
+        Assert.True(MutationEndsTheMark("{ var c = draft.CompleteApply(outcome); _knownClean.Remove(request.Session); return c; }"));
+        Assert.True(MutationEndsTheMark("{ var c = draft.CompleteApply(outcome); NotePilotEdit(request.Session); return c; }"));
+
+        // The real bodies of the reconciliation and of the update change a draft and each one ends the mark in the result that changed it (the
+        // lower bound of the removals above).
         var host = Host();
+        Assert.Equal(4, PortMutatingOperations.Skip(5).Count());
         foreach (var signature in PortMutatingOperations.Skip(5))
         {
             var body = Src.BodyOf(host, signature);

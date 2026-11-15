@@ -374,6 +374,108 @@ namespace RackCad.Application.Workspace
     }
 
     /// <summary>
+    /// How an update of the pilot ended (I-64 F4-T4B, D-T4B-07). The order is the one of the package and the default value is
+    /// <see cref="Unavailable"/>: it is inert, it means that nothing was done. From <see cref="NotAppliedConflict"/> to
+    /// <see cref="AppliedPostRereadFailed"/> the names are the ones of the outcomes of the classification by frontier.
+    /// </summary>
+    public enum EditUpdateStatus
+    {
+        /// <summary>Nothing was done. It is also the default value.</summary>
+        Unavailable,
+
+        /// <summary>The gate refused: the session, the document or a modal of RackCad. Nothing was read and nothing was written.</summary>
+        Rejected,
+
+        /// <summary>There is no draft for the rack, or the rack has no identity.</summary>
+        NoDraft,
+
+        /// <summary>The draft is clean: there is nothing to apply.</summary>
+        NothingToApply,
+
+        /// <summary>The draft has pending text: its boundary must be crossed first.</summary>
+        PendingText,
+
+        /// <summary>The draft is not clean or dirty: it cannot be updated now.</summary>
+        NotApplicable,
+
+        /// <summary>Another update is in progress in the registry.</summary>
+        AnotherUpdateInProgress,
+
+        /// <summary>The draft refused to begin: it is not registered, it is in a status that cannot update, or it has pending text.</summary>
+        Refused,
+
+        NotAppliedConflict,
+        NotAppliedAdmission,
+        NotAppliedPreflight,
+        NotAppliedFailure,
+        CommitThrew,
+        Applied,
+        AppliedWithWarnings,
+        AppliedPostRereadFailed,
+
+        /// <summary>The outcome was accepted but the draft was discarded or its session retired meanwhile.</summary>
+        ClosedDetached,
+
+        /// <summary>The status of the draft could not be computed and the draft is now in Error, with its reason.</summary>
+        ClosedInError,
+
+        /// <summary>A failure of the host BEFORE the update began: contained, and the session is not degraded.</summary>
+        Failed,
+    }
+
+    /// <summary>
+    /// I-64 F4-T4B (D-T4B-07) — the answer of the host to an update of the pilot. A value: the differences and the warnings are text, so
+    /// it names no draft type and no type of the pilot. Skeleton of the RED step: every factory is inert.
+    /// </summary>
+    public readonly struct EditUpdateOutcome
+    {
+        private readonly IReadOnlyList<string>? _differences;
+        private readonly IReadOnlyList<string>? _warnings;
+
+        private EditUpdateOutcome(EditUpdateStatus status, string? reason, IReadOnlyList<string> differences, IReadOnlyList<string> warnings)
+        {
+            Status = status;
+            Reason = reason;
+            _differences = differences;
+            _warnings = warnings;
+        }
+
+        public EditUpdateStatus Status { get; }
+
+        /// <summary>Why the update did not apply, or the cause of an uncertain outcome; null when there is none.</summary>
+        public string? Reason { get; }
+
+        public IReadOnlyList<string> Differences => _differences ?? Array.Empty<string>();
+
+        public IReadOnlyList<string> Warnings => _warnings ?? Array.Empty<string>();
+
+        public static EditUpdateOutcome Unavailable(string reason) => default;
+
+        public static EditUpdateOutcome Rejected(string reason) => default;
+
+        public static EditUpdateOutcome NoDraft(string reason) => default;
+
+        public static EditUpdateOutcome NothingToApply(string reason) => default;
+
+        public static EditUpdateOutcome PendingText(string reason) => default;
+
+        public static EditUpdateOutcome NotApplicable(string reason) => default;
+
+        public static EditUpdateOutcome AnotherUpdateInProgress() => default;
+
+        public static EditUpdateOutcome Refused(string reason) => default;
+
+        public static EditUpdateOutcome ClosedDetached() => default;
+
+        public static EditUpdateOutcome ClosedInError(string? reason) => default;
+
+        public static EditUpdateOutcome Failed(string reason) => default;
+
+        public static EditUpdateOutcome Closed(
+            EditUpdateStatus status, string? reason, IReadOnlyList<string> differences, IReadOnlyList<string> warnings) => default;
+    }
+
+    /// <summary>
     /// How the explicit discard of the drafts of a session, or of one draft, ended (I-64 F4-T2B2B, D-T2B2-15; F4-T3A, D-T3-02). The
     /// order is fixed and the default value is Rejected: it is inert, it means that nothing was done.
     /// </summary>

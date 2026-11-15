@@ -601,13 +601,13 @@ public class WorkspaceEditIntentGuardTests
         // Only the names of this task are prohibited in the drain and the idle (the operations, their reader, the gate and the
         // read); what F4-T2B2B does with the drafts in the drain is not decided here.
         var drain = Src.BodyOf(Core(), @"public\s+void\s+OnDrained\s*\(\s*DrainOutcome\s+\w+\s*\)");
-        Assert.DoesNotMatch(new Regex(@"TryBeginPilotEdit|TryCheckPilotEdit|TryConfirmPilotBase|TryKeepPilotEdit|TryDiscardAndReloadPilotEdit|_editIntentReader|ReadIntent|PassGate"), drain);
+        Assert.DoesNotMatch(new Regex(@"TryBeginPilotEdit|TryCheckPilotEdit|TryConfirmPilotBase|TryKeepPilotEdit|TryDiscardAndReloadPilotEdit|TryUpdatePilot|_editIntentReader|ReadIntent|PassGate"), drain);
         Assert.Contains("_reader.Read(", drain);
 
         var idleOfTheCore = Src.BodyOf(Src.Code(BridgeCorePath), @"public\s+IReadOnlyList<DrainOutcome>\s+OnIdle\s*\(\s*\)");
-        Assert.DoesNotMatch(new Regex(@"TryBeginPilotEdit|TryCheckPilotEdit|TryConfirmPilotBase|TryKeepPilotEdit|TryDiscardAndReloadPilotEdit|_editIntentReader|ReadIntent|PassGate|RackPilotIntentAdapter"), idleOfTheCore);
+        Assert.DoesNotMatch(new Regex(@"TryBeginPilotEdit|TryCheckPilotEdit|TryConfirmPilotBase|TryKeepPilotEdit|TryDiscardAndReloadPilotEdit|TryUpdatePilot|_editIntentReader|ReadIntent|PassGate|RackPilotIntentAdapter"), idleOfTheCore);
         var idleOfTheBridge = Src.BodyOf(Src.Code(BridgePath), @"private\s+void\s+OnIdle\s*\(\s*\)");
-        Assert.DoesNotMatch(new Regex(@"TryBeginPilotEdit|TryCheckPilotEdit|TryConfirmPilotBase|TryKeepPilotEdit|TryDiscardAndReloadPilotEdit|_editIntentReader|ReadIntent|PassGate|RackPilotIntentAdapter"), idleOfTheBridge);
+        Assert.DoesNotMatch(new Regex(@"TryBeginPilotEdit|TryCheckPilotEdit|TryConfirmPilotBase|TryKeepPilotEdit|TryDiscardAndReloadPilotEdit|TryUpdatePilot|_editIntentReader|ReadIntent|PassGate|RackPilotIntentAdapter"), idleOfTheBridge);
 
         var hostDrain = Src.BodyOf(Host(), @"public\s+void\s+OnDrained\s*\(\s*DrainOutcome\s+\w+\s*\)");
         Assert.DoesNotMatch(new Regex(@"EditIntent|ReadIntent|RackPilotIntentAdapter|_targets"), hostDrain);
@@ -630,9 +630,10 @@ public class WorkspaceEditIntentGuardTests
     [InlineData("var confirmed = TryConfirmPilotBase(request);")]
     [InlineData("var kept = TryKeepPilotEdit(request);")]
     [InlineData("var reloaded = TryDiscardAndReloadPilotEdit(request);")]
+    [InlineData("var updated = TryUpdatePilot(request, port);")]
     public void TheDrainGuardDetectsACallOfTheIntentionInTheRealTextOfTheDrainOfTheHostCore(string injected)
     {
-        var pattern = new Regex(@"TryBeginPilotEdit|TryCheckPilotEdit|TryConfirmPilotBase|TryKeepPilotEdit|TryDiscardAndReloadPilotEdit|_editIntentReader|ReadIntent|PassGate");
+        var pattern = new Regex(@"TryBeginPilotEdit|TryCheckPilotEdit|TryConfirmPilotBase|TryKeepPilotEdit|TryDiscardAndReloadPilotEdit|TryUpdatePilot|_editIntentReader|ReadIntent|PassGate");
         var drain = Src.BodyOf(Core(), @"public\s+void\s+OnDrained\s*\(\s*DrainOutcome\s+\w+\s*\)");
 
         Assert.DoesNotMatch(pattern, drain);
@@ -1040,5 +1041,85 @@ public class WorkspaceEditIntentGuardTests
         Assert.Contains("DefinitionHandle", body);
         Assert.DoesNotMatch(new Regex(@"OwnerId|ObjectId|\bHandle\b|Revalidate|Resolve\s*\("), body);
         Assert.Equal(1, Src.Count(code, @"public\s+static\s+class\s+WorkspaceEditIntent\b"));
+    }
+
+    // ------------------------------------------------------------------ I-64 F4-T4B (D-T4B-07): the update of the pilot
+
+    private static string UpdateBody() => Src.BodyOf(Core(), @"public\s+EditUpdateOutcome\s+TryUpdatePilot\s*\(");
+
+    // The contention as Failed only goes BEFORE the slot is taken: after TryBeginApply the answer always comes from the close of the draft.
+    private static IEnumerable<string> UpdateContainmentViolations(string body)
+    {
+        var begin = body.IndexOf(".TryBeginApply(", StringComparison.Ordinal);
+        var catchMatch = Regex.Match(body, @"catch\s*\(\s*Exception\s+ex\s*\)");
+        if (begin < 0) { yield return "no TryBeginApply"; yield break; }
+        if (!catchMatch.Success) { yield return "no catch of Exception"; yield break; }
+
+        var catchAt = catchMatch.Index;
+        var firstTry = body.IndexOf("try", StringComparison.Ordinal);
+        if (firstTry < 0 || firstTry > begin || catchAt < begin) yield return "the first try does not cover TryBeginApply";
+        // The text of the first try block: from its keyword to the catch.
+        var guarded = firstTry < 0 || catchAt < firstTry ? string.Empty : body.Substring(firstTry, catchAt - firstTry);
+        if (Regex.IsMatch(guarded, @"\.CompleteApply\s*\(|PushBackPilotUpdateRun\.Execute")) yield return "the run or the close is inside the contention of the failures before the slot";
+
+        var failed = Regex.Matches(body, @"EditUpdateOutcome\.Failed\s*\(").Count;
+        if (failed != 1) yield return "Failed must be answered exactly once, by the catch before the slot: " + failed;
+        var afterTheCatch = body.Substring(catchAt);
+        if (!Regex.IsMatch(afterTheCatch, @"Report\s*\(\s*""WorkspaceHostCore\.TryUpdatePilot""\s*,\s*ex\s*\)")) yield return "the catch does not report";
+        if (!Regex.IsMatch(afterTheCatch, @"EditUpdateOutcome\.Failed\s*\(\s*ex\.Message\s*\)")) yield return "the catch does not answer Failed(ex.Message)";
+        if (Regex.IsMatch(body, @"_faulted|\bContain\s*\(|\bthrow\s*;")) yield return "it degrades the session or rethrows";
+
+        // The close is ONE call, inside a finally, and it carries the outcome of the run.
+        if (Src.Count(body, @"\.CompleteApply\s*\(") != 1) yield return "CompleteApply is not called exactly once";
+        if (!Regex.IsMatch(body, @"finally\s*\{\s*closed\s*=\s*draft\.CompleteApply\s*\(\s*outcome\s*\)\s*;\s*\}")) yield return "the close is not in a finally with the outcome of the run";
+        if (Src.Count(body, @"\.TryBeginApply\s*\(") != 1) yield return "TryBeginApply is not called exactly once";
+    }
+
+    [Fact]
+    public void TheUpdateContainsTheFailuresBeforeTheSlotAsFailedAndAfterItTheAnswerComesFromTheClose()
+    {
+        Assert.Empty(UpdateContainmentViolations(UpdateBody()));
+    }
+
+    [Fact]
+    public void TheContainmentGuardOfTheUpdateSeesAFailedAfterTheSlotTheRunInsideTheTryASecondCloseAndAMissingFinally()
+    {
+        var body = UpdateBody();
+
+        Assert.Empty(UpdateContainmentViolations(body));
+        Assert.NotEmpty(UpdateContainmentViolations(body + "\nreturn EditUpdateOutcome.Failed(\"late\");"));
+        Assert.NotEmpty(UpdateContainmentViolations(body.Replace("var start = draft.TryBeginApply();", "var start = draft.TryBeginApply(); draft.CompleteApply(x);", StringComparison.Ordinal)));
+        Assert.NotEmpty(UpdateContainmentViolations(body.Replace("closed = draft.CompleteApply(outcome);", "closed = draft.CompleteApply(outcome); draft.CompleteApply(outcome);", StringComparison.Ordinal)));
+        Assert.NotEmpty(UpdateContainmentViolations(body.Replace("finally", "catch (InvalidOperationException)", StringComparison.Ordinal)));
+        Assert.NotEmpty(UpdateContainmentViolations(body.Replace("Report(\"WorkspaceHostCore.TryUpdatePilot\", ex);", string.Empty, StringComparison.Ordinal)));
+        Assert.NotEmpty(UpdateContainmentViolations(body.Replace("return EditUpdateOutcome.Failed(ex.Message);", "_faulted.Add(request.Session); return EditUpdateOutcome.Failed(ex.Message);", StringComparison.Ordinal)));
+    }
+
+    private static readonly Regex UpdateNeverReads = new(
+        @"ReadIntent|_editIntentReader|\bChosenReference\b|\bWitness\b|HasWitnessWithoutKey|\bPassGate\s*\(|\bpilot\b|PilotRead|_reader\b|\.StaleBase\b|\.InitialDraftState\b|\.InitialState\b|\.Entries\b");
+
+    [Fact]
+    public void TheUpdateNeverReadsTheDrawingNorTheIntentionAndNamesNeitherTheWitnessNorTheChosenReferenceNorThePilotRead()
+    {
+        var body = UpdateBody();
+
+        Assert.DoesNotMatch(UpdateNeverReads, body);
+        Assert.DoesNotMatch(BaseOrReadUse, WithoutTheAllowedConsumers(body));
+        // The early outputs only use the constants of the core that already exist, so the table of the 30 literals does not change.
+        Assert.Contains("NoDraftReason", body);
+        Assert.DoesNotMatch(new Regex(@"EditUpdateOutcome\.(?:Rejected|NoDraft|NothingToApply|PendingText|NotApplicable|Refused|Failed)\s*\(\s*"""), body);
+    }
+
+    [Theory]
+    [InlineData("var read = _editIntentReader!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.Witness);")]
+    [InlineData("var gate = PassGate(request.Session, out var reason);")]
+    [InlineData("var pilot = read.PilotRead;")]
+    [InlineData("var s = draft.StaleBase;")]
+    public void TheNoReadGuardOfTheUpdateDetectsEachWayToReadInTheRealBody(string injected)
+    {
+        var real = UpdateBody();
+
+        Assert.DoesNotMatch(UpdateNeverReads, real);
+        Assert.Matches(UpdateNeverReads, real + "\n" + injected);
     }
 }

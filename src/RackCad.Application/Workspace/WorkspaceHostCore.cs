@@ -791,6 +791,11 @@ namespace RackCad.Application.Workspace
         /// </summary>
         public void NotePilotEdit(SessionId session) => _knownClean.Remove(session);
 
+        // ---------------------------------------------------------------- the update of the pilot (I-64 F4-T4B, D-T4B-07)
+
+        /// <summary>The update of one rack of the pilot through the port that it is handed. Skeleton of the RED step: inert.</summary>
+        public EditUpdateOutcome TryUpdatePilot(EditIntentRequest request, IPushBackPilotUpdatePort port) => default;
+
         // ---------------------------------------------------------------- the edit port of the pilot (I-64 F4-T3A, D-T3-02)
         //
         // Every operation below is implemented explicitly, so the public surface of the host does not grow. None of them writes the

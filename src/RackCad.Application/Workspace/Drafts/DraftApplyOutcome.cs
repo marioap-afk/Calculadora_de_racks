@@ -81,7 +81,9 @@ namespace RackCad.Application.Workspace.Drafts
 
         public static DraftApplyOutcome<TState> CommitThrew(string cause) => WithCause(DraftApplyOutcomeKind.CommitThrew, cause);
 
-        public static DraftApplyOutcome<TState> AppliedPostRereadFailed(string cause) => WithCause(DraftApplyOutcomeKind.AppliedPostRereadFailed, cause);
+        /// <summary>The commit returned and the re-read of POST failed. The warnings that were already known go with it (F4-E16); inert: they are not kept yet.</summary>
+        public static DraftApplyOutcome<TState> AppliedPostRereadFailed(string cause, IReadOnlyList<string>? warnings = null) =>
+            WithCause(DraftApplyOutcomeKind.AppliedPostRereadFailed, cause);
 
         /// <summary>Applied: the re-read of POST is required, since nothing is assumed applied without it.</summary>
         public static DraftApplyOutcome<TState> Applied(DraftIntentRead<TState> postRead)

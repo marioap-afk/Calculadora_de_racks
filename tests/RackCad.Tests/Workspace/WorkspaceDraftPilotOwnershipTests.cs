@@ -414,14 +414,12 @@ public class WorkspaceDraftPilotOwnershipTests
         }
     }
 
+    // I-64 F4-T4B (D-T4B-06, F4-E25 (4)): the two rows of a reload through a user action that must keep throwing. The rows of the outcomes of an Update
+    // (Applied and AppliedWithWarnings) moved to the test below: CompleteApply no longer lets a copier that throws escape.
     [Theory]
     [InlineData("discard", 1)]
     [InlineData("discard", 2)]
     [InlineData("keep", 1)]
-    [InlineData("applied", 1)]
-    [InlineData("applied", 2)]
-    [InlineData("warnings", 1)]
-    [InlineData("warnings", 2)]
     public void AReloadWhoseCopierThrowsLeavesTheStaleBaseTheInitialStateAndTheCurrentStateExactlyAsTheyWere(string reload, int failingCopy)
     {
         var copier = new ArmedCopier();
@@ -439,15 +437,12 @@ public class WorkspaceDraftPilotOwnershipTests
         var statusBefore = draft.Status;
         var read = DraftIntentRead<DraftBox>.Admitted(DraftKit.Base(DraftKit.Mutable("D9")), kit.Make(3));
         Assert.NotSame(staleBefore, read.StaleBase);
-        if (reload is "applied" or "warnings") Assert.True(draft.TryBeginApply().IsStarted);
 
         copier.Arm(failingCopy);
         var thrown = Assert.Throws<InvalidOperationException>(() =>
         {
             if (reload == "discard") draft.DiscardAndReload(read);
-            else if (reload == "keep") draft.KeepMineOnCurrentVersion(read, confirmed: true);
-            else if (reload == "applied") draft.CompleteApply(DraftApplyOutcome<DraftBox>.Applied(read));
-            else draft.CompleteApply(DraftApplyOutcome<DraftBox>.AppliedWithWarnings(read, new[] { "w" }));
+            else draft.KeepMineOnCurrentVersion(read, confirmed: true);
         });
         copier.Disarm();
 
@@ -455,7 +450,47 @@ public class WorkspaceDraftPilotOwnershipTests
         Assert.Same(staleBefore, draft.StaleBase);
         Assert.Equal(initialBefore, kit.Fingerprint(draft.InitialDraftState));
         Assert.Equal(currentBefore, kit.Fingerprint(draft.CurrentDraftState));
-        if (reload is "discard" or "keep") Assert.Equal(statusBefore, draft.Status);
+        Assert.Equal(statusBefore, draft.Status);
+    }
+
+    [Theory]
+    [InlineData("applied", 1)]
+    [InlineData("applied", 2)]
+    [InlineData("warnings", 1)]
+    [InlineData("warnings", 2)]
+    public void AnAppliedOutcomeWhoseCopierThrowsLeavesTheStaleBaseTheInitialStateAndTheCurrentStateAsTheyWereAndTheDraftIsUnknownAfterThePostReread(string outcome, int failingCopy)
+    {
+        var copier = new ArmedCopier();
+        var kit = new OwnershipKit<DraftBox>(
+            make: OwnershipKits.Box().Make,
+            mutate: OwnershipKits.Box().Mutate,
+            fingerprint: OwnershipKits.Box().Fingerprint,
+            comparer: DraftKit.BoxComparer,
+            copy: copier.Copy);
+        var draft = kit.Born(new DraftRegistry(), kit.Make(1));
+        draft.SetCurrentDraftState(kit.Make(5));
+        var staleBefore = draft.StaleBase;
+        var initialBefore = kit.Fingerprint(draft.InitialDraftState);
+        var currentBefore = kit.Fingerprint(draft.CurrentDraftState);
+        var read = DraftIntentRead<DraftBox>.Admitted(DraftKit.Base(DraftKit.Mutable("D9")), kit.Make(3));
+        Assert.True(draft.TryBeginApply().IsStarted);
+
+        copier.Arm(failingCopy);
+        DraftApplyResult result = default;
+        var thrown = Record.Exception(() =>
+            result = draft.CompleteApply(outcome == "applied"
+                ? DraftApplyOutcome<DraftBox>.Applied(read)
+                : DraftApplyOutcome<DraftBox>.AppliedWithWarnings(read, new[] { "w" })));
+        copier.Disarm();
+
+        Assert.Null(thrown);
+        Assert.Equal(DraftApplyOutcomeKind.AppliedPostRereadFailed, result.Kind);
+        Assert.Equal(DraftStatus.Unknown, draft.Status);
+        Assert.Equal(DraftUnknownOrigin.PostReread, draft.UnknownOrigin);
+        Assert.Contains("copier-boom", draft.LastApplyCause!, StringComparison.Ordinal);
+        Assert.Same(staleBefore, draft.StaleBase);
+        Assert.Equal(initialBefore, kit.Fingerprint(draft.InitialDraftState));
+        Assert.Equal(currentBefore, kit.Fingerprint(draft.CurrentDraftState));
     }
 
     [Fact]

@@ -1769,8 +1769,11 @@ public class WorkspacePilotPrepareTests
 
             Assert.True(result.Kind == PushBackPilotPrepareKind.Invalid, name);
             Assert.Null(result.Plan);
-            Assert.StartsWith(PushBackPilotUpdatePlanner.ViewUnavailablePrefix + "B2", result.Reason, StringComparison.Ordinal);
-            Assert.EndsWith("RACKEDITAR.", result.Reason, StringComparison.Ordinal);
+            // M-5 (I-64 F4-T4B): a descriptor that does not decode has no address to ask about, so it has its own text and is never reported as a
+            // view that is "no longer available".
+            var corrupt = name is "corrupt-descriptor" or "section-out-of-range";
+            Assert.StartsWith((corrupt ? PushBackPilotUpdatePlanner.ViewAddressPrefix : PushBackPilotUpdatePlanner.ViewUnavailablePrefix) + "B2", result.Reason, StringComparison.Ordinal);
+            Assert.EndsWith(corrupt ? PushBackPilotUpdatePlanner.ViewAddressSuffix : PushBackPilotUpdatePlanner.ViewUnavailableSuffix, result.Reason, StringComparison.Ordinal);
         }
 
         Assert.NotEqual(origin, originFrontal);
@@ -1813,6 +1816,32 @@ public class WorkspacePilotPrepareTests
             Assert.Equal(PushBackPilotPrepareKind.Invalid, result!.Kind);
             Assert.Equal(PushBackPilotUpdatePlanner.MissingInputReason, result.Reason);
         }
+    }
+
+    // M-6 (I-64 F4-T4B): the missing catalog is answered at the start of Build, so a difference of the base and a read that is not admitted
+    // are told as such even when the catalog is missing; with a read that matches and is admitted, the missing catalog is still Invalid.
+    [Fact]
+    public void AMissingCatalogIsAnsweredAfterTheConflictAndTheAdmissionAndNotBeforeThem()
+    {
+        var read = IntentKit.Read(PrepareKit.RealScan());
+        var draft = PrepareKit.DraftOf(read);
+        PrepareKit.SetScale(draft, 2.25);
+        var input = PushBackPilotPrepareInput.From(draft);
+        var changed = IntentKit.Read(PrepareKit.RealScan("pb-02-modulos"));
+        var notAdmitted = PrepareKit.Reread(read.StaleBase, notAdmitted: "x");
+
+        var conflict = PushBackPilotUpdatePlanner.Prepare(input, changed, null!);
+        var refused = PushBackPilotUpdatePlanner.Prepare(input, notAdmitted, null!);
+        var missing = PushBackPilotUpdatePlanner.Prepare(input, read, null!);
+
+        Assert.Equal(PushBackPilotPrepareKind.Conflict, conflict.Kind);
+        Assert.NotEmpty(conflict.Differences);
+        Assert.Equal(PushBackPilotPrepareKind.NotAdmitted, refused.Kind);
+        Assert.Equal("x", refused.Reason);
+        Assert.Equal(PushBackPilotPrepareKind.Invalid, missing.Kind);
+        Assert.Equal(PushBackPilotUpdatePlanner.MissingInputReason, missing.Reason);
+        // Without a re-read there is still nothing to look at: Invalid.
+        Assert.Equal(PushBackPilotPrepareKind.Invalid, PushBackPilotUpdatePlanner.Prepare(input, null!, PilotKit.Catalog).Kind);
     }
 
     // ------------------------------------------------------------------ the plan

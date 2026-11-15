@@ -53,6 +53,11 @@ namespace RackCad.Tests
             { "SelectiveFrontalDrawService", new[] { "Systems", "Selective", "SelectiveFrontalDrawService.cs" } },
             { "SelectivePlantaDrawService", new[] { "Systems", "Selective", "SelectivePlantaDrawService.cs" } },
             { "LateralHeaderDrawService", new[] { "Drawing", "LateralHeaderDrawService.cs" } },
+            // I-64 F4-T4B (D-T4B-09): the three facades of Push Back, which the writer of the update of the pilot uses. They already comply, so
+            // the extension passes before and after the implementation.
+            { "PushBackSystemDrawService", new[] { "Systems", "PushBack", "PushBackSystemDrawService.cs" } },
+            { "PushBackFrontalDrawService", new[] { "Systems", "PushBack", "PushBackFrontalDrawService.cs" } },
+            { "PushBackPlantaDrawService", new[] { "Systems", "PushBack", "PushBackPlantaDrawService.cs" } },
         };
 
         private static string Body(string source, string marker)

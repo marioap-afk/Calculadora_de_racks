@@ -979,7 +979,9 @@ public class WorkspaceEditIntentHostTests
         }
 
         var types = new List<Type>();
-        foreach (var carrier in new[] { typeof(EditIntentRequest), typeof(EditIntentWitness), typeof(EditIntentOutcome), typeof(EditCheckOutcome), typeof(EditConfirmOutcome) })
+        // I-64 F4-T4B (D-T4B-07): the outcome of the update is a carrier too. The method TryUpdatePilot is NOT in the loop of the signatures above: its second
+        // parameter is the port of the update, which is of the pilot (a declared exception to D-T2B2-06).
+        foreach (var carrier in new[] { typeof(EditIntentRequest), typeof(EditIntentWitness), typeof(EditIntentOutcome), typeof(EditCheckOutcome), typeof(EditConfirmOutcome), typeof(EditUpdateOutcome) })
         {
             foreach (var property in carrier.GetProperties(BindingFlags.Public | BindingFlags.Instance)) types.AddRange(Flatten(property.PropertyType));
             foreach (var method in carrier.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly))
@@ -995,6 +997,26 @@ public class WorkspaceEditIntentHostTests
             var ns = type.Namespace ?? string.Empty;
             Assert.False(ns.StartsWith("RackCad.Application.Workspace.Drafts", StringComparison.Ordinal), type.FullName);
             Assert.False(ns.StartsWith("RackCad.Application.Systems", StringComparison.Ordinal), type.FullName);
+        }
+    }
+
+    [Fact]
+    public void TheUpdateOfThePilotIsAPublicMethodOfTheCoreWhoseSecondParameterIsThePortOfTheUpdateAndItsOutcomeNamesNoTypeOfTheDraftsNorOfThePilot()
+    {
+        var update = typeof(WorkspaceHostCore).GetMethod("TryUpdatePilot", BindingFlags.Public | BindingFlags.Instance);
+
+        Assert.NotNull(update);
+        Assert.Equal(typeof(EditUpdateOutcome), update!.ReturnType);
+        Assert.Equal(new[] { typeof(EditIntentRequest), typeof(RackCad.Application.Systems.PushBack.Pilot.IPushBackPilotUpdatePort) }, update.GetParameters().Select(p => p.ParameterType).ToArray());
+        // It is not an operation of the edit port of the panel: the port does not grow.
+        Assert.DoesNotContain(typeof(IWorkspacePilotEditPort).GetMethods(), m => m.Name.Contains("Update", StringComparison.Ordinal));
+        foreach (var property in typeof(EditUpdateOutcome).GetProperties(BindingFlags.Public | BindingFlags.Instance))
+        {
+            foreach (var type in Flatten(property.PropertyType))
+            {
+                Assert.False((type.Namespace ?? string.Empty).StartsWith("RackCad.Application.Workspace.Drafts", StringComparison.Ordinal), type.FullName);
+                Assert.False((type.Namespace ?? string.Empty).StartsWith("RackCad.Application.Systems", StringComparison.Ordinal), type.FullName);
+            }
         }
     }
 

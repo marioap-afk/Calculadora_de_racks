@@ -244,6 +244,9 @@ namespace RackCad.Application.Systems.PushBack.Pilot
 
         public PushBackPilotPostExpectation PostExpectation { get; }
 
+        /// <summary>The outgoing envelope text of the member of that key (ordinal); null when the plan has no such member. Inert.</summary>
+        public string? Envelope(string key) => null;
+
         public bool Equals(PushBackPilotUpdatePlan? other) =>
             other != null
             && string.Equals(RackId, other.RackId, StringComparison.Ordinal)
@@ -286,7 +289,11 @@ namespace RackCad.Application.Systems.PushBack.Pilot
 
         public const string ViewUnavailableSuffix = " ya no está disponible en el sistema saliente: usa RACKEDITAR.";
 
-        public const string PrepareFailurePrefix = "No se pudo preparar la actualización: ";
+        public const string ViewAddressPrefix = "El descriptor de la vista ";
+
+        public const string ViewAddressSuffix = " no se puede interpretar: usa RACKEDITAR.";
+
+        public const string PrepareFailurePrefix ="No se pudo preparar la actualización: ";
 
         /// <summary>
         /// The pure PREPARE of an update. It evaluates, in this order and returning at the first that holds: NotApplicable (the draft is
