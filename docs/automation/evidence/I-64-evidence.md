@@ -7210,3 +7210,15 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **Emisión:** el paquete v7 va en `docs/initiatives/`, con los borradores, las decisiones y la autorización custodiados. `attempts`: 1 de 3.
 
 **Límites:** solo documentación; sin AutoCAD.
+
+## 203. Contrato de F4-T4B-MUTATE-POST
+
+**Contrato:** `I-64-pilot/F4-T4B-MUTATE-POST/coordinator/gate-contract.json` (F4-E60).
+- **Alcance:** lista blanca exacta de 23 rutas: 3 archivos nuevos y 5 modificados de Application, el escritor nuevo y `RackSiblingScan.cs` del Plugin, 4 pruebas nuevas y 9 modificadas.
+- **`ForbiddenWriteScope`:** 70 entradas, por raíces y archivos exactos: la UI, la costura de I-55, las fachadas, los caminos clásicos, los llamadores del barrido y las pruebas que protegen el barrido y T1B.
+- **Invariantes y paradas:** 18 invariantes con la numeración del §6 del paquete, y 9 paradas propias, entre ellas C08 (la purga intercalada) y C09 (el núcleo movido no idéntico).
+- **`RequiredTests`:** 24 filas. Core `RackCad.Tests.Workspace` (`MinSelected` 2923, `ExpectRed` true); 21 clases de regresión con su cuenta de la base (`ExpectRed` false); UI `Workspace` (601) y `PushBackClassicCharacterization` (55), con `ExpectRed` false.
+- **Revisiones:** `AuthorityRevision` `56041cd0cce9bc20ab70b4192aa2f48080f4a8a0` y `MainSha` `812baf879612320653094a8aaf46aca0bac81383`.
+- **`attempts`:** 1 de 3.
+
+**Límites:** solo documentación en este paso; sin AutoCAD.
