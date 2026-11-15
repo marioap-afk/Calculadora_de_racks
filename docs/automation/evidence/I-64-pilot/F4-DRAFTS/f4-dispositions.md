@@ -2520,3 +2520,28 @@ El producto completo quedó en `wip-green-impl.patch`. Aplicado en local, deja t
 - **`CorrectionOf`:** el Worker `9b55`, con la clase `StopCondition`.
 - **El contrato del intento 2:** añade INV-F4T4C-26 (las tres pruebas, exactamente, y el producto del parche como GREEN) e INV-F4T4C-27 (la mecánica), y conserva el resto.
 - **La cadena:** `ChainBaseSha` `1cce48c0`, con `ChainRedSha` nulo. El RED de la corrección solo corrige las tres pruebas y lo acredita su verificación.
+
+## F4-E70. Corrección de F4-T4C2-PANEL (intento 2), cierre, y producto de F4-T4C y de F4-T4 completo
+
+**Autoridades:** la decisión del Owner «Corregir en intento 2» (`F4-DRAFTS/coordinator/owner-f4t4c2-attempt2-decision.md`) y la regla D2 (`owner-f4t4c-decisions-d1-d6.md`).
+
+**La corrección** (contrato `gate-contract-attempt2.json`, BaseSha `a912f645`):
+- **la planificación** `d34e`: fidelidad PASS y A1-A8 8/8, a la primera;
+- **el Worker** `468f`: RED `f1f1c7ee`, que solo corrige las tres pruebas del RED del intento 1, y GREEN `b88dabf2`, idéntico al parche custodiado del intento 1 (el mismo `patch-id` y 317 líneas iguales);
+- **la CI exacta:** GREEN `43758023582`, 4/4, y RED `43756155557`, con Core y UI en failure dentro de los filtros;
+- **la verificación** `c877`: EXECUTION_VERIFIED, 14/14.
+
+**Revisiones** (de todo T4C2):
+- la directa, 0/0/2;
+- la adversarial independiente, **ACEPTABLE CON MENORES, 0/0/5**, sin hallazgos OWNER.
+
+**Controles:**
+- **nc1** `685c` y **nc2** `11b3`: su salida ordinaria es CONTROL NOT PASSED, conservada, con la firma EXACTA de PD-F4-04 (Handoff antes que Identity) y de PD-F4-01 (Contract antes que Scope). Se aplicaron los sustitutos ya autorizados, clonados solo con su id y su alcance (D2), y dieron PASS (7/7 y 10/10);
+- **nc3** `bda6`: CONTROL PASS ordinario;
+- el falso P-02 de la primera medición de entrada de nc2 se repitió desde su script, con 0 participantes.
+
+**El cierre:** **F4-T4C2-PANEL CLOSED / PASS WITH LIMITATIONS**, intento 2 de 3, por la regla de D2 (paquete en `I-64-pilot/F4-T4C2-PANEL/task-close-package.md`).
+- **Limitaciones:** los menores M-01 a M-05 y D-1 y D-2. Ninguno cambia la escritura.
+- **El producto de F4-T4C queda completo** (H0, T4C1 y T4C2), y con él el de **F4-T4**.
+- **Siguiente:** Smoke-2 (§7 del paquete de T4C), obligatorio, con el Owner como operador.
+- La medición falsa de P-02 de nc2 se conserva aparte (SHA-256 `88cb6920…`).

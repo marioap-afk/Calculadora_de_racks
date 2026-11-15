@@ -7416,3 +7416,18 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **`attempts`:** 2 de 3.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 217. Cierre de F4-T4C2-PANEL; producto de F4-T4C y de F4-T4 completo
+
+**Decisión:** F4-E70, por la regla D2 del Owner.
+- **La corrección:** RED `f1f1c7ee` y GREEN `b88dabf2`, idéntico al parche del intento 1.
+- **CI exacta:** 4/4.
+- **Verificación:** `c877`, 14/14.
+- **Revisiones:** la directa, 0/0/2, y la independiente, 0/0/5.
+- **Controles:** nc1 y nc2 por sustitutos de firma exacta (PD-F4-04 y PD-F4-01), y nc3 ordinario.
+
+**Resultado:** **F4-T4C2-PANEL CLOSED / PASS WITH LIMITATIONS**, intento 2 de 3. El producto de F4-T4C y el de F4-T4 quedan completos.
+
+**Siguiente:** Smoke-2, obligatorio.
+
+**Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.
