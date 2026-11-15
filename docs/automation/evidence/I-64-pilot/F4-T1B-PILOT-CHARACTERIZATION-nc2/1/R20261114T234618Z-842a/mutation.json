@@ -1,0 +1,102 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261114T234618Z-842a",
+  "SourceVerification": "R20261114T233845Z-3df7",
+  "SourceInputs": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T233845Z-3df7/inputs",
+  "Mutation": {
+    "File": "delegation.json",
+    "Field": "AllowedWriteScope",
+    "DiffBaseToCurrent": [
+      "tests/RackCad.Tests/PushBackClassicCharacterizationPluginGuardTests.cs",
+      "tests/RackCad.UI.Tests/PushBackClassicCharacterizationCloseTests.cs",
+      "tests/RackCad.UI.Tests/PushBackClassicCharacterizationIntentTests.cs",
+      "tests/RackCad.UI.Tests/PushBackClassicCharacterizationKeyboardTests.cs",
+      "tests/RackCad.UI.Tests/PushBackClassicCharacterizationOwnerTests.cs",
+      "tests/RackCad.UI.Tests/PushBackClassicCharacterizationResourceTests.cs",
+      "tests/RackCad.UI.Tests/PushBackClassicCharacterizationSourceGuardTests.cs"
+    ],
+    "FirstLexicographic": "tests/RackCad.Tests/PushBackClassicCharacterizationPluginGuardTests.cs",
+    "CoveringEntries": [
+      "tests/RackCad.Tests/PushBackClassicCharacterizationPluginGuardTests.cs"
+    ],
+    "CoveredByPrefix": null,
+    "Old": [
+      "tests/RackCad.UI.Tests/PushBackClassicCharacterizationKeyboardTests.cs",
+      "tests/RackCad.UI.Tests/PushBackClassicCharacterizationCloseTests.cs",
+      "tests/RackCad.UI.Tests/PushBackClassicCharacterizationIntentTests.cs",
+      "tests/RackCad.UI.Tests/PushBackClassicCharacterizationOwnerTests.cs",
+      "tests/RackCad.UI.Tests/PushBackClassicCharacterizationResourceTests.cs",
+      "tests/RackCad.UI.Tests/PushBackClassicCharacterizationSourceGuardTests.cs",
+      "tests/RackCad.Tests/PushBackClassicCharacterizationPluginGuardTests.cs",
+      "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml",
+      "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs",
+      "src/RackCad.UI/Views/RackViewBatchDialog.xaml",
+      "src/RackCad.UI/Views/RackViewBatchDialogPresenter.cs",
+      "src/RackCad.UI/UiSupport.cs",
+      "src/RackCad.UI/Editor/EditorModules.cs",
+      "src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml.cs",
+      "src/RackCad.Plugin/RackPushBackCommands.cs",
+      "src/RackCad.Plugin/RackMenuCommands.cs",
+      "src/RackCad.Plugin/Views/RackViewBatchProducts.cs",
+      "src/RackCad.Plugin/Views/RackViewPlacement.cs",
+      "src/RackCad.Plugin/Systems/PushBack/PushBackSystemDrawService.cs",
+      "src/RackCad.Plugin/Systems/PushBack/PushBackFrontalDrawService.cs",
+      "src/RackCad.Plugin/Systems/PushBack/PushBackPlantaDrawService.cs"
+    ],
+    "New": [
+      "tests/RackCad.UI.Tests/PushBackClassicCharacterizationKeyboardTests.cs",
+      "tests/RackCad.UI.Tests/PushBackClassicCharacterizationCloseTests.cs",
+      "tests/RackCad.UI.Tests/PushBackClassicCharacterizationIntentTests.cs",
+      "tests/RackCad.UI.Tests/PushBackClassicCharacterizationOwnerTests.cs",
+      "tests/RackCad.UI.Tests/PushBackClassicCharacterizationResourceTests.cs",
+      "tests/RackCad.UI.Tests/PushBackClassicCharacterizationSourceGuardTests.cs",
+      "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml",
+      "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs",
+      "src/RackCad.UI/Views/RackViewBatchDialog.xaml",
+      "src/RackCad.UI/Views/RackViewBatchDialogPresenter.cs",
+      "src/RackCad.UI/UiSupport.cs",
+      "src/RackCad.UI/Editor/EditorModules.cs",
+      "src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml.cs",
+      "src/RackCad.Plugin/RackPushBackCommands.cs",
+      "src/RackCad.Plugin/RackMenuCommands.cs",
+      "src/RackCad.Plugin/Views/RackViewBatchProducts.cs",
+      "src/RackCad.Plugin/Views/RackViewPlacement.cs",
+      "src/RackCad.Plugin/Systems/PushBack/PushBackSystemDrawService.cs",
+      "src/RackCad.Plugin/Systems/PushBack/PushBackFrontalDrawService.cs",
+      "src/RackCad.Plugin/Systems/PushBack/PushBackPlantaDrawService.cs"
+    ],
+    "OtherDiffFilesStillCovered": true,
+    "Rule": "README 10: \"si una entrada de prefijo lo cubre, se sustituye por la enumeracion de los demas archivos del diff\": el prefijo que cubre el primer archivo se sustituye por los demas archivos del diff que ese prefijo cubria; las demas entradas no cambian; exactamente ese archivo queda fuera"
+  },
+  "DerivedRecompute": {
+    "File": "relay-record-planning.json",
+    "Field": "Outcome.OutputSha256",
+    "Old": "A991CD329F3A73E6D67383EFB6726C8DA0CBF366426CA7EBB23B01A92ABEAEB6",
+    "New": "159AF6E325053BF5A52F3DAB2AB72CE7CDBFD487F3D7C9608ADB91EBA875A67B",
+    "Reason": "hash derivado de delegation.json recalculado para que la copia sea internamente coherente con la entrega simulada; no es una mutacion del contenido de la entrega ni de la delegacion"
+  },
+  "PromptSha256": "DBA211BC1E1ADFD67F8864FE2EA12F1BB9237907D0B1569F6D84B5DD936C6F7E",
+  "PromptDiffVsVerified": "solo la ruta de entrada y el RunId de la invocacion (README 10)",
+  "SchemaValid": {
+    "worker-handoff.json": true,
+    "delegation.json": true,
+    "relay-record-work.json": true,
+    "relay-record-planning.json": true
+  },
+  "InputSha256": {
+    "byte-fidelity-check.json": "F64CBB042314142265143C95C9CF06878798ADC0FCF74694186D6EE7D06A5776",
+    "delegation.json": "159AF6E325053BF5A52F3DAB2AB72CE7CDBFD487F3D7C9608ADB91EBA875A67B",
+    "gate-contract.json": "5CD7ACB0C5C30B00C32A697F4609C3DB8BAC2115DAEC87BFEEE45B422483BB3D",
+    "relay-record-planning.json": "8E7BE1215EF88E1B2D8C49B93E3C141F53D82F9B3DCE6E2930C88C8FEB7006EE",
+    "relay-record-work.json": "85EEE39AE2DFCFAA850906EF0DF49CD0DE149B82244004226100014F28DDA990",
+    "worker-handoff.json": "221C9FB7A7AF30C56FDC10B259FE9FA3B136FCD4AF99AFFD84610DB779E399B7",
+    "ci-core/43650040527/core.trx": "D7DA2E594BEC08EF4BF18FDD3E388FD714F8604491E4AFFB85F785667ECA31F9",
+    "ci-core-red/43649940464/core.trx": "94A8FE50F874C856AFE488625109B4263B1F07F5BF3D58C522726FC07274C532",
+    "ci-ui/43650040527/ui.trx": "E2BBFA38A45007D4D3A91BD2F1F32985BEFEEBCCB02ADB2A5DE8BBCB1B2498EF",
+    "ci-ui-red/43649940464/ui.trx": "4CC84F382136F60497770569AC647B2677B721B16216AF8CA43BD32AC76F2C83"
+  },
+  "ChangedVsVerifiedInputs": [
+    "delegation.json",
+    "relay-record-planning.json"
+  ]
+}

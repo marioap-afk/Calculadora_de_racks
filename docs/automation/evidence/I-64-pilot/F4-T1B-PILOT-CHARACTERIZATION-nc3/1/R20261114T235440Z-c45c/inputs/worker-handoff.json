@@ -1,0 +1,2036 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F4-T1B-PILOT-CHARACTERIZATION",
+  "RunId": "R20261114T214644Z-c077",
+  "DelegationRunId": "R20261114T214147Z-851e",
+  "Initiative": "I-64",
+  "Gate": "F4",
+  "Attempt": 1,
+  "BaseSha": "0a6f84c298d0f542bbfdedabd82946490196e23f",
+  "RedSha": "92f5f5dbed597bc0e5a9ab57e83ff8a59459933e",
+  "CurrentSha": "1d36d0065ed3a469004f571ad8e3bc0fdc0a0d02",
+  "Branch": "architecture/workspace-persistente-rackcad",
+  "Worktree": "<worktree-de-I-64>",
+  "Pushed": true,
+  "FilesChanged": [
+    "tests/RackCad.Tests/PushBackClassicCharacterizationPluginGuardTests.cs",
+    "tests/RackCad.UI.Tests/PushBackClassicCharacterizationCloseTests.cs",
+    "tests/RackCad.UI.Tests/PushBackClassicCharacterizationIntentTests.cs",
+    "tests/RackCad.UI.Tests/PushBackClassicCharacterizationKeyboardTests.cs",
+    "tests/RackCad.UI.Tests/PushBackClassicCharacterizationOwnerTests.cs",
+    "tests/RackCad.UI.Tests/PushBackClassicCharacterizationResourceTests.cs",
+    "tests/RackCad.UI.Tests/PushBackClassicCharacterizationSourceGuardTests.cs"
+  ],
+  "WorkCompleted": "F4-T1B (intento 1) hecha: SOLO caracterizacion de la ventana clasica de Push Back (RackPushBackSystemWindow). Siete clases de prueba nuevas (seis en RackCad.UI.Tests y una en RackCad.Tests) con 55 resultados de UI y 10 de Core; ninguna prueba ni ayudante existente se edita, ninguna usa Skip, ninguna usa un MessageBox real, ninguna instancia RackFrameConfiguratorWindow ni ejecuta PromptSaveToLibrary, el BOM, RackProjectStore.Save, SaveLibrary_Click ni InsertBatch_Click con entradas validas, y no se cambia ningun .csproj, InternalsVisibleTo ni paquete.\nRED 92f5f5dbed597bc0e5a9ab57e83ff8a59459933e (titulo con la frase exacta del contrato): las siete clases mas los mutantes temporales de la tabla cerrada INV-F4T1B-14 en los 14 archivos de MutantScope (MU-04 y MU-18 no se aplican: CT-02 usa el gesto, no su respaldo, y CT-18 no se escribe). Con todos los mutantes a la vez: UI Failed 55 de 55 y Core Failed 10 de 10; criterio mecanico del TRX cumplido (todos Failed, Message sin prefijo de tipo, primera linea de la traza en tests/, sin NotExecuted ni Skipped).\nGREEN 1d36d0065ed3a469004f571ad8e3bc0fdc0a0d02: git restore --source=BaseSha de los 14 archivos de MutantScope; git diff BaseSha..HEAD -- src vacio, y git diff --name-only BaseSha..HEAD son exactamente los siete archivos de prueba; el id de blob de cada archivo mutado coincide con el de la BaseSha.\nVerificado en local sobre el GREEN: filtros UI 55/55 (tres corridas consecutivas g1, g2, g3 en verde) y Core 10/10; suites completas en Debug (Core 18471 en verde; UI 2293 en verde y 17 omitidas que ya lo estaban); builds Release de los tres proyectos (Core, UI.Tests y Plugin a una carpeta de artifacts) sin errores y sin avisos CS, MSB (salvo los 2 MSB3277 de la linea base), NU ni NETSDK, tambien con los mutantes.\nLa sesion mantiene la evidencia y el estado, y ejecuta la CI exacta, la verificacion, las revisiones y los controles nc1..nc3. GATE PASS.",
+  "TestsExecuted": [
+    {
+      "RunRef": "b1-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/b1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "GREEN",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/b1/ui.trx"
+    },
+    {
+      "RunRef": "b2-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/b2 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "GREEN",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/b2/ui.trx"
+    },
+    {
+      "RunRef": "b3-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/b3 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "GREEN",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/b3/ui.trx"
+    },
+    {
+      "RunRef": "b4-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/b4 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "GREEN",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/b4/core.trx"
+    },
+    {
+      "RunRef": "m01-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m01 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m01/ui.trx"
+    },
+    {
+      "RunRef": "m01-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m01 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m01/core.trx"
+    },
+    {
+      "RunRef": "m02-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m02 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m02/ui.trx"
+    },
+    {
+      "RunRef": "m02-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m02 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m02/core.trx"
+    },
+    {
+      "RunRef": "m03-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m03 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m03/ui.trx"
+    },
+    {
+      "RunRef": "m03-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m03 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m03/core.trx"
+    },
+    {
+      "RunRef": "m05-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m05 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m05/ui.trx"
+    },
+    {
+      "RunRef": "m05-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m05 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m05/core.trx"
+    },
+    {
+      "RunRef": "m06-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m06 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m06/ui.trx"
+    },
+    {
+      "RunRef": "m06-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m06 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m06/core.trx"
+    },
+    {
+      "RunRef": "m07-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m07 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m07/ui.trx"
+    },
+    {
+      "RunRef": "m07-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m07 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m07/core.trx"
+    },
+    {
+      "RunRef": "m08t-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m08t --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m08t/ui.trx"
+    },
+    {
+      "RunRef": "m08t-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m08t --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m08t/core.trx"
+    },
+    {
+      "RunRef": "m08o-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m08o --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m08o/ui.trx"
+    },
+    {
+      "RunRef": "m08o-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m08o --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m08o/core.trx"
+    },
+    {
+      "RunRef": "m09t-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m09t --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m09t/ui.trx"
+    },
+    {
+      "RunRef": "m09t-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m09t --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m09t/core.trx"
+    },
+    {
+      "RunRef": "m09e-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m09e --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m09e/ui.trx"
+    },
+    {
+      "RunRef": "m09e-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m09e --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m09e/core.trx"
+    },
+    {
+      "RunRef": "m10x-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m10x --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m10x/ui.trx"
+    },
+    {
+      "RunRef": "m10x-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m10x --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m10x/core.trx"
+    },
+    {
+      "RunRef": "m10c-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m10c --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m10c/ui.trx"
+    },
+    {
+      "RunRef": "m10c-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m10c --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m10c/core.trx"
+    },
+    {
+      "RunRef": "m11-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m11 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m11/ui.trx"
+    },
+    {
+      "RunRef": "m11-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m11 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m11/core.trx"
+    },
+    {
+      "RunRef": "m12-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m12 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m12/ui.trx"
+    },
+    {
+      "RunRef": "m12-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m12 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m12/core.trx"
+    },
+    {
+      "RunRef": "m13-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m13 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m13/ui.trx"
+    },
+    {
+      "RunRef": "m13-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m13 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m13/core.trx"
+    },
+    {
+      "RunRef": "m14l-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m14l --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m14l/ui.trx"
+    },
+    {
+      "RunRef": "m14l-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m14l --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m14l/core.trx"
+    },
+    {
+      "RunRef": "m14d-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m14d --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m14d/ui.trx"
+    },
+    {
+      "RunRef": "m14d-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m14d --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m14d/core.trx"
+    },
+    {
+      "RunRef": "m14c-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m14c --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m14c/ui.trx"
+    },
+    {
+      "RunRef": "m14c-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m14c --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m14c/core.trx"
+    },
+    {
+      "RunRef": "m15v-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m15v --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m15v/ui.trx"
+    },
+    {
+      "RunRef": "m15v-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m15v --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m15v/core.trx"
+    },
+    {
+      "RunRef": "m15d-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m15d --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m15d/ui.trx"
+    },
+    {
+      "RunRef": "m15d-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m15d --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m15d/core.trx"
+    },
+    {
+      "RunRef": "m16-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m16 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m16/ui.trx"
+    },
+    {
+      "RunRef": "m16-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m16 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m16/core.trx"
+    },
+    {
+      "RunRef": "m17-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m17 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m17/ui.trx"
+    },
+    {
+      "RunRef": "m17-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m17 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m17/core.trx"
+    },
+    {
+      "RunRef": "m19f-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m19f --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m19f/ui.trx"
+    },
+    {
+      "RunRef": "m19f-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m19f --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m19f/core.trx"
+    },
+    {
+      "RunRef": "m19d-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m19d --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m19d/ui.trx"
+    },
+    {
+      "RunRef": "m19d-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m19d --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m19d/core.trx"
+    },
+    {
+      "RunRef": "m19s-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m19s --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m19s/ui.trx"
+    },
+    {
+      "RunRef": "m19s-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m19s --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m19s/core.trx"
+    },
+    {
+      "RunRef": "m20w-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m20w --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m20w/ui.trx"
+    },
+    {
+      "RunRef": "m20w-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m20w --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m20w/core.trx"
+    },
+    {
+      "RunRef": "m20p-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m20p --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m20p/ui.trx"
+    },
+    {
+      "RunRef": "m20p-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m20p --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m20p/core.trx"
+    },
+    {
+      "RunRef": "m20u-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m20u --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m20u/ui.trx"
+    },
+    {
+      "RunRef": "m20u-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m20u --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m20u/core.trx"
+    },
+    {
+      "RunRef": "m21-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m21 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m21/ui.trx"
+    },
+    {
+      "RunRef": "m21-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m21 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m21/core.trx"
+    },
+    {
+      "RunRef": "m22w-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m22w --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m22w/ui.trx"
+    },
+    {
+      "RunRef": "m22w-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m22w --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m22w/core.trx"
+    },
+    {
+      "RunRef": "m22c-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m22c --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m22c/ui.trx"
+    },
+    {
+      "RunRef": "m22c-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m22c --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m22c/core.trx"
+    },
+    {
+      "RunRef": "m23-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m23 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m23/ui.trx"
+    },
+    {
+      "RunRef": "m23-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m23 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m23/core.trx"
+    },
+    {
+      "RunRef": "m24s-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m24s --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m24s/ui.trx"
+    },
+    {
+      "RunRef": "m24s-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m24s --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m24s/core.trx"
+    },
+    {
+      "RunRef": "m24d-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m24d --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m24d/ui.trx"
+    },
+    {
+      "RunRef": "m24d-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m24d --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m24d/core.trx"
+    },
+    {
+      "RunRef": "m25-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m25 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m25/ui.trx"
+    },
+    {
+      "RunRef": "m25-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m25 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m25/core.trx"
+    },
+    {
+      "RunRef": "m26m-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m26m --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m26m/ui.trx"
+    },
+    {
+      "RunRef": "m26m-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m26m --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m26m/core.trx"
+    },
+    {
+      "RunRef": "m26p-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m26p --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m26p/ui.trx"
+    },
+    {
+      "RunRef": "m26p-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m26p --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m26p/core.trx"
+    },
+    {
+      "RunRef": "m26l-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m26l --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m26l/ui.trx"
+    },
+    {
+      "RunRef": "m26l-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m26l --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m26l/core.trx"
+    },
+    {
+      "RunRef": "m27s-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m27s --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m27s/ui.trx"
+    },
+    {
+      "RunRef": "m27s-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m27s --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m27s/core.trx"
+    },
+    {
+      "RunRef": "m27f-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m27f --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m27f/ui.trx"
+    },
+    {
+      "RunRef": "m27f-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m27f --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m27f/core.trx"
+    },
+    {
+      "RunRef": "m27p-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m27p --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m27p/ui.trx"
+    },
+    {
+      "RunRef": "m27p-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m27p --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m27p/core.trx"
+    },
+    {
+      "RunRef": "m27d-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m27d --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m27d/ui.trx"
+    },
+    {
+      "RunRef": "m27d-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m27d --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m27d/core.trx"
+    },
+    {
+      "RunRef": "m28-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m28 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m28/ui.trx"
+    },
+    {
+      "RunRef": "m28-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m28 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m28/core.trx"
+    },
+    {
+      "RunRef": "m01b-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m01b --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m01b/ui.trx"
+    },
+    {
+      "RunRef": "m01b-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m01b --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m01b/core.trx"
+    },
+    {
+      "RunRef": "m15vb-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m15vb --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m15vb/ui.trx"
+    },
+    {
+      "RunRef": "m15vb-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m15vb --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m15vb/core.trx"
+    },
+    {
+      "RunRef": "m15db-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m15db --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m15db/ui.trx"
+    },
+    {
+      "RunRef": "m15db-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m15db --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/m15db/core.trx"
+    },
+    {
+      "RunRef": "cr0-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/cr0 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/cr0/ui.trx"
+    },
+    {
+      "RunRef": "cr0-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/cr0 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/cr0/core.trx"
+    },
+    {
+      "RunRef": "r1-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/r1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RED",
+      "TreeSha": "92f5f5dbed597bc0e5a9ab57e83ff8a59459933e",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/r1/ui.trx"
+    },
+    {
+      "RunRef": "r1-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/r1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RED",
+      "TreeSha": "92f5f5dbed597bc0e5a9ab57e83ff8a59459933e",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/r1/core.trx"
+    },
+    {
+      "RunRef": "rf-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/rf --blame-hang-timeout 5m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/rf/ui.trx"
+    },
+    {
+      "RunRef": "rf-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/rf --blame-hang-timeout 5m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/rf/core.trx"
+    },
+    {
+      "RunRef": "gf-ui",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/gf --blame-hang-timeout 5m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "1d36d0065ed3a469004f571ad8e3bc0fdc0a0d02",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/gf/ui.trx"
+    },
+    {
+      "RunRef": "gf-core",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/gf --blame-hang-timeout 5m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "1d36d0065ed3a469004f571ad8e3bc0fdc0a0d02",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/gf/core.trx"
+    },
+    {
+      "RunRef": "g1",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/g1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "GREEN",
+      "TreeSha": "1d36d0065ed3a469004f571ad8e3bc0fdc0a0d02",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/g1/ui.trx"
+    },
+    {
+      "RunRef": "g2",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/g2 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "GREEN",
+      "TreeSha": "1d36d0065ed3a469004f571ad8e3bc0fdc0a0d02",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/g2/ui.trx"
+    },
+    {
+      "RunRef": "g3",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/g3 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "GREEN",
+      "TreeSha": "1d36d0065ed3a469004f571ad8e3bc0fdc0a0d02",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/g3/ui.trx"
+    },
+    {
+      "RunRef": "g4",
+      "Command": "dotnet.exe (SDK 8.0.423 de usuario) test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/g4 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "GREEN",
+      "TreeSha": "1d36d0065ed3a469004f571ad8e3bc0fdc0a0d02",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1B-PILOT-CHARACTERIZATION/1/R20261114T214644Z-c077/tests/g4/core.trx"
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "b1-ui",
+      "Selected": 55,
+      "Passed": 55,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "b2-ui",
+      "Selected": 55,
+      "Passed": 55,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "b3-ui",
+      "Selected": 55,
+      "Passed": 55,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "b4-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m01-ui",
+      "Selected": 55,
+      "Passed": 54,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationKeyboardTests.EnterOnTheAccessKeyRouteDoesNothingBecauseNoButtonIsDefault"
+      ]
+    },
+    {
+      "RunRef": "m01-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m02-ui",
+      "Selected": 55,
+      "Passed": 47,
+      "Failed": 8,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.CloseButtonAnsweredNoKeepsTheWindowWithItsPendingWorkAndNoRequest",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.CloseButtonAnsweredYesClosesWithoutARequestAndTheStagedEditIsNotConfirmed",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.CloseButtonWithAStagedModuleAsksOnceWithTheExactQuestionAndNoOwner",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EscapeAnsweredNoKeepsTheWindowWithItsPendingWorkAndNoRequest",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EscapeAnsweredYesClosesWithoutARequestAndTheStagedEditIsNotConfirmed",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EscapeWithAStagedModuleAsksOnceWithTheExactQuestionAndNoOwner",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.ModalCloseButtonAnsweredNoAsksTwiceInTheDialogLoop",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.ModalEscapeAnsweredNoAsksTwiceInTheDialogLoop"
+      ]
+    },
+    {
+      "RunRef": "m02-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m03-ui",
+      "Selected": 55,
+      "Passed": 43,
+      "Failed": 12,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.CloseButtonAnsweredNoKeepsTheWindowWithItsPendingWorkAndNoRequest",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.CloseButtonAnsweredYesClosesWithoutARequestAndTheStagedEditIsNotConfirmed",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.CloseButtonWithAStagedModuleAsksOnceWithTheExactQuestionAndNoOwner",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.CloseButtonWithoutPendingWorkClosesWithoutAsking",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EscapeAnsweredNoKeepsTheWindowWithItsPendingWorkAndNoRequest",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EscapeAnsweredYesClosesWithoutARequestAndTheStagedEditIsNotConfirmed",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EscapeWithAStagedModuleAsksOnceWithTheExactQuestionAndNoOwner",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EscapeWithAnUncommittedFieldAndAnAppliedMatrixEditClosesWithoutAskingOrRecomputing",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EscapeWithoutPendingWorkClosesWithoutAsking",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.ModalCloseButtonAnsweredNoAsksTwiceInTheDialogLoop",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.ModalEscapeAnsweredNoAsksTwiceInTheDialogLoop",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationKeyboardTests.EnterOnTheAccessKeyRouteDoesNothingBecauseNoButtonIsDefault"
+      ]
+    },
+    {
+      "RunRef": "m03-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m05-ui",
+      "Selected": 55,
+      "Passed": 53,
+      "Failed": 2,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.PlainCloseOfAShownWindowAsksNothingAndKeepsTheInitialContract",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.PlainCloseOfAnUnshownWindowAsksNothingAndKeepsTheInitialContract"
+      ]
+    },
+    {
+      "RunRef": "m05-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m06-ui",
+      "Selected": 55,
+      "Passed": 43,
+      "Failed": 12,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EveryInsertActionClosesTheWindowWithoutAsking(buttonName: \"InsertButton\")",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EveryInsertActionClosesTheWindowWithoutAsking(buttonName: \"InsertFrontalEntradaButton\")",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EveryInsertActionClosesTheWindowWithoutAsking(buttonName: \"InsertFrontalPosteriorButton\")",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EveryInsertActionClosesTheWindowWithoutAsking(buttonName: \"InsertLateralButton\")",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EveryInsertActionClosesTheWindowWithoutAsking(buttonName: \"InsertPlantaButton\")",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.InsertWithAStagedModuleConfirmsItBeforeAndClosesWithoutAsking",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.UpdateOfAnExistingRackClosesTheWindowWithoutAsking",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.EachPerViewButtonSelectsItsViewAndExposesTheSingleViewIntent(buttonName: \"InsertFrontalEntradaButton\", viewIndex: 1, view: \"frontal\", section: 0, kind: Frontal)",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.EachPerViewButtonSelectsItsViewAndExposesTheSingleViewIntent(buttonName: \"InsertFrontalPosteriorButton\", viewIndex: 2, view: \"frontal\", section: 1, kind: Frontal)",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.EachPerViewButtonSelectsItsViewAndExposesTheSingleViewIntent(buttonName: \"InsertLateralButton\", viewIndex: 0, view: \"lateral\", section: 0, kind: Lateral)",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.EachPerViewButtonSelectsItsViewAndExposesTheSingleViewIntent(buttonName: \"InsertPlantaButton\", viewIndex: 3, view: \"planta\", section: -1, kind: Planta)",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.TheFrontalCutOfSideBFollowsTheFrontalSideSelectorNotTheEditedSide"
+      ]
+    },
+    {
+      "RunRef": "m06-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m07-ui",
+      "Selected": 55,
+      "Passed": 50,
+      "Failed": 5,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.EachPerViewButtonSelectsItsViewAndExposesTheSingleViewIntent(buttonName: \"InsertFrontalEntradaButton\", viewIndex: 1, view: \"frontal\", section: 0, kind: Frontal)",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.EachPerViewButtonSelectsItsViewAndExposesTheSingleViewIntent(buttonName: \"InsertFrontalPosteriorButton\", viewIndex: 2, view: \"frontal\", section: 1, kind: Frontal)",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.EachPerViewButtonSelectsItsViewAndExposesTheSingleViewIntent(buttonName: \"InsertLateralButton\", viewIndex: 0, view: \"lateral\", section: 0, kind: Lateral)",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.EachPerViewButtonSelectsItsViewAndExposesTheSingleViewIntent(buttonName: \"InsertPlantaButton\", viewIndex: 3, view: \"planta\", section: -1, kind: Planta)",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.TheFrontalCutOfSideBFollowsTheFrontalSideSelectorNotTheEditedSide"
+      ]
+    },
+    {
+      "RunRef": "m07-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m08t-ui",
+      "Selected": 55,
+      "Passed": 53,
+      "Failed": 2,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.TheFirstTwoGuardsShowTheirTextReturnWithoutConfirmingTheStagedModuleAndDoNotClose",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.TheLastTwoGuardsConfirmTheStagedModuleFirstShowTheirDiagnosticAndDoNotClose"
+      ]
+    },
+    {
+      "RunRef": "m08t-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m08o-ui",
+      "Selected": 55,
+      "Passed": 54,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.TheFirstTwoGuardsShowTheirTextReturnWithoutConfirmingTheStagedModuleAndDoNotClose"
+      ]
+    },
+    {
+      "RunRef": "m08o-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m09t-ui",
+      "Selected": 55,
+      "Passed": 54,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.TheActionBarStateIsExactForEveryCombinationOfAutoCadAndNewOrExistingRack"
+      ]
+    },
+    {
+      "RunRef": "m09t-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m09e-ui",
+      "Selected": 55,
+      "Passed": 54,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.InsertBatchIsAlwaysEnabledEvenWithInvalidInputs"
+      ]
+    },
+    {
+      "RunRef": "m09e-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m10x-ui",
+      "Selected": 55,
+      "Passed": 54,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationKeyboardTests.InitialFocusIsDeclaredOnTheNameBoxAndNotForcedFromCode"
+      ]
+    },
+    {
+      "RunRef": "m10x-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m10c-ui",
+      "Selected": 55,
+      "Passed": 54,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationKeyboardTests.NameBoxTextIsEmptyOnLoadNewAndTheStoredNameOnLoadExisting"
+      ]
+    },
+    {
+      "RunRef": "m10c-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m11-ui",
+      "Selected": 55,
+      "Passed": 54,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationKeyboardTests.TabStopsKeepTheirOrderInsideEveryShellZoneAndNoLocalNavigationValueIsSet"
+      ]
+    },
+    {
+      "RunRef": "m11-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m12-ui",
+      "Selected": 55,
+      "Passed": 54,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationOwnerTests.TheWindowHasNoOwnerAndCentersOnItsOwnerWithTheStyleSizes"
+      ]
+    },
+    {
+      "RunRef": "m12-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m13-ui",
+      "Selected": 55,
+      "Passed": 53,
+      "Failed": 2,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationOwnerTests.ThePerPostBootDialogIsOwnedByTheWindowNotByTheOpenSafetyDialog",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationOwnerTests.TheSafetyDialogIsOwnedByTheWindowAndCentersOnItsOwner"
+      ]
+    },
+    {
+      "RunRef": "m13-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m14l-ui",
+      "Selected": 55,
+      "Passed": 54,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationOwnerTests.TheBatchDialogCentersOnItsOwnerWithInsertarColaAsDefaultAndCancelarAsCancel"
+      ]
+    },
+    {
+      "RunRef": "m14l-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m14d-ui",
+      "Selected": 55,
+      "Passed": 54,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationOwnerTests.TheBatchDialogCentersOnItsOwnerWithInsertarColaAsDefaultAndCancelarAsCancel"
+      ]
+    },
+    {
+      "RunRef": "m14d-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m14c-ui",
+      "Selected": 55,
+      "Passed": 54,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationOwnerTests.TheBatchDialogCentersOnItsOwnerWithInsertarColaAsDefaultAndCancelarAsCancel"
+      ]
+    },
+    {
+      "RunRef": "m14c-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m15v-ui",
+      "Selected": 55,
+      "Passed": 54,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationResourceTests.TheWindowMergesAppStylesDeclaresTheThreeActionRhythmTokensAndUsesTheShellWindowStyle"
+      ]
+    },
+    {
+      "RunRef": "m15v-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m15d-ui",
+      "Selected": 55,
+      "Passed": 54,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationResourceTests.TheShellDoesNotActivateItsResourceFallbackOnceItsTemplateIsApplied"
+      ]
+    },
+    {
+      "RunRef": "m15d-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m16-ui",
+      "Selected": 55,
+      "Passed": 54,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheHeaderConfiguratorIsOwnedByTheWindowCentersOnItsOwnerAndItsConfigurationIsAlwaysStaged"
+      ]
+    },
+    {
+      "RunRef": "m16-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m17-ui",
+      "Selected": 55,
+      "Passed": 54,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.CancellingSafetyChangesNeitherTheSelectionsNorTheRecomputePasses"
+      ]
+    },
+    {
+      "RunRef": "m17-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m19f-ui",
+      "Selected": 55,
+      "Passed": 54,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheClassicWindowHasNoKeyboardHandlersNoTabOrderNoForcedFocusAndNoDialogResult"
+      ]
+    },
+    {
+      "RunRef": "m19f-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m19d-ui",
+      "Selected": 55,
+      "Passed": 54,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheClassicWindowHasNoKeyboardHandlersNoTabOrderNoForcedFocusAndNoDialogResult"
+      ]
+    },
+    {
+      "RunRef": "m19d-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m19s-ui",
+      "Selected": 55,
+      "Passed": 54,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.NoCodeAnywhereInSrcSubscribesToInsertRequestedRaised"
+      ]
+    },
+    {
+      "RunRef": "m19s-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m20w-ui",
+      "Selected": 55,
+      "Passed": 50,
+      "Failed": 5,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.InsertBatchShowsItsDialogThenRequestsTheBatchAndClosesWithoutLookingAtCanInsertInAutoCad",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheBatchDialogIsShownThroughItsPresenterWithTheWindowAsOwner",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheBomWindowIsOwnedByTheWindow",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheDefenseGridIsOwnedByTheWindow",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheTopeGridIsOwnedByTheWindow"
+      ]
+    },
+    {
+      "RunRef": "m20w-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m20p-ui",
+      "Selected": 55,
+      "Passed": 54,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheBatchDialogIsShownThroughItsPresenterWithTheWindowAsOwner"
+      ]
+    },
+    {
+      "RunRef": "m20p-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m20u-ui",
+      "Selected": 55,
+      "Passed": 54,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheSaveFileDialogIsOwnedByTheWindowThroughPromptSaveToLibrary"
+      ]
+    },
+    {
+      "RunRef": "m20u-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m21-ui",
+      "Selected": 55,
+      "Passed": 54,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheMenuHostOpensThePushBackWindowWithItsContextOwnerInBothPathsAndReturnsTheRequestOnlyWhenRequested"
+      ]
+    },
+    {
+      "RunRef": "m21-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m22w-ui",
+      "Selected": 55,
+      "Passed": 53,
+      "Failed": 2,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.SaveToLibraryPromptsFirstThenMarksTheIdentityNamesItAndSavesTheLibraryProject",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheSaveFileDialogIsOwnedByTheWindowThroughPromptSaveToLibrary"
+      ]
+    },
+    {
+      "RunRef": "m22w-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m22c-ui",
+      "Selected": 55,
+      "Passed": 54,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheHeaderConfiguratorWritesItsLayoutOnlyWhenItIsClosed"
+      ]
+    },
+    {
+      "RunRef": "m22c-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m23-ui",
+      "Selected": 55,
+      "Passed": 52,
+      "Failed": 3,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.InsertBatchWithABlockedOutputConfirmsTheModuleFirstAndStopsBeforeAnyDialog",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.InsertBatchWithAnInvalidFieldConfirmsTheModuleFirstAndStopsBeforeAnyDialog",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.InsertBatchShowsItsDialogThenRequestsTheBatchAndClosesWithoutLookingAtCanInsertInAutoCad"
+      ]
+    },
+    {
+      "RunRef": "m23-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m24s-ui",
+      "Selected": 55,
+      "Passed": 55,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m24s-core",
+      "Selected": 10,
+      "Passed": 9,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.RackPushBackShowsTheWindowModallyWithoutAnOwnerAndReadsOnlyTheViewAndSectionOfTheRequest"
+      ]
+    },
+    {
+      "RunRef": "m24d-ui",
+      "Selected": 55,
+      "Passed": 55,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m24d-core",
+      "Selected": 10,
+      "Passed": 9,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.RackPushBackDrawsAfterTheCloseThroughDrawPushBackViewThatNamesTheSystem"
+      ]
+    },
+    {
+      "RunRef": "m25-ui",
+      "Selected": 55,
+      "Passed": 55,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m25-core",
+      "Selected": 10,
+      "Passed": 9,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.RackEditarReadsTheWindowOutcomeAndWritesInTheFixedOrderWithNoRegenPerView"
+      ]
+    },
+    {
+      "RunRef": "m26m-ui",
+      "Selected": 55,
+      "Passed": 55,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m26m-core",
+      "Selected": 10,
+      "Passed": 9,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.TheMenuHostNamesTheNewRackThenPreparesAndRunsTheBatchWithoutAKindSwitch"
+      ]
+    },
+    {
+      "RunRef": "m26p-ui",
+      "Selected": 55,
+      "Passed": 55,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m26p-core",
+      "Selected": 10,
+      "Passed": 9,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.TheBatchProductsPlaceEveryPushBackViewWithoutRegeneratingEachOne"
+      ]
+    },
+    {
+      "RunRef": "m26l-ui",
+      "Selected": 55,
+      "Passed": 55,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m26l-core",
+      "Selected": 10,
+      "Passed": 9,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.ThePlacementFacadeForwardsTheRegenFlagToPlaceHeaderWithThePushBackKind"
+      ]
+    },
+    {
+      "RunRef": "m27s-ui",
+      "Selected": 55,
+      "Passed": 55,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m27s-core",
+      "Selected": 10,
+      "Passed": 9,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.EachPushBackFacadeKeepsItsExactPublicSignaturesAndItsCallerOwnedPrimitives(facade: \"PushBackSystemDrawService (lateral)\", path: [\"Systems\", \"PushBack\", \"PushBackSystemDrawService.cs\"], signatures: [\"public HeaderPlacementResult DrawAndPlace( Documen\"···, \"public HeaderPlacementResult RedrawInPlace( Docume\"···, \"internal PreparedViewRedraw PrepareRedraw(Database\"···, \"internal LateralHeaderDrawOutcome RedrawInTransact\"···])"
+      ]
+    },
+    {
+      "RunRef": "m27f-ui",
+      "Selected": 55,
+      "Passed": 55,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m27f-core",
+      "Selected": 10,
+      "Passed": 9,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.EachPushBackFacadeKeepsItsExactPublicSignaturesAndItsCallerOwnedPrimitives(facade: \"PushBackFrontalDrawService\", path: [\"Systems\", \"PushBack\", \"PushBackFrontalDrawService.cs\"], signatures: [\"public HeaderPlacementResult DrawAndPlace( Documen\"···, \"public HeaderPlacementResult RedrawInPlace( Docume\"···, \"internal PreparedViewRedraw PrepareRedraw(Database\"···, \"internal LateralHeaderDrawOutcome RedrawInTransact\"···])"
+      ]
+    },
+    {
+      "RunRef": "m27p-ui",
+      "Selected": 55,
+      "Passed": 55,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m27p-core",
+      "Selected": 10,
+      "Passed": 9,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.EachPushBackFacadeKeepsItsExactPublicSignaturesAndItsCallerOwnedPrimitives(facade: \"PushBackPlantaDrawService\", path: [\"Systems\", \"PushBack\", \"PushBackPlantaDrawService.cs\"], signatures: [\"public HeaderPlacementResult DrawAndPlace( Documen\"···, \"public HeaderPlacementResult RedrawInPlace( Docume\"···, \"internal PreparedViewRedraw PrepareRedraw(Database\"···, \"internal LateralHeaderDrawOutcome RedrawInTransact\"···])"
+      ]
+    },
+    {
+      "RunRef": "m27d-ui",
+      "Selected": 55,
+      "Passed": 55,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m27d-core",
+      "Selected": 10,
+      "Passed": 9,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.TheClassicPathsNeverCallTheCallerOwnedPrimitivesOfTheFacades"
+      ]
+    },
+    {
+      "RunRef": "m28-ui",
+      "Selected": 55,
+      "Passed": 53,
+      "Failed": 2,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EscapeWithAnUncommittedFieldAndAnAppliedMatrixEditClosesWithoutAskingOrRecomputing",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.PlainCloseWithAnUncommittedFieldAndAnAppliedMatrixEditClosesWithoutAskingOrRecomputing"
+      ]
+    },
+    {
+      "RunRef": "m28-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m01b-ui",
+      "Selected": 55,
+      "Passed": 54,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationKeyboardTests.EnterOnTheAccessKeyRouteDoesNothingBecauseNoButtonIsDefault"
+      ]
+    },
+    {
+      "RunRef": "m01b-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m15vb-ui",
+      "Selected": 55,
+      "Passed": 54,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationResourceTests.TheWindowMergesAppStylesDeclaresTheThreeActionRhythmTokensAndUsesTheShellWindowStyle"
+      ]
+    },
+    {
+      "RunRef": "m15vb-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m15db-ui",
+      "Selected": 55,
+      "Passed": 54,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationResourceTests.TheShellDoesNotActivateItsResourceFallbackOnceItsTemplateIsApplied"
+      ]
+    },
+    {
+      "RunRef": "m15db-core",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "cr0-ui",
+      "Selected": 55,
+      "Passed": 0,
+      "Failed": 55,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.CloseButtonAnsweredNoKeepsTheWindowWithItsPendingWorkAndNoRequest",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.CloseButtonAnsweredYesClosesWithoutARequestAndTheStagedEditIsNotConfirmed",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.CloseButtonWithAStagedModuleAsksOnceWithTheExactQuestionAndNoOwner",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.CloseButtonWithoutPendingWorkClosesWithoutAsking",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EscapeAnsweredNoKeepsTheWindowWithItsPendingWorkAndNoRequest",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EscapeAnsweredYesClosesWithoutARequestAndTheStagedEditIsNotConfirmed",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EscapeWithAStagedModuleAsksOnceWithTheExactQuestionAndNoOwner",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EscapeWithAnUncommittedFieldAndAnAppliedMatrixEditClosesWithoutAskingOrRecomputing",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EscapeWithoutPendingWorkClosesWithoutAsking",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EveryInsertActionClosesTheWindowWithoutAsking(buttonName: \"InsertButton\")",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EveryInsertActionClosesTheWindowWithoutAsking(buttonName: \"InsertFrontalEntradaButton\")",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EveryInsertActionClosesTheWindowWithoutAsking(buttonName: \"InsertFrontalPosteriorButton\")",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EveryInsertActionClosesTheWindowWithoutAsking(buttonName: \"InsertLateralButton\")",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EveryInsertActionClosesTheWindowWithoutAsking(buttonName: \"InsertPlantaButton\")",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.InsertWithAStagedModuleConfirmsItBeforeAndClosesWithoutAsking",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.ModalCloseButtonAnsweredNoAsksTwiceInTheDialogLoop",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.ModalEscapeAnsweredNoAsksTwiceInTheDialogLoop",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.PlainCloseOfAShownWindowAsksNothingAndKeepsTheInitialContract",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.PlainCloseOfAnUnshownWindowAsksNothingAndKeepsTheInitialContract",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.PlainCloseWithAnUncommittedFieldAndAnAppliedMatrixEditClosesWithoutAskingOrRecomputing",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.UpdateOfAnExistingRackClosesTheWindowWithoutAsking",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.CancellingSafetyChangesNeitherTheSelectionsNorTheRecomputePasses",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.EachPerViewButtonSelectsItsViewAndExposesTheSingleViewIntent(buttonName: \"InsertFrontalEntradaButton\", viewIndex: 1, view: \"frontal\", section: 0, kind: Frontal)",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.EachPerViewButtonSelectsItsViewAndExposesTheSingleViewIntent(buttonName: \"InsertFrontalPosteriorButton\", viewIndex: 2, view: \"frontal\", section: 1, kind: Frontal)",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.EachPerViewButtonSelectsItsViewAndExposesTheSingleViewIntent(buttonName: \"InsertLateralButton\", viewIndex: 0, view: \"lateral\", section: 0, kind: Lateral)",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.EachPerViewButtonSelectsItsViewAndExposesTheSingleViewIntent(buttonName: \"InsertPlantaButton\", viewIndex: 3, view: \"planta\", section: -1, kind: Planta)",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.InsertBatchIsAlwaysEnabledEvenWithInvalidInputs",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.InsertBatchWithABlockedOutputConfirmsTheModuleFirstAndStopsBeforeAnyDialog",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.InsertBatchWithAnInvalidFieldConfirmsTheModuleFirstAndStopsBeforeAnyDialog",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.TheActionBarStateIsExactForEveryCombinationOfAutoCadAndNewOrExistingRack",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.TheFirstTwoGuardsShowTheirTextReturnWithoutConfirmingTheStagedModuleAndDoNotClose",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.TheFrontalCutOfSideBFollowsTheFrontalSideSelectorNotTheEditedSide",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.TheLastTwoGuardsConfirmTheStagedModuleFirstShowTheirDiagnosticAndDoNotClose",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationKeyboardTests.EnterOnTheAccessKeyRouteDoesNothingBecauseNoButtonIsDefault",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationKeyboardTests.InitialFocusIsDeclaredOnTheNameBoxAndNotForcedFromCode",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationKeyboardTests.NameBoxTextIsEmptyOnLoadNewAndTheStoredNameOnLoadExisting",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationKeyboardTests.TabStopsKeepTheirOrderInsideEveryShellZoneAndNoLocalNavigationValueIsSet",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationOwnerTests.TheBatchDialogCentersOnItsOwnerWithInsertarColaAsDefaultAndCancelarAsCancel",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationOwnerTests.ThePerPostBootDialogIsOwnedByTheWindowNotByTheOpenSafetyDialog",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationOwnerTests.TheSafetyDialogIsOwnedByTheWindowAndCentersOnItsOwner",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationOwnerTests.TheWindowHasNoOwnerAndCentersOnItsOwnerWithTheStyleSizes",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationResourceTests.TheShellDoesNotActivateItsResourceFallbackOnceItsTemplateIsApplied",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationResourceTests.TheWindowMergesAppStylesDeclaresTheThreeActionRhythmTokensAndUsesTheShellWindowStyle",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.InsertBatchShowsItsDialogThenRequestsTheBatchAndClosesWithoutLookingAtCanInsertInAutoCad",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.NoCodeAnywhereInSrcSubscribesToInsertRequestedRaised",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.SaveToLibraryPromptsFirstThenMarksTheIdentityNamesItAndSavesTheLibraryProject",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheBatchDialogIsShownThroughItsPresenterWithTheWindowAsOwner",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheBomWindowIsOwnedByTheWindow",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheClassicWindowHasNoKeyboardHandlersNoTabOrderNoForcedFocusAndNoDialogResult",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheDefenseGridIsOwnedByTheWindow",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheHeaderConfiguratorIsOwnedByTheWindowCentersOnItsOwnerAndItsConfigurationIsAlwaysStaged",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheHeaderConfiguratorWritesItsLayoutOnlyWhenItIsClosed",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheMenuHostOpensThePushBackWindowWithItsContextOwnerInBothPathsAndReturnsTheRequestOnlyWhenRequested",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheSaveFileDialogIsOwnedByTheWindowThroughPromptSaveToLibrary",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheTopeGridIsOwnedByTheWindow"
+      ]
+    },
+    {
+      "RunRef": "cr0-core",
+      "Selected": 10,
+      "Passed": 0,
+      "Failed": 10,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.EachPushBackFacadeKeepsItsExactPublicSignaturesAndItsCallerOwnedPrimitives(facade: \"PushBackFrontalDrawService\", path: [\"Systems\", \"PushBack\", \"PushBackFrontalDrawService.cs\"], signatures: [\"public HeaderPlacementResult DrawAndPlace( Documen\"···, \"public HeaderPlacementResult RedrawInPlace( Docume\"···, \"internal PreparedViewRedraw PrepareRedraw(Database\"···, \"internal LateralHeaderDrawOutcome RedrawInTransact\"···])",
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.EachPushBackFacadeKeepsItsExactPublicSignaturesAndItsCallerOwnedPrimitives(facade: \"PushBackPlantaDrawService\", path: [\"Systems\", \"PushBack\", \"PushBackPlantaDrawService.cs\"], signatures: [\"public HeaderPlacementResult DrawAndPlace( Documen\"···, \"public HeaderPlacementResult RedrawInPlace( Docume\"···, \"internal PreparedViewRedraw PrepareRedraw(Database\"···, \"internal LateralHeaderDrawOutcome RedrawInTransact\"···])",
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.EachPushBackFacadeKeepsItsExactPublicSignaturesAndItsCallerOwnedPrimitives(facade: \"PushBackSystemDrawService (lateral)\", path: [\"Systems\", \"PushBack\", \"PushBackSystemDrawService.cs\"], signatures: [\"public HeaderPlacementResult DrawAndPlace( Documen\"···, \"public HeaderPlacementResult RedrawInPlace( Docume\"···, \"internal PreparedViewRedraw PrepareRedraw(Database\"···, \"internal LateralHeaderDrawOutcome RedrawInTransact\"···])",
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.RackEditarReadsTheWindowOutcomeAndWritesInTheFixedOrderWithNoRegenPerView",
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.RackPushBackDrawsAfterTheCloseThroughDrawPushBackViewThatNamesTheSystem",
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.RackPushBackShowsTheWindowModallyWithoutAnOwnerAndReadsOnlyTheViewAndSectionOfTheRequest",
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.TheBatchProductsPlaceEveryPushBackViewWithoutRegeneratingEachOne",
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.TheClassicPathsNeverCallTheCallerOwnedPrimitivesOfTheFacades",
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.TheMenuHostNamesTheNewRackThenPreparesAndRunsTheBatchWithoutAKindSwitch",
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.ThePlacementFacadeForwardsTheRegenFlagToPlaceHeaderWithThePushBackKind"
+      ]
+    },
+    {
+      "RunRef": "r1-ui",
+      "Selected": 55,
+      "Passed": 0,
+      "Failed": 55,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.CloseButtonAnsweredNoKeepsTheWindowWithItsPendingWorkAndNoRequest",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.CloseButtonAnsweredYesClosesWithoutARequestAndTheStagedEditIsNotConfirmed",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.CloseButtonWithAStagedModuleAsksOnceWithTheExactQuestionAndNoOwner",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.CloseButtonWithoutPendingWorkClosesWithoutAsking",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EscapeAnsweredNoKeepsTheWindowWithItsPendingWorkAndNoRequest",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EscapeAnsweredYesClosesWithoutARequestAndTheStagedEditIsNotConfirmed",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EscapeWithAStagedModuleAsksOnceWithTheExactQuestionAndNoOwner",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EscapeWithAnUncommittedFieldAndAnAppliedMatrixEditClosesWithoutAskingOrRecomputing",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EscapeWithoutPendingWorkClosesWithoutAsking",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EveryInsertActionClosesTheWindowWithoutAsking(buttonName: \"InsertButton\")",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EveryInsertActionClosesTheWindowWithoutAsking(buttonName: \"InsertFrontalEntradaButton\")",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EveryInsertActionClosesTheWindowWithoutAsking(buttonName: \"InsertFrontalPosteriorButton\")",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EveryInsertActionClosesTheWindowWithoutAsking(buttonName: \"InsertLateralButton\")",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EveryInsertActionClosesTheWindowWithoutAsking(buttonName: \"InsertPlantaButton\")",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.InsertWithAStagedModuleConfirmsItBeforeAndClosesWithoutAsking",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.ModalCloseButtonAnsweredNoAsksTwiceInTheDialogLoop",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.ModalEscapeAnsweredNoAsksTwiceInTheDialogLoop",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.PlainCloseOfAShownWindowAsksNothingAndKeepsTheInitialContract",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.PlainCloseOfAnUnshownWindowAsksNothingAndKeepsTheInitialContract",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.PlainCloseWithAnUncommittedFieldAndAnAppliedMatrixEditClosesWithoutAskingOrRecomputing",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.UpdateOfAnExistingRackClosesTheWindowWithoutAsking",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.CancellingSafetyChangesNeitherTheSelectionsNorTheRecomputePasses",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.EachPerViewButtonSelectsItsViewAndExposesTheSingleViewIntent(buttonName: \"InsertFrontalEntradaButton\", viewIndex: 1, view: \"frontal\", section: 0, kind: Frontal)",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.EachPerViewButtonSelectsItsViewAndExposesTheSingleViewIntent(buttonName: \"InsertFrontalPosteriorButton\", viewIndex: 2, view: \"frontal\", section: 1, kind: Frontal)",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.EachPerViewButtonSelectsItsViewAndExposesTheSingleViewIntent(buttonName: \"InsertLateralButton\", viewIndex: 0, view: \"lateral\", section: 0, kind: Lateral)",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.EachPerViewButtonSelectsItsViewAndExposesTheSingleViewIntent(buttonName: \"InsertPlantaButton\", viewIndex: 3, view: \"planta\", section: -1, kind: Planta)",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.InsertBatchIsAlwaysEnabledEvenWithInvalidInputs",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.InsertBatchWithABlockedOutputConfirmsTheModuleFirstAndStopsBeforeAnyDialog",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.InsertBatchWithAnInvalidFieldConfirmsTheModuleFirstAndStopsBeforeAnyDialog",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.TheActionBarStateIsExactForEveryCombinationOfAutoCadAndNewOrExistingRack",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.TheFirstTwoGuardsShowTheirTextReturnWithoutConfirmingTheStagedModuleAndDoNotClose",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.TheFrontalCutOfSideBFollowsTheFrontalSideSelectorNotTheEditedSide",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.TheLastTwoGuardsConfirmTheStagedModuleFirstShowTheirDiagnosticAndDoNotClose",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationKeyboardTests.EnterOnTheAccessKeyRouteDoesNothingBecauseNoButtonIsDefault",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationKeyboardTests.InitialFocusIsDeclaredOnTheNameBoxAndNotForcedFromCode",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationKeyboardTests.NameBoxTextIsEmptyOnLoadNewAndTheStoredNameOnLoadExisting",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationKeyboardTests.TabStopsKeepTheirOrderInsideEveryShellZoneAndNoLocalNavigationValueIsSet",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationOwnerTests.TheBatchDialogCentersOnItsOwnerWithInsertarColaAsDefaultAndCancelarAsCancel",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationOwnerTests.ThePerPostBootDialogIsOwnedByTheWindowNotByTheOpenSafetyDialog",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationOwnerTests.TheSafetyDialogIsOwnedByTheWindowAndCentersOnItsOwner",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationOwnerTests.TheWindowHasNoOwnerAndCentersOnItsOwnerWithTheStyleSizes",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationResourceTests.TheShellDoesNotActivateItsResourceFallbackOnceItsTemplateIsApplied",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationResourceTests.TheWindowMergesAppStylesDeclaresTheThreeActionRhythmTokensAndUsesTheShellWindowStyle",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.InsertBatchShowsItsDialogThenRequestsTheBatchAndClosesWithoutLookingAtCanInsertInAutoCad",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.NoCodeAnywhereInSrcSubscribesToInsertRequestedRaised",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.SaveToLibraryPromptsFirstThenMarksTheIdentityNamesItAndSavesTheLibraryProject",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheBatchDialogIsShownThroughItsPresenterWithTheWindowAsOwner",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheBomWindowIsOwnedByTheWindow",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheClassicWindowHasNoKeyboardHandlersNoTabOrderNoForcedFocusAndNoDialogResult",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheDefenseGridIsOwnedByTheWindow",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheHeaderConfiguratorIsOwnedByTheWindowCentersOnItsOwnerAndItsConfigurationIsAlwaysStaged",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheHeaderConfiguratorWritesItsLayoutOnlyWhenItIsClosed",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheMenuHostOpensThePushBackWindowWithItsContextOwnerInBothPathsAndReturnsTheRequestOnlyWhenRequested",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheSaveFileDialogIsOwnedByTheWindowThroughPromptSaveToLibrary",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheTopeGridIsOwnedByTheWindow"
+      ]
+    },
+    {
+      "RunRef": "r1-core",
+      "Selected": 10,
+      "Passed": 0,
+      "Failed": 10,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.EachPushBackFacadeKeepsItsExactPublicSignaturesAndItsCallerOwnedPrimitives(facade: \"PushBackFrontalDrawService\", path: [\"Systems\", \"PushBack\", \"PushBackFrontalDrawService.cs\"], signatures: [\"public HeaderPlacementResult DrawAndPlace( Documen\"···, \"public HeaderPlacementResult RedrawInPlace( Docume\"···, \"internal PreparedViewRedraw PrepareRedraw(Database\"···, \"internal LateralHeaderDrawOutcome RedrawInTransact\"···])",
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.EachPushBackFacadeKeepsItsExactPublicSignaturesAndItsCallerOwnedPrimitives(facade: \"PushBackPlantaDrawService\", path: [\"Systems\", \"PushBack\", \"PushBackPlantaDrawService.cs\"], signatures: [\"public HeaderPlacementResult DrawAndPlace( Documen\"···, \"public HeaderPlacementResult RedrawInPlace( Docume\"···, \"internal PreparedViewRedraw PrepareRedraw(Database\"···, \"internal LateralHeaderDrawOutcome RedrawInTransact\"···])",
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.EachPushBackFacadeKeepsItsExactPublicSignaturesAndItsCallerOwnedPrimitives(facade: \"PushBackSystemDrawService (lateral)\", path: [\"Systems\", \"PushBack\", \"PushBackSystemDrawService.cs\"], signatures: [\"public HeaderPlacementResult DrawAndPlace( Documen\"···, \"public HeaderPlacementResult RedrawInPlace( Docume\"···, \"internal PreparedViewRedraw PrepareRedraw(Database\"···, \"internal LateralHeaderDrawOutcome RedrawInTransact\"···])",
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.RackEditarReadsTheWindowOutcomeAndWritesInTheFixedOrderWithNoRegenPerView",
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.RackPushBackDrawsAfterTheCloseThroughDrawPushBackViewThatNamesTheSystem",
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.RackPushBackShowsTheWindowModallyWithoutAnOwnerAndReadsOnlyTheViewAndSectionOfTheRequest",
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.TheBatchProductsPlaceEveryPushBackViewWithoutRegeneratingEachOne",
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.TheClassicPathsNeverCallTheCallerOwnedPrimitivesOfTheFacades",
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.TheMenuHostNamesTheNewRackThenPreparesAndRunsTheBatchWithoutAKindSwitch",
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.ThePlacementFacadeForwardsTheRegenFlagToPlaceHeaderWithThePushBackKind"
+      ]
+    },
+    {
+      "RunRef": "rf-ui",
+      "Selected": 2310,
+      "Passed": 2236,
+      "Failed": 57,
+      "Skipped": 17,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.CloseButtonAnsweredNoKeepsTheWindowWithItsPendingWorkAndNoRequest",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.CloseButtonAnsweredYesClosesWithoutARequestAndTheStagedEditIsNotConfirmed",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.CloseButtonWithAStagedModuleAsksOnceWithTheExactQuestionAndNoOwner",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.CloseButtonWithoutPendingWorkClosesWithoutAsking",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EscapeAnsweredNoKeepsTheWindowWithItsPendingWorkAndNoRequest",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EscapeAnsweredYesClosesWithoutARequestAndTheStagedEditIsNotConfirmed",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EscapeWithAStagedModuleAsksOnceWithTheExactQuestionAndNoOwner",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EscapeWithAnUncommittedFieldAndAnAppliedMatrixEditClosesWithoutAskingOrRecomputing",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EscapeWithoutPendingWorkClosesWithoutAsking",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EveryInsertActionClosesTheWindowWithoutAsking(buttonName: \"InsertButton\")",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EveryInsertActionClosesTheWindowWithoutAsking(buttonName: \"InsertFrontalEntradaButton\")",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EveryInsertActionClosesTheWindowWithoutAsking(buttonName: \"InsertFrontalPosteriorButton\")",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EveryInsertActionClosesTheWindowWithoutAsking(buttonName: \"InsertLateralButton\")",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.EveryInsertActionClosesTheWindowWithoutAsking(buttonName: \"InsertPlantaButton\")",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.InsertWithAStagedModuleConfirmsItBeforeAndClosesWithoutAsking",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.ModalCloseButtonAnsweredNoAsksTwiceInTheDialogLoop",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.ModalEscapeAnsweredNoAsksTwiceInTheDialogLoop",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.PlainCloseOfAShownWindowAsksNothingAndKeepsTheInitialContract",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.PlainCloseOfAnUnshownWindowAsksNothingAndKeepsTheInitialContract",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.PlainCloseWithAnUncommittedFieldAndAnAppliedMatrixEditClosesWithoutAskingOrRecomputing",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationCloseTests.UpdateOfAnExistingRackClosesTheWindowWithoutAsking",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.CancellingSafetyChangesNeitherTheSelectionsNorTheRecomputePasses",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.EachPerViewButtonSelectsItsViewAndExposesTheSingleViewIntent(buttonName: \"InsertFrontalEntradaButton\", viewIndex: 1, view: \"frontal\", section: 0, kind: Frontal)",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.EachPerViewButtonSelectsItsViewAndExposesTheSingleViewIntent(buttonName: \"InsertFrontalPosteriorButton\", viewIndex: 2, view: \"frontal\", section: 1, kind: Frontal)",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.EachPerViewButtonSelectsItsViewAndExposesTheSingleViewIntent(buttonName: \"InsertLateralButton\", viewIndex: 0, view: \"lateral\", section: 0, kind: Lateral)",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.EachPerViewButtonSelectsItsViewAndExposesTheSingleViewIntent(buttonName: \"InsertPlantaButton\", viewIndex: 3, view: \"planta\", section: -1, kind: Planta)",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.InsertBatchIsAlwaysEnabledEvenWithInvalidInputs",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.InsertBatchWithABlockedOutputConfirmsTheModuleFirstAndStopsBeforeAnyDialog",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.InsertBatchWithAnInvalidFieldConfirmsTheModuleFirstAndStopsBeforeAnyDialog",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.TheActionBarStateIsExactForEveryCombinationOfAutoCadAndNewOrExistingRack",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.TheFirstTwoGuardsShowTheirTextReturnWithoutConfirmingTheStagedModuleAndDoNotClose",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.TheFrontalCutOfSideBFollowsTheFrontalSideSelectorNotTheEditedSide",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationIntentTests.TheLastTwoGuardsConfirmTheStagedModuleFirstShowTheirDiagnosticAndDoNotClose",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationKeyboardTests.EnterOnTheAccessKeyRouteDoesNothingBecauseNoButtonIsDefault",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationKeyboardTests.InitialFocusIsDeclaredOnTheNameBoxAndNotForcedFromCode",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationKeyboardTests.NameBoxTextIsEmptyOnLoadNewAndTheStoredNameOnLoadExisting",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationKeyboardTests.TabStopsKeepTheirOrderInsideEveryShellZoneAndNoLocalNavigationValueIsSet",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationOwnerTests.TheBatchDialogCentersOnItsOwnerWithInsertarColaAsDefaultAndCancelarAsCancel",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationOwnerTests.ThePerPostBootDialogIsOwnedByTheWindowNotByTheOpenSafetyDialog",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationOwnerTests.TheSafetyDialogIsOwnedByTheWindowAndCentersOnItsOwner",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationOwnerTests.TheWindowHasNoOwnerAndCentersOnItsOwnerWithTheStyleSizes",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationResourceTests.TheShellDoesNotActivateItsResourceFallbackOnceItsTemplateIsApplied",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationResourceTests.TheWindowMergesAppStylesDeclaresTheThreeActionRhythmTokensAndUsesTheShellWindowStyle",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.InsertBatchShowsItsDialogThenRequestsTheBatchAndClosesWithoutLookingAtCanInsertInAutoCad",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.NoCodeAnywhereInSrcSubscribesToInsertRequestedRaised",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.SaveToLibraryPromptsFirstThenMarksTheIdentityNamesItAndSavesTheLibraryProject",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheBatchDialogIsShownThroughItsPresenterWithTheWindowAsOwner",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheBomWindowIsOwnedByTheWindow",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheClassicWindowHasNoKeyboardHandlersNoTabOrderNoForcedFocusAndNoDialogResult",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheDefenseGridIsOwnedByTheWindow",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheHeaderConfiguratorIsOwnedByTheWindowCentersOnItsOwnerAndItsConfigurationIsAlwaysStaged",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheHeaderConfiguratorWritesItsLayoutOnlyWhenItIsClosed",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheMenuHostOpensThePushBackWindowWithItsContextOwnerInBothPathsAndReturnsTheRequestOnlyWhenRequested",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheSaveFileDialogIsOwnedByTheWindowThroughPromptSaveToLibrary",
+        "RackCad.UI.Tests.PushBackClassicCharacterizationSourceGuardTests.TheTopeGridIsOwnedByTheWindow",
+        "RackCad.UI.Tests.PushBackTopeSectionInSafetyTests.MovingControl_DoesNotChangeTopeGeometryOrBom",
+        "RackCad.UI.Tests.RichEditorCharacterizationTests.TheDefaultActionOfEachRichEditorIsWhatItIsToday"
+      ]
+    },
+    {
+      "RunRef": "rf-core",
+      "Selected": 18471,
+      "Passed": 18460,
+      "Failed": 11,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.EachPushBackFacadeKeepsItsExactPublicSignaturesAndItsCallerOwnedPrimitives(facade: \"PushBackFrontalDrawService\", path: [\"Systems\", \"PushBack\", \"PushBackFrontalDrawService.cs\"], signatures: [\"public HeaderPlacementResult DrawAndPlace( Documen\"···, \"public HeaderPlacementResult RedrawInPlace( Docume\"···, \"internal PreparedViewRedraw PrepareRedraw(Database\"···, \"internal LateralHeaderDrawOutcome RedrawInTransact\"···])",
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.EachPushBackFacadeKeepsItsExactPublicSignaturesAndItsCallerOwnedPrimitives(facade: \"PushBackPlantaDrawService\", path: [\"Systems\", \"PushBack\", \"PushBackPlantaDrawService.cs\"], signatures: [\"public HeaderPlacementResult DrawAndPlace( Documen\"···, \"public HeaderPlacementResult RedrawInPlace( Docume\"···, \"internal PreparedViewRedraw PrepareRedraw(Database\"···, \"internal LateralHeaderDrawOutcome RedrawInTransact\"···])",
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.EachPushBackFacadeKeepsItsExactPublicSignaturesAndItsCallerOwnedPrimitives(facade: \"PushBackSystemDrawService (lateral)\", path: [\"Systems\", \"PushBack\", \"PushBackSystemDrawService.cs\"], signatures: [\"public HeaderPlacementResult DrawAndPlace( Documen\"···, \"public HeaderPlacementResult RedrawInPlace( Docume\"···, \"internal PreparedViewRedraw PrepareRedraw(Database\"···, \"internal LateralHeaderDrawOutcome RedrawInTransact\"···])",
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.RackEditarReadsTheWindowOutcomeAndWritesInTheFixedOrderWithNoRegenPerView",
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.RackPushBackDrawsAfterTheCloseThroughDrawPushBackViewThatNamesTheSystem",
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.RackPushBackShowsTheWindowModallyWithoutAnOwnerAndReadsOnlyTheViewAndSectionOfTheRequest",
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.TheBatchProductsPlaceEveryPushBackViewWithoutRegeneratingEachOne",
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.TheClassicPathsNeverCallTheCallerOwnedPrimitivesOfTheFacades",
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.TheMenuHostNamesTheNewRackThenPreparesAndRunsTheBatchWithoutAKindSwitch",
+        "RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests.ThePlacementFacadeForwardsTheRegenFlagToPlaceHeaderWithThePushBackKind",
+        "RackCad.Tests.PushBackRoundTripSourceGuardTests.EditPushBack_RedrawsWithTheThreeDrawServices_EveryRedrawRegenFalse"
+      ]
+    },
+    {
+      "RunRef": "gf-ui",
+      "Selected": 2310,
+      "Passed": 2293,
+      "Failed": 0,
+      "Skipped": 17,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "gf-core",
+      "Selected": 18471,
+      "Passed": 18471,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g1",
+      "Selected": 55,
+      "Passed": 55,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g2",
+      "Selected": 55,
+      "Passed": 55,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g3",
+      "Selected": 55,
+      "Passed": 55,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g4",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    }
+  ],
+  "Evidence": [
+    "MAPA CT -> metodo(s) (tipo). Todas las clases UI llevan namespace RackCad.UI.Tests; Core, RackCad.Tests. Abreviaturas: K=PushBackClassicCharacterizationKeyboardTests, C=...CloseTests, I=...IntentTests, O=...OwnerTests, R=...ResourceTests, S=...SourceGuardTests (UI), P=...PluginGuardTests (Core).\nCT-01 (ejecucion): K.EnterOnTheAccessKeyRouteDoesNothingBecauseNoButtonIsDefault (sonda de Enter y control positivo con Escape, en el mismo metodo).\nCT-02 (ejecucion, gesto ProcessKey): C.EscapeWithoutPendingWorkClosesWithoutAsking; C.EscapeWithAStagedModuleAsksOnceWithTheExactQuestionAndNoOwner; C.EscapeAnsweredNoKeepsTheWindowWithItsPendingWorkAndNoRequest; C.EscapeAnsweredYesClosesWithoutARequestAndTheStagedEditIsNotConfirmed.\nCT-03 (ejecucion, ButtonAutomationPeer + IInvokeProvider): C.CloseButtonWithoutPendingWorkClosesWithoutAsking; C.CloseButtonWithAStagedModuleAsksOnceWithTheExactQuestionAndNoOwner; C.CloseButtonAnsweredNoKeepsTheWindowWithItsPendingWorkAndNoRequest; C.CloseButtonAnsweredYesClosesWithoutARequestAndTheStagedEditIsNotConfirmed.\nCT-04 (ejecucion, PROMOVIDO tras medirlo estable): C.ModalCloseButtonAnsweredNoAsksTwiceInTheDialogLoop; C.ModalEscapeAnsweredNoAsksTwiceInTheDialogLoop.\nCT-05 (ejecucion): C.PlainCloseOfAnUnshownWindowAsksNothingAndKeepsTheInitialContract; C.PlainCloseOfAShownWindowAsksNothingAndKeepsTheInitialContract.\nCT-06 (ejecucion): C.EveryInsertActionClosesTheWindowWithoutAsking (Theory, 5 filas: InsertButton y los cuatro botones por vista); C.UpdateOfAnExistingRackClosesTheWindowWithoutAsking; C.InsertWithAStagedModuleConfirmsItBeforeAndClosesWithoutAsking.\nCT-07 (ejecucion): I.EachPerViewButtonSelectsItsViewAndExposesTheSingleViewIntent (Theory, 4 filas); I.TheFrontalCutOfSideBFollowsTheFrontalSideSelectorNotTheEditedSide. El GUID sale de newIdFactory.\nCT-08 (ejecucion): I.TheFirstTwoGuardsShowTheirTextReturnWithoutConfirmingTheStagedModuleAndDoNotClose; I.TheLastTwoGuardsConfirmTheStagedModuleFirstShowTheirDiagnosticAndDoNotClose.\nCT-09 (ejecucion): I.TheActionBarStateIsExactForEveryCombinationOfAutoCadAndNewOrExistingRack; I.InsertBatchIsAlwaysEnabledEvenWithInvalidInputs.\nCT-10 (ejecucion): K.InitialFocusIsDeclaredOnTheNameBoxAndNotForcedFromCode; K.NameBoxTextIsEmptyOnLoadNewAndTheStoredNameOnLoadExisting.\nCT-11 (ejecucion): K.TabStopsKeepTheirOrderInsideEveryShellZoneAndNoLocalNavigationValueIsSet.\nCT-12 (ejecucion): O.TheWindowHasNoOwnerAndCentersOnItsOwnerWithTheStyleSizes.\nCT-13 (ejecucion): O.TheSafetyDialogIsOwnedByTheWindowAndCentersOnItsOwner (S-3); O.ThePerPostBootDialogIsOwnedByTheWindowNotByTheOpenSafetyDialog (S-4).\nCT-14 (ejecucion): O.TheBatchDialogCentersOnItsOwnerWithInsertarColaAsDefaultAndCancelarAsCancel.\nCT-15 (ejecucion): R.TheWindowMergesAppStylesDeclaresTheThreeActionRhythmTokensAndUsesTheShellWindowStyle; R.TheShellDoesNotActivateItsResourceFallbackOnceItsTemplateIsApplied.\nCT-16 (fuente): S.TheHeaderConfiguratorIsOwnedByTheWindowCentersOnItsOwnerAndItsConfigurationIsAlwaysStaged.\nCT-17 (ejecucion): I.CancellingSafetyChangesNeitherTheSelectionsNorTheRecomputePasses.\nCT-18: NO se escribe (opcional); MU-18 no se aplica.\nCT-19 (fuente): S.TheClassicWindowHasNoKeyboardHandlersNoTabOrderNoForcedFocusAndNoDialogResult; S.NoCodeAnywhereInSrcSubscribesToInsertRequestedRaised.\nCT-20 (fuente): S.TheDefenseGridIsOwnedByTheWindow (S-5); S.TheTopeGridIsOwnedByTheWindow (S-6); S.TheBomWindowIsOwnedByTheWindow (S-7); S.TheBatchDialogIsShownThroughItsPresenterWithTheWindowAsOwner (S-8); S.TheSaveFileDialogIsOwnedByTheWindowThroughPromptSaveToLibrary (S-9).\nCT-21 (fuente): S.TheMenuHostOpensThePushBackWindowWithItsContextOwnerInBothPathsAndReturnsTheRequestOnlyWhenRequested.\nCT-22 (fuente, clase A): S.SaveToLibraryPromptsFirstThenMarksTheIdentityNamesItAndSavesTheLibraryProject; S.TheHeaderConfiguratorWritesItsLayoutOnlyWhenItIsClosed.\nCT-23 (ejecucion + fuente): I.InsertBatchWithAnInvalidFieldConfirmsTheModuleFirstAndStopsBeforeAnyDialog; I.InsertBatchWithABlockedOutputConfirmsTheModuleFirstAndStopsBeforeAnyDialog (ventana sin mostrar, solo entrada invalida o salida bloqueada); fuente: S.InsertBatchShowsItsDialogThenRequestsTheBatchAndClosesWithoutLookingAtCanInsertInAutoCad.\nCT-24 (fuente, clase C): P.RackPushBackShowsTheWindowModallyWithoutAnOwnerAndReadsOnlyTheViewAndSectionOfTheRequest; P.RackPushBackDrawsAfterTheCloseThroughDrawPushBackViewThatNamesTheSystem.\nCT-25 (fuente, clase C): P.RackEditarReadsTheWindowOutcomeAndWritesInTheFixedOrderWithNoRegenPerView.\nCT-26 (fuente, clase C): P.TheMenuHostNamesTheNewRackThenPreparesAndRunsTheBatchWithoutAKindSwitch; P.TheBatchProductsPlaceEveryPushBackViewWithoutRegeneratingEachOne; P.ThePlacementFacadeForwardsTheRegenFlagToPlaceHeaderWithThePushBackKind.\nCT-27 (fuente, clase C): P.EachPushBackFacadeKeepsItsExactPublicSignaturesAndItsCallerOwnedPrimitives (Theory, 3 filas: lateral, frontal y planta); P.TheClassicPathsNeverCallTheCallerOwnedPrimitivesOfTheFacades.\nCT-28 (ejecucion): C.EscapeWithAnUncommittedFieldAndAnAppliedMatrixEditClosesWithoutAskingOrRecomputing; C.PlainCloseWithAnUncommittedFieldAndAnAppliedMatrixEditClosesWithoutAskingOrRecomputing.\nConteos: UI 55 resultados (22 minimo exigido; los CT-01 a CT-23 y CT-28 menos CT-18 mas CT-04 promovido), Core 10 (4 minimo).",
+    "TABLA DE MUTANTES (todos de la tabla cerrada; ninguno fuera de tabla). Formato: id (fila que instancia) | archivo:linea en la BaseSha | clase | cambio exacto | pruebas que fallan en su corrida aislada (sobre la BaseSha mas las pruebas; ambos filtros; RunRef) | en la conjuncion fallan las 65.\nMU-01 (MU-01) | RackPushBackSystemWindow.xaml:749 | comportamiento | IsDefault=\"True\" solo en RestoreButton | K.EnterOnTheAccessKey... (m01, m01b).\nMU-02 (MU-02) | RackPushBackSystemWindow.xaml.cs:3419 | comportamiento | el texto de la pregunta de PendingWork() termina en \"Deseas seguir?\" | C: los 3 casos con trabajo pendiente de CT-02, los 3 de CT-03 y los 2 modales de CT-04 (8 en total) (m02).\nMU-03 (MU-03) | .xaml.cs:3381 | comportamiento | Close_Click con cuerpo vacio | C: Escape y Cerrar sin trabajo pendiente, mas los casos con trabajo pendiente que dependen de Close_Click, CT-04 y CT-28(Escape); K.Enter (control positivo) (12 en total) (m03).\nMU-05 (MU-05) | .xaml.cs:1203 | comportamiento | Name_Changed sin Trim() | C.PlainCloseOfAnUnshownWindow..., C.PlainCloseOfAShownWindow... (m05).\nMU-06 (MU-06) | .xaml.cs:3376 | comportamiento | sin el Close() final de RequestDraw | C.EveryInsertAction... (5 filas), C.UpdateOfAnExistingRack..., C.InsertWithAStagedModule..., I.EachPerViewButton... (4 filas), I.TheFrontalCutOfSideB... (12 en total) (m06).\nMU-07 (MU-07) | .xaml.cs:3214, 3226, 3229 y 3251 | comportamiento | rotacion de los cuatro indices de InsertViewAt (0->1, 1->2, 2->3, 3->0) | I.EachPerViewButton... (las 4 filas), I.TheFrontalCutOfSideB... (5 en total) (m07).\nMU-08 variante T (MU-08) | .xaml.cs:3327, 3333 y 3354 | comportamiento | el texto de las guardas 1, 2 y 3 termina en \" (x).\" | I.TheFirstTwoGuards..., I.TheLastTwoGuards... (m08t).\nMU-08 variante O (MU-08) | .xaml.cs:3323 | comportamiento | confirmar el modulo antes de las guardas 1 y 2 (bloque HasPendingChanges/CommitModuleEdits al inicio de RequestDraw) | I.TheFirstTwoGuards... (m08o).\nMU-09 variante T (MU-09) | .xaml.cs:3532 y 3540 | comportamiento | los tooltips \"Disponible solo cuando la ventana se abre desde AutoCAD.\" y \"Inserta la vista seleccionada enlazada al sistema.\" llevan \" (x)\" | I.TheActionBarStateIsExact... (m09t).\nMU-09 variante E (MU-09) | .xaml.cs:3528 | comportamiento | InsertBatchButton.IsEnabled = canOutput en UpdateButtons | I.InsertBatchIsAlwaysEnabledEvenWithInvalidInputs (m09e).\nMU-10 variante X (MU-10) | RackPushBackSystemWindow.xaml:9 | comportamiento | ElementName del foco = FrontCountBox | K.InitialFocusIsDeclared... (m10x).\nMU-10 variante C (MU-10) | .xaml.cs:314 | comportamiento | LoadFromModel(inputs, rackName + \"*\") en LoadExisting | K.NameBoxTextIsEmptyOnLoadNew... (m10c).\nMU-11 (MU-11) | RackPushBackSystemWindow.xaml:102 | comportamiento | los dos pares etiqueta+campo ToleranceBox y BeamDepthBox del panel lateral intercambian su posicion, cada campo con su x:Name | K.TabStopsKeepTheirOrder... (m11).\nMU-12 (MU-12) | RackPushBackSystemWindow.xaml:6 | comportamiento | Title con \" (x)\" | O.TheWindowHasNoOwner... (m12).\nMU-13 (MU-13) | .xaml.cs:2722 y 3018 | comportamiento | dialog.WindowStartupLocation = Manual antes de entregar S-4 y S-3 a su costura (Owner intacto) | O.TheSafetyDialogIsOwned..., O.ThePerPostBootDialogIsOwned... (m13).\nMU-14 variante L (MU-14) | Views/RackViewBatchDialog.xaml:5 | comportamiento | WindowStartupLocation CenterScreen | O.TheBatchDialogCenters... (m14l).\nMU-14 variante D (MU-14) | RackViewBatchDialog.xaml:21 y 36 | comportamiento | IsDefault pasa de \"Insertar cola\" a \"Agregar\" | O.TheBatchDialogCenters... (m14d).\nMU-14 variante C (MU-14) | RackViewBatchDialog.xaml:35 y 22 | comportamiento | IsCancel pasa de \"Cancelar\" a \"Quitar\" | O.TheBatchDialogCenters... (m14c).\nMU-15 variante V (MU-15) | RackPushBackSystemWindow.xaml:20 | comportamiento | ActionGap 0,0,7,4 | R.TheWindowMergesAppStyles... (m15v, m15vb).\nMU-15 variante D (MU-15) | RackPushBackSystemWindow.xaml:37 | comportamiento | un diccionario vacio fusionado en los recursos del shell | R.TheShellDoesNotActivateItsResourceFallback... (m15d, m15db).\nMU-16 (MU-16) | .xaml.cs:2426 y 2446 | textual | { Owner = (Window)this } y (window.Configuration) ?? copy en ShowHeaderConfigurator | S.TheHeaderConfiguratorIsOwnedByTheWindow... (m16).\nMU-17 (MU-17) | .xaml.cs:2618 | comportamiento | RequestRecompute() en la rama de cancelar de Seguridad | I.CancellingSafetyChanges... (m17).\nMU-19 variante F (MU-19) | .xaml.cs:3292 | textual | metodo privado sin uso con NameBox.Focus() | S.TheClassicWindowHasNoKeyboardHandlers... (m19f).\nMU-19 variante D (MU-19) | .xaml.cs:3292 | textual | metodo privado sin uso que lee DialogResult | S.TheClassicWindowHasNoKeyboardHandlers... (m19d).\nMU-19 variante S (MU-19) | .xaml.cs:3292 | textual | metodo privado sin uso con session.InsertRequestedRaised += | S.NoCodeAnywhereInSrcSubscribes... (m19s).\nMU-20 variante W (MU-20) | .xaml.cs:3438, 2863, 3045 y 3311 | textual | { Owner = (Window)this } en S-7, Owner = (Window)this en S-5 y S-6, y TryShow((Window)this, en S-8 | S.TheBomWindow..., S.TheDefenseGrid..., S.TheTopeGrid..., S.TheBatchDialogIsShownThroughItsPresenter..., S.InsertBatchShowsItsDialog... (5) (m20w).\nMU-20 variante P (MU-20) | Views/RackViewBatchDialogPresenter.cs:59 | textual | Owner = (Window)owner | S.TheBatchDialogIsShownThroughItsPresenter... (m20p).\nMU-20 variante U (MU-20) | UiSupport.cs:81 | textual | ShowDialog((System.Windows.Window)owner) | S.TheSaveFileDialogIsOwned... (m20u).\nMU-21 (MU-21) | Editor/EditorModules.cs:114 (y su gemelo en la ruta de biblioteca) | textual | Owner = (context.Owner) en los dos caminos | S.TheMenuHostOpens... (m21).\nMU-22 variante W (MU-22) | .xaml.cs:3458 | textual | PromptSaveToLibrary((Window)this, | S.SaveToLibraryPromptsFirst..., S.TheSaveFileDialogIsOwned... (m22w).\nMU-22 variante C (MU-22) | RackFrames/RackFrameConfiguratorWindow.xaml.cs:602 | textual | this.SaveCurrentLayout() en OnClosed | S.TheHeaderConfiguratorWritesItsLayout... (m22c).\nMU-23 (MU-23) | .xaml.cs:3296 | comportamiento | InsertBatch_Click sin confirmar el modulo | I.InsertBatchWithAnInvalidField..., I.InsertBatchWithABlockedOutput..., S.InsertBatchShowsItsDialog... (m23).\nMU-24 variante S (MU-24) | RackPushBackCommands.cs:47 | textual | ShowModalWindow((System.Windows.Window)window) en RACKPUSHBACK | P.RackPushBackShowsTheWindowModally... (m24s).\nMU-24 variante D (MU-24) | RackPushBackCommands.cs:56 | textual | RackPushBackCommands.DrawPushBackView( (cualificado; nunca this.) | P.RackPushBackDrawsAfterTheClose... (m24d).\nMU-25 (MU-25) | RackPushBackCommands.cs:279 | textual | regen: (false) en el RedrawInPlace de planta | P.RackEditarReadsTheWindowOutcome... (m25).\nMU-26 variante M (MU-26) | RackMenuCommands.cs:136 | textual | global::RackCad.Plugin.Views.RackViewBatchProducts.PushBack (cualificacion redundante) | P.TheMenuHostNamesTheNewRack... (m26m).\nMU-26 variante P (MU-26) | Views/RackViewBatchProducts.cs:94 | textual | regen: (false) | P.TheBatchProductsPlace... (m26p).\nMU-26 variante L (MU-26) | Views/RackViewPlacement.cs:39 | textual | RackViewPlacement.PlaceHeader( (cualificacion redundante) | P.ThePlacementFacadeForwards... (m26l).\nMU-27 variantes S, F y P (MU-27) | Systems/PushBack/PushBackSystemDrawService.cs:46, PushBackFrontalDrawService.cs:44 y PushBackPlantaDrawService.cs:40 | textual | bool regen = (true) en la firma de RedrawInPlace de cada fachada | P.EachPushBackFacadeKeeps... (la fila de su fachada) (m27s, m27f, m27p).\nMU-27 variante D (MU-27) | RackPushBackCommands.cs:463 | textual | metodo privado sin uso que llama a PushBackPlantaDrawService.PrepareRedraw | P.TheClassicPathsNeverCall... (m27d).\nMU-28 (MU-28) | .xaml.cs:3395 | comportamiento | RequestRecompute() al inicio de OnClosing | C.EscapeWithAnUncommittedField..., C.PlainCloseWithAnUncommittedField... (m28).\nCada fila discrimina al menos los metodos o filas que INV-F4T1B-14 le asigna. Parches de cada mutante: tests/m*/mutant.patch bajo la carpeta de la ejecucion (un archivo por RunRef).",
+    "ASERCIONES ANCLA sin mutante propio, cada una en el mismo metodo que una aserción detectada: CT-12 Owner nulo, CenterOwner, ShowInTaskbar, ResizeMode, SizeToContent y tamanos (O.TheWindowHasNoOwner..., detectado por MU-12); CT-13 Owner de S-3 y de S-4 y que no es el de la ventana de seguridad (O.TheSafetyDialogIsOwned... y O.ThePerPostBootDialogIsOwned..., detectados por MU-13 en la ubicacion); CT-11: orden de las zonas del DockPanel de la plantilla y ausencia de valores locales de TabIndex, IsTabStop y KeyboardNavigation (K.TabStopsKeepTheirOrder..., detectado por MU-11); CT-10 NameBox es un TextBox (K.InitialFocusIsDeclared..., detectado por MU-10 X); CT-01 la sonda privada de Enter con IsDefault (K.EnterOnTheAccessKey..., detectado por MU-01); CT-02 y CT-03 el dueno nulo del aviso de descarte (decidido en Shell/EditorClosePolicy.cs, fuera de MutantScope; detectado por MU-02 el texto y la cuenta); CT-15 los tokens ActionGroupGap y ActionLast, el diccionario fusionado de la ventana y la equivalencia del estilo EditorShellWindowStyle (R.TheWindowMergesAppStyles..., detectado por MU-15 V); CT-16 el CenterOwner del XAML del configurador (archivo fuera de MutantScope; detectado por MU-16); CT-24 ausencia de Owner = y ausencia de Views en RACKPUSHBACK (detectado por MU-24 S) y la lectura tipada de la peticion; CT-25 todas las lecturas de EditPushBack, el orden de escrituras y el unico Regen (P.RackEditarReads..., detectado por MU-25); CT-27(2) el reenvio de PushBackKindHandler.Edit (archivo fuera de MutantScope; detectado por MU-27 D); CT-06 que PendingWork() queda vacio tras Insertar con un modulo escenificado (detectado por MU-06 en el cierre); CT-08 los pendientes y el texto del diagnostico bloqueante de las guardas 3 y 4 (el diagnostico lo decide la capa de Application) y el texto de la guarda 3 con su confirmacion previa; CT-19 las ausencias de KeyDown, PreviewKeyDown, InputBindings, KeyBinding, TabIndex, IsTabStop y KeyboardNavigation (detectado por MU-19 F y D en el mismo metodo con .Focus( y DialogResult); CT-20 los pares sin mutante en un metodo detectado; CT-23 (ejecucion) que no hay Closed ni peticion y el texto del campo (lo decide Controls/NumericField) y (fuente) las cinco vistas fijas del lote, el lateral por poste y la ausencia de canInsertInAutoCad (detectado por MU-20 W y MU-23); CT-09 los IsEnabled y tooltips de los botones que ningun mutante cambia (Restaurar, BOM, Guardar, Actualizar, Cerrar y los de lote) dentro de las cuatro comparaciones, detectadas por MU-09 T; CT-28 que el campo conserva el valor tecleado (C.*UncommittedField..., detectado por MU-28).",
+    "UNION DE PRUEBAS EXISTENTES ROTAS EN EL RED (todos los mutantes aplicados, suites completas en Debug; RunRef rf-core y rf-ui; el GREEN las devuelve a verde en gf-core y gf-ui):\n1. RackCad.Tests.PushBackRoundTripSourceGuardTests.EditPushBack_RedrawsWithTheThreeDrawServices_EveryRedrawRegenFalse -> MU-25 (regen: (false) rompe su guarda de que toda llamada RedrawInPlace de EditPushBack lleva regen: false).\n2. RackCad.UI.Tests.RichEditorCharacterizationTests.TheDefaultActionOfEachRichEditorIsWhatItIsToday -> MU-01 (su mensaje de fallo nombra el boton Restaurar como accion por defecto de Push Back, que es el IsDefault del mutante).\n3. RackCad.UI.Tests.PushBackTopeSectionInSafetyTests.MovingControl_DoesNotChangeTopeGeometryOrBom -> MU-17 (cancelar Seguridad con el mutante recalcula y la geometria de topes del fixture compuesto cambia: aparece un tope extra; con el producto de la base cancelar no recalcula).\nFuera de esas tres, todo lo demas que fallo en rf-core (11 = 10 nuevas + 1 existente) y rf-ui (57 = 55 nuevas + 2 existentes) son las pruebas nuevas. Las 17 omitidas de la suite de UI son omisiones previas (Skip existentes), tambien en el GREEN.",
+    "TABLA DE BYTES (INV-F4T1B-01), SHA-256 del blob (git cat-file blob <sha>:<ruta> | sha256sum) y id de blob de git. ChainBaseSha = BaseSha 0a6f84c298d0f542bbfdedabd82946490196e23f; RedSha 92f5f5dbed597bc0e5a9ab57e83ff8a59459933e; CurrentSha 1d36d0065ed3a469004f571ad8e3bc0fdc0a0d02. En los 14 archivos de MutantScope el SHA-256 de RedSha difiere del de ChainBaseSha y el de CurrentSha es IGUAL al de ChainBaseSha (columna final OK). El detalle completo, con los 64 caracteres, esta en tests/bytes-table.txt de la carpeta de la ejecucion. Resumen (ruta | base | red | green, primeros 16 hex del SHA-256):\nUI/Systems/PushBack/RackPushBackSystemWindow.xaml | a2f03cb307c64060 | bdf268b621def7a5 | a2f03cb307c64060\nUI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs | 5f198f78710650c3 | 3d2530daa407fea3 | 5f198f78710650c3\nUI/Views/RackViewBatchDialog.xaml | 2370b94baecb2d28 | f5ed310de6c279f9 | 2370b94baecb2d28\nUI/Views/RackViewBatchDialogPresenter.cs | 95c9e706b37ca5aa | ad613ba2fadf78a1 | 95c9e706b37ca5aa\nUI/UiSupport.cs | 748ae6a0619862f7 | 00ad12c17d900bf9 | 748ae6a0619862f7\nUI/Editor/EditorModules.cs | d8d120f7fda51403 | bf1d5d120dc208c5 | d8d120f7fda51403\nUI/RackFrames/RackFrameConfiguratorWindow.xaml.cs | 10d87e43732d9696 | 8c22f0237001c3a8 | 10d87e43732d9696\nPlugin/RackPushBackCommands.cs | f2c79f008a0ff13f | 82849e8c20f16424 | f2c79f008a0ff13f\nPlugin/RackMenuCommands.cs | 504f0cb7ffbf9a74 | 28a560278473e190 | 504f0cb7ffbf9a74\nPlugin/Views/RackViewBatchProducts.cs | 2ef37cecb682c388 | 2b8c16d4863cde6c | 2ef37cecb682c388\nPlugin/Views/RackViewPlacement.cs | bd9d1f1b813d5b02 | 8a069b29db05b9a0 | bd9d1f1b813d5b02\nPlugin/Systems/PushBack/PushBackSystemDrawService.cs | 2e82883a2046fe05 | dc6856bcf8b60469 | 2e82883a2046fe05\nPlugin/Systems/PushBack/PushBackFrontalDrawService.cs | d319c5f82dd1fbef | 92dce72a99f583a6 | d319c5f82dd1fbef\nPlugin/Systems/PushBack/PushBackPlantaDrawService.cs | 13617ca0a59d70c8 | 241d0f440b393f3a | 13617ca0a59d70c8\n(rutas bajo src/RackCad.). git diff BaseSha..CurrentSha -- src esta vacio y git diff --name-only BaseSha..CurrentSha lista exactamente los siete archivos de prueba.",
+    "MEDICIONES DEL PASO 1 (sobre la BaseSha, con codigo de medicion temporal que no entra en ningun commit; ventana mostrada fuera de pantalla, ShowActivated=false salvo donde se indica):\n(a) Escape, control positivo: AccessKeyManager.ProcessKey(PresentationSource.FromVisual(ventana), tecla 0x1B, false) sin trabajo pendiente CIERRA la ventana, sin preguntar y sin peticion (el valor de vuelta de ProcessKey, False, no se usa). Con un modulo escenificado pregunta UNA vez con el texto exacto de H-11 y dueno nulo; con No sigue abierta con el trabajo pendiente y sin peticion; con Si cierra sin peticion y la estructura no cambia. Resultado: CT-01 y CT-02 usan el GESTO, no su respaldo, y por tanto MU-04 no aplica.\n(b) Enter: ProcessKey con 0x0D no cierra, no pregunta y no cambia RecomputePassesForTest (6 -> 6); hay 0 botones IsDefault en todo el arbol y el unico IsCancel es CloseButton. Una Window sonda privada con un boton IsDefault SI recibe 0x0D por la misma ruta (ancla en CT-01).\n(c) Cerrar por el peer: Invoke() encola el clic (asked=0 justo despues); tras bombear a prioridad Background pregunta una vez. EditorWindowTestSupport.Click (ClickEvent elevado) no se usa para Cerrar.\n(d) Close() con la ventana mostrada: Closed, sin pregunta, RackName 'Rack X' recortado, RackId nulo, InsertionRequest nulo.\n(e) CT-04, ShowDialog real con las acciones encoladas y el respaldo a ApplicationIdle: con un modulo escenificado y No, tanto «Cerrar» por el peer como Escape por ProcessKey provocan DOS avisos (el boton IsCancel ejecuta ademas el cierre de dialogo de WPF), la ventana sigue visible con el trabajo pendiente y sin peticion; igual con ShowActivated=false y con la ventana activada; el respaldo la cierra. Estable: tres corridas locales consecutivas en verde (b1, b2, b3) y las tres del GREEN (g1, g2, g3). Se promueve a prueba (2 metodos) y OD-7 queda medida.\n(f) CT-28: SetNumber sin LostFocus no recalcula (RecomputePassesForTest 7 -> 7); AddFrontButton si recalcula; Escape y Close() cierran sin preguntar ni pedir y el recuento no cambia (OD-13 medida: el texto sin comprometer se pierde en silencio).\n(g) Foco efectivo (solo evidencia, nunca prueba): con la ventana activada el foco de teclado esta en NameBox (TextBox) y el FocusManager coincide.\n(h) Tabulacion efectiva (solo evidencia): desde NameBox, Tab recorre el panel lateral (NumberFrontsCheck ... PostBox, SideBPresentCheck, controles de datos, celda y seguridad, AdvancedModulesToggle), la matriz (AddFrontButton ... SelectedLevelBox), ViewBox y LateralSectionBox, una parada del propio Shell, y despues la barra de acciones (RestoreButton, BomButton, SaveLibraryButton, InsertLateralButton, InsertFrontalEntradaButton, InsertFrontalPosteriorButton, InsertPlantaButton, InsertBatchButton, InsertButton, CloseButton) para volver a NameBox: 70 pasos. Shift+Tab desde NameBox va a CloseButton, InsertButton, InsertBatchButton. Es decir, la barra de acciones se recorre DESPUES del panel lateral (aunque el DockPanel la declara primero) y el ciclo pasa por Restaurar (OD-9 medida: la suposicion «la barra va antes que el panel lateral» no se sostiene para el recorrido efectivo).\n(i) Estado inicial del contrato: InsertRequested false, UpdateOnly false, RackId nulo, RackName vacio, InsertView nulo, InsertSection -1, SourceProjectToInsert, InsertionRequest, SystemToInsert y DesignToInsert nulos. Propiedades de la ventana sin mostrar: Owner nulo, CenterOwner, ShowInTaskbar true, CanResize, SizeToContent Manual, tamano 1280x720, minimo 1120x672.\n(j) Intencion: lateral view=lateral section=0 indice 0; frontal entrada/salida frontal/0 indice 1; posterior frontal/1 indice 2; planta planta/-1 indice 3; Actualizar UpdateOnly con InsertView nulo, InsertSection -1 y Views vacio; el frontal de B con el selector es seccion 2 (entrada/salida) y 3 (posterior); en todos el GUID sale de newIdFactory.\n(k) Guardas: textos exactos medidos de las guardas 1 y 2 (no confirman el modulo) y 3 y 4 (lo confirman antes; la 4 muestra el diagnostico del escenario concreto y no el literal de reserva); «Insertar varias…» con campo invalido o salida bloqueada confirma el modulo y vuelve antes del dialogo (OD-2).\n(l) CT-16 y R-8: S-2 y OD-3 solo por fuente; el enrutado de Escape y Enter desde el elemento con foco no se mide (limite).\nCada medicion se hizo con codigo temporal ya retirado: ningun commit contiene codigo de medicion.",
+    "PRUEBA DE LIMPIEZA (INV-F4T1B-06), sin rutas: archivo de disposicion del configurador y carpeta de biblioteca.\nANTES (inicio, sobre la BaseSha): archivo de disposicion sha256=7AAB8FF7A3E52CE52399DE3B2C8A8AFEEC0C01720D90DAD0CA49D108BFF82621, fecha UTC 2026-11-14T16:42:01Z; carpeta de biblioteca: fecha UTC 2026-10-13T21:42:51Z, 11 archivos, SHA-256 del listado ordenado (ruta relativa, longitud y fecha UTC) 37A96C2DD1946EA9D17B6DFBE26CA62AD8D0C769EEC564BFDAC0FF04BFC86E7F.\nTras las corridas filtradas de UI sobre la BaseSha (mediciones, definitivas, b1 a b3): IDENTICO en todo.\nTras las suites COMPLETAS en Debug (las existentes, no las de T1B): la carpeta de biblioteca sigue identica; el archivo de disposicion conserva el mismo SHA-256 pero su fecha pasa a 2026-11-14T22:46:41Z y luego 22:55:38Z, porque la suite existente cierra el configurador real en cada corrida (H-18, PushBackHeaderAuthorityWindowTests.cs). Eso no es de las pruebas de T1B.\nAlrededor de las corridas de T1B sobre el GREEN: ANTES de g1, g2, g3 y g4 (sha 7AAB8F..., fecha 2026-11-14T22:55:38Z, biblioteca identica) y DESPUES (identico en SHA-256 y en fecha; biblioteca identica). Ninguna prueba de T1B escribe en el perfil: el aviso de que las suites completas retocan la fecha del archivo de disposicion se declara en KnownLimitations.",
+    "BUILDS RELEASE (tres proyectos: Core, UI.Tests y Plugin con -o a una carpeta de artifacts; entre los tres cubren los ocho proyectos de RackCad.sln; nunca la carpeta bin del Plugin). Linea base sobre la BaseSha: Core 0 errores y 65 avisos, UI.Tests 0 errores y 14 avisos, Plugin 0 errores y 2 avisos (MSB3277 de las referencias de AutoCAD; 104 lineas del mismo aviso) y ningun CS, NU ni NETSDK. Sobre el RED (todos los mutantes, incluidos el codigo muerto y la cualificacion redundante del Plugin): 0 errores y 65, 14 y 2 avisos, sin CS (ni CS0162, CS0168, CS0169, CS0219, CS0414 ni CS8321), sin NU ni NETSDK y ningun MSB distinto de MSB3277 (la primera compilacion del RED traia 3 avisos xUnit2013 y xUnit2029 de las pruebas nuevas; se corrigieron antes del commit RED). Sobre el GREEN: 0 errores y 65, 14 y 2 avisos. Registros en tests/b0, tests/rb y tests/gb.",
+    "TRES CORRIDAS CONSECUTIVAS en verde del filtro de UI sobre el GREEN (sin uso interactivo del equipo por esta sesion): g1, g2 y g3, 55 de 55 cada una; Core g4 10 de 10. Antes, sobre la BaseSha con las pruebas definitivas: b1, b2 y b3 (55 de 55) y b4 (Core 10 de 10). RED: cr0 y r1 (UI 55 de 55 Failed; Core 10 de 10 Failed) con el criterio mecanico de INV-F4T1B-02 comprobado sobre los TRX (script de la sesion: todos Failed, Message sin el prefijo de tipo cualificado seguido de dos puntos, primera linea de la traza bajo tests/, ninguno NotExecuted ni Skipped, Failed igual a Selected y mayor o igual que MinSelected 22 y 4).",
+    "CLASE DE CADA ESCRITURA (INV-F4T1B-16). Clase A (la propia ventana o editor, SOLO por fuente y sin ejecutar): guardar en biblioteca (CT-22 a: PromptSaveToLibrary(this) -> EnsureId -> SetName -> RackProject.ForPushBack(...).WithSourceMetadataFrom -> Save; el dialogo y la carpeta de la biblioteca nunca se ejercen, OD-10) y la disposicion del configurador en OnClosed -> SaveCurrentLayout (CT-22 b y CT-16; el configurador nunca se instancia). Clase B (la intencion que la ventana expone y otro consume, en ejecucion sobre el contrato publico): InsertRequested, UpdateOnly, InsertView, InsertSection, InsertionRequest.Views, RackId y RackName (CT-05 a CT-09, CT-23, CT-28). Clase C (las escrituras del DWG del Plugin despues de cerrar la ventana, SOLO por fuente en RackCad.Tests): RACKPUSHBACK (CT-24), RACKEDITAR (CT-25), el menu y la cola de vistas (CT-26) y las fachadas (CT-27); ninguna se atribuye a la ventana.",
+    "DEUDA D-T1B-06 (OD-1 a OD-13) tal como quedo caracterizada: OD-1 caracterizada (InsertBatchButton siempre habilitado, tambien con entradas invalidas, y InsertBatch_Click no contiene canInsertInAutoCad: CT-09 y CT-23). OD-2 caracterizada (InsertBatch_Click y las guardas 3 y 4 de RequestDraw confirman el modulo antes de poder volver: CT-08 y CT-23). OD-3 caracterizada solo por fuente (ShowHeaderConfigurator devuelve window.Configuration ?? copy: CT-16); su ejecucion es limite. OD-4 no medida en ejecucion (el dueno efectivo del aviso solo se ve en el host); lo caracterizado es el dueno WPF nulo del aviso (CT-02 y CT-03). OD-5 caracterizada (el dueno de la rejilla por poste de botas es la ventana Push Back con la de seguridad abierta, CT-13; S-5, S-6 y S-7 por fuente, CT-20). OD-6 por fuente (RACKPUSHBACK lee View/Section y no Views: CT-24). OD-7 MEDIDA y caracterizada: dos avisos ante un No en ShowDialog por «Cerrar» o por Escape (CT-04). OD-8 no medida (las celdas de la matriz sin teclado: observacion fuera de pruebas). OD-9 medida como evidencia: la barra de acciones se recorre despues del panel lateral y el ciclo pasa por Restaurar; no entra en pruebas. OD-10 por fuente (PromptSaveToLibrary crea la carpeta antes del dialogo: no se ejecuta). OD-11 por fuente y ejecucion (InsertView, InsertSection y SourceProjectToInsert se exponen pero nadie los lee; InsertRequestedRaised sin suscriptores: CT-19). OD-12 (PushBackPendingWorkQuestionNamesWhatIsLost es tautologica): no se edita; CT-02 y CT-03 fijan la pregunta real. OD-13 MEDIDA y caracterizada: el texto sin comprometer de un campo se pierde en silencio al cerrar con Escape o Close() (CT-28).",
+    "CONFORMIDAD CON LOS INVARIANTES. Scope real: BaseSha..CurrentSha = los siete archivos nuevos de prueba (21 rutas permitidas, 7 usadas netas). Ningun archivo de src/ difiere de la BaseSha en CurrentSha. El RED solo contiene mutantes de la tabla cerrada, en los 14 archivos de MutantScope y con la clase permitida por archivo (de comportamiento solo en el XAML y el code-behind de la ventana y en RackViewBatchDialog.xaml; textual en el resto). Trailer de los dos commits: Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>. Un commit RED y un commit GREEN, cada uno con su push, sin force, rebase, stash ni amend. Ninguna operacion sobre AutoCAD. Ningun archivo del checkout principal se toca. El codigo de medicion temporal no entra en ningun commit."
+  ],
+  "UnexpectedFindings": [
+    "MU-17 (recalculo al cancelar Seguridad) rompe PushBackTopeSectionInSafetyTests.MovingControl_DoesNotChangeTopeGeometryOrBom: con el recalculo, la geometria de topes del fixture compuesto cambia (aparece un tope extra). Con la base, cancelar no recalcula. Solo atribucion del RED; no se corrigio nada.",
+    "Medicion temporal (no versionada): una sonda de medicion disparo InsertBatch_Click con entradas validas sobre una ventana SIN mostrar y con canInsertInAutoCad false; lanzo InvalidOperationException en Owner = owner antes de abrir ningun dialogo, sin escribir nada. Evidencia en ejecucion de que InsertBatch_Click no comprueba canInsertInAutoCad (OD-1). Se declara como desviacion de la contencion de INV-F4T1B-06 en codigo temporal ya retirado; ninguna prueba versionada lo hace.",
+    "El orden efectivo de tabulacion (barra de acciones despues del panel lateral, parada propia del Shell) difiere de lo que sugiere el orden del DockPanel de la plantilla (OD-9)."
+  ],
+  "KnownLimitations": [
+    "D-T1B-07 / CT-16 y OD-3: la ejecucion del configurador de cabecera (S-2) y del efecto de cerrarlo por cualquier camino NO se prueba: el configurador real escribe su disposicion en %LOCALAPPDATA% en OnClosed por una ruta static readonly que no se puede redirigir sin cambiar producto; se fija por guarda de fuente (CT-16 y CT-22). Si lo decide el Owner, ejecutarlo exige una costura de producto, que es una decision aparte.",
+    "El enrutado de Escape y Enter desde el elemento con foco no se caracteriza: ProcessKey caracteriza la ruta de la tecla de acceso (por ejemplo, un CatalogCombo abierto consume Escape antes de esa ruta). Tampoco el foco y la tabulacion efectivos (solo evidencia local, nunca prueba) ni el orden Z de los dialogos anidados.",
+    "Solo el host puede validar: el dueno efectivo con ShowModalWindow y CenterOwner sin dueno WPF, WM_CLOSE y Alt+F4 reales (Close() hace las veces de la X y de Alt+F4, sin P/Invoke), y el comportamiento fisico del DWG (clase C: guardas de fuente de texto; Smoke-2).",
+    "Las guardas de fuente (CT-16, CT-19 a CT-23 en UI.Tests y CT-24 a CT-27 en Core) son guardas de TEXTO dependientes de la composicion de archivos: antes de F5 se sustituyen por pruebas de ejecucion segun el patron de I-39 (la vieja queda con Skip y su evidencia versionada). Las que cubren Plugin siguen siendo de texto porque RackCad.Tests no carga el Plugin (ADR-0003).",
+    "CT-04 se promovio (estable en local, independiente de la activacion). Riesgo aceptado y declarado por el paquete: si pasara en local y fallara solo en la CI del GREEN, es REWORK. Si cambia el cierre en modal en el futuro, el respaldo de la prueba (cancelar el modulo y cerrar a ApplicationIdle, mas Abort de las operaciones pendientes) evita dejar un modal vivo.",
+    "Los respaldos de CT-01 y CT-02 no se usaron: el gesto supero su control positivo. MU-04 y MU-18 no se aplican. CT-18 (opcional) no se escribio.",
+    "Uso del equipo: las corridas locales con ventanas (fuera de pantalla y sin activar, salvo la medicion del foco) no pueden demostrar que nadie usara el equipo en ese momento; esta sesion no hizo uso interactivo, pero no puede observar el de otras personas (INV-F4T1B-07).",
+    "La suite completa existente cierra el configurador real y vuelve a escribir el archivo de disposicion del usuario con el mismo contenido (la fecha cambia); no es de T1B y no se corrigio. La prueba de limpieza de T1B se mide alrededor de sus propias corridas filtradas, donde no cambia nada.",
+    "Los parches de cada mutante y los TRX estan solo en artifacts de la ejecucion (ignorada por Git); los SHA-256 del RED y del GREEN fijan lo versionado."
+  ],
+  "Deviations": [
+    "El arnes movio a segundo plano varias ordenes de primer plano que superaron 180 segundos (lotes de mutantes y la suite completa de UI); espere su fin y no quedo ningun proceso vivo. El tercer lote de mutantes lo lance yo mismo con un subshell en segundo plano y espere a su fin con comprobaciones del registro. El prompt pedia no usar procesos en segundo plano.",
+    "La tabla cerrada se instancio con VARIAS variantes por fila cuando la fila enumera alternativas (MU-08 T y O, MU-09 T y E, MU-10 X y C, MU-14 L, D y C, MU-15 V y D, MU-19 F, D y S, MU-20 W, P y U, MU-22 W y C, MU-24 S y D, MU-26 M, P y L, MU-27 S, F, P y D) para que cada aserción tenga su propio mutante; en la conjuncion se aplican todas a la vez. Ninguna esta fuera de la tabla.",
+    "Dos pruebas se retocaron antes del commit RED para no introducir avisos de analizador (xUnit2013 y xUnit2029); sus mutantes (MU-01, MU-15 V y MU-15 D) se volvieron a correr aislados sobre el GREEN (m01b, m15vb, m15db). Ninguna prueba cambio despues del commit RED.",
+    "Las mediciones se hicieron en archivos de prueba temporales (los mismos siete nombres) y se sustituyeron por las pruebas definitivas antes de cualquier commit."
+  ],
+  "OpenQuestions": [],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "La sesion ejecuta la CI exacta del RED (92f5f5db) y del GREEN (1d36d006), la verificacion del Controller, las revisiones directa e independiente y los controles nc1..nc3; despues reconcilia lo medido con los supuestos del paquete de T4B antes de emitirlo. Se declara la deuda OD-1 a OD-13 al Owner sin corregirla.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "high",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

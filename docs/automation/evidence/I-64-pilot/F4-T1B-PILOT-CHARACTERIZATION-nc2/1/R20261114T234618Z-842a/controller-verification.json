@@ -1,0 +1,81 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T1B-PILOT-CHARACTERIZATION",
+  "RunId": "R20261114T234618Z-842a",
+  "DelegationRunId": "R20261114T214147Z-851e",
+  "WorkRunId": "R20261114T214644Z-c077",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; cession ended 2026-11-14T23:03:33Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json matches TaskId, Attempt=1, DelegationRunId and WorkRunId. OutputWrittenUtc=2026-11-14T17:03:10.283734-06:00, after Cession.StartUtc=2026-11-14T21:46:49Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha returned 0. git diff AuthorityRevision BaseSha listed only three unit docs: evidence, coordinator contract and state; no EXTERNAL or UNIT_CHANGE paths. git show at MainSha confirmed AUTOMATION_PLAN sections 16.3, 16.8, 16.9, 16.10 and AGENTS.md; git show at AuthorityRevision confirmed the I-64 T1B package and F4-E57."
+    },
+    "Contract": {
+      "Result": "fail",
+      "Evidence": "A4 forbidden scope and A5 Invariants, StopConditions, Authorities and RequiredTests match; A3 delegated scope is a subset. However, gate-contract.ExpectedEvidence requires exact AllowedWriteScope equality, while direct comparison finds 20 delegated entries and 21 contract entries. The copied byte-fidelity-check.json says equality passed, contradicting the input collections. This triggers S-04 and P-03."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git branch --show-current returned architecture/workspace-persistente-rackcad; git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both returned 1d36d0065ed3a469004f571ad8e3bc0fdc0a0d02. BaseSha and RedSha match the handoff; merge-base --is-ancestor returned 0 for BaseSha->RedSha, RedSha->CurrentSha and BaseSha->CurrentSha. Worktree matches the expected path."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json records Exit HeadSha and LsRemoteSha as BaseSha and OriginMainSha=812baf879612320653094a8aaf46aca0bac81383. Entry and RemoteFacts record CurrentSha as remote tip and OriginMainSha unchanged."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "git diff --name-only BaseSha CurrentSha lists seven new test files and no src changes. Delegation AllowedWriteScope has 20 entries; the Core test tests/RackCad.Tests/PushBackClassicCharacterizationPluginGuardTests.cs is absent. The other six changed files are listed in delegation scope. git diff --name-only BaseSha CurrentSha -- src is empty."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned no entries. git check-ignore -v matched the copied gate-contract.json under artifacts/ via .gitignore:3."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun is push 43650040527 on refs/heads/architecture/workspace-persistente-rackcad at CurrentSha; all four required jobs succeeded. RedRun is push 43649940464 on the same ref at RedSha: Core and UI tests failed, Build UI succeeded, Plugin build was skipped. No timeout or blame-hang is recorded."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Read the supplied TRX files: Current Core filter selected 10, passed 10; Current UI selected 55, passed 55. RED Core selected 10, all failed; RED UI selected 55, all failed. All exceed MinSelected 4/22. RED failures had 10/10 and 55/55 messages without a qualified-type prefix, stack traces 10/10 and 55/55 with the first frame under tests/, and no skipped or NotExecuted results. git diff --name-only ChainBaseSha RedSha -- tests lists the seven test files; git diff --name-only RedSha CurrentSha -- tests is empty. ChainRedFiles=RT: those same seven test paths."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%H%n%B BaseSha..CurrentSha shows both RED and GREEN commits carry Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching worker-handoff.json Worker.Trailer."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 with high effort. relay-record-work records effective claude-sonnet-5-5/high; requested transport alias sonnet is consistent with the subagent transport note. Worker metadata agrees."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Checked WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions and RecommendedNextAction against the AUTOMATION_PLAN 16.10 terms; no matches."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work Notes record zero permission denials, two tool errors with none pending, and zero persistent participants or unattributable processes at exit and entry."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Contract",
+  "TriggeredStopConditions": [
+    "S-04",
+    "P-03"
+  ],
+  "Findings": [
+    "The direct scope comparison contradicts byte-fidelity-check.json: AllowedWriteScope has 20 entries in delegation.json and 21 in gate-contract.json.",
+    "The Worker changed tests/RackCad.Tests/PushBackClassicCharacterizationPluginGuardTests.cs, which is allowed by the gate contract but missing from the delegation whitelist."
+  ],
+  "RecommendedNextAction": "Reconcile the delegated scope and byte-fidelity record, then repeat verification."
+}

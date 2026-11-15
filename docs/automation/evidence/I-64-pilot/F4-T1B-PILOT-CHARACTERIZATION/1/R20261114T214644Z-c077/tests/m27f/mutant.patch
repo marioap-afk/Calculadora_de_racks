@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.Plugin/Systems/PushBack/PushBackFrontalDrawService.cs b/src/RackCad.Plugin/Systems/PushBack/PushBackFrontalDrawService.cs
+index 4cf0d0e5..de7d81fc 100644
+--- a/src/RackCad.Plugin/Systems/PushBack/PushBackFrontalDrawService.cs
++++ b/src/RackCad.Plugin/Systems/PushBack/PushBackFrontalDrawService.cs
+@@ -41,7 +41,7 @@ namespace RackCad.Plugin.Systems.PushBack
+             PushBackSystem system,
+             PushBackFrontalEnd end,
+             string payloadJson,
+-            bool regen = true,
++            bool regen = (true),
+             PushBackSide side = PushBackSide.A)
+             => ViewBlockDraw.RedrawInPlace(
+                 document,

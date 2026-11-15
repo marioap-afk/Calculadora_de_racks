@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.Plugin/RackPushBackCommands.cs b/src/RackCad.Plugin/RackPushBackCommands.cs
+index 75db0c6a..1874c8c7 100644
+--- a/src/RackCad.Plugin/RackPushBackCommands.cs
++++ b/src/RackCad.Plugin/RackPushBackCommands.cs
+@@ -45,7 +45,7 @@ namespace RackCad.Plugin
+             try
+             {
+                 var window = new RackPushBackSystemWindow(canInsertInAutoCad: true);
+-                AcApplication.ShowModalWindow(window);
++                AcApplication.ShowModalWindow((System.Windows.Window)window);
+ 
+                 if (!(window.InsertionRequest is PushBackInsertionRequest request))
+                 {

@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.Plugin/Views/RackViewBatchProducts.cs b/src/RackCad.Plugin/Views/RackViewBatchProducts.cs
+index 7d9f0bba..169a92f0 100644
+--- a/src/RackCad.Plugin/Views/RackViewBatchProducts.cs
++++ b/src/RackCad.Plugin/Views/RackViewBatchProducts.cs
+@@ -91,7 +91,7 @@ namespace RackCad.Plugin.Views
+             return new RackViewBatchProductSession<PushBackDesign, PushBackSystem, HeaderRunPlan>(
+                 RackSystemKind.PushBack, facts, preparer, RackAuthoredComparatorPorts.PushBack(), comparison,
+                 source, design, rackId, rackName, Project(RackProject.ForPushBack(design), innerSource),
+-                product => RackViewPlacement.PlacePushBack(document, product, regen: false));
++                product => RackViewPlacement.PlacePushBack(document, product, regen: (false)));
+         }
+ 
+         internal static RackViewBatchProductSession<RackFrameConfiguration, RackFrameConfiguration, HeaderRunPlan> Header(

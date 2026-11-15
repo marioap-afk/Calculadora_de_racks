@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml.cs b/src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml.cs
+index cfca6b28..93f55a79 100644
+--- a/src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml.cs
++++ b/src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml.cs
+@@ -601,7 +601,7 @@ namespace RackCad.UI.RackFrames
+ 
+         protected override void OnClosed(EventArgs e)
+         {
+-            SaveCurrentLayout();
++            this.SaveCurrentLayout();
+             Loaded -= RackFrameConfiguratorWindow_Loaded;
+             Dispatcher.UnhandledException -= Dispatcher_UnhandledException;
+ 

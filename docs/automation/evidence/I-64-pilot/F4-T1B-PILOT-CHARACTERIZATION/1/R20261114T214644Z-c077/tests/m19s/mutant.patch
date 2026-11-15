@@ -1,0 +1,16 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 205d3889..2a9234ca 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -3291,6 +3291,11 @@ namespace RackCad.UI.Systems.PushBack
+ 
+         private void Update_Click(object sender, RoutedEventArgs e) => RequestDraw(null, -1, updateOnly: true);
+ 
++        private void DeadSubscriptionProbe()
++        {
++            session.InsertRequestedRaised += (sender, args) => { };
++        }
++
+         private void InsertBatch_Click(object sender, RoutedEventArgs e)
+         {
+             if (moduleOwner.ModuleSession.HasPendingChanges) moduleOwner.CommitModuleEdits();

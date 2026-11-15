@@ -1,0 +1,12 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 205d3889..2413ab01 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -3394,6 +3394,7 @@ namespace RackCad.UI.Systems.PushBack
+         /// </summary>
+         protected override void OnClosing(CancelEventArgs e)
+         {
++            RequestRecompute();
+             if (!InsertRequested && !EditorClosePolicy.MayClose(PendingWork()))
+             {
+                 e.Cancel = true;

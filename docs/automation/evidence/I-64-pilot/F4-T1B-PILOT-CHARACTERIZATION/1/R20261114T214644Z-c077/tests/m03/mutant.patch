@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 205d3889..fe2576bd 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -3378,7 +3378,7 @@ namespace RackCad.UI.Systems.PushBack
+             Close();
+         }
+ 
+-        private void Close_Click(object sender, RoutedEventArgs e) => Close();
++        private void Close_Click(object sender, RoutedEventArgs e) { }
+ 
+         /// <summary>
+         /// El unico punto por el que pasan los CUATRO caminos de cierre (ADR-0029 D7): el boton Cerrar, Escape —que

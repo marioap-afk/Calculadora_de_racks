@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 205d3889..1ea4e4a2 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -1201,7 +1201,7 @@ namespace RackCad.UI.Systems.PushBack
+         private void Name_Changed(object sender, RoutedEventArgs e)
+         {
+             if (suppressSync) return;
+-            session.Identity.SetName(NameBox.Text?.Trim());
++            session.Identity.SetName(NameBox.Text);
+         }
+ 
+         private void Input_Changed(object sender, RoutedEventArgs e) => RequestRecompute();

@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 205d3889..0270377f 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -3416,7 +3416,7 @@ namespace RackCad.UI.Systems.PushBack
+         /// </summary>
+         internal EditorPendingWork PendingWork() => EditorPendingWork.When(
+             moduleOwner.ModuleSession != null && moduleOwner.ModuleSession.HasPendingChanges,
+-            "Hay cambios de módulo sin confirmar que se perderán al cerrar. ¿Deseas continuar?");
++            "Hay cambios de módulo sin confirmar que se perderán al cerrar. ¿Deseas seguir?");
+ 
+         // ---- BOM + library ---------------------------------------------------------------------------------------
+ 

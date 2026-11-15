@@ -7174,3 +7174,26 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **`attempts`:** 1 de 3.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 201. Cadena, disposición del Owner y cierre de F4-T1B-PILOT-CHARACTERIZATION
+
+**Decisión:** F4-E59 y la disposición del Owner antes del cierre (I-01 «Adenda y cerrar», I-02 «Ratificar + regla» e I-03 «Ratificar contenida»).
+
+- **Planificación** `851e` (fidelidad PASS, A1-A8 8/8) y **nc4** `15d5`.
+- **Worker** `c077`: RED `92f5f5db`, con pruebas y mutantes de la tabla cerrada; GREEN `1d36d006`, su inverso exacto.
+- **Identidad del producto:** `git diff 0a6f84c2 1d36d006 -- src` vacío. El blob de la base es igual al del GREEN en los 14 archivos mutados.
+- **CI:**
+  - RED `43649940464`: UI 55/55 y Core 10/10 en rojo por aserción, sin cuelgue;
+  - GREEN `43650040527`: 4/4.
+- **Revisiones:** la directa, conforme; la independiente, 0/3/10, con las tres importantes dispuestas por el Owner.
+- **Verificación** `3df7`: `EXECUTION_VERIFIED` 14/14.
+- **Controles:**
+  - nc1 `6d40`: CONTROL PASS;
+  - nc2 `842a`: con la firma de PD-F4-01, satisfecho por el sustituto `083e` (PASS);
+  - nc3 `c45c`: CONTROL PASS.
+- **Resultado:** F4-T1B **CLOSED / PASS WITH LIMITATIONS**, intentos 1 de 3. La ventana clásica caracterizada es la línea base de compatibilidad de T4B y T4C.
+
+**Límites:**
+- solo pruebas nuevas y documentación; sin AutoCAD;
+- la escritura de la fecha del archivo de disposición del perfil real por la suite existente es deuda H-1;
+- las validaciones del host son de Smoke-2.

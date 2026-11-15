@@ -1,0 +1,20 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml
+index 7d7e2aec..2fdcaaf6 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml
+@@ -99,12 +99,12 @@
+                             <TextBlock Text="Frentes" Style="{StaticResource FieldLabel}" />
+                             <controls:NumericField x:Name="FrontCountBox" LostFocus="FrontCount_Changed"
+                                                    IntegerOnly="True" Minimum="1" />
+-                            <TextBlock Text="Tolerancia" Style="{StaticResource FieldLabel}" />
+-                            <controls:NumericField x:Name="ToleranceBox" LostFocus="Input_Changed"
+-                                                   Minimum="0" MinimumInclusive="False" />
+                             <TextBlock Text="Peralte IN/OUT base" Style="{StaticResource FieldLabel}" />
+                             <controls:NumericField x:Name="BeamDepthBox" LostFocus="Input_Changed"
+                                                    Minimum="0" MinimumInclusive="False" />
++                            <TextBlock Text="Tolerancia" Style="{StaticResource FieldLabel}" />
++                            <controls:NumericField x:Name="ToleranceBox" LostFocus="Input_Changed"
++                                                   Minimum="0" MinimumInclusive="False" />
+                         </StackPanel>
+                         <StackPanel Grid.Column="2">
+                             <TextBlock Text="Fondos base" Style="{StaticResource FieldLabel}" />

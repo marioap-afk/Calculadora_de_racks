@@ -2043,3 +2043,54 @@ La mutación authored no empieza sin su contrato. Smoke-2 sigue pendiente de Aut
   - **dos paradas nuevas:** F4T1B-C09 (cuelgue, modal vivo, escritura del perfil, AutoCAD o rutas de la máquina) y F4T1B-C10 (un mutante de la tabla sin prueba que lo discrimine);
   - los dos filtros `PushBackClassicCharacterization`, Core con `MinSelected` 4 y UI con 22, los dos con `ExpectRed` true.
 - **La cadena:** la de F4-T4A2, con la planificación del Controller `gpt-6-luna`/high, el Worker Sonnet/high y nc4 en la primera delegación. La sesión comprueba además en el relevo del trabajo, con git, la identidad de bytes de cada archivo mutado.
+
+## F4-E59. Cadena del intento 1 de F4-T1B-PILOT-CHARACTERIZATION, disposición del Owner y cierre
+
+**Autoridades:** la autorización de F4-T1B v5 (F4-E58) y la disposición del Owner antes del cierre (`F4-DRAFTS/coordinator/owner-f4t1b-close-decision.md`, transcripción literal de sus tres respuestas). El paquete de cierre es `F4-T1B-PILOT-CHARACTERIZATION/task-close-package.md`.
+
+**La cadena, completa según la autorización:**
+- **Planificación** `851e`: comparación byte a byte PASS en las 8 colecciones, A1-A8 8/8. **nc4** `15d5`: oráculo cumplido.
+- **Worker** `c077` (`claude-sonnet-5-5`/high):
+  - RED `92f5f5db`: las siete clases y los mutantes de la tabla cerrada en los 14 archivos de MutantScope, sin MU-04 ni MU-18.
+  - GREEN `1d36d006`: `git restore --source=BaseSha`.
+  - 45 corridas aisladas por mutante, con sus parches custodiados.
+- **CI exacta:**
+  - RED `43649940464`: tests y ui-tests en failure, build-ui en success, build-plugin omitido y sin cuelgue;
+  - GREEN `43650040527`: 4/4.
+  - El criterio mecánico de INV-F4T1B-02 se cumple: UI 55/55 y Core 10/10.
+  - La unión de existentes rotas son 3, atribuidas a MU-25, MU-01 y MU-17.
+- **Identidad del producto:** `git diff 0a6f84c2 1d36d006 -- src` vacío. En los 14 archivos mutados, el blob de la base = el del GREEN ≠ el del RED. Lo comprueba con git el relevo del trabajo.
+- **Revisiones:**
+  - la directa, conforme (D-1..D-4 y el hallazgo previo H-1);
+  - la adversarial independiente, **ACEPTABLE CON MENORES 0/3/10**.
+- **Verificación** `3df7`: `EXECUTION_VERIFIED` / NONE, 14/14.
+- **Controles:**
+  - nc1 `6d40`: CONTROL PASS;
+  - nc2 `842a`: CONTROL NOT PASSED con la firma exacta de PD-F4-01, y su sustituto `F4T1B-NC2-EXACT-WHITELIST-01` da PASS (nc2 = SATISFIED_UNDER_F4T1B_EXACT_WHITELIST_SUBSTITUTE);
+  - nc3 `c45c`: CONTROL PASS.
+- **Relevos:** 0 participantes en toda la cadena, Snapshot I y el binario acreditado.
+
+**La disposición del Owner sobre las tres importantes de la revisión independiente:**
+- **I-01, «Adenda y cerrar».**
+  - La entrega no declaraba como ancla unas 11 aserciones sin mutante propio, y dos declaraciones eran inexactas (CT-28 y CT-23).
+  - Todas van en métodos detectados, así que **F4T1B-C04 (3) no se activa**.
+  - La adenda de la sesión, en el §5 del paquete de cierre, completa la lista medida por la revisión independiente.
+- **I-02, «Ratificar + regla».**
+  - Las pruebas de T1B no escriben.
+  - Las suites completas en local, que el prompt de la sesión pedía, reescribieron la fecha (no el contenido) del archivo de disposición del configurador en el perfil real. La causa es la suite de UI existente (H-1).
+  - Se registra como desviación de la delegación causada por el prompt.
+  - **Regla:** en tareas con contención de perfil, nunca suites completas de UI en local; solo en la CI.
+  - H-1 queda como deuda aparte.
+- **I-03, «Ratificar contenida».**
+  - Una sonda temporal de medición disparó `InsertBatch_Click` con entradas válidas. Lanzó antes del diálogo, sin escritura y sin commit.
+  - **Regla:** los prompts prohíben las sondas con entradas válidas en caminos con diálogo o escritura.
+
+**Resultado:** **F4-T1B-PILOT-CHARACTERIZATION = CLOSED / PASS WITH LIMITATIONS**, sobre `1d36d006`, con `attempts` 1 de 3.
+- El comportamiento caracterizado de la ventana clásica de Push Back pasa a ser la línea base de compatibilidad de T4B y T4C, sin respaldar sus rarezas (OD-1..OD-13).
+- Los menores de las dos revisiones van a la reconciliación previa a T4B y a F5.
+
+**Siguiente, por F4-E58:**
+1. Volver al paquete v3 de F4-T4B.
+2. Repetir su validación y su revisión contra la rama posterior a T1B.
+3. Incorporar los hallazgos de T1B.
+4. Solo entonces puede emitirse T4B.

@@ -1,0 +1,29 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 205d3889..3e2e7bcc 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -3324,13 +3324,13 @@ namespace RackCad.UI.Systems.PushBack
+         {
+             if (!canInsertInAutoCad)
+             {
+-                SetStatus("El dibujo en AutoCAD solo está disponible cuando la ventana se abre desde AutoCAD.", true);
++                SetStatus("El dibujo en AutoCAD solo está disponible cuando la ventana se abre desde AutoCAD (x).", true);
+                 return;
+             }
+ 
+             if (updateOnly && !isEditingExisting)
+             {
+-                SetStatus("Solo un sistema abierto con RACKEDITAR puede actualizarse en sitio.", true);
++                SetStatus("Solo un sistema abierto con RACKEDITAR puede actualizarse en sitio (x).", true);
+                 return;
+             }
+ 
+@@ -3351,7 +3351,7 @@ namespace RackCad.UI.Systems.PushBack
+             RequestRecompute(); // synchronous validate + build
+             if (!currentInputsAreValid || session.System == null)
+             {
+-                SetStatus("Corrige los datos: no se puede insertar un modelo inválido.", true);
++                SetStatus("Corrige los datos: no se puede insertar un modelo inválido (x).", true);
+                 return; // never fall back to the previous valid model
+             }
+ 

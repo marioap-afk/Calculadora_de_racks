@@ -1,0 +1,20 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 205d3889..0fc9630a 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -2719,6 +2719,7 @@ namespace RackCad.UI.Systems.PushBack
+                 BootPlacements.To(section.Placement),
+                 current,
+                 PushBackBootSection.ModeLabels) { Owner = this };
++            dialog.WindowStartupLocation = WindowStartupLocation.Manual;
+             var accepted = BootPerPostWindowDialog != null ? BootPerPostWindowDialog(dialog) : dialog.ShowDialog();
+             if (accepted != true)
+             {
+@@ -3015,6 +3016,7 @@ namespace RackCad.UI.Systems.PushBack
+             {
+                 Owner = this
+             };
++            dialog.WindowStartupLocation = WindowStartupLocation.Manual;
+             var accepted = SafetyWindowDialog != null ? SafetyWindowDialog(dialog) : dialog.ShowDialog();
+             return accepted == true ? dialog.Result : null;
+         }

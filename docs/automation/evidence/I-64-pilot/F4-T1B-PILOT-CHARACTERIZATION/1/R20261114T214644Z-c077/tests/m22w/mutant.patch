@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 205d3889..f1ddf4c7 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -3455,7 +3455,7 @@ namespace RackCad.UI.Systems.PushBack
+                 return;
+             }
+ 
+-            var path = UiSupport.PromptSaveToLibrary(this, NameBox.Text, "sistema");
++            var path = UiSupport.PromptSaveToLibrary((Window)this, NameBox.Text, "sistema");
+             if (path == null) return;
+ 
+             try

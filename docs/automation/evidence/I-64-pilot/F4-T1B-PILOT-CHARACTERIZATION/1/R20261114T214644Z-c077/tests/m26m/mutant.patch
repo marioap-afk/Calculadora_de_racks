@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.Plugin/RackMenuCommands.cs b/src/RackCad.Plugin/RackMenuCommands.cs
+index 26609800..f122dee8 100644
+--- a/src/RackCad.Plugin/RackMenuCommands.cs
++++ b/src/RackCad.Plugin/RackMenuCommands.cs
+@@ -133,7 +133,7 @@ namespace RackCad.Plugin
+                         var pushBackName = Systems.Shared.RackNewRackName.Resolve(
+                             document, global::RackCad.Domain.Systems.Shared.RackSystemKind.PushBack, pushBack.RackName);
+                         if (pushBack.System != null) pushBack.System.Name = pushBackName;
+-                        var pushBackProducts = RackViewBatchProducts.PushBack(document, pushBack.System, pushBack.Design,
++                        var pushBackProducts = global::RackCad.Plugin.Views.RackViewBatchProducts.PushBack(document, pushBack.System, pushBack.Design,
+                             pushBack.RackId, pushBackName, null, pushBack.SourceProject, null);
+                         RackViewBatchExecution.Run(document, pushBackProducts,
+                             RackViewBatchProductSession<RackCad.Domain.Systems.PushBack.PushBackDesign,

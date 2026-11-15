@@ -1,0 +1,40 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 205d3889..e5a09ff4 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -2862,7 +2862,7 @@ namespace RackCad.UI.Systems.PushBack
+                 autoPerEnd: true,
+                 face: section.Face())
+             {
+-                Owner = this
++                Owner = (Window)this
+             };
+             return dialog.ShowDialog() == true ? dialog.Result : null;
+         }
+@@ -3044,7 +3044,7 @@ namespace RackCad.UI.Systems.PushBack
+                 // pick, so neither control is offered. The adapter never read them either.
+                 showSharedAndSide: false)
+             {
+-                Owner = this
++                Owner = (Window)this
+             };
+             return dialog.ShowDialog() == true ? dialog.Result : null;
+         }
+@@ -3308,7 +3308,7 @@ namespace RackCad.UI.Systems.PushBack
+             foreach (var cut in new PushBackSystemLateralBuilder().Cortes(lastComputation.System, catalog))
+                 options.Insert(0, new Views.RackViewBatchOption(
+                     "Lateral · poste " + (cut.PostIndex + 1), RackViewAddress.Post(cut.PostIndex)));
+-            if (!Views.RackViewBatchDialogPresenter.TryShow(this, RackSystemKind.PushBack, options, out var views)) return;
++            if (!Views.RackViewBatchDialogPresenter.TryShow((Window)this, RackSystemKind.PushBack, options, out var views)) return;
+             session.Identity.SetName(NameBox.Text?.Trim());
+             session.SetModel(lastComputation.Design, lastComputation.System);
+             session.RequestInsertViews(views, ctx =>
+@@ -3435,7 +3435,7 @@ namespace RackCad.UI.Systems.PushBack
+                 return;
+             }
+ 
+-            new RackBomWindow(lastComputation.Bom) { Owner = this }.ShowDialog();
++            new RackBomWindow(lastComputation.Bom) { Owner = (Window)this }.ShowDialog();
+         }
+ 
+         private void SaveLibrary_Click(object sender, RoutedEventArgs e)
