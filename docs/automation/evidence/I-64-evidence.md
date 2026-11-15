@@ -7295,3 +7295,15 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - el dibujo es sintético;
 - el RELEASE de I-52 no tuvo respuesta;
 - sin cambios en `src/` ni en `tests/` de la rama.
+
+## 207. Paquete v5 de F4-T4C y decisión del Owner sobre el C12 de H0
+
+**Decisión:** F4-E64.
+- **El Owner:** «Completar o comando ajeno», para la cota del billete en vuelo.
+- **El paquete v5:** incorpora H0. Los hechos [H] pasan a [M], y la guarda del adaptador se reescribe para `ExecutionResult`.
+- **La comprobación dirigida:** EMITIBLE (0/0/4), con los menores aplicados.
+- **I-52:** respondió «SIN OBJECIÓN», sin emitir RELEASE, por su política.
+
+**Siguiente:** el Owner ratifica O-17 y O-17 bis, dispone O-18 y da la orden de emisión de T4C1.
+
+**Límites:** solo documentación; sin cambios en `src/` ni en `tests/`.

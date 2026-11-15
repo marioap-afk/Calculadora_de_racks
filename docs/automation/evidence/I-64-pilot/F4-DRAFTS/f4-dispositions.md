@@ -2312,3 +2312,45 @@ Smoke-2 espera a que cierre el producto.
 - el dibujo es sintético, de la sesión, y no un dibujo real del Owner.
 
 **Siguiente:** la fila 3 es C12. La cota del billete «en vuelo» por la primera entrada en reposo (D-T4C-02) no sirve, y **vuelve al Owner antes de emitir T4C1**. Los demás hechos [H] pasan a [M] en el paquete.
+
+## F4-E64. Paquete v5 de F4-T4C tras la sonda H0 y decisión del Owner sobre su C12
+
+**Autoridades:**
+- **la decisión del Owner** sobre el C12 de H0, «Completar o comando ajeno» (`F4-DRAFTS/coordinator/owner-f4t4c-h0-c12-decision.md`, literal);
+- **F4-E62 y F4-E63.**
+
+**La decisión:** el billete «en vuelo» de D-T4C-02 se libera con la compleción de `ExecutionResult`, que H0 vio siempre. Como respaldo, si el callback no empezó, caduca:
+- con el primer `CommandWillStart` de la sesión de un comando que no sea `EXECUTEFUNCTION`;
+- con el cierre del documento;
+- con la retirada de la sesión.
+
+Las entradas en reposo dejan de contar, porque AutoCAD entra en reposo dos veces antes del callback (fila 3 de H0).
+
+**El paquete v5** (`docs/initiatives/I-64-f4-t4c-gate-contract-package.md`):
+- **Los hechos que midió H0** pasan a [M] (H-39 a H-52):
+  - el callback es diferido;
+  - la llamada se completa siempre;
+  - el orden de los eventos es el medido y se cumple `F4P:60`;
+  - un solo paso de Undo, con Undo y Redo completos;
+  - el paso vacío;
+  - los bloqueos anidados funcionan;
+  - no hay bombeo.
+- **D-T4C-02** adopta la regla del Owner.
+- **D-T4C-04** reescribe la guarda del adaptador para `ExecutionResult`: una sola `OnCompleted` con el salto al planificador capturado, y `GetResult` solo dentro de un `try`.
+- **D-T4C-09** confirma la vía A con el orden medido. V1, V2, V3 y el cierre en `Settle` quedan como respuestas declaradas para Smoke-2.
+- **D-T4C-15** registra Undo de un solo paso en el diagnóstico, que Smoke-2 confirma con el producto.
+
+**La comprobación dirigida de la v5:** **EMITIBLE, 0/0/4**. La sesión aplicó los cuatro menores:
+- el paso vacío queda separado del Conflict, que lleva el residuo OM-5;
+- la custodia pendiente pasa a las precondiciones de emisión;
+- la interpretación de la regla del C12 sobre un billete empezado va a O-17 bis;
+- las lecturas del panel que vacían Rehacer quedan como la observación O-18, fuera del alcance de T4C.
+
+**La respuesta de I-52** (`F4-DRAFTS/t4c/h0/i52-reply.md`, literal, con la unidad local redactada) llegó después de la sonda: «SIN OBJECIÓN». I-52 no tenía ni tiene prevista ninguna sesión de host, y no emite RELEASE para otras iniciativas, porque la autorización viene del Owner según el §12.1. Con eso queda superado el «no reply» de `h0-session.json` (F4-E63).
+
+**Siguiente, todo del Owner:**
+1. Ratificar las desviaciones de H0 (O-17) y la interpretación de O-17 bis.
+2. Disponer la observación O-18.
+3. La orden de emisión de F4-T4C1-HOST.
+
+T4C2 y Smoke-2 siguen pendientes.

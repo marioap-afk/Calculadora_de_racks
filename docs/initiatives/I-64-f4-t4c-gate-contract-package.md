@@ -1,6 +1,6 @@
 # I-64 — Paquete del contrato de F4-T4C (integración en el host del Actualizar del piloto)
 
-**Estado:** v4, PREPARACIÓN, no emitida.
+**Estado:** v5, PREPARACIÓN, no emitida; H0 hecho.
 - La prepara la sesión principal por la orden del Owner de preparación de F4-T4C: «PACKAGE PREPARATION + INDEPENDENT REVIEW ONLY» y «Do NOT emit the T4C contract yet».
 - **v1:** la revisión adversarial independiente la juzgó **EMITIBLE TRAS CORRECCIONES (0/12/16)** (`independent-review-v1.md`, citada como IR). La v1 se conserva como `_package-v1.md`.
 - **v2:** incorporó los 28 hallazgos (§10.1). Cambió el diseño de D-T4C-02, D-T4C-04 y D-T4C-09 y añadió D-T4C-20. Se conserva como `_package-v2.md`.
@@ -13,10 +13,15 @@
   - **C3-01:** V3 se redefine en D-T4C-09; para N-10, «cerrar en `Settle`» va como variante y como desviación expresa de C-F4-04; se ajustan la fila 5 de H0, C12 y O-02;
   - **C3-02:** el cierre por degradación pasa a `Degrade`, el punto único (D-T4C-09, D-T4C-17 y D-T4C-20);
   - **C3-03:** se precisa la caducidad dentro de `RequestUpdate` cuando el billete es de otro rack (D-T4C-02, D-T4C-03, D-T4C-05, D-T4C-11 y D-T4C-17).
-- Los mapas y los documentos de revisión se custodian en `I-64-pilot/F4-DRAFTS/t4c/` (F4-E62). Las versiones v1 a v3 del paquete quedan solo como historia en la carpeta de trabajo de la sesión.
-- No declara ningún cierre. **El Owner decidió el §9 el 2026-11-15** (`F4-DRAFTS/coordinator/owner-f4t4c-package-decisions.md`, F4-E62): O-01 «H0 con dispensas», O-02 «Vía A + IC-09», O-03 y O-04 «E-a + D-1» y O-05 a O-15 «Aceptar todas». **Siguiente: T4C-H0** (D-T4C-16). T4C1 y T4C2 no se emiten hasta su resultado.
+  - El Owner dispuso el §9 de la v4: aceptó todas las recomendaciones de O-01 a O-15 (`docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4t4c-package-decisions.md`). La v4 está custodiada en `de27426b` (F4-E62 y la evidencia 205).
+- **v5:** incorpora la sonda **T4C-H0**, custodiada en `44fe029d` (F4-E63 y la evidencia 206, en `docs/automation/evidence/I-64-pilot/F4-T4C-H0/`), y la **decisión del Owner sobre su C12**, «Completar o comando ajeno» (`owner-f4t4c-h0-c12-decision.md`, en la carpeta de trabajo de la sesión y todavía sin custodiar). Se conserva la v4 como `_package-v4.md`.
+  - **Pasan de [H] a [M]** los hechos que H0 midió (§2.6, H-39 a H-52).
+  - **Cambian** D-T4C-02 (la cota del billete), D-T4C-03, D-T4C-04 (la guarda para `ExecutionResult`), D-T4C-05, D-T4C-08 (solo un hecho medido), D-T4C-09 (la vía A con el orden medido y el comando ajeno), D-T4C-10, D-T4C-15 (Undo medido), D-T4C-16 (la tabla rellena), D-T4C-17 y D-T4C-20, además del §5, el §6, el §7, el §9 y el §10.4.
+  - **No cambian** D-T4C-01, D-T4C-06, D-T4C-07, D-T4C-11 a D-T4C-14, D-T4C-18 ni D-T4C-19.
+- Los mapas y los documentos de revisión se custodian en `I-64-pilot/F4-DRAFTS/t4c/` (F4-E62 y F4-E64). Las versiones v1 a v4 del paquete quedan solo como historia en la carpeta de trabajo de la sesión; la v4 está en la historia de Git de este archivo (`de27426b`).
+- No declara ningún cierre. Le queda la vuelta al Owner con el §9.
 
-**Base medida:** `b15072ff`, la custodia del cierre de T4B, que solo toca `docs/`. El producto es el de `4314c180`: `git diff 4314c180 b15072ff -- src tests` sale vacío (M1). Todas las anclas `ruta:línea` son relativas al repositorio y están medidas en `b15072ff`. La sesión ha vuelto a comprobar en el worktree las que fundan una decisión, también las nuevas de la v2.
+**Base medida:** `b15072ff`, la custodia del cierre de T4B, que solo toca `docs/`. El producto es el de `4314c180`: `git diff 4314c180 b15072ff -- src tests` sale vacío (M1). La rama está ahora en `44fe029d`, y `git diff b15072ff 44fe029d -- src tests` también sale vacío: las anclas de `src` y `tests` siguen valiendo, y las de H0 se citan en `44fe029d`. Todas las anclas `ruta:línea` son relativas al repositorio y están medidas en `b15072ff`. La sesión ha vuelto a comprobar en el worktree las que fundan una decisión, también las nuevas de la v2.
 
 **Mapas** (custodiados en `I-64-pilot/F4-DRAFTS/t4c/`; se citan como M1 a M4):
 - M1, `map-1-t4b-seam-writer.md`: la costura de T4B, el escritor y la ausencia de una segunda vía;
@@ -82,6 +87,10 @@ El censo de G-9 lo hace un script de solo lectura de la misma carpeta, `_v2_g9_c
 - **`A2P`:** el §8, con «D-1 si añade una lectura» (`:660`), y D-T4A2-06.
 - **C2-M-3 a C2-M-7** (R-T4-13): su tabla está en `docs/automation/evidence/I-64-pilot/F4-DRAFTS/t4b/map-3-carries-guards-rules.md:156-162`.
 - **F4-T1B**, la autoridad de compatibilidad: `docs/automation/evidence/I-64-pilot/F4-T1B-PILOT-CHARACTERIZATION/task-close-package.md` y CT-24 a CT-27 (`tests/RackCad.Tests/PushBackClassicCharacterizationPluginGuardTests.cs`).
+- **Las decisiones del Owner sobre este paquete:**
+  - la disposición del §9 de la v4 (`docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4t4c-package-decisions.md`): «H0 con dispensas» (O-01), «Vía A + IC-09» (O-02), «E-a + D-1» (O-03 y O-04) y «Aceptar todas» (O-05 a O-15);
+  - **la decisión sobre el C12 de H0**, «Completar o comando ajeno» (`docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4t4c-h0-c12-decision.md`, que se custodia con esta v5): el billete se libera con la compleción de `ExecutionResult`; como respaldo, si el callback no empezó, caduca con el primer `CommandWillStart` de la sesión de un comando que no sea `EXECUTEFUNCTION`, con el cierre del documento o con la retirada de la sesión; y las entradas en reposo dejan de contar.
+- **T4C-H0:** su custodia en `44fe029d` (§2.6).
 
 ---
 
@@ -220,12 +229,7 @@ Aquí solo van los hechos que fundan una decisión. El detalle está en los mapa
 
 **H-22. El callback de `ExecuteInCommandContextAsync`** (M2 H2-10 a H2-12):
 - **lo medido:** corre en `EXECUTEFUNCTION`, fuera del contexto de aplicación; vacía PICKFIRST con dos `*Cancel*` (`docs/automation/evidence/I-64-pilot/F2-SMOKE-NAV/R20261110T064058Z-c883/operator/session-log.md:10`, `:20`); y un `LockDocument` dentro no falló;
-- **lo no medido:**
-  - si corre antes de que vuelva la llamada;
-  - si el `Task` se completa siempre;
-  - si los `*Cancel*` producen `CommandCancelled`.
-
-  Hay un indicio de callback diferido.
+- **lo que hasta la v4 no estaba medido, y H0 midió** (§2.6): el callback es diferido (H-39); la llamada se completa siempre (H-40), aunque no devuelve un `Task` sino un `ExecutionResult` (H-50); y los `*Cancel*` no dan pistas (H-42).
 
 **H-23. Undo:**
 - `src` no tiene ninguna marca ni API de Undo, ningún `SendStringToExecute` y ningún `CommandFlags` (M2 H2-30);
@@ -327,6 +331,56 @@ Aquí solo van los hechos que fundan una decisión. El detalle está en los mapa
 | v2 D-T4C-12 | «La cuenta de lecturas por operación no cambia» (`:688-700`) | Cambia en `:699-700` (H-37; RR N-05) |
 | v2 D-T4C-14 | G-6 con la lista de G-5 y cuatro excepciones | Falta `WorkspacePanelCommand.cs`, con sus dos `[CommandMethod(` (H-34; RR N-02) |
 | v2 §6 | El prohibido incluía «las guardas que no cambian», tres de ellas en archivos del permitido | El prohibido solo lleva archivos que no están en el permitido (RR N-06) |
+| v1 a v4, D-T4C-04 | `ExecuteInCommandContextAsync` devuelve un `Task`, con una `ContinueWith` | Devuelve `DocumentCollection.ExecutionResult` (H-50) |
+| v4, D-T4C-02 | La cota del billete por la primera entrada en reposo | H0 la invalidó (fila 3, H-41). La sustituye la regla del Owner |
+
+### 2.6 Lo que midió T4C-H0 (de [H] a [M])
+
+**La sonda.** T4C-H0 se hizo el 2026-11-15, según O-01 («H0 con dispensas»). Su custodia está en `44fe029d`, en `docs/automation/evidence/I-64-pilot/F4-T4C-H0/` (F4-E63 y la evidencia 206):
+- `H0R` = `h0-result.md`, el resultado fila por fila;
+- `H0T` = `h0-trace.txt`, la traza de 2192 líneas;
+- `H0N` = `h0-harness-notes.md`, las notas del arnés.
+
+Sus cinco corridas son P1 y P2 (el contexto vacío, sin selección y con ella), P3 (Actualizar con el borrador limpio) y P4 y P5 (Actualizar con un cambio, `Applied`) (`H0R:21-29`). Es un diagnóstico, no una validación: nada cuenta como evidencia de cumplimiento, y Smoke-2 sigue siendo la primera validación física. Las desviaciones del procedimiento están en H-52.
+
+**H-39. El callback es diferido** (fila 1, `H0R:35`). Lo es en las cinco sondas: la llamada vuelve con `IsCompleted=False` y el callback corre entre 49,6 y 145,8 ms después. La UI pinta uno o dos fotogramas mientras tanto (`H0T:127`, `:134`, `callReturnedBefore=True`).
+
+**H-40. La llamada se completa siempre** (filas 2 y 10, `H0R:36`, `:44`). `OnCompleted` llega en las cinco, y la continuación corre en el hilo de la UI (`thread=1`, `onPanelThread=True`; `H0T:823`). El contexto de sincronización al pedir es `DispatcherSynchronizationContext`.
+
+**H-41. Dos entradas en reposo antes del callback** (fila 3, `H0R:37`). Llegan dos `EnteringQuiescentState` entre la vuelta de la llamada y el `CommandWillStart` de `EXECUTEFUNCTION`, en las cinco sondas. Llegan con el reposo ya puesto (`cmdActiveInActiveSession=False`, `H0T:35-36`). El `CommandWillStart` de `EXECUTEFUNCTION` es el primero tras la llamada (`H0T:37`).
+
+**H-42. Los `*Cancel*` no dan pistas** (fila 4, `H0R:38`). Se ven dos en la línea de comandos por sonda, pero el puente no recibe `CommandCancelled` ni `CommandEnded` antes de `EXECUTEFUNCTION`.
+
+**H-43. El orden de los eventos** (fila 5, `H0R:39`): `CommandWillStart(EXECUTEFUNCTION)` → el callback, con el bloqueo exterior → los `Object*` de la importación y de MUTATE → `Seal` → POST (la purga, `SyncName`, el regen y la relectura) → la salida del callback → `CommandEnded(EXECUTEFUNCTION)` → `EnteringQuiescentState` (`H0T:37`, `:41-42`). **`F4P:60` se cumple:** `CommandEnded` llega después de la relectura de POST. No hay comandos anidados.
+
+**H-44. Un solo paso de Undo** (fila 6, `H0R:40`). La lista de Deshacer muestra **una** entrada «Executefunction» por Actualizar. Un `U` lo deshace entero, y un `REDO` **inmediato** lo rehace entero.
+
+**H-45. El paso vacío existe** (fila 7, `H0R:41`). P1, P2 y P3, sin escritura, dejan cada una su propia entrada «Executefunction» en Deshacer.
+
+**H-46. El estado al entrar en el callback** (fila 8, `H0R:42`; `H0T:134`): `MdiActiveDocument` es el admitido; `TopTransaction` es nula; `CommandInProgress` es `EXECUTEFUNCTION`; y el documento no está en reposo.
+
+**H-47. Los bloqueos anidados funcionan** (fila 9, `H0R:43`). `CaptureDrawing`, dos veces, y `SyncName`, con dos claves, toman y liberan su bloqueo bajo el exterior.
+
+**H-48. WPF no bombea dentro del callback** (fila 11, `H0R:45`). Las sondas `Background` y `Normal` corren **después** de salir del callback (`H0T:826-827`).
+
+**H-49. El `Debug.Assert` del drenaje no salta** (fila 12, `H0R:46`): `drain.assert-precheck top=null` en todos los drenajes (`H0T:829`).
+
+**H-50. `ExecuteInCommandContextAsync` devuelve `DocumentCollection.ExecutionResult`, no un `Task`** (O-H0-4, `H0R:53`; `H0N` §1). Los hechos del IL de `AcCoreMgd` 25.0.171, leídos por la revisión del arnés:
+- tiene `IsCompleted`, `GetAwaiter()`, `GetResult()` y `OnCompleted(Action)`. `GetResult` no hace nada: **no hay canal de fallo**;
+- **un rechazo nativo no lanza y nunca completa**;
+- el trampolín nativo invoca el callback **sin ninguna región de excepción**. Una excepción del callback cruzaría a código nativo, así que el callback tiene que ser total;
+- la compleción se publica con el `SynchronizationContext.Current` **de dentro del contexto de comando**. Sin contexto, nunca se completa;
+- `OnCompleted` tiene una sola ranura: una segunda llamada sustituye a la primera. Una continuación que lanza abre el diálogo de error de AutoCAD.
+
+**H-51. Las observaciones** (`H0R:50-54`):
+- **O-H0-1:** sin el ámbito de T4C, el drenaje tras cada Actualizar lleva `[InvalidateNavigationCaches, MarkDraftsPossiblyStale]`, y el campo queda «posiblemente obsoleto». Es la línea base que corrige D-T4C-09. `U` y `REDO` también marcan, como deben;
+- **O-H0-2:** las lecturas del panel («Comprobar ahora» y «Editar») dejan entradas «Group of commands» en Deshacer y **vacían la pila de Rehacer**. Un «Comprobar ahora» entre `U` y `REDO` da «Nothing to redo». No es de T4C;
+- **O-H0-3:** `EXECUTEFUNCTION` vacía PICKFIRST, lo que se aceptó en O-15. La pestaña fijada se mantiene.
+
+**H-52. Las desviaciones del procedimiento de H0** (`H0R:56-60`), que se declaran al Owner (§9):
+- **el operador fue la sesión, no el Owner,** por la instrucción del Owner («Crealo tú controlando autocad, no pidas autorización»). D-T4C-16 decía «el Owner opera», y su dispensa 2 decía que eso no se dispensaba;
+- **el dibujo es sintético:** lo creó la sesión con RACKPUSHBACK y RACKEDITAR, y no es un dibujo real del Owner;
+- **el RELEASE de I-52** se pidió antes de abrir AutoCAD y la respuesta llegó después de la sonda (`F4-DRAFTS/t4c/h0/i52-reply.md`, literal). I-52 dice «SIN OBJECIÓN», que no tenía ni tiene prevista ninguna sesión de host, y que **no emite RELEASE**: no concede ventanas de host a otras iniciativas, y la autorización viene del Owner según el §12.1. No hubo solapamiento. **Regla para el futuro:** con I-52 basta con avisar del inicio y del cierre.
 
 ---
 
@@ -374,9 +428,9 @@ Aquí solo van los hechos que fundan una decisión. El detalle está en los mapa
 
 ### D-T4C-02. El modelo tolerante: el valor de inicio, el billete en vuelo con su cota y el almacén del resultado
 
-*Cambia en la v2: IR R-01, R-03, R-07 (a), R-11 y M-12. Cambia en la v3: RR N-01, N-04, N-09 y N-15. Cambia en la v4: CK C3-03.*
+*Cambia en la v2: IR R-01, R-03, R-07 (a), R-11 y M-12. Cambia en la v3: RR N-01, N-04, N-09 y N-15. Cambia en la v4: CK C3-03. Cambia en la v5: la cota del billete es la regla del Owner, «Completar o comando ajeno», tras la fila 3 de H0.*
 
-Nadie ha medido cuándo corre el callback, ni si el `Task` se completa siempre (H-22). `Task` está prohibido en el núcleo, en el controlador y en los VM (H-12, H-15). Por eso nada en la cadena del panel espera a la corrida.
+**H0 lo midió** (§2.6): el callback es **diferido** en las cinco sondas, y la llamada **se completa siempre** (H-39, H-40). `Task` está prohibido en el núcleo, en el controlador y en los VM (H-12, H-15). Por eso nada en la cadena del panel espera a la corrida, y el modelo tolerante sigue siendo necesario: el caso diferido es el real.
 
 **Dos operaciones nuevas del puerto del panel**, al final de `IWorkspacePilotEditPort`:
 - **`EditUpdateStart RequestUpdate(EditIntentRequest request)`.** Responde al instante con un valor de inicio:
@@ -404,37 +458,42 @@ Nadie ha medido cuándo corre el callback, ni si el `Task` se completa siempre (
 - vive en la memoria del núcleo, por sesión;
 - lleva:
   - su rack y un **testigo** único de la corrida;
-  - la marca «empezado», que pone `Admit`, y la marca «en `Execute`»;
-  - la cuenta de entradas en reposo de la sesión al aceptar y la de su `Admit` (D-T4C-09, `QuiescentEntriesOf`).
+  - la marca «empezado», que pone `Admit`; la marca «en `Execute`»; y la marca «terminada», que ponen `Execute` y `NotRun` al guardar su resultado;
+  - la cuenta de **comandos ajenos** de la sesión al aceptar (D-T4C-09, `ForeignCommandStartsOf`). Las entradas en reposo ya no cuentan.
 - **Se pone** al aceptar, antes de llamar al ejecutor.
-- **Se quita en toda salida:**
-  - al terminar `Execute`, en su `finally`;
-  - en `NotRun`;
-  - si la petición falla en síncrono;
-  - con la caducidad;
-  - con la destrucción de la sesión.
-- **La liberación de un billete empezado está garantizada** (RR N-01), en tres capas:
-  1. **Las cuatro operaciones de la corrida del núcleo son totales.** `Admit`, `Begin`, `Execute` y `NotRun` nunca lanzan, y `Execute` y `NotRun` quitan el billete en su `finally` si el testigo es el vigente;
+- **Se libera con la compleción del `ExecutionResult`** (la decisión del Owner sobre C12): el corredor llama a la quinta operación de la corrida, `Completed()`, desde la continuación de `OnCompleted` (D-T4C-04). H0 midió que la compleción llega siempre, en el hilo de la UI, después del callback (H-40).
+  - Un billete **terminado** se libera sin más: su resultado ya está en el almacén.
+  - Un billete **no terminado** al completarse, que es inalcanzable porque la compleción solo llega después de invocar el callback (H-50), guarda `Failed(HostNotRunReason)` y se libera.
+- **También se libera,** como respaldo, con la caducidad (abajo), con un fallo síncrono de la petición y con la destrucción de la sesión.
+- **`InFlight`**, para la presentación, es «hay billete y no está terminado». Entre `Execute` y la compleción, el resultado ya se puede recoger, y un segundo `RequestUpdate` sigue recibiendo `Busy`. H0 midió que ese intervalo es de unos milisegundos: la compleción es un mensaje que se publica al salir del callback (`H0T:817`, `:823`).
+- **La terminación de un billete empezado está garantizada** (RR N-01), en tres capas:
+  1. **Las cinco operaciones de la corrida del núcleo son totales.** `Admit`, `Begin`, `Execute`, `NotRun` y `Completed` nunca lanzan. `Execute` y `NotRun` marcan el billete como terminado, en su `finally`, si el testigo es el vigente;
   2. **el corredor garantiza**, con un `finally` exterior propio, **exactamente una** llamada a `Execute` o a `NotRun` después de un `Admit` verdadero (D-T4C-04);
-  3. **la defensa en profundidad:** un billete empezado que no ha entrado en `Execute` también caduca con la primera entrada en reposo posterior a su `Admit` (abajo). Esa entrada solo llega cuando el comando interno ya terminó, y con él el callback.
+  3. **la defensa en profundidad:** la caducidad de abajo también alcanza a un billete empezado que no ha entrado en `Execute`, y a uno terminado cuya compleción no llegó.
 - **Mientras está puesto**, un segundo `RequestUpdate` de la sesión responde `Busy`, aunque el callback no haya corrido. Cubre la ventana que la ranura no cubre (M2 H2-41, M3 H-M3-44).
-- **Las operaciones del núcleo, testigo en mano:** `Admit`, `Begin`, `Execute` y `NotRun` llevan el testigo de su corrida. Si no es el del billete vigente, no hacen nada.
+- **Las operaciones del núcleo, testigo en mano:** `Admit`, `Begin`, `Execute`, `NotRun` y `Completed` llevan el testigo de su corrida. Si no es el del billete vigente, no hacen nada.
 
-**La cota del billete** (IR R-01). Sin ella, un callback que no corre y un `Task` que no se completa dejarían el documento sin poder actualizarse, descartarse ni cerrarse sin perder el trabajo (H-25).
-- **El billete caduca** en dos casos:
-  - la sesión ha entrado en reposo al menos una vez desde la aceptación, y el callback todavía no ha empezado;
-  - o la sesión ha entrado en reposo al menos una vez desde el `Admit`, y la corrida no ha entrado en `Execute` (RR N-01). Un billete en `Execute` nunca caduca.
-- **También caduca** si la sesión pasa a modo degradado antes de que el callback empiece. `QuiescentEntriesOf` devuelve nulo para una sesión degradada o desconocida (D-T4C-09; RR N-09).
-- **Cuándo se comprueba**, de forma perezosa, en memoria y a coste constante: al principio de `RequestUpdate`, de `TakeUpdateProgress` y de cada operación que responda `Busy` por el vuelo (D-T4C-08 y D-T4C-10). La comprueba una ayuda única del núcleo, `ExpireStaleUpdate`, que solo lee `_bridge.QuiescentEntriesOf` y nunca muta el puente.
+**La cota del billete: «Completar o comando ajeno»** (IR R-01; la decisión del Owner sobre C12). Sin cota, un callback que no corre y una compleción que no llega dejarían el documento sin poder actualizarse, descartarse ni cerrarse sin perder el trabajo (H-25). Y los dos casos son posibles: un rechazo nativo de `ExecuteInCommandContextAsync` no lanza y nunca completa, y sin contexto de sincronización dentro del contexto de comando la compleción tampoco llega (H-50).
+- **La v4 contaba las entradas en reposo, y H0 la invalidó** (fila 3, C12): AutoCAD entra en reposo dos veces entre la vuelta de la llamada y el `CommandWillStart` de `EXECUTEFUNCTION`, en las cinco sondas (H-41). Con esa regla, cada Actualizar caducaría antes de correr. La traza muestra además que esas dos entradas llegan con el reposo ya puesto (`cmdActiveInActiveSession=False`, `H0T:35-36`). Cualquier regla basada en el reposo es frágil.
+- **La regla del Owner:**
+  - **la liberación normal es la compleción** (arriba);
+  - **el respaldo:** si el callback **no ha empezado**, el billete caduca con el **primer `CommandWillStart` de la sesión de un comando que no sea `EXECUTEFUNCTION`**, con el cierre del documento o con la retirada de la sesión;
+  - **las entradas en reposo dejan de contar.**
+- **La defensa en profundidad de N-01**, con el mismo disparador: un billete empezado que no entró en `Execute`, o uno terminado cuya compleción no llegó, también caduca con el primer comando ajeno posterior a su `Admit`. Ese comando solo puede empezar cuando `EXECUTEFUNCTION` ya terminó, y con él el callback (H-43). Un billete en `Execute` nunca caduca.
+- **El comando ajeno lo anota el puente** (D-T4C-09): el manejador de `CommandWillStart` lee `e.GlobalCommandName`, un dato en memoria del argumento del evento y no del DWG, y si no es `EXECUTEFUNCTION` llama a `EBC.NoteForeignCommandStart(SessionId)`. El núcleo lee la cuenta con `ForeignCommandStartsOf(SessionId)`.
+- **El cierre del documento y la retirada de la sesión** llegan al núcleo por `SessionDestroyed` (`CORE:1415-1439`), que quita el billete y el almacén de la sesión. Un cierre vetado no cierra nada, y su comando (`CLOSE`, `CLOSEALL` o `QUIT`) ya es un comando ajeno.
+- **También caduca** si la sesión pasa a modo degradado antes de que el callback empiece: `ForeignCommandStartsOf` devuelve nulo para una sesión degradada o desconocida (D-T4C-09; RR N-09).
+- **Cuándo se comprueba**, de forma perezosa, en memoria y a coste constante: al principio de `RequestUpdate`, de `TakeUpdateProgress` y de cada operación que responda `Busy` por el vuelo (D-T4C-08 y D-T4C-10). La comprueba una ayuda única del núcleo, `ExpireStaleUpdate`, que solo lee `_bridge.ForeignCommandStartsOf` y nunca muta el puente.
 - **Al caducar:**
-  - se guarda una sola vez `Failed(HostNotRunReason)`, **bajo el rack del billete**. Si la caducidad ocurre dentro de `RequestUpdate`, depende del rack (RR N-15; CK C3-03):
+  - un billete **terminado** solo se libera: su resultado ya está guardado;
+  - uno **no terminado** guarda una sola vez `Failed(HostNotRunReason)`, **bajo el rack del billete**. Si la caducidad ocurre dentro de `RequestUpdate`, depende del rack (RR N-15; CK C3-03):
     - **el billete es del mismo rack que la petición:** ese `Failed` sale **por el valor de inicio**, la petición nueva no se acepta y no se guarda nada. El usuario vuelve a pulsar;
     - **el billete es de otro rack:** su `Failed` se guarda bajo **su** rack, como en cualquier otra caducidad, y la petición sigue: se evalúa y, si pasa, se acepta. El resultado del otro rack lo presentará su superficie cuando vuelva a estar viva. Desde el producto es casi inalcanzable, porque el gesto llama antes a `TakeUpdateProgress`, cuya caducidad ya lo guarda bajo su rack;
   - se quita el billete;
-  - **el ámbito propio no se cierra aquí** (RR N-04). Es inalcanzable que esté abierto: sin un callback empezado no hubo `Begin`, y en el segundo caso la entrada en reposo que dispara la caducidad ya lo cerró dentro de `SetQuiescent` (D-T4C-09). Una guarda fija que `ExpireStaleUpdate` no nombra `CloseOwnMutation`. `TakeUpdateProgress` no muta el puente ni olvida `_lastAllowedClose`.
+  - **el ámbito propio no se cierra aquí** (RR N-04). Es inalcanzable que esté abierto: sin un callback empezado no hubo `Begin`; y en los casos de N-01, el `CommandWillStart` ajeno que dispara la caducidad ya lo cerró dentro de `SetQuiescent`, que cierra con cualquier inicio de comando (D-T4C-09). Una guarda fija que `ExpireStaleUpdate` no nombra `CloseOwnMutation`. `TakeUpdateProgress` no muta el puente ni olvida `_lastAllowedClose`.
 - **Un callback tardío** con el testigo viejo no hace nada.
-- **Cualquier comando del usuario** produce esa entrada en reposo. **La activación del documento no la produce**, porque fija el reposo sin pasar por `SetQuiescent` (H-36). En el peor caso, el vuelo dura hasta el siguiente comando de la sesión.
-- **Si la entrada en reposo llegara antes que un callback legítimo,** la actualización se presenta como «no llegó a ejecutarse», sin ninguna escritura. Es seguro, y lo mide H0 (D-T4C-16, fila 3).
+- **Cualquier comando del usuario** es un comando ajeno. En el peor caso, el vuelo dura hasta el siguiente comando de la sesión, su cierre o su retirada. La activación del documento no cuenta.
+- **Si un comando ajeno empezara antes que un callback legítimo** (por ejemplo, un comando tecleado antes de que AutoCAD saque el `EXECUTEFUNCTION` de su cola), la actualización se presenta como «no llegó a ejecutarse», sin ninguna escritura, y el callback tardío no hace nada. Es seguro. H0 no lo vio: el `CommandWillStart` de `EXECUTEFUNCTION` fue siempre el primero tras la llamada (H-41).
 
 **«ONE ACTUALIZAR» y la ranura** (IR M-12).
 - La ranura de T4B sigue siendo el oráculo de T4B: `AnotherUpdateInProgress` dentro de `TryUpdatePilot` (`T4P:555-558`) no cambia, y sus pruebas de T4B siguen.
@@ -446,7 +505,7 @@ Nadie ha medido cuándo corre el callback, ni si el `Task` se completa siempre (
   - `RequestUpdate` y `TryUpdatePilot` no aparecen en `OnDrained` del núcleo, en `OnIdle` del núcleo del puente ni en el del puente;
   - tampoco en `OnDrained`, `NotifyStateChanged`, `OnCommandStateChanged` ni `OnActiveSessionChanged` del controlador, ni en `OnDrained` del host de navegación;
   - así se cierra M1 R-07;
-- **el puente:** los manejadores siguen encolando y nada más (`TW/WorkspaceIdleSchedulingGuardTests.cs:64-104`, sin cambios);
+- **el puente:** los manejadores siguen encolando y nada más (`TW/WorkspaceIdleSchedulingGuardTests.cs:64-104`, sin cambios). El de `CommandWillStart` anota además, en memoria, el comando ajeno: no lee el DWG ni pide ninguna corrida;
 - **la relectura de POST:** está dentro de la corrida;
 - **las notificaciones de mutación propia:** solo invalidan (D-T4C-09);
 - **el censo de llamadores** (G-10 de D-T4C-14):
@@ -459,17 +518,17 @@ Nadie ha medido cuándo corre el callback, ni si el `Task` se completa siempre (
 
 **Cambios de guarda declarados:** las filas 2, 4 a 8 y 10 de D-T4C-20.
 
-**Anclas:** H-12, H-14 a H-16, H-21, H-22 y H-25; `OO`, «ONE ACTUALIZAR».
+**Anclas:** H-12, H-14 a H-16, H-21, H-22, H-25 y H-39 a H-43; `OO`, «ONE ACTUALIZAR»; la decisión del Owner sobre C12.
 
 ### D-T4C-03. El canal de finalización hacia el panel
 
-*Cambia en la v2: IR R-02 (c) y (d). Cambia en la v3: RR N-15. Cambia en la v4: CK C3-03.*
+*Cambia en la v2: IR R-02 (c) y (d). Cambia en la v3: RR N-15. Cambia en la v4: CK C3-03. Cambia en la v5: el aviso tras el comando interno, medido por H0.*
 
 **Las opciones:**
 
 | Opción | Cómo | Guardas que toca | A favor | En contra |
 |---|---|---|---|---|
-| **F-1. Extracción** | El panel llama a `TakeUpdateProgress` justo después de `Accepted` y en cada repintado que ya provoca el aviso `StateChanged` (H-21) | Las de D-T4C-02. Una regla nueva de la superficie: la presentación del campo puede llamar a `TakeUpdateProgress` y a ninguna lectura (`TW/WorkspacePilotSurfaceGuardTests.cs:54-92`) | Ningún mecanismo nuevo: sin evento, suscripción, temporizador, `Task` ni `Dispatcher`. Si el callback es síncrono, el resultado ya está en la primera llamada | Depende de que llegue un aviso después del comando interno **[H]**. Si no llega, el resultado espera al siguiente repintado |
+| **F-1. Extracción** | El panel llama a `TakeUpdateProgress` justo después de `Accepted` y en cada repintado que ya provoca el aviso `StateChanged` (H-21) | Las de D-T4C-02. Una regla nueva de la superficie: la presentación del campo puede llamar a `TakeUpdateProgress` y a ninguna lectura (`TW/WorkspacePilotSurfaceGuardTests.cs:54-92`) | Ningún mecanismo nuevo: sin evento, suscripción, temporizador, `Task` ni `Dispatcher`. Si el callback es síncrono, el resultado ya está en la primera llamada | Depende de que llegue un aviso después del comando interno. **H0 midió que llega siempre** (H-43). Si no llegara, el resultado esperaría al siguiente repintado |
 | F-2. Empuje al VM | Un delegado o un evento desde el núcleo o el controlador | Rompe `TW/WorkspaceHostHardeningGuardTests.cs:758-760` (`delegate`, `event`, `+=`) y la cuenta de tres `+=` del controlador (`TW/WorkspacePilotEditGuardTests.cs:526`) | Inmediato | Un mecanismo nuevo en tres capas guardadas |
 | F-3. Resultado síncrono | `RequestUpdate` devuelve el `EditUpdateOutcome` | Ninguna nueva | La más simple | Solo vale si el callback es síncrono. Contradice la dirección de diseño, y un callback diferido la convierte en una A-n |
 | F-4. Sondeo | Un temporizador o el `Dispatcher` | Prohibido (H-15) | — | — |
@@ -487,13 +546,13 @@ Nadie ha medido cuándo corre el callback, ni si el `Task` se completa siempre (
 4. **El valor de inicio que no es `Accepted`** se presenta en el gesto, y nunca deja un resultado en el almacén (D-T4C-02). Eso vale también para el `Failed(HostNotRunReason)` de una caducidad ocurrida dentro de `RequestUpdate` cuando el billete es **del mismo rack** (RR N-15). Si es de otro rack, ese `Failed` va al almacén, bajo su rack, y lo presenta su superficie (CK C3-03).
 5. **Una nueva petición nunca borra un resultado sin presentar.** El gesto recoge antes lo pendiente del rack, y si encuentra un resultado, lo presenta y no pide nada (D-T4C-11, paso 1).
 
-**Lo que mide H0 [H]:** si siempre llega un aviso después del comando interno. Si no llega, es la fila 5 de la tabla de D-T4C-16.
+**Lo que midió H0** (H-43, H-39): después del comando interno llega siempre `EnteringQuiescentState`, que da `NotifyStateChanged` y el repintado que recoge el resultado. El callback es diferido, así que el `TakeUpdateProgress` del gesto, justo después de `Accepted`, ve `InFlight` verdadero y presenta «Aplicando». El resultado lo presenta el repintado posterior. F-1 queda confirmado en el caso real; el caso síncrono no se dio.
 
 **Anclas:** H-15, H-21; M2 Q2-03.
 
 ### D-T4C-04. El adaptador de contexto de comando: un corredor puro, un objetivo opaco y unas primitivas en `Plugin/Views`
 
-*Cambia en la v2: IR R-02 (a), R-04, R-08, M-10 y M-14. Cambia en la v3: RR N-01, N-03 y N-11.*
+*Cambia en la v2: IR R-02 (a), R-04, R-08, M-10 y M-14. Cambia en la v3: RR N-01, N-03 y N-11. Cambia en la v5: `ExecutionResult` en lugar de `Task` (H-50), la quinta operación `Completed` y la guarda del adaptador reescrita.*
 
 **La forma.** El adaptador tiene dos capas:
 - **el corredor puro**, en Application, que fija el orden y el cerrojo terminal, y se prueba en Core con dobles;
@@ -512,12 +571,13 @@ El precedente es `WorkspaceNavigationRunner`, que toca el host solo por un puert
   - `void Begin()`;
   - `void Execute(IPushBackPilotUpdatePort port)`;
   - `void NotRun(PushBackPilotHostFailure kind, string cause)`, con `PushBackPilotHostFailure` = `Rejected` o `Failed`;
+  - **`void Completed()`**, nueva en la v5: la compleción del `ExecutionResult`, que libera el billete (D-T4C-02);
 - **`IPushBackPilotHostTarget`**, el **objetivo opaco** (IR R-04). Lo implementa el Plugin, y Application nunca ve un `Document`:
   - `IDisposable Lock()`;
   - `IPushBackPilotUpdatePort CreateWriter()`;
   - `void Retire(IPushBackPilotUpdatePort writer)`;
 - **`IPushBackPilotHostPrimitives`**, las primitivas:
-  - `void EnterCommandContext(Action callback, Action<string?> completed)`;
+  - `void EnterCommandContext(Action callback, Action completed)`. La compleción no lleva fallo, porque `ExecutionResult` no tiene canal de fallo (H-50);
   - `bool TryOpenTarget(long documentNativeId, out IPushBackPilotHostTarget? target, out string reason)`;
 - **`PushBackPilotHostRunner`**, que existe una vez por petición. **Solo lo crea su `Request` estático**, y `PushBackPilotHostRunner.Request(` solo aparece en `TryRequest` de `ADAPTER`. Ningún tipo de larga vida lo guarda (G-3; RR N-03). El corredor sí retiene `run`, el id y su estado entre `Request` y el callback diferido, en sus campos o en las clausuras que genera el compilador: es su función, y vive lo que vive la petición;
 - **`PushBackPilotHostTexts`**, los textos nuevos de T4C (D-T4C-05).
@@ -537,17 +597,25 @@ El precedente es `WorkspaceNavigationRunner`, que toca el host solo por un puert
      - Si la excepción salta **antes** de `Execute`, `NotRun(Failed, …)`.
      - Si salta **después**, solo se registra y nunca se reclasifica (D-T4C-05).
   8. **El `finally` exterior** (RR N-01). Desde un `Admit` verdadero, un `finally` que envuelve los pasos 3 a 7 garantiza **exactamente una** llamada terminal: `Execute`, o `NotRun(Failed, …)` si `Execute` no llegó a llamarse por cualquier motivo, también una excepción de `Retire` o del `Dispose`. Una marca local, «terminal hecha», impide la segunda. Antes de `Admit`, los rechazos de los pasos 1 y 2 ya son esa llamada terminal.
-- **`OnCompleted(fault)`**: si el estado es `Pending`, el callback no llegó a correr, porque la llamada falló, se canceló o el comando interno se descartó. Pasa a `Ended` y llama a `NotRun(Failed, HostNotRunReason)`. Si no, solo registra el fallo.
-- **`OnCallback` es total** (IR M-10): todo, también `NotRun` y el registro, va dentro de un `try` cuyo `catch` registra y no relanza. **Ninguna excepción sale hacia AutoCAD.**
+- **`OnCompleted()`**, la compleción: llama **una vez** a `run.Completed()`, con una marca local que impide la segunda. Si el estado era `Pending`, pasa a `Ended`, y `Completed` guarda `Failed(HostNotRunReason)` en el núcleo. Es inalcanzable, porque la compleción solo llega después de invocar el callback (H-50), pero queda cubierto.
+  - **Lo que la compleción no cubre lo cubre la caducidad** de D-T4C-02: un rechazo nativo no lanza y nunca completa, y sin contexto de sincronización dentro del contexto de comando la compleción tampoco llega (H-50).
+  - `Request` sigue capturando la excepción síncrona de la llamada, pero H0 muestra que un rechazo nativo no la produce.
+- **`OnCallback` y `OnCompleted` son totales** (IR M-10): todo, también `NotRun`, `Completed` y el registro, va dentro de un `try` cuyo `catch` registra y no relanza. **Ninguna excepción sale hacia AutoCAD.** Es obligatorio: el trampolín nativo invoca el callback sin ninguna región de excepción, y una continuación que lanza abre el diálogo de error de AutoCAD (H-50).
 
 **La pureza del corredor.** No nombra `Task`, `async`, `await`, `Dispatcher`, `Timer`, `Autodesk`, `Database` ni `LockDocument`, ni usa reflexión ni archivos. Lo fija una guarda nueva, a la manera de `TW/WorkspacePilotUpdateGuardTests.cs:57-125`.
 
 **(b) Las primitivas y el objetivo, en `ADAPTER`:**
 - **`internal sealed class RackPilotUpdateCommandContext : IPushBackPilotUpdateHost`**, sin campos. `TryRequest` delega en `PushBackPilotHostRunner.Request(…, new Primitives(), …)`.
 - **La clase anidada `Primitives`**, sin campos:
-  - **el planificador primero** (IR R-08): `var scheduler = TaskScheduler.FromCurrentSynchronizationContext();` va **antes** de la llamada. Si no hay contexto de sincronización, lanza, no se pide nada y el resultado es el valor de inicio `Failed`;
-  - **la única llamada de producto** a `AcApplication.DocumentManager.ExecuteInCommandContextAsync`, con una lambda que llama a `callback()` dentro de un `try` total y devuelve `Task.CompletedTask`;
-  - **una sola** `ContinueWith(…, scheduler)` sobre el `Task` devuelto, con el planificador capturado. Así la continuación corre en el hilo de la UI;
+  - **el planificador primero** (IR R-08): `var context = SynchronizationContext.Current;` va **antes** de la llamada. Es el planificador capturado. Si es nulo, no se pide nada y el resultado es el valor de inicio `Failed`. H0 midió `DispatcherSynchronizationContext` (H-40);
+  - **la única llamada de producto** a `AcApplication.DocumentManager.ExecuteInCommandContextAsync`, con una lambda que llama a `callback()` dentro de un `try` total y devuelve `Task.CompletedTask`. Devuelve un `DocumentCollection.ExecutionResult`, **no un `Task`** (H-50);
+  - **la compleción, con una sola `OnCompleted`** (H-50; O-H0-4):
+    - si `result.IsCompleted` ya es verdadero, se salta directamente al planificador capturado. H0 nunca lo vio (H-39), pero `OnCompleted` no se llamaría;
+    - si no, `result.OnCompleted(…)` **una sola vez**, porque la ranura es única;
+    - **el salto al planificador capturado** es `context.Post(_ => completed(), null)`, en una única ayuda que usan las dos ramas. No usa `Task.Factory.StartNew` ni `ContinueWith`, que siguen prohibidos. El arnés de H0 sí usó `Task.Factory.StartNew(…, scheduler)`, pero era un diagnóstico (`H0N` §1);
+    - **la continuación cruda** que recibe `OnCompleted` es total: un `try` alrededor del `Post`, que registra y no relanza. Si el `Post` falla, la compleción no llega y la cubre la caducidad;
+    - **la acción publicada** es total: un `try` alrededor de `completed()`. `result.GetResult()` no aporta nada, porque no tiene canal de fallo. Si se llama, es como mucho una vez y **solo dentro de ese `try`**;
+    - H0 midió que la continuación corre en el hilo de la UI, después del callback (H-40). El salto al contexto capturado lo garantiza también si AutoCAD publicara la compleción en otro hilo;
   - `TryOpenTarget` recorre `DocumentManager` por `UnmanagedObject.ToInt64()` y exige `== MdiActiveDocument`. El precedente es `FindDocumentOrNull` (`src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs:335-343`).
 - **La clase anidada `Target : IPushBackPilotHostTarget`:**
   - **un único campo**, `private readonly Document _document;`;
@@ -571,35 +639,49 @@ El precedente es `WorkspaceNavigationRunner`, que toca el host solo por un puert
 
 **La puerta de reposo** se evalúa en `RequestUpdate`, en el contexto de aplicación del clic y **antes** de pedir el contexto de comando. Es `PassGate` sin cambios (`CORE:1481-1515`), con sus textos de hoy. Dentro del callback solo quedan `Admit` y la `UpdateGate` de T4B, porque el reposo fallaría siempre dentro de `EXECUTEFUNCTION` (H-21).
 
-**La guarda del adaptador** (IR R-08), en su archivo:
+**La guarda del adaptador** (IR R-08), reescrita en la v5 para `ExecutionResult` (H-50; O-H0-4). En su archivo:
 - **exactamente una aparición** de:
-  - `TaskScheduler.FromCurrentSynchronizationContext()`, antes de `ExecuteInCommandContextAsync`;
+  - `SynchronizationContext.Current`, antes de `ExecuteInCommandContextAsync`;
   - `ExecuteInCommandContextAsync`;
-  - `ContinueWith(`, con el planificador capturado como argumento;
+  - `.OnCompleted(`, en la rama en que `IsCompleted` es falso;
+  - `.Post(`, sobre el contexto capturado, en la única ayuda del salto;
   - `.LockDocument()`, en `Lock`;
   - `new RackPilotUpdateWriter(`, en `CreateWriter`;
+- **como mucho una** lectura de `.IsCompleted`, y como mucho un `GetResult()`, **solo dentro de un `try`**;
 - **los campos:** ninguno, salvo el `_document` exacto de `Target`;
-- **ninguna aparición** de:
-  - `.Wait(`, `.Result`, `GetAwaiter`, `GetResult`, `ConfigureAwait`;
-  - `Task.Run`, `Task.Factory`, `StartNew`, `Thread`, `ThreadPool`, `Timer`, `Dispatcher`;
-  - `async`, `await`;
-  - `StartTransaction`, `StartOpenCloseTransaction`, `.Commit(`, `TopTransaction`;
+- **ninguna aparición** de las prohibiciones del precedente (H-09), que se mantienen, salvo `GetResult`, que queda como arriba:
+  - `.Wait(`, `.Result`, `GetAwaiter`, `ConfigureAwait`;
+  - `Task.Run`, `Task.Factory`, `StartNew`, `ContinueWith`, `async void`;
+  - y además `Thread`, `ThreadPool`, `Timer`, `Dispatcher`, `TaskScheduler`, `async` y `await`;
+  - `StartTransaction`, `StartOpenCloseTransaction`, `.Commit(` y `TopTransaction`;
   - ni la lista de escritura de D-T4C-14.
+- **la totalidad, por texto:**
+  - la lambda del callback, la continuación cruda de `OnCompleted` y la acción publicada empiezan con un `try` cuyo `catch` registra y no contiene `throw`;
+  - el corredor (`HOSTRUN`) cumple lo mismo en `OnCallback` y `OnCompleted`.
 
-Cada prohibición lleva su negativa.
+Cada regla lleva su negativa: una segunda `OnCompleted`, un `GetResult()` fuera de un `try`, un `Task.Factory.StartNew`, un `ContinueWith`, una continuación sin `try` y un `throw` en un `catch`.
+
+**La continuación sigue siendo total.** Hay tres puntos por los que una excepción podría salir hacia AutoCAD:
+- la lambda del callback;
+- la continuación cruda, que AutoCAD invoca dentro de un `catch` que abre su diálogo de error;
+- la acción publicada.
+
+Los tres envuelven todo en un `try` que registra y no relanza, y el corredor también es total. Si el salto falla, no se pierde nada: el billete lo libera su caducidad, y el resultado de la corrida, si la hubo, ya está en el almacén.
 
 **Cambios de guarda declarados:** las filas 1, 3 y 13 de D-T4C-20.
 
-**Anclas:** H-09 a H-11, H-21, H-22 y H-29; `T4P:547-553`; `F4P:59`; M2 §1.5 y §3.4.
+**Lo que H0 confirmó del orden** (H-46, H-47): al entrar en el callback, el documento activo es el admitido y `TopTransaction` es nula, y los bloqueos anidados de `CaptureDrawing` y `SyncName` funcionan bajo el exterior. El orden objetivo → `Admit` → bloqueo → corrida se sostiene en el host.
+
+**Anclas:** H-09 a H-11, H-21, H-22, H-29, H-39, H-40, H-46, H-47 y H-50; `T4P:547-553`; `F4P:59`; M2 §1.5 y §3.4.
 
 ### D-T4C-05. La traducción de los fallos del host, sin tocar el modelo de T4B
 
-*Cambia en la v2: IR R-02 (a) y (b), M-03 y M-13. Cambia en la v3: RR N-13 y N-15. Cambia en la v4: CK C3-03.*
+*Cambia en la v2: IR R-02 (a) y (b), M-03 y M-13. Cambia en la v3: RR N-13 y N-15. Cambia en la v4: CK C3-03. Cambia en la v5: la compleción sin canal de fallo y el rechazo nativo que no lanza (H-50).*
 
 | Frontera (`OO`, «COMMIT FAILURE») | Quién decide | Estado que llega al panel | Lo que hace T4C |
 |---|---|---|---|
 | **La petición falla en síncrono** antes del callback, o **la actualización anterior del mismo rack caduca** dentro de `RequestUpdate` | T4C | El valor de inicio `Failed(reason)`, sin nada en el almacén | Cero corridas de T4B. El billete se quita. En la caducidad, la petición nueva no se acepta (RR N-15). Si el billete caducado es **de otro rack**, su `Failed` va al almacén bajo su rack, como en la fila siguiente, y la petición sigue (CK C3-03) |
-| **Un fallo del host antes de la mutación:** el callback no corre o se cancela, el billete caduca, el documento cambió o se cerró, la sesión no se admite, el bloqueo lanza | T4C | `Rejected(reason)` o `Failed(reason)` en el almacén, con las fábricas que ya existen (H-04) | Cero corridas de T4B. El borrador queda como estaba: no se toma la ranura, ni se llama a `CompleteApply` ni a `NotePilotEdit` (M2 H2-42). El billete se quita y el ámbito propio se cierra |
+| **Un fallo del host antes de la mutación:** el callback no corre (también un rechazo nativo, que no lanza y nunca completa, H-50), el billete caduca por un comando ajeno o por la degradación, el documento cambió o se cerró, la sesión no se admite, el bloqueo lanza | T4C | `Rejected(reason)` o `Failed(reason)` en el almacén, con las fábricas que ya existen (H-04) | Cero corridas de T4B. El borrador queda como estaba: no se toma la ranura, ni se llama a `CompleteApply` ni a `NotePilotEdit` (M2 H2-42). El billete se quita y el ámbito propio se cierra |
 | Antes de la mutación, dentro de T4B: la puerta, el borrador, la comprobación previa o la ranura | T4B | `Rejected`, `NoDraft`, `NothingToApply`, `PendingText`, `NotApplicable`, `AnotherUpdateInProgress`, `Refused` o `Failed` | Lo guarda tal cual |
 | La mutación o una unidad antes del commit | T4B | `NotAppliedConflict`, `NotAppliedAdmission`, `NotAppliedPreflight` o `NotAppliedFailure` | Lo guarda tal cual |
 | El commit falla, o la persistencia es desconocida | T4B | `CommitThrew`: Unknown(CommitThrew) | Lo guarda tal cual. **Nunca lo convierte en fallo ni en éxito** |
@@ -607,7 +689,7 @@ Cada prohibición lleva su negativa.
 | El commit vuelve con un aviso de POST | T4B | `AppliedWithWarnings`, o `AppliedPostRereadFailed`, que es Unknown(PostReread) | Lo guarda tal cual, con sus avisos |
 | Un error diferido o un descarte durante la corrida | T4B | `ClosedInError` con su clasificación (M-03, D-T4C-13) o `ClosedDetached` | Lo guarda tal cual |
 | `NotApplying` después de la corrida (`CORE:870`), hoy inalcanzable | T4B, con M-01 de T4C | `ClosedInError` con la clasificación de `closed.Kind` y `UpdateNotClosedReason`. **Nunca un éxito**, aunque el sello volviera (IR M-03). En este caso el borrador no está en Error, así que la documentación del valor (H-38) se amplía en el mismo cambio de M-03: «the draft is now in Error, or it did not accept the close of the update» (RR N-13) | Lo guarda tal cual |
-| **Una excepción del host después de que el callback empezó:** la de la llamada misma, el `Dispose` del bloqueo o el `Task` | T4C | El resultado ya guardado | Solo la registra. **Nunca reclasifica** (el cerrojo de D-T4C-04) |
+| **Una excepción del host después de que el callback empezó:** la de la llamada misma, el `Dispose` del bloqueo, la continuación de `OnCompleted` o el salto al contexto capturado. `ExecutionResult` no tiene canal de fallo (H-50) | T4C | El resultado ya guardado | Solo la registra. **Nunca reclasifica** (el cerrojo de D-T4C-04). Si se pierde la compleción, el billete lo libera su caducidad |
 | Una excepción que escapa de `TryUpdatePilot` | — | Imposible por construcción tras D-T4C-13 (M-01) | Defensa: se registra y **no se guarda ningún resultado**. El panel repinta desde el estado del borrador, que es la autoridad (D-T4C-03, regla 2). Unknown se ve como «Estado desconocido; comprueba.». Nunca da `Failed` ni `Applied` |
 
 **POST** (`OO`, «POST»):
@@ -705,7 +787,7 @@ D-4, sin cambio y con la comparación como única defensa, no cumple la letra de
 
 ### D-T4C-08. La revalidación final, sin TOCTOU
 
-*Cambia en la v2: IR R-03 y M-09. Cambia en la v3: RR N-08.*
+*Cambia en la v2: IR R-03 y M-09. Cambia en la v3: RR N-08. Cambia en la v5: la `TopTransaction` al entrar, medida por H0.*
 
 **Ningún resultado de T4A2 autoriza.** `TryUpdatePilot` no nombra `ChosenReference`, `Witness`, `PilotRead`, `.StaleBase` ni el lector (`TW/WorkspaceEditIntentGuardTests.cs:1098-1111`). Sigue así.
 
@@ -721,7 +803,7 @@ D-4, sin cambio y con la comparación como única defensa, no cumple la letra de
 | **El borrador de ese rack** | La UI cruza antes la frontera Update (D-T4C-11) y deja el campo sin texto pendiente | **No puede haber cambiado:** durante el vuelo, el núcleo responde `Busy` a toda operación que lo cambia (abajo) | `NoDraft`, `Precheck` (`PendingText`, `NothingToApply`, `NotApplicable`) | — |
 | La ranura | — | — | `TryBeginApply` (`CORE:837`) | — |
 | El dibujo: otro comando, UNDO o RACKEDITAR | — | — | La lectura de PREPARE | **La relectura de MUTATE:** el origen, la StaleBase, el destino, los supervivientes y las capas (M1 H-27) |
-| Una `TopTransaction` ajena | — | **[H]** H0 la mide al entrar | — | `BeginMutation` → `TOP_TRANSACTION_OPEN` |
+| Una `TopTransaction` ajena | — | H0 midió que es nula al entrar (H-46) | — | `BeginMutation` → `TOP_TRANSACTION_OPEN` |
 
 **La política del borrador durante el vuelo** (IR R-03). El Actualizar aplica el estado del clic, y no uno que el usuario no tenía al pulsar.
 - **Mientras el rack tiene un billete en vuelo,** el núcleo responde `Busy` o `Waiting`, con `UpdateInFlightReason` y sin cambiar nada, en estas operaciones:
@@ -739,100 +821,102 @@ D-4, sin cambio y con la comparación como única defensa, no cumple la letra de
 
 ### D-T4C-09. El ámbito de mutación propia: la vía A, con su residual declarado y una IC nueva
 
-*Cambia en la v2: IR R-05, R-06, R-07 (b) a (d) y M-01. Cambia en la v3: RR N-04, N-07, N-09 y N-10. Cambia en la v4: CK C3-01 y C3-02.*
+*Cambia en la v2: IR R-05, R-06, R-07 (b) a (d) y M-01. Cambia en la v3: RR N-04, N-07, N-09 y N-10. Cambia en la v4: CK C3-01 y C3-02. Cambia en la v5: la vía A queda confirmada con el orden medido por H0; V1, V2, V3 y el cierre en `Settle` pasan a respuestas declaradas para Smoke-2; y el manejador de `CommandWillStart` anota el comando ajeno.*
 
-Lo exigen C-F4-04 (`F4P:60`), IC-08 (`ICL:145-151`), INV-08 (`FRZ:746`), INV-28 (`FRZ:766`) y R-T4-08 (`T4P:562-566`).
+Lo exigen C-F4-04 (`F4P:60`), IC-08 (`ICL:145-151`), INV-08 (`FRZ:746`), INV-28 (`FRZ:766`) y R-T4-08 (`T4P:562-566`). El Owner eligió la vía A con IC-09 (O-02, «Vía A + IC-09»).
 
-**La recomendación es la vía A de M3 §1.9.**
+**Lo que midió H0** (§2.6):
+- **la línea base sin el ámbito** (O-H0-1, H-51): tras cada Actualizar, el drenaje marca el borrador y el campo queda «posiblemente obsoleto». Es justo lo que corrige esta decisión;
+- **el orden** (H-43): `CommandWillStart(EXECUTEFUNCTION)` llega **antes** del callback, y por tanto antes de `Begin`. Dentro del callback van todos los `Object*` de la importación, de MUTATE y de POST, y la relectura. Después de salir llegan `CommandEnded(EXECUTEFUNCTION)` y `EnteringQuiescentState`. No hay comandos anidados;
+- **los `*Cancel*`** no dan ninguna pista (H-42).
+
+**Con ese orden, la vía A tal como está** abre la ventana en `Begin`, registra como propio todo lo que escribe la corrida, y la cierra con el `CommandEnded` de `EXECUTEFUNCTION`, que cuenta como propio. Ninguna de las cuatro respuestas preparadas hace falta (abajo).
 
 **Las pistas propias se registran aparte.** No se suprimen las ajenas pendientes.
 - **`WorkspaceSession`** gana un segundo conjunto, `_ownPending`, también agrupado por tipo y de coste constante, con `EnqueueOwnHint(HintKind)`.
-- **`SessionState` de `EBC`** gana dos campos: `OwnMutationOpen`, un `bool`, y `QuiescentEntries`, un `int`. Ninguno contiene `Close`, `Allowed` ni `SessionId?` (H-17).
+- **`SessionState` de `EBC`** gana dos campos: `OwnMutationOpen`, un `bool`, y `ForeignCommandStarts`, un `int`, la cuenta de comandos ajenos para la cota del billete (D-T4C-02). Ninguno contiene `Close`, `Allowed` ni `SessionId?` (H-17). La v4 llevaba aquí `QuiescentEntries`, que ya no existe: las entradas en reposo dejan de contar.
 - **Mientras `OwnMutationOpen` es verdadero,** `EBC.OnSourceEvent` encola en `_ownPending` las pistas `DatabaseObjectChanged` y `CommandEnded`.
 - **`ImpliedSelectionChanged`** sigue en `_pending`, porque nunca marca.
 
 **Al drenar** (`WorkspaceSession.TryDrain`; IR M-01):
 - lo propio da solo `InvalidateNavigationCaches`, como exige IC-08;
-- `MarkDraftsPossiblyStale` sale **solo si `_pending` contiene `DatabaseObjectChanged` o `CommandEnded`**. Un `ImpliedSelectionChanged` pendiente, que siempre está tras el vaciado de PICKFIRST, no marca;
+- `MarkDraftsPossiblyStale` sale **solo si `_pending` contiene `DatabaseObjectChanged` o `CommandEnded`**. Un `ImpliedSelectionChanged` pendiente, que siempre está tras el vaciado de PICKFIRST (O-H0-3), no marca;
 - `PendingHintCount` cuenta los dos conjuntos, para que el Idle se enganche;
 - `DrainOperation` no cambia.
 
-**La apertura:** `run.Begin()`, en el callback, bajo el bloqueo y **antes** de `TryUpdatePilot`, por `IWorkspaceBridgeLink.OpenOwnMutation(session)`. Cubre la importación de PREPARE (`T4BP:325`), MUTATE, POST y la relectura.
+**La apertura:** `run.Begin()`, en el callback, bajo el bloqueo y **antes** de `TryUpdatePilot`, por `IWorkspaceBridgeLink.OpenOwnMutation(session)`. Cubre la importación de PREPARE (`T4BP:325`), MUTATE, POST y la relectura, que H0 midió todas dentro del callback (H-43).
 
 **El cierre**, idempotente. Tiene una cota estructural (IR R-05):
-- **con el primer `CommandEnded`, `CommandCancelled` o `CommandFailed`** de la sesión tras abrirlo, que se registra como propio y cierra;
+- **con el primer `CommandEnded`, `CommandCancelled` o `CommandFailed`** de la sesión tras abrirlo, que se registra como propio y cierra. H0 midió que es el de `EXECUTEFUNCTION`, después de la relectura de POST (H-43);
 - **dentro de `SetQuiescent`, en las dos transiciones de estado de comando** (IR R-07 (b)):
   - `SetQuiescent` pone `state.OwnMutationOpen = false` **antes** de su comparación de `:439`;
   - así cierra con el **primer `CommandWillStart`** de la sesión tras `Begin`, aunque el reposo no cambie, y también con `EnteringQuiescentState`;
-  - los dos literales de caso no cambian (H-17), y el cuerpo de `SetQuiescent` solo toca campos de `state`. No hace falta tocar `TW/WorkspaceHostC2SourceGuardTests.cs`;
-  - el mismo cuerpo suma `QuiescentEntries` en cada paso a reposo, que es la cota del billete (D-T4C-02);
+  - los dos literales de caso no cambian (H-17), y el cuerpo de `SetQuiescent` solo toca ese campo de `state`. No hace falta tocar `TW/WorkspaceHostC2SourceGuardTests.cs`;
+  - **en la v5, `SetQuiescent` ya no suma nada.** La cuenta de la cota la lleva `NoteForeignCommandStart` (abajo);
 - **explícito**, por `CloseOwnMutation(session)`, en `NotRun` y solo ahí. **La caducidad no lo cierra** (RR N-04): es inalcanzable que esté abierto, como explica D-T4C-02;
 - **con la destrucción** de la sesión;
-- **con la entrada en modo degradado** (RR N-09; CK C3-02): **`Degrade`** (`EBC:478-488`), el punto único de la degradación, pone también `OwnMutationOpen = false`. La v3 lo ponía en `ReportFault`, que es solo una de las seis entradas que llegan a `Degrade` por `Fault` (`EBC:491-495`; desde `:140`, `:246`, `:345`, `:399`, `:433` y `:472`). Una de ellas es el `catch` de `OnSourceEvent` (`:345`), que también recibe las pistas de la corrida. Una sesión degradada no recibe eventos (H-36), así que ninguno la cerraría después. Ninguna guarda fija el cuerpo de `Degrade`: las de `TW/WorkspaceLifecycleGuardTests.cs:216` y `:230` miran otros cuerpos;
-- nunca al final del callback, por `F4P:60`, **salvo la variante de O-02 para N-10** (abajo), que es una desviación expresa de C-F4-04; ni en el drenaje, por IC-08.
+- **con la entrada en modo degradado** (RR N-09; CK C3-02): **`Degrade`** (`EBC:478-488`), el punto único de la degradación, pone también `OwnMutationOpen = false`. Llegan a `Degrade` seis entradas, por `Fault` (`EBC:491-495`; desde `:140`, `:246`, `:345`, `:399`, `:433` y `:472`). Una sesión degradada no recibe eventos (H-36), así que ninguno la cerraría después. Ninguna guarda fija el cuerpo de `Degrade`: las de `TW/WorkspaceLifecycleGuardTests.cs:216` y `:230` miran otros cuerpos;
+- nunca al final del callback, por `F4P:60`, ni en el drenaje, por IC-08. La variante «cerrar en `Settle`», que sería una desviación de C-F4-04, queda solo como respuesta declarada para Smoke-2 (abajo).
 
 **Con la cota estructural,** un comando posterior del usuario nunca se registra como propio. Su `CommandWillStart` cierra la ventana antes de que encole nada.
 
-**Un cierre temprano no es inocuo** (RR N-07). Si la ventana se cierra antes del último `Object*` propio, lo que queda de POST se trata como ajeno y marca B. La v2 lo llamaba «marcado de más», pero un cierre temprano **sistemático** marca B después de cada Actualizar, y eso viola el oráculo de IC-08 (`ICL:151`), INV-28 y S2-14: es el mismo defecto que R-06. Puede venir de un comando anidado dentro del callback o de un `CommandWillStart` del propio `EXECUTEFUNCTION` que llegue después de `Begin` **[H]**.
-- **H0 lo mide** (D-T4C-16, fila 5).
-- **Si es sistemático, es la parada C12.** La respuesta preparada, que decide el Owner (§9, O-02), es **V3: una ventana en dos fases** (CK C3-01):
-  - **mientras dura el callback, ningún evento cierra la ventana:** ni el inicio de comando, ni la entrada en reposo, ni el fin de comando. Todo lo que llega entonces es propio, también lo de un comando anidado dentro del callback, que es nuestro;
-  - `Execute`, en su `finally`, marca el fin del callback con un miembro más del puente, `SettleOwnMutation(SessionId)`, con su olvido. El cierre explícito de `NotRun` sigue igual;
-  - **desde `Settle`, las reglas de cierre vuelven a ser las normales** de arriba: el primer fin o inicio de comando, la entrada en reposo, la destrucción o la degradación.
-  
-  Así V3 cubre las dos causas de N-07: el `CommandWillStart` del propio `EXECUTEFUNCTION` que llegue después de `Begin`, y el comando anidado. La v3 dejaba que el fin de comando cerrara durante el callback, y con eso no cubría el comando anidado (CK C3-01 (a)). Si el Owner no acepta V3, una A-n.
-- **Solo un caso aislado**, que no se repita en cada Actualizar, se puede declarar como residual.
+**El comando ajeno, para la cota del billete** (D-T4C-02; la decisión del Owner sobre C12):
+- **el manejador de `CommandWillStart`** de `AutoCadEventBridge` sigue igual en lo que ya hace: llama a `_core.OnSourceEvent(a.Session, a.Source)` y, si cambia el estado, a `RaiseCommandStateChanged()`, dentro de `ContainSession`;
+- **y además, en la misma lambda:** si `e.GlobalCommandName` no es `EXECUTEFUNCTION` (sin distinguir mayúsculas), llama a `_core.NoteForeignCommandStart(a.Session)`;
+- leer `e.GlobalCommandName` es leer un dato en memoria del argumento del evento, de coste constante. **No lee el DWG**: IC-04 (`ICL:77`) y `FRZ:216-219` quedan intactos. El arnés de H0 ya lo leía en su traza (`cmd=EXECUTEFUNCTION`, `H0T:37`);
+- **las guardas del manejador siguen satisfechas** y no cambian:
+  - sigue contenido (`TW/WorkspaceBridgeSourceGuardTests.cs:182-189`);
+  - no nombra nada de `HandlerForbidden` (`TW/WorkspaceIdleSchedulingGuardTests.cs:64-90`);
+  - la decisión `if (_core.OnSourceEvent(a.Session, a.Source)) RaiseCommandStateChanged();` sigue dentro del manejador contenido, y la cuenta de dos `RaiseCommandStateChanged();` no cambia (`TW/WorkspaceHostC2SourceGuardTests.cs:62-90`);
+- **`NoteForeignCommandStart`**, una entrada nueva de `EBC`, suma uno a `ForeignCommandStarts`. Con una sesión degradada o desconocida no hace nada.
 
-**Si faltan a la vez** el fin del comando interno y su entrada en reposo (RR N-10), solo cierra el siguiente `CommandWillStart`. Una escritura sin comando sobre otro rack antes de ese comando quedaría enmascarada, por ejemplo desde la paleta de Propiedades. **Ese resultado de H0 también es C12** (fila 5). No se declara en IC-09 sin una decisión del Owner (O-02).
-- **V3 no lo corrige** (CK C3-01 (b)): tras `Settle` vuelven las mismas reglas, y sin esos dos eventos solo cerraría el siguiente `CommandWillStart`.
-- **La variante preparada para este caso es «cerrar en `Settle`»:** el fin del callback cierra la ventana en lugar de restablecer las reglas normales. Solo se aplica si H0 mide que el comando interno **nunca** da su fin ni su entrada en reposo. En ese caso, cerrar en `Settle` no deja fuera ningún evento propio posterior.
-- **Es una desviación expresa de C-F4-04** (`F4P:60`: «se cierra con el fin del **propio comando**, no tras POST») y de la regla «nunca al final del callback» de arriba. Solo el Owner puede admitirla (O-02). Si no la admite, una A-n.
+**Un cierre temprano no es inocuo** (RR N-07). Si la ventana se cerrara antes del último `Object*` propio, lo que quedara de POST se trataría como ajeno y marcaría B. Un cierre temprano **sistemático** violaría el oráculo de IC-08 (`ICL:151`), INV-28 y S2-14.
+- **H0 no lo activó** (fila 5, H-43): no hay comandos anidados, y el `CommandWillStart` de `EXECUTEFUNCTION` llega antes de `Begin`. No se activa C12.
+- **V3 queda como respuesta declarada para Smoke-2**, por si allí apareciera un cierre temprano sistemático. Es una ventana en dos fases (CK C3-01): mientras dura el callback, ningún evento la cierra, y `SettleOwnMutation(SessionId)`, al final de `Execute`, restablece las reglas normales. Si hiciera falta, es una A-n al Owner.
+
+**La falta del fin de comando y de la entrada en reposo** (RR N-10). **H0 no la activó** (fila 5): los dos llegan después del callback en las cinco sondas (H-43). La variante **«cerrar en `Settle`»** queda como respuesta declarada para Smoke-2. Sería una **desviación expresa de C-F4-04** (`F4P:60`), y solo el Owner podría admitirla.
 
 **La superficie nueva:**
-- **`EBC`:** `OpenOwnMutation(SessionId)`, `CloseOwnMutation(SessionId)` y `int? QuiescentEntriesOf(SessionId)`;
-  - las dos primeras cambian su estado: olvidan `_lastAllowedClose` exactamente una vez, antes de cualquier rama, y entran en la regla de olvido, que pasa de 13 a 15 entradas (H-18; IR R-07 (c));
-  - la tercera es una lectura y no olvida. **Devuelve nulo para una sesión degradada o desconocida** (RR N-09), con `IsDegraded` (`EBC:144`). Así `RequestUpdate` responde `Unavailable` y un billete no empezado caduca (D-T4C-02);
-  - con V2, V3 o el cierre en `Settle`, un miembro más, con su olvido (`SettleOwnMutation` sirve a las dos últimas);
+- **`EBC`:**
+  - `OpenOwnMutation(SessionId)`, `CloseOwnMutation(SessionId)` y `NoteForeignCommandStart(SessionId)` cambian su estado. Olvidan `_lastAllowedClose` exactamente una vez, antes de cualquier rama, y entran en la regla de olvido, que pasa de 13 a **16** entradas (H-18; IR R-07 (c));
+  - `int? ForeignCommandStartsOf(SessionId)` es una lectura y no olvida. **Devuelve nulo para una sesión degradada o desconocida** (RR N-09), con `IsDegraded` (`EBC:144`). Así `RequestUpdate` responde `Unavailable` y un billete no empezado caduca (D-T4C-02). Sustituye a `QuiescentEntriesOf` de la v4;
   - ningún nombre contiene `Destroy`, `Detach`, `OnIdle` ni `Stop`;
-- **`IWorkspaceBridgeLink`:** los tres mismos miembros, que implementan el `BridgeLink` del controlador (`CTL:321`) y el doble `WorkspaceSimulatedBridgeLink` (`TW/WorkspaceHostTestSupport.cs:53`);
-- **`AutoCadEventBridge`:** reenviadores **`internal`**. Su superficie pública de nueve nombres no cambia (H-19; IR R-07 (d));
-- **los manejadores no cambian:** no leen `e.GlobalCommandName`, ni handles, ni el DWG. IC-04 queda intacta;
+  - V2, V3 o el cierre en `Settle`, si Smoke-2 los pidiera, añadirían un miembro más, con su olvido;
+- **`IWorkspaceBridgeLink`:** `OpenOwnMutation`, `CloseOwnMutation` y `ForeignCommandStartsOf`, que implementan el `BridgeLink` del controlador (`CTL:321`) y el doble `WorkspaceSimulatedBridgeLink` (`TW/WorkspaceHostTestSupport.cs:53`). `NoteForeignCommandStart` no va en el enlace: solo la llama el manejador del puente;
+- **`AutoCadEventBridge`:** reenviadores **`internal`**, y la sentencia nueva del manejador de `CommandWillStart`. Su superficie pública de nueve nombres no cambia (H-19; IR R-07 (d));
+- **los demás manejadores no cambian:** no leen handles ni el DWG. IC-04 queda intacta;
 - la sesión no lleva handles (`TW/WorkspaceNavigationEchoTests.cs:325-340`, sin cambios).
 
 **El residual que se declara:**
-- **lo ajeno dentro de la ventana:** las pistas no llevan rack (H-24). Durante la ventana, que ahora va del `Begin` al primer fin o inicio de comando o entrada en reposo, una escritura ajena sobre otro rack quedaría sin marcar. Puede ser un reactor de otro complemento, que D-12 H-LOCK ya deja en `UNKNOWN` (`FRZ:494-498`), o AutoCAD mismo;
+- **lo ajeno dentro de la ventana:** las pistas no llevan rack (H-24). Durante la ventana, una escritura ajena sobre otro rack quedaría sin marcar. H0 midió que la ventana va del `Begin` al `CommandEnded` de `EXECUTEFUNCTION`, todo dentro del comando interno (H-43). Esa escritura solo podría venir de un reactor de otro complemento, que D-12 H-LOCK ya deja en `UNKNOWN` (`FRZ:494-498`), o de AutoCAD mismo;
 - **«rack/member-bound»** queda nominal. El ámbito guarda el rack para el registro, pero no puede atribuir las pistas.
 
-**Los `*Cancel*` previos** (IR R-06). Si producen `CommandCancelled` o `CommandEnded` **antes** de `EXECUTEFUNCTION`, fuera de la ventana, marcan la sesión después de **cada** Actualizar. Eso viola el oráculo de IC-08, INV-28 y S2-14 (`FRZ:894`). La v1 lo llamaba «conservador» sin darle consecuencia, y no es aceptable.
-- **H0 lo mide** (D-T4C-16, fila 4).
-- **Si se confirma, es la parada C12.** Las respuestas preparadas, que decide el Owner (§9, O-02):
-  - **V1: abrir la ventana completa en la aceptación.** Enmascararía cualquier comando del usuario entre el clic y el callback;
-  - **V2: una antesala desde la aceptación hasta `Begin`,** en la que solo las pistas `CommandEnded` cuentan como propias y `DatabaseObjectChanged` sigue siendo ajena. **No enmascara ninguna escritura:** un cambio del dibujo siempre da pistas de objeto. Sí puede dejar sin marcar un comando que no cambia nada, y eso IC-08 no exige marcarlo. Añade una entrada más de `EBC`, con su olvido;
-  - **una A-n**, si el Owner no acepta ninguna de las dos.
-- **La recomendación es V2 si H0 lo confirma.** Si no, nada.
+**Los `*Cancel*` previos** (IR R-06). **H0 no los activó** (fila 4, H-42): el puente no recibe ninguna pista de ellos, solo las dos entradas en reposo de la fila 3, que no marcan. **V1 y V2 no hacen falta** y quedan como respuestas declaradas para Smoke-2:
+- V1 abriría la ventana completa en la aceptación;
+- V2 abriría una antesala desde la aceptación hasta `Begin`, solo para las pistas `CommandEnded`.
 
 **Lo que no se enmascara:**
 - lo ya pendiente al abrir;
-- todo lo posterior al cierre: un `U` inmediato, un RACKEDITAR de otro rack o cualquier comando del usuario.
+- todo lo posterior al cierre: un `U` inmediato, un RACKEDITAR de otro rack o cualquier comando del usuario. H0 midió que `U` y `REDO` marcan, como deben (O-H0-1).
 
-**Por qué es una decisión del Owner** (§9, O-02):
+**Por qué fue una decisión del Owner** (§9, O-02, ya decidida):
 - `OO` exige «unable to mask another rack», y la vía A deja el residual;
 - la vía B, la pista con handle, choca con el «coste constante» de `FRZ:217-218`, con IC-04 (`ICL:77`) y con la guarda de `WorkspaceSession` (`TW/WorkspaceNavigationEchoTests.cs:325-340`);
 - además, la vía B vuelve a marcarlo todo por las escrituras propias sobre objetos que no son miembros (M3 R-M3-06).
 
 **La IC nueva:** IC-09, «El ámbito de mutación propia del Actualizar del piloto». Este es su texto. La sesión lo registra en la custodia de la emisión, porque `docs/` está prohibido al Worker:
 
-> Las pistas `DatabaseObjectChanged` y `CommandEnded` de una sesión que llegan mientras está abierto el ámbito de mutación propia de su Actualizar se registran aparte y solo invalidan las cachés de navegación. Las pistas ajenas ya pendientes conservan su efecto. El ámbito se abre en el contexto de comando, bajo el bloqueo y antes de PREPARE. Se cierra con el primer fin de comando de la sesión, que cuenta como propio; con el primer inicio de comando o la primera entrada en reposo de la sesión; con el cierre explícito del adaptador si la corrida no llega a ejecutarse; y con la destrucción de la sesión. Residual declarado: una escritura ajena sobre otro rack durante la ventana queda sin marcar. Concreta D-04 (O-15), C-F4-04, INV-08 e INV-28 sin cambiar el Freeze.
+> Las pistas `DatabaseObjectChanged` y `CommandEnded` de una sesión que llegan mientras está abierto el ámbito de mutación propia de su Actualizar se registran aparte y solo invalidan las cachés de navegación. Las pistas ajenas ya pendientes conservan su efecto. El ámbito se abre en el contexto de comando, bajo el bloqueo y antes de PREPARE. Se cierra con el primer fin de comando de la sesión, que cuenta como propio; con el primer inicio de comando o la primera entrada en reposo de la sesión; con el cierre explícito del adaptador si la corrida no llega a ejecutarse; con la degradación de la sesión; y con su destrucción. Residual declarado: una escritura ajena sobre otro rack durante la ventana queda sin marcar. Concreta D-04 (O-15), C-F4-04, INV-08 e INV-28 sin cambiar el Freeze.
 
-Si el Owner elige V2, V3 o el cierre en `Settle`, la IC añade la antesala, las dos fases o ese cierre, este último como desviación expresa de C-F4-04.
+Si Smoke-2 pidiera V1, V2, V3 o el cierre en `Settle`, la IC añadiría la antesala, las dos fases o ese cierre, este último como desviación expresa de C-F4-04 y con una decisión del Owner.
 
-**Cambios de guarda declarados:** las filas 14 a 17 de D-T4C-20.
+**Cambios de guarda declarados:** las filas 14 a 17 y 22 de D-T4C-20.
 
-**Anclas:** H-17 a H-19 y H-24; M3 §1.
+**Anclas:** H-17 a H-19, H-24, H-42, H-43 y H-51; M3 §1.
 
 ### D-T4C-10. R-T4-07: una marca del host (M3 §2.7, opción (a))
 
-*Cambia en la v2: va con la cota del billete (IR R-01) y sin `BVM` (IR M-07). Cambia en la v3: la cota cubre también el billete empezado (RR N-01).*
+*Cambia en la v2: va con la cota del billete (IR R-01) y sin `BVM` (IR M-07). Cambia en la v3: la cota cubre también el billete empezado (RR N-01). Cambia en la v5: la cota es «Completar o comando ajeno».*
 
 **El cambio:**
 - `DiscardRack` responde `Busy(UpdateInFlightReason)` si el borrador de ese rack está en Applying o si ese rack tiene un billete en vuelo;
@@ -841,7 +925,11 @@ Si el Owner elige V2, V3 o el cierre en `Settle`, la IC añade la antesala, las 
   - comprueban primero la caducidad (`ExpireStaleUpdate`);
   - lo miran después de `Authorize` y de `_pilotReadInProgress`, como pide `HostViolations` (`TW/WorkspacePilotEditGuardTests.cs:262-268`).
 
-**Por qué la cota hace seguro (a)** (IR §2.9). Sin ella, un billete colgado convertiría el descarte en imposible y, con el veto de cierre (H-25), el documento no se podría cerrar sin perder el trabajo. Con la cota de D-T4C-02, el `Busy` dura como mucho hasta la siguiente entrada en reposo de la sesión, **también si el callback ya empezó** (RR N-01). En ese caso lo libera la llamada terminal que garantiza el corredor, y si faltara, la caducidad del billete empezado. Solo un billete en `Execute` no caduca, y `Execute` es total y quita el billete en su `finally`.
+**Por qué la cota hace seguro (a)** (IR §2.9). Sin ella, un billete colgado convertiría el descarte en imposible y, con el veto de cierre (H-25), el documento no se podría cerrar sin perder el trabajo. Con la cota de D-T4C-02, «Completar o comando ajeno», el `Busy` dura:
+- **normalmente,** hasta la compleción del `ExecutionResult`, que H0 midió que llega siempre, unos milisegundos después de salir del callback (H-40);
+- **como mucho,** hasta el primer comando ajeno de la sesión, su cierre o su retirada, **también si el callback ya empezó** (RR N-01). En ese caso lo cubren primero la llamada terminal que garantiza el corredor y la compleción, y si faltaran, la caducidad del billete empezado o terminado. Solo un billete en `Execute` no caduca, y `Execute` es total.
+
+**Un `RACKPANELDESCARTAR`** con el billete colgado es él mismo un comando ajeno: su `CommandWillStart` caduca el billete antes de que el comando llame a `DiscardDocument`, así que el descarte se admite. **Un cierre** vetado por el borrador Dirty también es un comando ajeno (`CLOSE`), así que el siguiente intento ya no encuentra `Busy`.
 
 **Lo que no cambia:**
 - **`DraftRegistry` y sus pruebas caracterizadas** (`TW/WorkspaceDraftRegistryContainmentTests.cs:383-411`);
@@ -1031,10 +1119,10 @@ Negativas:
 
 ### D-T4C-15. Undo
 
-*Cambia en la v2: IR M-11.*
+*Cambia en la v2: IR M-11. Cambia en la v5: Undo medido en el diagnóstico de H0.*
 
-**La frontera medida** (M2 §4, H-07):
-- un Actualizar es **un** comando interno, `EXECUTEFUNCTION` **[H]**, que contiene:
+**La frontera medida** (M2 §4, H-07; H0, H-43 y H-44):
+- un Actualizar es **un** comando interno, `EXECUTEFUNCTION`, que contiene:
   - la importación sin transacción;
   - las lecturas confirmadas;
   - **una** transacción authored;
@@ -1043,124 +1131,102 @@ Negativas:
 - no hay ninguna marca ni API de Undo (H-23);
 - **T4C no añade ninguna:** ni `StartUndoMark` u otra API de Undo, ni `SendStringToExecute`, ni `[CommandMethod(`, ni `CommandFlags`. La guarda de D-T4C-14 y el censo de 40 lo fijan.
 
-**Una lectura que se declara.** El renombrado y la purga son POST (`FRZ:519`), y la importación es residuo OM-5 (`FRZ:504`). Por tanto hay **una** transacción authored, y la condición «more than one authored mutation transaction» no se activa (§9, O-12). Un Undo de un solo paso tiene que agrupar 1 + (0..1) + (0..N) + (0..N) escrituras **[H]**.
+**Una lectura que se declara.** El renombrado y la purga son POST (`FRZ:519`), y la importación es residuo OM-5 (`FRZ:504`). Por tanto hay **una** transacción authored, y la condición «more than one authored mutation transaction» no se activa (O-12, aceptada por el Owner).
+
+**Lo que midió H0, en el diagnóstico** (H-44, H-45):
+- **un solo paso de Undo:** la lista de Deshacer muestra **una** entrada «Executefunction» por Actualizar, que agrupa la importación, MUTATE, la purga y los `SyncName`;
+- **Undo y Redo completos:** un `U` deshace el Actualizar entero, y «Comprobar ahora» da Conflicto en las dos vistas; un `REDO` **inmediato** lo rehace entero;
+- **el paso vacío existe:** un `EXECUTEFUNCTION` sin escritura (P1, P2 y P3: el contexto vacío y un `NothingToApply`) deja su propia entrada «Executefunction» en Deshacer.
+
+**Lo que eso significa:**
+- **la condición «Undo requires a material architecture change» no se activa:** el contexto de comando da un solo paso. No hace falta la A-n de D-13 hacia un comando registrado;
+- **no es todavía el cumplimiento.** H0 midió el escritor de T4B con un arnés, sobre un dibujo sintético. **Smoke-2 lo confirma con el producto** (S2-05, `FRZ:885`), y no hay ninguna afirmación de cumplimiento antes (`OO`, «UNDO»).
+
+**Lo que se declara para Smoke-2:**
+- **el paso vacío** (H-45): un Actualizar que no llega a importar deja una entrada «Executefunction» vacía en Deshacer. Son los casos de `NothingToApply`, de un rechazo dentro del callback antes de la importación de PREPARE y de un billete caducado. **Un Conflict no deja un paso vacío** (CK5 M5-03): sale en MUTATE, después de la importación de `PrepareUnits`, así que su paso de Undo lleva el residuo OM-5 y lo prueba solo AutoCAD (Smoke-2). Es comportamiento de AutoCAD con `ExecuteInCommandContextAsync`, y T4C no lo evita. Se informa al Owner como observación; no es una condición de devolución;
+- **las lecturas del panel vacían la pila de Rehacer** (O-H0-2, H-51): «Comprobar ahora» y «Editar» dejan entradas «Group of commands» en Deshacer, y un «Comprobar ahora» entre `U` y `REDO` da «Nothing to redo». No es de T4C, sino de las lecturas del panel de F4-T3 y F4-T4A. En Smoke-2, Redo se prueba **inmediatamente** después de Undo, y este comportamiento se declara.
 
 **Lo que prueban las pruebas unitarias:**
 - una entrada en el contexto, un bloqueo y una corrida de T4B por Actualizar;
 - una transacción authored, por las guardas de T4B que no cambian;
 - ninguna API de Undo en el producto.
 
-**Lo que solo prueba AutoCAD:**
-- un paso lógico de Undo, que Undo restaura y que Redo rehace (S2-05, `FRZ:885`);
-- la agrupación de la importación;
+**Lo que sigue siendo solo de AutoCAD,** y va a Smoke-2:
+- el paso único, Undo, Redo y la agrupación de la importación, con el producto;
 - el paso propio de un NotApplied con residuo OM-5;
-- el nombre en la lista de Undo;
-- **el paso de Undo vacío** que pueda dejar un `EXECUTEFUNCTION` sin escritura: `NotRun`, un Conflict, `NothingToApply` o un billete caducado (IR M-11). Si existe, se declara en Smoke-2 y se lleva al Owner como observación. No es una condición de devolución, salvo que el Owner la trate así.
+- el nombre en la lista de Undo, que H0 vio como «Executefunction».
 
-**Ninguna afirmación de cumplimiento antes de Smoke-2** (`OO`, «UNDO»).
-
-**Si un Actualizar no es un solo paso,** es una A-n hacia el comando registrado de D-13 (`FRZ:542-543`). Es una devolución material:
+**Si Smoke-2 diera más de un paso,** sería una A-n hacia el comando registrado de D-13 (`FRZ:542-543`), y una devolución material:
 - cambia el censo de 40;
 - añade `SendStringToExecute`, prohibido en varias guardas;
 - según dónde se registre, toca los `*Commands*.cs` o T1B (M4 DV-02).
 
 Es la parada C02.
 
-**Anclas:** H-07, H-23; `T4P:573`; M2 §4 y §5.
+**Anclas:** H-07, H-23, H-43 a H-45 y H-51; `T4P:573`; M2 §4 y §5.
 
 ### D-T4C-16. La sonda de host T4C-H0, antes del producto (R-T4-05, «primer paso»)
 
-*Cambia en la v2: IR R-06, R-10 y M-11. Cambia en la v3: RR N-07, N-10 y N-12. Cambia en la v4: la fila 5 (CK C3-01).*
+*Cambia en la v2: IR R-06, R-10 y M-11. Cambia en la v3: RR N-07, N-10 y N-12. Cambia en la v4: la fila 5 (CK C3-01). Cambia en la v5: **H0 está hecho.** La tabla lleva el resultado medido y la acción que se tomó.*
 
 **El hecho:**
 - R-T4-05 pone la medición del callback y de Undo como primer paso de T4C (`T4P:550`; `DSP:1701`);
-- la sesión no opera AutoCAD, y el Owner ejecuta (H-33);
-- Smoke-2 empieza tras cerrar el producto (`OO`).
+- el Owner eligió «H0 con dispensas» (O-01), con las tres dispensas de abajo;
+- **H0 se hizo el 2026-11-15** y está custodiado en `44fe029d` (F4-E63 y la evidencia 206; §2.6).
 
-**La recomendación es T4C-H0, con tres dispensas expresas del Owner** (IR R-10):
+**Las tres dispensas expresas del Owner** (IR R-10), tal como se pidieron:
 1. **Frente a `OO`, que llama a Smoke-2 «the first physical validation».** H0 ejercita la vía de escritura del piloto antes de Smoke-2. La dispensa la declara una **medición de diagnóstico**, no una validación. Smoke-2 sigue siendo la primera validación del producto, y nada de H0 cuenta como evidencia de cumplimiento.
 2. **Frente a §12.1,** en cuatro cláusulas:
    - H0 no es un hito de `FRZ:821-822`;
    - su build no es la build completa de un hito, con «UI Full local» y la CI exacta (`FRZ:828-829`);
-   - **el DLL Debug no sale del worktree de I-64**, que §12.1 exige (`FRZ:830`), sino del worktree desechable (RR N-12). Se carga ese DLL, con su SHA-256 medido por la sesión;
-   - el Owner opera, como en `FRZ:833`, y eso no se dispensa.
-   
-   El precedente es el build de diagnóstico de Smoke-NAV (H-33), que corrió dentro de la sesión de un hito. La dispensa admite H0 como sesión de diagnóstico propia, con las demás reglas de §12.1: RELEASE de I-52, una sola `acad.exe` y las inyecciones solo por variable del proceso.
-3. **Frente a F4-E59** (`DSP:2086`), que prohíbe las sondas con entradas válidas en caminos de escritura. La regla es de las sondas del Worker en una tarea con contención de perfil. La dispensa admite H0 como sesión de host, sobre una copia desechable y operada por el Owner.
+   - **el DLL Debug no sale del worktree de I-64**, que §12.1 exige (`FRZ:830`), sino del worktree desechable (RR N-12). Se cargó ese DLL, con su SHA-256 medido por la sesión (`H0R:5-19`);
+   - el Owner opera, como en `FRZ:833`. **No se cumplió:** ver las desviaciones.
+3. **Frente a F4-E59** (`DSP:2086`), que prohíbe las sondas con entradas válidas en caminos de escritura. La dispensa admite H0 como sesión de host, sobre una copia desechable.
 
-**El arnés y su custodia:**
-- **lo escribe la sesión,** o un Worker si el Owner lo prefiere, sobre `b15072ff`;
-- **lo revisa un revisor independiente** antes de construir;
-- **en un worktree desechable** de ruta corta:
-  - fuera del worktree de I-64, que es la base del Worker;
-  - fuera de la carpeta temporal de la sesión, por el límite de longitud de las rutas;
-  - nunca en la rama de I-64;
-  - **sin commit en ninguna rama del producto**;
-- **lo que hace:**
-  - añade, solo en Debug, un botón al panel;
-  - su clic, en contexto de aplicación, llama a `ExecuteInCommandContextAsync`, toma el bloqueo y llama a `TryUpdatePilot` con el escritor real sobre **una copia desechable** de un dibujo del Owner. Es la escritura de T4B misma: la importación, una transacción, `SyncName` y la purga;
-  - las trazas van a `RackLog`;
-- **la custodia,** en un commit de documentación de la sesión, con las reglas de privacidad del repositorio público:
-  - el parche completo;
-  - el SHA de la base;
-  - el SHA-256 del DLL;
-  - el kit y el procedimiento;
-  - la traza;
-  - los datos medidos por la sesión;
-  - las observaciones firmadas del Owner;
-- **la limpieza:** al terminar, el worktree desechable se elimina, y la limpieza se comprueba.
+**El arnés y su custodia,** como se hicieron (`H0N`; la revisión y la re-revisión del arnés, en la misma carpeta):
+- la sesión escribió el arnés sobre `b15072ff`, en un worktree desechable, sin commit y sin rama;
+- lo revisó un revisor independiente, y la segunda versión quedó «APTO PARA OPERAR»;
+- se custodiaron el parche, su SHA-256, el SHA de la base, los SHA-256 de los DLL, el procedimiento, la traza, los datos medidos y el resultado;
+- la sonda corrió sobre una copia del dibujo, que se cerró sin guardar, y el SHA-256 del original no cambió (`H0R:5-19`).
 
-**El operador:**
-- **el Owner opera AutoCAD;**
-- **la sesión mide los datos de máquina** (los hashes, las horas, el registro y el perfil), y el Owner solo observa y firma (H-33). La guía se le da en el chat;
-- **el dibujo:** se trabaja sobre una copia; se cierra sin guardar; y la sesión comprueba que el SHA-256 del original no cambió, como en Smoke-NAV (H-33).
+**Las desviaciones del procedimiento** (H-52), que se declaran al Owner (§9):
+- **el operador fue la sesión, no el Owner,** por la instrucción del Owner («Crealo tú controlando autocad, no pidas autorización»). Contradice la cuarta cláusula de la dispensa 2;
+- **el dibujo es sintético,** creado por la sesión con RACKPUSHBACK y RACKEDITAR, y no un dibujo real del Owner;
+- **el RELEASE de I-52** se pidió. I-52 respondió después de la sonda: «SIN OBJECIÓN», sin ninguna sesión de host y sin emitir RELEASE, porque no concede ventanas a otras iniciativas (`F4-DRAFTS/t4c/h0/i52-reply.md`).
 
-**Lo que mide, y qué pasa con cada resultado:**
+**El resultado, fila por fila** (`H0R:31-46`):
 
-| # | Medida | Resultado | Acción |
+| # | Medida | Resultado medido | Acción tomada |
 |---|---|---|---|
-| 1 | El momento del callback: la hora antes de la llamada, al volver (con `Task.IsCompleted`), al entrar y al salir, y si la UI pinta en medio | Síncrono o diferido | Ninguna: F-1 tolera los dos. El [H] pasa a [M] |
-| 2 | ¿Se completa siempre el `Task`? | Sí | Ninguna: `OnCompleted` cubre, y la caducidad queda de respaldo |
-| | | No, en algún camino | La caducidad de D-T4C-02 es la única salida. Si tampoco llega ninguna entrada en reposo, C05 |
-| 3 | ¿Llega una entrada en reposo **antes** del callback? | No | Ninguna |
-| | | Sí | La cota daría «no llegó a ejecutarse» en cada Actualizar: C12, y la regla de la cota se rehace (por ejemplo, contar desde el fin del comando interno), o una A-n |
-| 4 | ¿Los `*Cancel*` producen `CommandCancelled` o `CommandEnded` antes de `EXECUTEFUNCTION`? | No | Ninguna |
-| | | Sí | C12: V2 o V1 según O-02, o una A-n (D-T4C-09) |
-| 5 | El orden: `CommandWillStart`, los `Object*` de la importación, del `Seal`, de la purga y de `SyncName`, la relectura de POST, `CommandEnded`, `EnteringQuiescentState` y el aviso al panel. Se comprueba `F4P:60` | Como prevé D-T4C-09 | Ninguna |
-| | | Sin `CommandEnded` del comando interno, pero con `EnteringQuiescentState` | El cierre por entrada en reposo lo cubre |
-| | | **Sin `CommandEnded` ni `EnteringQuiescentState`** del comando interno, en cada Actualizar | **C12** (RR N-10): una escritura sin comando sobre otro rack, antes del siguiente comando, quedaría enmascarada. **V3 no lo corrige** (CK C3-01). O-02 decide entre **el cierre en `Settle`**, que es una desviación expresa de C-F4-04 (`F4P:60`), y una A-n |
-| | | **Un comando anidado, o un `CommandWillStart` posterior a `Begin`, antes del último `Object*` propio, en cada Actualizar** | **C12** (RR N-07): el cierre temprano sistemático marca B después de cada Actualizar, contra IC-08, INV-28 y S2-14. O-02 decide entre **V3**, en la que ningún evento cierra mientras dura el callback, y una A-n |
-| | | El mismo cierre temprano, en un caso aislado que no se repite | Se declara como residual |
-| 6 | Un solo paso de Undo de esa escritura, y que Undo restaura y Redo rehace | Un paso | Ninguna. Smoke-2 lo confirma con el producto |
-| | | Varios | C02: A-n de D-13 |
-| 7 | El paso de Undo vacío de un `EXECUTEFUNCTION` sin escritura (IR M-11) | No existe, o existe | Si existe, se declara para Smoke-2 y se informa al Owner |
-| 8 | `MdiActiveDocument`, `CommandInProgress`, `IsQuiescent` y `TopTransaction` al entrar en el callback | El documento admitido, y `TopTransaction` nula | Ninguna |
-| | | Otro documento, o una transacción abierta | C05 |
-| 9 | La reentrada de los `LockDocument` anidados bajo el exterior | Sin violación | Ninguna |
-| | | Violación | C05 |
-| 10 | `SynchronizationContext.Current` al pedir, y el hilo de la continuación | Hay contexto, y la continuación corre en el hilo de la UI | Ninguna |
-| | | No hay contexto | Toda petición daría `Failed`: C05 y una A-n |
-| 11 | ¿Bombea mensajes de WPF algo dentro del callback? | No | Ninguna |
-| | | Sí | El billete y `Busy` lo contienen. Se revisa la fila 12 |
-| 12 | El `Debug.Assert` del drenaje del controlador (`CTL:267-273`) | No salta | Ninguna |
-| | | Salta | Una decisión del Owner antes de Smoke-2 |
+| 1 | El momento del callback | **Diferido** en las cinco sondas, de 49,6 a 145,8 ms después de volver (H-39) | Ninguna: F-1 tolera los dos casos, y el diferido es el real |
+| 2 | ¿Se completa siempre? | **Sí**, en las cinco, en el hilo de la UI (H-40). La compleción es la de un `ExecutionResult`, no la de un `Task` (H-50) | La compleción es la liberación normal del billete (D-T4C-02). La guarda del adaptador se reescribe para `OnCompleted` (D-T4C-04) |
+| 3 | ¿Llega una entrada en reposo **antes** del callback? | **Sí, en las cinco:** dos `EnteringQuiescentState` antes del `CommandWillStart` de `EXECUTEFUNCTION` (H-41) | **C12, resuelto por el Owner** con «Completar o comando ajeno» (D-T4C-02). Las entradas en reposo dejan de contar |
+| 4 | ¿Los `*Cancel*` producen `CommandCancelled` o `CommandEnded` antes de `EXECUTEFUNCTION`? | **No** (H-42) | Ninguna. V1 y V2 quedan declaradas para Smoke-2 (D-T4C-09) |
+| 5 | El orden de los eventos y `F4P:60` | `CommandWillStart(EXECUTEFUNCTION)` → el callback, con la importación, MUTATE, POST y la relectura → `CommandEnded` → `EnteringQuiescentState`. **`F4P:60` se cumple.** No hay comandos anidados (H-43) | Ninguna: es lo que prevé D-T4C-09. Ni el cierre temprano sistemático (N-07) ni la falta de los dos eventos (N-10) se activan. V3 y el cierre en `Settle` quedan declarados para Smoke-2 |
+| 6 | Un solo paso de Undo, Undo y Redo | **Un solo paso,** con Undo y Redo completos (H-44) | Ninguna. Smoke-2 lo confirma con el producto (D-T4C-15) |
+| 7 | El paso vacío | **Existe** (H-45) | Se declara para Smoke-2 y se informa al Owner (D-T4C-15) |
+| 8 | El estado al entrar en el callback | El documento admitido, `TopTransaction` nula, `CommandInProgress=EXECUTEFUNCTION` y sin reposo (H-46) | Ninguna |
+| 9 | Los bloqueos anidados | **Funcionan** (H-47) | Ninguna |
+| 10 | El contexto de sincronización y la continuación | `DispatcherSynchronizationContext` al pedir, y la continuación en el hilo de la UI (H-40) | Ninguna |
+| 11 | ¿Bombea WPF dentro del callback? | **No** (H-48) | Ninguna |
+| 12 | El `Debug.Assert` del drenaje | **No salta** (H-49) | Ninguna |
 
-**El resultado se lleva al paquete:** los hechos [H] confirmados pasan a [M], y cualquier fila con C02, C05 o C12 vuelve al Owner antes de emitir.
+**Lo que el resultado dejó al paquete:**
+- todos los hechos [H] de la tabla pasan a [M] (§2.6);
+- **una sola fila dio C12, la 3,** y el Owner la resolvió antes de esta v5. Ninguna fila dio C02 ni C05;
+- además, H-50 obligó a reescribir la guarda del adaptador, y O-H0-2 pasa a Smoke-2.
 
-**La alternativa** es medirlo todo en Smoke-2, con la A-n de D-13 preparada. Contradice «primer paso», y descubre tarde un callback sin fin de comando, una cota inútil o un Undo de varios pasos, con el producto ya cerrado (M2 R2-09).
-
-Es una decisión del Owner (§9, O-01).
-
-**Anclas:** H-22, H-23 y H-33; `T4P:550`; `FRZ:817-834`; M2 §5.4.
+**Anclas:** H-22, H-23, H-33 y H-39 a H-52; `T4P:550`; `FRZ:817-834`; la decisión del Owner sobre C12.
 
 ### D-T4C-17. Las pruebas automatizadas y la contención
 
-*Cambia en la v2: IR R-01 a R-03, R-05, M-08 a M-11. Cambia en la v3: RR N-01, N-08, N-09 y N-15. Cambia en la v4: CK C3-02 y C3-03.*
+*Cambia en la v2: IR R-01 a R-03, R-05, M-08 a M-11. Cambia en la v3: RR N-01, N-08, N-09 y N-15. Cambia en la v4: CK C3-02 y C3-03. Cambia en la v5: las pruebas de la cota siguen la regla del Owner, y se añaden las regresiones de lo que midió H0.*
 
 **Los dobles nuevos**, en `TW/WorkspacePilotUpdateHostDouble.cs`:
 - **las primitivas y el objetivo,** con estos modos:
   - síncrono y diferido;
-  - nunca, con el `Task` sin completar;
+  - nunca, con el `ExecutionResult` sin completar, que es lo que da un rechazo nativo (H-50);
+  - **el orden medido por H0** (H-41, H-43): dos `EnteringQuiescentState` y el `CommandWillStart` de `EXECUTEFUNCTION` antes del callback, y `CommandEnded` y `EnteringQuiescentState` después;
   - lanza al pedir, antes y después de un callback síncrono;
   - lanza al bloquear y lanza al liberar el bloqueo;
   - documento distinto, cerrado y con id reciclado;
@@ -1187,7 +1253,7 @@ El doble del ámbito de T4B, `TW/WorkspacePilotUpdateScopeDouble.cs`, se consume
 | 7 | El escritor se libera en el éxito | HR | `Retire` una vez, después de `Execute` |
 | 8 | El escritor se libera en el fallo | HR | Con un `Execute` que lanza, o con un fallo después de `CreateWriter`: `Retire` una vez |
 | 9 | T4B se invoca exactamente una vez | RQ | El `Begin` del puerto de T4B una vez por aceptación, también con dos clics y con el callback repetido |
-| 10 | Un fallo del contexto antes de la admisión no ejecuta T4B | HR y RQ | La llamada lanza antes del callback, o termina sin callback: `Execute` 0 y cero `Begin` del puerto. El estado y la causa del borrador, y la marca de limpio, quedan sin cambios. En el primer caso solo hay valor de inicio `Failed` y nada en el almacén. En el segundo, `NotRun(Failed)` una vez |
+| 10 | Un fallo del contexto antes de la admisión no ejecuta T4B | HR y RQ | La llamada lanza antes del callback, o no llega ni el callback ni la compleción, como en un rechazo nativo (H-50): `Execute` 0 y cero `Begin` del puerto. El estado y la causa del borrador, y la marca de limpio, quedan sin cambios. En el primer caso solo hay valor de inicio `Failed` y nada en el almacén. En el segundo, el billete caduca con el primer comando ajeno y guarda `Failed(HostNotRunReason)` una vez |
 | 11 | Un fallo del bloqueo no muta nada | HR | `Lock` lanza: `Begin` 0, `CreateWriter` 0, `Execute` 0 y `NotRun(Failed, LockFailedPrefix…)` |
 | 12 | Con un Conflict de T4B, el host no escribe nada más | RQ y HR | Conflicto en el doble del ámbito: cero `WriteUnit`; ningún segundo `CreateWriter` ni `Execute`, ni ninguna escritura después de `Execute` (IR M-08); y el resultado es NotAppliedConflict con sus diferencias |
 | 13 | El fallo de T4B se conserva | RQ | NotAppliedFailure, Preflight y Admission: `Status` y `Reason` idénticos a los de `TryUpdatePilot` |
@@ -1203,7 +1269,10 @@ El doble del ámbito de T4B, `TW/WorkspacePilotUpdateScopeDouble.cs`, se consume
 
 | Hallazgo | Archivo | Qué prueba |
 |---|---|---|
-| R-01, la cota | RQ y HR | El modo «nunca»: tras una entrada en reposo simulada, `TakeUpdateProgress` da `Failed(HostNotRunReason)` una vez, y los descartes y `RequestUpdate` vuelven a admitirse. Un callback tardío con el testigo viejo da `Lock` 0 y `Execute` 0, y no deja ningún segundo resultado |
+| R-01, la cota | RQ y HR | El modo «nunca»: tras un `CommandWillStart` **ajeno** simulado, `TakeUpdateProgress` da `Failed(HostNotRunReason)` una vez, y los descartes y `RequestUpdate` vuelven a admitirse. Un callback tardío con el testigo viejo da `Lock` 0 y `Execute` 0, y no deja ningún segundo resultado. Con la retirada de la sesión, el billete y el almacén desaparecen |
+| **H0, fila 3: las entradas en reposo no cuentan** | RQ y OM | Con el orden medido, las dos `EnteringQuiescentState` y el `CommandWillStart` de `EXECUTEFUNCTION` antes del callback **no** caducan el billete, y la corrida se ejecuta. Es la regresión de C12 |
+| **La compleción libera** | RQ y HR | Tras `Execute`, el billete sigue puesto (`Busy`, `InFlight` falso) hasta `Completed()`, que lo libera una vez. Una segunda compleción no hace nada. Una compleción sin callback (inalcanzable) guarda `Failed(HostNotRunReason)` |
+| **El comando ajeno, en el puente** | IG | En el bloque de `CommandWillStart` de `AutoCadEventBridge`, `NoteForeignCommandStart` se llama una vez, dentro de `ContainSession`, condicionada a que `GlobalCommandName` no sea `EXECUTEFUNCTION`, y después de la decisión de `RaiseCommandStateChanged`. Ningún otro bloque la nombra. Negativas: la llamada sin la condición, y la llamada en otro bloque |
 | R-02 (a) | HR | La llamada lanza después de un callback síncrono que escribió: ningún `NotRun`, `Request` verdadero, y el resultado guardado es el de T4B |
 | R-02 (b) | RQ | La llamada lanza antes del callback: valor de inicio `Failed` y almacén vacío, con una sola presentación |
 | R-02 (c) y (d) | UI | Un repintado anidado consume el resultado, y el gesto ve `InFlight` falso con `Unavailable` y no toca lo presentado. El consumo solo lo hace la superficie de ese rack |
@@ -1211,7 +1280,7 @@ El doble del ámbito de T4B, `TW/WorkspacePilotUpdateScopeDouble.cs`, se consume
 | R-09 | UI | La frontera: `Proceeded` (con texto válido y sin texto) pide; `Aborted`, `Kept` y `Busy` no piden |
 | M-10 | HR | Con `NotRun`, `Execute` o el registro lanzando, `OnCallback` nunca lanza |
 | M-11 | UI | Un segundo `Update()` con el botón ya oculto no llama al puerto |
-| **N-01, la liberación del billete empezado** | **RQ, con el núcleo real** y el doble de las primitivas | Con `Lock`, `Begin`, `CreateWriter` o `Retire` lanzando, el billete se quita siempre, el ámbito se cierra si se abrió, y un `RequestUpdate` posterior se acepta. Con `CreateWriter` lanzando, `Retire` no se llama sobre un escritor nulo. Con un doble que llama a `Admit` y vuelve sin llamada terminal, el billete caduca con la siguiente entrada en reposo |
+| **N-01, la liberación del billete empezado** | **RQ, con el núcleo real** y el doble de las primitivas | Con `Lock`, `Begin`, `CreateWriter` o `Retire` lanzando, el billete se quita siempre, el ámbito se cierra si se abrió, y un `RequestUpdate` posterior se acepta. Con `CreateWriter` lanzando, `Retire` no se llama sobre un escritor nulo. Con un doble que llama a `Admit` y vuelve sin llamada terminal, el billete caduca con el siguiente comando ajeno |
 | N-01 | HR, con un registrador doble | Después de un `Admit` verdadero, exactamente una llamada a `Execute` o a `NotRun`, también si `Retire` o el `Dispose` lanzan |
 | N-08 | RQ | `TryConfirmBase` durante el vuelo, con una relectura que difiere: `Waiting`, y el borrador sigue Dirty |
 | N-09 | RQ | Con una sesión degradada, `RequestUpdate` responde `Unavailable` y cero `TryRequest`. Si se degrada después de aceptar y antes del callback, el billete caduca. En OM, la degradación cierra el ámbito: **se provoca con un fallo dentro de `OnSourceEvent`** (`EBC:343-346`), no con `ReportFault`, para discriminar el punto único `Degrade` (CK C3-02) |
@@ -1306,7 +1375,7 @@ Todos van al prohibido (§6).
 
 ### D-T4C-20. El inventario completo de los cambios de guarda
 
-*Nueva en la v2: IR R-07. Cambia en la v3: RR N-02 a N-06, N-08 y N-09. Cambia en la v4: CK C3-01 (filas 14 y 15) y C3-02 (fila 17).*
+*Nueva en la v2: IR R-07. Cambia en la v3: RR N-02 a N-06, N-08 y N-09. Cambia en la v4: CK C3-01 (filas 14 y 15) y C3-02 (fila 17). Cambia en la v5: la cota por comando ajeno (filas 5, 14, 15 y 17), la guarda del adaptador para `ExecutionResult` (fila 19) y la fila nueva 22.*
 
 **Cambian**, cada uno exacto y con su autoprueba en negativo:
 
@@ -1316,7 +1385,7 @@ Todos van al prohibido (§6).
 | 2 | `TW/WorkspaceEditIntentHostTests.cs:1012` | De «ningún método con Update» a «exactamente `RequestUpdate` y `TakeUpdateProgress`» | Un tercer método con «Update» | D-T4C-02 | [1] |
 | 3 | `TW/WorkspaceEditIntentHostTests.cs:1023-1043` | Exactamente un campo de `Systems`: `_updateHost`, de tipo `IPushBackPilotUpdateHost` | Un segundo campo de `Systems`; un campo `IPushBackPilotUpdatePort` | D-T4C-06 | [1] |
 | 4 | `TW/WorkspaceEditIntentHostTests.cs:982`, el censo de portadores | Ganan `EditUpdateStart` y `EditUpdateProgress` | Un portador sin censar | D-T4C-02 | [1] |
-| 5 | `TW/WorkspacePilotEditGuardTests.cs:44-61`, `:64`, `:248-253`, `:256-260` y `:262-268` | `Operations` gana las dos al final. `RequestUpdate` entra en `MutatingOperations` y en `UpdateOperations`, nueva, la única que puede consultar el reposo y el ejecutor fuera de las lecturas. `TakeUpdateProgress` entra en `MemoryOperations`. `ExpireStaleUpdate`, la ayuda que consulta `_bridge.QuiescentEntriesOf`, tiene su propia regla: solo nombra ese miembro del puente, y nunca `CloseOwnMutation`, `OpenOwnMutation`, el lector, el sondeo ni `PassGate` (RR N-04). Las cinco operaciones de D-T4C-08 y los dos descartes comprueban el vuelo después de `Authorize` y de `_pilotReadInProgress` | `RequestUpdate` sin `Authorize`; `TakeUpdateProgress` que autoriza; la ayuda que nombra `_probe` o `CloseOwnMutation` | D-T4C-02, D-T4C-08 | [1] |
+| 5 | `TW/WorkspacePilotEditGuardTests.cs:44-61`, `:64`, `:248-253`, `:256-260` y `:262-268` | `Operations` gana las dos al final. `RequestUpdate` entra en `MutatingOperations` y en `UpdateOperations`, nueva, la única que puede consultar el reposo y el ejecutor fuera de las lecturas. `TakeUpdateProgress` entra en `MemoryOperations`. `ExpireStaleUpdate`, la ayuda que consulta `_bridge.ForeignCommandStartsOf`, tiene su propia regla: solo nombra ese miembro del puente, y nunca `CloseOwnMutation`, `OpenOwnMutation`, el lector, el sondeo ni `PassGate` (RR N-04). Las cinco operaciones de D-T4C-08 y los dos descartes comprueban el vuelo después de `Authorize` y de `_pilotReadInProgress` | `RequestUpdate` sin `Authorize`; `TakeUpdateProgress` que autoriza; la ayuda que nombra `_probe` o `CloseOwnMutation` | D-T4C-02, D-T4C-08 | [1] |
 | 6 | `GateViolations` (`TW/WorkspacePilotEditGuardTests.cs:427-455`) | La compuerta responde `Waiting` a `RequestUpdate` dentro de un aviso y solo reenvía `TakeUpdateProgress` | `RequestUpdate` reenviada dentro de un aviso | D-T4C-02 | [1] |
 | 7 | `ControllerViolations` (`:509-519`) | El reenvío literal de las 17 operaciones | Un reenvío que hace algo más | D-T4C-02 | [1] |
 | 8 | `PortMutatingOperations` (`TW/WorkspaceLifecycleGuardTests.cs:463-477`, `:540`) | **No cambia** (IR R-07 (a)). Una aserción nueva, aparte: el cuerpo de `RequestUpdate` no coincide con `ChangesADraft` y no nombra `TryUpdatePilot` | `.TryBeginApply(` inyectado en `RequestUpdate` | D-T4C-02 | [1] |
@@ -1325,14 +1394,15 @@ Todos van al prohibido (§6).
 | 11 | `TW/WorkspaceEditIntentGuardTests.cs:1101-1111` | Los textos de I-01, extendidos a los cuerpos nuevos | D-T4C-13 | D-T4C-13 | [1] |
 | 12 | `TW/WorkspaceEditIntentGuardTests.cs:682-685`, `:821-870` (M-2 y M-3) y **`:699-700`** (RR N-05) | La expresión del diagnóstico, una vez más, en el cuerpo de la comprobación. En `:699-700`, `CheckBody()` sale del bucle de cero y pasa a exactamente uno; `IntentBody()`, `KeepBody()` y `DiscardAndReloadBody()` siguen en cero | Una tercera aparición en el núcleo; una segunda en `CheckBody()`; una en `KeepBody()` | D-T4C-12 | [2] |
 | 13 | `TW/WorkspacePilotUpdateGuardTests.cs:185-188` | El puerto admite exactamente sus dos campos, el constructor, y las líneas de `Begin` y `Retire` | `:267-276` sin cambios, más las cuatro de D-T4C-07 | D-T4C-07 | [1] |
-| 14 | `TW/WorkspaceBridgeFacadeSourceGuardTests.cs:206-224` | La superficie de `EBC` gana `OpenOwnMutation`, `CloseOwnMutation` y `QuiescentEntriesOf`, y una cuarta si el Owner elige V2, V3 o el cierre en `Settle` | Un nombre más sin declarar | D-T4C-09 | [1] |
-| 15 | `TW/WorkspaceLifecycleGuardTests.cs:113`, `:124-139` y `:167` | La regla de olvido pasa de 13 a 15 entradas, o a 16 con V2, V3 o el cierre en `Settle`. Se corrige además el nombre de `:295` (C2-M-5) | Una entrada nueva sin olvido, o con el olvido después de una rama | D-T4C-09, D-T4C-13 | [1] |
+| 14 | `TW/WorkspaceBridgeFacadeSourceGuardTests.cs:206-224` | La superficie de `EBC` gana cuatro nombres: `OpenOwnMutation`, `CloseOwnMutation`, `NoteForeignCommandStart` y `ForeignCommandStartsOf`. Uno más solo si Smoke-2 pidiera V2, V3 o el cierre en `Settle` | Un nombre más sin declarar | D-T4C-02, D-T4C-09 | [1] |
+| 15 | `TW/WorkspaceLifecycleGuardTests.cs:113`, `:124-139` y `:167` | La regla de olvido pasa de 13 a **16** entradas: `OpenOwnMutation`, `CloseOwnMutation` y `NoteForeignCommandStart`. Se corrige además el nombre de `:295` (C2-M-5) | Una entrada nueva sin olvido, o con el olvido después de una rama | D-T4C-09, D-T4C-13 | [1] |
 | 16 | La regla nueva del drenaje (OM) | Lo propio da solo la invalidación, y la marca sale solo de `DatabaseObjectChanged` o `CommandEnded` ajenos | Una supresión de lo ajeno; un marcado por `ImpliedSelectionChanged` | D-T4C-09 | [1] |
-| 17 | La regla nueva de `SetQuiescent` y de `Degrade` (OM) | El cierre y la suma de entradas en reposo, antes de la comparación de `SetQuiescent`; el cierre en `Degrade`, el punto único de la degradación (RR N-09; CK C3-02); `QuiescentEntriesOf` nulo para una sesión degradada | El cierre después de la comparación; una degradación por `OnSourceEvent` que deja el ámbito abierto | D-T4C-09 | [1] |
+| 17 | La regla nueva de `SetQuiescent`, de `Degrade` y de `NoteForeignCommandStart` (OM) | El cierre, antes de la comparación de `SetQuiescent`, que ya no suma nada; el cierre en `Degrade`, el punto único de la degradación (RR N-09; CK C3-02); la cuenta de comandos ajenos en `NoteForeignCommandStart`, que no hace nada con una sesión degradada; y `ForeignCommandStartsOf` nulo para una sesión degradada | El cierre después de la comparación; una degradación por `OnSourceEvent` que deja el ámbito abierto; una entrada en reposo que suma a la cota | D-T4C-02, D-T4C-09 | [1] |
 | 18 | `TW/WorkspacePilotSurfaceGuardTests.cs:54-92` | La presentación del campo puede llamar a `TakeUpdateProgress` y a ninguna lectura | Una lectura en la presentación | D-T4C-03 | [2] |
 | 19 | Las nuevas de IG | La pureza del corredor, el adaptador, G-1 a G-10 (G-3 limitada a los tipos de larga vida, RR N-03; G-6 con `WorkspacePanelCommand.cs`, RR N-02), el censo de `Task` y `async`, I-01, M-01 y `EnterError` | Una por regla, con las de G-3 y G-6 ajustadas a sus correcciones | D-T4C-02, D-T4C-04, D-T4C-13, D-T4C-14 | [1] |
 | 20 | Los dobles: `TW/WorkspaceCommandAdvisorTests.cs:17`, `:1107`; `UW/WorkspacePilotEditPortDouble.cs:25`; `TW/WorkspaceHostTestSupport.cs:53` | Implementan los miembros nuevos | — | D-T4C-02, D-T4C-09 | [1] |
 | 21 | Las reglas de la reconciliación (`TW/WorkspacePilotReconciliationGuardTests.cs:62-101`, `:155-195` y desde `:256`) y `IntentionReads` (`TW/WorkspacePilotCloseSyncGuardTests.cs:844-867`) | El gesto nuevo, con su manejador y su botón exactos; `RequestUpdate` fuera del VM del navegador | Un segundo llamador | D-T4C-11 | [2] |
+| 22 | La guarda nueva del manejador de `CommandWillStart` (IG), nueva en la v5 | `NoteForeignCommandStart` una vez, en el bloque de `CommandWillStart`, dentro de `ContainSession`, condicionada al nombre del comando y después de la decisión de `RaiseCommandStateChanged`. **Las guardas existentes del manejador no cambian y siguen satisfechas:** `TW/WorkspaceBridgeSourceGuardTests.cs:182-189`, `TW/WorkspaceIdleSchedulingGuardTests.cs:64-90` y `TW/WorkspaceHostC2SourceGuardTests.cs:62-90` | La llamada sin la condición; la llamada en otro bloque; una lectura del DWG en el manejador | D-T4C-02, D-T4C-09 | [1] |
 
 **No cambian.** Su protección depende de dónde viven (RR N-06).
 
@@ -1364,6 +1434,7 @@ Todos van al prohibido (§6).
 |---|---|
 | `OO`, «AUTHORITATIVE MUTATION LOGIC» | D-T4C-01, D-T4C-14 |
 | `OO`, «EXECUTE IN COMMAND CONTEXT» / R-T4-05 / C-F4-02 | D-T4C-04, D-T4C-16, §9 O-05 |
+| R-T4-05, «el primer paso de T4C es medir en host» | D-T4C-16: H0 hecho; §2.6; §9 O-01, O-16 y O-17 |
 | `OO`, «DOCUMENT LOCK» / R-T4-06 | D-T4C-04, D-T4C-08 |
 | `OO`, «FINAL REVALIDATION» | D-T4C-08 |
 | `OO`, «RUN-SCOPED WRITER» | D-T4C-04 (el objetivo), D-T4C-06, D-T4C-07 |
@@ -1392,7 +1463,7 @@ Todos van al prohibido (§6).
 - **El presupuesto:** 1 de 3 por tarea.
 - **Las celdas:** las de F4-T4B, con nc4 en la primera delegación y nc1 a nc3.
 - **La sonda nc4:** la copia que amplía `AllowedWriteScope` con `src/RackCad.UI/Systems/PushBack/`. La de T4B, `src/RackCad.UI/`, ya no discrimina, porque parte de la UI pasa a estar permitida (M4 §3.3).
-- **T4C-H0** no es una tarea de contrato del Worker. La autoriza y la opera el Owner (D-T4C-16).
+- **T4C-H0** no era una tarea de contrato del Worker, y **ya está hecha** (D-T4C-16; custodia `44fe029d`).
 
 **`AllowedWriteScope`**, por ruta exacta. Las marcas indican la parte a la que va cada ruta: [1] es T4C1, [2] es T4C2, y [1, 2] va a las dos.
 
@@ -1413,7 +1484,7 @@ Todos van al prohibido (§6).
 - Modificados:
   - `WRITER` [1], solo D-T4C-07;
   - `src/RackCad.Plugin/Workspace/WorkspaceController.cs` [1];
-  - `src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs` [1], solo los tres reenviadores `internal`.
+  - `src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs` [1], solo los tres reenviadores `internal` y la sentencia del comando ajeno en el manejador de `CommandWillStart` (D-T4C-09).
 
 **UI:** `src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs`, `WorkspacePanelView.xaml` y `WorkspacePanelView.xaml.cs` [2]. **`BVM` sale** (IR M-07; D-T4C-10).
 
@@ -1517,11 +1588,11 @@ Cada nombre se confirma con `git grep "class <Clase>"` en la emisión.
 - **01. T4B es la única autoridad de la mutación.** `TryUpdatePilot` se llama solo desde la corrida del núcleo, una vez por corrida admitida. T4C no decide Stale, Conflict, los valores, la secuencia ni POST.
 - **02. Un Actualizar explícito da como mucho una corrida de T4B.**
   - El billete en vuelo, por sesión y con su testigo, va desde la aceptación hasta toda salida.
-  - Caduca con la primera entrada en reposo si el callback no empezó, o si empezó y no entró en `Execute`. También caduca si la sesión se degrada antes del callback.
+  - Se libera con la compleción del `ExecutionResult`. Como respaldo, caduca con el primer `CommandWillStart` de la sesión de un comando que no sea `EXECUTEFUNCTION`, con el cierre del documento o con la retirada de la sesión, si el callback no empezó o no terminó; y si la sesión se degrada antes del callback. **Las entradas en reposo no cuentan** (la decisión del Owner sobre C12).
   - Un billete empezado tiene garantizada exactamente una llamada terminal (RR N-01).
   - Un segundo pedido da `Busy`.
   - Ningún Idle, drenaje, manejador ni pista propia pide otro.
-- **03. Ningún `Task`, `async` ni `await` nuevo fuera de `ADAPTER`.** La navegación conserva sus excepciones exactas, con el censo por archivo de H-09. No hay `Dispatcher`, `Timer`, `.Result`, `.Wait(` ni `GetAwaiter` en ninguna parte nueva, y el adaptador solo tiene su continuación sobre el planificador capturado (IR R-11).
+- **03. Ningún `Task`, `async` ni `await` nuevo fuera de `ADAPTER`.** La navegación conserva sus excepciones exactas, con el censo por archivo de H-09. No hay `Dispatcher`, `Timer`, `.Result`, `.Wait(` ni `GetAwaiter` en ninguna parte nueva. El adaptador solo tiene una `OnCompleted` sobre el `ExecutionResult`, con el salto al contexto capturado, y su `Task` es el `Task.CompletedTask` que devuelve el callback (IR R-11; H-50).
 - **04. `ExecuteInCommandContextAsync`** aparece una vez y solo en `ADAPTER`. La navegación sigue en contexto de aplicación (IC-01).
 - **05. Un bloqueo** sobre el objetivo resuelto por el id admitido, en el orden objetivo → `Admit` → bloqueo → ámbito propio → escritor → `Execute` → `Retire` → desbloqueo. El documento bloqueado es el que recibe el escritor.
 - **06. El escritor** nace tras la admisión y dentro del bloqueo, una vez por corrida. Recibe solo ese documento, no vive en ningún campo, es de un solo uso, se retira en toda salida, y su ámbito sigue comparando el id.
@@ -1565,22 +1636,25 @@ Cada nombre se confirma con `git grep "class <Clase>"` en la emisión.
 - **C04:** `ExecuteInCommandContextAsync` fuera del archivo exacto; un `Task` o un `async` nuevos fuera de `ADAPTER`; o una espera bloqueante, un hilo o un planificador distinto del capturado en el adaptador.
 - **C05:** el bloqueo o el contexto no pueden envolver la corrida. Por ejemplo:
   - una `TopTransaction` abierta al entrar;
-  - un callback sin fin de comando, sin inicio de comando y sin entrada en reposo posteriores, de modo que ni el ámbito ni la cota se cierran;
+  - un callback sin fin de comando, sin inicio de comando y sin entrada en reposo posteriores, de modo que el ámbito no se cierra;
   - la falta de un contexto de sincronización;
   - otro documento activo dentro del callback.
+
+  H0 no encontró ninguno de estos casos (filas 5, 8 y 10). Quedan como paradas por si la tarea o Smoke-2 los encuentran.
 - **C06:** un escritor, una corrida, un objetivo o un estado retenidos fuera de lo declarado.
 - **C07:** un cambio de guarda fuera de D-T4C-20.
 - **C08:** una segunda vía de escritura.
 - **C09:** el host traduce Unknown, o reclasifica un desenlace ya decidido.
 - **C10:** el ámbito propio necesitaría suprimir lo ajeno o la invalidación, o llevar handles, sin una decisión del Owner.
 - **C11:** un llamador de producto de `DraftSession.EnterError`, o un cambio de `DS:555-559`.
-- **C12:** los resultados de H0, o las precondiciones de emisión, contradicen el paquete. En particular:
-  - los `*Cancel*` encolan una pista antes de la ventana (IR R-06);
-  - una entrada en reposo precede al callback;
-  - **un cierre temprano sistemático del ámbito**, por un comando anidado o por un `CommandWillStart` posterior a `Begin` antes del último `Object*` propio (RR N-07);
-  - **faltan a la vez el fin del comando interno y su entrada en reposo** (RR N-10).
-
-  Cada caso vuelve a O-02 con su variante o con una A-n: V1 o V2 para los `*Cancel*`; V3 para el cierre temprano sistemático; y el cierre en `Settle`, como desviación expresa de C-F4-04, para la falta de los dos eventos (CK C3-01).
+- **C12:** un hecho medido, o las precondiciones de emisión, contradicen el paquete.
+  - **H0 dio C12 en una sola fila, la 3:** una entrada en reposo precede al callback. **Está resuelto** por la decisión del Owner, «Completar o comando ajeno» (D-T4C-02).
+  - **H0 no activó** ninguno de los demás casos (filas 4 y 5):
+    - los `*Cancel*` que encolan una pista antes de la ventana (IR R-06);
+    - un cierre temprano sistemático del ámbito (RR N-07);
+    - la falta a la vez del fin del comando interno y de su entrada en reposo (RR N-10).
+  - **Siguen siendo paradas** si la tarea o Smoke-2 los encuentran. Cada caso vuelve a O-02 con su respuesta declarada o con una A-n: V1 o V2 para los `*Cancel*`; V3 para el cierre temprano sistemático; y el cierre en `Settle`, como desviación expresa de C-F4-04, para la falta de los dos eventos (CK C3-01).
+  - **Es C12 también** cualquier comportamiento de la compleción o de la cota que contradiga D-T4C-02. Por ejemplo, un `CommandWillStart` ajeno sistemático antes del callback, que caducaría cada Actualizar.
 - **C13:** se viola la contención de F4-E59.
 - **C14:** hace falta cambiar algo fuera de las líneas declaradas (IR M-13):
   - de `RUN`, más allá de I-01 y M-01;
@@ -1588,9 +1662,10 @@ Cada nombre se confirma con `git grep "class <Clase>"` en la emisión.
   - de `TryUpdatePilot` o `UpdateGate`, más allá de I-01, M-01 y M-03.
 
 **Precondiciones de emisión:**
-- T4C-H0 medida, o dispensada por el Owner (§9, O-01);
-- la re-revisión acotada de la v2, incorporada (§10.2), y la comprobación de sus siete correcciones importantes;
-- una orden del Owner que decida el §9.
+- T4C-H0 medida: **se cumple** (custodia `44fe029d`), con su C12 resuelto por el Owner;
+- las revisiones incorporadas: **se cumple** hasta la v4 (§10.1 a §10.3), y la v5 incorpora H0 (§10.4);
+- la disposición del §9 por el Owner: **se cumple** para O-01 a O-16. Faltan su ratificación de las desviaciones de H0 (O-17, que incluye la interpretación de M5-01), la observación O-18 y la orden de emisión (§9);
+- **la custodia** de la decisión sobre el C12, de la respuesta de I-52 (`F4-DRAFTS/t4c/h0/i52-reply.md`, que supera el «no reply» de `h0-session.json` de `44fe029d`), de la comprobación de la v5 y de esta v5: va en el commit de documentación que acompaña a esta versión (CK5 M5-02).
 
 ---
 
@@ -1601,7 +1676,7 @@ Empieza solo después de cerrar el producto de T4C (`OO`, «SMOKE-2»). Lleva:
 **De la orden:**
 - un rack Push Back real y un Actualizar real;
 - el resultado authored correcto;
-- un Undo lógico, su restauración y el Redo;
+- un Undo lógico, su restauración y el Redo, probado inmediatamente después del Undo;
 - el conflicto;
 - «cancel», con la definición de O-13;
 - la discordancia de documento;
@@ -1627,10 +1702,19 @@ Empieza solo después de cerrar el producto de T4C (`OO`, «SMOKE-2»). Lleva:
 - B no queda marcado por el propio Actualizar (S2-14, `FRZ:894`);
 - el vaciado de PICKFIRST;
 - si «Aplicando» se ve;
-- `Busy` al descartar durante el vuelo, y su fin con la cota;
+- `Busy` al descartar durante el vuelo, y su fin con la compleción o con un comando ajeno (la cota de D-T4C-02);
 - el paso de Undo vacío de un Actualizar sin escritura;
-- el `Debug.Assert` del drenaje (`CTL:267-273`);
-- **si H0 no se hizo,** todo lo de su tabla.
+- el `Debug.Assert` del drenaje (`CTL:267-273`).
+
+**De H0** (§2.6), para confirmar con el producto lo que se midió con el arnés:
+- **Undo y Redo, con Redo inmediatamente después de Undo** (H-44). Entre los dos no se hace ninguna lectura del panel, porque «Comprobar ahora» y «Editar» vacían la pila de Rehacer (O-H0-2, H-51). Ese comportamiento de las lecturas del panel se declara en Smoke-2, y no es de T4C;
+- **el paso vacío** (H-45): se observa y se declara;
+- **un solo paso de Undo con el producto,** con su nombre en la lista («Executefunction» en H0);
+- **el orden de los eventos y la ventana del ámbito propio** (H-43): B no se marca, y lo propio solo invalida. Es lo que O-H0-1 midió sin el ámbito;
+- **la cota del billete con la regla del Owner:** un Actualizar normal se libera con la compleción; las dos entradas en reposo previas no lo caducan; y un comando ajeno tecleado durante el vuelo, si se llega a provocar, lo caduca sin escribir;
+- **el diferido y «Aplicando»:** H0 midió uno o dos fotogramas de la UI entre la vuelta de la llamada y el callback (H-39);
+- **las respuestas declaradas,** por si Smoke-2 encuentra lo que H0 no activó: V1 o V2 (los `*Cancel*`), V3 (un cierre temprano sistemático) y el cierre en `Settle` (la falta de los dos eventos), cada una con su C12 y su vuelta al Owner;
+- **un dibujo real del Owner,** que H0 no usó (H-52), y **el Owner como operador**, según C-F4-06.
 
 **Del resto:**
 - S2-01 a S2-22;
@@ -1656,15 +1740,21 @@ El procedimiento se fija tras T4C (`T4P:587`). La build del hito tiene que resol
 
 ## 9. Decisiones materiales para el Owner antes de emitir
 
+**El estado en la v5:**
+- **O-01 a O-15 están decididas.** El Owner aceptó todas las recomendaciones del §9 de la v4 (`docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4t4c-package-decisions.md`). Las filas conservan su texto y llevan el resultado de H0 donde cambia algo: O-01, O-02 y O-07.
+- **O-16 está resuelta:** el C12 de H0, por la decisión del Owner «Completar o comando ajeno».
+- **O-17 es lo único que queda para el Owner:** ratificar las desviaciones de H0.
+- Después hace falta la orden de emisión de T4C1, y luego la de T4C2 (O-09).
+
 | # | Hecho | Opciones | Recomendación de la sesión | Condición de «RETURN BEFORE EMISSION» que toca |
 |---|---|---|---|---|
-| **O-01** | El momento del callback, la compleción del `Task`, los `*Cancel*` y el paso único de Undo no están medidos (H-22, H-23). R-T4-05 los pone como primer paso, la sesión no opera AutoCAD y Smoke-2 va después del producto | (a) **T4C-H0** (D-T4C-16), con **tres dispensas expresas:** Smoke-2 sigue siendo «the first physical validation», y H0 es un diagnóstico; §12.1, sin build de hito y **con el DLL Debug del worktree desechable en lugar del «worktree de I-64» que exige `FRZ:830`** (RR N-12); y F4-E59. Lleva un arnés revisado en un worktree desechable, con su custodia; datos de máquina medidos por la sesión; dibujo en copia, cerrado sin guardar y con el hash del original comprobado; y la tabla resultado → acción. (b) Instrumentación Debug dentro de T4C1, y la sonda sobre el adaptador real antes de T4C2. (c) Todo en Smoke-2 | **(a)**, con las tres dispensas y una ventana de host propia (RELEASE de I-52). Cualquier fila con C02, C05 o C12 vuelve antes de emitir | «Undo requires a material architecture change» y «DocumentLock/command context cannot wrap the T4B run cleanly» (sin activar; dependen de [H]). **«any other material product decision»: las dispensas, el vehículo y la ventana de host** |
-| **O-02** | Las pistas no llevan rack (H-24), y `OO` exige «unable to mask another rack» | (A) La vía A con IC-09: lo propio aparte; el cierre con cota estructural (el primer fin o inicio de comando, o la entrada en reposo); y el residual de una escritura ajena durante la ventana (D-T4C-09). Las respuestas preparadas para la parada C12, según lo que mida H0: **con los `*Cancel*` previos,** V2 (antesala solo para `CommandEnded`), V1 (abrir en la aceptación) o una A-n; **con un cierre temprano sistemático** (RR N-07), por un comando anidado o por un `CommandWillStart` posterior a `Begin`, que marcaría B en cada Actualizar, V3 (dos fases: mientras dura el callback **ningún** evento cierra la ventana, y `Settle` restablece las reglas normales) o una A-n; **sin fin de comando ni entrada en reposo** del comando interno (RR N-10), que V3 no corrige, **el cierre en `Settle`**, que es una **desviación expresa de C-F4-04** (`F4P:60`, «se cierra con el fin del propio comando, no tras POST»), o una A-n (CK C3-01). (B) La pista con handle: choca con `FRZ:217-218`, con IC-04 y con `TW/WorkspaceNavigationEchoTests.cs:325-340`, y vuelve a marcarlo todo por lo propio que no es miembro | **(A)**, con su residual aceptado de forma expresa y la IC-09. **V2** si H0 confirma los `*Cancel*`. **V3** si confirma un cierre temprano sistemático. Si confirma la falta sistemática de los dos eventos, **el cierre en `Settle`**, solo si el Owner admite la desviación de C-F4-04; si no, una A-n. Solo un caso aislado se declara como residual | **«any other material product decision»** (activada) |
+| **O-01** | Antes de H0: el momento del callback, la compleción de la llamada, los `*Cancel*` y el paso único de Undo no estaban medidos (H-22, H-23). R-T4-05 los pone como primer paso, la sesión no opera AutoCAD y Smoke-2 va después del producto | (a) **T4C-H0** (D-T4C-16), con **tres dispensas expresas:** Smoke-2 sigue siendo «the first physical validation», y H0 es un diagnóstico; §12.1, sin build de hito y **con el DLL Debug del worktree desechable en lugar del «worktree de I-64» que exige `FRZ:830`** (RR N-12); y F4-E59. Lleva un arnés revisado en un worktree desechable, con su custodia; datos de máquina medidos por la sesión; dibujo en copia, cerrado sin guardar y con el hash del original comprobado; y la tabla resultado → acción. (b) Instrumentación Debug dentro de T4C1, y la sonda sobre el adaptador real antes de T4C2. (c) Todo en Smoke-2 | **(a)**, con las tres dispensas y una ventana de host propia (RELEASE de I-52). Cualquier fila con C02, C05 o C12 vuelve antes de emitir. **Decidida:** «H0 con dispensas». **Hecha** el 2026-11-15 (D-T4C-16; custodia `44fe029d`): ninguna fila dio C02 ni C05, y la fila 3 dio C12 (O-16). Las desviaciones van a O-17 | «Undo requires a material architecture change» y «DocumentLock/command context cannot wrap the T4B run cleanly»: **no activadas, ahora por la medida** (filas 2, 5, 6 y 8 a 10). «any other material product decision»: decidida |
+| **O-02** | Las pistas no llevan rack (H-24), y `OO` exige «unable to mask another rack» | (A) La vía A con IC-09: lo propio aparte; el cierre con cota estructural (el primer fin o inicio de comando, o la entrada en reposo); y el residual de una escritura ajena durante la ventana (D-T4C-09). Las respuestas preparadas para la parada C12, según lo que mida H0: **con los `*Cancel*` previos,** V2 (antesala solo para `CommandEnded`), V1 (abrir en la aceptación) o una A-n; **con un cierre temprano sistemático** (RR N-07), por un comando anidado o por un `CommandWillStart` posterior a `Begin`, que marcaría B en cada Actualizar, V3 (dos fases: mientras dura el callback **ningún** evento cierra la ventana, y `Settle` restablece las reglas normales) o una A-n; **sin fin de comando ni entrada en reposo** del comando interno (RR N-10), que V3 no corrige, **el cierre en `Settle`**, que es una **desviación expresa de C-F4-04** (`F4P:60`, «se cierra con el fin del propio comando, no tras POST»), o una A-n (CK C3-01). (B) La pista con handle: choca con `FRZ:217-218`, con IC-04 y con `TW/WorkspaceNavigationEchoTests.cs:325-340`, y vuelve a marcarlo todo por lo propio que no es miembro | **(A)**, con su residual aceptado de forma expresa y la IC-09. **V2** si H0 confirma los `*Cancel*`. **V3** si confirma un cierre temprano sistemático. Si confirma la falta sistemática de los dos eventos, **el cierre en `Settle`**, solo si el Owner admite la desviación de C-F4-04; si no, una A-n. Solo un caso aislado se declara como residual. **Decidida:** «Vía A + IC-09». **H0 no activó ninguna respuesta** (filas 4 y 5): V1, V2, V3 y el cierre en `Settle` no hacen falta, y quedan declarados para Smoke-2 (D-T4C-09) | «any other material product decision»: decidida |
 | **O-03** | El núcleo, que vive todo el proceso, guarda un ejecutor sin estado (D-T4C-06). El escritor sigue siendo de una corrida | (E-a) Un campo de tipo `Systems`, con el cambio declarado de la guarda de campos. (E-b) La interfaz en `WorkspaceEditIntent.cs` y un reenviador en `CTL`, sin ese cambio. (W-3) Sin campo, rompiendo el reenvío literal y la compuerta | **(E-a).** La sesión no lo lee como «a new persistent host authority»: no guarda documento, escritor, transacción, corrida ni objetivo, y cumple «not retained by Workspace controller». Pero el Owner decide la lectura | **«the pilot-specific writer needs a new persistent host authority»** (posible, según la lectura) |
 | **O-04** | El escritor de hoy lee el documento activo y se puede reutilizar (H-05). Su guarda prohíbe campos (H-06) | (D-1) Un constructor con el `Document`; dos campos, el documento de solo lectura y la marca de un solo uso; `Retire`; y un cambio declarado de `WRITER` y de `TW/WorkspacePilotUpdateGuardTests.cs:185-188`, protegido por C14. (D-1') Un solo campo `Document?` consumido. (D-3) Un puerto por corrida en el adaptador, con `WRITER` sin uso | **(D-1).** No es «reopen T4B»: cumple «receives only the exact current document» y «cannot be reused», que `OO` asigna a T4C, sin tocar MUTATE ni POST | «any other material product decision», por un cambio en un archivo y en una guarda de T4B |
 | **O-05** | C-F4-02 manda **avisar** al Owner de que se reintroduce `ExecuteInCommandContextAsync` (`F4P:59`). Hoy está prohibida en todo `src` (H-09) | Avisar y admitir la excepción por un solo archivo exacto; o un comando registrado desde el principio (D-13, A-n) | **El aviso:** se reintroduce en un único archivo, `ADAPTER`, solo para Actualizar, con el planificador del hilo de la UI y sin ninguna espera. La navegación sigue según IC-01. Vuelve el vaciado de PICKFIRST (`*Cancel*` x2), solo en Actualizar | — (aviso obligatorio) |
 | **O-06** | La UI no puede recibir nada por empuje (H-15) | F-1 extracción, F-2 empuje o F-3 resultado síncrono (D-T4C-03) | **F-1**, con `TakeUpdateProgress`, el aviso `StateChanged` existente y las cinco reglas de presentación única | Si H0 muestra que no llega ningún aviso después del comando interno: «DocumentLock/command context cannot wrap the T4B run cleanly» |
-| **O-07** | Los descartes actúan hoy sobre un Applying (H-25). Un `Busy` sin cota haría el documento imposible de descartar y de cerrar sin perder el trabajo (IR R-01) | (a) La marca del host, `Busy`, **con la cota del billete:** caduca con la primera entrada en reposo de la sesión si el callback no empezó, con `Failed(HostNotRunReason)` y un testigo que anula el callback tardío. (b) El registro, que cambia una prueba caracterizada de T2B2B. (c) Las dos | **(a) con la cota.** Sin la cota, (a) no es seguro. **Sigue siendo segura tras RR N-01**, y la v3 cierra el hueco que señalaba RR §6: un billete empezado tiene garantizada su llamada terminal, por las operaciones totales del núcleo y el `finally` exterior del corredor, y la defensa de la caducidad del billete empezado. Solo un billete dentro de `Execute` no caduca, y `Execute` es total y quita el billete en su `finally`. En una sesión degradada, `RequestUpdate` responde `Unavailable` y no pone billete | — |
+| **O-07** | Los descartes actúan hoy sobre un Applying (H-25). Un `Busy` sin cota haría el documento imposible de descartar y de cerrar sin perder el trabajo (IR R-01) | (a) La marca del host, `Busy`, **con la cota del billete**, con `Failed(HostNotRunReason)` y un testigo que anula el callback tardío. En la v4, la cota era la primera entrada en reposo; **en la v5 es la regla del Owner** (O-16). (b) El registro, que cambia una prueba caracterizada de T2B2B. (c) Las dos | **(a) con la cota.** Sin la cota, (a) no es seguro. **Decidida.** **Sigue siendo segura con la regla nueva:** el billete se libera con la compleción, que H0 vio siempre (H-40); y como respaldo, con el primer comando ajeno de la sesión, su cierre o su retirada. Un `RACKPANELDESCARTAR` o un `CLOSE` son ellos mismos comandos ajenos, así que el descarte y el cierre nunca quedan bloqueados más allá del comando con que el usuario los pide (D-T4C-10). Un billete empezado tiene garantizada su llamada terminal (RR N-01), y en una sesión degradada `RequestUpdate` responde `Unavailable` y no pone billete | — |
 | **O-08** | DV-05 de M4: la guía (`docs/guias/validacion-manual-autocad.md:427-428`) y `FRZ:828-830` exigen la suite completa de UI en local para la build del hito, y F4-E59 la prohíbe mientras siga H-1 | Una dispensa (la CI exacta y los filtros locales); aceptar H-1 declarada; o resolver antes H-1 | Una dispensa expresa del Owner para Smoke-2, o resolver H-1 en una tarea aparte. **Es para antes de Smoke-2 y no bloquea la emisión** | — |
 | **O-09** | El producto toca unas 40 rutas, en tres capas (§6) | H0 + T4C1 + T4C2; o H0 + una sola tarea | **H0 + T4C1 + T4C2** (D-T4C-19). El estado intermedio es seguro | — |
 | **O-10** | El diagnóstico de T4A2 obliga a cambiar M-2 y M-3 y la regla de UI de D-T4A2-06 (D-T4C-12) | La opción (a) de M3 §4.3; o dejar la limitación declarada a F5 | **(a)**, porque `OO` lo asigna a T4C, y sin ninguna lectura nueva | — |
@@ -1672,7 +1762,11 @@ El procedimiento se fija tras T4C (`T4P:587`). La build del hito tiene que resol
 | **O-12** | Una corrida modifica el DWG en varias transacciones, pero lo authored va en una (H-07) | Leer el renombrado y la purga como POST (`FRZ:519`); o como authored | **Como POST**: una transacción authored | «more than one authored mutation transaction is required» (no activada con esta lectura) |
 | **O-13** | «cancel» de `OO` no está definido (M2 Q2-05) | (i) El comando interno cancelado antes del callback, también con Esc justo después del clic: fallo del host y cero escrituras. (ii) El «No» de una confirmación. (iii) Esc durante la corrida, que no tiene punto de cancelación | **(i)**, y (iii) declarada como inexistente | — |
 | **O-14** | Los avisos no viajan en `PilotFieldView` (H-28) | Un aviso del gesto en el VM, que se pierde si la superficie cambia después de presentarlo; o ampliar la vista con un cambio declarado | **El aviso del gesto** | — |
-| **O-15** | `EXECUTEFUNCTION` vacía PICKFIRST (H-22) | Aceptarlo; o restaurar la selección, que es una escritura de selección nueva | **Aceptarlo**, en Smoke-2 | — |
+| **O-15** | `EXECUTEFUNCTION` vacía PICKFIRST (H-22) | Aceptarlo; o restaurar la selección, que es una escritura de selección nueva | **Aceptarlo**, en Smoke-2. H0 lo confirmó (O-H0-3) | — |
+| **O-16** | **El C12 de H0, fila 3** (H-41): AutoCAD entra en reposo dos veces entre la vuelta de la llamada y el callback, en las cinco sondas. Con la cota de la v4, cada Actualizar caducaría antes de correr | «Completar o comando ajeno»; «Contar desde el comando interno», en la que la caducidad por reposo solo cuenta después del `CommandWillStart` y del `CommandEnded` de `EXECUTEFUNCTION`; o «A-n: comando registrado» | **Resuelta por el Owner:** «Completar o comando ajeno» (`owner-f4t4c-h0-c12-decision.md`). El billete se libera con la compleción de `ExecutionResult`; como respaldo, si el callback no empezó, caduca con el primer `CommandWillStart` de la sesión de un comando que no sea `EXECUTEFUNCTION`, con el cierre del documento o con la retirada de la sesión; y las entradas en reposo dejan de contar. La v5 lo aplica en D-T4C-02, D-T4C-04, D-T4C-09, D-T4C-10, D-T4C-17 y D-T4C-20 | «any other material product decision»: **resuelta** |
+| **O-17** | **Las desviaciones del procedimiento de H0** (H-52): **el operador fue la sesión, no el Owner**, por la instrucción del Owner («Crealo tú controlando autocad, no pidas autorización»), contra la cuarta cláusula de la dispensa 2; **el dibujo es sintético**, creado por la sesión con el producto clásico; y **el RELEASE de I-52** se pidió y I-52 respondió después de la sonda, «SIN OBJECIÓN» y sin emitir RELEASE, por su política de no conceder ventanas a otras iniciativas | Ratificarlas como están; o repetir H0, o alguna de sus filas, con el Owner como operador, un dibujo real y el RELEASE de I-52 | **Ratificarlas.** El resultado es de diagnóstico y no cuenta como cumplimiento; Smoke-2 lo repite todo con el producto, un dibujo real del Owner y el Owner como operador (§7). Ninguna fila depende del dibujo: el callback, la compleción, el orden, Undo y los bloqueos son del host. La sesión de I-52 estaba inactiva, sin ninguna `acad.exe`, y no hubo solapamiento | — (ratificación del procedimiento) |
+| **O-17 bis** (CK5 M5-01) | **La interpretación de la regla del C12:** D-T4C-02 aplica el respaldo del comando ajeno también a un billete empezado que no entró en `Execute` y a uno terminado sin compleción. Es la defensa de N-01, que la decisión del Owner no nombra | Ratificarla como interpretación; o limitar el respaldo, literalmente, al billete cuyo callback no empezó | **Ratificarla.** No contradice la regla, solo cierra los dos caminos que la letra no cubre; sin ella, un billete empezado que no completa quedaría sin cota | — (ratificación de la interpretación) |
+| **O-18** (CK5 M5-04) | **Observación, fuera del alcance de T4C:** las lecturas del panel de F4-T3 y F4-T4A («Editar» y «Comprobar ahora») dejan entradas «Group of commands» en Deshacer y vacían la pila de Rehacer (O-H0-2, H-51). Es un efecto visible de unas lecturas que se suponían sin efecto, y toca S2-05 y la obligación de IC-02 de observar Deshacer y Rehacer | Registrarla como candidata a ideas futuras o a una corrección aparte de T3 y T4A; o tratarla dentro de T4C | **Registrarla aparte,** sin cambiar el alcance de T4C. Smoke-2 la declara y prueba Redo inmediatamente después de Undo | — (observación) |
 
 **Lo que IR §4 pedía llevar al Owner y el diseño de la v2 resuelve sin fila nueva:**
 - **la política del borrador que cambia durante el vuelo** (IR R-03): `Busy` en las operaciones que cambian ese borrador (D-T4C-08). El usuario no puede editar lo que no se va a aplicar, y la UI ya deshabilitaba la caja;
@@ -1686,10 +1780,10 @@ El procedimiento se fija tras T4C (`T4P:587`). La build del hito tiene que resol
 | T4B no se puede invocar sin duplicar la política | **No activada.** `TryUpdatePilot` se llama tal cual (D-T4C-01) |
 | Hace falta más de una transacción authored | **No activada**, con la lectura de O-12 |
 | T1B tiene que cambiar | **No activada** (D-T4C-18) |
-| El bloqueo y el contexto no envuelven la corrida | **No activada por el código.** Depende de H0 [H], filas 2, 5 y 8 a 10 (O-01, O-06) |
-| Undo exige un cambio material | **No activada por el código.** Depende de H0 o de Smoke-2 [H], fila 6 (O-01) |
-| El escritor necesita una autoridad persistente del host | **Posible**, según cómo se lea el ejecutor (O-03) |
-| Cualquier otra decisión material de producto | **Activada:** el ámbito propio, su residual y las respuestas a los `*Cancel*`, al cierre temprano sistemático y a la falta de eventos de fin (O-02); las tres dispensas, con la cuarta cláusula de §12.1, y el vehículo de la sonda de host (O-01); y la cota del billete con R-T4-07 (O-07) |
+| El bloqueo y el contexto no envuelven la corrida | **No activada, por la medida de H0:** la compleción llega siempre (fila 2), el orden es el previsto (fila 5), el documento es el admitido con `TopTransaction` nula (fila 8), los bloqueos anidados funcionan (fila 9) y hay contexto de sincronización (fila 10). El C12 de la fila 3 tocaba la cota, no el envoltorio, y está resuelto (O-16) |
+| Undo exige un cambio material | **No activada, por la medida de H0** (fila 6): un solo paso, con Undo y Redo completos. Smoke-2 lo confirma con el producto |
+| El escritor necesita una autoridad persistente del host | **Decidida por el Owner:** eligió «E-a + D-1» (O-03 y O-04). La descripción de la opción le dejaba a él decidir si el ejecutor sin estado contaba como autoridad persistente, y lo eligió con esa lectura sobre la mesa. H0 no cambia nada aquí |
+| Cualquier otra decisión material de producto | **Decidida o resuelta:** O-01, O-02 y O-07 por la disposición del Owner del §9 de la v4, y el C12 de H0 por su decisión (O-16). **Queda abierta solo la ratificación de las desviaciones de H0 (O-17)**, que es de procedimiento y no de producto |
 
 ---
 
@@ -1779,6 +1873,38 @@ Antes de aceptar cada hallazgo, la sesión comprobó en el código o en el paque
 
 **El §9:** O-02 queda corregido según C3-01, con la alternativa para N-10 como desviación expresa de C-F4-04. O-07 sigue siendo seguro (CK §4).
 
-### 10.4 Lo siguiente
+### 10.4 La incorporación de T4C-H0 (v5)
 
-- **La vuelta al Owner** con el §9. CK §6 no pide otra revisión.
+**Las entradas:**
+- el resultado de H0, fila por fila, con sus observaciones O-H0-1 a O-H0-5 y sus desviaciones (`H0R`);
+- las notas del arnés, con los hechos de `ExecutionResult` (`H0N` §1);
+- la traza (`H0T`);
+- la decisión del Owner sobre el C12 de la fila 3 («Completar o comando ajeno»);
+- la disposición del Owner sobre el §9 de la v4, que sigue vigente.
+
+La custodia está en la rama: la v4 en `de27426b` y H0 en `44fe029d`. La sesión comprobó en la rama los archivos de `docs/automation/evidence/I-64-pilot/F4-T4C-H0/` que cita la v5, y que `git diff b15072ff 44fe029d -- src tests` sale vacío.
+
+| Entrada | Qué cambia en la v5 | Dónde queda |
+|---|---|---|
+| Filas 1, 2 y 10: el callback diferido, la compleción siempre y en el hilo de la UI | [H] → [M]. El modelo tolerante se confirma en el caso real, y la compleción pasa a ser la liberación normal del billete | §2.6 (H-39, H-40), D-T4C-02, D-T4C-03, D-T4C-16 |
+| Fila 3: dos entradas en reposo antes del callback, C12 | **C12 resuelto por el Owner:** la cota «Completar o comando ajeno» sustituye a la de las entradas en reposo. Se añade la cuenta de comandos ajenos en el puente (`NoteForeignCommandStart`, `ForeignCommandStartsOf`) y se retira `QuiescentEntriesOf` | §2.6 (H-41), D-T4C-02, D-T4C-09, D-T4C-10, D-T4C-17, D-T4C-20 (filas 5, 14, 15, 17 y 22), §6 (INV-02, C12), §9 (O-07, O-16) |
+| Fila 4: sin pistas de los `*Cancel*` | V1 y V2 no hacen falta, y quedan declaradas para Smoke-2 | §2.6 (H-42), D-T4C-09, §6 C12, §9 O-02 |
+| Fila 5: el orden de los eventos y `F4P:60` | La vía A se confirma con el orden medido. V3 y el cierre en `Settle` no hacen falta, y quedan declarados para Smoke-2 | §2.6 (H-43), D-T4C-09, §6 C12, §7, §9 O-02 |
+| Filas 6 y 7: un solo paso de Undo, Undo y Redo completos, y el paso vacío | Undo medido en el diagnóstico, y Smoke-2 lo confirma con el producto. El paso vacío se declara | §2.6 (H-44, H-45), D-T4C-15, §7 |
+| Filas 8, 9, 11 y 12: el estado al entrar, los bloqueos anidados, sin bombeo y sin Assert | [H] → [M]. Ninguna acción | §2.6 (H-46 a H-49), D-T4C-04, D-T4C-16 |
+| O-H0-4: `ExecutionResult`, no un `Task` | La guarda del adaptador se reescribe: una sola `OnCompleted` con el salto al contexto capturado, las prohibiciones del precedente y `GetResult` solo dentro de un `try`. La totalidad de la continuación se comprueba. La compleción ya no lleva fallo, y la quinta operación de la corrida es `Completed` | §2.6 (H-50), D-T4C-04, D-T4C-05, §6 INV-03 |
+| O-H0-1, O-H0-2 y O-H0-3 | La línea base de la mutación propia confirma D-T4C-09. Las lecturas del panel que vacían Rehacer y Redo inmediatamente después de Undo van a Smoke-2. PICKFIRST confirma O-15 | §2.6 (H-51), D-T4C-09, D-T4C-15, §7, §9 O-15 |
+| O-H0-5: el paso opcional 10 no se hizo | Ninguna: las filas 1 y 11 no lo necesitan | §2.6 |
+| Las desviaciones: el operador, el dibujo y el RELEASE de I-52 | Se declaran, y se pide su ratificación | §2.6 (H-52), D-T4C-16, §7, §9 O-17 |
+
+**Lo que de §10.1 a §10.3 queda superado por H0:**
+- **la cota por entradas en reposo** de R-01 (§10.1), N-01 y N-09 (§10.2): ahora va por comando ajeno. La liberación garantizada de N-01 y el nulo de una sesión degradada de N-09 se conservan;
+- **la caducidad dentro de `RequestUpdate`** de C3-03 (§10.3) se conserva igual, con el disparador nuevo;
+- **las respuestas de N-07, N-10 y C3-01** se conservan como respuestas declaradas para Smoke-2, porque H0 no las activó.
+
+**Lo que se señala de la medición, sin cambiar la decisión del Owner.** Las dos entradas en reposo de la fila 3 llegan con el reposo ya puesto (`H0T:35-36`). Una cota que contara solo los cambios de estado quizá no las habría contado. Aun así, la regla del Owner es más robusta, porque no depende del estado del reposo que lleva el núcleo, y es la que rige.
+
+### 10.5 Lo siguiente
+
+- **La vuelta al Owner** con el §9: solo queda la ratificación de O-17.
+- **Después, la emisión de T4C1** (O-09), y luego la de T4C2.
