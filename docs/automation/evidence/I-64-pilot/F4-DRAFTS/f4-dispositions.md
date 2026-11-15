@@ -2545,3 +2545,36 @@ El producto completo quedó en `wip-green-impl.patch`. Aplicado en local, deja t
 - **El producto de F4-T4C queda completo** (H0, T4C1 y T4C2), y con él el de **F4-T4**.
 - **Siguiente:** Smoke-2 (§7 del paquete de T4C), obligatorio, con el Owner como operador.
 - La medición falsa de P-02 de nc2 se conserva aparte (SHA-256 `88cb6920…`).
+
+## F4-E71. Decisiones del Owner para Smoke-2 y preparación de sus dibujos
+
+**Autoridades:**
+- `F4-DRAFTS/coordinator/owner-f4-smoke2-decisions.md`, literal:
+  - la opción A para S2-10 y la rama PostReread: no se provocan en AutoCAD, sin inyección Debug en el escritor;
+  - el paso 87 incluido;
+  - las copias separadas por escenario;
+  - los casos de D3 que falten, NO DISPONIBLE, sin fabricarlos;
+  - las etiquetas «NO VERIFICABLE FÍSICAMENTE / CUBIERTO POR PRUEBA AUTOMATIZADA»;
+  - el protocolo OBSERVADO de los pasos 34 y 87;
+  - las precondiciones 1 a 7 de «PREPARAR SMOKE-2»;
+  - las disposiciones A a G;
+- `F4-DRAFTS/coordinator/owner-f4-smoke2-operator-instruction.md`, literal: la sesión **genera y prepara los dibujos**, y **Smoke-2 lo opera el Owner presente**. La primera lectura de la sesión («la sesión opera Smoke-2») quedó retirada por el segundo mensaje del Owner antes de ejecutar ningún paso.
+
+**Guía:** la v2, aceptada por el Owner como base, pasa a v3 con esas decisiones:
+- 30 copias fijas más una por dibujo de S2-15;
+- las pruebas que citan las 19 etiquetas «CUBIERTO POR PRUEBA AUTOMATIZADA».
+
+No se custodia todavía: lleva nombres de proyectos de clientes y rutas locales. Se custodiará redactada con el resultado de Smoke-2.
+
+**Precondiciones de «PREPARAR SMOKE-2»:**
+1. F4-T4C2-PANEL está cerrada (F4-E70).
+2. La rama está publicada en `b5589f3d`, con CI 4/4.
+3. El DLL está identificado (`F4-SMOKE-2/prep/dll.md`): la build Debug de `b88dabf2`, compilada con AutoCAD cerrado.
+4. AutoCAD seguía cerrado al compilar.
+5. Hay 36 copias de trabajo preparadas, todas de dibujos reales del Owner (`F4-SMOKE-2/prep/selection.md`). Sus casos NO DISPONIBLE son el sobre sin Id, la Cama de dos miembros y la referencia externa.
+6. Se registraron los SHA-256 de los 7 originales antes y después, y ninguno cambió.
+7. Ninguna otra sesión toca el worktree. I-52 recibió el aviso de inicio, la corrección y el aviso de cierre de esta preparación, y acusó recibo (`F4-SMOKE-2/prep/i52-ack-smoke2-prep.md`).
+
+**DV-05 / O-08:** la dispensa ya estaba aceptada (`owner-f4t4c-package-decisions.md`, pregunta 4).
+
+**Estado:** Smoke-2 queda **PREPARADO y en espera del Owner presente.** No se ejecutó ningún paso de Smoke-2, no se abrió la interfaz de AutoCAD y no se cargó el DLL.

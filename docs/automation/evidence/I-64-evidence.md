@@ -7431,3 +7431,22 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 **Siguiente:** Smoke-2, obligatorio.
 
 **Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.
+
+## 218. Smoke-2 preparado: decisiones del Owner, DLL y dibujos
+
+**Decisión:** F4-E71, con las decisiones literales del Owner y su instrucción sobre el operador (la sesión prepara los dibujos y el Owner opera Smoke-2).
+
+**DLL Debug de `b88dabf2`:** SHA-256 `8BB8E7E5…7964`.
+
+**Dibujos:**
+- 36 copias de trabajo de 7 dibujos reales del Owner.
+- Se eligieron leyendo solo copias con `accoreconsole`, en 167 dibujos locales.
+- Los originales quedaron intactos.
+
+**NO DISPONIBLE:** el sobre sin Id, la Cama de dos miembros y la referencia externa.
+
+**I-52:** avisada del inicio y del cierre.
+
+**Resultado:** Smoke-2 **PREPARADO, en espera del Owner presente.** No se ejecutó ningún paso.
+
+**Límites:** solo documentación. La guía v3 se custodiará redactada con el resultado de Smoke-2.
