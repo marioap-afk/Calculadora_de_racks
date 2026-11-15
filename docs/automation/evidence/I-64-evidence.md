@@ -7406,3 +7406,13 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 **Custodia:** las seis unidades del intento 1 con sus manifiestos, el análisis y las tres decisiones del Owner.
 
 **Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.
+
+## 216. Contrato del intento 2 de F4-T4C2-PANEL
+
+**Contrato:** `I-64-pilot/F4-T4C2-PANEL/coordinator/gate-contract-attempt2.json` (F4-E69), que parte del contrato del intento 1.
+- **Cambios:** se añaden INV-F4T4C-26, la corrección de las tres pruebas del RED y el GREEN con el producto del parche, e INV-F4T4C-27, la mecánica de la corrección. El alcance (14 rutas), el `ForbiddenWriteScope` (150 entradas), los `RequiredTests` y las paradas no cambian.
+- **Autoridades nuevas:** el análisis y el parche del intento 1, y la decisión del Owner de corregir.
+- **Revisiones:** `AuthorityRevision` `bbc259dd7c54c00edda2f6742961fa9daf5df3fe` (custodia del intento 1) y `MainSha` `812baf879612320653094a8aaf46aca0bac81383`.
+- **`attempts`:** 2 de 3.
+
+**Límites:** solo documentación en este paso; sin AutoCAD.
