@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: none
   attempts: 2
-  next_action: "F4-T4C1-HOST: CORRECCION en el intento 2 de 3 (F4-E66, decision D3 del Owner): la cota del billete terminado sin compleccion (B-01) y G-1 y G-10 acotados (I-01) de la revision independiente, mas los menores; emitir gate-contract-attempt2.json y ejecutar su cadena"
+  next_action: "F4-T4C1-HOST: contrato del intento 2 emitido (correccion, AuthorityRevision cd902cd9); siguiente: planificacion del Controller, comparacion byte a byte, A1-A8 y Worker"
   last_evidence_commit: 0f49f69160cdffc1d2933d6165d5f472b5793d84
 execution_context:
   mode: manual
