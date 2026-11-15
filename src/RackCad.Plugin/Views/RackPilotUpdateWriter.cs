@@ -31,6 +31,15 @@ namespace RackCad.Plugin.Views
     /// </summary>
     internal sealed class RackPilotUpdateWriter : IPushBackPilotUpdatePort
     {
+        // RED skeleton (INV-F4T4C-20): the constructor with the document and the retirement exist with inert bodies.
+        internal RackPilotUpdateWriter(Document document)
+        {
+        }
+
+        internal void Retire()
+        {
+        }
+
         public IPushBackPilotUpdateScope Begin(PushBackPilotUpdateRequest request)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));

@@ -99,6 +99,10 @@ namespace RackCad.Application.Workspace
         /// answers an empty list and the queue is NOT emptied: the notices are taken again at the next presentation.
         /// </summary>
         IReadOnlyList<PilotCloseView> TakeCloseNotices();
+
+        EditUpdateStart RequestUpdate(EditIntentRequest request);
+
+        EditUpdateProgress TakeUpdateProgress(WorkspaceRequest origin, string rackId);
     }
 
     /// <summary>The state of the field of one rack, as the port reports it. The default value is NotOpen.</summary>
@@ -172,6 +176,7 @@ namespace RackCad.Application.Workspace
         PanelHide,
         Dematerialize,
         DocumentClose,
+        Update,
     }
 
     /// <summary>

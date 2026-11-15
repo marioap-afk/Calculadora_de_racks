@@ -112,6 +112,17 @@ namespace RackCad.Plugin.Workspace
 
         public void SetModalRackCadActive(bool active) => _core.SetModalRackCadActive(active);
 
+        // RED skeleton (INV-F4T4C-20): three internal forwarders with inert bodies.
+        internal void OpenOwnMutation(SessionId session)
+        {
+        }
+
+        internal void CloseOwnMutation(SessionId session)
+        {
+        }
+
+        internal int? ForeignCommandStartsOf(SessionId session) => null;
+
         /// <summary>Removes every hookup. The bridge is then back to zero subscriptions.</summary>
         public void Dispose()
         {

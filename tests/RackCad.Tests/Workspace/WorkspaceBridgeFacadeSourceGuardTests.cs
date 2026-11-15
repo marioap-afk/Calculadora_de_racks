@@ -203,17 +203,18 @@ public class WorkspaceBridgeFacadeSourceGuardTests
     // OnNoActiveDocument (C2-B). I-64 F4-T2B2B (D-T2B2-09) widens it by exactly one more name, SetLifecycleAdvisor, the assignment of the
     // advisor of the lifecycle (the constructor does not change). I-64 F4-T2C (D-T2C-03, IC-04) widens it by exactly one more name,
     // CanDrainNow, the in-memory query of the eligibility of the idle pass. The T2 names and the two of T3A stay exactly as they were.
-    [Fact]
-    public void TheCoreAddsExactlyTwoPublicMembersToWhatT2Left()
-    {
-        var names = typeof(EventBridgeCore)
-            .GetMembers(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly)
-            .Where(m => !(m is MethodBase method && method.IsSpecialName))
-            .Select(m => m.Name)
-            .Distinct()
-            .OrderBy(n => n, StringComparer.Ordinal)
-            .ToArray();
+    private static string[] CoreSurface() => typeof(EventBridgeCore)
+        .GetMembers(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly)
+        .Where(m => !(m is MethodBase method && method.IsSpecialName))
+        .Select(m => m.Name)
+        .Distinct()
+        .OrderBy(n => n, StringComparer.Ordinal)
+        .ToArray();
 
+    // I-64 F4-T4C1-HOST (D-T4C-20, row 14) widens it by exactly four more names, and only them: the three entries of the own mutation of the
+    // update and of the count of foreign commands, and the query of that count. One more name, without being declared here, trips the guard.
+    private static string[] DeclaredCoreSurface()
+    {
         var t2 = new[]
         {
             "ActiveSession", "AttachedSources", "IsDegraded", "IsIdleAttached", "IsStarted", "LiveSessionCount", "OnBeginDocumentClose",
@@ -224,7 +225,25 @@ public class WorkspaceBridgeFacadeSourceGuardTests
         var c2 = new[] { "IsCommandActiveInActiveSession", "OnNoActiveDocument" };
         var t2b2b = new[] { "SetLifecycleAdvisor" };
         var t2c = new[] { "CanDrainNow" };
-        Assert.Equal(t2.Concat(t3a).Concat(c2).Concat(t2b2b).Concat(t2c).OrderBy(n => n, StringComparer.Ordinal).ToArray(), names);
+        var t4c1 = new[] { "OpenOwnMutation", "CloseOwnMutation", "NoteForeignCommandStart", "ForeignCommandStartsOf" };
+        return t2.Concat(t3a).Concat(c2).Concat(t2b2b).Concat(t2c).Concat(t4c1).OrderBy(n => n, StringComparer.Ordinal).ToArray();
+    }
+
+    [Fact]
+    public void TheCoreAddsExactlyTwoPublicMembersToWhatT2Left()
+    {
+        Assert.Equal(DeclaredCoreSurface(), CoreSurface());
+    }
+
+    [Fact]
+    public void TheCoreSurfaceGuardTripsOnAnUndeclaredNameAndOnAMissingDeclaredOne()
+    {
+        var declared = DeclaredCoreSurface();
+        var real = CoreSurface();
+
+        Assert.NotEqual(declared, real.Append("Sneaky").OrderBy(n => n, StringComparer.Ordinal).ToArray());
+        Assert.NotEqual(declared, real.Where(n => n != "NoteForeignCommandStart").ToArray());
+        Assert.Equal(4, declared.Count(n => n is "OpenOwnMutation" or "CloseOwnMutation" or "NoteForeignCommandStart" or "ForeignCommandStartsOf"));
     }
 
     [Fact]

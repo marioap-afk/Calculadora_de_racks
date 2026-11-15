@@ -160,6 +160,24 @@ public class WorkspacePilotUpdateGuardTests
 
     // ------------------------------------------------------------------ the writer, anchored by body (D-T4B-09)
 
+    // I-64 F4-T4C1-HOST (D-T4C-07, D-T4C-20 row 13): exactly these parts are taken out of the text of the port before the prohibitions are
+    // applied to the rest: the constructor with the exact document, the two declarations (the document, read-only, and the mark of one use),
+    // the line of the retirement and the lines of Begin that check and set the mark and hand the document to the scope. The prohibitions
+    // are the SAME expression as before, applied to what is left.
+    private static readonly string[] AllowedPortParts =
+    {
+        @"internal\s+RackPilotUpdateWriter\s*\(\s*Document\s+document\s*\)\s*\{[^{}]*\}",
+        @"private\s+readonly\s+Document\s+_document\s*;",
+        @"private\s+bool\s+_spent\s*;",
+        @"internal\s+void\s+Retire\s*\(\s*\)\s*=>\s*_spent\s*=\s*true\s*;",
+        @"if\s*\(\s*_spent\s*\)\s*throw\s+new\s+InvalidOperationException\s*\([^;]*\)\s*;",
+        @"_spent\s*=\s*true\s*;",
+        @"return\s+new\s+RackPilotUpdateScope\s*\(\s*_document\s*,\s*request\s*\)\s*;",
+    };
+
+    private static string PortWithoutItsAllowedParts(string port) =>
+        AllowedPortParts.Aggregate(port, (text, pattern) => Regex.Replace(text, pattern, string.Empty));
+
     // What the writer NEVER does. These are prohibitions: they hold for any text of the three classes, so they hold for a writer that does nothing.
     private static IEnumerable<string> WriterProhibitionViolations(string code)
     {
@@ -183,9 +201,10 @@ public class WorkspacePilotUpdateGuardTests
         if (Src.Count(code, @"\bPrepareRedraw\s*\(") != Src.Count(prepare, @"\bPrepareRedraw\s*\(")) yield return "PrepareRedraw is outside the body of PrepareUnits";
 
         // INV-14: no object of AutoCAD outside the two classes of scope, and the port has no field at all.
-        var port = PortClass(code);
+        var port = PortWithoutItsAllowedParts(PortClass(code));
         if (Regex.IsMatch(port, @"\b(?:Transaction|DBObject|Document|ObjectId|Database|PreparedViewRedraw)\b|staleDefinitions")) yield return "the port names an object of AutoCAD";
-        if (Regex.IsMatch(port, @"\bprivate\b|\breadonly\b")) yield return "the port has a field";
+        if (Regex.IsMatch(port, @"\bprivate\b|\breadonly\b|\bstatic\s+[^(){};=]*[;=]")) yield return "the port has a field";
+        if (Regex.IsMatch(code, @"MdiActiveDocument")) yield return "the writer resolves the active document by itself";
 
         // The scope of MUTATE never purges, renames, regenerates or reads the whole drawing.
         var mutation = MutationScope(code);
@@ -211,6 +230,15 @@ public class WorkspacePilotUpdateGuardTests
         if (!Regex.IsMatch(begin, @"TopTransaction\s*!=\s*null[\s\S]*StartTransaction\s*\(")) yield return "the top scope is not checked before the start";
         if (Src.Count(code, @"\bStartOpenCloseTransaction\s*\(") != 1 || Src.Count(post, @"\bStartOpenCloseTransaction\s*\(") != 1) yield return "the read of the names is not one scope in Post";
         if (Src.Count(code, @"\.Commit\s*\(") != 1 || Src.Count(seal, @"\.Commit\s*\(") != 1) yield return "Commit is not exactly one, in Seal";
+
+        // The port is the port of ONE run: it has exactly its two fields, it begins once and the target retires it. Begin checks the mark of one
+        // use before it sets it, and hands the exact document to the scope (D-T4C-07).
+        var portClass = PortClass(code);
+        if (Src.Count(portClass, @"private\s+readonly\s+Document\s+_document\s*;") != 1 || Src.Count(portClass, @"private\s+bool\s+_spent\s*;") != 1) yield return "the port does not have exactly its two fields";
+        if (Src.Count(portClass, @"\bprivate\b") != 2) yield return "the port has more than its two declarations";
+        if (Src.Count(portClass, @"internal\s+void\s+Retire\s*\(\s*\)\s*=>\s*_spent\s*=\s*true\s*;") != 1) yield return "the port does not retire itself";
+        var portBegin = Method(portClass, @"public\s+IPushBackPilotUpdateScope\s+Begin\s*\(");
+        if (!Regex.IsMatch(portBegin, @"if\s*\(\s*_spent\s*\)\s*throw\s+new\s+InvalidOperationException[\s\S]*_spent\s*=\s*true\s*;[\s\S]*return\s+new\s+RackPilotUpdateScope\s*\(\s*_document\s*,\s*request\s*\)\s*;")) yield return "Begin does not check and set the mark of one use before it hands the document to the scope";
 
         // The port hands back a new scope each time, and the scope of MUTATE releases its scope of the drawing.
         if (!Regex.IsMatch(Method(PortClass(code), @"public\s+IPushBackPilotUpdateScope\s+Begin\s*\("), @"return\s+new\s+RackPilotUpdateScope\s*\(")) yield return "Begin does not hand back a new scope each time";
@@ -262,6 +290,41 @@ public class WorkspacePilotUpdateGuardTests
 
         Assert.Empty(WriterProhibitionViolations(real));
         Assert.NotEmpty(WriterProhibitionViolations(real.Replace("internal sealed class RackPilotMutationScope", injected + "\ninternal sealed class RackPilotMutationScope", StringComparison.Ordinal)));
+    }
+
+    // D-T4C-20 row 13: the new negatives, apart from the four that stay. The port admits exactly its two declarations, its constructor, its
+    // retirement and the lines of Begin, and nothing else: a second document, a transaction, a static field, a Begin that does not check the
+    // mark, a port that cannot retire itself and the active document resolved by the writer all trip the guard.
+    [Theory]
+    [InlineData("private readonly Document _other;")]
+    [InlineData("private Document _second;")]
+    [InlineData("private Transaction _transaction;")]
+    [InlineData("private static int _count;")]
+    [InlineData("private readonly DBObject _object;")]
+    public void TheWriterGuardTripsOnASecondDocumentATransactionOrAStaticFieldInThePort(string injected)
+    {
+        var real = Writer();
+        var head = Regex.Match(real, @"internal\s+sealed\s+class\s+RackPilotUpdateWriter\s*:\s*IPushBackPilotUpdatePort\s*\{");
+        Assert.True(head.Success);
+
+        Assert.Empty(WriterProhibitionViolations(real));
+        Assert.Empty(WriterStructureViolations(real));
+        var mutated = real.Insert(head.Index + head.Length, " " + injected);
+        Assert.True(WriterProhibitionViolations(mutated).Any() || WriterStructureViolations(mutated).Any(), injected);
+    }
+
+    [Fact]
+    public void TheWriterGuardTripsOnABeginThatDoesNotCheckTheMarkOfOneUseAndOnAPortThatCannotRetireItself()
+    {
+        var real = Writer();
+        var check = Regex.Match(real, @"if\s*\(\s*_spent\s*\)\s*throw\s+new\s+InvalidOperationException\s*\([^;]*\)\s*;");
+        var retire = Regex.Match(real, @"internal\s+void\s+Retire\s*\(\s*\)\s*=>\s*_spent\s*=\s*true\s*;");
+        Assert.True(check.Success && retire.Success);
+
+        Assert.NotEmpty(WriterStructureViolations(real.Remove(check.Index, check.Length)));
+        Assert.NotEmpty(WriterStructureViolations(real.Remove(retire.Index, retire.Length)));
+        Assert.NotEmpty(WriterStructureViolations(real.Replace("return new RackPilotUpdateScope(_document, request);", "return new RackPilotUpdateScope(null, request);", StringComparison.Ordinal)));
+        Assert.NotEmpty(WriterProhibitionViolations(real.Replace("return new RackPilotUpdateScope(_document, request);", "return new RackPilotUpdateScope(AcApplication.DocumentManager.MdiActiveDocument, request);", StringComparison.Ordinal)));
     }
 
     [Fact]

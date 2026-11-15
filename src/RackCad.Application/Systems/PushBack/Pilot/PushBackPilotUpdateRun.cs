@@ -60,6 +60,13 @@ namespace RackCad.Application.Systems.PushBack.Pilot
 
         public const string DocumentMismatchReason = "El documento activo no es el que autorizó la actualización.";
 
+        // RED skeleton (INV-F4T4C-20): the three texts of I-01 exist with an inert value.
+        public const string UpdateNotRunReason = "";
+
+        public const string NoActiveDocumentReason = "";
+
+        public const string ModalOpenReason = "";
+
         public const string LockedLayerPrefix = "LOCKED_LAYER: ";
 
         public const string DestinationChangedReason = "Las vistas del rack o sus bloques preparados ya no son los del plan.";

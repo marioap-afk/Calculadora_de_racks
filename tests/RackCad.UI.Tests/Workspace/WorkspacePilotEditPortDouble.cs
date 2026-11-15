@@ -341,6 +341,12 @@ namespace RackCad.UI.Tests
             return taken;
         }
 
+        // I-64 F4-T4C1-HOST (INV-F4T4C-20): the two operations of the update are inert here. The gesture of the panel is of F4-T4C2, which
+        // gives them their calls, their responders and their tests; until then they record nothing and answer the inert default value.
+        public EditUpdateStart RequestUpdate(EditIntentRequest request) => default;
+
+        public EditUpdateProgress TakeUpdateProgress(WorkspaceRequest origin, string rackId) => default;
+
         private Call Record(string operation, SessionId origin, string? rackId)
         {
             var call = new Call(operation, origin, rackId);

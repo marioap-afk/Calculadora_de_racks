@@ -394,6 +394,107 @@ public class WorkspacePilotUpdateHostTests
         Assert.Equal(DraftStatus.Error, draft.Status);
         // The write happened and the re-read of POST was made: the content is the rebased one, whatever the status says.
         Assert.Equal(2.25, draft.CurrentDraftState.Inputs.Annotations.AnnotationScale);
+
+        // M-03: the answer keeps the classification of the update, and it is the one of the close, never a success that is lost.
+        Assert.Equal(EditUpdateStatus.Applied, outcome.Classification);
+        Assert.Null(outcome.Cause);
+        Assert.Empty(outcome.Warnings);
+    }
+
+    [Fact]
+    public void AnErrorThatArrivesDuringAnUpdateWithWarningsKeepsTheWarningsAndTheClassificationOfTheClosedInErrorAnswer()
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+        rig.Port.MissingPieces["B2"] = new[] { "POSTE_X" };
+        rig.Port.HookAt["Seal"] = () => draft.EnterError("the surface failed");
+
+        var outcome = rig.Update();
+
+        Assert.Equal(EditUpdateStatus.ClosedInError, outcome.Status);
+        Assert.Equal(EditUpdateStatus.AppliedWithWarnings, outcome.Classification);
+        var warning = Assert.Single(outcome.Warnings);
+        Assert.Contains("POSTE_X", warning, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AnErrorThatArrivesDuringAConflictKeepsTheConflictAsTheClassificationAndWritesNothing()
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+        rig.Port.RereadDrawing = Rig.Members().Select(m => m.Fact.DefinitionKey == "C3" ? IntentKit.Member("C3", PrepareKit.Planta("pb-02-modulos")) : m).ToArray();
+        rig.Port.HookAt["Reread"] = () => draft.EnterError("the surface failed");
+
+        var outcome = rig.Update();
+
+        Assert.Equal(EditUpdateStatus.ClosedInError, outcome.Status);
+        Assert.Equal(EditUpdateStatus.NotAppliedConflict, outcome.Classification);
+        Assert.Equal(DraftStatus.Error, draft.Status);
+        Assert.Empty(rig.Port.Written);
+    }
+
+    [Fact]
+    public void AnErrorThatArrivesDuringACommitThatThrewKeepsTheUnknownVisibleAsTheClassificationWithItsCause()
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+        rig.Port.ThrowAt["Seal"] = Boom("seal boom");
+        rig.Port.HookAt["Seal"] = () => draft.EnterError("the surface failed");
+
+        var outcome = rig.Update();
+
+        Assert.Equal(EditUpdateStatus.ClosedInError, outcome.Status);
+        Assert.Equal(EditUpdateStatus.CommitThrew, outcome.Classification);
+        Assert.StartsWith(PushBackPilotUpdateRun.SealFailedPrefix, outcome.Cause!, StringComparison.Ordinal);
+    }
+
+    // M-06 (e): the answer of an update comes from the close, with one row per class of outcome, and its status is the one of the class.
+    public static IEnumerable<object[]> EveryClassOfOutcome()
+    {
+        foreach (var name in new[]
+                 {
+                     "NotAppliedConflict", "NotAppliedAdmission", "NotAppliedPreflight", "NotAppliedFailure", "CommitThrew", "Applied",
+                     "AppliedWithWarnings", "AppliedPostRereadFailed",
+                 })
+            yield return new object[] { name };
+    }
+
+    [Theory]
+    [MemberData(nameof(EveryClassOfOutcome))]
+    public void TheAnswerOfAnUpdateHasTheStatusOfTheClassOfOutcomeThatClosedTheDraftForEveryClass(string className)
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+        switch (className)
+        {
+            case "NotAppliedConflict":
+                rig.Port.RereadDrawing = Rig.Members().Select(m => m.Fact.DefinitionKey == "C3" ? IntentKit.Member("C3", PrepareKit.Planta("pb-02-modulos")) : m).ToArray();
+                break;
+            case "NotAppliedAdmission":
+                rig.Port.NullCatalog = true;
+                break;
+            case "NotAppliedPreflight":
+                rig.Port.LockedAtPrepare = new[] { "B2" };
+                break;
+            case "NotAppliedFailure":
+                rig.Port.ThrowAt["Reread"] = Boom("reread boom");
+                break;
+            case "CommitThrew":
+                rig.Port.ThrowAt["Seal"] = Boom("seal boom");
+                break;
+            case "AppliedWithWarnings":
+                rig.Port.MissingPieces["B2"] = new[] { "POSTE_X" };
+                break;
+            case "AppliedPostRereadFailed":
+                rig.Port.ThrowAt["Post"] = Boom("post boom");
+                break;
+        }
+
+        var outcome = rig.Update();
+
+        Assert.Equal(className, outcome.Status.ToString());
+        Assert.Equal(outcome.Status, outcome.Classification);
+        Assert.NotEqual(DraftStatus.Applying, draft.Status);
     }
 
     [Fact]
@@ -443,7 +544,17 @@ public class WorkspacePilotUpdateHostTests
         Assert.Equal(EditUpdateStatus.AnotherUpdateInProgress, EditUpdateOutcome.AnotherUpdateInProgress().Status);
         Assert.Equal(EditUpdateStatus.Refused, EditUpdateOutcome.Refused("r").Status);
         Assert.Equal(EditUpdateStatus.ClosedDetached, EditUpdateOutcome.ClosedDetached().Status);
-        Assert.Equal("why", EditUpdateOutcome.ClosedInError("why").Reason);
+        var inError = EditUpdateOutcome.ClosedInError("why", EditUpdateStatus.NotAppliedConflict, "cause", new[] { "d" }, new[] { "w" });
+        Assert.Equal(EditUpdateStatus.ClosedInError, inError.Status);
+        Assert.Equal("why", inError.Reason);
+        Assert.Equal(EditUpdateStatus.NotAppliedConflict, inError.Classification);
+        Assert.Equal("cause", inError.Cause);
+        Assert.Equal(new[] { "d" }, inError.Differences.ToArray());
+        Assert.Equal(new[] { "w" }, inError.Warnings.ToArray());
+        Assert.Throws<ArgumentNullException>(() => EditUpdateOutcome.ClosedInError(null, EditUpdateStatus.Applied, null, null!, Array.Empty<string>()));
+        Assert.Throws<ArgumentNullException>(() => EditUpdateOutcome.ClosedInError(null, EditUpdateStatus.Applied, null, Array.Empty<string>(), null!));
+        Assert.Equal(EditUpdateStatus.Unavailable, default(EditUpdateOutcome).Classification);
+        Assert.Equal(EditUpdateStatus.Unavailable, EditUpdateOutcome.Failed("r").Classification);
         Assert.Equal(EditUpdateStatus.Failed, EditUpdateOutcome.Failed("r").Status);
         Assert.Equal(EditUpdateStatus.Unavailable, EditUpdateOutcome.Unavailable("r").Status);
 
@@ -454,6 +565,24 @@ public class WorkspacePilotUpdateHostTests
         Assert.Equal(new[] { "w" }, closed.Warnings.ToArray());
         Assert.Throws<ArgumentNullException>(() => EditUpdateOutcome.Closed(EditUpdateStatus.Applied, null, null!, Array.Empty<string>()));
         Assert.Throws<ArgumentNullException>(() => EditUpdateOutcome.Closed(EditUpdateStatus.Applied, null, Array.Empty<string>(), null!));
+    }
+
+    // M-06 (f): Closed copies the lists on receipt, so changing the lists of the caller afterwards changes nothing in the outcome.
+    [Fact]
+    public void TheClosedOutcomeCopiesTheListsOnReceiptAndMutatingTheOriginAfterwardsChangesNothing()
+    {
+        var differences = new List<string> { "d" };
+        var warnings = new List<string> { "w" };
+
+        var closed = EditUpdateOutcome.Closed(EditUpdateStatus.NotAppliedConflict, "c", differences, warnings);
+        var inError = EditUpdateOutcome.ClosedInError("r", EditUpdateStatus.Applied, null, differences, warnings);
+        differences.Add("other");
+        warnings.Clear();
+
+        Assert.Equal(new[] { "d" }, closed.Differences.ToArray());
+        Assert.Equal(new[] { "w" }, closed.Warnings.ToArray());
+        Assert.Equal(new[] { "d" }, inError.Differences.ToArray());
+        Assert.Equal(new[] { "w" }, inError.Warnings.ToArray());
     }
 
     // ================================================================== CompleteApply by branch (D-T4B-06), one test per row

@@ -58,14 +58,31 @@ public class WorkspacePilotEditGuardTests
         ("GetRacksAtRisk", @"PilotRiskView\s+GetRacksAtRisk\s*\(\s*WorkspaceRequest\s+\w+\s*\)\s*;"),
         ("TakeLossNotices", @"IReadOnlyList<PilotLossView>\s+TakeLossNotices\s*\(\s*\)\s*;"),
         ("TakeCloseNotices", @"IReadOnlyList<PilotCloseView>\s+TakeCloseNotices\s*\(\s*\)\s*;"),
+
+        // I-64 F4-T4C1-HOST (D-T4C-20, row 5): the two operations of the update, at the end of the port.
+        ("RequestUpdate", @"EditUpdateStart\s+RequestUpdate\s*\(\s*EditIntentRequest\s+\w+\s*\)\s*;"),
+        ("TakeUpdateProgress", @"EditUpdateProgress\s+TakeUpdateProgress\s*\(\s*WorkspaceRequest\s+\w+\s*,\s*string\s+\w+\s*\)\s*;"),
     };
 
     // The six operations that read the drawing: the three of F4-T3A and the three of the explicit reconciliation of F4-T4A1.
     private static readonly string[] ReadOperations = { "TryBeginEdit", "TryCheckNow", "TryReload", "TryConfirmBase", "TryKeepMine", "TryDiscardAndReload" };
 
-    private static readonly string[] MemoryOperations = { "GetField", "GetRacksAtRisk", "TakeLossNotices", "TakeCloseNotices" };
+    private static readonly string[] MemoryOperations = { "GetField", "GetRacksAtRisk", "TakeLossNotices", "TakeCloseNotices", "TakeUpdateProgress" };
 
-    private static readonly string[] MutatingOperations = { "SetPendingText", "CommitField", "CrossBoundary", "DiscardRack", "DiscardDocument" };
+    private static readonly string[] MutatingOperations = { "SetPendingText", "CommitField", "CrossBoundary", "DiscardRack", "DiscardDocument", "RequestUpdate" };
+
+    // The one operation of the request of the update: the only one, outside the six reads, that may look at the rest, the executor and the
+    // gate of the document, and the only one that asks the executor of the host. Its authorization is the one of the gate (PassGate).
+    private static readonly string[] UpdateOperations = { "RequestUpdate" };
+
+    // The operations that change a draft, or that discard one, while an update is in flight: after their authorization and the mark of the
+    // reads they answer Busy or Waiting, with no change (D-T4C-08 and D-T4C-10, row 5).
+    private static readonly string[] FlightOperations =
+    {
+        "SetPendingText", "CommitField", "TryKeepMine", "TryDiscardAndReload", "TryConfirmBase", "DiscardRack", "DiscardDocument",
+    };
+
+    private static readonly Regex FlightCheck = new(@"\bUpdateInFlightFor(?:Request)?\s*\(|\bExpireStaleUpdate\s*\(");
 
     private static string HostSignature(string name) => @"\w[\w<>,\s]*?\s+IWorkspacePilotEditPort\." + name + @"\s*\(";
 
@@ -81,7 +98,7 @@ public class WorkspacePilotEditGuardTests
     {
         ("PilotFieldState", new[] { "NotOpen", "Clean", "Dirty", "Conflict", "Applying", "Unknown", "Error", "Undecidable" }),
         ("PilotBoundaryDecision", new[] { "Proceeded", "Aborted", "Kept", "Busy" }),
-        ("PilotBoundaryKind", new[] { "TabChange", "RackChange", "DocumentChange", "PanelHide", "Dematerialize", "DocumentClose" }),
+        ("PilotBoundaryKind", new[] { "TabChange", "RackChange", "DocumentChange", "PanelHide", "Dematerialize", "DocumentClose", "Update" }),
     };
 
     private static IReadOnlyList<string>? EnumMembers(string code, string name)
@@ -97,7 +114,7 @@ public class WorkspacePilotEditGuardTests
         if (!Regex.IsMatch(port, @"\bpublic\s+interface\s+IWorkspacePilotEditPort\b")) yield return "the interface is missing";
         if (Src.Count(port, @"\bnamespace\s+RackCad\.Application\.Workspace\s*\{") != 1) yield return "the namespace is not the one of the workspace";
 
-        // The fifteen operations are a lower bound: a later task may add its own to this port.
+        // The seventeen operations (the two of the update are the last) are a lower bound: a later task may add its own to this port.
         foreach (var (name, signature) in Operations)
             if (Src.Count(port, signature) != 1) yield return "the port lacks " + name;
 
@@ -121,9 +138,12 @@ public class WorkspacePilotEditGuardTests
     }
 
     [Fact]
-    public void ThePortDeclaresTheFifteenOperationsWithTheEnumsAsOrderedPrefixesAndNamesNoTypeOfTheDraftsNorOfThePilot()
+    public void ThePortDeclaresTheSeventeenOperationsWithTheEnumsAsOrderedPrefixesAndNamesNoTypeOfTheDraftsNorOfThePilot()
     {
         Assert.Empty(PortViolations(Port()));
+        Assert.Equal(
+            Operations.Select(o => o.Name).OrderBy(n => n, StringComparer.Ordinal).ToArray(),
+            typeof(IWorkspacePilotEditPort).GetMethods().Select(m => m.Name).OrderBy(n => n, StringComparer.Ordinal).ToArray());
         Assert.StartsWith("#nullable enable", Src.Text(PortPath).TrimStart((char)0xFEFF));
     }
 
@@ -245,11 +265,50 @@ public class WorkspacePilotEditGuardTests
         if (Src.Count(host, @"private\s+static\s+readonly\s+PushBackPilotFieldAdapter\s+\w+") != 1) yield return "the adapter of the pilot is not the one static field";
 
         // Only the three reads read the drawing (C03): the other nine operations never name the reader, the probe or the gate of reading.
-        foreach (var (name, _) in Operations.Where(o => !ReadOperations.Contains(o.Name)))
+        // Row 5: the request of the update is the one exception, with its own rules below.
+        foreach (var (name, _) in Operations.Where(o => !ReadOperations.Contains(o.Name) && !UpdateOperations.Contains(o.Name)))
         {
             var body = TryBody(host, HostSignature(name));
             if (body == null) continue;
             if (Regex.IsMatch(body, @"_editIntentReader|ReadIntent|_reader\b|PassGate|_probe\b|_bridge\b")) yield return name + " reaches a reader, the probe or the bridge";
+        }
+
+        // The request of the update: it passes the gate of the document, the only place of the rest, and it is the one caller of the executor.
+        foreach (var name in UpdateOperations)
+        {
+            var body = TryBody(host, HostSignature(name));
+            if (body == null) continue;
+            if (!Regex.IsMatch(body, @"\bPassGate\s*\(")) yield return name + " does not pass the gate of the document";
+            if (Regex.IsMatch(body, @"_editIntentReader|ReadIntent|_reader\b")) yield return name + " reads the drawing";
+            if (Src.Count(body, @"\.TryRequest\s*\(") != 1) yield return name + " does not ask the executor exactly once";
+            if (Regex.IsMatch(body, @"TryUpdatePilot|\.Execute\s*\(")) yield return name + " runs the update itself";
+        }
+
+        // The lazy bound of the ticket: it only reads the count of foreign commands of the bridge, and it never touches the own mutation,
+        // the reader, the probe or the gate (RR N-04). The same for the progress, which is memory only.
+        var expire = TryBody(host, @"private\s+UpdateTicket\?\s+ExpireStaleUpdate\s*\(");
+        if (expire == null) yield return "ExpireStaleUpdate is missing";
+        else
+        {
+            if (Regex.IsMatch(expire, @"CloseOwnMutation|OpenOwnMutation|_editIntentReader|_reader\b|_probe\b|PassGate")) yield return "ExpireStaleUpdate reaches more than the count of foreign commands";
+            if (Regex.Matches(expire, @"_bridge\.(\w+)").Cast<Match>().Any(m => m.Groups[1].Value != "ForeignCommandStartsOf")) yield return "ExpireStaleUpdate names a member of the bridge other than ForeignCommandStartsOf";
+            if (!Regex.IsMatch(expire, @"_bridge\.ForeignCommandStartsOf\s*\(")) yield return "ExpireStaleUpdate does not read the count of foreign commands";
+        }
+
+        var progress = TryBody(host, HostSignature("TakeUpdateProgress"));
+        if (progress != null && Regex.IsMatch(progress, @"OwnMutation|_bridge\b|_probe\b|PassGate|_lastAllowedClose")) yield return "TakeUpdateProgress mutates the bridge or looks at the document";
+
+        // While an update is in flight (D-T4C-08, D-T4C-10): the check of the flight comes after the authorization and the mark of the reads.
+        foreach (var name in FlightOperations)
+        {
+            var body = TryBody(host, HostSignature(name));
+            if (body == null) { yield return name + " is missing"; continue; }
+
+            var check = FlightCheck.Match(body);
+            var mark = body.IndexOf("_pilotReadInProgress", StringComparison.Ordinal);
+            var authorize = body.IndexOf("Authorize(", StringComparison.Ordinal);
+            if (!check.Success) yield return name + " does not look at the update in flight";
+            else if (mark < 0 || check.Index < mark || (authorize >= 0 && check.Index < authorize)) yield return name + " looks at the update in flight before its authorization or the mark of the reads";
         }
 
         // Memory only: no authorization at all.
@@ -264,7 +323,10 @@ public class WorkspacePilotEditGuardTests
         {
             var body = TryBody(host, HostSignature(name));
             if (body == null) continue;
-            if (!Regex.IsMatch(body, @"\bAuthorize\s*\(")) yield return name + " does not authorize";
+
+            // The request of the update authorizes through the gate of the document, which ends with the authorization of the session.
+            var authorizes = Regex.IsMatch(body, @"\bAuthorize\s*\(") || (UpdateOperations.Contains(name) && Regex.IsMatch(body, @"\bPassGate\s*\("));
+            if (!authorizes) yield return name + " does not authorize";
             if (!Regex.IsMatch(body, @"if\s*\(\s*_pilotReadInProgress\s*\)")) yield return name + " does not look at the mark of the reads";
         }
 
@@ -288,7 +350,7 @@ public class WorkspacePilotEditGuardTests
         }
 
         // The ways the host contains an exception: a value with a reason, never the degradation of the session.
-        foreach (var name in new[] { "SetPendingText", "CommitField", "CrossBoundary", "DiscardRack", "DiscardDocument", "GetField", "GetRacksAtRisk" })
+        foreach (var name in new[] { "SetPendingText", "CommitField", "CrossBoundary", "DiscardRack", "DiscardDocument", "GetField", "GetRacksAtRisk", "RequestUpdate", "TakeUpdateProgress" })
         {
             var body = TryBody(host, HostSignature(name));
             if (body == null) continue;
@@ -324,6 +386,7 @@ public class WorkspacePilotEditGuardTests
     [InlineData("TakeCloseNotices", "_bridge.RequestReconciliation();")]
     [InlineData("GetField", "var gate = Authorize(origin);")]
     [InlineData("GetRacksAtRisk", "if (_pilotReadInProgress) return default;")]
+    [InlineData("TakeUpdateProgress", "var gate = Authorize(origin);")]
     [InlineData("DiscardRack", "var read = _reader.Read(origin.Origin, 1);")]
     public void TheHostGuardTripsOnAReadAnAuthorizationOrAMarkWhereTheOperationMustNotHaveThem(string operation, string injected)
     {
@@ -348,6 +411,67 @@ public class WorkspacePilotEditGuardTests
 
         Assert.NotEqual(host, mutated);
         Assert.NotEmpty(HostViolations(mutated));
+    }
+
+    // I-64 F4-T4C1-HOST (D-T4C-20, row 5): the negatives of the rules of the request of the update, of its bound and of the flight.
+    [Theory]
+    [InlineData("RequestUpdate", "PassGate(", "NoGate(")]
+    [InlineData("RequestUpdate", "_updateHost.TryRequest(", "_updateHost.TryRequestTwice(")]
+    [InlineData("RequestUpdate", "return EditUpdateStart.Accepted();", "TryUpdatePilot(request, null!); return EditUpdateStart.Accepted();")]
+    [InlineData("RequestUpdate", "return EditUpdateStart.Accepted();", "_editIntentReader!.ReadIntent(default, \"x\", null, null); return EditUpdateStart.Accepted();")]
+    [InlineData("TakeUpdateProgress", "ExpireStaleUpdate(session);", "ExpireStaleUpdate(session); var gate = Authorize(origin);")]
+    [InlineData("TakeUpdateProgress", "ExpireStaleUpdate(session);", "ExpireStaleUpdate(session); _bridge.CloseOwnMutation(session);")]
+    [InlineData("TakeUpdateProgress", "ExpireStaleUpdate(session);", "ExpireStaleUpdate(session); if (_pilotReadInProgress) return default;")]
+    public void TheUpdateRequestGuardTripsWithoutTheGateWithASecondRequestWithTheUpdateItselfOrWhereTheProgressAuthorizesOrMutates(string operation, string from, string to)
+    {
+        var host = Host();
+        var body = Src.BodyOf(host, HostSignature(operation));
+        Assert.Contains(from, body);
+        var mutated = host.Replace(body, body.Replace(from, to, StringComparison.Ordinal), StringComparison.Ordinal);
+
+        Assert.NotEqual(host, mutated);
+        Assert.NotEmpty(HostViolations(mutated));
+    }
+
+    [Theory]
+    [InlineData("_bridge.CloseOwnMutation(session);")]
+    [InlineData("_bridge.OpenOwnMutation(session);")]
+    [InlineData("var active = _probe.ActiveDocumentNativeId;")]
+    [InlineData("var gate = PassGate(session, out var why);")]
+    [InlineData("var read = _editIntentReader!.ReadIntent(default, \"x\", null, null);")]
+    [InlineData("var other = _bridge.RequestReconciliation();")]
+    public void TheBoundGuardTripsWhenTheLazyExpiryReachesTheOwnMutationTheProbeTheGateTheReaderOrAnotherMemberOfTheBridge(string injected)
+    {
+        var host = Host();
+        var body = Src.BodyOf(host, @"private\s+UpdateTicket\?\s+ExpireStaleUpdate\s*\(");
+        var mutated = host.Replace(body, body.Replace("var starts =", injected + " var starts =", StringComparison.Ordinal), StringComparison.Ordinal);
+
+        Assert.NotEqual(host, mutated);
+        Assert.NotEmpty(HostViolations(mutated));
+    }
+
+    [Theory]
+    [InlineData("SetPendingText")]
+    [InlineData("CommitField")]
+    [InlineData("TryKeepMine")]
+    [InlineData("TryDiscardAndReload")]
+    [InlineData("TryConfirmBase")]
+    [InlineData("DiscardRack")]
+    [InlineData("DiscardDocument")]
+    public void TheFlightGuardTripsWhenTheCheckOfTheFlightIsMissingOrComesBeforeTheAuthorizationAndTheMarkOfTheReads(string operation)
+    {
+        var host = Host();
+        var body = Src.BodyOf(host, HostSignature(operation));
+        Assert.Matches(FlightCheck, body);
+
+        var missing = host.Replace(body, Regex.Replace(body, @"UpdateInFlightFor(?:Request)?\s*\(|ExpireStaleUpdate\s*\(", "NotTheCheck("), StringComparison.Ordinal);
+        Assert.NotEqual(host, missing);
+        Assert.NotEmpty(HostViolations(missing));
+
+        var open = body.IndexOf('{') + 1;
+        var early = host.Replace(body, body.Insert(open, " ExpireStaleUpdate(default);"), StringComparison.Ordinal);
+        Assert.NotEqual(host, early);
+        Assert.NotEmpty(HostViolations(early));
     }
 
     [Fact]
@@ -398,7 +522,7 @@ public class WorkspacePilotEditGuardTests
     [InlineData("if (_pilotReadInProgress) return EditCheckOutcome.Waiting(PilotReadInProgressReason);", "")]
     [InlineData("return TryReloadPilotEdit(request);", "return TryBeginPilotEdit(request);")]
     [InlineData("if (_pilotReadInProgress) return EditConfirmOutcome.Waiting(PilotReadInProgressReason);", "")]
-    [InlineData("if (_pilotReadInProgress) return EditIntentOutcome.Waiting(PilotReadInProgressReason);\r\n            _pilotReadInProgress = true;\r\n            try\r\n            {\r\n                return TryKeepPilotEdit(request);", "_pilotReadInProgress = true;\r\n            try\r\n            {\r\n                return TryKeepPilotEdit(request);")]
+    [InlineData("if (_pilotReadInProgress) return EditIntentOutcome.Waiting(PilotReadInProgressReason);\r\n            if (UpdateInFlightForRequest(request)) return EditIntentOutcome.Waiting(PushBackPilotHostTexts.UpdateInFlightReason);\r\n            _pilotReadInProgress = true;\r\n            try\r\n            {\r\n                return TryKeepPilotEdit(request);", "if (UpdateInFlightForRequest(request)) return EditIntentOutcome.Waiting(PushBackPilotHostTexts.UpdateInFlightReason);\r\n            _pilotReadInProgress = true;\r\n            try\r\n            {\r\n                return TryKeepPilotEdit(request);")]
     [InlineData("return TryDiscardAndReloadPilotEdit(request);", "return TryKeepPilotEdit(request);")]
     public void TheReadGuardTripsWithoutTheFinallyWithoutTheWaitingAnswerOrWithAnotherRead(string from, string to)
     {
@@ -437,7 +561,7 @@ public class WorkspacePilotEditGuardTests
             if (body == null) { yield return "the decorator lacks " + name; continue; }
 
             var squashed = Squash(body);
-            if (ReadOperations.Contains(name))
+            if (ReadOperations.Contains(name) || UpdateOperations.Contains(name))
             {
                 var waiting = squashed.IndexOf("_depth.IsInside?", StringComparison.Ordinal);
                 var delegated = squashed.IndexOf(":_inner." + name + "(", StringComparison.Ordinal);
@@ -468,6 +592,8 @@ public class WorkspacePilotEditGuardTests
     [InlineData("_depth.IsInside ? EditIntentOutcome.Waiting(InsideNoticeReason) : _inner.TryKeepMine(request)", "_inner.TryKeepMine(request)")]
     [InlineData("_depth.IsInside ? EditIntentOutcome.Waiting(InsideNoticeReason) : _inner.TryDiscardAndReload(request)", "_inner.TryDiscardAndReload(request)")]
     [InlineData("=> _inner.DiscardRack(origin, rackId);", "=> _depth.IsInside ? default : _inner.DiscardRack(origin, rackId);")]
+    [InlineData("_depth.IsInside ? EditUpdateStart.Waiting(InsideNoticeReason) : _inner.RequestUpdate(request)", "_inner.RequestUpdate(request)")]
+    [InlineData("=> _inner.TakeUpdateProgress(origin, rackId);", "=> _depth.IsInside ? default : _inner.TakeUpdateProgress(origin, rackId);")]
     [InlineData("public WorkspacePilotEditGate(", "private static int _x; public WorkspacePilotEditGate(")]
     public void TheGateGuardTripsWhenAReadIsNotGatedOrAnotherOperationIsNotAPlainDelegation(string from, string to)
     {
@@ -544,6 +670,8 @@ public class WorkspacePilotEditGuardTests
     [InlineData("public EditConfirmOutcome TryConfirmBase(EditIntentRequest request) => _gate.TryConfirmBase(request);", "public EditConfirmOutcome TryConfirmBase(EditIntentRequest request) => _gate.TryConfirmBase(request) with { };")]
     [InlineData("public EditIntentOutcome TryKeepMine(EditIntentRequest request) => _gate.TryKeepMine(request);", "public EditIntentOutcome TryKeepMine(EditIntentRequest request) => _gate.TryKeepMine(request) with { };")]
     [InlineData("public EditIntentOutcome TryDiscardAndReload(EditIntentRequest request) => _gate.TryDiscardAndReload(request);", "public EditIntentOutcome TryDiscardAndReload(EditIntentRequest request) => _gate.TryDiscardAndReload(request) with { };")]
+    [InlineData("public EditUpdateStart RequestUpdate(EditIntentRequest request) => _gate.RequestUpdate(request);", "public EditUpdateStart RequestUpdate(EditIntentRequest request) => _gate.RequestUpdate(request) with { };")]
+    [InlineData("public EditUpdateProgress TakeUpdateProgress(WorkspaceRequest origin, string rackId) => _gate.TakeUpdateProgress(origin, rackId);", "public EditUpdateProgress TakeUpdateProgress(WorkspaceRequest origin, string rackId) => default;")]
     [InlineData("public IWorkspacePilotEditPort PilotEdit", "public WorkspaceHostCore Host => _host;\n        public IWorkspacePilotEditPort PilotEdit")]
     [InlineData("_bridge.CommandStateChanged += OnCommandStateChanged;", "_bridge.CommandStateChanged += OnCommandStateChanged; StateChanged += OnTheSide;")]
     public void TheControllerGuardTripsWithoutTheDepthTheNavigationTheDecoratorOrWhenTheHostIsExposedOrASubscriptionIsAdded(string from, string to)

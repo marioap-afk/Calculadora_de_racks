@@ -72,6 +72,7 @@ namespace RackCad.Application.Workspace
         private readonly List<PilotCloseView> _closeNotices = new();
         private bool _pilotReadInProgress;
         private IWorkspaceEditIntentReader? _editIntentReader;
+        private IPushBackPilotUpdateHost? _updateHost;
         private bool _started;
         private bool _panelVisible;
         private bool _modalRackCadActive;
@@ -274,6 +275,10 @@ namespace RackCad.Application.Workspace
         /// </summary>
         public void SetEditIntentReader(IWorkspaceEditIntentReader reader) =>
             _editIntentReader = reader ?? throw new ArgumentNullException(nameof(reader));
+
+        // RED skeleton (INV-F4T4C-20): assigned and nothing else.
+        public void SetPilotUpdateHost(IPushBackPilotUpdateHost host) =>
+            _updateHost = host ?? throw new ArgumentNullException(nameof(host));
 
         /// <summary>
         /// The edit intention of the user for one rack of the bounded Push Back pilot (D-T2B2-06): at most ONE logical read, and a
@@ -1275,6 +1280,15 @@ namespace RackCad.Application.Workspace
                 return Array.Empty<PilotCloseView>();
             }
         }
+
+        // RED skeleton (INV-F4T4C-20): inert bodies.
+        EditUpdateStart IWorkspacePilotEditPort.RequestUpdate(EditIntentRequest request)
+        {
+            _ = _updateHost;
+            return default;
+        }
+
+        EditUpdateProgress IWorkspacePilotEditPort.TakeUpdateProgress(WorkspaceRequest origin, string rackId) => default;
 
         private DraftSession<PushBackPilotDraftState>? FindPilotDraft(SessionId session, string rackId) =>
             string.IsNullOrWhiteSpace(rackId) ? null : _drafts.Find<PushBackPilotDraftState>(session, rackId);

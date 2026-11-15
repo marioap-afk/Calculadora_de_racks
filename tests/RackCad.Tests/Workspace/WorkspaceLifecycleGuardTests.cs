@@ -109,8 +109,9 @@ public class WorkspaceLifecycleGuardTests
         Assert.Equal(1, Src.Count(code, @"private\s+SessionId\?\s+_lastAllowedClose\s*;"));
         Assert.Equal(1, Src.Count(code, @"\b_lastAllowedClose\s*=\s*session\s*;"));
         Assert.Equal(0, Src.Count(code, @"\b_lastAllowedClose\s*=\s*(?!null\b|session\b)\w"));
-        // One forgetting per entry of the core that changes its state: the twelve below and the one of the close itself.
-        Assert.Equal(13, Src.Count(code, @"\b_lastAllowedClose\s*=\s*null\s*;"));
+        // One forgetting per entry of the core that changes its state: the twelve below, the one of the close itself and, since F4-T4C1-HOST
+        // (D-T4C-20, row 15), the three of the own mutation of the update and of the count of foreign commands.
+        Assert.Equal(16, Src.Count(code, @"\b_lastAllowedClose\s*=\s*null\s*;"));
         // The memory is not part of the state of a session and forgetting never walks the sessions.
         var state = Src.BodyOf(code, @"private\s+sealed\s+class\s+SessionState\b");
         Assert.DoesNotMatch(new Regex(@"SessionId\?|Allowed|Close"), state);
@@ -136,6 +137,9 @@ public class WorkspaceLifecycleGuardTests
         ("SetPanelVisible", @"public\s+void\s+SetPanelVisible\s*\(\s*bool\s+\w+\s*\)"),
         ("SetModalRackCadActive", @"public\s+void\s+SetModalRackCadActive\s*\(\s*bool\s+\w+\s*\)"),
         ("RequestReconciliation", @"public\s+void\s+RequestReconciliation\s*\(\s*\)"),
+        ("OpenOwnMutation", @"public\s+void\s+OpenOwnMutation\s*\(\s*SessionId\s+\w+\s*\)"),
+        ("CloseOwnMutation", @"public\s+void\s+CloseOwnMutation\s*\(\s*SessionId\s+\w+\s*\)"),
+        ("NoteForeignCommandStart", @"public\s+void\s+NoteForeignCommandStart\s*\(\s*SessionId\s+\w+\s*\)"),
     };
 
     private static readonly Regex StartedGuard = new(@"if\s*\(\s*!_started\s*\)\s*return[^;]*;");
@@ -164,7 +168,7 @@ public class WorkspaceLifecycleGuardTests
     {
         var code = BridgeCore();
 
-        Assert.Equal(13, ForgettingEntries.Length);
+        Assert.Equal(16, ForgettingEntries.Length);
         foreach (var (name, signature) in ForgettingEntries)
         {
             var body = Src.BodyOf(code, signature);
@@ -188,6 +192,27 @@ public class WorkspaceLifecycleGuardTests
         Assert.True(ForgetsBeforeAnyBranch("{ if (!_started) return; _lastAllowedClose = null; if (_active is not { } id) return; }"));
     }
 
+    // I-64 F4-T4C1-HOST (D-T4C-20, row 15): the negatives of the three entries of the own mutation. Without the forgetting, or with it after a
+    // branch, the guard trips; and the nobody's name contains a hookup, a destruction, the idle or a stop of the host.
+    [Theory]
+    [InlineData("OpenOwnMutation")]
+    [InlineData("CloseOwnMutation")]
+    [InlineData("NoteForeignCommandStart")]
+    public void TheForgettingGuardTripsForANewEntryWithoutTheForgetOrWithTheForgetAfterABranch(string name)
+    {
+        var code = BridgeCore();
+        var signature = ForgettingEntries.Single(e => e.Name == name).Signature;
+        var body = Src.BodyOf(code, signature);
+        Assert.True(ForgetsBeforeAnyBranch(body));
+
+        var withoutForget = body.Replace("_lastAllowedClose = null;", string.Empty, StringComparison.Ordinal);
+        Assert.False(ForgetsBeforeAnyBranch(withoutForget));
+
+        var afterABranch = body.Replace("_lastAllowedClose = null;", "if (_started) { } _lastAllowedClose = null;", StringComparison.Ordinal);
+        Assert.False(ForgetsBeforeAnyBranch(afterABranch));
+        Assert.DoesNotMatch(new Regex(@"Destroy|Detach|OnIdle|Stop"), name);
+    }
+
     [Fact]
     public void TheQueriesAndTheAssignmentOfTheAdvisorNeverForgetTheCloseSequence()
     {
@@ -195,6 +220,7 @@ public class WorkspaceLifecycleGuardTests
 
         foreach (var signature in new[]
                  {
+                     @"public\s+int\?\s+ForeignCommandStartsOf\s*\(\s*SessionId\s+\w+\s*\)",
                      @"public\s+RequestDecision\s+Authorize\s*\(\s*WorkspaceRequest\s+\w+\s*,\s*long\s+\w+\s*\)",
                      @"public\s+bool\s+TryGetSession\s*\(\s*SessionId\s+\w+\s*,\s*out\s+WorkspaceSession\?\s+\w+\s*\)",
                      @"public\s+bool\s+IsDegraded\s*\(\s*SessionId\s+\w+\s*\)",
@@ -292,7 +318,7 @@ public class WorkspaceLifecycleGuardTests
     }
 
     [Fact]
-    public void TheControllerWiresTheHostAsTheAdvisorOnceInItsConstructorAfterCreatingTheHostWithNoNewSubscription()
+    public void TheControllerInstallsTheRelayOverTheHostAsTheOneAdvisorOnceInItsConstructorAfterCreatingTheHostWithNoNewSubscription()
     {
         var code = Controller();
         var constructor = Src.BodyOf(code, @"private\s+WorkspaceController\s*\(\s*\)");
@@ -517,6 +543,26 @@ public class WorkspaceLifecycleGuardTests
         }
 
         Assert.True(withoutNote >= 4);
+    }
+
+    // D-T4C-20, row 8: the table above does NOT change. The request of the update is not a change of a draft and it never runs the update: it
+    // only asks the executor. The new assertion is apart from the table, with its negatives.
+    [Fact]
+    public void TheRequestOfTheUpdateDoesNotChangeADraftAndNeverNamesTheUpdateItself()
+    {
+        var body = Src.BodyOf(Host(), @"EditUpdateStart\s+IWorkspacePilotEditPort\.RequestUpdate\s*\(");
+
+        Assert.DoesNotMatch(ChangesADraft, body);
+        Assert.DoesNotMatch(new Regex(@"\bTryUpdatePilot\b"), body);
+        Assert.False(PortMutatingOperations.Any(p => Regex.IsMatch("EditUpdateStart IWorkspacePilotEditPort.RequestUpdate(", p)));
+
+        // The negatives: a slot taken, a close or a discard injected into the request are changes of a draft, and the update itself is named.
+        foreach (var injected in new[] { "draft.TryBeginApply();", "draft.CompleteApply(outcome);", "_drafts.DiscardByUser(s, r);", "TryUpdatePilot(request, port);" })
+        {
+            var mutated = body.Replace("return EditUpdateStart.Accepted();", injected + " return EditUpdateStart.Accepted();", StringComparison.Ordinal);
+            Assert.NotEqual(body, mutated);
+            Assert.True(ChangesADraft.IsMatch(mutated) || Regex.IsMatch(mutated, @"\bTryUpdatePilot\b"), injected);
+        }
     }
 
     [Fact]

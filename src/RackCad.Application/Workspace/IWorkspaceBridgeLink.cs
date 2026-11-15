@@ -22,6 +22,12 @@ namespace RackCad.Application.Workspace
 
         /// <summary>Queues the reconciliation hint of the active session. It drains later, at rest, never now.</summary>
         void RequestReconciliation();
+
+        void OpenOwnMutation(SessionId session);
+
+        void CloseOwnMutation(SessionId session);
+
+        int? ForeignCommandStartsOf(SessionId session);
     }
 
     /// <summary>In-memory facts about the host that need no read of the drawing.</summary>

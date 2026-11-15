@@ -442,6 +442,11 @@ namespace RackCad.Application.Workspace
 
         public EditUpdateStatus Status { get; }
 
+        // RED skeleton (INV-F4T4C-20): the two new properties exist with inert values.
+        public EditUpdateStatus Classification => EditUpdateStatus.Unavailable;
+
+        public string? Cause => null;
+
         /// <summary>Why the update did not apply, or the cause of an uncertain outcome; null when there is none.</summary>
         public string? Reason { get; }
 
@@ -471,6 +476,9 @@ namespace RackCad.Application.Workspace
 
         public static EditUpdateOutcome ClosedInError(string? reason) => Without(EditUpdateStatus.ClosedInError, reason);
 
+        public static EditUpdateOutcome ClosedInError(
+            string? reason, EditUpdateStatus classification, string? cause, IReadOnlyList<string> differences, IReadOnlyList<string> warnings) => default;
+
         public static EditUpdateOutcome Failed(string reason) => Without(EditUpdateStatus.Failed, reason);
 
         /// <summary>The outcome of an update that was closed with one of the eight outcomes of the classification by frontier.</summary>
@@ -484,6 +492,46 @@ namespace RackCad.Application.Workspace
 
         private static EditUpdateOutcome Without(EditUpdateStatus status, string? reason) =>
             new(status, reason, Array.Empty<string>(), Array.Empty<string>());
+    }
+
+    public enum EditUpdateStartStatus
+    {
+        Unavailable,
+        Accepted,
+        Waiting,
+        Rejected,
+        Busy,
+        Failed,
+    }
+
+    public readonly struct EditUpdateStart
+    {
+        public EditUpdateStartStatus Status => EditUpdateStartStatus.Unavailable;
+
+        public string? Reason => null;
+
+        public static EditUpdateStart Unavailable(string reason) => default;
+
+        public static EditUpdateStart Accepted() => default;
+
+        public static EditUpdateStart Waiting(string reason) => default;
+
+        public static EditUpdateStart Rejected(string reason) => default;
+
+        public static EditUpdateStart Busy(string reason) => default;
+
+        public static EditUpdateStart Failed(string reason) => default;
+    }
+
+    public readonly struct EditUpdateProgress
+    {
+        public EditUpdateProgress(bool inFlight, EditUpdateOutcome outcome)
+        {
+        }
+
+        public bool InFlight => false;
+
+        public EditUpdateOutcome Outcome => default;
     }
 
     /// <summary>

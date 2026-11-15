@@ -981,7 +981,12 @@ public class WorkspaceEditIntentHostTests
         var types = new List<Type>();
         // I-64 F4-T4B (D-T4B-07): the outcome of the update is a carrier too. The method TryUpdatePilot is NOT in the loop of the signatures above: its second
         // parameter is the port of the update, which is of the pilot (a declared exception to D-T2B2-06).
-        foreach (var carrier in new[] { typeof(EditIntentRequest), typeof(EditIntentWitness), typeof(EditIntentOutcome), typeof(EditCheckOutcome), typeof(EditConfirmOutcome), typeof(EditUpdateOutcome) })
+        // I-64 F4-T4C1-HOST (D-T4C-20, row 4): the start value and the progress of the update are carriers too, and so they are censused.
+        foreach (var carrier in new[]
+                 {
+                     typeof(EditIntentRequest), typeof(EditIntentWitness), typeof(EditIntentOutcome), typeof(EditCheckOutcome), typeof(EditConfirmOutcome),
+                     typeof(EditUpdateOutcome), typeof(EditUpdateStart), typeof(EditUpdateProgress),
+                 })
         {
             foreach (var property in carrier.GetProperties(BindingFlags.Public | BindingFlags.Instance)) types.AddRange(Flatten(property.PropertyType));
             foreach (var method in carrier.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly))
@@ -1008,8 +1013,9 @@ public class WorkspaceEditIntentHostTests
         Assert.NotNull(update);
         Assert.Equal(typeof(EditUpdateOutcome), update!.ReturnType);
         Assert.Equal(new[] { typeof(EditIntentRequest), typeof(RackCad.Application.Systems.PushBack.Pilot.IPushBackPilotUpdatePort) }, update.GetParameters().Select(p => p.ParameterType).ToArray());
-        // It is not an operation of the edit port of the panel: the port does not grow.
-        Assert.DoesNotContain(typeof(IWorkspacePilotEditPort).GetMethods(), m => m.Name.Contains("Update", StringComparison.Ordinal));
+        // It is not an operation of the edit port of the panel. Since F4-T4C1-HOST (D-T4C-20, row 2) the port has exactly two methods with
+        // "Update" in their name: the request and the progress of the update, never the update itself.
+        Assert.True(PortUpdateMethodsAreExactlyTheTwoOfTheRequest(typeof(IWorkspacePilotEditPort).GetMethods().Select(m => m.Name)));
         foreach (var property in typeof(EditUpdateOutcome).GetProperties(BindingFlags.Public | BindingFlags.Instance))
         {
             foreach (var type in Flatten(property.PropertyType))
@@ -1020,8 +1026,50 @@ public class WorkspaceEditIntentHostTests
         }
     }
 
+    private static bool PortUpdateMethodsAreExactlyTheTwoOfTheRequest(IEnumerable<string> methodNames) =>
+        methodNames.Where(n => n.Contains("Update", StringComparison.Ordinal)).OrderBy(n => n, StringComparer.Ordinal)
+            .SequenceEqual(new[] { "RequestUpdate", "TakeUpdateProgress" });
+
     [Fact]
-    public void NoFieldOfTheHostCoreIsOfATypeOfThePilotOrOfTheResultOfTheReadAndTheFieldOfTheReaderIsNotCalledReader()
+    public void ThePortHasExactlyTheTwoMethodsOfTheRequestWithUpdateInTheirNameAndRejectsAThirdOne()
+    {
+        var names = typeof(IWorkspacePilotEditPort).GetMethods().Select(m => m.Name).ToList();
+        Assert.True(PortUpdateMethodsAreExactlyTheTwoOfTheRequest(names));
+
+        // The negatives: a third method with "Update" in its name, and the absence of one of the two.
+        Assert.False(PortUpdateMethodsAreExactlyTheTwoOfTheRequest(names.Append("TryUpdatePilot")));
+        Assert.False(PortUpdateMethodsAreExactlyTheTwoOfTheRequest(names.Where(n => n != "TakeUpdateProgress")));
+    }
+
+    // The fields of the host core that are of a type of RackCad.Application.Systems: exactly one is allowed (D-T4C-20, row 3), the executor of
+    // the update, by its exact name and its exact type.
+    private static IReadOnlyList<string> SystemsFieldViolations(IEnumerable<(string Name, Type Type)> fields)
+    {
+        var violations = new List<string>();
+        var systems = fields.Where(f => Flatten(f.Type).Any(t => (t.Namespace ?? string.Empty).StartsWith("RackCad.Application.Systems", StringComparison.Ordinal))).ToList();
+        if (systems.Count != 1) violations.Add("expected exactly one field of Systems, found " + systems.Count);
+        foreach (var field in systems)
+            if (field.Name != "_updateHost" || field.Type != typeof(RackCad.Application.Systems.PushBack.Pilot.IPushBackPilotUpdateHost))
+                violations.Add(field.Name + " is not the executor of the update");
+        return violations;
+    }
+
+    [Fact]
+    public void TheHostCoreHasExactlyOneFieldOfSystemsTheExecutorOfTheUpdateAndRejectsASecondOneOrAPort()
+    {
+        var fields = typeof(WorkspaceHostCore)
+            .GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly)
+            .Select(f => (f.Name, f.FieldType)).ToList();
+        Assert.Empty(SystemsFieldViolations(fields));
+
+        Assert.NotEmpty(SystemsFieldViolations(fields.Append(("_other", typeof(RackCad.Application.Systems.PushBack.Pilot.PushBackPilotUpdateRequest)))));
+        Assert.NotEmpty(SystemsFieldViolations(fields.Append(("_port", typeof(RackCad.Application.Systems.PushBack.Pilot.IPushBackPilotUpdatePort)))));
+        Assert.NotEmpty(SystemsFieldViolations(fields.Where(f => f.Name != "_updateHost")));
+        Assert.NotEmpty(SystemsFieldViolations(fields.Select(f => f.Name == "_updateHost" ? ("_updateHost", typeof(RackCad.Application.Systems.PushBack.Pilot.IPushBackPilotUpdatePort)) : f)));
+    }
+
+    [Fact]
+    public void NoFieldOfTheHostCoreIsOfATypeOfThePilotExceptTheExecutorOrOfTheResultOfTheReadAndTheFieldOfTheReaderIsNotCalledReader()
     {
         var fields = typeof(WorkspaceHostCore).GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly);
 
@@ -1030,7 +1078,9 @@ public class WorkspaceEditIntentHostTests
         {
             foreach (var type in Flatten(field.FieldType))
             {
-                Assert.False((type.Namespace ?? string.Empty).StartsWith("RackCad.Application.Systems", StringComparison.Ordinal), field.Name + " is a type of the pilot");
+                // Row 3: the executor of the update is the one declared exception, by its exact name.
+                if (field.Name != "_updateHost")
+                    Assert.False((type.Namespace ?? string.Empty).StartsWith("RackCad.Application.Systems", StringComparison.Ordinal), field.Name + " is a type of the pilot");
                 Assert.NotEqual(typeof(EditIntentReadResult), type);
             }
         }

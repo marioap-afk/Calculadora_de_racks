@@ -38,6 +38,10 @@ namespace RackCad.Application.Workspace
 
             public bool Degraded { get; set; }
 
+            public bool OwnMutationOpen { get; set; }
+
+            public int ForeignCommandStarts { get; set; }
+
             public List<SourceAttachment> Attached { get; } = new();
         }
 
@@ -432,6 +436,21 @@ namespace RackCad.Application.Workspace
             _lastAllowedClose = null;
             Fault(session, context, exception);
         }
+
+        // RED skeleton (INV-F4T4C-20): the four new members exist with inert bodies.
+        public void OpenOwnMutation(SessionId session)
+        {
+        }
+
+        public void CloseOwnMutation(SessionId session)
+        {
+        }
+
+        public void NoteForeignCommandStart(SessionId session)
+        {
+        }
+
+        public int? ForeignCommandStartsOf(SessionId session) => null;
 
         // Flips the in-memory command state of a session and tells whether it changed. No hint, no idle, no host call.
         private static bool SetQuiescent(SessionState state, bool quiescent)

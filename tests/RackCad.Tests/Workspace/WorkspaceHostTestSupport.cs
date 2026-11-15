@@ -101,6 +101,28 @@ public sealed class WorkspaceSimulatedBridgeLink : IWorkspaceBridgeLink
         ReconciliationCalls++;
         Rig.Core.RequestReconciliation();
     }
+
+    public int OpenOwnMutationCalls { get; private set; }
+
+    public int CloseOwnMutationCalls { get; private set; }
+
+    /// <summary>The bridge refuses to open the own mutation: how a test makes the opening of the run fail.</summary>
+    public bool ThrowOnOpenOwnMutation { get; set; }
+
+    public void OpenOwnMutation(SessionId session)
+    {
+        OpenOwnMutationCalls++;
+        if (ThrowOnOpenOwnMutation) throw new InvalidOperationException("open own mutation boom");
+        Rig.Core.OpenOwnMutation(session);
+    }
+
+    public void CloseOwnMutation(SessionId session)
+    {
+        CloseOwnMutationCalls++;
+        Rig.Core.CloseOwnMutation(session);
+    }
+
+    public int? ForeignCommandStartsOf(SessionId session) => Rig.Core.ForeignCommandStartsOf(session);
 }
 
 /// <summary>

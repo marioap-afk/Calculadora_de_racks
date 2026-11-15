@@ -315,6 +315,10 @@ namespace RackCad.Plugin.Workspace
             public System.Collections.Generic.IReadOnlyList<PilotLossView> TakeLossNotices() => _gate.TakeLossNotices();
 
             public System.Collections.Generic.IReadOnlyList<PilotCloseView> TakeCloseNotices() => _gate.TakeCloseNotices();
+
+            public EditUpdateStart RequestUpdate(EditIntentRequest request) => default;
+
+            public EditUpdateProgress TakeUpdateProgress(WorkspaceRequest origin, string rackId) => default;
         }
 
         // The link of the pure host core to the single bridge: forwards to its facades and nothing else.
@@ -341,6 +345,16 @@ namespace RackCad.Plugin.Workspace
                 _bridge.Authorize(request, executingNativeInstanceId);
 
             public void RequestReconciliation() => _bridge.RequestReconciliation();
+
+            public void OpenOwnMutation(SessionId session)
+            {
+            }
+
+            public void CloseOwnMutation(SessionId session)
+            {
+            }
+
+            public int? ForeignCommandStartsOf(SessionId session) => null;
         }
 
         // In-memory facts of the host: the active document and whether a command runs. They read nothing of the drawing.

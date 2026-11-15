@@ -423,8 +423,39 @@ public class WorkspaceNavigationHostTests
         Assert.Equal(new[] { HostPath }, Src.AllProduct().Where(f => Regex.IsMatch(f.Code, @"class\s+\w+\s*:\s*[^{]*\bIWorkspaceNavigationPort\b")).Select(f => f.Path).ToArray());
     }
 
+    // I-64 F4-T4C1-HOST (D-T4C-20, row 1): the command context is asked for in ONE place of the whole product, the adapter of the update of the
+    // pilot, and only once. The navigation stays in the application context (IC-01).
+    private const string CommandContextAdapterPath = "src/RackCad.Plugin/Views/RackPilotUpdateCommandContext.cs";
+
+    private static IReadOnlyList<string> CommandContextViolations(IEnumerable<(string Path, string Code)> files)
+    {
+        var violations = new List<string>();
+        var named = files.Where(f => Regex.IsMatch(f.Code, @"ExecuteInCommandContextAsync")).ToList();
+        foreach (var file in named.Where(f => f.Path != CommandContextAdapterPath)) violations.Add("outside the adapter: " + file.Path);
+        var adapter = named.Where(f => f.Path == CommandContextAdapterPath).ToList();
+        if (adapter.Count != 1) violations.Add("the adapter does not name the command context");
+        else if (Src.Count(adapter[0].Code, @"ExecuteInCommandContextAsync") != 1) violations.Add("the adapter names it more than once");
+        return violations;
+    }
+
     [Fact]
-    public void TheNavigationRunsSynchronouslyAndNoProductFileUsesTheInternalCommand()
+    public void TheCommandContextRuleDetectsTheApiInTheNavigationHostAndASecondCallInTheAdapter()
+    {
+        var files = Src.AllProduct().ToList();
+        Assert.Empty(CommandContextViolations(files));
+
+        var inHost = files.Select(f => f.Path == HostPath ? (f.Path, f.Code + " var x = AcApplication.DocumentManager.ExecuteInCommandContextAsync(null, null);") : f).ToList();
+        Assert.NotEmpty(CommandContextViolations(inHost));
+
+        var twice = files.Select(f => f.Path == CommandContextAdapterPath ? (f.Path, f.Code + " var y = DocumentManager.ExecuteInCommandContextAsync(null, null);") : f).ToList();
+        Assert.NotEmpty(CommandContextViolations(twice));
+
+        var missing = files.Where(f => f.Path != CommandContextAdapterPath).ToList();
+        Assert.NotEmpty(CommandContextViolations(missing));
+    }
+
+    [Fact]
+    public void TheNavigationRunsSynchronouslyAndOnlyTheAdapterOfTheUpdateAsksForTheCommandContextOnce()
     {
         var host = Host();
 
@@ -433,7 +464,8 @@ public class WorkspaceNavigationHostTests
         Assert.Matches(@"public\s+Task<WorkspaceNavigationResult>\s+ExecuteAsync\s*\(", host);
         Assert.Contains("Task.FromResult(", host);
         Assert.Empty(Src.PluginFiles().Concat(Src.ApplicationFiles()).Where(f => Regex.IsMatch(f.Code, @"\basync\b|\bawait\b")).Select(f => f.Path));
-        Assert.Empty(Src.AllProduct().Where(f => Regex.IsMatch(f.Code, @"ExecuteInCommandContextAsync")).Select(f => f.Path));
+        Assert.Equal(new[] { CommandContextAdapterPath }, Src.AllProduct().Where(f => Regex.IsMatch(f.Code, @"ExecuteInCommandContextAsync")).Select(f => f.Path).ToArray());
+        Assert.Empty(CommandContextViolations(Src.AllProduct()));
     }
 
     [Fact]

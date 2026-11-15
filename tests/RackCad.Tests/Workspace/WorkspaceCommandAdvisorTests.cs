@@ -79,6 +79,11 @@ internal sealed class CommandAdvisorPortDouble : IWorkspacePilotEditPort
     public IReadOnlyList<PilotLossView> TakeLossNotices() => Refuse<IReadOnlyList<PilotLossView>>("TakeLossNotices", default);
 
     public IReadOnlyList<PilotCloseView> TakeCloseNotices() => Refuse<IReadOnlyList<PilotCloseView>>("TakeCloseNotices", default);
+
+    public EditUpdateStart RequestUpdate(EditIntentRequest request) => Refuse<EditUpdateStart>("RequestUpdate", request.Session);
+
+    public EditUpdateProgress TakeUpdateProgress(WorkspaceRequest origin, string rackId) =>
+        Refuse<EditUpdateProgress>("TakeUpdateProgress", origin.Origin);
 }
 
 // I-64 F4-T3C2-COMMAND-ADVISOR (INV-F4T3C2-01 to 06; D-T3C2-01, 02, 04): the lazy access without creating, the pure core of the command
@@ -1149,6 +1154,10 @@ public class WorkspaceCommandAdvisorTests
         public IReadOnlyList<PilotLossView> TakeLossNotices() => _calls.TakeLossNotices();
 
         public IReadOnlyList<PilotCloseView> TakeCloseNotices() => _calls.TakeCloseNotices();
+
+        public EditUpdateStart RequestUpdate(EditIntentRequest request) => _calls.RequestUpdate(request);
+
+        public EditUpdateProgress TakeUpdateProgress(WorkspaceRequest origin, string rackId) => _calls.TakeUpdateProgress(origin, rackId);
     }
 
     [Fact]

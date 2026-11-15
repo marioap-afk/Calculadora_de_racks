@@ -36,6 +36,9 @@ namespace RackCad.Application.Workspace
             return true;
         }
 
+        // RED skeleton (INV-F4T4C-20): inert.
+        public bool EnqueueOwnHint(HintKind kind) => false;
+
         /// <summary>Drains pending hints only when the conditions allow it; coalesces N hints into one drain.</summary>
         public DrainResult TryDrain(DrainConditions conditions)
         {

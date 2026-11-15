@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RackCad.Application.Persistence;
 using RackCad.Application.Systems.PushBack.Pilot;
 using RackCad.Application.Views.Redraw;
 using RackCad.Application.Workspace.Drafts;
@@ -774,6 +775,9 @@ public class WorkspacePilotUpdateRunTests
         Assert.NotEqual(DraftApplyOutcomeKind.Applied, outcome.Kind);
         Assert.NotEqual(DraftApplyOutcomeKind.AppliedWithWarnings, outcome.Kind);
         Assert.Equal(DraftApplyOutcomeKind.AppliedPostRereadFailed, outcome.Kind);
+
+        // M-06 (b): the cause names the envelope that differs (B2), not just any cause.
+        Assert.StartsWith(PushBackPilotUpdateRun.PostEnvelopeDiffersPrefix + "B2", outcome.Cause, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -806,7 +810,16 @@ public class WorkspacePilotUpdateRunTests
         var other = new PilotUpdateSetup(scale: 3.5).ExpectedPlan();
         var read = IntentKit.Read(IntentKit.Scan(PrepareKit.Rack, "A1", other.Members.Select(m => IntentKit.Member(m.Key, m.EnvelopeText)).ToArray()));
 
-        Assert.NotNull(PushBackPilotUpdateRun.ComparePost(plan, read));
+        var cause = PushBackPilotUpdateRun.ComparePost(plan, read);
+        Assert.NotNull(cause);
+
+        // M-06 (c): the branch of the scale (PostScaleDiffersReason) is UNREACHABLE with equal envelopes: the scale that the re-read
+        // materializes comes from the design inside the envelope, so envelopes that are equal byte for byte give the scale of the plan. A
+        // difference of scale always shows first as a difference of envelope, and that is what is fixed here.
+        Assert.StartsWith(PushBackPilotUpdateRun.PostEnvelopeDiffersPrefix, cause, StringComparison.Ordinal);
+        Assert.NotEqual(PushBackPilotUpdateRun.PostScaleDiffersReason, cause);
+        var same = IntentKit.Read(IntentKit.Scan(PrepareKit.Rack, "A1", plan.Members.Select(m => IntentKit.Member(m.Key, m.EnvelopeText)).ToArray()));
+        Assert.Null(PushBackPilotUpdateRun.ComparePost(plan, same));
     }
 
     [Fact]
@@ -826,15 +839,55 @@ public class WorkspacePilotUpdateRunTests
     [Fact]
     public void TheRunKeepsNoTextOfTheDrawingBetweenTwoRuns()
     {
+        // M-06 (a): two runs over the SAME double, the second one from a draft read from what the first one left in the drawing and with
+        // another scale. Nothing of the texts of the first run may survive in the second.
         var first = new PilotUpdateSetup();
-        var second = new PilotUpdateSetup();
-
         Assert.Equal(DraftApplyOutcomeKind.Applied, first.Run().Kind);
-        Assert.Equal(DraftApplyOutcomeKind.Applied, second.Run().Kind);
-        Assert.Equal(first.Port.Written, second.Port.Written);
+        var firstWritten = first.Port.Written.ToList();
+        Assert.NotEmpty(firstWritten);
+
+        var afterFirst = IntentKit.Scan(PrepareKit.Rack, "A1", first.Port.Drawing.Select(m => IntentKit.Member(m.Key, m.Text)).ToArray());
+        var draft = PrepareKit.DraftOf(IntentKit.Read(afterFirst));
+        PrepareKit.SetScale(draft, 3.5);
+        Assert.True(draft.TryBeginApply().IsStarted);
+
+        var outcome = PushBackPilotUpdateRun.Execute(draft, first.Request, first.Port);
+
+        Assert.True(outcome.Kind == DraftApplyOutcomeKind.Applied, outcome.Cause);
+        var secondWritten = first.Port.Written.Skip(firstWritten.Count).ToList();
+        Assert.Equal(firstWritten.Select(w => w.Key).ToArray(), secondWritten.Select(w => w.Key).ToArray());
+        Assert.All(secondWritten, w => Assert.DoesNotContain(firstWritten, f => f.Text == w.Text));
+        Assert.All(secondWritten, w => Assert.Contains("3.5", w.Text, StringComparison.Ordinal));
     }
 
-    // The system of the outgoing design, rebuilt apart from the text of a member of the plan with the same resolver as PREPARE.
+    // M-06 (d): the names of the views of a composite rack carry the side of each cut. The pilot refuses a composite rack (its reader says it is
+    // out of the pilot), so the rule is exercised on the plan itself, built by hand over the composite fixture, and the names are compared with
+    // the rule of the classic editor for the same cuts.
+    [Fact]
+    public void TheDesiredNamesOfACompositeRackCarryTheSideOfEachCutAndAPosteriorCutKeepsItsOwnName()
+    {
+        const string fixture = "pb-20-ab";
+        var members = new List<PushBackPilotMemberPlan>();
+        foreach (var section in new[] { 0, 1, 2, 3 })
+        {
+            var text = PrepareKit.Frontal(fixture, section, "Mi rack");
+            var embed = new RackEmbedStore().Deserialize(text)!;
+            members.Add(new PushBackPilotMemberPlan("K" + section, embed.View, embed.Section, embed.Design, text));
+        }
+
+        var plan = new PushBackPilotUpdatePlan(
+            PrepareKit.Rack, "K0", Array.Empty<DraftStaleBaseEntry>(), null, 2.25, members,
+            new PushBackPilotPostExpectation(2.25, Array.Empty<PushBackPilotKeyedText>()));
+
+        var names = PushBackPilotUpdateRun.DesiredNamesOf(plan, PilotKit.Catalog);
+
+        Assert.Equal(members.Count, names.Count);
+        Assert.All(names.Values, name => Assert.Matches(@"^Mi rack - frontal (entrada-salida|posterior) [AB]$", name));
+        Assert.Contains(names.Values, name => name.EndsWith(" A", StringComparison.Ordinal));
+        Assert.Contains(names.Values, name => name.EndsWith(" B", StringComparison.Ordinal));
+        Assert.Equal(names.Count, names.Values.Distinct(StringComparer.Ordinal).Count());
+    }
+
     [Fact]
     public void TheSystemIsRebuiltFromTheDesignTextOfAMemberOfThePlan()
     {

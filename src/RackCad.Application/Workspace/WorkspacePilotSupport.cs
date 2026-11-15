@@ -201,5 +201,9 @@ namespace RackCad.Application.Workspace
         public IReadOnlyList<PilotLossView> TakeLossNotices() => _inner.TakeLossNotices();
 
         public IReadOnlyList<PilotCloseView> TakeCloseNotices() => _inner.TakeCloseNotices();
+
+        public EditUpdateStart RequestUpdate(EditIntentRequest request) => default;
+
+        public EditUpdateProgress TakeUpdateProgress(WorkspaceRequest origin, string rackId) => default;
     }
 }

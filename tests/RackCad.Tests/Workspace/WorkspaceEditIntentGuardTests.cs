@@ -1122,4 +1122,167 @@ public class WorkspaceEditIntentGuardTests
         Assert.DoesNotMatch(UpdateNeverReads, real);
         Assert.Matches(UpdateNeverReads, real + "\n" + injected);
     }
+
+    // ------------------------------------------------------------------ I-64 F4-T4C1-HOST (D-T4C-20, rows 9, 10 and 11)
+
+    // Row 9: the census of the setter of the executor of the update, in the manner of the one of the reader: one call, in the getter of the
+    // navigation, after the reader, and only the host core and the controller name it.
+    private static IReadOnlyList<string> UpdateHostSetterViolations(string controller, IEnumerable<(string Path, string Code)> product)
+    {
+        var violations = new List<string>();
+        var getter = Src.BodyOf(controller, @"public\s+IWorkspaceNavigationPort\s+Navigation\b");
+        var constructor = Src.BodyOf(controller, @"private\s+WorkspaceController\s*\(\s*\)");
+        var reader = getter.IndexOf("_host.SetEditIntentReader(_navigation.EditIntentReader);", StringComparison.Ordinal);
+        var setter = getter.IndexOf("_host.SetPilotUpdateHost(new RackPilotUpdateCommandContext());", StringComparison.Ordinal);
+        var returns = getter.IndexOf("return _navigation;", StringComparison.Ordinal);
+        if (reader < 0 || setter <= reader || returns <= setter) violations.Add("the getter does not assign the executor right after the reader");
+        if (Src.Count(controller, @"SetPilotUpdateHost\s*\(") != 1) violations.Add("the controller does not call the setter exactly once");
+        if (Regex.IsMatch(constructor, @"SetPilotUpdateHost|RackPilotUpdateCommandContext")) violations.Add("the constructor assigns the executor");
+        var owners = product.Where(f => Regex.IsMatch(f.Code, @"\bSetPilotUpdateHost\s*\(")).Select(f => f.Path).OrderBy(p => p, StringComparer.Ordinal).ToArray();
+        if (!owners.SequenceEqual(new[] { CorePath, ControllerPath }.OrderBy(p => p, StringComparer.Ordinal))) violations.Add("the setter is named by " + string.Join(", ", owners));
+        return violations;
+    }
+
+    [Fact]
+    public void TheControllerAssignsTheExecutorOfTheUpdateInTheNavigationGetterAfterTheReaderAndOnlyTheCoreAndTheControllerNameTheSetter()
+    {
+        Assert.Empty(UpdateHostSetterViolations(Src.Code(ControllerPath), Src.AllProduct()));
+    }
+
+    [Fact]
+    public void TheSetterCensusTripsOnACallInTheConstructorOnASecondCallBeforeTheReaderAndOnAnotherFileThatNamesIt()
+    {
+        var controller = Src.Code(ControllerPath);
+        var product = Src.AllProduct().ToList();
+
+        var constructor = Src.BodyOf(controller, @"private\s+WorkspaceController\s*\(\s*\)");
+        var inConstructor = controller.Replace(constructor, constructor.TrimEnd('}') + " _host.SetPilotUpdateHost(null); }", StringComparison.Ordinal);
+        Assert.NotEmpty(UpdateHostSetterViolations(inConstructor, product));
+
+        var reader = "_host.SetEditIntentReader(_navigation.EditIntentReader);";
+        var setter = "_host.SetPilotUpdateHost(new RackPilotUpdateCommandContext());";
+        var before = controller.Replace(setter, string.Empty, StringComparison.Ordinal).Replace(reader, setter + reader, StringComparison.Ordinal);
+        Assert.NotEmpty(UpdateHostSetterViolations(before, product));
+
+        var twice = controller.Replace(setter, setter + setter, StringComparison.Ordinal);
+        Assert.NotEmpty(UpdateHostSetterViolations(twice, product));
+
+        var other = product.Select(f => f.Path.EndsWith("WorkspaceNavigationHost.cs", StringComparison.Ordinal) ? (f.Path, f.Code + " host.SetPilotUpdateHost(x);") : f).ToList();
+        Assert.NotEmpty(UpdateHostSetterViolations(controller, other));
+    }
+
+    // Row 10: neither the request of the update nor the update itself is called from the drain, from the idle or from the handlers of the
+    // notices of the controller (ONE ACTUALIZAR: no idle, no drain, no handler and no hint of its own asks for another).
+    private static readonly Regex UpdateCallNames = new(@"\bRequestUpdate\b|\bTryUpdatePilot\b");
+
+    private static IReadOnlyList<string> UpdateNotFromTheDrainViolations(string core, string bridgeCore, string bridge, string controller, string navigation)
+    {
+        var bodies = new List<(string Name, string Body)>
+        {
+            ("OnDrained of the core", Src.BodyOf(core, @"public\s+void\s+OnDrained\s*\(\s*DrainOutcome\s+\w+\s*\)")),
+            ("OnIdle of the bridge core", Src.BodyOf(bridgeCore, @"public\s+IReadOnlyList<DrainOutcome>\s+OnIdle\s*\(\s*\)")),
+            ("OnIdle of the bridge", Src.BodyOf(bridge, @"private\s+void\s+OnIdle\s*\(\s*\)")),
+            ("OnDrained of the controller", Src.BodyOf(controller, @"private\s+void\s+OnDrained\s*\(\s*DrainOutcome\s+\w+\s*\)")),
+            ("NotifyStateChanged of the controller", Src.BodyOf(controller, @"private\s+void\s+NotifyStateChanged\s*\(\s*\)")),
+            ("OnCommandStateChanged of the controller", Src.BodyOf(controller, @"private\s+void\s+OnCommandStateChanged\s*\(\s*\)")),
+            ("OnActiveSessionChanged of the controller", Src.BodyOf(controller, @"private\s+void\s+OnActiveSessionChanged\s*\(\s*\)")),
+            ("OnDrained of the navigation host", Src.BodyOf(navigation, @"public\s+void\s+OnDrained\s*\(\s*DrainOutcome\s+\w+\s*\)")),
+        };
+        return bodies.Where(b => UpdateCallNames.IsMatch(b.Body)).Select(b => b.Name + " names " + UpdateCallNames.Match(b.Body).Value).ToArray();
+    }
+
+    private const string NavigationHostPath = "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs";
+
+    [Fact]
+    public void NeitherTheRequestOfTheUpdateNorTheUpdateItselfIsCalledFromTheDrainTheIdleOrTheHandlersOfTheNotices()
+    {
+        Assert.Empty(UpdateNotFromTheDrainViolations(Core(), Src.Code(BridgeCorePath), Src.Code(BridgePath), Src.Code(ControllerPath), Src.Code(NavigationHostPath)));
+    }
+
+    [Theory]
+    [InlineData("core", @"public\s+void\s+OnDrained\s*\(\s*DrainOutcome\s+\w+\s*\)", "var s = ((IWorkspacePilotEditPort)this).RequestUpdate(null!);")]
+    [InlineData("core", @"public\s+void\s+OnDrained\s*\(\s*DrainOutcome\s+\w+\s*\)", "var s = TryUpdatePilot(null!, null!);")]
+    [InlineData("bridgeCore", @"public\s+IReadOnlyList<DrainOutcome>\s+OnIdle\s*\(\s*\)", "var s = RequestUpdate(null);")]
+    [InlineData("bridge", @"private\s+void\s+OnIdle\s*\(\s*\)", "var s = RequestUpdate(null);")]
+    [InlineData("controller", @"private\s+void\s+OnDrained\s*\(\s*DrainOutcome\s+\w+\s*\)", "var s = _pilotEdit.RequestUpdate(null);")]
+    [InlineData("controller", @"private\s+void\s+NotifyStateChanged\s*\(\s*\)", "var s = _pilotEdit.RequestUpdate(null);")]
+    [InlineData("controller", @"private\s+void\s+OnCommandStateChanged\s*\(\s*\)", "var s = _pilotEdit.RequestUpdate(null);")]
+    [InlineData("controller", @"private\s+void\s+OnActiveSessionChanged\s*\(\s*\)", "var s = _pilotEdit.RequestUpdate(null);")]
+    [InlineData("navigation", @"public\s+void\s+OnDrained\s*\(\s*DrainOutcome\s+\w+\s*\)", "var s = RequestUpdate(null);")]
+    public void TheNoUpdateFromTheDrainGuardDetectsTheCallInjectedIntoEachOfTheEightBodies(string file, string signature, string injected)
+    {
+        var texts = new Dictionary<string, string>
+        {
+            ["core"] = Core(),
+            ["bridgeCore"] = Src.Code(BridgeCorePath),
+            ["bridge"] = Src.Code(BridgePath),
+            ["controller"] = Src.Code(ControllerPath),
+            ["navigation"] = Src.Code(NavigationHostPath),
+        };
+        Assert.Empty(UpdateNotFromTheDrainViolations(texts["core"], texts["bridgeCore"], texts["bridge"], texts["controller"], texts["navigation"]));
+
+        var body = Src.BodyOf(texts[file], signature);
+        // A body that is an expression (=>) takes the call as a second expression; every other body takes it as one more statement.
+        var mutatedBody = body.Contains("=>", StringComparison.Ordinal) && !body.Contains('{', StringComparison.Ordinal)
+            ? body.TrimEnd(';') + ", " + injected.Substring(injected.IndexOf('=') + 1).Trim().TrimEnd(';') + ";"
+            : body.TrimEnd('}') + " " + injected + " }";
+        texts[file] = texts[file].Replace(body, mutatedBody, StringComparison.Ordinal);
+        Assert.NotEmpty(UpdateNotFromTheDrainViolations(texts["core"], texts["bridgeCore"], texts["bridge"], texts["controller"], texts["navigation"]));
+    }
+
+    // Row 11: the texts of I-01 and the new bodies. No assignment of a literal to a reason, and no literal in a factory of an outcome of the
+    // update, of the start of the update or in a Busy or a Waiting of the new bodies: every text is a constant of the run or of the host texts.
+    private static readonly (string Name, string Signature)[] UpdateTextBodies =
+    {
+        ("UpdateGate", @"private\s+EditGate\s+UpdateGate\s*\("),
+        ("RequestUpdate", @"EditUpdateStart\s+IWorkspacePilotEditPort\.RequestUpdate\s*\("),
+        ("TakeUpdateProgress", @"EditUpdateProgress\s+IWorkspacePilotEditPort\.TakeUpdateProgress\s*\("),
+        ("ExpireStaleUpdate", @"private\s+UpdateTicket\?\s+ExpireStaleUpdate\s*\("),
+        ("PilotUpdateRun", @"private\s+sealed\s+class\s+PilotUpdateRun\b"),
+        ("TryUpdatePilot", @"public\s+EditUpdateOutcome\s+TryUpdatePilot\s*\("),
+        ("AnswerOfAClosedThatWasNotAccepted", @"private\s+static\s+EditUpdateOutcome\s+AnswerOfAClosedThatWasNotAccepted\s*\("),
+    };
+
+    private static readonly Regex UpdateTextLiteral = new(
+        @"\breason\s*=\s*""|\b(?:EditUpdateOutcome|EditUpdateStart)\.\w+\s*\(\s*""|\bEditUpdateOutcome\.Closed(?:InError)?\s*\(\s*[\w.]+\s*,\s*""|\.(?:Busy|Waiting)\s*\(\s*""");
+
+    private static IReadOnlyList<string> UpdateTextViolations(string core) =>
+        UpdateTextBodies
+            .Select(b => (b.Name, Body: Src.BodyOf(core, b.Signature)))
+            .Where(b => UpdateTextLiteral.IsMatch(b.Body))
+            .Select(b => b.Name + " carries a literal text: " + UpdateTextLiteral.Match(b.Body).Value)
+            .ToArray();
+
+    [Fact]
+    public void TheTextsOfTheGateAndOfTheNewBodiesOfTheUpdateAreConstantsAndNeverLiterals()
+    {
+        var core = Core();
+        Assert.Empty(UpdateTextViolations(core));
+
+        // The three texts of I-01 are constants of the run, and the core no longer declares one of its own for them.
+        Assert.Contains("PushBackPilotUpdateRun.NoActiveDocumentReason", Src.BodyOf(core, @"private\s+EditGate\s+UpdateGate\s*\("));
+        Assert.Contains("PushBackPilotUpdateRun.ModalOpenReason", Src.BodyOf(core, @"private\s+EditGate\s+UpdateGate\s*\("));
+        Assert.DoesNotMatch(new Regex(@"const\s+string\s+UpdateNotRunReason"), core);
+        Assert.Contains("PushBackPilotUpdateRun.UpdateNotRunReason", Src.BodyOf(core, @"public\s+EditUpdateOutcome\s+TryUpdatePilot\s*\("));
+    }
+
+    [Theory]
+    [InlineData("UpdateGate", "reason = \"x\";")]
+    [InlineData("TryUpdatePilot", "var x = EditUpdateOutcome.Closed(EditUpdateStatus.NotAppliedFailure, \"x\", Array.Empty<string>(), Array.Empty<string>());")]
+    [InlineData("RequestUpdate", "var x = EditUpdateStart.Busy(\"x\");")]
+    [InlineData("RequestUpdate", "var x = EditUpdateStart.Failed(\"x\");")]
+    [InlineData("TakeUpdateProgress", "var x = EditUpdateOutcome.Failed(\"x\");")]
+    [InlineData("ExpireStaleUpdate", "var x = EditUpdateOutcome.Failed(\"x\");")]
+    [InlineData("PilotUpdateRun", "var x = EditUpdateOutcome.Rejected(\"x\");")]
+    [InlineData("AnswerOfAClosedThatWasNotAccepted", "var x = EditUpdateOutcome.ClosedInError(\"x\", EditUpdateStatus.Applied, null, null!, null!);")]
+    public void TheTextGuardOfTheUpdateDetectsALiteralInjectedIntoEachOfTheBodies(string name, string injected)
+    {
+        var core = Core();
+        var signature = UpdateTextBodies.Single(b => b.Name == name).Signature;
+        var body = Src.BodyOf(core, signature);
+
+        Assert.Empty(UpdateTextViolations(core));
+        var mutated = core.Replace(body, body.TrimEnd('}') + " " + injected + " }", StringComparison.Ordinal);
+        Assert.NotEmpty(UpdateTextViolations(mutated));
+    }
 }
