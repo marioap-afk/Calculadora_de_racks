@@ -2197,3 +2197,72 @@ El paquete de cierre es `F4-T4B-MUTATE-POST/task-close-package.md`.
 **Siguiente:**
 1. El paquete de F4-T4C (§8 del paquete de T4B), con los arrastres de este cierre.
 2. Smoke-2, después de T4C (§7).
+
+## F4-E62. Preparación de F4-T4C: paquete v4, revisiones y disposición del Owner sobre el §9
+
+**Autoridades:**
+- la orden del Owner de ratificación del cierre de T4B y de preparación de T4C, «PACKAGE PREPARATION + INDEPENDENT REVIEW ONLY» y «Do NOT emit the T4C contract yet» (`F4-DRAFTS/coordinator/owner-f4t4c-preparation-authorization.md`, literal). Ratifica F4-T4B = CLOSED / PASS WITH LIMITATIONS sobre `4314c180` (custodia `b15072ff`) y manda «Do not reopen T4B merely because T4C integrates it»;
+- la disposición del Owner sobre el §9 del paquete v4 (`F4-DRAFTS/coordinator/owner-f4t4c-package-decisions.md`, literal).
+
+**La preparación:** los siete mapas de la orden («PACKAGE REVIEW», pasos 1 a 7), en cuatro mapas de solo lectura medidos en `b15072ff`, custodiados en `F4-DRAFTS/t4c/`:
+- M1: la costura de T4B, el escritor de corrida y la ausencia de una segunda vía;
+- M2: el contexto de comando, el bloqueo y la frontera de transacción y de Undo;
+- M3: la mutación propia, el ciclo de vida, la UI de Actualizar y el diagnóstico de T4A2;
+- M4: las superficies de T1B, el alcance y la línea base de pruebas.
+
+**Las revisiones** (pasos 8 a 11):
+- v1: **EMITIBLE TRAS CORRECCIONES (0/12/16)**;
+- v2: re-revisión acotada de los tres diseños rehechos, con 26 de 28 resueltos y **0/7/8** nuevos;
+- v3: comprobación dirigida, con N-01 a N-15 resueltos y **0/1/2**;
+- v4: aplica C3-01 a C3-03, sin cambio del diseño de base.
+
+**Ninguna revisión halló bloqueantes:**
+- T4B se invoca tal cual, sin duplicar su política;
+- hay una sola transacción authored, con el renombrado y la purga leídos como POST;
+- T1B no cambia.
+
+**El paquete** es `docs/initiatives/I-64-f4-t4c-gate-contract-package.md` (v4, PREPARACIÓN, no emitida), con 20 decisiones D-T4C.
+
+**Las condiciones de «RETURN BEFORE EMISSION»:**
+- **activada:** «any other material product decision», por el ámbito propio y su residual, por las dispensas y el vehículo de la sonda de host, y por la cota del billete;
+- **posible:** la autoridad persistente, según cómo se lea el ejecutor;
+- **dependen del host:** Undo y el envoltorio del bloqueo y del contexto.
+
+Todas se llevaron al Owner en el §9.
+
+**La disposición del Owner:**
+- **O-01, «H0 con dispensas».** La sonda T4C-H0 (D-T4C-16) va antes del producto:
+  - un arnés Debug revisado, en un worktree desechable, sin commit en ninguna rama del producto, sobre una copia del dibujo que se cierra sin guardar, con su custodia y una tabla resultado → acción;
+  - el Owner opera AutoCAD, y la sesión mide los datos de máquina;
+  - **tres dispensas:**
+    - Smoke-2 sigue siendo la primera validación física, y H0 es un diagnóstico;
+    - §12.1, sin build de hito y con el DLL del worktree desechable;
+    - F4-E59.
+- **O-02, «Vía A + IC-09».** Las pistas propias van aparte y solo invalidan cachés.
+  - El cierre tiene una cota estructural.
+  - El residual, una escritura de un tercero sobre otro rack durante la ventana, se declara en una IC-09 nueva.
+  - Las respuestas a lo que mida H0 están preparadas: V2 o V1 por los `*Cancel*`, V3 por un cierre temprano, y «cerrar en `Settle`», una desviación de C-F4-04, solo si el Owner la admite; si no, una A-n.
+- **O-03 y O-04, «E-a + D-1».**
+  - En el núcleo, un campo con un ejecutor sin estado.
+  - Un escritor con un constructor `Document` y una marca de un solo uso.
+  - Es un cambio declarado de `RackPilotUpdateWriter` y de su guarda, protegido por C14, sin tocar MUTATE ni POST.
+- **O-05 a O-15, «Aceptar todas»:**
+  - el aviso de C-F4-02: `ExecuteInCommandContextAsync` en un solo archivo y solo para Actualizar, con el vaciado de PICKFIRST;
+  - el canal F-1;
+  - R-T4-07 con la cota del billete;
+  - la dispensa de UI local para Smoke-2;
+  - la división H0 + T4C1 + T4C2;
+  - el diagnóstico de T4A2;
+  - `ClosedInError` ampliado;
+  - el renombrado y la purga como POST;
+  - la definición de «cancel»;
+  - los avisos del gesto;
+  - aceptar el vaciado de PICKFIRST.
+
+**Siguiente:**
+1. Preparar T4C-H0: el arnés, su revisión independiente, el build Debug y la guía del operador.
+2. H0 lo opera el Owner.
+3. Su resultado se lleva al paquete: los hechos [H] pasan a [M], y cualquier fila con C02, C05 o C12 vuelve al Owner.
+4. **T4C1 y T4C2 no se emiten hasta el resultado de H0.**
+
+Smoke-2 espera a que cierre el producto.

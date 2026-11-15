@@ -7248,3 +7248,25 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - I-01 y los menores pasan a F4-T4C;
 - deuda nueva PD-F4-07;
 - H-1 sigue abierta.
+
+## 205. Preparación de F4-T4C y disposición del Owner sobre su §9
+
+**Decisión:** F4-E62.
+- **La orden del Owner:** preparación y revisión independiente, sin emitir. Ratifica el cierre de F4-T4B.
+- **Su disposición sobre el §9:** O-01 «H0 con dispensas», O-02 «Vía A + IC-09», O-03 y O-04 «E-a + D-1», y O-05 a O-15 «Aceptar todas».
+
+**Los hechos:**
+- **Cuatro mapas** de solo lectura sobre `b15072ff` (`F4-DRAFTS/t4c/map-1..4`).
+- **El paquete** `docs/initiatives/I-64-f4-t4c-gate-contract-package.md`, v4, con 20 decisiones D-T4C. Pasó por tres revisiones:
+  - la de la v1, 0/12/16;
+  - la re-revisión de la v2, 0/7/8;
+  - la comprobación de la v3, 0/1/2.
+
+  Ningún bloqueante.
+- **Las condiciones de devolución:**
+  - activada, «any other material product decision», que el Owner decidió en el §9;
+  - las de Undo y del envoltorio del contexto, pendientes de medir en el host.
+
+**Siguiente:** T4C-H0. El arnés lo escribe la sesión y lo revisa un revisor independiente; va en un worktree desechable y sin commit en el producto, y lo opera el Owner. T4C1 y T4C2 no se emiten hasta su resultado.
+
+**Límites:** solo documentación; sin AutoCAD; sin cambios en `src/` ni en `tests/`.
