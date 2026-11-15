@@ -423,16 +423,32 @@ namespace RackCad.Application.Workspace
                 var pilot = read.PilotRead;
                 if (pilot == null) return EditCheckOutcome.Failed("La relectura no trajo resultado.");
 
+                // 7, continued (I-64 F4-T4C2, D-T4C-12): the diagnostic of the admission comes from the SAME reread, before its base goes to CheckNow, and in its
+                // own try. A failure of it gives null and never changes the answer: Recovered and Conflict only come from the comparison of the bases.
+                string? admission = null;
+                string? hint = null;
+                try
+                {
+                    admission = pilot.Read.IsAdmitted ? null : pilot.Read.Admission.Diagnostic;
+                    hint = admission == null ? null : pilot.ClassicEditorHint;
+                }
+                catch (Exception diagnosticFailure)
+                {
+                    Report("WorkspaceHostCore.TryCheckPilotEdit.Diagnostic", diagnosticFailure);
+                    admission = null;
+                    hint = null;
+                }
+
                 // 8: the base of the reread only goes to CheckNow.
                 var check = draft.CheckNow(pilot.StaleBase);
                 switch (check.Status)
                 {
                     case DraftCheckStatus.Recovered:
                         _knownClean.Remove(request.Session);
-                        return EditCheckOutcome.Recovered();
+                        return EditCheckOutcome.Recovered(admission, hint);
                     case DraftCheckStatus.Conflict:
                         _knownClean.Remove(request.Session);
-                        return EditCheckOutcome.Conflict(DescribeDifferences(check.Differences));
+                        return EditCheckOutcome.Conflict(DescribeDifferences(check.Differences), admission, hint);
                     default:
                         return EditCheckOutcome.NotApplicable("El borrador no quedó desconocido tras una aplicación fallida.");
                 }

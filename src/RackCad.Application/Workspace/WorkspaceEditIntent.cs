@@ -285,11 +285,11 @@ namespace RackCad.Application.Workspace
         public static EditCheckOutcome Conflict(IReadOnlyList<string> differences, string? admissionDiagnostic = null, string? classicEditorHint = null)
         {
             if (differences == null) throw new ArgumentNullException(nameof(differences));
-            return new EditCheckOutcome(EditCheckStatus.Conflict, null, differences, null, null);
+            return new EditCheckOutcome(EditCheckStatus.Conflict, null, differences, admissionDiagnostic, classicEditorHint);
         }
 
         public static EditCheckOutcome Recovered(string? admissionDiagnostic = null, string? classicEditorHint = null) =>
-            new(EditCheckStatus.Recovered, null, Array.Empty<string>(), null, null);
+            new(EditCheckStatus.Recovered, null, Array.Empty<string>(), admissionDiagnostic, classicEditorHint);
 
         public static EditCheckOutcome Failed(string reason) => Without(EditCheckStatus.Failed, reason);
 
