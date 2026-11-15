@@ -7320,3 +7320,15 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 **Siguiente:** el contrato de F4-T4C1-HOST (evidencia 209).
 
 **Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.
+
+## 209. Contrato de F4-T4C1-HOST
+
+**Contrato:** `I-64-pilot/F4-T4C1-HOST/coordinator/gate-contract.json` (F4-E65), la parte [1] del §6 del paquete v5 de F4-T4C.
+- **Alcance:** lista blanca exacta de 30 rutas: 2 archivos nuevos de producto (`PushBackPilotHostRun.cs` y el adaptador del contexto de comando), 11 modificados de producto, 5 pruebas nuevas y 12 modificadas.
+- **`ForbiddenWriteScope`:** 163 entradas, por raíces y archivos exactos: la UI entera, la costura de I-55, las fachadas, los caminos clásicos, el barrido, los otros archivos de `Plugin/Workspace/`, las pruebas que protegen T1B, las guardas de D-T4C-20 (a), los 52 archivos de G4 de T1B y el resto de `Pilot/`.
+- **Invariantes y paradas:** 18 invariantes con la numeración del §6 del paquete (sin la 11 y la 12, que son de T4C2), y 15 paradas propias, F4T4C-C01 a F4T4C-C15.
+- **`RequiredTests`:** 26 filas. Core `RackCad.Tests.Workspace` (`MinSelected` 3103, `ExpectRed` true); 23 clases de regresión con su cuenta de la base (`ExpectRed` false); UI `Workspace` (601) y `PushBackClassicCharacterization` (55), con `ExpectRed` false.
+- **Revisiones:** `AuthorityRevision` `12eda7de2307950f64d4bbf532fc56a05365fca6` y `MainSha` `812baf879612320653094a8aaf46aca0bac81383`.
+- **`attempts`:** 1 de 3.
+
+**Límites:** solo documentación en este paso; sin AutoCAD.
