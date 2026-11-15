@@ -121,7 +121,8 @@ namespace RackCad.UI.Tests
 
         private static EditConfirmOutcome UnknownConfirm() => Forge<EditConfirmOutcome>((EditConfirmStatus)99, "forged", Array.Empty<string>(), null, null);
 
-        private static EditCheckOutcome UnknownCheck() => Forge<EditCheckOutcome>((EditCheckStatus)99, "forged", Array.Empty<string>());
+        // I-64 F4-T4C2 (D-T4C-12): the answer of the check carries the diagnostic and the hint too, so its private constructor takes them as EditConfirmOutcome does.
+        private static EditCheckOutcome UnknownCheck() => Forge<EditCheckOutcome>((EditCheckStatus)99, "forged", Array.Empty<string>(), null, null);
 
         private static EditIntentOutcome UnknownIntent() =>
             Forge<EditIntentOutcome>((EditIntentStatus)99, EditWitnessStatus.NotEvaluated, "forged", null, null, null);
@@ -1457,6 +1458,137 @@ namespace RackCad.UI.Tests
 
             Assert.Empty(rig.Port.Reads());
             Assert.Empty(rig.Operations());
+        }
+
+        // ------------------------------------------------------------------ I-64 F4-T4C2 (D-T4C-12): the diagnostic of the check of an unknown draft
+
+        [Fact]
+        public void ARecoveredCheckWithADiagnosticKeepsItAsPersistentWithItsHintAndTheBoxStaysReadOnlyAndTheTextOfTheRecoveryIsTheSame()
+        {
+            var rig = new Rig(Unknown(PilotUnknownOrigin.CommitThrew));
+            rig.Port.CheckNowResponder = _ =>
+            {
+                rig.Set(Dirty());
+                return EditCheckOutcome.Recovered("DIAG-R", "HINT-R");
+            };
+
+            rig.Field.CheckNow();
+
+            Assert.Equal(A207, rig.Field.NoticeText);
+            Assert.Equal("DIAG-R", rig.Field.NotEditableText);
+            Assert.Equal("HINT-R", rig.Field.ClassicEditorHintText);
+            Assert.True(rig.Field.IsReadOnly);
+            Assert.Equal("Modificado", rig.Field.StateText);
+        }
+
+        [Fact]
+        public void AConflictOfTheCheckWithADiagnosticKeepsItAsPersistentWithItsHintAndTheTextOfTheConflictIsTheSame()
+        {
+            var rig = new Rig(Unknown(PilotUnknownOrigin.CommitThrew));
+            rig.Port.CheckNowResponder = _ =>
+            {
+                rig.Set(Conflict(true));
+                return EditCheckOutcome.Conflict(new[] { "A1:EnvelopeText" }, "DIAG-K", "HINT-K");
+            };
+
+            rig.Field.CheckNow();
+
+            Assert.Equal(A209, rig.Field.NoticeText);
+            Assert.Equal("DIAG-K", rig.Field.NotEditableText);
+            Assert.Equal("HINT-K", rig.Field.ClassicEditorHintText);
+            Assert.True(rig.Field.IsReadOnly);
+            Assert.False(rig.Field.ShowDiscardAndReloadButton);
+            Assert.False(rig.Field.ShowKeepMineButton);
+        }
+
+        [Fact]
+        public void ADiagnosticWithoutAHintShowsAnEmptyHintAndTheHintNeverComesWithoutItsDiagnostic()
+        {
+            var withDiagnostic = new Rig(Unknown(PilotUnknownOrigin.CommitThrew));
+            withDiagnostic.Port.CheckNowResponder = _ =>
+            {
+                withDiagnostic.Set(Dirty());
+                return EditCheckOutcome.Recovered("DIAG-N");
+            };
+            withDiagnostic.Field.CheckNow();
+            Assert.Equal("DIAG-N", withDiagnostic.Field.NotEditableText);
+            Assert.Equal(string.Empty, withDiagnostic.Field.ClassicEditorHintText);
+
+            var withoutDiagnostic = new Rig(Unknown(PilotUnknownOrigin.CommitThrew));
+            withoutDiagnostic.Port.CheckNowResponder = _ =>
+            {
+                withoutDiagnostic.Set(Dirty());
+                return EditCheckOutcome.Recovered(null, "HINT-ALONE");
+            };
+            withoutDiagnostic.Field.CheckNow();
+            Assert.Equal(string.Empty, withoutDiagnostic.Field.NotEditableText);
+            Assert.Equal(string.Empty, withoutDiagnostic.Field.ClassicEditorHintText);
+        }
+
+        [Fact]
+        public void ARecoveredOrConflictingCheckWithoutADiagnosticRetiresThePersistentOneAndAnAnswerThatDidNotRereadLeavesItAlone()
+        {
+            Rig Persistent()
+            {
+                var persistent = WithPersistentDiagnostic();
+                persistent.Set(Unknown(PilotUnknownOrigin.CommitThrew));
+                persistent.Field.Show(A, Rack, false);
+                Assert.Equal("DIAG", persistent.Field.NotEditableText);
+                return persistent;
+            }
+
+            var recovered = Persistent();
+            recovered.Port.CheckNowResponder = _ =>
+            {
+                recovered.Set(Dirty());
+                return EditCheckOutcome.Recovered();
+            };
+            recovered.Field.CheckNow();
+            Assert.Equal(string.Empty, recovered.Field.NotEditableText);
+            Assert.Equal(string.Empty, recovered.Field.ClassicEditorHintText);
+
+            var conflict = Persistent();
+            conflict.Port.CheckNowResponder = _ =>
+            {
+                conflict.Set(Conflict(true));
+                return EditCheckOutcome.Conflict(new[] { "A1:EnvelopeText" });
+            };
+            conflict.Field.CheckNow();
+            Assert.Equal(string.Empty, conflict.Field.NotEditableText);
+
+            // A new diagnostic replaces the old one; an answer that did not reread the drawing leaves the persistent one as it was.
+            var replaced = Persistent();
+            replaced.Port.CheckNowResponder = _ =>
+            {
+                replaced.Set(Dirty());
+                return EditCheckOutcome.Recovered("DIAG-NEW", "HINT-NEW");
+            };
+            replaced.Field.CheckNow();
+            Assert.Equal("DIAG-NEW", replaced.Field.NotEditableText);
+            Assert.Equal("HINT-NEW", replaced.Field.ClassicEditorHintText);
+
+            var waiting = Persistent();
+            waiting.Port.CheckNowResponder = _ => EditCheckOutcome.Waiting("hay un comando.");
+            waiting.Field.CheckNow();
+            Assert.Equal("DIAG", waiting.Field.NotEditableText);
+            Assert.Equal("HINT", waiting.Field.ClassicEditorHintText);
+        }
+
+        [Fact]
+        public void TheCheckWithADiagnosticReadsOnceAndTheFieldCallsNoOtherOperationOfTheDrawing()
+        {
+            var rig = new Rig(Unknown(PilotUnknownOrigin.CommitThrew));
+            rig.Port.CheckNowResponder = _ =>
+            {
+                rig.Set(Dirty());
+                return EditCheckOutcome.Recovered("DIAG-R", "HINT-R");
+            };
+
+            rig.Field.CheckNow();
+
+            Assert.Single(rig.Port.Reads());
+            Assert.Equal(1, rig.Count(WorkspacePilotEditPortDouble.CheckOp));
+            Assert.Equal(0, rig.Port.UpdateCount(WorkspacePilotEditPortDouble.RequestUpdateOp));
         }
     }
 }

@@ -88,6 +88,10 @@ namespace RackCad.UI.Workspace
         // member of the field. The two options only ask for the confirmation; the check and the answer Yes are the ones that reach the port.
         private void OnBrowserFieldCheckClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.Field.CheckNow());
 
+        // The update of the rack (I-64 F4-T4C2, D-T4C-11): one explicit click is one gesture of the field. The handler only calls the gesture; the
+        // field checks its own button first, so a click that was queued after a run does not ask for another one.
+        private void OnBrowserFieldUpdateClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.Field.Update());
+
         private void OnBrowserFieldDiscardAndReloadClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.Field.RequestDiscardAndReload());
 
         private void OnBrowserFieldKeepMineClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.Field.RequestKeepMine());

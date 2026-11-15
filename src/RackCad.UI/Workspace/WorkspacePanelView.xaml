@@ -236,6 +236,11 @@
                                     AutomationProperties.Name="Comprobar el borrador ahora"
                                     Visibility="{Binding Browser.Field.ShowCheckButton, Converter={StaticResource FlagToVisibility}}"
                                     Click="OnBrowserFieldCheckClick" />
+                            <Button x:Name="BrowserFieldUpdateButton" Content="Actualizar" Margin="0,2,6,0" Padding="10,3"
+                                    Style="{StaticResource SecondaryButtonStyle}"
+                                    AutomationProperties.Name="Actualizar el dibujo con el borrador"
+                                    Visibility="{Binding Browser.Field.ShowUpdateButton, Converter={StaticResource FlagToVisibility}}"
+                                    Click="OnBrowserFieldUpdateClick" />
                             <Button x:Name="BrowserFieldDiscardAndReloadButton" Content="Descartar y recargar" Margin="0,2,6,0" Padding="10,3"
                                     Style="{StaticResource SecondaryButtonStyle}"
                                     AutomationProperties.Name="Descartar el borrador y recargarlo"

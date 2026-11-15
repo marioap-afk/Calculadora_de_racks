@@ -193,6 +193,9 @@ namespace RackCad.UI.Workspace
         /// </summary>
         public bool ShowCheckButton => OffersCheck(_view);
 
+        /// <summary>The Update button (I-64 F4-T4C2, D-T4C-11). Inert until the gesture exists.</summary>
+        public bool ShowUpdateButton => false;
+
         /// <summary>
         /// The option to discard the work and reload the draft (D-T4A2-02): for a draft in conflict, and for an unknown one that was applied and
         /// whose reread failed; on a pinned tab, without a failure, without a persistent diagnostic and without a choice that waits.
@@ -440,6 +443,11 @@ namespace RackCad.UI.Workspace
             {
                 EnterFailure(ex);
             }
+        }
+
+        /// <summary>The Update button (I-64 F4-T4C2, D-T4C-11). Inert until the gesture exists.</summary>
+        public void Update()
+        {
         }
 
         /// <summary>The option to discard the work and reload the draft: it asks for the confirmation and calls nothing of the port but the memory.</summary>

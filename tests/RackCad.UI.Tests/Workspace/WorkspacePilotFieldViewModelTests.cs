@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RackCad.Application.Systems.PushBack.Pilot;
 using RackCad.Application.Workspace;
 using RackCad.UI.Workspace;
 using Xunit;
@@ -1415,6 +1416,801 @@ namespace RackCad.UI.Tests
             rig.Field.Text = "1:75";
 
             Assert.Equal("El texto no se aplicó: La petición no es del documento activo.", rig.Field.NoticeText);
+        }
+
+        // ================================================================== I-64 F4-T4C2 (D-T4C-11, D-T4C-03): the update of the rack
+        //
+        // The gesture Update() of the field, over the double of the edit port: the button, the order of the five steps, the boundary of the update, the
+        // presentation of every outcome WITHOUT reclassifying it, the five rules of the presentation (once, nested repaint, per surface and after IsMine,
+        // the start value in the gesture, a new request never erases an outcome) and the texts, each one written here in full and byte for byte. Nothing
+        // reads a drawing and nothing is written: the double records what the field asked of the port.
+
+        private const string Rk = "R-1";
+
+        private const string UAppliedText = "Actualizado: el cambio se aplicó al dibujo.";
+        private const string UCommitThrewText = "Estado desconocido; comprueba.";
+        private const string UPostRereadText = "Aplicado; recarga para seguir editando.";
+        private const string USurfaceChangedText = "La superficie cambió durante la lectura; el resultado no se mostró.";
+
+        private static PilotFieldView DirtyView(string? pending = null, bool stale = false, bool canEdit = true) =>
+            WorkspacePilotEditPortDouble.View(PilotFieldState.Dirty, "2.5", pending, null, stale, true, canEdit);
+
+        private static PilotFieldView CleanView() => WorkspacePilotEditPortDouble.View(PilotFieldState.Clean, "2.5");
+
+        private static EditUpdateOutcome Applied() => EditUpdateOutcome.Closed(EditUpdateStatus.Applied, null, Array.Empty<string>(), Array.Empty<string>());
+
+        private static EditUpdateOutcome Closed(EditUpdateStatus status, string? reason = null, string[]? differences = null, string[]? warnings = null) =>
+            EditUpdateOutcome.Closed(status, reason, differences ?? Array.Empty<string>(), warnings ?? Array.Empty<string>());
+
+        // An outcome and a start with a status that no enumerator names, built through the private constructor of the value.
+        private static T ForgeUpdate<T>(params object?[] arguments)
+            where T : struct =>
+            (T)Activator.CreateInstance(typeof(T), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic, null, arguments, null)!;
+
+        private static EditUpdateOutcome UnknownOutcome() =>
+            ForgeUpdate<EditUpdateOutcome>((EditUpdateStatus)99, "forged", Array.Empty<string>(), Array.Empty<string>(), EditUpdateStatus.Unavailable, null);
+
+        private static EditUpdateStart UnknownStart() => ForgeUpdate<EditUpdateStart>((EditUpdateStartStatus)99, "forged");
+
+        private sealed class UpdateRig
+        {
+            public readonly WorkspacePilotEditPortDouble Port = new();
+            public readonly WorkspacePilotFieldViewModel Field;
+            public int Changed;
+
+            public UpdateRig(PilotFieldView? view = null, bool preview = false)
+            {
+                Field = new WorkspacePilotFieldViewModel(Port, () => Changed++);
+                Port.Set(A, Rk, view ?? DirtyView());
+                Field.Show(A, Rk, preview);
+                Port.Calls.Clear();
+                Port.UpdateLog.Clear();
+                Changed = 0;
+            }
+
+            public void Set(PilotFieldView view) => Port.Set(A, Rk, view);
+
+            // The register of the update as text: the operation and, for the boundary, its kind.
+            public string[] Order() => Port.UpdateLog.Select(e => e.Operation + (e.Kind.HasValue ? ":" + e.Kind.Value : string.Empty)).ToArray();
+
+            // The request is accepted and the update is in flight, as the host answers when the callback is deferred.
+            public void AcceptInFlight() => Port.UpdateStartResponder = _ =>
+            {
+                Port.SetProgress(A, Rk, true);
+                return EditUpdateStart.Accepted();
+            };
+
+            // The request is accepted and the outcome is already there, as the host answers when the callback ran inside the call.
+            public void AcceptWith(EditUpdateOutcome outcome, PilotFieldView? after = null) => Port.UpdateStartResponder = _ =>
+            {
+                Port.SetProgress(A, Rk, false, outcome);
+                if (after.HasValue) Set(after.Value);
+                return EditUpdateStart.Accepted();
+            };
+        }
+
+        private static readonly string[] TheFiveSteps =
+        {
+            WorkspacePilotEditPortDouble.TakeProgressOp,
+            WorkspacePilotEditPortDouble.BoundaryOp + ":Update",
+            WorkspacePilotEditPortDouble.RequestUpdateOp,
+            WorkspacePilotEditPortDouble.TakeProgressOp,
+        };
+
+        // ------------------------------------------------------------------ the button (D-T4C-11, INV-F4T4C-11)
+
+        public static TheoryData<string, bool> UpdateOffers()
+        {
+            var data = new TheoryData<string, bool>
+            {
+                { "Dirty", true },
+                { "DirtyPossiblyStale", true },
+                { "DirtyWithPendingText", true },
+                { "Clean", false },
+                { "CleanPossiblyStale", false },
+                { "Conflict", false },
+                { "UnknownCommitThrew", false },
+                { "UnknownPostReread", false },
+                { "UnknownNoOrigin", false },
+                { "Applying", false },
+                { "Error", false },
+                { "Undecidable", false },
+                { "NotOpen", false },
+            };
+            return data;
+        }
+
+        private static PilotFieldView UpdateViewNamed(string name) => name switch
+        {
+            "Dirty" => DirtyView(),
+            "DirtyPossiblyStale" => DirtyView(stale: true),
+            "DirtyWithPendingText" => DirtyView(pending: "3"),
+            "Clean" => CleanView(),
+            "CleanPossiblyStale" => WorkspacePilotEditPortDouble.View(PilotFieldState.Clean, "2.5", stale: true),
+            "Conflict" => WorkspacePilotEditPortDouble.View(PilotFieldState.Conflict, "2.5", isProtected: true, conflictText: "A1:EnvelopeText"),
+            "UnknownCommitThrew" => WorkspacePilotEditPortDouble.View(PilotFieldState.Unknown, "2.5", isProtected: true, unknownOrigin: PilotUnknownOrigin.CommitThrew),
+            "UnknownPostReread" => WorkspacePilotEditPortDouble.View(PilotFieldState.Unknown, "2.5", isProtected: true, unknownOrigin: PilotUnknownOrigin.PostReread),
+            "UnknownNoOrigin" => WorkspacePilotEditPortDouble.View(PilotFieldState.Unknown, "2.5", isProtected: true),
+            "Applying" => WorkspacePilotEditPortDouble.View(PilotFieldState.Applying, "2.5", isProtected: true),
+            "Error" => WorkspacePilotEditPortDouble.View(PilotFieldState.Error, "2.5", isProtected: true),
+            "Undecidable" => WorkspacePilotEditPortDouble.View(PilotFieldState.Undecidable, "2.5", isProtected: true),
+            _ => WorkspacePilotEditPortDouble.NoDraft(),
+        };
+
+        [Theory]
+        [MemberData(nameof(UpdateOffers))]
+        public void U01_TheUpdateButtonIsOfferedOnAPinnedSurfaceOnlyForADirtyDraftAlsoPossiblyStaleAndNeverInTheOtherStates(string name, bool offered)
+        {
+            var rig = new UpdateRig(UpdateViewNamed(name));
+
+            Assert.Equal(offered, rig.Field.ShowUpdateButton);
+            Assert.Empty(rig.Port.Calls);
+        }
+
+        [Fact]
+        public void U02_TheUpdateButtonIsNotOfferedOnAPreviewSurfaceNorWithAFailureOfTheFieldAndTheReloadOfTheFailureOffersItAgain()
+        {
+            var preview = new UpdateRig(DirtyView(), preview: true);
+            Assert.False(preview.Field.ShowUpdateButton);
+
+            var failed = new UpdateRig();
+            Assert.True(failed.Field.ShowUpdateButton);
+            failed.Field.Fail(new InvalidOperationException("falló el puerto"));
+            Assert.False(failed.Field.ShowUpdateButton);
+            failed.Field.Rematerialize();
+            Assert.True(failed.Field.ShowUpdateButton);
+        }
+
+        [Fact]
+        public void U03_AFieldWithoutThePortHasNoUpdateButtonAndItsGestureDoesNothing()
+        {
+            var field = new WorkspacePilotFieldViewModel(null);
+
+            field.Show(A, Rk, false);
+            field.Update();
+
+            Assert.False(field.ShowUpdateButton);
+        }
+
+        [Fact]
+        public void U04_ADirtyDraftWithAPersistentDiagnosticOffersTheUpdateButtonToo()
+        {
+            var rig = new UpdateRig(DirtyView(stale: true));
+            rig.Port.ConfirmBaseResponder = _ => EditConfirmOutcome.Confirmed("DIAG", "HINT");
+            rig.Field.CheckNow();
+
+            Assert.Equal("DIAG", rig.Field.NotEditableText);
+            Assert.True(rig.Field.IsReadOnly);
+            Assert.True(rig.Field.ShowUpdateButton);
+        }
+
+        // ------------------------------------------------------------------ the gesture: the button first, and the five steps in order
+
+        [Fact]
+        public void U05_TheGestureChecksItsButtonFirstAndWithoutItNothingIsAskedOfThePort()
+        {
+            foreach (var name in new[] { "Clean", "Conflict", "UnknownCommitThrew", "Applying", "Error", "NotOpen" })
+            {
+                var rig = new UpdateRig(UpdateViewNamed(name));
+
+                rig.Field.Update();
+
+                Assert.Empty(rig.Port.UpdateLog);
+                Assert.Empty(rig.Port.Calls);
+                Assert.Equal(0, rig.Changed);
+            }
+
+            var preview = new UpdateRig(DirtyView(), preview: true);
+            preview.Field.Update();
+            Assert.Empty(preview.Port.UpdateLog);
+            Assert.Empty(preview.Port.Calls);
+        }
+
+        [Fact]
+        public void U06_AnAcceptedRequestTakesWhatIsPendingCrossesTheBoundaryOfTheUpdateAsksOnceAndTakesTheProgressAndShowsApplyingWhileItIsInFlight()
+        {
+            var rig = new UpdateRig();
+            rig.AcceptInFlight();
+
+            rig.Field.Update();
+
+            Assert.Equal(TheFiveSteps, rig.Order());
+            var boundary = Assert.Single(rig.Port.UpdateOf(WorkspacePilotEditPortDouble.BoundaryOp));
+            Assert.Equal(PilotBoundaryKind.Update, boundary.Kind);
+            Assert.Equal(A, boundary.Origin);
+            Assert.Equal(Rk, boundary.RackId);
+            var request = Assert.Single(rig.Port.UpdateOf(WorkspacePilotEditPortDouble.RequestUpdateOp));
+            Assert.Equal(A, request.Origin);
+            Assert.Equal(Rk, request.RackId);
+            Assert.All(rig.Port.UpdateOf(WorkspacePilotEditPortDouble.TakeProgressOp), e => Assert.Equal((A, Rk), (e.Origin, e.RackId)));
+            Assert.Equal("Aplicando", rig.Field.StateText);
+            Assert.False(rig.Field.ShowUpdateButton);
+            Assert.Equal(string.Empty, rig.Field.NoticeText);
+            Assert.Empty(rig.Port.Reads());
+            Assert.Equal(1, rig.Changed);
+        }
+
+        [Fact]
+        public void U07_ASecondGestureWithTheButtonAlreadyHiddenDoesNotCallThePort()
+        {
+            var rig = new UpdateRig();
+            rig.AcceptInFlight();
+            rig.Field.Update();
+            Assert.False(rig.Field.ShowUpdateButton);
+            var before = rig.Port.UpdateLog.Count;
+
+            rig.Field.Update();
+            rig.Field.Update();
+
+            Assert.Equal(before, rig.Port.UpdateLog.Count);
+            Assert.Equal(1, rig.Port.UpdateCount(WorkspacePilotEditPortDouble.RequestUpdateOp));
+        }
+
+        [Fact]
+        public void U08_AnAcceptedRequestWhoseOutcomeIsAlreadyThereShowsItAtOnceAndTheStateIsTheOneOfTheMemoryOfThePort()
+        {
+            var rig = new UpdateRig();
+            rig.AcceptWith(Applied(), CleanView());
+
+            rig.Field.Update();
+
+            Assert.Equal(TheFiveSteps, rig.Order());
+            Assert.Equal(UAppliedText, rig.Field.NoticeText);
+            Assert.Equal("Limpio", rig.Field.StateText);
+            Assert.False(rig.Field.ShowUpdateButton);
+            Assert.Equal(1, rig.Changed);
+            // K = 1: the one live surface is painted again from the memory of the port, which is the authority of the state.
+            Assert.True(rig.Port.Count(WorkspacePilotEditPortDouble.GetFieldOp) > 0);
+        }
+
+        [Fact]
+        public void U09_AnAcceptedRequestWithoutOutcomeAndNotInFlightBecauseANestedRepaintPresentedItTouchesNothing()
+        {
+            var rig = new UpdateRig();
+            rig.Port.UpdateStartResponder = _ => EditUpdateStart.Accepted();
+            rig.Field.ShowNotice("aviso previo");
+
+            rig.Field.Update();
+
+            Assert.Equal(TheFiveSteps, rig.Order());
+            // A new gesture ends the notice of the previous one, and nothing was presented: no outcome and no flight invented.
+            Assert.Equal(string.Empty, rig.Field.NoticeText);
+            Assert.Equal("Modificado", rig.Field.StateText);
+            Assert.True(rig.Field.ShowUpdateButton);
+        }
+
+        // ------------------------------------------------------------------ step 1: what is pending is presented first, and then nothing is asked
+
+        [Fact]
+        public void U10_AnOutcomeThatWasPendingIsPresentedAndNothingIsAskedAndItIsPresentedOnce()
+        {
+            var rig = new UpdateRig();
+            rig.Port.SetProgress(A, Rk, false, Applied());
+
+            rig.Field.Update();
+
+            Assert.Equal(new[] { WorkspacePilotEditPortDouble.TakeProgressOp }, rig.Order());
+            Assert.Equal(UAppliedText, rig.Field.NoticeText);
+            Assert.Equal(0, rig.Port.UpdateCount(WorkspacePilotEditPortDouble.RequestUpdateOp));
+            Assert.Equal(0, rig.Port.UpdateCount(WorkspacePilotEditPortDouble.BoundaryOp));
+            Assert.Equal(1, rig.Changed);
+
+            // The outcome was consumed: the next gesture finds nothing pending, asks, and shows what the start says, not the old outcome again.
+            rig.Port.UpdateStartResponder = _ => EditUpdateStart.Busy("Hay una actualización en curso: espera a que termine.");
+            rig.Field.Update();
+
+            Assert.Equal("Ocupado: Hay una actualización en curso: espera a que termine. No se actualizó.", rig.Field.NoticeText);
+        }
+
+        // ------------------------------------------------------------------ step 2: the boundary of the update (H-27)
+
+        [Fact]
+        public void U11_ProceededWithAValidPendingTextAndWithoutTextAsksForTheUpdate()
+        {
+            var withText = new UpdateRig(DirtyView(pending: "3"));
+            withText.AcceptInFlight();
+            withText.Field.Update();
+            Assert.Equal(TheFiveSteps, withText.Order());
+            Assert.Equal(1, withText.Port.UpdateCount(WorkspacePilotEditPortDouble.RequestUpdateOp));
+
+            var withoutText = new UpdateRig(DirtyView());
+            withoutText.AcceptInFlight();
+            withoutText.Field.Update();
+            Assert.Equal(TheFiveSteps, withoutText.Order());
+        }
+
+        [Fact]
+        public void U12_AnInvalidPendingTextAbortsTheBoundaryAndNothingIsAskedAndTheMessageOfTheFieldIsShown()
+        {
+            var rig = new UpdateRig(DirtyView(pending: "3x"));
+            rig.Port.Validate = text => text == "3x" ? "El texto no es válido." : null;
+            rig.Port.UpdateStartResponder = _ => EditUpdateStart.Accepted();
+
+            rig.Field.Update();
+
+            Assert.Equal(new[] { WorkspacePilotEditPortDouble.TakeProgressOp, WorkspacePilotEditPortDouble.BoundaryOp + ":Update" }, rig.Order());
+            Assert.Equal("No se actualizó: El texto no es válido.", rig.Field.NoticeText);
+            Assert.Equal(0, rig.Port.UpdateCount(WorkspacePilotEditPortDouble.RequestUpdateOp));
+        }
+
+        [Fact]
+        public void U13_AnAbortWithoutAMessageShowsItsReasonAndAnAbortWithNeitherShowsTheTextOfNoDetail()
+        {
+            var reason = new UpdateRig();
+            reason.Port.BoundaryResponder = (_, _, kind) =>
+                new PilotBoundaryResult(kind, PilotBoundaryDecision.Aborted, false, Array.Empty<PilotFieldProblem>(), "La petición no es del documento activo.");
+            reason.Field.Update();
+            Assert.Equal("No se actualizó: La petición no es del documento activo.", reason.Field.NoticeText);
+            Assert.Equal(0, reason.Port.UpdateCount(WorkspacePilotEditPortDouble.RequestUpdateOp));
+
+            var neither = new UpdateRig();
+            neither.Port.BoundaryResponder = (_, _, kind) =>
+                new PilotBoundaryResult(kind, PilotBoundaryDecision.Aborted, false, Array.Empty<PilotFieldProblem>(), null);
+            neither.Field.Update();
+            Assert.Equal("No se actualizó: sin detalle.", neither.Field.NoticeText);
+            Assert.Equal(0, neither.Port.UpdateCount(WorkspacePilotEditPortDouble.RequestUpdateOp));
+        }
+
+        [Fact]
+        public void U14_KeptAndBusyAndAnUnknownDecisionDoNotAskAndShowTheirText()
+        {
+            var kept = new UpdateRig(DirtyView(pending: "3", canEdit: false));
+            kept.Port.UpdateStartResponder = _ => EditUpdateStart.Accepted();
+            kept.Field.Update();
+            Assert.Equal("No se actualizó: el borrador no se puede actualizar ahora.", kept.Field.NoticeText);
+            Assert.Equal(0, kept.Port.UpdateCount(WorkspacePilotEditPortDouble.RequestUpdateOp));
+
+            var busy = new UpdateRig();
+            busy.Port.BoundaryResponder = (_, _, kind) =>
+                new PilotBoundaryResult(kind, PilotBoundaryDecision.Busy, false, Array.Empty<PilotFieldProblem>(), "Hay una lectura del piloto en curso.");
+            busy.Field.Update();
+            Assert.Equal("Ocupado: Hay una lectura del piloto en curso. No se actualizó.", busy.Field.NoticeText);
+            Assert.Equal(0, busy.Port.UpdateCount(WorkspacePilotEditPortDouble.RequestUpdateOp));
+
+            var unknown = new UpdateRig();
+            unknown.Port.BoundaryResponder = (_, _, kind) =>
+                new PilotBoundaryResult(kind, (PilotBoundaryDecision)99, false, Array.Empty<PilotFieldProblem>(), null);
+            unknown.Field.Update();
+            Assert.Equal("No se actualizó: el borrador no se puede actualizar ahora.", unknown.Field.NoticeText);
+            Assert.Equal(0, unknown.Port.UpdateCount(WorkspacePilotEditPortDouble.RequestUpdateOp));
+        }
+
+        // ------------------------------------------------------------------ step 5: every start value that is not Accepted is shown in the gesture, with its cause
+
+        public static TheoryData<EditUpdateStart, string> StartValues() => new()
+        {
+            { EditUpdateStart.Waiting("hay un comando."), "En espera: hay un comando. No se actualizó." },
+            { EditUpdateStart.Rejected("otro documento."), "Rechazado: otro documento. No se actualizó." },
+            { EditUpdateStart.Busy("hay una lectura."), "Ocupado: hay una lectura. No se actualizó." },
+            { EditUpdateStart.Unavailable("no hay ejecutor."), "No disponible: no hay ejecutor. No se actualizó." },
+            { EditUpdateStart.Failed("no se pudo pedir el contexto."), "Fallo: no se pudo pedir el contexto. No se actualizó." },
+            { EditUpdateStart.Failed(PushBackPilotHostTexts.HostNotRunReason), "Fallo: La actualización no llegó a ejecutarse; no se escribió nada en el dibujo. No se actualizó." },
+            { EditUpdateStart.Failed(" "), "Fallo: sin detalle. No se actualizó." },
+            { default(EditUpdateStart), "No disponible: sin detalle. No se actualizó." },
+            { UnknownStart(), "No se pudo actualizar: forged No se actualizó." },
+        };
+
+        [Theory]
+        [MemberData(nameof(StartValues))]
+        public void U15_AStartValueThatIsNotAcceptedIsShownInTheGestureWithItsCauseAndTheProgressIsNotTakenAfterIt(EditUpdateStart start, string expected)
+        {
+            var rig = new UpdateRig();
+            rig.Port.UpdateStartResponder = _ => start;
+
+            rig.Field.Update();
+
+            Assert.Equal(
+                new[] { WorkspacePilotEditPortDouble.TakeProgressOp, WorkspacePilotEditPortDouble.BoundaryOp + ":Update", WorkspacePilotEditPortDouble.RequestUpdateOp },
+                rig.Order());
+            Assert.Equal(expected, rig.Field.NoticeText);
+            Assert.NotEqual("Aplicando", rig.Field.StateText);
+            Assert.True(rig.Field.ShowUpdateButton);
+        }
+
+        [Fact]
+        public void U16_AFailedStartDoesNotLeaveAnythingInTheStoreAndTheNextGestureAsksAgain()
+        {
+            var rig = new UpdateRig();
+            rig.Port.UpdateStartResponder = _ => EditUpdateStart.Failed(PushBackPilotHostTexts.HostNotRunReason);
+            rig.Field.Update();
+            rig.Field.Update();
+
+            Assert.Equal(2, rig.Port.UpdateCount(WorkspacePilotEditPortDouble.RequestUpdateOp));
+            // What is pending is taken once per gesture, and a start value that is not Accepted is never followed by a take.
+            Assert.Equal(2, rig.Port.UpdateCount(WorkspacePilotEditPortDouble.TakeProgressOp));
+        }
+
+        // ------------------------------------------------------------------ the presentation of every outcome, without reclassifying it
+
+        private static readonly string[] OneDifference = { "A1:EnvelopeText" };
+
+        public static TheoryData<EditUpdateOutcome, string> Outcomes() => new()
+        {
+            { Applied(), UAppliedText },
+            { Closed(EditUpdateStatus.AppliedWithWarnings, null, null, new[] { "aviso uno", "aviso dos" }), "Actualizado con avisos: aviso uno; aviso dos" },
+            { Closed(EditUpdateStatus.AppliedWithWarnings), "Actualizado con avisos: sin detalle." },
+            { Closed(EditUpdateStatus.NotAppliedConflict, null, new[] { "A1:EnvelopeText", "B2:Membership" }), "No se aplicó: el dibujo cambió fuera del panel. Diferencias: A1:EnvelopeText; B2:Membership" },
+            { Closed(EditUpdateStatus.NotAppliedConflict), "No se aplicó: el dibujo cambió fuera del panel. Diferencias: sin detalle." },
+            { Closed(EditUpdateStatus.NotAppliedAdmission, "el rack ya no es editable."), "No se aplicó: el rack ya no es editable." },
+            { Closed(EditUpdateStatus.NotAppliedPreflight, "falta una vista."), "No se aplicó: falta una vista." },
+            { Closed(EditUpdateStatus.NotAppliedFailure, "falló la escritura."), "No se aplicó: falló la escritura." },
+            { Closed(EditUpdateStatus.NotAppliedFailure), "No se aplicó: sin detalle." },
+            { Closed(EditUpdateStatus.CommitThrew, "el cierre lanzó."), UCommitThrewText },
+            { Closed(EditUpdateStatus.AppliedPostRereadFailed, "falló la relectura."), UPostRereadText },
+            { EditUpdateOutcome.ClosedDetached(), "El borrador se descartó o su sesión terminó durante la actualización." },
+            { EditUpdateOutcome.Rejected("otro documento."), "Rechazado: otro documento." },
+            { EditUpdateOutcome.NoDraft("no hay borrador."), "Sin borrador: no hay borrador." },
+            { EditUpdateOutcome.NothingToApply("el borrador está limpio."), "Nada que aplicar: el borrador está limpio." },
+            { EditUpdateOutcome.PendingText("hay texto sin aplicar."), "Hay texto pendiente: hay texto sin aplicar." },
+            { EditUpdateOutcome.NotApplicable("el borrador no se puede actualizar."), "No aplicable: el borrador no se puede actualizar." },
+            { EditUpdateOutcome.AnotherUpdateInProgress(), "Ya hay una actualización en curso." },
+            { EditUpdateOutcome.Refused("el borrador no empezó."), "El borrador no admitió la actualización: el borrador no empezó." },
+            { EditUpdateOutcome.Failed(PushBackPilotHostTexts.HostNotRunReason), "Fallo: La actualización no llegó a ejecutarse; no se escribió nada en el dibujo." },
+            { EditUpdateOutcome.Failed(string.Empty), "Fallo: sin detalle." },
+            { UnknownOutcome(), "Resultado de la actualización no reconocido." },
+        };
+
+        [Theory]
+        [MemberData(nameof(Outcomes))]
+        public void U17_EveryOutcomeIsShownByItsClassWithItsTextAndItsCauseAndOnce(EditUpdateOutcome outcome, string expected)
+        {
+            var rig = new UpdateRig();
+            rig.AcceptWith(outcome);
+
+            rig.Field.Update();
+
+            Assert.Equal(TheFiveSteps, rig.Order());
+            Assert.Equal(expected, rig.Field.NoticeText);
+
+            // Once: a repaint finds nothing and leaves the notice as it was.
+            rig.Field.Show(A, Rk, false);
+            Assert.Equal(expected, rig.Field.NoticeText);
+        }
+
+        public static TheoryData<EditUpdateOutcome, string> ClosedInErrorOutcomes() => new()
+        {
+            {
+                EditUpdateOutcome.ClosedInError("El borrador no aceptó el cierre de la actualización.", EditUpdateStatus.Applied, "la causa", Array.Empty<string>(), new[] { "aviso" }),
+                "El borrador quedó en error al cerrar la actualización. Clasificación: aplicada. El borrador no aceptó el cierre de la actualización. Causa: la causa Avisos: aviso"
+            },
+            {
+                EditUpdateOutcome.ClosedInError("no se rebasó.", EditUpdateStatus.AppliedWithWarnings, null, Array.Empty<string>(), new[] { "uno", "dos" }),
+                "El borrador quedó en error al cerrar la actualización. Clasificación: aplicada con avisos. no se rebasó. Avisos: uno; dos"
+            },
+            {
+                EditUpdateOutcome.ClosedInError("no se rebasó.", EditUpdateStatus.NotAppliedConflict, null, OneDifference, Array.Empty<string>()),
+                "El borrador quedó en error al cerrar la actualización. Clasificación: no aplicada por conflicto. no se rebasó. Diferencias: A1:EnvelopeText"
+            },
+            {
+                EditUpdateOutcome.ClosedInError(null, EditUpdateStatus.CommitThrew, "el cierre lanzó", Array.Empty<string>(), Array.Empty<string>()),
+                "El borrador quedó en error al cerrar la actualización. Clasificación: desconocida (el cierre falló). Causa: el cierre lanzó"
+            },
+            {
+                EditUpdateOutcome.ClosedInError(null, EditUpdateStatus.AppliedPostRereadFailed, null, Array.Empty<string>(), Array.Empty<string>()),
+                "El borrador quedó en error al cerrar la actualización. Clasificación: aplicada con la relectura fallida."
+            },
+            {
+                EditUpdateOutcome.ClosedInError(null, EditUpdateStatus.NotAppliedAdmission, null, Array.Empty<string>(), Array.Empty<string>()),
+                "El borrador quedó en error al cerrar la actualización. Clasificación: no aplicada por la admisión."
+            },
+            {
+                EditUpdateOutcome.ClosedInError(null, EditUpdateStatus.NotAppliedPreflight, null, Array.Empty<string>(), Array.Empty<string>()),
+                "El borrador quedó en error al cerrar la actualización. Clasificación: no aplicada por la comprobación previa."
+            },
+            {
+                EditUpdateOutcome.ClosedInError(null, EditUpdateStatus.NotAppliedFailure, null, Array.Empty<string>(), Array.Empty<string>()),
+                "El borrador quedó en error al cerrar la actualización. Clasificación: no aplicada por un fallo."
+            },
+            {
+                EditUpdateOutcome.ClosedInError(null, EditUpdateStatus.Unavailable, null, Array.Empty<string>(), Array.Empty<string>()),
+                "El borrador quedó en error al cerrar la actualización. Clasificación: sin clasificar."
+            },
+        };
+
+        [Theory]
+        [MemberData(nameof(ClosedInErrorOutcomes))]
+        public void U18_AClosedInErrorOutcomeIsShownWithItsClassificationAndNeverAsASuccessWhateverTheClassificationIs(EditUpdateOutcome outcome, string expected)
+        {
+            var rig = new UpdateRig();
+            rig.AcceptWith(outcome);
+
+            rig.Field.Update();
+
+            Assert.Equal(expected, rig.Field.NoticeText);
+            Assert.DoesNotContain("Actualizado", rig.Field.NoticeText);
+            Assert.NotEqual(UAppliedText, rig.Field.NoticeText);
+        }
+
+        [Fact]
+        public void U19_NoClassificationOfAClosedInErrorOutcomeEverProducesTheTextOfASuccess()
+        {
+            foreach (var classification in Enum.GetValues<EditUpdateStatus>())
+            {
+                var rig = new UpdateRig();
+                rig.AcceptWith(EditUpdateOutcome.ClosedInError("r", classification, "c", Array.Empty<string>(), Array.Empty<string>()));
+
+                rig.Field.Update();
+
+                Assert.StartsWith("El borrador quedó en error al cerrar la actualización. Clasificación: ", rig.Field.NoticeText, StringComparison.Ordinal);
+                Assert.DoesNotContain("Actualizado", rig.Field.NoticeText);
+            }
+        }
+
+        [Fact]
+        public void U20_UnknownIsNeverShownAsAFailureNorAsASuccessAndNoOutcomeShowsNothing()
+        {
+            foreach (var unknown in new[] { Closed(EditUpdateStatus.CommitThrew, "x"), Closed(EditUpdateStatus.AppliedPostRereadFailed, "x") })
+            {
+                var rig = new UpdateRig();
+                rig.AcceptWith(unknown);
+                rig.Field.Update();
+                Assert.DoesNotMatch("^(Fallo|Actualizado|No se aplicó|Rechazado)", rig.Field.NoticeText);
+            }
+
+            // An outcome that says nothing (the default value, or an Unavailable one) is not an outcome: nothing is presented and nothing is invented.
+            foreach (var none in new[] { default(EditUpdateOutcome), EditUpdateOutcome.Unavailable("no hay") })
+            {
+                var rig = new UpdateRig();
+                rig.AcceptWith(none);
+                rig.Field.Update();
+                Assert.Equal(string.Empty, rig.Field.NoticeText);
+                Assert.Equal("Modificado", rig.Field.StateText);
+            }
+        }
+
+        // ------------------------------------------------------------------ the five rules of the presentation (D-T4C-03)
+
+        [Fact]
+        public void U21_ANestedRepaintThatTakesTheOutcomeFirstLeavesTheGestureWithInFlightFalseAndNothingToPresentAndItTouchesNothing()
+        {
+            var rig = new UpdateRig();
+            rig.Port.UpdateHook = _ =>
+            {
+                rig.Port.SetProgress(A, Rk, false, Applied());
+                rig.Field.Show(A, Rk, false);
+            };
+            rig.Port.UpdateStartResponder = _ => EditUpdateStart.Accepted();
+
+            rig.Field.Update();
+
+            Assert.Equal(UAppliedText, rig.Field.NoticeText);
+            Assert.NotEqual("Aplicando", rig.Field.StateText);
+            Assert.Equal(
+                new[]
+                {
+                    WorkspacePilotEditPortDouble.TakeProgressOp,
+                    WorkspacePilotEditPortDouble.BoundaryOp + ":Update",
+                    WorkspacePilotEditPortDouble.RequestUpdateOp,
+                    WorkspacePilotEditPortDouble.TakeProgressOp,
+                    WorkspacePilotEditPortDouble.TakeProgressOp,
+                },
+                rig.Order());
+        }
+
+        [Fact]
+        public void U22_ARepaintWithInFlightFalseAndNoOutcomeNeverTouchesWhatWasPresentedNorInventsAnOutcome()
+        {
+            var rig = new UpdateRig();
+            rig.AcceptWith(Applied(), CleanView());
+            rig.Field.Update();
+            Assert.Equal(UAppliedText, rig.Field.NoticeText);
+
+            rig.Field.Show(A, Rk, false);
+            rig.Field.Show(A, Rk, false);
+
+            Assert.Equal(UAppliedText, rig.Field.NoticeText);
+            Assert.Equal("Limpio", rig.Field.StateText);
+        }
+
+        [Fact]
+        public void U23_ApplyingComesOnlyFromInFlightOrFromTheApplyingStateOfTheFieldAndOtherwiseTheFieldIsPaintedFromItsState()
+        {
+            var rig = new UpdateRig();
+            rig.AcceptInFlight();
+            rig.Field.Update();
+            Assert.Equal("Aplicando", rig.Field.StateText);
+
+            // Not in flight any more and no outcome yet (nothing invented): the state is the one the memory of the port says.
+            rig.Port.SetProgress(A, Rk, false);
+            rig.Field.Show(A, Rk, false);
+            Assert.Equal("Modificado", rig.Field.StateText);
+            Assert.True(rig.Field.ShowUpdateButton);
+
+            // The state Applying of the draft is enough to say it, with no flight.
+            rig.Set(UpdateViewNamed("Applying"));
+            rig.Field.Show(A, Rk, false);
+            Assert.Equal("Aplicando", rig.Field.StateText);
+            Assert.False(rig.Field.ShowUpdateButton);
+        }
+
+        [Fact]
+        public void U24_ARepaintOfTheLiveSurfacePresentsTheOutcomeThatArrivedAfterTheGestureOnceAndNeverReplacesALaterNotice()
+        {
+            var rig = new UpdateRig();
+            rig.AcceptInFlight();
+            rig.Field.Update();
+            Assert.Equal("Aplicando", rig.Field.StateText);
+            Assert.False(rig.Field.ShowUpdateButton);
+
+            rig.Port.SetProgress(A, Rk, false, Applied());
+            rig.Set(CleanView());
+            rig.Field.Show(A, Rk, false);
+
+            Assert.Equal(UAppliedText, rig.Field.NoticeText);
+            Assert.Equal("Limpio", rig.Field.StateText);
+
+            rig.Field.ShowNotice("otro aviso");
+            rig.Field.Show(A, Rk, false);
+            Assert.Equal("otro aviso", rig.Field.NoticeText);
+        }
+
+        [Fact]
+        public void U25_OnlyTheLiveSurfaceOfTheRackTakesTheOutcomeAndOnlyForItsOwnRackAndSession()
+        {
+            var rig = new UpdateRig();
+            rig.Port.SetProgress(A, "R-2", false, Applied());
+            rig.Port.SetProgress(B, Rk, false, Applied());
+
+            rig.Field.Show(A, Rk, false);
+            rig.Field.Show(A, Rk, false);
+
+            Assert.All(rig.Port.UpdateOf(WorkspacePilotEditPortDouble.TakeProgressOp), e => Assert.Equal((A, Rk), (e.Origin, e.RackId)));
+            Assert.Equal(string.Empty, rig.Field.NoticeText);
+            // The outcomes of the other rack and of the other session are still in the store: nobody took them.
+            Assert.Equal(EditUpdateStatus.Applied, rig.Port.TakeUpdateProgress(new WorkspaceRequest(A), "R-2").Outcome.Status);
+            Assert.Equal(EditUpdateStatus.Applied, rig.Port.TakeUpdateProgress(new WorkspaceRequest(B), Rk).Outcome.Status);
+        }
+
+        [Fact]
+        public void U26_AnOutcomeIsNotTakenOnAPreviewSurfaceNorWithAFailureOfTheFieldAndItStaysInTheStore()
+        {
+            var preview = new UpdateRig(DirtyView(), preview: true);
+            preview.Port.SetProgress(A, Rk, false, Applied());
+            preview.Field.Show(A, Rk, true);
+            Assert.Equal(0, preview.Port.UpdateCount(WorkspacePilotEditPortDouble.TakeProgressOp));
+            Assert.Equal(string.Empty, preview.Field.NoticeText);
+
+            var failed = new UpdateRig();
+            failed.Field.Fail(new InvalidOperationException("falló el puerto"));
+            failed.Port.UpdateLog.Clear();
+            failed.Port.SetProgress(A, Rk, false, Applied());
+            failed.Field.Show(A, Rk, false);
+            Assert.Equal(0, failed.Port.UpdateCount(WorkspacePilotEditPortDouble.TakeProgressOp));
+            Assert.Equal(EditUpdateStatus.Applied, failed.Port.TakeUpdateProgress(new WorkspaceRequest(A), Rk).Outcome.Status);
+        }
+
+        [Fact]
+        public void U27_IfTheSurfaceChangedInsideTheRequestTheResultIsNotShownHereNorTakenAndItStaysInTheStore()
+        {
+            var rig = new UpdateRig();
+            rig.Port.UpdateHook = _ =>
+            {
+                rig.Port.SetProgress(A, Rk, false, Applied());
+                rig.Field.Show(A, "R-2", false);
+            };
+            rig.Port.UpdateStartResponder = _ => EditUpdateStart.Accepted();
+
+            rig.Field.Update();
+
+            Assert.Equal(USurfaceChangedText, rig.Field.NoticeText);
+            // Taken once for R-1 (before the request); after the request the gesture did not take it, and the repaint of the other rack took its own.
+            var takesOfTheRack = rig.Port.UpdateOf(WorkspacePilotEditPortDouble.TakeProgressOp).Where(e => e.RackId == Rk).ToList();
+            Assert.Single(takesOfTheRack);
+            Assert.Equal(EditUpdateStatus.Applied, rig.Port.TakeUpdateProgress(new WorkspaceRequest(A), Rk).Outcome.Status);
+        }
+
+        [Fact]
+        public void U28_IfTheSurfaceChangedInsideTheBoundaryNothingIsAskedAndTheSurfaceChangeIsShown()
+        {
+            var rig = new UpdateRig();
+            rig.Port.BoundaryResponder = (_, _, kind) =>
+            {
+                rig.Field.Show(A, "R-2", false);
+                return new PilotBoundaryResult(kind, PilotBoundaryDecision.Proceeded, false, Array.Empty<PilotFieldProblem>(), null);
+            };
+
+            rig.Field.Update();
+
+            Assert.Equal(USurfaceChangedText, rig.Field.NoticeText);
+            Assert.Equal(0, rig.Port.UpdateCount(WorkspacePilotEditPortDouble.RequestUpdateOp));
+        }
+
+        [Fact]
+        public void U29_ARequestNeverErasesAnOutcomeThatWasNotPresentedBecauseTheGestureTakesWhatIsPendingFirst()
+        {
+            var rig = new UpdateRig();
+            rig.Port.SetProgress(A, Rk, false, Closed(EditUpdateStatus.NotAppliedConflict, null, OneDifference));
+            rig.Port.UpdateStartResponder = _ => EditUpdateStart.Accepted();
+
+            rig.Field.Update();
+
+            Assert.Equal("No se aplicó: el dibujo cambió fuera del panel. Diferencias: A1:EnvelopeText", rig.Field.NoticeText);
+            Assert.Equal(0, rig.Port.UpdateCount(WorkspacePilotEditPortDouble.RequestUpdateOp));
+        }
+
+        // ------------------------------------------------------------------ failures of the port are contained, and the field never gives a false state
+
+        [Fact]
+        public void U30_AFailureOfTheRequestTheBoundaryOrTheProgressIsContainedAsTheErrorOfTheFieldAndNeverEscapes()
+        {
+            foreach (var operation in new[] { WorkspacePilotEditPortDouble.RequestUpdateOp, WorkspacePilotEditPortDouble.BoundaryOp, WorkspacePilotEditPortDouble.TakeProgressOp })
+            {
+                var rig = new UpdateRig();
+                rig.Port.UpdateStartResponder = _ => EditUpdateStart.Accepted();
+                rig.Port.Throws[operation] = new InvalidOperationException("falló " + operation);
+
+                var thrown = Record.Exception(() => rig.Field.Update());
+
+                Assert.Null(thrown);
+                Assert.StartsWith("Error: falló " + operation, rig.Field.StateText, StringComparison.Ordinal);
+                Assert.False(rig.Field.ShowUpdateButton);
+                Assert.True(rig.Field.ShowReloadButton);
+            }
+        }
+
+        [Fact]
+        public void U31_AFailureOfTheProgressInTheRepaintIsContainedAsTheErrorOfTheField()
+        {
+            var rig = new UpdateRig();
+            rig.Port.Throws[WorkspacePilotEditPortDouble.TakeProgressOp] = new InvalidOperationException("falló el progreso");
+
+            var thrown = Record.Exception(() => rig.Field.Show(A, Rk, false));
+
+            Assert.Null(thrown);
+            Assert.StartsWith("Error: falló el progreso", rig.Field.StateText, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void U32_TheGestureNeverReadsTheDrawingNorWritesNorTouchesTheTextOrTheDraftByItself()
+        {
+            var rig = new UpdateRig();
+            rig.AcceptWith(Applied(), CleanView());
+
+            rig.Field.Update();
+
+            Assert.Empty(rig.Port.Reads());
+            Assert.Equal(0, rig.Port.Count(WorkspacePilotEditPortDouble.SetPendingOp));
+            Assert.Equal(0, rig.Port.Count(WorkspacePilotEditPortDouble.CommitOp));
+            Assert.Equal(0, rig.Port.Count(WorkspacePilotEditPortDouble.DiscardRackOp));
+            Assert.Equal(0, rig.Port.Count(WorkspacePilotEditPortDouble.DiscardDocumentOp));
+        }
+
+        [Fact]
+        public void U33_TheDoubleRecordsTheUpdateInItsOwnRegisterAndTheSetsOfTheOtherOperationsDoNotChange()
+        {
+            var rig = new UpdateRig();
+            rig.AcceptInFlight();
+
+            rig.Field.Update();
+
+            // INV-F4T4C-25: Calls, Operations() and Reads() keep the exact sets that the closing tests assert; only CrossBoundary, which is not new, appears.
+            Assert.DoesNotContain(rig.Port.Calls, c => c.Operation == WorkspacePilotEditPortDouble.RequestUpdateOp || c.Operation == WorkspacePilotEditPortDouble.TakeProgressOp);
+            Assert.DoesNotContain(WorkspacePilotEditPortDouble.RequestUpdateOp, rig.Port.Operations());
+            Assert.DoesNotContain(WorkspacePilotEditPortDouble.TakeProgressOp, rig.Port.Operations());
+            Assert.Contains(WorkspacePilotEditPortDouble.BoundaryOp, rig.Port.Operations());
+            Assert.Empty(rig.Port.Reads());
+        }
+
+        [Fact]
+        public void U34_ThroughTheBrowserARepaintOfThePanelTakesTheOutcomeOfTheLiveSurfaceAndPresentsItOnce()
+        {
+            var rig = new Rig();
+            rig.Pinned(A, "R-1");
+            rig.Pilot.Set(A, "R-1", DirtyView());
+            rig.Present(A, SelectionContext.One("R-1"));
+            rig.Pilot.SetProgress(A, "R-1", false, Applied());
+            rig.Pilot.Set(A, "R-1", CleanView());
+
+            rig.Present(A, SelectionContext.One("R-1"));
+
+            Assert.Equal(UAppliedText, rig.Field.NoticeText);
+            Assert.Equal("Limpio", rig.Field.StateText);
+            var takes = rig.Pilot.UpdateOf(WorkspacePilotEditPortDouble.TakeProgressOp).ToList();
+            Assert.NotEmpty(takes);
+            Assert.All(takes, e => Assert.Equal((A, "R-1"), (e.Origin, e.RackId)));
+
+            rig.Present(A, SelectionContext.One("R-1"));
+            Assert.Equal(UAppliedText, rig.Field.NoticeText);
         }
     }
 }

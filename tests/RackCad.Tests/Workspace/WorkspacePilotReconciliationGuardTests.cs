@@ -225,7 +225,121 @@ public class WorkspacePilotReconciliationGuardTests
         Assert.Equal(1, Src.Count("Field.CheckNow();", @"\bCheckNow\b"));
     }
 
-    // ================================================================== rule 3: the XAML of the five buttons
+    // ================================================================== rule 2b (I-64 F4-T4C2, D-T4C-11; row 21 of D-T4C-20): the gesture of the update
+
+    private const string UpdateHandler = "OnBrowserFieldUpdateClick";
+
+    private const string UpdateDeclaration = @"public\s+void\s+Update\s*\(\s*\)";
+
+    private const string UpdateHandlerForm =
+        @"private\s+void\s+" + UpdateHandler + @"\s*\(\s*object\s+sender\s*,\s*RoutedEventArgs\s+e\s*\)\s*=>\s*Contained\s*\(\s*\(\s*\)\s*=>\s*_viewModel\s*\.\s*Browser\s*\.\s*Field\s*\.\s*Update\s*\(\s*\)\s*\)\s*;";
+
+    // The new gesture is declared once in the field view-model and called only by its exact handler of the code-behind, inside Contained.
+    private static IEnumerable<string> UpdateGestureViolations(IReadOnlyList<(string Path, string Code)> files)
+    {
+        const string named = @"\bUpdate\s*\(\s*\)";
+
+        foreach (var (path, code) in files)
+        {
+            var count = Src.Count(code, named);
+            if (count == 0) continue;
+
+            if (path == FieldPath)
+            {
+                if (count != 1 || Src.Count(code, UpdateDeclaration) != 1) yield return "Update() is named in the field view-model other than by its declaration";
+            }
+            else if (path == CodeBehindPath)
+            {
+                if (count != 1 || Src.Count(code, UpdateHandlerForm) != 1) yield return "Update() is named in the code-behind other than by " + UpdateHandler;
+            }
+            else
+            {
+                yield return path + " names Update()";
+            }
+        }
+
+        if (Src.Count(CodeOf(files, FieldPath), UpdateDeclaration) != 1) yield return "Update is not declared once in the field view-model";
+        if (Src.Count(CodeOf(files, CodeBehindPath), UpdateHandlerForm) != 1) yield return UpdateHandler + " is not the exact handler of Update";
+    }
+
+    // The request of the update is named only by the field view-model of the workspace folder (never by the browser), exactly once, as
+    // _port.RequestUpdate(request) inside Update, and in the order of the package: the button, what is pending, the boundary, the request and the take.
+    // The four windows of the editors of the systems have a RequestUpdate of their own, outside this folder: the census of the whole product is G-10.
+    private static IEnumerable<string> RequestViolations(IReadOnlyList<(string Path, string Code)> files)
+    {
+        const string token = @"\bRequestUpdate\b";
+        const string invocation = @"\b_port\s*\.\s*RequestUpdate\s*\(\s*request\s*\)";
+
+        foreach (var (path, code) in files)
+            if (path.StartsWith(WorkspaceUiFolder, StringComparison.Ordinal) && path != FieldPath && Src.Count(code, token) > 0)
+                yield return path + " names RequestUpdate";
+
+        var field = files.Where(f => f.Path == FieldPath).ToList();
+        if (field.Count != 1)
+        {
+            yield return "the field view-model is not among the files";
+            yield break;
+        }
+
+        var fieldCode = field[0].Code;
+        if (Src.Count(fieldCode, token) != 1) yield return "the field view-model does not name RequestUpdate exactly once";
+        if (Src.Count(fieldCode, invocation) != 1) yield return "the field view-model does not invoke _port.RequestUpdate(request) exactly once";
+        if (!Regex.IsMatch(fieldCode, UpdateDeclaration))
+        {
+            yield return "the field view-model has no Update";
+            yield break;
+        }
+
+        var body = Src.BodyOf(fieldCode, UpdateDeclaration);
+        if (Src.Count(body, token) != 1 || Src.Count(body, invocation) != 1) yield return "RequestUpdate is not invoked inside Update";
+
+        var at = 0;
+        foreach (var step in new[] { "ShowUpdateButton", "TakeUpdateProgress", "PilotBoundaryKind.Update", "RequestUpdate", "TakeUpdateProgress" })
+        {
+            var found = body.IndexOf(step, at, StringComparison.Ordinal);
+            if (found < 0) { yield return "Update does not have " + step + " in the order of the package"; yield break; }
+            at = found + step.Length;
+        }
+    }
+
+    [Fact]
+    public void TheGestureOfTheUpdateIsDeclaredOnceInTheFieldAndCalledOnlyByItsExactHandlerAndTheRequestIsInsideItInTheOrderOfThePackage()
+    {
+        Assert.Empty(UpdateGestureViolations(UiFiles()));
+        Assert.Empty(RequestViolations(UiFiles()));
+    }
+
+    [Fact]
+    public void TheGuardOfTheGestureOfTheUpdateSeesASecondCallerTheBrowserAHandlerWithoutContainedAndASwapOfHandlers()
+    {
+        var files = UiFiles();
+        var field = CodeOf(files, FieldPath);
+        var browser = CodeOf(files, BrowserPath);
+        var codeBehind = CodeOf(files, CodeBehindPath);
+
+        Assert.NotEmpty(UpdateGestureViolations(With(files, FieldPath, Mutate(field, "_isPreview = isPreview;", "_isPreview = isPreview; Update();"))));
+        Assert.NotEmpty(UpdateGestureViolations(With(files, BrowserPath, Mutate(browser, "public void ReloadField() => Field.Rematerialize();", "public void ReloadField() { Field.Update(); }"))));
+        Assert.NotEmpty(UpdateGestureViolations(With(files, CodeBehindPath, Mutate(codeBehind, "=> Contained(() => _viewModel.Browser.Field.Update());", "=> _viewModel.Browser.Field.Update();"))));
+        Assert.NotEmpty(UpdateGestureViolations(With(files, CodeBehindPath, Swap(codeBehind, "Field.Update()", "Field.CheckNow()"))));
+        Assert.NotEmpty(UpdateGestureViolations(With(files, CodeBehindPath, Mutate(codeBehind, "Browser.Field.Update()", "Browser.Field.Update(); _viewModel.Browser.Field.Update()"))));
+    }
+
+    [Fact]
+    public void TheGuardOfTheRequestSeesASecondCallTheBrowserTheMethodGroupAndTheBrokenOrderOfTheSteps()
+    {
+        var files = UiFiles();
+        var field = CodeOf(files, FieldPath);
+        var browser = CodeOf(files, BrowserPath);
+
+        Assert.NotEmpty(RequestViolations(With(files, FieldPath, Mutate(field, "var outcome = _port.TryCheckNow(request);", "var outcome = _port.TryCheckNow(request); _port.RequestUpdate(request);"))));
+        Assert.NotEmpty(RequestViolations(With(files, BrowserPath, Mutate(browser, "public void ReloadField() => Field.Rematerialize();", "public void ReloadField() { _pilotEdit.RequestUpdate(null); }"))));
+        Assert.NotEmpty(RequestViolations(With(files, FieldPath, Mutate(field, "_port.RequestUpdate(request)", "_port.RequestUpdate"))));
+        // The request before the boundary, and the boundary before the button: the order of the package is broken.
+        Assert.NotEmpty(RequestViolations(With(files, FieldPath, Swap(field, "PilotBoundaryKind.Update", "RequestUpdate"))));
+        Assert.NotEmpty(RequestViolations(With(files, FieldPath, Swap(field, "ShowUpdateButton", "PilotBoundaryKind.Update"))));
+    }
+
+    // ================================================================== rule 3: the XAML of the six buttons
 
     private static string XamlWithoutComments() => Regex.Replace(RealText(XamlPath), @"<!--.*?-->", string.Empty, RegexOptions.Singleline);
 
@@ -253,9 +367,11 @@ public class WorkspacePilotReconciliationGuardTests
         return null;
     }
 
-    private static readonly (string Name, string Content, string Automation, string Click, string? Binding)[] TheFiveButtons =
+    private static readonly (string Name, string Content, string Automation, string Click, string? Binding)[] TheSixButtons =
     {
         ("BrowserFieldCheckButton", "Comprobar ahora", "Comprobar el borrador ahora", "OnBrowserFieldCheckClick", "Browser.Field.ShowCheckButton"),
+        // I-64 F4-T4C2 (D-T4C-11, row 21): the sixth button, the Update button, with its own content, automation name, handler and visibility.
+        ("BrowserFieldUpdateButton", "Actualizar", "Actualizar el dibujo con el borrador", "OnBrowserFieldUpdateClick", "Browser.Field.ShowUpdateButton"),
         ("BrowserFieldDiscardAndReloadButton", "Descartar y recargar", "Descartar el borrador y recargarlo", "OnBrowserFieldDiscardAndReloadClick", "Browser.Field.ShowDiscardAndReloadButton"),
         ("BrowserFieldKeepMineButton", "Conservar mi borrador", "Conservar el borrador sobre la versión actual", "OnBrowserFieldKeepMineClick", "Browser.Field.ShowKeepMineButton"),
         ("BrowserFieldChoiceYesButton", "Sí", "Confirmar la elección", "OnBrowserFieldChoiceYesClick", null),
@@ -275,7 +391,7 @@ public class WorkspacePilotReconciliationGuardTests
         if (choicePanel.Value.Start < panel.Value.Start || choicePanel.Value.End > panel.Value.End) yield return "the choice panel is not inside the field panel";
 
         var order = new List<(string Name, int Index)>();
-        foreach (var (name, content, automation, click, binding) in TheFiveButtons)
+        foreach (var (name, content, automation, click, binding) in TheSixButtons)
         {
             if (Src.Count(xaml, @"x:Name=""" + name + @"""") != 1) { yield return name + " does not appear exactly once"; continue; }
             var element = ElementNamed(xaml, name);
@@ -346,7 +462,7 @@ public class WorkspacePilotReconciliationGuardTests
     }
 
     [Fact]
-    public void TheXamlHoldsTheFiveButtonsOfTheTableInsideTheFieldPanelWithTheirOwnNamesTextsHandlersAndVisibility()
+    public void TheXamlHoldsTheSixButtonsOfTheTableInsideTheFieldPanelWithTheirOwnNamesTextsHandlersAndVisibility()
     {
         Assert.Empty(ButtonViolations(XamlWithoutComments()));
     }
@@ -374,6 +490,21 @@ public class WorkspacePilotReconciliationGuardTests
         Assert.NotEmpty(ButtonViolations(Mutate(xaml, "{Binding Browser.Field.HasChoice,", "{Binding Browser.Field.ShowCheckButton,")));
         Assert.NotEmpty(ButtonViolations(Mutate(xaml, "Text=\"{Binding Browser.Field.ChoiceText}\"", "Text=\"{Binding Browser.Field.ReconcileText}\"")));
         Assert.NotEmpty(ButtonViolations(Mutate(xaml, "Content=\"Comprobar ahora\"", "Content=\"Comprobar\"")));
+    }
+
+    [Fact]
+    public void TheGuardOfTheButtonsSeesTheUpdateButtonWithAnotherClickContentAutomationNameBindingOrAsADefaultButton()
+    {
+        var xaml = XamlWithoutComments();
+
+        Assert.Empty(ButtonViolations(xaml));
+        Assert.NotEmpty(ButtonViolations(Swap(xaml, "Click=\"OnBrowserFieldUpdateClick\"", "Click=\"OnBrowserFieldCheckClick\"")));
+        Assert.NotEmpty(ButtonViolations(Mutate(xaml, "Content=\"Actualizar\"", "Content=\"Aplicar\"")));
+        Assert.NotEmpty(ButtonViolations(Mutate(xaml, "AutomationProperties.Name=\"Actualizar el dibujo con el borrador\"", "AutomationProperties.Name=\"Actualizar\"")));
+        Assert.NotEmpty(ButtonViolations(Mutate(xaml, "{Binding Browser.Field.ShowUpdateButton,", "{Binding Browser.Field.ShowCheckButton,")));
+        Assert.NotEmpty(ButtonViolations(Mutate(xaml, "Content=\"Actualizar\"", "Content=\"Actualizar\" IsDefault=\"True\"")));
+        // A second button with the same name is not allowed either: the name appears exactly once.
+        Assert.NotEmpty(ButtonViolations(Mutate(xaml, "x:Name=\"BrowserFieldCheckButton\"", "x:Name=\"BrowserFieldUpdateButton\"")));
     }
 
     // ================================================================== rule 4: no false clean

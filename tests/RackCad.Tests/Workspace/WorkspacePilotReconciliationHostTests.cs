@@ -555,4 +555,218 @@ public class WorkspacePilotReconciliationHostTests
         rig.Core.TryDiscardAndReloadPilotEdit(rig.Request());
         Assert.Single(rig.Reader.Calls);
     }
+
+    // ------------------------------------------------------------------ I-64 F4-T4C2 (D-T4C-12, INV-F4T4C-12): the diagnostic of "check now"
+
+    // The draft of the rack taken to Unknown after a commit that threw: the one way to Unknown that "check now" serves.
+    private static DraftSession<PushBackPilotDraftState> UnknownDraft(Rig rig)
+    {
+        var draft = rig.Open();
+        Assert.True(draft.TryBeginApply().IsStarted);
+        draft.CompleteApply(DraftApplyOutcome<PushBackPilotDraftState>.CommitThrew("the commit threw"));
+        Assert.Equal(DraftStatus.Unknown, draft.Status);
+        Assert.Equal(DraftUnknownOrigin.CommitThrew, draft.UnknownOrigin);
+        return draft;
+    }
+
+    // A reread that is NOT admitted (no catalog) and whose base equals the one of the draft, so the comparison says "recovered".
+    private static PushBackPilotIntentResult NotAdmittedWithTheSameBase()
+    {
+        var read = PushBackPilotIntentReader.Read(EditIntentKit.TwoViews(RackA), null);
+        Assert.False(read.Read.IsAdmitted);
+        return read;
+    }
+
+    // A reread that is NOT admitted and whose base differs from the one of the draft (a member became unreadable), so the comparison says "conflict".
+    private static PushBackPilotIntentResult NotAdmittedWithAnotherBase()
+    {
+        var read = PushBackPilotIntentReader.Read(
+            IntentKit.Scan(RackA, "A1", IntentKit.Member("A1", IntentKit.Variant("pb-01-base", RackA)), IntentKit.Unreadable("B2", RackA)),
+            null);
+        Assert.False(read.Read.IsAdmitted);
+        return read;
+    }
+
+    [Fact]
+    public void CheckNowWithARereadThatIsNotAdmittedAndMatchesTheBaseIsRecoveredAndCarriesTheDiagnosticAndTheHint()
+    {
+        var rig = new Rig();
+        var draft = UnknownDraft(rig);
+        var read = NotAdmittedWithTheSameBase();
+        rig.Reader.Answer = _ => EditIntentReadResult.FromPilot(read);
+
+        var outcome = rig.Core.TryCheckPilotEdit(rig.Request());
+
+        Assert.Equal(EditCheckStatus.Recovered, outcome.Status);
+        Assert.False(string.IsNullOrWhiteSpace(outcome.AdmissionDiagnostic));
+        Assert.Equal(read.Read.Admission.Diagnostic, outcome.AdmissionDiagnostic);
+        Assert.Equal(read.ClassicEditorHint, outcome.ClassicEditorHint);
+        Assert.False(string.IsNullOrWhiteSpace(outcome.ClassicEditorHint));
+        Assert.NotEqual(DraftStatus.Unknown, draft.Status);
+        Assert.Single(rig.Reader.Calls);
+    }
+
+    [Fact]
+    public void CheckNowWithARereadThatIsNotAdmittedAndDiffersFromTheBaseIsAConflictAndCarriesTheDiagnosticAndTheHint()
+    {
+        var rig = new Rig();
+        var draft = UnknownDraft(rig);
+        var read = NotAdmittedWithAnotherBase();
+        rig.Reader.Answer = _ => EditIntentReadResult.FromPilot(read);
+
+        var outcome = rig.Core.TryCheckPilotEdit(rig.Request());
+
+        Assert.Equal(EditCheckStatus.Conflict, outcome.Status);
+        Assert.Contains("B2:Membership", outcome.Differences);
+        Assert.Equal(read.Read.Admission.Diagnostic, outcome.AdmissionDiagnostic);
+        Assert.Equal(read.ClassicEditorHint, outcome.ClassicEditorHint);
+        Assert.Equal(DraftStatus.Conflict, draft.Status);
+        Assert.Single(rig.Reader.Calls);
+    }
+
+    [Fact]
+    public void CheckNowWithAnAdmittedRereadCarriesNoDiagnosticNorHintInARecoveryNorInAConflict()
+    {
+        var recovered = new Rig();
+        var recoveredDraft = UnknownDraft(recovered);
+        var outcome = recovered.Core.TryCheckPilotEdit(recovered.Request());
+        Assert.Equal(EditCheckStatus.Recovered, outcome.Status);
+        Assert.Null(outcome.AdmissionDiagnostic);
+        Assert.Null(outcome.ClassicEditorHint);
+        Assert.NotEqual(DraftStatus.Unknown, recoveredDraft.Status);
+        Assert.Single(recovered.Reader.Calls);
+
+        var conflict = new Rig();
+        UnknownDraft(conflict);
+        var changed = OriginChanged(RackA, (ScaleFrom, ScaleTo));
+        Assert.True(changed.PilotRead!.Read.IsAdmitted);
+        conflict.Reader.Answer = _ => changed;
+        var other = conflict.Core.TryCheckPilotEdit(conflict.Request());
+        Assert.Equal(EditCheckStatus.Conflict, other.Status);
+        Assert.Null(other.AdmissionDiagnostic);
+        Assert.Null(other.ClassicEditorHint);
+        Assert.Single(conflict.Reader.Calls);
+    }
+
+    [Fact]
+    public void TheDiagnosticNeverDecidesTheClassificationTheSameBaseGivesTheSameAnswerAndTheSameDraftWithOrWithoutAdmission()
+    {
+        var admitted = new Rig();
+        var admittedDraft = UnknownDraft(admitted);
+        var admittedOutcome = admitted.Core.TryCheckPilotEdit(admitted.Request());
+
+        var notAdmitted = new Rig();
+        var notAdmittedDraft = UnknownDraft(notAdmitted);
+        notAdmitted.Reader.Answer = _ => EditIntentReadResult.FromPilot(NotAdmittedWithTheSameBase());
+        var notAdmittedOutcome = notAdmitted.Core.TryCheckPilotEdit(notAdmitted.Request());
+
+        Assert.Equal(admittedOutcome.Status, notAdmittedOutcome.Status);
+        Assert.Equal(admittedOutcome.Differences.ToArray(), notAdmittedOutcome.Differences.ToArray());
+        Assert.Equal(admittedDraft.Status, notAdmittedDraft.Status);
+        Assert.Equal(admittedDraft.IsDirty, notAdmittedDraft.IsDirty);
+        Assert.Equal(admittedDraft.IsPossiblyStale, notAdmittedDraft.IsPossiblyStale);
+    }
+
+    // A reread whose read of the admission cannot be opened: it keeps its real base, so the comparison works, and has no read, so the expression of the
+    // diagnostic throws. It is built without its constructor, which would not accept it.
+    private static PushBackPilotIntentResult WithoutRead(DraftStaleBase staleBase)
+    {
+        var broken = (PushBackPilotIntentResult)RuntimeHelpers.GetUninitializedObject(typeof(PushBackPilotIntentResult));
+        var field = typeof(PushBackPilotIntentResult).GetField("<StaleBase>k__BackingField", BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(field);
+        field!.SetValue(broken, staleBase);
+        Assert.Throws<NullReferenceException>(() => broken.Read.IsAdmitted);
+        return broken;
+    }
+
+    [Fact]
+    public void AFailureOfTheDiagnosticGivesNullAndNeverChangesTheClassificationNorTurnsAChangedDraftIntoFailed()
+    {
+        var recovered = new Rig();
+        var recoveredDraft = UnknownDraft(recovered);
+        var sameBase = EditIntentKit.Admitted(RackA).PilotRead!.StaleBase;
+        recovered.Reader.Answer = _ => EditIntentReadResult.FromPilot(WithoutRead(sameBase));
+
+        var outcome = recovered.Core.TryCheckPilotEdit(recovered.Request());
+
+        Assert.Equal(EditCheckStatus.Recovered, outcome.Status);
+        Assert.Null(outcome.AdmissionDiagnostic);
+        Assert.Null(outcome.ClassicEditorHint);
+        Assert.NotEqual(DraftStatus.Unknown, recoveredDraft.Status);
+        Assert.Single(recovered.Reader.Calls);
+        Assert.False(recovered.Host.Bridge.Core.IsDegraded(recovered.Session));
+
+        var conflict = new Rig();
+        var conflictDraft = UnknownDraft(conflict);
+        var anotherBase = EditIntentKit.MemberBecameBlocking(RackA).PilotRead!.StaleBase;
+        conflict.Reader.Answer = _ => EditIntentReadResult.FromPilot(WithoutRead(anotherBase));
+
+        var other = conflict.Core.TryCheckPilotEdit(conflict.Request());
+
+        Assert.Equal(EditCheckStatus.Conflict, other.Status);
+        Assert.Contains("B2:Membership", other.Differences);
+        Assert.Null(other.AdmissionDiagnostic);
+        Assert.Null(other.ClassicEditorHint);
+        Assert.Equal(DraftStatus.Conflict, conflictDraft.Status);
+        Assert.Single(conflict.Reader.Calls);
+    }
+
+    [Fact]
+    public void TheDiagnosticOfCheckNowReadsTheDrawingExactlyOnceAndWritesNothingAndANotAdmittedRereadStillReadsOnce()
+    {
+        var rig = new Rig();
+        var draft = UnknownDraft(rig);
+        rig.Reader.Answer = _ => EditIntentReadResult.FromPilot(NotAdmittedWithTheSameBase());
+        var scale = draft.CurrentDraftState.Inputs.Annotations.AnnotationScale;
+
+        rig.Core.TryCheckPilotEdit(rig.Request());
+
+        Assert.Single(rig.Reader.Calls);
+        Assert.Equal(scale, draft.CurrentDraftState.Inputs.Annotations.AnnotationScale);
+        Assert.Equal(0, rig.Host.Reader.Reads.Count);
+    }
+
+    [Fact]
+    public void TheAnswerOfCheckNowCarriesTheDiagnosticOnlyWhereItIsGivenAndEveryOtherAnswerHasNone()
+    {
+        var recovered = EditCheckOutcome.Recovered("diagnostic", "hint");
+        Assert.Equal(EditCheckStatus.Recovered, recovered.Status);
+        Assert.Equal("diagnostic", recovered.AdmissionDiagnostic);
+        Assert.Equal("hint", recovered.ClassicEditorHint);
+
+        var conflict = EditCheckOutcome.Conflict(new[] { "A1:EnvelopeText" }, "diagnostic", "hint");
+        Assert.Equal(EditCheckStatus.Conflict, conflict.Status);
+        Assert.Equal("diagnostic", conflict.AdmissionDiagnostic);
+        Assert.Equal("hint", conflict.ClassicEditorHint);
+        Assert.Equal(new[] { "A1:EnvelopeText" }, conflict.Differences.ToArray());
+
+        foreach (var plain in new[]
+                 {
+                     EditCheckOutcome.Recovered(), EditCheckOutcome.Conflict(new[] { "k:Membership" }), EditCheckOutcome.Failed("x"),
+                     EditCheckOutcome.Unavailable("x"), EditCheckOutcome.Waiting("x"), EditCheckOutcome.Rejected("x"),
+                     EditCheckOutcome.NotFound("x"), EditCheckOutcome.NotApplicable("x"), default,
+                 })
+        {
+            Assert.Null(plain.AdmissionDiagnostic);
+            Assert.Null(plain.ClassicEditorHint);
+        }
+
+        Assert.Equal("diagnostic", EditCheckOutcome.Recovered("diagnostic").AdmissionDiagnostic);
+        Assert.Null(EditCheckOutcome.Recovered("diagnostic").ClassicEditorHint);
+        Assert.Throws<ArgumentNullException>(() => EditCheckOutcome.Conflict(null!, "d", "h"));
+    }
+
+    [Fact]
+    public void TheAnswerOfCheckNowOnlyCarriesAStateTextAndListsOfTextAndTheStatusesAreStillTheEightOfBefore()
+    {
+        var allowed = new[] { typeof(EditCheckStatus), typeof(string), typeof(IReadOnlyList<string>) };
+        var properties = typeof(EditCheckOutcome).GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        var fields = typeof(EditCheckOutcome).GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+        Assert.All(properties, p => Assert.Contains(p.PropertyType, allowed));
+        Assert.All(fields, f => Assert.Contains(f.FieldType, allowed));
+        Assert.Equal(
+            new[] { "Unavailable", "Waiting", "Rejected", "NotFound", "NotApplicable", "Conflict", "Recovered", "Failed" },
+            Enum.GetNames<EditCheckStatus>());
+    }
 }

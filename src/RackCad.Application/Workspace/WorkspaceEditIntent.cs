@@ -239,11 +239,18 @@ namespace RackCad.Application.Workspace
     {
         private readonly IReadOnlyList<string>? _differences;
 
-        private EditCheckOutcome(EditCheckStatus status, string? reason, IReadOnlyList<string> differences)
+        private EditCheckOutcome(
+            EditCheckStatus status,
+            string? reason,
+            IReadOnlyList<string> differences,
+            string? admissionDiagnostic,
+            string? classicEditorHint)
         {
             Status = status;
             Reason = reason;
             _differences = differences;
+            AdmissionDiagnostic = admissionDiagnostic;
+            ClassicEditorHint = classicEditorHint;
         }
 
         public EditCheckStatus Status { get; }
@@ -256,6 +263,15 @@ namespace RackCad.Application.Workspace
         /// </summary>
         public IReadOnlyList<string> Differences => _differences ?? Array.Empty<string>();
 
+        /// <summary>
+        /// The diagnostic of the admission of the reread, set for a Recovered or a Conflict whose reread was not admitted (I-64 F4-T4C2, D-T4C-12);
+        /// null otherwise. It never changes the status: the status only comes from the comparison of the bases.
+        /// </summary>
+        public string? AdmissionDiagnostic { get; }
+
+        /// <summary>The hint to the classic editor; set only next to a diagnostic, null otherwise.</summary>
+        public string? ClassicEditorHint { get; }
+
         public static EditCheckOutcome Unavailable(string reason) => Without(EditCheckStatus.Unavailable, reason);
 
         public static EditCheckOutcome Waiting(string reason) => Without(EditCheckStatus.Waiting, reason);
@@ -266,18 +282,19 @@ namespace RackCad.Application.Workspace
 
         public static EditCheckOutcome NotApplicable(string reason) => Without(EditCheckStatus.NotApplicable, reason);
 
-        public static EditCheckOutcome Conflict(IReadOnlyList<string> differences)
+        public static EditCheckOutcome Conflict(IReadOnlyList<string> differences, string? admissionDiagnostic = null, string? classicEditorHint = null)
         {
             if (differences == null) throw new ArgumentNullException(nameof(differences));
-            return new EditCheckOutcome(EditCheckStatus.Conflict, null, differences);
+            return new EditCheckOutcome(EditCheckStatus.Conflict, null, differences, null, null);
         }
 
-        public static EditCheckOutcome Recovered() => Without(EditCheckStatus.Recovered, null);
+        public static EditCheckOutcome Recovered(string? admissionDiagnostic = null, string? classicEditorHint = null) =>
+            new(EditCheckStatus.Recovered, null, Array.Empty<string>(), null, null);
 
         public static EditCheckOutcome Failed(string reason) => Without(EditCheckStatus.Failed, reason);
 
         private static EditCheckOutcome Without(EditCheckStatus status, string? reason) =>
-            new(status, reason, Array.Empty<string>());
+            new(status, reason, Array.Empty<string>(), null, null);
     }
 
     public enum EditConfirmStatus

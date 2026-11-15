@@ -688,5 +688,151 @@ namespace RackCad.UI.Tests
                 Assert.Equal(Visibility.Visible, surface.Visibility);
             });
         }
+
+        // ------------------------------------------------------------------ I-64 F4-T4C2 (D-T4C-11): the Update button in the real view
+
+        // The tab R-1 is pinned and its draft is the given one; what the double recorded until now is forgotten.
+        private static (WorkspacePanelView View, WorkspacePilotEditPortDouble Pilot) PinnedWith(PilotFieldView draft)
+        {
+            var (view, pilot, _) = Build();
+            pilot.Set(new SessionId(7), "R-1", draft);
+            view.ViewModel.Browser.PinTab("R-1");
+            Lay(view);
+            pilot.Calls.Clear();
+            pilot.UpdateLog.Clear();
+            return (view, pilot);
+        }
+
+        private static PilotFieldView DirtyDraft() => WorkspacePilotEditPortDouble.View(PilotFieldState.Dirty, "2.5", isProtected: true);
+
+        [Fact]
+        public void TheUpdateButtonHasItsContentItsAutomationNameAndIsNeitherDefaultNorCancel()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var (view, _) = PinnedWith(DirtyDraft());
+
+                var button = Named<Button>(view, "BrowserFieldUpdateButton");
+
+                Assert.Equal("Actualizar", button.Content);
+                Assert.Equal("Actualizar el dibujo con el borrador", System.Windows.Automation.AutomationProperties.GetName(button));
+                Assert.False(button.IsDefault || button.IsCancel);
+                Assert.True(button.IsDescendantOf(Named<StackPanel>(view, "BrowserFieldPanel")));
+                foreach (var property in new[]
+                         {
+                             FrameworkElement.WidthProperty, FrameworkElement.MinWidthProperty, FrameworkElement.MaxWidthProperty,
+                             FrameworkElement.HeightProperty, FrameworkElement.MinHeightProperty, FrameworkElement.MaxHeightProperty,
+                         })
+                    Assert.True(button.ReadLocalValue(property) == DependencyProperty.UnsetValue, "the Update button sets " + property.Name);
+            });
+        }
+
+        [Fact]
+        public void TheUpdateButtonIsVisibleOnlyForADirtyDraftOnAPinnedSurfaceAndNeverInTheOtherStatesNorOnAPreview()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var (dirty, _) = PinnedWith(DirtyDraft());
+                Assert.Equal(Visibility.Visible, Named<Button>(dirty, "BrowserFieldUpdateButton").Visibility);
+
+                foreach (var other in new[]
+                         {
+                             WorkspacePilotEditPortDouble.View(PilotFieldState.Clean, "2.5"),
+                             WorkspacePilotEditPortDouble.View(PilotFieldState.Conflict, "2.5", isProtected: true, conflictText: "A1:EnvelopeText"),
+                             WorkspacePilotEditPortDouble.View(PilotFieldState.Unknown, "2.5", isProtected: true, unknownOrigin: PilotUnknownOrigin.CommitThrew),
+                             WorkspacePilotEditPortDouble.View(PilotFieldState.Applying, "2.5", isProtected: true),
+                             WorkspacePilotEditPortDouble.View(PilotFieldState.Error, "2.5", isProtected: true),
+                             WorkspacePilotEditPortDouble.NoDraft(),
+                         })
+                {
+                    var (view, _) = PinnedWith(other);
+                    Assert.Equal(Visibility.Collapsed, Named<Button>(view, "BrowserFieldUpdateButton").Visibility);
+                }
+
+                // A tab that is still a preview has no Update button, whatever the draft says.
+                var (preview, pilot, _) = Build();
+                pilot.Set(new SessionId(7), "R-1", DirtyDraft());
+                preview.ViewModel.Refresh();
+                Lay(preview);
+                Assert.True(preview.ViewModel.Browser.Tabs.Single().IsPreview);
+                Assert.Equal(Visibility.Collapsed, Named<Button>(preview, "BrowserFieldUpdateButton").Visibility);
+            });
+        }
+
+        [Fact]
+        public void ARealClickOnTheUpdateButtonRunsTheGestureOnceInTheOrderOfThePackageAndTheButtonDisappearsWhileTheUpdateIsInFlight()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var (view, pilot) = PinnedWith(DirtyDraft());
+                pilot.UpdateStartResponder = _ =>
+                {
+                    pilot.SetProgress(new SessionId(7), "R-1", true);
+                    return EditUpdateStart.Accepted();
+                };
+                var button = Named<Button>(view, "BrowserFieldUpdateButton");
+
+                Click(button);
+                Lay(view);
+
+                Assert.Equal(
+                    new[] { "TakeUpdateProgress", "CrossBoundary:Update", "RequestUpdate", "TakeUpdateProgress" },
+                    pilot.UpdateLog.Select(e => e.Operation + (e.Kind.HasValue ? ":" + e.Kind.Value : string.Empty)).ToArray());
+                var request = Assert.Single(pilot.UpdateOf(WorkspacePilotEditPortDouble.RequestUpdateOp));
+                Assert.Equal(new SessionId(7), request.Origin);
+                Assert.Equal("R-1", request.RackId);
+                Assert.Equal("Aplicando", Named<TextBlock>(view, "BrowserFieldStateText").Text);
+                Assert.Equal(Visibility.Collapsed, button.Visibility);
+                Assert.Empty(pilot.Reads());
+
+                // A click that was queued behind the first one finds its button already hidden and asks for nothing.
+                var asked = pilot.UpdateLog.Count;
+                Click(button);
+                Assert.Equal(asked, pilot.UpdateLog.Count);
+                Assert.Equal(1, pilot.UpdateCount(WorkspacePilotEditPortDouble.RequestUpdateOp));
+            });
+        }
+
+        [Fact]
+        public void TheOutcomeOfTheUpdateReachesTheViewByTheNoticeLineAndTheStateIsTheOneOfTheMemoryOfThePort()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var (view, pilot) = PinnedWith(DirtyDraft());
+                pilot.UpdateStartResponder = _ =>
+                {
+                    pilot.SetProgress(
+                        new SessionId(7), "R-1", false,
+                        EditUpdateOutcome.Closed(EditUpdateStatus.AppliedWithWarnings, null, Array.Empty<string>(), new[] { "el rack se redibujó." }));
+                    pilot.Set(new SessionId(7), "R-1", WorkspacePilotEditPortDouble.View(PilotFieldState.Clean, "2.5"));
+                    return EditUpdateStart.Accepted();
+                };
+
+                Click(Named<Button>(view, "BrowserFieldUpdateButton"));
+                Lay(view);
+
+                Assert.Equal("Actualizado con avisos: el rack se redibujó.", Named<TextBlock>(view, "BrowserFieldNoticeText").Text);
+                Assert.Equal("Limpio", Named<TextBlock>(view, "BrowserFieldStateText").Text);
+                Assert.Equal(Visibility.Collapsed, Named<Button>(view, "BrowserFieldUpdateButton").Visibility);
+            });
+        }
+
+        [Fact]
+        public void AFailureOfThePortInsideTheUpdateClickIsContainedAsTheErrorOfTheFieldAndNeverEscapesTheClick()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var (view, pilot) = PinnedWith(DirtyDraft());
+                pilot.Throws[WorkspacePilotEditPortDouble.RequestUpdateOp] = new InvalidOperationException("falló el puerto");
+
+                var thrown = Record.Exception(() => Click(Named<Button>(view, "BrowserFieldUpdateButton")));
+                Lay(view);
+
+                Assert.Null(thrown);
+                Assert.Contains("falló el puerto", Named<TextBlock>(view, "BrowserFieldStateText").Text);
+                Assert.Equal(Visibility.Visible, Named<Button>(view, "BrowserFieldReloadButton").Visibility);
+                Assert.Equal(Visibility.Collapsed, Named<Button>(view, "BrowserFieldUpdateButton").Visibility);
+            });
+        }
     }
 }

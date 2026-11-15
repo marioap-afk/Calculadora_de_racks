@@ -846,7 +846,8 @@ public class WorkspacePilotCloseSyncGuardTests
         CheckUiReach(Browser(), new[] { Browser(), Src.Code(CodeBehindPath) });
     }
 
-    private static readonly Regex IntentionReads = new(@"\b(?:TryBeginEdit|TryReload|TryCheckNow)\b");
+    // I-64 F4-T4C2 (D-T4C-11, row 21 of D-T4C-20): the request of the update is out of the browser view-model too; it is the gesture of the field.
+    private static readonly Regex IntentionReads = new(@"\b(?:TryBeginEdit|TryReload|TryCheckNow|RequestUpdate)\b");
 
     private static readonly Regex DrawingReach = new(@"\bTransaction|\bDatabase\b|\.Commit\s*\(|SendStringToExecute|CommandMethod|ExecuteInCommandContextAsync|Autodesk");
 
@@ -870,6 +871,7 @@ public class WorkspacePilotCloseSyncGuardTests
     [InlineData("_p.TryBeginEdit(r);", "intention")]
     [InlineData("_p.TryReload(r);", "intention")]
     [InlineData("_p.TryCheckNow(r);", "intention")]
+    [InlineData("_p.RequestUpdate(r);", "intention")]
     [InlineData("var t = new Transaction();", "drawing")]
     [InlineData("var d = HostApplicationServices.WorkingDatabase; Database db;", "drawing")]
     [InlineData("tr.Commit();", "drawing")]

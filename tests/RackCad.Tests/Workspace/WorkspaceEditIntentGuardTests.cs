@@ -653,7 +653,7 @@ public class WorkspaceEditIntentGuardTests
 
     // The ONE other use of a read that the obligation allows, since F4-T4A1 (M-5): the diagnostic of the admission of a confirmed check, read
     // as pilot.Read.IsAdmitted and pilot.Read.Admission.Diagnostic and nothing else of the read. It is explicit and it is counted per
-    // operation (only the body of the general check has it); no alias and no renamed variable stands for it.
+    // operation (only the bodies of the general check and, since F4-T4C2, of "check now" have it); no alias and no renamed variable stands for it.
     private const string AdmissionDiagnosticPattern = @"\bpilot\.Read\.IsAdmitted\s*\?\s*null\s*:\s*pilot\.Read\.Admission\.Diagnostic\b";
 
     private static readonly Regex AllowedAdmissionDiagnostic = new(AdmissionDiagnosticPattern);
@@ -681,7 +681,12 @@ public class WorkspaceEditIntentGuardTests
         var check = CheckBody();
         Assert.Equal(1, Src.Count(check, @"\.StaleBase\b"));
         Assert.Matches(@"\.CheckNow\s*\(\s*\w+\.StaleBase\s*\)", check);
-        Assert.Equal(0, Src.Count(check, @"\bpilot\.Read\b|\.Begin\s*\("));
+        // I-64 F4-T4C2 (D-T4C-12, row 12 of D-T4C-20): "check now" carries the diagnostic of the admission of the SAME reread, so the expression is in its
+        // body exactly once and the read is named exactly twice, both inside that one expression. The reader is still called once.
+        Assert.Equal(1, Src.Count(check, AdmissionDiagnosticPattern));
+        Assert.Equal(2, Src.Count(check, @"\bpilot\.Read\b"));
+        Assert.Equal(0, Src.Count(WithoutTheAllowedConsumers(check), @"\bpilot\.Read\b"));
+        Assert.Equal(0, Src.Count(check, @"\.Begin\s*\("));
     }
 
     [Fact]
@@ -696,7 +701,9 @@ public class WorkspaceEditIntentGuardTests
         Assert.Equal(1, Src.Count(confirm, AdmissionDiagnosticPattern));
         Assert.Equal(2, Src.Count(confirm, @"\bpilot\.Read\b"));
         Assert.Equal(0, Src.Count(WithoutTheAllowedConsumers(confirm), @"\bpilot\.Read\b"));
-        foreach (var other in new[] { IntentBody(), CheckBody(), KeepBody(), DiscardAndReloadBody() })
+        // I-64 F4-T4C2 (row 12, RR N-05): "check now" leaves the loop of zero and has exactly one; the other three bodies stay at zero.
+        Assert.Equal(1, Src.Count(CheckBody(), AdmissionDiagnosticPattern));
+        foreach (var other in new[] { IntentBody(), KeepBody(), DiscardAndReloadBody() })
             Assert.Equal(0, Src.Count(other, AdmissionDiagnosticPattern));
 
         var keep = KeepBody();
@@ -855,17 +862,35 @@ public class WorkspaceEditIntentGuardTests
         Assert.NotEmpty(PilotNameViolations(Core() + "\n" + injected));
     }
 
-    // M-3 (I-64 F4-T4A2): the expression of the diagnostic of the admission is in the whole host core exactly once, not only in the body of the
-    // general check, so no other operation and no helper can reach the diagnostic of a read.
+    // M-3 (I-64 F4-T4A2), changed by F4-T4C2 (D-T4C-12, row 12): the expression of the diagnostic of the admission is in the whole host core exactly
+    // twice, once in the body of the general check and once in the body of "check now", so no other operation and no helper can reach the
+    // diagnostic of a read.
+    private const string AnotherDiagnosticExpression = "\nvar again = pilot.Read.IsAdmitted ? null : pilot.Read.Admission.Diagnostic;";
+
     [Fact]
-    public void TheExpressionOfTheDiagnosticOfTheAdmissionIsInTheWholeHostCoreExactlyOnce()
+    public void TheExpressionOfTheDiagnosticOfTheAdmissionIsInTheWholeHostCoreExactlyTwiceOnceInTheGeneralCheckAndOnceInCheckNow()
     {
         var core = Core();
 
-        Assert.Equal(1, Src.Count(core, AdmissionDiagnosticPattern));
-        Assert.Equal(2, Src.Count(core + "\nvar again = pilot.Read.IsAdmitted ? null : pilot.Read.Admission.Diagnostic;", AdmissionDiagnosticPattern));
-        foreach (var body in new[] { IntentBody(), CheckBody(), KeepBody(), DiscardAndReloadBody() })
+        Assert.Equal(2, Src.Count(core, AdmissionDiagnosticPattern));
+        Assert.Equal(1, Src.Count(ConfirmBody(), AdmissionDiagnosticPattern));
+        Assert.Equal(1, Src.Count(CheckBody(), AdmissionDiagnosticPattern));
+        foreach (var body in new[] { IntentBody(), KeepBody(), DiscardAndReloadBody() })
             Assert.Equal(0, Src.Count(body, AdmissionDiagnosticPattern));
+    }
+
+    [Fact]
+    public void TheGuardOfTheExpressionOfTheDiagnosticSeesAThirdOneInTheCoreASecondOneInCheckNowAndOneInKeep()
+    {
+        var core = Core();
+
+        // The third in the whole core.
+        Assert.Equal(3, Src.Count(core + AnotherDiagnosticExpression, AdmissionDiagnosticPattern));
+        // A second in the body of "check now" and one in the body of the keep: the per-body rules see them.
+        Assert.Equal(2, Src.Count(CheckBody() + AnotherDiagnosticExpression, AdmissionDiagnosticPattern));
+        Assert.Equal(1, Src.Count(KeepBody() + AnotherDiagnosticExpression, AdmissionDiagnosticPattern));
+        // The expression itself is the one of the package: the same text, once more, is not allowed by the consumers.
+        Assert.Matches(BaseOrReadUse, WithoutTheAllowedConsumers(core + "\nvar d = pilot.Read.Admission.Diagnostic;"));
     }
 
     [Fact]

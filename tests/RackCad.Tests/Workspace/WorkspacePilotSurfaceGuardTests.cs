@@ -140,6 +140,65 @@ public class WorkspacePilotSurfaceGuardTests
         Assert.Empty(ReadViolations(new[] { ("src/RackCad.UI/Workspace/WorkspacePanelViewModel.cs", "class C { public void Check() { _port.TryCheckNow(r); } }") }));
     }
 
+    // ------------------------------------------------------------------ I-64 F4-T4C2 (D-T4C-03, F-1; row 18 of D-T4C-20): the presentation takes the progress, and reads nothing
+
+    // The presentation of the field may call TakeUpdateProgress (a repaint of the live surface takes what the port knows about the update of its rack)
+    // and NO read: none of the six reads of the drawing and not the request of the update. TakeUpdateProgress is named only by the field view-model, and
+    // there exactly three times: once in Show and twice in the gesture of the update (before the request and after it).
+    private static readonly Regex TheSixReadsAndTheRequest =
+        new(@"\b(?:TryBeginEdit|TryReload|TryCheckNow|TryConfirmBase|TryKeepMine|TryDiscardAndReload|RequestUpdate)\b");
+
+    private static IEnumerable<string> PresentationViolations(IEnumerable<(string Path, string Code)> files)
+    {
+        foreach (var (path, code) in files)
+        {
+            // The presentation members of the workspace folder; the editors of the systems have members of their own with those names and are not bound here.
+            if (path.StartsWith(UiFolder, StringComparison.Ordinal))
+                foreach (var (name, body) in NonGestureMembers(code))
+                    if (TheSixReadsAndTheRequest.IsMatch(body))
+                        yield return path + ": " + name + " names " + TheSixReadsAndTheRequest.Match(body).Value;
+
+            var takes = Src.Count(code, @"\bTakeUpdateProgress\b");
+            if (path.EndsWith("WorkspacePilotFieldViewModel.cs", StringComparison.Ordinal))
+            {
+                var show = Regex.Match(code, @"\bpublic\s+void\s+Show\s*\(");
+                var inShow = show.Success ? Src.Count(BodyFrom(code, show.Index + show.Length), @"\bTakeUpdateProgress\b") : 0;
+                var update = Regex.Match(code, @"\bpublic\s+void\s+Update\s*\(\s*\)");
+                var inUpdate = update.Success ? Src.Count(BodyFrom(code, update.Index + update.Length), @"\bTakeUpdateProgress\b") : 0;
+                if (inShow != 1) yield return path + ": Show does not take the progress exactly once";
+                if (inUpdate != 2) yield return path + ": Update does not take the progress exactly twice";
+                if (takes != inShow + inUpdate) yield return path + " names TakeUpdateProgress outside Show and Update";
+            }
+            else if (takes > 0)
+            {
+                yield return path + " names TakeUpdateProgress outside the field view-model";
+            }
+        }
+    }
+
+    [Fact]
+    public void ThePresentationOfTheFieldTakesTheProgressOfTheUpdateInShowAndInTheGestureOnlyAndReadsNothing()
+    {
+        Assert.Empty(PresentationViolations(Src.Files("src/RackCad.UI/")));
+    }
+
+    [Fact]
+    public void TheGuardOfThePresentationAllowsTheTakeAndSeesAReadAnAnotherTakeAndATakeOutsideTheField()
+    {
+        const string good = "class C { public void Show(int a) { var p = _port.TakeUpdateProgress(o, r); } public void Update() { _port.TakeUpdateProgress(o, r); x(); _port.TakeUpdateProgress(o, r); } }";
+
+        Assert.Empty(PresentationViolations(new[] { (FieldModelPath, good) }));
+        foreach (var read in new[] { "_port.TryReload(r);", "_port.TryBeginEdit(r);", "_port.TryCheckNow(r);", "_port.TryConfirmBase(r);", "_port.TryKeepMine(r);", "_port.TryDiscardAndReload(r);", "_port.RequestUpdate(r);" })
+            Assert.NotEmpty(PresentationViolations(new[] { (FieldModelPath, good.Replace("var p =", read + " var p =", StringComparison.Ordinal)) }));
+
+        // A second take in Show, a third in Update, one in another member of the field and one in another file.
+        Assert.NotEmpty(PresentationViolations(new[] { (FieldModelPath, good.Replace("var p =", "var q = _port.TakeUpdateProgress(o, r); var p =", StringComparison.Ordinal)) }));
+        Assert.NotEmpty(PresentationViolations(new[] { (FieldModelPath, good.Replace("x();", "_port.TakeUpdateProgress(o, r);", StringComparison.Ordinal)) }));
+        Assert.NotEmpty(PresentationViolations(new[] { (FieldModelPath, good + " class D { void Other() { _port.TakeUpdateProgress(o, r); } }") }));
+        Assert.NotEmpty(PresentationViolations(new[] { (FieldModelPath, good), (BrowserModelPath, "class C { void M() { _pilotEdit.TakeUpdateProgress(o, r); } }") }));
+        Assert.NotEmpty(PresentationViolations(new[] { (FieldModelPath, "class C { public void Show(int a) { } public void Update() { } }") }));
+    }
+
     // ------------------------------------------------------------------ INV-F4T3B1-04: SetPendingText only in the setter of the text
 
     // The text typed by the user reaches the draft only through the public setter of Text of the field view-model: nobody else in the UI

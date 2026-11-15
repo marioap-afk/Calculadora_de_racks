@@ -40,6 +40,11 @@ namespace RackCad.UI.Tests
         public const string LossOp = "TakeLossNotices";
         public const string CloseOp = "TakeCloseNotices";
 
+        // I-64 F4-T4C2 (INV-F4T4C-25): the two operations of the update. They are NOT in Calls, Operations() or Reads(), whose exact sets the
+        // closing tests assert: they have a register of their own, UpdateLog, which also holds CrossBoundary so the ORDER of the gesture is seen.
+        public const string RequestUpdateOp = "RequestUpdate";
+        public const string TakeProgressOp = "TakeUpdateProgress";
+
         /// <param name="Operation">The operation of the port.</param>
         /// <param name="Origin">The session that travelled with the call.</param>
         /// <param name="RackId">The rack of the call; null for the operations that have none.</param>
@@ -47,9 +52,36 @@ namespace RackCad.UI.Tests
         /// <param name="Kind">The boundary of CrossBoundary.</param>
         public sealed record Call(string Operation, SessionId Origin, string? RackId, string? Text = null, PilotBoundaryKind? Kind = null);
 
+        /// <summary>One entry of the register of the update: the operation, the session that travelled, the rack and, for CrossBoundary, the boundary.</summary>
+        public sealed record UpdateEntry(string Operation, SessionId Origin, string? RackId, PilotBoundaryKind? Kind = null);
+
         private readonly Dictionary<(SessionId, string), PilotFieldView> _fields = new();
+        private readonly Dictionary<(SessionId, string), EditUpdateProgress> _progress = new();
 
         public List<Call> Calls { get; } = new();
+
+        /// <summary>RequestUpdate, TakeUpdateProgress and CrossBoundary, in the order they were called (INV-F4T4C-25).</summary>
+        public List<UpdateEntry> UpdateLog { get; } = new();
+
+        public int UpdateCount(string operation) => UpdateLog.Count(e => e.Operation == operation);
+
+        public IEnumerable<UpdateEntry> UpdateOf(string operation) => UpdateLog.Where(e => e.Operation == operation);
+
+        /// <summary>What RequestUpdate answers. Without it the double answers Unavailable and records the call.</summary>
+        public Func<EditIntentRequest, EditUpdateStart>? UpdateStartResponder { get; set; }
+
+        /// <summary>Runs inside RequestUpdate, after the call is recorded: a request whose pump repaints the panel, as the real one can.</summary>
+        public Action<EditIntentRequest>? UpdateHook { get; set; }
+
+        /// <summary>What TakeUpdateProgress answers instead of the programmed progress of the rack.</summary>
+        public Func<WorkspaceRequest, string, EditUpdateProgress>? ProgressResponder { get; set; }
+
+        /// <summary>
+        /// The update of a rack as the memory of the host holds it: whether it is in flight and its outcome. TakeUpdateProgress answers it
+        /// and CONSUMES the outcome (a second take answers the same flag and no outcome), as the port does.
+        /// </summary>
+        public void SetProgress(SessionId session, string rack, bool inFlight, EditUpdateOutcome outcome = default) =>
+            _progress[(session, rack)] = new EditUpdateProgress(inFlight, outcome);
 
         public int Count(string operation) => Calls.Count(c => c.Operation == operation);
 
@@ -274,11 +306,12 @@ namespace RackCad.UI.Tests
         public PilotBoundaryResult CrossBoundary(WorkspaceRequest origin, string rackId, PilotBoundaryKind kind)
         {
             Calls.Add(new Call(BoundaryOp, origin.Origin, rackId, Kind: kind));
+            UpdateLog.Add(new UpdateEntry(BoundaryOp, origin.Origin, rackId, kind));
             ThrowIfAsked(BoundaryOp);
             if (BoundaryResponder != null) return BoundaryResponder(origin, rackId, kind);
 
             var none = Array.Empty<PilotFieldProblem>();
-            var blocking = kind == PilotBoundaryKind.TabChange || kind == PilotBoundaryKind.RackChange;
+            var blocking = kind == PilotBoundaryKind.TabChange || kind == PilotBoundaryKind.RackChange || kind == PilotBoundaryKind.Update;
             if (!blocking) return new PilotBoundaryResult(kind, PilotBoundaryDecision.Kept, false, none, null);
 
             var view = Current(origin.Origin, rackId);
@@ -341,11 +374,29 @@ namespace RackCad.UI.Tests
             return taken;
         }
 
-        // I-64 F4-T4C1-HOST (INV-F4T4C-20): the two operations of the update are inert here. The gesture of the panel is of F4-T4C2, which
-        // gives them their calls, their responders and their tests; until then they record nothing and answer the inert default value.
-        public EditUpdateStart RequestUpdate(EditIntentRequest request) => default;
+        // I-64 F4-T4C2 (INV-F4T4C-25): the two operations of the update record in their own register and never in Calls.
+        public EditUpdateStart RequestUpdate(EditIntentRequest request)
+        {
+            UpdateLog.Add(new UpdateEntry(RequestUpdateOp, request.Session, request.RackId));
+            UpdateHook?.Invoke(request);
+            ThrowIfAsked(RequestUpdateOp);
+            if (UpdateStartResponder != null) return UpdateStartResponder(request);
+            return EditUpdateStart.Unavailable("The double does not update.");
+        }
 
-        public EditUpdateProgress TakeUpdateProgress(WorkspaceRequest origin, string rackId) => default;
+        public EditUpdateProgress TakeUpdateProgress(WorkspaceRequest origin, string rackId)
+        {
+            UpdateLog.Add(new UpdateEntry(TakeProgressOp, origin.Origin, rackId));
+            ThrowIfAsked(TakeProgressOp);
+            if (ProgressResponder != null) return ProgressResponder(origin, rackId);
+
+            var key = (origin.Origin, rackId);
+            if (!_progress.TryGetValue(key, out var progress)) return default;
+
+            // Taking the outcome consumes it; whether the update is in flight stays what the memory of the host says.
+            if (progress.Outcome.Status != EditUpdateStatus.Unavailable) _progress[key] = new EditUpdateProgress(progress.InFlight, default);
+            return progress;
+        }
 
         private Call Record(string operation, SessionId origin, string? rackId)
         {
