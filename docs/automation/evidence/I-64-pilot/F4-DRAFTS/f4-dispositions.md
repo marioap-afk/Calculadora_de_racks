@@ -2460,3 +2460,33 @@ T4C2 y Smoke-2 siguen pendientes.
   - el adaptador, cubierto solo por las guardas de fuente;
   - Smoke-2 pendiente.
 - **Siguiente:** la emisión de F4-T4C2-PANEL, por D5.
+
+## F4-E68. Emisión de F4-T4C2-PANEL
+
+**Autoridad:** la decisión D5 del Owner (`F4-DRAFTS/coordinator/owner-f4t4c-decisions-d1-d6.md`): preparar el contrato desde el paquete v5, someterlo a una comprobación independiente, incorporar sus hallazgos y emitirlo en cuanto F4-T4C1-HOST cerrara bien (F4-E67), con attempts 1 de 3 y sin volver al Owner salvo ante una decisión material nueva.
+
+**La comprobación independiente** (`F4-DRAFTS/t4c/contract-check-t4c2.md`): **EMITIBLE TRAS CORRECCIONES (1/5/13)**, **sin ningún hallazgo OWNER**. La parte [2] se hace con las decisiones ya tomadas en la v5. La sesión incorporó todos los hallazgos:
+- **B-01:** C07 se reescribe para las filas [2] (12, 18 y 21). C09 y C14 también se adaptan, y una aserción del generador impide emitir C07, C09 o C14 con su texto de T4C1;
+- **I-01:** la frontera por miembro de `WorkspaceHostCore.cs` (solo `TryCheckPilotEdit`) y de `WorkspaceEditIntent.cs` (solo `EditCheckOutcome`), en C14 y en el invariante nuevo INV-F4T4C-23;
+- **I-02:** `tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs` entra en el alcance, para probar con el núcleo real la parte de núcleo del diagnóstico de T4A2;
+- **I-03:** INV-14 recoge las cuatro ventanas de G-10;
+- **I-04:** el doble de UI registra lo nuevo aparte (INV-F4T4C-25), para no romper `WorkspacePilotCloseSyncTests.cs`, que está prohibido;
+- **I-05:** INV-02 e INV-11 recogen las reglas de D-T4C-11 y D-T4C-03 que faltaban;
+- **M-01 a M-13:**
+  - los 20 archivos de pruebas de UI del Workspace que no se tocan pasan al prohibido;
+  - C16 vuelve al Owner;
+  - se completan INV-12 e INV-13;
+  - INV-03 e INV-19 son ahora fieles;
+  - INV-F4T4C-24 mantiene vigentes INV-04 a 10 de T4C1;
+  - en la evidencia esperada: la lista de los textos nuevos del VM, y la falta de build Debug del Plugin, declarada;
+  - el objetivo y la autoridad del paquete nombran las decisiones de la parte [2];
+  - la clausura de T1B queda declarada por raíces.
+
+**El contrato** (`I-64-pilot/F4-T4C2-PANEL/coordinator/gate-contract.json`):
+- **alcance:** 14 rutas exactas, las [2] y [1, 2] del §6 más la de I-02;
+- **`ForbiddenWriteScope`:** 150 entradas: `src/RackCad.Plugin/` y `src/RackCad.Application/Systems/` enteros, la UI partida por subraíces y archivos, lo que T4C1 tenía permitido y T4C2 no necesita, y el resto de T4C1;
+- **invariantes:** 16 (01 a 03, 11 a 20, 23, 24 y 25);
+- **`RequiredTests`:** 26 filas, con las cuentas de la CI verde de T4C1: Core Workspace 3421 y UI Workspace 601, las dos con `ExpectRed` true, y las 23 clases y los 55 de T1B con `ExpectRed` false;
+- **paradas:** 33.
+
+**attempts:** 1 de 3.

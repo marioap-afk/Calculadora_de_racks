@@ -7375,3 +7375,11 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 **Siguiente:** F4-T4C2-PANEL (D5) y después Smoke-2.
 
 **Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.
+
+## 213. Comprobación del contrato de F4-T4C2-PANEL
+
+**Decisión:** F4-E68, por la decisión D5 del Owner.
+- **La comprobación independiente:** EMITIBLE TRAS CORRECCIONES (1/5/13), sin ningún hallazgo OWNER.
+- **La sesión** incorporó todos los hallazgos al generador del contrato.
+
+**Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.
