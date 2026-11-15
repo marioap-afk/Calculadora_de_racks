@@ -7332,3 +7332,19 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **`attempts`:** 1 de 3.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 210. Intento 1 de F4-T4C1-HOST y decisiones D1 a D6 del Owner
+
+**Decisión:** F4-E66.
+- **El Owner:** ratifica los textos del host (D1) y fija las reglas de cierre, corrección y replanificación de la cadena (D2 a D4), la emisión de F4-T4C2 tras el cierre de T4C1 (D5) y la preparación de Smoke-2 (D6).
+- **El intento 1:**
+  - la replanificación reforzada única aceptada, tras un rechazo por fidelidad;
+  - el Worker: RED `8e57061e`, GREEN `271a045c`;
+  - la CI exacta: GREEN 4/4;
+  - la verificación `eca1`: EXECUTION_VERIFIED 14/14.
+- **Las revisiones:** la independiente da **REWORK (1/1/10)**: B-01, la cota del billete terminado sin compleción, e I-01, G-1 y G-10 acotados.
+- **La disposición:** corrección en el intento 2 de 3 (D3).
+
+**Custodia:** las cinco unidades del intento 1 con sus manifiestos, las dos revisiones, el análisis y las decisiones del Owner.
+
+**Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.

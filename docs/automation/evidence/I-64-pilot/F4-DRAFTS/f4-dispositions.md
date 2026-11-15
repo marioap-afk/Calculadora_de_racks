@@ -2394,3 +2394,43 @@ T4C2 y Smoke-2 siguen pendientes.
   - Rigen las reglas de F4-E59: sin suites completas de UI en local y sin sondas con entradas válidas en los caminos de diálogo o de escritura.
   - Las pruebas no usan AutoCAD.
 - **attempts:** 1 de 3 para F4-T4C1-HOST.
+
+## F4-E66. Intento 1 de F4-T4C1-HOST, decisiones D1 a D6 del Owner y corrección en el intento 2
+
+**Las decisiones del Owner D1 a D6** (`F4-DRAFTS/coordinator/owner-f4t4c-decisions-d1-d6.md`, literal), pedidas en el chat mientras corría el Worker:
+- **D1:** ratifica los seis textos del host, tal como los fijó la sesión. No se gasta una corrección solo por redacción.
+- **D2:** la sesión cierra T4C1 sin volver al Owner si:
+  - las dos revisiones dan 0 bloqueantes y 0 importantes;
+  - la CI y la verificación pasan;
+  - nc1 a nc3 pasan por su oráculo ordinario o por un sustituto con firma EXACTA de PD-F4-01, 04, 05, 06 o 07.
+
+  Un modo de fallo nuevo vuelve al Owner.
+- **D3:** el intento 2 queda autorizado sin volver al Owner ante un REWORK real dentro del alcance. Nunca el intento 3 sin él.
+- **D4:** cada delegación nueva, también la de una corrección, tiene una replanificación reforzada única. No se acumulan.
+- **D5:** preparar el contrato de F4-T4C2 y su comprobación, y emitirlo y ejecutarlo (1 de 3) en cuanto T4C1 cierre bien. Vuelve al Owner ante una decisión material nueva.
+- **D6:** preparar la guía de Smoke-2. El dibujo, una copia de trabajo real de Push Back, lo elige el Owner.
+
+**Los hechos del intento 1:**
+- **Planificación:**
+  - `R20261115T143542Z-0100`, rechazada por la comparación byte a byte: `ForbiddenWriteScope` con 216 entradas frente a 163, porque omitió una y entró en bucle en los archivos de `Systems/PushBack/`. A4 en fail;
+  - la replanificación reforzada única de F4T4C-C15, `R20261115T144358Z-b5f7`: fidelidad PASS en las ocho colecciones y A1-A8 8/8;
+  - nc4 `R20261115T144759Z-886c`, que amplía con `src/RackCad.UI/Systems/PushBack/`: solo A3 en fail.
+- **El Worker** `R20261115T145157Z-efec`: `claude-sonnet-5-5`/high, 426 turnos y 0 denegaciones; RED `8e57061e` y GREEN `271a045c`, con las 30 rutas del alcance.
+  - Los seis textos del host salen byte a byte de `host-texts.txt`, que fijó la sesión porque D-T4C-05 dejaba su redacción para la emisión, y que D1 ratificó.
+- **La CI exacta:**
+  - GREEN `43733257361`, 4/4: Core Workspace 3385/3385, UI Workspace 601/601 y Core completo 18966/18966;
+  - RED `43731731401`: Core en failure, con 216 fallos, todos dentro del filtro; UI en success.
+- **La verificación** `R20261115T163412Z-eca1`: EXECUTION_VERIFIED, 14/14, `VerifiedSha` `271a045c`, con el RED acreditado (17 rutas de `tests/`).
+
+**Las revisiones** (análisis conjunto en `F4-T4C1-HOST/1/R20261115T163412Z-eca1/analysis.md`):
+- **la directa de la sesión:** 1 importante y 1 menor;
+- **la adversarial independiente:** **REWORK, 1/1/10.**
+  - **B-01:** un billete que pasó por `Execute` no caduca nunca, porque la marca «en `Execute`» no se retira. Si la compleción no llega, la sesión queda en `Busy` sin cota, contra D-T4C-02 y D-T4C-04;
+  - **I-01:** G-1 y G-10 quedaron acotados por carpeta sin la necesidad que alegó el Worker;
+  - y 10 menores.
+
+**La decisión:** corrección en el **intento 2 de 3**, por D3.
+- **`CorrectionOf`:** la verificación `eca1`, con la clase `Tests`.
+- **El contrato del intento 2:** conserva el alcance, la lista prohibida, los invariantes, los `RequiredTests` y las paradas. Añade INV-F4T4C-21, con las correcciones, e INV-F4T4C-22, con la mecánica.
+- **La cadena:** sigue con `ChainBaseSha` `44eafbc1` y `ChainRedSha` `8e57061e`.
+- **Intento 3:** no se gasta sin el Owner.
