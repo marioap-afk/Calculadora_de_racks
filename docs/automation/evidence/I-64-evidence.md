@@ -7197,3 +7197,16 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - solo pruebas nuevas y documentación; sin AutoCAD;
 - la escritura de la fecha del archivo de disposición del perfil real por la suite existente es deuda H-1;
 - las validaciones del host son de Smoke-2.
+
+## 202. Revalidación y emisión de F4-T4B
+
+**Decisión:** F4-E60, con dos decisiones del Owner: «Guardas exactas en T4B» para el movimiento de `Traverse`, y «Emitir con el §9 propuesto».
+
+- **Revalidación tras T1B** sobre `7c29a5e5`:
+  - M4: T1B no cubre el barrido, y la condición (3) se sustituye por protección propia de T4B;
+  - M5: la purga es de categoría (b) con su orden.
+- **Comprobaciones independientes del paquete:** v4 1/4/13, v5 0/2/6 y v6 **EMITIBLE** 0/0/3. La v7 aplica los tres menores.
+- **Validación determinista:** PASS 99/99.
+- **Emisión:** el paquete v7 va en `docs/initiatives/`, con los borradores, las decisiones y la autorización custodiados. `attempts`: 1 de 3.
+
+**Límites:** solo documentación; sin AutoCAD.

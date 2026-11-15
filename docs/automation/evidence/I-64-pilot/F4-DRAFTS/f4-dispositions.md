@@ -2094,3 +2094,51 @@ La mutación authored no empieza sin su contrato. Smoke-2 sigue pendiente de Aut
 2. Repetir su validación y su revisión contra la rama posterior a T1B.
 3. Incorporar los hallazgos de T1B.
 4. Solo entonces puede emitirse T4B.
+
+## F4-E60. Revalidación de F4-T4B tras el cierre de F4-T1B, decisiones del Owner y emisión de F4-T4B-MUTATE-POST
+
+**Origen:** la autorización de T1B («After T1B closes: return to F4-T4B package v3. Re-run the relevant package validation/review against the post-T1B branch. Then incorporate T1B findings into T4B assumptions. Only then may T4B be emitted») y la disposición `owner-f4t4-disposition-reverify-t1b-t4b.md`.
+
+**La revalidación**, sobre `7c29a5e5`, cuyo producto es el de `c3ae1c97`:
+- **M4** (`F4-DRAFTS/t4b/map-4-traverse-t1b-coverage.md`): T1B **no** protege el comportamiento relevante para el movimiento de `Traverse`. La condición (3) de la disposición, «characterization T1B protects the relevant existing behavior», no se cumple:
+  - T1B no lee `RackSiblingScan.cs` ni el cableado del barrido;
+  - ninguna prueba ejecuta el barrido;
+  - nada en T1B revela una diferencia de comportamiento.
+- **M5** (`map-5-purge-category.md`): la purga es **categoría (b), solo registro**, con un orden: en su propia transacción, después del commit y sin `TopTransaction`. Si se intercalara con la transacción authored, pasaría a (a).
+- **Decisión del Owner sobre `Traverse`:** «Guardas exactas en T4B» (`F4-DRAFTS/coordinator/owner-f4t4b-traverse-decision.md`). La condición (3) se sustituye, declarado, por protección propia de T4B:
+  - el núcleo `internal static` idéntico al literal de `c3ae1c97`, con una única sustitución y autopruebas negativas;
+  - el envoltorio exacto;
+  - `Capture` y `CaptureDrawing` exactos;
+  - un censo de dos llamadas;
+  - el resto del archivo congelado;
+  - cinco clases de regresión más;
+  - y Smoke-2 de los cuatro llamadores.
+
+**El paquete:**
+- **v4:** la revalidación, con la línea base de T1B (H-15 a H-22), la purga (H-23 a H-26, INV-16), el movimiento (INV-17) y la contención de las corridas locales (INV-18, las reglas de F4-E59).
+- **Comprobaciones adversariales independientes:**
+  - v4: EMITIBLE TRAS CORRECCIONES (1/4/13). El bloqueante era el núcleo `private` frente a la llamada del escritor;
+  - v5: EMITIBLE TRAS CORRECCIONES (0/2/6);
+  - v6: **EMITIBLE (0/0/3)**.
+- **v7:** aplica esos tres menores de texto.
+- **Validación determinista** (`validate_t4b_package.py`): PASS 99/99, con el producto sin cambio, el alcance, las clases y cuentas de `RequiredTests` contra la CI `43650040527` y las anclas citadas.
+- **Cambios de diseño de la v5:**
+  - `Post(PushBackPilotPostRequest)` recibe los nombres deseados de la corrida y devuelve hechos; la interpretación de POST es de Application, como manda la disposición;
+  - la fila `ABORT_FAILED` da CommitThrew, es decir Unknown, por la B del Owner;
+  - los dos ámbitos se liberan en `finally` propios, con su precedencia.
+
+**La autorización de emisión:** el Owner eligió «Emitir con el §9 propuesto» (`F4-DRAFTS/coordinator/owner-f4t4b-emission-authorization.md`, con la hoja `owner-f4t4b-emission-decision-sheet.md`).
+- Quedan aprobadas las doce interpretaciones abiertas del §9: I-2, I-3, el resto de I-5, I-7 a I-14 e I-15.
+- Antes ya estaban decididas I-1, I-4, I-5 en lo que toca a la purga, e I-6.
+
+**Cómo lo aplica la sesión:**
+- **Paquete:** `docs/initiatives/I-64-f4-t4b-gate-contract-package.md` v7. Solo cambia su párrafo de estado, que pasa a decir que está emitido.
+- **Borradores custodiados:** los mapas 4 y 5, las tres comprobaciones y la validación, en `F4-DRAFTS/t4b/`. El borrador v3 de esa carpeta se conserva como historia.
+- **Contrato** (`I-64-pilot/F4-T4B-MUTATE-POST/coordinator/gate-contract.json`):
+  - 23 rutas exactas;
+  - el prohibido por raíces y archivos exactos, para evitar el riesgo de copia de una cobertura de 174 entradas;
+  - 18 invariantes INV-F4T4B-01 a INV-F4T4B-18, con la numeración del §6 del paquete;
+  - `RequiredTests` con 24 filas: Core `Workspace` 2923 con `ExpectRed` true; 21 clases de regresión con su cuenta de la base y `ExpectRed` false; y UI `Workspace` 601 y `PushBackClassicCharacterization` 55, con `ExpectRed` false;
+  - las paradas F4T4B-C01 a F4T4B-C09.
+- **La cadena** es la de F4-T1B, sin mutantes: la planificación del Controller `gpt-6-luna`/high, la comparación byte a byte, A1-A8, nc4, el Worker Sonnet/high, la CI exacta, las revisiones directa e independiente, la verificación, nc1..nc3 y la custodia.
+- **attempts:** 1 de 3.
