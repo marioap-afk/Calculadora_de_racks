@@ -2578,3 +2578,29 @@ No se custodia todavía: lleva nombres de proyectos de clientes y rutas locales.
 **DV-05 / O-08:** la dispensa ya estaba aceptada (`owner-f4t4c-package-decisions.md`, pregunta 4).
 
 **Estado:** Smoke-2 queda **PREPARADO y en espera del Owner presente.** No se ejecutó ningún paso de Smoke-2, no se abrió la interfaz de AutoCAD y no se cargó el DLL.
+
+## F4-E72. Hallazgo: el «Actualizar» del piloto redibuja sin el nombre del rack
+
+**Origen:** el reporte del Owner (2026-11-15) sobre RACKPROYECTAR: la vista proyectada no lleva el nombre del rack, los niveles ni las cotas hasta RACKEDITAR y Actualizar, y falla con frentes en blanco, medios frentes o fondos distintos. La sesión pidió un diagnóstico de solo lectura y lo verificó en el código. Detalle en `F4-SMOKE-2/prep/pilot-rackname-finding.md`.
+
+**El hallazgo para I-64:**
+- el escritor del piloto, de T4B e integrado por T4C, reconstruye el sistema con `PushBackPilotSystemRebuild.Build` y no le asigna el nombre del sobre (`RackPilotUpdateWriter.cs:118`). RACKEDITAR sí lo asigna (`RackPushBackCommands.cs:190`);
+- la etiqueta del nombre solo se dibuja con `DrawRackName` y un nombre no vacío (`DynamicViewDecorations.cs:91`);
+- un «Actualizar» del panel sobre un rack con el nombre dibujado lo quitaría de las vistas redibujadas: el resultado authored dejaría de ser equivalente al de RACKEDITAR;
+- no lo vio ninguna prueba ni ninguna revisión, porque POST no compara la geometría, el Plugin no se puede cargar en las suites (ADR-0003) y H0 usó un dibujo sintético.
+
+**Estado:**
+- **no se ha provocado en AutoCAD.** Lo corrobora el mismo patrón en RACKPROYECTAR, que el Owner ve en AutoCAD;
+- solo existe en la rama de I-64, porque main no tiene el piloto;
+- es un **modo de fallo nuevo** (regla D2): vuelve al Owner.
+
+**Efecto en Smoke-2:** queda **PREPARADO, pero en espera de la decisión del Owner** sobre este hallazgo:
+- **(a) [recomendada]:** una tarea de corrección pequeña antes de Smoke-2 (el nombre del sobre al sistema antes de cada `PrepareRedraw`), con su contrato, su RED en Application y su cadena;
+- **(b):** ejecutar Smoke-2 tal cual, con FAIL esperado del resultado authored en el paso 14.
+
+**La guía v3** (local) ya cambió:
+- el paso 14 comprueba el nombre, los niveles y las cotas;
+- A pasa a ser un rack sin frentes en blanco ni fondos distintos, por los defectos de RACKPROYECTAR;
+- el paso 34 declara esos defectos y no los cuenta como FAIL.
+
+**Fuera de I-64:** RACKPROYECTAR tiene el mismo defecto del nombre (en main, de I-55) y otros sin explicar en el código. El diagnóstico propone una iniciativa aparte, sin crearla; la decide el Owner.

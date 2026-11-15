@@ -7450,3 +7450,11 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 **Resultado:** Smoke-2 **PREPARADO, en espera del Owner presente.** No se ejecutó ningún paso.
 
 **Límites:** solo documentación. La guía v3 se custodiará redactada con el resultado de Smoke-2.
+
+## 219. Hallazgo del nombre del rack en el «Actualizar» del piloto
+
+**Decisión:** F4-E72. El escritor del piloto reconstruye el sistema sin el nombre del sobre (`RackPilotUpdateWriter.cs:118`), mientras que RACKEDITAR sí lo asigna (`RackPushBackCommands.cs:190`). Un «Actualizar» del panel quitaría la etiqueta del nombre de las vistas redibujadas.
+
+**Estado:** verificado en el código, no en AutoCAD. Es un modo de fallo nuevo y vuelve al Owner. Smoke-2 queda preparado y en espera de su decisión entre (a) corregir antes, que es la recomendada, y (b) ejecutar con FAIL esperado.
+
+**Límites:** solo documentación; sin cambios en `src/` ni en `tests/`.
