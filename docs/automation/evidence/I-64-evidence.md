@@ -7270,3 +7270,28 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 **Siguiente:** T4C-H0. El arnés lo escribe la sesión y lo revisa un revisor independiente; va en un worktree desechable y sin commit en el producto, y lo opera el Owner. T4C1 y T4C2 no se emiten hasta su resultado.
 
 **Límites:** solo documentación; sin AutoCAD; sin cambios en `src/` ni en `tests/`.
+
+## 206. Sonda de host F4-T4C-H0
+
+**Decisión:** F4-E63. Es la sonda de diagnóstico de D-T4C-16, con las dispensas de O-01 y la instrucción del Owner de que la sesión controlara AutoCAD.
+
+**El arnés:**
+- solo en Debug, en un worktree desechable, sin commit;
+- dos revisiones independientes: APTO TRAS CORRECCIONES y después APTO PARA OPERAR;
+- Release idéntico a la base.
+
+**Las sondas:** cinco, sobre una copia desechable, y el original no cambió.
+- **El callback es diferido.**
+- **Un Actualizar es un solo paso de Undo,** con Undo y Redo completos.
+- **El orden de los eventos** es el que prevé D-T4C-09.
+- **Los bloqueos anidados** funcionan.
+- **WPF no bombea** dentro del callback.
+
+**C12 (fila 3):** AutoCAD entra en reposo dos veces antes del callback, así que la cota del billete de D-T4C-02 no sirve. Vuelve al Owner antes de emitir T4C1.
+
+**Límites:**
+- es diagnóstico y no validación: Smoke-2 sigue siendo la primera validación física;
+- el operador fue la sesión;
+- el dibujo es sintético;
+- el RELEASE de I-52 no tuvo respuesta;
+- sin cambios en `src/` ni en `tests/` de la rama.

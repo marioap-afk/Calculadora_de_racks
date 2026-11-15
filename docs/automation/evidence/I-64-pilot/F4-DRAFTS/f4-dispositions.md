@@ -2266,3 +2266,49 @@ Todas se llevaron al Owner en el §9.
 4. **T4C1 y T4C2 no se emiten hasta el resultado de H0.**
 
 Smoke-2 espera a que cierre el producto.
+
+## F4-E63. Sonda de host F4-T4C-H0: arnés, operación y resultado
+
+**Autoridades:**
+- **D-T4C-16** del paquete de F4-T4C;
+- **la disposición del Owner** O-01, «H0 con dispensas» (F4-E62);
+- **su instrucción en el chat**, ante la pregunta por el dibujo: «Crealo tú controlando autocad, no pidas autorización».
+
+**El arnés:**
+- **dónde:** solo en Debug, en un worktree desechable sobre `b15072ff`, sin commit en ninguna rama;
+- **revisión independiente:** APTO TRAS CORRECCIONES (0/5/11). Se corrigió y se volvió a compilar. La revisión focalizada dio **APTO PARA OPERAR** (0/0/7);
+- **Release** idéntico a la base;
+- **el DLL del Plugin:** `611808426BAA9A02…`, medido por la sesión;
+- **se custodia** en `I-64-pilot/F4-T4C-H0/`:
+  - el parche;
+  - las notas, redactadas;
+  - las dos revisiones;
+  - la guía del operador;
+  - la traza `[H0]`, redactada;
+  - el resultado.
+
+**La operación (2026-11-15, unos 13 minutos):**
+- **el host:** una sola `acad.exe`, sin bundle, sin inyecciones y con «Load Once», sin cambiar el perfil;
+- **el dibujo:** lo creó la sesión con RACKPUSHBACK y RACKEDITAR (un rack con lateral y planta). El SHA-256 del original no cambió, y la copia se cerró sin guardar;
+- **las sondas:** cinco. Dos de contexto vacío, una de Actualizar sin cambios (`NothingToApply`) y dos de Actualizar con cambios (`Applied`).
+
+**El resultado, por filas de D-T4C-16:**
+- **fila 1:** el callback es **diferido**; vuelve entre 50 y 146 ms después de la llamada;
+- **fila 2:** se completa siempre;
+- **fila 3:** **llegan dos entradas en reposo antes del callback, en cada sonda: C12**;
+- **fila 4:** los `*Cancel*` no generan ninguna pista de comando;
+- **fila 5:** el orden es el previsto. `CommandEnded(EXECUTEFUNCTION)` llega después de la relectura de POST (`F4P:60`), y no hay comandos anidados;
+- **fila 6:** **un solo paso de Undo** por Actualizar; `U` restaura las dos vistas y un `REDO` inmediato las rehace;
+- **fila 7:** el `EXECUTEFUNCTION` vacío deja su propio paso de Undo;
+- **filas 8 a 12:** sin incidencias. El documento es el admitido, `TopTransaction` es nula, los bloqueos anidados funcionan, la continuación corre en el hilo de la UI, WPF no bombea y el `Assert` no salta.
+
+**Hechos nuevos para el paquete:**
+- `ExecuteInCommandContextAsync` devuelve `DocumentCollection.ExecutionResult`, no un `Task`: la guarda de D-T4C-04 se reescribe para `OnCompleted`;
+- las lecturas del panel vacían la pila de Rehacer.
+
+**Desviaciones declaradas:**
+- el operador fue la sesión, por la instrucción del Owner, y no el Owner como decía D-T4C-16;
+- el RELEASE de I-52 se pidió por el canal entre sesiones y no tuvo respuesta. I-52 estaba inactiva, sin ninguna `acad.exe` abierta;
+- el dibujo es sintético, de la sesión, y no un dibujo real del Owner.
+
+**Siguiente:** la fila 3 es C12. La cota del billete «en vuelo» por la primera entrada en reposo (D-T4C-02) no sirve, y **vuelve al Owner antes de emitir T4C1**. Los demás hechos [H] pasan a [M] en el paquete.

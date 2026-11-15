@@ -1,0 +1,1820 @@
+diff --git a/src/RackCad.Plugin/Drawing/RackBlockRenamer.cs b/src/RackCad.Plugin/Drawing/RackBlockRenamer.cs
+index 5b8eb4ce..0c1ee1bc 100644
+--- a/src/RackCad.Plugin/Drawing/RackBlockRenamer.cs
++++ b/src/RackCad.Plugin/Drawing/RackBlockRenamer.cs
+@@ -29,9 +29,18 @@ namespace RackCad.Plugin.Drawing
+             {
+                 var target = BlockNaming.SanitizeBlockName(desiredRawName);
+ 
++#if DEBUG
++                // I-64 F4-T4C-H0, row 9 (Debug only, not product): whether this nested lock throws or works under the outer one.
++                RackCad.Plugin.Diagnostics.H0HostTrace.Lock("SyncName", "request h=" + blockId.Handle, document);
++                try
++                {
++#endif
+                 using (document.LockDocument())
+                 using (var tr = document.Database.TransactionManager.StartTransaction())
+                 {
++#if DEBUG
++                    RackCad.Plugin.Diagnostics.H0HostTrace.Lock("SyncName", "held h=" + blockId.Handle, document);
++#endif
+                     if (!(tr.GetObject(blockId, OpenMode.ForRead) is BlockTableRecord def)
+                         || def.IsErased || def.IsLayout
+                         || string.Equals(def.Name, target, StringComparison.OrdinalIgnoreCase))
+@@ -49,9 +58,20 @@ namespace RackCad.Plugin.Drawing
+                     def.Name = target;
+                     tr.Commit();
+                 }
++#if DEBUG
++                }
++                finally
++                {
++                    // After both usings disposed: the lock modes once the nested lock is gone (review H-10).
++                    RackCad.Plugin.Diagnostics.H0HostTrace.Lock("SyncName", "released h=" + blockId.Handle, document);
++                }
++#endif
+             }
+             catch (Exception ex)
+             {
++#if DEBUG
++                RackCad.Application.Diagnostics.H0Trace.Exception("lock.nested.SyncName.threw-and-caught outerDepth=" + RackCad.Application.Diagnostics.H0Trace.OuterLockDepth, ex);
++#endif
+                 // The name is cosmetic; never let a rename failure break the edit flow.
+                 RackLog.Exception("Sincronizar nombre de bloque", ex);
+             }
+diff --git a/src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs b/src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs
+index 11219727..9cad7782 100644
+--- a/src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs
++++ b/src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs
+@@ -16,6 +16,10 @@ using RackCad.Domain.Systems.Shared;
+ using RackCad.Plugin.Drawing;
+ using RackCad.Plugin.Systems.PushBack;
+ using RackCad.Plugin.Systems.Shared;
++#if DEBUG
++using RackCad.Application.Diagnostics;
++using RackCad.Plugin.Diagnostics;
++#endif
+ using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
+ 
+ namespace RackCad.Plugin.Views
+@@ -34,6 +38,10 @@ namespace RackCad.Plugin.Views
+         public IPushBackPilotUpdateScope Begin(PushBackPilotUpdateRequest request)
+         {
+             if (request == null) throw new ArgumentNullException(nameof(request));
++#if DEBUG
++            // I-64 F4-T4C-H0 (Debug only, not product): the phases of the run in the trace of the probe. No logic changes.
++            H0Trace.Log("writer.Begin", "authorizedDoc=" + request.AuthorizedDocumentNativeId + " rack=" + request.RackId + " active:" + H0HostTrace.DocumentFacts(AcApplication.DocumentManager.MdiActiveDocument));
++#endif
+             return new RackPilotUpdateScope(AcApplication.DocumentManager.MdiActiveDocument, request);
+         }
+ 
+@@ -74,14 +82,23 @@ namespace RackCad.Plugin.Views
+         public PushBackPilotScanValues ReadForPrepare()
+         {
+             EnsureOpen();
++#if DEBUG
++            H0Trace.Log("writer.ReadForPrepare.begin", "documentMatches=" + _documentMatches);
++#endif
+             if (!_documentMatches) return new PushBackPilotScanValues(false, Array.Empty<RackSiblingScanFact>(), new Dictionary<string, string>());
+ 
+             // The catalog is read outside the ownership of any scope of mutation, and the drawing is read by the same traversal as every
+             // other path, which takes its own lock and its own short scope.
+             _catalog = LateralHeaderDrawService.LoadCatalog() ?? throw new InvalidOperationException("El catálogo no está disponible.");
++#if DEBUG
++            H0Trace.Log("writer.ReadForPrepare.catalog-loaded", "CaptureDrawing follows");
++#endif
+             var scan = RackSiblingScan.CaptureDrawing(_document!);
+             _definitions.Clear();
+             foreach (var pair in scan.Definitions) _definitions[pair.Key] = pair.Value;
++#if DEBUG
++            H0Trace.Log("writer.ReadForPrepare.end", "facts=" + scan.Facts.Count + " definitionKeys=[" + string.Join(",", _definitions.Keys) + "]");
++#endif
+             return RackPilotUpdateWriter.ValuesOf(scan, _catalog, null);
+         }
+ 
+@@ -95,10 +112,16 @@ namespace RackCad.Plugin.Views
+             var database = _document!.Database;
+             var store = new RackEmbedStore();
+             _prepared.Clear();
++#if DEBUG
++            H0Trace.Log("writer.PrepareUnits.begin", "members=" + plan.Members.Count + " (the import, residue OM-5, runs inside)");
++#endif
+             foreach (var member in plan.Members)
+             {
+                 if (!_definitions.TryGetValue(member.Key, out var blockId))
+                     return PushBackPilotImportResult.Failed("La definición " + member.Key + " ya no está en el dibujo.");
++#if DEBUG
++                H0Trace.Log("writer.PrepareUnits.member.begin", "key=" + member.Key);
++#endif
+ 
+                 var embed = store.Deserialize(member.EnvelopeText)
+                     ?? throw new InvalidOperationException("El sobre de la vista " + member.Key + " no se puede leer.");
+@@ -125,8 +148,14 @@ namespace RackCad.Plugin.Views
+                 }
+ 
+                 _prepared[member.Key] = (prepared, address.Kind);
++#if DEBUG
++                H0Trace.Log("writer.PrepareUnits.member.end", "key=" + member.Key + " kind=" + address.Kind);
++#endif
+             }
+ 
++#if DEBUG
++            H0Trace.Log("writer.PrepareUnits.end", "prepared=" + _prepared.Count);
++#endif
+             return PushBackPilotImportResult.Succeeded();
+         }
+ 
+@@ -137,10 +166,16 @@ namespace RackCad.Plugin.Views
+             if (!_documentMatches || _prepared.Count == 0) throw new InvalidOperationException("BeginMutation se llamó sin una importación previa.");
+ 
+             var database = _document!.Database;
++#if DEBUG
++            H0Trace.Log("writer.BeginMutation.begin", "top=" + (database.TransactionManager.TopTransaction == null ? "null" : "OPEN => rejected"));
++#endif
+             if (database.TransactionManager.TopTransaction != null)
+                 return PushBackPilotMutationStart.Rejected(PushBackPilotUpdateRun.ForeignScopeOpenCause);
+ 
+             var transaction = database.TransactionManager.StartTransaction();
++#if DEBUG
++            H0Trace.Log("writer.BeginMutation.started", "the one owned scope of MUTATE is open");
++#endif
+             return PushBackPilotMutationStart.Started(new RackPilotMutationScope(database, transaction, _prepared, _staleDefinitions));
+         }
+ 
+@@ -152,6 +187,9 @@ namespace RackCad.Plugin.Views
+ 
+             var document = _document!;
+             var database = document.Database;
++#if DEBUG
++            H0Trace.Log("writer.Post.begin", "top=" + (database.TransactionManager.TopTransaction == null ? "null" : "OPEN => nothing else is done") + " staleCandidates=" + _staleDefinitions.Count + " desiredNames=" + request.DesiredNames.Count);
++#endif
+ 
+             // 1: no scope of anybody else may be open, or nothing else is done.
+             if (database.TransactionManager.TopTransaction != null)
+@@ -159,13 +197,22 @@ namespace RackCad.Plugin.Views
+ 
+             // 2: the purge, ONCE, over the union of what every unit left without a use, after the seal returned and the scope of MUTATE
+             // was released. A failure of the purge only goes to the log: the write is already confirmed.
++#if DEBUG
++            H0Trace.Log("writer.Post.purge.begin", "candidates=" + _staleDefinitions.Count);
++#endif
+             SystemBlockWriter.PurgeAfterCommit(database, _staleDefinitions.ToList());
++#if DEBUG
++            H0Trace.Log("writer.Post.purge.end", "SyncName follows, once per key with a desired name");
++#endif
+ 
+             // 3: the names that the views must carry, as the rule of the run computed them. A key without one is not renamed.
+             foreach (var pair in request.DesiredNames)
+             {
+                 if (_definitions.TryGetValue(pair.Key, out var blockId)) RackBlockRenamer.SyncName(document, blockId, pair.Value);
+             }
++#if DEBUG
++            H0Trace.Log("writer.Post.syncname.end", "the read of the names follows");
++#endif
+ 
+             // 4: the name that each definition has NOW, read by a scope of its own that only reads.
+             var names = new Dictionary<string, string>(StringComparer.Ordinal);
+@@ -179,6 +226,9 @@ namespace RackCad.Plugin.Views
+             }
+ 
+             // 5: one regeneration; a failure is a fact, and the run decides what it means.
++#if DEBUG
++            H0Trace.Log("writer.Post.regen.begin", "names=" + names.Count);
++#endif
+             string? regenFailure = null;
+             try
+             {
+@@ -190,12 +240,21 @@ namespace RackCad.Plugin.Views
+             }
+ 
+             // 6: the re-read of POST, AFTER the purge, so the comparison sees the state that stays.
++#if DEBUG
++            H0Trace.Log("writer.Post.reread.begin", "regenFailure=" + (regenFailure ?? "none"));
++#endif
+             var scan = RackSiblingScan.CaptureDrawing(document);
++#if DEBUG
++            H0Trace.Log("writer.Post.end", "facts=" + scan.Facts.Count);
++#endif
+             return new PushBackPilotPostValues(false, RackPilotUpdateWriter.ValuesOf(scan, null, null), names, regenFailure);
+         }
+ 
+         public void Dispose()
+         {
++#if DEBUG
++            H0Trace.Log("writer.Scope.Dispose", "the scope of the run is released");
++#endif
+             _disposed = true;
+             _definitions.Clear();
+             _prepared.Clear();
+@@ -240,10 +299,16 @@ namespace RackCad.Plugin.Views
+         public PushBackPilotScanValues Reread()
+         {
+             EnsureOwned();
++#if DEBUG
++            H0Trace.Log("writer.Reread.begin", "inside the owned scope of MUTATE");
++#endif
+             var scan = RackSiblingScan.TraverseCore(_transaction, _database, ObjectId.Null, null);
+             var matches = new Dictionary<string, bool>(StringComparer.Ordinal);
+             foreach (var pair in _prepared)
+                 matches[pair.Key] = scan.Definitions.TryGetValue(pair.Key, out var found) && found == pair.Value.Prepared.BlockId;
++#if DEBUG
++            H0Trace.Log("writer.Reread.end", "facts=" + scan.Facts.Count);
++#endif
+             return RackPilotUpdateWriter.ValuesOf(scan, null, matches);
+         }
+ 
+@@ -257,6 +322,9 @@ namespace RackCad.Plugin.Views
+ 
+             _units++;
+             FailUnitIfRequested(_units);
++#if DEBUG
++            H0Trace.Log("writer.WriteUnit.begin", "unit=" + _units + " key=" + memberKey + " kind=" + unit.Kind);
++#endif
+ 
+             IReadOnlyCollection<ObjectId> stale;
+             LateralHeaderDrawOutcome outcome;
+@@ -283,6 +351,9 @@ namespace RackCad.Plugin.Views
+                 .Where(name => !string.IsNullOrEmpty(name))
+                 .Distinct(StringComparer.Ordinal)
+                 .ToList();
++#if DEBUG
++            H0Trace.Log("writer.WriteUnit.end", "unit=" + _units + " key=" + memberKey + " missing=" + missing.Count + " staleCandidates=" + _staleDefinitions.Count);
++#endif
+             return new PushBackPilotUnitResult(missing);
+         }
+ 
+@@ -290,7 +361,13 @@ namespace RackCad.Plugin.Views
+         {
+             EnsureOwned();
+             FailSealIfRequested("before");
++#if DEBUG
++            H0Trace.Log("writer.Seal.commit.begin", "units=" + _units);
++#endif
+             _transaction.Commit();
++#if DEBUG
++            H0Trace.Log("writer.Seal.commit.returned", "units=" + _units);
++#endif
+             FailSealIfRequested("after");
+         }
+ 
+@@ -298,6 +375,9 @@ namespace RackCad.Plugin.Views
+         {
+             if (_disposed) return;
+             _disposed = true;
++#if DEBUG
++            H0Trace.Log("writer.MutationScope.Dispose", "the transaction of MUTATE is disposed (an abort only if it was not sealed)");
++#endif
+ 
+             // Without a seal this is the abort.
+             _transaction.Dispose();
+diff --git a/src/RackCad.Plugin/Views/RackSiblingScan.cs b/src/RackCad.Plugin/Views/RackSiblingScan.cs
+index c52b011f..aa163689 100644
+--- a/src/RackCad.Plugin/Views/RackSiblingScan.cs
++++ b/src/RackCad.Plugin/Views/RackSiblingScan.cs
+@@ -100,13 +100,35 @@ namespace RackCad.Plugin.Views
+             ObjectId selectedDefinition,
+             Func<RackEmbedDocument, bool> eraseByKind)
+         {
++#if DEBUG
++            // I-64 F4-T4C-H0, row 9 (Debug only, not product): whether this nested lock throws or works under the outer one. The filter
++            // only logs and returns false, so an exception travels exactly as before.
++            RackCad.Plugin.Diagnostics.H0HostTrace.Lock("CaptureDrawing", "request", document);
++            try
++            {
++#endif
+             using (document.LockDocument())
+             using (var transaction = document.Database.TransactionManager.StartTransaction())
+             {
++#if DEBUG
++                RackCad.Plugin.Diagnostics.H0HostTrace.Lock("CaptureDrawing", "held", document);
++#endif
+                 var scan = TraverseCore(transaction, document.Database, selectedDefinition, eraseByKind);
+                 transaction.Commit();
+                 return scan;
+             }
++#if DEBUG
++            }
++            catch (System.Exception ex) when (RackCad.Application.Diagnostics.H0Trace.LogAndContinueSearch("lock.nested.CaptureDrawing.threw outerDepth=" + RackCad.Application.Diagnostics.H0Trace.OuterLockDepth, ex))
++            {
++                throw;
++            }
++            finally
++            {
++                // After both usings disposed: the lock modes once the nested lock is gone (review H-10).
++                RackCad.Plugin.Diagnostics.H0HostTrace.Lock("CaptureDrawing", "released", document);
++            }
++#endif
+         }
+ 
+         internal static RackSiblingDrawingScan TraverseCore(
+diff --git a/src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs b/src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs
+index 1b385d19..0ea0e3af 100644
+--- a/src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs
++++ b/src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs
+@@ -6,6 +6,9 @@ using Autodesk.AutoCAD.ApplicationServices;
+ using Autodesk.AutoCAD.DatabaseServices;
+ using RackCad.Application.Diagnostics;
+ using RackCad.Application.Workspace;
++#if DEBUG
++using RackCad.Plugin.Diagnostics;
++#endif
+ using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
+ 
+ namespace RackCad.Plugin.Workspace
+@@ -184,77 +187,121 @@ namespace RackCad.Plugin.Workspace
+                 case BridgeSource.ImpliedSelectionChanged:
+                 {
+                     var document = FindDocument(a.NativeInstanceId);
++#if DEBUG
++                    EventHandler handler = (s, e) => { try { H0Event(a, null); } catch { } ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source)); };
++#else
+                     EventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
++#endif
+                     document.ImpliedSelectionChanged += handler;
+                     return () => WithDocument(a.NativeInstanceId, d => d.ImpliedSelectionChanged -= handler);
+                 }
+                 case BridgeSource.CommandWillStart:
+                 {
+                     var document = FindDocument(a.NativeInstanceId);
++#if DEBUG
++                    CommandEventHandler handler = (s, e) => { try { H0Event(a, () => "cmd=" + e.GlobalCommandName); } catch { } ContainSession(a, () => { if (_core.OnSourceEvent(a.Session, a.Source)) RaiseCommandStateChanged(); }); };
++#else
+                     CommandEventHandler handler = (s, e) => ContainSession(a, () => { if (_core.OnSourceEvent(a.Session, a.Source)) RaiseCommandStateChanged(); });
++#endif
+                     document.CommandWillStart += handler;
+                     return () => WithDocument(a.NativeInstanceId, d => d.CommandWillStart -= handler);
+                 }
+                 case BridgeSource.CommandEnded:
+                 {
+                     var document = FindDocument(a.NativeInstanceId);
++#if DEBUG
++                    CommandEventHandler handler = (s, e) => { try { H0Event(a, () => "cmd=" + e.GlobalCommandName); } catch { } ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source)); };
++#else
+                     CommandEventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
++#endif
+                     document.CommandEnded += handler;
+                     return () => WithDocument(a.NativeInstanceId, d => d.CommandEnded -= handler);
+                 }
+                 case BridgeSource.CommandCancelled:
+                 {
+                     var document = FindDocument(a.NativeInstanceId);
++#if DEBUG
++                    CommandEventHandler handler = (s, e) => { try { H0Event(a, () => "cmd=" + e.GlobalCommandName); } catch { } ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source)); };
++#else
+                     CommandEventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
++#endif
+                     document.CommandCancelled += handler;
+                     return () => WithDocument(a.NativeInstanceId, d => d.CommandCancelled -= handler);
+                 }
+                 case BridgeSource.CommandFailed:
+                 {
+                     var document = FindDocument(a.NativeInstanceId);
++#if DEBUG
++                    CommandEventHandler handler = (s, e) => { try { H0Event(a, () => "cmd=" + e.GlobalCommandName); } catch { } ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source)); };
++#else
+                     CommandEventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
++#endif
+                     document.CommandFailed += handler;
+                     return () => WithDocument(a.NativeInstanceId, d => d.CommandFailed -= handler);
+                 }
+                 case BridgeSource.EnteringQuiescentState:
+                 {
+                     var document = FindDocument(a.NativeInstanceId);
++#if DEBUG
++                    EventHandler handler = (s, e) => { try { H0Event(a, null); } catch { } ContainSession(a, () => { if (_core.OnSourceEvent(a.Session, a.Source)) RaiseCommandStateChanged(); }); };
++#else
+                     EventHandler handler = (s, e) => ContainSession(a, () => { if (_core.OnSourceEvent(a.Session, a.Source)) RaiseCommandStateChanged(); });
++#endif
+                     document.Editor.EnteringQuiescentState += handler;
+                     return () => WithDocument(a.NativeInstanceId, d => d.Editor.EnteringQuiescentState -= handler);
+                 }
+                 case BridgeSource.ObjectAppended:
+                 {
+                     var document = FindDocument(a.NativeInstanceId);
++#if DEBUG
++                    ObjectEventHandler handler = (s, e) => { try { H0ObjectEvent(a, e.DBObject, null); } catch { } ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source)); };
++#else
+                     ObjectEventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
++#endif
+                     document.Database.ObjectAppended += handler;
+                     return () => WithDocument(a.NativeInstanceId, d => d.Database.ObjectAppended -= handler);
+                 }
+                 case BridgeSource.ObjectErased:
+                 {
+                     var document = FindDocument(a.NativeInstanceId);
++#if DEBUG
++                    ObjectErasedEventHandler handler = (s, e) => { try { H0ObjectEvent(a, e.DBObject, e.Erased); } catch { } ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source)); };
++#else
+                     ObjectErasedEventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
++#endif
+                     document.Database.ObjectErased += handler;
+                     return () => WithDocument(a.NativeInstanceId, d => d.Database.ObjectErased -= handler);
+                 }
+                 case BridgeSource.ObjectModified:
+                 {
+                     var document = FindDocument(a.NativeInstanceId);
++#if DEBUG
++                    ObjectEventHandler handler = (s, e) => { try { H0ObjectEvent(a, e.DBObject, null); } catch { } ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source)); };
++#else
+                     ObjectEventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
++#endif
+                     document.Database.ObjectModified += handler;
+                     return () => WithDocument(a.NativeInstanceId, d => d.Database.ObjectModified -= handler);
+                 }
+                 case BridgeSource.ObjectUnappended:
+                 {
+                     var document = FindDocument(a.NativeInstanceId);
++#if DEBUG
++                    ObjectEventHandler handler = (s, e) => { try { H0ObjectEvent(a, e.DBObject, null); } catch { } ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source)); };
++#else
+                     ObjectEventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
++#endif
+                     document.Database.ObjectUnappended += handler;
+                     return () => WithDocument(a.NativeInstanceId, d => d.Database.ObjectUnappended -= handler);
+                 }
+                 case BridgeSource.ObjectReappended:
+                 {
+                     var document = FindDocument(a.NativeInstanceId);
++#if DEBUG
++                    ObjectEventHandler handler = (s, e) => { try { H0ObjectEvent(a, e.DBObject, null); } catch { } ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source)); };
++#else
+                     ObjectEventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
++#endif
+                     document.Database.ObjectReappended += handler;
+                     return () => WithDocument(a.NativeInstanceId, d => d.Database.ObjectReappended -= handler);
+                 }
+@@ -305,6 +352,9 @@ namespace RackCad.Plugin.Workspace
+         {
+             foreach (var outcome in _core.OnIdle())
+             {
++#if DEBUG
++                H0Drain(outcome);
++#endif
+                 try
+                 {
+                     Drained?.Invoke(outcome);
+@@ -387,5 +437,85 @@ namespace RackCad.Plugin.Workspace
+         }
+ 
+         private static void LogFault(string context, System.Exception exception) => RackLog.Exception(context, exception);
++
++#if DEBUG
++        // I-64 F4-T4C-H0 (Debug only, not product): ONE line per event, written BEFORE the core handles it, with the hint that the core
++        // maps the source to, the distinct kinds already pending in the session, and whether the session is degraded. It opens nothing.
++        // Each handler also wraps the call in its own try (review H-15), so not even a load failure of a mixed set of DLL reaches AutoCAD.
++        private void H0Event(SourceAttachment a, Func<string> detail)
++        {
++            try
++            {
++                H0Trace.Log("event." + a.Source, H0EventDetail(a, detail == null ? null : H0HostTrace.Safe(detail)));
++            }
++            catch (System.Exception ex)
++            {
++                H0Trace.Exception("event.trace-threw", ex);
++            }
++        }
++
++        // The events of objects (review H-08): written one by one up to the cap of the segment, then only counted by source and type. The
++        // type is the managed wrapper of the object that AutoCAD already holds open for the notice; nothing is opened.
++        private void H0ObjectEvent(SourceAttachment a, DBObject dbObject, bool? erased)
++        {
++            try
++            {
++                var type = H0HostTrace.Safe(() => dbObject == null ? "null" : dbObject.GetType().Name);
++                H0Trace.ObjectEvent(
++                    "event." + a.Source,
++                    a.Source + "/" + type,
++                    () => H0EventDetail(a, H0HostTrace.ObjectFacts(dbObject) + (erased.HasValue ? " erased=" + erased.Value : string.Empty)));
++            }
++            catch (System.Exception ex)
++            {
++                H0Trace.Exception("event.trace-threw", ex);
++            }
++        }
++
++        private string H0EventDetail(SourceAttachment a, string detail)
++        {
++            var pending = _core.TryGetSession(a.Session, out var live) && live != null ? live.PendingHintCount.ToString() : "-";
++            return "session=" + a.Session.Value + " doc=" + a.NativeInstanceId + (string.IsNullOrEmpty(detail) ? string.Empty : " " + detail)
++                + " hint=" + H0HintOf(a.Source) + " pendingKindsBefore=" + pending + " degraded=" + _core.IsDegraded(a.Session)
++                + " cmdActiveInActiveSession=" + _core.IsCommandActiveInActiveSession;
++        }
++
++        // The hint that EventBridgeCore.OnSourceEvent queues for each source (the two command-state sources queue none).
++        private static string H0HintOf(BridgeSource source)
++        {
++            switch (source)
++            {
++                case BridgeSource.CommandWillStart: return "none(SetQuiescent:false)";
++                case BridgeSource.EnteringQuiescentState: return "none(SetQuiescent:true)";
++                case BridgeSource.ImpliedSelectionChanged: return "ImpliedSelectionChanged";
++                case BridgeSource.CommandEnded:
++                case BridgeSource.CommandCancelled:
++                case BridgeSource.CommandFailed: return "CommandEnded";
++                case BridgeSource.ObjectAppended:
++                case BridgeSource.ObjectErased:
++                case BridgeSource.ObjectModified:
++                case BridgeSource.ObjectUnappended:
++                case BridgeSource.ObjectReappended: return "DatabaseObjectChanged";
++                default: return "none";
++            }
++        }
++
++        // One line per outcome of the idle pass, before the subscribers of the drain see it.
++        private static void H0Drain(DrainOutcome outcome)
++        {
++            try
++            {
++                var result = outcome.Result;
++                H0Trace.Log(
++                    "drain",
++                    "session=" + outcome.Session.Value + " drained=" + (result == null ? "null" : result.Drained.ToString())
++                    + " ops=[" + (result == null || result.Operations == null ? string.Empty : string.Join(",", result.Operations)) + "]");
++            }
++            catch (System.Exception ex)
++            {
++                H0Trace.Exception("drain.trace-threw", ex);
++            }
++        }
++#endif
+     }
+ }
+diff --git a/src/RackCad.Plugin/Workspace/WorkspaceController.cs b/src/RackCad.Plugin/Workspace/WorkspaceController.cs
+index 9a729d22..1364b2af 100644
+--- a/src/RackCad.Plugin/Workspace/WorkspaceController.cs
++++ b/src/RackCad.Plugin/Workspace/WorkspaceController.cs
+@@ -64,6 +64,19 @@ namespace RackCad.Plugin.Workspace
+             _bridge.Drained += OnDrained;
+             _bridge.ActiveSessionChanged += OnActiveSessionChanged;
+             _bridge.CommandStateChanged += OnCommandStateChanged;
++#if DEBUG
++            // I-64 F4-T4C-H0 (Debug only, not product): the harness of the host probe gets this core and this bridge and assigns the two
++            // hooks of the panel. It subscribes to nothing of AutoCAD and changes nothing of the wiring above.
++            // A failure here (for example, a mixed set of RackCad DLL without the Debug trace) only goes to RackLog, which exists in both.
++            try
++            {
++                RackCad.Plugin.Diagnostics.WorkspaceH0Harness.Attach(_host, _bridge);
++            }
++            catch (System.Exception ex)
++            {
++                RackLog.Exception("[H0] harness.attach FAILED (a mixed set of RackCad assemblies?)", ex);
++            }
++#endif
+         }
+ 
+         /// <summary>
+@@ -224,6 +237,10 @@ namespace RackCad.Plugin.Workspace
+             {
+                 _host.OnDrained(outcome);
+                 if (_navigation != null) _navigation.OnDrained(outcome);
++#if DEBUG
++                // I-64 F4-T4C-H0, row 12 (Debug only): the trace says beforehand whether the assert below will fire. The assert is untouched.
++                RackCad.Plugin.Diagnostics.H0HostTrace.BeforeDrainAssert();
++#endif
+                 AssertNoOpenTransaction();
+             }
+             catch (System.Exception ex)
+@@ -249,6 +266,10 @@ namespace RackCad.Plugin.Workspace
+         // pilot answer Waiting, so a handler of the notice can never start one.
+         private void NotifyStateChanged()
+         {
++#if DEBUG
++            // I-64 F4-T4C-H0, row 5 (Debug only): the notice to the panel, with the member that raised it.
++            H0Trace.Log("panel.notice", "StateChanged from=" + (new StackFrame(1, false).GetMethod()?.Name ?? "?"));
++#endif
+             _noticeDepth.Enter();
+             try
+             {
+diff --git a/src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs b/src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs
+index 2cfc7f78..1a597b3f 100644
+--- a/src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs
++++ b/src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs
+@@ -30,6 +30,10 @@ namespace RackCad.UI.Workspace
+             // The error banner follows the view-model directly, so it never depends on when the binding engine runs.
+             _viewModel.PropertyChanged += OnViewModelPropertyChanged;
+             ShowErrorBanner(_viewModel.HasError);
++#if DEBUG
++            // I-64 F4-T4C-H0: the section of the host probe (Debug only, not product).
++            AttachH0Probe();
++#endif
+         }
+ 
+         public WorkspacePanelViewModel ViewModel => _viewModel;
+diff --git a/src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs b/src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+index eee4575a..c52d141a 100644
+--- a/src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
++++ b/src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+@@ -229,6 +229,13 @@ namespace RackCad.UI.Workspace
+         /// <summary>The hint of the classic editor that comes with a diagnostic; it is shown, never launched.</summary>
+         public string ClassicEditorHintText => _hint ?? _persistHint ?? string.Empty;
+ 
++#if DEBUG
++        // I-64 F4-T4C-H0: the read-only accessors of the host probe (Debug only, not product): the session and the rack of the surface.
++        internal SessionId? H0Session => _session;
++
++        internal string H0Rack => _rack;
++#endif
++
+         // ------------------------------------------------------------------ what the browser tells it
+ 
+         /// <summary>
+diff --git a/src/RackCad.Application/Diagnostics/H0Trace.cs b/src/RackCad.Application/Diagnostics/H0Trace.cs
+new file mode 100644
+index 00000000..8657ba99
+--- /dev/null
++++ b/src/RackCad.Application/Diagnostics/H0Trace.cs
+@@ -0,0 +1,165 @@
++#if DEBUG
++using System;
++using System.Collections.Generic;
++using System.Diagnostics;
++using System.Globalization;
++using System.Linq;
++using System.Threading;
++
++namespace RackCad.Application.Diagnostics
++{
++    /// <summary>
++    /// I-64 F4-T4C-H0 — the trace of the host probe. DEBUG ONLY and NOT PRODUCT: this file compiles to nothing in Release. Every line goes
++    /// to <see cref="RackLog"/> (<c>%AppData%\RackCad\logs\rackcad-yyyyMMdd.log</c>, UTC date) with the fixed context <c>[H0]</c>, a sequence
++    /// number of seven digits, a monotonic high-resolution time in milliseconds since the first trace of the process, the UTC time with
++    /// seven decimals, the managed thread id and the current phase of the probe. It never throws.
++    ///
++    /// The events of objects are bounded (review H-08): within one SEGMENT (the lines between two lines that are not object events) only
++    /// the first <see cref="ObjectLinesPerSegment"/> are written one by one; the rest are counted by source and type, and the count is
++    /// written as one summary line right before the next line that closes the segment. The ORDER is kept: the summary sits where the
++    /// segment ends.
++    /// </summary>
++    public static class H0Trace
++    {
++        public const string Prefix = "[H0]";
++
++        /// <summary>The object events written one by one in each segment; the rest only go to the summary of the segment.</summary>
++        public const int ObjectLinesPerSegment = 200;
++
++        private static readonly long Origin = Stopwatch.GetTimestamp();
++        private static readonly object Gate = new object();
++        private static readonly Dictionary<string, int> Suppressed = new Dictionary<string, int>(StringComparer.Ordinal);
++        private static int _sequence;
++        private static int _outerLockDepth;
++        private static int _objectLinesInSegment;
++        private static int _suppressedInSegment;
++        private static string _phase = "idle";
++
++        /// <summary>The phase of the last probe, written by the harness and printed on every line.</summary>
++        public static string Phase
++        {
++            get => Volatile.Read(ref _phase);
++            set => Volatile.Write(ref _phase, string.IsNullOrEmpty(value) ? "idle" : value);
++        }
++
++        /// <summary>How many outer locks of the harness are held right now (row 9: a nested lock prints it).</summary>
++        public static int OuterLockDepth => Volatile.Read(ref _outerLockDepth);
++
++        public static void EnterOuterLock() => Interlocked.Increment(ref _outerLockDepth);
++
++        public static void LeaveOuterLock() => Interlocked.Decrement(ref _outerLockDepth);
++
++        /// <summary>Monotonic milliseconds since the first use of this class.</summary>
++        public static double NowMs => (Stopwatch.GetTimestamp() - Origin) * 1000.0 / Stopwatch.Frequency;
++
++        /// <summary>A line that is not an object event: it closes the current segment (its summary goes first) and is always written.</summary>
++        public static void Log(string tag, string detail)
++        {
++            try
++            {
++                lock (Gate)
++                {
++                    FlushSegment();
++                    Write(tag, detail);
++                }
++            }
++            catch
++            {
++                // A trace never breaks the flow it observes.
++            }
++        }
++
++        /// <summary>
++        /// An object event: written one by one while the segment has room, otherwise counted under <paramref name="kind"/> (the source and
++        /// the type of the object). <paramref name="detail"/> is only evaluated when the line is written.
++        /// </summary>
++        public static void ObjectEvent(string tag, string kind, Func<string> detail)
++        {
++            try
++            {
++                lock (Gate)
++                {
++                    if (_objectLinesInSegment < ObjectLinesPerSegment)
++                    {
++                        _objectLinesInSegment++;
++                        Write(tag, Evaluate(detail));
++                        return;
++                    }
++
++                    var key = kind ?? "?";
++                    Suppressed[key] = Suppressed.TryGetValue(key, out var count) ? count + 1 : 1;
++                    _suppressedInSegment++;
++                }
++            }
++            catch
++            {
++                // A trace never breaks the flow it observes.
++            }
++        }
++
++        public static void Exception(string tag, Exception exception) =>
++            Log(tag, "EXCEPTION " + (exception == null ? "(null)" : exception.ToString()));
++
++        /// <summary>For an exception filter: logs and returns false, so the exception keeps travelling unchanged.</summary>
++        public static bool LogAndContinueSearch(string tag, Exception exception)
++        {
++            Exception(tag, exception);
++            return false;
++        }
++
++        // Inside the gate: the summary of the object events that the segment did not write, then a new segment.
++        private static void FlushSegment()
++        {
++            if (_suppressedInSegment > 0)
++            {
++                var by = string.Join(", ", Suppressed.OrderBy(pair => pair.Key, StringComparer.Ordinal).Select(pair => pair.Key + "=" + pair.Value));
++                Write(
++                    "event.Object.suppressed",
++                    "written=" + _objectLinesInSegment + " notWritten=" + _suppressedInSegment + " by=[" + by + "] (the object events of this segment beyond the first " + ObjectLinesPerSegment + ")");
++            }
++
++            Suppressed.Clear();
++            _suppressedInSegment = 0;
++            _objectLinesInSegment = 0;
++        }
++
++        // Inside the gate: one line.
++        private static void Write(string tag, string detail)
++        {
++            var at = NowMs;
++            var utc = DateTime.UtcNow;
++            var sequence = Interlocked.Increment(ref _sequence);
++            var body = string.Format(
++                CultureInfo.InvariantCulture,
++                "#{0:D7} t={1:F3}ms utc={2:HH:mm:ss.fffffff} thr={3} phase={4} {5} {6}",
++                sequence,
++                at,
++                utc,
++                Environment.CurrentManagedThreadId,
++                Phase,
++                tag ?? "-",
++                Flatten(detail));
++            RackLog.Warning(Prefix, body);
++        }
++
++        private static string Evaluate(Func<string> detail)
++        {
++            try
++            {
++                return detail?.Invoke() ?? string.Empty;
++            }
++            catch (System.Exception ex)
++            {
++                return "<" + ex.GetType().Name + ">";
++            }
++        }
++
++        // One line per entry: a multi-line text (a stack trace) is folded with " || ".
++        private static string Flatten(string text)
++        {
++            if (string.IsNullOrEmpty(text)) return string.Empty;
++            return text.Replace("\r\n", " || ").Replace('\n', ' ').Replace('\r', ' ');
++        }
++    }
++}
++#endif
+diff --git a/src/RackCad.Plugin/Diagnostics/H0HostTrace.cs b/src/RackCad.Plugin/Diagnostics/H0HostTrace.cs
+new file mode 100644
+index 00000000..83715a52
+--- /dev/null
++++ b/src/RackCad.Plugin/Diagnostics/H0HostTrace.cs
+@@ -0,0 +1,79 @@
++#if DEBUG
++using System;
++using Autodesk.AutoCAD.ApplicationServices;
++using Autodesk.AutoCAD.DatabaseServices;
++using RackCad.Application.Diagnostics;
++using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
++
++namespace RackCad.Plugin.Diagnostics
++{
++    /// <summary>
++    /// I-64 F4-T4C-H0 — the facts of the host that the traces of the probe print. DEBUG ONLY and NOT PRODUCT. Every fact is read on its
++    /// own and a failure only prints its exception type: it opens no object of the drawing, writes nothing and never throws.
++    /// </summary>
++    internal static class H0HostTrace
++    {
++        /// <summary>The document by its native id, its command in progress, rest, the top transaction and the lock modes.</summary>
++        internal static string DocumentFacts(Document document)
++        {
++            if (document == null) return "doc=null";
++            return "doc=" + Safe(() => document.UnmanagedObject.ToInt64().ToString())
++                + " cmd='" + Safe(() => document.CommandInProgress) + "'"
++                + " quiescent=" + Safe(() => document.Editor.IsQuiescent.ToString())
++                + " top=" + Safe(() => document.Database.TransactionManager.TopTransaction == null ? "null" : "OPEN")
++                + " lockOthers=" + Safe(() => document.LockMode(false).ToString())
++                + " lockAll=" + Safe(() => document.LockMode(true).ToString());
++        }
++
++        /// <summary>The context of the application and the facts of the active document.</summary>
++        internal static string ContextFacts()
++        {
++            return "isAppCtx=" + Safe(() => AcApplication.DocumentManager.IsApplicationContext.ToString())
++                + " syncCtx=" + Safe(() => System.Threading.SynchronizationContext.Current?.GetType().FullName ?? "null")
++                + " active:" + DocumentFacts(SafeActive());
++        }
++
++        /// <summary>Row 9: one step of a nested lock (request, held, released), with the depth of the outer lock of the harness.</summary>
++        internal static void Lock(string site, string step, Document document) =>
++            H0Trace.Log("lock.nested." + site + "." + step, "outerDepth=" + H0Trace.OuterLockDepth + " " + DocumentFacts(document));
++
++        /// <summary>Row 12: logged right before the Debug.Assert of the drain of the controller, which this harness does not touch.</summary>
++        internal static void BeforeDrainAssert()
++        {
++            var active = SafeActive();
++            var top = active == null ? "no-document" : Safe(() => active.Database.TransactionManager.TopTransaction == null ? "null" : "OPEN");
++            H0Trace.Log("drain.assert-precheck", "top=" + top + (top == "OPEN" ? " => THE ASSERT OF THE DRAIN WILL FIRE" : string.Empty));
++        }
++
++        internal static string ObjectFacts(DBObject dbObject)
++        {
++            if (dbObject == null) return "type=null";
++            return "type=" + Safe(() => dbObject.GetType().Name) + " h=" + Safe(() => dbObject.ObjectId.Handle.ToString());
++        }
++
++        private static Document SafeActive()
++        {
++            try
++            {
++                return AcApplication.DocumentManager.MdiActiveDocument;
++            }
++            catch
++            {
++                return null;
++            }
++        }
++
++        internal static string Safe(Func<string> read)
++        {
++            try
++            {
++                return read() ?? "null";
++            }
++            catch (System.Exception ex)
++            {
++                return "<" + ex.GetType().Name + ">";
++            }
++        }
++    }
++}
++#endif
+diff --git a/src/RackCad.Plugin/Diagnostics/WorkspaceH0Harness.cs b/src/RackCad.Plugin/Diagnostics/WorkspaceH0Harness.cs
+new file mode 100644
+index 00000000..05bd281b
+--- /dev/null
++++ b/src/RackCad.Plugin/Diagnostics/WorkspaceH0Harness.cs
+@@ -0,0 +1,786 @@
++#if DEBUG
++using System;
++using System.Diagnostics;
++using System.Globalization;
++using System.IO;
++using System.Linq;
++using System.Reflection;
++using System.Security.Cryptography;
++using System.Threading;
++using System.Threading.Tasks;
++using System.Windows.Threading;
++using Autodesk.AutoCAD.ApplicationServices;
++using RackCad.Application.Diagnostics;
++using RackCad.Application.Workspace;
++using RackCad.Plugin.Views;
++using RackCad.Plugin.Workspace;
++using RackCad.UI.Workspace;
++using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
++
++namespace RackCad.Plugin.Diagnostics
++{
++    /// <summary>
++    /// I-64 F4-T4C-H0 — the harness of the host probe (D-T4C-16). DEBUG ONLY, NOT PRODUCT, NEVER COMMITTED: this file compiles to nothing
++    /// in Release. The controller attaches it once, when it is created, with its own core and bridge (the Debug accessor to the core).
++    /// It assigns the two static hooks of the panel:
++    /// - «H0: Actualizar (sonda)»: from the click (application context), T0, then ExecuteInCommandContextAsync with a callback that takes
++    ///   the lock of the admitted document, builds the real writer of T4B and calls TryUpdatePilot ONCE with the session and the rack of the
++    ///   field of the panel; it logs the return of the call, the callback, the outcome and the continuation on the captured scheduler;
++    /// - «H0: contexto vacío»: the same call with a callback that only logs its entry and its exit (row 7).
++    /// It changes no logic of T4B or of the product: it only calls what exists and logs. No exception leaves a callback.
++    ///
++    /// After the independent review: ONE probe at a time (H-01, a flight guard with Interlocked); a click out of rest is refused like
++    /// PassGate would (H-09); AutoCAD is read only on the thread of the dispatcher of the panel (H-03); the attach logs the injection
++    /// variables (H-04) and the four RackCad assemblies that are really loaded (H-15); row 11 also posts at Normal priority (H-06); the
++    /// frames of WPF can be switched off from the panel (H-16).
++    /// </summary>
++    internal static class WorkspaceH0Harness
++    {
++        private const int FrameCap = 1800;
++        private const double FrameWindowMs = 30000;
++        private const double AbandonAfterMs = 120000;
++
++        private static readonly string[] InjectionVariables =
++        {
++            "RACKCAD_DEBUG_FAIL_PILOT_UPDATE_UNIT", "RACKCAD_DEBUG_FAIL_PILOT_UPDATE_SEAL", "RACKCAD_DEBUG_FAIL_SIBLING_REDRAW_UNIT",
++        };
++
++        private static readonly string[] ExpectedAssemblies = { "RackCad.Domain", "RackCad.Application", "RackCad.UI", "RackCad.Plugin" };
++
++        private static WorkspaceHostCore _host;
++        private static AutoCadEventBridge _bridge;
++        private static int _probes;
++        private static int _inFlightId;
++        private static double _inFlightSinceMs;
++        private static bool _assembliesCheckedAtProbe;
++
++        internal static void Attach(WorkspaceHostCore host, AutoCadEventBridge bridge)
++        {
++            try
++            {
++                _host = host;
++                _bridge = bridge;
++                WorkspaceH0Hooks.Update = RequestUpdate;
++                WorkspaceH0Hooks.EmptyContext = RequestEmptyContext;
++
++                var acCore = typeof(DocumentCollection).Assembly;
++                H0Trace.Log(
++                    "harness.attach",
++                    "pid=" + Environment.ProcessId + " stopwatchHz=" + Stopwatch.Frequency + " highRes=" + Stopwatch.IsHighResolution
++                    + " acCoreMgd=" + H0HostTrace.Safe(() => acCore.Location) + " acCoreMgdFileVersion=" + H0HostTrace.Safe(() => FileVersionInfo.GetVersionInfo(acCore.Location).FileVersion)
++                    + " (the facts of ExecutionResult were read on 25.0.171) " + H0HostTrace.ContextFacts());
++                LogAssemblies("harness.attach.assembly");
++
++                // H-04: whether each injection point of the Debug DLL is armed, never its value. Any SET in the process voids the run.
++                var armed = ArmedInProcess();
++                H0Trace.Log(
++                    "harness.attach.injection",
++                    string.Join(" ", InjectionVariables.Select(name => name + "=process:" + IsSet(name, EnvironmentVariableTarget.Process)
++                        + ",user:" + IsSet(name, EnvironmentVariableTarget.User) + ",machine:" + IsSet(name, EnvironmentVariableTarget.Machine)))
++                    + (armed.Length == 0 ? " => none armed in the process" : " => ARMED IN THE PROCESS: " + string.Join(",", armed) + ". THE RUN WOULD BE A FAULT INJECTION; STOP"));
++            }
++            catch (System.Exception ex)
++            {
++                H0Trace.Exception("harness.attach.threw", ex);
++            }
++        }
++
++        // ------------------------------------------------------------------ the two buttons (application context, from the click)
++
++        private static string RequestUpdate(SessionId? fieldSession, string fieldRack, Action<string> report)
++        {
++            var probe = new Probe(Interlocked.Increment(ref _probes), "update");
++            if (!TryEnterFlight(probe, out var refusal)) return refusal;
++
++            var handedToLaunch = false;
++            try
++            {
++                H0Trace.Phase = probe.Tag("requested");
++                var document = AcApplication.DocumentManager.MdiActiveDocument;
++                probe.AdmittedDocument = document == null ? (long?)null : document.UnmanagedObject.ToInt64();
++                var active = _bridge.ActiveSession;
++                probe.Session = fieldSession ?? active;
++                probe.Rack = fieldRack;
++
++                H0Trace.Log(
++                    "T0",
++                    probe.Name + " admittedDoc=" + Show(probe.AdmittedDocument) + " fieldSession=" + Show(fieldSession?.Value)
++                    + " activeSession=" + Show(active?.Value) + " rack=" + (fieldRack ?? "null")
++                    + " bridgeCmdActive=" + H0HostTrace.Safe(() => _bridge.IsCommandActiveInActiveSession.ToString())
++                    + " frames=" + (WorkspaceH0Hooks.CountFrames ? "on" : "off") + " injection=" + InjectionAtT0()
++                    + " " + H0HostTrace.ContextFacts());
++                CheckAssembliesOnce();
++                LogField(probe, "T0.field");
++
++                if (document == null || !probe.Session.HasValue || string.IsNullOrEmpty(probe.Rack))
++                {
++                    H0Trace.Log("T0.refused", probe.Name + " no active document, session or rack on the surface of the panel: nothing is requested");
++                    return probe.Name + ": no se pidió nada (falta el documento, la sesión o el rack del panel). Ver el registro.";
++                }
++
++                if (!AtRest(probe, document)) return probe.Name + ": no se pidió nada (AutoCAD no está en reposo). Espera a que la línea de comandos quede libre.";
++
++                handedToLaunch = true;
++                return Launch(probe, report, RunUpdate);
++            }
++            catch (System.Exception ex)
++            {
++                H0Trace.Exception("T0.threw " + probe.Name, ex);
++                return probe.Name + ": falló antes de pedir el contexto (" + ex.GetType().Name + "). Ver el registro.";
++            }
++            finally
++            {
++                if (!handedToLaunch) LeaveFlight(probe, "not-requested");
++            }
++        }
++
++        private static string RequestEmptyContext(Action<string> report)
++        {
++            var probe = new Probe(Interlocked.Increment(ref _probes), "empty");
++            if (!TryEnterFlight(probe, out var refusal)) return refusal;
++
++            var handedToLaunch = false;
++            try
++            {
++                H0Trace.Phase = probe.Tag("requested");
++                var document = AcApplication.DocumentManager.MdiActiveDocument;
++                probe.AdmittedDocument = document == null ? (long?)null : document.UnmanagedObject.ToInt64();
++                H0Trace.Log(
++                    "T0",
++                    probe.Name + " admittedDoc=" + Show(probe.AdmittedDocument)
++                    + " bridgeCmdActive=" + H0HostTrace.Safe(() => _bridge.IsCommandActiveInActiveSession.ToString())
++                    + " frames=" + (WorkspaceH0Hooks.CountFrames ? "on" : "off") + " injection=" + InjectionAtT0()
++                    + " " + H0HostTrace.ContextFacts());
++                CheckAssembliesOnce();
++
++                if (document == null)
++                {
++                    H0Trace.Log("T0.refused", probe.Name + " no active document: nothing is requested");
++                    return probe.Name + ": no se pidió nada (no hay documento activo).";
++                }
++
++                if (!AtRest(probe, document)) return probe.Name + ": no se pidió nada (AutoCAD no está en reposo). Espera a que la línea de comandos quede libre.";
++
++                // Row 7: the callback only logs its entry and its exit; it writes nothing.
++                handedToLaunch = true;
++                return Launch(probe, report, (p, doc) => { });
++            }
++            catch (System.Exception ex)
++            {
++                H0Trace.Exception("T0.threw " + probe.Name, ex);
++                return probe.Name + ": falló antes de pedir el contexto (" + ex.GetType().Name + "). Ver el registro.";
++            }
++            finally
++            {
++                if (!handedToLaunch) LeaveFlight(probe, "not-requested");
++            }
++        }
++
++        // H-01: one probe at a time. A click with a probe in flight asks for nothing. A probe that did not complete in two minutes is declared
++        // abandoned by the next click (which still asks for nothing), so a later click can ask again.
++        private static bool TryEnterFlight(Probe probe, out string refusal)
++        {
++            refusal = null;
++            var holder = Interlocked.CompareExchange(ref _inFlightId, probe.Id, 0);
++            if (holder == 0)
++            {
++                Volatile.Write(ref _inFlightSinceMs, H0Trace.NowMs);
++                return true;
++            }
++
++            var age = H0Trace.NowMs - Volatile.Read(ref _inFlightSinceMs);
++            if (age >= AbandonAfterMs)
++            {
++                H0Trace.Log(
++                    "probe.abandoned",
++                    "P" + holder + " did not complete in " + Ms(age) + " ms: the flight guard is released. STOP THE SESSION AND REPORT (row 2 may be No)");
++                Interlocked.CompareExchange(ref _inFlightId, 0, holder);
++                H0Trace.Log("T0.refused-in-flight", probe.Name + " P" + holder + " was declared abandoned by this click: nothing is requested");
++                refusal = probe.Name + ": no se pidió nada. La sonda P" + holder + " no terminó en 2 minutos y queda abandonada: para y avisa a la sesión.";
++                return false;
++            }
++
++            H0Trace.Log("T0.refused-in-flight", probe.Name + " P" + holder + " is still in flight (" + Ms(age) + " ms): nothing is requested");
++            refusal = probe.Name + ": no se pidió nada; la sonda P" + holder + " sigue en vuelo.";
++            return false;
++        }
++
++        private static void LeaveFlight(Probe probe, string why)
++        {
++            if (Interlocked.CompareExchange(ref _inFlightId, 0, probe.Id) == probe.Id)
++                H0Trace.Log("probe.flight-released", probe.Name + " why=" + why);
++        }
++
++        // H-09: the rule of the rest of PassGate (CTL:367-373): the editor at rest and no command active for the bridge. Out of rest, nothing.
++        private static bool AtRest(Probe probe, Document document)
++        {
++            var quiescent = H0HostTrace.Safe(() => document.Editor.IsQuiescent.ToString());
++            var commandActive = H0HostTrace.Safe(() => _bridge.IsCommandActiveInActiveSession.ToString());
++            if (quiescent == bool.TrueString && commandActive == bool.FalseString) return true;
++
++            H0Trace.Log(
++                "T0.refused-not-quiescent",
++                probe.Name + " quiescent=" + quiescent + " bridgeCmdActive=" + commandActive + " cmd='" + H0HostTrace.Safe(() => document.CommandInProgress)
++                + "': nothing is requested (the rule of rest of PassGate)");
++            return false;
++        }
++
++        // The call itself: the scheduler first (row 10), the frames of the UI (row 1), the call, its return and the continuation. Total: every
++        // path that leaves no continuation behind releases the flight guard.
++        private static string Launch(Probe probe, Action<string> report, Action<Probe, Document> body)
++        {
++            try
++            {
++                TaskScheduler scheduler;
++                string schedulerText;
++                try
++                {
++                    scheduler = TaskScheduler.FromCurrentSynchronizationContext();
++                    schedulerText = "captured";
++                }
++                catch (System.Exception ex)
++                {
++                    scheduler = TaskScheduler.Default;
++                    schedulerText = "NOT-CAPTURED(" + ex.GetType().Name + ") fallback=Default";
++                }
++
++                probe.UiThread = Environment.CurrentManagedThreadId;
++                probe.Dispatcher = Dispatcher.CurrentDispatcher;
++                H0Trace.Log("scheduler", probe.Name + " " + schedulerText + " uiThread=" + probe.UiThread + " dispatcherThread=" + probe.Dispatcher.Thread.ManagedThreadId);
++                if (WorkspaceH0Hooks.CountFrames) AttachFrames(probe);
++                else H0Trace.Log("ui.frames", probe.Name + " off (switched off in the panel)");
++
++                // The call returns DocumentCollection.ExecutionResult, the awaitable of AutoCAD (IsCompleted, OnCompleted(Action), GetResult),
++                // and NOT a Task: the brief's «Task.IsCompleted» is its IsCompleted, and the continuation is hooked ONCE with its OnCompleted
++                // (one slot, per IL) and then hopped to the captured scheduler. Both the raw continuation and the scheduled one are logged.
++                DocumentCollection.ExecutionResult result;
++                H0Trace.Log("call.before", probe.Name + " ExecuteInCommandContextAsync");
++                try
++                {
++                    result = AcApplication.DocumentManager.ExecuteInCommandContextAsync(
++                        data =>
++                        {
++                            Callback(probe, body);
++                            return Task.CompletedTask;
++                        },
++                        null);
++                }
++                catch (System.Exception ex)
++                {
++                    probe.CallReturned = true;
++                    H0Trace.Exception("call.threw " + probe.Name + " callbackEntered=" + probe.CallbackEntered + " callbackExited=" + probe.CallbackExited, ex);
++                    DetachFrames(probe, "call-threw");
++                    LeaveFlight(probe, "call-threw");
++                    return probe.Name + ": la llamada lanzó " + ex.GetType().Name + ". Ver el registro.";
++                }
++
++                probe.CallReturned = true;
++                if (!probe.CallbackEntered) H0Trace.Phase = probe.Tag("returned-awaiting-callback");
++                var completedAtReturn = result != null && H0HostTrace.Safe(() => result.IsCompleted.ToString()) == bool.TrueString;
++                var mode = probe.CallbackExited ? "SYNCHRONOUS (callback ran and exited before the call returned)"
++                    : probe.CallbackEntered ? "CALLBACK-STILL-RUNNING (entered, not exited, when the call returned)"
++                    : "DEFERRED (the call returned before the callback ran)";
++                H0Trace.Log(
++                    "call.returned",
++                    probe.Name + " result=" + (result == null ? "null" : result.GetType().FullName + " IsCompleted=" + H0HostTrace.Safe(() => result.IsCompleted.ToString()))
++                    + " callbackEntered=" + probe.CallbackEntered + " callbackExited=" + probe.CallbackExited + " => " + mode
++                    + " (IsCompleted=False here is expected also when synchronous: it turns true only when the posted completion runs)");
++
++                if (result == null)
++                {
++                    DetachFrames(probe, "result-null");
++                    LeaveFlight(probe, "result-null");
++                    return probe.Name + ": la llamada devolvió un resultado nulo. Ver el registro.";
++                }
++
++                bool hooked;
++                if (completedAtReturn)
++                {
++                    // Already complete: an await would not call OnCompleted either. The continuation goes straight to the captured scheduler.
++                    H0Trace.Log("continuation.not-needed", probe.Name + " the result was complete when the call returned; scheduling the continuation directly");
++                    hooked = Schedule(probe, result, report, scheduler, schedulerText);
++                }
++                else
++                {
++                    try
++                    {
++                        result.OnCompleted(() => OnRawCompletion(probe, result, report, scheduler, schedulerText));
++                        H0Trace.Log("continuation.attached", probe.Name + " ExecutionResult.OnCompleted, then the scheduler " + schedulerText);
++                        hooked = true;
++                    }
++                    catch (System.Exception ex)
++                    {
++                        H0Trace.Exception("continuation.attach-threw " + probe.Name, ex);
++                        hooked = false;
++                    }
++                }
++
++                if (!hooked)
++                {
++                    DetachFrames(probe, "no-continuation");
++                    LeaveFlight(probe, "no-continuation");
++                }
++
++                return probe.Name + ": " + (probe.CallbackExited ? "el callback ya corrió (síncrono)" : "en vuelo (callback diferido)") + ". Espera a «terminado».";
++            }
++            catch (System.Exception ex)
++            {
++                H0Trace.Exception("launch.threw " + probe.Name, ex);
++                DetachFrames(probe, "launch-threw");
++                LeaveFlight(probe, "launch-threw");
++                return probe.Name + ": falló al pedir el contexto (" + ex.GetType().Name + "). Ver el registro.";
++            }
++        }
++
++        // What AutoCAD calls when the result completes: where and when (row 2), then the hop to the captured scheduler (row 10). AutoCAD is
++        // read only on the thread of the dispatcher of the panel (H-03).
++        private static void OnRawCompletion(Probe probe, DocumentCollection.ExecutionResult result, Action<string> report, TaskScheduler scheduler, string schedulerText)
++        {
++            try
++            {
++                H0Trace.Log(
++                    "continuation.raw",
++                    probe.Name + " callbackEntered=" + probe.CallbackEntered + " callbackExited=" + probe.CallbackExited + " " + ThreadFacts(probe));
++                if (!Schedule(probe, result, report, scheduler, schedulerText)) LeaveFlight(probe, "schedule-failed");
++            }
++            catch (System.Exception ex)
++            {
++                H0Trace.Exception("continuation.raw.threw " + probe.Name, ex);
++                LeaveFlight(probe, "raw-threw");
++            }
++        }
++
++        private static bool Schedule(Probe probe, DocumentCollection.ExecutionResult result, Action<string> report, TaskScheduler scheduler, string schedulerText)
++        {
++            try
++            {
++                Task.Factory.StartNew(() => OnCompleted(probe, result, report), CancellationToken.None, TaskCreationOptions.None, scheduler);
++                H0Trace.Log("continuation.scheduled", probe.Name + " scheduler=" + schedulerText);
++                return true;
++            }
++            catch (System.Exception ex)
++            {
++                H0Trace.Exception("continuation.schedule-threw " + probe.Name, ex);
++                return false;
++            }
++        }
++
++        // ------------------------------------------------------------------ inside ExecuteInCommandContextAsync
++
++        // Total: no exception leaves it towards AutoCAD (its native trampoline has no exception region, per IL).
++        private static void Callback(Probe probe, Action<Probe, Document> body)
++        {
++            try
++            {
++                probe.CallbackEntered = true;
++                H0Trace.Phase = probe.Tag("in-callback");
++                var document = AcApplication.DocumentManager.MdiActiveDocument;
++                var id = document == null ? (long?)null : document.UnmanagedObject.ToInt64();
++                H0Trace.Log(
++                    "callback.enter",
++                    probe.Name + " callReturnedBefore=" + probe.CallReturned + " sameThreadAsClick=" + (Environment.CurrentManagedThreadId == probe.UiThread)
++                    + " activeIsAdmitted=" + (id.HasValue && id == probe.AdmittedDocument) + " " + H0HostTrace.ContextFacts());
++                body(probe, document);
++            }
++            catch (System.Exception ex)
++            {
++                H0Trace.Exception("callback.threw " + probe.Name, ex);
++            }
++            finally
++            {
++                try
++                {
++                    probe.CallbackExited = true;
++                    H0Trace.Phase = probe.Tag("callback-done");
++
++                    // H-07: ExecutionResult.Continuation posts the completion to the context that is current HERE, with no null check (IL of
++                    // 25.0.171). Without one, the result never completes: row 2 is No, deterministically.
++                    var context = SynchronizationContext.Current;
++                    var prediction = context == null
++                        ? "NEVER (no SynchronizationContext inside the command context: the completion cannot be posted)"
++                        : "posted to " + context.GetType().FullName;
++                    H0Trace.Log("callback.exit", probe.Name + " row2-prediction=" + prediction + " " + H0HostTrace.ContextFacts());
++                }
++                catch
++                {
++                    // Never towards AutoCAD.
++                }
++            }
++        }
++
++        // The update: the probes of row 11, the outer lock of the admitted document, the real writer and ONE call to TryUpdatePilot.
++        private static void RunUpdate(Probe probe, Document document)
++        {
++            ScheduleWpfProbes(probe);
++
++            if (document == null || document.UnmanagedObject.ToInt64() != probe.AdmittedDocument)
++            {
++                H0Trace.Log("run.skipped", probe.Name + " the active document is not the admitted one: nothing is locked and nothing is written");
++                return;
++            }
++
++            H0Trace.Log("lock.outer.request", probe.Name + " " + H0HostTrace.DocumentFacts(document));
++            using (document.LockDocument())
++            {
++                H0Trace.EnterOuterLock();
++                try
++                {
++                    H0Trace.Log("lock.outer.held", probe.Name + " " + H0HostTrace.DocumentFacts(document));
++                    var writer = new RackPilotUpdateWriter();
++                    var request = new EditIntentRequest(probe.Session.Value, probe.Rack, null, null);
++                    H0Trace.Log("run.begin", probe.Name + " TryUpdatePilot session=" + probe.Session.Value.Value + " rack=" + probe.Rack);
++                    var outcome = _host.TryUpdatePilot(request, writer);
++                    H0Trace.Log(
++                        "run.outcome",
++                        probe.Name + " status=" + outcome.Status + " reason=" + Quote(outcome.Reason)
++                        + " differences(" + outcome.Differences.Count + ")=[" + string.Join(" ; ", outcome.Differences) + "]"
++                        + " warnings(" + outcome.Warnings.Count + ")=[" + string.Join(" ; ", outcome.Warnings) + "]");
++                    LogField(probe, "run.field-after");
++                }
++                finally
++                {
++                    H0Trace.LeaveOuterLock();
++                    H0Trace.Log("lock.outer.releasing", probe.Name + " " + H0HostTrace.DocumentFacts(document));
++                }
++            }
++
++            H0Trace.Log("lock.outer.released", probe.Name + " " + H0HostTrace.DocumentFacts(document));
++        }
++
++        // Row 11: posted on entry at Background priority (which WPF defers while there is pending input) and at Normal priority (which it
++        // does not, H-06); each says whether it ran before or after the callback exited.
++        private static void ScheduleWpfProbes(Probe probe)
++        {
++            ScheduleWpfProbe(probe, DispatcherPriority.Background, "row11.background");
++            ScheduleWpfProbe(probe, DispatcherPriority.Normal, "row11.normal");
++        }
++
++        private static void ScheduleWpfProbe(Probe probe, DispatcherPriority priority, string tag)
++        {
++            try
++            {
++                var dispatcher = probe.Dispatcher ?? Dispatcher.CurrentDispatcher;
++                var scheduledAt = H0Trace.NowMs;
++                dispatcher.BeginInvoke(priority, new Action(() =>
++                    H0Trace.Log(
++                        tag + "-ran",
++                        probe.Name + " scheduledAtMs=" + Ms(scheduledAt) + " callbackExited=" + probe.CallbackExited
++                        + (probe.CallbackExited ? " => AFTER the callback exited" : " => BEFORE the callback exited: WPF PUMPED INSIDE THE CALLBACK"))));
++                H0Trace.Log(tag + "-scheduled", probe.Name + " priority=" + priority + " dispatcherThread=" + dispatcher.Thread.ManagedThreadId);
++            }
++            catch (System.Exception ex)
++            {
++                H0Trace.Exception(tag + ".schedule-threw " + probe.Name, ex);
++            }
++        }
++
++        // ------------------------------------------------------------------ the continuation (captured scheduler)
++
++        private static void OnCompleted(Probe probe, DocumentCollection.ExecutionResult result, Action<string> report)
++        {
++            try
++            {
++                probe.TaskCompleted = true;
++                H0Trace.Phase = probe.Tag(probe.CallbackEntered ? "task-completed" : "task-completed-NO-CALLBACK");
++
++                // H-07: GetResult is an empty method in 25.0.171 (IL «ret»): it carries no failure. It is called only to end the pattern.
++                string getResult;
++                try
++                {
++                    result.GetResult();
++                    getResult = "returned(no-op)";
++                }
++                catch (System.Exception ex)
++                {
++                    getResult = "threw " + ex.GetType().Name + ": " + ex.Message;
++                }
++
++                H0Trace.Log(
++                    "continuation.ran",
++                    probe.Name + " IsCompleted=" + H0HostTrace.Safe(() => result.IsCompleted.ToString()) + " getResult=" + getResult
++                    + " callbackEntered=" + probe.CallbackEntered + " callbackExited=" + probe.CallbackExited + " uiThread=" + probe.UiThread
++                    + " " + ThreadFacts(probe));
++                LeaveFlight(probe, "completed");
++
++                var text = probe.Name + ": terminado (callback " + (probe.CallbackEntered ? "corrió" : "NO corrió") + "). Ver el registro.";
++                OnPanelThread(probe, () =>
++                {
++                    DetachFrames(probe, "task-completed");
++                    report?.Invoke(text);
++                });
++            }
++            catch (System.Exception ex)
++            {
++                H0Trace.Exception("continuation.threw " + probe.Name, ex);
++                LeaveFlight(probe, "continuation-threw");
++            }
++        }
++
++        // H-03: the facts of the thread, and AutoCAD only when this is the thread of the dispatcher of the panel.
++        private static string ThreadFacts(Probe probe)
++        {
++            var onPanelThread = IsPanelThread(probe);
++            return "thread=" + Environment.CurrentManagedThreadId + " onPanelThread=" + onPanelThread
++                + (onPanelThread ? " " + H0HostTrace.ContextFacts() : " (off the thread of the panel: AutoCAD is not read)");
++        }
++
++        private static bool IsPanelThread(Probe probe)
++        {
++            try
++            {
++                return probe.Dispatcher != null && probe.Dispatcher.CheckAccess();
++            }
++            catch
++            {
++                return false;
++            }
++        }
++
++        // The work of the UI (the frames and the text of the panel) always on the thread of the panel.
++        private static void OnPanelThread(Probe probe, Action action)
++        {
++            try
++            {
++                if (IsPanelThread(probe)) action();
++                else probe.Dispatcher?.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
++                {
++                    try
++                    {
++                        action();
++                    }
++                    catch (System.Exception ex)
++                    {
++                        H0Trace.Exception("panel-thread.threw " + probe.Name, ex);
++                    }
++                }));
++            }
++            catch (System.Exception ex)
++            {
++                H0Trace.Exception("panel-thread.threw " + probe.Name, ex);
++            }
++        }
++
++        // ------------------------------------------------------------------ row 1: does the UI paint in between
++
++        // CompositionTarget.Rendering is raised once per frame of WPF on the thread of the panel. The first frame of every stage is logged,
++        // and the counts per stage when the probe ends (or after the cap, if the result never completes). It forces WPF to render every
++        // frame while it is attached (H-16): the panel can switch it off for a comparison run.
++        private static void AttachFrames(Probe probe)
++        {
++            try
++            {
++                probe.FramesStartedMs = H0Trace.NowMs;
++                probe.FrameHandler = (sender, args) => OnFrame(probe);
++                System.Windows.Media.CompositionTarget.Rendering += probe.FrameHandler;
++                probe.FramesAttached = true;
++            }
++            catch (System.Exception ex)
++            {
++                H0Trace.Exception("ui.frames.attach-threw " + probe.Name, ex);
++            }
++        }
++
++        private static void OnFrame(Probe probe)
++        {
++            try
++            {
++                var stage = probe.Stage();
++                probe.Frames[stage]++;
++                probe.TotalFrames++;
++                if (probe.Frames[stage] == 1) H0Trace.Log("ui.frame.first", probe.Name + " stage=" + Probe.StageNames[stage]);
++                if (probe.TotalFrames >= FrameCap || H0Trace.NowMs - probe.FramesStartedMs > FrameWindowMs) DetachFrames(probe, "cap");
++            }
++            catch
++            {
++                // A trace never breaks the frame.
++            }
++        }
++
++        // Only on the thread of the panel (every caller is on it, or goes through OnPanelThread).
++        private static void DetachFrames(Probe probe, string why)
++        {
++            try
++            {
++                if (!probe.FramesAttached) return;
++                probe.FramesAttached = false;
++                System.Windows.Media.CompositionTarget.Rendering -= probe.FrameHandler;
++                H0Trace.Log(
++                    "ui.frames",
++                    probe.Name + " why=" + why + " " + string.Join(" ", Probe.StageNames.Select((name, index) => name + "=" + probe.Frames[index])));
++            }
++            catch (System.Exception ex)
++            {
++                H0Trace.Exception("ui.frames.detach-threw " + probe.Name, ex);
++            }
++        }
++
++        // ------------------------------------------------------------------ helpers
++
++        // The field of the panel, from the memory of the core only (it reads nothing of the drawing).
++        private static void LogField(Probe probe, string tag)
++        {
++            try
++            {
++                if (!probe.Session.HasValue || string.IsNullOrEmpty(probe.Rack))
++                {
++                    H0Trace.Log(tag, probe.Name + " no session or rack");
++                    return;
++                }
++
++                var view = ((IWorkspacePilotEditPort)_host).GetField(new WorkspaceRequest(probe.Session.Value), probe.Rack);
++                H0Trace.Log(
++                    tag,
++                    probe.Name + " exists=" + view.Exists + " state=" + view.State + " possiblyStale=" + view.IsPossiblyStale
++                    + " pendingText=" + (view.PendingText != null) + " canEdit=" + view.CanEdit + " unknownOrigin=" + view.UnknownOrigin
++                    + " lastCause=" + Quote(view.LastCause) + " error=" + Quote(view.ErrorReason));
++            }
++            catch (System.Exception ex)
++            {
++                H0Trace.Exception(tag + ".threw " + probe.Name, ex);
++            }
++        }
++
++        // H-15: the RackCad assemblies that the process really loaded, with their location and SHA-256. A mixed set (for example, the Release
++        // Application of an installed bundle bound by identity) shows here as a location or a hash that is not the one of the build.
++        private static void LogAssemblies(string tag)
++        {
++            var loaded = AppDomain.CurrentDomain.GetAssemblies()
++                .Where(assembly => (assembly.GetName().Name ?? string.Empty).StartsWith("RackCad.", StringComparison.Ordinal))
++                .OrderBy(assembly => assembly.GetName().Name, StringComparer.Ordinal)
++                .ToList();
++            foreach (var assembly in loaded)
++            {
++                var location = H0HostTrace.Safe(() => assembly.Location);
++                H0Trace.Log(
++                    tag,
++                    "name=" + assembly.GetName().Name + " location=" + location + " sha256=" + Sha256Of(location)
++                    + " version=" + (assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "?"));
++            }
++
++            var folders = loaded.Select(assembly => H0HostTrace.Safe(() => Path.GetDirectoryName(assembly.Location))).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
++            var missing = ExpectedAssemblies.Where(name => loaded.All(assembly => assembly.GetName().Name != name)).ToList();
++            H0Trace.Log(
++                tag + ".summary",
++                "loaded=" + loaded.Count + " folders=" + folders.Count + (folders.Count == 1 ? " (one folder)" : " => MORE THAN ONE FOLDER: MIXED SET")
++                + " notLoadedYet=[" + string.Join(",", missing) + "]");
++        }
++
++        // The four assemblies are all loaded by the first click: they are checked once more there.
++        private static void CheckAssembliesOnce()
++        {
++            if (_assembliesCheckedAtProbe) return;
++            _assembliesCheckedAtProbe = true;
++            LogAssemblies("T0.assembly");
++        }
++
++        private static string InjectionAtT0()
++        {
++            var armed = ArmedInProcess();
++            return armed.Length == 0 ? "none" : "ARMED[" + string.Join(",", armed) + "]";
++        }
++
++        private static string[] ArmedInProcess() =>
++            InjectionVariables.Where(name => IsSet(name, EnvironmentVariableTarget.Process) == "SET").ToArray();
++
++        // Whether the variable has a value at that level; never the value.
++        private static string IsSet(string name, EnvironmentVariableTarget target)
++        {
++            try
++            {
++                return string.IsNullOrEmpty(Environment.GetEnvironmentVariable(name, target)) ? "no" : "SET";
++            }
++            catch (System.Exception ex)
++            {
++                return "<" + ex.GetType().Name + ">";
++            }
++        }
++
++        private static string Sha256Of(string path)
++        {
++            try
++            {
++                using (var sha = SHA256.Create())
++                using (var stream = File.OpenRead(path))
++                {
++                    return Convert.ToHexString(sha.ComputeHash(stream));
++                }
++            }
++            catch (System.Exception ex)
++            {
++                return "<" + ex.GetType().Name + ">";
++            }
++        }
++
++        private static string Show(long? value) => value.HasValue ? value.Value.ToString() : "null";
++
++        private static string Ms(double value) => value.ToString("F3", CultureInfo.InvariantCulture);
++
++        private static string Quote(string text) => text == null ? "null" : "\"" + text + "\"";
++
++        // One probe: one click. Its flags are written by the click, the callback and the continuation.
++        private sealed class Probe
++        {
++            internal static readonly string[] StageNames =
++            {
++                "beforeReturn", "returnedAwaitingCallback", "inCallback", "afterCallbackBeforeCompletion", "afterCompletion",
++            };
++
++            internal readonly int[] Frames = new int[5];
++
++            internal Probe(int id, string kind)
++            {
++                Id = id;
++                Kind = kind;
++            }
++
++            internal int Id { get; }
++
++            internal string Kind { get; }
++
++            internal string Name => "P" + Id + "(" + Kind + ")";
++
++            internal long? AdmittedDocument { get; set; }
++
++            internal SessionId? Session { get; set; }
++
++            internal string Rack { get; set; }
++
++            internal int UiThread { get; set; }
++
++            internal Dispatcher Dispatcher { get; set; }
++
++            internal EventHandler FrameHandler { get; set; }
++
++            internal bool FramesAttached { get; set; }
++
++            internal double FramesStartedMs { get; set; }
++
++            internal int TotalFrames { get; set; }
++
++            private volatile bool _callReturned;
++            private volatile bool _callbackEntered;
++            private volatile bool _callbackExited;
++            private volatile bool _taskCompleted;
++
++            internal bool CallReturned { get => _callReturned; set => _callReturned = value; }
++
++            internal bool CallbackEntered { get => _callbackEntered; set => _callbackEntered = value; }
++
++            internal bool CallbackExited { get => _callbackExited; set => _callbackExited = value; }
++
++            internal bool TaskCompleted { get => _taskCompleted; set => _taskCompleted = value; }
++
++            internal string Tag(string phase) => "P" + Id + ":" + phase;
++
++            internal int Stage()
++            {
++                if (TaskCompleted) return 4;
++                if (CallbackExited) return 3;
++                if (CallbackEntered) return 2;
++                if (CallReturned) return 1;
++                return 0;
++            }
++        }
++    }
++}
++#endif
+diff --git a/src/RackCad.UI/Diagnostics/WorkspacePanelViewH0.cs b/src/RackCad.UI/Diagnostics/WorkspacePanelViewH0.cs
+new file mode 100644
+index 00000000..31ae2e31
+--- /dev/null
++++ b/src/RackCad.UI/Diagnostics/WorkspacePanelViewH0.cs
+@@ -0,0 +1,146 @@
++#if DEBUG
++using System;
++using System.Windows;
++using System.Windows.Automation;
++using System.Windows.Controls;
++using RackCad.Application.Workspace;
++
++namespace RackCad.UI.Workspace
++{
++    /// <summary>
++    /// I-64 F4-T4C-H0 — the Debug hooks of the host probe. DEBUG ONLY and NOT PRODUCT: this file compiles to nothing in Release. The UI
++    /// cannot name AutoCAD, so the two buttons of the probe call these static delegates, which the Plugin assigns when it creates the
++    /// controller. Each returns the text to show at once; the callback it receives shows a later text (from the continuation).
++    /// </summary>
++    public static class WorkspaceH0Hooks
++    {
++        /// <summary>«H0: Actualizar (sonda)»: the session and the rack of the field of the panel, and the reporter of a later text.</summary>
++        public static Func<SessionId?, string, Action<string>, string> Update { get; set; }
++
++        /// <summary>«H0: contexto vacío»: the reporter of a later text.</summary>
++        public static Func<Action<string>, string> EmptyContext { get; set; }
++
++        /// <summary>Whether the next probe counts the frames of WPF (row 1). Off, for a comparison run without forced rendering (review H-16).</summary>
++        public static bool CountFrames { get; set; } = true;
++    }
++
++    /// <summary>The section of the probe in the panel, built in code so the XAML of the product does not change.</summary>
++    public partial class WorkspacePanelView
++    {
++        internal const string H0UpdateLabel = "H0: Actualizar (sonda)";
++        internal const string H0EmptyLabel = "H0: contexto vacío";
++
++        private TextBlock _h0Status;
++
++        // Right after the surface of the browser: a bordered section with the two buttons and one line of status.
++        private void AttachH0Probe()
++        {
++            try
++            {
++                if (!(BrowserSurface.Parent is Panel host)) return;
++
++                var title = new TextBlock
++                {
++                    Text = "Sonda H0 (solo Debug; diagnóstico, no es producto)",
++                    FontWeight = FontWeights.SemiBold,
++                    TextWrapping = TextWrapping.Wrap,
++                };
++
++                var update = NewH0Button(H0UpdateLabel);
++                update.Click += OnH0UpdateClick;
++                var empty = NewH0Button(H0EmptyLabel);
++                empty.Click += OnH0EmptyClick;
++
++                var buttons = new WrapPanel { Margin = new Thickness(0, 4, 0, 0) };
++                buttons.Children.Add(update);
++                buttons.Children.Add(empty);
++
++                // Review H-16: the frames of WPF (row 1) force a render per frame while a probe runs; this switch allows a run without them.
++                var frames = new CheckBox
++                {
++                    Content = "Contar fotogramas de WPF (fila 1)",
++                    IsChecked = WorkspaceH0Hooks.CountFrames,
++                    Margin = new Thickness(0, 4, 0, 0),
++                    Focusable = false,
++                    IsTabStop = false,
++                };
++                frames.Click += (sender, args) => Contained(() => WorkspaceH0Hooks.CountFrames = frames.IsChecked == true);
++                AutomationProperties.SetName(frames, "Contar fotogramas de WPF");
++
++                _h0Status = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 4, 0, 0), Text = "H0: sin sondas todavía." };
++
++                var content = new StackPanel();
++                content.Children.Add(title);
++                content.Children.Add(buttons);
++                content.Children.Add(frames);
++                content.Children.Add(_h0Status);
++
++                var section = new Border
++                {
++                    Margin = new Thickness(0, 8, 0, 0),
++                    Padding = new Thickness(8),
++                    BorderThickness = new Thickness(2),
++                    Child = content,
++                };
++                if (TryFindResource("ShellStatusWarningBrush") is System.Windows.Media.Brush brush) section.BorderBrush = brush;
++                AutomationProperties.SetName(section, "Sonda H0");
++
++                host.Children.Insert(host.Children.IndexOf(BrowserSurface) + 1, section);
++            }
++            catch (System.Exception ex)
++            {
++                _viewModel.ShowError(ex);
++            }
++        }
++
++        private Button NewH0Button(string label)
++        {
++            // Review H-02: the palette keeps the focus (KeepFocus = true) and a focused button is pressed again by Enter or Space, so a
++            // «U» + Enter typed afterwards could launch another probe. These buttons never take the focus of the keyboard.
++            var button = new Button
++            {
++                Content = label,
++                Margin = new Thickness(0, 2, 6, 0),
++                Padding = new Thickness(10, 3, 10, 3),
++                Focusable = false,
++                IsTabStop = false,
++            };
++            if (TryFindResource("SecondaryButtonStyle") is Style style) button.Style = style;
++            AutomationProperties.SetName(button, label);
++            return button;
++        }
++
++        private void OnH0UpdateClick(object sender, RoutedEventArgs e) => Contained(() =>
++        {
++            var hook = WorkspaceH0Hooks.Update;
++            if (hook == null)
++            {
++                ShowH0("H0: el Plugin no asignó el gancho de la sonda.");
++                return;
++            }
++
++            var field = _viewModel.Browser.Field;
++            ShowH0(hook(field.H0Session, field.H0Rack, ShowH0));
++        });
++
++        private void OnH0EmptyClick(object sender, RoutedEventArgs e) => Contained(() =>
++        {
++            var hook = WorkspaceH0Hooks.EmptyContext;
++            if (hook == null)
++            {
++                ShowH0("H0: el Plugin no asignó el gancho de la sonda.");
++                return;
++            }
++
++            ShowH0(hook(ShowH0));
++        });
++
++        // Only on the thread of the panel; a later text from another thread is dropped (the trace has it anyway).
++        private void ShowH0(string text)
++        {
++            if (_h0Status == null || !Dispatcher.CheckAccess()) return;
++            _h0Status.Text = text ?? string.Empty;
++        }
++    }
++}
++#endif
