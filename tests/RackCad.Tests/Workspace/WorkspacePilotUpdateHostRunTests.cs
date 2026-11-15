@@ -249,9 +249,34 @@ public class WorkspacePilotUpdateHostRunTests
 
         Assert.Equal(0, kit.Target.CreateWriters);
         Assert.Equal(0, kit.Run.Executes);
-        Assert.Equal(PushBackPilotHostFailure.Failed, Assert.Single(kit.Run.NotRuns).Kind);
+        var notRun = Assert.Single(kit.Run.NotRuns);
+        Assert.Equal(PushBackPilotHostFailure.Failed, notRun.Kind);
+        // M-04: the sentence is used as it is, never as a prefix: the exception goes to the log, not to the text that the user reads.
+        Assert.Equal(PushBackPilotHostTexts.HostNotRunReason, notRun.Cause);
+        Assert.DoesNotContain("begin boom", notRun.Cause, StringComparison.Ordinal);
+        Assert.Contains(kit.Logged, l => l.Error.Message == "begin boom");
         Assert.Equal(1, kit.Target.LastLock!.Disposed);
         Assert.Equal(0, kit.Target.Retires);
+    }
+
+    [Fact]
+    public void ALockThatIsNullIsAFailedWithTheLockPrefixAndNothingElseRunsAndThereIsNothingToRelease()
+    {
+        // M-06 (d): a host that does not honor the contract of Lock answers null. The run must not go on without a lock.
+        var kit = new PilotHostKit();
+        kit.Target.NullLock = true;
+
+        Assert.True(kit.Request(out _));
+
+        Assert.Equal(1, kit.Target.Locks);
+        Assert.Equal(0, kit.Run.Begins);
+        Assert.Equal(0, kit.Target.CreateWriters);
+        Assert.Equal(0, kit.Run.Executes);
+        Assert.Equal(0, kit.Target.Retires);
+        var notRun = Assert.Single(kit.Run.NotRuns);
+        Assert.Equal(PushBackPilotHostFailure.Failed, notRun.Kind);
+        Assert.StartsWith(PushBackPilotHostTexts.LockFailedPrefix, notRun.Cause, StringComparison.Ordinal);
+        Assert.Equal(1, kit.Run.Terminals);
     }
 
     [Fact]
@@ -265,7 +290,9 @@ public class WorkspacePilotUpdateHostRunTests
         Assert.Equal(0, kit.Run.Executes);
         Assert.Equal(0, kit.Target.Retires);
         Assert.Null(kit.Target.Retired);
-        Assert.Equal(PushBackPilotHostFailure.Failed, Assert.Single(kit.Run.NotRuns).Kind);
+        var notRun = Assert.Single(kit.Run.NotRuns);
+        Assert.Equal(PushBackPilotHostFailure.Failed, notRun.Kind);
+        Assert.Equal(PushBackPilotHostTexts.HostNotRunReason, notRun.Cause);
         Assert.Equal(1, kit.Target.LastLock!.Disposed);
     }
 
@@ -398,7 +425,7 @@ public class WorkspacePilotUpdateHostRunTests
         Assert.NotEmpty(type.GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance));
         Assert.True(type.IsSealed);
         Assert.NotNull(type.GetMethod("Request", BindingFlags.Public | BindingFlags.Static));
-        Assert.Empty(type.GetFields(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic).Where(f => f.FieldType == type));
+        Assert.DoesNotContain(type.GetFields(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic), f => f.FieldType == type);
     }
 
     [Fact]

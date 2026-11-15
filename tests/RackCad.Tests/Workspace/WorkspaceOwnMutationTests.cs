@@ -122,8 +122,9 @@ public class WorkspaceOwnMutationTests
         Assert.Equal(1, live.PendingHintCount);
         rig.Core.OnDocumentToBeDestroyed(1);
         Assert.False(live.EnqueueOwnHint(HintKind.CommandEnded));
-        Assert.Empty(typeof(WorkspaceSession).GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
-            .Where(f => f.Name.Contains("andle", StringComparison.Ordinal)));
+        Assert.DoesNotContain(
+            typeof(WorkspaceSession).GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public),
+            f => f.Name.Contains("andle", StringComparison.Ordinal));
     }
 
     // ------------------------------------------------------------------ the closing (test 17)

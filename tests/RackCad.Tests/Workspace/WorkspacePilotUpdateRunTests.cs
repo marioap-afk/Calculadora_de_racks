@@ -888,6 +888,7 @@ public class WorkspacePilotUpdateRunTests
         Assert.Equal(names.Count, names.Values.Distinct(StringComparer.Ordinal).Count());
     }
 
+    // The system of the outgoing design, rebuilt apart from the text of a member of the plan with the same resolver as PREPARE.
     [Fact]
     public void TheSystemIsRebuiltFromTheDesignTextOfAMemberOfThePlan()
     {

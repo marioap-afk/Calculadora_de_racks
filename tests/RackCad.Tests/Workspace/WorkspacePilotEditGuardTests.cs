@@ -75,14 +75,29 @@ public class WorkspacePilotEditGuardTests
     // gate of the document, and the only one that asks the executor of the host. Its authorization is the one of the gate (PassGate).
     private static readonly string[] UpdateOperations = { "RequestUpdate" };
 
-    // The operations that change a draft, or that discard one, while an update is in flight: after their authorization and the mark of the
-    // reads they answer Busy or Waiting, with no change (D-T4C-08 and D-T4C-10, row 5).
-    private static readonly string[] FlightOperations =
+    // The operations that change a draft, or that discard one, while an update is in flight: after their authorization (Authorize or the
+    // gate, PassGate) and, where the body has it, the mark of the reads they answer Busy or Waiting, with no change (D-T4C-08 and D-T4C-10,
+    // row 5; M-01). The three reconciliations are looked at in the body that passes the gate, which is the one of the pilot (the wrapper of
+    // the port only marks the read), so the check of the flight can never come before the authorization.
+    private static readonly (string Name, string Signature, bool MarkInBody)[] FlightBodies =
     {
-        "SetPendingText", "CommitField", "TryKeepMine", "TryDiscardAndReload", "TryConfirmBase", "DiscardRack", "DiscardDocument",
+        ("SetPendingText", HostSignature("SetPendingText"), true),
+        ("CommitField", HostSignature("CommitField"), true),
+        ("TryKeepPilotEdit", @"public\s+EditIntentOutcome\s+TryKeepPilotEdit\s*\(", false),
+        ("TryDiscardAndReloadPilotEdit", @"public\s+EditIntentOutcome\s+TryDiscardAndReloadPilotEdit\s*\(", false),
+        ("TryConfirmPilotBase", @"public\s+EditConfirmOutcome\s+TryConfirmPilotBase\s*\(", false),
+        ("DiscardRack", HostSignature("DiscardRack"), true),
+        ("DiscardDocument", HostSignature("DiscardDocument"), true),
     };
 
     private static readonly Regex FlightCheck = new(@"\bUpdateInFlightFor(?:Request)?\s*\(|\bExpireStaleUpdate\s*\(");
+
+    // The first place where a body authorizes: its own Authorize or the gate, whose last step is the authorization of the session.
+    private static int FirstAuthorization(string body)
+    {
+        var places = new[] { body.IndexOf("Authorize(", StringComparison.Ordinal), body.IndexOf("PassGate(", StringComparison.Ordinal) }.Where(i => i >= 0).ToArray();
+        return places.Length == 0 ? -1 : places.Min();
+    }
 
     private static string HostSignature(string name) => @"\w[\w<>,\s]*?\s+IWorkspacePilotEditPort\." + name + @"\s*\(";
 
@@ -298,17 +313,19 @@ public class WorkspacePilotEditGuardTests
         var progress = TryBody(host, HostSignature("TakeUpdateProgress"));
         if (progress != null && Regex.IsMatch(progress, @"OwnMutation|_bridge\b|_probe\b|PassGate|_lastAllowedClose")) yield return "TakeUpdateProgress mutates the bridge or looks at the document";
 
-        // While an update is in flight (D-T4C-08, D-T4C-10): the check of the flight comes after the authorization and the mark of the reads.
-        foreach (var name in FlightOperations)
+        // While an update is in flight (D-T4C-08, D-T4C-10; M-01): the check of the flight comes after the authorization (Authorize or
+        // PassGate) and after the mark of the reads where the body has it. A body without any authorization has no order to keep: it trips.
+        foreach (var (name, signature, markInBody) in FlightBodies)
         {
-            var body = TryBody(host, HostSignature(name));
+            var body = TryBody(host, signature);
             if (body == null) { yield return name + " is missing"; continue; }
 
             var check = FlightCheck.Match(body);
             var mark = body.IndexOf("_pilotReadInProgress", StringComparison.Ordinal);
-            var authorize = body.IndexOf("Authorize(", StringComparison.Ordinal);
+            var authorize = FirstAuthorization(body);
             if (!check.Success) yield return name + " does not look at the update in flight";
-            else if (mark < 0 || check.Index < mark || (authorize >= 0 && check.Index < authorize)) yield return name + " looks at the update in flight before its authorization or the mark of the reads";
+            else if (authorize < 0 || check.Index < authorize) yield return name + " looks at the update in flight before its authorization";
+            else if (markInBody && (mark < 0 || check.Index < mark)) yield return name + " looks at the update in flight before the mark of the reads";
         }
 
         // Memory only: no authorization at all.
@@ -453,15 +470,15 @@ public class WorkspacePilotEditGuardTests
     [Theory]
     [InlineData("SetPendingText")]
     [InlineData("CommitField")]
-    [InlineData("TryKeepMine")]
-    [InlineData("TryDiscardAndReload")]
-    [InlineData("TryConfirmBase")]
+    [InlineData("TryKeepPilotEdit")]
+    [InlineData("TryDiscardAndReloadPilotEdit")]
+    [InlineData("TryConfirmPilotBase")]
     [InlineData("DiscardRack")]
     [InlineData("DiscardDocument")]
     public void TheFlightGuardTripsWhenTheCheckOfTheFlightIsMissingOrComesBeforeTheAuthorizationAndTheMarkOfTheReads(string operation)
     {
         var host = Host();
-        var body = Src.BodyOf(host, HostSignature(operation));
+        var body = Src.BodyOf(host, FlightBodies.Single(b => b.Name == operation).Signature);
         Assert.Matches(FlightCheck, body);
 
         var missing = host.Replace(body, Regex.Replace(body, @"UpdateInFlightFor(?:Request)?\s*\(|ExpireStaleUpdate\s*\(", "NotTheCheck("), StringComparison.Ordinal);
@@ -472,6 +489,40 @@ public class WorkspacePilotEditGuardTests
         var early = host.Replace(body, body.Insert(open, " ExpireStaleUpdate(default);"), StringComparison.Ordinal);
         Assert.NotEqual(host, early);
         Assert.NotEmpty(HostViolations(early));
+    }
+
+    // M-01: the same order when the authorization is the gate (PassGate) and not an Authorize of the body itself: the flight before the gate trips.
+    [Theory]
+    [InlineData("TryKeepPilotEdit")]
+    [InlineData("TryDiscardAndReloadPilotEdit")]
+    [InlineData("TryConfirmPilotBase")]
+    public void TheFlightGuardTripsWhenTheFlightIsCheckedBeforeTheGateThatAuthorizesInTheThreeReconciliations(string operation)
+    {
+        var host = Host();
+        Assert.Empty(HostViolations(host));
+        var body = Src.BodyOf(host, FlightBodies.Single(b => b.Name == operation).Signature);
+        var statement = Regex.Match(body, @"if\s*\(\s*UpdateInFlightForRequest\s*\(\s*request\s*\)\s*\)\s*return\s+[^;]*;");
+        var gate = body.IndexOf("var gate = PassGate(", StringComparison.Ordinal);
+        Assert.True(statement.Success, "the body does not check the flight with the request");
+        Assert.True(gate >= 0 && gate < statement.Index, "the body does not pass the gate before it checks the flight");
+
+        var moved = body.Remove(statement.Index, statement.Length).Insert(gate, statement.Value + " ");
+        var mutated = host.Replace(body, moved, StringComparison.Ordinal);
+
+        Assert.NotEqual(host, mutated);
+        Assert.NotEmpty(HostViolations(mutated));
+    }
+
+    [Fact]
+    public void TheFlightGuardTripsOnABodyThatChecksTheFlightWithNoAuthorizationAtAll()
+    {
+        var host = Host();
+        var body = Src.BodyOf(host, FlightBodies.Single(b => b.Name == "TryKeepPilotEdit").Signature);
+        var withoutGate = Regex.Replace(body, @"var\s+gate\s*=\s*PassGate\s*\([^;]*;[\s\S]*?Rejected\s*\(\s*reason\s*\)\s*;", string.Empty);
+        Assert.NotEqual(body, withoutGate);
+        Assert.Matches(FlightCheck, withoutGate);
+
+        Assert.NotEmpty(HostViolations(host.Replace(body, withoutGate, StringComparison.Ordinal)));
     }
 
     [Fact]
@@ -522,7 +573,7 @@ public class WorkspacePilotEditGuardTests
     [InlineData("if (_pilotReadInProgress) return EditCheckOutcome.Waiting(PilotReadInProgressReason);", "")]
     [InlineData("return TryReloadPilotEdit(request);", "return TryBeginPilotEdit(request);")]
     [InlineData("if (_pilotReadInProgress) return EditConfirmOutcome.Waiting(PilotReadInProgressReason);", "")]
-    [InlineData("if (_pilotReadInProgress) return EditIntentOutcome.Waiting(PilotReadInProgressReason);\r\n            if (UpdateInFlightForRequest(request)) return EditIntentOutcome.Waiting(PushBackPilotHostTexts.UpdateInFlightReason);\r\n            _pilotReadInProgress = true;\r\n            try\r\n            {\r\n                return TryKeepPilotEdit(request);", "if (UpdateInFlightForRequest(request)) return EditIntentOutcome.Waiting(PushBackPilotHostTexts.UpdateInFlightReason);\r\n            _pilotReadInProgress = true;\r\n            try\r\n            {\r\n                return TryKeepPilotEdit(request);")]
+    [InlineData("if (_pilotReadInProgress) return EditIntentOutcome.Waiting(PilotReadInProgressReason);\r\n            _pilotReadInProgress = true;\r\n            try\r\n            {\r\n                return TryKeepPilotEdit(request);", "_pilotReadInProgress = true;\r\n            try\r\n            {\r\n                return TryKeepPilotEdit(request);")]
     [InlineData("return TryDiscardAndReloadPilotEdit(request);", "return TryKeepPilotEdit(request);")]
     public void TheReadGuardTripsWithoutTheFinallyWithoutTheWaitingAnswerOrWithAnotherRead(string from, string to)
     {
@@ -579,7 +630,7 @@ public class WorkspacePilotEditGuardTests
     }
 
     [Fact]
-    public void TheDecoratorAnswersWaitingInsideANoticeForTheThreeReadsAndDelegatesTheRestAsItIs()
+    public void TheDecoratorAnswersWaitingInsideANoticeForTheSixReadsAndTheRequestOfTheUpdateAndDelegatesTheRestAsItIs()
     {
         Assert.Empty(GateViolations(Support()));
     }

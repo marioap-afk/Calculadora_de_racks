@@ -78,7 +78,7 @@ public class WorkspacePilotUpdateIntegrationGuardTests
     public void TheRunnerIsPureAndTotalAndNamesNeitherTheWorkspaceNorTheUpdateOfT4B()
     {
         Assert.Empty(RunnerViolations(Src.Text(HostRunPath)));
-        Assert.Empty(Src.Files("src/RackCad.Application/Systems/PushBack/Pilot").Where(f => Src.Text(f.Path).Contains("Transaction", StringComparison.Ordinal)));
+        Assert.DoesNotContain(Src.Files("src/RackCad.Application/Systems/PushBack/Pilot"), f => Src.Text(f.Path).Contains("Transaction", StringComparison.Ordinal));
     }
 
     [Fact]
@@ -144,6 +144,19 @@ public class WorkspacePilotUpdateIntegrationGuardTests
         // The completion: at most one read of IsCompleted, at most one GetResult and only inside a try; OnCompleted only on the branch where
         // IsCompleted is false (the branch that returns when it is true comes first).
         if (Src.Count(code, @"\.IsCompleted\b") > 1) yield return "IsCompleted is read more than once";
+
+        // M-07: the raw continuation hangs only from the branch where IsCompleted is false, which comes after the branch that returns when it is
+        // true; and the hop posts to the scheduler that was captured before the call, in the one place that posts.
+        var early = Regex.Match(code, @"if\s*\(\s*result\.IsCompleted\s*\)\s*\{[^{}]*\breturn\s*;\s*\}");
+        var continuation = code.IndexOf(".OnCompleted(", StringComparison.Ordinal);
+        if (!early.Success || continuation < early.Index + early.Length) yield return "OnCompleted is not on the branch of an IsCompleted that is false";
+        if (!Regex.IsMatch(code, @"\bHop\s*\(\s*SynchronizationContext\s+context\s*,\s*Action\s+completed\s*\)\s*=>\s*context\s*\.\s*Post\s*\(")) yield return "the Post is not the one of the context that was captured";
+        if (Src.Count(code, @"\bHop\s*\(\s*context\s*,\s*completed\s*\)") != 2) yield return "Hop is not called, twice, with the captured context";
+
+        // M-04: the target answers the reason of the run and no text of its own.
+        var open = Src.BodyOf(code, @"public\s+bool\s+TryOpenTarget\s*\(");
+        if (open.Contains('"')) yield return "TryOpenTarget carries a literal text";
+        if (!open.Contains("PushBackPilotUpdateRun.DocumentMismatchReason", StringComparison.Ordinal)) yield return "TryOpenTarget does not answer the reason of the run";
         var getResults = Regex.Matches(code, @"\.GetResult\s*\(").Count;
         if (getResults > 1) yield return "GetResult is called more than once";
         if (getResults == 1 && !Regex.IsMatch(code, @"try\s*\{[^{}]*\.GetResult\s*\(")) yield return "GetResult is outside a try";
@@ -211,6 +224,35 @@ public class WorkspacePilotUpdateIntegrationGuardTests
     }
 
     [Fact]
+    public void TheAdapterGuardTripsWhenTheContinuationIsNotOnTheBranchOfAnIsCompletedThatIsFalseOrThePostIsNotOfTheCapturedContext()
+    {
+        var real = CodeOf(AdapterPath);
+
+        Assert.Empty(AdapterViolations(real));
+        // M-07: the condition turned around, the branch that no longer returns, a Post of another scheduler and a hop with another context.
+        Assert.NotEmpty(AdapterViolations(real.Replace("if (result.IsCompleted)", "if (!result.IsCompleted)", StringComparison.Ordinal)));
+        Assert.NotEmpty(AdapterViolations(Regex.Replace(real, @"(if\s*\(\s*result\.IsCompleted\s*\)\s*\{[^{}]*?)\breturn\s*;", "$1")));
+        Assert.NotEmpty(AdapterViolations(real.Replace("context.Post(", "other.Post(", StringComparison.Ordinal)));
+        Assert.NotEmpty(AdapterViolations(real.Replace("Hop(context, completed);", "Hop(other, completed);", StringComparison.Ordinal)));
+        // The continuation before the branch: the first OnCompleted moved over it.
+        var branch = Regex.Match(real, @"if\s*\(\s*result\.IsCompleted\s*\)\s*\{[^{}]*\breturn\s*;\s*\}");
+        Assert.True(branch.Success);
+        Assert.NotEmpty(AdapterViolations(real.Insert(branch.Index, "result.OnCompleted(() => { }); ").Replace("result.OnCompleted(() =>\r\n", "result.Other(() =>\r\n", StringComparison.Ordinal).Replace("result.OnCompleted(() =>\n", "result.Other(() =>\n", StringComparison.Ordinal)));
+    }
+
+    [Fact]
+    public void TheAdapterGuardTripsWhenTheTargetOfTheRunCarriesATextOfItsOwnOrDoesNotAnswerTheReasonOfTheRun()
+    {
+        var real = CodeOf(AdapterPath);
+        var open = Src.BodyOf(real, @"public\s+bool\s+TryOpenTarget\s*\(");
+
+        Assert.Empty(AdapterViolations(real));
+        // M-04: the two literals that the adapter had.
+        Assert.NotEmpty(AdapterViolations(real.Replace(open, open.TrimEnd('}') + " reason = \"El documento ya no está abierto.\"; }", StringComparison.Ordinal)));
+        Assert.NotEmpty(AdapterViolations(real.Replace(open, open.Replace("PushBackPilotUpdateRun.DocumentMismatchReason", "string.Empty", StringComparison.Ordinal), StringComparison.Ordinal)));
+    }
+
+    [Fact]
     public void TheAdapterGuardTripsOnAContinuationWithoutATryAndOnAThrowInACatch()
     {
         var real = CodeOf(AdapterPath);
@@ -236,17 +278,28 @@ public class WorkspacePilotUpdateIntegrationGuardTests
     // ================================================================== G-1: the census of the primitives of Push Back
 
 
+    // The three facades of Push Back: the only files of src that may call their own primitives, besides the writer (I-01).
+    private static readonly string[] PushBackDrawServicePaths =
+    {
+        "src/RackCad.Plugin/Systems/PushBack/PushBackFrontalDrawService.cs",
+        "src/RackCad.Plugin/Systems/PushBack/PushBackPlantaDrawService.cs",
+        "src/RackCad.Plugin/Systems/PushBack/PushBackSystemDrawService.cs",
+    };
+
     private static IEnumerable<string> G1Violations(IReadOnlyList<(string Path, string Code)> product)
     {
-        // Nothing of the new code or of the panel calls the primitives of the three facades: only the writer, in PrepareUnits and WriteUnit.
+        // I-01: a census of the WHOLE of src. A file that names one of the three facades and calls .PrepareRedraw( or .RedrawInTransaction( is one
+        // of the three facades themselves or the writer: no other file of any folder, a new file of the Plugin included.
+        var allowed = PushBackDrawServicePaths.Append(WriterPath).ToHashSet(StringComparer.Ordinal);
         foreach (var (path, code) in product)
         {
-            var named = Regex.IsMatch(code, @"PushBack(?:System|Frontal|Planta)DrawService") && Regex.IsMatch(code, @"\.(?:PrepareRedraw|RedrawInTransaction)\s*\(");
-            var ofTheIntegration = path.StartsWith("src/RackCad.Plugin/Workspace/", StringComparison.Ordinal)
-                                   || path.StartsWith("src/RackCad.Application/Workspace/", StringComparison.Ordinal)
-                                   || path == AdapterPath || path == HostRunPath;
-            if (named && ofTheIntegration) yield return path + " calls a primitive of Push Back";
+            var named = Regex.IsMatch(code, @"PushBack(?:System|Frontal|Planta)DrawService");
+            var calls = Regex.IsMatch(code, @"\.(?:PrepareRedraw|RedrawInTransaction)\s*\(");
+            if (named && calls && !allowed.Contains(path)) yield return path + " calls a primitive of Push Back";
         }
+
+        foreach (var path in PushBackDrawServicePaths)
+            if (product.All(f => f.Path != path)) yield return path + " is missing from the census";
 
         var writer = product.Single(f => f.Path == WriterPath).Code;
         var update = Src.BodyOf(writer, @"internal\s+sealed\s+class\s+RackPilotUpdateScope\b");
@@ -271,6 +324,26 @@ public class WorkspacePilotUpdateIntegrationGuardTests
         Assert.NotEmpty(G1Violations(Append(Product(), ControllerPath, injected)));
         Assert.NotEmpty(G1Violations(Append(Product(), HostRunPath, injected)));
         Assert.NotEmpty(G1Violations(With(Product(), WriterPath, code => code + "\nvar q = new PushBackFrontalDrawService().PrepareRedraw(db, id, system, text);")));
+    }
+
+    [Fact]
+    public void G1TripsOnANewFileOfThePluginOutsideTheIntegrationFoldersAndOnAnExistingOneThatCallsAPrimitive()
+    {
+        var call = "class Other { void M() { new PushBackPlantaDrawService().PrepareRedraw(db, id, system, text); new PushBackSystemDrawService().RedrawInTransaction(a, b, c, out s); } }";
+        var product = Product();
+
+        Assert.Empty(G1Violations(product));
+        // I-01: a new file of the Plugin, in any folder, trips the census.
+        Assert.NotEmpty(G1Violations(product.Append(("src/RackCad.Plugin/Views/RackPilotAnotherWriter.cs", call)).ToList()));
+        Assert.NotEmpty(G1Violations(product.Append(("src/RackCad.Plugin/Drawing/NewDrawing.cs", call)).ToList()));
+        Assert.NotEmpty(G1Violations(product.Append(("src/RackCad.UI/Editor/NewThing.cs", call)).ToList()));
+        // Existing files of the Plugin that name the facades and are outside the integration folders.
+        Assert.NotEmpty(G1Violations(Append(product, "src/RackCad.Plugin/RackPushBackCommands.cs", "var p = new PushBackFrontalDrawService().PrepareRedraw(db, id, system, text);")));
+        Assert.NotEmpty(G1Violations(Append(product, "src/RackCad.Plugin/Systems/Selective/SelectivePlantaDrawService.cs", "var p = new PushBackSystemDrawService().RedrawInTransaction(a, b, c, out s);")));
+        // The facades themselves and the writer are the exceptions, by exact file.
+        Assert.Empty(G1Violations(Append(product, PushBackDrawServicePaths[0], "var p = new PushBackFrontalDrawService().PrepareRedraw(db, id, system, text);")));
+        // A missing facade is a trip too: the census names three exact files.
+        Assert.NotEmpty(G1Violations(product.Where(f => f.Path != PushBackDrawServicePaths[1]).ToList()));
     }
 
     // ================================================================== G-2: one implementer of the port of the update
@@ -408,17 +481,21 @@ public class WorkspacePilotUpdateIntegrationGuardTests
 
     // ================================================================== G-4: one caller of the update of T4B
 
+    // The code without the text of its strings: the context that the core gives to its log is not an identifier.
+    private static string WithoutStrings(string code) => Regex.Replace(code, "\"(?:[^\"\\\\\\r\\n]|\\\\.)*\"", "\"\"");
+
     private static IEnumerable<string> G4Violations(IReadOnlyList<(string Path, string Code)> product)
     {
-        var callers = product.Where(f => Regex.IsMatch(f.Code, @"\.TryUpdatePilot\s*\(") || (f.Path != CorePath && Regex.IsMatch(f.Code, @"\bTryUpdatePilot\s*\(")))
-            .Select(f => f.Path).ToArray();
+        // M-07: the IDENTIFIER, as a whole word and outside the text of a string, so that a group of methods (a delegate that is the method itself)
+        // is seen too: it appears in the core twice (its declaration and its one call) and nowhere else.
+        var callers = product.Where(f => Regex.IsMatch(WithoutStrings(f.Code), @"\bTryUpdatePilot\b")).Select(f => f.Path).ToArray();
         if (!callers.SequenceEqual(new[] { CorePath })) yield return "the callers are in " + string.Join(", ", callers);
 
         var core = product.Single(f => f.Path == CorePath).Code;
         var run = Src.BodyOf(core, @"private\s+sealed\s+class\s+PilotUpdateRun\b");
         var execute = Src.BodyOf(run, @"public\s+void\s+Execute\s*\(");
         if (Src.Count(core, @"\.TryUpdatePilot\s*\(") != 1 || Src.Count(execute, @"\.TryUpdatePilot\s*\(") != 1) yield return "TryUpdatePilot is not called exactly once, from Execute of the run of the core";
-        if (Src.Count(core, @"\bTryUpdatePilot\s*\(") != 2) yield return "TryUpdatePilot appears other than as its declaration and its one call";
+        if (Src.Count(WithoutStrings(core), @"\bTryUpdatePilot\b") != 2) yield return "the identifier TryUpdatePilot appears other than as its declaration and its one call";
 
         var runCallers = product.Where(f => Regex.IsMatch(f.Code, @"PushBackPilotUpdateRun\.Execute\s*\(")).Select(f => f.Path).ToArray();
         if (!runCallers.SequenceEqual(new[] { CorePath })) yield return "PushBackPilotUpdateRun.Execute is named in " + string.Join(", ", runCallers);
@@ -437,6 +514,21 @@ public class WorkspacePilotUpdateIntegrationGuardTests
         Assert.NotEmpty(G4Violations(Append(Product(), AdapterPath, "var u = core.TryUpdatePilot(request, port);")));
         Assert.NotEmpty(G4Violations(Append(Product(), HostRunPath, "var o = PushBackPilotUpdateRun.Execute(draft, request, port);")));
         Assert.NotEmpty(G4Violations(With(Product(), CorePath, code => code.Replace("public EditUpdateOutcome TryUpdatePilot(", "public EditUpdateOutcome Other() { return TryUpdatePilot(null!, null!); }\n        public EditUpdateOutcome TryUpdatePilot(", StringComparison.Ordinal))));
+    }
+
+    [Fact]
+    public void G4TripsOnAGroupOfMethodsOfTheUpdateOutsideTheCoreAndInsideItAndNotOnTheNameInsideAString()
+    {
+        var product = Product();
+
+        Assert.Empty(G4Violations(product));
+        // M-07: no parenthesis at all, so the old expression of the guard did not see these.
+        Assert.NotEmpty(G4Violations(Append(product, ControllerPath, "Func<EditIntentRequest, IPushBackPilotUpdatePort, EditUpdateOutcome> f = core.TryUpdatePilot;")));
+        Assert.NotEmpty(G4Violations(Append(product, AdapterPath, "var f = (Delegate)host.TryUpdatePilot;")));
+        Assert.NotEmpty(G4Violations(Append(product, CorePath, "Func<EditIntentRequest, IPushBackPilotUpdatePort, EditUpdateOutcome> f = TryUpdatePilot;")));
+        // The name of the method that the log of the core carries in a string is not an identifier: the guard does not count it.
+        Assert.Contains("\"WorkspaceHostCore.TryUpdatePilot\"", CodeOf(CorePath));
+        Assert.Empty(G4Violations(Append(product, CorePath, "var context = \"WorkspaceHostCore.TryUpdatePilot\";")));
     }
 
     // ================================================================== G-5: no authored write API in the adapter and the runner
@@ -628,22 +720,33 @@ public class WorkspacePilotUpdateIntegrationGuardTests
 
     // ================================================================== G-10: the callers of the flight
 
+    // I-01: four windows of the editors of the systems have a RequestUpdate of their own, of their editor session: another member that is not the port
+    // of the panel. They are exceptions by EXACT file with a count of one (measured), and no folder is left out of the census.
+    private static readonly string[] OwnRequestUpdateWindows =
+    {
+        "src/RackCad.UI/Systems/Cantilever/RackCantileverWindow.xaml.cs",
+        "src/RackCad.UI/Systems/Dynamic/RackDynamicSystemWindow.xaml.cs",
+        "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs",
+        "src/RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml.cs",
+    };
+
+    private const string FieldViewModelPath = "src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs";
+
     private static IEnumerable<string> G10Violations(IReadOnlyList<(string Path, string Code)> product)
     {
-        // The editors of the systems (src/RackCad.UI/Systems and src/RackCad.UI/Editor) have a RequestUpdate of their own, of the editor session:
-        // it is another member that is not the port of the panel, so those two folders are outside the census.
         var requestCallers = product
-            .Where(f => !f.Path.StartsWith("src/RackCad.UI/Systems/", StringComparison.Ordinal) && !f.Path.StartsWith("src/RackCad.UI/Editor/", StringComparison.Ordinal))
             .Where(f => Regex.IsMatch(f.Code, @"(?<!IWorkspacePilotEditPort)\.RequestUpdate\s*\("))
             .Select(f => f.Path).OrderBy(p => p, StringComparer.Ordinal).ToArray();
-        // The gesture of the field (F4-T4C2) may call it from its view model; until then only the two forwards do.
-        var allowed = new[] { ControllerPath, GatePath }.OrderBy(p => p, StringComparer.Ordinal).ToArray();
-        var withoutGesture = requestCallers.Where(p => p != "src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs").ToArray();
+        // The gesture of the field (F4-T4C2) may call it from its view model; until then the two forwards and the four windows do.
+        var allowed = new[] { ControllerPath, GatePath }.Concat(OwnRequestUpdateWindows).OrderBy(p => p, StringComparer.Ordinal).ToArray();
+        var withoutGesture = requestCallers.Where(p => p != FieldViewModelPath).ToArray();
         if (!withoutGesture.SequenceEqual(allowed)) yield return ".RequestUpdate( is called from " + string.Join(", ", requestCallers);
-        foreach (var path in product.Where(f => f.Path == ControllerPath || f.Path == GatePath).Select(f => f.Path))
+        foreach (var path in allowed)
         {
-            var code = product.Single(f => f.Path == path).Code;
-            if (Src.Count(code, @"(?<!IWorkspacePilotEditPort)\.RequestUpdate\s*\(") != 1) yield return path + " does not forward the request exactly once";
+            var files = product.Where(f => f.Path == path).ToList();
+            if (files.Count == 0) { yield return path + " is missing"; continue; }
+            if (Src.Count(files[0].Code, @"(?<!IWorkspacePilotEditPort)\.RequestUpdate\s*\(") != 1)
+                yield return path + (OwnRequestUpdateWindows.Contains(path) ? " does not have its one RequestUpdate of its own" : " does not forward the request exactly once");
         }
 
         var tryRequest = product.Where(f => Regex.IsMatch(f.Code, @"\.TryRequest\s*\(")).Select(f => f.Path).ToArray();
@@ -675,6 +778,15 @@ public class WorkspacePilotUpdateIntegrationGuardTests
         var product = Product();
 
         Assert.NotEmpty(G10Violations(Append(product, "src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs", "port.RequestUpdate(r);")));
+        // I-01: no folder is outside the census any more. The folders that the guard used to leave out trip it, in a new file and in an old one.
+        Assert.NotEmpty(G10Violations(product.Append(("src/RackCad.UI/Systems/PushBack/OtherThing.cs", "class C { void M() { port.RequestUpdate(r); } }")).ToList()));
+        Assert.NotEmpty(G10Violations(product.Append(("src/RackCad.UI/Editor/OtherThing.cs", "class C { void M() { port.RequestUpdate(r); } }")).ToList()));
+        Assert.NotEmpty(G10Violations(Append(product, "src/RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml.cs", "port.RequestUpdate(r);")));
+        Assert.NotEmpty(G10Violations(Append(product, "src/RackCad.UI/Systems/Cantilever/RackCantileverWindow.xaml.cs", "session.RequestUpdate(ctx => null);")));
+        // A window that had its own RequestUpdate and lost it is a trip too: the exception is a count of one, by exact file.
+        Assert.NotEmpty(G10Violations(With(product, "src/RackCad.UI/Systems/Dynamic/RackDynamicSystemWindow.xaml.cs", code => code.Replace(".RequestUpdate(", ".RequestUpdateX(", StringComparison.Ordinal))));
+        // The gesture of the field stays admitted for F4-T4C2.
+        Assert.Empty(G10Violations(Append(product, FieldViewModelPath, "_port.RequestUpdate(request);")));
         Assert.NotEmpty(G10Violations(Append(product, CorePath, "var s = _pilotEdit.RequestUpdate(r);")));
         Assert.NotEmpty(G10Violations(Append(product, AdapterPath, "_host.TryRequest(1, run, out var f);")));
         Assert.NotEmpty(G10Violations(Append(product, CorePath, "var s = _updateHost.TryRequest(1, run, out var f);")));
@@ -808,8 +920,25 @@ public class WorkspacePilotUpdateIntegrationGuardTests
         var update = Src.BodyOf(core, @"public\s+EditUpdateOutcome\s+TryUpdatePilot\s*\(");
         if (!Regex.IsMatch(update, @"if\s*\(\s*!closed\.Accepted\s*\)\s*return\s+AnswerOfAClosedThatWasNotAccepted\s*\(\s*outcome\s*,\s*closed\.Kind\s*\)\s*;")) yield return "TryUpdatePilot does not answer through the close that was not accepted";
         var status = update.IndexOf("var status = StatusOfOutcomeKind(closed.Kind);", StringComparison.Ordinal);
-        var tryAt = update.IndexOf("try", status < 0 ? 0 : status, StringComparison.Ordinal);
+        var tryAt = status < 0 ? -1 : Regex.Match(update.Substring(status), @"\btry\b") is { Success: true } found ? status + found.Index : -1;
         if (status < 0 || tryAt < status) yield return "the state of the answer is not computed before the try that builds it";
+
+        // M-05: everything that can build the answer or note the edit is inside that try, with the fallback of its catch: the answer of a close
+        // that was not accepted, and the note of the edit together with the mark of known clean.
+        var catchAt = tryAt < 0 ? -1 : update.IndexOf("catch", tryAt, StringComparison.Ordinal);
+        foreach (var (name, pattern) in new[]
+                 {
+                     ("the answer of a close that was not accepted", @"if\s*\(\s*!closed\.Accepted\s*\)\s*return\s+AnswerOfAClosedThatWasNotAccepted\b"),
+                     ("the note of the edit", @"\bNotePilotEdit\s*\(\s*request\.Session\s*\)\s*;"),
+                     ("the mark of known clean", @"_knownClean\.Remove\s*\(\s*request\.Session\s*\)\s*;"),
+                 })
+        {
+            var at = status < 0 ? Match.Empty : Regex.Match(update.Substring(status), pattern);
+            if (!at.Success || tryAt < 0 || catchAt < 0 || status + at.Index < tryAt || status + at.Index > catchAt) yield return name + " is not inside the try of the answer";
+        }
+
+        // The fallback of a close that was not accepted is never a success either: it carries the reason that the draft did not accept it.
+        if (!Regex.IsMatch(update, @"catch\s*\(\s*Exception\s+ex\s*\)\s*\{[^{}]*!closed\.Accepted[^{}]*UpdateNotClosedReason")) yield return "the fallback of a close that was not accepted does not carry its reason";
         if (!Regex.IsMatch(update, @"catch\s*\(\s*Exception\s+ex\s*\)\s*\{[^{}]*Closed\s*\(\s*status\s*,\s*draft\.LastApplyCause\s*,\s*Array\.Empty<string>\(\)\s*,\s*Array\.Empty<string>\(\)\s*\)")) yield return "the answer has no fallback that carries the state";
     }
 
@@ -829,6 +958,63 @@ public class WorkspacePilotUpdateIntegrationGuardTests
         Assert.NotEmpty(CloseAnswerViolations(core.Replace(notClosed, "private static EditUpdateOutcome AnswerOfAClosedThatWasNotAccepted(DraftApplyOutcome<PushBackPilotDraftState> outcome, DraftApplyOutcomeKind kind) { var u = ClosedInError(null, StatusOfOutcomeKind(kind), null, null, null); return EditUpdateOutcome.Closed(EditUpdateStatus.Applied, null, Array.Empty<string>(), Array.Empty<string>()); }", StringComparison.Ordinal)));
         Assert.NotEmpty(CloseAnswerViolations(Regex.Replace(core, @"Closed\s*\(\s*status\s*,\s*draft\.LastApplyCause\s*,\s*Array\.Empty<string>\(\)\s*,\s*Array\.Empty<string>\(\)\s*\)", "Closed(status, null, null!, null!)")));
         Assert.NotEmpty(CloseAnswerViolations(core.Replace("return AnswerOfAClosedThatWasNotAccepted(outcome, closed.Kind);", "return EditUpdateOutcome.Closed(EditUpdateStatus.Applied, null, Array.Empty<string>(), Array.Empty<string>());", StringComparison.Ordinal)));
+    }
+
+    [Fact]
+    public void M05TheCloseGuardTripsWhenTheAnswerOfANotAcceptedCloseOrTheNoteOfTheEditOrTheMarkOfKnownCleanLeaveTheTryOfTheAnswer()
+    {
+        var core = CodeOf(CorePath);
+        var update = Src.BodyOf(core, @"public\s+EditUpdateOutcome\s+TryUpdatePilot\s*\(");
+        const string statusLine = "var status = StatusOfOutcomeKind(closed.Kind);";
+        var notAccepted = Regex.Match(update, @"if\s*\(\s*!closed\.Accepted\s*\)\s*return\s+AnswerOfAClosedThatWasNotAccepted\s*\(\s*outcome\s*,\s*closed\.Kind\s*\)\s*;");
+        var note = Regex.Match(update, @"NotePilotEdit\s*\(\s*request\.Session\s*\)\s*;");
+        var known = Regex.Match(update, @"_knownClean\.Remove\s*\(\s*request\.Session\s*\)\s*;");
+        Assert.Empty(CloseAnswerViolations(core));
+        Assert.True(notAccepted.Success && note.Success && known.Success && update.Contains(statusLine, StringComparison.Ordinal));
+
+        // Each of the three moved in front of the state of the answer, outside the try.
+        foreach (var piece in new[] { notAccepted, note, known })
+        {
+            var moved = update.Remove(piece.Index, piece.Length).Replace(statusLine, piece.Value + " " + statusLine, StringComparison.Ordinal);
+            Assert.NotEmpty(CloseAnswerViolations(core.Replace(update, moved, StringComparison.Ordinal)));
+        }
+
+        // The fallback that does not carry the reason of a close that was not accepted.
+        Assert.NotEmpty(CloseAnswerViolations(core.Replace(update, update.Replace("UpdateNotClosedReason, status", "null, status", StringComparison.Ordinal), StringComparison.Ordinal)));
+    }
+
+    // ================================================================== M-04: the sentence of the host that did not run is never used as a prefix
+
+    private static IEnumerable<string> NotRunPrefixViolations(IReadOnlyList<(string Path, string Code)> product)
+    {
+        foreach (var path in new[] { HostRunPath, CorePath })
+        {
+            var code = product.Single(f => f.Path == path).Code;
+            if (Regex.IsMatch(code, @"HostNotRunReason\s*\+|\+\s*(?:PushBackPilotHostTexts\.)?HostNotRunReason\b")) yield return path + " uses HostNotRunReason as a prefix";
+        }
+
+        // The run of the core is new in this task: it has no literal space of its own to compose a text with.
+        var run = Src.BodyOf(product.Single(f => f.Path == CorePath).Code, @"private\s+sealed\s+class\s+PilotUpdateRun\b");
+        if (run.Contains("\" \"", StringComparison.Ordinal)) yield return "the run of the core composes a text with a literal space";
+    }
+
+    [Fact]
+    public void M04TheSentenceOfTheHostThatDidNotRunIsTheWholeTextInTheRunnerAndInTheCoreAndTheExceptionGoesToTheLog()
+    {
+        Assert.Empty(NotRunPrefixViolations(Product()));
+    }
+
+    [Fact]
+    public void M04TheGuardTripsOnTheSentenceUsedAsAPrefixInTheRunnerAndInTheCoreAndOnALiteralSpaceInTheRunOfTheCore()
+    {
+        var product = Product();
+        var composed = "var cause = PushBackPilotHostTexts.HostNotRunReason + \" \" + ex.Message;";
+
+        Assert.Empty(NotRunPrefixViolations(product));
+        Assert.NotEmpty(NotRunPrefixViolations(Append(product, HostRunPath, composed)));
+        Assert.NotEmpty(NotRunPrefixViolations(Append(product, CorePath, composed)));
+        Assert.NotEmpty(NotRunPrefixViolations(Append(product, CorePath, "var again = ex.Message + PushBackPilotHostTexts.HostNotRunReason;")));
+        Assert.NotEmpty(NotRunPrefixViolations(With(product, CorePath, code => code.Replace("public void Begin()", "public void Begin() { var s = \" \"; }\n            public void BeginAgain()", StringComparison.Ordinal))));
     }
 
     // ================================================================== D-T4C-20 row 22: the command that is not the update, in the handler of CommandWillStart

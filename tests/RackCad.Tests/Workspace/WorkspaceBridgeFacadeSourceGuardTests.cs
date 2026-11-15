@@ -230,7 +230,7 @@ public class WorkspaceBridgeFacadeSourceGuardTests
     }
 
     [Fact]
-    public void TheCoreAddsExactlyTwoPublicMembersToWhatT2Left()
+    public void TheCorePublicSurfaceIsExactlyTheDeclaredOneOfT2AndOfTheLaterTasks()
     {
         Assert.Equal(DeclaredCoreSurface(), CoreSurface());
     }

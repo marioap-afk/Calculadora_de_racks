@@ -1285,4 +1285,82 @@ public class WorkspaceEditIntentGuardTests
         var mutated = core.Replace(body, body.TrimEnd('}') + " " + injected + " }", StringComparison.Ordinal);
         Assert.NotEmpty(UpdateTextViolations(mutated));
     }
+
+    // M-03 (row 11): the seven Busy and Waiting of the flight, one in each of the five operations that could change a draft and in the two
+    // discards, are the constant of the host texts and never a literal. The three reconciliations are read in the body of the pilot that
+    // passes the gate, where the check of the flight is (M-01).
+    private static readonly (string Name, string Signature)[] FlightTextBodies =
+    {
+        ("SetPendingText", @"PilotFieldResult\s+IWorkspacePilotEditPort\.SetPendingText\s*\("),
+        ("CommitField", @"PilotFieldResult\s+IWorkspacePilotEditPort\.CommitField\s*\("),
+        ("TryConfirmPilotBase", @"public\s+EditConfirmOutcome\s+TryConfirmPilotBase\s*\("),
+        ("TryKeepPilotEdit", @"public\s+EditIntentOutcome\s+TryKeepPilotEdit\s*\("),
+        ("TryDiscardAndReloadPilotEdit", @"public\s+EditIntentOutcome\s+TryDiscardAndReloadPilotEdit\s*\("),
+        ("DiscardRack", @"EditDiscardOutcome\s+IWorkspacePilotEditPort\.DiscardRack\s*\("),
+        ("DiscardDocument", @"EditDiscardOutcome\s+IWorkspacePilotEditPort\.DiscardDocument\s*\("),
+    };
+
+    private static readonly Regex FlightSymbol = new(@"\bUpdateInFlightFor(?:Request)?\s*\(|\b_tickets\b|\bIsAnyPilotDraftApplying\s*\(|\bIsPilotDraftApplying\s*\(");
+
+    private static readonly Regex BusyOrWaiting = new(@"\.(?:Busy|Waiting)\s*\(");
+
+    private static IReadOnlyList<string> FlightTextViolations(string core)
+    {
+        var violations = new List<string>();
+        foreach (var (name, signature) in FlightTextBodies)
+        {
+            var body = Src.BodyOf(core, signature);
+            var answers = body.Split(';').Where(statement => FlightSymbol.IsMatch(statement) && BusyOrWaiting.IsMatch(statement)).ToArray();
+            if (answers.Length != 1) violations.Add(name + " has " + answers.Length + " answers of the flight (expected 1)");
+            foreach (var answer in answers)
+            {
+                if (answer.Contains('"')) violations.Add(name + " answers the flight with a literal text");
+                if (!answer.Contains("PushBackPilotHostTexts.UpdateInFlightReason", StringComparison.Ordinal)) violations.Add(name + " does not answer the flight with the constant of the host texts");
+            }
+        }
+
+        return violations;
+    }
+
+    [Fact]
+    public void TheSevenAnswersOfTheFlightOfTheFiveOperationsAndTheTwoDiscardsAreTheConstantOfTheHostTextsAndNeverALiteral()
+    {
+        Assert.Equal(7, FlightTextBodies.Length);
+        Assert.Empty(FlightTextViolations(Core()));
+    }
+
+    [Theory]
+    [InlineData("SetPendingText", "if (UpdateInFlightFor(origin.Origin, rackId)) return PilotFieldResult.Busy(\"hay una actualizacion\");")]
+    [InlineData("CommitField", "if (UpdateInFlightFor(origin.Origin, rackId)) return PilotFieldResult.Busy(\"hay una actualizacion\");")]
+    [InlineData("TryConfirmPilotBase", "if (UpdateInFlightForRequest(request)) return EditConfirmOutcome.Waiting(\"hay una actualizacion\");")]
+    [InlineData("TryKeepPilotEdit", "if (UpdateInFlightForRequest(request)) return EditIntentOutcome.Waiting(\"hay una actualizacion\");")]
+    [InlineData("TryDiscardAndReloadPilotEdit", "if (UpdateInFlightForRequest(request)) return EditIntentOutcome.Waiting(\"hay una actualizacion\");")]
+    [InlineData("DiscardRack", "if (UpdateInFlightFor(session, rackId)) return EditDiscardOutcome.Busy(\"hay una actualizacion\");")]
+    [InlineData("DiscardDocument", "if (_tickets.ContainsKey(origin.Origin)) return EditDiscardOutcome.Busy(\"hay una actualizacion\");")]
+    public void TheFlightTextGuardTripsOnASecondAnswerOfTheFlightWithALiteralInEachOfTheSevenBodies(string name, string injected)
+    {
+        var core = Core();
+        var body = Src.BodyOf(core, FlightTextBodies.Single(b => b.Name == name).Signature);
+
+        Assert.Empty(FlightTextViolations(core));
+        Assert.NotEmpty(FlightTextViolations(core.Replace(body, body.TrimEnd('}') + " " + injected + " }", StringComparison.Ordinal)));
+    }
+
+    [Theory]
+    [InlineData("SetPendingText")]
+    [InlineData("CommitField")]
+    [InlineData("TryConfirmPilotBase")]
+    [InlineData("TryKeepPilotEdit")]
+    [InlineData("TryDiscardAndReloadPilotEdit")]
+    [InlineData("DiscardRack")]
+    [InlineData("DiscardDocument")]
+    public void TheFlightTextGuardTripsWhenTheConstantOfTheFlightIsReplacedByALiteral(string name)
+    {
+        var core = Core();
+        var body = Src.BodyOf(core, FlightTextBodies.Single(b => b.Name == name).Signature);
+        var mutated = body.Replace("PushBackPilotHostTexts.UpdateInFlightReason", "\"hay una actualizacion\"", StringComparison.Ordinal);
+
+        Assert.NotEqual(body, mutated);
+        Assert.NotEmpty(FlightTextViolations(core.Replace(body, mutated, StringComparison.Ordinal)));
+    }
 }

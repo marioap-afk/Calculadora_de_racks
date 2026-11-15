@@ -68,6 +68,9 @@ internal sealed class PilotHostTargetDouble : IPushBackPilotHostTarget
 
     public bool ThrowOnRetire { get; set; }
 
+    /// <summary>The target answers a null lock: a host that does not honor the contract of Lock (M-06 (d)).</summary>
+    public bool NullLock { get; set; }
+
     public int Locks { get; private set; }
 
     public int CreateWriters { get; private set; }
@@ -83,6 +86,7 @@ internal sealed class PilotHostTargetDouble : IPushBackPilotHostTarget
         Locks++;
         _events.Add("Lock");
         if (ThrowOnLock) throw new InvalidOperationException("lock boom");
+        if (NullLock) return null!;
         LastLock = new PilotHostLockDouble(_events, ThrowOnUnlock);
         return LastLock;
     }
@@ -233,6 +237,9 @@ internal sealed class PilotUpdateHostExecutorDouble : IPushBackPilotUpdateHost
 
     public bool Throw { get; set; }
 
+    /// <summary>The request runs through the real runner and THEN the executor throws: the callback already began (M-06 (b)).</summary>
+    public bool ThrowAfterRun { get; set; }
+
     public bool TryRequest(long documentNativeId, IPushBackPilotHostRun run, out string failure)
     {
         TryRequests++;
@@ -245,7 +252,9 @@ internal sealed class PilotUpdateHostExecutorDouble : IPushBackPilotUpdateHost
             return false;
         }
 
-        return PushBackPilotHostRunner.Request(documentNativeId, run, _primitives, (context, error) => Logged.Add((context, error)), out failure);
+        var requested = PushBackPilotHostRunner.Request(documentNativeId, run, _primitives, (context, error) => Logged.Add((context, error)), out failure);
+        if (ThrowAfterRun) throw new InvalidOperationException("executor boom after the run");
+        return requested;
     }
 }
 

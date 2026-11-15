@@ -2,10 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using RackCad.Application.Systems.PushBack.Pilot;
 using RackCad.Application.Workspace;
 using RackCad.Application.Workspace.Drafts;
 using Xunit;
+using Src = RackCad.Tests.WorkspaceHostSource;
 
 namespace RackCad.Tests;
 
@@ -570,6 +572,209 @@ public class WorkspacePilotUpdateRequestTests
         Assert.True(rig.Take(RackB).InFlight);
     }
 
+    // ------------------------------------------------------------------ B-01: a ticket that ended and whose completion never arrives
+
+    [Fact]
+    public void ATicketThatEndedWhoseCompletionNeverArrivesExpiresWithTheNextForeignCommandAndFreesTheRequestAndTheDiscardsAndKeepsTheOutcomeOnce()
+    {
+        // B-01 (a): the callback runs and the update ends, but the completion never comes (the hop failed, or there was no scheduler).
+        var rig = new Rig();
+        rig.Open();
+        rig.Kit.Primitives.Mode = PilotHostMode.Deferred;
+        Assert.Equal(EditUpdateStartStatus.Accepted, rig.Start().Status);
+        rig.Kit.Primitives.RunCallback();
+        Assert.Equal(1, rig.WriterBegins);
+
+        // Until the bound, the ticket is still there: a request and the two discards answer Busy.
+        Assert.Equal(EditUpdateStartStatus.Busy, rig.Start().Status);
+        Assert.Equal(EditDiscardStatus.Busy, rig.Port.DiscardRack(rig.Origin(), RackA).Status);
+        Assert.Equal(EditDiscardStatus.Busy, rig.Port.DiscardDocument(rig.Origin()).Status);
+
+        rig.ForeignCommand();
+
+        // The bound released the ticket: the discards are served, and the outcome that was stored stays and is taken once.
+        Assert.Equal(EditDiscardStatus.Discarded, rig.Port.DiscardRack(rig.Origin(), RackA).Status);
+        Assert.Equal(EditDiscardStatus.Discarded, rig.Port.DiscardDocument(rig.Origin()).Status);
+        var progress = rig.Take();
+        Assert.False(progress.InFlight);
+        Assert.Equal(EditUpdateStatus.Applied, progress.Outcome.Status);
+        Assert.Equal(EditUpdateStatus.Unavailable, rig.Take().Outcome.Status);
+        Assert.Equal(1, rig.WriterBegins);
+
+        // The release only freed the ticket: no second outcome was written, and a request is accepted again.
+        rig.Open();
+        Assert.Equal(EditUpdateStartStatus.Accepted, rig.Start().Status);
+        Assert.Equal(2, rig.Kit.Executor.TryRequests);
+        Assert.Equal(EditUpdateStatus.Unavailable, rig.Take().Outcome.Status);
+    }
+
+    [Fact]
+    public void AForeignCommandDuringTheUpdateDoesNotExpireTheTicketDuringTheRunAndAfterTheRunTheTicketIsFreedByTheNextCheckWithoutASecondOutcome()
+    {
+        // B-01 (b): a ticket in Execute never expires, but only while Execute lasts.
+        var rig = new Rig();
+        rig.Open();
+        rig.Kit.Primitives.Mode = PilotHostMode.Deferred;
+        EditUpdateProgress during = default;
+        EditUpdateStart startDuring = default;
+        rig.Writer.HookAt["Reread"] = () =>
+        {
+            rig.Host.Bridge.Core.NoteForeignCommandStart(rig.Session);
+            during = rig.Take();
+            startDuring = rig.Start();
+        };
+
+        Assert.Equal(EditUpdateStartStatus.Accepted, rig.Start().Status);
+        rig.Kit.Primitives.RunCallback();
+
+        Assert.True(during.InFlight, "the ticket expired during the run");
+        Assert.Equal(EditUpdateStartStatus.Busy, startDuring.Status);
+        Assert.Equal(1, rig.Kit.Executor.TryRequests);
+
+        // After Execute the same count of foreign commands is enough: the next check frees the ticket, and the outcome is still taken once.
+        var after = rig.Take();
+        Assert.False(after.InFlight);
+        Assert.Equal(EditUpdateStatus.Applied, after.Outcome.Status);
+        Assert.Equal(EditUpdateStartStatus.Accepted, rig.Start().Status);
+        Assert.Equal(2, rig.Kit.Executor.TryRequests);
+        Assert.Equal(1, rig.WriterBegins);
+        Assert.Equal(EditUpdateStatus.Unavailable, rig.Take().Outcome.Status);
+    }
+
+    // ------------------------------------------------------------------ M-06: defenses in depth of the core
+
+    private sealed class ScriptedExecutor : IPushBackPilotUpdateHost
+    {
+        private readonly Action<IPushBackPilotHostRun> _script;
+
+        public ScriptedExecutor(Action<IPushBackPilotHostRun> script)
+        {
+            _script = script;
+        }
+
+        public bool TryRequest(long documentNativeId, IPushBackPilotHostRun run, out string failure)
+        {
+            failure = string.Empty;
+            _script(run);
+            return true;
+        }
+    }
+
+    [Fact]
+    public void ASecondTerminalCallOnATicketThatAlreadyEndedDoesNothingAndTheFirstOutcomeIsKept()
+    {
+        // M-06 (a): a host that does not honor the latch of the runner cannot overwrite the outcome that was stored.
+        var twice = new Rig(executor: false);
+        twice.Open();
+        var second = new PilotUpdateScopeDouble(Rig.Members());
+        twice.Core.SetPilotUpdateHost(new ScriptedExecutor(run =>
+        {
+            Assert.True(run.Admit(out _));
+            run.Begin();
+            run.Execute(twice.Writer);
+            run.Execute(second);
+        }));
+        twice.Start();
+        Assert.Equal(EditUpdateStatus.Applied, twice.Take().Outcome.Status);
+        Assert.Empty(second.Calls);
+        Assert.Equal(1, twice.WriterBegins);
+
+        var late = new Rig(executor: false);
+        late.Open();
+        late.Core.SetPilotUpdateHost(new ScriptedExecutor(run =>
+        {
+            Assert.True(run.Admit(out _));
+            run.Begin();
+            run.Execute(late.Writer);
+            run.NotRun(PushBackPilotHostFailure.Failed, "too late");
+        }));
+        late.Start();
+        var kept = late.Take().Outcome;
+        Assert.Equal(EditUpdateStatus.Applied, kept.Status);
+        Assert.NotEqual("too late", kept.Reason);
+
+        var notRunTwice = new Rig(executor: false);
+        notRunTwice.Open();
+        notRunTwice.Core.SetPilotUpdateHost(new ScriptedExecutor(run =>
+        {
+            run.NotRun(PushBackPilotHostFailure.Rejected, "first");
+            run.NotRun(PushBackPilotHostFailure.Failed, "second");
+        }));
+        notRunTwice.Start();
+        var first = notRunTwice.Take().Outcome;
+        Assert.Equal(EditUpdateStatus.Rejected, first.Status);
+        Assert.Equal("first", first.Reason);
+    }
+
+    [Fact]
+    public void AnExecutorThatThrowsAfterTheCallbackBeganIsAnAcceptedStartValueAndTheOutcomeIsTheOnlyChannel()
+    {
+        // M-06 (b): the callback already ran and stored its outcome, so the start value cannot be a second failure.
+        var rig = new Rig();
+        var draft = rig.Open();
+        rig.Kit.Executor.ThrowAfterRun = true;
+
+        var start = rig.Start();
+
+        Assert.Equal(EditUpdateStartStatus.Accepted, start.Status);
+        Assert.Null(start.Reason);
+        Assert.Equal(1, rig.WriterBegins);
+        Assert.Equal(DraftStatus.Clean, draft.Status);
+        Assert.Equal(EditUpdateStatus.Applied, rig.Take().Outcome.Status);
+        Assert.Equal(EditUpdateStatus.Unavailable, rig.Take().Outcome.Status);
+        Assert.Contains(rig.Host.Faults, f => f.Context.Contains("RequestUpdate", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void AnExecutorThatThrowsBeforeTheCallbackBeganIsStillAFailedStartValueEvenInTheDeferredMode()
+    {
+        var rig = new Rig();
+        rig.Open();
+        rig.Kit.Primitives.Mode = PilotHostMode.Deferred;
+        rig.Kit.Executor.ThrowAfterRun = true;
+
+        var start = rig.Start();
+
+        Assert.Equal(EditUpdateStartStatus.Failed, start.Status);
+        Assert.False(rig.Take().InFlight);
+        Assert.Equal(EditUpdateStatus.Unavailable, rig.Take().Outcome.Status);
+    }
+
+    [Fact]
+    public void AComparerOrAnythingThatFailsWhileLookingForADraftBeingAppliedAnswersFalseAndIsLoggedSoTheDiscardIsNeverStuckInBusy()
+    {
+        // M-06 (c): the registry cannot be made to fail from a test, so the rule is read from the text of the core.
+        var core = Src.Code("src/RackCad.Application/Workspace/WorkspaceHostCore.cs");
+        var body = Src.BodyOf(core, @"private\s+bool\s+IsAnyPilotDraftApplying\s*\(");
+        var handler = Regex.Match(body, @"catch\s*\(\s*Exception\s+(?<name>\w+)\s*\)\s*\{(?<inside>[^{}]*)\}");
+
+        Assert.True(handler.Success, "the catch does not keep the exception to log it");
+        Assert.Matches(@"\bReport\s*\(\s*""WorkspaceHostCore\.IsAnyPilotDraftApplying""\s*,\s*" + handler.Groups["name"].Value + @"\s*\)", handler.Groups["inside"].Value);
+        Assert.Matches(@"return\s+false\s*;", handler.Groups["inside"].Value);
+        Assert.DoesNotMatch(@"return\s+true\s*;", handler.Groups["inside"].Value);
+    }
+
+    // ------------------------------------------------------------------ M-01: the flight is looked at after the authorization
+
+    [Fact]
+    public void ARequestOfASessionThatIsNoLongerTheActiveOneIsRejectedByItsAuthorizationAndNeverWaitsForTheFlightOfThreeOperations()
+    {
+        var rig = new Rig();
+        rig.Open();
+        rig.Kit.Primitives.Mode = PilotHostMode.Deferred;
+        rig.Start();
+        // Another document becomes the active one: the session of the flight is not the one of the active document any more.
+        rig.Host.Activate(200);
+
+        var confirm = rig.Port.TryConfirmBase(rig.Request());
+        var keep = rig.Port.TryKeepMine(rig.Request());
+        var discard = rig.Port.TryDiscardAndReload(rig.Request());
+
+        Assert.Equal(EditConfirmStatus.Rejected, confirm.Status);
+        Assert.Equal(EditIntentStatus.Rejected, keep.Status);
+        Assert.Equal(EditIntentStatus.Rejected, discard.Status);
+    }
+
     // ------------------------------------------------------------------ the outcome of T4B is kept as it is (tests 12 to 16)
 
     [Fact]
@@ -703,6 +908,9 @@ public class WorkspacePilotUpdateRequestTests
         if (!ranTheUpdate) Assert.Equal(DraftStatus.Dirty, draft.Status);
         if (!ranTheUpdate) Assert.Empty(rig.Writer.Calls);
         if (failure == "Begin") Assert.Equal(1, rig.Kit.Target.Retires);
+        // M-04: the sentence of the host is the whole reason; the exception goes to the log and never to the text that the user reads.
+        if (failure is "Begin" or "CreateWriter") Assert.Equal(PushBackPilotHostTexts.HostNotRunReason, outcome.Reason);
+        if (failure == "Lock") Assert.StartsWith(PushBackPilotHostTexts.LockFailedPrefix, outcome.Reason, StringComparison.Ordinal);
         if (failure == "CreateWriter")
         {
             Assert.Equal(0, rig.Kit.Target.Retires);

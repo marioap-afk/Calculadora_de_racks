@@ -264,6 +264,16 @@ public class WorkspacePilotUpdateGuardTests
         Assert.Matches(@"internal\s+sealed\s+class\s+RackPilotMutationScope\s*:\s*IPushBackPilotMutationScope\b", Writer());
     }
 
+    // M-10: since D-T4C-07 the writer no longer resolves the active document, so the alias of the application that it only used for that is gone.
+    [Fact]
+    public void TheWriterDoesNotKeepTheAliasOfTheApplicationThatOnlyTheActiveDocumentNeeded()
+    {
+        var real = Writer();
+
+        Assert.DoesNotContain("AcApplication", real, StringComparison.Ordinal);
+        Assert.Empty(WriterProhibitionViolations(real));
+    }
+
     [Fact]
     public void TheWriterDoesThePrimitiveOperationsOfThePackageInsideItsScopesInTheOrderOfThePackage()
     {

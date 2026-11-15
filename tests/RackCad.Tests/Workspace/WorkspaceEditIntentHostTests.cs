@@ -954,6 +954,39 @@ public class WorkspaceEditIntentHostTests
             foreach (var argument in current.GetGenericArguments().SelectMany(Flatten)) yield return argument;
     }
 
+    // The carriers of the edit intention (D-T2B2-06; D-T4C-20, row 4): the request, its witness and the outcomes that the panel receives.
+    private static readonly Type[] Carriers =
+    {
+        typeof(EditIntentRequest), typeof(EditIntentWitness), typeof(EditIntentOutcome), typeof(EditCheckOutcome), typeof(EditConfirmOutcome),
+        typeof(EditUpdateOutcome), typeof(EditUpdateStart), typeof(EditUpdateProgress),
+    };
+
+    // M-02: the carriers are DERIVED from the assembly (by the family of their names) and every one must be in the census, so a new carrier
+    // that nobody censused trips the guard instead of escaping the rule that a carrier names no type of the drafts nor of the pilot.
+    private static IReadOnlyList<string> CarriersWithoutCensus(IEnumerable<Type> census)
+    {
+        var known = census.ToHashSet();
+        return typeof(IWorkspacePilotEditPort).Assembly.GetTypes()
+            .Where(t => t.IsPublic && t.Namespace == "RackCad.Application.Workspace" && System.Text.RegularExpressions.Regex.IsMatch(t.Name, @"^Edit(?:Intent|Check|Confirm|Update)(?:Request|Witness|Outcome|Start|Progress)$"))
+            .Where(t => !known.Contains(t))
+            .Select(t => t.Name)
+            .OrderBy(n => n, StringComparer.Ordinal)
+            .ToArray();
+    }
+
+    [Fact]
+    public void ACarrierOfTheEditIntentionThatIsNotInTheCensusTripsTheGuardAndTheCensusHasThemAll()
+    {
+        Assert.Empty(CarriersWithoutCensus(Carriers));
+        Assert.Equal(8, Carriers.Length);
+
+        // The negatives: a carrier that was left out of the census (the new ones of the update, and an old one), by name.
+        Assert.Equal(new[] { "EditUpdateProgress" }, CarriersWithoutCensus(Carriers.Where(t => t != typeof(EditUpdateProgress))));
+        Assert.Equal(new[] { "EditUpdateStart" }, CarriersWithoutCensus(Carriers.Where(t => t != typeof(EditUpdateStart))));
+        Assert.Equal(new[] { "EditConfirmOutcome" }, CarriersWithoutCensus(Carriers.Where(t => t != typeof(EditConfirmOutcome))));
+        Assert.Equal(Carriers.Length, CarriersWithoutCensus(Array.Empty<Type>()).Count);
+    }
+
     [Fact]
     public void TheSignaturesOfTheTwoOperationsAndTheirValuesNameNoTypeOfADraftNorOfThePilot()
     {
@@ -982,11 +1015,8 @@ public class WorkspaceEditIntentHostTests
         // I-64 F4-T4B (D-T4B-07): the outcome of the update is a carrier too. The method TryUpdatePilot is NOT in the loop of the signatures above: its second
         // parameter is the port of the update, which is of the pilot (a declared exception to D-T2B2-06).
         // I-64 F4-T4C1-HOST (D-T4C-20, row 4): the start value and the progress of the update are carriers too, and so they are censused.
-        foreach (var carrier in new[]
-                 {
-                     typeof(EditIntentRequest), typeof(EditIntentWitness), typeof(EditIntentOutcome), typeof(EditCheckOutcome), typeof(EditConfirmOutcome),
-                     typeof(EditUpdateOutcome), typeof(EditUpdateStart), typeof(EditUpdateProgress),
-                 })
+        Assert.Empty(CarriersWithoutCensus(Carriers));
+        foreach (var carrier in Carriers)
         {
             foreach (var property in carrier.GetProperties(BindingFlags.Public | BindingFlags.Instance)) types.AddRange(Flatten(property.PropertyType));
             foreach (var method in carrier.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly))
