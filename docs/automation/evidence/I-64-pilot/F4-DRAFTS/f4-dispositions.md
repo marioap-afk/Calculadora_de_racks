@@ -2490,3 +2490,33 @@ T4C2 y Smoke-2 siguen pendientes.
 - **paradas:** 33.
 
 **attempts:** 1 de 3.
+
+## F4-E69. Intento 1 de F4-T4C2-PANEL: cuatro planificaciones, parada del Worker y corrección en el intento 2
+
+**Autoridades:** las decisiones literales del Owner (en `F4-DRAFTS/coordinator/`):
+- `owner-f4t4c2-third-planning-decision.md` («Una planificación más»);
+- `owner-f4t4c2-fourth-planning-decision.md` («Cuarta, sin el cebo»);
+- `owner-f4t4c2-attempt2-decision.md` («Corregir en intento 2»).
+
+**La planificación:**
+- **tres rechazos**, todos por la comparación byte a byte de `ForbiddenWriteScope` (las otras siete colecciones salieron exactas siempre):
+  - `af0a` omitió la entrada 102, de nombre casi igual a la 101;
+  - `6c20`, la replanificación de D4, y `3d22`, la tercera, autorizada por el Owner, añadieron un espacio al principio de la entrada 71;
+- **la causa medida:** el prompt citaba como ejemplo, entre comillas, la cadena errónea de un rechazo anterior;
+- **la cuarta**, `4797`, quitó ese cebo y cargó la lista como array compacto: fidelidad PASS, A1-A8 8/8 y nc4 `2c68` con su oráculo.
+
+**El Worker** `R20261115T190629Z-9b55` hizo el RED `a6511c04`:
+- 13 rutas: el esqueleto inerte y las pruebas;
+- su CI `43753137730`: Core en failure (10 de 3437) y UI en failure (75 de 694), todo dentro de los filtros de Workspace, como pide `ExpectRed`.
+
+Paró antes del GREEN, con BLOCKED, por tres defectos de pruebas que él mismo escribió y que la regla 16.8 le impide corregir:
+- una vista previa que nunca ocurre, porque el navegador fija las pestañas con trabajo protegido;
+- un registro que esperaba cuatro entradas donde F-1 añade una quinta en el repintado;
+- un aviso xUnit2013 nuevo.
+
+El producto completo quedó en `wip-green-impl.patch`. Aplicado en local, deja todo en verde menos esas dos pruebas. No hay ningún defecto del producto ni ninguna decisión material nueva (análisis en `F4-T4C2-PANEL/1/R20261115T190629Z-9b55/analysis.md`).
+
+**La decisión:** corrección en el **intento 2 de 3** («Corregir en intento 2»), con cierre por la regla de D2. El intento 3 no se gasta sin el Owner.
+- **`CorrectionOf`:** el Worker `9b55`, con la clase `StopCondition`.
+- **El contrato del intento 2:** añade INV-F4T4C-26 (las tres pruebas, exactamente, y el producto del parche como GREEN) e INV-F4T4C-27 (la mecánica), y conserva el resto.
+- **La cadena:** `ChainBaseSha` `1cce48c0`, con `ChainRedSha` nulo. El RED de la corrección solo corrige las tres pruebas y lo acredita su verificación.

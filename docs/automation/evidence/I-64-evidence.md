@@ -7395,3 +7395,14 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **`attempts`:** 1 de 3.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 215. Intento 1 de F4-T4C2-PANEL
+
+**Decisión:** F4-E69.
+- **La planificación:** tres rechazos por fidelidad, con la causa medida en el propio prompt. El Owner autorizó la tercera y la cuarta, y la cuarta salió exacta.
+- **El Worker:** RED `a6511c04`, con la CI en failure en Core y UI, como se esperaba; sin GREEN (BLOCKED), por tres defectos de sus propias pruebas.
+- **El Owner:** «Corregir en intento 2».
+
+**Custodia:** las seis unidades del intento 1 con sus manifiestos, el análisis y las tres decisiones del Owner.
+
+**Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.

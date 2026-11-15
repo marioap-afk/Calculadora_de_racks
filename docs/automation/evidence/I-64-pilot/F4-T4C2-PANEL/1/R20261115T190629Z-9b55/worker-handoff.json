@@ -1,0 +1,643 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F4-T4C2-PANEL",
+  "RunId": "R20261115T190629Z-9b55",
+  "DelegationRunId": "R20261115T190148Z-4797",
+  "Initiative": "I-64",
+  "Gate": "F4",
+  "Attempt": 1,
+  "BaseSha": "1cce48c00575f48e15106e4007c887c08746b228",
+  "RedSha": "a6511c0493e93edd2bb4c0503b2e74fce900a1d0",
+  "CurrentSha": "a6511c0493e93edd2bb4c0503b2e74fce900a1d0",
+  "Branch": "architecture/workspace-persistente-rackcad",
+  "Worktree": "<worktree-de-I-64>",
+  "Pushed": true,
+  "FilesChanged": [
+    "src/RackCad.Application/Workspace/WorkspaceEditIntent.cs",
+    "src/RackCad.UI/Workspace/WorkspacePanelView.xaml",
+    "src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs",
+    "src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotCloseSyncGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotSurfaceGuardTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotEditPortDouble.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotFieldViewModelTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotFieldViewTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs"
+  ],
+  "WorkCompleted": "RED completo y enviado (a6511c0493e93edd2bb4c0503b2e74fce900a1d0): esqueleto inerte, pruebas nuevas y cambiadas, doble de UI con registro propio y los cambios de guarda de las filas 12, 18 y 21. Producto de la parte [2] implementado en el arbol de trabajo (VM del campo: boton, gesto Update() con sus cinco pasos, presentacion de cada desenlace sin reclasificarlo, M-03, Aplicando, recogida por repintado y por superficie; PresentCheck con diagnostico persistente; EditCheckOutcome con AdmissionDiagnostic y ClassicEditorHint; TryCheckPilotEdit con el diagnostico antes de CheckNow en su propio try) y verificado en local, pero detenido antes del commit GREEN porque tres pruebas del RED son defectuosas y la regla 16.8 impide corregirlas. El parche queda en artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/wip-green-impl.patch y el arbol de trabajo esta limpio en el commit RED.",
+  "TestsExecuted": [
+    {
+      "RunRef": "r1-core-ws",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.Tests.Workspace\" --logger \"trx;LogFileName=core-ws.trx\" --results-directory artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r1",
+      "Phase": "RED",
+      "TreeSha": "a1c734e98c838651d508f2ab3e0052586df667a0",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r1/core-ws.trx"
+    },
+    {
+      "RunRef": "r1-ui-ws",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.Workspace\" --logger \"trx;LogFileName=ui-ws.trx\" --results-directory artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r1",
+      "Phase": "RED",
+      "TreeSha": "a1c734e98c838651d508f2ab3e0052586df667a0",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r1/ui-ws.trx"
+    },
+    {
+      "RunRef": "r2-CallerOwnedFacadeGuardTests",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter \"FullyQualifiedName~RackCad.Tests.CallerOwnedFacadeGuardTests\" --logger \"trx;LogFileName=CallerOwnedFacadeGuardTests.trx\" --results-directory artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2",
+      "Phase": "RED",
+      "TreeSha": "a1c734e98c838651d508f2ab3e0052586df667a0",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2/CallerOwnedFacadeGuardTests.trx"
+    },
+    {
+      "RunRef": "r2-CallerOwnedTransactionGuardTests",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter \"FullyQualifiedName~RackCad.Tests.CallerOwnedTransactionGuardTests\" --logger \"trx;LogFileName=CallerOwnedTransactionGuardTests.trx\" --results-directory artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2",
+      "Phase": "RED",
+      "TreeSha": "a1c734e98c838651d508f2ab3e0052586df667a0",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2/CallerOwnedTransactionGuardTests.trx"
+    },
+    {
+      "RunRef": "r2-RackSiblingRedrawUnitsTests",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter \"FullyQualifiedName~RackCad.Tests.RackSiblingRedrawUnitsTests\" --logger \"trx;LogFileName=RackSiblingRedrawUnitsTests.trx\" --results-directory artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2",
+      "Phase": "RED",
+      "TreeSha": "a1c734e98c838651d508f2ab3e0052586df667a0",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2/RackSiblingRedrawUnitsTests.trx"
+    },
+    {
+      "RunRef": "r2-DebugFaultInjectionGuardTests",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter \"FullyQualifiedName~RackCad.Tests.DebugFaultInjectionGuardTests\" --logger \"trx;LogFileName=DebugFaultInjectionGuardTests.trx\" --results-directory artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2",
+      "Phase": "RED",
+      "TreeSha": "a1c734e98c838651d508f2ab3e0052586df667a0",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2/DebugFaultInjectionGuardTests.trx"
+    },
+    {
+      "RunRef": "r2-SiblingRedrawSeamGuardTests",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter \"FullyQualifiedName~RackCad.Tests.SiblingRedrawSeamGuardTests\" --logger \"trx;LogFileName=SiblingRedrawSeamGuardTests.trx\" --results-directory artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2",
+      "Phase": "RED",
+      "TreeSha": "a1c734e98c838651d508f2ab3e0052586df667a0",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2/SiblingRedrawSeamGuardTests.trx"
+    },
+    {
+      "RunRef": "r2-RackSiblingMembershipTests",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter \"FullyQualifiedName~RackCad.Tests.RackSiblingMembershipTests\" --logger \"trx;LogFileName=RackSiblingMembershipTests.trx\" --results-directory artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2",
+      "Phase": "RED",
+      "TreeSha": "a1c734e98c838651d508f2ab3e0052586df667a0",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2/RackSiblingMembershipTests.trx"
+    },
+    {
+      "RunRef": "r2-RackSiblingRedrawPlanTests",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter \"FullyQualifiedName~RackCad.Tests.RackSiblingRedrawPlanTests\" --logger \"trx;LogFileName=RackSiblingRedrawPlanTests.trx\" --results-directory artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2",
+      "Phase": "RED",
+      "TreeSha": "a1c734e98c838651d508f2ab3e0052586df667a0",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2/RackSiblingRedrawPlanTests.trx"
+    },
+    {
+      "RunRef": "r2-RackSiblingRedrawRunTests",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter \"FullyQualifiedName~RackCad.Tests.RackSiblingRedrawRunTests\" --logger \"trx;LogFileName=RackSiblingRedrawRunTests.trx\" --results-directory artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2",
+      "Phase": "RED",
+      "TreeSha": "a1c734e98c838651d508f2ab3e0052586df667a0",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2/RackSiblingRedrawRunTests.trx"
+    },
+    {
+      "RunRef": "r2-PushBackClassicCharacterizationPluginGuardTests",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests\" --logger \"trx;LogFileName=PushBackClassicCharacterizationPluginGuardTests.trx\" --results-directory artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2",
+      "Phase": "RED",
+      "TreeSha": "a1c734e98c838651d508f2ab3e0052586df667a0",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2/PushBackClassicCharacterizationPluginGuardTests.trx"
+    },
+    {
+      "RunRef": "r2-PushBackPluginSourceGuardTests",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter \"FullyQualifiedName~RackCad.Tests.PushBackPluginSourceGuardTests\" --logger \"trx;LogFileName=PushBackPluginSourceGuardTests.trx\" --results-directory artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2",
+      "Phase": "RED",
+      "TreeSha": "a1c734e98c838651d508f2ab3e0052586df667a0",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2/PushBackPluginSourceGuardTests.trx"
+    },
+    {
+      "RunRef": "r2-PushBackRoundTripSourceGuardTests",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter \"FullyQualifiedName~RackCad.Tests.PushBackRoundTripSourceGuardTests\" --logger \"trx;LogFileName=PushBackRoundTripSourceGuardTests.trx\" --results-directory artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2",
+      "Phase": "RED",
+      "TreeSha": "a1c734e98c838651d508f2ab3e0052586df667a0",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2/PushBackRoundTripSourceGuardTests.trx"
+    },
+    {
+      "RunRef": "r2-RackProjectionCommandGuardTests",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter \"FullyQualifiedName~RackCad.Tests.RackProjectionCommandGuardTests\" --logger \"trx;LogFileName=RackProjectionCommandGuardTests.trx\" --results-directory artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2",
+      "Phase": "RED",
+      "TreeSha": "a1c734e98c838651d508f2ab3e0052586df667a0",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2/RackProjectionCommandGuardTests.trx"
+    },
+    {
+      "RunRef": "r2-NamespaceFolderGuardTests",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter \"FullyQualifiedName~RackCad.Tests.NamespaceFolderGuardTests\" --logger \"trx;LogFileName=NamespaceFolderGuardTests.trx\" --results-directory artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2",
+      "Phase": "RED",
+      "TreeSha": "a1c734e98c838651d508f2ab3e0052586df667a0",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2/NamespaceFolderGuardTests.trx"
+    },
+    {
+      "RunRef": "r2-CustomPropertiesEnvelopeGuardTests",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter \"FullyQualifiedName~RackCad.Tests.CustomPropertiesEnvelopeGuardTests\" --logger \"trx;LogFileName=CustomPropertiesEnvelopeGuardTests.trx\" --results-directory artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2",
+      "Phase": "RED",
+      "TreeSha": "a1c734e98c838651d508f2ab3e0052586df667a0",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2/CustomPropertiesEnvelopeGuardTests.trx"
+    },
+    {
+      "RunRef": "r2-RackUnitsGuardSourceTests",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter \"FullyQualifiedName~RackCad.Tests.RackUnitsGuardSourceTests\" --logger \"trx;LogFileName=RackUnitsGuardSourceTests.trx\" --results-directory artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2",
+      "Phase": "RED",
+      "TreeSha": "a1c734e98c838651d508f2ab3e0052586df667a0",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2/RackUnitsGuardSourceTests.trx"
+    },
+    {
+      "RunRef": "r2-I55G15Auth15ConsumerTests",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter \"FullyQualifiedName~RackCad.Tests.I55G15Auth15ConsumerTests\" --logger \"trx;LogFileName=I55G15Auth15ConsumerTests.trx\" --results-directory artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2",
+      "Phase": "RED",
+      "TreeSha": "a1c734e98c838651d508f2ab3e0052586df667a0",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2/I55G15Auth15ConsumerTests.trx"
+    },
+    {
+      "RunRef": "r2-SingleScanInsertGuardTests",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter \"FullyQualifiedName~RackCad.Tests.SingleScanInsertGuardTests\" --logger \"trx;LogFileName=SingleScanInsertGuardTests.trx\" --results-directory artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2",
+      "Phase": "RED",
+      "TreeSha": "a1c734e98c838651d508f2ab3e0052586df667a0",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2/SingleScanInsertGuardTests.trx"
+    },
+    {
+      "RunRef": "r2-RackViewBatchDriverGuardTests",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter \"FullyQualifiedName~RackCad.Tests.RackViewBatchDriverGuardTests\" --logger \"trx;LogFileName=RackViewBatchDriverGuardTests.trx\" --results-directory artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2",
+      "Phase": "RED",
+      "TreeSha": "a1c734e98c838651d508f2ab3e0052586df667a0",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2/RackViewBatchDriverGuardTests.trx"
+    },
+    {
+      "RunRef": "r2-G16FirstViewCorrectiveTests",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter \"FullyQualifiedName~RackCad.Tests.G16FirstViewCorrectiveTests\" --logger \"trx;LogFileName=G16FirstViewCorrectiveTests.trx\" --results-directory artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2",
+      "Phase": "RED",
+      "TreeSha": "a1c734e98c838651d508f2ab3e0052586df667a0",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2/G16FirstViewCorrectiveTests.trx"
+    },
+    {
+      "RunRef": "r2-RackSiblingCustomPropertiesGateTests",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter \"FullyQualifiedName~RackCad.Tests.RackSiblingCustomPropertiesGateTests\" --logger \"trx;LogFileName=RackSiblingCustomPropertiesGateTests.trx\" --results-directory artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2",
+      "Phase": "RED",
+      "TreeSha": "a1c734e98c838651d508f2ab3e0052586df667a0",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2/RackSiblingCustomPropertiesGateTests.trx"
+    },
+    {
+      "RunRef": "r2-RackEnvelopeIdProbeTests",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter \"FullyQualifiedName~RackCad.Tests.RackEnvelopeIdProbeTests\" --logger \"trx;LogFileName=RackEnvelopeIdProbeTests.trx\" --results-directory artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2",
+      "Phase": "RED",
+      "TreeSha": "a1c734e98c838651d508f2ab3e0052586df667a0",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2/RackEnvelopeIdProbeTests.trx"
+    },
+    {
+      "RunRef": "r2-SelectiveEditorOpenTests",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter \"FullyQualifiedName~RackCad.Tests.SelectiveEditorOpenTests\" --logger \"trx;LogFileName=SelectiveEditorOpenTests.trx\" --results-directory artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2",
+      "Phase": "RED",
+      "TreeSha": "a1c734e98c838651d508f2ab3e0052586df667a0",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2/SelectiveEditorOpenTests.trx"
+    },
+    {
+      "RunRef": "r2-CustomPropertiesCommandGuardTests",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter \"FullyQualifiedName~RackCad.Tests.CustomPropertiesCommandGuardTests\" --logger \"trx;LogFileName=CustomPropertiesCommandGuardTests.trx\" --results-directory artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2",
+      "Phase": "RED",
+      "TreeSha": "a1c734e98c838651d508f2ab3e0052586df667a0",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2/CustomPropertiesCommandGuardTests.trx"
+    },
+    {
+      "RunRef": "r2-ui-pbc",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=ui-pbc.trx\" --results-directory artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2",
+      "Phase": "RED",
+      "TreeSha": "a1c734e98c838651d508f2ab3e0052586df667a0",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r2/ui-pbc.trx"
+    },
+    {
+      "RunRef": "g1-core-ws",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.Tests.Workspace\" --logger \"trx;LogFileName=core-ws.trx\" --results-directory artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/g1",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/g1/core-ws.trx"
+    },
+    {
+      "RunRef": "g1-ui-ws",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.Workspace\" --logger \"trx;LogFileName=ui-ws.trx\" --results-directory artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/g1",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/g1/ui-ws.trx"
+    },
+    {
+      "RunRef": "b0-build-release-base",
+      "Command": "dotnet build RackCad.sln -c Release --no-incremental -o artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/b0/out",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/b0/build.log"
+    },
+    {
+      "RunRef": "g2-build-release-wip",
+      "Command": "dotnet build RackCad.sln -c Release --no-incremental -o artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/g2/out",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/g2/build.log"
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "r1-core-ws",
+      "Selected": 3437,
+      "Passed": 3427,
+      "Failed": 10,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.WorkspaceEditIntentGuardTests.TheBaseOfAResultOfThePilotOnlyReachesBeginCheckNowOrDiscardAndReloadInTheHostCoreAndTheTwoOperationsCountTheirOwnUses",
+        "RackCad.Tests.WorkspaceEditIntentGuardTests.TheExpressionOfTheDiagnosticOfTheAdmissionIsInTheWholeHostCoreExactlyTwiceOnceInTheGeneralCheckAndOnceInCheckNow",
+        "RackCad.Tests.WorkspaceEditIntentGuardTests.TheGuardOfTheExpressionOfTheDiagnosticSeesAThirdOneInTheCoreASecondOneInCheckNowAndOneInKeep",
+        "RackCad.Tests.WorkspaceEditIntentGuardTests.ThePerOperationCountsOfTheBaseAndOfTheReadInTheThreeBodiesOfTheReconciliationAreTheirOwnConsumer",
+        "RackCad.Tests.WorkspacePilotReconciliationGuardTests.TheGestureOfTheUpdateIsDeclaredOnceInTheFieldAndCalledOnlyByItsExactHandlerAndTheRequestIsInsideItInTheOrderOfThePackage",
+        "RackCad.Tests.WorkspacePilotReconciliationGuardTests.TheGuardOfTheRequestSeesASecondCallTheBrowserTheMethodGroupAndTheBrokenOrderOfTheSteps",
+        "RackCad.Tests.WorkspacePilotReconciliationHostTests.CheckNowWithARereadThatIsNotAdmittedAndDiffersFromTheBaseIsAConflictAndCarriesTheDiagnosticAndTheHint",
+        "RackCad.Tests.WorkspacePilotReconciliationHostTests.CheckNowWithARereadThatIsNotAdmittedAndMatchesTheBaseIsRecoveredAndCarriesTheDiagnosticAndTheHint",
+        "RackCad.Tests.WorkspacePilotReconciliationHostTests.TheAnswerOfCheckNowCarriesTheDiagnosticOnlyWhereItIsGivenAndEveryOtherAnswerHasNone",
+        "RackCad.Tests.WorkspacePilotSurfaceGuardTests.ThePresentationOfTheFieldTakesTheProgressOfTheUpdateInShowAndInTheGestureOnlyAndReadsNothing"
+      ]
+    },
+    {
+      "RunRef": "r1-ui-ws",
+      "Selected": 694,
+      "Passed": 619,
+      "Failed": 75,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U01_TheUpdateButtonIsOfferedOnAPinnedSurfaceOnlyForADirtyDraftAlsoPossiblyStaleAndNeverInTheOtherStates(name: \"Dirty\", offered: True)",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U01_TheUpdateButtonIsOfferedOnAPinnedSurfaceOnlyForADirtyDraftAlsoPossiblyStaleAndNeverInTheOtherStates(name: \"DirtyPossiblyStale\", offered: True)",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U01_TheUpdateButtonIsOfferedOnAPinnedSurfaceOnlyForADirtyDraftAlsoPossiblyStaleAndNeverInTheOtherStates(name: \"DirtyWithPendingText\", offered: True)",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U02_TheUpdateButtonIsNotOfferedOnAPreviewSurfaceNorWithAFailureOfTheFieldAndTheReloadOfTheFailureOffersItAgain",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U04_ADirtyDraftWithAPersistentDiagnosticOffersTheUpdateButtonToo",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U06_AnAcceptedRequestTakesWhatIsPendingCrossesTheBoundaryOfTheUpdateAsksOnceAndTakesTheProgressAndShowsApplyingWhileItIsInFlight",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U07_ASecondGestureWithTheButtonAlreadyHiddenDoesNotCallThePort",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U08_AnAcceptedRequestWhoseOutcomeIsAlreadyThereShowsItAtOnceAndTheStateIsTheOneOfTheMemoryOfThePort",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U09_AnAcceptedRequestWithoutOutcomeAndNotInFlightBecauseANestedRepaintPresentedItTouchesNothing",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U10_AnOutcomeThatWasPendingIsPresentedAndNothingIsAskedAndItIsPresentedOnce",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U11_ProceededWithAValidPendingTextAndWithoutTextAsksForTheUpdate",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U12_AnInvalidPendingTextAbortsTheBoundaryAndNothingIsAskedAndTheMessageOfTheFieldIsShown",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U13_AnAbortWithoutAMessageShowsItsReasonAndAnAbortWithNeitherShowsTheTextOfNoDetail",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U14_KeptAndBusyAndAnUnknownDecisionDoNotAskAndShowTheirText",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U15_AStartValueThatIsNotAcceptedIsShownInTheGestureWithItsCauseAndTheProgressIsNotTakenAfterIt(start: RackCad.Application.Workspace.EditUpdateStart, expected: \"En espera: hay un comando. No se actualizó.\")",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U15_AStartValueThatIsNotAcceptedIsShownInTheGestureWithItsCauseAndTheProgressIsNotTakenAfterIt(start: RackCad.Application.Workspace.EditUpdateStart, expected: \"Fallo: La actualización no llegó a ejecutarse; no \"···)",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U15_AStartValueThatIsNotAcceptedIsShownInTheGestureWithItsCauseAndTheProgressIsNotTakenAfterIt(start: RackCad.Application.Workspace.EditUpdateStart, expected: \"Fallo: no se pudo pedir el contexto. No se actuali\"···)",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U15_AStartValueThatIsNotAcceptedIsShownInTheGestureWithItsCauseAndTheProgressIsNotTakenAfterIt(start: RackCad.Application.Workspace.EditUpdateStart, expected: \"Fallo: sin detalle. No se actualizó.\")",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U15_AStartValueThatIsNotAcceptedIsShownInTheGestureWithItsCauseAndTheProgressIsNotTakenAfterIt(start: RackCad.Application.Workspace.EditUpdateStart, expected: \"No disponible: no hay ejecutor. No se actualizó.\")",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U15_AStartValueThatIsNotAcceptedIsShownInTheGestureWithItsCauseAndTheProgressIsNotTakenAfterIt(start: RackCad.Application.Workspace.EditUpdateStart, expected: \"No disponible: sin detalle. No se actualizó.\")",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U15_AStartValueThatIsNotAcceptedIsShownInTheGestureWithItsCauseAndTheProgressIsNotTakenAfterIt(start: RackCad.Application.Workspace.EditUpdateStart, expected: \"No se pudo actualizar: forged No se actualizó.\")",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U15_AStartValueThatIsNotAcceptedIsShownInTheGestureWithItsCauseAndTheProgressIsNotTakenAfterIt(start: RackCad.Application.Workspace.EditUpdateStart, expected: \"Ocupado: hay una lectura. No se actualizó.\")",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U15_AStartValueThatIsNotAcceptedIsShownInTheGestureWithItsCauseAndTheProgressIsNotTakenAfterIt(start: RackCad.Application.Workspace.EditUpdateStart, expected: \"Rechazado: otro documento. No se actualizó.\")",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U16_AFailedStartDoesNotLeaveAnythingInTheStoreAndTheNextGestureAsksAgain",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U17_EveryOutcomeIsShownByItsClassWithItsTextAndItsCauseAndOnce(outcome: RackCad.Application.Workspace.EditUpdateOutcome, expected: \"Actualizado con avisos: aviso uno; aviso dos\")",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U17_EveryOutcomeIsShownByItsClassWithItsTextAndItsCauseAndOnce(outcome: RackCad.Application.Workspace.EditUpdateOutcome, expected: \"Actualizado con avisos: sin detalle.\")",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U17_EveryOutcomeIsShownByItsClassWithItsTextAndItsCauseAndOnce(outcome: RackCad.Application.Workspace.EditUpdateOutcome, expected: \"Actualizado: el cambio se aplicó al dibujo.\")",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U17_EveryOutcomeIsShownByItsClassWithItsTextAndItsCauseAndOnce(outcome: RackCad.Application.Workspace.EditUpdateOutcome, expected: \"Aplicado; recarga para seguir editando.\")",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U17_EveryOutcomeIsShownByItsClassWithItsTextAndItsCauseAndOnce(outcome: RackCad.Application.Workspace.EditUpdateOutcome, expected: \"El borrador no admitió la actualización: el borrad\"···)",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U17_EveryOutcomeIsShownByItsClassWithItsTextAndItsCauseAndOnce(outcome: RackCad.Application.Workspace.EditUpdateOutcome, expected: \"El borrador se descartó o su sesión terminó durant\"···)",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U17_EveryOutcomeIsShownByItsClassWithItsTextAndItsCauseAndOnce(outcome: RackCad.Application.Workspace.EditUpdateOutcome, expected: \"Estado desconocido; comprueba.\")",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U17_EveryOutcomeIsShownByItsClassWithItsTextAndItsCauseAndOnce(outcome: RackCad.Application.Workspace.EditUpdateOutcome, expected: \"Fallo: La actualización no llegó a ejecutarse; no \"···)",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U17_EveryOutcomeIsShownByItsClassWithItsTextAndItsCauseAndOnce(outcome: RackCad.Application.Workspace.EditUpdateOutcome, expected: \"Fallo: sin detalle.\")",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U17_EveryOutcomeIsShownByItsClassWithItsTextAndItsCauseAndOnce(outcome: RackCad.Application.Workspace.EditUpdateOutcome, expected: \"Hay texto pendiente: hay texto sin aplicar.\")",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U17_EveryOutcomeIsShownByItsClassWithItsTextAndItsCauseAndOnce(outcome: RackCad.Application.Workspace.EditUpdateOutcome, expected: \"Nada que aplicar: el borrador está limpio.\")",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U17_EveryOutcomeIsShownByItsClassWithItsTextAndItsCauseAndOnce(outcome: RackCad.Application.Workspace.EditUpdateOutcome, expected: \"No aplicable: el borrador no se puede actualizar.\")",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U17_EveryOutcomeIsShownByItsClassWithItsTextAndItsCauseAndOnce(outcome: RackCad.Application.Workspace.EditUpdateOutcome, expected: \"No se aplicó: el dibujo cambió fuera del panel. Di\"···)",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U17_EveryOutcomeIsShownByItsClassWithItsTextAndItsCauseAndOnce(outcome: RackCad.Application.Workspace.EditUpdateOutcome, expected: \"No se aplicó: el rack ya no es editable.\")",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U17_EveryOutcomeIsShownByItsClassWithItsTextAndItsCauseAndOnce(outcome: RackCad.Application.Workspace.EditUpdateOutcome, expected: \"No se aplicó: falló la escritura.\")",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U17_EveryOutcomeIsShownByItsClassWithItsTextAndItsCauseAndOnce(outcome: RackCad.Application.Workspace.EditUpdateOutcome, expected: \"No se aplicó: falta una vista.\")",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U17_EveryOutcomeIsShownByItsClassWithItsTextAndItsCauseAndOnce(outcome: RackCad.Application.Workspace.EditUpdateOutcome, expected: \"No se aplicó: sin detalle.\")",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U17_EveryOutcomeIsShownByItsClassWithItsTextAndItsCauseAndOnce(outcome: RackCad.Application.Workspace.EditUpdateOutcome, expected: \"Rechazado: otro documento.\")",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U17_EveryOutcomeIsShownByItsClassWithItsTextAndItsCauseAndOnce(outcome: RackCad.Application.Workspace.EditUpdateOutcome, expected: \"Resultado de la actualización no reconocido.\")",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U17_EveryOutcomeIsShownByItsClassWithItsTextAndItsCauseAndOnce(outcome: RackCad.Application.Workspace.EditUpdateOutcome, expected: \"Sin borrador: no hay borrador.\")",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U17_EveryOutcomeIsShownByItsClassWithItsTextAndItsCauseAndOnce(outcome: RackCad.Application.Workspace.EditUpdateOutcome, expected: \"Ya hay una actualización en curso.\")",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U18_AClosedInErrorOutcomeIsShownWithItsClassificationAndNeverAsASuccessWhateverTheClassificationIs(outcome: RackCad.Application.Workspace.EditUpdateOutcome, expected: \"El borrador quedó en error al cerrar la actualizac\"···)",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U19_NoClassificationOfAClosedInErrorOutcomeEverProducesTheTextOfASuccess",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U21_ANestedRepaintThatTakesTheOutcomeFirstLeavesTheGestureWithInFlightFalseAndNothingToPresentAndItTouchesNothing",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U22_ARepaintWithInFlightFalseAndNoOutcomeNeverTouchesWhatWasPresentedNorInventsAnOutcome",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U23_ApplyingComesOnlyFromInFlightOrFromTheApplyingStateOfTheFieldAndOtherwiseTheFieldIsPaintedFromItsState",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U24_ARepaintOfTheLiveSurfacePresentsTheOutcomeThatArrivedAfterTheGestureOnceAndNeverReplacesALaterNotice",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U27_IfTheSurfaceChangedInsideTheRequestTheResultIsNotShownHereNorTakenAndItStaysInTheStore",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U28_IfTheSurfaceChangedInsideTheBoundaryNothingIsAskedAndTheSurfaceChangeIsShown",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U29_ARequestNeverErasesAnOutcomeThatWasNotPresentedBecauseTheGestureTakesWhatIsPendingFirst",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U30_AFailureOfTheRequestTheBoundaryOrTheProgressIsContainedAsTheErrorOfTheFieldAndNeverEscapes",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U31_AFailureOfTheProgressInTheRepaintIsContainedAsTheErrorOfTheField",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U33_TheDoubleRecordsTheUpdateInItsOwnRegisterAndTheSetsOfTheOtherOperationsDoNotChange",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.U34_ThroughTheBrowserARepaintOfThePanelTakesTheOutcomeOfTheLiveSurfaceAndPresentsItOnce",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewTests.AFailureOfThePortInsideTheUpdateClickIsContainedAsTheErrorOfTheFieldAndNeverEscapesTheClick",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewTests.ARealClickOnTheUpdateButtonRunsTheGestureOnceInTheOrderOfThePackageAndTheButtonDisappearsWhileTheUpdateIsInFlight",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewTests.TheOutcomeOfTheUpdateReachesTheViewByTheNoticeLineAndTheStateIsTheOneOfTheMemoryOfThePort",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewTests.TheUpdateButtonIsVisibleOnlyForADirtyDraftOnAPinnedSurfaceAndNeverInTheOtherStatesNorOnAPreview",
+        "RackCad.UI.Tests.WorkspacePilotReconciliationTests.AConflictOfTheCheckWithADiagnosticKeepsItAsPersistentWithItsHintAndTheTextOfTheConflictIsTheSame",
+        "RackCad.UI.Tests.WorkspacePilotReconciliationTests.ADiagnosticWithoutAHintShowsAnEmptyHintAndTheHintNeverComesWithoutItsDiagnostic",
+        "RackCad.UI.Tests.WorkspacePilotReconciliationTests.ARecoveredCheckWithADiagnosticKeepsItAsPersistentWithItsHintAndTheBoxStaysReadOnlyAndTheTextOfTheRecoveryIsTheSame",
+        "RackCad.UI.Tests.WorkspacePilotReconciliationTests.ARecoveredOrConflictingCheckWithoutADiagnosticRetiresThePersistentOneAndAnAnswerThatDidNotRereadLeavesItAlone"
+      ]
+    },
+    {
+      "RunRef": "r2-CallerOwnedFacadeGuardTests",
+      "Selected": 81,
+      "Passed": 81,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r2-CallerOwnedTransactionGuardTests",
+      "Selected": 15,
+      "Passed": 15,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r2-RackSiblingRedrawUnitsTests",
+      "Selected": 2,
+      "Passed": 2,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r2-DebugFaultInjectionGuardTests",
+      "Selected": 1,
+      "Passed": 1,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r2-SiblingRedrawSeamGuardTests",
+      "Selected": 2,
+      "Passed": 2,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r2-RackSiblingMembershipTests",
+      "Selected": 12,
+      "Passed": 12,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r2-RackSiblingRedrawPlanTests",
+      "Selected": 2,
+      "Passed": 2,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r2-RackSiblingRedrawRunTests",
+      "Selected": 6,
+      "Passed": 6,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r2-PushBackClassicCharacterizationPluginGuardTests",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r2-PushBackPluginSourceGuardTests",
+      "Selected": 11,
+      "Passed": 11,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r2-PushBackRoundTripSourceGuardTests",
+      "Selected": 24,
+      "Passed": 24,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r2-RackProjectionCommandGuardTests",
+      "Selected": 34,
+      "Passed": 34,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r2-NamespaceFolderGuardTests",
+      "Selected": 7,
+      "Passed": 7,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r2-CustomPropertiesEnvelopeGuardTests",
+      "Selected": 22,
+      "Passed": 22,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r2-RackUnitsGuardSourceTests",
+      "Selected": 18,
+      "Passed": 18,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r2-I55G15Auth15ConsumerTests",
+      "Selected": 5,
+      "Passed": 5,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r2-SingleScanInsertGuardTests",
+      "Selected": 5,
+      "Passed": 5,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r2-RackViewBatchDriverGuardTests",
+      "Selected": 4,
+      "Passed": 4,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r2-G16FirstViewCorrectiveTests",
+      "Selected": 61,
+      "Passed": 61,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r2-RackSiblingCustomPropertiesGateTests",
+      "Selected": 2,
+      "Passed": 2,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r2-RackEnvelopeIdProbeTests",
+      "Selected": 5,
+      "Passed": 5,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r2-SelectiveEditorOpenTests",
+      "Selected": 33,
+      "Passed": 33,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r2-CustomPropertiesCommandGuardTests",
+      "Selected": 48,
+      "Passed": 48,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r2-ui-pbc",
+      "Selected": 55,
+      "Passed": 55,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g1-core-ws",
+      "Selected": 3437,
+      "Passed": 3437,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g1-ui-ws",
+      "Selected": 694,
+      "Passed": 692,
+      "Failed": 2,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.WorkspacePilotFieldViewTests.ARealClickOnTheUpdateButtonRunsTheGestureOnceInTheOrderOfThePackageAndTheButtonDisappearsWhileTheUpdateIsInFlight",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewTests.TheUpdateButtonIsVisibleOnlyForADirtyDraftOnAPinnedSurfaceAndNeverInTheOtherStatesNorOnAPreview"
+      ]
+    },
+    {
+      "RunRef": "b0-build-release-base",
+      "Selected": 0,
+      "Passed": 0,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g2-build-release-wip",
+      "Selected": 0,
+      "Passed": 0,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    }
+  ],
+  "Evidence": [
+    "ESTADO: BLOQUEADO por tres defectos de las pruebas del propio RED (ver UnexpectedFindings). El producto de la parte [2] esta implementado y verificado en local, pero no esta confirmado en Git: vive como parche en artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/wip-green-impl.patch (3 archivos de produccion; el arbol queda limpio en el commit RED). No hay commit GREEN.",
+    "RED: commit a6511c0493e93edd2bb4c0503b2e74fce900a1d0 (arbol a1c734e98c838651d508f2ab3e0052586df667a0), 13 de los 14 archivos del alcance (WorkspaceHostCore.cs solo cambia en el GREEN). Esqueleto inerte: ShowUpdateButton falso, Update() vacio, boton del XAML con su manejador contenido, y AdmissionDiagnostic/ClassicEditorHint de EditCheckOutcome con fabricas inertes (los argumentos se ignoran).",
+    "RED en Core (filtro Workspace, ExpectRed true): 3437 seleccionadas (3421 de la base + 16 nuevas), 3427 pasan, 10 fallan por asercion; ninguna falla por una excepcion del esqueleto. RED en UI (filtro Workspace, ExpectRed true): 694 seleccionadas (601 de la base + 93 nuevas), 619 pasan, 75 fallan por asercion (todos los mensajes son Assert.*). Las 23 clases de regresion de Core y PushBackClassicCharacterization (55) pasan en el RED con sus conteos exactos (ExpectRed false).",
+    "Pruebas nuevas o cambiadas que ya pasan en el RED (lista completa en artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/tests/r1/red-pass.txt): Core 9 metodos (autopruebas de guardas sobre texto sintetico, el XAML con el boton del esqueleto, y las del diagnostico cuyo resultado ya es el correcto: lectura admitida sin diagnostico, un fallo del diagnostico que no cambia la clasificacion, la forma del valor y la lectura unica); UI 9 metodos (U01, U03, U05, U20, U25, U26, U32 y las dos de la vista y de la reconciliacion que no dependen del gesto).",
+    "GREEN local (arbol de trabajo con el parche, sin confirmar): Core filtro Workspace 3437/3437 en verde; UI filtro Workspace 692 de 694 (fallan solo las dos pruebas de la vista descritas abajo). Con el parche aplicado, las guardas de las filas 12, 18 y 21 y la regla H-19 pasan, y las guardas G-1 a G-10, las de los VM sin mecanismos y las de contenido de texto siguen en verde.",
+    "Mapa evidencia por invariante: INV-F4T4C-01 y 24: el gesto solo llama RequestUpdate/TakeUpdateProgress/CrossBoundary del puerto y presenta el EditUpdateOutcome por su clase (U06, U17, U18, guardas G-10 intactas). INV-F4T4C-02: orden y una sola peticion (U06, U07, U10, U11, U14, U15; guardas RequestViolations con orden boton, pendiente, frontera, peticion, recogida). INV-F4T4C-03: sin Task/async/Dispatcher/Timer/event/+= nuevos (guardas del VM sin mecanismos, que pasan). INV-F4T4C-11: boton (U01 a U05, vista), frontera H-27 (U11 a U14), Aplicando solo con InFlight o Applying (U06, U23, U24), una vez y sin reclasificar (U17 a U20), IsMine y consumo por superficie (U21, U25 a U28), valor de inicio en el gesto (U15, U16), K=1 (U08, U34). INV-F4T4C-12: diagnostico antes de CheckNow, en su try, null si falla, una lectura (pruebas del nucleo real en WorkspacePilotReconciliationHostTests; PresentCheck en WorkspacePilotReconciliationTests). INV-F4T4C-13: ClosedInError con clasificacion y nunca exito (U18, U19). INV-F4T4C-14/15/16/19: sin segunda via de escritura, sin API de Undo ni comando, sin tocar T1B ni fachadas, solo IWorkspacePilotEditPort (git diff --name-only BaseSha..RedSha lista solo archivos del alcance). INV-F4T4C-17: ver los cambios de guarda. INV-F4T4C-18: ver contencion. INV-F4T4C-20: RED con cuerpos inertes. INV-F4T4C-23: en el parche WorkspaceHostCore.cs solo cambia el cuerpo de TryCheckPilotEdit y WorkspaceEditIntent.cs solo EditCheckOutcome. INV-F4T4C-25: el doble registra RequestUpdate, TakeUpdateProgress y CrossBoundary en UpdateLog sin cambiar Calls, Operations() ni Reads() (U33).",
+    "Cambios de guarda aplicados frente a D-T4C-20 (todos en el RED, cada uno con su autoprueba en negativo; ninguna fila [1] ni otra guarda cambia): FILA 12 y tabla H-19 (WorkspaceEditIntentGuardTests): CheckBody() sale del bucle de cero y pasa a exactamente un AdmissionDiagnosticPattern y dos pilot.Read, ambos dentro de esa expresion; IntentBody, KeepBody y DiscardAndReloadBody siguen en cero; la expresion pasa de una a dos apariciones en el nucleo (una en la confirmacion y una en la comprobacion), con negativas: una tercera en el nucleo, una segunda en CheckBody y una en KeepBody. FILA 18 (WorkspacePilotSurfaceGuardTests): la presentacion del campo (miembros Present, Refresh, Show, Clear y demas) puede llamar a TakeUpdateProgress y a ninguna de las seis lecturas ni a RequestUpdate; TakeUpdateProgress solo en el VM del campo y exactamente tres veces (una en Show y dos en Update), con negativas: una lectura en la presentacion, una segunda recogida, una recogida fuera del campo. FILA 21 (WorkspacePilotReconciliationGuardTests y IntentionReads de WorkspacePilotCloseSyncGuardTests): el gesto Update() declarado una vez en el VM del campo y llamado solo por su manejador OnBrowserFieldUpdateClick dentro de Contained; RequestUpdate solo en el VM del campo, una vez, como _port.RequestUpdate(request) dentro de Update y en el orden boton, pendiente, frontera, peticion, recogida; el boton BrowserFieldUpdateButton en la tabla de botones (contenido, nombre de automatizacion, manejador y visibilidad); IntentionReads incluye RequestUpdate para el VM del navegador, con negativas de un segundo llamador, del navegador, del manejador sin Contained, del grupo de metodos y del orden roto. Regla de UI de D-T4A2-06: PresentCheck guarda el diagnostico como persistente y solo retira si la respuesta no trae diagnostico (WorkspacePilotReconciliationTests).",
+    "Los textos de CommitThrew y AppliedPostRereadFailed son los existentes A2-11 (UnknownCheckText, «Estado desconocido; comprueba.») y A2-12 (UnknownAppliedText, «Aplicado; recarga para seguir editando.»); no se gasta una correccion por su redaccion.",
+    "Constante nueva del VM del campo: ApplyingText = «Aplicando». Caso: indicador de la actualizacion en vuelo (InFlight) o del estado Applying.",
+    "Constante nueva del VM del campo: UpdateAppliedText = «Actualizado: el cambio se aplicó al dibujo.». Caso: desenlace Applied.",
+    "Constante nueva del VM del campo: UpdateAppliedWithWarningsPrefix = «Actualizado con avisos: ». Caso: desenlace AppliedWithWarnings, seguido de los avisos separados por «; ».",
+    "Constante nueva del VM del campo: UpdateConflictPrefix = «No se aplicó: el dibujo cambió fuera del panel. Diferencias: ». Caso: desenlace NotAppliedConflict, seguido de las diferencias.",
+    "Constante nueva del VM del campo: UpdateNotAppliedPrefix = «No se aplicó: ». Caso: desenlaces NotAppliedAdmission, NotAppliedPreflight y NotAppliedFailure, seguido de su causa.",
+    "Constante nueva del VM del campo: UpdateClosedInErrorPrefix = «El borrador quedó en error al cerrar la actualización. Clasificación: ». Caso: desenlace ClosedInError (M-03): clasificacion + motivo + causa + diferencias + avisos; nunca un exito.",
+    "Constante nueva del VM del campo: UpdateClosedDetachedText = «El borrador se descartó o su sesión terminó durante la actualización.». Caso: desenlace ClosedDetached.",
+    "Constante nueva del VM del campo: UpdateAnotherInProgressText = «Ya hay una actualización en curso.». Caso: desenlace AnotherUpdateInProgress.",
+    "Constante nueva del VM del campo: UpdateUnrecognizedText = «Resultado de la actualización no reconocido.». Caso: estado de desenlace que ningun enumerador nombra (neutro: ni fallo ni exito).",
+    "Constante nueva del VM del campo: UpdateNotStartedSuffix = « No se actualizó.». Caso: sufijo de todo valor de inicio que no es Accepted y del Busy de la frontera.",
+    "Constante nueva del VM del campo: UpdateNotStartedPrefix = «No se pudo actualizar: ». Caso: valor de inicio con un estado que ningun enumerador nombra.",
+    "Constante nueva del VM del campo: UpdateAbortedPrefix = «No se actualizó: ». Caso: frontera Update con decision Aborted (mensaje del campo o motivo).",
+    "Constante nueva del VM del campo: UpdateKeptText = «No se actualizó: el borrador no se puede actualizar ahora.». Caso: frontera Update con decision Kept o una decision desconocida (no se pide).",
+    "Constante nueva del VM del campo: UpdateRefusedPrefix = «El borrador no admitió la actualización: ». Caso: desenlace Refused.",
+    "Constante nueva del VM del campo: UpdateNothingToApplyPrefix = «Nada que aplicar: ». Caso: desenlace NothingToApply.",
+    "Constante nueva del VM del campo: UpdatePendingTextPrefix = «Hay texto pendiente: ». Caso: desenlace PendingText.",
+    "Constante nueva del VM del campo: UpdateRejectedPrefix = «Rechazado: ». Caso: desenlace Rejected y valor de inicio Rejected.",
+    "Constante nueva del VM del campo: UpdateNoDraftPrefix = «Sin borrador: ». Caso: desenlace NoDraft.",
+    "Constante nueva del VM del campo: UpdateNotApplicablePrefix = «No aplicable: ». Caso: desenlace NotApplicable.",
+    "Constante nueva del VM del campo: UpdateFailedPrefix = «Fallo: ». Caso: desenlace Failed y valor de inicio Failed (incluye Failed(HostNotRunReason)).",
+    "Constante nueva del VM del campo: UpdateUnavailablePrefix = «No disponible: ». Caso: valor de inicio Unavailable.",
+    "Constante nueva del VM del campo: UpdateWaitingPrefix = «En espera: ». Caso: valor de inicio Waiting.",
+    "Constante nueva del VM del campo: UpdateBusyPrefix = «Ocupado: ». Caso: valor de inicio Busy y decision Busy de la frontera.",
+    "Constante nueva del VM del campo: DifferencesPrefix = « Diferencias: ». Caso: diferencias de un ClosedInError.",
+    "Constante nueva del VM del campo: WarningsPrefix = « Avisos: ». Caso: avisos de un ClosedInError.",
+    "Constante nueva del VM del campo: ListSeparator = «; ». Caso: separador de listas de avisos y diferencias.",
+    "Constante nueva del VM del campo: ClassifiedAppliedName = «aplicada». Caso: clasificacion Applied de un ClosedInError.",
+    "Constante nueva del VM del campo: ClassifiedAppliedWithWarningsName = «aplicada con avisos». Caso: clasificacion AppliedWithWarnings de un ClosedInError.",
+    "Constante nueva del VM del campo: ClassifiedConflictName = «no aplicada por conflicto». Caso: clasificacion NotAppliedConflict de un ClosedInError.",
+    "Constante nueva del VM del campo: ClassifiedAdmissionName = «no aplicada por la admisión». Caso: clasificacion NotAppliedAdmission de un ClosedInError.",
+    "Constante nueva del VM del campo: ClassifiedPreflightName = «no aplicada por la comprobación previa». Caso: clasificacion NotAppliedPreflight de un ClosedInError.",
+    "Constante nueva del VM del campo: ClassifiedFailureName = «no aplicada por un fallo». Caso: clasificacion NotAppliedFailure de un ClosedInError.",
+    "Constante nueva del VM del campo: ClassifiedCommitThrewName = «desconocida (el cierre falló)». Caso: clasificacion CommitThrew de un ClosedInError.",
+    "Constante nueva del VM del campo: ClassifiedPostRereadName = «aplicada con la relectura fallida». Caso: clasificacion AppliedPostRereadFailed de un ClosedInError.",
+    "Constante nueva del VM del campo: ClassifiedNoneName = «sin clasificar». Caso: clasificacion sin valor de un ClosedInError.",
+    "Como las trampas medidas respetan el parche: WorkspaceLifecycleGuardTests (dos _knownClean y la forma literal de los case Recovered y Conflict: se conservan, con Recovered(admission, hint) y Conflict(DescribeDifferences(...), admission, hint)); WorkspaceEditIntentGuardTests:1003-1016 (palabras prohibidas tambien en comentarios de Core y de WorkspaceEditIntent.cs: ninguna nueva); nombres de tipo de H-20 (ningun tipo nuevo); WorkspaceBrowserHostGuardTests (Content unico en la superficie y ningun Width ni Height: «Actualizar» es unico y el boton no fija tamanos); textos de WorkspacePilotReconciliationGuardTests:414-477 (no se repiten); G-10 de Task y async (0 en el VM del campo); y los VM sin mecanismos (no hay +=, -=, event, delegate, Dispatcher, Timer, Task ni async: la lista del mensaje se compone con text = text + ...).",
+    "Contencion INV-F4T4C-18 (F4-E59): en local solo se corrieron los dos filtros de UI de RequiredTests (Workspace y PushBackClassicCharacterization), nunca la suite completa de UI; en Core, los filtros de Workspace y de las 23 clases en Debug. Ninguna prueba nueva escribe fuera de memoria ni usa la configuracion real, ni deja modal, dispatcher o estado persistente; no se uso ninguna sonda con entradas validas en caminos con dialogo o escritura. No se corrio la suite completa de Core en Debug ni los filtros en Release: el bloqueo se detecto antes.",
+    "Builds: linea base Release de la solucion (RunRef b0-build-release-base): 0 errores, 82 avisos (MSB3277 del Plugin y xUnit de pruebas existentes). Release con el parche aplicado (g2-build-release-wip): 0 errores, 83 avisos; el unico aviso nuevo es xUnit2013 en WorkspacePilotReconciliationHostTests.cs (defecto 3 de UnexpectedFindings). No se compilo el Plugin a su carpeta bin por defecto; no se toco AutoCAD."
+  ],
+  "UnexpectedFindings": [
+    "DEFECTO DE PRUEBA 1 (RED, no del producto): tests/RackCad.UI.Tests/Workspace/WorkspacePilotFieldViewTests.cs, TheUpdateButtonIsVisibleOnlyForADirtyDraftOnAPinnedSurfaceAndNeverInTheOtherStatesNorOnAPreview, linea 757. Para el caso de la vista previa usa un borrador Dirty con isProtected true, y el navegador (WorkspaceBrowserViewModel.cs, RebuildTabs, lineas 1295-1300) fija toda pestana con trabajo protegido, por lo que la pestana nunca es una vista previa y la asercion Assert.True(IsPreview) falla antes de comprobar el boton. Correccion propuesta: en ese caso usar un Dirty con isProtected false (no protegido), que se queda como vista previa. No se puede arreglar con producto: el navegador esta fuera del alcance.",
+    "DEFECTO DE PRUEBA 2 (RED, no del producto): mismo archivo, ARealClickOnTheUpdateButtonRunsTheGestureOnceInTheOrderOfThePackageAndTheButtonDisappearsWhileTheUpdateIsInFlight, linea 778. Espera exactamente cuatro entradas en el registro del doble (recogida, frontera, peticion, recogida). En la vista real el gesto termina con el aviso de cambio (_changed), el navegador reconstruye y llama a Show, que por diseno (F-1, D-T4C-03) recoge el progreso de la superficie viva: queda una quinta entrada TakeUpdateProgress. El orden del gesto y la unica peticion si son correctos. Correccion propuesta: esperar las cinco entradas (la quinta es el repintado) o comprobar una frontera y una peticion y el orden relativo de las cuatro primeras.",
+    "DEFECTO DE PRUEBA 3 (RED, no del producto): tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs, linea 726, Assert.Equal(0, rig.Host.Reader.Reads.Count) introduce un aviso nuevo xUnit2013 (el criterio pide ningun aviso nuevo). Correccion propuesta: Assert.Empty(rig.Host.Reader.Reads).",
+    "Por la regla de la delegacion (16.8: desde el commit RED no se modifica, anade ni borra nada bajo tests/, y si una prueba necesita cambio, parada y bloqueo estructurado) no se corrigieron las pruebas ni se confirmo el GREEN. Ninguna condicion C01 a C16 se activo: el id S-04 (evidencia contradictoria) es el mas cercano de la lista del contrato, porque las pruebas del RED contradicen un comportamiento medido del navegador y del repintado; no es una contradiccion del paquete.",
+    "La unica pareja de archivos del alcance que sigue sin cambios en el RED es WorkspaceHostCore.cs, cuyo cambio (solo el cuerpo de TryCheckPilotEdit) esta en el parche junto con EditCheckOutcome y el VM del campo."
+  ],
+  "KnownLimitations": [
+    "El producto implementado en el parche no esta confirmado en Git ni lo ha corrido la CI; la CI del SHA RED debe dar Core y UI en failure (ExpectRed true), y no existe SHA GREEN.",
+    "Segun el diseno, los avisos de un AppliedWithWarnings viven como aviso del gesto (NoticeText) y se pierden si la superficie cambia despues de presentarlos (D-T4C-11, O-14); PICKFIRST se vacia con EXECUTEFUNCTION (aceptado, O-15). El diagnostico persistente de T4A2 puede quedar mientras Actualizar admite (R-M3-16).",
+    "Si la superficie viva es una vista previa o el campo esta en Error, el resultado no se recoge (decision conservadora): queda en el almacen hasta que la superficie fijada de su rack vuelva a pintarse."
+  ],
+  "Deviations": [
+    "El GREEN no se confirmo ni se envio (bloqueo por defectos de las pruebas del RED, regla 16.8). Todo lo demas del RED se hizo segun el contrato.",
+    "La presentacion de un resultado en la vista previa o con el campo en Error se omite sin consumirlo (decision conservadora dentro del comportamiento fijado; sin cambio de semantica)."
+  ],
+  "OpenQuestions": [],
+  "WorkerStatus": "BLOCKED",
+  "Disposition": "BLOCKED",
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "RecommendedNextAction": "Emitir una delegacion de correccion nueva (intento 2) que parta del RED a6511c0493e93edd2bb4c0503b2e74fce900a1d0 y que permita corregir exactamente las tres pruebas del RED descritas en UnexpectedFindings (dos en WorkspacePilotFieldViewTests.cs y una en WorkspacePilotReconciliationHostTests.cs, ambos en el alcance), y despues aplicar el parche artifacts/orchestration/I-64/F4-T4C2-PANEL/1/R20261115T190629Z-9b55/wip-green-impl.patch como GREEN (con git apply) y repetir las corridas: filtros de Workspace de Core (3437 o mas) y de UI (694 o mas), las 23 clases, PushBackClassicCharacterization, la suite completa de Core en Debug, el build Release y la CI exacta. No hay que cambiar el producto del parche para esas tres pruebas.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "high",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

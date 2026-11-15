@@ -1,0 +1,13 @@
+I-64 F4-T4C2-PANEL RED: pruebas y esqueleto inerte de la UI de Actualizar
+
+Pruebas nuevas y cambiadas contra un esqueleto inerte: el gesto Update() y la oferta del boton
+(ShowUpdateButton) sin efecto, el boton del XAML con su manejador contenido, y las propiedades
+AdmissionDiagnostic y ClassicEditorHint de EditCheckOutcome con fabricas inertes. Cubre el gesto y su
+orden, la frontera Update, la presentacion de cada desenlace sin reclasificarlo (M-03 incluido), las cinco
+reglas de D-T4C-03, el diagnostico de T4A2 en el nucleo real y en la UI, el doble de UI con su registro
+propio (INV-F4T4C-25) y los cambios de guarda de las filas 12, 18 y 21 de D-T4C-20 con su autoprueba en
+negativo. Fallan por asercion solo las pruebas nuevas o cambiadas, en Core y en UI.
+
+Estado: F4 en curso; RED de la entrega del Worker de F4-T4C2-PANEL (WorkRunId R20261115T190629Z-9b55, intento 1).
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
