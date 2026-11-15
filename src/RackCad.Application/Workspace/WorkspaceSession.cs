@@ -25,8 +25,12 @@ namespace RackCad.Application.Workspace
         // Pending hints are coalesced by kind: N hints of one kind are a single pending flag (constant cost).
         private readonly System.Collections.Generic.HashSet<HintKind> _pending = new();
 
-        /// <summary>Number of distinct pending hint kinds; zero when nothing awaits a drain.</summary>
-        public int PendingHintCount => _pending.Count;
+        // I-64 F4-T4C1-HOST (D-T4C-09, IC-09): the hints that arrive while the own mutation of the update is open are kept apart, also
+        // coalesced by kind. They only invalidate; the foreign ones in _pending keep their whole effect.
+        private readonly System.Collections.Generic.HashSet<HintKind> _ownPending = new();
+
+        /// <summary>Number of distinct pending hint kinds, the own ones included; zero when nothing awaits a drain.</summary>
+        public int PendingHintCount => _pending.Count + _ownPending.Count;
 
         /// <summary>Queues a hint. Constant cost, no reads. False when the session is destroyed.</summary>
         public bool EnqueueHint(HintKind kind)
@@ -36,14 +40,19 @@ namespace RackCad.Application.Workspace
             return true;
         }
 
-        // RED skeleton (INV-F4T4C-20): inert.
-        public bool EnqueueOwnHint(HintKind kind) => false;
+        /// <summary>Queues a hint that the own mutation of the update caused. Constant cost, no reads. False when the session is destroyed.</summary>
+        public bool EnqueueOwnHint(HintKind kind)
+        {
+            if (IsDestroyed) return false;
+            _ownPending.Add(kind);
+            return true;
+        }
 
         /// <summary>Drains pending hints only when the conditions allow it; coalesces N hints into one drain.</summary>
         public DrainResult TryDrain(DrainConditions conditions)
         {
             var allowed = !IsDestroyed && conditions.IsQuiescent && !conditions.ModalRackCadActive && conditions.PanelVisible;
-            if (!allowed || _pending.Count == 0)
+            if (!allowed || PendingHintCount == 0)
                 return new DrainResult(false, System.Array.Empty<DrainOperation>());
 
             var ops = new System.Collections.Generic.List<DrainOperation>();
@@ -52,12 +61,13 @@ namespace RackCad.Application.Workspace
                 ops.Add(DrainOperation.ReadImplicitSelection);
                 ops.Add(DrainOperation.RecomputeSelectionContext);
             }
-            if (_pending.Contains(HintKind.DatabaseObjectChanged) || _pending.Contains(HintKind.CommandEnded))
-            {
-                ops.Add(DrainOperation.InvalidateNavigationCaches);
-                ops.Add(DrainOperation.MarkDraftsPossiblyStale);
-            }
+
+            // What is own only invalidates (IC-08, IC-09). The drafts are marked only by a foreign hint that was pending.
+            var foreignChange = _pending.Contains(HintKind.DatabaseObjectChanged) || _pending.Contains(HintKind.CommandEnded);
+            if (foreignChange || _ownPending.Count > 0) ops.Add(DrainOperation.InvalidateNavigationCaches);
+            if (foreignChange) ops.Add(DrainOperation.MarkDraftsPossiblyStale);
             _pending.Clear();
+            _ownPending.Clear();
             return new DrainResult(true, ops);
         }
 

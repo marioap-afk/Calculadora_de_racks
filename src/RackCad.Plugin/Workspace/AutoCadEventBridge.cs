@@ -112,16 +112,13 @@ namespace RackCad.Plugin.Workspace
 
         public void SetModalRackCadActive(bool active) => _core.SetModalRackCadActive(active);
 
-        // RED skeleton (INV-F4T4C-20): three internal forwarders with inert bodies.
-        internal void OpenOwnMutation(SessionId session)
-        {
-        }
+        // I-64 F4-T4C1-HOST (D-T4C-09, IC-09): three internal forwarders to the one core, for the own mutation of the update of the pilot and
+        // the bound of its ticket. They add no state, no subscription and no read of the drawing, and the public surface does not grow.
+        internal void OpenOwnMutation(SessionId session) => _core.OpenOwnMutation(session);
 
-        internal void CloseOwnMutation(SessionId session)
-        {
-        }
+        internal void CloseOwnMutation(SessionId session) => _core.CloseOwnMutation(session);
 
-        internal int? ForeignCommandStartsOf(SessionId session) => null;
+        internal int? ForeignCommandStartsOf(SessionId session) => _core.ForeignCommandStartsOf(session);
 
         /// <summary>Removes every hookup. The bridge is then back to zero subscriptions.</summary>
         public void Dispose()
@@ -202,7 +199,13 @@ namespace RackCad.Plugin.Workspace
                 case BridgeSource.CommandWillStart:
                 {
                     var document = FindDocument(a.NativeInstanceId);
-                    CommandEventHandler handler = (s, e) => ContainSession(a, () => { if (_core.OnSourceEvent(a.Session, a.Source)) RaiseCommandStateChanged(); });
+                    CommandEventHandler handler = (s, e) => ContainSession(a, () =>
+                    {
+                        if (_core.OnSourceEvent(a.Session, a.Source)) RaiseCommandStateChanged();
+
+                        // A command that is not the update itself: only its name is read, from the argument of the event, in memory.
+                        if (!string.Equals(e.GlobalCommandName, "EXECUTEFUNCTION", StringComparison.OrdinalIgnoreCase)) _core.NoteForeignCommandStart(a.Session);
+                    });
                     document.CommandWillStart += handler;
                     return () => WithDocument(a.NativeInstanceId, d => d.CommandWillStart -= handler);
                 }

@@ -26,25 +26,29 @@ namespace RackCad.Plugin.Views
     /// views must carry and every warning are decided by the pure run of Application. It never takes the lock of the document: the one lock
     /// around PREPARE, MUTATE and POST is the one of the adapter that runs it. It never erases a view.
     ///
-    /// This class is the port: it keeps nothing, and every <see cref="Begin"/> hands back a NEW scope. The objects of AutoCAD live only in
-    /// the two scope classes below, which the run always releases.
+    /// This class is the port of ONE run (I-64 F4-T4C1-HOST, D-T4C-07): it is created only by the target of the adapter, with the exact document
+    /// that the adapter locked, and it can begin once. The target retires it on every exit. The objects of AutoCAD live only in the two scope
+    /// classes below, which the run always releases.
     /// </summary>
     internal sealed class RackPilotUpdateWriter : IPushBackPilotUpdatePort
     {
-        // RED skeleton (INV-F4T4C-20): the constructor with the document and the retirement exist with inert bodies.
+        private readonly Document _document;
+        private bool _spent;
+
         internal RackPilotUpdateWriter(Document document)
         {
-        }
-
-        internal void Retire()
-        {
+            _document = document ?? throw new ArgumentNullException(nameof(document));
         }
 
         public IPushBackPilotUpdateScope Begin(PushBackPilotUpdateRequest request)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
-            return new RackPilotUpdateScope(AcApplication.DocumentManager.MdiActiveDocument, request);
+            if (_spent) throw new InvalidOperationException("The writer of the run was already used.");
+            _spent = true;
+            return new RackPilotUpdateScope(_document, request);
         }
+
+        internal void Retire() => _spent = true;
 
         // The facts of one scan as values. The locked layers are listed for every definition that touches one; the run only looks at the
         // members of the plan.

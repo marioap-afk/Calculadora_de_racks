@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using RackCad.Application.Systems.PushBack.Pilot;
 
 namespace RackCad.Application.Workspace
@@ -416,7 +417,10 @@ namespace RackCad.Application.Workspace
         /// <summary>The outcome was accepted but the draft was discarded or its session retired meanwhile.</summary>
         ClosedDetached,
 
-        /// <summary>The status of the draft could not be computed and the draft is now in Error, with its reason.</summary>
+        /// <summary>
+        /// The status of the draft could not be computed and the draft is now in Error, with its reason, or the draft did not accept the
+        /// close of the update. Either way the outcome carries the classification that the update had (M-03), and it is never a success.
+        /// </summary>
         ClosedInError,
 
         /// <summary>A failure of the host BEFORE the update began: contained, and the session is not degraded.</summary>
@@ -432,20 +436,32 @@ namespace RackCad.Application.Workspace
         private readonly IReadOnlyList<string>? _differences;
         private readonly IReadOnlyList<string>? _warnings;
 
-        private EditUpdateOutcome(EditUpdateStatus status, string? reason, IReadOnlyList<string> differences, IReadOnlyList<string> warnings)
+        private EditUpdateOutcome(
+            EditUpdateStatus status,
+            string? reason,
+            IReadOnlyList<string> differences,
+            IReadOnlyList<string> warnings,
+            EditUpdateStatus classification = EditUpdateStatus.Unavailable,
+            string? cause = null)
         {
             Status = status;
             Reason = reason;
             _differences = differences;
             _warnings = warnings;
+            Classification = classification;
+            Cause = cause;
         }
 
         public EditUpdateStatus Status { get; }
 
-        // RED skeleton (INV-F4T4C-20): the two new properties exist with inert values.
-        public EditUpdateStatus Classification => EditUpdateStatus.Unavailable;
+        /// <summary>
+        /// The classification by frontier that the update ended with: the status itself for the eight classified outcomes, the one computed
+        /// from the close for <see cref="EditUpdateStatus.ClosedInError"/> (M-03), and Unavailable for every other outcome.
+        /// </summary>
+        public EditUpdateStatus Classification { get; }
 
-        public string? Cause => null;
+        /// <summary>The cause of the classified outcome of a ClosedInError, exactly as the update gave it; null otherwise.</summary>
+        public string? Cause { get; }
 
         /// <summary>Why the update did not apply, or the cause of an uncertain outcome; null when there is none.</summary>
         public string? Reason { get; }
@@ -474,10 +490,17 @@ namespace RackCad.Application.Workspace
 
         public static EditUpdateOutcome ClosedDetached() => Without(EditUpdateStatus.ClosedDetached, null);
 
-        public static EditUpdateOutcome ClosedInError(string? reason) => Without(EditUpdateStatus.ClosedInError, reason);
-
+        /// <summary>
+        /// The update was closed, but the draft is in Error or did not accept the close. It keeps the classification of the update, its
+        /// cause, its differences and its warnings, which are copied on receipt.
+        /// </summary>
         public static EditUpdateOutcome ClosedInError(
-            string? reason, EditUpdateStatus classification, string? cause, IReadOnlyList<string> differences, IReadOnlyList<string> warnings) => default;
+            string? reason, EditUpdateStatus classification, string? cause, IReadOnlyList<string> differences, IReadOnlyList<string> warnings)
+        {
+            if (differences == null) throw new ArgumentNullException(nameof(differences));
+            if (warnings == null) throw new ArgumentNullException(nameof(warnings));
+            return new EditUpdateOutcome(EditUpdateStatus.ClosedInError, reason, differences.ToArray(), warnings.ToArray(), classification, cause);
+        }
 
         public static EditUpdateOutcome Failed(string reason) => Without(EditUpdateStatus.Failed, reason);
 
@@ -487,51 +510,83 @@ namespace RackCad.Application.Workspace
         {
             if (differences == null) throw new ArgumentNullException(nameof(differences));
             if (warnings == null) throw new ArgumentNullException(nameof(warnings));
-            return new EditUpdateOutcome(status, reason, differences, warnings);
+            // M-06 (f): a copy taken on receipt, so changing the list of the caller afterwards changes nothing here.
+            return new EditUpdateOutcome(status, reason, differences.ToArray(), warnings.ToArray(), status);
         }
 
         private static EditUpdateOutcome Without(EditUpdateStatus status, string? reason) =>
             new(status, reason, Array.Empty<string>(), Array.Empty<string>());
     }
 
+    /// <summary>How the request of an update ended, as the port answers at once (I-64 F4-T4C1-HOST, D-T4C-02). The default value is Unavailable.</summary>
     public enum EditUpdateStartStatus
     {
+        /// <summary>Nothing was done: no executor of the update, no reader or a degraded session. It is also the default value.</summary>
         Unavailable,
+
+        /// <summary>The update was accepted: it is in flight, and its outcome arrives through <see cref="IWorkspacePilotEditPort.TakeUpdateProgress"/>.</summary>
         Accepted,
+
+        /// <summary>No active document, a modal of RackCad, no rest or a notice of the panel being delivered: nothing was done.</summary>
         Waiting,
+
+        /// <summary>The request does not belong to the active document: nothing was done.</summary>
         Rejected,
+
+        /// <summary>A read of the pilot or another update is in progress: nothing was done.</summary>
         Busy,
+
+        /// <summary>The command context could not be requested, or the previous update of the same rack just expired: nothing was done.</summary>
         Failed,
     }
 
+    /// <summary>
+    /// The immediate answer to the request of an update. A value: it names no draft and no type of the pilot. Its default value is
+    /// <see cref="EditUpdateStartStatus.Unavailable"/>, inert.
+    /// </summary>
     public readonly struct EditUpdateStart
     {
-        public EditUpdateStartStatus Status => EditUpdateStartStatus.Unavailable;
+        private EditUpdateStart(EditUpdateStartStatus status, string? reason)
+        {
+            Status = status;
+            Reason = reason;
+        }
 
-        public string? Reason => null;
+        public EditUpdateStartStatus Status { get; }
 
-        public static EditUpdateStart Unavailable(string reason) => default;
+        /// <summary>Why nothing was started; null for Accepted.</summary>
+        public string? Reason { get; }
 
-        public static EditUpdateStart Accepted() => default;
+        public static EditUpdateStart Unavailable(string reason) => new(EditUpdateStartStatus.Unavailable, reason);
 
-        public static EditUpdateStart Waiting(string reason) => default;
+        public static EditUpdateStart Accepted() => new(EditUpdateStartStatus.Accepted, null);
 
-        public static EditUpdateStart Rejected(string reason) => default;
+        public static EditUpdateStart Waiting(string reason) => new(EditUpdateStartStatus.Waiting, reason);
 
-        public static EditUpdateStart Busy(string reason) => default;
+        public static EditUpdateStart Rejected(string reason) => new(EditUpdateStartStatus.Rejected, reason);
 
-        public static EditUpdateStart Failed(string reason) => default;
+        public static EditUpdateStart Busy(string reason) => new(EditUpdateStartStatus.Busy, reason);
+
+        public static EditUpdateStart Failed(string reason) => new(EditUpdateStartStatus.Failed, reason);
     }
 
+    /// <summary>
+    /// What the port knows about the update of one rack, from memory: whether one is in flight and, once, its outcome. Taking it consumes the
+    /// outcome. The default value is inert: not in flight and an Unavailable outcome.
+    /// </summary>
     public readonly struct EditUpdateProgress
     {
         public EditUpdateProgress(bool inFlight, EditUpdateOutcome outcome)
         {
+            InFlight = inFlight;
+            Outcome = outcome;
         }
 
-        public bool InFlight => false;
+        /// <summary>True while the update of the rack is in flight and has not ended.</summary>
+        public bool InFlight { get; }
 
-        public EditUpdateOutcome Outcome => default;
+        /// <summary>The outcome of the update; Unavailable when there is none.</summary>
+        public EditUpdateOutcome Outcome { get; }
     }
 
     /// <summary>

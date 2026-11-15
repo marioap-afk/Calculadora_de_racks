@@ -23,10 +23,19 @@ namespace RackCad.Application.Workspace
         /// <summary>Queues the reconciliation hint of the active session. It drains later, at rest, never now.</summary>
         void RequestReconciliation();
 
+        /// <summary>
+        /// Opens the scope of the own mutation of the update of the session (I-64 F4-T4C1-HOST, D-T4C-09, IC-09): from now on the hints of the
+        /// session that the update causes are kept apart and only invalidate. Memory only.
+        /// </summary>
         void OpenOwnMutation(SessionId session);
 
+        /// <summary>Closes the scope of the own mutation of the session. Idempotent. Memory only.</summary>
         void CloseOwnMutation(SessionId session);
 
+        /// <summary>
+        /// How many commands that are not the update itself started in the session, as the bridge learned it in memory. Null for a session
+        /// that is degraded or unknown: its events no longer arrive.
+        /// </summary>
         int? ForeignCommandStartsOf(SessionId session);
     }
 

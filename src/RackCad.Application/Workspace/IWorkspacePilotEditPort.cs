@@ -17,7 +17,8 @@ namespace RackCad.Application.Workspace
     /// - the session travels in the request (<see cref="WorkspaceRequest"/> or <see cref="EditIntentRequest"/>), except for
     ///   <see cref="TakeLossNotices"/>, whose notices belong to sessions that no longer exist;
     /// - only the six operations of the edit intention read the drawing, each in one action of the user: the three of F4-T3A and, since
-    ///   F4-T4A1, the general check, "keep my work" and the explicit discard with a reload; none of the operations writes anything;
+    ///   F4-T4A1, the general check, "keep my work" and the explicit discard with a reload; none of the operations writes the drawing by
+    ///   itself (since F4-T4C1-HOST the request of the update only asks the executor of the host, which runs the one update of T4B);
     /// - every exception is contained as a value with a reason and the session is not degraded; the one of <see cref="GetRacksAtRisk"/>
     ///   is contained as the unknown value (<see cref="PilotRiskView.IsKnown"/> false) and its reason goes to the log;
     /// - while one of the six reads is in progress, every operation that changes something answers Busy and a second read answers
@@ -100,8 +101,17 @@ namespace RackCad.Application.Workspace
         /// </summary>
         IReadOnlyList<PilotCloseView> TakeCloseNotices();
 
+        /// <summary>
+        /// The request of the update of one rack of the pilot (I-64 F4-T4C1-HOST, D-T4C-02). It answers at once with a start value and never
+        /// writes by itself: the one run of the update is asked of the executor of the host, inside a command context, and its outcome
+        /// is taken later with <see cref="TakeUpdateProgress"/>. While an update is in flight a second request answers Busy.
+        /// </summary>
         EditUpdateStart RequestUpdate(EditIntentRequest request);
 
+        /// <summary>
+        /// What is known, from memory, about the update of one rack: whether it is in flight and, once, its outcome. It authorizes nothing,
+        /// reads nothing and never throws; taking the outcome consumes it.
+        /// </summary>
         EditUpdateProgress TakeUpdateProgress(WorkspaceRequest origin, string rackId);
     }
 
@@ -176,6 +186,8 @@ namespace RackCad.Application.Workspace
         PanelHide,
         Dematerialize,
         DocumentClose,
+
+        /// <summary>The update of the rack: a blocking boundary, crossed before it is requested (I-64 F4-T4C1-HOST, D-T4C-11).</summary>
         Update,
     }
 

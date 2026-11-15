@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Autodesk.AutoCAD.ApplicationServices;
 using RackCad.Application.Diagnostics;
 using RackCad.Application.Workspace;
+using RackCad.Plugin.Views;
 using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace RackCad.Plugin.Workspace
@@ -103,6 +104,10 @@ namespace RackCad.Plugin.Workspace
                     // The reader of the edit intention (I-64 F4-T2B2A) is wired by assignment, right after the host exists, so the
                     // constructor of this controller and the arguments of the host do not change. Nothing calls it until F4-T3.
                     _host.SetEditIntentReader(_navigation.EditIntentReader);
+
+                    // The executor of the update of the pilot (I-64 F4-T4C1-HOST, D-T4C-06) is wired the same way, right after the reader:
+                    // it has no state, and nothing asks it until the panel offers the gesture.
+                    _host.SetPilotUpdateHost(new RackPilotUpdateCommandContext());
                 }
 
                 return _navigation;
@@ -316,9 +321,9 @@ namespace RackCad.Plugin.Workspace
 
             public System.Collections.Generic.IReadOnlyList<PilotCloseView> TakeCloseNotices() => _gate.TakeCloseNotices();
 
-            public EditUpdateStart RequestUpdate(EditIntentRequest request) => default;
+            public EditUpdateStart RequestUpdate(EditIntentRequest request) => _gate.RequestUpdate(request);
 
-            public EditUpdateProgress TakeUpdateProgress(WorkspaceRequest origin, string rackId) => default;
+            public EditUpdateProgress TakeUpdateProgress(WorkspaceRequest origin, string rackId) => _gate.TakeUpdateProgress(origin, rackId);
         }
 
         // The link of the pure host core to the single bridge: forwards to its facades and nothing else.
@@ -346,15 +351,11 @@ namespace RackCad.Plugin.Workspace
 
             public void RequestReconciliation() => _bridge.RequestReconciliation();
 
-            public void OpenOwnMutation(SessionId session)
-            {
-            }
+            public void OpenOwnMutation(SessionId session) => _bridge.OpenOwnMutation(session);
 
-            public void CloseOwnMutation(SessionId session)
-            {
-            }
+            public void CloseOwnMutation(SessionId session) => _bridge.CloseOwnMutation(session);
 
-            public int? ForeignCommandStartsOf(SessionId session) => null;
+            public int? ForeignCommandStartsOf(SessionId session) => _bridge.ForeignCommandStartsOf(session);
         }
 
         // In-memory facts of the host: the active document and whether a command runs. They read nothing of the drawing.

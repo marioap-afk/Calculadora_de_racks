@@ -60,12 +60,12 @@ namespace RackCad.Application.Systems.PushBack.Pilot
 
         public const string DocumentMismatchReason = "El documento activo no es el que autorizó la actualización.";
 
-        // RED skeleton (INV-F4T4C-20): the three texts of I-01 exist with an inert value.
-        public const string UpdateNotRunReason = "";
+        /// <summary>I-01: the three texts of the gate of the host, as constants of the run. Their wording does not change.</summary>
+        public const string UpdateNotRunReason = "La actualización no llegó a ejecutarse.";
 
-        public const string NoActiveDocumentReason = "";
+        public const string NoActiveDocumentReason = "No hay un documento activo para actualizar.";
 
-        public const string ModalOpenReason = "";
+        public const string ModalOpenReason = "Hay una ventana de RackCad abierta: ciérrala antes de actualizar.";
 
         public const string LockedLayerPrefix = "LOCKED_LAYER: ";
 
@@ -141,16 +141,18 @@ namespace RackCad.Application.Systems.PushBack.Pilot
             PushBackPilotUpdateRequest request,
             IPushBackPilotUpdatePort port)
         {
+            if (draft == null || request == null || port == null)
+                return DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedFailure(MissingArgumentsReason);
+
+            // M-01: the state of the run lives outside the try, so what escapes is classified with what the run already did.
+            var execution = new Execution(draft, request, port);
             try
             {
-                if (draft == null || request == null || port == null)
-                    return DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedFailure(MissingArgumentsReason);
-
-                return new Execution(draft, request, port).Run();
+                return execution.Run();
             }
             catch (Exception ex)
             {
-                return DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedFailure(RunFailurePrefix + ex.Message);
+                return execution.OutcomeOfAnEscape(ex);
             }
         }
 
@@ -284,6 +286,15 @@ namespace RackCad.Application.Systems.PushBack.Pilot
                 }
 
                 return WithScopeDisposeFailure(outcome, scopeDisposeFailure);
+            }
+
+            // What an exception that escaped from the run means, by what the run had already done: after the seal the write is done, after
+            // a write began its persistence is not known, and only before both it is a plain failure (M-01).
+            public DraftApplyOutcome<PushBackPilotDraftState> OutcomeOfAnEscape(Exception ex)
+            {
+                if (_sealReturned) return PostFailed(PostFailurePrefix + ex.Message);
+                if (_writeStarted) return DraftApplyOutcome<PushBackPilotDraftState>.CommitThrew(WriteFailurePrefix + ex.Message);
+                return NotAppliedFailure(RunFailurePrefix + ex.Message);
             }
 
             // ------------------------------------------------------------------ PREPARE

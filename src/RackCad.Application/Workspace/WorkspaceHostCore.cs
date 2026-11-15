@@ -45,7 +45,6 @@ namespace RackCad.Application.Workspace
         private const string NotThisDocumentReason = "La petición no es del documento activo.";
         private const string NoDraftReason = "No hay borrador para el rack.";
         private const string NotCheckableReason = "El borrador no admite comprobación en su estado actual.";
-        private const string UpdateNotRunReason = "La actualización no llegó a ejecutarse.";
         private const string NotKeepableReason ="Solo se conserva un borrador en conflicto o con cambios marcados como posiblemente obsoletos.";
 
         /// <summary>Native identity used when no document is open: it matches no session.</summary>
@@ -72,7 +71,13 @@ namespace RackCad.Application.Workspace
         private readonly List<PilotCloseView> _closeNotices = new();
         private bool _pilotReadInProgress;
         private IWorkspaceEditIntentReader? _editIntentReader;
+
+        // I-64 F4-T4C1-HOST (D-T4C-02, D-T4C-06): the executor of the update (assigned once, it keeps nothing), the ticket in flight by
+        // session, the outcome that nobody took by (session, rack) and the counter of the witnesses of the tickets. All in memory.
         private IPushBackPilotUpdateHost? _updateHost;
+        private readonly Dictionary<SessionId, UpdateTicket> _tickets = new();
+        private readonly Dictionary<(SessionId Session, string RackId), EditUpdateOutcome> _updateOutcomes = new();
+        private long _lastUpdateWitness;
         private bool _started;
         private bool _panelVisible;
         private bool _modalRackCadActive;
@@ -276,7 +281,11 @@ namespace RackCad.Application.Workspace
         public void SetEditIntentReader(IWorkspaceEditIntentReader reader) =>
             _editIntentReader = reader ?? throw new ArgumentNullException(nameof(reader));
 
-        // RED skeleton (INV-F4T4C-20): assigned and nothing else.
+        /// <summary>
+        /// Assigns the executor of the update of the pilot (I-64 F4-T4C1-HOST, D-T4C-06), by assignment like the reader and never by
+        /// constructor. The executor has no state: it keeps no document, no writer and no run. Without it the request of an update answers
+        /// Unavailable.
+        /// </summary>
         public void SetPilotUpdateHost(IPushBackPilotUpdateHost host) =>
             _updateHost = host ?? throw new ArgumentNullException(nameof(host));
 
@@ -854,7 +863,7 @@ namespace RackCad.Application.Workspace
             }
 
             // 5 and 6: the run is total, and the slot is closed exactly once, with the outcome of the run in every case.
-            var outcome = DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedFailure(UpdateNotRunReason);
+            var outcome = DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedFailure(PushBackPilotUpdateRun.UpdateNotRunReason);
             DraftApplyResult closed;
             try
             {
@@ -863,7 +872,7 @@ namespace RackCad.Application.Workspace
             catch (Exception ex)
             {
                 Report("WorkspaceHostCore.TryUpdatePilot", ex);
-                outcome = DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedFailure(UpdateNotRunReason + " " + ex.Message);
+                outcome = DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedFailure(PushBackPilotUpdateRun.UpdateNotRunReason + " " + ex.Message);
             }
             finally
             {
@@ -872,41 +881,74 @@ namespace RackCad.Application.Workspace
 
             // 7: the answer comes from the close of the draft. What changed the draft ends the mark of known clean.
             if (!closed.DraftWasRegistered) return EditUpdateOutcome.ClosedDetached();
-            if (!closed.Accepted) return EditUpdateOutcome.Closed(EditUpdateStatus.NotAppliedFailure, UpdateNotRunReason, Array.Empty<string>(), Array.Empty<string>());
 
-            if (closed.Status == DraftStatus.Error)
-            {
-                NotePilotEdit(request.Session);
-                _knownClean.Remove(request.Session);
-                return EditUpdateOutcome.ClosedInError(draft.ErrorReason);
-            }
+            // M-01: the draft did not accept the close. It is never a success, whatever the run decided: a decision of the write or of POST
+            // is kept as the classification of a ClosedInError, and any other one stays a failure that did not run.
+            if (!closed.Accepted) return AnswerOfAClosedThatWasNotAccepted(outcome, closed.Kind);
 
-            EditUpdateStatus status;
-            switch (closed.Kind)
-            {
-                case DraftApplyOutcomeKind.NotAppliedConflict: status = EditUpdateStatus.NotAppliedConflict; break;
-                case DraftApplyOutcomeKind.NotAppliedAdmission: status = EditUpdateStatus.NotAppliedAdmission; break;
-                case DraftApplyOutcomeKind.NotAppliedPreflight: status = EditUpdateStatus.NotAppliedPreflight; break;
-                case DraftApplyOutcomeKind.NotAppliedFailure: status = EditUpdateStatus.NotAppliedFailure; break;
-                case DraftApplyOutcomeKind.CommitThrew: status = EditUpdateStatus.CommitThrew; break;
-                case DraftApplyOutcomeKind.Applied: status = EditUpdateStatus.Applied; break;
-                case DraftApplyOutcomeKind.AppliedWithWarnings: status = EditUpdateStatus.AppliedWithWarnings; break;
-                default: status = EditUpdateStatus.AppliedPostRereadFailed; break;
-            }
-
-            if (status != EditUpdateStatus.NotAppliedAdmission
-                && status != EditUpdateStatus.NotAppliedPreflight
-                && status != EditUpdateStatus.NotAppliedFailure)
+            // The state of the answer is computed first, and the answer is built inside a try with a fallback that still carries it (M-01).
+            var status = StatusOfOutcomeKind(closed.Kind);
+            var inError = closed.Status == DraftStatus.Error;
+            if (inError
+                || (status != EditUpdateStatus.NotAppliedAdmission
+                    && status != EditUpdateStatus.NotAppliedPreflight
+                    && status != EditUpdateStatus.NotAppliedFailure))
             {
                 NotePilotEdit(request.Session);
                 _knownClean.Remove(request.Session);
             }
 
-            return EditUpdateOutcome.Closed(
-                status,
-                draft.LastApplyCause,
-                status == EditUpdateStatus.NotAppliedConflict ? DescribeDifferences(draft.ConflictDifferences) : Array.Empty<string>(),
-                draft.Warnings);
+            try
+            {
+                var differences = status == EditUpdateStatus.NotAppliedConflict ? DescribeDifferences(draft.ConflictDifferences) : Array.Empty<string>();
+                if (inError) return EditUpdateOutcome.ClosedInError(draft.ErrorReason, status, draft.LastApplyCause, differences, draft.Warnings);
+
+                return EditUpdateOutcome.Closed(status, draft.LastApplyCause, differences, draft.Warnings);
+            }
+            catch (Exception ex)
+            {
+                Report("WorkspaceHostCore.TryUpdatePilot", ex);
+                return inError
+                    ? EditUpdateOutcome.ClosedInError(null, status, null, Array.Empty<string>(), Array.Empty<string>())
+                    : EditUpdateOutcome.Closed(status, draft.LastApplyCause, Array.Empty<string>(), Array.Empty<string>());
+            }
+        }
+
+        // The classification by frontier of a close, from the kind of the outcome that closed it.
+        private static EditUpdateStatus StatusOfOutcomeKind(DraftApplyOutcomeKind kind)
+        {
+            switch (kind)
+            {
+                case DraftApplyOutcomeKind.NotAppliedConflict: return EditUpdateStatus.NotAppliedConflict;
+                case DraftApplyOutcomeKind.NotAppliedAdmission: return EditUpdateStatus.NotAppliedAdmission;
+                case DraftApplyOutcomeKind.NotAppliedPreflight: return EditUpdateStatus.NotAppliedPreflight;
+                case DraftApplyOutcomeKind.NotAppliedFailure: return EditUpdateStatus.NotAppliedFailure;
+                case DraftApplyOutcomeKind.CommitThrew: return EditUpdateStatus.CommitThrew;
+                case DraftApplyOutcomeKind.Applied: return EditUpdateStatus.Applied;
+                case DraftApplyOutcomeKind.AppliedWithWarnings: return EditUpdateStatus.AppliedWithWarnings;
+                default: return EditUpdateStatus.AppliedPostRereadFailed;
+            }
+        }
+
+        // The draft did not accept the close of the update: the draft was not rebased, so the answer is built from what the run decided.
+        private static EditUpdateOutcome AnswerOfAClosedThatWasNotAccepted(DraftApplyOutcome<PushBackPilotDraftState> outcome, DraftApplyOutcomeKind kind)
+        {
+            switch (kind)
+            {
+                case DraftApplyOutcomeKind.CommitThrew:
+                case DraftApplyOutcomeKind.Applied:
+                case DraftApplyOutcomeKind.AppliedWithWarnings:
+                case DraftApplyOutcomeKind.AppliedPostRereadFailed:
+                    return EditUpdateOutcome.ClosedInError(
+                        PushBackPilotHostTexts.UpdateNotClosedReason,
+                        StatusOfOutcomeKind(kind),
+                        outcome.Cause,
+                        DescribeDifferences(outcome.Differences),
+                        outcome.Warnings);
+                default:
+                    return EditUpdateOutcome.Closed(
+                        EditUpdateStatus.NotAppliedFailure, PushBackPilotUpdateRun.UpdateNotRunReason, Array.Empty<string>(), Array.Empty<string>());
+            }
         }
 
         // The gate of the update: the active document, no modal of RackCad and the authorization of the session. It has no rest and no reader.
@@ -917,13 +959,13 @@ namespace RackCad.Application.Workspace
             var active = _probe.ActiveDocumentNativeId;
             if (!active.HasValue)
             {
-                reason = "No hay un documento activo para actualizar.";
+                reason = PushBackPilotUpdateRun.NoActiveDocumentReason;
                 return EditGate.Waiting;
             }
 
             if (_modalRackCadActive)
             {
-                reason = "Hay una ventana de RackCad abierta: ciérrala antes de actualizar.";
+                reason = PushBackPilotUpdateRun.ModalOpenReason;
                 return EditGate.Waiting;
             }
 
@@ -992,6 +1034,7 @@ namespace RackCad.Application.Workspace
         EditConfirmOutcome IWorkspacePilotEditPort.TryConfirmBase(EditIntentRequest request)
         {
             if (_pilotReadInProgress) return EditConfirmOutcome.Waiting(PilotReadInProgressReason);
+            if (UpdateInFlightForRequest(request)) return EditConfirmOutcome.Waiting(PushBackPilotHostTexts.UpdateInFlightReason);
             _pilotReadInProgress = true;
             try
             {
@@ -1006,6 +1049,7 @@ namespace RackCad.Application.Workspace
         EditIntentOutcome IWorkspacePilotEditPort.TryKeepMine(EditIntentRequest request)
         {
             if (_pilotReadInProgress) return EditIntentOutcome.Waiting(PilotReadInProgressReason);
+            if (UpdateInFlightForRequest(request)) return EditIntentOutcome.Waiting(PushBackPilotHostTexts.UpdateInFlightReason);
             _pilotReadInProgress = true;
             try
             {
@@ -1020,6 +1064,7 @@ namespace RackCad.Application.Workspace
         EditIntentOutcome IWorkspacePilotEditPort.TryDiscardAndReload(EditIntentRequest request)
         {
             if (_pilotReadInProgress) return EditIntentOutcome.Waiting(PilotReadInProgressReason);
+            if (UpdateInFlightForRequest(request)) return EditIntentOutcome.Waiting(PushBackPilotHostTexts.UpdateInFlightReason);
             _pilotReadInProgress = true;
             try
             {
@@ -1053,6 +1098,7 @@ namespace RackCad.Application.Workspace
             {
                 if (Authorize(origin) != RequestDecision.Accepted) return PilotFieldResult.Rejected(NotThisDocumentReason);
                 if (_pilotReadInProgress) return PilotFieldResult.Busy(PilotReadInProgressReason);
+                if (UpdateInFlightFor(origin.Origin, rackId)) return PilotFieldResult.Busy(PushBackPilotHostTexts.UpdateInFlightReason);
                 if (text == null) return PilotFieldResult.Rejected("El texto es obligatorio.");
 
                 var draft = FindPilotDraft(origin.Origin, rackId);
@@ -1080,6 +1126,7 @@ namespace RackCad.Application.Workspace
             {
                 if (Authorize(origin) != RequestDecision.Accepted) return PilotFieldResult.Rejected(NotThisDocumentReason);
                 if (_pilotReadInProgress) return PilotFieldResult.Busy(PilotReadInProgressReason);
+                if (UpdateInFlightFor(origin.Origin, rackId)) return PilotFieldResult.Busy(PushBackPilotHostTexts.UpdateInFlightReason);
 
                 var draft = FindPilotDraft(origin.Origin, rackId);
                 if (draft == null) return PilotFieldResult.NotEditable(NoDraftReason, default);
@@ -1116,6 +1163,7 @@ namespace RackCad.Application.Workspace
                 {
                     case PilotBoundaryKind.TabChange:
                     case PilotBoundaryKind.RackChange:
+                    case PilotBoundaryKind.Update:
                         break;
                     case PilotBoundaryKind.DocumentChange:
                     case PilotBoundaryKind.PanelHide:
@@ -1136,7 +1184,9 @@ namespace RackCad.Application.Workspace
                 var draft = FindPilotDraft(origin.Origin, rackId);
                 if (draft == null) return new PilotBoundaryResult(kind, PilotBoundaryDecision.Proceeded, false, none, null);
 
-                var boundary = kind == PilotBoundaryKind.TabChange ? DraftBoundary.TabChange : DraftBoundary.RackChange;
+                var boundary = kind == PilotBoundaryKind.TabChange
+                    ? DraftBoundary.TabChange
+                    : kind == PilotBoundaryKind.RackChange ? DraftBoundary.RackChange : DraftBoundary.Update;
                 var crossed = draft.CrossBoundary(boundary, PilotFieldAdapter);
                 switch (crossed.Decision)
                 {
@@ -1165,7 +1215,10 @@ namespace RackCad.Application.Workspace
                 if (Authorize(origin) != RequestDecision.Accepted) return EditDiscardOutcome.Rejected(NotThisDocumentReason);
                 if (_pilotReadInProgress) return EditDiscardOutcome.Busy(PilotReadInProgressReason);
 
+                // R-T4-07: an update of the rack in flight, or its draft being applied, cannot be discarded.
                 var session = origin.Origin;
+                if (UpdateInFlightFor(session, rackId) || IsPilotDraftApplying(session, rackId))
+                    return EditDiscardOutcome.Busy(PushBackPilotHostTexts.UpdateInFlightReason);
                 if (string.IsNullOrWhiteSpace(rackId)) return EditDiscardOutcome.Discarded(Array.Empty<string>(), Array.Empty<string>());
 
                 var discarded = _drafts.DiscardByUser(session, rackId);
@@ -1188,6 +1241,11 @@ namespace RackCad.Application.Workspace
             {
                 if (Authorize(origin) != RequestDecision.Accepted) return EditDiscardOutcome.Rejected(NotThisDocumentReason);
                 if (_pilotReadInProgress) return EditDiscardOutcome.Busy(PilotReadInProgressReason);
+
+                // R-T4-07: an update of the session in flight, or any of its drafts being applied, cannot be discarded.
+                ExpireStaleUpdate(origin.Origin);
+                if (_tickets.ContainsKey(origin.Origin) || IsAnyPilotDraftApplying(origin.Origin))
+                    return EditDiscardOutcome.Busy(PushBackPilotHostTexts.UpdateInFlightReason);
 
                 var outcome = DiscardPilotEdits(origin.Origin);
                 if (outcome.Status == EditDiscardStatus.Discarded) DropCloseNotice(origin.Origin);
@@ -1281,14 +1339,336 @@ namespace RackCad.Application.Workspace
             }
         }
 
-        // RED skeleton (INV-F4T4C-20): inert bodies.
+        // ---------------------------------------------------------------- the request of the update of the pilot (I-64 F4-T4C1-HOST)
+        //
+        // The request answers at once. The one run of T4B happens later, inside a command context that the executor of the host asks for, and
+        // its outcome waits in memory until the panel takes it. Only the ticket in flight, the outcome that nobody took and the executor
+        // live here: no document, no writer, no run and no transaction of the host is kept.
+
+        // The one operation that asks the executor: the only caller of TryRequest.
         EditUpdateStart IWorkspacePilotEditPort.RequestUpdate(EditIntentRequest request)
         {
-            _ = _updateHost;
-            return default;
+            try
+            {
+                if (request == null) throw new ArgumentNullException(nameof(request));
+                if (string.IsNullOrWhiteSpace(request.RackId)) return EditUpdateStart.Rejected(NoDraftReason);
+
+                // The previous update of the same rack that expired just now is reported here, by the start value, and nothing new is accepted.
+                var expired = ExpireStaleUpdate(request.Session, request.RackId);
+                if (expired != null && string.Equals(expired.RackId, request.RackId, StringComparison.Ordinal))
+                    return EditUpdateStart.Failed(PushBackPilotHostTexts.HostNotRunReason);
+
+                if (_pilotReadInProgress) return EditUpdateStart.Busy(PilotReadInProgressReason);
+                if (_tickets.ContainsKey(request.Session)) return EditUpdateStart.Busy(PushBackPilotHostTexts.UpdateInFlightReason);
+                if (_updateHost == null) return EditUpdateStart.Unavailable(PushBackPilotHostTexts.HostUnavailableReason);
+
+                var gate = PassGate(request.Session, out var reason);
+                if (gate == EditGate.Unavailable) return EditUpdateStart.Unavailable(reason);
+                if (gate == EditGate.Waiting) return EditUpdateStart.Waiting(reason);
+                if (gate == EditGate.Rejected) return EditUpdateStart.Rejected(reason);
+
+                // A degraded session receives no events: the ticket would have no bound and the own mutation would receive nothing.
+                var foreignStarts = _bridge.ForeignCommandStartsOf(request.Session);
+                if (!foreignStarts.HasValue) return EditUpdateStart.Unavailable(PushBackPilotHostTexts.HostUnavailableReason);
+
+                var documentId = _probe.ActiveDocumentNativeId ?? NoDocumentNativeId;
+                var ticket = new UpdateTicket(request.RackId, ++_lastUpdateWitness, foreignStarts.Value);
+                _tickets[request.Session] = ticket;
+
+                bool requested;
+                string failure;
+                try
+                {
+                    requested = _updateHost.TryRequest(documentId, new PilotUpdateRun(this, request, ticket.Witness), out failure);
+                }
+                catch (Exception ex)
+                {
+                    Report("WorkspaceHostCore.RequestUpdate", ex);
+                    requested = false;
+                    failure = PushBackPilotHostTexts.HostRequestFailedPrefix + ex.Message;
+                }
+
+                if (requested) return EditUpdateStart.Accepted();
+
+                // The request failed before the callback began: one channel only, the start value. Nothing is stored and no run happened.
+                if (CurrentTicket(request.Session, ticket.Witness) != null) _tickets.Remove(request.Session);
+                return EditUpdateStart.Failed(failure);
+            }
+            catch (Exception ex)
+            {
+                Report("WorkspaceHostCore.RequestUpdate", ex);
+                return EditUpdateStart.Failed(ex.Message);
+            }
         }
 
-        EditUpdateProgress IWorkspacePilotEditPort.TakeUpdateProgress(WorkspaceRequest origin, string rackId) => default;
+        // Memory only: it authorizes nothing, reads nothing and never throws. Taking the outcome consumes it.
+        EditUpdateProgress IWorkspacePilotEditPort.TakeUpdateProgress(WorkspaceRequest origin, string rackId)
+        {
+            try
+            {
+                var session = origin.Origin;
+                ExpireStaleUpdate(session);
+                var key = rackId ?? string.Empty;
+                var inFlight = _tickets.TryGetValue(session, out var ticket) && !ticket.Finished
+                               && string.Equals(ticket.RackId, key, StringComparison.Ordinal);
+                var outcome = _updateOutcomes.Remove((session, key), out var stored) ? stored : default;
+                return new EditUpdateProgress(inFlight, outcome);
+            }
+            catch (Exception ex)
+            {
+                Report("WorkspaceHostCore.TakeUpdateProgress", ex);
+                return default;
+            }
+        }
+
+        // The ticket of the session when it is the one of the witness (the current one); null otherwise.
+        private UpdateTicket? CurrentTicket(SessionId session, long witness) =>
+            _tickets.TryGetValue(session, out var ticket) && ticket.Witness == witness ? ticket : null;
+
+        // The lazy bound of the ticket (D-T4C-02), in memory and of constant cost: a ticket that is not in Execute expires with the first
+        // command of the session that is not the update itself, and with the degradation of the session (its count is then null). It only
+        // reads the count of the bridge. A ticket that did not end leaves, once, the outcome that it did not run, under its own rack, unless
+        // that is the rack of the request that is asking (then the request reports it). It returns that ticket.
+        private UpdateTicket? ExpireStaleUpdate(SessionId session, string? requestRack = null)
+        {
+            try
+            {
+                if (!_tickets.TryGetValue(session, out var ticket) || ticket.InExecute) return null;
+                var starts = _bridge.ForeignCommandStartsOf(session);
+                if (starts.HasValue && starts.Value <= ticket.ForeignCommandStarts) return null;
+
+                _tickets.Remove(session);
+                if (ticket.Finished) return null;
+                if (!string.Equals(ticket.RackId, requestRack, StringComparison.Ordinal))
+                    _updateOutcomes[(session, ticket.RackId)] = EditUpdateOutcome.Failed(PushBackPilotHostTexts.HostNotRunReason);
+                return ticket;
+            }
+            catch (Exception ex)
+            {
+                Report("WorkspaceHostCore.ExpireStaleUpdate", ex);
+                return null;
+            }
+        }
+
+        // The same for the rack of a request; a null request has nothing in flight (its operation answers for it).
+        private bool UpdateInFlightForRequest(EditIntentRequest request) =>
+            request != null && UpdateInFlightFor(request.Session, request.RackId);
+
+        // True while the rack of the session has a ticket, after the lazy expiry. Memory only.
+        private bool UpdateInFlightFor(SessionId session, string? rackId)
+        {
+            ExpireStaleUpdate(session);
+            return _tickets.TryGetValue(session, out var ticket) && string.Equals(ticket.RackId, rackId, StringComparison.Ordinal);
+        }
+
+        private bool IsPilotDraftApplying(SessionId session, string rackId)
+        {
+            try
+            {
+                return FindPilotDraft(session, rackId)?.Status == DraftStatus.Applying;
+            }
+            catch (Exception)
+            {
+                // The status is computed with the comparer unless it is an explicit one, and Applying is explicit: a comparer that fails
+                // means that the draft is not being applied, so it can still be discarded.
+                return false;
+            }
+        }
+
+        private bool IsAnyPilotDraftApplying(SessionId session)
+        {
+            try
+            {
+                return _drafts.RackIdsOf(session).Any(rackId => IsPilotDraftApplying(session, rackId));
+            }
+            catch (Exception)
+            {
+                return true;
+            }
+        }
+
+        // The session is gone: its ticket and the outcomes that nobody took go with it.
+        private void ForgetUpdatesOf(SessionId session)
+        {
+            try
+            {
+                _tickets.Remove(session);
+                foreach (var key in _updateOutcomes.Keys.Where(k => k.Session == session).ToList()) _updateOutcomes.Remove(key);
+            }
+            catch (Exception ex)
+            {
+                Report("WorkspaceHostCore.ForgetUpdatesOf", ex);
+            }
+        }
+
+        // The ticket of the update in flight of ONE session: its rack, the witness of its run and the count of foreign commands when it was
+        // accepted. It lives in memory only, from the acceptance to the completion of the command context or to its bound.
+        private sealed class UpdateTicket
+        {
+            public UpdateTicket(string rackId, long witness, int foreignCommandStarts)
+            {
+                RackId = rackId;
+                Witness = witness;
+                ForeignCommandStarts = foreignCommandStarts;
+            }
+
+            public string RackId { get; }
+
+            public long Witness { get; }
+
+            public int ForeignCommandStarts { get; }
+
+            public bool Started { get; set; }
+
+            public bool InExecute { get; set; }
+
+            public bool Finished { get; set; }
+        }
+
+        // The synchronous delegate of ONE request, with the witness of its ticket (D-T4C-04). Its five operations are total, and any of
+        // them with a witness that is no longer the current one does nothing. It is the only caller of the update of T4B.
+        private sealed class PilotUpdateRun : IPushBackPilotHostRun
+        {
+            private readonly WorkspaceHostCore _core;
+            private readonly EditIntentRequest _request;
+            private readonly long _witness;
+            private string? _openFailure;
+
+            public PilotUpdateRun(WorkspaceHostCore core, EditIntentRequest request, long witness)
+            {
+                _core = core;
+                _request = request;
+                _witness = witness;
+            }
+
+            public bool Admit(out string reason)
+            {
+                reason = PushBackPilotHostTexts.HostNotRunReason;
+                try
+                {
+                    _core.ExpireStaleUpdate(_request.Session);
+                    var ticket = _core.CurrentTicket(_request.Session, _witness);
+                    if (ticket == null) return false;
+                    if (_core._pilotReadInProgress)
+                    {
+                        reason = PilotReadInProgressReason;
+                        return false;
+                    }
+
+                    if (_core._modalRackCadActive)
+                    {
+                        reason = PushBackPilotUpdateRun.ModalOpenReason;
+                        return false;
+                    }
+
+                    if (_core.Authorize(new WorkspaceRequest(_request.Session)) != RequestDecision.Accepted)
+                    {
+                        reason = NotThisDocumentReason;
+                        return false;
+                    }
+
+                    ticket.Started = true;
+                    reason = string.Empty;
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    _core.Report("WorkspaceHostCore.PilotUpdateRun.Admit", ex);
+                    reason = PushBackPilotHostTexts.HostNotRunReason;
+                    return false;
+                }
+            }
+
+            public void Begin()
+            {
+                try
+                {
+                    if (_core.CurrentTicket(_request.Session, _witness) == null) return;
+                    _core._bridge.OpenOwnMutation(_request.Session);
+                }
+                catch (Exception ex)
+                {
+                    // The own mutation could not be opened: the update must not run without it, so Execute answers a failure of the host.
+                    _core.Report("WorkspaceHostCore.PilotUpdateRun.Begin", ex);
+                    _openFailure = PushBackPilotHostTexts.HostNotRunReason + " " + ex.Message;
+                }
+            }
+
+            public void Execute(IPushBackPilotUpdatePort port)
+            {
+                UpdateTicket? ticket = null;
+                try
+                {
+                    ticket = _core.CurrentTicket(_request.Session, _witness);
+                    if (ticket == null) return;
+                    ticket.InExecute = true;
+
+                    // A failure of the host before the update: nothing of T4B runs, the draft is not touched and the own mutation is closed.
+                    if (_openFailure != null)
+                    {
+                        _core._updateOutcomes[(_request.Session, _request.RackId)] = EditUpdateOutcome.Failed(_openFailure);
+                        _core._bridge.CloseOwnMutation(_request.Session);
+                        return;
+                    }
+
+                    // The one call of the update of T4B. What escapes from it is only logged: nothing is stored, and the panel paints
+                    // again from the state of the draft, which is the authority.
+                    var outcome = _core.TryUpdatePilot(_request, port);
+                    _core._updateOutcomes[(_request.Session, _request.RackId)] = outcome;
+                }
+                catch (Exception ex)
+                {
+                    _core.Report("WorkspaceHostCore.PilotUpdateRun.Execute", ex);
+                }
+                finally
+                {
+                    if (ticket != null && _core.CurrentTicket(_request.Session, _witness) != null) ticket.Finished = true;
+                }
+            }
+
+            public void NotRun(PushBackPilotHostFailure kind, string cause)
+            {
+                try
+                {
+                    var ticket = _core.CurrentTicket(_request.Session, _witness);
+                    if (ticket == null) return;
+                    try
+                    {
+                        _core._updateOutcomes[(_request.Session, ticket.RackId)] = kind == PushBackPilotHostFailure.Rejected
+                            ? EditUpdateOutcome.Rejected(cause)
+                            : EditUpdateOutcome.Failed(cause);
+                        _core._bridge.CloseOwnMutation(_request.Session);
+                    }
+                    finally
+                    {
+                        ticket.Finished = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _core.Report("WorkspaceHostCore.PilotUpdateRun.NotRun", ex);
+                }
+            }
+
+            public void Completed()
+            {
+                try
+                {
+                    var ticket = _core.CurrentTicket(_request.Session, _witness);
+                    if (ticket == null) return;
+
+                    // Unreachable, because the completion only arrives after the callback ran: a ticket that did not end leaves the outcome
+                    // that it did not run.
+                    if (!ticket.Finished)
+                        _core._updateOutcomes[(_request.Session, ticket.RackId)] = EditUpdateOutcome.Failed(PushBackPilotHostTexts.HostNotRunReason);
+                    _core._tickets.Remove(_request.Session);
+                }
+                catch (Exception ex)
+                {
+                    _core.Report("WorkspaceHostCore.PilotUpdateRun.Completed", ex);
+                }
+            }
+        }
 
         private DraftSession<PushBackPilotDraftState>? FindPilotDraft(SessionId session, string rackId) =>
             string.IsNullOrWhiteSpace(rackId) ? null : _drafts.Find<PushBackPilotDraftState>(session, rackId);
@@ -1428,6 +1808,7 @@ namespace RackCad.Application.Workspace
         // the panel purges it when its session no longer lives.
         void IWorkspaceLifecycleAdvisor.SessionDestroyed(SessionId session, bool closeSequenceIntact)
         {
+            ForgetUpdatesOf(session);
             var marked = _knownClean.Remove(session);
             DraftLossNotice? notice = null;
             try

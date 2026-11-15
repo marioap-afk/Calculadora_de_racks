@@ -38,6 +38,8 @@ namespace RackCad.Application.Workspace
 
             public bool Degraded { get; set; }
 
+            // I-64 F4-T4C1-HOST (D-T4C-09, IC-09): whether the own mutation of the update of the session is open, and how many commands
+            // other than the update itself started in the session (the bound of the ticket of the update, D-T4C-02). Memory only.
             public bool OwnMutationOpen { get; set; }
 
             public int ForeignCommandStarts { get; set; }
@@ -328,14 +330,26 @@ namespace RackCad.Application.Workspace
                     case BridgeSource.CommandEnded:
                     case BridgeSource.CommandCancelled:
                     case BridgeSource.CommandFailed:
-                        live.EnqueueHint(HintKind.CommandEnded);
+                        // The first end of a command after the own mutation opened is the end of the update itself: it counts as own
+                        // and it closes the scope (IC-09). Every later end is foreign.
+                        if (state.OwnMutationOpen)
+                        {
+                            live.EnqueueOwnHint(HintKind.CommandEnded);
+                            state.OwnMutationOpen = false;
+                        }
+                        else
+                        {
+                            live.EnqueueHint(HintKind.CommandEnded);
+                        }
+
                         break;
                     case BridgeSource.ObjectAppended:
                     case BridgeSource.ObjectErased:
                     case BridgeSource.ObjectModified:
                     case BridgeSource.ObjectUnappended:
                     case BridgeSource.ObjectReappended:
-                        live.EnqueueHint(HintKind.DatabaseObjectChanged);
+                        if (state.OwnMutationOpen) live.EnqueueOwnHint(HintKind.DatabaseObjectChanged);
+                        else live.EnqueueHint(HintKind.DatabaseObjectChanged);
                         break;
                     default:
                         return false;
@@ -437,24 +451,46 @@ namespace RackCad.Application.Workspace
             Fault(session, context, exception);
         }
 
-        // RED skeleton (INV-F4T4C-20): the four new members exist with inert bodies.
+        /// <summary>
+        /// Opens the scope of the own mutation of the update of a session (I-64 F4-T4C1-HOST, D-T4C-09, IC-09): while it is open, the
+        /// DatabaseObjectChanged and CommandEnded hints of that session are kept apart and only invalidate. It changes the state of the core,
+        /// so it forgets the close sequence. A session that is degraded or unknown has no events: nothing opens.
+        /// </summary>
         public void OpenOwnMutation(SessionId session)
         {
+            _lastAllowedClose = null;
+            if (_states.TryGetValue(session, out var state) && !state.Degraded) state.OwnMutationOpen = true;
         }
 
+        /// <summary>Closes the scope of the own mutation of a session. Idempotent. It forgets the close sequence.</summary>
         public void CloseOwnMutation(SessionId session)
         {
+            _lastAllowedClose = null;
+            if (_states.TryGetValue(session, out var state)) state.OwnMutationOpen = false;
         }
 
+        /// <summary>
+        /// A command that is not the update itself started in the session: adds one to its count, which bounds the ticket of the update. It
+        /// forgets the close sequence. A session that is degraded or unknown counts nothing.
+        /// </summary>
         public void NoteForeignCommandStart(SessionId session)
         {
+            _lastAllowedClose = null;
+            if (_states.TryGetValue(session, out var state) && !state.Degraded) state.ForeignCommandStarts++;
         }
 
-        public int? ForeignCommandStartsOf(SessionId session) => null;
+        /// <summary>
+        /// How many foreign commands started in the session, or null when the session is degraded or unknown (it receives no events, so the
+        /// count would not move). A query: it changes nothing and forgets nothing.
+        /// </summary>
+        public int? ForeignCommandStartsOf(SessionId session) =>
+            _states.TryGetValue(session, out var state) && !state.Degraded ? state.ForeignCommandStarts : null;
 
-        // Flips the in-memory command state of a session and tells whether it changed. No hint, no idle, no host call.
+        // Flips the in-memory command state of a session and tells whether it changed. No hint, no idle, no host call. Any start of a
+        // command or entry into rest closes the own mutation first, before the comparison, even when the state does not change.
         private static bool SetQuiescent(SessionState state, bool quiescent)
         {
+            state.OwnMutationOpen = false;
             if (state.Quiescent == quiescent) return false;
             state.Quiescent = quiescent;
             return true;
@@ -498,6 +534,9 @@ namespace RackCad.Application.Workspace
         {
             if (!_states.TryGetValue(id, out var state) || state.Degraded) return;
             state.Degraded = true;
+
+            // A degraded session receives no events, so nothing would close the own mutation afterwards (D-T4C-09).
+            state.OwnMutationOpen = false;
             foreach (var attachment in state.Attached.Where(a => BridgeSources.IsSynchronization(a.Source)).ToList())
             {
                 DetachSafe(attachment);

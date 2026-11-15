@@ -202,8 +202,9 @@ namespace RackCad.Application.Workspace
 
         public IReadOnlyList<PilotCloseView> TakeCloseNotices() => _inner.TakeCloseNotices();
 
-        public EditUpdateStart RequestUpdate(EditIntentRequest request) => default;
+        public EditUpdateStart RequestUpdate(EditIntentRequest request) =>
+            _depth.IsInside ? EditUpdateStart.Waiting(InsideNoticeReason) : _inner.RequestUpdate(request);
 
-        public EditUpdateProgress TakeUpdateProgress(WorkspaceRequest origin, string rackId) => default;
+        public EditUpdateProgress TakeUpdateProgress(WorkspaceRequest origin, string rackId) => _inner.TakeUpdateProgress(origin, rackId);
     }
 }
