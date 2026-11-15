@@ -7307,3 +7307,16 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 **Siguiente:** el Owner ratifica O-17 y O-17 bis, dispone O-18 y da la orden de emisión de T4C1.
 
 **Límites:** solo documentación; sin cambios en `src/` ni en `tests/`.
+
+## 208. Ratificaciones del Owner sobre H0 y orden de emisión de F4-T4C1-HOST
+
+**Decisión:** F4-E65.
+- **O-17 y O-17 bis:** «Ratificar». H0 vale como diagnóstico, y Smoke-2 lo repite con el producto.
+- **O-18:** «Registrar aparte», en `docs/ideas-futuras.md`, sin cambiar el alcance de T4C.
+- **La emisión:** «Emitir T4C1», intento 1 de 3, con el paquete v5 y la cadena completa.
+
+**Registros:** la autorización literal en `F4-DRAFTS/coordinator/`, IC-09 en las aclaraciones de implementación y O-18 en las ideas futuras.
+
+**Siguiente:** el contrato de F4-T4C1-HOST (evidencia 209).
+
+**Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.

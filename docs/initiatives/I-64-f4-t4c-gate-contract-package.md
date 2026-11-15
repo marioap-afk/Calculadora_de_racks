@@ -1,6 +1,6 @@
 # I-64 — Paquete del contrato de F4-T4C (integración en el host del Actualizar del piloto)
 
-**Estado:** v5, PREPARACIÓN, no emitida; H0 hecho.
+**Estado:** v5; H0 hecho. **F4-T4C1-HOST se emite el 2026-11-15** (F4-E65) por la orden del Owner «Emitir T4C1» (`docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4t4c1-emission-authorization.md`, literal). F4-T4C2-PANEL no está emitida.
 - La prepara la sesión principal por la orden del Owner de preparación de F4-T4C: «PACKAGE PREPARATION + INDEPENDENT REVIEW ONLY» y «Do NOT emit the T4C contract yet».
 - **v1:** la revisión adversarial independiente la juzgó **EMITIBLE TRAS CORRECCIONES (0/12/16)** (`independent-review-v1.md`, citada como IR). La v1 se conserva como `_package-v1.md`.
 - **v2:** incorporó los 28 hallazgos (§10.1). Cambió el diseño de D-T4C-02, D-T4C-04 y D-T4C-09 y añadió D-T4C-20. Se conserva como `_package-v2.md`.
@@ -14,12 +14,12 @@
   - **C3-02:** el cierre por degradación pasa a `Degrade`, el punto único (D-T4C-09, D-T4C-17 y D-T4C-20);
   - **C3-03:** se precisa la caducidad dentro de `RequestUpdate` cuando el billete es de otro rack (D-T4C-02, D-T4C-03, D-T4C-05, D-T4C-11 y D-T4C-17).
   - El Owner dispuso el §9 de la v4: aceptó todas las recomendaciones de O-01 a O-15 (`docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4t4c-package-decisions.md`). La v4 está custodiada en `de27426b` (F4-E62 y la evidencia 205).
-- **v5:** incorpora la sonda **T4C-H0**, custodiada en `44fe029d` (F4-E63 y la evidencia 206, en `docs/automation/evidence/I-64-pilot/F4-T4C-H0/`), y la **decisión del Owner sobre su C12**, «Completar o comando ajeno» (`owner-f4t4c-h0-c12-decision.md`, en la carpeta de trabajo de la sesión y todavía sin custodiar). Se conserva la v4 como `_package-v4.md`.
+- **v5:** incorpora la sonda **T4C-H0**, custodiada en `44fe029d` (F4-E63 y la evidencia 206, en `docs/automation/evidence/I-64-pilot/F4-T4C-H0/`), y la **decisión del Owner sobre su C12**, «Completar o comando ajeno» (`owner-f4t4c-h0-c12-decision.md`, custodiada en `F4-DRAFTS/coordinator/` con la v5, F4-E64). Se conserva la v4 como `_package-v4.md`.
   - **Pasan de [H] a [M]** los hechos que H0 midió (§2.6, H-39 a H-52).
   - **Cambian** D-T4C-02 (la cota del billete), D-T4C-03, D-T4C-04 (la guarda para `ExecutionResult`), D-T4C-05, D-T4C-08 (solo un hecho medido), D-T4C-09 (la vía A con el orden medido y el comando ajeno), D-T4C-10, D-T4C-15 (Undo medido), D-T4C-16 (la tabla rellena), D-T4C-17 y D-T4C-20, además del §5, el §6, el §7, el §9 y el §10.4.
   - **No cambian** D-T4C-01, D-T4C-06, D-T4C-07, D-T4C-11 a D-T4C-14, D-T4C-18 ni D-T4C-19.
 - Los mapas y los documentos de revisión se custodian en `I-64-pilot/F4-DRAFTS/t4c/` (F4-E62 y F4-E64). Las versiones v1 a v4 del paquete quedan solo como historia en la carpeta de trabajo de la sesión; la v4 está en la historia de Git de este archivo (`de27426b`).
-- No declara ningún cierre. Le queda la vuelta al Owner con el §9.
+- No declara ningún cierre. El Owner ratificó O-17 y O-17 bis («Ratificar»), dispuso O-18 aparte («Registrar aparte») y ordenó la emisión de T4C1 (F4-E65). IC-09 queda registrada en `docs/initiatives/I-64-implementation-clarifications.md`. T4C2 y Smoke-2 necesitan su propia orden (O-09).
 
 **Base medida:** `b15072ff`, la custodia del cierre de T4B, que solo toca `docs/`. El producto es el de `4314c180`: `git diff 4314c180 b15072ff -- src tests` sale vacío (M1). La rama está ahora en `44fe029d`, y `git diff b15072ff 44fe029d -- src tests` también sale vacío: las anclas de `src` y `tests` siguen valiendo, y las de H0 se citan en `44fe029d`. Todas las anclas `ruta:línea` son relativas al repositorio y están medidas en `b15072ff`. La sesión ha vuelto a comprobar en el worktree las que fundan una decisión, también las nuevas de la v2.
 

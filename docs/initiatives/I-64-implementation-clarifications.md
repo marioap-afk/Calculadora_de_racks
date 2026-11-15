@@ -151,3 +151,13 @@ Si el drenaje termina y después programa o materializa la superficie activa por
 - **Oráculo:** «tras Actualizar A, el borrador B no queda marcado» (INV-28).
 
 **Smoke-2 y Smoke-PERF:** miden la frecuencia del marcado y el coste de las recargas que provoca.
+
+## IC-09. Ámbito de mutación propia del Actualizar del piloto en F4-T4C
+
+**Autoridad:** C-F4-04, IC-08, INV-08 e INV-28 del Freeze, el paquete de F4-T4C (D-T4C-09) y la decisión del Owner «Vía A + IC-09» (O-02, F4-E62). Se registra en la emisión de F4-T4C1-HOST (F4-E65). No cambia el Freeze y se comunica al Owner.
+
+**El texto, literal del paquete:**
+
+> Las pistas `DatabaseObjectChanged` y `CommandEnded` de una sesión que llegan mientras está abierto el ámbito de mutación propia de su Actualizar se registran aparte y solo invalidan las cachés de navegación. Las pistas ajenas ya pendientes conservan su efecto. El ámbito se abre en el contexto de comando, bajo el bloqueo y antes de PREPARE. Se cierra con el primer fin de comando de la sesión, que cuenta como propio; con el primer inicio de comando o la primera entrada en reposo de la sesión; con el cierre explícito del adaptador si la corrida no llega a ejecutarse; con la degradación de la sesión; y con su destrucción. Residual declarado: una escritura ajena sobre otro rack durante la ventana queda sin marcar. Concreta D-04 (O-15), C-F4-04, INV-08 e INV-28 sin cambiar el Freeze.
+
+**Variantes declaradas para Smoke-2:** si Smoke-2 pidiera V1, V2, V3 o el cierre en `Settle`, la IC añadiría la antesala, las dos fases o ese cierre. El cierre en `Settle` sería una desviación expresa de C-F4-04 y necesitaría una decisión del Owner.

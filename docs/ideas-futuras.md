@@ -1734,3 +1734,9 @@ Un valor authored con más de tres decimales (por ejemplo, una escala de anotaci
 ### (c) y (d) Ajustes de `LoadFromModel` y celda vuelta a comprometer
 
 `LoadFromModel` (`:382-419`) sustituye y ajusta valores al poblar los controles, y `CommitCurrentCell` vuelve a escribir la celda desde ellos. Con el corpus de F4-T2A no hay ningún diseño que provoque un delta de estas clases. La caracterización de F4-T1B o la migración de F5 pueden medirlas.
+
+## I-64 F4-T4C-H0 — las lecturas del panel vacían Rehacer (2026-11-15, registrada sin corregir)
+
+La sonda de host T4C-H0 (F4-E63) vio que las lecturas del panel de F4-T3 y F4-T4A, «Editar» y «Comprobar ahora», dejan entradas «Group of commands» en la pila de Deshacer y vacían la de Rehacer. Son lecturas que se suponían sin efecto. Un `U` seguido de «Comprobar ahora» deja sin nada que rehacer. Toca S2-05 y la obligación de IC-02 de observar Deshacer y Rehacer.
+
+El Owner la dispuso aparte («Registrar aparte», O-18 del paquete de F4-T4C, F4-E65). No cambia el alcance de F4-T4C. Smoke-2 la declara y prueba Redo justo después de Undo. Queda como candidata para una corrección aparte de T3 y T4A.

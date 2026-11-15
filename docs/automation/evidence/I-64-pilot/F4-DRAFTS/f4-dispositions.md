@@ -2354,3 +2354,43 @@ Las entradas en reposo dejan de contar, porque AutoCAD entra en reposo dos veces
 3. La orden de emisión de F4-T4C1-HOST.
 
 T4C2 y Smoke-2 siguen pendientes.
+
+## F4-E65. Ratificaciones del Owner sobre H0 y emisión de F4-T4C1-HOST
+
+**Autoridad:** las respuestas del Owner en el chat, transcritas literalmente en `F4-DRAFTS/coordinator/owner-f4t4c1-emission-authorization.md`, sobre el paquete v5 de F4-T4C (F4-E64).
+
+**Las decisiones:**
+- **O-17 y O-17 bis:** «Ratificar». H0 vale como diagnóstico, y Smoke-2 lo repite todo con el producto, un dibujo real del Owner y el Owner como operador. La interpretación de O-17 bis queda en D-T4C-02: la cota del billete se aplica también a un billete empezado que no entró en `Execute`.
+- **O-18:** «Registrar aparte». Se anota en `docs/ideas-futuras.md` como candidata, sin cambiar el alcance de T4C. Smoke-2 la declara y prueba Redo justo después de Undo.
+- **La emisión:** «Emitir T4C1». Se emite F4-T4C1-HOST, intento 1 de 3, con el paquete v5 y la cadena completa, como en T4B. T4C2-PANEL y Smoke-2 quedan para después, y cualquier hallazgo material vuelve al Owner.
+
+**Cómo lo aplica la sesión:**
+- **Paquete:** `docs/initiatives/I-64-f4-t4c-gate-contract-package.md` v5. Solo cambia su párrafo de estado, que pasa a decir que T4C1 está emitida.
+- **IC-09** («El ámbito de mutación propia del Actualizar del piloto»): se registra en `docs/initiatives/I-64-implementation-clarifications.md` con el texto de D-T4C-09 del paquete, como manda el paquete, porque `docs/` está prohibido al Worker.
+- **O-18:** queda registrada en `docs/ideas-futuras.md`, sin corregir.
+- **Contrato** (`I-64-pilot/F4-T4C1-HOST/coordinator/gate-contract.json`): es la parte [1] del §6 del paquete, partido por O-09 (D-T4C-19).
+  - **Alcance:** 30 rutas exactas:
+    - 2 archivos nuevos de producto: `PushBackPilotHostRun.cs` de Application y el adaptador `RackPilotUpdateCommandContext.cs` del Plugin;
+    - 11 modificados de producto: 8 de Application y 3 del Plugin (el escritor, `WorkspaceController.cs` y `AutoCadEventBridge.cs`);
+    - 5 pruebas nuevas y 12 modificadas.
+  - **`ForbiddenWriteScope`:** 163 entradas, por raíces y archivos exactos. Es el de T4B sin las cuatro entradas que T4C1 necesita abrir. Le añade:
+    - los otros 7 archivos de `Plugin/Workspace/`;
+    - las 10 rutas de la UI que protegen T1B;
+    - `RackSiblingScan.cs`, los archivos de T4B que no se tocan y las guardas de D-T4C-20 (a);
+    - **por la comprobación (K-01 y K-06):** los 52 archivos de `src/RackCad.Application/Systems/PushBack/` fuera de `Pilot/` (G4 de la clausura de T1B, que la plantilla de T4B no protegía) y los otros 4 archivos de `Pilot/`.
+    - `src/RackCad.UI/` sigue prohibido entero.
+  - **Invariantes:** 18, INV-F4T4C-01 a 10 y 13 a 20, con la numeración del §6 del paquete. La 11 y la 12 son de T4C2.
+    - INV-01 nombra quién llama a T4B: el `Execute` de la corrida anidada del núcleo, no `HOSTRUN` (K-02).
+    - INV-09 añade el cierre en `Degrade` y la anotación del comando ajeno en el manejador de `CommandWillStart` (K-04).
+  - **El objetivo** asigna a T4C1 la frontera `PilotBoundaryKind.Update` y su traducción en `CrossBoundary`, que el paquete prueba en el núcleo (K-03).
+  - **`RequiredTests`:** 26 filas:
+    - Core `RackCad.Tests.Workspace` (`MinSelected` 3103, `ExpectRed` true);
+    - 23 clases de regresión con su cuenta de la base (`ExpectRed` false);
+    - UI `Workspace` (601) y `PushBackClassicCharacterization` (55), con `ExpectRed` false.
+  - **Paradas:** las del protocolo, F4T4C-C01 a F4T4C-C14 y la C15, que pide replanificar.
+- **La comprobación independiente del contrato** (`F4-DRAFTS/t4c/contract-check-t4c1.md`) dio **EMITIBLE TRAS CORRECCIONES (0/2/4)**. Las cuentas de las 23 clases cuadran exactas con el TRX de la base. La sesión aplicó los seis hallazgos; K-05 pedía custodiar la autorización antes del contrato, y eso hace este commit.
+- **La cadena** es la de T4B: la planificación del Controller `gpt-6-luna`/high, la comparación byte a byte, A1-A8, nc4, el Worker Sonnet/high, la CI exacta, las revisiones directa e independiente, la verificación, nc1..nc3 y la custodia.
+  - Para nc2 vale el sustituto de PD-F4-07, solo con su firma exacta.
+  - Rigen las reglas de F4-E59: sin suites completas de UI en local y sin sondas con entradas válidas en los caminos de diálogo o de escritura.
+  - Las pruebas no usan AutoCAD.
+- **attempts:** 1 de 3 para F4-T4C1-HOST.
