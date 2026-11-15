@@ -7383,3 +7383,15 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **La sesión** incorporó todos los hallazgos al generador del contrato.
 
 **Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.
+
+## 214. Contrato de F4-T4C2-PANEL
+
+**Contrato:** `I-64-pilot/F4-T4C2-PANEL/coordinator/gate-contract.json` (F4-E68), la parte [2] del §6 del paquete v5 de F4-T4C.
+- **Alcance:** lista blanca exacta de 14 rutas: el VM del campo, la vista XAML y su código subyacente, el núcleo (solo `TryCheckPilotEdit`) y `EditCheckOutcome`, las guardas de las filas 12, 18 y 21, el doble de UI y las pruebas de la UI y del diagnóstico.
+- **`ForbiddenWriteScope`:** 150 entradas: `src/RackCad.Plugin/` y `src/RackCad.Application/Systems/` enteros, la UI partida, lo que T4C1 creó y no cambia, y las guardas de D-T4C-20 (a).
+- **Invariantes y paradas:** 16 invariantes y 33 paradas, con C07, C09 y C14 adaptadas a T4C2, C15 (D4) y C16 (D5).
+- **`RequiredTests`:** 26 filas: Core Workspace (`MinSelected` 3421) y UI Workspace (`MinSelected` 601), los dos con `ExpectRed` true; 23 clases de regresión y `PushBackClassicCharacterization` (55), con `ExpectRed` false.
+- **Revisiones:** `AuthorityRevision` `cde952266c67a944d4a5d763b43c9d29d79fe213` y `MainSha` `812baf879612320653094a8aaf46aca0bac81383`.
+- **`attempts`:** 1 de 3.
+
+**Límites:** solo documentación en este paso; sin AutoCAD.
