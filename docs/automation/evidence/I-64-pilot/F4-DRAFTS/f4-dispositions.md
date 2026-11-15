@@ -2142,3 +2142,58 @@ La mutación authored no empieza sin su contrato. Smoke-2 sigue pendiente de Aut
   - las paradas F4T4B-C01 a F4T4B-C09.
 - **La cadena** es la de F4-T1B, sin mutantes: la planificación del Controller `gpt-6-luna`/high, la comparación byte a byte, A1-A8, nc4, el Worker Sonnet/high, la CI exacta, las revisiones directa e independiente, la verificación, nc1..nc3 y la custodia.
 - **attempts:** 1 de 3.
+
+## F4-E61. Cadena del intento 1 de F4-T4B-MUTATE-POST, disposición del Owner y cierre
+
+**Autoridades:**
+- la autorización de emisión de F4-T4B v7 (F4-E60, `F4-DRAFTS/coordinator/owner-f4t4b-emission-authorization.md`);
+- la disposición del Owner antes del cierre (`F4-DRAFTS/coordinator/owner-f4t4b-close-decision.md`), que transcribe literalmente sus tres respuestas.
+
+El paquete de cierre es `F4-T4B-MUTATE-POST/task-close-package.md`.
+
+**La cadena, completa según la autorización:**
+- **Planificación** `93b8`: comparación byte a byte PASS en las 8 colecciones a la primera y A1-A8 8/8. **nc4** `df36`: oráculo cumplido.
+- **Worker** `7a4a` (`claude-sonnet-5-5`/high, 433 turnos y 0 denegaciones):
+  - RED `f4476bc4`: el esqueleto inerte de los cuatro archivos nuevos de producto y las pruebas nuevas y cambiadas;
+  - GREEN `4314c180`: MUTATE y POST del Actualizar del piloto por la vía propia, el escritor del Plugin y el movimiento del núcleo de `Traverse`.
+- **CI exacta:**
+  - RED `43667312134`: Core en failure con 132 de 3103 en el filtro de Workspace, todos por aserción y de pruebas nuevas o cambiadas; UI en success; build-plugin omitido;
+  - GREEN `43668817337`: 4/4, con Core 18684/18684.
+- **El movimiento de `Traverse`:** la sesión y la revisión independiente comprobaron, cada una por su cuenta, que los literales de las guardas son los de `c3ae1c97` (`:103-110`, `:115-161` y `:166-169`, con la única sustitución, y el resto sin `:98-170`).
+- **Revisiones:**
+  - la directa: 0/0/3, con 5 observaciones;
+  - la adversarial independiente: **ACEPTABLE CON MENORES 0/1/10**.
+- **Verificación** `45f0`: `EXECUTION_VERIFIED` / NONE, 14/14.
+- **Controles:**
+  - nc1 `880b`: CONTROL PASS;
+  - nc2 `855b`: CONTROL NOT PASSED con un modo que **no** es PD-F4-01, devuelto al Owner;
+  - nc3 `fb91`: CONTROL PASS.
+- **Relevos:** 0 participantes en toda la cadena, la Snapshot I y el binario acreditado.
+
+**La disposición del Owner:**
+- **I-01 (los textos de D-T4B-07), «Ratificar + a T4C».**
+  - El GREEN añade al host `UpdateNotRunReason` y los dos motivos de `UpdateGate`, en lugar de constantes de la corrida. El comportamiento no cambia y la guarda de los 30 literales pasa.
+  - Se cierra como **desviación declarada**, con la adenda del §5 del paquete de cierre.
+  - Llevar los tres textos a constantes de la corrida, con la guarda extendida a `UpdateGate` y su negativa, pasa a **F4-T4C**.
+- **nc2, «Sustituto + deuda».**
+  - Con la lista blanca recortada (sin `IPushBackPilotUpdatePort.cs`), el Controller dio `EXECUTION_VERIFIED` con Scope y Contract en pass. Imprimió las dos listas y no las comparó.
+  - El sustituto `F4T4B-NC2-EXACT-WHITELIST-01` (`dba3`), clonado de F4T1B-NC2-EXACT-WHITELIST-01 y extendido a esta firma, da **PASS**: 10/10 propiedades y 17/17 autopruebas deterministas. Así, nc2 = SATISFIED_UNDER_F4T4B_EXACT_WHITELIST_SUBSTITUTE.
+  - Su propiedad 9 exige la firma nueva; las 7 y 8 demuestran mecánicamente que la respuesta correcta era Scope en fail.
+  - La salida ordinaria se conserva.
+  - **Deuda PD-F4-07:** el Controller puede dar Scope y Contract en pass, y `EXECUTION_VERIFIED`, ante una lista blanca recortada. El mismo modo apareció en I-64 F2/F3 (`8415` y `e415`) y en la primera ronda de F4-T3B2, allí por un conteo del prompt. Con la firma exacta, su sustituto se reutiliza **solo** en las tareas cuya disposición lo autorice. El AUTOMATION_PLAN no cambia.
+- **Las decisiones y los menores, «Ratificar todo».** Se ratifican como interpretaciones declaradas:
+  - un fallo del cálculo de los nombres deseados es un aviso, y POST sigue;
+  - una importación con `Ok = false`, o nula, es NotAppliedPreflight;
+  - la clasificación AppliedPostRereadFailed(`TOP_TRANSACTION_OPEN`) sustituye al registro «al salir» de §9 I-7;
+  - cualquier Error tras la corrida se responde como ClosedInError;
+  - la letra de INV-14.
+
+  Los menores de las dos revisiones van a F4-T4C o a ideas futuras.
+
+**Resultado:** **F4-T4B-MUTATE-POST = CLOSED / PASS WITH LIMITATIONS**, sobre `4314c180`, con `attempts` 1 de 3.
+- El piloto tiene su primera escritura authored, por una corrida pura y total con su escritor de operaciones primitivas.
+- No tiene todavía llamador de producto ni contexto de comando: eso es de T4C.
+
+**Siguiente:**
+1. El paquete de F4-T4C (§8 del paquete de T4B), con los arrastres de este cierre.
+2. Smoke-2, después de T4C (§7).

@@ -1,0 +1,77 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T4B-MUTATE-POST",
+  "RunId": "R20261115T041135Z-fb91",
+  "DelegationRunId": "R20261115T012258Z-93b8",
+  "WorkRunId": "R20261115T012820Z-7a4a",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.StartUtc=2026-11-15T01:28:25Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json is present and matches TaskId, Attempt=1, DelegationRunId and RunId. OutputWrittenUtc is later than Cession.StartUtc."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha succeeded. git diff --name-only AuthorityRevision BaseSha lists only the three unit docs: evidence, state and coordinator contract. External authority paths have no diff against MainSha."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "delegation.json and gate-contract.json match on A3-A5 inputs: 18 invariants, 23 exact allowed paths, 70 forbidden entries, 24 RequiredTests and StopConditions. byte-fidelity-check.json reports PASS for all eight collections; planning record reports A1-A8 pass and nc4."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD=4314c1803b7a047f0521c34d631950a475e7cd32; branch and worktree match delegation.json. BaseSha and RedSha are ancestors of CurrentSha; refs/remotes/origin/architecture/workspace-persistente-rackcad equals CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: LsRemoteSha=4314c1803b7a047f0521c34d631950a475e7cd32 equals CurrentSha; OriginMainSha=812baf879612320653094a8af46aca0bac81383 equals MainSha."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha lists 21 paths; each is an exact entry in delegation.json AllowedWriteScope. No changed path intersects ForbiddenWriteScope."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain is empty. git check-ignore -v confirms the verification package path is ignored by .gitignore rule artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts CurrentRun 43668817337 is push on refs/heads/architecture/workspace-persistente-rackcad at CurrentSha; all four required jobs succeeded. RedRun 43667312134 is push on the same ref at RedSha; Core failed as expected, UI and Build UI succeeded, Plugin build was skipped by needs."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Current Core and UI TRX match the handoff totals: 18684 Core passed; 2310 UI selected, 2293 passed, 0 failed. RequiredTests has 24 filters; TRX counts in TestResults meet each MinSelected, all pass on CurrentSha, and the 21 ExpectRed=false filters do not fail on RedSha. Workspace selected 3103, with 132 assertion failures on RedSha and 0 on CurrentSha; inspected failure messages lack a qualified-type prefix followed by ' : ', and stack first lines point under tests/. RT=ChainRedFiles contains 11 paths: tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs; tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs; tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs; tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs; tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs; tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs; tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs; tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs; tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs; tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs; tests/RackCad.Tests/Workspace/WorkspacePilotUpdateScopeDouble.cs. git diff --name-only RedSha CurrentSha -- tests/ is empty. RedSha diff contains no RackSiblingScan.cs implementation."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha returns the RED and GREEN commit bodies; both carry the declared Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com> trailer."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 with high effort. Work record says ModelRequested=sonnet (permitted subagent launch alias), ModelEffective=claude-sonnet-5-5 and EffortEffective=high."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "worker-handoff.json WorkCompleted matches a prohibited gate-status term in AUTOMATION_PLAN 16.10."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes record 0 permission denials and no pending tool errors; no failed order remains pending."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "The WorkCompleted field contains a prohibited gate-status term; the FreeText check fails."
+  ],
+  "RecommendedNextAction": "Replace the prohibited phrase in WorkCompleted and submit a corrected handoff for text rechecking."
+}

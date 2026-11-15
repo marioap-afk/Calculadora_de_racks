@@ -1,0 +1,665 @@
+{
+  "Schema": "rackcad-delegation/v1",
+  "TaskId": "F4-T4B-MUTATE-POST",
+  "RunId": "R20261115T012258Z-93b8",
+  "Initiative": "I-64",
+  "Unit": "I-64",
+  "Gate": "F4",
+  "Attempt": 1,
+  "AuthorityRevision": "56041cd0cce9bc20ab70b4192aa2f48080f4a8a0",
+  "MainSha": "812baf879612320653094a8aaf46aca0bac81383",
+  "BaseSha": "3633f08d1082a8a049bca1ac24432900919253d3",
+  "ExpectedBranch": "architecture/workspace-persistente-rackcad",
+  "ExpectedWorktree": "<worktree-de-I-64>",
+  "Owner": {
+    "Kind": "subagent",
+    "Id": "subagent:R20261115T012258Z-93b8"
+  },
+  "TaskClass": "Implementacion transversal a capas (corta)",
+  "Dimensions": {
+    "Ambiguity": "Low",
+    "ArchitecturalSensitivity": "High",
+    "Breadth": "High",
+    "ToolUse": "High",
+    "FailureCost": "High",
+    "MechanicalRepetition": "Low",
+    "Horizon": "Medium"
+  },
+  "Executor": {
+    "Provider": "Anthropic",
+    "Transport": "subagent",
+    "Role": "Worker",
+    "Cell": "anthropic/subagent/claude-sonnet-5-5"
+  },
+  "Model": "claude-sonnet-5-5",
+  "Effort": {
+    "Semantic": "Deep",
+    "Provider": "high"
+  },
+  "PromptProfile": "ROUTINE_IMPLEMENTATION",
+  "RoutingReason": "Verificacion 2026-11-14: clasificada como implementacion transversal a capas corta. Ambiguity Low: el paquete v7 y las decisiones aprobadas fijan el diseno. ArchitecturalSensitivity High: la tarea enlaza Application, Plugin y Workspace con reglas de escritura y lectura caller-owned. Breadth High: puerto, corrida, ayuda, borrador, host, escritor y pruebas Core. ToolUse High: requiere inspeccionar codigo, pruebas y guardas y producir evidencia RED/GREEN/CI. FailureCost High: una clasificacion o escritura incorrecta puede alterar el dibujo. MechanicalRepetition Low: requiere implementar comportamiento y pruebas especificos, no repeticion mecanica. Horizon Medium: alcance de una subtarea acotada. La clase parte en Deep; las dimensiones High arquitectonica y de coste lo mantienen en Deep por el tope de routing. Se selecciona la celda elegible mas baja del contrato para el Worker: anthropic/subagent/claude-sonnet-5-5, Anthropic/subagent, modelo claude-sonnet-5-5, effort high; catalogo verificado 2026-09-30, capacidad write-commit-push y effort high medidos en U-04. Identidad comprobada: branch architecture/workspace-persistente-rackcad, HEAD y ChainBaseSha 3633f08d1082a8a049bca1ac24432900919253d3, origin/main coincide con MainSha 812baf879612320653094a8aaf46aca0bac81383. Conteos tracked comprobados: Pilot 8, Workspace 40, Plugin Views 12, Core Workspace tests 68. El contrato es ASCII puro; no se observa bloqueo de planificacion por los datos comprobados.",
+  "ModelEscalationReason": null,
+  "RoutingEnforcement": "required",
+  "Authorities": [
+    {
+      "Path": "docs/initiatives/I-64-f4-t4b-gate-contract-package.md",
+      "Section": "archivo completo (v7); sus section 2 (hechos H-01 a H-26), section 3 (el reparto con T4C), section 4 (D-T4B-02 a D-T4B-09), section 6 (contrato), section 7 (Smoke-2), section 9 (interpretaciones aprobadas) y section 10 fijan esta subtarea",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4t4b-emission-authorization.md",
+      "Section": "archivo completo: autorizacion de emision y ejecucion de F4-T4B con el section 9 propuesto",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4t4b-traverse-decision.md",
+      "Section": "archivo completo: el movimiento de Traverse con guardas exactas en T4B",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4t4-disposition-reverify-t1b-t4b.md",
+      "Section": "las decisiones de F4-T4B: la via propia, el puerto por ambitos, el movimiento del barrido, la purga y la distincion A/B/C",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4t1b-authorization.md",
+      "Section": "el orden despues del cierre de T1B y la via propia del piloto",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4t4-preparation-authorization.md",
+      "Section": "archivo completo: la division de F4-T4",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4t4a2-authorization.md",
+      "Section": "TOCTOU, el plan inmutable y la primera tarea con escritura authored",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-f4-t4-gate-contract-package.md",
+      "Section": "section 3 (la fila de T4B), section 3.1, section 3.2 y section 7 (R-T4-01 a R-T4-04, R-T4-11 a R-T4-13)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-f4-t4a2-gate-contract-package.md",
+      "Section": "section 8 y D-T4A2-06",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-proposal-v5.md",
+      "Section": "D-12, D-13, INV-06, INV-10, INV-11, INV-12, INV-14, INV-30, INV-39 y M-02",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-implementation-clarifications.md",
+      "Section": "IC-08",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-T1B-PILOT-CHARACTERIZATION/task-close-package.md",
+      "Section": "archivo completo: la linea base caracterizada de T1B y sus menores",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-T4A2-PREPARE-UI/task-close-package.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/t4b/map-4-traverse-t1b-coverage.md",
+      "Section": "archivo completo: los llamadores del barrido y lo que cubre T1B",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/t4b/map-5-purge-category.md",
+      "Section": "archivo completo: la categoria de la purga",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/state/I-64.yml",
+      "Section": "estado vigente completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-evidence.md",
+      "Section": "section 201 y siguientes",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/f4-dispositions.md",
+      "Section": "archivo completo, en particular F4-E07, F4-E16, F4-E25, F4-E31, F4-E43, F4-E51, F4-E59 y F4-E60",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4t2b2a-replanning.md",
+      "Section": "archivo completo: regla de replanificacion de F4 (F4-E31)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-T4B-MUTATE-POST/coordinator/gate-contract.json",
+      "Section": "este contrato",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "src/RackCad.Plugin/Systems/PushBack/PushBackSystemDrawService.cs",
+      "Section": "fachada lateral de Push Back: el escritor usa PrepareRedraw y RedrawInTransaction; no cambia (CT-27 de T1B)",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Plugin/Systems/PushBack/PushBackFrontalDrawService.cs",
+      "Section": "fachada frontal de Push Back; no cambia (CT-27 de T1B)",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Plugin/Systems/PushBack/PushBackPlantaDrawService.cs",
+      "Section": "fachada de planta de Push Back; no cambia (CT-27 de T1B)",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs",
+      "Section": "PurgeAfterCommit, la entrada unica de la purga de los caminos de redibujo; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Plugin/Systems/Shared/ViewBlockDraw.cs",
+      "Section": "la importacion y el redibujo caller-owned; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs",
+      "Section": "la purga (PurgeUnreferenced) y las staleDefinitions; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Plugin/Drawing/RackBlockRenamer.cs",
+      "Section": "SyncName; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs",
+      "Section": "el lector del piloto (llamador D del barrido); no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs",
+      "Section": "el host del panel; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/Shared/RackViewBaseName.cs",
+      "Section": "los nombres por vista del clasico; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/Shared/RackViewCodec.cs",
+      "Section": "el corte de una vista; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/BlockNaming.cs",
+      "Section": "SanitizeBlockName; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentReader.cs",
+      "Section": "el lector del piloto en Application; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs",
+      "Section": "el materializador del piloto; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs",
+      "Section": "el puerto del panel con sus cinco implementadores; no cambia en T4B",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "tests/RackCad.Tests/CallerOwnedTransactionGuardTests.cs",
+      "Section": "las guardas del orden commit, purga y regen de los escritores clasicos; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "tests/RackCad.Tests/PushBackClassicCharacterizationPluginGuardTests.cs",
+      "Section": "la caracterizacion de T1B del Plugin de Push Back; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "docs/adr/0003-referencias-autocad-para-ci.md",
+      "Section": "archivo completo: las pruebas no cargan el Plugin",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "section 16.1 a section 16.10",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "section 4 (A1-A8) y section 10 (nc1..nc4)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/routing.md",
+      "Section": "archivo completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/model-catalog.md",
+      "Section": "celdas medidas y vigentes para Controller y Worker",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/WORKFLOW.md",
+      "Section": "relevo, Git e integracion",
+      "Class": "EXTERNAL"
+    }
+  ],
+  "Objective": "Implementar MUTATE y POST del Actualizar del piloto de Push Back segun el paquete v7 de F4-T4B y la autorizacion de emision del Owner, por la via propia del piloto: el puerto por ambitos por corrida (IPushBackPilotUpdatePort), la corrida pura y total que decide y clasifica (PushBackPilotUpdateRun), la ayuda pura del sistema, el escritor del Plugin que solo hace operaciones primitivas dentro de los ambitos (RackPilotUpdateWriter), la lectura caller-owned por el movimiento del nucleo de Traverse con guardas exactas, la purga de categoria b despues del commit, CompleteApply por rama y TryUpdatePilot como metodo del nucleo, sin contexto de comando, sin LockDocument en el escritor y sin AutoCAD en las pruebas. La primera escritura authored del piloto; su primera validacion fisica es Smoke-2.",
+  "AllowedWriteScope": [
+    "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs",
+    "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotSystemRebuild.cs",
+    "src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs",
+    "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs",
+    "src/RackCad.Application/Workspace/Drafts/DraftSession.cs",
+    "src/RackCad.Application/Workspace/Drafts/DraftApplyOutcome.cs",
+    "src/RackCad.Application/Workspace/WorkspaceHostCore.cs",
+    "src/RackCad.Application/Workspace/WorkspaceEditIntent.cs",
+    "src/RackCad.Plugin/Views/RackSiblingScan.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateScopeDouble.cs",
+    "tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostTestSupport.cs"
+  ],
+  "ForbiddenWriteScope": [
+    "src/RackCad.UI/",
+    "src/RackCad.Domain/",
+    "src/RackCad.Plugin/Workspace/",
+    "src/RackCad.Plugin/Systems/",
+    "src/RackCad.Plugin/Drawing/",
+    "src/RackCad.Plugin/KindHandlers/",
+    "src/RackCad.Application/Views/Redraw/",
+    "src/RackCad.Plugin/RackAyudaCommands.cs",
+    "src/RackCad.Plugin/RackCabeceraCommands.cs",
+    "src/RackCad.Plugin/RackCamaCommands.cs",
+    "src/RackCad.Plugin/RackCantileverCommands.cs",
+    "src/RackCad.Plugin/RackDinamicoCommands.cs",
+    "src/RackCad.Plugin/RackDuplicarCommands.cs",
+    "src/RackCad.Plugin/RackInventarioCommands.BomTotal.cs",
+    "src/RackCad.Plugin/RackInventarioCommands.cs",
+    "src/RackCad.Plugin/RackLayoutCommands.Fill.cs",
+    "src/RackCad.Plugin/RackLayoutCommands.cs",
+    "src/RackCad.Plugin/RackMenuCommands.cs",
+    "src/RackCad.Plugin/RackPropiedadesCommands.cs",
+    "src/RackCad.Plugin/RackProyectarCommands.cs",
+    "src/RackCad.Plugin/RackPushBackCommands.cs",
+    "src/RackCad.Plugin/RackRamElementsCommands.cs",
+    "src/RackCad.Plugin/RackSeccionCommands.cs",
+    "src/RackCad.Plugin/RackSelectivoCommands.cs",
+    "src/RackCad.Plugin/RackVariablesCommands.cs",
+    "src/RackCad.Plugin/RackSelectivoInsertIntegration.cs",
+    "src/RackCad.Plugin/RackCommandSupport.cs",
+    "src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs",
+    "src/RackCad.Plugin/Views/RackUnsupportedSiblingInsert.cs",
+    "src/RackCad.Plugin/Views/RackProjectionSnapshotReader.cs",
+    "src/RackCad.Plugin/Views/RackViewBatchProducts.cs",
+    "src/RackCad.Plugin/Views/RackViewPlacement.cs",
+    "src/RackCad.Plugin/Views/RackViewBatchDriver.cs",
+    "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs",
+    "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentReader.cs",
+    "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentScan.cs",
+    "src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs",
+    "src/RackCad.Application/Workspace/WorkspacePilotSupport.cs",
+    "src/RackCad.Application/RackCad.Application.csproj",
+    "src/RackCad.Plugin/RackCad.Plugin.csproj",
+    "tests/RackCad.UI.Tests/",
+    "tests/RackCad.Tests/Fixtures/",
+    "tests/RackCad.Tests/RackCad.Tests.csproj",
+    "tests/RackCad.Tests/PushBackClassicCharacterizationPluginGuardTests.cs",
+    "tests/RackCad.Tests/SiblingRedrawSeamGuardTests.cs",
+    "tests/RackCad.Tests/CallerOwnedTransactionGuardTests.cs",
+    "tests/RackCad.Tests/G9bInsertWiringGuardTests.cs",
+    "tests/RackCad.Tests/RackViewBatchDriverGuardTests.cs",
+    "tests/RackCad.Tests/G16FirstViewCorrectiveTests.cs",
+    "tests/RackCad.Tests/RackProjectionCommandGuardTests.cs",
+    "tests/RackCad.Tests/RackSiblingRedrawTests.cs",
+    "tests/RackCad.Tests/RackSiblingCustomPropertiesGateTests.cs",
+    "tests/RackCad.Tests/RackEnvelopeIdProbeTests.cs",
+    "tests/RackCad.Tests/PushBackPluginSourceGuardTests.cs",
+    "tests/RackCad.Tests/PushBackRoundTripSourceGuardTests.cs",
+    "tests/RackCad.Tests/CustomPropertiesEnvelopeGuardTests.cs",
+    "tests/RackCad.Tests/RackUnitsGuardSourceTests.cs",
+    "tests/RackCad.Tests/NamespaceFolderGuardTests.cs",
+    "docs/",
+    ".github/",
+    "eng/",
+    "tools/",
+    "assets/",
+    "deploy/",
+    "RackCad.sln",
+    "Directory.Build.props",
+    "Directory.Build.targets",
+    "global.json",
+    "NuGet.Config",
+    "README.md"
+  ],
+  "Invariants": [
+    "INV-F4T4B-01 (la relectura de MUTATE es la autoridad): ningun resultado de PREPARE autoriza escribir; dentro de la transaccion poseida, Reread vuelve a elegir el origen en puro (la misma clave que el plan, o NotAppliedConflict), recompone la StaleBase y la compara con la del plan antes de cualquier WriteUnit.",
+    "INV-F4T4B-02 (sin escritura ante una diferencia): con una diferencia de la StaleBase, NotAppliedConflict y cero WriteUnit.",
+    "INV-F4T4B-03 (todo o nada, corrida total): la clasificacion por frontera de la tabla de D-T4B-02 del paquete, incluidas las filas del aborto (ABORT_FAILED da CommitThrew, es decir Unknown) y del Dispose exterior, con la precedencia de D-T4B-02 (6) y sus dos salvedades; la corrida es total y nunca lanza; los dos ambitos se liberan en finally propios que no tapan la excepcion decidida; la costura de I-55 no cambia y sus pruebas siguen en verde.",
+    "INV-F4T4B-04 (una transaccion poseida): una sola transaccion de MUTATE, abierta en BeginMutation solo con TopTransaction nula (si no, el valor de rechazo TOP_TRANSACTION_OPEN, que no es una excepcion); la relectura no abre transaccion, no bloquea y no confirma; los objetos de AutoCAD viven solo en las clases de ambito del escritor.",
+    "INV-F4T4B-05 (importacion y preflight): la importacion (PrepareUnits) va antes de la transaccion; C-F4-05 (supervivientes) y las capas bloqueadas (LOCKED_LAYER) se comprueban antes de importar y otra vez en MUTATE; el origen se elige en puro, en la corrida, por el texto exacto del origen del borrador (cero da NoOriginReason y varios SeveralOriginsReason, los dos Preflight); el residuo OM-5 de la importacion queda declarado.",
+    "INV-F4T4B-06 (POST): POST sale de la relectura posterior a la purga, al SyncName y al regen, con el origen plan.OriginKey; se compara byte a byte y sin normalizar (las mismas claves, EnvelopeText ordinalmente igual, la misma escala); Dirty pasa a false solo desde el estado verificado; la interpretacion de POST (nombres esperados, avisos) es de la corrida y el escritor solo devuelve hechos.",
+    "INV-F4T4B-07 (nunca se borra una vista): sin Erase( ni EraseViewBlocks en el escritor; solo se aplica lo que posee el piloto.",
+    "INV-F4T4B-08 (el plan): el plan es inmutable y de valores; no lleva objetos del host ni de AutoCAD.",
+    "INV-F4T4B-09 (la ranura): la disciplina de la ranura de D-T4B-07 del paquete; TryUpdatePilot es un metodo publico del nucleo, sin llamador de producto en T4B, con su puerta propia sin reposo ni lector.",
+    "INV-F4T4B-10 (CompleteApply por rama): D-T4B-06 del paquete, rama por rama, con una prueba por fila; el bloque diferido de DraftSession queda identico byte a byte; AppliedPostRereadFailed conserva los avisos.",
+    "INV-F4T4B-11 (los arrastres): M-1, M-5, M-6 y M-10 segun D-T4B-08 del paquete.",
+    "INV-F4T4B-12 (sin contexto de ejecucion): sin UI, contexto de comando, async, await, ExecuteInCommandContextAsync ni LockDocument en el escritor ni en las carpetas Workspace.",
+    "INV-F4T4B-13 (los caminos clasicos no cambian): Insertar, RACKEDITAR, el menu y RACKPROYECTAR no cambian; git diff --name-only BaseSha..CurrentSha no toca ningun archivo de los caminos clasicos ni de los llamadores del barrido (H-20 del paquete), que estan en el prohibido; las pruebas de T1B y de I-55 siguen en verde; que T1B siga en verde es necesario pero no protege el movimiento de Traverse, que lo protege INV-F4T4B-17.",
+    "INV-F4T4B-14 (cambios de guarda): solo los cambios de guarda declarados en D-T4B-07 y D-T4B-09 del paquete, exactos y con su autoprueba en negativo.",
+    "INV-F4T4B-15 (el RED): cuerpos inertes tambien en las fabricas, igualdades y reenvios (M-11); las pruebas existentes que cambian van en el RED; las guardas que pasan ya en el RED se declaran (D-T4B-04 (8) del paquete); ninguna prueba necesita AutoCAD; ningun archivo nuevo construye ni compone un RackEmbedDocument ni anade [CommandMethod( o Insunits.",
+    "INV-F4T4B-16 (la purga, categoria b): corre una vez, en Post, con SystemBlockWriter.PurgeAfterCommit y la union de las staleDefinitions de todas las WriteUnit, despues de que Seal vuelva, fuera del ambito de mutacion y con TopTransaction nula (si no, Post no hace nada mas y la corrida da AppliedPostRereadFailed con TOP_TRANSACTION_OPEN); nunca en WriteUnit, en Seal, dentro del ambito de mutacion ni entre dos WriteUnit; no hay purga en NotApplied ni en CommitThrew; no da aviso, fallo ni estado y su fallo solo va al registro; la relectura de POST va despues; un diseno que la comparta con la transaccion authored, la anide o la intercale es STOP (F4T4B-C08).",
+    "INV-F4T4B-17 (el movimiento de Traverse, por decision del Owner): es una refactorizacion sin cambio de comportamiento; lo fijan las guardas exactas de D-T4B-04 del paquete (el nucleo internal static TraverseCore identico, sin las llaves del metodo y normalizado, al literal de c3ae1c97:src/RackCad.Plugin/Views/RackSiblingScan.cs:103-110, :115-161 y :166-169 con la unica sustitucion document.Database.BlockTableId por database.BlockTableId y con autopruebas negativas; el envoltorio exacto de Traverse; Capture y CaptureDrawing exactos; el censo de dos llamadas al nucleo; y el resto del archivo congelado fuera de los dos miembros, AddLayer incluido), las clases de regresion del barrido en verde y Smoke-2 de los cuatro llamadores.",
+    "INV-F4T4B-18 (contencion de las pruebas y de las corridas locales, F4-E59): ninguna prueba nueva escribe fuera de una ubicacion temporal aislada ni usa la configuracion real del usuario; ninguna deja vivo un modal, un dispatcher ni estado persistente fuera de su sandbox; las suites completas de UI solo corren en la CI, y en local solo los filtros de UI de RequiredTests; ninguna sonda temporal ejerce con entradas validas un camino con dialogo o escritura."
+  ],
+  "AcceptanceCriteria": [
+    "Crear las pruebas RED para que compilen contra el esqueleto inerte, incluidos cuerpos inertes en fabricas, igualdades y reenvios; solo las pruebas nuevas o cambiadas fallan por asercion, salvo las guardas de D-T4B-04 (8) que pasan en RED y quedan declaradas.",
+    "Implementar GREEN solo dentro del AllowedWriteScope; ningun archivo tests/ cambiado en RED se modifica en GREEN.",
+    "Cubrir la corrida total con la tabla de frontera completa, filas del aborto y del Dispose exterior, precedencia y salvedades; liberar ambos ambitos en finally propios y no tapar la excepcion decidida.",
+    "En MUTATE, releer y volver a elegir el origen en puro como autoridad, reconstruir StaleBase y compararla antes de WriteUnit; cualquier diferencia produce NotAppliedConflict y cero WriteUnit.",
+    "Usar una transaccion poseida unica que solo comienza con TopTransaction nula; si hay transaccion ajena devolver TOP_TRANSACTION_OPEN como valor de rechazo, no como excepcion. Mantener los objetos AutoCAD solo en los ambitos del escritor.",
+    "El escritor solo comprueba identidad del documento, lee y ejecuta operaciones primitivas dentro de los ambitos; devuelve hechos para que la corrida decida origen, supervivientes, capas, nombres esperados y avisos POST.",
+    "Producir POST mediante relectura posterior a purga, SyncName y regen; comparar sin normalizar las mismas claves, EnvelopeText ordinalmente igual y escala igual. Dirty solo pasa a false desde el estado verificado.",
+    "Ejecutar una vez la purga de categoria b en Post, despues de Seal, fuera del ambito de mutacion y con TopTransaction nula, usando la union de staleDefinitions de todas las WriteUnit; respetar el orden y las condiciones de no ejecucion de INV-F4T4B-16.",
+    "Mover Traverse con las guardas exactas de D-T4B-04: nucleo identico al literal indicado con la unica sustitucion declarada, envoltorio, Capture y CaptureDrawing exactos, censo de dos llamadas, resto del archivo congelado; incluir autopruebas negativas y clases de regresion del barrido en verde.",
+    "Implementar CompleteApply por rama segun D-T4B-06 con una prueba por fila; conservar byte a byte el bloque diferido de DraftSession y los avisos de AppliedPostRereadFailed.",
+    "Mantener sin cambios los caminos clasicos, la costura de I-55, las fachadas congeladas, el adaptador y los llamadores prohibidos; las pruebas de T1B y de I-55 siguen en verde.",
+    "Implementar TryUpdatePilot como metodo publico del nucleo con la disciplina de ranura de D-T4B-07, sin llamador de producto, reposo ni lector; conservar los arrastres M-1, M-5, M-6 y M-10.",
+    "Limitar cambios de guardas a los declarados en D-T4B-07 y D-T4B-09, exactos y con autoprueba negativa; ninguna prueba carga AutoCAD ni crea o compone RackEmbedDocument, CommandMethod o Insunits.",
+    "Contener pruebas y corridas segun INV-F4T4B-18: no escribir fuera de ubicacion temporal aislada ni usar configuracion real; no dejar modal, dispatcher o estado persistente fuera del sandbox; no ejecutar suite completa de UI local; no sondear caminos con dialogo o escritura con entradas validas.",
+    "En RED acreditar que compila y que las pruebas existentes pasan, con solo Core Workspace en failure y UI en success; omitir build-plugin dependiente de tests en RED. En GREEN acreditar los filtros RequiredTests, Core Full local Debug, solo los dos filtros de UI local, builds exigidos y CI push exacta con jobs requeridos success."
+  ],
+  "RequiredTests": [
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.Workspace",
+      "MinSelected": 2923,
+      "ExpectRed": true
+    },
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.CallerOwnedFacadeGuardTests",
+      "MinSelected": 48,
+      "ExpectRed": false
+    },
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.CallerOwnedTransactionGuardTests",
+      "MinSelected": 15,
+      "ExpectRed": false
+    },
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.RackSiblingRedrawUnitsTests",
+      "MinSelected": 2,
+      "ExpectRed": false
+    },
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.DebugFaultInjectionGuardTests",
+      "MinSelected": 1,
+      "ExpectRed": false
+    },
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.SiblingRedrawSeamGuardTests",
+      "MinSelected": 2,
+      "ExpectRed": false
+    },
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.RackSiblingMembershipTests",
+      "MinSelected": 12,
+      "ExpectRed": false
+    },
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.RackSiblingRedrawPlanTests",
+      "MinSelected": 2,
+      "ExpectRed": false
+    },
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.RackSiblingRedrawRunTests",
+      "MinSelected": 6,
+      "ExpectRed": false
+    },
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests",
+      "MinSelected": 10,
+      "ExpectRed": false
+    },
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.PushBackPluginSourceGuardTests",
+      "MinSelected": 11,
+      "ExpectRed": false
+    },
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.PushBackRoundTripSourceGuardTests",
+      "MinSelected": 24,
+      "ExpectRed": false
+    },
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.RackProjectionCommandGuardTests",
+      "MinSelected": 34,
+      "ExpectRed": false
+    },
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.NamespaceFolderGuardTests",
+      "MinSelected": 7,
+      "ExpectRed": false
+    },
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.CustomPropertiesEnvelopeGuardTests",
+      "MinSelected": 22,
+      "ExpectRed": false
+    },
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.RackUnitsGuardSourceTests",
+      "MinSelected": 18,
+      "ExpectRed": false
+    },
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.I55G15Auth15ConsumerTests",
+      "MinSelected": 5,
+      "ExpectRed": false
+    },
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.SingleScanInsertGuardTests",
+      "MinSelected": 5,
+      "ExpectRed": false
+    },
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.RackViewBatchDriverGuardTests",
+      "MinSelected": 4,
+      "ExpectRed": false
+    },
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.G16FirstViewCorrectiveTests",
+      "MinSelected": 61,
+      "ExpectRed": false
+    },
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.RackSiblingCustomPropertiesGateTests",
+      "MinSelected": 2,
+      "ExpectRed": false
+    },
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.RackEnvelopeIdProbeTests",
+      "MinSelected": 5,
+      "ExpectRed": false
+    },
+    {
+      "Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.UI.Tests.Workspace",
+      "MinSelected": 601,
+      "ExpectRed": false
+    },
+    {
+      "Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization",
+      "MinSelected": 55,
+      "ExpectRed": false
+    }
+  ],
+  "ExpectedEvidence": [
+    "gate-contract valido; delegacion del Controller valida; comparacion byte a byte y aceptacion A1-A8, y nc4 (primera delegacion de la cadena F4-T4B), antes del Worker.",
+    "AllowedWriteScope de la delegacion = exactamente el AllowedWriteScope del contrato.",
+    "Commit RED y push propios antes del GREEN: pruebas que compilan; las existentes pasan y solo las nuevas o las cambiadas fallan, por asercion, salvo las guardas que el paquete declara que pasan ya en el RED (D-T4B-04 (8)); ChainRedSha y ChainRedFiles acreditados.",
+    "Commit GREEN y push con cambios solo dentro del AllowedWriteScope; ningun archivo de tests/ del RED cambia.",
+    "En local, sobre el GREEN: los filtros de RequiredTests de Core en verde y la suite completa de Core en verde en Debug; de UI, solo los dos filtros de RequiredTests (sin la suite completa de UI en local, INV-F4T4B-18); build Release de la solucion, Plugin incluido, sin avisos nuevos (tambien con el esqueleto del RED); el build Debug del Plugin con la orden de D-T4B-03 del paquete, a una carpeta temporal fuera del repo, sin avisos nuevos respecto a la base en Debug.",
+    "CI push del SHA exacto GREEN con los cuatro jobs en success (las suites completas de Core y de UI), y del RED con el job de Core en failure (ExpectRed true en el filtro de Workspace) y el de UI en success (ExpectRed false en los dos filtros de UI).",
+    "worker-handoff.json conforme a su esquema con RED, GREEN, alcance real, trailer, conteos de cada filtro, el mapa evidencia-por-invariante, las guardas que pasan en el RED, que suites se corrieron en local (INV-F4T4B-18) y OpenQuestions vacia salvo ambiguedad material real; opcional, el git diff --color-moved del movimiento de Traverse.",
+    "Controller verification valida; nc1..nc3 segun README section 10 con su oraculo ordinario, conservando cada salida ordinaria de control; deuda de controles: un sustituto local solo con la firma EXACTA de sus condiciones aceptadas (PD-F4-01 para nc2, PD-F4-04 o PD-F4-05 para nc1, PD-F4-06 para Ci o Trailer); la verificacion 14/14 sola no basta para cerrar; revision directa de la sesion y revision adversarial independiente del diff.",
+    "Sin AutoCAD: la corrida, el puerto y el host se prueban en Core con el doble del ambito; el escritor del Plugin solo lo cubren las guardas de fuente; la primera validacion fisica del escritor del piloto es Smoke-2 (section 7 del paquete), despues de cerrar F4-T4C."
+  ],
+  "StopConditions": [
+    {
+      "Id": "S-02",
+      "Text": "architecture outside Freeze"
+    },
+    {
+      "Id": "S-03",
+      "Text": "material ambiguity"
+    },
+    {
+      "Id": "S-04",
+      "Text": "contradictory evidence"
+    },
+    {
+      "Id": "S-05",
+      "Text": "destructive or irreversible action not authorized"
+    },
+    {
+      "Id": "S-07",
+      "Text": "conflict with another active owner"
+    },
+    {
+      "Id": "S-08",
+      "Text": "branch or worktree ownership conflict"
+    },
+    {
+      "Id": "S-12",
+      "Text": "Worker loses context or cannot verify AuthorityRevision"
+    },
+    {
+      "Id": "S-13",
+      "Text": "origin/main movement invalidates exact-SHA assumptions; apply AUTOMATION_PLAN 16.7"
+    },
+    {
+      "Id": "S-14",
+      "Text": "I-64 Freeze or contract explicitly says STOP"
+    },
+    {
+      "Id": "P-01",
+      "Text": "config.toml no longer matches accepted Snapshot A, B, C or D"
+    },
+    {
+      "Id": "P-02",
+      "Text": "foreign live participant, unattributable process or more than one open delegation"
+    },
+    {
+      "Id": "P-03",
+      "Text": "delegation outside gate contract"
+    },
+    {
+      "Id": "P-04",
+      "Text": "BLOCKED cap reached"
+    },
+    {
+      "Id": "P-05",
+      "Text": "invocation differs from accepted delegation package"
+    },
+    {
+      "Id": "P-06",
+      "Text": "usage or credit-limit warning"
+    },
+    {
+      "Id": "P-07",
+      "Text": "another invocation would exceed the invocation budget"
+    },
+    {
+      "Id": "P-08",
+      "Text": "responsible session operates the worktree during cession"
+    },
+    {
+      "Id": "F4T4B-C01",
+      "Text": "the writer would need the UI, a command context, async or LockDocument"
+    },
+    {
+      "Id": "F4T4B-C02",
+      "Text": "a change would be needed in the I-55 seam, the facades, the classic paths, RackPilotIntentAdapter.cs, IWorkspacePilotEditPort or its implementers"
+    },
+    {
+      "Id": "F4T4B-C03",
+      "Text": "a guard change not declared in D-T4B-07 or D-T4B-09 of the package would be needed"
+    },
+    {
+      "Id": "F4T4B-C04",
+      "Text": "the plan would need to carry a host object, or an AutoCAD object would have to live outside a scope"
+    },
+    {
+      "Id": "F4T4B-C05",
+      "Text": "the POST comparison would need to normalize anything"
+    },
+    {
+      "Id": "F4T4B-C06",
+      "Text": "the emission preconditions stop holding, or a fact of section 2 of the package does not hold on the base in a way that changes the design"
+    },
+    {
+      "Id": "F4T4B-C07",
+      "Text": "a planning output rejected only by the literal byte-fidelity comparison of the collections before the Worker allows ONE replanning with a reinforced prompt, without consuming a product attempt; a second planning fidelity failure is STOP to the Coordinator (F4-E31, F4-E43)"
+    },
+    {
+      "Id": "F4T4B-C08",
+      "Text": "the purge would have to share, nest in or interleave with the authored transaction (category a), or its failure would have to change the outcome"
+    },
+    {
+      "Id": "F4T4B-C09",
+      "Text": "the moved traversal core cannot be identical to the frozen literal except for its declared substitution; or any other change in RackSiblingScan.cs outside the two members Traverse and the core would be needed; or the move would need an undeclared change to a traversal caller or to a guard listed in H-19 of the package"
+    }
+  ],
+  "MaxReworkLoops": 3,
+  "AttemptsRemaining": 2,
+  "ChainBaseSha": "3633f08d1082a8a049bca1ac24432900919253d3",
+  "ChainRedSha": null,
+  "ChainRedFiles": [],
+  "CorrectionOf": null,
+  "ExpectedHandoffPath": "artifacts/orchestration/I-64/F4-T4B-MUTATE-POST/1/{WorkRunId}/worker-handoff.json",
+  "IssuedBy": "Controller Codex (planificacion F4-T4B-MUTATE-POST, primera delegacion de la cadena, CONTROLLER_PLANNING)"
+}

@@ -7222,3 +7222,29 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **`attempts`:** 1 de 3.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 204. Cadena, disposición del Owner y cierre de F4-T4B-MUTATE-POST
+
+**Decisión:** F4-E61 y la disposición del Owner antes del cierre: I-01 «Ratificar + a T4C», nc2 «Sustituto + deuda» y las decisiones del Worker «Ratificar todo».
+
+- **Planificación** `93b8` (fidelidad PASS, A1-A8 8/8) y **nc4** `df36`.
+- **Worker** `7a4a`:
+  - RED `f4476bc4`, con el esqueleto inerte y las pruebas;
+  - GREEN `4314c180`, con la corrida pura y total, el escritor del Plugin, `CompleteApply` por rama, `TryUpdatePilot` y el movimiento de `Traverse`.
+- **CI:**
+  - RED `43667312134`: Core 132/3103 en rojo por aserción, UI en verde;
+  - GREEN `43668817337`: 4/4, con Core 18684/18684.
+- **Revisiones:** la directa, 0/0/3; la independiente, 0/1/10, con I-01 dispuesta por el Owner.
+- **Verificación** `45f0`: `EXECUTION_VERIFIED` 14/14.
+- **Controles:**
+  - nc1 `880b`: CONTROL PASS;
+  - nc2 `855b`: Scope en pass ante la lista recortada (PD-F4-07), satisfecho por el sustituto `dba3` (PASS);
+  - nc3 `fb91`: CONTROL PASS.
+- **Resultado:** F4-T4B **CLOSED / PASS WITH LIMITATIONS**, intentos 1 de 3.
+
+**Límites:**
+- sin AutoCAD: la primera validación física es Smoke-2, después de F4-T4C;
+- `TryUpdatePilot` todavía no tiene llamador de producto;
+- I-01 y los menores pasan a F4-T4C;
+- deuda nueva PD-F4-07;
+- H-1 sigue abierta.

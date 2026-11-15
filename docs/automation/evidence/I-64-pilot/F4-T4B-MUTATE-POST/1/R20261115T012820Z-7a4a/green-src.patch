@@ -1,0 +1,1837 @@
+diff --git a/src/RackCad.Application/Systems/PushBack/Pilot/IPushBackPilotUpdatePort.cs b/src/RackCad.Application/Systems/PushBack/Pilot/IPushBackPilotUpdatePort.cs
+new file mode 100644
+index 00000000..124f5001
+--- /dev/null
++++ b/src/RackCad.Application/Systems/PushBack/Pilot/IPushBackPilotUpdatePort.cs
+@@ -0,0 +1,189 @@
++#nullable enable
++using System;
++using System.Collections.Generic;
++using System.Linq;
++using RackCad.Application.Catalogs;
++using RackCad.Application.Views.Redraw;
++
++namespace RackCad.Application.Systems.PushBack.Pilot
++{
++    /// <summary>
++    /// I-64 F4-T4B (D-T4B-02) — the port of the update of the bounded Push Back pilot. It works by SCOPES, one per run: the port only
++    /// opens a scope for one request, and everything that touches the drawing lives inside the scope that the host adapter hands back.
++    /// The port itself keeps nothing between runs. It only RETURNS VALUES read from the drawing: it never chooses the origin, never
++    /// counts survivors and never decides a warning. All of that is decided, in pure code, by <see cref="PushBackPilotUpdateRun"/>.
++    /// </summary>
++    public interface IPushBackPilotUpdatePort
++    {
++        /// <summary>Opens the scope of ONE run. Every call gives a NEW scope.</summary>
++        IPushBackPilotUpdateScope Begin(PushBackPilotUpdateRequest request);
++    }
++
++    /// <summary>
++    /// The scope of one run: PREPARE (the read and the import), the start of MUTATE and POST. The run always releases it, in a
++    /// <c>finally</c> of its own, after the scope of MUTATE.
++    /// </summary>
++    public interface IPushBackPilotUpdateScope : IDisposable
++    {
++        /// <summary>The read of PREPARE: the facts and the raw text of the whole drawing without an origin, and the catalog.</summary>
++        PushBackPilotScanValues ReadForPrepare();
++
++        /// <summary>The import of what the plan draws, BEFORE the scope of MUTATE exists.</summary>
++        PushBackPilotImportResult PrepareUnits(PushBackPilotUpdatePlan plan);
++
++        /// <summary>Starts the ONE owned scope of MUTATE, or says why it cannot start. A rejection is a value, never an exception.</summary>
++        PushBackPilotMutationStart BeginMutation();
++
++        /// <summary>POST: the tidy-up after the write and the facts of the drawing afterwards. It only returns facts, never warnings.</summary>
++        PushBackPilotPostValues Post(PushBackPilotPostRequest request);
++    }
++
++    /// <summary>The ONE owned scope of MUTATE. Releasing it without a <see cref="Seal"/> is an abort.</summary>
++    public interface IPushBackPilotMutationScope : IDisposable
++    {
++        /// <summary>The re-read inside the scope that is the authority of MUTATE: it opens nothing and closes nothing.</summary>
++        PushBackPilotScanValues Reread();
++
++        /// <summary>Redraws ONE member with the text that the plan holds for that key.</summary>
++        PushBackPilotUnitResult WriteUnit(string memberKey, string envelopeText);
++
++        /// <summary>Confirms everything that the units wrote, in one step.</summary>
++        void Seal();
++    }
++
++    /// <summary>One run asked of the port: the identity of the document that the gate authorized and the rack.</summary>
++    public sealed record PushBackPilotUpdateRequest(long AuthorizedDocumentNativeId, string RackId);
++
++    /// <summary>
++    /// What one scan of the drawing gave, as plain values. <see cref="Catalog"/> is only set by the read of PREPARE and
++    /// <see cref="PreparedBlockMatches"/> only by the re-read of MUTATE.
++    /// </summary>
++    public sealed class PushBackPilotScanValues
++    {
++        public PushBackPilotScanValues(
++            bool documentMatches,
++            IReadOnlyList<RackSiblingScanFact> facts,
++            IReadOnlyDictionary<string, string> rawEnvelopes,
++            IReadOnlyCollection<string>? lockedLayerKeys = null,
++            RackCatalog? catalog = null,
++            IReadOnlyDictionary<string, bool>? preparedBlockMatches = null)
++        {
++            DocumentMatches = documentMatches;
++            Facts = Array.AsReadOnly((facts ?? throw new ArgumentNullException(nameof(facts))).ToArray());
++            RawEnvelopes = new Dictionary<string, string>(rawEnvelopes ?? throw new ArgumentNullException(nameof(rawEnvelopes)), StringComparer.Ordinal);
++            LockedLayerKeys = Array.AsReadOnly((lockedLayerKeys ?? Array.Empty<string>()).ToArray());
++            Catalog = catalog;
++            PreparedBlockMatches = preparedBlockMatches == null ? null : new Dictionary<string, bool>(preparedBlockMatches, StringComparer.Ordinal);
++        }
++
++        /// <summary>False when the document that the scan found is not the one that the request authorized.</summary>
++        public bool DocumentMatches { get; }
++
++        /// <summary>The facts of the scan, unclassified (the same ones that the read of the intention consumes).</summary>
++        public IReadOnlyList<RackSiblingScanFact> Facts { get; }
++
++        /// <summary>The exact raw text of the envelope of each scanned definition that has text, by key (ordinal).</summary>
++        public IReadOnlyDictionary<string, string> RawEnvelopes { get; }
++
++        /// <summary>The keys of the definitions that touch a locked layer, as the scan finds them. The run only looks at the members of the plan.</summary>
++        public IReadOnlyCollection<string> LockedLayerKeys { get; }
++
++        /// <summary>The catalog; only the read of PREPARE sets it.</summary>
++        public RackCatalog? Catalog { get; }
++
++        /// <summary>By key, whether the block that PREPARE imported into is the one that the re-read found; only the re-read of MUTATE sets it.</summary>
++        public IReadOnlyDictionary<string, bool>? PreparedBlockMatches { get; }
++    }
++
++    /// <summary>The answer of the import of PREPARE.</summary>
++    public sealed class PushBackPilotImportResult
++    {
++        private PushBackPilotImportResult(bool ok, string? cause)
++        {
++            Ok = ok;
++            Cause = cause;
++        }
++
++        public bool Ok { get; }
++
++        /// <summary>Why the import did not happen; null when it did.</summary>
++        public string? Cause { get; }
++
++        public static PushBackPilotImportResult Succeeded() => new(true, null);
++
++        public static PushBackPilotImportResult Failed(string cause) => new(false, cause);
++    }
++
++    /// <summary>
++    /// The answer of the start of MUTATE: the owned scope, or the code of a rejection. A rejection is a value and never an exception. The
++    /// only code today is <see cref="PushBackPilotUpdateRun.ForeignScopeOpenCause"/>.
++    /// </summary>
++    public sealed class PushBackPilotMutationStart
++    {
++        private PushBackPilotMutationStart(IPushBackPilotMutationScope? scope, string? rejectionCode)
++        {
++            Scope = scope;
++            RejectionCode = rejectionCode;
++        }
++
++        public IPushBackPilotMutationScope? Scope { get; }
++
++        public string? RejectionCode { get; }
++
++        public static PushBackPilotMutationStart Started(IPushBackPilotMutationScope scope) => new(scope, null);
++
++        public static PushBackPilotMutationStart Rejected(string rejectionCode) => new(null, rejectionCode);
++    }
++
++    /// <summary>What one write of a unit found: the pieces that the plan references and the drawing does not have.</summary>
++    public sealed class PushBackPilotUnitResult
++    {
++        public PushBackPilotUnitResult(IReadOnlyList<string> missingPieces)
++        {
++            MissingPieces = Array.AsReadOnly((missingPieces ?? throw new ArgumentNullException(nameof(missingPieces))).ToArray());
++        }
++
++        public IReadOnlyList<string> MissingPieces { get; }
++    }
++
++    /// <summary>
++    /// What POST needs to be told: the name that each view must carry, by key, as the rule of the classic editor computes it. A key
++    /// without a desired name is not renamed and gives no warning.
++    /// </summary>
++    public sealed class PushBackPilotPostRequest
++    {
++        public PushBackPilotPostRequest(IReadOnlyDictionary<string, string> desiredNames)
++        {
++            DesiredNames = new Dictionary<string, string>(desiredNames ?? throw new ArgumentNullException(nameof(desiredNames)), StringComparer.Ordinal);
++        }
++
++        public IReadOnlyDictionary<string, string> DesiredNames { get; }
++    }
++
++    /// <summary>
++    /// The FACTS of POST, never warnings: whether a foreign scope was open and nothing was done, the scan read AFTER the tidy-up, the
++    /// name of the definition of each key read AFTER the rename and the failure of the regeneration, when there was one.
++    /// </summary>
++    public sealed class PushBackPilotPostValues
++    {
++        public PushBackPilotPostValues(
++            bool foreignScopeOpenAtPost,
++            PushBackPilotScanValues? scan,
++            IReadOnlyDictionary<string, string>? namesByKey,
++            string? regenFailure)
++        {
++            ForeignScopeOpenAtPost = foreignScopeOpenAtPost;
++            Scan = scan;
++            NamesByKey = new Dictionary<string, string>(namesByKey ?? new Dictionary<string, string>(), StringComparer.Ordinal);
++            RegenFailure = regenFailure;
++        }
++
++        public bool ForeignScopeOpenAtPost { get; }
++
++        public PushBackPilotScanValues? Scan { get; }
++
++        public IReadOnlyDictionary<string, string> NamesByKey { get; }
++
++        public string? RegenFailure { get; }
++    }
++}
+diff --git a/src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotSystemRebuild.cs b/src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotSystemRebuild.cs
+new file mode 100644
+index 00000000..e248ac7d
+--- /dev/null
++++ b/src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotSystemRebuild.cs
+@@ -0,0 +1,45 @@
++#nullable enable
++using System;
++using RackCad.Application.Catalogs;
++using RackCad.Application.Persistence;
++using RackCad.Domain.Systems.PushBack;
++
++namespace RackCad.Application.Systems.PushBack.Pilot
++{
++    /// <summary>
++    /// I-64 F4-T4B (D-T4B-03, D-T4B-02) — the pure help that gives the system of the OUTGOING design of a plan. The plan keeps only text,
++    /// so the writer of the host rebuilds the system from the serialized design of a member, with the same resolver that PREPARE used. It
++    /// reads nothing of the drawing and writes nothing.
++    /// </summary>
++    public static class PushBackPilotSystemRebuild
++    {
++        public const string UnreadableDesignReason = "El diseño saliente del plan no se puede leer.";
++
++        public const string NotPushBackReason = "El diseño saliente del plan no es de Push Back.";
++
++        /// <summary>
++        /// The system of the serialized design of a member of the plan. A design that cannot be read, or that is not of Push Back, is an
++        /// <see cref="InvalidOperationException"/> with its reason: the caller decides what that means.
++        /// </summary>
++        public static PushBackSystem Build(string designText, RackCatalog catalog)
++        {
++            if (designText == null) throw new ArgumentNullException(nameof(designText));
++            if (catalog == null) throw new ArgumentNullException(nameof(catalog));
++
++            if (!new RackProjectStore().TryDeserialize(designText, out var project, out _) || project == null)
++                throw new InvalidOperationException(UnreadableDesignReason);
++
++            var design = project.PushBackDesign;
++            if (design == null) throw new InvalidOperationException(NotPushBackReason);
++
++            return new PushBackResolver(catalog).Resolve(design);
++        }
++
++        /// <summary>True when the system is a composite rack (two sides): its frontal cuts then carry the side in their name.</summary>
++        public static bool IsComposite(PushBackSystem system)
++        {
++            if (system == null) throw new ArgumentNullException(nameof(system));
++            return system.IsComposite;
++        }
++    }
++}
+diff --git a/src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs b/src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+index 72b68db2..52fd5d63 100644
+--- a/src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
++++ b/src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@ -244,6 +244,14 @@ namespace RackCad.Application.Systems.PushBack.Pilot
+ 
+         public PushBackPilotPostExpectation PostExpectation { get; }
+ 
++        /// <summary>The outgoing envelope text of the member of that key (ordinal); null when the plan has no such member.</summary>
++        public string? Envelope(string key)
++        {
++            foreach (var member in Members)
++                if (string.Equals(member.Key, key, StringComparison.Ordinal)) return member.EnvelopeText;
++            return null;
++        }
++
+         public bool Equals(PushBackPilotUpdatePlan? other) =>
+             other != null
+             && string.Equals(RackId, other.RackId, StringComparison.Ordinal)
+@@ -286,7 +294,11 @@ namespace RackCad.Application.Systems.PushBack.Pilot
+ 
+         public const string ViewUnavailableSuffix = " ya no está disponible en el sistema saliente: usa RACKEDITAR.";
+ 
+-        public const string PrepareFailurePrefix = "No se pudo preparar la actualización: ";
++        public const string ViewAddressPrefix = "El descriptor de la vista ";
++
++        public const string ViewAddressSuffix = " no se puede interpretar: usa RACKEDITAR.";
++
++        public const string PrepareFailurePrefix ="No se pudo preparar la actualización: ";
+ 
+         /// <summary>
+         /// The pure PREPARE of an update. It evaluates, in this order and returning at the first that holds: NotApplicable (the draft is
+@@ -305,7 +317,7 @@ namespace RackCad.Application.Systems.PushBack.Pilot
+                 if (input.HasPendingText) return PushBackPilotPrepareResult.Without(PushBackPilotPrepareKind.PendingText);
+                 if (input.ConsideredStatus == DraftStatus.Clean) return PushBackPilotPrepareResult.Without(PushBackPilotPrepareKind.NothingToApply);
+ 
+-                if (reread == null || catalog == null) return PushBackPilotPrepareResult.WithInvalid(MissingInputReason);
++                if (reread == null) return PushBackPilotPrepareResult.WithInvalid(MissingInputReason);
+ 
+                 var comparison = input.StaleBase.CompareWith(reread.StaleBase);
+                 if (!comparison.IsMatch) return PushBackPilotPrepareResult.WithConflict(comparison.Differences);
+@@ -324,6 +336,10 @@ namespace RackCad.Application.Systems.PushBack.Pilot
+         // The base of the draft and the re-read match here, and the re-read is admitted: the plan can be built, or it is Invalid.
+         private static PushBackPilotPrepareResult Build(PushBackPilotPrepareInput input, PushBackPilotIntentResult reread, RackCatalog catalog)
+         {
++            // A missing catalog is answered here, after the comparison and the admission (M-6): a difference of the base or a read that is not
++            // admitted is told as such even when the catalog is missing.
++            if (catalog == null) return PushBackPilotPrepareResult.WithInvalid(MissingInputReason);
++
+             // (a) The current state is composed over the base that matches the re-read (H-06), with the carry-overs of D-T4A1-05.
+             var composition = PushBackPilotMaterializer.ComposeForWrite(input.InitialDraftState, input.CurrentDraftState, catalog);
+             if (!composition.IsComposed) return PushBackPilotPrepareResult.WithInvalid(composition.Reason ?? PushBackPilotMaterializer.NonPilotContentReason);
+@@ -377,6 +393,10 @@ namespace RackCad.Application.Systems.PushBack.Pilot
+             {
+                 var (entry, embed) = members[index];
+                 var decoded = RackViewCodec.Decode(embed.Kind, embed.View, embed.Section);
++
++                // A descriptor that does not decode has no address to ask about (M-5): it has its own text, and it is never coerced into a view.
++                if (!decoded.HasAddress)
++                    return PushBackPilotPrepareResult.WithInvalid(ViewAddressPrefix + entry.Key + ViewAddressSuffix);
+                 if (RackViewAvailability.Evaluate(decoded, facts).Status != RackViewAvailabilityStatus.Available)
+                     return PushBackPilotPrepareResult.WithInvalid(ViewUnavailablePrefix + entry.Key + ViewUnavailableSuffix);
+ 
+diff --git a/src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs b/src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs
+new file mode 100644
+index 00000000..ec6f10f0
+--- /dev/null
++++ b/src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs
+@@ -0,0 +1,571 @@
++#nullable enable
++using System;
++using System.Collections.Generic;
++using System.Linq;
++using RackCad.Application.Catalogs;
++using RackCad.Application.Persistence;
++using RackCad.Application.Systems.Shared;
++using RackCad.Application.Views.Redraw;
++using RackCad.Application.Workspace.Drafts;
++using RackCad.Domain.Systems.Shared;
++
++namespace RackCad.Application.Systems.PushBack.Pilot
++{
++    /// <summary>The answer of the check that the host makes BEFORE it takes the slot of the update.</summary>
++    public sealed class PushBackPilotPrecheck
++    {
++        private PushBackPilotPrecheck(bool proceeds, PushBackPilotPrepareKind kind, string? reason)
++        {
++            Proceeds = proceeds;
++            Kind = kind;
++            Reason = reason;
++        }
++
++        /// <summary>True when the update can go on to take the slot.</summary>
++        public bool Proceeds { get; }
++
++        /// <summary>The kind that stopped the update; only meaningful when <see cref="Proceeds"/> is false.</summary>
++        public PushBackPilotPrepareKind Kind { get; }
++
++        /// <summary>The constant of the run that says why the update stopped; null when it proceeds.</summary>
++        public string? Reason { get; }
++
++        internal static PushBackPilotPrecheck Go() => new(true, PushBackPilotPrepareKind.Invalid, null);
++
++        internal static PushBackPilotPrecheck Stop(PushBackPilotPrepareKind kind, string reason) => new(false, kind, reason);
++    }
++
++    /// <summary>
++    /// I-64 F4-T4B (D-T4B-02) — the pure and TOTAL run of the update of the bounded Push Back pilot: it decides, classifies and
++    /// compares, and it never touches the drawing by itself: everything that does goes through <see cref="IPushBackPilotUpdatePort"/>.
++    /// It never throws: every failure is one of the outcomes of D-13, by the frontier where it happened.
++    ///
++    /// The order is the one of the package: the check before the slot, then, under the slot, the read of PREPARE (the origin is chosen
++    /// here, in pure code, by the exact text of the origin of the draft), the survivors and the locked layers, the import, the start of
++    /// MUTATE, the re-read that is the authority of MUTATE, one write per member, the seal and POST. POST is only reached once the seal
++    /// returned, and its interpretation (the names that the views must carry, the warnings and the comparison) is made here.
++    /// </summary>
++    public static class PushBackPilotUpdateRun
++    {
++        /// <summary>The cause of a foreign scope that is open: the value of the rejection of the start of MUTATE and of POST.</summary>
++        public const string ForeignScopeOpenCause = "TOP_TRANSACTION_OPEN";
++
++        public const string NothingToApplyReason = "No hay cambios que aplicar.";
++
++        public const string NotApplicableReason = "El borrador no admite actualizarse en su estado actual.";
++
++        public const string PendingTextReason = "Hay texto pendiente: confírmalo antes de actualizar.";
++
++        public const string NoSurvivorsReason = "Ninguna vista del rack queda en un espacio de diseño: no se actualiza.";
++
++        public const string DocumentMismatchReason = "El documento activo no es el que autorizó la actualización.";
++
++        public const string LockedLayerPrefix = "LOCKED_LAYER: ";
++
++        public const string DestinationChangedReason = "Las vistas del rack o sus bloques preparados ya no son los del plan.";
++
++        public const string MissingArgumentsReason = "Faltan el borrador, la petición o el puerto de la actualización.";
++
++        public const string NoScopeReason = "El puerto no abrió el ámbito de la actualización.";
++
++        public const string NoReadReason = "El ámbito no devolvió la lectura del dibujo.";
++
++        public const string ImportFailedReason = "No se pudo importar lo que dibuja el plan.";
++
++        public const string NoMutationScopeReason = "El ámbito no devolvió el ámbito de la escritura.";
++
++        public const string RunFailurePrefix = "La actualización falló antes de escribir: ";
++
++        public const string WriteFailurePrefix = "La escritura falló antes de confirmarse: ";
++
++        public const string SealFailedPrefix = "SEAL_FAILED: ";
++
++        public const string AbortFailedPrefix = "ABORT_FAILED: ";
++
++        public const string PostFailurePrefix = "POST_FAILED: ";
++
++        public const string PostMissingReason = "POST_FAILED: el ámbito no devolvió los hechos de POST.";
++
++        public const string PostNotAdmittedPrefix = "POST_NOT_ADMITTED: ";
++
++        public const string PostKeysDifferReason = "POST_KEYS_DIFFER: las vistas editables del dibujo ya no son las del plan.";
++
++        public const string PostEnvelopeDiffersPrefix = "POST_ENVELOPE_DIFFERS: ";
++
++        public const string PostScaleDiffersReason = "POST_SCALE_DIFFERS: la escala del dibujo no es la del plan.";
++
++        public const string PostRereadMissingReason = "POST_FAILED: no hay relectura posterior.";
++
++        public const string MissingPiecePrefix = "Falta una pieza en la vista ";
++
++        public const string NameDiffersPrefix = "El nombre del bloque de la vista ";
++
++        public const string RegenFailedPrefix = "No se pudo regenerar el dibujo: ";
++
++        public const string DisposeWarningPrefix = "No se pudo liberar un ámbito de la actualización: ";
++
++        public const string DesiredNamesFailedPrefix = "No se pudieron calcular los nombres de las vistas: ";
++
++        private const string CompletenessEvidence = "RackSiblingScan/CaptureDrawing";
++
++        /// <summary>
++        /// The check before the slot (step 1): the pure PREPARE without a re-read and without a catalog. It only stops for the three kinds
++        /// that need neither; anything else goes on.
++        /// </summary>
++        public static PushBackPilotPrecheck Precheck(DraftSession<PushBackPilotDraftState> draft)
++        {
++            if (draft == null) throw new ArgumentNullException(nameof(draft));
++
++            var result = PushBackPilotUpdatePlanner.Prepare(PushBackPilotPrepareInput.From(draft), null!, null!);
++            switch (result.Kind)
++            {
++                case PushBackPilotPrepareKind.NotApplicable: return PushBackPilotPrecheck.Stop(result.Kind, NotApplicableReason);
++                case PushBackPilotPrepareKind.PendingText: return PushBackPilotPrecheck.Stop(result.Kind, PendingTextReason);
++                case PushBackPilotPrepareKind.NothingToApply: return PushBackPilotPrecheck.Stop(result.Kind, NothingToApplyReason);
++                default: return PushBackPilotPrecheck.Go();
++            }
++        }
++
++        /// <summary>
++        /// The whole update under the slot. TOTAL: it never throws. The outcome is the one that the draft must be closed with.
++        /// </summary>
++        public static DraftApplyOutcome<PushBackPilotDraftState> Execute(
++            DraftSession<PushBackPilotDraftState> draft,
++            PushBackPilotUpdateRequest request,
++            IPushBackPilotUpdatePort port)
++        {
++            try
++            {
++                if (draft == null || request == null || port == null)
++                    return DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedFailure(MissingArgumentsReason);
++
++                return new Execution(draft, request, port).Run();
++            }
++            catch (Exception ex)
++            {
++                return DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedFailure(RunFailurePrefix + ex.Message);
++            }
++        }
++
++        /// <summary>
++        /// The comparison of POST, without normalizing anything (D-T4B-05): the same keys as the plan, the envelope of each key equal
++        /// ordinally, and the same scale. Null when everything matches; otherwise the cause.
++        /// </summary>
++        public static string? ComparePost(PushBackPilotUpdatePlan plan, PushBackPilotIntentResult? postRead)
++        {
++            if (plan == null) throw new ArgumentNullException(nameof(plan));
++            if (postRead == null) return PostRereadMissingReason;
++            if (!postRead.Read.IsAdmitted) return PostNotAdmittedPrefix + (postRead.Read.Admission.Diagnostic ?? "sin diagnóstico");
++
++            var found = postRead.StaleBase.Entries.Values
++                .Where(entry => entry.Membership == DraftMembership.Mutable)
++                .ToDictionary(entry => entry.Key, entry => entry.EnvelopeText, StringComparer.Ordinal);
++            var expected = plan.PostExpectation.Envelopes;
++            if (found.Count != expected.Count) return PostKeysDifferReason;
++
++            foreach (var item in expected)
++            {
++                if (!found.TryGetValue(item.Key, out var text)) return PostKeysDifferReason;
++                if (!string.Equals(text, item.Text, StringComparison.Ordinal)) return PostEnvelopeDiffersPrefix + item.Key;
++            }
++
++            var scale = postRead.Read.InitialState!.Inputs.Annotations.AnnotationScale;
++            return scale.Equals(plan.PostExpectation.AnnotationScale) ? null : PostScaleDiffersReason;
++        }
++
++        /// <summary>
++        /// The name that each view of the plan must carry, by key, with the rule of the classic editor: the base is the trimmed name of
++        /// the outgoing envelope, and a view without a base has no desired name. A plan view uses the plan view name, a lateral one the
++        /// name of its post, and a frontal one the name of its cut (with the side when the rack is composite).
++        /// </summary>
++        public static IReadOnlyDictionary<string, string> DesiredNamesOf(PushBackPilotUpdatePlan plan, RackCatalog catalog)
++        {
++            if (plan == null) throw new ArgumentNullException(nameof(plan));
++
++            var names = new Dictionary<string, string>(StringComparer.Ordinal);
++            var store = new RackEmbedStore();
++            bool? composite = null;
++            foreach (var member in plan.Members)
++            {
++                var embed = store.Deserialize(member.EnvelopeText);
++                if (embed == null || string.IsNullOrWhiteSpace(embed.Name)) continue;
++
++                var baseName = embed.Name.Trim();
++                var address = RackViewCodec.Decode(embed.Kind, embed.View, embed.Section).Address;
++                string? desired;
++                switch (address.Kind)
++                {
++                    case DimensionViewKind.Planta:
++                        desired = RackViewBaseName.LinkedPlanta(baseName);
++                        break;
++                    case DimensionViewKind.Lateral:
++                        desired = RackViewBaseName.LinkedLateral(baseName, address.Variant.Index);
++                        break;
++                    default:
++                        composite ??= PushBackPilotSystemRebuild.IsComposite(PushBackPilotSystemRebuild.Build(member.DesignText, catalog));
++                        desired = RackViewBaseName.LinkedPushBackCut(baseName, address.Variant.PushBackEnd, address.Variant.PushBackSide, composite.Value);
++                        break;
++                }
++
++                if (desired != null) names[member.Key] = desired;
++            }
++
++            return names;
++        }
++
++        // ------------------------------------------------------------------ the state of ONE run
++
++        private sealed class Execution
++        {
++            private readonly DraftSession<PushBackPilotDraftState> _draft;
++            private readonly PushBackPilotUpdateRequest _request;
++            private readonly IPushBackPilotUpdatePort _port;
++            private readonly List<string> _warnings = new();
++
++            private PushBackPilotPrepareInput? _input;
++            private PushBackPilotUpdatePlan? _plan;
++            private RackCatalog? _catalog;
++            private bool _writeStarted;
++            private bool _sealReturned;
++            private Exception? _mutationDisposeFailure;
++
++            public Execution(DraftSession<PushBackPilotDraftState> draft, PushBackPilotUpdateRequest request, IPushBackPilotUpdatePort port)
++            {
++                _draft = draft;
++                _request = request;
++                _port = port;
++            }
++
++            // The two scopes are released in finally blocks of their own, the one of MUTATE inside the one of the run, and what a release
++            // throws never covers the outcome that was already decided (D-T4B-02 (6)).
++            public DraftApplyOutcome<PushBackPilotDraftState> Run()
++            {
++                IPushBackPilotUpdateScope? scope = null;
++                DraftApplyOutcome<PushBackPilotDraftState>? outcome;
++                Exception? scopeDisposeFailure = null;
++                try
++                {
++                    scope = _port.Begin(_request);
++                    if (scope == null)
++                    {
++                        outcome = NotAppliedFailure(NoScopeReason);
++                    }
++                    else
++                    {
++                        outcome = Prepare(scope) ?? Mutate(scope) ?? Post(scope);
++                    }
++                }
++                catch (Exception ex)
++                {
++                    outcome = _sealReturned
++                        ? PostFailed(PostFailurePrefix + ex.Message)
++                        : NotAppliedFailure(RunFailurePrefix + ex.Message);
++                }
++                finally
++                {
++                    if (scope != null)
++                    {
++                        try
++                        {
++                            scope.Dispose();
++                        }
++                        catch (Exception ex)
++                        {
++                            scopeDisposeFailure = ex;
++                        }
++                    }
++                }
++
++                return WithScopeDisposeFailure(outcome, scopeDisposeFailure);
++            }
++
++            // ------------------------------------------------------------------ PREPARE
++
++            // Returns the decision when the update cannot go on, and null when it can.
++            private DraftApplyOutcome<PushBackPilotDraftState>? Prepare(IPushBackPilotUpdateScope scope)
++            {
++                _input = PushBackPilotPrepareInput.From(_draft);
++                var values = scope.ReadForPrepare();
++                if (values == null) return NotAppliedFailure(NoReadReason);
++                if (!values.DocumentMatches) return NotAppliedPreflight(DocumentMismatchReason);
++
++                _catalog = values.Catalog;
++                var origin = ChooseOrigin(values, _input.InitialDraftState.Origin, out var originKey);
++                if (origin != null) return origin;
++
++                var pilot = PushBackPilotIntentReader.Read(ScanOf(values, originKey!), values.Catalog);
++                var prepared = PushBackPilotUpdatePlanner.Prepare(_input, pilot, values.Catalog!);
++                switch (prepared.Kind)
++                {
++                    case PushBackPilotPrepareKind.Ready:
++                        _plan = prepared.Plan;
++                        break;
++                    case PushBackPilotPrepareKind.Conflict:
++                        return DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedConflict(prepared.Differences);
++                    case PushBackPilotPrepareKind.NotAdmitted:
++                        return DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedAdmission(prepared.Reason ?? PushBackPilotIntentReader.MaterializeDiagnostic);
++                    case PushBackPilotPrepareKind.NothingToApply:
++                        return NotAppliedPreflight(NothingToApplyReason);
++                    case PushBackPilotPrepareKind.PendingText:
++                        return NotAppliedPreflight(PendingTextReason);
++                    case PushBackPilotPrepareKind.NotApplicable:
++                        return NotAppliedPreflight(NotApplicableReason);
++                    default:
++                        return NotAppliedPreflight(prepared.Reason ?? PushBackPilotUpdatePlanner.MissingInputReason);
++                }
++
++                var plan = _plan!;
++                var refusal = SurvivorsAndLayers(values, plan);
++                if (refusal != null) return refusal;
++
++                var import = scope.PrepareUnits(plan);
++                if (import == null || !import.Ok) return NotAppliedPreflight(import?.Cause ?? ImportFailedReason);
++                return null;
++            }
++
++            // ------------------------------------------------------------------ MUTATE
++
++            // Returns the decision of MUTATE, or null when the seal returned and POST must follow.
++            private DraftApplyOutcome<PushBackPilotDraftState>? Mutate(IPushBackPilotUpdateScope scope)
++            {
++                var start = scope.BeginMutation();
++                if (start == null) return NotAppliedFailure(NoMutationScopeReason);
++                if (start.RejectionCode != null) return NotAppliedPreflight(start.RejectionCode);
++
++                var mutation = start.Scope;
++                if (mutation == null) return NotAppliedFailure(NoMutationScopeReason);
++
++                DraftApplyOutcome<PushBackPilotDraftState>? decided;
++                var sealing = false;
++                try
++                {
++                    decided = Write(mutation, () => sealing = true);
++                }
++                catch (Exception ex)
++                {
++                    decided = sealing
++                        ? DraftApplyOutcome<PushBackPilotDraftState>.CommitThrew(SealFailedPrefix + ex.Message)
++                        : NotAppliedFailure(WriteFailurePrefix + ex.Message);
++                }
++                finally
++                {
++                    try
++                    {
++                        mutation.Dispose();
++                    }
++                    catch (Exception ex)
++                    {
++                        _mutationDisposeFailure = ex;
++                    }
++                }
++
++                if (_sealReturned)
++                {
++                    // The seal returned: the write is done, so a release that fails is only a warning and POST goes on (D-13).
++                    if (_mutationDisposeFailure != null) _warnings.Add(DisposeWarningPrefix + _mutationDisposeFailure.Message);
++                    return null;
++                }
++
++                return WithAbortFailure(decided ?? NotAppliedFailure(NoMutationScopeReason));
++            }
++
++            // The re-read is the authority of MUTATE: nothing that PREPARE found authorizes a write until it agrees.
++            private DraftApplyOutcome<PushBackPilotDraftState>? Write(IPushBackPilotMutationScope mutation, Action markSealing)
++            {
++                var plan = _plan!;
++                var values = mutation.Reread();
++                if (values == null) return NotAppliedFailure(NoReadReason);
++                if (!values.DocumentMatches) return NotAppliedPreflight(DocumentMismatchReason);
++
++                // The origin is chosen again, in pure code, and it must be the key of the plan.
++                var origin = ChooseOrigin(values, _input!.InitialDraftState.Origin, out var originKey);
++                var sameOrigin = origin == null && string.Equals(originKey, plan.OriginKey, StringComparison.Ordinal);
++
++                var reread = PushBackPilotIntentReader.BuildStaleBase(ScanOf(values, plan.OriginKey));
++                var comparison = DraftStaleBase.Create(plan.ExpectedBase, plan.ExpectedVariableRegistryText).CompareWith(reread);
++                if (!sameOrigin || !comparison.IsMatch)
++                    return DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedConflict(comparison.Differences);
++
++                // The destination: the keys of the plan are the mutable ones that were re-read, and every prepared block is the re-read one.
++                var mutable = reread.Entries.Values.Where(e => e.Membership == DraftMembership.Mutable).Select(e => e.Key).ToList();
++                var planned = plan.Members.Select(m => m.Key).ToList();
++                var matches = values.PreparedBlockMatches;
++                if (mutable.Count != planned.Count
++                    || mutable.Any(key => !planned.Contains(key, StringComparer.Ordinal))
++                    || matches == null
++                    || planned.Any(key => !matches.TryGetValue(key, out var same) || !same))
++                    return NotAppliedPreflight(DestinationChangedReason);
++
++                var refusal = SurvivorsAndLayers(values, plan);
++                if (refusal != null) return refusal;
++
++                foreach (var member in plan.Members)
++                {
++                    _writeStarted = true;
++                    var unit = mutation.WriteUnit(member.Key, plan.Envelope(member.Key)!);
++                    if (unit == null) continue;
++                    foreach (var piece in unit.MissingPieces) _warnings.Add(MissingPiecePrefix + member.Key + ": " + piece);
++                }
++
++                markSealing();
++                mutation.Seal();
++                _sealReturned = true;
++                return null;
++            }
++
++            // What a failed release of the scope of MUTATE does to a decision that was taken without a seal (D-T4B-02 (4) and (6)).
++            private DraftApplyOutcome<PushBackPilotDraftState> WithAbortFailure(DraftApplyOutcome<PushBackPilotDraftState> decided)
++            {
++                var failure = _mutationDisposeFailure;
++                if (failure == null) return decided;
++
++                var abort = AbortFailedPrefix + failure.Message;
++                switch (decided.Kind)
++                {
++                    case DraftApplyOutcomeKind.NotAppliedFailure:
++                        // A unit started and the abort failed too: nothing is known about what was written, and no rollback is claimed.
++                        return _writeStarted
++                            ? DraftApplyOutcome<PushBackPilotDraftState>.CommitThrew(abort + "; " + decided.Cause)
++                            : NotAppliedFailure(decided.Cause + "; " + abort);
++                    case DraftApplyOutcomeKind.CommitThrew:
++                        return DraftApplyOutcome<PushBackPilotDraftState>.CommitThrew(decided.Cause + "; " + abort);
++                    case DraftApplyOutcomeKind.NotAppliedPreflight:
++                        return NotAppliedPreflight(decided.Cause + "; " + abort);
++                    default:
++                        // A conflict has no cause to add it to: the failure of the release is dropped, and the tests say so.
++                        return decided;
++                }
++            }
++
++            // ------------------------------------------------------------------ POST
++
++            private DraftApplyOutcome<PushBackPilotDraftState> Post(IPushBackPilotUpdateScope scope)
++            {
++                try
++                {
++                    var plan = _plan!;
++                    var desired = DesiredNamesOrNone(plan);
++                    var values = scope.Post(new PushBackPilotPostRequest(desired));
++                    if (values == null) return PostFailed(PostMissingReason);
++                    if (values.ForeignScopeOpenAtPost) return PostFailed(ForeignScopeOpenCause);
++
++                    foreach (var pair in desired)
++                    {
++                        var expected = BlockNaming.SanitizeBlockName(pair.Value);
++                        if (!values.NamesByKey.TryGetValue(pair.Key, out var actual) || !string.Equals(actual, expected, StringComparison.OrdinalIgnoreCase))
++                            _warnings.Add(NameDiffersPrefix + pair.Key + " no es «" + expected + "».");
++                    }
++
++                    if (values.RegenFailure != null) _warnings.Add(RegenFailedPrefix + values.RegenFailure);
++                    if (values.Scan == null) return PostFailed(PostRereadMissingReason);
++
++                    // The origin of POST is the key of the plan: the definition does not change, even if its text is the new one now.
++                    var read = PushBackPilotIntentReader.Read(ScanOf(values.Scan, plan.OriginKey), _catalog);
++                    var cause = ComparePost(plan, read);
++                    if (cause != null) return PostFailed(cause);
++
++                    return _warnings.Count == 0
++                        ? DraftApplyOutcome<PushBackPilotDraftState>.Applied(read.Read)
++                        : DraftApplyOutcome<PushBackPilotDraftState>.AppliedWithWarnings(read.Read, _warnings);
++                }
++                catch (Exception ex)
++                {
++                    return PostFailed(PostFailurePrefix + ex.Message);
++                }
++            }
++
++            // A failure of the rule of the names must not stop POST: the tidy-up and the re-read still run, and the failure is a warning.
++            private IReadOnlyDictionary<string, string> DesiredNamesOrNone(PushBackPilotUpdatePlan plan)
++            {
++                try
++                {
++                    return DesiredNamesOf(plan, _catalog!);
++                }
++                catch (Exception ex)
++                {
++                    _warnings.Add(DesiredNamesFailedPrefix + ex.Message);
++                    return new Dictionary<string, string>(StringComparer.Ordinal);
++                }
++            }
++
++            // ------------------------------------------------------------------ pure helpers
++
++            private PushBackPilotIntentScan ScanOf(PushBackPilotScanValues values, string originKey) =>
++                new(
++                    _request.RackId,
++                    originKey,
++                    values.Facts,
++                    values.RawEnvelopes.ToDictionary(pair => pair.Key, pair => (string?)pair.Value, StringComparer.Ordinal),
++                    CompletenessEvidence);
++
++            // The origin is the ONLY mutable member whose raw text is, byte for byte, the origin of the draft. Zero or several is a
++            // preflight refusal with its own reason, and never the misleading "origin missing" of the reader.
++            private DraftApplyOutcome<PushBackPilotDraftState>? ChooseOrigin(PushBackPilotScanValues values, string origin, out string? key)
++            {
++                key = null;
++                var staleBase = PushBackPilotIntentReader.BuildStaleBase(ScanOf(values, string.Empty));
++                var matches = staleBase.Entries.Values
++                    .Where(entry => entry.Membership == DraftMembership.Mutable && string.Equals(entry.EnvelopeText, origin, StringComparison.Ordinal))
++                    .Select(entry => entry.Key)
++                    .ToList();
++                if (matches.Count == 0) return NotAppliedPreflight(PushBackPilotUpdatePlanner.NoOriginReason);
++                if (matches.Count > 1) return NotAppliedPreflight(PushBackPilotUpdatePlanner.SeveralOriginsReason);
++
++                key = matches[0];
++                return null;
++            }
++
++            // C-F4-05 (at least one survivor) and the locked layers, before the import and again in MUTATE.
++            private DraftApplyOutcome<PushBackPilotDraftState>? SurvivorsAndLayers(PushBackPilotScanValues values, PushBackPilotUpdatePlan plan)
++            {
++                var snapshot = RackSiblingMembership.Classify(values.Facts, _request.RackId, null, false);
++                if (!snapshot.Members.Any(member => member.IsSurvivor)) return NotAppliedPreflight(NoSurvivorsReason);
++
++                var locked = values.LockedLayerKeys
++                    .Where(key => plan.Members.Any(member => string.Equals(member.Key, key, StringComparison.Ordinal)))
++                    .OrderBy(key => key, StringComparer.Ordinal)
++                    .ToList();
++                return locked.Count == 0 ? null : NotAppliedPreflight(LockedLayerPrefix + string.Join(", ", locked));
++            }
++
++            // What a failed release of the scope of the run does: it never changes the classification that was already decided.
++            private DraftApplyOutcome<PushBackPilotDraftState> WithScopeDisposeFailure(
++                DraftApplyOutcome<PushBackPilotDraftState>? outcome, Exception? failure)
++            {
++                var decided = outcome ?? NotAppliedFailure(NoScopeReason);
++                if (failure == null) return decided;
++
++                var text = DisposeWarningPrefix + failure.Message;
++                switch (decided.Kind)
++                {
++                    case DraftApplyOutcomeKind.NotAppliedAdmission:
++                        return DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedAdmission(decided.Cause + "; " + text);
++                    case DraftApplyOutcomeKind.NotAppliedPreflight:
++                        return NotAppliedPreflight(decided.Cause + "; " + text);
++                    case DraftApplyOutcomeKind.NotAppliedFailure:
++                        return NotAppliedFailure(decided.Cause + "; " + text);
++                    case DraftApplyOutcomeKind.CommitThrew:
++                        return DraftApplyOutcome<PushBackPilotDraftState>.CommitThrew(decided.Cause + "; " + text);
++                    case DraftApplyOutcomeKind.Applied:
++                    case DraftApplyOutcomeKind.AppliedWithWarnings:
++                        // The only exception to "nothing changes": after POST an Applied becomes AppliedWithWarnings, and both end Clean.
++                        return DraftApplyOutcome<PushBackPilotDraftState>.AppliedWithWarnings(decided.PostRead!, decided.Warnings.Append(text).ToArray());
++                    case DraftApplyOutcomeKind.AppliedPostRereadFailed:
++                        return DraftApplyOutcome<PushBackPilotDraftState>.AppliedPostRereadFailed(decided.Cause!, decided.Warnings.Append(text).ToArray());
++                    default:
++                        // A conflict carries no cause: the failure of the release is dropped (declared limitation).
++                        return decided;
++                }
++            }
++
++            private DraftApplyOutcome<PushBackPilotDraftState> PostFailed(string cause) =>
++                DraftApplyOutcome<PushBackPilotDraftState>.AppliedPostRereadFailed(cause, _warnings.ToArray());
++
++            private static DraftApplyOutcome<PushBackPilotDraftState> NotAppliedFailure(string cause) =>
++                DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedFailure(cause);
++
++            private static DraftApplyOutcome<PushBackPilotDraftState> NotAppliedPreflight(string cause) =>
++                DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedPreflight(cause);
++        }
++    }
++}
+diff --git a/src/RackCad.Application/Workspace/Drafts/DraftApplyOutcome.cs b/src/RackCad.Application/Workspace/Drafts/DraftApplyOutcome.cs
+index 90739f6d..6eb9e914 100644
+--- a/src/RackCad.Application/Workspace/Drafts/DraftApplyOutcome.cs
++++ b/src/RackCad.Application/Workspace/Drafts/DraftApplyOutcome.cs
+@@ -81,7 +81,15 @@ namespace RackCad.Application.Workspace.Drafts
+ 
+         public static DraftApplyOutcome<TState> CommitThrew(string cause) => WithCause(DraftApplyOutcomeKind.CommitThrew, cause);
+ 
+-        public static DraftApplyOutcome<TState> AppliedPostRereadFailed(string cause) => WithCause(DraftApplyOutcomeKind.AppliedPostRereadFailed, cause);
++        /// <summary>
++        /// The commit returned and the re-read of POST failed. The warnings that were already known (the pieces that were missing, a name
++        /// that differs, a failed regeneration) go with it, so they are not lost with the failure (F4-E16): a copy is taken on receipt.
++        /// </summary>
++        public static DraftApplyOutcome<TState> AppliedPostRereadFailed(string cause, IReadOnlyList<string>? warnings = null)
++        {
++            if (string.IsNullOrEmpty(cause)) throw new ArgumentException("A cause is required.", nameof(cause));
++            return new(DraftApplyOutcomeKind.AppliedPostRereadFailed, cause, Array.Empty<DraftDifference>(), warnings == null ? Array.Empty<string>() : warnings.ToArray(), null);
++        }
+ 
+         /// <summary>Applied: the re-read of POST is required, since nothing is assumed applied without it.</summary>
+         public static DraftApplyOutcome<TState> Applied(DraftIntentRead<TState> postRead)
+diff --git a/src/RackCad.Application/Workspace/Drafts/DraftSession.cs b/src/RackCad.Application/Workspace/Drafts/DraftSession.cs
+index 07b20933..d961f854 100644
+--- a/src/RackCad.Application/Workspace/Drafts/DraftSession.cs
++++ b/src/RackCad.Application/Workspace/Drafts/DraftSession.cs
+@@ -462,7 +462,9 @@ namespace RackCad.Application.Workspace.Drafts
+         /// <paramref name="keepOn"/> makes of the new initial state and the current one (IC-07 point 2), in the same step. A null
+         /// <paramref name="keepOn"/> throws before anything else. The checks go in the same order as the overload above and, without
+         /// admission, <paramref name="keepOn"/> is never called. Every copy and the call of <paramref name="keepOn"/> are made BEFORE
+-        /// anything is assigned, so if one of them throws the draft stays exactly as it was. The pending text stays.
++        /// anything is assigned, so if one of them throws the draft stays exactly as it was. The pending text stays. That atomicity assumes that
++        /// <paramref name="keepOn"/> does not mutate its second argument: the current state of the draft is handed to it by reference, so a function
++        /// that edits it in place would change the draft even when a later step throws.
+         /// </summary>
+         public DraftReloadResult KeepMineOnCurrentVersion(DraftIntentRead<TState> read, Func<TState, TState, TState> keepOn, bool confirmed)
+         {
+@@ -534,13 +536,17 @@ namespace RackCad.Application.Workspace.Drafts
+             if (!_holdsApplySlot)
+                 return DraftApplyResult.NotApplying(Status, outcome.Kind);
+ 
++            // The copies of an applied outcome are made BEFORE the slot is freed and before anything is assigned (D-T4B-06): a copier or a
++            // comparator that throws is then a value, and it never leaves the draft half rebased or the exception escaping.
++            var staged = _registered ? StageApplied(outcome) : AppliedStage.None();
++
+             _holdsApplySlot = false;
+             _registry.ReleaseApplySlot(this);
+             if (!_registered)
+                 return DraftApplyResult.ClosedDetached(outcome.Kind, Status);
+ 
+             _explicitStatus = null;
+-            var result = Classify(outcome);
++            var result = ClassifyContained(outcome, staged);
+             var deferred = _deferredErrorReason;
+             if (deferred == null) return result;
+ 
+@@ -553,7 +559,102 @@ namespace RackCad.Application.Workspace.Drafts
+             return DraftApplyResult.Closed(result.Kind, Status, result.Rebased);
+         }
+ 
+-        private DraftApplyResult Classify(DraftApplyOutcome<TState> outcome)
++        /// <summary>The states that an applied outcome rebases onto, already copied, or why they could not be made.</summary>
++        private sealed class AppliedStage
++        {
++            private AppliedStage(TState? initial, TState? current, string? failure)
++            {
++                Initial = initial;
++                Current = current;
++                Failure = failure;
++            }
++
++            public static AppliedStage None() => new(default, default, null);
++
++            public TState? Initial { get; }
++
++            public TState? Current { get; }
++
++            /// <summary>Why the copies or the comparison failed; null when they did not.</summary>
++            public string? Failure { get; }
++
++            public static AppliedStage Ready(TState initial, TState current) => new(initial, current, null);
++
++            public static AppliedStage Failed(string failure) => new(default, default, failure);
++        }
++
++        // The copies of an applied outcome with an admitted re-read, and ONE evaluation of the comparator on them (the status after the
++        // rebase is computed from exactly these two). Nothing is assigned here.
++        private AppliedStage StageApplied(DraftApplyOutcome<TState> outcome)
++        {
++            if (outcome.Kind != DraftApplyOutcomeKind.Applied && outcome.Kind != DraftApplyOutcomeKind.AppliedWithWarnings)
++                return AppliedStage.None();
++
++            var read = outcome.PostRead;
++            if (read == null || !read.IsAdmitted) return AppliedStage.None();
++
++            try
++            {
++                var initial = _copy(read.InitialState!);
++                var current = _copy(read.InitialState!);
++                _comparer.Equals(current, initial);
++                return AppliedStage.Ready(initial, current);
++            }
++            catch (Exception ex)
++            {
++                return AppliedStage.Failed("No se pudo copiar o comparar el estado releído: " + ex.Message);
++            }
++        }
++
++        // The classification never lets an exception escape: when computing the state of the draft throws, each branch has its fallback.
++        private DraftApplyResult ClassifyContained(DraftApplyOutcome<TState> outcome, AppliedStage staged)
++        {
++            try
++            {
++                return Classify(outcome, staged);
++            }
++            catch (Exception ex)
++            {
++                return Recover(outcome, ex);
++            }
++        }
++
++        private DraftApplyResult Recover(DraftApplyOutcome<TState> outcome, Exception failure)
++        {
++            var cause = "No se pudo calcular el estado del borrador: " + failure.Message;
++            switch (outcome.Kind)
++            {
++                case DraftApplyOutcomeKind.CommitThrew:
++                {
++                    _explicitStatus = DraftStatus.Unknown;
++                    UnknownOrigin = DraftUnknownOrigin.CommitThrew;
++                    LastApplyCause = outcome.Cause + "; " + cause;
++                    return DraftApplyResult.Closed(outcome.Kind, Status, false);
++                }
++
++                case DraftApplyOutcomeKind.Applied:
++                case DraftApplyOutcomeKind.AppliedWithWarnings:
++                case DraftApplyOutcomeKind.AppliedPostRereadFailed:
++                {
++                    _explicitStatus = DraftStatus.Unknown;
++                    UnknownOrigin = DraftUnknownOrigin.PostReread;
++                    LastApplyCause = cause;
++                    Warnings = outcome.Warnings;
++                    return DraftApplyResult.Closed(DraftApplyOutcomeKind.AppliedPostRereadFailed, Status, false);
++                }
++
++                default:
++                {
++                    // A draft that did not apply keeps its content: only its status becomes Error, with the reason, never "applied".
++                    _explicitStatus = DraftStatus.Error;
++                    ErrorReason = cause;
++                    UnknownOrigin = null;
++                    return DraftApplyResult.Closed(outcome.Kind, Status, false);
++                }
++            }
++        }
++
++        private DraftApplyResult Classify(DraftApplyOutcome<TState> outcome, AppliedStage staged)
+         {
+             switch (outcome.Kind)
+             {
+@@ -579,19 +680,19 @@ namespace RackCad.Application.Workspace.Drafts
+                 case DraftApplyOutcomeKind.AppliedWithWarnings:
+                 {
+                     var read = outcome.PostRead;
+-                    if (read == null || !read.IsAdmitted)
++                    if (read == null || !read.IsAdmitted || staged.Failure != null)
+                     {
+-                        // The write happened but its re-read cannot rebase the draft: never assume it is clean.
++                        // The write happened but its re-read cannot rebase the draft: never assume it is clean. The warnings that were
++                        // already known are kept (F4-E16), so they are not lost with the failure.
+                         _explicitStatus = DraftStatus.Unknown;
+                         UnknownOrigin = DraftUnknownOrigin.PostReread;
+-                        LastApplyCause = read?.Admission.Diagnostic;
++                        LastApplyCause = staged.Failure ?? read?.Admission.Diagnostic;
++                        Warnings = outcome.Warnings;
+                         return DraftApplyResult.Closed(DraftApplyOutcomeKind.AppliedPostRereadFailed, Status, false);
+                     }
+ 
+-                    var initial = _copy(read.InitialState!);
+-                    var current = _copy(read.InitialState!);
+-                    Rebase(read, initial);
+-                    _current = current;
++                    Rebase(read, staged.Initial!);
++                    _current = staged.Current!;
+                     _pending.Clear();
+                     if (outcome.Kind == DraftApplyOutcomeKind.AppliedWithWarnings) Warnings = outcome.Warnings;
+                     return DraftApplyResult.Closed(outcome.Kind, Status, true);
+@@ -601,6 +702,7 @@ namespace RackCad.Application.Workspace.Drafts
+                     _explicitStatus = DraftStatus.Unknown;
+                     UnknownOrigin = DraftUnknownOrigin.PostReread;
+                     LastApplyCause = outcome.Cause;
++                    Warnings = outcome.Warnings;
+                     return DraftApplyResult.Closed(DraftApplyOutcomeKind.AppliedPostRereadFailed, Status, false);
+             }
+         }
+diff --git a/src/RackCad.Application/Workspace/WorkspaceEditIntent.cs b/src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+index 580d34df..b1b4cb31 100644
+--- a/src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
++++ b/src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+@@ -373,6 +373,119 @@ namespace RackCad.Application.Workspace
+             new(status, reason, Array.Empty<string>(), null, null);
+     }
+ 
++    /// <summary>
++    /// How an update of the pilot ended (I-64 F4-T4B, D-T4B-07). The order is the one of the package and the default value is
++    /// <see cref="Unavailable"/>: it is inert, it means that nothing was done. From <see cref="NotAppliedConflict"/> to
++    /// <see cref="AppliedPostRereadFailed"/> the names are the ones of the outcomes of the classification by frontier.
++    /// </summary>
++    public enum EditUpdateStatus
++    {
++        /// <summary>Nothing was done. It is also the default value.</summary>
++        Unavailable,
++
++        /// <summary>The gate refused: the session, the document or a modal of RackCad. Nothing was read and nothing was written.</summary>
++        Rejected,
++
++        /// <summary>There is no draft for the rack, or the rack has no identity.</summary>
++        NoDraft,
++
++        /// <summary>The draft is clean: there is nothing to apply.</summary>
++        NothingToApply,
++
++        /// <summary>The draft has pending text: its boundary must be crossed first.</summary>
++        PendingText,
++
++        /// <summary>The draft is not clean or dirty: it cannot be updated now.</summary>
++        NotApplicable,
++
++        /// <summary>Another update is in progress in the registry.</summary>
++        AnotherUpdateInProgress,
++
++        /// <summary>The draft refused to begin: it is not registered, it is in a status that cannot update, or it has pending text.</summary>
++        Refused,
++
++        NotAppliedConflict,
++        NotAppliedAdmission,
++        NotAppliedPreflight,
++        NotAppliedFailure,
++        CommitThrew,
++        Applied,
++        AppliedWithWarnings,
++        AppliedPostRereadFailed,
++
++        /// <summary>The outcome was accepted but the draft was discarded or its session retired meanwhile.</summary>
++        ClosedDetached,
++
++        /// <summary>The status of the draft could not be computed and the draft is now in Error, with its reason.</summary>
++        ClosedInError,
++
++        /// <summary>A failure of the host BEFORE the update began: contained, and the session is not degraded.</summary>
++        Failed,
++    }
++
++    /// <summary>
++    /// I-64 F4-T4B (D-T4B-07) — the answer of the host to an update of the pilot. A value: the differences and the warnings are text, so
++    /// it names no draft type and no type of the pilot. Both lists are never null, also for a default value of this struct.
++    /// </summary>
++    public readonly struct EditUpdateOutcome
++    {
++        private readonly IReadOnlyList<string>? _differences;
++        private readonly IReadOnlyList<string>? _warnings;
++
++        private EditUpdateOutcome(EditUpdateStatus status, string? reason, IReadOnlyList<string> differences, IReadOnlyList<string> warnings)
++        {
++            Status = status;
++            Reason = reason;
++            _differences = differences;
++            _warnings = warnings;
++        }
++
++        public EditUpdateStatus Status { get; }
++
++        /// <summary>Why the update did not apply, or the cause of an uncertain outcome; null when there is none.</summary>
++        public string? Reason { get; }
++
++        /// <summary>What differs, as "key:kind" lines; empty unless the status is NotAppliedConflict. Never null.</summary>
++        public IReadOnlyList<string> Differences => _differences ?? Array.Empty<string>();
++
++        /// <summary>The warnings of the update; empty unless there were some. Never null.</summary>
++        public IReadOnlyList<string> Warnings => _warnings ?? Array.Empty<string>();
++
++        public static EditUpdateOutcome Unavailable(string reason) => Without(EditUpdateStatus.Unavailable, reason);
++
++        public static EditUpdateOutcome Rejected(string reason) => Without(EditUpdateStatus.Rejected, reason);
++
++        public static EditUpdateOutcome NoDraft(string reason) => Without(EditUpdateStatus.NoDraft, reason);
++
++        public static EditUpdateOutcome NothingToApply(string reason) => Without(EditUpdateStatus.NothingToApply, reason);
++
++        public static EditUpdateOutcome PendingText(string reason) => Without(EditUpdateStatus.PendingText, reason);
++
++        public static EditUpdateOutcome NotApplicable(string reason) => Without(EditUpdateStatus.NotApplicable, reason);
++
++        public static EditUpdateOutcome AnotherUpdateInProgress() => Without(EditUpdateStatus.AnotherUpdateInProgress, null);
++
++        public static EditUpdateOutcome Refused(string reason) => Without(EditUpdateStatus.Refused, reason);
++
++        public static EditUpdateOutcome ClosedDetached() => Without(EditUpdateStatus.ClosedDetached, null);
++
++        public static EditUpdateOutcome ClosedInError(string? reason) => Without(EditUpdateStatus.ClosedInError, reason);
++
++        public static EditUpdateOutcome Failed(string reason) => Without(EditUpdateStatus.Failed, reason);
++
++        /// <summary>The outcome of an update that was closed with one of the eight outcomes of the classification by frontier.</summary>
++        public static EditUpdateOutcome Closed(
++            EditUpdateStatus status, string? reason, IReadOnlyList<string> differences, IReadOnlyList<string> warnings)
++        {
++            if (differences == null) throw new ArgumentNullException(nameof(differences));
++            if (warnings == null) throw new ArgumentNullException(nameof(warnings));
++            return new EditUpdateOutcome(status, reason, differences, warnings);
++        }
++
++        private static EditUpdateOutcome Without(EditUpdateStatus status, string? reason) =>
++            new(status, reason, Array.Empty<string>(), Array.Empty<string>());
++    }
++
+     /// <summary>
+     /// How the explicit discard of the drafts of a session, or of one draft, ended (I-64 F4-T2B2B, D-T2B2-15; F4-T3A, D-T3-02). The
+     /// order is fixed and the default value is Rejected: it is inert, it means that nothing was done.
+diff --git a/src/RackCad.Application/Workspace/WorkspaceHostCore.cs b/src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+index b99572a2..f864dc35 100644
+--- a/src/RackCad.Application/Workspace/WorkspaceHostCore.cs
++++ b/src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+@@ -45,7 +45,8 @@ namespace RackCad.Application.Workspace
+         private const string NotThisDocumentReason = "La petición no es del documento activo.";
+         private const string NoDraftReason = "No hay borrador para el rack.";
+         private const string NotCheckableReason = "El borrador no admite comprobación en su estado actual.";
+-        private const string NotKeepableReason = "Solo se conserva un borrador en conflicto o con cambios marcados como posiblemente obsoletos.";
++        private const string UpdateNotRunReason = "La actualización no llegó a ejecutarse.";
++        private const string NotKeepableReason ="Solo se conserva un borrador en conflicto o con cambios marcados como posiblemente obsoletos.";
+ 
+         /// <summary>Native identity used when no document is open: it matches no session.</summary>
+         private const long NoDocumentNativeId = -1;
+@@ -791,6 +792,146 @@ namespace RackCad.Application.Workspace
+         /// </summary>
+         public void NotePilotEdit(SessionId session) => _knownClean.Remove(session);
+ 
++        // ---------------------------------------------------------------- the update of the pilot (I-64 F4-T4B, D-T4B-07)
++
++        /// <summary>
++        /// The update of one rack of the pilot (D-T4B-07): the first operation of the host that writes authored state, and it does it
++        /// only through the port that it is handed. It is a method of the core and not an operation of the edit port of the panel; nothing
++        /// of the product calls it yet. Its gate is its own and has no rest and no reader: the active document, no modal of RackCad and the
++        /// authorization of the session. The steps are, in this order: the gate, the draft, the check before the slot, the slot, the run
++        /// (which is total) and the ONE close of the slot, which always carries the outcome of the run. A failure of the host is only
++        /// Failed BEFORE the slot is taken; after it, the answer always comes from the close of the draft.
++        /// </summary>
++        public EditUpdateOutcome TryUpdatePilot(EditIntentRequest request, IPushBackPilotUpdatePort port)
++        {
++            DraftSession<PushBackPilotDraftState> draft;
++            long documentId;
++            try
++            {
++                if (request == null) throw new ArgumentNullException(nameof(request));
++                if (port == null) throw new ArgumentNullException(nameof(port));
++
++                // 1: the gate of its own.
++                var gate = UpdateGate(request.Session, out var reason, out documentId);
++                if (gate != EditGate.Open) return EditUpdateOutcome.Rejected(reason);
++
++                // 2: the draft. A rack without identity has none.
++                if (string.IsNullOrWhiteSpace(request.RackId)) return EditUpdateOutcome.NoDraft(NoDraftReason);
++                var found = _drafts.Find<PushBackPilotDraftState>(request.Session, request.RackId);
++                if (found == null) return EditUpdateOutcome.NoDraft(NoDraftReason);
++                draft = found;
++
++                // 3: the check before the slot: it only stops for what needs neither a read nor a catalog.
++                var precheck = PushBackPilotUpdateRun.Precheck(draft);
++                if (!precheck.Proceeds)
++                {
++                    switch (precheck.Kind)
++                    {
++                        case PushBackPilotPrepareKind.NothingToApply: return EditUpdateOutcome.NothingToApply(precheck.Reason!);
++                        case PushBackPilotPrepareKind.PendingText: return EditUpdateOutcome.PendingText(precheck.Reason!);
++                        default: return EditUpdateOutcome.NotApplicable(precheck.Reason!);
++                    }
++                }
++
++                // 4: the slot of the update, one for the whole registry.
++                var start = draft.TryBeginApply();
++                if (!start.IsStarted)
++                {
++                    return start.Refusal == DraftApplyRefusal.AnotherUpdateInProgress
++                        ? EditUpdateOutcome.AnotherUpdateInProgress()
++                        : EditUpdateOutcome.Refused(start.Refusal.ToString());
++                }
++            }
++            catch (Exception ex)
++            {
++                Report("WorkspaceHostCore.TryUpdatePilot", ex);
++                return EditUpdateOutcome.Failed(ex.Message);
++            }
++
++            // 5 and 6: the run is total, and the slot is closed exactly once, with the outcome of the run in every case.
++            var outcome = DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedFailure(UpdateNotRunReason);
++            DraftApplyResult closed;
++            try
++            {
++                outcome = PushBackPilotUpdateRun.Execute(draft, new PushBackPilotUpdateRequest(documentId, request.RackId), port);
++            }
++            catch (Exception ex)
++            {
++                Report("WorkspaceHostCore.TryUpdatePilot", ex);
++                outcome = DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedFailure(UpdateNotRunReason + " " + ex.Message);
++            }
++            finally
++            {
++                closed = draft.CompleteApply(outcome);
++            }
++
++            // 7: the answer comes from the close of the draft. What changed the draft ends the mark of known clean.
++            if (!closed.DraftWasRegistered) return EditUpdateOutcome.ClosedDetached();
++            if (!closed.Accepted) return EditUpdateOutcome.Closed(EditUpdateStatus.NotAppliedFailure, UpdateNotRunReason, Array.Empty<string>(), Array.Empty<string>());
++
++            if (closed.Status == DraftStatus.Error)
++            {
++                NotePilotEdit(request.Session);
++                _knownClean.Remove(request.Session);
++                return EditUpdateOutcome.ClosedInError(draft.ErrorReason);
++            }
++
++            EditUpdateStatus status;
++            switch (closed.Kind)
++            {
++                case DraftApplyOutcomeKind.NotAppliedConflict: status = EditUpdateStatus.NotAppliedConflict; break;
++                case DraftApplyOutcomeKind.NotAppliedAdmission: status = EditUpdateStatus.NotAppliedAdmission; break;
++                case DraftApplyOutcomeKind.NotAppliedPreflight: status = EditUpdateStatus.NotAppliedPreflight; break;
++                case DraftApplyOutcomeKind.NotAppliedFailure: status = EditUpdateStatus.NotAppliedFailure; break;
++                case DraftApplyOutcomeKind.CommitThrew: status = EditUpdateStatus.CommitThrew; break;
++                case DraftApplyOutcomeKind.Applied: status = EditUpdateStatus.Applied; break;
++                case DraftApplyOutcomeKind.AppliedWithWarnings: status = EditUpdateStatus.AppliedWithWarnings; break;
++                default: status = EditUpdateStatus.AppliedPostRereadFailed; break;
++            }
++
++            if (status != EditUpdateStatus.NotAppliedAdmission
++                && status != EditUpdateStatus.NotAppliedPreflight
++                && status != EditUpdateStatus.NotAppliedFailure)
++            {
++                NotePilotEdit(request.Session);
++                _knownClean.Remove(request.Session);
++            }
++
++            return EditUpdateOutcome.Closed(
++                status,
++                draft.LastApplyCause,
++                status == EditUpdateStatus.NotAppliedConflict ? DescribeDifferences(draft.ConflictDifferences) : Array.Empty<string>(),
++                draft.Warnings);
++        }
++
++        // The gate of the update: the active document, no modal of RackCad and the authorization of the session. It has no rest and no reader.
++        private EditGate UpdateGate(SessionId session, out string reason, out long documentNativeId)
++        {
++            reason = string.Empty;
++            documentNativeId = NoDocumentNativeId;
++            var active = _probe.ActiveDocumentNativeId;
++            if (!active.HasValue)
++            {
++                reason = "No hay un documento activo para actualizar.";
++                return EditGate.Waiting;
++            }
++
++            if (_modalRackCadActive)
++            {
++                reason = "Hay una ventana de RackCad abierta: ciérrala antes de actualizar.";
++                return EditGate.Waiting;
++            }
++
++            if (Authorize(new WorkspaceRequest(session)) != RequestDecision.Accepted)
++            {
++                reason = NotThisDocumentReason;
++                return EditGate.Rejected;
++            }
++
++            documentNativeId = active.Value;
++            return EditGate.Open;
++        }
++
+         // ---------------------------------------------------------------- the edit port of the pilot (I-64 F4-T3A, D-T3-02)
+         //
+         // Every operation below is implemented explicitly, so the public surface of the host does not grow. None of them writes the
+diff --git a/src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs b/src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs
+new file mode 100644
+index 00000000..11219727
+--- /dev/null
++++ b/src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs
+@@ -0,0 +1,339 @@
++#nullable enable
++using System;
++using System.Collections.Generic;
++using System.Diagnostics;
++using System.Linq;
++using Autodesk.AutoCAD.ApplicationServices;
++using Autodesk.AutoCAD.DatabaseServices;
++using RackCad.Application.Catalogs;
++using RackCad.Application.Persistence;
++using RackCad.Application.Systems.PushBack;
++using RackCad.Application.Systems.PushBack.Pilot;
++using RackCad.Application.Systems.Shared;
++using RackCad.Application.Views.Redraw;
++using RackCad.Domain.Systems.PushBack;
++using RackCad.Domain.Systems.Shared;
++using RackCad.Plugin.Drawing;
++using RackCad.Plugin.Systems.PushBack;
++using RackCad.Plugin.Systems.Shared;
++using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
++
++namespace RackCad.Plugin.Views
++{
++    /// <summary>
++    /// I-64 F4-T4B (D-T4B-03) — the writer of the update of the bounded Push Back pilot. It only does PRIMITIVE operations of the drawing,
++    /// inside scopes that live for ONE run, and it only returns FACTS: the origin, the survivors, the locked layers, the names that the
++    /// views must carry and every warning are decided by the pure run of Application. It never takes the lock of the document: the one lock
++    /// around PREPARE, MUTATE and POST is the one of the adapter that runs it. It never erases a view.
++    ///
++    /// This class is the port: it keeps nothing, and every <see cref="Begin"/> hands back a NEW scope. The objects of AutoCAD live only in
++    /// the two scope classes below, which the run always releases.
++    /// </summary>
++    internal sealed class RackPilotUpdateWriter : IPushBackPilotUpdatePort
++    {
++        public IPushBackPilotUpdateScope Begin(PushBackPilotUpdateRequest request)
++        {
++            if (request == null) throw new ArgumentNullException(nameof(request));
++            return new RackPilotUpdateScope(AcApplication.DocumentManager.MdiActiveDocument, request);
++        }
++
++        // The facts of one scan as values. The locked layers are listed for every definition that touches one; the run only looks at the
++        // members of the plan.
++        internal static PushBackPilotScanValues ValuesOf(
++            RackSiblingDrawingScan scan, RackCatalog? catalog, IReadOnlyDictionary<string, bool>? preparedBlockMatches)
++        {
++            var locked = scan.Layers
++                .Where(pair => pair.Value.Any(layer => layer.IsLocked))
++                .Select(pair => pair.Key)
++                .OrderBy(key => key, StringComparer.Ordinal)
++                .ToList();
++            return new PushBackPilotScanValues(true, scan.Facts, scan.RawEnvelopes, locked, catalog, preparedBlockMatches);
++        }
++    }
++
++    /// <summary>
++    /// The scope of one run: PREPARE (the read and the import), the start of MUTATE and POST. It holds the document, the definitions that
++    /// the read found, what the import prepared and the definitions that the writes left without a use. Releasing it forgets all of them.
++    /// </summary>
++    internal sealed class RackPilotUpdateScope : IPushBackPilotUpdateScope
++    {
++        private readonly Document? _document;
++        private readonly bool _documentMatches;
++        private readonly Dictionary<string, ObjectId> _definitions = new(StringComparer.Ordinal);
++        private readonly Dictionary<string, (PreparedViewRedraw Prepared, DimensionViewKind Kind)> _prepared = new(StringComparer.Ordinal);
++        private readonly HashSet<ObjectId> _staleDefinitions = new();
++        private RackCatalog? _catalog;
++        private bool _disposed;
++
++        internal RackPilotUpdateScope(Document? document, PushBackPilotUpdateRequest request)
++        {
++            _document = document;
++            _documentMatches = document != null && document.UnmanagedObject.ToInt64() == request.AuthorizedDocumentNativeId;
++        }
++
++        public PushBackPilotScanValues ReadForPrepare()
++        {
++            EnsureOpen();
++            if (!_documentMatches) return new PushBackPilotScanValues(false, Array.Empty<RackSiblingScanFact>(), new Dictionary<string, string>());
++
++            // The catalog is read outside the ownership of any scope of mutation, and the drawing is read by the same traversal as every
++            // other path, which takes its own lock and its own short scope.
++            _catalog = LateralHeaderDrawService.LoadCatalog() ?? throw new InvalidOperationException("El catálogo no está disponible.");
++            var scan = RackSiblingScan.CaptureDrawing(_document!);
++            _definitions.Clear();
++            foreach (var pair in scan.Definitions) _definitions[pair.Key] = pair.Value;
++            return RackPilotUpdateWriter.ValuesOf(scan, _catalog, null);
++        }
++
++        // IMPORT: every PrepareRedraw of the facades imports what its plan references, before any scope of mutation exists.
++        public PushBackPilotImportResult PrepareUnits(PushBackPilotUpdatePlan plan)
++        {
++            EnsureOpen();
++            if (plan == null) throw new ArgumentNullException(nameof(plan));
++            if (!_documentMatches || _catalog == null) return PushBackPilotImportResult.Failed("PrepareUnits se llamó sin una lectura previa.");
++
++            var database = _document!.Database;
++            var store = new RackEmbedStore();
++            _prepared.Clear();
++            foreach (var member in plan.Members)
++            {
++                if (!_definitions.TryGetValue(member.Key, out var blockId))
++                    return PushBackPilotImportResult.Failed("La definición " + member.Key + " ya no está en el dibujo.");
++
++                var embed = store.Deserialize(member.EnvelopeText)
++                    ?? throw new InvalidOperationException("El sobre de la vista " + member.Key + " no se puede leer.");
++                var address = RackViewCodec.Decode(embed.Kind, embed.View, embed.Section).Address;
++                var system = PushBackPilotSystemRebuild.Build(member.DesignText, _catalog);
++                PreparedViewRedraw prepared;
++                switch (address.Kind)
++                {
++                    case DimensionViewKind.Planta:
++                        prepared = new PushBackPlantaDrawService().PrepareRedraw(database, blockId, system, member.EnvelopeText);
++                        break;
++                    case DimensionViewKind.Lateral:
++                        prepared = new PushBackSystemDrawService().PrepareRedraw(database, blockId, system, member.EnvelopeText, address.Variant.Index);
++                        break;
++                    default:
++                        prepared = new PushBackFrontalDrawService().PrepareRedraw(
++                            database,
++                            blockId,
++                            system,
++                            address.Variant.PushBackEnd == RackPushBackEnd.Posterior ? PushBackFrontalEnd.Posterior : PushBackFrontalEnd.EntradaSalida,
++                            member.EnvelopeText,
++                            address.Variant.PushBackSide == RackPushBackSide.B ? PushBackSide.B : PushBackSide.A);
++                        break;
++                }
++
++                _prepared[member.Key] = (prepared, address.Kind);
++            }
++
++            return PushBackPilotImportResult.Succeeded();
++        }
++
++        // The ONE owned scope of MUTATE, only with no scope of anybody else open. A rejection is a value, never an exception.
++        public PushBackPilotMutationStart BeginMutation()
++        {
++            EnsureOpen();
++            if (!_documentMatches || _prepared.Count == 0) throw new InvalidOperationException("BeginMutation se llamó sin una importación previa.");
++
++            var database = _document!.Database;
++            if (database.TransactionManager.TopTransaction != null)
++                return PushBackPilotMutationStart.Rejected(PushBackPilotUpdateRun.ForeignScopeOpenCause);
++
++            var transaction = database.TransactionManager.StartTransaction();
++            return PushBackPilotMutationStart.Started(new RackPilotMutationScope(database, transaction, _prepared, _staleDefinitions));
++        }
++
++        // POST: the tidy-up, in the order of the classic editor, and the facts of the drawing afterwards. It never decides a warning.
++        public PushBackPilotPostValues Post(PushBackPilotPostRequest request)
++        {
++            EnsureOpen();
++            if (request == null) throw new ArgumentNullException(nameof(request));
++
++            var document = _document!;
++            var database = document.Database;
++
++            // 1: no scope of anybody else may be open, or nothing else is done.
++            if (database.TransactionManager.TopTransaction != null)
++                return new PushBackPilotPostValues(true, null, null, null);
++
++            // 2: the purge, ONCE, over the union of what every unit left without a use, after the seal returned and the scope of MUTATE
++            // was released. A failure of the purge only goes to the log: the write is already confirmed.
++            SystemBlockWriter.PurgeAfterCommit(database, _staleDefinitions.ToList());
++
++            // 3: the names that the views must carry, as the rule of the run computed them. A key without one is not renamed.
++            foreach (var pair in request.DesiredNames)
++            {
++                if (_definitions.TryGetValue(pair.Key, out var blockId)) RackBlockRenamer.SyncName(document, blockId, pair.Value);
++            }
++
++            // 4: the name that each definition has NOW, read by a scope of its own that only reads.
++            var names = new Dictionary<string, string>(StringComparer.Ordinal);
++            using (var reading = database.TransactionManager.StartOpenCloseTransaction())
++            {
++                foreach (var key in _prepared.Keys)
++                {
++                    if (_definitions.TryGetValue(key, out var blockId) && reading.GetObject(blockId, OpenMode.ForRead) is BlockTableRecord definition)
++                        names[key] = definition.Name;
++                }
++            }
++
++            // 5: one regeneration; a failure is a fact, and the run decides what it means.
++            string? regenFailure = null;
++            try
++            {
++                SystemBlockWriter.ApplyRegen(document, true);
++            }
++            catch (System.Exception ex)
++            {
++                regenFailure = ex.GetType().Name + ": " + ex.Message;
++            }
++
++            // 6: the re-read of POST, AFTER the purge, so the comparison sees the state that stays.
++            var scan = RackSiblingScan.CaptureDrawing(document);
++            return new PushBackPilotPostValues(false, RackPilotUpdateWriter.ValuesOf(scan, null, null), names, regenFailure);
++        }
++
++        public void Dispose()
++        {
++            _disposed = true;
++            _definitions.Clear();
++            _prepared.Clear();
++            _staleDefinitions.Clear();
++        }
++
++        private void EnsureOpen()
++        {
++            if (_disposed) throw new ObjectDisposedException(nameof(RackPilotUpdateScope));
++        }
++    }
++
++    /// <summary>
++    /// The ONE owned scope of MUTATE. It owns the semantic scope of the drawing that it starts with, and releasing it without a seal is an
++    /// abort. It never purges, renames, regenerates or erases: that is POST, which runs after the run released this scope.
++    /// </summary>
++    internal sealed class RackPilotMutationScope : IPushBackPilotMutationScope
++    {
++        private const string UnitVariable = "RACKCAD_DEBUG_FAIL_PILOT_UPDATE_UNIT";
++        private const string SealVariable = "RACKCAD_DEBUG_FAIL_PILOT_UPDATE_SEAL";
++
++        private readonly Database _database;
++        private readonly Transaction _transaction;
++        private readonly IReadOnlyDictionary<string, (PreparedViewRedraw Prepared, DimensionViewKind Kind)> _prepared;
++        private readonly HashSet<ObjectId> _staleDefinitions;
++        private int _units;
++        private bool _disposed;
++
++        internal RackPilotMutationScope(
++            Database database,
++            Transaction transaction,
++            IReadOnlyDictionary<string, (PreparedViewRedraw Prepared, DimensionViewKind Kind)> prepared,
++            HashSet<ObjectId> staleDefinitions)
++        {
++            _database = database;
++            _transaction = transaction;
++            _prepared = prepared;
++            _staleDefinitions = staleDefinitions;
++        }
++
++        // The re-read inside the owned scope: the traversal of the nucleus, with no lock, no scope of its own and no confirmation.
++        public PushBackPilotScanValues Reread()
++        {
++            EnsureOwned();
++            var scan = RackSiblingScan.TraverseCore(_transaction, _database, ObjectId.Null, null);
++            var matches = new Dictionary<string, bool>(StringComparer.Ordinal);
++            foreach (var pair in _prepared)
++                matches[pair.Key] = scan.Definitions.TryGetValue(pair.Key, out var found) && found == pair.Value.Prepared.BlockId;
++            return RackPilotUpdateWriter.ValuesOf(scan, null, matches);
++        }
++
++        public PushBackPilotUnitResult WriteUnit(string memberKey, string envelopeText)
++        {
++            EnsureOwned();
++            if (!_prepared.TryGetValue(memberKey, out var unit))
++                throw new InvalidOperationException("La vista " + memberKey + " no se preparó.");
++            if (!string.Equals(envelopeText, unit.Prepared.PayloadJson, StringComparison.Ordinal))
++                throw new InvalidOperationException("El texto de la vista " + memberKey + " no es el del plan.");
++
++            _units++;
++            FailUnitIfRequested(_units);
++
++            IReadOnlyCollection<ObjectId> stale;
++            LateralHeaderDrawOutcome outcome;
++            switch (unit.Kind)
++            {
++                case DimensionViewKind.Planta:
++                    outcome = new PushBackPlantaDrawService().RedrawInTransaction(_database, _transaction, unit.Prepared, out stale);
++                    break;
++                case DimensionViewKind.Lateral:
++                    outcome = new PushBackSystemDrawService().RedrawInTransaction(_database, _transaction, unit.Prepared, out stale);
++                    break;
++                default:
++                    outcome = new PushBackFrontalDrawService().RedrawInTransaction(_database, _transaction, unit.Prepared, out stale);
++                    break;
++            }
++
++            if (stale != null)
++            {
++                foreach (var id in stale) _staleDefinitions.Add(id);
++            }
++
++            var missing = outcome.MissingInstances
++                .Select(instance => string.IsNullOrEmpty(instance.BlockName) ? instance.PieceId : instance.BlockName)
++                .Where(name => !string.IsNullOrEmpty(name))
++                .Distinct(StringComparer.Ordinal)
++                .ToList();
++            return new PushBackPilotUnitResult(missing);
++        }
++
++        public void Seal()
++        {
++            EnsureOwned();
++            FailSealIfRequested("before");
++            _transaction.Commit();
++            FailSealIfRequested("after");
++        }
++
++        public void Dispose()
++        {
++            if (_disposed) return;
++            _disposed = true;
++
++            // Without a seal this is the abort.
++            _transaction.Dispose();
++        }
++
++        // The scope that was started must still be the top one of the drawing: compared by its native identity, never by reference.
++        private void EnsureOwned()
++        {
++            if (_disposed) throw new ObjectDisposedException(nameof(RackPilotMutationScope));
++            var top = _database.TransactionManager.TopTransaction;
++            if (top == null || top.UnmanagedObject != _transaction.UnmanagedObject)
++                throw new InvalidOperationException("El ámbito de la escritura ya no es el último abierto del dibujo.");
++        }
++
++        // The points of injection of Debug builds: a unit that throws, and a seal that throws before or after the confirmation.
++        [Conditional("DEBUG")]
++        private static void FailUnitIfRequested(int oneBasedUnit)
++        {
++            if (int.TryParse(DebugVariable(UnitVariable), out var requested) && requested == oneBasedUnit)
++                throw new InvalidOperationException("DEBUG pilot update fault at unit " + oneBasedUnit + ".");
++        }
++
++        [Conditional("DEBUG")]
++        private static void FailSealIfRequested(string moment)
++        {
++            if (string.Equals(DebugVariable(SealVariable), moment, StringComparison.Ordinal))
++                throw new InvalidOperationException("DEBUG pilot update fault " + moment + " the seal.");
++        }
++
++        private static string? DebugVariable(string name)
++        {
++#if DEBUG
++            return Environment.GetEnvironmentVariable(name);
++#else
++            return null;
++#endif
++        }
++    }
++}
+diff --git a/src/RackCad.Plugin/Views/RackSiblingScan.cs b/src/RackCad.Plugin/Views/RackSiblingScan.cs
+index aaa3aac8..c52b011f 100644
+--- a/src/RackCad.Plugin/Views/RackSiblingScan.cs
++++ b/src/RackCad.Plugin/Views/RackSiblingScan.cs
+@@ -99,6 +99,21 @@ namespace RackCad.Plugin.Views
+             Document document,
+             ObjectId selectedDefinition,
+             Func<RackEmbedDocument, bool> eraseByKind)
++        {
++            using (document.LockDocument())
++            using (var transaction = document.Database.TransactionManager.StartTransaction())
++            {
++                var scan = TraverseCore(transaction, document.Database, selectedDefinition, eraseByKind);
++                transaction.Commit();
++                return scan;
++            }
++        }
++
++        internal static RackSiblingDrawingScan TraverseCore(
++            Transaction transaction,
++            Database database,
++            ObjectId selectedDefinition,
++            Func<RackEmbedDocument, bool> eraseByKind)
+         {
+             var facts = new List<RackSiblingScanFact>();
+             var definitions = new Dictionary<string, ObjectId>(StringComparer.Ordinal);
+@@ -109,58 +124,52 @@ namespace RackCad.Plugin.Views
+             var embedStore = new RackEmbedStore();
+             var propertyStore = new CustomPropertiesStore();
+ 
+-            using (document.LockDocument())
+-            using (var transaction = document.Database.TransactionManager.StartTransaction())
++            var table = (BlockTable)transaction.GetObject(database.BlockTableId, OpenMode.ForRead);
++            foreach (ObjectId definitionId in table)
+             {
+-                var table = (BlockTable)transaction.GetObject(document.Database.BlockTableId, OpenMode.ForRead);
+-                foreach (ObjectId definitionId in table)
++                var definition = (BlockTableRecord)transaction.GetObject(definitionId, OpenMode.ForRead);
++                if (definition.IsLayout || definition.IsAnonymous) continue;
++
++                var json = RackBlockData.Read(transaction, definitionId);
++                if (string.IsNullOrEmpty(json)) continue;
++
++                var envelope = embedStore.Deserialize(json);
++                var key = definitionId.Handle.ToString();
++                var layoutReferences = 0;
++                var nestedReferences = 0;
++                var layerFacts = new List<RackSiblingLayerRequirement>();
++                foreach (ObjectId referenceId in definition.GetBlockReferenceIds(directOnly: true, forceValidity: true))
+                 {
+-                    var definition = (BlockTableRecord)transaction.GetObject(definitionId, OpenMode.ForRead);
+-                    if (definition.IsLayout || definition.IsAnonymous) continue;
+-
+-                    var json = RackBlockData.Read(transaction, definitionId);
+-                    if (string.IsNullOrEmpty(json)) continue;
+-
+-                    var envelope = embedStore.Deserialize(json);
+-                    var key = definitionId.Handle.ToString();
+-                    var layoutReferences = 0;
+-                    var nestedReferences = 0;
+-                    var layerFacts = new List<RackSiblingLayerRequirement>();
+-                    foreach (ObjectId referenceId in definition.GetBlockReferenceIds(directOnly: true, forceValidity: true))
+-                    {
+-                        var reference = transaction.GetObject(referenceId, OpenMode.ForRead) as BlockReference;
+-                        var owner = reference == null ? null : transaction.GetObject(reference.OwnerId, OpenMode.ForRead) as BlockTableRecord;
+-                        if (owner?.IsLayout == true) layoutReferences++; else nestedReferences++;
+-                        AddLayer(transaction, reference?.LayerId ?? ObjectId.Null, RackSiblingLayerUse.DirectReference, layerFacts);
+-                    }
+-
+-                    foreach (ObjectId entityId in definition)
+-                        AddLayer(transaction, (transaction.GetObject(entityId, OpenMode.ForRead) as Entity)?.LayerId ?? ObjectId.Null,
+-                            RackSiblingLayerUse.ExistingDefinitionEntity, layerFacts);
+-
+-                    var probe = envelope?.Id ?? RackEnvelopeIdProbe.Probe(json);
+-                    facts.Add(new RackSiblingScanFact(
+-                        key,
+-                        envelope?.View,
+-                        definitionId == selectedDefinition,
+-                        definition.IsFromExternalReference,
+-                        envelope != null,
+-                        envelope?.Id,
+-                        probe,
+-                        layoutReferences,
+-                        nestedReferences,
+-                        envelope != null && eraseByKind != null && eraseByKind(envelope)));
+-                    definitions.Add(key, definitionId);
+-                    rawEnvelopes.Add(key, json);
+-                    layers.Add(key, layerFacts);
+-                    if (envelope != null)
+-                    {
+-                        envelopes.Add(key, envelope);
+-                        properties.Add(key, propertyStore.ReadElement(envelope.CustomProperties));
+-                    }
++                    var reference = transaction.GetObject(referenceId, OpenMode.ForRead) as BlockReference;
++                    var owner = reference == null ? null : transaction.GetObject(reference.OwnerId, OpenMode.ForRead) as BlockTableRecord;
++                    if (owner?.IsLayout == true) layoutReferences++; else nestedReferences++;
++                    AddLayer(transaction, reference?.LayerId ?? ObjectId.Null, RackSiblingLayerUse.DirectReference, layerFacts);
+                 }
+ 
+-                transaction.Commit();
++                foreach (ObjectId entityId in definition)
++                    AddLayer(transaction, (transaction.GetObject(entityId, OpenMode.ForRead) as Entity)?.LayerId ?? ObjectId.Null,
++                        RackSiblingLayerUse.ExistingDefinitionEntity, layerFacts);
++
++                var probe = envelope?.Id ?? RackEnvelopeIdProbe.Probe(json);
++                facts.Add(new RackSiblingScanFact(
++                    key,
++                    envelope?.View,
++                    definitionId == selectedDefinition,
++                    definition.IsFromExternalReference,
++                    envelope != null,
++                    envelope?.Id,
++                    probe,
++                    layoutReferences,
++                    nestedReferences,
++                    envelope != null && eraseByKind != null && eraseByKind(envelope)));
++                definitions.Add(key, definitionId);
++                rawEnvelopes.Add(key, json);
++                layers.Add(key, layerFacts);
++                if (envelope != null)
++                {
++                    envelopes.Add(key, envelope);
++                    properties.Add(key, propertyStore.ReadElement(envelope.CustomProperties));
++                }
+             }
+ 
+             return new RackSiblingDrawingScan(facts, definitions, envelopes, properties, layers)
