@@ -723,7 +723,7 @@ public class WorkspacePilotReconciliationHostTests
 
         Assert.Single(rig.Reader.Calls);
         Assert.Equal(scale, draft.CurrentDraftState.Inputs.Annotations.AnnotationScale);
-        Assert.Equal(0, rig.Host.Reader.Reads.Count);
+        Assert.Empty(rig.Host.Reader.Reads);
     }
 
     [Fact]

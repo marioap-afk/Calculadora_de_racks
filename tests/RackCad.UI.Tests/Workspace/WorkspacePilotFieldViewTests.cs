@@ -749,9 +749,10 @@ namespace RackCad.UI.Tests
                     Assert.Equal(Visibility.Collapsed, Named<Button>(view, "BrowserFieldUpdateButton").Visibility);
                 }
 
-                // A tab that is still a preview has no Update button, whatever the draft says.
+                // A tab that is still a preview has no Update button, whatever the draft says. The browser pins every tab with protected work,
+                // so the draft of a tab that stays a preview is a Dirty one that is not protected.
                 var (preview, pilot, _) = Build();
-                pilot.Set(new SessionId(7), "R-1", DirtyDraft());
+                pilot.Set(new SessionId(7), "R-1", WorkspacePilotEditPortDouble.View(PilotFieldState.Dirty, "2.5", isProtected: false));
                 preview.ViewModel.Refresh();
                 Lay(preview);
                 Assert.True(preview.ViewModel.Browser.Tabs.Single().IsPreview);
@@ -775,9 +776,12 @@ namespace RackCad.UI.Tests
                 Click(button);
                 Lay(view);
 
+                // The gesture is the first four entries; whatever follows is the repaint of the live surface (F-1, D-T4C-03), which only collects.
+                var log = pilot.UpdateLog.Select(e => e.Operation + (e.Kind.HasValue ? ":" + e.Kind.Value : string.Empty)).ToArray();
                 Assert.Equal(
                     new[] { "TakeUpdateProgress", "CrossBoundary:Update", "RequestUpdate", "TakeUpdateProgress" },
-                    pilot.UpdateLog.Select(e => e.Operation + (e.Kind.HasValue ? ":" + e.Kind.Value : string.Empty)).ToArray());
+                    log.Take(4).ToArray());
+                Assert.All(log.Skip(4), entry => Assert.Equal("TakeUpdateProgress", entry));
                 var request = Assert.Single(pilot.UpdateOf(WorkspacePilotEditPortDouble.RequestUpdateOp));
                 Assert.Equal(new SessionId(7), request.Origin);
                 Assert.Equal("R-1", request.RackId);
