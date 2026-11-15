@@ -1,0 +1,1330 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F4-T4C1-HOST",
+  "RunId": "R20261115T165352Z-3e8e",
+  "DelegationRunId": "R20261115T164833Z-353a",
+  "Initiative": "I-64",
+  "Gate": "F4",
+  "Attempt": 2,
+  "BaseSha": "12c248b039674b5e8589f10f51e6dd1150f99b12",
+  "RedSha": "1268bb9d29af86ddff02a2ab02e7993c0d5c402b",
+  "CurrentSha": "b2631084bcadbda25d69936c47d6f09b64fb1ac7",
+  "Branch": "architecture/workspace-persistente-rackcad",
+  "Worktree": "<worktree-de-I-64>",
+  "Pushed": true,
+  "FilesChanged": [
+    "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotHostRun.cs",
+    "src/RackCad.Application/Workspace/WorkspaceHostCore.cs",
+    "src/RackCad.Plugin/Views/RackPilotUpdateCommandContext.cs",
+    "src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeFacadeSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceOwnMutationTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostDouble.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostRunTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRequestTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs"
+  ],
+  "WorkCompleted": "Correccion del intento 1 (RED 8e57061e, GREEN 271a045c) con un RED nuevo (1268bb9d, solo tests/, 11 archivos) y un GREEN (b2631084, solo src/, 4 archivos), ambos con su push. Producto: B-01, PilotUpdateRun.Execute retira InExecute en su finally junto con Finished, de modo que un billete terminado cuya compleccion no llega caduca con el primer CommandWillStart ajeno posterior, el cierre, la retirada o la degradacion y solo se libera, sin un segundo resultado; M-01, TryConfirmPilotBase, TryKeepPilotEdit y TryDiscardAndReloadPilotEdit comprueban el vuelo despues de PassGate (los reenvios explicitos del puerto solo marcan la lectura); M-04, HostNotRunReason se usa entero en el corredor y en el nucleo (la excepcion va al registro) y TryOpenTarget del adaptador devuelve PushBackPilotUpdateRun.DocumentMismatchReason; M-05, la respuesta de un cierre no aceptado y la nota de la edicion con _knownClean.Remove entran en el try de la respuesta de TryUpdatePilot con el mismo respaldo; M-06, Execute y NotRun no actuan sobre un billete terminado, un TryRequest que lanza tras el inicio del callback da Accepted, IsAnyPilotDraftApplying responde false y lo registra y un Lock() nulo da NotRun(Failed) con LockFailedPrefix; M-10, la marca Started se usa (para M-06 b) y RackPilotUpdateWriter.cs pierde el using AcApplication. Pruebas: B-01 (a) y (b), G-1 como censo de todo src/, G-10 sin carpetas excluidas, el orden del vuelo despues de PassGate o Authorize, la negativa del portador sin censar, los siete textos del vuelo, el prefijo HostNotRunReason, el try de la respuesta del cierre, las defensas del nucleo y las guardas del adaptador (OnCompleted en la rama de IsCompleted falso, Post al contexto capturado). Nada de AutoCAD en las pruebas; el adaptador del Plugin solo lo cubren las guardas de fuente y la compilacion del Plugin.",
+  "TestsExecuted": [
+    {
+      "RunRef": "r1",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --filter FullyQualifiedName~RackCad.Tests.Workspace --logger trx;LogFileName=r1.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r1 -v:minimal",
+      "Phase": "RED",
+      "TreeSha": "cdf146ffab24ee78c98775e63309c1ca8bc08cde",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r1/r1.trx"
+    },
+    {
+      "RunRef": "r201",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.CallerOwnedFacadeGuardTests --logger trx;LogFileName=r201.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r201 -v:minimal",
+      "Phase": "RED",
+      "TreeSha": "cdf146ffab24ee78c98775e63309c1ca8bc08cde",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r201/r201.trx"
+    },
+    {
+      "RunRef": "r202",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.CallerOwnedTransactionGuardTests --logger trx;LogFileName=r202.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r202 -v:minimal",
+      "Phase": "RED",
+      "TreeSha": "cdf146ffab24ee78c98775e63309c1ca8bc08cde",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r202/r202.trx"
+    },
+    {
+      "RunRef": "r203",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.RackSiblingRedrawUnitsTests --logger trx;LogFileName=r203.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r203 -v:minimal",
+      "Phase": "RED",
+      "TreeSha": "cdf146ffab24ee78c98775e63309c1ca8bc08cde",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r203/r203.trx"
+    },
+    {
+      "RunRef": "r204",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.DebugFaultInjectionGuardTests --logger trx;LogFileName=r204.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r204 -v:minimal",
+      "Phase": "RED",
+      "TreeSha": "cdf146ffab24ee78c98775e63309c1ca8bc08cde",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r204/r204.trx"
+    },
+    {
+      "RunRef": "r205",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.SiblingRedrawSeamGuardTests --logger trx;LogFileName=r205.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r205 -v:minimal",
+      "Phase": "RED",
+      "TreeSha": "cdf146ffab24ee78c98775e63309c1ca8bc08cde",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r205/r205.trx"
+    },
+    {
+      "RunRef": "r206",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.RackSiblingMembershipTests --logger trx;LogFileName=r206.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r206 -v:minimal",
+      "Phase": "RED",
+      "TreeSha": "cdf146ffab24ee78c98775e63309c1ca8bc08cde",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r206/r206.trx"
+    },
+    {
+      "RunRef": "r207",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.RackSiblingRedrawPlanTests --logger trx;LogFileName=r207.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r207 -v:minimal",
+      "Phase": "RED",
+      "TreeSha": "cdf146ffab24ee78c98775e63309c1ca8bc08cde",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r207/r207.trx"
+    },
+    {
+      "RunRef": "r208",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.RackSiblingRedrawRunTests --logger trx;LogFileName=r208.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r208 -v:minimal",
+      "Phase": "RED",
+      "TreeSha": "cdf146ffab24ee78c98775e63309c1ca8bc08cde",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r208/r208.trx"
+    },
+    {
+      "RunRef": "r209",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests --logger trx;LogFileName=r209.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r209 -v:minimal",
+      "Phase": "RED",
+      "TreeSha": "cdf146ffab24ee78c98775e63309c1ca8bc08cde",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r209/r209.trx"
+    },
+    {
+      "RunRef": "r210",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.PushBackPluginSourceGuardTests --logger trx;LogFileName=r210.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r210 -v:minimal",
+      "Phase": "RED",
+      "TreeSha": "cdf146ffab24ee78c98775e63309c1ca8bc08cde",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r210/r210.trx"
+    },
+    {
+      "RunRef": "r211",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.PushBackRoundTripSourceGuardTests --logger trx;LogFileName=r211.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r211 -v:minimal",
+      "Phase": "RED",
+      "TreeSha": "cdf146ffab24ee78c98775e63309c1ca8bc08cde",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r211/r211.trx"
+    },
+    {
+      "RunRef": "r212",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.RackProjectionCommandGuardTests --logger trx;LogFileName=r212.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r212 -v:minimal",
+      "Phase": "RED",
+      "TreeSha": "cdf146ffab24ee78c98775e63309c1ca8bc08cde",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r212/r212.trx"
+    },
+    {
+      "RunRef": "r213",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.NamespaceFolderGuardTests --logger trx;LogFileName=r213.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r213 -v:minimal",
+      "Phase": "RED",
+      "TreeSha": "cdf146ffab24ee78c98775e63309c1ca8bc08cde",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r213/r213.trx"
+    },
+    {
+      "RunRef": "r214",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.CustomPropertiesEnvelopeGuardTests --logger trx;LogFileName=r214.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r214 -v:minimal",
+      "Phase": "RED",
+      "TreeSha": "cdf146ffab24ee78c98775e63309c1ca8bc08cde",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r214/r214.trx"
+    },
+    {
+      "RunRef": "r215",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.RackUnitsGuardSourceTests --logger trx;LogFileName=r215.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r215 -v:minimal",
+      "Phase": "RED",
+      "TreeSha": "cdf146ffab24ee78c98775e63309c1ca8bc08cde",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r215/r215.trx"
+    },
+    {
+      "RunRef": "r216",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.I55G15Auth15ConsumerTests --logger trx;LogFileName=r216.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r216 -v:minimal",
+      "Phase": "RED",
+      "TreeSha": "cdf146ffab24ee78c98775e63309c1ca8bc08cde",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r216/r216.trx"
+    },
+    {
+      "RunRef": "r217",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.SingleScanInsertGuardTests --logger trx;LogFileName=r217.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r217 -v:minimal",
+      "Phase": "RED",
+      "TreeSha": "cdf146ffab24ee78c98775e63309c1ca8bc08cde",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r217/r217.trx"
+    },
+    {
+      "RunRef": "r218",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.RackViewBatchDriverGuardTests --logger trx;LogFileName=r218.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r218 -v:minimal",
+      "Phase": "RED",
+      "TreeSha": "cdf146ffab24ee78c98775e63309c1ca8bc08cde",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r218/r218.trx"
+    },
+    {
+      "RunRef": "r219",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.G16FirstViewCorrectiveTests --logger trx;LogFileName=r219.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r219 -v:minimal",
+      "Phase": "RED",
+      "TreeSha": "cdf146ffab24ee78c98775e63309c1ca8bc08cde",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r219/r219.trx"
+    },
+    {
+      "RunRef": "r220",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.RackSiblingCustomPropertiesGateTests --logger trx;LogFileName=r220.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r220 -v:minimal",
+      "Phase": "RED",
+      "TreeSha": "cdf146ffab24ee78c98775e63309c1ca8bc08cde",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r220/r220.trx"
+    },
+    {
+      "RunRef": "r221",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.RackEnvelopeIdProbeTests --logger trx;LogFileName=r221.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r221 -v:minimal",
+      "Phase": "RED",
+      "TreeSha": "cdf146ffab24ee78c98775e63309c1ca8bc08cde",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r221/r221.trx"
+    },
+    {
+      "RunRef": "r222",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.SelectiveEditorOpenTests --logger trx;LogFileName=r222.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r222 -v:minimal",
+      "Phase": "RED",
+      "TreeSha": "cdf146ffab24ee78c98775e63309c1ca8bc08cde",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r222/r222.trx"
+    },
+    {
+      "RunRef": "r223",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.CustomPropertiesCommandGuardTests --logger trx;LogFileName=r223.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r223 -v:minimal",
+      "Phase": "RED",
+      "TreeSha": "cdf146ffab24ee78c98775e63309c1ca8bc08cde",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/r223/r223.trx"
+    },
+    {
+      "RunRef": "u201",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.UI.Tests.Workspace --logger trx;LogFileName=u201.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/u201 -v:minimal",
+      "Phase": "RED",
+      "TreeSha": "cdf146ffab24ee78c98775e63309c1ca8bc08cde",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/u201/u201.trx"
+    },
+    {
+      "RunRef": "u202",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization --logger trx;LogFileName=u202.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/u202 -v:minimal",
+      "Phase": "RED",
+      "TreeSha": "cdf146ffab24ee78c98775e63309c1ca8bc08cde",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/u202/u202.trx"
+    },
+    {
+      "RunRef": "g1",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --filter FullyQualifiedName~RackCad.Tests.Workspace --logger trx;LogFileName=g1.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g1 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g1/g1.trx"
+    },
+    {
+      "RunRef": "g301",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.CallerOwnedFacadeGuardTests --logger trx;LogFileName=g301.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g301 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g301/g301.trx"
+    },
+    {
+      "RunRef": "g302",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.CallerOwnedTransactionGuardTests --logger trx;LogFileName=g302.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g302 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g302/g302.trx"
+    },
+    {
+      "RunRef": "g303",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.RackSiblingRedrawUnitsTests --logger trx;LogFileName=g303.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g303 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g303/g303.trx"
+    },
+    {
+      "RunRef": "g304",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.DebugFaultInjectionGuardTests --logger trx;LogFileName=g304.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g304 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g304/g304.trx"
+    },
+    {
+      "RunRef": "g305",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.SiblingRedrawSeamGuardTests --logger trx;LogFileName=g305.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g305 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g305/g305.trx"
+    },
+    {
+      "RunRef": "g306",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.RackSiblingMembershipTests --logger trx;LogFileName=g306.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g306 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g306/g306.trx"
+    },
+    {
+      "RunRef": "g307",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.RackSiblingRedrawPlanTests --logger trx;LogFileName=g307.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g307 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g307/g307.trx"
+    },
+    {
+      "RunRef": "g308",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.RackSiblingRedrawRunTests --logger trx;LogFileName=g308.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g308 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g308/g308.trx"
+    },
+    {
+      "RunRef": "g309",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests --logger trx;LogFileName=g309.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g309 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g309/g309.trx"
+    },
+    {
+      "RunRef": "g310",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.PushBackPluginSourceGuardTests --logger trx;LogFileName=g310.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g310 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g310/g310.trx"
+    },
+    {
+      "RunRef": "g311",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.PushBackRoundTripSourceGuardTests --logger trx;LogFileName=g311.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g311 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g311/g311.trx"
+    },
+    {
+      "RunRef": "g312",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.RackProjectionCommandGuardTests --logger trx;LogFileName=g312.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g312 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g312/g312.trx"
+    },
+    {
+      "RunRef": "g313",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.NamespaceFolderGuardTests --logger trx;LogFileName=g313.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g313 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g313/g313.trx"
+    },
+    {
+      "RunRef": "g314",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.CustomPropertiesEnvelopeGuardTests --logger trx;LogFileName=g314.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g314 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g314/g314.trx"
+    },
+    {
+      "RunRef": "g315",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.RackUnitsGuardSourceTests --logger trx;LogFileName=g315.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g315 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g315/g315.trx"
+    },
+    {
+      "RunRef": "g316",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.I55G15Auth15ConsumerTests --logger trx;LogFileName=g316.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g316 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g316/g316.trx"
+    },
+    {
+      "RunRef": "g317",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.SingleScanInsertGuardTests --logger trx;LogFileName=g317.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g317 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g317/g317.trx"
+    },
+    {
+      "RunRef": "g318",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.RackViewBatchDriverGuardTests --logger trx;LogFileName=g318.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g318 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g318/g318.trx"
+    },
+    {
+      "RunRef": "g319",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.G16FirstViewCorrectiveTests --logger trx;LogFileName=g319.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g319 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g319/g319.trx"
+    },
+    {
+      "RunRef": "g320",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.RackSiblingCustomPropertiesGateTests --logger trx;LogFileName=g320.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g320 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g320/g320.trx"
+    },
+    {
+      "RunRef": "g321",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.RackEnvelopeIdProbeTests --logger trx;LogFileName=g321.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g321 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g321/g321.trx"
+    },
+    {
+      "RunRef": "g322",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.SelectiveEditorOpenTests --logger trx;LogFileName=g322.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g322 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g322/g322.trx"
+    },
+    {
+      "RunRef": "g323",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.Tests.CustomPropertiesCommandGuardTests --logger trx;LogFileName=g323.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g323 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/g323/g323.trx"
+    },
+    {
+      "RunRef": "v301",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.UI.Tests.Workspace --logger trx;LogFileName=v301.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/v301 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/v301/v301.trx"
+    },
+    {
+      "RunRef": "v302",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --no-build --filter FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization --logger trx;LogFileName=v302.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/v302 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/v302/v302.trx"
+    },
+    {
+      "RunRef": "h301",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --filter FullyQualifiedName~RackCad.Tests.Workspace --logger trx;LogFileName=h301.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h301 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h301/h301.trx"
+    },
+    {
+      "RunRef": "h302",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --filter FullyQualifiedName~RackCad.Tests.CallerOwnedFacadeGuardTests --logger trx;LogFileName=h302.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h302 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h302/h302.trx"
+    },
+    {
+      "RunRef": "h303",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --filter FullyQualifiedName~RackCad.Tests.CallerOwnedTransactionGuardTests --logger trx;LogFileName=h303.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h303 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h303/h303.trx"
+    },
+    {
+      "RunRef": "h304",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --filter FullyQualifiedName~RackCad.Tests.RackSiblingRedrawUnitsTests --logger trx;LogFileName=h304.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h304 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h304/h304.trx"
+    },
+    {
+      "RunRef": "h305",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --filter FullyQualifiedName~RackCad.Tests.DebugFaultInjectionGuardTests --logger trx;LogFileName=h305.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h305 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h305/h305.trx"
+    },
+    {
+      "RunRef": "h306",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --filter FullyQualifiedName~RackCad.Tests.SiblingRedrawSeamGuardTests --logger trx;LogFileName=h306.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h306 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h306/h306.trx"
+    },
+    {
+      "RunRef": "h307",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --filter FullyQualifiedName~RackCad.Tests.RackSiblingMembershipTests --logger trx;LogFileName=h307.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h307 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h307/h307.trx"
+    },
+    {
+      "RunRef": "h308",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --filter FullyQualifiedName~RackCad.Tests.RackSiblingRedrawPlanTests --logger trx;LogFileName=h308.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h308 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h308/h308.trx"
+    },
+    {
+      "RunRef": "h309",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --filter FullyQualifiedName~RackCad.Tests.RackSiblingRedrawRunTests --logger trx;LogFileName=h309.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h309 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h309/h309.trx"
+    },
+    {
+      "RunRef": "h310",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --filter FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterizationPluginGuardTests --logger trx;LogFileName=h310.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h310 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h310/h310.trx"
+    },
+    {
+      "RunRef": "h311",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --filter FullyQualifiedName~RackCad.Tests.PushBackPluginSourceGuardTests --logger trx;LogFileName=h311.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h311 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h311/h311.trx"
+    },
+    {
+      "RunRef": "h312",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --filter FullyQualifiedName~RackCad.Tests.PushBackRoundTripSourceGuardTests --logger trx;LogFileName=h312.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h312 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h312/h312.trx"
+    },
+    {
+      "RunRef": "h313",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --filter FullyQualifiedName~RackCad.Tests.RackProjectionCommandGuardTests --logger trx;LogFileName=h313.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h313 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h313/h313.trx"
+    },
+    {
+      "RunRef": "h314",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --filter FullyQualifiedName~RackCad.Tests.NamespaceFolderGuardTests --logger trx;LogFileName=h314.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h314 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h314/h314.trx"
+    },
+    {
+      "RunRef": "h315",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --filter FullyQualifiedName~RackCad.Tests.CustomPropertiesEnvelopeGuardTests --logger trx;LogFileName=h315.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h315 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h315/h315.trx"
+    },
+    {
+      "RunRef": "h316",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --filter FullyQualifiedName~RackCad.Tests.RackUnitsGuardSourceTests --logger trx;LogFileName=h316.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h316 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h316/h316.trx"
+    },
+    {
+      "RunRef": "h317",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --filter FullyQualifiedName~RackCad.Tests.I55G15Auth15ConsumerTests --logger trx;LogFileName=h317.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h317 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h317/h317.trx"
+    },
+    {
+      "RunRef": "h318",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --filter FullyQualifiedName~RackCad.Tests.SingleScanInsertGuardTests --logger trx;LogFileName=h318.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h318 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h318/h318.trx"
+    },
+    {
+      "RunRef": "h319",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --filter FullyQualifiedName~RackCad.Tests.RackViewBatchDriverGuardTests --logger trx;LogFileName=h319.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h319 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h319/h319.trx"
+    },
+    {
+      "RunRef": "h320",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --filter FullyQualifiedName~RackCad.Tests.G16FirstViewCorrectiveTests --logger trx;LogFileName=h320.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h320 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h320/h320.trx"
+    },
+    {
+      "RunRef": "h321",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --filter FullyQualifiedName~RackCad.Tests.RackSiblingCustomPropertiesGateTests --logger trx;LogFileName=h321.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h321 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h321/h321.trx"
+    },
+    {
+      "RunRef": "h322",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --filter FullyQualifiedName~RackCad.Tests.RackEnvelopeIdProbeTests --logger trx;LogFileName=h322.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h322 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h322/h322.trx"
+    },
+    {
+      "RunRef": "h323",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --filter FullyQualifiedName~RackCad.Tests.SelectiveEditorOpenTests --logger trx;LogFileName=h323.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h323 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h323/h323.trx"
+    },
+    {
+      "RunRef": "h324",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --filter FullyQualifiedName~RackCad.Tests.CustomPropertiesCommandGuardTests --logger trx;LogFileName=h324.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h324 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/h324/h324.trx"
+    },
+    {
+      "RunRef": "w301",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Release --no-build --filter FullyQualifiedName~RackCad.UI.Tests.Workspace --logger trx;LogFileName=w301.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/w301 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/w301/w301.trx"
+    },
+    {
+      "RunRef": "w302",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Release --no-build --filter FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization --logger trx;LogFileName=w302.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/w302 -v:minimal",
+      "Phase": "GREEN",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/w302/w302.trx"
+    },
+    {
+      "RunRef": "gf",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --logger trx;LogFileName=gf.trx --results-directory artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/gf -v:minimal",
+      "Phase": "RELEVANT",
+      "TreeSha": "bcc39e84a168750e42129f884c195cf73db979d7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4C1-HOST/2/R20261115T165352Z-3e8e/tests/gf/gf.trx"
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "r1",
+      "Selected": 3421,
+      "Passed": 3361,
+      "Failed": 60,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.TheAdapterGuardTripsOnEachViolationInjectedIntoItsRealText(name: \"a Wait\", injected: \"task.Wait();\")",
+        "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.TheAdapterGuardTripsOnEachViolationInjectedIntoItsRealText(name: \"the update of T4B\", injected: \"draft.CompleteApply(outcome);\")",
+        "RackCad.Tests.WorkspaceEditIntentGuardTests.TheFlightTextGuardTripsWhenTheConstantOfTheFlightIsReplacedByALiteral(name: \"TryConfirmPilotBase\")",
+        "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.TheAdapterGuardTripsOnEachViolationInjectedIntoItsRealText(name: \"a transaction\", injected: \"var t = database.TransactionManager.StartTransacti\"···)",
+        "RackCad.Tests.WorkspacePilotEditGuardTests.TheHostGuardAllowsWhatTheNextTaskWouldAddAnUpdateOperationThatWrites",
+        "RackCad.Tests.WorkspacePilotEditGuardTests.TheFlightGuardTripsWhenTheFlightIsCheckedBeforeTheGateThatAuthorizesInTheThreeReconciliations(operation: \"TryDiscardAndReloadPilotEdit\")",
+        "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.M04TheSentenceOfTheHostThatDidNotRunIsTheWholeTextInTheRunnerAndInTheCoreAndTheExceptionGoesToTheLog",
+        "RackCad.Tests.WorkspacePilotEditGuardTests.TheFlightGuardTripsWhenTheCheckOfTheFlightIsMissingOrComesBeforeTheAuthorizationAndTheMarkOfTheReads(operation: \"TryDiscardAndReloadPilotEdit\")",
+        "RackCad.Tests.WorkspaceEditIntentGuardTests.TheFlightTextGuardTripsOnASecondAnswerOfTheFlightWithALiteralInEachOfTheSevenBodies(name: \"DiscardDocument\", injected: \"if (_tickets.ContainsKey(origin.Origin)) return Ed\"···)",
+        "RackCad.Tests.WorkspacePilotUpdateRequestTests.ARequestOfASessionThatIsNoLongerTheActiveOneIsRejectedByItsAuthorizationAndNeverWaitsForTheFlightOfThreeOperations",
+        "RackCad.Tests.WorkspaceEditIntentGuardTests.TheFlightTextGuardTripsOnASecondAnswerOfTheFlightWithALiteralInEachOfTheSevenBodies(name: \"TryConfirmPilotBase\", injected: \"if (UpdateInFlightForRequest(request)) return Edit\"···)",
+        "RackCad.Tests.WorkspacePilotEditGuardTests.TheFlightGuardTripsWhenTheFlightIsCheckedBeforeTheGateThatAuthorizesInTheThreeReconciliations(operation: \"TryConfirmPilotBase\")",
+        "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.TheAdapterGuardTripsOnEachViolationInjectedIntoItsRealText(name: \"the workspace\", injected: \"using RackCad.Application.Workspace;\")",
+        "RackCad.Tests.WorkspaceEditIntentGuardTests.TheFlightTextGuardTripsOnASecondAnswerOfTheFlightWithALiteralInEachOfTheSevenBodies(name: \"SetPendingText\", injected: \"if (UpdateInFlightFor(origin.Origin, rackId)) retu\"···)",
+        "RackCad.Tests.WorkspaceEditIntentGuardTests.TheFlightTextGuardTripsOnASecondAnswerOfTheFlightWithALiteralInEachOfTheSevenBodies(name: \"TryDiscardAndReloadPilotEdit\", injected: \"if (UpdateInFlightForRequest(request)) return Edit\"···)",
+        "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.TheAdapterGuardTripsOnEachViolationInjectedIntoItsRealText(name: \"a second lock\", injected: \"var l = document.LockDocument();\")",
+        "RackCad.Tests.WorkspacePilotEditGuardTests.TheFlightGuardTripsWhenTheCheckOfTheFlightIsMissingOrComesBeforeTheAuthorizationAndTheMarkOfTheReads(operation: \"TryConfirmPilotBase\")",
+        "RackCad.Tests.WorkspaceEditIntentGuardTests.TheFlightTextGuardTripsOnASecondAnswerOfTheFlightWithALiteralInEachOfTheSevenBodies(name: \"TryKeepPilotEdit\", injected: \"if (UpdateInFlightForRequest(request)) return Edit\"···)",
+        "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.TheAdapterGuardTripsOnEachViolationInjectedIntoItsRealText(name: \"a second call of the context\", injected: \"AcApplication.DocumentManager.ExecuteInCommandCont\"···)",
+        "RackCad.Tests.WorkspaceEditIntentGuardTests.TheFlightTextGuardTripsWhenTheConstantOfTheFlightIsReplacedByALiteral(name: \"TryDiscardAndReloadPilotEdit\")",
+        "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.TheAdapterGuardTripsOnEachViolationInjectedIntoItsRealText(name: \"a second OnCompleted\", injected: \"var x = result.OnCompleted(() => { });\")",
+        "RackCad.Tests.WorkspaceEditIntentGuardTests.TheFlightTextGuardTripsWhenTheConstantOfTheFlightIsReplacedByALiteral(name: \"TryKeepPilotEdit\")",
+        "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.TheAdapterGuardTripsOnEachViolationInjectedIntoItsRealText(name: \"a Result\", injected: \"var r = task.Result;\")",
+        "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.TheAdapterGuardTripsOnEachViolationInjectedIntoItsRealText(name: \"a ContinueWith\", injected: \"task.ContinueWith(t => { });\")",
+        "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.TheAdapterGuardTripsOnEachViolationInjectedIntoItsRealText(name: \"a second Post\", injected: \"context.Post(null, null);\")",
+        "RackCad.Tests.WorkspacePilotEditGuardTests.TheReadGuardTripsWithoutTheFinallyWithoutTheWaitingAnswerOrWithAnotherRead(from: \"if (_pilotReadInProgress) return EditIntentOutcome\"···, to: \"_pilotReadInProgress = true;\\r\\n            try\\r\\\"···)",
+        "RackCad.Tests.WorkspaceEditIntentGuardTests.TheFlightTextGuardTripsOnASecondAnswerOfTheFlightWithALiteralInEachOfTheSevenBodies(name: \"CommitField\", injected: \"if (UpdateInFlightFor(origin.Origin, rackId)) retu\"···)",
+        "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.TheAdapterGuardTripsOnEachViolationInjectedIntoItsRealText(name: \"a second writer\", injected: \"var w = new RackPilotUpdateWriter(document);\")",
+        "RackCad.Tests.WorkspacePilotUpdateRequestTests.ASecondTerminalCallOnATicketThatAlreadyEndedDoesNothingAndTheFirstOutcomeIsKept",
+        "RackCad.Tests.WorkspacePilotUpdateRequestTests.AComparerOrAnythingThatFailsWhileLookingForADraftBeingAppliedAnswersFalseAndIsLoggedSoTheDiscardIsNeverStuckInBusy",
+        "RackCad.Tests.WorkspaceEditIntentGuardTests.TheSevenAnswersOfTheFlightOfTheFiveOperationsAndTheTwoDiscardsAreTheConstantOfTheHostTextsAndNeverALiteral",
+        "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.M05TheCloseGuardTripsWhenTheAnswerOfANotAcceptedCloseOrTheNoteOfTheEditOrTheMarkOfKnownCleanLeaveTheTryOfTheAnswer",
+        "RackCad.Tests.WorkspacePilotEditGuardTests.TheFlightGuardTripsOnABodyThatChecksTheFlightWithNoAuthorizationAtAll",
+        "RackCad.Tests.WorkspacePilotUpdateRequestTests.ATicketThatEndedWhoseCompletionNeverArrivesExpiresWithTheNextForeignCommandAndFreesTheRequestAndTheDiscardsAndKeepsTheOutcomeOnce",
+        "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.TheAdapterHasItsExactCountsAndNoFieldButTheDocumentOfTheTargetAndIsTotalByText",
+        "RackCad.Tests.WorkspacePilotUpdateHostRunTests.AnOwnMutationThatThrowsIsAFailedBeforeTheUpdateAndTheLockIsStillReleased",
+        "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.TheAdapterGuardTripsOnEachViolationInjectedIntoItsRealText(name: \"a second capture of the scheduler\", injected: \"var c = SynchronizationContext.Current;\")",
+        "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.TheAdapterGuardTripsOnEachViolationInjectedIntoItsRealText(name: \"a Task.Factory.StartNew\", injected: \"Task.Factory.StartNew(() => { });\")",
+        "RackCad.Tests.WorkspacePilotEditGuardTests.TheFlightGuardTripsWhenTheCheckOfTheFlightIsMissingOrComesBeforeTheAuthorizationAndTheMarkOfTheReads(operation: \"TryKeepPilotEdit\")",
+        "RackCad.Tests.WorkspacePilotEditGuardTests.TheHostImplementsThePortExplicitlyAndNeverReadsOutsideTheThreeReadsAndChangesOnlyThroughNotePilotEdit",
+        "RackCad.Tests.WorkspacePilotUpdateHostRunTests.ALockThatIsNullIsAFailedWithTheLockPrefixAndNothingElseRunsAndThereIsNothingToRelease",
+        "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.TheAdapterGuardTripsOnEachViolationInjectedIntoItsRealText(name: \"a write API\", injected: \"SystemBlockWriter.ApplyRegen(database);\")",
+        "RackCad.Tests.WorkspaceEditIntentGuardTests.TheFlightTextGuardTripsOnASecondAnswerOfTheFlightWithALiteralInEachOfTheSevenBodies(name: \"DiscardRack\", injected: \"if (UpdateInFlightFor(session, rackId)) return Edi\"···)",
+        "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.TheAdapterGuardTripsWhenTheTargetOfTheRunCarriesATextOfItsOwnOrDoesNotAnswerTheReasonOfTheRun",
+        "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.M04TheGuardTripsOnTheSentenceUsedAsAPrefixInTheRunnerAndInTheCoreAndOnALiteralSpaceInTheRunOfTheCore",
+        "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.TheAdapterGuardTripsOnEachViolationInjectedIntoItsRealText(name: \"a thread\", injected: \"var t = new Thread(() => { });\")",
+        "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.TheAdapterGuardTripsOnEachViolationInjectedIntoItsRealText(name: \"a static field\", injected: \"private static int _shared;\")",
+        "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.TheAdapterGuardTripsOnEachViolationInjectedIntoItsRealText(name: \"a field\", injected: \"private int _count;\")",
+        "RackCad.Tests.WorkspacePilotEditGuardTests.TheFlightGuardTripsWhenTheFlightIsCheckedBeforeTheGateThatAuthorizesInTheThreeReconciliations(operation: \"TryKeepPilotEdit\")",
+        "RackCad.Tests.WorkspacePilotUpdateRequestTests.AHostFailureAfterTheAdmissionAlwaysRemovesTheTicketClosesTheOwnMutationIfItWasOpenedAndALaterRequestIsAccepted(failure: \"CreateWriter\")",
+        "RackCad.Tests.WorkspacePilotUpdateRequestTests.AnExecutorThatThrowsAfterTheCallbackBeganIsAnAcceptedStartValueAndTheOutcomeIsTheOnlyChannel",
+        "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.TheAdapterGuardTripsWhenTheContinuationIsNotOnTheBranchOfAnIsCompletedThatIsFalseOrThePostIsNotOfTheCapturedContext",
+        "RackCad.Tests.WorkspacePilotUpdateHostRunTests.AWriterThatCannotBeCreatedIsAFailedAndRetireIsNeverCalledOnANullWriter",
+        "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.TheAdapterGuardTripsOnEachViolationInjectedIntoItsRealText(name: \"a Commit\", injected: \"transaction.Commit();\")",
+        "RackCad.Tests.WorkspacePilotUpdateRequestTests.AForeignCommandDuringTheUpdateDoesNotExpireTheTicketDuringTheRunAndAfterTheRunTheTicketIsFreedByTheNextCheckWithoutASecondOutcome",
+        "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.TheAdapterGuardTripsOnEachViolationInjectedIntoItsRealText(name: \"a second read of IsCompleted\", injected: \"var c = result.IsCompleted;\")",
+        "RackCad.Tests.WorkspacePilotUpdateGuardTests.TheWriterDoesNotKeepTheAliasOfTheApplicationThatOnlyTheActiveDocumentNeeded",
+        "RackCad.Tests.WorkspacePilotUpdateRequestTests.AHostFailureAfterTheAdmissionAlwaysRemovesTheTicketClosesTheOwnMutationIfItWasOpenedAndALaterRequestIsAccepted(failure: \"Begin\")",
+        "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.M01TheCloseThatWasNotAcceptedIsNeverASuccessAndTheAnswerIsBuiltInATryWithAFallback",
+        "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.TheAdapterGuardTripsOnEachViolationInjectedIntoItsRealText(name: \"a GetResult outside a try\", injected: \"result.GetResult();\")"
+      ]
+    },
+    {
+      "RunRef": "r201",
+      "Selected": 81,
+      "Passed": 81,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r202",
+      "Selected": 15,
+      "Passed": 15,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r203",
+      "Selected": 2,
+      "Passed": 2,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r204",
+      "Selected": 1,
+      "Passed": 1,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r205",
+      "Selected": 2,
+      "Passed": 2,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r206",
+      "Selected": 12,
+      "Passed": 12,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r207",
+      "Selected": 2,
+      "Passed": 2,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r208",
+      "Selected": 6,
+      "Passed": 6,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r209",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r210",
+      "Selected": 11,
+      "Passed": 11,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r211",
+      "Selected": 24,
+      "Passed": 24,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r212",
+      "Selected": 34,
+      "Passed": 34,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r213",
+      "Selected": 7,
+      "Passed": 7,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r214",
+      "Selected": 22,
+      "Passed": 22,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r215",
+      "Selected": 18,
+      "Passed": 18,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r216",
+      "Selected": 5,
+      "Passed": 5,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r217",
+      "Selected": 5,
+      "Passed": 5,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r218",
+      "Selected": 4,
+      "Passed": 4,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r219",
+      "Selected": 61,
+      "Passed": 61,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r220",
+      "Selected": 2,
+      "Passed": 2,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r221",
+      "Selected": 5,
+      "Passed": 5,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r222",
+      "Selected": 33,
+      "Passed": 33,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r223",
+      "Selected": 48,
+      "Passed": 48,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "u201",
+      "Selected": 601,
+      "Passed": 601,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "u202",
+      "Selected": 55,
+      "Passed": 55,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g1",
+      "Selected": 3421,
+      "Passed": 3421,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g301",
+      "Selected": 81,
+      "Passed": 81,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g302",
+      "Selected": 15,
+      "Passed": 15,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g303",
+      "Selected": 2,
+      "Passed": 2,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g304",
+      "Selected": 1,
+      "Passed": 1,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g305",
+      "Selected": 2,
+      "Passed": 2,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g306",
+      "Selected": 12,
+      "Passed": 12,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g307",
+      "Selected": 2,
+      "Passed": 2,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g308",
+      "Selected": 6,
+      "Passed": 6,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g309",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g310",
+      "Selected": 11,
+      "Passed": 11,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g311",
+      "Selected": 24,
+      "Passed": 24,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g312",
+      "Selected": 34,
+      "Passed": 34,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g313",
+      "Selected": 7,
+      "Passed": 7,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g314",
+      "Selected": 22,
+      "Passed": 22,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g315",
+      "Selected": 18,
+      "Passed": 18,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g316",
+      "Selected": 5,
+      "Passed": 5,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g317",
+      "Selected": 5,
+      "Passed": 5,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g318",
+      "Selected": 4,
+      "Passed": 4,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g319",
+      "Selected": 61,
+      "Passed": 61,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g320",
+      "Selected": 2,
+      "Passed": 2,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g321",
+      "Selected": 5,
+      "Passed": 5,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g322",
+      "Selected": 33,
+      "Passed": 33,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g323",
+      "Selected": 48,
+      "Passed": 48,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "v301",
+      "Selected": 601,
+      "Passed": 601,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "v302",
+      "Selected": 55,
+      "Passed": 55,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "h301",
+      "Selected": 3421,
+      "Passed": 3421,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "h302",
+      "Selected": 81,
+      "Passed": 81,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "h303",
+      "Selected": 15,
+      "Passed": 15,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "h304",
+      "Selected": 2,
+      "Passed": 2,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "h305",
+      "Selected": 1,
+      "Passed": 1,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "h306",
+      "Selected": 2,
+      "Passed": 2,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "h307",
+      "Selected": 12,
+      "Passed": 12,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "h308",
+      "Selected": 2,
+      "Passed": 2,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "h309",
+      "Selected": 6,
+      "Passed": 6,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "h310",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "h311",
+      "Selected": 11,
+      "Passed": 11,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "h312",
+      "Selected": 24,
+      "Passed": 24,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "h313",
+      "Selected": 34,
+      "Passed": 34,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "h314",
+      "Selected": 7,
+      "Passed": 7,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "h315",
+      "Selected": 22,
+      "Passed": 22,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "h316",
+      "Selected": 18,
+      "Passed": 18,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "h317",
+      "Selected": 5,
+      "Passed": 5,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "h318",
+      "Selected": 5,
+      "Passed": 5,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "h319",
+      "Selected": 4,
+      "Passed": 4,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "h320",
+      "Selected": 61,
+      "Passed": 61,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "h321",
+      "Selected": 2,
+      "Passed": 2,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "h322",
+      "Selected": 5,
+      "Passed": 5,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "h323",
+      "Selected": 33,
+      "Passed": 33,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "h324",
+      "Selected": 48,
+      "Passed": 48,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "w301",
+      "Selected": 601,
+      "Passed": 601,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "w302",
+      "Selected": 55,
+      "Passed": 55,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "gf",
+      "Selected": 19002,
+      "Passed": 19002,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    }
+  ],
+  "Evidence": [
+    "ALCANCE: FilesChanged = 15 rutas (4 de src/ y 11 de tests/), todas dentro de las 30 del AllowedWriteScope y ninguna bajo ForbiddenWriteScope; git diff --name-only RedSha CurrentSha -- tests esta vacio (el GREEN no toca tests/); ninguna ruta de la clausura de T1B, de las fachadas, de KindHandlers/ ni de los *Commands*.cs. Ningun cambio fuera de las lineas declaradas (F4T4C-C14): PushBackPilotUpdateRun.cs y UpdateGate sin cambios; el escritor solo pierde el using AcApplication; TryUpdatePilot solo en su tramo final (M-05); las tres lecturas solo en el lugar del vuelo (M-01).",
+    "CADENA: ChainBaseSha 44eafbc18c73bab333085d668e84c19ab15fb208, ChainRedSha 8e57061e62aa847eecab0b9653c8f9f008c434a2, BaseSha 12c248b039674b5e8589f10f51e6dd1150f99b12. RED de la correccion 1268bb9d (arbol cdf146ff), ChainRedFiles de este RED = 11 rutas de tests/ (WorkspaceBridgeFacadeSourceGuardTests, WorkspaceEditIntentGuardTests, WorkspaceEditIntentHostTests, WorkspaceOwnMutationTests, WorkspacePilotEditGuardTests, WorkspacePilotUpdateGuardTests, WorkspacePilotUpdateHostDouble, WorkspacePilotUpdateHostRunTests, WorkspacePilotUpdateIntegrationGuardTests, WorkspacePilotUpdateRequestTests, WorkspacePilotUpdateRunTests). GREEN b2631084 (arbol bcc39e84) = HEAD = remoto.",
+    "RED: sobre el producto de 271a045c, filtro Core Workspace = 3421 seleccionadas, 3361 en verde y 60 en rojo (r1, ExpectRed true); los 60 fallos son por asercion (Assert.Equal/Empty/NotEqual/Matches/True con su mensaje), ninguno por una excepcion del producto. Las 23 clases de regresion de Core (r201 a r223) y los dos filtros de UI (u201 y u202) en verde (ExpectRed false), con sus conteos iguales a los de la base.",
+    "RED, lo que falla por asercion: las dos pruebas nuevas de B-01 (ATicketThatEndedWhoseCompletionNeverArrives..., Busy en lugar de Discarded; AForeignCommandDuringTheUpdate..., Busy en lugar de Accepted); la guarda corregida de M-01 (TheHostImplementsThePortExplicitly... y sus negativas nuevas, mas ARequestOfASessionThatIsNoLongerTheActiveOne..., Waiting en lugar de Rejected); las pruebas de M-06 (a) ASecondTerminalCallOnATicketThatAlreadyEnded..., (b) AnExecutorThatThrowsAfterTheCallbackBegan..., (c) AComparerOrAnythingThatFailsWhileLooking... y (d) ALockThatIsNull... (HR); ademas M-03 (11 pruebas), M-04 (HR, RQ, IG y las del adaptador), M-05 (las dos guardas del try de la respuesta) y M-10 (TheWriterDoesNotKeepTheAlias...).",
+    "RED, pruebas nuevas o corregidas que ya pasan y por que: ACarrierOfTheEditIntentionThatIsNotInTheCensusTrips... (M-02, guarda sobre tipos que ya estan censados, con negativas sobre el censo); G1TripsOnANewFileOfThePlugin... y los negativos nuevos de G-10 (I-01, la regla nueva es codigo de prueba y el producto ya la cumple); G4TripsOnAGroupOfMethods... (M-07); AnExecutorThatThrowsBeforeTheCallbackBegan... (M-06 b, el caso contrario que ya era Failed); las dos pruebas renombradas (TheCorePublicSurfaceIsExactlyTheDeclaredOneOfT2AndOfTheLaterTasks y TheDecoratorAnswersWaitingInsideANoticeForTheSixReadsAndTheRequestOfTheUpdateAndDelegatesTheRestAsItIs, M-10); la restauracion del comentario de WorkspacePilotUpdateRunTests.cs; las correcciones de xUnit2029 (M-11); y las pruebas existentes cuyo cuerpo cambio sin cambiar de resultado.",
+    "GREEN: Core Workspace Debug 3421/3421 (g1) y Release 3421/3421 (h301); las 23 clases de regresion en Debug (g301 a g323) y en Release (h302 a h324), todas con su conteo igual o mayor al minimo; suite completa de Core en Debug 19002/19002 (gf, RELEVANT; la linea base de la CI de 271a045c era 18966, +36 pruebas nuevas); UI solo sus dos filtros: Workspace 601/601 y PushBackClassicCharacterization 55/55 en Debug (v301, v302) y en Release (w301, w302). Nunca se corrio la suite completa de UI en local (INV-F4T4C-18).",
+    "BUILDS: (base, antes de editar) b0: Plugin Release --no-incremental -o artifacts = 0 errores y 2 avisos MSB3277; Plugin Debug -p:UseAutoCADNuGetReferences=true a una carpeta temporal fuera del repo (creada y borrada por mi) = 0 errores y 0 avisos. (GREEN) g2: Plugin Release = 0 errores y los mismos 2 MSB3277, ningun CS/NU/NETSDK; Plugin Debug temporal = 0 errores y 0 avisos. gr: proyectos de prueba en Release --no-incremental: Core 66 avisos y UI 14, todos xUnit y todos ya presentes antes (los tres xUnit2029 de los archivos nuevos del intento 1 se corrigieron: OwnMutation, HostRun e IntegrationGuard), ningun CS/NU/NETSDK; las dos herramientas de tools/ en Release = 0 avisos.",
+    "CORRIDAS LOCALES (M-09), todas declaradas: antes del RED, sin pruebas: b0 (los dos builds del Plugin en la base) y r0 (build Debug de los dos proyectos de prueba con el RED escrito). RED: r1 (Core Workspace), r201 a r223 (regresion Core) y u201, u202 (UI). GREEN: g1, g301 a g323, v301, v302 (Debug), gf (suite completa Core Debug), h301 a h324 y w301, w302 (Release), mas g2 y gr (builds). Las corridas de RED y de GREEN se hicieron sobre el arbol de trabajo cuyo contenido es exactamente el del commit que despues se creo (sin ediciones entre la corrida y el commit; el arbol quedo limpio tras cada commit). Ningun proceso en segundo plano propio; la herramienta de la sesion paso a segundo plano, por su limite de 180 s, tres ordenes largas que yo lance en primer plano (las dos tandas de filtros y la suite completa), y las espere hasta su fin.",
+    "HALLAZGO B-01 (bloqueante): InExecute se retira en el finally de Execute con Finished. Pruebas en WorkspacePilotUpdateRequestTests.cs: ATicketThatEndedWhoseCompletionNeverArrivesExpiresWithTheNextForeignCommand... (modo diferido: antes del acotamiento, Busy en la peticion y en los dos descartes; tras un comando ajeno, la peticion se acepta, DiscardRack y DiscardDocument se sirven y TakeUpdateProgress devuelve el resultado una sola vez) y AForeignCommandDuringTheUpdateDoesNotExpireTheTicketDuringTheRun... (el billete sigue en vuelo durante Execute y, tras Execute, el billete se libera en la comprobacion siguiente sin un segundo resultado). Resultado en el RED: las dos fallan por asercion; en GREEN pasan.",
+    "HALLAZGO I-01 (importante): G-1 es un censo de todo src/ (un archivo que nombra uno de los tres PushBack*DrawService y llama .PrepareRedraw( o .RedrawInTransaction( solo puede ser uno de los tres servicios de src/RackCad.Plugin/Systems/PushBack/ o RackPilotUpdateWriter.cs, que ademas conserva la posicion dentro de PrepareUnits y WriteUnit) y G10 no excluye carpetas: .RequestUpdate( solo en los dos reenvios (WorkspaceController.cs, WorkspacePilotSupport.cs) y, con cuenta 1 medida y por archivo exacto, en RackCantileverWindow, RackDynamicSystemWindow, RackPushBackSystemWindow y RackSelectiveWindow; el gesto del VM del campo queda admitido para F4-T4C2. Negativas: archivo nuevo del Plugin en tres carpetas, archivos existentes que nombran las fachadas, carpetas antes excluidas, una cuenta distinta de uno, una ventana que pierde su RequestUpdate. Pasan ya en el RED (el producto cumplia la regla).",
+    "HALLAZGO M-01: la comprobacion del vuelo pasa a TryConfirmPilotBase, TryKeepPilotEdit y TryDiscardAndReloadPilotEdit, despues de PassGate; la guarda (FlightBodies, FirstAuthorization) exige Authorize o PassGate antes del vuelo y la marca de las lecturas donde el cuerpo la tiene, con negativas (el vuelo antes de la compuerta en las tres, un cuerpo sin autorizacion, el vuelo ausente, el vuelo temprano) y una prueba de comportamiento (una sesion que ya no es la activa recibe Rejected y no Waiting). Falla en el RED y pasa en GREEN.",
+    "HALLAZGOS M-02 y M-03: M-02, el censo de portadores se deriva del ensamblado (nombres Edit(Intent|Check|Confirm|Update)(Request|Witness|Outcome|Start|Progress)) y cada uno debe estar en el censo, con negativas (EditUpdateProgress, EditUpdateStart y EditConfirmOutcome sin censar); M-03, FlightTextBodies cubre los siete Busy y Waiting del vuelo (SetPendingText, CommitField, las tres reconciliaciones y los dos descartes), uno por cuerpo, con la constante de PushBackPilotHostTexts y ninguna cadena literal, con una negativa por cuerpo (segunda respuesta con literal) y otra (la constante sustituida por un literal).",
+    "HALLAZGOS M-04 a M-07: M-04, HostNotRunReason entero (pruebas HR de Begin y CreateWriter, prueba RQ AHostFailureAfterTheAdmission..., guarda NotRunPrefixViolations con negativas, y la guarda del adaptador que exige que TryOpenTarget no lleve literales y devuelva DocumentMismatchReason). M-05, CloseAnswerViolations exige la respuesta del cierre no aceptado, NotePilotEdit y _knownClean.Remove dentro del try y el respaldo con UpdateNotClosedReason, con la prueba M05TheCloseGuardTrips.... M-06, cuatro pruebas (RQ ASecondTerminalCall..., RQ AnExecutorThatThrowsAfterTheCallbackBegan... y su contraria, RQ AComparerOrAnythingThatFails... por texto, HR ALockThatIsNull...). M-07, G-4 cuenta \\bTryUpdatePilot\\b fuera de las cadenas (dos apariciones en el nucleo y ninguna fuera) con la negativa del grupo de metodos, y la guarda del adaptador ancla OnCompleted en la rama de IsCompleted falso y Post a context con cuatro negativas.",
+    "HALLAZGOS M-08 a M-11: M-08, ver la lista de cambios de guarda; M-09, ver las corridas locales; M-10, Started se usa, WRITER pierde el using (guarda TheWriterDoesNotKeepTheAlias...), el comentario de TheSystemIsRebuiltFromTheDesignTextOfAMemberOfThePlan se restauro y se renombraron TheCoreAddsExactlyTwoPublicMembersToWhatT2Left (ahora TheCorePublicSurfaceIsExactlyTheDeclaredOneOfT2AndOfTheLaterTasks) y TheDecoratorAnswersWaitingInsideANoticeForTheThreeReads... (ahora ...ForTheSixReadsAndTheRequestOfTheUpdate...); M-11, sin avisos xUnit2029 nuevos ni ningun otro (66 Core y 14 UI, los de la base).",
+    "CAMBIOS DE GUARDA frente a D-T4C-20 (todos en filas [1], ninguno relaja una guarda): fila 4 (WorkspaceEditIntentHostTests.cs): censo de portadores derivado del ensamblado y su negativa (M-02). Fila 5 (WorkspacePilotEditGuardTests.cs): FlightBodies y FirstAuthorization (el vuelo despues de Authorize o PassGate, las tres reconciliaciones leidas en el cuerpo que pasa la compuerta), la teoria TheFlightGuardTrips... con los nombres nuevos, dos negativas nuevas, y el InlineData de TheReadGuardTripsWithoutTheFinally... adaptado al cuerpo nuevo de TryKeepMine (M-08 (1), que el intento 1 no declaro y que ahora se adapta otra vez). Fila 6 (WorkspacePilotEditGuardTests.cs): renombre de la prueba del decorador (M-10). Fila 11 (WorkspaceEditIntentGuardTests.cs): FlightTextBodies, FlightTextViolations y tres pruebas (M-03). Fila 13 (WorkspacePilotUpdateGuardTests.cs): la prueba nueva del using del alias; la expresion de WriterProhibitionViolations ampliada con static y MdiActiveDocument (lineas 205 a 207) sigue como la dejo el intento 1 y se declara aqui (M-08 (3)), endurece y no relaja. Fila 14 (WorkspaceBridgeFacadeSourceGuardTests.cs): renombre de TheCoreAddsExactly... (M-10). Fila 15 (WorkspaceLifecycleGuardTests.cs): sin cambio nuevo; se declara que ForeignCommandStartsOf esta en 'las consultas no olvidan' desde el intento 1 (linea 223, M-08 (2)), coherente con D-T4C-09 y con la fila 15. Fila 19 (WorkspacePilotUpdateIntegrationGuardTests.cs): G-1 (censo de todo src/), G-4 (identificador completo fuera de las cadenas), G-10 (sin carpetas excluidas y cuatro ventanas por archivo exacto), la guarda del adaptador (OnCompleted, Post, TryOpenTarget), CloseAnswerViolations (M-05), NotRunPrefixViolations (M-04) y las correcciones xUnit2029 de WorkspaceOwnMutationTests.cs, WorkspacePilotUpdateHostRunTests.cs y de la propia IG. Los dobles de pruebas (WorkspacePilotUpdateHostDouble.cs) ganan NullLock y ThrowAfterRun. No se toca ninguna guarda de las filas [2], de las guardas de la lista prohibida ni D-T4C-20 (a).",
+    "INV-F4T4C-01: TryUpdatePilot sigue con un solo llamador (el Execute de PilotUpdateRun, ahora con Execute que no actua sobre un billete terminado) y G-4 cuenta el identificador completo (2 apariciones en el nucleo, 0 fuera); HOSTRUN no nombra Workspace ni la actualizacion de T4B (RunnerViolations). INV-02: el billete en vuelo tiene ahora la cota completa (B-01) y un solo Execute o NotRun por billete (M-06 a); pruebas RQ de B-01, de la cota y del testigo. INV-03: sin Task, async, await, Dispatcher, Timer, .Result, .Wait( ni GetAwaiter nuevos; el censo por archivo de Task y async no cambia (TaskCensusViolations en verde) y el adaptador solo tiene la OnCompleted de IsCompleted falso y el Post al contexto capturado (M-07). INV-04: ExecuteInCommandContextAsync una sola vez, solo en RackPilotUpdateCommandContext.cs (TheCommandContextAndTheDocumentLock...). INV-05 y 06: orden objetivo, Admit, bloqueo, ambito, escritor, Execute, Retire, desbloqueo (HR TheRightDocumentIsAdmitted...), escritor de un solo uso y retirado en toda salida, y ahora un Lock nulo no sigue (M-06 d). INV-07: un fallo del host antes de la mutacion da Rejected o Failed por un solo canal (AHostFailureAfterTheAdmission..., M-06 b con Accepted); Unknown no se traduce. INV-08: reposo antes de entrar y solo Admit, UpdateGate y T4B dentro; el vuelo no cambia el borrador (DuringTheFlightTheFiveOperations...). INV-09: ambito propio por IC-09 sin cambios (WorkspaceOwnMutationTests y WorkspaceLifecycleGuardTests en verde; EventBridgeCore.cs, WorkspaceSession.cs y AutoCadEventBridge.cs sin cambios). INV-10: R-T4-07 con Busy en los descartes y DraftRegistry sin cambios (B-01, M-03 y las pruebas de descartes).",
+    "INV-F4T4C-13: los tres textos de I-01 siguen siendo constantes de la ejecucion (TheTextsOfTheGateOfTheUpdate...), M-01 de T4B (OutcomeOfAnEscape) intacto, M-03 de T4B en el tipo, M-06 de T4B sin cambios; ningun llamador de producto de DraftSession.EnterError y el bloque diferido de DraftSession.cs sin tocar (NoProductCallerOfEnterError...). INV-14: G-1 a G-7, G-9 y G-10 en IG, con negativas; la unica escritura authored del piloto pasa por RackPilotUpdateWriter. INV-15: sin API de Undo, SendStringToExecute, [CommandMethod( ni CommandFlags en HOSTRUN y ADAPTER (TheNewFilesNameNoUndoApi...). INV-16: ninguna ruta de la clausura de T1B ni de las fachadas ni de KindHandlers/ ni de los *Commands*.cs en el diff; PushBackClassicCharacterizationPluginGuardTests (10/10) y las pruebas de T1B en verde y sin cambios. INV-17: los cambios de guarda de arriba. INV-18: las pruebas nuevas son de memoria (sin File, Directory, AppData ni RackLog), ninguna carga el Plugin ni AutoCAD, ni deja modal, dispatcher o estado persistente; en local solo se corrieron los dos filtros de UI de RequiredTests. INV-19: ninguna linea nueva de Application nombra un tipo de AutoCAD; el Lock llega como IDisposable. INV-20: el RED con cuerpos del producto del intento 1 (que ya compilan) y las pruebas que cambian dentro del RED. INV-21: B-01, I-01 y M-01 a M-11 segun el mapa de arriba. INV-22: el RED de la correccion se crea sobre 271a045c, fallan las dos de B-01, la guarda de M-01 y las de M-06; el GREEN no toca tests/; ChainBaseSha y ChainRedSha conservados; el filtro de Core Workspace en rojo (ExpectRed true) y los dos filtros de UI en verde (ExpectRed false).",
+    "TEXTOS DEL HOST: los seis textos de PushBackPilotHostTexts no cambian (TheHostTextsHaveTheExactWording... en verde); el mensaje de la excepcion del adaptador cuando falta el contexto de sincronizacion (No hay contexto de sincronizacion en este hilo.) se conserva, porque HostRequestFailedPrefix esta hecho para componerse con la causa; la causa de un fallo del bloqueo conserva LockFailedPrefix mas el mensaje por la misma razon."
+  ],
+  "UnexpectedFindings": [
+    "La suite de Core con el filtro de Workspace pasa de 3385 a 3421 pruebas por las 36 nuevas de la correccion (24 metodos nuevos, con teorias); la suite completa pasa de 18966 a 19002.",
+    "El censo de G-1 por nombre de fachada (un archivo que nombra una de las tres y llama una primitiva) deja fuera, por diseno, los archivos que llaman a ViewBlockDraw.PrepareRedraw sin nombrar las fachadas de Push Back (los servicios de Dynamic y de Selective y ProjectVariableMutationExecutor.cs): son otras fachadas y G-9 y G-6 siguen cubriendo el piloto."
+  ],
+  "KnownLimitations": [
+    "El adaptador RackPilotUpdateCommandContext y el escritor solo los cubren las guardas de fuente y la compilacion del Plugin (Release y Debug temporal): la primera validacion fisica es Smoke-2.",
+    "IsAnyPilotDraftApplying (M-06 c) y el respaldo del try de la respuesta de TryUpdatePilot (M-05) no se pueden provocar desde una prueba de comportamiento, porque el registro y la fabrica no son inyectables; las cubren una prueba y una guarda por texto, con sus negativas.",
+    "WriterProhibitionViolations conserva la expresion que dejo el intento 1 (con static y MdiActiveDocument); se declara y no se cambia."
+  ],
+  "Deviations": [
+    "No se corrio dotnet build RackCad.sln -c Release: construye el Plugin en su carpeta bin por defecto, que la orden prohibe; se sustituye por el build Release del Plugin con -o bajo artifacts/, los de los dos proyectos de prueba (que arrastran Application, Domain y UI) y los de las dos herramientas de tools/, todos con --no-incremental y sin avisos nuevos.",
+    "TryKeepPilotEdit, TryDiscardAndReloadPilotEdit y TryConfirmPilotBase (publicos del nucleo) llevan ahora el vuelo dentro de su cuerpo, tras PassGate, en lugar de en el reenvio explicito del puerto; es la lectura de M-01 'mover la comprobacion dentro de Try*Pilot*, tras PassGate' del informe independiente.",
+    "El respaldo de TryUpdatePilot para un cierre no aceptado es ClosedInError con UpdateNotClosedReason y la clasificacion del tipo (nunca un exito); el contrato dice 'el mismo respaldo' y el del cierre aceptado habria dado un Closed con la clasificacion de exito.",
+    "RequestUpdate trata como aceptada la peticion cuando TryRequest lanza y el billete ya no esta, o esta empezado o terminado (M-06 b): el billete que ya no esta solo lo quita una compleccion, o sea que el callback corrio.",
+    "La herramienta de la sesion movio a segundo plano, por su limite de 180 s, tres ordenes de pruebas que lance en primer plano (las dos tandas de filtros y la suite completa de Core); las espere hasta su fin y no queda ningun proceso mio."
+  ],
+  "OpenQuestions": [],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "La sesion ejecuta la CI de push de los SHA exactos (RED 1268bb9d: Core en failure por el filtro de Workspace y UI en success; GREEN b2631084: los cuatro jobs en success), la verificacion del Controller con la comparacion de las dos listas de alcance (PD-F4-07), las revisiones directa e independiente del diff y nc1..nc3.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "high",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

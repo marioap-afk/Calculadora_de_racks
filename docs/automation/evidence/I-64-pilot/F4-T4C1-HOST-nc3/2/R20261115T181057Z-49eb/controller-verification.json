@@ -1,0 +1,77 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T4C1-HOST",
+  "RunId": "R20261115T181057Z-49eb",
+  "DelegationRunId": "R20261115T164833Z-353a",
+  "WorkRunId": "R20261115T165352Z-3e8e",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; terminal event records final subagent completion."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json matches TaskId F4-T4C1-HOST, Attempt 2, DelegationRunId R20261115T164833Z-353a, and WorkRunId R20261115T165352Z-3e8e. OutputWrittenUtc 2026-11-15T11:34:27.954089-06:00 is after Cession.StartUtc 2026-11-15T16:53:57Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha returned 0. git diff --name-only cd902cd9d46d92dcd959d6bcbb2901364167d262 12c248b039674b5e8589f10f51e6dd1150f99b12 returned only three docs/I-64 unit-document routes. External authority files have no diff between MainSha and AuthorityRevision."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "byte-fidelity-check.json reports PASS and byte equality for all eight collections. relay-record-planning.json records A1-A8 8/8 and nc4; the accepted package matches the delegation and contract."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both resolve to b2631084bcadbda25d69936c47d6f09b64fb1ac7. BaseSha 12c248b039674b5e8589f10f51e6dd1150f99b12 is an ancestor of RedSha 1268bb9d29af86ddff02a2ab02e7993c0d5c402b and CurrentSha; RedSha is an ancestor of CurrentSha. Branch and worktree match the handoff identity."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts records LsRemoteSha equal to CurrentSha and OriginMainSha equal to MainSha. Local origin branch and origin/main refs resolve to those same SHAs."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha returns 15 paths. All 15 are exact entries in delegation.json AllowedWriteScope (30 entries); none match ForbiddenWriteScope. The GREEN diff contains four src paths."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain is empty. git check-ignore -v confirms the worker handoff package path is ignored by the artifacts/ rule."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts records push run 43741634851 on refs/heads/architecture/workspace-persistente-rackcad at CurrentSha, completed successfully with all four required jobs successful. Red push run 43740130830 at RedSha is complete; Core failed, UI and Build UI succeeded, and Plugin was skipped."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "The four TRX files match the handoff counts. Current Core: 19002 results, 0 failed; current UI: 2310 results, 0 failed. All 26 RequiredTests filters meet their minima and pass at CurrentSha. At RedSha, Workspace selected 3421 (minimum 3103) with 60 assertion failures; a sampled failure has its first stack frame under tests/. The other 23 Core RequiredTests filters and both UI filters meet their minima with no failures in RED. ChainRedFiles prior set has 17 paths; RT from ChainBaseSha to RedSha has the same 17 paths, so the union has 17. RedSha..CurrentSha touches no tests, so it does not touch RT."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha returns exactly the RED and GREEN commits; both contain the declared Co-Authored-By trailer for Claude Sonnet 5.5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 with high effort and required routing. relay-record-work.json records effective model claude-sonnet-5-5 and effective effort high; the subagent launch alias is sonnet."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "worker-handoff.json WorkCompleted has one whole-phrase match from the 16.10 list at the end of the field, case-insensitive."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes record zero permission denials and one tool error with none pending. Notes also record no persistent participants or unattributable processes at entry or exit."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "WorkCompleted contains a single prohibited whole-phrase match at its end; the remaining 13 checks pass."
+  ],
+  "RecommendedNextAction": "Correct WorkCompleted to remove the 16.10 match, then repeat verification."
+}

@@ -7358,3 +7358,20 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **`attempts`:** 2 de 3.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 212. Cierre de F4-T4C1-HOST
+
+**Decisión:** F4-E67, por la regla D2 del Owner.
+- **La corrección del intento 2:** RED `1268bb9d` y GREEN `b2631084`, que corrige B-01, la cota del billete terminado sin compleción, e I-01, las guardas G-1 y G-10.
+- **CI exacta:** GREEN 4/4.
+- **Verificación:** `b1f8`, EXECUTION_VERIFIED 14/14.
+- **Revisiones:** la directa, 0/0/2, y la re-revisión independiente, 0/0/5.
+- **Controles:** nc1, nc2 y nc3, CONTROL PASS por su oráculo ordinario.
+
+**Resultado:** **F4-T4C1-HOST CLOSED / PASS WITH LIMITATIONS**, intento 2 de 3.
+
+**Custodia:** las seis unidades del intento 2 con sus manifiestos, las revisiones y el paquete de cierre.
+
+**Siguiente:** F4-T4C2-PANEL (D5) y después Smoke-2.
+
+**Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.

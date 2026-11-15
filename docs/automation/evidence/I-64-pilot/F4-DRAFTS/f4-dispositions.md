@@ -2434,3 +2434,29 @@ T4C2 y Smoke-2 siguen pendientes.
 - **El contrato del intento 2:** conserva el alcance, la lista prohibida, los invariantes, los `RequiredTests` y las paradas. Añade INV-F4T4C-21, con las correcciones, e INV-F4T4C-22, con la mecánica.
 - **La cadena:** sigue con `ChainBaseSha` `44eafbc1` y `ChainRedSha` `8e57061e`.
 - **Intento 3:** no se gasta sin el Owner.
+
+## F4-E67. Corrección de F4-T4C1-HOST (intento 2) y cierre
+
+**Autoridades:** las decisiones D2 y D3 del Owner (`F4-DRAFTS/coordinator/owner-f4t4c-decisions-d1-d6.md`).
+
+**La corrección** (contrato `gate-contract-attempt2.json`, BaseSha `12c248b0`):
+- **la planificación** `R20261115T164833Z-353a`: fidelidad PASS y A1-A8 8/8, a la primera. A8 aplica la regla de una delegación de corrección: `ChainBaseSha`, `ChainRedSha`, las 17 rutas y `CorrectionOf` exactos. No hubo nc4, que solo corresponde a la primera delegación;
+- **dos preparaciones descartadas** antes de invocar nada, por errores de los generadores de la sesión: `eb79`, con la ruta del análisis bajo `/2/`, y `80c7`, un duplicado;
+- **el Worker** `R20261115T165352Z-3e8e`: RED `1268bb9d`, solo `tests/`, y GREEN `b2631084`, solo `src/`, en cuatro archivos;
+  - B-01: `Execute` retira la marca «en `Execute`» al salir, y el billete terminado sin compleción caduca con el comando ajeno, sin un segundo resultado;
+  - I-01: G-1 como censo de todo `src/` y G-10 sin excluir carpetas;
+  - y los menores M-01 a M-11;
+- **la CI exacta:** GREEN `43741634851`, 4/4 (Core completo 19002/19002), y RED `43740130830`, con 60 fallos, todos de Workspace;
+- **la verificación** `R20261115T175454Z-b1f8`: EXECUTION_VERIFIED, 14/14.
+
+**Revisiones y controles:**
+- la directa de la sesión: 0/0/2;
+- la re-revisión independiente: **ACEPTABLE CON MENORES, 0/0/5**;
+- nc1 `7ec6`, nc2 `a952` y nc3 `49eb`: **CONTROL PASS por su oráculo ordinario**, sin sustitutos. En nc2, esta vez el Controller detectó la ruta fuera de la lista recortada.
+
+**El cierre:** **F4-T4C1-HOST CLOSED / PASS WITH LIMITATIONS**, intento 2 de 3, por D2, sin volver al Owner, porque se cumplen todas sus condiciones (paquete en `I-64-pilot/F4-T4C1-HOST/task-close-package.md`).
+- **Las limitaciones:**
+  - los cinco menores N-01 a N-05 de la re-revisión y los dos de la directa, todos de pruebas o inalcanzables con el producto;
+  - el adaptador, cubierto solo por las guardas de fuente;
+  - Smoke-2 pendiente.
+- **Siguiente:** la emisión de F4-T4C2-PANEL, por D5.

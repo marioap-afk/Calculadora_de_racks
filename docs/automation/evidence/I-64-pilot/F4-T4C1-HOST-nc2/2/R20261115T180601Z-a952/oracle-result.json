@@ -1,0 +1,51 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261115T180601Z-a952",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "MutatedCheck": {
+    "Scope": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Scope"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Scope": "git diff --name-only BaseSha..CurrentSha lists 15 paths. Comparing each against delegation.json AllowedWriteScope (29 exact paths) finds src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotHostRun.cs outside the whitelist. No changed path matches ForbiddenWriteScope."
+  },
+  "OutputSha256": "060D4781D57B5ACA6EFC5C6B1259D9079114B3B4860E1387F21778AF5C61C2DE",
+  "ManualFreeText1610": []
+}
