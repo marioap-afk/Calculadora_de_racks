@@ -239,6 +239,9 @@ namespace RackCad.Application.Systems.PushBack.Pilot
             try
             {
                 held = target.Lock();
+
+                // A host that answers no lock does not honor the contract: the run does not go on without one (M-06).
+                if (held == null) throw new InvalidOperationException("The target did not answer a lock.");
                 locking = false;
                 _run.Begin();
                 writer = target.CreateWriter();
@@ -253,9 +256,10 @@ namespace RackCad.Application.Systems.PushBack.Pilot
                 if (!terminal)
                 {
                     terminal = true;
+                    // The sentence of the host is the whole text, never a prefix (M-04): the exception went to the log above.
                     var cause = locking
                         ? PushBackPilotHostTexts.LockFailedPrefix + ex.Message
-                        : PushBackPilotHostTexts.HostNotRunReason + " " + ex.Message;
+                        : PushBackPilotHostTexts.HostNotRunReason;
                     TryNotRun(PushBackPilotHostFailure.Failed, cause);
                 }
             }

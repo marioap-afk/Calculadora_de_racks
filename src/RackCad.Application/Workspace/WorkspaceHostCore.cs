@@ -560,6 +560,9 @@ namespace RackCad.Application.Workspace
                 if (gate == EditGate.Waiting) return EditConfirmOutcome.Waiting(reason);
                 if (gate == EditGate.Rejected) return EditConfirmOutcome.Rejected(reason);
 
+                // An update of the rack in flight: nothing is read and the draft does not change (D-T4C-08). It comes after the authorization.
+                if (UpdateInFlightForRequest(request)) return EditConfirmOutcome.Waiting(PushBackPilotHostTexts.UpdateInFlightReason);
+
                 // 3 and 4: a missing draft, and a draft whose status is not clean, dirty or in conflict, read nothing.
                 var draft = _drafts.Find<PushBackPilotDraftState>(request.Session, request.RackId);
                 if (draft == null) return EditConfirmOutcome.NotFound(NoDraftReason);
@@ -639,6 +642,9 @@ namespace RackCad.Application.Workspace
                 if (gate == EditGate.Unavailable) return EditIntentOutcome.Unavailable(reason);
                 if (gate == EditGate.Waiting) return EditIntentOutcome.Waiting(reason);
                 if (gate == EditGate.Rejected) return EditIntentOutcome.Rejected(reason);
+
+                // An update of the rack in flight: nothing is read and the draft does not change (D-T4C-08). It comes after the authorization.
+                if (UpdateInFlightForRequest(request)) return EditIntentOutcome.Waiting(PushBackPilotHostTexts.UpdateInFlightReason);
 
                 // 3 and 4: a missing draft is NotFound, a draft that is being applied waits and one that does not need to be kept is not
                 // needed; none of them reads anything.
@@ -724,6 +730,9 @@ namespace RackCad.Application.Workspace
                 if (gate == EditGate.Unavailable) return EditIntentOutcome.Unavailable(reason);
                 if (gate == EditGate.Waiting) return EditIntentOutcome.Waiting(reason);
                 if (gate == EditGate.Rejected) return EditIntentOutcome.Rejected(reason);
+
+                // An update of the rack in flight: nothing is read and the draft does not change (D-T4C-08). It comes after the authorization.
+                if (UpdateInFlightForRequest(request)) return EditIntentOutcome.Waiting(PushBackPilotHostTexts.UpdateInFlightReason);
 
                 // 3 and 4: a missing draft is NotFound and a draft that is being applied waits; none of them reads anything.
                 var draft = _drafts.Find<PushBackPilotDraftState>(request.Session, request.RackId);
@@ -882,24 +891,26 @@ namespace RackCad.Application.Workspace
             // 7: the answer comes from the close of the draft. What changed the draft ends the mark of known clean.
             if (!closed.DraftWasRegistered) return EditUpdateOutcome.ClosedDetached();
 
-            // M-01: the draft did not accept the close. It is never a success, whatever the run decided: a decision of the write or of POST
-            // is kept as the classification of a ClosedInError, and any other one stays a failure that did not run.
-            if (!closed.Accepted) return AnswerOfAClosedThatWasNotAccepted(outcome, closed.Kind);
-
-            // The state of the answer is computed first, and the answer is built inside a try with a fallback that still carries it (M-01).
+            // The state of the answer is computed first, and everything that builds the answer or notes the edit is inside one try with a
+            // fallback that still carries it (M-01, M-05).
             var status = StatusOfOutcomeKind(closed.Kind);
             var inError = closed.Status == DraftStatus.Error;
-            if (inError
-                || (status != EditUpdateStatus.NotAppliedAdmission
-                    && status != EditUpdateStatus.NotAppliedPreflight
-                    && status != EditUpdateStatus.NotAppliedFailure))
-            {
-                NotePilotEdit(request.Session);
-                _knownClean.Remove(request.Session);
-            }
-
             try
             {
+                // M-01: the draft did not accept the close. It is never a success, whatever the run decided: a decision of the write or of
+                // POST is kept as the classification of a ClosedInError, and any other one stays a failure that did not run.
+                if (!closed.Accepted) return AnswerOfAClosedThatWasNotAccepted(outcome, closed.Kind);
+
+                // What changed the draft ends the mark of known clean.
+                if (inError
+                    || (status != EditUpdateStatus.NotAppliedAdmission
+                        && status != EditUpdateStatus.NotAppliedPreflight
+                        && status != EditUpdateStatus.NotAppliedFailure))
+                {
+                    NotePilotEdit(request.Session);
+                    _knownClean.Remove(request.Session);
+                }
+
                 var differences = status == EditUpdateStatus.NotAppliedConflict ? DescribeDifferences(draft.ConflictDifferences) : Array.Empty<string>();
                 if (inError) return EditUpdateOutcome.ClosedInError(draft.ErrorReason, status, draft.LastApplyCause, differences, draft.Warnings);
 
@@ -908,6 +919,9 @@ namespace RackCad.Application.Workspace
             catch (Exception ex)
             {
                 Report("WorkspaceHostCore.TryUpdatePilot", ex);
+                if (!closed.Accepted)
+                    return EditUpdateOutcome.ClosedInError(PushBackPilotHostTexts.UpdateNotClosedReason, status, null, Array.Empty<string>(), Array.Empty<string>());
+
                 return inError
                     ? EditUpdateOutcome.ClosedInError(null, status, null, Array.Empty<string>(), Array.Empty<string>())
                     : EditUpdateOutcome.Closed(status, draft.LastApplyCause, Array.Empty<string>(), Array.Empty<string>());
@@ -1034,7 +1048,6 @@ namespace RackCad.Application.Workspace
         EditConfirmOutcome IWorkspacePilotEditPort.TryConfirmBase(EditIntentRequest request)
         {
             if (_pilotReadInProgress) return EditConfirmOutcome.Waiting(PilotReadInProgressReason);
-            if (UpdateInFlightForRequest(request)) return EditConfirmOutcome.Waiting(PushBackPilotHostTexts.UpdateInFlightReason);
             _pilotReadInProgress = true;
             try
             {
@@ -1049,7 +1062,6 @@ namespace RackCad.Application.Workspace
         EditIntentOutcome IWorkspacePilotEditPort.TryKeepMine(EditIntentRequest request)
         {
             if (_pilotReadInProgress) return EditIntentOutcome.Waiting(PilotReadInProgressReason);
-            if (UpdateInFlightForRequest(request)) return EditIntentOutcome.Waiting(PushBackPilotHostTexts.UpdateInFlightReason);
             _pilotReadInProgress = true;
             try
             {
@@ -1064,7 +1076,6 @@ namespace RackCad.Application.Workspace
         EditIntentOutcome IWorkspacePilotEditPort.TryDiscardAndReload(EditIntentRequest request)
         {
             if (_pilotReadInProgress) return EditIntentOutcome.Waiting(PilotReadInProgressReason);
-            if (UpdateInFlightForRequest(request)) return EditIntentOutcome.Waiting(PushBackPilotHostTexts.UpdateInFlightReason);
             _pilotReadInProgress = true;
             try
             {
@@ -1384,6 +1395,12 @@ namespace RackCad.Application.Workspace
                 catch (Exception ex)
                 {
                     Report("WorkspaceHostCore.RequestUpdate", ex);
+
+                    // The callback already began (or already ended, and its completion took the ticket away): the outcome is the one channel,
+                    // so the start value cannot be a second, failed one (M-06).
+                    var current = CurrentTicket(request.Session, ticket.Witness);
+                    if (current == null || current.Started || current.Finished) return EditUpdateStart.Accepted();
+
                     requested = false;
                     failure = PushBackPilotHostTexts.HostRequestFailedPrefix + ex.Message;
                 }
@@ -1481,9 +1498,12 @@ namespace RackCad.Application.Workspace
             {
                 return _drafts.RackIdsOf(session).Any(rackId => IsPilotDraftApplying(session, rackId));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return true;
+                // A registry that fails cannot decide it: the failure is logged and it counts as not applying, so the discard of the
+                // document is never stuck in Busy with no bound (M-06).
+                Report("WorkspaceHostCore.IsAnyPilotDraftApplying", ex);
+                return false;
             }
         }
 
@@ -1590,7 +1610,7 @@ namespace RackCad.Application.Workspace
                 {
                     // The own mutation could not be opened: the update must not run without it, so Execute answers a failure of the host.
                     _core.Report("WorkspaceHostCore.PilotUpdateRun.Begin", ex);
-                    _openFailure = PushBackPilotHostTexts.HostNotRunReason + " " + ex.Message;
+                    _openFailure = PushBackPilotHostTexts.HostNotRunReason;
                 }
             }
 
@@ -1600,7 +1620,14 @@ namespace RackCad.Application.Workspace
                 try
                 {
                     ticket = _core.CurrentTicket(_request.Session, _witness);
-                    if (ticket == null) return;
+
+                    // A ticket that already ended takes no second terminal call: the outcome that it stored is the one (M-06).
+                    if (ticket == null || ticket.Finished)
+                    {
+                        ticket = null;
+                        return;
+                    }
+
                     ticket.InExecute = true;
 
                     // A failure of the host before the update: nothing of T4B runs, the draft is not touched and the own mutation is closed.
@@ -1622,7 +1649,13 @@ namespace RackCad.Application.Workspace
                 }
                 finally
                 {
-                    if (ticket != null && _core.CurrentTicket(_request.Session, _witness) != null) ticket.Finished = true;
+                    // The mark of Execute goes away when Execute does, together with the one of ended (B-01): from here on the ticket only waits
+                    // for the completion, and the bound of the foreign command, of the document and of the session can free it.
+                    if (ticket != null && _core.CurrentTicket(_request.Session, _witness) != null)
+                    {
+                        ticket.InExecute = false;
+                        ticket.Finished = true;
+                    }
                 }
             }
 
@@ -1631,7 +1664,7 @@ namespace RackCad.Application.Workspace
                 try
                 {
                     var ticket = _core.CurrentTicket(_request.Session, _witness);
-                    if (ticket == null) return;
+                    if (ticket == null || ticket.Finished) return;
                     try
                     {
                         _core._updateOutcomes[(_request.Session, ticket.RackId)] = kind == PushBackPilotHostFailure.Rejected

@@ -16,7 +16,6 @@ using RackCad.Domain.Systems.Shared;
 using RackCad.Plugin.Drawing;
 using RackCad.Plugin.Systems.PushBack;
 using RackCad.Plugin.Systems.Shared;
-using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace RackCad.Plugin.Views
 {

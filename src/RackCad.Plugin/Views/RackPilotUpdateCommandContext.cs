@@ -68,17 +68,13 @@ namespace RackCad.Plugin.Views
             public bool TryOpenTarget(long documentNativeId, out IPushBackPilotHostTarget? target, out string reason)
             {
                 target = null;
-                reason = "El documento ya no está abierto.";
+                reason = PushBackPilotUpdateRun.DocumentMismatchReason;
                 foreach (Document candidate in AcApplication.DocumentManager)
                 {
                     if (candidate.UnmanagedObject.ToInt64() != documentNativeId) continue;
 
                     var active = AcApplication.DocumentManager.MdiActiveDocument;
-                    if (active == null || active.UnmanagedObject.ToInt64() != documentNativeId)
-                    {
-                        reason = "El documento ya no es el activo.";
-                        return false;
-                    }
+                    if (active == null || active.UnmanagedObject.ToInt64() != documentNativeId) return false;
 
                     target = new Target(candidate);
                     reason = string.Empty;
