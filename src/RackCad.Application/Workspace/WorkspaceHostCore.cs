@@ -45,7 +45,8 @@ namespace RackCad.Application.Workspace
         private const string NotThisDocumentReason = "La petición no es del documento activo.";
         private const string NoDraftReason = "No hay borrador para el rack.";
         private const string NotCheckableReason = "El borrador no admite comprobación en su estado actual.";
-        private const string NotKeepableReason = "Solo se conserva un borrador en conflicto o con cambios marcados como posiblemente obsoletos.";
+        private const string UpdateNotRunReason = "La actualización no llegó a ejecutarse.";
+        private const string NotKeepableReason ="Solo se conserva un borrador en conflicto o con cambios marcados como posiblemente obsoletos.";
 
         /// <summary>Native identity used when no document is open: it matches no session.</summary>
         private const long NoDocumentNativeId = -1;
@@ -793,8 +794,143 @@ namespace RackCad.Application.Workspace
 
         // ---------------------------------------------------------------- the update of the pilot (I-64 F4-T4B, D-T4B-07)
 
-        /// <summary>The update of one rack of the pilot through the port that it is handed. Skeleton of the RED step: inert.</summary>
-        public EditUpdateOutcome TryUpdatePilot(EditIntentRequest request, IPushBackPilotUpdatePort port) => default;
+        /// <summary>
+        /// The update of one rack of the pilot (D-T4B-07): the first operation of the host that writes authored state, and it does it
+        /// only through the port that it is handed. It is a method of the core and not an operation of the edit port of the panel; nothing
+        /// of the product calls it yet. Its gate is its own and has no rest and no reader: the active document, no modal of RackCad and the
+        /// authorization of the session. The steps are, in this order: the gate, the draft, the check before the slot, the slot, the run
+        /// (which is total) and the ONE close of the slot, which always carries the outcome of the run. A failure of the host is only
+        /// Failed BEFORE the slot is taken; after it, the answer always comes from the close of the draft.
+        /// </summary>
+        public EditUpdateOutcome TryUpdatePilot(EditIntentRequest request, IPushBackPilotUpdatePort port)
+        {
+            DraftSession<PushBackPilotDraftState> draft;
+            long documentId;
+            try
+            {
+                if (request == null) throw new ArgumentNullException(nameof(request));
+                if (port == null) throw new ArgumentNullException(nameof(port));
+
+                // 1: the gate of its own.
+                var gate = UpdateGate(request.Session, out var reason, out documentId);
+                if (gate != EditGate.Open) return EditUpdateOutcome.Rejected(reason);
+
+                // 2: the draft. A rack without identity has none.
+                if (string.IsNullOrWhiteSpace(request.RackId)) return EditUpdateOutcome.NoDraft(NoDraftReason);
+                var found = _drafts.Find<PushBackPilotDraftState>(request.Session, request.RackId);
+                if (found == null) return EditUpdateOutcome.NoDraft(NoDraftReason);
+                draft = found;
+
+                // 3: the check before the slot: it only stops for what needs neither a read nor a catalog.
+                var precheck = PushBackPilotUpdateRun.Precheck(draft);
+                if (!precheck.Proceeds)
+                {
+                    switch (precheck.Kind)
+                    {
+                        case PushBackPilotPrepareKind.NothingToApply: return EditUpdateOutcome.NothingToApply(precheck.Reason!);
+                        case PushBackPilotPrepareKind.PendingText: return EditUpdateOutcome.PendingText(precheck.Reason!);
+                        default: return EditUpdateOutcome.NotApplicable(precheck.Reason!);
+                    }
+                }
+
+                // 4: the slot of the update, one for the whole registry.
+                var start = draft.TryBeginApply();
+                if (!start.IsStarted)
+                {
+                    return start.Refusal == DraftApplyRefusal.AnotherUpdateInProgress
+                        ? EditUpdateOutcome.AnotherUpdateInProgress()
+                        : EditUpdateOutcome.Refused(start.Refusal.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                Report("WorkspaceHostCore.TryUpdatePilot", ex);
+                return EditUpdateOutcome.Failed(ex.Message);
+            }
+
+            // 5 and 6: the run is total, and the slot is closed exactly once, with the outcome of the run in every case.
+            var outcome = DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedFailure(UpdateNotRunReason);
+            DraftApplyResult closed;
+            try
+            {
+                outcome = PushBackPilotUpdateRun.Execute(draft, new PushBackPilotUpdateRequest(documentId, request.RackId), port);
+            }
+            catch (Exception ex)
+            {
+                Report("WorkspaceHostCore.TryUpdatePilot", ex);
+                outcome = DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedFailure(UpdateNotRunReason + " " + ex.Message);
+            }
+            finally
+            {
+                closed = draft.CompleteApply(outcome);
+            }
+
+            // 7: the answer comes from the close of the draft. What changed the draft ends the mark of known clean.
+            if (!closed.DraftWasRegistered) return EditUpdateOutcome.ClosedDetached();
+            if (!closed.Accepted) return EditUpdateOutcome.Closed(EditUpdateStatus.NotAppliedFailure, UpdateNotRunReason, Array.Empty<string>(), Array.Empty<string>());
+
+            if (closed.Status == DraftStatus.Error)
+            {
+                NotePilotEdit(request.Session);
+                _knownClean.Remove(request.Session);
+                return EditUpdateOutcome.ClosedInError(draft.ErrorReason);
+            }
+
+            EditUpdateStatus status;
+            switch (closed.Kind)
+            {
+                case DraftApplyOutcomeKind.NotAppliedConflict: status = EditUpdateStatus.NotAppliedConflict; break;
+                case DraftApplyOutcomeKind.NotAppliedAdmission: status = EditUpdateStatus.NotAppliedAdmission; break;
+                case DraftApplyOutcomeKind.NotAppliedPreflight: status = EditUpdateStatus.NotAppliedPreflight; break;
+                case DraftApplyOutcomeKind.NotAppliedFailure: status = EditUpdateStatus.NotAppliedFailure; break;
+                case DraftApplyOutcomeKind.CommitThrew: status = EditUpdateStatus.CommitThrew; break;
+                case DraftApplyOutcomeKind.Applied: status = EditUpdateStatus.Applied; break;
+                case DraftApplyOutcomeKind.AppliedWithWarnings: status = EditUpdateStatus.AppliedWithWarnings; break;
+                default: status = EditUpdateStatus.AppliedPostRereadFailed; break;
+            }
+
+            if (status != EditUpdateStatus.NotAppliedAdmission
+                && status != EditUpdateStatus.NotAppliedPreflight
+                && status != EditUpdateStatus.NotAppliedFailure)
+            {
+                NotePilotEdit(request.Session);
+                _knownClean.Remove(request.Session);
+            }
+
+            return EditUpdateOutcome.Closed(
+                status,
+                draft.LastApplyCause,
+                status == EditUpdateStatus.NotAppliedConflict ? DescribeDifferences(draft.ConflictDifferences) : Array.Empty<string>(),
+                draft.Warnings);
+        }
+
+        // The gate of the update: the active document, no modal of RackCad and the authorization of the session. It has no rest and no reader.
+        private EditGate UpdateGate(SessionId session, out string reason, out long documentNativeId)
+        {
+            reason = string.Empty;
+            documentNativeId = NoDocumentNativeId;
+            var active = _probe.ActiveDocumentNativeId;
+            if (!active.HasValue)
+            {
+                reason = "No hay un documento activo para actualizar.";
+                return EditGate.Waiting;
+            }
+
+            if (_modalRackCadActive)
+            {
+                reason = "Hay una ventana de RackCad abierta: ciérrala antes de actualizar.";
+                return EditGate.Waiting;
+            }
+
+            if (Authorize(new WorkspaceRequest(session)) != RequestDecision.Accepted)
+            {
+                reason = NotThisDocumentReason;
+                return EditGate.Rejected;
+            }
+
+            documentNativeId = active.Value;
+            return EditGate.Open;
+        }
 
         // ---------------------------------------------------------------- the edit port of the pilot (I-64 F4-T3A, D-T3-02)
         //

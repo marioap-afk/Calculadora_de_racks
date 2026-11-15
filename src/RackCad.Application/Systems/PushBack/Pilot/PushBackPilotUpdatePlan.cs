@@ -244,8 +244,13 @@ namespace RackCad.Application.Systems.PushBack.Pilot
 
         public PushBackPilotPostExpectation PostExpectation { get; }
 
-        /// <summary>The outgoing envelope text of the member of that key (ordinal); null when the plan has no such member. Inert.</summary>
-        public string? Envelope(string key) => null;
+        /// <summary>The outgoing envelope text of the member of that key (ordinal); null when the plan has no such member.</summary>
+        public string? Envelope(string key)
+        {
+            foreach (var member in Members)
+                if (string.Equals(member.Key, key, StringComparison.Ordinal)) return member.EnvelopeText;
+            return null;
+        }
 
         public bool Equals(PushBackPilotUpdatePlan? other) =>
             other != null
@@ -312,7 +317,7 @@ namespace RackCad.Application.Systems.PushBack.Pilot
                 if (input.HasPendingText) return PushBackPilotPrepareResult.Without(PushBackPilotPrepareKind.PendingText);
                 if (input.ConsideredStatus == DraftStatus.Clean) return PushBackPilotPrepareResult.Without(PushBackPilotPrepareKind.NothingToApply);
 
-                if (reread == null || catalog == null) return PushBackPilotPrepareResult.WithInvalid(MissingInputReason);
+                if (reread == null) return PushBackPilotPrepareResult.WithInvalid(MissingInputReason);
 
                 var comparison = input.StaleBase.CompareWith(reread.StaleBase);
                 if (!comparison.IsMatch) return PushBackPilotPrepareResult.WithConflict(comparison.Differences);
@@ -331,6 +336,10 @@ namespace RackCad.Application.Systems.PushBack.Pilot
         // The base of the draft and the re-read match here, and the re-read is admitted: the plan can be built, or it is Invalid.
         private static PushBackPilotPrepareResult Build(PushBackPilotPrepareInput input, PushBackPilotIntentResult reread, RackCatalog catalog)
         {
+            // A missing catalog is answered here, after the comparison and the admission (M-6): a difference of the base or a read that is not
+            // admitted is told as such even when the catalog is missing.
+            if (catalog == null) return PushBackPilotPrepareResult.WithInvalid(MissingInputReason);
+
             // (a) The current state is composed over the base that matches the re-read (H-06), with the carry-overs of D-T4A1-05.
             var composition = PushBackPilotMaterializer.ComposeForWrite(input.InitialDraftState, input.CurrentDraftState, catalog);
             if (!composition.IsComposed) return PushBackPilotPrepareResult.WithInvalid(composition.Reason ?? PushBackPilotMaterializer.NonPilotContentReason);
@@ -384,6 +393,10 @@ namespace RackCad.Application.Systems.PushBack.Pilot
             {
                 var (entry, embed) = members[index];
                 var decoded = RackViewCodec.Decode(embed.Kind, embed.View, embed.Section);
+
+                // A descriptor that does not decode has no address to ask about (M-5): it has its own text, and it is never coerced into a view.
+                if (!decoded.HasAddress)
+                    return PushBackPilotPrepareResult.WithInvalid(ViewAddressPrefix + entry.Key + ViewAddressSuffix);
                 if (RackViewAvailability.Evaluate(decoded, facts).Status != RackViewAvailabilityStatus.Available)
                     return PushBackPilotPrepareResult.WithInvalid(ViewUnavailablePrefix + entry.Key + ViewUnavailableSuffix);
 

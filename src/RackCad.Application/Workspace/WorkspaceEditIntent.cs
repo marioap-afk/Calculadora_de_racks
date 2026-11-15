@@ -425,7 +425,7 @@ namespace RackCad.Application.Workspace
 
     /// <summary>
     /// I-64 F4-T4B (D-T4B-07) — the answer of the host to an update of the pilot. A value: the differences and the warnings are text, so
-    /// it names no draft type and no type of the pilot. Skeleton of the RED step: every factory is inert.
+    /// it names no draft type and no type of the pilot. Both lists are never null, also for a default value of this struct.
     /// </summary>
     public readonly struct EditUpdateOutcome
     {
@@ -445,34 +445,45 @@ namespace RackCad.Application.Workspace
         /// <summary>Why the update did not apply, or the cause of an uncertain outcome; null when there is none.</summary>
         public string? Reason { get; }
 
+        /// <summary>What differs, as "key:kind" lines; empty unless the status is NotAppliedConflict. Never null.</summary>
         public IReadOnlyList<string> Differences => _differences ?? Array.Empty<string>();
 
+        /// <summary>The warnings of the update; empty unless there were some. Never null.</summary>
         public IReadOnlyList<string> Warnings => _warnings ?? Array.Empty<string>();
 
-        public static EditUpdateOutcome Unavailable(string reason) => default;
+        public static EditUpdateOutcome Unavailable(string reason) => Without(EditUpdateStatus.Unavailable, reason);
 
-        public static EditUpdateOutcome Rejected(string reason) => default;
+        public static EditUpdateOutcome Rejected(string reason) => Without(EditUpdateStatus.Rejected, reason);
 
-        public static EditUpdateOutcome NoDraft(string reason) => default;
+        public static EditUpdateOutcome NoDraft(string reason) => Without(EditUpdateStatus.NoDraft, reason);
 
-        public static EditUpdateOutcome NothingToApply(string reason) => default;
+        public static EditUpdateOutcome NothingToApply(string reason) => Without(EditUpdateStatus.NothingToApply, reason);
 
-        public static EditUpdateOutcome PendingText(string reason) => default;
+        public static EditUpdateOutcome PendingText(string reason) => Without(EditUpdateStatus.PendingText, reason);
 
-        public static EditUpdateOutcome NotApplicable(string reason) => default;
+        public static EditUpdateOutcome NotApplicable(string reason) => Without(EditUpdateStatus.NotApplicable, reason);
 
-        public static EditUpdateOutcome AnotherUpdateInProgress() => default;
+        public static EditUpdateOutcome AnotherUpdateInProgress() => Without(EditUpdateStatus.AnotherUpdateInProgress, null);
 
-        public static EditUpdateOutcome Refused(string reason) => default;
+        public static EditUpdateOutcome Refused(string reason) => Without(EditUpdateStatus.Refused, reason);
 
-        public static EditUpdateOutcome ClosedDetached() => default;
+        public static EditUpdateOutcome ClosedDetached() => Without(EditUpdateStatus.ClosedDetached, null);
 
-        public static EditUpdateOutcome ClosedInError(string? reason) => default;
+        public static EditUpdateOutcome ClosedInError(string? reason) => Without(EditUpdateStatus.ClosedInError, reason);
 
-        public static EditUpdateOutcome Failed(string reason) => default;
+        public static EditUpdateOutcome Failed(string reason) => Without(EditUpdateStatus.Failed, reason);
 
+        /// <summary>The outcome of an update that was closed with one of the eight outcomes of the classification by frontier.</summary>
         public static EditUpdateOutcome Closed(
-            EditUpdateStatus status, string? reason, IReadOnlyList<string> differences, IReadOnlyList<string> warnings) => default;
+            EditUpdateStatus status, string? reason, IReadOnlyList<string> differences, IReadOnlyList<string> warnings)
+        {
+            if (differences == null) throw new ArgumentNullException(nameof(differences));
+            if (warnings == null) throw new ArgumentNullException(nameof(warnings));
+            return new EditUpdateOutcome(status, reason, differences, warnings);
+        }
+
+        private static EditUpdateOutcome Without(EditUpdateStatus status, string? reason) =>
+            new(status, reason, Array.Empty<string>(), Array.Empty<string>());
     }
 
     /// <summary>

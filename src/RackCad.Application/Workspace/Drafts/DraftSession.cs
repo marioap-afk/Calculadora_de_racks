@@ -462,7 +462,9 @@ namespace RackCad.Application.Workspace.Drafts
         /// <paramref name="keepOn"/> makes of the new initial state and the current one (IC-07 point 2), in the same step. A null
         /// <paramref name="keepOn"/> throws before anything else. The checks go in the same order as the overload above and, without
         /// admission, <paramref name="keepOn"/> is never called. Every copy and the call of <paramref name="keepOn"/> are made BEFORE
-        /// anything is assigned, so if one of them throws the draft stays exactly as it was. The pending text stays.
+        /// anything is assigned, so if one of them throws the draft stays exactly as it was. The pending text stays. That atomicity assumes that
+        /// <paramref name="keepOn"/> does not mutate its second argument: the current state of the draft is handed to it by reference, so a function
+        /// that edits it in place would change the draft even when a later step throws.
         /// </summary>
         public DraftReloadResult KeepMineOnCurrentVersion(DraftIntentRead<TState> read, Func<TState, TState, TState> keepOn, bool confirmed)
         {
@@ -534,13 +536,17 @@ namespace RackCad.Application.Workspace.Drafts
             if (!_holdsApplySlot)
                 return DraftApplyResult.NotApplying(Status, outcome.Kind);
 
+            // The copies of an applied outcome are made BEFORE the slot is freed and before anything is assigned (D-T4B-06): a copier or a
+            // comparator that throws is then a value, and it never leaves the draft half rebased or the exception escaping.
+            var staged = _registered ? StageApplied(outcome) : AppliedStage.None();
+
             _holdsApplySlot = false;
             _registry.ReleaseApplySlot(this);
             if (!_registered)
                 return DraftApplyResult.ClosedDetached(outcome.Kind, Status);
 
             _explicitStatus = null;
-            var result = Classify(outcome);
+            var result = ClassifyContained(outcome, staged);
             var deferred = _deferredErrorReason;
             if (deferred == null) return result;
 
@@ -553,7 +559,102 @@ namespace RackCad.Application.Workspace.Drafts
             return DraftApplyResult.Closed(result.Kind, Status, result.Rebased);
         }
 
-        private DraftApplyResult Classify(DraftApplyOutcome<TState> outcome)
+        /// <summary>The states that an applied outcome rebases onto, already copied, or why they could not be made.</summary>
+        private sealed class AppliedStage
+        {
+            private AppliedStage(TState? initial, TState? current, string? failure)
+            {
+                Initial = initial;
+                Current = current;
+                Failure = failure;
+            }
+
+            public static AppliedStage None() => new(default, default, null);
+
+            public TState? Initial { get; }
+
+            public TState? Current { get; }
+
+            /// <summary>Why the copies or the comparison failed; null when they did not.</summary>
+            public string? Failure { get; }
+
+            public static AppliedStage Ready(TState initial, TState current) => new(initial, current, null);
+
+            public static AppliedStage Failed(string failure) => new(default, default, failure);
+        }
+
+        // The copies of an applied outcome with an admitted re-read, and ONE evaluation of the comparator on them (the status after the
+        // rebase is computed from exactly these two). Nothing is assigned here.
+        private AppliedStage StageApplied(DraftApplyOutcome<TState> outcome)
+        {
+            if (outcome.Kind != DraftApplyOutcomeKind.Applied && outcome.Kind != DraftApplyOutcomeKind.AppliedWithWarnings)
+                return AppliedStage.None();
+
+            var read = outcome.PostRead;
+            if (read == null || !read.IsAdmitted) return AppliedStage.None();
+
+            try
+            {
+                var initial = _copy(read.InitialState!);
+                var current = _copy(read.InitialState!);
+                _comparer.Equals(current, initial);
+                return AppliedStage.Ready(initial, current);
+            }
+            catch (Exception ex)
+            {
+                return AppliedStage.Failed("No se pudo copiar o comparar el estado releído: " + ex.Message);
+            }
+        }
+
+        // The classification never lets an exception escape: when computing the state of the draft throws, each branch has its fallback.
+        private DraftApplyResult ClassifyContained(DraftApplyOutcome<TState> outcome, AppliedStage staged)
+        {
+            try
+            {
+                return Classify(outcome, staged);
+            }
+            catch (Exception ex)
+            {
+                return Recover(outcome, ex);
+            }
+        }
+
+        private DraftApplyResult Recover(DraftApplyOutcome<TState> outcome, Exception failure)
+        {
+            var cause = "No se pudo calcular el estado del borrador: " + failure.Message;
+            switch (outcome.Kind)
+            {
+                case DraftApplyOutcomeKind.CommitThrew:
+                {
+                    _explicitStatus = DraftStatus.Unknown;
+                    UnknownOrigin = DraftUnknownOrigin.CommitThrew;
+                    LastApplyCause = outcome.Cause + "; " + cause;
+                    return DraftApplyResult.Closed(outcome.Kind, Status, false);
+                }
+
+                case DraftApplyOutcomeKind.Applied:
+                case DraftApplyOutcomeKind.AppliedWithWarnings:
+                case DraftApplyOutcomeKind.AppliedPostRereadFailed:
+                {
+                    _explicitStatus = DraftStatus.Unknown;
+                    UnknownOrigin = DraftUnknownOrigin.PostReread;
+                    LastApplyCause = cause;
+                    Warnings = outcome.Warnings;
+                    return DraftApplyResult.Closed(DraftApplyOutcomeKind.AppliedPostRereadFailed, Status, false);
+                }
+
+                default:
+                {
+                    // A draft that did not apply keeps its content: only its status becomes Error, with the reason, never "applied".
+                    _explicitStatus = DraftStatus.Error;
+                    ErrorReason = cause;
+                    UnknownOrigin = null;
+                    return DraftApplyResult.Closed(outcome.Kind, Status, false);
+                }
+            }
+        }
+
+        private DraftApplyResult Classify(DraftApplyOutcome<TState> outcome, AppliedStage staged)
         {
             switch (outcome.Kind)
             {
@@ -579,19 +680,19 @@ namespace RackCad.Application.Workspace.Drafts
                 case DraftApplyOutcomeKind.AppliedWithWarnings:
                 {
                     var read = outcome.PostRead;
-                    if (read == null || !read.IsAdmitted)
+                    if (read == null || !read.IsAdmitted || staged.Failure != null)
                     {
-                        // The write happened but its re-read cannot rebase the draft: never assume it is clean.
+                        // The write happened but its re-read cannot rebase the draft: never assume it is clean. The warnings that were
+                        // already known are kept (F4-E16), so they are not lost with the failure.
                         _explicitStatus = DraftStatus.Unknown;
                         UnknownOrigin = DraftUnknownOrigin.PostReread;
-                        LastApplyCause = read?.Admission.Diagnostic;
+                        LastApplyCause = staged.Failure ?? read?.Admission.Diagnostic;
+                        Warnings = outcome.Warnings;
                         return DraftApplyResult.Closed(DraftApplyOutcomeKind.AppliedPostRereadFailed, Status, false);
                     }
 
-                    var initial = _copy(read.InitialState!);
-                    var current = _copy(read.InitialState!);
-                    Rebase(read, initial);
-                    _current = current;
+                    Rebase(read, staged.Initial!);
+                    _current = staged.Current!;
                     _pending.Clear();
                     if (outcome.Kind == DraftApplyOutcomeKind.AppliedWithWarnings) Warnings = outcome.Warnings;
                     return DraftApplyResult.Closed(outcome.Kind, Status, true);
@@ -601,6 +702,7 @@ namespace RackCad.Application.Workspace.Drafts
                     _explicitStatus = DraftStatus.Unknown;
                     UnknownOrigin = DraftUnknownOrigin.PostReread;
                     LastApplyCause = outcome.Cause;
+                    Warnings = outcome.Warnings;
                     return DraftApplyResult.Closed(DraftApplyOutcomeKind.AppliedPostRereadFailed, Status, false);
             }
         }

@@ -81,9 +81,15 @@ namespace RackCad.Application.Workspace.Drafts
 
         public static DraftApplyOutcome<TState> CommitThrew(string cause) => WithCause(DraftApplyOutcomeKind.CommitThrew, cause);
 
-        /// <summary>The commit returned and the re-read of POST failed. The warnings that were already known go with it (F4-E16); inert: they are not kept yet.</summary>
-        public static DraftApplyOutcome<TState> AppliedPostRereadFailed(string cause, IReadOnlyList<string>? warnings = null) =>
-            WithCause(DraftApplyOutcomeKind.AppliedPostRereadFailed, cause);
+        /// <summary>
+        /// The commit returned and the re-read of POST failed. The warnings that were already known (the pieces that were missing, a name
+        /// that differs, a failed regeneration) go with it, so they are not lost with the failure (F4-E16): a copy is taken on receipt.
+        /// </summary>
+        public static DraftApplyOutcome<TState> AppliedPostRereadFailed(string cause, IReadOnlyList<string>? warnings = null)
+        {
+            if (string.IsNullOrEmpty(cause)) throw new ArgumentException("A cause is required.", nameof(cause));
+            return new(DraftApplyOutcomeKind.AppliedPostRereadFailed, cause, Array.Empty<DraftDifference>(), warnings == null ? Array.Empty<string>() : warnings.ToArray(), null);
+        }
 
         /// <summary>Applied: the re-read of POST is required, since nothing is assumed applied without it.</summary>
         public static DraftApplyOutcome<TState> Applied(DraftIntentRead<TState> postRead)
