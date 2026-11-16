@@ -7466,3 +7466,22 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 **Estado:** Smoke-2 PREPARADO, en espera del Owner presente.
 
 **Límites:** solo documentación.
+
+## 221. Smoke-2 suspendido, diagnóstico y paquete de F4-T4-HOST-C1
+
+**Decisión:** F4-E74.
+
+**Smoke-2 en parte (el Owner operando):**
+- PASS en los pasos 0, 4 a 10, 12 y 15;
+- FAIL conocido en el 14 (F4-E72);
+- hallazgos F4-S2-01 a S2-03.
+
+**Orden del Owner:** corregir antes de seguir con Smoke-2.
+
+**Diagnóstico en AutoCAD:** la causa de S2-01 son los eventos de `AssocNetwork` en las propias lecturas del panel. Correcciones validadas.
+
+**F4-T4-HOST-C1:** paquete v2 (C1 el nombre, C2 la contabilidad asociativa, IC-10), con su revisión independiente incorporada (0/4/14).
+
+**F4-S2-03:** pasa a decisión del Owner.
+
+**Límites:** solo documentación; sin cambios en `src/` ni en `tests/`.

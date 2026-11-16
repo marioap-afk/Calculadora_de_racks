@@ -161,3 +161,31 @@ Si el drenaje termina y después programa o materializa la superficie activa por
 > Las pistas `DatabaseObjectChanged` y `CommandEnded` de una sesión que llegan mientras está abierto el ámbito de mutación propia de su Actualizar se registran aparte y solo invalidan las cachés de navegación. Las pistas ajenas ya pendientes conservan su efecto. El ámbito se abre en el contexto de comando, bajo el bloqueo y antes de PREPARE. Se cierra con el primer fin de comando de la sesión, que cuenta como propio; con el primer inicio de comando o la primera entrada en reposo de la sesión; con el cierre explícito del adaptador si la corrida no llega a ejecutarse; con la degradación de la sesión; y con su destrucción. Residual declarado: una escritura ajena sobre otro rack durante la ventana queda sin marcar. Concreta D-04 (O-15), C-F4-04, INV-08 e INV-28 sin cambiar el Freeze.
 
 **Variantes declaradas para Smoke-2:** si Smoke-2 pidiera V1, V2, V3 o el cierre en `Settle`, la IC añadiría la antesala, las dos fases o ese cierre. El cierre en `Settle` sería una desviación expresa de C-F4-04 y necesitaría una decisión del Owner.
+
+## IC-10. La contabilidad asociativa de AutoCAD no es un cambio del dibujo (F4-T4-HOST-C1)
+
+**Autoridad:**
+- la orden del Owner de corregir los hallazgos de Smoke-2;
+- FRZ:216-218, leído como el tipo en tiempo de ejecución del objeto del evento, con el precedente T4CP:866;
+- IC-08, cuya letra («cualquier cambio de base de datos») refina.
+
+Sustituye la frase de D-T4C-09 «los demás manejadores no cambian» (T4CP:887) solo para los cinco manejadores de objeto. No cambia el Freeze y se comunica al Owner.
+
+**Regla:** un evento de objeto de la base de datos cuyo objeto es del marco asociativo de AutoCAD (`AssocAction`, que incluye `AssocNetwork`, o `AssocDependency`):
+- no encola ninguna pista;
+- no marca los borradores;
+- no invalida las cachés de navegación;
+- sigue olvidando la secuencia de cierre (T2B2P:268).
+
+El puente clasifica solo por tipo, en el manejador y con coste constante, sin abrir el objeto. El núcleo decide. Todo otro evento de objeto y todo `CommandEnded` siguen como en IC-08. No choca con «no puede suprimir `InvalidateNavigationCaches`» (ICL:150), porque esa regla rige la mutación propia, que sigue invalidando por sus eventos de entidades y definiciones.
+
+**Por qué:** en un dibujo con objetos asociativos, AutoCAD modifica la red asociativa en cada bloqueo o confirmación, también en las lecturas del propio panel, y al terminar cada orden. Es una inferencia por la posición en la traza. Eso marcaba el borrador tras cada lectura (Smoke-2, F4-S2-01).
+
+**Residual declarado:**
+1. Un cambio que solo toque objetos `AssocAction` o `AssocDependency`:
+   - **dentro de una orden:** marca igual, por el fin de esa orden, también si se cancela o falla;
+   - **fuera de toda orden** (una paleta no modal, otro complemento en reposo o un reactor): no marca.
+
+   Un cambio así no puede alterar un sobre de rack: los Xrecord, los DBDictionary y las entidades siguen contando.
+2. El filtro se limita a esas dos jerarquías. `AssocActionBody`, `AssocDependencyBody` y las demás clases siguen contando, que es lo conservador. Solo D1 está medido.
+3. En D1, el evento asociativo posterior a `QUIT` probablemente deja la secuencia de cierre sin intacta. Es el mismo comportamiento que antes de esta IC, y Smoke-2 lo observa (T2B2P:256).

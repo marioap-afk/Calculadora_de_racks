@@ -2614,3 +2614,36 @@ No se custodia todavía: lleva nombres de proyectos de clientes y rutas locales.
 - **El paso 14:** si el nombre del rack desaparece de las vistas que redibuja el panel, se registra como «FAIL (F4-E72)», conocido, y Smoke-2 sigue. En los demás pasos no cuenta como un FAIL nuevo (regla R13 de la guía v3).
 - **La corrección del nombre** va en la tarea de I-64 que corrija los problemas que salgan de Smoke-2, junto con ellos.
 - **RACKPROYECTAR** queda para una iniciativa aparte, que el Owner abrirá después. No se reclama nada, y el diagnóstico de solo lectura queda como insumo.
+
+## F4-E74. Smoke-2 ejecutado en parte y suspendido; diagnóstico en AutoCAD; emisión de F4-T4-HOST-C1
+
+**Smoke-2 (2026-11-16, el Owner presente y operando)** se hizo con la guía v3, el DLL `8BB8E7E5…` (`b88dabf2`) y las copias preparadas (F4-E71). Registro: `F4-SMOKE-2/run/run-log-1.md`.
+
+**Resultados por paso:**
+- **PASS:** 0, 4 a 10, 12 y 15.
+- **OBSERVADO:** 1, 2 y 3 (la marca «posiblemente obsoleto» y `DBMOD` con zoom), 11 (la `LINE` del Owner) y 16 (`U` no refresca la vista).
+- **FAIL:** 14, por F4-E72, conocido: el «Actualizar» quita el rótulo del nombre en todas las vistas.
+
+**Hallazgos nuevos:**
+- **F4-S2-01:** las lecturas del panel marcan su propio borrador como «posiblemente obsoleto». Con un borrador limpio, la caja solo deja editar menos de 1 s.
+- **F4-S2-02:** borrar no inicia la edición. Es consecuencia de S2-01.
+- **F4-S2-03:** tras `U` del «Actualizar», la vista no se refresca hasta `REGEN`, y un `REGEN` entre `U` y `REDO` deja sin Rehacer.
+- **Rendimiento:** el «Actualizar» de un rack grande tarda segundos.
+
+**Orden del Owner** (`F4-DRAFTS/coordinator/owner-f4-smoke2-fix-order.md`, literal): «arregla todos los errores que encontramos y después continuamos con el SMOKE». Sustituye el «Smoke-2 primero» de F4-E73. Smoke-2 queda suspendido antes del paso 16 repetido.
+
+**Diagnóstico en AutoCAD** (`F4-DRAFTS/c1/diagnosis-report.md`):
+- **Cómo se hizo:** la sesión operó AutoCAD solo para diagnosticar, con dos builds de un worktree desechable sobre `b88dabf2` y copias que se cerraron sin guardar. No ejecutó ningún paso de Smoke-2. I-52 recibió el aviso de inicio y el de cierre.
+- **Causa de S2-01:** eventos `ObjectModified` de la red asociativa (`AssocNetwork`) dentro de las propias lecturas del panel y al terminar cada orden. El núcleo los encolaba como un cambio ajeno.
+- **Correcciones validadas en AutoCAD:** el nombre del sobre en el escritor (F4-E72) y no contar los objetos del marco asociativo (S2-01 y S2-02).
+- **Para S2-03:** una regeneración por código en reposo tras `U` o `REDO` refresca la vista y mantiene el Rehacer.
+
+**F4-T4-HOST-C1** (paquete v2, `docs/initiatives/I-64-f4-t4-host-c1-gate-contract-package.md`):
+- **Alcance:** C1 (el nombre del rack, `BuildForMember`) y C2 (la contabilidad asociativa: el puente clasifica por tipo y `EventBridgeCore.OnObjectEvent` decide), con cinco cambios de guarda declarados e IC-10.
+- **Revisión independiente de la v1:** EMITIBLE TRAS CORRECCIONES, 0 B / 4 I / 14 m. Todo se incorporó.
+- **C2 no es una decisión material de D5:** cuatro razones en D-C1-06, que se anotan al Owner.
+- **Emisión:** contrato con `attempts` 1 de 3 y cierre por la regla D2.
+
+**Fuera de la tarea, al Owner:**
+- **F4-S2-03:** cambia la lista congelada del drenaje (D-04, «y solo estas»), la intención de INV-03 y el efecto tras Undo (D5). La propuesta está en `F4-DRAFTS/c1/owner-decision-request-s2-03.md`, con la recomendación de una tarea propia con el diseño probado.
+- **El rendimiento:** la mecánica del redibujo clásico; no se cambia.
