@@ -167,6 +167,8 @@ namespace RackCad.Plugin.Drawing
             foreach (ObjectId referenceId in systemDef.GetBlockReferenceIds(directOnly: true, forceValidity: true))
             {
                 var reference = (BlockReference)tr.GetObject(referenceId, OpenMode.ForWrite);
+                // Opening for write records no undo; this no-op assignment does, so U and REDO repaint every reference of the redefined block (F4-S2-03).
+                reference.Position = reference.Position;
                 reference.RecordGraphicsModified(true);
             }
 
