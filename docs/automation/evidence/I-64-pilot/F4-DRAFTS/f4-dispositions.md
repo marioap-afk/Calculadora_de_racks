@@ -2604,3 +2604,13 @@ No se custodia todavía: lleva nombres de proyectos de clientes y rutas locales.
 - el paso 34 declara esos defectos y no los cuenta como FAIL.
 
 **Fuera de I-64:** RACKPROYECTAR tiene el mismo defecto del nombre (en main, de I-55) y otros sin explicar en el código. El diagnóstico propone una iniciativa aparte, sin crearla; la decide el Owner.
+
+## F4-E73. Decisión del Owner sobre F4-E72: Smoke-2 primero
+
+**Autoridad:** `F4-DRAFTS/coordinator/owner-f4e72-decision.md`, literal: «No hay que corregirlo aún, hay que hacer el smoke primero, cuando se vayan a corregir los probelams del smoke se corrige el defecto del nombre que afectaría I-64, después abriría otra iniciativa para rack proyectar».
+
+**Efecto:**
+- **Smoke-2** se ejecuta con el producto `b88dabf2` tal cual y con el Owner presente como operador (F4-E71).
+- **El paso 14:** si el nombre del rack desaparece de las vistas que redibuja el panel, se registra como «FAIL (F4-E72)», conocido, y Smoke-2 sigue. En los demás pasos no cuenta como un FAIL nuevo (regla R13 de la guía v3).
+- **La corrección del nombre** va en la tarea de I-64 que corrija los problemas que salgan de Smoke-2, junto con ellos.
+- **RACKPROYECTAR** queda para una iniciativa aparte, que el Owner abrirá después. No se reclama nada, y el diagnóstico de solo lectura queda como insumo.

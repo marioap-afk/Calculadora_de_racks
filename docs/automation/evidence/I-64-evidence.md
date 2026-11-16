@@ -7458,3 +7458,11 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 **Estado:** verificado en el código, no en AutoCAD. Es un modo de fallo nuevo y vuelve al Owner. Smoke-2 queda preparado y en espera de su decisión entre (a) corregir antes, que es la recomendada, y (b) ejecutar con FAIL esperado.
 
 **Límites:** solo documentación; sin cambios en `src/` ni en `tests/`.
+
+## 220. Decisión del Owner sobre F4-E72
+
+**Decisión:** F4-E73. Smoke-2 va primero, con el FAIL conocido del nombre del rack en el paso 14. La corrección del nombre irá con la de los problemas que salgan de Smoke-2, y RACKPROYECTAR tendrá una iniciativa aparte más adelante.
+
+**Estado:** Smoke-2 PREPARADO, en espera del Owner presente.
+
+**Límites:** solo documentación.
