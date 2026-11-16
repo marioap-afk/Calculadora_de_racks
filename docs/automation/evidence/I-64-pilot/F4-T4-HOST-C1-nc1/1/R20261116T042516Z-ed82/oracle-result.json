@@ -1,0 +1,53 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261116T042516Z-ed82",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Handoff",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "fail",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "fail",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Handoff",
+    "Identity",
+    "Ci"
+  ],
+  "PreviousSameAsReal": false,
+  "LaterSameAsReal": false,
+  "TriggeredStopConditions": [],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Identity": "git rev-parse HEAD y refs/remotes/origin/architecture/workspace-persistente-rackcad dieron ambos b86c3cfe2c39e7b0fea7ff6e62f431c68751d3b1. git merge-base --is-ancestor BaseSha HEAD y BaseSha RedSha devolvieron 0; RedSha CurrentSha declarado no existe: la entrega declara deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. Por tanto HEAD no coincide con CurrentSha declarado."
+  },
+  "OutputSha256": "A7EC4252E819A5901F05235BD99AD835EA33627D33D7E84AB57E9621F23E0454",
+  "ManualFreeText1610": []
+}

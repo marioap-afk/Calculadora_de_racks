@@ -2647,3 +2647,48 @@ No se custodia todavía: lleva nombres de proyectos de clientes y rutas locales.
 **Fuera de la tarea, al Owner:**
 - **F4-S2-03:** cambia la lista congelada del drenaje (D-04, «y solo estas»), la intención de INV-03 y el efecto tras Undo (D5). La propuesta está en `F4-DRAFTS/c1/owner-decision-request-s2-03.md`, con la recomendación de una tarea propia con el diseño probado.
 - **El rendimiento:** la mecánica del redibujo clásico; no se cambia.
+
+## F4-E75. F4-T4-HOST-C1: cadena y cierre
+
+**Autoridades:**
+- la orden del Owner de corregir los errores de Smoke-2 (F4-E74);
+- el paquete v2 de F4-T4-HOST-C1 (§8, cierre por D2);
+- la regla D2 (`owner-f4t4c-decisions-d1-d6.md`).
+
+**La cadena:**
+- **la planificación** `6019`: fidelidad PASS 8/8 y A1-A8 8/8, a la primera; nc4 `c6d6` PASS;
+- **el Worker** `e758`: RED `61ffc828` y GREEN `b86c3cfe`, con 11 rutas, exactamente las del AllowedWriteScope;
+- **la CI exacta:**
+  - GREEN `43801607010`, 4/4;
+  - RED `43799572094`: Core en failure con 11 fallos, todos de pruebas nuevas o cambiadas; UI en success;
+- **la verificación** `ba30`: EXECUTION_VERIFIED, 14/14.
+
+**Revisiones:**
+- la directa, 0/0/4;
+- la adversarial independiente, **ACEPTABLE CON MENORES, 0/0/3**, sin hallazgos OWNER.
+
+**Controles:**
+- **nc1** `ed82`: CONTROL NOT PASSED, conservado, con la firma EXACTA de PD-F4-04 en los cinco elementos del Owner. Se aplicó el sustituto `F4T4HOSTC1-NC1-IDENTITY-SIGNAL-01`, clonado del de T4C2 solo con su id, su alcance y su etiqueta, y dio PASS 7/7. Esta vez `TriggeredStopConditions` sale vacía (antes, S-04); la firma del Owner no incluye paradas;
+- **nc2** `9a0e`: CONTROL PASS ordinario. El falso P-02 de su primera medición de entrada se repitió desde su script, con 0 participantes, y se conserva aparte (SHA-256 `82dfdec5…`);
+- **nc3** `8dcf`: CONTROL PASS ordinario (FreeText, REWORK).
+
+**El cierre:** **F4-T4-HOST-C1 CLOSED / PASS WITH LIMITATIONS**, intento 1 de 3, por la regla D2 (paquete en `I-64-pilot/F4-T4-HOST-C1/task-close-package.md`).
+
+**Corregido:**
+- F4-E72: el nombre del rack tras «Actualizar»;
+- F4-S2-01 y F4-S2-02: las lecturas del propio panel ya no marcan su borrador.
+
+**Limitaciones:**
+- M-1, que origina el prompt de la sesión: la prueba 2 pasa ya en el RED;
+- M-2, M-3 y m-1 a m-3;
+- los residuos de IC-10.
+
+**Fuera:**
+- F4-S2-03, que espera al Owner;
+- el rendimiento.
+
+**Siguiente:**
+- el DLL Debug nuevo, compilado con AutoCAD cerrado;
+- copias nuevas;
+- el anexo de reanudación de la guía v3;
+- Smoke-2 desde el bloque 1, con el Owner presente.

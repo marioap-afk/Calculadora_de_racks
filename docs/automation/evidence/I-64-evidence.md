@@ -7497,3 +7497,18 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **`attempts`:** 1 de 3.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 223. Cierre de F4-T4-HOST-C1
+
+**Decisión:** F4-E75, por la regla D2 del Owner.
+- **Corrige:** F4-E72 (el nombre del rack) y F4-S2-01/02 (la contabilidad asociativa, IC-10). RED `61ffc828` y GREEN `b86c3cfe`.
+- **CI exacta:** 4/4.
+- **Verificación:** `ba30`, 14/14.
+- **Revisiones:** la directa, 0/0/4, y la independiente, 0/0/3.
+- **Controles:** nc1 por el sustituto de la firma exacta de PD-F4-04, y nc2 y nc3 ordinarios.
+
+**Resultado:** **F4-T4-HOST-C1 CLOSED / PASS WITH LIMITATIONS**, intento 1 de 3.
+
+**Siguiente:** F4-S2-03 espera al Owner, y Smoke-2 se reanuda desde el bloque 1 con el DLL nuevo y el Owner presente.
+
+**Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.
