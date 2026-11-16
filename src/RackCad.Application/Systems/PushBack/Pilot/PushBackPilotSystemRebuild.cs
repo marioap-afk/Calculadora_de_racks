@@ -45,7 +45,13 @@ namespace RackCad.Application.Systems.PushBack.Pilot
         /// </summary>
         public static PushBackSystem BuildForMember(PushBackPilotMemberPlan member, RackCatalog catalog)
         {
-            return Build(member.DesignText, catalog);
+            if (member == null) throw new ArgumentNullException(nameof(member));
+
+            var system = Build(member.DesignText, catalog);
+            var envelope = new RackEmbedStore().Deserialize(member.EnvelopeText)
+                ?? throw new InvalidOperationException(UnreadableEnvelopeReason);
+            system.Name = envelope.Name;
+            return system;
         }
 
         /// <summary>True when the system is a composite rack (two sides): its frontal cuts then carry the side in their name.</summary>

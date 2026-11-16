@@ -366,13 +366,34 @@ namespace RackCad.Application.Workspace
         }
 
         /// <summary>
-        /// Handler of the object events of the database (I-64 F4-T4-HOST-C1, IC-10). It is <see cref="OnSourceEvent"/> with one more fact, the
-        /// kind of object, that the bridge classifies by type alone.
+        /// Handler of the object events of the database (I-64 F4-T4-HOST-C1, D-C1-02, IC-10). It is <see cref="OnSourceEvent"/> with one more fact,
+        /// the kind of object, that the bridge classifies by type alone. An object event of the associative framework of the host
+        /// (<see cref="ObjectEventSubject.AssociativeBookkeeping"/>) is not a change of the drawing: after the same checks of the session it
+        /// answers false and nothing else happens (no hint, no idle source, nothing of the own scope, of the rest or of the counters). Any other
+        /// event, whatever its subject, has exactly the effect of <see cref="OnSourceEvent"/> and the same answer. Like every entry that
+        /// changes the state of the core, it forgets the close sequence first (T2B2P:268), also for the bookkeeping.
         /// </summary>
         public bool OnObjectEvent(SessionId session, BridgeSource source, ObjectEventSubject subject)
         {
-            return OnSourceEvent(session, source);
+            if (!_started) return false;
+            _lastAllowedClose = null;
+            if (subject != ObjectEventSubject.AssociativeBookkeeping || !IsObjectSource(source)) return OnSourceEvent(session, source);
+            try
+            {
+                if (!_states.TryGetValue(session, out var state) || state.Degraded) return false;
+                if (!_registry.TryGet(session, out var live) || live == null) return false;
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Fault(session, "OnObjectEvent." + source, ex);
+                return false;
+            }
         }
+
+        private static bool IsObjectSource(BridgeSource source) =>
+            source is BridgeSource.ObjectAppended or BridgeSource.ObjectErased or BridgeSource.ObjectModified
+                or BridgeSource.ObjectUnappended or BridgeSource.ObjectReappended;
 
         /// <summary>
         /// Close-begin handler. It lives as long as the session, degraded or not, and decides only from in-memory
