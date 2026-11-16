@@ -7485,3 +7485,15 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 **F4-S2-03:** pasa a decisión del Owner.
 
 **Límites:** solo documentación; sin cambios en `src/` ni en `tests/`.
+
+## 222. Contrato de F4-T4-HOST-C1
+
+**Contrato:** `I-64-pilot/F4-T4-HOST-C1/coordinator/gate-contract.json` (F4-E74), desde el paquete v2.
+- **Alcance:** lista blanca exacta de 11 rutas: `PushBackPilotSystemRebuild.cs`, la llamada del escritor, `EventBridgeCore.cs`, `BridgeSource.cs`, el puente y seis archivos de pruebas, dos de ellos nuevos.
+- **`ForbiddenWriteScope`:** 119 entradas, sin ningún prefijo que cubra una ruta permitida.
+- **Invariantes y paradas:** 11 invariantes (INV-C1-01 a 11) y 31 paradas (las comunes, ocho C de T4C2 y C1-S01 a S06).
+- **`RequiredTests`:** 26 filas: Core Workspace (`MinSelected` 3437) con `ExpectRed` true; las 23 clases de regresión, UI Workspace (694) y `PushBackClassicCharacterization` (55) con `ExpectRed` false.
+- **Revisiones:** `AuthorityRevision` `b28e75ad8a31bd490d67adbc74a294f35082c17c` y `MainSha` `812baf879612320653094a8aaf46aca0bac81383`.
+- **`attempts`:** 1 de 3.
+
+**Límites:** solo documentación en este paso; sin AutoCAD.

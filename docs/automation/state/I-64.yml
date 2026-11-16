@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: none
   attempts: 1
-  next_action: "F4-T4-HOST-C1: emitir el contrato (attempts 1 de 3, F4-E74) y ejecutar la cadena; despues el cierre por la regla D2 y la reanudacion de Smoke-2 con el Owner presente; F4-S2-03 espera la decision del Owner"
+  next_action: "F4-T4-HOST-C1: contrato emitido (AuthorityRevision b28e75ad); siguiente: planificacion del Controller, comparacion byte a byte, A1-A8, nc4 y Worker"
   last_evidence_commit: 0f49f69160cdffc1d2933d6165d5f472b5793d84
 execution_context:
   mode: manual
