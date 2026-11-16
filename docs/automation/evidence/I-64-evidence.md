@@ -7512,3 +7512,16 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 **Siguiente:** F4-S2-03 espera al Owner, y Smoke-2 se reanuda desde el bloque 1 con el DLL nuevo y el Owner presente.
 
 **Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.
+
+## 224. C1 comprobado en AutoCAD y F4-S2-03 diagnosticado
+
+**Decisión:** F4-E76, por la orden del Owner «Avanza lo más que puedas…».
+- **Diagnóstico en AutoCAD:** con copias desechables y sin ningún paso de Smoke-2. F4-E72, F4-S2-01 y F4-S2-02 quedan corregidos con el DLL de F4-T4-HOST-C1.
+- **F4-S2-03 es preexistente:** `RACKEDITAR` clásico hace lo mismo.
+- **La corrección:** una línea en `LateralHeaderDrawer.cs`, medida con un build desechable. `U` y `REDO` refrescan la pantalla en el panel y en el clásico.
+
+**Resultado:** el paquete de F4-T4-HOST-C2 está escrito y revisado, **sin emitir** (revision independiente 0/4/12, aplicada en la v2; Cantilever no queda cubierto). Decide el Owner (S2-03 v2), porque amplía el alcance de F4 a la primitiva de dibujo compartida y toca la categoría «Undo» de D5.
+
+**Siguiente:** la decisión del Owner y, con él presente, Smoke-2 desde el bloque 1.
+
+**Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; AutoCAD solo para diagnosticar.

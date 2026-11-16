@@ -1,0 +1,12 @@
+diff --git a/src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs b/src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs
+index 65db7060..ba98c6b1 100644
+--- a/src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs
++++ b/src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs
+@@ -167,6 +167,7 @@ namespace RackCad.Plugin.Drawing
+             foreach (ObjectId referenceId in systemDef.GetBlockReferenceIds(directOnly: true, forceValidity: true))
+             {
+                 var reference = (BlockReference)tr.GetObject(referenceId, OpenMode.ForWrite);
++                reference.Position = reference.Position; // DIAG-C3: modificacion registrada en el Undo (U/REDO refrescan la referencia)
+                 reference.RecordGraphicsModified(true);
+             }
+ 

@@ -2692,3 +2692,36 @@ No se custodia todavía: lleva nombres de proyectos de clientes y rutas locales.
 - copias nuevas;
 - el anexo de reanudación de la guía v3;
 - Smoke-2 desde el bloque 1, con el Owner presente.
+
+## F4-E76. C1 comprobado en AutoCAD; F4-S2-03 preexistente y con corrección medida; paquete de F4-T4-HOST-C2 sin emitir
+
+**Autoridad:** la orden del Owner «Avanza lo más que puedas. No estoy disponible para ver los mensajes, pero necesito que avances.» (`F4-DRAFTS/coordinator/owner-f4-advance-2026-11-16.md`), que amplía la de corregir los errores de Smoke-2 (F4-E74). **No cambia los límites permanentes**:
+- ninguna sesión de Smoke-2 sin el Owner presente;
+- nada destructivo sin avisar;
+- nada en `main`;
+- una enmienda material del Freeze exige Architect y Coordinator.
+
+**Diagnóstico en AutoCAD** (`F4-DRAFTS/c2/diagnosis-report-c2.md`). La sesión operó AutoCAD solo para diagnosticar, con copias desechables del original de D1 cerradas sin guardar. **No se ejecutó ningún paso de Smoke-2.** I-52 recibió el aviso de inicio y el de cierre.
+1. **El DLL de F4-T4-HOST-C1** (`7CD9E5D7…`), en el dibujo real:
+   - «Editar» deja «Listo para editar» y «Comprobar ahora» deja «Limpio», los dos estables y sin la marca;
+   - Retroceso borra a la primera;
+   - tras «Actualizar», el rótulo del nombre se conserva en cada vista (conteo de TEXT/MTEXT en el BTR: planta 1 → 1, lateral 1 → 1), y el estado queda «Limpio» con «Actualizado…».
+   - F4-E72, F4-S2-01 y F4-S2-02 quedan corregidos en AutoCAD.
+2. **F4-S2-03 es PREEXISTENTE.** `RACKEDITAR` clásico hace lo mismo: tras `U`, la pantalla sigue con el redibujo hasta `REGEN`, aunque la base de datos ya está revertida. El panel hereda la mecánica del redibujo de I-55.
+3. **La causa y una corrección sin eventos:**
+   - **la causa:** el redibujo abre las referencias de primer nivel para escritura sin modificarlas (`LateralHeaderDrawer.cs:167-171`), y eso no deja ningún registro de Undo;
+   - **el experimento con LISP y su control:**
+     - reescribir las inserciones dentro del mismo paso (`entmod` con los mismos datos) hace que `U` y `REDO` refresquen;
+     - sin la reescritura, no refrescan;
+   - **el build desechable** (una línea: `reference.Position = reference.Position;`; parche `F4-DRAFTS/c2/diag3.patch`): en el panel y en `RACKEDITAR`, `U` refresca sin `REGEN` y `REDO` funciona y refresca. Hubo un «Nothing to redo» en 1 de 4 `REDO` del clásico, que no se reprodujo.
+
+**Por qué no se emite:**
+- la corrección no toca el Freeze de I-64 (FRZ:506, la mecánica del Actualizar no está congelada; se conservan el paso único de UNDO y el «todo o nada»; ningún evento escribe nada);
+- pero amplía el alcance de F4 a la primitiva de dibujo compartida por todos los sistemas (`src/RackCad.Plugin/Drawing/`, prohibida en todos los contratos de F4);
+- y cambia lo que se ve tras `U` y `REDO` (la categoría «Undo» de D5).
+
+La alternativa de hacerlo solo en el piloto rompe guardas ratificadas del escritor de T4B y T4C1 (D5). **Decide el Owner**, con la decisión de S2-03 v2: **(W)**, **(b)** o **(W-p)**, y si va antes o después de Smoke-2. La opción (a) de la primera versión, con su enmienda del Freeze, queda sin uso.
+
+**Paquete:** el borrador del paquete de F4-T4-HOST-C2 (`F4-DRAFTS/c2/I-64-f4-t4-host-c2-gate-contract-package.md`) y su revisión independiente (`F4-DRAFTS/c2/independent-review-v1.md`): v1 EMITIBLE TRAS CORRECCIONES, 0 B / 4 I / 12 m, todo aplicado en la v2 (sobre todo I-1: Cantilever tiene su propio bucle y no queda cubierto; I-2: el comentario literal en ingles; I-3: la muestra de Rehacer y la regla post-cierre).
+
+**Desechables que quedan** (sin borrar; se avisa al Owner antes): el worktree `<worktree-diag3>` (detached, sin commits) y `<build-diag3>`, con los de F4-E74.
