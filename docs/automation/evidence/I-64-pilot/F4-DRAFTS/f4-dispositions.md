@@ -2725,3 +2725,28 @@ La alternativa de hacerlo solo en el piloto rompe guardas ratificadas del escrit
 **Paquete:** el borrador del paquete de F4-T4-HOST-C2 (`F4-DRAFTS/c2/I-64-f4-t4-host-c2-gate-contract-package.md`) y su revisión independiente (`F4-DRAFTS/c2/independent-review-v1.md`): v1 EMITIBLE TRAS CORRECCIONES, 0 B / 4 I / 12 m, todo aplicado en la v2 (sobre todo I-1: Cantilever tiene su propio bucle y no queda cubierto; I-2: el comentario literal en ingles; I-3: la muestra de Rehacer y la regla post-cierre).
 
 **Desechables que quedan** (sin borrar; se avisa al Owner antes): el worktree `<worktree-diag3>` (detached, sin commits) y `<build-diag3>`, con los de F4-E74.
+
+## F4-E77. Decisión del Owner sobre F4-S2-03 (v2); emisión de F4-T4-HOST-C2; corrección de las horas de F4-E76
+
+**Decisión del Owner** (`F4-DRAFTS/coordinator/owner-f4-s2-03-v2-decision.md`, literal, 2026-11-16 12:45Z): «Hacemos lo que recomiendes». Responde a la petición S2-03 v2 (`F4-DRAFTS/c2/owner-decision-request-s2-03-v2.md`, F4-E76), que marcaba como recomendada una sola opción en cada una de sus cuatro preguntas. Así, la decisión es **«(W), Cantilever fuera, basta, antes»**:
+1. **(W):** F4-S2-03 se corrige en I-64, con la sentencia de D-C2-01 en la primitiva compartida `LateralHeaderDrawer.RedefineSystemBlock`.
+2. **Cantilever fuera:** `CantileverViewMaterializer` no cambia; R-4 queda declarado.
+3. **Basta:** R-1 (el `U`/`REDO` de los demás sistemas que usan la primitiva, sin observar) basta para F4 y **se anota para la OV final de I-64**.
+4. **Antes:** la cadena de C2 va antes de reanudar Smoke-2.
+
+**Emisión de F4-T4-HOST-C2** (paquete v2, `docs/initiatives/I-64-f4-t4-host-c2-gate-contract-package.md`, sin cambios desde su custodia en F4-E76):
+- **Alcance:** dos rutas exactas: la sentencia y su comentario en `src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs`, y la guarda nueva `tests/RackCad.Tests/RedefinedViewReferenceUndoTouchGuardTests.cs`.
+- **Presupuesto:** `attempts` 1 de 3, con las reglas D2 (cierre), D3 (intento 2, nunca el 3), D4 y D5 del Owner.
+- **Ya no hacen falta:** la decisión S2-03 v1 (`F4-DRAFTS/c1/owner-decision-request-s2-03.md`), sus opciones a, b y c, y su enmienda del Freeze (H-08).
+
+**Después:** el cierre por D2, el DLL nuevo (con AutoCAD cerrado) y el anexo de Smoke-2 para C2. Smoke-2 se reanuda desde el bloque 1 con el Owner presente. Rige la regla post-cierre del §7 del paquete: un «Nothing to redo» con el DLL de C2 en una secuencia que con el DLL de C1 rehace vuelve al Owner.
+
+**Corrección declarada de F4-E76 (horas).** El informe de diagnóstico (`F4-DRAFTS/c2/diagnosis-report-c2.md`) y el aviso de cierre a I-52 dan horas ESTIMADAS que no son correctas. La custodia `43160132` no se modifica.
+
+| Dónde | Decía | Medido |
+|---|---|---|
+| Cabecera del informe (sesión 1, DLL de C1) | «~07:03Z a 07:50Z» | Inicio de `acad.exe` a las 07:03:11Z. El cierre fue antes de la compilación de diag3, que es de las 07:17Z a las 07:18:05Z (hora de escritura del DLL) |
+| §4 (sesión 2, build W) | «~08:15Z a 08:35Z» | Inicio de `acad.exe` a las 07:18:16Z. El cierre fue antes de las 07:45Z, aproximadamente |
+| Aviso de cierre a I-52 | «~08:35Z» | Antes de las 07:45Z, aproximadamente. A I-52 se le envió una corrección |
+
+**Por qué:** la sesión estimó las horas en lugar de medirlas. Las horas medidas son las de inicio de los procesos y las de escritura de los archivos (`copias.json` a las 07:02:45Z; el DLL de diag3 a las 07:18:05Z). La custodia es de las 07:51Z.

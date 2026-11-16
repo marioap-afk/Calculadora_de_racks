@@ -7525,3 +7525,16 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 **Siguiente:** la decisión del Owner y, con él presente, Smoke-2 desde el bloque 1.
 
 **Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; AutoCAD solo para diagnosticar.
+
+## 225. Decisión del Owner sobre F4-S2-03 y paquete de F4-T4-HOST-C2
+
+**Decisión:** F4-E77. El Owner contestó «Hacemos lo que recomiendes» a la petición S2-03 v2, que recomendaba una opción en cada pregunta: **(W), Cantilever fuera, basta, antes**.
+
+**Resultado:**
+- se custodia el paquete v2 de F4-T4-HOST-C2 en `docs/initiatives/` (revisión independiente 0 B / 4 I / 12 m, todo incorporado), sin cambios desde F4-E76;
+- R-1 (los demás sistemas, sin observar) se anota para la OV final de I-64;
+- la corrección de las horas de F4-E76 queda declarada en F4-E77, sin modificar la custodia `43160132`.
+
+**Siguiente:** el contrato (evidencia 226) y la cadena; después, Smoke-2 con el Owner presente.
+
+**Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.
