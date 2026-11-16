@@ -115,7 +115,7 @@ namespace RackCad.Plugin.Views
                 var embed = store.Deserialize(member.EnvelopeText)
                     ?? throw new InvalidOperationException("El sobre de la vista " + member.Key + " no se puede leer.");
                 var address = RackViewCodec.Decode(embed.Kind, embed.View, embed.Section).Address;
-                var system = PushBackPilotSystemRebuild.Build(member.DesignText, _catalog);
+                var system = PushBackPilotSystemRebuild.BuildForMember(member, _catalog);
                 PreparedViewRedraw prepared;
                 switch (address.Kind)
                 {

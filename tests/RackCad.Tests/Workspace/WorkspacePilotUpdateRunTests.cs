@@ -902,4 +902,63 @@ public class WorkspacePilotUpdateRunTests
         Assert.Throws<ArgumentNullException>(() => PushBackPilotSystemRebuild.Build(null!, PilotKit.Catalog));
         Assert.Throws<ArgumentNullException>(() => PushBackPilotSystemRebuild.IsComposite(null!));
     }
+
+    // I-64 F4-T4-HOST-C1 (D-C1-01, INV-C1-01, test 1 of D-C1-09): the system that the writer redraws carries the rack name of the envelope of ITS
+    // member, raw, because the label of the name of the views is drawn only from it. Everything runs over the text kits of the plan: the members
+    // are only deserialized, nothing is drawn.
+    [Fact]
+    public void TheSystemRebuiltForAMemberCarriesTheRackNameOfItsEnvelope()
+    {
+        var store = new RackEmbedStore();
+
+        // Every member of the plan of a rack carries the name of its envelope, and nothing else of the system changes. (The reader of the pilot
+        // admits a rack whose views share one name, so the three views carry the same one here; different names come below, by hand.)
+        var scan = PrepareKit.Scan(
+            IntentKit.Member("A1", PrepareKit.Frontal(name: "PB G")),
+            IntentKit.Member("B2", PrepareKit.Lateral(PrepareKit.ExistingPost(), name: "PB G")),
+            IntentKit.Member("C3", PrepareKit.Planta(name: "PB G")));
+        var plan = new PilotUpdateSetup(() => scan).ExpectedPlan();
+        Assert.Equal(new[] { "A1", "B2", "C3" }, plan.Members.Select(m => m.Key).OrderBy(k => k, StringComparer.Ordinal).ToArray());
+        foreach (var member in plan.Members)
+        {
+            var system = PushBackPilotSystemRebuild.BuildForMember(member, PilotKit.Catalog);
+            var plain = PushBackPilotSystemRebuild.Build(member.DesignText, PilotKit.Catalog);
+
+            Assert.Equal(store.Deserialize(member.EnvelopeText)!.Name, system.Name);
+            Assert.Equal("PB G", system.Name);
+            Assert.Equal(plain.IsComposite, system.IsComposite);
+            Assert.Equal(plain.TotalLength, system.TotalLength);
+            Assert.Equal(plain.Fronts!.Count, system.Fronts!.Count);
+            Assert.Equal(plain.InOutBeamCatalogId, system.InOutBeamCatalogId);
+            Assert.Equal(plain.HighEndBeamCatalogId, system.HighEndBeamCatalogId);
+            Assert.Equal(plain.DefensePieceId, system.DefensePieceId);
+        }
+
+        // The name goes as it is written: with spaces around it, identical; a blank one, or none, stays blank and draws no label.
+        var design = store.Deserialize(PrepareKit.Frontal())!.Design;
+        PushBackPilotMemberPlan Member(string text) => new("K0", RackEmbedDocument.ViewFrontal, 0, design!, text);
+        string? NameOf(string? written) =>
+            PushBackPilotSystemRebuild.BuildForMember(Member(IntentKit.Rewrite(PrepareKit.Frontal(), e => e.Name = written)), PilotKit.Catalog).Name;
+
+        // Each member carries the name of its OWN envelope, also when the views of a drawing were named differently.
+        Assert.Equal("Rack uno", NameOf("Rack uno"));
+        Assert.Equal("Rack dos", NameOf("Rack dos"));
+        Assert.Equal("  Mi rack  ", NameOf("  Mi rack  "));
+        Assert.Equal("   ", NameOf("   "));
+        Assert.True(string.IsNullOrWhiteSpace(NameOf("   ")));
+        Assert.True(string.IsNullOrWhiteSpace(NameOf(string.Empty)));
+        Assert.True(string.IsNullOrWhiteSpace(NameOf(null)));
+
+        // The arguments and the envelope that cannot be read: the same exceptions as the help that it extends, and one reason of its own.
+        var noMember = Record.Exception(() => PushBackPilotSystemRebuild.BuildForMember(null!, PilotKit.Catalog));
+        Assert.IsType<ArgumentNullException>(noMember);
+        var noCatalog = Record.Exception(() => PushBackPilotSystemRebuild.BuildForMember(Member(PrepareKit.Frontal()), null!));
+        Assert.IsType<ArgumentNullException>(noCatalog);
+        var notADesign = Record.Exception(() => PushBackPilotSystemRebuild.BuildForMember(new PushBackPilotMemberPlan("K0", RackEmbedDocument.ViewFrontal, 0, "not a design", PrepareKit.Frontal()), PilotKit.Catalog));
+        Assert.IsType<InvalidOperationException>(notADesign);
+        Assert.Equal(PushBackPilotSystemRebuild.UnreadableDesignReason, notADesign!.Message);
+        var unreadable = Record.Exception(() => PushBackPilotSystemRebuild.BuildForMember(Member("{ not an envelope"), PilotKit.Catalog));
+        Assert.IsType<InvalidOperationException>(unreadable);
+        Assert.Equal(PushBackPilotSystemRebuild.UnreadableEnvelopeReason, unreadable!.Message);
+    }
 }

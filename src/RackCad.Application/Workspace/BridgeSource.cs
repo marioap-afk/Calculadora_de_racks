@@ -35,6 +35,17 @@ namespace RackCad.Application.Workspace
         Idle,
     }
 
+    /// <summary>
+    /// What the object of a database object event is, as the bridge classifies it by its type alone (I-64 F4-T4-HOST-C1, IC-10): a plain
+    /// object of the drawing, or an object of the associative framework of the host, which the host modifies by itself while it locks, commits
+    /// and ends commands. Neutral: it names no type of the host.
+    /// </summary>
+    public enum ObjectEventSubject
+    {
+        Drawing,
+        AssociativeBookkeeping,
+    }
+
     /// <summary>Static classification of <see cref="BridgeSource"/>: which ones are global, which per session, which are synchronization.</summary>
     public static class BridgeSources
     {

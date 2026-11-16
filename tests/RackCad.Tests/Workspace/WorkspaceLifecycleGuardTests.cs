@@ -110,8 +110,9 @@ public class WorkspaceLifecycleGuardTests
         Assert.Equal(1, Src.Count(code, @"\b_lastAllowedClose\s*=\s*session\s*;"));
         Assert.Equal(0, Src.Count(code, @"\b_lastAllowedClose\s*=\s*(?!null\b|session\b)\w"));
         // One forgetting per entry of the core that changes its state: the twelve below, the one of the close itself and, since F4-T4C1-HOST
-        // (D-T4C-20, row 15), the three of the own mutation of the update and of the count of foreign commands.
-        Assert.Equal(16, Src.Count(code, @"\b_lastAllowedClose\s*=\s*null\s*;"));
+        // (D-T4C-20, row 15), the three of the own mutation of the update and of the count of foreign commands, and, since F4-T4-HOST-C1
+        // (D-C1-03, change 2 of 5), the one of the entry for the object events of the bridge.
+        Assert.Equal(17, Src.Count(code, @"\b_lastAllowedClose\s*=\s*null\s*;"));
         // The memory is not part of the state of a session and forgetting never walks the sessions.
         var state = Src.BodyOf(code, @"private\s+sealed\s+class\s+SessionState\b");
         Assert.DoesNotMatch(new Regex(@"SessionId\?|Allowed|Close"), state);
@@ -140,6 +141,7 @@ public class WorkspaceLifecycleGuardTests
         ("OpenOwnMutation", @"public\s+void\s+OpenOwnMutation\s*\(\s*SessionId\s+\w+\s*\)"),
         ("CloseOwnMutation", @"public\s+void\s+CloseOwnMutation\s*\(\s*SessionId\s+\w+\s*\)"),
         ("NoteForeignCommandStart", @"public\s+void\s+NoteForeignCommandStart\s*\(\s*SessionId\s+\w+\s*\)"),
+        ("OnObjectEvent", @"public\s+bool\s+OnObjectEvent\s*\(\s*SessionId\s+\w+\s*,\s*BridgeSource\s+\w+\s*,\s*ObjectEventSubject\s+\w+\s*\)"),
     };
 
     private static readonly Regex StartedGuard = new(@"if\s*\(\s*!_started\s*\)\s*return[^;]*;");
@@ -168,7 +170,7 @@ public class WorkspaceLifecycleGuardTests
     {
         var code = BridgeCore();
 
-        Assert.Equal(16, ForgettingEntries.Length);
+        Assert.Equal(17, ForgettingEntries.Length);
         foreach (var (name, signature) in ForgettingEntries)
         {
             var body = Src.BodyOf(code, signature);
@@ -198,6 +200,7 @@ public class WorkspaceLifecycleGuardTests
     [InlineData("OpenOwnMutation")]
     [InlineData("CloseOwnMutation")]
     [InlineData("NoteForeignCommandStart")]
+    [InlineData("OnObjectEvent")]
     public void TheForgettingGuardTripsForANewEntryWithoutTheForgetOrWithTheForgetAfterABranch(string name)
     {
         var code = BridgeCore();

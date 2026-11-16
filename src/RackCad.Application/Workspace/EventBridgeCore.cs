@@ -366,6 +366,15 @@ namespace RackCad.Application.Workspace
         }
 
         /// <summary>
+        /// Handler of the object events of the database (I-64 F4-T4-HOST-C1, IC-10). It is <see cref="OnSourceEvent"/> with one more fact, the
+        /// kind of object, that the bridge classifies by type alone.
+        /// </summary>
+        public bool OnObjectEvent(SessionId session, BridgeSource source, ObjectEventSubject subject)
+        {
+            return OnSourceEvent(session, source);
+        }
+
+        /// <summary>
         /// Close-begin handler. It lives as long as the session, degraded or not, and decides only from in-memory
         /// state: it reads no stored data, resolves nothing, writes nothing and opens no dialog. Without an advisor it allows. With
         /// one, the decision is the one of the advisor, and any exception of the advisor is a Veto: it is logged, never degrades the

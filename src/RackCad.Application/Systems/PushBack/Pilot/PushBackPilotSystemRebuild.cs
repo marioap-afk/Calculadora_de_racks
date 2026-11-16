@@ -17,6 +17,8 @@ namespace RackCad.Application.Systems.PushBack.Pilot
 
         public const string NotPushBackReason = "El diseño saliente del plan no es de Push Back.";
 
+        public const string UnreadableEnvelopeReason = "El sobre del miembro del plan no se puede leer.";
+
         /// <summary>
         /// The system of the serialized design of a member of the plan. A design that cannot be read, or that is not of Push Back, is an
         /// <see cref="InvalidOperationException"/> with its reason: the caller decides what that means.
@@ -33,6 +35,17 @@ namespace RackCad.Application.Systems.PushBack.Pilot
             if (design == null) throw new InvalidOperationException(NotPushBackReason);
 
             return new PushBackResolver(catalog).Resolve(design);
+        }
+
+        /// <summary>
+        /// The system of a member of the plan, the way the classic editor redraws it (I-64 F4-T4-HOST-C1, D-C1-01): the system of
+        /// <see cref="Build"/> over the design text of the member, carrying the rack name of the envelope of the same member, as it is
+        /// written there (raw: not trimmed, not changed, and a null or blank name stays so and draws no label). Nothing else of the system changes.
+        /// A member whose envelope cannot be read is an <see cref="InvalidOperationException"/> with <see cref="UnreadableEnvelopeReason"/>.
+        /// </summary>
+        public static PushBackSystem BuildForMember(PushBackPilotMemberPlan member, RackCatalog catalog)
+        {
+            return Build(member.DesignText, catalog);
         }
 
         /// <summary>True when the system is a composite rack (two sides): its frontal cuts then carry the side in their name.</summary>

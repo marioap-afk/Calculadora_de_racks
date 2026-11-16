@@ -240,35 +240,35 @@ namespace RackCad.Plugin.Workspace
                 case BridgeSource.ObjectAppended:
                 {
                     var document = FindDocument(a.NativeInstanceId);
-                    ObjectEventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
+                    ObjectEventHandler handler = (s, e) => ContainSession(a, () => _core.OnObjectEvent(a.Session, a.Source, SubjectOf(e.DBObject)));
                     document.Database.ObjectAppended += handler;
                     return () => WithDocument(a.NativeInstanceId, d => d.Database.ObjectAppended -= handler);
                 }
                 case BridgeSource.ObjectErased:
                 {
                     var document = FindDocument(a.NativeInstanceId);
-                    ObjectErasedEventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
+                    ObjectErasedEventHandler handler = (s, e) => ContainSession(a, () => _core.OnObjectEvent(a.Session, a.Source, SubjectOf(e.DBObject)));
                     document.Database.ObjectErased += handler;
                     return () => WithDocument(a.NativeInstanceId, d => d.Database.ObjectErased -= handler);
                 }
                 case BridgeSource.ObjectModified:
                 {
                     var document = FindDocument(a.NativeInstanceId);
-                    ObjectEventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
+                    ObjectEventHandler handler = (s, e) => ContainSession(a, () => _core.OnObjectEvent(a.Session, a.Source, SubjectOf(e.DBObject)));
                     document.Database.ObjectModified += handler;
                     return () => WithDocument(a.NativeInstanceId, d => d.Database.ObjectModified -= handler);
                 }
                 case BridgeSource.ObjectUnappended:
                 {
                     var document = FindDocument(a.NativeInstanceId);
-                    ObjectEventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
+                    ObjectEventHandler handler = (s, e) => ContainSession(a, () => _core.OnObjectEvent(a.Session, a.Source, SubjectOf(e.DBObject)));
                     document.Database.ObjectUnappended += handler;
                     return () => WithDocument(a.NativeInstanceId, d => d.Database.ObjectUnappended -= handler);
                 }
                 case BridgeSource.ObjectReappended:
                 {
                     var document = FindDocument(a.NativeInstanceId);
-                    ObjectEventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
+                    ObjectEventHandler handler = (s, e) => ContainSession(a, () => _core.OnObjectEvent(a.Session, a.Source, SubjectOf(e.DBObject)));
                     document.Database.ObjectReappended += handler;
                     return () => WithDocument(a.NativeInstanceId, d => d.Database.ObjectReappended -= handler);
                 }
@@ -343,6 +343,12 @@ namespace RackCad.Plugin.Workspace
                 LogFault("AutoCadEventBridge.CommandStateChanged", ex);
             }
         }
+
+        // I-64 F4-T4-HOST-C1 (IC-10): the kind of the object of an object event, by its type alone. The associative framework of the host
+        // (AssocAction, which includes AssocNetwork, and AssocDependency) modifies itself while it locks, commits and ends commands: those events
+        // are not a change of the drawing. Only type tests of the argument of the event, in memory and of constant cost: the object is not
+        // opened and nothing of it is read. It is evaluated inside the containment of the handler.
+        private static ObjectEventSubject SubjectOf(DBObject o) => o is AssocAction || o is AssocDependency ? ObjectEventSubject.AssociativeBookkeeping : ObjectEventSubject.Drawing;
 
         private static long NativeId(Document document) => document.UnmanagedObject.ToInt64();
 

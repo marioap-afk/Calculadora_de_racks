@@ -280,6 +280,35 @@ public class WorkspacePilotUpdateGuardTests
         Assert.Empty(WriterStructureViolations(Writer()));
     }
 
+    // I-64 F4-T4-HOST-C1 (D-C1-01, INV-C1-01, test 2 of D-C1-09): the system that the writer redraws is the one of the member WITH the rack name of
+    // its envelope. PrepareUnits builds it with ONE call of the help of the member, and the writer does not name the help that has no name.
+    private static IEnumerable<string> RackNameViolations(string code)
+    {
+        var prepare = Method(UpdateScope(code), @"public\s+PushBackPilotImportResult\s+PrepareUnits\s*\(");
+
+        if (Src.Count(prepare, @"\bPushBackPilotSystemRebuild\s*\.\s*BuildForMember\s*\(\s*member\s*,\s*_catalog\s*\)") != 1) yield return "PrepareUnits does not build the system with exactly one BuildForMember(member, _catalog)";
+        if (Src.Count(code, @"\bBuildForMember\b") != 1) yield return "BuildForMember is named outside PrepareUnits or more than once";
+        if (Src.Count(code, @"\bPushBackPilotSystemRebuild\s*\.\s*Build\s*\(") != 0) yield return "the writer names PushBackPilotSystemRebuild.Build";
+        if (Src.Count(code, @"\bPushBackPilotSystemRebuild\b") != 1) yield return "the writer names PushBackPilotSystemRebuild other than in the one call of PrepareUnits";
+    }
+
+    [Fact]
+    public void PrepareUnitsBuildsTheSystemOfEachMemberWithItsRackName()
+    {
+        var real = Writer();
+        const string call = "PushBackPilotSystemRebuild.BuildForMember(member, _catalog)";
+
+        Assert.Empty(RackNameViolations(real));
+        Assert.Contains(call, real, StringComparison.Ordinal);
+        // Without the name: the old help of the design alone.
+        Assert.NotEmpty(RackNameViolations(real.Replace(call, "PushBackPilotSystemRebuild.Build(member.DesignText, _catalog)", StringComparison.Ordinal)));
+        // Two builds of the system, or the build apart from the member of the loop, or the call outside PrepareUnits.
+        Assert.NotEmpty(RackNameViolations(real.Replace(call, call + ", " + call, StringComparison.Ordinal)));
+        Assert.NotEmpty(RackNameViolations(real.Replace(call, "PushBackPilotSystemRebuild.BuildForMember(plan.Members[0], _catalog)", StringComparison.Ordinal)));
+        Assert.NotEmpty(RackNameViolations(real.Replace("internal sealed class RackPilotMutationScope", "var other = " + call + ";\ninternal sealed class RackPilotMutationScope", StringComparison.Ordinal)));
+        Assert.NotEmpty(RackNameViolations(real.Replace(call, "_ = 0", StringComparison.Ordinal)));
+    }
+
     [Theory]
     [InlineData("var r = RackBlockData.Read(transaction, id);")]
     [InlineData("var t = document.Database.BlockTableId;")]

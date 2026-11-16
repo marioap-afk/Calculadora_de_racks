@@ -213,6 +213,7 @@ public class WorkspaceBridgeFacadeSourceGuardTests
 
     // I-64 F4-T4C1-HOST (D-T4C-20, row 14) widens it by exactly four more names, and only them: the three entries of the own mutation of the
     // update and of the count of foreign commands, and the query of that count. One more name, without being declared here, trips the guard.
+    // I-64 F4-T4-HOST-C1 (D-C1-03, change 1 of 5) widens it by exactly one more name: OnObjectEvent, the entry for the object events of the bridge.
     private static string[] DeclaredCoreSurface()
     {
         var t2 = new[]
@@ -226,7 +227,8 @@ public class WorkspaceBridgeFacadeSourceGuardTests
         var t2b2b = new[] { "SetLifecycleAdvisor" };
         var t2c = new[] { "CanDrainNow" };
         var t4c1 = new[] { "OpenOwnMutation", "CloseOwnMutation", "NoteForeignCommandStart", "ForeignCommandStartsOf" };
-        return t2.Concat(t3a).Concat(c2).Concat(t2b2b).Concat(t2c).Concat(t4c1).OrderBy(n => n, StringComparer.Ordinal).ToArray();
+        var c1 = new[] { "OnObjectEvent" };
+        return t2.Concat(t3a).Concat(c2).Concat(t2b2b).Concat(t2c).Concat(t4c1).Concat(c1).OrderBy(n => n, StringComparer.Ordinal).ToArray();
     }
 
     [Fact]
@@ -243,7 +245,9 @@ public class WorkspaceBridgeFacadeSourceGuardTests
 
         Assert.NotEqual(declared, real.Append("Sneaky").OrderBy(n => n, StringComparer.Ordinal).ToArray());
         Assert.NotEqual(declared, real.Where(n => n != "NoteForeignCommandStart").ToArray());
-        Assert.Equal(4, declared.Count(n => n is "OpenOwnMutation" or "CloseOwnMutation" or "NoteForeignCommandStart" or "ForeignCommandStartsOf"));
+        Assert.NotEqual(declared, real.Where(n => n != "OnObjectEvent").ToArray());
+        Assert.Contains("OnObjectEvent", declared);
+        Assert.Equal(4,declared.Count(n => n is "OpenOwnMutation" or "CloseOwnMutation" or "NoteForeignCommandStart" or "ForeignCommandStartsOf"));
     }
 
     [Fact]
