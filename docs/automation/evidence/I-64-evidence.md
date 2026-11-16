@@ -7538,3 +7538,15 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 **Siguiente:** el contrato (evidencia 226) y la cadena; después, Smoke-2 con el Owner presente.
 
 **Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.
+
+## 226. Contrato de F4-T4-HOST-C2
+
+**Contrato:** `I-64-pilot/F4-T4-HOST-C2/coordinator/gate-contract.json` (F4-E77), desde el paquete v2.
+- **Alcance:** lista blanca exacta de 2 rutas: `src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs` (dos lineas) y la guarda nueva.
+- **`ForbiddenWriteScope`:** 79 entradas, sin ningun prefijo que cubra una ruta permitida.
+- **Invariantes y paradas:** 6 invariantes (INV-C2-01 a 06) y 22 paradas (las comunes y C2-S01 a S05).
+- **`RequiredTests`:** 31 filas: la clase nueva (`MinSelected` 4) con `ExpectRed` true; Core Workspace (3468), las 23 clases de regresion, cuatro lectoras del archivo, UI Workspace (694) y `PushBackClassicCharacterization` (55) con `ExpectRed` false.
+- **Revisiones:** `AuthorityRevision` `6d02b485efaed0787849a0651e6704cbee94dd65` y `MainSha` `812baf879612320653094a8aaf46aca0bac81383`.
+- **`attempts`:** 1 de 3.
+
+**Limites:** solo documentacion en este paso; sin AutoCAD.
