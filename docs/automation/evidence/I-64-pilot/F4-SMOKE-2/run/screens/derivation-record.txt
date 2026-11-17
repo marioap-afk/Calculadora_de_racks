@@ -1,0 +1,62 @@
+Capturas de la corrida 2 de Smoke-2 de I-64 F4 (2026-11-17), preparadas para el repo publico.
+Origen: owner-NN = imagenes que el Owner pego en el chat (en run-log-2, images/NN.png); tool-* = imagenes que la herramienta de escritorio de la sesion devolvio durante la corrida (zooms del panel o de la linea de ordenes).
+Criterio: solo el panel de RackCad, las listas de Deshacer y lineas de ordenes sin rutas locales. Las pantallas completas y el dibujo de los clientes no se copian; los recortes indican su region.
+
+Owner 18 () | owner-18.png | copia exacta | sha256 986692EDFC0C416E0B400DAED6E1F6D63DFD02B7FFF86C4F290059EA162B3AE2
+Owner 19 () | owner-19.png | copia exacta | sha256 A675AF34CE90507408547E8B5FD42FC0991FE8A13B350EB34A1F763F6B1E0DAA
+Owner 20 () | owner-20.png | copia exacta | sha256 804565254BE739D4AABB765AA76572F1DA11028146C76E46F3ED56BA6BC17EBF
+Owner 21 () | owner-21.png | copia exacta | sha256 796B015BB6E9E9EFA51B57F15B283E8E7EA3A60FC5E7C9100F2455AC9997BA04
+Owner 22 () | owner-22.png | copia exacta | sha256 62E2339E253F2958B53EBF2E82640F4EC06A37987486BB89DF24D0ADDF49C4AE
+Owner 23 () | owner-23.png | copia exacta | sha256 2424591B7227EA9AD1FEDE7A0053F7C2792D39DB73098C74B438AF95201B19C2
+Owner 24 () | owner-24.png | copia exacta | sha256 A54D5B62549D010CDF076648FF94CCF15935B3A1AC741B9B87EC7C9692783566
+Owner 25 () | owner-25.png | copia exacta | sha256 25B74D5A2662451B3C5F1CD331A3E4D3BCF199397B74EC2EAF288E5BC8220C60
+Owner 26 () | owner-26.png | copia exacta | sha256 C2F8285CBC21106071663747F6325A3E28C00AE65600CD32C8A742E68E265700
+Owner 27 () | owner-27.png | copia exacta | sha256 57FF1DA1064AE1733911D982BED33EF1D3C7F3685FF189E8151968655FF92F47
+Owner 28 () | owner-28.png | copia exacta | sha256 610AE5DD5B26E834026214FEA88653E25183B3BF061CB5120F7F49FF5B13D81B
+Owner 29 () | owner-29.png | copia exacta | sha256 72100C8950C4EBB1545C646B1BFD9D59C77C6C0E0F1B9480B0F7F4BF9470CAE7
+Owner 30 () | owner-30.png | copia exacta | sha256 D83672C31A7CA11AA1E7593F65004DB47848975C3DA48B5A0BA5877C13681FDD
+Owner 31 () | owner-31.png | copia exacta | sha256 D3D0B337554C66C0E83097777730EF78FAABF07C128349B37093EE084EEC7E6F
+Owner 32 () | owner-32.png | copia exacta | sha256 230AF455BF1ACB2926095E94FD9882A860A800E3140123DC104B05AF0F12A1FC
+Owner 35 () | owner-35.png | copia exacta | sha256 D72CBA7D14F799B4DCE623A08FACCA9B273B7499D7B9A8AA39302750BC043F97
+Owner 40 () | owner-40.png | copia exacta | sha256 1989FC1559167F2AA3FBAF5E44A4771EECCED6ECBCC9A109825737E23B07D8D0
+Owner 41 () | owner-41.png | copia exacta | sha256 131580ADE7AE28B0EE096A930B9DC6E48623E588F2A8F5F790E08C8C6D804676
+Owner 33 (paso 13, panel; sin el dibujo) | owner-33-panel-crop.png | recorte x 0-290, y 0-592 de un origen de 1337x592 | sha256 7B9DF66D387A13571C18BD48D94E8DD86496945F980944B3F4B1085E62D34517 | origen (no custodiado) sha256 B0E972B79DBBC38F782ABC82FC735A36854BABB319D5D0D384A70FD86B0B4975
+Owner 36 (paso 16, panel; sin el dibujo ni la linea con ruta local) | owner-36-panel-crop.png | recorte x 0-318, y 0-764 de un origen de 1413x764 | sha256 A7D23D90613E35ACFE990CFEBBDD1CBFC10A1656256DE488F804916E17F0A230 | origen (no custodiado) sha256 0BF80E9157DB5F4B51BC035547D3766C3371465B0889E1B8B28CCC6F2190D860
+Owner 37 (pasos 17 y 18, panel; sin el dibujo) | owner-37-panel-crop.png | recorte x 0-305, y 0-771 de un origen de 1296x771 | sha256 5A4A1BB10A9EA3B4E8972D1DE5341D493F9A43310B6549A0C770A2E1F542E82C | origen (no custodiado) sha256 09C7C313AB1E90BE61649A8D8542CA1C3EF5C24624152E86FA04FC8BE83B16C9
+Owner 37 (paso 17, lineas _u INTELLIPAN, _u EXECUTEFUNCTION, REDO y EXECUTEFUNCTION; sin la linea con ruta local) | owner-37-cmdline-crop.png | recorte x 335-1296, y 688-752 de un origen de 1296x771 | sha256 A42BC1DB1FED00E1409908D87801BEB1822CFEB876BD5BF382E4770340DE5759 | origen (no custodiado) sha256 09C7C313AB1E90BE61649A8D8542CA1C3EF5C24624152E86FA04FC8BE83B16C9
+Owner 38 (paso 20, panel; sin el dibujo) | owner-38-panel-crop.png | recorte x 0-312, y 0-761 de un origen de 1724x761 | sha256 8E4582E31E422476ECABD3E21879F21C9CA1BE281E2E7F4EEAF0AE72E554273D | origen (no custodiado) sha256 4B21BD7CBEA7BEE8024FA3A48ECDF4546B3B90C2EF7FC6C066B35E2935672581
+Owner 39 (paso 20, Deshacer; sin el borde del dibujo) | owner-39-undo-crop.png | recorte x 0-158, y 0-392 de un origen de 176x392 | sha256 DE62B79D2BA945F9598B6AFFBA17391F6AC8F8F51BE7A40226DB5FAC89173BB9 | origen (no custodiado) sha256 C92D78FEE8CC75088F124CF1D508365FE868E1ACBAA03A5C4075A044F3851B92
+Owner 42 (paso 28, Deshacer antes; sin el borde del dibujo) | owner-42-undo-crop.png | recorte x 0-186, y 0-675 de un origen de 258x675 | sha256 4ABE132028632EBC06D58C4052C1B134A92829702D5074D1EF8BA95A7E5F3F8F | origen (no custodiado) sha256 F4E06A04D2497BAFA756B8F4BC7E9F5ACA26C4DE82218620735A568A700CC2BA
+Owner 34 (paso 13, solo el dibujo): no se custodia.
+Herramienta: paso 66, D3a: ninguna referencia anidada de la planta ni de la frontal _1 de 0bb9386e | tool-p66-D3a-anidados-0.jpg | copia exacta | sha256 E5C32CE5D8F316A06B49EC533AABE9577A634331CE6A8B55F866C6FF3F3B9E93
+Herramienta: paso 66, D3a: la frontal _1 (0bb9386e) con 0 referencias | tool-p66-D3a-frontal1-refs-0.jpg | copia exacta | sha256 847909E451875197C001096C39D3C96D94D6B9CCC95FEDFAF41D43CBEF33B25E
+Herramienta: paso 66, D3b: definiciones con lado B presente (f6fa1734) y 0 referencias | tool-p66-D3b-AB-refs-0.jpg | copia exacta | sha256 385274796139AE5B3F1DCF7C99FE6913350E34490B9A4BA328D0ED77D63054E7
+Herramienta: paso 66, D3b: 525 INSERT con 10 nombres, ninguno de rack | tool-p66-D3b-525-inserts-10-nombres.jpg | copia exacta | sha256 5C2982CE09868475B25C35ACBA58E3A01BC5D5AE9B80EF6C9C4D82E9D610460C
+Herramienta: paso 67, D4: el panel con los 69 INSERT seleccionados, 0 racks | tool-p67-D4-0-racks.jpg | copia exacta | sha256 DFBF79066AD12945021375116E6E19EDE1F6DE44829C5AD90B1560CB4660FFF8
+Herramienta: paso 68, D5-01: cabecera, fuera del piloto (F5) | tool-p68-D5-01-cabecera-F5.jpg | copia exacta | sha256 404C3C5EC076DDFB16AA31A483EC04D50C729146473FD182C29F2C347FEC5F19
+Herramienta: paso 68, D5-02: Selectivo 2, fuera del piloto (F5) | tool-p68-D5-02-selectivo-F5.jpg | copia exacta | sha256 00AA19D6CF3E3E6068093D49CE1BA483C632F6D24E307B271E051446E56C2127
+Herramienta: paso 68, D5-03: Dinamico 1, fuera del piloto (F5) | tool-p68-D5-03-dinamico-F5.jpg | copia exacta | sha256 AE2925830BC355298831B1DD56E43C4D2E86C0E7EAB92CD98A0A373DD2E2BA0E
+Herramienta: paso 68, D5-04: 0 racks y 525 otros objetos | tool-p68-D5-04-0-racks.jpg | copia exacta | sha256 11499B6574ED71F8613892ABEFEFEA33719967AE23EDCFC5D4DED531698D8605
+Herramienta: paso 68, D5-05: 2 racks (dinamicos) y 2 otros objetos | tool-p68-D5-05-2-racks.jpg | copia exacta | sha256 91046A280781F42B54A12B3FCFC61ABF248174C75E641667CF2E25463C5A2BB1
+Herramienta: paso 70: DBMOD = 1 en D1 | tool-p70-DBMOD-1.jpg | copia exacta | sha256 24E91E268C237F184DC97DE9607401026DA5D0053C25D3BB6BF10FBCC4729EB8
+Herramienta: paso 70: el veto de RackCad tras responder No | tool-p70-veto-tras-No.jpg | copia exacta | sha256 DC0B3AC43D809643527C6F25EDCF61AE70315C6667F8AD25C7E1FC7BFA610BC7
+Herramienta: paso 73: borradores descartados | tool-p73-descartados.jpg | copia exacta | sha256 5D258344F1C039DB7FD6849F27A12CC34C2F1ACD6B9F615AEAB9C63BA5B32B24
+Herramienta: paso 74: RACKPANELDESCARTAR en D2 sin borradores | tool-p74-RACKPANELDESCARTAR.jpg | copia exacta | sha256 2804BDA671591EC60E124C0FD79E63B72728E7D0CBA50730BDD1C8AF78F4718F
+Herramienta: paso 75: DBMOD 0 y 1 tras seleccionar A | tool-p75-DBMOD-0-a-1.jpg | copia exacta | sha256 333E107F6D3BAAA19D60D482970DCF96F56716DD693D212FC56F8BE9010BD2AE
+Herramienta: paso 79: No se aplico ... unit 2 | tool-p79-no-se-aplico-unit2.jpg | copia exacta | sha256 62C3E7D1AECC0460B8A12C75F912984A345F454C45F8AE8E144F754E0CF14D7F
+Herramienta: paso 79: Deshacer con Executefunction | tool-p79-deshacer-executefunction.jpg | copia exacta | sha256 5F42CF7C99E3DB92C828E2C72121BCA1DF9A9C61DE895DEE526808400A6C9040
+Herramienta: paso 79: AnnotationScale = 1 en planta y lateral | tool-p79-AnnotationScale-1.jpg | copia exacta | sha256 A43306E6A17F0244EBC4AD63FA52017EDD21E7D24AC6782FF8DC2AB074BE8152
+Herramienta: paso 82: Desconocido, A2-11 dos veces | tool-p82-desconocido.jpg | copia exacta | sha256 EACA73FF8D2BE74D76F1C758C8936BFFB713085F543F66192255EC61C9B3E513
+Herramienta: paso 82: AnnotationScale = 1 | tool-p82-AnnotationScale-1.jpg | copia exacta | sha256 DB25693AD56B150F471AE110E74391CD6E9D8225506538C6350A4F8B3711935A
+Herramienta: paso 82: Comprobar ahora, A2-07 | tool-p82-A2-07.jpg | copia exacta | sha256 769657F7B4884605E0EC8DB9B8ADF852F326DEBBE284A1DFED3275A6AD3CB0B9
+Herramienta: paso 84: Desconocido, A2-11 dos veces | tool-p84-desconocido.jpg | copia exacta | sha256 86DC95BDC31BB64FB8F63E15E17FCA61D44530CFE2B348DA8BB7B466CFD4D948
+Herramienta: paso 84: AnnotationScale = 2 (escritura confirmada) | tool-p84-AnnotationScale-2.jpg | copia exacta | sha256 EBACA666E4C679CBAB4655FA8EDE7043AE564846D28AA9E86F33A87CE2AEED39
+Herramienta: paso 84: Conflicto, A2-09, SEAL_FAILED y las tres opciones | tool-p84-conflicto-SEAL_FAILED.jpg | copia exacta | sha256 0130FD42BC67C657B51D87B0F0C4CA8D71AB7FB0C33087C83CDB758A8FC76249
+Herramienta: paso 84: A2-20 | tool-p84-A2-20.jpg | copia exacta | sha256 BCCB8DE0F1BBEEF482E131F448A1C3628122A76C07AAA6C2140A1C53A3D2891C
+Herramienta: paso 84: A2-30, Limpio | tool-p84-A2-30.jpg | copia exacta | sha256 90782301F9635F9A0D0D4EFA908AF6DBF0CCE4BC1B7B03D6EA147E3B77D74A30
+Herramienta: paso 87: -RENAME del bloque de la planta | tool-p87-rename.jpg | copia exacta | sha256 2E6CB6EC0CC74ADFF147CAE03200EEA758C54E0D976A823BAFC47A0D0A7AAE5F
+Herramienta: paso 87: -BLOCK con el nombre anotado | tool-p87-block.jpg | copia exacta | sha256 7039C646366DBFCC304A5C4620A563F50B9384D8373D513392D6A2F8922E6237
+Herramienta: paso 87: Actualizado con avisos, Limpio | tool-p87-actualizado-con-avisos.jpg | copia exacta | sha256 EA0931A8483D90644DAA415926959A9F7681D9C603EDE4971962EBFA9ECF6997
+Herramienta: paso 87: AnnotationScale = 2 en las dos vistas | tool-p87-AnnotationScale-2.jpg | copia exacta | sha256 91531B64DC0868FA589C37F97778D81C87F6CBE964FF17E0D875A7A5087EC4F3
+Herramienta: paso 70, el aviso del panel tras el veto (solo el panel) | tool-p70-aviso-del-panel-crop.png | recorte x 0-148, y 92-400 de un origen de 874x491 | sha256 95EABF5073E2CA13042F4EC8F7D446C852FC2140C363F13B28527BA5F3B48BE6 | origen (no custodiado) sha256 0DB248924E2BDAD46FB1357230053E995B642256548DE86254A97DF988FEC4DD
+Herramienta: paso 76, ventana de texto: DBMOD 0 antes y 17 tras el ZOOM de objeto (sin la barra inferior) | tool-p76-F2-DBMOD-0-a-17-crop.png | recorte x 0-874, y 0-295 de un origen de 874x491 | sha256 547E41CAD04BD3794D33C181FF6C9B6D487BF9619C0E67D009924677E654892D | origen (no custodiado) sha256 118E135748FFA43D6367246299C7D582386C927DC9677434E37912DB8CE8D441

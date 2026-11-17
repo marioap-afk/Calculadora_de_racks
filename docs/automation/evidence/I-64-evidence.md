@@ -7568,3 +7568,21 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 **Siguiente:** el DLL nuevo y Smoke-2 desde el bloque 1, con el Owner presente.
 
 **Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.
+
+## 228. Smoke-2, corrida 2, y disposición del Owner
+
+**Decisión:** F4-E79.
+- **Corrida:** 2026-11-17, de 00:40Z a 05:20Z, pasos 0 a 88, con el DLL de C2 (Plugin `798C9366…4E48`).
+- **Operador:** el Owner hasta el paso 29 y la sesión desde el 30, por orden del Owner.
+- **Disposición del Owner:** **PASS WITH ONE PRODUCT DEFECT / REWORK REQUIRED**.
+  - El paso 50 («Ver» con una selección previa) es defecto confirmado y requiere una corrección NARROW y un mini-smoke de 7 casos.
+  - 70 a 72 pasan a OBSERVED / TEST-DRAWING CONDITION; el veto es PASS tras «No».
+  - Los casos sin referencias son NOT AVAILABLE FOR PHYSICAL SMOKE.
+  - Ratificados PASS: las inyecciones UNIT=2, SEAL=before y SEAL=after, Aplicado con avisos y el cierre en vuelo en la rama (a).
+- **Integridad:** 7 originales y 37 copias intactos; ningún error de RackCad ni de aplicación.
+
+**Custodia:** `I-64-pilot/F4-SMOKE-2/run/`, con el registro, el resumen, la integridad, los inventarios y las capturas con su registro de derivación. También `prep/` (el DLL y los anexos de C1 y C2) y `F4-DRAFTS/coordinator/`, con la orden de operador y la disposición literal.
+
+**Siguiente:** el diagnóstico del paso 50 y su corrección NARROW. F4 sigue abierta.
+
+**Límites:** solo documentación; sin cambios en `src/` ni en `tests/`. Las rutas locales van con marcadores, y los nombres de cliente no aparecen.

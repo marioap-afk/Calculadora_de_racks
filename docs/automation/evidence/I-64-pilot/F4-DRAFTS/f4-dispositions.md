@@ -2796,3 +2796,56 @@ La alternativa de hacerlo solo en el piloto rompe guardas ratificadas del escrit
 - copias nuevas;
 - el anexo de C2;
 - Smoke-2 desde el bloque 1, con el Owner presente.
+
+## F4-E79. Smoke-2, corrida 2: terminada, disposición del Owner y custodia
+
+**Autoridades:**
+- la orden del Owner de pasar el control de Smoke-2 a la sesión desde el paso 30 (`F4-DRAFTS/coordinator/owner-smoke2-session-operator.md`);
+- la disposición del Owner sobre la corrida 2 (`F4-DRAFTS/coordinator/owner-f4-smoke2-run2-disposition.md`, literal);
+- la guía v3, con los anexos de C1 y C2 (`F4-SMOKE-2/prep/annex-c1.md` y `annex-c2.md`).
+
+**La corrida:** 2026-11-17, de 00:40Z a 05:20Z, pasos 0 a 88.
+- DLL de C2 (`F4-SMOKE-2/prep/dll-c2.md`): producto `9abc1320`, compilado desde `9f894587`, Plugin `798C9366…4E48`.
+- Operó el Owner hasta el paso 29 y la sesión desde el 30, con control de pantalla.
+- Registro literal: `F4-SMOKE-2/run/run-log-2.md`. Resumen de la sesión: `F4-SMOKE-2/run/owner-summary-run2.md`.
+- Integridad: `F4-SMOKE-2/run/integrity.md`. Inventarios de S2-15: `F4-SMOKE-2/run/inventories/`. Capturas: `F4-SMOKE-2/run/screens/`, con su `derivation-record.txt`.
+
+**La disposición del Owner:** **SMOKE-2 RUN 2: PASS WITH ONE PRODUCT DEFECT / REWORK REQUIRED.** No se repite el Smoke-2 completo, y la evidencia se custodia ya.
+- **Paso 50: CONFIRMED PRODUCT DEFECT, FAIL.** Con una selección previa en AutoCAD, «Ver» no navega. Toca una corrección NARROW. Antes de modificar, se reproduce y se determina la causa: selección implícita, PICKADD, foco, `SetImpliedSelection`, la secuencia selección/vista u otra interacción del host. Se conserva toda la semántica de navegación; no es motivo para refactorizarla. Después va un mini-smoke dirigido de 7 casos; si pasa, el paso 50 queda CLOSED.
+- **Pasos 70 a 72:** pasan a **OBSERVED / TEST-DRAWING CONDITION**, no a fallo de RackCad. D1 llega a DBMOD ≠ 0 sin el panel: 0 al abrir, bit 1 tras una regeneración o un ZOOM, y el dibujo tiene objetos proxy de una aplicación ausente.
+  - El **veto es PASS** después de responder «No» en CLOSE, CLOSE repetido, X de la pestaña, CLOSEALL y QUIT.
+  - La pregunta de AutoCAD llega ANTES del veto cuando el dibujo tiene modificaciones propias de AutoCAD; RackCad no controla el orden de ese diálogo.
+  - La rama «Sí» queda como observación: no implica que se escriba el borrador.
+- **Casos no disponibles:** se aceptan como **NOT AVAILABLE FOR PHYSICAL SMOKE**, no FAIL, sin fabricar dibujos. Son el divergente, el A/B, el Push Back antiguo, el borrador de D2 y las demás clases anotadas en el registro.
+  - Los criterios estáticos de C-F4-06 contaron sobres en definiciones de bloque sin comprobar que estuvieran insertadas.
+  - Su respaldo sigue siendo la evidencia automatizada.
+- **Ratificados PASS:**
+  - las inyecciones: el fallo de escritura antes del cambio authored (UNIT=2), SEAL=before, SEAL=after con persistencia desconocida, y la reconciliación posterior;
+  - Aplicado con avisos (paso 87), validado físicamente, con `AnnotationScale` = 2 en las dos vistas enlazadas;
+  - el cierre con el Actualizar en vuelo, solo en la rama observada (a). La carrera a mitad de transacción no se provocó.
+- **«Ningún sobre editable»:** es DISEÑO, cubierto por T4B I-9.
+- **Seguridad, ratificada:**
+  - 7 originales y 37 copias intactos;
+  - ningún guardado involuntario;
+  - ni acad.exe ni accoreconsole al terminar;
+  - ninguna `RACKCAD_DEBUG_*`;
+  - ninguna línea `ERROR` de RackCad;
+  - ningún error de aplicación relevante;
+  - «Load Once» fue la elección correcta.
+- **Las carpetas de diagnóstico** se conservan hasta entender la causa del paso 50 y custodiar lo necesario.
+
+**Resultado:** **SMOKE-2 RUN 2 — PASS WITH ONE PRODUCT DEFECT / REWORK REQUIRED**. El bloqueante es el paso 50.
+- **Limitaciones aceptadas:**
+  - el orden de la pregunta de guardar, por condición del dibujo;
+  - las clases de dibujo no disponibles;
+  - las condiciones internas no observables sin instrumentación;
+  - la carrera de cierre a mitad de transacción, no provocada.
+- **Firma prevista:** tras la corrección y el mini-smoke, Smoke-2 se firma **PASS WITH LIMITATIONS** sin otra corrida completa.
+
+**F4:** **PRODUCT IMPLEMENTATION COMPLETE, PHYSICAL VALIDATION NEAR COMPLETE, ONE TARGETED NAVIGATION DEFECT OPEN.** No se cierra hasta tener:
+- la corrección del paso 50;
+- el mini-smoke en PASS;
+- la custodia de la adenda;
+- la firma final del Owner.
+
+**Siguiente:** el diagnóstico del paso 50 (reproducir y determinar la causa) y, después, la tarea de corrección NARROW.

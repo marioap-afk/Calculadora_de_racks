@@ -1,0 +1,47 @@
+1D2323	dynamic 5ad610e8	Dinámico 1 - copia - lateral 1	Dinámico 1 - copia - lateral 1
+1CFA73	dynamic 5ad610e8	Dinámico 1 - copia - lateral 1	Dinámico 1 - copia - lateral 1
+1CC51E	pushback 895e2833	Dinámico bloque 1 - copia - copia - copia - copia (2)	Dinámico bloque 1 - copia - copia - copia - copia (2)
+1CC51D	pushback f742f42e	Dinámico bloque 1 - copia - copia - copia - copia - copia	Dinámico bloque 1 - copia - copia - copia - copia - copia
+1CBA6D	dynamic 5ad610e8	Dinámico 1 - copia	Dinámico 1 - copia
+1A9DD9	dynamic b1cf2ab6	Dinámico 1 - copia - copia - copia - copia - lateral 1	Dinámico 1 - copia - copia - copia - copia - lateral 1
+1A53B6	pushback ed80a7d3	Dinámico bloque 1 - copia - copia - copia - copia (1)	Dinámico bloque 1 - copia - copia - copia - copia (1)
+1A2238	dynamic b1cf2ab6	Dinámico 1 - copia - copia - copia - copia - lateral 1	Dinámico 1 - copia - copia - copia - copia - lateral 1
+19F9FE	dynamic 12b7a51e	Dinámico 1 - copia - copia - copia	Dinámico 1 - copia - copia - copia
+19F086	dynamic bc51ffbc	Dinámico 1 - copia - copia	Dinámico 1 - copia - copia
+18B629	pushback c3b279f1	Dinámico bloque 1 - copia - copia - copia - copia - planta	Dinámico bloque 1 - copia - copia - copia - copia - planta
+18B303	dynamic e8db6dce	Dinámico 1 - planta	Dinámico 1 - planta
+18B2DB	pushback 12239492	Dinámico bloque 1 - copia - copia - copia - planta	Dinámico bloque 1 - copia - copia - copia - planta
+18B275	pushback c3b279f1	Dinámico bloque 1 - copia - copia - copia - copia - frontal entrada-salida	Dinámico bloque 1 - copia - copia - copia - copia - frontal entrada-salida
+17FB9B	dynamic e8db6dce	Dinámico 1 - lateral 1	Dinámico 1 - lateral 1
+15F6AA	pushback 12239492	Dinámico bloque 1 - copia - copia - copia - frontal entrada-salida	Dinámico bloque 1 - copia - copia - copia - frontal entrada-salida
+15C3E6	dynamic e8db6dce	Dinámico 1 - frontal salida	Dinámico 1 - frontal salida
+149BA6	dynamic e8db6dce	Dinámico 1 - lateral 1	Dinámico 1 - lateral 1
+ins=896
+DEF Dinámico bloque 1 - copia - copia	pushback 616e97c4	refs=0
+DEF Dinámico bloque 1 - copia - copia - copia - planta	pushback 12239492	refs=1
+DEF Dinámico 1 - lateral 1	dynamic e8db6dce	refs=2
+DEF Dinámico 1 - planta	dynamic e8db6dce	refs=1
+DEF Dinámico bloque 1 - copia - copia - copia - lateral 1	pushback 12239492	refs=0
+DEF Dinámico 1 - frontal salida	dynamic e8db6dce	refs=1
+DEF Dinámico bloque 1 - copia - copia - copia - frontal entrada-salida	pushback 12239492	refs=1
+DEF Dinámico bloque 1 - copia - copia - copia - copia - planta	pushback c3b279f1	refs=1
+DEF Dinámico bloque 1 - copia - copia - copia - copia - copia - planta	pushback 46e74587	refs=0
+DEF Dinámico bloque 1 - copia - copia - copia - copia - frontal entrada-salida	pushback c3b279f1	refs=1
+DEF Dinámico bloque 1 - copia - copia - copia - copia	pushback 0bb9386e	refs=0
+DEF Dinámico bloque 1 - copia - copia - copia - copia - frontal entrada-salida_1	pushback 0bb9386e	refs=0
+DEF Dinámico 1 - copia - planta	dynamic b8bd8089	refs=0
+DEF Dinámico 1 - copia - copia - planta	dynamic e9df8add	refs=0
+DEF Dinámico 1 - copia - copia - copia - planta	dynamic 7df1352c	refs=0
+DEF Dinámico 1 - copia - copia	dynamic bc51ffbc	refs=1
+DEF Dinámico 1 - copia - copia - copia	dynamic 12b7a51e	refs=1
+DEF Dinámico 1 - copia - copia - copia - copia - planta	dynamic b1cf2ab6	refs=0
+DEF Dinámico 1 - copia - copia - copia - copia - lateral 1	dynamic b1cf2ab6	refs=2
+DEF Dinámico bloque 1 - copia - copia - copia - copia (1)	pushback ed80a7d3	refs=1
+DEF Dinámico bloque 1 - copia - copia - copia - copia - lateral 1	pushback ed80a7d3	refs=0
+DEF Dinámico bloque 1 - copia - copia - copia - copia - lateral 1_1	pushback c3b279f1	refs=0
+DEF Dinámico 1 - copia	dynamic 5ad610e8	refs=1
+DEF Dinámico bloque 1 - copia - copia - copia - copia - copia	pushback f742f42e	refs=1
+DEF Dinámico bloque 1 - copia - copia - copia - copia (2)	pushback 895e2833	refs=1
+DEF Dinámico 1 - copia - lateral 1	dynamic 5ad610e8	refs=2
+DEF Dinámico bloque 1 - copia - copia - copia - copia - copia - lateral 1	pushback f742f42e	refs=0
+sobres=27

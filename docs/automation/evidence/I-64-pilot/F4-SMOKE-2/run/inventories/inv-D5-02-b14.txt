@@ -1,0 +1,40 @@
+37BA4D	selective f77d1564	Selectivo 2 - lateral 1	Selectivo 2 - lateral 1
+33F9C5	selective 90ee442b	Selectivo 2 - copia	Selectivo 2 - copia
+33D1EE	selective f77d1564	Selectivo 2 - planta	Selectivo 2 - planta
+339C17	selective f77d1564	Selectivo 2	Selectivo 2
+31226C	pushback 4b0b7357	PB C - lateral 1_1	PB C - lateral 1_1
+30F02D	pushback 09b032dd	PB D - lateral 1	PB D - lateral 1
+30CFEE	pushback e9f453ef	PB E - lateral 1	PB E - lateral 1
+30977A	pushback 77a36905	PB F - lateral 1	PB F - lateral 1
+307246	pushback 8b3a89ec	PB G - lateral 1	PB G - lateral 1
+303BC4	pushback f2852305	PB B - copia	PB B - copia
+2FB5CB	pushback 5a399f13	PB B - planta	PB B - planta
+2FA633	pushback 4b0b7357	PB C - planta	PB C - planta
+2FA632	pushback 09b032dd	PB D - planta	PB D - planta
+2F7FD7	pushback 77a36905	PB F - planta	PB F - planta
+2F3B9B	pushback e9f453ef	PB E - planta	PB E - planta
+2F127C	pushback 8b3a89ec	PB G - planta	PB G - planta
+ins=4453
+DEF PB G - planta	pushback 8b3a89ec	refs=1
+DEF PB E - planta	pushback e9f453ef	refs=1
+DEF PB F - planta	pushback 77a36905	refs=1
+DEF PB D - planta	pushback 09b032dd	refs=1
+DEF PB C - planta	pushback 4b0b7357	refs=1
+DEF PB A - planta	pushback e511b9d1	refs=0
+DEF PB B - planta	pushback 5a399f13	refs=1
+DEF PB B - copia	pushback f2852305	refs=1
+DEF PB G - lateral 1	pushback 8b3a89ec	refs=1
+DEF PB F - lateral 1	pushback 77a36905	refs=1
+DEF PB C - lateral 1	pushback 4b0b7357	refs=0
+DEF PB E - lateral 1	pushback e9f453ef	refs=1
+DEF PB D - lateral 1	pushback 09b032dd	refs=1
+DEF PB C - lateral 1_1	pushback 4b0b7357	refs=1
+DEF Selectivo 1 - planta	selective 0b481509	refs=0
+DEF Selectivo 1	selective 0b481509	refs=0
+DEF Cabecera 1 - planta	cabecera 83811a7d	refs=0
+DEF Cabecera 2 - planta	cabecera 53375141	refs=0
+DEF Selectivo 2	selective f77d1564	refs=1
+DEF Selectivo 2 - planta	selective f77d1564	refs=1
+DEF Selectivo 2 - copia	selective 90ee442b	refs=1
+DEF Selectivo 2 - lateral 1	selective f77d1564	refs=1
+sobres=22

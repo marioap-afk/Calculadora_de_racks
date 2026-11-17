@@ -1,0 +1,16 @@
+32A24A	cabecera 53375141	Cabecera 2 - planta	Cabecera 2 - planta	16210
+32A23E	cabecera 53375141	Cabecera 2 - planta	Cabecera 2 - planta	16210
+329D73	cabecera 53375141	Cabecera 2 - planta	Cabecera 2 - planta	16210
+329CA2	cabecera 53375141	Cabecera 2 - planta	Cabecera 2 - planta	16210
+31226C	pushback 4b0b7357	PB C - lateral 1_1	PB C - lateral 1_1	290379
+30F02D	pushback 09b032dd	PB D - lateral 1	PB D - lateral 1	271309
+30CFEE	pushback e9f453ef	PB E - lateral 1	PB E - lateral 1	290565
+30977A	pushback 77a36905	PB F - lateral 1	PB F - lateral 1	290565
+307246	pushback 8b3a89ec	PB G - lateral 1	PB G - lateral 1	271571
+303BC4	pushback f2852305	PB B - copia	PB B - copia	273412
+2FB5CB	pushback 5a399f13	PB B - planta	PB B - planta	273817
+2FA633	pushback 4b0b7357	PB C - planta	PB C - planta	290379
+2FA632	pushback 09b032dd	PB D - planta	PB D - planta	271309
+2F7FD7	pushback 77a36905	PB F - planta	PB F - planta	290565
+2F3B9B	pushback e9f453ef	PB E - planta	PB E - planta	290565
+2F127C	pushback 8b3a89ec	PB G - planta	PB G - planta	271571
