@@ -108,7 +108,7 @@ namespace RackCad.Application.Systems.Shared
             if (address.Variant.Kind == RackViewVariantKind.Whole)
                 return address.Kind == DimensionViewKind.Planta;
             if (address.Variant.Kind == RackViewVariantKind.Post)
-                return posts.Contains(address.Variant.Index) || address.Variant.Index >= 0;
+                return posts.Contains(address.Variant.Index);
             if (address.Variant.Kind == RackViewVariantKind.PushBackCut)
                 return address.Variant.PushBackSide == RackPushBackSide.A || isComposite;
             return false;

@@ -317,6 +317,10 @@ namespace RackCad.Application.Systems.PushBack
             {
                 DefaultTopology = PushBackCellTopology.Encontradas;
             }
+            else if (!present && DefaultTopology == PushBackCellTopology.Encontradas)
+            {
+                DefaultTopology = PushBackCellTopology.SoloA;
+            }
         }
 
         /// <summary>

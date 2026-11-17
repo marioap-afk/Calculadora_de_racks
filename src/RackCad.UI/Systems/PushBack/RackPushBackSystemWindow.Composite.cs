@@ -836,7 +836,8 @@ namespace RackCad.UI.Systems.PushBack
             if (structure != null)
             {
                 composite.ParkDormantTail(
-                    structure.Modules.Take(0),
+                    structure.Modules.Where(module => module != null
+                        && PushBackCompositeStructure.IsCompositeTailId(module.ModuleId)),
                     structure.HeaderLineOverrides.Where(line => line != null
                         && PushBackCompositeStructure.IsCompositeTailId(line.ModuleId)));
             }

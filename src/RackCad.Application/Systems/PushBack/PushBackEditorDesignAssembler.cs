@@ -208,7 +208,8 @@ namespace RackCad.Application.Systems.PushBack
             // B invertido. Compararla contra el layout de profundidad de A daba siempre distinto (17 modulos contra
             // 8, base 17 contra 8), asi que todo recalculo de un compuesto reconstruia desde cero.
             var rebuildShape = state.WorkingBaseline?.Composite?.Of(PushBackSide.A)?.Local?.Structure ?? baseline;
-            var mustRebuild = restoredIds.Count > 0
+            var mustRebuild = standardRestore
+                              || restoredIds.Count > 0
                               || DynamicEditorDesignAssembler.MustRebuild(rebuildShape, pallet, depthLayout);
 
             DynamicRackSystem system;
@@ -296,7 +297,7 @@ namespace RackCad.Application.Systems.PushBack
             // only — no rule is restated here; the resolver, DynamicSeparatorGeometry, the lateral builder and the BOM
             // read them exactly as they do for the dynamic system. A rack-wide "restaurar estándar" clears them, which
             // is what makes it a reset of EVERYTHING and not only of the modules.
-            if (standardRestore && editorInputs == null)
+            if (standardRestore)
             {
                 PushBackAdvancedRackParameters.Reset(editorInputs);
             }
