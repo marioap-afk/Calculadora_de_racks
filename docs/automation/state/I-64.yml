@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: none
   attempts: 1
-  next_action: "F4B PB-T0: [DP] (F4B-E03), paquete del contrato v2.1 y bloque M custodiados (F4B-E04); siguiente: emitir el contrato de F4B-PBT0-CHARACTERIZATION con attempts 1 de 3"
+  next_action: "F4B-PBT0-CHARACTERIZATION: contrato emitido (AuthorityRevision ca4165bb, attempts 1 de 3); siguiente: planificacion del Controller, comparacion byte a byte, A1-A8, nc4 y Worker"
   last_evidence_commit: 0f49f69160cdffc1d2933d6165d5f472b5793d84
 execution_context:
   mode: manual

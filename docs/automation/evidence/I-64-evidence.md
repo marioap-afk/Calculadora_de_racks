@@ -7668,3 +7668,15 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - sin cambios en `src/` ni en `tests/`;
 - el bloque M se midió en AutoCAD sobre copias, con el DLL de C2, y los originales no se abrieron;
 - no integra en `main`.
+
+## 233. Contrato de F4B-PBT0-CHARACTERIZATION
+
+**Contrato:** `I-64-pilot/F4B-PBT0-CHARACTERIZATION/coordinator/gate-contract.json` (F4B-E04), con su script generador al lado (M-06).
+- **Alcance:** lista blanca exacta de 16 rutas: los diez archivos nuevos de prueba y los seis de `MutantScope`, que el RED muta y el GREEN revierte con neto cero (INV-PBT0-01: los bytes del producto del GREEN son los de `ChainBaseSha`).
+- **`ForbiddenWriteScope`:** 265 entradas. Las de `src/` salen del algoritmo de [T1B-C], y se añaden los prefijos y archivos de prueba del §6.3 del paquete y la raíz.
+- **Invariantes y paradas:** 24 invariantes (INV-PBT0-01 a 24, con la tabla cerrada MU-PB0-01 a 20 en el 14) y 12 paradas propias (PBT0-C01 a C12). PBT0-C08 es la replanificación de [DP]; PBT0-C11, los sustitutos con firma exacta; PBT0-C12, el intento 3 al Owner. P-01 nombra la Snapshot I.
+- **Filtros:** `RackCad.Tests.PushBackFullEditorCharacterization` (`MinSelected` 3) y `RackCad.UI.Tests.PushBackFullEditorCharacterization` (`MinSelected` 18), los dos con `ExpectRed` true. Hoy seleccionan 0 pruebas.
+- **Revisiones:** `AuthorityRevision` `ca4165bb8aa0a1949bd15c327ed2f082e0eb8cdb` y `MainSha` `812baf879612320653094a8aaf46aca0bac81383`.
+- **`attempts`:** 1 de 3.
+
+**Límites:** solo documentación en este paso; sin AutoCAD.
