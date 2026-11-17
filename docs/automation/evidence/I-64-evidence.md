@@ -7629,3 +7629,42 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - solo documentación;
 - sin cambios en `src/` ni en `tests/`;
 - no integra en `main`.
+
+## 232. F4B PB-T0: decisiones de procedimiento, paquete del contrato v2.1 y bloque M
+
+**Decisiones:**
+- **F4B-E03:** las decisiones de procedimiento del Owner, en `I-64-pilot/F4B-DRAFTS/coordinator/owner-f4b-procedure-decisions.md`:
+  - los sustitutos de nc1 y nc2, solo con la firma exacta;
+  - una replanificación por la comparación literal;
+  - el bloque M lo opera la sesión.
+- **F4B-E04:** el cierre de las revisiones y la emisión.
+
+**El paquete del contrato de PB-T0:**
+- v1, revisada por IRC1: EMITIBLE TRAS CORRECCIONES (0/4/21);
+- v2, revisada por IRC2: EMITIBLE TRAS CORRECCIONES, con N-I1 en el anexo;
+- v2.1, con el cierre registrado por la sesión.
+
+**Custodia:**
+- el paquete, en `docs/initiatives/I-64-f4b-pbt0-gate-contract-package.md`;
+- la historia y las revisiones, en `I-64-pilot/F4B-DRAFTS/pbt0/`;
+- el anexo del bloque M, en `I-64-pilot/F4B-PBT0-CHARACTERIZATION/coordinator/`.
+
+**El bloque M** está en `I-64-pilot/F4B-PBT0-CHARACTERIZATION/block-m/`. La evidencia comprende:
+- el análisis y el registro con hora;
+- los resúmenes de los inventarios con su SHA-256, sin el JSON crudo;
+- los scripts, con marcadores en lugar de rutas;
+- 12 capturas con su `derivation-record`.
+
+**Resultado:**
+- **H-PB-16 confirmado:** el «Actualizar» clásico no crea vistas, así que PB-T3 se iguala sin crear vistas y no vuelve al Owner.
+- **Deshacer:** un `U` por «Actualizar».
+- **El último vínculo:** no se borra nada y la edición no se escribe.
+- **H-077 confirmado.**
+- **H-PB-18:** medido.
+- **M-7:** 0 de 22 sobres con estilo de cotas (NO DISPONIBLE).
+
+**Límites:**
+- solo documentación;
+- sin cambios en `src/` ni en `tests/`;
+- el bloque M se midió en AutoCAD sobre copias, con el DLL de C2, y los originales no se abrieron;
+- no integra en `main`.

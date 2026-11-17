@@ -1,0 +1,86 @@
+Diferencias entre inventarios usadas en block-m-analysis.md (inv_analyze.diff; None = todo el dibujo).
+
+## M1-m1post frente a M1-pre (rack e9f453ef): 3 diferencias
+CAMBIA PB E - lateral 1: fronts 72->73, pbfronts 72->73, len 290565->293624, sha f74a3b6cc34e->bfe196a1eb06
+CAMBIA PB E - planta: fronts 72->73, pbfronts 72->73, ents 2241->2274, len 290565->293624, sha 78bc5c173f39->aa4db7d68bd3
+CAMBIA REF 2F3B9B PB E - planta
+
+## M1u-u1 frente a M1-pre (rack None): 0 diferencias
+
+## M1v-u1 frente a M1-m1post (rack e9f453ef): 0 diferencias
+
+## M2-ins frente a M2-pre (rack e9f453ef): 2 diferencias
+NUEVA DEF PB E - lateral 73
+NUEVA REF 32CBA0 PB E - lateral 73 (9818.12 -1805.06 0.0) rot=0.000000 sx=1.000000 lay=A-TEXTO bbox=(9801.83 -1805.25 0.0) (10122.5 -1358.56 0.0)
+
+## M2-m2post frente a M2-ins (rack e9f453ef): 5 diferencias
+CAMBIA PB E - lateral 1: fronts 72->71, pbfronts 72->71, len 290565->287421, sha f74a3b6cc34e->765b38dd3fca
+BORRADA DEF PB E - lateral 73
+CAMBIA PB E - planta: fronts 72->71, pbfronts 72->71, ents 2241->2208, len 290565->287421, sha 78bc5c173f39->09c04f707560
+CAMBIA REF 2F3B9B PB E - planta
+BORRADA REF 32CBA0 PB E - lateral 73
+
+## M2u-u1 frente a M2-ins (rack None): 0 diferencias
+
+## M2-r1 frente a M2-m2u1 (rack 77a36905): 6 diferencias
+BORRADA DEF PB F - lateral 1
+BORRADA DEF PB F - planta
+NUEVA DEF PB F2 - lateral 1
+NUEVA DEF PB F2 - planta
+CAMBIA REF 2F7FD7 PB F - planta
+CAMBIA REF 30977A PB F - lateral 1
+
+## M2-r2 frente a M2-r1 (rack 77a36905): 4 diferencias
+CAMBIA PB F2 - lateral 1: Name PB F2->PB E, len 290566->290565, sha 0fc8528a03cb->71d5476ea107
+CAMBIA PB F2 - planta: Name PB F2->PB E, len 290566->290565, sha 5d1d4fd3a3ad->60d1d97e7efc
+CAMBIA REF 2F7FD7 PB F2 - planta
+CAMBIA REF 30977A PB F2 - lateral 1
+
+## M2-i2 frente a M2-r2 (rack 77a36905): 8 diferencias
+BORRADA DEF PB F2 - lateral 1
+BORRADA DEF PB F2 - planta
+NUEVA DEF PB F3 - lateral 1
+NUEVA DEF PB F3 - planta
+NUEVA DEF PB F3 - planta_1
+CAMBIA REF 2F7FD7 PB F2 - planta
+CAMBIA REF 30977A PB F2 - lateral 1
+NUEVA REF 337DA3 PB F3 - planta_1 (9818.12 -2763.06 0.0) rot=0.000000 sx=1.000000 lay=A-TEXTO bbox=(9797.98 -2769.2 0.0) (10122.5 1103.0 0.0)
+
+## M3u-u1 frente a M2-r1 (rack 77a36905): 0 diferencias
+
+## M4-ab1 frente a M4-pre (rack 77a36905): 4 diferencias
+CAMBIA PB F - lateral 1: modules 6->15, composite False->True, ents 93->168, len 290565->550137, sha 5df244b8f624->104bc42e5ab3
+CAMBIA PB F - planta: modules 6->15, composite False->True, ents 2241->2376, len 290565->550137, sha 9521e11e2473->a9be26f5d974
+CAMBIA REF 2F7FD7 PB F - planta
+CAMBIA REF 30977A PB F - lateral 1
+
+## M4-ab2 frente a M4-ab1 (rack 77a36905): 2 diferencias
+NUEVA DEF PB F - frontal entrada-salida B
+NUEVA REF 331BDD PB F - frontal entrada-salida B (9818.12 -3363.06 0.0) rot=0.000000 sx=1.000000 lay=A-TEXTO bbox=(9811.92 -3376.06 0.0) (9891.68 -2931.06 0.0)
+
+## M4-u1 frente a M4-ab2 (rack None): 0 diferencias
+
+## M4-ab3 frente a M4-ab2 (rack 77a36905): 7 diferencias
+NUEVA DEF PB F - frontal entrada-salida
+BORRADA DEF PB F - frontal entrada-salida B
+CAMBIA PB F - lateral 1: modules 15->6, composite True->False, ents 168->93, len 550137->291621, sha 104bc42e5ab3->619ee23003e8
+CAMBIA PB F - planta: modules 15->6, composite True->False, ents 2376->2241, len 550137->291621, sha a9be26f5d974->8735b50fa339
+CAMBIA REF 2F7FD7 PB F - planta
+CAMBIA REF 30977A PB F - lateral 1
+CAMBIA REF 331BDD PB F - frontal entrada-salida B
+
+## M4-g1 frente a M4-ab3 (rack None): 2 diferencias
+NUEVA DEF PB G - lateral 73
+NUEVA REF 33DF35 PB G - lateral 73 (9818.12 -4363.06 0.0) rot=0.000000 sx=1.000000 lay=A-TEXTO bbox=(9801.62 -4363.25 0.0) (10026.7 -3916.56 0.0)
+
+## M4-g2 frente a M4-g1 (rack None): 3 diferencias
+BORRADA DEF PB G - lateral 1
+BORRADA REF 2F127C PB G - planta
+BORRADA REF 307246 PB G - lateral 1
+
+## M4-g3 frente a M4-g2 (rack None): 1 diferencias
+BORRADA DEF PB G - planta
+
+## M4-g4 frente a M4-g3 (rack None): 0 diferencias
+
+M4-g4 == M4-g3 byte a byte: True
