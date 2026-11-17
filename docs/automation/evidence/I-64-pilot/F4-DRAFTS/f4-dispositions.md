@@ -2849,3 +2849,41 @@ La alternativa de hacerlo solo en el piloto rompe guardas ratificadas del escrit
 - la firma final del Owner.
 
 **Siguiente:** el diagnóstico del paso 50 (reproducir y determinar la causa) y, después, la tarea de corrección NARROW.
+
+## F4-E80. Paso 50: diagnóstico, reclasificación y Smoke-2 PASS WITH LIMITATIONS
+
+**Autoridades:**
+- la disposición del Owner sobre la corrida 2 (F4-E79), que pedía reproducir y determinar la causa antes de modificar;
+- la disposición del Owner sobre el paso 50 (`F4-DRAFTS/coordinator/owner-f4-smoke2-step50-disposition.md`, literal), con la decisión **(a)**.
+
+**El diagnóstico:** en AutoCAD, de 06:17Z a 06:29Z, con el DLL de C2 sobre una copia de D1 que no se guardó. Detalle en `F4-SMOKE-2/run/addendum-step50.md`.
+- No hay defecto de producto. Con un rack seleccionado, la sección «Selección» del panel crece una línea y la fila de navegación baja unos 12 px (en el marco 1456×819, «Ver» pasa de y ≈ 648 a ≈ 660).
+- La transcripción de la sesión muestra dónde se hizo clic en el paso 50:
+  - el único «Ver» con selección pulsado en la posición real (y 623) funcionó;
+  - los que «no hicieron nada» se pulsaron en y 611–615, la posición sin selección, por encima del botón.
+- **Reproducción intencionada:** un clic en la posición antigua no hace nada, y en la real navega.
+- Las hipótesis de la disposición (selección implícita, PICKADD, foco, `SetImpliedSelection`, secuencia selección/vista) quedan descartadas por la reproducción.
+- **Mini-smoke dirigido, sobre el producto sin cambios: 7/7 PASS.**
+  - sin preselección;
+  - objeto ajeno;
+  - el rack, por expresión y con clic, con el panel flotante y acoplado;
+  - varios objetos (dos racks y 1325 textos);
+  - Seleccionar, Centrar y Localizar con preselección.
+
+**La disposición del Owner:**
+- **Paso 50: OBSERVED / OPERATOR ARTIFACT**; clasificación final **CLOSED / FALSE FAIL / OPERATOR ARTIFACT**. No se autoriza ni hace falta ninguna corrección de producto.
+- El mini-smoke se acepta como el re-smoke dirigido.
+- El registro original conserva el FAIL tal como se observó; esta adenda lo completa.
+- **SMOKE-2: PASS WITH LIMITATIONS.** Limitaciones aceptadas, todas de cobertura física y ninguna defecto de producto abierto:
+  - el orden de la pregunta de guardar (condición del dibujo y DBMOD de AutoCAD);
+  - las clases de dibujo no disponibles;
+  - las condiciones internas no observables sin instrumentación;
+  - la carrera de cierre a mitad de transacción, no provocada;
+  - las ramas declaradas solo automatizadas.
+- **FUTURE UX IMPROVEMENT:** mantener vertical y estable la fila de navegación y acciones mientras cambia el contenido de «Selección». Está registrada en `docs/ideas-futuras.md`. No reabre F4 y no es un defecto de corrección.
+- **F4:** autorizado a cerrarse tras la custodia final.
+- **Carpetas de diagnóstico:** pueden limpiarse una vez publicadas esta adenda y la disposición final, con los hashes y la evidencia preservados, y sin borrar nada que siga referenciado por evidencia sin custodiar.
+
+**Resultado:** el paso 50 queda **CLOSED / FALSE FAIL / OPERATOR ARTIFACT**, y **Smoke-2, PASS WITH LIMITATIONS**.
+
+**Siguiente:** el cierre de F4 (F4-E81).

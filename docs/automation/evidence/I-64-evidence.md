@@ -7586,3 +7586,16 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 **Siguiente:** el diagnóstico del paso 50 y su corrección NARROW. F4 sigue abierta.
 
 **Límites:** solo documentación; sin cambios en `src/` ni en `tests/`. Las rutas locales van con marcadores, y los nombres de cliente no aparecen.
+
+## 229. Paso 50: falso FAIL; Smoke-2 PASS WITH LIMITATIONS
+
+**Decisión:** F4-E80, con la disposición del Owner (a).
+- **Diagnóstico:** el FAIL del paso 50 fueron clics de la sesión en la posición del botón sin selección. Con un rack seleccionado, «Selección» crece y «Ver» baja unos 12 px. Se reprodujo a propósito (la posición antigua no actúa y la real sí); la transcripción da las coordenadas originales.
+- **Re-smoke dirigido:** 7/7 PASS sobre el producto sin cambios (DLL de C2).
+- **Clasificación:** el paso 50 queda CLOSED / FALSE FAIL / OPERATOR ARTIFACT, sin corrección de producto. El registro original no se reescribe.
+- **Smoke-2:** PASS WITH LIMITATIONS, con las limitaciones de cobertura física de F4-E79 y F4-E80.
+- **Mejora de uso futura:** que la fila de navegación no se mueva con la selección (`docs/ideas-futuras.md`).
+
+**Custodia:** `I-64-pilot/F4-SMOKE-2/run/addendum-step50.md` y `addendum-step50-screens/`, y `F4-DRAFTS/coordinator/owner-f4-smoke2-step50-disposition.md`.
+
+**Límites:** solo documentación; sin cambios en `src/` ni en `tests/`. Las rutas locales no aparecen; las capturas solo muestran el panel y líneas de órdenes.

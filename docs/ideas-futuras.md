@@ -1740,3 +1740,9 @@ Un valor authored con más de tres decimales (por ejemplo, una escala de anotaci
 La sonda de host T4C-H0 (F4-E63) vio que las lecturas del panel de F4-T3 y F4-T4A, «Editar» y «Comprobar ahora», dejan entradas «Group of commands» en la pila de Deshacer y vacían la de Rehacer. Son lecturas que se suponían sin efecto. Un `U` seguido de «Comprobar ahora» deja sin nada que rehacer. Toca S2-05 y la obligación de IC-02 de observar Deshacer y Rehacer.
 
 El Owner la dispuso aparte («Registrar aparte», O-18 del paquete de F4-T4C, F4-E65). No cambia el alcance de F4-T4C. Smoke-2 la declara y prueba Redo justo después de Undo. Queda como candidata para una corrección aparte de T3 y T4A.
+
+## I-64 Smoke-2 — la fila de navegación del panel se mueve con la selección (2026-11-17, mejora de uso futura)
+
+Con un rack seleccionado, la sección «Selección» del panel Workspace pasa de dos líneas a tres (`Rack seleccionado: <GUID partido>`). Eso desplaza hacia abajo, unos 12 px, todo lo que hay debajo, incluida la fila Seleccionar / Ver / Centrar. Los avisos que aparecen y desaparecen («Hay un comando en curso.», las confirmaciones) también mueven el panel. En Smoke-2 eso hizo que un operador automático pulsara por encima de «Ver» y diera un falso FAIL (paso 50, F4-E80).
+
+Mejora posible: mantener vertical y estable la fila de navegación y acciones mientras cambia el contenido de «Selección», por ejemplo con una altura fija o reservada para esa sección. El Owner la registra como **FUTURE UX IMPROVEMENT**: no reabre F4 y no es un defecto de corrección.
