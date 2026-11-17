@@ -1,0 +1,79 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T4-HOST-C2",
+  "RunId": "R20261116T232445Z-5006",
+  "DelegationRunId": "R20261116T124830Z-cfb1",
+  "WorkRunId": "R20261116T125319Z-3ea9",
+  "Attempt": 1,
+  "VerifiedSha": "9abc1320743d5e4d472c4db6f5fdf4a96b835a46",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json reports Outcome.Kind=COMPLETED, DeathConfirmed=true, and the handoff output hash matches worker-handoff.json. Cession.SessionOperated=false."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json matches TaskId, RunId, DelegationRunId and Attempt; its SHA-256 matches Outcome.OutputSha256. OutputWrittenUtc is after Cession.StartUtc."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "From MainSha, AUTOMATION_PLAN section 16.3 and agent-execution README section 8 were read. git merge-base --is-ancestor AuthorityRevision BaseSha succeeded. git diff --name-only AuthorityRevision BaseSha lists the three expected docs paths: I-64-evidence.md, the C2 gate-contract.json and state/I-64.yml; none is EXTERNAL or UNIT_CHANGE. AGENTS.md was read from Git."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Contract and delegation match for the required scope, invariants, stop conditions, authorities and RequiredTests. byte-fidelity-check.json reports PASS with all eight collections byte-equal; planning Acceptance A1-A8 are all pass, and Notes record nc4."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both return 9abc1320743d4e5d4e472c4db6f5fdf4a96b835a46. Branch and worktree match the handoff. merge-base checks succeeded for BaseSha..CurrentSha, BaseSha..RedSha and RedSha..CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json records Entry HeadSha and LsRemoteSha as CurrentSha and OriginMainSha as MainSha; git rev-parse refs/remotes/origin/main returns 812baf879612320653094a8aaf46aca0bac81383. Exit facts show HeadSha=LsRemoteSha=BaseSha."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha lists only src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs and tests/RackCad.Tests/RedefinedViewReferenceUndoTouchGuardTests.cs; both exactly match AllowedWriteScope. Neither matches ForbiddenWriteScope."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain is empty. git check-ignore -v confirms the verification output path is ignored by the artifacts/ rule."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts records CurrentRun 43972738540 as completed push on the exact branch and SHA, with all four required jobs success. RedRun 43971230759 is a completed push for RedSha; Core failed as expected, UI and Build UI succeeded, and Plugin was skipped. TRX totals agree with the relay record."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Read all four TRX files. Current Core has 19067 passed and 0 failed; every RequiredTests Core filter meets its minimum, including Workspace 3482/3468 and the new guard 4/4. Current and RED UI filters select 694 and 55, all passed. RED Core has exactly 3 assertion failures, all in RedefinedViewReferenceUndoTouchGuardTests; other tests pass. Handoff counts agree. git diff BaseSha RedSha -- src/ is empty; git diff RedSha CurrentSha -- tests/ is empty, so RT is the new guard file and ChainRedFiles=tests/RackCad.Tests/RedefinedViewReferenceUndoTouchGuardTests.cs."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha shows both commit messages carry the declared Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com> trailer, matching worker-handoff.json."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 with Provider effort high. The work record's subagent launch alias is sonnet; ModelEffective=claude-sonnet-5-5 and EffortEffective=high."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Checked WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions and RecommendedNextAction against the AUTOMATION_PLAN section 16.10 term list; no matching term found."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes report zero permission denials, two tool errors with none pending, no usage-limit warning, and no persistent foreign or unattributable participant. Entry processes are classified own-tree or nominal-exclusion."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "The Git diff contains exactly the two allowed paths. The RED commit changes only the new guard test; the GREEN commit adds two lines only in LateralHeaderDrawer.cs.",
+    "The CurrentSha CI run and TRX results agree. The RED run's three failures are assertion failures from the new guard; its remaining tests and UI run pass.",
+    "The accepted config.toml snapshot hash is unchanged between relay Exit and Entry."
+  ],
+  "RecommendedNextAction": "Record this verification against the reviewed handoff and continue the assigned independent checks."
+}

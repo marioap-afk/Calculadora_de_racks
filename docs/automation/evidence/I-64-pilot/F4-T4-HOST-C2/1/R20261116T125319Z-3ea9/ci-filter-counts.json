@@ -1,0 +1,37 @@
+{
+  "GreenCore": {
+    "Filter": "FullyQualifiedName~RackCad.Tests.Workspace",
+    "Selected": 3482,
+    "Passed": 3482,
+    "Failed": 0,
+    "Other": 0
+  },
+  "GreenNewClass": {
+    "Filter": "FullyQualifiedName~RackCad.Tests.RedefinedViewReferenceUndoTouchGuardTests",
+    "Selected": 4,
+    "Passed": 4,
+    "Failed": 0,
+    "Other": 0
+  },
+  "GreenUi": {
+    "Filter": "FullyQualifiedName~RackCad.UI.Tests.Workspace",
+    "Selected": 694,
+    "Passed": 694,
+    "Failed": 0,
+    "Other": 0
+  },
+  "RedCore": {
+    "Filter": "FullyQualifiedName~RackCad.Tests.RedefinedViewReferenceUndoTouchGuardTests",
+    "Selected": 4,
+    "Passed": 1,
+    "Failed": 3,
+    "Other": 0
+  },
+  "RedUi": {
+    "Filter": "FullyQualifiedName~RackCad.UI.Tests.Workspace",
+    "Selected": 694,
+    "Passed": 694,
+    "Failed": 0,
+    "Other": 0
+  }
+}

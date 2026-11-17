@@ -7550,3 +7550,21 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **`attempts`:** 1 de 3.
 
 **Limites:** solo documentacion en este paso; sin AutoCAD.
+
+## 227. Cierre de F4-T4-HOST-C2
+
+**Decisión:** F4-E78, por la regla D2 del Owner y su disposición «A — SOLO C2» para nc1.
+- **Corrige:** F4-S2-03 (`U` y `REDO` refrescan la pantalla tras un redibujo). RED `fe165a63` y GREEN `9abc1320`.
+- **CI exacta:** 4/4.
+- **Verificación:** `5006`, 14/14.
+- **Revisiones:** la directa, 0/0/3, y la independiente, 0/0/3.
+- **Controles:**
+  - nc1: salida ordinaria NOT PASSED conservada; sustituto local de C2 con la excepción de Trailer, PASS 10/10; deuda PD-F4-08;
+  - nc2 y nc3: ordinarios.
+- **Historia de ejecución:** la cesión del Worker se cortó por una suspensión del equipo (13:06Z a 22:31Z) y se reanudó el mismo Worker.
+
+**Resultado:** **F4-T4-HOST-C2 CLOSED / PASS WITH LIMITATIONS**, intento 1 de 3. R-1 se anota para la OV final de I-64; Cantilever sigue con F4-S2-03.
+
+**Siguiente:** el DLL nuevo y Smoke-2 desde el bloque 1, con el Owner presente.
+
+**Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.

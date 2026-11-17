@@ -1,0 +1,109 @@
+{
+ "SelfTestPass": true,
+ "Deterministic": true,
+ "SelfTest": [
+  [
+   "A",
+   "PASS",
+   true
+  ],
+  [
+   "A2",
+   "PASS",
+   true
+  ],
+  [
+   "A3",
+   "PASS",
+   true
+  ],
+  [
+   "B",
+   "FAIL",
+   true
+  ],
+  [
+   "B2",
+   "FAIL",
+   true
+  ],
+  [
+   "C",
+   "FAIL",
+   true
+  ],
+  [
+   "C2",
+   "FAIL",
+   true
+  ],
+  [
+   "C3",
+   "FAIL",
+   true
+  ],
+  [
+   "C4",
+   "FAIL",
+   true
+  ],
+  [
+   "D",
+   "FAIL",
+   true
+  ],
+  [
+   "D2",
+   "FAIL",
+   true
+  ],
+  [
+   "E",
+   "FAIL",
+   true
+  ],
+  [
+   "F",
+   "FAIL",
+   true
+  ],
+  [
+   "G",
+   "FAIL",
+   true
+  ],
+  [
+   "H",
+   "FAIL",
+   true
+  ],
+  [
+   "H2",
+   "FAIL",
+   true
+  ],
+  [
+   "I",
+   "FAIL",
+   true
+  ],
+  [
+   "J",
+   "FAIL",
+   true
+  ]
+ ],
+ "SubstituteResult": "PASS",
+ "Properties": {
+  "C01_RealVerification14of14": true,
+  "C02_MutationOnlyFalseCurrentShaPlusDerived": true,
+  "C03_ControllerDetectsAndRejectsFalseCurrentSha": true,
+  "C04_TrailerEquivalentToRealDelivery": true,
+  "C05_TrailerUnderWorkerPerSchema": true,
+  "C06_RealVerificationTrailerPass": true,
+  "C07_MutationDoesNotAlterTrailer": true,
+  "C08_NoOtherUnrelatedCheckDiffers": true,
+  "C09_OutcomeBlockedNotVerified": true,
+  "C10_IdentitySignalFailsForFalseSha": true
+ }
+}

@@ -1,0 +1,122 @@
+{
+ "SelfTestPass": true,
+ "Deterministic": true,
+ "SelfTest": [
+  [
+   "A",
+   "PASS",
+   true
+  ],
+  [
+   "A2",
+   "PASS",
+   true
+  ],
+  [
+   "B",
+   "FAIL",
+   true
+  ],
+  [
+   "C",
+   "FAIL",
+   true
+  ],
+  [
+   "D",
+   "FAIL",
+   true
+  ],
+  [
+   "E",
+   "FAIL",
+   true
+  ],
+  [
+   "F",
+   "FAIL",
+   true
+  ],
+  [
+   "G",
+   "FAIL",
+   true
+  ],
+  [
+   "H",
+   "FAIL",
+   true
+  ],
+  [
+   "I",
+   "FAIL",
+   true
+  ],
+  [
+   "J",
+   "FAIL",
+   true
+  ],
+  [
+   "K",
+   "FAIL",
+   true
+  ]
+ ],
+ "SubstituteResult": "FAIL",
+ "Properties": {
+  "1_MutationIsExactlyCurrentShaToANonexistentSha": true,
+  "2_DerivedHashesConsistent": true,
+  "3_IdentityMustFail": true,
+  "4_ControllerReportedIdentityFailBlockedStop": true,
+  "5_IdentityEvidenceNamesFakeShaAndHead": true,
+  "6_OnlyCurrentShaConsumersDiffer": false,
+  "7_FailureClassFirstNotPassHandoffOrIdentity": true
+ },
+ "Measured": {
+  "RealCurrentSha": "9abc1320743d5e4d472c4db6f5fdf4a96b835a46",
+  "MutatedCurrentSha": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+  "Head": "9abc1320743d5e4d472c4db6f5fdf4a96b835a46",
+  "HandoffFieldsChanged": [
+   ".CurrentSha"
+  ],
+  "ChangedInputs": [
+   "relay-record-work.json",
+   "worker-handoff.json"
+  ],
+  "Controller": {
+   "Classification": "EXECUTION_BLOCKED",
+   "Disposition": "STOP",
+   "FailureClass": "Handoff",
+   "TriggeredStopConditions": [
+    "S-04"
+   ],
+   "Results": {
+    "Termination": "pass",
+    "Handoff": "fail",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "fail",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "fail",
+    "Tests": "fail",
+    "Trailer": "fail",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+   }
+  },
+  "DiffersFromReal": [
+   "Handoff",
+   "Identity",
+   "Remote",
+   "Ci",
+   "Tests",
+   "Trailer"
+  ],
+  "FirstNotPass": "Handoff",
+  "FakeShaExistsInRepo": false
+ }
+}

@@ -2750,3 +2750,49 @@ La alternativa de hacerlo solo en el piloto rompe guardas ratificadas del escrit
 | Aviso de cierre a I-52 | «~08:35Z» | Antes de las 07:45Z, aproximadamente. A I-52 se le envió una corrección |
 
 **Por qué:** la sesión estimó las horas en lugar de medirlas. Las horas medidas son las de inicio de los procesos y las de escritura de los archivos (`copias.json` a las 07:02:45Z; el DLL de diag3 a las 07:18:05Z). La custodia es de las 07:51Z.
+
+## F4-E78. F4-T4-HOST-C2: cadena, disposición de nc1 y cierre
+
+**Autoridades:**
+- la decisión del Owner sobre F4-S2-03 v2 (F4-E77);
+- la orden del Owner «Sigue con la cadena hasta el cierre» (`F4-DRAFTS/coordinator/owner-f4-c2-continue.md`);
+- la disposición del Owner/Coordinator sobre nc1, «A — SOLO C2» (`F4-DRAFTS/coordinator/owner-f4-c2-nc1-decision.md`);
+- el paquete v2 de F4-T4-HOST-C2 (§7, cierre por D2) y la regla D2.
+
+**La cadena:**
+- **la planificación** `cfb1`: fidelidad PASS 8/8 y A1-A8 8/8, a la primera; nc4 `f80f` PASS;
+- **el Worker** `3ea9`: RED `fe165a63` y GREEN `9abc1320`, con 2 rutas, exactamente las del AllowedWriteScope;
+- **la CI exacta:** GREEN `43972738540`, 4/4; RED `43971230759`, con Core en failure y 3 fallos por aserción, todos de la guarda nueva, y UI en success;
+- **la verificación** `5006`: EXECUTION_VERIFIED, 14/14.
+
+**Historia de ejecución:** el equipo entró en espera moderna a las 13:06:51Z y en suspensión a las 16:23Z, hasta las 22:31Z, pese al keep-awake (`SetThreadExecutionState` con SYSTEM_REQUIRED). La cesión del Worker se cortó antes del commit RED. La sesión reanudó el MISMO Worker por mensaje, con su contexto y su WorkRunId, y el Worker repitió después del commit RED las corridas previas al corte. Por la disposición del Owner, no es un defecto del producto ni un motivo para repetir el Worker. Desde entonces la sesión mantiene también la pantalla (DISPLAY_REQUIRED).
+
+**Revisiones:**
+- la directa, 0/0/3;
+- la adversarial independiente, **ACEPTABLE CON MENORES, 0/0/3**, sin hallazgos OWNER.
+
+**Controles:**
+- **nc1** `a11e`: CONTROL NOT PASSED, conservado. La firma **no** es la exacta de PD-F4-04: además de los cinco consumidores del `CurrentSha` que admite el sustituto ratificado, difiere Trailer. El Controller buscó `Trailer` en la raíz de la entrega, cuando el esquema lo pone bajo `Worker`.
+  - La sesión no aplicó nada ni repitió nc1, y volvió al Owner (`F4-DRAFTS/c2/owner-decision-request-c2-nc1.md`).
+  - **Disposición del Owner:** «A — SOLO C2». Un sustituto local con UNA excepción (Trailer), sin modificar el sustituto general ratificado.
+  - **El sustituto local** `F4C2-NC1-TRAILER-EXCEPTION-01` da PASS en las diez condiciones C01 a C10, con autoprueba 18/18 determinista: **nc1 = SATISFIED_UNDER_F4C2_NC1_TRAILER_EXCEPTION**.
+  - El ensayo en seco del general clonado dio FAIL solo por su propiedad 6.
+  - **Deuda nueva PD-F4-08:** el Controller puede buscar Trailer en la raíz de la entrega en lugar de bajo Worker durante una corrida de control negativo.
+  - La excepción es local a C2: no es global ni se reutiliza automáticamente en otras tareas.
+- **nc2** `ffdd`: CONTROL PASS ordinario;
+- **nc3** `5d84`: CONTROL PASS ordinario (FreeText, REWORK).
+
+**El cierre:** **F4-T4-HOST-C2 CLOSED / PASS WITH LIMITATIONS**, intento 1 de 3, por la regla D2 (paquete en `I-64-pilot/F4-T4-HOST-C2/task-close-package.md`).
+
+**Corregido:** F4-S2-03 en todos los redibujos que pasan por `RedefineSystemBlock`. Solo está observado en Push Back (H-06); la primera comprobación con el DLL de C2 es Smoke-2.
+
+**Limitaciones:**
+- M-1 a M-3 de la independiente y m-1 a m-3 de la directa;
+- R-1 (los demás sistemas, sin observar), que se anota para la OV final de I-64;
+- R-2 a R-5; Cantilever sigue con F4-S2-03 (R-4).
+
+**Siguiente:**
+- el DLL Debug nuevo, compilado con AutoCAD cerrado;
+- copias nuevas;
+- el anexo de C2;
+- Smoke-2 desde el bloque 1, con el Owner presente.
