@@ -7599,3 +7599,16 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 **Custodia:** `I-64-pilot/F4-SMOKE-2/run/addendum-step50.md` y `addendum-step50-screens/`, y `F4-DRAFTS/coordinator/owner-f4-smoke2-step50-disposition.md`.
 
 **Límites:** solo documentación; sin cambios en `src/` ni en `tests/`. Las rutas locales no aparecen; las capturas solo muestran el panel y líneas de órdenes.
+
+## 230. Cierre del gate F4
+
+**Decisión:** F4-E81, por la firma final del Owner tras la custodia final de Smoke-2 (`75f684cb`).
+- **Tareas:** 19 cerradas; F4-T1 y F4-T2A, PASS; el resto, PASS WITH LIMITATIONS.
+- **Candidato F4:** `9abc1320`, CI `43972738540` 4/4.
+- **Smoke-2:** PASS WITH LIMITATIONS; el paso 50 queda CLOSED / FALSE FAIL / OPERATOR ARTIFACT.
+
+**Resultado:** **F4 CLOSED / PASS WITH LIMITATIONS**, con limitaciones de cobertura física y ningún defecto de producto abierto. El detalle está en `I-64-pilot/F4-DRAFTS/gate-close.md`.
+
+**Siguiente:** F5-A, con su propio contrato y la autorización del Owner.
+
+**Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; no integra en `main`.

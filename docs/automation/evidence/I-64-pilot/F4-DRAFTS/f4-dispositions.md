@@ -2887,3 +2887,23 @@ La alternativa de hacerlo solo en el piloto rompe guardas ratificadas del escrit
 **Resultado:** el paso 50 queda **CLOSED / FALSE FAIL / OPERATOR ARTIFACT**, y **Smoke-2, PASS WITH LIMITATIONS**.
 
 **Siguiente:** el cierre de F4 (F4-E81).
+
+## F4-E81. Cierre del gate F4
+
+**Autoridad:** la firma final del Owner, «F4: AUTHORIZED TO CLOSE AFTER FINAL CUSTODY» (`F4-DRAFTS/coordinator/owner-f4-smoke2-step50-disposition.md`). La custodia final de Smoke-2 está publicada (`75f684cb`, F4-E80).
+
+**La secuencia de cierre** (Proposal V5 §11):
+- las 19 tareas de F4 cerradas: F4-T1 y F4-T2A, CLOSED / PASS; las demás, CLOSED / PASS WITH LIMITATIONS;
+- el Candidato F4 `9abc1320` (CI exacta `43972738540` 4/4);
+- la evidencia automatizada de las tareas;
+- Smoke-2 PASS WITH LIMITATIONS (F4-E79 y F4-E80);
+- la firma del Owner.
+
+El detalle está en `I-64-pilot/F4-DRAFTS/gate-close.md`.
+
+**Resultado:** **F4 CLOSED / PASS WITH LIMITATIONS.**
+- Las limitaciones son de cobertura física; ningún defecto de producto queda abierto.
+- La mejora de uso de la fila de navegación queda en `docs/ideas-futuras.md`.
+- No es Owner Validation y no integra en `main`.
+
+**Siguiente:** F5-A necesita su propio contrato y la autorización expresa del Owner. Las carpetas de diagnóstico se limpian ahora que la custodia está publicada, sin borrar nada que siga referenciado por evidencia sin custodiar.
