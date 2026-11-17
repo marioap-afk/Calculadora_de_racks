@@ -326,7 +326,7 @@ namespace RackCad.Application.Systems.Dynamic
         }
 
         private static double Scale(DynamicRackSystem system)
-            => system.AnnotationScale > 0.0 ? system.AnnotationScale : 1.0;
+            => system.AnnotationScale > 0.0 ? Math.Round(system.AnnotationScale, 3) : 1.0;
 
         /// <summary>How far below Y=0 a view's cotas reach, from that view's EFFECTIVE detail.</summary>
         private static double BottomReach(DimensionDetail detail, double scale)
@@ -399,7 +399,7 @@ namespace RackCad.Application.Systems.Dynamic
                 ConnectionAnchor = p2,
                 DimensionOffset = offset,
                 TextHeight = height,
-                DimensionStyleName = style
+                DimensionStyleName = style?.ToLowerInvariant()
             };
     }
 }
