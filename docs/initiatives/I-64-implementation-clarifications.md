@@ -189,3 +189,18 @@ El puente clasifica solo por tipo, en el manejador y con coste constante, sin ab
    Un cambio así no puede alterar un sobre de rack: los Xrecord, los DBDictionary y las entidades siguen contando.
 2. El filtro se limita a esas dos jerarquías. `AssocActionBody`, `AssocDependencyBody` y las demás clases siguen contando, que es lo conservador. Solo D1 está medido.
 3. En D1, el evento asociativo posterior a `QUIT` probablemente deja la secuencia de cierre sin intacta. Es el mismo comportamiento que antes de esta IC, y Smoke-2 lo observa (T2B2P:256).
+
+## IC-11. F4B — Push Back completo, entre F4 y F5-A (2026-11-17)
+
+**Autoridad:** la disposición del Owner y del Coordinator «I-64 — F4B PUSH BACK COMPLETO» (F4B-E01). Su texto literal está en `docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-f4b-disposition.md`.
+
+**Qué aclara:**
+- Entre F4 y F5-A entra una fase **F4B**. La Proposal congelada no se edita.
+- F4B extiende la arquitectura del Workspace de F4 al editor completo de Push Back:
+  - la ventana existente en modo WORKSPACE, que lee del borrador y le devuelve el estado (draft-in / draft-out);
+  - la escritura, por PREPARE → MUTATE → POST de T4;
+  - RACKEDITAR, como superficie de compatibilidad.
+- F4B no reabre F4. F5-A espera a que F4B cierre.
+- No hay integración parcial en `main` (A64-PV1-21).
+- El paquete de la fase es `docs/initiatives/I-64-f4b-push-back-completo-package.md`.
+- Hasta que F4B cierre no se dice «editor de Push Back migrado» (IC-06).

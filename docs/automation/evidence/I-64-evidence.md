@@ -7612,3 +7612,20 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 **Siguiente:** F5-A, con su propio contrato y la autorización del Owner.
 
 **Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; no integra en `main`.
+
+## 231. F4B: autorización y paquete de la fase
+
+**Decisión:** F4B-E01. El Owner y el Coordinator autorizan F4B — PUSH BACK COMPLETO entre F4 y F5-A. Su texto literal está en `I-64-pilot/F4B-DRAFTS/coordinator/owner-f4b-disposition.md`.
+- Decide D-PB-01 a D-PB-10, salvo D-PB-07, que no trae texto.
+- PB-T0 queda condicionada a la revisión de la v2.
+
+**El paquete:** v1, v2 (IR2: APTO TRAS CORRECCIONES, 0/11/14), v3 (IR3: APTO, 0/0/3 nuevos) y v3.1. Está custodiado en `docs/initiatives/I-64-f4b-push-back-completo-package.md`. Los mapas, las revisiones y la historia están en `I-64-pilot/F4B-DRAFTS/package/`. Las decisiones, en `F4B-DRAFTS/f4b-dispositions.md` (F4B-E01 y F4B-E02). La aclaración es IC-11.
+
+**Resultado:** se cumplen las condiciones de la autorización condicional para preparar y emitir PB-T0.
+
+**Siguiente:** el paquete del contrato de PB-T0 (bloque C), con su revisión independiente.
+
+**Límites:**
+- solo documentación;
+- sin cambios en `src/` ni en `tests/`;
+- no integra en `main`.
