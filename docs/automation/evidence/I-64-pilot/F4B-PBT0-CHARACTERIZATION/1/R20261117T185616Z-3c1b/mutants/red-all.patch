@@ -1,0 +1,184 @@
+diff --git a/src/RackCad.Application/Systems/Dynamic/DynamicViewDecorations.cs b/src/RackCad.Application/Systems/Dynamic/DynamicViewDecorations.cs
+index c4615c84..788fd526 100644
+--- a/src/RackCad.Application/Systems/Dynamic/DynamicViewDecorations.cs
++++ b/src/RackCad.Application/Systems/Dynamic/DynamicViewDecorations.cs
+@@ -326,7 +326,7 @@ namespace RackCad.Application.Systems.Dynamic
+         }
+ 
+         private static double Scale(DynamicRackSystem system)
+-            => system.AnnotationScale > 0.0 ? system.AnnotationScale : 1.0;
++            => system.AnnotationScale > 0.0 ? Math.Round(system.AnnotationScale, 3) : 1.0;
+ 
+         /// <summary>How far below Y=0 a view's cotas reach, from that view's EFFECTIVE detail.</summary>
+         private static double BottomReach(DimensionDetail detail, double scale)
+@@ -399,7 +399,7 @@ namespace RackCad.Application.Systems.Dynamic
+                 ConnectionAnchor = p2,
+                 DimensionOffset = offset,
+                 TextHeight = height,
+-                DimensionStyleName = style
++                DimensionStyleName = style?.ToLowerInvariant()
+             };
+     }
+ }
+diff --git a/src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorState.cs b/src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorState.cs
+index 2a64f8d3..7739b8c0 100644
+--- a/src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorState.cs
++++ b/src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorState.cs
+@@ -317,10 +317,6 @@ namespace RackCad.Application.Systems.PushBack
+             {
+                 DefaultTopology = PushBackCellTopology.Encontradas;
+             }
+-            else if (!present && DefaultTopology == PushBackCellTopology.Encontradas)
+-            {
+-                DefaultTopology = PushBackCellTopology.SoloA;
+-            }
+         }
+ 
+         /// <summary>
+diff --git a/src/RackCad.Application/Systems/PushBack/PushBackEditorDesignAssembler.cs b/src/RackCad.Application/Systems/PushBack/PushBackEditorDesignAssembler.cs
+index 5f59ac3b..2f8a60ee 100644
+--- a/src/RackCad.Application/Systems/PushBack/PushBackEditorDesignAssembler.cs
++++ b/src/RackCad.Application/Systems/PushBack/PushBackEditorDesignAssembler.cs
+@@ -208,8 +208,7 @@ namespace RackCad.Application.Systems.PushBack
+             // B invertido. Compararla contra el layout de profundidad de A daba siempre distinto (17 modulos contra
+             // 8, base 17 contra 8), asi que todo recalculo de un compuesto reconstruia desde cero.
+             var rebuildShape = state.WorkingBaseline?.Composite?.Of(PushBackSide.A)?.Local?.Structure ?? baseline;
+-            var mustRebuild = standardRestore
+-                              || restoredIds.Count > 0
++            var mustRebuild = restoredIds.Count > 0
+                               || DynamicEditorDesignAssembler.MustRebuild(rebuildShape, pallet, depthLayout);
+ 
+             DynamicRackSystem system;
+@@ -297,7 +296,7 @@ namespace RackCad.Application.Systems.PushBack
+             // only — no rule is restated here; the resolver, DynamicSeparatorGeometry, the lateral builder and the BOM
+             // read them exactly as they do for the dynamic system. A rack-wide "restaurar estándar" clears them, which
+             // is what makes it a reset of EVERYTHING and not only of the modules.
+-            if (standardRestore)
++            if (standardRestore && editorInputs == null)
+             {
+                 PushBackAdvancedRackParameters.Reset(editorInputs);
+             }
+diff --git a/src/RackCad.Application/Systems/Shared/RackViewAvailability.cs b/src/RackCad.Application/Systems/Shared/RackViewAvailability.cs
+index 74e1a1ab..0d68809a 100644
+--- a/src/RackCad.Application/Systems/Shared/RackViewAvailability.cs
++++ b/src/RackCad.Application/Systems/Shared/RackViewAvailability.cs
+@@ -108,7 +108,7 @@ namespace RackCad.Application.Systems.Shared
+             if (address.Variant.Kind == RackViewVariantKind.Whole)
+                 return address.Kind == DimensionViewKind.Planta;
+             if (address.Variant.Kind == RackViewVariantKind.Post)
+-                return posts.Contains(address.Variant.Index);
++                return posts.Contains(address.Variant.Index) || address.Variant.Index >= 0;
+             if (address.Variant.Kind == RackViewVariantKind.PushBackCut)
+                 return address.Variant.PushBackSide == RackPushBackSide.A || isComposite;
+             return false;
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs
+index 4752b394..d5529688 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs
+@@ -836,8 +836,7 @@ namespace RackCad.UI.Systems.PushBack
+             if (structure != null)
+             {
+                 composite.ParkDormantTail(
+-                    structure.Modules.Where(module => module != null
+-                        && PushBackCompositeStructure.IsCompositeTailId(module.ModuleId)),
++                    structure.Modules.Take(0),
+                     structure.HeaderLineOverrides.Where(line => line != null
+                         && PushBackCompositeStructure.IsCompositeTailId(line.ModuleId)));
+             }
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 205d3889..4a5cefa5 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -312,6 +312,7 @@ namespace RackCad.UI.Systems.PushBack
+             this.sourceProject = sourceProject;
+             isEditingExisting = true;
+             session.Identity.Adopt(rackId, rackName);
++            if (design.IsComposite) inputs.PalletTolerance += 1.0;
+             LoadFromModel(inputs, rackName);
+         }
+ 
+@@ -403,8 +404,8 @@ namespace RackCad.UI.Systems.PushBack
+                 NumberFrontsCheck.IsChecked = options.NumberFronts;
+                 NumberLevelsCheck.IsChecked = options.NumberLevels;
+                 DrawRackNameCheck.IsChecked = options.DrawRackName;
+-                AnnotationScaleBox.SetNumber(options.AnnotationScale > 0.0 ? options.AnnotationScale : 1.0);
+-                DimensionsBox.SelectedIndex = Math.Min((int)DimensionDetail.Detailed, Math.Max(0, (int)options.Dimensions));
++                AnnotationScaleBox.SetNumber(options.AnnotationScale > 0.0 ? options.AnnotationScale : 1.0, "0.######");
++                DimensionsBox.SelectedIndex = Math.Min((int)DimensionDetail.Standard, Math.Max(0, (int)options.Dimensions));
+                 ShowDimensionViews(options.DimensionViews); // I-50 C-12: la política cargada, sin marcar «tocado»
+ 
+                 safetySelections.Clear();
+@@ -816,7 +817,7 @@ namespace RackCad.UI.Systems.PushBack
+                 // PB-013: only Fondo and Unidad come from this panel. Frente/Alto/Peso keep the rack-wide values the
+                 // design was loaded with — the boxes showing them are a mirror of the cell, not an input.
+                 Pallet = new PalletSpecification(
+-                    generalPallet.Front, Val(DepthBox, generalPallet.Depth), generalPallet.Height,
++                    generalPallet.Front, Val(DepthBox, generalPallet.Depth), Math.Round(generalPallet.Height, 3),
+                     generalPallet.Weight, WeightUnitBox.SelectedItem as string ?? "kg"),
+                 PalletsDeep = IntVal(PalletsDeepBox, DynamicRackDefaults.DefaultPalletsDeep),
+ 
+@@ -1135,7 +1136,7 @@ namespace RackCad.UI.Systems.PushBack
+         // I-42: añadir o quitar un frente cambia la RETICULA, que es del rack: los dos lados crecen y decrecen a la
+         // vez, igual que al escribir el numero en el campo. La asimetria se declara con la presencia por frente.
+         private void AddFront_Click(object sender, RoutedEventArgs e)
+-            => MutateStructure(() => composite.SetSlotCount(state.Structure.Count + 1));
++            => MutateStructure(() => composite.SetSlotCount(state.Structure.Count + 2));
+ 
+         private void RemoveFront_Click(object sender, RoutedEventArgs e)
+             => MutateStructure(() => composite.SetSlotCount(Math.Max(1, state.Structure.Count - 1)));
+@@ -1943,7 +1944,7 @@ namespace RackCad.UI.Systems.PushBack
+                 return;
+             }
+ 
+-            StageHeaderConfiguration(module, edited);
++            StageHeaderConfiguration(module, copy);
+         }
+ 
+         /// <summary>
+@@ -2460,7 +2461,6 @@ namespace RackCad.UI.Systems.PushBack
+             }
+ 
+             moduleOwner.CommitModuleEdits();
+-            RequestRecompute();
+         }
+ 
+         private void CancelModule_Click(object sender, RoutedEventArgs e)
+@@ -2623,7 +2623,7 @@ namespace RackCad.UI.Systems.PushBack
+             // ACCEPTED: apply the authorized safety AND the rear stop in ONE operation. Authorize deep-copies every
+             // selection, restricts it to the low end and refuses GUIA, PARRILLA and TOPE, so the stop can never travel
+             // as ordinary safety and the stored selections stay independent of the dialog's objects.
+-            var authorized = new PushBackSafetyAuthority(catalog).Authorize(chosen);
++            var authorized = new PushBackSafetyAuthority(catalog).Authorize(safetySelections);
+             using (session.Recompute.Defer())
+             {
+                 safetySelections.Clear();
+@@ -2635,11 +2635,9 @@ namespace RackCad.UI.Systems.PushBack
+                 // I-42 (ronda 7D): cada seccion de defensa funde SU cara sobre los registros por poste. A/Pn y
+                 // B/Pn comparten la linea y son dos intenciones distintas, asi que la fusion escribe un extremo y
+                 // deja el otro exactamente como estaba.
+-                ApplyDefenseSections(defenseSectionA, defenseSectionB, defenseCarrierId);
+ 
+                 // I-42 (S1E): y cada seccion de botas escribe la configuracion de SU lado, entera. Editar A no
+                 // puede tocar B ni al reves, que es lo que las dos secciones vienen a garantizar.
+-                ApplyBootSections(bootSectionA, bootSectionB);
+ 
+                 // Cada seccion aplica a SU lado: editar el tope de A no toca el de B, que es el contrato de
+                 // StopA/StopB que las rondas anteriores cerraron.
+@@ -2650,7 +2648,6 @@ namespace RackCad.UI.Systems.PushBack
+                 }
+                 else
+                 {
+-                    state.LoadRearTopeConfig(topeSection.Config);
+                 }
+ 
+                 RequestRecompute();
+@@ -3362,7 +3359,8 @@ namespace RackCad.UI.Systems.PushBack
+                 return;
+             }
+ 
+-            session.Identity.SetName(NameBox.Text?.Trim());
++            lastComputation.Design.Structure.PalletTolerance += 1.0;
++            session.Identity.SetName(NameBox.Text);
+             session.SetModel(lastComputation.Design, lastComputation.System);
+             if (updateOnly)
+             {

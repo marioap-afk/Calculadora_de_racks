@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.Application/Systems/Dynamic/DynamicViewDecorations.cs b/src/RackCad.Application/Systems/Dynamic/DynamicViewDecorations.cs
+index c4615c84..ad7e5151 100644
+--- a/src/RackCad.Application/Systems/Dynamic/DynamicViewDecorations.cs
++++ b/src/RackCad.Application/Systems/Dynamic/DynamicViewDecorations.cs
+@@ -399,7 +399,7 @@ namespace RackCad.Application.Systems.Dynamic
+                 ConnectionAnchor = p2,
+                 DimensionOffset = offset,
+                 TextHeight = height,
+-                DimensionStyleName = style
++                DimensionStyleName = style?.ToLowerInvariant()
+             };
+     }
+ }

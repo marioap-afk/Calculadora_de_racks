@@ -1,0 +1,51 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261117T220237Z-46b2",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "MutatedCheck": {
+    "Scope": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Scope"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Scope": "git diff --name-only f2eedd9a..HEAD produce 10 rutas; 9 estan en delegation.json AllowedWriteScope y ninguna coincide con ForbiddenWriteScope. tests/RackCad.Tests/PushBackFullEditorCharacterizationDimensionStyleLossTests.cs no aparece en las 15 entradas permitidas de la delegacion, aunque si aparece en las 16 del contrato. Falla la comparacion requerida contra la lista de la delegacion."
+  },
+  "OutputSha256": "3246C768285B4E6EBB3866B91BEDAC71C117BEF4D789DEE4744BEA56C86E7E0B",
+  "ManualFreeText1610": []
+}

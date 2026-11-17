@@ -1,0 +1,15 @@
+diff --git a/src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorState.cs b/src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorState.cs
+index 2a64f8d3..7739b8c0 100644
+--- a/src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorState.cs
++++ b/src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorState.cs
+@@ -317,10 +317,6 @@ namespace RackCad.Application.Systems.PushBack
+             {
+                 DefaultTopology = PushBackCellTopology.Encontradas;
+             }
+-            else if (!present && DefaultTopology == PushBackCellTopology.Encontradas)
+-            {
+-                DefaultTopology = PushBackCellTopology.SoloA;
+-            }
+         }
+ 
+         /// <summary>

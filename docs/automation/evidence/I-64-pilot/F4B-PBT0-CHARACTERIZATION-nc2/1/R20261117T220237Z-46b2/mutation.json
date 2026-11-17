@@ -1,0 +1,96 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261117T220237Z-46b2",
+  "SourceVerification": "R20261117T215307Z-3cff",
+  "SourceInputs": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T215307Z-3cff/inputs",
+  "Mutation": {
+    "File": "delegation.json",
+    "Field": "AllowedWriteScope",
+    "DiffBaseToCurrent": [
+      "tests/RackCad.Tests/PushBackFullEditorCharacterizationDimensionStyleLossTests.cs",
+      "tests/RackCad.Tests/PushBackFullEditorCharacterizationLateralCutTests.cs",
+      "tests/RackCad.Tests/PushBackFullEditorCharacterizationRoundingEffectTests.cs",
+      "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationCatalogTests.cs",
+      "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationCompositeTests.cs",
+      "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationModuleTests.cs",
+      "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationRoundingLossTests.cs",
+      "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationStateTests.cs",
+      "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationSubdialogTests.cs",
+      "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationSupport.cs"
+    ],
+    "FirstLexicographic": "tests/RackCad.Tests/PushBackFullEditorCharacterizationDimensionStyleLossTests.cs",
+    "CoveringEntries": [
+      "tests/RackCad.Tests/PushBackFullEditorCharacterizationDimensionStyleLossTests.cs"
+    ],
+    "CoveredByPrefix": null,
+    "Old": [
+      "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationStateTests.cs",
+      "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationModuleTests.cs",
+      "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationCompositeTests.cs",
+      "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationSubdialogTests.cs",
+      "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationCatalogTests.cs",
+      "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationRoundingLossTests.cs",
+      "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationSupport.cs",
+      "tests/RackCad.Tests/PushBackFullEditorCharacterizationLateralCutTests.cs",
+      "tests/RackCad.Tests/PushBackFullEditorCharacterizationDimensionStyleLossTests.cs",
+      "tests/RackCad.Tests/PushBackFullEditorCharacterizationRoundingEffectTests.cs",
+      "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs",
+      "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs",
+      "src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorState.cs",
+      "src/RackCad.Application/Systems/PushBack/PushBackEditorDesignAssembler.cs",
+      "src/RackCad.Application/Systems/Shared/RackViewAvailability.cs",
+      "src/RackCad.Application/Systems/Dynamic/DynamicViewDecorations.cs"
+    ],
+    "New": [
+      "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationStateTests.cs",
+      "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationModuleTests.cs",
+      "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationCompositeTests.cs",
+      "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationSubdialogTests.cs",
+      "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationCatalogTests.cs",
+      "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationRoundingLossTests.cs",
+      "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationSupport.cs",
+      "tests/RackCad.Tests/PushBackFullEditorCharacterizationLateralCutTests.cs",
+      "tests/RackCad.Tests/PushBackFullEditorCharacterizationRoundingEffectTests.cs",
+      "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs",
+      "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs",
+      "src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorState.cs",
+      "src/RackCad.Application/Systems/PushBack/PushBackEditorDesignAssembler.cs",
+      "src/RackCad.Application/Systems/Shared/RackViewAvailability.cs",
+      "src/RackCad.Application/Systems/Dynamic/DynamicViewDecorations.cs"
+    ],
+    "OtherDiffFilesStillCovered": true,
+    "Rule": "README 10: \"si una entrada de prefijo lo cubre, se sustituye por la enumeracion de los demas archivos del diff\": el prefijo que cubre el primer archivo se sustituye por los demas archivos del diff que ese prefijo cubria; las demas entradas no cambian; exactamente ese archivo queda fuera"
+  },
+  "DerivedRecompute": {
+    "File": "relay-record-planning.json",
+    "Field": "Outcome.OutputSha256",
+    "Old": "364CDD48E1FDD2EBE484A9E66D1C255F02F05E62A3E19FF1BDA347A9D692A5F8",
+    "New": "94E7567C627C30CBD404B9ECD8A6D0E345248E2CEAB6EA02EDD2939DB93F50C4",
+    "Reason": "hash derivado de delegation.json recalculado para que la copia sea internamente coherente con la entrega simulada; no es una mutacion del contenido de la entrega ni de la delegacion"
+  },
+  "PromptSha256": "AAE6B3448024310E5B90DE1A79C4E22FD0A9695119EC58C8C776653B3F7F503C",
+  "PromptDiffVsVerified": "solo la ruta de entrada y el RunId de la invocacion (README 10)",
+  "SchemaValid": {
+    "worker-handoff.json": true,
+    "delegation.json": true,
+    "relay-record-work.json": true,
+    "relay-record-planning.json": true
+  },
+  "InputSha256": {
+    "byte-fidelity-check.json": "B704A22D6853CBB5DFCDCB2028180E78DC09E734C48A43869550E945E139EA92",
+    "coordinator-disposition.md": "2E454491D9E0A4652ABF15D004FE4808F1CD040B1FACA128BAD19B15C53E27BC",
+    "delegation.json": "94E7567C627C30CBD404B9ECD8A6D0E345248E2CEAB6EA02EDD2939DB93F50C4",
+    "gate-contract.json": "49D04D1E0B5114F79299A57A29E04CFDAEA1960BBD43A02B593CFF41E8EF66E8",
+    "relay-record-planning.json": "82807E1D3021AABF1B48427D5302BE34385FFF91F5A17515DD81A1D7A5FC0A58",
+    "relay-record-work.json": "C7372759FB94CDACBB424881090F5A89E6B306758FAFBF8F91F3AA0ABC90380D",
+    "worker-handoff.json": "1974D775FB953E971B0D4DBE67697203DEB936AC5B54C7DFAC19E65EF16D5264",
+    "ci-core/44175320836/core.trx": "171F30B75B34A79459B6D44A1C132EAA861F6D23EEA9B8E1C292BD607BED1155",
+    "ci-core-red/44174025134/core.trx": "3208CBD320E56C2C845832C95008EC69AB73DE44568EB16CF7EEEDE866503A9F",
+    "ci-ui/44175320836/ui.trx": "AAB33897524901FFA440396C6EEAEF9301F720248A5600596144BA904F1C4BFC",
+    "ci-ui-red/44174025134/ui.trx": "59FE2C5CB5A9E4E854941F75B94086BB500DF37B501ABE155CFA148E5B886576"
+  },
+  "ChangedVsVerifiedInputs": [
+    "delegation.json",
+    "relay-record-planning.json"
+  ]
+}

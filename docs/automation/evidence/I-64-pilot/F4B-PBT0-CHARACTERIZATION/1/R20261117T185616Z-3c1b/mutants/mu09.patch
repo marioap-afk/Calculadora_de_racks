@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.Application/Systems/Shared/RackViewAvailability.cs b/src/RackCad.Application/Systems/Shared/RackViewAvailability.cs
+index 74e1a1ab..0d68809a 100644
+--- a/src/RackCad.Application/Systems/Shared/RackViewAvailability.cs
++++ b/src/RackCad.Application/Systems/Shared/RackViewAvailability.cs
+@@ -108,7 +108,7 @@ namespace RackCad.Application.Systems.Shared
+             if (address.Variant.Kind == RackViewVariantKind.Whole)
+                 return address.Kind == DimensionViewKind.Planta;
+             if (address.Variant.Kind == RackViewVariantKind.Post)
+-                return posts.Contains(address.Variant.Index);
++                return posts.Contains(address.Variant.Index) || address.Variant.Index >= 0;
+             if (address.Variant.Kind == RackViewVariantKind.PushBackCut)
+                 return address.Variant.PushBackSide == RackPushBackSide.A || isComposite;
+             return false;

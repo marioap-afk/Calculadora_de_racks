@@ -1,0 +1,12 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 205d3889..3dbb2ab6 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -312,6 +312,7 @@ namespace RackCad.UI.Systems.PushBack
+             this.sourceProject = sourceProject;
+             isEditingExisting = true;
+             session.Identity.Adopt(rackId, rackName);
++            if (design.IsComposite) inputs.PalletTolerance += 1.0;
+             LoadFromModel(inputs, rackName);
+         }
+ 

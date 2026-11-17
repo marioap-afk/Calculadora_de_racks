@@ -1,0 +1,14 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs
+index 4752b394..d5529688 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs
+@@ -836,8 +836,7 @@ namespace RackCad.UI.Systems.PushBack
+             if (structure != null)
+             {
+                 composite.ParkDormantTail(
+-                    structure.Modules.Where(module => module != null
+-                        && PushBackCompositeStructure.IsCompositeTailId(module.ModuleId)),
++                    structure.Modules.Take(0),
+                     structure.HeaderLineOverrides.Where(line => line != null
+                         && PushBackCompositeStructure.IsCompositeTailId(line.ModuleId)));
+             }

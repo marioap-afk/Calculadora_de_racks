@@ -150,3 +150,58 @@ El Owner, en el chat, el 2026-11-17: «Sí, arranca con la custodia y la emisió
 - la CI exacta;
 - las revisiones y la verificación;
 - nc1 a nc3, según PBT0-C11.
+
+## F4B-E05. PB-T0: cadena del intento 1, ratificación del Owner sobre CT-PB0-17 y cierre (2026-11-17)
+
+**Autoridades:**
+- el contrato de PB-T0 (F4B-E04);
+- las decisiones de procedimiento del Owner (F4B-E03);
+- la ratificación del Owner sobre CT-PB0-17: `F4B-DRAFTS/coordinator/owner-pbt0-c16-decision.md`, con la pregunta, las opciones y la respuesta literales.
+
+El paquete de cierre es `F4B-PBT0-CHARACTERIZATION/task-close-package.md`.
+
+**La cadena:**
+- **Planificación** `eb30`: **rechazada** solo por la copia.
+  - ForbiddenWriteScope 152-154 llevaba un segmento `Systems/` añadido, y una Section de Authorities tenía la concordancia cambiada.
+  - Fue STOP P-03 antes del Worker.
+- **Replanificación única** `e1ae` (PBT0-C08; F4B-E03, pregunta 2): fidelidad PASS 8/8 y A1-A8 8/8, sin gastar intento. nc4 `aa9d` cumplió su oráculo.
+- **Worker** `3c1b` (`claude-sonnet-5-5`/high):
+  - RED `8f75a89b`: 21 métodos nuevos y los 20 mutantes de la tabla cerrada;
+  - GREEN `28e38d8d`: `git diff f2eedd9a 28e38d8d -- src` vacío.
+- **CI exacta:**
+  - RED `44174025134`: tests y ui-tests en failure, build-ui en success, build-plugin omitido; las existentes rotas están atribuidas a mutantes (T-8);
+  - GREEN `44175320836`: 4/4.
+- **Revisiones:**
+  - la directa, conforme, con D-1 para el Owner;
+  - la adversarial independiente, **REWORK 0/1/6**. La importante, I-01, era la desviación de CT-PB0-17 y se resuelve con una disposición, sin código.
+- **Verificación** `3cff`: `EXECUTION_VERIFIED` / NONE, 14/14, con la disposición del Owner como entrada.
+- **Controles:** nc1 `e427`, nc2 `46b2` y nc3 `b457` dan CONTROL PASS ordinario.
+  - Ningún sustituto: no se reprodujo ninguna firma de F4B-E03.
+- **Relevos:** 0 participantes, Snapshot I y el binario acreditado.
+
+**La desviación y la disposición del Owner.**
+- **El problema:** MU-PB0-16 no discriminaba CT-PB0-17 con c-10 y c-11, porque `ValidDimensions` normaliza 7 y −1 antes de la ventana (`DynamicRackSystemDocument.cs:227` y `:429-432`). La alternativa W:387 tampoco discriminaba.
+- **Lo que hizo el Worker:**
+  - añadió c-16 (`Dimensions = 3`);
+  - fijó c-12 y c-13 como `RECHAZADO <tipo>: <mensaje>`;
+  - no paró con PBT0-C10, siguiendo una cláusula del paso 3 de su prompt que el contrato no tenía.
+- **La responsabilidad:** es un defecto de la sesión y se registra como lección.
+- **Owner:** «Ratificar el cambio (Recomendado)». c-16 y la forma RECHAZADO quedan como enmienda de CT-PB0-17. PBT0-C10 no se aplica a este intento, y no se gasta intento.
+
+**Resultado:** **F4B-PBT0-CHARACTERIZATION = CLOSED / PASS WITH LIMITATIONS** sobre `28e38d8d`, attempts 1 de 3.
+- Los 21 CT-PB0 y T1B forman la red de caracterización de PB-TC a PB-T3.
+- El §6.4 de la fase ya estaba resuelto en la fila 1 (F4B-E04).
+- Los menores (M-01 a M-06 y D-2 a D-5) y la observación de CT-16 van a PB-TC y PB-T1 según el §5 del paquete de cierre.
+
+**Nota del Owner sobre la interfaz** (`F4B-DRAFTS/coordinator/owner-note-ui-deferred.md`, literal):
+- los campos o botones extra que vio se arreglan después de la primera etapa; «lo importante es la funcionalidad»;
+- no cambia OB-01.5 ni OB-01.6.
+
+**Siguiente:**
+1. El paquete de PB-TC, con su revisión independiente.
+2. Antes de emitir PB-TC, la vuelta al Owner prevista:
+   - el efecto medido de (a) y (b) (T-3, con la lectura OWNER-4);
+   - M-7 = 0/22;
+   - H-PB-28 (OWNER-2).
+3. Antes del contrato de PB-T1: `pb-21-cola` (OWNER-3) y los demás casos de T-2 (OB-06.5).
+4. PB-TC no se emite sin la orden del Owner.

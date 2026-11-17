@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT0-CHARACTERIZATION",
+  "RunId": "R20261117T220616Z-b457",
+  "DelegationRunId": "R20261117T185020Z-e1ae",
+  "WorkRunId": "R20261117T185616Z-3c1b",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED y DeathConfirmed=true. OutputWrittenUtc=2026-11-17T15:20:09-06:00, posterior a Cession.StartUtc."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json coincide en TaskId, Attempt=1, DelegationRunId=R20261117T185020Z-e1ae y RunId=R20261117T185616Z-3c1b; CurrentSha=28e38d8d51108c22305a5fc41ce84070a2efdbe7, RedSha=8f75a89b092947e4572e7383cc37696776903de1."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leidos docs/AUTOMATION_PLAN.md, docs/automation/agent-execution/README.md y AGENTS.md desde MainSha 812baf879612320653094a8aaf46aca0bac81383; documentos de la unidad desde AuthorityRevision ca4165bb. git merge-base --is-ancestor AuthorityRevision BaseSha dio exit 0. git diff --name-only AuthorityRevision BaseSha dio cuatro rutas: contrato, generador, estado y evidencia bajo docs/; no son EXTERNAL ni tienen secciones UNIT_CHANGE."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "delegation.json y gate-contract.json: A1-A8 constan pass; relay-record-planning.json registra 8/8 y nc4. byte-fidelity-check.json da PASS en las ocho colecciones, incluidas las 24 invariantes. La lista AllowedWriteScope de la delegacion contiene las 10 rutas netas y los seis archivos de MutantScope; coordinator-disposition.md ratifica las dos desviaciones declaradas para este intento."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD=28e38d8d51108c22305a5fc41ce84070a2efdbe7; git branch --show-current=architecture/workspace-persistente-rackcad; refs/remotes/origin/architecture/workspace-persistente-rackcad coincide con HEAD. git merge-base --is-ancestor BaseSha CurrentSha y RedSha CurrentSha dieron exit 0. Worktree de handoff coincide con el worktree actual."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: LsRemoteSha=CurrentSha=28e38d8d51108c22305a5fc41ce84070a2efdbe7 y OriginMainSha=MainSha=812baf879612320653094a8aaf46aca0bac81383."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha da exactamente 10 rutas: tests/RackCad.Tests/PushBackFullEditorCharacterizationDimensionStyleLossTests.cs, PushBackFullEditorCharacterizationLateralCutTests.cs, PushBackFullEditorCharacterizationRoundingEffectTests.cs y siete rutas tests/RackCad.UI.Tests/PushBackFullEditorCharacterization*.cs. Todas son entradas exactas de AllowedWriteScope en delegation.json; ninguna intersecta ForbiddenWriteScope. git diff BaseSha CurrentSha -- src esta vacio. El diff BaseSha RedSha -- src y RedSha CurrentSha -- src contiene solo los seis archivos de MutantScope. Para cada uno, git rev-parse BaseSha:ruta y CurrentSha:ruta coinciden y RedSha:ruta difiere; coincide con la tabla de blobs de worker-handoff.json."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 no produjo rutas. git check-ignore reconocio artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION-nc3/1/R20261117T220616Z-b457/inputs/gate-contract.json."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun: run 44175320836, event=push, ref=refs/heads/architecture/workspace-persistente-rackcad, head_sha=CurrentSha; los cuatro jobs requeridos terminaron success. RedPart: run 44174025134 es push del RedSha y el job Tests (Domain + Application) termino failure; UI Tests fallo, Build UI tuvo success y Build Plugin fue omitido."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX current: el filtro RequiredTests selecciona Core 3/3 y UI 18/18, todos Passed; concuerda con g0 y g1 en TestResults. TRX RED: selecciona Core 3/3 y UI 18/18, todos Failed; los fallos nuevos son Assert.*, con primera linea de StackTrace bajo tests/ y sin NotExecuted ni Skipped. git diff --name-only ChainBaseSha RedSha -- tests/ da los mismos 10 archivos enumerados en Scope; git diff --name-only RedSha CurrentSha -- tests/ esta vacio. ChainRedFiles=RT: esos 10 archivos."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%H%n%B BaseSha..CurrentSha muestra los commits RED 8f75a89b y GREEN 28e38d8d; ambos llevan Co-Authored-By: Claude Sonnet 5.5. El trailer concuerda con ModelEffective=claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "delegation.json solicita Model=claude-sonnet-5-5 y effort semantico Deep/provider high. relay-record-work.json registra ModelRequested=sonnet (alias de lanzamiento subagent), ModelEffective=claude-sonnet-5-5 y EffortEffective=high."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "La comprobacion de los campos de texto libre de worker-handoff.json encontro una coincidencia con la lista de AUTOMATION_PLAN 16.10 en WorkCompleted; no encontro otras coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra cero denegaciones de permisos y cinco resultados de herramienta con error, ninguno pendiente. El registro indica cero participantes y cero procesos no atribuibles persistentes."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "worker-handoff.json WorkCompleted contiene una coincidencia restringida por AUTOMATION_PLAN 16.10; las otras 13 comprobaciones pasan.",
+    "La disposicion del Owner ratifica las desviaciones de CT-PB0-17 y excluye PBT0-C10 para este intento."
+  ],
+  "RecommendedNextAction": "Corregir el texto libre de la entrega para eliminar la coincidencia y solicitar una nueva verificacion."
+}

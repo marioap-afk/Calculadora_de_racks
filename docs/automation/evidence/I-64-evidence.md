@@ -7680,3 +7680,28 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **`attempts`:** 1 de 3.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 234. Cadena, ratificación del Owner y cierre de F4B-PBT0-CHARACTERIZATION
+
+**Decisión:** F4B-E05 y la ratificación del Owner sobre CT-PB0-17 («Ratificar el cambio (Recomendado)»).
+
+**La cadena:**
+- **Planificación:** `eb30` fue rechazada solo por la copia (STOP P-03); la replanificación única `e1ae` dio fidelidad PASS y A1-A8 8/8. nc4 `aa9d`.
+- **Worker** `3c1b`:
+  - RED `8f75a89b`, con 21 métodos nuevos y los 20 mutantes de la tabla cerrada;
+  - GREEN `28e38d8d`, con `src` igual a la base.
+- **CI:**
+  - RED `44174025134`: tests y ui-tests en rojo, build-ui en verde, plugin omitido;
+  - GREEN `44175320836`: 4/4.
+- **Revisiones:**
+  - la directa, conforme;
+  - la independiente, REWORK 0/1/6 por la desviación c-16 de CT-PB0-17, resuelta por la ratificación del Owner sin código.
+- **Verificación** `3cff`: `EXECUTION_VERIFIED` 14/14.
+- **Controles:** nc1 `e427`, nc2 `46b2` y nc3 `b457` dan CONTROL PASS, sin sustitutos.
+
+**Resultado:** PB-T0 **CLOSED / PASS WITH LIMITATIONS**, intento 1 de 3. Los 21 CT-PB0 y T1B forman la red de PB-TC a PB-T3.
+
+**Límites:**
+- solo pruebas nuevas, sin AutoCAD;
+- los menores van a PB-TC y PB-T1;
+- las vueltas al Owner antes de PB-TC (efecto de (a) y (b), M-7 y H-PB-28) y antes de PB-T1 (`pb-21-cola` y T-2) siguen pendientes.
