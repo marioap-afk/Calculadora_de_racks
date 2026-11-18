@@ -1746,3 +1746,34 @@ El Owner la dispuso aparte («Registrar aparte», O-18 del paquete de F4-T4C, F4
 Con un rack seleccionado, la sección «Selección» del panel Workspace pasa de dos líneas a tres (`Rack seleccionado: <GUID partido>`). Eso desplaza hacia abajo, unos 12 px, todo lo que hay debajo, incluida la fila Seleccionar / Ver / Centrar. Los avisos que aparecen y desaparecen («Hay un comando en curso.», las confirmaciones) también mueven el panel. En Smoke-2 eso hizo que un operador automático pulsara por encima de «Ver» y diera un falso FAIL (paso 50, F4-E80).
 
 Mejora posible: mantener vertical y estable la fila de navegación y acciones mientras cambia el contenido de «Selección», por ejemplo con una altura fija o reservada para esa sección. El Owner la registra como **FUTURE UX IMPROVEMENT**: no reabre F4 y no es un defecto de corrección.
+
+## I-64 F4B PB-T1a — hallazgos de la ventana clásica de Push Back (2026-11-18, registrados sin corregir)
+
+La red de caracterización de PB-T1a (`tests/RackCad.UI.Tests/PushBackStateNet*.cs`) fija estos comportamientos tal como son hoy. El Owner decidió reproducirlos en PB-T1 sin cambiar RACKEDITAR y anotarlos aquí como mejoras futuras (F4B-E14, preguntas 2 y 3). Corregirlos sería un cambio declarado de RACKEDITAR, en una tarea propia.
+
+### La unidad «ton» se pierde al reconstruir la estructura (c-09)
+
+Un rack guardado con `PalletWeightUnit = "ton"` la conserva al cargar y con «Actualizar». Pero cuando otra edición reconstruye la estructura (por ejemplo, el fondo del pallet), la salida pasa a «kg» con el mismo número: 1000 ton se convierten en 1000 kg. La caja `WeightUnitBox` solo ofrece kg y lb. PB-T1b lo reproduce como una regla explícita del estado (F4B-E14, pregunta 2). La fija CT-PBT1A-02.
+
+### «lb» y la caja de fondos de pallet no llegan solas a la salida
+
+- **«lb» en `WeightUnitBox`:** elegirla no cambia la salida, ni con «Actualizar», mientras nada reconstruye la estructura (`SamePallet` ignora la unidad). La elección del usuario se pierde en silencio hasta la siguiente reconstrucción.
+- **`PalletsDeepBox`:** editarla no mueve la salida, ni siquiera el fondo de un frente que se añade después.
+
+La fija CT-PBT1A-02.
+
+### Aceptar Seguridad sin cambios añade el portador de botas
+
+En `pb-05-topes`, aceptar el diálogo de Seguridad sin tocar nada añade a la salida el portador de botas (`Structure.SafetySelections` y `DefensePieceId`), sin cambiar el BOM. La fija CT-PBT1A-11 (es la observación de CT-16 de PB-T0). Si el portador llega al dibujo es algo para comprobar en Smoke-PB.
+
+### Una caja de largo manual vaciada no se vacía (M-07 de PB-TC2)
+
+Con un indicador mixto obsoleto, vaciar «Largo manual» deja el override en la salida, y una caja obligatoria vacía no marca error. La fija CT-PBT1A-10 como INCUMPLIMIENTO CARACTERIZADO.
+
+### El poste fuera de catálogo se ve vacío (c-02)
+
+Un `HeaderPostCatalogId` que no está en el catálogo pasa al poste por defecto en la salida, pero `PostBox` se ve vacía. PB-T1b lo reproduce como una regla explícita (F4B-E09, pregunta 2). Mostrar en la caja el poste que de verdad se usa sería una mejora de uso.
+
+### Higiene de pruebas: `Abrir` en CT-PB0-17 (M-01 de PB-T0)
+
+CT-PB0-17 sigue usando el ayudante `Abrir` (M-01 de la revisión de PB-T0). Las pruebas nuevas de PB-T1 usan `Ventana()` con la carga dentro del `try`. Queda sin corregir porque PB-T1 no edita pruebas existentes.

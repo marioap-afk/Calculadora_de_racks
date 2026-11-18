@@ -1,0 +1,55 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261118T171929Z-3203",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "fail",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "fail",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Identity",
+    "Remote",
+    "Ci"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": false,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Identity": "Delivery CurrentSha is literally deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. git rev-parse HEAD=73d30982b0c0ce2b8c9213e626df0ab0d50b0475; git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad gives the same 73d30982... Branch and worktree match. Base and Red are ancestors of measured HEAD, but HEAD and remote ref do not equal delivery CurrentSha."
+  },
+  "OutputSha256": "80E60C37218129FA88E4CF5C23191CA0FB1F8E4890AC5E7F877A6E4FCDB7EE88",
+  "ManualFreeText1610": []
+}

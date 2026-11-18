@@ -1,0 +1,49 @@
+{
+  "Control": "nc3",
+  "RunId": "R20261118T165356Z-bdb7",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "MutatedCheck": {
+    "FreeText": "pass"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [],
+  "VerifiedSha": "73d30982b0c0ce2b8c9213e626df0ab0d50b0475",
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "FreeText",
+    "FailureClass": "FreeText",
+    "Classification": "EXECUTION_REWORK_REQUIRED",
+    "Disposition": "REWORK",
+    "LaterChecksMustMatch": true
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "FreeText": "Checked worker handoff free-text fields listed by AUTOMATION_PLAN 16.10; no prohibited term or phrase is present."
+  },
+  "OutputSha256": "932741BADC43E735D6C2623BA74CBFD4C4D1C1DB535BB60CBF36DBC0E252FC82",
+  "ManualFreeText1610": []
+}

@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 6ca4f29e..499bf089 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -1507,7 +1507,7 @@ namespace RackCad.UI.Systems.PushBack
+             using (session.Recompute.Defer())
+             {
+                 var frontTargets = targets.ToList();
+-                ForEachEditedSide(side => side.Structure.ApplyFrontValuesTo(ReadCellValues(side).Dynamic, frontTargets));
++                ForEachEditedSide(side => side.Structure.ApplyFrontValuesTo(ReadCellValues().Dynamic, frontTargets));
+                 suppressSync = true;
+                 try
+                 {

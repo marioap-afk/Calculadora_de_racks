@@ -1,0 +1,77 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT1A-LOSSLESS-STATE-NET",
+  "RunId": "R20261118T173153Z-7969",
+  "DelegationRunId": "R20261118T141628Z-d049",
+  "WorkRunId": "R20261118T142230Z-d31d",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true, OutputWrittenUtc=2026-11-18T10:06:40.810636-06:00; Cession.StartUtc=2026-11-18T14:22:36Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json matches TaskId, DelegationRunId and Attempt; RunId=R20261118T142230Z-d31d. Recorded output time is after cession start; assigned input copy is present."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor 95c8126ba88c4e355cc09c51db972ff7f757251a a3b63ccc8c8c7ec758960c10f872c371338ce104 exited 0. git diff --name-only returned five docs/ paths: evidence index, anchors, contract, generator script and state. None is EXTERNAL or UNIT_CHANGE."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "byte-fidelity-check.json Result=PASS; all eight compared fields have equal decoded and UTF-8 bytes, with AllowedWriteScopeElementwiseInOrder=true. Delegation and contract identity and required-test data agree."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "Handoff CurrentSha=73d30982b0c0ce2b8c9213e626df0ab0d50b0475; git rev-parse HEAD=73d30982b0c0ce2b8c9213e626df0ab0d50b0475; git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad=73d30982b0c0ce2b8c9213e626df0ab0d50b0475. Branch and worktree match delegation. Base is ancestor; RedSha 15f1f225b8981d2b78746b0daed4e27da2bcd901 is between BaseSha and CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: CurrentRun is completed push for exact branch and CurrentSha; LsRemoteSha=73d30982b0c0ce2b8c9213e626df0ab0d50b0475 and OriginMainSha=812baf879612320653094a8aaf46aca0bac81383, equal to MainSha."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "Read-only scope script printed 9 AllowedWriteScope entries. git diff --name-only BaseSha CurrentSha lists 7 test paths, all exact members; BaseSha RedSha lists those 7 plus the 2 permitted Push Back mutant files, all exact members. ForbiddenWriteScope has no intersection. RED-to-GREEN changes only the 2 mutant paths."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned empty. git check-ignore -v on the input handoff returned .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun 44338475965 is completed push for exact branch and CurrentSha; all four required jobs are success. RedRun 44333116533 is completed push for exact branch and RedSha; UI job failure, other three jobs success. TRX totals match handoff: Current UI 2436/2415/0/21 and Core 19070/19070/0/0; RED UI 2436/2359/56/21 and Core 19070/19070/0/0."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Parsed all four TRX files and matched totals to handoff TestResults. Current UI filters selected/pass: StateNet 14/14; Classic 55/55; FullEditor 18/16 (2 NotExecuted); rounding 3/3; dimension style 2/2; pilot parity 2/2; side B notice 2/2; standard restore 1/1; correction 2 4/4; Cantilever 67/67; CompositeWindow 52/52; LifecycleWiring 7/7; LoadExisting 3/3; BothMode 10/10; ModuleEditor 13/13; AdvancedRack 9/9. Current Core filters: 10/10, 3/3, 15/15. RED StateNet selected 14, all 14 Failed, none skipped or NotExecuted; messages are assertion differences and first stack lines point under tests/. CI RED Core has 19070 passed and 0 failed. git diff --name-only BaseSha RedSha -- tests/ is the seven new test files; git diff --name-only RedSha CurrentSha -- tests/ is empty, so ChainRedFiles is those seven paths."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha shows RED and GREEN each carry Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching Worker.Trailer and effective model."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 with high effort. relay-record-work Participant records launch alias sonnet, ModelEffective=claude-sonnet-5-5 and EffortEffective=high."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "Mandatory case-insensitive whole-term scan of all seven complete handoff text fields: WorkCompleted chars=14803 has one match at index 14793, context suffix 'El checkout principal no se toco. [matched phrase]'. Evidence chars=15014, UnexpectedFindings 2670, KnownLimitations 1393, Deviations 2116, OpenQuestions 0 and RecommendedNextAction 201 have no matches."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes reports 0 permission denials and 3 tool errors, none pending. Process reread reports 0 persistent participants and 0 persistent unattributable processes."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "The complete handoff text scan found one prohibited whole-phrase match in WorkCompleted; no other scanned field matched."
+  ],
+  "RecommendedNextAction": "Remove the matched phrase from WorkCompleted and submit a corrected handoff for verification."
+}

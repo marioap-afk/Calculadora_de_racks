@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs
+index c8dd9d93..30924c2d 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs
+@@ -206,7 +206,7 @@ namespace RackCad.UI.Systems.PushBack
+                 return;
+             }
+ 
+-            composite.SetCentralSeparator(CentralSeparatorCheck.IsChecked == true);
++            composite.SetCentralSeparator(false);
+             RequestRecompute();
+         }
+ 

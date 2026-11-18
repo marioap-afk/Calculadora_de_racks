@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 6ca4f29e..d4bd1b35 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -1168,7 +1168,7 @@ namespace RackCad.UI.Systems.PushBack
+         // I-42: añadir o quitar un frente cambia la RETICULA, que es del rack: los dos lados crecen y decrecen a la
+         // vez, igual que al escribir el numero en el campo. La asimetria se declara con la presencia por frente.
+         private void AddFront_Click(object sender, RoutedEventArgs e)
+-            => MutateStructure(() => composite.SetSlotCount(state.Structure.Count + 1));
++            => MutateStructure(() => composite.SetSlotCount(state.Structure.Count + 2));
+ 
+         private void RemoveFront_Click(object sender, RoutedEventArgs e)
+             => MutateStructure(() => composite.SetSlotCount(Math.Max(1, state.Structure.Count - 1)));

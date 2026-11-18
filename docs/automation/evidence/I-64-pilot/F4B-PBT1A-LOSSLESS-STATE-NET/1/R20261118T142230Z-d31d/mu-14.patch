@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 6ca4f29e..af7c0759 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -416,7 +416,7 @@ namespace RackCad.UI.Systems.PushBack
+                 NumberLevelsCheck.IsChecked = options.NumberLevels;
+                 DrawRackNameCheck.IsChecked = options.DrawRackName;
+                 AnnotationScaleBox.SetNumber(options.AnnotationScale > 0.0 ? options.AnnotationScale : 1.0);
+-                rackAnnotationScale = options.AnnotationScale > 0.0 ? options.AnnotationScale : 1.0;
++                rackAnnotationScale = 1.0;
+                 DimensionsBox.SelectedIndex = Math.Min((int)DimensionDetail.Detailed, Math.Max(0, (int)options.Dimensions));
+                 ShowDimensionViews(options.DimensionViews); // I-50 C-12: la política cargada, sin marcar «tocado»
+ 

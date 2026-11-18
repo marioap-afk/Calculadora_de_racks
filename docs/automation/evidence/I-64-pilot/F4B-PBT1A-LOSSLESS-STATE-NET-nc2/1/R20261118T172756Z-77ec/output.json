@@ -1,0 +1,81 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT1A-LOSSLESS-STATE-NET",
+  "RunId": "R20261118T172756Z-77ec",
+  "DelegationRunId": "R20261118T141628Z-d049",
+  "WorkRunId": "R20261118T142230Z-d31d",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.StartUtc=2026-11-18T14:22:36Z; OutputWrittenUtc=2026-11-18T10:06:40.810636-06:00, later than start."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json is present with schema rackcad-worker-handoff/v1; TaskId, Attempt, DelegationRunId and RunId match this delegation and work invocation; handoff run and output path match the work record."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha returned 0; BaseSha is a direct child of AuthorityRevision. git diff --name-only AuthorityRevision BaseSha returned five docs/ paths for the unit; no EXTERNAL or UNIT_CHANGE path is in that diff."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Compared delegation to gate-contract.json for 16.5 A3-A5: AllowedWriteScope is a subset of contract scope; ForbiddenWriteScope matches (131 entries); 14 Invariants and RequiredTests match. Note: byte-fidelity-check.json says AllowedWriteScope bytes match, but the actual input arrays differ: delegation has 8 entries and omits tests/RackCad.UI.Tests/PushBackStateNetActionsTests.cs, present in the 9-entry contract scope."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD=73d30982b0c0ce2b8c9213e626df0ab0d50b0475; git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad returns the same SHA. git branch --show-current matches the delegation; git rev-parse --show-toplevel matches ExpectedWorktree. BaseSha and RedSha are ancestors of CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: CurrentRun is push on refs/heads/architecture/workspace-persistente-rackcad at CurrentSha, success; LsRemoteSha=CurrentSha and OriginMainSha=MainSha. MainSha remained 812baf879612320653094a8aaf46aca0bac81383. No network Git command was run."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "git diff --name-only BaseSha CurrentSha lists seven test paths; exact delegation AllowedWriteScope comparison fails for tests/RackCad.UI.Tests/PushBackStateNetActionsTests.cs, which is absent from the 8-entry delegation list. git diff --name-only BaseSha RedSha lists the same seven test paths plus the two permitted source mutant paths. git diff --name-only RedSha CurrentSha lists only those two source paths and no tests. The GREEN source diff is empty; both source blobs match BaseSha and differ from RedSha."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned empty. git check-ignore on the supplied worker-handoff.json path returned that path as ignored."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts and supplied TRX identify CurrentRun 44338475965 as push on the exact branch and CurrentSha, with all four required jobs success. RedRun 44333116533 is push on the exact branch and RedSha; UI job failure, Core and both build jobs success, no blame-hang or timeout."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Read the four supplied TRX files. All 19 RequiredTests filters select at least MinSelected; every selected CurrentSha result passes. Current UI TRX: 2436 total, 2415 passed, 0 failed, 21 skipped; Core: 19070 passed. RED UI: 2436 total, 2359 passed, 56 failed; Core: 19070 passed. The ExpectRed=true filter selects 14, with 14 assertion failures on RED and 14 passes on CurrentSha; its RED stacks point under tests/ and have no skipped/not-executed results. ExpectRed=false RED failures match the declared T-8 mutant attribution; RT is the seven BaseSha-to-RedSha test paths, and RedSha-to-CurrentSha changes no tests. The two RED source files are the declared mutant paths; their BaseSha and CurrentSha blobs match and differ from RedSha."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha shows both commits with Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching the declared Worker trailer and effective model."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Participant records ModelRequested=sonnet, ModelEffective=claude-sonnet-5-5, EffortRequested=high and EffortEffective=high. The effective model matches the delegation model cell; the subagent launch alias is recorded literally as requested."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Read-only script scanned the complete seven required handoff text fields case-insensitively for each 16.10 term as a whole word or phrase; zero matches. Character counts: WorkCompleted 14792, Evidence 15014, UnexpectedFindings 2670, KnownLimitations 1393, Deviations 2116, OpenQuestions 0, RecommendedNextAction 201."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json has Denials=null; Notes report zero permission denials and three tool errors, none pending."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "TriggeredStopConditions": [
+    "S-04",
+    "PBT1A-C01"
+  ],
+  "Findings": [
+    "The GREEN changes tests/RackCad.UI.Tests/PushBackStateNetActionsTests.cs outside the delegation's exact AllowedWriteScope.",
+    "The byte-fidelity-check.json PASS claim for AllowedWriteScope conflicts with the supplied delegation and contract arrays."
+  ],
+  "RecommendedNextAction": "Return the scope discrepancy and conflicting fidelity record to the Coordinator for resolution."
+}

@@ -1,0 +1,49 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261118T164820Z-996a",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "MutatedCheck": {
+    "Scope": "pass"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [],
+  "VerifiedSha": "73d30982b0c0ce2b8c9213e626df0ab0d50b0475",
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": true,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Scope": "git diff --name-only BaseSha CurrentSha produjo exactamente siete archivos nuevos de tests/RackCad.UI.Tests, todos en AllowedWriteScope exacto. Diff Base..Current -- src/ esta vacio. El RED modifico solo los dos archivos de MutantScope; el GREEN restaura ambos y no modifica tests/. Sus blobs Base/Red/Current coinciden con la tabla registrada."
+  },
+  "OutputSha256": "1BEDB4AC01EE62B51C6B6A8344A5C952F6389AB2BD21093BE69A503BACB85FD0",
+  "ManualFreeText1610": []
+}

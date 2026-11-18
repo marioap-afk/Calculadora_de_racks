@@ -426,3 +426,80 @@ Son las respuestas a las dos vueltas que la sesión preparó en modo autónomo: 
 - **A-4:** la `ExtensionData` anidada.
 - **A-5:** la copia de la carga del piloto.
 - **A-6:** M-07, la caja de c-02 y M-01 de PB-T0, que van a `docs/ideas-futuras.md`.
+
+## F4B-E14. Decisiones del Owner tras el Worker de PB-T1a
+
+**Fecha:** 2026-11-18. **Texto literal:** `F4B-DRAFTS/coordinator/owner-pbt1a-decisions.md`. **La vuelta:** `F4B-DRAFTS/pbt1a/owner-return-pbt1a.md`, preparada con la revisión directa y con la independiente (REWORK 0/1/9).
+
+1. **CT-02** (I-01): «Ratificar (Recomendado)».
+   - El Worker añadió pasos a CT-02 durante la medición, antes de las pruebas definitivas, para que MU-T1A-02 discriminara: la fila suponía que «lb» llega sola a la salida, y no llega.
+   - El contrato mandaba parar (PBT1A-C04). El Owner lo ratifica **solo para este caso**, como c-16 de PB-T0 (F4B-E05). La regla SIN LATITUD y PBT1A-C04 no cambian.
+   - La revisión independiente pasa a ACEPTABLE CON MENORES 0/0/9.
+2. **c-09 al reconstruir** (OWNER-2): «Como hoy, regla explícita (Recomendado)».
+   - Un rack guardado en «ton» pasa a «kg», con el mismo número, cuando otra edición reconstruye la estructura: `WeightUnitBox` decide el estado.
+   - PB-T1b lo reproduce como una regla explícita del estado con su CT, igual que c-02 (F4B-E09, pregunta 2). RACKEDITAR no cambia.
+3. **Los demás hallazgos de INV-PBT1A-13** (OWNER-3 y OWNER-4): «Tal cual, anotar mejoras (Recomendado)».
+   - Los dos hallazgos:
+     - «lb» y `PalletsDeepBox` no llegan solos a la salida;
+     - aceptar Seguridad sin cambios añade el portador de botas.
+   - PB-T1 los reproduce, y se anotan en `docs/ideas-futuras.md`.
+   - Con las preguntas 2 y 3, la precondición 5 de PB-T1b queda satisfecha.
+
+## F4B-E15. Decisión del Owner sobre los controles de PB-T1a
+
+**Fecha:** 2026-11-18. **Texto literal:** `F4B-DRAFTS/coordinator/owner-pbt1a-nc1-decisions.md`. **La vuelta:** `F4B-DRAFTS/pbt1a/owner-return-controls.md`.
+
+**La primera ronda:** los tres controles sobre la verificación `06b0` dieron CONTROL NOT PASSED.
+- **nc1** `8b4e`: detecta el SHA falso, pero la evidencia de Identity no lo nombra (no es la firma exacta de PD-F4-04).
+- **nc2** `996a`: no detecta el `AllowedWriteScope` estrechado.
+- **nc3** `bdb7`: no detecta « GATE PASS.» al final de `WorkCompleted` (no ejecutó ninguna búsqueda).
+
+Son falsos negativos del verificador con una entrega grande. Por F4B-E03 y PBT1A-C11, ninguno tenía salida sin el Owner.
+
+**Respuesta del Owner:** «Reforzar y repetir (Recomendado)».
+- **El refuerzo:** el prompt de la verificación gana tres comprobaciones deterministas obligatorias:
+  - FreeText por script, sobre el texto completo de los siete campos libres;
+  - Scope, contado por script contra el `AllowedWriteScope` de la delegación;
+  - Identity, con el `CurrentSha` de la entrega y el HEAD medido escritos literalmente.
+- **La repetición:** se repiten una vez la verificación y nc1 a nc3.
+- **El alcance:** vale también para PB-T1b y PB-T1c. No gasta intento.
+
+**La segunda ronda:**
+- **Verificación** `b71b`: `EXECUTION_VERIFIED` 14/14, con las tres comprobaciones por script.
+- **Controles,** los tres **CONTROL PASS** ordinarios, con el oráculo cumplido y sin sustitutos:
+  - nc1 `3203`: Identity primero; Remote y Ci como consumidores del SHA falso; STOP S-04;
+  - nc2 `77ec`: Scope en fail;
+  - nc3 `7969`: FreeText en fail.
+
+## F4B-E16. Cierre de F4B-PBT1A-LOSSLESS-STATE-NET
+
+**Paquete de cierre:** `F4B-PBT1A-LOSSLESS-STATE-NET/task-close-package.md`.
+
+**La cadena del intento 1:**
+- **Planificación** `d049`, en el primer lanzamiento: fidelidad PASS en las 8 colecciones y A1-A8 8/8. nc4 `7228`.
+- **Worker** `d31d`: IMPLEMENTATION_COMPLETE, sin paradas.
+  - RED `15f1f225`: los siete archivos nuevos y los quince mutantes de la tabla, exactamente.
+  - GREEN `73d30982`: la reversión; `git diff a3b63ccc 73d30982 -- src` vacío.
+  - Cada mutante aislado hace fallar el CT de su fila.
+- **CI:**
+  - RED `44333116533`: ui-tests en failure (`PushBackStateNet` 14/14 por aserción; 42 pruebas existentes atribuidas a los mutantes); los otros tres trabajos en success.
+  - GREEN `44338475965`: 4/4, con UI 2 415/21/2 436 y Core 19 070, exactamente lo previsto.
+- **Revisiones:**
+  - la directa, conforme;
+  - la independiente, REWORK 0/1/9, que pasa a ACEPTABLE CON MENORES 0/0/9 con F4B-E14.
+- **Verificación** `06b0`: `EXECUTION_VERIFIED` 14/14, con la ratificación de CT-02 como disposición de entrada; la verificación reforzada `b71b` (F4B-E15), también 14/14.
+- **Controles:** primera ronda sobre la verificación `06b0`: nc1 `8b4e`, nc2 `996a` y nc3 `bdb7` CONTROL NOT PASSED (falsos negativos del verificador); el Owner dijo «Reforzar y repetir (Recomendado)» (F4B-E15); segunda ronda sobre la verificación reforzada `b71b` (`EXECUTION_VERIFIED` 14/14): nc1 `3203`, nc2 `77ec` y nc3 `7969` **CONTROL PASS** ordinario, sin sustitutos.
+
+**Resultado:** **F4B-PBT1A-LOSSLESS-STATE-NET = CLOSED / PASS WITH LIMITATIONS** sobre `73d30982`, con attempts 1 de 3.
+- La red de caracterización de la ventana clásica queda fijada con catorce CT y quince mutantes.
+- Sin cambios de producto.
+
+**Anotado en `docs/ideas-futuras.md`:**
+- A-6 de PB-T1: M-07, la caja de c-02 que se ve vacía y M-01 de PB-T0;
+- OWNER-3 y OWNER-4 de F4B-E14;
+- c-09 como mejora futura de producto.
+
+**Siguiente:**
+- los anclajes de PB-T1b sobre este cierre y su generador, con la regla explícita de c-09 (F4B-E14, pregunta 2);
+- su comprobación acotada;
+- su emisión, por la autorización de F4B-E09 y F4B-E11.

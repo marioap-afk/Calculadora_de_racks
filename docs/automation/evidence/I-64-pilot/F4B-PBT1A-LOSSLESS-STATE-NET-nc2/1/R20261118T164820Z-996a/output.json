@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT1A-LOSSLESS-STATE-NET",
+  "RunId": "R20261118T164820Z-996a",
+  "DelegationRunId": "R20261118T141628Z-d049",
+  "WorkRunId": "R20261118T142230Z-d31d",
+  "Attempt": 1,
+  "VerifiedSha": "73d30982b0c0ce2b8c9213e626df0ab0d50b0475",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; OutputWrittenUtc=2026-11-18T10:06:40.810636-06:00, posterior a Cession.StartUtc=2026-11-18T14:22:36Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json presente y coincide con TaskId, Attempt=1, DelegationRunId y RunId asignados; BaseSha, CurrentSha, branch y worktree coinciden con la entrega. OutputWrittenUtc consta en relay-record-work.json."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha exit=0; BaseSha^ = AuthorityRevision. git diff --name-only AuthorityRevision BaseSha dio cinco rutas, todas docs/ de la unidad; no hay rutas EXTERNAL ni UNIT_CHANGE. AUTOMATION_PLAN.md, README.md y AGENTS.md se consultaron en MainSha."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "delegation.json y gate-contract.json coinciden en los elementos A3-A5. byte-fidelity-check.json marca PASS en las ocho colecciones; relay-record-planning.json registra A1-A8 8/8 y nc4 con solo A3 en fail, segun su oraculo."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD y refs/remotes/origin/architecture/workspace-persistente-rackcad = CurrentSha 73d30982; rama y worktree coinciden. git merge-base --is-ancestor BaseSha CurrentSha y RedSha CurrentSha dieron exit=0; log muestra Base -> Red -> Current."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: LsRemoteSha = CurrentSha y OriginMainSha = MainSha. No se uso Git de red."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha produjo exactamente siete archivos nuevos de tests/RackCad.UI.Tests, todos en AllowedWriteScope exacto. Diff Base..Current -- src/ esta vacio. El RED modifico solo los dos archivos de MutantScope; el GREEN restaura ambos y no modifica tests/. Sus blobs Base/Red/Current coinciden con la tabla registrada."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain no produjo salida. git check-ignore -v sobre el paquete de entrada lo asigna a .gitignore:3, artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun y TRX 44338475965: push, ref exacta, HeadSha=CurrentSha, completado; los cuatro jobs requeridos success. RedRun 44333116533 coincide con RedSha: UI failure, Core y ambos builds success, sin timeout ni blame-hang segun el registro."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX Current: UI 2436 resultados, 0 Failed; Core 19070, 0 Failed. Los 19 filtros RequiredTests cumplen MinSelected; el filtro nuevo selecciona 14 y pasa 14/14; Core requeridos selecciona 10, 3 y 15, todos pasan. RED: las 14 nuevas fallan por asercion, sin Skipped/NotExecuted y con stack en tests/; UI RED tiene 56 fallos, 14 nuevos y 42 existentes atribuidos por T-8 a mutantes; Core RED pasa 19070. RT son los siete archivos nuevos; RedSha..CurrentSha no toca tests/, por lo que ChainRedFiles=RT."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha muestra dos commits; ambos llevan Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, coincidente con Worker.Trailer y el modelo efectivo."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegacion solicita claude-sonnet-5-5 y effort high; relay-record-work.json registra ModelEffective=claude-sonnet-5-5 y EffortEffective=high. ModelRequested=sonnet es el alias de transporte admitido."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Busqueda sin distinguir mayusculas de los terminos de AUTOMATION_PLAN 16.10 en los siete campos libres de worker-handoff.json: sin coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json registra cero denegaciones; tres resultados de herramienta con error, ninguno pendiente. Sin aviso de limite ni orden fallida pendiente."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "coordinator-disposition.md ratifica CT-02 solo para este caso y este intento.",
+    "El filtro PushBackFullEditorCharacterization del TRX actual contiene 16 Passed, 0 Failed y 2 NotExecuted; cumple MinSelected=16."
+  ],
+  "RecommendedNextAction": "Continuar las revisiones pendientes usando el SHA verificado."
+}

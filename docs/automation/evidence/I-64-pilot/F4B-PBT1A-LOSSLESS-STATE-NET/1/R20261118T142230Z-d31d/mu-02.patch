@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 6ca4f29e..d6d6c650 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -849,7 +849,7 @@ namespace RackCad.UI.Systems.PushBack
+                 // design was loaded with — the boxes showing them are a mirror of the cell, not an input.
+                 Pallet = new PalletSpecification(
+                     generalPallet.Front, generalPallet.Depth, generalPallet.Height,
+-                    generalPallet.Weight, WeightUnitBox.SelectedItem as string ?? "kg"),
++                    generalPallet.Weight, "kg"),
+                 PalletsDeep = IntVal(PalletsDeepBox, DynamicRackDefaults.DefaultPalletsDeep),
+ 
+                 // I-42 (correccion aislada 3) — el datum de «Alto 1er nivel» se TRANSPORTA, no se fabrica. Este

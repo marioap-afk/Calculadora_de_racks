@@ -1,0 +1,54 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261118T164355Z-8b4e",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Handoff",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "fail",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Handoff",
+    "Identity"
+  ],
+  "PreviousSameAsReal": false,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Identity": "git branch --show-current matched architecture/workspace-persistente-rackcad; worktree matched expected path. BaseSha is ancestor of RedSha and CurrentSha, and RedSha is ancestor of HEAD. git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both returned 73d30982b0c0ce2b8c9213e626df0ab0d50b0475, which contradicts the handoff CurrentSha."
+  },
+  "OutputSha256": "42D8E971716909EC9BB6AFDF8D2F1D74AD269EF8A8376FAAF6F56E61E19D64FF",
+  "ManualFreeText1610": []
+}

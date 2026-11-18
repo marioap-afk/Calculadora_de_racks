@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 6ca4f29e..1bfc88ac 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -814,7 +814,7 @@ namespace RackCad.UI.Systems.PushBack
+                     PalletCount = IntVal(PositionsBox, front.PalletCount),
+                     LoadLevels = IntVal(LevelsBox, front.LoadLevels),
+                     PalletsDeep = IntVal(FondosBox, front.PalletsDeep),
+-                    DepthStartPosition = IntVal(DepthStartBox, front.DepthStartPosition),
++                    DepthStartPosition = front.DepthStartPosition,
+                     FirstLevelHeight = KeepCell(FirstLevelHeightBox, front.FirstLevelHeight),
+                     PalletFront = KeepCell(CellPalletFrontBox, cell.PalletFront),
+                     PalletHeight = KeepCell(CellPalletHeightBox, cell.PalletHeight),

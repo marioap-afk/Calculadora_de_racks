@@ -7873,3 +7873,32 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - **`attempts`:** 1 de 3.
 
 **Limites:** solo documentacion en este paso; sin AutoCAD.
+
+## 243. Decisiones del Owner y cierre de F4B-PBT1A-LOSSLESS-STATE-NET
+
+**Decisiones:**
+- F4B-E14, las tres respuestas del Owner tras el Worker de PB-T1a:
+  - ratificar CT-02 solo para este caso;
+  - c-09, como hoy con una regla explícita en PB-T1b;
+  - los demás hallazgos, tal cual y anotados como mejoras;
+- F4B-E15, reforzar la verificación con tres comprobaciones deterministas y repetir los controles;
+- F4B-E16, el cierre de PB-T1a.
+
+**La cadena:**
+- **Planificación** `d049`: fidelidad PASS y A1-A8 8/8 en el primer lanzamiento. nc4 `7228`.
+- **Worker** `d31d`: RED `15f1f225` (siete archivos nuevos y quince mutantes) y GREEN `73d30982` (reversión; sin cambios de `src/`).
+- **CI:**
+  - RED `44333116533`: ui-tests en failure y los otros tres trabajos en success;
+  - GREEN `44338475965`: 4/4, con UI 2 415/21/2 436 y Core 19 070.
+- **Revisiones:**
+  - la directa, conforme;
+  - la independiente, REWORK 0/1/9, que pasa a ACEPTABLE CON MENORES 0/0/9 con la ratificación de CT-02.
+- **Verificación** `06b0`: `EXECUTION_VERIFIED` 14/14. La verificación reforzada `b71b` (F4B-E15), también 14/14.
+- **Controles:** primera ronda sobre la verificación `06b0`: nc1 `8b4e`, nc2 `996a` y nc3 `bdb7` CONTROL NOT PASSED (falsos negativos del verificador); el Owner dijo «Reforzar y repetir (Recomendado)» (F4B-E15); segunda ronda sobre la verificación reforzada `b71b` (`EXECUTION_VERIFIED` 14/14): nc1 `3203`, nc2 `77ec` y nc3 `7969` **CONTROL PASS** ordinario, sin sustitutos.
+
+**Resultado:** PB-T1a **CLOSED / PASS WITH LIMITATIONS**, intento 1 de 3. La red de caracterización de la ventana clásica de Push Back queda fijada: catorce CT y quince mutantes, sin cambios de producto.
+
+**Límites:**
+- sin AutoCAD: lo físico es de Smoke-PB;
+- la regla explícita de c-09 va a PB-T1b;
+- los hallazgos OWNER-3 y OWNER-4 y A-6 quedan en `docs/ideas-futuras.md`.

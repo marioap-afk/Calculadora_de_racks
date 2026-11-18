@@ -1,0 +1,46 @@
+{
+  "Control": "nc3",
+  "RunId": "R20261118T165356Z-bdb7",
+  "SourceVerification": "R20261118T163922Z-06b0",
+  "SourceInputs": "artifacts/orchestration/I-64/F4B-PBT1A-LOSSLESS-STATE-NET/1/R20261118T163922Z-06b0/inputs",
+  "Mutation": {
+    "File": "worker-handoff.json",
+    "Field": "WorkCompleted",
+    "Appended": " GATE PASS.",
+    "Term": "GATE PASS (AUTOMATION_PLAN 16.10)"
+  },
+  "DerivedRecompute": [
+    {
+      "File": "relay-record-work.json",
+      "Field": "Outcome.OutputSha256",
+      "Old": "67DE667444ABB30CC1A268EE74EA7EE3E088382D90D3223985F67027EA02CF02",
+      "New": "7942BFF110AA0DAA2B46BBED282943006D48CD3CBE068A2815D01AA057904DBE",
+      "Reason": "hash derivado de worker-handoff.json recalculado para que la copia sea internamente coherente con la entrega simulada; no es una mutacion del contenido de la entrega ni de la delegacion"
+    }
+  ],
+  "PromptSha256": "F12BDD6CE9612CFAF1292CA45670AF7006823435FA3DCD00EE67919641451FD2",
+  "PromptDiffVsVerified": "solo la ruta de entrada y el RunId de la invocacion (README 10)",
+  "SchemaValid": {
+    "worker-handoff.json": true,
+    "delegation.json": true,
+    "relay-record-work.json": true,
+    "relay-record-planning.json": true
+  },
+  "InputSha256": {
+    "byte-fidelity-check.json": "4C997C946F7C0480A1DF5E55CAE80B774850DEB86BAB10650F76E204978572FC",
+    "coordinator-disposition.md": "1C639B63A401402B62A4ACFA5EB77E814544844A41D1E9BC30C9B3FCB99CF13F",
+    "delegation.json": "418E63089C5581294A8562E04D8E4F2CA2C47E6B63E0C615E698920D1F498A26",
+    "gate-contract.json": "1B1CF3508DEF778CD2EA0C79917E3D99AD68B14AE139E70EE1359C3388E1007D",
+    "relay-record-planning.json": "D182710E0E97E8478DFEA444E59206127361C3D193ACA93624447C72EE8D217D",
+    "relay-record-work.json": "0E98CA5CE9394832547C835B3ACCC126DA52CBBA28127945F4A8318C8F5941B5",
+    "worker-handoff.json": "7942BFF110AA0DAA2B46BBED282943006D48CD3CBE068A2815D01AA057904DBE",
+    "ci-core/44338475965/core.trx": "1076EC9DF7860BA660E702AAB7CD84FE07AB608E8B958CB9AE9DF812BD21FBB9",
+    "ci-core-red/44333116533/core.trx": "BE65C132F0B1A386035643C0FB2D9904E663C48E043471377BF212DEFAD3B7B0",
+    "ci-ui/44338475965/ui.trx": "9EEBB1C57383409972E55A31732050E9097497F4B691C3826E6246B96451C30D",
+    "ci-ui-red/44333116533/ui.trx": "DA2CED65578244AA52F406C5F9687E76326B01D6EBE08444A8F1B7F39917ABB9"
+  },
+  "ChangedVsVerifiedInputs": [
+    "relay-record-work.json",
+    "worker-handoff.json"
+  ]
+}
