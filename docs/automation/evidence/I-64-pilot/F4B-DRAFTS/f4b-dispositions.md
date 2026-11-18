@@ -325,3 +325,49 @@ También midió los huecos de red y las guardas de T1B (OB-T1B.3 no obliga a pre
 - **Las condiciones de la pregunta 4** se cumplen: 0 bloqueantes, 0 importantes sin resolver y ninguna decisión material nueva.
 - **Lo que se emite:** el contrato de `F4B-PBTC2-DECLARED-CORRECTIONS`, con attempts 1 de 3.
 - **El registro** `superseding-characterization.md` añade la sección de PB-TC2 en estado DECLARADA, sin ninguna sustitución. Cierra el «Pendiente» de H-31 y la limitación OWNER-1, que pasan a PB-TC2.
+
+## F4B-E11. Decisiones D1 y D2 del Owner / Coordinator
+
+**Fecha:** 2026-11-18. **Texto literal:** `F4B-DRAFTS/coordinator/owner-d1-d2-decisions.md`.
+
+Son las respuestas a las dos vueltas que la sesión preparó en modo autónomo: `F4B-DRAFTS/pbtc2/owner-return-c14.md` y `F4B-DRAFTS/pbt1/owner-return-l1.md`.
+
+**D1 = «CONTINUE EXACT-VALUE FIX»,** sobre PB-TC2, por PBTC2-C14.
+- Ratifica que el BOM distinga cantidades con valores exactos distintos (32 @ 150 y 4 @ 150.0004).
+- Prohíbe volver a redondear para conservar la agrupación anterior, y prohíbe inventar una tolerancia dentro de PB-TC2.
+- Ordena reanudar el mismo trabajo **sin gastar intento** y sin nueva planificación, y conservar la parada y la decisión como evidencia.
+
+**D2 = «ACCEPT TWO-REFERENCE ALIAS EXCEPTION»,** sobre PB-T1, L-1.
+- La copia del estado puede compartir **solo** el rack resuelto y el informe de módulos, con **10 condiciones de seguridad** que PB-T1 tiene que probar.
+- **El límite:** si PB-T1, PB-T2 o PB-T3 tuvieran que mutar uno de los dos dentro del tiempo de vida del borrador, STOP y se reabre L-1.
+- La división de PB-T1 en tres subtareas queda aceptada en principio. Se vuelve a medir sobre el producto final de PB-TC2, y PB-T1a se emite «normally» si no cambia ninguna premisa material.
+
+## F4B-E12. Cierre de F4B-PBTC2-DECLARED-CORRECTIONS
+
+**Paquete de cierre:** `F4B-PBTC2-DECLARED-CORRECTIONS/task-close-package.md`.
+
+**La cadena del intento 1:**
+- **Planificación:** `6ac2` se rechazó solo por la copia: ExpectedEvidence[1] cortada; en ForbiddenWriteScope, un nombre cambiado y una entrada repetida. A4 dio fail y la parada fue STOP P-03.
+- **Replanificación única** de PBTC2-C08: `c73e` dio fidelidad PASS en las 8 colecciones y A1-A8 8/8. nc4 `6700`.
+- **Worker `38d3`:** parada **prevista** PBTC2-C14 en la medición previa (fila T2-3: el BOM de postes, partido), sin commits.
+- **Owner D1** (F4B-E11): sigue, sin gastar intento.
+- **Worker `037c`**, la reanudación de la misma delegación:
+  - la medición `m8b` es idéntica a la de `38d3`;
+  - RED `3677847c`, con los 4 métodos nuevos;
+  - GREEN `b5c09f0b`, solo en W y WC.
+- **CI:**
+  - RED `44298811020`: ui-tests en failure;
+  - GREEN `44300874797`: 4/4, con UI 2 401/21/2 422 y Core 19 070, exactamente lo previsto.
+- **Revisiones:**
+  - la directa, conforme;
+  - la independiente, **ACEPTABLE CON MENORES 0/0/4**, con IRC-O01 informativo. La línea del BOM ratificada en D1 sale con la descripción larga del catálogo para el mismo perfil. Ya ocurría sin tocar el panel, y cae en las reglas de presentación existentes que D1 admite.
+- **Verificación** `a2c6`: `EXECUTION_VERIFIED` 14/14, con D1 como disposición de entrada.
+- **Controles:** nc1 `1d1d` CONTROL NOT PASSED (Handoff, Identity y Ci; Remote en pass); el Owner dijo «Es la firma exacta: aplica el sustituto (Recomendado)», pero el sustituto PBTC2-NC1-IDENTITY-SIGNAL-01 dio FAIL por la propiedad 5 (la evidencia de Identity no escribe el SHA falso); el Owner dijo «Repetir nc1; si falla, aceptarlo (Recomendado)»; nc1 repetido `d6fd` CONTROL NOT PASSED (además Remote); queda `nc1 = SATISFIED_BY_OWNER_DISPOSITION` solo para este caso (`F4B-DRAFTS/coordinator/owner-pbtc2-nc1-decisions.md`), sin cambiar las firmas; nc2 `683c` y nc3 `efea` CONTROL PASS ordinario.
+
+**Resultado:** **F4B-PBTC2-DECLARED-CORRECTIONS = CLOSED / PASS WITH LIMITATIONS** sobre `b5c09f0b`, con attempts 1 de 3.
+- **Correcciones declaradas de RACKEDITAR:** H-31 (seis cajas con la regla `Keep`) y OWNER-1 (la caja mixta de «Ambos lados» con B presente).
+- **Registro:** la sección de PB-TC2 de `superseding-characterization.md` pasa a EJECUTADA. Cierra el «Pendiente» de H-31 y la limitación OWNER-1.
+
+**Siguiente:**
+- volver a medir el paquete de PB-T1 v2.2 sobre `b5c09f0b`, con una comprobación acotada;
+- emitir PB-T1a por la autorización condicional (F4B-E09 y F4B-E11).

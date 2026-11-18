@@ -1,0 +1,398 @@
+diff --git a/tests/RackCad.UI.Tests/PushBackDeclaredCorrection2RoundingTests.cs b/tests/RackCad.UI.Tests/PushBackDeclaredCorrection2RoundingTests.cs
+new file mode 100644
+index 00000000..a728aafd
+--- /dev/null
++++ b/tests/RackCad.UI.Tests/PushBackDeclaredCorrection2RoundingTests.cs
+@@ -0,0 +1,392 @@
++using System;
++using System.Collections.Generic;
++using System.Globalization;
++using System.Linq;
++using System.Text.Json.Nodes;
++using System.Windows;
++using RackCad.Application.Drawing;
++using RackCad.Application.Systems.PushBack;
++using RackCad.Domain.Systems.PushBack;
++using RackCad.UI.Systems.PushBack;
++using Xunit;
++using static RackCad.UI.Tests.PushBackDeclaredCorrectionSupport;
++using static RackCad.UI.Tests.PushBackFullEditorCharacterizationSupport;
++
++namespace RackCad.UI.Tests
++{
++    // TEMPORAL (paso 1, D-PBTC2-07): no entra en ningun commit.
++    [Collection(EditorDiscardPromptCollection.Name)]
++    public sealed class PushBackDeclaredCorrection2RoundingTests
++    {
++        private const double Threshold = 0.001;
++        private const double Epsilon = 1e-9;
++
++        private sealed class Fila
++        {
++            public string Nombre;
++            public string Fixture;
++            public string Ruta;
++            public double Valor;
++            public bool Avanzada;
++            public Action<RackPushBackSystemWindow> Gesto;
++            public Func<string, string> Mano;
++            public string Esperado;
++            public string Green;
++            public Func<string, string> LeeGreen;
++        }
++
++        private sealed class Result
++        {
++            public bool Valid;
++            public string Error;
++            public PushBackEditorComputation Computation;
++            public Dictionary<string, List<HeaderBlockInstance>> Plans;
++        }
++
++        private static void Lost(RackPushBackSystemWindow w, string name)
++        {
++            var field = Field(w, name);
++            field.RaiseEvent(new RoutedEventArgs(UIElement.LostFocusEvent, field));
++        }
++
++        private static JsonNode Nav(string json, string ruta)
++        {
++            var node = JsonNode.Parse(json)["PushBack"];
++            foreach (var segment in ruta.Split('.'))
++            {
++                var bracket = segment.IndexOf('[');
++                var name = bracket < 0 ? segment : segment.Substring(0, bracket);
++                node = node?[name];
++                while (bracket >= 0 && node != null)
++                {
++                    var close = segment.IndexOf(']', bracket);
++                    node = node[int.Parse(segment.Substring(bracket + 1, close - bracket - 1), CultureInfo.InvariantCulture)];
++                    bracket = segment.IndexOf('[', close);
++                }
++            }
++
++            return node;
++        }
++
++        private static string N(string json, string ruta)
++        {
++            var node = Nav(json, ruta);
++            return node == null ? "<null>" : Texto(node.GetValue<double>());
++        }
++
++        private static string B(string json, string ruta)
++        {
++            var node = Nav(json, ruta);
++            return node == null ? "<null>" : node.GetValue<bool>().ToString();
++        }
++
++        private static Result Compute(PushBackEditorDesignAssembler assembler, PushBackDesign design)
++        {
++            var computation = assembler.BuildFrom(design, PushBackSide.A);
++            if (!computation.IsValid) return new Result { Valid = false, Error = computation.Error };
++            var plans = new Dictionary<string, List<HeaderBlockInstance>>(StringComparer.Ordinal)
++            {
++                ["planta"] = computation.PlantaPlan.Flatten().Instances.ToList(),
++                ["frontal-es"] = computation.FrontalEntradaSalida.Flatten().Instances.ToList(),
++                ["frontal-post"] = computation.FrontalPosterior.Flatten().Instances.ToList(),
++                ["lateral"] = computation.LateralPlan.Flatten().Instances.ToList(),
++            };
++            foreach (var corte in computation.LateralCortes) plans["corte-" + corte.PostIndex.ToString(CultureInfo.InvariantCulture)] = corte.Plan.Flatten().Instances.ToList();
++            return new Result { Valid = true, Computation = computation, Plans = plans };
++        }
++
++        private static string Signature(HeaderBlockInstance instance)
++            => string.Join(
++                "/",
++                instance.Role.ToString(),
++                instance.PieceId ?? "<null>",
++                instance.BlockName ?? "<null>",
++                instance.View ?? "<null>",
++                instance.MirroredX ? "mx" : "-",
++                instance.MirroredY ? "my" : "-",
++                string.Join(",", instance.DynamicParameters.Keys.OrderBy(key => key, StringComparer.Ordinal)));
++
++        private static double MaxDeltaOf(HeaderBlockInstance a, HeaderBlockInstance b, out double geometry, out double other)
++        {
++            geometry = Math.Max(
++                Math.Max(Math.Abs(a.Insertion.X - b.Insertion.X), Math.Abs(a.Insertion.Y - b.Insertion.Y)),
++                Math.Max(Math.Abs(a.ConnectionAnchor.X - b.ConnectionAnchor.X), Math.Abs(a.ConnectionAnchor.Y - b.ConnectionAnchor.Y)));
++            foreach (var key in a.DynamicParameters.Keys)
++            {
++                geometry = Math.Max(geometry, Math.Abs(a.DynamicParameters[key] - b.DynamicParameters[key]));
++            }
++
++            other = Math.Max(
++                Math.Abs(a.TextHeight - b.TextHeight),
++                Math.Max(Math.Abs(a.DimensionOffset - b.DimensionOffset), Math.Abs(a.RotationRadians - b.RotationRadians)));
++            return Math.Max(geometry, other);
++        }
++
++        private static string FrontShape(Result result)
++            => string.Join(
++                ";",
++                result.Computation.System.Structure.Fronts.Select(front => front.LoadLevels.ToString(CultureInfo.InvariantCulture)
++                    + "/" + front.PalletCount.ToString(CultureInfo.InvariantCulture)
++                    + "/" + string.Join(",", result.Computation.LateralCortes.Select(corte => corte.PostIndex.ToString(CultureInfo.InvariantCulture)))));
++
++        private static List<List<KeyValuePair<string, object>>> BomRows(Result result)
++        {
++            var rows = new List<List<KeyValuePair<string, object>>>();
++            foreach (var line in result.Computation.Bom.Lines)
++            {
++                rows.Add(line.GetType().GetProperties()
++                    .Where(property => property.GetIndexParameters().Length == 0)
++                    .Select(property => new KeyValuePair<string, object>(property.Name, property.GetValue(line)))
++                    .ToList());
++            }
++
++            return rows;
++        }
++
++        private static string BomText(Result result)
++            => string.Join("\n", BomRows(result).Select(row => string.Join(";", row.Select(kv => kv.Key + "=" + Convert.ToString(kv.Value, CultureInfo.InvariantCulture)))));
++
++        private static string Num(object value)
++            => Convert.ToString(value, CultureInfo.InvariantCulture);
++
++        private static bool IsNumber(object value)
++            => value is double || value is float || value is decimal || value is int || value is long || value is short || value is byte;
++
++        // E = lo que escribe el GREEN (carga sin gesto); R = la base tras el gesto.
++        private static void Medir(Fila fila, List<string> lineas, List<string> stops)
++        {
++            var texto = EditInner(Fixture(fila.Fixture), inner => Poner(inner, fila.Ruta, fila.Valor));
++            PushBackDesign r;
++            PushBackDesign e;
++            RackCad.Application.Catalogs.RackCatalog catalog;
++            string rJson;
++            string eJson;
++
++            var wr = Ventana();
++            try
++            {
++                Cargar(wr, texto);
++                if (fila.Avanzada) Check(wr, "AdvancedModulesToggle").IsChecked = true;
++                fila.Gesto(wr);
++                Assert.True(wr.CurrentInputsAreValid && wr.LastComputation != null && wr.LastComputation.IsValid, StatusText(wr));
++                r = wr.LastComputation.Design;
++                rJson = Persist(r);
++                catalog = wr.Session.Catalog;
++            }
++            finally { Cerrar(wr); }
++
++            var we = Ventana();
++            try
++            {
++                Cargar(we, texto);
++                if (fila.Avanzada) Check(we, "AdvancedModulesToggle").IsChecked = true;
++                Assert.True(we.CurrentInputsAreValid && we.LastComputation != null && we.LastComputation.IsValid, StatusText(we));
++                e = we.LastComputation.Design;
++                eJson = Persist(e);
++            }
++            finally { Cerrar(we); }
++
++            var mano = fila.Mano(rJson);
++            var verde = fila.LeeGreen(eJson);
++            var coincide = mano == fila.Esperado;
++            lineas.Add(fila.Nombre + " " + fila.Fixture + " " + fila.Ruta + "=" + Texto(fila.Valor));
++            lineas.Add(fila.Nombre + " base-tras-gesto=[" + mano + "] fila-a-mano=[" + fila.Esperado + "] coincide=" + coincide);
++            lineas.Add(fila.Nombre + " green-sin-gesto=[" + verde + "] esperado-green=[" + fila.Green + "] coincide=" + (verde == fila.Green));
++            if (!coincide || verde != fila.Green) stops.Add(fila.Nombre + " PBTC2-C07: la salida real difiere de la fila a mano");
++
++            var delta = Delta(eJson, rJson);
++            lineas.Add(fila.Nombre + " delta-diseno(E->R)=[" + string.Join(" ;; ", delta) + "]");
++
++            var assembler = new PushBackEditorDesignAssembler(catalog);
++            var re = Compute(assembler, e);
++            var rr = Compute(assembler, r);
++            lineas.Add(fila.Nombre + " BuildFrom E.valid=" + re.Valid + " R.valid=" + rr.Valid + " E.error=" + re.Error + " R.error=" + rr.Error);
++            if (!re.Valid || !rr.Valid) { stops.Add(fila.Nombre + " salida no valida"); return; }
++
++            var k1 = new List<string>();
++            var k1o = new List<string>();
++            var k4 = new List<string>();
++            var k4p = new List<string>();
++            var k5 = new List<string>();
++            var maxDelta = 0.0;
++            var keys = re.Plans.Keys.Union(rr.Plans.Keys).OrderBy(key => key, StringComparer.Ordinal).ToList();
++            foreach (var key in keys)
++            {
++                var left = re.Plans.TryGetValue(key, out var l) ? l : new List<HeaderBlockInstance>();
++                var right = rr.Plans.TryGetValue(key, out var rrr) ? rrr : new List<HeaderBlockInstance>();
++                var leftSignatures = left.Select(Signature).ToList();
++                var rightSignatures = right.Select(Signature).ToList();
++                if (!leftSignatures.OrderBy(s => s, StringComparer.Ordinal).SequenceEqual(rightSignatures.OrderBy(s => s, StringComparer.Ordinal), StringComparer.Ordinal))
++                {
++                    k1.Add(key);
++                    continue;
++                }
++
++                var sameOrder = leftSignatures.SequenceEqual(rightSignatures, StringComparer.Ordinal);
++                if (!sameOrder) k1o.Add(key);
++                var pairs = new List<(HeaderBlockInstance A, HeaderBlockInstance B)>();
++                if (sameOrder)
++                {
++                    for (var i = 0; i < left.Count; i++) pairs.Add((left[i], right[i]));
++                }
++                else
++                {
++                    foreach (var group in leftSignatures.Distinct(StringComparer.Ordinal))
++                    {
++                        var lefts = left.Where((x, i) => leftSignatures[i] == group).ToList();
++                        var rights = right.Where((x, i) => rightSignatures[i] == group).ToList();
++                        for (var i = 0; i < lefts.Count; i++) pairs.Add((lefts[i], rights[i]));
++                    }
++                }
++
++                var geometry = 0.0;
++                var other = 0.0;
++                foreach (var pair in pairs)
++                {
++                    MaxDeltaOf(pair.A, pair.B, out var g, out var o);
++                    geometry = Math.Max(geometry, g);
++                    other = Math.Max(other, o);
++                }
++
++                if (geometry > Threshold) k4.Add(key);
++                if (geometry > Epsilon) k4p.Add(key);
++                if (other > Epsilon) k5.Add(key);
++                maxDelta = Math.Max(maxDelta, Math.Max(geometry, other));
++            }
++
++            var k2 = FrontShape(re) != FrontShape(rr);
++            var k3 = BomText(re) != BomText(rr);
++            lineas.Add(fila.Nombre + " K1=[" + string.Join(",", k1) + "] K1o=[" + string.Join(",", k1o) + "] K2=" + k2 + " K3=" + k3
++                + " K4=[" + string.Join(",", k4) + "] K4'=[" + string.Join(",", k4p) + "] K5=[" + string.Join(",", k5) + "]"
++                + " MaxDelta=" + maxDelta.ToString("R", CultureInfo.InvariantCulture)
++                + " material=" + (k1.Count > 0 || k2 || k3 || k4.Count > 0));
++            if (k1.Count > 0 || k1o.Count > 0) stops.Add(fila.Nombre + " PBTC2-C14: K1 o K1o no vacias");
++            if (k2) stops.Add(fila.Nombre + " PBTC2-C14: K2 cierto");
++            if (k4.Count > 0) stops.Add(fila.Nombre + " PBTC2-C14: K4 no vacia");
++
++            var eRows = BomRows(re);
++            var rRows = BomRows(rr);
++            lineas.Add(fila.Nombre + " BOM lineas E=" + eRows.Count + " R=" + rRows.Count);
++            if (eRows.Count != rRows.Count)
++            {
++                stops.Add(fila.Nombre + " PBTC2-C14: distinto numero de lineas del BOM");
++                for (var i = 0; i < eRows.Count; i++) lineas.Add(fila.Nombre + " BOM-E[" + i + "] " + string.Join(";", eRows[i].Select(kv => kv.Key + "=" + Num(kv.Value))));
++                for (var i = 0; i < rRows.Count; i++) lineas.Add(fila.Nombre + " BOM-R[" + i + "] " + string.Join(";", rRows[i].Select(kv => kv.Key + "=" + Num(kv.Value))));
++            }
++            else
++            {
++                var maxBom = 0.0;
++                var diffs = 0;
++                for (var i = 0; i < eRows.Count; i++)
++                {
++                    for (var p = 0; p < eRows[i].Count; p++)
++                    {
++                        var name = eRows[i][p].Key;
++                        var a = eRows[i][p].Value;
++                        var b = rRows[i][p].Value;
++                        var sa = Num(a);
++                        var sb = Num(b);
++                        if (sa == sb) continue;
++                        diffs++;
++                        if (IsNumber(a) && IsNumber(b))
++                        {
++                            var d = Convert.ToDouble(b, CultureInfo.InvariantCulture) - Convert.ToDouble(a, CultureInfo.InvariantCulture);
++                            maxBom = Math.Max(maxBom, Math.Abs(d));
++                            lineas.Add(fila.Nombre + " BOM[" + i + "] " + name + " E=" + sa + " R=" + sb + " delta=" + d.ToString("R", CultureInfo.InvariantCulture)
++                                + (Math.Abs(d) < Threshold ? string.Empty : " >= 0.001"));
++                            if (Math.Abs(d) >= Threshold) stops.Add(fila.Nombre + " PBTC2-C14: BOM[" + i + "]." + name + " |delta| >= 0.001");
++                        }
++                        else
++                        {
++                            lineas.Add(fila.Nombre + " BOM[" + i + "] " + name + " E=" + sa + " R=" + sb + " NO-NUMERICA");
++                            stops.Add(fila.Nombre + " PBTC2-C14: BOM[" + i + "]." + name + " difiere y no es un numero");
++                        }
++                    }
++                }
++
++                lineas.Add(fila.Nombre + " BOM propiedades-distintas=" + diffs + " max|delta|=" + maxBom.ToString("R", CultureInfo.InvariantCulture));
++                if (maxBom >= 0.0005) lineas.Add(fila.Nombre + " DECLARAR: BOM max|delta| >= 0.0005");
++            }
++
++            if (maxDelta >= 0.0005) lineas.Add(fila.Nombre + " DECLARAR: MaxDelta >= 0.0005");
++        }
++
++        [Fact]
++        public void TEMP_MedicionD07()
++        {
++            var lineas = new List<string>();
++            var stops = new List<string>();
++            Sta(() =>
++            {
++                var filas = new List<Fila>
++                {
++                    new Fila
++                    {
++                        Nombre = "T2-1", Fixture = "pb-20-ab", Ruta = "Composite.Gap", Valor = 54.00044,
++                        Gesto = w => Lost(w, "GapBox"),
++                        Mano = j => N(j, "Composite.Gap"), Esperado = "54",
++                        LeeGreen = j => N(j, "Composite.Gap"), Green = "54.00044",
++                    },
++                    new Fila
++                    {
++                        Nombre = "T2-2", Fixture = "pb-31-v2-modulos", Ruta = "Structure.Modules[1].Length", Valor = 47.99213,
++                        Gesto = w =>
++                        {
++                            SelectModule(w, "M2");
++                            Lost(w, "ModuleLengthBox");
++                            Click(w, "ConfirmModuleButton");
++                        },
++                        Mano = j => "Length=" + N(j, "Structure.Modules[1].Length") + " IsManualOverride=" + B(j, "Structure.Modules[1].IsManualOverride") + " IsCalculated=" + B(j, "Structure.Modules[1].IsCalculated"),
++                        Esperado = "Length=47.992 IsManualOverride=True IsCalculated=False",
++                        LeeGreen = j => "Length=" + N(j, "Structure.Modules[1].Length") + " IsManualOverride=" + B(j, "Structure.Modules[1].IsManualOverride") + " IsCalculated=" + B(j, "Structure.Modules[1].IsCalculated"),
++                        Green = "Length=47.99213 IsManualOverride=False IsCalculated=True",
++                    },
++                    new Fila
++                    {
++                        Nombre = "T2-3", Fixture = "pb-06-seguridad", Ruta = "Structure.ManualHeaderHeightOverride", Valor = 150.00044, Avanzada = true,
++                        Gesto = w => Lost(w, "RackSeparatorCountBox"),
++                        Mano = j => N(j, "Structure.ManualHeaderHeightOverride"), Esperado = "150",
++                        LeeGreen = j => N(j, "Structure.ManualHeaderHeightOverride"), Green = "150.00044",
++                    },
++                    new Fila
++                    {
++                        Nombre = "T2-4", Fixture = "pb-06-seguridad", Ruta = "Structure.SeparatorSpacingOverride", Valor = 18.00044, Avanzada = true,
++                        Gesto = w => Lost(w, "RackSeparatorCountBox"),
++                        Mano = j => N(j, "Structure.SeparatorSpacingOverride"), Esperado = "18",
++                        LeeGreen = j => N(j, "Structure.SeparatorSpacingOverride"), Green = "18.00044",
++                    },
++                    new Fila
++                    {
++                        Nombre = "T2-5", Fixture = "pb-07-combinado", Ruta = "Structure.DerivedPostHeight", Valor = 140.00044, Avanzada = true,
++                        Gesto = w => Lost(w, "DerivedPostHeightBox"),
++                        Mano = j => N(j, "Structure.DerivedPostHeight"), Esperado = "140",
++                        LeeGreen = j => N(j, "Structure.DerivedPostHeight"), Green = "140.00044",
++                    },
++                    new Fila
++                    {
++                        Nombre = "T2-6", Fixture = "pb-07-combinado", Ruta = "Structure.DerivedPostReinforcementHeight", Valor = 24.00044, Avanzada = true,
++                        Gesto = w => Lost(w, "DerivedPostHeightBox"),
++                        Mano = j => N(j, "Structure.DerivedPostReinforcementHeight"), Esperado = "24",
++                        LeeGreen = j => N(j, "Structure.DerivedPostReinforcementHeight"), Green = "24.00044",
++                    },
++                };
++
++                foreach (var fila in filas)
++                {
++                    try
++                    {
++                        Medir(fila, lineas, stops);
++                    }
++                    catch (Exception ex)
++                    {
++                        lineas.Add(fila.Nombre + " EXCEPCION " + ex.GetType().FullName + ": " + ex.Message);
++                        stops.Add(fila.Nombre + " excepcion");
++                    }
++                }
++            });
++
++            lineas.Add("STOPS=[" + string.Join(" | ", stops) + "]");
++            Assert.Fail(string.Join("\n", lineas));
++        }
++    }
++}

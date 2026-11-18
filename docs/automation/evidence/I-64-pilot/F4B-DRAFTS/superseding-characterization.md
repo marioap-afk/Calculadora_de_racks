@@ -217,7 +217,7 @@ En «Ambos lados», con una caja **mixta**, escribir el número que se ve del va
 
 ## PB-TC2 — Las cajas que aún redondeaban y la caja mixta de «Ambos lados» (F4B-E09)
 
-**Estado: DECLARADA.** La pasa a **EJECUTADA** la sesión principal al cerrar PB-TC2, con los SHA del RED y del GREEN y sus CI. El Worker no escribe en este archivo.
+**Estado: EJECUTADA** (2026-11-18, cierre de PB-TC2, F4B-E12): RED `3677847c59e92b34567fa42c600eb2c01e65576c`, GREEN `b5c09f0bd741f67b7dd8311dce65c26e3d4cf3c4`. Lo escribe la sesión principal; el Worker no escribe en este archivo.
 
 **Autoridad:**
 - **D-PB-06**, en [OD] (`docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-f4b-disposition.md:130-155`): «rounding behavior/state», y «Do not hide these corrections inside PB-T1 state extraction».
@@ -252,15 +252,19 @@ En «Ambos lados», con una caja **mixta**, escribir el número que se ve del va
 
 | | |
 |---|---|
-| **RED** | *(pendiente)* |
-| **GREEN** | *(pendiente)* |
-| **Medición previa de la base** (el efecto del hueco, el módulo y las avanzadas exactas; la parada por efecto material) | *(pendiente: artefactos citados en la entrega)* |
-| **Estado** | DECLARADA |
+| **RED** | `3677847c59e92b34567fa42c600eb2c01e65576c` (CI `44298811020`: ui-tests en failure por los 4 métodos nuevos; tests, build-ui y build-plugin en success) |
+| **GREEN** | `b5c09f0bd741f67b7dd8311dce65c26e3d4cf3c4` (CI `44300874797` 4/4; UI 2 401 Passed y 21 Skipped de 2 422; Core 19 070/19 070) |
+| **Medición previa de la base** (el efecto del hueco, el módulo y las avanzadas exactas; la parada por efecto material) | Primera invocación `R20261118T055535Z-38d3`: parada prevista PBTC2-C14 en T2-3 (postes 150 x32 y 150,0004 x4 frente a 150 x36), sin commits; el Owner ratificó el efecto y ordenó reanudar sin gastar intento (D1, F4B-E11). Segunda invocación `R20261118T113927Z-037c`: la medición `m8b` es idéntica línea a línea; K1, K1o, K2 y K4 vacías en las seis filas; MaxDelta 0,00044 |
+| **Estado** | EJECUTADA |
 
 <!-- Bloque 2: al final de «## Pendiente: decisión del Owner antes de PB-T1» -->
 
-**Decidido por el Owner en F4B-E09** (pregunta 1, «Corregir en PB-TC2 (Recomendado)»): estas cajas se corrigen en la tarea PB-TC2, con la regla `Keep` de PB-TC (sección «PB-TC2», arriba). Al cerrar PB-TC2, esta línea pasa a «Cerrado por PB-TC2 (GREEN `<sha>`)».
+**Decidido por el Owner en F4B-E09** (pregunta 1, «Corregir en PB-TC2 (Recomendado)»): estas cajas se corrigen en la tarea PB-TC2, con la regla `Keep` de PB-TC (sección «PB-TC2», arriba). **Cerrado por PB-TC2 (GREEN `b5c09f0b`).**
 
 <!-- Bloque 3: al final de «## Limitación conocida declarada al cerrar (OWNER-1, F4B-E08)» -->
 
-**Decidido por el Owner en F4B-E09** (pregunta 1): la caja mixta de «Ambos lados» que recibe un valor lo aplica a los dos lados, con el lado B presente. Se corrige en la tarea PB-TC2 (sección «PB-TC2»). Al cerrar PB-TC2, esta línea pasa a «Cerrado por PB-TC2 (GREEN `<sha>`)».
+**Decidido por el Owner en F4B-E09** (pregunta 1): la caja mixta de «Ambos lados» que recibe un valor lo aplica a los dos lados, con el lado B presente. Se corrige en la tarea PB-TC2 (sección «PB-TC2»). **Cerrado por PB-TC2 (GREEN `b5c09f0b`).**
+
+**Notas del cierre de PB-TC2 (F4B-E12):**
+- La regla R-03 (i) (escribir algo que se ve igual conserva el exacto) vale para las seis cajas de PB-TC2, no solo para la longitud del módulo (IRC-M04 de la revisión independiente).
+- La línea del BOM que el Owner ratificó en D1 (los postes de 150,0004) sale con la descripción larga del catálogo, distinta de la de los postes de 150, con el mismo `ProfileId`: `BomBuilder.Merge` agrupa por categoría, perfil y longitud y toma la primera descripción. Ya ocurría sin tocar el panel de avanzados; cae en las reglas de presentación existentes que D1 admite (IRC-O01, informativo).

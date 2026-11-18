@@ -1,0 +1,81 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBTC2-DECLARED-CORRECTIONS",
+  "RunId": "R20261118T130053Z-d6fd",
+  "DelegationRunId": "R20261118T055036Z-c73e",
+  "WorkRunId": "R20261118T113927Z-037c",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession ended at 2026-11-18T12:15:19Z."
+    },
+    "Handoff": {
+      "Result": "fail",
+      "Evidence": "worker-handoff.json has matching TaskId, RunId, DelegationRunId, Attempt and BaseSha, but CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. Git HEAD and the relay Entry are b5c09f0bd741f67b7dd8311dce65c26e3d4cf3c4."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git show BaseSha shows AuthorityRevision 8708d28fa19ba912e39da5ae55c14affb1e53651 as its direct parent. git diff --name-only AuthorityRevision BaseSha lists four docs/ paths for this unit; none are EXTERNAL or UNIT_CHANGE. AUTOMATION_PLAN sections 16.3, 16.8-16.10 and agent-execution README section 8 were read from Git."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "delegation.json A1-A8 are pass; relay-record-planning.json records A1-A8 8/8 and nc4 with only A3 fail. byte-fidelity-check.json is PASS for all eight collections, including RequiredTests, StopConditions, Authorities and both scopes. Delegation and contract scopes match."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "Branch is architecture/workspace-persistente-rackcad and worktree matches the expected path. git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both return b5c09f0bd741f67b7dd8311dce65c26e3d4cf3c4; BaseSha is ancestor of RedSha and RedSha is ancestor of that HEAD. Handoff CurrentSha is deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, so HEAD is not the declared CurrentSha."
+    },
+    "Remote": {
+      "Result": "fail",
+      "Evidence": "relay-record-work.json Entry LsRemoteSha=b5c09f0bd741f67b7dd8311dce65c26e3d4cf3c4 and OriginMainSha=812baf879612320653094a8aaf46aca0bac81383; CurrentRun also reports HeadSha=b5c09f0bd741f67b7dd8311dce65c26e3d4cf3c4. These conflict with handoff CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha HEAD lists exactly RackPushBackSystemWindow.Composite.cs, RackPushBackSystemWindow.xaml.cs, PushBackDeclaredCorrection2MixedBoxTests.cs and PushBackDeclaredCorrection2RoundingTests.cs, all four exact AllowedWriteScope entries from delegation.json; no ForbiddenWriteScope path appears. This checks the actual Git HEAD range."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain is empty. git check-ignore -v identifies artifacts/ as the ignore rule for the copied input and worker handoff paths."
+    },
+    "Ci": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts CurrentRun 44300874797 is a completed push for the expected branch and reports all four required jobs success at b5c09f0bd741f67b7dd8311dce65c26e3d4cf3c4, not the handoff CurrentSha. RedRun 44298811020 is a completed push at RedSha with UI tests failure and the other three required jobs success; relay notes no blame-hang or timeout."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX ci-ui: 2422 total, 2401 passed, 0 failed, 21 skipped; all 15 UI filters selected at least their RequiredTests minimum and passed, including 18 selected for the 16-minimum characterization filter. ci-core: 19070 passed; all three Core filters met minima. ci-ui-red: the ExpectRed filter selected 4 and all 4 failed; the other RequiredTests filters passed, with no other failures. ci-core-red: 19070 passed. Failures and outcomes match worker TestResults. RT/ChainRedFiles is the two added test paths: tests/RackCad.UI.Tests/PushBackDeclaredCorrection2MixedBoxTests.cs and tests/RackCad.UI.Tests/PushBackDeclaredCorrection2RoundingTests.cs; git diff RedSha HEAD contains only the two product files and no tests/ path."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..HEAD shows both commits carry Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching the effective Worker model claude-sonnet-5-5 in relay-record-work.json."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 with high effort. Relay records the subagent launch alias sonnet and effective model claude-sonnet-5-5 with high effort, matching the requested model and effort under the declared transport semantics."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Checked worker-handoff.json WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions and RecommendedNextAction against the AUTOMATION_PLAN 16.10 term list; no prohibited term matched."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes report zero permission denials, one tool error with none pending, and zero persistent participants or unattributable processes at exit and entry."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Handoff",
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "Findings": [
+    "The handoff CurrentSha is deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, while Git HEAD, the entry remote fact and the CurrentRun CI head are b5c09f0bd741f67b7dd8311dce65c26e3d4cf3c4.",
+    "The four actual changed paths are within the exact AllowedWriteScope. Required TRX counts and the RED outcomes match the contract and delivery records.",
+    "The coordinator disposition ratifies the measured PBTC2-C14 T2-3 effect only; it does not resolve the SHA discrepancy."
+  ],
+  "RecommendedNextAction": "Correct the handoff SHA and request a new verification against the corresponding exact commit evidence."
+}

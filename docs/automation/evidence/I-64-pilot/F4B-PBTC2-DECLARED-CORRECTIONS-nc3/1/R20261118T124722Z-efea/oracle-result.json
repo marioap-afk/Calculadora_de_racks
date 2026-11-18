@@ -1,0 +1,51 @@
+{
+  "Control": "nc3",
+  "RunId": "R20261118T124722Z-efea",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "MutatedCheck": {
+    "FreeText": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "fail",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "FreeText"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "FreeText",
+    "FailureClass": "FreeText",
+    "Classification": "EXECUTION_REWORK_REQUIRED",
+    "Disposition": "REWORK",
+    "LaterChecksMustMatch": true
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "FreeText": "worker-handoff.json WorkCompleted contiene una coincidencia completa de la lista de AUTOMATION_PLAN 16.10. Los demas campos de texto libre se contrastaron con esa lista."
+  },
+  "OutputSha256": "BFF024288060E4E3C373402E4975000B424794DB466286A807C2D75281F5EE20",
+  "ManualFreeText1610": []
+}

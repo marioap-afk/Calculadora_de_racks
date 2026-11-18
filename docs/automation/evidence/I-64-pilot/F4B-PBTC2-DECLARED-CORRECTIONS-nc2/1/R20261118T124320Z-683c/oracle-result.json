@@ -1,0 +1,54 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261118T124320Z-683c",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "MutatedCheck": {
+    "Scope": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Scope"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "S-04",
+    "P-03"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Scope": "git diff --name-only BaseSha..CurrentSha lista cuatro rutas: W, WC y los dos archivos nuevos de pruebas. AllowedWriteScope de delegation.json lista solo W y las dos pruebas, y omite WC=src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs. La ruta cambiada no esta cubierta: P-03."
+  },
+  "OutputSha256": "C4FA0C4D77A35D5A92EB3CD370A1C10AD377663F5CC68AA551F216166E48AC5C",
+  "ManualFreeText1610": []
+}

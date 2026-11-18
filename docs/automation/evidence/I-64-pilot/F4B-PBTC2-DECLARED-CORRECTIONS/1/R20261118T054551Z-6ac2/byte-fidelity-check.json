@@ -1,0 +1,208 @@
+{
+  "Schema": "rackcad-i64-byte-fidelity/v1",
+  "TaskId": "F4B-PBTC2-DECLARED-CORRECTIONS",
+  "PlanningRunId": "R20261118T054551Z-6ac2",
+  "Authority": "F4-E19 y F4-E26: comparacion previa a la aceptacion",
+  "OutputSha256": "c5168330a185022c0d68990700741c207d0103aa043ba4fae148042c13d60adb",
+  "ContractSha256": "8d024f42188d9965f5196bde333a9530738dd7ca6d9d65853b9151d1f908cbe9",
+  "Fields": [
+    {
+      "Field": "Invariants",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "cedb450e97f0fac5c0f7b3225b9af6b2c38b894e0c91ce40a432a5deb735656a",
+      "OutputSha256": "cedb450e97f0fac5c0f7b3225b9af6b2c38b894e0c91ce40a432a5deb735656a",
+      "Differences": []
+    },
+    {
+      "Field": "RequiredTests",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "8af7dde1d6dc31a810c7c2eaf11703f6f2590e22298d03c7264f1143bb438b59",
+      "OutputSha256": "8af7dde1d6dc31a810c7c2eaf11703f6f2590e22298d03c7264f1143bb438b59",
+      "Differences": []
+    },
+    {
+      "Field": "StopConditions",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "6ea8c3b7b60db750d03e2535837c6bfed4e7fadbb3e1654918195991a898baed",
+      "OutputSha256": "6ea8c3b7b60db750d03e2535837c6bfed4e7fadbb3e1654918195991a898baed",
+      "Differences": []
+    },
+    {
+      "Field": "Authorities",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "3f6ca924627c8f2aa8ec5d26feb25839c5f1f87309af194a9ccda43e07df818a",
+      "OutputSha256": "3f6ca924627c8f2aa8ec5d26feb25839c5f1f87309af194a9ccda43e07df818a",
+      "Differences": []
+    },
+    {
+      "Field": "ExpectedEvidence",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "a438ceba590301c58de1e423fad4aad2a40eecda8db93c4b0b22f0f500f3ee4c",
+      "OutputSha256": "aa23d914b35d3c4d591fc14d70ddea52b098d0c1b88eecb36a97dbd5e0200243",
+      "Differences": [
+        {
+          "Index": 1,
+          "Offset": 483,
+          "Source": "linea; el TRX y el log, como artefactos. Si PBTC2-C14 se activa, STOP antes del ",
+          "Output": "linea; el TRX y el log, como artefactos."
+        }
+      ]
+    },
+    {
+      "Field": "Objective",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "6a3eb20a293e85a1cf2acb434a6040cc7bad363cd248d7d894492fdeedb42927",
+      "OutputSha256": "6a3eb20a293e85a1cf2acb434a6040cc7bad363cd248d7d894492fdeedb42927",
+      "Differences": []
+    },
+    {
+      "Field": "AllowedWriteScope",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "b107bb9b0a39ff1572a80d7a167739cb53a8b8538d8409038fd5f6f6e28c3666",
+      "OutputSha256": "b107bb9b0a39ff1572a80d7a167739cb53a8b8538d8409038fd5f6f6e28c3666",
+      "Differences": []
+    },
+    {
+      "Field": "ForbiddenWriteScope",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "8b5afe82ddad58cd4afa2a496b4cdaaaaac815aca723ffa737d372b304f65b56",
+      "OutputSha256": "04044f11b618657cbc3a7709b5fc1cb63246a08b9a172400ab579c75d3ac219e",
+      "Differences": [
+        {
+          "Index": 38,
+          "Offset": 25,
+          "Source": "src/RackCad.UI/SafetyTopeGridWindow.cs",
+          "Output": "src/RackCad.UI/SafetyTopeWindow.cs"
+        },
+        {
+          "Index": 112,
+          "Offset": 0,
+          "Source": "docs/",
+          "Output": "tests/RackCad.Tests/"
+        },
+        {
+          "Index": 113,
+          "Offset": 0,
+          "Source": ".github/",
+          "Output": "docs/"
+        },
+        {
+          "Index": 114,
+          "Offset": 0,
+          "Source": "eng/",
+          "Output": ".github/"
+        },
+        {
+          "Index": 115,
+          "Offset": 0,
+          "Source": "tools/",
+          "Output": "eng/"
+        },
+        {
+          "Index": 116,
+          "Offset": 0,
+          "Source": "assets/",
+          "Output": "tools/"
+        },
+        {
+          "Index": 117,
+          "Offset": 0,
+          "Source": "deploy/",
+          "Output": "assets/"
+        },
+        {
+          "Index": 118,
+          "Offset": 0,
+          "Source": "RackCad.sln",
+          "Output": "deploy/"
+        },
+        {
+          "Index": 119,
+          "Offset": 0,
+          "Source": "Directory.Build.props",
+          "Output": "RackCad.sln"
+        },
+        {
+          "Index": 120,
+          "Offset": 16,
+          "Source": "Directory.Build.targets",
+          "Output": "Directory.Build.props"
+        },
+        {
+          "Index": 121,
+          "Offset": 0,
+          "Source": "global.json",
+          "Output": "Directory.Build.targets"
+        },
+        {
+          "Index": 122,
+          "Offset": 0,
+          "Source": "NuGet.Config",
+          "Output": "global.json"
+        },
+        {
+          "Index": 123,
+          "Offset": 0,
+          "Source": "README.md",
+          "Output": "NuGet.Config"
+        },
+        {
+          "Index": 124,
+          "Offset": 0,
+          "Source": "AGENTS.md",
+          "Output": "README.md"
+        },
+        {
+          "Index": 125,
+          "Offset": 0,
+          "Source": "CLAUDE.md",
+          "Output": "AGENTS.md"
+        },
+        {
+          "Index": 126,
+          "Offset": 0,
+          "Source": ".editorconfig",
+          "Output": "CLAUDE.md"
+        },
+        {
+          "Index": 127,
+          "Offset": 1,
+          "Source": ".gitattributes",
+          "Output": ".editorconfig"
+        },
+        {
+          "Index": 128,
+          "Offset": 4,
+          "Source": ".gitignore",
+          "Output": ".gitattributes"
+        },
+        {
+          "CountSource": 129,
+          "CountOutput": 130
+        }
+      ]
+    }
+  ],
+  "Result": "REJECTED",
+  "AllowedWriteScopeElementwiseInOrder": true,
+  "ForbiddenWriteScopeCount": {
+    "Contract": 129,
+    "Output": 130
+  }
+}

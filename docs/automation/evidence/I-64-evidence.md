@@ -7805,3 +7805,33 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - **`attempts`:** 1 de 3.
 
 **Limites:** solo documentacion en este paso; sin AutoCAD.
+
+## 240. Decisiones D1 y D2 del Owner y cierre de F4B-PBTC2-DECLARED-CORRECTIONS
+
+**Decisiones:**
+- F4B-E11: D1, seguir con la corrección y ratificar el BOM con los valores exactos; D2, la excepción L-1 de PB-T1 con 10 condiciones;
+- F4B-E12: el cierre de PB-TC2.
+
+**La cadena:**
+- **Planificación:** `6ac2` se rechazó solo por la copia, y la replanificación única `c73e` dio fidelidad PASS y A1-A8 8/8. nc4 `6700`.
+- **Worker:**
+  - `38d3` hizo la parada prevista PBTC2-C14, sin commits;
+  - el Owner dio la orden D1;
+  - `037c` reanudó, sin gastar intento: la medición `m8b` es idéntica, RED `3677847c` y GREEN `b5c09f0b`.
+- **CI:**
+  - RED `44298811020`: ui-tests en failure y los otros tres trabajos en success;
+  - GREEN `44300874797`: 4/4, con UI 2 401/21/2 422 y Core 19 070.
+- **Revisiones:**
+  - la directa, conforme;
+  - la independiente, ACEPTABLE CON MENORES 0/0/4, con IRC-O01 informativo.
+- **Verificación** `a2c6`: `EXECUTION_VERIFIED` 14/14.
+- **Controles:** nc1 `1d1d` CONTROL NOT PASSED (Handoff, Identity y Ci; Remote en pass); el Owner dijo «Es la firma exacta: aplica el sustituto (Recomendado)», pero el sustituto PBTC2-NC1-IDENTITY-SIGNAL-01 dio FAIL por la propiedad 5 (la evidencia de Identity no escribe el SHA falso); el Owner dijo «Repetir nc1; si falla, aceptarlo (Recomendado)»; nc1 repetido `d6fd` CONTROL NOT PASSED (además Remote); queda `nc1 = SATISFIED_BY_OWNER_DISPOSITION` solo para este caso (`F4B-DRAFTS/coordinator/owner-pbtc2-nc1-decisions.md`), sin cambiar las firmas; nc2 `683c` y nc3 `efea` CONTROL PASS ordinario.
+
+**Resultado:** PB-TC2 **CLOSED / PASS WITH LIMITATIONS**, intento 1 de 3.
+- Quedan corregidos, como cambios declarados de RACKEDITAR, el hueco entre lados, la longitud del módulo (un módulo calculado ya no pasa a manual al pasar por la caja), las cuatro avanzadas anulables y la caja mixta de «Ambos lados».
+- El registro de sustitución de PB-TC2 queda en EJECUTADA.
+
+**Límites:**
+- sin AutoCAD: lo físico es de Smoke-PB;
+- el modo WORKSPACE queda para PB-T2;
+- el siguiente paso es volver a medir el paquete de PB-T1 y emitir PB-T1a.
