@@ -245,3 +245,40 @@ El paquete de cierre es `F4B-PBT0-CHARACTERIZATION/task-close-package.md`.
   - el contrato de `F4B-PBTC-DECLARED-CORRECTIONS`, con attempts 1 de 3.
 - **El registro declarado** `F4B-DRAFTS/superseding-characterization.md` nace en estado DECLARADA, con SUS-01 a SUS-04 (OB-T1B.2), y pasa a EJECUTADA al cerrar.
 - **Reglas de la cadena:** las de F4B-E03 y D-PB-10, transcritas en PBTC-C08, C11 y C12. PBTC-C14 vuelve al Owner antes del GREEN si el delta de la base de CT-PBTC-10 es material.
+
+## F4B-E08. Cadena, decisión del Owner sobre OWNER-1 y cierre de F4B-PBTC-DECLARED-CORRECTIONS
+
+**Fecha:** 2026-11-18. **Paquete de cierre:** `F4B-PBTC-DECLARED-CORRECTIONS/task-close-package.md`.
+
+**La cadena del intento 1:**
+- **Planificación:** `8db0` se rechazó solo por la copia. El invariante del índice 15, INV-PBTC-16, se copió sin «en f4b-dispositions.md»; A5 falló y la parada fue STOP P-03.
+- **Replanificación única** de PBTC-C08 ([DP], pregunta 2): `7171` dio fidelidad PASS en las 8 colecciones y A1-A8 8/8. No gasta intento. nc4 `b7b5`.
+- **Worker** `069b`, con `claude-sonnet-5-5` en effort high:
+  - la medición previa de la base (D-PBTC-10) no activa PBTC-C14: F1 y M-02 solo cambian `PalletDepth`, con K1 a K4 vacíos;
+  - RED `f665edac`: solo `tests/`;
+  - GREEN `4440f67d`: solo W, WC y WX.
+- **CI:**
+  - RED `44223960356`: ui-tests en failure por los 10 métodos nuevos; tests, build-ui y build-plugin en success;
+  - GREEN `44225456328`: 4/4. Las cifras son exactamente las del §6.9 del paquete.
+- **Revisiones:**
+  - la directa, conforme, con D-1 menor: el prefijo erróneo de las rutas de los artefactos en la entrega;
+  - la adversarial independiente, **ACEPTABLE CON MENORES 0/0/5**.
+- **Verificación** `a6f6`: `EXECUTION_VERIFIED` / NONE, 14/14.
+- **Controles:** nc1 `2812` CONTROL NOT PASSED con una variación de la firma de PD-F4-04 (Remote, Scope, Tests y Trailer en fail además de Handoff, Identity y Ci, todas solo como consumidoras del CurrentSha falso), resuelto por el Owner «Aceptarlo solo esta vez (Recomendado)» (`F4B-DRAFTS/coordinator/owner-pbtc-nc1-decision.md`; `nc1 = SATISFIED_BY_OWNER_DISPOSITION`, sin sustituto y sin ampliar las firmas); nc2 `2db5` y nc3 `412a` CONTROL PASS ordinario.
+
+**OWNER-1 y la decisión del Owner** (`F4B-DRAFTS/coordinator/owner-pbtc-mixed-decision.md`, literal):
+- **El hallazgo:** M-01 de la revisión independiente es un hueco del diseño del paquete, no una desviación. En «Ambos lados», con una caja mixta, escribir el número que se ve del exacto de un lado no iguala los dos lados. Ese lado conserva su exacto y la caja vuelve a quedar mixta, con una diferencia menor que 0,0005.
+- **La respuesta:** el Owner eligió «Registrar y arreglarlo luego (Recomendado)».
+- **El efecto:** queda como limitación conocida, anotada en `superseding-characterization.md`. La propuesta de arreglo vuelve al Owner antes del contrato de PB-T1, junto con el caso H-31, porque es la misma regla `Keep`. No gasta intento.
+
+**Resultado:** **F4B-PBTC-DECLARED-CORRECTIONS = CLOSED / PASS WITH LIMITATIONS** sobre `4440f67d`, con attempts 1 de 3.
+- **Correcciones declaradas de RACKEDITAR:** D-PB-06 (a) y (b), D-PB-08 y D-PB-11.
+- **Registro declarado:** `superseding-characterization.md` pasa a EJECUTADA, con SUS-01 a SUS-04.
+- **Arrastres al paquete de PB-T1:** M-02 a M-05, según el §4 del paquete de cierre.
+
+**Siguiente:**
+1. Antes del contrato de PB-T1 (OB-06.5), la vuelta al Owner con:
+   - el caso H-31 y OWNER-1;
+   - `pb-21-cola` (OWNER-3 de PB-T0);
+   - los casos de T-2.
+2. PB-T1 no se emite sin la orden del Owner.

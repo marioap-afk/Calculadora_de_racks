@@ -1,0 +1,77 @@
+== INV-PBTC-01 name-only Base..HEAD
+src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs
+src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml
+src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+tests/RackCad.UI.Tests/PushBackDeclaredCorrectionDimensionStyleTests.cs
+tests/RackCad.UI.Tests/PushBackDeclaredCorrectionPilotParityTests.cs
+tests/RackCad.UI.Tests/PushBackDeclaredCorrectionRoundingTests.cs
+tests/RackCad.UI.Tests/PushBackDeclaredCorrectionSideBNoticeTests.cs
+tests/RackCad.UI.Tests/PushBackDeclaredCorrectionStandardRestoreTests.cs
+tests/RackCad.UI.Tests/PushBackDeclaredCorrectionSupport.cs
+tests/RackCad.UI.Tests/PushBackDimensionViewsWindowTests.cs
+tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationModuleTests.cs
+tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationRoundingLossTests.cs
+tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs
+== protected dirs diff bytes
+0
+== INV-PBTC-02 Red..Green names
+src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs
+src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml
+src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+== Base..Red src files
+0
+== INV-PBTC-03 SetNumber( lines changed in W/WC
+0
+== removed Val( lines
+-                    FirstLevelHeight = Val(FirstLevelHeightBox, front.FirstLevelHeight),
+-                    PalletFront = Val(CellPalletFrontBox, cell.PalletFront),
+-                    PalletHeight = Val(CellPalletHeightBox, cell.PalletHeight),
+-                    PalletWeight = Val(CellPalletWeightBox, cell.PalletWeight),
+-                    ClearHeight = Val(CellClearBox, cell.ClearHeight),
+-                    generalPallet.Front, Val(DepthBox, generalPallet.Depth), generalPallet.Height,
+-                PostPeralte = Val(PostPeralteBox, 0.0),
+-                PalletTolerance = Val(ToleranceBox, DynamicRackDefaults.DefaultPalletTolerance),
+-                BeamDepth = Val(BeamDepthBox, DynamicRackDefaults.DefaultBeamDepth),
+-                    AnnotationScale = Val(AnnotationScaleBox, 1.0),
+== added Keep( lines
++                    FirstLevelHeight = Keep(FirstLevelHeightBox, front.FirstLevelHeight),
++                    PalletFront = Keep(CellPalletFrontBox, cell.PalletFront),
++                    PalletHeight = Keep(CellPalletHeightBox, cell.PalletHeight),
++                    PalletWeight = Keep(CellPalletWeightBox, cell.PalletWeight),
++                    ClearHeight = Keep(CellClearBox, cell.ClearHeight),
++                generalPallet.Front, Keep(DepthBox, generalPallet.Depth), generalPallet.Height,
++            rackTolerance = Keep(ToleranceBox, rackTolerance);
++            rackPostPeralte = Keep(PostPeralteBox, rackPostPeralte);
++            rackBeamDepth = Keep(BeamDepthBox, rackBeamDepth);
++            rackAnnotationScale = Keep(AnnotationScaleBox, rackAnnotationScale);
++        private static double Keep(NumericField field, double current)
+== Val declaration/use retained
+1905:            var length = Val(ModuleLengthBox, module.Length);
+3634:        private static double Val(NumericField field, double fallback) => field.Value ?? fallback;
+== OptionalVal body
+825:                    BeamLengthOverride = OptionalVal(CellBeamLengthOverrideBox, cell.BeamLengthOverride),
+== INV-PBTC-19 (3)
+0
+1
+== INV-PBTC-19 (2) added RequestRecompute(
+0
+== hunks
+@@ -72,0 +73,25 @@ namespace RackCad.UI.Systems.PushBack
+@@ -684,0 +685 @@
+@@ -102,0 +103,8 @@ namespace RackCad.UI.Systems.PushBack
+@@ -389,0 +398 @@ namespace RackCad.UI.Systems.PushBack
+@@ -391,0 +401 @@ namespace RackCad.UI.Systems.PushBack
+@@ -392,0 +403 @@ namespace RackCad.UI.Systems.PushBack
+@@ -402,0 +414 @@ namespace RackCad.UI.Systems.PushBack
+@@ -406,0 +419 @@ namespace RackCad.UI.Systems.PushBack
+@@ -607,0 +621 @@ namespace RackCad.UI.Systems.PushBack
+@@ -681,0 +696 @@ namespace RackCad.UI.Systems.PushBack
+@@ -682,0 +698,6 @@ namespace RackCad.UI.Systems.PushBack
+@@ -797,5 +818,5 @@ namespace RackCad.UI.Systems.PushBack
+@@ -813,0 +835,11 @@ namespace RackCad.UI.Systems.PushBack
+@@ -819 +851 @@ namespace RackCad.UI.Systems.PushBack
+@@ -837,3 +869,3 @@ namespace RackCad.UI.Systems.PushBack
+@@ -845 +877 @@ namespace RackCad.UI.Systems.PushBack
+@@ -846,0 +879 @@ namespace RackCad.UI.Systems.PushBack
+@@ -1217,0 +1251,7 @@ namespace RackCad.UI.Systems.PushBack
+@@ -3626 +3666,21 @@ namespace RackCad.UI.Systems.PushBack

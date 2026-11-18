@@ -1,0 +1,92 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261118T032822Z-2db5",
+  "SourceVerification": "R20261118T031948Z-a6f6",
+  "SourceInputs": "artifacts/orchestration/I-64/F4B-PBTC-DECLARED-CORRECTIONS/1/R20261118T031948Z-a6f6/inputs",
+  "Mutation": {
+    "File": "delegation.json",
+    "Field": "AllowedWriteScope",
+    "DiffBaseToCurrent": [
+      "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs",
+      "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml",
+      "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs",
+      "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionDimensionStyleTests.cs",
+      "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionPilotParityTests.cs",
+      "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionRoundingTests.cs",
+      "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionSideBNoticeTests.cs",
+      "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionStandardRestoreTests.cs",
+      "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionSupport.cs",
+      "tests/RackCad.UI.Tests/PushBackDimensionViewsWindowTests.cs",
+      "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationModuleTests.cs",
+      "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationRoundingLossTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs"
+    ],
+    "FirstLexicographic": "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs",
+    "CoveringEntries": [
+      "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs"
+    ],
+    "CoveredByPrefix": null,
+    "Old": [
+      "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs",
+      "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs",
+      "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml",
+      "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionSupport.cs",
+      "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionRoundingTests.cs",
+      "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionDimensionStyleTests.cs",
+      "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionPilotParityTests.cs",
+      "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionSideBNoticeTests.cs",
+      "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionStandardRestoreTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs",
+      "tests/RackCad.UI.Tests/PushBackDimensionViewsWindowTests.cs",
+      "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationRoundingLossTests.cs",
+      "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationModuleTests.cs"
+    ],
+    "New": [
+      "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs",
+      "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml",
+      "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionSupport.cs",
+      "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionRoundingTests.cs",
+      "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionDimensionStyleTests.cs",
+      "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionPilotParityTests.cs",
+      "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionSideBNoticeTests.cs",
+      "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionStandardRestoreTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs",
+      "tests/RackCad.UI.Tests/PushBackDimensionViewsWindowTests.cs",
+      "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationRoundingLossTests.cs",
+      "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationModuleTests.cs"
+    ],
+    "OtherDiffFilesStillCovered": true,
+    "Rule": "README 10: \"si una entrada de prefijo lo cubre, se sustituye por la enumeracion de los demas archivos del diff\": el prefijo que cubre el primer archivo se sustituye por los demas archivos del diff que ese prefijo cubria; las demas entradas no cambian; exactamente ese archivo queda fuera"
+  },
+  "DerivedRecompute": {
+    "File": "relay-record-planning.json",
+    "Field": "Outcome.OutputSha256",
+    "Old": "4371F2EE34AE92C77CDD25DA8F7EB6B7C7C9C2C247646DAC988361EABD776A2B",
+    "New": "3264998AF36C9331E2497378C0E7FAC8702F7710C743525B26DD592F1A665639",
+    "Reason": "hash derivado de delegation.json recalculado para que la copia sea internamente coherente con la entrega simulada; no es una mutacion del contenido de la entrega ni de la delegacion"
+  },
+  "PromptSha256": "D53F218D6F10A4CF77D4D27F37CAE46B43D6E4222E648C7C031CF39B58F8D1A8",
+  "PromptDiffVsVerified": "solo la ruta de entrada y el RunId de la invocacion (README 10)",
+  "SchemaValid": {
+    "worker-handoff.json": true,
+    "delegation.json": true,
+    "relay-record-work.json": true,
+    "relay-record-planning.json": true
+  },
+  "InputSha256": {
+    "byte-fidelity-check.json": "66ECEB438E7C8404186B5D2455FF5577F11C6C6035E702AF0043B75F90A4CCDE",
+    "delegation.json": "3264998AF36C9331E2497378C0E7FAC8702F7710C743525B26DD592F1A665639",
+    "gate-contract.json": "8F865FD08F28F3583B9AC21E488E8624BC14430EB0696A58D935DE7D87012AB6",
+    "relay-record-planning.json": "421C537F4C54242BC564439BE428B4C9547B9EFA44DD18B56A91964A333AB11B",
+    "relay-record-work.json": "128C7A864040430AD2134ED3488842C5FEF6F6F8392B2935FFA128277F0E5251",
+    "worker-handoff.json": "903616B9F8B739C90506E7200A4CBA36FA2B478624F4F8E346775460DA206509",
+    "ci-core/44225456328/core.trx": "A1166A93633D6AB349AC0EEB8A844587AAD79B09577D7CCBBCAFC4E1995A8961",
+    "ci-core-red/44223960356/core.trx": "89BC53B1AA37890B0C9007CAB97A36BDFEDC5BEB3285B39C215529068DAD46EE",
+    "ci-ui/44225456328/ui.trx": "CF15107D9A1E4E2036E1F4AEF61E58B9D8FFBD9664507F4A949314B1DD91B693",
+    "ci-ui-red/44223960356/ui.trx": "3846E56532304BF091594CA975182BC3197B5D1D695A22F314A7BFF1936CB3AB"
+  },
+  "ChangedVsVerifiedInputs": [
+    "delegation.json",
+    "relay-record-planning.json"
+  ]
+}

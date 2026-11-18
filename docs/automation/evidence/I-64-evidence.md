@@ -7745,3 +7745,31 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - **`attempts`:** 1 de 3.
 
 **Limites:** solo documentacion en este paso; sin AutoCAD.
+
+## 237. Cadena, decisión del Owner y cierre de F4B-PBTC-DECLARED-CORRECTIONS
+
+**Decisión:** F4B-E08, con la decisión del Owner sobre OWNER-1: «Registrar y arreglarlo luego (Recomendado)».
+
+**La cadena:**
+- **Planificación:** `8db0` se rechazó solo por la copia (STOP P-03). La replanificación única `7171` dio fidelidad PASS y A1-A8 8/8. nc4 `b7b5`.
+- **Worker** `069b`:
+  - la medición previa de la base no activa PBTC-C14;
+  - RED `f665edac`, con 10 métodos nuevos y las 4 sustituciones SUS-01 a SUS-04;
+  - GREEN `4440f67d`, que solo toca la ventana clásica de Push Back.
+- **CI:**
+  - RED `44223960356`: ui-tests en failure y los otros tres trabajos en success;
+  - GREEN `44225456328`: 4/4, con UI 2 397/21/2 418 y Core 19 070.
+- **Revisiones:**
+  - la directa, conforme;
+  - la independiente, ACEPTABLE CON MENORES 0/0/5, con OWNER-1 resuelto por el Owner como limitación conocida.
+- **Verificación** `a6f6`: `EXECUTION_VERIFIED` 14/14.
+- **Controles:** nc1 `2812` CONTROL NOT PASSED con una variación de la firma de PD-F4-04 (Remote, Scope, Tests y Trailer en fail además de Handoff, Identity y Ci, todas solo como consumidoras del CurrentSha falso), resuelto por el Owner «Aceptarlo solo esta vez (Recomendado)» (`F4B-DRAFTS/coordinator/owner-pbtc-nc1-decision.md`; `nc1 = SATISFIED_BY_OWNER_DISPOSITION`, sin sustituto y sin ampliar las firmas); nc2 `2db5` y nc3 `412a` CONTROL PASS ordinario.
+
+**Resultado:** PB-TC **CLOSED / PASS WITH LIMITATIONS**, intento 1 de 3.
+- Quedan corregidos, como cambios declarados de RACKEDITAR, los diez campos redondeados, el estilo de cotas, el aviso del lado B y «Restaurar estándar».
+- El registro de sustitución queda en EJECUTADA.
+
+**Límites:**
+- sin AutoCAD: lo físico es de Smoke-PB;
+- el modo WORKSPACE queda para PB-T2;
+- antes del contrato de PB-T1 vuelven al Owner el caso H-31 y OWNER-1, `pb-21-cola` y T-2.

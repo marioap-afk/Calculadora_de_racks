@@ -1,0 +1,35 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Unit": "F4B-PBTC-DECLARED-CORRECTIONS-nc4/1/R20261118T021200Z-b7b5",
+  "SourceRoot": "artifacts/orchestration/I-64/F4B-PBTC-DECLARED-CORRECTIONS-nc4/1/R20261118T021200Z-b7b5",
+  "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
+  "Counts": {
+    "CUSTODIED": 3,
+    "EXCLUDED": 0
+  },
+  "Files": [
+    {
+      "Path": "delegation.json",
+      "Bytes": 47401,
+      "Sha256": "f83ab233fafcea37a22a5340760f85b1a49bbcc067c228cf51f3892cca1d1188",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "9a9e8456113b1ad37e819d75bef7ebfd2d7c116636ca98b10e955d87f5914330",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>"
+      ]
+    },
+    {
+      "Path": "nc4-result.json",
+      "Bytes": 790,
+      "Sha256": "8bb213f6e9c50e5bba1a05cac17a31d13a2d53cbea64f2c9c5caabf234696d48",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "relay-record.json",
+      "Bytes": 5730,
+      "Sha256": "52e7a783ae6cf33bbc124fa2dfe02f801806b1dfdc2baf5591f4e237ed72b4df",
+      "Disposition": "CUSTODIED"
+    }
+  ]
+}

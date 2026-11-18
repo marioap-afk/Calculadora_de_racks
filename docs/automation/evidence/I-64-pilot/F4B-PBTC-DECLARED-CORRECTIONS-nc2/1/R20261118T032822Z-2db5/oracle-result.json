@@ -1,0 +1,51 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261118T032822Z-2db5",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "MutatedCheck": {
+    "Scope": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Scope"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Scope": "git diff --name-only BaseSha CurrentSha returned 13 paths. Twelve are in delegation.json AllowedWriteScope; src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs is not. The path is in the contract scope and not ForbiddenWriteScope, but the delegation whitelist is exact. git diff --name-only RedSha CurrentSha contains only the three product paths and no tests/ paths."
+  },
+  "OutputSha256": "A4B86C379BE569F7FD3A5BDDE182C947911B15692554F745EDD03903A44D33AE",
+  "ManualFreeText1610": []
+}

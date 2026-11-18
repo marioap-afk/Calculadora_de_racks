@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBTC-DECLARED-CORRECTIONS",
+  "RunId": "R20261118T032822Z-2db5",
+  "DelegationRunId": "R20261118T020622Z-7171",
+  "WorkRunId": "R20261118T021306Z-069b",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true, TreeKilled=false. Cession starts 2026-11-18T02:13:15Z; Outcome.OutputWrittenUtc=2026-11-18T02:52:14Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json is present; TaskId, Attempt=1, DelegationRunId, RunId=R20261118T021306Z-069b match the delegation and invocation. OutputWrittenUtc follows Cession.StartUtc. Referenced test artifacts were inspected at their actual workrun paths."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha exited 0. git diff --name-only AuthorityRevision BaseSha returned four docs paths: I-64-evidence.md, gate-contract.json, make_pbtc_contract.py, and I-64.yml; none is EXTERNAL or UNIT_CHANGE. git diff --quiet MainSha AuthorityRevision for docs/AUTOMATION_PLAN.md, README.md, and AGENTS.md exited 0. Authorities were read from the specified Git revisions."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Compared delegation.json with gate-contract.json: Invariants 19/19, RequiredTests 12/12, StopConditions 31/31, Authorities 25/25, ExpectedEvidence 8/8, Objective 1/1, and ForbiddenWriteScope 131/131 match. Delegation AllowedWriteScope has 12 entries and is a subset of the contract's 13 entries, so A3 passes. byte-fidelity-check.json reports PASS for all eight collections; planning Notes report A1-A8 8/8 and nc4."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git branch --show-current returned architecture/workspace-persistente-rackcad. git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both returned 4440f67d4c76fb2ec019a566231353acdcca61f6. merge-base --is-ancestor BaseSha CurrentSha and RedSha CurrentSha exited 0. Handoff branch and worktree match the delegation."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Exit records HeadSha and LsRemoteSha=BaseSha and OriginMainSha=812baf879612320653094a8aaf46aca0bac81383. Entry records HeadSha and LsRemoteSha=CurrentSha. No remote Git operation was run."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "git diff --name-only BaseSha CurrentSha returned 13 paths. Twelve are in delegation.json AllowedWriteScope; src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs is not. The path is in the contract scope and not ForbiddenWriteScope, but the delegation whitelist is exact. git diff --name-only RedSha CurrentSha contains only the three product paths and no tests/ paths."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned empty. git check-ignore -v for workrun handoff, workrun UI TRX, and input handoff returned the artifacts/ rule from .gitignore."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun is push, refs/heads/architecture/workspace-persistente-rackcad, HeadSha=CurrentSha, completed/success; all four required jobs succeeded. RedRun is push on the same ref at RedSha; UI Tests failed and the other three jobs succeeded. Work log records no blame-hang or timeout. TRXs show Current Core 19070/19070 passed and UI 2397 passed, 0 failed, 21 not executed; RED Core 19070/19070 passed and UI 2387 passed, 10 failed."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Read all four input TRXs. CurrentSha filters selected/pass: UI PushBackDeclaredCorrection 10/10; Cantilever 67/67; PushBackClassicCharacterization 55/55; PushBackFullEditorCharacterization 18 selected, 16 passed, 2 SUS skips; WorkspaceDraftPilotWindowLoad 4 selected, 3 passed, 1 SUS skip; DimensionViews 13 selected, 12 passed, 1 SUS skip; AdvancedRackParameters 9/9; ModuleEditor 13/13. Core filters: Classic 10/10, FullEditor 3/3, BlankFrontAuthority 9/9, ModuleEditor 15/15. All meet MinSelected and have no failures. RED PushBackDeclaredCorrection selected 10, failed 10, passed 0, with no NotExecuted/Skipped; all failure messages are assertion failures without a qualified type prefix and separator, and all first stack lines point under tests/. ExpectRed=false filters have no RED failures; their skipped results are SUS-01..SUS-04. Core RED is successful as required. RT and ChainRedFiles are the 10 paths from git diff --name-only ChainBaseSha RedSha -- tests/: PushBackDeclaredCorrectionDimensionStyleTests.cs, PushBackDeclaredCorrectionPilotParityTests.cs, PushBackDeclaredCorrectionRoundingTests.cs, PushBackDeclaredCorrectionSideBNoticeTests.cs, PushBackDeclaredCorrectionStandardRestoreTests.cs, PushBackDeclaredCorrectionSupport.cs, PushBackDimensionViewsWindowTests.cs, PushBackFullEditorCharacterizationModuleTests.cs, PushBackFullEditorCharacterizationRoundingLossTests.cs, Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs. git diff --name-only RedSha CurrentSha has no tests/ paths. Four SUS diffs each change only the Fact/Theory attribute line with the declared Skip literal. Handoff CI artifact counts match the TRX summaries. cleanup-before.txt and cleanup-after.txt have identical layout and library hashes/mtimes; inv-checks.txt reports zero base-to-RED src paths and lists the same three GREEN product files as Git."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%H%n%B BaseSha..CurrentSha shows both commits carry Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching Worker.Trailer and the effective model."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 with Provider effort high and enforcement required. Work record Notes report launch alias sonnet, effective assistant model claude-sonnet-5-5, effort high, and 220 assistant turns."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Checked worker-handoff.json free-text fields WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions, and RecommendedNextAction against the section 16.10 term list; no match."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes report zero permission denials and one tool error with none pending. Exit and Entry process records show no persistent participant or unattributable process; config.toml hash matches Snapshot I and Cession.SessionOperated=false."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "The GREEN commit changes RackPushBackSystemWindow.Composite.cs, which is absent from the delegation's exact AllowedWriteScope; this makes the Scope check fail.",
+    "Handoff artifact references contain the malformed prefix System.Xml.XmlElement/tests; the cited files exist under the workrun tests directory and were evaluated there."
+  ],
+  "RecommendedNextAction": "Stop this work chain and request a new delegation that explicitly includes RackPushBackSystemWindow.Composite.cs before continuing."
+}

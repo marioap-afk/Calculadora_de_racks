@@ -5,7 +5,7 @@
 > se conservan intactas, con su texto original, marcadas `Skip` con un motivo que nombra este registro. El comportamiento nuevo
 > vive en clases separadas.
 
-**Estado: DECLARADA.** Lo pasa a **EJECUTADA** la sesión principal al cerrar PB-TC, con los SHA del RED y del GREEN. El Worker no escribe en este archivo.
+**Estado: EJECUTADA** (2026-11-18, cierre de PB-TC, F4B-E08): RED `f665edac046014533f031adfa797291a3d027df2`, GREEN `4440f67d4c76fb2ec019a566231353acdcca61f6`. Lo escribe la sesión principal; el Worker no escribe en este archivo.
 
 **Autoridad:**
 - **D-PB-06**, en la disposición del Owner y del Coordinator de F4B, [OD] (`docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-f4b-disposition.md:130-155`): las correcciones (a), el redondeo, y (b), el estilo de cotas. Su paso 6 (`:149-150`) dice que es un «cambio intencionado del editor clásico, no "no observable change"».
@@ -201,7 +201,11 @@ Hasta esa decisión, siguen redondeando como en la base, y PB-TC no las toca (IN
 
 | | |
 |---|---|
-| **RED** | *(pendiente)* |
-| **GREEN** | *(pendiente)* |
-| **Comprobación temporal** (las cuatro viejas sin `Skip` sobre el GREEN; §5.2 del paquete) | *(pendiente: artefactos citados en la entrega)* |
-| **Estado** | DECLARADA |
+| **RED** | `f665edac046014533f031adfa797291a3d027df2` (CI `44223960356`: ui-tests en failure por los 10 métodos nuevos; tests, build-ui y build-plugin en success) |
+| **GREEN** | `4440f67d4c76fb2ec019a566231353acdcca61f6` (CI `44225456328` 4/4; UI 2 397 Passed y 21 Skipped de 2 418; Core 19 070/19 070) |
+| **Comprobación temporal** (las cuatro viejas sin `Skip` sobre el GREEN; §5.2 del paquete) | Conforme con el §5.2: SUS-01 falla en pb-06, pb-07 y pb-08 y pasan 11; SUS-02 falla en el estilo; SUS-03 difiere en 10 líneas y F4 coincide; SUS-04 difiere en 4 y coinciden 6 (TRX y logs `tests/s1` a `tests/s4` de la entrega del Worker `R20261118T021306Z-069b`, por SHA-256 en su manifiesto) |
+| **Estado** | EJECUTADA |
+
+## Limitación conocida declarada al cerrar (OWNER-1, F4B-E08)
+
+En «Ambos lados», con una caja **mixta**, escribir el número que se ve del valor exacto de un lado no iguala los dos lados: ese lado conserva su exacto y la caja vuelve a quedar mixta (diferencia menor que 0,0005). La encontró la revisión independiente (M-01); es un hueco del diseño del paquete, no una desviación. El Owner eligió «Registrar y arreglarlo luego (Recomendado)» (`F4B-DRAFTS/coordinator/owner-pbtc-mixed-decision.md`): la propuesta de arreglo vuelve al Owner antes del contrato de PB-T1, junto con el caso pendiente de arriba.
