@@ -552,3 +552,72 @@ La única diferencia material es c-09 (V25-06), y ya está decidida por el Owner
 - 23 filtros, con `ExpectRed` en `PushBackEditableState` (13), `PushBackEditorOutputGate` (1) y `PushBackEditableStateParityTests` (1).
 
 **El GREEN previsto:** Core 19 086 y UI 2 437.
+
+## F4B-E18. Decisión del Owner sobre la planificación de PB-T1b (PBT1B-C08)
+
+**Fecha:** 2026-11-18. **Texto literal:** `F4B-DRAFTS/coordinator/owner-pbt1b-planning-decision.md`. **La vuelta:** `F4B-DRAFTS/pbt1b/owner-return-planning.md`.
+
+**La planificación** `R20261118T184831Z-aaac` se rechazó solo por la copia, en tres colecciones:
+- ForbiddenWriteScope sin una entrada;
+- en RequiredTests, un `Project` cambiado;
+- en Authorities, un identificador de CT cambiado.
+
+**La replanificación única** `R20261118T185409Z-c45c` se rechazó otra vez solo por la copia. ForbiddenWriteScope salió con 196 de las 213 entradas: faltaban las 17 de la raíz. Las otras siete colecciones eran idénticas.
+
+**La respuesta del Owner:** «La sesión pone la lista (Recomendado)».
+- **Solo en esa delegación,** la sesión sustituyó el ForbiddenWriteScope por la lista exacta del contrato. La salida del Controller y su comparación rechazada se conservan.
+- **Sobre la delegación reparada:** comparación byte a byte PASS en las ocho colecciones, A1-A8 8/8 y nc4 `R20261118T190107Z-0764` con el oráculo cumplido.
+- **El alcance:** no gasta intento y no cambia la regla para otras tareas.
+
+## F4B-E19. Decisión del Owner sobre el config.toml tras el reinicio: Snapshot J
+
+**Fecha:** 2026-11-18. **Texto literal:** `F4B-DRAFTS/coordinator/owner-config-snapshot-j-decision.md`. **La vuelta:** `F4B-DRAFTS/pbt1b/owner-return-config.md`.
+
+**La pausa y el reinicio.** El Owner pidió pausar todo para reiniciar el equipo. La sesión detuvo el Worker `R20261118T190205Z-6d33` después de sus pasos 0 y 1, sin commits.
+
+**Lo que cambió con el reinicio:**
+- la app de Codex se actualizó de 26.1111.21308 a 26.1111.2228.0 y reescribió `config.toml`;
+- el nuevo hash es `57B0FED6…`, distinto de la Snapshot I;
+- los 104 nombres y los 68 valores del inventario seguro son idénticos;
+- el único valor que el inventario oculta es el directorio opaco de la tubería de computer use;
+- el binario acreditado no cambió.
+
+Se detectó como P-01 al preparar la reanudación (`R20261118T191840Z-7115`, que no se lanzó).
+
+**La respuesta del Owner:** «Sonda neutra, luego J (Recomendado)».
+
+**La sonda** `R20261118T193210Z-d32c` dio **Pass**:
+- el oráculo se cumple, con `gpt-6-luna`/high;
+- el sandbox es de solo lectura y la red está restringida;
+- la CLI, el binario y la configuración no cambiaron durante la corrida.
+
+Frente a la corrida `c45c` (Snapshot I, hoy) solo cambia el `root_turn_id`. El registro de la sonda de referencia 3082 ya solo existe comprimido, y la comparación usa `c45c`.
+
+**El resultado:** la **Snapshot J** es la línea base activa del Controller en I-64 y sustituye a la I. Su registro está en `F4-ENVIRONMENT/snapshot-J/snapshot-j.json`.
+
+## F4B-E20. Decisiones del Owner sobre la parada PBT1B-C15 y la reemisión de PB-T1b
+
+**Fecha:** 2026-11-18. **Texto literal:** `F4B-DRAFTS/coordinator/owner-pbt1b-c15-decisions.md`. **La vuelta:** `F4B-DRAFTS/pbt1b/owner-return-c15.md`.
+
+**La parada.** El Worker reanudado `R20261118T193423Z-fb01` repitió el paso 1 con las mismas líneas (c-02 en la rama ordinal y c-09 en la rama «conserva»). Después paró con PBT1B-C15 antes del RED, sin commits:
+- la mitad estado → diseño → estado de CT-PBT1B-02 da «distintos» en `pb-15-sin-composite`;
+- la diferencia es que el frente 0 del lado B pasa de activo a inactivo, con B no presente;
+- es la normalización que ya registra `LegacyDeltas`: `AbsentSlotsB[0]: <absent> -> 0`.
+
+Su lectura de CT-06 dio falsos fallos.
+
+**Las respuestas del Owner:**
+- «Normalización conocida (Recomendado)»: no es una pérdida, y se corrige CT-02;
+- «Sin gastar intento (Recomendado)»: la delegación nueva sigue en el intento 1 de 3.
+
+**El paquete v2.7:**
+- **CT-PBT1B-02** tiene tres pasos por diseño:
+  - (i) diseño → estado → diseño, con el oráculo de siempre;
+  - (ii) la primera vuelta vista desde el estado: iguales en 17 diseños; en pb-15, solo el frente 0 de B;
+  - (iii) estado → diseño → estado desde el estado normalizado: iguales en los 18.
+- **CT-PBT1B-06** define «sobrevive a `Copy`» con el `Mutator` del piloto, como CT-08. Excluye, con su ancla, las ranuras que `Restore` vuelve a alinear y `SafetyFacePiece`, que es inmutable.
+- **PBT1B-C15** nombra la normalización de pb-15 como excepción.
+
+**La comprobación acotada de la v2.7:** EMITIBLE 0/0/4, sin decisiones nuevas para el Owner; sus cuatro menores, aplicados en el texto de emision de la v2.7.
+
+**Lo que se emite de nuevo:** el contrato de `F4B-PBT1B-LOSSLESS-STATE-TYPE`, con la v2.7. Sigue en el intento 1 de 3, y la delegación es nueva.

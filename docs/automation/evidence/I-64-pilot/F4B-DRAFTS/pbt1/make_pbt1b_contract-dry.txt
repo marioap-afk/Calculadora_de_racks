@@ -1,7 +1,7 @@
-DRY allowed 12 forbidden 213 (src 117 tests 79 root 17 ) inv 15 stops 33 required 23 evidence 8 authorities 49 anchors-ok 39 skeleton-in-HEAD v2.4 bytes 55111 sha256 D6911E30176C19B7822A83BEB6EAB3EE551F5114DFF70B8ADC075B52A3B8CE09
-a custodiar en la emision (aun no en HEAD): 2 ['docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt1/pbt1b-anchors-out.txt', 'docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt1/independent-review-pbt1b-check.md']
-a custodiar tambien, sin ser autoridades (PBT1BC-M04; aun no en HEAD): 2 ['docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt1/check_v25_skeleton.py', 'docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt1/make_pbt1b_contract-dry.txt']
-a sustituir en la emision: paquete en HEAD v2.4 (hace falta la v2.6); registro en HEAD con el apartado P: False
+DRY allowed 12 forbidden 213 (src 117 tests 79 root 17 ) inv 15 stops 33 required 23 evidence 8 authorities 52 anchors-ok 39 skeleton-in-HEAD vigente bytes 56861 sha256 83360B93ED6689F2BF24830395228AA3FA2CAA7020CDE22E0CB72786B56FAE54
+a custodiar en la emision (aun no en HEAD): 3 ['docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt1b-c15-decisions.md', 'docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt1b/owner-return-c15.md', 'docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt1/independent-review-pbt1b-v27-check.md']
+a custodiar tambien, sin ser autoridades (PBT1BC-M04 y la medicion de fb01; aun no en HEAD): 2 ['docs/automation/evidence/I-64-pilot/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T193423Z-fb01/tests/dev/ct02-lines-expected-vs-actual.txt', 'docs/automation/evidence/I-64-pilot/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T193423Z-fb01/tests/dev/pb15-state-diff.txt']
+a sustituir en la emision: paquete en HEAD v2.6 (hace falta la v2.7); registro en HEAD con el apartado P: True
 1 src/RackCad.Application/BlockNaming.cs
 2 src/RackCad.Application/Bom/
 3 src/RackCad.Application/Catalogs/

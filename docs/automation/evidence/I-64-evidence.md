@@ -7937,3 +7937,26 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - **El generador custodiado** escribe con `[0-9]` la regex de `IssuedUtc`: el filtro de rutas locales leia la secuencia de la regex original como una unidad de disco. El contrato regenerado con el mismo `IssuedUtc` es identico byte a byte al emitido.
 
 **Limites:** solo documentacion en este paso; sin AutoCAD.
+
+## 246. Planificación, pausa, Snapshot J y parada C15 de PB-T1b; paquete v2.7
+
+**Decisiones:** F4B-E18 (la lista de la planificación), F4B-E19 (la Snapshot J) y F4B-E20 (la parada C15 y la reemisión con la v2.7).
+
+**Qué se custodia:**
+- **Las decisiones literales del Owner,** en `F4B-DRAFTS/coordinator/`: la de la planificación, la de la Snapshot J y la de la parada C15.
+- **Las tres vueltas,** en `F4B-DRAFTS/pbt1b/`.
+- **El registro de la Snapshot J,** en `F4-ENVIRONMENT/snapshot-J/snapshot-j.json`.
+- **El paquete de PB-T1 v2.7,** en `docs/initiatives/I-64-f4b-pbt1-gate-contract-package.md`. La v2.6 pasa a la historia como `F4B-DRAFTS/pbt1/package-v26.md`.
+- **La comprobación acotada de la v2.7** (EMITIBLE 0/0/4, sin decisiones nuevas para el Owner; sus cuatro menores, aplicados en el texto de emision de la v2.7) y su encargo.
+- **La medición del Worker que fija CT-02,** en `F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T193423Z-fb01/tests/dev/`.
+
+**Lo que establece la v2.7:**
+- CT-PBT1B-02 en tres pasos, con la normalización conocida de pb-15;
+- CT-PBT1B-06 con el `Mutator` del piloto;
+- PBT1B-C15 con su excepción.
+
+**Límites:**
+- solo documentación en este paso;
+- sin cambios en `src/` ni en `tests/`;
+- sin AutoCAD;
+- las corridas de la cadena (las planificaciones, la sonda y las invocaciones del Worker) se custodian al cerrar la tarea.
