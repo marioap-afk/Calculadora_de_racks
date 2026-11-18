@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: none
   attempts: 1
-  next_action: "F4B PB-T1: paquete v2.4 (remedido sobre b5c09f0b sin cambios materiales; tres subtareas; D2 incorporada) custodiado; siguiente: emitir el contrato de F4B-PBT1A-LOSSLESS-STATE-NET con attempts 1 de 3 (F4B-E13)"
+  next_action: "F4B-PBT1A-LOSSLESS-STATE-NET: contrato emitido (AuthorityRevision 95c8126b, attempts 1 de 3); siguiente: planificacion del Controller, comparacion byte a byte, A1-A8, nc4 y Worker"
   last_evidence_commit: 0f49f69160cdffc1d2933d6165d5f472b5793d84
 execution_context:
   mode: manual
