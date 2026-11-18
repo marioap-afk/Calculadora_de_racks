@@ -7923,3 +7923,17 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - solo documentación en este paso;
 - sin cambios en `src/` ni en `tests/`;
 - sin AutoCAD.
+
+## 245. Contrato de F4B-PBT1B-LOSSLESS-STATE-TYPE
+
+**Contrato:** `I-64-pilot/F4B-PBT1B-LOSSLESS-STATE-TYPE/coordinator/gate-contract.json` (F4B-E17), con su script generador al lado.
+- **Alcance:** lista blanca exacta de 12 rutas: ES y RMES, los cuatro archivos nuevos de Application y las seis clases de prueba nuevas. La ventana, el piloto, el Plugin y CS no cambian.
+- **`ForbiddenWriteScope`:** 213 entradas, con el metodo de PB-T0.
+- **Invariantes y paradas:** 15 invariantes y 16 paradas propias. PBT1B-C08 es la replanificacion de [DP]; PBT1B-C11, los sustitutos con firma exacta; PBT1B-C12, el intento 3 al Owner; PBT1B-C14, el paso 1 de c-02 y c-09; PBT1B-C15, una diferencia nueva con la ventana (al Owner); PBT1B-C17, el limite de D2.
+- **Filtros:** `RackCad.Tests.PushBackEditableState` (`MinSelected` 13, `ExpectRed`); `RackCad.Tests.PushBackEditorOutputGate` (`MinSelected` 1, `ExpectRed`); `RackCad.UI.Tests.PushBackEditableStateParityTests` (`MinSelected` 1, `ExpectRed`); `RackCad.Tests.PushBackSharedReferenceGuardTests` (`MinSelected` 2); `RackCad.Tests.Workspace` (`MinSelected` 3271); `RackCad.Tests.PushBackOutputGateTests` (`MinSelected` 8); `RackCad.Tests.PushBackBlankFrontAuthorityTests` (`MinSelected` 9); `RackCad.Tests.PushBackModuleEditorCharacterizationTests` (`MinSelected` 15); `RackCad.Tests.RackModuleEditSessionTests` (`MinSelected` 25); `RackCad.Tests.NamespaceFolderGuardTests` (`MinSelected` 7); `RackCad.Tests.HeaderBatchContractTests` (`MinSelected` 17); `RackCad.UI.Tests.PushBackStateNet` (`MinSelected` 14); `RackCad.UI.Tests.PushBackClassicCharacterization` (`MinSelected` 55); `RackCad.Tests.PushBackClassicCharacterization` (`MinSelected` 10); `RackCad.UI.Tests.PushBackFullEditorCharacterization` (`MinSelected` 16); `RackCad.Tests.PushBackFullEditorCharacterization` (`MinSelected` 3); `RackCad.UI.Tests.PushBackDeclaredCorrectionRoundingTests` (`MinSelected` 3); `RackCad.UI.Tests.PushBackDeclaredCorrectionDimensionStyleTests` (`MinSelected` 2); `RackCad.UI.Tests.PushBackDeclaredCorrectionPilotParityTests` (`MinSelected` 2); `RackCad.UI.Tests.PushBackDeclaredCorrectionSideBNoticeTests` (`MinSelected` 2); `RackCad.UI.Tests.PushBackDeclaredCorrectionStandardRestoreTests` (`MinSelected` 1); `RackCad.UI.Tests.PushBackDeclaredCorrection2` (`MinSelected` 4); `RackCad.UI.Tests.Cantilever` (`MinSelected` 67).
+- **Revisiones:** `AuthorityRevision` `1464193f899b4678d1e4a2c4885a30cee19875ff` y `MainSha` `812baf879612320653094a8aaf46aca0bac81383`.
+- **`attempts`:** 1 de 3.
+- **La verificacion** lleva las tres comprobaciones deterministas de F4B-E15.
+- **El generador custodiado** escribe con `[0-9]` la regex de `IssuedUtc`: el filtro de rutas locales leia la secuencia de la regex original como una unidad de disco. El contrato regenerado con el mismo `IssuedUtc` es identico byte a byte al emitido.
+
+**Limites:** solo documentacion en este paso; sin AutoCAD.
