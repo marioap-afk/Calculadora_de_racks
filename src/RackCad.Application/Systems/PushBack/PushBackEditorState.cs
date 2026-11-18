@@ -164,6 +164,14 @@ namespace RackCad.Application.Systems.PushBack
         /// that already landed. The intents themselves survive inside the new baseline.</summary>
         public void ClearModuleCommit() => moduleCommit = null;
 
+        /// <summary>
+        /// Copy the module authority of <paramref name="source"/> into this state (I-64 F4B PB-T1b, D-PBT1-07). Skeleton:
+        /// it does nothing yet.
+        /// </summary>
+        public void CopyAuthorityFrom(PushBackEditorState source)
+        {
+        }
+
         private RackModuleEditSession OpenModuleSession()
         {
             var structure = workingBaseline?.Structure;

@@ -44,6 +44,14 @@ namespace RackCad.Application.Systems.Shared
 
         /// <summary>I-40: the accepted per-LINE derived-post heights.</summary>
         public IReadOnlyList<DynamicDerivedPostLineOverride> DerivedPostOverrides { get; }
+
+        /// <summary>A faithful copy of this commit that shares no mutable object with it (I-64 F4B PB-T1b, D-PBT1-07).
+        /// Skeleton: it returns this commit.</summary>
+        public RackModuleCommit Copy() => this;
+
+        /// <summary>Whether another commit holds exactly the same accepted edit (I-64 F4B PB-T1b, D-PBT1-07). Skeleton:
+        /// it is never the same.</summary>
+        public bool SameAs(RackModuleCommit other) => false;
     }
 
     /// <summary>
@@ -149,6 +157,14 @@ namespace RackCad.Application.Systems.Shared
             if (designs == null) throw new ArgumentNullException(nameof(designs));
             return new RackModuleEditSession(designs.Where(design => design != null));
         }
+
+        /// <summary>A copy of this session that shares no mutable object with it (I-64 F4B PB-T1b, D-PBT1-07). Skeleton:
+        /// an empty session.</summary>
+        public RackModuleEditSession Copy() => RackModuleEditSession.Begin(Array.Empty<DynamicRackModuleDesign>());
+
+        /// <summary>Whether another session holds exactly the same edit (I-64 F4B PB-T1b, D-PBT1-07). Skeleton: it is
+        /// never the same.</summary>
+        public bool SameEditAs(RackModuleEditSession other) => false;
 
         /// <summary>The staged state, as read-only descriptors. This is what an editor renders.</summary>
         public IReadOnlyList<RackModuleDescriptor> Modules => RackModuleDescriptor.Describe(working);
