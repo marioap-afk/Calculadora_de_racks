@@ -205,3 +205,43 @@ El paquete de cierre es `F4B-PBT0-CHARACTERIZATION/task-close-package.md`.
    - H-PB-28 (OWNER-2).
 3. Antes del contrato de PB-T1: `pb-21-cola` (OWNER-3) y los demás casos de T-2 (OB-06.5).
 4. PB-TC no se emite sin la orden del Owner.
+
+## F4B-E06. Decisiones del Owner antes de emitir PB-TC
+
+**Fecha:** 2026-11-17 (noche). **Texto literal:** `F4B-DRAFTS/coordinator/owner-pbtc-decisions.md`.
+
+**El paquete:**
+- La sesión principal preparó el paquete del contrato de PB-TC.
+- Pasó tres revisiones independientes y adversariales en solo lectura:
+  - IRT1, sobre la v1: NO EMITIBLE 1/4/10;
+  - ICT2, sobre la v2: EMITIBLE TRAS CORRECCIONES 0/1/9;
+  - ICT21, sobre la v2.1: EMITIBLE 0/0/5.
+- La historia completa está en `F4B-DRAFTS/pbtc/`.
+- La bloqueante de IRT1 (B-01) era un hecho falso: el peralte IN/OUT base no es una pérdida, porque el ensamblador lo normaliza al único peralte del catálogo. Así que las pérdidas de (a) son **diez** campos.
+
+**La vuelta al Owner** que prevén [P]:766, [OD]:153-155 y F4B-E05 se hizo con cinco preguntas, y sus respuestas fueron estas:
+- **OD-PBTC-1:** «Corregir, regla Cantilever (Recomendado)»:
+  - (a) se corrige con la regla `Keep` (R-03 (i));
+  - vale también más allá de la ruta de carga: la selección, «Ambos lados», el alcance, los datos del frente y la biblioteca;
+  - PBTC-C14 se mantiene.
+- **OD-PBTC-2:** «Corregir (Recomendado)»: (b) se corrige.
+- **OD-PBTC-3:** «Texto corto, franja de estado (Recomendado)»: el aviso de D-PB-08 va en `StatusContent`, detrás de `StatusText`, con el literal byte a byte del archivo de decisiones.
+- **OD-PBTC-4:** «Restaurar estándar (Recomendado)» = (A). H-PB-28 entra en PB-TC como corrección declarada nueva, **D-PB-11**.
+- **OD-PBTC-5:** el Owner no marcó «Otras cajas que redondean» = (B). El caso de H-31 (`GapBox`, `ModuleLengthBox` y las cuatro cajas avanzadas anulables) **no** entra en PB-TC: vuelve al Owner **antes del contrato de PB-T1** (OB-06.5), y PB-TC lo prohíbe de forma explícita (INV-PBTC-15 y PBTC-C10).
+
+**Obligaciones de PB-T2** (M-07 de IRT1; precondición 3 del paquete):
+- el paso 4 de D-PB-06 en el modo WORKSPACE;
+- el aviso de D-PB-08 en el modo WORKSPACE.
+
+[P] los asigna a PB-T2, y [OD]:144-147 pide probar los dos modos. El contrato de PB-T2 los incluye.
+
+## F4B-E07. Orden del Owner de emitir PB-TC
+
+**Fecha:** 2026-11-17 (noche). **Texto literal:** `F4B-DRAFTS/coordinator/owner-pbtc-emission-order.md`.
+
+- **La orden.** F4B-E05 («Siguiente», punto 4) exige la orden del Owner. El Owner respondió «Sí, emite PB-TC (Recomendado)».
+- **Lo que se emite:**
+  - el paquete v2.2, que es la v2.1 con los cinco menores de ICT21 aplicados sin otra comprobación, como ICT21 recomienda. Las sustituciones pasan a llamarse SUS-01 a SUS-04, para no chocar con las paradas estándar S-0n;
+  - el contrato de `F4B-PBTC-DECLARED-CORRECTIONS`, con attempts 1 de 3.
+- **El registro declarado** `F4B-DRAFTS/superseding-characterization.md` nace en estado DECLARADA, con SUS-01 a SUS-04 (OB-T1B.2), y pasa a EJECUTADA al cerrar.
+- **Reglas de la cadena:** las de F4B-E03 y D-PB-10, transcritas en PBTC-C08, C11 y C12. PBTC-C14 vuelve al Owner antes del GREEN si el delta de la base de CT-PBTC-10 es material.

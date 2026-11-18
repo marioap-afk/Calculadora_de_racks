@@ -7705,3 +7705,31 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - solo pruebas nuevas, sin AutoCAD;
 - los menores van a PB-TC y PB-T1;
 - las vueltas al Owner antes de PB-TC (efecto de (a) y (b), M-7 y H-PB-28) y antes de PB-T1 (`pb-21-cola` y T-2) siguen pendientes.
+
+## 235. Paquete del contrato de PB-TC y decisiones del Owner
+
+**Decisiones:** F4B-E06, las decisiones del Owner antes de emitir, y F4B-E07, la orden de emitir.
+
+**Qué se custodia:**
+- **El paquete** `docs/initiatives/I-64-f4b-pbtc-gate-contract-package.md`, v2.2, el texto de emisión, con su registro de mediciones `docs/initiatives/I-64-f4b-pbtc-measurements.md`.
+- **La historia,** en `F4B-DRAFTS/pbtc/`:
+  - las versiones v1, v2 y v2.1;
+  - los encargos de redacción;
+  - las tres revisiones independientes con sus encargos: IRT1, NO EMITIBLE 1/4/10; ICT2, EMITIBLE TRAS CORRECCIONES 0/1/9; ICT21, EMITIBLE 0/0/5.
+- **Las decisiones literales del Owner** (`owner-pbtc-decisions.md`) y su orden de emitir (`owner-pbtc-emission-order.md`).
+- **El registro declarado** `F4B-DRAFTS/superseding-characterization.md`, con SUS-01 a SUS-04 en estado DECLARADA.
+
+**Lo que corrige PB-TC:**
+- D-PB-06 (a): diez campos, con la regla `Keep`;
+- D-PB-06 (b): el estilo de cotas;
+- D-PB-08: el aviso en la banda de estado;
+- D-PB-11: «Restaurar estándar» llega al Actualizar.
+
+Todo en la ventana clásica de Push Back, con el RED primero y la sustitución declarada.
+
+**Lo que no entra:** el caso de H-31 vuelve al Owner antes de PB-T1.
+
+**Límites:**
+- solo documentación en este paso;
+- sin cambios en `src/` ni en `tests/`;
+- sin AutoCAD.
