@@ -7835,3 +7835,29 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - sin AutoCAD: lo físico es de Smoke-PB;
 - el modo WORKSPACE queda para PB-T2;
 - el siguiente paso es volver a medir el paquete de PB-T1 y emitir PB-T1a.
+
+## 241. Paquete del contrato de PB-T1 y remedición sobre el producto de PB-TC2
+
+**Decisión:** F4B-E13, la emisión de PB-T1a por F4B-E09 (pregunta 4) y F4B-E11 (D2 y «PB-T1 PLAN»).
+
+**Qué se custodia:**
+- **El paquete de PB-T1** v2.4, en `docs/initiatives/I-64-f4b-pbt1-gate-contract-package.md`, y su registro de mediciones `docs/initiatives/I-64-f4b-pbt1-measurements.md`, apartados A a O. El apartado N es la remedición sobre `b5c09f0b`; el O, la guarda G-L1 de la v2.4.
+- **La historia,** en `F4B-DRAFTS/pbt1/`:
+  - las versiones v1, v2, v2.1, v2.2 y v2.3;
+  - los encargos al redactor y a los revisores;
+  - los seis scripts de medición, con sus salidas;
+  - las herramientas de solo lectura del revisor.
+- **Las tres revisiones:**
+  - IRT1-1, de la v1: 0/8/15, con L-1 para el Owner;
+  - la comprobación acotada de la v2: 0/1/10;
+  - la comprobación acotada de la remedición: 0/1/3, sin decisiones nuevas, aplicada en la v2.4.
+
+**Lo que establece el paquete:**
+- PB-T1 se divide en tres subtareas secuenciales: la red, el tipo y la ventana.
+- D2 queda incorporada con sus diez condiciones, la guarda G-L1, la parada C17 en cada subtarea y el arrastre A-2 a PB-T2, PB-T3 y PB-T4.
+- La remedición sobre el producto final de PB-TC2 no encontró ninguna diferencia material (§8.4).
+
+**Límites:**
+- solo documentación en este paso;
+- sin cambios en `src/` ni en `tests/`;
+- sin AutoCAD.

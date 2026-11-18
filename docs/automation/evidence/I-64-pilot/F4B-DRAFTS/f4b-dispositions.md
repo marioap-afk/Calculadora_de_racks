@@ -371,3 +371,58 @@ Son las respuestas a las dos vueltas que la sesión preparó en modo autónomo: 
 **Siguiente:**
 - volver a medir el paquete de PB-T1 v2.2 sobre `b5c09f0b`, con una comprobación acotada;
 - emitir PB-T1a por la autorización condicional (F4B-E09 y F4B-E11).
+
+## F4B-E13. Paquete del contrato de PB-T1, remedición sobre PB-TC2 y emisión de PB-T1a
+
+**Fecha:** 2026-11-18. **El paquete:** `docs/initiatives/I-64-f4b-pbt1-gate-contract-package.md` v2.4, con su registro de mediciones `docs/initiatives/I-64-f4b-pbt1-measurements.md` (apartados A a O). La historia, los encargos, los scripts de medición y las revisiones están en `F4B-DRAFTS/pbt1/`.
+
+**La autoridad de la emisión:**
+- F4B-E09, pregunta 4: la autorización condicional de emitir PB-TC2 y después PB-T1 sin volver al Owner.
+- F4B-E11, D2 y «PB-T1 PLAN»: «Re-measure it against the final PB-TC2 product before emission. If that remeasurement changes no material premise: issue the first PB-T1 task normally.»
+
+**La división (D-PBT1-01),** aceptada en principio por el Owner en F4B-E11. Son tres subtareas secuenciales, cada una con su cadena y su presupuesto de 1 de 3 (D-PB-10):
+- **PB-T1a, `F4B-PBT1A-LOSSLESS-STATE-NET`:** solo pruebas de caracterización (CT-PBT1A-01 a 14), con un RED por los quince mutantes revertidos de la tabla cerrada. El producto no cambia.
+- **PB-T1b, `F4B-PBT1B-LOSSLESS-STATE-TYPE`:** `PushBackEditableState` y `PushBackEditorOutputGate` en Application (CT-PBT1B-01 a 16).
+- **PB-T1c, `F4B-PBT1C-LOSSLESS-STATE-WINDOW`:** la ventana sobre el estado, con reenvíos del mismo nombre (CT-PBT1C-01 a 04).
+
+**D2, incorporada (D-PBT1-15):**
+- **Las diez condiciones de seguridad:** se reparten entre CT-PBT1B-14, 15 y 16, CT-PBT1C-02 y 04, la guarda G-L1 y el invariante INV-PBT1x-14.
+- **El límite:** es la parada PBT1x-C17 en cada contrato, con el texto literal del Owner.
+- **Lo que heredan PB-T2, PB-T3 y PB-T4:** el arrastre A-2, con la tabla por condición del §10 del paquete.
+- **La lectura L-5** extiende el límite a PB-T4 y a la vida de edición clásica. La comprobación acotada de la remedición la juzgó una lectura legítima y no una decisión nueva.
+
+**Las revisiones:**
+- **IRT1-1, de la v1:** EMITIBLE TRAS CORRECCIONES 0/8/15. Planteó una decisión del Owner, L-1, que el Owner resolvió con D2.
+- **La comprobación acotada de la v2:** EMITIBLE TRAS CORRECCIONES 0/1/10. La sesión corrigió el importante, N-I-01: la pregunta de L-1 estaba sesgada.
+- **La comprobación acotada de la remedición (v2.3):** EMITIBLE TRAS CORRECCIONES 0/1/3, sin decisiones nuevas. Sus cuatro hallazgos están aplicados en la v2.4.
+  - El importante, V23C-I01, amplía G-L1 en PB-T1b y PB-T1c (indexadores, moldes `as`/`is`, lambdas y la regla 1c nueva). No toca el contrato de PB-T1a.
+
+**La remedición sobre el producto final de PB-TC2** (§8.4 del paquete; registro N). Se hizo en `cd47523b`, con el producto de su GREEN `b5c09f0b`, en solo lectura y sin ningún Worker en el worktree.
+- Cubrió R-1 a R-13 y lo que añade el cierre de PB-TC2.
+- **Ninguna diferencia es material** según L-6: todas son anclas, recuentos o textos, y la tabla del §8.4 clasifica cada una.
+- **Las premisas de D2 se sostienen:** G-L1 da 0 coincidencias sobre la base, y no hay un cuarto escritor de `Name` en Push Back.
+
+**Los anclajes, medidos de nuevo al emitir** (§6.0). La sesión volvió a ejecutar `remeasure_anchors.py` sobre la base de la emisión, y su salida queda custodiada junto al contrato. El generador del contrato comprueba además con sus `assert` los quince textos de la tabla de mutantes.
+
+**Las condiciones de emisión se cumplen:** 0 bloqueantes, 0 importantes sin resolver y ninguna decisión material nueva.
+
+**Lo que se emite:** el contrato de `F4B-PBT1A-LOSSLESS-STATE-NET`, con attempts 1 de 3:
+- 9 rutas permitidas: W y WC, solo para los mutantes del RED, y los siete archivos nuevos `PushBackStateNet*`;
+- 131 rutas prohibidas;
+- 14 invariantes y 30 paradas, con las de [DP] literales, C04 y C17;
+- 19 filtros. `ExpectRed` está solo en `PushBackStateNet`, con `MinSelected` 14.
+
+**Las vueltas al Owner que quedan previstas:**
+- **Antes de emitir PB-T1b:** la lista de INV-PBT1A-13, si no está vacía (precondición 5).
+- **Antes de PB-T2:** D-PB-07.
+- **Antes de PB-T3:** la `ExtensionData` anidada (A-4).
+- **Siguen las de F4B-E03:** una sola replanificación, y solo por la comparación literal; los sustitutos de nc1 y nc2, solo con la firma exacta de PD-F4-04 y PD-F4-01.
+- **Ninguna aceptación puntual se extiende a PB-T1:** ni la de nc1 en PB-TC (F4B-E08) ni la de PB-TC2 (F4B-E12).
+
+**Los arrastres del §10:**
+- **A-1:** el modo WORKSPACE y lo demás de PB-T2.
+- **A-2:** el borrador sobre el estado, con las obligaciones de D2.
+- **A-3:** el rechazo A/B del piloto, en PB-T3 o PB-T4.
+- **A-4:** la `ExtensionData` anidada.
+- **A-5:** la copia de la carga del piloto.
+- **A-6:** M-07, la caja de c-02 y M-01 de PB-T0, que van a `docs/ideas-futuras.md`.
