@@ -282,3 +282,46 @@ El paquete de cierre es `F4B-PBT0-CHARACTERIZATION/task-close-package.md`.
    - `pb-21-cola` (OWNER-3 de PB-T0);
    - los casos de T-2.
 2. PB-T1 no se emite sin la orden del Owner.
+
+## F4B-E09. Decisiones del Owner antes del contrato de PB-T1 (OB-06.5) y autorización condicional de emisión
+
+**Fecha:** 2026-11-18. **Texto literal:** `F4B-DRAFTS/coordinator/owner-pbt1-pre-decisions.md`.
+
+**Las órdenes previas del Owner** (chat, literales):
+- «Avanza todo lo que puedas, me refiero a que no contestaré lo que no sea necesario, no que no trabajes»;
+- más tarde, «Ya dormiré, por lo que, tienes que avanzar por tu cuenta todo lo posible, si en necesario controla la computadora sin pedir autorización».
+
+**El expediente** (`F4B-DRAFTS/pbt1/ob065-dossier.md`), de un analista independiente en solo lectura. Midió los casos de OB-06.5:
+- H-31;
+- OWNER-1;
+- c-02;
+- `pb-21-cola`;
+- los demás de T-2.
+
+También midió los huecos de red y las guardas de T1B (OB-T1B.3 no obliga a preguntar).
+
+**La comprobación de la sesión antes de preguntar** (`F4B-DRAFTS/pbt1/scan_dormant_tail.py`, sobre los inventarios crudos de las copias del bloque M, sin AutoCAD): ningún rack real de un sentido guarda una cola. Los únicos `GAP` y `B:` son de un rack A/B con `SideB` presente.
+
+**Las cuatro respuestas del Owner:**
+1. **H-31 y OWNER-1:** «Corregir en PB-TC2 (Recomendado)». Va una tarea propia, **PB-TC2**, antes de PB-T1, con presupuesto de 1/3.
+2. **c-02:** «Como hoy, como regla explícita (Recomendado)». PB-T1 reproduce la sustitución de un poste fuera de catálogo como regla explícita del estado. Los demás casos de T-2 se quedan como hoy.
+3. **`pb-21-cola`:** «Dejarlo fuera de la garantía (Recomendado)». Un rack de un sentido con cola compuesta guardada no es un «supported classic rack» para la garantía sin pérdidas de PB-T1. El Workspace sigue rechazándolo en todo F4B.
+4. **Emisión:** «Sí, emite con esa condición (Recomendado)». PB-TC2 y después PB-T1 se emiten sin volver al Owner si se cumplen dos condiciones: su revisión independiente da 0 bloqueantes y 0 importantes sin resolver, y no aparece ninguna decisión material nueva. Se vuelve al Owner por una decisión nueva, por un control con una firma no prevista, por un intento 3 o por un efecto material sin medir.
+
+**Obligaciones que se anotan:**
+- **PB-T2:** se mantienen las de F4B-E06: el paso 4 de D-PB-06 y el aviso de D-PB-08 en modo WORKSPACE.
+- **El paquete de PB-T1** recibe:
+  - M-07 de la revisión de PB-TC2 (la caja de largo manual que no se vacía en un rack de un sentido con un indicador mixto obsoleto);
+  - los arrastres M-02 a M-05 de PB-TC;
+  - la regla explícita de c-02;
+  - la exclusión de `pb-21-cola`.
+
+## F4B-E10. Emisión de PB-TC2 por la autorización condicional de F4B-E09
+
+- **El paquete:** el de PB-TC2, `docs/initiatives/I-64-f4b-pbtc2-gate-contract-package.md` v2.
+- **Su revisión:**
+  - la independiente IRT2-1 de la v1 dio EMITIBLE TRAS CORRECCIONES 0/3/7;
+  - la comprobación acotada de la v2 dio EMITIBLE 0/0/3, con N-01 a N-03 aplicados en el texto de emision y ninguna decision nueva.
+- **Las condiciones de la pregunta 4** se cumplen: 0 bloqueantes, 0 importantes sin resolver y ninguna decisión material nueva.
+- **Lo que se emite:** el contrato de `F4B-PBTC2-DECLARED-CORRECTIONS`, con attempts 1 de 3.
+- **El registro** `superseding-characterization.md` añade la sección de PB-TC2 en estado DECLARADA, sin ninguna sustitución. Cierra el «Pendiente» de H-31 y la limitación OWNER-1, que pasan a PB-TC2.

@@ -171,6 +171,7 @@ pb-07-combinado A2 peticion: ManualHeaderHeightOverride=null,DerivedPostReinforc
 Anotados también en `docs/automation/evidence/I-64-pilot/F4B-DRAFTS/f4b-dispositions.md`:
 - **el paso 4 de D-PB-06 en modo WORKSPACE** (OB-06.3). PB-TC lo prueba solo en RACKEDITAR, la ventana en modo clásico;
 - **el aviso de D-PB-08 en modo WORKSPACE** (OB-08.2). En el modo clásico, «así no se guardará» es exacto; en WORKSPACE no está demostrado.
+- **las correcciones de PB-TC2 en modo WORKSPACE** (OB-06.3): ver la sección de PB-TC2 (N-03 de su comprobación acotada).
 
 ## Pendiente: decisión del Owner antes de PB-T1
 
@@ -209,3 +210,57 @@ Hasta esa decisión, siguen redondeando como en la base, y PB-TC no las toca (IN
 ## Limitación conocida declarada al cerrar (OWNER-1, F4B-E08)
 
 En «Ambos lados», con una caja **mixta**, escribir el número que se ve del valor exacto de un lado no iguala los dos lados: ese lado conserva su exacto y la caja vuelve a quedar mixta (diferencia menor que 0,0005). La encontró la revisión independiente (M-01); es un hueco del diseño del paquete, no una desviación. El Owner eligió «Registrar y arreglarlo luego (Recomendado)» (`F4B-DRAFTS/coordinator/owner-pbtc-mixed-decision.md`): la propuesta de arreglo vuelve al Owner antes del contrato de PB-T1, junto con el caso pendiente de arriba.
+
+<!-- Texto de emisión para docs/automation/evidence/I-64-pilot/F4B-DRAFTS/superseding-characterization.md.
+     Bloque 1: la sección nueva, que se añade al final del archivo.
+     Bloques 2 y 3: las notas de cierre, cada una al final de la sección que cierra. -->
+
+## PB-TC2 — Las cajas que aún redondeaban y la caja mixta de «Ambos lados» (F4B-E09)
+
+**Estado: DECLARADA.** La pasa a **EJECUTADA** la sesión principal al cerrar PB-TC2, con los SHA del RED y del GREEN y sus CI. El Worker no escribe en este archivo.
+
+**Autoridad:**
+- **D-PB-06**, en [OD] (`docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-f4b-disposition.md:130-155`): «rounding behavior/state», y «Do not hide these corrections inside PB-T1 state extraction».
+- **La decisión del Owner F4B-E09**, pregunta 1, «Corregir en PB-TC2 (Recomendado)» (`docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt1-pre-decisions.md`), con su autorización condicional de emisión (pregunta 4).
+- **El contrato:**
+  - el paquete `docs/initiatives/I-64-f4b-pbtc2-gate-contract-package.md` (v2);
+  - `docs/automation/evidence/I-64-pilot/F4B-PBTC2-DECLARED-CORRECTIONS/coordinator/gate-contract.json`.
+
+**Sustituciones: ninguna.**
+- Ninguna prueba existente fija el redondeo de estas cajas ni el «Ambos lados» corregido. Todas las que las tocan escriben valores que se ven distintos, valores enteros o el valor que la caja ya tiene, y con tres decimales o menos la regla nueva da el mismo número.
+- Ninguna prueba cambia de atributo, y no hay filas `SUS2-0n`.
+
+**El cambio de comportamiento declarado de RACKEDITAR:**
+- **Las cajas que aún redondeaban** (H-31) dejan de guardarse redondeadas a tres decimales con solo pasar por ellas:
+  - el hueco entre lados;
+  - la longitud del módulo elegido;
+  - las cuatro cajas avanzadas anulables: la altura manual de la cabecera, la altura del refuerzo del poste derivado, la altura del poste derivado y la separación entre separadores.
+
+  Escribir algo que se ve igual a lo que muestra la caja conserva el valor exacto, y escribir algo distinto manda. Vaciar una caja avanzada sigue siendo «el cálculo».
+- **Pasar por la longitud de un módulo calculado ya no lo convierte en manual.** Escribir una longitud distinta sí lo convierte, como hasta ahora.
+- **En «Ambos lados», con el lado B presente,** una caja mixta (vacía porque los dos lados difieren) que recibe un valor lo aplica a los dos lados, como dice su ayuda. Vale al salir de la caja, al cambiar de celda, al aplicar a un alcance y con los datos del frente (estos dos, sin prueba propia; ver «Lo que sigue pendiente»). Una caja mixta que se deja vacía sigue dejando a cada lado el suyo.
+- **Sin lado B, o fuera de «Ambos lados»,** una caja sin editar conserva el valor exacto, aunque el indicador mixto haya quedado puesto.
+- **Con tres decimales o menos, nada cambia.**
+
+**Lo que sigue pendiente:**
+- **De PB-T2:** probar estas correcciones también en el modo WORKSPACE de la ventana (OB-06.3). Anotado también en `docs/automation/evidence/I-64-pilot/F4B-DRAFTS/f4b-dispositions.md`.
+- **Del paquete de PB-T1, antes de su contrato:**
+  - la regla de «Ambos lados» en el alcance y en los datos del frente, que no tiene prueba propia (red de PB-T1);
+  - un defecto anterior, que PB-TC2 conserva tal cual: sin lado B y con el indicador mixto obsoleto, vaciar «Largo manual» no surte efecto, y las cajas obligatorias quedan opcionales. PB-T1 decide si lo reproduce o lo corrige.
+
+### Ejecución de PB-TC2 (se completa al cerrar)
+
+| | |
+|---|---|
+| **RED** | *(pendiente)* |
+| **GREEN** | *(pendiente)* |
+| **Medición previa de la base** (el efecto del hueco, el módulo y las avanzadas exactas; la parada por efecto material) | *(pendiente: artefactos citados en la entrega)* |
+| **Estado** | DECLARADA |
+
+<!-- Bloque 2: al final de «## Pendiente: decisión del Owner antes de PB-T1» -->
+
+**Decidido por el Owner en F4B-E09** (pregunta 1, «Corregir en PB-TC2 (Recomendado)»): estas cajas se corrigen en la tarea PB-TC2, con la regla `Keep` de PB-TC (sección «PB-TC2», arriba). Al cerrar PB-TC2, esta línea pasa a «Cerrado por PB-TC2 (GREEN `<sha>`)».
+
+<!-- Bloque 3: al final de «## Limitación conocida declarada al cerrar (OWNER-1, F4B-E08)» -->
+
+**Decidido por el Owner en F4B-E09** (pregunta 1): la caja mixta de «Ambos lados» que recibe un valor lo aplica a los dos lados, con el lado B presente. Se corrige en la tarea PB-TC2 (sección «PB-TC2»). Al cerrar PB-TC2, esta línea pasa a «Cerrado por PB-TC2 (GREEN `<sha>`)».

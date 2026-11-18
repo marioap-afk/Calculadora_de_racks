@@ -1,0 +1,3 @@
+M7-D2-pre.txt |  | vista lateral 0 | SideB.IsPresent True | Composite si | modulos 15 | cola 8 | fondos 7
+M7-D2-pre.txt |  | vista planta -1 | SideB.IsPresent True | Composite si | modulos 15 | cola 8 | fondos 7
+M7-D2-pre.txt |  | vista planta -1 | SideB.IsPresent True | Composite si | modulos 15 | cola 8 | fondos 7

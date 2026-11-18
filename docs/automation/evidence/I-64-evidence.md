@@ -7773,3 +7773,23 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - sin AutoCAD: lo físico es de Smoke-PB;
 - el modo WORKSPACE queda para PB-T2;
 - antes del contrato de PB-T1 vuelven al Owner el caso H-31 y OWNER-1, `pb-21-cola` y T-2.
+
+## 238. Decisiones del Owner antes de PB-T1 y paquete de PB-TC2
+
+**Decisiones:** F4B-E09, la vuelta al Owner antes del contrato de PB-T1 con su autorización condicional de emisión, y F4B-E10, la emisión de PB-TC2.
+
+**Qué se custodia:**
+- **El expediente de la vuelta,** en `F4B-DRAFTS/pbt1/`: el encargo, el expediente y el script de la sesión con su salida.
+- **Las decisiones literales del Owner,** en `F4B-DRAFTS/coordinator/owner-pbt1-pre-decisions.md`.
+- **El paquete de PB-TC2** v2, en `docs/initiatives/I-64-f4b-pbtc2-gate-contract-package.md`, con su registro de mediciones.
+- **La historia,** en `F4B-DRAFTS/pbtc2/`: la v1, los encargos y las dos revisiones (IRT2-1 0/3/7 y la comprobación acotada de la v2).
+- **La sección de PB-TC2** en `superseding-characterization.md`.
+
+**Lo que corrige PB-TC2:** H-31 (el hueco, la longitud de módulo y las cuatro avanzadas anulables, con la regla `Keep`) y OWNER-1 (la caja mixta de «Ambos lados» con el lado B presente), solo en la ventana clásica de Push Back.
+
+**Lo que va a PB-T1:**
+- c-02, como regla explícita;
+- `pb-21-cola`, fuera de la garantía sin pérdidas;
+- M-07 y los arrastres de PB-TC.
+
+**Límites:** solo documentación en este paso; sin cambios en `src/` ni en `tests/`; sin AutoCAD.
