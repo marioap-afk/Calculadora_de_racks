@@ -206,7 +206,7 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
-            composite.SetCentralSeparator(CentralSeparatorCheck.IsChecked == true);
+            composite.SetCentralSeparator(false);
             RequestRecompute();
         }
 
