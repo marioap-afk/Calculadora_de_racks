@@ -126,7 +126,7 @@ namespace RackCad.UI.Tests
             return log;
         }
 
-        [Fact]
+        [Fact(Skip = "SUSTITUIDA por PB-TC (D-PB-06), registro docs/automation/evidence/I-64-pilot/F4B-DRAFTS/superseding-characterization.md fila SUS-03: la ejecuta PushBackDeclaredCorrectionRoundingTests.CT_PBTC_01_TheLoadedFieldsKeepTheirExactValueAfterLoading")]
         public void CT_PB0_19_TheFieldsThatPassThroughAFormattedControlComeBackRoundedToThreeDecimals()
         {
             var log = new List<string>();

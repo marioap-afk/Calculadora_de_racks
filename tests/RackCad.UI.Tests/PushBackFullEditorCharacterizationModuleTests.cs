@@ -167,7 +167,7 @@ namespace RackCad.UI.Tests
         /// cargado y Actualizar (A2) vuelve a escribir los valores cargados, de modo que la restauracion se pierde. Se fija
         /// asi y NO se corrige.</para>
         /// </summary>
-        [Fact]
+        [Fact(Skip = "SUSTITUIDA por PB-TC (D-PB-11), registro docs/automation/evidence/I-64-pilot/F4B-DRAFTS/superseding-characterization.md fila SUS-04: la ejecuta PushBackDeclaredCorrectionStandardRestoreTests.CT_PBTC_14_AStandardRestoreResetsTheAdvancedControlsAndReachesTheUpdate")]
         public void CT_PB0_05_TheSixAdvancedParametersAfterRestoreStandardAreResetInTheOutputAndComeBackOnUpdate()
         {
             var log = new List<string>();

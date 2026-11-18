@@ -228,7 +228,7 @@ namespace RackCad.UI.Tests
             return "OUTSIDE";
         }
 
-        [Theory]
+        [Theory(Skip = "SUSTITUIDA por PB-TC (D-PB-06), registro docs/automation/evidence/I-64-pilot/F4B-DRAFTS/superseding-characterization.md fila SUS-01: la ejecuta PushBackDeclaredCorrectionPilotParityTests.CT_PBTC_06_TheWindowAndThePilotWriteTheSameDesignForTheFourteenDesigns")]
         [MemberData(nameof(Corpus))]
         public void TheWindowAndThePilotDifferOnlyInTheKnownClasses(string fixture)
         {
