@@ -7793,3 +7793,15 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - M-07 y los arrastres de PB-TC.
 
 **Límites:** solo documentación en este paso; sin cambios en `src/` ni en `tests/`; sin AutoCAD.
+
+## 239. Contrato de F4B-PBTC2-DECLARED-CORRECTIONS
+
+**Contrato:** `I-64-pilot/F4B-PBTC2-DECLARED-CORRECTIONS/coordinator/gate-contract.json` (F4B-E10), con su script generador al lado.
+- **Alcance:** lista blanca exacta de 4 rutas: W y WC de la ventana clasica de Push Back y los dos archivos de pruebas nuevos; sin sustituciones.
+- **`ForbiddenWriteScope`:** 129 entradas, con el metodo de PB-T0.
+- **Invariantes y paradas:** 14 invariantes y 14 paradas propias. PBTC2-C08 es la replanificacion de [DP]; PBTC2-C11, los sustitutos con firma exacta; PBTC2-C12, el intento 3 al Owner; PBTC2-C14, la vuelta al Owner si la medicion de la base de D-PBTC2-07 es material.
+- **Filtros:** `RackCad.UI.Tests.PushBackDeclaredCorrection2` (`MinSelected` 4, `ExpectRed`); `RackCad.UI.Tests.PushBackDeclaredCorrectionRoundingTests` (`MinSelected` 3); `RackCad.UI.Tests.PushBackDeclaredCorrectionDimensionStyleTests` (`MinSelected` 2); `RackCad.UI.Tests.PushBackDeclaredCorrectionPilotParityTests` (`MinSelected` 2); `RackCad.UI.Tests.PushBackDeclaredCorrectionSideBNoticeTests` (`MinSelected` 2); `RackCad.UI.Tests.PushBackDeclaredCorrectionStandardRestoreTests` (`MinSelected` 1); `RackCad.UI.Tests.PushBackFullEditorCharacterization` (`MinSelected` 16); `RackCad.UI.Tests.PushBackClassicCharacterization` (`MinSelected` 55); `RackCad.UI.Tests.Cantilever` (`MinSelected` 67); `RackCad.UI.Tests.PushBackModuleEditorWindowTests` (`MinSelected` 13); `RackCad.UI.Tests.PushBackAdvancedRackParametersWindowTests` (`MinSelected` 9); `RackCad.UI.Tests.PushBackCompositeWindowTests` (`MinSelected` 52); `RackCad.UI.Tests.PushBackCompositeLifecycleWiringTests` (`MinSelected` 7); `RackCad.UI.Tests.PushBackCompositeLoadExistingModulesTests` (`MinSelected` 3); `RackCad.UI.Tests.PushBackBothModeCellBeamOverrideTests` (`MinSelected` 10); `RackCad.Tests.PushBackClassicCharacterization` (`MinSelected` 10); `RackCad.Tests.PushBackFullEditorCharacterization` (`MinSelected` 3); `RackCad.Tests.PushBackModuleEditorCharacterizationTests` (`MinSelected` 15).
+- **Revisiones:** `AuthorityRevision` `8708d28fa19ba912e39da5ae55c14affb1e53651` y `MainSha` `812baf879612320653094a8aaf46aca0bac81383`.
+- **`attempts`:** 1 de 3.
+
+**Limites:** solo documentacion en este paso; sin AutoCAD.
