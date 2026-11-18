@@ -621,3 +621,46 @@ Su lectura de CT-06 dio falsos fallos.
 **La comprobación acotada de la v2.7:** EMITIBLE 0/0/4, sin decisiones nuevas para el Owner; sus cuatro menores, aplicados en el texto de emision de la v2.7.
 
 **Lo que se emite de nuevo:** el contrato de `F4B-PBT1B-LOSSLESS-STATE-TYPE`, con la v2.7. Sigue en el intento 1 de 3, y la delegación es nueva.
+
+## F4B-E21. Decisión del Owner: la sesión pone las colecciones opacas del contrato (desde PB-T1b, en el resto de F4B)
+
+**Fecha:** 2026-11-18. **Texto literal:** `F4B-DRAFTS/coordinator/owner-f4b-opaque-collections-decision.md`. **La vuelta:** `F4B-DRAFTS/pbt1b/owner-return-planning2.md`.
+
+**Por qué:** el contrato de PB-T1b reemitido con la v2.7 mide unos 56 KB y ya no cabe en la salida del Controller.
+- La planificación `R20261118T203710Z-4000` dejó colecciones enteras vacías.
+- La replanificación única `R20261118T204045Z-a60d` las dejó todas vacías y lo declaró así: «excede el limite de salida disponible y se trunca».
+- Por PBT1B-C08, ese segundo rechazo volvió al Owner.
+
+**Respuesta del Owner:** «La sesión copia; resto de F4B (Recomendado)».
+- **Lo que deja de copiar el Controller:** las ocho colecciones opacas. Las emite vacías.
+- **Lo que pone la sesión:** esas colecciones, byte a byte desde el contrato (`inject_opaque.py`). Se conservan la salida del Controller y la delegación final.
+- **Lo que no cambia:** la comparación byte a byte, A1-A8 y nc4 se hacen sobre la delegación final.
+
+**La primera aplicación:** la planificación `R20261118T204434Z-6063` dio fidelidad PASS en las ocho colecciones, A1-A8 8/8 y nc4 `R20261118T204611Z-3412` con el oráculo cumplido.
+
+## F4B-E22. Decisiones del Owner tras la revisión independiente de PB-T1b (intento 1): corrección en el intento 2
+
+**Fecha:** 2026-11-18. **Texto literal:** `F4B-DRAFTS/coordinator/owner-pbt1b-rework-decisions.md`. **La vuelta:** `F4B-DRAFTS/pbt1b/owner-return-rework.md`.
+
+**El intento 1:** Worker `R20261118T204715Z-a4e2`.
+- RED `2d9febc6`: el esqueleto y las seis clases de prueba.
+- GREEN `a0a5f699`: solo `src/` de Application.
+- CI 4/4 con las cifras previstas: Core 19 086 y UI 2 437.
+- pb-15 da exactamente la normalización conocida.
+- **Revisión directa:** conforme.
+- **Revisión independiente:** **REWORK 0/2/15**. El producto está bien y D2 se respeta. Los dos importantes son defectos de pruebas que venían del borrador heredado:
+  - I01: la guarda G-L1 no aplica la regla 1b a los alias;
+  - I02: un caso de CT-10 no puede fallar.
+
+**Las respuestas del Owner:**
+1. «Corregir en el intento 2 (Recomendado)». Una delegación de corrección, con `FailureClass` `Tests` y el análisis en `F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T204715Z-a4e2/analysis.md`.
+   - Arregla I01, I02 y los menores de pruebas M01, M02, M04, M06, M07, M08 y M13.
+   - El RED vuelve a poner el esqueleto (§6.0, M-11), y el GREEN restaura la misma implementación.
+   - Los menores de producto (M09, M11, M12 y M15) se declaran o pasan como arrastres.
+   - El intento 3, si llegara, vuelve al Owner.
+2. «Ratificar, solo PB-T1b (Recomendado)».
+   - M10: los ayudantes privados del comparador y del mapa fuera de la lista de INV-PBT1B-03.
+   - M14: `build-plugin` omitido en la CI del RED, frente a lo que dice ExpectedEvidence[2].
+   - Se pasan como disposición a la verificación, y el paquete de PB-T1c corrige el texto.
+
+**El presupuesto:** PB-T1b pasa al **intento 2 de 3**. Las paradas anteriores no gastaron intento (F4B-E20).

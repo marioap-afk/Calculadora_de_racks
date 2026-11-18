@@ -7970,3 +7970,27 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - **La verificacion** lleva las tres comprobaciones deterministas de F4B-E15; config.toml es la Snapshot J (F4B-E19).
 
 **Limites:** solo documentacion en este paso; sin AutoCAD.
+
+## 248. PB-T1b: colecciones opacas por la sesión, intento 1 y corrección en el intento 2
+
+**Decisiones:**
+- F4B-E21: la sesión pone las colecciones opacas, en el resto de F4B;
+- F4B-E22: corrección de PB-T1b en el intento 2, y ratificación de M10 y M14 solo para PB-T1b.
+
+**Qué se custodia:**
+- **Las decisiones literales** del Owner y sus dos vueltas.
+- **En `F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T204715Z-a4e2/`:**
+  - las revisiones del intento 1: la directa, conforme, y la independiente, REWORK 0/2/15, con su encargo;
+  - el análisis de la corrección (`analysis.md`).
+- **El estado,** con attempts 2.
+
+**El intento 1:**
+- RED `2d9febc6` y GREEN `a0a5f699`;
+- CI `44400123417` del RED: tests y ui-tests en failure, build-ui en success y build-plugin omitido;
+- CI `44405531606` del GREEN: 4/4, con Core 19 086 y UI 2 437;
+- el producto, conforme. Las pruebas de CT-14 y CT-10 tienen defectos.
+
+**Límites:**
+- solo documentación;
+- sin AutoCAD;
+- las corridas de la cadena de PB-T1b se custodian al cerrar la tarea.
