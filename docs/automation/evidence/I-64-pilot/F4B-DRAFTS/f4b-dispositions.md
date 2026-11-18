@@ -503,3 +503,52 @@ Son falsos negativos del verificador con una entrega grande. Por F4B-E03 y PBT1A
 - los anclajes de PB-T1b sobre este cierre y su generador, con la regla explícita de c-09 (F4B-E14, pregunta 2);
 - su comprobación acotada;
 - su emisión, por la autorización de F4B-E09 y F4B-E11.
+
+## F4B-E17. Paquete de PB-T1 v2.6 y emisión de PB-T1b
+
+**Fecha:** 2026-11-18.
+
+**El paquete:** `docs/initiatives/I-64-f4b-pbt1-gate-contract-package.md` v2.6, que sustituye a la v2.4 custodiada. La v2.4 y la v2.5 revisada pasan a la historia (`F4B-DRAFTS/pbt1/package-v24.md` y `package-v25.md`). Su registro de mediciones gana el apartado P.
+
+**La autoridad de la emisión:**
+- F4B-E09, pregunta 4 (la autorización condicional);
+- F4B-E11 (D2 y «PB-T1 PLAN»);
+- F4B-E14, pregunta 2: c-09 al reconstruir, «Como hoy, regla explícita».
+
+**Lo que cambia en la v2.5 y la v2.6:**
+- **c-09,** la decisión del Owner, entra como regla explícita del estado (D-PBT1-09b, `ResolveWeightUnit` en `AdoptCarriers`):
+  - su CT, CT-PBT1B-17, con las líneas literales de CT-PBT1A-02;
+  - la fila (f) del paso 1, con dos ramas fijadas y la parada PBT1B-C14, como c-02;
+  - HT1-15 y el mapa de controles quedan corregidos: `WeightUnitBox` decide la unidad al reconstruir.
+- **El filtro `PushBackEditableState`** pasa de 12 a 13.
+- **Los `Objective`** de PB-T1b y PB-T1c citan la v2.6.
+- **La verificación** lleva las tres comprobaciones deterministas de F4B-E15.
+- **OWNER-3 y OWNER-4** (F4B-E14, pregunta 3) se reproducen tal cual, sin regla propia.
+
+**Los anclajes de PB-T1b** (§6.0, precondición 4), medidos sobre `5043b49a`, el cierre de PB-T1a (registro P):
+- `src/` no cambia desde `b5c09f0b`;
+- las 104 anclas siguen en su línea y su miembro;
+- G-L1 da 0 coincidencias y sus autopruebas saltan;
+- los recuentos y la línea base de la CI (`44361363873`: UI 2 436 / 21 / 2 415; Core 19 070) coinciden con la previsión.
+
+La única diferencia material es c-09 (V25-06), y ya está decidida por el Owner.
+
+**La precondición 5** (la autoridad de PB-T1a) queda satisfecha por F4B-E14.
+
+**La comprobación acotada** de la v2.5 (`F4B-DRAFTS/pbt1/independent-review-pbt1b-check.md`): EMITIBLE TRAS CORRECCIONES 0/1/5, sin decisiones nuevas para el Owner; sus seis hallazgos, aplicados en la v2.6.
+- **PBT1BC-I01:** a CT-PBT1B-17 le faltaba la línea que fija de punta a punta la rama de c-09 con la caja en «lb». La v2.6 la añade, con lo esperado tomado de la fila (f) del paso 1.
+- **M01 a M05** también están aplicados en la v2.6:
+  - M01: la fila (f) carga el diseño y se comprueba a sí misma;
+  - M02: la razón del RED de CT-16;
+  - M03: las autoridades de F4-T2 y F4-T3;
+  - M04: la custodia de la comprobación del esqueleto y de la salida en seco;
+  - M05: precisiones del texto.
+- Como en la remedición de PB-T1a, se corrige en el texto antes de custodiarlo, sin volver al Owner.
+
+**Lo que se emite:** el contrato de `F4B-PBT1B-LOSSLESS-STATE-TYPE`, con attempts 1 de 3:
+- 12 rutas permitidas: ES y RMES, los cuatro archivos nuevos de Application y las seis clases de prueba nuevas;
+- 213 rutas prohibidas;
+- 15 invariantes y 33 paradas;
+- 23 filtros, con `ExpectRed` en `PushBackEditableState` (13), `PushBackEditorOutputGate` (1) y `PushBackEditableStateParityTests` (1).
+
+**El GREEN previsto:** Core 19 086 y UI 2 437.

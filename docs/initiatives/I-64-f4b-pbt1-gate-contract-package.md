@@ -1,10 +1,13 @@
 > **Redaccion para el repo publico:** las rutas locales se sustituyen por marcadores (`<worktree-de-I-64>`, `<carpeta-del-paquete>`, `<datos-locales-del-usuario>`). El resto no cambia.
 
-# I-64 F4B — Paquete del contrato de PB-T1 (el estado editable de Push Back sin pérdidas fuera de la ventana), v2.4
+# I-64 F4B — Paquete del contrato de PB-T1 (el estado editable de Push Back sin pérdidas fuera de la ventana), v2.6
 
-**Estado:** v2.4, el texto de emisión de PB-T1a. **PB-T1a se emite por F4B-E09 (la autorización condicional, pregunta 4) y F4B-E11 (D2 y «PB-T1 PLAN»), tras la remedición sobre el producto final de PB-TC2 y la comprobación acotada.** No declara GATE PASS.
-- **Emitida el 2026-11-18** con attempts 1 de 3 (F4B-E13). **El contrato manda:** `I-64-pilot/F4B-PBT1A-LOSSLESS-STATE-NET/coordinator/gate-contract.json`.
-- **La comprobación acotada de la remedición** (`F4B-DRAFTS/pbt1/independent-review-v23-check.md`) dio **EMITIBLE TRAS CORRECCIONES 0/1/3**, sin decisiones nuevas para el Owner. Esta v2.4 aplica sus cuatro hallazgos (registro de cambios v2.3 → v2.4). El importante, V23C-I01, amplía la guarda G-L1 de PB-T1b y PB-T1c; no toca el contrato de PB-T1a.
+**Estado:** v2.6, el texto de emisión de PB-T1b, con la comprobación acotada aplicada. **PB-T1b se emite por F4B-E09 (la autorización condicional, pregunta 4) y F4B-E11 (D2 y «PB-T1 PLAN»), con F4B-E14 aplicada, tras sus anclajes sobre el cierre de PB-T1a y su comprobación acotada.** No declara GATE PASS.
+- **PB-T1b, emitida el 2026-11-18** con attempts 1 de 3 (F4B-E17), tras su comprobación acotada (EMITIBLE TRAS CORRECCIONES 0/1/5, sin decisiones nuevas para el Owner; sus seis hallazgos, aplicados en la v2.6). **El contrato manda:** `I-64-pilot/F4B-PBT1B-LOSSLESS-STATE-TYPE/coordinator/gate-contract.json`.
+- **La comprobación acotada de PB-T1b** (`F4B-DRAFTS/pbt1/independent-review-pbt1b-check.md`) dio **EMITIBLE TRAS CORRECCIONES 0/1/5**, sin decisiones nuevas para el Owner. La v2.6 aplica sus seis hallazgos (registro de cambios v2.5 → v2.6).
+- **Lo que cambia en la v2.5** (registro de cambios v2.4 → v2.5): la decisión del Owner sobre c-09 (F4B-E14, pregunta 2) entra como **regla explícita del estado** (D-PBT1-09b) con su CT (**CT-PBT1B-17**); HT1-15 y el mapa de controles se corrigen (`WeightUnitBox` decide el estado al reconstruir); los anclajes de PB-T1b se miden sobre `5043b49a` (registro P); los `Objective` de PB-T1b y PB-T1c citan esta v2.5. El generador del contrato de PB-T1b es `make_pbt1b_contract.py`; su `--dry` pasa (registro P-7).
+- **PB-T1a: CLOSED / PASS WITH LIMITATIONS** sobre `73d30982` (F4B-E16), con attempts 1 de 3; custodia del cierre en `5043b49a`. Se emitió el 2026-11-18 con la v2.4 (F4B-E13; su contrato manda: `I-64-pilot/F4B-PBT1A-LOSSLESS-STATE-NET/coordinator/gate-contract.json`). La v2.5 no cambia nada de PB-T1a.
+- **La comprobación acotada de la remedición** (`F4B-DRAFTS/pbt1/independent-review-v23-check.md`) dio **EMITIBLE TRAS CORRECCIONES 0/1/3**, sin decisiones nuevas para el Owner. La v2.4 aplicó sus cuatro hallazgos (registro de cambios v2.3 → v2.4). El importante, V23C-I01, amplía la guarda G-L1 de PB-T1b y PB-T1c; no toca el contrato de PB-T1a.
 - **La remedición** (§8.4; registro N) se hizo sobre `cd47523b`, la custodia del cierre de PB-TC2 (F4B-E12), con el producto de su GREEN `b5c09f0b`. **No cambia ninguna premisa material** (L-6): todas las diferencias son anclas, recuentos o textos, y la tabla del §8.4 clasifica cada una.
 - **El generador del contrato de PB-T1a** es `make_pbt1a_contract.py`, junto al registro. Su `--dry` pasa: 9 rutas permitidas, 131 prohibidas, 14 invariantes, 30 paradas, 19 filtros y **39 autoridades** (registro N-14 y O-3).
 - **La revisión independiente** IRT1-1 de la v1 (`F4B-DRAFTS/pbt1/independent-review-v1.md`) dio **EMITIBLE TRAS CORRECCIONES 0/8/15**, con **una decisión nueva del Owner, L-1**.
@@ -21,13 +24,13 @@
   - **PB-T1a — la red** (`F4B-PBT1A-LOSSLESS-STATE-NET`): solo pruebas de caracterización, con RED por mutantes. El producto no cambia.
   - **PB-T1b — el tipo** (`F4B-PBT1B-LOSSLESS-STATE-TYPE`): el estado editable en Application. La ventana no cambia.
   - **PB-T1c — la ventana sobre el estado** (`F4B-PBT1C-LOSSLESS-STATE-WINDOW`): la ventana guarda su estado en ese tipo, en modo CLASSIC y sin cambio observable.
-- **Ninguna corrección de producto.** RACKEDITAR no cambia (OB-RE.1). c-02 se reproduce como regla explícita (F4B-E09, pregunta 2).
+- **Ninguna corrección de producto.** RACKEDITAR no cambia (OB-RE.1). c-02 se reproduce como regla explícita (F4B-E09, pregunta 2), y c-09 al reconstruir también (F4B-E14, pregunta 2).
 - **L-1, decidida: (a), la excepción declarada** (F4B-E11, D2): la copia comparte por referencia **solo** el rack resuelto y el informe de módulos de cada lado, con las diez condiciones de seguridad del Owner probadas o arrastradas una a una (D-PBT1-15) y su límite como parada en cada contrato. El anexo L1-C queda **no elegido**.
 
 **Condiciones para emitir** (§8.4):
 - el cierre de PB-TC2 (D1 del Owner: seguir con la corrección): **hecho**, F4B-E12;
 - la remedición sobre su GREEN: **hecha**, sin ningún cambio de una premisa material;
-- la comprobación acotada de la remedición, que pidió la sesión (F4B-E12, «Siguiente»): **hecha**, EMITIBLE TRAS CORRECCIONES 0/1/3, sin decisiones nuevas, y aplicada en esta v2.4;
+- la comprobación acotada de la remedición, que pidió la sesión (F4B-E12, «Siguiente»): **hecha**, EMITIBLE TRAS CORRECCIONES 0/1/3, sin decisiones nuevas, y aplicada en la v2.4;
 - y la emisión de PB-T1a «normally» (F4B-E11).
 
 **Base de la medición:**
@@ -35,16 +38,57 @@
 - **La v2.3 lo vuelve a medir** en `cd47523b`, la custodia del cierre de PB-TC2, con el producto de su GREEN `b5c09f0b` (`git diff b5c09f0b cd47523b -- src tests` vacío; registro N). `main` sigue en `812baf87`.
 - **La `BaseSha` de PB-T1a** es su commit de emisión, sobre `cd47523b`, con `src` y `tests` iguales a `b5c09f0b`.
 - **Las zonas que tocó PB-TC2,** marcadas **[TC2]** (`Gap_Changed`, `ModuleLength_Changed`, `ReadAdvancedRackParameters`, `ReadCellValues`, `OptionalVal`, la retirada de `Val` y los miembros nuevos), están medidas sobre `b5c09f0b` (§2.8; registro N-1 y N-2).
-- Todo hecho va anclado por **nombre de miembro y línea**. Las anclas de W anteriores a W:3631 no se movieron. El detalle y las órdenes están en `pbt1-measurements.md`: apartados A a L de la v1, **M** de la v2 y **N** de la remedición.
+- **Los anclajes de PB-T1b** (v2.5) se miden en `5043b49a`, la custodia del cierre de PB-T1a: `git diff a3b63ccc 5043b49a -- src` y `git diff b5c09f0b 5043b49a -- src` vacíos (el producto sigue siendo `b5c09f0b`); `tests` solo gana las siete clases de PB-T1a (registro P).
+- Todo hecho va anclado por **nombre de miembro y línea**. Las anclas de W anteriores a W:3631 no se movieron. El detalle y las órdenes están en `pbt1-measurements.md`: apartados A a L de la v1, **M** de la v2, **N** de la remedición, **O** de la guarda G-L1 de la v2.4 y **P** de los anclajes de PB-T1b.
 
 **Precondiciones de emisión** (de cada subtarea, salvo que se diga otra cosa):
 1. **PB-TC2 cerrada** con el diseño de su paquete v2 y la decisión D1 del Owner («CONTINUE WITH THE FIX», F4B-E11). **Hecha:** CLOSED / PASS WITH LIMITATIONS sobre `b5c09f0b` (F4B-E12).
 2. **L-1, decidida** (F4B-E11, D2): (a), con sus diez condiciones (D-PBT1-15). **Hecha.**
-3. **La remedición sobre el GREEN de PB-TC2** (§8.4, R-1 a R-13): **hecha**, sin ningún cambio de una premisa material (registro N). **Su comprobación acotada** (§6.0): **hecha** (`independent-review-v23-check.md`, 0/1/3), con sus cuatro hallazgos aplicados en esta v2.4. La comprobación acotada de la v2 ya estaba hecha (0/1/10).
-4. **Los anclajes de la subtarea**, medidos sobre su `BaseSha` (§6.0).
-5. **Para PB-T1b: la autoridad de PB-T1a** (I-08). Ninguna línea fijada por PB-T1a muestra una pérdida (clase c, d o una nueva) ni un control que decida el estado, distinta de las declaradas (c-01, c-02 y M-07). Si alguna lo muestra, se vuelve al Owner antes de emitir PB-T1b (OB-06.5).
+3. **La remedición sobre el GREEN de PB-TC2** (§8.4, R-1 a R-13): **hecha**, sin ningún cambio de una premisa material (registro N). **Su comprobación acotada** (§6.0): **hecha** (`independent-review-v23-check.md`, 0/1/3), con sus cuatro hallazgos aplicados en la v2.4. La comprobación acotada de la v2 ya estaba hecha (0/1/10).
+4. **Los anclajes de la subtarea**, medidos sobre su `BaseSha` (§6.0). **Para PB-T1b: medidos** sobre `5043b49a` (registro P; §8.4, «Los anclajes de PB-T1b»), sin ninguna diferencia material nueva.
+5. **Para PB-T1b: la autoridad de PB-T1a** (I-08). Ninguna línea fijada por PB-T1a muestra una pérdida (clase c, d o una nueva) ni un control que decida el estado, distinta de las declaradas (c-01, c-02 y M-07). Si alguna lo muestra, se vuelve al Owner antes de emitir PB-T1b (OB-06.5). **Satisfecha por F4B-E14** (`F4B-DRAFTS/coordinator/owner-pbt1a-decisions.md`): la lista de INV-PBT1A-13 volvió al Owner (`F4B-DRAFTS/pbt1a/owner-return-pbt1a.md`); c-09 al reconstruir pasa a regla explícita de PB-T1b (pregunta 2; D-PBT1-09b y CT-PBT1B-17), y OWNER-3 y OWNER-4 se reproducen tal cual (pregunta 3).
 6. Las celdas del §6.0 no están `STALE` (vencen el 2026-12-29); el `config.toml` coincide con la Snapshot I; el binario de Codex es el acreditado.
 7. **La custodia** (§6.0, «Custodia»).
+
+## Registro de cambios v2.5 → v2.6 (la comprobación acotada de PB-T1b)
+
+La comprobación acotada (`F4B-DRAFTS/pbt1/independent-review-pbt1b-check.md`) dio **EMITIBLE TRAS CORRECCIONES 0/1/5**, sin decisiones nuevas para el Owner. Cada fila aplica un hallazgo de su §8. **Ninguno cambia el alcance, el esqueleto, los recuentos, la CI, D2 ni RACKEDITAR.**
+
+| Hallazgo | Qué cambió | Dónde |
+|---|---|---|
+| **PBT1BC-I01** (IMPORTANTE): CT-PBT1B-17 no fijaba de punta a punta la rama de c-09 con la caja en «lb»; el paso de `current` dentro de `AdoptCarriers` no lo fijaba ninguna prueba | La parte 2 de CT-PBT1B-17 gana una sexta línea, el equivalente en el estado de la fila (f): `restaurar ton lb caja=[<u>] [PalletDepth=54 PalletWeightUnit="<u>" PalletWeight=1000]`, con `<u>` = `lb` en la rama «conserva» y `kg` en la rama «kg», fijado por la fila (f), y su receta (la carga «ton» y su `Pasada`; «lb» y `Pasada`; `Restore` del diseño de esa computación y `Pasada`; `caja=`; `Depth` 54 y `Pasada`). Su oráculo es el paso 1 | §5.3, CT-PBT1B-17 |
+| **PBT1BC-M01:** la fila (f) no nombraba la carga | La fila (f) hace `Cargar` con el diseño «ton» antes de elegir «lb», y se comprueba a sí misma como F-03: `carga=[kg]` y `antes=ton` esperados en las dos ramas; otro valor es PBT1B-C14 | D-PBT1-09b; INV-PBT1B-06 (y su texto en el generador) |
+| **PBT1BC-M02:** la razón del RED de CT-PBT1B-16 no era la de su columna | La columna «Falla en el RED porque» de CT-PBT1B-16 dice «la receta F-01 no se completa sobre el esqueleto (línea `EXCEPCION`)». Se elige la columna; la línea nueva que también proponía el informe no se añade | §5.3, CT-PBT1B-16 |
+| **PBT1BC-M03:** el contrato citaba INV-F4T3A-13 y el régimen del esqueleto inerte sin su autoridad | Las autoridades del generador ganan los tres contratos de F4 con API nueva del §1, cuyas anclas lo justifican: `I-64-f4-t2-gate-contract-package.md` (`:282`, el RED con esqueleto inerte), `I-64-f4-t3-gate-contract-package.md` (INV-F4T3A-13, `:371-374`) e `I-64-f4-t3c-gate-contract-package.md` (la regla RED, `:297`): **49** autoridades. El §1 ya los listaba | `make_pbt1b_contract.py` |
+| **PBT1BC-M04:** la custodia no recogía todo lo que sostiene el registro P-7 | `check_v25_skeleton.py` y `make_pbt1b_contract-dry.txt` se custodian en `F4B-DRAFTS/pbt1/` con la emisión de PB-T1b; no son autoridades. El generador comprueba que están en HEAD antes de escribir | §6.0, «Custodia»; `make_pbt1b_contract.py` |
+| **PBT1BC-M05 (a):** los disparadores de la reconstrucción de D-PBT1-09b eran incompletos y ambiguos | «DA:211-213: un «Restaurar estándar» o un «Restaurar módulo» confirmados, o `MustRebuild`: otro pallet sin contar la unidad, u otro reparto de fondos» | D-PBT1-09b |
+| **PBT1BC-M05 (b):** §8.5 chocaba con c-09 | «…no ganan ninguna excepción por C14» | §8.5 |
+| — (la versión) | El título y la línea de estado citan la v2.6; los `Objective` de §6.2 y §6.3 citan la v2.6; la custodia de §6.0 nombra la v2.6. El generador cita la v2.6 en `Objective`, `CUSTODY` e `IssuedBy`, y al escribir exige la v2.6 custodiada; en seco acepta la v2.4 de HEAD. El esqueleto de la v2.6 es el de la v2.5 | Estado; §6.0; §6.2; §6.3; `make_pbt1b_contract.py` |
+
+## Registro de cambios v2.4 → v2.5 (los anclajes de PB-T1b y la decisión F4B-E14)
+
+Cada fila es una diferencia que encontraron los anclajes de PB-T1b sobre `5043b49a` (registro P) o un cambio que pide el cierre de PB-T1a, con su clase según L-6 (§8.4). La base de la v2.5 es el texto custodiado de la v2.4 (`95c8126b`). **La única diferencia material es V25-06 (c-09), que ya volvió al Owner y está decidida (F4B-E14); la v2.5 la aplica sin decisiones nuevas.**
+
+| Id | Diferencia u origen | Clase (L-6) | Qué cambió | Dónde |
+|---|---|---|---|---|
+| V25-01 | Identidad: la rama está en `5043b49a`, la custodia del cierre de PB-T1a; `git diff a3b63ccc 5043b49a -- src` y `git diff b5c09f0b 5043b49a -- src` vacíos; `tests` solo gana las siete clases de PB-T1a; `docs/automation/agent-execution` sin cambio desde `cd47523b` | no material (anclas) | La base de los anclajes de PB-T1b | Base; precondición 4; §6.0 |
+| V25-02 | Las 104 anclas por miembro y línea que citan D-PBT1-02 a D-PBT1-11, D-PBT1-15 y el §5.3 (ES, RMES, CS, DA y CA, y además W, WC, PC, PM, Domain y las pruebas citadas): todas en su línea, con su texto y en su miembro | no material (sin cambio) | Nada | Registro P-1 |
+| V25-03 | G-L1 de la v2.4 sobre los 47 archivos de CT-PBT1B-14 que existen (997 miembros) y sobre W y WC (320): **0 coincidencias**; las catorce autopruebas saltan y las tres del límite no | no material (confirma D2) | Nada | Registro P-4 |
+| V25-04 | Los recuentos: `PushBackStateNet` 14 (PB-T1a); UI `PushBack` 556 (542 + 14); los demás filtros de §6.2, iguales; los prefijos nuevos, libres | no material (recuentos) | Nada en §6.2; en §6.3, `PushBack` sigue siendo 557 tras PB-T1b | Registro P-5 |
+| V25-05 | La CI: el último run verde de la rama es `44361363873`, sobre `5043b49a`: UI 2 436 / 21 / 2 415; Core 19 070. Es la previsión exacta del cierre de PB-T1a | no material (línea base) | La línea base de §6.2, medida; el GREEN de PB-T1b pasa a UI 2 437 / 21 / 2 416 y Core 19 086 (con CT-PBT1B-17) | §6.2 |
+| V25-06 | **c-09 al reconstruir** (OWNER-2 de PB-T1a; CT-PBT1A-02): la caja `WeightUnitBox` decide la unidad cuando una pasada reconstruye la estructura (1000 ton → 1000 kg). Contradice HT1-15 y el mapa del §5.5. Con el diseño de la v2.4 (la unidad cargada en `Pallet`), el estado habría llevado «ton» a la reconstrucción, donde la ventana lleva «kg» | **material** por L-6 (iii): un control que decide el estado. **Ya volvió al Owner y está decidida** (F4B-E14, pregunta 2: «Como hoy, regla explícita»). No pide ninguna decisión nueva: la v2.5 la aplica con el patrón de D-PBT1-09 | HT1-15; D-PBT1-02 (`Pallet`); D-PBT1-03 (`AdoptCarriers`); D-PBT1-04; **D-PBT1-09b**, nuevo; §5.3 (el esqueleto con `ResolveWeightUnit`, la clase de CT-17 y **CT-PBT1B-17**); §5.5; §5.6; INV-PBT1B-03 y 06; PBT1B-C14; los `RequiredTests` (`PushBackEditableState` 12 → 13) y la CI de §6.2; §6.3; §8.2; §8.3 (L-7) |
+| V25-07 | La rama de c-09 con la caja en «lb» y una unidad cargada que la caja no ofrece: CT-PBT1A-02 no la mide (su caja estaba en «kg»), y la lectura de WPF (`Selector.CoerceSelectedItem`) dice que la caja conserva su selección | no material (medición; como N-M-03 en c-02) | El paso 1 de PB-T1b gana la fila (f), con sus dos ramas fijadas; PBT1B-C14 la cubre | D-PBT1-09b; INV-PBT1B-06; PBT1B-C14 |
+| V25-08 | Los 17 diseños de `Fixtures/I64` guardan `PalletWeightUnit = "kg"` | no material (dato) | CT-PBT1B-01 y CT-PBT1C-01 no ven c-09: por eso CT-PBT1B-17, con las líneas de CT-PBT1A-02 | CT-PBT1B-17 |
+| V25-09 | **OWNER-3 y OWNER-4** («lb» y `PalletsDeepBox` no llegan solos a la salida; aceptar Seguridad sin cambios añade el portador de botas) | no material (F4B-E14, pregunta 3: tal cual) | Comprobado en el diseño de las cargas y de la salida: los reproduce la red de PB-T1a, sin regla propia | D-PBT1-09b |
+| V25-10 | **PB-T1c ante c-09:** CT-PBT1C-02 calcula desde una copia del estado de la ventana, y D-PBT1-13 (5) ya escribe en el estado la unidad de la caja en cada pasada; con la regla, `AdoptCarriers` deja la misma unidad que la caja | no material (PB-T1c no cambia de alcance, de CT ni de diseño) | Una nota en D-PBT1-13 (5); `WeightUnitBox` del §5.5 con CT-PBT1B-17; el `MinSelected` de `PushBackEditableState` en §6.3 (13) | D-PBT1-13; §5.5; §6.3 |
+| V25-11 | Los `Objective` de §6.2 y §6.3 citaban la v2.2 | no material (texto) | Citan la v2.5; el de §6.2 nombra la regla de c-09 y CT-PBT1B-01..17 | §6.2; §6.3 |
+| V25-12 | **F4B-E15:** la verificación reforzada (tres comprobaciones deterministas) vale también para PB-T1b y PB-T1c | no material (procedimiento ya decidido por el Owner) | INV-PBT1x-12 y la `ExpectedEvidence` de §6.2 y §6.3 | §6.0; §6.2; §6.3 |
+| V25-13 | El §6.0 decía «la lista curada de PB-T0 (18 entradas) más las clases de Core de PB-T0», pero las 18 de H-12 ya incluyen esas tres clases | no material (texto) | «18 entradas, con sus tres clases de Core». El generador lo comprueba: 15 entradas prohibidas y 3 clases | §6.0 |
+| V25-14 | El `ForbiddenWriteScope` de PB-T1b, medido por el generador: 117 de `src/` (CS incluido), 79 de `tests/` (18 de Core; en UI, 53 archivos, las 7 clases de PB-T1a y `Workspace/`) y las 17 de la raíz: **213** | no material (recuento) | §6.2 | §6.2 |
+| V25-15 | La fila «Core y UI … como en §6.1» de los `RequiredTests` de §6.2 no decía qué filtros exactos entran | no material (texto; sin latitud, R-T1-01) | La tabla los lista uno a uno: 23 filtros | §6.2 |
+| V25-16 | La copia de trabajo de la v2.4 difería del texto custodiado en `95c8126b` en dos líneas de custodia (la línea «Emitida» y la ruta del anexo L1-C) | no material (texto) | La v2.5 parte del texto custodiado | Estado; anexo L1-C |
+| V25-17 | La parada C10 común no nombraba lo que F4B-E14 manda reproducir | no material (texto) | C10 nombra c-09, OWNER-3 y OWNER-4 | §6.0 |
+| — | La custodia de PB-T1b y su generador | — | La v2.5, el registro con el apartado P, la salida de los anclajes (`pbt1b-anchors-out.txt`) y la comprobación acotada (`independent-review-pbt1b-check.md`) son las cuatro rutas de `CUSTODY` de `make_pbt1b_contract.py` | §6.0 |
 
 ## Registro de cambios v2.3 → v2.4 (la comprobación acotada de la remedición)
 
@@ -154,6 +198,9 @@ Cada fila es una diferencia que encontró la remedición (registro N), con su cl
 | IRT1-1 (`F4B-DRAFTS/pbt1/independent-review-v1.md`) | Los 23 hallazgos de la v1 y las tres opciones de L-1 (su §4) |
 | **[OD2] Las decisiones D1 y D2 del Owner** (`F4B-DRAFTS/coordinator/owner-d1-d2-decisions.md`, F4B-E11) | **D1:** PB-TC2 «CONTINUE WITH THE FIX» (la vuelta C14 se resuelve con su opción A). **D2:** L-1 «ACCEPT DECLARED EXCEPTION», con «L-1 SAFETY CONDITIONS» 1 a 10 y el «IMPORTANT LIMIT». **«PB-T1 PLAN»:** la división aceptada en principio, con la remedición sobre el producto final de PB-TC2 antes de emitir |
 | La vuelta C14 de PB-TC2 (`F4B-DRAFTS/pbtc2/owner-return-c14.md`) | El contexto de D1 (§8.5) |
+| **[OPT1a] Las decisiones del Owner tras el Worker de PB-T1a** (`F4B-DRAFTS/coordinator/owner-pbt1a-decisions.md`, F4B-E14; la vuelta, `F4B-DRAFTS/pbt1a/owner-return-pbt1a.md`) | **Pregunta 2:** c-09 al reconstruir, «Como hoy, regla explícita (Recomendado)» → D-PBT1-09b y CT-PBT1B-17. **Pregunta 3:** OWNER-3 y OWNER-4, «Tal cual, anotar mejoras (Recomendado)». Con las dos, la precondición 5 de PB-T1b queda satisfecha. **Pregunta 1:** CT-02 ratificado solo para ese caso; la regla SIN LATITUD no cambia |
+| **F4B-E15** (`F4B-DRAFTS/coordinator/owner-pbt1a-nc1-decisions.md`) | La verificación reforzada con tres comprobaciones deterministas, que vale también para PB-T1b y PB-T1c |
+| El cierre de PB-T1a (`F4B-PBT1A-LOSSLESS-STATE-NET/task-close-package.md`, F4B-E16) | La red `PushBackStateNet` (CT-PBT1A-01 a 14) sobre `73d30982`; CT-PBT1A-02, el oráculo de CT-PBT1B-17 |
 | El expediente (`F4B-DRAFTS/pbt1/ob065-dossier.md`) | §3: los huecos de red. §4: las guardas de T1B y de texto |
 | PB-T0: su paquete, su cierre y su entrega (`F4B-PBT0-CHARACTERIZATION/…`) | Los 21 CT-PB0; T-1, T-2 y T-5; M-01, M-04, D-3, D-5 y CT-16; el RED por mutantes |
 | PB-TC ([PKC], v2.2) y su cierre | El patrón; M-02 a M-05; el precedente del RED con Core en `success` ([PKC]:466) |
@@ -208,7 +255,15 @@ Los hechos se midieron en `eedb069c` (registro A a M) y se volvieron a medir sob
 
 **La definición** es la que usa el paquete de PB-TC para H-PB-44, formulada en su H-31 ([PKC] `:187`) y en su §10 ([PKC] `:1343`); la fila de H-PB-44 (`:355`) solo la nombra: un control que se relee sin que el usuario cambie su valor y, al releerse, cambia el estado o la salida. [OPD] pregunta 4 decidió el alcance de PB-TC (OD-PBTC-5), no esta definición.
 
-- **HT1-15.** Con el diseño de PB-TC2 v2, **solo `PostBox` decide el estado con el catálogo entregado**: c-02 (un id fuera del catálogo → nulo → `Defaults.Post`; W:399, W:868, DA:169-171) y c-01 (en blanco → `Defaults.Post`; W:399). **D1 del Owner** (F4B-E11, «CONTINUE WITH THE FIX») resolvió la vuelta C14 con la corrección: `RackHeaderHeightBox` deja de redondear con PB-TC2 y **no se añade** aquí (§8.5). **Medido sobre `b5c09f0b`** (registro N-4): W:1639 es `KeepOptional(RackHeaderHeightBox, advanced.ManualHeaderHeightOverride)`, las lecturas crudas que quedan son enteros o acciones del usuario, y una caja mixta solo tiene valor si el usuario lo escribe. La conclusión se sostiene.
+- **HT1-15 (corregido en la v2.5).** Con el diseño de PB-TC2 v2, **`PostBox` decide el estado con el catálogo entregado**, y **`WeightUnitBox` al reconstruir** (c-09, abajo): c-02 (un id fuera del catálogo → nulo → `Defaults.Post`; W:399, W:868, DA:169-171) y c-01 (en blanco → `Defaults.Post`; W:399). **D1 del Owner** (F4B-E11, «CONTINUE WITH THE FIX») resolvió la vuelta C14 con la corrección: `RackHeaderHeightBox` deja de redondear con PB-TC2 y **no se añade** aquí (§8.5). **Medido sobre `b5c09f0b`** (registro N-4): W:1639 es `KeepOptional(RackHeaderHeightBox, advanced.ManualHeaderHeightOverride)`, las lecturas crudas que quedan son enteros o acciones del usuario, y una caja mixta solo tiene valor si el usuario lo escribe.
+  - **c-09 (la corrección de la v2.5; F4B-E14).** La v2.4 decía «solo `PostBox`», pero PB-T1a midió que `WeightUnitBox` también decide el estado, **al reconstruir** (CT-PBT1A-02; registro P-2):
+    - la caja solo ofrece «kg» y «lb» (W:148-149);
+    - una unidad cargada fuera de esas dos («ton») no entra en la caja: W:395 la intenta y la caja conserva su selección («caja=[kg]»);
+    - `generalPallet` guarda la unidad cargada (W:393, W:840), pero esa unidad no llega a la salida: los inputs de cada pasada llevan la de la caja (W:850-852);
+    - una pasada sin reconstrucción copia la línea base (DA:273) y conserva la unidad cargada, porque `SamePallet` no mira la unidad (DDA:50-61): «ton» sigue al cargar y con «Actualizar»;
+    - una pasada que reconstruye (DA:211-218; por ejemplo, `DepthBox=54`) construye con la unidad de la caja (DA:176, DA:218): «ton» pasa a «kg» con el mismo `PalletWeight`.
+
+    **El Owner decidió reproducirlo como regla explícita del estado** (F4B-E14, pregunta 2), igual que c-02: D-PBT1-09b y CT-PBT1B-17. Los otros dos hallazgos de la lista de INV-PBT1A-13 (OWNER-3 y OWNER-4) se reproducen tal cual (F4B-E14, pregunta 3).
 - **HT1-16.** Los demás controles de HT1-03 no pierden nada, pero hoy su valor no tiene portador fuera del control. PB-T1 se lo da.
 - **HT1-17.** `RearPeralteBox` y los combos de peralte de la celda solo sustituyen con un catálogo distinto del entregado o con un documento que la carga ya normaliza (E-3, E-4). Sin caso alcanzable (OB-06.5).
 - **HT1-18. M-07 de PB-TC2:** el indicador mixto obsoleto hace inerte una caja vacía. No cambia el estado (E-7).
@@ -263,7 +318,7 @@ Los hechos se midieron en `eedb069c` (registro A a M) y se volvieron a medir sob
 | Miembro | Tipo | Valor inicial (el de hoy) | Es hoy |
 |---|---|---|---|
 | `Editor` | `PushBackCompositeEditorState` `{ get; }` | `new PushBackCompositeEditorState(new PushBackEditorState(), new PushBackEditorState())` | `composite` (W:56-57) |
-| `Pallet` | `PalletSpecification` `{ get; set; }` | `PushBackEditorInputs.NewDesign().Pallet` | `generalPallet` (W:101); **también lleva la unidad** |
+| `Pallet` | `PalletSpecification` `{ get; set; }` | `PushBackEditorInputs.NewDesign().Pallet` | `generalPallet` (W:101); **también lleva la unidad**, la de `WeightUnitBox` (c-09, D-PBT1-09b) |
 | `PalletsDeep` | `int` `{ get; set; }` | `DynamicRackDefaults.DefaultPalletsDeep` | `PalletsDeepBox` |
 | `PostCatalogId` | `string` `{ get; set; }` | `null` | `PostBox` |
 | `PostPeralte`, `PalletTolerance`, `BeamDepth`, `AnnotationScale` | `double` `{ get; set; }` | `PushBackEditorInputs.NewDesign().PostPeralte`, `DynamicRackDefaults.DefaultPalletTolerance`, `DynamicRackDefaults.DefaultBeamDepth`, `1.0` | W:106-109 |
@@ -302,7 +357,7 @@ Son **métodos de instancia que mutan en sitio** el mismo `Editor`, como hoy la 
   1. no llama a `UpdateCompositeEnabled()`, que es de la interfaz;
   2. **la cola que aparca se copia campo a campo y literal (I-05):** cada `DynamicRackModuleDesign` como `new DynamicRackModuleDesign { ModuleId, Kind, Length, IsCalculated, IsManualOverride, UseCalculatedHeaderConfiguration, HeaderConfiguration = <store>.DeepCopy(HeaderConfiguration), Notes }`, con los mismos ocho campos que copia el despertar (DA:557-566), y cada `DynamicHeaderLineOverride` como `new DynamicHeaderLineOverride { PostIndex, ModuleId, Header = <store>.DeepCopy(Header) }`. `<store>` es un `RackFrameProjectStore` (RFPS:87) **local al método, nunca un campo** (N-M-06): un campo de instancia entraría en el censo de CT-PBT1B-06 y rompería INV-PBT1B-03. **No se usa `CopyIntent` de RMES,** que es privado y normaliza la procedencia (M-3).
 - **`AdoptCarriers(inputs, catalog)`** reproduce W:391-427 con sus normalizaciones literales:
-  - `Pallet` = `inputs.Pallet ?? new PalletSpecification(42.0, 48.0, 60.0, 1000.0, "kg")`, con la unidad en blanco → «kg» (W:392, W:395), como objeto nuevo;
+  - `Pallet` = `inputs.Pallet ?? new PalletSpecification(42.0, 48.0, 60.0, 1000.0, "kg")` (W:392), como objeto nuevo con sus cuatro medidas, y con la unidad **`ResolveWeightUnit(<la unidad del Pallet del estado antes de sustituirlo>, <la de ese pallet>)`** (c-09, D-PBT1-09b; incluye «en blanco → kg» de W:395);
   - `PalletsDeep = Math.Max(2, inputs.PalletsDeep)` (W:396);
   - `PalletTolerance`, `BeamDepth` y `AnnotationScale` con su «> 0 ? : defecto» (W:397-398, W:402-403, W:418-419);
   - `PostPeralte = inputs.PostPeralte` (W:401);
@@ -316,7 +371,7 @@ Son **métodos de instancia que mutan en sitio** el mismo `Editor`, como hoy la 
 
 ### D-PBT1-04. La salida, con la semántica de hoy
 
-- **`PushBackEditorInputs BuildInputs(PushBackEditorDesignAssembler assembler)`** devuelve **un objeto nuevo en cada llamada**, igual campo a campo al de `ReadInputs` (W:846-889) con los controles sin editar: `Pallet` nueva con los cinco valores; los escalares y los seis avanzados copiados; `Annotations` nuevas con `DimensionViews = DimensionViewPolicy.FromEditor(LoadedDimensionViews, DimensionViewsTouched, DimensionsFrontal, DimensionsLateral, DimensionsPlanta)`; `SafetySelections` = `assembler.AuthorizedSafety(SafetySelections)`.
+- **`PushBackEditorInputs BuildInputs(PushBackEditorDesignAssembler assembler)`** devuelve **un objeto nuevo en cada llamada**, igual campo a campo al de `ReadInputs` (W:846-889) con los controles sin editar: `Pallet` nueva con los cinco valores (la unidad, la del estado, que es la de la caja: c-09, D-PBT1-09b); los escalares y los seis avanzados copiados; `Annotations` nuevas con `DimensionViews = DimensionViewPolicy.FromEditor(LoadedDimensionViews, DimensionViewsTouched, DimensionsFrontal, DimensionsLateral, DimensionsPlanta)`; `SafetySelections` = `assembler.AuthorizedSafety(SafetySelections)`.
 - **Por qué nuevo cada vez:** el ensamblador muta los inputs (DA:302).
 - **El armado no cambia:** sigue siendo `assembler.BuildFrom(compositeAssembler.BuildDesign(state.Editor, state.BuildInputs(assembler)), frontalSide)` y la adopción de W:674-704. **No hay API de asiento** (I-03): PB-T1 no la crea, y las pruebas usan el ayudante `Pasada` (§5.0).
 
@@ -423,6 +478,41 @@ public static class PushBackEditableStateOwnership
 - **Dónde vive:** en `AdoptCarriers`. La ventana sigue sembrando `PostBox` con la expresión de hoy (W:399): el desplegable se ve igual.
 - **CT-PB0-17 sigue en verde.**
 
+### D-PBT1-09b. La regla de c-09 (F4B-E14, pregunta 2; OWNER-2 de PB-T1a)
+
+El Owner pidió para c-09 lo mismo que para c-02: «Como hoy, regla explícita». Esta regla sigue el patrón de D-PBT1-09.
+
+- **`public static string ResolveWeightUnit(string current, string requested)`**, en `PushBackEditableState`. Reproduce lo que muestra `WeightUnitBox` tras la siembra de W:395:
+  - `requested` nulo, en blanco o solo espacios → `"kg"` (W:395);
+  - `requested` ordinalmente igual a `"kg"` o a `"lb"`, las dos opciones de la caja (W:148) → `requested`;
+  - si no, la caja no admite el valor y **conserva su selección**: → `current` si es ordinalmente `"kg"` o `"lb"`; si no, `"kg"`, la selección inicial de la caja (W:149). En la **rama «kg»** del paso 1 (abajo), esta tercera fila devuelve siempre `"kg"`.
+- **Lo medido** (CT-PBT1A-02, en la CI de PB-T1a; registro P-2), con la caja en «kg»:
+  - la carga con «ton» deja la caja en «kg» (`caja=[kg]`);
+  - la salida conserva «ton» al cargar y con «Actualizar»;
+  - con `DepthBox=54`, la salida pasa a «kg» con `PalletWeight=1000`.
+- **Lo que no mide CT-PBT1A-02:** la tercera fila con la caja en «lb». La lectura de WPF dice que `Selector.CoerceSelectedItem` rechaza un elemento que no está en `Items`, y entonces la caja conserva su selección. **La mide el paso 1 de PB-T1b** (INV-PBT1B-06, fila (f)), con dos ramas fijadas, como N-M-03 en c-02:
+  - **rama «conserva»** (la lectura): `f carga=[kg] WeightUnitBox.SelectedItem=lb antes=ton salida=lb`; la tercera fila devuelve `current`;
+  - **rama «kg»:** `f carga=[kg] WeightUnitBox.SelectedItem=kg antes=ton salida=kg` o `f carga=[kg] WeightUnitBox.SelectedItem=<null> antes=ton salida=kg` (una caja sin selección da «kg» en W:852); la tercera fila devuelve `"kg"`.
+
+  La fila carga primero el diseño con «ton» y después elige «lb» (PBT1BC-M01), y se comprueba a sí misma como F-03 (N-M-08): `carga=[kg]` (la caja tras cargar) y `antes=ton` (la unidad de la salida tras «Restaurar») se esperan en las dos ramas; otro valor quiere decir que el guion no ejerce el camino, y es PBT1B-C14.
+
+  El Worker aplica la rama que mida, la declara en la entrega y usa sus líneas esperadas en CT-PBT1B-17. No hay otra rama: cualquier otra línea es PBT1B-C14.
+- **Dónde vive:** en `AdoptCarriers` (D-PBT1-03). La regla da la unidad del `Pallet` nuevo; `current` es la unidad del `Pallet` del estado justo antes de sustituirlo, y `requested` la del pallet de los inputs cargados. Así el estado lleva **la unidad que muestra la caja**, no la cargada: la de `generalPallet` (W:393, W:840) nunca llega a la salida. La ventana sigue sembrando `WeightUnitBox` con la expresión de hoy (W:395), así que la caja se ve igual.
+- **En qué paso de la salida se aplica:** `BuildInputs` (D-PBT1-04) lleva esa unidad como quinto argumento de su `Pallet` nueva, igual que hoy W:850-852 lleva la de la caja. **El ensamblador no cambia y decide como hoy:**
+  - una pasada **sin** reconstrucción copia la línea base (DA:273) y conserva la unidad cargada, porque `SamePallet` no mira la unidad (DDA:50-61);
+  - una pasada que **reconstruye** (DA:211-213: un «Restaurar estándar» o un «Restaurar módulo» confirmados, o `MustRebuild`: otro pallet sin contar la unidad, u otro reparto de fondos) construye con la unidad del estado (DA:176, DA:218).
+
+  Por eso la salida conserva «ton» al cargar y con «Actualizar», y pasa a «kg» con el mismo número al reconstruir, como la ventana.
+- **El orden de la carga no cambia** (D-PBT1-03, I-04): la regla es una expresión dentro de `AdoptCarriers`, que lee el `Pallet` anterior antes de sustituirlo. No hay pasadas nuevas ni campos nuevos.
+- **Por qué hace falta:** sin la regla, el estado de la v2.4 guardaba en `Pallet` la unidad cargada y la llevaba a la reconstrucción («ton»), donde la ventana lleva la de la caja («kg»). Los 17 diseños del corpus guardan «kg» (registro P-2), así que CT-PBT1B-01 no lo vería: por eso **CT-PBT1B-17**.
+- **Lo que deja PB-T1a sin regla propia** (F4B-E14, pregunta 3), comprobado en el diseño de las cargas y de la salida:
+  - **«lb» elegida en la caja (OWNER-3):** el estado la lleva a `BuildInputs` como hoy W:852, y la salida no cambia hasta la siguiente reconstrucción, porque decide el ensamblador (`SamePallet`), no el estado;
+  - **`PalletsDeepBox` (OWNER-3):** `AdoptCarriers` lo adopta con `Math.Max(2, …)` (W:396) y `BuildInputs` lo lleva como hoy W:853; el ensamblador lo usa igual (DA:183), así que la salida no cambia tampoco;
+  - **el portador de botas al aceptar Seguridad sin cambios (OWNER-4):** lo añade `Safety_Click` (W:2682), que PB-T1b no toca y que PB-T1c deja fuera por la letra (D-PBT1-13); el estado solo transporta `SafetySelections`.
+
+  Los tres los fija la red de PB-T1a (CT-PBT1A-02 y 11), que sigue en verde sin tocarla.
+- **CT-PB0-17 y CT-PBT1A-02 siguen en verde** (la ventana no cambia en PB-T1b).
+
 ### D-PBT1-10. La exclusión de `pb-21-cola` (F4B-E09, pregunta 3)
 
 - **Declaración:** «Un rack de un solo sentido (`!design.IsComposite`) cuya `Structure` guarda módulos o líneas con ids de cola (`PushBackCompositeStructure.IsCompositeTailId`) **no es un supported classic rack** para la garantía sin pérdidas de PB-T1.»
@@ -460,7 +550,7 @@ public static class PushBackEditableStateOwnership
    El proyecto, el modo, la identidad y `LoadFromModel` siguen en su orden.
 4. **`LoadFromModel` adopta los portadores donde hoy (I-04):** dentro del `try`, bajo `suppressSync`, **la primera sentencia** pasa a ser `editable.AdoptCarriers(inputs, catalog);`, y se quitan las asignaciones a portadores (W:391, :393, :398, :401, :403, :406-411, :414, :419 y :423-427). Las siembras de los controles **no cambian ni un carácter** (W:390, :392, :394-397, :399-400, :402, :413, :415-418, :420-421). Es equivalente: ninguna siembra lee un portador, y `LoadAdvancedRackParameters` (W:432) y `ShowDimensionViews` (W:421) corren después y ven los mismos valores.
 5. **`ReadInputs`** escribe en el estado lo que lee, con la expresión de hoy, y devuelve `editable.BuildInputs(assembler)`:
-   - la caja de fondo y la unidad, en `generalPallet` (la unidad, quinto argumento de la `PalletSpecification` de W:838-840, con la expresión de W:852);
+   - la caja de fondo y la unidad, en `generalPallet` (la unidad, quinto argumento de la `PalletSpecification` de W:838-840, con la expresión de W:852). Con la regla de c-09 (D-PBT1-09b), la unidad que deja `AdoptCarriers` es la que la caja muestra tras W:395, así que esta escritura no cambia la salida de hoy;
    - las cuatro de `Keep`, como W:841-844;
    - `editable.PalletsDeep = IntVal(PalletsDeepBox, DynamicRackDefaults.DefaultPalletsDeep);` (W:853);
    - `editable.PostCatalogId = PostBox.SelectedId ?? editable.PostCatalogId;` (W:868, con el respaldo de las vigas de W:823 y W:826). Con la regla de D-PBT1-09, el valor del estado es el que `PostBox` ofrecería o el que hoy pone DA:169-171, así que la salida es la de hoy también con catálogos editados (espacios, duplicados por mayúsculas);
@@ -767,18 +857,18 @@ T1B (55 y 10), PB-T0 (16 y 3, con SUS-03 y SUS-04 en `Skip`), PB-TC (10), PB-TC2
 
 Las sangrías son las de la línea original. **MU-T1A-13 se ancla por línea y miembro:** el mismo texto está también en W:296 (`LoadDesignForNew`), igual que en `eedb069c`, y esa línea no se toca. Ningún mutante toca un literal de I-55, Fact3, el desviador, G-10 ni T-SG: Core sigue en `success` en el RED. MU-T1A-14 discrimina por `pb-08-redondeo` (`AnnotationScale` 1,23456), que está en el corpus.
 
-### 5.3 PB-T1b: el tipo (lista cerrada CT-PBT1B-01 a 16)
+### 5.3 PB-T1b: el tipo (lista cerrada CT-PBT1B-01 a 17)
 
 **Régimen** (el de F4-T2A): **el RED** es el **esqueleto inerte** y las pruebas nuevas, que fallan **por aserción**, salvo las dos guardas de D2 (CT-PBT1B-14 y 15), que pasan en el RED y discriminan por sus autopruebas en negativo (INV-F4T3A-13); **el GREEN** solo toca `src/`; **la ventana no cambia**; la regla «EXCEPCION» del §5.0.
 
 **El esqueleto exacto:**
-- `PushBackEditableState`: todos los miembros con sus valores iniciales; `LoadNewEditor`, `LoadDesignEditor`, `RestoreEditor`, `LoadNew`, `LoadDesign` y `Restore` devuelven `PushBackEditorInputs.NewDesign()` sin hacer nada más; `AdoptCarriers` y `SeedDefaultSafety` no hacen nada; `BuildInputs` devuelve `PushBackEditorInputs.NewDesign()`; `ResolvePostCatalogId` devuelve `requested`; `SupportOf` devuelve `Supported`; `SideAOnly` devuelve `design`;
+- `PushBackEditableState`: todos los miembros con sus valores iniciales; `LoadNewEditor`, `LoadDesignEditor`, `RestoreEditor`, `LoadNew`, `LoadDesign` y `Restore` devuelven `PushBackEditorInputs.NewDesign()` sin hacer nada más; `AdoptCarriers` y `SeedDefaultSafety` no hacen nada; `BuildInputs` devuelve `PushBackEditorInputs.NewDesign()`; `ResolvePostCatalogId` devuelve `requested`; `ResolveWeightUnit` devuelve `requested`; `SupportOf` devuelve `Supported`; `SideAOnly` devuelve `design`;
 - `PushBackEditableStateComparer`: `Instance`; `Equals` = `ReferenceEquals(x, y)`; `GetHashCode` = 0; `Copy` = `new PushBackEditableState()`;
 - `PushBackEditableStateOwnership`: `Table` vacía; `Normalize` devuelve su argumento; `Of` devuelve `Unclassified`;
 - `PushBackEditorOutputGate`: `Diagnostics` vacía; `IsBlocked` = false; `StatusOr` = `fallback`;
 - ES `CopyAuthorityFrom` no hace nada; RMES `Copy()` = `RackModuleEditSession.Begin(Array.Empty<DynamicRackModuleDesign>())`; `SameEditAs` = false; `RackModuleCommit.Copy()` = `this`; `SameAs` = false.
 
-**Las clases:** en `tests/RackCad.Tests/` (`namespace RackCad.Tests`): `PushBackEditableStateLoadTests` (02 a 05), `PushBackEditableStateCopyTests` (06 a 10, 13 y 16), `PushBackEditableStateOwnershipTests` (11), `PushBackEditorOutputGateTests` (12) y `PushBackSharedReferenceGuardTests` (14 y 15); en `tests/RackCad.UI.Tests/` (`namespace RackCad.UI.Tests`): `PushBackEditableStateParityTests` (01), en `EditorDiscardPromptCollection`.
+**Las clases:** en `tests/RackCad.Tests/` (`namespace RackCad.Tests`): `PushBackEditableStateLoadTests` (02 a 05 y 17), `PushBackEditableStateCopyTests` (06 a 10, 13 y 16), `PushBackEditableStateOwnershipTests` (11), `PushBackEditorOutputGateTests` (12) y `PushBackSharedReferenceGuardTests` (14 y 15); en `tests/RackCad.UI.Tests/` (`namespace RackCad.UI.Tests`): `PushBackEditableStateParityTests` (01), en `EditorDiscardPromptCollection`.
 
 | CT | Qué fija | Oráculo | Falla en el RED porque |
 |---|---|---|---|
@@ -797,7 +887,8 @@ Las sangrías son las de la línea original. **MU-T1A-13 se ancla por línea y m
 | **13** | **`BuildInputs` nuevo en cada llamada:** dos llamadas no comparten objetos; un «Restaurar estándar» confirmado (DA:302) no toca `Advanced`; los seis avanzados, la unidad y las casillas llegan a los inputs | D-PBT1-04 | `BuildInputs` da `NewDesign()` |
 | **14** | **D2, condición 10: la guarda G-L1 sobre Application** (`PushBackSharedReferenceGuardTests`). Los archivos, las fichas, las reglas de la v2.4 (1 con indexadores y `RecalculatePositions`; 1b con los moldes de estilo C, `as` e `is`; 1c; 2 con asignación, `foreach`, `is` y lambda; y 3) y las autopruebas (a), (b), (c), (e), (f1), (f2), (f3), (g1), (g2), (h1), (h2), (i) y (j) de D-PBT1-15, «La condición 10». Las líneas: `reglas-sin-coincidencias=True`, y `autoprueba-<x>=falla` por cada una de las trece. El límite declarado (lo que no ve) va en la misma sección | D-PBT1-15; registro N-9 y O | **no falla en el RED** (es una guarda; `ExpectRed` false) |
 | **15** | **D2, condición 8: los escritores de `Name` del Plugin** (`PushBackSharedReferenceGuardTests`). El censo de las siete asignaciones de los archivos del Plugin que contienen `PushBack` (tres de Push Back), el orden de las tres de Push Back tras su `ShowModalWindow` y las dos autopruebas en negativo de D-PBT1-15, «La condición 8». Las líneas: `archivos=14`, `asignaciones=7`, los siete textos literales con su archivo, `escritores-pushback=3`, `orden=True` por cada uno de los tres, `DrawPushBackView-llamadas=1`, y `autoprueba-octava=falla`, `autoprueba-orden=falla` | M-1; D-PBT1-15; registro N-11 | **no falla en el RED** (`ExpectRed` false) |
-| **16** | **D2, condiciones 3 a 7: las operaciones del API no mutan las dos referencias compartidas.** Sobre el estado rico de CT-06, su copia y X-01. **Qué referencias se miden (V23C-M02):** las no nulas de los cuatro miembros del original y de la copia **capturadas al empezar el bloque**, y las que el estado adopta durante él (`Pasada`, `LoadDesign`, `Restore` y `LoadNew` sustituyen la línea base y el informe), **cada una desde su adopción**, como en CT-PBT1C-02, parte 2. Una referencia sustituida no se vuelve a leer del estado: se mide el objeto capturado. Para cada una, al capturarla y al final del bloque, **la huella profunda** (V23-12; registro N-10): el recorrido `AllObjects` ampliado de CT-07 desde el rack o el informe, que escribe por cada objeto su tipo y cada campo de instancia (públicos, privados y de respaldo) con su valor (números con «R» y cultura invariante; cadenas tal cual; referencias por su índice de recorrido; listas y diccionarios en orden), con su `sha256`, más `<rack>.Name` en claro. `Persist(resolver.Snapshot(<rack>))` no basta: no ve lo derivado ni `Composite`. **Bloque «editar»** (3 y 5): `Pasada`; retirar B y `Pasada` (`ParkTailOf`); abrir la sesión, escenificar, confirmar y cancelar; `ParkDormantTail` y `ClearDormantTail`; las operaciones de CS de la condición 9; y cada portador. **Bloque «validar»** (4): `PushBackEditorOutputGate.Diagnostics`, `IsBlocked` y `StatusOr`; `Editor.IntentDiagnostics()`; una `Pasada` con el refuerzo de 100000 (que lanza); `SupportOf`; `ResolvePostCatalogId`; `BuildInputs`; y los dos consumidores medidos de la ventana que solo leen, `RackModuleDescriptor.Describe(<rack>.Structure)` y `new PushBackSystemLateralBuilder().Cortes(<rack>, catalog)` (M-1). **Bloque «descartar y recargar»** (6): `LoadDesign`, `Restore` y `LoadNew` sobre la copia, y una copia descartada sin tocar. **Bloque «comparar»** (7): `Equals` en los dos sentidos y `GetHashCode`; y, con dos estados que comparten la misma línea base, el resultado de `Equals` antes y después de mutar en el objeto compartido su `Name` y la `Length` de un módulo, que **no cambia**. Cada bloque da `<bloque> huellas-iguales=True`, y el último, además, `comparar-invariante=True` | M-1; D-PBT1-15 | `Copy` da un estado vacío |
+| **16** | **D2, condiciones 3 a 7: las operaciones del API no mutan las dos referencias compartidas.** Sobre el estado rico de CT-06, su copia y X-01. **Qué referencias se miden (V23C-M02):** las no nulas de los cuatro miembros del original y de la copia **capturadas al empezar el bloque**, y las que el estado adopta durante él (`Pasada`, `LoadDesign`, `Restore` y `LoadNew` sustituyen la línea base y el informe), **cada una desde su adopción**, como en CT-PBT1C-02, parte 2. Una referencia sustituida no se vuelve a leer del estado: se mide el objeto capturado. Para cada una, al capturarla y al final del bloque, **la huella profunda** (V23-12; registro N-10): el recorrido `AllObjects` ampliado de CT-07 desde el rack o el informe, que escribe por cada objeto su tipo y cada campo de instancia (públicos, privados y de respaldo) con su valor (números con «R» y cultura invariante; cadenas tal cual; referencias por su índice de recorrido; listas y diccionarios en orden), con su `sha256`, más `<rack>.Name` en claro. `Persist(resolver.Snapshot(<rack>))` no basta: no ve lo derivado ni `Composite`. **Bloque «editar»** (3 y 5): `Pasada`; retirar B y `Pasada` (`ParkTailOf`); abrir la sesión, escenificar, confirmar y cancelar; `ParkDormantTail` y `ClearDormantTail`; las operaciones de CS de la condición 9; y cada portador. **Bloque «validar»** (4): `PushBackEditorOutputGate.Diagnostics`, `IsBlocked` y `StatusOr`; `Editor.IntentDiagnostics()`; una `Pasada` con el refuerzo de 100000 (que lanza); `SupportOf`; `ResolvePostCatalogId`; `BuildInputs`; y los dos consumidores medidos de la ventana que solo leen, `RackModuleDescriptor.Describe(<rack>.Structure)` y `new PushBackSystemLateralBuilder().Cortes(<rack>, catalog)` (M-1). **Bloque «descartar y recargar»** (6): `LoadDesign`, `Restore` y `LoadNew` sobre la copia, y una copia descartada sin tocar. **Bloque «comparar»** (7): `Equals` en los dos sentidos y `GetHashCode`; y, con dos estados que comparten la misma línea base, el resultado de `Equals` antes y después de mutar en el objeto compartido su `Name` y la `Length` de un módulo, que **no cambia**. Cada bloque da `<bloque> huellas-iguales=True`, y el último, además, `comparar-invariante=True` | M-1; D-PBT1-15 | la receta F-01 no se completa sobre el esqueleto (línea `EXCEPCION`) |
+| **17** | **c-09 al reconstruir (F4B-E14, pregunta 2; D-PBT1-09b), con líneas literales.** **Parte 1, la regla:** `ResolveWeightUnit` con estos pares, cada uno en la línea `regla current=[<c>] requested=[<r>] -> [<u>]` (`<null>` sin corchetes para nulo): `regla current=[kg] requested=[kg] -> [kg]`; `regla current=[kg] requested=[lb] -> [lb]`; `regla current=[lb] requested=[kg] -> [kg]`; `regla current=[kg] requested=[ton] -> [kg]`; `regla current=[lb] requested=[ton] -> [lb]` (rama «conserva») o `-> [kg]` (rama «kg»); `regla current=[kg] requested=<null> -> [kg]`; `regla current=[lb] requested=[   ] -> [kg]` (tres espacios); `regla current=[kg] requested=[KG] -> [kg]`; `regla current=[ton] requested=[ton] -> [kg]`. **Parte 2, la salida: las cinco primeras líneas de CT-PBT1A-02** (`PushBackStateNetRackControlsTests.cs:198-202`), **literales y sin el sufijo ` descartes=<n>`** (el estado no tiene aviso de descarte): `carga [PalletDepth=48 PalletWeightUnit="kg" PalletWeight=1000]`; `WeightUnitBox=lb [PalletDepth=48 PalletWeightUnit="kg" PalletWeight=1000]`; `DepthBox=54 [PalletDepth=54 PalletWeightUnit="lb" PalletWeight=1000]`; `carga ton caja=[kg] salida=[PalletDepth=48 PalletWeightUnit="ton" PalletWeight=1000] actualizar=[PalletDepth=48 PalletWeightUnit="ton" PalletWeight=1000]`; `carga ton y DepthBox=54 [PalletDepth=54 PalletWeightUnit="kg" PalletWeight=1000]`; y **una sexta línea, el equivalente en el estado de la fila (f) del paso 1** (PBT1BC-I01): `restaurar ton lb caja=[<u>] [PalletDepth=54 PalletWeightUnit="<u>" PalletWeight=1000]`, con `<u>` = `lb` en la rama «conserva» y `kg` en la rama «kg», la que fije la fila (f). **Cada etiqueta nombra el gesto de la ventana, y el estado hace su equivalente** sobre `pb-01-base`, con las secuencias del §5.0 (la ventana nueva, `LoadDesign` y `Pasada`): `carga` es `LoadDesign` y `Pasada`; `WeightUnitBox=lb`, `Pallet` nueva con sus cuatro medidas y la unidad `"lb"`, y `Pasada` (lo que ese gesto escribe en el estado con D-PBT1-13 (5)); `DepthBox=54`, `Pallet` nueva con `Depth` 54 y su unidad, y `Pasada`; `carga ton`, otro estado con `LoadDesign` de `pb-01-base` con `Structure.PalletWeightUnit = "ton"` (la edición de CT-PBT1A-02, con `EditInner` y `StructureNode` de S0, `:108-118`, copiados) y `Pasada`, donde `caja=` es `Pallet.WeightUnit` del estado tras `LoadDesign`, `salida=` el diseño de esa `Pasada` y `actualizar=` el de una `Pasada` más («Actualizar», §5.0); `carga ton y DepthBox=54`, otro estado con esa carga y su `Pasada`, y después `Pallet` con `Depth` 54 y `Pasada`; y `restaurar ton lb`, otro estado con la carga «ton» y su `Pasada`, después `Pallet` con la unidad `"lb"` y `Pasada`, después `Restore(<el diseño de esa computación>, resolver)` y `Pasada`, donde `caja=` es `Pallet.WeightUnit` del estado, y por último `Pallet` con `Depth` 54 y `Pasada`, cuyo diseño da el `[…]`. Esta línea fija de punta a punta el paso de `current` dentro de `AdoptCarriers`: es la única en la que `AdoptCarriers` recibe `current` = «lb». Cada `[…]` lee de `Persist` del diseño (el de S0, `:122-123`, copiado) los nodos `Structure.PalletDepth`, `Structure.PalletWeightUnit` y `Structure.PalletWeight` con su texto JSON (`Leer` de `PushBackStateNetSupport.cs:55`, copiado). CT-PBT1B-05 sigue fijando la carga de c-09 por CT-PB0-17 | CT-PBT1A-02 (medido en la CI de PB-T1a); para `current=[lb] requested=[ton]` y para la sexta línea, el paso 1 de PB-T1b (INV-PBT1B-06, fila (f)) | el esqueleto no carga y `ResolveWeightUnit` devuelve `requested` |
 
 ### 5.4 PB-T1c: la ventana sobre el estado (lista cerrada CT-PBT1C-01 a 04)
 
@@ -815,8 +906,8 @@ Las sangrías son las de la línea original. **MU-T1A-13 se ancla por línea y m
 | Control | Prueba que fija su efecto en la salida | Prueba de que el estado lo lleva (PB-T1c) |
 |---|---|---|
 | `DepthBox`, `ToleranceBox`, `PostPeralteBox`, `BeamDepthBox`, `AnnotationScaleBox` | CT-PB0-19 (SUS-03), CT-PBTC-01 a 03 y CT-PBT1A-07 | CT-PBT1C-02 |
-| `WeightUnitBox`, `PalletsDeepBox` | CT-PB0-17, CT-PB0-04 y **CT-PBT1A-02** | CT-PBT1C-02 |
-| `PostBox` | CT-PB0-17 (c-01, c-02) y **CT-PBT1B-03** | CT-PBT1C-02 |
+| `WeightUnitBox`, `PalletsDeepBox` | CT-PB0-17, CT-PB0-04, **CT-PBT1A-02** y, para `WeightUnitBox`, **CT-PBT1B-17**: decide el estado al reconstruir (c-09, regla explícita de D-PBT1-09b) | CT-PBT1C-02 |
+| `PostBox` | CT-PB0-17 (c-01, c-02) y **CT-PBT1B-03**: decide el estado (c-01 y c-02, regla explícita de D-PBT1-09) | CT-PBT1C-02 |
 | `NumberFrontsCheck`, `NumberLevelsCheck`, `DrawRackNameCheck`, `DimensionsBox`, las tres de cotas | CT-PB0-17, `PushBackDimensionViewsWindowTests` y **CT-PBT1A-01** | CT-PBT1C-02 |
 | `PositionsBox`, `LevelsBox`, `FondosBox`, `DepthStartBox` | **CT-PBT1A-03** | CT-PBT1C-02 |
 | `FirstLevelHeightBox` y las cuatro de la celda | CT-PB0-19, CT-PBTC-01 a 03 y CT-PBT1A-07 | CT-PBT1C-02 |
@@ -832,6 +923,8 @@ Las sangrías son las de la línea original. **MU-T1A-13 se ancla por línea y m
 | `SideBPresentCheck`, `SideSelectorBox`, `FrontalSideBox` | CT-PB0-06 a 09, **CT-PBT1A-09** y CT-PBT1A-14 (F-02, F-03) | CT-PBT1C-02 |
 
 **Huecos que quedan:** ninguno de los 20 de D-5.
+
+**Los controles que deciden el estado** (HT1-15, corregido en la v2.5): `PostBox` (c-01 y c-02) y `WeightUnitBox` al reconstruir (c-09). Los dos se reproducen como reglas explícitas del estado (D-PBT1-09 y D-PBT1-09b), así que **ninguno es la fuente de verdad**: el estado lleva lo que la caja muestra, y CT-PBT1C-02 lo comprueba en la ventana sin cambiar su texto.
 
 ### 5.6 Trazabilidad
 
@@ -850,12 +943,13 @@ Las sangrías son las de la línea original. **MU-T1A-13 se ancla por línea y m
 | D2, condición 9 | CT-PBT1B-08 |
 | D2, condición 10 | CT-PBT1B-14; CT-PBT1C-04; arrastre a PB-T2, PB-T3 y PB-T4 (A-2) |
 | D2, el límite | PBT1A-C17, PBT1B-C17 y PBT1C-C17; A-2 |
-| «no WPF control becomes source of truth» | CT-PBT1C-02; CT-PBT1B-03; §5.5 |
+| «no WPF control becomes source of truth» | CT-PBT1C-02; CT-PBT1B-03 y 17; §5.5 |
 | «state round-trip lossless for supported classic racks» | CT-PBT1B-02 y 04 |
 | «classic RACKEDITAR still works through the extracted state» | CT-PBT1C-01; §5.1 y CT-PBT1A-14 sobre PB-T1c |
 | OB-05.1 | CT-PBT1B-11 |
 | El criterio de bloqueo para PB-T3 | CT-PBT1B-12 y 01; CT-PBT1C-03 |
 | c-02; `pb-21-cola`; T-2; D-3 | CT-PBT1B-03, 04 y 05; CT-PBT1A-13 |
+| c-09 al reconstruir (F4B-E14, pregunta 2); OWNER-3 y OWNER-4 (pregunta 3) | CT-PBT1B-17; CT-PBT1A-02 y 11 |
 | D-5; M-03 de PB-TC y de PB-TC2; M-04; M-07; CT-16; M-02 de PB-TC | CT-PBT1A-01 a 12 |
 | OB-03.1 | CT-PBT1B-04 y el filtro `Workspace` |
 | OB-T1B.3 | §4; INV-PBT1x-07 |
@@ -868,12 +962,12 @@ Las sangrías son las de la línea original. **MU-T1A-13 se ancla por línea y m
 
 **Anclajes:** antes de emitir cada subtarea, la sesión vuelve a medir sobre su `BaseSha`, con las órdenes del registro, y lo deja escrito en el commit de emisión:
 - PB-T1a: los quince textos de la tabla de mutantes y las zonas [TC2]. Su `BaseSha` es el commit de emisión, sobre `cd47523b`, con `git diff b5c09f0b <BaseSha> -- src tests` vacío. Los mide además el generador del contrato con sus `assert` (registro N-14);
-- PB-T1b: `git diff <cierre de PB-T1a> -- src` vacío;
+- PB-T1b: `git diff <cierre de PB-T1a> -- src` vacío. **Medidos** sobre `5043b49a` (registro P): ese diff, las anclas por miembro y línea de D-PBT1-02 a D-PBT1-11, D-PBT1-15 y el §5.3, las reglas de G-L1, los recuentos de §6.2 y la línea base de la CI. El generador `make_pbt1b_contract.py` vuelve a comprobar con sus `assert` el diff de `src`, las anclas de ES, RMES, CS, DA y CA, y el texto exacto del esqueleto del §5.3 en el paquete custodiado;
 - PB-T1c: `git diff <cierre de PB-T1b> -- src/RackCad.UI` vacío y los anclajes de D-PBT1-13.
 
 **La comprobación acotada (M-12):**
 - **Quién:** un revisor independiente, en solo lectura, con el método de IRT1-1.
-- **Sobre qué:** este paquete (v2.4), la sección de la subtarea, la salida de sus anclajes y, para PB-T1a, la remedición del §8.4 (registro N), que la sesión pidió revisar (F4B-E12, «Siguiente»). **Ya hechas:** la de la v2 (`independent-review-v2-check.md`, 0/1/10) y la de la remedición (`independent-review-v23-check.md`, 0/1/3, aplicada en la v2.4).
+- **Sobre qué:** este paquete (v2.5 para PB-T1b y PB-T1c; la v2.4 fue la de PB-T1a), la sección de la subtarea, la salida de sus anclajes y, para PB-T1b, la regla de c-09 (D-PBT1-09b, CT-PBT1B-17) y, para PB-T1a, la remedición del §8.4 (registro N), que la sesión pidió revisar (F4B-E12, «Siguiente»). **Ya hechas:** la de la v2 (`independent-review-v2-check.md`, 0/1/10) y la de la remedición (`independent-review-v23-check.md`, 0/1/3, aplicada en la v2.4).
 - **Qué comprueba:** que los anclajes se sostienen; que ningún hecho nuevo cambia un CT o el diseño; que no aparece ninguna decisión material nueva; para la v2, que los 23 hallazgos de IRT1-1 están resueltos; y, en PB-T1b y PB-T1c, que lo de D2 (D-PBT1-15) cubre sus condiciones como se declara.
 - **Resultado:** EMITIBLE o NO EMITIBLE, con hallazgos, custodiado en `F4B-DRAFTS/pbt1/` con los nombres reales (V23C-M03): `independent-review-v2-check.md` (la v2), `independent-review-v23-check.md` (la remedición), y, cuando se hagan, `independent-review-pbt1b-check.md` (PB-T1b) e `independent-review-pbt1c-check.md` (PB-T1c). La de PB-T1b verifica además que las reglas de G-L1 de la v2.4 dan 0 y que sus autopruebas saltan.
 
@@ -881,12 +975,12 @@ Si un anclaje no se sostiene de un modo que cambia un CT o el diseño, la parte 
 
 **Custodia (M-12):**
 - en el commit de emisión de **PB-T1a**: este paquete (`docs/initiatives/I-64-f4b-pbt1-gate-contract-package.md`), el registro (con los apartados N, la remedición, y O, la guarda G-L1 de la v2.4), los seis scripts de medición (`members.py`, `count_tests.py`, `forbidden_scope.py`, `remeasure_anchors.py`, `remeasure_d2.py` y `remeasure_gl1_v24.py`), IRT1-1 (`independent-review-v1.md`), la comprobación acotada de la v2 (`independent-review-v2-check.md`) y la de la remedición (`independent-review-v23-check.md`) (el paquete, el registro y estos tres informes son las cinco rutas de `CUSTODY` del generador, que comprueba que están en HEAD antes de escribir), y el contrato y su generador `make_pbt1a_contract.py` en `docs/automation/evidence/I-64-pilot/F4B-PBT1A-LOSSLESS-STATE-NET/coordinator/`. Las decisiones D1 y D2 del Owner (F4B-E11) ya están custodiadas en `cd47523b`;
-- en los de **PB-T1b** y **PB-T1c**: su contrato y su generador en su `coordinator/`, la salida de sus anclajes y su comprobación acotada;
+- en los de **PB-T1b** y **PB-T1c**: su contrato y su generador en su `coordinator/`, la salida de sus anclajes y su comprobación acotada. **En PB-T1b,** además, esta v2.6 (en `docs/initiatives/I-64-f4b-pbt1-gate-contract-package.md`), el registro con el apartado P y el script `measure_pbt1b_anchors.py`; y, en `F4B-DRAFTS/pbt1/` (PBT1BC-M04), `check_v25_skeleton.py` y la salida del `--dry` del generador, `make_pbt1b_contract-dry.txt`, que sostienen el registro P-7 y no son autoridades del contrato. Las cuatro rutas de `CUSTODY` de `make_pbt1b_contract.py` son el paquete, el registro, `F4B-DRAFTS/pbt1/pbt1b-anchors-out.txt` y `F4B-DRAFTS/pbt1/independent-review-pbt1b-check.md`; el generador comprueba que están en HEAD (el paquete en la v2.6 y el registro con P), y también las dos de PBT1BC-M04, antes de escribir;
 - en `f4b-dispositions.md`: la división (D-PBT1-01), D2 (L-1) con sus condiciones y su límite, el resultado de la remedición, cada emisión y los arrastres del §10.
 
 **`ForbiddenWriteScope`:** con el método de [PKC-C], calculado por el generador de cada contrato con `assert` (medición J):
 - `src/`: 59 en PB-T1a y PB-T1c (la forma de PB-TC2, con WX), 117 en PB-T1b;
-- `tests/`: en PB-T1a, `tests/RackCad.Tests/` entero; en PB-T1b y PB-T1c, la lista curada de PB-T0 (18 entradas; medición H-12) más las clases de Core de PB-T0 y, en PB-T1c, las de PB-T1b. En `tests/RackCad.UI.Tests/`, la lista curada de [PKC2] (51 archivos y `Workspace/`) más las clases de PB-TC2 y, en PB-T1b y PB-T1c, las de las subtareas anteriores;
+- `tests/`: en PB-T1a, `tests/RackCad.Tests/` entero; en PB-T1b y PB-T1c, la lista curada de PB-T0 (18 entradas, con sus tres clases de Core; medición H-12) y, en PB-T1c, las clases de PB-T1b. En `tests/RackCad.UI.Tests/`, la lista curada de [PKC2] (51 archivos y `Workspace/`) más las clases de PB-TC2 y, en PB-T1b y PB-T1c, las de las subtareas anteriores;
 - la raíz, las 17 entradas de [PKC2].
 
 **`StopConditions` estándar** (17), copiadas de [PKC2] §6.7: S-02, S-03, S-04, S-05, S-07, S-08, S-12, S-13 y S-14, y P-01 a P-08, con P-01 = «config.toml no longer matches the accepted Snapshot in force (today Snapshot I, docs/automation/evidence/I-64-pilot/F4-ENVIRONMENT/snapshot-I/snapshot-i.json)».
@@ -943,7 +1037,7 @@ Si un anclaje no se sostiene de un modo que cambia un CT o el diseño, la parte 
 - **09. Determinismo:** el GUID fijo, la cultura invariante, «R», el orden ordinal; ni hora ni aleatoriedad.
 - **10. Las corridas locales:** solo los filtros del contrato en UI, **nunca la suite completa de UI en local**; la de Core, sí; sin copias de árboles (MAX_PATH); las corridas temporales terminan en `Assert.Fail(string.Join("\n", lineas))`, corren también dentro de `EditorDiscardPrompt.Substitute` (lección IRC-M02 del cierre de PB-TC2), no entran en ningún commit y guardan TRX y log como artefactos; el perfil no cambia (INV-PBT0-06).
 - **11. La evidencia:** rutas relativas comprobadas en `worker-handoff.json`; `TreeSha` real (`git write-tree`) o null; el Worker no escribe en `docs/`; una sustitución se llamaría `SUS3A-0n`, `SUS3B-0n` o `SUS3C-0n` y es C02.
-- **12. Las reglas de F4B y sin AutoCAD.**
+- **12. Las reglas de F4B y sin AutoCAD.** En PB-T1b y PB-T1c, la verificación lleva las tres comprobaciones deterministas de F4B-E15 (los términos por script sobre los siete campos libres completos, el alcance contado por script contra la delegación, e Identity con el `CurrentSha` de la entrega y el HEAD medido escritos).
 - **14. Las dos referencias de D2:** fuera de `PushBackEditorState.workingBaseline` y `PushBackEditorState.LastModuleReconciliation` de cada lado, ninguna copia del estado comparte un objeto mutable con su original; ninguna línea añadida muta un `PushBackSystem` ni un `RackModuleReconciliationResult` adoptado (las reglas de G-L1, D-PBT1-15). En PB-T1a, que no cambia producto, se cumple por INV-PBT1A-01.
 
 **Las propias comunes** (con el prefijo de cada contrato):
@@ -954,7 +1048,7 @@ Si un anclaje no se sostiene de un modo que cambia un CT o el diseño, la parte 
 - **C06:** la CI del GREEN falla fuera de las pruebas nuevas, se reproduce y no es atribuible a ellas.
 - **C07:** los hechos del §2 no se sostienen de un modo que cambia un CT o el diseño; o una línea esperada no se cumple en el GREEN. El Worker no ajusta lo esperado.
 - **C09:** una prueba colgaría, dejaría viva una ventana, un modal o un dispatcher, escribiría en el perfil o dependería de rutas de una máquina.
-- **C10:** hacerlo bien exigiría corregir algo fuera del alcance: una pérdida de T-2, M-07, `pb-21-cola`, el modo WORKSPACE, el piloto, D-PB-07 o una corrección de PB-TC o PB-TC2.
+- **C10:** hacerlo bien exigiría corregir algo fuera del alcance: una pérdida de T-2, M-07, `pb-21-cola`, el modo WORKSPACE, el piloto, D-PB-07 o una corrección de PB-TC o PB-TC2. En PB-T1b y PB-T1c, también c-09, OWNER-3 y OWNER-4 (F4B-E14: se reproducen, c-09 como regla explícita).
 
 ### 6.1 Contrato de PB-T1a — `F4B-PBT1A-LOSSLESS-STATE-NET`
 
@@ -993,27 +1087,34 @@ Si un anclaje no se sostiene de un modo que cambia un CT o el diseño, la parte 
 
 ### 6.2 Contrato de PB-T1b — `F4B-PBT1B-LOSSLESS-STATE-TYPE`
 
-- **Objective** (ASCII): «Crear en Application el estado editable de Push Back sin perdidas fuera de la ventana (PushBackEditableState), con las cargas de LoadNew, LoadExisting, LoadDesignForNew y Restaurar partidas en la de Application y AdoptCarriers, la salida BuildInputs, el copiador y el comparador completos con modulos, cola aparcada y A/B (con la excepcion de dos referencias compartidas decidida por el Owner en F4B-E11, D2, y sus diez condiciones de seguridad), el mapa de propiedad, la regla explicita de c-02, la exclusion de pb-21-cola y el criterio de bloqueo de salida extraido, segun el paquete del contrato de PB-T1 v2.2 y la lista cerrada CT-PBT1B-01..16. El RED es el esqueleto inerte y las pruebas nuevas, que fallan por asercion salvo las dos guardas de D2; el GREEN implementa solo Application. Si hiciera falta mutar el rack resuelto o el informe de modulos dentro del tiempo de vida de la edicion: STOP y se reabre L-1. La ventana, el piloto, el Plugin y el XAML no cambian; no se ejecuta AutoCAD.»
+- **Objective** (ASCII): «Crear en Application el estado editable de Push Back sin perdidas fuera de la ventana (PushBackEditableState), con las cargas de LoadNew, LoadExisting, LoadDesignForNew y Restaurar partidas en la de Application y AdoptCarriers, la salida BuildInputs, el copiador y el comparador completos con modulos, cola aparcada y A/B (con la excepcion de dos referencias compartidas decidida por el Owner en F4B-E11, D2, y sus diez condiciones de seguridad), el mapa de propiedad, las reglas explicitas de c-02 y de c-09 (F4B-E09 y F4B-E14), la exclusion de pb-21-cola y el criterio de bloqueo de salida extraido, segun el paquete del contrato de PB-T1 v2.6, con los anclajes medidos sobre el cierre de PB-T1a (5043b49a), y la lista cerrada CT-PBT1B-01..17. El RED es el esqueleto inerte y las pruebas nuevas, que fallan por asercion salvo las dos guardas de D2; el GREEN implementa solo Application. Si hiciera falta mutar el rack resuelto o el informe de modulos dentro del tiempo de vida de la edicion: STOP y se reabre L-1. La ventana, el piloto, el Plugin y el XAML no cambian; no se ejecuta AutoCAD.»
 - **`AllowedWriteScope`** (12): ES y RMES; los cuatro nuevos de `src/RackCad.Application/Systems/PushBack/` (`PushBackEditableState.cs`, `PushBackEditableStateComparer.cs`, `PushBackEditableStateOwnership.cs`, `PushBackEditorOutputGate.cs`); los cinco nuevos de `tests/RackCad.Tests/` (`PushBackEditableStateLoadTests.cs`, `PushBackEditableStateCopyTests.cs`, `PushBackEditableStateOwnershipTests.cs`, `PushBackEditorOutputGateTests.cs` y **`PushBackSharedReferenceGuardTests.cs`**) y `tests/RackCad.UI.Tests/PushBackEditableStateParityTests.cs`.
-- **`ForbiddenWriteScope`:** 117 de `src/` (CS incluido) y lo común.
-- **`RequiredTests`:**
+- **`ForbiddenWriteScope`** (**213**, medido por el generador; registro P-7): 117 de `src/` (CS incluido); 79 de `tests/` (en `tests/RackCad.Tests/`, las 18 de la lista curada de PB-T0, con sus tres clases de Core; en `tests/RackCad.UI.Tests/`, los 53 archivos de PB-T1a, sus siete clases `PushBackStateNet*` y `Workspace/`); y las 17 de la raíz.
+- **`RequiredTests`** (23 filtros):
 
   | Proyecto | Filtro | `MinSelected` | `ExpectRed` |
   |---|---|---|---|
-  | Core | `PushBackEditableState` | **12** | true |
+  | Core | `PushBackEditableState` (CT-02 a 11, 13, 16 y 17) | **13** | true |
   | Core | `PushBackEditorOutputGate` | **1** | true |
   | UI | `PushBackEditableStateParityTests` | **1** | true |
   | Core | `PushBackSharedReferenceGuardTests` (CT-14 y 15, las guardas de D2) | **2** | false |
   | Core | `Workspace` | 3 271 | false |
   | Core | `PushBackOutputGateTests`, `PushBackBlankFrontAuthorityTests`, `PushBackModuleEditorCharacterizationTests` | 8, 9, 15 | false |
   | Core | `RackModuleEditSessionTests`, `NamespaceFolderGuardTests`, `HeaderBatchContractTests` (M-10) | 25, 7, 17 | false |
-  | Core y UI | `PushBackStateNet` (14), T1B, PB-T0, PB-TC, PB-TC2 y Cantilever | como en §6.1 | false |
+  | UI | `PushBackStateNet` (PB-T1a) | 14 | false |
+  | UI y Core | `PushBackClassicCharacterization` (T1B) | 55 y 10 | false |
+  | UI y Core | `PushBackFullEditorCharacterization` (PB-T0) | 16 y 3 | false |
+  | UI | `PushBackDeclaredCorrectionRoundingTests`, `…DimensionStyleTests`, `…PilotParityTests`, `…SideBNoticeTests`, `…StandardRestoreTests` (PB-TC, uno por clase) | 3, 2, 2, 2, 1 | false |
+  | UI | `PushBackDeclaredCorrection2` (PB-TC2) | 4 | false |
+  | UI | `Cantilever` | 67 | false |
+
+  Los `MinSelected` de PB-T1a, T1B, PB-T0, PB-TC, PB-TC2 y Cantilever son los de §6.1, y el generador lo comprueba contra el contrato de PB-T1a.
 
 - **Invariantes propios:**
   - **INV-PBT1B-01. Alcance:** el diff dentro de las 12 rutas; en `src/`, solo las seis de producto. `git diff BaseSha..CurrentSha -- src/RackCad.UI src/RackCad.Plugin src/RackCad.Domain src/RackCad.Application/Systems/PushBack/Pilot src/RackCad.Application/Workspace src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorState.cs` vacío.
   - **INV-PBT1B-02. RED y GREEN:** el RED es el esqueleto exacto del §5.3 y las seis clases de prueba; el GREEN solo toca `src/`. Criterio del RED sobre cada filtro con `ExpectRed`: todos `Failed` por aserción (como INV-PBT1A-02), con `Failed == Selected`. El filtro de las guardas de D2 pasa en el RED y en el GREEN, y sus autopruebas en negativo fallan sobre el texto inyectado.
   - **INV-PBT1B-07c. D2** (D-PBT1-15): CT-PBT1B-06, 07, 08, 14, 15 y 16 en verde en el GREEN; la clase **D** del censo son exactamente los dos miembros de la condición 1.
-  - **INV-PBT1B-03. La API:** los miembros, las firmas y los valores iniciales son exactamente los de D-PBT1-02 a D-PBT1-11; ningún otro miembro público nuevo. Los ayudantes privados nuevos son solo `LoadComposite` en `PushBackEditableState`, `CopyLiteral` en la sesión y `CopyModule` en el commit, más los privados del comparador que copian literal los del piloto (PC:64-83, PC:134-350).
+  - **INV-PBT1B-03. La API:** los miembros, las firmas y los valores iniciales son exactamente los de D-PBT1-02 a D-PBT1-11, con D-PBT1-09b (`ResolveWeightUnit`); ningún otro miembro público nuevo. Los ayudantes privados nuevos son solo `LoadComposite` en `PushBackEditableState`, `CopyLiteral` en la sesión y `CopyModule` en el commit, más los privados del comparador que copian literal los del piloto (PC:64-83, PC:134-350).
   - **INV-PBT1B-04. Ningún campo de instancia nuevo** en CS, ES, `PushBackEditorInputs`, `PalletSpecification`, `DynamicAnnotationOptions`, los tipos de seguridad ni RMES (el censo del piloto en verde y `git diff -U0` sin declaraciones de campo de instancia añadidas en ES ni en RMES). Ningún campo estático nuevo tampoco: el `RackFrameProjectStore` de `RackModuleCommit` y el de `PushBackEditableState` son locales al método (N-M-06).
   - **INV-PBT1B-04b.** Cada archivo nuevo de `src/` declara un solo `namespace RackCad.Application.Systems.PushBack` de bloque; las pruebas, `namespace RackCad.Tests` o `RackCad.UI.Tests`.
   - **INV-PBT1B-05 (M-06), solo sobre `src/`:** ningún archivo nuevo de `src/` contiene `.RequestUpdate(` ni nombra `RackCad.UI`, `System.Windows`, `Autodesk`, `Workspace`, `Pilot` ni `RackSystemKind`.
@@ -1027,19 +1128,25 @@ Si un anclaje no se sostiene de un modo que cambia un CT o el diseño, la parte 
     | (d) | en blanco | `d PostBox.SelectedId=P salida=P` |
     | (e) | tres espacios | `e PostBox.SelectedId=P salida=P` |
 
-    Se transcribe en la entrega. **La fila (b) fija la rama de la regla de c-02** (D-PBT1-09, N-M-03): con `<null>`, la rama ordinal; con `P`, la rama sin mayúsculas. El Worker declara cuál midió y la aplica; cualquier otro valor de `PostBox.SelectedId` en (b) es PBT1B-C14.
+    **La fila de c-09** (D-PBT1-09b, F4B-E14), en la misma corrida: en una ventana nueva, `Cargar(w, <el sobre de pb-01-base con Structure.PalletWeightUnit = "ton">)` (`EditInner`); después `WeightUnitBox.SelectedItem = "lb"`, «Restaurar» (`Click(w, "RestoreButton")`) y `SetNumberR(w, "DepthBox", 54)`; la línea `f carga=[<WeightUnitBox.SelectedItem tras cargar>] WeightUnitBox.SelectedItem=<v tras «Restaurar»> antes=<PalletWeightUnit de LastComputation.Design tras «Restaurar», sin comillas> salida=<PalletWeightUnit de LastComputation.Design tras DepthBox=54, sin comillas>`. **Se comprueba a sí misma** (PBT1BC-M01, como F-03): `carga=[kg]` y `antes=ton` se esperan en las dos ramas:
+
+    | Caso | Línea esperada |
+    |---|---|
+    | (f) | `f carga=[kg] WeightUnitBox.SelectedItem=lb antes=ton salida=lb` (rama «conserva») o `f carga=[kg] WeightUnitBox.SelectedItem=kg antes=ton salida=kg` o `f carga=[kg] WeightUnitBox.SelectedItem=<null> antes=ton salida=kg` (rama «kg») |
+
+    Se transcribe en la entrega. **La fila (b) fija la rama de la regla de c-02** (D-PBT1-09, N-M-03): con `<null>`, la rama ordinal; con `P`, la rama sin mayúsculas. **La fila (f) fija la rama de la regla de c-09** (D-PBT1-09b): con `lb`, la rama «conserva»; con `kg` o `<null>`, la rama «kg». El Worker declara las dos ramas que midió y las aplica; cualquier otro valor en (b) o cualquier otra línea en (f) es PBT1B-C14.
 - **`StopConditions` propias:**
   - **PBT1B-C04 (I-06):** un método de un filtro con `ExpectRed` pasa sobre el esqueleto, o falla por excepción y no por aserción. Es un defecto del contrato.
   - **PBT1B-C13:** la implementación necesitaría un campo nuevo en un tipo del censo del piloto, tocar CS, o cambiar el comportamiento de un método existente de ES, CS, DA, CA o RMES.
-  - **PBT1B-C14:** en el paso 1, alguna `salida` de (a) a (e) no es P, o una fila no es ninguna de sus líneas esperadas (en (b), ninguna de las dos ramas). STOP antes del RED: la regla de c-02 vuelve a la sesión.
+  - **PBT1B-C14:** en el paso 1, alguna `salida` de (a) a (e) no es P, o una fila no es ninguna de sus líneas esperadas (en (b), ninguna de las dos ramas de c-02; en (f), ninguna de las dos ramas de c-09). STOP antes del RED: la regla vuelve a la sesión.
   - **PBT1B-C15:** CT-PBT1B-01 o 02 da una diferencia entre el estado y la ventana de hoy, o una pérdida en un rack soportado, que no sale del esqueleto. STOP: es un hecho nuevo y vuelve al Owner por OB-06.5.
   - **PBT1B-C17:** la parada del límite de D2 (§6.0).
-- **`ExpectedEvidence`:** como §6.1, con el paso 1 y, en vez de los mutantes, el diff del esqueleto, la tabla «CT → la aserción que falla en el RED» y la salida de las autopruebas en negativo de las dos guardas.
-- **Línea base de la CI:** la del cierre de PB-T1a. **GREEN:** Core 19 070 + 15 (12 + 1 + 2); UI la de PB-T1a + 1.
+- **`ExpectedEvidence`:** como §6.1, con el paso 1 (filas (a) a (f), con las ramas de c-02 y de c-09 declaradas) y, en vez de los mutantes, el diff del esqueleto, la tabla «CT → la aserción que falla en el RED» y la salida de las autopruebas en negativo de las dos guardas; la verificación, con las tres comprobaciones deterministas de F4B-E15.
+- **Línea base de la CI:** la del cierre de PB-T1a, **medida** (registro P-6): el run `44361363873` sobre `5043b49a`, 4 de 4 en `success`, con UI 2 436 resultados, 21 `Skipped` y 2 415 `Passed`, y Core 19 070. Es la previsión del cierre de PB-T1a (`44338475965` sobre `73d30982`). **GREEN de PB-T1b:** Core 19 070 + 16 (13 + 1 + 2) = **19 086**; UI 2 436 + 1 = **2 437** (21 `Skipped` y 2 416 `Passed`).
 
 ### 6.3 Contrato de PB-T1c — `F4B-PBT1C-LOSSLESS-STATE-WINDOW`
 
-- **Objective** (ASCII): «Hacer que la ventana clasica de Push Back guarde su estado editable en el PushBackEditableState de PB-T1b, en modo CLASSIC y sin cambio observable, con el cambio minimo de D-PBT1-13 (reenvios con el mismo nombre, la carga de Application delegada, AdoptCarriers dentro de LoadFromModel, ReadInputs que escribe en el estado, el criterio de bloqueo extraido y la costura EditableStateForTest), segun el paquete del contrato de PB-T1 v2.2 y la lista cerrada CT-PBT1C-01..04, con las condiciones de seguridad de la decision D2 del Owner (F4B-E11) que toca la ventana. El RED es la costura inerte y las pruebas nuevas, salvo la guarda de D2; el GREEN toca solo W y WC. Si hiciera falta mutar el rack resuelto o el informe de modulos dentro del tiempo de vida de la edicion: STOP y se reabre L-1. Los constructores, los cuatro sitios, el XAML, el Plugin, el piloto y Application no cambian; el modo Workspace queda para PB-T2; no se ejecuta AutoCAD.»
+- **Objective** (ASCII): «Hacer que la ventana clasica de Push Back guarde su estado editable en el PushBackEditableState de PB-T1b, en modo CLASSIC y sin cambio observable, con el cambio minimo de D-PBT1-13 (reenvios con el mismo nombre, la carga de Application delegada, AdoptCarriers dentro de LoadFromModel, ReadInputs que escribe en el estado, el criterio de bloqueo extraido y la costura EditableStateForTest), segun el paquete del contrato de PB-T1 v2.6 y la lista cerrada CT-PBT1C-01..04, con las condiciones de seguridad de la decision D2 del Owner (F4B-E11) que toca la ventana. El RED es la costura inerte y las pruebas nuevas, salvo la guarda de D2; el GREEN toca solo W y WC. Si hiciera falta mutar el rack resuelto o el informe de modulos dentro del tiempo de vida de la edicion: STOP y se reabre L-1. Los constructores, los cuatro sitios, el XAML, el Plugin, el piloto y Application no cambian; el modo Workspace queda para PB-T2; no se ejecuta AutoCAD.»
 - **`AllowedWriteScope`** (5): W, WC, `tests/RackCad.UI.Tests/PushBackWindowOnStateTests.cs`, `tests/RackCad.Tests/PushBackWindowOnStateSourceGuardTests.cs` y **`tests/RackCad.Tests/PushBackWindowSharedReferenceGuardTests.cs`**.
 - **`ForbiddenWriteScope`:** 59 de `src/` y lo común.
 - **`RequiredTests`:**
@@ -1052,7 +1159,7 @@ Si un anclaje no se sostiene de un modo que cambia un CT o el diseño, la parte 
   | Core | `PushBackSharedReferenceGuardTests` (las de PB-T1b) | 2 | false |
   | UI | `PushBack` (todas las clases `PushBack*`) | el medido en la emisión (542 sobre `b5c09f0b`, con las 4 de PB-TC2, + 14 de PB-T1a + 1 de PB-T1b = 557) | false |
   | UI | `BlankFront`, `WindowCensusGuardTests`, `RichEditor`, `Workspace`, `PushBackRichPreviewTests` | 33, 8, 25, 547, el medido | false |
-  | Core | `PushBackEditableState`, `PushBackEditorOutputGate`, `PushBackClassicCharacterization`, `PushBackFullEditorCharacterization`, `PushBackModuleEditorCharacterizationTests`, `I55DeferredProductFixCharacterizationTests`, `NamespaceFolderGuardTests`, `Workspace` | 12, 1, 10, 3, 15, 3, 7, 3 271 | false |
+  | Core | `PushBackEditableState`, `PushBackEditorOutputGate`, `PushBackClassicCharacterization`, `PushBackFullEditorCharacterization`, `PushBackModuleEditorCharacterizationTests`, `I55DeferredProductFixCharacterizationTests`, `NamespaceFolderGuardTests`, `Workspace` | 13, 1, 10, 3, 15, 3, 7, 3 271 | false |
   | UI | `Cantilever` | 67 | false |
 
 - **Invariantes propios:**
@@ -1069,7 +1176,7 @@ Si un anclaje no se sostiene de un modo que cambia un CT o el diseño, la parte 
   - **PBT1C-C13:** mantener sin cambio observable un gesto exigiría tocar un miembro fuera de INV-PBT1C-03 o cambiar el orden de una carga.
   - **PBT1C-C14:** una huella de CT-PBT1A-14 cambia. STOP (C03); el Worker no ajusta ni la huella ni el producto.
   - **PBT1C-C17:** la parada del límite de D2 (§6.0).
-- **`ExpectedEvidence`:** como §6.1, con la salida de INV-PBT1C-03 a 05 sobre el diff, la de las autopruebas de CT-PBT1C-04 y, en local, la clase de huellas tres veces en verde sobre el GREEN.
+- **`ExpectedEvidence`:** como §6.1, con la salida de INV-PBT1C-03 a 05 sobre el diff, la de las autopruebas de CT-PBT1C-04 y, en local, la clase de huellas tres veces en verde sobre el GREEN; la verificación, con las tres comprobaciones deterministas de F4B-E15.
 - **Línea base de la CI:** la del cierre de PB-T1b. **GREEN:** Core + 2 (CT-03 y CT-04); UI + 2.
 
 ## 7. Riesgos y lecciones aplicadas
@@ -1094,6 +1201,7 @@ Si un anclaje no se sostiene de un modo que cambia un CT o el diseño, la parte 
 | R-T1-15 | **Cómo cuenta el Controller un `Skipped`** | `MinSelected` sobre los que pasan |
 | R-T1-16 | **El RED de PB-T1a rompe pruebas existentes** | La tabla T-8; Core en `success` (§6.0) |
 | R-T1-17 | **El modelo paralelo interino (M-12):** entre el cierre de PB-T1b y el de PB-T1c hay **tres** copias de la carga compuesta (WC, el estado y el piloto), contra ADR-0029 D12 | Se declara como interino. PB-T1c retira la de la ventana; PB-T4 retira la del piloto (A-5) |
+| R-T1-20 | **c-09: la rama de la regla con la caja en «lb»** no la mide la red de PB-T1a (v2.5) | El paso 1 de PB-T1b la mide (fila (f)) con dos ramas fijadas; PBT1B-C14 si no es ninguna; CT-PBT1B-17 usa la rama medida |
 | R-T1-18 | **PB-T1c no cierra** (M-12) | El tipo de PB-T1b queda sin uso de producto y sin cambio observable; ante un intento 3, el Owner decide (C12); nada se integra en `main` (A64-PV1-21) |
 
 ## 8. Las decisiones del Owner
@@ -1157,6 +1265,9 @@ Si un anclaje no se sostiene de un modo que cambia un CT o el diseño, la parte 
 - **F4B-E11, D1 (C14 de PB-TC2):** «CONTINUE WITH THE FIX» → la precondición 1, HT1-15 y §8.5.
 - **F4B-E11, «PB-T1 PLAN»:** la división en tres, aceptada en principio → D-PBT1-01; la remedición y la emisión «normally» → la precondición 3 y §8.4.
 - **F4B-E09, pregunta 2 (c-02):** «Como hoy, como regla explícita (Recomendado)» → D-PBT1-09 y CT-PBT1B-03.
+- **F4B-E14, pregunta 2 (c-09 al reconstruir):** «Como hoy, regla explícita (Recomendado)» → HT1-15 corregido, D-PBT1-09b y CT-PBT1B-17 (v2.5). **Pregunta 3** (OWNER-3 y OWNER-4): «Tal cual, anotar mejoras (Recomendado)» → se reproducen sin regla propia (D-PBT1-09b) y están en `docs/ideas-futuras.md`. **Pregunta 1** (CT-02): ratificado solo para ese caso; la regla SIN LATITUD y las paradas C04 no cambian. Con las preguntas 2 y 3, la precondición 5 queda satisfecha.
+- **F4B-E15** («Reforzar y repetir»): la verificación con tres comprobaciones deterministas, también en PB-T1b y PB-T1c → INV-PBT1x-12 y la `ExpectedEvidence` de §6.2 y §6.3.
+- **F4B-E16:** PB-T1a CLOSED / PASS WITH LIMITATIONS sobre `73d30982` → la base de PB-T1b (`5043b49a`).
 - **F4B-E09, pregunta 3 (`pb-21-cola`):** «Dejarlo fuera de la garantía (Recomendado)» → D-PBT1-10 y CT-PBT1B-04.
 - **F4B-E09, alcance:** los demás casos de T-2, tal cual → CT-PBT1B-05.
 - **F4B-E09, pregunta 1:** H-31 y OWNER-1 en PB-TC2, antes de PB-T1 → la precondición 1.
@@ -1176,8 +1287,9 @@ Si un anclaje no se sostiene de un modo que cambia un CT o el diseño, la parte 
   Es una lectura de cómo se prueba la condición, no una decisión nueva. Si el Owner o la revisión la leen de otro modo (por ejemplo, que el comparador no lea nada de la línea base), cambia el diseño de D-PBT1-06 y el paquete vuelve al Owner antes de emitir PB-T1b.
 - **L-5. A qué tareas alcanza el límite.** El texto del Owner nombra «PB-T1/PB-T2/PB-T3» y «the Workspace draft lifetime». Este paquete lo aplica **también a PB-T4**, que es la tarea que conecta el `DraftSession` del Workspace al estado (A-2), y, **dentro de PB-T1**, donde aún no hay borrador del Workspace, al tiempo de vida de la edición de la ventana clásica (de la carga al cierre). Es más estricto que la letra (así lo pidió la sesión para esta v2.2). No es una decisión nueva; el Owner puede estrecharlo.
 - **L-6. Qué es una «premisa material»** para la emisión «normally» (§8.4). Este paquete la define para que la remedición no tenga latitud. No es una decisión nueva; la revisión puede ajustarla.
+- **L-7. La regla de c-09** (v2.5). Es «como hoy» (F4B-E14): la regla reproduce lo que muestra `WeightUnitBox` tras W:395 (D-PBT1-09b), igual que L-2 con `PostBox`. **El paso 1 elige entre dos ramas ya fijadas** según la fila (f): la caja conserva su selección, o vuelve a «kg». **PBT1B-C14 para** si la fila no es ninguna de las dos. Dónde vive (`AdoptCarriers`) y en qué paso de la salida se aplica (`BuildInputs`, con efecto solo en la reconstrucción de DA:211-218) salen de D-PBT1-09 como patrón y del código de hoy; el orden de la carga no cambia. **No es material** ni pide una decisión nueva.
 
-**Decisiones materiales nuevas para el Owner, al incorporar D2: ninguna.** Las diez condiciones se prueban en PB-T1 en todo lo que su API permite, o se arrastran a PB-T2, PB-T3 o PB-T4 como obligación de contrato con la parada C17, sin cambiar el plan, el orden ni las dependencias de la fase. Lo que la v2.2 dejó abierto era **medición**, no decisión, y la remedición lo cerró: no hay hoy ninguna mutación de los dos objetos en el camino de edición (R-11) ni un cuarto escritor de `Name` (R-12) (registro N-9 y N-11). **La premisa de D2 se sostiene. Tampoco hay decisiones nuevas en la v2.3.**
+**Decisiones materiales nuevas para el Owner, al incorporar D2: ninguna.** Las diez condiciones se prueban en PB-T1 en todo lo que su API permite, o se arrastran a PB-T2, PB-T3 o PB-T4 como obligación de contrato con la parada C17, sin cambiar el plan, el orden ni las dependencias de la fase. Lo que la v2.2 dejó abierto era **medición**, no decisión, y la remedición lo cerró: no hay hoy ninguna mutación de los dos objetos en el camino de edición (R-11) ni un cuarto escritor de `Name` (R-12) (registro N-9 y N-11). **La premisa de D2 se sostiene. Tampoco hay decisiones nuevas en la v2.3.** **Ni en la v2.5:** c-09 ya lo decidió el Owner (F4B-E14), y su regla se diseña con D-PBT1-09 como patrón (L-7).
 
 ### 8.4 Las condiciones de emisión (F4B-E11, «PB-T1 PLAN»)
 
@@ -1185,7 +1297,7 @@ Si un anclaje no se sostiene de un modo que cambia un CT o el diseño, la parte 
 
 1. **El cierre de PB-TC2** con D1 («CONTINUE WITH THE FIX»): **hecho.** CLOSED / PASS WITH LIMITATIONS sobre su GREEN `b5c09f0b`, con la custodia del cierre en `cd47523b` (F4B-E12). La parada C14 y D1 están en su evidencia.
 2. **La remedición sobre ese producto final:** **hecha** en `cd47523b`, en solo lectura, sin ningún Worker en el worktree. Usó las órdenes del registro y cinco scripts de lectura; la custodia va con la emisión (§6.0). El detalle está en `pbt1-measurements.md`, apartado N, y el resultado en la tabla de abajo.
-3. **Ninguna premisa material cambió** (L-6). Por eso, PB-T1a se emite «normally» (F4B-E11) por F4B-E09 y F4B-E11, **tras la comprobación acotada de la remedición** que pidió la sesión (F4B-E12, «Siguiente»; §6.0). **Hecha:** `independent-review-v23-check.md`, EMITIBLE TRAS CORRECCIONES 0/1/3, sin decisiones nuevas; sus cuatro hallazgos se aplican en esta v2.4. El importante, V23C-I01, amplía G-L1 y no toca el contrato de PB-T1a. Las anclas, las líneas, los textos de los mutantes y los recuentos ya están actualizados como datos en esta v2.3 y en el generador del contrato.
+3. **Ninguna premisa material cambió** (L-6). Por eso, PB-T1a se emite «normally» (F4B-E11) por F4B-E09 y F4B-E11, **tras la comprobación acotada de la remedición** que pidió la sesión (F4B-E12, «Siguiente»; §6.0). **Hecha:** `independent-review-v23-check.md`, EMITIBLE TRAS CORRECCIONES 0/1/3, sin decisiones nuevas; sus cuatro hallazgos se aplican en la v2.4. El importante, V23C-I01, amplía G-L1 y no toca el contrato de PB-T1a. Las anclas, las líneas, los textos de los mutantes y los recuentos ya están actualizados como datos en esta v2.3 y en el generador del contrato.
 4. **La comprobación acotada no encontró ningún cambio material.** Si apareciera uno antes de emitir, el paquete se corregiría y volvería a ella antes de emitir PB-T1a. Si el cambio tocara una premisa de D2 (R-11 o R-12), sería PBT1x-C17 y se reabriría L-1.
 
 **PB-T1b y PB-T1c,** además, con sus precondiciones 4 y 5 y su propia comprobación acotada (§6.0), que revisa también lo de D2: CT-PBT1B-14, 15 y 16, y CT-PBT1C-04, con lo que la remedición fijó en V23-11 a V23-13.
@@ -1209,7 +1321,7 @@ Si un anclaje no se sostiene de un modo que cambia un CT o el diseño, la parte 
 | R-3 | **Los anclajes de D-PBT1-13 y D-PBT1-03** | Todos en su línea y con su texto. `KeepOptional` y `MixedBoth` leen los portadores y `composite`, que PB-T1c reenvía con su mismo nombre (N-3) | no material |
 | R-4 | **La pasada reentrante** (HT1-10b, F-03) | El camino no cambia (WC:117-121, W:3277-3289); lo esperado en CT-PBT1A-14, tampoco (N-3) | no material |
 | R-5 | **D1 en el producto** | `RackHeaderHeightBox` ya no redondea (W:1639, `KeepOptional`) (N-4) | no material (V23-05) |
-| R-6 | **El mapa de controles** | Las lecturas crudas que quedan son enteros o acciones del usuario. Una caja mixta solo tiene valor si el usuario lo escribe. WX no cambia. Solo `PostBox` decide el estado (N-4) | no material (V23-05) |
+| R-6 | **El mapa de controles** | Las lecturas crudas que quedan son enteros o acciones del usuario. Una caja mixta solo tiene valor si el usuario lo escribe. WX no cambia. Solo `PostBox` decide el estado (N-4). **Corregido en la v2.5:** también `WeightUnitBox` al reconstruir (c-09, medido por PB-T1a; V25-06) | no material (V23-05) |
 | R-7 | **La línea base de la CI** | `44313012995` sobre `cd47523b`: UI 2 422 / 21 / 2 401; Core 19 070. Es la previsión exacta (N-5) | no material (V23-06) |
 | R-8 | **El BOM por valor exacto (D1) frente a CT-PBT1A-11** | `pb-05-topes` no tiene valores con más precisión de la que se muestra, y CT-11 no pasa por cajas avanzadas: sus líneas no cambian por D1 (N-8) | no material (V23-09) |
 | R-9 | **Los recuentos estáticos** | `PushBack*` de UI pasa a 542 (+4 de PB-TC2), `PushBackDeclaredCorrection` a 14 y `PushBackRichPreviewTests` da 9. Lo demás, igual; los prefijos nuevos, libres (N-6) | no material (V23-07) |
@@ -1221,19 +1333,33 @@ Si un anclaje no se sostiene de un modo que cambia un CT o el diseño, la parte 
 
 **Diferencias materiales: ninguna.** La emisión no se para.
 
+**Los anclajes de PB-T1b** (precondición 4; registro P), medidos en `5043b49a`, en solo lectura, sin ningún Worker en el worktree:
+
+| Id | Qué | Resultado sobre `5043b49a` | Clase |
+|---|---|---|---|
+| A1B-1 | **`src` frente al cierre de PB-T1a** | `git diff a3b63ccc 5043b49a -- src`, `git diff b5c09f0b 5043b49a -- src` y el árbol de trabajo frente a `5043b49a`: vacíos. `tests` solo gana las siete clases de PB-T1a (P-0) | no material (V25-01) |
+| A1B-2 | **Las anclas por miembro y línea** de ES, RMES, CS, DA y CA (y de W, WC, PC, PM, Domain y las pruebas) que citan D-PBT1-02 a D-PBT1-11, D-PBT1-15 y el §5.3 | 104 de 104 en su línea, con su texto y en su miembro (P-1) | no material (V25-02) |
+| A1B-3 | **G-L1 de la v2.4** sobre los archivos de su lista | 0 coincidencias en los 47 archivos que existen (997 miembros) y en W y WC (320); las catorce autopruebas saltan y las tres del límite no (P-4) | no material (V25-03): la premisa de D2 se sostiene |
+| A1B-4 | **Los recuentos de §6.2** | `PushBackStateNet` 14; los demás, los de §6.1; UI `PushBack` 556; los prefijos nuevos, libres (P-5) | no material (V25-04) |
+| A1B-5 | **La línea base de la CI** | `44361363873` sobre `5043b49a`: UI 2 436 / 21 / 2 415; Core 19 070; es la previsión del cierre de PB-T1a (P-6) | no material (V25-05) |
+| A1B-6 | **La autoridad de PB-T1a** (precondición 5) | c-09 al reconstruir: `WeightUnitBox` decide el estado (CT-PBT1A-02; P-2); OWNER-3 y OWNER-4 | **material** por L-6 (iii) (c-09), **ya decidida por el Owner** (F4B-E14): la v2.5 la aplica (V25-06 a V25-10) |
+
+**Diferencias materiales nuevas: ninguna.** La única material, c-09, ya volvió al Owner y está decidida (F4B-E14, pregunta 2); la v2.5 la aplica con el patrón de D-PBT1-09 (L-7), sin decisiones nuevas. La comprobación acotada de PB-T1b revisa la v2.5 antes de emitir.
+
 ### 8.5 D1 del Owner y la vuelta C14 de PB-TC2
 
-- **D1** (F4B-E11, «CONTINUE WITH THE FIX»; «Ratify exact-value preservation»): PB-TC2 sigue con su corrección. La nota de la v2.1 sobre la opción (B) de C14 **ya no aplica**: `RackHeaderHeightBox` no queda como control fuente de verdad, y HT1-15, el mapa de controles (§5.5) y CT-PBT1C-02 no ganan ninguna excepción. **Medido** (R-5; registro N-4): W:1639 usa `KeepOptional` y la caja ya no redondea.
+- **D1** (F4B-E11, «CONTINUE WITH THE FIX»; «Ratify exact-value preservation»): PB-TC2 sigue con su corrección. La nota de la v2.1 sobre la opción (B) de C14 **ya no aplica**: `RackHeaderHeightBox` no queda como control fuente de verdad, y HT1-15, el mapa de controles (§5.5) y CT-PBT1C-02 no ganan ninguna excepción por C14. **Medido** (R-5; registro N-4): W:1639 usa `KeepOptional` y la caja ya no redondea.
 - **La consecuencia que toca a PB-T1** es el BOM: «grouping/equality must not pretend two distinct exact values are equal unless the BOM contract explicitly defines a tolerance». PB-T1 no cambia el BOM ni define ninguna tolerancia; su red lo caracteriza tal como lo deja PB-TC2 (R-8). Con `pb-05-topes`, las líneas de CT-11 no cambian por D1 (registro N-8).
 - **Lo que la parada C14 no consumió:** según F4B-E11, «NO ATTEMPT CONSUMED BY THE MEASUREMENT STOP». Eso es de PB-TC2 y no cambia los presupuestos de PB-T1.
 
 ## 9. Límites
 
-En `pbt1-measurements.md`, apartados L, M-11, N-16 y O-4. En resumen:
+En `pbt1-measurements.md`, apartados L, M-11, N-16, O-4 y P-8. En resumen:
 - **Nada se compiló ni se ejecutó.** Las líneas esperadas de PB-T1a las mide el Worker; las de PB-T1b y PB-T1c salen de oráculos existentes o son literales. Del generador del contrato solo se ejecutó el `--dry`, que no escribe nada.
 - **La v2.2 no leyó el worktree** (un Worker de PB-TC2 trabajaba en él). **La v2.3 lo remidió** en solo lectura, sin Worker, y cerró todo lo que quedaba «A MEDIR» (registro N).
 - **No medido:**
   - cómo compara WPF un `SelectedValue` en minúsculas (lo mide el paso 1 de PB-T1b; con el catálogo entregado no cambia la salida);
+  - qué conserva `WeightUnitBox` cuando estaba en «lb» y se le siembra una unidad que no ofrece (c-09; lo mide el paso 1 de PB-T1b, fila (f); la lectura de `Selector.CoerceSelectedItem` dice que conserva su selección);
   - que la sesión y el commit se puedan copiar y comparar como se describe (por lectura de sus campos);
   - si F-03 alcanza en la base exactamente la pasada reentrante descrita (por lectura sí; lo fija CT-PBT1A-14 tal como sea);
   - el `config.toml` frente a la Snapshot I y el binario acreditado (precondición 6; los comprueba la sesión al emitir);
@@ -1251,7 +1377,7 @@ En `pbt1-measurements.md`, apartados L, M-11, N-16 y O-4. En resumen:
 | A-3 | Quitar el rechazo A/B del piloto (OB-03.2) con PB-T1 cerrada; `DormantTailOutOfPilotReason` se queda en todo F4B | PB-T3 o PB-T4 |
 | A-4 | La pregunta al Owner sobre la `ExtensionData` anidada (OB-05.2) | Antes del contrato de PB-T3 |
 | A-5 | La copia de la carga del piloto (PM:150-172) | PB-T4 la retira al consumir el API |
-| A-6 | M-07 (reproducido), la caja de c-02 que se ve vacía y M-01 de PB-T0 (no corregido) | `docs/ideas-futuras.md`, por la sesión |
+| A-6 | M-07 (reproducido), la caja de c-02 que se ve vacía y M-01 de PB-T0 (no corregido) | `docs/ideas-futuras.md`, por la sesión: **hecho** en el cierre de PB-T1a (F4B-E16), con c-09, OWNER-3 y OWNER-4 (F4B-E14) |
 
 ### A-2, D2: lo que heredan PB-T2, PB-T3 y PB-T4
 

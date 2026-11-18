@@ -7902,3 +7902,24 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - sin AutoCAD: lo físico es de Smoke-PB;
 - la regla explícita de c-09 va a PB-T1b;
 - los hallazgos OWNER-3 y OWNER-4 y A-6 quedan en `docs/ideas-futuras.md`.
+
+## 244. Paquete de PB-T1 v2.6 y anclajes de PB-T1b
+
+**Decisión:** F4B-E17, la emisión de PB-T1b por F4B-E09 (pregunta 4) y F4B-E11, con F4B-E14 aplicada.
+
+**Qué se custodia:**
+- **El paquete de PB-T1** v2.6, en `docs/initiatives/I-64-f4b-pbt1-gate-contract-package.md`: la v2.5 con la comprobación acotada aplicada. La v2.4 y la v2.5 pasan a la historia.
+- **El registro de mediciones,** con el apartado P: los anclajes de PB-T1b sobre `5043b49a`.
+- **En `F4B-DRAFTS/pbt1/`:**
+  - el encargo al redactor;
+  - el script de medición con su salida;
+  - la comprobación del esqueleto;
+  - la salida en seco del generador;
+  - la comprobación acotada de PB-T1b con su encargo (EMITIBLE TRAS CORRECCIONES 0/1/5, sin decisiones nuevas para el Owner; sus seis hallazgos, aplicados en la v2.6).
+
+**Lo que establece la v2.6:** c-09 como regla explícita del estado en PB-T1b (D-PBT1-09b y CT-PBT1B-17), por la decisión del Owner F4B-E14. Los anclajes no cambian, y G-L1 da 0.
+
+**Límites:**
+- solo documentación en este paso;
+- sin cambios en `src/` ni en `tests/`;
+- sin AutoCAD.

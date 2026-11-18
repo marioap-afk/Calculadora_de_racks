@@ -642,3 +642,156 @@ a custodiar en la emision (aun no en HEAD): 5 [paquete, registro, IRT1-1, compro
 
   Lo cubren las huellas profundas de los caminos ejercidos, INV-PBT1x-14, la comprobación acotada de cada subtarea y C17.
 - **Los falsos positivos futuros de la regla 2 con lambdas:** el alias de un parámetro vale para el resto del miembro, así que un parámetro con el mismo nombre en otro lambda del mismo miembro, que mute un objeto ajeno, haría saltar la guarda. Hoy no ocurre (O-1). Si ocurre, se cambia el nombre del parámetro: es más estricto, nunca más permisivo.
+
+---
+
+## P. Los anclajes de PB-T1b sobre el cierre de PB-T1a (v2.5; precondición 4)
+
+**Base:** rama `architecture/workspace-persistente-rackcad` en `5043b49a`, la custodia del cierre de PB-T1a (F4B-E14, F4B-E15 y F4B-E16), con el producto de `b5c09f0b`. Ningún Worker en el worktree (lo dijo la sesión). `git status --short` del worktree, vacío antes y después.
+
+**Reglas:** las de siempre. Solo lectura en el worktree; sin compilar ni ejecutar pruebas; `gh` solo de lectura (`run list`, `run view`, `run view --job --log`; ninguna descarga). Dos scripts nuevos de solo lectura, escritos con la herramienta de archivos y ejecutados con `python -I`, en `<carpeta-del-paquete>`:
+- `measure_pbt1b_anchors.py`: lee HEAD con `git show`, `git diff` y `git ls-tree`; ejecuta con `-I` `remeasure_gl1_v24.py` (O) y `count_tests.py` (I); y consulta la CI con `gh`. No imprime rutas locales. Su salida es `pbt1b-anchors-out.txt`;
+- `check_v25_skeleton.py`: compara el esqueleto del §5.3 de la v2.4 y de la v2.5 (P-7).
+
+Y el generador del contrato de PB-T1b, `make_pbt1b_contract.py`, ejecutado **solo** con `--dry --print` (P-7).
+
+**Orden:** `python -I measure_pbt1b_anchors.py <worktree-de-I-64> > pbt1b-anchors-out.txt`.
+
+### P-0. Identidad
+
+| Orden | Resultado |
+|---|---|
+| `git -C <worktree-de-I-64> rev-parse HEAD` | `5043b49a2bbf707520296b353a204995b90a1d79` |
+| `git -C <worktree-de-I-64> status --short` | vacío |
+| `git -C <worktree-de-I-64> log --oneline -6` | `5043b49a` (cierre de PB-T1a), `73d30982` (GREEN), `15f1f225` (RED), `a3b63ccc` (emisión), `95c8126b` (paquete v2.4), `cd47523b` (cierre de PB-TC2) |
+| `git -C <worktree-de-I-64> diff --stat a3b63ccc 5043b49a -- src` | vacío |
+| `git -C <worktree-de-I-64> diff --stat b5c09f0b HEAD -- src` | vacío: el producto sigue siendo el GREEN de PB-TC2 |
+| `git -C <worktree-de-I-64> diff --stat 5043b49a -- src` | vacío (el árbol de trabajo frente al cierre de PB-T1a) |
+| `git -C <worktree-de-I-64> diff --name-status b5c09f0b HEAD -- tests` | solo `A` de las siete clases `tests/RackCad.UI.Tests/PushBackStateNet*.cs` de PB-T1a |
+| `git -C <worktree-de-I-64> diff --quiet cd47523b HEAD -- docs/automation/agent-execution` | sin cambios: las celdas siguen y vencen el 2026-12-29 |
+| líneas con `git show HEAD:<ruta>` | ES 622, EL 234, CS 1213, DA 578, CA 300, RMES 851, W 3700 y WC 936 |
+
+### P-1. Las anclas por miembro y línea
+
+**104 anclas, 0 diferencias.** Cada ancla comprueba que la línea contiene el texto que cita el paquete y nombra su miembro (con la heurística de `members.py`):
+- **ES** (10): `workingBaseline` (:65), `WorkingBaseline` (:71), `AdoptLoadedBaseline` (:99-106, con :105), `moduleSession`, `moduleCommit` y `moduleSignature` (:110-112), `ModuleSession` (:124), `LastModuleReconciliation` (:143) y `ReseedModuleSession` (:176-186);
+- **CS** (9): `DormantCompositeTail` (:58), `DormantTailLineOverrides` (:61), `ParkDormantTail` (:74-96), `MarkDormantTailConsumed` (:116-117), `DormantTailConsumptionPending` (:145), `dormantTailConsumed` (:147), `ActiveSide` (:167), `ActiveSelection` (:179) e `IntentDiagnostics` (:629-631);
+- **RMES** (10): `RackModuleCommit` (:16) y su constructor `internal` (:18), `clone` (:74), `committedLines` y `workingLines` (:82-83), `CopyIntent` en :91, `CopyLines` (:732-742), `AreEquivalentDerivedPosts` (:744-746), `AreEquivalentLines` (:750-769) y `AreEquivalent` (:818-846);
+- **DA** (16): `ModuleIntents` (:57), `AcceptComputation` (:101-107), y en `BuildDesign` (:141-436) las líneas :155, :169, :176, :183, :211, :213, :218, :273, :302 y :325; `AttachDormantTail` (:557 y :565) y `ClonePallet` (:573-576);
+- **CA y PCS** (6): `ParkTailOf` (:180-242, con :189, :202 y :241), `ToTailDesign` (PCS:777) y `ToDesign` (PCS:800-811);
+- **el piloto, el informe, el almacén, Domain y Dynamic** (21): PC:37, :58, :64, :134, :309; PM:108, :160; `RackModuleReconciliation.cs:16` y `:212`; RFPS:87; `UiSupport.cs:124`; `RackBomOutputGate.cs:49`; DDA:44, :50, :60 y :65; `DynamicRackSystem.cs:146`; `DynamicRackSystemBuilder.cs:137`; `BracingPanelMemberBuilder.cs:11`; `PushBackSystem.cs:143`; `PushBackDesignDocument.cs:469`;
+- **W y WC** (25): W:148, :149, :273, :286, :301, :318, :391, :392, :393, :395, :396, :399, :838, :840, :852, :853, :868, :2682, :3322 y :3327; WC:783, :789, :806, :827 y :933;
+- **las pruebas** (7): `WorkspaceDraftPilotStateTests.cs:211`, `:501` y `:531`; `PushBackOutputGateTests.cs:41`; `WorkspaceDraftPilotMaterializationTests.cs:706`; `PushBackDeclaredCorrectionPilotParityTests.cs:20`; `HeaderBatchContractTests.cs:524`; y el oráculo de CT-PBT1B-17, `PushBackStateNetRackControlsTests.cs:133`.
+
+**Nota:** el miembro `Copy` de PC tiene el rango 58-62 en la heurística; la cita «PC:58-111» del paquete (HT1-20) abarca `Copy` y sus ayudantes. No es una diferencia nueva: es la misma desde `eedb069c`.
+
+### P-2. c-09 al reconstruir (F4B-E14, pregunta 2)
+
+**El oráculo** (`git show HEAD:tests/RackCad.UI.Tests/PushBackStateNetRackControlsTests.cs`, `:198-204`), medido por PB-T1a y verde en la CI de `5043b49a`:
+- `carga [PalletDepth=48 PalletWeightUnit="kg" PalletWeight=1000]`;
+- `WeightUnitBox=lb [PalletDepth=48 PalletWeightUnit="kg" PalletWeight=1000]`;
+- `DepthBox=54 [PalletDepth=54 PalletWeightUnit="lb" PalletWeight=1000] descartes=0`;
+- `carga ton caja=[kg] salida=[PalletDepth=48 PalletWeightUnit="ton" PalletWeight=1000] actualizar=[PalletDepth=48 PalletWeightUnit="ton" PalletWeight=1000] descartes=0`;
+- `carga ton y DepthBox=54 [PalletDepth=54 PalletWeightUnit="kg" PalletWeight=1000] descartes=0`;
+- y las dos de `PalletsDeepBox` (`:203-204`).
+
+**El mecanismo, por lectura de las anclas de P-1:**
+- la caja solo ofrece «kg» y «lb» (W:148) y nace en «kg» (W:149);
+- la carga intenta W:395 con la unidad cargada; con «ton», la caja conserva su selección (`caja=[kg]`);
+- `generalPallet` guarda la unidad cargada (W:393, W:840), pero los inputs de cada pasada llevan la de la caja (W:852);
+- el ensamblador clona ese pallet (DA:176) y solo reconstruye si `MustRebuild` (DA:211-213), que compara el pallet sin la unidad (`SamePallet`, DDA:50-61, la última comparación es `Weight` en :60);
+- sin reconstrucción copia la línea base (DA:273), que conserva la unidad cargada; con reconstrucción construye con la de la caja (DA:218).
+
+**Los 17 diseños de `Fixtures/I64`** (`git ls-tree` y `git show` de cada uno): `PalletWeightUnit` = «kg» en los 17. El corpus no ejerce c-09.
+
+**OWNER-3 y OWNER-4 por lectura:** `PalletsDeepBox` se siembra con `Math.Max(2, …)` (W:396) y se lee con `IntVal` (W:853), y el ensamblador lo usa en DA:183; el portador de botas lo añade `ApplyBootSections` en `Safety_Click` (W:2682). Ninguno pasa por una normalización del estado.
+
+### P-3. Las rutas de PB-T1b y la lista de G-L1
+
+- **Existen** ES y RMES; **no existen** los cuatro archivos nuevos de Application ni las seis clases de prueba.
+- **La lista de CT-PBT1B-14** que existe hoy: ES, EL, CS, CA, DA, RMES, `RackModuleReconciliation.cs` y los 40 `.cs` de `src/RackCad.Application/Workspace/`: **47**.
+- **Los prefijos nuevos** (`PushBackEditableState`, `PushBackEditorOutputGate`, `PushBackSharedReferenceGuardTests`, `PushBackWindowSharedReferenceGuardTests` y `PushBackWindowOnState`): 0 rutas en `tests/`.
+
+### P-4. G-L1 de la v2.4
+
+Orden (dentro de `measure_pbt1b_anchors.py`): `python -I remeasure_gl1_v24.py <worktree-de-I-64>`.
+
+- **CT-PBT1B-14:** 47 archivos, 997 miembros. Regla 1: **0**. Regla 1b: **0**. Regla 1c: **0**. Regla 2: **0**. Los alias, todos por asignación y de lectura: `structure` y `signature` (ES), `baseline` (CA), y `baseline` y `rebuildShape` (DA).
+- **CT-PBT1C-04:** W y WC, 320 miembros. Las cuatro reglas: **0**. Los alias, de lectura: `outputIsBlocked` y `reconciliation` (asignación) y `module` (lambda).
+- **Las autopruebas:** (a), (b), (c), (d), (e), (f1), (f2), (f3), (g1), (g2), (h1), (h2), (i) y (j) saltan, cada una por su regla; `L1-alias2`, `L2-anidado` y `L3-otro-metodo` no saltan, como declara el límite.
+- **Es la misma salida que O-1 y O-2**: `src` no cambió desde `b5c09f0b`.
+
+### P-5. Los recuentos estáticos de `RequiredTests`
+
+Orden (dentro de `measure_pbt1b_anchors.py`): `python -I count_tests.py <worktree-de-I-64> UI <prefijos>` y lo mismo con `Core`.
+
+| Proyecto | Prefijo | `5043b49a` |
+|---|---|---|
+| UI | `PushBackStateNet` | **14** (6 clases de prueba) |
+| UI | `PushBackClassicCharacterization`, `PushBackFullEditorCharacterization`, `Cantilever` | 55; 16 (2 `Skip`); 67 |
+| UI | `PushBackDeclaredCorrectionRoundingTests`, `…DimensionStyleTests`, `…PilotParityTests`, `…SideBNoticeTests`, `…StandardRestoreTests`; `PushBackDeclaredCorrection2` | 3, 2, 2, 2, 1; 4 |
+| UI | `PushBack` (todas las clases `PushBack*`) | **556** (3 `Skip`): 542 + 14 de PB-T1a |
+| UI | `BlankFront`, `WindowCensusGuardTests`, `RichEditor`, `Workspace`, `PushBackRichPreviewTests` | 33, 8, 25 (4 `Skip`), 547 (+16 `MemberData`), 9 |
+| Core | `Workspace` | 3 271 (+33 `MemberData`) |
+| Core | `PushBackOutputGateTests`, `PushBackBlankFrontAuthorityTests`, `PushBackModuleEditorCharacterizationTests` | 8, 9, 15 |
+| Core | `RackModuleEditSessionTests`, `NamespaceFolderGuardTests`, `HeaderBatchContractTests` | 25, 7, 17 (+2 `MemberData`) |
+| Core | `PushBackClassicCharacterization`, `PushBackFullEditorCharacterization`, `I55DeferredProductFixCharacterizationTests`, `PushBack` | 7 (+1 `MemberData`; 10 casos), 3, 3, 1 584 (+59) |
+| UI y Core | `PushBackEditableState`, `PushBackEditableStateParityTests`, `PushBackEditorOutputGate`, `PushBackSharedReferenceGuardTests`, `PushBackWindowSharedReferenceGuardTests`, `PushBackWindowOnState` | **0**: libres |
+
+**Consecuencia:** los filtros de §6.2 son los de §6.1 más los de PB-T1b; con CT-PBT1B-17, el filtro `PushBackEditableState` de Core pasa a 13. En PB-T1c, UI `PushBack` = 556 + 1 = 557, como prevé §6.3.
+
+### P-6. La línea base de la CI
+
+Orden (dentro de `measure_pbt1b_anchors.py`): `gh run list --branch architecture/workspace-persistente-rackcad --limit 5 --json …`; `gh run view 44361363873 --json jobs`; y `gh run view --job <id> --log`, filtrado a las líneas `Passed!` y `Failed!`. Solo lectura, sin descargas.
+
+- **El último run verde de la rama:** `44361363873`, sobre `5043b49a`, `push`, `success`, 4 de 4 trabajos en `success`.
+- **UI:** `Passed! - Failed: 0, Passed: 2415, Skipped: 21, Total: 2436`.
+- **Core:** `Passed! - Failed: 0, Passed: 19070, Skipped: 0, Total: 19070`.
+- **Es exactamente la previsión del cierre de PB-T1a** (UI 2 436 / 21 / 2 415; Core 19 070), igual que su GREEN `44338475965` sobre `73d30982`. Los runs anteriores: `44333116533` (el RED de PB-T1a, `failure`, esperado), `44322004186` (`a3b63ccc`) y `44321940755` (`95c8126b`), `success`.
+- **El GREEN de PB-T1b, previsto:** Core 19 070 + 16 = 19 086; UI 2 437 (21 `Skipped`, 2 416 `Passed`).
+
+### P-7. El generador del contrato de PB-T1b, en seco, y el esqueleto
+
+**El esqueleto:** `python -I check_v25_skeleton.py I-64-f4b-pbt1-gate-contract-package-v24.md I-64-f4b-pbt1-gate-contract-package-v25.md` da `v2.5 == v2.4 con el fragmento de c-09: True` (5 líneas; 1 006 → 1 048 caracteres). El único cambio es `` `ResolveWeightUnit` devuelve `requested`; `` tras el de `ResolvePostCatalogId`.
+
+**El generador.** Orden (la del encargo, literal, desde `<carpeta-del-paquete>`): `python make_pbt1b_contract.py 2026-11-18T00:00:00Z 0000000000000000000000000000000000000000 0000000000000000000000000000000000000000 --dry --print`. Su salida es `make_pbt1b_contract-dry.txt`:
+
+```text
+DRY allowed 12 forbidden 213 (src 117 tests 79 root 17 ) inv 15 stops 33 required 23 evidence 8 authorities 46 anchors-ok 39 skeleton-in-HEAD v2.4 bytes 53912 sha256 E50624538521B872D0D1CF5A80D54AB55B90674001E8A5295F0EF6D96503CF86
+a custodiar en la emision (aun no en HEAD): 2 ['docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt1/pbt1b-anchors-out.txt', 'docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt1/independent-review-pbt1b-check.md']
+a sustituir en la emision: paquete en HEAD v2.4 (hace falta la v2.5); registro en HEAD con el apartado P: False
+```
+
+y las 213 rutas prohibidas, numeradas.
+
+- **Lo que comprueba antes de imprimir:**
+  - la fecha de emisión, antes del 2026-12-29 (las celdas);
+  - `HEAD` desciende de `5043b49a`, y `git diff` de `src` frente a `5043b49a` y a `b5c09f0b` está vacío (el anclaje de §6.0);
+  - 39 anclas de ES, RMES, CS, DA y CA, con su texto en su línea;
+  - **el texto exacto del esqueleto del §5.3**, extraído del paquete de HEAD y pasado a ASCII: es el de la v2.4 (la v2.5 sin `ResolveWeightUnit`); al escribir, exige el de la v2.5, el título de la v2.5 y el apartado P en el registro;
+  - las 12 rutas permitidas (2 de producto que existen y 10 nuevas que no existen);
+  - el `ForbiddenWriteScope`: 117 de `src/` por `cover()`, con CS, DA, CA, `Pilot/`, `Workspace/`, Domain, Plugin y UI dentro; en `tests/RackCad.Tests/`, las 15 entradas prohibidas de PB-T0 y sus 3 clases de Core (18); en `tests/RackCad.UI.Tests/`, las 54 de PB-T1a y sus 7 clases (61); la raíz, igual a la de PB-T1a (17). Todas existen en HEAD;
+  - las paradas estándar, iguales a las de PB-T1a, y las celdas, iguales a las de PB-T1a y PB-TC2;
+  - los 23 filtros, con los 12 heredados iguales a los de PB-T1a; los prefijos nuevos, libres;
+  - 46 autoridades: las 41 de `EXISTING`, `UNIT_CHANGE` y `EXTERNAL` existen en HEAD; de las cuatro de `CUSTODY`, el paquete y el registro están en HEAD en su versión anterior (v2.4; apartados A a O) y las otras dos aún no; y este contrato;
+  - el texto: ASCII, sin términos de cierre ni rutas locales.
+- **No escribe nada.** `git status --short` del worktree, vacío antes y después.
+
+### P-7b. El generador en la v2.6 (la comprobación acotada aplicada)
+
+Lo añade la sesión principal al custodiar. La v2.6 aplica los seis hallazgos de la comprobación acotada de PB-T1b (`independent-review-pbt1b-check.md`, 0/1/5). PBT1BC-M03 añade tres autoridades (F4-T2, F4-T3 y F4-T3C), y el `--dry` del generador pasa a ser, en `make_pbt1b_contract-dry.txt`:
+
+```
+DRY allowed 12 forbidden 213 (src 117 tests 79 root 17 ) inv 15 stops 33 required 23 evidence 8 authorities 49 anchors-ok 39 skeleton-in-HEAD v2.4 bytes 55111 sha256 D6911E30176C19B7822A83BEB6EAB3EE551F5114DFF70B8ADC075B52A3B8CE09
+```
+
+Lo de P-7 (46 autoridades y `sha256 E5062453…`) es el `--dry` de la v2.5. Los recuentos de alcance, invariantes, paradas y filtros no cambian.
+
+### P-8. Lo que sigue sin medir
+
+- **Nada se compiló ni se ejecutó.** Las líneas del paso 1 de PB-T1b (filas (a) a (f)) las mide el Worker en la `BaseSha`.
+- **La rama de c-09 con la caja en «lb»** (fila (f)): CT-PBT1A-02 midió la caja en «kg»; la lectura de WPF (`Selector.CoerceSelectedItem` rechaza un elemento que no está en `Items`) da la rama «conserva». Lo mide el paso 1; PBT1B-C14 si no es ninguna de las dos ramas.
+- **El `config.toml` frente a la Snapshot I y el binario de Codex acreditado:** son de la sesión en la emisión (precondición 6). No se leyeron.
+- **El contrato completo:** el `--dry` no lo imprime; sus recuentos y sus `assert` son los de arriba, y el `sha256` es el de los bytes con los SHA de ceros.
+- **Los TRX de la CI de `5043b49a`:** solo se leyó la línea de resumen del log de cada trabajo de pruebas.
+- **Lo que G-L1 no ve:** sin cambio (O-4).
