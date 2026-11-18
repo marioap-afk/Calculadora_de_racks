@@ -7960,3 +7960,13 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - sin cambios en `src/` ni en `tests/`;
 - sin AutoCAD;
 - las corridas de la cadena (las planificaciones, la sonda y las invocaciones del Worker) se custodian al cerrar la tarea.
+
+## 247. Contrato de F4B-PBT1B-LOSSLESS-STATE-TYPE, emitido de nuevo con la v2.7
+
+**Contrato:** `I-64-pilot/F4B-PBT1B-LOSSLESS-STATE-TYPE/coordinator/gate-contract.json` (F4B-E20), con su script generador al lado. Sustituye al de la v2.6 (`7905b3a9`, en la historia de Git).
+- **Lo que cambia frente al de la v2.6:** el `Objective` y `IssuedBy` citan la v2.7 y F4B-E20; PBT1B-C15 nombra la normalizacion conocida de pb-15 como excepcion; las autoridades pasan a 52. El alcance (12 permitidas, 213 prohibidas), los 15 invariantes, las 33 paradas y los 23 filtros no cambian de numero.
+- **Revisiones:** `AuthorityRevision` `5e52aaa34037d8cc6b46849c89d1fce946187324` y `MainSha` `812baf879612320653094a8aaf46aca0bac81383`.
+- **`attempts`:** 1 de 3 (la parada C15 no gasto intento, F4B-E20).
+- **La verificacion** lleva las tres comprobaciones deterministas de F4B-E15; config.toml es la Snapshot J (F4B-E19).
+
+**Limites:** solo documentacion en este paso; sin AutoCAD.

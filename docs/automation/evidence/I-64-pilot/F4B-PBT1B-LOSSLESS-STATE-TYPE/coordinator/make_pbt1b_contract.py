@@ -1,4 +1,4 @@
-"""Contrato de gate de F4B-PBT1B-LOSSLESS-STATE-TYPE (ASCII), desde el paquete del contrato de PB-T1 v2.6
+"""Contrato de gate de F4B-PBT1B-LOSSLESS-STATE-TYPE (ASCII), desde el paquete del contrato de PB-T1 v2.7
 (docs/initiatives/I-64-f4b-pbt1-gate-contract-package.md, sections 5.0, 5.3, 6.0 y 6.2) y el patron de make_pbt1a_contract.py.
 El ForbiddenWriteScope de src/ sale del algoritmo de [PKC-C] (cover()): por cada entrada de src/ en HEAD se emite <dir>/ solo si
 ninguna ruta permitida queda debajo; si queda alguna, se desciende; los archivos se emiten uno a uno. Los de tests/ y la raiz son
@@ -7,9 +7,10 @@ en tests/RackCad.UI.Tests/, la de PB-T1a (la de [PKC2], las dos clases de PB-TC2
 la raiz, la de PB-T1a.
 Antes de escribir, comprueba sobre HEAD: src igual al cierre de PB-T1a (5043b49a) y al GREEN de PB-TC2 (b5c09f0b) (section 6.0,
 anclajes de PB-T1b); las anclas de ES, RMES, CS, DA y CA del registro P; y el texto exacto del esqueleto del section 5.3 del
-paquete custodiado (en --dry acepta todavia la v2.4 en HEAD, cuyo esqueleto es el de la v2.6 sin ResolveWeightUnit; al escribir exige la
-v2.6). Al escribir comprueba tambien que estan en HEAD las dos rutas de PBT1BC-M04 (check_v25_skeleton.py y make_pbt1b_contract-dry.txt),
-que se custodian con la emision y no son autoridades.
+paquete custodiado: el esqueleto vigente, el mismo desde la v2.5 (en --dry acepta el paquete de HEAD en la v2.6, o en la v2.4, cuyo esqueleto es
+el vigente sin ResolveWeightUnit; al escribir exige la v2.7). Al escribir comprueba tambien que estan en HEAD las rutas de CUSTODY_EXTRA, que
+se custodian y no son autoridades: las dos de PBT1BC-M04 (check_v25_skeleton.py y make_pbt1b_contract-dry.txt) y la medicion del Worker
+R20261118T193423Z-fb01 en la que se apoyan las lineas de CT-PBT1B-02 (v2.7, F4B-E20).
 Uso: python make_pbt1b_contract.py <IssuedUtc> <AuthorityRevision> <MainSha> [--dry] [--print]
 Con --dry no escribe nada: comprueba e imprime los recuentos y los bytes (con --print, ademas, el ForbiddenWriteScope numerado).
 Al custodiarlo, la ruta local del worktree se redacta como en PB-T0 ('<worktree-de-I-64>')."""
@@ -145,7 +146,8 @@ def skeleton_of(text):
     return ascii_fold('\n'.join(out))
 
 
-# El esqueleto exacto del section 5.3 del paquete v2.6, el mismo de la v2.5 (texto ASCII: sin tildes). La v2.4 es este texto sin C09_FRAG.
+# El esqueleto exacto del section 5.3 del paquete, el vigente desde la v2.5 y sin cambio en la v2.6 ni en la v2.7 (texto ASCII: sin tildes).
+# La v2.4 es este texto sin C09_FRAG.
 SKELETON = '\n'.join([
     '- `PushBackEditableState`: todos los miembros con sus valores iniciales; `LoadNewEditor`, `LoadDesignEditor`, `RestoreEditor`, `LoadNew`, '
     '`LoadDesign` y `Restore` devuelven `PushBackEditorInputs.NewDesign()` sin hacer nada mas; `AdoptCarriers` y `SeedDefaultSafety` no hacen nada; '
@@ -160,8 +162,8 @@ SKELETON = '\n'.join([
 C09_FRAG = ' `ResolveWeightUnit` devuelve `requested`;'
 assert SKELETON.count(C09_FRAG) == 1
 _head_skel = skeleton_of(show(PKG))
-SKELETON_IN_HEAD = 'v2.6' if _head_skel == SKELETON else ('v2.4' if _head_skel == SKELETON.replace(C09_FRAG, '') else None)
-assert SKELETON_IN_HEAD is not None, ('el esqueleto de HEAD no es ni el de la v2.6 ni el de la v2.4', _head_skel)
+SKELETON_IN_HEAD = 'vigente' if _head_skel == SKELETON else ('v2.4' if _head_skel == SKELETON.replace(C09_FRAG, '') else None)
+assert SKELETON_IN_HEAD is not None, ('el esqueleto de HEAD no es ni el vigente ni el de la v2.4', _head_skel)
 SKELETON_FLAT = ' / '.join(l[2:] for l in SKELETON.replace('`', '').split('\n'))
 
 
@@ -351,7 +353,7 @@ STOPS = P_STOPS + [
     {'Id': 'PBT1B-C12', 'Text': 'a correction would be attempt 3 of 3: it returns to the Owner before it is issued (D-PB-10)'},
     {'Id': 'PBT1B-C13', 'Text': 'the implementation would need a new field in a type of the pilot census, to touch CS, or to change the behaviour of an existing method of ES, CS, DA, CA or RMES'},
     {'Id': 'PBT1B-C14', 'Text': 'in step 1 (INV-PBT1B-06) some salida of rows (a) to (e) is not P, or a row is none of its expected lines (in (b), none of the two branches of the c-02 rule; in (f), none of the two branches of the c-09 rule): STOP before the RED; the rule returns to the session'},
-    {'Id': 'PBT1B-C15', 'Text': 'CT-PBT1B-01 or 02 gives a difference between the state and the window of today, or a loss in a supported rack, that does not come from the skeleton: STOP; it is a new fact and returns to the Owner by OB-06.5'},
+    {'Id': 'PBT1B-C15', 'Text': 'CT-PBT1B-01 or 02 gives a difference between the state and the window of today, or a loss in a supported rack, that does not come from the skeleton: STOP; it is a new fact and returns to the Owner by OB-06.5. EXCEPT the known normalization (package v2.7, F4B-E20): in pb-15-sin-composite the first round trip turns front 0 of side B from active to inactive, with side B not present, and nothing else; it is the line $.PushBack.Composite.AbsentSlotsB[0]: <absent> -> 0 of LegacyDeltas seen from the state, and CT-PBT1B-02 fixes it as an expected line (primera-vuelta-estado ... SideB.Fronts[0].IsActive=True->False normalizada-iguales=True); it does not stop. Any other difference is still this stop, also in pb-15-sin-composite (for example normalizada-iguales=False) and also in step (iii) of CT-PBT1B-02'},
     {'Id': 'PBT1B-C17', 'Text': C17},
 ]
 assert [s['Id'] for s in STOPS[17:]] == ['PBT1B-C%02d' % n for n in range(1, 16)] + ['PBT1B-C17'] and len(STOPS) == 33
@@ -436,16 +438,25 @@ EXISTING = [
     (PILOT + '/F4-DRAFTS/coordinator/owner-f4t3-authorization.md', 'la firma literal de PD-F4-04 (:255-265)'),
     ('docs/automation/state/I-64.yml', 'estado vigente completo'),
     ('docs/automation/evidence/I-64-evidence.md', 'las secciones de F4B (231 y siguientes)'),
-]
-CUSTODY = [  # se custodian en el commit de emision de PB-T1b (section 6.0 del paquete, Custodia)
-    (PKG, 'archivo completo (v2.6): section 2 (hechos), section 3 (D-PBT1-02 a D-PBT1-11 con D-PBT1-09b, la regla de c-09, y D-PBT1-15), section 5.0 y 5.3 (recetas, el esqueleto exacto y CT-PBT1B-01 a 17), section 6.0 y 6.2 (el contrato), section 8 (decisiones del Owner y los anclajes de PB-T1b) y section 10 (arrastres)'),
+    # custodiadas con la emision de la v2.6 (F4B-E17): siguen siendo autoridades y ya estan en HEAD
     (MEAS, 'el registro de mediciones del paquete, apartados A a P (P: los anclajes de PB-T1b sobre el cierre de PB-T1a, 5043b49a)'),
     (D1 + 'pbt1b-anchors-out.txt', 'la salida de los anclajes de PB-T1b (registro P): identidad, anclas, G-L1, recuentos y la linea base de la CI'),
-    (D1 + 'independent-review-pbt1b-check.md', 'la comprobacion acotada de PB-T1b (section 6.0 del paquete)'),
+    (D1 + 'independent-review-pbt1b-check.md', 'la comprobacion acotada de PB-T1b sobre la v2.5, aplicada en la v2.6'),
+]
+CUSTODY = [  # se custodian en el commit de la nueva emision de PB-T1b, con la v2.7 (section 6.0 del paquete, Custodia; F4B-E20)
+    (PKG, 'archivo completo (v2.7): section 2 (hechos), section 3 (D-PBT1-02 a D-PBT1-11 con D-PBT1-09b, la regla de c-09, y D-PBT1-15), section 5.0 y 5.3 (recetas, el esqueleto exacto y CT-PBT1B-01 a 17, con CT-PBT1B-02 corregido y CT-PBT1B-06 aclarado), section 6.0 y 6.2 (el contrato, con PBT1B-C15 y su excepcion), section 8 (decisiones del Owner y los anclajes de PB-T1b) y section 10 (arrastres)'),
+    (PILOT + '/F4B-DRAFTS/coordinator/owner-pbt1b-c15-decisions.md', 'archivo completo (F4B-E20): pb-15 es una normalizacion conocida y se corrige CT-PBT1B-02 (pregunta 1); la delegacion nueva no gasta intento (pregunta 2)'),
+    # PBT1BC27-M03: la vuelta al Owner de F4B-E20, en paralelo con owner-return-pbt1a.md de PB-T1a. Va en CUSTODY y no en EXISTING porque
+    # se custodia en el commit de emision: el generador la comprueba en HEAD al escribir.
+    (PILOT + '/F4B-DRAFTS/pbt1b/owner-return-c15.md', 'la vuelta al Owner por la parada PBT1B-C15: los hechos de pb-15-sin-composite y de CT-PBT1B-06, respondida por F4B-E20'),
+    (D1 + 'independent-review-pbt1b-v27-check.md', 'la comprobacion acotada de la v2.7 (section 6.0 del paquete): EMITIBLE 0/0/4, sus cuatro menores aplicados en la v2.7'),
 ]
 assert len(CUSTODY) == 4 and len({p for p, _ in CUSTODY}) == 4 and not {p for p, _ in CUSTODY} & {p for p, _ in EXISTING}
-# PBT1BC-M04: se custodian con la emision en F4B-DRAFTS/pbt1/, sostienen el registro P-7 y no son autoridades del contrato.
-CUSTODY_EXTRA = [D1 + 'check_v25_skeleton.py', D1 + 'make_pbt1b_contract-dry.txt']
+# Se custodian y no son autoridades del contrato: PBT1BC-M04 (sostienen el registro P-7), y la medicion del Worker de la parada C15 en la que se
+# apoyan las lineas (ii) de CT-PBT1B-02 (F4B-E20), en la carpeta de su corrida, como las de PB-T1a.
+RUN_FB01 = PILOT + '/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T193423Z-fb01/'
+CUSTODY_EXTRA = [D1 + 'check_v25_skeleton.py', D1 + 'make_pbt1b_contract-dry.txt',
+                 RUN_FB01 + 'tests/dev/ct02-lines-expected-vs-actual.txt', RUN_FB01 + 'tests/dev/pb15-state-diff.txt']
 EXTERNAL = [
     ('docs/adr/0029-contrato-funcional-comun-de-ventanas-wpf.md', 'D12 y D13 (sin modelo paralelo; la caracterizacion no se edita para que pase)'),
     ('docs/AUTOMATION_PLAN.md', 'section 16.5, 16.8, 16.9, 16.10 y 16.11'),
@@ -461,7 +472,7 @@ c = {
                   'LoadExisting, LoadDesignForNew y Restaurar partidas en la de Application y AdoptCarriers, la salida BuildInputs, el copiador y el comparador '
                   'completos con modulos, cola aparcada y A/B (con la excepcion de dos referencias compartidas decidida por el Owner en F4B-E11, D2, y sus diez '
                   'condiciones de seguridad), el mapa de propiedad, las reglas explicitas de c-02 y de c-09 (F4B-E09 y F4B-E14), la exclusion de pb-21-cola y '
-                  'el criterio de bloqueo de salida extraido, segun el paquete del contrato de PB-T1 v2.6, con los anclajes medidos sobre el cierre de PB-T1a '
+                  'el criterio de bloqueo de salida extraido, segun el paquete del contrato de PB-T1 v2.7, con los anclajes medidos sobre el cierre de PB-T1a '
                   '(5043b49a), y la lista cerrada CT-PBT1B-01..17. El RED es el esqueleto inerte y las pruebas nuevas, que fallan por asercion salvo las dos '
                   'guardas de D2; el GREEN implementa solo Application. Si hiciera falta mutar el rack resuelto o el informe de modulos dentro del tiempo de '
                   'vida de la edicion: STOP y se reabre L-1. La ventana, el piloto, el Plugin y el XAML no cambian; no se ejecuta AutoCAD.'),
@@ -480,11 +491,12 @@ c = {
                  '(docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-d1-d2-decisions.md), y F4B-E14, con c-09 como regla explicita y la '
                  'precondicion 5 satisfecha, y F4B-E15, la verificacion reforzada (docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/'
                  'owner-pbt1a-decisions.md y owner-pbt1a-nc1-decisions.md): la emision de la segunda tarea de PB-T1 tras el cierre de PB-T1a (F4B-E16), '
-                 'sus anclajes y su comprobacion acotada; las decisiones de procedimiento owner-f4b-procedure-decisions.md (F4B-E03); y el paquete del '
-                 'contrato v2.6, con la comprobacion acotada de PB-T1b aplicada'),
+                 'sus anclajes y su comprobacion acotada; las decisiones de procedimiento owner-f4b-procedure-decisions.md (F4B-E03); F4B-E20 '
+                 '(docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt1b-c15-decisions.md), tras la parada PBT1B-C15 del intento 1: '
+                 'la normalizacion conocida de pb-15 y la nueva emision sin gastar intento; y el paquete del contrato v2.7, con su comprobacion acotada'),
     'IssuedUtc': ISSUED,
 }
-assert len(c['Authorities']) == 49, len(c['Authorities'])  # 46 de la v2.5 + los tres contratos de F4 con API nueva (PBT1BC-M03)
+assert len(c['Authorities']) == 52, len(c['Authorities'])  # 49 de la v2.6 + F4B-E20, su vuelta (PBT1BC27-M03) y la comprobacion acotada de la v2.7
 b = (json.dumps(c, indent=2, ensure_ascii=True) + '\n').encode('ascii')
 assert all(x < 0x80 for x in b) and b'\\u' not in b, 'no ASCII'
 assert not set(c['AllowedWriteScope']) & set(c['ForbiddenWriteScope'])
@@ -505,8 +517,8 @@ if DRY:
           'bytes', len(b), 'sha256', hashlib.sha256(b).hexdigest().upper())
     print('a custodiar en la emision (aun no en HEAD):', len(custody_missing), custody_missing)
     extra_missing = [p for p in CUSTODY_EXTRA if not in_head(p)]
-    print('a custodiar tambien, sin ser autoridades (PBT1BC-M04; aun no en HEAD):', len(extra_missing), extra_missing)
-    print('a sustituir en la emision: paquete en HEAD', PKG_IN_HEAD.group(1) if PKG_IN_HEAD else None, '(hace falta la v2.6); registro en HEAD con el apartado P:', MEAS_HAS_P)
+    print('a custodiar tambien, sin ser autoridades (PBT1BC-M04 y la medicion de fb01; aun no en HEAD):', len(extra_missing), extra_missing)
+    print('a sustituir en la emision: paquete en HEAD', PKG_IN_HEAD.group(1) if PKG_IN_HEAD else None, '(hace falta la v2.7); registro en HEAD con el apartado P:', MEAS_HAS_P)
     if '--print' in sys.argv:
         for i, f in enumerate(FORBIDDEN, 1):
             print(i, f)
@@ -514,9 +526,9 @@ if DRY:
 for p, _ in CUSTODY:
     assert in_head(p), ('falta custodiar antes de escribir el contrato', p)
 for p in CUSTODY_EXTRA:
-    assert in_head(p), ('falta custodiar antes de escribir el contrato (PBT1BC-M04)', p)
-assert SKELETON_IN_HEAD == 'v2.6', 'el paquete custodiado no tiene el esqueleto de la v2.6'
-assert PKG_IN_HEAD and PKG_IN_HEAD.group(1) == 'v2.6', 'el paquete custodiado no es la v2.6'
+    assert in_head(p), ('falta custodiar antes de escribir el contrato (CUSTODY_EXTRA)', p)
+assert SKELETON_IN_HEAD == 'vigente', 'el paquete custodiado no tiene el esqueleto vigente'
+assert PKG_IN_HEAD and PKG_IN_HEAD.group(1) == 'v2.7', 'el paquete custodiado no es la v2.7'
 assert MEAS_HAS_P, 'el registro custodiado no tiene el apartado P'
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
 open(OUT, 'wb').write(b)

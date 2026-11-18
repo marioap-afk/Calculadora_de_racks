@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: none
   attempts: 1
-  next_action: "F4B PB-T1b: parada PBT1B-C15 del Worker (pb-15, normalizacion conocida) y decisiones del Owner F4B-E18 a F4B-E20 (lista de la planificacion, Snapshot J, CT-02 corregido sin gastar intento); siguiente: emitir de nuevo el contrato de F4B-PBT1B-LOSSLESS-STATE-TYPE con la v2.7, intento 1 de 3"
+  next_action: "F4B-PBT1B-LOSSLESS-STATE-TYPE: contrato emitido de nuevo con la v2.7 (AuthorityRevision 5e52aaa3, attempts 1 de 3); siguiente: planificacion del Controller, comparacion byte a byte, A1-A8, nc4 y Worker"
   last_evidence_commit: 0f49f69160cdffc1d2933d6165d5f472b5793d84
 execution_context:
   mode: manual

@@ -3,28 +3,28 @@
   "Unit": "I-64",
   "Gate": "F4B",
   "TaskId": "F4B-PBT1B-LOSSLESS-STATE-TYPE",
-  "Objective": "Crear en Application el estado editable de Push Back sin perdidas fuera de la ventana (PushBackEditableState), con las cargas de LoadNew, LoadExisting, LoadDesignForNew y Restaurar partidas en la de Application y AdoptCarriers, la salida BuildInputs, el copiador y el comparador completos con modulos, cola aparcada y A/B (con la excepcion de dos referencias compartidas decidida por el Owner en F4B-E11, D2, y sus diez condiciones de seguridad), el mapa de propiedad, las reglas explicitas de c-02 y de c-09 (F4B-E09 y F4B-E14), la exclusion de pb-21-cola y el criterio de bloqueo de salida extraido, segun el paquete del contrato de PB-T1 v2.6, con los anclajes medidos sobre el cierre de PB-T1a (5043b49a), y la lista cerrada CT-PBT1B-01..17. El RED es el esqueleto inerte y las pruebas nuevas, que fallan por asercion salvo las dos guardas de D2; el GREEN implementa solo Application. Si hiciera falta mutar el rack resuelto o el informe de modulos dentro del tiempo de vida de la edicion: STOP y se reabre L-1. La ventana, el piloto, el Plugin y el XAML no cambian; no se ejecuta AutoCAD.",
-  "AuthorityRevision": "1464193f899b4678d1e4a2c4885a30cee19875ff",
+  "Objective": "Crear en Application el estado editable de Push Back sin perdidas fuera de la ventana (PushBackEditableState), con las cargas de LoadNew, LoadExisting, LoadDesignForNew y Restaurar partidas en la de Application y AdoptCarriers, la salida BuildInputs, el copiador y el comparador completos con modulos, cola aparcada y A/B (con la excepcion de dos referencias compartidas decidida por el Owner en F4B-E11, D2, y sus diez condiciones de seguridad), el mapa de propiedad, las reglas explicitas de c-02 y de c-09 (F4B-E09 y F4B-E14), la exclusion de pb-21-cola y el criterio de bloqueo de salida extraido, segun el paquete del contrato de PB-T1 v2.7, con los anclajes medidos sobre el cierre de PB-T1a (5043b49a), y la lista cerrada CT-PBT1B-01..17. El RED es el esqueleto inerte y las pruebas nuevas, que fallan por asercion salvo las dos guardas de D2; el GREEN implementa solo Application. Si hiciera falta mutar el rack resuelto o el informe de modulos dentro del tiempo de vida de la edicion: STOP y se reabre L-1. La ventana, el piloto, el Plugin y el XAML no cambian; no se ejecuta AutoCAD.",
+  "AuthorityRevision": "5e52aaa34037d8cc6b46849c89d1fce946187324",
   "MainSha": "812baf879612320653094a8aaf46aca0bac81383",
   "Authorities": [
     {
       "Path": "docs/initiatives/I-64-f4b-pbt1-gate-contract-package.md",
-      "Section": "archivo completo (v2.6): section 2 (hechos), section 3 (D-PBT1-02 a D-PBT1-11 con D-PBT1-09b, la regla de c-09, y D-PBT1-15), section 5.0 y 5.3 (recetas, el esqueleto exacto y CT-PBT1B-01 a 17), section 6.0 y 6.2 (el contrato), section 8 (decisiones del Owner y los anclajes de PB-T1b) y section 10 (arrastres)",
+      "Section": "archivo completo (v2.7): section 2 (hechos), section 3 (D-PBT1-02 a D-PBT1-11 con D-PBT1-09b, la regla de c-09, y D-PBT1-15), section 5.0 y 5.3 (recetas, el esqueleto exacto y CT-PBT1B-01 a 17, con CT-PBT1B-02 corregido y CT-PBT1B-06 aclarado), section 6.0 y 6.2 (el contrato, con PBT1B-C15 y su excepcion), section 8 (decisiones del Owner y los anclajes de PB-T1b) y section 10 (arrastres)",
       "Class": "UNIT_DOC"
     },
     {
-      "Path": "docs/initiatives/I-64-f4b-pbt1-measurements.md",
-      "Section": "el registro de mediciones del paquete, apartados A a P (P: los anclajes de PB-T1b sobre el cierre de PB-T1a, 5043b49a)",
+      "Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt1b-c15-decisions.md",
+      "Section": "archivo completo (F4B-E20): pb-15 es una normalizacion conocida y se corrige CT-PBT1B-02 (pregunta 1); la delegacion nueva no gasta intento (pregunta 2)",
       "Class": "UNIT_DOC"
     },
     {
-      "Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt1/pbt1b-anchors-out.txt",
-      "Section": "la salida de los anclajes de PB-T1b (registro P): identidad, anclas, G-L1, recuentos y la linea base de la CI",
+      "Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt1b/owner-return-c15.md",
+      "Section": "la vuelta al Owner por la parada PBT1B-C15: los hechos de pb-15-sin-composite y de CT-PBT1B-06, respondida por F4B-E20",
       "Class": "UNIT_DOC"
     },
     {
-      "Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt1/independent-review-pbt1b-check.md",
-      "Section": "la comprobacion acotada de PB-T1b (section 6.0 del paquete)",
+      "Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt1/independent-review-pbt1b-v27-check.md",
+      "Section": "la comprobacion acotada de la v2.7 (section 6.0 del paquete): EMITIBLE 0/0/4, sus cuatro menores aplicados en la v2.7",
       "Class": "UNIT_DOC"
     },
     {
@@ -210,6 +210,21 @@
     {
       "Path": "docs/automation/evidence/I-64-evidence.md",
       "Section": "las secciones de F4B (231 y siguientes)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-f4b-pbt1-measurements.md",
+      "Section": "el registro de mediciones del paquete, apartados A a P (P: los anclajes de PB-T1b sobre el cierre de PB-T1a, 5043b49a)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt1/pbt1b-anchors-out.txt",
+      "Section": "la salida de los anclajes de PB-T1b (registro P): identidad, anclas, G-L1, recuentos y la linea base de la CI",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt1/independent-review-pbt1b-check.md",
+      "Section": "la comprobacion acotada de PB-T1b sobre la v2.5, aplicada en la v2.6",
       "Class": "UNIT_DOC"
     },
     {
@@ -776,7 +791,7 @@
     },
     {
       "Id": "PBT1B-C15",
-      "Text": "CT-PBT1B-01 or 02 gives a difference between the state and the window of today, or a loss in a supported rack, that does not come from the skeleton: STOP; it is a new fact and returns to the Owner by OB-06.5"
+      "Text": "CT-PBT1B-01 or 02 gives a difference between the state and the window of today, or a loss in a supported rack, that does not come from the skeleton: STOP; it is a new fact and returns to the Owner by OB-06.5. EXCEPT the known normalization (package v2.7, F4B-E20): in pb-15-sin-composite the first round trip turns front 0 of side B from active to inactive, with side B not present, and nothing else; it is the line $.PushBack.Composite.AbsentSlotsB[0]: <absent> -> 0 of LegacyDeltas seen from the state, and CT-PBT1B-02 fixes it as an expected line (primera-vuelta-estado ... SideB.Fronts[0].IsActive=True->False normalizada-iguales=True); it does not stop. Any other difference is still this stop, also in pb-15-sin-composite (for example normalizada-iguales=False) and also in step (iii) of CT-PBT1B-02"
     },
     {
       "Id": "PBT1B-C17",
@@ -820,6 +835,6 @@
   ],
   "RoutingEnforcement": "required",
   "CorrectionsAuthorized": true,
-  "IssuedBy": "Sesion principal de I-64 (Claude) por las decisiones del Owner F4B-E09, con su autorizacion condicional de emision (pregunta 4) (docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt1-pre-decisions.md), F4B-E11, D2 y PB-T1 PLAN (docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-d1-d2-decisions.md), y F4B-E14, con c-09 como regla explicita y la precondicion 5 satisfecha, y F4B-E15, la verificacion reforzada (docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt1a-decisions.md y owner-pbt1a-nc1-decisions.md): la emision de la segunda tarea de PB-T1 tras el cierre de PB-T1a (F4B-E16), sus anclajes y su comprobacion acotada; las decisiones de procedimiento owner-f4b-procedure-decisions.md (F4B-E03); y el paquete del contrato v2.6, con la comprobacion acotada de PB-T1b aplicada",
-  "IssuedUtc": "2026-11-18T18:46:11Z"
+  "IssuedBy": "Sesion principal de I-64 (Claude) por las decisiones del Owner F4B-E09, con su autorizacion condicional de emision (pregunta 4) (docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt1-pre-decisions.md), F4B-E11, D2 y PB-T1 PLAN (docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-d1-d2-decisions.md), y F4B-E14, con c-09 como regla explicita y la precondicion 5 satisfecha, y F4B-E15, la verificacion reforzada (docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt1a-decisions.md y owner-pbt1a-nc1-decisions.md): la emision de la segunda tarea de PB-T1 tras el cierre de PB-T1a (F4B-E16), sus anclajes y su comprobacion acotada; las decisiones de procedimiento owner-f4b-procedure-decisions.md (F4B-E03); F4B-E20 (docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt1b-c15-decisions.md), tras la parada PBT1B-C15 del intento 1: la normalizacion conocida de pb-15 y la nueva emision sin gastar intento; y el paquete del contrato v2.7, con su comprobacion acotada",
+  "IssuedUtc": "2026-11-18T20:36:27Z"
 }
