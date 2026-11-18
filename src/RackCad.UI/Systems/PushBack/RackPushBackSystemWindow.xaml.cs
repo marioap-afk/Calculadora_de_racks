@@ -815,11 +815,11 @@ namespace RackCad.UI.Systems.PushBack
                     LoadLevels = IntVal(LevelsBox, front.LoadLevels),
                     PalletsDeep = IntVal(FondosBox, front.PalletsDeep),
                     DepthStartPosition = IntVal(DepthStartBox, front.DepthStartPosition),
-                    FirstLevelHeight = Keep(FirstLevelHeightBox, front.FirstLevelHeight),
-                    PalletFront = Keep(CellPalletFrontBox, cell.PalletFront),
-                    PalletHeight = Keep(CellPalletHeightBox, cell.PalletHeight),
-                    PalletWeight = Keep(CellPalletWeightBox, cell.PalletWeight),
-                    ClearHeight = Keep(CellClearBox, cell.ClearHeight),
+                    FirstLevelHeight = KeepCell(FirstLevelHeightBox, front.FirstLevelHeight),
+                    PalletFront = KeepCell(CellPalletFrontBox, cell.PalletFront),
+                    PalletHeight = KeepCell(CellPalletHeightBox, cell.PalletHeight),
+                    PalletWeight = KeepCell(CellPalletWeightBox, cell.PalletWeight),
+                    ClearHeight = KeepCell(CellClearBox, cell.ClearHeight),
                     InOutBeamCatalogId = CellInOutBeamBox.SelectedValue as string ?? cell.InOutBeamCatalogId,
                     InOutBeamDepth = SelectedPeralte(CellInOutPeralteBox, cell.InOutBeamDepth),
                     BeamLengthOverride = OptionalVal(CellBeamLengthOverrideBox, cell.BeamLengthOverride),
@@ -1636,14 +1636,14 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
-            advanced.ManualHeaderHeightOverride = RackHeaderHeightBox.Value;
+            advanced.ManualHeaderHeightOverride = KeepOptional(RackHeaderHeightBox, advanced.ManualHeaderHeightOverride);
             advanced.DerivedPostReinforced = DerivedPostReinforcedCheck.IsChecked == true;
-            advanced.DerivedPostReinforcementHeight = DerivedPostReinforcementHeightBox.Value;
-            advanced.DerivedPostHeight = DerivedPostHeightBox.Value;
+            advanced.DerivedPostReinforcementHeight = KeepOptional(DerivedPostReinforcementHeightBox, advanced.DerivedPostReinforcementHeight);
+            advanced.DerivedPostHeight = KeepOptional(DerivedPostHeightBox, advanced.DerivedPostHeight);
             advanced.SeparatorCountOverride = RackSeparatorCountBox.Value.HasValue
                 ? (int?)(int)Math.Round(RackSeparatorCountBox.Value.Value)
                 : null;
-            advanced.SeparatorSpacingOverride = RackSeparatorSpacingBox.Value;
+            advanced.SeparatorSpacingOverride = KeepOptional(RackSeparatorSpacingBox, advanced.SeparatorSpacingOverride);
         }
 
         /// <summary>The reinforcement length is meaningless with no reinforcement: disabled, with the reason visible.</summary>
@@ -1902,7 +1902,7 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
-            var length = Val(ModuleLengthBox, module.Length);
+            var length = Keep(ModuleLengthBox, module.Length);
             if (length <= 0.0 || Math.Abs(length - module.Length) < 0.0001)
             {
                 return;
@@ -3631,14 +3631,12 @@ namespace RackCad.UI.Systems.PushBack
 
         private static double SelectedPeralte(ComboBox combo, double fallback) => combo?.SelectedItem is double value ? value : fallback;
 
-        private static double Val(NumericField field, double fallback) => field.Value ?? fallback;
-
         /// <summary>
         /// I-42 (A3-CELL, contrato del dueño) — LA LECTURA POR LADO DE UN OVERRIDE OPCIONAL.
         ///
         /// <para>
         /// <b>El defecto.</b> Los demas campos de la celda ya caian al valor DEL LADO que se escribe cuando el
-        /// control esta vacio (<see cref="Val"/>), que es lo que hace que «Ambos» con valores distintos no pise a
+        /// control esta vacio (hoy <see cref="Keep"/>), que es lo que hace que «Ambos» con valores distintos no pise a
         /// nadie. «Largo manual» se leia crudo —<c>CellBeamLengthOverrideBox.Value</c>—, asi que el hueco que pinta
         /// el estado mixto viajaba como <c>null</c> A LOS DOS LADOS. Medido: con A = 100 y B sin override, elegir
         /// «Ambos lados» sin tocar el campo dejaba A = null y B = null; con A = 100 y B = 120, los dos en null.
@@ -3664,7 +3662,7 @@ namespace RackCad.UI.Systems.PushBack
         /// </summary>
         private double? OptionalVal(NumericField field, double? sideValue)
             => field.Value.HasValue
-                ? (sideValue.HasValue && SameShown(field.Value.Value, sideValue.Value) ? sideValue : field.Value)
+                ? (MixedBoth(field) ? field.Value : KeepOptional(field, sideValue))
                 : (IsMixed(field) ? sideValue : null);
 
         /// <summary>I-64 F4B PB-TC (D-PBTC-01) — el formato con el que <see cref="NumericField.SetNumber"/> pinta estas cajas.</summary>
@@ -3680,10 +3678,22 @@ namespace RackCad.UI.Systems.PushBack
         /// <summary>
         /// I-64 F4B PB-TC (D-PBTC-01, la regla de «Keep» de Cantilever) — el numero que lleva la caja, o el valor DE DONDE se sembro
         /// cuando los dos se ven igual: una caja que el usuario no edito no cambia el diseño, y una editada a un numero que se ve
-        /// distinto manda. Con la caja vacia devuelve <paramref name="current"/>, como el respaldo de <see cref="Val"/>.
+        /// distinto manda. Con la caja vacia devuelve <paramref name="current"/>.
         /// </summary>
         private static double Keep(NumericField field, double current)
             => !field.Value.HasValue || SameShown(field.Value.Value, current) ? current : field.Value.Value;
+
+        /// <summary>I-64 F4B PB-TC2 (D-PBTC2-03) — la regla de la caja anulable: vacia es nulo (el calculo), igual a como se ve el portador es el portador y otra cosa es la caja.</summary>
+        private static double? KeepOptional(NumericField field, double? current)
+            => !field.Value.HasValue ? null : (current.HasValue && SameShown(field.Value.Value, current.Value) ? current : field.Value);
+
+        /// <summary>I-64 F4B PB-TC2 (D-PBTC2-04) — True cuando la caja se pinta mixta con «Ambos lados» activo y el lado B presente.</summary>
+        private bool MixedBoth(NumericField field)
+            => IsMixed(field) && composite.ActiveSelection == PushBackSideSelection.Both && composite.SideBPresent;
+
+        /// <summary>I-64 F4B PB-TC2 (D-PBTC2-04, OWNER-1) — una caja mixta de «Ambos lados» que recibe un valor lo aplica a los dos lados; en cualquier otro caso, la regla de PB-TC.</summary>
+        private double KeepCell(NumericField field, double current)
+            => MixedBoth(field) && field.Value.HasValue ? field.Value.Value : Keep(field, current);
 
         private static int IntVal(NumericField field, int fallback) => field.Value.HasValue ? (int)Math.Round(field.Value.Value) : fallback;
     }

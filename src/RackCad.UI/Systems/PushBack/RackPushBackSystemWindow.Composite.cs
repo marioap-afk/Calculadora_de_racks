@@ -195,7 +195,7 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
-            composite.SetGap(GapBox.Value.Value);
+            composite.SetGap(Keep(GapBox, composite.Gap));
             RequestRecompute();
         }
 
