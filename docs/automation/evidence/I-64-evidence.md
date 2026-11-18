@@ -7733,3 +7733,15 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - solo documentación en este paso;
 - sin cambios en `src/` ni en `tests/`;
 - sin AutoCAD.
+
+## 236. Contrato de F4B-PBTC-DECLARED-CORRECTIONS
+
+**Contrato:** `I-64-pilot/F4B-PBTC-DECLARED-CORRECTIONS/coordinator/gate-contract.json` (F4B-E07), con su script generador al lado.
+- **Alcance:** lista blanca exacta de 13 rutas: W, WC y WX de la ventana clasica de Push Back, las pruebas nuevas y las lineas de atributo de SUS-01 a SUS-04.
+- **`ForbiddenWriteScope`:** 131 entradas, con el metodo de PB-T0.
+- **Invariantes y paradas:** 19 invariantes y 14 paradas propias (PBTC-C01 a C14). PBTC-C08 es la replanificacion de [DP]; PBTC-C11, los sustitutos con firma exacta; PBTC-C12, el intento 3 al Owner; PBTC-C14, la vuelta al Owner si el delta de la base de CT-PBTC-10 es material.
+- **Filtros:** `RackCad.UI.Tests.PushBackDeclaredCorrection` (`MinSelected` 10, `ExpectRed`); `RackCad.UI.Tests.Cantilever` (`MinSelected` 67); `RackCad.UI.Tests.PushBackClassicCharacterization` (`MinSelected` 55); `RackCad.UI.Tests.PushBackFullEditorCharacterization` (`MinSelected` 16); `RackCad.UI.Tests.WorkspaceDraftPilotWindowLoadCharacterizationTests` (`MinSelected` 3); `RackCad.UI.Tests.PushBackDimensionViewsWindowTests` (`MinSelected` 12); `RackCad.UI.Tests.PushBackAdvancedRackParametersWindowTests` (`MinSelected` 9); `RackCad.UI.Tests.PushBackModuleEditorWindowTests` (`MinSelected` 13); `RackCad.Tests.PushBackClassicCharacterization` (`MinSelected` 10); `RackCad.Tests.PushBackFullEditorCharacterization` (`MinSelected` 3); `RackCad.Tests.PushBackBlankFrontAuthorityTests` (`MinSelected` 9); `RackCad.Tests.PushBackModuleEditorCharacterizationTests` (`MinSelected` 15).
+- **Revisiones:** `AuthorityRevision` `a9e7195a7181eacba5941e7b35da86909ce72f8d` y `MainSha` `812baf879612320653094a8aaf46aca0bac81383`.
+- **`attempts`:** 1 de 3.
+
+**Limites:** solo documentacion en este paso; sin AutoCAD.

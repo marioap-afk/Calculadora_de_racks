@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: none
   attempts: 1
-  next_action: "F4B PB-TC: paquete v2.2, decisiones del Owner (F4B-E06) y orden de emitir (F4B-E07) custodiados; siguiente: emitir el contrato de F4B-PBTC-DECLARED-CORRECTIONS con attempts 1 de 3"
+  next_action: "F4B-PBTC-DECLARED-CORRECTIONS: contrato emitido (AuthorityRevision a9e7195a, attempts 1 de 3); siguiente: planificacion del Controller, comparacion byte a byte, A1-A8, nc4 y Worker"
   last_evidence_commit: 0f49f69160cdffc1d2933d6165d5f472b5793d84
 execution_context:
   mode: manual
