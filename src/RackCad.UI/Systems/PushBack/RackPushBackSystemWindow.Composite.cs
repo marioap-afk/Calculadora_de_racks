@@ -71,6 +71,31 @@ namespace RackCad.UI.Systems.PushBack
         }
 
         /// <summary>
+        /// I-64 F4B PB-TC (D-PB-08) — el texto del aviso de solo lectura de la banda de estado, el que eligio el Owner, tal cual.
+        /// </summary>
+        private const string SideBEmptyNoticeMessage =
+            "Lado B declarado sin ningún frente activo: así no se guardará. Para conservarlo, elige «Lado B» y desmarca «En blanco» en al menos un frente.";
+
+        /// <summary>
+        /// I-64 F4B PB-TC (D-PB-08) — un aviso NO bloqueante, de solo texto, en la banda de estado: visible mientras el lado B esta
+        /// declarado y ninguna de sus ranuras esta activa (el diseño sale entonces sin lado B), y colapsado en cualquier otro caso.
+        /// Solo LEE la regla de capacidad sin presencia del estado compuesto: no cambia ningun boton, el estado, el diseño ni la
+        /// casilla, y no es un control ni se enfoca.
+        /// </summary>
+        private void UpdateSideBEmptyNotice()
+        {
+            if (SideBEmptyNoticeText == null)
+            {
+                return;
+            }
+
+            var empty = composite.SideBPresent
+                && !Enumerable.Range(0, composite.SideB.Structure.Count).Any(slot => composite.IsSlotPresent(PushBackSide.B, slot));
+            SideBEmptyNoticeText.Text = empty ? SideBEmptyNoticeMessage : string.Empty;
+            SideBEmptyNoticeText.Visibility = empty ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        /// <summary>
         /// Los CORTES FRONTALES de un rack compuesto son cuatro: entrada/salida y posterior de cada lado. Con el
         /// compuesto apagado hay dos y se llaman como siempre; al encenderlo, los dos de siempre pasan a decir «A» y
         /// aparecen los dos de B. Ni un boton ambiguo, ni seis botones donde bastan cuatro.

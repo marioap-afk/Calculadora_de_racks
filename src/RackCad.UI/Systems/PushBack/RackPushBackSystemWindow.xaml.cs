@@ -100,6 +100,14 @@ namespace RackCad.UI.Systems.PushBack
         /// </summary>
         private PalletSpecification generalPallet = PushBackEditorInputs.NewDesign().Pallet;
 
+        // I-64 F4B PB-TC (D-PB-06 (a), D-PBTC-01): the value each of these RACK-WIDE boxes was seeded from, exact. A box the
+        // user did not edit shows the same as its carrier, so Keep (below) hands the carrier back instead of the box's
+        // "0.###" rounding. The depth needs no carrier of its own: it is generalPallet.Depth.
+        private double rackTolerance = DynamicRackDefaults.DefaultPalletTolerance;
+        private double rackPostPeralte = PushBackEditorInputs.NewDesign().PostPeralte;
+        private double rackBeamDepth = DynamicRackDefaults.DefaultBeamDepth;
+        private double rackAnnotationScale = 1.0;
+
         /// <summary>Carrier of the four advanced RACK-WIDE scopes between recomputes (I-35, Owner round 2). It is the
         /// SAME transport type the assembler consumes, so there is no parallel field and no second authority: only
         /// its four advanced properties are used, and ReadInputs copies them across verbatim.</summary>
@@ -387,9 +395,12 @@ namespace RackCad.UI.Systems.PushBack
                 WeightUnitBox.SelectedItem = string.IsNullOrWhiteSpace(pallet.WeightUnit) ? "kg" : pallet.WeightUnit;
                 PalletsDeepBox.SetNumber(Math.Max(2, inputs.PalletsDeep));
                 ToleranceBox.SetNumber(inputs.PalletTolerance > 0.0 ? inputs.PalletTolerance : DynamicRackDefaults.DefaultPalletTolerance);
+                rackTolerance = inputs.PalletTolerance > 0.0 ? inputs.PalletTolerance : DynamicRackDefaults.DefaultPalletTolerance;
                 PostBox.SelectedId = string.IsNullOrWhiteSpace(inputs.PostCatalogId) ? catalog?.Defaults?.Post : inputs.PostCatalogId;
                 PostPeralteBox.SetNumber(inputs.PostPeralte);
+                rackPostPeralte = inputs.PostPeralte;
                 BeamDepthBox.SetNumber(inputs.BeamDepth > 0.0 ? inputs.BeamDepth : DynamicRackDefaults.DefaultBeamDepth);
+                rackBeamDepth = inputs.BeamDepth > 0.0 ? inputs.BeamDepth : DynamicRackDefaults.DefaultBeamDepth;
 
                 // I-35 (Owner round 2): adopt the four advanced scopes the load recovered, then paint them.
                 advanced.ManualHeaderHeightOverride = inputs.ManualHeaderHeightOverride;
@@ -400,10 +411,12 @@ namespace RackCad.UI.Systems.PushBack
                 advanced.SeparatorSpacingOverride = inputs.SeparatorSpacingOverride;
 
                 var options = inputs.Annotations ?? new DynamicAnnotationOptions();
+                loadedDimensionStyle = options.DimensionStyle;
                 NumberFrontsCheck.IsChecked = options.NumberFronts;
                 NumberLevelsCheck.IsChecked = options.NumberLevels;
                 DrawRackNameCheck.IsChecked = options.DrawRackName;
                 AnnotationScaleBox.SetNumber(options.AnnotationScale > 0.0 ? options.AnnotationScale : 1.0);
+                rackAnnotationScale = options.AnnotationScale > 0.0 ? options.AnnotationScale : 1.0;
                 DimensionsBox.SelectedIndex = Math.Min((int)DimensionDetail.Detailed, Math.Max(0, (int)options.Dimensions));
                 ShowDimensionViews(options.DimensionViews); // I-50 C-12: la política cargada, sin marcar «tocado»
 
@@ -605,6 +618,7 @@ namespace RackCad.UI.Systems.PushBack
             if (suppressSync) return;
 
             RecomputePassesForTest++;
+            UpdateSideBEmptyNotice();
 
             // A control in error blocks the model rebuild: do NOT touch state/session/computation/baseline, keep the last
             // valid model as a preview reference only, and disable every action.
@@ -679,7 +693,14 @@ namespace RackCad.UI.Systems.PushBack
                 // I-35: the accepted module edit has landed on the new baseline, so it must not be re-applied by an
                 // unrelated recompute (an individual restore would otherwise fire again and again). The module list is
                 // rebuilt from the new structure and the reconciliation report reaches the panel.
+                var standardRestoreLanded = moduleOwner.ModuleCommit?.StandardRestoreRequested == true; // I-64 F4B PB-TC (D-PB-11)
                 moduleOwner.ClearModuleCommit();
+                if (standardRestoreLanded)
+                {
+                    state.RestoreAdvancedRackParameters(advanced);
+                    LoadAdvancedRackParameters();
+                }
+
                 RefreshModuleSelector();
                 RefreshHeaderDestinations();
 
@@ -794,11 +815,11 @@ namespace RackCad.UI.Systems.PushBack
                     LoadLevels = IntVal(LevelsBox, front.LoadLevels),
                     PalletsDeep = IntVal(FondosBox, front.PalletsDeep),
                     DepthStartPosition = IntVal(DepthStartBox, front.DepthStartPosition),
-                    FirstLevelHeight = Val(FirstLevelHeightBox, front.FirstLevelHeight),
-                    PalletFront = Val(CellPalletFrontBox, cell.PalletFront),
-                    PalletHeight = Val(CellPalletHeightBox, cell.PalletHeight),
-                    PalletWeight = Val(CellPalletWeightBox, cell.PalletWeight),
-                    ClearHeight = Val(CellClearBox, cell.ClearHeight),
+                    FirstLevelHeight = Keep(FirstLevelHeightBox, front.FirstLevelHeight),
+                    PalletFront = Keep(CellPalletFrontBox, cell.PalletFront),
+                    PalletHeight = Keep(CellPalletHeightBox, cell.PalletHeight),
+                    PalletWeight = Keep(CellPalletWeightBox, cell.PalletWeight),
+                    ClearHeight = Keep(CellClearBox, cell.ClearHeight),
                     InOutBeamCatalogId = CellInOutBeamBox.SelectedValue as string ?? cell.InOutBeamCatalogId,
                     InOutBeamDepth = SelectedPeralte(CellInOutPeralteBox, cell.InOutBeamDepth),
                     BeamLengthOverride = OptionalVal(CellBeamLengthOverrideBox, cell.BeamLengthOverride),
@@ -811,12 +832,23 @@ namespace RackCad.UI.Systems.PushBack
 
         private PushBackEditorInputs ReadInputs()
         {
+            // I-64 F4B PB-TC (D-PBTC-01): a rack-wide box the user did not edit hands back the exact value it was seeded
+            // from; an edited one wins and becomes the carrier. generalPallet is replaced, never mutated (the loaded
+            // object is the caller's).
+            generalPallet = new PalletSpecification(
+                generalPallet.Front, Keep(DepthBox, generalPallet.Depth), generalPallet.Height,
+                generalPallet.Weight, generalPallet.WeightUnit);
+            rackTolerance = Keep(ToleranceBox, rackTolerance);
+            rackPostPeralte = Keep(PostPeralteBox, rackPostPeralte);
+            rackBeamDepth = Keep(BeamDepthBox, rackBeamDepth);
+            rackAnnotationScale = Keep(AnnotationScaleBox, rackAnnotationScale);
+
             var inputs = new PushBackEditorInputs
             {
                 // PB-013: only Fondo and Unidad come from this panel. Frente/Alto/Peso keep the rack-wide values the
                 // design was loaded with — the boxes showing them are a mirror of the cell, not an input.
                 Pallet = new PalletSpecification(
-                    generalPallet.Front, Val(DepthBox, generalPallet.Depth), generalPallet.Height,
+                    generalPallet.Front, generalPallet.Depth, generalPallet.Height,
                     generalPallet.Weight, WeightUnitBox.SelectedItem as string ?? "kg"),
                 PalletsDeep = IntVal(PalletsDeepBox, DynamicRackDefaults.DefaultPalletsDeep),
 
@@ -834,16 +866,17 @@ namespace RackCad.UI.Systems.PushBack
                 SeparatorCountOverride = advanced.SeparatorCountOverride,
                 SeparatorSpacingOverride = advanced.SeparatorSpacingOverride,
                 PostCatalogId = PostBox.SelectedId,
-                PostPeralte = Val(PostPeralteBox, 0.0),
-                PalletTolerance = Val(ToleranceBox, DynamicRackDefaults.DefaultPalletTolerance),
-                BeamDepth = Val(BeamDepthBox, DynamicRackDefaults.DefaultBeamDepth),
+                PostPeralte = rackPostPeralte,
+                PalletTolerance = rackTolerance,
+                BeamDepth = rackBeamDepth,
                 Annotations = new DynamicAnnotationOptions
                 {
                     NumberFronts = NumberFrontsCheck.IsChecked == true,
                     NumberLevels = NumberLevelsCheck.IsChecked == true,
                     DrawRackName = DrawRackNameCheck.IsChecked == true,
-                    AnnotationScale = Val(AnnotationScaleBox, 1.0),
+                    AnnotationScale = rackAnnotationScale,
                     Dimensions = (DimensionDetail)Math.Min((int)DimensionDetail.Detailed, Math.Max(0, DimensionsBox.SelectedIndex)),
+                    DimensionStyle = loadedDimensionStyle, // I-64 F4B PB-TC (D-PBTC-02): the loaded style travels in every pass
                     DimensionViews = SelectedDimensionViews() // I-50 C-12
                 }
             };
@@ -1214,6 +1247,13 @@ namespace RackCad.UI.Systems.PushBack
         /// <c>null</c>, no 7.
         /// </summary>
         private DimensionViewVisibility? loadedDimensionViews;
+
+        /// <summary>
+        /// I-64 F4B PB-TC (D-PB-06 (b), D-PBTC-02) — el estilo de cotas con nombre que trajo el modelo CARGADO. La ventana no
+        /// tiene selector de estilo: solo lo transporta, de <see cref="LoadFromModel"/> a cada pasada de
+        /// <see cref="ReadInputs"/>. <c>null</c> en un rack nuevo.
+        /// </summary>
+        private string loadedDimensionStyle;
 
         /// <summary>Si el USUARIO cambió alguna de las tres casillas desde la última carga. Cargar, restaurar, recalcular o
         /// cambiar el nivel de cotas no cuentan.</summary>
@@ -3623,7 +3663,27 @@ namespace RackCad.UI.Systems.PushBack
         /// </para>
         /// </summary>
         private double? OptionalVal(NumericField field, double? sideValue)
-            => field.Value ?? (IsMixed(field) ? sideValue : null);
+            => field.Value.HasValue
+                ? (sideValue.HasValue && SameShown(field.Value.Value, sideValue.Value) ? sideValue : field.Value)
+                : (IsMixed(field) ? sideValue : null);
+
+        /// <summary>I-64 F4B PB-TC (D-PBTC-01) — el formato con el que <see cref="NumericField.SetNumber"/> pinta estas cajas.</summary>
+        private const string ShownFormat = "0.###";
+
+        /// <summary>I-64 F4B PB-TC — True cuando dos numeros se ven igual en una caja formateada con <see cref="ShownFormat"/>.</summary>
+        private static bool SameShown(double a, double b)
+            => string.Equals(
+                a.ToString(ShownFormat, System.Globalization.CultureInfo.InvariantCulture),
+                b.ToString(ShownFormat, System.Globalization.CultureInfo.InvariantCulture),
+                StringComparison.Ordinal);
+
+        /// <summary>
+        /// I-64 F4B PB-TC (D-PBTC-01, la regla de «Keep» de Cantilever) — el numero que lleva la caja, o el valor DE DONDE se sembro
+        /// cuando los dos se ven igual: una caja que el usuario no edito no cambia el diseño, y una editada a un numero que se ve
+        /// distinto manda. Con la caja vacia devuelve <paramref name="current"/>, como el respaldo de <see cref="Val"/>.
+        /// </summary>
+        private static double Keep(NumericField field, double current)
+            => !field.Value.HasValue || SameShown(field.Value.Value, current) ? current : field.Value.Value;
 
         private static int IntVal(NumericField field, int fallback) => field.Value.HasValue ? (int)Math.Round(field.Value.Value) : fallback;
     }
