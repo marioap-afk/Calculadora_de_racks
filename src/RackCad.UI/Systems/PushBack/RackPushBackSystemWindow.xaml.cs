@@ -165,6 +165,7 @@ namespace RackCad.UI.Systems.PushBack
         internal RackEditorSession<PushBackDesign, PushBackSystem> Session => session;
         internal PushBackEditorState State => state;
         internal PushBackEditorDesignAssembler Assembler => assembler;
+        internal PushBackEditableState EditableStateForTest => new PushBackEditableState();
 
         /// <summary>The plan currently drawn in the preview (the selected view/corte). For the lateral view this is the
         /// SELECTED corte's plan, so changing "Corte 1"→"Corte 2" changes what the preview shows.</summary>
