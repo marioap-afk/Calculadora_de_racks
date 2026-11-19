@@ -1794,3 +1794,35 @@ Un campo que el plugin no conoce, dentro de un módulo, de un lado o de otra pie
 - **PBT1B2-IR-M03:** las corridas de medición previas al RED (p2) se lanzaron con `--no-build` y la entrega no trae su log de compilación. Solo p3, el RED y el GREEN prueban qué texto se compiló.
 - **PBT1B2-IR-M04:** la regla «EXCEPCION» sigue sin aplicarse en CT-11. No es una regresión.
 - **PBT1B2-IR-M05:** la línea de declaración de CT-PBT1B-01 (M08) calcula 16 y 19 en lugar de escribirlos.
+
+## I-64 F4B PB-T1c — aislamiento de pruebas y un desfase del editor (2026-11-19, registrados sin corregir)
+
+### Las pruebas de UI escriben la disposición del configurador en el perfil del usuario
+
+Varias pruebas de UI que ya existían crean un `RackFrameConfiguratorWindow` real y lo cierran: las clases RichEditor*, EditorShellAdoptionTests, FirstView* y PushBackHeaderOwnerRoundTwoTests, entre otras.
+- **Qué pasa:** `OnClosed` llama a `SaveCurrentLayout`, y `RackFrameConfiguratorLayoutStore` escribe `RackCad/RackFrameConfigurator.layout` bajo los datos locales del usuario.
+- **El efecto:** cada corrida local de esas pruebas sobrescribe la disposición del configurador (anchos de columna y alto de paneles) que el usuario tiene guardada. No afecta a dibujos ni a datos de racks.
+- **En la CI no tiene efecto,** porque el runner es efímero.
+- **Cómo se vio:** en la prueba de limpieza del perfil de los Workers de F4B.
+- **Lo que haría falta:** una tarea propia que redirija la ubicación de la disposición en las pruebas. Por ejemplo, una costura de prueba en `RackFrameConfiguratorLayoutStore` o una carpeta temporal por prueba. PB-T1c no podía cambiar pruebas existentes.
+
+### El diseño calculado del compuesto va una pasada por detrás tras tres gestos
+
+En la ventana clásica de Push Back, tras cambiar `GapBox`, `CentralSeparatorCheck` o la estructura propia (`StructureOverrideBox`), la secuencia de módulos de `LastComputation` de la parte compuesta se reconverge en la pasada **siguiente**. Por eso, hasta el recálculo siguiente, el diseño calculado va una pasada por detrás del estado.
+- **Ya existía antes de PB-T1c** y es igual en la base.
+- **Las salidas que escriben no se ven afectadas:** «Actualizar», el BOM y «Guardar en biblioteca» recalculan antes de usar el diseño.
+- **«Restaurar» sí:** lee `lastComputation.Design` sin una pasada previa, así que un «Restaurar» justo después de esos gestos parte del diseño que va una pasada por detrás. Lo vio la revisión independiente de PB-T1c, OWNER-01, como dato informativo.
+  - Por el mecanismo, la intención compuesta debería volver a ganar en la pasada siguiente.
+  - Ninguna prueba lo ejerce sobre un compuesto.
+  - El comportamiento es el mismo antes y después de PB-T1c.
+- **Lo fija CT-PBT1C-02,** que compara tras un recálculo neutro (F4B-E30).
+- **Conviene revisarlo** en PB-T2, cuando «Aplicar al borrador» devuelva el estado en el modo WORKSPACE.
+
+### Mejoras de las pruebas de PB-T1c (revisión independiente del intento 2, menores)
+
+- **PBT1CC2-IR-M01 y M02:** dos comentarios quedan desfasados en W.
+  - El de I-42 en `Restore_Click` describe `LoadCompositeFromDesign`, que se retiró.
+  - El `<summary>` del estado compuesto documenta ahora `editable` en lugar del reenvío `composite`.
+- **PBT1CC2-IR-M03:** el gesto «PostBox=otro» de CT-PBT1C-02 es inerte con el catálogo que se entrega, porque solo trae un poste. Con un catálogo de varios postes, ninguna prueba de la ventana fija el traspaso al estado.
+- **PBT1CC2-IR-M04:** CT-PBT1C-01 deriva sus líneas esperadas de la misma enumeración del corpus que las reales.
+- **PBT1CC2-IR-M05:** la parte 2 de CT-PBT1C-02 captura las referencias tras cada paso del gesto, no tras cada pasada interna.

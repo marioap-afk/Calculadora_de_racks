@@ -1,0 +1,130 @@
+{
+  "Schema": "rackcad-i64-byte-fidelity/v1",
+  "TaskId": "F4B-PBT1C-LOSSLESS-STATE-WINDOW",
+  "PlanningRunId": "R20261119T025114Z-43f7",
+  "Authority": "F4-E19 y F4-E26: comparacion previa a la aceptacion",
+  "OutputSha256": "6c2faafee0cc7127ebce7a149e80e4e58990186fec710987792f54d2ab1cf031",
+  "ContractSha256": "030380eed130344e902a7d8359a0227bf596e58c7068f8190fe9c2957d7cc3cb",
+  "Fields": [
+    {
+      "Field": "Invariants",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "3ea065d7d7d9f34d8d702a0cdce3d0351eb3471887617f888dddbdf5b59d6ab7",
+      "OutputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Differences": [
+        {
+          "CountSource": 15,
+          "CountOutput": 0
+        }
+      ]
+    },
+    {
+      "Field": "RequiredTests",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "e19797b0e5ad0ec65ae8e1ba0fa91504f9017c09a458672737420c751d8c2f23",
+      "OutputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Differences": [
+        {
+          "CountSource": 38,
+          "CountOutput": 0
+        }
+      ]
+    },
+    {
+      "Field": "StopConditions",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "380622ee5a45a306178fb7b34a72c324515266293bd23391ab417bf6fb4cfc9d",
+      "OutputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Differences": [
+        {
+          "CountSource": 64,
+          "CountOutput": 0
+        }
+      ]
+    },
+    {
+      "Field": "Authorities",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "e3a5d6047c5a19b39af7010b97664259e9c4924e7e646a34375afa03cc0f386b",
+      "OutputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Differences": [
+        {
+          "CountSource": 204,
+          "CountOutput": 0
+        }
+      ]
+    },
+    {
+      "Field": "ExpectedEvidence",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "56618c02eba5b32e073109aa62ab8f9fb1a0ac34c63a653c3181d480c43d415d",
+      "OutputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Differences": [
+        {
+          "CountSource": 7,
+          "CountOutput": 0
+        }
+      ]
+    },
+    {
+      "Field": "Objective",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "1c70a85ad524251fc8d3f209886fb3ffc0380b1948269c2b84beffe1f80d8459",
+      "OutputSha256": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
+      "Differences": [
+        {
+          "Index": 0,
+          "Offset": 0,
+          "Source": "Hacer que la ventana clasica de Push Bac",
+          "Output": ""
+        }
+      ]
+    },
+    {
+      "Field": "AllowedWriteScope",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "97d9c16c4488f73c19a191e08a8e636ab67822c40cb7b1a3a49db834901277d6",
+      "OutputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Differences": [
+        {
+          "CountSource": 5,
+          "CountOutput": 0
+        }
+      ]
+    },
+    {
+      "Field": "ForbiddenWriteScope",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "ec9474d527837586daa54d6f7a12953e54d41e89f2ffdca1a6e3e79953a57451",
+      "OutputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Differences": [
+        {
+          "CountSource": 161,
+          "CountOutput": 0
+        }
+      ]
+    }
+  ],
+  "Result": "REJECTED",
+  "AllowedWriteScopeElementwiseInOrder": false,
+  "ForbiddenWriteScopeCount": {
+    "Contract": 161,
+    "Output": 0
+  }
+}

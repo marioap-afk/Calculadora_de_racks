@@ -8076,3 +8076,28 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - solo documentación;
 - sin AutoCAD;
 - las corridas de la cadena de PB-T1c se custodian al cerrar la tarea.
+
+## 253. PB-T1c: cadena completa y cierre (F4B-E31); PB-T1 completa
+
+**Qué se custodia:**
+- **Las unidades de la cadena,** con su manifiesto por unidad:
+  - en `F4B-PBT1C-LOSSLESS-STATE-WINDOW/1/`: la planificación `43f7` y el Worker `ee6c`;
+  - en `F4B-PBT1C-LOSSLESS-STATE-WINDOW/2/`: la planificación `cf1f`, el Worker `11b9` y la verificación `3612`;
+  - las nc4 `6a10` y `2c93`;
+  - los controles nc1 `e146`, nc2 `1c08` y nc3 `f007`.
+- **Las revisiones del intento 2,** con su encargo, en `.../2/R20261119T041505Z-11b9/`.
+- **El paquete de cierre de la tarea.**
+- **La nota de `docs/ideas-futuras.md`.**
+- **El estado.**
+
+**El intento 2:**
+- RED `2faae9da` y GREEN `161a0dad`;
+- CI `44459636816` del RED y `44463212627` del GREEN (4/4; Core 19 088 y UI 2 439);
+- la revisión independiente, ACEPTABLE CON MENORES 0/0/5 (PBT1CC2-IR-M01 a M05: comentarios desfasados y huecos de cobertura de las pruebas, sin producto) y un dato informativo para el Owner (OWNER-01: «Restaurar» no recalcula antes de leer el diseño, igual en la base);
+- la verificación, 14/14;
+- nc1, nc2 y nc3, CONTROL PASS.
+
+**Límites:**
+- solo documentación;
+- sin AutoCAD;
+- los eventos y las transcripciones, solo por SHA-256 (16.12).

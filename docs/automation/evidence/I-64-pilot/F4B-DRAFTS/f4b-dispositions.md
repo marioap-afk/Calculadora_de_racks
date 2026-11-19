@@ -835,3 +835,39 @@ Su lectura de CT-06 dio falsos fallos.
 - Cada corrida local de esos filtros sobrescribe la disposición del configurador del usuario.
 - **No es una parada de PB-T1c.** PBT1C-C09 rige las pruebas nuevas, y PB-T1c no puede cambiar las existentes.
 - **Lo que se hace con él:** se informa al Owner y se anota en `docs/ideas-futuras.md` al cerrar PB-T1c, para una tarea propia.
+
+## F4B-E31. Cierre de F4B-PBT1C-LOSSLESS-STATE-WINDOW (PB-T1 completa)
+
+**Paquete de cierre:** `F4B-PBT1C-LOSSLESS-STATE-WINDOW/task-close-package.md`.
+
+**La cadena:**
+- **Emisión** (F4B-E27): con el paquete v2.8, X `af46fcd5` y BASE `833ea6bf`.
+- **Intento 1:**
+  - la planificación `43f7` se aceptó al primer lanzamiento (fidelidad 8/8 y A1-A8 8/8), con nc4 `6a10`;
+  - el Worker `ee6c` dejó el RED `e5a21989` (la costura inerte y las tres clases; CI `44450941610` conforme) y paró con PBT1C-C07 (F4B-E30).
+- **Intento 2, la corrección** (F4B-E30, con el análisis custodiado en `d8ccbcb8`):
+  - la planificación `cf1f` se aceptó al primer lanzamiento, con nc4 `2c93`;
+  - el Worker `11b9` dejó el RED `2faae9da`, solo con C-1: la parte 1 de CT-PBT1C-02 tras el recálculo neutro;
+  - y el GREEN `161a0dad`, D-PBT1-13 solo en W y WC.
+
+**CI:**
+- RED `44459636816`: tests y ui-tests en failure, build-ui en success y build-plugin omitido.
+- GREEN `44463212627`: 4/4, con Core 19 088 y UI 2 439 (2 418 pasadas y 21 omitidas). Es la línea base del cierre de PB-T1b más 2 y más 2, exactamente lo previsto.
+
+**Revisiones:**
+- la directa, sin hallazgos;
+- la independiente, ACEPTABLE CON MENORES 0/0/5 (PBT1CC2-IR-M01 a M05: comentarios desfasados y huecos de cobertura de las pruebas, sin producto) y un dato informativo para el Owner (OWNER-01: «Restaurar» no recalcula antes de leer el diseño, igual en la base).
+
+**Verificación** `3612`: EXECUTION_VERIFIED 14/14 al primer lanzamiento. Authority pasa con la regla de F4B-E25: W es UNIT_CHANGE en la base y solo la tocó el RED del intento 1.
+
+**Controles:** nc1 `e146` (Identity, STOP), nc2 `1c08` (Scope, STOP) y nc3 `f007` (FreeText, REWORK), los tres **CONTROL PASS** con el oráculo cumplido y sin sustitutos. La coincidencia «limit reached» de sus relevos es el texto de S-11 del README.
+
+**Resultado:** **F4B-PBT1C-LOSSLESS-STATE-WINDOW = CLOSED / PASS WITH LIMITATIONS** sobre `161a0dad`, con attempts 2 de 3.
+- La ventana clásica de Push Back guarda su estado editable en `PushBackEditableState`, en modo CLASSIC y sin cambio observable.
+- **PB-T1 queda completa:** PB-T1a, PB-T1b y PB-T1c.
+
+**Anotado en `docs/ideas-futuras.md`:**
+- el aislamiento del configurador en las pruebas: las pruebas existentes escriben su disposición en el perfil del usuario;
+- el desfase de una pasada del diseño calculado del compuesto, que ya existía.
+
+**Siguiente:** la emisión de PB-T2a con el paquete de PB-T2 v2.2, por la autorización condicional de F4B-E28 (pregunta 4); su comprobación acotada ya está hecha.

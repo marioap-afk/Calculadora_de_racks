@@ -1,0 +1,92 @@
+rutas cambiadas:
+  docs/automation/evidence/I-64-evidence.md
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt2-decisions.md
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt3-d1-decision.md
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/f4b-dispositions.md
+  docs/automation/evidence/I-64-pilot/F4B-PBT1C-LOSSLESS-STATE-WINDOW/1/R20261119T025420Z-ee6c/analysis.md
+  docs/automation/state/I-64.yml
+  src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs
+  src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+  tests/RackCad.Tests/PushBackWindowOnStateSourceGuardTests.cs
+  tests/RackCad.Tests/PushBackWindowSharedReferenceGuardTests.cs
+  tests/RackCad.UI.Tests/PushBackWindowOnStateTests.cs
+FAIL INV-01 las rutas cambiadas estan dentro del AllowedWriteScope :: ['docs/automation/evidence/I-64-evidence.md', 'docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt2-decisions.md', 'docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt3-d1-decision.md', 'docs/automation/evidence/I-64-pilot/F4B-DRAFTS/f4b-dispositions.md', 'docs/automation/evidence/I-64-pilot/F4B-PBT1C-LOSSLESS-STATE-WINDOW/1/R20261119T025420Z-ee6c/analysis.md', 'docs/automation/state/I-64.yml']
+PASS INV-01 en src/ solo W y WC :: ['src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs', 'src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs']
+PASS INV-01 el diff de XAML, Application, Domain, Plugin, Editor y Controls esta vacio
+
+hunks de git diff -U0 (src), con su miembro y su rango de BaseSha:
+  RackPushBackSystemWindow.Composite.cs -784,3 +784,1 CompositeDiagnostics  [+1 -3]
+  RackPushBackSystemWindow.Composite.cs -790,12 +788,1 CompositeStatusOr  [+1 -12]
+  RackPushBackSystemWindow.Composite.cs -806,1 +793,1 CompositeHasBlocking  [+1 -1]
+  RackPushBackSystemWindow.Composite.cs -811,124 +797,0 LoadCompositeFromDesign  [+0 -124]
+  RackPushBackSystemWindow.xaml.cs -54,1 +54,1 composite+editable  [+1 -1]
+  RackPushBackSystemWindow.xaml.cs -56,2 +56,2 composite+editable  [+2 -2]
+  RackPushBackSystemWindow.xaml.cs -84,1 +84,1 safetySelections  [+1 -1]
+  RackPushBackSystemWindow.xaml.cs -101,1 +101,1 generalPallet  [+1 -1]
+  RackPushBackSystemWindow.xaml.cs -106,4 +106,4 rackTolerance..rackAnnotationScale  [+4 -4]
+  RackPushBackSystemWindow.xaml.cs -114,1 +114,1 advanced  [+1 -1]
+  RackPushBackSystemWindow.xaml.cs -167,0 +168,1 (entre miembros)  [+1 -0]
+  RackPushBackSystemWindow.xaml.cs -273,4 +274,1 LoadNew  [+1 -4]
+  RackPushBackSystemWindow.xaml.cs -279,0 +278,1 LoadNew  [+1 -0]
+  RackPushBackSystemWindow.xaml.cs -286,2 +285,1 LoadNew  [+1 -2]
+  RackPushBackSystemWindow.xaml.cs -299,4 +297,2 LoadDesignForNew  [+2 -4]
+  RackPushBackSystemWindow.xaml.cs -305,0 +302,1 LoadDesignForNew  [+1 -0]
+  RackPushBackSystemWindow.xaml.cs -316,4 +313,2 LoadExisting  [+2 -4]
+  RackPushBackSystemWindow.xaml.cs -322,0 +318,1 LoadExisting  [+1 -0]
+  RackPushBackSystemWindow.xaml.cs -326,49 +321,0 SideAOnly  [+0 -49]
+  RackPushBackSystemWindow.xaml.cs -380,1 +327,1 firstLevelDatum  [+1 -1]
+  RackPushBackSystemWindow.xaml.cs -389,0 +337,1 LoadFromModel  [+1 -0]
+  RackPushBackSystemWindow.xaml.cs -391,1 +338,0 LoadFromModel  [+0 -1]
+  RackPushBackSystemWindow.xaml.cs -393,1 +339,0 LoadFromModel  [+0 -1]
+  RackPushBackSystemWindow.xaml.cs -398,1 +343,0 LoadFromModel  [+0 -1]
+  RackPushBackSystemWindow.xaml.cs -401,1 +345,0 LoadFromModel  [+0 -1]
+  RackPushBackSystemWindow.xaml.cs -403,9 +346,0 LoadFromModel  [+0 -9]
+  RackPushBackSystemWindow.xaml.cs -414,1 +348,0 LoadFromModel  [+0 -1]
+  RackPushBackSystemWindow.xaml.cs -419,1 +352,0 LoadFromModel  [+0 -1]
+  RackPushBackSystemWindow.xaml.cs -423,6 +355,0 LoadFromModel  [+0 -6]
+  RackPushBackSystemWindow.xaml.cs -840,1 +767,1 ReadInputs  [+1 -1]
+  RackPushBackSystemWindow.xaml.cs -845,45 +772,10 ReadInputs  [+10 -45]
+  RackPushBackSystemWindow.xaml.cs -1237,0 +1130,1 Name_Changed  [+1 -0]
+  RackPushBackSystemWindow.xaml.cs -1239,0 +1133,2 (entre miembros)  [+2 -0]
+  RackPushBackSystemWindow.xaml.cs -1249,1 +1144,1 loadedDimensionViews  [+1 -1]
+  RackPushBackSystemWindow.xaml.cs -1256,1 +1151,1 loadedDimensionStyle  [+1 -1]
+  RackPushBackSystemWindow.xaml.cs -1260,1 +1155,1 dimensionViewsTouched  [+1 -1]
+  RackPushBackSystemWindow.xaml.cs -1289,10 +1183,0 SelectedDimensionViews  [+0 -10]
+  RackPushBackSystemWindow.xaml.cs -3320,3 +3205,2 Restore_Click  [+2 -3]
+  RackPushBackSystemWindow.xaml.cs -3327,1 +3210,0 Restore_Click  [+0 -1]
+  RackPushBackSystemWindow.xaml.cs -3352,0 +3236,1 InsertBatch_Click  [+1 -0]
+  RackPushBackSystemWindow.xaml.cs -3405,0 +3290,1 RequestDraw  [+1 -0]
+  RackPushBackSystemWindow.xaml.cs -3504,0 +3390,1 SaveLibrary_Click  [+1 -0]
+PASS INV-03 cada hunk cae en su rango y respeta su forma :: []
+PASS INV-03 la declaracion 'private void SyncName()' se anade una vez
+PASS INV-03 la declaracion 'internal PushBackEditableState EditableStateForTest' se anade una vez
+PASS INV-03 ningun comentario nuevo fuera del rango de composite (W:49-57) :: []
+PASS INV-04 las cinco sentencias de CT-22 siguen en W y en su orden :: [845, 992, 1037, 1351, 1468]
+PASS INV-04 S-9
+PASS INV-04 S-7
+PASS INV-04 las sentencias de CT-23 siguen en W y en su orden :: [87, 1798, 2079]
+PASS INV-04 CT-23 literales
+PASS INV-04 SyncName(); inmediatamente despues de cada SetName( y Adopt( (siete sitios) :: sitios=7 con-SyncName=7
+  sitios en BaseSha: [279, 305, 322, 1237, 3352, 3405, 3504]
+PASS INV-05 W con una sola .RequestUpdate( :: 1
+PASS INV-05 ninguna linea anadida con los tokens prohibidos :: []
+PASS INV-05 I-55
+PASS INV-05 Fact3 (W sin forceRebuild: ni forceRebuild))
+PASS INV-05 desviador
+PASS INV-05 ninguna linea con SetNumber( anadida ni quitada :: []
+PASS INV-05 editable.AdoptCarriers(inputs, catalog); es la primera sentencia del try de LoadFromModel
+PASS INV-05 las dos variables locales y las siembras de LoadFromModel
+PASS INV-05 UpdateCompositeEnabled(); en la linea siguiente a LoadDesignEditor y a RestoreEditor :: sitios=3 ok=3
+PASS INV-05 linea testigo (W) unica en BaseSha y ausente en CurrentSha :: del lado A SOLO, sin la parte compuesta.
+PASS INV-05 linea testigo (W) unica en BaseSha y ausente en CurrentSha :: que se guarda: la cargada, exacta, si el usuario no
+PASS INV-05 linea testigo (WC) unica en BaseSha y ausente en CurrentSha :: Recupera la intencion compuesta de un diseno
+PASS INV-05 linea testigo (WC) unica en BaseSha y ausente en CurrentSha :: CARGAR OTRO RACK Y RESTAURAR EL ACTUAL NO SON LO MISMO
+  declaraciones de miembro en BaseSha: 327; en CurrentSha: 326
+PASS INV-05 el censo de declaraciones es el de BaseSha sin las cuatro retiradas y con las tres prescritas :: {}
+PASS INV-05 los doce reenvios conservan su nombre (una declaracion cada uno) :: {'composite': 1, 'safetySelections': 1, 'generalPallet': 1, 'rackTolerance': 1, 'rackPostPeralte': 1, 'rackBeamDepth': 1, 'rackAnnotationScale': 1, 'advanced': 1, 'firstLevelDatum': 1, 'loadedDimensionViews': 1, 'loadedDimensionStyle': 1, 'dimensionViewsTouched': 1}
+  costuras internal en BaseSha: 40
+PASS INV-06 las costuras internal de BaseSha siguen con su nombre y tipo, mas EditableStateForTest
+PASS INV-07c ninguna linea anadida asigna el Name ni muta el rack resuelto o el informe :: []
+PASS INV-07c la unica asignacion de .Name anadida es la de SyncName :: ['private void SyncName() => editable.Name = session.Identity.Name;']
+
+RESULTADO: FALLAN: INV-01 las rutas cambiadas estan dentro del AllowedWriteScope

@@ -1,0 +1,68 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261119T052614Z-1c08",
+  "SourceVerification": "R20261119T051834Z-3612",
+  "SourceInputs": "artifacts/orchestration/I-64/F4B-PBT1C-LOSSLESS-STATE-WINDOW/2/R20261119T051834Z-3612/inputs",
+  "Mutation": {
+    "File": "delegation.json",
+    "Field": "AllowedWriteScope",
+    "DiffBaseToCurrent": [
+      "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs",
+      "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs",
+      "tests/RackCad.UI.Tests/PushBackWindowOnStateTests.cs"
+    ],
+    "FirstLexicographic": "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs",
+    "CoveringEntries": [
+      "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs"
+    ],
+    "CoveredByPrefix": null,
+    "Old": [
+      "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs",
+      "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs",
+      "tests/RackCad.UI.Tests/PushBackWindowOnStateTests.cs",
+      "tests/RackCad.Tests/PushBackWindowOnStateSourceGuardTests.cs",
+      "tests/RackCad.Tests/PushBackWindowSharedReferenceGuardTests.cs"
+    ],
+    "New": [
+      "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs",
+      "tests/RackCad.UI.Tests/PushBackWindowOnStateTests.cs",
+      "tests/RackCad.Tests/PushBackWindowOnStateSourceGuardTests.cs",
+      "tests/RackCad.Tests/PushBackWindowSharedReferenceGuardTests.cs"
+    ],
+    "OtherDiffFilesStillCovered": true,
+    "Rule": "README 10: \"si una entrada de prefijo lo cubre, se sustituye por la enumeracion de los demas archivos del diff\": el prefijo que cubre el primer archivo se sustituye por los demas archivos del diff que ese prefijo cubria; las demas entradas no cambian; exactamente ese archivo queda fuera"
+  },
+  "DerivedRecompute": {
+    "File": "relay-record-planning.json",
+    "Field": "Outcome.OutputSha256",
+    "Old": "600EE804C8304175B62A42B167E3FC057E2324D4EFD129A2DF7C2B493DB526C8",
+    "New": "3291D4F59CCD80549478F2AE479186DA4C499113C1FFA5E424F756035808F8FD",
+    "Reason": "hash derivado de delegation.json recalculado para que la copia sea internamente coherente con la entrega simulada; no es una mutacion del contenido de la entrega ni de la delegacion"
+  },
+  "PromptSha256": "F9C1550AFDB353E6C31C9E08BADE5A7086A91A9C1FAAB07ADBDA808CA9CD131B",
+  "PromptDiffVsVerified": "solo la ruta de entrada y el RunId de la invocacion (README 10)",
+  "SchemaValid": {
+    "worker-handoff.json": true,
+    "delegation.json": true,
+    "relay-record-work.json": true,
+    "relay-record-planning.json": true
+  },
+  "InputSha256": {
+    "byte-fidelity-check.json": "90D3F91F366A8DC5334966351B7BB002D82C1E507303F36519A4D112597975DF",
+    "delegation-intento1.json": "55C6EA100050FDE19B246F7550BED420F78F9FA66CDF42DE0BDE447EEFE82DF3",
+    "delegation.json": "3291D4F59CCD80549478F2AE479186DA4C499113C1FFA5E424F756035808F8FD",
+    "gate-contract.json": "030380EED130344E902A7D8359A0227BF596E58C7068F8190FE9C2957D7CC3CB",
+    "relay-record-planning.json": "B3B8ECA5F0694AE245492FFFAE3B7F934847C605A4CBA7AA4876BF17E1AAE397",
+    "relay-record-work.json": "9F47C7C4EB7C3BD1F6AA8949668F40E78BC40BEFBBBC9697866A754CE3DD10DC",
+    "worker-handoff-intento1.json": "7C4C8780C763C6947727C37A091236C697A9F648A02B1A1CC73DADE96A51BD1A",
+    "worker-handoff.json": "1A073BCE491E2EE3CB3B77094222812B111790B4CB93C2EEC21916E7F1CB467E",
+    "ci-core/44463212627/core.trx": "F538258D280A4B23695020FA18EF6FAD150CAAF5C2756F5A96D306C8CD4B8264",
+    "ci-core-red/44459636816/core.trx": "35F007DD8F546C3CD1508063A30A7EBA19C26772339A7B897C3E5F6781F34B09",
+    "ci-ui/44463212627/ui.trx": "1CD33A7044B4DD24A218C18756ABE96B09BA1F6BE956E018C039B97949AFCB15",
+    "ci-ui-red/44459636816/ui.trx": "B5E354AC998005C4E973E2B51E7A2F06A1E32FC263CC13FBD8A4766B7A0E1057"
+  },
+  "ChangedVsVerifiedInputs": [
+    "delegation.json",
+    "relay-record-planning.json"
+  ]
+}

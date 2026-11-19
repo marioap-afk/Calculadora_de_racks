@@ -1,0 +1,53 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261119T052614Z-1c08",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "MutatedCheck": {
+    "Scope": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Scope"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "PBT1C-C01"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Scope": "Deterministic exact-list script read 4 AllowedWriteScope entries. git diff --name-only BaseSha CurrentSha returned W, WC, and tests/RackCad.UI.Tests/PushBackWindowOnStateTests.cs; WC (src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs) is not in the exact list. git diff --name-only BaseSha RedSha returned only the UI test path, which is allowed. git diff --name-only ChainBaseSha CurrentSha -- src tests returned W, WC, and three test paths; WC is not in the exact list. This is outside the primary whitelist and triggers PBT1C-C01."
+  },
+  "OutputSha256": "AE1A4A2A947C25767166E5976F22484DFCD7452DCBA0B3B734C5388803EF9DF0",
+  "ManualFreeText1610": []
+}

@@ -1,0 +1,44 @@
+{
+  "GreenCore": {
+    "Filter": "FullyQualifiedName~RackCad.Tests.PushBackWindowOnStateSourceGuardTests",
+    "Selected": 1,
+    "Passed": 1,
+    "Failed": 0,
+    "Other": 0
+  },
+  "GreenCoreGuard": {
+    "Filter": "FullyQualifiedName~RackCad.Tests.PushBackWindowSharedReferenceGuardTests",
+    "Selected": 1,
+    "Passed": 1,
+    "Failed": 0,
+    "Other": 0
+  },
+  "GreenUi": {
+    "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWindowOnStateTests",
+    "Selected": 2,
+    "Passed": 2,
+    "Failed": 0,
+    "Other": 0
+  },
+  "RedCore": {
+    "Filter": "FullyQualifiedName~RackCad.Tests.PushBackWindowOnStateSourceGuardTests",
+    "Selected": 1,
+    "Passed": 0,
+    "Failed": 1,
+    "Other": 0
+  },
+  "RedCoreGuard": {
+    "Filter": "FullyQualifiedName~RackCad.Tests.PushBackWindowSharedReferenceGuardTests",
+    "Selected": 1,
+    "Passed": 1,
+    "Failed": 0,
+    "Other": 0
+  },
+  "RedUi": {
+    "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWindowOnStateTests",
+    "Selected": 2,
+    "Passed": 0,
+    "Failed": 2,
+    "Other": 0
+  }
+}

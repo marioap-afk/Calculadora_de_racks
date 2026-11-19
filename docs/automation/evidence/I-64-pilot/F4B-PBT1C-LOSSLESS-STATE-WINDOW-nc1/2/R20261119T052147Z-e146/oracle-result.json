@@ -1,0 +1,57 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261119T052147Z-e146",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "fail",
+    "Scope": "not_run",
+    "CleanTree": "pass",
+    "Ci": "fail",
+    "Tests": "fail",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Identity",
+    "Remote",
+    "Scope",
+    "Ci",
+    "Tests"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": false,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Identity": "worker-handoff.json CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. git rev-parse HEAD=161a0dadccaf5b71886344d834146737b90bb4f3 and git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad returns the same 161a... value. git cat-file -e deadbeef... fails. BaseSha is an ancestor of RedSha, and RedSha is an ancestor of HEAD."
+  },
+  "OutputSha256": "4F430719FED7E5DFAD74E2DF0379765D3C1BB4C88D14D11998C7E2703FC3B417",
+  "ManualFreeText1610": []
+}
