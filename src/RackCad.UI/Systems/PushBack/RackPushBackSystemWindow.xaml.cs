@@ -166,6 +166,7 @@ namespace RackCad.UI.Systems.PushBack
         internal PushBackEditorState State => state;
         internal PushBackEditorDesignAssembler Assembler => assembler;
         internal PushBackEditableState EditableStateForTest => editable;
+        internal PushBackEditorMode ModeForTest => PushBackEditorMode.Classic;
 
         /// <summary>The plan currently drawn in the preview (the selected view/corte). For the lateral view this is the
         /// SELECTED corte's plan, so changing "Corte 1"→"Corte 2" changes what the preview shows.</summary>
@@ -263,6 +264,7 @@ namespace RackCad.UI.Systems.PushBack
         public RackInsertionRequest InsertionRequest => session.InsertionRequest;
         public PushBackSystem SystemToInsert => (session.InsertionRequest as PushBackInsertionRequest)?.System;
         public PushBackDesign DesignToInsert => (session.InsertionRequest as PushBackInsertionRequest)?.Design;
+        public static RackPushBackSystemWindow ForDraft(PushBackDraftEditorLaunch launch) => new RackPushBackSystemWindow(canInsertInAutoCad: false);
 
         // ---- Public load paths ------------------------------------------------------------------------------------
 
@@ -3345,6 +3347,8 @@ namespace RackCad.UI.Systems.PushBack
 
         // ---- BOM + library ---------------------------------------------------------------------------------------
 
+        internal Action<RackCad.Application.Bom.BillOfMaterials, Window> BomDialog;
+
         private void Bom_Click(object sender, RoutedEventArgs e)
         {
             RequestRecompute();
@@ -3362,6 +3366,8 @@ namespace RackCad.UI.Systems.PushBack
 
             new RackBomWindow(lastComputation.Bom) { Owner = this }.ShowDialog();
         }
+
+        internal Func<Window, string, string> LibraryPathDialog;
 
         private void SaveLibrary_Click(object sender, RoutedEventArgs e)
         {
