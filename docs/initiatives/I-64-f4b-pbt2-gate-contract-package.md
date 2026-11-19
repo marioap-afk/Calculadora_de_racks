@@ -1,9 +1,10 @@
 > **Redacción para el repo público:** las rutas locales se sustituyen por marcadores (`<checkout-principal>`, `<carpeta-del-paquete>`, `<datos-locales-del-usuario>`). El resto no cambia.
 
-# I-64 F4B — Paquete del contrato de PB-T2 (aplicar, cerrar y escribir separados; los dos modos), v2.8
+# I-64 F4B — Paquete del contrato de PB-T2 (aplicar, cerrar y escribir separados; los dos modos), v2.9
 
-**Estado:** v2.8, el texto de emisión de PB-T2b y PB-T2c, con la reparación del RED de F4B-E35 (v2.7, V27-07) y su lectura en la verificación (v2.8, V28-01). PB-T2a ya está emitida con la v2.2 (abajo). Antes de emitir cada una se vuelve a medir sobre el cierre de la anterior (§6.0, «Anclajes»). No declara GATE PASS.
+**Estado:** v2.9, el texto de emisión de PB-T2c. PB-T2b está emitida con la v2.8 (F4B-E36, abajo). La reparación del RED de F4B-E35 (v2.7, V27-07) y su lectura en la verificación (v2.8, V28-01) siguen. PB-T2a ya está emitida con la v2.2 (abajo). Antes de emitir cada una se vuelve a medir sobre el cierre de la anterior (§6.0, «Anclajes»). No declara GATE PASS.
 - **PB-T2b, emitida el 2026-11-19** con attempts 1 de 3 (F4B-E36), por la autorización condicional de F4B-E28, pregunta 4, tras su comprobación acotada (CA-T2b: EMITIBLE TRAS CORRECCIONES, B 0 / I 3 / M 7, corregidas en la v2.4) y sus recomprobaciones, y la remedición sobre el cierre de PB-T2a (`b29551ae`), con la reparación del RED de F4B-E35. **El contrato manda:** `I-64-pilot/F4B-PBT2B-WORKSPACE-MODE-WINDOW/coordinator/gate-contract.json`.
+- **PB-T2c, emitida el 2026-11-19** con attempts 1 de 3 (F4B-E39), por la autorización condicional de F4B-E28, pregunta 4, tras su comprobación acotada (CA-T2c: EMITIBLE TRAS CORRECCIONES, B 0 / I 1 / M 5, corregidas en el paquete) y sus recomprobaciones, y la remedición sobre el cierre de PB-T2b (`56cb026f`). **El contrato manda:** `I-64-pilot/F4B-PBT2C-WORKSPACE-CARRYOVER/coordinator/gate-contract.json`.
 - **PB-T2a, emitida el 2026-11-19** con attempts 1 de 3 (F4B-E32), por la autorización condicional de F4B-E28, pregunta 4, tras su comprobación acotada (EMITIBLE TRAS CORRECCIONES 0/0/6, aplicada) y la remedición sobre el cierre de PB-T1c (`5a8366c1`). **El contrato manda:** `I-64-pilot/F4B-PBT2A-DRAFT-STATE-PORT/coordinator/gate-contract.json`. Su intento 1 paró con PBT2A-C07 por el momento de una lectura de CT-PBT2A-02, y va en el intento 2 de 3 (F4B-E33).
 - **v1:** revisión adversarial independiente (`F4B-DRAFTS/pbt2/independent-review-v1.md`, citada **IR1**): **NECESITA v2, 0/8/16**. Las cuatro preguntas al Owner son reales y ninguna estaba decidida; ninguna decisión material nueva.
 - **v2:** aplica los 24 hallazgos de IR1 y las lecciones de PB-T1b que pidió la sesión (registro v1 → v2, abajo). El detalle de cada hallazgo y su cambio está en `v2-delta.md`.
@@ -15,6 +16,7 @@
 - **v2.6:** la comprobación acotada de PB-T2c (`F4B-DRAFTS/pbt2/independent-review-pbt2c-v25-check.md`, citada **CA-T2c**) da **EMITIBLE TRAS CORRECCIONES, B 0 / I 1 / M 5**, sin decisiones nuevas para el Owner. La v2.6 aplica su importante (las fuentes de CT-PBT2C-01 y 02, en el borrador) y sus menores (registro v2.5 → v2.6, abajo; el detalle está en `v26-delta.md`). Solo cambia PB-T2c: PB-T2b se emite con la v2.5. El diseño no cambia. Su recomprobación (la §9 de CA-T2c) da **EMITIBLE, nuevos B 0 / I 0 / M 3**, sin decisiones nuevas para el Owner: M-06 va en V26-08, M-07 en el generador de PB-T2c y M-08 en la custodia de su encargo.
 - **v2.7:** incorpora en PB-T2b y PB-T2c la regla de la reparación del RED (RR-1 a RR-7) que el Owner aprobó en F4B-E35, pregunta 4: la excepción en C07, la parada C18, la cadena en INV-PBT2B-02 e INV-PBT2C-02, la CI del RED reparado, lo que declara la entrega y la autoridad (registro v2.6 → v2.7, abajo; el detalle está en `v27-delta.md`). PB-T2b se emite ya con la v2.7. El diseño no cambia.
 - **v2.8:** las recomprobaciones de la v2.7 (la §11 de CA-T2b y la §10 de CA-T2c) dan **EMITIBLE TRAS CORRECCIONES**, B 0 / I 1 / M 4 y B 0 / I 1 / M 3, con una importante compartida: cómo lee la verificación del Controller una reparación (la segunda mitad de RR-7). La v2.8 la corrige con sus menores (registro v2.7 → v2.8, abajo; el detalle está en `v28-delta.md`). El diseño no cambia.
+- **v2.9:** la recomprobación de la v2.8 para PB-T2c (la §11 de CA-T2c) da **EMITIBLE, nuevos B 0 / I 0 / M 2**: M-09 se aplica aquí y M-10 es de la cadena. Las ventanas del generador de PB-T2c se ensanchan (registro v2.8 → v2.9, abajo; el detalle está en `v29-delta.md`). Su recomprobación, la §12 de CA-T2c, da **EMITIBLE, nuevos B 0 / I 0 / M 2**: M-11 y M-12 se aplican en esta misma v2.9. La Snapshot K de F4B-E37 sustituye a la J en P-01 de PB-T2c (V29-06). Solo cambia PB-T2c.
 
 **Lo que pide el Owner** ([OD], fila de PB-T2 del §5 de [P], literal):
 
@@ -52,7 +54,7 @@
 2. las respuestas del Owner a Q-PBT2-1 a Q-PBT2-4;
 3. la remedición sobre el cierre de PB-T1c, sin cambio de una premisa material (L-6 de [PT1]), **con la comprobación de que ninguna guarda de PB-T1c impide reasignar `editable` en un constructor** (v2, V2-05);
 4. la comprobación acotada de cada subtarea (la de la v2 ya está hecha: IR1-R);
-5. las celdas vigentes, el `config.toml` igual a la Snapshot J (F4B-E19) y el binario acreditado;
+5. las celdas vigentes, el `config.toml` igual a la Snapshot aceptada vigente (la J de F4B-E19; para PB-T2c, la K de F4B-E37: v2.9, V29-06) y el binario acreditado;
 6. la custodia.
 
 **Base de la medición:**
@@ -63,6 +65,19 @@
 - **La v2.4** (V24-16) lee `17872be8`, con PB-T2a en su intento 2 (F4B-E33): W, WC y WX son los mismos blobs que en `161a0dad` y `0dc623ca` (`f8756a88`, `1a3300b4` y `fb094bef`), y en `src/` solo se añade el esqueleto de PB-T2a (`c33ac6ac`). Las anclas de la v2.3 valen sin cambio, y las que añade la v2.4 son de esa misma ventana.
 - `main` sigue en `812baf87`. Todo es en solo lectura y por objetos git desde el checkout principal. El detalle está en `pbt2-measurements.md`: apartados A a P (la v1, con las correcciones de IR1) y **Q** (la v2 y la v2.1).
 - **Marca [T1c]:** las anclas de W, WC o WX que dependían de la ventana de PB-T1c. Hasta la v2.2 eran las de `b5c09f0b`, `2f5d3dec`, `95373af6` y `833ea6bf`; **desde la v2.3 (V23-03) son las de `0dc623ca`**, el cierre de PB-T1c, con D-PBT1-13 aplicada. Los registros de cambios conservan las de entonces.
+
+## Registro de cambios v2.8 → v2.9
+
+**Origen:** la recomprobación de la v2.8 para PB-T2c, la §11 de CA-T2c (`F4B-DRAFTS/pbt2/independent-review-pbt2c-v25-check.md`: **EMITIBLE, nuevos B 0 / I 0 / M 2**), y su recomprobación, la §12 (**EMITIBLE, nuevos B 0 / I 0 / M 2**), cuyas menores se aplican en esta misma v2.9, sin decisiones nuevas para el Owner; la decisión del Owner F4B-E37, la Snapshot K, que se custodia con el cierre de PB-T2b; y la sesión. PB-T2b ya está emitida con la v2.8 (F4B-E36) y no cambia. **Nada cambia el diseño.**
+
+| Id | Origen | Qué cambia | Dónde |
+|---|---|---|---|
+| V29-01 | **CA-T2c §11 M-09** | **Las líneas fijas de CT-PBT2C-01 en la ayuda de RR-3:** a «los exactos, las doce de CT-PBTC-07 y la de «Aplicar»» le faltaban la línea de `pb-08-redondeo` y las dos de estilo (STANDARD-ISO y SIMPLEX), que también son literales del §5.4. Su comparación byte a byte entre `RedSha` y `RedRepairSha` es, como las demás, parada C07 | §6.0, «La verificación con una reparación del RED»; la `ExpectedEvidence` de PB-T2c |
+| V29-02 | La sesión (D-23) | **Las ventanas del generador de PB-T2c:** la cabecera son las líneas hasta «Lo que pide el Owner», y la fila de [OD] se busca en las 40 primeras. Así caben las líneas de emisión de PB-T2b y de PB-T2c, y las versiones que vengan. No cambia el texto del paquete | `make_pbt2c_contract.py` |
+| V29-03 | La sesión | **La custodia:** PB-T2b quedó emitida con la v2.8; la de PB-T2c gana esta v2.9 y `v29-delta.md` | §6.0, «Custodia» |
+| V29-04 | **CA-T2c §12 M-11** | **Las doce de CT-PBTC-07, enumerables sin interpretar:** la ayuda de RR-3 de PB-T2c nombra su referencia, `PushBackDeclaredCorrectionSideBNoticeTests.cs:89-100`, y el sufijo ` descartes=1` de la última de cada ventana. No son literales del paquete, sino de esa prueba existente, que PB-T2c no toca (C02) | §6.0; la `ExpectedEvidence` de PB-T2c |
+| V29-05 | **CA-T2c §12 M-12** | **La línea de IR1** se busca en toda la cabecera, hasta «Lo que pide el Owner», como las demás de V29-02, y no en las 12 primeras líneas. No cambia el texto del paquete | `make_pbt2c_contract.py` |
+| V29-06 | **F4B-E37 (Owner)** | **La Snapshot K en P-01 de PB-T2c:** la decisión del Owner F4B-E37 (`F4B-DRAFTS/coordinator/owner-config-snapshot-k-decision.md`) acepta la Snapshot K tras la sonda neutra `R20261119T154313Z-2a9a`, y la K sustituye a la J como línea base del `config.toml` del Controller (SHA-256 `E1F69847610FD810D5286B82C86E00FE85D9F497F89E9FD9645E0EEA113322FE`; registro `docs/automation/evidence/I-64-pilot/F4-ENVIRONMENT/snapshot-K/snapshot-k.json`). P-01 de PB-T2c dice «today Snapshot K», y su autoridad es la decisión de la K, en lugar de la de la J. Los dos archivos se custodian con el cierre de PB-T2b: antes son un AVISO del generador y, al escribir, una parada. PB-T2a y PB-T2b se emitieron con la J | las condiciones para emitir; §1; §6.0, «`StopConditions` estándar»; §8.1; §9; `make_pbt2c_contract.py` |
 
 ## Registro de cambios v2.7 → v2.8
 
@@ -259,7 +274,7 @@
 | [PT1] | D-PBT1-02 a D-PBT1-13 (el estado y la ventana sobre él), D-PBT1-15 (D2), §4 (guardas), §5.5 (censo), §10 (A-1, A-2, A-7 a A-10) |
 | [OD2] (`F4B-DRAFTS/coordinator/owner-d1-d2-decisions.md`, F4B-E11) | D2: las dos referencias compartidas, las diez condiciones y el «IMPORTANT LIMIT» |
 | [DP] (`F4B-DRAFTS/coordinator/owner-f4b-procedure-decisions.md`, F4B-E03) | C08 y C11 |
-| F4B-E19, F4B-E21 y F4B-E22 (`owner-config-snapshot-j-decision.md`, `owner-f4b-opaque-collections-decision.md`, `owner-pbt1b-rework-decisions.md`) | La Snapshot J (P-01); la sesión pone las ocho colecciones opacas; las lecciones M10 y M14 |
+| F4B-E37, F4B-E21 y F4B-E22 (`owner-config-snapshot-k-decision.md`, `owner-f4b-opaque-collections-decision.md`, `owner-pbt1b-rework-decisions.md`) | La Snapshot K (P-01), que sustituye a la J de F4B-E19 (v2.9, V29-06); la sesión pone las ocho colecciones opacas; las lecciones M10 y M14 |
 | F4B-E06 y F4B-E09 (`f4b-dispositions.md`) | Las obligaciones de PB-T2: el paso 4 de D-PB-06 y el aviso de D-PB-08 en WORKSPACE |
 | Los cierres de PB-TC, PB-TC2, PB-T1a, PB-T1b y PB-T1c | Las redes que siguen en verde; CT-PBTC-02, 05 y 07 como oráculos |
 | T1B (`docs/initiatives/I-64-f4-t1b-gate-contract-package.md`) | 55 casos de UI y 10 de Core, y sus guardas de texto |
@@ -1071,7 +1086,7 @@ La columna nueva es «WORKSPACE»: el camino del control al borrador. Las dos pr
 
 **Custodia:**
 - en el commit de emisión de PB-T2a: este paquete (en `docs/initiatives/I-64-f4b-pbt2-gate-contract-package.md`), el registro, `v2-delta.md`, `v21-delta.md`, `v22-delta.md` (v2.2, V22-02), los guiones de medición (`measure_pbt2.py`, `measure_pbt2_v2.py`, `forbidden_pbt2.py` y `check_questions_v2.py`), IR1 con su recomprobación (IR1-R), las decisiones de Q-PBT2-1 a 4, y el contrato y su generador en su `coordinator/`;
-- en los de PB-T2b y PB-T2c: su contrato y su generador, la salida de sus anclajes y su comprobación acotada; en el de PB-T2b, además, esta v2.8 (con la v2.5, la v2.6 y la v2.7 en la historia), `v23-delta.md`, `v24-delta.md`, `v25-delta.md`, `v26-delta.md`, `v27-delta.md`, `v28-delta.md`, `measure_pbt2b_t1c.py` y el encargo literal de su comprobación acotada y de su recomprobación (`independent-review-pbt2b-v23-check-prompt.md`), junto al informe (v2.3, V23-06; v2.4, V24-07; v2.5, V25-04; v2.7, V27-07; v2.8, V28-06); en el de PB-T2c, además, el encargo literal de su comprobación acotada y de su recomprobación (`independent-review-pbt2c-v25-check-prompt.md`), junto al informe (v2.6, V26-06; v2.7, V27-07);
+- en los de PB-T2b y PB-T2c: su contrato y su generador, la salida de sus anclajes y su comprobación acotada; en el de PB-T2b, además, la v2.8 (con la v2.5, la v2.6 y la v2.7 en la historia), `v23-delta.md`, `v24-delta.md`, `v25-delta.md`, `v26-delta.md`, `v27-delta.md`, `v28-delta.md`, `measure_pbt2b_t1c.py` y el encargo literal de su comprobación acotada y de su recomprobación (`independent-review-pbt2b-v23-check-prompt.md`), junto al informe (v2.3, V23-06; v2.4, V24-07; v2.5, V25-04; v2.7, V27-07; v2.8, V28-06); en el de PB-T2c, además, esta v2.9, `v29-delta.md` y el encargo literal de su comprobación acotada y de su recomprobación (`independent-review-pbt2c-v25-check-prompt.md`), junto al informe (v2.6, V26-06; v2.7, V27-07; v2.9, V29-03);
 - en `f4b-dispositions.md`: la división, Q-PBT2-1 a 4, cada emisión y los arrastres del §10.
 
 **La delegación (F4B-E21):** el Controller deja vacías las ocho colecciones opacas, y la sesión las pone byte a byte. La comparación byte a byte, A1-A8 y nc4 se hacen sobre la delegación final.
@@ -1098,7 +1113,7 @@ La columna nueva es «WORKSPACE»: el camino del control al borrador. Las dos pr
 - **`tests/`:** la lista curada de PB-T0 (18 entradas); en `tests/RackCad.UI.Tests/`, la de [PKC2] (51 archivos y `Workspace/`), las clases de PB-TC2, PB-T1a, PB-T1b y PB-T1c y las de las subtareas anteriores de PB-T2;
 - **la raíz:** las 17 entradas de [PKC2].
 
-**`StopConditions` estándar** (17): S-02, S-03, S-04, S-05, S-07, S-08, S-12, S-13 y S-14, y P-01 a P-08, con P-01 = «config.toml no longer matches the accepted Snapshot in force (today Snapshot J, docs/automation/evidence/I-64-pilot/F4-ENVIRONMENT/snapshot-J/snapshot-j.json)».
+**`StopConditions` estándar** (17): S-02, S-03, S-04, S-05, S-07, S-08, S-12, S-13 y S-14, y P-01 a P-08, con P-01 = «config.toml no longer matches the accepted Snapshot in force (today Snapshot K, docs/automation/evidence/I-64-pilot/F4-ENVIRONMENT/snapshot-K/snapshot-k.json)». PB-T2a y PB-T2b se emitieron con la J (F4B-E19); PB-T2c, con la K (F4B-E37; v2.9, V29-06).
 
 **Las de [DP], literales en cada contrato** (x = A, B o C): PBT2x-C08, PBT2x-C11 y PBT2x-C12, con el texto de [PT1] §6.0, cambiando solo el prefijo y, en PBT2x-C11, la referencia «section 6.0 of the package» por «section 6.0 of the PB-T1 contract package ([PT1], docs/initiatives/I-64-f4b-pbt1-gate-contract-package.md)» (v2.2, V22-01). Ninguna aceptación puntual anterior de un control se extiende.
 
@@ -1123,7 +1138,7 @@ La columna nueva es «WORKSPACE»: el camino del control al borrador. Las dos pr
   - **Lo que el Controller comprueba de RR** (si algo falla, es C18): RR-1, un solo commit «RED repair», hijo directo de `RedSha` y anterior al GREEN; RR-2, `git diff --name-only RedSha RedRepairSha` dentro de las clases de prueba que añadió el RED (`git diff --name-only --diff-filter=A BaseSha RedSha -- tests/`); RR-4, la CI de `RedRepairSha`, registrada como la del RED reparado, y los TRX de los filtros con `ExpectRed` sobre él; RR-5, la declaración de la entrega, con el diff, y `RedSha`, el commit RED original; RR-6, con el tramo `RedSha..RedRepairSha`.
   - **En PB-T2c, además:** `RedSha..RedRepairSha` es solo `tests/RackCad.UI.Tests/PushBackWorkspaceCarryoverTests.cs`, sin tocar W ni WC (los mutantes del RED), aunque el GREEN los revierta después.
   - **La ayuda mecánica de RR-3** (v2.8, V28-02), en PB-T2b: es parada C07, una violación cierta de RR-3, que una línea literal que el paquete fija para sus clases (las tres listas de CT-PBT2B-03 y las líneas fijas de CT-PBT2B-01 a 07) no siga, byte a byte, en la clase reparada como en `RedSha`.
-  - **La ayuda mecánica de RR-3** (v2.8, V28-02), en PB-T2c: es parada C07, una violación cierta de RR-3, que las 49 líneas esperadas de CT-PBT2C-03 o las líneas fijas de CT-PBT2C-01 y 02 (los exactos, las doce de CT-PBTC-07 y la de «Aplicar») no sean, byte a byte, las mismas en `RedSha` y en `RedRepairSha`.
+  - **La ayuda mecánica de RR-3** (v2.8, V28-02), en PB-T2c: es parada C07, una violación cierta de RR-3, que las 49 líneas esperadas de CT-PBT2C-03 o las líneas fijas de CT-PBT2C-01 y 02 (los exactos, la línea de `pb-08-redondeo`, las dos de estilo, las doce de CT-PBTC-07 (`PushBackDeclaredCorrectionSideBNoticeTests.cs:89-100`, con ` descartes=1` en la última de cada ventana) y la de «Aplicar») no sean, byte a byte, las mismas en `RedSha` y en `RedRepairSha` (v2.9, V29-01 y V29-04).
   - **Indicios para la revisión, no parada** (v2.8, V28-02): una cadena `<campo>=` añadida o quitada en `git diff -U0 RedSha RedRepairSha`, o un cambio en el primer argumento de un `Assert.Equal`. Pueden dar falsos positivos, como una línea que solo se mueve de sitio, así que van a Findings y a la revisión, con la declaración de RR-5.
   - **En el contrato:** la autoridad F4B-E35 lo resume, y la `ExpectedEvidence` lo lleva como lo que lee la verificación.
 
@@ -1337,7 +1352,7 @@ La columna nueva es «WORKSPACE»: el camino del control al borrador. Las dos pr
 - **[OD] D-PB-10** («Each separately contracted PB task starts at: 1 / 3») → cada subtarea, en 1/3.
 - **[OD] §7.3** → §4, sin sustituciones.
 - **F4B-E06 y F4B-E09** → CT-PBT2C-01 y 02.
-- **[DP]** → C08 y C11; **F4B-E19** → P-01 con la Snapshot J; **F4B-E21** → la delegación.
+- **[DP]** → C08 y C11; **F4B-E19** → P-01 con la Snapshot J (PB-T2a y PB-T2b); **F4B-E37** → P-01 con la Snapshot K (PB-T2c; v2.9, V29-06); **F4B-E21** → la delegación.
 - **F4B-E22 y F4B-E26, los arrastres de PB-T1b** (v2, V2-06; IR1 I-06):
   - **M09 (A-7):** `PushBackEditableStateOwnership.Of` decide «declarada» por la tabla y no por el tipo (`:109-112` en `a0a5f699`, igual en `a18ba345`). **Se arrastra a PB-T3,** cuya composición de D-PB-05 usa el mapa para saber qué sale del borrador y qué del rack actual: su contrato añade una prueba de que toda propiedad declarada de los tres documentos tiene fila, o declara la equivalencia (A2-12). PB-T2 no usa el mapa;
   - **M11 (A-8):** no se ejerce (HT2-26);
@@ -1451,7 +1466,7 @@ Lo que no se pudo medir está en el registro, apartados P y Q. En resumen:
   - el mensaje exacto de `ArgumentNullException` en .NET 8 («Value cannot be null. (Parameter '…')»), que el Worker confirma en el RED;
   - que los mutantes de PB-T2c, aislados, hagan fallar su CT; lo mide el Worker.
 - **Los recuentos son estáticos** (registros M y Q-4). La línea base de la CI de PB-T1b está **medida** (`44438060317`); las siguientes, **previstas**.
-- **No medido aquí:** el `config.toml` frente a la Snapshot J, el binario acreditado y la vigencia de las celdas.
+- **No medido aquí:** el `config.toml` frente a la Snapshot aceptada vigente (la K desde F4B-E37; v2.9, V29-06), el binario acreditado y la vigencia de las celdas.
 - **El worktree de la rama no se leyó.** Toda lectura fue por objetos git desde el checkout principal.
 - **Dos incidencias de procedimiento** (registro, cabecera):
   - `python3 -c "pass"`, en la v1;

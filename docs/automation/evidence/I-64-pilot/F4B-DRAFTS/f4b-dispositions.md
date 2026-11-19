@@ -1127,3 +1127,66 @@ No hay cambios materiales.
 - BOM y biblioteca siguen, con sus dos costuras.
 
 **Siguiente:** la emisión de PB-T2c con el paquete de PB-T2 v2.9, tras la remedición sobre este cierre y su recomprobación final (la §13 de CA-T2c), por F4B-E28 (pregunta 4).
+
+## F4B-E39. Emisión de F4B-PBT2C-WORKSPACE-CARRYOVER (PB-T2c), con el paquete de PB-T2 v2.9
+
+**Fecha:** 2026-11-19.
+
+**Autoridad de emisión:** la autorización condicional del Owner, F4B-E28, pregunta 4: «Sí, con esa condición (Recomendado)».
+- **Las condiciones que exige:**
+  - la revisión de la subtarea da 0 bloqueantes y 0 importantes sin resolver;
+  - la remedición sobre el cierre de PB-T2b no cambia nada material;
+  - PB-T2b no llega a su intento 3.
+- **Cuándo se vuelve al Owner:** por una decisión nueva, un control con una firma no prevista, un intento 3 o un efecto material sin medir. No se da ninguno.
+
+**El cierre de PB-T2b** (F4B-E38, `56cb026f`): PB-T2b CLOSED / PASS WITH LIMITATIONS sobre `03b16c88`, intento 1 de 3 con la primera reparación del RED de F4B (`6bc3497f`, RR); verificación `422f` 14/14 con `rr_check` PASS; nc1 por disposición del Owner (solo esta vez); nc2 y nc3 PASS; OWNER-01 (Cerrar con módulo escenificado y cambios sin aplicar) como arrastre a PB-T4; F4B-E38. Con él se custodió la decisión del Owner F4B-E37: la Snapshot K sustituye a la J como línea base del `config.toml` del Controller.
+
+**La reparación del RED** (F4B-E35): el contrato incorpora la regla RR del Owner, como el de PB-T2b:
+- PBT2C-C07 con su excepción, y PBT2C-C18 para una reparación que rompe la regla;
+- la cadena RR-6 en INV-PBT2C-02, con las corridas aisladas sobre la clase reparada;
+- en la `ExpectedEvidence`, la CI del RED reparado y lo que declara la entrega;
+- cómo lee la verificación del Controller una reparación (RR-7, v2.8), con la ayuda mecánica de RR-3 y la lista cerrada de las líneas fijas de CT-PBT2C-01 y 02 (v2.9).
+
+Una reparación no gasta intento (RR-7).
+
+**La revisión:**
+- **La comprobación acotada de PB-T2c** (CA-T2c) se hizo sobre la v2.5, el contrato propuesto y la salida de sus anclajes. Da **EMITIBLE TRAS CORRECCIONES, B 0 / I 1 / M 5**, sin decisiones nuevas para el Owner.
+  - **Su importante:** las filas de estilo y de `pb-08-redondeo` de CT-PBT2C-01 no decían de dónde se leen sus datos, y en WORKSPACE la petición clásica es nula.
+  - **La v2.6** la corrige, con sus cinco menores.
+- **Sus recomprobaciones,** en el mismo informe:
+  - **la §9, sobre la v2.6:** EMITIBLE, nuevos B 0 / I 0 / M 3. M-06 a M-08 se aplican en la v2.6;
+  - **la §10, sobre la v2.7** (la regla RR de F4B-E35): EMITIBLE TRAS CORRECCIONES, nuevos B 0 / I 1 / M 3. Su importante es la compartida con PB-T2b, la lectura de la verificación, y la v2.8 la corrige con sus menores;
+  - **la §11, sobre la v2.8:** EMITIBLE, nuevos B 0 / I 0 / M 2. M-09 se aplica en la v2.9, y M-10 es de la cadena, para el texto de la verificación;
+  - **la §12, sobre la v2.9:** EMITIBLE, nuevos B 0 / I 0 / M 2. M-11 y M-12 se aplican en la misma v2.9;
+  - **la §13, sobre la v2.9, final sobre el cierre de PB-T2b:** EMITIBLE, nuevos B 0 / I 0 / M 2.
+    - M-13: las filas inertes de CT-PBT2C-03 llevan su porqué en la tabla, y su límite está abajo.
+    - M-14: la medición se custodia sin el TRX.
+- **El resultado que lleva el contrato,** con sus recomprobaciones: `EMITIBLE TRAS CORRECCIONES (B 0 / I 1 / M 5; I-01 y M-01 a M-05 corregidas en el paquete; recomprobacion v2.6: EMITIBLE, B 0 / I 0 / M 3; M-06 a M-08 aplicadas; recomprobacion v2.8: EMITIBLE, B 0 / I 0 / M 2; M-09 aplicada en la v2.9; recomprobacion v2.9: EMITIBLE, B 0 / I 0 / M 2; M-11 y M-12 aplicadas en la v2.9; recomprobacion v2.9: EMITIBLE, B 0 / I 0 / M 2 (seccion 13, final sobre el cierre de PB-T2b); M-13 y M-14 aplicadas)`.
+
+**La remedición sobre el cierre de PB-T2b** (`56cb026f`, F4B-E38), hecha por el generador al escribir con `--pt2b-close`:
+- `git diff <cierre de PB-T2b> <BaseSha> -- src` sale vacío, y el cierre trae W cambiado, el archivo del modo y su `task-close-package.md`.
+- Los textos de los tres mutantes [T2b] se leen sobre `BaseSha`; el de MU-T2C-03, por contenido.
+- La tabla de CT-PBT2C-03, con lo esperado de cada uno de los 49 gestos, sale de una corrida temporal de UI en WORKSPACE, fuera de todo commit y con TRX (`measure_pbt2c.py`, v2.6, V26-02). Está custodiada y se comprueba.
+  - **Lo que se custodia de la medición** (CA-T2c M-14): la clase temporal (`PushBackPbt2cCt03ProbeTests.cs.txt`), `measure_pbt2c.py` y su salida.
+  - **El TRX no se custodia:** lleva el nombre del equipo, el del usuario y rutas locales. Queda identificado por su SHA-256, que va en `pbt2c-anchors-out.txt`, como los TRX de la CI.
+- **El límite de cobertura de CT-PBT2C-03** (CA-T2c M-13): tres de las seis filas «nada» son gestos inertes, porque el catálogo solo ofrece una opción: `PostBox=otro`, `CellInOutBeamBox=otro` y `CellInOutPeralteBox=otro`.
+  - Su resultado es correcto, pero CT-PBT2C-03 no prueba esos tres controles en el camino al borrador. En CLASSIC, CT-PBT1C-02 tampoco los prueba.
+  - La tabla lo dice bajo cada una (`  porque: el catalogo solo ofrece una opcion`), en una línea que el Worker no copia.
+  - Si el catálogo gana opciones, esas filas dejarán de ser «nada», y la caracterización lo detectará.
+- La Snapshot K: su registro y la decisión de F4B-E37 están en el cierre, y el generador comprueba el SHA-256 y la sonda neutra (v2.9, V29-06).
+- `src` desde `161a0dad` cambia solo en PB-T2a y PB-T2b; WC y WX siguen siendo los de `161a0dad`, y los recuentos de las familias, los de `17872be8`.
+- La línea base de la CI: la corrida `push` `44586045707` sobre `03b16c88`, con el `src` y los `tests` del cierre: Core 19 094 y UI 2 447, con 21 omitidas. Es exactamente la prevista en el §6.3.
+
+No hay cambios materiales.
+
+**El contrato:**
+- **Qué es PB-T2c:** fijar con pruebas nuevas, sin cambiar el producto, lo que hereda el modo WORKSPACE de la ventana de Push Back:
+  - el paso 4 de D-PB-06: los valores exactos y el estilo de cotas llegan al borrador;
+  - el aviso de D-PB-08;
+  - el censo de controles en el camino al borrador.
+
+  El RED son las pruebas nuevas y los tres mutantes de la tabla cerrada MU-T2C-01 a 03, en W y WC; el GREEN los revierte.
+- **P-01:** la Snapshot K (F4B-E37; v2.9, V29-06). PB-T2a y PB-T2b se emitieron con la J.
+- **La cadena:** primera delegación; `attempts` 1 de 3.
+- **La planificación:** con las colecciones opacas puestas por la sesión (F4B-E21).
+- **La verificación:** con las comprobaciones deterministas de F4B-E15.

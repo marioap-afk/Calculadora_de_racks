@@ -8247,3 +8247,33 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - solo documentación;
 - sin AutoCAD;
 - los eventos y las transcripciones, solo por SHA-256.
+
+## 261. PB-T2: paquete del contrato v2.9 y anclajes de PB-T2c (F4B-E39)
+
+**Qué se custodia:**
+- **El paquete** `docs/initiatives/I-64-f4b-pbt2-gate-contract-package.md`, en su v2.9, con la línea de emisión de PB-T2c tras la de PB-T2b. La v2.8 que estaba custodiada, con la línea de emisión de PB-T2b, pasa a la historia en `F4B-DRAFTS/pbt2/`.
+- **En `F4B-DRAFTS/pbt2/`:**
+  - el delta v2.8 → v2.9 (los anteriores se custodiaron con la emisión de PB-T2b);
+  - la comprobación acotada de PB-T2c (CA-T2c), con sus recomprobaciones (§9 a §13), y el encargo literal de cada ronda;
+  - los guiones de lectura del revisor, `recheck_bounded_v28.py`, `recheck_bounded_v29.py` y `recheck_bounded_final.py`, con sus salidas;
+  - la remedición sobre el cierre de PB-T2b (CA-T2c M-14):
+    - `measure_pbt2c.py`;
+    - la clase temporal de la corrida de UI, `PushBackPbt2cCt03ProbeTests.cs.txt`, que no entró en ningún commit;
+    - su salida, `pbt2c-anchors-out.txt`, con los textos de los tres mutantes y la tabla de CT-PBT2C-03. Las tres filas inertes llevan su porqué (CA-T2c M-13).
+
+    **El TRX de la corrida no se custodia:** lleva el nombre del equipo, el del usuario y rutas locales. Queda identificado por su SHA-256, que va en `pbt2c-anchors-out.txt`, como los TRX de la CI;
+  - la salida en seco del generador sobre el cierre de PB-T2b.
+
+**La base:** el cierre de PB-T2b, F4B-E38 (`56cb026f`): PB-T2b CLOSED / PASS WITH LIMITATIONS sobre `03b16c88`, intento 1 de 3 con la primera reparación del RED de F4B (`6bc3497f`, RR); verificación `422f` 14/14 con `rr_check` PASS; nc1 por disposición del Owner (solo esta vez); nc2 y nc3 PASS; OWNER-01 (Cerrar con módulo escenificado y cambios sin aplicar) como arrastre a PB-T4; F4B-E38. Con él se custodió la decisión del Owner F4B-E37: la Snapshot K sustituye a la J como línea base del `config.toml` del Controller, y la v2.9 la lleva a P-01 de PB-T2c (V29-06).
+
+**Las comprobaciones:**
+- **la comprobación acotada:** EMITIBLE TRAS CORRECCIONES, B 0 / I 1 / M 5, corregidas en la v2.6;
+- **sus recomprobaciones:**
+  - sobre la v2.6: EMITIBLE, B 0 / I 0 / M 3, aplicadas en la v2.6;
+  - sobre la v2.7: EMITIBLE TRAS CORRECCIONES, B 0 / I 1 / M 3, corregidas en la v2.8;
+  - sobre la v2.8: EMITIBLE, B 0 / I 0 / M 2. M-09 se aplica en la v2.9, y M-10 es de la cadena;
+  - sobre la v2.9: EMITIBLE, B 0 / I 0 / M 2, aplicadas en la misma v2.9;
+  - la final, sobre el cierre de PB-T2b (§13): EMITIBLE, B 0 / I 0 / M 2. M-13 y M-14 se aplican en la remedición y en su custodia;
+- **`BOUNDED_RESULT`,** con las recomprobaciones: `EMITIBLE TRAS CORRECCIONES (B 0 / I 1 / M 5; I-01 y M-01 a M-05 corregidas en el paquete; recomprobacion v2.6: EMITIBLE, B 0 / I 0 / M 3; M-06 a M-08 aplicadas; recomprobacion v2.8: EMITIBLE, B 0 / I 0 / M 2; M-09 aplicada en la v2.9; recomprobacion v2.9: EMITIBLE, B 0 / I 0 / M 2; M-11 y M-12 aplicadas en la v2.9; recomprobacion v2.9: EMITIBLE, B 0 / I 0 / M 2 (seccion 13, final sobre el cierre de PB-T2b); M-13 y M-14 aplicadas)`.
+
+**Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.

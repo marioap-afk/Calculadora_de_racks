@@ -1,0 +1,3 @@
+PB-T2c: informe=independent-review-pbt2c-v25-check.md paquete=I-64-f4b-pbt2-gate-contract-package-v29.md errores=0 ascii=True
+   control (sin la mencion de la v2.9): errores=1
+   control (el literal de la seccion 11): errores=1

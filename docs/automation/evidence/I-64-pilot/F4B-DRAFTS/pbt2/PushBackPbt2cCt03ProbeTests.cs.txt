@@ -1,0 +1,228 @@
+// I-64 F4B PB-T2c: la remedicion sobre el cierre de PB-T2b (v2.6, V26-02; CA-T2c M-01). Clase TEMPORAL que mide la tabla de CT-PBT2C-03.
+// No es una prueba de la red ni va a ningun commit (INV-10): la sesion la copia en tests/RackCad.UI.Tests/PushBackPbt2cCt03ProbeTests.cs, sobre el
+// cierre de PB-T2b (56cb026f, con el src y los tests del GREEN 03b16c88), la corre una vez con TRX y la borra. Lo que mide lo lee measure_pbt2c.py
+// del TRX y lo escribe en pbt2c-anchors-out.txt. Las recetas son las de PushBackWorkspaceSupport en 03b16c88, con las mismas llamadas que
+// PushBackWorkspaceModeTests (CT-PBT2B-02) y PushBackWorkspaceApplyCloseTests.
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using RackCad.Application.Persistence;
+using RackCad.Application.Systems.PushBack;
+using RackCad.Application.Workspace.Drafts;
+using RackCad.Domain.Systems.PushBack;
+using RackCad.UI.Shell;
+using RackCad.UI.Systems.PushBack;
+using Xunit;
+using Xunit.Abstractions;
+using static RackCad.UI.Tests.PushBackFullEditorCharacterizationSupport;
+
+namespace RackCad.UI.Tests
+{
+    /// <summary>
+    /// La tabla de CT-PBT2C-03 (paquete de PB-T2 v2.9, §5.4; v2.4, V24-14; v2.6, V26-02): por cada gesto de <c>Gestos()</c> de CT-PBT1C-02 con
+    /// <c>Compara</c> = true (los 49 del censo, «Restaurar» incluido; los cuatro de D2 no entran), sobre el mismo diseño y en su orden, en una
+    /// ventana de WORKSPACE nueva, los gestos y «Aplicar» → <c>&lt;fila&gt; aplicado=&lt;b&gt; igual-a-la-ventana=&lt;b&gt; diseno-igual=&lt;b&gt;
+    /// descartes=&lt;n&gt;</c>, y, si «Aplicar» se niega con el estado cambiado, una línea <c>  porque: …</c> con lo que dice la ventana.
+    ///
+    /// <para>Los gestos se toman por reflexión de la clase cerrada [T1c] (<c>PushBackWindowOnStateTests.Gestos()</c>): son los mismos objetos,
+    /// con su nombre, su diseño y su orden, sin copiarlos. Las recetas de la ventana de WORKSPACE son las de <c>PushBackWorkspaceSupport</c>
+    /// (§5.0), las mismas que usará CT-PBT2C-03: <c>Estado(Fixture(sobre))</c>, <c>Borrador</c>, <c>PuertoContado</c>,
+    /// <c>VentanaBorrador(draft, null, puerto)</c>, <c>CerrarVentana</c>, <c>Igual</c>, y <c>diseno-igual</c> como en CT-PBT2B-02:
+    /// <c>DisenoDe(draft.CurrentDraftState, PushBackSide.A) == DisenoDeVentana(w)</c>, leído tras «Aplicar», que recalcula antes de aplicar.</para>
+    ///
+    /// <para>Las líneas salen por <see cref="ITestOutputHelper"/>, entre <c>PBT2C-CT03-TABLA-INICIO</c> y <c>PBT2C-CT03-TABLA-FIN</c>, en el
+    /// <c>StdOut</c> del TRX. La prueba pasa si hay 49 filas: lo que se espera de cada una no lo decide ella, sino la regla del §5.4, que
+    /// comprueba measure_pbt2c.py con el <c>ct3_table_check</c> del generador.</para>
+    /// </summary>
+    [Collection(EditorDiscardPromptCollection.Name)]
+    public sealed class PushBackPbt2cCt03ProbeTests
+    {
+        private const string Inicio = "PBT2C-CT03-TABLA-INICIO";
+        private const string Fin = "PBT2C-CT03-TABLA-FIN";
+
+        private readonly ITestOutputHelper output;
+
+        public PushBackPbt2cCt03ProbeTests(ITestOutputHelper output)
+        {
+            this.output = output;
+        }
+
+        // ------------------------------------------------------------------------------------------------ la regla «EXCEPCION»
+
+        /// <summary>Un paso que lanza se vuelve una línea «EXCEPCION»; measure_pbt2c.py rechaza una tabla que la tenga.</summary>
+        private static T Paso<T>(List<string> log, Func<T> step)
+        {
+            try
+            {
+                return step();
+            }
+            catch (Exception error)
+            {
+                log.Add("EXCEPCION " + error.GetType().Name + ": " + error.Message);
+                return default(T);
+            }
+        }
+
+        private static void Paso(List<string> log, Action step) => Paso<int>(log, () => { step(); return 0; });
+
+        // ------------------------------------------------------------------------------------------------ los gestos de CT-PBT1C-02, por reflexión
+
+        private sealed class GestoT1c
+        {
+            public string Nombre;
+            public string Diseno;
+            public bool Compara;
+            public Action<RackPushBackSystemWindow>[] Pasos;
+        }
+
+        /// <summary>Los gestos de <c>Gestos()</c> de la clase cerrada [T1c], en su orden, con sus campos tal cual.</summary>
+        private static List<GestoT1c> GestosDeT1c()
+        {
+            var metodo = typeof(PushBackWindowOnStateTests).GetMethod("Gestos", BindingFlags.NonPublic | BindingFlags.Static);
+            Assert.True(metodo != null, "PushBackWindowOnStateTests.Gestos() no esta");
+            var lista = new List<GestoT1c>();
+            foreach (var g in (IEnumerable)metodo.Invoke(null, null))
+            {
+                var t = g.GetType();
+                lista.Add(new GestoT1c
+                {
+                    Nombre = (string)t.GetField("Nombre").GetValue(g),
+                    Diseno = (string)t.GetField("Diseno").GetValue(g),
+                    Compara = (bool)t.GetField("Compara").GetValue(g),
+                    Pasos = (Action<RackPushBackSystemWindow>[])t.GetField("Pasos").GetValue(g),
+                });
+            }
+
+            return lista;
+        }
+
+        // ------------------------------------------------------------------------------------------------ las recetas del §5.0 (PushBackWorkspaceSupport, 03b16c88)
+
+        /// <summary><c>Estado(sobre)</c>: <c>LoadNew</c>, <c>Pasada</c>, <c>SeedDefaultSafety</c>, <c>Pasada</c>, <c>LoadDesign</c> del sobre, <c>Pasada</c>.</summary>
+        private static PushBackEditableState EstadoDe(string sobre)
+            => PushBackWorkspaceSupport.Estado(Fixture(sobre));
+
+        /// <summary><c>Borrador(s)</c>: el registro y su <c>Draft</c>; aquí, el <c>Draft</c>.</summary>
+        private static DraftSession<PushBackEditableState> BorradorDe(PushBackEditableState s)
+            => PushBackWorkspaceSupport.Borrador(s).Draft;
+
+        /// <summary>El proyecto que pasan a <c>VentanaBorrador</c> CT-PBT2B-02 y la sesión por defecto de PushBackWorkspaceApplyCloseTests: ninguno.</summary>
+        private static RackProject ProyectoDe(string sobre)
+            => null;
+
+        /// <summary><c>VentanaBorrador(draft, proyecto, puerto)</c>, con su registro de <c>Closed</c>; el puerto, <c>PuertoContado</c>, como en PB-T2b.</summary>
+        private static RackPushBackSystemWindow VentanaDe(DraftSession<PushBackEditableState> draft, RackProject proyecto)
+            => PushBackWorkspaceSupport.VentanaBorrador(draft, proyecto, new PushBackWorkspaceSupport.PuertoContado(draft));
+
+        /// <summary><c>CerrarVentana(w)</c>: cierra una sola vez una ventana registrada.</summary>
+        private static void CerrarDe(RackPushBackSystemWindow w)
+            => PushBackWorkspaceSupport.CerrarVentana(w);
+
+        /// <summary>La sonda del modo (<c>Sondeo</c>, §5.0): <c>w.ModeForTest</c>.</summary>
+        private static PushBackEditorMode ModoDe(RackPushBackSystemWindow w)
+            => w.ModeForTest;
+
+        /// <summary><c>diseno-igual</c>, el de CT-PBT2B-02 (<c>PushBackWorkspaceModeTests.DisenoIgual</c>), con el lado A.</summary>
+        private static bool DisenoIgualDe(DraftSession<PushBackEditableState> draft, RackPushBackSystemWindow w)
+            => PushBackWorkspaceSupport.DisenoDe(draft.CurrentDraftState, PushBackSide.A) == PushBackWorkspaceSupport.DisenoDeVentana(w);
+
+        // ------------------------------------------------------------------------------------------------ la medida
+
+        /// <summary>Lo que dice la ventana cuando «Aplicar» se niega: el botón, su aviso y la barra de estado.</summary>
+        private static string Motivo(List<string> log, RackPushBackSystemWindow w)
+        {
+            var boton = Paso(log, () => Btn(w, "UpdateButton"));
+            var habilitado = boton != null && boton.IsEnabled;
+            var aviso = boton?.ToolTip?.ToString() ?? "<ninguno>";
+            var estado = Paso(log, () => StatusText(w)) ?? "<ninguno>";
+            return "boton-habilitado=" + habilitado + " aviso=[" + Plano(aviso) + "] estado=[" + Plano(estado) + "]";
+        }
+
+        /// <summary>Un texto en una sola línea: la tabla es una línea por fila y otra por su porqué.</summary>
+        private static string Plano(string s) => s.Replace("\r", " ").Replace("\n", " ");
+
+        /// <summary>Un gesto en su ventana de WORKSPACE nueva: los pasos, «Aplicar» (el <c>UpdateButton</c>, que en WORKSPACE dice «Aplicar al borrador») y la fila.</summary>
+        private static void Medir(List<string> log, GestoT1c gesto, Func<int> descartes)
+        {
+            RackPushBackSystemWindow w = null;
+            var antes = descartes();
+            try
+            {
+                var s = Paso(log, () => EstadoDe(gesto.Diseno));
+                var draft = s == null ? null : Paso(log, () => BorradorDe(s));
+                if (draft == null)
+                {
+                    log.Add(gesto.Nombre + " sin-borrador");
+                    return;
+                }
+
+                w = Paso(log, () => VentanaDe(draft, ProyectoDe(gesto.Diseno)));
+                if (w == null)
+                {
+                    log.Add(gesto.Nombre + " sin-ventana");
+                    return;
+                }
+
+                // La sonda del modo (§5.0): si no es WORKSPACE, ningún gesto más.
+                var modo = Paso(log, () => ModoDe(w));
+                if (modo != PushBackEditorMode.Workspace)
+                {
+                    CerrarDe(w);
+                    log.Add(gesto.Nombre + " modo=" + modo + " descartes=" + (descartes() - antes));
+                    return;
+                }
+
+                foreach (var paso in gesto.Pasos)
+                {
+                    Paso(log, () => paso(w));
+                }
+
+                // aplicado (§5.0): el borrador solo cambia de objeto si «Aplicar» llega al puerto y aplica.
+                var actual = draft.CurrentDraftState;
+                Paso(log, () => Click(w, "UpdateButton"));
+                var aplicado = !ReferenceEquals(actual, draft.CurrentDraftState);
+                var iguales = Paso(log, () => PushBackWorkspaceSupport.Igual(draft.CurrentDraftState, w.EditableStateForTest));
+                var disenoIgual = Paso(log, () => DisenoIgualDe(draft, w));
+                var linea = gesto.Nombre + " aplicado=" + aplicado + " igual-a-la-ventana=" + iguales + " diseno-igual=" + disenoIgual;
+                var porque = !aplicado && !iguales ? "  porque: " + Motivo(log, w) : null;
+
+                // El sufijo descartes (§5.0): la línea se arma antes de cerrar; CerrarVentana dentro del try; los avisos de ESTA ventana.
+                CerrarDe(w);
+                log.Add(linea + " descartes=" + (descartes() - antes));
+                if (porque != null) log.Add(porque);
+            }
+            finally
+            {
+                if (w != null) CerrarDe(w);
+            }
+        }
+
+        [Fact]
+        public void PBT2C_CT03_Probe_MeasuresTheTableOfTheRemediation()
+        {
+            var log = new List<string>();
+            var descartes = 0;
+            // Como en PB-T2b: el primer Sta del proceso crea el hilo STA e instala en el su aviso de descarte permanente, así que se
+            // arranca ANTES de sustituir el aviso, o el sustituto de esta corrida no llegaría a sus ventanas.
+            Sta(() => { });
+            using (EditorDiscardPrompt.Substitute(_ => { descartes++; return true; }))
+            {
+                Sta(() =>
+                {
+                    foreach (var gesto in GestosDeT1c())
+                    {
+                        if (!gesto.Compara) continue; // los cuatro de D2 no entran (v2.4, V24-14)
+                        Medir(log, gesto, () => descartes);
+                    }
+                });
+            }
+
+            output.WriteLine(Inicio);
+            foreach (var l in log) output.WriteLine(l);
+            output.WriteLine(Fin);
+            Assert.Equal(49, log.Count(l => l.Contains(" aplicado=")));
+        }
+    }
+}

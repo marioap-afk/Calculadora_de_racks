@@ -1,0 +1,83 @@
+DRY rev 56cb026f (objetos del checkout principal) allowed 3 forbidden 173 (src 60 tests 96 [core 29 ui 67] root 17 ) inv 11 stops 33 required 39 evidence 10 authorities 50 test-anchors 17 bytes 57502 sha256 6482FDB03E44E19F8FAEC8B47B6D2AB70BEEB0F1FF1BB270F9FE5E19833172DB
+anclaje: desciende de 5a8366c1 (F4B-E31) y de 0dc623ca (F4B-E32); src desde 161a0dad: PushBackDraftEditorLaunch.cs, PushBackDraftStatePort.cs, PushBackEditorMode.cs, RackPushBackSystemWindow.xaml.cs; WC y WX == 161a0dad | src == cierre de PB-T2b (56cb026f, F4B-E38) | f4b-dispositions hasta F4B-E38 | F4B-E06, E09, E23 y E28 custodiadas
+paquete leido: --package-file I-64-f4b-pbt2-gate-contract-package-v29.md -> v2.9 | en la revision: v2.8
+textos de la v2.9 comprobados: Objective, section 6.3 (10 lineas), section 6.0 (55 lineas), section 5.4 (6 lineas), INV propios literales sin su nota, paradas C04, C13 y C15, INV comunes (10 con V23-01), P-01 K (V29-06), CT-PBT2C-01..03, la tabla de mutantes MU-T2C-01..03, los valores exactos de CT-PBT2C-01, las doce lineas de CT-PBTC-07, V24-14 (CT-PBT2C-03), section 5.0 (aplicado), cabecera y registros V24-01..16, V25-01..04 y V26-01..08, V26-01..05 (CT-PBT2C-01..03 y D-PBT2-13), V26-08 y el aborto de MU-T2C-03, section 1 (19 filas), ExpectedEvidence comun y de 6.3, linea base de la CI, custodia, F4B-E25, RequiredTests (6.3 y las familias de 6.2), la regla RR de F4B-E35 (V27-01 a V27-07: section 6.0, C07, C18, INV-PBT2C-02, cabecera y registro), V28-01 a V28-06 (la verificacion con una reparacion, la ayuda de RR-3, el trailer, C07 y C18, cabecera y registro), V29-01 a V29-06 (M-09, M-11, la custodia, cabecera y registro; M-12, IR1 en la cabecera; la Snapshot K)
+mutantes [T2b] (testigos ASCII):
+  MU-T2C-01 W:3713 en Keep (declarado en W:3712)
+  MU-T2C-02 WC:95 en UpdateSideBEmptyNotice (declarado en WC:85)
+  MU-T2C-03 W:3273 en ApplyToDraft (declarado en W:3264), por contenido
+CT-PBT2C-01: el gesto neutro DrawRackNameCheck escucha Click y lo lee ReadInputs (W:798-820); las once filas F de SC1; pb-08-redondeo, STANDARD-ISO y SIMPLEX | CT-PBT2C-02: las doce lineas de CT-PBTC-07
+CT-PBT2C-03: las filas que tiene que traer la tabla de la remedicion (49, en este orden; fuera, los de D2: campo-en-error, calculo-invalido, caja-escrita-sin-salir, cerrar-sin-pedir):
+  DepthBox=54 | ToleranceBox=4 | PostPeralteBox=+0.5 | BeamDepthBox=+1 | AnnotationScaleBox=2 | WeightUnitBox=lb
+  PalletsDeepBox=9 | PostBox=otro | NumberFrontsCheck | NumberLevelsCheck | DrawRackNameCheck | DimensionsBox=3
+  DimensionsFrontalCheck | DimensionsLateralCheck | DimensionsPlantaCheck | NameBox | FondosBox=4 | DepthStartBox=2
+  PositionsBox=2 | LevelsBox=2 | FirstLevelHeightBox=5 | CellPalletFrontBox=40 | CellPalletHeightBox=61.5 | CellPalletWeightBox=900
+  CellClearBox=7 | CellInOutBeamBox=otro | CellInOutPeralteBox=otro | CellIntermediateBeamBox=otro | CellIntermediatePeralteBox=otro | CellFondoOverrideBox=6
+  CellDrawPalletCheck | CellBeamLengthOverrideBox=100 | RearPeralteBox=4.5 | GapBox=60 | CentralSeparatorCheck | StructureOverrideBox=6
+  CellTopologyBox+RunDirectionBox+TopologyScopeBox | FrontCountBox=3 | SideBPresentCheck | SideSelectorBox=1 | FrontalSideBox=1 | RackHeaderHeightBox=155
+  DerivedPostHeightBox=140 | DerivedPostReinforcedCheck+DerivedPostReinforcementHeightBox=50 | RackSeparatorCountBox=4 | RackSeparatorSpacingBox=20 | ModuleLengthBox=+8 | DerivedPostLineHeightBox=137
+  Restaurar
+V23-01 (CA-T2a M-6 (a)): clases de los filtros de UI que crean un RackFrameConfiguratorWindow real: RichEditorCharacterizationTests.cs, RichEditorCloseContractTests.cs, RichEditorContractTests.cs
+D1: needs de build-plugin = ['tests', 'build-ui'] | D2: Snapshot J: True | la Snapshot K (F4B-E37) y su decision: True | celdas hasta 2026-12-29
+remedicion al escribir (section 6.0, anclajes de PB-T2c):
+  1 el cierre de PB-T2b: src == cierre de PB-T2b (56cb026f, F4B-E38), posterior a la parada de PB-T2a F4B-E33 y con el cierre de PB-T2a delante; el contrato de PB-T2b: presente
+  2 los textos de los tres mutantes [T2b]: MU-T2C-01 W:3713 en Keep (declarado en W:3712); MU-T2C-02 WC:95 en UpdateSideBEmptyNotice (declarado en WC:85); MU-T2C-03 W:3273 en ApplyToDraft (declarado en W:3264), por contenido
+  3 la tabla de CT-PBT2C-03: 49 gestos (y 4 de D2 fuera); lo esperado de cada fila: pendiente (la remedicion)
+  4 la linea base de la CI: atada al cierre de PB-T2b
+  5 el producto: src desde 161a0dad solo en PB-T2a y PB-T2b; WC y WX == 161a0dad; recuentos de las familias == 17872be8: OK
+  6 la custodia y la entrada de emision: 7 AVISOS
+  7 el entorno: MainSha == origin/main: True; celdas hasta 2026-12-29; Test-Json al escribir; config.toml = Snapshot K (F4B-E37), el binario y una sola delegacion: la sesion
+  8 la autorizacion (F4B-E28, pregunta 4): BOUNDED_RESULT = EMITIBLE TRAS CORRECCIONES (B 0 / I 1 / M 5; I-01 y M-01 a M-05 corregidas en el paquete; recomprobacion v2.6: EMITIBLE, B 0 / I 0 / M 3; M-06 a M-08 aplicadas; recomprobacion v2.8: EMITIBLE, B 0 / I 0 / M 2; M-09 aplicada en la v2.9; recomprobacion v2.9: EMITIBLE, B 0 / I 0 / M 2; M-11 y M-12 aplicadas en la v2.9; recomprobacion v2.9: EMITIBLE, B 0 / I 0 / M 2 (seccion 13, final sobre el cierre de PB-T2b); M-13 y M-14 aplicadas); la remedicion sin cambio material y PB-T2b sin intento 3: la sesion
+RequiredTests (criterio de count_tests_git.py sobre los objetos de la revision; cada minimo frente a los ejecutables, v2.4, V24-05):
+  UI   PushBackWorkspaceCarryoverTests               new   paquete=3     medido: clases=0 ejecutables=0 skip=0 memberdata=0 -> MinSelected=3 ExpectRed=True
+  UI   PushBackWorkspaceModeTests                    t2b   paquete=3     medido: clases=1 ejecutables=3 skip=0 memberdata=0 -> MinSelected=3 ExpectRed=False
+  UI   PushBackWorkspaceApplyCloseTests              t2b   paquete=4     medido: clases=1 ejecutables=4 skip=0 memberdata=0 -> MinSelected=4 ExpectRed=False
+  UI   PushBackFieldValidationConcordanceTests       t2b   paquete=1     medido: clases=1 ejecutables=1 skip=0 memberdata=0 -> MinSelected=1 ExpectRed=False
+  Core PushBackWorkspaceModeSourceGuardTests         t2b   paquete=1     medido: clases=1 ejecutables=1 skip=0 memberdata=0 -> MinSelected=1 ExpectRed=False
+  Core PushBackWorkspaceSharedReferenceGuardTests    t2b   paquete=1     medido: clases=1 ejecutables=1 skip=0 memberdata=0 -> MinSelected=1 ExpectRed=False
+  Core PushBackDraftStatePortTests                   pt2a  paquete=3     medido: clases=1 ejecutables=3 skip=0 memberdata=0 -> MinSelected=3 ExpectRed=False
+  Core PushBackDraftPortSharedReferenceGuardTests    pt2a  paquete=1     medido: clases=1 ejecutables=1 skip=0 memberdata=0 -> MinSelected=1 ExpectRed=False
+  Core PushBackWindowOnStateSourceGuardTests         fixed paquete=1     medido: clases=1 ejecutables=1 skip=0 memberdata=0 -> MinSelected=1 ExpectRed=False
+  Core PushBackWindowSharedReferenceGuardTests       fixed paquete=1     medido: clases=1 ejecutables=1 skip=0 memberdata=0 -> MinSelected=1 ExpectRed=False
+  Core PushBackSharedReferenceGuardTests             fixed paquete=2     medido: clases=1 ejecutables=2 skip=0 memberdata=0 -> MinSelected=2 ExpectRed=False
+  Core PushBackEditableState                         fixed paquete=13    medido: clases=3 ejecutables=13 skip=0 memberdata=0 -> MinSelected=13 ExpectRed=False
+  Core PushBackEditorOutputGate                      fixed paquete=1     medido: clases=1 ejecutables=1 skip=0 memberdata=0 -> MinSelected=1 ExpectRed=False
+  Core PushBackClassicCharacterization               fixed paquete=10    medido: clases=1 ejecutables=7 skip=0 memberdata=1 -> MinSelected=10 ExpectRed=False
+       estatico 7 (+1 Theory con MemberData) < 10: vale porque un contrato anterior fija el mismo filtro con 10
+  Core PushBackFullEditorCharacterization            fixed paquete=3     medido: clases=3 ejecutables=3 skip=0 memberdata=0 -> MinSelected=3 ExpectRed=False
+  Core PushBackModuleEditorCharacterizationTests     fixed paquete=15    medido: clases=1 ejecutables=15 skip=0 memberdata=0 -> MinSelected=15 ExpectRed=False
+  Core I55DeferredProductFixCharacterizationTests    fixed paquete=3     medido: clases=1 ejecutables=3 skip=0 memberdata=0 -> MinSelected=3 ExpectRed=False
+  Core NamespaceFolderGuardTests                     fixed paquete=7     medido: clases=1 ejecutables=7 skip=0 memberdata=0 -> MinSelected=7 ExpectRed=False
+  Core Workspace                                     fixed paquete=3271  medido: clases=74 ejecutables=3271 skip=0 memberdata=33 -> MinSelected=3271 ExpectRed=False
+  UI   PushBackWindowOnStateTests                    fixed paquete=2     medido: clases=1 ejecutables=2 skip=0 memberdata=0 -> MinSelected=2 ExpectRed=False
+  UI   PushBackEditableStateParityTests              fixed paquete=1     medido: clases=1 ejecutables=1 skip=0 memberdata=0 -> MinSelected=1 ExpectRed=False
+  UI   PushBackStateNet                              fixed paquete=14    medido: clases=6 ejecutables=14 skip=0 memberdata=0 -> MinSelected=14 ExpectRed=False
+  UI   PushBackClassicCharacterization               fixed paquete=55    medido: clases=6 ejecutables=55 skip=0 memberdata=0 -> MinSelected=55 ExpectRed=False
+  UI   PushBackFullEditorCharacterization            fixed paquete=16    medido: clases=6 ejecutables=16 skip=2 memberdata=0 -> MinSelected=16 ExpectRed=False
+       ejecutables 16 >= 16; los 2 Skip no cuentan para el minimo
+  UI   PushBackDeclaredCorrection                    fixed paquete=14    medido: clases=7 ejecutables=14 skip=0 memberdata=0 -> MinSelected=14 ExpectRed=False
+  UI   PushBackCompositeWindowTests                  fixed paquete=52    medido: clases=1 ejecutables=52 skip=0 memberdata=0 -> MinSelected=52 ExpectRed=False
+  UI   PushBackCompositeLifecycleWiringTests         fixed paquete=7     medido: clases=1 ejecutables=7 skip=0 memberdata=0 -> MinSelected=7 ExpectRed=False
+  UI   PushBackCompositeLoadExistingModulesTests     fixed paquete=3     medido: clases=1 ejecutables=3 skip=0 memberdata=0 -> MinSelected=3 ExpectRed=False
+  UI   PushBackBothModeCellBeamOverrideTests         fixed paquete=10    medido: clases=1 ejecutables=10 skip=0 memberdata=0 -> MinSelected=10 ExpectRed=False
+  UI   PushBackModuleEditorWindowTests               fixed paquete=13    medido: clases=1 ejecutables=13 skip=0 memberdata=0 -> MinSelected=13 ExpectRed=False
+  UI   PushBackAdvancedRackParametersWindowTests     fixed paquete=9     medido: clases=1 ejecutables=9 skip=0 memberdata=0 -> MinSelected=9 ExpectRed=False
+  UI   PushBackRichPreviewTests                      fixed paquete=9     medido: clases=1 ejecutables=9 skip=0 memberdata=0 -> MinSelected=9 ExpectRed=False
+  UI   PushBackLibrarySaveGateTests                  fixed paquete=5     medido: clases=1 ejecutables=5 skip=0 memberdata=0 -> MinSelected=5 ExpectRed=False
+  UI   DialogWindowCharacterizationTests             fixed paquete=20    medido: clases=1 ejecutables=20 skip=3 memberdata=0 -> MinSelected=20 ExpectRed=False
+       ejecutables 20 >= 20; los 3 Skip no cuentan para el minimo
+  UI   BlankFront                                    fixed paquete=33    medido: clases=3 ejecutables=33 skip=0 memberdata=0 -> MinSelected=33 ExpectRed=False
+  UI   WindowCensusGuardTests                        fixed paquete=8     medido: clases=1 ejecutables=8 skip=0 memberdata=0 -> MinSelected=8 ExpectRed=False
+  UI   RichEditor                                    fixed paquete=25    medido: clases=4 ejecutables=25 skip=4 memberdata=0 -> MinSelected=25 ExpectRed=False
+       ejecutables 25 >= 25; los 4 Skip no cuentan para el minimo
+  UI   Workspace                                     fixed paquete=547   medido: clases=20 ejecutables=547 skip=0 memberdata=16 -> MinSelected=547 ExpectRed=False
+  UI   Cantilever                                    fixed paquete=67    medido: clases=3 ejecutables=67 skip=0 memberdata=0 -> MinSelected=67 ExpectRed=False
+AVISOS (7):
+  - el paquete custodiado en la revision es v2.8; al escribir hace falta la v2.9 en HEAD (docs/initiatives/I-64-f4b-pbt2-gate-contract-package.md)
+  - a custodiar con la emision de PB-T2c, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt2/independent-review-pbt2c-v25-check.md
+  - a custodiar con la emision de PB-T2c, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt2/pbt2c-anchors-out.txt (la tabla de lo esperado de CT-PBT2C-03)
+  - a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt2/v29-delta.md
+  - a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt2/independent-review-pbt2c-v25-check-prompt.md
+  - a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt2/make_pbt2c_contract-dry.txt
+  - la ultima entrada de f4b-dispositions.md (F4B-E38) no es la emision de F4B-PBT2C-WORKSPACE-CARRYOVER con las condiciones de F4B-E28, pregunta 4
+rc=0
