@@ -8027,3 +8027,18 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - solo documentación;
 - sin AutoCAD;
 - los eventos y las transcripciones solo por SHA-256 (16.12).
+
+## 250. PB-T1: paquete del contrato v2.8 y anclajes de PB-T1c (F4B-E27)
+
+**Qué se custodia:**
+- **El paquete** `docs/initiatives/I-64-f4b-pbt1-gate-contract-package.md` v2.8. La v2.7 pasa a la historia, en `F4B-DRAFTS/pbt1/package-v27.md`.
+- **El registro** `docs/initiatives/I-64-f4b-pbt1-measurements.md`, con el apartado Q: los anclajes de PB-T1c.
+- **En `F4B-DRAFTS/pbt1/`:**
+  - el informe de anclas de PB-T1c y la salida de su script (escrita por la consola en cp1252 y custodiada en UTF-8 con el mismo texto);
+  - los scripts de medición y de la simulación, y la salida de la simulación;
+  - la comprobación acotada de la v2.8, con su recomprobación, y su encargo;
+  - la salida en seco del generador de PB-T1c.
+
+**La comprobación:** comprobacion acotada independiente de la v2.8 EMITIBLE TRAS CORRECCIONES 0/1/7, recomprobacion 0/1/3 y confirmacion final 0/0/1 (el assert del generador, alineado antes de emitir: seco final rc 0 sobre 95373af6), todas aplicadas; sin decisiones materiales nuevas para el Owner.
+
+**Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.

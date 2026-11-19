@@ -1,0 +1,314 @@
+
+## (a) src/RackCad.UI entre b5c09f0b y 2f5d3dec
+diff --quiet rc = 0
+tree b5c09f0b src/RackCad.UI = c38679f8bcbb2718b3033438db258d28512aa218
+tree 2f5d3dec src/RackCad.UI = c38679f8bcbb2718b3033438db258d28512aa218
+diff --name-status src:
+A	src/RackCad.Application/Systems/PushBack/PushBackEditableState.cs
+A	src/RackCad.Application/Systems/PushBack/PushBackEditableStateComparer.cs
+A	src/RackCad.Application/Systems/PushBack/PushBackEditableStateOwnership.cs
+A	src/RackCad.Application/Systems/PushBack/PushBackEditorOutputGate.cs
+M	src/RackCad.Application/Systems/PushBack/PushBackEditorState.cs
+M	src/RackCad.Application/Systems/Shared/RackModuleEditSession.cs
+lineas W/WC/WX = 3700 936 793
+
+## (b) anclas de D-PBT1-13, D-PBT1-14 y sec 4/6.3
+| W:56-57 | campo `composite` (D-13 (1)) | W:56 `private readonly PushBackCompositeEditorState composite =` / W:57 `new PushBackCompositeEditorState(new PushBackEditorState(), new PushBackEditorState());` | PASS |
+| W:84 | `safetySelections` | W:84 `private readonly List<SelectiveSafetySelection> safetySelections = new List<SelectiveSafetySelection>();` | PASS |
+| W:101 | `generalPallet` | W:101 `private PalletSpecification generalPallet = PushBackEditorInputs.NewDesign().Pallet;` | PASS |
+| W:106-109 | `rackTolerance`, `rackPostPeralte`, `rackBeamDepth`, `rackAnnotationScale` | W:106 `private double rackTolerance = DynamicRackDefaults.DefaultPalletTolerance;` / W:107 `private double rackPostPeralte = PushBackEditorInputs.NewDesign().PostPeralte;` / W:108 `private double rackBeamDepth = DynamicRackDefaults.DefaultBeamDepth;` / W:109 `private double rackAnnotationScale = 1.0;` | PASS |
+| W:114 | `advanced` | W:114 `private readonly PushBackEditorInputs advanced = PushBackEditorInputs.NewDesign();` | PASS |
+| W:380 | `firstLevelDatum` | W:380 `private int? firstLevelDatum = (int)RackCad.Application.Systems.Shared.RackFirstLevelDatumMode.LowestUsablePun` | PASS |
+| W:1249 | `loadedDimensionViews` | W:1249 `private DimensionViewVisibility? loadedDimensionViews;` | PASS |
+| W:1256 | `loadedDimensionStyle` | W:1256 `private string loadedDimensionStyle;` | PASS |
+| W:1260 | `dimensionViewsTouched` | W:1260 `private bool dimensionViewsTouched;` | PASS |
+| W:273-276 | LoadNew: la mitad del editor (-> `LoadNewEditor`) | W:273 `composite.SetActiveSide(RackCad.Domain.Systems.PushBack.PushBackSide.A);` / W:274 `composite.SetSideBPresent(false);` / W:275 `composite.LoadComposite(null);` / W:276 `var inputs = state.LoadNew();` | PASS |
+| W:286-287 | LoadNew: la seguridad por defecto (-> `SeedDefaultSafety`) | W:286 `safetySelections.Clear();` / W:287 `safetySelections.AddRange(new PushBackSafetyAuthority(catalog).Defaults());` | PASS |
+| W:299-302 | LoadDesignForNew: la mitad del editor (-> `LoadDesignEditor` + `UpdateCompositeEnabled();`) | W:299 `composite.SetActiveSide(RackCad.Domain.Systems.PushBack.PushBackSide.A);` / W:300 `composite.SetSideBPresent(false);` / W:301 `var inputs = state.LoadFromDesign(SideAOnly(design), assembler.Resolver);` / W:302 `LoadCompositeFromDesign(design);` | PASS |
+| W:316-319 | LoadExisting: la mitad del editor | W:316 `composite.SetActiveSide(RackCad.Domain.Systems.PushBack.PushBackSide.A);` / W:317 `composite.SetSideBPresent(false);` / W:318 `var inputs = state.LoadFromDesign(SideAOnly(design), assembler.Resolver);` / W:319 `LoadCompositeFromDesign(design);` | PASS |
+| WC:933 | `UpdateCompositeEnabled();` al final de `LoadCompositeFromDesign` | WC:933 `UpdateCompositeEnabled();` / WC:934 `}` | PASS |
+| W:3320-3327 | Restore_Click: la mitad del editor (-> `RestoreEditor` + `UpdateCompositeEnabled();`) | W:3320 `composite.SetActiveSide(RackCad.Domain.Systems.PushBack.PushBackSide.A);` / W:3321 `composite.SetSideBPresent(false);` / W:3322 `var inputs = state.LoadFromDesign(SideAOnly(design), assembler.Resolver);` / W:3327 `LoadCompositeFromDesign(design, preserveDormantIntent: true);` / W:3328 `LoadFromModel(inputs, NameBox.Text);` | PASS |
+| W:385-440 | `LoadFromModel` (HT1-07: try bajo suppressSync W:387-437, Recompute W:439) | W:385 `private void LoadFromModel(PushBackEditorInputs inputs, string rackName)` / W:387 `suppressSync = true;` / W:388 `try` / W:437 `}` / W:436 `suppressSync = false;` / W:439 `Recompute();` | PASS |
+| W:391 | portador `firstLevelDatum` | W:391 `firstLevelDatum = inputs.FirstLevelDatum;` | PASS |
+| W:393 | portador `generalPallet` | W:393 `generalPallet = pallet;` | PASS |
+| W:398 | portador `rackTolerance` | W:398 `rackTolerance = inputs.PalletTolerance > 0.0 ? inputs.PalletTolerance : DynamicRackDefaults.DefaultPalletToler` | PASS |
+| W:401 | portador `rackPostPeralte` | W:401 `rackPostPeralte = inputs.PostPeralte;` | PASS |
+| W:403 | portador `rackBeamDepth` | W:403 `rackBeamDepth = inputs.BeamDepth > 0.0 ? inputs.BeamDepth : DynamicRackDefaults.DefaultBeamDepth;` | PASS |
+| W:406-411 | los seis avanzados | W:406 `advanced.ManualHeaderHeightOverride = inputs.ManualHeaderHeightOverride;` / W:407 `advanced.DerivedPostReinforced = inputs.DerivedPostReinforced;` / W:408 `advanced.DerivedPostReinforcementHeight = inputs.DerivedPostReinforcementHeight;` / W:409 `advanced.DerivedPostHeight = inputs.DerivedPostHeight;` / W:410 `advanced.SeparatorCountOverride = inputs.SeparatorCountOverride;` / W:411 `advanced.SeparatorSpacingOverride = inputs.SeparatorSpacingOverride;` | PASS |
+| W:414 | portador `loadedDimensionStyle` | W:414 `loadedDimensionStyle = options.DimensionStyle;` | PASS |
+| W:419 | portador `rackAnnotationScale` | W:419 `rackAnnotationScale = options.AnnotationScale > 0.0 ? options.AnnotationScale : 1.0;` | PASS |
+| W:423-427 | portador `safetySelections` | W:423 `safetySelections.Clear();` / W:424 `foreach (var safety in inputs.SafetySelections ?? Enumerable.Empty<SelectiveSafetySelection>())` / W:426 `if (safety != null) safetySelections.Add(safety.DeepCopy());` / W:427 `}` | PASS |
+| W:390 | siembra NameBox | W:390 `NameBox.Text = rackName ?? string.Empty;` | PASS |
+| W:392 | "siembra" (local `pallet`) | W:392 `var pallet = inputs.Pallet ?? new PalletSpecification(42.0, 48.0, 60.0, 1000.0, "kg");` | PASS |
+| W:394-397 | siembras DepthBox, WeightUnitBox, PalletsDeepBox, ToleranceBox | W:394 `DepthBox.SetNumber(pallet.Depth);` / W:395 `WeightUnitBox.SelectedItem = string.IsNullOrWhiteSpace(pallet.WeightUnit) ? "kg" : pallet.WeightUnit;` / W:396 `PalletsDeepBox.SetNumber(Math.Max(2, inputs.PalletsDeep));` / W:397 `ToleranceBox.SetNumber(inputs.PalletTolerance > 0.0 ? inputs.PalletTolerance : DynamicRackDefaults.DefaultPall` | PASS |
+| W:399-400 | siembras PostBox, PostPeralteBox | W:399 `PostBox.SelectedId = string.IsNullOrWhiteSpace(inputs.PostCatalogId) ? catalog?.Defaults?.Post : inputs.PostCa` / W:400 `PostPeralteBox.SetNumber(inputs.PostPeralte);` | PASS |
+| W:402 | siembra BeamDepthBox | W:402 `BeamDepthBox.SetNumber(inputs.BeamDepth > 0.0 ? inputs.BeamDepth : DynamicRackDefaults.DefaultBeamDepth);` | PASS |
+| W:413 | "siembra" (local `options`) | W:413 `var options = inputs.Annotations ?? new DynamicAnnotationOptions();` | PASS |
+| W:415-418 | siembras de las tres casillas y AnnotationScaleBox | W:415 `NumberFrontsCheck.IsChecked = options.NumberFronts;` / W:416 `NumberLevelsCheck.IsChecked = options.NumberLevels;` / W:417 `DrawRackNameCheck.IsChecked = options.DrawRackName;` / W:418 `AnnotationScaleBox.SetNumber(options.AnnotationScale > 0.0 ? options.AnnotationScale : 1.0);` | PASS |
+| W:420-421 | siembras DimensionsBox y ShowDimensionViews | W:420 `DimensionsBox.SelectedIndex = Math.Min((int)DimensionDetail.Detailed, Math.Max(0, (int)options.Dimensions));` / W:421 `ShowDimensionViews(options.DimensionViews); // I-50 C-12: la política cargada, sin marcar «tocado»` | PASS |
+| W:432 | `LoadAdvancedRackParameters` despues | W:432 `LoadAdvancedRackParameters();` | PASS |
+| W:838-840 | la `PalletSpecification` de ReadInputs (5o argumento = unidad) | W:838 `generalPallet = new PalletSpecification(` / W:839 `generalPallet.Front, Keep(DepthBox, generalPallet.Depth), generalPallet.Height,` / W:840 `generalPallet.Weight, generalPallet.WeightUnit);` | PASS |
+| W:852 | la expresion de la unidad | W:852 `generalPallet.Weight, WeightUnitBox.SelectedItem as string ?? "kg"),` | PASS |
+| W:841-844 | las cuatro de Keep | W:841 `rackTolerance = Keep(ToleranceBox, rackTolerance);` / W:842 `rackPostPeralte = Keep(PostPeralteBox, rackPostPeralte);` / W:843 `rackBeamDepth = Keep(BeamDepthBox, rackBeamDepth);` / W:844 `rackAnnotationScale = Keep(AnnotationScaleBox, rackAnnotationScale);` | PASS |
+| W:853 | PalletsDeep | W:853 `PalletsDeep = IntVal(PalletsDeepBox, DynamicRackDefaults.DefaultPalletsDeep),` | PASS |
+| W:868 | PostCatalogId | W:868 `PostCatalogId = PostBox.SelectedId,` | PASS |
+| W:823, W:826 | el respaldo de las vigas (`?? cell.…`) | W:823 `InOutBeamCatalogId = CellInOutBeamBox.SelectedValue as string ?? cell.InOutBeamCatalogId,` / W:826 `IntermediateBeamCatalogId = CellIntermediateBeamBox.SelectedValue as string ?? cell.IntermediateBeamCatalogId,` | PASS |
+| DA:169-171 | el respaldo del poste en el ensamblador | DA:169 `var postId = string.IsNullOrWhiteSpace(editorInputs.PostCatalogId)` / DA:170 `? catalog.Defaults?.Post` / DA:171 `: editorInputs.PostCatalogId;` | PASS |
+| W:874-876 | las tres casillas | W:874 `NumberFronts = NumberFrontsCheck.IsChecked == true,` / W:875 `NumberLevels = NumberLevelsCheck.IsChecked == true,` / W:876 `DrawRackName = DrawRackNameCheck.IsChecked == true,` | PASS |
+| W:878 | Dimensions | W:878 `Dimensions = (DimensionDetail)Math.Min((int)DimensionDetail.Detailed, Math.Max(0, DimensionsBox.SelectedIndex)` | PASS |
+| W:1295-1297 | las tres de cotas | W:1295 `DimensionsFrontalCheck.IsChecked == true,` / W:1296 `DimensionsLateralCheck.IsChecked == true,` / W:1297 `DimensionsPlantaCheck.IsChecked == true);` | PASS |
+| W:1291-1297 | `SelectedDimensionViews` | W:1291 `private DimensionViewVisibility? SelectedDimensionViews()` / W:1297 `DimensionsPlantaCheck.IsChecked == true);` | PASS |
+| W:880 | unico uso de `SelectedDimensionViews` | W:880 `DimensionViews = SelectedDimensionViews() // I-50 C-12` | PASS |
+| W:342-373 | `SideAOnly` | W:342 `private static PushBackDesign SideAOnly(PushBackDesign design)` / W:373 `}` | PASS |
+| WC:813-814 | `LoadCompositeFromDesign(design)` | WC:813 `private void LoadCompositeFromDesign(PushBackDesign design)` / WC:814 `=> LoadCompositeFromDesign(design, preserveDormantIntent: false);` | PASS |
+| WC:827-934 | `LoadCompositeFromDesign(design, preserve…)` | WC:827 `private void LoadCompositeFromDesign(PushBackDesign design, bool preserveDormantIntent)` / WC:934 `}` | PASS |
+| W:279 | Adopt (LoadNew) | W:279 `session.Identity.Adopt(null, null);` | PASS |
+| W:305 | Adopt (LoadDesignForNew) | W:305 `session.Identity.Adopt(null, rackName); // no id -> a fresh GUID is minted on insert` | PASS |
+| W:322 | Adopt (LoadExisting) | W:322 `session.Identity.Adopt(rackId, rackName);` | PASS |
+| W:1237 | SetName (Name_Changed) | W:1237 `session.Identity.SetName(NameBox.Text?.Trim());` | PASS |
+| W:3352 | SetName (InsertBatch_Click) | W:3352 `session.Identity.SetName(NameBox.Text?.Trim());` | PASS |
+| W:3405 | SetName (RequestDraw) | W:3405 `session.Identity.SetName(NameBox.Text?.Trim());` | PASS |
+| W:3504 | SetName (SaveLibrary_Click) | W:3504 `session.Identity.SetName(NameBox.Text?.Trim());` | PASS |
+| W:131-161 | D-14: los constructores | W:131 `public RackPushBackSystemWindow()` / W:136 `public RackPushBackSystemWindow(bool canInsertInAutoCad, Func<string> newIdFactory = null)` / W:160 `LoadNew();` / W:161 `}` | PASS |
+| W:270, :294, :311 | D-14: las firmas publicas | W:270 `public void LoadNew()` / W:294 `public void LoadDesignForNew(PushBackDesign design, string rackName, RackProject sourceProject = null)` / W:311 `public void LoadExisting(PushBackDesign design, string rackId, string rackName, RackProject sourceProject = nu` | PASS |
+| W:165-193, WC:43 | sec 4: las costuras internas | W:165 `internal RackEditorSession<PushBackDesign, PushBackSystem> Session => session;` / W:193 `internal IReadOnlyList<SelectiveSafetySelection> SafetySelections => safetySelections;` / WC:43 `internal PushBackCompositeEditorState CompositeState => composite;` | PASS |
+anclas=59 diff=0
+try de LoadFromModel (W:389-433), lineas que no estan en ninguna de las dos listas de D-13 (4):
+   W:404 ``
+   W:405 `// I-35 (Owner round 2): adopt the four advanced scopes the load recovered, then paint them.`
+   W:412 ``
+   W:422 ``
+   W:428 ``
+   W:429 `RefreshFrontSelector();`
+   W:430 `RenderPushBackMatrix();`
+   W:431 `LoadSelectedFront();`
+   W:432 `LoadAdvancedRackParameters();`
+lineas de la lista de portadores que estan tambien en la de siembras: []
+escrituras de portadores FUERA de LoadFromModel y ReadInputs (siguen por el reenvio):
+   W:1270 `loadedDimensionViews = views;`
+   W:1271 `dimensionViewsTouched = false;`
+   W:1303 `dimensionViewsTouched = true;`
+
+## (c) INV-PBT1C-03: los miembros de la lista, con su rango en 2f5d3dec (heuristica de members.py)
+miembros W=265 WC=50
+| composite | W | 56-57 | 49-55 |
+| safetySelections | W | 84-84 | - |
+| generalPallet | W | NO EXISTE |  |
+| rackTolerance | W | 106-106 | 103-105 |
+| rackPostPeralte | W | 107-107 | - |
+| rackBeamDepth | W | 108-108 | - |
+| rackAnnotationScale | W | 109-109 | - |
+| advanced | W | 114-114 | 111-113 |
+| firstLevelDatum | W | 380-380 | 375-379 |
+| loadedDimensionViews | W | 1249-1249 | 1244-1248 |
+| loadedDimensionStyle | W | 1256-1256 | 1251-1255 |
+| dimensionViewsTouched | W | 1260-1260 | 1258-1259 |
+| LoadNew | W | 270-289 | 268-269 |
+| LoadDesignForNew | W | 294-307 | 291-293 |
+| LoadExisting | W | 311-324 | 309-310 |
+| SideAOnly | W | 342-373 | 326-341 |
+| LoadFromModel | W | 385-440 | - |
+| ReadInputs | W | 833-890 | - |
+| Name_Changed | W | 1234-1238 | - |
+| SelectedDimensionViews | W | 1291-1297 | 1289-1290 |
+| Restore_Click | W | 3307-3330 | 3304-3306 |
+| InsertBatch_Click | W | 3334-3361 | - |
+| RequestDraw | W | 3363-3419 | - |
+| SaveLibrary_Click | W | 3481-3515 | - |
+| LoadCompositeFromDesign | WC | 813-814, 827-934 | 812-812, 816-826 |
+| CompositeDiagnostics | WC | 783-786 | 779-782 |
+| CompositeStatusOr | WC | 789-801 | 788-788 |
+| CompositeHasBlocking | WC | 803-807 | - |
+declaracion nueva SyncName: W=[] WC=[]
+declaracion nueva EditableStateForTest: W=[] WC=[]
+declaracion nueva editable: W=[] WC=[]
+
+## (d) INV-PBT1C-04: los literales de T-SG en W
+| CT-22 | `UiSupport.PromptSaveToLibrary(this,` | W:[3498] | WC:[] |
+| CT-22 | `session.Identity.EnsureId();` | W:[3503] | WC:[] |
+| CT-22 | `session.Identity.SetName(NameBox.Text?.Trim());` | W:[1237, 3352, 3405, 3504] | WC:[] |
+| CT-22 | `var project = RackProject.ForPushBack(lastComputation.Design).WithSourceMetadataFrom(sourceProject);` | W:[3507] | WC:[] |
+| CT-22 | `new RackProjectStore().Save(project, path);` | W:[3508] | WC:[] |
+| S-9 | `UiSupport.PromptSaveToLibrary(this, NameBox.Text, "sistema")` | W:[3498] | WC:[] |
+| S-7 | `new RackBomWindow(lastComputation.Bom) { Owner = this }.ShowDialog();` | W:[3478] | WC:[] |
+| CT-23 | `if (moduleOwner.ModuleSession.HasPendingChanges) moduleOwner.CommitModuleEdits();` | W:[3336] | WC:[] |
+| CT-23 | `Views.RackViewBatchDialogPresenter.TryShow(this, RackSystemKind.PushBack, options, out var views)` | W:[3351] | WC:[] |
+| CT-23 | `session.RequestInsertViews(views` | W:[3354] | WC:[] |
+| CT-23 | `Close();` | W:[3360, 3418, 3421] | WC:[] |
+| CT-23 | `RackViewAddress.PushBackCut(RackCad.Application.Systems.Shared.RackPushBackEnd.EntradaSalida, RackCa` | W:[3342] | WC:[] |
+| CT-23 | `RackViewAddress.PushBackCut(RackCad.Application.Systems.Shared.RackPushBackEnd.Posterior, RackCad.Ap` | W:[3345] | WC:[] |
+| CT-23 | `RackViewAddress.Whole(DimensionViewKind.Planta)` | W:[3346] | WC:[] |
+| CT-23 | `RackViewAddress.Post(cut.PostIndex)` | W:[3350] | WC:[] |
+| CT-23 | `RackViewCodec.Encode(RackSystemKind.PushBack, ctx.Views[0])` | W:[3356] | WC:[] |
+T-SG sobre 2f5d3dec (texto normalizado de Systems/PushBack): {'CT-22': True, 'S-9': True, 'S-7': True, 'CT-23': True, 'CT-19': True}
+orden CT-22 en W (lineas): [3498, 3503, 3504, 3507, 3508]
+orden CT-23 en W (lineas): [3336, 3351, 3354, 3360]
+sitios SetName/Adopt en W y WC: [('W', 279), ('W', 305), ('W', 322), ('W', 1237), ('W', 3352), ('W', 3405), ('W', 3504)]
+   W:279 ['LoadNew'] `session.Identity.Adopt(null, null);`
+   W:305 ['LoadDesignForNew'] `session.Identity.Adopt(null, rackName); // no id -> a fresh GUID is minted on insert`
+   W:322 ['LoadExisting'] `session.Identity.Adopt(rackId, rackName);`
+   W:1237 ['Name_Changed'] `session.Identity.SetName(NameBox.Text?.Trim());`
+   W:3352 ['InsertBatch_Click'] `session.Identity.SetName(NameBox.Text?.Trim());`
+   W:3405 ['RequestDraw'] `session.Identity.SetName(NameBox.Text?.Trim());`
+   W:3504 ['SaveLibrary_Click'] `session.Identity.SetName(NameBox.Text?.Trim());`
+git grep Identity.(SetName|Adopt|EnsureId)( en src:
+   2f5d3dec:src/RackCad.UI/Editor/RackEditorSession.cs:157:            Identity.EnsureId();
+   2f5d3dec:src/RackCad.UI/Editor/RackEditorSession.cs:186:            Identity.EnsureId();
+   2f5d3dec:src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml.cs:368:                insertionIdentity.EnsureId();
+   2f5d3dec:src/RackCad.UI/Systems/Cantilever/RackCantileverWindow.xaml.cs:210:            session.Identity.Adopt(null, null);
+   2f5d3dec:src/RackCad.UI/Systems/Cantilever/RackCantileverWindow.xaml.cs:226:            session.Identity.Adopt(null, rackName);
+   2f5d3dec:src/RackCad.UI/Systems/Cantilever/RackCantileverWindow.xaml.cs:242:            session.Identity.Adopt(rackId, rackName);
+   2f5d3dec:src/RackCad.UI/Systems/Cantilever/RackCantileverWindow.xaml.cs:1268:            session.Identity.SetName(NameBox.Text?.Trim());
+   2f5d3dec:src/RackCad.UI/Systems/Cantilever/RackCantileverWindow.xaml.cs:1298:            session.Identity.SetName(NameBox.Text?.Trim());
+   2f5d3dec:src/RackCad.UI/Systems/Cantilever/RackCantileverWindow.xaml.cs:1340:            session.Identity.SetName(NameBox.Text?.Trim());
+   2f5d3dec:src/RackCad.UI/Systems/Cantilever/RackCantileverWindow.xaml.cs:1389:                session.Identity.EnsureId();
+   2f5d3dec:src/RackCad.UI/Systems/Cantilever/RackCantileverWindow.xaml.cs:1390:                session.Identity.SetName(NameBox.Text?.Trim());
+   2f5d3dec:src/RackCad.UI/Systems/Dynamic/RackDynamicSystemWindow.xaml.cs:3353:            session.Identity.Adopt(id, name); // keep the drawn system's GUID + name (I-15)
+   2f5d3dec:src/RackCad.UI/Systems/Dynamic/RackDynamicSystemWindow.xaml.cs:3410:            session.Identity.SetName(NameBox?.Text?.Trim());
+   2f5d3dec:src/RackCad.UI/Systems/Dynamic/RackDynamicSystemWindow.xaml.cs:3455:            session.Identity.SetName(NameBox?.Text?.Trim());
+   2f5d3dec:src/RackCad.UI/Systems/FlowBed/RackFlowBedWindow.xaml.cs:276:            session.Identity.SetName(NameBox?.Text?.Trim());
+   2f5d3dec:src/RackCad.UI/Systems/FlowBed/RackFlowBedWindow.xaml.cs:294:            session.Identity.Adopt(id, name); // keep the drawn bed's GUID + name (I-15)
+   2f5d3dec:src/RackCad.UI/Systems/FlowBed/RackFlowBedWindow.xaml.cs:336:            session.Identity.Adopt(null, name); // a library template inserts as a NEW bed: no id yet, fresh GUID on insert (I-15)
+   2f5d3dec:src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs:279:            session.Identity.Adopt(null, null);
+   2f5d3dec:src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs:305:            session.Identity.Adopt(null, rackName); // no id -> a fresh GUID is minted on insert
+   2f5d3dec:src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs:322:            session.Identity.Adopt(rackId, rackName);
+   2f5d3dec:src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs:1237:            session.Identity.SetName(NameBox.Text?.Trim());
+   2f5d3dec:src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs:3352:            session.Identity.SetName(NameBox.Text?.Trim());
+   2f5d3dec:src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs:3405:            session.Identity.SetName(NameBox.Text?.Trim());
+   2f5d3dec:src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs:3503:                session.Identity.EnsureId();
+   2f5d3dec:src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs:3504:                session.Identity.SetName(NameBox.Text?.Trim());
+   2f5d3dec:src/RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml.cs:2561:            session.Identity.SetName(NameBox.Text?.Trim());
+   2f5d3dec:src/RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml.cs:2610:            session.Identity.SetName(NameBox.Text?.Trim());
+   2f5d3dec:src/RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml.cs:3314:            session.Identity.Adopt(document.Id, document.Name);
+   2f5d3dec:src/RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml.cs:3326:            session.Identity.Adopt(null, document.Name); // a library template inserts as a NEW rack: no id yet, fresh GUID on insert (I-15)
+
+## (e) INV-PBT1C-05: cuentas y literales
+.RequestUpdate( en W: crudo=1 sin-comentarios=1 lineas=[3409]
+.RequestUpdate( en WC: 0
+| I-55 | `PhysicalPostIndex(LateralSectionBox.SelectedItem)` | W:[3135] |
+| I-55 | `corte.PostIndex == section` | W:[3224] |
+| I-55 (ausente) | `Math.Max(0, LateralSectionBox.SelectedIndex)` | W:[] |
+| Fact3 | `RequestStandardRestore()` | W:[2539] |
+| Fact3 (ausente) | `forceRebuild:` | W:[] |
+| Fact3 (ausente) | `forceRebuild)` | W:[] |
+| Fact3 (prosa) | `forceRebuild` | W:[2535] |
+| Fact3 | `StandardRestoreRequested` | DA:[204] |
+| Fact3 | `RestoreAllModulesButton` | WX:[664] |
+| Desviador | `desviadorLevelsPerPost: DesviadorLevelsPerPost()` | W:[3044] |
+| Desviador | `showDesviadorSide: false` | W:[3048] |
+SetNumber( en W: 24 lineas [394, 396, 397, 400, 402, 418, 458, 463, 464, 465, 466, 467, 469, 470, 471, 473, 476, 574, 575, 576, 1399, 1625, 1813, 1833]
+SetNumber( en WC: 5 lineas [340, 348, 581, 746, 749]
+lineas que D-13 quita o sustituye y contienen SetNumber(: W=[] WC=[]
+siembras de LoadFromModel (D-13 (4)):
+   W:390 `NameBox.Text = rackName ?? string.Empty;`
+   W:392 `var pallet = inputs.Pallet ?? new PalletSpecification(42.0, 48.0, 60.0, 1000.0, "kg");`
+   W:394 `DepthBox.SetNumber(pallet.Depth);`
+   W:395 `WeightUnitBox.SelectedItem = string.IsNullOrWhiteSpace(pallet.WeightUnit) ? "kg" : pallet.WeightUnit;`
+   W:396 `PalletsDeepBox.SetNumber(Math.Max(2, inputs.PalletsDeep));`
+   W:397 `ToleranceBox.SetNumber(inputs.PalletTolerance > 0.0 ? inputs.PalletTolerance : DynamicRackDefaults.DefaultPalletTolerance);`
+   W:399 `PostBox.SelectedId = string.IsNullOrWhiteSpace(inputs.PostCatalogId) ? catalog?.Defaults?.Post : inputs.PostCatalogId;`
+   W:400 `PostPeralteBox.SetNumber(inputs.PostPeralte);`
+   W:402 `BeamDepthBox.SetNumber(inputs.BeamDepth > 0.0 ? inputs.BeamDepth : DynamicRackDefaults.DefaultBeamDepth);`
+   W:413 `var options = inputs.Annotations ?? new DynamicAnnotationOptions();`
+   W:415 `NumberFrontsCheck.IsChecked = options.NumberFronts;`
+   W:416 `NumberLevelsCheck.IsChecked = options.NumberLevels;`
+   W:417 `DrawRackNameCheck.IsChecked = options.DrawRackName;`
+   W:418 `AnnotationScaleBox.SetNumber(options.AnnotationScale > 0.0 ? options.AnnotationScale : 1.0);`
+   W:420 `DimensionsBox.SelectedIndex = Math.Min((int)DimensionDetail.Detailed, Math.Max(0, (int)options.Dimensions));`
+   W:421 `ShowDimensionViews(options.DimensionViews); // I-50 C-12: la política cargada, sin marcar «tocado»`
+
+## (f) INV-PBT1C-06: las costuras internas
+| W:165 | Session | RackEditorSession<PushBackDesign, PushBackSystem> |
+| W:166 | State | PushBackEditorState |
+| W:167 | Assembler | PushBackEditorDesignAssembler |
+| W:171 | CurrentPreviewPlan | HeaderRunPlan |
+| W:181 | CurrentPreviewModel | PushBackPreviewModel |
+| W:190 | LastComputation | PushBackEditorComputation |
+| W:191 | HasValidModel | bool |
+| W:192 | CurrentInputsAreValid | bool |
+| W:193 | SafetySelections | IReadOnlyList<SelectiveSafetySelection> |
+| W:195 | LateralViewOption | class |
+| W:197 | ? | internal LateralViewOption(string label, int postIndex) |
+| W:207 | LateralViewOptions | IReadOnlyList<LateralViewOption> |
+| W:214 | PhysicalPostIndex | int |
+| W:217 | RestoredLateralSelectionIndex | int |
+| W:228 | SafetyElementsForDialog | IReadOnlyList<SafetyElementCatalogEntry> |
+| W:248 | BuildLibraryProjectForTest | RackProject |
+| W:383 | FirstLevelDatumForTest | int? |
+| W:614 | RecomputePassesForTest | int |
+| W:1080 | SelectMatrixCell | void |
+| W:1533 | SafetyDialog | Func<IReadOnlyList<SelectiveSafetySelection>, IReadOnlyList<SelectiveSafetySelection>> |
+| W:1539 | RearTopeDialog | Func<PushBackRearTopeConfig, IReadOnlyList<int>, SafetyTopeGridWindow.TopeResult> |
+| W:1545 | DefenseDialog | Func<PushBackDefenseSection, IReadOnlyList<SafetyPostDefense>> |
+| W:1557 | DesviadorLevelsPerPost | IReadOnlyList<int> |
+| W:1565 | HeaderConfiguratorDialog | Func<RackFrameConfiguration, RackFrameConfiguration> |
+| W:1569 | EditorStateForTest | PushBackEditorState |
+| W:2042 | PendingHeaderConfigurationForTest | RackFrameConfiguration |
+| W:2450 | HeaderConfiguratorPresenter | Action<RackFrameConfiguratorWindow> |
+| W:2701 | BootSectionForTest | PushBackBootSection |
+| W:2704 | BootSectionBForTest | PushBackBootSection |
+| W:2740 | BootPerPostWindowDialog | Func<SafetyPerPostWindow, bool?> |
+| W:2841 | DefenseSectionForTest | PushBackDefenseSection |
+| W:2844 | DefenseSectionBForTest | PushBackDefenseSection |
+| W:3012 | RearTopeSectionForTest | PushBackRearTopeSection |
+| W:3015 | RearTopeSectionBForTest | PushBackRearTopeSection |
+| W:3028 | RearTopeLevels | IReadOnlyList<int> |
+| W:3068 | SafetyWindowDialog | Func<SelectiveSafetyWindow, bool?> |
+| W:3264 | FrontalSideForTest | PushBackSide |
+| W:3457 | PendingWork | EditorPendingWork |
+| W:3527 | OutputIsBlockedForTest | bool |
+| WC:43 | CompositeState | PushBackCompositeEditorState |
+costuras: W=39 WC=1 total=40; iguales a b5c09f0b: True
+EditableStateForTest en src/ y tests/: ninguna
+
+## (g) la API de Application que usa D-PBT1-13
+== PushBackEditableState.cs
+   :16 public enum PushBackEditableSupport
+   :38 public sealed class PushBackEditableState
+   :40 public PushBackEditableState()
+   :55 public PushBackCompositeEditorState Editor { get; }
+   :59 public PalletSpecification Pallet { get; set; }
+   :61 public int PalletsDeep { get; set; }
+   :62 public string PostCatalogId { get; set; }
+   :63 public double PostPeralte { get; set; }
+   :64 public double PalletTolerance { get; set; }
+   :65 public double BeamDepth { get; set; }
+   :66 public double AnnotationScale { get; set; }
+   :69 public int? FirstLevelDatum { get; set; }
+   :71 public bool NumberFronts { get; set; }
+   :72 public bool NumberLevels { get; set; }
+   :73 public bool DrawRackName { get; set; }
+   :74 public DimensionDetail Dimensions { get; set; }
+   :77 public string DimensionStyle { get; set; }
+   :80 public DimensionViewVisibility? LoadedDimensionViews { get; set; }
+   :83 public bool DimensionViewsTouched { get; set; }
+   :85 public bool DimensionsFrontal { get; set; }
+   :86 public bool DimensionsLateral { get; set; }
+   :87 public bool DimensionsPlanta { get; set; }
+   :90 public PushBackEditorInputs Advanced { get; }
+   :92 public List<SelectiveSafetySelection> SafetySelections { get; } = new List<SelectiveSafetySelection>();
+   :95 public string Name { get; set; }
+   :100 public PushBackEditorInputs LoadNewEditor()
+   :109 public PushBackEditorInputs LoadDesignEditor(PushBackDesign design, PushBackResolver resolver)
+   :119 public PushBackEditorInputs RestoreEditor(PushBackDesign lastValidDesign, PushBackResolver resolver)
+   :130 public void AdoptCarriers(PushBackEditorInputs inputs, RackCatalog catalog)
+   :173 public void SeedDefaultSafety(RackCatalog catalog)
+   :180 public PushBackEditorInputs LoadNew(RackCatalog catalog)
+   :189 public PushBackEditorInputs LoadDesign(PushBackDesign design, string rackName, PushBackResolver resolver)
+   :198 public PushBackEditorInputs Restore(PushBackDesign lastValidDesign, PushBackResolver resolver)
+   :211 public static PushBackDesign SideAOnly(PushBackDesign design)
+   :367 public PushBackEditorInputs BuildInputs(PushBackEditorDesignAssembler assembler)
+   :415 public static string ResolvePostCatalogId(RackCatalog catalog, string requested)
+   :435 public static string ResolveWeightUnit(string current, string requested)
+   :454 public static PushBackEditableSupport SupportOf(PushBackDesign design)
+== PushBackEditorOutputGate.cs
+   :12 public static class PushBackEditorOutputGate
+   :16 public static IReadOnlyList<PushBackCompositeDiagnostic> Diagnostics(
+   :23 public static bool IsBlocked(PushBackCompositeEditorState composite, PushBackSystem system)
+   :28 public static string StatusOr(PushBackCompositeEditorState composite, PushBackSystem system, string fallback)
+== PushBackEditableStateComparer.cs
+   :29 public sealed class PushBackEditableStateComparer : IEqualityComparer<PushBackEditableState>
+   :31 public static PushBackEditableStateComparer Instance { get; } = new PushBackEditableStateComparer();
+   :33 public bool Equals(PushBackEditableState x, PushBackEditableState y)
+   :45 public int GetHashCode(PushBackEditableState obj)
+   :63 public static PushBackEditableState Copy(PushBackEditableState state)

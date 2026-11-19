@@ -795,3 +795,136 @@ Lo de P-7 (46 autoridades y `sha256 E5062453…`) es el `--dry` de la v2.5. Los 
 - **El contrato completo:** el `--dry` no lo imprime; sus recuentos y sus `assert` son los de arriba, y el `sha256` es el de los bytes con los SHA de ceros.
 - **Los TRX de la CI de `5043b49a`:** solo se leyó la línea de resumen del log de cada trabajo de pruebas.
 - **Lo que G-L1 no ve:** sin cambio (O-4).
+
+---
+
+## Q. Los anclajes de PB-T1c sobre el cierre de PB-T1b (v2.8; precondición 4)
+
+**Base:** las anclas se midieron en `2f5d3dec` (el intento 1 de PB-T1b revisado, con F4B-E21 y F4B-E22), con el producto de `a0a5f699`, por objetos git desde el checkout principal, mientras un Worker trabajaba en el worktree (cesión activa, P-08: ni el worktree ni su ruta se leyeron ni se nombraron). **Valen sobre el cierre de PB-T1b:** `git diff 2f5d3dec 95373af6 -- src` está vacío, porque la corrección de PB-T1b no cambió `src` (`git diff 2f5d3dec a18ba345 -- src`, vacío) y el cierre (`95373af6`, F4B-E26) es solo documentación. La `BaseSha` de PB-T1c será hija de esa línea, sin cambios de `src`, y el generador vuelve a comprobar en HEAD lo que importa antes de escribir (Q-7).
+
+**Reglas:** solo lectura por objetos git (`show`, `diff`, `ls-tree`, `rev-parse`, `grep` y `cat-file --batch`); sin compilar ni ejecutar pruebas; sin GitHub. Scripts de solo lectura, escritos con la herramienta de archivos y ejecutados con `python -I`, en `<carpeta-del-paquete>`:
+- `measure_pbt1c_anchors.py`: `src/RackCad.UI` frente a `b5c09f0b`; las anclas de D-PBT1-13, D-PBT1-14 y del §6.3; los miembros de INV-PBT1C-03; los literales de T-SG; las cuentas de INV-PBT1C-05; las costuras; y la API de Application que usa D-PBT1-13. Su salida es `pbt1c-anchors-out.txt`;
+- `count_tests_git.py`: los recuentos de `RequiredTests`, con el criterio de `count_tests.py` (I), leyendo la revisión con `ls-tree` y `cat-file`. Calibrado sobre `5043b49a`, reproduce las cifras de P-5;
+- `simulate_pbt1c_green.py`: aplica D-PBT1-13 a W y WC de forma mecánica y en memoria, en dos variantes (A, que retira la documentación de lo que se retira, y B, que la deja), y mide sobre el resultado los invariantes de PB-T1c, CT-PBT1C-03 y G-L1. Su salida es `simulate-out.txt`. Es una lectura del diseño, no el producto: no compila;
+- `check_inv_pbt1c_03_ranges.py`: los rangos de INV-PBT1C-03 y sus dos reglas, el censo de declaraciones y las subcadenas testigo de INV-PBT1C-05, sobre W y WC de `2f5d3dec` (sacados con `git show`) y sobre las dos variantes de la simulación, con `git diff --no-index -U0` entre archivos de `<carpeta-del-paquete>`.
+
+El informe que lo resume es `pbt1c-anchors-report.md`.
+
+**Órdenes:**
+- `python -I measure_pbt1c_anchors.py <checkout-que-comparte-el-almacen> > pbt1c-anchors-out.txt`;
+- `python -I count_tests_git.py <checkout-que-comparte-el-almacen> <rev> <UI|Core> <prefijos>`, con `<rev>` = `2f5d3dec` y, tras el cierre, `95373af6`;
+- `python -I simulate_pbt1c_green.py <checkout-que-comparte-el-almacen> > simulate-out.txt`;
+- `python -I check_inv_pbt1c_03_ranges.py`.
+
+### Q-0. Identidad
+
+| Orden | Resultado |
+|---|---|
+| `git rev-parse 2f5d3dec` | `2f5d3decb237913e3980aa0bbd84346a7ff91f19` |
+| `git diff --quiet b5c09f0b 2f5d3dec -- src/RackCad.UI` | vacío; el árbol `src/RackCad.UI` es `c38679f8…` en las dos |
+| `git diff --name-status b5c09f0b 2f5d3dec -- src` | solo Application: `A` de los cuatro archivos nuevos de PB-T1b y `M` de ES y RMES |
+| `git diff --quiet 2f5d3dec a18ba345 -- src` | vacío: la corrección de PB-T1b no cambió `src` |
+| `git diff --quiet 2f5d3dec 95373af6 -- src` | vacío: el cierre de PB-T1b es solo documentación |
+| `git log --oneline -3 95373af6` | `95373af6` (el cierre de PB-T1b, F4B-E23 a F4B-E26), `a18ba345` (el GREEN de la corrección) y `126fd65f` (su RED) |
+| líneas con `git show 2f5d3dec:<ruta>` | W 3700, WC 936 y WX 793 |
+
+### Q-1. Las anclas de D-PBT1-13, D-PBT1-14 y del §6.3
+
+**59 anclas, 0 diferencias.** Cada ancla comprueba que la línea contiene el texto que cita el paquete; el texto completo está en `pbt1c-anchors-out.txt`:
+- **los campos de D-PBT1-13 (1) y (2):** W:56-57, :84, :101, :106-109, :114, :380, :1249, :1256 y :1260;
+- **las mitades del editor de las cargas:** W:273-276, :286-287, :299-302, :316-319 y :3320-3327, y WC:933;
+- **`LoadFromModel`** (W:385-440): las 21 asignaciones a portadores que se quitan y las 16 líneas que se quedan, 14 siembras y las dos variables locales, W:392 y :413 (V28-10);
+- **`ReadInputs`:** W:838-840, :841-844, :852, :853, :868, :874-876 y :878, con el respaldo de W:823 y :826 y DA:169-171;
+- **lo que se retira:** `SideAOnly` (W:342-373; sus usos, W:301, :318 y :3322), `SelectedDimensionViews` (W:1291-1297; su único uso, W:880) y los dos `LoadCompositeFromDesign` (WC:813-814 y 827-934);
+- **la identidad:** los siete sitios de `Adopt` y `SetName` (W:279, :305, :322, :1237, :3352, :3405 y :3504);
+- **lo que no cambia:** los constructores y las firmas públicas (W:131-161, :270, :294 y :311), las costuras (W:165-193 y WC:43) y el único lector del informe (W:2559).
+
+**Lecturas que no cambian el diseño:** el comentario de W:405 queda obsoleto, y se quita con las asignaciones que describe; las únicas asignaciones a un portador fuera de `LoadFromModel` y `ReadInputs` son las de `ShowDimensionViews` (W:1270-1271) y `DimensionViews_Changed` (W:1303), que siguen por el reenvío (V28-11).
+
+### Q-2. La API de Application y los invariantes de la ventana
+
+- **La API que usa D-PBT1-13:** 0 desajustes. Cada miembro existe y es público, con una firma y un tipo compatibles, y con setter donde la ventana escribe.
+- **INV-PBT1C-04 (T-SG):** CT-22, S-9, S-7, CT-23 y CT-19, PASS sobre el texto normalizado; los sitios de `SetName` y `Adopt` son exactamente los siete.
+- **INV-PBT1C-05:** W con una sola `.RequestUpdate(` (W:3409); los literales de I-55, Fact3 y el desviador, presentes; 24 líneas con `SetNumber(` en W y 5 en WC, y ninguna en lo que D-PBT1-13 quita o sustituye.
+- **INV-PBT1C-06:** 40 costuras (39 en W y 1 en WC), con el mismo nombre y tipo que en `b5c09f0b`.
+
+### Q-3. INV-PBT1C-03: los rangos
+
+Orden: `python -I check_inv_pbt1c_03_ranges.py`.
+
+- **25 rangos**, documentación incluida, sin solapes: los de INV-PBT1C-03 en el §6.3. Las 49 anclas de texto de sus bordes (39 en W y 10 en WC), en su línea. Los bordes en blanco son solo W:325 y :374, W:1288 y :1298, y WC:811.
+- **Sobre las dos variantes de la simulación:** 0 hunks fuera (W, 37 hunks; WC, 4 en A y 5 en B). Y las dos reglas de V28-15: en lo que se retira, los hunks solo quitan líneas; en `Name_Changed`, `InsertBatch_Click`, `RequestDraw` y `SaveLibrary_Click`, el único hunk es `SyncName();` tras W:1237, :3352, :3405 y :3504. Las dos se cumplen en A y en B.
+- **Con la heurística de `members.py`** (N-1), el reenvío de `generalPallet` (W:101) caía en `lastComputation` (W:92-101), y la documentación de lo que se retira (W:325-341, W:1288-1290, WC:811-812 y WC:815-826) quedaba fuera de todo miembro. Por eso los rangos de la v2.8 (V28-08).
+
+### Q-4. INV-PBT1C-05: las subcadenas testigo y el censo
+
+**Las subcadenas testigo** (V28-16 y V28-30), ASCII y buscadas literales:
+
+| Línea | Subcadena | En W y WC, `2f5d3dec` | Variante A | Variante B |
+|---|---|---|---|---|
+| W:327 | `del lado A SOLO, sin la parte compuesta.` | 1 | 0 | 1 |
+| W:1289 | `que se guarda: la cargada, exacta, si el usuario no` | 1 (y otra en `RackSelectiveWindow.xaml.cs:2165`, fuera de W y WC) | 0 | 1 |
+| WC:812 | `Recupera la intencion compuesta de un diseno cargado` | 1 | 0 | 1 |
+| WC:817 | `CARGAR OTRO RACK Y RESTAURAR EL ACTUAL NO SON LO MISMO` | 1 | 0 | 1 |
+
+Las dos de W eran, en V28-16, las líneas con tildes; en un contrato ASCII la búsqueda no las encontraba (PBT1CV28R-I01). La variante B, que deja la documentación, incumple las cuatro: la regla discrimina.
+
+**El censo de declaraciones** (V28-15 y V28-33): las líneas de W y WC a profundidad 2 (el `namespace` y la clase parcial) que empiezan por un modificador, sin comentarios ni literales, y el nombre que declaran, contadas una a una:
+- **la base, `2f5d3dec`:** 325;
+- **las dos variantes:** 324, sin las cuatro que se retiran (`SideAOnly`, `SelectedDimensionViews` y los dos `LoadCompositeFromDesign`) y con las tres de D-PBT1-13 (`editable`, `SyncName` y `EditableStateForTest`). Los doce reenvíos conservan su nombre;
+- **una sobrecarga** es una declaración más y cambia la cuenta.
+
+### Q-5. Los recuentos estáticos de `RequiredTests`
+
+Orden: `python -I count_tests_git.py <checkout-que-comparte-el-almacen> <rev> <UI|Core> <prefijos>`.
+
+| Proyecto | Prefijo | `2f5d3dec` | `95373af6` |
+|---|---|---|---|
+| UI | `PushBackWindowOnStateTests` | 0 (libre) | 0 (libre) |
+| Core | `PushBackWindowOnStateSourceGuardTests`, `PushBackWindowSharedReferenceGuardTests` | 0 y 0 (libres) | 0 y 0 (libres) |
+| Core | `PushBackSharedReferenceGuardTests` | 2 | 2 |
+| UI | `PushBack` (todas las clases `PushBack*`) | **557** (69 clases, 3 `Skip`) | **557** |
+| UI | `BlankFront`, `WindowCensusGuardTests`, `RichEditor`, `Workspace` | 33, 8, 25 (4 `Skip`), 547 (+16 `MemberData`) | — |
+| UI | `PushBackRichPreviewTests` | **9** | **9** |
+| Core | `PushBackEditableState` | 13 (Load 5, Copy 7, Ownership 1) | 13 |
+| Core | `PushBackEditorOutputGate` | 1 | 1 |
+| Core | `PushBackClassicCharacterization`, `PushBackFullEditorCharacterization`, `PushBackModuleEditorCharacterizationTests` | 7 (+1 `MemberData`; 10 casos), 3, 15 | — |
+| Core | `I55DeferredProductFixCharacterizationTests`, `NamespaceFolderGuardTests`, `Workspace` | 3, 7, 3 271 (+33 `MemberData`) | — |
+| UI | `Cantilever` | 67 | — |
+
+**Consecuencia:** todos coinciden con el §6.3, y la corrección de PB-T1b no los cambió (F4B-E26). En el GREEN de PB-T1c, UI `PushBack` = 557 + 2 = 559; la CI, Core 19 088 y UI 2 439, sobre la línea base del cierre (`44438060317`: Core 19 086; UI 2 437 / 21 / 2 416).
+
+### Q-6. La simulación de D-PBT1-13 y G-L1
+
+Orden: `python -I simulate_pbt1c_green.py <checkout-que-comparte-el-almacen> > simulate-out.txt`.
+
+- **D-PBT1-13 cabe entero en W y WC:** 37 hunks en W, y 4 o 5 en WC.
+- **Los invariantes, sobre la simulación:** T-SG, PASS; `SyncName();` justo después de los siete `SetName` y `Adopt`; una `.RequestUpdate(`; ningún término prohibido en las líneas añadidas; los literales de I-55, Fact3 y el desviador, presentes; `SetNumber(`, 0 añadidas y 0 quitadas; las 16 líneas de `LoadFromModel`, idénticas y en su orden; `editable.AdoptCarriers(inputs, catalog);`, la primera sentencia del `try`; `UpdateCompositeEnabled();`, en la línea siguiente a los dos `LoadDesignEditor` y al `RestoreEditor`; las costuras, de 40 a 41.
+- **CT-PBT1C-03:** se cumple en la simulación, y en la base falla en todas sus cláusulas: el RED es válido.
+- **G-L1 de CT-PBT1C-04:** 0 coincidencias en la base (320 miembros) y en la simulación (310). Los alias, de lectura: `module` (lambda), `outputIsBlocked` y `reconciliation` (asignación).
+- **G-L1 de CT-PBT1B-14:** 0 coincidencias en los 51 archivos de `2f5d3dec` (1 063 miembros).
+- **Las autopruebas**, cada una sola en un miembro neutro, con el modelo en Python de la guarda y la regla 1b sobre los alias: las catorce de la v2.4 saltan; la (k1) y un molde de estilo C sobre otro alias (la forma de la (k2)) saltan solo con la regla 1b sobre los alias. Las (k1) y (k2) de la CT-PBT1B-14 corregida las comprueba su CI (`44438060317`).
+- **Ningún ayudante privado nuevo:** la simulación no lo necesita (la base de V28-07).
+
+### Q-7. Lo que hallaron, dónde se aplica y lo que se vuelve a comprobar en la emisión
+
+| Hallazgo del informe de anclas | En la v2.8 |
+|---|---|
+| I-1: la `ExpectedEvidence` de PB-T1c heredada del §6.1 | V28-01 |
+| I-2: INV-PBT1C-03 sin rangos | V28-08, V28-15 y V28-19 |
+| I-3: CT-PBT1C-04 sin la (c) ni la «alias + molde» | V28-09 y V28-20 |
+| M-1: dos «siembras» que son variables locales | V28-10 |
+| M-2: los escritores de portadores y el comentario de W:405 | V28-11 |
+| M-3: el filtro UI `PushBack` falla en el RED | V28-12 |
+| M-4: las cifras de `PushBackRichPreviewTests` y de UI `PushBack` | V28-13 |
+
+Ningún bloqueante y ningún hecho nuevo.
+
+**En la emisión,** el generador del contrato de PB-T1c (`make_pbt1c_contract.py`) vuelve a comprobar en HEAD, antes de escribir: los 25 rangos de INV-PBT1C-03 (con autopruebas que desplazan cada rango una línea); las subcadenas testigo de INV-PBT1C-05, ASCII y únicas en W y WC; las anclas de D-PBT1-13 y D-PBT1-14, la API, las costuras y los sitios de `SetName` y `Adopt`; los recuentos de `RequiredTests`, con el criterio de `count_tests.py`; y que este registro tenga el apartado Q.
+
+### Q-8. Lo que sigue sin medir
+
+- **Nada se compiló ni se ejecutó.** La simulación es una lectura del diseño; las líneas de CT-PBT1C-01 y 02 las da el producto en el GREEN.
+- **La CI:** sin GitHub; la línea base (`44438060317`) es la del cierre de PB-T1b (F4B-E26), no medida aquí.
+- **El censo** usa una heurística de líneas (profundidad 2 y un modificador); el generador tiene la suya, y las dos dan la misma diferencia en la simulación.
+- **Lo que G-L1 no ve:** sin cambio (O-4).

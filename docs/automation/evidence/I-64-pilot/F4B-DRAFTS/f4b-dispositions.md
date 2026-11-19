@@ -757,3 +757,30 @@ Su lectura de CT-06 dio falsos fallos.
 - el RED `2d9febc6` declarado ChainRedSha sin acreditar. El hecho se declaró al Controller, y Tests pasó.
 
 **Siguiente:** la emisión de PB-T1c con el paquete v2.8 (comprobación acotada hecha; F4B-E09 y F4B-E11).
+
+## F4B-E27. Emisión de F4B-PBT1C-LOSSLESS-STATE-WINDOW (PB-T1c), con el paquete v2.8
+
+**Fecha:** 2026-11-19. **Autoridad de emisión:** la autorización condicional del Owner (F4B-E09, pregunta 4; F4B-E11, «PB-T1 PLAN»). Se emite sin volver al Owner porque la comprobación acotada no deja bloqueantes ni importantes sin resolver y no hay ninguna decisión material nueva.
+
+**El paquete v2.8:** las correcciones que deja PB-T1b para PB-T1c (F4B-E22: «el paquete de PB-T1c corrige el texto»).
+- **La evidencia del RED de PB-T1c:** tests y ui-tests en failure, build-ui en success y build-plugin omitido. Con esto se aplica la lección M14.
+- **INV-PBT1C-03:** sus miembros van con rangos de línea, documentación incluida. Lo retirado solo quita líneas.
+- **PBT1C-C13:** el Worker para ante toda declaración con un nombre nuevo en W o WC, o ante una sobrecarga, salvo `editable`, `SyncName` y `EditableStateForTest`. Es la lección M10, por disposición de la sesión (PD-V28-01, opción (A)): estrecha la regla y no la relaja.
+- **INV-PBT1C-05:** lleva el censo de declaraciones y las líneas testigo en ASCII.
+- **CT-PBT1C-04:** lleva dieciséis autopruebas. Entre ellas, k1 y k2 de la regla 1b sobre los alias, tomadas de las pruebas corregidas de PB-T1b (`a18ba345`).
+- **Otros cambios:**
+  - los textos de CT-PBT1B-14 y 15, puestos al día con esas pruebas (PB-T1b no se reemite);
+  - la regla de F4B-E25 para las correcciones;
+  - los arrastres de PB-T1b en el §10;
+  - la Snapshot J.
+- **El registro de mediciones** gana el apartado Q: los anclajes de PB-T1c. Se midieron en `2f5d3dec`, que tiene el mismo `src` que el cierre `95373af6`: 59 anclas sin diferencia, la API de Application completa, ningún bloqueante y la simulación mecánica de D-PBT1-13 limpia.
+
+**Las comprobaciones:** comprobacion acotada independiente de la v2.8 EMITIBLE TRAS CORRECCIONES 0/1/7, recomprobacion 0/1/3 y confirmacion final 0/0/1 (el assert del generador, alineado antes de emitir: seco final rc 0 sobre 95373af6), todas aplicadas; sin decisiones materiales nuevas para el Owner.
+
+**El contrato:**
+- **Alcance:** 5 rutas: W, WC y las tres clases de prueba.
+- **Cadena:** primera delegación; `attempts` 1 de 3.
+- **Anclaje:** `src` igual al cierre de PB-T1b.
+- **Procedimiento:**
+  - la planificación con las colecciones opacas puestas por la sesión (F4B-E21);
+  - la verificación con las comprobaciones deterministas de F4B-E15.

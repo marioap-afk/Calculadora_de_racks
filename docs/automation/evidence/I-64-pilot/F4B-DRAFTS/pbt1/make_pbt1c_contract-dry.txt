@@ -1,0 +1,74 @@
+DRY rev 95373af6 (objetos del checkout principal) allowed 5 forbidden 161 (src 59 tests 85 [core 23 ui 62] root 17 ) inv 15 stops 32 required 19 evidence 7 authorities 68 anchors-ok 115 api-ok 31 seams 40 sites 7 bytes 58748 sha256 2B2CF2ED821363B1B80A36E544D5C00E61E5AF03F8C921FDC42B6A7CDDA35BA6
+anclaje: src == cierre de PB-T1b (95373af6, con F4B-E26) == GREEN a18ba345 == a0a5f699 | src/RackCad.UI == b5c09f0b: True | paquete en la revision: v2.7 | registro con el apartado Q: False | f4b-dispositions hasta F4B-E26
+paquete leido: --package-file I-64-f4b-pbt1-gate-contract-package-v28.md -> v2.8 | textos de la v2.8 comprobados: Objective, AllowedWriteScope, costura inerte, INV-PBT1C-03 literal sin nota, INV-PBT1C-05 literal sin nota, PBT1C-C13 literal sin nota, tres notas fuera, CT-PBT1C-04 dieciseis, lineas testigo, V28-12, V28-01, V28-17 Trailer, V28-22 F4B-E25, P-01 J, V28-18c custodia, RequiredTests
+INV-PBT1C-03 (V28-08): 25 rangos comprobados contra la revision (empiezan en la documentacion y acaban en el final del miembro; bordes en blanco solo los declarados), con 98 autopruebas en negativo (cada rango desplazado una linea), todas fallan:
+  W:49-57 composite (miembros 56-57)
+  W:84-84 safetySelections (miembros 84-84)
+  W:94-101 generalPallet (miembros 101-101)
+  W:103-109 rackTolerance/rackPostPeralte/rackBeamDepth/rackAnnotationScale (miembros 106-106, 107-107, 108-108, 109-109)
+  W:111-114 advanced (miembros 114-114)
+  W:375-380 firstLevelDatum (miembros 380-380)
+  W:1244-1249 loadedDimensionViews (miembros 1249-1249)
+  W:1251-1256 loadedDimensionStyle (miembros 1256-1256)
+  W:1258-1260 dimensionViewsTouched (miembros 1260-1260)
+  W:268-289 LoadNew (miembros 270-289)
+  W:291-307 LoadDesignForNew (miembros 294-307)
+  W:309-324 LoadExisting (miembros 311-324)
+  W:385-440 LoadFromModel (miembros 385-440)
+  W:833-890 ReadInputs (miembros 833-890)
+  W:1234-1238 Name_Changed (miembros 1234-1238)
+  W:3304-3330 Restore_Click (miembros 3307-3330)
+  W:3334-3361 InsertBatch_Click (miembros 3334-3361)
+  W:3363-3419 RequestDraw (miembros 3363-3419)
+  W:3481-3515 SaveLibrary_Click (miembros 3481-3515)
+  W:325-374 SideAOnly (miembros 342-373)
+  W:1288-1298 SelectedDimensionViews (miembros 1291-1297)
+  WC:779-786 CompositeDiagnostics (miembros 783-786)
+  WC:788-801 CompositeStatusOr (miembros 789-801)
+  WC:803-807 CompositeHasBlocking (miembros 803-807)
+  WC:811-934 LoadCompositeFromDesign (miembros 813-814, 827-934)
+V28-11b: escritores de portadores fuera de LoadFromModel y ReadInputs = W:1270, :1271, :1303
+INV-PBT1C-05 (V28-15): censo de declaraciones de W y WC = 325 (las cuatro que se retiran presentes; editable, SyncName y EditableStateForTest ausentes; los doce reenvios, una vez cada uno)
+INV-PBT1C-05 (V28-16): lineas testigo, cada una en su linea y unica en W y WC:
+  W:327 ASCII=True unica=True literal-en-el-contrato=True: "del lado A SOLO, sin la parte compuesta."
+  W:1289 ASCII=True unica=True literal-en-el-contrato=True: "que se guarda: la cargada, exacta, si el usuario no"
+  WC:812 ASCII=True unica=True literal-en-el-contrato=True: "Recupera la intencion compuesta de un diseno cargado"
+  WC:817 ASCII=True unica=True literal-en-el-contrato=True: "CARGAR OTRO RACK Y RESTAURAR EL ACTUAL NO SON LO MISMO"
+V28-18c: nombres de custodia nuevos de F4B-DRAFTS/pbt1/ libres en la revision: 10 de 10
+D1: needs de build-plugin = ['tests', 'build-ui'] | D2: Snapshot J en la revision: True | D3: C13 con miembro nuevo: True
+SetNumber( en BaseSha: W 24 WC 5 (INV-PBT1C-05: el GREEN no anade ni quita ninguna linea con SetNumber()
+RequiredTests (criterio de count_tests.py sobre los objetos de la revision):
+  UI   PushBackWindowOnStateTests                    new      paquete=2     medido: clases=0 ejecutables=0 skip=0 memberdata=0 -> MinSelected=2 ExpectRed=True
+  Core PushBackWindowOnStateSourceGuardTests         new      paquete=1     medido: clases=0 ejecutables=0 skip=0 memberdata=0 -> MinSelected=1 ExpectRed=True
+  Core PushBackWindowSharedReferenceGuardTests       new      paquete=1     medido: clases=0 ejecutables=0 skip=0 memberdata=0 -> MinSelected=1 ExpectRed=False
+  Core PushBackSharedReferenceGuardTests             fixed    paquete=2     medido: clases=1 ejecutables=2 skip=0 memberdata=0 -> MinSelected=2 ExpectRed=False
+  UI   PushBack                                      measured paquete=557   medido: clases=69 ejecutables=557 skip=3 memberdata=0 -> MinSelected=557 ExpectRed=False
+  UI   BlankFront                                    fixed    paquete=33    medido: clases=3 ejecutables=33 skip=0 memberdata=0 -> MinSelected=33 ExpectRed=False
+  UI   WindowCensusGuardTests                        fixed    paquete=8     medido: clases=1 ejecutables=8 skip=0 memberdata=0 -> MinSelected=8 ExpectRed=False
+  UI   RichEditor                                    fixed    paquete=25    medido: clases=4 ejecutables=25 skip=4 memberdata=0 -> MinSelected=25 ExpectRed=False
+  UI   Workspace                                     fixed    paquete=547   medido: clases=20 ejecutables=547 skip=0 memberdata=16 -> MinSelected=547 ExpectRed=False
+  UI   PushBackRichPreviewTests                      measured paquete=9     medido: clases=1 ejecutables=9 skip=0 memberdata=0 -> MinSelected=9 ExpectRed=False
+  Core PushBackEditableState                         fixed    paquete=13    medido: clases=3 ejecutables=13 skip=0 memberdata=0 -> MinSelected=13 ExpectRed=False
+  Core PushBackEditorOutputGate                      fixed    paquete=1     medido: clases=1 ejecutables=1 skip=0 memberdata=0 -> MinSelected=1 ExpectRed=False
+  Core PushBackClassicCharacterization               fixed    paquete=10    medido: clases=1 ejecutables=7 skip=0 memberdata=1 -> MinSelected=10 ExpectRed=False
+       estatico 7 (+1 Theory con MemberData) < 10 del paquete: vale porque el contrato de PB-T1b fija el mismo filtro con 10 (casos de MemberData contados por la CI)
+  Core PushBackFullEditorCharacterization            fixed    paquete=3     medido: clases=3 ejecutables=3 skip=0 memberdata=0 -> MinSelected=3 ExpectRed=False
+  Core PushBackModuleEditorCharacterizationTests     fixed    paquete=15    medido: clases=1 ejecutables=15 skip=0 memberdata=0 -> MinSelected=15 ExpectRed=False
+  Core I55DeferredProductFixCharacterizationTests    fixed    paquete=3     medido: clases=1 ejecutables=3 skip=0 memberdata=0 -> MinSelected=3 ExpectRed=False
+  Core NamespaceFolderGuardTests                     fixed    paquete=7     medido: clases=1 ejecutables=7 skip=0 memberdata=0 -> MinSelected=7 ExpectRed=False
+  Core Workspace                                     fixed    paquete=3271  medido: clases=74 ejecutables=3271 skip=0 memberdata=33 -> MinSelected=3271 ExpectRed=False
+  UI   Cantilever                                    fixed    paquete=67    medido: clases=3 ejecutables=67 skip=0 memberdata=0 -> MinSelected=67 ExpectRed=False
+AVISOS (12):
+  - el paquete custodiado en la revision es la v2.7; al escribir hace falta la v2.8 custodiada en HEAD
+  - el registro en la revision no tiene el apartado Q (los anclajes de PB-T1c)
+  - a custodiar con la emision de PB-T1c, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt1/pbt1c-anchors-out.txt
+  - a custodiar con la emision de PB-T1c, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt1/independent-review-pbt1c-v28-check.md
+  - a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt1/pbt1c-anchors-report.md
+  - a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt1/independent-review-pbt1c-v28-check-prompt.md
+  - a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt1/make_pbt1c_contract-dry.txt
+  - a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt1/measure_pbt1c_anchors.py
+  - a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt1/count_tests_git.py
+  - a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt1/simulate_pbt1c_green.py
+  - a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt1/check_inv_pbt1c_03_ranges.py
+  - a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt1/simulate-out.txt
+rc=0
