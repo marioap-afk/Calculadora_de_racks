@@ -664,3 +664,96 @@ Su lectura de CT-06 dio falsos fallos.
    - Se pasan como disposición a la verificación, y el paquete de PB-T1c corrige el texto.
 
 **El presupuesto:** PB-T1b pasa al **intento 2 de 3**. Las paradas anteriores no gastaron intento (F4B-E20).
+
+## F4B-E23. Decisión del Owner: D-PB-07, BOM y biblioteca en el modo WORKSPACE
+
+**Fecha:** 2026-11-19. **Texto literal:** `F4B-DRAFTS/coordinator/owner-f4b-dpb07-extensiondata-decisions.md`, pregunta 1. **La vuelta:** `F4B-DRAFTS/pbfull/owner-return-dpb07.md`, medida por lectura de objetos git en `2f5d3dec`.
+
+**Respuesta del Owner:** «BOM y biblioteca (Recomendado)».
+- En el modo WORKSPACE, el editor ofrece «BOM», con su exportación, y «Guardar en biblioteca».
+- Insertar y el lote de vistas siguen ocultos (D-PB-01, OB-01.6). RACKEDITAR no cambia.
+- **El contrato de PB-T2 lleva:**
+  - dos costuras de prueba (la ventana del BOM y el diálogo de guardado), con S-7, S-9 y CT-22 en verde;
+  - la prueba UI-STA de OB-01.3 con BOM y biblioteca, que comprueba:
+    - que no hay petición clásica;
+    - que el borrador no cambia hasta «Aplicar al borrador»;
+    - que el GUID del borrador no cambia;
+    - que el archivo de biblioteca conserva los campos desconocidos del rack.
+- **Se aceptan** dos salidas a disco fuera del borrador, que pueden reflejar valores no aplicados.
+
+## F4B-E24. Decisión del Owner: la ExtensionData anidada y el paso 6 de D-PB-05 (antes de PB-T3)
+
+**Fecha:** 2026-11-19. **Texto literal:** `F4B-DRAFTS/coordinator/owner-f4b-dpb07-extensiondata-decisions.md`, pregunta 2. **La vuelta:** `F4B-DRAFTS/pbfull/owner-return-extensiondata.md`.
+
+**Respuesta del Owner:** «Basta así (Recomendado)».
+- PB-T3 sigue.
+- El panel mantiene el rechazo con aviso de AUTH-13 (I-58) para todo campo desconocido a cualquier nivel, y el contrato de PB-T3 lo fija con una prueba.
+- La pérdida silenciosa de RACKEDITAR («Actualizar» y «Guardar en biblioteca» con el lector tolerante) queda declarada como **limitación conocida anterior a F4B**, sin tocar el clásico (D-16, INV-19). Queda anotada en `docs/ideas-futuras.md`.
+
+## F4B-E25. Decisión del Owner: las rutas UNIT_CHANGE en la base de una corrección (AUTOMATION_PLAN 16.3), regla de F4B
+
+**Fecha:** 2026-11-19. **Texto literal:** `F4B-DRAFTS/coordinator/owner-f4b-correction-unit-change-decision.md`. **La vuelta:** `F4B-DRAFTS/pbt1b/owner-return-verify-stop.md`.
+
+**Por qué:** la verificación `R20261119T014757Z-c78a` del intento 2 de PB-T1b dio EXECUTION_BLOCKED / STOP con FailureClass Authority.
+- `git diff --name-only 5e52aaa3 2f5d3dec` contiene ES y RMES, que son rutas UNIT_CHANGE del contrato. Solo las cambiaron el RED `2d9febc6` y el GREEN `a0a5f699` del Worker del intento 1.
+- Para la corrección, la sesión no reemitió el contrato, y 16.3 no prevé este caso.
+- Las otras 12 comprobaciones pasaron.
+- Scope falló por un control extra de la sesión: el diff `ChainBaseSha..CurrentSha` incluye los commits de documentación de la sesión. Es un error de la sesión, corregido en la reverificación.
+
+**Respuesta del Owner:** «Regla F4B y reverificar (Recomendado)».
+- **La regla, para las correcciones de F4B:** una ruta UNIT_CHANGE de `git diff --name-only AuthorityRevision BaseSha` no incumple 16.3 si se cumplen las tres condiciones siguientes. El Controller las comprueba commit a commit.
+  1. Todo commit del rango que la toca es el RedSha o el CurrentSha de una entrega de un Worker de la misma cadena.
+  2. La ruta está en el AllowedWriteScope de la delegación de esa entrega.
+  3. Ningún commit de la sesión la toca.
+- Las rutas EXTERNAL siguen prohibidas sin excepción.
+- **La aplicación:** la reverificación `R20261119T020026Z-dc81` dio EXECUTION_VERIFIED 14/14. No gastó intento ni cambió la entrega.
+
+## F4B-E26. Cierre de F4B-PBT1B-LOSSLESS-STATE-TYPE
+
+**Paquete de cierre:** `F4B-PBT1B-LOSSLESS-STATE-TYPE/task-close-package.md`.
+
+**La cadena:**
+- **v2.6** (F4B-E17):
+  - planificación `aaac` y replanificación única `c45c`, reparada por la sesión (F4B-E18), con nc4 `0764`;
+  - Worker `6d33`, detenido por la pausa del Owner;
+  - `7115`, que no se lanzó;
+  - Worker `fb01`, parado con PBT1B-C15 en pb-15 (F4B-E20, sin gastar intento).
+- **La Snapshot J** (F4B-E19): sonda neutra `d32c` en PASS.
+- **v2.7:**
+  - las planificaciones `4000` y `a60d` se rechazaron por el límite de salida del Controller (F4B-E21);
+  - la planificación `6063` se aceptó con las colecciones opacas puestas por la sesión, con nc4 `3412`.
+- **Intento 1:** el Worker `a4e2` dejó el producto conforme, con REWORK 0/2/15 de pruebas (F4B-E22).
+- **Intento 2 (la corrección):**
+  - planificación `e354`, con nc4 `6aa3`;
+  - Worker `4c04`, con la interrupción de transporte 1 de 2 reanudada en la misma invocación;
+  - RED `126fd65f`: el esqueleto devuelto y las pruebas corregidas;
+  - GREEN `a18ba345`: la implementación restaurada, con `git diff 2f5d3dec a18ba345 -- src` vacío.
+
+**CI:**
+- RED `44430615074`: tests y ui-tests en failure, build-ui en success y build-plugin omitido (M14);
+- GREEN `44438060317`: 4/4, con Core 19 086 y UI 2 437 (2 416 pasadas y 21 omitidas).
+
+**Revisiones del intento 2:**
+- la directa, sin hallazgos;
+- la independiente, ACEPTABLE CON MENORES 0/0/5 (PBT1B2-IR-M01 a M05: evidencia y alcance de pruebas, sin producto).
+
+**Verificación:** `c78a`, STOP Authority (F4B-E25); la reverificación `dc81`, EXECUTION_VERIFIED 14/14.
+
+**Controles:** sobre la reverificación `dc81`: nc1 `a4e8` **CONTROL PASS** (Identity, STOP), nc2 `448d` **CONTROL PASS** (Scope, STOP) y nc3 `2049` **CONTROL PASS** (FreeText, REWORK), los tres con el oráculo cumplido y sin sustitutos. El registro de relevo de nc3 cuenta una coincidencia de «limit reached», que es el texto de la parada S-11 del README («repeated rework limit reached»), no un límite de uso.
+
+**Resultado:** **F4B-PBT1B-LOSSLESS-STATE-TYPE = CLOSED / PASS WITH LIMITATIONS** sobre `a18ba345`, con attempts 2 de 3.
+- `PushBackEditableState`, el copiador, el comparador, el mapa de propiedad y `PushBackEditorOutputGate` quedan en Application, con c-02 y c-09 explícitas y D2 respetada.
+- La ventana no cambia: es de PB-T1c.
+
+**Arrastres:**
+- **A PB-T2 y PB-T4,** los de la revisión del intento 1: M09, M11, M12 y M15. Van al §10 del paquete de PB-T1 v2.8.
+- **Anotados en `docs/ideas-futuras.md`:**
+  - los cinco menores de la revisión del intento 2;
+  - la limitación de la ExtensionData anidada en RACKEDITAR (F4B-E24).
+
+**Disposiciones de la sesión en esta tarea:**
+- la interrupción de transporte 1 de 2 de la fase WORK, reanudada en la misma invocación sin descartar las ediciones;
+- el control de cadena del prompt de verificación, corregido;
+- el RED `2d9febc6` declarado ChainRedSha sin acreditar. El hecho se declaró al Controller, y Tests pasó.
+
+**Siguiente:** la emisión de PB-T1c con el paquete v2.8 (comprobación acotada hecha; F4B-E09 y F4B-E11).

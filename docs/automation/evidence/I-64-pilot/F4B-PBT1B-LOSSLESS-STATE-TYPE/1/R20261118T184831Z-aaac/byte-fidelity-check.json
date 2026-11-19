@@ -1,0 +1,947 @@
+{
+  "Schema": "rackcad-i64-byte-fidelity/v1",
+  "TaskId": "F4B-PBT1B-LOSSLESS-STATE-TYPE",
+  "PlanningRunId": "R20261118T184831Z-aaac",
+  "Authority": "F4-E19 y F4-E26: comparacion previa a la aceptacion",
+  "OutputSha256": "b63ffa11b76e97904b46f71889d1f32af30f3c290dcd21df35ebc38726c0a176",
+  "ContractSha256": "4187ea8c18964c5cd07a5f6d58c9f58b70f807ad9e55617e7acdbb66041a334e",
+  "Fields": [
+    {
+      "Field": "Invariants",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "9c846dc5e28b5714de48ff04d876eb97e960da5bb3b6b73e1352d1b82cdb2f56",
+      "OutputSha256": "9c846dc5e28b5714de48ff04d876eb97e960da5bb3b6b73e1352d1b82cdb2f56",
+      "Differences": []
+    },
+    {
+      "Field": "RequiredTests",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "72d65df792f9447acc7deea7a81b801fc2dc24465f4ede5bd3ea6334ece197ff",
+      "OutputSha256": "61cd263be7f2a602b7fe36112baee054c6a80a8099d99dd29fb16caa4550682f",
+      "Differences": [
+        {
+          "Index": 37,
+          "Offset": 31,
+          "Source": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+          "Output": "tests/RackCad.UI.Tests/RackCad.Tests.csproj"
+        }
+      ]
+    },
+    {
+      "Field": "StopConditions",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "98ab5bcac0d438bc0182581fbcd5157fbe96933049b55e9415e11fcac955e77a",
+      "OutputSha256": "98ab5bcac0d438bc0182581fbcd5157fbe96933049b55e9415e11fcac955e77a",
+      "Differences": []
+    },
+    {
+      "Field": "Authorities",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "c19892680123c5cc3c3b07ab85f0b78bca56ec4312c2eda59bcbb7f136e48350",
+      "OutputSha256": "f4fc87ce82d19d0764d92738e7d63faf83069e2fb4bd1d69c2459876a9aaaab0",
+      "Differences": [
+        {
+          "Index": 95,
+          "Offset": 98,
+          "Source": "ackStateNet (CT-PBT1A-01 a 14) y CT-PBT1A-02, el oraculo de CT-PBT1B-17",
+          "Output": "ackStateNet (CT-PBT1A-01 a 14) y CT-PBT1B-02, el oraculo de CT-PBT1B-17"
+        }
+      ]
+    },
+    {
+      "Field": "ExpectedEvidence",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "f2c3b321f58580912409a451e01e107798852e632e1b1d065d00f71601dfa622",
+      "OutputSha256": "f2c3b321f58580912409a451e01e107798852e632e1b1d065d00f71601dfa622",
+      "Differences": []
+    },
+    {
+      "Field": "Objective",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "08f893ac17dd301650d73e34cccd23f197c016be49d979dc0a6a94929b31fa9b",
+      "OutputSha256": "08f893ac17dd301650d73e34cccd23f197c016be49d979dc0a6a94929b31fa9b",
+      "Differences": []
+    },
+    {
+      "Field": "AllowedWriteScope",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "943792145b7357e3a87c862df971ba9f5cec1e91509c1ea46cc27e38db6135f9",
+      "OutputSha256": "943792145b7357e3a87c862df971ba9f5cec1e91509c1ea46cc27e38db6135f9",
+      "Differences": []
+    },
+    {
+      "Field": "ForbiddenWriteScope",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "1ba4bac61ae8b4e15c94b537136161c16e2a2d1e2e22ed1fc398a2ddaf185bce",
+      "OutputSha256": "3464ae271c9e75758425690e5081dd5c20d14bb337ed75174a36206f7ac73efb",
+      "Differences": [
+        {
+          "Index": 72,
+          "Offset": 50,
+          "Source": "d.Application/Systems/PushBack/PushBackTopeSurface.cs",
+          "Output": "d.Application/Systems/PushBack/PushBackTroquelGrid.cs"
+        },
+        {
+          "Index": 73,
+          "Offset": 32,
+          "Source": "src/RackCad.Application/Systems/PushBack/PushBackTroquelGrid.cs",
+          "Output": "src/RackCad.Application/Systems/Selective/"
+        },
+        {
+          "Index": 74,
+          "Offset": 33,
+          "Source": "src/RackCad.Application/Systems/Selective/",
+          "Output": "src/RackCad.Application/Systems/Shared/AuthoredCanonical.cs"
+        },
+        {
+          "Index": 75,
+          "Offset": 47,
+          "Source": "kCad.Application/Systems/Shared/AuthoredCanonical.cs",
+          "Output": "kCad.Application/Systems/Shared/AuthoredRawReader.Shapes.cs"
+        },
+        {
+          "Index": 76,
+          "Offset": 57,
+          "Source": "cation/Systems/Shared/AuthoredRawReader.Shapes.cs",
+          "Output": "cation/Systems/Shared/AuthoredRawReader.cs"
+        },
+        {
+          "Index": 77,
+          "Offset": 47,
+          "Source": "kCad.Application/Systems/Shared/AuthoredRawReader.cs",
+          "Output": "kCad.Application/Systems/Shared/AuthoredTypedValues.cs"
+        },
+        {
+          "Index": 78,
+          "Offset": 39,
+          "Source": "src/RackCad.Application/Systems/Shared/AuthoredTypedValues.cs",
+          "Output": "src/RackCad.Application/Systems/Shared/DimensionViewPolicy.cs"
+        },
+        {
+          "Index": 79,
+          "Offset": 39,
+          "Source": "src/RackCad.Application/Systems/Shared/DimensionViewPolicy.cs",
+          "Output": "src/RackCad.Application/Systems/Shared/HeaderBatchCodes.cs"
+        },
+        {
+          "Index": 80,
+          "Offset": 50,
+          "Source": "d.Application/Systems/Shared/HeaderBatchCodes.cs",
+          "Output": "d.Application/Systems/Shared/HeaderBatchOutcome.cs"
+        },
+        {
+          "Index": 81,
+          "Offset": 50,
+          "Source": "d.Application/Systems/Shared/HeaderBatchOutcome.cs",
+          "Output": "d.Application/Systems/Shared/HeaderBatchPlan.cs"
+        },
+        {
+          "Index": 82,
+          "Offset": 45,
+          "Source": "ackCad.Application/Systems/Shared/HeaderBatchPlan.cs",
+          "Output": "ackCad.Application/Systems/Shared/HeaderConfigurationSnapshot.cs"
+        },
+        {
+          "Index": 83,
+          "Offset": 39,
+          "Source": "src/RackCad.Application/Systems/Shared/HeaderConfigurationSnapshot.cs",
+          "Output": "src/RackCad.Application/Systems/Shared/LibraryBlockRequirements.cs"
+        },
+        {
+          "Index": 84,
+          "Offset": 46,
+          "Source": "ckCad.Application/Systems/Shared/LibraryBlockRequirements.cs",
+          "Output": "ckCad.Application/Systems/Shared/LibraryPieceRequirementsV2.cs"
+        },
+        {
+          "Index": 85,
+          "Offset": 39,
+          "Source": "src/RackCad.Application/Systems/Shared/LibraryPieceRequirementsV2.cs",
+          "Output": "src/RackCad.Application/Systems/Shared/RackAuthoredComparator.FourKinds.cs"
+        },
+        {
+          "Index": 86,
+          "Offset": 62,
+          "Source": "n/Systems/Shared/RackAuthoredComparator.FourKinds.cs",
+          "Output": "n/Systems/Shared/RackAuthoredComparator.cs"
+        },
+        {
+          "Index": 87,
+          "Offset": 51,
+          "Source": ".Application/Systems/Shared/RackAuthoredComparator.cs",
+          "Output": ".Application/Systems/Shared/RackAuthoredInput.cs"
+        },
+        {
+          "Index": 88,
+          "Offset": 43,
+          "Source": "/RackCad.Application/Systems/Shared/RackAuthoredInput.cs",
+          "Output": "/RackCad.Application/Systems/Shared/RackFirstLevelDatum.cs"
+        },
+        {
+          "Index": 89,
+          "Offset": 43,
+          "Source": "/RackCad.Application/Systems/Shared/RackFirstLevelDatum.cs",
+          "Output": "/RackCad.Application/Systems/Shared/RackLevelElevations.cs"
+        },
+        {
+          "Index": 90,
+          "Offset": 43,
+          "Source": "/RackCad.Application/Systems/Shared/RackLevelElevations.cs",
+          "Output": "/RackCad.Application/Systems/Shared/RackModuleDescriptor.cs"
+        },
+        {
+          "Index": 91,
+          "Offset": 49,
+          "Source": "ad.Application/Systems/Shared/RackModuleDescriptor.cs",
+          "Output": "ad.Application/Systems/Shared/RackModuleHeaderApply.cs"
+        },
+        {
+          "Index": 92,
+          "Offset": 49,
+          "Source": "ad.Application/Systems/Shared/RackModuleHeaderApply.cs",
+          "Output": "ad.Application/Systems/Shared/RackModuleReconciliation.cs"
+        },
+        {
+          "Index": 93,
+          "Offset": 43,
+          "Source": "/RackCad.Application/Systems/Shared/RackModuleReconciliation.cs",
+          "Output": "/RackCad.Application/Systems/Shared/RackPhysicalSelection.cs"
+        },
+        {
+          "Index": 94,
+          "Offset": 43,
+          "Source": "/RackCad.Application/Systems/Shared/RackPhysicalSelection.cs",
+          "Output": "/RackCad.Application/Systems/Shared/RackResolveContract.cs"
+        },
+        {
+          "Index": 95,
+          "Offset": 43,
+          "Source": "/RackCad.Application/Systems/Shared/RackResolveContract.cs",
+          "Output": "/RackCad.Application/Systems/Shared/RackSourceTransformFactsV2.cs"
+        },
+        {
+          "Index": 96,
+          "Offset": 43,
+          "Source": "/RackCad.Application/Systems/Shared/RackSourceTransformFactsV2.cs",
+          "Output": "/RackCad.Application/Systems/Shared/RackTransformFacts.cs"
+        },
+        {
+          "Index": 97,
+          "Offset": 43,
+          "Source": "/RackCad.Application/Systems/Shared/RackTransformFacts.cs",
+          "Output": "/RackCad.Application/Systems/Shared/RackViewAddress.cs"
+        },
+        {
+          "Index": 98,
+          "Offset": 48,
+          "Source": "Cad.Application/Systems/Shared/RackViewAddress.cs",
+          "Output": "Cad.Application/Systems/Shared/RackViewAvailability.cs"
+        },
+        {
+          "Index": 99,
+          "Offset": 47,
+          "Source": "kCad.Application/Systems/Shared/RackViewAvailability.cs",
+          "Output": "kCad.Application/Systems/Shared/RackViewBaseName.cs"
+        },
+        {
+          "Index": 100,
+          "Offset": 47,
+          "Source": "kCad.Application/Systems/Shared/RackViewBaseName.cs",
+          "Output": "kCad.Application/Systems/Shared/RackViewCodec.cs"
+        },
+        {
+          "Index": 101,
+          "Offset": 47,
+          "Source": "kCad.Application/Systems/Shared/RackViewCodec.cs",
+          "Output": "kCad.Application/Systems/Shared/RackViewFrame.cs"
+        },
+        {
+          "Index": 102,
+          "Offset": 52,
+          "Source": "Application/Systems/Shared/RackViewFrame.cs",
+          "Output": "Application/Systems/Shared/RackViewFrameAdapters.cs"
+        },
+        {
+          "Index": 103,
+          "Offset": 47,
+          "Source": "kCad.Application/Systems/Shared/RackViewFrameAdapters.cs",
+          "Output": "kCad.Application/Systems/Shared/RackViewPreparation.cs"
+        },
+        {
+          "Index": 104,
+          "Offset": 49,
+          "Source": "ad.Application/Systems/Shared/RackViewPreparation.cs",
+          "Output": "ad.Application/Systems/Shared/RackViewProductNames.cs"
+        },
+        {
+          "Index": 105,
+          "Offset": 39,
+          "Source": "src/RackCad.Application/Systems/Shared/RackViewProductNames.cs",
+          "Output": "src/RackCad.Application/Systems/Shared/SafetyDormantCells.cs"
+        },
+        {
+          "Index": 106,
+          "Offset": 40,
+          "Source": "src/RackCad.Application/Systems/Shared/SafetyDormantCells.cs",
+          "Output": "src/RackCad.Application/Systems/Shared/SeparatorLevelCalculator.cs"
+        },
+        {
+          "Index": 107,
+          "Offset": 40,
+          "Source": "src/RackCad.Application/Systems/Shared/SeparatorLevelCalculator.cs",
+          "Output": "src/RackCad.Application/Systems/Shared/SystemDescriptor.cs"
+        },
+        {
+          "Index": 108,
+          "Offset": 45,
+          "Source": "ackCad.Application/Systems/Shared/SystemDescriptor.cs",
+          "Output": "ackCad.Application/Systems/Shared/SystemRegistry.Default.cs"
+        },
+        {
+          "Index": 109,
+          "Offset": 54,
+          "Source": "plication/Systems/Shared/SystemRegistry.Default.cs",
+          "Output": "plication/Systems/Shared/SystemRegistry.cs"
+        },
+        {
+          "Index": 110,
+          "Offset": 24,
+          "Source": "src/RackCad.Application/Systems/Shared/SystemRegistry.cs",
+          "Output": "src/RackCad.Application/Units/"
+        },
+        {
+          "Index": 111,
+          "Offset": 24,
+          "Source": "src/RackCad.Application/Units/",
+          "Output": "src/RackCad.Application/Views/"
+        },
+        {
+          "Index": 112,
+          "Offset": 24,
+          "Source": "src/RackCad.Application/Views/",
+          "Output": "src/RackCad.Application/Workspace/"
+        },
+        {
+          "Index": 113,
+          "Offset": 12,
+          "Source": "src/RackCad.Application/Workspace/",
+          "Output": "src/RackCad.Domain/"
+        },
+        {
+          "Index": 114,
+          "Offset": 12,
+          "Source": "src/RackCad.Domain/",
+          "Output": "src/RackCad.Plugin/"
+        },
+        {
+          "Index": 115,
+          "Offset": 12,
+          "Source": "src/RackCad.Plugin/",
+          "Output": "src/RackCad.UI/"
+        },
+        {
+          "Index": 116,
+          "Offset": 0,
+          "Source": "src/RackCad.UI/",
+          "Output": "tests/RackCad.Tests/Fixtures/"
+        },
+        {
+          "Index": 117,
+          "Offset": 20,
+          "Source": "tests/RackCad.Tests/Fixtures/",
+          "Output": "tests/RackCad.Tests/Workspace/"
+        },
+        {
+          "Index": 118,
+          "Offset": 20,
+          "Source": "tests/RackCad.Tests/Workspace/",
+          "Output": "tests/RackCad.Tests/StructuralAnalysis/"
+        },
+        {
+          "Index": 119,
+          "Offset": 20,
+          "Source": "tests/RackCad.Tests/StructuralAnalysis/",
+          "Output": "tests/RackCad.Tests/RackCad.Tests.csproj"
+        },
+        {
+          "Index": 120,
+          "Offset": 20,
+          "Source": "tests/RackCad.Tests/RackCad.Tests.csproj",
+          "Output": "tests/RackCad.Tests/PushBackClassicCharacterizationPluginGua"
+        },
+        {
+          "Index": 121,
+          "Offset": 20,
+          "Source": "tests/RackCad.Tests/PushBackClassicCharacterizationPluginGua",
+          "Output": "tests/RackCad.Tests/NamespaceFolderGuardTests.cs"
+        },
+        {
+          "Index": 122,
+          "Offset": 20,
+          "Source": "tests/RackCad.Tests/NamespaceFolderGuardTests.cs",
+          "Output": "tests/RackCad.Tests/PushBackDimensionLegacyCharacterizationT"
+        },
+        {
+          "Index": 123,
+          "Offset": 20,
+          "Source": "tests/RackCad.Tests/PushBackDimensionLegacyCharacterizationT",
+          "Output": "tests/RackCad.Tests/BlankFrontBoundaryTests.cs"
+        },
+        {
+          "Index": 124,
+          "Offset": 20,
+          "Source": "tests/RackCad.Tests/BlankFrontBoundaryTests.cs",
+          "Output": "tests/RackCad.Tests/RackModuleEditSessionTests.cs"
+        },
+        {
+          "Index": 125,
+          "Offset": 20,
+          "Source": "tests/RackCad.Tests/RackModuleEditSessionTests.cs",
+          "Output": "tests/RackCad.Tests/I55DeferredProductFixCharacterizationTes"
+        },
+        {
+          "Index": 126,
+          "Offset": 20,
+          "Source": "tests/RackCad.Tests/I55DeferredProductFixCharacterizationTes",
+          "Output": "tests/RackCad.Tests/PushBackModuleEditorCharacterizationTest"
+        },
+        {
+          "Index": 127,
+          "Offset": 21,
+          "Source": "tests/RackCad.Tests/PushBackModuleEditorCharacterizationTests",
+          "Output": "tests/RackCad.Tests/ProductPolicyIndependenceGuardTests.cs"
+        },
+        {
+          "Index": 128,
+          "Offset": 21,
+          "Source": "tests/RackCad.Tests/ProductPolicyIndependenceGuardTests.cs",
+          "Output": "tests/RackCad.Tests/PushBackPluginSourceGuardTests.cs"
+        },
+        {
+          "Index": 129,
+          "Offset": 28,
+          "Source": "tests/RackCad.Tests/PushBackPluginSourceGuardTests.cs",
+          "Output": "tests/RackCad.Tests/PushBackRoundTripSourceGuardTests.cs"
+        },
+        {
+          "Index": 130,
+          "Offset": 20,
+          "Source": "tests/RackCad.Tests/PushBackRoundTripSourceGuardTests.cs",
+          "Output": "tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs"
+        },
+        {
+          "Index": 131,
+          "Offset": 20,
+          "Source": "tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs",
+          "Output": "tests/RackCad.Tests/PushBackFullEditorCharacterizationLatera"
+        },
+        {
+          "Index": 132,
+          "Offset": 54,
+          "Source": "Tests/PushBackFullEditorCharacterizationLateralCutTests.cs",
+          "Output": "Tests/PushBackFullEditorCharacterizationDimensionStyleLossTests.cs"
+        },
+        {
+          "Index": 133,
+          "Offset": 54,
+          "Source": "Tests/PushBackFullEditorCharacterizationDimensionStyleLossTests.cs",
+          "Output": "Tests/PushBackFullEditorCharacterizationRoundingEffectTests.cs"
+        },
+        {
+          "Index": 134,
+          "Offset": 14,
+          "Source": "tests/RackCad.Tests/PushBackFullEditorCharacterization",
+          "Output": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj"
+        },
+        {
+          "Index": 135,
+          "Offset": 23,
+          "Source": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+          "Output": "tests/RackCad.UI.Tests/StaTestRunner.cs"
+        },
+        {
+          "Index": 136,
+          "Offset": 23,
+          "Source": "tests/RackCad.UI.Tests/StaTestRunner.cs",
+          "Output": "tests/RackCad.UI.Tests/EditorWindowTestSupport.cs"
+        },
+        {
+          "Index": 137,
+          "Offset": 29,
+          "Source": "tests/RackCad.UI.Tests/EditorWindowTestSupport.cs",
+          "Output": "tests/RackCad.UI.Tests/EditorDiscardPromptCollection.cs"
+        },
+        {
+          "Index": 138,
+          "Offset": 23,
+          "Source": "tests/RackCad.UI.Tests/EditorDiscardPromptCollection.cs",
+          "Output": "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationSuppor"
+        },
+        {
+          "Index": 139,
+          "Offset": 31,
+          "Source": "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationSupport.cs",
+          "Output": "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionSupport.cs"
+        },
+        {
+          "Index": 140,
+          "Offset": 49,
+          "Source": "kCad.UI.Tests/PushBackDeclaredCorrectionSupport.cs",
+          "Output": "kCad.UI.Tests/PushBackDeclaredCorrectionRoundingTests.cs"
+        },
+        {
+          "Index": 141,
+          "Offset": 49,
+          "Source": "kCad.UI.Tests/PushBackDeclaredCorrectionRoundingTests.cs",
+          "Output": "kCad.UI.Tests/PushBackDeclaredCorrectionDimensionStyleTests.cs"
+        },
+        {
+          "Index": 142,
+          "Offset": 49,
+          "Source": "kCad.UI.Tests/PushBackDeclaredCorrectionDimensionStyleTests.cs",
+          "Output": "kCad.UI.Tests/PushBackDeclaredCorrectionPilotParityTests.cs"
+        },
+        {
+          "Index": 143,
+          "Offset": 49,
+          "Source": "kCad.UI.Tests/PushBackDeclaredCorrectionPilotParityTests.cs",
+          "Output": "kCad.UI.Tests/PushBackDeclaredCorrectionSideBNoticeTests.cs"
+        },
+        {
+          "Index": 144,
+          "Offset": 50,
+          "Source": "Cad.UI.Tests/PushBackDeclaredCorrectionSideBNoticeTests.cs",
+          "Output": "Cad.UI.Tests/PushBackDeclaredCorrectionStandardRestoreTests.cs"
+        },
+        {
+          "Index": 145,
+          "Offset": 31,
+          "Source": "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionStandardRestoreTests.c",
+          "Output": "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationStateTests.cs"
+        },
+        {
+          "Index": 146,
+          "Offset": 57,
+          "Source": "Tests/PushBackFullEditorCharacterizationStateTests.cs",
+          "Output": "Tests/PushBackFullEditorCharacterizationModuleTests.cs"
+        },
+        {
+          "Index": 147,
+          "Offset": 57,
+          "Source": "Tests/PushBackFullEditorCharacterizationModuleTests.cs",
+          "Output": "Tests/PushBackFullEditorCharacterizationCompositeTests.cs"
+        },
+        {
+          "Index": 148,
+          "Offset": 57,
+          "Source": "Tests/PushBackFullEditorCharacterizationCompositeTests.cs",
+          "Output": "Tests/PushBackFullEditorCharacterizationSubdialogTests.cs"
+        },
+        {
+          "Index": 149,
+          "Offset": 57,
+          "Source": "Tests/PushBackFullEditorCharacterizationSubdialogTests.cs",
+          "Output": "Tests/PushBackFullEditorCharacterizationCatalogTests.cs"
+        },
+        {
+          "Index": 150,
+          "Offset": 57,
+          "Source": "Tests/PushBackFullEditorCharacterizationCatalogTests.cs",
+          "Output": "Tests/PushBackFullEditorCharacterizationRoundingLossTests.cs"
+        },
+        {
+          "Index": 151,
+          "Offset": 31,
+          "Source": "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationRoundingLossTe",
+          "Output": "tests/RackCad.UI.Tests/PushBackClassicCharacterizationKeyboardTests.cs"
+        },
+        {
+          "Index": 152,
+          "Offset": 54,
+          "Source": "UI.Tests/PushBackClassicCharacterizationKeyboardTests.cs",
+          "Output": "UI.Tests/PushBackClassicCharacterizationCloseTests.cs"
+        },
+        {
+          "Index": 153,
+          "Offset": 54,
+          "Source": "UI.Tests/PushBackClassicCharacterizationCloseTests.cs",
+          "Output": "UI.Tests/PushBackClassicCharacterizationIntentTests.cs"
+        },
+        {
+          "Index": 154,
+          "Offset": 54,
+          "Source": "UI.Tests/PushBackClassicCharacterizationIntentTests.cs",
+          "Output": "UI.Tests/PushBackClassicCharacterizationOwnerTests.cs"
+        },
+        {
+          "Index": 155,
+          "Offset": 54,
+          "Source": "UI.Tests/PushBackClassicCharacterizationOwnerTests.cs",
+          "Output": "UI.Tests/PushBackClassicCharacterizationResourceTests.cs"
+        },
+        {
+          "Index": 156,
+          "Offset": 54,
+          "Source": "UI.Tests/PushBackClassicCharacterizationResourceTests.cs",
+          "Output": "UI.Tests/PushBackClassicCharacterizationSourceGuardTests.cs"
+        },
+        {
+          "Index": 157,
+          "Offset": 23,
+          "Source": "tests/RackCad.UI.Tests/PushBackClassicCharacterizationSourceGua",
+          "Output": "tests/RackCad.UI.Tests/BlankFrontDesviadorHandoffTests.cs"
+        },
+        {
+          "Index": 158,
+          "Offset": 23,
+          "Source": "tests/RackCad.UI.Tests/BlankFrontDesviadorHandoffTests.cs",
+          "Output": "tests/RackCad.UI.Tests/EditorClosePolicyTests.cs"
+        },
+        {
+          "Index": 159,
+          "Offset": 23,
+          "Source": "tests/RackCad.UI.Tests/EditorClosePolicyTests.cs",
+          "Output": "tests/RackCad.UI.Tests/RichEditorCharacterizationTests.cs"
+        },
+        {
+          "Index": 160,
+          "Offset": 34,
+          "Source": "tests/RackCad.UI.Tests/RichEditorCharacterizationTests.cs",
+          "Output": "tests/RackCad.UI.Tests/RichEditorCloseContractTests.cs"
+        },
+        {
+          "Index": 161,
+          "Offset": 34,
+          "Source": "tests/RackCad.UI.Tests/RichEditorCloseContractTests.cs",
+          "Output": "tests/RackCad.UI.Tests/RichEditorContractTests.cs"
+        },
+        {
+          "Index": 162,
+          "Offset": 23,
+          "Source": "tests/RackCad.UI.Tests/RichEditorContractTests.cs",
+          "Output": "tests/RackCad.UI.Tests/PushBackShellAdoptionTests.cs"
+        },
+        {
+          "Index": 163,
+          "Offset": 31,
+          "Source": "tests/RackCad.UI.Tests/PushBackShellAdoptionTests.cs",
+          "Output": "tests/RackCad.UI.Tests/PushBackModuleEditorWindowTests.cs"
+        },
+        {
+          "Index": 164,
+          "Offset": 31,
+          "Source": "tests/RackCad.UI.Tests/PushBackModuleEditorWindowTests.cs",
+          "Output": "tests/RackCad.UI.Tests/PushBackSafetyPerPostFlowTests.cs"
+        },
+        {
+          "Index": 165,
+          "Offset": 32,
+          "Source": "tests/RackCad.UI.Tests/PushBackSafetyPerPostFlowTests.cs",
+          "Output": "tests/RackCad.UI.Tests/PushBackSidebarCompositionTests.cs"
+        },
+        {
+          "Index": 166,
+          "Offset": 23,
+          "Source": "tests/RackCad.UI.Tests/PushBackSidebarCompositionTests.cs",
+          "Output": "tests/RackCad.UI.Tests/UiSystemBoundaryGuardTests.cs"
+        },
+        {
+          "Index": 167,
+          "Offset": 23,
+          "Source": "tests/RackCad.UI.Tests/UiSystemBoundaryGuardTests.cs",
+          "Output": "tests/RackCad.UI.Tests/WindowCensusGuardTests.cs"
+        },
+        {
+          "Index": 168,
+          "Offset": 23,
+          "Source": "tests/RackCad.UI.Tests/WindowCensusGuardTests.cs",
+          "Output": "tests/RackCad.UI.Tests/PushBackAdvancedRackParametersWindowTest"
+        },
+        {
+          "Index": 169,
+          "Offset": 31,
+          "Source": "tests/RackCad.UI.Tests/PushBackAdvancedRackParametersWindowTests.cs",
+          "Output": "tests/RackCad.UI.Tests/PushBackCompositeWindowTests.cs"
+        },
+        {
+          "Index": 170,
+          "Offset": 40,
+          "Source": "tests/RackCad.UI.Tests/PushBackCompositeWindowTests.cs",
+          "Output": "tests/RackCad.UI.Tests/PushBackCompositeLifecycleWiringTests.cs"
+        },
+        {
+          "Index": 171,
+          "Offset": 41,
+          "Source": "ests/RackCad.UI.Tests/PushBackCompositeLifecycleWiringTests.cs",
+          "Output": "ests/RackCad.UI.Tests/PushBackCompositeLoadExistingModulesTests.cs"
+        },
+        {
+          "Index": 172,
+          "Offset": 31,
+          "Source": "tests/RackCad.UI.Tests/PushBackCompositeLoadExistingModulesTests.cs",
+          "Output": "tests/RackCad.UI.Tests/PushBackBothModeCellBeamOverrideTests.cs"
+        },
+        {
+          "Index": 173,
+          "Offset": 31,
+          "Source": "tests/RackCad.UI.Tests/PushBackBothModeCellBeamOverrideTests.cs",
+          "Output": "tests/RackCad.UI.Tests/PushBackA1EditorTests.cs"
+        },
+        {
+          "Index": 174,
+          "Offset": 31,
+          "Source": "tests/RackCad.UI.Tests/PushBackA1EditorTests.cs",
+          "Output": "tests/RackCad.UI.Tests/PushBackDormantRestoreTests.cs"
+        },
+        {
+          "Index": 175,
+          "Offset": 38,
+          "Source": "tests/RackCad.UI.Tests/PushBackDormantRestoreTests.cs",
+          "Output": "tests/RackCad.UI.Tests/PushBackDormantTailTransactionTests.cs"
+        },
+        {
+          "Index": 176,
+          "Offset": 31,
+          "Source": "tests/RackCad.UI.Tests/PushBackDormantTailTransactionTests.cs",
+          "Output": "tests/RackCad.UI.Tests/PushBackEditorSideOwnershipTests.cs"
+        },
+        {
+          "Index": 177,
+          "Offset": 31,
+          "Source": "tests/RackCad.UI.Tests/PushBackEditorSideOwnershipTests.cs",
+          "Output": "tests/RackCad.UI.Tests/PushBackLibrarySaveGateTests.cs"
+        },
+        {
+          "Index": 178,
+          "Offset": 31,
+          "Source": "tests/RackCad.UI.Tests/PushBackLibrarySaveGateTests.cs",
+          "Output": "tests/RackCad.UI.Tests/PushBackOutputGateAfterRecomputeTests.cs"
+        },
+        {
+          "Index": 179,
+          "Offset": 31,
+          "Source": "tests/RackCad.UI.Tests/PushBackOutputGateAfterRecomputeTests.cs",
+          "Output": "tests/RackCad.UI.Tests/PushBackHeaderLineWindowTests.cs"
+        },
+        {
+          "Index": 180,
+          "Offset": 23,
+          "Source": "tests/RackCad.UI.Tests/PushBackHeaderLineWindowTests.cs",
+          "Output": "tests/RackCad.UI.Tests/CantileverAdvancedPanelWindowTests.cs"
+        },
+        {
+          "Index": 181,
+          "Offset": 33,
+          "Source": "tests/RackCad.UI.Tests/CantileverAdvancedPanelWindowTests.cs",
+          "Output": "tests/RackCad.UI.Tests/CantileverComponentEditorTests.cs"
+        },
+        {
+          "Index": 182,
+          "Offset": 33,
+          "Source": "tests/RackCad.UI.Tests/CantileverComponentEditorTests.cs",
+          "Output": "tests/RackCad.UI.Tests/CantileverEditorWindowTests.cs"
+        },
+        {
+          "Index": 183,
+          "Offset": 23,
+          "Source": "tests/RackCad.UI.Tests/CantileverEditorWindowTests.cs",
+          "Output": "tests/RackCad.UI.Tests/NumericFieldTests.cs"
+        },
+        {
+          "Index": 184,
+          "Offset": 35,
+          "Source": "tests/RackCad.UI.Tests/NumericFieldTests.cs",
+          "Output": "tests/RackCad.UI.Tests/NumericFieldValidationTests.cs"
+        },
+        {
+          "Index": 185,
+          "Offset": 23,
+          "Source": "tests/RackCad.UI.Tests/NumericFieldValidationTests.cs",
+          "Output": "tests/RackCad.UI.Tests/PushBackDeclaredCorrection2RoundingTests"
+        },
+        {
+          "Index": 186,
+          "Offset": 50,
+          "Source": "Cad.UI.Tests/PushBackDeclaredCorrection2RoundingTests.cs",
+          "Output": "Cad.UI.Tests/PushBackDeclaredCorrection2MixedBoxTests.cs"
+        },
+        {
+          "Index": 187,
+          "Offset": 31,
+          "Source": "tests/RackCad.UI.Tests/PushBackDeclaredCorrection2MixedBoxTests.cs",
+          "Output": "tests/RackCad.UI.Tests/PushBackStateNetSupport.cs"
+        },
+        {
+          "Index": 188,
+          "Offset": 39,
+          "Source": "tests/RackCad.UI.Tests/PushBackStateNetSupport.cs",
+          "Output": "tests/RackCad.UI.Tests/PushBackStateNetRackControlsTests.cs"
+        },
+        {
+          "Index": 189,
+          "Offset": 39,
+          "Source": "tests/RackCad.UI.Tests/PushBackStateNetRackControlsTests.cs",
+          "Output": "tests/RackCad.UI.Tests/PushBackStateNetCellAndFrontTests.cs"
+        },
+        {
+          "Index": 190,
+          "Offset": 40,
+          "Source": "tests/RackCad.UI.Tests/PushBackStateNetCellAndFrontTests.cs",
+          "Output": "tests/RackCad.UI.Tests/PushBackStateNetCompositeTests.cs"
+        },
+        {
+          "Index": 191,
+          "Offset": 39,
+          "Source": "tests/RackCad.UI.Tests/PushBackStateNetCompositeTests.cs",
+          "Output": "tests/RackCad.UI.Tests/PushBackStateNetModuleAndSafetyTests.cs"
+        },
+        {
+          "Index": 192,
+          "Offset": 39,
+          "Source": "tests/RackCad.UI.Tests/PushBackStateNetModuleAndSafetyTests.cs",
+          "Output": "tests/RackCad.UI.Tests/PushBackStateNetActionsTests.cs"
+        },
+        {
+          "Index": 193,
+          "Offset": 39,
+          "Source": "tests/RackCad.UI.Tests/PushBackStateNetActionsTests.cs",
+          "Output": "tests/RackCad.UI.Tests/PushBackStateNetFingerprintTests.cs"
+        },
+        {
+          "Index": 194,
+          "Offset": 23,
+          "Source": "tests/RackCad.UI.Tests/PushBackStateNetFingerprintTests.cs",
+          "Output": "tests/RackCad.UI.Tests/Workspace/"
+        },
+        {
+          "Index": 195,
+          "Offset": 0,
+          "Source": "tests/RackCad.UI.Tests/Workspace/",
+          "Output": "docs/"
+        },
+        {
+          "Index": 196,
+          "Offset": 0,
+          "Source": "docs/",
+          "Output": ".github/"
+        },
+        {
+          "Index": 197,
+          "Offset": 0,
+          "Source": ".github/",
+          "Output": "eng/"
+        },
+        {
+          "Index": 198,
+          "Offset": 0,
+          "Source": "eng/",
+          "Output": "tools/"
+        },
+        {
+          "Index": 199,
+          "Offset": 0,
+          "Source": "tools/",
+          "Output": "assets/"
+        },
+        {
+          "Index": 200,
+          "Offset": 0,
+          "Source": "assets/",
+          "Output": "deploy/"
+        },
+        {
+          "Index": 201,
+          "Offset": 0,
+          "Source": "deploy/",
+          "Output": "RackCad.sln"
+        },
+        {
+          "Index": 202,
+          "Offset": 0,
+          "Source": "RackCad.sln",
+          "Output": "Directory.Build.props"
+        },
+        {
+          "Index": 203,
+          "Offset": 16,
+          "Source": "Directory.Build.props",
+          "Output": "Directory.Build.targets"
+        },
+        {
+          "Index": 204,
+          "Offset": 0,
+          "Source": "Directory.Build.targets",
+          "Output": "global.json"
+        },
+        {
+          "Index": 205,
+          "Offset": 0,
+          "Source": "global.json",
+          "Output": "NuGet.Config"
+        },
+        {
+          "Index": 206,
+          "Offset": 0,
+          "Source": "NuGet.Config",
+          "Output": "README.md"
+        },
+        {
+          "Index": 207,
+          "Offset": 0,
+          "Source": "README.md",
+          "Output": "AGENTS.md"
+        },
+        {
+          "Index": 208,
+          "Offset": 0,
+          "Source": "AGENTS.md",
+          "Output": "CLAUDE.md"
+        },
+        {
+          "Index": 209,
+          "Offset": 0,
+          "Source": "CLAUDE.md",
+          "Output": ".editorconfig"
+        },
+        {
+          "Index": 210,
+          "Offset": 1,
+          "Source": ".editorconfig",
+          "Output": ".gitattributes"
+        },
+        {
+          "Index": 211,
+          "Offset": 4,
+          "Source": ".gitattributes",
+          "Output": ".gitignore"
+        },
+        {
+          "CountSource": 213,
+          "CountOutput": 212
+        }
+      ]
+    }
+  ],
+  "Result": "REJECTED",
+  "AllowedWriteScopeElementwiseInOrder": true,
+  "ForbiddenWriteScopeCount": {
+    "Contract": 213,
+    "Output": 212
+  }
+}

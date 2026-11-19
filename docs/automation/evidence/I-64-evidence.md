@@ -7994,3 +7994,36 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - solo documentación;
 - sin AutoCAD;
 - las corridas de la cadena de PB-T1b se custodian al cerrar la tarea.
+
+## 249. PB-T1b: cadena completa, decisiones del Owner F4B-E23 a F4B-E25 y cierre (F4B-E26)
+
+**Decisiones:**
+- F4B-E23: D-PB-07, BOM y biblioteca en el modo WORKSPACE;
+- F4B-E24: la ExtensionData anidada, «Basta así»;
+- F4B-E25: la regla de F4B para las rutas UNIT_CHANGE en la base de una corrección (16.3);
+- F4B-E26: el cierre de PB-T1b.
+
+**Qué se custodia:**
+- **Las unidades de la cadena,** con su manifiesto por unidad:
+  - en `F4B-PBT1B-LOSSLESS-STATE-TYPE/1/`: aaac, c45c, 6d33, 7115, fb01, 4000, a60d, 6063 y a4e2;
+  - en `F4B-PBT1B-LOSSLESS-STATE-TYPE/2/`: e354, 4c04, la verificación `c78a` y la reverificación `dc81`;
+  - las nc4 `0764`, `3412` y `6aa3`;
+  - los controles: `F4B-PBT1B-LOSSLESS-STATE-TYPE-nc1/2/R20261119T020504Z-a4e8`, `-nc2/2/R20261119T021056Z-448d` y `-nc3/2/R20261119T021418Z-2049`;
+  - la sonda `F4-ENVIRONMENT/probe-R20261118T193210Z-d32c`.
+- **Las revisiones del intento 2,** con su encargo, en `.../2/R20261118T223111Z-4c04/`.
+- **Las decisiones literales** del Owner y sus tres vueltas.
+- **El paquete de cierre de la tarea.**
+- **La nota de `docs/ideas-futuras.md`.**
+- **El estado.**
+
+**El intento 2:**
+- RED `126fd65f` y GREEN `a18ba345`, con el producto idéntico al del intento 1;
+- CI `44430615074` del RED y `44438060317` del GREEN (4/4; Core 19 086 y UI 2 437);
+- la revisión independiente, ACEPTABLE CON MENORES 0/0/5;
+- la reverificación `dc81`, 14/14;
+- nc1, nc2 y nc3 CONTROL PASS.
+
+**Límites:**
+- solo documentación;
+- sin AutoCAD;
+- los eventos y las transcripciones solo por SHA-256 (16.12).

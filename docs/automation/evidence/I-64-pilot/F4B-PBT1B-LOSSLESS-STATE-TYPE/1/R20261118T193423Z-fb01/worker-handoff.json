@@ -1,0 +1,139 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F4B-PBT1B-LOSSLESS-STATE-TYPE",
+  "RunId": "R20261118T193423Z-fb01",
+  "DelegationRunId": "R20261118T185409Z-c45c",
+  "Initiative": "I-64",
+  "Gate": "F4B",
+  "Attempt": 1,
+  "BaseSha": "7905b3a95311aa4de172c9ab89b5825ab57dd280",
+  "RedSha": null,
+  "CurrentSha": "7905b3a95311aa4de172c9ab89b5825ab57dd280",
+  "Branch": "architecture/workspace-persistente-rackcad",
+  "Worktree": "<worktree-de-I-64>",
+  "Pushed": false,
+  "FilesChanged": [],
+  "WorkCompleted": "REANUDACION: esta es la segunda invocacion del Worker de la misma delegacion (la anterior, WorkRunId R20261118T190205Z-6d33, se detuvo por la pausa del Owner sin commits). Se repitio el paso 0 y el paso 1 en carpeta propia. PARADA PBT1B-C15 durante el desarrollo, antes del commit RED: no hay commits ni push; HEAD = remoto = BaseSha; el arbol quedo limpio; el borrador completo esta en un solo parche. PASO 0 (sobre la BaseSha): builds Release de linea base de Core (66 avisos), UI (14) y Plugin (2), todas con 0 errores; prueba de limpieza ANTES. PASO 1 (sobre la BaseSha, corrida temporal de UI con Assert.Fail, TRX y log guardados, codigo retirado despues): a PostBox.SelectedId=POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA salida=POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA | b PostBox.SelectedId=<null> salida=POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA | c PostBox.SelectedId=<null> salida=POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA | d PostBox.SelectedId=POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA salida=POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA | e PostBox.SelectedId=POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA salida=POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA | f carga=[kg] WeightUnitBox.SelectedItem=lb antes=ton salida=lb. Rama de c-02 declarada: ORDINAL (fila b con <null>). Rama de c-09 declarada: CONSERVA (fila f con lb). Comparacion linea a linea con step1-lines.txt de la invocacion 6d33: las seis lineas son IDENTICAS; ninguna parada PBT1B-C14. DESARROLLO (sin commit): se escribio la implementacion completa de los seis archivos de producto (D-PBT1-02 a D-PBT1-11, D-PBT1-09b y D-PBT1-15) y cinco de las seis clases de prueba (CT-PBT1B-02 a 17; CT-PBT1B-01 de UI sin escribir al parar). Mapa CT a metodo en Core: CT-02, 03, 04, 05 y 17 en PushBackEditableStateLoadTests; CT-06, 07, 08, 09, 10, 13 y 16 en PushBackEditableStateCopyTests; CT-11 en PushBackEditableStateOwnershipTests; CT-12 en PushBackEditorOutputGateTests; CT-14 y 15 en PushBackSharedReferenceGuardTests. Resultado sobre el arbol sin commit: pasan CT-03, 04, 05, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16 y 17 con sus lineas literales (c-02 ordinal, c-09 conserva); CT-02 falla solo en una linea; CT-06 falla por la interpretacion de la prueba (ver UnexpectedFindings). PARADA: CT-PBT1B-02, mitad estado-diseno-estado, sobre pb-15-sin-composite (soportado): el estado cargado y recomputado NO es igual, con el comparador, al estado que sale de cargar su propio diseno de salida. Causa medida: el frente 0 del lado B del editor esta activo (IsActive=True) tras cargar el documento sin bloque compuesto y pasa a inactivo (False) al recargar el diseno de salida, que declara AbsentSlotsB[0]=0 (la misma linea que LegacyDeltas ya fija para pb-15: Composite.AbsentSlotsB[0]: <absent> -> 0). Los otros 17 disenos (los 8 canonicos, los otros 5 heredados, pb-20-ab, pb-31-v2-modulos, X-01 y F-01) dan igual=True y la mitad diseno-estado-diseno da exactamente sus lineas (vacias, o LegacyDeltas). No es del esqueleto (no hubo RED aun) y viene de la carga literal de la ventana de hoy (CS.LoadComposite sin Composite deja el lado B por defecto), asi que es un hecho nuevo para el Owner por OB-06.5. Estado final: sin RED, sin GREEN, sin CI; no se ejecuto CT-PBT1B-01 (paridad con la ventana) ni los filtros de RequiredTests de UI ni la suite completa de Core. Prueba de limpieza DESPUES identica a la de antes; dotnet build-server shutdown ejecutado; no se toco AutoCAD ni el checkout principal.",
+  "TestsExecuted": [
+    {
+      "RunRef": "p1",
+      "Command": "<datos-locales-del-usuario>/Microsoft/dotnet/dotnet.exe test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.TmpPbt1bStep1Probe\" --logger \"trx;LogFileName=p1.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T193423Z-fb01/tests/p1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T193423Z-fb01/tests/p1/p1.trx"
+    },
+    {
+      "RunRef": "d1",
+      "Command": "<datos-locales-del-usuario>/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --no-build -c Debug --filter \"FullyQualifiedName~RackCad.Tests.PushBackEditorOutputGate|FullyQualifiedName~RackCad.Tests.PushBackSharedReferenceGuardTests|FullyQualifiedName~RackCad.Tests.PushBackEditableStateOwnership\" --logger \"trx;LogFileName=d1.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T193423Z-fb01/tests/dev",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T193423Z-fb01/tests/dev/d1.trx"
+    },
+    {
+      "RunRef": "d2",
+      "Command": "<datos-locales-del-usuario>/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --no-build -c Debug --filter \"FullyQualifiedName~RackCad.Tests.PushBackEditableStateLoadTests\" --logger \"trx;LogFileName=d2.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T193423Z-fb01/tests/dev",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T193423Z-fb01/tests/dev/d2.trx"
+    },
+    {
+      "RunRef": "d3",
+      "Command": "<datos-locales-del-usuario>/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.Tests.PushBackEditableStateCopyTests\" --logger \"trx;LogFileName=d3.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T193423Z-fb01/tests/dev",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T193423Z-fb01/tests/dev/d3.trx"
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "p1",
+      "Selected": 1,
+      "Passed": 0,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.TmpPbt1bStep1Probe.Step1"
+      ]
+    },
+    {
+      "RunRef": "d1",
+      "Selected": 4,
+      "Passed": 4,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "d2",
+      "Selected": 5,
+      "Passed": 4,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.PushBackEditableStateLoadTests.CT_PBT1B_02_TheRoundTripOfEverySupportedRackLosesNothing"
+      ]
+    },
+    {
+      "RunRef": "d3",
+      "Selected": 7,
+      "Passed": 6,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.PushBackEditableStateCopyTests.CT_PBT1B_06_EveryFieldOfTheStateIsClassifiedAndEveryEditableFieldSurvivesTheCopy"
+      ]
+    }
+  ],
+  "Evidence": [
+    "artifacts/orchestration/I-64/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T193423Z-fb01/tests/b0/build-core-release.log : build Release de tests/RackCad.Tests en la BaseSha: 66 avisos, 0 errores",
+    "artifacts/orchestration/I-64/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T193423Z-fb01/tests/b0/build-ui-release.log : build Release de tests/RackCad.UI.Tests en la BaseSha: 14 avisos, 0 errores",
+    "artifacts/orchestration/I-64/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T193423Z-fb01/tests/b0/build-plugin-release.log : build Release del Plugin (salida en tests/b0/plugin-out) en la BaseSha: 2 avisos, 0 errores",
+    "artifacts/orchestration/I-64/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T193423Z-fb01/tests/b0/cleanliness-before.txt : prueba de limpieza ANTES (SHA-256 y fecha UTC del archivo de disposicion del configurador y de la carpeta de biblioteca)",
+    "artifacts/orchestration/I-64/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T193423Z-fb01/tests/b0/cleanliness-after.txt : prueba de limpieza DESPUES: identica a la de antes",
+    "artifacts/orchestration/I-64/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T193423Z-fb01/tests/p1/p1.trx : TRX de la corrida temporal del paso 1 (termina en Assert.Fail por diseno)",
+    "artifacts/orchestration/I-64/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T193423Z-fb01/tests/p1/p1.log : log de la corrida temporal del paso 1",
+    "artifacts/orchestration/I-64/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T193423Z-fb01/tests/p1/step1-lines.txt : las seis lineas del paso 1 (a a f)",
+    "artifacts/orchestration/I-64/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T193423Z-fb01/tests/p1/step1-probe.cs.txt : texto del codigo temporal del paso 1 (retirado del arbol; nunca entro en un commit)",
+    "artifacts/orchestration/I-64/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T193423Z-fb01/tests/dev/d1.trx : TRX de la corrida de desarrollo d1 (CT-11, 12, 14 y 15, sobre un arbol sin commit)",
+    "artifacts/orchestration/I-64/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T193423Z-fb01/tests/dev/d1.log : log de d1",
+    "artifacts/orchestration/I-64/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T193423Z-fb01/tests/dev/d2.trx : TRX de la corrida de desarrollo d2 (CT-02, 03, 04, 05 y 17)",
+    "artifacts/orchestration/I-64/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T193423Z-fb01/tests/dev/d2.log : log de d2",
+    "artifacts/orchestration/I-64/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T193423Z-fb01/tests/dev/d3.trx : TRX de la corrida de desarrollo d3 (CT-06 a 10, 13 y 16)",
+    "artifacts/orchestration/I-64/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T193423Z-fb01/tests/dev/d3.log : log de d3",
+    "artifacts/orchestration/I-64/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T193423Z-fb01/tests/dev/ct02-lines-expected-vs-actual.txt : lineas esperadas (E) y obtenidas (A) de CT-PBT1B-02, tras corregir el origen del delta de los heredados",
+    "artifacts/orchestration/I-64/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T193423Z-fb01/tests/dev/pb15-state-diff.txt : medicion del estado de pb-15-sin-composite tras la ida y vuelta estado-diseno-estado",
+    "artifacts/orchestration/I-64/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T193423Z-fb01/tests/dev/ct06-failures.txt : fallos de la interpretacion de CT-PBT1B-06 (mutar una ranura E por reflexion y copiar)",
+    "artifacts/orchestration/I-64/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T193423Z-fb01/uncommitted-work-at-stop.patch : parche unico con el borrador sin commit (los 2 archivos de src modificados y los 9 nuevos); el arbol se dejo limpio"
+  ],
+  "UnexpectedFindings": [
+    "PBT1B-C15 (hecho nuevo): estado-diseno-estado de pb-15-sin-composite da iguales=False; solo el frente 0 del lado B difiere (IsActive True frente a False). Es la normalizacion que la ventana de hoy ya hace al escribir (AbsentSlotsB siempre declaradas) vista desde el estado, no una perdida de la implementacion. Medicion en tests/dev/pb15-state-diff.txt.",
+    "Si el Owner decide que ese caso no es una perdida, CT-PBT1B-02 necesita una redaccion que lo diga (por ejemplo, la mitad estado-diseno-estado solo para los disenos cuya mitad diseno-estado-diseno es vacia); el Worker no la elige.",
+    "CT-PBT1B-06, tal como yo lo interprete (mutar cada ranura E por reflexion y exigir que la copia conserve la mutacion), da falsos fallos en las ranuras que el editor resincroniza al copiar (DynamicEditorFront.LoadLevels, DynamicFrontMatrix.fronts, PushBackEditorFront.Cells, PushBackEditorState.pushFronts) y en SafetyFacePiece, que se normaliza al copiar; es un defecto de mi interpretacion o del texto del CT, no de la copia. Detalle en tests/dev/ct06-failures.txt. No lo toque porque la parada anterior manda.",
+    "Los CT-PBT1B-07, 08, 09, 10, 13 y 16 pasaron a la primera sobre la implementacion completa (CT-14, la guarda G-L1, en verde sobre mis propios archivos nuevos)."
+  ],
+  "KnownLimitations": [
+    "Sin AutoCAD: nada de lo medido toca el dibujo; la comprobacion fisica es de Smoke-PB.",
+    "No se escribio ni se ejecuto CT-PBT1B-01 (la paridad con la ventana en UI) ni los filtros de RequiredTests de UI: la unica corrida de UI fue la temporal del paso 1.",
+    "No hubo commit RED, CI del RED, commit GREEN ni CI del GREEN; las corridas d1 a d3 son de desarrollo sobre un arbol sin commit (TreeSha null) y no cuentan como evidencia del RED ni del GREEN.",
+    "La corrida d2 se guardo antes de corregir el origen del delta de los heredados en CT-02; las repeticiones posteriores de CT-02 (sin TRX) dejaron como unica diferencia la linea de pb-15, ver tests/dev/ct02-lines-expected-vs-actual.txt.",
+    "El uso del equipo no se puede observar desde el Worker; las corridas se hicieron en primer plano y sin actividad interactiva."
+  ],
+  "Deviations": [
+    "Orden de trabajo: se desarrollo la implementacion completa y las pruebas antes del commit RED para detectar una parada de contenido sin haber empujado un RED; no hubo ningun commit ni push, asi que no hay efecto sobre la rama."
+  ],
+  "OpenQuestions": [
+    "El estado cargado de pb-15-sin-composite no es igual a su propia ida y vuelta por el frente 0 del lado B dormido: es un hecho nuevo (OB-06.5) y lo decide el Owner, no el Worker."
+  ],
+  "WorkerStatus": "BLOCKED",
+  "Disposition": "STOP",
+  "TriggeredStopConditions": [
+    "PBT1B-C15"
+  ],
+  "RecommendedNextAction": "Devolver el hallazgo al Owner por OB-06.5 con tests/dev/pb15-state-diff.txt; con su decision, emitir una delegacion nueva que fije el tratamiento de la mitad estado-diseno-estado de CT-PBT1B-02 para los heredados y aclare el criterio de CT-PBT1B-06. El borrador completo para reutilizar esta en uncommitted-work-at-stop.patch.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "high",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "A1": [],
+  "A2": [],
+  "A3": [],
+  "A4": [
+    "1 entradas prohibidas del contrato sin cubrir; primeras: src/RackCad.Application/Systems/PushBack/PushBackTopeSurface.cs"
+  ],
+  "A5": [
+    "autoridades ausentes: docs/automation/evidence/I-64-pilot/F4B-PBT1A-LOSSLESS-STATE-NET/task-close-package.md el cierre de PB-T1a sobre 73d3",
+    "prueba ausente: FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrectionPilotParityTests"
+  ],
+  "A6": [],
+  "A7": [],
+  "A8": []
+}

@@ -1777,3 +1777,20 @@ Un `HeaderPostCatalogId` que no está en el catálogo pasa al poste por defecto 
 ### Higiene de pruebas: `Abrir` en CT-PB0-17 (M-01 de PB-T0)
 
 CT-PB0-17 sigue usando el ayudante `Abrir` (M-01 de la revisión de PB-T0). Las pruebas nuevas de PB-T1 usan `Ventana()` con la carga dentro del `try`. Queda sin corregir porque PB-T1 no edita pruebas existentes.
+
+## I-64 F4B PB-T1b — limitación conocida y mejoras de pruebas (2026-11-19, registradas sin corregir)
+
+### RACKEDITAR pierde en silencio los campos desconocidos anidados (F4B-E24)
+
+Un campo que el plugin no conoce, dentro de un módulo, de un lado o de otra pieza anidada del diseño Push Back, se pierde al reescribir desde RACKEDITAR («Actualizar» o «Guardar en biblioteca»). Puede venir de una versión más nueva del plugin o de una edición a mano.
+- **Por qué:** el lector tolerante descarta el campo al leer, y el escritor reconstruye cada pieza anidada desde cero. Solo el sobre, el proyecto y el diseño de primer nivel tienen `[JsonExtensionData]` (I-11 no es recursiva).
+- **El panel no tiene el problema:** no escribe esos racks. Los rechaza con aviso (AUTH-13, I-58) y remite a RACKEDITAR. PB-T3 fija ese rechazo con una prueba.
+- **Decisión del Owner:** «Basta así». Es una limitación conocida, anterior a F4B, y no se corrige en F4B. Conservar lo anidado sería una iniciativa propia: 21 tipos de datos, algunos compartidos con Dinámico y Selectivo.
+
+### Mejoras de las pruebas de PB-T1b (revisión independiente del intento 2, menores)
+
+- **PBT1B2-IR-M01:** la autoprueba nueva de CT-PBT1B-15 (`escritor-fuera-de-DrawPushBackView`) no distingue la comprobación nueva («dentro del método») de la anterior.
+- **PBT1B2-IR-M02:** al caso corregido de CT-10 (I02) le falta una línea de control que demuestre que la sesión de módulos es la única diferencia.
+- **PBT1B2-IR-M03:** las corridas de medición previas al RED (p2) se lanzaron con `--no-build` y la entrega no trae su log de compilación. Solo p3, el RED y el GREEN prueban qué texto se compiló.
+- **PBT1B2-IR-M04:** la regla «EXCEPCION» sigue sin aplicarse en CT-11. No es una regresión.
+- **PBT1B2-IR-M05:** la línea de declaración de CT-PBT1B-01 (M08) calcula 16 y 19 en lugar de escribirlos.

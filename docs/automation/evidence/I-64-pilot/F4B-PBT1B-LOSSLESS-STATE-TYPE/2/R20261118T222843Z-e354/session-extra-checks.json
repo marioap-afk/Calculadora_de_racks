@@ -1,0 +1,71 @@
+{
+  "AllowedExact": true,
+  "ExactCopy.Authorities": true,
+  "ExactCopy.ForbiddenWriteScope": true,
+  "ExactCopy.Invariants": true,
+  "ExactCopy.RequiredTests": true,
+  "ExactCopy.ExpectedEvidence": true,
+  "ExactCopy.StopConditions": true,
+  "ExactCopy.Objective": true,
+  "NonAsciiBytes": 0,
+  "BackslashU": 0,
+  "ControlCharsInStrings": 0,
+  "CorrectionOf": {
+    "RunId": "R20261118T204715Z-a4e2",
+    "FailureClass": "Tests",
+    "AnalysisSha256": "9891487e4cac8540f3c377ac848e55380ef7dffb76cfec303c4947ead7f8f0bf"
+  },
+  "TaskClass": "Implementacion transversal a capas (corta)",
+  "TaskClassExact": true,
+  "PromptProfile": "ROUTINE_IMPLEMENTATION",
+  "PromptProfileExact": true,
+  "Effort": {
+    "Semantic": "Deep",
+    "Provider": "high"
+  },
+  "Executor": {
+    "Provider": "Anthropic",
+    "Transport": "subagent",
+    "Role": "Worker",
+    "Cell": "anthropic/subagent/claude-sonnet-5-5"
+  },
+  "Model": "claude-sonnet-5-5",
+  "EffortExact": true,
+  "ModelEscalationReason": null,
+  "Dimensions": {
+    "Ambiguity": "Low",
+    "ArchitecturalSensitivity": "High",
+    "Breadth": "Medium",
+    "ToolUse": "High",
+    "FailureCost": "High",
+    "MechanicalRepetition": "Medium",
+    "Horizon": "Medium"
+  },
+  "BaseSha": "2f5d3decb237913e3980aa0bbd84346a7ff91f19",
+  "AuthorityRevision": "5e52aaa34037d8cc6b46849c89d1fce946187324",
+  "MainSha": "812baf879612320653094a8aaf46aca0bac81383",
+  "ChainFields": {
+    "ChainBaseSha": "4b0498e3e05f65813c5e6274b3beb51217587d65",
+    "ChainRedSha": "2d9febc6087280e0ba9f7a6c72e77b283506891d",
+    "ChainRedFiles": [
+      "tests/RackCad.Tests/PushBackEditableStateCopyTests.cs",
+      "tests/RackCad.Tests/PushBackEditableStateLoadTests.cs",
+      "tests/RackCad.Tests/PushBackEditableStateOwnershipTests.cs",
+      "tests/RackCad.Tests/PushBackEditorOutputGateTests.cs",
+      "tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs",
+      "tests/RackCad.UI.Tests/PushBackEditableStateParityTests.cs"
+    ]
+  },
+  "AttemptFields": {
+    "Attempt": 2,
+    "AttemptsRemaining": 1,
+    "MaxReworkLoops": 3
+  },
+  "ExpectedHandoffPath": "artifacts/orchestration/I-64/F4B-PBT1B-LOSSLESS-STATE-TYPE/2/{WorkRunId}/worker-handoff.json",
+  "Owner": {
+    "Kind": "subagent",
+    "Id": "subagent:R20261118T222843Z-e354"
+  },
+  "AcceptanceCriteriaCount": 19,
+  "IssuedBy": "Controller Codex (planificacion F4B-PBT1B-LOSSLESS-STATE-TYPE, correccion del intento 2, CONTROLLER_PLANNING)"
+}

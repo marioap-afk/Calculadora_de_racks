@@ -1,0 +1,64 @@
+using System;
+using System.Collections.Generic;
+using RackCad.UI.Controls;
+using RackCad.UI.Shell;
+using Xunit;
+using static RackCad.UI.Tests.PushBackDeclaredCorrectionSupport;
+using static RackCad.UI.Tests.PushBackFullEditorCharacterizationSupport;
+
+namespace RackCad.UI.Tests
+{
+    [Collection(EditorDiscardPromptCollection.Name)]
+    public sealed class TmpPbt1bStep1Probe
+    {
+        private const string P = "POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA";
+
+        private static string V(string s) => s ?? "<null>";
+
+        [Fact]
+        public void Step1()
+        {
+            var lineas = new List<string>();
+            var descartes = 0;
+            using (EditorDiscardPrompt.Substitute(_ => { descartes++; return true; }))
+            {
+                Sta(() =>
+                {
+                    var casos = new (string Caso, string Valor)[]
+                    {
+                        ("a", P), ("b", P.ToLowerInvariant()), ("c", "PB0_POSTE_INEXISTENTE"), ("d", ""), ("e", "   "),
+                    };
+                    foreach (var caso in casos)
+                    {
+                        var w = Ventana();
+                        try
+                        {
+                            Cargar(w, EditInner(Fixture("pb-01-base"), inner => StructureNode(inner)["HeaderPostCatalogId"] = caso.Valor));
+                            var post = ((CatalogCombo)w.FindName("PostBox")).SelectedId;
+                            lineas.Add(caso.Caso + " PostBox.SelectedId=" + V(post) + " salida=" + V(w.LastComputation.Design.Structure.HeaderPostCatalogId));
+                        }
+                        finally { Cerrar(w); }
+                    }
+
+                    var f = Ventana();
+                    try
+                    {
+                        Cargar(f, EditInner(Fixture("pb-01-base"), inner => StructureNode(inner)["PalletWeightUnit"] = "ton"));
+                        var carga = Combo(f, "WeightUnitBox").SelectedItem;
+                        Combo(f, "WeightUnitBox").SelectedItem = "lb";
+                        Click(f, "RestoreButton");
+                        var tras = Combo(f, "WeightUnitBox").SelectedItem;
+                        var antes = f.LastComputation.Design.Structure.Pallet.WeightUnit;
+                        SetNumberR(f, "DepthBox", 54);
+                        var salida = f.LastComputation.Design.Structure.Pallet.WeightUnit;
+                        lineas.Add("f carga=[" + V(carga as string) + "] WeightUnitBox.SelectedItem=" + V(tras as string) + " antes=" + antes + " salida=" + salida);
+                    }
+                    finally { Cerrar(f); }
+                });
+            }
+
+            lineas.Add("descartes=" + descartes);
+            Assert.Fail(string.Join("\n", lineas));
+        }
+    }
+}

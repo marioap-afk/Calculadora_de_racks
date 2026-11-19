@@ -1,0 +1,7 @@
+builds done
+g1 done
+g2 done
+g3 done
+relevant done
+full-core done
+ALLDONE

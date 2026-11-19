@@ -1,0 +1,38 @@
+## INV-PBT1B-01 (alcance, working tree vs BaseSha)
+src/RackCad.Application/Systems/PushBack/PushBackEditableState.cs
+src/RackCad.Application/Systems/PushBack/PushBackEditableStateComparer.cs
+src/RackCad.Application/Systems/PushBack/PushBackEditableStateOwnership.cs
+src/RackCad.Application/Systems/PushBack/PushBackEditorOutputGate.cs
+src/RackCad.Application/Systems/PushBack/PushBackEditorState.cs
+src/RackCad.Application/Systems/Shared/RackModuleEditSession.cs
+tests/RackCad.Tests/PushBackEditableStateCopyTests.cs
+tests/RackCad.Tests/PushBackEditableStateLoadTests.cs
+tests/RackCad.Tests/PushBackEditableStateOwnershipTests.cs
+tests/RackCad.Tests/PushBackEditorOutputGateTests.cs
+tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs
+tests/RackCad.UI.Tests/PushBackEditableStateParityTests.cs
+## cuenta
+12
+## diff vacio en prohibidos:
+0
+## INV-PBT1B-03: miembros publicos nuevos de ES y RMES (lineas anadidas)
++        public void CopyAuthorityFrom(PushBackEditorState source)
++        public RackModuleCommit Copy()
++        public bool SameAs(RackModuleCommit other)
++        public RackModuleEditSession Copy()
++        public bool SameEditAs(RackModuleEditSession other)
+## INV-PBT1B-04: declaraciones de campo anadidas en ES y RMES
+(fin campos)
+## INV-PBT1B-04b: namespaces por archivo nuevo
+PushBackEditableState: 1 -> namespace RackCad.Application.Systems.PushBack
+PushBackEditableStateComparer: 1 -> namespace RackCad.Application.Systems.PushBack
+PushBackEditableStateOwnership: 1 -> namespace RackCad.Application.Systems.PushBack
+PushBackEditorOutputGate: 1 -> namespace RackCad.Application.Systems.PushBack
+tests/RackCad.Tests/PushBackEditableStateLoadTests.cs: namespace RackCad.Tests
+tests/RackCad.Tests/PushBackEditableStateCopyTests.cs: namespace RackCad.Tests
+tests/RackCad.Tests/PushBackEditableStateOwnershipTests.cs: namespace RackCad.Tests
+tests/RackCad.Tests/PushBackEditorOutputGateTests.cs: namespace RackCad.Tests
+tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs: namespace RackCad.Tests
+tests/RackCad.UI.Tests/PushBackEditableStateParityTests.cs: namespace RackCad.UI.Tests
+## INV-PBT1B-05 en los 4 archivos nuevos de src
+grep-exit=1 (1 = ninguna coincidencia)

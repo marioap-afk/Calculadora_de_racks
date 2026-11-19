@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT1B-LOSSLESS-STATE-TYPE",
+  "RunId": "R20261119T014757Z-c78a",
+  "DelegationRunId": "R20261118T222843Z-e354",
+  "WorkRunId": "R20261118T223111Z-4c04",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Outcome.Kind=COMPLETED, DeathConfirmed=true. Cession.StartUtc=2026-11-18T22:31:17Z; Outcome.OutputWrittenUtc=2026-11-18T19:45:36.715469-06:00, later than start."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json matches TaskId, WorkRunId, DelegationRunId and Attempt 2; Branch and Worktree match the delegation. Outcome.OutputPath identifies the handoff; its write time is later than Cession.StartUtc."
+    },
+    "Authority": {
+      "Result": "fail",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha exited 0. git diff --name-only AuthorityRevision BaseSha has 25 paths and includes UNIT_CHANGE paths src/RackCad.Application/Systems/PushBack/PushBackEditorState.cs and src/RackCad.Application/Systems/Shared/RackModuleEditSession.cs. AUTOMATION_PLAN 16.3 forbids UNIT_CHANGE paths in this diff, including for this correction base. No EXTERNAL-class path appears in that diff."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "delegation.json and gate-contract.json match for AllowedWriteScope, ForbiddenWriteScope, Authorities, Invariants, StopConditions and RequiredTests. byte-fidelity-check.json reports PASS, with decoded and UTF-8 byte equality for all 8 collections. relay-record-planning.json records A1-A8 pass and nc4; coordinator-disposition.md ratifies only the M10 and M14 points applied here."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json CurrentSha=a18ba345eddc5333c22b8bacbad5c2ed4dbf5959; git rev-parse HEAD=a18ba345eddc5333c22b8bacbad5c2ed4dbf5959; git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad=a18ba345eddc5333c22b8bacbad5c2ed4dbf5959. Branch and worktree match; BaseSha is an ancestor of RedSha, and RedSha is an ancestor of CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Entry reports HeadSha and LsRemoteSha equal CurrentSha. RemoteFacts reports OriginMainSha=812baf879612320653094a8aaf46aca0bac81383, equal to delegation MainSha. No network Git operation was run."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "Read-only scope script loaded the 12 exact AllowedWriteScope entries. git diff --name-only BaseSha CurrentSha: all 5 paths are allowed. git diff --name-only BaseSha RedSha: all 11 paths are allowed. git diff --name-only ChainBaseSha CurrentSha: 12 paths are allowed, but these 11 are outside the exact list: docs/automation/evidence/I-64-evidence.md; docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-f4b-opaque-collections-decision.md; docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt1b-rework-decisions.md; docs/automation/evidence/I-64-pilot/F4B-DRAFTS/f4b-dispositions.md; docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt1b/owner-return-planning2.md; docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt1b/owner-return-rework.md; docs/automation/evidence/I-64-pilot/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T204715Z-a4e2/analysis.md; docs/automation/evidence/I-64-pilot/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T204715Z-a4e2/direct-review.md; docs/automation/evidence/I-64-pilot/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T204715Z-a4e2/independent-review-prompt.md; docs/automation/evidence/I-64-pilot/F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T204715Z-a4e2/independent-review.md; docs/automation/state/I-64.yml. An out-of-list path fails this deterministic Scope check."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned empty. git check-ignore -v artifacts/orchestration/I-64/F4B-PBT1B-LOSSLESS-STATE-TYPE/2/R20261119T014757Z-c78a/inputs matched .gitignore:3 artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun is push, exact branch ref, exact CurrentSha, completed success; all 4 required jobs succeeded. RedRun is push on the same ref and exact RedSha; Core and UI tests failed and Build UI succeeded. Build Plugin was skipped; coordinator-disposition.md M14 explicitly ratifies that result for this point. The supplied CurrentSha and RedSha TRX files match these run records."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Parsed all 4 supplied TRX files against RequiredTests and worker-handoff TestResults. On RedSha, ExpectRed filters selected 13 Core PushBackEditableState tests, 1 Core PushBackEditorOutputGate test and 1 UI parity test; all failed by assertion, with no skips, no qualified-type message prefix and first stack lines under tests/. On CurrentSha, each selected test passed. All ExpectRed=false filters met MinSelected; none failed on RedSha, and all passed on CurrentSha. Chain RT from ChainBaseSha to ChainRedSha contains the six test files recorded in ChainRedFiles; GREEN diff touches none of RT union ChainRedFiles. Current TRX totals: Core 19086 passed; UI 2437 selected, 2416 passed, 21 NotExecuted, 0 failed. Correction analysis SHA-256 in BaseSha matches CorrectionOf: 9891487e4cac8540f3c377ac848e55380ef7dffb76cfec303c4947ead7f8f0bf. RED product blobs match 2d9febc6 for all six src files; BaseSha-to-CurrentSha src diff is empty."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha shows both RED and GREEN commits with Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching worker-handoff Worker.Trailer."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation Model=claude-sonnet-5-5 and Effort.Provider=high. relay-record-work Participant records ModelEffective=claude-sonnet-5-5 and EffortEffective=high; EffectiveSource cites 259 assistant turns. ModelRequested=sonnet is the literal subagent launch alias."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Read-only script scanned the complete seven specified handoff fields against all 16.10 terms, case-insensitive with whole-word or whole-phrase boundaries. Character counts: WorkCompleted 14793, Evidence 7631, UnexpectedFindings 773, KnownLimitations 1864, Deviations 847, OpenQuestions 0, RecommendedNextAction 183. No matches."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes reports 0 permission denials and 2 tool errors, neither pending. Denials is null; no pending failed order is recorded."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Authority",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "AUTOMATION_PLAN 16.3 rejects the AuthorityRevision-to-BaseSha diff because it includes two UNIT_CHANGE paths.",
+    "The required exact-scope script finds 11 ChainBaseSha-to-CurrentSha paths outside AllowedWriteScope; the BaseSha-to-CurrentSha delivery diff itself contains only 5 allowed paths."
+  ],
+  "RecommendedNextAction": "Resolve the AuthorityRevision and chain-scope findings, then request a new Controller verification."
+}

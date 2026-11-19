@@ -1,0 +1,313 @@
+{
+  "Schema": "rackcad-i64-byte-fidelity/v1",
+  "TaskId": "F4B-PBT1B-LOSSLESS-STATE-TYPE",
+  "PlanningRunId": "R20261118T203710Z-4000",
+  "Authority": "F4-E19 y F4-E26: comparacion previa a la aceptacion",
+  "OutputSha256": "961cedc5ac60a70f0ff95b09199729cce455974b00befe03d7355e1b86b64f98",
+  "ContractSha256": "222f1343dcf651d89f41562aea1e412a75d52d222e4a329f94a039b3d26b16ee",
+  "Fields": [
+    {
+      "Field": "Invariants",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "9c846dc5e28b5714de48ff04d876eb97e960da5bb3b6b73e1352d1b82cdb2f56",
+      "OutputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Differences": [
+        {
+          "CountSource": 15,
+          "CountOutput": 0
+        }
+      ]
+    },
+    {
+      "Field": "RequiredTests",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "72d65df792f9447acc7deea7a81b801fc2dc24465f4ede5bd3ea6334ece197ff",
+      "OutputSha256": "9a1c432bd4968cf6e5fd63c8788b955f76ec08c2b5e8e09bdee7a9d685ab3c79",
+      "Differences": [
+        {
+          "Index": 35,
+          "Offset": 31,
+          "Source": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+          "Output": "tests/RackCad.UI.Tests/RackCad.Tests.csproj"
+        },
+        {
+          "Index": 45,
+          "Offset": 31,
+          "Source": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+          "Output": "tests/RackCad.UI.Tests/RackCad.Tests.csproj"
+        }
+      ]
+    },
+    {
+      "Field": "StopConditions",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "2c649dbbcef226135d3f627c2b4e13efb9845b6311e4c223c52597b84ab9db17",
+      "OutputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Differences": [
+        {
+          "CountSource": 66,
+          "CountOutput": 0
+        }
+      ]
+    },
+    {
+      "Field": "Authorities",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "ac731daad05c5b247ca73243c2942e61f9209b704546ca24986f5ea9e0e5dd27",
+      "OutputSha256": "9542870494c0cfe4e1cad32e2315ee56c617ba0a60b108a7af4c967af6e64ead",
+      "Differences": [
+        {
+          "Index": 10,
+          "Offset": 5,
+          "Source": "docs/automation/evidence/I-64-pilot/F4B-DRAFT",
+          "Output": "docs/initiatives/I-64-f4b-push-back-completo-"
+        },
+        {
+          "Index": 11,
+          "Offset": 0,
+          "Source": "la comprobacion acotada de la v2.7 (sect",
+          "Output": "paquete de la fase F4B v3.1: OB-01.1b, O"
+        },
+        {
+          "Index": 13,
+          "Offset": 27,
+          "Source": "docs/initiatives/I-64-f4b-push-back-completo-package.md",
+          "Output": "docs/initiatives/I-64-f4b-pbt0-gate-contract-package.md"
+        },
+        {
+          "Index": 14,
+          "Offset": 0,
+          "Source": "paquete de la fase F4B v3.1: OB-01.1b, O",
+          "Output": "el paquete de PB-T0: CT-PB0-01 (las 667 "
+        },
+        {
+          "Index": 16,
+          "Offset": 5,
+          "Source": "docs/automation/evidence/I-64-pilot/F4B-DRAFT",
+          "Output": "docs/initiatives/I-64-f4b-pbtc-gate-contract-"
+        },
+        {
+          "Index": 17,
+          "Offset": 0,
+          "Source": "archivo completo ([OD]): la fila de PB-T",
+          "Output": "el paquete de PB-TC v2.2 ([PKC]): el alg"
+        },
+        {
+          "Index": 19,
+          "Offset": 5,
+          "Source": "docs/automation/evidence/I-64-pilot/F4B-DRAFT",
+          "Output": "docs/initiatives/I-64-f4b-pbtc2-gate-contract"
+        },
+        {
+          "Index": 20,
+          "Offset": 0,
+          "Source": "archivo completo ([DP], F4B-E03): pregun",
+          "Output": "el paquete de PB-TC2 v2 ([PKC2]): la cel"
+        },
+        {
+          "Index": 22,
+          "Offset": 5,
+          "Source": "docs/automation/evidence/I-64-pilot/F4B-DRAFT",
+          "Output": "docs/initiatives/I-64-f4b-pbtc2-measurements."
+        },
+        {
+          "Index": 23,
+          "Offset": 0,
+          "Source": "archivo completo ([OPT1], F4B-E09): preg",
+          "Output": "el registro de mediciones de PB-TC2"
+        },
+        {
+          "Index": 25,
+          "Offset": 5,
+          "Source": "docs/automation/evidence/I-64-pilot/F4B-DRAFT",
+          "Output": "docs/initiatives/I-64-f4-t1b-gate-contract-pa"
+        },
+        {
+          "Index": 26,
+          "Offset": 0,
+          "Source": "archivo completo ([OD2], F4B-E11): D2 co",
+          "Output": "el patron de T1B ([T1B]): la caracteriza"
+        },
+        {
+          "Index": 28,
+          "Offset": 5,
+          "Source": "docs/automation/evidence/I-64-pilot/F4B-DRAFT",
+          "Output": "docs/initiatives/I-64-f4-t2-gate-contract-pac"
+        },
+        {
+          "Index": 29,
+          "Offset": 0,
+          "Source": "archivo completo (F4B-E14): pregunta 2 (",
+          "Output": "el regimen del RED con esqueleto inerte "
+        },
+        {
+          "Index": 31,
+          "Offset": 5,
+          "Source": "docs/automation/evidence/I-64-pilot/F4B-DRAFT",
+          "Output": "docs/initiatives/I-64-f4-t3-gate-contract-pac"
+        },
+        {
+          "Index": 32,
+          "Offset": 0,
+          "Source": "archivo completo (F4B-E15): las tres com",
+          "Output": "INV-F4T3A-13 (:371-374): el esqueleto in"
+        },
+        {
+          "Index": 34,
+          "Offset": 5,
+          "Source": "docs/automation/evidence/I-64-pilot/F4B-DRAFT",
+          "Output": "docs/initiatives/I-64-f4-t3c-gate-contract-pa"
+        },
+        {
+          "Index": 35,
+          "Offset": 3,
+          "Source": "la disposicion unica de nc1 en PB-TC (F4B-E",
+          "Output": "la regla RED (:297): el esqueleto completo "
+        },
+        {
+          "Index": 37,
+          "Offset": 5,
+          "Source": "docs/automation/evidence/I-64-pilot/F4B-DRAFT",
+          "Output": "docs/initiatives/I-64-f4b-pbt1-measurements.m"
+        },
+        {
+          "Index": 38,
+          "Offset": 0,
+          "Source": "la disposicion de nc1 en PB-TC2 solo par",
+          "Output": "el registro de mediciones del paquete, a"
+        },
+        {
+          "Index": 39,
+          "Offset": 5,
+          "Source": "UNIT_DOC",
+          "Output": "UNIT_CHANGE"
+        },
+        {
+          "Index": 40,
+          "Offset": 0,
+          "Source": "docs/automation/evidence/I-64-pilot/F4B-",
+          "Output": "src/RackCad.Application/Systems/PushBack"
+        },
+        {
+          "Index": 41,
+          "Offset": 0,
+          "Source": "archivo completo: F4B-E01 a F4B-E16",
+          "Output": "PushBackEditorState: solo el metodo nuev"
+        },
+        {
+          "Index": 42,
+          "Offset": 5,
+          "Source": "UNIT_DOC",
+          "Output": "UNIT_CHANGE"
+        },
+        {
+          "Index": 43,
+          "Offset": 0,
+          "Source": "docs/automation/evidence/I-64-pilot/F4B-",
+          "Output": "src/RackCad.Application/Systems/Shared/R"
+        },
+        {
+          "Index": 44,
+          "Offset": 0,
+          "Source": "la vuelta al Owner tras el Worker de PB-",
+          "Output": "RackModuleEditSession y RackModuleCommit"
+        },
+        {
+          "Index": 45,
+          "Offset": 0,
+          "Source": "UNIT_DOC",
+          "Output": "EXTERNAL"
+        },
+        {
+          "Index": 46,
+          "Offset": 16,
+          "Source": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt1/ob06",
+          "Output": "docs/automation/agent-execution/routing.md"
+        },
+        {
+          "Index": 47,
+          "Offset": 0,
+          "Source": "el expediente del analista: section 3 (l",
+          "Output": "archivo completo"
+        },
+        {
+          "Index": 48,
+          "Offset": 0,
+          "Source": "UNIT_DOC",
+          "Output": "EXTERNAL"
+        },
+        {
+          "Index": 49,
+          "Offset": 16,
+          "Source": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt1/owne",
+          "Output": "docs/automation/agent-execution/model-catalog.md"
+        },
+        {
+          "Index": 50,
+          "Offset": 0,
+          "Source": "la vuelta L-1 al Owner, respondida por F",
+          "Output": "celdas medidas y vigentes para Controlle"
+        },
+        {
+          "CountSource": 156,
+          "CountOutput": 51
+        }
+      ]
+    },
+    {
+      "Field": "ExpectedEvidence",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "f2c3b321f58580912409a451e01e107798852e632e1b1d065d00f71601dfa622",
+      "OutputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Differences": [
+        {
+          "CountSource": 8,
+          "CountOutput": 0
+        }
+      ]
+    },
+    {
+      "Field": "Objective",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "b46102af33231d254003f5fa8ac15d08d68a3944e92ab4444b26c4770bdd0464",
+      "OutputSha256": "b46102af33231d254003f5fa8ac15d08d68a3944e92ab4444b26c4770bdd0464",
+      "Differences": []
+    },
+    {
+      "Field": "AllowedWriteScope",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "943792145b7357e3a87c862df971ba9f5cec1e91509c1ea46cc27e38db6135f9",
+      "OutputSha256": "943792145b7357e3a87c862df971ba9f5cec1e91509c1ea46cc27e38db6135f9",
+      "Differences": []
+    },
+    {
+      "Field": "ForbiddenWriteScope",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "1ba4bac61ae8b4e15c94b537136161c16e2a2d1e2e22ed1fc398a2ddaf185bce",
+      "OutputSha256": "1ba4bac61ae8b4e15c94b537136161c16e2a2d1e2e22ed1fc398a2ddaf185bce",
+      "Differences": []
+    }
+  ],
+  "Result": "REJECTED",
+  "AllowedWriteScopeElementwiseInOrder": true,
+  "ForbiddenWriteScopeCount": {
+    "Contract": 213,
+    "Output": 213
+  }
+}

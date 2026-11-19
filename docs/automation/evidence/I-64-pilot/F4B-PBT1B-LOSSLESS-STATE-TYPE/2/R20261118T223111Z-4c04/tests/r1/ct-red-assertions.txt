@@ -1,0 +1,105 @@
+== CT_PBT1B_06_EveryFieldOfTheStateIsClassifiedAndEveryEditableFieldSurvivesTheCopy (r1a)
+   Assert.Equal() Failure: Collections differ
+                                                                                                         ↓ (pos 3)
+   Expected: string[]     [···, "obsoletas=[]", "clase-D=[PushBackEditorState.LastModuleReconciliat"···, "copia-inicial-igual=True", "copia-inicial-igual-pb-20-ab-sin-B=True", "campos-E-sin-ejercer=[]", ···]
+   Actual:   List<string> [···, "obsoletas=[]", "clase-D=[PushBackEditorState.LastModuleReconciliat"···, "EXCEPCION InvalidOperationException: Sequence cont"···, "copia-inicial-igual=False", "copia-inicial-igual-pb-20-ab-sin-B=False", ···]
+                                                                                                         ↑ (pos 3)
+   en: at RackCad.Tests.PushBackEditableStateCopyTests.CT_PBT1B_06_EveryFieldOfTheStateIsClassifiedAndEveryEditableFieldSurvivesTheCopy() in tests\RackCad.Tests\PushBackEditableStateCopyTests.cs:line 669
+== CT_PBT1B_02_TheRoundTripOfEverySupportedRackLosesNothing (r1a)
+   Assert.Equal() Failure: Collections differ
+              ↓ (pos 0)
+   Expected: ["pb-01-base diseno-estado-diseno delta=[]", "pb-01-base primera-vuelta-estado iguales=True", "pb-01-base estado-diseno-estado iguales=True", "pb-02-modulos diseno-estado-diseno delta=[]", "pb-02-modulos primera-vuelta-estado iguales=True", ···]
+   Actual:   ["EXCEPCION InvalidOperationException: Sequence cont"···, "pb-01-base diseno-estado-diseno delta=[$.PushBack."···, "pb-01-base primera-vuelta-estado iguales=False", "pb-01-base estado-diseno-estado iguales=False", "pb-02-modulos diseno-estado-diseno 
+              ↑ (pos 0)
+   en: at RackCad.Tests.PushBackEditableStateLoadTests.CT_PBT1B_02_TheRoundTripOfEverySupportedRackLosesNothing() in tests\RackCad.Tests\PushBackEditableStateLoadTests.cs:line 294
+== CT_PBT1B_11_EveryFieldOfTheThreeDocumentLevelsHasAnOwner (r1a)
+   Assert.Equal() Failure: Collections differ
+              ↓ (pos 0)
+   Expected: ["normalize $.Structure.Fronts[*].Cells[*]", "pb-01-base envelope sin-clasificar-o-distinta=0 ho"···, "pb-01-base proyecto sin-clasificar-o-distinta=0 ho"···, "pb-01-base carga sin-clasificar-o-distinta=0 hojas"···, "pb-02-modulos envelope sin-clasif
+   Actual:   ["normalize $.Structure.Fronts[3].Cells[0]", "pb-01-base envelope sin-clasificar-o-distinta=7 ho"···, "pb-01-base proyecto sin-clasificar-o-distinta=830 "···, "pb-01-base carga sin-clasificar-o-distinta=822 hoj"···, "pb-02-modulos envelope sin-clasif
+              ↑ (pos 0)
+   en: at RackCad.Tests.PushBackEditableStateOwnershipTests.CT_PBT1B_11_EveryFieldOfTheThreeDocumentLevelsHasAnOwner() in tests\RackCad.Tests\PushBackEditableStateOwnershipTests.cs:line 118
+== CT_PBT1B_05_TheOtherLossesOfTheCatalogDependenciesAreReproducedAsTheyAre (r1a)
+   Assert.Equal() Failure: Collections differ
+                                                                                    ↓ (pos 1)
+   Expected: string[]     ["c-01 HeaderPostCatalogId vacio :: retiradas(a/b)=["···, "   [CARGA-APPLICATION:poste-vacio-a-defecto Dynami"···, "c-03 HighEndBeamPeraltes[0]=7.25 :: retiradas(a/b)"···, "   [CARGA-APPLICATION:peralte-posterior-normalizad"···, "c-04 In
+   Actual:   List<string> ["c-01 HeaderPostCatalogId vacio :: retiradas(a/b)=["···, "   [SIN-ETIQUETA] $.PushBack.Fronts[1].DefaultPall"···, "   [SIN-ETIQUETA] $.PushBack.Fronts[1].DrawPallets"···, "   [SIN-ETIQUETA] $.PushBack.Fronts[1].HighEndBeam"···, "   [SIN
+                                                                                    ↑ (pos 1)
+   en: at RackCad.Tests.PushBackEditableStateLoadTests.CT_PBT1B_05_TheOtherLossesOfTheCatalogDependenciesAreReproducedAsTheyAre() in tests\RackCad.Tests\PushBackEditableStateLoadTests.cs:line 480
+== CT_PBT1B_10_TheComparerSeparatesEveryChangeOfContentAndIgnoresTheSelection (r1a)
+   Assert.Equal() Failure: Collections differ
+                           ↓ (pos 0)
+   Expected: string[]     ["dos-cargas-iguales=True", "sesion-abierta-sin-cambios-vs-nula-iguales=True,Tr"···, "sesion-de-una-linea-base-anterior-vs-cargada-disti"···, "contenido distintos=True", "cola distintos=True", ···]
+   Actual:   List<string> ["dos-cargas-iguales=False", "sesion-abierta-sin-cambios-vs-nula-iguales=False,F"···, "sesion-de-una-linea-base-anterior-vs-cargada-disti"···, "EXCEPCION InvalidOperationException: Sequence cont"···, "contenido distintos=True", ···]
+                           ↑ (pos 0)
+   en: at RackCad.Tests.PushBackEditableStateCopyTests.CT_PBT1B_10_TheComparerSeparatesEveryChangeOfContentAndIgnoresTheSelection() in tests\RackCad.Tests\PushBackEditableStateCopyTests.cs:line 1010
+== CT_PBT1B_07_ACopySharesNoMutableObjectWithItsOriginalExceptTheTwoDeclaredReferences (r1a)
+   Assert.Equal() Failure: Collections differ
+              ↓ (pos 0)
+   Expected: ["pb-06-seguridad parte1 copia-igual=True compartido"···, "pb-06-seguridad parte2 revisados>0=True compartido"···, "pb-07-combinado parte1 copia-igual=True compartido"···, "pb-07-combinado parte2 revisados>0=True compartido"···, "F-01 parte1 copia-ig
+   Actual:   ["EXCEPCION InvalidOperationException: Sequence cont"···, "pb-06-seguridad parte1 copia-igual=False compartid"···, "pb-06-seguridad parte2 revisados>0=True compartido"···, "pb-07-combinado parte1 copia-igual=False compartid"···, "pb-07-combinado part
+              ↑ (pos 0)
+   en: at RackCad.Tests.PushBackEditableStateCopyTests.CT_PBT1B_07_ACopySharesNoMutableObjectWithItsOriginalExceptTheTwoDeclaredReferences() in tests\RackCad.Tests\PushBackEditableStateCopyTests.cs:line 758
+== CT_PBT1B_13_EveryCallOfBuildInputsGivesNewObjectsWithTheValuesOfTheState (r1a)
+   Assert.Equal() Failure: Collections differ
+                           ↓ (pos 0)
+   Expected: string[]     ["dos-llamadas-objetos-compartidos=0", "seis-avanzados=True", "unidad-y-casillas=True", "restaurar-estandar Advanced-intacto=True inputs-de"···]
+   Actual:   List<string> ["EXCEPCION InvalidOperationException: Sequence cont"···, "dos-llamadas-objetos-compartidos=0", "seis-avanzados=False", "unidad-y-casillas=False", "restaurar-estandar Advanced-intacto=True inputs-de"···]
+                           ↑ (pos 0)
+   en: at RackCad.Tests.PushBackEditableStateCopyTests.CT_PBT1B_13_EveryCallOfBuildInputsGivesNewObjectsWithTheValuesOfTheState() in tests\RackCad.Tests\PushBackEditableStateCopyTests.cs:line 1064
+== CT_PBT1B_08_MutatingAllOrdinaryEditableStateInTheCopyDoesNotChangeTheSource (r1a)
+   Assert.Equal() Failure: Collections differ
+              ↓ (pos 0)
+   Expected: ["F-01 copia-no-toca-original ranuras-E intacto=True"···, "F-01 copia-no-toca-original autoridad intacto=True"···, "F-01 copia-no-toca-original intencion intacto=True"···, "F-01 copia-no-toca-original portadores intacto=Tru"···, "F-01 copia-no-toca-o
+   Actual:   ["EXCEPCION InvalidOperationException: Sequence cont"···, "F-01 copia-no-toca-original ranuras-E intacto=Fals"···, "F-01 copia-no-toca-original autoridad intacto=Fals"···, "F-01 copia-no-toca-original intencion intacto=Fals"···, "F-01 copia-no-toca-o
+              ↑ (pos 0)
+   en: at RackCad.Tests.PushBackEditableStateCopyTests.CT_PBT1B_08_MutatingAllOrdinaryEditableStateInTheCopyDoesNotChangeTheSource() in tests\RackCad.Tests\PushBackEditableStateCopyTests.cs:line 885
+== CT_PBT1B_17_TheWeightUnitThatTheBoxShowsIsTheOneEveryRebuildUses (r1a)
+   Assert.Equal() Failure: Collections differ
+                                                                                                                          ↓ (pos 3)
+   Expected: string[]     [···, "regla current=[kg] requested=[lb] -> [lb]", "regla current=[lb] requested=[kg] -> [kg]", "regla current=[kg] requested=[ton] -> [kg]", "regla current=[lb] requested=[ton] -> [lb]", "regla current=[kg] requested=<null> -> [kg]", ··
+   Actual:   List<string> [···, "regla current=[kg] requested=[lb] -> [lb]", "regla current=[lb] requested=[kg] -> [kg]", "regla current=[kg] requested=[ton] -> [ton]", "regla current=[lb] requested=[ton] -> [ton]", "regla current=[kg] requested=<null> -> []", ··
+                                                                                                                          ↑ (pos 3)
+   en: at RackCad.Tests.PushBackEditableStateLoadTests.CT_PBT1B_17_TheWeightUnitThatTheBoxShowsIsTheOneEveryRebuildUses() in tests\RackCad.Tests\PushBackEditableStateLoadTests.cs:line 585
+== CT_PBT1B_03_TheRuleOfTheCatalogPostIsExplicitAndOrdinal (r1a)
+   Assert.Equal() Failure: Collections differ
+                                                                                    ↓ (pos 1)
+   Expected: string[]     ["catalogo regla [POSTE_OMEGA_ATORNILLABLE_CON_TROQU"···, "catalogo regla [poste_omega_atornillable_con_troqu"···, "catalogo regla [PB0_POSTE_INEXISTENTE] -> [POSTE_O"···, "catalogo regla [] -> [POSTE_OMEGA_ATORNILLABLE_CON"···, "catalog
+   Actual:   List<string> ["catalogo regla [POSTE_OMEGA_ATORNILLABLE_CON_TROQU"···, "catalogo regla [poste_omega_atornillable_con_troqu"···, "catalogo regla [PB0_POSTE_INEXISTENTE] -> [PB0_POS"···, "catalogo regla [] -> []", "catalogo regla [   ] -> [   ]", ···]
+                                                                                    ↑ (pos 1)
+   en: at RackCad.Tests.PushBackEditableStateLoadTests.CT_PBT1B_03_TheRuleOfTheCatalogPostIsExplicitAndOrdinal() in tests\RackCad.Tests\PushBackEditableStateLoadTests.cs:line 335
+== CT_PBT1B_16_NoOperationOfTheApiMutatesTheResolvedRackOrTheModuleReport (r1a)
+   Assert.Equal() Failure: Collections differ
+                           ↓ (pos 0)
+   Expected: string[]     ["editar huellas-iguales=True", "validar huellas-iguales=True", "descartar-y-recargar huellas-iguales=True", "comparar huellas-iguales=True", "comparar-proyeccion lineas-base-distintas=True igu"···, ···]
+   Actual:   List<string> ["EXCEPCION InvalidOperationException: Sequence cont"···, "editar huellas-iguales=True", "EXCEPCION InvalidOperationException: Sequence cont"···, "EXCEPCION NullReferenceException: Object reference"···, "EXCEPCION NullReferenceException:
+                           ↑ (pos 0)
+   en: at RackCad.Tests.PushBackEditableStateCopyTests.CT_PBT1B_16_NoOperationOfTheApiMutatesTheResolvedRackOrTheModuleReport() in tests\RackCad.Tests\PushBackEditableStateCopyTests.cs:line 1352
+== CT_PBT1B_09_ModulesTailAndSidesBehaveInTheCopyAsInTheOriginal (r1a)
+   Assert.Equal() Failure: Collections differ
+              ↓ (pos 0)
+   Expected: ["F-01 la-copia-calcula-el-mismo-diseno=True", "F-01 retirar-B copia-igual-que-original=True", "F-01 redeclarar-B copia-igual-que-original=True co"···, "F-01 confirmar-la-edicion copia-igual-que-original"···, "pb-20-ab-sin-B la-copia-calcula-el-mismo
+   Actual:   ["EXCEPCION InvalidOperationException: Sequence cont"···, "F-01 la-copia-calcula-el-mismo-diseno=True", "EXCEPCION InvalidOperationException: Sequence cont"···, "F-01 retirar-B copia-igual-que-original=True", "F-01 redeclarar-B copia-igual-que-origin
+              ↑ (pos 0)
+   en: at RackCad.Tests.PushBackEditableStateCopyTests.CT_PBT1B_09_ModulesTailAndSidesBehaveInTheCopyAsInTheOriginal() in tests\RackCad.Tests\PushBackEditableStateCopyTests.cs:line 944
+== CT_PBT1B_04_OnlyTheParkedTailOfPb21ColaIsOutsideTheGuarantee (r1a)
+   Assert.Equal() Failure: Collections differ
+                                                                                          ↓ (pos 15)
+   Expected: [···, "pb-15-sin-composite soporte=Supported", "pb-20-ab soporte=Supported", "pb-21-cola soporte=DormantCompositeTail", "pb-31-v2-modulos soporte=Supported", "pb-21-cola delta-filtrado=667 sha256=0b54e8ff5c8ad"···, ···]
+   Actual:   [···, "pb-15-sin-composite soporte=Supported", "pb-20-ab soporte=Supported", "pb-21-cola soporte=Supported", "pb-31-v2-modulos soporte=Supported", "pb-21-cola delta-filtrado=722 sha256=b3b7af4b6b5bd"···, ···]
+                                                                                          ↑ (pos 15)
+   en: at RackCad.Tests.PushBackEditableStateLoadTests.CT_PBT1B_04_OnlyTheParkedTailOfPb21ColaIsOutsideTheGuarantee() in tests\RackCad.Tests\PushBackEditableStateLoadTests.cs:line 381
+== CT_PBT1B_12_TheOutputGateBlocksWithTheLiteralTextsOfTheWindow (r1b)
+   Assert.Equal() Failure: Collections differ
+                                                                    ↓ (pos 1)
+   Expected: string[]     ["valido bloqueado=False estado=RESERVA", "hueco-negativo bloqueado=True estado=El hueco (-1\"···, "separador-sin-hueco bloqueado=True estado=El separ"···, "override-no-construible bloqueado=True estado=Lado"···, "celda-no-cabe bloqueado
+   Actual:   List<string> ["valido bloqueado=False estado=RESERVA", "hueco-negativo bloqueado=False estado=RESERVA", "separador-sin-hueco bloqueado=False estado=RESERVA", "override-no-construible bloqueado=False estado=RES"···, "celda-no-cabe bloqueado=False esta
+                                                                    ↑ (pos 1)
+   en: at RackCad.Tests.PushBackEditorOutputGateTests.CT_PBT1B_12_TheOutputGateBlocksWithTheLiteralTextsOfTheWindow() in tests\RackCad.Tests\PushBackEditorOutputGateTests.cs:line 95
+== CT_PBT1B_01_TheLoadsOfTheStateMatchTheWindowOfToday (r1d)
+   Assert.Equal() Failure: Collections differ
+              ↓ (pos 0)
+   Expected: ["(sin-diseno) nueva iguales=True bloqueado-ventana="···, "pb-01-base LoadExisting iguales=True bloqueado-ven"···, "pb-01-base LoadDesignForNew iguales=True bloqueado"···, "pb-01-base Restaurar-tras-cargar iguales=True bloq"···, "pb-01-base Restaurar
+   Actual:   ["(sin-diseno) nueva iguales=False bloqueado-ventana"···, "pb-01-base LoadExisting iguales=False bloqueado-ve"···, "pb-01-base LoadDesignForNew iguales=False bloquead"···, "pb-01-base Restaurar-tras-cargar iguales=False blo"···, "pb-01-base Restaurar
+              ↑ (pos 0)
+   en: at RackCad.UI.Tests.PushBackEditableStateParityTests.CT_PBT1B_01_TheLoadsOfTheStateMatchTheWindowOfToday() in tests\RackCad.UI.Tests\PushBackEditableStateParityTests.cs:line 559
