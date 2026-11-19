@@ -1190,3 +1190,56 @@ No hay cambios materiales.
 - **La cadena:** primera delegación; `attempts` 1 de 3.
 - **La planificación:** con las colecciones opacas puestas por la sesión (F4B-E21).
 - **La verificación:** con las comprobaciones deterministas de F4B-E15.
+
+## F4B-E40. Cierre de F4B-PBT2C-WORKSPACE-CARRYOVER (PB-T2 completa), con la decisión del Owner sobre nc1 y la firma PD-F4B-01
+
+**Paquete de cierre:** `F4B-PBT2C-WORKSPACE-CARRYOVER/task-close-package.md`.
+
+**La cadena:**
+- **La emisión** (F4B-E39): con el paquete de PB-T2 v2.9, X `92232ed3` y BASE `05beabfd`. CA-T2c y sus seis rondas; la última, la §13 sobre el cierre de PB-T2b, EMITIBLE 0/0/2, con M-13 y M-14 aplicadas. La tabla de CT-PBT2C-03 la midió la sesión en una corrida temporal de UI: 49 filas, de las que aplican 42, en 6 no hay nada que aplicar y 1 se niega.
+- **La planificación:**
+  - Dos preparaciones no se lanzaron: `b5fa`, por la expresión del pie de la tabla, y `a19d`, por un P-02 falso, porque la línea de órdenes de la sesión llevaba la ruta del worktree.
+  - La planificación `65ce` se aceptó al primer lanzamiento: fidelidad 8/8, A1-A8 8/8, nc4 `d138` y 17 criterios.
+- **El Worker `05b7`** (sonnet/high) dio IMPLEMENTATION_COMPLETE, sin reparación del RED:
+  - el RED `7aeb6170`: los tres mutantes de una línea (W:3713, WC:95 y W:3273) y la clase `PushBackWorkspaceCarryoverTests`;
+  - las corridas aisladas `m1` a `m3`: cada mutante hace fallar el CT de su fila, y m3 además CT-02;
+  - el GREEN `b1968341`: revierte los mutantes, y `src` queda igual que en la base.
+
+**CI:**
+- RED `44618262418`: tests y ui-tests en failure, build-ui en success y build-plugin omitido. Los fallos existentes se atribuyen a los mutantes, entre ellos CT-PBT2B-08 en Core.
+- GREEN `44619492077`: 4/4, Core 19 094 y UI 2 450 (2 429 pasadas y 21 omitidas), lo previsto.
+
+**Revisiones:**
+- La directa: sin hallazgos.
+- La independiente: ACEPTABLE CON MENORES 0/0/2, más OWNER-01, informativo:
+  - en WORKSPACE, un lado B declarado sin frentes sobrevive en el borrador mientras vive, y en CLASSIC se pierde al reabrir;
+  - el aviso sigue siendo cierto respecto al dibujo;
+  - se informa al Owner, y qué escribe el panel queda para PB-T3 y PB-T4.
+
+**Verificación** `R20261119T220812Z-e59c`: **EXECUTION_VERIFIED** 14/14 al primer lanzamiento, con `rr_check` PASS (sin reparación).
+
+**Tabla de comparación de nc1** (PBT2C-C11), frente a la verificación real `e59c`. Solo se listan las comprobaciones que difieren:
+
+| Control | Resultado | Primera en fail | En fail | Paradas | Firma |
+|---|---|---|---|---|---|
+| nc1 `R20261119T221258Z-ea01` (`CurrentSha` falso `deadbeef…`) | EXECUTION_BLOCKED / STOP | Handoff | Handoff, Identity, Remote, Scope, Ci y Tests | S-04 | **Variación de PD-F4-04**, la misma cascada que en PB-T2a. Todas las evidencias en fail citan el SHA falso. Trailer y las demás, en pass |
+| nc2 `R20261119T222128Z-1ff5` | CONTROL PASS (Scope, STOP) | — | — | — | — |
+| nc3 `R20261119T222719Z-4f9f` | CONTROL PASS (FreeText, REWORK) | — | — | — | — |
+
+**La decisión del Owner** (`F4B-DRAFTS/coordinator/owner-pbt2c-nc1-decision.md`, literal): «Aceptar y ampliar la firma (Recomendado)».
+- **PB-T2c:** `nc1 = SATISFIED_BY_OWNER_DISPOSITION`.
+- **La firma nueva PD-F4B-01, «cascada del SHA falso»,** para el resto de F4B, con las condiciones (a) a (f) de la decisión:
+  - Handoff primero, STOP con S-04;
+  - en fail, solo un subconjunto de {Handoff, Identity, Remote, Scope, Ci, Tests}, con Handoff e Identity;
+  - cada evidencia en fail cita el SHA falso y ninguna atribuye otra causa;
+  - Identity escribe además el HEAD real.
+- **El sustituto** `PBT3x-NC1-CASCADE-SIGNAL-01` lleva autoprueba y revisión independiente antes de los controles de PB-T3a. Cualquier otra variación vuelve al Owner.
+- Es la cuarta variación de nc1 en F4B, tras PB-TC (F4B-E08), PB-T2a (F4B-E34) y PB-T2b (F4B-E38).
+
+**Controles:** nc1 por disposición del Owner; nc2 y nc3, CONTROL PASS.
+
+**Resultado:** **F4B-PBT2C-WORKSPACE-CARRYOVER = CLOSED / PASS WITH LIMITATIONS** sobre `b1968341`, con attempts 1 de 3.
+- Las obligaciones heredadas de PB-TC y PB-TC2 se cumplen en WORKSPACE, y lo fijan CT-PBT2C-01 a 03.
+- **PB-T2 queda completa:** PB-T2a, PB-T2b y PB-T2c.
+
+**Siguiente:** la emisión de PB-T3a con el paquete de PB-T3 v4.4, por F4B-E35 (pregunta 3). Su comprobación acotada CA-T3a dio EMITIBLE en su recomprobación sobre la v4.4. Antes de sus controles, el sustituto de PD-F4B-01, revisado.

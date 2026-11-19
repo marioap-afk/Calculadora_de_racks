@@ -1,0 +1,62 @@
+{
+  "GreenNuevaClase": {
+    "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceCarryoverTests",
+    "Selected": 3,
+    "Passed": 3,
+    "Failed": 0,
+    "Other": 0
+  },
+  "GreenCoreAll": {
+    "Selected": 19094,
+    "Passed": 19094,
+    "Failed": 0
+  },
+  "GreenUiAll": {
+    "Selected": 2450,
+    "Passed": 2429,
+    "Failed": 0
+  },
+  "Red": {
+    "NuevaClase": {
+      "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceCarryoverTests",
+      "Selected": 3,
+      "Passed": 0,
+      "Failed": 3,
+      "Other": 0
+    },
+    "CoreAll": {
+      "Selected": 19094,
+      "Passed": 19093,
+      "Failed": 1
+    },
+    "UiAll": {
+      "Selected": 2450,
+      "Passed": 2406,
+      "Failed": 23
+    },
+    "ExistentesQueFallan": [
+      "RackCad.Tests.PushBackWorkspaceModeSourceGuardTests.CT_PBT2B_08_NoWorkspacePathReachesTheClassicWritePath",
+      "RackCad.UI.Tests.PushBackDeclaredCorrection2MixedBoxTests.CT_PBTC2_04_AMixedBoxThatReceivesAValueAppliesItToBothSidesAndANonMixedBoxKeepsTheExactValue",
+      "RackCad.UI.Tests.PushBackDeclaredCorrection2RoundingTests.CT_PBTC2_01_AnUneditedGapBoxKeepsTheExactGapUpToTheUpdate",
+      "RackCad.UI.Tests.PushBackDeclaredCorrection2RoundingTests.CT_PBTC2_02_PassingThroughTheModuleLengthKeepsACalculatedModuleAndAnEditMakesItManual",
+      "RackCad.UI.Tests.PushBackDeclaredCorrectionPilotParityTests.CT_PBTC_06_TheWindowAndThePilotWriteTheSameDesignForTheFourteenDesigns",
+      "RackCad.UI.Tests.PushBackDeclaredCorrectionPilotParityTests.CT_PBTC_10_TheWindowAndThePilotWriteTheSameDesignForEveryExactFieldAndForCustomModules",
+      "RackCad.UI.Tests.PushBackDeclaredCorrectionRoundingTests.CT_PBTC_01_TheLoadedFieldsKeepTheirExactValueAfterLoading",
+      "RackCad.UI.Tests.PushBackDeclaredCorrectionRoundingTests.CT_PBTC_02_UpdateInRackeditarAndTheLibraryLoadCarryTheExactValues",
+      "RackCad.UI.Tests.PushBackDeclaredCorrectionRoundingTests.CT_PBTC_03_AnEditedBoxWinsAndAnUneditedOrReselectedBoxKeepsTheExactValue",
+      "RackCad.UI.Tests.PushBackDeclaredCorrectionSideBNoticeTests.CT_PBTC_07_TheSideBNoticeShowsExactlyWhileSideBIsDeclaredWithoutAnActiveFront",
+      "RackCad.UI.Tests.PushBackDeclaredCorrectionSideBNoticeTests.CT_PBTC_08_TheSideBNoticeIsTextOnlyAndBlocksNoAction",
+      "RackCad.UI.Tests.PushBackEditableStateParityTests.CT_PBT1B_01_TheLoadsOfTheStateMatchTheWindowOfToday",
+      "RackCad.UI.Tests.PushBackStateNetActionsTests.CT_PBT1A_12_TheElevenActionButtonsAreEnabledWithTheSideBNoticeVisibleAndWithoutIt",
+      "RackCad.UI.Tests.PushBackStateNetCellAndFrontTests.CT_PBT1A_07_AnUneditedExactValueReachesTheOutputExactAndTheRackCarriersAndTheAdvancedScopesAreKept",
+      "RackCad.UI.Tests.PushBackStateNetCellAndFrontTests.CT_PBT1A_08_AMixedBoxWrittenReachesBothSidesByTheScopeAndByTheFrontDataAndAnUnwrittenOneKeepsEachSide",
+      "RackCad.UI.Tests.PushBackStateNetCompositeTests.CT_PBT1A_10_IncumplimientoCaracterizadoM07AStaleMixedIndicatorMakesAnEmptiedManualLengthKeepItsOverride",
+      "RackCad.UI.Tests.PushBackStateNetFingerprintTests.CT_PBT1A_14_TheOutputFingerprintsOfTheExtendedCorpusByTheScriptsG1ToG6AreFixed",
+      "RackCad.UI.Tests.PushBackWindowOnStateTests.CT_PBT1C_01_TheWindowEditsTheExtractedStateAndLoadsItLikeTheStateAlone",
+      "RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests.CT_PBT2B_03_NoWorkspaceGestureFlagsAClassicRequestAndBomAndLibraryLeaveTheDraftAndItsIdentityAlone",
+      "RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests.CT_PBT2B_04_ApplyToDraftHandsTheEditedStateToTheDraftOnceAndKeepsTheWindowOpen",
+      "RackCad.UI.Tests.PushBackWorkspaceModeTests.CT_PBT2B_02_WorkspaceLoadsACopyOfTheDraftStateWithoutGoingThroughADesign"
+    ],
+    "ExistentesQueLaEntregaNoNombra": []
+  }
+}

@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index da66eba0..2f47a4c9 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -3270,7 +3270,7 @@ namespace RackCad.UI.Systems.PushBack
+                 return;
+             }
+ 
+-            var result = draftPort.ApplyToDraft(PushBackEditableStateComparer.Copy(editable));
++            var result = draftPort.ApplyToDraft(PushBackEditableStateComparer.Copy(appliedState));
+             if (result.Status != PushBackDraftApplyStatus.Applied)
+             {
+                 SetStatus(WorkspaceNotEditableMessage, true);

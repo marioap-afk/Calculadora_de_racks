@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT2C-WORKSPACE-CARRYOVER",
+  "RunId": "R20261119T220812Z-e59c",
+  "DelegationRunId": "R20261119T203120Z-65ce",
+  "WorkRunId": "R20261119T203340Z-05b7",
+  "Attempt": 1,
+  "VerifiedSha": "b19683412ec1202bac141aa80654eddad274a023",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true, terminal event is the subagent final result. Cession StartUtc=2026-11-19T20:33:46Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json schema rackcad-worker-handoff/v1 has matching TaskId, Attempt=1, DelegationRunId and assigned WorkRunId. Outcome.OutputWrittenUtc=2026-11-19T16:06:55.570544-06:00 (22:06:55Z), after Cession.StartUtc."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Read AUTOMATION_PLAN.md section 16.3 and agent-execution/README.md section 8; AGENTS.md is present. git merge-base --is-ancestor 92232ed3ded1422ae375a06ed5858600faceaf0c 05beabfdd9efa5bb530860dc156f5832e4e452c2 returned 0; git rev-list --count returned 1; git rev-list --parents shows BaseSha parent 92232ed3. git diff --name-only AuthorityRevision BaseSha listed four docs paths: docs/automation/evidence/I-64-evidence.md, coordinator/gate-contract.json, coordinator/make_pbt2c_contract.py, and docs/automation/state/I-64.yml. None is EXTERNAL or UNIT_CHANGE per contract Authorities; W and WC are UNIT_CHANGE but are not in this range."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "relay-record-planning.json records A1-A8 all pass and nc4 passed; byte-fidelity-check.json Result=PASS, all eight opaque collections have Utf8BytesEqual=true and AllowedWriteScopeElementwiseInOrder=true. Contract and delegation match on TaskId, MainSha, AuthorityRevision, RequiredTests, AllowedWriteScope, ForbiddenWriteScope, StopConditions and Invariants."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD = b19683412ec1202bac141aa80654eddad274a023; git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad returned the same SHA. Delivery Branch and Worktree match the actual branch and cwd. git merge-base --is-ancestor BaseSha RedSha and RedSha CurrentSha both returned 0."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: LsRemoteSha=b19683412ec1202bac141aa80654eddad274a023 equals CurrentSha; OriginMainSha=812baf879612320653094a8aaf46aca0bac81383 equals contract MainSha. Recorded CurrentRun is push on the exact branch and SHA."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "Read AllowedWriteScope from delegation.json: 3 exact entries (W, WC, and PushBackWorkspaceCarryoverTests.cs). Script compared each path from git diff --name-only BaseSha CurrentSha, BaseSha RedSha, and ChainBaseSha CurrentSha -- src tests against that list; all matched. Base..Current has only the new test; Base..Red has W, WC, and the new test; Red..Current -- src tests has only W and WC. git diff BaseSha CurrentSha -- src is empty; ForbiddenWriteScope has no intersection."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned no entries. git check-ignore on artifacts/orchestration/I-64/F4B-PBT2C-WORKSPACE-CARRYOVER/1/R20261119T220812Z-e59c/inputs/worker-handoff.json returned that ignored path."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun 44619492077 is completed push, exact ref and head SHA; all four required jobs succeeded. Current Core TRX: 19094 passed, 0 failed. Current UI TRX: 2429 passed, 0 failed, 21 other/NotExecuted. RedRun 44618262418 is push of RedSha; Core and UI jobs failed, Build UI succeeded, Plugin job skipped. Red TRX has Core 19093 passed/1 failed and UI 2406 passed/23 failed/21 other, as expected."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Parsed all four CI TRX files. All 39 RequiredTests filters select at least MinSelected on CurrentSha and have zero failures; UI FullEditorCharacterization selects 18 (16 passed, 2 skipped), which exceeds its minimum 16. The RED ExpectRed filter selects 3, all Failed by assertion with test-stack paths and no skipped result; CurrentSha passes all 3. RED existing failures are 20 UI and 1 Core, all named in the delivery attribution; no unlisted existing failure. Isolated m1/m2 fail their row CT by assertion; m3 fails CT-03 and CT-02 by assertion. git diff --name-only ChainBaseSha RedSha -- tests/ is only tests/RackCad.UI.Tests/PushBackWorkspaceCarryoverTests.cs; git diff --name-only RedSha CurrentSha -- tests/ is empty, so ChainRedFiles is that single file."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%H%n%P%n%B BaseSha..CurrentSha returned exactly RED and GREEN. Both commit bodies contain Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching Worker.Trailer and effective model claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 with Provider effort high. relay-record-work.json records launch alias sonnet, effective model claude-sonnet-5-5, effective effort high, and a transcript source with 204 assistant turns using that model."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Read AUTOMATION_PLAN.md section 16.10 terms and ran a case-insensitive whole-word/phrase scan over the complete seven worker-handoff text fields. Character counts: WorkCompleted 11429, Evidence 3821, UnexpectedFindings 1283, KnownLimitations 849, Deviations 0, OpenQuestions 0, RecommendedNextAction 294. No matches."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes record 0 permission denials, 5 tool errors with none pending, and no usage-limit warning. Process reread records no persistent participant or unattributable process; transient unattributable git.exe disappeared on reread."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "The profile check recorded only RackCad/RackFrameConfigurator.layout changing after the existing RichEditor and WindowCensusGuardTests filters; the library listing stayed identical. This matches the recorded INV-PBT2C-10 exception.",
+    "Isolated mutation m3 also fails CT-PBT2C-02 in addition to its row CT-PBT2C-03; both assertion failures appear in m3.trx and the delivery notes."
+  ],
+  "RecommendedNextAction": "Entregar esta verificacion a la sesion para que continue la revision independiente y nc1 a nc3."
+}

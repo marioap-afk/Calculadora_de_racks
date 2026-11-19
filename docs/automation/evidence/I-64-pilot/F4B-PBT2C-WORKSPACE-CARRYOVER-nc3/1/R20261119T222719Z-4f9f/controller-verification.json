@@ -1,0 +1,79 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT2C-WORKSPACE-CARRYOVER",
+  "RunId": "R20261119T222719Z-4f9f",
+  "DelegationRunId": "R20261119T203120Z-65ce",
+  "WorkRunId": "R20261119T203340Z-05b7",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.StartUtc=2026-11-19T20:33:46Z, Outcome.OutputWrittenUtc=2026-11-19T22:06:55.570544+00:00."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "inputs/worker-handoff.json has the required schema and TaskId, Attempt, DelegationRunId, RunId, BaseSha, and ExpectedHandoffPath values; OutputWrittenUtc is after Cession.StartUtc."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Read AUTOMATION_PLAN at AuthorityRevision and README.md plus AGENTS.md at MainSha with git show. git merge-base --is-ancestor AuthorityRevision BaseSha exited 0; git rev-list --parents shows BaseSha is a direct child. git diff --name-only AuthorityRevision BaseSha lists four docs paths; none is EXTERNAL or a UNIT_CHANGE section. W and WC are not changed in that range."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Planning relay records A1-A8 pass and nc4's expected A3 failure. byte-fidelity-check.json reports PASS for all eight opaque fields. Delegation and contract match on AuthorityRevision, MainSha, scopes, invariants, required tests, expected evidence, stop conditions, and authorities; A3-A5 inclusion checks pass."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "Delivery CurrentSha=b19683412ec1202bac141aa80654eddad274a023; git rev-parse HEAD and git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad both returned b19683412ec1202bac141aa80654eddad274a023. Branch and worktree match the delegation. BaseSha is an ancestor; RedSha is between BaseSha and CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work RemoteFacts: CurrentRun is completed push to refs/heads/architecture/workspace-persistente-rackcad at CurrentSha; ls-remote fact equals CurrentSha and OriginMainSha equals MainSha. No network Git command was run."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "Read AllowedWriteScope from delegation.json: 3 exact entries. Read-only comparison of git diff --name-only BaseSha CurrentSha, BaseSha RedSha, and ChainBaseSha CurrentSha -- src tests shows every changed path is in that exact list. Base..Current has only tests/RackCad.UI.Tests/PushBackWorkspaceCarryoverTests.cs; Base..Red has W, WC, and that test; Red..Current has W and WC only. No forbidden-prefix intersection."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned empty. git check-ignore -v on the input worker-handoff.json returned .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "relay-record-work RemoteFacts.CurrentRun is push 44619492077 at CurrentSha with all four required jobs success. RedRun 44618262418 is push at RedSha; Core and UI test jobs failed, Build UI succeeded, and Build Plugin was skipped. Read the four supplied CI TRX files; their outcomes agree with the relay."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Parsed supplied TRX files: Current Core 19094/19094 passed; Current UI 2429 passed, 0 failed, 21 NotExecuted. All 39 contract filters meet MinSelected in Current TRX with no failures. RED filter for the new class selected 3 and all 3 failed by assertion; its Current filter passed 3/3. Each isolated mutant TRX fails its row CT by assertion; m3 also fails CT-PBT2C-02, disclosed in UnexpectedFindings. RED has 1 Core and 23 UI failures; all 21 existing failing methods are attributed in WorkCompleted. git diff --name-only ChainBaseSha RedSha -- tests/ is only the new test file; RedSha..CurrentSha -- src tests has no test path. Worker local UI commands are filters, not a full UI suite."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%H%n%P%n%B BaseSha..CurrentSha lists the RED and GREEN commits; both contain Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching Worker.Trailer."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 and provider effort high. relay-record-work Participant records ModelRequested=sonnet, ModelEffective=claude-sonnet-5-5, EffortEffective=high, EffectiveSource=transcript; effective model and effort match."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "Read all seven handoff free-text fields and scanned their complete text against AUTOMATION_PLAN 16.10 using case-insensitive whole-term matching. Character counts: WorkCompleted 11440, Evidence 3821, UnexpectedFindings 1283, KnownLimitations 849, Deviations 0, OpenQuestions 0, RecommendedNextAction 294. One match occurs at the end of WorkCompleted, characters 11430-11439."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work Notes report 0 permission denials and 5 tool errors, none pending. Exit/Entry records and Notes report no persistent participant or unattributable processes; the apparent entry process is resolved by reread."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "The only failed check is FreeText: one prohibited whole-term match is present at the end of WorkCompleted.",
+    "CurrentSha, local HEAD, and the local origin branch reference agree. The working tree is clean.",
+    "The net delivery diff contains only the new UI test file; the RED contains the declared three one-line mutations, and the GREEN restores W and WC."
+  ],
+  "RecommendedNextAction": "Remove the prohibited phrase from WorkCompleted and rerun verification for the corrected delivery."
+}

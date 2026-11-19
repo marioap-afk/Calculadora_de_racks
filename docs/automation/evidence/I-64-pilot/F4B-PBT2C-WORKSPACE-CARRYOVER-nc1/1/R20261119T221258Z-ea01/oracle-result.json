@@ -1,0 +1,58 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261119T221258Z-ea01",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Handoff",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "fail",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "fail",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "fail",
+    "Tests": "fail",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Handoff",
+    "Identity",
+    "Remote",
+    "Scope",
+    "Ci",
+    "Tests"
+  ],
+  "PreviousSameAsReal": false,
+  "LaterSameAsReal": false,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Identity": "CurrentSha declarado literalmente: deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. git rev-parse HEAD=b19683412ec1202bac141aa80654eddad274a023; git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad=b19683412ec1202bac141aa80654eddad274a023. BaseSha es ancestro de HEAD y RedSha esta entre ambos; el CurrentSha declarado no resuelve y no coincide con HEAD/remoto."
+  },
+  "OutputSha256": "7D5C32F1092B72636E2C580FEB365662C3543C3CB6C81D6CAF9A4AAAE2F2782F",
+  "ManualFreeText1610": []
+}

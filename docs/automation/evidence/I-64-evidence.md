@@ -8291,3 +8291,30 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - **La verificacion** lleva las tres comprobaciones deterministas de F4B-E15; la planificacion, las colecciones opacas puestas por la sesion (F4B-E21).
 
 **Limites:** solo documentacion en este paso; sin AutoCAD.
+
+## 263. PB-T2c: cadena completa, decisión del Owner y cierre; PB-T2 completa (F4B-E40)
+
+**Qué se custodia:**
+- **Las unidades de `F4B-PBT2C-WORKSPACE-CARRYOVER/1/`,** con su manifiesto por unidad:
+  - la preparación parada `a19d`, que no se lanzó;
+  - la planificación `65ce`, con nc4 `d138`;
+  - el Worker `05b7`;
+  - la verificación `e59c`;
+  - los controles nc1 `ea01`, nc2 `1ff5` y nc3 `4f9f`.
+- **Las revisiones,** con su encargo.
+- **La decisión del Owner:** `owner-pbt2c-nc1-decision.md`, con PD-F4B-01.
+- **El paquete de cierre.**
+- **La nota de `docs/ideas-futuras.md`.**
+- **El estado.**
+
+**El intento 1:**
+- RED `7aeb6170`, con los tres mutantes y la clase, y GREEN `b1968341`, que revierte los mutantes;
+- CI `44618262418` y `44619492077`, esta 4/4 (Core 19 094 y UI 2 450);
+- la revisión independiente, 0/0/2;
+- la verificación, 14/14;
+- **los controles:** nc1, por disposición del Owner; nc2 y nc3, CONTROL PASS.
+
+**Límites:**
+- solo documentación;
+- sin AutoCAD;
+- los eventos y las transcripciones, solo por SHA-256.
