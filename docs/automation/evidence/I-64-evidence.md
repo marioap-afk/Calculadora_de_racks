@@ -8352,3 +8352,19 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - **`BOUNDED_RESULT`,** con la recomprobación: `EMITIBLE TRAS CORRECCIONES; B 0 / I 1 / M 4; importantes corregidas en el paquete: I-01 (CT-PBT3A-09 y CT-PBT3B-01 sin el gesto inerte de BeamDepth); recomprobacion v4.4: EMITIBLE, B 0 / I 0 / M 1`.
 
 **Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.
+## 265. Contrato de F4B-PBT3A-FULL-WRITE-MODEL
+
+**Contrato:** `I-64-pilot/F4B-PBT3A-FULL-WRITE-MODEL/coordinator/gate-contract.json` (F4B-E41), con su script generador al lado.
+- **Alcance:** lista blanca exacta de 14 rutas: los ocho archivos nuevos de `src/RackCad.Application/Systems/PushBack/Draft/` y las seis clases de prueba nuevas. PB-T3a solo crea archivos.
+- **`ForbiddenWriteScope`:** 203 entradas, con el método de PB-T0 ([PKC-C]).
+- **Invariantes y paradas:** 14 invariantes y 16 paradas propias. P-01 va en la Snapshot K (F4B-E37), y C11, con el sustituto de nc2 de F4B-E34.
+- **La reparación del RED** (F4B-E35, RR):
+  - PBT3A-C07 con su excepción, y PBT3A-C18;
+  - la cadena en INV-PBT3A-02;
+  - en la `ExpectedEvidence`, la CI del RED reparado, lo que declara la entrega y la lectura entera de la verificación (V44-04).
+- **Filtros:** `RackCad.Tests.PushBackFullDraft` (`MinSelected` 10, `ExpectRed`); `RackCad.UI.Tests.PushBackFullDraftWindowParityTests` (`MinSelected` 1, `ExpectRed`); `RackCad.Tests.PushBackDraftWriteGuardTests` (`MinSelected` 3); `RackCad.Tests.Workspace` (`MinSelected` 3271); `RackCad.UI.Tests.Workspace` (`MinSelected` 547); `RackCad.Tests.PushBackEditableState` (`MinSelected` 13); `RackCad.Tests.PushBackEditorOutputGate` (`MinSelected` 1); `RackCad.Tests.PushBackSharedReferenceGuardTests` (`MinSelected` 2); `RackCad.Tests.PushBackWindowSharedReferenceGuardTests` (`MinSelected` 1); `RackCad.Tests.PushBackWindowOnStateSourceGuardTests` (`MinSelected` 1); `RackCad.UI.Tests.PushBackWindowOnStateTests` (`MinSelected` 2); `RackCad.UI.Tests.PushBackClassicCharacterization` (`MinSelected` 55); `RackCad.Tests.PushBackClassicCharacterization` (`MinSelected` 10); `RackCad.UI.Tests.PushBackFullEditorCharacterization` (`MinSelected` 16); `RackCad.Tests.PushBackFullEditorCharacterization` (`MinSelected` 3); `RackCad.UI.Tests.PushBackStateNet` (`MinSelected` 14); `RackCad.UI.Tests.PushBackDeclaredCorrection` (`MinSelected` 14); `RackCad.UI.Tests.Cantilever` (`MinSelected` 67); `RackCad.Tests.I58F1` (`MinSelected` 10); `RackCad.Tests.CustomPropertiesEnvelopeGuardTests` (`MinSelected` 9); `RackCad.Tests.NamespaceFolderGuardTests` (`MinSelected` 7); `RackCad.Tests.PushBackDraftStatePortTests` (`MinSelected` 3); `RackCad.Tests.PushBackDraftPortSharedReferenceGuardTests` (`MinSelected` 1); `RackCad.Tests.PushBackWorkspaceModeSourceGuardTests` (`MinSelected` 1); `RackCad.Tests.PushBackWorkspaceSharedReferenceGuardTests` (`MinSelected` 1); `RackCad.UI.Tests.PushBackWorkspaceModeTests` (`MinSelected` 3); `RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests` (`MinSelected` 4); `RackCad.UI.Tests.PushBackFieldValidationConcordanceTests` (`MinSelected` 1); `RackCad.UI.Tests.PushBackWorkspaceCarryoverTests` (`MinSelected` 3).
+- **Revisiones:** `AuthorityRevision` `2d8768318f741f0ace8cf3e3b24f11b9f5877a88` y `MainSha` `812baf879612320653094a8aaf46aca0bac81383`. El anclaje es el cierre de PB-T2c (`f273eae1`).
+- **`attempts`:** 1 de 3.
+- **La verificación** lleva las tres comprobaciones deterministas de F4B-E15, y la planificación, las colecciones opacas puestas por la sesión (F4B-E21).
+
+**Límites:** solo documentación en este paso; sin AutoCAD.
