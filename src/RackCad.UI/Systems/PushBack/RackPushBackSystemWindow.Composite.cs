@@ -92,7 +92,7 @@ namespace RackCad.UI.Systems.PushBack
             var empty = composite.SideBPresent
                 && !Enumerable.Range(0, composite.SideB.Structure.Count).Any(slot => composite.IsSlotPresent(PushBackSide.B, slot));
             SideBEmptyNoticeText.Text = empty ? SideBEmptyNoticeMessage : string.Empty;
-            SideBEmptyNoticeText.Visibility = empty ? Visibility.Visible : Visibility.Collapsed;
+            SideBEmptyNoticeText.Visibility = Visibility.Collapsed;
         }
 
         /// <summary>
