@@ -1,0 +1,55 @@
+DRY rev 5a8366c1 (objetos del checkout principal) allowed 4 forbidden 192 (src 87 tests 88 [core 25 ui 63] root 17 ) inv 13 stops 32 required 18 evidence 9 authorities 39 anchors-ok 74 api-ok 15 bytes 46273 sha256 B41C34CCE6C0B741EFE52D6B132BF646ACAAA7D0D7EB9EFEB2D99773A2ADDDED
+anclaje: src == cierre de PB-T1b (95373af6, F4B-E26) salvo WC, W; Application/Domain/Plugin == a18ba345 == a0a5f699; desciende de 833ea6bf (F4B-E27) | src == cierre de PB-T1c (5a8366c1, F4B-E31) | f4b-dispositions hasta F4B-E31 | F4B-E28 custodiada con Q-PBT2-1..4 (Recomendado)
+paquete leido: --package-file I-64-f4b-pbt2-gate-contract-package-v22.md -> v2.2 | en la revision: None | registro con Q-7: False
+textos de la v2.2 comprobados: Objective, AllowedWriteScope y alcance (6.1), section 6.0 (39 lineas), esqueleto y clases (5.2), cabecera y registro de la v2.2 (V22-01 a 04, CA-T2a), INV propios literales sin nota, paradas C04, C13 y C15, INV comunes 07-12 y 14, P-01 J, API de D-PBT2-02/03 = nombres de C13, sentencias de excepcion, CT-PBT2A-01..04 y las quince autopruebas, PBT2B-C13 (V2-05), section 1 (18 filas), ExpectedEvidence comun y de 6.1, linea base de la CI, custodia, F4B-E25, RequiredTests
+G-L1c: 15 autopruebas en :223-235 y :238-239 ((a), (b), (c), (e), (f1), (f2), (f3), (g1), (g2), (h1), (h2), (i), (j), (k1) y (k2)); huellas AllObjects :278 y Fingerprint :1080; iguales que en 95373af6
+V2-05: listas de las guardas de PB-T1c sin editable ni los 26 nombres de INV-PBT2B-03: Forwarded (CT-PBT1C-03) 12, Tokens (CT-PBT1C-04) 8, Rebind (CT-PBT1C-04) 4; literales con editable en sus tres clases: 3, ninguno fija una asignacion; ventana: editable: un campo private readonly PushBackEditableState con inicializador y una sola declaracion (D-13)=True, composite => editable.Editor=True, EditableStateForTest => editable;=True, state y moduleOwner calculados=True, sin otra asignacion de editable=True, sin suscripciones al estado=True, sin capturas del estado en campos ni constructores (M-3)=True, sin nombres de PBT2B-C13 (M-3)=True; suscripciones al estado en W y WC: 0; autopruebas de window_checks: 20 (las 4 de forma pasan y las demas fallan, como deben)
+D1: needs de build-plugin = ['tests', 'build-ui'] | D2: Snapshot J en la revision: True | celdas vigentes hasta 2026-12-29
+lectura D-1 (CA-T2a, aceptada): tests/ de Core = 18 de PB-T0 + 5 de PB-T1b + 2 de PB-T1c = 25; UI = 63
+C11 (CA-T2a M-4; v2.2, V22-01): la referencia a las diferencias admitidas es "section 6.0 of the PB-T1 contract package ([PT1], docs/initiatives/I-64-f4b-pbt1-gate-contract-package.md)"
+remedicion al escribir (CA-T2a section 3):
+  1 el cierre: src == cierre de PB-T1c (5a8366c1, F4B-E31)
+  2 V2-05: listas y literales de PB-T1c OK; capturas del estado y nombres de PBT2B-C13 OK; la ventana: OK
+  3 la linea base de la CI: atada al cierre, cifras previstas
+  4 el producto: Application/Domain/Plugin == a18ba345 OK; G-L1c == 95373af6 OK; recuentos == d8ccbcb8: OK
+  5 la custodia: 16 AVISOS de emision
+  6 el entorno: MainSha == origin/main: True; celdas hasta 2026-12-29; Test-Json al escribir; config.toml = Snapshot J, el binario y una sola delegacion abierta: la sesion
+  7 la autorizacion (F4B-E28, pregunta 4): BOUNDED_RESULT = EMITIBLE TRAS CORRECCIONES 0/0/6, aplicadas; la remedicion sin cambio material y PB-T1c sin intento 3: la sesion
+custodia de PB-T2a: 15 de 15 rutas aun libres en la revision
+RequiredTests (criterio de count_tests_git.py sobre los objetos de la revision):
+  Core PushBackDraftStatePortTests                   new    paquete=3     medido: clases=0 ejecutables=0 skip=0 memberdata=0 -> MinSelected=3 ExpectRed=True
+  Core PushBackDraftPortSharedReferenceGuardTests    new    paquete=1     medido: clases=0 ejecutables=0 skip=0 memberdata=0 -> MinSelected=1 ExpectRed=False
+  Core PushBackEditableState                         fixed  paquete=13    medido: clases=3 ejecutables=13 skip=0 memberdata=0 -> MinSelected=13 ExpectRed=False
+  Core PushBackEditorOutputGate                      fixed  paquete=1     medido: clases=1 ejecutables=1 skip=0 memberdata=0 -> MinSelected=1 ExpectRed=False
+  Core PushBackSharedReferenceGuardTests             fixed  paquete=2     medido: clases=1 ejecutables=2 skip=0 memberdata=0 -> MinSelected=2 ExpectRed=False
+  Core PushBackWindowOnStateSourceGuardTests         fixed  paquete=1     medido: clases=1 ejecutables=1 skip=0 memberdata=0 -> MinSelected=1 ExpectRed=False
+  Core PushBackWindowSharedReferenceGuardTests       fixed  paquete=1     medido: clases=1 ejecutables=1 skip=0 memberdata=0 -> MinSelected=1 ExpectRed=False
+  Core Workspace                                     fixed  paquete=3271  medido: clases=74 ejecutables=3271 skip=0 memberdata=33 -> MinSelected=3271 ExpectRed=False
+  Core NamespaceFolderGuardTests                     fixed  paquete=7     medido: clases=1 ejecutables=7 skip=0 memberdata=0 -> MinSelected=7 ExpectRed=False
+  Core PushBackClassicCharacterization               fixed  paquete=10    medido: clases=1 ejecutables=7 skip=0 memberdata=1 -> MinSelected=10 ExpectRed=False
+       estatico 7 (+1 Theory con MemberData) < 10 del paquete: vale porque un contrato anterior fija el mismo filtro con 10 (casos de MemberData contados por la CI)
+  Core PushBackFullEditorCharacterization            fixed  paquete=3     medido: clases=3 ejecutables=3 skip=0 memberdata=0 -> MinSelected=3 ExpectRed=False
+  UI   PushBackWindowOnStateTests                    fixed  paquete=2     medido: clases=1 ejecutables=2 skip=0 memberdata=0 -> MinSelected=2 ExpectRed=False
+  UI   PushBackEditableStateParityTests              fixed  paquete=1     medido: clases=1 ejecutables=1 skip=0 memberdata=0 -> MinSelected=1 ExpectRed=False
+  UI   PushBackStateNet                              fixed  paquete=14    medido: clases=6 ejecutables=14 skip=0 memberdata=0 -> MinSelected=14 ExpectRed=False
+  UI   PushBackClassicCharacterization               fixed  paquete=55    medido: clases=6 ejecutables=55 skip=0 memberdata=0 -> MinSelected=55 ExpectRed=False
+  UI   PushBackFullEditorCharacterization            fixed  paquete=16    medido: clases=6 ejecutables=16 skip=2 memberdata=0 -> MinSelected=16 ExpectRed=False
+  UI   PushBackDeclaredCorrection                    fixed  paquete=14    medido: clases=7 ejecutables=14 skip=0 memberdata=0 -> MinSelected=14 ExpectRed=False
+  UI   Cantilever                                    fixed  paquete=67    medido: clases=3 ejecutables=67 skip=0 memberdata=0 -> MinSelected=67 ExpectRed=False
+AVISOS (16):
+  - el paquete custodiado en la revision es None; al escribir hace falta la v2.2 en HEAD (docs/initiatives/I-64-f4b-pbt2-gate-contract-package.md)
+  - el registro (docs/initiatives/I-64-f4b-pbt2-measurements.md) no esta en la revision o no tiene el apartado Q-7
+  - a custodiar con la emision de PB-T2a, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt2/v2-delta.md
+  - a custodiar con la emision de PB-T2a, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt2/independent-review-v1.md
+  - a custodiar con la emision de PB-T2a, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt2/independent-review-pbt2a-v21-check.md
+  - a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt2/v21-delta.md
+  - a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt2/v22-delta.md
+  - a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt2/measure_pbt2.py
+  - a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt2/measure_pbt2_v2.py
+  - a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt2/forbidden_pbt2.py
+  - a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt2/check_questions_v2.py
+  - a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt2/independent-review-v1-prompt.md
+  - a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt2/pbt2a-anchors-out.txt
+  - a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt2/independent-review-pbt2a-v21-check-prompt.md
+  - a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt2/make_pbt2a_contract-dry.txt
+  - CA-T2a D-5: la ultima entrada de f4b-dispositions.md (F4B-E31) no es la emision de F4B-PBT2A-DRAFT-STATE-PORT con las condiciones de F4B-E28, pregunta 4

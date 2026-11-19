@@ -8101,3 +8101,23 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - solo documentación;
 - sin AutoCAD;
 - los eventos y las transcripciones, solo por SHA-256 (16.12).
+
+## 254. PB-T2: paquete del contrato v2.2 y anclajes de PB-T2a (F4B-E32)
+
+**Qué se custodia:**
+- **El paquete** `docs/initiatives/I-64-f4b-pbt2-gate-contract-package.md`, en su v2.2. La v1, la v2 y la v2.1 pasan a la historia en `F4B-DRAFTS/pbt2/`.
+- **El registro** `docs/initiatives/I-64-f4b-pbt2-measurements.md`, con el apartado Q-7.
+- **En `F4B-DRAFTS/pbt2/`:**
+  - el encargo del redactor;
+  - los deltas v1 → v2, v2 → v2.1 y v2.1 → v2.2;
+  - los scripts de medición;
+  - la revisión independiente con su recomprobación, y su encargo;
+  - la comprobación acotada de PB-T2a, con su encargo;
+  - la salida en seco del generador sobre `d8ccbcb8`, la revisada;
+  - la remedición sobre el cierre de PB-T1c.
+
+**Las comprobaciones:**
+- la revisión independiente: 0/8/16, y su recomprobación 0/0/7;
+- la comprobación acotada: EMITIBLE TRAS CORRECCIONES 0/0/6, aplicada.
+
+**Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.

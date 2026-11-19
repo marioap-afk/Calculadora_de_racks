@@ -871,3 +871,36 @@ Su lectura de CT-06 dio falsos fallos.
 - el desfase de una pasada del diseño calculado del compuesto, que ya existía.
 
 **Siguiente:** la emisión de PB-T2a con el paquete de PB-T2 v2.2, por la autorización condicional de F4B-E28 (pregunta 4); su comprobación acotada ya está hecha.
+
+## F4B-E32. Emisión de F4B-PBT2A-DRAFT-STATE-PORT (PB-T2a), con el paquete de PB-T2 v2.2
+
+**Fecha:** 2026-11-19.
+
+**Autoridad de emisión:** la autorización condicional del Owner, F4B-E28, pregunta 4: «Sí, con esa condición (Recomendado)».
+- **Las condiciones que exige:**
+  - la revisión de la subtarea da 0 bloqueantes y 0 importantes sin resolver;
+  - la remedición sobre el cierre de PB-T1c no cambia nada material.
+- **Cuándo se vuelve al Owner:** por una decisión nueva, un control con una firma no prevista, un intento 3 o un efecto material sin medir. No se da ninguno.
+
+**La revisión:**
+- **El paquete de PB-T2:**
+  - la revisión independiente de la v1 dio NECESITA v2, 0/8/16;
+  - la recomprobación de la v2, LISTA PARA EMITIR TRAS REMEDICIÓN, 0/0/7, aplicada en la v2.1.
+- **La comprobación acotada de PB-T2a** (CA-T2a), sobre la v2.1, el contrato propuesto y la salida de sus anclajes, da **EMITIBLE TRAS CORRECCIONES, 0/0/6**, sin decisiones nuevas para el Owner. Sus menores ya están aplicados:
+  - M-1 a M-5, en el generador;
+  - M-4, también en la v2.2: la referencia de PBT2x-C11;
+  - M-6 queda para el paquete antes de emitir PB-T2b.
+
+**La remedición sobre el cierre de PB-T1c** (`5a8366c1`, F4B-E31), hecha por el generador al escribir con `--pt1c-close`:
+- el `src` de Application y de los demás proyectos, salvo W y WC, es igual al cierre de PB-T1b;
+- W declara `editable`, como en D-PBT1-13;
+- ningún campo ni constructor de la ventana captura una referencia del estado;
+- la línea base de la CI es la del GREEN de PB-T1c (`44463212627` sobre `161a0dad`, el mismo `src` y los mismos `tests` del cierre): Core 19 088 y UI 2 439, con 21 omitidas. Es exactamente la prevista en el §6.1.
+
+No hay cambios materiales.
+
+**El contrato:**
+- PB-T2a es el puerto por el que el editor devuelve su estado al borrador, su adaptador y el lanzamiento tipado del modo WORKSPACE, solo en Application.
+- Primera delegación de la cadena; `attempts` 1 de 3.
+- La planificación, con las colecciones opacas puestas por la sesión (F4B-E21).
+- La verificación, con las comprobaciones deterministas de F4B-E15.
