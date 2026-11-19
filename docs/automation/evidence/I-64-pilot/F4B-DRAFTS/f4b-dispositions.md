@@ -904,3 +904,21 @@ No hay cambios materiales.
 - Primera delegación de la cadena; `attempts` 1 de 3.
 - La planificación, con las colecciones opacas puestas por la sesión (F4B-E21).
 - La verificación, con las comprobaciones deterministas de F4B-E15.
+
+## F4B-E33. PB-T2a, intento 1: parada PBT2A-C07 tras el RED, y corrección en el intento 2
+
+**Fecha:** 2026-11-19. **El análisis del Coordinator:** `F4B-PBT2A-DRAFT-STATE-PORT/1/R20261119T060524Z-55f2/analysis.md`.
+
+**El intento 1:**
+- **La planificación** `R20261119T060327Z-ad3e` se aceptó al primer lanzamiento: fidelidad PASS 8/8, A1-A8 8/8 y nc4 `R20261119T060503Z-d5f7`.
+- **El RED del Worker** `R20261119T060524Z-55f2` es `c33ac6ac`: el esqueleto inerte del puerto y del lanzamiento, y las dos clases.
+- **La parada:** el Worker paró con **PBT2A-C07** antes del GREEN. En CT-PBT2A-02, la línea `launchfor` compara `estado-es-el-actual` **después** de aplicar la edición por el puerto. Como el borrador guarda una copia nueva, la comparación da `False`.
+- **El resto, bien:** la implementación, validada sin commit, hace pasar CT-PBT2A-01 y 03.
+- **Lo que no hizo el Worker:** no ajustó la prueba ni el producto.
+
+**La disposición de la sesión (16.8):** corrección en el **intento 2 de 3**, con FailureClass `StopCondition`.
+- **C-1:** `estado-es-el-actual` se lee antes de aplicar; la línea esperada no cambia.
+- **El RED de la corrección:** solo esa clase.
+- **El GREEN:** solo los dos archivos nuevos de Application.
+- **La cadena:** ChainRedSha null y ChainRedFiles vacío, porque el RED no se acreditó.
+- **El intento 3, si llegara,** vuelve al Owner.

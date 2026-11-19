@@ -8134,3 +8134,18 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - **La verificacion** lleva las tres comprobaciones deterministas de F4B-E15; la planificacion, las colecciones opacas puestas por la sesion (F4B-E21).
 
 **Limites:** solo documentacion en este paso; sin AutoCAD.
+
+## 256. PB-T2a: parada en el intento 1 y corrección en el intento 2 (F4B-E33)
+
+**Qué se custodia:**
+- el análisis de la corrección, en `F4B-PBT2A-DRAFT-STATE-PORT/1/R20261119T060524Z-55f2/`;
+- el estado, con attempts 2.
+
+**El intento 1:**
+- el RED `c33ac6ac`;
+- sin GREEN: el Worker paró con PBT2A-C07, por una prueba que lee el estado del lanzamiento después de aplicar la edición.
+
+**Límites:**
+- solo documentación;
+- sin AutoCAD;
+- las corridas de la cadena de PB-T2a se custodian al cerrar la tarea.
