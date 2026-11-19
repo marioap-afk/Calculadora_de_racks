@@ -3270,7 +3270,7 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
-            var result = draftPort.ApplyToDraft(PushBackEditableStateComparer.Copy(appliedState));
+            var result = draftPort.ApplyToDraft(PushBackEditableStateComparer.Copy(editable));
             if (result.Status != PushBackDraftApplyStatus.Applied)
             {
                 SetStatus(WorkspaceNotEditableMessage, true);
@@ -3710,7 +3710,7 @@ namespace RackCad.UI.Systems.PushBack
         /// distinto manda. Con la caja vacia devuelve <paramref name="current"/>.
         /// </summary>
         private static double Keep(NumericField field, double current)
-            => !field.Value.HasValue ? current : field.Value.Value;
+            => !field.Value.HasValue || SameShown(field.Value.Value, current) ? current : field.Value.Value;
 
         /// <summary>I-64 F4B PB-TC2 (D-PBTC2-03) — la regla de la caja anulable: vacia es nulo (el calculo), igual a como se ve el portador es el portador y otra cosa es la caja.</summary>
         private static double? KeepOptional(NumericField field, double? current)
