@@ -1826,3 +1826,27 @@ En la ventana clásica de Push Back, tras cambiar `GapBox`, `CentralSeparatorChe
 - **PBT1CC2-IR-M03:** el gesto «PostBox=otro» de CT-PBT1C-02 es inerte con el catálogo que se entrega, porque solo trae un poste. Con un catálogo de varios postes, ninguna prueba de la ventana fija el traspaso al estado.
 - **PBT1CC2-IR-M04:** CT-PBT1C-01 deriva sus líneas esperadas de la misma enumeración del corpus que las reales.
 - **PBT1CC2-IR-M05:** la parte 2 de CT-PBT1C-02 captura las referencias tras cada paso del gesto, no tras cada pasada interna.
+
+## I-64 F4B PB-T2a — mejoras de las pruebas del puerto al borrador (2026-11-19, registradas sin corregir)
+
+Son los menores de la revisión independiente del intento 2 de PB-T2a. El código es correcto por lectura; lo que falta es cobertura o precisión.
+
+- **PBT2A-IR2-M01:** CT-PBT2A-02 no discrimina dos cosas que fija la API:
+  - la línea `launchfor` no mira `SourceProject`;
+  - cada caso de excepción pasa un solo nulo, así que el **orden** de las tres comprobaciones del constructor de `PushBackDraftEditorLaunch` (D-PBT2-03) no se ejerce.
+- **PBT2A-IR2-M02:** CT-PBT2A-03 podría pasar en vacío para X-01 y F-01. Si sus diseños dan `null` cuando la pasada traga una excepción, la fila usa un estado nuevo y vacío, y las líneas salen iguales sin ejercer nada.
+- **PBT2A-IR2-M03:** dos comentarios XML imprecisos, heredados del esqueleto:
+  - `NotEditable` no cubre todos los estados del núcleo (`Applying`, `Unknown`);
+  - `IsDirty` simplifica lo que hace el núcleo.
+- **PBT2A-IR2-M04:** INV-PBT2A-01 no se cumple a la letra contra una sola base en una corrección:
+  - desde ChainBaseSha entran los documentos de la sesión;
+  - desde la BaseSha, los archivos ya existen con el esqueleto.
+
+  La lectura correcta, que es la de la verificación, mira `src/` desde ChainBaseSha. Conviene escribirla así en los contratos de las subtareas siguientes.
+- **PBT2A-IR2-M05:** el Worker lanzó las corridas largas como tareas en segundo plano. Ninguna se solapó, y los árboles medidos coinciden con los del RED y el GREEN.
+
+## I-64 F4B — el kit de nc2 frente a F4B-E21 (2026-11-19, registrado sin corregir)
+
+- **El kit de los controles recalcula el hash del relevo de la planificación con la regla de F4:** en la copia mutada, `relay-record-planning.json` → `Outcome.OutputSha256` pasa a ser el SHA de la delegación mutada. Pero desde F4B-E21 el relevo real guarda el SHA de la salida cruda del Controller, con las colecciones opacas vacías. **La copia de nc2 no es, por tanto, del todo fiel a F4B-E21.** No tuvo efecto en PB-T2a: el Controller falló Contract y Scope por la ruta quitada.
+- **El sustituto adaptado `PBT2A-NC2-EXACT-WHITELIST-F4B-01` exige exactamente ese recálculo** y lo declara (`Nc2KitRelayRecompute`). Si se corrige el kit, hay que revisar el sustituto.
+- **Además, el sustituto depende de la serialización de `inject_opaque.py`,** porque exige que la salida cruda más las colecciones reproduzca la delegación byte a byte.

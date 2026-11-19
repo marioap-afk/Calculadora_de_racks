@@ -1,0 +1,18 @@
+=== CT_PBT2A_03_ThePortRoundTripIsLosslessAndSharesNothingOutsideTheTwoDeclaredReferences
+Assert.Equal() Failure: Collections differ
+           ↓ (pos 0)
+Expected: ["pb-01-base iguales=True diseno-igual=True comparti"···, "pb-02-modulos iguales=True diseno-igual=True compa"···, "pb-03-fondos iguales=True diseno-igual=True compar"···, "pb-04-blanco iguales=True diseno-igual=True compar"···, "pb-05-topes iguales=True diseno-igual=True compart"···, ···]
+Actual:   ["pb-01-base iguales=False diseno-igual=False compar"···, "pb-02-modulos iguales=False diseno-igual=False com"···, "pb-03-fondos iguales=False diseno-igual=False comp"···, "pb-04-blanco iguales=False diseno-igual=False comp"···, "pb-05-topes iguales=False diseno-igual=False compa"···, ···]
+           ↑ (pos 0)
+=== CT_PBT2A_01_ThePortHandsACopyOfTheEditedStateToTheDraftAndNothingElse
+Assert.Equal() Failure: Collections differ
+                                              ↓ (pos 1)
+Expected: string[]     ["inicio sucio=False", "aplicar estado=Applied sucio=True igual-al-editado"···, "mutar-tras-aplicar sin-cambio=True", "volver estado=Applied sucio=False", "error estado=NotEditable sin-cambio=True", ···]
+Actual:   List<string> ["inicio sucio=False", "aplicar estado=NotEditable sucio=False igual-al-ed"···, "mutar-tras-aplicar sin-cambio=True", "volver estado=NotEditable sucio=False", "error estado=NotEditable sin-cambio=True", ···]
+                                              ↑ (pos 1)
+=== CT_PBT2A_02_TheLaunchCarriesTheStateTheIdentityTheSourceAndThePortAndRefusesWhatIsMissing
+Assert.Equal() Failure: Collections differ
+                        ↓ (pos 0)
+Expected: string[]     ["lanzamiento estado-mismo=True id=GUID-PBT2-0001 pr"···, "proyecto=<null>", "EXCEPCION ArgumentNullException: Value cannot be n"···, "EXCEPCION ArgumentException: A rack id is required"···, "EXCEPCION ArgumentException: A rack id is required"···, ···]
+Actual:   List<string> ["lanzamiento estado-mismo=False id= proyecto-mismo="···, "proyecto=<null>", "EXCEPCION NullReferenceException: Object reference"···]
+                        ↑ (pos 0)

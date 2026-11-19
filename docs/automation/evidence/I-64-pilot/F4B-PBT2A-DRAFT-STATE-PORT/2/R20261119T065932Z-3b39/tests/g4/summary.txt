@@ -1,0 +1,24 @@
+g2 PushBackDraftStatePortTests :: Correctas! - Con error:     0, Superado:     3, Omitido:     0, Total:     3, Duración: 2 s - RackCad.Tests.dll (net8.0)
+g3 PushBackDraftStatePortTests :: Correctas! - Con error:     0, Superado:     3, Omitido:     0, Total:     3, Duración: 2 s - RackCad.Tests.dll (net8.0)
+core PushBackDraftPortSharedReferenceGuardTests :: Correctas! - Con error:     0, Superado:     1, Omitido:     0, Total:     1, Duración: < 1 ms - RackCad.Tests.dll (net8.0)
+core PushBackEditableState :: Correctas! - Con error:     0, Superado:    13, Omitido:     0, Total:    13, Duración: 1 m 6 s - RackCad.Tests.dll (net8.0)
+core PushBackEditorOutputGate :: Correctas! - Con error:     0, Superado:     1, Omitido:     0, Total:     1, Duración: < 1 ms - RackCad.Tests.dll (net8.0)
+core PushBackSharedReferenceGuardTests :: Correctas! - Con error:     0, Superado:     2, Omitido:     0, Total:     2, Duración: 563 ms - RackCad.Tests.dll (net8.0)
+core PushBackWindowOnStateSourceGuardTests :: Correctas! - Con error:     0, Superado:     1, Omitido:     0, Total:     1, Duración: < 1 ms - RackCad.Tests.dll (net8.0)
+core PushBackWindowSharedReferenceGuardTests :: Correctas! - Con error:     0, Superado:     1, Omitido:     0, Total:     1, Duración: < 1 ms - RackCad.Tests.dll (net8.0)
+core Workspace :: Correctas! - Con error:     0, Superado:  3482, Omitido:     0, Total:  3482, Duración: 1 m 58 s - RackCad.Tests.dll (net8.0)
+core NamespaceFolderGuardTests :: Correctas! - Con error:     0, Superado:     7, Omitido:     0, Total:     7, Duración: 1 s - RackCad.Tests.dll (net8.0)
+core PushBackClassicCharacterization :: Correctas! - Con error:     0, Superado:    10, Omitido:     0, Total:    10, Duración: 27 ms - RackCad.Tests.dll (net8.0)
+core PushBackFullEditorCharacterization :: Correctas! - Con error:     0, Superado:     3, Omitido:     0, Total:     3, Duración: 580 ms - RackCad.Tests.dll (net8.0)
+core FULL :: Correctas! - Con error:     0, Superado: 19092, Omitido:     0, Total: 19092, Duración: 3 m 50 s - RackCad.Tests.dll (net8.0)
+ui PushBackWindowOnStateTests :: Correctas! - Con error:     0, Superado:     2, Omitido:     0, Total:     2, Duración: 7 s - RackCad.UI.Tests.dll (net8.0)
+ui PushBackEditableStateParityTests :: Correctas! - Con error:     0, Superado:     1, Omitido:     0, Total:     1, Duración: < 1 ms - RackCad.UI.Tests.dll (net8.0)
+ui PushBackStateNet :: Correctas! - Con error:     0, Superado:    14, Omitido:     0, Total:    14, Duración: 18 s - RackCad.UI.Tests.dll (net8.0)
+ui PushBackClassicCharacterization :: Correctas! - Con error:     0, Superado:    55, Omitido:     0, Total:    55, Duración: 8 s - RackCad.UI.Tests.dll (net8.0)
+ui PushBackFullEditorCharacterization :: Correctas! - Con error:     0, Superado:    16, Omitido:     2, Total:    18, Duración: 8 s - RackCad.UI.Tests.dll (net8.0)
+ui PushBackDeclaredCorrection :: Correctas! - Con error:     0, Superado:    14, Omitido:     0, Total:    14, Duración: 9 s - RackCad.UI.Tests.dll (net8.0)
+ui Cantilever :: Correctas! - Con error:     0, Superado:    67, Omitido:     0, Total:    67, Duración: 1 s - RackCad.UI.Tests.dll (net8.0)
+build core 0
+build ui 0
+build plugin 0
+ALLDONE

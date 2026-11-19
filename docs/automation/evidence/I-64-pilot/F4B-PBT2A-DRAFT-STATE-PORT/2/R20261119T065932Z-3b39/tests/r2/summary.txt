@@ -1,0 +1,5 @@
+full :: Con error! - Con error:     3, Superado: 19089, Omitido:     0, Total: 19092, Duración: 4 m 15 s - RackCad.Tests.dll (net8.0)
+build core 0
+build ui 0
+build plugin 0
+ALLDONE

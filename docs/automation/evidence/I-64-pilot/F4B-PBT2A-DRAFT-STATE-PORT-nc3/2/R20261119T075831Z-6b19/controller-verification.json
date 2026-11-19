@@ -1,0 +1,77 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT2A-DRAFT-STATE-PORT",
+  "RunId": "R20261119T075831Z-6b19",
+  "DelegationRunId": "R20261119T065628Z-7de7",
+  "WorkRunId": "R20261119T065932Z-3b39",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED and DeathConfirmed=true; Cession.StartUtc=2026-11-19T06:59:37Z; Notes record no persistent participants or unattributable processes."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json matches TaskId, Attempt=2, DelegationRunId and RunId=WorkRunId. OutputWrittenUtc=2026-11-19T01:42:57.441081-06:00, equivalent to 07:42:57Z, after Cession.StartUtc. WorkerStatus=IMPLEMENTATION_COMPLETE."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha exited 0. git diff --name-only AuthorityRevision BaseSha listed 10 paths and none are EXTERNAL or UNIT_CHANGE authorities. Per-path git log shows the four src/tests paths were touched only by c33ac6ac; worker-handoff-intento1.json identifies c33ac6ac as attempt 1 RED, and delegation-intento1.json allows those four paths. The other changed paths are UNIT_DOC or not declared authorities. The analysis.md SHA-256 at BaseSha is 34717ba021ddd613fc69674b5ef8433684ce6316ff7b3a3a1bdc5d805a9c61d3, matching CorrectionOf."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "delegation.json has 13 invariants, 32 stop conditions, 39 authorities and 18 RequiredTests, matching gate-contract.json. byte-fidelity-check.json reports PASS and Utf8BytesEqual=true for all eight opaque collections. relay-record-planning.json records A1-A8 8/8 and nc4. Delegated AllowedWriteScope has four exact paths."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git branch --show-current returned architecture/workspace-persistente-rackcad. git rev-parse HEAD and git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad both returned 5ddeb3b4ed99cb17d05142c67d47a26e89e238f9, equal to handoff CurrentSha. merge-base --is-ancestor BaseSha CurrentSha, RedSha CurrentSha and AuthorityRevision BaseSha each exited 0."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts records LsRemoteSha=5ddeb3b4ed99cb17d05142c67d47a26e89e238f9 and OriginMainSha=812baf879612320653094a8aaf46aca0bac81383, matching CurrentSha and MainSha. No network Git command was run."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "Read-only scope script printed all four AllowedWriteScope entries and exact membership for each route. git diff --name-only BaseSha CurrentSha lists only the two new src files and PushBackDraftStatePortTests.cs; BaseSha RedSha lists only PushBackDraftStatePortTests.cs; ChainBaseSha CurrentSha -- src tests lists the four allowed files. No changed path intersects ForbiddenWriteScope."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned no entries. git check-ignore returned the input worker-handoff.json path, confirming the orchestration package is ignored."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun is push run 44480898605 on refs/heads/architecture/workspace-persistente-rackcad at CurrentSha; all four required jobs are success. RedRun 44478438623 is push on the same ref at RedSha; Tests is failure, UI Tests and Build UI are success, and Build Plugin is skipped as expected for the RED."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Current Core TRX counters: 19092 passed, 0 failed. Current UI TRX: 2439 total, 2418 passed, 21 notExecuted, 0 failed. Required Core filters were counted directly in the TRX: 3,1,13,1,2,1,1,3482,7,10,3; each passed. worker-handoff TestResults records UI selections 2,1,14,55,18,14,67, consistent with the UI TRX totals and test names. RED Core TRX: 19092 total, 19089 passed, 3 failed; the failures are CT-PBT2A-01, 02 and 03, with 0 skipped. CT-PBT2A-01 reports Assert.Equal() Failure and its first stack line points to tests/RackCad.Tests/PushBackDraftStatePortTests.cs:364. The guard CT-PBT2A-04 passes on RED and Current. git diff --name-only ChainBaseSha RedSha -- tests lists the two chain test files (RT); git diff --name-only RedSha CurrentSha lists only the two src files, so GREEN does not touch RT or ChainRedFiles. ChainRedFiles is those two test paths."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha shows the RED and GREEN commits both contain Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, exactly matching Worker.Trailer."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 and effort high. relay-record-work.json records ModelEffective=claude-sonnet-5-5 and EffortEffective=high; Participant.ModelRequested=sonnet is the permitted subagent launch alias."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "The read-only deterministic script searched all seven complete fields with the AUTOMATION_PLAN 16.10 terms and whole-term boundaries. Lengths: WorkCompleted=5323, Evidence=2061, UnexpectedFindings=884, KnownLimitations=809, Deviations=571, OpenQuestions=0, RecommendedNextAction=148. It reported one match in WorkCompleted at index 5313; context was `... por eso TreeSha es null en cada una. [REDACTED].` The matched text is redacted here."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json has Denials=null. Notes report zero permission denials, two tool errors with neither pending, and no usage-limit warning."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "FreeText is the first non-pass check: WorkCompleted contains one whole-term match at offset 5313. The other 13 checks pass and no listed stop condition was observed."
+  ],
+  "RecommendedNextAction": "Return the delivery for the FreeText finding; because another correction would be attempt 3 of 3, refer it to the Owner before issuing that correction."
+}

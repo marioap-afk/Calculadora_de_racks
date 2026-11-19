@@ -922,3 +922,83 @@ No hay cambios materiales.
 - **El GREEN:** solo los dos archivos nuevos de Application.
 - **La cadena:** ChainRedSha null y ChainRedFiles vacío, porque el RED no se acreditó.
 - **El intento 3, si llegara,** vuelve al Owner.
+
+## F4B-E34. Cierre de F4B-PBT2A-DRAFT-STATE-PORT, con las decisiones del Owner sobre nc1 y nc2
+
+**Paquete de cierre:** `F4B-PBT2A-DRAFT-STATE-PORT/task-close-package.md`.
+
+**La cadena:**
+- **Emisión** (F4B-E32): X `1ee10d3f` y BASE `0dc623ca`.
+- **Intento 1:**
+  - la planificación `ad3e`, aceptada al primer lanzamiento, con nc4 `d5f7`;
+  - el Worker `55f2` dejó el RED `c33ac6ac` y paró con PBT2A-C07.
+- **Intento 2, la corrección** (F4B-E33, con el análisis en `17872be8`):
+  - la planificación `7de7`, con nc4 `4284`;
+  - el Worker `3b39` dejó el RED `fb90c823`, solo con C-1, y el GREEN `5ddeb3b4`, con los dos archivos de Application.
+
+**CI:**
+- RED `44478438623`: tests en failure, ui-tests y build-ui en success, build-plugin omitido;
+- GREEN `44480898605`: 4/4, con Core 19 092 y UI 2 439, como se preveía.
+
+**Revisiones:**
+- la directa, sin hallazgos;
+- la independiente, ACEPTABLE CON MENORES 0/0/5, anotada en `docs/ideas-futuras.md`.
+
+**Verificación** `R20261119T074453Z-10a9`: EXECUTION_VERIFIED 14/14.
+
+**Tablas de comparación de los controles** (PBT2A-C11). Cada control se compara con la verificación real `10a9` (EXECUTION_VERIFIED / NONE, 14/14 en pass), comprobación por comprobación. Solo se listan las que difieren; todas las demás quedan en pass, como en la real.
+
+| Control | Resultado | Primera en fail | En fail | Paradas | Firma |
+|---|---|---|---|---|---|
+| nc1 `R20261119T074938Z-0302` (`CurrentSha` falso, `deadbeef…`, en la entrega) | EXECUTION_BLOCKED / STOP | Handoff | Handoff, Identity, Remote, Scope, Ci y Tests | S-04 | **Variación de PD-F4-04:** la firma solo admite Handoff, Identity y Ci, con Remote en pass. Todas las evidencias en fail citan el SHA falso. Trailer, en pass |
+| nc2 `R20261119T075153Z-a799` (una ruta menos en el `AllowedWriteScope` de la delegación: `PushBackDraftEditorLaunch.cs`) | EXECUTION_BLOCKED / STOP | Contract | Contract y Scope | S-04 y PBT2A-C01 | **La firma exacta de PD-F4-01** |
+| nc3 `R20261119T075831Z-6b19` | — | — | — | — | CONTROL PASS ordinario |
+
+**Las evidencias de nc2, frente a la firma:**
+- **Scope** nombra la ruta quitada, que queda fuera de la lista blanca, y activa PBT2A-C01.
+- **Contract:** A3 es subconjunto y A4 coincide en 192 entradas. Falla solo por el contraste del `AllowedWriteScope` estrechado con el contrato y con `byte-fidelity-check.json` (`f4-dispositions.md:520`, `:562`).
+- **Las otras doce** quedan en pass, con evidencias de los mismos hechos que la real.
+
+**El sustituto de F4 sobre nc2:** `PBT2A-NC2-EXACT-WHITELIST-01` (`R20261119T081504Z-9d60`) es una copia de `F4T1B-NC2-EXACT-WHITELIST-01` con solo el identificador y el ámbito cambiados. Dio **FAIL** en las propiedades 5 y 8, por el formato de F4B-E21:
+- el relevo de la planificación guarda el SHA de la salida cruda del Controller, no el de la delegación con las colecciones inyectadas;
+- los contratos de F4B no llevan la cláusula literal de F4 en `ExpectedEvidence`: su exactitud va por la comparación byte a byte.
+
+Por PBT2A-C11, los dos controles volvieron al Owner.
+
+**Decisiones del Owner** (`F4B-DRAFTS/coordinator/owner-pbt2a-controls-decisions.md`, literales):
+- **nc1:** «Aceptarlo solo esta vez (Recomendado)». Queda `nc1 = SATISFIED_BY_OWNER_DISPOSITION`, solo para PB-T2a, intento 2. Es la segunda vez en F4B que sale esta variación, tras PB-TC (F4B-E08). Las firmas no cambian.
+- **nc2:** «Adaptar el sustituto (Recomendado)».
+  - El sustituto `PBT2A-NC2-EXACT-WHITELIST-F4B-01` cambia solo las propiedades 5 y 8 en el modo F4B-E21, más la autoprueba y dos argumentos: la nota de inyección y la salida cruda.
+  - Pasó una revisión independiente: APTO TRAS CORRECCIONES 0/4/7; tras corregir, APTO 0/0/3, con las menores aplicadas.
+  - Se ejecutó en `R20261119T125505Z-c2d3`: **PASS**, con las 10 propiedades en true y la autoprueba 50 de 50, determinista.
+  - Queda `nc2 = SATISFIED_UNDER_PBT2A_EXACT_WHITELIST_SUBSTITUTE_F4B`.
+  - En el resto de F4B se reutiliza con solo el identificador y el ámbito cambiados, y solo con la firma exacta de PD-F4-01.
+  - Sus encargos, su revisión y sus notas están en `F4B-DRAFTS/pbt2a-nc2-substitute/`.
+
+**Controles:** nc1 por disposición del Owner (solo esta vez), nc2 por el sustituto adaptado (PASS) y nc3 CONTROL PASS. Las salidas ordinarias de nc1 y nc2 y el FAIL del sustituto de F4 se conservan tal cual.
+
+**Resultado:** **F4B-PBT2A-DRAFT-STATE-PORT = CLOSED / PASS WITH LIMITATIONS** sobre `5ddeb3b4`, con attempts 2 de 3. El puerto al borrador y el lanzamiento tipado del modo WORKSPACE quedan en Application.
+
+**Disposición de la sesión:** el relevo del trabajo de la corrección se corrigió para mirar solo `src` y `tests` en la cadena, que incluye el commit de documentación de la sesión.
+
+**Siguiente:** las decisiones de F4B-E35, y después la emisión de PB-T2b con el paquete de PB-T2 v2.7, que añade la regla RR de F4B-E35 a la v2.6, cuando su recomprobación termine limpia, por F4B-E28 (pregunta 4).
+
+## F4B-E35. Decisiones del Owner: la emisión condicional de PB-T3 y la reparación del RED (RR)
+
+**Fuente:** `F4B-DRAFTS/coordinator/owner-f4b-pbt3-emission-red-repair-decisions.md`, con las preguntas y las respuestas literales. Se tomaron en la misma ronda que las de F4B-E34.
+
+- **Pregunta 3, la emisión de PB-T3:** «Sí, con esa condición (Recomendado)».
+  - PB-T3a, PB-T3b y PB-T3c se emiten en orden, cada una tras el cierre de la anterior, sin volver al Owner si su comprobación acotada da 0 bloqueantes y 0 importantes sin resolver y la remedición sobre el cierre anterior no cambia nada material, como en F4B-E28 (pregunta 4).
+  - Vuelve al Owner por una decisión nueva, un control con una firma no prevista, un intento 3 o un efecto material sin medir.
+  - Resuelve DU-1 del generador de PB-T3a.
+- **Pregunta 4, la reparación del RED:** «Sí, con esas condiciones (Recomendado)». **La regla RR (RR-1 a RR-7)**, de F4B y desde PB-T2b, en las subtareas cuyo contrato la incorpore:
+  - **RR-1. Cuándo:** un solo commit «RED repair» por intento, después del RED y antes del GREEN.
+  - **RR-2. Qué toca:** solo las clases de prueba que el RED añadió.
+  - **RR-3. Lo esperado no cambia:** ninguna línea esperada cambia; si hace falta cambiar una, es la parada de siempre.
+  - **RR-4. El RED se repite:** su criterio se repite entero sobre la reparación, con su CI.
+  - **RR-5. Se declara:** la entrega declara la reparación.
+  - **RR-6. La cadena:** BaseSha..RedSha solo en `tests/`, RedSha..RedRepairSha solo en lo que añadió el RED, y RedRepairSha..CurrentSha solo en `src/`.
+  - **RR-7. Sin coste:** no gasta intento.
+
+  Excepciona AUTOMATION_PLAN 16.8 solo en esas condiciones, como F4B-E25 hizo con 16.3.
+- **Motivo:** en PB-T1c y en PB-T2a se gastó un intento por un error de escritura de una prueba nueva que solo aparecía después del RED (F4B-E30 y F4B-E33).

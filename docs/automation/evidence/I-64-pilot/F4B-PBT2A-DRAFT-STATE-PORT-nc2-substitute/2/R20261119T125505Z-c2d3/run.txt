@@ -1,0 +1,296 @@
+{
+ "SelfTestPass": true,
+ "Deterministic": true,
+ "SelfTest": [
+  [
+   "A",
+   "PASS",
+   true
+  ],
+  [
+   "B",
+   "FAIL",
+   true
+  ],
+  [
+   "C",
+   "FAIL",
+   true
+  ],
+  [
+   "D",
+   "FAIL",
+   true
+  ],
+  [
+   "E",
+   "FAIL",
+   true
+  ],
+  [
+   "F",
+   "FAIL",
+   true
+  ],
+  [
+   "G",
+   "FAIL",
+   true
+  ],
+  [
+   "H",
+   "FAIL",
+   true
+  ],
+  [
+   "I",
+   "FAIL",
+   true
+  ],
+  [
+   "J",
+   "FAIL",
+   true
+  ],
+  [
+   "K",
+   "FAIL",
+   true
+  ],
+  [
+   "L",
+   "FAIL",
+   true
+  ],
+  [
+   "M",
+   "FAIL",
+   true
+  ],
+  [
+   "N",
+   "PASS",
+   true
+  ],
+  [
+   "O",
+   "PASS",
+   true
+  ],
+  [
+   "P",
+   "FAIL",
+   true
+  ],
+  [
+   "Q",
+   "FAIL",
+   true
+  ],
+  [
+   "R",
+   "FAIL",
+   true
+  ],
+  [
+   "S",
+   "FAIL",
+   true
+  ],
+  [
+   "T",
+   "FAIL",
+   true
+  ],
+  [
+   "U",
+   "FAIL",
+   true
+  ],
+  [
+   "V",
+   "FAIL",
+   true
+  ],
+  [
+   "W",
+   "FAIL",
+   true
+  ],
+  [
+   "X",
+   "FAIL",
+   true
+  ],
+  [
+   "Y",
+   "FAIL",
+   true
+  ],
+  [
+   "Z",
+   "FAIL",
+   true
+  ],
+  [
+   "AA",
+   "FAIL",
+   true
+  ],
+  [
+   "AB",
+   "FAIL",
+   true
+  ],
+  [
+   "AC",
+   "FAIL",
+   true
+  ],
+  [
+   "AD",
+   "FAIL",
+   true
+  ],
+  [
+   "AE",
+   "FAIL",
+   true
+  ],
+  [
+   "AF",
+   "FAIL",
+   true
+  ],
+  [
+   "AG",
+   "FAIL",
+   true
+  ],
+  [
+   "AH",
+   "FAIL",
+   true
+  ],
+  [
+   "AI",
+   "FAIL",
+   true
+  ],
+  [
+   "AJ",
+   "FAIL",
+   true
+  ],
+  [
+   "AK",
+   "FAIL",
+   true
+  ],
+  [
+   "AL",
+   "FAIL",
+   true
+  ],
+  [
+   "AO",
+   "FAIL",
+   true
+  ],
+  [
+   "AP",
+   "FAIL",
+   true
+  ],
+  [
+   "AQ",
+   "FAIL",
+   true
+  ],
+  [
+   "AR",
+   "FAIL",
+   true
+  ],
+  [
+   "AS",
+   "FAIL",
+   true
+  ],
+  [
+   "AT",
+   "FAIL",
+   true
+  ],
+  [
+   "AU",
+   "FAIL",
+   true
+  ],
+  [
+   "AV",
+   "FAIL",
+   true
+  ],
+  [
+   "AW",
+   "FAIL",
+   true
+  ],
+  [
+   "AX",
+   "FAIL",
+   true
+  ],
+  [
+   "AM",
+   "FAIL",
+   true
+  ],
+  [
+   "AN",
+   "FAIL",
+   true
+  ]
+ ],
+ "SubstituteResult": "PASS",
+ "Properties": {
+  "1_AcceptedRealDelegationMatchesContract": true,
+  "2_RealChangedPathInsideAcceptedScope": true,
+  "3_Nc2RemovesExactlyThatPath": true,
+  "4_NoOtherDelegationFieldChanges": true,
+  "5_DerivedHashesConsistent": true,
+  "6_ChangedPathNotInMutatedScope": true,
+  "7_ScopeMustFail": true,
+  "8_ContractFailsOnlyByExactWhitelist": true,
+  "9_ControllerReportedScopeFail": true,
+  "10_NoAlternativeOneFieldMutation": true
+ },
+ "Measured": {
+  "ChangedPath": "src/RackCad.Application/Systems/PushBack/PushBackDraftEditorLaunch.cs",
+  "DelegationFieldsChanged": [
+   "AllowedWriteScope"
+  ],
+  "ChangedInputs": [
+   "delegation.json",
+   "relay-record-planning.json"
+  ],
+  "Mode": "F4B-E21",
+  "RawOutputSha256": "100A7695160F5A5FF622470128957399BB2172FF90D0F66EDC414C5E811472A8",
+  "RawNonEmptyComputed": [],
+  "RawCollectionsEmptyExact": true,
+  "RawPlusContractCollectionsEqualsDelegationJson": true,
+  "RawPlusContractCollectionsEqualsDelegationBytes": true,
+  "ScopeOnReal": "pass",
+  "ScopeOnMutated": "fail",
+  "PlainA3A5OnMutated": {
+   "A3": true,
+   "A4": true,
+   "A5": true
+  },
+  "ExactWhitelistBy": "F4B_EXACT_EVIDENCE+BFC",
+  "ControllerScope": "fail",
+  "ControllerContract": "fail",
+  "AlternativeCandidatesExcludingPath": 24
+ }
+}

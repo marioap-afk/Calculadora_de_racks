@@ -1,0 +1,37 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Unit": "F4B-PBT2A-DRAFT-STATE-PORT-nc2-substitute/2/R20261119T125505Z-c2d3",
+  "SourceRoot": "artifacts/orchestration/I-64/F4B-PBT2A-DRAFT-STATE-PORT-nc2-substitute/2/R20261119T125505Z-c2d3",
+  "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
+  "Counts": {
+    "CUSTODIED": 3,
+    "EXCLUDED": 0
+  },
+  "Files": [
+    {
+      "Path": "nc2_exact_whitelist_substitute_f4b.py",
+      "Bytes": 35304,
+      "Sha256": "6ccaf12dbf9122c0bddc5b724bcff573705c95698af38bf750bf69459ee2ffd3",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "run.txt",
+      "Bytes": 3476,
+      "Sha256": "3d55efdd6664596a44bbd49440ee53443ebe583990ce244a79a396d99ac79d8a",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "eea40788b16652d4ad4a0f6cc9a47fd0c5c03d673f86d1663f1bf5670a850798",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)"
+    },
+    {
+      "Path": "substitute-result.json",
+      "Bytes": 14469,
+      "Sha256": "2d56f80eb6fb4c22b0f1e1205ccf5f030eed3735d4eb05e6571461cdc9043a6d",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "bf35c15c33d089688a203d3d291e609cbc9438a432940560a8e8cdf3549dfcd5",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>"
+      ]
+    }
+  ]
+}

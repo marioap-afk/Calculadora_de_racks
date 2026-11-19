@@ -1,0 +1,17 @@
+R1-real-7args | esperado=PASS | obtenido=PASS | exit=0 | falsas=[] | stderr=-
+N1-raw-int-as-float | esperado=FAIL | obtenido=FAIL | exit=1 | falsas=['5'] | stderr=-
+N2-raw-bool-for-int | esperado=FAIL | obtenido=FAIL | exit=1 | falsas=['5'] | stderr=-
+N3-raw-duplicate-key | esperado=FAIL | obtenido=FAIL (entrada ausente o mal formada: ValueError: clave duplicada en un objeto JSON) | exit=1 | falsas=[] | stderr=-
+N5-raw-absent-collection | esperado=FAIL | obtenido=FAIL | exit=1 | falsas=['5'] | stderr=-
+N6-runid-all-absent | esperado=FAIL | obtenido=FAIL | exit=1 | falsas=['5'] | stderr=-
+N7-runid-deleg-differs | esperado=FAIL | obtenido=FAIL | exit=1 | falsas=['5'] | stderr=-
+N8-fidelity-substring | esperado=FAIL | obtenido=FAIL | exit=1 | falsas=['5'] | stderr=-
+N4-raw-reordered | esperado=FAIL (ahora: bytes distintos de la delegacion; la revision la daba por aceptable) | obtenido=FAIL | exit=1 | falsas=['5'] | stderr=-
+N9-evidence-plus-relaxing | esperado=PASS (observacion heredada) | obtenido=FAIL | exit=1 | falsas=['5'] | stderr=-
+N10-evidence-trailing-space | esperado=FAIL | obtenido=FAIL | exit=1 | falsas=['8'] | stderr=-
+X1-note-incoherent | esperado=FAIL | obtenido=FAIL | exit=1 | falsas=['5'] | stderr=-
+X2-relay-raw-unbound | esperado=FAIL | obtenido=FAIL | exit=1 | falsas=['5'] | stderr=-
+X3-negated-phrase | esperado=FAIL | obtenido=FAIL | exit=1 | falsas=['8'] | stderr=-
+X4-f4b-faithful-nc2 | esperado=FAIL | obtenido=FAIL | exit=1 | falsas=['5'] | stderr=-
+M6-note-missing | esperado=FAIL | obtenido=FAIL (entrada ausente o mal formada: FileNotFoundError: [Errno 2] No such file or directory: '<scratchpad>/b491591bc47a | exit=1 | falsas=[] | stderr=-
+M7-note-malformed | esperado=FAIL | obtenido=FAIL (entrada ausente o mal formada: ValueError: la nota de inyeccion no es un objeto JSON) | exit=1 | falsas=[] | stderr=-

@@ -1,0 +1,11 @@
+TRX artifacts/orchestration/I-64/F4B-PBT2A-DRAFT-STATE-PORT/2/R20261119T065932Z-3b39/tests/r1/r1-statePort.trx
+  CT_PBT2A_03_ThePortRoundTripIsLosslessAndSharesNothingOutsideTheTwoDeclaredReferences outcome=Failed mensaje-con-prefijo-de-tipo=False primera-linea-stack-bajo-tests=True
+    mensaje: Assert.Equal() Failure: Collections differ&#xD;
+    stack: at RackCad.Tests.PushBackDraftStatePortTests.CT_PBT2A_03_ThePortRoundTripIsLosslessAndSharesNothingOutsideTheTwoDeclaredReferences() in <worktree-de-I-64>
+  CT_PBT2A_01_ThePortHandsACopyOfTheEditedStateToTheDraftAndNothingElse outcome=Failed mensaje-con-prefijo-de-tipo=False primera-linea-stack-bajo-tests=True
+    mensaje: Assert.Equal() Failure: Collections differ&#xD;
+    stack: at RackCad.Tests.PushBackDraftStatePortTests.CT_PBT2A_01_ThePortHandsACopyOfTheEditedStateToTheDraftAndNothingElse() in <worktree-de-I-64>\tests\RackCad
+  CT_PBT2A_02_TheLaunchCarriesTheStateTheIdentityTheSourceAndThePortAndRefusesWhatIsMissing outcome=Failed mensaje-con-prefijo-de-tipo=False primera-linea-stack-bajo-tests=True
+    mensaje: Assert.Equal() Failure: Collections differ&#xD;
+    stack: at RackCad.Tests.PushBackDraftStatePortTests.CT_PBT2A_02_TheLaunchCarriesTheStateTheIdentityTheSourceAndThePortAndRefusesWhatIsMissing() in <worktree-de-I-64>
+  recuento={'Failed': 3}

@@ -8149,3 +8149,34 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - solo documentación;
 - sin AutoCAD;
 - las corridas de la cadena de PB-T2a se custodian al cerrar la tarea.
+
+## 257. PB-T2a: cadena completa, decisiones del Owner y cierre (F4B-E34 y F4B-E35)
+
+**Qué se custodia:**
+- **Las unidades de la cadena,** con su manifiesto por unidad:
+  - en `F4B-PBT2A-DRAFT-STATE-PORT/1/`: `ad3e` y `55f2`;
+  - en `F4B-PBT2A-DRAFT-STATE-PORT/2/`: `7de7`, `3b39` y la verificación `10a9`;
+  - las nc4 `d5f7` y `4284`;
+  - los controles nc1 `0302`, nc2 `a799` y nc3 `6b19`;
+  - las dos corridas del sustituto de nc2: `9d60`, el de F4, FAIL; y `c2d3`, el adaptado, PASS.
+- **Las revisiones del intento 2,** con su encargo.
+- **Las decisiones del Owner:** `owner-pbt2a-controls-decisions.md` y `owner-f4b-pbt3-emission-red-repair-decisions.md`.
+- **El sustituto adaptado:** sus encargos, su revisión independiente, sus notas, su diff y las sondas tras las correcciones, en `F4B-DRAFTS/pbt2a-nc2-substitute/`.
+- **El paquete de cierre.**
+- **La nota de `docs/ideas-futuras.md`.**
+- **El estado.**
+
+**El intento 2:**
+- RED `fb90c823` y GREEN `5ddeb3b4`;
+- CI `44478438623` y `44480898605`, 4/4 (Core 19 092 y UI 2 439);
+- la revisión independiente, 0/0/5;
+- la verificación, 14/14;
+- **los controles:**
+  - nc1, por disposición del Owner, solo esta vez;
+  - nc2, `SATISFIED_UNDER_PBT2A_EXACT_WHITELIST_SUBSTITUTE_F4B`;
+  - nc3, CONTROL PASS.
+
+**Límites:**
+- solo documentación;
+- sin AutoCAD;
+- los eventos y las transcripciones, solo por SHA-256.
