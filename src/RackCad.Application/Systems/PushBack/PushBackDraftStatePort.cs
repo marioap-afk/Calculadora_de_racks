@@ -1,3 +1,4 @@
+using System;
 using RackCad.Application.Persistence;
 using RackCad.Application.Workspace.Drafts;
 
@@ -34,21 +35,33 @@ namespace RackCad.Application.Systems.PushBack
         PushBackDraftApplyResult ApplyToDraft(PushBackEditableState edited);
     }
 
-    /// <summary>The port over the draft of a rack: it hands the edited state to the draft, which keeps a copy of it.</summary>
+    /// <summary>
+    /// The port over the draft of a rack: it hands the edited state to the draft, which keeps a COPY of it. The adapter
+    /// itself copies nothing, validates nothing and calls no other operation of the draft.
+    /// </summary>
     public sealed class PushBackDraftSessionPort : IPushBackDraftStatePort
     {
+        private readonly DraftSession<PushBackEditableState> draft;
+
         public PushBackDraftSessionPort(DraftSession<PushBackEditableState> draft)
         {
+            if (draft == null) throw new ArgumentNullException(nameof(draft));
+            this.draft = draft;
         }
 
         public PushBackDraftApplyResult ApplyToDraft(PushBackEditableState edited)
         {
-            return new PushBackDraftApplyResult(PushBackDraftApplyStatus.NotEditable, false);
+            if (edited == null) throw new ArgumentNullException(nameof(edited));
+            var result = draft.SetCurrentDraftState(edited);
+            return new PushBackDraftApplyResult(
+                result.Status == DraftEditStatus.Updated ? PushBackDraftApplyStatus.Applied : PushBackDraftApplyStatus.NotEditable,
+                result.IsDirty);
         }
 
         public static PushBackDraftEditorLaunch LaunchFor(DraftSession<PushBackEditableState> draft, RackProject sourceProject)
         {
-            return null;
+            if (draft == null) throw new ArgumentNullException(nameof(draft));
+            return new PushBackDraftEditorLaunch(draft.CurrentDraftState, draft.RackId, sourceProject, new PushBackDraftSessionPort(draft));
         }
     }
 }
