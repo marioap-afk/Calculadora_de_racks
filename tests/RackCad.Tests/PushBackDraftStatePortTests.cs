@@ -409,11 +409,14 @@ namespace RackCad.Tests
             var desdeBorrador = Paso(log, () => PushBackDraftSessionPort.LaunchFor(draft, p));
             var lectura = Paso(log, () =>
             {
+                // The state and the id are read BEFORE the edit: applying an edit leaves the draft holding a new copy.
+                var estadoEsElActual = ReferenceEquals(desdeBorrador.State, draft.CurrentDraftState).ToString();
+                var id = desdeBorrador.RackId;
                 var edited = Copy(desdeBorrador.State);
                 edited.PalletTolerance = 4.5;
                 desdeBorrador.Port.ApplyToDraft(edited);
-                return "launchfor estado-es-el-actual=" + ReferenceEquals(desdeBorrador.State, draft.CurrentDraftState).ToString()
-                    + " id=" + desdeBorrador.RackId
+                return "launchfor estado-es-el-actual=" + estadoEsElActual
+                    + " id=" + id
                     + " puerto-es-del-borrador=" + (Igual(draft.CurrentDraftState, edited) && draft.IsDirty);
             });
             if (lectura != null) log.Add(lectura);
