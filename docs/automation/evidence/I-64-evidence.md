@@ -8121,3 +8121,16 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - la comprobación acotada: EMITIBLE TRAS CORRECCIONES 0/0/6, aplicada.
 
 **Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.
+
+## 255. Contrato de F4B-PBT2A-DRAFT-STATE-PORT
+
+**Contrato:** `I-64-pilot/F4B-PBT2A-DRAFT-STATE-PORT/coordinator/gate-contract.json` (F4B-E32), con su script generador al lado.
+- **Alcance:** lista blanca exacta de 4 rutas, solo en Application y sus pruebas. La ventana, el piloto, el Plugin y el XAML no cambian.
+- **`ForbiddenWriteScope`:** 192 entradas, con el metodo de PB-T0.
+- **Invariantes y paradas:** 13 invariantes y 15 paradas propias.
+- **Filtros:** `RackCad.Tests.PushBackDraftStatePortTests` (`MinSelected` 3, `ExpectRed`); `RackCad.Tests.PushBackDraftPortSharedReferenceGuardTests` (`MinSelected` 1); `RackCad.Tests.PushBackEditableState` (`MinSelected` 13); `RackCad.Tests.PushBackEditorOutputGate` (`MinSelected` 1); `RackCad.Tests.PushBackSharedReferenceGuardTests` (`MinSelected` 2); `RackCad.Tests.PushBackWindowOnStateSourceGuardTests` (`MinSelected` 1); `RackCad.Tests.PushBackWindowSharedReferenceGuardTests` (`MinSelected` 1); `RackCad.Tests.Workspace` (`MinSelected` 3271); `RackCad.Tests.NamespaceFolderGuardTests` (`MinSelected` 7); `RackCad.Tests.PushBackClassicCharacterization` (`MinSelected` 10); `RackCad.Tests.PushBackFullEditorCharacterization` (`MinSelected` 3); `RackCad.UI.Tests.PushBackWindowOnStateTests` (`MinSelected` 2); `RackCad.UI.Tests.PushBackEditableStateParityTests` (`MinSelected` 1); `RackCad.UI.Tests.PushBackStateNet` (`MinSelected` 14); `RackCad.UI.Tests.PushBackClassicCharacterization` (`MinSelected` 55); `RackCad.UI.Tests.PushBackFullEditorCharacterization` (`MinSelected` 16); `RackCad.UI.Tests.PushBackDeclaredCorrection` (`MinSelected` 14); `RackCad.UI.Tests.Cantilever` (`MinSelected` 67).
+- **Revisiones:** `AuthorityRevision` `1ee10d3fc53010e87f7a2720146366c3d4320951` y `MainSha` `812baf879612320653094a8aaf46aca0bac81383`; anclaje: el cierre de PB-T1c (`5a8366c1`).
+- **`attempts`:** 1 de 3.
+- **La verificacion** lleva las tres comprobaciones deterministas de F4B-E15; la planificacion, las colecciones opacas puestas por la sesion (F4B-E21).
+
+**Limites:** solo documentacion en este paso; sin AutoCAD.
