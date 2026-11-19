@@ -8055,3 +8055,24 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - **La verificacion** lleva las tres comprobaciones deterministas de F4B-E15; la planificacion, las colecciones opacas puestas por la sesion (F4B-E21).
 
 **Limites:** solo documentacion en este paso; sin AutoCAD.
+
+## 252. PB-T2 y PB-T3: decisiones del Owner; PB-T1c: parada en el intento 1 y corrección en el intento 2
+
+**Decisiones:**
+- F4B-E28: las cuatro de PB-T2;
+- F4B-E29: D-1 de PB-T3, un solo código;
+- F4B-E30: la parada PBT1C-C07 y la corrección de PB-T1c en el intento 2.
+
+**Qué se custodia:**
+- las dos decisiones literales del Owner;
+- el análisis de la corrección de PB-T1c, en `F4B-PBT1C-LOSSLESS-STATE-WINDOW/1/R20261119T025420Z-ee6c/`;
+- el estado, con attempts 2.
+
+**El intento 1 de PB-T1c:**
+- RED `e5a21989` y CI `44450941610` del RED, conforme;
+- sin GREEN: el Worker paró con PBT1C-C07, por una prueba que compara antes del recálculo neutro.
+
+**Límites:**
+- solo documentación;
+- sin AutoCAD;
+- las corridas de la cadena de PB-T1c se custodian al cerrar la tarea.

@@ -784,3 +784,54 @@ Su lectura de CT-06 dio falsos fallos.
 - **Procedimiento:**
   - la planificación con las colecciones opacas puestas por la sesión (F4B-E21);
   - la verificación con las comprobaciones deterministas de F4B-E15.
+
+## F4B-E28. Decisiones del Owner antes de los contratos de PB-T2 (Q-PBT2-1 a Q-PBT2-4)
+
+**Fecha:** 2026-11-19. **Texto literal:** `F4B-DRAFTS/coordinator/owner-pbt2-decisions.md`.
+
+**El paquete:** PB-T2 v2.1, que se custodiará con la emisión de PB-T2a. Su revisión independiente de la v1 dio NECESITA v2 (0/8/16), y la recomprobación de la v2, LISTA PARA EMITIR TRAS REMEDICIÓN (0/0/7).
+
+**Las respuestas del Owner,** todas «(Recomendado)»:
+1. «Aplica sin cerrar; Cerrar avisa». Se aplica solo en el modo WORKSPACE y autoriza esa excepción a ADR-0029 D8.
+2. «Lo rechaza, como Actualizar». Es la misma compuerta en los dos modos.
+3. «En PB-T4, con prueba ya». PB-T2 añade una prueba de concordancia de la validación de la escala.
+4. «Sí, con esa condición»: la emisión condicional de PB-T2a, PB-T2b y PB-T2c.
+
+## F4B-E29. Decisión del Owner antes del contrato de PB-T3b: D-1
+
+**Fecha:** 2026-11-19. **Texto literal:** `F4B-DRAFTS/coordinator/owner-pbt3-d1-decision.md`.
+
+**El paquete:** PB-T3 v4, que se custodiará con la emisión de PB-T3a. Pasó por:
+- la revisión independiente de la v1: 1/11/16;
+- la recomprobación de la v2: 0/3/4;
+- la recomprobación de la v3: 0/1/1, con los números corregidos en la v4.
+
+**Respuesta del Owner:** «Un solo código (Recomendado)».
+- Un único escritor para el piloto y el borrador completo.
+- PB-T3b sustituye seis pruebas de F4, cada una con su registro declarado y una prueba equivalente que se ejecuta.
+- PB-T4 sustituirá tres de esos equivalentes al quitar el piloto: nueve en total por esta decisión.
+
+## F4B-E30. PB-T1c, intento 1: parada PBT1C-C07 tras el RED, y corrección en el intento 2
+
+**Fecha:** 2026-11-19. **El análisis del Coordinator:** `F4B-PBT1C-LOSSLESS-STATE-WINDOW/1/R20261119T025420Z-ee6c/analysis.md`.
+
+**El intento 1:**
+- **La planificación** `R20261119T025114Z-43f7` se aceptó en el primer lanzamiento: fidelidad PASS 8/8, A1-A8 8/8 y nc4 `R20261119T025329Z-6a10`.
+- **El Worker** `R20261119T025420Z-ee6c` hizo el RED `e5a21989`: la costura inerte y las tres clases.
+  - Su CI `44450941610` es conforme: tests y ui-tests en failure, build-ui en success y build-plugin omitido.
+  - Paró con **PBT1C-C07** antes del GREEN. CT-PBT1C-02 compara el diseño de la copia del estado con `LastComputation.Design` antes del recálculo neutro. En tres gestos de la parte compuesta, ese diseño va una pasada por detrás: el comportamiento ya existía y es el mismo en la base.
+  - Con la comparación tras el recálculo, CT-02 pasa entera sobre la implementación validada sin commit.
+- **Lo que no hizo el Worker:** no ajustó la expectativa ni compensó en el producto.
+
+**La disposición de la sesión (16.8):** corrección en el **intento 2 de 3**, con FailureClass `StopCondition`.
+- **C-1:** CT-02 toma su parte 1 tras el recálculo neutro.
+- **El RED de la corrección:** solo esa clase.
+- **El GREEN:** D-PBT1-13 en W y WC.
+- **La cadena:** ChainRedSha null y ChainRedFiles vacío, porque el RED no se acreditó.
+- **Las autoridades:** F4B-E25 cubre W, que es UNIT_CHANGE en la base.
+- **El intento 3, si llegara,** vuelve al Owner.
+
+**Un hallazgo de contención, anterior a F4B.** Pruebas de UI que ya existían crean un `RackFrameConfiguratorWindow` real (RichEditor*, EditorShellAdoptionTests, FirstView* y PushBackHeaderOwnerRoundTwoTests, entre otras), y su `OnClosed` escribe `RackFrameConfigurator.layout` en los datos locales del usuario.
+- Cada corrida local de esos filtros sobrescribe la disposición del configurador del usuario.
+- **No es una parada de PB-T1c.** PBT1C-C09 rige las pruebas nuevas, y PB-T1c no puede cambiar las existentes.
+- **Lo que se hace con él:** se informa al Owner y se anota en `docs/ideas-futuras.md` al cerrar PB-T1c, para una tarea propia.
