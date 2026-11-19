@@ -58,6 +58,9 @@ namespace RackCad.UI.Tests
         {
             var log = new List<string>();
             var avisos = new PromptProbe(true);
+            // El primer Sta del proceso crea el hilo STA e instala en el su aviso de descarte permanente: se arranca ANTES de sustituir
+            // el aviso de esta prueba, o el primero que corra en el proceso la dejaria sin su sustituto.
+            Sta(() => { });
             using (EditorDiscardPrompt.Substitute(avisos.Ask))
             {
                 Sta(() =>
@@ -186,6 +189,9 @@ namespace RackCad.UI.Tests
             var log = new List<string>();
             var esperadas = new List<string>();
             var avisos = new PromptProbe(true);
+            // El primer Sta del proceso crea el hilo STA e instala en el su aviso de descarte permanente: se arranca ANTES de sustituir
+            // el aviso de esta prueba, o el primero que corra en el proceso la dejaria sin su sustituto.
+            Sta(() => { });
             using (EditorDiscardPrompt.Substitute(avisos.Ask))
             {
                 Sta(() =>
@@ -291,6 +297,9 @@ namespace RackCad.UI.Tests
         {
             var log = new List<string>();
             var avisos = new PromptProbe(true);
+            // El primer Sta del proceso crea el hilo STA e instala en el su aviso de descarte permanente: se arranca ANTES de sustituir
+            // el aviso de esta prueba, o el primero que corra en el proceso la dejaria sin su sustituto.
+            Sta(() => { });
             using (EditorDiscardPrompt.Substitute(avisos.Ask))
             {
                 Sta(() =>
