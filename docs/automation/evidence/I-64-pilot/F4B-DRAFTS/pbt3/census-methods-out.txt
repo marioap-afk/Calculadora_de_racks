@@ -1,0 +1,211 @@
+FILE tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs
+  CONST CorePath = src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+  CONST DraftSessionPath = src/RackCad.Application/Workspace/Drafts/DraftSession.cs
+  CONST MaterializerPath = src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs
+  CONST PilotFolder = src/RackCad.Application/Systems/PushBack/Pilot/
+  CONST PortPath = src/RackCad.Application/Systems/PushBack/Pilot/IPushBackPilotUpdatePort.cs
+  CONST RebuildPath = src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotSystemRebuild.cs
+  CONST RunPath = src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs
+  CONST ScanPath = src/RackCad.Plugin/Views/RackSiblingScan.cs
+  CONST WriterPath = src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs
+    METHOD TheRunThePortAndTheHelpAreNullableEnabledAndInThePilotNamespace -> 
+    METHOD TheRunThePortAndTheHelpNameNothingOfAutoCadOfThePluginOfTheUiOfThreadingOfFilesOrOfReflectionEvenInComments -> 
+    METHOD ThePurityGuardTripsOnEachProhibitionInTheRealTextOfEachFile -> 
+    METHOD NoFileOfThePilotFolderNamesTheWordTransactionNotEvenInAComment -> PilotFolder
+    METHOD TheRunReleasesBothScopesInFinallyBlocksOfItsOwnAndNeverWithAUsing -> RunPath
+    METHOD ThePortHasTheOperationsAndTheValuesOfThePackageAndNoWordOfAutoCad -> PortPath
+    METHOD TheWriterHasItsThreeClassesAndNeverNamesWhatItMustNotName -> 
+    METHOD TheWriterDoesNotKeepTheAliasOfTheApplicationThatOnlyTheActiveDocumentNeeded -> 
+    METHOD TheWriterDoesThePrimitiveOperationsOfThePackageInsideItsScopesInTheOrderOfThePackage -> 
+    METHOD PrepareUnitsBuildsTheSystemOfEachMemberWithItsRackName -> 
+    METHOD TheProhibitionGuardOfTheWriterTripsOnEachProhibitedNameInjectedIntoTheRealTextOfTheWriter -> 
+    METHOD TheWriterGuardTripsOnASecondDocumentATransactionOrAStaticFieldInThePort -> 
+    METHOD TheWriterGuardTripsOnABeginThatDoesNotCheckTheMarkOfOneUseAndOnAPortThatCannotRetireItself -> 
+    METHOD TheProhibitionGuardOfTheWriterSeesAFieldInThePortAnObjectOfAutoCadInThePortAndAPurgeInTheScopeOfMutate -> 
+    METHOD TheStructureGuardOfTheWriterTripsOnASecondScopeASecondConfirmationAndASecondPurge -> 
+    METHOD TheStructureGuardOfTheWriterSeesTheOrderOfPostAPurgeAfterTheRenameAMovedCheckAndAScopeThatIsNotReleased -> 
+    METHOD TheDebugInjectionHasConditionalMethodsAndOnlyTheReadOfTheVariableIsInsideIfDebug -> WriterPath
+    METHOD TheDebugGuardTripsOnAnEnvironmentReadOutsideIfDebugAndOnAConditionalThatIsMissing -> WriterPath
+    METHOD TheCallerOwnedReadOfMutateOpensNoScopeTakesNoLockAndConfirmsNothing -> 
+    METHOD TheCallerOwnedReadOfMutateGoesThroughTheNucleusAndComparesItsScopeByNativeIdentity -> 
+    METHOD TheGuardOfTheCallerOwnedReadTripsOnEachOperationThatItMustNotHaveInTheRealBody -> 
+    METHOD TheNucleusOfTheTraversalIsTheLiteralOfTheBaseWithTheOneDeclaredSubstitution -> ScanPath
+    METHOD TheGuardOfTheNucleusTripsOnEachChangeOfItsBehavior -> ScanPath
+    METHOD TheGuardOfTheNucleusDoesNotSeeCommentsWhiteSpaceOrLineEndingsButSeesTheSubstitutionUndone -> ScanPath
+    METHOD TraverseIsExactlyTheLockTheScopeTheCallOfTheNucleusTheConfirmationAndTheReturn -> ScanPath
+    METHOD TheGuardOfTheWrapperTripsOnEachChangeOfTheWrapper -> ScanPath
+    METHOD TheGuardOfTheWrapperSeesTheNucleusMovedAwayFromTraverseAndNewDeclaredMembersBetweenThem -> ScanPath
+    METHOD CaptureCaptureDrawingAndTheRestOfTheFileAreTheFrozenOnesOfTheBaseAddLayerIncluded -> ScanPath
+    METHOD TheGuardOfTheFrozenRestTripsOnAChangeOutsideTheTwoMembers -> ScanPath
+    METHOD TheNucleusCanMoveAnywhereInTheFileWithoutTheFrozenRestChanging -> ScanPath, WriterPath
+    METHOD TheNucleusIsCalledExactlyTwiceByTraverseAndByTheWriterAndByNoOtherFileOfTheProduct -> ScanPath
+    METHOD TheCensusGuardSeesAThirdCallASecondCallInTraverseAndAMissingCall -> ScanPath, WriterPath, src/RackCad.Plugin/Other.cs
+    METHOD TheGateOfTheUpdateAuthorizesTheSessionByTheExactFormOnlyOnceAndHasNeitherRestNorReader -> CorePath
+    METHOD TheGuardOfTheGateOfTheUpdateSeesTheComparisonTheDecisionTheSessionTheAlwaysTrueTheRestAndTheReader -> CorePath
+    METHOD TheBodyOfTheUpdateFollowsTheOrderOfThePackageAndEndsTheMarkOfKnownCleanAfterTheClose -> CorePath
+    METHOD NoNewFileOfTheUpdateBuildsOrComposesAnEnvelopeAddsACommandOrNamesTheUnits -> WriterPath
+    METHOD X -> WriterPath
+    METHOD NoNewTestFileOfTheUpdateBuildsOrComposesAnEnvelopeTheyUseTheTextsOfTheirNeighbours -> DraftSessionPath, src/RackCad.Application/Workspace/Drafts/DraftSession.cs
+    METHOD TheDeferredErrorBlockOfTheDraftSessionIsIdenticalByteForByteAndTheFallbackToErrorUsesTheSameForm -> DraftSessionPath
+    METHOD TheXmlOfTheAtomicKeepDocumentsThatKeepOnMustNotMutateItsSecondArgument -> DraftSessionPath
+    METHOD TheCompositionForWritingComparesTheCurrentStateAsItIsAndNeverCopiesIt -> MaterializerPath
+    METHOD TheGuardOfTheCompositionTripsWhenTheCurrentStateIsCopiedBeforeTheComparison -> MaterializerPath
+  METHODS 42
+FILE tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs
+  CONST PilotFolder = src/RackCad.Application/Systems/PushBack/Pilot/
+  CONST PlanPath = src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+  CONST SessionPath = src/RackCad.Application/Workspace/Drafts/DraftSession.cs
+    METHOD TheFileOfThePlanNamesNoWriteOfTheDrawingNoTransactionNoLockNoHostNoMutationOfADraftAndNoClockOrThread -> 
+    METHOD ThePurityGuardTripsOnEachNameThatItForbidsInTheRealTextOfTheFile -> 
+    METHOD TheFileOfThePlanIsNullableEnabledInTheNamespaceOfThePilotWithBracesAndDeclaresTheTypesOfThePackage -> PilotFolder, PlanPath
+    METHOD TheFileOfThePlanComposesExactlyOnceInAMemberOfItsOwnWithAParameterSourceAndTheNameOfTheRereadEnvelope -> 
+    METHOD TheComposeGuardTripsOnAnotherCallAnUnsourcedCompositionANullableSourceOrAnotherName -> 
+    METHOD NobodyComposesTheEnvelopeOfTheWritingOfThePilotOutsideThePlanAndNoPilotFileBeforeThisTaskDoes -> PilotFolder, PlanPath
+    METHOD ComposeForWriteIsCalledOnlyByThePlannerAndOnlyAfterTheComparisonOfTheBase -> 
+    METHOD TheAfterMatchGuardTripsOnAnotherCallerAndOnACallBeforeTheComparison -> PlanPath, src/RackCad.Application/Workspace/Other.cs
+    METHOD TheOrderOfPrepareIsTheOneOfThePackageAndNoOutcomeBeforeConflictLooksAtTheReread -> 
+    METHOD TheMemberPlansAreBuiltOnlyFromTheMutableMembersOfTheRereadInOrdinalOrderAndNeverErase -> 
+    METHOD TheReasonOfTheErrorIsAssignedInTheCoreOnlyTogetherWithTheStatusErrorOrToNull -> 
+    METHOD TheGuardOfTheReasonOfTheErrorTripsOnAReasonWithoutTheStatusErrorAndOnAnAssignmentOutsideTheStatus -> 
+    METHOD TheGuardOfTheReasonOfTheErrorTripsOnTheFormsThatAssignItThroughThisCompoundlyOrByDeconstructionOutsideTheStatusError -> 
+    METHOD TheGuardOfTheReasonOfTheErrorTripsOnANewMethodThatAssignsItAlone -> 
+    METHOD TheReasonOfTheErrorIsNeverLeftBehindOutsideTheStatusErrorInTheRealDraftSession -> 
+    METHOD TheBuildersThatThePlanUsesNeedNeitherTheDrawingNorThePlugin -> src/RackCad.Application/Persistence/RackEmbedComposer.cs, src/RackCad.Application/Persistence/RackProjectStore.cs, src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorAssembler.cs, src/RackCad.Application/Systems/PushBack/PushBackResolver.cs, src/RackCad.Application/Systems/PushBack/PushBackSystemLateralBuilder.cs, src/RackCad.Application/Systems/Shared/RackViewAvailability.cs, src/RackCad.Application/Systems/Shared/RackViewCodec.cs
+    METHOD NoFileOfTheTaskUsesTheCommandContextNorAsynchronyNorTimersNorADispatcher -> PlanPath, SessionPath, src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs, src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs, src/RackCad.Application/Workspace/WorkspaceEditIntent.cs, src/RackCad.Application/Workspace/WorkspaceHostCore.cs, src/RackCad.Application/Workspace/WorkspacePilotSupport.cs, src/RackCad.Plugin/Workspace/WorkspaceController.cs
+  METHODS 17
+FILE tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs
+  CONST AdapterPath = src/RackCad.Plugin/Views/RackPilotUpdateCommandContext.cs
+  CONST BridgePath = src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs
+  CONST ControllerPath = src/RackCad.Plugin/Workspace/WorkspaceController.cs
+  CONST CorePath = src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+  CONST FieldViewModelPath = src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+  CONST GatePath = src/RackCad.Application/Workspace/WorkspacePilotSupport.cs
+  CONST HostRunPath = src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotHostRun.cs
+  CONST IntentAdapterPath = src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs
+  CONST NavigationHostPath = src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs
+  CONST RunPath = src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs
+  CONST WriterPath = src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs
+    METHOD TheRunnerIsPureAndTotalAndNamesNeitherTheWorkspaceNorTheUpdateOfT4B -> HostRunPath, src/RackCad.Application/Systems/PushBack/Pilot
+    METHOD ThePurityGuardOfTheRunnerTripsOnEachProhibitionInjectedIntoTheRealText -> HostRunPath
+    METHOD TheTotalityGuardOfTheRunnerTripsOnACallbackWithoutATryAndOnAThrowInACatch -> HostRunPath
+    METHOD TheAdapterHasItsExactCountsAndNoFieldButTheDocumentOfTheTargetAndIsTotalByText -> AdapterPath
+    METHOD TheAdapterGuardTripsOnEachViolationInjectedIntoItsRealText -> AdapterPath
+    METHOD TheAdapterGuardTripsWhenTheContinuationIsNotOnTheBranchOfAnIsCompletedThatIsFalseOrThePostIsNotOfTheCapturedContext -> AdapterPath
+    METHOD TheAdapterGuardTripsWhenTheTargetOfTheRunCarriesATextOfItsOwnOrDoesNotAnswerTheReasonOfTheRun -> AdapterPath
+    METHOD TheAdapterGuardTripsOnAContinuationWithoutATryAndOnAThrowInACatch -> AdapterPath
+    METHOD TheCommandContextAndTheDocumentLockAreNamedInOneFileOfTheProductEachWithItsOwnCount -> AdapterPath, WriterPath, src/RackCad.Plugin/Systems/PushBack/PushBackFrontalDrawService.cs, src/RackCad.Plugin/Systems/PushBack/PushBackPlantaDrawService.cs, src/RackCad.Plugin/Systems/PushBack/PushBackSystemDrawService.cs
+    METHOD G1TheTwoPrimitivesOfPushBackAreCalledOnlyByTheWriterInPrepareUnitsAndWriteUnit -> 
+    METHOD G1TripsWhenThePrimitivesAreInjectedIntoTheAdapterOrTheController -> AdapterPath, ControllerPath, HostRunPath, WriterPath
+    METHOD G1TripsOnANewFileOfThePluginOutsideTheIntegrationFoldersAndOnAnExistingOneThatCallsAPrimitive -> WriterPath, src/RackCad.Plugin/Drawing/NewDrawing.cs, src/RackCad.Plugin/RackPushBackCommands.cs, src/RackCad.Plugin/Systems/Selective/SelectivePlantaDrawService.cs, src/RackCad.Plugin/Views/RackPilotAnotherWriter.cs, src/RackCad.UI/Editor/NewThing.cs
+    METHOD G2OnlyTheWriterImplementsThePortOfTheUpdateAndAnotherClassTripsTheGuard -> AdapterPath, ControllerPath, HostRunPath
+    METHOD G3NoLongLivedTypeKeepsAWriterARunnerARunOrATargetAndTheWriterAndTheRunnerAreBuiltOnce -> 
+    METHOD G3TripsOnAFieldOfEachTypeOnASecondConstructionAndOnARequestFromAnotherFile -> AdapterPath, ControllerPath, CorePath, HostRunPath
+    METHOD G3TheFieldRuleOfTheCoreTripsOnAFieldOfEachTypeAlsoInsideAGenericAndInANestedType -> CorePath
+    METHOD G4OnlyTheExecuteOfTheRunOfTheCoreCallsTheUpdateAndOnlyTheCoreCallsTheRunOfT4B -> 
+    METHOD G4TripsOnACallerInTheControllerTheAdapterOrASecondCallInTheCore -> AdapterPath, ControllerPath, CorePath, HostRunPath
+    METHOD G4TripsOnAGroupOfMethodsOfTheUpdateOutsideTheCoreAndInsideItAndNotOnTheNameInsideAString -> AdapterPath, ControllerPath, CorePath, HostRunPath
+    METHOD G5TheAdapterAndTheRunnerNameNoAuthoredWriteApi -> 
+    METHOD G5TripsOnEachNameInjectedIntoTheAdapterAndIntoTheRunner -> AdapterPath, HostRunPath, src/RackCad.Application/Workspace/, src/RackCad.Plugin/Workspace/, src/RackCad.Plugin/Workspace/WorkspaceNavigationEffects.cs, src/RackCad.Plugin/Workspace/WorkspaceNavigationFacts.cs, src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs, src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs, src/RackCad.Plugin/Workspace/WorkspaceSelectionReader.cs
+    METHOD G6TheTwoWorkspaceFoldersHaveNoWriteApiOutsideTheFiveExceptionsWithTheirExactCounts -> 
+    METHOD G6TripsOnOneMoreThanTheCountOfEachExceptionAndOnAnyNameInTheOtherFiles -> RunPath, src/RackCad.Application/, src/RackCad.Application/Systems/PushBack/Pilot/, src/RackCad.Application/Workspace/EventBridgeCore.cs, src/RackCad.Application/Workspace/WorkspaceHostCore.cs, src/RackCad.Plugin/Workspace/WorkspaceController.cs, src/RackCad.Plugin/Workspace/WorkspaceNavigationEffects.cs, src/RackCad.Plugin/Workspace/WorkspaceNavigationFacts.cs, src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs, src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs, src/RackCad.Plugin/Workspace/WorkspaceSelectionReader.cs
+    METHOD G7TheWriteCallsOfThePortAreOnlyInTheRunOfT4B -> 
+    METHOD G7TripsOnACallOfThePortOutsideTheRun -> AdapterPath, CorePath, GatePath, HostRunPath, IntentAdapterPath, NavigationHostPath, WriterPath, src/RackCad.Application/, src/RackCad.Plugin/
+    METHOD G9NoFileOfThePluginOrOfApplicationThatNamesThePilotUsesAWriteApiOrALockOutsideTheFourExceptionsWithTheirExactCounts -> 
+    METHOD G9TripsOnAPilotFileThatRedrawsInPlaceThatWritesBlockDataThatOpensForWriteOrThatLocksASecondTime -> AdapterPath, BridgePath, ControllerPath, CorePath, FieldViewModelPath, GatePath, IntentAdapterPath, WriterPath, src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotHostRun.cs, src/RackCad.Plugin/Views/RackPilotNewWriter.cs, src/RackCad.Plugin/Views/RackPilotOtherThing.cs, src/RackCad.UI/Systems/Cantilever/RackCantileverWindow.xaml.cs, src/RackCad.UI/Systems/Dynamic/RackDynamicSystemWindow.xaml.cs, src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs, src/RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml.cs, src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+    METHOD G10TheRequestIsCalledOnlyByTheTwoForwardsTheExecutorOnlyByTheRequestAndTheOwnMutationOnlyByTheRunAndTheForwards -> 
+    METHOD G10TripsOnAnotherCallerOfTheRequestOfTheExecutorOrOfTheOwnMutation -> AdapterPath, CorePath, FieldViewModelPath, GatePath, HostRunPath, src/RackCad.Application/Systems/PushBack/Pilot/, src/RackCad.Application/Workspace/, src/RackCad.Application/Workspace/IWorkspaceNavigationPort.cs, src/RackCad.Plugin/Views/RackPilotUpdateCommandContext.cs, src/RackCad.Plugin/Workspace/, src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs, src/RackCad.UI/Editor/OtherThing.cs, src/RackCad.UI/Systems/Cantilever/RackCantileverWindow.xaml.cs, src/RackCad.UI/Systems/Dynamic/RackDynamicSystemWindow.xaml.cs, src/RackCad.UI/Systems/PushBack/OtherThing.cs, src/RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml.cs, src/RackCad.UI/Workspace/, src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs, src/RackCad.UI/Workspace/WorkspaceNavigationViewModel.cs
+    METHOD ThereIsNoNewTaskAsyncOrAwaitOutsideTheAdapterAndTheNavigationKeepsItsExactCountsPerFile -> 
+    METHOD TheCensusTripsOnANewTaskAsyncAwaitDispatcherOrBlockingCall -> AdapterPath, ControllerPath, CorePath, GatePath, HostRunPath, src/RackCad.Application/, src/RackCad.Application/Workspace/IWorkspaceNavigationPort.cs, src/RackCad.Plugin/, src/RackCad.UI/Workspace/WorkspaceNavigationViewModel.cs
+    METHOD NoProductCallerOfEnterErrorExistsInApplicationOrPluginAndTheDeferredBlockOfTheDraftIsUntouched -> src/RackCad.UI/Workspace/WorkspacePanelViewModel.cs
+    METHOD TheEnterErrorGuardTripsOnAProductCaller -> AdapterPath, ControllerPath, CorePath, src/RackCad.Application/Workspace/WorkspacePilotSupport.cs
+    METHOD M01TheEscapeOfTheRunIsClassifiedByTheStateThatTheRunAlreadyHadAndNeverAsAPlainFailureAfterAWriteOrASeal -> RunPath
+    METHOD M01TheEscapeGuardTripsOnACatchThatDoesNotConsultTheStateAndOnAnEscapeThatAnswersAPlainFailureFirst -> RunPath
+    METHOD M01TheCloseThatWasNotAcceptedIsNeverASuccessAndTheAnswerIsBuiltInATryWithAFallback -> CorePath
+    METHOD M01TheCloseGuardTripsOnAFixedNotAppliedFailureAFixedAppliedAndAnAnswerWithoutAFallback -> CorePath
+    METHOD M05TheCloseGuardTripsWhenTheAnswerOfANotAcceptedCloseOrTheNoteOfTheEditOrTheMarkOfKnownCleanLeaveTheTryOfTheAnswer -> CorePath, HostRunPath
+    METHOD M04TheSentenceOfTheHostThatDidNotRunIsTheWholeTextInTheRunnerAndInTheCoreAndTheExceptionGoesToTheLog -> 
+    METHOD M04TheGuardTripsOnTheSentenceUsedAsAPrefixInTheRunnerAndInTheCoreAndOnALiteralSpaceInTheRunOfTheCore -> CorePath, HostRunPath
+    METHOD TheHandlerOfCommandWillStartNotesAForeignCommandOnceInsideTheContainedHandlerConditionedOnItsNameAfterTheNoticeDecision -> BridgePath
+    METHOD TheForeignCommandGuardTripsOnTheCallWithoutTheConditionOnTheCallInAnotherBlockAndOnAReadOfTheDrawing -> BridgePath
+    METHOD TheNewFilesNameNoUndoApiNoSendStringToExecuteNoCommandMethodAndNoCommandFlags -> AdapterPath, HostRunPath
+  METHODS 43
+FILE tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentGuardTests.cs
+  CONST PilotFolder = src/RackCad.Application/Systems/PushBack/Pilot/
+  CONST ReaderPath = src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentReader.cs
+  CONST ResultPath = src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentResult.cs
+  CONST ScanPath = src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentScan.cs
+    METHOD TheThreeProductFilesExistInThePilotNamespaceAndAreNullableEnabled -> 
+    METHOD TheThreeProductFilesNameNothingOfAutoCadOfThePluginOfTheUiOfThreadingOrOfInputOutput -> 
+    METHOD ThePurityGuardDetectsEachProhibitionInTheRealTextOfEachProductFile -> 
+    METHOD ThePurityGuardDoesNotRejectNamesThatOnlyContainTheProhibitedWordsInsideOtherWords -> 
+    METHOD NoProductFileReadsTheBaseBackToMaterializeTheState -> 
+    METHOD TheReadGuardDetectsEachReadInTheRealTextOfEachProductFile -> 
+    METHOD TheReaderCallsTheClassificationTheAuthoredComparatorAndTheMaterializerExactlyOnceEach -> ReaderPath
+    METHOD NoOtherProductFileOfTheTaskCallsThem -> ResultPath, ScanPath
+    METHOD TheCountGuardDetectsASecondCallInTheRealTextOfTheReader -> ReaderPath
+    METHOD TheFilesThatServeAPreviewAreTheFourOfTheBoundaryGuard -> src/RackCad.Application/Workspace/BrowserRackSummaries.cs, src/RackCad.Application/Workspace/BrowserSession.cs, src/RackCad.Application/Workspace/BrowserSessionRegistry.cs, src/RackCad.Application/Workspace/IWorkspaceBrowserSummaryPort.cs
+    METHOD NoFileThatServesAPreviewNamesTheIntentOfThePilotNorItsNamespace -> 
+    METHOD ThePreviewGuardDetectsEachNameInTheRealTextOfEachPreviewFile -> 
+    METHOD TheDraftCoreStillNamesNoSystem -> src/RackCad.Application/Workspace/Drafts/
+  METHODS 13
+FILE tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardTests.cs
+  CONST BrowserPath = src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs
+  CONST CodeBehindPath = src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs
+  CONST CorePath = src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+  CONST FieldPath = src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+  CONST NavigationHostPath = src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs
+  CONST UiFolder = src/RackCad.UI/
+  CONST WorkspaceUiFolder = src/RackCad.UI/Workspace/
+  CONST XamlPath = src/RackCad.UI/Workspace/WorkspacePanelView.xaml
+    METHOD TheFourOperationsOfTheCheckAndOfTheReconciliationAreNamedOnlyByTheFieldViewModelOnceEachInsideTheirGesture -> 
+    METHOD TheGuardOfWhoReadsSeesAKeepInTheRequestACheckInThePresentationAnyOfTheFourInTheBrowserAndANameof -> BrowserPath, FieldPath
+    METHOD TheGuardOfWhoReadsSeesAnOperationCapturedAsAMethodGroupInsideItsOwnGesture -> FieldPath
+    METHOD TheGuardOfWhoReadsDoesNotReadTheFileIfTheFieldViewModelIsMissing -> CodeBehindPath, FieldPath
+    METHOD TheFiveGesturesAreDeclaredOnceInTheFieldAndCalledOnlyByTheirExactHandlerOfTheCodeBehind -> 
+    METHOD TheGuardOfTheGesturesSeesACallInThePresentationInASetterAsAMethodGroupFromTheBrowserAndTheSwapOfYesAndNo -> BrowserPath, CodeBehindPath, FieldPath
+    METHOD ThePatternOfTheGesturesIsNotConfusedWithTheNamesOfTheReads -> CodeBehindPath, FieldPath, WorkspaceUiFolder
+    METHOD TheGestureOfTheUpdateIsDeclaredOnceInTheFieldAndCalledOnlyByItsExactHandlerAndTheRequestIsInsideItInTheOrderOfThePackage -> 
+    METHOD TheGuardOfTheGestureOfTheUpdateSeesASecondCallerTheBrowserAHandlerWithoutContainedAndASwapOfHandlers -> BrowserPath, CodeBehindPath, FieldPath
+    METHOD TheGuardOfTheRequestSeesASecondCallTheBrowserTheMethodGroupAndTheBrokenOrderOfTheSteps -> BrowserPath, FieldPath, XamlPath
+    METHOD TheQuestionOfTheChoiceComesBeforeYesInsideTheChoicePanel -> 
+    METHOD TheGuardOfTheQuestionSeesItAfterYesAndOutsideTheChoicePanel -> 
+    METHOD TheXamlHoldsTheSixButtonsOfTheTableInsideTheFieldPanelWithTheirOwnNamesTextsHandlersAndVisibility -> 
+    METHOD TheGuardOfTheButtonsSeesTheSwapOfYesAndNoOfTheirNamesAndOfTheClicksOfTheCheckAndTheKeep -> 
+    METHOD TheGuardOfTheButtonsSeesAChangedBindingAVisibilityOnYesAnIsDefaultAndTheChoicePanelWithoutItsBinding -> 
+    METHOD TheGuardOfTheButtonsSeesTheUpdateButtonWithAnotherClickContentAutomationNameBindingOrAsADefaultButton -> WorkspaceUiFolder
+    METHOD TheFolderOfTheRuleReadsEveryXamlOfTheWorkspaceFolderOfTheUi -> XamlPath
+    METHOD TheTextOfNoChangesAndTheTextOfNotAppliedLiveOnlyInTheirConstantReferencedOnceInTheCaseOfTheAnswerThatSaysThem -> FieldPath
+    METHOD TheGuardOfNoFalseCleanSeesASecondReferenceTheConstantInAnotherCaseAndTheTextBuiltInTwoPieces -> FieldPath
+    METHOD TheGuardOfNoFalseCleanSeesTheReferenceMovedOutOfTheCaseThatSaysItWithoutRemovingTheLabelOfTheCase -> FieldPath
+    METHOD TheGuardOfNoFalseCleanSeesTheTextOrItsHalvesAnywhereElseInTheFolderOfTheUi -> FieldPath
+    METHOD PassGateAuthorizesTheSessionAgainstTheActiveDocumentByTheExactFormAndOnlyOnce -> CorePath
+    METHOD TheGuardOfPassGateSeesTheComparisonTheDecisionTheSessionTheIgnoredResultAndTheAlwaysTrue -> CorePath
+    METHOD TheReaderOfThePluginAuthorizesTheSessionAgainstTheDocumentThatExecutesItByTheExactFormAndTheOtherCallsOfTheFileAreOutsideTheRule -> NavigationHostPath
+    METHOD TheGuardOfTheReaderSeesTheComparisonTheDecisionTheSessionTheDocumentTheIgnoredResultAndTheAlwaysTrue -> NavigationHostPath
+    METHOD TheGuardOfTheReaderDoesNotAskForAUniqueCallSoALaterReadCanBeAddedToTheClassButASecondCallOfAnotherFormIsSeen -> NavigationHostPath
+  METHODS 26
+FILE tests/RackCad.Tests/CustomPropertiesEnvelopeGuardTests.cs
+  CONST ComposerPath = src/RackCad.Application/Persistence/RackEmbedComposer.cs
+  CONST RestampPath = src/RackCad.Plugin/RackEnvelopeRestamp.cs
+    METHOD TGrd01_EnSrc_SoloRackEmbedComposerConstruyeUnSobre -> ComposerPath
+    METHOD TGrd01_LaGuardaDetectaUnaConstruccionFueraDelCompositor -> src/RackCad.Plugin/Nuevo.cs
+    METHOD TGrd01_UnComentarioOUnLiteral_NoEsUnaConstruccion -> 
+    METHOD TGrd02_CensoDeCompose_IncluyeD21YLaComposicionPuraDeG7_PorArchivo -> 
+    METHOD TGrd02_CadaOrigenEstaClasificado_YNingunaLlamadaPasaNullLiteral -> src/RackCad.Plugin/ProjectVariableMutationExecutor.cs
+    METHOD TGrd02_NadieImportaElCompositorConUsingStaticNiConAlias -> 
+    METHOD TGrd02_LaGuardaDetectaUnaLlamadaNueva -> src/RackCad.Plugin/Nuevo.cs
+    METHOD TGrd03_ElRestampSerializaElMismoObjetoQueDeserializa -> 
+    METHOD TGrd03_LaGuardaDetectaUnRestampQueNoReutilizaElObjeto -> ComposerPath, RestampPath, src/RackCad.Application/Persistence/RackEmbedComposer.cs, src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs, src/RackCad.Application/Views/Placement/RackProjectionEnvelopeName.cs, src/RackCad.Application/Views/Preparation/RackViewEnvelopeComposition.cs, src/RackCad.Plugin/ProjectVariableMutationExecutor.cs, src/RackCad.Plugin/RackCabeceraCommands.cs, src/RackCad.Plugin/RackCamaCommands.cs, src/RackCad.Plugin/RackCantileverCommands.cs, src/RackCad.Plugin/RackDinamicoCommands.cs, src/RackCad.Plugin/RackEnvelopeRestamp.cs, src/RackCad.Plugin/RackPushBackCommands.cs, src/RackCad.Plugin/RackSelectivoCommands.cs, src/RackCad.Plugin/RackSelectivoInsertIntegration.cs
+  METHODS 9
+FILE tests/RackCad.Tests/I60RackNameWiringGuardTests.cs
+    METHOD I60_N6_SelectiveCreationResolvesTheNameBeforeSerializing -> src/RackCad.Plugin/RackSelectivoCommands.cs
+    METHOD I60_N6_TheSharedDrawPathsNameOnlyANewRack -> src/RackCad.Plugin/RackCantileverCommands.cs, src/RackCad.Plugin/RackDinamicoCommands.cs, src/RackCad.Plugin/RackPushBackCommands.cs
+    METHOD I60_N6_CabeceraCreationResolvesWithTheTemplateRule -> src/RackCad.Plugin/RackCabeceraCommands.cs
+    METHOD I60_N6_BothCamaCreationPathsResolveTheName -> src/RackCad.Plugin/RackCamaCommands.cs, src/RackCad.Plugin/RackMenuCommands.cs
+    METHOD I60_N9_TheCabeceraInnerNameIsTheAssignedNameBeforeTheEnvelope -> src/RackCad.Plugin/RackCabeceraCommands.cs
+    METHOD I60_N9_ACantileverNamedAutomaticallyCarriesTheNameInItsDesign -> src/RackCad.Plugin/RackCantileverCommands.cs
+    METHOD I60_N9_TheCamaUsesOneNameForTheEnvelopeAndTheBlock -> src/RackCad.Plugin/RackCamaCommands.cs, src/RackCad.Plugin/RackMenuCommands.cs
+    METHOD I60_N6_NoDuplicationLayoutProjectionOrReportNamesARack -> src/RackCad.Plugin/RackDuplicarCommands.cs, src/RackCad.Plugin/RackInventarioCommands.BomTotal.cs, src/RackCad.Plugin/RackInventarioCommands.cs, src/RackCad.Plugin/RackLayoutCommands.Fill.cs, src/RackCad.Plugin/RackLayoutCommands.cs, src/RackCad.Plugin/RackProyectarCommands.cs
+    METHOD I60_N6_NoEditPathNamesALegacyRack -> src/RackCad.Plugin/RackCabeceraCommands.cs, src/RackCad.Plugin/RackCamaCommands.cs, src/RackCad.Plugin/RackCantileverCommands.cs, src/RackCad.Plugin/RackDinamicoCommands.cs, src/RackCad.Plugin/RackPushBackCommands.cs, src/RackCad.Plugin/RackSelectivoCommands.cs
+    METHOD I60_N7_TheScanOnlyReadsAndUsesThePureAuthority -> src/RackCad.Plugin/Systems/Shared/RackNewRackName.cs
+  METHODS 10

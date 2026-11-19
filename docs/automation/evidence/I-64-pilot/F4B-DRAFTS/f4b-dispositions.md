@@ -1243,3 +1243,55 @@ No hay cambios materiales.
 - **PB-T2 queda completa:** PB-T2a, PB-T2b y PB-T2c.
 
 **Siguiente:** la emisión de PB-T3a con el paquete de PB-T3 v4.4, por F4B-E35 (pregunta 3). Su comprobación acotada CA-T3a dio EMITIBLE en su recomprobación sobre la v4.4. Antes de sus controles, el sustituto de PD-F4B-01, revisado.
+## F4B-E41. Emisión de F4B-PBT3A-FULL-WRITE-MODEL (PB-T3a), con el paquete de PB-T3 v4.4
+
+**Fecha:** 2026-11-19.
+
+**Autoridad de emisión:** la autorización condicional del Owner, F4B-E35, pregunta 3: «Sí, con esa condición (Recomendado)». Cubre PB-T3a, PB-T3b y PB-T3c, en ese orden y cada una tras el cierre de la anterior.
+- **Las condiciones que exige:**
+  - la comprobación acotada de la subtarea da 0 bloqueantes y 0 importantes sin resolver;
+  - la remedición sobre el cierre anterior, el de PB-T2c, no cambia nada material.
+- **Cuándo se vuelve al Owner:** por una decisión nueva, un control con una firma no prevista, un intento 3 o un efecto material sin medir. No se da ninguno.
+
+**El cierre de PB-T2c** (F4B-E40, `f273eae1`): PB-T2c CLOSED / PASS WITH LIMITATIONS sobre `b1968341`, intento 1 de 3; verificación `e59c` 14/14; nc1 por disposición del Owner, que además aprueba la firma nueva PD-F4B-01 (cascada del SHA falso) para el resto de F4B, con su sustituto antes de los controles de PB-T3a; nc2 y nc3 PASS; PB-T2 completa; F4B-E40.
+
+**La reparación del RED** (F4B-E35, pregunta 4): el contrato incorpora la regla RR del Owner, como los de PB-T2b y PB-T2c:
+- PBT3A-C07 con su excepción, y PBT3A-C18 para una reparación que rompe la regla;
+- la cadena RR-6 en INV-PBT3A-02;
+- en la `ExpectedEvidence`, la CI del RED reparado, lo que declara la entrega y la lectura entera de la verificación con una reparación (V44-04);
+- la ayuda mecánica de RR-3, con la tabla cerrada de cada clase: las líneas se comparan como subcadena y los valores de los gestos, como token (V44-02 y V44-03).
+
+Una reparación no gasta intento (RR-7).
+
+**Las revisiones:**
+- **La revisión independiente del paquete** (`independent-review-v1.md`): NECESITA v2 sobre la v1 (1/11/16). Sus recomprobaciones:
+  - la §10, sobre la v2: NECESITA v3 (0/3/4);
+  - la §11, sobre la v3: NECESITA v4 (0/1/1);
+  - la §12, sobre la v4, y la §13, sobre la v4.2: LISTO PARA EMITIR TRAS REMEDICIÓN (0/0/1).
+- **La revisión de compatibilidad con PB-T2** (`compat-pbt3-vs-pbt2.md`): COMPATIBLE CON REMEDICIÓN (0/5/7), sobre la v4.1. La aplica la v4.2.
+- **La comprobación acotada de PB-T3a** (CA-T3a), sobre el contrato en seco y la v4.3: **EMITIBLE TRAS CORRECCIONES, B 0 / I 1 / M 4**, sin decisiones nuevas para el Owner.
+  - **Su importante:** `BeamDepth` era un gesto inerte, porque el catálogo solo ofrece el peralte 6, y el ancla de CT-PBT3A-09 no podía salir. La v4.4 cambia el gesto de CT-PBT3A-09 y de CT-PBT3B-01 a `PalletDepth` 48.5 (V44-01).
+  - **Sus menores:** M-01 a M-03 se corrigen en la v4.4 (la evidencia y la tabla de RR-3), y M-04 en el generador.
+- **Su recomprobación** (§10), sobre la v4.4: **EMITIBLE, B 0 / I 0 / M 1**. M-05, la custodia de sus guiones, se aplica en el generador.
+- **El resultado que lleva el contrato:** `EMITIBLE TRAS CORRECCIONES; B 0 / I 1 / M 4; importantes corregidas en el paquete: I-01 (CT-PBT3A-09 y CT-PBT3B-01 sin el gesto inerte de BeamDepth); recomprobacion v4.4: EMITIBLE, B 0 / I 0 / M 1`.
+
+**La remedición sobre el cierre de PB-T2c** (`f273eae1`, F4B-E40). La hace el generador al escribir con `--pt2c-close`, y la salida queda custodiada en `pbt3a-anchors-out.txt`:
+- `git diff <cierre de PB-T2c> <BaseSha> -- src` sale vacío, y `src` es el del cierre de PB-T2b;
+- las anclas de W se leen por su contenido, y `Recompute`, `LoadFromModel` y `ReadInputs` son iguales a los del cierre de PB-T1c;
+- la Snapshot K: su SHA-256 y su sonda neutra (F4B-E37);
+- los recuentos y los alcances, con las clases de PB-T2;
+- la línea base de la CI: la corrida `push` `44619492077` sobre `b1968341`, con el `src` y los `tests` del cierre: Core 19 094 y UI 2 450, con 21 omitidas. Es exactamente la prevista en el §6.1 del paquete.
+
+No hay cambios materiales.
+
+**El contrato:**
+- **Qué es PB-T3a:**
+  - crear en Application, solo con archivos nuevos en `src/RackCad.Application/Systems/PushBack/Draft/`, el modelo del borrador completo de Push Back: el estado y su comparador, el asiento, el materializador y el lector, la composición, la disposición de las vistas y el clasificador de D-PB-05;
+  - sin conectarlo al panel.
+
+  El RED es el esqueleto inerte y las pruebas nuevas; el GREEN implementa solo los ocho archivos nuevos.
+- **P-01:** la Snapshot K (F4B-E37).
+- **C11:** nc2 con el sustituto adaptado a F4B (F4B-E34).
+- **La cadena:** primera delegación; `attempts` 1 de 3.
+- **La planificación:** con las colecciones opacas puestas por la sesión (F4B-E21).
+- **La verificación:** con las comprobaciones deterministas de F4B-E15.

@@ -1,0 +1,81 @@
+FILE tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs
+  HELPER Writer -> WriterPath
+    METHOD TheRunThePortAndTheHelpAreNullableEnabledAndInThePilotNamespace -> 
+    METHOD TheRunThePortAndTheHelpNameNothingOfAutoCadOfThePluginOfTheUiOfThreadingOfFilesOrOfReflectionEvenInComments -> 
+    METHOD ThePurityGuardTripsOnEachProhibitionInTheRealTextOfEachFile -> 
+    METHOD NoFileOfThePilotFolderNamesTheWordTransactionNotEvenInAComment -> PilotFolder
+    METHOD TheRunReleasesBothScopesInFinallyBlocksOfItsOwnAndNeverWithAUsing -> RunPath
+    METHOD ThePortHasTheOperationsAndTheValuesOfThePackageAndNoWordOfAutoCad -> PortPath
+    METHOD TheWriterHasItsThreeClassesAndNeverNamesWhatItMustNotName -> H:Writer=WriterPath
+    METHOD TheWriterDoesNotKeepTheAliasOfTheApplicationThatOnlyTheActiveDocumentNeeded -> H:Writer=WriterPath
+    METHOD TheWriterDoesThePrimitiveOperationsOfThePackageInsideItsScopesInTheOrderOfThePackage -> H:Writer=WriterPath
+    METHOD PrepareUnitsBuildsTheSystemOfEachMemberWithItsRackName -> H:Writer=WriterPath
+    METHOD TheProhibitionGuardOfTheWriterTripsOnEachProhibitedNameInjectedIntoTheRealTextOfTheWriter -> H:Writer=WriterPath
+    METHOD TheWriterGuardTripsOnASecondDocumentATransactionOrAStaticFieldInThePort -> H:Writer=WriterPath
+    METHOD TheWriterGuardTripsOnABeginThatDoesNotCheckTheMarkOfOneUseAndOnAPortThatCannotRetireItself -> H:Writer=WriterPath
+    METHOD TheProhibitionGuardOfTheWriterSeesAFieldInThePortAnObjectOfAutoCadInThePortAndAPurgeInTheScopeOfMutate -> H:Writer=WriterPath
+    METHOD TheStructureGuardOfTheWriterTripsOnASecondScopeASecondConfirmationAndASecondPurge -> H:Writer=WriterPath
+    METHOD TheStructureGuardOfTheWriterSeesTheOrderOfPostAPurgeAfterTheRenameAMovedCheckAndAScopeThatIsNotReleased -> H:Writer=WriterPath
+    METHOD TheDebugInjectionHasConditionalMethodsAndOnlyTheReadOfTheVariableIsInsideIfDebug -> H:Writer=WriterPath, WriterPath
+    METHOD TheDebugGuardTripsOnAnEnvironmentReadOutsideIfDebugAndOnAConditionalThatIsMissing -> WriterPath
+    METHOD TheCallerOwnedReadOfMutateOpensNoScopeTakesNoLockAndConfirmsNothing -> H:Writer=WriterPath
+    METHOD TheCallerOwnedReadOfMutateGoesThroughTheNucleusAndComparesItsScopeByNativeIdentity -> H:Writer=WriterPath
+    METHOD TheGuardOfTheCallerOwnedReadTripsOnEachOperationThatItMustNotHaveInTheRealBody -> H:Writer=WriterPath
+    METHOD TheNucleusOfTheTraversalIsTheLiteralOfTheBaseWithTheOneDeclaredSubstitution -> ScanPath
+    METHOD TheGuardOfTheNucleusTripsOnEachChangeOfItsBehavior -> ScanPath
+    METHOD TheGuardOfTheNucleusDoesNotSeeCommentsWhiteSpaceOrLineEndingsButSeesTheSubstitutionUndone -> ScanPath
+    METHOD TraverseIsExactlyTheLockTheScopeTheCallOfTheNucleusTheConfirmationAndTheReturn -> ScanPath
+    METHOD TheGuardOfTheWrapperTripsOnEachChangeOfTheWrapper -> ScanPath
+    METHOD TheGuardOfTheWrapperSeesTheNucleusMovedAwayFromTraverseAndNewDeclaredMembersBetweenThem -> ScanPath
+    METHOD CaptureCaptureDrawingAndTheRestOfTheFileAreTheFrozenOnesOfTheBaseAddLayerIncluded -> ScanPath
+    METHOD TheGuardOfTheFrozenRestTripsOnAChangeOutsideTheTwoMembers -> ScanPath
+    METHOD TheNucleusCanMoveAnywhereInTheFileWithoutTheFrozenRestChanging -> ScanPath, WriterPath
+    METHOD TheNucleusIsCalledExactlyTwiceByTraverseAndByTheWriterAndByNoOtherFileOfTheProduct -> ScanPath
+    METHOD TheCensusGuardSeesAThirdCallASecondCallInTraverseAndAMissingCall -> ScanPath, WriterPath, src/RackCad.Plugin/Other.cs
+    METHOD TheGateOfTheUpdateAuthorizesTheSessionByTheExactFormOnlyOnceAndHasNeitherRestNorReader -> CorePath
+    METHOD TheGuardOfTheGateOfTheUpdateSeesTheComparisonTheDecisionTheSessionTheAlwaysTrueTheRestAndTheReader -> CorePath
+    METHOD TheBodyOfTheUpdateFollowsTheOrderOfThePackageAndEndsTheMarkOfKnownCleanAfterTheClose -> CorePath
+    METHOD NoNewFileOfTheUpdateBuildsOrComposesAnEnvelopeAddsACommandOrNamesTheUnits -> WriterPath
+    METHOD X -> WriterPath
+    METHOD NoNewTestFileOfTheUpdateBuildsOrComposesAnEnvelopeTheyUseTheTextsOfTheirNeighbours -> DraftSessionPath, src/RackCad.Application/Workspace/Drafts/DraftSession.cs
+    METHOD TheDeferredErrorBlockOfTheDraftSessionIsIdenticalByteForByteAndTheFallbackToErrorUsesTheSameForm -> DraftSessionPath
+    METHOD TheXmlOfTheAtomicKeepDocumentsThatKeepOnMustNotMutateItsSecondArgument -> DraftSessionPath
+    METHOD TheCompositionForWritingComparesTheCurrentStateAsItIsAndNeverCopiesIt -> MaterializerPath
+    METHOD TheGuardOfTheCompositionTripsWhenTheCurrentStateIsCopiedBeforeTheComparison -> MaterializerPath
+  METHODS 42
+FILE tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs
+  HELPER Plan -> PlanPath
+  HELPER Session -> SessionPath
+    METHOD TheFileOfThePlanNamesNoWriteOfTheDrawingNoTransactionNoLockNoHostNoMutationOfADraftAndNoClockOrThread -> H:Plan=PlanPath
+    METHOD ThePurityGuardTripsOnEachNameThatItForbidsInTheRealTextOfTheFile -> H:Plan=PlanPath
+    METHOD TheFileOfThePlanIsNullableEnabledInTheNamespaceOfThePilotWithBracesAndDeclaresTheTypesOfThePackage -> H:Plan=PlanPath, PilotFolder, PlanPath
+    METHOD TheFileOfThePlanComposesExactlyOnceInAMemberOfItsOwnWithAParameterSourceAndTheNameOfTheRereadEnvelope -> H:Plan=PlanPath
+    METHOD TheComposeGuardTripsOnAnotherCallAnUnsourcedCompositionANullableSourceOrAnotherName -> H:Plan=PlanPath
+    METHOD NobodyComposesTheEnvelopeOfTheWritingOfThePilotOutsideThePlanAndNoPilotFileBeforeThisTaskDoes -> PilotFolder, PlanPath
+    METHOD ComposeForWriteIsCalledOnlyByThePlannerAndOnlyAfterTheComparisonOfTheBase -> 
+    METHOD TheAfterMatchGuardTripsOnAnotherCallerAndOnACallBeforeTheComparison -> PlanPath, src/RackCad.Application/Workspace/Other.cs
+    METHOD TheOrderOfPrepareIsTheOneOfThePackageAndNoOutcomeBeforeConflictLooksAtTheReread -> H:Plan=PlanPath
+    METHOD TheMemberPlansAreBuiltOnlyFromTheMutableMembersOfTheRereadInOrdinalOrderAndNeverErase -> H:Plan=PlanPath
+    METHOD TheReasonOfTheErrorIsAssignedInTheCoreOnlyTogetherWithTheStatusErrorOrToNull -> H:Session=SessionPath
+    METHOD TheGuardOfTheReasonOfTheErrorTripsOnAReasonWithoutTheStatusErrorAndOnAnAssignmentOutsideTheStatus -> H:Session=SessionPath
+    METHOD TheGuardOfTheReasonOfTheErrorTripsOnTheFormsThatAssignItThroughThisCompoundlyOrByDeconstructionOutsideTheStatusError -> H:Session=SessionPath
+    METHOD TheGuardOfTheReasonOfTheErrorTripsOnANewMethodThatAssignsItAlone -> H:Session=SessionPath
+    METHOD TheReasonOfTheErrorIsNeverLeftBehindOutsideTheStatusErrorInTheRealDraftSession -> 
+    METHOD TheBuildersThatThePlanUsesNeedNeitherTheDrawingNorThePlugin -> src/RackCad.Application/Persistence/RackEmbedComposer.cs, src/RackCad.Application/Persistence/RackProjectStore.cs, src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorAssembler.cs, src/RackCad.Application/Systems/PushBack/PushBackResolver.cs, src/RackCad.Application/Systems/PushBack/PushBackSystemLateralBuilder.cs, src/RackCad.Application/Systems/Shared/RackViewAvailability.cs, src/RackCad.Application/Systems/Shared/RackViewCodec.cs
+    METHOD NoFileOfTheTaskUsesTheCommandContextNorAsynchronyNorTimersNorADispatcher -> PlanPath, SessionPath, src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs, src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs, src/RackCad.Application/Workspace/WorkspaceEditIntent.cs, src/RackCad.Application/Workspace/WorkspaceHostCore.cs, src/RackCad.Application/Workspace/WorkspacePilotSupport.cs, src/RackCad.Plugin/Workspace/WorkspaceController.cs
+  METHODS 17
+FILE tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentGuardTests.cs
+    METHOD TheThreeProductFilesExistInThePilotNamespaceAndAreNullableEnabled -> 
+    METHOD TheThreeProductFilesNameNothingOfAutoCadOfThePluginOfTheUiOfThreadingOrOfInputOutput -> 
+    METHOD ThePurityGuardDetectsEachProhibitionInTheRealTextOfEachProductFile -> 
+    METHOD ThePurityGuardDoesNotRejectNamesThatOnlyContainTheProhibitedWordsInsideOtherWords -> 
+    METHOD NoProductFileReadsTheBaseBackToMaterializeTheState -> 
+    METHOD TheReadGuardDetectsEachReadInTheRealTextOfEachProductFile -> 
+    METHOD TheReaderCallsTheClassificationTheAuthoredComparatorAndTheMaterializerExactlyOnceEach -> ReaderPath
+    METHOD NoOtherProductFileOfTheTaskCallsThem -> ResultPath, ScanPath
+    METHOD TheCountGuardDetectsASecondCallInTheRealTextOfTheReader -> ReaderPath
+    METHOD TheFilesThatServeAPreviewAreTheFourOfTheBoundaryGuard -> src/RackCad.Application/Workspace/BrowserRackSummaries.cs, src/RackCad.Application/Workspace/BrowserSession.cs, src/RackCad.Application/Workspace/BrowserSessionRegistry.cs, src/RackCad.Application/Workspace/IWorkspaceBrowserSummaryPort.cs
+    METHOD NoFileThatServesAPreviewNamesTheIntentOfThePilotNorItsNamespace -> 
+    METHOD ThePreviewGuardDetectsEachNameInTheRealTextOfEachPreviewFile -> 
+    METHOD TheDraftCoreStillNamesNoSystem -> src/RackCad.Application/Workspace/Drafts/
+  METHODS 13

@@ -8318,3 +8318,37 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - solo documentación;
 - sin AutoCAD;
 - los eventos y las transcripciones, solo por SHA-256.
+## 264. PB-T3: paquete del contrato v4.4 y anclajes de PB-T3a (F4B-E41)
+
+**Qué se custodia:**
+- **El paquete** `docs/initiatives/I-64-f4b-pbt3-gate-contract-package.md`, en su v4.4, byte a byte: el generador fija su SHA-256.
+- **El registro de mediciones** `docs/initiatives/I-64-f4b-pbt3-measurements.md`, puesto al día por la remedición sobre el cierre de PB-T2c.
+- **En `F4B-DRAFTS/pbt3/`,** que se crea con este commit:
+  - **la historia del paquete:**
+    - las versiones revisadas, de la v1 a la v4.3 (`package-v1.md` a `package-v43.md`);
+    - los deltas, de `v2-delta.md` a `v44-delta.md`;
+    - el encargo de redacción, `drafting-brief.md`;
+  - **la revisión independiente** (`independent-review-v1.md`, §1 a §13), con su encargo y sus guiones y salidas:
+    - `census_pins.py`, `census_methods.py` y `census_methods2.py`, con sus salidas;
+    - `count_question.py` y `check_tables.py`;
+    - `rv_anchors.py`, con su salida;
+  - **la revisión de compatibilidad con PB-T2** (`compat-pbt3-vs-pbt2.md`), con `compat_measure.py`;
+  - **la comprobación acotada de PB-T3a** (CA-T3a, `independent-review-pbt3a-v43-check.md`):
+    - con su recomprobación (§10);
+    - con el encargo literal de cada ronda;
+    - con sus guiones, `cat3a_*.py`;
+  - **la remedición sobre el cierre de PB-T2c,** `pbt3a-anchors-out.txt`;
+  - **la salida en seco del generador** sobre ese cierre, `make_pbt3a_contract-dry.txt`.
+
+  Los textos con rutas locales van con la redacción común.
+
+**La base:** el cierre de PB-T2c, F4B-E40 (`f273eae1`): PB-T2c CLOSED / PASS WITH LIMITATIONS sobre `b1968341`, intento 1 de 3; verificación `e59c` 14/14; nc1 por disposición del Owner, que además aprueba la firma nueva PD-F4B-01 (cascada del SHA falso) para el resto de F4B, con su sustituto antes de los controles de PB-T3a; nc2 y nc3 PASS; PB-T2 completa; F4B-E40.
+
+**Las comprobaciones:**
+- **la revisión independiente:** LISTO PARA EMITIR TRAS REMEDICIÓN, 0/0/1, sobre la v4 (§12) y sobre la v4.2 (§13);
+- **la revisión de compatibilidad:** COMPATIBLE CON REMEDICIÓN, 0/5/7, aplicada en la v4.2;
+- **la comprobación acotada:** EMITIBLE TRAS CORRECCIONES, B 0 / I 1 / M 4, corregidas en la v4.4;
+- **su recomprobación** sobre la v4.4 (§10): EMITIBLE, B 0 / I 0 / M 1. M-05 se aplica en la custodia;
+- **`BOUNDED_RESULT`,** con la recomprobación: `EMITIBLE TRAS CORRECCIONES; B 0 / I 1 / M 4; importantes corregidas en el paquete: I-01 (CT-PBT3A-09 y CT-PBT3B-01 sin el gesto inerte de BeamDepth); recomprobacion v4.4: EMITIBLE, B 0 / I 0 / M 1`.
+
+**Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.

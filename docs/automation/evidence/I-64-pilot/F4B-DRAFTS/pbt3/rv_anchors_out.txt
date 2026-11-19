@@ -1,0 +1,312 @@
+> **Redaccion para el repo publico:** las rutas locales y las variables de entorno de carpetas del usuario se sustituyen por marcadores (`<scratchpad>`, `<worktree-de-I-64>`, `<checkout-principal>`, `<datos-locales-del-usuario>`, `<datos-de-aplicacion-del-usuario>`). El resto no cambia.
+
+### src/RackCad.Application/Workspace/WorkspaceHostCore.cs:692-696 (total 2004)
+  692: 
+  693: // 7: the read only goes to the atomic form of KeepMineOnCurrentVersion, which has been confirmed by the gesture itself.
+  694: var kept = draft.KeepMineOnCurrentVersion(pilot.Read, PushBackPilotMaterializer.KeepPilotEditsOn, confirmed: true);
+  695: switch (kept.Status)
+  696: {
+### src/RackCad.Application/Workspace/WorkspaceHostCore.cs:844-848 (total 2004)
+  844: public EditUpdateOutcome TryUpdatePilot(EditIntentRequest request, IPushBackPilotUpdatePort port)
+  845: {
+  846: DraftSession<PushBackPilotDraftState> draft;
+  847: long documentId;
+  848: try
+### src/RackCad.Application/Workspace/WorkspaceHostCore.cs:893-897 (total 2004)
+  893: try
+  894: {
+  895: outcome = PushBackPilotUpdateRun.Execute(draft, new PushBackPilotUpdateRequest(documentId, request.RackId), port);
+  896: }
+  897: catch (Exception ex)
+### src/RackCad.Application/Workspace/WorkspaceHostCore.cs:345-354 (total 2004)
+  345: 
+  346: // 8: the base of the read only goes to Begin, with the comparer and the copier of the pilot.
+  347: var begun = _drafts.Begin(
+  348: request.Session,
+  349: request.RackId,
+  350: pilot.Read,
+  351: PushBackPilotStateComparer.Instance,
+  352: PushBackPilotStateComparer.Copy);
+  353: switch (begun.Status)
+  354: {
+### src/RackCad.Plugin/RackPushBackCommands.cs:184-200 (total 478)
+  184: }
+  185: 
+  186: // Identity: keep the picked envelope's GUID; the window GUID is only a fallback. NEVER mint a new GUID on edit.
+  187: var id = string.IsNullOrWhiteSpace(embed.Id) ? window.RackId : embed.Id;
+  188: var name = string.IsNullOrWhiteSpace(window.RackName) ? embed.Name : window.RackName;
+  189: var baseName = string.IsNullOrWhiteSpace(name) ? null : name.Trim();
+  190: system.Name = name;
+  191: RackAuthorizedSiblingBatch authorized = null;
+  192: 
+  193: if (!window.UpdateOnly)
+  194: {
+  195: if (!RackUnsupportedSiblingInsert.TryAuthorize(document, blockId, embed, id, out authorized)) return;
+  196: }
+  197: 
+  198: var blocks = !window.UpdateOnly ? authorized.Blocks.ToList() : RackCommandSupport.FindRackBlocks(document, id);
+  199: if (blocks.Count == 0)
+  200: {
+### src/RackCad.Plugin/RackPushBackCommands.cs:266-280 (total 478)
+  266: var updatedPlanta = 0;
+  267: var staleViewBlocks = new System.Collections.Generic.List<ObjectId>();
+  268: var catalog = LateralHeaderDrawService.LoadCatalog();
+  269: var lateralCortes = new PushBackSystemLateralBuilder().Cortes(system, catalog);
+  270: var availabilityFacts = new PushBackViewAvailabilityFacts(
+  271: lateralCortes.Select(item => item.PostIndex), system.IsComposite);
+  272: foreach (var viewBlock in blocks)
+  273: {
+  274: HeaderPlacementResult result;
+  275: var decoded = RackCommandSupport.DecodeView(viewBlock.Embed);
+  276: if (decoded.Address.Kind == DimensionViewKind.Planta)
+  277: {
+  278: var payload = BuildPushBackPayload(design, id, name, RackEmbedDocument.ViewPlanta, -1, viewBlock.Embed, preflight.ResolvedByBlock[viewBlock.BlockId]);
+  279: result = new PushBackPlantaDrawService().RedrawInPlace(document, viewBlock.BlockId, system, payload, regen: false);
+  280: if (result != null && result.Success)
+### src/RackCad.Plugin/RackPushBackCommands.cs:318-358 (total 478)
+  318: }
+  319: }
+  320: else
+  321: {
+  322: // Lateral: the descriptor preflight guarantees View == ViewLateral && Section >= 0. Redraw the cut for
+  323: // THIS post index; a post that no longer exists becomes stale (never redraw it at another index).
+  324: var postIndex = decoded.Address.Variant.Index;
+  325: var availability = RackViewAvailability.Evaluate(decoded, availabilityFacts);
+  326: var corte = availability.Status == RackViewAvailabilityStatus.Available
+  327: ? lateralCortes.FirstOrDefault(item => item.PostIndex == postIndex)
+  328: : null;
+  329: if (corte == null)
+  330: {
+  331: staleViewBlocks.Add(viewBlock.BlockId);
+  332: continue;
+  333: }
+  334: 
+  335: var payload = BuildPushBackPayload(design, id, name, RackEmbedDocument.ViewLateral, postIndex, viewBlock.Embed, preflight.ResolvedByBlock[viewBlock.Bl
+  336: result = new PushBackSystemDrawService().RedrawInPlace(document, viewBlock.BlockId, system, payload, regen: false, postIndex: postIndex);
+  337: if (result != null && result.Success)
+  338: {
+  339: RackBlockRenamer.SyncName(
+  340: document,
+  341: viewBlock.BlockId,
+  342: RackViewBaseName.LinkedLateral(baseName, postIndex));
+  343: updatedLateral++;
+  344: }
+  345: }
+  346: }
+  347: 
+  348: // Stale lateral cuts: erase ONLY when some survive (never delete a rack's last remaining link).
+  349: var survivors = blocks.Count - staleViewBlocks.Count;
+  350: var erasedPhantoms = staleViewBlocks.Count > 0 && survivors > 0
+  351: ? RackCommandSupport.EraseViewBlocks(document, staleViewBlocks)
+  352: : 0;
+  353: if (staleViewBlocks.Count > 0 && survivors == 0)
+  354: {
+  355: editor.WriteMessage("\nRackCad: todas las vistas Push Back quedaron obsoletas; no se elimino el ultimo vinculo del rack.");
+  356: }
+  357: 
+  358: // SINGLE authority for "the drawing changed in place": erasing a stale cut IS a change, so an edit that only
+### src/RackCad.Plugin/RackPushBackCommands.cs:366-384 (total 478)
+  366: document.Editor.Regen();
+  367: }
+  368: 
+  369: if (!window.UpdateOnly)
+  370: {
+  371: RackViewBatchExecution.Run(document, batchProducts, batchRequest,
+  372: _ => RackCad.Application.Views.Batch.RackViewBatchRedrawResult.Applied());
+  373: return;
+  374: }
+  375: 
+  376: editor.WriteMessage(changedInPlace
+  377: ? "\nRackCad: sistema Push Back actualizado; vistas redibujadas (lateral x"
+  378: + updatedLateral.ToString(CultureInfo.InvariantCulture) + ", frontal entrada/salida x"
+  379: + updatedFrontalEntrada.ToString(CultureInfo.InvariantCulture) + ", frontal posterior x"
+  380: + updatedFrontalPosterior.ToString(CultureInfo.InvariantCulture) + ", planta x"
+  381: + updatedPlanta.ToString(CultureInfo.InvariantCulture) + "; cortes obsoletos eliminados x"
+  382: + erasedPhantoms.ToString(CultureInfo.InvariantCulture) + ")."
+  383: : "\nRackCad: no se pudo actualizar el sistema Push Back.");
+  384: }
+### src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotFieldAdapter.cs:22-41 (total 73)
+  22: {
+  23: /// <summary>The only field key of the pilot, compared ordinally. Any other key is invalid.</summary>
+  24: public const string AnnotationScaleKey = "AnnotationScale";
+  25: 
+  26: /// <summary>Same wording as the classic control, so the two surfaces tell the user the same thing.</summary>
+  27: public const string EmptyMessage = "Escribe un valor.";
+  28: 
+  29: public const string NotANumberMessage = "Valor no numérico.";
+  30: 
+  31: public const string NotPositiveMessage = "El valor debe ser > 0.";
+  32: 
+  33: public const string UnknownFieldMessage = "Campo desconocido para el piloto.";
+  34: 
+  35: public DraftFieldValidation Validate(string fieldKey, string text)
+  36: {
+  37: if (!string.Equals(fieldKey, AnnotationScaleKey, StringComparison.Ordinal))
+  38: {
+  39: return DraftFieldValidation.Invalid(UnknownFieldMessage);
+  40: }
+  41: 
+### src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs:56-60 (total 352)
+  56: /// tail. The origin is shared because it is an immutable string.
+  57: /// </summary>
+  58: public static PushBackPilotDraftState Copy(PushBackPilotDraftState state)
+  59: {
+  60: if (state == null) throw new ArgumentNullException(nameof(state));
+### src/RackCad.Application/Persistence/RackEmbedDocument.cs:72-76 (total 131)
+  72: /// build authored (no extra keys emitted).
+  73: /// </summary>
+  74: [JsonExtensionData]
+  75: public Dictionary<string, JsonElement> ExtensionData { get; set; }
+  76: }
+### src/RackCad.Application/Persistence/RackProjectDocument.cs:49-53 (total 54)
+  49: /// never resurrects an inactive known payload. Null/empty for freshly written projects (no extra keys emitted).
+  50: /// </summary>
+  51: [JsonExtensionData]
+  52: public Dictionary<string, JsonElement> ExtensionData { get; set; }
+  53: }
+### src/RackCad.Application/Persistence/RackEmbedComposer.cs:40-62 (total 123)
+  40: .Select(property => property.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name ?? property.Name)
+  41: .ToArray();
+  42: 
+  43: public static RackEmbedDocument Compose(
+  44: RackEmbedDocument source, string kind, string id, string name, string view, int section, string design)
+  45: {
+  46: RequireNoDeclaredMemberInExtensionData(source);
+  47: 
+  48: return new RackEmbedDocument
+  49: {
+  50: SchemaVersion = SchemaVersionPolicy.ResolveWriteVersion(source?.SchemaVersion, RackEmbedDocument.CurrentSchemaVersion),
+  51: Kind = kind,
+  52: Id = id,
+  53: Name = name,
+  54: View = view,
+  55: Section = section,
+  56: Design = design,
+  57: CustomProperties = Normalize(source?.CustomProperties),
+  58: ExtensionData = source?.ExtensionData
+  59: };
+  60: }
+  61: 
+  62: /// <summary>
+### src/RackCad.Application/Persistence/RackProjectStore.cs:58-62 (total 428)
+  58: }
+  59: 
+  60: PreserveUnknownMetadata(document, project.SourceDocument);
+  61: return JsonSerializer.Serialize(document, SerializerOptions);
+  62: }
+### src/RackCad.Application/Persistence/PushBackDesignDocument.cs:90-99 (total 548)
+  90: /// (its unknown fields + a non-downgraded schema version), so a Document→Domain→Document re-save preserves both.
+  91: /// </summary>
+  92: public static PushBackDesignDocument FromDomain(PushBackDesign design, PushBackDesignDocument source)
+  93: {
+  94: var document = new PushBackDesignDocument
+  95: {
+  96: SchemaVersion = SchemaVersionPolicy.ResolveWriteVersion(source?.SchemaVersion, CurrentSchemaVersion),
+  97: ExtensionData = source?.ExtensionData
+  98: };
+  99: 
+### src/RackCad.Application/Views/Redraw/RackSiblingMembership.cs:60-66 (total 157)
+  60: }
+  61: 
+  62: public RackSiblingScanFact Fact { get; }
+  63: public RackSiblingMembershipKind Kind { get; }
+  64: public bool IsSurvivor => Kind == RackSiblingMembershipKind.Redraw && Fact.LayoutReferenceCount >= 1;
+  65: }
+  66: 
+### tests/RackCad.Tests/Workspace/WorkspacePilotUpdateScopeDouble.cs:11-16 (total 279)
+  11: namespace RackCad.Tests;
+  12: 
+  13: /// <summary>
+  14: /// I-64 F4-T4B: the double of the port of the update of the pilot. It simulates a drawing of the members of ONE rack (a key and the raw
+  15: /// text of its envelope), logs every call of the run in order, and can be told to throw at any call, to answer something else, or to run
+  16: /// a hook, which is how a test makes the drawing change between PREPARE and MUTATE. Writes are STAGED: the seal applies them to the drawing
+### src/RackCad.Application/RackCad.Application.csproj:9-13 (total 13)
+  9: the internal path overloads of UserSettingsStore, without touching the real <datos-de-aplicacion-del-usuario>. -->
+  10: <ItemGroup>
+  11: <InternalsVisibleTo Include="RackCad.Tests" />
+  12: </ItemGroup>
+  13: </Project>
+### src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentResult.cs:25-42 (total 61)
+  25: public sealed class PushBackPilotIntentResult
+  26: {
+  27: internal PushBackPilotIntentResult(
+  28: DraftStaleBase staleBase,
+  29: DraftIntentRead<PushBackPilotDraftState> read,
+  30: string originKey,
+  31: string? detail,
+  32: string? classicEditorHint,
+  33: PushBackPilotPreviewWitnessStatus previewWitness)
+  34: {
+  35: StaleBase = staleBase ?? throw new ArgumentNullException(nameof(staleBase));
+  36: Read = read ?? throw new ArgumentNullException(nameof(read));
+  37: OriginKey = originKey ?? string.Empty;
+  38: Detail = detail;
+  39: ClassicEditorHint = classicEditorHint;
+  40: PreviewWitness = previewWitness;
+  41: }
+  42: 
+### docs/automation/evidence/I-64-pilot/F4-SMOKE-2/run/run-log-2.md:48-53 (total 181)
+  48: - 14 (S2-03) 2026-11-17T02:19:43Z: «Actualizar» una vez: el Owner vio «Aplicando»; el cambio se ve, el tamaño corresponde al 2; el estado queda «Limpi
+  49: - 14 (cont.) 2026-11-17T02:20:51Z: sigue «PB G» en la vista (F4-E72 corregido); sigue «Limpio» sin la marca (estable); la selección desapareció (PICKF
+  50: - 15 2026-11-17T02:22:24Z: Deshacer (images/35.png, de arriba abajo): Intellipan, Executefunction, Intellizoom, Group of commands x3, Intellizoom, Gro
+  51: - 16 2026-11-17T02:24:12Z: captura tras los dos U (images/36.png): la línea de órdenes dice «_u INTELLIPAN» y «_u EXECUTEFUNCTION» (el 2.º U deshizo e
+  52: - 16 (cont.) 2026-11-17: el Owner confirma que tras el 2.º U (EXECUTEFUNCTION) la pantalla volvió SOLA al dibujo anterior, sin REGEN (images/36.png: «
+  53: - 17 2026-11-17: REDO inmediatamente después del 2.º U: la línea de órdenes dice «REDO» y «EXECUTEFUNCTION» (texto pegado por el Owner); la pantalla v
+### tests/RackCad.Tests/PushBackFullEditorCharacterizationLateralCutTests.cs:13-25 (total 143)
+  13: namespace RackCad.Tests
+  14: {
+  15: /// <summary>
+  16: /// I-64 F4B PB-T0 (CT-PB0-10) — CARACTERIZACION de la decision pura detras del borrado de vistas: que cortes
+  17: /// laterales existen despues de cada edicion de frentes y cuales de las vistas de ANTES quedan obsoletas segun la
+  18: /// disponibilidad de DESPUES. Es la misma decision que RACKEDITAR toma con los cortes y los hechos, calculada aqui con el
+  19: /// producto real y sin Plugin, sin ventana y sin AutoCAD.
+  20: ///
+  21: /// <para>Se fija lo que HAY. El orden es ordinal y solo se fijan enteros, cadenas y booleanos.</para>
+  22: /// </summary>
+  23: public sealed class PushBackFullEditorCharacterizationLateralCutTests
+  24: {
+  25: private static readonly RackCatalog Catalog = JsonRackCatalogProvider.FromBaseDirectory().Load();
+### tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs:13-22 (total 616)
+  13: 
+  14: /// <summary>One definition of a scan for the pilot intent tests: the fact of the scan and the raw text read for its key.</summary>
+  15: internal sealed record IntentItem(RackSiblingScanFact Fact, string? Text);
+  16: 
+  17: /// <summary>
+  18: /// I-64 F4-T2B1: shared builders of the intent tests. The envelopes come from the fixtures of F4-T2A (read by path from the
+  19: /// repository root); the variants are derived in code through the same store the product uses.
+  20: /// </summary>
+  21: internal static class IntentKit
+  22: {
+### docs/AUTOMATION_PLAN.md:555-560 (total 696)
+  555: trabajo y `DelegationRunId`; `ExpectedHandoffPath` lleva el token literal `{WorkRunId}`, que el relevo sustituye al componer el prompt. La verificació
+  556: `DelegationRunId` y `WorkRunId`. Un registro de rebase recibe un `RunId` propio y vive en el directorio del intento.
+  557: - **Propiedad exclusiva:** `Owner` identifica el único puesto de escritor; nunca hay dos. Si no se sabe si un participante sigue vivo, no se lanza otr
+  558: - **Delegación abierta:** aceptada y sin verificación válida registrada ni cierre declarado por la sesión. Como máximo una por unidad.
+  559: - **Cadena en curso:** tarea con al menos una delegación aceptada que no terminó en VERIFIED ni en abandono declarado, incluida una corrección autoriz
+  560: - G.7 («invoke worker») y G.11 («route corrections») los ejecuta la sesión exactamente según el paquete aceptado; cualquier divergencia es STOP (P-05)
+SystemRegistry.Default.cs candidates: src/RackCad.Application/Systems/Shared/SystemRegistry.Default.cs
+### src/RackCad.Application/Systems/Shared/SystemRegistry.Default.cs:165-170 (total 257)
+  165: return false;
+  166: }
+  167: 
+  168: document.PushBack = PushBackDesignDocument.FromDomain(project.PushBackDesign, project.SourceDocument?.PushBack);
+  169: return true;
+  170: }
+METHODS WorkspacePilotPrepareTests = 67
+METHODS WorkspacePilotUpdateRunTests = 49
+METHODS WorkspaceDraftPilotMaterializationTests = 41
+METHODS WorkspacePilotUpdateHostTests = 35
+METHODS WorkspacePilotUpdateRequestTests = 44
+METHODS WorkspacePilotReconciliationHostTests = 28
+METHODS WorkspaceDraftPilotIntentReadTests = 63
+METHODS WorkspaceDraftPilotStateTests = 27
+METHODS WorkspacePilotPrepareGuardTests = 17
+METHODS WorkspacePilotUpdateGuardTests = 42
+METHODS WorkspacePilotUpdateIntegrationGuardTests = 43
+METHODS WorkspaceDraftPilotIntentGuardTests = 13
+METHODS tests/RackCad.Tests/I58F1CharacterizationTests.cs = 2
+METHODS tests/RackCad.Tests/I58F1OracleChecks.cs = 8
+METHODS tests/RackCad.Tests/CustomPropertiesEnvelopeGuardTests.cs = 9
+METHODS tests/RackCad.Tests/NamespaceFolderGuardTests.cs = 7
+METHODS tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs = 2
+bloqueado=True occurrences: 0; bloqueado=False: 105

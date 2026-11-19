@@ -1,0 +1,131 @@
+FILE tests/RackCad.Tests/CustomPropertiesEnvelopeGuardTests.cs
+  TARGET src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs (literal)
+  TARGET src/RackCad.Plugin/RackPushBackCommands.cs (literal)
+  TARGET src/RackCad.Application/Systems/PushBack/Pilot (literal)
+  TARGET src/RackCad.Application/Systems/PushBack (literal)
+    METHOD TGrd03_LaGuardaDetectaUnRestampQueNoReutilizaElObjeto -> Pilot, PushBack, PushBackPilotUpdatePlan.cs, RackPushBackCommands.cs
+FILE tests/RackCad.Tests/I60RackNameWiringGuardTests.cs
+  TARGET src/RackCad.Plugin/RackPushBackCommands.cs (literal)
+    METHOD I60_N6_TheSharedDrawPathsNameOnlyANewRack -> RackPushBackCommands.cs
+    METHOD I60_N6_NoEditPathNamesALegacyRack -> RackPushBackCommands.cs
+FILE tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs
+  TARGET src/RackCad.Application/Systems/PushBack via push
+    METHOD CT_PBT1B_14_NoLineOfTheEditingPathMutatesTheResolvedRackOrTheModuleReport -> PushBack
+FILE tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorGuardTests.cs
+  TARGET src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs via IntentAdapterPath
+    METHOD TheControllerGuardAcceptsAControllerThatFollowsTheRulesAndFlagsEachBrokenRule -> RackPilotIntentAdapter.cs
+FILE tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentGuardTests.cs
+  TARGET src/RackCad.Application/Systems/PushBack/Pilot via PilotFolder
+  TARGET src/RackCad.Application/Systems/PushBack (literal)
+FILE tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs
+  TARGET src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs via AdapterPath
+  TARGET src/RackCad.Application/Workspace/WorkspaceHostCore.cs via CorePath
+    METHOD TheAdapterIsAnInternalStaticClassOfTheViewsFolderWithTheThreeOperationsOfThePackage -> RackPilotIntentAdapter.cs
+    METHOD TheControllerAssignsTheReaderInTheNavigationGetterRightAfterCreatingTheHostAndNowhereElse -> WorkspaceHostCore.cs
+    METHOD AtMostTheHostCoreTheInterfaceAndTheIntentFileNameThePilotInTheApplicationWorkspaceFolder -> WorkspaceHostCore.cs
+    METHOD TheHostCoreOffersTheTwoOperationsAndTheAssignmentWithTheSignaturesOfThePackage -> WorkspaceHostCore.cs
+    METHOD NoOperationOfTheIntentionIsCalledFromTheDrainOrTheIdleOfAnyFile -> WorkspaceHostCore.cs
+    METHOD TheFoldersKeepTheirFilesAndTheTwoNewFilesOfTheApplicationAreExactFiles -> RackPilotIntentAdapter.cs
+    METHOD TheThreeFilesOfTheApplicationAreNullableEnabledNameNoHostTypeAndKeepTheWordsThatTheNeighbouringGuardsForbidEvenInComments -> WorkspaceHostCore.cs
+    METHOD TheNoReadGuardOfTheUpdateDetectsEachWayToReadInTheRealBody -> WorkspaceHostCore.cs
+FILE tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs
+  TARGET src/RackCad.Application/Workspace/WorkspaceHostCore.cs via HostCorePath
+    METHOD TheReaderIsBuiltOnlyByTheControllerAndCalledOnlyFromTheDrain -> WorkspaceHostCore.cs
+    METHOD TheDrainInvalidatesTheCacheFirstAndOnlyHintsSayWhen -> WorkspaceHostCore.cs
+    METHOD TheContextPathIsClassifyThenApplyContextAndNothingElseWritesTheContext -> WorkspaceHostCore.cs
+FILE tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs
+  TARGET src/RackCad.Application/Workspace/WorkspaceHostCore.cs via HostCorePath
+    METHOD TheFilesOfTheLifecycleWriteNothingAndHoldNoObjectNorTransactionOfTheHost -> WorkspaceHostCore.cs
+FILE tests/RackCad.Tests/Workspace/WorkspaceNavigationAuthorityTests.cs
+  TARGET src/RackCad.Application/Workspace/WorkspaceHostCore.cs (literal)
+    METHOD NoEventSideFileCanReachTheNavigationEffectsOrThePolicy -> WorkspaceHostCore.cs
+FILE tests/RackCad.Tests/Workspace/WorkspaceNavigationEchoTests.cs
+  TARGET src/RackCad.Application/Workspace/WorkspaceHostCore.cs (literal)
+    METHOD TheEchoIsSharedByTheReaderAndTheHostCoreAndFlowsThroughTheControllerOnly -> WorkspaceHostCore.cs
+    METHOD NothingChangedInTheSelectionReadOrTheSessionToCarryTheHandles -> WorkspaceHostCore.cs
+    METHOD NoEventNorContextChangeWritesTheSelectionOrTheViewAndTheEchoNamesNoEffect -> WorkspaceHostCore.cs
+FILE tests/RackCad.Tests/Workspace/WorkspaceNavigationHostTests.cs
+  TARGET src/RackCad.Plugin/Views/RackPilotUpdateCommandContext.cs via CommandContextAdapterPath
+    METHOD TheHostInstantiatesExactlyOneTargetsAuthorityAndOnePolicyAndNothingElseDoes -> RackPilotUpdateCommandContext.cs
+    METHOD TheCommandContextRuleDetectsTheApiInTheNavigationHostAndASecondCallInTheAdapter -> RackPilotUpdateCommandContext.cs
+    METHOD TheNavigationRunsSynchronouslyAndOnlyTheAdapterOfTheUpdateAsksForTheCommandContextOnce -> RackPilotUpdateCommandContext.cs
+FILE tests/RackCad.Tests/Workspace/WorkspacePilotCloseSyncGuardTests.cs
+  TARGET src/RackCad.Application/Workspace/WorkspaceHostCore.cs (literal)
+    METHOD TheQueuesOfNoticesAreNamedInTheHostSideOnlyByThePortTheHostAndTheTwoForwarders -> WorkspaceHostCore.cs
+FILE tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs
+  TARGET src/RackCad.Application/Workspace/WorkspaceHostCore.cs via HostPath
+    METHOD TheControllerGuardTripsWithoutTheDepthTheNavigationTheDecoratorOrWhenTheHostIsExposedOrASubscriptionIsAdded -> WorkspaceHostCore.cs
+    METHOD TheNewTypesAndTheNewCodeOfApplicationAvoidTheTrapsOfTheNeighbouringGuards -> WorkspaceHostCore.cs
+FILE tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs
+  TARGET src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs via PlanPath
+  TARGET src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs (literal)
+  TARGET src/RackCad.Application/Workspace/WorkspaceHostCore.cs (literal)
+  TARGET src/RackCad.Application/Systems/PushBack/Pilot via PilotFolder
+  TARGET src/RackCad.Application/Systems/PushBack (literal)
+    METHOD TheFileOfThePlanIsNullableEnabledInTheNamespaceOfThePilotWithBracesAndDeclaresTheTypesOfThePackage -> Pilot, PushBackPilotUpdatePlan.cs
+    METHOD NobodyComposesTheEnvelopeOfTheWritingOfThePilotOutsideThePlanAndNoPilotFileBeforeThisTaskDoes -> Pilot, PushBackPilotUpdatePlan.cs
+    METHOD TheAfterMatchGuardTripsOnAnotherCallerAndOnACallBeforeTheComparison -> PushBackPilotUpdatePlan.cs
+    METHOD TheBuildersThatThePlanUsesNeedNeitherTheDrawingNorThePlugin -> PushBack
+    METHOD NoFileOfTheTaskUsesTheCommandContextNorAsynchronyNorTimersNorADispatcher -> Pilot, PushBack, PushBackPilotMaterializer.cs, PushBackPilotUpdatePlan.cs, WorkspaceHostCore.cs
+FILE tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardTests.cs
+  TARGET src/RackCad.Application/Workspace/WorkspaceHostCore.cs via CorePath
+    METHOD PassGateAuthorizesTheSessionAgainstTheActiveDocumentByTheExactFormAndOnlyOnce -> WorkspaceHostCore.cs
+    METHOD TheGuardOfPassGateSeesTheComparisonTheDecisionTheSessionTheIgnoredResultAndTheAlwaysTrue -> WorkspaceHostCore.cs
+FILE tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs
+  TARGET src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs via WriterPath
+  TARGET src/RackCad.Application/Workspace/WorkspaceHostCore.cs via CorePath
+  TARGET src/RackCad.Application/Systems/PushBack/Pilot via PilotFolder
+  TARGET src/RackCad.Application/Systems/PushBack (literal)
+    METHOD NoFileOfThePilotFolderNamesTheWordTransactionNotEvenInAComment -> Pilot
+    METHOD TheDebugInjectionHasConditionalMethodsAndOnlyTheReadOfTheVariableIsInsideIfDebug -> RackPilotUpdateWriter.cs
+    METHOD TheDebugGuardTripsOnAnEnvironmentReadOutsideIfDebugAndOnAConditionalThatIsMissing -> RackPilotUpdateWriter.cs
+    METHOD TheNucleusCanMoveAnywhereInTheFileWithoutTheFrozenRestChanging -> RackPilotUpdateWriter.cs
+    METHOD TheCensusGuardSeesAThirdCallASecondCallInTraverseAndAMissingCall -> RackPilotUpdateWriter.cs
+    METHOD TheGateOfTheUpdateAuthorizesTheSessionByTheExactFormOnlyOnceAndHasNeitherRestNorReader -> WorkspaceHostCore.cs
+    METHOD TheGuardOfTheGateOfTheUpdateSeesTheComparisonTheDecisionTheSessionTheAlwaysTrueTheRestAndTheReader -> WorkspaceHostCore.cs
+    METHOD TheBodyOfTheUpdateFollowsTheOrderOfThePackageAndEndsTheMarkOfKnownCleanAfterTheClose -> WorkspaceHostCore.cs
+    METHOD NoNewFileOfTheUpdateBuildsOrComposesAnEnvelopeAddsACommandOrNamesTheUnits -> RackPilotUpdateWriter.cs
+    METHOD X -> RackPilotUpdateWriter.cs
+FILE tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs
+  TARGET src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs via RunPath
+  TARGET src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotHostRun.cs via HostRunPath
+  TARGET src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs via WriterPath
+  TARGET src/RackCad.Plugin/Views/RackPilotUpdateCommandContext.cs via AdapterPath
+  TARGET src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs via IntentAdapterPath
+  TARGET src/RackCad.Application/Workspace/WorkspaceHostCore.cs via CorePath
+  TARGET src/RackCad.Plugin/RackPushBackCommands.cs (literal)
+  TARGET src/RackCad.Application/Systems/PushBack/Pilot (literal)
+  TARGET src/RackCad.Application/Systems/PushBack (literal)
+    METHOD TheRunnerIsPureAndTotalAndNamesNeitherTheWorkspaceNorTheUpdateOfT4B -> Pilot, PushBack, PushBackPilotHostRun.cs
+    METHOD ThePurityGuardOfTheRunnerTripsOnEachProhibitionInjectedIntoTheRealText -> PushBackPilotHostRun.cs
+    METHOD TheTotalityGuardOfTheRunnerTripsOnACallbackWithoutATryAndOnAThrowInACatch -> PushBackPilotHostRun.cs
+    METHOD TheAdapterHasItsExactCountsAndNoFieldButTheDocumentOfTheTargetAndIsTotalByText -> RackPilotUpdateCommandContext.cs
+    METHOD TheAdapterGuardTripsOnEachViolationInjectedIntoItsRealText -> RackPilotUpdateCommandContext.cs
+    METHOD TheAdapterGuardTripsWhenTheContinuationIsNotOnTheBranchOfAnIsCompletedThatIsFalseOrThePostIsNotOfTheCapturedContext -> RackPilotUpdateCommandContext.cs
+    METHOD TheAdapterGuardTripsWhenTheTargetOfTheRunCarriesATextOfItsOwnOrDoesNotAnswerTheReasonOfTheRun -> RackPilotUpdateCommandContext.cs
+    METHOD TheAdapterGuardTripsOnAContinuationWithoutATryAndOnAThrowInACatch -> RackPilotUpdateCommandContext.cs
+    METHOD TheCommandContextAndTheDocumentLockAreNamedInOneFileOfTheProductEachWithItsOwnCount -> RackPilotUpdateCommandContext.cs, RackPilotUpdateWriter.cs
+    METHOD G1TripsWhenThePrimitivesAreInjectedIntoTheAdapterOrTheController -> PushBackPilotHostRun.cs, RackPilotUpdateCommandContext.cs, RackPilotUpdateWriter.cs
+    METHOD G1TripsOnANewFileOfThePluginOutsideTheIntegrationFoldersAndOnAnExistingOneThatCallsAPrimitive -> RackPilotUpdateWriter.cs, RackPushBackCommands.cs
+    METHOD G2OnlyTheWriterImplementsThePortOfTheUpdateAndAnotherClassTripsTheGuard -> PushBackPilotHostRun.cs, RackPilotUpdateCommandContext.cs
+    METHOD G3TripsOnAFieldOfEachTypeOnASecondConstructionAndOnARequestFromAnotherFile -> PushBackPilotHostRun.cs, RackPilotUpdateCommandContext.cs, WorkspaceHostCore.cs
+    METHOD G3TheFieldRuleOfTheCoreTripsOnAFieldOfEachTypeAlsoInsideAGenericAndInANestedType -> WorkspaceHostCore.cs
+    METHOD G4TripsOnACallerInTheControllerTheAdapterOrASecondCallInTheCore -> PushBackPilotHostRun.cs, RackPilotUpdateCommandContext.cs, WorkspaceHostCore.cs
+    METHOD G4TripsOnAGroupOfMethodsOfTheUpdateOutsideTheCoreAndInsideItAndNotOnTheNameInsideAString -> PushBackPilotHostRun.cs, RackPilotUpdateCommandContext.cs, WorkspaceHostCore.cs
+    METHOD G5TripsOnEachNameInjectedIntoTheAdapterAndIntoTheRunner -> PushBackPilotHostRun.cs, RackPilotUpdateCommandContext.cs
+    METHOD G6TripsOnOneMoreThanTheCountOfEachExceptionAndOnAnyNameInTheOtherFiles -> Pilot, PushBack, PushBackPilotUpdateRun.cs, WorkspaceHostCore.cs
+    METHOD G7TripsOnACallOfThePortOutsideTheRun -> PushBackPilotHostRun.cs, RackPilotIntentAdapter.cs, RackPilotUpdateCommandContext.cs, RackPilotUpdateWriter.cs, WorkspaceHostCore.cs
+    METHOD G9TripsOnAPilotFileThatRedrawsInPlaceThatWritesBlockDataThatOpensForWriteOrThatLocksASecondTime -> Pilot, PushBack, PushBackPilotHostRun.cs, RackPilotIntentAdapter.cs, RackPilotUpdateCommandContext.cs, RackPilotUpdateWriter.cs, WorkspaceHostCore.cs
+    METHOD G10TripsOnAnotherCallerOfTheRequestOfTheExecutorOrOfTheOwnMutation -> Pilot, PushBack, PushBackPilotHostRun.cs, RackPilotUpdateCommandContext.cs, WorkspaceHostCore.cs
+    METHOD TheCensusTripsOnANewTaskAsyncAwaitDispatcherOrBlockingCall -> PushBackPilotHostRun.cs, RackPilotUpdateCommandContext.cs, WorkspaceHostCore.cs
+    METHOD TheEnterErrorGuardTripsOnAProductCaller -> RackPilotUpdateCommandContext.cs, WorkspaceHostCore.cs
+    METHOD M01TheEscapeOfTheRunIsClassifiedByTheStateThatTheRunAlreadyHadAndNeverAsAPlainFailureAfterAWriteOrASeal -> PushBackPilotUpdateRun.cs
+    METHOD M01TheEscapeGuardTripsOnACatchThatDoesNotConsultTheStateAndOnAnEscapeThatAnswersAPlainFailureFirst -> PushBackPilotUpdateRun.cs
+    METHOD M01TheCloseThatWasNotAcceptedIsNeverASuccessAndTheAnswerIsBuiltInATryWithAFallback -> WorkspaceHostCore.cs
+    METHOD M01TheCloseGuardTripsOnAFixedNotAppliedFailureAFixedAppliedAndAnAnswerWithoutAFallback -> WorkspaceHostCore.cs
+    METHOD M05TheCloseGuardTripsWhenTheAnswerOfANotAcceptedCloseOrTheNoteOfTheEditOrTheMarkOfKnownCleanLeaveTheTryOfTheAnswer -> PushBackPilotHostRun.cs, WorkspaceHostCore.cs
+    METHOD M04TheGuardTripsOnTheSentenceUsedAsAPrefixInTheRunnerAndInTheCoreAndOnALiteralSpaceInTheRunOfTheCore -> PushBackPilotHostRun.cs, WorkspaceHostCore.cs
+    METHOD TheNewFilesNameNoUndoApiNoSendStringToExecuteNoCommandMethodAndNoCommandFlags -> PushBackPilotHostRun.cs, RackPilotUpdateCommandContext.cs
+FILE tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRequestTests.cs
+  TARGET src/RackCad.Application/Workspace/WorkspaceHostCore.cs (literal)
+    METHOD AComparerOrAnythingThatFailsWhileLookingForADraftBeingAppliedAnswersFalseAndIsLoggedSoTheDiscardIsNeverStuckInBusy -> WorkspaceHostCore.cs
