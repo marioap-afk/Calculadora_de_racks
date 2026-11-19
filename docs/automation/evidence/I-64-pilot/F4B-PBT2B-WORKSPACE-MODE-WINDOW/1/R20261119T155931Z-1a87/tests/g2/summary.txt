@@ -1,0 +1,9 @@
+g1 RackCad.UI.Tests.PushBackWorkspaceModeTests | Correctas! - Con error:     0, Superado:     3, Omitido:     0, Total:     3, Duración: 709 ms - RackCad.UI.T
+g1 RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests | Correctas! - Con error:     0, Superado:     4, Omitido:     0, Total:     4, Duración: 7 s - RackCad.UI.Test
+g1 RackCad.Tests.PushBackWorkspaceModeSourceGuardTests | Correctas! - Con error:     0, Superado:     1, Omitido:     0, Total:     1, Duración: < 1 ms - RackCad.Test
+g2 RackCad.UI.Tests.PushBackWorkspaceModeTests | Correctas! - Con error:     0, Superado:     3, Omitido:     0, Total:     3, Duración: 912 ms - RackCad.UI.T
+g2 RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests | Correctas! - Con error:     0, Superado:     4, Omitido:     0, Total:     4, Duración: 7 s - RackCad.UI.Test
+g2 RackCad.Tests.PushBackWorkspaceModeSourceGuardTests | Correctas! - Con error:     0, Superado:     1, Omitido:     0, Total:     1, Duración: < 1 ms - RackCad.Test
+g3 RackCad.UI.Tests.PushBackWorkspaceModeTests | Correctas! - Con error:     0, Superado:     3, Omitido:     0, Total:     3, Duración: 828 ms - RackCad.UI.T
+g3 RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests | Correctas! - Con error:     0, Superado:     4, Omitido:     0, Total:     4, Duración: 7 s - RackCad.UI.Test
+g3 RackCad.Tests.PushBackWorkspaceModeSourceGuardTests | Correctas! - Con error:     0, Superado:     1, Omitido:     0, Total:     1, Duración: < 1 ms - RackCad.Test

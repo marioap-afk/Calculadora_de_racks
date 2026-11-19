@@ -1,0 +1,28 @@
+{
+  "Regla": "RR-3 (a), CA-T2b section 12, M-05: cada linea de PorClase[<clase>] sigue byte a byte como literal de cadena (entre comillas dobles) en git show RedRepairSha:<clase>; una que falte es PBT2B-C07. La lista es cerrada: las demas lineas y literales van a los indicios (Findings).",
+  "Paquete": "59839c7148fa101c2f95e1f59b36e6b052216680:docs/initiatives/I-64-f4b-pbt2-gate-contract-package.md",
+  "RedSha": "a3b86134227e716825c4fbf72c4efba03b819351",
+  "RedRepairSha": "6bc3497fc5962d46a3a8541f34004bfd8a7848be",
+  "LineasLiteralesDelPaquete": 56,
+  "PorClase": {
+    "tests/RackCad.UI.Tests/PushBackWorkspaceApplyCloseTests.cs": [
+      "modo=Workspace",
+      " descartes=0",
+      "carga llamadas=0 sucio=False",
+      "segunda llamadas=2 igual-a-la-ventana=True diseno-igual=True",
+      "nombre-nulo-biblioteca archivo=True nombre-ventana=[] llamadas=0 sucio=False",
+      "cerrada=True descartes=1",
+      "cuarta-ventana llamadas=1 huellas-iguales=True descartes=0",
+      "cerrar-sin-cambios avisos=0 cerrada=True borrador-igual=True",
+      "cerrar-con-cambios-si avisos=2 cerrada=True borrador-igual=True llamadas=0",
+      "cerrar-tras-aplicar avisos=0 cerrada=True llamadas=1",
+      "clasico-con-cambios avisos=0 cerrada=True peticion=False"
+    ],
+    "tests/RackCad.UI.Tests/PushBackWorkspaceModeTests.cs": [
+      "EXCEPCION ArgumentNullException: Value cannot be null. (Parameter 'launch')",
+      " descartes=0",
+      "BomDialog llamadas=1 dueno-es-la-ventana=True bom-es-el-calculado=True",
+      "LibraryPathDialog llamadas=1 dueno-es-la-ventana=True nombre=PB-01 archivo=False peticion=False descartes=0"
+    ]
+  }
+}

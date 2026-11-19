@@ -1054,3 +1054,76 @@ No hay cambios materiales.
 - **La cadena:** primera delegación; `attempts` 1 de 3.
 - **La planificación:** con las colecciones opacas puestas por la sesión (F4B-E21).
 - **La verificación:** con las comprobaciones deterministas de F4B-E15.
+
+## F4B-E37. Decisión del Owner sobre el config.toml tras la actualización de la app de Codex: Snapshot K
+
+**Fuente:** `F4B-DRAFTS/coordinator/owner-config-snapshot-k-decision.md`, con la pregunta y la respuesta literales.
+
+**Los hechos:**
+- **La parada:** la preparación de la planificación de PB-T2b, `R20261119T154005Z-3194`, paró con P-01 sin lanzar nada. La app de Codex se había actualizado y había reescrito `config.toml` a las 14:05:53Z. El hash pasó de `57B0FED6…` (Snapshot J) a `E1F69847…`.
+- **Lo que cambió:** los 104 nombres siguen iguales y en el mismo orden. De los 68 valores del inventario seguro cambian solo dos, `mcp_servers.node_repl.env.BROWSER_USE_CODEX_APP_VERSION` y la ruta del plugin del navegador en `NODE_REPL_TRUSTED_SERVICES`, que pasan de 26.1111.21308 a 26.1111.71704.
+- **Lo que no cambió:** el modelo, el effort y el binario acreditado de la CLI.
+
+**La respuesta del Owner:** «Sonda neutra, luego K (Recomendado)».
+
+**La sonda neutra** `F4-ENVIRONMENT/probe-R20261119T154313Z-2a9a` da **Pass**:
+- binario acreditado `4F91AE86…`, gpt-6-luna / high efectivos, solo lectura, `approval_policy` never y CLI 0.167.0-alpha.3.2;
+- frente a la referencia, la planificación `R20261119T065628Z-7de7` (Snapshot J, mismo binario), el contexto efectivo solo difiere en `root_turn_id`;
+- el repositorio y `config.toml` no cambiaron durante la sonda.
+
+**Resultado:** la **Snapshot K** (`E1F69847610FD810D5286B82C86E00FE85D9F497F89E9FD9645E0EEA113322FE`) sustituye a la J como línea base activa del Controller en I-64. Su registro está en `F4-ENVIRONMENT/snapshot-K/snapshot-k.json`.
+- La comprobación de config de la cadena la admite.
+- La planificación de PB-T2b se lanzó con una preparación nueva, `69c3`.
+- El registro y esta decisión se custodian con el cierre de PB-T2b, y no antes, porque la base de su cadena tenía que seguir siendo su emisión.
+- El contrato de PB-T2b se emitió con «today Snapshot J». Su frase operativa, «the accepted Snapshot in force», es la K desde esta decisión, y su verificación lo recibió así.
+- La v2.9 de PB-T2c ya nombra la K (V29-06).
+
+## F4B-E38. Cierre de F4B-PBT2B-WORKSPACE-MODE-WINDOW, con las decisiones del Owner sobre nc1 y OWNER-01
+
+**Paquete de cierre:** `F4B-PBT2B-WORKSPACE-MODE-WINDOW/task-close-package.md`.
+
+**La cadena:**
+- **Emisión** (F4B-E36): con el paquete de PB-T2 v2.8, X `a12ea09a` y BASE `59839c71`.
+- **Planificación:**
+  - **La preparación `3194`** paró por P-01 sin lanzarse. Llevó a la Snapshot K (F4B-E37).
+  - **La planificación `69c3`** se aceptó al primer lanzamiento: fidelidad 8/8 (`session-inject`), A1-A8 8/8, nc4 `2540` (A3 fail, oráculo cumplido) y 19 criterios.
+  - **Incidencia de la sesión:** ejecutó por error la comparación sobre la salida cruda, que sobrescribió la copia de `byte-fidelity-check.json`. Se restauró byte a byte desde `session-inject`.
+- **El Worker `1a87`** (sonnet/high) dio IMPLEMENTATION_COMPLETE:
+  - **el RED `a3b86134`:** la costura inerte en W, el archivo del modo y las seis clases;
+  - **la primera reparación del RED de F4B, `6bc3497f`** (RR, F4B-E35). Añade un `Sta(() => { });` antes de cada `EditorDiscardPrompt.Substitute`, porque el primer `Sta` del proceso instalaba su aviso permanente y pisaba el de la prueba. Solo hay líneas añadidas en dos clases que añadió el RED, y no cambia ninguna línea esperada;
+  - **el GREEN `03b16c88`:** solo W.
+
+**CI:**
+- RED `44572405777` y RED reparado `44581043462`: tests y ui-tests en failure, build-ui en success y build-plugin omitido. Fallan solo CT-PBT2B-08 en Core y CT-PBT2B-01 a 07 en UI, por aserción.
+- GREEN `44586045707`: 4/4, con Core 19 094 y UI 2 447 (2 426 pasadas y 21 omitidas), como se preveía.
+
+**Revisiones:**
+- **La directa:** sin hallazgos.
+- **La independiente:** ACEPTABLE CON MENORES 0/0/6, con un hallazgo OWNER.
+  - Las cinco corridas de diagnóstico del Worker, con la instrumentación temporal revertida, cumplen 16.8, RR y la limpieza del árbol. Solo incumplen el régimen de las corridas temporales (M-03, menor).
+  - Las menores van a `docs/ideas-futuras.md`.
+
+**Verificación** `R20261119T182732Z-422f`: **EXECUTION_VERIFIED** 14/14 al primer lanzamiento, la primera con una reparación del RED.
+- La comprobación n.º 10 acredita el RED con `RedSha` y mira RT desde `RedRepairSha`.
+- La n.º 11 encuentra el trailer en los tres commits.
+- `rr_check` da PASS: RR-1, RR-2, RR-6, la comprobación n.º 10 desde la reparación y la lista cerrada byte a byte (M-05 y M-06 de la §12 de CA-T2b, aplicados en la cadena).
+
+**Tabla de comparación de nc1** (PBT2B-C11), frente a la verificación real `422f` (EXECUTION_VERIFIED / NONE, 14/14 en pass). Solo se listan las que difieren:
+
+| Control | Resultado | Primera en fail | En fail | Paradas | Firma |
+|---|---|---|---|---|---|
+| nc1 `R20261119T183134Z-bfda` (`CurrentSha` falso `deadbeef…` en la entrega) | EXECUTION_BLOCKED / STOP | StopCondition | Identity, Remote, Ci, Tests y Trailer | S-04 | **No es PD-F4-04:** Handoff pasa; Remote, Tests y Trailer fallan además. Tests y Trailer, también por leer mal `Worker.Trailer` y `RedRepairSha` en `Deviations`, que la entrega trae bien |
+| nc2 `R20261119T183325Z-14dd` | CONTROL PASS (Scope, STOP) | — | — | — | — |
+| nc3 `R20261119T183456Z-a3bc` | CONTROL PASS (FreeText, REWORK) | — | — | — | — |
+
+**Decisiones del Owner** (`F4B-DRAFTS/coordinator/owner-pbt2b-close-decisions.md`, literales):
+- **nc1:** «Aceptarlo solo esta vez (Recomendado)». Queda `nc1 = SATISFIED_BY_OWNER_DISPOSITION`, solo para PB-T2b, intento 1. Es la tercera variación de nc1 en F4B, tras PB-TC (F4B-E08) y PB-T2a (F4B-E34). Las firmas no cambian.
+- **OWNER-01:** «Corregir en PB-T4 (Recomendado)». Si al cerrar hay a la vez un módulo escenificado y cambios sin aplicar al borrador, «Cerrar» solo hace la pregunta del módulo (el código literal de D-PBT2-07). El arrastre **A-T2b-OWNER-01** va a PB-T4: allí «Cerrar» hará una sola pregunta que nombre las dos cosas, con su prueba.
+
+**Controles:** nc1 por disposición del Owner, solo esta vez; nc2 y nc3, CONTROL PASS. La coincidencia «limit reached» de los relevos es el texto de S-11 del README.
+
+**Resultado:** **F4B-PBT2B-WORKSPACE-MODE-WINDOW = CLOSED / PASS WITH LIMITATIONS** sobre `03b16c88`, con attempts 1 de 3 y una reparación del RED.
+- La ventana de Push Back tiene dos modos explícitos. CLASSIC no cambia de forma observable. WORKSPACE solo se obtiene por `ForDraft`: carga una copia del borrador, «Aplicar al borrador» devuelve una copia por el puerto de PB-T2a y no cierra, y «Insertar» y el lote se rechazan.
+- BOM y biblioteca siguen, con sus dos costuras.
+
+**Siguiente:** la emisión de PB-T2c con el paquete de PB-T2 v2.9, tras la remedición sobre este cierre y su recomprobación final (la §13 de CA-T2c), por F4B-E28 (pregunta 4).

@@ -1,0 +1,51 @@
+{
+  "Control": "nc3",
+  "RunId": "R20261119T183456Z-a3bc",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "MutatedCheck": {
+    "FreeText": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "fail",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "FreeText"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "FreeText",
+    "FailureClass": "FreeText",
+    "Classification": "EXECUTION_REWORK_REQUIRED",
+    "Disposition": "REWORK",
+    "LaterChecksMustMatch": true
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "FreeText": "Script de lectura completa de los siete campos de texto libre y los terminos de AUTOMATION_PLAN 16.10: WorkCompleted tiene 5422 caracteres y una coincidencia completa, sin distincion de mayusculas, al final del campo, inmediatamente despues del resultado N-PBT2-01a. Los otros campos tienen 0 coincidencias."
+  },
+  "OutputSha256": "835D0FD9CCC1D89DB8168C8223E77AC79928711CE7A70A2E1834756705F10923",
+  "ManualFreeText1610": []
+}

@@ -1,0 +1,69 @@
+INV-PBT2B-01 rutas dentro del alcance: OK cambiadas=8 fuera=[]
+INV-PBT2B-01 en src/ solo W y el archivo del modo: OK ['src/RackCad.UI/Systems/PushBack/PushBackEditorMode.cs', 'src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs']
+INV-PBT2B-01 vacio git diff de WX, WC, Application, Domain, Plugin, Editor, Controls, Workspace y Shell: OK
+INV-PBT2B-03 hunks de W (-U0):
+  @@ -86,0 +87,3  insercion entre miembros que declara ['mode']  declara=['mode']
+  @@ -91,0 +95,1  insercion entre miembros que declara ['draftPort']  declara=['draftPort']
+  @@ -92,0 +97,1  insercion entre miembros que declara ['appliedState']  declara=['appliedState']
+  @@ -162,0 +168,24  insercion entre miembros que declara ['RackPushBackSystemWindow']  declara=['RackPushBackSystemWindow']
+  @@ -168,0 +198,1  insercion entre miembros que declara ['ModeForTest']  declara=['ModeForTest']
+  @@ -265,0 +296,5  insercion entre miembros que declara ['ForDraft']  declara=['ForDraft']
+  @@ -272,0 +308,1  en LoadNew  declara=[]
+  @@ -293,0 +330,1  en LoadDesignForNew  declara=[]
+  @@ -309,0 +347,1  en LoadExisting  declara=[]
+  @@ -3215,1 +3253,30  en Update_Click  declara=['Update_Click', 'ApplyToDraft']
+  @@ -3218,0 +3286,2  en InsertBatch_Click  declara=[]
+  @@ -3246,0 +3316,7  insercion entre miembros que declara ['RefuseInWorkspace']  declara=['RefuseInWorkspace']
+  @@ -3248,0 +3325,2  en RequestDraw  declara=[]
+  @@ -3270,18 +3348,1  en RequestDraw  declara=[]
+  @@ -3305,0 +3367,24  insercion entre miembros que declara ['ApplyEditsToEditingState']  declara=['ApplyEditsToEditingState']
+  @@ -3342,3 +3427,29  en PendingWork  declara=['PendingWork', 'HasUnappliedDraftChanges', 'WorkspaceApplyLabel', 'WorkspaceApplyToolTip', 'WorkspaceApplyBlockedToolTip', 'WorkspaceRefusalMessage', 'WorkspaceLoadRefusalMessage', 'WorkspaceInvalidMessage', 'WorkspaceBlockedMessage', 'WorkspaceNothingToApplyMessage', 'WorkspaceAppliedMessage', 'WorkspaceNotEditableMessage', 'WorkspaceUnappliedQuestion']
+  @@ -3347,0 +3459,2  insercion entre miembros que declara ['BomDialog']  declara=['BomDialog']
+  @@ -3362,0 +3476,6  en Bom_Click  declara=[]
+  @@ -3365,0 +3485,2  insercion entre miembros que declara ['LibraryPathDialog']  declara=['LibraryPathDialog']
+  @@ -3383,1 +3504,3  en SaveLibrary_Click  declara=[]
+  @@ -3495,0 +3619,7  en UpdateButtons  declara=[]
+  @@ -3499,0 +3630,13  insercion entre miembros que declara ['ApplyModeChrome']  declara=['ApplyModeChrome']
+INV-PBT2B-03 cada hunk cae en un miembro de la lista o es una insercion entre miembros de una sola declaracion: OK hunks=22
+INV-PBT2B-04 testigo S-7: OK
+INV-PBT2B-04 testigo S-9: OK
+INV-PBT2B-04 testigo pregunta del modulo: OK
+INV-PBT2B-04 testigo rechazo invalido: OK
+INV-PBT2B-04 testigo rechazo bloqueado: OK
+INV-PBT2B-04 las cinco sentencias de CT-22 en su orden: OK [945, 1092, 1137, 1451, 1568]
+INV-PBT2B-04 literales de CT-23 (confirmacion antes del dialogo y sin canInsertInAutoCad ni Close() antes de la guarda): OK
+INV-PBT2B-04 firma publica 1 sin cambio: OK
+INV-PBT2B-04 firma publica 2 sin cambio: OK
+INV-PBT2B-04 una sola .RequestUpdate( en W: OK
+INV-PBT2B-04 constante WorkspaceApplyLabel una vez y con su testigo: OK
+INV-PBT2B-04 constante WorkspaceApplyToolTip una vez y con su testigo: OK
+INV-PBT2B-04 constante WorkspaceApplyBlockedToolTip una vez y con su testigo: OK
+INV-PBT2B-04 constante WorkspaceRefusalMessage una vez y con su testigo: OK
+INV-PBT2B-04 constante WorkspaceLoadRefusalMessage una vez y con su testigo: OK
+INV-PBT2B-04 constante WorkspaceInvalidMessage una vez y con su testigo: OK
+INV-PBT2B-04 constante WorkspaceBlockedMessage una vez y con su testigo: OK
+INV-PBT2B-04 constante WorkspaceNothingToApplyMessage una vez y con su testigo: OK
+INV-PBT2B-04 constante WorkspaceAppliedMessage una vez y con su testigo: OK
+INV-PBT2B-04 constante WorkspaceNotEditableMessage una vez y con su testigo: OK
+INV-PBT2B-04 constante WorkspaceUnappliedQuestion una vez y con su testigo: OK
+INV-PBT2B-04 ninguna linea anadida con forceRebuild: OK []
+INV-PBT2B-04 ninguna linea anadida con KeyDown: OK []
+INV-PBT2B-04 ninguna linea anadida con PreviewKeyDown: OK []
+INV-PBT2B-04 ninguna linea anadida con InputBindings: OK []
+INV-PBT2B-04 ninguna linea anadida con KeyBinding: OK []
+INV-PBT2B-04 ninguna linea anadida con TabIndex: OK []
+INV-PBT2B-04 ninguna linea anadida con IsTabStop: OK []
+INV-PBT2B-04 ninguna linea anadida con KeyboardNavigation: OK []
+INV-PBT2B-04 ninguna linea anadida con .Focus(: OK []
+INV-PBT2B-04 ninguna linea anadida con DialogResult: OK []
+INV-PBT2B-04 ninguna linea con SetNumber( anadida ni quitada: OK []
+INV-PBT2B-04 LoadFromModel sin cambio: OK
+INV-PBT2B-04 ReadInputs sin cambio: OK
+INV-PBT2B-04 OnClosing sin cambio: OK
+INV-PBT2B-04 Recompute sin cambio: OK
+INV-PBT2B-04 el archivo del modo solo declara el enum: OK
+PBT2B-C13 toda declaracion nueva de W esta en la lista cerrada: OK nuevas=['ApplyEditsToEditingState', 'ApplyModeChrome', 'ApplyToDraft', 'BomDialog', 'ForDraft', 'HasUnappliedDraftChanges', 'LibraryPathDialog', 'ModeForTest', 'RefuseInWorkspace', 'WorkspaceAppliedMessage', 'WorkspaceApplyBlockedToolTip', 'WorkspaceApplyLabel', 'WorkspaceApplyToolTip', 'WorkspaceBlockedMessage', 'WorkspaceInvalidMessage', 'WorkspaceLoadRefusalMessage', 'WorkspaceNotEditableMessage', 'WorkspaceNothingToApplyMessage', 'WorkspaceRefusalMessage', 'WorkspaceUnappliedQuestion', 'appliedState', 'draftPort', 'mode'] sin lista=[]
+PBT2B-C13 el unico constructor nuevo es el privado de PushBackDraftEditorLaunch: OK [('public ', ''), ('public ', 'bool canInsertInAutoCad, Func<string> newIdFactory = null'), ('private ', 'PushBackDraftEditorLaunch launch')]
+INV-PBT2B-06 las costuras de hoy siguen y solo se anaden ModeForTest, BomDialog y LibraryPathDialog: OK base=27 nuevas=['BomDialog', 'LibraryPathDialog', 'ModeForTest']
+INV-PBT2B-07c/14 ninguna linea anadida toca un token de G-L1 ni asigna un Name: OK []
+RESULTADO GLOBAL: OK

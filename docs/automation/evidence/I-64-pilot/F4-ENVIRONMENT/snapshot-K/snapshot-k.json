@@ -1,0 +1,329 @@
+{
+  "Schema": "rackcad-i64-config-snapshot/v1",
+  "Snapshot": "K",
+  "AcceptedUtc": "2026-11-19T15:44:33Z",
+  "Authority": "decision del Owner (2026-11-19), respuesta literal: Sonda neutra, luego K (Recomendado); F4B-DRAFTS/coordinator/owner-config-snapshot-k-decision.md",
+  "ConfigSha256": "E1F69847610FD810D5286B82C86E00FE85D9F497F89E9FD9645E0EEA113322FE",
+  "ReplacesSnapshot": {
+    "J": "57B0FED688317D347BCC726F99549BDE6AC9EC108D6E2CCBA10A9D71F233F961"
+  },
+  "OrderedNamesSha256": "EB8775C5F9B3CC5C15031ED064391FFE000AB4A7220360C04F2F89D83D49F820",
+  "NameCount": 104,
+  "FlatValueCount": 68,
+  "KeysAddedVsJ": [],
+  "KeysRemovedVsJ": [],
+  "ChangedValuesVsJ": [
+    "mcp_servers.node_repl.env.BROWSER_USE_CODEX_APP_VERSION",
+    "mcp_servers.node_repl.env.NODE_REPL_TRUSTED_SERVICES"
+  ],
+  "ComparedWith": "inventario seguro de la Snapshot J (el unico valor redactado es mcp_servers.node_repl.env.SKY_CUA_NATIVE_PIPE_DIRECTORY)",
+  "AppVersionTransition": "BROWSER_USE_CODEX_APP_VERSION 26.1111.21308 (J) -> 26.1111.71704 (K), actualizacion de la app de Codex del 2026-11-19 (config.toml escrito 14:05Z)",
+  "SafeSemanticInventory": [
+    {
+      "Key": "model",
+      "Value": "gpt-5.6-sol"
+    },
+    {
+      "Key": "model_reasoning_effort",
+      "Value": "medium"
+    },
+    {
+      "Key": "service_tier",
+      "Value": "priority"
+    },
+    {
+      "Key": "notify",
+      "Value": [
+        "<app-install>\\app\\resources\\cua_node\\bin\\node_modules\\@oai\\sky\\bin\\windows\\codex-computer-use.exe",
+        "turn-ended"
+      ]
+    },
+    {
+      "Key": "windows.sandbox",
+      "Value": "unelevated"
+    },
+    {
+      "Key": "desktop.keepRemoteControlAwakeWhilePluggedIn",
+      "Value": true
+    },
+    {
+      "Key": "desktop.reviewDelivery",
+      "Value": "inline"
+    },
+    {
+      "Key": "desktop.conversationDetailMode",
+      "Value": "STEPS_PROSE"
+    },
+    {
+      "Key": "desktop.ambient-suggestions-enabled",
+      "Value": true
+    },
+    {
+      "Key": "desktop.migratedFollowUpQueueToSteer",
+      "Value": true
+    },
+    {
+      "Key": "desktop.open-in-target-preferences.global",
+      "Value": "vscode"
+    },
+    {
+      "Key": "desktop.open-in-target-preferences.perPath.<project-path>",
+      "Value": "vscode"
+    },
+    {
+      "Key": "desktop.open-in-target-preferences.perPath.<project-path>",
+      "Value": "vscode"
+    },
+    {
+      "Key": "marketplaces.openai-bundled.source_type",
+      "Value": "local"
+    },
+    {
+      "Key": "marketplaces.openai-bundled.source",
+      "Value": "\\\\?\\<USERPROFILE>\\.codex\\.tmp\\bundled-marketplaces\\openai-bundled"
+    },
+    {
+      "Key": "marketplaces.openai-primary-runtime.source_type",
+      "Value": "local"
+    },
+    {
+      "Key": "marketplaces.openai-primary-runtime.source",
+      "Value": "\\\\?\\<USERPROFILE>\\.cache\\codex-runtimes\\codex-primary-runtime\\plugins\\openai-primary-runtime"
+    },
+    {
+      "Key": "plugins.documents@openai-primary-runtime.enabled",
+      "Value": true
+    },
+    {
+      "Key": "plugins.spreadsheets@openai-primary-runtime.enabled",
+      "Value": true
+    },
+    {
+      "Key": "plugins.presentations@openai-primary-runtime.enabled",
+      "Value": true
+    },
+    {
+      "Key": "plugins.outlook-email@openai-curated.enabled",
+      "Value": true
+    },
+    {
+      "Key": "plugins.github@openai-curated.enabled",
+      "Value": true
+    },
+    {
+      "Key": "plugins.pdf@openai-primary-runtime.enabled",
+      "Value": true
+    },
+    {
+      "Key": "plugins.template-creator@openai-primary-runtime.enabled",
+      "Value": true
+    },
+    {
+      "Key": "plugins.visualize@openai-bundled.enabled",
+      "Value": true
+    },
+    {
+      "Key": "plugins.chrome@openai-bundled.enabled",
+      "Value": true
+    },
+    {
+      "Key": "plugins.browser@openai-bundled.enabled",
+      "Value": true
+    },
+    {
+      "Key": "plugins.outlook-calendar@openai-curated.enabled",
+      "Value": true
+    },
+    {
+      "Key": "plugins.teams@openai-curated.enabled",
+      "Value": true
+    },
+    {
+      "Key": "plugins.codex-app-tools@openai-bundled.enabled",
+      "Value": true
+    },
+    {
+      "Key": "plugins.unified-computer-use@openai-bundled.enabled",
+      "Value": true
+    },
+    {
+      "Key": "plugins.computer-use@openai-bundled.enabled",
+      "Value": true
+    },
+    {
+      "Key": "features.js_repl",
+      "Value": false
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Value": "trusted"
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Value": "trusted"
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Value": "trusted"
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Value": "trusted"
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Value": "trusted"
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Value": "trusted"
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Value": "trusted"
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Value": "trusted"
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Value": "trusted"
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Value": "trusted"
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Value": "trusted"
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Value": "trusted"
+    },
+    {
+      "Key": "mcp_servers.node_repl.args",
+      "Value": []
+    },
+    {
+      "Key": "mcp_servers.node_repl.command",
+      "Value": "<app-install>\\app\\resources\\cua_node\\bin\\node_repl.exe"
+    },
+    {
+      "Key": "mcp_servers.node_repl.env_vars",
+      "Value": [
+        "BROWSER_USE_ACCESS_EXECUTOR_ID",
+        "BROWSER_USE_ACCESS_PIPE_PATH",
+        "BROWSER_USE_ACCESS_VERIFYING_IDENTITY",
+        "CODEX_WINDOWS_REGISTERED_CORE"
+      ]
+    },
+    {
+      "Key": "mcp_servers.node_repl.startup_timeout_sec",
+      "Value": 120
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS",
+      "Value": "1000"
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.NODE_REPL_NODE_MODULE_DIRS",
+      "Value": "<app-install>\\app\\resources\\cua_node\\bin\\node_modules"
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.NODE_REPL_NODE_PATH",
+      "Value": "<app-install>\\app\\resources\\cua_node\\bin\\node.exe"
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.NODE_REPL_TRUSTED_CODE_PATHS",
+      "Value": "<USERPROFILE>\\.codex;<app-install>\\app\\resources\\cua_node\\bin\\node_modules"
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.CODEX_HOME",
+      "Value": "<USERPROFILE>\\.codex"
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.BROWSER_USE_AVAILABLE_BACKENDS",
+      "Value": "chrome,iab,mcpapps"
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.BROWSER_USE_TINYSKY_ENABLED",
+      "Value": "1"
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER",
+      "Value": ""
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME",
+      "Value": ""
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.BROWSER_USE_CODEX_APP_BUILD_FLAVOR",
+      "Value": "prod"
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.BROWSER_USE_CODEX_APP_VERSION",
+      "Value": "26.1111.71704"
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.NODE_REPL_TRUSTED_SERVICES",
+      "Value": "{\"browser\":\"<USERPROFILE>/.codex/plugins/cache/openai-bundled/browser/26.1111.71704/scripts/browser-service.mjs\",\"sky\":\"@oai/sky/service\"}"
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.SKY_CUA_NATIVE_PIPE",
+      "Value": "1"
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.SKY_CUA_NATIVE_PIPE_DIRECTORY",
+      "Value": "<REDACTED: opaque id>"
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.CODEX_CLI_PATH",
+      "Value": "<app-install>\\app\\resources\\codex.exe"
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.NODE_REPL_UNTRUSTED_ENV_ALLOWLIST",
+      "Value": "CODEX_WINDOWS_REGISTERED_CORE"
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE",
+      "Value": ""
+    },
+    {
+      "Key": "shell_environment_policy.set.NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S",
+      "Value": "8e172ec9f458f2e636fc69a1b8c68c217f6bb8d10c41f70a05a0878b73863701"
+    },
+    {
+      "Key": "tui.screen_reader_detection_done",
+      "Value": true
+    }
+  ],
+  "NeutralProbe": {
+    "RunId": "R20261119T154313Z-2a9a",
+    "Pass": true,
+    "Effective": [
+      "gpt-6-luna",
+      "high"
+    ],
+    "Sandbox": {
+      "type": "read-only"
+    },
+    "ApprovalPolicy": "never",
+    "CliVersion": "0.167.0-alpha.3.2",
+    "TurnContextDifferencesVsSnapshotJRun7de7": [
+      "root_turn_id"
+    ],
+    "SessionMetaKeysDiffer": [],
+    "LimitPatternContexts": {},
+    "RepositoryUnchanged": true,
+    "ConfigUnchangedDuringProbe": true,
+    "AccreditedBinarySha256": "4F91AE86895FF124760D70ED1630E2354CA874765C9BB61AE524B600327EFC17",
+    "OutputSha256": "161D6675340FCF7F489E2884282833068BAFD8A7237DE5B8A428619C6D64BCBB",
+    "EventsSha256": "C9DE0CCDE967D1A4B2AA3B3F5C82C08669892422564A9583D1620B541F48C1D0",
+    "EffectiveSourceSha256": "85E9308ACEABDC0CBCD10F8E1DCB03BF5AA2C951D65E82D477E53E740B42C1FB",
+    "Note": "comparacion del contexto efectivo con la planificacion 7de7 de la correccion de PB-T2a (Snapshot J, mismo binario, 2026-11-19)"
+  },
+  "Decision": "Snapshot K aceptada si y solo si NeutralProbe.Pass es true, por la decision del Owner; sustituye a J como linea base activa del Controller en I-64"
+}

@@ -1,0 +1,19 @@
+{
+  "Decision": "F4B-E21 (Owner: «La sesion copia; resto de F4B (Recomendado)»)",
+  "RunId": "R20261119T154505Z-69c3",
+  "OutputSha256": "3323C2BDBEF31E56F14C21FE3A261B72263FFD6F175C1BAEB5BC54F95BB3BD6C",
+  "ContractSha256": "E46F8B650A374B52E39C21CA988A4A64768D38AE7C074481FC6B3551240AD89E",
+  "DelegationSha256": "6396E45C6399C2813ED83064095F5869CC4FDEC51520342F3EAD84DB623A14F6",
+  "Injected": [
+    "Authorities",
+    "Objective",
+    "AllowedWriteScope",
+    "ForbiddenWriteScope",
+    "Invariants",
+    "RequiredTests",
+    "ExpectedEvidence",
+    "StopConditions"
+  ],
+  "NonEmptyInControllerOutput": [],
+  "Fidelity": "PASS sobre delegation.json (session-inject/byte-fidelity-check.json)"
+}

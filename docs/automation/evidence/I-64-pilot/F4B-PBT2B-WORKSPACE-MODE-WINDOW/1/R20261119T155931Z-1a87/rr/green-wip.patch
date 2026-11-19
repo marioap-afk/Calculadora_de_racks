@@ -1,0 +1,310 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index ae29f74a..da66eba0 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -84,12 +84,17 @@ namespace RackCad.UI.Systems.PushBack
+         private List<SelectiveSafetySelection> safetySelections => editable.SafetySelections;
+         private readonly bool canInsertInAutoCad;
+ 
++        /// <summary>I-64 F4B PB-T2b (D-PBT2-04) - el modo de la ventana. <c>Classic</c> por defecto; solo lo asigna, una vez, el constructor de WORKSPACE.</summary>
++        private readonly PushBackEditorMode mode;
++
+         private bool isEditingExisting;
+         private bool suppressSync;
+         private bool hasValidModel;          // ever produced a valid model (a preview reference exists)
+         private bool currentInputsAreValid;  // the CURRENT controls recomputed to a valid model
+         private RackProject sourceProject;
++        private readonly IPushBackDraftStatePort draftPort; // WORKSPACE: the only channel to the draft (D-PBT2-05)
+         private PushBackEditorComputation lastComputation; // the LAST VALID computation (only replaced on a valid build)
++        private PushBackEditableState appliedState; // WORKSPACE: the state last applied to the draft (W0 at the start)
+ 
+         /// <summary>
+         /// PB-013 (I-32): the RACK-WIDE pallet. Only its Fondo and Unidad are edited in this window (the two boxes that
+@@ -160,13 +165,37 @@ namespace RackCad.UI.Systems.PushBack
+             LoadNew();
+         }
+ 
++        /// <summary>
++        /// I-64 F4B PB-T2b (D-PBT2-05) - la ventana de WORKSPACE: carga una COPIA del estado del borrador, sin pasar por un diseno.
++        /// La ventana que devuelve no se muestra y no tiene dueno: los pone el host. Solo se llega aqui por <see cref="ForDraft"/>.
++        /// </summary>
++        private RackPushBackSystemWindow(PushBackDraftEditorLaunch launch)
++            : this(canInsertInAutoCad: false)
++        {
++            mode = PushBackEditorMode.Workspace;
++            draftPort = launch.Port;
++            editable = PushBackEditableStateComparer.Copy(launch.State);   // el editor, la cola, la autoridad de modulos y los portadores
++            var inputs = editable.BuildInputs(assembler);                  // lo que la carga clasica habria adoptado
++            UpdateCompositeEnabled();                                      // el sitio de LoadExisting
++            sourceProject = launch.SourceProject;
++            isEditingExisting = true;
++            session.Identity.Adopt(launch.RackId, editable.Name);
++            SyncName();
++            lastComputation = null;                                        // nada del LoadNew encadenado llega al borrador
++            hasValidModel = false;
++            session.SetModel(null, null);
++            LoadFromModel(inputs, editable.Name);
++            appliedState = PushBackEditableStateComparer.Copy(editable);   // W0: la referencia de «sin aplicar»
++            ApplyModeChrome();
++        }
++
+         // ---- Test seams (internal) --------------------------------------------------------------------------------
+ 
+         internal RackEditorSession<PushBackDesign, PushBackSystem> Session => session;
+         internal PushBackEditorState State => state;
+         internal PushBackEditorDesignAssembler Assembler => assembler;
+         internal PushBackEditableState EditableStateForTest => editable;
+-        internal PushBackEditorMode ModeForTest => PushBackEditorMode.Classic;
++        internal PushBackEditorMode ModeForTest => mode;
+ 
+         /// <summary>The plan currently drawn in the preview (the selected view/corte). For the lateral view this is the
+         /// SELECTED corte's plan, so changing "Corte 1"→"Corte 2" changes what the preview shows.</summary>
+@@ -264,7 +293,11 @@ namespace RackCad.UI.Systems.PushBack
+         public RackInsertionRequest InsertionRequest => session.InsertionRequest;
+         public PushBackSystem SystemToInsert => (session.InsertionRequest as PushBackInsertionRequest)?.System;
+         public PushBackDesign DesignToInsert => (session.InsertionRequest as PushBackInsertionRequest)?.Design;
+-        public static RackPushBackSystemWindow ForDraft(PushBackDraftEditorLaunch launch) => new RackPushBackSystemWindow(canInsertInAutoCad: false);
++        public static RackPushBackSystemWindow ForDraft(PushBackDraftEditorLaunch launch)
++        {
++            if (launch == null) throw new ArgumentNullException(nameof(launch));
++            return new RackPushBackSystemWindow(launch);
++        }
+ 
+         // ---- Public load paths ------------------------------------------------------------------------------------
+ 
+@@ -272,6 +305,7 @@ namespace RackCad.UI.Systems.PushBack
+         /// standard modular baseline. No identity is forced until insert; only "Insertar" is offered (no "Actualizar").</summary>
+         public void LoadNew()
+         {
++            if (mode == PushBackEditorMode.Workspace) throw new InvalidOperationException(WorkspaceLoadRefusalMessage);
+             // I-42: un rack nuevo nace de UN solo sentido, como siempre. El lado B se declara despues, si se quiere.
+             var inputs = editable.LoadNewEditor();
+             sourceProject = null;
+@@ -293,6 +327,7 @@ namespace RackCad.UI.Systems.PushBack
+         /// only, no update.</summary>
+         public void LoadDesignForNew(PushBackDesign design, string rackName, RackProject sourceProject = null)
+         {
++            if (mode == PushBackEditorMode.Workspace) throw new InvalidOperationException(WorkspaceLoadRefusalMessage);
+             if (design == null) return;
+             // I-42: primero el lado A, por el camino de siempre, y luego la parte compuesta. Un documento
+             // anterior a I-42 no trae ninguna, asi que el rack se abre como el de un solo sentido que es.
+@@ -309,6 +344,7 @@ namespace RackCad.UI.Systems.PushBack
+         /// "Actualizar" and also allows requesting an additional linked view.</summary>
+         public void LoadExisting(PushBackDesign design, string rackId, string rackName, RackProject sourceProject = null)
+         {
++            if (mode == PushBackEditorMode.Workspace) throw new InvalidOperationException(WorkspaceLoadRefusalMessage);
+             if (design == null) return;
+             // I-42: primero el lado A, por el camino de siempre, y luego la parte compuesta. Un documento
+             // anterior a I-42 no trae ninguna, asi que el rack se abre como el de un solo sentido que es.
+@@ -3214,10 +3250,41 @@ namespace RackCad.UI.Systems.PushBack
+             SetStatus("Valores restaurados al último sistema válido.", false);
+         }
+ 
+-        private void Update_Click(object sender, RoutedEventArgs e) => RequestDraw(null, -1, updateOnly: true);
++        private void Update_Click(object sender, RoutedEventArgs e)
++        {
++            if (mode == PushBackEditorMode.Workspace)
++            {
++                ApplyToDraft();
++                return;
++            }
++
++            RequestDraw(null, -1, updateOnly: true);
++        }
++
++        private void ApplyToDraft()
++        {
++            if (!ApplyEditsToEditingState(WorkspaceInvalidMessage, WorkspaceBlockedMessage)) return;
++            if (!HasUnappliedDraftChanges())
++            {
++                SetStatus(WorkspaceNothingToApplyMessage, false);
++                return;
++            }
++
++            var result = draftPort.ApplyToDraft(PushBackEditableStateComparer.Copy(editable));
++            if (result.Status != PushBackDraftApplyStatus.Applied)
++            {
++                SetStatus(WorkspaceNotEditableMessage, true);
++                return;
++            }
++
++            appliedState = PushBackEditableStateComparer.Copy(editable);
++            SetStatus(WorkspaceAppliedMessage, false);
++        }
+ 
+         private void InsertBatch_Click(object sender, RoutedEventArgs e)
+         {
++            if (RefuseInWorkspace()) return;
++
+             if (moduleOwner.ModuleSession.HasPendingChanges) moduleOwner.CommitModuleEdits();
+             RequestRecompute();
+             if (!currentInputsAreValid || lastComputation?.System == null
+@@ -3246,8 +3313,17 @@ namespace RackCad.UI.Systems.PushBack
+             Close();
+         }
+ 
++        private bool RefuseInWorkspace()
++        {
++            if (mode != PushBackEditorMode.Workspace) return false;
++            SetStatus(WorkspaceRefusalMessage, true);
++            return true;
++        }
++
+         private void RequestDraw(string view, int section, bool updateOnly)
+         {
++            if (RefuseInWorkspace()) return;
++
+             if (!canInsertInAutoCad)
+             {
+                 SetStatus("El dibujo en AutoCAD solo está disponible cuando la ventana se abre desde AutoCAD.", true);
+@@ -3269,24 +3345,7 @@ namespace RackCad.UI.Systems.PushBack
+             // Pulsar Actualizar o Insertar es aplicar lo que el panel muestra: se confirma primero. La transaccion
+             // de I-35 no se debilita —«Cancelar» sigue siendo el UNICO descarte—, deja de haber un camino que
+             // descarta sin decirlo.
+-            if (moduleOwner.ModuleSession.HasPendingChanges)
+-            {
+-                moduleOwner.CommitModuleEdits();
+-            }
+-
+-            RequestRecompute(); // synchronous validate + build
+-            if (!currentInputsAreValid || session.System == null)
+-            {
+-                SetStatus("Corrige los datos: no se puede insertar un modelo inválido.", true);
+-                return; // never fall back to the previous valid model
+-            }
+-
+-            // I-42 (A3-GATE) — el recalculo de ARRIBA acaba de confirmar la edicion escenificada y de rehacer el
+-            // sistema: el veredicto de salida que vale es el de AHORA, no el que habia cuando el usuario pulso.
+-            if (OutputBlockedAfterRecompute("Corrige los datos: no se puede dibujar un modelo bloqueado."))
+-            {
+-                return;
+-            }
++            if (!ApplyEditsToEditingState("Corrige los datos: no se puede insertar un modelo inválido.", "Corrige los datos: no se puede dibujar un modelo bloqueado.")) return;
+ 
+             session.Identity.SetName(NameBox.Text?.Trim());
+             SyncName();
+@@ -3305,6 +3364,30 @@ namespace RackCad.UI.Systems.PushBack
+             Close();
+         }
+ 
++        /// <summary>
++        /// I-64 F4B PB-T2b (D-PBT2-06 (1)) - «aplicar al estado de edicion»: el paso que comparten «Actualizar» e «Insertar» (CLASSIC) y
++        /// «Aplicar al borrador» (WORKSPACE), extraido de <see cref="RequestDraw"/> sin cambiar su orden, sus textos ni su efecto:
++        /// confirma la edicion de modulo escenificada, recalcula, comprueba las entradas y, por ultimo, la compuerta de salida.
++        /// </summary>
++        private bool ApplyEditsToEditingState(string invalidMessage, string blockedFallback)
++        {
++            if (moduleOwner.ModuleSession.HasPendingChanges)
++            {
++                moduleOwner.CommitModuleEdits();
++            }
++
++            RequestRecompute(); // synchronous validate + build
++            if (!currentInputsAreValid || session.System == null)
++            {
++                SetStatus(invalidMessage, true);
++                return false; // never fall back to the previous valid model
++            }
++
++            // I-42 (A3-GATE) — el recalculo de ARRIBA acaba de confirmar la edicion escenificada y de rehacer el
++            // sistema: el veredicto de salida que vale es el de AHORA, no el que habia cuando el usuario pulso.
++            return !OutputBlockedAfterRecompute(blockedFallback);
++        }
++
+         private void Close_Click(object sender, RoutedEventArgs e) => Close();
+ 
+         /// <summary>
+@@ -3341,9 +3424,35 @@ namespace RackCad.UI.Systems.PushBack
+         /// apertura, que es el dirty global artificial que ADR-0029 D8 no quiere: el contrato dice que dirty
+         /// pertenece a un AMBITO y que «no aplicable» es un valor legitimo.</para>
+         /// </summary>
+-        internal EditorPendingWork PendingWork() => EditorPendingWork.When(
+-            moduleOwner.ModuleSession != null && moduleOwner.ModuleSession.HasPendingChanges,
+-            "Hay cambios de módulo sin confirmar que se perderán al cerrar. ¿Deseas continuar?");
++        internal EditorPendingWork PendingWork()
++        {
++            var modules = EditorPendingWork.When(
++                moduleOwner.ModuleSession != null && moduleOwner.ModuleSession.HasPendingChanges,
++                "Hay cambios de módulo sin confirmar que se perderán al cerrar. ¿Deseas continuar?");
++            return modules.HasPendingWork ? modules : EditorPendingWork.When(HasUnappliedDraftChanges(), WorkspaceUnappliedQuestion);
++        }
++
++        /// <summary>
++        /// I-64 F4B PB-T2b (D-PBT2-07) - solo en WORKSPACE: el estado editable difiere del ultimo aplicado al borrador. Es el segundo
++        /// ambito de <see cref="PendingWork"/>; la frontera la pone el borrador, y en CLASSIC es siempre <c>false</c>.
++        /// </summary>
++        private bool HasUnappliedDraftChanges()
++            => mode == PushBackEditorMode.Workspace && appliedState != null
++               && !PushBackEditableStateComparer.Instance.Equals(editable, appliedState);
++
++        // ---- WORKSPACE texts (D-PBT2-09) -------------------------------------------------------------------------
++
++        private const string WorkspaceApplyLabel = "Aplicar al borrador";
++        private const string WorkspaceApplyToolTip = "Guarda los cambios en el borrador. El dibujo cambia con «Actualizar» del panel.";
++        private const string WorkspaceApplyBlockedToolTip = "Corrige el diagnóstico bloqueante: el rack no puede pasar al borrador así.";
++        private const string WorkspaceRefusalMessage = "En el editor del borrador no se dibuja: aplica al borrador y actualiza desde el panel.";
++        private const string WorkspaceLoadRefusalMessage = "La ventana del borrador solo carga el estado del borrador.";
++        private const string WorkspaceInvalidMessage = "Corrige los datos: no se puede aplicar al borrador un modelo inválido.";
++        private const string WorkspaceBlockedMessage = "Corrige los datos: no se puede aplicar al borrador un modelo bloqueado.";
++        private const string WorkspaceNothingToApplyMessage = "No hay cambios que aplicar al borrador.";
++        private const string WorkspaceAppliedMessage = "Cambios aplicados al borrador. El dibujo cambia con «Actualizar» del panel.";
++        private const string WorkspaceNotEditableMessage = "El borrador no admite cambios ahora: cierra el editor y revisa el panel.";
++        private const string WorkspaceUnappliedQuestion = "Hay cambios sin aplicar al borrador que se perderán al cerrar. ¿Deseas continuar?";
+ 
+         // ---- BOM + library ---------------------------------------------------------------------------------------
+ 
+@@ -3364,6 +3473,12 @@ namespace RackCad.UI.Systems.PushBack
+                 return;
+             }
+ 
++            if (BomDialog != null)
++            {
++                BomDialog(lastComputation.Bom, this);
++                return;
++            }
++
+             new RackBomWindow(lastComputation.Bom) { Owner = this }.ShowDialog();
+         }
+ 
+@@ -3386,7 +3501,9 @@ namespace RackCad.UI.Systems.PushBack
+                 return;
+             }
+ 
+-            var path = UiSupport.PromptSaveToLibrary(this, NameBox.Text, "sistema");
++            var path = LibraryPathDialog != null
++                ? LibraryPathDialog(this, NameBox.Text)
++                : UiSupport.PromptSaveToLibrary(this, NameBox.Text, "sistema");
+             if (path == null) return;
+ 
+             try
+@@ -3499,10 +3616,30 @@ namespace RackCad.UI.Systems.PushBack
+             RestoreButton.ToolTip = lastComputation != null
+                 ? "Vuelve todos los valores al último sistema válido."
+                 : "Aún no hay un sistema válido que restaurar.";
++
++            if (mode == PushBackEditorMode.Workspace)
++            {
++                UpdateButton.IsEnabled = canOutput;
++                UpdateButton.ToolTip = outputIsBlocked ? WorkspaceApplyBlockedToolTip
++                    : currentInputsAreValid ? WorkspaceApplyToolTip : "Corrige los campos numéricos marcados.";
++            }
+         }
+ 
+         private void UpdateGuid() => GuidText.Text = session.Identity.HasId ? session.Identity.Id : "(se asigna al insertar)";
+ 
++        /// <summary>
++        /// I-64 F4B PB-T2b (D-PBT2-09) - solo en WORKSPACE, una vez, al final del constructor: el boton principal es «Aplicar al borrador»
++        /// y los de insercion no se muestran. En CLASSIC no cambia ningun rotulo.
++        /// </summary>
++        private void ApplyModeChrome()
++        {
++            UpdateButton.Content = WorkspaceApplyLabel;
++            foreach (var button in new[] { InsertButton, InsertLateralButton, InsertFrontalEntradaButton, InsertFrontalPosteriorButton, InsertPlantaButton, InsertBatchButton })
++            {
++                button.Visibility = Visibility.Collapsed;
++            }
++        }
++
+         private void SetStatus(string message, bool isError) => UiSupport.SetStatus(StatusText, message, isError);
+ 
+         private IReadOnlyList<BeamProfileCatalogEntry> InOutBeamOptions() => DynamicRackLevelGeometry.CompatibleInOutBeams(catalog);

@@ -1,0 +1,75 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT2B-WORKSPACE-MODE-WINDOW",
+  "RunId": "R20261119T182732Z-422f",
+  "DelegationRunId": "R20261119T154505Z-69c3",
+  "WorkRunId": "R20261119T155931Z-1a87",
+  "Attempt": 1,
+  "VerifiedSha": "03b16c88c01ebfd29a642fc6a9324eb76926bcba",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, ExitCode=0, DeathConfirmed=true; Cession.StartUtc=2026-11-19T15:59:41Z, OutputWrittenUtc=2026-11-19T18:25:21Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json is present; TaskId, RunId, DelegationRunId, Attempt and BaseSha match the delegation. OutputWrittenUtc follows Cession.StartUtc. CurrentSha is 03b16c88c01ebfd29a642fc6a9324eb76926bcba, Branch and Worktree match the delegated values."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor a12ea09a980e2ce84c4bbf0c5f49275f515c365a 59839c7148fa101c2f95e1f59b36e6b052216680 exited 0. git diff --name-only AuthorityRevision BaseSha returned four docs paths: docs/automation/evidence/I-64-evidence.md, coordinator/gate-contract.json, coordinator/make_pbt2b_contract.py and docs/automation/state/I-64.yml. None is EXTERNAL or UNIT_CHANGE under the delegation authorities. Read AUTOMATION_PLAN section 16.3 and agent-execution README section 8."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Compared delegation.json with gate-contract.json for A3-A5; relay-record-planning.json records A1-A8 pass and nc4 as required. byte-fidelity-check.json reports PASS, with all eight opaque collections byte-equal and in order."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json CurrentSha=03b16c88c01ebfd29a642fc6a9324eb76926bcba; git rev-parse HEAD returned 03b16c88c01ebfd29a642fc6a9324eb76926bcba; git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad returned 03b16c88c01ebfd29a642fc6a9324eb76926bcba. Branch and worktree match. BaseSha is an ancestor; RedSha a3b86134227e716825c4fbf72c4efba03b819351 is between BaseSha and CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: CurrentRun is push on refs/heads/architecture/workspace-persistente-rackcad at CurrentSha, success; recorded remote tip equals CurrentSha and OriginMainSha equals delegated MainSha 812baf879612320653094a8aaf46aca0bac81383. No network Git command used."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "Read delegation.json AllowedWriteScope: 8 exact paths. Script compared each path from git diff --name-only BaseSha CurrentSha, BaseSha RedSha, RedSha RedRepairSha and ChainBaseSha CurrentSha -- src tests against that list; every path matched. BaseSha..CurrentSha has exactly the 8 allowed paths; ForbiddenWriteScope has no intersection. BaseSha..RedSha -- src tests is W modified plus seven added files; RedRepairSha..CurrentSha -- src tests is W only."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned empty output. git check-ignore on the supplied worker-handoff input path returned that path as ignored."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun and push run 44586045707 match exact ref and SHA; all four required jobs are success. RED run 44572405777 is push on the same ref and RedSha: Core and UI tests failure, Build UI success, Plugin skipped by needs. Repair run 44581043462 has the same required RED pattern. Corresponding supplied TRX files were read."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Parsed supplied TRX testName/outcome records and matched all 42 RequiredTests filters against their MinSelected: CurrentSha filters meet minimum and pass; the UI full suite has 2447 results, 2426 Passed, 0 Failed, 21 NotExecuted; Core has 19094 Passed, 0 Failed. RED expected-red filters fail by assertion: UI mode 3/3, apply-close 4/4, Core source guard 1/1; expected-green filters pass, including shared-reference guard and concordance. On RedRepairSha, the same expected-red filters fail with those same selected counts and expected-green filters pass. RED diff has six test paths; ChainRedFiles/RT are those six added test paths. git diff --name-only RedRepairSha CurrentSha touches no tests/ paths. rr-literal-lines.json closed-list check found every listed quoted literal in git show RedRepairSha:<class>."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha shows RED, RED repair and GREEN commits; git show -s --format=fuller for each shows Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>. This matches worker-handoff.json Worker.Trailer and the effective Worker model."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5/high. relay-record-work.json records launch alias sonnet, effective model claude-sonnet-5-5 and effective effort high; transport alias is the permitted subagent launch parameter."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Read AUTOMATION_PLAN section 16.10 terms and searched the complete text of all seven worker-handoff free-text fields case-insensitively with whole-word/phrase boundaries. Script printed field lengths (WorkCompleted 5411, Evidence 6970, UnexpectedFindings 1213, KnownLimitations 1272, Deviations 1896, OpenQuestions 0, RecommendedNextAction 381); no matches."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes report 0 permission denials and 3 tool errors, none pending. Process reread records 0 persistent participants and 0 persistent unattributable processes at both ends; config snapshot K and bin unchanged."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [],
+  "RecommendedNextAction": "Registrar esta verificacion para la entrega y continuar con las comprobaciones de relevo pendientes."
+}

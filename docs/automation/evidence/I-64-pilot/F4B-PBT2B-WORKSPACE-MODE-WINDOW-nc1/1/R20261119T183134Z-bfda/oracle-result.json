@@ -1,0 +1,57 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261119T183134Z-bfda",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "StopCondition",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "fail",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "fail",
+    "Tests": "fail",
+    "Trailer": "fail",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Identity",
+    "Remote",
+    "Ci",
+    "Tests",
+    "Trailer"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": false,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Identity": "Entrega CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef; git rev-parse HEAD=03b16c88c01ebfd29a642fc6a9324eb76926bcba; git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad=03b16c88c01ebfd29a642fc6a9324eb76926bcba. Los valores no coinciden."
+  },
+  "OutputSha256": "54BA419FE7E67A513CEE96992ADAA1F8101154F0479933AE9F164D889F979D7C",
+  "ManualFreeText1610": []
+}

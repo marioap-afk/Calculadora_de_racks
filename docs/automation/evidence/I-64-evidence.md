@@ -8214,3 +8214,36 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - **La verificacion** lleva las tres comprobaciones deterministas de F4B-E15; la planificacion, las colecciones opacas puestas por la sesion (F4B-E21).
 
 **Limites:** solo documentacion en este paso; sin AutoCAD.
+
+## 260. PB-T2b: la Snapshot K, la cadena completa, las decisiones del Owner y el cierre (F4B-E37 y F4B-E38)
+
+**Qué se custodia:**
+- **La Snapshot K** (F4B-E37):
+  - la preparación `R20261119T154005Z-3194`, parada por P-01 sin lanzarse;
+  - la sonda neutra `F4-ENVIRONMENT/probe-R20261119T154313Z-2a9a`, en PASS;
+  - el registro `F4-ENVIRONMENT/snapshot-K/snapshot-k.json`;
+  - la decisión `owner-config-snapshot-k-decision.md`.
+- **Las unidades de la cadena** de `F4B-PBT2B-WORKSPACE-MODE-WINDOW/1/`, cada una con su manifiesto:
+  - la planificación `69c3`, con su nc4 `2540`;
+  - el Worker `1a87`;
+  - la verificación `422f`;
+  - los controles nc1 `bfda`, nc2 `14dd` y nc3 `a3bc`.
+- **Las revisiones,** directa e independiente, con su encargo.
+- **Las decisiones del Owner** sobre nc1 y OWNER-01: `owner-pbt2b-close-decisions.md`.
+- **El paquete de cierre.**
+- **La nota de `docs/ideas-futuras.md`.**
+- **El estado.**
+
+**El intento 1:**
+- **Commits:** RED `a3b86134`; la primera reparación del RED de F4B, `6bc3497f` (RR, F4B-E35); y GREEN `03b16c88`.
+- **CI:** `44572405777`, `44581043462` y `44586045707`. El GREEN da 4/4 (Core 19 094 y UI 2 447).
+- **Revisión independiente:** 0/0/6, con un hallazgo OWNER.
+- **Verificación:** 14/14, con `rr_check` PASS.
+- **Controles:**
+  - nc1, por disposición del Owner (solo esta vez);
+  - nc2 y nc3, CONTROL PASS.
+
+**Límites:**
+- solo documentación;
+- sin AutoCAD;
+- los eventos y las transcripciones, solo por SHA-256.

@@ -1850,3 +1850,23 @@ Son los menores de la revisión independiente del intento 2 de PB-T2a. El códig
 - **El kit de los controles recalcula el hash del relevo de la planificación con la regla de F4:** en la copia mutada, `relay-record-planning.json` → `Outcome.OutputSha256` pasa a ser el SHA de la delegación mutada. Pero desde F4B-E21 el relevo real guarda el SHA de la salida cruda del Controller, con las colecciones opacas vacías. **La copia de nc2 no es, por tanto, del todo fiel a F4B-E21.** No tuvo efecto en PB-T2a: el Controller falló Contract y Scope por la ruta quitada.
 - **El sustituto adaptado `PBT2A-NC2-EXACT-WHITELIST-F4B-01` exige exactamente ese recálculo** y lo declara (`Nc2KitRelayRecompute`). Si se corrige el kit, hay que revisar el sustituto.
 - **Además, el sustituto depende de la serialización de `inject_opaque.py`,** porque exige que la salida cruda más las colecciones reproduzca la delegación byte a byte.
+
+## I-64 F4B PB-T2b — los menores de la revisión independiente y un arrastre del Owner (2026-11-19, registrados sin corregir)
+
+Son los menores de la revisión independiente de PB-T2b, intento 1. El código cumple el paquete; lo que falta es precisión de las pruebas o de la evidencia.
+
+- **PBT2B-IR-M01:** tres comprobaciones de CT-PBT2B-08 no prueban lo que dicen.
+  - **R11b:** la autoprueba quita la primera aparición de la llamada a `ApplyEditsToEditingState`, que está en `ApplyToDraft` y no en `RequestDraw`.
+  - **R6 y otra autoprueba:** tampoco aíslan la regla que nombran.
+- **PBT2B-IR-M02:** el `Vigia` de CT-PBT2B-05 captura con menos frecuencia que el de CT-PBT1C-02: tras el gesto entero, no tras cada paso, en `calculo-invalido` y `bloqueante`.
+- **PBT2B-IR-M03:** las cinco corridas de diagnóstico del Worker no siguieron el régimen de las corridas temporales (INV-PBT2B-10):
+  - sin TRX;
+  - no todas terminan en `Assert.Fail`;
+  - con un filtro de método en lugar del filtro del contrato.
+
+  Cumplen 16.8, RR y la limpieza del árbol.
+- **PBT2B-IR-M04:** la evidencia de INV-PBT2B-06 cuenta 27 costuras con una expresión que solo ve declaraciones `internal` de una línea. El contrato dice 41. En lo material se cumple.
+- **PBT2B-IR-M05:** `DisenoDe` y `DisenoDeVentana` comparten el centinela `<sin diseno>`. Si los dos fallaran, `diseno-igual` daría True. Hoy no se ejerce.
+- **PBT2B-IR-M06:** el §5.0 del paquete dice que la primera línea de cada ventana de WORKSPACE es `modo=…`, y las listas literales del §5.3 solo la llevan en algunas. El Worker siguió las listas, como manda C07.
+- **A-T2b-OWNER-01, para PB-T4** (decisión del Owner, F4B-E38): con un módulo escenificado y cambios sin aplicar al borrador a la vez, «Cerrar» solo pregunta por el módulo, y «Sí» pierde también lo no aplicado sin nombrarlo. En PB-T4, una sola pregunta que nombre las dos cosas, con su prueba.
+- **El nc1 de F4B:** es la tercera variación de PD-F4-04 (PB-TC, PB-T2a y PB-T2b). En PB-T2b, el Controller además leyó mal `Worker.Trailer` y `RedRepairSha` en `Deviations`. Conviene estudiar, fuera de F4B, si el texto del control nc1 o el esquema de la entrega pueden dejar menos margen a esas lecturas.

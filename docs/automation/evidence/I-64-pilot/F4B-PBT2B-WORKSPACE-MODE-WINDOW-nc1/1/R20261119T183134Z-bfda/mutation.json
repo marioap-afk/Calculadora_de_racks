@@ -1,0 +1,49 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261119T183134Z-bfda",
+  "SourceVerification": "R20261119T182732Z-422f",
+  "SourceInputs": "artifacts/orchestration/I-64/F4B-PBT2B-WORKSPACE-MODE-WINDOW/1/R20261119T182732Z-422f/inputs",
+  "Mutation": {
+    "File": "worker-handoff.json",
+    "Field": "CurrentSha",
+    "Old": "03b16c88c01ebfd29a642fc6a9324eb76926bcba",
+    "New": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+    "NewExistsInRepo": false
+  },
+  "DerivedRecompute": [
+    {
+      "File": "relay-record-work.json",
+      "Field": "Outcome.OutputSha256",
+      "Old": "C7455A61BC2FEE23A91F375CC00F91CD32EE4CF861C5BB68693B106674E7A6B5",
+      "New": "8914E78789DD427F73405D12E63583556F40C8610BA970E9AD87219CA26155C5",
+      "Reason": "hash derivado de worker-handoff.json recalculado para que la copia sea internamente coherente con la entrega simulada; no es una mutacion del contenido de la entrega ni de la delegacion"
+    }
+  ],
+  "PromptSha256": "D703F97E8D14B96AB69BDAFDDF563A8BDE83F8E4ADA424ED1B241D94B345F9BA",
+  "PromptDiffVsVerified": "solo la ruta de entrada y el RunId de la invocacion (README 10)",
+  "SchemaValid": {
+    "worker-handoff.json": true,
+    "delegation.json": true,
+    "relay-record-work.json": true,
+    "relay-record-planning.json": true
+  },
+  "InputSha256": {
+    "byte-fidelity-check.json": "0AA85B15797D1B426C977EAC9341FBB93E833123D55B9E5CAEC898781915E679",
+    "delegation.json": "6396E45C6399C2813ED83064095F5869CC4FDEC51520342F3EAD84DB623A14F6",
+    "gate-contract.json": "E46F8B650A374B52E39C21CA988A4A64768D38AE7C074481FC6B3551240AD89E",
+    "relay-record-planning.json": "0C2C3588C9B0CDEDBF020A419C1ADA696F8326F7FEA78D9FD5410097477B7C7E",
+    "relay-record-work.json": "8DF89D1CC31C20F930FBEA78E5D766BA62F8DCFE368D2E804487EDC8A5586C11",
+    "rr-literal-lines.json": "5E33FEC9B1E17EDE5AB928FA0C5C96F33C7547D977E7E85475592437BD39B2E9",
+    "worker-handoff.json": "8914E78789DD427F73405D12E63583556F40C8610BA970E9AD87219CA26155C5",
+    "ci-core/44586045707/core.trx": "76CD33EB40E036014D6FF6618DE40EB7B784482B6DD2A27A8B207125BCF6847F",
+    "ci-core-red/44572405777/core.trx": "C886D40D223FF83BF20E75E1924A7724839D97943E62F9E21D04B8C02DA41F66",
+    "ci-core-rr/44581043462/core.trx": "5A51D8C2ACAED5C89A7C3C5589414447981149B8BBFC608E7AE176CEC954F97F",
+    "ci-ui/44586045707/ui.trx": "F3C7F4441FF084076CF8457E8D409CAB501DF52C51CDCFA9D1378F2E20F8BB33",
+    "ci-ui-red/44572405777/ui.trx": "83EC8811AC90F39638E0259C490100E6A211C97472C9D422BABD6DF1BD9C5AD6",
+    "ci-ui-rr/44581043462/ui.trx": "5EB2C6C36F669B3317DECFF96A2C7A9E6FE334E53B3CCCA29B0154E497497E20"
+  },
+  "ChangedVsVerifiedInputs": [
+    "relay-record-work.json",
+    "worker-handoff.json"
+  ]
+}
