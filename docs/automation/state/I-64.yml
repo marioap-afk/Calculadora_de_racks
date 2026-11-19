@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: none
   attempts: 1
-  next_action: "F4B PB-T2b: paquete de PB-T2 v2.8 (con la reparacion del RED de F4B-E35), su historia, la comprobacion acotada de PB-T2b (CA-T2b) con sus recomprobaciones y su encargo, y la remedicion sobre el cierre de PB-T2a custodiados; siguiente: emitir el contrato de F4B-PBT2B-WORKSPACE-MODE-WINDOW con attempts 1 de 3 (F4B-E36)"
+  next_action: "F4B-PBT2B-WORKSPACE-MODE-WINDOW: contrato emitido (AuthorityRevision a12ea09a, attempts 1 de 3); siguiente: planificacion del Controller (colecciones opacas por la sesion, F4B-E21), comparacion byte a byte, A1-A8, nc4 y Worker"
   last_evidence_commit: 0f49f69160cdffc1d2933d6165d5f472b5793d84
 execution_context:
   mode: manual
