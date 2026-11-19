@@ -44,9 +44,23 @@ namespace RackCad.Tests
             return state;
         }
 
-        private static string Line(string label, PushBackCompositeEditorState state, PushBackSystem system)
-            => label + " bloqueado=" + PushBackEditorOutputGate.IsBlocked(state, system)
-               + " estado=" + PushBackEditorOutputGate.StatusOr(state, system, "RESERVA");
+        /// <summary>The «EXCEPCION» rule: a step that throws becomes a line, and the expected lines never contain one.</summary>
+        private static T Paso<T>(List<string> log, Func<T> step)
+        {
+            try
+            {
+                return step();
+            }
+            catch (Exception error)
+            {
+                log.Add("EXCEPCION " + error.GetType().Name + ": " + error.Message);
+                return default(T);
+            }
+        }
+
+        private static string Line(List<string> log, string label, PushBackCompositeEditorState state, PushBackSystem system)
+            => label + " bloqueado=" + Paso(log, () => PushBackEditorOutputGate.IsBlocked(state, system))
+               + " estado=" + Paso(log, () => PushBackEditorOutputGate.StatusOr(state, system, "RESERVA"));
 
         [Fact]
         public void CT_PBT1B_12_TheOutputGateBlocksWithTheLiteralTextsOfTheWindow()
@@ -59,16 +73,16 @@ namespace RackCad.Tests
                 var valid = Valid();
                 var blocking = Blocking();
 
-                log.Add(Line("valido", WithIntent(new PushBackCompositeDesign()), valid));
-                log.Add(Line("hueco-negativo", WithIntent(new PushBackCompositeDesign { Gap = -1 }), valid));
-                log.Add(Line("separador-sin-hueco", WithIntent(new PushBackCompositeDesign { CentralSeparator = true, Gap = 0 }), valid));
-                log.Add(Line("override-no-construible", WithIntent(new PushBackCompositeDesign { StructureOverrideA = 1 }), valid));
+                log.Add(Line(log, "valido", WithIntent(new PushBackCompositeDesign()), valid));
+                log.Add(Line(log, "hueco-negativo", WithIntent(new PushBackCompositeDesign { Gap = -1 }), valid));
+                log.Add(Line(log, "separador-sin-hueco", WithIntent(new PushBackCompositeDesign { CentralSeparator = true, Gap = 0 }), valid));
+                log.Add(Line(log, "override-no-construible", WithIntent(new PushBackCompositeDesign { StructureOverrideA = 1 }), valid));
 
                 var clean = WithIntent(new PushBackCompositeDesign());
                 var first = PushBackCompositeDiagnostics.Evaluate(blocking).FirstOrDefault(diagnostic => diagnostic.IsBlocking);
-                log.Add("celda-no-cabe bloqueado=" + PushBackEditorOutputGate.IsBlocked(clean, blocking)
+                log.Add("celda-no-cabe bloqueado=" + Paso(log, () => PushBackEditorOutputGate.IsBlocked(clean, blocking))
                     + " estado-igual-al-primer-bloqueante-de-Evaluate="
-                    + (first != null && string.Equals(PushBackEditorOutputGate.StatusOr(clean, blocking, "RESERVA"), first.Message, StringComparison.Ordinal)));
+                    + (first != null && string.Equals(Paso(log, () => PushBackEditorOutputGate.StatusOr(clean, blocking, "RESERVA")), first.Message, StringComparison.Ordinal)));
 
                 log.Add("RackBomOutputGate.For(Valid()).Allowed=" + RackBomOutputGate.For(valid).Allowed);
                 log.Add("RackBomOutputGate.For(Blocking()).Allowed=" + RackBomOutputGate.For(blocking).Allowed);

@@ -160,7 +160,12 @@ namespace RackCad.Tests
             foreach (var member in Members(cleaned))
             {
                 var aliases = Aliases(member, Tokens);
-                if (aliases.Count > 0) result.AddRange(Rule1(member, aliases.Keys).Select(hit => "R2 " + hit));
+                if (aliases.Count > 0)
+                {
+                    // Rule 2 of D-PBT1-15: an alias counts as a token for rules 1 AND 1b (a mold over an alias is a mutation too).
+                    result.AddRange(Rule1(member, aliases.Keys).Select(hit => "R2 " + hit));
+                    result.AddRange(Rule1b(member, aliases.Keys).Select(hit => "R2b " + hit));
+                }
             }
 
             return result;
@@ -228,6 +233,10 @@ namespace RackCad.Tests
                 ("h2", "state.WorkingBaseline.Structure.Modules.ToList().ForEach(m => { m.Length = 1; });"),
                 ("i", "state.WorkingBaseline.Structure.RecalculatePositions();"),
                 ("j", "builder.Refresh(state.WorkingBaseline.Structure);"),
+
+                // I01 (the correction of attempt 2): an alias plus a mold. Only rule 2 applied to rule 1b sees them.
+                ("k1", "var r = side.LastModuleReconciliation; (r.Preserved as List<string>).Add(\"x\");"),
+                ("k2", "var p = side.LastModuleReconciliation.Preserved; ((List<string>)p).Add(\"x\");"),
             };
 
             foreach (var test in selfTests)
@@ -241,7 +250,7 @@ namespace RackCad.Tests
                     "reglas-sin-coincidencias=True",
                     "autoprueba-a=falla", "autoprueba-b=falla", "autoprueba-c=falla", "autoprueba-e=falla", "autoprueba-f1=falla",
                     "autoprueba-f2=falla", "autoprueba-f3=falla", "autoprueba-g1=falla", "autoprueba-g2=falla", "autoprueba-h1=falla",
-                    "autoprueba-h2=falla", "autoprueba-i=falla", "autoprueba-j=falla",
+                    "autoprueba-h2=falla", "autoprueba-i=falla", "autoprueba-j=falla", "autoprueba-k1=falla", "autoprueba-k2=falla",
                 },
                 log);
         }
@@ -256,10 +265,34 @@ namespace RackCad.Tests
                                && !path.Contains(Path.DirectorySeparatorChar + "obj" + Path.DirectorySeparatorChar))
                 .OrderBy(path => path, StringComparer.Ordinal);
 
+        /// <summary>M07: the WHOLE statement of each assignment (up to its semicolon), so a change of its right-hand side shows.</summary>
+        private const string NameStatement = NameWriter + @"[^;]*;";
+
         private static List<(string File, string Text)> Assignments(IReadOnlyDictionary<string, string> cleanedFiles)
             => cleanedFiles
-                .SelectMany(file => Regex.Matches(file.Value, NameWriter).Cast<Match>().Select(match => (file.Key, Collapse(match.Value))))
+                .SelectMany(file => Regex.Matches(file.Value, NameStatement).Cast<Match>().Select(match => (file.Key, Collapse(match.Value))))
                 .ToList();
+
+        /// <summary>The text of a method, from its signature to its closing brace (the text has no comments and its literals are emptied).</summary>
+        private static string MethodText(string text, string signature)
+        {
+            var start = text.IndexOf(signature, StringComparison.Ordinal);
+            if (start < 0) return string.Empty;
+            var open = text.IndexOf('{', start);
+            if (open < 0) return string.Empty;
+            var depth = 0;
+            for (var index = open; index < text.Length; index++)
+            {
+                if (text[index] == '{') depth++;
+                else if (text[index] == '}' && --depth == 0) return text.Substring(start, index - start + 1);
+            }
+
+            return string.Empty;
+        }
+
+        /// <summary>M07: the first writer must be INSIDE <c>DrawPushBackView</c>, not merely after its declaration.</summary>
+        private static bool WriterInsideDrawPushBackView(string commands)
+            => MethodText(commands, "static void DrawPushBackView(").Contains("system.Name = rackName;");
 
         private static bool OrderOf(string text, string method, string modal, string writer)
         {
@@ -292,12 +325,11 @@ namespace RackCad.Tests
             var commands = cleaned.ContainsKey("RackPushBackCommands.cs") ? cleaned["RackPushBackCommands.cs"] : string.Empty;
             var menu = cleaned.ContainsKey("RackMenuCommands.cs") ? cleaned["RackMenuCommands.cs"] : string.Empty;
 
-            // The call to DrawPushBackView is the first occurrence (the declaration comes later); the writer is inside it.
+            // The call to DrawPushBackView is the first occurrence (the declaration comes later); the writer is inside it (M07).
             var modalFirst = commands.IndexOf("AcApplication.ShowModalWindow(window);", StringComparison.Ordinal);
             var call = commands.IndexOf("DrawPushBackView(", StringComparison.Ordinal);
             var declaration = commands.IndexOf("static void DrawPushBackView(", StringComparison.Ordinal);
-            var writerFirst = commands.IndexOf("system.Name = rackName;", StringComparison.Ordinal);
-            log.Add("orden=" + (modalFirst >= 0 && modalFirst < call && call < declaration && declaration < writerFirst));
+            log.Add("orden=" + (modalFirst >= 0 && modalFirst < call && call < declaration && WriterInsideDrawPushBackView(commands)));
             log.Add("orden=" + OrderOf(commands, "static void EditPushBack(", "AcApplication.ShowModalWindow(window);", "system.Name = name;"));
             log.Add("orden=" + OrderOf(menu, "public void RackCad()", "AcApplication.ShowModalWindow(menu);", "pushBack.System.Name = pushBackName;"));
 
@@ -333,18 +365,31 @@ namespace RackCad.Tests
 
             log.Add("autoprueba-orden=" + (OrderOf(moved, "static void EditPushBack(", "AcApplication.ShowModalWindow(window);", "system.Name = name;") ? "pasa" : "falla"));
 
+            // M07: the writer of DrawPushBackView moved out of the method (to just before its declaration) no longer counts as inside it.
+            var outside = commands;
+            if (declaration >= 0)
+            {
+                var inside = outside.IndexOf("system.Name = rackName;", declaration, StringComparison.Ordinal);
+                if (inside >= 0)
+                {
+                    outside = outside.Remove(inside, "system.Name = rackName;".Length).Insert(declaration, "system.Name = rackName; ");
+                }
+            }
+
+            log.Add("autoprueba-escritor-fuera-de-DrawPushBackView=" + (WriterInsideDrawPushBackView(outside) ? "pasa" : "falla"));
+
             Assert.Equal(
                 new[]
                 {
                     "archivos=14",
                     "asignaciones=7",
-                    "RackMenuCommands.cs: header.Configuration.Name =",
-                    "RackMenuCommands.cs: dynamic.System.Name =",
-                    "RackMenuCommands.cs: selective.System.Name =",
-                    "RackMenuCommands.cs: cantilever.Design.Name =",
-                    "RackMenuCommands.cs: pushBack.System.Name =",
-                    "RackPushBackCommands.cs: system.Name =",
-                    "RackPushBackCommands.cs: system.Name =",
+                    "RackMenuCommands.cs: header.Configuration.Name = Systems.Shared.RackNewRackName.Resolve( document, global::RackCad.Domain.Systems.Shared.RackSystemKind.Selective, header.Configuration.Name);",
+                    "RackMenuCommands.cs: dynamic.System.Name = dynamicName;",
+                    "RackMenuCommands.cs: selective.System.Name = selectiveName;",
+                    "RackMenuCommands.cs: cantilever.Design.Name = cantileverName;",
+                    "RackMenuCommands.cs: pushBack.System.Name = pushBackName;",
+                    "RackPushBackCommands.cs: system.Name = rackName;",
+                    "RackPushBackCommands.cs: system.Name = name;",
                     "escritores-pushback=3",
                     "orden=True",
                     "orden=True",
@@ -352,6 +397,7 @@ namespace RackCad.Tests
                     "DrawPushBackView-llamadas=1",
                     "autoprueba-octava=falla",
                     "autoprueba-orden=falla",
+                    "autoprueba-escritor-fuera-de-DrawPushBackView=falla",
                 },
                 log);
         }

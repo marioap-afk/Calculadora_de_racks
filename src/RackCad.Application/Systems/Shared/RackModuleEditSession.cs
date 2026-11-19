@@ -45,115 +45,13 @@ namespace RackCad.Application.Systems.Shared
         /// <summary>I-40: the accepted per-LINE derived-post heights.</summary>
         public IReadOnlyList<DynamicDerivedPostLineOverride> DerivedPostOverrides { get; }
 
-        /// <summary>A faithful copy of this commit that shares no mutable object with it. LITERAL: each intent is copied
-        /// field by field, without normalizing its provenance, and each cabecera with the canonical deep copy.</summary>
-        public RackModuleCommit Copy()
-        {
-            var store = new RackFrameProjectStore();
-            return new RackModuleCommit(
-                Modules.Select(module => CopyModule(module, store)).ToList(),
-                RestoredModuleIds.ToList(),
-                StandardRestoreRequested,
-                LineOverrides
-                    .Select(line => new DynamicHeaderLineOverride
-                    {
-                        PostIndex = line.PostIndex,
-                        ModuleId = line.ModuleId,
-                        Header = store.DeepCopy(line.Header)
-                    })
-                    .ToList(),
-                DerivedPostOverrides
-                    .Select(derived => new DynamicDerivedPostLineOverride
-                    {
-                        PostIndex = derived.PostIndex,
-                        Height = derived.Height
-                    })
-                    .ToList());
-        }
+        /// <summary>A faithful copy of this commit that shares no mutable object with it (I-64 F4B PB-T1b, D-PBT1-07).
+        /// Skeleton: it returns this commit.</summary>
+        public RackModuleCommit Copy() => this;
 
-        /// <summary>Whether another commit holds exactly the same accepted edit, comparing every cabecera through its
-        /// persisted shape.</summary>
-        public bool SameAs(RackModuleCommit other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            var store = new RackFrameProjectStore();
-            string Persisted(RackFrameConfiguration configuration)
-                => configuration == null ? string.Empty : store.Serialize(configuration);
-
-            if (Modules.Count != other.Modules.Count
-                || RestoredModuleIds.Count != other.RestoredModuleIds.Count
-                || LineOverrides.Count != other.LineOverrides.Count
-                || DerivedPostOverrides.Count != other.DerivedPostOverrides.Count
-                || StandardRestoreRequested != other.StandardRestoreRequested)
-            {
-                return false;
-            }
-
-            for (var index = 0; index < Modules.Count; index++)
-            {
-                var a = Modules[index];
-                var b = other.Modules[index];
-                if (!string.Equals(a.ModuleId, b.ModuleId, StringComparison.Ordinal)
-                    || a.Kind != b.Kind
-                    || a.Length != b.Length
-                    || a.IsCalculated != b.IsCalculated
-                    || a.IsManualOverride != b.IsManualOverride
-                    || a.UseCalculatedHeaderConfiguration != b.UseCalculatedHeaderConfiguration
-                    || !string.Equals(a.Notes, b.Notes, StringComparison.Ordinal)
-                    || !string.Equals(Persisted(a.HeaderConfiguration), Persisted(b.HeaderConfiguration), StringComparison.Ordinal))
-                {
-                    return false;
-                }
-            }
-
-            for (var index = 0; index < RestoredModuleIds.Count; index++)
-            {
-                if (!string.Equals(RestoredModuleIds[index], other.RestoredModuleIds[index], StringComparison.Ordinal))
-                {
-                    return false;
-                }
-            }
-
-            for (var index = 0; index < LineOverrides.Count; index++)
-            {
-                var a = LineOverrides[index];
-                var b = other.LineOverrides[index];
-                if (a.PostIndex != b.PostIndex
-                    || !string.Equals(a.ModuleId, b.ModuleId, StringComparison.Ordinal)
-                    || !string.Equals(Persisted(a.Header), Persisted(b.Header), StringComparison.Ordinal))
-                {
-                    return false;
-                }
-            }
-
-            for (var index = 0; index < DerivedPostOverrides.Count; index++)
-            {
-                if (DerivedPostOverrides[index].PostIndex != other.DerivedPostOverrides[index].PostIndex
-                    || DerivedPostOverrides[index].Height != other.DerivedPostOverrides[index].Height)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        private static DynamicRackModuleDesign CopyModule(DynamicRackModuleDesign source, RackFrameProjectStore store)
-            => new DynamicRackModuleDesign
-            {
-                ModuleId = source.ModuleId,
-                Kind = source.Kind,
-                Length = source.Length,
-                IsCalculated = source.IsCalculated,
-                IsManualOverride = source.IsManualOverride,
-                UseCalculatedHeaderConfiguration = source.UseCalculatedHeaderConfiguration,
-                HeaderConfiguration = store.DeepCopy(source.HeaderConfiguration),
-                Notes = source.Notes
-            };
+        /// <summary>Whether another commit holds exactly the same accepted edit (I-64 F4B PB-T1b, D-PBT1-07). Skeleton:
+        /// it is never the same.</summary>
+        public bool SameAs(RackModuleCommit other) => false;
     }
 
     /// <summary>
@@ -259,6 +157,14 @@ namespace RackCad.Application.Systems.Shared
             if (designs == null) throw new ArgumentNullException(nameof(designs));
             return new RackModuleEditSession(designs.Where(design => design != null));
         }
+
+        /// <summary>A copy of this session that shares no mutable object with it (I-64 F4B PB-T1b, D-PBT1-07). Skeleton:
+        /// an empty session.</summary>
+        public RackModuleEditSession Copy() => RackModuleEditSession.Begin(Array.Empty<DynamicRackModuleDesign>());
+
+        /// <summary>Whether another session holds exactly the same edit (I-64 F4B PB-T1b, D-PBT1-07). Skeleton: it is
+        /// never the same.</summary>
+        public bool SameEditAs(RackModuleEditSession other) => false;
 
         /// <summary>The staged state, as read-only descriptors. This is what an editor renders.</summary>
         public IReadOnlyList<RackModuleDescriptor> Modules => RackModuleDescriptor.Describe(working);
@@ -838,58 +744,6 @@ namespace RackCad.Application.Systems.Shared
             restored.Clear();
             return result;
         }
-
-        /// <summary>
-        /// A faithful copy of this session — what is staged, what is committed, the restores and every per-line table —
-        /// that shares no mutable object with it. LITERAL: each intent is copied field by field, WITHOUT the provenance
-        /// normalization of <see cref="Begin(IEnumerable{DynamicRackModuleDesign})"/>, so a copy is exactly what the
-        /// original holds.
-        /// </summary>
-        public RackModuleEditSession Copy()
-        {
-            var copy = new RackModuleEditSession(Array.Empty<DynamicRackModuleDesign>());
-            copy.restored.AddRange(restored);
-            copy.committed = committed.Select(CopyLiteral).ToList();
-            copy.working = working.Select(CopyLiteral).ToList();
-            copy.standardRestoreRequested = standardRestoreRequested;
-            copy.committedLines = CopyLines(committedLines);
-            copy.workingLines = CopyLines(workingLines);
-            copy.committedDerivedPosts = new Dictionary<int, double>(committedDerivedPosts);
-            copy.workingDerivedPosts = new Dictionary<int, double>(workingDerivedPosts);
-            return copy;
-        }
-
-        /// <summary>Whether another session holds exactly the same EDIT: the committed and staged intents, the per-line
-        /// configurations, the derived-post heights, the restores (in order) and the standard-restore request.</summary>
-        public bool SameEditAs(RackModuleEditSession other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            return AreEquivalent(committed, other.committed)
-                   && AreEquivalent(working, other.working)
-                   && AreEquivalentLines(committedLines, other.committedLines)
-                   && AreEquivalentLines(workingLines, other.workingLines)
-                   && AreEquivalentDerivedPosts(committedDerivedPosts, other.committedDerivedPosts)
-                   && AreEquivalentDerivedPosts(workingDerivedPosts, other.workingDerivedPosts)
-                   && restored.SequenceEqual(other.restored, StringComparer.Ordinal)
-                   && standardRestoreRequested == other.standardRestoreRequested;
-        }
-
-        private DynamicRackModuleDesign CopyLiteral(DynamicRackModuleDesign source)
-            => new DynamicRackModuleDesign
-            {
-                ModuleId = source.ModuleId,
-                Kind = source.Kind,
-                Length = source.Length,
-                IsCalculated = source.IsCalculated,
-                IsManualOverride = source.IsManualOverride,
-                UseCalculatedHeaderConfiguration = source.UseCalculatedHeaderConfiguration,
-                HeaderConfiguration = clone.DeepCopy(source.HeaderConfiguration),
-                Notes = source.Notes
-            };
 
         private Dictionary<LineKey, RackFrameConfiguration> CopyLines(
             Dictionary<LineKey, RackFrameConfiguration> source)

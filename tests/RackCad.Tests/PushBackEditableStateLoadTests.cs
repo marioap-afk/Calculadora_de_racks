@@ -46,6 +46,24 @@ namespace RackCad.Tests
             }
         }
 
+        /// <summary>The comparer of the state, through the «EXCEPCION» rule (a comparer that throws is never «equal»).</summary>
+        private static bool Eq(List<string> log, PushBackEditableState a, PushBackEditableState b)
+            => Paso(log, () => PushBackEditableStateComparer.Instance.Equals(a, b));
+
+        /// <summary>A step whose rejection is the EXPECTED result of the case: the rejection as «Tipo: Mensaje», or null if it does not throw.</summary>
+        private static string Rechazo(Action step)
+        {
+            try
+            {
+                step();
+                return null;
+            }
+            catch (Exception rejected)
+            {
+                return rejected.GetType().Name + ": " + rejected.Message;
+            }
+        }
+
         private static PushBackDesign DesignOfText(string envelope)
             => new RackProjectStore().Deserialize(new RackEmbedStore().Deserialize(envelope).Design).PushBackDesign;
 
@@ -254,14 +272,14 @@ namespace RackCad.Tests
 
                 // S2: a new state loaded from D1 with its pass; D2: the design of that pass.
                 var s2 = s1.Computation == null ? default : Loaded(log, s1.Computation.Design, entry.RackName);
-                var firstEqual = s2.State != null && PushBackEditableStateComparer.Instance.Equals(s1.State, s2.State);
+                var firstEqual = s2.State != null && Eq(log, s1.State, s2.State);
                 var firstLine = entry.Name + " primera-vuelta-estado iguales=" + firstEqual;
                 if (isNormalized)
                 {
                     var before = Paso(log, () => s1.State.Editor.SideB.Structure.IsActive(0));
                     var after = Paso(log, () => s2.State.Editor.SideB.Structure.IsActive(0));
                     Paso(log, () => s1.State.Editor.SetSlotPresent(PushBackSide.B, 0, false));
-                    var normalizedEqual = s2.State != null && PushBackEditableStateComparer.Instance.Equals(s1.State, s2.State);
+                    var normalizedEqual = s2.State != null && Eq(log, s1.State, s2.State);
                     firstLine += " SideB.Fronts[0].IsActive=" + before + "->" + after + " normalizada-iguales=" + normalizedEqual;
                 }
 
@@ -269,7 +287,7 @@ namespace RackCad.Tests
 
                 // S3: a new state loaded from D2 with its pass; S2 against S3, from the state already normalized.
                 var s3 = s2.Computation == null ? default : Loaded(log, s2.Computation.Design, entry.RackName);
-                var secondEqual = s3.State != null && PushBackEditableStateComparer.Instance.Equals(s2.State, s3.State);
+                var secondEqual = s3.State != null && Eq(log, s2.State, s3.State);
                 log.Add(entry.Name + " estado-diseno-estado iguales=" + secondEqual);
             }
 
@@ -278,8 +296,8 @@ namespace RackCad.Tests
 
         // ------------------------------------------------------------------------------------------------- CT-03
 
-        private static string Rule(RackCatalog catalog, string requested)
-            => "regla [" + (requested ?? "<null>") + "] -> [" + PushBackEditableState.ResolvePostCatalogId(catalog, requested) + "]";
+        private static string Rule(List<string> log, RackCatalog catalog, string requested)
+            => "regla [" + (requested ?? "<null>") + "] -> [" + Paso(log, () => PushBackEditableState.ResolvePostCatalogId(catalog, requested)) + "]";
 
         [Fact]
         public void CT_PBT1B_03_TheRuleOfTheCatalogPostIsExplicitAndOrdinal()
@@ -290,7 +308,7 @@ namespace RackCad.Tests
             var requested = new string[] { P, P.ToLowerInvariant(), "PB0_POSTE_INEXISTENTE", string.Empty, "   ", null };
             foreach (var value in requested)
             {
-                log.Add("catalogo " + Rule(Catalog, value));
+                log.Add("catalogo " + Rule(log, Catalog, value));
             }
 
             var fabricated = new RackCatalog();
@@ -303,7 +321,7 @@ namespace RackCad.Tests
             };
             foreach (var value in new[] { "PB1_X", " PB1_X ", "PB1_Y", "pb1_y" })
             {
-                log.Add("fabricado " + Rule(fabricated, value));
+                log.Add("fabricado " + Rule(log, fabricated, value));
             }
 
             // The output of the state for c-01 (blank id) and c-02 (an id the catalog does not have).
@@ -342,7 +360,7 @@ namespace RackCad.Tests
             var names = FixtureNames().ToList();
             foreach (var name in names)
             {
-                log.Add(name + " soporte=" + PushBackEditableState.SupportOf(DesignOfText(PilotKit.Text(name))));
+                log.Add(name + " soporte=" + Paso(log, () => PushBackEditableState.SupportOf(DesignOfText(PilotKit.Text(name)))));
             }
 
             var text = PilotKit.Text("pb-21-cola");
@@ -425,24 +443,25 @@ namespace RackCad.Tests
                 }
                 catch (Exception rejected)
                 {
-                    // The store refuses the document before any load (the same as the window of today).
-                    log.Add(testCase.Key + " :: RECHAZADO " + rejected.GetType().Name + ": " + rejected.Message);
+                    // The store refuses the document before any load (the same as the window of today): c-12.
+                    log.Add(testCase.Key + " :: RECHAZADO-POR-EL-ALMACEN " + rejected.GetType().Name + ": " + rejected.Message);
                     continue;
                 }
 
                 var assembler = new PushBackEditorDesignAssembler(Catalog);
                 var composite = new PushBackCompositeEditorAssembler(Catalog);
                 var state = new PushBackEditableState();
-                try
+
+                // The load of the STATE goes through the «EXCEPCION» rule. Only c-13 is expected to throw there (the same type and
+                // message as the window of today, from the resolver), and it is told apart from the rejection of the store (c-12).
+                if (testCase.Key.StartsWith("c-13 ", StringComparison.Ordinal))
                 {
-                    state.LoadDesign(design, NameOfText(text), assembler.Resolver);
-                }
-                catch (Exception rejected)
-                {
-                    // c-13: the load throws the same type and the same message as the window of today, from the resolver.
-                    log.Add(testCase.Key + " :: RECHAZADO " + rejected.GetType().Name + ": " + rejected.Message);
+                    var rejection = Rechazo(() => state.LoadDesign(design, NameOfText(text), assembler.Resolver));
+                    log.Add(testCase.Key + " :: RECHAZADO-AL-CARGAR-EL-ESTADO " + (rejection ?? "<no lanza>"));
                     continue;
                 }
+
+                Paso(log, () => state.LoadDesign(design, NameOfText(text), assembler.Resolver));
 
                 var computation = Pasada(state, assembler, composite, PushBackSide.A);
                 if (computation == null || !computation.IsValid)
@@ -477,8 +496,8 @@ namespace RackCad.Tests
                     "c-09 PalletWeightUnit ton :: retiradas(a/b)=[]",
                     "c-10 Dimensions 7 :: retiradas(a/b)=[]",
                     "c-11 Dimensions -1 :: retiradas(a/b)=[]",
-                    "c-12 PalletsDeep 1 :: RECHAZADO InvalidOperationException: El proyecto no tiene datos válidos para el sistema Push Back (¿archivo vacío o incompleto?).",
-                    "c-13 PalletTolerance 0 :: RECHAZADO ArgumentException: La holgura transversal debe ser mayor que cero. (Parameter 'design')",
+                    "c-12 PalletsDeep 1 :: RECHAZADO-POR-EL-ALMACEN InvalidOperationException: El proyecto no tiene datos válidos para el sistema Push Back (¿archivo vacío o incompleto?).",
+                    "c-13 PalletTolerance 0 :: RECHAZADO-AL-CARGAR-EL-ESTADO ArgumentException: La holgura transversal debe ser mayor que cero. (Parameter 'design')",
                     "c-14 BeamDepth 0 :: retiradas(a/b)=[]",
                     "   [CARGA-APPLICATION:peralte-de-larguero-0-a-defecto PushBackEditorState.Load.cs:200] $.PushBack.Structure.BeamDepth: 0 -> 6",
                     "c-15 AnnotationScale 0 :: retiradas(a/b)=[]",
@@ -493,9 +512,9 @@ namespace RackCad.Tests
             => "[PalletDepth=" + Leer(persisted, "Structure.PalletDepth") + " PalletWeightUnit=" + Leer(persisted, "Structure.PalletWeightUnit")
                + " PalletWeight=" + Leer(persisted, "Structure.PalletWeight") + "]";
 
-        private static string Regla(string current, string requested)
+        private static string Regla(List<string> log, string current, string requested)
             => "regla current=" + (current == null ? "<null>" : "[" + current + "]") + " requested="
-               + (requested == null ? "<null>" : "[" + requested + "]") + " -> [" + PushBackEditableState.ResolveWeightUnit(current, requested) + "]";
+               + (requested == null ? "<null>" : "[" + requested + "]") + " -> [" + Paso(log, () => PushBackEditableState.ResolveWeightUnit(current, requested)) + "]";
 
         [Fact]
         public void CT_PBT1B_17_TheWeightUnitThatTheBoxShowsIsTheOneEveryRebuildUses()
@@ -504,15 +523,15 @@ namespace RackCad.Tests
             var assembler = new PushBackEditorDesignAssembler(Catalog);
 
             // Part 1: the rule.
-            log.Add(Regla("kg", "kg"));
-            log.Add(Regla("kg", "lb"));
-            log.Add(Regla("lb", "kg"));
-            log.Add(Regla("kg", "ton"));
-            log.Add(Regla("lb", "ton"));
-            log.Add(Regla("kg", null));
-            log.Add(Regla("lb", "   "));
-            log.Add(Regla("kg", "KG"));
-            log.Add(Regla("ton", "ton"));
+            log.Add(Regla(log, "kg", "kg"));
+            log.Add(Regla(log, "kg", "lb"));
+            log.Add(Regla(log, "lb", "kg"));
+            log.Add(Regla(log, "kg", "ton"));
+            log.Add(Regla(log, "lb", "ton"));
+            log.Add(Regla(log, "kg", null));
+            log.Add(Regla(log, "lb", "   "));
+            log.Add(Regla(log, "kg", "KG"));
+            log.Add(Regla(log, "ton", "ton"));
 
             // Part 2: the output, with the sequences of the window (§5.0) over pb-01-base.
             var baseText = PilotKit.Text("pb-01-base");

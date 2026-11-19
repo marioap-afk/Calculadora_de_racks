@@ -182,7 +182,18 @@ namespace RackCad.UI.Tests
 
         private static readonly string[] CaminosDeUnLado = { "LoadExisting", "LoadDesignForNew", "Restaurar-tras-cargar" };
 
-        private static readonly string[] CaminosConLadoB = { "Restaurar-tras-retirar-B", "Restaurar-tras-SetGap(60)" };
+        /// <summary>M08: «retirar B» only has meaning where side B is declared; on a one-sided rack it degenerates.</summary>
+        private const string CaminoRetirarB = "Restaurar-tras-retirar-B";
+
+        /// <summary>M08: «SetGap(60)» runs on ALL the designs (it does not degenerate on a one-sided rack).</summary>
+        private const string CaminoSetGap = "Restaurar-tras-SetGap(60)";
+
+        /// <summary>The designs that open with side B declared (the ones that also run «Restaurar» after retiring B).</summary>
+        private static bool TieneLadoB(Origen origen)
+        {
+            var abierto = origen.Abrir();
+            return abierto.Design.SideB != null && abierto.Design.SideB.IsPresent;
+        }
 
         /// <summary>One path over one design: a window of its own, the state with the same sequence, and the line.</summary>
         private static string Camino(List<string> log, Origen origen, string camino, Func<int> descartes)
@@ -206,7 +217,7 @@ namespace RackCad.UI.Tests
                         Click(w, "RestoreButton");
                         estado = Restaurada(log, e);
                         break;
-                    case "Restaurar-tras-retirar-B":
+                    case CaminoRetirarB:
                         w.LoadExisting(abierto.Design, abierto.Id, abierto.Name, abierto.Project);
                         Check(w, "SideBPresentCheck").IsChecked = false;
                         Paso(log, () => e.S.Editor.SetSideBPresent(false));
@@ -214,7 +225,7 @@ namespace RackCad.UI.Tests
                         Click(w, "RestoreButton");
                         estado = Restaurada(log, e);
                         break;
-                    case "Restaurar-tras-SetGap(60)":
+                    case CaminoSetGap:
                         w.LoadExisting(abierto.Design, abierto.Id, abierto.Name, abierto.Project);
                         w.CompositeState.SetGap(60);
                         Recalcular(w);
@@ -502,16 +513,19 @@ namespace RackCad.UI.Tests
                             log.Add(Camino(log, origen, camino, () => descartes));
                         }
 
-                        if (ConLadoB(origen.Nombre))
+                        if (TieneLadoB(origen))
                         {
-                            foreach (var camino in CaminosConLadoB)
-                            {
-                                log.Add(Camino(log, origen, camino, () => descartes));
-                            }
+                            log.Add(Camino(log, origen, CaminoRetirarB, () => descartes));
                         }
 
+                        log.Add(Camino(log, origen, CaminoSetGap, () => descartes));
                         log.Add(Camino(log, origen, "Actualizar", () => descartes));
                     }
+
+                    // M08, declared in ONE line: «retirar B» only runs where B exists; «SetGap(60)» runs on every design.
+                    var conLadoB = origenes.Where(TieneLadoB).Select(origen => origen.Nombre).ToList();
+                    log.Add("Restaurar-tras-retirar-B solo-con-lado-B=[" + string.Join(", ", conLadoB) + "] omitido-en=" + (origenes.Count - conLadoB.Count)
+                        + " Restaurar-tras-SetGap(60) en=" + origenes.Count);
 
                     // The two recipes: the window and the state give the same design.
                     var x01 = X01Ventana();
@@ -545,7 +559,7 @@ namespace RackCad.UI.Tests
             Assert.Equal(Esperadas(), log);
         }
 
-        /// <summary>The designs that open with side B declared: they also run the paths that retire B and change the gap.</summary>
+        /// <summary>The designs that open with side B declared (M08): the expected list, written out (the run derives it from the designs).</summary>
         private static bool ConLadoB(string nombre) => nombre == "pb-20-ab" || nombre == "X-01" || nombre == "F-01";
 
         private static List<string> Esperadas()
@@ -557,13 +571,12 @@ namespace RackCad.UI.Tests
             foreach (var nombre in nombres)
             {
                 foreach (var camino in CaminosDeUnLado) esperadas.Add(Ok(nombre, camino));
-                if (ConLadoB(nombre))
-                {
-                    foreach (var camino in CaminosConLadoB) esperadas.Add(Ok(nombre, camino));
-                }
-
+                if (ConLadoB(nombre)) esperadas.Add(Ok(nombre, CaminoRetirarB));
+                esperadas.Add(Ok(nombre, CaminoSetGap));
                 esperadas.Add(Ok(nombre, "Actualizar"));
             }
+
+            esperadas.Add("Restaurar-tras-retirar-B solo-con-lado-B=[pb-20-ab, X-01, F-01] omitido-en=" + nombres.Count(n => !ConLadoB(n)) + " Restaurar-tras-SetGap(60) en=" + nombres.Count);
 
             esperadas.Add("X-01 receta-ventana-y-estado iguales=True descartes=0");
             esperadas.Add("F-01 receta-ventana-y-estado iguales=True descartes=0");

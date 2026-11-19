@@ -51,7 +51,9 @@ namespace RackCad.Tests
 
         private static void Paso(List<string> log, Action step) => Paso<int>(log, () => { step(); return 0; });
 
-        private static bool Eq(PushBackEditableState a, PushBackEditableState b) => PushBackEditableStateComparer.Instance.Equals(a, b);
+        /// <summary>The comparer of the state, through the «EXCEPCION» rule (a comparer that throws is never «equal»).</summary>
+        private static bool Eq(List<string> log, PushBackEditableState a, PushBackEditableState b)
+            => Paso(log, () => PushBackEditableStateComparer.Instance.Equals(a, b));
 
         private static PushBackEditableState Copy(PushBackEditableState state) => PushBackEditableStateComparer.Copy(state);
 
@@ -196,9 +198,13 @@ namespace RackCad.Tests
 
         /// <summary>The rich state of CT-PBT1B-06: F-01 with a staged edit and an accepted one, every carrier with a
         /// non-default value, topologies, safety selections of every family and a parked tail whose consumption is pending.</summary>
-        private static PushBackEditableState Rich(List<string> log)
+        private static PushBackEditableState Rich(List<string> log) => Enrich(log, F01(log));
+
+        /// <summary>The second rich state of CT-PBT1B-06 (M04): pb-20-ab with side B retired, with the same carriers and a parked tail.</summary>
+        private static PushBackEditableState RichRetired(List<string> log) => Enrich(log, Retired(log));
+
+        private static PushBackEditableState Enrich(List<string> log, PushBackEditableState state)
         {
-            var state = F01(log);
             Paso(log, () => state.Editor.SetDefaults(PushBackCellTopology.Encontradas, PushBackRunDirection.BToA));
             Paso(log, () => state.Editor.SetCell(0, 0, PushBackCellTopology.Corrida, PushBackRunDirection.AToB));
             Paso(log, () => state.Editor.SetCorridaDepth(0, 1, 3));
@@ -269,7 +275,7 @@ namespace RackCad.Tests
 
         /// <summary>Every reference-type object a graph holds (collections included), by walking ALL fields, and also the keys
         /// and the values of every dictionary: its entries are value types and the dictionary is not a product type.</summary>
-        private static HashSet<object> AllObjects(object root)
+        private static HashSet<object> AllObjects(object root, Func<FieldInfo, bool> skip = null)
         {
             var visited = new HashSet<object>(ReferenceEqualityComparer.Instance);
             var pending = new Queue<object>();
@@ -297,6 +303,7 @@ namespace RackCad.Tests
                 if (!IsProductType(current.GetType())) continue;
                 foreach (var field in InstanceFields(current.GetType()))
                 {
+                    if (skip != null && skip(field)) continue;
                     if (field.FieldType.IsValueType && !field.FieldType.IsGenericType) continue;
                     var value = field.GetValue(current);
                     if (value != null && !value.GetType().IsValueType) pending.Enqueue(value);
@@ -606,22 +613,36 @@ namespace RackCad.Tests
             log.Add("clase-D=[" + string.Join(", ", sharedFields) + "]");
 
             var rich = Rich(log);
+            var richRetired = RichRetired(log);
             var baseline = Paso(log, () => Copy(rich));
-            log.Add("copia-inicial-igual=" + (baseline != null && Eq(baseline, rich)));
+            log.Add("copia-inicial-igual=" + (baseline != null && Eq(log, baseline, rich)));
+            var baselineRetired = Paso(log, () => Copy(richRetired));
+            log.Add("copia-inicial-igual-pb-20-ab-sin-B=" + (baselineRetired != null && Eq(log, baselineRetired, richRetired)));
 
             var exercised = new HashSet<string>(StringComparer.Ordinal);
             var failures = new List<string>();
-            foreach (var (owner, field) in EditableSlots(rich).ToList())
+            var perState = new Dictionary<string, int>(StringComparer.Ordinal);
+            var undone = 0;
+            foreach (var (label, state, start) in new[] { ("F-01", rich, baseline), ("pb-20-ab-sin-B", richRetired, baselineRetired) })
             {
-                var key = KeyOf(field);
-                if (NotMutated.Contains(key)) continue;
-                if (!TryMutate(owner, field, out var undo)) continue;
-                exercised.Add(key);
-                var copy = Paso(log, () => Copy(rich));
-                if (copy == null) { failures.Add("la copia no se pudo tomar: " + key); undo(); continue; }
-                if (!Eq(copy, rich) || !Eq(rich, copy)) failures.Add("la copia no es igual: " + key);
-                if (baseline != null && (Eq(copy, baseline) || Eq(baseline, copy))) failures.Add("la copia perdio la mutacion: " + key);
-                undo();
+                perState[label] = 0;
+                foreach (var (owner, field) in EditableSlots(state).ToList())
+                {
+                    var key = KeyOf(field);
+                    if (NotMutated.Contains(key)) continue;
+                    if (!TryMutate(owner, field, out var undo)) continue;
+                    exercised.Add(key);
+                    perState[label]++;
+                    var copy = Paso(log, () => Copy(state));
+                    if (copy == null) { failures.Add(label + " la copia no se pudo tomar: " + key); undo(); continue; }
+                    if (!Eq(log, copy, state) || !Eq(log, state, copy)) failures.Add(label + " la copia no es igual: " + key);
+                    if (start != null && (Eq(log, copy, start) || Eq(log, start, copy))) failures.Add(label + " la copia perdio la mutacion: " + key);
+
+                    // undo() undoes it: the state is again equal to the copy taken before (as the pilot checks it).
+                    undo();
+                    undone++;
+                    if (start == null || !Eq(log, start, state) || !Eq(log, state, start)) failures.Add(label + " undo no restauro la igualdad: " + key);
+                }
             }
 
             // A reference to a part that holds more fields is exercised through those fields; the rest of the carrier
@@ -638,6 +659,8 @@ namespace RackCad.Tests
                 .Except(exercised).OrderBy(key => key, StringComparer.Ordinal).ToList();
             log.Add("campos-E-sin-ejercer=[" + string.Join(", ", missing) + "]");
             log.Add("fallos=[" + string.Join(" ;; ", failures.OrderBy(f => f, StringComparer.Ordinal)) + "]");
+            log.Add("ranuras-ejercidas F-01>0=" + (perState["F-01"] > 0) + " pb-20-ab-sin-B>0=" + (perState["pb-20-ab-sin-B"] > 0));
+            log.Add("undo-deshace-cada-mutacion=" + (undone > 0 && !failures.Any(failure => failure.Contains("undo no restauro"))));
 
             // The transient mark of the tail consumption is copied and not compared.
             var marked = Paso(log, () => Copy(rich));
@@ -650,8 +673,11 @@ namespace RackCad.Tests
                     "obsoletas=[]",
                     "clase-D=[PushBackEditorState.LastModuleReconciliation:RackModuleReconciliationResult, PushBackEditorState.workingBaseline:PushBackSystem]",
                     "copia-inicial-igual=True",
+                    "copia-inicial-igual-pb-20-ab-sin-B=True",
                     "campos-E-sin-ejercer=[]",
                     "fallos=[]",
+                    "ranuras-ejercidas F-01>0=True pb-20-ab-sin-B>0=True",
+                    "undo-deshace-cada-mutacion=True",
                     "marca-de-consumo-copiada=True",
                 },
                 log);
@@ -681,8 +707,8 @@ namespace RackCad.Tests
 
                 // Part 1: the copy is equal, and what graph shares are exactly the non-null references of D2 and what they reach.
                 var shared = Mutable(AllObjects(original).Intersect(AllObjects(copy), ReferenceEqualityComparer.Instance));
-                var wanted = Mutable(SharedRoots(original).SelectMany(AllObjects));
-                log.Add(scenario.Name + " parte1 copia-igual=" + Eq(original, copy) + " compartidos-exactos=" + shared.SetEquals(wanted) + " raices>0=" + SharedRoots(original).Any());
+                var wanted = Mutable(SharedRoots(original).SelectMany(root => AllObjects(root)));
+                log.Add(scenario.Name + " parte1 copia-igual=" + Eq(log, original, copy) + " compartidos-exactos=" + shared.SetEquals(wanted) + " raices>0=" + SharedRoots(original).Any());
                 expected.Add(scenario.Name + " parte1 copia-igual=True compartidos-exactos=True raices>0=True");
 
                 // Part 2, with no exemption: tail, commit and session of each side of the copy against the WHOLE graph of the original.
@@ -695,24 +721,38 @@ namespace RackCad.Tests
                     ownedByCopy.Add(side.ModuleSession);
                 }
 
-                var reached = Mutable(ownedByCopy.SelectMany(AllObjects));
+                var reached = Mutable(ownedByCopy.SelectMany(root => AllObjects(root)));
                 var common = reached.Intersect(AllObjects(original), ReferenceEqualityComparer.Instance).Count();
                 log.Add(scenario.Name + " parte2 revisados>0=" + (reached.Count > 0) + " compartidos=" + common);
                 expected.Add(scenario.Name + " parte2 revisados>0=True compartidos=0");
             }
 
-            // Part 3: a state just loaded shares nothing mutable with the design it was loaded from.
+            // Part 3 (M06): the editable content, the tail, the session and the commit of a state just loaded share no mutable
+            // object with the design it was loaded from. They are measured from the state itself, WITHOUT subtracting what the
+            // baseline reaches (only the two fields of the class D are not followed), and with a session and a commit that are
+            // not null: after the pass a session is open, and one edit is staged and accepted and another one staged.
             foreach (var name in new[] { "pb-06-seguridad", "pb-07-combinado", "pb-20-ab", "pb-21-cola" })
             {
                 var text = PilotKit.Text(name);
                 var design = DesignOfText(text);
                 var state = new PushBackEditableState();
                 Paso(log, () => state.LoadDesign(design, NameOfText(text), Assembler.Resolver));
-                var inState = AllObjects(state);
-                foreach (var root in SharedRoots(state)) inState.ExceptWith(AllObjects(root));
-                var common = Mutable(inState).Intersect(AllObjects(design), ReferenceEqualityComparer.Instance).Count();
-                log.Add(name + " parte3 compartidos-con-el-diseno=" + common);
-                expected.Add(name + " parte3 compartidos-con-el-diseno=0");
+                Pasada(state);
+                var first = Paso(log, () => state.Editor.SideA.ModuleSession.Modules.First());
+                if (first != null)
+                {
+                    Paso(log, () => state.Editor.SideA.ModuleSession.SetLength(first.ModuleId, first.Length + 2.0));
+                    Paso(log, () => state.Editor.SideA.CommitModuleEdits());
+                    Paso(log, () => state.Editor.SideA.ModuleSession.SetLength(first.ModuleId, first.Length + 3.0));
+                }
+
+                var fromState = Mutable(AllObjects(state, field => Table.TryGetValue(KeyOf(field), out var kind) && kind == Class.D));
+                var common = fromState.Intersect(AllObjects(design), ReferenceEqualityComparer.Instance).Count();
+                var sessionOpen = state.Editor.SideA.ModuleSession != null;
+                var commitOpen = state.Editor.SideA.ModuleCommit != null;
+                log.Add(name + " parte3 revisados>0=" + (fromState.Count > 0) + " sesion-no-nula=" + sessionOpen + " commit-no-nulo=" + commitOpen
+                    + " compartidos-con-el-diseno=" + common);
+                expected.Add(name + " parte3 revisados>0=True sesion-no-nula=True commit-no-nulo=True compartidos-con-el-diseno=0");
             }
 
             Assert.Equal(expected, log);
@@ -722,19 +762,19 @@ namespace RackCad.Tests
 
         /// <summary>Everything that is ordinary editable state, mutated on <paramref name="target"/>; after each group, the
         /// other state must be equal to a copy taken before, compute the same design and hold the same objects.</summary>
-        private static List<string> Battery(string scenario, string direction, PushBackEditableState target, PushBackEditableState other)
+        private static List<string> Battery(List<string> log, string scenario, string direction, PushBackEditableState target, PushBackEditableState other)
         {
             var lines = new List<string>();
             var failures = new List<string>();
-            var before = Copy(other);
+            var before = Paso(log, () => Copy(other)) ?? new PushBackEditableState();
             var objects = AllObjects(other);
-            var design = Salida(Copy(other));
+            var design = Salida(Paso(log, () => Copy(other)) ?? new PushBackEditableState());
 
             void Group(string group)
             {
-                var intact = Eq(other, before) && Eq(before, other);
+                var intact = Eq(log, other, before) && Eq(log, before, other);
                 var same = objects.SetEquals(AllObjects(other));
-                var computes = Salida(Copy(other)) == design;
+                var computes = Salida(Paso(log, () => Copy(other)) ?? new PushBackEditableState()) == design;
                 lines.Add(scenario + " " + direction + " " + group + " intacto=" + (intact && same) + " diseno=" + computes);
                 if (!(intact && same && computes)) failures.Add(group);
             }
@@ -746,7 +786,7 @@ namespace RackCad.Tests
             {
                 if (field.DeclaringType == typeof(SafetyFacePiece)) continue;
                 if (!TryMutate(owner, field, out var undo)) continue;
-                if (!Eq(other, before) || !Eq(before, other) || !objects.SetEquals(AllObjects(other))) failures.Add("ranura " + KeyOf(field));
+                if (!Eq(log, other, before) || !Eq(log, before, other) || !objects.SetEquals(AllObjects(other))) failures.Add("ranura " + KeyOf(field));
                 undo();
             }
 
@@ -830,8 +870,8 @@ namespace RackCad.Tests
                     var original = scenario.Build();
                     var copy = Paso(log, () => Copy(original)) ?? new PushBackEditableState();
                     var lines = direction == "copia-no-toca-original"
-                        ? Paso(log, () => Battery(scenario.Name, direction, copy, original))
-                        : Paso(log, () => Battery(scenario.Name, direction, original, copy));
+                        ? Paso(log, () => Battery(log, scenario.Name, direction, copy, original))
+                        : Paso(log, () => Battery(log, scenario.Name, direction, original, copy));
                     log.AddRange(lines ?? new List<string> { scenario.Name + " " + direction + " sin-bateria" });
                     foreach (var group in new[] { "ranuras-E", "autoridad", "intencion", "portadores" })
                     {
@@ -912,21 +952,22 @@ namespace RackCad.Tests
             var log = new List<string>();
 
             // Two loads of the same design are equal.
-            log.Add("dos-cargas-iguales=" + Eq(Fixture(log, "pb-02-modulos"), Fixture(log, "pb-02-modulos")));
+            log.Add("dos-cargas-iguales=" + Eq(log, Fixture(log, "pb-02-modulos"), Fixture(log, "pb-02-modulos")));
 
             // An open session without changes and a null one are equal (I-03).
             var abierta = Fixture(log, "pb-02-modulos");
             var nula = Paso(log, () => Copy(abierta)) ?? new PushBackEditableState();
             Paso(log, () => nula.Editor.SideA.AdoptLoadedBaseline(nula.Editor.SideA.WorkingBaseline));
-            log.Add("sesion-abierta-sin-cambios-vs-nula-iguales=" + Eq(abierta, nula) + "," + Eq(nula, abierta));
+            log.Add("sesion-abierta-sin-cambios-vs-nula-iguales=" + Eq(log, abierta, nula) + "," + Eq(log, nula, abierta));
 
             // N-M-02: a session that keeps the confirmed list of an older baseline of the same signature is not «without changes».
             var anterior = Fixture(log, "pb-31-v2-modulos");
             Paso(log, () => { _ = anterior.Editor.SideA.ModuleSession; });
             anterior.Pallet = new PalletSpecification(anterior.Pallet.Front, 50.0, anterior.Pallet.Height, anterior.Pallet.Weight, anterior.Pallet.WeightUnit);
             var rebuilt = Pasada(anterior);
-            var fresh = rebuilt == null ? new PushBackEditableState() : LoadState(log, rebuilt.Design, "pb-31");
-            log.Add("sesion-de-una-linea-base-anterior-vs-cargada-distintos=" + !Eq(anterior, fresh));
+            // I02: the SAME name as the one of the envelope that `anterior` was loaded with, so the only difference is the session.
+            var fresh = rebuilt == null ? new PushBackEditableState() : LoadState(log, rebuilt.Design, NameOfText(PilotKit.Text("pb-31-v2-modulos")));
+            log.Add("sesion-de-una-linea-base-anterior-vs-cargada-distintos=" + !Eq(log, anterior, fresh));
 
             // Every change is told apart.
             var rich = F01(log);
@@ -934,7 +975,7 @@ namespace RackCad.Tests
             {
                 var copy = Paso(log, () => Copy(rich)) ?? new PushBackEditableState();
                 Paso(log, () => change(copy));
-                return label + " distintos=" + (!Eq(rich, copy) && !Eq(copy, rich));
+                return label + " distintos=" + (!Eq(log, rich, copy) && !Eq(log, copy, rich));
             }
 
             log.Add(Cambio("contenido", c => c.Editor.SideA.RearTopeSaque += 1.0));
@@ -951,20 +992,20 @@ namespace RackCad.Tests
             var module = other.Structure.Modules.FirstOrDefault(m => m != null);
             if (module != null) module.Length += 3.0;
             Paso(log, () => right.Editor.SideA.AdoptLoadedBaseline(Assembler.Resolver.Resolve(other)));
-            log.Add("linea-base-distinta-con-el-mismo-commit distintos=" + (!Eq(left, right) && !Eq(right, left)));
+            log.Add("linea-base-distinta-con-el-mismo-commit distintos=" + (!Eq(log, left, right) && !Eq(log, right, left)));
 
             // Only the selection: equal.
             var selected = Paso(log, () => Copy(rich)) ?? new PushBackEditableState();
             Paso(log, () => selected.Editor.SideA.ToggleCell(1, 0, extendSelection: false));
             Paso(log, () => selected.Editor.SetActiveSide(PushBackSide.B));
-            log.Add("solo-la-seleccion iguales=" + (Eq(rich, selected) && Eq(selected, rich)));
+            log.Add("solo-la-seleccion iguales=" + (Eq(log, rich, selected) && Eq(log, selected, rich)));
 
             // NaN is reflexive, and null behaves as in the pilot.
             var nan = Paso(log, () => Copy(rich)) ?? new PushBackEditableState();
             nan.AnnotationScale = double.NaN;
             var nanCopy = Paso(log, () => Copy(nan)) ?? new PushBackEditableState();
-            log.Add("NaN-reflexivo=" + (Eq(nan, nan) && Eq(nan, nanCopy)));
-            log.Add("null=" + PushBackEditableStateComparer.Instance.Equals(null, null) + "," + PushBackEditableStateComparer.Instance.Equals(rich, null) + "," + PushBackEditableStateComparer.Instance.Equals(null, rich));
+            log.Add("NaN-reflexivo=" + (Eq(log, nan, nan) && Eq(log, nan, nanCopy)));
+            log.Add("null=" + Eq(log, null, null) + "," + Eq(log, rich, null) + "," + Eq(log, null, rich));
 
             Assert.Equal(
                 new[]
@@ -1015,10 +1056,10 @@ namespace RackCad.Tests
             restored.Advanced.SeparatorCountOverride = 3;
             Paso(log, () => restored.Editor.SideA.ModuleSession.RequestStandardRestore());
             Paso(log, () => restored.Editor.SideA.CommitModuleEdits());
-            var inputs = restored.BuildInputs(Assembler);
+            var inputs = Paso(log, () => restored.BuildInputs(Assembler));
             Paso(log, () => CompositeAssembler.BuildDesign(restored.Editor, inputs));
             log.Add("restaurar-estandar Advanced-intacto=" + (restored.Advanced.ManualHeaderHeightOverride == 150.5 && restored.Advanced.SeparatorCountOverride == 3)
-                + " inputs-de-la-pasada-reiniciados=" + (inputs.ManualHeaderHeightOverride == null && inputs.SeparatorCountOverride == null));
+                + " inputs-de-la-pasada-reiniciados=" + (inputs != null && inputs.ManualHeaderHeightOverride == null && inputs.SeparatorCountOverride == null));
 
             Assert.Equal(
                 new[]
@@ -1150,13 +1191,36 @@ namespace RackCad.Tests
             Step(() => state.Editor.SetActiveSelection(PushBackSideSelection.Both));
             Step(() =>
             {
+                // Every carrier of D-PBT1-02 (M02): the pallet, the post, the tolerance, the beam, the scale, the datum, the three
+                // boxes, the dimensions with their style and views and the three view boxes, the six advanced scopes, the name and
+                // the safety selections (one added and one changed).
                 state.Pallet = new PalletSpecification(1.0, 2.0, 3.0, 4.0, "lb");
                 state.PalletsDeep += 1;
                 state.PostCatalogId = "OTRO";
+                state.PostPeralte += 1.0;
+                state.PalletTolerance += 1.0;
+                state.BeamDepth += 1.0;
                 state.AnnotationScale += 1.0;
+                state.FirstLevelDatum = null;
+                state.NumberFronts = !state.NumberFronts;
+                state.NumberLevels = !state.NumberLevels;
+                state.DrawRackName = !state.DrawRackName;
+                state.Dimensions = state.Dimensions == DimensionDetail.None ? DimensionDetail.Detailed : DimensionDetail.None;
+                state.DimensionStyle = "OTRO";
+                state.LoadedDimensionViews = DimensionViewVisibility.Lateral;
+                state.DimensionViewsTouched = !state.DimensionViewsTouched;
+                state.DimensionsFrontal = !state.DimensionsFrontal;
+                state.DimensionsLateral = !state.DimensionsLateral;
+                state.DimensionsPlanta = !state.DimensionsPlanta;
+                state.Advanced.ManualHeaderHeightOverride = 123.0;
+                state.Advanced.DerivedPostReinforced = !state.Advanced.DerivedPostReinforced;
+                state.Advanced.DerivedPostReinforcementHeight = 12.0;
+                state.Advanced.DerivedPostHeight = 34.0;
                 state.Advanced.SeparatorCountOverride = 9;
+                state.Advanced.SeparatorSpacingOverride = 5.0;
                 state.Name = "otro";
                 state.SafetySelections.Add(Selection("N"));
+                if (state.SafetySelections.Count > 1) state.SafetySelections[0].Quantity += 3;
             });
             Step(() => Pasada(state));
         }
@@ -1251,11 +1315,29 @@ namespace RackCad.Tests
             Paso(log, () => PushBackEditableStateComparer.Instance.GetHashCode(copyC));
             log.Add("comparar huellas-iguales=" + (comparing.Count > 0 && comparing.Intact()));
 
+            // M01 (condition 7 (ii)): the comparer reads of a baseline only the declared projection. Two DIFFERENT baselines, equal in
+            // the projection: the name of one is mutated (outside the projection) and Equals does not change; as a control that the
+            // check can fail, the length of a module (inside the projection) is mutated and Equals does change.
+            var projA = Fixture(log, "pb-02-modulos");
+            var projB = Paso(log, () => Copy(projA)) ?? new PushBackEditableState();
+            Paso(log, () => projB.Editor.SideA.AdoptLoadedBaseline(Assembler.Resolver.Resolve(DesignOfText(PilotKit.Text("pb-02-modulos")))));
+            var projBaselineA = projA.Editor.SideA.WorkingBaseline;
+            var projBaselineB = projB.Editor.SideA.WorkingBaseline;
+            var distinct = projBaselineA != null && projBaselineB != null && !ReferenceEquals(projBaselineA, projBaselineB);
+            var projBefore = Eq(log, projA, projB) && Eq(log, projB, projA);
+            if (projBaselineB != null) projBaselineB.Name = "mutado desde la prueba (fuera de la proyeccion)";
+            var projOutside = Eq(log, projA, projB) && Eq(log, projB, projA);
+            var projModule = projBaselineB?.Structure.Modules.FirstOrDefault();
+            if (projModule != null) projModule.Length += 1.0;
+            var projInside = Eq(log, projA, projB) || Eq(log, projB, projA);
+            log.Add("comparar-proyeccion lineas-base-distintas=" + distinct + " iguales-antes=" + projBefore + " iguales-tras-mutar-el-nombre=" + projOutside
+                + " iguales-tras-mutar-un-modulo=" + projInside);
+
             // ... and with two states that share the same baseline, the result does not change when the shared object is
             // mutated: neither outside the projection (its name) nor inside it (the length of a module).
             var sharedA = Rich(log);
             var sharedB = Paso(log, () => Copy(sharedA)) ?? new PushBackEditableState();
-            var antes = Eq(sharedA, sharedB);
+            var antes = Eq(log, sharedA, sharedB);
             var baseline = sharedA.Editor.SideA.WorkingBaseline;
             if (baseline != null)
             {
@@ -1264,7 +1346,7 @@ namespace RackCad.Tests
                 module.Length += 1.0;
             }
 
-            var despues = Eq(sharedA, sharedB) && Eq(sharedB, sharedA);
+            var despues = Eq(log, sharedA, sharedB) && Eq(log, sharedB, sharedA);
             log.Add("comparar-invariante=" + (antes && despues && baseline != null));
 
             Assert.Equal(
@@ -1274,6 +1356,7 @@ namespace RackCad.Tests
                     "validar huellas-iguales=True",
                     "descartar-y-recargar huellas-iguales=True",
                     "comparar huellas-iguales=True",
+                    "comparar-proyeccion lineas-base-distintas=True iguales-antes=True iguales-tras-mutar-el-nombre=True iguales-tras-mutar-un-modulo=False",
                     "comparar-invariante=True",
                 },
                 log);

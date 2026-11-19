@@ -165,19 +165,11 @@ namespace RackCad.Application.Systems.PushBack
         public void ClearModuleCommit() => moduleCommit = null;
 
         /// <summary>
-        /// Copy the module authority of <paramref name="source"/> into this state: the staged edit and the accepted edit
-        /// are copied (this state shares nothing mutable with them) and the signature travels. The resolved baseline
-        /// and the last reconciliation report are the two references declared as shared (decision D2 of the Owner): they
-        /// are adopted, never mutated and never copied.
+        /// Copy the module authority of <paramref name="source"/> into this state (I-64 F4B PB-T1b, D-PBT1-07). Skeleton:
+        /// it does nothing yet.
         /// </summary>
         public void CopyAuthorityFrom(PushBackEditorState source)
         {
-            if (source == null) throw new ArgumentNullException(nameof(source));
-            workingBaseline = source.workingBaseline;
-            moduleSession = source.moduleSession?.Copy();
-            moduleCommit = source.moduleCommit?.Copy();
-            moduleSignature = source.moduleSignature;
-            LastModuleReconciliation = source.LastModuleReconciliation;
         }
 
         private RackModuleEditSession OpenModuleSession()
