@@ -8180,3 +8180,23 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - solo documentación;
 - sin AutoCAD;
 - los eventos y las transcripciones, solo por SHA-256.
+
+## 258. PB-T2: paquete del contrato v2.8 y anclajes de PB-T2b (F4B-E36)
+
+**Qué se custodia:**
+- **El paquete** `docs/initiatives/I-64-f4b-pbt2-gate-contract-package.md`, en su v2.8, con la línea de emisión de PB-T2b. La v2.2 que estaba custodiada, la v2.3, la v2.4, la v2.5, la v2.6 y la v2.7 pasan a la historia en `F4B-DRAFTS/pbt2/`.
+- **En `F4B-DRAFTS/pbt2/`:**
+  - los deltas v2.2 → v2.3, v2.3 → v2.4, v2.4 → v2.5, v2.5 → v2.6, v2.6 → v2.7 y v2.7 → v2.8;
+  - la comprobación acotada de PB-T2b (CA-T2b), con sus recomprobaciones, y el encargo literal de cada ronda;
+  - los guiones de lectura del revisor: `recheck_fixture_tolerance.py` y `recheck_fixture_fields.py`;
+  - la remedición de las anclas [T1c]: `measure_pbt2b_t1c.py` y su salida, `pbt2b-anchors-out.txt`;
+  - la salida en seco del generador sobre el cierre de PB-T2a, la revisada.
+
+**La base:** el cierre de PB-T2a, F4B-E34 (`b29551ae`): PB-T2a CLOSED / PASS WITH LIMITATIONS sobre `5ddeb3b4`, en el intento 2 de 3: la verificación `10a9`, 14/14; nc1 por disposición del Owner (solo esta vez); nc2 por el sustituto adaptado `PBT2A-NC2-EXACT-WHITELIST-F4B-01` (PASS, `c2d3`); nc3 PASS (F4B-E34, con las decisiones del Owner sobre nc1 y nc2). Con él se custodiaron las decisiones del Owner de F4B-E35: la emisión condicional de PB-T3 y la reparación del RED (RR), que la v2.7 incorpora en PB-T2b y PB-T2c y la v2.8 completa con la lectura de la verificación (RR-7).
+
+**Las comprobaciones:**
+- **la comprobación acotada:** EMITIBLE TRAS CORRECCIONES, B 0 / I 3 / M 7, corregidas en la v2.4;
+- **su recomprobación sobre la v2.4:** EMITIBLE, B 0 / I 0 / M 4, aplicada en la v2.5;
+- **`BOUNDED_RESULT`,** con las recomprobaciones que haya: `EMITIBLE TRAS CORRECCIONES (B 0 / I 3 / M 7; I-01, I-02 e I-03 corregidas en el paquete; recomprobacion v2.4: EMITIBLE, B 0 / I 0 / M 4; M-08 a M-11 aplicadas en la v2.5; recomprobacion v2.8: EMITIBLE, B 0 / I 0 / M 2)`.
+
+**Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.

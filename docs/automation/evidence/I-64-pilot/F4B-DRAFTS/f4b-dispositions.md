@@ -1002,3 +1002,55 @@ Por PBT2A-C11, los dos controles volvieron al Owner.
 
   Excepciona AUTOMATION_PLAN 16.8 solo en esas condiciones, como F4B-E25 hizo con 16.3.
 - **Motivo:** en PB-T1c y en PB-T2a se gastó un intento por un error de escritura de una prueba nueva que solo aparecía después del RED (F4B-E30 y F4B-E33).
+
+## F4B-E36. Emisión de F4B-PBT2B-WORKSPACE-MODE-WINDOW (PB-T2b), con el paquete de PB-T2 v2.8
+
+**Fecha:** 2026-11-19.
+
+**Autoridad de emisión:** la autorización condicional del Owner, F4B-E28, pregunta 4: «Sí, con esa condición (Recomendado)».
+- **Las condiciones que exige:**
+  - la revisión de la subtarea da 0 bloqueantes y 0 importantes sin resolver;
+  - la remedición sobre el cierre de PB-T2a no cambia nada material.
+- **Cuándo se vuelve al Owner:** por una decisión nueva, un control con una firma no prevista, un intento 3 o un efecto material sin medir. No se da ninguno.
+
+**El cierre de PB-T2a** (F4B-E34, `b29551ae`): PB-T2a CLOSED / PASS WITH LIMITATIONS sobre `5ddeb3b4`, en el intento 2 de 3: la verificación `10a9`, 14/14; nc1 por disposición del Owner (solo esta vez); nc2 por el sustituto adaptado `PBT2A-NC2-EXACT-WHITELIST-F4B-01` (PASS, `c2d3`); nc3 PASS (F4B-E34, con las decisiones del Owner sobre nc1 y nc2).
+
+**La reparación del RED** (F4B-E35, pregunta 4): el contrato incorpora la regla RR del Owner, que empieza en PB-T2b:
+- PBT2B-C07 con su excepción, y PBT2B-C18, nueva, para una reparación que rompe la regla;
+- la cadena RR-6 en INV-PBT2B-02;
+- en la `ExpectedEvidence`, la CI del RED reparado y lo que declara la entrega;
+- cómo lee la verificación del Controller una reparación (RR-7): las comprobaciones de 16.9 que la tocan, lo que comprueba de RR y la ayuda mecánica de RR-3 (v2.8).
+
+Una reparación no gasta intento (RR-7).
+
+**La revisión:**
+- **La comprobación acotada de PB-T2b** (CA-T2b) se hizo sobre la v2.3, el contrato propuesto y la salida de sus anclajes. Da **EMITIBLE TRAS CORRECCIONES, B 0 / I 3 / M 7**, sin decisiones nuevas para el Owner.
+  - **Sus tres importantes** son recetas de prueba con el riesgo que costó el intento 1 de PB-T1c y el de PB-T2a: el momento de una lectura y gestos que no hacen lo que dicen.
+  - **La v2.4** las corrige con sus siete menores, y repasa con ese riesgo todas las CT de PB-T2b y PB-T2c. Ese repaso encontró además que la tolerancia de los 17 fixtures es 4, así que la edición de tolerancia de cuatro CT no cambiaba nada (V24-11).
+- **Su recomprobación sobre la v2.4,** la §10 del mismo informe, da **EMITIBLE, nuevos B 0 / I 0 / M 4**. Las cuatro menores se aplican en la v2.5: M-08 en el generador y M-09 a M-11 en el texto.
+- **La v2.6, la v2.7 y la v2.8:**
+  - la v2.6 aplica la comprobación acotada de PB-T2c (CA-T2c) y su recomprobación, que solo cambian PB-T2c;
+  - la v2.7 incorpora la regla RR de F4B-E35 en PB-T2b y PB-T2c;
+  - la v2.8 aplica sus recomprobaciones (la §11 de CA-T2b y la §10 de CA-T2c), con una importante compartida, la lectura de la verificación, y PB-T2b se emite con ella.
+- **La §12, sobre la v2.8,** da **EMITIBLE, nuevos B 0 / I 0 / M 2**, sin decisiones nuevas para el Owner. Sus dos menores se aplican en la cadena de la sesión, sin cambiar el contrato:
+  - **M-05:** el relevo y la verificación escriben la lista cerrada de las líneas literales del paquete que la clase lleva en `RedSha`, y aplican sobre ella la parada C07 de RR-3;
+  - **M-06:** la verificación comprueba por guion RR-1, RR-2, RR-6, la comprobación n.º 10 desde `RedRepairSha` y la comparación byte a byte, como en F4B-E15.
+- **El resultado que lleva el contrato,** con las recomprobaciones que haya: `EMITIBLE TRAS CORRECCIONES (B 0 / I 3 / M 7; I-01, I-02 e I-03 corregidas en el paquete; recomprobacion v2.4: EMITIBLE, B 0 / I 0 / M 4; M-08 a M-11 aplicadas en la v2.5; recomprobacion v2.8: EMITIBLE, B 0 / I 0 / M 2)`.
+
+**La remedición sobre el cierre de PB-T2a** (`b29551ae`, F4B-E34), hecha por el generador al escribir con `--pt2a-close`:
+- `git diff <cierre de PB-T2a> <BaseSha> -- src/RackCad.UI` sale vacío, y W, WC y WX son los blobs del GREEN de PB-T1c (`f8756a88`, `1a3300b4` y `fb094bef`). Por eso las anclas de W y WC y los rangos de INV-PBT2B-03 valen sin cambio.
+- El puerto de PB-T2a, ya implementado, tiene la API de D-PBT2-02 y D-PBT2-03.
+- Application es el GREEN de PB-T1c más los dos archivos de PB-T2a, y `tests` solo gana sus dos clases. Los recuentos de los RequiredTests son los de `0dc623ca`.
+- La línea base de la CI: la corrida `push` `44480898605` sobre `5ddeb3b4`, con el `src` y los `tests` del cierre: Core 19 092 y UI 2 439, con 21 omitidas. Es exactamente la prevista en el §6.2.
+
+No hay cambios materiales.
+
+**El contrato:**
+- **Qué es PB-T2b:** la ventana de Push Back en dos modos explícitos:
+  - CLASSIC, sin cambio observable;
+  - WORKSPACE, solo por la factoría tipada `ForDraft`.
+
+  «Aplicar al borrador» devuelve una copia por el puerto de PB-T2a y no cierra. BOM y biblioteca siguen, con dos costuras de prueba nuevas.
+- **La cadena:** primera delegación; `attempts` 1 de 3.
+- **La planificación:** con las colecciones opacas puestas por la sesión (F4B-E21).
+- **La verificación:** con las comprobaciones deterministas de F4B-E15.
