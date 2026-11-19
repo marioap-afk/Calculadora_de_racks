@@ -8042,3 +8042,16 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 **La comprobación:** comprobacion acotada independiente de la v2.8 EMITIBLE TRAS CORRECCIONES 0/1/7, recomprobacion 0/1/3 y confirmacion final 0/0/1 (el assert del generador, alineado antes de emitir: seco final rc 0 sobre 95373af6), todas aplicadas; sin decisiones materiales nuevas para el Owner.
 
 **Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.
+
+## 251. Contrato de F4B-PBT1C-LOSSLESS-STATE-WINDOW
+
+**Contrato:** `I-64-pilot/F4B-PBT1C-LOSSLESS-STATE-WINDOW/coordinator/gate-contract.json` (F4B-E27), con su script generador al lado.
+- **Alcance:** lista blanca exacta de 5 rutas: W, WC y las tres clases de prueba nuevas. Application, el piloto, el Plugin, el XAML y los constructores no cambian.
+- **`ForbiddenWriteScope`:** 161 entradas, con el metodo de PB-T0.
+- **Invariantes y paradas:** 15 invariantes y 15 paradas propias; INV-PBT1C-03 con rangos de linea y PBT1C-C13 por nombre (v2.8).
+- **Filtros:** `RackCad.UI.Tests.PushBackWindowOnStateTests` (`MinSelected` 2, `ExpectRed`); `RackCad.Tests.PushBackWindowOnStateSourceGuardTests` (`MinSelected` 1, `ExpectRed`); `RackCad.Tests.PushBackWindowSharedReferenceGuardTests` (`MinSelected` 1); `RackCad.Tests.PushBackSharedReferenceGuardTests` (`MinSelected` 2); `RackCad.UI.Tests.PushBack` (`MinSelected` 557); `RackCad.UI.Tests.BlankFront` (`MinSelected` 33); `RackCad.UI.Tests.WindowCensusGuardTests` (`MinSelected` 8); `RackCad.UI.Tests.RichEditor` (`MinSelected` 25); `RackCad.UI.Tests.Workspace` (`MinSelected` 547); `RackCad.UI.Tests.PushBackRichPreviewTests` (`MinSelected` 9); `RackCad.Tests.PushBackEditableState` (`MinSelected` 13); `RackCad.Tests.PushBackEditorOutputGate` (`MinSelected` 1); `RackCad.Tests.PushBackClassicCharacterization` (`MinSelected` 10); `RackCad.Tests.PushBackFullEditorCharacterization` (`MinSelected` 3); `RackCad.Tests.PushBackModuleEditorCharacterizationTests` (`MinSelected` 15); `RackCad.Tests.I55DeferredProductFixCharacterizationTests` (`MinSelected` 3); `RackCad.Tests.NamespaceFolderGuardTests` (`MinSelected` 7); `RackCad.Tests.Workspace` (`MinSelected` 3271); `RackCad.UI.Tests.Cantilever` (`MinSelected` 67).
+- **Revisiones:** `AuthorityRevision` `af46fcd5fc9ea79c9b1d5c187ac3c1f68c96fc8e` y `MainSha` `812baf879612320653094a8aaf46aca0bac81383`; anclaje: src igual al cierre de PB-T1b (`95373af6`).
+- **`attempts`:** 1 de 3.
+- **La verificacion** lleva las tres comprobaciones deterministas de F4B-E15; la planificacion, las colecciones opacas puestas por la sesion (F4B-E21).
+
+**Limites:** solo documentacion en este paso; sin AutoCAD.

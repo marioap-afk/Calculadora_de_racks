@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: none
   attempts: 1
-  next_action: "F4B PB-T1c: paquete v2.8 (las correcciones que deja PB-T1b; F4B-E22 a F4B-E26), el registro con el apartado Q y la comprobacion acotada custodiados; siguiente: emitir el contrato de F4B-PBT1C-LOSSLESS-STATE-WINDOW con attempts 1 de 3 (F4B-E27)"
+  next_action: "F4B-PBT1C-LOSSLESS-STATE-WINDOW: contrato emitido (AuthorityRevision af46fcd5, attempts 1 de 3); siguiente: planificacion del Controller (colecciones opacas por la sesion, F4B-E21), comparacion byte a byte, A1-A8, nc4 y Worker"
   last_evidence_commit: 0f49f69160cdffc1d2933d6165d5f472b5793d84
 execution_context:
   mode: manual
