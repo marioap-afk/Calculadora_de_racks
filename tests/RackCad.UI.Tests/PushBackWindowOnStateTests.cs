@@ -582,15 +582,17 @@ namespace RackCad.UI.Tests
                     vigia.Capturar(log, w);
                 }
 
+                // A neutral recompute after the gesture, so that what the gesture adopted is compared against a later pass.
+                if (!EstaCerrada(w)) Recalcular(w);
+                vigia.Capturar(log, w);
+
+                // The line of the part 1 is taken after that recompute, the same for every gesture.
                 string parte1 = null;
                 if (gesto.Compara)
                 {
                     parte1 = gesto.Nombre + " valido=" + Valido(w) + " iguales=" + DisenoIgual(log, w) + " nombre-igual=" + NombreIgual(log, w);
                 }
 
-                // A neutral recompute after the gesture, so that what the gesture adopted is compared against a later pass.
-                if (!EstaCerrada(w)) Recalcular(w);
-                vigia.Capturar(log, w);
                 Cerrar(w);
                 if (parte1 != null) log.Add(parte1);
                 log.Add(gesto.Nombre + " huellas-iguales=" + (vigia.Cuenta > 0 && vigia.Intacta()) + " descartes=" + descartes());
