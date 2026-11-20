@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: none
   attempts: 2
-  next_action: "F4B-PBT3A-FULL-WRITE-MODEL: intento 1 parado con PBT3A-C02 antes del RED (el esqueleto de la v4.4 chocaba con la guarda G-9); decision del Owner F4B-E42 (Renombrar ForWrite), paquete de PB-T3 v4.5 y analisis de la correccion custodiados; siguiente: reemitir el contrato con la v4.5 para la correccion en el intento 2 de 3"
+  next_action: "F4B-PBT3A-FULL-WRITE-MODEL: contrato emitido de nuevo con la v4.5 (AuthorityRevision 5bda5569, correccion en el intento 2 de 3); siguiente: planificacion de la correccion (CorrectionOf R20261120T001738Z-7d92, analysis.md custodiado), colecciones opacas por la sesion (F4B-E21), comparacion byte a byte, A1-A8, nc4 y Worker"
   last_evidence_commit: 0f49f69160cdffc1d2933d6165d5f472b5793d84
 execution_context:
   mode: manual
