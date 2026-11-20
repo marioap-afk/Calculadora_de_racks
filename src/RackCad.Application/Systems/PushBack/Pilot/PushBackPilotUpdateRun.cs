@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
+using RackCad.Application.Systems.PushBack.Draft;
 using RackCad.Application.Systems.Shared;
 using RackCad.Application.Views.Redraw;
 using RackCad.Application.Workspace.Drafts;
@@ -113,6 +114,10 @@ namespace RackCad.Application.Systems.PushBack.Pilot
 
         public const string DesiredNamesFailedPrefix = "No se pudieron calcular los nombres de las vistas: ";
 
+        public const string EraseUnsupportedReason = "El dibujo no admite borrar vistas en esta actualización.";
+
+        public const string PostErasedStillPresentPrefix = "POST_ERASED_STILL_PRESENT: ";
+
         private const string CompletenessEvidence = "RackSiblingScan/CaptureDrawing";
 
         /// <summary>
@@ -132,6 +137,21 @@ namespace RackCad.Application.Systems.PushBack.Pilot
                 default: return PushBackPilotPrecheck.Go();
             }
         }
+
+        /// <summary>The check before the slot for a draft of the FULL model (D-PBT3-10): the same one, over its own snapshot.</summary>
+        public static PushBackPilotPrecheck Precheck(DraftSession<PushBackFullDraftState> draft) =>
+            PushBackPilotPrecheck.Go();
+
+        /// <summary>The whole update of a draft of the FULL model under the slot (D-PBT3-10). TOTAL: it never throws.</summary>
+        public static DraftApplyOutcome<PushBackFullDraftState> ExecuteFull(
+            DraftSession<PushBackFullDraftState> draft,
+            PushBackPilotUpdateRequest request,
+            IPushBackPilotUpdatePort port) =>
+            DraftApplyOutcome<PushBackFullDraftState>.NotAppliedFailure(UpdateNotRunReason);
+
+        /// <summary>The comparison of POST for the FULL model (D-PBT3-10): the erased views are gone, and the rest as for the pilot.</summary>
+        public static string? ComparePostFull(PushBackPilotUpdatePlan plan, PushBackFullIntentResult? postRead) =>
+            PostRereadMissingReason;
 
         /// <summary>
         /// The whole update under the slot. TOTAL: it never throws. The outcome is the one that the draft must be closed with.

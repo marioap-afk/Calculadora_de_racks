@@ -123,7 +123,7 @@ public class WorkspacePilotUpdateGuardTests
         foreach (var path in files) Assert.DoesNotMatch(new Regex(@"Transaction"), Src.Text(path));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T3b: sustituida por E-4 de PushBackPilotUpdateEquivalenceGuardTests (registro declarado superseding-characterization.md; decisión del Owner F4B-E29, D-1).")]
     public void TheRunReleasesBothScopesInFinallyBlocksOfItsOwnAndNeverWithAUsing()
     {
         var code = Src.Code(RunPath);

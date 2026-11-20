@@ -118,13 +118,13 @@ public class WorkspacePilotPrepareGuardTests
         if (!Regex.IsMatch(body, @"source\.Id\s*,\s*source\.Name\s*,")) yield return "the identity and the name do not come from the source";
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T3b: sustituida por E-1 de PushBackPilotUpdateEquivalenceGuardTests (registro declarado superseding-characterization.md; decisión del Owner F4B-E29, D-1).")]
     public void TheFileOfThePlanComposesExactlyOnceInAMemberOfItsOwnWithAParameterSourceAndTheNameOfTheRereadEnvelope()
     {
         Assert.Empty(ComposeViolations(Plan()));
     }
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T3b: sustituida por E-2 de PushBackPilotUpdateEquivalenceGuardTests (registro declarado superseding-characterization.md; decisión del Owner F4B-E29, D-1).")]
     [InlineData("source.Id, source.Name,", "source.Id, \"Otro\",")]
     [InlineData("RackEmbedComposer.Compose(source,", "RackEmbedComposer.Compose(null,")]
     [InlineData("RackEmbedDocument source, string view", "RackEmbedDocument? source, string view")]
@@ -226,7 +226,7 @@ public class WorkspacePilotPrepareGuardTests
         Assert.DoesNotMatch(new Regex(@"\bthrow\b"), prepare);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T3b: sustituida por E-3 de PushBackPilotUpdateEquivalenceGuardTests (registro declarado superseding-characterization.md; decisión del Owner F4B-E29, D-1).")]
     public void TheMemberPlansAreBuiltOnlyFromTheMutableMembersOfTheRereadInOrdinalOrderAndNeverErase()
     {
         var plan = Plan();

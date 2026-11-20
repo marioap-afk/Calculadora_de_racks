@@ -892,14 +892,14 @@ public class WorkspacePilotUpdateIntegrationGuardTests
         if (Regex.IsMatch(escape, @"DraftApplyOutcomeKind\.Applied\b|\.Applied\s*\(")) yield return "the escape can answer an applied";
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T3b: sustituida por E-5 de PushBackPilotUpdateEquivalenceGuardTests (registro declarado superseding-characterization.md; decisión del Owner F4B-E29, D-1).")]
     public void M01TheEscapeOfTheRunIsClassifiedByTheStateThatTheRunAlreadyHadAndNeverAsAPlainFailureAfterAWriteOrASeal()
     {
         Assert.Empty(RunEscapeViolations(CodeOf(RunPath)));
         Assert.Contains("OutcomeOfAnEscape", CodeOf(RunPath));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T3b: sustituida por E-6 de PushBackPilotUpdateEquivalenceGuardTests (registro declarado superseding-characterization.md; decisión del Owner F4B-E29, D-1).")]
     public void M01TheEscapeGuardTripsOnACatchThatDoesNotConsultTheStateAndOnAnEscapeThatAnswersAPlainFailureFirst()
     {
         var run = CodeOf(RunPath);

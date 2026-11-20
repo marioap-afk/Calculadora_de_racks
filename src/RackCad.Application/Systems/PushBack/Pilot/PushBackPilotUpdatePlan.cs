@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
+using RackCad.Application.Systems.PushBack.Draft;
 using RackCad.Application.Systems.Shared;
 using RackCad.Application.Workspace.Drafts;
 using RackCad.Domain.Systems.PushBack;
@@ -64,6 +65,65 @@ namespace RackCad.Application.Systems.PushBack.Pilot
                 draft.StaleBase,
                 draft.InitialDraftState,
                 PushBackPilotStateComparer.Copy(draft.CurrentDraftState),
+                draft.HasPendingText,
+                draft.IsDirty,
+                status == DraftStatus.Applying ? draft.StatusBeforeAttempt : status);
+        }
+    }
+
+    /// <summary>
+    /// I-64 F4B PB-T3b (D-PBT3-09) — the explicit snapshot of a draft of the FULL model that the full PREPARE reads. It is the twin of
+    /// <see cref="PushBackPilotPrepareInput"/>, which does not change, and it is built by ONE factory, <see cref="From"/>.
+    /// The two states are copies, and <see cref="ConsideredStatus"/> is the status the draft had before an attempt that is in flight.
+    /// </summary>
+    public sealed class PushBackFullPrepareInput
+    {
+        private PushBackFullPrepareInput(
+            string rackId,
+            DraftStaleBase staleBase,
+            PushBackFullDraftState initialDraftState,
+            PushBackFullDraftState currentDraftState,
+            bool hasPendingText,
+            bool isDirty,
+            DraftStatus consideredStatus)
+        {
+            RackId = rackId;
+            StaleBase = staleBase;
+            InitialDraftState = initialDraftState;
+            CurrentDraftState = currentDraftState;
+            HasPendingText = hasPendingText;
+            IsDirty = isDirty;
+            ConsideredStatus = consideredStatus;
+        }
+
+        public string RackId { get; }
+
+        /// <summary>The base of the draft: what the last read of the drawing saw.</summary>
+        public DraftStaleBase StaleBase { get; }
+
+        /// <summary>A COPY of the initial state of the draft.</summary>
+        public PushBackFullDraftState InitialDraftState { get; }
+
+        /// <summary>A COPY of the current state of the draft.</summary>
+        public PushBackFullDraftState CurrentDraftState { get; }
+
+        public bool HasPendingText { get; }
+
+        public bool IsDirty { get; }
+
+        /// <summary>The status of the draft, and under Applying the status it had before the attempt began.</summary>
+        public DraftStatus ConsideredStatus { get; }
+
+        /// <summary>The one construction of the snapshot of a draft of the full model.</summary>
+        public static PushBackFullPrepareInput From(DraftSession<PushBackFullDraftState> draft)
+        {
+            if (draft == null) throw new ArgumentNullException(nameof(draft));
+            var status = draft.Status;
+            return new PushBackFullPrepareInput(
+                draft.RackId,
+                draft.StaleBase,
+                draft.InitialDraftState,
+                PushBackFullDraftStateComparer.Copy(draft.CurrentDraftState),
                 draft.HasPendingText,
                 draft.IsDirty,
                 status == DraftStatus.Applying ? draft.StatusBeforeAttempt : status);
@@ -181,9 +241,15 @@ namespace RackCad.Application.Systems.PushBack.Pilot
     public sealed class PushBackPilotPostExpectation : IEquatable<PushBackPilotPostExpectation>
     {
         internal PushBackPilotPostExpectation(double annotationScale, IEnumerable<PushBackPilotKeyedText> envelopes)
+            : this(annotationScale, envelopes, Array.Empty<string>())
+        {
+        }
+
+        internal PushBackPilotPostExpectation(double annotationScale, IEnumerable<PushBackPilotKeyedText> envelopes, IEnumerable<string> erasedKeys)
         {
             AnnotationScale = annotationScale;
             Envelopes = Array.AsReadOnly(envelopes.ToArray());
+            ErasedKeys = Array.AsReadOnly(erasedKeys.ToArray());
         }
 
         public double AnnotationScale { get; }
@@ -191,8 +257,14 @@ namespace RackCad.Application.Systems.PushBack.Pilot
         /// <summary>The outgoing envelope text of each member, ordered by key (ordinal).</summary>
         public IReadOnlyList<PushBackPilotKeyedText> Envelopes { get; }
 
+        /// <summary>The keys of the views that the update erases, ordered by key (ordinal); empty in the pilot.</summary>
+        public IReadOnlyList<string> ErasedKeys { get; }
+
         public bool Equals(PushBackPilotPostExpectation? other) =>
-            other != null && AnnotationScale.Equals(other.AnnotationScale) && Envelopes.SequenceEqual(other.Envelopes);
+            other != null
+            && AnnotationScale.Equals(other.AnnotationScale)
+            && Envelopes.SequenceEqual(other.Envelopes)
+            && ErasedKeys.SequenceEqual(other.ErasedKeys, StringComparer.Ordinal);
 
         public override bool Equals(object? obj) => Equals(obj as PushBackPilotPostExpectation);
 
@@ -215,13 +287,29 @@ namespace RackCad.Application.Systems.PushBack.Pilot
             double annotationScale,
             IEnumerable<PushBackPilotMemberPlan> members,
             PushBackPilotPostExpectation postExpectation)
+            : this(rackId, originKey, originKey, expectedBase, expectedVariableRegistryText, annotationScale, members, Array.Empty<string>(), postExpectation)
+        {
+        }
+
+        internal PushBackPilotUpdatePlan(
+            string rackId,
+            string originKey,
+            string postOriginKey,
+            IEnumerable<DraftStaleBaseEntry> expectedBase,
+            string? expectedVariableRegistryText,
+            double annotationScale,
+            IEnumerable<PushBackPilotMemberPlan> members,
+            IEnumerable<string> erasures,
+            PushBackPilotPostExpectation postExpectation)
         {
             RackId = rackId;
             OriginKey = originKey;
+            PostOriginKey = postOriginKey;
             ExpectedBase = Array.AsReadOnly(expectedBase.ToArray());
             ExpectedVariableRegistryText = expectedVariableRegistryText;
             AnnotationScale = annotationScale;
             Members = Array.AsReadOnly(members.ToArray());
+            Erasures = Array.AsReadOnly(erasures.ToArray());
             PostExpectation = postExpectation;
         }
 
@@ -229,6 +317,12 @@ namespace RackCad.Application.Systems.PushBack.Pilot
 
         /// <summary>The key of the member that is the origin of the draft.</summary>
         public string OriginKey { get; }
+
+        /// <summary>The key of the member that POST reads again: the origin, or, when the update erases it, another one that survives.</summary>
+        public string PostOriginKey { get; }
+
+        /// <summary>The keys of the views that the update erases, ordered by key (ordinal); empty in the pilot.</summary>
+        public IReadOnlyList<string> Erasures { get; }
 
         /// <summary>The entries of the base of the draft, ordered by key (ordinal): MUTATE compares them with its own re-read.</summary>
         public IReadOnlyList<DraftStaleBaseEntry> ExpectedBase { get; }
@@ -256,6 +350,8 @@ namespace RackCad.Application.Systems.PushBack.Pilot
             other != null
             && string.Equals(RackId, other.RackId, StringComparison.Ordinal)
             && string.Equals(OriginKey, other.OriginKey, StringComparison.Ordinal)
+            && string.Equals(PostOriginKey, other.PostOriginKey, StringComparison.Ordinal)
+            && Erasures.SequenceEqual(other.Erasures, StringComparer.Ordinal)
             && ExpectedBase.SequenceEqual(other.ExpectedBase)
             && string.Equals(ExpectedVariableRegistryText, other.ExpectedVariableRegistryText, StringComparison.Ordinal)
             && AnnotationScale.Equals(other.AnnotationScale)
@@ -300,6 +396,14 @@ namespace RackCad.Application.Systems.PushBack.Pilot
 
         public const string PrepareFailurePrefix ="No se pudo preparar la actualización: ";
 
+        public const string BlockedPrefix = "El diseño tiene un error que impide escribirlo: ";
+
+        public const string FrontalBOfOneWayPrefix = "La vista ";
+
+        public const string FrontalBOfOneWaySuffix = " es un frontal del lado B en un rack sin lado B: el panel no la borra ni la redibuja; usa RACKEDITAR.";
+
+        public const string AllViewsObsoleteReason = "Todas las vistas del rack quedarían obsoletas: no se elimina el último vínculo del rack.";
+
         /// <summary>
         /// The pure PREPARE of an update. It evaluates, in this order and returning at the first that holds: NotApplicable (the draft is
         /// not Clean or Dirty), PendingText, NothingToApply (Clean; the re-read is not looked at), Conflict (the raw comparison of the
@@ -332,6 +436,13 @@ namespace RackCad.Application.Systems.PushBack.Pilot
                 return PushBackPilotPrepareResult.WithInvalid(PrepareFailurePrefix + ex.Message);
             }
         }
+
+        /// <summary>
+        /// The pure PREPARE of an update of the FULL model (D-PBT3-09), with the same order as the one of the pilot: NotApplicable,
+        /// PendingText, NothingToApply, Conflict, NotAdmitted and the plan. It is total and changes nothing.
+        /// </summary>
+        public static PushBackPilotPrepareResult PrepareFull(PushBackFullPrepareInput input, PushBackFullIntentResult reread, RackCatalog catalog) =>
+            PushBackPilotPrepareResult.WithInvalid(MissingInputReason);
 
         // The base of the draft and the re-read match here, and the re-read is admitted: the plan can be built, or it is Invalid.
         private static PushBackPilotPrepareResult Build(PushBackPilotPrepareInput input, PushBackPilotIntentResult reread, RackCatalog catalog)
