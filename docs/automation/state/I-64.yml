@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: none
   attempts: 1
-  next_action: "F4B PB-T4: decisiones del Owner (F4B-E49), paquete de PB-T4 v4.3, compilacion de comprobacion del esqueleto de PB-T4a, comprobacion acotada de PB-T4a (CA-T4a) y registro declarado de CT-PBT3A-12 custodiados; siguiente: emitir el contrato de F4B-PBT4-FULL-READ-PATH con attempts 1 de 3 (F4B-E50)"
+  next_action: "F4B-PBT4-FULL-READ-PATH: contrato emitido (AuthorityRevision 27c13fab, attempts 1 de 3); siguiente: planificacion del Controller (colecciones opacas por la sesion, F4B-E21), comparacion byte a byte, A1-A8, nc4 y Worker"
   last_evidence_commit: 0f49f69160cdffc1d2933d6165d5f472b5793d84
 execution_context:
   mode: manual
