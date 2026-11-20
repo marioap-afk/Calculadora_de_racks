@@ -1935,3 +1935,30 @@ Son los menores de la revisión independiente del código de PB-T3c, intento 1. 
 **De la comprobación acotada de la emisión (CA-T3c),** sin efecto en el contrato:
 - **CA-T3c M-02:** la nota de V47-06 del paquete de PB-T3 da por hecho que `pb-20-ab` no tiene un lateral que exista solo por B, y la revisión de PB-T3b dice que no lo verificó. Le falta además el rechazo de sobres con nombres distintos (`DivergentDiagnostic`, OWNER-2 de PB-T3b).
 - **CA-T3c M-05:** el corte de argumentos corregido de `overload_sweep_t3c.py` sigue tomando por genérica una comparación sin espacios como `(a<b, c>d)`. No afecta a PB-T3c. La salida custodiada de PB-T3b (`overload-sweep-eab27a9e.txt`) cuenta 5 parámetros en el constructor de `RackPilotMutationScope`, que tenía 4: el mismo defecto, sin efecto en sus conclusiones.
+
+## I-64 F4B PB-T4a — el coste de la lectura, riesgos para el Smoke-PB y menores de la revisión (2026-11-20, registrados sin corregir)
+
+**El coste de la lectura (OWNER-02, medido; decisión del Owner «Cerrar y optimizar en PB-T4b»):**
+- **La medida:** cada lectura del panel hace ahora el piloto y además la lectura completa con su materialización. Medido sin AutoCAD en los fixtures mayores (`F4B-DRAFTS/pbt4/read-cost-pbt4a/`): de +40 a +80 ms en `Begin`, de +35 a +86 ms en la relectura habitual y de +80 a +175 ms con el origen encontrado (p95 hasta 257 ms), dentro del bloqueo del documento.
+- **De dónde sale:** casi todo es `PushBackEditableStateSeat.LoadExisting`, de 25 a 78 ms por llamada, que se hace dos veces cuando se encuentra el origen.
+- **Lo que viene:** PB-T4b elige el origen antes de leer, para materializar una sola vez, y se mide otra vez allí y en el Smoke-PB.
+- **Una lección de método:** una medición prevista en el paquete («se mide en la precondición 6») tiene que tener su salida custodiada antes de emitir. Si no, es un efecto sin medir.
+
+**Para el Smoke-PB de PB-T5 (D-PB-09):**
+- **PBT4A-IR-OWNER-01:** el origen «deriva» al `Primary` y se queda allí. Si el texto del origen del borrador deja de estar, byte a byte, en un miembro mutable (el rack editado en RACKEDITAR, o un «Comprobar ahora» en `Unknown`), la relectura cae al `Primary`. `Reload`, `DiscardAndReload` y `KeepMine` reconstruyen el borrador desde él, y las relecturas siguientes ya no vuelven a la vista de origen. No es una regresión: hoy siempre es el `Primary`. Para probarlo: abrir desde una vista que no sea el `Primary`, editar en RACKEDITAR y conservar, descartar o comprobar, y ver qué vista refleja el panel.
+- **PBT4A-IR-OWNER-03:** dos subcasos de la relectura con origen sin CT en PB-T4a:
+  - sin destinos frescos de navegación, la relectura se admite donde hoy no;
+  - el texto del origen tras el rebase de un POST.
+
+**Los menores de la revisión independiente del código** (ninguno pide cambiar `src/`):
+- **PBT4A-IR-M01:** CT-PBT4A-02 es casi tautológica respecto del Plugin. El kit hace él mismo las dos lecturas sobre un escaneo y las une con `FromReads`, así que no prueba el cableado de RIA, que solo cubren la guarda de texto CT-07 y el Smoke-PB.
+- **PBT4A-IR-M02:** CT-PBT4A-03 no distingue `CurrentDraftState.Origin` de `InitialDraftState.Origin`, porque el doble responde siempre con el mismo texto de origen.
+- **PBT4A-IR-M03:** CT-PBT4A-04 no fija la comparación byte a byte: no tiene un caso casi igual, como mayúsculas o espacios.
+- **PBT4A-IR-M04:** el oráculo de las líneas de CT-02, CT-04 y CT-07 salió de clases temporales que llevaban el GREEN literal en memoria. Se borraron antes del RED y la entrega lo declara.
+- **PBT4A-IR-M05:** en CT-03 y CT-05, el constructor del rig corre fuera de `Paso`. Si lanzara, la CT caería por excepción y no por su aserción.
+- **PBT4A-IR-M06:** la entrega dice «the three commits» y son dos. Cosmético.
+- **PBT4A-IR-M07:** la relectura con origen descarta `ChosenReference` (pasa `null`). Hoy no se nota, porque los gestos del panel construyen la petición con `null`.
+
+**Dos lecciones de la cadena** (aplicadas en la de PB-T4b):
+- **El prompt de un Controller no debe pasar de 30 000 bytes:** Windows corta la línea de órdenes y Codex no arranca. Los bloques grandes van a `inputs/` con su sha256, y una guarda de tamaño en los guiones previos lo impide.
+- **Las reglas del prompt se escriben como condición explícita** («si … es PBT4A-C07»), nunca como «<hecho>, <parada>.». Además, el prompt de la verificación aclara que una ruta del diff de emisión que no figura en Authorities la admite 16.3.

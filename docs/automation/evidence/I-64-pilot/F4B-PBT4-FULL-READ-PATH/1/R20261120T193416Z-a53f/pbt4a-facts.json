@@ -1,0 +1,97 @@
+{
+  "ExpectedCounts": {
+    "red": [
+      19137,
+      19125,
+      5,
+      7
+    ],
+    "green": [
+      19137,
+      19130,
+      0,
+      7
+    ],
+    "ui": [
+      2451,
+      2430,
+      0,
+      21
+    ]
+  },
+  "SkeletonPath": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4a-skeleton.patch",
+  "SkeletonSha256": "e99c87c61dec083c9b9efefd7a7cf44e0bae31fd0e477b1347618683e4d1de19",
+  "SkeletonFiles": [
+    "src/RackCad.Application/Systems/PushBack/Draft/PushBackOriginByText.cs",
+    "src/RackCad.Application/Workspace/IWorkspaceEditIntentOriginReader.cs",
+    "src/RackCad.Application/Workspace/WorkspaceEditIntent.cs",
+    "tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs"
+  ],
+  "WorkspaceMinSelected": 3261,
+  "Nc2ExactEvidenceEntries": [
+    0
+  ],
+  "Nc2SubstituteSha256": "C033E96CE147963FEB9C04733E9BFBEC7493FEA33D8FF79B1C2E8AB860798E45",
+  "Rr3": {
+    "PushBackFullReadPathTests": 6,
+    "PushBackFullReadGuardTests": 33,
+    "PushBackFullReadSupport": 2
+  },
+  "PackagePath": "docs/initiatives/I-64-f4b-pbt4-gate-contract-package.md",
+  "PackageVersion": "4.3",
+  "Classes": [
+    "PushBackFullReadPathTests",
+    "PushBackFullReadGuardTests"
+  ],
+  "Kit": [
+    "PushBackFullReadSupport"
+  ],
+  "NewTests": [
+    "tests/RackCad.Tests/PushBackFullReadPathTests.cs",
+    "tests/RackCad.Tests/PushBackFullReadGuardTests.cs",
+    "tests/RackCad.Tests/PushBackFullReadSupport.cs"
+  ],
+  "RedFilters": [
+    "FullyQualifiedName~RackCad.Tests.PushBackFullReadPathTests"
+  ],
+  "BaseCounts": {
+    "RackPilotIntentAdapter.cs": {
+      "LockDocument": 1,
+      "StartTransaction": 1,
+      "CaptureDrawing(": 1,
+      "PushBackPilotIntentReader.Read(": 1,
+      "new PushBackPilotIntentScan(": 1
+    },
+    "WorkspaceNavigationHost.cs": {
+      "LockDocument": 2,
+      "RackPilotIntentAdapter.Read(": 1,
+      "RackPilotIntentAdapter.LoadCatalog()": 1
+    },
+    "WorkspaceHostCore.cs": {
+      "Find<PushBackPilotDraftState>": 9
+    }
+  },
+  "WhcStatementLines": [
+    328,
+    409,
+    503,
+    590,
+    675,
+    759
+  ],
+  "WhcBlockSha256": "29ccc7e79793b949e723f7cadf39986992a458724896c48274b94c0c8ad1c3da",
+  "DwgFacts": 3,
+  "NewNames": [
+    "FromReads",
+    "FullRead",
+    "IWorkspaceEditIntentOriginReader",
+    "ReadIntentAtOrigin",
+    "PushBackOriginByText",
+    "AtKey",
+    "ReadAt",
+    "AtOrigin",
+    "PushBackFullReadPathTests",
+    "PushBackFullReadGuardTests",
+    "PushBackFullReadSupport"
+  ]
+}

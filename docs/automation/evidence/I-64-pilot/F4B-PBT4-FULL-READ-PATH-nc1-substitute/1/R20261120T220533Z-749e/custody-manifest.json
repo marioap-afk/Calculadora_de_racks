@@ -1,0 +1,40 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Unit": "F4B-PBT4-FULL-READ-PATH-nc1-substitute/1/R20261120T220533Z-749e",
+  "SourceRoot": "artifacts/orchestration/I-64/F4B-PBT4-FULL-READ-PATH-nc1-substitute/1/R20261120T220533Z-749e",
+  "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
+  "Counts": {
+    "CUSTODIED": 2,
+    "EXCLUDED": 2
+  },
+  "Files": [
+    {
+      "Path": "nc1_cascade_golden.json",
+      "Bytes": 1026234,
+      "Sha256": "8eb3a991371777ab218e434f4ecf43dc1fd42403c64dbf5c9a949084efa88c24",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a F4B-PBT3B-FULL-WRITE-RUN-nc1-substitute/2/R20261120T093907Z-71d6/nc1_cascade_golden.json, ya custodiado"
+    },
+    {
+      "Path": "nc1_cascade_signal_substitute.py",
+      "Bytes": 53786,
+      "Sha256": "41440edc4a963bef890e4336dccb885837424008c027cdb172d2b926e0f49b40",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a F4B-PBT3B-FULL-WRITE-RUN-nc1-substitute/2/R20261120T093907Z-71d6/nc1_cascade_signal_substitute.py, ya custodiado"
+    },
+    {
+      "Path": "run.txt",
+      "Bytes": 345,
+      "Sha256": "74fd9f4bf598d3561901e40b504958272ece668f49fd160626ca9cd3e4eca285",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "079fdb773498edec465f2d470b3e6cfec40f7851586aa9b99590336e4d8fb866",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)"
+    },
+    {
+      "Path": "substitute-result.json",
+      "Bytes": 17409,
+      "Sha256": "e053eac8835c112c4f8e8ac762c5fba992a160a8b4eec513ad8a84ea15691ddc",
+      "Disposition": "CUSTODIED"
+    }
+  ]
+}

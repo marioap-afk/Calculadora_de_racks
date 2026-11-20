@@ -351,7 +351,7 @@ I-64 F4B PB-T3b: sustituida por <E-n> de PushBackPilotUpdateEquivalenceGuardTest
 
 ## PB-T4a — CT-PBT3A-12, el censo de los tipos del modelo completo, sustituida por CT-PBT4A-06
 
-**Estado: EMITIDA** (2026-11-20, emisión de PB-T4a, F4B-E50, sobre el cierre de PB-T3c `7f0d9aa3`). Lo escribe la sesión principal; el Worker no escribe en este archivo. La ejecución se completa al cerrar.
+**Estado: EJECUTADA** (2026-11-20, cierre de PB-T4a, F4B-E51; emitida en F4B-E50): RED `214f8c75f2ca5a248a5592075c3bac8e667bd362`, GREEN `faef702055990d1350a73bf4d254eb9e898d5670`. Lo escribe la sesión principal; el Worker no escribe en este archivo.
 
 **Autoridad:**
 - **[OD], el bloque sobre T1B:** «create a declared superseding characterization/change record. Do not silently weaken the old guard».
@@ -374,7 +374,7 @@ I-64 F4B PB-T3b: sustituida por <E-n> de PushBackPilotUpdateEquivalenceGuardTest
 
 | | |
 |---|---|
-| **RED** | (al cerrar) |
-| **GREEN** | (al cerrar) |
-| **CT-PBT4A-06, en el GREEN** | (al cerrar) |
-| **Estado** | EMITIDA |
+| **RED** | `214f8c75f2ca5a248a5592075c3bac8e667bd362` (CI `44810371492`: tests en failure por las cinco CT que fallan por aserción; ui-tests y build-ui en success; build-plugin omitido. Core 19 137 = 19 125 Passed + 5 Failed + 7 Skipped: las seis de D-1 y CT-PBT3A-12, ya con su `Skip`; UI 2 451 = 2 430 + 21). El esqueleto del RED es, byte a byte, el del parche `pbt4a-skeleton.patch` |
+| **GREEN** | `faef702055990d1350a73bf4d254eb9e898d5670` (CI `44814418683` 4/4; Core 19 137 = 19 130 Passed + 0 Failed + 7 Skipped; UI 2 451 = 2 430 + 21). Toca solo las seis rutas de `src/` del alcance; ninguna prueba de `tests/` cambia tras el RED |
+| **CT-PBT4A-06, en el GREEN** | `PushBackFullReadGuardTests.CT_PBT4A_06_OnlyTheFolderOfTheModelThePlanTheRunAndTheAdapterOfThePluginNameItsTypes` (`tests/RackCad.Tests/PushBackFullReadGuardTests.cs:98`): pasa en el RED y en el GREEN, con el mismo censo que CT-PBT3A-12 admitiendo RIA. CT-PBT3A-12 sale en Skipped con su motivo literal en las dos CI |
+| **Estado** | EJECUTADA |

@@ -1701,3 +1701,55 @@ El «limit reached» de los eventos de nc1 y nc2 es el texto de la parada S-11 d
 - **La cadena:** primera delegación; `attempts` 1 de 3.
 - **La planificación:** con las colecciones opacas puestas por la sesión (F4B-E21).
 - **La verificación:** con las comprobaciones deterministas de F4B-E15.
+
+## F4B-E51. Cierre de F4B-PBT4-FULL-READ-PATH, con tres decisiones del Owner sobre la verificación, nc1 y el coste de la lectura
+
+**Paquete de cierre:** `F4B-PBT4-FULL-READ-PATH/task-close-package.md`.
+
+**La cadena:**
+- **La emisión** (F4B-E50): X `27c13fab` y BASE `5aaacce3`, con el paquete de PB-T4 v4.3 y las decisiones del Owner de F4B-E49. CA-T4a dio EMITIBLE tras su recomprobación. La compilación de comprobación (precondición 6) dio 0 errores y 0 avisos CS, y Core 19 129 = 19 122 + 7, también con el GREEN literal del paquete.
+- **La planificación** `R20261120T193416Z-a53f` se aceptó al primer lanzamiento: inyección PASS 8/8, A1-A8 8/8 y 18 criterios. nc4 es `R20261120T193630Z-735b`.
+- **El Worker** `R20261120T193653Z-de54` (sonnet/high) dio IMPLEMENTATION_COMPLETE, sin reparación del RED, sin desviaciones y sin paradas.
+  - El RED `214f8c75` lleva el esqueleto del parche, igual byte a byte, las tres clases nuevas y el `Skip` de CT-PBT3A-12.
+  - El GREEN `faef7020` toca solo las seis rutas de `src/` del alcance.
+
+**CI** (los totales exactos de su única rama, F4B-E46):
+- RED `44810371492`: tests en failure; ui-tests y build-ui en success; build-plugin omitido. Core 19 137 = 19 125 + 5 Failed + 7 Skipped; UI 2 451 = 2 430 + 21.
+- GREEN `44814418683`: 4/4. Core 19 137 = 19 130 + 0 + 7; UI 2 451 = 2 430 + 21.
+
+**Revisiones:**
+- la directa, conforme;
+- la independiente, ACEPTABLE CON MENORES 0/0/7, con tres hallazgos para el Owner:
+  - OWNER-01: el origen deriva al `Primary` tras una relectura sin coincidencia;
+  - OWNER-02: el coste de la lectura;
+  - OWNER-03: dos subcasos de la relectura con origen sin CT.
+
+**La verificación**, en cuatro corridas (las tres primeras se custodian tal cual, como unidades propias):
+1. **`R20261120T205531Z-611f`, lanzamiento no productivo.** El prompt, de 36 786 bytes, superaba el límite de la línea de órdenes de Windows, y Codex no arrancó (exit 126, sin invocación del modelo). La cadena bajó los prompts de la verificación y de los controles a menos de 30 000 bytes, con los bloques grandes en `inputs/` y citados por su sha256, y lleva ahora una guarda de tamaño en sus guiones previos. El transporte no cambió.
+2. **`R20261120T211710Z-a468`, STOP Authority con S-12.** El Controller no admitió el generador del contrato custodiado en BASE, que no figura en Authorities («cannot be classified under 16.3»). El Owner eligió «Reverificar con aclaración (Recomendado)».
+3. **`R20261120T212638Z-de08`, STOP Tests con PBT4A-C07.** Authority pasó. El Controller leyó como un hecho una frase del prompt heredada de todas las cadenas: «Una linea esperada que no se cumple en el GREEN, PBT4A-C07». El Owner eligió «Corregir la frase y reverificar (Recomendado)».
+4. **`R20261120T213256Z-8d11`, EXECUTION_VERIFIED, 14/14 y sin hallazgos,** con la frase reescrita como condición explícita y la aclaración de 16.3 en `inputs/coordinator-disposition.md`.
+
+El registro literal de las dos decisiones es `F4B-DRAFTS/coordinator/owner-pbt4a-verify-stop-decision.md`.
+
+**Controles:**
+- **nc1** `R20261120T214408Z-bdf3`: CONTROL NOT PASSED, con la cascada del SHA falso. Su sustituto de PD-F4B-01 (`R20261120T220533Z-749e`) dio FAIL en una propiedad, `e2_OtherFailCitesFakeSha`: el fallo de Tests no cita el SHA falso literalmente. Es la quinta variación de nc1 en F4B. El Owner eligió «Aceptar solo esta vez (Recomendado)», así que **nc1 = SATISFIED_BY_OWNER_DISPOSITION** (`F4B-DRAFTS/coordinator/owner-pbt4a-nc1-decision.md`). El sustituto no cambia.
+- **nc2** `R20261120T214941Z-4cda`: CONTROL NOT PASSED, con la firma de PD-F4-01 (Contract antes que Scope). Su sustituto v2 (`R20261120T220537Z-60ab`) dio PASS: **nc2 = SATISFIED_UNDER_PBT4_EXACT_WHITELIST_SUBSTITUTE_F4B**.
+- **nc3** `R20261120T215653Z-e244`: CONTROL PASS.
+
+**OWNER-02, el coste de la lectura, medido.** Lo midió la revisión, sin AutoCAD, en copias exportadas de la base y del GREEN, con una prueba temporal que no entró en ningún commit (`F4B-DRAFTS/pbt4/read-cost-pbt4a/`).
+- **El aumento por gesto en los fixtures mayores:** de +40 a +80 ms en `Begin`; de +35 a +86 ms en la relectura habitual; de +80 a +175 ms en la relectura con el origen encontrado.
+- **De dónde sale:** casi todo es la materialización completa, que se hace dos veces cuando se encuentra el origen.
+- **La decisión del Owner:** «Cerrar y optimizar en PB-T4b (Recomendado)» (`F4B-DRAFTS/coordinator/owner-pbt4a-cost-decision.md`). PB-T4a cierra con el coste como limitación conocida. PB-T4b elegirá el origen antes de leer, para materializar una sola vez, y el coste se volverá a medir allí y en el Smoke-PB.
+
+**El registro declarado de CT-PBT3A-12** (`F4B-DRAFTS/superseding-characterization.md`): este cierre completa la tabla de ejecución de PB-T4a y la pasa a EJECUTADA. Cambian cinco líneas, con el texto y la fuente en `F4B-DRAFTS/pbt4/superseding-pbt4a-close-fill.md`.
+
+**Resultado:** **F4B-PBT4-FULL-READ-PATH = CLOSED / PASS WITH LIMITATIONS** sobre `faef7020`, con attempts 1 de 3. La lectura de la intención del Workspace trae también el modelo completo sobre el mismo escaneo (`FromReads`), y las cinco relecturas de un borrador abierto van al origen del borrador por su texto (A-T3-8).
+
+**Las limitaciones:**
+- el coste de la lectura (OWNER-02, medido);
+- el origen que deriva al `Primary` (OWNER-01);
+- dos subcasos sin CT (OWNER-03);
+- sin AutoCAD, la relectura real en el origen del dibujo queda para el Smoke-PB.
+
+**Siguiente:** PB-T4b, con su paquete en v4.5 (la lista de 475 que vio el Owner y la optimización de la lectura), su remedición sobre este cierre, la precondición 6 y su comprobación acotada, por la emisión condicional de F4B-E49.

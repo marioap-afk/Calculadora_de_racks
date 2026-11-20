@@ -1,0 +1,80 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT4-FULL-READ-PATH",
+  "RunId": "R20261120T214408Z-bdf3",
+  "DelegationRunId": "R20261120T193416Z-a53f",
+  "WorkRunId": "R20261120T193653Z-de54",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED; final subagent result recorded; DeathConfirmed=true. Cession.StartUtc=2026-11-20T19:36:59Z."
+    },
+    "Handoff": {
+      "Result": "fail",
+      "Evidence": "worker-handoff.json has TaskId, Attempt, DelegationRunId and RunId matching the delegation and work run; relay OutputWrittenUtc=2026-11-20T20:54:16.451840Z, after Cession.StartUtc. However CurrentSha is deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, which does not resolve to a commit."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha succeeded. git diff --name-only AuthorityRevision BaseSha returned four docs paths as listed in revision-diff.txt; SHA256 matched BA2B6A194BA134821E028DA44E67CEC1FF2C8984D269F00D7DB33902668D41F3. The Owner disposition permits the unlisted generator path; no path is EXTERNAL or UNIT_CHANGE. git merge-base MainSha AuthorityRevision=MainSha; git diff over the five EXTERNAL paths from that merge base was empty; the diff to BaseSha contains no src paths."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "byte-fidelity-check.json Result=PASS: all eight opaque collections have equal UTF-8 bytes and matching hashes. relay-record-planning.json records A1-A8 8/8 and nc4. Delegation and contract required-test rows and scopes match."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "worker-handoff.json CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef; git rev-parse HEAD and git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad both returned faef702055990d1350a73bf4d254eb9e898d5670. BaseSha is an ancestor of measured HEAD and RedSha is between BaseSha and measured HEAD. The handoff CurrentSha is not a commit."
+    },
+    "Remote": {
+      "Result": "fail",
+      "Evidence": "relay-record-work.json RemoteFacts has LsRemoteSha=faef702055990d1350a73bf4d254eb9e898d5670 and OriginMainSha=812baf879612320653094a8aaf46aca0bac81383. Main matches MainSha, but ls-remote does not match the handoff CurrentSha deadbeefdeadbeefdeadbeefdeadbeefdeadbeef."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "The required diff against handoff CurrentSha deadbeefdeadbeefdeadbeefdeadbeefdeadbeef fails because Git cannot resolve that object, so the exact declared range cannot be evaluated. As a comparison, git diff BaseSha HEAD listed 10 paths and the read-only scope script matched all 10 exactly to the 10 delegation AllowedWriteScope entries; BaseSha..RedSha listed 7 paths, all in that list."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 was empty. git check-ignore -v artifacts/orchestration/I-64/F4B-PBT4-FULL-READ-PATH/1/R20261120T214408Z-bdf3/controller-verification.json matched .gitignore:3 artifacts/."
+    },
+    "Ci": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts records CurrentRun 44814418683 as completed push on refs/heads/architecture/workspace-persistente-rackcad, head faef702055990d1350a73bf4d254eb9e898d5670, with all four required jobs success. It does not match handoff CurrentSha. RedRun 44810371492 is a push for RedSha 214f8c75f2ca5a248a5592075c3bac8e667bd362; Core failed, UI and Build UI succeeded, Plugin build was skipped."
+    },
+    "Tests": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "SHA256 of required-tests.txt matched 2270E05B5D0AC9329905C84DB1A03C548B44BF77F472E184E2C69E05D1C9FD4E; all 38 rows were read and matched the contract. CI TRX totals matched ExpectedCounts: RED Core 19137=19125+5+7, GREEN Core 19137=19130+0+7, each UI 2451=2430+0+21. All filters selected at least MinSelected; the five ExpectRed tests failed by Assert.Equal with stack frames under tests/ in RED, and the other filters passed. The seven Core NotExecuted rows are the six D-1 tests and CT-PBT3A-12. RED RT contains four test paths and git diff RedSha..HEAD -- tests/ is empty. The GREEN TRX belongs to measured HEAD, not the handoff CurrentSha, so exact-SHA test evidence is absent. RedPart is pass."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..HEAD returned the RED and GREEN commit bodies; both include Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching worker-handoff.json Worker.Trailer."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 and high effort. relay-record-work.json records effective model claude-sonnet-5-5 and effective effort high; requested transport alias is sonnet."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Read AUTOMATION_PLAN 16.10 from AuthorityRevision and scanned the complete seven free-text fields in worker-handoff.json case-insensitively for whole terms and phrases. Field lengths: WorkCompleted 7522, Evidence 3010, UnexpectedFindings 770, KnownLimitations 800, Deviations 0, OpenQuestions 0, RecommendedNextAction 151 characters. No matches."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes records 0 permission denials, 3 tool errors with none pending, and 0 persistent participants or unattributable processes at exit and entry."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Handoff",
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "Findings": [
+    "The handoff declares a nonexistent CurrentSha; Git HEAD, origin branch tip and the CI run identify faef702055990d1350a73bf4d254eb9e898d5670.",
+    "The handoff CurrentSha conflicts with relay remote facts and prevents verification of the exact declared diff and current-SHA CI and test evidence."
+  ],
+  "RecommendedNextAction": "Correct the handoff CurrentSha to the verified commit and issue a new verification run."
+}

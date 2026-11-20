@@ -8663,3 +8663,43 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - **`attempts`:** 1 de 3.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 279. PB-T4a: la cadena, tres decisiones del Owner y el cierre (F4B-E51)
+
+**Qué se custodia:**
+- **Las unidades de la delegación,** en `F4B-PBT4-FULL-READ-PATH/1/`, cada una con su manifiesto:
+  - la planificación `a53f`, con nc4 `735b`;
+  - el Worker `de54`;
+  - la verificación válida `8d11`;
+  - los controles nc1 `bdf3`, nc2 `4cda` y nc3 `e244`.
+- **Las tres verificaciones anteriores, como unidades propias:**
+  - `611f`, el lanzamiento no productivo, sin invocación del modelo;
+  - `a468`, el STOP de Authority;
+  - `de08`, el STOP de Tests.
+- **Los sustitutos:** el de nc1 `749e` (FAIL) y el de nc2 `60ab` (PASS).
+- **Las revisiones,** con su encargo.
+- **Las tres decisiones del Owner, con su texto literal:**
+  - la parada de la verificación, en dos vueltas;
+  - nc1;
+  - el coste de la lectura.
+- **La disposición de la reverificación.**
+- **La medición del coste** (`read-cost-pbt4a/`), con las TRX solo por SHA-256. Sus textos se custodian en LF, y en las trazas de las cuatro salidas de la sonda la ruta local de la copia exportada se sustituye por `<copia>`.
+- **El registro declarado de CT-PBT3A-12,** completado, con sus cinco sustituciones.
+- **El paquete de cierre.**
+- **La nota de `docs/ideas-futuras.md`.**
+- **El estado.**
+
+**La delegación:**
+- **RED y GREEN:** el RED `214f8c75` y el GREEN `faef7020`, sin reparación del RED.
+- **CI:** las corridas `44810371492` y `44814418683`. La del GREEN da 4/4 (Core 19 137 = 19 130 + 7; UI 2 451), los totales exactos de su única rama.
+- **Revisión independiente:** 0/0/7, más OWNER-01 a OWNER-03.
+- **Verificación:** 14/14, la cuarta corrida.
+- **Controles:**
+  - nc1 por disposición del Owner;
+  - nc2 por su sustituto;
+  - nc3 CONTROL PASS.
+
+**Límites:**
+- solo documentación;
+- sin AutoCAD;
+- los eventos y las transcripciones, solo por SHA-256.

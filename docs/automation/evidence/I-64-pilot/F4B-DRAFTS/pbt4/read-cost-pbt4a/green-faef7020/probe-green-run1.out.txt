@@ -1,0 +1,65 @@
+### Measure_the_pure_cost_of_the_read_on_the
+copia=faef7020 (GREEN)
+entorno framework=.NET 8.0.29 config=Release cpus=8 servergc=False hires=True
+escenario pb-01-base x2 vistas definiciones=2 | Primary piloto=Admitted completo=Admitted | origen-encontrado=B2 piloto=Admitted completo=Admitted | cae-al-Primary=null | origen-es-Primary=null
+medida | pb-01-base x2 vistas | base-emulada (piloto+FromPilot) | mediana=3.502 ms | p95=5.872 ms | n=769
+medida | pb-01-base x2 vistas | green Begin (piloto+completo+FromReads) | mediana=38.521 ms | p95=51.137 ms | n=200
+medida | pb-01-base x2 vistas | green relectura origen-encontrado | mediana=97.799 ms | p95=155.305 ms | n=200
+medida | pb-01-base x2 vistas | green relectura cae-al-Primary (sin coincidencia) | mediana=52.181 ms | p95=73.425 ms | n=200
+medida | pb-01-base x2 vistas | green relectura origen-es-Primary | mediana=51.884 ms | p95=75.604 ms | n=200
+medida | pb-01-base x2 vistas | parte: solo el escaneo (ctor) | mediana=0.000 ms | p95=0.001 ms | n=1000
+medida | pb-01-base x2 vistas | parte: solo BuildStaleBase | mediana=0.426 ms | p95=0.730 ms | n=1000
+medida | pb-01-base x2 vistas | parte: solo el piloto | mediana=3.825 ms | p95=6.229 ms | n=712
+medida | pb-01-base x2 vistas | parte: solo el completo | mediana=47.996 ms | p95=63.207 ms | n=200
+escenario pb-07-combinado x2 vistas definiciones=2 | Primary piloto=Admitted completo=Admitted | origen-encontrado=B2 piloto=Admitted completo=Admitted | cae-al-Primary=null | origen-es-Primary=null
+medida | pb-07-combinado x2 vistas | base-emulada (piloto+FromPilot) | mediana=4.981 ms | p95=7.985 ms | n=506
+medida | pb-07-combinado x2 vistas | green Begin (piloto+completo+FromReads) | mediana=60.038 ms | p95=93.690 ms | n=200
+medida | pb-07-combinado x2 vistas | green relectura origen-encontrado | mediana=109.389 ms | p95=158.084 ms | n=200
+medida | pb-07-combinado x2 vistas | green relectura cae-al-Primary (sin coincidencia) | mediana=59.825 ms | p95=89.831 ms | n=200
+medida | pb-07-combinado x2 vistas | green relectura origen-es-Primary | mediana=53.870 ms | p95=67.287 ms | n=200
+medida | pb-07-combinado x2 vistas | parte: solo el escaneo (ctor) | mediana=0.000 ms | p95=0.001 ms | n=1000
+medida | pb-07-combinado x2 vistas | parte: solo BuildStaleBase | mediana=0.485 ms | p95=0.780 ms | n=1000
+medida | pb-07-combinado x2 vistas | parte: solo el piloto | mediana=4.015 ms | p95=6.528 ms | n=551
+medida | pb-07-combinado x2 vistas | parte: solo el completo | mediana=48.366 ms | p95=61.961 ms | n=200
+escenario pb-21-cola x2 vistas definiciones=2 | Primary piloto=NotAdmitted completo=NotAdmitted | origen-encontrado=B2 piloto=NotAdmitted completo=NotAdmitted | cae-al-Primary=null | origen-es-Primary=null
+medida | pb-21-cola x2 vistas | base-emulada (piloto+FromPilot) | mediana=5.327 ms | p95=8.036 ms | n=533
+medida | pb-21-cola x2 vistas | green Begin (piloto+completo+FromReads) | mediana=9.880 ms | p95=15.271 ms | n=228
+medida | pb-21-cola x2 vistas | green relectura origen-encontrado | mediana=19.959 ms | p95=33.314 ms | n=200
+medida | pb-21-cola x2 vistas | green relectura cae-al-Primary (sin coincidencia) | mediana=10.951 ms | p95=20.056 ms | n=202
+medida | pb-21-cola x2 vistas | green relectura origen-es-Primary | mediana=14.063 ms | p95=20.956 ms | n=200
+medida | pb-21-cola x2 vistas | parte: solo el escaneo (ctor) | mediana=0.001 ms | p95=0.002 ms | n=1000
+medida | pb-21-cola x2 vistas | parte: solo BuildStaleBase | mediana=0.935 ms | p95=1.246 ms | n=1000
+medida | pb-21-cola x2 vistas | parte: solo el piloto | mediana=5.190 ms | p95=7.958 ms | n=524
+medida | pb-21-cola x2 vistas | parte: solo el completo | mediana=5.004 ms | p95=8.087 ms | n=651
+escenario pb-20-ab x2 vistas definiciones=2 | Primary piloto=NotAdmitted completo=Admitted | origen-encontrado=B2 piloto=NotAdmitted completo=Admitted | cae-al-Primary=null | origen-es-Primary=null
+medida | pb-20-ab x2 vistas | base-emulada (piloto+FromPilot) | mediana=5.973 ms | p95=9.804 ms | n=571
+medida | pb-20-ab x2 vistas | green Begin (piloto+completo+FromReads) | mediana=69.399 ms | p95=127.299 ms | n=200
+medida | pb-20-ab x2 vistas | green relectura origen-encontrado | mediana=157.131 ms | p95=217.416 ms | n=200
+medida | pb-20-ab x2 vistas | green relectura cae-al-Primary (sin coincidencia) | mediana=70.496 ms | p95=96.938 ms | n=200
+medida | pb-20-ab x2 vistas | green relectura origen-es-Primary | mediana=60.215 ms | p95=95.315 ms | n=200
+medida | pb-20-ab x2 vistas | parte: solo el escaneo (ctor) | mediana=0.001 ms | p95=0.002 ms | n=1000
+medida | pb-20-ab x2 vistas | parte: solo BuildStaleBase | mediana=0.794 ms | p95=1.179 ms | n=1000
+medida | pb-20-ab x2 vistas | parte: solo el piloto | mediana=4.572 ms | p95=6.769 ms | n=623
+medida | pb-20-ab x2 vistas | parte: solo el completo | mediana=62.367 ms | p95=80.562 ms | n=200
+escenario pb-07-combinado x4 vistas +200 racks ajenos definiciones=204 | Primary piloto=Admitted completo=Admitted | origen-encontrado=B2 piloto=Admitted completo=Admitted | cae-al-Primary=null | origen-es-Primary=null
+medida | pb-07-combinado x4 vistas +200 racks ajenos | base-emulada (piloto+FromPilot) | mediana=6.359 ms | p95=9.722 ms | n=528
+medida | pb-07-combinado x4 vistas +200 racks ajenos | green Begin (piloto+completo+FromReads) | mediana=71.663 ms | p95=103.343 ms | n=200
+medida | pb-07-combinado x4 vistas +200 racks ajenos | green relectura origen-encontrado | mediana=132.789 ms | p95=187.255 ms | n=200
+medida | pb-07-combinado x4 vistas +200 racks ajenos | green relectura cae-al-Primary (sin coincidencia) | mediana=64.842 ms | p95=84.720 ms | n=200
+medida | pb-07-combinado x4 vistas +200 racks ajenos | green relectura origen-es-Primary | mediana=66.372 ms | p95=100.990 ms | n=200
+medida | pb-07-combinado x4 vistas +200 racks ajenos | parte: solo el escaneo (ctor) | mediana=0.019 ms | p95=0.033 ms | n=1000
+medida | pb-07-combinado x4 vistas +200 racks ajenos | parte: solo BuildStaleBase | mediana=1.115 ms | p95=1.786 ms | n=1000
+medida | pb-07-combinado x4 vistas +200 racks ajenos | parte: solo el piloto | mediana=9.123 ms | p95=12.809 ms | n=258
+medida | pb-07-combinado x4 vistas +200 racks ajenos | parte: solo el completo | mediana=48.568 ms | p95=73.969 ms | n=200
+escenario pb-20-ab x4 vistas +200 racks ajenos definiciones=204 | Primary piloto=NotAdmitted completo=Admitted | origen-encontrado=B2 piloto=NotAdmitted completo=Admitted | cae-al-Primary=null | origen-es-Primary=null
+medida | pb-20-ab x4 vistas +200 racks ajenos | base-emulada (piloto+FromPilot) | mediana=10.840 ms | p95=15.840 ms | n=286
+medida | pb-20-ab x4 vistas +200 racks ajenos | green Begin (piloto+completo+FromReads) | mediana=63.784 ms | p95=92.334 ms | n=200
+medida | pb-20-ab x4 vistas +200 racks ajenos | green relectura origen-encontrado | mediana=138.484 ms | p95=187.732 ms | n=200
+medida | pb-20-ab x4 vistas +200 racks ajenos | green relectura cae-al-Primary (sin coincidencia) | mediana=67.996 ms | p95=93.438 ms | n=200
+medida | pb-20-ab x4 vistas +200 racks ajenos | green relectura origen-es-Primary | mediana=83.356 ms | p95=122.174 ms | n=200
+medida | pb-20-ab x4 vistas +200 racks ajenos | parte: solo el escaneo (ctor) | mediana=0.016 ms | p95=0.032 ms | n=1000
+medida | pb-20-ab x4 vistas +200 racks ajenos | parte: solo BuildStaleBase | mediana=1.414 ms | p95=2.441 ms | n=1000
+medida | pb-20-ab x4 vistas +200 racks ajenos | parte: solo el piloto | mediana=9.136 ms | p95=13.035 ms | n=274
+medida | pb-20-ab x4 vistas +200 racks ajenos | parte: solo el completo | mediana=55.976 ms | p95=81.122 ms | n=200
+STACK: eadCostProbe.Measure_the_pure_cost_of_the_read_on_the_green() in <copia>\tests\RackCad.Tests\TmpReadCostProbe.cs:line 194
+

@@ -1,0 +1,745 @@
+{
+  "Id": "PBT4-NC1-CASCADE-SIGNAL-01",
+  "GenericId": "PBT3x-NC1-CASCADE-SIGNAL-01",
+  "Task": "PBT4",
+  "NotA4": true,
+  "Signature": "PD-F4B-01",
+  "Scope": "solo F4B PB-T3a, PB-T3b, PB-T3c, PB-T4 y PB-T5; firma PD-F4B-01; no reemplaza al Controller ni a nc1 fuera de esas subtareas. e3 es una lista cerrada: no detecta causas ajenas con otra redaccion; null/ausente/no consta pueden dar falsos FAIL (conservador); el prefijo de 8 hex como cita en Remote/Scope/Ci/Tests es una interpretacion forzada por ea01",
+  "Limits": [
+    "e3 detecta causas ajenas redactadas como ausencia, nulidad o falta de declaracion de un campo (lista cerrada ALIEN); no detecta otras atribuciones (fechas, rutas, conteos, trailers, falta, vacio, missing, empty).",
+    "M-3: las palabras sueltas null, ausente, ausencia, no consta y no presente dan falso FAIL cuando el sujeto es el SHA falso o el vocabulario de una prueba; es conservador (el caso vuelve al Owner).",
+    "M-4: el prefijo de 8 o mas hex cuenta como cita del SHA falso en Remote, Scope, Ci y Tests (lectura forzada por ea01: Tests dice CurrentSha deadbeef); con 7 da FAIL. Handoff e Identity exigen los 40.",
+    "La autoprueba no ejecuta git: los casos dorados usan NewExistsInRepo de mutation.json y dan por buena la presencia del CurrentSha y el BaseSha en el repositorio; la ejecucion real exige el repositorio y los comprueba.",
+    "El SHA-256 del archivo dorado se comprueba contra GOLDEN_SHA256, fijado en el script: el custodio debe registrar ScriptSha256 (va en el resultado); un dorado y un script manipulados a la vez no se detectan dentro del propio script."
+  ],
+  "ScriptSha256": "41440EDC4A963BEF890E4336DCCB885837424008C027CDB172D2B926E0F49B40",
+  "GoldenSha256": "8EB3A991371777AB218E434F4ECF43DC1FD42403C64DBF5C9A949084EFA88C24",
+  "TaskName": "PB-T4",
+  "SelfTest": {
+    "Ok": true,
+    "Deterministic": true,
+    "SyntheticCases": 97,
+    "Units": [
+      {
+        "Unit": "checks_of lista == diccionario",
+        "Ok": true
+      },
+      {
+        "Unit": "checks_of rechaza Ids repetidos",
+        "Ok": true
+      },
+      {
+        "Unit": "jl rechaza claves duplicadas",
+        "Ok": true
+      },
+      {
+        "Unit": "jl acepta JSON sin duplicados",
+        "Ok": true
+      },
+      {
+        "Unit": "prompt_shas: texto libre",
+        "Ok": true
+      },
+      {
+        "Unit": "prompt_shas: clave PromptSha256",
+        "Ok": true
+      },
+      {
+        "Unit": "prompt_shas: sin SHA",
+        "Ok": true
+      }
+    ],
+    "GoldenCases": [
+      {
+        "Case": "t2a",
+        "Real": "R20261119T074453Z-10a9",
+        "Nc1": "R20261119T074938Z-0302",
+        "ExpectedResult": "PASS",
+        "Result": "PASS",
+        "ExpectedFailingAtoms": [],
+        "ActualFailingAtoms": [],
+        "Ok": true
+      },
+      {
+        "Case": "t2b",
+        "Real": "R20261119T182732Z-422f",
+        "Nc1": "R20261119T183134Z-bfda",
+        "ExpectedResult": "FAIL",
+        "Result": "FAIL",
+        "ExpectedFailingAtoms": [
+          "c.FirstFailIsHandoff",
+          "d1.FailSetWithinAllowed",
+          "d2.HandoffFails",
+          "e2.OtherFailEvidenceCitesFake",
+          "e3.NoAlienInOthers"
+        ],
+        "ActualFailingAtoms": [
+          "c.FirstFailIsHandoff",
+          "d1.FailSetWithinAllowed",
+          "d2.HandoffFails",
+          "e2.OtherFailEvidenceCitesFake",
+          "e3.NoAlienInOthers"
+        ],
+        "Ok": true
+      },
+      {
+        "Case": "t2c",
+        "Real": "R20261119T220812Z-e59c",
+        "Nc1": "R20261119T221258Z-ea01",
+        "ExpectedResult": "PASS",
+        "Result": "PASS",
+        "ExpectedFailingAtoms": [],
+        "ActualFailingAtoms": [],
+        "Ok": true
+      }
+    ],
+    "GoldenError": null,
+    "AtomsNotCoveredByAnyCase": [],
+    "SyntheticDetail": [
+      [
+        "A",
+        "PASS",
+        true
+      ],
+      [
+        "A2",
+        "PASS",
+        true
+      ],
+      [
+        "A3",
+        "PASS",
+        true
+      ],
+      [
+        "A4",
+        "PASS",
+        true
+      ],
+      [
+        "A5",
+        "PASS",
+        true
+      ],
+      [
+        "A6",
+        "PASS",
+        true
+      ],
+      [
+        "A7",
+        "PASS",
+        true
+      ],
+      [
+        "a1-Control",
+        "FAIL",
+        true
+      ],
+      [
+        "a1-File",
+        "FAIL",
+        true
+      ],
+      [
+        "a1-Field",
+        "FAIL",
+        true
+      ],
+      [
+        "a1-Old",
+        "FAIL",
+        true
+      ],
+      [
+        "a1-New",
+        "FAIL",
+        true
+      ],
+      [
+        "a1-Hex",
+        "FAIL",
+        true
+      ],
+      [
+        "a1-Same",
+        "FAIL",
+        true
+      ],
+      [
+        "a1-Flag",
+        "FAIL",
+        true
+      ],
+      [
+        "a1-Git",
+        "FAIL",
+        true
+      ],
+      [
+        "a1-NoGit",
+        "FAIL",
+        true
+      ],
+      [
+        "a1-Src",
+        "FAIL",
+        true
+      ],
+      [
+        "a1-Run",
+        "FAIL",
+        true
+      ],
+      [
+        "a2-Text",
+        "FAIL",
+        true
+      ],
+      [
+        "a2-Type",
+        "FAIL",
+        true
+      ],
+      [
+        "a2-Empty",
+        "FAIL",
+        true
+      ],
+      [
+        "a3-CopyHash",
+        "FAIL",
+        true
+      ],
+      [
+        "a3-RealHash",
+        "FAIL",
+        true
+      ],
+      [
+        "a3-ExtraChanged",
+        "FAIL",
+        true
+      ],
+      [
+        "a3-ExtraFile",
+        "FAIL",
+        true
+      ],
+      [
+        "a3-MissingFile",
+        "FAIL",
+        true
+      ],
+      [
+        "a3-ChangedList",
+        "FAIL",
+        true
+      ],
+      [
+        "a3-RrDiff",
+        "FAIL",
+        true
+      ],
+      [
+        "a3-Derived",
+        "FAIL",
+        true
+      ],
+      [
+        "a3-InKeys",
+        "FAIL",
+        true
+      ],
+      [
+        "a3-InVals",
+        "FAIL",
+        true
+      ],
+      [
+        "a4-Hint",
+        "FAIL",
+        true
+      ],
+      [
+        "a4-Sha",
+        "FAIL",
+        true
+      ],
+      [
+        "a4-HintSha",
+        "FAIL",
+        true
+      ],
+      [
+        "a4-Text",
+        "FAIL",
+        true
+      ],
+      [
+        "b-Class",
+        "FAIL",
+        true
+      ],
+      [
+        "b-Disp",
+        "FAIL",
+        true
+      ],
+      [
+        "b-S04",
+        "FAIL",
+        true
+      ],
+      [
+        "c-Identity",
+        "FAIL",
+        true
+      ],
+      [
+        "c-NoHandoff",
+        "FAIL",
+        true
+      ],
+      [
+        "c-Termination",
+        "FAIL",
+        true
+      ],
+      [
+        "c-FC",
+        "FAIL",
+        true
+      ],
+      [
+        "d1-Trailer",
+        "FAIL",
+        true
+      ],
+      [
+        "d2-Identity",
+        "FAIL",
+        true
+      ],
+      [
+        "d3-NotRun",
+        "FAIL",
+        true
+      ],
+      [
+        "d3-Missing",
+        "FAIL",
+        true
+      ],
+      [
+        "d3-Unknown",
+        "FAIL",
+        true
+      ],
+      [
+        "d3-RealFail",
+        "FAIL",
+        true
+      ],
+      [
+        "d3-RealCls",
+        "FAIL",
+        true
+      ],
+      [
+        "e1-IdNoFake",
+        "FAIL",
+        true
+      ],
+      [
+        "e1-HoNoFake",
+        "FAIL",
+        true
+      ],
+      [
+        "e1-HoShort",
+        "FAIL",
+        true
+      ],
+      [
+        "e1-IdShort",
+        "FAIL",
+        true
+      ],
+      [
+        "e2-None",
+        "FAIL",
+        true
+      ],
+      [
+        "e2-Short7",
+        "FAIL",
+        true
+      ],
+      [
+        "e3-Others",
+        "FAIL",
+        true
+      ],
+      [
+        "e3-NoDecl",
+        "FAIL",
+        true
+      ],
+      [
+        "e3-Ausente",
+        "FAIL",
+        true
+      ],
+      [
+        "e3-Accent",
+        "FAIL",
+        true
+      ],
+      [
+        "e3-EnNotDecl",
+        "FAIL",
+        true
+      ],
+      [
+        "e3-EnUndecl",
+        "FAIL",
+        true
+      ],
+      [
+        "e3-EnNotPres",
+        "FAIL",
+        true
+      ],
+      [
+        "e3-Handoff",
+        "FAIL",
+        true
+      ],
+      [
+        "e3-Identity",
+        "FAIL",
+        true
+      ],
+      [
+        "f-NoHead",
+        "FAIL",
+        true
+      ],
+      [
+        "f-Short",
+        "FAIL",
+        true
+      ],
+      [
+        "f-Verified",
+        "FAIL",
+        true
+      ],
+      [
+        "a1-RepoCur",
+        "FAIL",
+        true
+      ],
+      [
+        "a1-RepoBase",
+        "FAIL",
+        true
+      ],
+      [
+        "a1-RepoNone",
+        "FAIL",
+        true
+      ],
+      [
+        "A8",
+        "PASS",
+        true
+      ],
+      [
+        "A10",
+        "PASS",
+        true
+      ],
+      [
+        "e3-Nulo",
+        "FAIL",
+        true
+      ],
+      [
+        "e3-Ausencia",
+        "FAIL",
+        true
+      ],
+      [
+        "e3-NoConsta",
+        "FAIL",
+        true
+      ],
+      [
+        "e3-SinDeclarar",
+        "FAIL",
+        true
+      ],
+      [
+        "e3-NoDeclara",
+        "FAIL",
+        true
+      ],
+      [
+        "e3-NoPresente",
+        "FAIL",
+        true
+      ],
+      [
+        "c-FCIdentity",
+        "FAIL",
+        true
+      ],
+      [
+        "b-S07",
+        "FAIL",
+        true
+      ],
+      [
+        "a3-DerivedField",
+        "FAIL",
+        true
+      ],
+      [
+        "a3-DerivedOld",
+        "FAIL",
+        true
+      ],
+      [
+        "a4-NoSeg",
+        "FAIL",
+        true
+      ],
+      [
+        "a4-RelayOther",
+        "FAIL",
+        true
+      ],
+      [
+        "a4-RelayKey",
+        "PASS",
+        true
+      ],
+      [
+        "a4-RelayLower",
+        "PASS",
+        true
+      ],
+      [
+        "g-Task",
+        "FAIL",
+        true
+      ],
+      [
+        "A9",
+        "PASS",
+        true
+      ],
+      [
+        "g-ValBad",
+        "FAIL",
+        true
+      ],
+      [
+        "g-Nc1Task",
+        "FAIL",
+        true
+      ],
+      [
+        "g-Att",
+        "FAIL",
+        true
+      ],
+      [
+        "g-AttBool",
+        "FAIL",
+        true
+      ],
+      [
+        "g-Src",
+        "FAIL",
+        true
+      ],
+      [
+        "MAL",
+        "FAIL",
+        true
+      ],
+      [
+        "MAL-Dup",
+        "FAIL",
+        true
+      ],
+      [
+        "MAL-Relay",
+        "FAIL",
+        true
+      ]
+    ]
+  },
+  "RealVerification": "artifacts/orchestration/I-64/F4B-PBT4-FULL-READ-PATH/1/R20261120T213256Z-8d11",
+  "Nc1Run": "artifacts/orchestration/I-64/F4B-PBT4-FULL-READ-PATH-nc1/1/R20261120T214408Z-bdf3",
+  "RealVerificationClassification": "EXECUTION_VERIFIED",
+  "Nc1ControllerEvidence": {
+    "Handoff": "worker-handoff.json has TaskId, Attempt, DelegationRunId and RunId matching the delegation and work run; relay OutputWrittenUtc=2026-11-20T20:54:16.451840Z, after Cession.StartUtc. However CurrentSha is deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, which does not resolve to a commit.",
+    "Identity": "worker-handoff.json CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef; git rev-parse HEAD and git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad both returned faef702055990d1350a73bf4d254eb9e898d5670. BaseSha is an ancestor of measured HEAD and RedSha is between BaseSha and measured HEAD. The handoff CurrentSha is not a commit.",
+    "Remote": "relay-record-work.json RemoteFacts has LsRemoteSha=faef702055990d1350a73bf4d254eb9e898d5670 and OriginMainSha=812baf879612320653094a8aaf46aca0bac81383. Main matches MainSha, but ls-remote does not match the handoff CurrentSha deadbeefdeadbeefdeadbeefdeadbeefdeadbeef.",
+    "Scope": "The required diff against handoff CurrentSha deadbeefdeadbeefdeadbeefdeadbeefdeadbeef fails because Git cannot resolve that object, so the exact declared range cannot be evaluated. As a comparison, git diff BaseSha HEAD listed 10 paths and the read-only scope script matched all 10 exactly to the 10 delegation AllowedWriteScope entries; BaseSha..RedSha listed 7 paths, all in that list.",
+    "Ci": "RemoteFacts records CurrentRun 44814418683 as completed push on refs/heads/architecture/workspace-persistente-rackcad, head faef702055990d1350a73bf4d254eb9e898d5670, with all four required jobs success. It does not match handoff CurrentSha. RedRun 44810371492 is a push for RedSha 214f8c75f2ca5a248a5592075c3bac8e667bd362; Core failed, UI and Build UI succeeded, Plugin build was skipped.",
+    "Tests": "SHA256 of required-tests.txt matched 2270E05B5D0AC9329905C84DB1A03C548B44BF77F472E184E2C69E05D1C9FD4E; all 38 rows were read and matched the contract. CI TRX totals matched ExpectedCounts: RED Core 19137=19125+5+7, GREEN Core 19137=19130+0+7, each UI 2451=2430+0+21. All filters selected at least MinSelected; the five ExpectRed tests failed by Assert.Equal with stack frames under tests/ in RED, and the other filters passed. The seven Core NotExecuted rows are the six D-1 tests and CT-PBT3A-12. RED RT contains four test paths and git diff RedSha..HEAD -- tests/ is empty. The GREEN TRX belongs to measured HEAD, not the handoff CurrentSha, so exact-SHA test evidence is absent. RedPart is pass."
+  },
+  "Measured": {
+    "FakeCurrentSha": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+    "RealCurrentShaAsHead": "faef702055990d1350a73bf4d254eb9e898d5670",
+    "HandoffFieldsChanged": [
+      ".CurrentSha"
+    ],
+    "ChangedInputs": [
+      "relay-record-work.json",
+      "worker-handoff.json"
+    ],
+    "RelayRecordWorkFieldsChanged": [
+      ".Outcome.OutputSha256"
+    ],
+    "RealPromptShaCandidatesInRelayRecord": [
+      "6AF7246C8151F1B3E5071BB165B3C61DEBB883C70921DB56B8D2F750AFBCAED2"
+    ],
+    "Controller": {
+      "Classification": "EXECUTION_BLOCKED",
+      "Disposition": "STOP",
+      "FailureClass": "Handoff",
+      "TriggeredStopConditions": [
+        "S-04"
+      ],
+      "Results": {
+        "Termination": "pass",
+        "Handoff": "fail",
+        "Authority": "pass",
+        "Contract": "pass",
+        "Identity": "fail",
+        "Remote": "fail",
+        "Scope": "fail",
+        "CleanTree": "pass",
+        "Ci": "fail",
+        "Tests": "fail",
+        "Trailer": "pass",
+        "Routing": "pass",
+        "FreeText": "pass",
+        "Denials": "pass"
+      }
+    },
+    "FailSet": [
+      "Handoff",
+      "Identity",
+      "Remote",
+      "Scope",
+      "Ci",
+      "Tests"
+    ],
+    "FirstFail": "Handoff",
+    "RealClassification": "EXECUTION_VERIFIED",
+    "DiffersFromReal": [
+      "Handoff",
+      "Identity",
+      "Remote",
+      "Scope",
+      "Ci",
+      "Tests"
+    ],
+    "OtherFailCitesFake": {
+      "Remote": true,
+      "Scope": true,
+      "Ci": false,
+      "Tests": false
+    },
+    "AlienCauseHits": {},
+    "FakeShaFoundByGit": false,
+    "RepoHasRealCurrentSha": true,
+    "RepoHasRealBaseSha": true
+  },
+  "Atoms": {
+    "a1.Control": true,
+    "a1.File": true,
+    "a1.Field": true,
+    "a1.OldIsRealCurrentSha": true,
+    "a1.NewIsMutatedCurrentSha": true,
+    "a1.NewIsHex40": true,
+    "a1.NewDiffersFromOld": true,
+    "a1.NewExistsFlagFalse": true,
+    "a1.GitConfirmsNotExists": true,
+    "a1.RepoHasRealCurrentSha": true,
+    "a1.RepoHasRealBaseSha": true,
+    "a1.SourceVerificationIsRealRun": true,
+    "a1.RunIdIsNc1Run": true,
+    "a2.BytesReplaceOldNewOnceEqualsCopy": true,
+    "a2.TypedLeafDiffIsOnlyCurrentSha": true,
+    "a3.InputFileSetEqual": true,
+    "a3.ChangedExactlyHandoffAndRelayRecord": true,
+    "a3.ChangedVsVerifiedInputsMatches": true,
+    "a3.RelayRecordDiffOnlyOutputSha": true,
+    "a3.RealOutputShaIsHandoffHash": true,
+    "a3.CopyOutputShaIsHandoffHash": true,
+    "a3.DerivedRecomputeMatches": true,
+    "a3.InputShaKeysMatchFiles": true,
+    "a3.InputShaValuesMatchFiles": true,
+    "a4.PromptShaMatchesMutationJson": true,
+    "a4.PromptIsRealWithOnlyRunIdAndPathChanged": true,
+    "a4.PromptDiffTextDeclared": true,
+    "a4.RealPromptShaInRelayRecord": true,
+    "g.RealTaskIdMatchesTask": true,
+    "g.Nc1TaskIdEqualsReal": true,
+    "g.Nc1AttemptEqualsReal": true,
+    "g.SourceInputsContainsTaskId": true,
+    "b.ClassificationBlocked": true,
+    "b.DispositionStop": true,
+    "b.StopConditionS04": true,
+    "c.FirstFailIsHandoff": true,
+    "c.FailureClassIsHandoffOrStopCondition": true,
+    "d1.FailSetWithinAllowed": true,
+    "d2.HandoffFails": true,
+    "d2.IdentityFails": true,
+    "d3.OnlyTheFourteenKnownChecks": true,
+    "d3.RestPassInNc1": true,
+    "d3.RealIsVerified": true,
+    "d3.RealAllFourteenPass": true,
+    "e1.HandoffEvidenceLiteralFake": true,
+    "e1.IdentityEvidenceLiteralFake": true,
+    "e2.OtherFailEvidenceCitesFake": false,
+    "e3.NoAlienInHandoffIdentity": true,
+    "e3.NoAlienInOthers": true,
+    "f.IdentityEvidenceHasRealHead": true,
+    "f.HeadEqualsRealVerifiedSha": true
+  },
+  "Properties": {
+    "a1_MutationJson": true,
+    "a2_HandoffChangesOnlyCurrentSha": true,
+    "a3_InputDiff": true,
+    "a4_Prompt": true,
+    "g_TaskBinding": true,
+    "b_BlockedStopWithS04": true,
+    "c_FirstFailIsHandoff": true,
+    "d1_FailSetWithinAllowed": true,
+    "d2_HandoffAndIdentityFail": true,
+    "d3_RestPassLikeReal": true,
+    "e1_HandoffIdentityLiteralFakeSha": true,
+    "e2_OtherFailCitesFakeSha": false,
+    "e3_NoAlienCause": true,
+    "f_IdentityHasRealHead": true
+  },
+  "FailingAtoms": [
+    "e2.OtherFailEvidenceCitesFake"
+  ],
+  "FailingProperties": [
+    "e2_OtherFailCitesFakeSha"
+  ],
+  "SubstituteResult": "FAIL",
+  "Record": {
+    "nc1": "NOT SATISFIED (vuelve al Owner: variacion fuera de PD-F4B-01)"
+  }
+}

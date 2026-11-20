@@ -1,0 +1,79 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT4-FULL-READ-PATH",
+  "RunId": "R20261120T211710Z-a468",
+  "DelegationRunId": "R20261120T193416Z-a53f",
+  "WorkRunId": "R20261120T193653Z-de54",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.SessionOperated=false from 2026-11-20T19:36:59Z to 20:54:40Z; Participant.Kind=subagent."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json matches TaskId, RunId, DelegationRunId and Attempt; BaseSha=5aaacce3b278c1f29375de4f24c7fab232f44ad2, RedSha=214f8c75f2ca5a248a5592075c3bac8e667bd362, CurrentSha=faef702055990d1350a73bf4d254eb9e898d5670. OutputWrittenUtc=2026-11-20T14:54:16.45184-06:00 is after Cession.StartUtc."
+    },
+    "Authority": {
+      "Result": "fail",
+      "Evidence": "git merge-base --is-ancestor 27c13fabcd692678daca0095476c58fd175fbe79 5aaacce3b278c1f29375de4f24c7fab232f44ad2 exited 0. git diff --name-only AuthorityRevision BaseSha returned four docs paths. revision-diff.txt SHA256 matches BA2B6A194BA134821E028DA44E67CEC1FF2C8984D269F00D7DB33902668D41F3, but lists make_pbt4a_contract.py as having no Authorities entry. That changed route cannot be classified under 16.3; S-12 applies."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "gate-contract.json and delegation.json counts match for AllowedWriteScope=10, ForbiddenWriteScope=316, Invariants=14, StopConditions=34, Authorities=47 and RequiredTests=38. byte-fidelity-check.json reports PASS with UTF-8 byte equality for all eight opaque collections."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD and git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad both returned faef702055990d1350a73bf4d254eb9e898d5670. BaseSha and RedSha resolve as recorded; merge-base --is-ancestor BaseSha CurrentSha and RedSha CurrentSha both exited 0. Branch and worktree match the delegation."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: LsRemoteSha=faef702055990d1350a73bf4d254eb9e898d5670 and OriginMainSha=812baf879612320653094a8aaf46aca0bac81383, matching CurrentSha and MainSha."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha returned 10 routes; the read-only exact-string comparison against the 10 delegation AllowedWriteScope entries marked all 10 true. BaseSha..RedSha returned seven routes, all allowed. ChainBaseSha..CurrentSha -- src tests returned 10 routes, all allowed; no forbidden or out-of-scope route."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned empty. git check-ignore -v for the handoff input returned .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun 44814418683 is completed success, event=push, exact branch ref and CurrentSha; all four required jobs are success. RedRun 44810371492 is a push of RedSha with Core failure, UI and Build UI success, Plugin skipped as expected."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "required-tests.txt SHA256 matches 2270E05B5D0AC9329905C84DB1A03C548B44BF77F472E184E2C69E05D1C9FD4E; it and the contract contain 38 filters. TRX counts match ExpectedCounts: RED Core 19137/19125/5/7, GREEN Core 19137/19130/0/7, both UI 2451/2430/0/21. Filter counts meet minima; the RED filter selected and failed 5/5 by assertions with stack paths under tests/, and the GREEN selected and passed 5/5. Seven expected Core skips are present. git diff RedSha CurrentSha -- tests is empty; RT/ChainRedFiles is the three new test files plus PushBackDraftWriteGuardTests.cs. Handoff records 24 local UI test invocations, each filtered."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha shows RED and GREEN both carry the declared trailer: Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests model claude-sonnet-5-5 and effort high. relay-record-work.json records the subagent launch alias as sonnet, with ModelEffective=claude-sonnet-5-5, EffortEffective=high and EffectiveSource citing the transcript."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Read-only full-field scan of the seven required handoff text fields reported lengths 7522, 3010, 770, 800, 0, 0 and 151 characters; zero whole-word or whole-phrase matches."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes report zero permission denials and three tool errors, none pending; no pending failed order is recorded."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Authority",
+  "TriggeredStopConditions": [
+    "S-12"
+  ],
+  "Findings": [
+    "AuthorityRevision..BaseSha includes docs/automation/evidence/I-64-pilot/F4B-PBT4-FULL-READ-PATH/coordinator/make_pbt4a_contract.py, which is absent from the contract Authorities mapping; its authority class cannot be verified."
+  ],
+  "RecommendedNextAction": "Resolve the missing authority classification and repeat the authority verification."
+}

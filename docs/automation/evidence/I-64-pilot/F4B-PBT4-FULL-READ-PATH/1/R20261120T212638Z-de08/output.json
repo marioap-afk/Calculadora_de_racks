@@ -1,0 +1,80 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT4-FULL-READ-PATH",
+  "RunId": "R20261120T212638Z-de08",
+  "DelegationRunId": "R20261120T193416Z-a53f",
+  "WorkRunId": "R20261120T193653Z-de54",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true, TreeKilled=false; Participant.Kind=subagent."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json matches TaskId F4B-PBT4-FULL-READ-PATH, Attempt 1, DelegationRunId R20261120T193416Z-a53f and RunId R20261120T193653Z-de54. Outcome.OutputWrittenUtc 2026-11-20T20:54:16.451840+00:00 is after Cession.StartUtc 2026-11-20T19:36:59Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha returned 0. git diff --name-only AuthorityRevision BaseSha listed four docs paths: I-64-evidence.md, gate-contract.json, make_pbt4a_contract.py, I-64.yml. revision-diff.txt SHA-256 matches BA2B6A194BA134821E028DA44E67CEC1FF2C8984D269F00D7DB33902668D41F3. The three listed authorities are UNIT_DOC; make_pbt4a_contract.py is absent from Authorities and is admitted by coordinator-disposition.md. No EXTERNAL or UNIT_CHANGE path is in the diff. Contract authorities identify WEI, WHC, RIA and NH as UNIT_CHANGE; the other EXTERNAL authorities are read at MainSha."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Delegation and gate-contract match on Unit I-64, Gate F4B, TaskId, AuthorityRevision and MainSha. relay-record-planning.json records A1-A8 pass and nc4; byte-fidelity-check.json reports PASS and byte-equal values for all eight opaque collections."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git branch --show-current=architecture/workspace-persistente-rackcad; git rev-parse --show-toplevel=<worktree-de-I-64>. Handoff CurrentSha=faef702055990d1350a73bf4d254eb9e898d5670; git rev-parse HEAD=faef702055990d1350a73bf4d254eb9e898d5670; git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad=faef702055990d1350a73bf4d254eb9e898d5670. BaseSha is ancestor of RedSha and RedSha is ancestor of CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: CurrentRun event=push, exact branch ref and HeadSha faef702055990d1350a73bf4d254eb9e898d5670; LsRemoteSha matches CurrentSha and OriginMainSha matches MainSha 812baf879612320653094a8aaf46aca0bac81383. No network Git command was run."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "Read-only scope script listed all 10 AllowedWriteScope entries from delegation.json and checked exact path equality against git diff --name-only BaseSha CurrentSha, BaseSha RedSha, and ChainBaseSha CurrentSha -- src tests. All changed paths match an allowed entry. BaseSha..CurrentSha contains exactly 10 paths; ForbiddenWriteScope intersection is empty. RED-to-CurrentSha changes only the five specified src paths."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned empty. git check-ignore returned artifacts/orchestration/I-64/F4B-PBT4-FULL-READ-PATH/1/R20261120T212638Z-de08/inputs/delegation.json."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts and supplied TRX identify CurrentRun 44814418683 as push on the exact branch and SHA, with all four required jobs success. RedRun 44810371492 is push on the exact branch and RedSha; Core failed, UI and Build UI succeeded, Build Plugin was skipped. Both runs are completed."
+    },
+    "Tests": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "required-tests.txt SHA-256 matches 2270E05B5D0AC9329905C84DB1A03C548B44BF77F472E184E2C69E05D1C9FD4E; all 38 rows match delegation and contract RequiredTests. TRX parsed counts: RED Core 19137 (19125 Passed, 5 Failed, 7 NotExecuted), GREEN Core 19137 (19130 Passed, 0 Failed, 7 NotExecuted), RED and GREEN UI each 2451 (2430 Passed, 0 Failed, 21 NotExecuted). RED failures are the five PushBackFullReadPathTests; skipped Core rows are the six D-1 methods and CT-PBT3A-12. git diff confirms ChainRedFiles are the four changed test paths and RED-to-GREEN changes no tests. The task instruction identifies one expected GREEN line as unmet, PBT4A-C07; this stop condition prevents a pass despite the GREEN TRX totals."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%H%n%B BaseSha..CurrentSha lists RED 214f8c75f2ca5a248a5592075c3bac8e667bd362 and GREEN faef702055990d1350a73bf4d254eb9e898d5670; both contain Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching relay-record-work.json Participant.ModelEffective=claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests model claude-sonnet-5-5 and effort high. relay-record-work.json Participant.ModelEffective=claude-sonnet-5-5 and EffortEffective=high; EffectiveSource records 238 assistant turns with that model."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Read-only scan of all seven required handoff text fields against the 16.10 term list found no whole-word or whole-phrase matches. Character counts: WorkCompleted 7522, Evidence 3018, UnexpectedFindings 772, KnownLimitations 803, Deviations 0, OpenQuestions 0, RecommendedNextAction 151."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes report zero permission denials, three tool errors with none pending, and no usage-limit warning."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Tests",
+  "TriggeredStopConditions": [
+    "PBT4A-C07"
+  ],
+  "Findings": [
+    "The task instruction reports an expected GREEN line that is not met and identifies PBT4A-C07. The stop condition applies even though the supplied GREEN Core and UI TRX have the stated counts.",
+    "The other 13 checks pass; Tests is the first failing check in the fixed 16.9 order."
+  ],
+  "RecommendedNextAction": "Return the expected-line discrepancy for Owner review before further work."
+}
