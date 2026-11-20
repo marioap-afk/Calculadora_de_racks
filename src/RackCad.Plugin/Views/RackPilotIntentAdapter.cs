@@ -4,6 +4,7 @@ using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.Catalogs;
+using RackCad.Application.Systems.PushBack.Draft;
 using RackCad.Application.Systems.PushBack.Pilot;
 using RackCad.Plugin.Drawing;
 using RackCad.Plugin.Systems.Shared;
@@ -35,9 +36,21 @@ namespace RackCad.Plugin.Views
             FailureReason = failureReason ?? string.Empty;
         }
 
+        internal RackPilotIntentReadResult(PushBackPilotIntentResult pilot, PushBackFullIntentResult full, PushBackPilotIntentScan input)
+        {
+            Pilot = pilot;
+            Full = full;
+            Input = input;
+            FailureReason = string.Empty;
+        }
+
         internal bool Succeeded => Pilot != null;
 
         internal PushBackPilotIntentResult? Pilot { get; }
+
+        internal PushBackFullIntentResult? Full { get; }
+
+        internal PushBackPilotIntentScan? Input { get; }
 
         internal string FailureReason { get; }
     }
@@ -120,7 +133,7 @@ namespace RackCad.Plugin.Views
                 var input = new PushBackPilotIntentScan(rackId, originKey, scan.Facts, scan.RawEnvelopes, CompletenessEvidence, witness);
                 var read = PushBackPilotIntentReader.Read(input, catalog);
 
-                return new RackPilotIntentReadResult(read, null);
+                return new RackPilotIntentReadResult(read, PushBackFullDraftReader.Read(input, catalog), input);
             }
             catch (Autodesk.AutoCAD.Runtime.Exception ex) when (ex.ErrorStatus == ErrorStatus.LockViolation)
             {
@@ -139,6 +152,19 @@ namespace RackCad.Plugin.Views
                 // INV-14: every path of the read (the success, the early return and the catches) leaves no transaction open.
                 AssertNoOpenTransaction(document, "after");
             }
+        }
+
+        /// <summary>
+        /// I-64 F4B PB-T4a (D-PBT4-03): the same read at the origin of an open draft, chosen by its text over the scan that
+        /// <see cref="Read"/> already took, by the pure reread of the full model (PushBackOriginByText.ReadAt). It reads nothing
+        /// more of the drawing. Without exactly one other mutable member with that text, the read stays as it was. An exception of
+        /// the pure reread is not contained here, unlike <see cref="Read"/>: it reaches the reader of the host, which answers Failed.
+        /// </summary>
+        internal static RackPilotIntentReadResult AtOrigin(RackPilotIntentReadResult read, string originText, RackCatalog catalog)
+        {
+            if (!read.Succeeded || read.Input == null) return read;
+            var at = PushBackOriginByText.ReadAt(read.Input, originText, catalog);
+            return at == null ? read : new RackPilotIntentReadResult(at.Value.Pilot, at.Value.Full, at.Value.Scan);
         }
 
         /// <summary>

@@ -406,7 +406,9 @@ namespace RackCad.Application.Workspace
                     return EditCheckOutcome.NotApplicable("El borrador no quedó desconocido tras una aplicación fallida.");
 
                 // 7: the one reread.
-                var read = _editIntentReader!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.Witness);
+                var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader
+                    ? originReader.ReadIntentAtOrigin(request.Session, request.RackId, draft.CurrentDraftState.Origin, request.Witness)
+                    : _editIntentReader!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.Witness);
                 switch (read.Status)
                 {
                     case EditIntentReadStatus.Read:
@@ -500,7 +502,9 @@ namespace RackCad.Application.Workspace
                 if (!draft.NeedsLazyReload) return EditIntentOutcome.NotNeeded("El borrador no necesita recargarse.");
 
                 // 7: the one read.
-                var read = _editIntentReader!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.Witness);
+                var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader
+                    ? originReader.ReadIntentAtOrigin(request.Session, request.RackId, draft.CurrentDraftState.Origin, request.Witness)
+                    : _editIntentReader!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.Witness);
                 switch (read.Status)
                 {
                     case EditIntentReadStatus.Read:
@@ -587,7 +591,9 @@ namespace RackCad.Application.Workspace
                     return EditConfirmOutcome.NotApplicable(NotCheckableReason);
 
                 // 6: the one reread.
-                var read = _editIntentReader!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.Witness);
+                var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader
+                    ? originReader.ReadIntentAtOrigin(request.Session, request.RackId, draft.CurrentDraftState.Origin, request.Witness)
+                    : _editIntentReader!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.Witness);
                 switch (read.Status)
                 {
                     case EditIntentReadStatus.Read:
@@ -672,7 +678,9 @@ namespace RackCad.Application.Workspace
                     return EditIntentOutcome.NotNeeded(NotKeepableReason);
 
                 // 6: the one read.
-                var read = _editIntentReader!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.Witness);
+                var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader
+                    ? originReader.ReadIntentAtOrigin(request.Session, request.RackId, draft.CurrentDraftState.Origin, request.Witness)
+                    : _editIntentReader!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.Witness);
                 switch (read.Status)
                 {
                     case EditIntentReadStatus.Read:
@@ -756,7 +764,9 @@ namespace RackCad.Application.Workspace
                 if (draft.Status == DraftStatus.Applying) return EditIntentOutcome.Waiting("El borrador se está aplicando o ya no está registrado.");
 
                 // 6: the one read.
-                var read = _editIntentReader!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.Witness);
+                var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader
+                    ? originReader.ReadIntentAtOrigin(request.Session, request.RackId, draft.CurrentDraftState.Origin, request.Witness)
+                    : _editIntentReader!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.Witness);
                 switch (read.Status)
                 {
                     case EditIntentReadStatus.Read:

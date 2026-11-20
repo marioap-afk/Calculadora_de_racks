@@ -193,7 +193,7 @@ namespace RackCad.Plugin.Workspace
         /// document that executes it, the revalidation of the targets with the choice of the origin, and the read of the adapter.
         /// A failure is contained as a value. It writes no selection, no view and nothing of the drawing, and it gives no focus back.
         /// </summary>
-        private sealed class PilotIntentReader : IWorkspaceEditIntentReader
+        private sealed class PilotIntentReader : IWorkspaceEditIntentReader, IWorkspaceEditIntentOriginReader
         {
             private readonly NavigationTargets _targets;
             private readonly Func<WorkspaceRequest, long, RequestDecision> _authorize;
@@ -208,7 +208,7 @@ namespace RackCad.Plugin.Workspace
             {
                 try
                 {
-                    return ReadOnActiveDocument(session, rackId, chosenReference, witness);
+                    return ReadOnActiveDocument(session, rackId, chosenReference, witness, null);
                 }
                 catch (System.Exception ex)
                 {
@@ -217,7 +217,20 @@ namespace RackCad.Plugin.Workspace
                 }
             }
 
-            private EditIntentReadResult ReadOnActiveDocument(SessionId session, string rackId, long? chosenReference, EditIntentWitness witness)
+            public EditIntentReadResult ReadIntentAtOrigin(SessionId session, string rackId, string originText, EditIntentWitness witness)
+            {
+                try
+                {
+                    return ReadOnActiveDocument(session, rackId, null, witness, originText);
+                }
+                catch (System.Exception ex)
+                {
+                    LogFault("WorkspaceNavigationHost.ReadEditIntent", ex);
+                    return EditIntentReadResult.Failed(ex.Message);
+                }
+            }
+
+            private EditIntentReadResult ReadOnActiveDocument(SessionId session, string rackId, long? chosenReference, EditIntentWitness witness, string originText)
             {
                 var document = AcApplication.DocumentManager.MdiActiveDocument;
                 if (document == null)
@@ -246,8 +259,10 @@ namespace RackCad.Plugin.Workspace
                         witness?.Key,
                         witness?.Text,
                         catalog.Catalog);
+                    if (originText != null)
+                        read = RackPilotIntentAdapter.AtOrigin(read, originText, catalog.Catalog);
                     return read.Succeeded
-                        ? EditIntentReadResult.FromPilot(read.Pilot)
+                        ? EditIntentReadResult.FromReads(read.Pilot, read.Full, catalog.Catalog)
                         : EditIntentReadResult.Failed(read.FailureReason);
                 }
             }

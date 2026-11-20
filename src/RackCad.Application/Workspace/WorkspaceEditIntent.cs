@@ -64,7 +64,13 @@ namespace RackCad.Application.Workspace
             return new EditIntentReadResult(EditIntentReadStatus.Read, null, pilotRead, null, null);
         }
 
-        public static EditIntentReadResult FromReads(PushBackPilotIntentResult pilotRead, PushBackFullIntentResult fullRead, RackCatalog catalog) => new EditIntentReadResult(EditIntentReadStatus.Read, null, pilotRead, null, null);
+        public static EditIntentReadResult FromReads(PushBackPilotIntentResult pilotRead, PushBackFullIntentResult fullRead, RackCatalog catalog)
+        {
+            if (pilotRead == null) throw new ArgumentNullException(nameof(pilotRead));
+            if (fullRead == null) throw new ArgumentNullException(nameof(fullRead));
+            if (catalog == null) throw new ArgumentNullException(nameof(catalog));
+            return new EditIntentReadResult(EditIntentReadStatus.Read, null, pilotRead, fullRead, catalog);
+        }
 
         public static EditIntentReadResult NoActiveDocument(string reason) => new(EditIntentReadStatus.NoActiveDocument, reason, null, null, null);
 
