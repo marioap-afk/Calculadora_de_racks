@@ -57,7 +57,7 @@ namespace RackCad.Tests
                     .Select(name => file.Path + ": " + name))
                 .ToList();
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4a: sustituida por CT-PBT4A-06 de PushBackFullReadGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 4).")]
         public void CT_PBT3A_12_NoSourceFileOutsideTheFolderOfTheModelNamesItsTypes()
         {
             var log = new List<string>();

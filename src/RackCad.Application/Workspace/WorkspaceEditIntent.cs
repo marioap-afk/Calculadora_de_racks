@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RackCad.Application.Catalogs;
+using RackCad.Application.Systems.PushBack.Draft;
 using RackCad.Application.Systems.PushBack.Pilot;
 
 namespace RackCad.Application.Workspace
@@ -34,11 +36,13 @@ namespace RackCad.Application.Workspace
     /// </summary>
     public readonly struct EditIntentReadResult
     {
-        private EditIntentReadResult(EditIntentReadStatus status, string? reason, PushBackPilotIntentResult? pilotRead)
+        private EditIntentReadResult(EditIntentReadStatus status, string? reason, PushBackPilotIntentResult? pilotRead, PushBackFullIntentResult? fullRead, RackCatalog? catalog)
         {
             Status = status;
             Reason = reason;
             PilotRead = pilotRead;
+            FullRead = fullRead;
+            Catalog = catalog;
         }
 
         public EditIntentReadStatus Status { get; }
@@ -48,19 +52,27 @@ namespace RackCad.Application.Workspace
         /// <summary>The read of the pilot; null unless the status is Read.</summary>
         public PushBackPilotIntentResult? PilotRead { get; }
 
+        /// <summary>I-64 F4B PB-T4a: the read of the full model over the same scan; null unless the read came from <see cref="FromReads"/>.</summary>
+        public PushBackFullIntentResult? FullRead { get; }
+
+        /// <summary>I-64 F4B PB-T4a: the catalog of the read; null unless the read came from <see cref="FromReads"/>.</summary>
+        public RackCatalog? Catalog { get; }
+
         public static EditIntentReadResult FromPilot(PushBackPilotIntentResult pilotRead)
         {
             if (pilotRead == null) throw new ArgumentNullException(nameof(pilotRead));
-            return new EditIntentReadResult(EditIntentReadStatus.Read, null, pilotRead);
+            return new EditIntentReadResult(EditIntentReadStatus.Read, null, pilotRead, null, null);
         }
 
-        public static EditIntentReadResult NoActiveDocument(string reason) => new(EditIntentReadStatus.NoActiveDocument, reason, null);
+        public static EditIntentReadResult FromReads(PushBackPilotIntentResult pilotRead, PushBackFullIntentResult fullRead, RackCatalog catalog) => new EditIntentReadResult(EditIntentReadStatus.Read, null, pilotRead, null, null);
 
-        public static EditIntentReadResult Busy(string reason) => new(EditIntentReadStatus.Busy, reason, null);
+        public static EditIntentReadResult NoActiveDocument(string reason) => new(EditIntentReadStatus.NoActiveDocument, reason, null, null, null);
 
-        public static EditIntentReadResult Rejected(string reason) => new(EditIntentReadStatus.Rejected, reason, null);
+        public static EditIntentReadResult Busy(string reason) => new(EditIntentReadStatus.Busy, reason, null, null, null);
 
-        public static EditIntentReadResult Failed(string reason) => new(EditIntentReadStatus.Failed, reason, null);
+        public static EditIntentReadResult Rejected(string reason) => new(EditIntentReadStatus.Rejected, reason, null, null, null);
+
+        public static EditIntentReadResult Failed(string reason) => new(EditIntentReadStatus.Failed, reason, null, null, null);
     }
 
     /// <summary>
