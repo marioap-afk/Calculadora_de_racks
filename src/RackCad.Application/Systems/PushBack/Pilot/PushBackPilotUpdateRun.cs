@@ -45,6 +45,9 @@ namespace RackCad.Application.Systems.PushBack.Pilot
     /// here, in pure code, by the exact text of the origin of the draft), the survivors and the locked layers, the import, the start of
     /// MUTATE, the re-read that is the authority of MUTATE, one write per member, the seal and POST. POST is only reached once the seal
     /// returned, and its interpretation (the names that the views must carry, the warnings and the comparison) is made here.
+    ///
+    /// I-64 F4B PB-T3b (D-PBT3-10) — the same run serves the two models of the draft: the one of the pilot and the full one. The views that the
+    /// update leaves obsolete are taken away between the start of MUTATE and its seal, by the capacity that the scope of MUTATE may implement.
     /// </summary>
     public static class PushBackPilotUpdateRun
     {
@@ -138,20 +141,20 @@ namespace RackCad.Application.Systems.PushBack.Pilot
             }
         }
 
-        /// <summary>The check before the slot for a draft of the FULL model (D-PBT3-10): the same one, over its own snapshot.</summary>
-        public static PushBackPilotPrecheck Precheck(DraftSession<PushBackFullDraftState> draft) =>
-            PushBackPilotPrecheck.Go();
+        /// <summary>The same check for a draft of the FULL model (D-PBT3-10): the same three kinds, over its own snapshot.</summary>
+        public static PushBackPilotPrecheck Precheck(DraftSession<PushBackFullDraftState> draft)
+        {
+            if (draft == null) throw new ArgumentNullException(nameof(draft));
 
-        /// <summary>The whole update of a draft of the FULL model under the slot (D-PBT3-10). TOTAL: it never throws.</summary>
-        public static DraftApplyOutcome<PushBackFullDraftState> ExecuteFull(
-            DraftSession<PushBackFullDraftState> draft,
-            PushBackPilotUpdateRequest request,
-            IPushBackPilotUpdatePort port) =>
-            DraftApplyOutcome<PushBackFullDraftState>.NotAppliedFailure(UpdateNotRunReason);
-
-        /// <summary>The comparison of POST for the FULL model (D-PBT3-10): the erased views are gone, and the rest as for the pilot.</summary>
-        public static string? ComparePostFull(PushBackPilotUpdatePlan plan, PushBackFullIntentResult? postRead) =>
-            PostRereadMissingReason;
+            var result = PushBackPilotUpdatePlanner.PrepareFull(PushBackFullPrepareInput.From(draft), null!, null!);
+            switch (result.Kind)
+            {
+                case PushBackPilotPrepareKind.NotApplicable: return PushBackPilotPrecheck.Stop(result.Kind, NotApplicableReason);
+                case PushBackPilotPrepareKind.PendingText: return PushBackPilotPrecheck.Stop(result.Kind, PendingTextReason);
+                case PushBackPilotPrepareKind.NothingToApply: return PushBackPilotPrecheck.Stop(result.Kind, NothingToApplyReason);
+                default: return PushBackPilotPrecheck.Go();
+            }
+        }
 
         /// <summary>
         /// The whole update under the slot. TOTAL: it never throws. The outcome is the one that the draft must be closed with.
@@ -165,7 +168,61 @@ namespace RackCad.Application.Systems.PushBack.Pilot
                 return DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedFailure(MissingArgumentsReason);
 
             // M-01: the state of the run lives outside the try, so what escapes is classified with what the run already did.
-            var execution = new Execution(draft, request, port);
+            PushBackPilotPrepareInput? input = null;
+            var execution = new Execution<PushBackPilotDraftState>(
+                draft,
+                request,
+                port,
+                snapshotted =>
+                {
+                    input = PushBackPilotPrepareInput.From(snapshotted);
+                    return input.InitialDraftState.Origin;
+                },
+                (_, scan, catalog) => PushBackPilotUpdatePlanner.Prepare(input!, PushBackPilotIntentReader.Read(scan, catalog), catalog),
+                (scan, catalog, plan) =>
+                {
+                    var read = PushBackPilotIntentReader.Read(scan, catalog);
+                    return (read.Read, ComparePost(plan, read));
+                });
+            try
+            {
+                return execution.Run();
+            }
+            catch (Exception ex)
+            {
+                return execution.OutcomeOfAnEscape(ex);
+            }
+        }
+
+        /// <summary>
+        /// The whole update under the slot for a draft of the FULL model (D-PBT3-10). TOTAL: it never throws. It is the same run as the one of the
+        /// pilot, with the plan, the re-read and the comparison of the full model.
+        /// </summary>
+        public static DraftApplyOutcome<PushBackFullDraftState> ExecuteFull(
+            DraftSession<PushBackFullDraftState> draft,
+            PushBackPilotUpdateRequest request,
+            IPushBackPilotUpdatePort port)
+        {
+            if (draft == null || request == null || port == null)
+                return DraftApplyOutcome<PushBackFullDraftState>.NotAppliedFailure(MissingArgumentsReason);
+
+            // M-01: the state of the run lives outside the try, so what escapes is classified with what the run already did.
+            PushBackFullPrepareInput? input = null;
+            var execution = new Execution<PushBackFullDraftState>(
+                draft,
+                request,
+                port,
+                snapshotted =>
+                {
+                    input = PushBackFullPrepareInput.From(snapshotted);
+                    return input.InitialDraftState.Origin;
+                },
+                (_, scan, catalog) => PushBackPilotUpdatePlanner.PrepareFull(input!, PushBackFullDraftReader.Read(scan, catalog), catalog),
+                (scan, catalog, plan) =>
+                {
+                    var read = PushBackFullDraftReader.Read(scan, catalog);
+                    return (read.Read, ComparePostFull(plan, read));
+                });
             try
             {
                 return execution.Run();
@@ -184,11 +241,33 @@ namespace RackCad.Application.Systems.PushBack.Pilot
         {
             if (plan == null) throw new ArgumentNullException(nameof(plan));
             if (postRead == null) return PostRereadMissingReason;
-            if (!postRead.Read.IsAdmitted) return PostNotAdmittedPrefix + (postRead.Read.Admission.Diagnostic ?? "sin diagnóstico");
 
-            var found = postRead.StaleBase.Entries.Values
+            return ComparePostCore(plan, postRead.Read.Admission, postRead.StaleBase, postRead.Read.InitialState?.Inputs.Annotations.AnnotationScale);
+        }
+
+        /// <summary>The comparison of POST for the FULL model (D-PBT3-10): the erased views are gone, and the rest as for the pilot.</summary>
+        public static string? ComparePostFull(PushBackPilotUpdatePlan plan, PushBackFullIntentResult? postRead)
+        {
+            if (plan == null) throw new ArgumentNullException(nameof(plan));
+            if (postRead == null) return PostRereadMissingReason;
+
+            return ComparePostCore(plan, postRead.Read.Admission, postRead.StaleBase, postRead.Read.InitialState?.Editable.AnnotationScale);
+        }
+
+        // The comparison of the two models: the read that is admitted, the views that were erased and are gone, the same keys, the same envelopes
+        // and the same scale (the one of the state that the read gave).
+        private static string? ComparePostCore(PushBackPilotUpdatePlan plan, DraftAdmission admission, DraftStaleBase? staleBase, double? scale)
+        {
+            if (!admission.IsAdmitted) return PostNotAdmittedPrefix + (admission.Diagnostic ?? "sin diagnóstico");
+
+            var found = staleBase!.Entries.Values
                 .Where(entry => entry.Membership == DraftMembership.Mutable)
                 .ToDictionary(entry => entry.Key, entry => entry.EnvelopeText, StringComparer.Ordinal);
+            foreach (var erased in plan.PostExpectation.ErasedKeys)
+            {
+                if (found.ContainsKey(erased)) return PostErasedStillPresentPrefix + erased;
+            }
+
             var expected = plan.PostExpectation.Envelopes;
             if (found.Count != expected.Count) return PostKeysDifferReason;
 
@@ -198,8 +277,7 @@ namespace RackCad.Application.Systems.PushBack.Pilot
                 if (!string.Equals(text, item.Text, StringComparison.Ordinal)) return PostEnvelopeDiffersPrefix + item.Key;
             }
 
-            var scale = postRead.Read.InitialState!.Inputs.Annotations.AnnotationScale;
-            return scale.Equals(plan.PostExpectation.AnnotationScale) ? null : PostScaleDiffersReason;
+            return scale.HasValue && scale.Value.Equals(plan.PostExpectation.AnnotationScale) ? null : PostScaleDiffersReason;
         }
 
         /// <summary>
@@ -244,33 +322,45 @@ namespace RackCad.Application.Systems.PushBack.Pilot
 
         // ------------------------------------------------------------------ the state of ONE run
 
-        private sealed class Execution
+        private sealed class Execution<TState>
         {
-            private readonly DraftSession<PushBackPilotDraftState> _draft;
+            private readonly DraftSession<TState> _draft;
             private readonly PushBackPilotUpdateRequest _request;
             private readonly IPushBackPilotUpdatePort _port;
+            private readonly Func<DraftSession<TState>, string> _originOf;
+            private readonly Func<DraftSession<TState>, PushBackPilotIntentScan, RackCatalog, PushBackPilotPrepareResult> _prepare;
+            private readonly Func<PushBackPilotIntentScan, RackCatalog?, PushBackPilotUpdatePlan, (DraftIntentRead<TState> Read, string? Cause)> _postRead;
             private readonly List<string> _warnings = new();
 
-            private PushBackPilotPrepareInput? _input;
+            private string? _origin;
             private PushBackPilotUpdatePlan? _plan;
             private RackCatalog? _catalog;
             private bool _writeStarted;
             private bool _sealReturned;
             private Exception? _mutationDisposeFailure;
 
-            public Execution(DraftSession<PushBackPilotDraftState> draft, PushBackPilotUpdateRequest request, IPushBackPilotUpdatePort port)
+            public Execution(
+                DraftSession<TState> draft,
+                PushBackPilotUpdateRequest request,
+                IPushBackPilotUpdatePort port,
+                Func<DraftSession<TState>, string> originOf,
+                Func<DraftSession<TState>, PushBackPilotIntentScan, RackCatalog, PushBackPilotPrepareResult> prepare,
+                Func<PushBackPilotIntentScan, RackCatalog?, PushBackPilotUpdatePlan, (DraftIntentRead<TState> Read, string? Cause)> postRead)
             {
                 _draft = draft;
                 _request = request;
                 _port = port;
+                _originOf = originOf;
+                _prepare = prepare;
+                _postRead = postRead;
             }
 
             // The two scopes are released in finally blocks of their own, the one of MUTATE inside the one of the run, and what a release
             // throws never covers the outcome that was already decided (D-T4B-02 (6)).
-            public DraftApplyOutcome<PushBackPilotDraftState> Run()
+            public DraftApplyOutcome<TState> Run()
             {
                 IPushBackPilotUpdateScope? scope = null;
-                DraftApplyOutcome<PushBackPilotDraftState>? outcome;
+                DraftApplyOutcome<TState>? outcome;
                 Exception? scopeDisposeFailure = null;
                 try
                 {
@@ -310,38 +400,37 @@ namespace RackCad.Application.Systems.PushBack.Pilot
 
             // What an exception that escaped from the run means, by what the run had already done: after the seal the write is done, after
             // a write began its persistence is not known, and only before both it is a plain failure (M-01).
-            public DraftApplyOutcome<PushBackPilotDraftState> OutcomeOfAnEscape(Exception ex)
+            public DraftApplyOutcome<TState> OutcomeOfAnEscape(Exception ex)
             {
                 if (_sealReturned) return PostFailed(PostFailurePrefix + ex.Message);
-                if (_writeStarted) return DraftApplyOutcome<PushBackPilotDraftState>.CommitThrew(WriteFailurePrefix + ex.Message);
+                if (_writeStarted) return DraftApplyOutcome<TState>.CommitThrew(WriteFailurePrefix + ex.Message);
                 return NotAppliedFailure(RunFailurePrefix + ex.Message);
             }
 
             // ------------------------------------------------------------------ PREPARE
 
             // Returns the decision when the update cannot go on, and null when it can.
-            private DraftApplyOutcome<PushBackPilotDraftState>? Prepare(IPushBackPilotUpdateScope scope)
+            private DraftApplyOutcome<TState>? Prepare(IPushBackPilotUpdateScope scope)
             {
-                _input = PushBackPilotPrepareInput.From(_draft);
+                _origin = _originOf(_draft);
                 var values = scope.ReadForPrepare();
                 if (values == null) return NotAppliedFailure(NoReadReason);
                 if (!values.DocumentMatches) return NotAppliedPreflight(DocumentMismatchReason);
 
                 _catalog = values.Catalog;
-                var origin = ChooseOrigin(values, _input.InitialDraftState.Origin, out var originKey);
+                var origin = ChooseOrigin(values, _origin, out var originKey);
                 if (origin != null) return origin;
 
-                var pilot = PushBackPilotIntentReader.Read(ScanOf(values, originKey!), values.Catalog);
-                var prepared = PushBackPilotUpdatePlanner.Prepare(_input, pilot, values.Catalog!);
+                var prepared = _prepare(_draft, ScanOf(values, originKey!), values.Catalog!);
                 switch (prepared.Kind)
                 {
                     case PushBackPilotPrepareKind.Ready:
                         _plan = prepared.Plan;
                         break;
                     case PushBackPilotPrepareKind.Conflict:
-                        return DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedConflict(prepared.Differences);
+                        return DraftApplyOutcome<TState>.NotAppliedConflict(prepared.Differences);
                     case PushBackPilotPrepareKind.NotAdmitted:
-                        return DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedAdmission(prepared.Reason ?? PushBackPilotIntentReader.MaterializeDiagnostic);
+                        return DraftApplyOutcome<TState>.NotAppliedAdmission(prepared.Reason ?? PushBackPilotIntentReader.MaterializeDiagnostic);
                     case PushBackPilotPrepareKind.NothingToApply:
                         return NotAppliedPreflight(NothingToApplyReason);
                     case PushBackPilotPrepareKind.PendingText:
@@ -364,7 +453,7 @@ namespace RackCad.Application.Systems.PushBack.Pilot
             // ------------------------------------------------------------------ MUTATE
 
             // Returns the decision of MUTATE, or null when the seal returned and POST must follow.
-            private DraftApplyOutcome<PushBackPilotDraftState>? Mutate(IPushBackPilotUpdateScope scope)
+            private DraftApplyOutcome<TState>? Mutate(IPushBackPilotUpdateScope scope)
             {
                 var start = scope.BeginMutation();
                 if (start == null) return NotAppliedFailure(NoMutationScopeReason);
@@ -373,7 +462,7 @@ namespace RackCad.Application.Systems.PushBack.Pilot
                 var mutation = start.Scope;
                 if (mutation == null) return NotAppliedFailure(NoMutationScopeReason);
 
-                DraftApplyOutcome<PushBackPilotDraftState>? decided;
+                DraftApplyOutcome<TState>? decided;
                 var sealing = false;
                 try
                 {
@@ -382,7 +471,7 @@ namespace RackCad.Application.Systems.PushBack.Pilot
                 catch (Exception ex)
                 {
                     decided = sealing
-                        ? DraftApplyOutcome<PushBackPilotDraftState>.CommitThrew(SealFailedPrefix + ex.Message)
+                        ? DraftApplyOutcome<TState>.CommitThrew(SealFailedPrefix + ex.Message)
                         : NotAppliedFailure(WriteFailurePrefix + ex.Message);
                 }
                 finally
@@ -408,25 +497,30 @@ namespace RackCad.Application.Systems.PushBack.Pilot
             }
 
             // The re-read is the authority of MUTATE: nothing that PREPARE found authorizes a write until it agrees.
-            private DraftApplyOutcome<PushBackPilotDraftState>? Write(IPushBackPilotMutationScope mutation, Action markSealing)
+            private DraftApplyOutcome<TState>? Write(IPushBackPilotMutationScope mutation, Action markSealing)
             {
                 var plan = _plan!;
+
+                // The capacity first: a plan that erases views cannot be written by a scope that cannot erase them, whatever the drawing says.
+                var eraser = mutation as IPushBackPilotViewEraser;
+                if (plan.Erasures.Count > 0 && eraser == null) return NotAppliedPreflight(EraseUnsupportedReason);
+
                 var values = mutation.Reread();
                 if (values == null) return NotAppliedFailure(NoReadReason);
                 if (!values.DocumentMatches) return NotAppliedPreflight(DocumentMismatchReason);
 
                 // The origin is chosen again, in pure code, and it must be the key of the plan.
-                var origin = ChooseOrigin(values, _input!.InitialDraftState.Origin, out var originKey);
+                var origin = ChooseOrigin(values, _origin!, out var originKey);
                 var sameOrigin = origin == null && string.Equals(originKey, plan.OriginKey, StringComparison.Ordinal);
 
                 var reread = PushBackPilotIntentReader.BuildStaleBase(ScanOf(values, plan.OriginKey));
                 var comparison = DraftStaleBase.Create(plan.ExpectedBase, plan.ExpectedVariableRegistryText).CompareWith(reread);
                 if (!sameOrigin || !comparison.IsMatch)
-                    return DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedConflict(comparison.Differences);
+                    return DraftApplyOutcome<TState>.NotAppliedConflict(comparison.Differences);
 
-                // The destination: the keys of the plan are the mutable ones that were re-read, and every prepared block is the re-read one.
+                // The destination: the keys of the plan, the redrawn and the erased, are the mutable ones that were re-read, and every prepared block is the re-read one.
                 var mutable = reread.Entries.Values.Where(e => e.Membership == DraftMembership.Mutable).Select(e => e.Key).ToList();
-                var planned = plan.Members.Select(m => m.Key).ToList();
+                var planned = plan.Members.Select(m => m.Key).Concat(plan.Erasures).ToList();
                 var matches = values.PreparedBlockMatches;
                 if (mutable.Count != planned.Count
                     || mutable.Any(key => !planned.Contains(key, StringComparer.Ordinal))
@@ -445,6 +539,13 @@ namespace RackCad.Application.Systems.PushBack.Pilot
                     foreach (var piece in unit.MissingPieces) _warnings.Add(MissingPiecePrefix + member.Key + ": " + piece);
                 }
 
+                // The views that the edition leaves obsolete are taken away after the redrawing, in ordinal order, inside the same MUTATE.
+                foreach (var key in plan.Erasures)
+                {
+                    _writeStarted = true;
+                    eraser!.EraseUnit(key);
+                }
+
                 markSealing();
                 mutation.Seal();
                 _sealReturned = true;
@@ -452,7 +553,7 @@ namespace RackCad.Application.Systems.PushBack.Pilot
             }
 
             // What a failed release of the scope of MUTATE does to a decision that was taken without a seal (D-T4B-02 (4) and (6)).
-            private DraftApplyOutcome<PushBackPilotDraftState> WithAbortFailure(DraftApplyOutcome<PushBackPilotDraftState> decided)
+            private DraftApplyOutcome<TState> WithAbortFailure(DraftApplyOutcome<TState> decided)
             {
                 var failure = _mutationDisposeFailure;
                 if (failure == null) return decided;
@@ -463,10 +564,10 @@ namespace RackCad.Application.Systems.PushBack.Pilot
                     case DraftApplyOutcomeKind.NotAppliedFailure:
                         // A unit started and the abort failed too: nothing is known about what was written, and no rollback is claimed.
                         return _writeStarted
-                            ? DraftApplyOutcome<PushBackPilotDraftState>.CommitThrew(abort + "; " + decided.Cause)
+                            ? DraftApplyOutcome<TState>.CommitThrew(abort + "; " + decided.Cause)
                             : NotAppliedFailure(decided.Cause + "; " + abort);
                     case DraftApplyOutcomeKind.CommitThrew:
-                        return DraftApplyOutcome<PushBackPilotDraftState>.CommitThrew(decided.Cause + "; " + abort);
+                        return DraftApplyOutcome<TState>.CommitThrew(decided.Cause + "; " + abort);
                     case DraftApplyOutcomeKind.NotAppliedPreflight:
                         return NotAppliedPreflight(decided.Cause + "; " + abort);
                     default:
@@ -477,7 +578,7 @@ namespace RackCad.Application.Systems.PushBack.Pilot
 
             // ------------------------------------------------------------------ POST
 
-            private DraftApplyOutcome<PushBackPilotDraftState> Post(IPushBackPilotUpdateScope scope)
+            private DraftApplyOutcome<TState> Post(IPushBackPilotUpdateScope scope)
             {
                 try
                 {
@@ -497,14 +598,14 @@ namespace RackCad.Application.Systems.PushBack.Pilot
                     if (values.RegenFailure != null) _warnings.Add(RegenFailedPrefix + values.RegenFailure);
                     if (values.Scan == null) return PostFailed(PostRereadMissingReason);
 
-                    // The origin of POST is the key of the plan: the definition does not change, even if its text is the new one now.
-                    var read = PushBackPilotIntentReader.Read(ScanOf(values.Scan, plan.OriginKey), _catalog);
-                    var cause = ComparePost(plan, read);
+                    // The origin of POST is the key of the plan that is read again: the origin of the draft, or, when the update erased it, the first
+                    // view that was redrawn. The definition does not change, even if its text is the new one now.
+                    var (read, cause) = _postRead(ScanOf(values.Scan, plan.PostOriginKey), _catalog, plan);
                     if (cause != null) return PostFailed(cause);
 
                     return _warnings.Count == 0
-                        ? DraftApplyOutcome<PushBackPilotDraftState>.Applied(read.Read)
-                        : DraftApplyOutcome<PushBackPilotDraftState>.AppliedWithWarnings(read.Read, _warnings);
+                        ? DraftApplyOutcome<TState>.Applied(read)
+                        : DraftApplyOutcome<TState>.AppliedWithWarnings(read, _warnings);
                 }
                 catch (Exception ex)
                 {
@@ -538,7 +639,7 @@ namespace RackCad.Application.Systems.PushBack.Pilot
 
             // The origin is the ONLY mutable member whose raw text is, byte for byte, the origin of the draft. Zero or several is a
             // preflight refusal with its own reason, and never the misleading "origin missing" of the reader.
-            private DraftApplyOutcome<PushBackPilotDraftState>? ChooseOrigin(PushBackPilotScanValues values, string origin, out string? key)
+            private DraftApplyOutcome<TState>? ChooseOrigin(PushBackPilotScanValues values, string origin, out string? key)
             {
                 key = null;
                 var staleBase = PushBackPilotIntentReader.BuildStaleBase(ScanOf(values, string.Empty));
@@ -553,22 +654,25 @@ namespace RackCad.Application.Systems.PushBack.Pilot
                 return null;
             }
 
-            // C-F4-05 (at least one survivor) and the locked layers, before the import and again in MUTATE.
-            private DraftApplyOutcome<PushBackPilotDraftState>? SurvivorsAndLayers(PushBackPilotScanValues values, PushBackPilotUpdatePlan plan)
+            // C-F4-05 (at least one survivor, among the views that stay) and the locked layers, those of the views that are redrawn and those that
+            // are erased, before the import and again in MUTATE.
+            private DraftApplyOutcome<TState>? SurvivorsAndLayers(PushBackPilotScanValues values, PushBackPilotUpdatePlan plan)
             {
                 var snapshot = RackSiblingMembership.Classify(values.Facts, _request.RackId, null, false);
-                if (!snapshot.Members.Any(member => member.IsSurvivor)) return NotAppliedPreflight(NoSurvivorsReason);
+                if (!snapshot.Members.Any(member => member.IsSurvivor && !plan.Erasures.Contains(member.Fact.DefinitionKey, StringComparer.Ordinal)))
+                    return NotAppliedPreflight(NoSurvivorsReason);
 
                 var locked = values.LockedLayerKeys
-                    .Where(key => plan.Members.Any(member => string.Equals(member.Key, key, StringComparison.Ordinal)))
+                    .Where(key => plan.Members.Any(member => string.Equals(member.Key, key, StringComparison.Ordinal))
+                                  || plan.Erasures.Contains(key, StringComparer.Ordinal))
                     .OrderBy(key => key, StringComparer.Ordinal)
                     .ToList();
                 return locked.Count == 0 ? null : NotAppliedPreflight(LockedLayerPrefix + string.Join(", ", locked));
             }
 
             // What a failed release of the scope of the run does: it never changes the classification that was already decided.
-            private DraftApplyOutcome<PushBackPilotDraftState> WithScopeDisposeFailure(
-                DraftApplyOutcome<PushBackPilotDraftState>? outcome, Exception? failure)
+            private DraftApplyOutcome<TState> WithScopeDisposeFailure(
+                DraftApplyOutcome<TState>? outcome, Exception? failure)
             {
                 var decided = outcome ?? NotAppliedFailure(NoScopeReason);
                 if (failure == null) return decided;
@@ -577,33 +681,33 @@ namespace RackCad.Application.Systems.PushBack.Pilot
                 switch (decided.Kind)
                 {
                     case DraftApplyOutcomeKind.NotAppliedAdmission:
-                        return DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedAdmission(decided.Cause + "; " + text);
+                        return DraftApplyOutcome<TState>.NotAppliedAdmission(decided.Cause + "; " + text);
                     case DraftApplyOutcomeKind.NotAppliedPreflight:
                         return NotAppliedPreflight(decided.Cause + "; " + text);
                     case DraftApplyOutcomeKind.NotAppliedFailure:
                         return NotAppliedFailure(decided.Cause + "; " + text);
                     case DraftApplyOutcomeKind.CommitThrew:
-                        return DraftApplyOutcome<PushBackPilotDraftState>.CommitThrew(decided.Cause + "; " + text);
+                        return DraftApplyOutcome<TState>.CommitThrew(decided.Cause + "; " + text);
                     case DraftApplyOutcomeKind.Applied:
                     case DraftApplyOutcomeKind.AppliedWithWarnings:
                         // The only exception to "nothing changes": after POST an Applied becomes AppliedWithWarnings, and both end Clean.
-                        return DraftApplyOutcome<PushBackPilotDraftState>.AppliedWithWarnings(decided.PostRead!, decided.Warnings.Append(text).ToArray());
+                        return DraftApplyOutcome<TState>.AppliedWithWarnings(decided.PostRead!, decided.Warnings.Append(text).ToArray());
                     case DraftApplyOutcomeKind.AppliedPostRereadFailed:
-                        return DraftApplyOutcome<PushBackPilotDraftState>.AppliedPostRereadFailed(decided.Cause!, decided.Warnings.Append(text).ToArray());
+                        return DraftApplyOutcome<TState>.AppliedPostRereadFailed(decided.Cause!, decided.Warnings.Append(text).ToArray());
                     default:
                         // A conflict carries no cause: the failure of the release is dropped (declared limitation).
                         return decided;
                 }
             }
 
-            private DraftApplyOutcome<PushBackPilotDraftState> PostFailed(string cause) =>
-                DraftApplyOutcome<PushBackPilotDraftState>.AppliedPostRereadFailed(cause, _warnings.ToArray());
+            private DraftApplyOutcome<TState> PostFailed(string cause) =>
+                DraftApplyOutcome<TState>.AppliedPostRereadFailed(cause, _warnings.ToArray());
 
-            private static DraftApplyOutcome<PushBackPilotDraftState> NotAppliedFailure(string cause) =>
-                DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedFailure(cause);
+            private static DraftApplyOutcome<TState> NotAppliedFailure(string cause) =>
+                DraftApplyOutcome<TState>.NotAppliedFailure(cause);
 
-            private static DraftApplyOutcome<PushBackPilotDraftState> NotAppliedPreflight(string cause) =>
-                DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedPreflight(cause);
+            private static DraftApplyOutcome<TState> NotAppliedPreflight(string cause) =>
+                DraftApplyOutcome<TState>.NotAppliedPreflight(cause);
         }
     }
 }
