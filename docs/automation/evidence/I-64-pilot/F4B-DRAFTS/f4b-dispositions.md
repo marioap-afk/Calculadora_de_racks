@@ -1466,3 +1466,49 @@ No hay cambios materiales.
 - **El análisis de la sesión** está custodiado en `F4B-PBT3B-FULL-WRITE-RUN/1/R20261120T055235Z-a45b/analysis.md` (sha256 `27d3ff05baad1cb59578a38d8e7d47f524d35321749efa4d827c62c63d7434c1`): C-1, los nombres; C-2, el RED entero; C-3, el GREEN; C-4, la reparación del RED, que sigue disponible.
 - **La carpeta del Worker del intento 1** se custodia al lado, con su manifiesto: lo que la sesión leyó para la parada, sin binarios.
 - **Lo que no cambia:** el diseño, D-1, las listas cerradas de CT, los `MinSelected`, el GREEN previsto y las pruebas existentes.
+
+## F4B-E46. Cierre de F4B-PBT3B-FULL-WRITE-RUN, con la decisión del Owner sobre nc3
+
+**Paquete de cierre:** `F4B-PBT3B-FULL-WRITE-RUN/task-close-package.md`.
+
+**La cadena:**
+- **La emisión** (F4B-E44): X `05b6f04e` y BASE `eab27a9e`, con la v4.5.
+- **El intento 1:**
+  - la planificación `814c` se aceptó, con nc4 `1ca3`;
+  - el Worker `a45b` paró antes del RED con PBT3B-C02 y PBT3B-C07, sin commits. Con el esqueleto de la v4.5, `RackCad.Tests` no compilaba: dos CS0121 en una prueba existente de F4.
+- **La reemisión y la corrección en el intento 2** (F4B-E45): el Owner eligió «Renombrar los métodos nuevos».
+  - Con la v4.6, los nombres son `ExecuteFull`, `ComparePostFull` y `PrepareFull`. El commit X es `2bb3b759`, con el análisis, y el BASE es `c7441653`.
+  - La compilación de comprobación de la sesión dio Core 19 107 de 19 107.
+  - La §13 de CA-T3b dio EMITIBLE 0/0/2.
+- **La planificación `ba4a`** se aceptó al primer lanzamiento, con `CorrectionOf` exacto, nc4 `0d48` y 17 criterios.
+- **El Worker `a9e0`** (sonnet/high) dio IMPLEMENTATION_COMPLETE, sin reparación del RED.
+  - El RED `9fda277e` lleva el esqueleto, la interfaz de borrado, las cuatro clases nuevas con el doble y los seis `Skip` de D-1.
+  - El GREEN `c7582785` toca solo PP y UR.
+  - La medición de INV-PBT3B-15 da exactamente la variante (A).
+
+**CI:**
+- RED `44704503614`: tests en failure; ui-tests y build-ui en success; build-plugin omitido;
+- GREEN `44707482956`: 4/4, Core 19 124 (6 omitidas, las de D-1) y UI 2 451 (2 430 pasadas y 21 omitidas).
+
+**Revisiones:**
+- la directa, sin hallazgos bloqueantes ni importantes;
+- la independiente, ACEPTABLE CON MENORES 0/0/9, con dos hallazgos para el Owner solo informativos.
+
+**Verificación** `R20261120T091621Z-2b95`: **EXECUTION_VERIFIED** 14/14 al primer lanzamiento.
+
+**Controles:**
+- **nc1** `R20261120T092052Z-0d2f`: CONTROL NOT PASSED, con la firma exacta de PD-F4B-01. Su sustituto revisado (`41440edc`, `--task PBT3B`, `R20261120T093907Z-71d6`) dio PASS: **nc1 = SATISFIED_UNDER_PBT3B_NC1_CASCADE_SUBSTITUTE**. Es su primera aplicación.
+- **nc2** `R20261120T092518Z-aea7`: CONTROL PASS (Scope, STOP). El sustituto ampliado de nc2 no hizo falta.
+- **nc3** `R20261120T093218Z-fd73`: CONTROL NOT PASSED.
+  - FreeText detectó la mutación, pero antes falló Tests, que en la verificación real había pasado.
+  - Su Controller leyó «19 128 resultados» en ExpectedEvidence[14] y no aceptó los 19 124 de la CI.
+  - La sesión midió por clase (`F4B-DRAFTS/pbt3/nc3-row-count-pbt3b/`): la Theory S-2 con `Skip` cuenta como una fila en lugar de cinco. 19 107 − 4 + 21 = 19 124 es la rama «+ 6 omitidas» que el propio contrato admite, y el 19 128 solo vale en la rama «+ 10».
+  - Ningún sustituto autorizado cubre nc3.
+
+**La decisión del Owner** (`F4B-DRAFTS/coordinator/owner-pbt3b-nc3-decision.md`, literal): «Aceptar por disposición (Recomendado)».
+- **PB-T3b:** `nc3 = SATISFIED_BY_OWNER_DISPOSITION`.
+- **Desde PB-T3c,** una evidencia esperada que dependa de cómo cuente la TRX lleva el total exacto de cada rama.
+
+**Resultado:** **F4B-PBT3B-FULL-WRITE-RUN = CLOSED / PASS WITH LIMITATIONS** sobre `c7582785`, con attempts 2 de 3. El plan y la corrida de la actualización del Workspace de Push Back sirven al piloto y al modelo completo, sin conectar este último. Llevan la barrera, el borrado de laterales obsoletos y la interfaz para borrar.
+
+**Siguiente:** la emisión de PB-T3c por F4B-E35 (pregunta 3), tras revisar el paquete sobre este cierre (los marcadores posteriores al cierre de PB-T3b y M-07 de CA-T3b) y su comprobación acotada.

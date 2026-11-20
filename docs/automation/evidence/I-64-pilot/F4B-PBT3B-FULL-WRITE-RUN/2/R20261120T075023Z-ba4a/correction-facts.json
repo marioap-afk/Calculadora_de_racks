@@ -1,0 +1,56 @@
+{
+  "Rule": "F4B-E45 (paquete v4.6; el analisis, section 3): medido por la sesion en la X, en el HEAD y en la carpeta del intento 1",
+  "Attempt1": {
+    "RunId": "R20261120T055235Z-a45b",
+    "DelegationRunId": "R20261120T054837Z-814c",
+    "BaseSha": "eab27a9e340afa9ffe66a4a9866949806b6dfee3",
+    "TriggeredStopConditions": [
+      "PBT3B-C02",
+      "PBT3B-C07"
+    ]
+  },
+  "AnalysisPath": "docs/automation/evidence/I-64-pilot/F4B-PBT3B-FULL-WRITE-RUN/1/R20261120T055235Z-a45b/analysis.md",
+  "AnalysisSha256": "27d3ff05baad1cb59578a38d8e7d47f524d35321749efa4d827c62c63d7434c1",
+  "Patches": {
+    "artifacts/orchestration/I-64/F4B-PBT3B-FULL-WRITE-RUN/1/R20261120T055235Z-a45b/blocked-skeleton.patch": "4abfa01adeb1d56a55a7577c8de85c2d0cae5c33539a6c0936eddcb8e6f927e1"
+  },
+  "C1": {
+    "Nuevas": {
+      "PrepareFull": [
+        "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs",
+        "public static PushBackPilotPrepareResult PrepareFull(PushBackFullPrepareInput input, PushBackFullIntentResult reread, RackCatalog catalog)"
+      ],
+      "ExecuteFull": [
+        "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs",
+        "public static DraftApplyOutcome<PushBackFullDraftState> ExecuteFull(DraftSession<PushBackFullDraftState> draft, PushBackPilotUpdateRequest request, IPushBackPilotUpdatePort port)"
+      ],
+      "ComparePostFull": [
+        "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs",
+        "public static string? ComparePostFull(PushBackPilotUpdatePlan plan, PushBackFullIntentResult? postRead)"
+      ]
+    },
+    "FormaDeLaV45": {
+      "Prepare": [
+        "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs",
+        "public static PushBackPilotPrepareResult Prepare(PushBackFullPrepareInput input, PushBackFullIntentResult reread, RackCatalog catalog)"
+      ],
+      "Execute": [
+        "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs",
+        "public static DraftApplyOutcome<PushBackFullDraftState> Execute(DraftSession<PushBackFullDraftState> draft, PushBackPilotUpdateRequest request, IPushBackPilotUpdatePort port)"
+      ],
+      "ComparePost": [
+        "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs",
+        "public static string? ComparePost(PushBackPilotUpdatePlan plan, PushBackFullIntentResult? postRead)"
+      ]
+    },
+    "EnElPaquete": {
+      "declara PrepareFull": true,
+      "declara ExecuteFull": true,
+      "declara ComparePostFull": true,
+      "sin la forma de la v4.5 de Prepare": true,
+      "sin la forma de la v4.5 de Execute": true,
+      "sin la forma de la v4.5 de ComparePost": true,
+      "los ...Full del paquete son los de C1_NEW": true
+    }
+  }
+}

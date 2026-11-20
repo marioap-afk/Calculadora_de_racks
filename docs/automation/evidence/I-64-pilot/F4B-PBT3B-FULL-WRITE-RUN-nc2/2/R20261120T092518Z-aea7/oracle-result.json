@@ -1,0 +1,53 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261120T092518Z-aea7",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "MutatedCheck": {
+    "Scope": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Scope"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "PBT3B-C01"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Scope": "Deterministic comparison of git diff --name-only BaseSha CurrentSha against delegation.json AllowedWriteScope (10 exact entries) found 10 matches and one non-match: src/RackCad.Application/Systems/PushBack/Pilot/IPushBackPilotViewEraser.cs. The BaseSha..RedSha and ChainBaseSha..CurrentSha -- src tests diffs contain the same unlisted path. ForbiddenWriteScope prefix intersections are empty. This triggers PBT3B-C01."
+  },
+  "OutputSha256": "75B2E6176ADE31788ED19A2A863C1DBBAA0097B7AE7D415CAECDB0C646909BEE",
+  "ManualFreeText1610": []
+}

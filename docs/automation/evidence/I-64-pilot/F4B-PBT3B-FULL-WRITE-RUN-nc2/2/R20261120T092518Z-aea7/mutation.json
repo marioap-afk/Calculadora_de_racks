@@ -1,0 +1,87 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261120T092518Z-aea7",
+  "SourceVerification": "R20261120T091621Z-2b95",
+  "SourceInputs": "artifacts/orchestration/I-64/F4B-PBT3B-FULL-WRITE-RUN/2/R20261120T091621Z-2b95/inputs",
+  "Mutation": {
+    "File": "delegation.json",
+    "Field": "AllowedWriteScope",
+    "DiffBaseToCurrent": [
+      "src/RackCad.Application/Systems/PushBack/Pilot/IPushBackPilotViewEraser.cs",
+      "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs",
+      "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs",
+      "tests/RackCad.Tests/PushBackFullWritePrepareTests.cs",
+      "tests/RackCad.Tests/PushBackFullWriteRunTests.cs",
+      "tests/RackCad.Tests/PushBackFullWriteSupport.cs",
+      "tests/RackCad.Tests/PushBackPilotUpdateEquivalenceGuardTests.cs",
+      "tests/RackCad.Tests/PushBackWritePathGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs"
+    ],
+    "FirstLexicographic": "src/RackCad.Application/Systems/PushBack/Pilot/IPushBackPilotViewEraser.cs",
+    "CoveringEntries": [
+      "src/RackCad.Application/Systems/PushBack/Pilot/IPushBackPilotViewEraser.cs"
+    ],
+    "CoveredByPrefix": null,
+    "Old": [
+      "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs",
+      "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs",
+      "src/RackCad.Application/Systems/PushBack/Pilot/IPushBackPilotViewEraser.cs",
+      "tests/RackCad.Tests/PushBackFullWritePrepareTests.cs",
+      "tests/RackCad.Tests/PushBackFullWriteRunTests.cs",
+      "tests/RackCad.Tests/PushBackWritePathGuardTests.cs",
+      "tests/RackCad.Tests/PushBackPilotUpdateEquivalenceGuardTests.cs",
+      "tests/RackCad.Tests/PushBackFullWriteSupport.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs"
+    ],
+    "New": [
+      "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs",
+      "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs",
+      "tests/RackCad.Tests/PushBackFullWritePrepareTests.cs",
+      "tests/RackCad.Tests/PushBackFullWriteRunTests.cs",
+      "tests/RackCad.Tests/PushBackWritePathGuardTests.cs",
+      "tests/RackCad.Tests/PushBackPilotUpdateEquivalenceGuardTests.cs",
+      "tests/RackCad.Tests/PushBackFullWriteSupport.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs"
+    ],
+    "OtherDiffFilesStillCovered": true,
+    "Rule": "README 10: \"si una entrada de prefijo lo cubre, se sustituye por la enumeracion de los demas archivos del diff\": el prefijo que cubre el primer archivo se sustituye por los demas archivos del diff que ese prefijo cubria; las demas entradas no cambian; exactamente ese archivo queda fuera"
+  },
+  "DerivedRecompute": {
+    "File": "relay-record-planning.json",
+    "Field": "Outcome.OutputSha256",
+    "Old": "9E244E2946B05DA7D89EDF2EFDCCCE4156A4F448E8DAE757EC3EBC1DE71590C4",
+    "New": "D96886B0AFC8E9E66A8128D267481FD1A89D56999444C6B3C54C4E5131A0BE81",
+    "Reason": "hash derivado de delegation.json recalculado para que la copia sea internamente coherente con la entrega simulada; no es una mutacion del contenido de la entrega ni de la delegacion"
+  },
+  "PromptSha256": "19E85013AE7AF0C3E43F396EA94ADF39302B7D24A505CAA46430E1CEED9D0C7F",
+  "PromptDiffVsVerified": "solo la ruta de entrada y el RunId de la invocacion (README 10)",
+  "SchemaValid": {
+    "worker-handoff.json": true,
+    "delegation.json": true,
+    "relay-record-work.json": true,
+    "relay-record-planning.json": true
+  },
+  "InputSha256": {
+    "byte-fidelity-check.json": "2D737518A9555BABE480FED700920BB4A090EF8E297AFB4917354967E8E12502",
+    "delegation.json": "D96886B0AFC8E9E66A8128D267481FD1A89D56999444C6B3C54C4E5131A0BE81",
+    "gate-contract.json": "E135A086175E19681D3A240D1E24943B3EC705F4B4AE5656CD2C0767E15E0A3C",
+    "pbt3b-facts.json": "B4E58357121DD429800E13091C465BF3B3004D4430C11988D47D8EDAA753A1FC",
+    "relay-record-planning.json": "2B0A778672D6EE704A3AA5AAE7EFD127712BDF85446C9350DED5AF31DCE18DD0",
+    "relay-record-work.json": "C563342AFA7E303DA96739CA3069BE61326517FAC09711E9EAEC0110A33E0307",
+    "worker-handoff.json": "5B3B139A08E54B473CD66C8A37C124C50316B85EB1D53F20536DBACCFE7701DD",
+    "ci-core/44707482956/core.trx": "74E86CBDF89A63C938AA8C7EB487F2EB3F8DC91FF45B49A6717F3200C386A187",
+    "ci-core-red/44704503614/core.trx": "2E8B3404E05E577F79FA6086E63A6897FB87653363B4AEDBEC140A7D12D620F7",
+    "ci-ui/44707482956/ui.trx": "9286FA097BE740FAF8BBF881E0261012D00E1C2C90292666AFDD5A884908F649",
+    "ci-ui-red/44704503614/ui.trx": "37BA80B927061D08C7479E6337850525CD2ED62D5ABF32E9827EA1E1E5598707"
+  },
+  "ChangedVsVerifiedInputs": [
+    "delegation.json",
+    "relay-record-planning.json"
+  ]
+}

@@ -1895,3 +1895,23 @@ Son los menores de la revisión independiente de PB-T3a, intento 2. El código c
 **Dos lecciones de método,** con su traducción a los paquetes siguientes:
 - **Comprobar los archivos nuevos contra todas las guardas existentes antes de fijar el esqueleto.** La parada del intento 1 vino de G9, que barre también Application. Ya está en el §5.0 de la v4.5.
 - **Los sustitutos de control con literales de contrato:** cada paquete redacta la evidencia a su manera, así que un sustituto que exige un literal debe llevar la lista cerrada de los literales de cada paquete.
+
+## I-64 F4B PB-T3b — menores de la revisión independiente y dos lecciones de método (2026-11-20, registrados sin corregir)
+
+Son los menores de la revisión independiente de PB-T3b, intento 2. El código cumple el paquete v4.6, con la variante (A) de D-1; ninguno pide cambiar `src/`.
+
+- **PBT3B-IR-M01:** tres recetas no son las del §5.3, y la entrega las declara solo en `UnexpectedFindings`.
+  - CT-PBT3B-04 (iii) y (iv) usan el rack compuesto de CT-PB0-10, sobre `pb-01-base`, en lugar de `pb-20-ab`.
+  - CT-PBT3B-11, en su parte principal, y CT-PBT3B-05, con el nombre en blanco, fabrican la relectura: AUTH-13 solo admite la versión de sobre `1.0` y el lector rechaza los nombres distintos.
+- **PBT3B-IR-M02:** la línea «hueco-negativo» de CT-PBT3B-06 depende de la cultura del proceso. El producto forma el texto con `CurrentCulture`, y la prueba no fija la cultura invariante, como sí hace CT-PBT1B-12.
+- **PBT3B-IR-M03:** el reparto de los dos delegados de la corrida no sigue la letra de D-PBT3-10. La instantánea de la entrada se crea en `_originOf` y `_prepare` no usa su parámetro. Conserva el momento de lectura de la base, pero acopla las dos lambdas por orden de llamada.
+- **PBT3B-IR-M04:** la guarda E-3 es algo más débil que la letra del §5.3. Adapta la aguja a `BuildCore` sin comprobar que `Build` y `BuildFull` pasen `reread.StaleBase`.
+- **PBT3B-IR-M05:** la receta «celda-no-cabe» de CT-PBT3B-06 no es la de CT-PBT1B-12, y la línea no prueba que el bloqueante sea el de la celda.
+- **PBT3B-IR-M06:** CT-PBT3B-09 compara el piloto en 2 casos, no en todos los del §5.3. Faltan las claves distintas y el sobre distinto; las pruebas de F4 de `ComparePost` mitigan el hueco.
+- **PBT3B-IR-M07:** la regla del §5.0 de comprobar `IsDirty` justo antes de la operación solo se cumple en CT-01 (i), CT-07 (ii), CT-10, CT-11 y CT-15.
+- **PBT3B-IR-M08:** CT-PBT3B-13 (ii) detecta `Precheck` con el borrador completo solo si el tipo aparece en el texto de la llamada. Lo mitiga CT-PBT3A-12.
+- **PBT3B-IR-M09:** la entrega no cuadra del todo con los hechos. Habla de «tres commits», y hay dos. Hay corridas locales (`g0`, `d0` y `t0`) que no están en `TestsExecuted`. Y la cronología indica que el GREEN se redactó antes del commit RED; ninguna regla lo prohíbe.
+
+**Dos lecciones de método,** con su traducción a los paquetes siguientes:
+- **Compilar el esqueleto y ejecutar la suite completa de Core antes de emitir.** La parada del intento 1 vino de dos CS0121 de una prueba existente, y un tercer choque era de reflexión. El barrido por nombre no ve ni la resolución de sobrecargas ni los escaneos de ensamblado. Ya está en F4B-E45; la redacción del §5.0 pasa a la revisión del paquete para PB-T3c (M-07 de CA-T3b).
+- **Una evidencia esperada que dependa de cómo cuente la TRX lleva el total exacto de cada rama.** El contrato de PB-T3b decía «19 128 resultados», con la alternativa «+ 6 o + 10 omitidas»; en la rama «+ 6», la real, el total es 19 124. Un Controller lo leyó de forma estricta en nc3 (F4B-E46, `owner-pbt3b-nc3-decision.md`).

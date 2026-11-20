@@ -8504,3 +8504,35 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - **La verificación** lleva las tres comprobaciones deterministas de F4B-E15, y la planificación, las colecciones opacas puestas por la sesión (F4B-E21).
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 273. PB-T3b: los dos intentos, la decisión del Owner sobre nc3 y el cierre (F4B-E46)
+
+**Qué se custodia:**
+- **Las unidades del intento 1,** en `F4B-PBT3B-FULL-WRITE-RUN/1/`: la planificación `814c` y nc4 `1ca3`. La carpeta del Worker `a45b`, parado con PBT3B-C02 y PBT3B-C07, ya la custodió la reemisión (F4B-E45) con su manifiesto, y no se vuelve a custodiar.
+- **Las unidades del intento 2,** en `/2/`, cada una con su manifiesto:
+  - la planificación `ba4a`, con nc4 `0d48`;
+  - el Worker `a9e0`;
+  - la verificación `2b95`;
+  - los controles nc1 `0d2f`, nc2 `aea7` y nc3 `fd73`;
+  - el sustituto de nc1 `71d6`, que dio PASS.
+- **Las revisiones,** con su encargo.
+- **La decisión del Owner sobre nc3:** `owner-pbt3b-nc3-decision.md`.
+- **La medición por clase de la sesión:** `F4B-DRAFTS/pbt3/nc3-row-count-pbt3b/`, con `count_rows.py` y su salida. Las TRX van solo por SHA-256.
+- **El paquete de cierre.**
+- **La nota de `docs/ideas-futuras.md`.**
+- **El estado.**
+
+**El intento 2:**
+- **RED y GREEN:** el RED `9fda277e` y el GREEN `c7582785`, sin reparación del RED.
+- **CI:** las corridas `44704503614` y `44707482956`; la del GREEN, 4/4 (Core 19 124 y UI 2 451).
+- **Revisión independiente:** 0/0/9.
+- **Verificación:** 14/14.
+- **Controles:**
+  - nc1: por su sustituto, porque la firma es la exacta de PD-F4B-01;
+  - nc2: CONTROL PASS;
+  - nc3: por disposición del Owner, porque la cifra del contrato solo vale en una de sus dos ramas de recuento.
+
+**Límites:**
+- solo documentación;
+- sin AutoCAD;
+- los eventos y las transcripciones, solo por SHA-256.
