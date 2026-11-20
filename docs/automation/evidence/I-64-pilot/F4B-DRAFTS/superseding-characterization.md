@@ -271,7 +271,7 @@ En «Ambos lados», con una caja **mixta**, escribir el número que se ve del va
 
 ## PB-T3b — Las seis guardas de F4 que se sustituyen por D-1 (F4B-E29)
 
-**Estado: EMITIDA** (2026-11-20, emisión de PB-T3b, F4B-E44, sobre el cierre de PB-T3a `c40eea4a`). Lo escribe la sesión principal; el Worker no escribe en este archivo. La ejecución se completa al cerrar.
+**Estado: EJECUTADA** (2026-11-20, cierre de PB-T3b, F4B-E46, custodia `fe1c67f4`; emitida en F4B-E44 y reemitida en F4B-E45): RED `9fda277e5609e62ff715450eed03220c93df8585`, GREEN `c758278548bcdd66e7c55ca15ca1faeb1a431e53`. Lo escribe la sesión principal; el Worker no escribe en este archivo. La tabla de ejecución la completó la emisión de PB-T3c (F4B-E47), porque el cierre la dejó sin rellenar.
 
 **Autoridad:**
 - **[OD], la fila de PB-T3 y D-PB-04** (`docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-f4b-disposition.md`): borrar sí; y el bloque sobre T1B, «create a declared superseding characterization/change record. Do not silently weaken the old guard».
@@ -303,7 +303,48 @@ I-64 F4B PB-T3b: sustituida por <E-n> de PushBackPilotUpdateEquivalenceGuardTest
 
 | | |
 |---|---|
+| **RED** | `9fda277e5609e62ff715450eed03220c93df8585` (CI `44704503614`: tests en failure por los 13 métodos de `PushBackFullWrite` y los 6 de la equivalencia, que fallan por aserción; ui-tests y build-ui en success; build-plugin omitido; los seis métodos de D-1 en `Skipped`) |
+| **GREEN** | `c758278548bcdd66e7c55ca15ca1faeb1a431e53` (CI `44707482956` 4/4; Core 19 124: 19 118 Passed, 0 Failed y 6 Skipped, los de D-1, con la Theory S-2 como una fila; UI 2 451: 2 430 Passed y 21 Skipped) |
+| **La medición sobre el GREEN** | Conforme con la variante (A): S-1, S-3, S-4 y S-5 fallan; S-2 falla en las filas 1 y 3 y pasa en las 2, 4 y 5; S-6 pasa en vacío. Los `Skip` se restauraron antes del commit (TRX `tests/m1/m1.trx` de la entrega del Worker `R20261120T075251Z-a9e0`, por SHA-256 en su manifiesto) |
+| **Estado** | EJECUTADA |
+
+## PB-T3c — La premisa «el escritor nunca borra» del Plugin (D-2), sin `Skip`
+
+**Estado: EMITIDA** (2026-11-20, emisión de PB-T3c, F4B-E47, sobre el cierre de PB-T3b `fe1c67f4`). Lo escribe la sesión principal; el Worker no escribe en este archivo. La ejecución se completa al cerrar.
+
+**Qué es:** un registro declarado de un cambio autorizado, **sin `Skip`**. No se sustituye ni se debilita ninguna guarda: la premisa del escritor del piloto de F4, «nunca borra una vista», pasa a «borra solo las vistas del plan, por la fachada caller-owned». D-2 no es una decisión (§8.2 del paquete): este registro es lo que pide [OD] para todo cambio autorizado.
+
+**Autoridad:**
+- **[OD], D-PB-04** (`docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-f4b-disposition.md`): borrar sí; y el bloque sobre T1B, «create a declared superseding characterization/change record. Do not silently weaken the old guard».
+- **[P], OB-04.1:** «una primitiva caller-owned y su guarda de fachada».
+- **El contrato:** `docs/initiatives/I-64-f4b-pbt3-gate-contract-package.md` (v4.7), D-PBT3-11, §5.4, §6.3 y §8.2, y `docs/automation/evidence/I-64-pilot/F4B-PBT3C-FULL-WRITE-ERASE/coordinator/gate-contract.json`.
+
+**La guarda que sigue en verde, y por qué:**
+- **`WorkspacePilotUpdateGuardTests`, `WriterProhibitionViolations`** (`tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:182-212`). Su comentario de la línea 188 dice «Never: the lock, an erasure, …», y la regla prohíbe a las tres clases del escritor `\bErase\s*\(`, `EraseViewBlocks`, `GetBlockReferenceIds`, `ForWrite` y `UpgradeOpen`.
+- **Sigue siendo cierta y no cambia:** el escritor no borra por sí mismo. Llama a `RackViewBlockEraser.EraseInTransaction`, en un archivo propio (`src/RackCad.Plugin/Views/RackViewBlockEraser.cs`), que es el que borra. La llamada no casa con ninguna de esas expresiones (`.EraseInTransaction(` no es `\bErase\s*\(`).
+- Siguen igual también la estructura del escritor, con un `StartTransaction`, un `Commit` y una purga, y G-1, G-2, G-7 y G-9 con sus cuentas (R-6 y R-7 del registro de mediciones).
+
+**Las guardas nuevas** (§5.4 del paquete; un `[Fact]` cada una). CT-PBT3C-01 a 04 fijan el borrado, y son las que pide D-2; CT-PBT3C-05 extiende D2 a WR y a la fachada:
+
+| CT | Clase | Qué fija |
+|---|---|---|
+| CT-PBT3C-01 | `PushBackViewEraseGuardTests` | **La fachada:** su firma exacta y sus operaciones en orden, sin bloqueo, transacción propia, confirmación, purga, regeneración, `SyncName` ni la cadena `PushBack`, y sin nombrar el piloto |
+| CT-PBT3C-02 | `PushBackViewEraseGuardTests` | **`EraseUnit` en el escritor:** `RackPilotMutationScope` implementa `IPushBackPilotViewEraser`, y el cuerpo de `EraseUnit` sigue el orden de D-PBT3-11 |
+| CT-PBT3C-03 | `PushBackViewEraseGuardTests` | **PREPARE y la relectura:** `PrepareUnits` resuelve cada clave de `plan.Erasures`, sin ningún `PrepareRedraw` para ellas, y `Reread` calcula `matches` sobre `_prepared` y `_erasures` |
+| CT-PBT3C-04 | `PushBackViewEraseGuardTests` | **El censo de la primitiva:** en todo `src/`, una sola llamada a la fachada, dentro de `EraseUnit` de WR |
+| CT-PBT3C-05 | `PushBackWritePathPluginGuardTests` | **G-L1 ampliada a WR y a la fachada:** las fichas de D2 no aparecen, y las reglas de CT-PBT1B-14 dan 0 coincidencias |
+
+**Los dos comentarios de WR que cambian** (D-PBT3-11; V2-11 y V2-28). Son comentarios, y ninguna guarda los lee (`Src.Code` los quita):
+- **El de cabecera, `RackPilotUpdateWriter.cs:26`** («It never erases a view.»): pasa a describir el borrado caller-owned.
+- **El del ámbito de MUTATE, `:225`** («It never purges, renames, regenerates or erases»): pasa a «It never purges, renames or regenerates; it erases only the planned views, through the caller-owned facade».
+
+**Si la comprobación acotada de PB-T3c lo leyera como un debilitamiento,** entraría en D-1 con sus métodos (§8.2). CA-T3c no lo lee así: su resultado va en F4B-E47.
+
+### Ejecución de PB-T3c (se completa al cerrar)
+
+| | |
+|---|---|
 | **RED** | (al cerrar) |
 | **GREEN** | (al cerrar) |
-| **La medición sobre el GREEN** | (al cerrar) |
+| **Los comentarios de WR, en el GREEN** | (al cerrar) |
 | **Estado** | EMITIDA |

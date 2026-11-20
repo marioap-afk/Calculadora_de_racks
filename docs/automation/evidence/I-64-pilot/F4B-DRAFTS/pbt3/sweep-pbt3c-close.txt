@@ -1,0 +1,11 @@
+corpus: Plugin/WR + RackViewBlockEraser.cs (PB-T3c)
+antes: scanned guard files: 92 | filas del corpus: 410
+despues: scanned guard files: 94 | filas del corpus: 419
+guardas con coincidencias (cualquier corpus): antes 78, despues 80; nuevas: tests/RackCad.Tests/PushBackPilotUpdateEquivalenceGuardTests.cs, tests/RackCad.Tests/PushBackWritePathGuardTests.cs
+filas del corpus nuevas: 9 | perdidas: 0
+  + tests/RackCad.Tests/PushBackWritePathGuardTests.cs | (?:List|IList|ICollection|Collection|HashSet|Dictionary|IDictionary) | Collection (x2)
+  + tests/RackCad.Tests/PushBackWritePathGuardTests.cs | (?:\s*\??\.\s*\w+(?:\s*\([^()]*\))?|\s*\[[^\]]*\]) | .Plugin (x2)
+  + tests/RackCad.Tests/PushBackWritePathGuardTests.cs | [^;{}]*?\s+as\s+ |  (x2)
+  + tests/RackCad.Tests/PushBackWritePathGuardTests.cs | \$?"(?:\\.|[^"\\\n])*" | "La definición " (x1)
+  + tests/RackCad.Tests/PushBackWritePathGuardTests.cs | \s*<[^>]*>\s+\w+ | <ObjectId> EraseInTransaction (x2)
+guardas con coincidencias en el corpus: antes 61, despues 62; nuevas: tests/RackCad.Tests/PushBackWritePathGuardTests.cs

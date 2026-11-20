@@ -1,0 +1,12 @@
+esqueleto antes: sha256 598769d848b870b448bab8958721d315675cf616df4614fca2520ce5d30c1786
+inyectado: 1 linea(s)
+con la inyeccion: rc=1
+      1 archivos=14
+      1 archivos=15
+filas 1 {'Failed': 1}
+esqueleto restaurado: sha256 598769d848b870b448bab8958721d315675cf616df4614fca2520ce5d30c1786
+restaurado: rc=0
+filas 1 {'Passed': 1}
+build-server shutdown rc=0
+MAINCO []
+rc=0

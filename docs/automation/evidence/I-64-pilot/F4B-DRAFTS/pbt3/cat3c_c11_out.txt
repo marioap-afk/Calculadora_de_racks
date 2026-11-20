@@ -1,0 +1,3 @@
+longitudes: 3874 3874
+   replace 'acceptance; no one-off acceptance extends to PB-T3b' -> 'acceptance; no one-off acceptance extends to PB-T3c'
+primera mencion de PBT3x-C11 en la v4.7, linea 44

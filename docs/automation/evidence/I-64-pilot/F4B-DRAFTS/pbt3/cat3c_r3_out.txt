@@ -1,0 +1,15 @@
+antes 2A1FF346CB436F89 53549 ASCII: True CR: False
+ahora 682F998682463A7C 53959 ASCII: True CR: False
+claves iguales y en orden: True
+campos que cambian: ['RequiredTests']
+RequiredTests: 34 -> 36
+anadidas: [{"Project": "tests/RackCad.Tests/RackCad.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullWrite", "MinSelected": 13, "ExpectRed": false}, {"Project": "tests/RackCad.Tests/RackCad.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.Tests.PushBackPilotUpdateEquivalenceGuardTests", "MinSelected": 6, "ExpectRed": false}]
+quitadas: []
+lo de antes, en el mismo orden relativo: True
+posiciones de las anadidas: [6, 7] | vecinas: [('Tests.PushBackFullDraftWindowParityTests', 'PushBackPilotUpdateEquivalenceGuardTests'), ('fiedName~RackCad.Tests.PushBackFullWrite', 'ackCad.Tests.PushBackWritePathGuardTests')]
+heredadas de PB-T3b presentes: 31 de 31 | faltan: []
+orden de las heredadas = orden en PB-T3b: False
+heredadas que PB-T3c pone en sus filas propias (las 6 primeras): ['ckCad.Tests.PushBackSharedReferenceGuardTests']
+el resto (desde la 7.a) = PB-T3b en su orden, sin esas: True | fuera de PB-T3b: []
+con ExpectRed true en PB-T3c: ['FullyQualifiedName~RackCad.Tests.PushBackViewEraseGuardTests']
+con ExpectRed true en PB-T3b: [('FullyQualifiedName~RackCad.Tests.PushBackFullWrite', 13), ('FullyQualifiedName~RackCad.Tests.PushBackPilotUpdateEquivalenceGuardTests', 6)]

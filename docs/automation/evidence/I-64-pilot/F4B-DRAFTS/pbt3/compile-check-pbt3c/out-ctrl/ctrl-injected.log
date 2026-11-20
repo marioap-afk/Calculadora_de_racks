@@ -1,0 +1,20 @@
+Serie de pruebas para <copia>\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll (.NETCoreApp,Version=v8.0)
+Versión 17.11.1 (x64) de VSTest
+
+Iniciando la ejecución de pruebas, espere...
+1 archivos de prueba en total coincidieron con el patrón especificado.
+[xUnit.net 00:00:06.44]     RackCad.Tests.PushBackSharedReferenceGuardTests.CT_PBT1B_15_TheWritersOfNameInThePluginRunAfterTheWindowCloses [FAIL]
+  Con error RackCad.Tests.PushBackSharedReferenceGuardTests.CT_PBT1B_15_TheWritersOfNameInThePluginRunAfterTheWindowCloses [789 ms]
+  Mensaje de error:
+   Assert.Equal() Failure: Collections differ
+                        ↓ (pos 0)
+Expected: string[]     ["archivos=14", "asignaciones=7", "RackMenuCommands.cs: header.Configuration.Name = S"···, "RackMenuCommands.cs: dynamic.System.Name = dynamic"···, "RackMenuCommands.cs: selective.System.Name = selec"···, ···]
+Actual:   List<string> ["archivos=15", "asignaciones=7", "RackMenuCommands.cs: header.Configuration.Name = S"···, "RackMenuCommands.cs: dynamic.System.Name = dynamic"···, "RackMenuCommands.cs: selective.System.Name = selec"···, ···]
+                        ↑ (pos 0)
+  Seguimiento de la pila:
+     at RackCad.Tests.PushBackSharedReferenceGuardTests.CT_PBT1B_15_TheWritersOfNameInThePluginRunAfterTheWindowCloses() in <copia>\tests\RackCad.Tests\PushBackSharedReferenceGuardTests.cs:line 381
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+Archivo de resultados: <copia>\_trx\ctrl-injected.trx
+
+Con error! - Con error:     1, Superado:     0, Omitido:     0, Total:     1, Duración: < 1 ms - RackCad.Tests.dll (net8.0)

@@ -1,0 +1,21 @@
+diff --git a/src/RackCad.Plugin/Views/RackViewBlockEraser.cs b/src/RackCad.Plugin/Views/RackViewBlockEraser.cs
+new file mode 100644
+index 0000000..b4224b3
+--- /dev/null
++++ b/src/RackCad.Plugin/Views/RackViewBlockEraser.cs
+@@ -0,0 +1,15 @@
++#nullable enable
++using System;
++using System.Collections.Generic;
++using Autodesk.AutoCAD.DatabaseServices;
++
++namespace RackCad.Plugin.Views
++{
++    internal static class RackViewBlockEraser
++    {
++        internal static IReadOnlyCollection<ObjectId> EraseInTransaction(Transaction transaction, ObjectId definitionId)
++        {
++            throw new NotSupportedException();
++        }
++    }
++}

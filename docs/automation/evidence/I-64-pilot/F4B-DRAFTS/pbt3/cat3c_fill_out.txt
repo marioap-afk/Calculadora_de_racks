@@ -1,0 +1,17 @@
+relleno sha256 01c288ac1c963456 | CR en el relleno: False
+bloques de texto: 10 -> pares: 5 | cada bloque de una linea: True
+seccion de PB-T3b: lineas 272 a 310
+  vieja x1 en [274] | nueva ya en el cierre x0 | **Estado: EMITIDA** (2026-11-20, emisión de PB-T3b, F4B-E44,
+  vieja x1 en [306] | nueva ya en el cierre x0 | | **RED** | (al cerrar) |
+  vieja x1 en [307] | nueva ya en el cierre x0 | | **GREEN** | (al cerrar) |
+  vieja x1 en [308] | nueva ya en el cierre x0 | | **La medición sobre el GREEN** | (al cerrar) |
+  vieja x1 en [309] | nueva ya en el cierre x2 | | **Estado** | EMITIDA |
+lineas cambiadas: [274, 306, 307, 308, 309]
+marcas que quedan en la entrada: []
+tamano: cierre 27281 bytes -> con las sustituciones y la entrada 32382 bytes
+las nuevas, en orden:
+  274: **Estado: EJECUTADA** (2026-11-20, cierre de PB-T3b, F4B-E46, custodia `fe1c67f4`; emitida en F4B-E44 y reemitida en F4B-E45): RED `9fda277e5609e62ff7
+  306: | **RED** | `9fda277e5609e62ff715450eed03220c93df8585` (CI `44704503614`: tests en failure por los 13 métodos de `PushBackFullWrite` y los 6 de la equ
+  307: | **GREEN** | `c758278548bcdd66e7c55ca15ca1faeb1a431e53` (CI `44707482956` 4/4; Core 19 124: 19 118 Passed, 0 Failed y 6 Skipped, los de D-1, con la T
+  308: | **La medición sobre el GREEN** | Conforme con la variante (A): S-1, S-3, S-4 y S-5 fallan; S-2 falla en las filas 1 y 3 y pasa en las 2, 4 y 5; S-6 
+  309: | **Estado** | EJECUTADA |

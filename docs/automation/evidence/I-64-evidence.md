@@ -8536,3 +8536,33 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - solo documentación;
 - sin AutoCAD;
 - los eventos y las transcripciones, solo por SHA-256.
+
+## 274. PB-T3c: paquete del contrato v4.7, remedición sobre el cierre de PB-T3b, comprobación acotada y registro de D-2 (F4B-E47)
+
+**Qué se custodia:**
+- **El paquete del contrato** `docs/initiatives/I-64-f4b-pbt3-gate-contract-package.md`, v4.7, que sustituye a la v4.6. La v4.6 pasa a la historia, en `F4B-DRAFTS/pbt3/package-v46.md`.
+- **El registro de mediciones** `docs/initiatives/I-64-f4b-pbt3-measurements.md`, con R-23: la remedición de PB-T3c sobre el cierre de PB-T3b.
+- **El registro declarado** `F4B-DRAFTS/superseding-characterization.md`, con su entrada de PB-T3c: D-2, sin `Skip`. También completa la tabla de ejecución de PB-T3b, que el cierre dejó sin rellenar: cinco líneas, con lo ya custodiado (`F4B-DRAFTS/pbt3/superseding-pbt3b-close-fill.md`).
+- **En `F4B-DRAFTS/pbt3/`:**
+  - **la v4.7:** `v47-delta.md`, `make_v47.py`, `check_v47.py` y su salida, `check-v47-out.txt`;
+  - **la remedición:** `pbt3c-anchors-out.txt`, con su guion `measure_pbt3c.py`;
+  - **los barridos sobre el cierre:**
+    - el de las guardas, `sweep-pbt3c-close.txt`;
+    - el de sobrecargas y reflexión, `overload_sweep_t3c.py` y `overload-sweep-pbt3c-fe1c67f4.txt`;
+    - el de nombres, `name_check_t3c.py` y `name-check-pbt3c-fe1c67f4.txt`;
+  - **el esqueleto de la fachada** como parche, `pbt3c-skeleton.patch`, con `make_pbt3c_skeleton.py`;
+  - **la compilación de comprobación de la sesión,** en `compile-check-pbt3c/`, con sus registros redactados y su manifiesto;
+  - **la comprobación acotada de PB-T3c** (CA-T3c, `independent-review-pbt3c-check.md`), con su encargo, y los guiones del revisor: `cat3c_args.py`, `cat3c_args2.py`, `cat3c_args_out.txt`, `cat3c_auth.py`, `cat3c_auth_out.txt`, `cat3c_bounded.py`, `cat3c_c11.py`, `cat3c_c11_out.txt`, `cat3c_dry.py`, `cat3c_dry_out.txt`, `cat3c_enum.py`, `cat3c_enum_out.txt`, `cat3c_evid.py`, `cat3c_evid_out.txt`, `cat3c_fill.py`, `cat3c_fill_out.txt`, `cat3c_r3.py`, `cat3c_r3_out.txt`, `cat3c_scope.py`, `cat3c_scope_out.txt`, `cat3c_scope_t3b_out.txt`;
+  - **la salida en seco del generador** sobre el cierre, `make_pbt3c_contract-dry.txt`.
+
+  Los textos con rutas locales van con la redacción común.
+
+**La base:** el cierre de PB-T3b, F4B-E46 (`fe1c67f4`). PB-T3b está CLOSED / PASS WITH LIMITATIONS sobre `c7582785`, en el intento 2 de 3. La CI del GREEN es `44707482956`: Core 19 124, con 6 omitidas, y UI 2 451, con 21 omitidas.
+
+**Las comprobaciones:**
+- **la remedición:** sin cambios materiales;
+- **los barridos:** sin colisión;
+- **la compilación de comprobación:** Core-tests y UI-tests en Debug y el Plugin en Release (con -o), 0 errores; el tipo y el método del esqueleto en el ensamblado del Plugin; la suite completa de Core sobre la copia exportada de fe1c67f4, 19 124 = 19 118 pasadas + 0 fallidas + 6 omitidas (S-1 a S-6 de D-1);
+- **la comprobación acotada,** `BOUNDED_RESULT`: `EMITIBLE; B 0 / I 0 / M 4; sin importantes; sin decisiones nuevas del Owner; remedicion sobre fe1c67f4 sin cambios materiales; precondicion 13 cumplida: Core 19124 = 19118 + 0 + 6; recomprobacion v4.7: EMITIBLE, B 0 / I 0 / M 1`.
+
+**Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.

@@ -431,3 +431,24 @@ Con `ForFullWrite` (V45-01) no hay colisión con G-9 ni con ninguna otra guarda.
 | Los literales de las guardas | 8 filas propias de `ExecuteFull`, 3 de `ComparePostFull` y 1 de `PrepareFull`, de 22 548 literales en 165 archivos. Ninguna lee PP ni UR |
 
 **Consecuencia:** con `ExecuteFull` y `ComparePostFull` (los de la sesión) la reemisión aún habría fallado por `Prepare`, en una prueba de comportamiento de F4 (PBT3B-C14). La v4.6 lo renombra a `PrepareFull` (V46-06). `Precheck` sigue como sobrecarga (V46-08). Con los tres nombres: ninguna llamada ambigua, ningún grupo de métodos y ninguna reflexión rota.
+
+## R-23. La remedición de PB-T3c sobre el cierre de PB-T3b (`fe1c67f4`; precondición 2 de la v4.7)
+
+**Método:**
+- Es el seco del generador de PB-T3c (`make_pbt3c_contract.py`) sobre el cierre de PB-T3b, por objetos git desde el checkout principal, con el paquete v4.7.
+- `measure_pbt3c.py` lo corre y añade los barridos sobre el cierre y el estado de WR. La salida es `pbt3c-anchors-out.txt`.
+- La orden: `python -I measure_pbt3c.py <checkout-principal> fe1c67f4efa23f2abb9b6ab9d636df54ae15f343`.
+- Nada se ejecutó con dotnet y no se leyó el worktree.
+
+| Hecho | Medido en `fe1c67f4` | Fuente |
+|---|---|---|
+| La base | Desciende de `d8ccbcb8` (F4B-E29), del cierre de PB-T3a, de la emisión (`eab27a9e`) y la reemisión (`c7441653`) de PB-T3b y de su GREEN `c7582785`. `src` y `tests` son los del GREEN. Su entrada es F4B-E46, CLOSED / PASS WITH LIMITATIONS, con `task-close-package.md` | `f4b-dispositions.md` |
+| La CI del GREEN de PB-T3b | Run `44707482956`: Core 19 124 resultados, con 19 118 `Passed` y 6 `Skipped`; UI 2 451, con 2 430 `Passed` y 21 `Skipped`. La TRX cuenta la `Theory` S-2 con `Skip` como una fila | F4B-E46 y `F4B-DRAFTS/pbt3/nc3-row-count-pbt3b/count-rows-out.txt` |
+| Los `MinSelected` de las guardas del escritor | `WorkspacePilotUpdateGuardTests` 86 y `WorkspacePilotUpdateIntegrationGuardTests` 123: los `Passed` de la TRX, iguales a lo estático (86 y 123 ejecutables, con 1 y 2 `Skip`, sin `MemberData`) | `count-rows-out.txt`; el seco |
+| Los heredados de §6.2 | Ninguno baja del contrato reemitido de PB-T3b; `Workspace` de Core, 3 261 ejecutables estáticos, con 10 `Skip` y 33 `Theory` con `MemberData` | El seco |
+| WR | Igual que en la emisión de PB-T3b (PB-T3b no lo toca). Tres clases `RackPilot*`, un `StartTransaction`, un `Commit`, una purga y dos `[Conditional("DEBUG")]`; ningún `GetBlockReferenceIds`, `Erase(`, `EraseViewBlocks`, `ForWrite`, `UpgradeOpen` ni `.Name =` | `pbt3c-anchors-out.txt` |
+| El barrido de las guardas | De 92 a 94 clases que leen código (las de PB-T3b); 9 coincidencias nuevas con el texto de PB-T3c, genéricas, de `PushBackWritePathGuardTests`; ninguna perdida. Sin colisión | `sweep-pbt3c-close.txt` |
+| Sobrecargas, reflexión y nombres (T3C-1) | El constructor de `RackPilotMutationScope`, un uso (WR:156); ninguna reflexión sobre los tipos tocados; los nombres nuevos, libres en WR y en la fachada; los literales propios de los nombres, de guardas de otro alcance. Sin colisión | `overload-sweep-pbt3c-fe1c67f4.txt`; `name-check-pbt3c-fe1c67f4.txt` |
+| La fila de CT-05 de la tabla de RR-3 | Las ocho fichas de D2 (`PushBackSharedReferenceGuardTests.cs:35-36`) y las reglas `Rule1`, `Rule1b` y `Rule1c` (`:57-69`) | El seco |
+
+**Consecuencia:** la remedición no cambia nada material. El seco de PB-T3c sobre el cierre solo deja los AVISOS de la emisión: el commit X, la comprobación acotada y la entrada de D-2.

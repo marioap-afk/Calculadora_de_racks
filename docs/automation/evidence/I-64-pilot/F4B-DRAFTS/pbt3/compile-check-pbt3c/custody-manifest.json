@@ -1,0 +1,176 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Unit": "F4B-DRAFTS/pbt3/compile-check-pbt3c",
+  "SourceRoot": "la carpeta de la compilacion de comprobacion de la sesion (fuera del repositorio)",
+  "Rules": "rutas locales, usuario y maquina nunca se versionan; los registros de MSBuild y de VSTest y el informe de la sesion se custodian redactados, porque prueban que el esqueleto de la fachada compila en Core, UI y el Plugin y que la suite completa de Core pasa sobre la copia exportada (precondicion 13 de la v4.7; V47-02); las TRX y los binarios, solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
+  "Counts": {
+    "CUSTODIED": 18,
+    "EXCLUDED": 1
+  },
+  "Files": [
+    {
+      "Path": "compile-check.md",
+      "Bytes": 6554,
+      "Sha256": "fc48a76b4536deb5305a8fe64bc6768ff8c580b7d85224047d88b14d1d977160",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "compile_check.sh",
+      "Bytes": 2745,
+      "Sha256": "bbcdec3f7a98f78a82a6fb7f87b4a160db11992b832da58d2759bdfbd23bf10d",
+      "Redaction": [
+        "ubicacion local sustituida por: <checkout-principal>",
+        "ubicacion local sustituida por: <datos-locales-del-usuario>"
+      ],
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "41c3f93771306467aca9a0ae6138ed0cc43e49a37967fe8967ae95c0bd112a4b"
+    },
+    {
+      "Path": "compile_check_ctrl.sh",
+      "Bytes": 2557,
+      "Sha256": "b55fea6e312a022935322b040ed2b73b9feba5fa34998bf432849eec93f853a7",
+      "Redaction": [
+        "ubicacion local sustituida por: <checkout-principal>",
+        "ubicacion local sustituida por: <datos-locales-del-usuario>"
+      ],
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "f77570d185afcb178de560774186b59d191cef6b20c3b63b30d031c83b7f9741"
+    },
+    {
+      "Path": "out-ctrl/build-server-shutdown.txt",
+      "Bytes": 188,
+      "Sha256": "6abb8581d09e4d9de38fa7a70874e73f5f7bc04ce3aebf23bb7bb4981f2ebfdc",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "093d25d8a4ace0fbc3c6e7104d458956124132ed246c675f27e95bcb86fefcfa"
+    },
+    {
+      "Path": "out-ctrl/ctrl-injected-outcomes.txt",
+      "Bytes": 354,
+      "Sha256": "768ae12ea0258dc5de1e68cb11a132885ec5ac5a01465770304c03ce83731ecf",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-ctrl/ctrl-injected.log",
+      "Bytes": 1804,
+      "Sha256": "1e66a37dbfea79436795bf130e0560cf95f1c362c322753e5d0ea19426c439f9",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)",
+      "Redaction": [
+        "ubicacion local sustituida por: <copia>"
+      ],
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "f2b86c627e1b62602acda027eea66d82efae3d118d84b7d7a6dbfcc92aa97724"
+    },
+    {
+      "Path": "out-ctrl/ctrl-restored-outcomes.txt",
+      "Bytes": 22,
+      "Sha256": "41dcb8dbdce2b82a71bef1614d135aa3387d94552da285615b3bf068bc7364ea",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-ctrl/ctrl-restored.log",
+      "Bytes": 450,
+      "Sha256": "c8ce7439ee9108d303a2d85f3bd883c14d82592248e7ea113490736aaea2b43d",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)",
+      "Redaction": [
+        "ubicacion local sustituida por: <copia>"
+      ],
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "7c9bdfbcf5aa2089602fd2ffd0886d8071cd7eb5a3772adb02bb23138f649c94"
+    },
+    {
+      "Path": "out-run-ctrl.txt",
+      "Bytes": 371,
+      "Sha256": "80261c1f0fd88c56964e31e213d043dfe78e643329cf5aad632c7e7616e1a04c",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-run1.txt",
+      "Bytes": 518,
+      "Sha256": "630144806b1cbab19b08c947a5e4a3261899ad67a8f9de5727440ec8eb1443b6",
+      "Normalization": "CRLF->LF (finales mixtos; el SHA-256 original identifica el archivo)",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "6dca19b870732525f6bad1a10f77e0e1505a3660f1a9ed23ab1536d341fc21d0"
+    },
+    {
+      "Path": "out/build-server-shutdown.txt",
+      "Bytes": 188,
+      "Sha256": "b7964357198bc541e6acce911dad8604545e4d2b7890693469a998ff070f24fe",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "fe558fb72a8b6c7231f562945de8ed69dde691d70741e03aef2d0793c3697aa9"
+    },
+    {
+      "Path": "out/core-test.log",
+      "Bytes": 2445,
+      "Sha256": "d3ad6d943b1044027ac56d3c999453a877b326f574b4419257791c04d371f4be",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)",
+      "Redaction": [
+        "ubicacion local sustituida por: <copia>"
+      ],
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "bf7a54d7d23d126af3476af31c70ceeffd54f9d92e10bc032384c16bcdd0c37a"
+    },
+    {
+      "Path": "out/core-tests.log",
+      "Bytes": 44924,
+      "Sha256": "d4441316f446db8aafc3e5240243f0798a73c0e0090a52750592ff1a849d8c90",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)",
+      "Redaction": [
+        "ubicacion local sustituida por: <copia>"
+      ],
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "ca1bdb0dd7ba059b04bad534974b3bb7e3ff52b1cbac5c14861eb5da8604d62e"
+    },
+    {
+      "Path": "out/core.trx",
+      "Bytes": 24867481,
+      "Sha256": "5ff50c8506aeeb5bd1ff1ec5e45780ca80d5c7e5a5f6c237517d1c15078e879a",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX cruda (lleva usuario, maquina y rutas): su resumen esta en los registros de texto; solo por SHA-256"
+    },
+    {
+      "Path": "out/plugin.log",
+      "Bytes": 30929,
+      "Sha256": "24c45e62a9540d68dd4401635ce92ba55f5475e0a0df233bcebf59eaf6778988",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)",
+      "Redaction": [
+        "ubicacion local sustituida por: <copia>",
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <dotnet-del-usuario>",
+        "ubicacion local sustituida por: <programas>"
+      ],
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "a18e89efe9cd987a91950288bc298fb52ac8c8a3941ea2b21ce1a8ff5527ee86"
+    },
+    {
+      "Path": "out/ui-tests.log",
+      "Bytes": 10350,
+      "Sha256": "9ec57745835178253de072b863425eb9847ed5493768f0ff6d67baeab9bb4b1a",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)",
+      "Redaction": [
+        "ubicacion local sustituida por: <copia>"
+      ],
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "c423f378a8fe2b3e9dddb9fa1058eed6ad3a864e0b342ee1b62fdc463403617d"
+    },
+    {
+      "Path": "trx-outcomes.txt",
+      "Bytes": 2012,
+      "Sha256": "2efb010f412f5799a63bf7e2957b26f092a17d6f4408544584121d81e111ac69",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "trx_failed.py",
+      "Bytes": 732,
+      "Sha256": "400dc2154dda7d1b580c3752fabac8c5823ebe475e74083c1a11e24c2f2f569a",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "trx_outcomes.py",
+      "Bytes": 1127,
+      "Sha256": "f0d11cf37e9148cd840f19eb43ddedab5def41c674e2a6642dcea4c864f01902",
+      "Disposition": "CUSTODIED"
+    }
+  ]
+}

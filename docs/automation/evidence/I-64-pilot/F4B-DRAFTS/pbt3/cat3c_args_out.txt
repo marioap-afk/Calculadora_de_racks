@@ -1,0 +1,25 @@
+tramo copiado: 2484 caracteres, desde 3634 hasta 6118
+funciones: ['re', 'GENERIC_CHARS', 'generic_close', 'args_at']
+   ... (Database database, Transaction transaction, IReadOnlyDictio
+ok   4/4  (Database database, Transaction transaction, IReadOnlyDictionary<string, (PreparedViewRedraw Prepared, Dimensi
+   ... (Dictionary<string, int[]> a, Func<int, string> f)
+ok   2/2  (Dictionary<string, int[]> a, Func<int, string> f)
+   ... (Action<string> a = null, int b = 0)
+ok   2/2  (Action<string> a = null, int b = 0)
+   ... (global::System.Collections.Generic.List<int> a, int b)
+ok   2/2  (global::System.Collections.Generic.List<int> a, int b)
+   ... (List<int?> a, (int x, int y)? b)
+ok   2/2  (List<int?> a, (int x, int y)? b)
+   ... (x < y ? a : b, c)
+ok   2/2  (x < y ? a : b, c)
+   ... (a<b, c>d)
+DIF  2/1  (a<b, c>d)
+   ... (F<A, B>(x), y)
+ok   2/2  (F<A, B>(x), y)
+   ... (n<m, k)
+ok   2/2  (n<m, k)
+   ... (new Dictionary<string, int>(), null!)
+ok   2/2  (new Dictionary<string, int>(), null!)
+   ... (plan, null)
+ok   2/2  (plan, null)
+casos: 11 | distintos: 1

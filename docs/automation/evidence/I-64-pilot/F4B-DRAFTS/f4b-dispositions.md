@@ -1512,3 +1512,79 @@ No hay cambios materiales.
 **Resultado:** **F4B-PBT3B-FULL-WRITE-RUN = CLOSED / PASS WITH LIMITATIONS** sobre `c7582785`, con attempts 2 de 3. El plan y la corrida de la actualización del Workspace de Push Back sirven al piloto y al modelo completo, sin conectar este último. Llevan la barrera, el borrado de laterales obsoletos y la interfaz para borrar.
 
 **Siguiente:** la emisión de PB-T3c por F4B-E35 (pregunta 3), tras revisar el paquete sobre este cierre (los marcadores posteriores al cierre de PB-T3b y M-07 de CA-T3b) y su comprobación acotada.
+
+## F4B-E47. Emisión de F4B-PBT3C-FULL-WRITE-ERASE (PB-T3c), con el paquete de PB-T3 v4.7
+
+**Fecha:** 2026-11-20.
+
+**Autoridad de emisión:** la autorización condicional del Owner, F4B-E35, pregunta 3: «Sí, con esa condición (Recomendado)». Cubre PB-T3a, PB-T3b y PB-T3c, en ese orden y cada una tras el cierre de la anterior.
+- **Las condiciones que exige:**
+  - la comprobación acotada de la subtarea da 0 bloqueantes y 0 importantes sin resolver;
+  - la remedición sobre el cierre anterior, el de PB-T3b, no cambia nada material.
+- **Cuándo se vuelve al Owner:** por una decisión nueva, un control con una firma no prevista, un intento 3 o un efecto material sin medir. No se da ninguno.
+
+**El cierre de PB-T3b** (F4B-E46, `fe1c67f4`):
+- PB-T3b CLOSED / PASS WITH LIMITATIONS sobre `c7582785`, en el intento 2 de 3, tras la reemisión con la v4.6 (X `2bb3b759` y BASE `c7441653`);
+- RED `9fda277e`, sin reparación;
+- verificación 14/14;
+- nc1 por el sustituto de PD-F4B-01, nc2 PASS y nc3 por disposición del Owner;
+- CI del GREEN `44707482956`, 4/4: Core 19 124, con 6 omitidas (las de D-1), y UI 2 451, con 21 omitidas.
+
+**La lección del cierre de PB-T3b** (F4B-E46, `F4B-DRAFTS/coordinator/owner-pbt3b-nc3-decision.md`). Una evidencia esperada que dependa de cómo cuente la TRX lleva el total exacto de cada rama. La v4.7 la aplica:
+- CT-PBT3C-01 a 05 son un `[Fact]` cada una;
+- la `ExpectedEvidence` de la CI da los recuentos del RED y del GREEN en su única rama, sin alternativa:
+  - **RED:** Core 19 129 = 19 119 `Passed` + 4 `Failed` + 6 `Skipped`;
+  - **GREEN:** Core 19 129 = 19 123 + 0 + 6;
+  - **UI, en los dos:** 2 451 = 2 430 + 21.
+
+**D-2, la premisa «el escritor nunca borra»:** cambia, y lleva su registro declarado **sin `Skip`**. La entrada `## PB-T3c` de `F4B-DRAFTS/superseding-characterization.md` va en esta emisión, y recoge:
+- la autoridad, D-PB-04 y OB-04.1;
+- la guarda que sigue en verde, UpdateGuard:182-212, con su comentario :188;
+- las guardas nuevas, CT-PBT3C-01 a 04;
+- los dos comentarios de WR que cambian, :26 y :225.
+
+No se sustituye ni se debilita ninguna guarda; D-1 no cubre el escritor.
+
+**El registro declarado de PB-T3b:** el cierre (F4B-E46) dejó sin rellenar su tabla de ejecución en `F4B-DRAFTS/superseding-characterization.md`. El commit X de esta emisión la completa con lo que ya está custodiado en `fe1c67f4`:
+- los SHA del RED y del GREEN, con sus CI;
+- la medición de INV-PBT3B-15, conforme con la variante (A).
+
+Cambian solo esas cinco líneas. El texto exacto y sus fuentes están en `F4B-DRAFTS/pbt3/superseding-pbt3b-close-fill.md`.
+
+**Los controles** (PBT3C-C11), con las decisiones del Owner posteriores a la v4.5:
+- **nc1:** la firma PD-F4B-01, con su sustituto `PBT3x-NC1-CASCADE-SIGNAL-01` (F4B-E40), revisado y aplicado ya en PB-T3b. Se usa con `--task PBT3C`.
+- **nc2:** el sustituto ampliado, la v2 de `PBTx-NC2-EXACT-WHITELIST-F4B-01` (F4B-E43). Su lista ya tiene `PBT3C`, y la primera entrada de la `ExpectedEvidence` es, byte a byte, la de PB-T3a.
+
+**La reparación del RED** (F4B-E35, pregunta 4): la regla RR del Owner, con la lectura de PB-T3c.
+- PBT3C-C07 lleva su excepción, y PBT3C-C18 cubre una reparación que rompe la regla.
+- La cadena RR-6 va en INV-PBT3C-02.
+- Una reparación no toca WR ni la fachada.
+
+Una reparación no gasta intento (RR-7).
+
+**Antes de emitir** (la precondición 13 de la v4.7; V47-02 y V47-05):
+- **El barrido de sobrecargas, de reflexión y de nombres** (T3C-1), sobre `fe1c67f4`, salió sin colisión: `overload-sweep-pbt3c-fe1c67f4.txt` y `name-check-pbt3c-fe1c67f4.txt`.
+- **La compilación de comprobación de la sesión,** con el esqueleto de la fachada (`pbt3c-skeleton.patch`) sobre una copia exportada de la base, fuera del worktree: Core-tests y UI-tests en Debug y el Plugin en Release (con -o), 0 errores; el tipo y el método del esqueleto en el ensamblado del Plugin; la suite completa de Core sobre la copia exportada de fe1c67f4, 19 124 = 19 118 pasadas + 0 fallidas + 6 omitidas (S-1 a S-6 de D-1). Su custodia está en `F4B-DRAFTS/pbt3/compile-check-pbt3c/`.
+
+**La comprobación acotada de PB-T3c** (CA-T3c, `independent-review-pbt3c-check.md`, con su encargo), sobre el contrato en seco y la v4.7. El resultado que lleva el contrato es `EMITIBLE; B 0 / I 0 / M 4; sin importantes; sin decisiones nuevas del Owner; remedicion sobre fe1c67f4 sin cambios materiales; precondicion 13 cumplida: Core 19124 = 19118 + 0 + 6; recomprobacion v4.7: EMITIBLE, B 0 / I 0 / M 1`.
+- **Su M-01 decidió la duda 1 del generador: incluir.** La celda «Y los de §6.2 sin `ExpectRed`» de la v4.7 se lee «con `ExpectRed` false». Así, `PushBackFullWrite` (13) y `PushBackPilotUpdateEquivalenceGuardTests` (6) entran en los `RequiredTests`, que pasan de 34 a 36. La v4.7 no cambia.
+- **Sus menores M-02 y M-05** van a `docs/ideas-futuras.md` en el cierre de PB-T3c. M-02 es la nota de V47-06 sobre PBT3B-IR-M01; M-05 es el límite del corte de argumentos del barrido, con el mismo «5» de `overload-sweep-eab27a9e.txt` en la custodia de PB-T3b.
+
+**La remedición sobre el cierre de PB-T3b** (`fe1c67f4`, F4B-E46), en `pbt3c-anchors-out.txt` y en R-23 del registro de mediciones:
+- **La base:** `src/` y `tests/` son los del GREEN de PB-T3b, y WR está igual que en la emisión de PB-T3b.
+- **Los `MinSelected` de las guardas del escritor:** 86 y 123, los `Passed` de la TRX del GREEN de PB-T3b. Lo heredado no baja del contrato reemitido de PB-T3b.
+- **El barrido de las guardas:** de 92 a 94 clases que leen código; 9 coincidencias nuevas y genéricas, ninguna perdida; sin colisión.
+- **La fila de CT-05 de la tabla de RR-3,** enumerada (V47-04).
+- **La línea base de la CI:** la corrida `push` `44707482956` sobre `c7582785`, el GREEN de PB-T3b, con el `src` y los `tests` del cierre: Core 19 124 (19 118 pasadas y 6 omitidas, las de D-1) y UI 2 451 (2 430 pasadas y 21 omitidas); es la del §6.3 del paquete.
+
+No hay cambios materiales.
+
+**El contrato:**
+- **Qué es PB-T3c:** dar al escritor de la actualización del Workspace de Push Back la capacidad de borrar una vista obsoleta dentro de la única transacción de MUTATE. Lo hace por una fachada caller-owned nueva, `RackViewBlockEraser.EraseInTransaction`, y `EraseUnit` en WR.
+  - **El RED:** el esqueleto inerte de la fachada y las dos clases de prueba nuevas.
+  - **El GREEN:** toca solo WR y la fachada.
+- **`UNIT_CHANGE`:** WR (F4B-E25).
+- **P-01:** la Snapshot K (F4B-E37).
+- **La cadena:** primera delegación; `attempts` 1 de 3.
+- **La planificación:** con las colecciones opacas puestas por la sesión (F4B-E21).
+- **La verificación:** con las comprobaciones deterministas de F4B-E15.

@@ -1,0 +1,342 @@
+== tests/RackCad.Tests/BomExcel/ConsolidatedBomXlsxDetailTests.cs
+   enum :184 var sources = Directory.GetFiles(Path.Combine(root, "src", "RackCad.Domain"), "*.cs", SearchOption.AllDirectories).ToList();
+   enum :188 sources.AddRange(Directory.GetFiles(Path.Combine(root, "src", "RackCad.Application", "Systems"), "*BomBuilder.cs", SearchOption.AllDirectories));
+   literales que casan con la fachada prevista: 8
+      :21 'Rack'
+      :135 'name'
+      :137 'ref'
+      :139 'ref'
+      :143 'name'
+      :146 'name'
+      :165 'ref'
+      :200 'RackCad.Plugin'
+== tests/RackCad.Tests/CantileverPluginSourceGuardTests.cs
+   enum :100 var offenders = Directory.GetFiles(PluginDirectory, "*.cs", SearchOption.AllDirectories)
+   literales que casan con la fachada prevista: 4
+      :33 'RackCad.Plugin'
+      :263 '[CommandMethod("RACKCANTILEVER")]'
+      :264 '[CommandMethod("RCT")]'
+      :301 '\\bAutodesk\\.'
+== tests/RackCad.Tests/CantileverRoundTwoSourceGuardTests.cs
+   enum :159 foreach (var file in Directory.GetFiles(applicationCantilever, "*.cs", SearchOption.AllDirectories))
+   enum :210 foreach (var file in Directory.GetFiles(ComponentDirectory, "*.cs")
+   enum :249 foreach (var file in Directory.GetFiles(root, "*.cs", SearchOption.AllDirectories)
+   literales que casan con la fachada prevista: 4
+      :227 'RackCad.Plugin'
+      :253 '\\bAutodesk\\.'
+      :262 'RackCad.Plugin'
+      :300 'RackCad.Plugin'
+== tests/RackCad.Tests/CantileverSourceGuardTests.cs
+   enum :55 foreach (var file in Directory.GetFiles(folder, "*.cs", SearchOption.AllDirectories))
+   enum :88 .SelectMany(d => Directory.GetFiles(d, fileName, SearchOption.AllDirectories))
+   enum :219 foreach (var file in Directory.GetFiles(folder, "*.cs", SearchOption.AllDirectories))
+   literales que casan con la fachada prevista: 2
+      :202 '\\bAutodesk\\.'
+      :297 'InvalidOperationException'
+== tests/RackCad.Tests/ComputedParameters/RackMetricProviderPurityTests.cs
+   enum :74 return Directory.GetFiles(folder, "RackMetricProvider*.cs").OrderBy(path => path, StringComparer.Ordinal).ToList();
+   literales que casan con la fachada prevista: 1
+      :36 '\\bAutodesk\\b'
+== tests/RackCad.Tests/CustomPropertiesCommandGuardTests.cs
+   enum :182 return Directory.GetFiles(Path.Combine(root, "src", "RackCad.Plugin"), "*.cs", SearchOption.AllDirectories)
+   literales que casan con la fachada prevista: 14
+      :131 '[CommandMethod("RPR")]'
+      :131 '[CommandMethod("RPR")] [CommandMethod("RPRO")]'
+      :132 '[CommandMethod("RPR")]'
+      :132 '[CommandMethod("rpr")]'
+      :134 '[CommandMethod("RACKPROPIEDADES")]'
+      :134 '[CommandMethod("RACKPROPIEDADESPROYECTO")]'
+      :140 'OpenMode.ForRead'
+      :140 'OpenMode.ForWrite'
+      :182 'RackCad.Plugin'
+      :186 'name'
+      :243 'name'
+      :283 '\\.\\s*BlockTableRecord\\b'
+      :297 'UpgradeOpen'
+      :297 'ForWrite'
+== tests/RackCad.Tests/CustomPropertiesEdgeGuardTests.cs
+   enum :270 return Directory.GetFiles(System.IO.Path.Combine(root, "src"), "*.cs", SearchOption.AllDirectories)
+   literales que casan con la fachada prevista: 20
+      :45 'if (!result.IsPlanned || !RackCustomPropertiesAuthority.Evaluate(fresh, selection, IsKnown'
+      :46 'if (!result.IsPlanned || !CustomPropertiesPreflight.ForRack(null, null).IsAccepted)'
+      :47 'if (!result.IsPlanned || result.FreshOutcome == null)'
+      :418 '\\s*\\('
+      :420 '\\s*\\('
+      :421 '\\s*\\('
+      :453 'foreach'
+      :480 '\\b(?:Write|WritePlan|UpgradeOpen)\\s*\\(|\\bForWrite\\b|\\bCustomPropertiesCommit\\b'
+      :566 'Read'
+      :568 'Transaction'
+      :568 'Database'
+      :576 '\\bthrow\\b'
+      :622 'Write'
+      :624 'Transaction'
+      ...
+== tests/RackCad.Tests/CustomPropertiesEnvelopeGuardTests.cs
+   enum :228 return Directory.GetFiles(Path.Combine(root, "src"), "*.cs", SearchOption.AllDirectories)
+   literales que casan con la fachada prevista: 4
+      :92 'null'
+      :238 'RackCad.Plugin'
+      :300 '\\s+'
+      :362 '\\s+'
+== tests/RackCad.Tests/CustomPropertiesTestKit.cs
+   enum :165 return Directory.GetFiles(Path.Combine(application, "Persistence"), "CustomPropert*.cs")
+   enum :166 .Concat(Directory.GetFiles(Path.Combine(application, "CustomProperties"), "*.cs"))
+   literales que casan con la fachada prevista: 2
+      :34 'rea'
+      :37 'rea'
+== tests/RackCad.Tests/ElevationOverrideSourceGuardTests.cs
+   enum :37 => Directory.GetFiles(Path.Combine(RepoRoot().FullName, "src"), "*.cs", SearchOption.AllDirectories)
+   literales que casan con la fachada prevista: 0
+== tests/RackCad.Tests/I55G14FoundationConsumerTests.cs
+   enum :93 .GetFiles(Path.Combine(root, "src", "RackCad.Application", "Views"), "*.cs", SearchOption.AllDirectories)
+   literales que casan con la fachada prevista: 3
+      :93 'Views'
+      :121 'Views'
+      :133 'Views'
+== tests/RackCad.Tests/I55G15Auth15ConsumerTests.cs
+   enum :47 var consumers = Directory.GetFiles(pluginDir, "*.cs", SearchOption.AllDirectories)
+   literales que casan con la fachada prevista: 5
+      :25 'RackCad.Plugin'
+      :46 'RackCad.Plugin'
+      :61 'Views'
+      :86 'Views'
+      :90 '.Erase('
+== tests/RackCad.Tests/I60BatchCreationNamingTests.cs
+   enum :111 var projection = Directory.GetFiles(Path.Combine(Root(), "src", "RackCad.Plugin", "Views"), "RackProjection*.cs");
+   literales que casan con la fachada prevista: 3
+      :111 'RackCad.Plugin'
+      :111 'Views'
+      :159 '   '
+== tests/RackCad.Tests/LengthUnitsAuthorityGuardTests.cs
+   enum :41 .GetFiles(src, "*.cs", SearchOption.AllDirectories)
+   literales que casan con la fachada prevista: 3
+      :124 '|MillimetersPerInch|MillimeterPerInch|InchesToMillimeters|InchToMillimeters|MillimetersToI'
+      :167 'name'
+      :182 'name'
+== tests/RackCad.Tests/MainMenuStructuralSectionAccessGuardTests.cs
+   enum :53 Directory.GetFiles(PluginDirectory, "*.cs", SearchOption.AllDirectories)
+   literales que casan con la fachada prevista: 2
+      :36 'RackCad.Plugin'
+      :161 '[CommandMethod("RACKSECCION")]'
+== tests/RackCad.Tests/NamespaceFolderGuardTests.cs
+   enum :71 return Directory.EnumerateFiles(src, "*.cs", SearchOption.AllDirectories)
+   enum :219 foreach (var path in Directory.EnumerateFiles(root, "*.cs", SearchOption.AllDirectories))
+   literales que casan con la fachada prevista: 3
+      :120 'namespace '
+      :228 'namespace '
+      :229 'namespace '
+== tests/RackCad.Tests/ProjectVariablesConformanceTests.cs
+   enum :47 .GetFiles(root, "*.cs", SearchOption.AllDirectories)
+   literales que casan con la fachada prevista: 11
+      :87 'RackCad.Plugin'
+      :97 'RackCad.Plugin'
+      :97 'Autodesk.AutoCAD'
+      :110 'Autodesk.AutoCAD'
+      :149 '(?<![A-Za-z0-9_])'
+      :149 '(?![A-Za-z0-9_])'
+      :192 'RackCad.Plugin'
+      :225 'RackCad.Plugin'
+      :249 'RackCad.Plugin'
+      :278 'RackCad.Plugin'
+      :293 'RackCad.Plugin'
+== tests/RackCad.Tests/PushBackCellConfigurationDeliveryTests.cs
+   enum :295 .EnumerateFiles(root, "*.cs", SearchOption.AllDirectories)
+   enum :309 foreach (var path in Directory.EnumerateFiles(root, "*.cs", SearchOption.AllDirectories))
+   enum :348 foreach (var path in Directory.EnumerateFiles(root, "*.cs", SearchOption.AllDirectories))
+   enum :363 foreach (var path in Directory.EnumerateFiles(root, "*.cs", SearchOption.AllDirectories))
+   literales que casan con la fachada prevista: 3
+      :266 'RackCad.Plugin'
+      :279 'RackCad.Plugin'
+      :280 'RackCad.Plugin'
+== tests/RackCad.Tests/PushBackDraftStatePortTests.cs
+   enum :157 return System.IO.Directory.GetFiles(dir, "pb-*.json")
+   literales que casan con la fachada prevista: 3
+      :166 'RackCad'
+      :269 'null'
+      :401 '   '
+== tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs
+   enum :64 var files = Directory.GetFiles(Path.Combine(Root, "src"), "*.cs", SearchOption.AllDirectories)
+   literales que casan con la fachada prevista: 22
+      :110 '(?:\\s*\\??\\.\\s*\\w+(?:\\s*\\([^()]*\\))?|\\s*\\[[^\\]]*\\])'
+      :112 '(?:Add|AddRange|Clear|Remove|RemoveAt|RemoveAll|RemoveRange|Insert|InsertRange|Sort|Revers'
+      :113 '\\s*\\??\\.\\s*'
+      :113 '\\s*\\('
+      :114 '(?:List|IList|ICollection|Collection|HashSet|Dictionary|IDictionary)'
+      :118 '(?<![\\w])'
+      :118 '\\s*\\.\\s*'
+      :130 '\\s*<'
+      :131 '[^;{}]*?\\s+is\\s+'
+      :131 '\\s*<[^>]*>\\s+\\w+'
+      :141 '\\$?"(?:\\\\.|[^"\\\\\\n])*"'
+      :182 '(?:\\bvar|[\\w<>\\[\\]?,.]+)?\\s+(\\w+)\\s*=(?![=>])\\s*([^;{}]*)'
+      :191 'foreach\\s*\\(\\s*(?:var|[\\w<>\\[\\]?,.]+)\\s+(\\w+)\\s+in\\s+([^)]*(?:\\([^()]*\\)[^)]*)*)\\)'
+      :193 'foreach'
+      ...
+== tests/RackCad.Tests/PushBackEditableStateLoadTests.cs
+   enum :156 return System.IO.Directory.GetFiles(dir, "pb-*.json")
+   literales que casan con la fachada prevista: 2
+      :308 '   '
+      :532 '   '
+== tests/RackCad.Tests/PushBackEditableStateOwnershipTests.cs
+   enum :20 return System.IO.Directory.GetFiles(dir, "pb-*.json")
+   literales que casan con la fachada prevista: 0
+== tests/RackCad.Tests/PushBackModuleEditorCharacterizationTests.cs
+   enum :576 var matches = Directory.GetFiles(root, Path.GetFileName(relative), SearchOption.AllDirectories)
+   literales que casan con la fachada prevista: 0
+== tests/RackCad.Tests/PushBackRoundTripSourceGuardTests.cs
+   enum :70 foreach (var file in Directory.EnumerateFiles(pluginDir, "*.cs", SearchOption.AllDirectories))
+   literales que casan con la fachada prevista: 3
+      :37 'RackCad.Plugin'
+      :68 'RackCad.Plugin'
+      :279 '[CommandMethod("RACKEDITAR")]'
+== tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs
+   enum :192 files.AddRange(Directory.GetFiles(folder, "*.cs", SearchOption.AllDirectories)
+   literales que casan con la fachada prevista: 16
+      :44 '(?:\\s*\\??\\.\\s*\\w+(?:\\s*\\([^()]*\\))?|\\s*\\[[^\\]]*\\])'
+      :46 '(?:Add|AddRange|Clear|Remove|RemoveAt|RemoveAll|RemoveRange|Insert|InsertRange|Sort|Revers'
+      :47 '\\s*\\??\\.\\s*'
+      :47 '\\s*\\('
+      :48 '(?:List|IList|ICollection|Collection|HashSet|Dictionary|IDictionary)'
+      :52 '(?<![\\w])'
+      :52 '\\s*\\.\\s*'
+      :64 '\\s*<'
+      :65 '[^;{}]*?\\s+is\\s+'
+      :65 '\\s*<[^>]*>\\s+\\w+'
+      :75 '\\$?"(?:\\\\.|[^"\\\\\\n])*"'
+      :116 '(?:\\bvar|[\\w<>\\[\\]?,.]+)?\\s+(\\w+)\\s*=(?![=>])\\s*([^;{}]*)'
+      :125 'foreach\\s*\\(\\s*(?:var|[\\w<>\\[\\]?,.]+)\\s+(\\w+)\\s+in\\s+([^)]*(?:\\([^()]*\\)[^)]*)*)\\)'
+      :127 'foreach'
+      ...
+== tests/RackCad.Tests/PushBackWritePathGuardTests.cs
+   enum :255 var files = Directory.GetFiles(Path.Combine(Root, "src"), "*.cs", SearchOption.AllDirectories)
+   literales que casan con la fachada prevista: 15
+      :54 '(?:\\s*\\??\\.\\s*\\w+(?:\\s*\\([^()]*\\))?|\\s*\\[[^\\]]*\\])'
+      :56 '(?:Add|AddRange|Clear|Remove|RemoveAt|RemoveAll|RemoveRange|Insert|InsertRange|Sort|Revers'
+      :57 '\\s*\\??\\.\\s*'
+      :57 '\\s*\\('
+      :58 '(?:List|IList|ICollection|Collection|HashSet|Dictionary|IDictionary)'
+      :62 '(?<![\\w])'
+      :62 '\\s*\\.\\s*'
+      :74 '\\s*<'
+      :75 '[^;{}]*?\\s+is\\s+'
+      :75 '\\s*<[^>]*>\\s+\\w+'
+      :85 '\\$?"(?:\\\\.|[^"\\\\\\n])*"'
+      :126 '(?:\\bvar|[\\w<>\\[\\]?,.]+)?\\s+(\\w+)\\s*=(?![=>])\\s*([^;{}]*)'
+      :135 'foreach\\s*\\(\\s*(?:var|[\\w<>\\[\\]?,.]+)\\s+(\\w+)\\s+in\\s+([^)]*(?:\\([^()]*\\)[^)]*)*)\\)'
+      :137 'foreach'
+      ...
+== tests/RackCad.Tests/RackDefinitionCreatorGuardTests.cs
+   enum :529 foreach (var file in Directory.EnumerateFiles(application, "*.cs", SearchOption.AllDirectories))
+   literales que casan con la fachada prevista: 6
+      :41 'RackCad.Plugin'
+      :107 'Transaction transaction'
+      :121 'foreach'
+      :170 'BlockReference'
+      :438 'Erase('
+      :481 'Erase('
+== tests/RackCad.Tests/RackUnitsGuardSourceTests.cs
+   enum :91 foreach (var file in Directory.EnumerateFiles(pluginDir, "*.cs", SearchOption.AllDirectories))
+   literales que casan con la fachada prevista: 2
+      :35 'RackCad.Plugin'
+      :90 'RackCad.Plugin'
+== tests/RackCad.Tests/SelectiveBomAuthorityTests.cs
+   enum :430 foreach (var file in Directory.GetFiles(
+   literales que casan con la fachada prevista: 2
+      :354 'RackCad.Plugin'
+      :431 'RackCad.Plugin'
+== tests/RackCad.Tests/SelectiveEditorOpenTests.cs
+   enum :487 .GetFiles(Path.Combine(RepoRoot().FullName, "src"), "*.cs", SearchOption.AllDirectories)
+   enum :568 .GetFiles(Path.Combine(RepoRoot().FullName, "src", "RackCad.Plugin"), "*.cs", SearchOption.AllDirectories)
+   enum :577 foreach (var file in Directory.GetFiles(
+   literales que casan con la fachada prevista: 5
+      :367 'RackCad.Plugin'
+      :501 'Autodesk.AutoCAD'
+      :503 'ObjectId'
+      :504 'Transaction'
+      :568 'RackCad.Plugin'
+== tests/RackCad.Tests/SiblingRedrawSeamGuardTests.cs
+   enum :64 foreach (var file in Directory.GetFiles(Path.Combine(root, "src", "RackCad.Plugin"), "*Commands*.cs", SearchOption.AllDirectories))
+   literales que casan con la fachada prevista: 5
+      :32 'RackCad.Plugin'
+      :42 'RackCad.Plugin'
+      :49 'RackCad.Plugin'
+      :64 'RackCad.Plugin'
+      :73 'RackCad.Plugin'
+== tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsPackageTemplateTests.cs
+   enum :763 foreach (var path in System.IO.Directory.GetFiles(folder, "StructuralAnalysisRamElementsPackage*.cs"))
+   literales que casan con la fachada prevista: 4
+      :38 '|\\.(?:set_stiffness_factors|set_releases|set_spring|set_rigid_end_offset|set_rotational_st'
+      :41 '\\.([A-Za-z_]\\w*)'
+      :442 'name'
+      :654 '\\.([A-Za-z_]\\w*)'
+== tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs
+   enum :35 return Directory.GetFiles(dir, "*.cs", SearchOption.AllDirectories)
+   literales que casan con la fachada prevista: 25
+      :42 'RackCad.Plugin'
+      :70 'DocumentCreated|DocumentActivated|DocumentToBeDestroyed|DocumentDestroyed|DocumentToBeActi'
+      :71 'DocumentActivationChanged|DocumentBecameCurrent|DocumentLockModeChanged|DocumentLockModeWi'
+      :72 'ImpliedSelectionChanged|CommandWillStart|CommandEnded|CommandCancelled|CommandFailed|Begin'
+      :73 'EnteringQuiescentState|LeavingQuiescentState|ObjectAppended|ObjectErased|ObjectModified|Ob'
+      :74 'ObjectReappended|ObjectOpenedForModify|ObjectClosed|SelectionAdded|SelectionRemoved|System'
+      :118 '\\.(\\w+)'
+      :140 'SetImpliedSelection|SetCurrentView|ZoomExtents|ZoomWindow|Zoom|PanTo|UpdateScreen|Regen|Se'
+      :141 'GetSelection|GetEntity|GetString|GetPoint|GetKeywords|GetInteger|GetDouble|SelectImplied|S'
+      :142 'ShowModalDialog|ShowModelessDialog|ShowDialog|MessageBox|GetObject|OpenCloseTransaction|Hi'
+      :148 'GetObject'
+      :154 'GetObject'
+      :157 'GetObject'
+      :208 '\\busing\\b'
+      ...
+== tests/RackCad.Tests/Workspace/WorkspaceHostSourceSupport.cs
+   enum :52 return Directory.GetFiles(dir, "*.cs", SearchOption.AllDirectories)
+   literales que casan con la fachada prevista: 0
+== tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs
+   enum :47 foreach (var file in System.IO.Directory.GetFiles(dir, "*.xaml", System.IO.SearchOption.AllDirectories).OrderBy(f => f, StringComparer.Ordinal))
+   literales que casan con la fachada prevista: 7
+      :77 '\\bclass\\s+\\w+'
+      :256 'StartTransaction|StartOpenCloseTransaction|LockDocument|GetObject|SelectImplied|MdiActiveD'
+      :294 'PaletteSet|\\w+EventArgs|Autodesk|\\bDocument\\b|\\bEditor\\b'
+      :327 'name'
+      :532 'Autodesk|RackCad\\.Plugin'
+      :609 'namespace '
+      :747 '\\s+'
+== tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardTests.cs
+   enum :517 return System.IO.Directory.GetFiles(dir, "*.xaml", System.IO.SearchOption.AllDirectories)
+   literales que casan con la fachada prevista: 9
+      :93 '\\s*\\(\\s*\\)'
+      :96 '\\s*\\(\\s*\\)'
+      :169 '\\s*\\(\\s*\\)'
+      :349 '"[^>]*>'
+      :559 'name'
+      :741 '\n                    '
+      :741 '\n                    '
+      :741 '\n                    '
+      :741 '\n                    '
+== tests/RackCad.UI.Tests/BlankFrontDesviadorHandoffTests.cs
+   enum :289 var matches = Directory.GetFiles(root, fileName, SearchOption.AllDirectories)
+   literales que casan con la fachada prevista: 0
+== tests/RackCad.UI.Tests/CustomPropertiesHelpCensusTests.cs
+   enum :155 return Directory.GetFiles(Path.Combine(root, "src", "RackCad.Plugin"), "*.cs", SearchOption.AllDirectories)
+   literales que casan con la fachada prevista: 2
+      :155 'RackCad.Plugin'
+      :159 'name'
+== tests/RackCad.UI.Tests/PushBackClassicCharacterizationSourceGuardTests.cs
+   enum :51 => Directory.EnumerateFiles(root, pattern, SearchOption.AllDirectories)
+   literales que casan con la fachada prevista: 2
+      :154 '\\s+'
+      :290 'Views'
+== tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationSupport.cs
+   enum :104 return Directory.GetFiles(dir, "pb-*.json").Select(Path.GetFileNameWithoutExtension).OrderBy(n => n, StringComparer.Ordinal).ToList();
+   literales que casan con la fachada prevista: 0
+== tests/RackCad.UI.Tests/SelectiveWindowConstructionGuardTests.cs
+   enum :50 return Directory.EnumerateFiles(root, "*.cs", SearchOption.AllDirectories)
+   literales que casan con la fachada prevista: 0
+== tests/RackCad.UI.Tests/UiSystemBoundaryGuardTests.cs
+   enum :50 => Directory.EnumerateFiles(UiRoot(), pattern, SearchOption.AllDirectories)
+   literales que casan con la fachada prevista: 2
+      :139 'namespace '
+      :140 'namespace '
+== tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs
+   enum :327 var onDisk = Directory.GetFiles(dir, "pb-*.json").Select(Path.GetFileNameWithoutExtension).OrderBy(n => n, StringComparer.Ordinal).ToArray();
+   literales que casan con la fachada prevista: 0
