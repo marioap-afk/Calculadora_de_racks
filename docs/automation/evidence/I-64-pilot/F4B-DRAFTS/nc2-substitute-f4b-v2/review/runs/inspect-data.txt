@@ -1,0 +1,23 @@
+== ExpectedEvidence del contrato (9 entradas)
+0 ['BYTE_COMPARISON', 'byte'] 'Antes del Worker: el contrato, la salida del Controller (output.json, con las colecciones opacas vacias), la delegacion final con esas colecciones puestas por la sesion (delegation.json), la comparacion byte a byte, A1-A8 y nc4.'
+== Campos de nivel superior del contrato: ['AllowedWriteScope', 'Authorities', 'AuthorityRevision', 'CorrectionsAuthorized', 'EligibleCells', 'ExpectedEvidence', 'ForbiddenWriteScope', 'Gate', 'Invariants', 'IssuedBy', 'IssuedUtc', 'MainSha', 'Objective', 'RequiredTests', 'RoutingEnforcement', 'Schema', 'StopConditions', 'TaskId', 'Unit']
+== Campos de nivel superior de la delegacion real: ['AcceptanceCriteria', 'AllowedWriteScope', 'Attempt', 'AttemptsRemaining', 'Authorities', 'AuthorityRevision', 'BaseSha', 'ChainBaseSha', 'ChainRedFiles', 'ChainRedSha', 'CorrectionOf', 'Dimensions', 'Effort', 'Executor', 'ExpectedBranch', 'ExpectedEvidence', 'ExpectedHandoffPath', 'ExpectedWorktree', 'ForbiddenWriteScope', 'Gate', 'Initiative', 'Invariants', 'IssuedBy', 'MainSha', 'MaxReworkLoops', 'Model', 'ModelEscalationReason', 'Objective', 'Owner', 'PromptProfile', 'RequiredTests', 'RoutingEnforcement', 'RoutingReason', 'RunId', 'Schema', 'StopConditions', 'TaskClass', 'TaskId', 'Unit']
+== Campos de la salida cruda: ['AcceptanceCriteria', 'AllowedWriteScope', 'Attempt', 'AttemptsRemaining', 'Authorities', 'AuthorityRevision', 'BaseSha', 'ChainBaseSha', 'ChainRedFiles', 'ChainRedSha', 'CorrectionOf', 'Dimensions', 'Effort', 'Executor', 'ExpectedBranch', 'ExpectedEvidence', 'ExpectedHandoffPath', 'ExpectedWorktree', 'ForbiddenWriteScope', 'Gate', 'Initiative', 'Invariants', 'IssuedBy', 'MainSha', 'MaxReworkLoops', 'Model', 'ModelEscalationReason', 'Objective', 'Owner', 'PromptProfile', 'RequiredTests', 'RoutingEnforcement', 'RoutingReason', 'RunId', 'Schema', 'StopConditions', 'TaskClass', 'TaskId', 'Unit']
+== Colecciones opacas en la salida cruda: {'AllowedWriteScope': [], 'Objective': '', 'Authorities': [], 'ForbiddenWriteScope': [], 'Invariants': [], 'RequiredTests': [], 'ExpectedEvidence': [], 'StopConditions': []}
+== Campos que difieren entre salida cruda y delegacion real: ['AllowedWriteScope', 'Authorities', 'ExpectedEvidence', 'ForbiddenWriteScope', 'Invariants', 'Objective', 'RequiredTests', 'StopConditions']
+== Campos fuera de las 8 que difieren: []
+== cruda + 8 del contrato == delegacion real (decodificado): True
+== orden de claves cruda vs real igual: True
+== reconstruccion byte a byte coincide con indent=2 ensure_ascii=False
+== reconstruccion byte a byte coincide con indent=2 ensure_ascii=True
+== SHA cruda 100A7695160F5A5FF622470128957399BB2172FF90D0F66EDC414C5E811472A8 nota.OutputSha256 100A7695160F5A5FF622470128957399BB2172FF90D0F66EDC414C5E811472A8
+== SHA delegacion real BF3F0F622DAA68C4E9DE0032F93A623FF37EAAC9E13A26AAB0D498618732DF3A nota.DelegationSha256 BF3F0F622DAA68C4E9DE0032F93A623FF37EAAC9E13A26AAB0D498618732DF3A bfc.OutputSha256 bf3f0f622daa68c4e9de0032f93a623ff37eaac9e13a26aab0d498618732df3a
+== SHA contrato 319683F7F6F037269DA41224C601B2F2F981A332D1117EFC48C75EE38A017F5F nota.ContractSha256 319683F7F6F037269DA41224C601B2F2F981A332D1117EFC48C75EE38A017F5F bfc.ContractSha256 319683f7f6f037269da41224c601b2f2f981a332d1117efc48c75ee38a017f5f
+== RunId nota R20261119T065628Z-7de7 bfc.PlanningRunId R20261119T065628Z-7de7 relevo.RunId R20261119T065628Z-7de7 delegacion.RunId R20261119T065628Z-7de7
+== RunId nc2-relevo R20261119T065628Z-7de7
+== bfc AllowedWriteScope SourceSha256 = json.dumps(indent=None, sep=(',', ':'), ensure_ascii=False)
+== bfc AllowedWriteScope SourceSha256 = json.dumps(indent=None, sep=(',', ':'), ensure_ascii=True)
+== AllowedWriteScope contrato ['src/RackCad.Application/Systems/PushBack/PushBackDraftStatePort.cs', 'src/RackCad.Application/Systems/PushBack/PushBackDraftEditorLaunch.cs', 'tests/RackCad.Tests/PushBackDraftStatePortTests.cs', 'tests/RackCad.Tests/PushBackDraftPortSharedReferenceGuardTests.cs']
+== AllowedWriteScope real     ['src/RackCad.Application/Systems/PushBack/PushBackDraftStatePort.cs', 'src/RackCad.Application/Systems/PushBack/PushBackDraftEditorLaunch.cs', 'tests/RackCad.Tests/PushBackDraftStatePortTests.cs', 'tests/RackCad.Tests/PushBackDraftPortSharedReferenceGuardTests.cs']
+== AllowedWriteScope mutado   ['src/RackCad.Application/Systems/PushBack/PushBackDraftStatePort.cs', 'tests/RackCad.Tests/PushBackDraftStatePortTests.cs', 'tests/RackCad.Tests/PushBackDraftPortSharedReferenceGuardTests.cs']
+== real == contrato (orden): True

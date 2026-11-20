@@ -1,0 +1,150 @@
+== PBT3B-C11 (3854 car.)
+a negative control (nc1, nc2 or nc3) does not give CONTROL PASS: its ordinary output is kept as is and there are only two exits without returning to the Owner ([DP] question 1, "Extender firmas exactas"): (1) nc2 with the EXACT signature of PD-F4-01 (source f4-dispositions.md:1103-1106: Scope in fail on the removed path; Contract in fail only by the exactness clause; EXECUTION_BLOCKED/STOP; applied literally at :1540: no check other than the real verification differs; the exactness clause includes Contract evidence citing the contrast of the narrowed AllowedWriteScope with the contract or with byte-fidelity-check.json, f4-dispositions.md:520, :562, and nothing else) -> substitute PBT3B-NC2-EXACT-WHITELIST-F4B-01, the version 2 of PBTx-NC2-EXACT-WHITELIST-F4B-01 (F4B-E43: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/nc2-substitute-f4b-v2/nc2_exact_whitelist_substitute_f4b_v2.py, SHA-256 <por rellenar: el SHA-256 de la v2 revisada>; owner-pbt3a-nc2-decision.md, "Aceptar y ampliar el sustituto"), whose property 8 admits only the closed list of the exact literals of the evidence entry of the byte-by-byte comparison, one per package (PB-T2 and PB-T3), with its reviewed text unchanged and run with --task PBT3B in the F4B-E21 mode with the injection note and the raw output of this task's accepted planning, recorded as nc2 = SATISFIED_UNDER_PBT3B_EXACT_WHITELIST_SUBSTITUTE_F4B; if inject_opaque.py changed since that run, the substitute is reviewed before it is reused; (2) nc1 with the signature PD-F4B-01, the false SHA cascade (F4B-E40: owner-pbt2c-nc1-decision.md, its conditions (a) to (f): the mutation only changes the CurrentSha of the handoff to a SHA that does not exist in the repository; EXECUTION_BLOCKED / STOP with S-04 among the stops; Handoff is the first check in fail; the failing checks are a subset of Handoff, Identity, Remote, Scope, Ci and Tests that always includes Handoff and Identity, and all the others pass as in the real verification; each failing evidence cites the false SHA and none attributes the failure to another cause; the Identity evidence also writes the real HEAD), of which the EXACT signature of PD-F4-04 (source owner-f4t3-authorization.md:255-265; as applied in F4, f4-dispositions.md:1657-1660) is a particular case -> substitute PBT3x-NC1-CASCADE-SIGNAL-01 (F4B-E40 and F4B-E43: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/nc1-cascade-substitute/nc1_cascade_signal_substitute.py, SHA-256 41440edc4a963bef890e4336dccb885837424008c027cdb172d2b926e0f49b40, reviewed APTO, with its declared limits), with its reviewed text unchanged and run with --task PBT3B, recorded as nc1 = SATISFIED_UNDER_PBT3B_NC1_CASCADE_SUBSTITUTE. Matching is decided never by check name: the control output is compared with the real verification check by check (the set of failing checks, the first failing check, Outcome and StopClass, and the evidence text); the only admitted differences are those listed for each signature in section 6.0 of the PB-T1 contract package ([PT1], docs/initiatives/I-64-f4b-pbt1-gate-contract-package.md) and, for PD-F4B-01, its conditions (a) to (f); the session records the comparison table in f4b-dispositions.md. Any other signature or variation (PD-F4-05, PD-F4-06, nc2 with Ci or Trailer also in fail, any nc1 that does not meet PD-F4B-01 - the one-off acceptances of nc1 in PB-TC (F4B-E08), in PB-TC2 attempt 1 (F4B-E12), in PB-T2a (F4B-E34), in PB-T2b (F4B-E38) and in PB-T2c (F4B-E40) do not extend -, an nc2 that the version 2 of the substitute does not give PASS - the disposition of the Owner on the nc2 of PB-T3a (F4B-E43) does not extend -, a substitute that does not give PASS, any failure of nc3, or an evidence text that cannot be assigned to an admitted difference) returns to the Owner before any substitute or acceptance; no one-off acceptance extends to PB-T3b
+
+--- PBT3A-C11 (prefijo PBT3B)
++++ PBT3B-C11
+@@ -12,4 +12,4 @@
+--> substitute PBT3B-NC2-EXACT-WHITELIST-F4B-01, a copy of PBT2A-NC2-EXACT-WHITELIST-F4B-01 (F4B-E34:
+-docs/automation/evidence/I-64-pilot/F4B-PBT2A-DRAFT-STATE-PORT-nc2-substitute/2/R20261119T125505Z-c2d3/nc2_exact_whitelist_substitute_f4b.py, SHA-256 6ccaf12dbf9122c0bddc5b724bcff573705c95698af38bf750bf69459ee2ffd3;
+-owner-pbt2a-controls-decisions.md, question 2)
+-with ONLY the id and the scope changed, run in the F4B-E21 mode with the injection note and the raw output of this task's accepted planning, recorded as nc2 = SATISFIED_UNDER_PBT3B_EXACT_WHITELIST_SUBSTITUTE_F4B;
++-> substitute PBT3B-NC2-EXACT-WHITELIST-F4B-01, the version 2 of PBTx-NC2-EXACT-WHITELIST-F4B-01 (F4B-E43:
++docs/automation/evidence/I-64-pilot/F4B-DRAFTS/nc2-substitute-f4b-v2/nc2_exact_whitelist_substitute_f4b_v2.py, SHA-256 <por rellenar:
++el SHA-256 de la v2 revisada>;
++owner-pbt3a-nc2-decision.md, "Aceptar y ampliar el sustituto"), whose property 8 admits only the closed list of the exact literals of the evidence entry of the byte-by-byte comparison, one per package (PB-T2 and PB-T3), with its reviewed text unchanged and run with --task PBT3B in the F4B-E21 mode with the injection note and the raw output of this task's accepted planning, recorded as nc2 = SATIS
+@@ -18,8 +18,12 @@
+-nc1 with the EXACT signature of PD-F4-04 (source owner-f4t3-authorization.md:255-265:
+-false CurrentSha correctly detected;
+-Identity = fail;
+-Handoff also fails first only because the handoff itself contains the false SHA;
+-outcome BLOCKED / STOP;
+-all other intended checks match;
+-as applied in F4, f4-dispositions.md:1657-1660, Ci in fail only as a consumer of the false CurrentSha is part of the signature, with Remote in pass)
+--> substitute PBT3B-NC1-IDENTITY-SIGNAL-01, a copy of F4T3C2-NC1-IDENTITY-SIGNAL-01 with ONLY the id and the scope changed, recorded as nc1 = SATISFIED_UNDER_PBT3B_NC1_IDENTITY_SIGNAL_SUBSTITUTE. Matching is decided never by check name:
++nc1 with the signature PD-F4B-01, the false SHA cascade (F4B-E40:
++owner-pbt2c-nc1-decision.md, its conditions (a)
++to (f):
++the mutation only changes the CurrentSha of the handoff to a SHA that does not exist in the repository;
++EXECUTION_BLOCKED / STOP with S-04 among the stops;
++Handoff is the first check in fail;
++the failing checks are a subset of Handoff, Identity, Remote, Scope, Ci and Tests that always includes Handoff and Identity, and all the others pass as in the real verification;
++each failing evidence cites the false SHA and none attributes the failure to another cause;
++the Identity evidence also writes the real HEAD), of which the EXACT signature of PD-F4-04 (source owner-f4t3-authorization.md:255-265;
++as applied in F4, f4-dispositions.md:1657-1660)
++is a particular case -> substitute PBT3x-NC1-CASCADE-SIGNAL-01 (F4B-E40 and F4B-E43:
++docs/automation/evidence/I-64-pilot/F4B-DRAFTS/nc1-cascade-substitute/nc1_cascade_signal_substitute.py, SHA-256 41440edc4a963bef890e4336dccb885837424008c027cdb172d2b926e0f49b40, reviewed APTO, with its declared limits), with its reviewed text unchanged and run with --task PBT3B, recorded as nc1 = SATISFIED_UNDER_PBT3B_NC1_CASCADE_SUBSTITUTE. Matching is decided never by check name:
+@@ -27,4 +31,7 @@
+-the only admitted differences are those listed for each signature in section 6.0 of the PB-T1 contract package ([PT1], docs/initiatives/I-64-f4b-pbt1-gate-contract-package.md);
+-the session records the comparison table in f4b-dispositions.md. Any other signature or variation (PD-F4-05, PD-F4-06, nc2 with Ci or Trailer also in fail, any nc1 that does not reproduce the literal signature - including the variation the Owner accepted only once in PB-TC (F4B-E08), in PB-T2a (F4B-E34)
+-and in PB-T2b (F4B-E38), and the PB-TC2 case, where the substitute failed its property 5 and the Owner accepted nc1 only for PB-TC2 attempt 1 (F4B-E12)
+--, a substitute that does not give PASS, any failure of nc3, or an evidence text that cannot be assigned to an admitted difference)
++the only admitted differences are those listed for each signature in section 6.0 of the PB-T1 contract package ([PT1], docs/initiatives/I-64-f4b-pbt1-gate-contract-package.md)
++and, for PD-F4B-01, its conditions (a)
++to (f);
++the session records the comparison table in f4b-dispositions.md. Any other signature or variation (PD-F4-05, PD-F4-06, nc2 with Ci or Trailer also in fail, any nc1 that does not meet PD-F4B-01 - the one-off acceptances of nc1 in PB-TC (F4B-E08), in PB-TC2 attempt 1 (F4B-E12), in PB-T2a (F4B-E34), in PB-T2b (F4B-E38)
++and in PB-T2c (F4B-E40)
++do not extend -, an nc2 that the version 2 of the substitute does not give PASS - the disposition of the Owner on the nc2 of PB-T3a (F4B-E43)
++does not extend -, a substitute that does not give PASS, any failure of nc3, or an evidence text that cannot be assigned to an admitted difference)
+
+===== F4B-E40
+
+## F4B-E40. Cierre de F4B-PBT2C-WORKSPACE-CARRYOVER (PB-T2 completa), con la decisión del Owner sobre nc1 y la firma PD-F4B-01
+
+**Paquete de cierre:** `F4B-PBT2C-WORKSPACE-CARRYOVER/task-close-package.md`.
+
+**La cadena:**
+- **La emisión** (F4B-E39): con el paquete de PB-T2 v2.9, X `92232ed3` y BASE `05beabfd`. CA-T2c y sus seis rondas; la última, la §13 sobre el cierre de PB-T2b, EMITIBLE 0/0/2, con M-13 y M-14 aplicadas. La tabla de CT-PBT2C-03 la midió la sesión en una corrida temporal de UI: 49 filas, de las que aplican 42, en 6 no hay nada que aplicar y 1 se niega.
+- **La planificación:**
+  - Dos preparaciones no se lanzaron: `b5fa`, por la expresión del pie de la tabla, y `a19d`, por un P-02 falso, porque la línea de órdenes de la sesión llevaba la ruta del worktree.
+  - La planificación `65ce` se aceptó al primer lanzamiento: fidelidad 8/8, A1-A8 8/8, nc4 `d138` y 17 criterios.
+- **El Worker `05b7`** (sonnet/high) dio IMPLEMENTATION_COMPLETE, sin reparación del RED:
+  - el RED `7aeb6170`: los tres mutantes de una línea (W:3713, WC:95 y W:3273) y la clase `PushBackWorkspaceCarryoverTests`;
+  - las corridas aisladas `m1` a `m3`: cada mutante hace fallar el CT de su fila, y m3 además CT-02;
+  - el GREEN `b1968341`: revierte los mutantes, y `src` queda igual que en la base.
+
+**CI:**
+- RED `44618262418`: tests y ui-tests en failure, build-ui en success y build-plugin omitido. Los fallos existentes se atribuyen a los mutantes, entre ellos CT-PBT2B-08 en Core.
+- GREEN `44619492077`: 4/4, Core 19 094 y UI 2 450 (2 429 pasadas y 21 omitidas), lo previsto.
+
+**Revisiones:**
+- La directa: sin hallazgos.
+- La independiente: ACEPTABLE CON MENORES 0/0/2, más OWNER-01, informativo:
+  - en WORKSPACE, un lado B declarado sin frentes sobrevive en el borrador mientras vive, y en CLASSIC se pierde al reabrir;
+  - el aviso sigue siendo cierto respecto al dibujo;
+  - se informa al Owner, y qué escribe el panel queda para PB-T3 y PB-T4.
+
+**Verificación** `R20261119T220812Z-e59c`: **EXECUTION_VERIFIED** 14/14 al primer lanzamiento, con `rr_check` PASS (sin reparación).
+
+**Tabla de comparación de nc1** (PBT2C-C11), frente a la verificación real `e59c`. Solo se listan las comprobaciones que difieren:
+
+| Control | Resultado | Primera en fail | En fail | Paradas | Firma |
+|---|---|---|---|---|---|
+| nc1 `R20261119T221258Z-ea01` (`CurrentSha` falso `deadbeef…`) | EXECUTION_BLOCKED / STOP | Handoff | Handoff, Identity, Remote, Scope, Ci y Tests | S-04 | **Variación de PD-F4-04**, la misma cascada que en PB-T2a. Todas las evidencias en fail citan el SHA falso. Trailer y las demás, en pass |
+| nc2 `R20261119T222128Z-1ff5` | CONTROL PASS (Scope, STOP) | — | — | — | — |
+| nc3 `R20261119T222719Z-4f9f` | CONTROL PASS (FreeText, REWORK) | — | — | — | — |
+
+**La decisión del Owner** (`F4B-DRAFTS/coordinator/owner-pbt2c-nc1-decision.md`, literal): «Aceptar y ampliar la firma (Recomendado)».
+- **PB-T2c:** `nc1 = SATISFIED_BY_OWNER_DISPOSITION`.
+- **La firma nueva PD-F4B-01, «cascada del SHA falso»,** para el resto de F4B, con las condiciones (a) a (f) de la decisión:
+  - Handoff primero, STOP con S-04;
+  - en fail, solo un subconjunto de {Handoff, Identity, Remote, Scope, Ci, Tests}, con Handoff e Identity;
+  - cada evidencia en fail cita el SHA falso y ninguna atribuye otra causa;
+  - Identity escribe además el HEAD real.
+- **El sustituto** `PBT3x-NC1-CASCADE-SIGNAL-01` lleva autoprueba y revisión independiente antes de los controles de PB-T3a. Cualquier otra variación vuelve al Owner.
+- Es la cuarta variación de nc1 en F4B, tras PB-TC (F4B-E08), PB-T2a (F4B-E34) y PB-T2b (F4B-E38).
+
+**Controles:** nc1 por disposición del Owner; nc2 y nc3, CONTROL PASS.
+
+**Resultado:** **F4B-PBT2C-WORKSPACE-CARRYOVER = CLOSED / PASS WITH LIMITATIONS** sobre `b1968341`, con attempts 1 de 3.
+- Las obligaciones heredadas de PB-TC y PB-TC2 se cumplen en WORKSPACE, y lo fijan CT-PBT2C-01 a 03.
+- **PB-T2 queda completa:** PB-T2a, PB-T2b y PB-T2c.
+
+**Siguiente:** la emisión de PB-T3a con el paquete de PB-T3 v4.4, por F4B-E35 (pregunta 3). Su comprobación acotada CA-T3a dio EMITIBLE en su recomprobación sobre la v4.4. Antes de sus controles, el sustituto de PD-F4B-01, revisado.
+===== F4B-E43
+
+## F4B-E43. Cierre de F4B-PBT3A-FULL-WRITE-MODEL, con la decisión del Owner sobre nc2
+
+**Paquete de cierre:** `F4B-PBT3A-FULL-WRITE-MODEL/task-close-package.md`.
+
+**La cadena:**
+- **La emisión** (F4B-E41): X `2d876831` y BASE `18e4b783`, con la v4.4.
+- **El intento 1:**
+  - la planificación `903c` se aceptó, con nc4 `7aa0`;
+  - el Worker `7d92` paró antes del RED con PBT3A-C02, sin commits. El esqueleto del paquete hacía que `PushBackFullComposition.cs` nombrara el piloto y declarara `ForWrite`, y la guarda G9 lo prohíbe.
+- **La reemisión y la corrección en el intento 2** (F4B-E42): el Owner eligió «Renombrar ForWrite».
+  - Con la v4.5 y `ForFullWrite`, el commit X es `5bda5569`, con el análisis, y el BASE es `485b5651`.
+  - El barrido de todas las guardas no encontró otra colisión.
+  - La §11 de CA-T3a dio EMITIBLE 0/0/2.
+- **La planificación `fc50`** se aceptó al primer lanzamiento, con `CorrectionOf` exacto, nc4 `9811` y 17 criterios.
+- **El Worker `f006`** (sonnet/high) dio IMPLEMENTATION_COMPLETE, sin reparación del RED.
+  - Partió de los parches del intento 1 con el nombre cambiado.
+  - El RED `5dbc9661` lleva el esqueleto y las seis clases; el GREEN `6919e17a` toca solo `src/`.
+  - G9 pasa en el RED y en el GREEN.
+
+**CI:**
+- RED `44666242222`: tests y ui-tests en failure, build-ui en success y build-plugin omitido;
+- GREEN `44668584248`: 4/4, Core 19 107 y UI 2 451 (2 430 pasadas y 21 omitidas), lo previsto.
+
+**Revisiones:**
+- la directa, sin hallazgos;
+- la independiente, ACEPTABLE CON MENORES 0/0/9, sin hallazgos para el Owner.
+
+**Verificación** `R20261120T034433Z-6d41`: **EXECUTION_VERIFIED** 14/14 al primer lanzamiento.
+
+**Controles:**
+- **nc1** `R20261120T035005Z-c736`: CONTROL PASS (Identity, STOP). El sustituto de PD-F4B-01 no hizo falta.
+- **nc3** `R20261120T040354Z-5eac`: CONTROL PASS (FreeText, REWORK).
+- **nc2** `R20261120T035748Z-ad66`: CONTROL NOT PASSED, con la firma exacta de PD-F4-01.
+  - Comparada con la verificación real, solo difieren Contract, la primera, que falla solo por la exactitud de la lista blanca, y Scope, sobre la ruta quitada `PushBackConflictClassifier.cs`. El resultado es STOP, con S-04, P-03 y PBT3A-C01. Las otras doce, en pass.
+  - El sustituto adaptado a F4B, `PBT3A-NC2-EXACT-WHITELIST-F4B-01` (`R20261120T040923Z-882e`), dio **FAIL** en la propiedad 8: su literal de la cláusula de exactitud es el de los contratos de PB-T2, y el de PB-T3a está redactado de otra forma.
+
+**La decisión del Owner** (`F4B-DRAFTS/coordinator/owner-pbt3a-nc2-decision.md`, literal): «Aceptar y ampliar el sustituto (Recomendado)».
+- **PB-T3a:** `nc2 = SATISFIED_BY_OWNER_DISPOSITION`.
+- **De PB-T3b en adelante,** el sustituto admite una lista cerrada de los literales exactos de cada paquete, con autoprueba y revisión independiente antes de usarlo.
+
+**El sustituto de nc1 de PD-F4B-01** (F4B-E40), revisado y APTO tras tres rondas, se custodia en `F4B-DRAFTS/nc1-cascade-substitute/` con su revisión, sus notas y sus límites declarados. En PB-T3a no se aplicó.
+
+**Resultado:** **F4B-PBT3A-FULL-WRITE-MODEL = CLOSED / PASS WITH LIMITATIONS** sobre `6919e17a`, con attempts 2 de 3. El modelo de escritura completa del borrador de Push Back queda en Application, en archivos nuevos: el estado completo, el lector, la composición, la disposición de vistas y el clasificador de conflictos.
+
+**Siguiente:** la emisión de PB-T3b por F4B-E35 (pregunta 3), tras la remedición sobre este cierre y su comprobación acotada. Antes de sus controles, el sustituto de nc2 ampliado.
+

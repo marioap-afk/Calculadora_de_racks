@@ -8,6 +8,8 @@
 
 **La reemisión de PB-T3a** (F4B-E42; paquete v4.5): **R-20** corrige la lectura de la guarda G-9 en R-6. R-6 no se reescribe.
 
+**La remedición de la emisión de PB-T3b** (precondición 2 del paquete v4.5): **R-21**, sobre el cierre de PB-T3a (`c40eea4a`, F4B-E43). Solo cambia, explicado, el recuento de `src/` del `ForbiddenWriteScope`.
+
 **Lo que cambia en la v3** (la recomprobación de la v2, N-05 y N-07; V3-02, V3-05 y V3-07):
 - R-0 y R-17, medidos otra vez en `833ea6bf`, la HEAD de la rama: PB-T1b CERRADA, PB-T1c EMITIDA, F4B-E24 y F4B-E25 en git, y `src` igual que en `2f5d3dec`;
 - R-11 y R-12, al día (la medición pasa a INV-PBT3B-15, V3-08);
@@ -379,3 +381,28 @@ Con `ForFullWrite` (V45-01) no hay colisión con G-9 ni con ninguna otra guarda.
 **El método del barrido:** `name_check.py`, con el resumen de su salida en `name-check-sweep-summary.md` (`F4B-DRAFTS/pbt3/`).
 
 **Lo que no cambia:** G-9 y ninguna otra prueba existente; las demás filas de R-6.
+
+## R-21. La remedición de PB-T3b sobre el cierre de PB-T3a (`c40eea4a`; precondición 2 de la v4.5)
+
+**Método:**
+- Es el seco del generador de PB-T3b (`make_pbt3b_contract.py`) sobre el cierre de PB-T3a, por objetos git desde el checkout principal, con el paquete v4.5.
+- `measure_pbt3b.py` lo corre, extrae sus anclas y sus recuentos y añade lo que el generador no mide: el censo de los diseños de las clases de comportamiento del piloto de F4 y el barrido de las guardas sobre el cierre. La salida, `pbt3b-anchors-out.txt`, lo compara con lo previsto en el paquete.
+- La orden: `python -I measure_pbt3b.py <checkout-principal> c40eea4ad126ec6209dfef40e643e180b364bc97`.
+- El barrido es `guard_sweep.py` (el del §4.1) en `18e4b783` y en el cierre, comparado por `sweep_t3b_diff.py` en `sweep-pbt3b-close.txt`.
+- Nada se ejecutó con dotnet y no se leyó el worktree.
+
+| Hecho | Medido en `c40eea4a` | Frente a lo previsto |
+|---|---|---|
+| La base | Desciende de `d8ccbcb8` (F4B-E29), `18e4b783`, `485b5651` y del GREEN de PB-T3a (`6919e17a`). `src` y `tests` son los del GREEN. Su entrada es F4B-E43, CLOSED / PASS WITH LIMITATIONS, con el `task-close-package.md` y el contrato reemitido de PB-T3a | Igual |
+| Las anclas de PP, UR, UP, PM, WHC y RPC que cita el diseño (D-PBT3-09 y D-PBT3-10) | Las mismas líneas de R-18: PB-T3a solo creó archivos en `Draft/` | Igual |
+| S-1 a S-6 (R-6) | En `PrepareGuard:121`, `:127` (la `Theory` de cinco filas), `:229`, `UpdateGuard:126`, `IntegrationGuard:895` y `:902`, sin `Skip`: diez filas | Igual |
+| `tests/RackCad.Tests/Workspace/` (R-15) | 79 archivos; 76 en la lista explícita, sin los tres de guardas de D-1 | Igual |
+| Los nombres nuevos de PBT3B-C13 | Los 19 libres en `Pilot/`; los miembros de `Execution` que cambian de firma, con `PushBackPilotDraftState` en su firma | Igual |
+| El `ForbiddenWriteScope` | `src/` 99; `tests/` Core 109 (28 + 76 + 5) y UI 69 (68 + 1); la raíz, 17 | **`src/`: 98 previstas.** La de más es `Draft/`, la carpeta que creó PB-T3a: una entrada más del algoritmo de [PKC-C]. No es material |
+| Los `MinSelected` | Los heredados, iguales a los del contrato de PB-T3a; `Workspace` de Core, 3 271 − 10 = 3 261 | Igual (el de `Workspace`, una cota: R-11) |
+| La línea base de la CI | Run `44668584248` sobre `6919e17a`: Core 19 107 y UI 2 451 (2 430 pasadas y 21 omitidas) | Igual a la prevista |
+| El censo de los diseños de las clases de F4 (precondición 2; V2-09) | Las ocho usan solo diseños de `Fixtures/I64`. Las que llegan al plan (`WorkspacePilotPrepareTests`, `WorkspacePilotUpdateRunTests`, `WorkspacePilotUpdateHostTests` y `WorkspacePilotUpdateRequestTests`) usan `pb-01-base`, `pb-02-modulos` y `pb-20-ab`, sin ningún gesto que bloquee. `bloqueado=True` sigue en 0 en `PushBackStateNetFingerprintTests.cs` (R-8) | Ningún diseño bloqueado llega a la barrera: es una lectura estática; la cubre PBT3B-C14 |
+| El barrido de las guardas sobre el cierre (V45-03) | La única guarda nueva que lee `src/` es la de PB-T3a, `PushBackDraftWriteGuardTests`. Deja nombrar el modelo a `Draft/`, PP y UR, y la interfaz nueva no nombra sus tipos; sus reglas de D2 y de pureza solo leen los ocho de `Draft/`. Ninguna otra guarda cambia sus coincidencias con PP, UR o la interfaz | Sin colisión |
+| La Snapshot K, C11, F4B-E35 y la tabla de RR-3 | Como en el §6.0. C11 sale del bloque citado con los sustitutos de F4B-E40 y F4B-E43 | Las salidas de nc1 y nc2 cambian por esas dos decisiones del Owner |
+
+**Consecuencia:** la remedición no cambia nada material. El seco de PB-T3b sobre el cierre solo deja los AVISOS de la emisión: el commit X, la comprobación acotada y el sustituto de nc2 v2.

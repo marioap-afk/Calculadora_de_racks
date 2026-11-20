@@ -1,0 +1,27 @@
+R1-real-7args                  exp=PASS   got=PASS                                                         exit=0 false=[] by=F4B_EXACT_EVIDENCE+BFC jsonEq=True bytesEq=True
+M1-note-other-raw-sha          exp=FAIL   got=FAIL                                                         exit=1 false=['5_DerivedHashesConsistent'] by=F4B_EXACT_EVIDENCE+BFC jsonEq=True bytesEq=True
+M2-bfc-result-fail             exp=FAIL   got=FAIL                                                         exit=1 false=['8_ContractFailsOnlyByExactWhitelist'] by=None jsonEq=True bytesEq=True
+M3-bfc-order-false             exp=FAIL   got=FAIL                                                         exit=1 false=['8_ContractFailsOnlyByExactWhitelist'] by=None jsonEq=True bytesEq=True
+M4-contract-no-phrase          exp=FAIL   got=FAIL                                                         exit=1 false=['8_ContractFailsOnlyByExactWhitelist'] by=None jsonEq=True bytesEq=True
+M5-note-injected-partial       exp=FAIL   got=FAIL                                                         exit=1 false=['5_DerivedHashesConsistent'] by=F4B_EXACT_EVIDENCE+BFC jsonEq=True bytesEq=True
+M6-note-missing                exp=FAIL   got=FAIL (entrada ausente o mal formada: FileNotFoundError: [Err exit=1 false=[] by=None jsonEq=None bytesEq=None
+M7-note-malformed              exp=FAIL   got=FAIL (entrada ausente o mal formada: ValueError: la nota de  exit=1 false=[] by=None jsonEq=None bytesEq=None
+X1-note-incoherent             exp=FAIL   got=FAIL                                                         exit=1 false=['5_DerivedHashesConsistent'] by=F4B_EXACT_EVIDENCE+BFC jsonEq=True bytesEq=True
+X2-relay-raw-unbound           exp=FAIL   got=FAIL                                                         exit=1 false=['5_DerivedHashesConsistent'] by=F4B_EXACT_EVIDENCE+BFC jsonEq=False bytesEq=False
+X3-negated-phrase              exp=FAIL   got=FAIL                                                         exit=1 false=['8_ContractFailsOnlyByExactWhitelist'] by=None jsonEq=True bytesEq=True
+X4-f4b-faithful-nc2            exp=FAIL   got=FAIL                                                         exit=1 false=['5_DerivedHashesConsistent'] by=F4B_EXACT_EVIDENCE+BFC jsonEq=True bytesEq=True
+N1-raw-int-as-float            exp=FAIL?  got=PASS                                                         exit=0 false=[] by=F4B_EXACT_EVIDENCE+BFC jsonEq=True bytesEq=False
+N2-raw-bool-for-int            exp=FAIL?  got=PASS                                                         exit=0 false=[] by=F4B_EXACT_EVIDENCE+BFC jsonEq=True bytesEq=False
+N3-raw-duplicate-key           exp=FAIL?  got=PASS                                                         exit=0 false=[] by=F4B_EXACT_EVIDENCE+BFC jsonEq=True bytesEq=True
+N4-raw-reordered               exp=PASS?  got=PASS                                                         exit=0 false=[] by=F4B_EXACT_EVIDENCE+BFC jsonEq=True bytesEq=False
+N5-raw-absent-collection       exp=FAIL?  got=PASS                                                         exit=0 false=[] by=F4B_EXACT_EVIDENCE+BFC jsonEq=True bytesEq=False
+N6-runid-all-absent            exp=FAIL?  got=PASS                                                         exit=0 false=[] by=F4B_EXACT_EVIDENCE+BFC jsonEq=True bytesEq=True
+N7-runid-deleg-differs         exp=FAIL?  got=PASS                                                         exit=0 false=[] by=F4B_EXACT_EVIDENCE+BFC jsonEq=True bytesEq=True
+N8-fidelity-substring          exp=FAIL?  got=PASS                                                         exit=0 false=[] by=F4B_EXACT_EVIDENCE+BFC jsonEq=True bytesEq=True
+N9-evidence-plus-relaxing      exp=FAIL?  got=PASS                                                         exit=0 false=[] by=F4B_EXACT_EVIDENCE+BFC jsonEq=True bytesEq=False
+N10-evidence-trailing-space    exp=FAIL   got=FAIL                                                         exit=1 false=['8_ContractFailsOnlyByExactWhitelist'] by=None jsonEq=True bytesEq=True
+K1-five-args                   exp=FAIL   got=FAIL                                                         exit=1 false=['5_DerivedHashesConsistent', '8_ContractFailsOnlyByExactWhitelist'] by=None jsonEq=None bytesEq=None
+K2-note-only                   exp=FAIL   got=FAIL (modo F4B-E21 incompleto: exige la nota de inyeccion y  exit=1 false=[] by=None jsonEq=None bytesEq=None
+K3-raw-only                    exp=FAIL   got=FAIL (modo F4B-E21 incompleto: exige la nota de inyeccion y  exit=1 false=[] by=None jsonEq=None bytesEq=None
+K4-raw-is-delegation           exp=FAIL   got=FAIL                                                         exit=1 false=['5_DerivedHashesConsistent'] by=F4B_EXACT_EVIDENCE+BFC jsonEq=True bytesEq=True
+K5-swapped                     exp=FAIL   got=FAIL                                                         exit=1 false=['5_DerivedHashesConsistent'] by=F4B_EXACT_EVIDENCE+BFC jsonEq=False bytesEq=False

@@ -1,0 +1,21 @@
+corpus: Pilot/PP + UR (lo nuevo de PB-T3b)
+antes: scanned guard files: 91 | filas del corpus: 497
+despues: scanned guard files: 92 | filas del corpus: 521
+guardas con coincidencias (cualquier corpus): antes 77, despues 78; nuevas: tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs
+filas del corpus nuevas: 24 | perdidas: 0
+  + tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs | (?:var|[\w<>\[\]?,.]+)?\s+(\w+)\s*=(?![=>])\s*([^;{}]*) | string EraseUnsupportedReason = "El dibujo no admite borrar  (x1)
+  + tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs | (?:Add|AddRange|Clear|Remove|RemoveAt|RemoveAll|RemoveRange|Insert|InsertRange|Sort|Reverse|RecalculatePositions) | Add (x2)
+  + tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs | (?:List|IList|ICollection|Collection|HashSet|Dictionary|IDictionary) | List (x2)
+  + tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs | (?:\bvar|[\w<>\[\]?,.]+)?\s+(\w+)\s*=(?![=>])\s*([^;{}]*) | string EraseUnsupportedReason = "El dibujo no admite borrar  (x1)
+  + tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs | (?:\s*\??\.\s*\w+(?:\s*\([^()]*\))?|\s*\[[^\]]*\]) |  (x2)
+  + tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs | //[^\n]* | // una sola construcción, en From (x1)
+  + tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs | @"(?:[^"]|"")*" | @"\bmutation\.Dispose\s*\(" (x1)
+  + tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs | PushBackFullComposition | PushBackFullComposition (x2)
+  + tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs | PushBackFullDraftState | PushBackFullDraftState (x2)
+  + tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs | PushBackViewDispositions | PushBackViewDispositions (x2)
+  + tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs | Transaction | Transaction (x1)
+  + tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs | \$?"(?:\\.|[^"\\\n])*" | "El dibujo no admite borrar vistas en esta actualización." (x1)
+  + tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs | \s*(?:\??\.\s*\w+|\[[^\]]*\])\s*(?:=(?![=>])|\+=|-=|\*=|/=|\+\+|--) | .StructureOverrideA = (x2)
+  + tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs | \s*<[^>]*>\s*\)[^;]*? | <PushBackPilotDraftState>) (x2)
+  + tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs | \s*<[^>]*>\s+\w+ | <PushBackFullDraftState> draft (x2)
+guardas con coincidencias en el corpus: antes 65, despues 66; nuevas: tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs

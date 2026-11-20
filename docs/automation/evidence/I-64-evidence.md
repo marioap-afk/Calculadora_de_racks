@@ -8431,3 +8431,24 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - solo documentación;
 - sin AutoCAD;
 - los eventos y las transcripciones, solo por SHA-256.
+## 269. PB-T3b: remedición sobre el cierre de PB-T3a, comprobación acotada y registro de D-1 (F4B-E44)
+
+**Qué se custodia:**
+- **El registro de mediciones** `docs/initiatives/I-64-f4b-pbt3-measurements.md`, con R-21: la remedición de PB-T3b sobre el cierre de PB-T3a.
+- **El registro declarado** `F4B-DRAFTS/superseding-characterization.md`, con su sección de PB-T3b: S-1 a S-6 y sus equivalentes E-1 a E-6 (D-1, F4B-E29).
+- **En `F4B-DRAFTS/pbt3/`:**
+  - **la remedición** `pbt3b-anchors-out.txt`, con su guion `measure_pbt3b.py`;
+  - **el barrido de las guardas sobre el cierre:** `guard_sweep.py`, `sweep_t3b_diff.py` y su salida, `sweep-pbt3b-close.txt`;
+  - **la comprobación acotada de PB-T3b** (CA-T3b, `independent-review-pbt3b-check.md`), con su encargo;
+  - **la salida en seco del generador** sobre el cierre, `make_pbt3b_contract-dry.txt`.
+- **El sustituto de nc2 ampliado** (F4B-E43), la v2, en `F4B-DRAFTS/nc2-substitute-f4b-v2/`: el script byte a byte (SHA-256 `c033e96ce147963feb9c04733e9bfbec7493fea33d8ff79b1c2e8ab860798e45`), sus notas, sus límites declarados, sus corridas reales y sus contrastes, sus ayudantes, y su revisión entera con los guiones y las salidas de texto de sus rondas (M-05 de CA-T3b). `CUSTODY-NOTE.md` dice lo que queda fuera: los datos crudos y la copia de trabajo del v1.
+
+  Los textos con rutas locales van con la redacción común.
+
+**La base:** el cierre de PB-T3a, F4B-E43 (`c40eea4a`): PB-T3a CLOSED / PASS WITH LIMITATIONS sobre `6919e17a`, intento 2 de 3 tras la reemisión con la v4.5 (RED `5dbc9661`, sin reparación del RED); verificación `6d41` 14/14; nc1 y nc3 PASS; nc2 por disposición del Owner, que además amplía el sustituto de nc2 a una lista cerrada de literales por paquete, de PB-T3b en adelante; CI del GREEN `44668584248` 4/4; F4B-E43.
+
+**Las comprobaciones:**
+- **la remedición:** sin cambios materiales; solo el recuento de `src/` del `ForbiddenWriteScope`, explicado por `Draft/`;
+- **la comprobación acotada,** `BOUNDED_RESULT`: `EMITIBLE; B 0 / I 0 / M 4; sin importantes; sin decisiones nuevas del Owner; recomprobacion v4.5: EMITIBLE, B 0 / I 0 / M 1`.
+
+**Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.

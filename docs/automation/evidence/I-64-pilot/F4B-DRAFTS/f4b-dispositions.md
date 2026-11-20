@@ -1370,3 +1370,65 @@ No hay cambios materiales.
 **Resultado:** **F4B-PBT3A-FULL-WRITE-MODEL = CLOSED / PASS WITH LIMITATIONS** sobre `6919e17a`, con attempts 2 de 3. El modelo de escritura completa del borrador de Push Back queda en Application, en archivos nuevos: el estado completo, el lector, la composición, la disposición de vistas y el clasificador de conflictos.
 
 **Siguiente:** la emisión de PB-T3b por F4B-E35 (pregunta 3), tras la remedición sobre este cierre y su comprobación acotada. Antes de sus controles, el sustituto de nc2 ampliado.
+## F4B-E44. Emisión de F4B-PBT3B-FULL-WRITE-RUN (PB-T3b), con el paquete de PB-T3 v4.5
+
+**Fecha:** 2026-11-20.
+
+**Autoridad de emisión:** la autorización condicional del Owner, F4B-E35, pregunta 3: «Sí, con esa condición (Recomendado)». Cubre PB-T3a, PB-T3b y PB-T3c, en ese orden y cada una tras el cierre de la anterior.
+- **Las condiciones que exige:**
+  - la comprobación acotada de la subtarea da 0 bloqueantes y 0 importantes sin resolver;
+  - la remedición sobre el cierre anterior, el de PB-T3a, no cambia nada material.
+- **Cuándo se vuelve al Owner:** por una decisión nueva, un control con una firma no prevista, un intento 3 o un efecto material sin medir. No se da ninguno.
+
+**El cierre de PB-T3a** (F4B-E43, `c40eea4a`): PB-T3a CLOSED / PASS WITH LIMITATIONS sobre `6919e17a`, intento 2 de 3 tras la reemisión con la v4.5 (RED `5dbc9661`, sin reparación del RED); verificación `6d41` 14/14; nc1 y nc3 PASS; nc2 por disposición del Owner, que además amplía el sustituto de nc2 a una lista cerrada de literales por paquete, de PB-T3b en adelante; CI del GREEN `44668584248` 4/4; F4B-E43.
+
+**D-1, la variante (A)** (F4B-E29): PB-T3b sustituye con registro las seis guardas de F4 S-1 a S-6, con un `Skip` de motivo literal y sus equivalentes E-1 a E-6 de `PushBackPilotUpdateEquivalenceGuardTests`. El registro declarado va en `F4B-DRAFTS/superseding-characterization.md`, en esta emisión. La lista se mide otra vez sobre el texto del GREEN (INV-PBT3B-15), y cualquier otra diferencia es PBT3B-C16, que vuelve al Owner.
+
+**Los controles** (PBT3B-C11), con las decisiones del Owner posteriores a la v4.5:
+- **nc1:** la firma PD-F4B-01, la cascada del SHA falso (F4B-E40), con su sustituto `PBT3x-NC1-CASCADE-SIGNAL-01`, revisado APTO y custodiado en el cierre de PB-T3a. Se usa con `--task PBT3B`.
+- **nc2:** el sustituto ampliado, la v2 de `PBTx-NC2-EXACT-WHITELIST-F4B-01` (F4B-E43), con su lista cerrada de literales de PB-T2 y de PB-T3, su autoprueba y su revisión independiente (SHA-256 `c033e96c`…). Se usa con `--task PBT3B`. La primera entrada de la `ExpectedEvidence` es, byte a byte, la de PB-T3a, que su lista ya lleva.
+- El texto del paquete nombra todavía el sustituto de nc2 v1 y la firma exacta de PD-F4-04; el contrato se aparta de él solo en esas dos salidas, por esas dos decisiones.
+
+**La reparación del RED** (F4B-E35, pregunta 4): el contrato incorpora la regla RR del Owner, con la lectura de PB-T3b:
+- PBT3B-C07 con su excepción, y PBT3B-C18 para una reparación que rompe la regla;
+- la cadena RR-6 en INV-PBT3B-02;
+- una reparación no toca PP, UR, la interfaz nueva ni los tres archivos de guardas de F4 con los `Skip` (RR-2);
+- en la `ExpectedEvidence`, la CI del RED reparado y la lectura entera de la verificación con una reparación.
+
+Una reparación no gasta intento (RR-7).
+
+**La comprobación acotada de PB-T3b** (CA-T3b, `independent-review-pbt3b-check.md`, §1 a §12, con su encargo), sobre el contrato en seco y la v4.5:
+- **la primera ronda:** EMITIBLE, B 0 / I 0 / M 4, sin importantes y sin decisiones nuevas del Owner;
+- **la §12, sobre el seco r2** (el SHA del sustituto de nc2 v2 fijado y su custodia): EMITIBLE, B 0 / I 0 / M 1;
+- **el resultado que lleva el contrato:** `EMITIBLE; B 0 / I 0 / M 4; sin importantes; sin decisiones nuevas del Owner; recomprobacion v4.5: EMITIBLE, B 0 / I 0 / M 1`.
+
+**Las menores de CA-T3b y su destino:**
+- **M-01:** el bloque citado de `PBT3x-C11` del §6.0 sigue diciendo que C11 de PB-T3b es el de PB-T3a con su prefijo, y `PBT3B-C11` se aparta a propósito, por F4B-E40 y F4B-E43, con cinco cambios. Va a una v4.6 del paquete, solo de texto, antes de PB-T3c.
+- **M-02:** tres entradas de la tabla de RR-3 de PB-T3b (las cuatro líneas de CT-10, las once `<Fn> …` de CT-01 (ii) y la línea cortada de CT-06 (ii)) no se enumeran en la fila y se derivan del §5.3; el doble `PushBackFullWriteSupport.cs` se puede reparar y no tiene literales. Hasta la v4.6, la cadena usa la derivación del generador, con la lista en UTF-8. Va a la misma v4.6.
+- **M-03:** tres textos de PB-T3a pasan a PB-T3b sin adaptar: «las autopruebas de las tres guardas» de la `ExpectedEvidence`, la UI de paridad de PB-T3a que no vuelve a los `RequiredTests`, y el GREEN previsto de Core (19 128, o 19 124 si la TRX cuenta la `Theory` S-2 como una fila). Ninguno impide emitir. Va a la misma v4.6.
+- **M-04:** el sustituto de nc2 v2 entraba solo como script, con el SHA por rellenar. **Resuelto en el seco r2:** el SHA `c033e96c`… fijado, y sus límites declarados y su revisión como autoridades.
+- **M-05:** la custodia de la v2 dejaba fuera los ayudantes que citan sus notas y los guiones de su revisión. **Resuelto en esta custodia:** entran redactados, y `CUSTODY-NOTE.md` dice lo que queda fuera y por qué.
+
+**Para el prompt del Worker** (los dos avisos de CA-T3b; los mete la cadena, no son del contrato):
+- **`Transaction`:** ningún archivo de `Pilot/` puede contener la palabra, ni en un comentario (UpdateGuard:118-123; IntegrationGuard:81).
+- **Los cinco tipos del modelo:** `IPushBackPilotViewEraser.cs` no puede nombrar ninguno de los cinco tipos de CT-PBT3A-12, ni en un comentario: la guarda de PB-T3a solo deja nombrarlos a `Draft/`, PP y UR.
+
+**El generador se cambió en su sitio** para el SHA del sustituto de nc2 v2 y su custodia, y otra vez para `BOUNDED_RESULT`. No queda copia de las versiones anteriores: `generator-change-r2.md` lo explica con las pruebas por comportamiento de la §12.
+
+**La remedición sobre el cierre de PB-T3a** (`c40eea4a`, F4B-E43), en `pbt3b-anchors-out.txt` y en R-21 del registro de mediciones:
+- `git diff <cierre de PB-T3a> <BaseSha> -- src tests` sale vacío;
+- las anclas de PP, UR y de las guardas, S-1 a S-6 y la lista de `tests/RackCad.Tests/Workspace/` (76 de 79);
+- los recuentos y los alcances: 99 entradas de `src/` en el `ForbiddenWriteScope`, una más que las 98 previstas por `Draft/`, la carpeta que creó PB-T3a;
+- el censo de los diseños de las clases de F4 que llegan al plan: ninguno bloqueado;
+- el barrido de las guardas sobre el cierre: sin colisiones con PP, UR ni la interfaz nueva;
+- la línea base de la CI: la corrida `push` `44668584248` sobre `6919e17a`, el GREEN de PB-T3a, con el `src` y los `tests` del cierre: Core 19 107 y UI 2 451, con 21 omitidas; es la prevista en el §6.1 del paquete.
+
+No hay cambios materiales.
+
+**El contrato:**
+- **Qué es PB-T3b:** generalizar en su sitio el plan (PP) y la corrida (UR) de la actualización del Workspace de Push Back para el modelo del piloto, conectado, y el modelo completo de PB-T3a, sin conectar, con la barrera, el borrado de laterales obsoletos y la interfaz nueva para borrar. El RED es el esqueleto inerte del API nuevo, la interfaz, las pruebas nuevas y los `Skip` de D-1; el GREEN toca solo PP y UR.
+- **`UNIT_CHANGE`:** PP y UR (F4B-E25).
+- **P-01:** la Snapshot K (F4B-E37).
+- **La cadena:** primera delegación; `attempts` 1 de 3.
+- **La planificación:** con las colecciones opacas puestas por la sesión (F4B-E21).
+- **La verificación:** con las comprobaciones deterministas de F4B-E15.

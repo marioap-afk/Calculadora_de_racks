@@ -1,0 +1,8 @@
+Real Classification/Disposition/FailureClass: EXECUTION_VERIFIED NONE NONE
+nc2  Classification/Disposition/FailureClass: EXECUTION_BLOCKED STOP Contract
+Mismas claves de comprobacion: True
+Comprobaciones que difieren real -> nc2: {'Contract': ('pass', 'fail'), 'Scope': ('pass', 'fail')}
+RedPart real/nc2: {'Ci': ('pass', 'pass'), 'Tests': ('pass', 'pass')}
+TriggeredStopConditions nc2: ['S-04', 'PBT2A-C01']
+git diff (sustituto) == mutation.DiffBaseToCurrent: True
+mutation.New == MutatedAllowedWriteScope: True

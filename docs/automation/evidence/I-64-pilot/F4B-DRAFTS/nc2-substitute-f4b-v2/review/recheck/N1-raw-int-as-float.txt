@@ -1,0 +1,253 @@
+> **Redaccion para el repo publico:** las rutas locales y las variables de entorno de carpetas del usuario se sustituyen por marcadores (`<scratchpad>`, `<worktree-de-I-64>`, `<checkout-principal>`, `<datos-locales-del-usuario>`, `<datos-de-aplicacion-del-usuario>`). El resto no cambia.
+
+exit=0
+args=['<scratchpad>/hs65/pbt2acc2/nc2-substitute-f4b\\review\\mut2\\N1-raw-int-as-float\\real', '<scratchpad>/hs65/pbt2acc2/nc2-substitute-f4b\\review\\mut2\\N1-raw-int-as-float\\nc2', '17872be8179475a3c080a9df158488a4a7b4f870', '5ddeb3b4ed99cb17d05142c67d47a26e89e238f9', '<scratchpad>/hs65/pbt2acc2/nc2-substitute-f4b\\review\\recheck\\N1-raw-int-as-float.json', '<scratchpad>/hs65/pbt2acc2/nc2-substitute-f4b\\review\\mut2\\N1-raw-int-as-float\\planning\\session-inject-note.json', '<scratchpad>/hs65/pbt2acc2/nc2-substitute-f4b\\review\\mut2\\N1-raw-int-as-float\\planning\\output.json']
+--- stdout
+{
+ "SelfTestPass": true,
+ "Deterministic": true,
+ "SelfTest": [
+  [
+   "A",
+   "PASS",
+   true
+  ],
+  [
+   "B",
+   "FAIL",
+   true
+  ],
+  [
+   "C",
+   "FAIL",
+   true
+  ],
+  [
+   "D",
+   "FAIL",
+   true
+  ],
+  [
+   "E",
+   "FAIL",
+   true
+  ],
+  [
+   "F",
+   "FAIL",
+   true
+  ],
+  [
+   "G",
+   "FAIL",
+   true
+  ],
+  [
+   "H",
+   "FAIL",
+   true
+  ],
+  [
+   "I",
+   "FAIL",
+   true
+  ],
+  [
+   "J",
+   "FAIL",
+   true
+  ],
+  [
+   "K",
+   "FAIL",
+   true
+  ],
+  [
+   "L",
+   "FAIL",
+   true
+  ],
+  [
+   "M",
+   "FAIL",
+   true
+  ],
+  [
+   "N",
+   "PASS",
+   true
+  ],
+  [
+   "O",
+   "PASS",
+   true
+  ],
+  [
+   "P",
+   "FAIL",
+   true
+  ],
+  [
+   "Q",
+   "FAIL",
+   true
+  ],
+  [
+   "R",
+   "FAIL",
+   true
+  ],
+  [
+   "S",
+   "FAIL",
+   true
+  ],
+  [
+   "T",
+   "FAIL",
+   true
+  ],
+  [
+   "U",
+   "FAIL",
+   true
+  ],
+  [
+   "V",
+   "FAIL",
+   true
+  ],
+  [
+   "W",
+   "FAIL",
+   true
+  ],
+  [
+   "X",
+   "FAIL",
+   true
+  ],
+  [
+   "Y",
+   "FAIL",
+   true
+  ],
+  [
+   "Z",
+   "FAIL",
+   true
+  ],
+  [
+   "AA",
+   "FAIL",
+   true
+  ],
+  [
+   "AB",
+   "FAIL",
+   true
+  ],
+  [
+   "AC",
+   "FAIL",
+   true
+  ],
+  [
+   "AD",
+   "FAIL",
+   true
+  ],
+  [
+   "AE",
+   "FAIL",
+   true
+  ],
+  [
+   "AF",
+   "FAIL",
+   true
+  ],
+  [
+   "AG",
+   "FAIL",
+   true
+  ],
+  [
+   "AH",
+   "FAIL",
+   true
+  ],
+  [
+   "AI",
+   "FAIL",
+   true
+  ],
+  [
+   "AJ",
+   "FAIL",
+   true
+  ],
+  [
+   "AK",
+   "FAIL",
+   true
+  ],
+  [
+   "AL",
+   "FAIL",
+   true
+  ],
+  [
+   "AM",
+   "FAIL",
+   true
+  ],
+  [
+   "AN",
+   "FAIL",
+   true
+  ]
+ ],
+ "SubstituteResult": "PASS",
+ "Properties": {
+  "1_AcceptedRealDelegationMatchesContract": true,
+  "2_RealChangedPathInsideAcceptedScope": true,
+  "3_Nc2RemovesExactlyThatPath": true,
+  "4_NoOtherDelegationFieldChanges": true,
+  "5_DerivedHashesConsistent": true,
+  "6_ChangedPathNotInMutatedScope": true,
+  "7_ScopeMustFail": true,
+  "8_ContractFailsOnlyByExactWhitelist": true,
+  "9_ControllerReportedScopeFail": true,
+  "10_NoAlternativeOneFieldMutation": true
+ },
+ "Measured": {
+  "ChangedPath": "src/RackCad.Application/Systems/PushBack/PushBackDraftEditorLaunch.cs",
+  "DelegationFieldsChanged": [
+   "AllowedWriteScope"
+  ],
+  "ChangedInputs": [
+   "delegation.json",
+   "relay-record-planning.json"
+  ],
+  "Mode": "F4B-E21",
+  "RawOutputSha256": "4907E9E97B0D46364FFC8E450FFC998DC6DFBEEB57C486CBAFF7A1FAD7F05FB1",
+  "RawNonEmptyComputed": [],
+  "RawPlusContractCollectionsEqualsDelegationJson": true,
+  "RawPlusContractCollectionsEqualsDelegationBytes": false,
+  "ScopeOnReal": "pass",
+  "ScopeOnMutated": "fail",
+  "PlainA3A5OnMutated": {
+   "A3": true,
+   "A4": true,
+   "A5": true
+  },
+  "ExactWhitelistBy": "F4B_EXACT_EVIDENCE+BFC",
+  "ControllerScope": "fail",
+  "ControllerContract": "fail",
+  "AlternativeCandidatesExcludingPath": 24
+ }
+}
+
+--- stderr
+

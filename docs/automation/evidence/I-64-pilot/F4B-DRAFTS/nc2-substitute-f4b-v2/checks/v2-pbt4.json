@@ -1,0 +1,588 @@
+{
+  "Id": "PBT4-NC2-EXACT-WHITELIST-F4B-01",
+  "GenericId": "PBTx-NC2-EXACT-WHITELIST-F4B-01",
+  "Task": "PBT4",
+  "NotA4": true,
+  "Scope": "solo F4B-PBT3A-FULL-WRITE-MODEL, intento 2 (verificacion R20261120T034433Z-6d41); no reemplaza al Controller ni a nc2 en otras tareas",
+  "ScriptSha256": "C033E96CE147963FEB9C04733E9BFBEC7493FEA33D8FF79B1C2E8AB860798E45",
+  "Mode": "F4B-E21",
+  "SelfTest": [
+    {
+      "Case": "A",
+      "Description": "ruta exacta cambiada; la mutacion de README 10 la quita; Controller con Scope = fail",
+      "Result": "PASS",
+      "Expected": "PASS",
+      "Ok": true
+    },
+    {
+      "Case": "B",
+      "Description": "el alcance mutado sigue cubriendo la ruta cambiada",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "C",
+      "Description": "cambia un segundo campo de la delegacion",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "D",
+      "Description": "cambia ForbiddenWriteScope",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "E",
+      "Description": "la delegacion real no es la lista exacta del contrato",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "F",
+      "Description": "el hash derivado no coincide con los bytes de la delegacion mutada",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "G",
+      "Description": "el Controller no informo Scope = fail",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "H",
+      "Description": "el contrato no exige la lista blanca exacta",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "I",
+      "Description": "la mutacion anade otra ruta",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "J",
+      "Description": "cambia otra entrada ademas de las derivadas",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "K",
+      "Description": "cambia la atestacion de fidelidad de la delegacion real",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "L",
+      "Description": "A5 llano tambien falla (se quitan invariantes): Contract no falla solo por la exactitud",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "M",
+      "Description": "la ruta quitada no esta en el diff",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "N",
+      "Description": "prefijo: README 10 sustituye el prefijo por los demas archivos del diff",
+      "Result": "PASS",
+      "Expected": "PASS",
+      "Ok": true
+    },
+    {
+      "Case": "O",
+      "Description": "F4B-E21: relevo = SHA de la salida cruda, nota coherente, exactitud por la evidencia exacta y el bfc",
+      "Result": "PASS",
+      "Expected": "PASS",
+      "Ok": true
+    },
+    {
+      "Case": "P",
+      "Description": "F4B: la nota no coincide con el relevo ni con la salida cruda (OutputSha256)",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "Q",
+      "Description": "F4B: DelegationSha256 de la nota distinto del SHA de la delegacion",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "R",
+      "Description": "F4B: la nota no registra las 8 colecciones inyectadas (7)",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "S",
+      "Description": "F4B: la nota dice NonEmptyInControllerOutput no vacio con la salida cruda vacia",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "T",
+      "Description": "F4B: el contrato no lleva la evidencia exacta ni EXACT_CLAUSE",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "U",
+      "Description": "F4B: el bfc con AllowedWriteScopeElementwiseInOrder = false",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "V",
+      "Description": "F4B: el bfc con Result = FAIL",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "W",
+      "Description": "F4B: el bfc sin AllowedWriteScope en Fields (solapa con la propiedad 1)",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "X",
+      "Description": "F4B: el relevo de nc2 no recalcula el SHA de la delegacion mutada",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "Y",
+      "Description": "modo F4B con EXACT_CLAUSE en el contrato y sin la evidencia exacta: no se acepta (modos acoplados)",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "Z",
+      "Description": "modo F4 (sin nota ni salida cruda) con la evidencia F4B y sin EXACT_CLAUSE: no se acepta",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "AA",
+      "Description": "F4B: el relevo no coincide con la salida cruda (la nota si)",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "AB",
+      "Description": "F4B: relevo y nota coinciden entre si pero no con el SHA de la salida cruda leida (X2)",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "AC",
+      "Description": "F4B: una coleccion no vacia en la salida cruda y la nota lo declara",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "AD",
+      "Description": "F4B: una coleccion no vacia en la salida cruda y la nota dice que no",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "AE",
+      "Description": "F4B: la salida cruda con las 8 colecciones del contrato no es la delegacion real",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "AF",
+      "Description": "F4B: Injected con un elemento de mas",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "AG",
+      "Description": "F4B: Injected con un elemento repetido (8 elementos, falta uno)",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "AH",
+      "Description": "F4B: RunId de la nota distinto del de byte-fidelity-check",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "AI",
+      "Description": "F4B: ContractSha256 de la nota distinto del SHA del contrato",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "AJ",
+      "Description": "F4B: Fidelity de la nota sin PASS",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "AK",
+      "Description": "F4B: Decision de la nota que no empieza por F4B-E21",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "AL",
+      "Description": "F4B: entrada de ExpectedEvidence parecida pero negada",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "AO",
+      "Description": "M-R1: clave duplicada en la salida cruda (la ultima coincide con la delegacion)",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "AP",
+      "Description": "M-R1: salida cruda con Attempt = 2.0 y la delegacion con 2 (iguales por JSON, distintos en bytes)",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "AQ",
+      "Description": "M-R1: salida cruda con AttemptsRemaining = true y la delegacion con 1",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "AR",
+      "Description": "M-R1: salida cruda sin la clave AllowedWriteScope",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "AS",
+      "Description": "M-R1: salida cruda con Objective = [] en vez de la cadena vacia",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "AT",
+      "Description": "M-R1: salida cruda con Invariants = \"\" en vez de la lista vacia",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "AU",
+      "Description": "M-R2: RunId vacio en la nota, el bfc, el relevo y la delegacion",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "AV",
+      "Description": "M-R2: RunId ausente en la nota, el bfc, el relevo y la delegacion",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "AW",
+      "Description": "M-R2: RunId de la delegacion real distinto del de la nota, el bfc y el relevo",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "AX",
+      "Description": "M-R3: Fidelity contiene PASS pero no empieza por PASS",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "AM",
+      "Description": "F4B: nota sin salida cruda",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "AN",
+      "Description": "F4B: salida cruda sin nota",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "AY",
+      "Description": "v2: el literal de PB-T3 (segundo de la lista cerrada) pasa",
+      "Result": "PASS",
+      "Expected": "PASS",
+      "Ok": true
+    },
+    {
+      "Case": "AZ",
+      "Description": "v2: variante del literal de PB-T3 sin \"ocho\"",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "BA",
+      "Description": "v2: variante del literal de PB-T3 con un espacio de mas dentro",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "BB",
+      "Description": "v2: el literal de PB-T3 con un espacio final",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "BC",
+      "Description": "v2: el literal de PB-T3 con el punto y coma final cambiado por un punto",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "BD",
+      "Description": "v2: el literal de PB-T3 con la inicial en mayuscula",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "BE",
+      "Description": "v2: el literal de PB-T2 con \"ocho\" (mezcla de los dos: no esta en la lista)",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "T1",
+      "Description": "--task PBT3A con el TaskId de PB-T3a",
+      "Result": "PASS",
+      "Expected": "PASS",
+      "Ok": true
+    },
+    {
+      "Case": "T2",
+      "Description": "--task PBT3B sobre datos de PB-T3a",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "T3",
+      "Description": "--task PBT3 (prefijo parcial) sobre datos de PB-T3a",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "T4",
+      "Description": "--task VALIDATION con un TaskId de F4B",
+      "Result": "PASS",
+      "Expected": "PASS",
+      "Ok": true
+    },
+    {
+      "Case": "T5",
+      "Description": "--task VALIDATION con un TaskId que no es de F4B",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "T6",
+      "Description": "TaskId ausente",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    }
+  ],
+  "SelfTestPass": true,
+  "SelfTestDeterministic": true,
+  "InjectNote": {
+    "Path": "<scratchpad>/hs65/nc2-substitute-f4b-v2/data/pbt3a/planning/session-inject-note.json",
+    "Sha256": "BDCEDBF52D1C9AD0CF1EB7F75C9302FEFEE46AED1BD6E18267E15F854C293933"
+  },
+  "RawControllerOutput": {
+    "Path": "<scratchpad>/hs65/nc2-substitute-f4b-v2/data/pbt3a/planning/output.json",
+    "Sha256": "40D895169312F7CF0A717476720D7315FB06FD703A434CD2EFFB731C8BA2C22F"
+  },
+  "TaskBinding": {
+    "Task": "PBT4",
+    "RealDelegationTaskId": "F4B-PBT3A-FULL-WRITE-MODEL",
+    "Ok": false
+  },
+  "RealVerification": "<scratchpad>/hs65/nc2-substitute-f4b-v2/data/pbt3a/real",
+  "Nc2Run": "<scratchpad>/hs65/nc2-substitute-f4b-v2/data/pbt3a/nc2",
+  "BaseSha": "485b5651bcec132761347b40ed38b60cfec0db04",
+  "CurrentSha": "6919e17af9fdd5c702d454a97a3c5b6cc6be1739",
+  "ChangedPaths": [
+    "src/RackCad.Application/Systems/PushBack/Draft/PushBackConflictClassifier.cs",
+    "src/RackCad.Application/Systems/PushBack/Draft/PushBackEditableStateSeat.cs",
+    "src/RackCad.Application/Systems/PushBack/Draft/PushBackFullComposition.cs",
+    "src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftMaterializer.cs",
+    "src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftReader.cs",
+    "src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftState.cs",
+    "src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftStateComparer.cs",
+    "src/RackCad.Application/Systems/PushBack/Draft/PushBackViewDisposition.cs",
+    "tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs",
+    "tests/RackCad.Tests/PushBackFullDraftClassifierTests.cs",
+    "tests/RackCad.Tests/PushBackFullDraftCompositionTests.cs",
+    "tests/RackCad.Tests/PushBackFullDraftLoadTests.cs",
+    "tests/RackCad.Tests/PushBackFullDraftViewTests.cs",
+    "tests/RackCad.UI.Tests/PushBackFullDraftWindowParityTests.cs"
+  ],
+  "RealAllowedWriteScope": [
+    "src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftState.cs",
+    "src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftStateComparer.cs",
+    "src/RackCad.Application/Systems/PushBack/Draft/PushBackEditableStateSeat.cs",
+    "src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftMaterializer.cs",
+    "src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftReader.cs",
+    "src/RackCad.Application/Systems/PushBack/Draft/PushBackFullComposition.cs",
+    "src/RackCad.Application/Systems/PushBack/Draft/PushBackViewDisposition.cs",
+    "src/RackCad.Application/Systems/PushBack/Draft/PushBackConflictClassifier.cs",
+    "tests/RackCad.Tests/PushBackFullDraftLoadTests.cs",
+    "tests/RackCad.Tests/PushBackFullDraftCompositionTests.cs",
+    "tests/RackCad.Tests/PushBackFullDraftViewTests.cs",
+    "tests/RackCad.Tests/PushBackFullDraftClassifierTests.cs",
+    "tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs",
+    "tests/RackCad.UI.Tests/PushBackFullDraftWindowParityTests.cs"
+  ],
+  "MutatedAllowedWriteScope": [
+    "src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftState.cs",
+    "src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftStateComparer.cs",
+    "src/RackCad.Application/Systems/PushBack/Draft/PushBackEditableStateSeat.cs",
+    "src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftMaterializer.cs",
+    "src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftReader.cs",
+    "src/RackCad.Application/Systems/PushBack/Draft/PushBackFullComposition.cs",
+    "src/RackCad.Application/Systems/PushBack/Draft/PushBackViewDisposition.cs",
+    "tests/RackCad.Tests/PushBackFullDraftLoadTests.cs",
+    "tests/RackCad.Tests/PushBackFullDraftCompositionTests.cs",
+    "tests/RackCad.Tests/PushBackFullDraftViewTests.cs",
+    "tests/RackCad.Tests/PushBackFullDraftClassifierTests.cs",
+    "tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs",
+    "tests/RackCad.UI.Tests/PushBackFullDraftWindowParityTests.cs"
+  ],
+  "Nc2ControllerClassification": "EXECUTION_BLOCKED",
+  "Nc2ControllerDisposition": "STOP",
+  "Nc2ControllerFailureClass": "Contract",
+  "Nc2ControllerChecks": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "fail",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "Measured": {
+    "ChangedPath": "src/RackCad.Application/Systems/PushBack/Draft/PushBackConflictClassifier.cs",
+    "DelegationFieldsChanged": [
+      "AllowedWriteScope"
+    ],
+    "ChangedInputs": [
+      "delegation.json",
+      "relay-record-planning.json"
+    ],
+    "Mode": "F4B-E21",
+    "RawOutputSha256": "40D895169312F7CF0A717476720D7315FB06FD703A434CD2EFFB731C8BA2C22F",
+    "RawNonEmptyComputed": [],
+    "RawCollectionsEmptyExact": true,
+    "RawPlusContractCollectionsEqualsDelegationJson": true,
+    "RawPlusContractCollectionsEqualsDelegationBytes": true,
+    "ScopeOnReal": "pass",
+    "ScopeOnMutated": "fail",
+    "PlainA3A5OnMutated": {
+      "A3": true,
+      "A4": true,
+      "A5": true
+    },
+    "ExactEvidenceMatched": "PB-T3",
+    "ExactWhitelistBy": "F4B_EXACT_EVIDENCES+BFC",
+    "ControllerScope": "fail",
+    "ControllerContract": "fail",
+    "AlternativeCandidatesExcludingPath": 24576
+  },
+  "Properties": {
+    "1_AcceptedRealDelegationMatchesContract": true,
+    "2_RealChangedPathInsideAcceptedScope": true,
+    "3_Nc2RemovesExactlyThatPath": true,
+    "4_NoOtherDelegationFieldChanges": true,
+    "5_DerivedHashesConsistent": true,
+    "6_ChangedPathNotInMutatedScope": true,
+    "7_ScopeMustFail": true,
+    "8_ContractFailsOnlyByExactWhitelist": true,
+    "9_ControllerReportedScopeFail": true,
+    "10_NoAlternativeOneFieldMutation": true
+  },
+  "SubstituteResult": "FAIL",
+  "Notes": {
+    "ByteFidelityAttestation": "byte-fidelity-check.json no cambia en la copia de nc2: atestigua la delegacion REAL (su OutputSha256 es el SHA de la delegacion real) y sigue siendo cierta; no es un hash derivado de la copia mutada",
+    "ForbiddenRoute": "anadir la ruta al ForbiddenWriteScope no la excluye del AllowedWriteScope (fuera de la propiedad 10), no es la mutacion que README 10 define para nc2 y romperia la copia exacta aceptada que registra byte-fidelity-check.json",
+    "WhyOrdinaryOracleUnreachable": "bajo la lista blanca exacta, quitar una ruta del AllowedWriteScope viola a la vez la exactitud de la lista que el contrato exige (en F4B por la comparacion byte a byte de ExpectedEvidence; Contract, comprobacion 4) y la contencion del diff (Scope, comprobacion 7); el orden fijo de 16.9 da FailureClass = Contract",
+    "Nc2KitRelayRecompute": "el kit de nc2 recalcula Outcome.OutputSha256 del relevo de la copia con la regla de F4 (= SHA de la delegacion mutada); el sustituto exige exactamente eso y solo eso (rr1 = SHA(delegacion mutada)), en los dos modos. Una copia que siguiera F4B-E21 seria otra mutacion del kit, fuera de este sustituto"
+  },
+  "Record": {
+    "Nc2OrdinaryRun": "CONTROL NOT PASSED (se conserva tal cual)",
+    "nc2": "NOT SATISFIED"
+  }
+}

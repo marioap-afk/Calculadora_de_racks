@@ -268,3 +268,42 @@ En «Ambos lados», con una caja **mixta**, escribir el número que se ve del va
 **Notas del cierre de PB-TC2 (F4B-E12):**
 - La regla R-03 (i) (escribir algo que se ve igual conserva el exacto) vale para las seis cajas de PB-TC2, no solo para la longitud del módulo (IRC-M04 de la revisión independiente).
 - La línea del BOM que el Owner ratificó en D1 (los postes de 150,0004) sale con la descripción larga del catálogo, distinta de la de los postes de 150, con el mismo `ProfileId`: `BomBuilder.Merge` agrupa por categoría, perfil y longitud y toma la primera descripción. Ya ocurría sin tocar el panel de avanzados; cae en las reglas de presentación existentes que D1 admite (IRC-O01, informativo).
+
+## PB-T3b — Las seis guardas de F4 que se sustituyen por D-1 (F4B-E29)
+
+**Estado: EMITIDA** (2026-11-20, emisión de PB-T3b, F4B-E44, sobre el cierre de PB-T3a `c40eea4a`). Lo escribe la sesión principal; el Worker no escribe en este archivo. La ejecución se completa al cerrar.
+
+**Autoridad:**
+- **[OD], la fila de PB-T3 y D-PB-04** (`docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-f4b-disposition.md`): borrar sí; y el bloque sobre T1B, «create a declared superseding characterization/change record. Do not silently weaken the old guard».
+- **D-1, decidida por el Owner en F4B-E29** (`docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt3-d1-decision.md`): «Un solo código (Recomendado)», la variante (A).
+- **El contrato:** `docs/initiatives/I-64-f4b-pbt3-gate-contract-package.md` (v4.5), §5.3, §6.2 y §8.2, y `docs/automation/evidence/I-64-pilot/F4B-PBT3B-FULL-WRITE-RUN/coordinator/gate-contract.json`.
+
+**El motivo:** con (A), el plan y la corrida del piloto se generalizan en su sitio (`BuildCore` y `Execution<TState>`), y estas seis guardas de F4 fijan por su letra la forma de hoy: cinco fallan y S-6 queda vacía (R-6 del registro de mediciones). No se editan: cada una queda con `Skip` y su equivalente, que se ejecuta y **empieza afirmando la forma nueva**, cubre lo que cubría.
+
+**El `Skip`, literal** (§5.3; `<E-n>` es el equivalente de cada método):
+
+```text
+I-64 F4B PB-T3b: sustituida por <E-n> de PushBackPilotUpdateEquivalenceGuardTests (registro declarado superseding-characterization.md; decisión del Owner F4B-E29, D-1).
+```
+
+| Id | La prueba vieja (con `Skip`) | El equivalente (`PushBackPilotUpdateEquivalenceGuardTests`) | Qué fija el equivalente |
+|---|---|---|---|
+| S-1 | `WorkspacePilotPrepareGuardTests.TheFileOfThePlanComposesExactlyOnceInAMemberOfItsOwnWithAParameterSourceAndTheNameOfTheRereadEnvelope` (`[Fact]`, `tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs:121`) | E-1 | El plan compone una vez, en `ComposeMemberEnvelope(RackEmbedDocument source, string name, string view, int section, string designJson)`, con el nombre de una sola expresión de `BuildCore` |
+| S-2 | `WorkspacePilotPrepareGuardTests.TheComposeGuardTripsOnAnotherCallAnUnsourcedCompositionANullableSourceOrAnotherName` (`[Theory]` de cinco filas, `:127`) | E-2 | Empieza afirmando la forma nueva; después, las autopruebas sobre el texto real hacen fallar E-1 |
+| S-3 | `WorkspacePilotPrepareGuardTests.TheMemberPlansAreBuiltOnlyFromTheMutableMembersOfTheRereadInOrdinalOrderAndNeverErase` (`[Fact]`, `:229`) | E-3 | Las agujas de S-3 sobre `BuildCore` y `PushBackViewDispositions.Of`; `Erasures` solo con borrado admitido y solo con `ObsoleteLateral` |
+| S-4 | `WorkspacePilotUpdateGuardTests.TheRunReleasesBothScopesInFinallyBlocksOfItsOwnAndNeverWithAUsing` (`[Fact]`, `tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:126`) | E-4 | Las mismas aserciones sobre `Execution<TState>`: los dos ámbitos en `finally` propios y POST tras liberar MUTATE |
+| S-5 | `WorkspacePilotUpdateIntegrationGuardTests.M01TheEscapeOfTheRunIsClassifiedByTheStateThatTheRunAlreadyHadAndNeverAsAPlainFailureAfterAWriteOrASeal` (`[Fact]`, `tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:895`) | E-5 | Las reglas de `RunEscapeViolations` sobre las dos `Execute` y sobre `OutcomeOfAnEscape` de `Execution<TState>` |
+| S-6 | `WorkspacePilotUpdateIntegrationGuardTests.M01TheEscapeGuardTripsOnACatchThatDoesNotConsultTheStateAndOnAnEscapeThatAnswersAPlainFailureFirst` (`[Fact]`, `:902`) | E-6 | Empieza afirmando la forma nueva; después, las tres autopruebas adaptadas al tipo genérico, que cambian el texto y dan violaciones |
+
+**La medición sobre el GREEN** (INV-PBT3B-15): el Worker quita en local el `Skip`, corre los seis sobre el texto del GREEN y lo vuelve a poner antes del commit. Lo esperado con (A): S-1, S-3, S-4 y S-5 fallan; en S-2, las filas 1 y 3 fallan y las 2, 4 y 5 pasan en vacío; S-6 pasa en vacío. Cualquier otra diferencia es PBT3B-C16 y vuelve al Owner.
+
+**Lo que queda para PB-T4** (§5.3): al quitar el piloto, PB-T4 sustituye con registro E-3, E-5 y E-6.
+
+### Ejecución de PB-T3b (se completa al cerrar)
+
+| | |
+|---|---|
+| **RED** | (al cerrar) |
+| **GREEN** | (al cerrar) |
+| **La medición sobre el GREEN** | (al cerrar) |
+| **Estado** | EMITIDA |
