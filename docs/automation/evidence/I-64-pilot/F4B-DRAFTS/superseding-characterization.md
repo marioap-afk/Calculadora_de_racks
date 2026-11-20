@@ -310,7 +310,7 @@ I-64 F4B PB-T3b: sustituida por <E-n> de PushBackPilotUpdateEquivalenceGuardTest
 
 ## PB-T3c — La premisa «el escritor nunca borra» del Plugin (D-2), sin `Skip`
 
-**Estado: EMITIDA** (2026-11-20, emisión de PB-T3c, F4B-E47, sobre el cierre de PB-T3b `fe1c67f4`). Lo escribe la sesión principal; el Worker no escribe en este archivo. La ejecución se completa al cerrar.
+**Estado: EJECUTADA** (2026-11-20, cierre de PB-T3c, F4B-E48; emitida en F4B-E47): RED `e0940a0efa314ea26777c59ab4e55c09d019bff6`, GREEN `938a35f0f1636b4306d844eb9e34000e8967c05e`. Lo escribe la sesión principal; el Worker no escribe en este archivo.
 
 **Qué es:** un registro declarado de un cambio autorizado, **sin `Skip`**. No se sustituye ni se debilita ninguna guarda: la premisa del escritor del piloto de F4, «nunca borra una vista», pasa a «borra solo las vistas del plan, por la fachada caller-owned». D-2 no es una decisión (§8.2 del paquete): este registro es lo que pide [OD] para todo cambio autorizado.
 
@@ -344,7 +344,7 @@ I-64 F4B PB-T3b: sustituida por <E-n> de PushBackPilotUpdateEquivalenceGuardTest
 
 | | |
 |---|---|
-| **RED** | (al cerrar) |
-| **GREEN** | (al cerrar) |
-| **Los comentarios de WR, en el GREEN** | (al cerrar) |
-| **Estado** | EMITIDA |
+| **RED** | `e0940a0efa314ea26777c59ab4e55c09d019bff6` (CI `44754080713`: tests en failure por CT-PBT3C-01 a 04, que fallan por aserción, y CT-PBT3C-05 pasa; ui-tests y build-ui en success; build-plugin omitido. Core 19 129 = 19 119 Passed + 4 Failed + 6 Skipped, los de D-1; UI 2 451 = 2 430 + 21). La fachada del RED es, byte a byte, la del parche `pbt3c-skeleton.patch` |
+| **GREEN** | `938a35f0f1636b4306d844eb9e34000e8967c05e` (CI `44757675821` 4/4; Core 19 129 = 19 123 Passed + 0 Failed + 6 Skipped, los de D-1; UI 2 451 = 2 430 + 21). Toca solo WR y la fachada; `WriterProhibitionViolations` (UpdateGuard:182-212) y G-9 siguen en verde |
+| **Los comentarios de WR, en el GREEN** | Cambiados como dice D-PBT3-11: el de cabecera (`RackPilotUpdateWriter.cs:26-27`) dice que el escritor borra una vista solo por la fachada caller-owned, dentro del único ámbito de MUTATE y solo las que pide el plan; el del ámbito de MUTATE (`:238-240`) lleva el texto literal del paquete («It never purges, renames or regenerates; it erases only the planned views, through the caller-owned facade») más una frase sobre POST. Ninguna guarda los lee |
+| **Estado** | EJECUTADA |

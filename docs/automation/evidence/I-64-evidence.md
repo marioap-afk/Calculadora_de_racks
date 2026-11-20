@@ -8592,3 +8592,29 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - **La verificación y la planificación:** la verificación lleva las tres comprobaciones deterministas de F4B-E15, y la planificación, las colecciones opacas puestas por la sesión (F4B-E21).
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 276. PB-T3c: la cadena y el cierre (F4B-E48)
+
+**Qué se custodia:**
+- **Las unidades de la delegación,** en `F4B-PBT3C-FULL-WRITE-ERASE/1/`, cada una con su manifiesto:
+  - la planificación `68e5`, con nc4 `9c1a`;
+  - el Worker `80e5`;
+  - la verificación `e403`;
+  - los controles nc1 `8a51`, nc2 `670e` y nc3 `2017`.
+- **Las revisiones,** con su encargo.
+- **El registro declarado de D-2:** la tabla de ejecución de PB-T3c, completada, y el texto de sus cinco sustituciones (`F4B-DRAFTS/pbt3/superseding-pbt3c-close-fill.md`).
+- **El paquete de cierre.**
+- **La nota de `docs/ideas-futuras.md`.**
+- **El estado.**
+
+**La delegación:**
+- **RED y GREEN:** el RED `e0940a0e` y el GREEN `938a35f0`, sin reparación del RED.
+- **CI:** las corridas `44754080713` y `44757675821`. La del GREEN da 4/4 (Core 19 129 = 19 123 + 6 omitidas; UI 2 451), los totales exactos de su única rama.
+- **Revisión independiente:** 0/0/6, más tres hallazgos para el Smoke-PB.
+- **Verificación:** 14/14.
+- **Controles:** nc1, nc2 y nc3, CONTROL PASS ordinario.
+
+**Límites:**
+- solo documentación;
+- sin AutoCAD;
+- los eventos y las transcripciones, solo por SHA-256.

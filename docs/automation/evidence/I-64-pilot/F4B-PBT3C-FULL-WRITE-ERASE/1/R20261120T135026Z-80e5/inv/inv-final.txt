@@ -1,0 +1,141 @@
+# INV-PBT3C-01 (alcance); Now=938a35f0f1636b4306d844eb9e34000e8967c05e
+git diff --name-status 7dfc7c21a0b30f5e04d691768b1717778e5c4ad7..938a35f0f1636b4306d844eb9e34000e8967c05e -- src tests:
+  M	src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs
+  A	src/RackCad.Plugin/Views/RackViewBlockEraser.cs
+  A	tests/RackCad.Tests/PushBackViewEraseGuardTests.cs
+  A	tests/RackCad.Tests/PushBackWritePathPluginGuardTests.cs
+git diff --name-only e0940a0efa314ea26777c59ab4e55c09d019bff6..938a35f0f1636b4306d844eb9e34000e8967c05e -- src tests:
+  src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs
+  src/RackCad.Plugin/Views/RackViewBlockEraser.cs
+diff de Application, UI, Domain, RPC y RCS vacio=True
+# INV-PBT3C-03 (el escritor, texto entero con comentarios): Base y ahora
+  'class RackPilot' base=3 ahora=3
+  'StartTransaction' base=1 ahora=1
+  '.Commit(' base=1 ahora=1
+  'Purge' base=1 ahora=1
+  '[Conditional("DEBUG")]' base=2 ahora=2
+  '.Name =' base=0 ahora=0
+  'GetBlockReferenceIds' base=0 ahora=0
+  'Erase(' base=0 ahora=0
+  'EraseViewBlocks' base=0 ahora=0
+  'ForWrite' base=0 ahora=0
+  'UpgradeOpen' base=0 ahora=0
+# INV-PBT3C-04 (la fachada)
+  la fachada existe=True
+  PushBack en el texto entero=0
+  NamesThePilot=0
+  'LockDocument'=0
+  'StartTransaction'=0
+  'StartOpenCloseTransaction'=0
+  '.Commit('=0
+  'Purge'=0
+  'Regen'=0
+  'SyncName'=0
+  censo de CT-PBT1B-15: archivos del Plugin con PushBack=14
+# CT-PBT3C-04 (el censo de la primitiva en todo src/)
+  src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs x1
+  llamadas totales=1
+  EraseUnit en el escritor=True
+  llamadas dentro de EraseUnit=1
+# CENSO de declaraciones (PBT3C-C13): Base y ahora, una a una, con su nombre
+## src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs
+  Base (40):
+    type RackPilotUpdateWriter
+    member RackPilotUpdateWriter._document
+    member RackPilotUpdateWriter._spent
+    member RackPilotUpdateWriter.RackPilotUpdateWriter
+    member RackPilotUpdateWriter.Begin
+    member RackPilotUpdateWriter.Retire
+    member RackPilotUpdateWriter.ValuesOf
+    type RackPilotUpdateScope
+    member RackPilotUpdateScope._document
+    member RackPilotUpdateScope._documentMatches
+    member RackPilotUpdateScope._definitions
+    member RackPilotUpdateScope._prepared
+    member RackPilotUpdateScope._staleDefinitions
+    member RackPilotUpdateScope._catalog
+    member RackPilotUpdateScope._disposed
+    member RackPilotUpdateScope.RackPilotUpdateScope
+    member RackPilotUpdateScope.ReadForPrepare
+    member RackPilotUpdateScope.PrepareUnits
+    member RackPilotUpdateScope.BeginMutation
+    member RackPilotUpdateScope.Post
+    member RackPilotUpdateScope.Dispose
+    member RackPilotUpdateScope.EnsureOpen
+    type RackPilotMutationScope
+    member RackPilotMutationScope.UnitVariable
+    member RackPilotMutationScope.SealVariable
+    member RackPilotMutationScope._database
+    member RackPilotMutationScope._transaction
+    member RackPilotMutationScope._prepared
+    member RackPilotMutationScope._staleDefinitions
+    member RackPilotMutationScope._units
+    member RackPilotMutationScope._disposed
+    member RackPilotMutationScope.RackPilotMutationScope
+    member RackPilotMutationScope.Reread
+    member RackPilotMutationScope.WriteUnit
+    member RackPilotMutationScope.Seal
+    member RackPilotMutationScope.Dispose
+    member RackPilotMutationScope.EnsureOwned
+    member RackPilotMutationScope.FailUnitIfRequested
+    member RackPilotMutationScope.FailSealIfRequested
+    member RackPilotMutationScope.DebugVariable
+  Ahora (43):
+    type RackPilotUpdateWriter
+    member RackPilotUpdateWriter._document
+    member RackPilotUpdateWriter._spent
+    member RackPilotUpdateWriter.RackPilotUpdateWriter
+    member RackPilotUpdateWriter.Begin
+    member RackPilotUpdateWriter.Retire
+    member RackPilotUpdateWriter.ValuesOf
+    type RackPilotUpdateScope
+    member RackPilotUpdateScope._document
+    member RackPilotUpdateScope._documentMatches
+    member RackPilotUpdateScope._definitions
+    member RackPilotUpdateScope._prepared
+    member RackPilotUpdateScope._erasures
+    member RackPilotUpdateScope._staleDefinitions
+    member RackPilotUpdateScope._catalog
+    member RackPilotUpdateScope._disposed
+    member RackPilotUpdateScope.RackPilotUpdateScope
+    member RackPilotUpdateScope.ReadForPrepare
+    member RackPilotUpdateScope.PrepareUnits
+    member RackPilotUpdateScope.BeginMutation
+    member RackPilotUpdateScope.Post
+    member RackPilotUpdateScope.Dispose
+    member RackPilotUpdateScope.EnsureOpen
+    type RackPilotMutationScope
+    member RackPilotMutationScope.UnitVariable
+    member RackPilotMutationScope.SealVariable
+    member RackPilotMutationScope._database
+    member RackPilotMutationScope._transaction
+    member RackPilotMutationScope._prepared
+    member RackPilotMutationScope._erasures
+    member RackPilotMutationScope._staleDefinitions
+    member RackPilotMutationScope._units
+    member RackPilotMutationScope._disposed
+    member RackPilotMutationScope.RackPilotMutationScope
+    member RackPilotMutationScope.Reread
+    member RackPilotMutationScope.WriteUnit
+    member RackPilotMutationScope.EraseUnit
+    member RackPilotMutationScope.Seal
+    member RackPilotMutationScope.Dispose
+    member RackPilotMutationScope.EnsureOwned
+    member RackPilotMutationScope.FailUnitIfRequested
+    member RackPilotMutationScope.FailSealIfRequested
+    member RackPilotMutationScope.DebugVariable
+## src/RackCad.Plugin/Views/RackViewBlockEraser.cs
+  Base (0):
+  Ahora (2):
+    type RackViewBlockEraser
+    member RackViewBlockEraser.EraseInTransaction
+## DIFERENCIA (ahora - base)
+  src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs | member RackPilotMutationScope._erasures | delta=1
+  src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs | member RackPilotMutationScope.EraseUnit | delta=1
+  src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs | member RackPilotUpdateScope._erasures | delta=1
+  src/RackCad.Plugin/Views/RackViewBlockEraser.cs | member RackViewBlockEraser.EraseInTransaction | delta=1
+  src/RackCad.Plugin/Views/RackViewBlockEraser.cs | type RackViewBlockEraser | delta=1
+  total de diferencias=5
+# INV-PBT3C-07 (las redes): ningun archivo de tests existente cambia
+  A	tests/RackCad.Tests/PushBackViewEraseGuardTests.cs
+  A	tests/RackCad.Tests/PushBackWritePathPluginGuardTests.cs

@@ -1,0 +1,51 @@
+{
+  "Control": "nc3",
+  "RunId": "R20261120T152519Z-2017",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "MutatedCheck": {
+    "FreeText": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "fail",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "FreeText"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "FreeText",
+    "FailureClass": "FreeText",
+    "Classification": "EXECUTION_REWORK_REQUIRED",
+    "Disposition": "REWORK",
+    "LaterChecksMustMatch": true
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "FreeText": "Deterministic scan of the seven complete handoff text fields reported lengths: WorkCompleted 9352, Evidence 2311, UnexpectedFindings 924, KnownLimitations 1026, Deviations 0, OpenQuestions 0, RecommendedNextAction 287. Exactly one complete-term match was found in WorkCompleted; its printed context is at the end of that field. No other field had a match."
+  },
+  "OutputSha256": "B994F1D63F39EA8E2F966E8AAAE75E4D82FBB31C540DD03D0F6767F391C2886F",
+  "ManualFreeText1610": []
+}

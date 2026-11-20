@@ -1588,3 +1588,39 @@ No hay cambios materiales.
 - **La cadena:** primera delegación; `attempts` 1 de 3.
 - **La planificación:** con las colecciones opacas puestas por la sesión (F4B-E21).
 - **La verificación:** con las comprobaciones deterministas de F4B-E15.
+
+## F4B-E48. Cierre de F4B-PBT3C-FULL-WRITE-ERASE
+
+**Paquete de cierre:** `F4B-PBT3C-FULL-WRITE-ERASE/task-close-package.md`.
+
+**La cadena:**
+- **La emisión** (F4B-E47): X `e3c293b1` y BASE `7dfc7c21`, con la v4.7. CA-T3c dio EMITIBLE 0/0/4 y su recomprobación 0/0/1. La compilación de comprobación de la sesión dio Core 19 124 = 19 118 + 6 omitidas, con su control negativo.
+- **La planificación** `R20261120T134718Z-68e5` se aceptó al primer lanzamiento: inyección PASS 8/8, A1-A8 8/8 y 14 criterios. nc4 `R20261120T134930Z-9c1a`.
+- **El Worker** `R20261120T135026Z-80e5` (sonnet/high) dio IMPLEMENTATION_COMPLETE, sin reparación del RED, sin desviaciones y sin preguntas abiertas.
+  - El RED `e0940a0e` lleva la fachada del parche, igual byte a byte, y las dos clases de guardas.
+  - El GREEN `938a35f0` toca solo WR y la fachada.
+
+**CI** (los totales exactos de su única rama, F4B-E46):
+- RED `44754080713`: tests en failure; ui-tests y build-ui en success; build-plugin omitido. Core 19 129 = 19 119 + 4 Failed + 6 Skipped; UI 2 451 = 2 430 + 21.
+- GREEN `44757675821`: 4/4. Core 19 129 = 19 123 + 0 + 6, las de D-1; UI 2 451 = 2 430 + 21.
+
+**Revisiones:**
+- la directa, conforme;
+- la independiente, ACEPTABLE CON MENORES 0/0/6. Añade tres hallazgos para el Owner que no son defectos de la entrega, sino riesgos del borrado real para el Smoke-PB: OWNER-1, las referencias de la vista en espacio papel o dentro de bloques del usuario se borran sin aviso; OWNER-2, la purga de las anidadas es de un nivel; OWNER-3, bloques dinámicos.
+
+**Verificación** `R20261120T150458Z-e403`: **EXECUTION_VERIFIED** 14/14 al primer lanzamiento, sin reparación (`rr_check` PASS).
+
+**Controles,** los tres con CONTROL PASS ordinario, sin sustitutos:
+- nc1 `R20261120T151131Z-8a51` (Identity, STOP);
+- nc2 `R20261120T151911Z-670e` (Scope, STOP);
+- nc3 `R20261120T152519Z-2017` (FreeText, REWORK).
+
+El «limit reached» de los eventos de nc1 y nc2 es el texto de la parada S-11 del contrato.
+
+**El registro declarado de D-2** (`F4B-DRAFTS/superseding-characterization.md`): este cierre completa la tabla de ejecución de PB-T3c y la pasa a EJECUTADA. Cambian cinco líneas, con el texto y la fuente en `F4B-DRAFTS/pbt3/superseding-pbt3c-close-fill.md`.
+
+**La custodia, un ajuste declarado del filtro de nombres:** `forceValidity`, el parámetro de `GetBlockReferenceIds` de la API de AutoCAD que aparece en la entrega y en las revisiones, lleva dentro, sin distinguir mayúsculas, uno de los nombres de la lista de FORBIDDEN. El patrón de nombres no pide palabra completa, así que daba un falso positivo. En este cierre solo ese nombre pasa a palabra completa (con `\b` a los dos lados), como el `(?![*])` del cierre de PB-T0. El resto del filtro no cambia, y ningún archivo se excluye por ello.
+
+**Resultado:** **F4B-PBT3C-FULL-WRITE-ERASE = CLOSED / PASS WITH LIMITATIONS** sobre `938a35f0`, con attempts 1 de 3. El escritor de la actualización del Workspace borra las vistas obsoletas del plan dentro de la única transacción de MUTATE, por la fachada caller-owned `RackViewBlockEraser.EraseInTransaction`. La limitación es la de siempre: sin AutoCAD, el borrado real en el dibujo queda para el Smoke-PB (D-PB-09). **PB-T3 queda completa.**
+
+**Siguiente:** el paquete de PB-T4 («Editar todo»), en revisión. Su emisión no está autorizada: va al Owner en una sola vuelta, con la lista de pruebas sustituidas medida sobre este cierre.

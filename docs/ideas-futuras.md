@@ -1915,3 +1915,23 @@ Son los menores de la revisión independiente de PB-T3b, intento 2. El código c
 **Dos lecciones de método,** con su traducción a los paquetes siguientes:
 - **Compilar el esqueleto y ejecutar la suite completa de Core antes de emitir.** La parada del intento 1 vino de dos CS0121 de una prueba existente, y un tercer choque era de reflexión. El barrido por nombre no ve ni la resolución de sobrecargas ni los escaneos de ensamblado. Ya está en F4B-E45; la redacción del §5.0 pasa a la revisión del paquete para PB-T3c (M-07 de CA-T3b).
 - **Una evidencia esperada que dependa de cómo cuente la TRX lleva el total exacto de cada rama.** El contrato de PB-T3b decía «19 128 resultados», con la alternativa «+ 6 o + 10 omitidas»; en la rama «+ 6», la real, el total es 19 124. Un Controller lo leyó de forma estricta en nc3 (F4B-E46, `owner-pbt3b-nc3-decision.md`).
+
+## I-64 F4B PB-T3c — menores de la revisión independiente, riesgos para el Smoke-PB y menores de CA-T3c (2026-11-20, registrados sin corregir)
+
+Son los menores de la revisión independiente del código de PB-T3c, intento 1. El código cumple D-PBT3-11 punto por punto; ninguno pide cambiar `src/`.
+
+- **PBT3C-IR-M01:** CT-PBT3C-01 cuenta las declaraciones de la fachada por modificador de acceso. Un miembro declarado sin modificador (privado implícito) no lo ve. La lista cerrada de PBT3C-C13 la sostiene hoy el censo de la entrega, no una guarda duradera.
+- **PBT3C-IR-M02:** en CT-PBT3C-04, la regla «la llamada está dentro de `EraseUnit`» no tiene una autoprueba que la aísle: las tres del §5.4 suben el total a 2. Además, el censo solo ve el literal `RackViewBlockEraser.EraseInTransaction(`, y un `using static` o un grupo de métodos se le escaparían.
+- **PBT3C-IR-M03:** CT-PBT3C-03 es menos preciso que su nombre. Cuenta los `Failed` en todo `PrepareUnits`, no dentro del bucle de las claves a borrar, y no comprueba que la relectura compare las claves a borrar con el `ObjectId` resuelto. El código real sí lo hace.
+- **PBT3C-IR-M04:** las autopruebas de CT-PBT3C-05 usan 8 de los 15 ejemplos de CT-PBT1B-14. Faltan los `as`/`is` de la regla 1b y los dos que ejercen la regla 2b (alias más molde). Es el mismo subconjunto que CT-PBT3B-13, y el paquete no fija la lista.
+- **PBT3C-IR-M05:** tres líneas de WR que D-PBT3-11 no prescribe: los dos `_erasures.Clear()` (al empezar PREPARE y en `Dispose`) y el bucle de las claves a borrar antes del de los miembros. Copian el patrón de `_prepared` y no cambian nada observable. El orden lo declaró el Worker; la línea de `Dispose`, no.
+- **PBT3C-IR-M06:** la fachada no lleva el salto del clásico para una definición nula o borrada; con ella lanza una excepción de AutoCAD. Es conforme al paquete y no se alcanza, porque la relectura exige cada clave. Pero el comentario de la clase dice que hace «lo que hace el borrado clásico, en el mismo orden», y hay dos diferencias: el layout, que lanza, y este salto.
+
+**Para el Smoke-PB de PB-T5 (D-PB-09),** riesgos del borrado real que no son defectos de la entrega (la fachada reproduce el clásico):
+- **PBT3C-IR-OWNER-1:** `GetBlockReferenceIds(directOnly: true)` devuelve también las referencias de la vista en los layouts de papel y las anidadas en bloques del usuario, y la fachada las borra todas sin aviso. Probar una de cada, con un solo `U`. El Owner decide si quiere un aviso.
+- **PBT3C-IR-OWNER-2:** la purga de las anidadas es de un nivel: las definiciones de segundo nivel pueden quedar sin referencias y sin purgar, como en el clásico. Contar los candidatos de `PURGE` antes y después.
+- **PBT3C-IR-OWNER-3 (baja):** las representaciones anónimas `*U` de un bloque dinámico no se devuelven ni se escanean. Confirmar que las vistas de RackCad son estáticas.
+
+**De la comprobación acotada de la emisión (CA-T3c),** sin efecto en el contrato:
+- **CA-T3c M-02:** la nota de V47-06 del paquete de PB-T3 da por hecho que `pb-20-ab` no tiene un lateral que exista solo por B, y la revisión de PB-T3b dice que no lo verificó. Le falta además el rechazo de sobres con nombres distintos (`DivergentDiagnostic`, OWNER-2 de PB-T3b).
+- **CA-T3c M-05:** el corte de argumentos corregido de `overload_sweep_t3c.py` sigue tomando por genérica una comparación sin espacios como `(a<b, c>d)`. No afecta a PB-T3c. La salida custodiada de PB-T3b (`overload-sweep-eab27a9e.txt`) cuenta 5 parámetros en el constructor de `RackPilotMutationScope`, que tenía 4: el mismo defecto, sin efecto en sus conclusiones.
