@@ -8452,3 +8452,19 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - **la comprobación acotada,** `BOUNDED_RESULT`: `EMITIBLE; B 0 / I 0 / M 4; sin importantes; sin decisiones nuevas del Owner; recomprobacion v4.5: EMITIBLE, B 0 / I 0 / M 1`.
 
 **Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.
+## 270. Contrato de F4B-PBT3B-FULL-WRITE-RUN
+
+**Contrato:** `I-64-pilot/F4B-PBT3B-FULL-WRITE-RUN/coordinator/gate-contract.json` (F4B-E44), con su script generador al lado.
+- **Alcance:** lista blanca exacta de 11 rutas: PP, UR y la interfaz nueva `IPushBackPilotViewEraser.cs`; las cuatro clases de prueba nuevas y el doble con borrado; y, solo para los `Skip` de D-1, los tres archivos de guardas de F4.
+- **`ForbiddenWriteScope`:** 294 entradas, con el método de PB-T0 ([PKC-C]); `tests/RackCad.Tests/Workspace/` va como lista explícita, sin los tres archivos de guardas de D-1.
+- **Invariantes y paradas:** 15 invariantes y 17 paradas propias. P-01 va en la Snapshot K (F4B-E37). C11 lleva los sustitutos de nc1 de PD-F4B-01 (F4B-E40) y de nc2 v2 (F4B-E43).
+- **La reparación del RED** (F4B-E35, RR):
+  - PBT3B-C07 con su excepción, y PBT3B-C18;
+  - la cadena en INV-PBT3B-02;
+  - la reparación no toca PP, UR, la interfaz ni los tres archivos de guardas de F4 con los `Skip`.
+- **Filtros:** `RackCad.Tests.PushBackFullWrite` (`MinSelected` 13, `ExpectRed`); `RackCad.Tests.PushBackPilotUpdateEquivalenceGuardTests` (`MinSelected` 6, `ExpectRed`); `RackCad.Tests.PushBackWritePathGuardTests` (`MinSelected` 2); `RackCad.Tests.Workspace` (`MinSelected` 3261); `RackCad.Tests.PushBackFullDraft` (`MinSelected` 10); `RackCad.Tests.PushBackDraftWriteGuardTests` (`MinSelected` 3); `RackCad.UI.Tests.Workspace` (`MinSelected` 547); `RackCad.Tests.PushBackEditableState` (`MinSelected` 13); `RackCad.Tests.PushBackEditorOutputGate` (`MinSelected` 1); `RackCad.Tests.PushBackSharedReferenceGuardTests` (`MinSelected` 2); `RackCad.Tests.PushBackWindowSharedReferenceGuardTests` (`MinSelected` 1); `RackCad.Tests.PushBackWindowOnStateSourceGuardTests` (`MinSelected` 1); `RackCad.UI.Tests.PushBackWindowOnStateTests` (`MinSelected` 2); `RackCad.UI.Tests.PushBackClassicCharacterization` (`MinSelected` 55); `RackCad.Tests.PushBackClassicCharacterization` (`MinSelected` 10); `RackCad.UI.Tests.PushBackFullEditorCharacterization` (`MinSelected` 16); `RackCad.Tests.PushBackFullEditorCharacterization` (`MinSelected` 3); `RackCad.UI.Tests.PushBackStateNet` (`MinSelected` 14); `RackCad.UI.Tests.PushBackDeclaredCorrection` (`MinSelected` 14); `RackCad.UI.Tests.Cantilever` (`MinSelected` 67); `RackCad.Tests.I58F1` (`MinSelected` 10); `RackCad.Tests.CustomPropertiesEnvelopeGuardTests` (`MinSelected` 9); `RackCad.Tests.NamespaceFolderGuardTests` (`MinSelected` 7); `RackCad.Tests.PushBackDraftStatePortTests` (`MinSelected` 3); `RackCad.Tests.PushBackDraftPortSharedReferenceGuardTests` (`MinSelected` 1); `RackCad.Tests.PushBackWorkspaceModeSourceGuardTests` (`MinSelected` 1); `RackCad.Tests.PushBackWorkspaceSharedReferenceGuardTests` (`MinSelected` 1); `RackCad.UI.Tests.PushBackWorkspaceModeTests` (`MinSelected` 3); `RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests` (`MinSelected` 4); `RackCad.UI.Tests.PushBackFieldValidationConcordanceTests` (`MinSelected` 1); `RackCad.UI.Tests.PushBackWorkspaceCarryoverTests` (`MinSelected` 3).
+- **Revisiones:** `AuthorityRevision` `05b6f04e1799857c5c488b61c30e1af8ee7ae257` y `MainSha` `812baf879612320653094a8aaf46aca0bac81383`. El anclaje es el cierre de PB-T3a (`c40eea4a`).
+- **`attempts`:** 1 de 3.
+- **La verificación** lleva las tres comprobaciones deterministas de F4B-E15, y la planificación, las colecciones opacas puestas por la sesión (F4B-E21).
+
+**Límites:** solo documentación en este paso; sin AutoCAD.
