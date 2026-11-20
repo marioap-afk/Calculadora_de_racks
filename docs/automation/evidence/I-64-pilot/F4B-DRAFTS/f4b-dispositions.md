@@ -1295,3 +1295,32 @@ No hay cambios materiales.
 - **La cadena:** primera delegación; `attempts` 1 de 3.
 - **La planificación:** con las colecciones opacas puestas por la sesión (F4B-E21).
 - **La verificación:** con las comprobaciones deterministas de F4B-E15.
+## F4B-E42. Parada de F4B-PBT3A-FULL-WRITE-MODEL en el intento 1 (PBT3A-C02), decisión del Owner (Renombrar ForWrite) y reemisión con el paquete de PB-T3 v4.5
+
+**Fecha:** 2026-11-20.
+
+**La parada:** el Worker `R20261120T001738Z-7d92` (delegación `R20261120T001442Z-903c`, intento 1) paró con **PBT3A-C02 antes del commit RED**, sin commits ni push. HEAD siguió en `18e4b783` y el árbol quedó limpio.
+- **Lo que falla:** una prueba existente, `WorkspacePilotUpdateIntegrationGuardTests.G9NoFileOfThePluginOrOfApplicationThatNamesThePilotUsesAWriteApiOrALockOutsideTheFourExceptionsWithTheirExactCounts`, sobre el esqueleto exacto de la v4.4.
+- **La causa, un defecto del paquete:**
+  - el esqueleto hace que `Draft/PushBackFullComposition.cs` nombre el piloto, porque usa `PushBackPilotMaterializer.NonPilotContentReason`;
+  - y que declare `ForWrite`, el nombre cerrado de D-PBT3-05;
+  - la guarda G-9 prohíbe ese término de escritura en los archivos de Application y del Plugin que nombran el piloto, salvo cuatro excepciones fijas.
+- **El Worker** no eligió ninguna salida, porque todas cambiaban el esqueleto, el API cerrado o una prueba existente. Dejó tres parches reutilizables (`wip-red-tree.patch`, `rr/skeleton.patch` y `rr/green-wip.patch`), que no son autoridad.
+
+**La decisión del Owner** (`F4B-DRAFTS/coordinator/owner-pbt3a-g9-decision.md`): «Renombrar ForWrite (Recomendado)». G-9 no se toca, ni ninguna otra prueba existente.
+
+**El paquete v4.5** (V45-01 a V45-05):
+- el miembro cerrado pasa a `ForFullWrite`, con la misma firma, en D-PBT3-05, la lista cerrada de C13, `BuildFull` de D-PBT3-09, CT-PBT3A-06 y 11 y el esqueleto del §6.1;
+- el barrido de los archivos nuevos frente a todas las guardas existentes (§4.1) no encuentra otra colisión;
+- la precondición 11 es la reemisión.
+
+**Su comprobación acotada** (la §11 de CA-T3a): `EMITIBLE TRAS CORRECCIONES; B 0 / I 1 / M 4; importantes corregidas en el paquete: I-01 (CT-PBT3A-09 y CT-PBT3B-01 sin el gesto inerte de BeamDepth); recomprobacion v4.4: EMITIBLE, B 0 / I 0 / M 1; recomprobacion v4.5: EMITIBLE, B 0 / I 0 / M 2`.
+
+**La reemisión:** el contrato de `F4B-PBT3A-FULL-WRITE-MODEL` se emite de nuevo con la v4.5 y sustituye al de `18e4b783` (F4B-E41), que queda en la historia de Git.
+- **La corrección va en el intento 2 de 3:** la parada del intento 1 consume intento (16.8). `FailureClass` es `StopCondition`; `ChainRedSha` es null y `ChainRedFiles` está vacío, porque el intento 1 no hizo RED. El RED es el entero de la v4.5.
+- **El análisis de la sesión** está custodiado en `F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/analysis.md` (sha256 `7a615033c57403ab52e3b254f81a87fbfad1fc1aae7fd95ad15281b0210e105a`):
+  - C-1, el nombre;
+  - C-2, el RED entero;
+  - C-3, el GREEN;
+  - C-4, la reparación del RED, que sigue disponible.
+- **Lo que no cambia:** el diseño, D-1, las listas cerradas de CT, los `MinSelected`, el GREEN previsto y las pruebas existentes.

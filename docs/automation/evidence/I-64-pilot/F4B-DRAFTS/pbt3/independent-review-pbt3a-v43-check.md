@@ -434,3 +434,179 @@ La cláusula final, «no one-off acceptance extends to PB-T3a», cubre cualquier
   - y la §10, emparejada con su veredicto en la forma de PB-T3, con 0 bloqueantes y 0 importantes, que el literal nombra como «recomprobacion v4.4: EMITIBLE, B 0 / I 0 / M 1».
 - **El literal** es ASCII y empieza por «EMITIBLE TRAS CORRECCIONES;».
 - **El informe** no lleva rutas locales.
+
+## §11. Recomprobación sobre la v4.5
+
+**Veredicto: EMITIBLE.** B/I/M = **0 / 0 / 2**
+
+**En breve:**
+- **El renombrado está completo y es coherente** en PB-T3a y PB-T3b. No queda ningún `ForWrite` del método de la composición. `ForFullWrite` no casa con ningún término de ninguna guarda.
+- **El barrido independiente no encuentra ninguna otra colisión.** Es un barrido de literales, de reflexión y de guardas condicionales, con un control positivo: con la declaración de la v4.4, el método sí reproduce la colisión de G-9.
+- **La reemisión en el intento 2 es coherente** con el análisis y con 16.8, y tiene precedente. Dos menores:
+  - **M-06:** la base de la cadena y `CorrectionOf`, que hay que fijar en la delegación;
+  - **M-07:** la custodia de los guiones de esta ronda.
+- **No hay decisiones nuevas para el Owner.**
+
+**`BOUNDED_RESULT` final (ASCII):**
+
+`EMITIBLE TRAS CORRECCIONES; B 0 / I 1 / M 4; importantes corregidas en el paquete: I-01 (CT-PBT3A-09 y CT-PBT3B-01 sin el gesto inerte de BeamDepth); recomprobacion v4.4: EMITIBLE, B 0 / I 0 / M 1; recomprobacion v4.5: EMITIBLE, B 0 / I 0 / M 2`
+
+### 11.1 Método y límites
+
+**Qué se leyó:**
+- **El paquete:** `I-64-f4b-pbt3-gate-contract-package-v45.md` (sha256 `69411084…`) y `v45-delta.md`. El `diff` frente a la v4.4 solo toca lo que dice su registro (V45-01 a V45-05).
+- **El análisis de la sesión** (`analysis.md`, sha256 `b7270ccb…`) y la decisión del Owner F4B-E42 (`owner-pbt3a-g9-decision.md`).
+- **El código y las pruebas,** por objetos git en `18e4b783`. Nada del worktree, y no hay delegaciones activas.
+
+**Los guiones** (Python con `-I`, escritos con la herramienta de archivos; el checkout va por argumento, así que no llevan ninguna ruta local):
+- **`cat3a_sweep.py`:** el barrido;
+- **`cat3a_sweep_sum.py`:** su resumen;
+- **`cat3a_g9.py`:** las guardas condicionales;
+- **`cat3a_reflect.py`:** las guardas por reflexión;
+- **`cat3a_ctx.py`:** el contexto de una línea;
+- **`cat3a_chain.py`:** los campos de cadena de las delegaciones de corrección de F4 y F4B.
+
+**Las salidas:** `cat3a_sweep_out.txt`, `cat3a_sweep_v44_out.txt` y `cat3a_reflect_out.txt`.
+
+**Una incidencia, declarada:** corregí dos índices de `cat3a_chain.py` con un `sed -i`, no con la herramienta de archivos. No ejecuté ningún Python por `-c` ni por heredoc, y esta ronda no dejó copias temporales.
+
+### 11.2 El renombrado (punto 1)
+
+**Completo.** `ForFullWrite` aparece en 20 líneas:
+- **el API cerrado** de D-PBT3-05 (l.509), su texto (l.514) y la fila 4 de su tabla (l.529);
+- **`BuildFull`** de D-PBT3-09 (l.703);
+- **CT-PBT3A-06** (l.1050) y **CT-PBT3A-11** (l.1055);
+- **la justificación de I-02** (l.1121);
+- **el esqueleto de §6.1** (l.1422);
+- **R-T3-07** (l.1583) y **§8.3** (l.1709);
+- y el registro, §4, §4.1, §6.0 y la precondición 11.
+
+**Cada `\bForWrite\b` que queda es uno de estos:**
+- texto de análisis o de historia: el registro, §4, §4.1, §6.0, la precondición 11, §8.1, y V2-21 (l.177), que es registro;
+- `OpenMode.ForWrite` de la fachada de PB-T3c (D-PBT3-11, paso 3, l.846);
+- la lista de lo que WR no nombra (l.870 e INV-PBT3C-03, l.1556);
+- o `ComposeForWrite` del piloto (l.300, l.702, l.920 y l.1506), que `\bForWrite\b` no ve, porque no hay frontera de palabra dentro del identificador.
+
+**Ningún bloque de código lleva el nombre viejo.** Tampoco la tabla de RR-3, que no lo tenía: la línea fija de CT-11 es ` huellas-iguales=True`, sin la `<operacion>`.
+
+**En el contrato en seco de la reemisión,** `ForWrite` solo sale en el texto de las autoridades y de `IssuedBy`, que narran F4B-E42.
+
+**`ForFullWrite` es un nombre libre:** ningún archivo de `src/` ni de `tests/` lo usa en `18e4b783` (`git grep`).
+
+**No casa con ningún término:**
+- no es `\bForWrite\b` (G-9, IntegrationGuard:603; UpdateGuard:195), porque `For` va pegado a `Full`;
+- no es `\bWrite\s*\(` (CustomPropertiesEdgeGuardTests:480), porque dentro del identificador no hay frontera delante de `Write`;
+- no es `ComposeForWrite`, cuyo recuento en PP fija PrepareGuard.
+
+### 11.3 El barrido independiente (punto 2)
+
+**Qué entra:**
+- **Las pruebas:** las 175 de `tests/` que leen `src/`, con 18 453 literales de cadena. Cada literal se prueba como expresión (`(?<n>` pasa a `(?P<n>`) o, si no compila, como texto.
+- **El texto nuevo:** el que el paquete fija para los archivos nuevos o tocados, en tres grupos:
+  - **A**, los ocho de `Draft/`: D-PBT3-02 a 07 y el esqueleto de §6.1;
+  - **B**, PP, UR e `IPushBackPilotViewEraser.cs`: D-PBT3-09 y 10;
+  - **C**, WR y `RackViewBlockEraser.cs`: D-PBT3-11 y §5.4.
+
+  Cada grupo lleva sus bloques de código y sus fragmentos de código, con el `namespace`, los `using` que necesitará y las llamadas de la fachada. Se quitan las listas de términos prohibidos que el paquete nombra (D-PBT3-08, CT-14 y CT-PBT3C-01) y las notas de la v4.4.
+- **El control:** los 70 archivos existentes de `Application/Systems/PushBack/`, `Pilot/` incluido, que ya pasan todas las guardas.
+
+**El control positivo:** con la declaración de la v4.4 añadida al grupo A (`--v44`), el barrido da como nuevos `\bForWrite\b` de IntegrationGuard:603 (G-9), el de UpdateGuard:195 y el de StructuralAnalysisPluginCommandGuard:88. Con la v4.5 no sale ninguno de los tres. El método ve la colisión que pasó.
+
+**Lo que queda, revisado acierto por acierto en su prueba, por alcance y sentido:**
+- **A, 43 aciertos:**
+  - prefijos de ruta (`src/RackCad.Application/…`);
+  - extractores de `namespace`;
+  - `\bpilot\.Read\b` y los `using`: las guardas que los nombran leen archivos fijos (WHC, el adaptador o el núcleo de `Workspace/Drafts/`), y el lector de `Draft/` no está entre ellos;
+  - textos de protocolo (AgentExecutionProtocolTests);
+  - y un literal de comando tomado como clase de caracteres.
+
+  Ninguno prohíbe nada en `Draft/`.
+- **B, 5 aciertos:**
+  - **`PushBackEditorOutputGate.IsBlocked(`:** la caracterización de W (PushBackWindowOnStateSourceGuardTests:87), no una prohibición;
+  - **cuatro extractores de `namespace`,** de archivos fijos: PP y UR ya cumplen `#nullable enable` y el `namespace` del piloto.
+- **C, 281 aciertos:** son API de AutoCAD, que el control de Application no tiene. Revisé las guardas que barren todo el Plugin o `Plugin/Views/`:
+  - `CustomPropertiesCommandGuardTests` (el censo de `[CommandMethod(`);
+  - `I55G15Auth15ConsumerTests` (`RackDefinitionCreator.CreateInTransaction(`);
+  - `MainMenuStructuralSectionAccessGuardTests`;
+  - `CantileverPluginSourceGuardTests` (`CantileverLineResolver`);
+  - `SiblingRedrawSeamGuardTests` (`*Commands*.cs`);
+  - `WorkspaceBridgeSourceGuardTests:364` (fuera de `Plugin/Workspace/`, nada nombra `RackCad.Application.Workspace`; ni WR ni la fachada lo necesitan);
+  - y las de archivo fijo: CallerOwnedFacade (sus siete fachadas), CallerOwnedTransaction, RackDefinitionCreator, RackProjection (sus cuatro archivos), SelectiveDuplication, I60, la navegación, el anfitrión y el puente.
+
+  Ninguna aplica a la fachada ni a lo que WR añade.
+
+**Lo que un barrido de literales no ve, mirado aparte:**
+- **Las guardas condicionales,** sin el control (`cat3a_g9.py`), porque su condición (nombrar el piloto, estar en `Pilot/`) hace que un término del control no baste para descartarlas:
+  - **G-9:** los 20 términos dan 0 en A y en B. En C, `ForWrite`, `UpgradeOpen` y `.Erase(` son de la fachada, que no nombra el piloto (CT-PBT3C-01). WR no gana ningún término, así que sus cuentas exactas de excepción (IntegrationGuard:681-683) no cambian. `\.Erase\s*\(` no casa con `EraseUnit(` ni con `EraseInTransaction(`;
+  - **G-7:** ninguna llamada nueva de `.PrepareUnits(`, `.BeginMutation(`, `.WriteUnit(` ni `.Seal(` fuera de UR, y ningún `.Post(` en `Pilot/`. `EraseUnit` no está en la lista;
+  - **G-1:** `PrepareRedraw` y `RedrawInTransaction` siguen solo en `PrepareUnits` y `WriteUnit` de WR (IntegrationGuard:289-311);
+  - **`Transaction` en `Pilot/`,** comentarios incluidos (UpdateGuard:118-123; IntegrationGuard:81): 0 en B. Ojo para el Worker de PB-T3b: la regla distingue mayúsculas, y prohíbe `Transaction` en cualquier comentario de PP, UR o la interfaz.
+- **Las guardas por reflexión,** las 38 de `tests/`. Filtran por espacio de nombres (`Workspace`, `Workspace.Drafts`, `Systems.Shared`, `Views.Preparation`, `StructuralAnalysis`, `Expressions`, `CustomProperties`), por prefijo de nombre (`CustomPropert`, `Header`, `RackPhysical`, `RackResolve`…) o por herencia.
+  - Ninguna alcanza `RackCad.Application.Systems.PushBack.Draft`, `…Pilot` ni `RackCad.Plugin.Views`.
+  - Las de `G9ContractTestSupport` solo exigen que algo exista.
+- **Los censos de todo el producto** (`Src.AllProduct()` y `Product()`): miran nombres que PB-T3 no usa (`EventBridgeCore`, `WorkspaceSessionRegistry`, `new DraftRegistry(`, `.ReadIntent(`, `NavigationTargets`…). Los dos que sí tocan PB-T3 ya los atan el diseño:
+  - **los archivos del Plugin con `PushBack`:** son 14, y la fachada no lleva la cadena;
+  - **las composiciones del sobre:** son 11, y E-1 deja una sola en el plan.
+
+**Conclusión:** la v4.5 y su §4.1 dicen lo mismo que este barrido. No hay otra colisión con el texto que fija el paquete.
+
+**El límite:** el barrido mira ese texto, no el código final, que solo existirá en el GREEN. Lo que el Worker escriba de más (ayudantes privados, comentarios) lo cubren INV-PBT3A-13 y C02. Para PB-T3b, el aviso de `Transaction` de arriba.
+
+### 11.4 La reemisión en el intento 2 (punto 3)
+
+**Es coherente con el análisis y con 16.8:**
+- **La clase:** `FailureClass` `StopCondition`. Un STOP cuya resolución cambia el trabajo sube `attempts` a 2, en un commit anterior a la delegación. El contador por clase queda en 1.
+- **El RED:** `ChainRedSha` null y `ChainRedFiles` vacío. La cadena nunca acreditó un RED, así que la entrega exige RED, y es el RED entero (C-2). `git restore --source=<RED del intento 1>` no se aplica, y la viñeta nueva de §6.0 lo dice (l.1296-1300).
+- **La reparación del RED** sigue disponible (C-4).
+- **`CorrectionOf`** (RunId del Worker `7d92`, `StopCondition` y `AnalysisSha256` del análisis custodiado) es lo que pide 16.6, y lo que hizo F4-T4A1 (F4-E52).
+- **El contrato,** en la misma ruta y con el mismo `TaskId`, con `AuthorityRevision` y `BaseSha` nuevas. Tiene precedente en F4B: PB-T1b se emitió de nuevo en su ruta (`4b0498e3`, X `5e52aaa3`).
+- **La remedición:** `git diff f273eae1 18e4b783 -- src` está vacío, y `05beabfd..f273eae1 -- src` también. En `tests/`, entre `05beabfd` y `18e4b783` solo entra `PushBackWorkspaceCarryoverTests.cs`.
+- **nc4** se repite, como hizo F4B en los intentos 2 de PB-T1b, PB-T1c y PB-T2a (sus carpetas `-nc4/2`). F4 no lo repetía.
+
+**Los parches del intento 1:**
+- son un punto de partida, no una autoridad;
+- se cambia el nombre, también en los textos de las pruebas;
+- lo que difiera de la v4.5 más allá del nombre se rige por el contrato reemitido;
+- y la sesión los cita con su ruta y su sha256 (l.1313-1318).
+
+Es la forma de F4-T4A1, INV-F4T4A1-15. Los parches se escribieron con la v4.4, que ya traía la corrección de I-01, así que solo los separa el nombre.
+
+**Lo que conviene fijar (M-06):**
+- **`ChainBaseSha`.**
+  - **Lo que dice la letra de 16.8:** «`BaseSha` de la primera delegación de la tarea (o su imagen)», que es `18e4b783`.
+  - **Lo que fijan el análisis y `v45-delta.md`:** la `BaseSha` nueva. Lo mismo hizo F4-T4A1 en su reemisión (intento 2: `ChainBaseSha` = `BaseSha` = `443b5b3a`, no `7f8f9aa7`, con A1-A8 en 8/8, F4-E53).
+  - **Los otros intentos 2 de F4B** fueron sin reemisión y conservaron la base del intento 1 (PB-T1b, PB-T1c y PB-T2a).
+  - **Lo que da cada opción:** `RT` sale igual con las dos, porque `tests/` es igual en `18e4b783` y en la BASE nueva. La diferencia es solo cómo lee A8 «según 16.8».
+- **`CorrectionOf`, en el generador de la planificación.** `make_pbt3a_prompt_inject.py:194`, el de la delegación del intento 1, dice literalmente «`ChainBaseSha` = ese mismo BaseSha; …; `CorrectionOf` = null». `v45-delta.md` §6 enumera lo que cambia en la delegación, pero no nombra `CorrectionOf`, que sí está en el análisis.
+- **La identidad de §6.0** (l.1234) sigue diciendo «attempts 1 de 3». Su sección de la reemisión ya dice «el intento 2 de 3».
+
+### 11.5 Decisiones del Owner (punto 4)
+
+**Ninguna nueva.**
+- **F4B-E42 ya decide** el renombrado, la reemisión y el intento 2.
+- **La elección de `ChainBaseSha`** es de procedimiento, con precedente.
+- **El barrido no encuentra otra colisión.** Una colisión nueva sí habría sido otra «firma no prevista».
+
+### 11.6 Hallazgos nuevos
+
+| Id | Sev. | Dónde | Hallazgo | Qué hacer |
+|---|---|---|---|---|
+| M-06 | M | §6.0, «La reemisión de PB-T3a en el intento 2» (l.1302-1320) y la identidad (l.1234); `analysis.md` §3; `v45-delta.md` §6; `make_pbt3a_prompt_inject.py:194` | **El problema:** la reemisión no fija en el paquete los campos de cadena de la delegación. `ChainBaseSha` = la `BaseSha` nueva sigue a F4-T4A1 (F4-E53), pero no a la letra de 16.8 («la primera delegación»: `18e4b783`); `RT` no cambia, pero A8 lo puede leer de las dos maneras. El generador de la planificación del intento 1 escribe `CorrectionOf = null`. La identidad de §6.0 sigue con «attempts 1 de 3» | **En §6.0 o en el análisis,** escribir la elección de `ChainBaseSha` con su fuente: la BASE nueva, como F4-T4A1, o `18e4b783`, la letra; las dos dan el mismo `RT`.<br>**En la delegación,** nombrar `CorrectionOf` (RunId `R20261120T001738Z-7d92`, `StopCondition`, `AnalysisSha256`), `Attempt` 2 y `AttemptsRemaining` 1, y poner al día `make_pbt3a_prompt_inject.py`.<br>**En la identidad,** «attempts: el del estado al emitir (PB-T3a: 2 de 3, F4B-E42)» |
+| M-07 | M | `CUSTODY_EXTRA` del generador; DU-23 | **El problema:** esta sección cita seis guiones nuevos y tres salidas que no están en la custodia | Añadirlos a `CUSTODY_EXTRA`. No llevan ruta local, porque el checkout va por argumento; `local_paths` no da nada en ellos |
+
+**Para la reemisión, sin que sea hallazgo:**
+- `BOUNDED_RESULT` pasa al literal de arriba;
+- el seco y las 80 pruebas en negativo se repiten sobre el generador final. Hoy no casan: el generador se escribió a las 20:25 y el seco a las 20:16, y `dry-pbt3a.txt` dice 64 890 bytes frente a los 64 788 de `contract-dry-pbt3a.json`;
+- y se custodia este informe con la §11.
+
+### 11.7 El `BOUNDED_RESULT`, comprobado
+
+**Cómo:** `cat3a_bounded.py` aplica la `bounded_check` del generador actual a este informe entero, al literal final y a las líneas de la v4.5.
+
+**Lo que da, 0 errores:**
+- el primer veredicto, con su fila `| I-01 | I |` y la fila `**CA-T3a I-01**` del registro;
+- la §10 y la §11, cada una con su veredicto en la forma de PB-T3;
+- la última, la §11, en EMITIBLE con 0 bloqueantes y 0 importantes;
+- y el literal la nombra: «recomprobacion v4.5: EMITIBLE, B 0 / I 0 / M 2».
+
+**El literal** es ASCII y empieza por «EMITIBLE TRAS CORRECCIONES;». **El informe** no lleva rutas locales.

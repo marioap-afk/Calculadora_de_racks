@@ -1,0 +1,680 @@
+pruebas que leen src/: 175 | literales probados: 18453 | archivos de control: 70
+corpus A Draft/ 12917 caracteres
+corpus B PP/UR/IPushBackPilotViewEraser 4928 caracteres
+corpus C WR/RackViewBlockEraser 2143 caracteres
+
+===== A Draft/ | SOLO en el texto nuevo: 46
+  tests/RackCad.Tests/AgentExecutionProtocolTests.cs:43  lit='Tests'
+      -> tems.PushBack.Draft | NamespaceFolderGuardTests | Pilot/ | Workspace/ | PushBackFullDraftStat
+  tests/RackCad.Tests/AgentExecutionProtocolTests.cs:95  lit='Classification'
+      ->  | } |  | public sealed class PushBackConflictClassification | { |     internal PushBackConflictClassifi
+  tests/RackCad.Tests/AgentExecutionProtocolTests.cs:166  lit='BaseSha'
+      -> elector(); | null | catch (Exception error) | BaseSha | d8ccbcb8 | 5ddeb3b4 | 03b16c88 | catch | LoadEx
+  tests/RackCad.Tests/AgentExecutionProtocolTests.cs:179  lit='BaseSha'
+      -> elector(); | null | catch (Exception error) | BaseSha | d8ccbcb8 | 5ddeb3b4 | 03b16c88 | catch | LoadEx
+  tests/RackCad.Tests/AgentExecutionProtocolTests.cs:724  lit='Tests'
+      -> tems.PushBack.Draft | NamespaceFolderGuardTests | Pilot/ | Workspace/ | PushBackFullDraftStat
+  tests/RackCad.Tests/CustomPropertiesEdgeGuardTests.cs:288  lit='src/'
+      -> urrentMembers, RackCatalog catalog); | } |  | src/RackCad.Application/Systems/PushBack/Dra
+  tests/RackCad.Tests/CustomPropertiesEdgeGuardTests.cs:292  lit='src/RackCad.Application/'
+      -> urrentMembers, RackCatalog catalog); | } |  | src/RackCad.Application/Systems/PushBack/Draft/ | namespace RackCa
+  tests/RackCad.Tests/CustomPropertiesEdgeGuardTests.cs:804  lit='src/RackCad.Application/'
+      -> urrentMembers, RackCatalog catalog); | } |  | src/RackCad.Application/Systems/PushBack/Draft/ | namespace RackCa
+  tests/RackCad.Tests/PushBackDraftPortSharedReferenceGuardTests.cs:173  lit='src/RackCad.Application/Systems/PushBack/'
+      -> urrentMembers, RackCatalog catalog); | } |  | src/RackCad.Application/Systems/PushBack/Draft/ | namespace RackCad.Application.Sys
+  tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs:180  lit='src/RackCad.Application/Systems/PushBack/'
+      -> urrentMembers, RackCatalog catalog); | } |  | src/RackCad.Application/Systems/PushBack/Draft/ | namespace RackCad.Application.Sys
+  tests/RackCad.Tests/PushBackWorkspaceModeSourceGuardTests.cs:263  lit='LoadDesignForNew'
+      -> 3b16c88 | catch | LoadExisting | LoadExisting | LoadDesignForNew | design == null | ArgumentNullException | 5d
+  tests/RackCad.Tests/SharedViewFoundationCt04V2CharacterizationTests.cs:181  lit='RackViewCodec.cs'
+      ->  | NoAddress | RackViewCodec.DecodePushBack | RackViewCodec.cs:263-286 | Section | PushBackConflictClassif
+  tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandGuard.cs:88  lit='\\bStartTransaction\\b|\\bTransactionManager\\b|\\bLockDocument\\b|\\bUpgradeOpen\\b|\\bForWrite\\b|\\bRegen\\b'
+      -> lic static PushBackFullWriteComposition ForWrite(PushBackFullDraftState initial, PushBac
+  tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandGuardTests.cs:140  lit='[CommandMethod("RACKRAMPAQUETE")]\n        [CommandMethod("RRP")]'
+      -> ic static PushBackEditorComputation Pass( |         PushBackEditableState state, PushBackEdit
+  tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceGuardTests.cs:34  lit='src/RackCad.Application/Systems/'
+      -> urrentMembers, RackCatalog catalog); | } |  | src/RackCad.Application/Systems/PushBack/Draft/ | namespace RackCad.Applic
+  tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceGuardTests.cs:370  lit='src/RackCad.Application/Systems/'
+      -> urrentMembers, RackCatalog catalog); | } |  | src/RackCad.Application/Systems/PushBack/Draft/ | namespace RackCad.Applic
+  tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceGuardTests.cs:390  lit='src/RackCad.Application/'
+      -> urrentMembers, RackCatalog catalog); | } |  | src/RackCad.Application/Systems/PushBack/Draft/ | namespace RackCa
+  tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceGuardTests.cs:501  lit='src/'
+      -> urrentMembers, RackCatalog catalog); | } |  | src/RackCad.Application/Systems/PushBack/Dra
+  tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceGuardTests.cs:527  lit='src/'
+      -> urrentMembers, RackCatalog catalog); | } |  | src/RackCad.Application/Systems/PushBack/Dra
+  tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs:226  lit='(=>|\\{|;).*$'
+      -> DraftState current, RackCatalog catalog); | 
+  tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs:60  lit='^\\s*namespace\\s+([\\w\\.]+)\\s*(\\{|;)'
+      -> namespace RackCad.Application.Systems.PushBack.Draft | { | } | using System; | using System.Collection
+  tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs:472  lit='using RackCad.Application.Workspace;'
+      -> Cad.Application.Systems.PushBack.Pilot; | using RackCad.Application.Workspace; | using RackCad.Application.Persistence; | 
+  tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentGuardTests.cs:57  lit='^\\s*namespace\\s+([\\w\\.]+)\\s*(\\{|;)'
+      -> namespace RackCad.Application.Systems.PushBack.Draft | { | } | using System; | using System.Collection
+  tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentGuardTests.cs:219  lit='using RackCad.Application.Systems.PushBack.Pilot;'
+      -> tem.Linq; | using System.Text.Json.Nodes; | using RackCad.Application.Systems.PushBack.Pilot; | using RackCad.Application.Workspace; | us
+  tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:390  lit='using RackCad.Application.Workspace;'
+      -> Cad.Application.Systems.PushBack.Pilot; | using RackCad.Application.Workspace; | using RackCad.Application.Persistence; | 
+  tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:527  lit='using RackCad.Application.Systems.PushBack.Pilot;'
+      -> tem.Linq; | using System.Text.Json.Nodes; | using RackCad.Application.Systems.PushBack.Pilot; | using RackCad.Application.Workspace; | us
+  tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:677  lit='\\bpilot\\.Read\\b'
+      -> kPilotIntentReader.Read(scan, catalog); | pilot.Read.IsAdmitted | Diagnostic == PushBackPilotI
+  tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:687  lit='\\bpilot\\.Read\\b'
+      -> kPilotIntentReader.Read(scan, catalog); | pilot.Read.IsAdmitted | Diagnostic == PushBackPilotI
+  tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:688  lit='\\bpilot\\.Read\\b'
+      -> kPilotIntentReader.Read(scan, catalog); | pilot.Read.IsAdmitted | Diagnostic == PushBackPilotI
+  tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:702  lit='\\bpilot\\.Read\\b'
+      -> kPilotIntentReader.Read(scan, catalog); | pilot.Read.IsAdmitted | Diagnostic == PushBackPilotI
+  tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:703  lit='\\bpilot\\.Read\\b'
+      -> kPilotIntentReader.Read(scan, catalog); | pilot.Read.IsAdmitted | Diagnostic == PushBackPilotI
+  tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:710  lit='\\bpilot\\.Read\\b'
+      -> kPilotIntentReader.Read(scan, catalog); | pilot.Read.IsAdmitted | Diagnostic == PushBackPilotI
+  tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:715  lit='\\bpilot\\.Read\\b'
+      -> kPilotIntentReader.Read(scan, catalog); | pilot.Read.IsAdmitted | Diagnostic == PushBackPilotI
+  tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:832  lit='var pilot = read\\.PilotRead;|\\bpilot == null\\b|\\bpilot\\.(?:StaleBase|Read|PreviewWitness|Detail|ClassicEditorHint)\\b'
+      -> kPilotIntentReader.Read(scan, catalog); | pilot.Read.IsAdmitted | Diagnostic == PushBackPilotI
+  tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs:657  lit='\\bpilot\\.Read\\b'
+      -> kPilotIntentReader.Read(scan, catalog); | pilot.Read.IsAdmitted | Diagnostic == PushBackPilotI
+  tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs:542  lit='using\\s+RackCad\\.Application\\.Workspace\\s*;'
+      -> Cad.Application.Systems.PushBack.Pilot; | using RackCad.Application.Workspace; | using RackCad.Application.Persistence; | 
+  tests/RackCad.Tests/Workspace/WorkspacePilotCloseSyncGuardTests.cs:186  lit='src/RackCad.Application/'
+      -> urrentMembers, RackCatalog catalog); | } |  | src/RackCad.Application/Systems/PushBack/Draft/ | namespace RackCa
+  tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs:87  lit='^\\s*namespace\\s+([\\w\\.]+)\\s*(\\{|;)'
+      -> namespace RackCad.Application.Systems.PushBack.Draft | { | } | using System; | using System.Collection
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:83  lit='^\\s*namespace\\s+([\\w\\.]+)\\s*(\\{|;)'
+      -> namespace RackCad.Application.Systems.PushBack.Draft | { | } | using System; | using System.Collection
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:195  lit='\\bForWrite\\b|\\bUpgradeOpen\\b|\\bAppendEntity\\b'
+      -> lic static PushBackFullWriteComposition ForWrite(PushBackFullDraftState initial, PushBac
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:56  lit='using RackCad.Application.Workspace;'
+      -> Cad.Application.Systems.PushBack.Pilot; | using RackCad.Application.Workspace; | using RackCad.Application.Persistence; | 
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:213  lit='using RackCad.Application.Workspace;'
+      -> Cad.Application.Systems.PushBack.Pilot; | using RackCad.Application.Workspace; | using RackCad.Application.Persistence; | 
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:603  lit='\\bForWrite\\b'
+      -> lic static PushBackFullWriteComposition ForWrite(PushBackFullDraftState initial, PushBac
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:654  lit='src/RackCad.Application/'
+      -> urrentMembers, RackCatalog catalog); | } |  | src/RackCad.Application/Systems/PushBack/Draft/ | namespace RackCa
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:691  lit='src/RackCad.Application/'
+      -> urrentMembers, RackCatalog catalog); | } |  | src/RackCad.Application/Systems/PushBack/Draft/ | namespace RackCa
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:857  lit='src/RackCad.Application/'
+      -> urrentMembers, RackCatalog catalog); | } |  | src/RackCad.Application/Systems/PushBack/Draft/ | namespace RackCa
+
+===== A Draft/ | tambien en el control: 1043
+
+===== B PP/UR/IPushBackPilotViewEraser | SOLO en el texto nuevo: 5
+  tests/RackCad.Tests/PushBackWindowOnStateSourceGuardTests.cs:87  lit='PushBackEditorOutputGate.IsBlocked('
+      -> .ComposeForWrite( | .CompareWith( | Invalid | PushBackEditorOutputGate.IsBlocked(editor, system) | Invalid(BlockedPrefix + 
+  tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs:60  lit='^\\s*namespace\\s+([\\w\\.]+)\\s*(\\{|;)'
+      -> namespace RackCad.Application.Systems.PushBack.Pilot | { | } | using RackCad.Application.Systems.Pus
+  tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentGuardTests.cs:57  lit='^\\s*namespace\\s+([\\w\\.]+)\\s*(\\{|;)'
+      -> namespace RackCad.Application.Systems.PushBack.Pilot | { | } | using RackCad.Application.Systems.Pus
+  tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs:87  lit='^\\s*namespace\\s+([\\w\\.]+)\\s*(\\{|;)'
+      -> namespace RackCad.Application.Systems.PushBack.Pilot | { | } | using RackCad.Application.Systems.Pus
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:83  lit='^\\s*namespace\\s+([\\w\\.]+)\\s*(\\{|;)'
+      -> namespace RackCad.Application.Systems.PushBack.Pilot | { | } | using RackCad.Application.Systems.Pus
+
+===== B PP/UR/IPushBackPilotViewEraser | tambien en el control: 862
+
+===== C WR/RackViewBlockEraser | SOLO en el texto nuevo: 281
+  tests/RackCad.Tests/AgentExecutionProtocolTests.cs:43  lit='Tests'
+      -> ortedException(); | PushBackViewEraseGuardTests | PushBackWritePathPluginGuardTests | tests
+  tests/RackCad.Tests/AgentExecutionProtocolTests.cs:724  lit='Tests'
+      -> ortedException(); | PushBackViewEraseGuardTests | PushBackWritePathPluginGuardTests | tests
+  tests/RackCad.Tests/BomExcel/ConsolidatedBomXlsxDetailTests.cs:200  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs:47  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs:112  lit='PrepareRedraw'
+      -> Units | plan.Erasures | _definitions | Failed | PrepareRedraw | Reread | matches | _prepared | _erasures | src/
+  tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs:178  lit='PrepareRedraw'
+      -> Units | plan.Erasures | _definitions | Failed | PrepareRedraw | Reread | matches | _prepared | _erasures | src/
+  tests/RackCad.Tests/CallerOwnedTransactionGuardTests.cs:46  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/CallerOwnedTransactionGuardTests.cs:136  lit='Transaction transaction'
+      -> Collection<ObjectId> EraseInTransaction(Transaction transaction, ObjectId definitionId); | } |  | src/RackCad
+  tests/RackCad.Tests/CantileverPluginSourceGuardTests.cs:33  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/CantileverPluginSourceGuardTests.cs:148  lit='EraseViewBlocks'
+      -> Cad.Plugin/Views/RackViewBlockEraser.cs | EraseViewBlocks | transaction.GetObject(definitionId, Ope
+  tests/RackCad.Tests/CantileverPluginSourceGuardTests.cs:301  lit='\\bAutodesk\\.'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Eras
+  tests/RackCad.Tests/CantileverRoundTwoSourceGuardTests.cs:227  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/CantileverRoundTwoSourceGuardTests.cs:253  lit='\\bAutodesk\\.'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Eras
+  tests/RackCad.Tests/CantileverRoundTwoSourceGuardTests.cs:262  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/CantileverRoundTwoSourceGuardTests.cs:300  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/CantileverSourceGuardTests.cs:202  lit='\\bAutodesk\\.'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Eras
+  tests/RackCad.Tests/CantileverVisualRoleTests.cs:187  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/CantileverVisualRoleTests.cs:205  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/ComputedParameters/ComputedParametersPopulationGuardTests.cs:73  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/ComputedParameters/RackMetricProviderPurityTests.cs:36  lit='\\bAutodesk\\b'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Era
+  tests/RackCad.Tests/CustomPropertiesCommandGuardTests.cs:140  lit='OpenMode.ForRead'
+      -> cks | transaction.GetObject(definitionId, OpenMode.ForRead) as BlockTableRecord | IsLayout | InvalidOp
+  tests/RackCad.Tests/CustomPropertiesCommandGuardTests.cs:140  lit='OpenMode.ForWrite'
+      -> tion.Erase(); | transaction.GetObject(id, OpenMode.ForWrite) | internal static class RackViewBlockEra
+  tests/RackCad.Tests/CustomPropertiesCommandGuardTests.cs:182  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/CustomPropertiesCommandGuardTests.cs:297  lit='UpgradeOpen'
+      -> Services; | reference.Erase(); | definition.UpgradeOpen(); | definition.Erase(); | transaction.GetO
+  tests/RackCad.Tests/CustomPropertiesEdgeGuardTests.cs:288  lit='src/'
+      -> transaction, ObjectId definitionId); | } |  | src/RackCad.Plugin/Views/RackViewBlockEraser
+  tests/RackCad.Tests/CustomPropertiesEdgeGuardTests.cs:511  lit='src/RackCad.Plugin/'
+      -> transaction, ObjectId definitionId); | } |  | src/RackCad.Plugin/Views/RackViewBlockEraser.cs | EraseViewBl
+  tests/RackCad.Tests/CustomPropertiesEdgeGuardTests.cs:568  lit='Transaction'
+      -> ic IReadOnlyCollection<ObjectId> EraseInTransaction(Transaction transaction, ObjectId defin
+  tests/RackCad.Tests/CustomPropertiesEdgeGuardTests.cs:568  lit='Database'
+      -> Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Erase(); | definition.
+  tests/RackCad.Tests/CustomPropertiesEdgeGuardTests.cs:624  lit='Transaction'
+      -> ic IReadOnlyCollection<ObjectId> EraseInTransaction(Transaction transaction, ObjectId defin
+  tests/RackCad.Tests/CustomPropertiesEdgeGuardTests.cs:624  lit='Database'
+      -> Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Erase(); | definition.
+  tests/RackCad.Tests/CustomPropertiesEdgeGuardTests.cs:806  lit='\\bAutodesk\\b'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Era
+  tests/RackCad.Tests/CustomPropertiesEnvelopeGuardTests.cs:238  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/ExpressionCoreGuardTests.cs:41  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/ExpressionCoreGuardTests.cs:41  lit='Autodesk'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Era
+  tests/RackCad.Tests/ExpressionCoreGuardTests.cs:50  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/ExpressionCoreGuardTests.cs:50  lit='Autodesk'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Era
+  tests/RackCad.Tests/FirstViewFreedomGuardTests.cs:38  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/FirstViewFreedomGuardTests.cs:39  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/G16BlockNameTests.cs:169  lit='src/RackCad.Plugin/'
+      -> transaction, ObjectId definitionId); | } |  | src/RackCad.Plugin/Views/RackViewBlockEraser.cs | EraseViewBl
+  tests/RackCad.Tests/G16OrientationGuardTests.cs:82  lit='Autodesk'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Era
+  tests/RackCad.Tests/G16ProjectedEnvelopeTests.cs:103  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/G9bInsertWiringGuardTests.cs:12  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/G9bInsertWiringGuardTests.cs:26  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/G9bInsertWiringGuardTests.cs:45  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/G9bInsertWiringGuardTests.cs:58  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/G9bInsertWiringGuardTests.cs:59  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/G9bInsertWiringGuardTests.cs:73  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/I55G15Auth15ConsumerTests.cs:25  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/I55G15Auth15ConsumerTests.cs:46  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/I55G15Auth15ConsumerTests.cs:90  lit='.Erase('
+      -> desk.AutoCAD.DatabaseServices; | reference.Erase(); | definition.UpgradeOpen(); | definition.
+  tests/RackCad.Tests/I59F2BoundaryGuardTests.cs:20  lit='Autodesk.AutoCAD'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Erase(); | de
+  tests/RackCad.Tests/I59F2BoundaryGuardTests.cs:27  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/I59F2BoundaryGuardTests.cs:36  lit='Transaction'
+      -> ic IReadOnlyCollection<ObjectId> EraseInTransaction(Transaction transaction, ObjectId defin
+  tests/RackCad.Tests/I59F3ConsumerIntegrationTests.cs:134  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/I59F3CorrectionTests.cs:66  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/I59F3CorrectionTests.cs:82  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/I59F3CorrectionTests.cs:84  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/I60BatchCreationNamingTests.cs:111  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/I60RackLogicalNameTests.cs:126  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/I60RackNameWiringGuardTests.cs:136  lit='OpenMode.ForWrite'
+      -> tion.Erase(); | transaction.GetObject(id, OpenMode.ForWrite) | internal static class RackViewBlockEra
+  tests/RackCad.Tests/KindHandlerGuardSourceTests.cs:26  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/LinkedPropertyViewPayloadTests.cs:311  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/MainMenuStructuralSectionAccessGuardTests.cs:36  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/NamespaceFolderGuardTests.cs:53  lit='RackCad.Tests'
+      -> PushBackWritePathPluginGuardTests | tests/RackCad.Tests/ | src/RackCad.Plugin/Views/RackViewBlock
+  tests/RackCad.Tests/ProjectVariableMutationExecutorTests.cs:184  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/ProjectVariableMutationExecutorTests.cs:381  lit='Autodesk.AutoCAD'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Erase(); | de
+  tests/RackCad.Tests/ProjectVariableScanProjectionTests.cs:214  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/ProjectVariablesConformanceTests.cs:87  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/ProjectVariablesConformanceTests.cs:97  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/ProjectVariablesConformanceTests.cs:97  lit='Autodesk.AutoCAD'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Erase(); | de
+  tests/RackCad.Tests/ProjectVariablesConformanceTests.cs:110  lit='Autodesk.AutoCAD'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Erase(); | de
+  tests/RackCad.Tests/ProjectVariablesConformanceTests.cs:192  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/ProjectVariablesConformanceTests.cs:225  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/ProjectVariablesConformanceTests.cs:249  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/ProjectVariablesConformanceTests.cs:278  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/ProjectVariablesConformanceTests.cs:293  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/ProjectVariablesWorkspaceTests.cs:698  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/ProjectVariablesWorkspaceTests.cs:754  lit='Autodesk.AutoCAD'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Erase(); | de
+  tests/RackCad.Tests/ProjectVariablesWorkspaceTests.cs:756  lit='Transaction'
+      -> ic IReadOnlyCollection<ObjectId> EraseInTransaction(Transaction transaction, ObjectId defin
+  tests/RackCad.Tests/PushBackBomCommandGuardTests.cs:45  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/PushBackBomCommandGuardTests.cs:48  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/PushBackCellConfigurationDeliveryTests.cs:266  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/PushBackCellConfigurationDeliveryTests.cs:279  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/PushBackCellConfigurationDeliveryTests.cs:280  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/PushBackClassicCharacterizationPluginGuardTests.cs:141  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/PushBackDraftStatePortTests.cs:156  lit='RackCad.Tests'
+      -> PushBackWritePathPluginGuardTests | tests/RackCad.Tests/ | src/RackCad.Plugin/Views/RackViewBlock
+  tests/RackCad.Tests/PushBackEditableStateLoadTests.cs:155  lit='RackCad.Tests'
+      -> PushBackWritePathPluginGuardTests | tests/RackCad.Tests/ | src/RackCad.Plugin/Views/RackViewBlock
+  tests/RackCad.Tests/PushBackEditableStateOwnershipTests.cs:19  lit='RackCad.Tests'
+      -> PushBackWritePathPluginGuardTests | tests/RackCad.Tests/ | src/RackCad.Plugin/Views/RackViewBlock
+  tests/RackCad.Tests/PushBackFullEditorCharacterizationDimensionStyleLossTests.cs:34  lit='RackCad.Tests'
+      -> PushBackWritePathPluginGuardTests | tests/RackCad.Tests/ | src/RackCad.Plugin/Views/RackViewBlock
+  tests/RackCad.Tests/PushBackFullEditorCharacterizationLateralCutTests.cs:32  lit='RackCad.Tests'
+      -> PushBackWritePathPluginGuardTests | tests/RackCad.Tests/ | src/RackCad.Plugin/Views/RackViewBlock
+  tests/RackCad.Tests/PushBackFullEditorCharacterizationRoundingEffectTests.cs:39  lit='RackCad.Tests'
+      -> PushBackWritePathPluginGuardTests | tests/RackCad.Tests/ | src/RackCad.Plugin/Views/RackViewBlock
+  tests/RackCad.Tests/PushBackPluginSourceGuardTests.cs:33  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/PushBackRoundTripSourceGuardTests.cs:37  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/PushBackRoundTripSourceGuardTests.cs:68  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs:311  lit='src/RackCad.Plugin'
+      -> transaction, ObjectId definitionId); | } |  | src/RackCad.Plugin/Views/RackViewBlockEraser.cs | EraseViewB
+  tests/RackCad.Tests/RackDefinitionCreatorGuardTests.cs:41  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/RackDefinitionCreatorGuardTests.cs:107  lit='Transaction transaction'
+      -> Collection<ObjectId> EraseInTransaction(Transaction transaction, ObjectId definitionId); | } |  | src/RackCad
+  tests/RackCad.Tests/RackDefinitionCreatorGuardTests.cs:170  lit='BlockReference'
+      -> alidOperationException | BlockTableRecord | BlockReference | GetBlockReferenceIds(directOnly: true, 
+  tests/RackCad.Tests/RackDefinitionCreatorGuardTests.cs:438  lit='Erase('
+      -> esk.AutoCAD.DatabaseServices; | reference.Erase(); | definition.UpgradeOpen(); | definition.
+  tests/RackCad.Tests/RackDefinitionCreatorGuardTests.cs:481  lit='Erase('
+      -> esk.AutoCAD.DatabaseServices; | reference.Erase(); | definition.UpgradeOpen(); | definition.
+  tests/RackCad.Tests/RackProjectionCommandGuardTests.cs:259  lit='.Erase('
+      -> desk.AutoCAD.DatabaseServices; | reference.Erase(); | definition.UpgradeOpen(); | definition.
+  tests/RackCad.Tests/RackProjectionCommandGuardTests.cs:444  lit='Autodesk'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Era
+  tests/RackCad.Tests/RackUnitsGuardSourceTests.cs:35  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/RackUnitsGuardSourceTests.cs:90  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/RackViewBatchDriverGuardTests.cs:12  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/RackViewBatchDriverGuardTests.cs:13  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/RackViewBatchDriverGuardTests.cs:26  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/RackViewBatchDriverGuardTests.cs:40  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/RackViewBatchDriverGuardTests.cs:45  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/RackViewBatchDriverGuardTests.cs:46  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/RackViewBatchDriverGuardTests.cs:47  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/RackViewBatchDriverGuardTests.cs:48  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/RackViewBatchDriverGuardTests.cs:55  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/RegistryCommitAccreditationTests.cs:232  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/SelectiveAuthoredCarrierAdoptionTests.cs:204  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/SelectiveBindingIntentTests.cs:357  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/SelectiveBomAuthorityTests.cs:354  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/SelectiveBomAuthorityTests.cs:431  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/SelectiveDuplicationFailClosedTests.cs:295  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/SelectiveDuplicationFailClosedTests.cs:558  lit='UpgradeOpen'
+      -> Services; | reference.Erase(); | definition.UpgradeOpen(); | definition.Erase(); | transaction.GetO
+  tests/RackCad.Tests/SelectiveEditorOpenTests.cs:367  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/SelectiveEditorOpenTests.cs:501  lit='Autodesk.AutoCAD'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Erase(); | de
+  tests/RackCad.Tests/SelectiveEditorOpenTests.cs:504  lit='Transaction'
+      -> ic IReadOnlyCollection<ObjectId> EraseInTransaction(Transaction transaction, ObjectId defin
+  tests/RackCad.Tests/SelectiveEditorOpenTests.cs:568  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/SharedViewCodecTests.cs:107  lit='RackCad.Tests'
+      -> PushBackWritePathPluginGuardTests | tests/RackCad.Tests/ | src/RackCad.Plugin/Views/RackViewBlock
+  tests/RackCad.Tests/SharedViewFoundationCt04V2CharacterizationTests.cs:191  lit='RackCad.Tests'
+      -> PushBackWritePathPluginGuardTests | tests/RackCad.Tests/ | src/RackCad.Plugin/Views/RackViewBlock
+  tests/RackCad.Tests/SharedViewFoundationCt04V2CharacterizationTests.cs:207  lit='RackCad.Tests'
+      -> PushBackWritePathPluginGuardTests | tests/RackCad.Tests/ | src/RackCad.Plugin/Views/RackViewBlock
+  tests/RackCad.Tests/SharedViewFoundationF1CharacterizationTests.cs:50  lit='RackCad.Tests'
+      -> PushBackWritePathPluginGuardTests | tests/RackCad.Tests/ | src/RackCad.Plugin/Views/RackViewBlock
+  tests/RackCad.Tests/SharedViewFoundationF1CharacterizationTests.cs:364  lit='RackCad.Tests'
+      -> PushBackWritePathPluginGuardTests | tests/RackCad.Tests/ | src/RackCad.Plugin/Views/RackViewBlock
+  tests/RackCad.Tests/SharedViewFoundationF6Tests.cs:296  lit='Autodesk.AutoCAD.'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Erase(); | def
+  tests/RackCad.Tests/SiblingRedrawSeamGuardTests.cs:32  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/SiblingRedrawSeamGuardTests.cs:42  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/SiblingRedrawSeamGuardTests.cs:49  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/SiblingRedrawSeamGuardTests.cs:64  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/SiblingRedrawSeamGuardTests.cs:73  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonToolTests.cs:457  lit='RackCad.Tests'
+      -> PushBackWritePathPluginGuardTests | tests/RackCad.Tests/ | src/RackCad.Plugin/Views/RackViewBlock
+  tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonToolTests.cs:458  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandGuard.cs:88  lit='\\bStartTransaction\\b|\\bTransactionManager\\b|\\bLockDocument\\b|\\bUpgradeOpen\\b|\\bForWrite\\b|\\bRegen\\b'
+      -> Services; | reference.Erase(); | definition.UpgradeOpen(); | definition.Erase(); | transaction.GetO
+  tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandGuard.cs:142  lit='"\\)\\]'
+      -> IfRequested(_units); | [Conditional("DEBUG")] | RackViewBlockEraser.EraseInTransaction(
+  tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandGuard.cs:202  lit='\\.\\s*Code\\b'
+      -> prepared | _erasures | _staleDefinitions | Src.Code | RackViewBlockEraser.cs | throw new NotSup
+  tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsDumpSourceTests.cs:143  lit='tests/RackCad.Tests'
+      -> Tests | PushBackWritePathPluginGuardTests | tests/RackCad.Tests/ | src/RackCad.Plugin/Views/RackViewBlock
+  tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsDumpSourceTests.cs:160  lit='tests/RackCad.Tests'
+      -> Tests | PushBackWritePathPluginGuardTests | tests/RackCad.Tests/ | src/RackCad.Plugin/Views/RackViewBlock
+  tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsHardeningGuardTests.cs:87  lit='tests/RackCad.Tests'
+      -> Tests | PushBackWritePathPluginGuardTests | tests/RackCad.Tests/ | src/RackCad.Plugin/Views/RackViewBlock
+  tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsHardeningGuardTests.cs:97  lit='tests/RackCad.Tests'
+      -> Tests | PushBackWritePathPluginGuardTests | tests/RackCad.Tests/ | src/RackCad.Plugin/Views/RackViewBlock
+  tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsHardeningGuardTests.cs:98  lit='tests/RackCad.Tests'
+      -> Tests | PushBackWritePathPluginGuardTests | tests/RackCad.Tests/ | src/RackCad.Plugin/Views/RackViewBlock
+  tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsHardeningGuardTests.cs:141  lit='tests/RackCad.Tests'
+      -> Tests | PushBackWritePathPluginGuardTests | tests/RackCad.Tests/ | src/RackCad.Plugin/Views/RackViewBlock
+  tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsHardeningGuardTests.cs:227  lit='tests/RackCad.Tests'
+      -> Tests | PushBackWritePathPluginGuardTests | tests/RackCad.Tests/ | src/RackCad.Plugin/Views/RackViewBlock
+  tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsPackageTemplateTests.cs:761  lit='RackCad.Tests'
+      -> PushBackWritePathPluginGuardTests | tests/RackCad.Tests/ | src/RackCad.Plugin/Views/RackViewBlock
+  tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceGuardTests.cs:53  lit='tests/RackCad.Tests'
+      -> Tests | PushBackWritePathPluginGuardTests | tests/RackCad.Tests/ | src/RackCad.Plugin/Views/RackViewBlock
+  tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceGuardTests.cs:264  lit='tests/RackCad.Tests'
+      -> Tests | PushBackWritePathPluginGuardTests | tests/RackCad.Tests/ | src/RackCad.Plugin/Views/RackViewBlock
+  tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceGuardTests.cs:390  lit='src/RackCad.Plugin/'
+      -> transaction, ObjectId definitionId); | } |  | src/RackCad.Plugin/Views/RackViewBlockEraser.cs | EraseViewBl
+  tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceGuardTests.cs:501  lit='src/'
+      -> transaction, ObjectId definitionId); | } |  | src/RackCad.Plugin/Views/RackViewBlockEraser
+  tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceGuardTests.cs:510  lit='tests/RackCad.Tests/'
+      -> Tests | PushBackWritePathPluginGuardTests | tests/RackCad.Tests/ | src/RackCad.Plugin/Views/RackViewBlockE
+  tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceGuardTests.cs:527  lit='src/'
+      -> transaction, ObjectId definitionId); | } |  | src/RackCad.Plugin/Views/RackViewBlockEraser
+  tests/RackCad.Tests/StructuralSectionPluginSourceGuardTests.cs:49  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/StructuralSectionPluginSourceGuardTests.cs:53  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/StructuralSectionPluginSourceGuardTests.cs:64  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/StructuralSectionPluginSourceGuardTests.cs:121  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/StructuralSectionPluginSourceGuardTests.cs:124  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/Workspace/WorkspaceBridgeFacadeSourceGuardTests.cs:186  lit='TryDrain|ApplyContext|GetOrCreate|OnIdle\\s*\\(|_source\\.Attach|_source\\.Detach|_registry\\.Destroy|Autodesk|new\\s+WorkspaceSession|_started\\s*'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Era
+  tests/RackCad.Tests/Workspace/WorkspaceBridgeFacadeSourceGuardTests.cs:269  lit='\\bAutodesk\\.|RackCad\\.Plugin|RackCad\\.UI|System\\.Windows'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs:42  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs:142  lit='ShowModalDialog|ShowModelessDialog|ShowDialog|MessageBox|GetObject|OpenCloseTransaction|Highlight|Unhighlight'
+      -> Open(); | definition.Erase(); | transaction.GetObject(id, OpenMode.ForWrite) | internal static 
+  tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs:148  lit='GetObject'
+      -> Open(); | definition.Erase(); | transaction.GetObject(id, OpenMode.ForWrite) | internal static 
+  tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs:154  lit='GetObject'
+      -> Open(); | definition.Erase(); | transaction.GetObject(id, OpenMode.ForWrite) | internal static 
+  tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs:157  lit='GetObject'
+      -> Open(); | definition.Erase(); | transaction.GetObject(id, OpenMode.ForWrite) | internal static 
+  tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs:216  lit='\\b(?:Transaction|OpenCloseTransaction|DBObject|Document|Entity|BlockReference)\\b'
+      -> Collection<ObjectId> EraseInTransaction(Transaction transaction, ObjectId definitionId); | } | 
+  tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs:328  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs:364  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs:422  lit='\\bAutodesk\\.'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Eras
+  tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs:423  lit='RackCad\\.Plugin|RackCad\\.UI|System\\.Windows'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/Workspace/WorkspaceBrowserBoundaryTests.cs:237  lit='Autodesk'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Era
+  tests/RackCad.Tests/Workspace/WorkspaceBrowserHostGuardTests.cs:129  lit='ScanEnvelopes|LockDocument|StartTransaction|GetBlockReferenceIds|OpenMode'
+      -> tion.Erase(); | transaction.GetObject(id, OpenMode.ForWrite) | internal static class RackVie
+  tests/RackCad.Tests/Workspace/WorkspaceBrowserHostGuardTests.cs:275  lit='Autodesk|RackCad\\.Plugin|IWorkspaceNavigationPort|IWorkspaceHostPort|ExecuteAsync|NavigateAsync'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorGuardTests.cs:373  lit='\\b(?:StartTransaction|LockDocument|GetObject|Database)\\b'
+      -> Open(); | definition.Erase(); | transaction.GetObject(id, OpenMode.ForWrite) | internal static 
+  tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorGuardTests.cs:560  lit='\\bAutodesk\\.|System\\.IO|\\bRackLog\\b|System\\.Windows|RackCad\\.Plugin|RackCad\\.UI'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs:60  lit='^\\s*namespace\\s+([\\w\\.]+)\\s*(\\{|;)'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServic
+  tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs:82  lit='\\bAutodesk\\.|System\\.Windows|RackCad\\.Plugin|RackCad\\.UI|Autodesk\\.AutoCAD\\.Internal'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs:92  lit='using Autodesk.AutoCAD.DatabaseServices;'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Erase(); | definition.UpgradeOp
+  tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs:137  lit='using Autodesk.AutoCAD.DatabaseServices;'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Erase(); | definition.UpgradeOp
+  tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentGuardTests.cs:30  lit='Autodesk'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Era
+  tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentGuardTests.cs:30  lit='Autodesk'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Era
+  tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentGuardTests.cs:30  lit='using Autodesk.AutoCAD.DatabaseServices;'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Erase(); | definition.UpgradeOp
+  tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentGuardTests.cs:31  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentGuardTests.cs:31  lit='RackCad\\.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentGuardTests.cs:35  lit='Transaction'
+      -> ic IReadOnlyCollection<ObjectId> EraseInTransaction(Transaction transaction, ObjectId defin
+  tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentGuardTests.cs:35  lit='Transaction'
+      -> ic IReadOnlyCollection<ObjectId> EraseInTransaction(Transaction transaction, ObjectId defin
+  tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentGuardTests.cs:57  lit='^\\s*namespace\\s+([\\w\\.]+)\\s*(\\{|;)'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServic
+  tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs:58  lit='RackCad.Tests'
+      -> PushBackWritePathPluginGuardTests | tests/RackCad.Tests/ | src/RackCad.Plugin/Views/RackViewBlock
+  tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:125  lit='OpenMode\\.(?:ForWrite|ForNotify)|UpgradeOpen|AppendEntity|\\.Erase\\s*\\(|RackBlockData\\.Write|SetImpliedSelection|SetCurrentView|ProjectVariab'
+      -> desk.AutoCAD.DatabaseServices; | reference.Erase(); | definition.UpgradeOpen(); | definition.
+  tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:137  lit='\\bnamespace\\s+RackCad\\.Plugin\\.Views\\b'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServ
+  tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:300  lit='GetObject\\s*\\('
+      -> Open(); | definition.Erase(); | transaction.GetObject(id, OpenMode.ForWrite) | internal static c
+  tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:1023  lit='src/RackCad.Plugin/Views/'
+      -> transaction, ObjectId definitionId); | } |  | src/RackCad.Plugin/Views/RackViewBlockEraser.cs | EraseViewBlocks | t
+  tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:1039  lit='\\bAutodesk\\.|System\\.Windows|RackCad\\.Plugin|RackCad\\.UI|System\\.IO|\\bFile\\.|\\bRegistry\\b|RackLog'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/Workspace/WorkspaceHostC2SourceGuardTests.cs:112  lit='RequestReconciliation|EnqueueHint|OnIdle|TryDrain|Drained|AcApplication\\.Idle|SelectImplied|GetObject|StartTransaction|LockDocument|ActiveSe'
+      -> Open(); | definition.Erase(); | transaction.GetObject(id, OpenMode.ForWrite) | internal static 
+  tests/RackCad.Tests/Workspace/WorkspaceHostC2SourceGuardTests.cs:161  lit='GetSystemVariable|CMDACTIVE|SetSystemVariable|Database'
+      -> Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Erase(); | definition.
+  tests/RackCad.Tests/Workspace/WorkspaceHostC2SourceGuardTests.cs:242  lit='\\bAutodesk\\.|RackCad\\.Plugin|RackCad\\.UI|System\\.Windows'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/Workspace/WorkspaceHostPortGuardTests.cs:127  lit='Autodesk'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Era
+  tests/RackCad.Tests/Workspace/WorkspaceHostPortGuardTests.cs:234  lit='\\b(?:Autodesk|AcApplication|RackLog|StartTransaction|LockDocument|GetObject|SelectImplied)\\b'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Era
+  tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs:78  lit='\\bnew\\s+WorkspaceController\\b|PaletteSet|AddVisual|System\\.Windows|AutoCadEventBridge|StartTransaction|LockDocument|SelectImplied|GetObject'
+      -> Open(); | definition.Erase(); | transaction.GetObject(id, OpenMode.ForWrite) | internal static 
+  tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs:231  lit='\\bGetObject\\s*\\('
+      -> Open(); | definition.Erase(); | transaction.GetObject(id, OpenMode.ForWrite) | internal static c
+  tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs:232  lit='OpenMode.ForRead'
+      -> cks | transaction.GetObject(definitionId, OpenMode.ForRead) as BlockTableRecord | IsLayout | InvalidOp
+  tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs:316  lit='\\bGetObject\\s*\\('
+      -> Open(); | definition.Erase(); | transaction.GetObject(id, OpenMode.ForWrite) | internal static c
+  tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs:270  lit='\\bAutodesk\\.|RackCad\\.Plugin|RackCad\\.UI|System\\.Windows'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs:34  lit='\\bAutodesk\\.'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Eras
+  tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs:35  lit='System\\.Windows|RackCad\\.Plugin|RackCad\\.UI'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs:64  lit='using Autodesk.AutoCAD.DatabaseServices;'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Erase(); | definition.UpgradeOp
+  tests/RackCad.Tests/Workspace/WorkspaceNavigationEchoTests.cs:298  lit='Autodesk\\.|System\\.IO|Transaction'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Eras
+  tests/RackCad.Tests/Workspace/WorkspaceNavigationHostTests.cs:589  lit='GetBlockReferenceIds\\s*\\(\\s*directOnly:\\s*true'
+      -> ception | BlockTableRecord | BlockReference | GetBlockReferenceIds(directOnly: true, forceValidity: true) | UpgradeOpen() | Era
+  tests/RackCad.Tests/Workspace/WorkspaceNavigationHostTests.cs:664  lit='src/RackCad.Plugin/'
+      -> transaction, ObjectId definitionId); | } |  | src/RackCad.Plugin/Views/RackViewBlockEraser.cs | EraseViewBl
+  tests/RackCad.Tests/Workspace/WorkspaceNavigationHostTests.cs:676  lit='\\bGetObject\\s*\\('
+      -> Open(); | definition.Erase(); | transaction.GetObject(id, OpenMode.ForWrite) | internal static c
+  tests/RackCad.Tests/Workspace/WorkspaceNavigationPrivacyGuardTests.cs:77  lit='src/RackCad.Plugin/'
+      -> transaction, ObjectId definitionId); | } |  | src/RackCad.Plugin/Views/RackViewBlockEraser.cs | EraseViewBl
+  tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs:532  lit='Autodesk|RackCad\\.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/Workspace/WorkspacePilotCloseSyncGuardTests.cs:49  lit='([\\w>]+(?:\\[\\])*\\??)$'
+      -> RackViewBlockEraser.EraseInTransaction( | EraseUnit
+  tests/RackCad.Tests/Workspace/WorkspacePilotCloseSyncGuardTests.cs:186  lit='src/RackCad.Plugin/'
+      -> transaction, ObjectId definitionId); | } |  | src/RackCad.Plugin/Views/RackViewBlockEraser.cs | EraseViewBl
+  tests/RackCad.Tests/Workspace/WorkspacePilotCloseSyncGuardTests.cs:972  lit='RackCad.Tests'
+      -> PushBackWritePathPluginGuardTests | tests/RackCad.Tests/ | src/RackCad.Plugin/Views/RackViewBlock
+  tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs:913  lit='OpenMode\\.(?:ForWrite|ForNotify)|UpgradeOpen|AppendEntity|StartTransaction|LockDocument|SetSystemVariable|SendStringToExecute'
+      -> Services; | reference.Erase(); | definition.UpgradeOpen(); | definition.Erase(); | transaction.GetO
+  tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs:1028  lit='\\bAutodesk\\.|System\\.Windows|RackCad\\.Plugin|RackCad\\.UI|System\\.IO|\\bFile\\.'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs:32  lit='OpenMode.ForWrite'
+      -> tion.Erase(); | transaction.GetObject(id, OpenMode.ForWrite) | internal static class RackViewBlockEra
+  tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs:32  lit='OpenMode\\s*\\.\\s*(?:ForWrite|ForNotify)'
+      -> tion.Erase(); | transaction.GetObject(id, OpenMode.ForWrite) | internal static class RackViewBlockEra
+  tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs:33  lit='UpgradeOpen'
+      -> Services; | reference.Erase(); | definition.UpgradeOpen(); | definition.Erase(); | transaction.GetO
+  tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs:33  lit='\\bUpgradeOpen\\b'
+      -> Services; | reference.Erase(); | definition.UpgradeOpen(); | definition.Erase(); | transaction.GetO
+  tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs:35  lit='\\.\\s*Erase\\s*\\('
+      -> desk.AutoCAD.DatabaseServices; | reference.Erase(); | definition.UpgradeOpen(); | definition.
+  tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs:36  lit='Transaction'
+      -> ic IReadOnlyCollection<ObjectId> EraseInTransaction(Transaction transaction, ObjectId defin
+  tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs:36  lit='Transaction'
+      -> ic IReadOnlyCollection<ObjectId> EraseInTransaction(Transaction transaction, ObjectId defin
+  tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs:41  lit='Database'
+      -> Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Erase(); | definition.
+  tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs:42  lit='Autodesk'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Era
+  tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs:42  lit='\\bAutodesk\\b'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Era
+  tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs:42  lit='using Autodesk.AutoCAD.DatabaseServices;'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Erase(); | definition.UpgradeOp
+  tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs:43  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs:43  lit='RackCad\\s*\\.\\s*Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs:87  lit='^\\s*namespace\\s+([\\w\\.]+)\\s*(\\{|;)'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServic
+  tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs:403  lit='\\bAutodesk\\b|RackCad\\s*\\.\\s*Plugin|RackCad\\s*\\.\\s*UI|\\bTransactionManager\\b'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/Workspace/WorkspacePilotSurfaceGuardTests.cs:390  lit='Autodesk|RackCad\\.Plugin|WorkspaceHostCore|WorkspaceController|IWorkspaceHostPort'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:36  lit='RackPilotUpdateScope'
+      -> ceValidity: true) | UpgradeOpen() | Erase() | RackPilotUpdateScope.PrepareUnits | plan.Erasures | _definitions
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:38  lit='RackPilotMutationScope'
+      -> en el dibujo.") | BeginMutation | _erasures | RackPilotMutationScope : IPushBackPilotMutationScope, IPushBac
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:59  lit='Transaction'
+      -> ic IReadOnlyCollection<ObjectId> EraseInTransaction(Transaction transaction, ObjectId defin
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:59  lit='Transaction'
+      -> ic IReadOnlyCollection<ObjectId> EraseInTransaction(Transaction transaction, ObjectId defin
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:60  lit='Database'
+      -> Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Erase(); | definition.
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:63  lit='Autodesk'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Era
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:63  lit='Autodesk'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Era
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:63  lit='using Autodesk.AutoCAD.DatabaseServices;'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Erase(); | definition.UpgradeOp
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:64  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:64  lit='RackCad\\.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:83  lit='^\\s*namespace\\s+([\\w\\.]+)\\s*(\\{|;)'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServic
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:100  lit='Transaction'
+      -> ic IReadOnlyCollection<ObjectId> EraseInTransaction(Transaction transaction, ObjectId defin
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:123  lit='Transaction'
+      -> ic IReadOnlyCollection<ObjectId> EraseInTransaction(Transaction transaction, ObjectId defin
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:185  lit='GetBlockReferenceIds'
+      -> ception | BlockTableRecord | BlockReference | GetBlockReferenceIds(directOnly: true, forceValidity: true) | 
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:189  lit='\\bErase\\s*\\('
+      -> esk.AutoCAD.DatabaseServices; | reference.Erase(); | definition.UpgradeOpen(); | definition.
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:189  lit='EraseViewBlocks'
+      -> Cad.Plugin/Views/RackViewBlockEraser.cs | EraseViewBlocks | transaction.GetObject(definitionId, Ope
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:195  lit='\\bForWrite\\b|\\bUpgradeOpen\\b|\\bAppendEntity\\b'
+      -> Services; | reference.Erase(); | definition.UpgradeOpen(); | definition.Erase(); | transaction.GetO
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:418  lit='\\[Conditional\\("DEBUG"\\)\\]'
+      ->  | _units++; FailUnitIfRequested(_units); | [Conditional("DEBUG")] | RackViewBlockEraser.EraseInTransaction(
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:441  lit='\\[Conditional\\("DEBUG"\\)\\]'
+      ->  | _units++; FailUnitIfRequested(_units); | [Conditional("DEBUG")] | RackViewBlockEraser.EraseInTransaction(
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:632  lit='directOnly: true'
+      -> ord | BlockReference | GetBlockReferenceIds(directOnly: true, forceValidity: true) | UpgradeOpen() | Era
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:635  lit='forceValidity: true'
+      ->  | GetBlockReferenceIds(directOnly: true, forceValidity: true) | UpgradeOpen() | Erase() | RackPilotUpdateS
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:637  lit='OpenMode.ForRead'
+      -> cks | transaction.GetObject(definitionId, OpenMode.ForRead) as BlockTableRecord | IsLayout | InvalidOp
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:637  lit='OpenMode.ForWrite'
+      -> tion.Erase(); | transaction.GetObject(id, OpenMode.ForWrite) | internal static class RackViewBlockEra
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:51  lit='Autodesk'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Era
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:51  lit='Autodesk'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Era
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:52  lit='Database'
+      -> Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Erase(); | definition.
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:62  lit='Transaction'
+      -> ic IReadOnlyCollection<ObjectId> EraseInTransaction(Transaction transaction, ObjectId defin
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:81  lit='Transaction'
+      -> ic IReadOnlyCollection<ObjectId> EraseInTransaction(Transaction transaction, ObjectId defin
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:112  lit='UpgradeOpen'
+      -> Services; | reference.Erase(); | definition.UpgradeOpen(); | definition.Erase(); | transaction.GetO
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:114  lit='.Erase('
+      -> desk.AutoCAD.DatabaseServices; | reference.Erase(); | definition.UpgradeOpen(); | definition.
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:560  lit='UpgradeOpen'
+      -> Services; | reference.Erase(); | definition.UpgradeOpen(); | definition.Erase(); | transaction.GetO
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:603  lit='\\bForWrite\\b'
+      -> e(); | transaction.GetObject(id, OpenMode.ForWrite) | internal static class RackViewBlockEra
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:604  lit='UpgradeOpen'
+      -> Services; | reference.Erase(); | definition.UpgradeOpen(); | definition.Erase(); | transaction.GetO
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:604  lit='\\bUpgradeOpen\\b'
+      -> Services; | reference.Erase(); | definition.UpgradeOpen(); | definition.Erase(); | transaction.GetO
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:607  lit='\\.Erase\\s*\\('
+      -> desk.AutoCAD.DatabaseServices; | reference.Erase(); | definition.UpgradeOpen(); | definition.
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:691  lit='src/RackCad.Plugin/'
+      -> transaction, ObjectId definitionId); | } |  | src/RackCad.Plugin/Views/RackViewBlockEraser.cs | EraseViewBl
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:857  lit='src/RackCad.Plugin/'
+      -> transaction, ObjectId definitionId); | } |  | src/RackCad.Plugin/Views/RackViewBlockEraser.cs | EraseViewBl
+  tests/RackCad.UI.Tests/CustomPropertiesHelpCensusTests.cs:155  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.UI.Tests/DialogWindowCharacterizationTests.cs:567  lit='RackCad.Plugin'
+      -> namespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.Databa
+  tests/RackCad.UI.Tests/DialogWindowContractTests.cs:284  lit='Autodesk'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Era
+  tests/RackCad.UI.Tests/EditorVisualShellTests.cs:594  lit='Autodesk'
+      -> amespace RackCad.Plugin.Views | { | } | using Autodesk.AutoCAD.DatabaseServices; | reference.Era
+  tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationSupport.cs:95  lit='RackCad.Tests'
+      -> PushBackWritePathPluginGuardTests | tests/RackCad.Tests/ | src/RackCad.Plugin/Views/RackViewBlock
+  tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationSupport.cs:103  lit='RackCad.Tests'
+      -> PushBackWritePathPluginGuardTests | tests/RackCad.Tests/ | src/RackCad.Plugin/Views/RackViewBlock
+  tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotCanonicalLineEndingTests.cs:39  lit='RackCad.Tests'
+      -> PushBackWritePathPluginGuardTests | tests/RackCad.Tests/ | src/RackCad.Plugin/Views/RackViewBlock
+  tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotCanonicalLineEndingTests.cs:71  lit='RackCad.Tests'
+      -> PushBackWritePathPluginGuardTests | tests/RackCad.Tests/ | src/RackCad.Plugin/Views/RackViewBlock
+  tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs:51  lit='RackCad.Tests'
+      -> PushBackWritePathPluginGuardTests | tests/RackCad.Tests/ | src/RackCad.Plugin/Views/RackViewBlock
+  tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs:326  lit='RackCad.Tests'
+      -> PushBackWritePathPluginGuardTests | tests/RackCad.Tests/ | src/RackCad.Plugin/Views/RackViewBlock
+
+===== C WR/RackViewBlockEraser | tambien en el control: 604

@@ -1,0 +1,494 @@
+=== tests/RackCad.Tests/CustomPropertiesProjectTests.cs:329
+                    .ToArray();
+    
+            private static IEnumerable<Type> ApplicationTypes()
+                => typeof(CustomPropertiesStore).Assembly.GetTypes().Where(type => type.IsPublic || type.IsNestedPublic);
+    
+            private static bool IsPropertyType(Type type)
+                => type.Namespace == "RackCad.Application.CustomProperties"
+                   || (type.Namespace == "RackCad.Application.Persistence" && type.Name.StartsWith("CustomPropert", StringComparison.Ordinal));
+    
+            private static bool IsProjectVariablesType(Type type)
+                => type.Namespace == "RackCad.Application.ProjectVariables"
+                   || type.Name.Contains("ProjectVariable", StringComparison.Ordinal);
+=== tests/RackCad.Tests/CustomPropertiesStoreTests.cs:1184
+            {
+                var forbidden = new[] { "Discard", "Descart", "Repair", "Repar", "Recover", "Reset", "Clear", "Force", "Purge" };
+    
+                var types = typeof(CustomPropertiesStore).Assembly.GetTypes()
+                    .Where(type => type.IsPublic && type.Name.StartsWith("CustomPropert", StringComparison.Ordinal))
+                    .ToList();
+    
+                Assert.True(types.Count >= 8, "El barrido apenas encontro tipos de propiedades personalizadas.");
+    
+                foreach (var type in types)
+                {
+                    var names = type.GetMembers(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly)
+=== tests/RackCad.Tests/ExpressionCoreGuardTests.cs:101
+            /// <summary>Los tipos compilados de un namespace y sus sub-namespaces, incluidos los generados por el compilador.</summary>
+            private static IReadOnlyList<Type> TypesOf(string ns)
+                => typeof(ExpressionParser).Assembly
+                    .GetTypes()
+                    .Where(type => type.Namespace != null
+                                   && (string.Equals(type.Namespace, ns, StringComparison.Ordinal)
+                                       || type.Namespace.StartsWith(ns + ".", StringComparison.Ordinal)))
+                    .ToList();
+    
+            // ================================================================ la barrida mira de verdad
+    
+            /// <summary>
+=== tests/RackCad.Tests/G7ContractTestSupport.cs:28
+            internal static IReadOnlyList<SymbolId> Dependencies(BoundExpression expression)
+            {
+                var method = ExpressionAssembly()
+                    .GetTypes()
+                    .Where(type => type.Namespace == typeof(BoundExpression).Namespace)
+                    .SelectMany(type => type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static))
+                    .Where(candidate => candidate.Name.IndexOf("Depend", StringComparison.OrdinalIgnoreCase) >= 0)
+                    .Where(candidate => candidate.GetParameters().Length == 1)
+                    .Where(candidate => candidate.GetParameters()[0].ParameterType.IsAssignableFrom(typeof(BoundExpression)))
+                    .FirstOrDefault(candidate => typeof(IEnumerable<SymbolId>).IsAssignableFrom(candidate.ReturnType));
+    
+                if (method == null)
+=== tests/RackCad.Tests/G7ContractTestSupport.cs:47
+            internal static G7EvaluationView Evaluate(params SymbolEntry[] entries)
+            {
+                var assembly = ExpressionAssembly();
+                var resultType = assembly.GetTypes().FirstOrDefault(type => type.Name == "RegistryEvaluation");
+                if (resultType == null)
+                {
+                    throw Missing("RegistryEvaluation");
+                }
+    
+                var context = Context(entries);
+                var factory = assembly.GetTypes()
+                    .Where(type => type.Namespace == typeof(BoundExpression).Namespace)
+=== tests/RackCad.Tests/G7ContractTestSupport.cs:54
+                }
+    
+                var context = Context(entries);
+                var factory = assembly.GetTypes()
+                    .Where(type => type.Namespace == typeof(BoundExpression).Namespace)
+                    .SelectMany(type => type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static))
+                    .Where(method => method.ReturnType == resultType)
+                    .Select(method => new { Method = method, Parameters = method.GetParameters() })
+                    .FirstOrDefault(candidate => candidate.Parameters.Length == 1
+                        && (candidate.Parameters[0].ParameterType.IsAssignableFrom(typeof(ExpressionContext))
+                            || candidate.Parameters[0].ParameterType.IsAssignableFrom(typeof(SymbolTable))));
+    
+=== tests/RackCad.Tests/G9BehavioralContractSupport.cs:177
+                => RepairDecisionReason.Create(kind, data);
+    
+            private static Type ProductType(params string[] names)
+                => typeof(MutationPlan).Assembly.GetTypes().FirstOrDefault(type => names.Any(name =>
+                    string.Equals(type.Name, name, StringComparison.Ordinal)))
+                    ?? throw Missing(string.Join("/", names) + " product behavior");
+    
+            private static object InvokeCompatibleStatic(Type type, object[] args, params string[] names)
+                => TryInvokeCompatibleStatic(type, args, names) ?? throw Missing(type.Name + "." + string.Join("/", names));
+    
+            private static object TryInvokeCompatibleStatic(Type type, object[] args, params string[] names)
+            {
+=== tests/RackCad.Tests/G9ContractTestSupport.cs:93
+            internal static Type RequireType(string capability, params string[] names)
+            {
+                var assembly = typeof(MutationPlan).Assembly;
+                var type = assembly.GetTypes().FirstOrDefault(candidate =>
+                    names.Any(name => string.Equals(candidate.Name, name, StringComparison.Ordinal)));
+                return type ?? throw Missing(capability);
+            }
+    
+            internal static void RequirePlanReadSetSurface()
+            {
+                var readSet = RequireType("PlanReadSet", "PlanReadSet");
+                RequireType("SymbolResultObservation", "SymbolResultObservation");
+=== tests/RackCad.Tests/G9ContractTestSupport.cs:161
+            internal static void RequireNamedCapability(string capability, params string[] names)
+            {
+                var assembly = typeof(MutationPlan).Assembly;
+                var exists = assembly.GetTypes().Any(type => names.Any(name =>
+                        type.Name.IndexOf(name, StringComparison.OrdinalIgnoreCase) >= 0)
+                    || type.GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
+                        .Any(member => names.Any(name => member.Name.IndexOf(name, StringComparison.OrdinalIgnoreCase) >= 0)));
+                if (!exists)
+                {
+                    throw Missing(capability);
+                }
+            }
+=== tests/RackCad.Tests/HeaderBatchContractTests.cs:480
+            {
+                // Un tipo nuevo del nucleo que nadie agrego a las raices escaparia de C-08, C-09 y C-10 en silencio.
+                var guarded = new HashSet<Type>(SharedFoundationInspection.Roots);
+                var headerTypes = typeof(HeaderConfigurationSnapshot).Assembly.GetTypes()
+                    .Where(type => type.Namespace == SharedFoundationInspection.SharedNamespace && !type.IsNested)
+                    .Where(type => type.Name.StartsWith("Header", StringComparison.Ordinal))
+                    .ToList();
+    
+                Assert.NotEmpty(headerTypes);
+                Assert.All(headerTypes, type => Assert.True(guarded.Contains(type), type.FullName + " no esta en SharedFoundationInspection.Roots."));
+                Assert.All(SharedFoundationInspection.Roots, root => Assert.Equal(SharedFoundationInspection.SharedNamespace, root.Namespace));
+            }
+=== tests/RackCad.Tests/HeaderBatchContractTests.cs:495
+            [Fact]
+            public void C10_GUARDA_SHARED_NO_CONTIENE_POLITICA_DE_COBERTURA_STAGEINERT_NI_EJECUTOR_GENERICO()
+            {
+                var shared = typeof(HeaderConfigurationSnapshot).Assembly.GetTypes()
+                    .Where(type => type.Namespace == SharedFoundationInspection.SharedNamespace)
+                    .ToList();
+                Assert.Contains(shared, type => type == typeof(RackModuleEditSession)); // premisa: el alcance es el Shared real
+    
+                var offenders = new List<string>();
+    
+                // Todo Shared, no solo lo nuevo: ningun tipo ni miembro con esas responsabilidades.
+                var forbiddenTypeFragments = new[] { "Coverage", "StageInert", "OmitAndReport", "Executor", "BatchService", "Engine", "Callback" };
+=== tests/RackCad.Tests/NoProductPlannerGuardTests.cs:13
+            [Fact]
+            public void ProductPreparePublicContractHasNoObjectDynamicJsonReflectionOrAutoCad()
+            {
+                var types = typeof(RackProductPreparer<,,>).Assembly.GetExportedTypes()
+                    .Where(type => type.Namespace == "RackCad.Application.Views.Preparation")
+                    .ToArray();
+    
+                Assert.NotEmpty(types);
+                Assert.DoesNotContain(types.SelectMany(type => type.GetProperties()),
+                    property => property.PropertyType == typeof(object));
+                Assert.DoesNotContain(types.SelectMany(type => type.GetMethods()),
+                    method => method.Name.Contains("Json", StringComparison.OrdinalIgnoreCase)
+=== tests/RackCad.Tests/ProjectVariablesConformanceTests.cs:137
+                const string nucleo = "RackCad.Application.Expressions";
+    
+                var tiposDelNucleo = typeof(ExpressionParser).Assembly
+                    .GetTypes()
+                    .Where(type => !type.IsNested
+                                   && type.Namespace != null
+                                   && (type.Namespace == nucleo || type.Namespace.StartsWith(nucleo + ".", StringComparison.Ordinal))
+                                   && !type.IsDefined(typeof(CompilerGeneratedAttribute), false))
+                    .Select(type => type.Name.Split('`')[0])
+                    .Distinct(StringComparer.Ordinal)
+                    .ToList();
+    
+=== tests/RackCad.Tests/RackModuleEditSessionTests.cs:497
+            public void TheFoundation_HasNoPublicDiscardPolicy_BecauseDiscardIsNotAnOrdinaryOutcome()
+            {
+                var exported = typeof(RackModuleReconciliation).Assembly
+                    .GetExportedTypes()
+                    .Select(type => type.Name)
+                    .ToList();
+    
+                Assert.DoesNotContain("RackModuleCustomizationPolicy", exported);
+                Assert.DoesNotContain(
+                    typeof(RackModuleReconciliation).GetMethods().SelectMany(m => m.GetParameters()),
+                    parameter => parameter.ParameterType.IsEnum);
+            }
+=== tests/RackCad.Tests/RackViewCountInvariantTests.cs:39
+            public void G14_THE_PLACEMENT_CONTRACT_HAS_NO_COPY_OR_RESTAMP_SURFACE()
+            {
+                var names = typeof(RackProjectedPlacement).Assembly
+                    .GetTypes()
+                    .Where(type => type.Namespace == typeof(RackProjectedPlacement).Namespace)
+                    .SelectMany(type => type.GetMembers())
+                    .Select(member => member.Name)
+                    .ToArray();
+    
+                Assert.DoesNotContain(names, name => name.Contains("NewRackId", StringComparison.Ordinal));
+                Assert.DoesNotContain(names, name => name.Contains("Restamp", StringComparison.Ordinal));
+                Assert.DoesNotContain(names, name => name.Contains("CopyName", StringComparison.Ordinal));
+=== tests/RackCad.Tests/SharedPhysicalFactsTests.cs:107
+            public void AUTH07_CONTRACT_HAS_NO_COPY_OR_GENERATED_IDENTITY_POLICY()
+            {
+                var publicNames = typeof(RackPhysicalSelection).Assembly
+                    .GetTypes()
+                    .Where(type => type.Namespace == typeof(RackPhysicalSelection).Namespace
+                        && (type.Name.StartsWith("RackPhysical", StringComparison.Ordinal)
+                            || type.Name.StartsWith("RackTransform", StringComparison.Ordinal)))
+                    .SelectMany(type => type.GetMembers())
+                    .Select(member => member.Name)
+                    .ToArray();
+    
+                Assert.DoesNotContain(publicNames, name => name.Contains("NewRackId", StringComparison.Ordinal));
+=== tests/RackCad.Tests/SharedPhysicalFactsTests.cs:125
+            public void AUTH06_APPLICATION_CONTRACT_EXPOSES_NO_AUTOCAD_RUNTIME_TYPES()
+            {
+                var boundaryTypes = typeof(RackPhysicalSelection).Assembly
+                    .GetTypes()
+                    .Where(type => type.Namespace == typeof(RackPhysicalSelection).Namespace
+                        && type.Name.StartsWith("RackPhysical", StringComparison.Ordinal))
+                    .SelectMany(type => type.GetMembers())
+                    .SelectMany(member => member switch
+                    {
+                        System.Reflection.PropertyInfo property => new[] { property.PropertyType },
+                        System.Reflection.MethodInfo method => method.GetParameters().Select(parameter => parameter.ParameterType)
+                            .Append(method.ReturnType),
+=== tests/RackCad.Tests/SharedViewFoundationF5Tests.cs:226
+            [Fact]
+            public void AUTH09_11_PUBLIC_CONTRACTS_HAVE_NO_AUTOCAD_TYPES()
+            {
+                var contractTypes = typeof(RackResolveResult<>).Assembly.GetExportedTypes()
+                    .Where(type => type.Namespace == "RackCad.Application.Systems.Shared")
+                    .Where(type => type.Name.StartsWith("RackResolve", StringComparison.Ordinal)
+                        || type.Name.StartsWith("IRackResolve", StringComparison.Ordinal)
+                        || type.Name.StartsWith("RackPrepared", StringComparison.Ordinal)
+                        || type.Name.StartsWith("RackViewPreparation", StringComparison.Ordinal)
+                        || type.Name.StartsWith("IRackViewPreparation", StringComparison.Ordinal)
+                        || type.Name == nameof(RackViewBaseName))
+                    .ToArray();
+=== tests/RackCad.Tests/SharedViewFoundationF6Tests.cs:220
+            [Fact]
+            public void AUTH12_13_PUBLIC_CONTRACTS_HAVE_NO_AUTOCAD_OBJECT_OR_REFLECTION_ESCAPE()
+            {
+                var contracts = typeof(LibraryBlockRequirement).Assembly.GetExportedTypes()
+                    .Where(type => type.Namespace == "RackCad.Application.Systems.Shared")
+                    .Where(type => type.Name.Contains("LibraryBlock", StringComparison.Ordinal)
+                        || type.Name.Contains("RackAuthored", StringComparison.Ordinal))
+                    .ToArray();
+                Assert.NotEmpty(contracts);
+                Assert.DoesNotContain(contracts.SelectMany(type => type.GetProperties()),
+                    property => property.PropertyType == typeof(object));
+                Assert.DoesNotContain(contracts.SelectMany(type => type.GetMethods()),
+=== tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisModelBuilderTests.cs:561
+            [Fact]
+            public void NoExistenAnalyzeNiReadResultsNiEscrituraDeArchivosEnLaCapaNeutral()
+            {
+                var types = typeof(StructuralModelBuilder).Assembly.GetTypes()
+                    .Where(t => t.Namespace == "RackCad.Application.StructuralAnalysis")
+                    .ToList();
+                var members = types
+                    .SelectMany(t => t.GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly))
+                    .Select(m => m.Name)
+                    .ToList();
+    
+                Assert.NotEmpty(types);
+=== tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisModelTests.cs:23
+                new StructuralPosition(Inches(x), Inches(y), Inches(z));
+    
+            private static IEnumerable<Type> ModelTypes() =>
+                typeof(StructuralModel).Assembly.GetTypes()
+                    .Where(t => t.Namespace == "RackCad.Application.StructuralAnalysis" && t.IsPublic);
+    
+            [Fact]
+            public void ElModeloEsInmutable_NingunaPropiedadPublicaTieneSetter()
+            {
+                var modelTypes = new[]
+                {
+                    typeof(StructuralModel), typeof(StructuralModelMetadata), typeof(StructuralSourceRef), typeof(StructuralNode),
+=== tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsDumpSourceTests.cs:179
+    
+            // ---------------------------------------------------------------- immutability and validation of the neutral types
+    
+            private static IEnumerable<Type> ReadbackTypes() => typeof(StructuralModelReadback).Assembly.GetTypes()
+                .Where(t => t.IsPublic && t.Namespace == "RackCad.Application.StructuralAnalysis"
+                            && (t.Name.StartsWith("StructuralReadback", StringComparison.Ordinal) || t.Name == "StructuralModelReadback"
+                                || t.Name == "StructuralTransferReadback" || t.Name == "StructuralPackageProvenance"))
+                .Where(t => t.IsClass);
+    
+            [Fact]
+            public void LosTiposNeutralesSonInmutablesSinSettersNiCamposPublicosEscribibles()
+            {
+=== tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisUnitTests.cs:208
+                        .ToList();
+    
+                    Assert.Empty(conversions);
+                    Assert.Empty(typeof(StructuralLength).Assembly.GetTypes()
+                        .Where(t => t.Namespace == "RackCad.Application.StructuralAnalysis")
+                        .SelectMany(t => t.GetMethods(BindingFlags.Public | BindingFlags.Static))
+                        .Where(m => (m.Name == "op_Implicit" || m.Name == "op_Explicit") && m.ReturnType == type));
+                }
+            }
+    
+            [Fact]
+            public void LasFabricasDeCantidadesNombranSuUnidad()
+=== tests/RackCad.Tests/Workspace/WorkspaceBrowserBoundaryTests.cs:87
+        public void TheBrowserFilesUseNoOtherWorkspaceTypeThanSessionIdAndSelectionContext()
+        {
+            var allowed = new HashSet<string>(StringComparer.Ordinal) { "SessionId", "SelectionContext" };
+            var workspaceNames = typeof(WorkspaceSession).Assembly.GetTypes()
+                .Where(t => t.Namespace == "RackCad.Application.Workspace" && !t.Name.StartsWith("Browser", StringComparison.Ordinal) && !t.Name.StartsWith("<", StringComparison.Ordinal))
+                .Select(t => t.Name)
+                .Where(n => !allowed.Contains(n))
+                .Distinct(StringComparer.Ordinal)
+                .ToList();
+            Assert.NotEmpty(workspaceNames);
+    
+            foreach (var path in BrowserFiles)
+=== tests/RackCad.Tests/Workspace/WorkspaceBrowserBoundaryTests.cs:287
+        [Fact]
+        public void TheWorkspaceNamespaceHoldsNoOtherTypeWithTabInItsNameThanTheTwoExemptOnes()
+        {
+            var offenders = typeof(WorkspaceSession).Assembly.GetTypes()
+                .Where(t => t.Namespace == "RackCad.Application.Workspace")
+                .Select(t => t.Name)
+                .Where(n => Regex.IsMatch(n, "Tab", RegexOptions.IgnoreCase) && n != "BrowserTabRecord" && n != "BrowserTabStatus")
+                .ToList();
+    
+            Assert.Empty(offenders);
+        }
+    
+=== tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs:35
+        private static IReadOnlyList<(string Path, string Code)> DraftFiles() => Src.Files(DraftsFolder);
+    
+        private static IReadOnlyList<Type> DraftTypes() =>
+            typeof(DraftRegistry).Assembly.GetTypes()
+                .Where(t => t.Namespace == DraftsNamespace && !t.IsDefined(typeof(CompilerGeneratedAttribute), false))
+                .ToList();
+    
+        private const BindingFlags AllMembers = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;
+    
+        // ------------------------------------------------------------------ the folder and its files
+    
+        [Fact]
+=== tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs:423
+        // ------------------------------------------------------------------ only SessionId of the parent namespace
+    
+        private static IReadOnlyList<string> ParentTypesOtherThanSessionId() =>
+            typeof(SessionId).Assembly.GetTypes()
+                .Where(t => t.Namespace == "RackCad.Application.Workspace" && !t.IsDefined(typeof(CompilerGeneratedAttribute), false))
+                .Select(t => Regex.Replace(t.Name, @"`\d+$", string.Empty))
+                .Where(n => n != nameof(SessionId))
+                .Distinct()
+                .ToList();
+    
+        /// <summary>The types of the parent namespace other than SessionId that a text names, plus any qualified name that is not the drafts namespace.</summary>
+        private static IReadOnlyList<string> ParentNamespaceViolations(string code)
+=== tests/RackCad.Tests/Workspace/WorkspaceDraftRegistryTests.cs:82
+            Assert.Empty(typeof(DraftSession<DraftForm>).GetConstructors(BindingFlags.Public | BindingFlags.Instance));
+            Assert.Empty(typeof(DraftIntentRead<DraftForm>).GetConstructors(BindingFlags.Public | BindingFlags.Instance));
+    
+            var producers = typeof(DraftRegistry).Assembly.GetTypes()
+                .Where(t => t.Namespace == "RackCad.Application.Workspace.Drafts" && t.IsPublic)
+                .SelectMany(t => t.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly))
+                .Where(m => m.ReturnType.IsGenericType && m.ReturnType.GetGenericTypeDefinition() == typeof(DraftSession<>))
+                .Select(m => m.DeclaringType!.Name + "." + m.Name)
+                .Where(n => !n.StartsWith("DraftBeginResult", StringComparison.Ordinal))
+                .OrderBy(n => n, StringComparer.Ordinal)
+                .ToArray();
+            Assert.Equal(new[] { "DraftRegistry.Find" }, producers);
+=== tests/RackCad.Tests/Workspace/WorkspaceDraftRegistryTests.cs:123
+        [Fact]
+        public void NoOperationOfTheCoreButTheReadFactoryCheckNowAndConfirmBaseTakesAStaleBaseAlone()
+        {
+            var types = typeof(DraftRegistry).Assembly.GetTypes().Where(t => t.Namespace == "RackCad.Application.Workspace.Drafts" && t.IsPublic).ToArray();
+    
+            // The only way to a read that can create a draft: the two factories of DraftIntentRead.
+            var readFactories = typeof(DraftIntentRead<DraftForm>).GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
+                .Select(m => m.Name).OrderBy(n => n, StringComparer.Ordinal).ToArray();
+            Assert.Equal(new[] { "Admitted", "NotAdmitted" }, readFactories);
+    
+            // The base alone is never accepted by an operation that creates, replaces or reloads a draft. CheckNow and, since F4-T4A1
+            // (D-T4A1-01), ConfirmBase are the only exceptions, and they are exempt by name: each one only COMPARES the base of a draft with a
+=== tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs:969
+        private static IReadOnlyList<string> CarriersWithoutCensus(IEnumerable<Type> census)
+        {
+            var known = census.ToHashSet();
+            return typeof(IWorkspacePilotEditPort).Assembly.GetTypes()
+                .Where(t => t.IsPublic && t.Namespace == "RackCad.Application.Workspace" && System.Text.RegularExpressions.Regex.IsMatch(t.Name, @"^Edit(?:Intent|Check|Confirm|Update)(?:Request|
+                .Where(t => !known.Contains(t))
+                .Select(t => t.Name)
+                .OrderBy(n => n, StringComparer.Ordinal)
+                .ToArray();
+        }
+    
+        [Fact]
+=== tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs:540
+        [Fact]
+        public void TheInstrumentationNamesCarryNoMetricsConcept()
+        {
+            var names = typeof(WorkspaceInstrumentation).Assembly.GetTypes()
+                .Where(t => t.Namespace == "RackCad.Application.Workspace" && t.Name.Contains("Measurement", StringComparison.Ordinal))
+                .Select(t => t.Name)
+                .ToList();
+    
+            Assert.NotEmpty(names);
+            Assert.All(names, n => Assert.DoesNotMatch(new Regex("Metric|Provider|Bom|Aggregat|ProjectSummary|TotalRacks", RegexOptions.IgnoreCase), n));
+        }
+    
+=== tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs:84
+        public void ModelHasNoMetricsProviderOrProjectSummaryConcepts()
+        {
+            var banned = new Regex(@"ProjectSummary|Metric|Provider|TotalRacks|Aggregat|Bom\b", RegexOptions.IgnoreCase);
+            foreach (var type in typeof(WorkspaceSession).Assembly.GetTypes()
+                         .Where(t => t.Namespace == "RackCad.Application.Workspace"))
+            {
+                Assert.DoesNotMatch(banned, type.Name);
+                foreach (var m in type.GetMembers(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly))
+                    Assert.DoesNotMatch(banned, m.Name);
+            }
+        }
+    
+=== tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs:96
+        [Fact]
+        public void ThereIsNoPerTabStateOrPerTabSubscriptions()
+        {
+            var types = typeof(WorkspaceSession).Assembly.GetTypes()
+                .Where(t => t.Namespace == "RackCad.Application.Workspace").ToList();
+            Assert.Contains(types, t => t == typeof(WorkspaceSession));
+            // I-64 F3-T1-BROWSER-CORE (INV-F3T1-15): only the exact names BrowserTabRecord and BrowserTabStatus are exempt from the Tab part.
+            // Subscription, Editor and Draft stay forbidden for every type, those two included.
+            Assert.DoesNotContain(types, t => Regex.IsMatch(t.Name, "Subscription|Editor|Draft", RegexOptions.IgnoreCase));
+            Assert.DoesNotContain(types, t => t.Name != "BrowserTabRecord" && t.Name != "BrowserTabStatus" && Regex.IsMatch(t.Name, "Tab", RegexOptions.IgnoreCase));
+            foreach (var p in typeof(WorkspaceSession).GetProperties())
+                Assert.DoesNotMatch(new Regex("Tab|Subscription|Draft|Handler", RegexOptions.IgnoreCase), p.Name);
+=== tests/RackCad.Tests/Workspace/WorkspaceNavigationPrivacyGuardTests.cs:110
+        [Fact]
+        public void NoNavigationTypeIsAPublicSharedApiOutsideTheWorkspaceNamespace()
+        {
+            var types = typeof(RackCad.Application.Workspace.NavigationTargets).Assembly.GetTypes()
+                .Where(t => NavigationNames.Contains(t.Name))
+                .ToArray();
+    
+            Assert.Equal(NavigationNames.Length, types.Length);
+            Assert.All(types, t => Assert.Equal("RackCad.Application.Workspace", t.Namespace));
+        }
+    }
+    
+=== tests/RackCad.UI.Tests/BoundedEditorContractTests.cs:99
+    
+                // Y no reaparece con otro nombre: nada en el ensamblado deriva del shell acotado.
+                var derived = typeof(RackCad.UI.Shell.RackBoundedEditorShell).Assembly
+                    .GetTypes()
+                    .Where(type => typeof(RackCad.UI.Shell.RackBoundedEditorShell).IsAssignableFrom(type)
+                        && type != typeof(RackCad.UI.Shell.RackBoundedEditorShell))
+                    .Select(type => type.FullName)
+                    .ToList();
+    
+                Assert.Empty(derived);
+            }
+    
+=== tests/RackCad.UI.Tests/BoundedEditorShellTests.cs:222
+                // they existed to protect: the bounded-editor shell has exactly ONE type, it lives in shared
+                // infrastructure, and nothing derives from it to re-plant a system's name on the archetype.
+                var derived = typeof(RackBoundedEditorShell).Assembly
+                    .GetTypes()
+                    .Where(type => typeof(RackBoundedEditorShell).IsAssignableFrom(type) && type != typeof(RackBoundedEditorShell))
+                    .ToList();
+    
+                Assert.Empty(derived);
+                Assert.Equal("RackCad.UI.Shell", typeof(RackBoundedEditorShell).Namespace);
+            }
+    
+            [Fact]
+=== tests/RackCad.UI.Tests/DynamicHeaderBatchSeamGuardTests.cs:88
+    
+                    // Y la ventana del Dinamico no declara ninguna ventana hija nueva para ellos.
+                    Assert.DoesNotContain(
+                        typeof(RackDynamicSystemWindow).Assembly.GetTypes(),
+                        type => typeof(Window).IsAssignableFrom(type)
+                                && type.Namespace == typeof(RackDynamicSystemWindow).Namespace
+                                && type != typeof(RackDynamicSystemWindow));
+                });
+            }
+    
+            [Fact]
+            public void D34_UnGestoCompleto_ConConfiguradorYReconstruccion_NoAbreNingunModal()
+=== tests/RackCad.UI.Tests/WindowCensusGuardTests.cs:89
+    
+            private static IReadOnlyList<Type> ConcreteWindows() =>
+                typeof(RackEditorVisualShell).Assembly
+                    .GetTypes()
+                    .Where(t => typeof(Window).IsAssignableFrom(t) && !t.IsAbstract)
+                    .OrderBy(t => t.Name, StringComparer.Ordinal)
+                    .ToList();
+    
+            private static IEnumerable<string> Census() =>
+                RichEditors.Concat(BoundedEditors).Concat(ConfigurationDialogs).Concat(Utilities).Concat(Infrastructure);
+    
+            [Fact]

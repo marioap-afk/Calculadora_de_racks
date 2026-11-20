@@ -83,3 +83,40 @@ Tu CA-T3a dio EMITIBLE TRAS CORRECCIONES, B 0 / I 1 / M 4.
 - el veredicto;
 - los hallazgos;
 - el literal.
+
+## 3. Recomprobación 2 (2026-11-20T02:06:29.596Z)
+
+Recomprobación de CA-T3a sobre la v4.5, antes de reemitir PB-T3a.
+
+**Lo que pasó:**
+- El Worker de PB-T3a, intento 1, paró antes del RED con PBT3A-C02, sin commits. El esqueleto de la v4.4 hacía que `PushBackFullComposition.cs` nombrara el piloto y declarara `ForWrite`, y la guarda existente G9 (`WorkspacePilotUpdateIntegrationGuardTests`) prohíbe `\bForWrite\b` en los archivos de Application que nombran el piloto.
+- El Owner decidió «Renombrar ForWrite» (F4B-E42; `hs65\pbt3acc\owner-pbt3a-g9-decision.md`).
+- La corrección va en el intento 2, con reemisión. El análisis de la sesión está en `hs65\pbt3acc\analysis.md`.
+
+**Añade** al final de `hs65\pbt3\independent-review-pbt3a-v43-check.md` una sección «§11. Recomprobación sobre la v4.5», con el veredicto en línea propia («**Veredicto: EMITIBLE …**»).
+
+**Entradas:**
+- `hs65\pbt3\I-64-f4b-pbt3-gate-contract-package-v45.md` (SHA 69411084…) y `v45-delta.md` (V45-01 a V45-05):
+  - `ForWrite` → `ForFullWrite`;
+  - el §4.1 nuevo, con el barrido de todas las guardas;
+  - la lección del §5.0;
+  - la precondición 11 de la reemisión;
+- el análisis de la sesión.
+
+**Qué comprobar:**
+1. **El renombrado,** completo y coherente en PB-T3a y PB-T3b: no queda ningún `ForWrite` de producto y `ForFullWrite` no casa con ningún término de ninguna guarda.
+2. **El barrido del §4.1:** hazlo tú de forma independiente, sobre los archivos nuevos o tocados de PB-T3a, b y c frente a TODAS las guardas de `tests/` que leen `src/`. Esta vez nos falló una guarda, y quiero una segunda mirada. ¿Hay otra colisión?
+3. **La reemisión en el intento 2,** en el §6.0 y la precondición 11: ¿es coherente con el análisis y con el régimen de corrección? Revisa en especial `ChainRedSha` null, `CorrectionOf` y la reutilización de los parches.
+4. **Decisiones nuevas para el Owner,** si las hay.
+
+**El `BOUNDED_RESULT`:** propón el literal final, alargado con «; recomprobacion v4.5: EMITIBLE, B 0 / I 0 / M n».
+
+**Reglas:**
+- objetos git en `18e4b783`; no hay delegaciones activas;
+- nada en el worktree;
+- Python con `-I`, escrito con Write.
+
+**Responde con:**
+- el veredicto;
+- los hallazgos;
+- el literal.

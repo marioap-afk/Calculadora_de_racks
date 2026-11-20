@@ -6,6 +6,8 @@
 
 **La remedición de la emisión de PB-T3a** (precondición 2 del paquete v4.4): **R-19**, sobre el cierre de PB-T2c (`f273eae1`, F4B-E40). No cambia nada frente a lo previsto.
 
+**La reemisión de PB-T3a** (F4B-E42; paquete v4.5): **R-20** corrige la lectura de la guarda G-9 en R-6. R-6 no se reescribe.
+
 **Lo que cambia en la v3** (la recomprobación de la v2, N-05 y N-07; V3-02, V3-05 y V3-07):
 - R-0 y R-17, medidos otra vez en `833ea6bf`, la HEAD de la rama: PB-T1b CERRADA, PB-T1c EMITIDA, F4B-E24 y F4B-E25 en git, y `src` igual que en `2f5d3dec`;
 - R-11 y R-12, al día (la medición pasa a INV-PBT3B-15, V3-08);
@@ -355,3 +357,25 @@ La comprobación acotada no puede medirla «sobre el esqueleto», como decía la
 | La decisión del Owner sobre nc1 (F4B-E40, `owner-pbt2c-nc1-decision.md`): la firma nueva PD-F4B-01 y su sustituto para el resto de F4B | Entra como autoridad del contrato sin cambiar la v4.4: los contratos de PB-T3 que no nombran el sustituto lo usan por esa decisión | Nueva, sin efecto en el texto del paquete |
 
 **Consecuencia:** la remedición no cambia nada material. El seco de PB-T3a sobre el cierre solo deja los AVISOS de la custodia de la emisión.
+
+## R-20. La lectura de G-9 en R-6, corregida (F4B-E42; V45-02)
+
+**Qué corrige:** la fila de G-9 de R-6 (IntegrationGuard G-9, «los archivos que nombran el piloto con API de escritura») se leyó como una regla solo del Plugin: «PB-T3b no toca el Plugin». **G-9 barre también todo Application:** los archivos de Application y del Plugin que nombran el piloto no pueden usar ninguno de sus veinte términos de escritura, entre ellos `\bForWrite\b`, salvo cuatro excepciones fijas con sus cuentas exactas (`WorkspacePilotUpdateIntegrationGuardTests.cs`: los términos en :600-608, el barrido en :677-699). R-6 se deja como estaba; esta entrada es la lectura que vale.
+
+**La consecuencia, medida:** la parada del intento 1 de PB-T3a es por eso.
+- **El Worker** `R20261120T001738Z-7d92` (delegación `R20261120T001442Z-903c`) paró con PBT3A-C02 antes del RED.
+- **Con el esqueleto exacto de la v4.4,** `Draft/PushBackFullComposition.cs`:
+  - nombra el piloto, porque usa `PushBackPilotMaterializer.NonPilotContentReason`, que reconoce `NamesThePilot`;
+  - y declara `ForWrite`, el nombre cerrado de D-PBT3-05.
+- **Falla** `G9NoFileOfThePluginOrOfApplicationThatNamesThePilotUsesAWriteApiOrALockOutsideTheFourExceptionsWithTheirExactCounts`.
+- **Con el nombre de la v4.4,** `BuildFull` de PP (PB-T3b) habría chocado igual.
+
+**La referencia:** F4B-E42, la decisión del Owner «Renombrar ForWrite» (`F4B-DRAFTS/coordinator/owner-pbt3a-g9-decision.md`), y V45-02 del paquete v4.5:
+- la fila de G-9 del §4, corregida;
+- y el barrido entero del §4.1.
+
+Con `ForFullWrite` (V45-01) no hay colisión con G-9 ni con ninguna otra guarda.
+
+**El método del barrido:** `name_check.py`, con el resumen de su salida en `name-check-sweep-summary.md` (`F4B-DRAFTS/pbt3/`).
+
+**Lo que no cambia:** G-9 y ninguna otra prueba existente; las demás filas de R-6.

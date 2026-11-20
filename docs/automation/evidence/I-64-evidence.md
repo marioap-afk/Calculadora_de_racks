@@ -8368,3 +8368,24 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - **La verificación** lleva las tres comprobaciones deterministas de F4B-E15, y la planificación, las colecciones opacas puestas por la sesión (F4B-E21).
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+## 266. PB-T3a: parada del intento 1, decisión del Owner y paquete del contrato v4.5 (F4B-E42)
+
+**Qué se custodia:**
+- **El paquete** `docs/initiatives/I-64-f4b-pbt3-gate-contract-package.md`, en su v4.5, byte a byte: el generador fija su SHA-256. La v4.4 que estaba custodiada pasa a la historia, como `F4B-DRAFTS/pbt3/package-v44.md`.
+- **El registro** `docs/initiatives/I-64-f4b-pbt3-measurements.md`, con una entrada nueva, R-20: corrige la lectura de G-9 de R-6 (G-9 barre también Application; la parada de PB-T3a es por eso; F4B-E42, V45-02). R-6 no se reescribe.
+- **En `F4B-DRAFTS/pbt3/`:**
+  - el delta v4.4 → v4.5, `v45-delta.md`;
+  - el método del barrido de colisiones del §4.1 (V45-02), `name_check.py`, y el resumen de sus salidas, `name-check-sweep-summary.md`. El volcado entero no se custodia;
+  - la comprobación acotada de PB-T3a (CA-T3a), con su recomprobación de la v4.5 (§11) y el encargo literal de cada ronda;
+  - la salida en seco del generador para la reemisión, sobre `18e4b783`.
+  - los guiones del revisor nuevos o cambiados: `cat3a_chain.py`, `cat3a_ctx.py`, `cat3a_g9.py`, `cat3a_reflect.py`, `cat3a_reflect_out.txt`, `cat3a_sweep.py`, `cat3a_sweep_out.txt`, `cat3a_sweep_sum.py`, `cat3a_sweep_v44_out.txt`.
+- **La decisión del Owner:** `F4B-DRAFTS/coordinator/owner-pbt3a-g9-decision.md`.
+- **El análisis de la sesión** para la corrección del intento 2: `F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/analysis.md` (sha256 `7a615033c57403ab52e3b254f81a87fbfad1fc1aae7fd95ad15281b0210e105a`).
+  - Va en este commit, y no en el de la reemisión, porque el contrato reemitido lo nombra como autoridad, y el generador solo lee lo que ya está en la revisión.
+  - El commit de la reemisión, que es la `ChainBaseSha` de la corrección, lo contiene igual.
+
+**La base:** la emisión de PB-T3a, F4B-E41 (`18e4b783`), sin commits del intento 1.
+
+**Las comprobaciones:** la comprobación acotada de la v4.5: `EMITIBLE TRAS CORRECCIONES; B 0 / I 1 / M 4; importantes corregidas en el paquete: I-01 (CT-PBT3A-09 y CT-PBT3B-01 sin el gesto inerte de BeamDepth); recomprobacion v4.4: EMITIBLE, B 0 / I 0 / M 1; recomprobacion v4.5: EMITIBLE, B 0 / I 0 / M 2`.
+
+**Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.
