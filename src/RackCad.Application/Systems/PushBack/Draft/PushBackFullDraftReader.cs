@@ -41,15 +41,79 @@ namespace RackCad.Application.Systems.PushBack.Draft
         public string ClassicEditorHint { get; }
     }
 
-    /// <summary>I-64 F4B PB-T3a (D-PBT3-04) — the reader of the FULL model, on top of the reader of the pilot.</summary>
+    /// <summary>
+    /// I-64 F4B PB-T3a (D-PBT3-04) — the reader of the FULL model, on top of the reader of the pilot. It changes neither the
+    /// pilot reader nor its 14 rules nor AUTH-13: every rule decides first, and only a read the pilot admits, or refuses
+    /// exactly for being two-sided (A/B), is materialized again as a full state.
+    /// </summary>
     public static class PushBackFullDraftReader
     {
         public static PushBackFullIntentResult Read(PushBackPilotIntentScan scan, RackCatalog catalog)
-            => new PushBackFullIntentResult(
-                PushBackPilotIntentReader.BuildStaleBase(scan),
-                DraftIntentRead<PushBackFullDraftState>.NotAdmitted(PushBackPilotIntentReader.MaterializeDiagnostic),
-                scan.OriginKey,
-                null,
-                PushBackPilotIntentReader.ClassicEditorHint);
+        {
+            if (scan == null) throw new ArgumentNullException(nameof(scan));
+            try
+            {
+                var pilot = PushBackPilotIntentReader.Read(scan, catalog);
+                var isTwoSided = !pilot.Read.IsAdmitted
+                                 && string.Equals(pilot.Read.Admission.Diagnostic, PushBackPilotIntentReader.OutOfPilotDiagnostic, StringComparison.Ordinal)
+                                 && string.Equals(pilot.Detail, PushBackPilotMaterializer.CompositeOutOfPilotReason, StringComparison.Ordinal);
+                if (!pilot.Read.IsAdmitted && !isTwoSided)
+                {
+                    return new PushBackFullIntentResult(
+                        pilot.StaleBase,
+                        DraftIntentRead<PushBackFullDraftState>.NotAdmitted(pilot.Read.Admission.Diagnostic),
+                        pilot.OriginKey,
+                        pilot.Detail,
+                        pilot.ClassicEditorHint);
+                }
+
+                var full = PushBackFullDraftMaterializer.Materialize(scan.RawEnvelopes[scan.OriginKey], catalog);
+                if (full.IsAdmitted)
+                {
+                    return new PushBackFullIntentResult(
+                        pilot.StaleBase,
+                        DraftIntentRead<PushBackFullDraftState>.Admitted(pilot.StaleBase, full.State),
+                        pilot.OriginKey,
+                        null,
+                        null);
+                }
+
+                if (full.Kind == PushBackPilotMaterializationKind.OutOfPilot)
+                {
+                    return new PushBackFullIntentResult(
+                        pilot.StaleBase,
+                        DraftIntentRead<PushBackFullDraftState>.NotAdmitted(PushBackPilotIntentReader.OutOfPilotDiagnostic),
+                        pilot.OriginKey,
+                        full.Reason,
+                        PushBackPilotIntentReader.ClassicEditorHint);
+                }
+
+                if (string.Equals(full.Reason, PushBackPilotMaterializer.UnreadableOrFutureDiagnostic, StringComparison.Ordinal))
+                {
+                    return new PushBackFullIntentResult(
+                        pilot.StaleBase,
+                        DraftIntentRead<PushBackFullDraftState>.NotAdmitted(PushBackPilotIntentReader.UnreadableDiagnostic),
+                        pilot.OriginKey,
+                        null,
+                        PushBackPilotIntentReader.ClassicEditorHint);
+                }
+
+                return new PushBackFullIntentResult(
+                    pilot.StaleBase,
+                    DraftIntentRead<PushBackFullDraftState>.NotAdmitted(PushBackPilotIntentReader.MaterializeDiagnostic),
+                    pilot.OriginKey,
+                    full.Reason,
+                    PushBackPilotIntentReader.ClassicEditorHint);
+            }
+            catch (Exception ex)
+            {
+                return new PushBackFullIntentResult(
+                    PushBackPilotIntentReader.BuildStaleBase(scan),
+                    DraftIntentRead<PushBackFullDraftState>.NotAdmitted(PushBackPilotIntentReader.MaterializeDiagnostic),
+                    scan.OriginKey,
+                    ex.Message,
+                    PushBackPilotIntentReader.ClassicEditorHint);
+            }
+        }
     }
 }
