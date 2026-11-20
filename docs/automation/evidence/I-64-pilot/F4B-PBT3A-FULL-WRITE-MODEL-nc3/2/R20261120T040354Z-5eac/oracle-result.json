@@ -1,0 +1,51 @@
+{
+  "Control": "nc3",
+  "RunId": "R20261120T040354Z-5eac",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "MutatedCheck": {
+    "FreeText": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "fail",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "FreeText"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "FreeText",
+    "FailureClass": "FreeText",
+    "Classification": "EXECUTION_REWORK_REQUIRED",
+    "Disposition": "REWORK",
+    "LaterChecksMustMatch": true
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "FreeText": "Read all seven complete handoff text fields and scanned case-insensitively for the 16.10 terms as whole words or phrases. WorkCompleted is 9893 characters and has one match at its final sentence, immediately after the fragment 'de la linea base llevan el arbol de BaseSha.' No matches in the other six fields."
+  },
+  "OutputSha256": "ADFD8EBA86EA772F5F84C0B6A744F8D7360397ECA109098FF535D5AF81CFAD8A",
+  "ManualFreeText1610": []
+}

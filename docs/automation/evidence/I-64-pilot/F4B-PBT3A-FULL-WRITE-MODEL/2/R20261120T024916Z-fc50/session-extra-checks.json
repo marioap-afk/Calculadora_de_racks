@@ -1,0 +1,65 @@
+{
+  "AllowedExact": true,
+  "ExactCopy.Authorities": true,
+  "ExactCopy.ForbiddenWriteScope": true,
+  "ExactCopy.Invariants": true,
+  "ExactCopy.RequiredTests": true,
+  "ExactCopy.ExpectedEvidence": true,
+  "ExactCopy.StopConditions": true,
+  "ExactCopy.Objective": true,
+  "NonAsciiBytes": 0,
+  "BackslashU": 0,
+  "ControlCharsInStrings": 0,
+  "CorrectionOf": {
+    "RunId": "R20261120T001738Z-7d92",
+    "FailureClass": "StopCondition",
+    "AnalysisSha256": "7a615033c57403ab52e3b254f81a87fbfad1fc1aae7fd95ad15281b0210e105a"
+  },
+  "CorrectionOfExact": true,
+  "TaskClass": "Implementacion transversal a capas (corta)",
+  "TaskClassExact": true,
+  "PromptProfile": "ROUTINE_IMPLEMENTATION",
+  "PromptProfileExact": true,
+  "Effort": {
+    "Semantic": "Deep",
+    "Provider": "high"
+  },
+  "Executor": {
+    "Provider": "Anthropic",
+    "Transport": "subagent",
+    "Role": "Worker",
+    "Cell": "anthropic/subagent/claude-sonnet-5-5"
+  },
+  "Model": "claude-sonnet-5-5",
+  "EffortExact": true,
+  "ModelEscalationReason": null,
+  "Dimensions": {
+    "Ambiguity": "Medium",
+    "ArchitecturalSensitivity": "High",
+    "Breadth": "Medium",
+    "ToolUse": "High",
+    "FailureCost": "High",
+    "MechanicalRepetition": "Medium",
+    "Horizon": "Medium"
+  },
+  "BaseSha": "485b5651bcec132761347b40ed38b60cfec0db04",
+  "AuthorityRevision": "5bda5569330d75fb2f03ae809ada1a47676139da",
+  "MainSha": "812baf879612320653094a8aaf46aca0bac81383",
+  "ChainFields": {
+    "ChainBaseSha": "485b5651bcec132761347b40ed38b60cfec0db04",
+    "ChainRedSha": null,
+    "ChainRedFiles": []
+  },
+  "AttemptFields": {
+    "Attempt": 2,
+    "AttemptsRemaining": 1,
+    "MaxReworkLoops": 3
+  },
+  "ExpectedHandoffPath": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/2/{WorkRunId}/worker-handoff.json",
+  "Owner": {
+    "Kind": "subagent",
+    "Id": "subagent:R20261120T024916Z-fc50"
+  },
+  "AcceptanceCriteriaCount": 17,
+  "IssuedBy": "Controller Codex (planificacion F4B-PBT3A-FULL-WRITE-MODEL, correccion del intento 2, CONTROLLER_PLANNING)"
+}

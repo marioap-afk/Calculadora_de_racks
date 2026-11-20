@@ -1,0 +1,559 @@
+{
+ "Schema": "rackcad-worker-handoff/v1",
+ "TaskId": "F4B-PBT3A-FULL-WRITE-MODEL",
+ "RunId": "R20261120T001738Z-7d92",
+ "DelegationRunId": "R20261120T001442Z-903c",
+ "Initiative": "I-64",
+ "Gate": "F4B",
+ "Attempt": 1,
+ "BaseSha": "18e4b78302d9010555e5c7b7a6c6f7384622c0e6",
+ "RedSha": null,
+ "CurrentSha": "18e4b78302d9010555e5c7b7a6c6f7384622c0e6",
+ "Branch": "architecture/workspace-persistente-rackcad",
+ "Worktree": "<worktree-de-I-64>",
+ "Pushed": false,
+ "FilesChanged": [],
+ "WorkCompleted": "PARADA ANTES DEL COMMIT RED (PBT3A-C02). No hay commit ni push: HEAD sigue en BaseSha y el arbol esta limpio. Trabajo hecho y conservado como parches bajo artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/: wip-red-tree.patch (esqueleto de los ocho archivos de Draft/ y las seis clases de prueba, git diff HEAD), rr/skeleton.patch (solo el esqueleto del RED), rr/green-wip.patch (borrador de la implementacion de D-PBT3-02 a D-PBT3-07 en los ocho archivos). Paso 0: lineas base de build y prueba de limpieza antes (tests/b0, tests/clean-before.txt). Paso 1: las anclas usadas por el diseno se sostienen. Mapa CT -> metodo: CT-PBT3A-01 PushBackFullDraftWindowParityTests.CT_PBT3A_01_TheSeatMatchesTheWindowAfterLoadExisting; CT-02 a 05 PushBackFullDraftLoadTests.CT_PBT3A_02 a 05; CT-06, 07 y 11 PushBackFullDraftCompositionTests.CT_PBT3A_06, 07 y 11; CT-08 PushBackFullDraftViewTests.CT_PBT3A_08; CT-09 y 10 PushBackFullDraftClassifierTests.CT_PBT3A_09 y 10; CT-12 a 14 PushBackDraftWriteGuardTests.CT_PBT3A_12 a 14. Esqueleto RED medido: el filtro RackCad.Tests.PushBackFullDraft da 10 seleccionadas y 10 Failed, todas por asercion y con la primera linea del StackTrace bajo tests/; RackCad.UI.Tests.PushBackFullDraftWindowParityTests da 1 de 1 (tests/r1/red-red-1.trx y red-red-2.trx, comprobados con inv/check-red-trx.py); las guardas pasan (3 de 3) y los demas filtros pasan salvo el de RackCad.Tests.Workspace. Con el borrador de la implementacion, sobre el arbol sin commit, los 10 metodos de Core, la prueba de UI y las 3 guardas pasan (tests/p1 a p5). Suite completa de Core sobre el esqueleto: 19107 resultados, 19096 Passed y 11 Failed (los 10 esperados mas G9).",
+ "TestsExecuted": [
+  {
+   "RunRef": "r1-red-others-1",
+   "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.Tests.PushBackDraftWriteGuardTests\" --logger \"trx;LogFileName=red-others-1.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+   "Phase": "RELEVANT",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1/red-others-1.trx"
+  },
+  {
+   "RunRef": "r1-red-others-2",
+   "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.Tests.Workspace\" --logger \"trx;LogFileName=red-others-2.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+   "Phase": "RELEVANT",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1/red-others-2.trx"
+  },
+  {
+   "RunRef": "r1-red-others-13",
+   "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=red-others-13.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+   "Phase": "RELEVANT",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1/red-others-13.trx"
+  },
+  {
+   "RunRef": "r1-red-others-14",
+   "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackStateNet\" --logger \"trx;LogFileName=red-others-14.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+   "Phase": "RELEVANT",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1/red-others-14.trx"
+  },
+  {
+   "RunRef": "r1-red-others-15",
+   "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection\" --logger \"trx;LogFileName=red-others-15.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+   "Phase": "RELEVANT",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1/red-others-15.trx"
+  },
+  {
+   "RunRef": "r1-red-others-16",
+   "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.Cantilever\" --logger \"trx;LogFileName=red-others-16.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+   "Phase": "RELEVANT",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1/red-others-16.trx"
+  },
+  {
+   "RunRef": "r1-red-others-17",
+   "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.Tests.I58F1\" --logger \"trx;LogFileName=red-others-17.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+   "Phase": "RELEVANT",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1/red-others-17.trx"
+  },
+  {
+   "RunRef": "r1-red-others-18",
+   "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.Tests.CustomPropertiesEnvelopeGuardTests\" --logger \"trx;LogFileName=red-others-18.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+   "Phase": "RELEVANT",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1/red-others-18.trx"
+  },
+  {
+   "RunRef": "r1-red-others-19",
+   "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.Tests.NamespaceFolderGuardTests\" --logger \"trx;LogFileName=red-others-19.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+   "Phase": "RELEVANT",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1/red-others-19.trx"
+  },
+  {
+   "RunRef": "r1-red-others-20",
+   "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.Tests.PushBackDraftStatePortTests\" --logger \"trx;LogFileName=red-others-20.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+   "Phase": "RELEVANT",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1/red-others-20.trx"
+  },
+  {
+   "RunRef": "r1-red-others-21",
+   "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.Tests.PushBackDraftPortSharedReferenceGuardTests\" --logger \"trx;LogFileName=red-others-21.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+   "Phase": "RELEVANT",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1/red-others-21.trx"
+  },
+  {
+   "RunRef": "r1-red-others-22",
+   "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.Tests.PushBackWorkspaceModeSourceGuardTests\" --logger \"trx;LogFileName=red-others-22.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+   "Phase": "RELEVANT",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1/red-others-22.trx"
+  },
+  {
+   "RunRef": "r1-red-others-23",
+   "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.Tests.PushBackWorkspaceSharedReferenceGuardTests\" --logger \"trx;LogFileName=red-others-23.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+   "Phase": "RELEVANT",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1/red-others-23.trx"
+  },
+  {
+   "RunRef": "r1-red-others-24",
+   "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceModeTests\" --logger \"trx;LogFileName=red-others-24.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+   "Phase": "RELEVANT",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1/red-others-24.trx"
+  },
+  {
+   "RunRef": "r1-red-others-25",
+   "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests\" --logger \"trx;LogFileName=red-others-25.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+   "Phase": "RELEVANT",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1/red-others-25.trx"
+  },
+  {
+   "RunRef": "r1-red-others-26",
+   "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFieldValidationConcordanceTests\" --logger \"trx;LogFileName=red-others-26.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+   "Phase": "RELEVANT",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1/red-others-26.trx"
+  },
+  {
+   "RunRef": "r1-red-others-27",
+   "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceCarryoverTests\" --logger \"trx;LogFileName=red-others-27.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+   "Phase": "RELEVANT",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1/red-others-27.trx"
+  },
+  {
+   "RunRef": "r1-red-others-3",
+   "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.Workspace\" --logger \"trx;LogFileName=red-others-3.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+   "Phase": "RELEVANT",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1/red-others-3.trx"
+  },
+  {
+   "RunRef": "r1-red-others-4",
+   "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.Tests.PushBackEditableState\" --logger \"trx;LogFileName=red-others-4.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+   "Phase": "RELEVANT",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1/red-others-4.trx"
+  },
+  {
+   "RunRef": "r1-red-others-5",
+   "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.Tests.PushBackEditorOutputGate\" --logger \"trx;LogFileName=red-others-5.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+   "Phase": "RELEVANT",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1/red-others-5.trx"
+  },
+  {
+   "RunRef": "r1-red-others-6",
+   "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.Tests.PushBackSharedReferenceGuardTests\" --logger \"trx;LogFileName=red-others-6.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+   "Phase": "RELEVANT",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1/red-others-6.trx"
+  },
+  {
+   "RunRef": "r1-red-others-7",
+   "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.Tests.PushBackWindowSharedReferenceGuardTests\" --logger \"trx;LogFileName=red-others-7.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+   "Phase": "RELEVANT",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1/red-others-7.trx"
+  },
+  {
+   "RunRef": "r1-red-others-8",
+   "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.Tests.PushBackWindowOnStateSourceGuardTests\" --logger \"trx;LogFileName=red-others-8.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+   "Phase": "RELEVANT",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1/red-others-8.trx"
+  },
+  {
+   "RunRef": "r1-red-others-9",
+   "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackWindowOnStateTests\" --logger \"trx;LogFileName=red-others-9.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+   "Phase": "RELEVANT",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1/red-others-9.trx"
+  },
+  {
+   "RunRef": "r1-red-others-10",
+   "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=red-others-10.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+   "Phase": "RELEVANT",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1/red-others-10.trx"
+  },
+  {
+   "RunRef": "r1-red-others-11",
+   "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=red-others-11.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+   "Phase": "RELEVANT",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1/red-others-11.trx"
+  },
+  {
+   "RunRef": "r1-red-others-12",
+   "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=red-others-12.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+   "Phase": "RELEVANT",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1/red-others-12.trx"
+  },
+  {
+   "RunRef": "r1-red-red-1",
+   "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.Tests.PushBackFullDraft\" --logger \"trx;LogFileName=red-red-1.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+   "Phase": "RED",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1/red-red-1.trx"
+  },
+  {
+   "RunRef": "r1-red-red-2",
+   "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullDraftWindowParityTests\" --logger \"trx;LogFileName=red-red-2.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+   "Phase": "RED",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1/red-red-2.trx"
+  },
+  {
+   "RunRef": "r1-core-full",
+   "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --no-build --logger \"trx;LogFileName=red-core-full.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+   "Phase": "RED",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1/red-core-full.trx"
+  },
+  {
+   "RunRef": "b0-build-core",
+   "Command": "dotnet build tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-incremental -v:minimal",
+   "Phase": "RELEVANT",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/b0/build-core.log"
+  },
+  {
+   "RunRef": "b0-build-ui",
+   "Command": "dotnet build tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Release --no-incremental -v:minimal",
+   "Phase": "RELEVANT",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/b0/build-ui.log"
+  },
+  {
+   "RunRef": "b0-build-plugin",
+   "Command": "dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Release --no-incremental -v:minimal -o artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/b0/plugin-out",
+   "Phase": "RELEVANT",
+   "TreeSha": null,
+   "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/b0/build-plugin.log"
+  }
+ ],
+ "TestResults": [
+  {
+   "RunRef": "r1-red-others-1",
+   "Selected": 3,
+   "Passed": 3,
+   "Failed": 0,
+   "Skipped": 0,
+   "FailedTests": []
+  },
+  {
+   "RunRef": "r1-red-others-2",
+   "Selected": 3482,
+   "Passed": 3481,
+   "Failed": 1,
+   "Skipped": 0,
+   "FailedTests": [
+    "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.G9NoFileOfThePluginOrOfApplicationThatNamesThePilotUsesAWriteApiOrALockOutsideTheFourExceptionsWithTheirExactCounts"
+   ]
+  },
+  {
+   "RunRef": "r1-red-others-13",
+   "Selected": 3,
+   "Passed": 3,
+   "Failed": 0,
+   "Skipped": 0,
+   "FailedTests": []
+  },
+  {
+   "RunRef": "r1-red-others-14",
+   "Selected": 14,
+   "Passed": 14,
+   "Failed": 0,
+   "Skipped": 0,
+   "FailedTests": []
+  },
+  {
+   "RunRef": "r1-red-others-15",
+   "Selected": 14,
+   "Passed": 14,
+   "Failed": 0,
+   "Skipped": 0,
+   "FailedTests": []
+  },
+  {
+   "RunRef": "r1-red-others-16",
+   "Selected": 67,
+   "Passed": 67,
+   "Failed": 0,
+   "Skipped": 0,
+   "FailedTests": []
+  },
+  {
+   "RunRef": "r1-red-others-17",
+   "Selected": 1912,
+   "Passed": 1912,
+   "Failed": 0,
+   "Skipped": 0,
+   "FailedTests": []
+  },
+  {
+   "RunRef": "r1-red-others-18",
+   "Selected": 22,
+   "Passed": 22,
+   "Failed": 0,
+   "Skipped": 0,
+   "FailedTests": []
+  },
+  {
+   "RunRef": "r1-red-others-19",
+   "Selected": 7,
+   "Passed": 7,
+   "Failed": 0,
+   "Skipped": 0,
+   "FailedTests": []
+  },
+  {
+   "RunRef": "r1-red-others-20",
+   "Selected": 3,
+   "Passed": 3,
+   "Failed": 0,
+   "Skipped": 0,
+   "FailedTests": []
+  },
+  {
+   "RunRef": "r1-red-others-21",
+   "Selected": 1,
+   "Passed": 1,
+   "Failed": 0,
+   "Skipped": 0,
+   "FailedTests": []
+  },
+  {
+   "RunRef": "r1-red-others-22",
+   "Selected": 1,
+   "Passed": 1,
+   "Failed": 0,
+   "Skipped": 0,
+   "FailedTests": []
+  },
+  {
+   "RunRef": "r1-red-others-23",
+   "Selected": 1,
+   "Passed": 1,
+   "Failed": 0,
+   "Skipped": 0,
+   "FailedTests": []
+  },
+  {
+   "RunRef": "r1-red-others-24",
+   "Selected": 3,
+   "Passed": 3,
+   "Failed": 0,
+   "Skipped": 0,
+   "FailedTests": []
+  },
+  {
+   "RunRef": "r1-red-others-25",
+   "Selected": 4,
+   "Passed": 4,
+   "Failed": 0,
+   "Skipped": 0,
+   "FailedTests": []
+  },
+  {
+   "RunRef": "r1-red-others-26",
+   "Selected": 1,
+   "Passed": 1,
+   "Failed": 0,
+   "Skipped": 0,
+   "FailedTests": []
+  },
+  {
+   "RunRef": "r1-red-others-27",
+   "Selected": 3,
+   "Passed": 3,
+   "Failed": 0,
+   "Skipped": 0,
+   "FailedTests": []
+  },
+  {
+   "RunRef": "r1-red-others-3",
+   "Selected": 681,
+   "Passed": 680,
+   "Failed": 0,
+   "Skipped": 1,
+   "FailedTests": []
+  },
+  {
+   "RunRef": "r1-red-others-4",
+   "Selected": 13,
+   "Passed": 13,
+   "Failed": 0,
+   "Skipped": 0,
+   "FailedTests": []
+  },
+  {
+   "RunRef": "r1-red-others-5",
+   "Selected": 1,
+   "Passed": 1,
+   "Failed": 0,
+   "Skipped": 0,
+   "FailedTests": []
+  },
+  {
+   "RunRef": "r1-red-others-6",
+   "Selected": 2,
+   "Passed": 2,
+   "Failed": 0,
+   "Skipped": 0,
+   "FailedTests": []
+  },
+  {
+   "RunRef": "r1-red-others-7",
+   "Selected": 1,
+   "Passed": 1,
+   "Failed": 0,
+   "Skipped": 0,
+   "FailedTests": []
+  },
+  {
+   "RunRef": "r1-red-others-8",
+   "Selected": 1,
+   "Passed": 1,
+   "Failed": 0,
+   "Skipped": 0,
+   "FailedTests": []
+  },
+  {
+   "RunRef": "r1-red-others-9",
+   "Selected": 2,
+   "Passed": 2,
+   "Failed": 0,
+   "Skipped": 0,
+   "FailedTests": []
+  },
+  {
+   "RunRef": "r1-red-others-10",
+   "Selected": 55,
+   "Passed": 55,
+   "Failed": 0,
+   "Skipped": 0,
+   "FailedTests": []
+  },
+  {
+   "RunRef": "r1-red-others-11",
+   "Selected": 10,
+   "Passed": 10,
+   "Failed": 0,
+   "Skipped": 0,
+   "FailedTests": []
+  },
+  {
+   "RunRef": "r1-red-others-12",
+   "Selected": 18,
+   "Passed": 16,
+   "Failed": 0,
+   "Skipped": 2,
+   "FailedTests": []
+  },
+  {
+   "RunRef": "r1-red-red-1",
+   "Selected": 10,
+   "Passed": 0,
+   "Failed": 10,
+   "Skipped": 0,
+   "FailedTests": [
+    "(ver el TRX)"
+   ]
+  },
+  {
+   "RunRef": "r1-red-red-2",
+   "Selected": 1,
+   "Passed": 0,
+   "Failed": 1,
+   "Skipped": 0,
+   "FailedTests": [
+    "(ver el TRX)"
+   ]
+  },
+  {
+   "RunRef": "r1-core-full",
+   "Selected": 19107,
+   "Passed": 19096,
+   "Failed": 11,
+   "Skipped": 0,
+   "FailedTests": [
+    "los 10 metodos de RackCad.Tests.PushBackFullDraft (esperado en el RED)",
+    "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.G9NoFileOfThePluginOrOfApplicationThatNamesThePilotUsesAWriteApiOrALockOutsideTheFourExceptionsWithTheirExactCounts"
+   ]
+  },
+  {
+   "RunRef": "b0-build-core",
+   "Selected": 0,
+   "Passed": 0,
+   "Failed": 0,
+   "Skipped": 0,
+   "FailedTests": []
+  },
+  {
+   "RunRef": "b0-build-ui",
+   "Selected": 0,
+   "Passed": 0,
+   "Failed": 0,
+   "Skipped": 0,
+   "FailedTests": []
+  },
+  {
+   "RunRef": "b0-build-plugin",
+   "Selected": 0,
+   "Passed": 0,
+   "Failed": 0,
+   "Skipped": 0,
+   "FailedTests": []
+  }
+ ],
+ "Evidence": [
+  "Causa de la parada: RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.G9NoFileOfThePluginOrOfApplicationThatNamesThePilotUsesAWriteApiOrALockOutsideTheFourExceptionsWithTheirExactCounts (tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:703-707; G9Violations :689-700; WriteTerms :599-609) falla en el RED con Assert.Empty de las violaciones, por src/RackCad.Application/Systems/PushBack/Draft/PushBackFullComposition.cs. Traza en artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/tests/r1/red-others-2.log y red-core-full.log.",
+  "Mecanismo: G9 recorre todo src/RackCad.Plugin y src/RackCad.Application; un archivo que nombra el piloto (PushBackPilot*, RackPilot* o el namespace Systems.PushBack.Pilot) no puede contener ningun termino de escritura fuera de sus cuatro excepciones. PushBackFullComposition.cs nombra el piloto porque el esqueleto exacto del paquete (ForWrite devuelve Rejected(PushBackPilotMaterializer.NonPilotContentReason)) y D-PBT3-05 usan sus constantes, y declara el metodo publico ForWrite de la API cerrada (D-PBT3-05), que coincide con el termino ForWrite (limite de palabra) de G9. Ocurre ya en el esqueleto y ocurriria igual en el GREEN.",
+  "Es la unica prueba existente que falla: la suite completa de Core da 11 Failed (los 10 metodos de PushBackFullDraft esperados y G9). Los demas filtros del RequiredTests pasan uno a uno en el RED (tests/r1/results-red-*.tsv); UI Workspace 681 seleccionadas, 0 Failed, 1 Skipped; PushBackFullEditorCharacterization UI 18 seleccionadas, 16 Passed y 2 Skipped existentes.",
+  "Prueba de limpieza: tests/clean-before.txt y tests/clean-after-red.txt son identicos (disposicion del configurador y biblioteca).",
+  "Lineas base de build Release en BaseSha: tests/b0/build-core.log, build-ui.log y build-plugin.log, 0 errores. Las builds Release del RED no se repitieron al parar antes del commit."
+ ],
+ "UnexpectedFindings": [
+  "El paquete v4.4 (seccion 4, G-9) y el contrato no preven la colision entre G9 y los archivos nuevos de Draft/ que nombran el piloto. Salidas: no nombrar el piloto en PushBackFullComposition.cs (duplicar constantes, contra D-PBT3-05, o cambiar el esqueleto exacto), renombrar ForWrite (cambia la API cerrada de INV-PBT3A-03) o anadir una excepcion a PilotExceptions (edita una prueba existente, PBT3A-C02). El Worker no elige ninguna.",
+  "G9 no falla en el HEAD: lo causa solo el archivo nuevo."
+ ],
+ "KnownLimitations": [
+  "No se ejecuto AutoCAD ni la suite completa de UI en local (INV-PBT3A-10); la CI correra la suite completa de UI.",
+  "El Worker no puede observar el uso del equipo mientras corren las pruebas.",
+  "No hay commit RED, CI del RED, reparacion del RED, GREEN, scripts de INV-PBT3A-01/03/04/05/06/14 sobre BaseSha..CurrentSha ni tres corridas en verde: la parada ocurre antes.",
+  "PB-T3b y PB-T3c quedan fuera de esta tarea.",
+  "El borrador de la implementacion se probo solo sobre el arbol sin commit; la lista cerrada de declaraciones (PBT3A-C13) no se comprobo con el script de inv/."
+ ],
+ "Deviations": [],
+ "OpenQuestions": [
+  "Como convive WorkspacePilotUpdateIntegrationGuardTests.G9 (existente) con PushBackFullComposition.ForWrite: excepcion declarada para G9 en una delegacion nueva, otro nombre de la API, o un archivo de Draft/ que no nombre el piloto."
+ ],
+ "WorkerStatus": "BLOCKED",
+ "Disposition": "BLOCKED",
+ "TriggeredStopConditions": [
+  "PBT3A-C02"
+ ],
+ "RecommendedNextAction": "Vuelta a la sesion y al Owner antes de emitir una correccion: decidir como convive G9 (existente, prohibida de editar) con PushBackFullComposition.cs. La entrega conserva las pruebas y el borrador de la implementacion ya escritos y validados (wip-red-tree.patch, rr/green-wip.patch) para reutilizarlos en la delegacion nueva.",
+ "Worker": {
+  "Provider": "Anthropic",
+  "ModelRequested": "claude-sonnet-5-5",
+  "EffortRequested": "high",
+  "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+ }
+}

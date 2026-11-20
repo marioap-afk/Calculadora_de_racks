@@ -1,0 +1,84 @@
+{
+  "GreenCoreFullDraft": {
+    "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullDraft",
+    "Selected": 10,
+    "Passed": 10,
+    "Failed": 0,
+    "Other": 0
+  },
+  "GreenCoreGuards": {
+    "Filter": "FullyQualifiedName~RackCad.Tests.PushBackDraftWriteGuardTests",
+    "Selected": 3,
+    "Passed": 3,
+    "Failed": 0,
+    "Other": 0
+  },
+  "GreenUiParity": {
+    "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullDraftWindowParityTests",
+    "Selected": 1,
+    "Passed": 1,
+    "Failed": 0,
+    "Other": 0
+  },
+  "GreenCoreAll": {
+    "Selected": 19107,
+    "Passed": 19107,
+    "Failed": 0
+  },
+  "GreenUiAll": {
+    "Selected": 2451,
+    "Passed": 2430,
+    "Failed": 0
+  },
+  "GreenG9": {
+    "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.G9NoFileOfThePluginOrOfApplicationThatNamesThePilotUsesAWriteApiOrALockOutsideTheFourExceptionsWithTheirExactCounts": "Passed",
+    "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.G9TripsOnAPilotFileThatRedrawsInPlaceThatWritesBlockDataThatOpensForWriteOrThatLocksASecondTime": "Passed"
+  },
+  "Red": {
+    "CoreFullDraft": {
+      "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullDraft",
+      "Selected": 10,
+      "Passed": 0,
+      "Failed": 10,
+      "Other": 0
+    },
+    "CoreGuards": {
+      "Filter": "FullyQualifiedName~RackCad.Tests.PushBackDraftWriteGuardTests",
+      "Selected": 3,
+      "Passed": 3,
+      "Failed": 0,
+      "Other": 0
+    },
+    "UiParity": {
+      "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullDraftWindowParityTests",
+      "Selected": 1,
+      "Passed": 0,
+      "Failed": 1,
+      "Other": 0
+    },
+    "G9": {
+      "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.G9NoFileOfThePluginOrOfApplicationThatNamesThePilotUsesAWriteApiOrALockOutsideTheFourExceptionsWithTheirExactCounts": "Passed",
+      "RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.G9TripsOnAPilotFileThatRedrawsInPlaceThatWritesBlockDataThatOpensForWriteOrThatLocksASecondTime": "Passed"
+    },
+    "PorAsercion": {
+      "Core": {
+        "Failed": 10,
+        "PorAsercion": 10
+      },
+      "Ui": {
+        "Failed": 1,
+        "PorAsercion": 1
+      }
+    },
+    "CoreAll": {
+      "Selected": 19107,
+      "Passed": 19097,
+      "Failed": 10
+    },
+    "UiAll": {
+      "Selected": 2451,
+      "Passed": 2429,
+      "Failed": 1
+    }
+  }
+}

@@ -1877,3 +1877,21 @@ Son los menores de la revisión independiente de PB-T2b, intento 1. El código c
 - **PBT2C-IR-M02:** el Worker leyó INV-PBT2C-10 de forma más estricta que el contrato. Creyó que solo admitía el filtro de la clase nueva en las corridas aisladas. La atribución de los fallos existentes del RED es correcta igualmente.
 - **CT-PBT2C-03, un límite de cobertura (M-13 de CA-T2c):** `PostBox=otro`, `CellInOutBeamBox=otro` y `CellInOutPeralteBox=otro` son gestos inertes con el catálogo de prueba, que tiene una sola opción en cada uno. Esos tres controles no se prueban en el camino al borrador. Conviene una prueba con un catálogo de prueba de dos opciones.
 - **OWNER-01 de la revisión de PB-T2c, informado al Owner:** en WORKSPACE, un lado B declarado sin frentes sobrevive en el estado del borrador mientras este vive, y una reapertura del editor desde ese borrador vuelve a mostrar el aviso. En CLASSIC, «Actualizar» escribe el diseño no compuesto y la declaración se pierde al reabrir. Qué escribe el panel lo deciden PB-T3 y PB-T4.
+
+## I-64 F4B PB-T3a — menores de la revisión independiente y dos lecciones de método (2026-11-20, registrados sin corregir)
+
+Son los menores de la revisión independiente de PB-T3a, intento 2. El código cumple el paquete v4.5; lo que falta es precisión de las pruebas.
+
+- **PBT3A-IR-M01:** el caso «modulo» de CT-PBT3A-06 no es exactamente la receta F-01 que cita el §5.0.
+- **PBT3A-IR-M02:** `cambio-llego` es tautológico en el caso «modulo»: el getter de `ModuleSession` abre la sesión si es nula.
+- **PBT3A-IR-M03:** varias pruebas llaman directamente a ayudantes de producto (`PushBackEditableStateSeat.Pass`, constructores y `Copy`), donde el paquete prescribe su propio camino.
+- **PBT3A-IR-M04:** CT-PBT3A-12 cubre menos que INV-PBT3A-06. Busca los cinco nombres del §5.2 con `\b` y no ve el comparador.
+- **PBT3A-IR-M05:** el fragmento de RR-3 ` reglas-sin-coincidencias=True`, con el espacio delante, no aparece literal en la clase. No hubo reparación, así que no tuvo efecto.
+- **PBT3A-IR-M06:** hay una divergencia latente entre el clasificador de producto y el oráculo que prescribe CT-PBT3A-09 en un caso de `DiffPaths`.
+- **PBT3A-IR-M07:** `PushBackFullDraftReader.Read` lanza `ArgumentNullException` con un escaneo nulo, y D-PBT3-04 dice «total». Es lo mismo que hace el lector del piloto.
+- **PBT3A-IR-M08:** en CT-PBT3A-06, la lectura «después» se toma tres operaciones más tarde de lo que dice el paquete.
+- **PBT3A-IR-M09:** ningún CT ejerce las ramas del paso 2 de D-PBT3-04 en las que el lector completo difiere del piloto sin admitir.
+
+**Dos lecciones de método,** con su traducción a los paquetes siguientes:
+- **Comprobar los archivos nuevos contra todas las guardas existentes antes de fijar el esqueleto.** La parada del intento 1 vino de G9, que barre también Application. Ya está en el §5.0 de la v4.5.
+- **Los sustitutos de control con literales de contrato:** cada paquete redacta la evidencia a su manera, así que un sustituto que exige un literal debe llevar la lista cerrada de los literales de cada paquete.

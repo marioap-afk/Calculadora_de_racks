@@ -1,0 +1,83 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT3A-FULL-WRITE-MODEL",
+  "RunId": "R20261120T035748Z-ad66",
+  "DelegationRunId": "R20261120T024916Z-fc50",
+  "WorkRunId": "R20261120T025240Z-f006",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; OutputWrittenUtc=2026-11-20T03:43:15.250991+00:00 follows Cession.StartUtc=2026-11-20T02:52:45Z. Notes report 0 persistent participants and 0 unattributable processes at exit and entry."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json matches TaskId=F4B-PBT3A-FULL-WRITE-MODEL, RunId=R20261120T025240Z-f006, DelegationRunId=R20261120T024916Z-fc50, Attempt=2, BaseSha=485b5651bcec132761347b40ed38b60cfec0db04, and the measured worktree and branch. OutputWrittenUtc follows cession start."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor 5bda5569330d75fb2f03ae809ada1a47676139da 485b5651bcec132761347b40ed38b60cfec0db04 exited 0. git diff --name-only AuthorityRevision BaseSha returned four docs paths: I-64-evidence.md, coordinator/gate-contract.json, coordinator/make_pbt3a_contract.py, and state/I-64.yml. The first, second, and fourth are UNIT_DOC; the Python path is not listed as an authority. No EXTERNAL authority path or UNIT_CHANGE section is in the diff. External authority files are unchanged from MainSha. git show of the cited analysis.md produced SHA-256 7a615033c57403ab52e3b254f81a87fbfad1fc1aae7fd95ad15281b0210e105a at both AuthorityRevision and BaseSha."
+    },
+    "Contract": {
+      "Result": "fail",
+      "Evidence": "A3 comparison of delegation.json with gate-contract.json: AllowedWriteScope has 13 entries in the delegation and 14 in the contract; the delegation omits src/RackCad.Application/Systems/PushBack/Draft/PushBackConflictClassifier.cs. ForbiddenWriteScope has 203 equal entries; Invariants, StopConditions, Authorities, and RequiredTests match. byte-fidelity-check.json says PASS and AllowedWriteScopeElementwiseInOrder=true, contradicting the supplied delegation. This triggers P-03 and S-04."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json CurrentSha=6919e17af9fdd5c702d454a97a3c5b6cc6be1739; git rev-parse HEAD and git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad both returned 6919e17af9fdd5c702d454a97a3c5b6cc6be1739. git branch --show-current returned architecture/workspace-persistente-rackcad. merge-base ancestry checks passed for BaseSha..CurrentSha and RedSha..CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: LsRemoteSha=6919e17af9fdd5c702d454a97a3c5b6cc6be1739 matches CurrentSha; OriginMainSha=812baf879612320653094a8aaf46aca0bac81383 matches MainSha. CurrentRun is completed push of the exact branch ref and CurrentSha."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "Read-only scope script printed the delegation AllowedWriteScope count (13) and each entry, then checked git diff --name-only BaseSha CurrentSha, BaseSha RedSha, and ChainBaseSha CurrentSha -- src tests by exact string equality. Each 14-path diff includes src/RackCad.Application/Systems/PushBack/Draft/PushBackConflictClassifier.cs with allowed=false; the other 13 paths are allowed. git diff --name-only RedSha CurrentSha -- src tests contains only seven Draft files and no tests. The missing delegated path triggers PBT3A-C01."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned empty. git check-ignore for artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL-nc2/2/R20261120T035748Z-ad66/inputs/worker-handoff.json returned that ignored path with exit 0."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun is completed push 44668584248, ref refs/heads/architecture/workspace-persistente-rackcad, exact CurrentSha, conclusion success; all four required jobs are success. RedRun is completed push 44666242222 on the same ref and exact RedSha: Core and UI tests failed, Build UI succeeded, Plugin build was skipped by needs. The provided Core and UI RED TRX match those runs."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Read all four supplied TRX and matched all 29 RequiredTests filters: each selected at least MinSelected, with no current failures; current Core has 19107 passed and 0 failed, current UI 2430 passed and 0 failed (2451 total, 21 NotExecuted). RED Core has exactly the 10 PushBackFullDraft tests failed; RED UI has exactly the 1 parity test failed. All 11 RED failures have assertion-style messages and stack traces under tests/, with no skipped or NotExecuted results in those filters. The three draft guards pass in RED and CurrentSha; the specified G9 guard and autoprueba pass in both Core TRX. Required non-RED filters meet their minima in RED and CurrentSha. TestResults and TestsExecuted in the handoff agree; local UI runs are contract filters, not a full suite or method filter. git diff RedSha CurrentSha -- src tests leaves RT untouched. git grep -w ForWrite on Draft/ is empty at RedSha and CurrentSha; ForFullWrite is declared in PushBackFullComposition.cs at both SHAs. ChainRedFiles is the six new PB-T3a test classes from BaseSha..RedSha."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha shows both RED and GREEN commits with Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching worker-handoff.json Worker.Trailer and the effective Worker model."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 with high effort. Work record records launch alias sonnet, effective model claude-sonnet-5-5, and effective effort high; its notes report 214 assistant turns with that model."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Read-only script scanned the complete seven free-text fields in worker-handoff.json, case-insensitively with complete-word/phrase boundaries against all 16.10 terms. Character counts: WorkCompleted=9882, Evidence=6311, UnexpectedFindings=1477, KnownLimitations=933, Deviations=0, OpenQuestions=0, RecommendedNextAction=170. No matches."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes report 0 permission denials and 3 tool errors, none pending. No denied permission, credential issue, or failed order remains unresolved."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Contract",
+  "TriggeredStopConditions": [
+    "S-04",
+    "P-03",
+    "PBT3A-C01"
+  ],
+  "Findings": [
+    "The delegation omits PushBackConflictClassifier.cs from its exact AllowedWriteScope although that path is changed in BaseSha..CurrentSha.",
+    "The delegation's scope conflicts with the contract, while byte-fidelity-check.json reports the two scopes equal; this is contradictory evidence.",
+    "All other evaluated checks pass, including the supplied CurrentSha CI and RED/CurrentSha TRX."
+  ],
+  "RecommendedNextAction": "Ask the Coordinator to resolve the delegation scope and byte-fidelity discrepancy before another verification."
+}

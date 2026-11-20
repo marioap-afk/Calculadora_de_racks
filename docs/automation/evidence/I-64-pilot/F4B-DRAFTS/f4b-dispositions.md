@@ -1324,3 +1324,49 @@ No hay cambios materiales.
   - C-3, el GREEN;
   - C-4, la reparación del RED, que sigue disponible.
 - **Lo que no cambia:** el diseño, D-1, las listas cerradas de CT, los `MinSelected`, el GREEN previsto y las pruebas existentes.
+
+## F4B-E43. Cierre de F4B-PBT3A-FULL-WRITE-MODEL, con la decisión del Owner sobre nc2
+
+**Paquete de cierre:** `F4B-PBT3A-FULL-WRITE-MODEL/task-close-package.md`.
+
+**La cadena:**
+- **La emisión** (F4B-E41): X `2d876831` y BASE `18e4b783`, con la v4.4.
+- **El intento 1:**
+  - la planificación `903c` se aceptó, con nc4 `7aa0`;
+  - el Worker `7d92` paró antes del RED con PBT3A-C02, sin commits. El esqueleto del paquete hacía que `PushBackFullComposition.cs` nombrara el piloto y declarara `ForWrite`, y la guarda G9 lo prohíbe.
+- **La reemisión y la corrección en el intento 2** (F4B-E42): el Owner eligió «Renombrar ForWrite».
+  - Con la v4.5 y `ForFullWrite`, el commit X es `5bda5569`, con el análisis, y el BASE es `485b5651`.
+  - El barrido de todas las guardas no encontró otra colisión.
+  - La §11 de CA-T3a dio EMITIBLE 0/0/2.
+- **La planificación `fc50`** se aceptó al primer lanzamiento, con `CorrectionOf` exacto, nc4 `9811` y 17 criterios.
+- **El Worker `f006`** (sonnet/high) dio IMPLEMENTATION_COMPLETE, sin reparación del RED.
+  - Partió de los parches del intento 1 con el nombre cambiado.
+  - El RED `5dbc9661` lleva el esqueleto y las seis clases; el GREEN `6919e17a` toca solo `src/`.
+  - G9 pasa en el RED y en el GREEN.
+
+**CI:**
+- RED `44666242222`: tests y ui-tests en failure, build-ui en success y build-plugin omitido;
+- GREEN `44668584248`: 4/4, Core 19 107 y UI 2 451 (2 430 pasadas y 21 omitidas), lo previsto.
+
+**Revisiones:**
+- la directa, sin hallazgos;
+- la independiente, ACEPTABLE CON MENORES 0/0/9, sin hallazgos para el Owner.
+
+**Verificación** `R20261120T034433Z-6d41`: **EXECUTION_VERIFIED** 14/14 al primer lanzamiento.
+
+**Controles:**
+- **nc1** `R20261120T035005Z-c736`: CONTROL PASS (Identity, STOP). El sustituto de PD-F4B-01 no hizo falta.
+- **nc3** `R20261120T040354Z-5eac`: CONTROL PASS (FreeText, REWORK).
+- **nc2** `R20261120T035748Z-ad66`: CONTROL NOT PASSED, con la firma exacta de PD-F4-01.
+  - Comparada con la verificación real, solo difieren Contract, la primera, que falla solo por la exactitud de la lista blanca, y Scope, sobre la ruta quitada `PushBackConflictClassifier.cs`. El resultado es STOP, con S-04, P-03 y PBT3A-C01. Las otras doce, en pass.
+  - El sustituto adaptado a F4B, `PBT3A-NC2-EXACT-WHITELIST-F4B-01` (`R20261120T040923Z-882e`), dio **FAIL** en la propiedad 8: su literal de la cláusula de exactitud es el de los contratos de PB-T2, y el de PB-T3a está redactado de otra forma.
+
+**La decisión del Owner** (`F4B-DRAFTS/coordinator/owner-pbt3a-nc2-decision.md`, literal): «Aceptar y ampliar el sustituto (Recomendado)».
+- **PB-T3a:** `nc2 = SATISFIED_BY_OWNER_DISPOSITION`.
+- **De PB-T3b en adelante,** el sustituto admite una lista cerrada de los literales exactos de cada paquete, con autoprueba y revisión independiente antes de usarlo.
+
+**El sustituto de nc1 de PD-F4B-01** (F4B-E40), revisado y APTO tras tres rondas, se custodia en `F4B-DRAFTS/nc1-cascade-substitute/` con su revisión, sus notas y sus límites declarados. En PB-T3a no se aplicó.
+
+**Resultado:** **F4B-PBT3A-FULL-WRITE-MODEL = CLOSED / PASS WITH LIMITATIONS** sobre `6919e17a`, con attempts 2 de 3. El modelo de escritura completa del borrador de Push Back queda en Application, en archivos nuevos: el estado completo, el lector, la composición, la disposición de vistas y el clasificador de conflictos.
+
+**Siguiente:** la emisión de PB-T3b por F4B-E35 (pregunta 3), tras la remedición sobre este cierre y su comprobación acotada. Antes de sus controles, el sustituto de nc2 ampliado.

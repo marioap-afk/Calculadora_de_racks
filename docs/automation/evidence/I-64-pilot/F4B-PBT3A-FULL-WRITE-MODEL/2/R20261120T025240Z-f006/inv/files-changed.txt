@@ -1,0 +1,14 @@
+src/RackCad.Application/Systems/PushBack/Draft/PushBackConflictClassifier.cs
+src/RackCad.Application/Systems/PushBack/Draft/PushBackEditableStateSeat.cs
+src/RackCad.Application/Systems/PushBack/Draft/PushBackFullComposition.cs
+src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftMaterializer.cs
+src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftReader.cs
+src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftState.cs
+src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftStateComparer.cs
+src/RackCad.Application/Systems/PushBack/Draft/PushBackViewDisposition.cs
+tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs
+tests/RackCad.Tests/PushBackFullDraftClassifierTests.cs
+tests/RackCad.Tests/PushBackFullDraftCompositionTests.cs
+tests/RackCad.Tests/PushBackFullDraftLoadTests.cs
+tests/RackCad.Tests/PushBackFullDraftViewTests.cs
+tests/RackCad.UI.Tests/PushBackFullDraftWindowParityTests.cs

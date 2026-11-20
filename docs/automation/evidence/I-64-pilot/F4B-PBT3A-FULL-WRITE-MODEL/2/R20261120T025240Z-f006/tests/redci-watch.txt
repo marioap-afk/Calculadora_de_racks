@@ -1,0 +1,644 @@
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* architecture/workspace-persistente-rackcad CI · 44666242222
+Triggered via push less than a minute ago
+
+JOBS
+* UI Tests (WPF controls, net8.0-windows) (ID 136056128798)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  * Run actions/setup-dotnet@v4
+  * dotnet test UI controls (TRX + blame-hang)
+  * Upload UI test diagnostics (TRX + blame)
+  * Post Run actions/setup-dotnet@v4
+  * Post Run actions/checkout@v4
+* Build UI (WPF, valida API de Application) (ID 136056129108)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  * Run actions/setup-dotnet@v4
+  * dotnet build UI
+  * Post Run actions/setup-dotnet@v4
+  * Post Run actions/checkout@v4
+* Tests (Domain + Application) (ID 136056129123)
+  ✓ Set up job
+  ✓ Cadencia de cobertura y SHA objetivo
+  ✓ Run actions/checkout@v4
+  ✓ Verificar que el checkout es el SHA pedido
+  ✓ Run actions/setup-dotnet@v4
+  * dotnet test Core (TRX + blame-hang; Cobertura solo en Candidato y trunk)
+  * Normalize coverage path
+  * Upload Cobertura coverage
+  * Upload Core test diagnostics (TRX + blame)
+  * Post Run actions/setup-dotnet@v4
+  * Post Run actions/checkout@v4
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* architecture/workspace-persistente-rackcad CI · 44666242222
+Triggered via push about 1 minute ago
+
+JOBS
+* UI Tests (WPF controls, net8.0-windows) (ID 136056128798)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  * dotnet test UI controls (TRX + blame-hang)
+  * Upload UI test diagnostics (TRX + blame)
+  * Post Run actions/setup-dotnet@v4
+  * Post Run actions/checkout@v4
+* Build UI (WPF, valida API de Application) (ID 136056129108)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  * dotnet build UI
+  * Post Run actions/setup-dotnet@v4
+  * Post Run actions/checkout@v4
+* Tests (Domain + Application) (ID 136056129123)
+  ✓ Set up job
+  ✓ Cadencia de cobertura y SHA objetivo
+  ✓ Run actions/checkout@v4
+  ✓ Verificar que el checkout es el SHA pedido
+  ✓ Run actions/setup-dotnet@v4
+  * dotnet test Core (TRX + blame-hang; Cobertura solo en Candidato y trunk)
+  * Normalize coverage path
+  * Upload Cobertura coverage
+  * Upload Core test diagnostics (TRX + blame)
+  * Post Run actions/setup-dotnet@v4
+  * Post Run actions/checkout@v4
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* architecture/workspace-persistente-rackcad CI · 44666242222
+Triggered via push about 1 minute ago
+
+JOBS
+* UI Tests (WPF controls, net8.0-windows) (ID 136056128798)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  * dotnet test UI controls (TRX + blame-hang)
+  * Upload UI test diagnostics (TRX + blame)
+  * Post Run actions/setup-dotnet@v4
+  * Post Run actions/checkout@v4
+✓ Build UI (WPF, valida API de Application) in 1m20s (ID 136056129108)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  ✓ dotnet build UI
+  ✓ Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+* Tests (Domain + Application) (ID 136056129123)
+  ✓ Set up job
+  ✓ Cadencia de cobertura y SHA objetivo
+  ✓ Run actions/checkout@v4
+  ✓ Verificar que el checkout es el SHA pedido
+  ✓ Run actions/setup-dotnet@v4
+  * dotnet test Core (TRX + blame-hang; Cobertura solo en Candidato y trunk)
+  * Normalize coverage path
+  * Upload Cobertura coverage
+  * Upload Core test diagnostics (TRX + blame)
+  * Post Run actions/setup-dotnet@v4
+  * Post Run actions/checkout@v4
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-dotnet@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build UI (WPF, valida API de Application): .github#6
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* architecture/workspace-persistente-rackcad CI · 44666242222
+Triggered via push about 2 minutes ago
+
+JOBS
+* UI Tests (WPF controls, net8.0-windows) (ID 136056128798)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  * dotnet test UI controls (TRX + blame-hang)
+  * Upload UI test diagnostics (TRX + blame)
+  * Post Run actions/setup-dotnet@v4
+  * Post Run actions/checkout@v4
+✓ Build UI (WPF, valida API de Application) in 1m20s (ID 136056129108)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  ✓ dotnet build UI
+  ✓ Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+* Tests (Domain + Application) (ID 136056129123)
+  ✓ Set up job
+  ✓ Cadencia de cobertura y SHA objetivo
+  ✓ Run actions/checkout@v4
+  ✓ Verificar que el checkout es el SHA pedido
+  ✓ Run actions/setup-dotnet@v4
+  * dotnet test Core (TRX + blame-hang; Cobertura solo en Candidato y trunk)
+  * Normalize coverage path
+  * Upload Cobertura coverage
+  * Upload Core test diagnostics (TRX + blame)
+  * Post Run actions/setup-dotnet@v4
+  * Post Run actions/checkout@v4
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-dotnet@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build UI (WPF, valida API de Application): .github#6
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* architecture/workspace-persistente-rackcad CI · 44666242222
+Triggered via push about 2 minutes ago
+
+JOBS
+* UI Tests (WPF controls, net8.0-windows) (ID 136056128798)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  * dotnet test UI controls (TRX + blame-hang)
+  * Upload UI test diagnostics (TRX + blame)
+  * Post Run actions/setup-dotnet@v4
+  * Post Run actions/checkout@v4
+✓ Build UI (WPF, valida API de Application) in 1m20s (ID 136056129108)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  ✓ dotnet build UI
+  ✓ Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+* Tests (Domain + Application) (ID 136056129123)
+  ✓ Set up job
+  ✓ Cadencia de cobertura y SHA objetivo
+  ✓ Run actions/checkout@v4
+  ✓ Verificar que el checkout es el SHA pedido
+  ✓ Run actions/setup-dotnet@v4
+  * dotnet test Core (TRX + blame-hang; Cobertura solo en Candidato y trunk)
+  * Normalize coverage path
+  * Upload Cobertura coverage
+  * Upload Core test diagnostics (TRX + blame)
+  * Post Run actions/setup-dotnet@v4
+  * Post Run actions/checkout@v4
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-dotnet@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build UI (WPF, valida API de Application): .github#6
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* architecture/workspace-persistente-rackcad CI · 44666242222
+Triggered via push about 3 minutes ago
+
+JOBS
+* UI Tests (WPF controls, net8.0-windows) (ID 136056128798)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  * dotnet test UI controls (TRX + blame-hang)
+  * Upload UI test diagnostics (TRX + blame)
+  * Post Run actions/setup-dotnet@v4
+  * Post Run actions/checkout@v4
+✓ Build UI (WPF, valida API de Application) in 1m20s (ID 136056129108)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  ✓ dotnet build UI
+  ✓ Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+X Tests (Domain + Application) in 2m41s (ID 136056129123)
+  ✓ Set up job
+  ✓ Cadencia de cobertura y SHA objetivo
+  ✓ Run actions/checkout@v4
+  ✓ Verificar que el checkout es el SHA pedido
+  ✓ Run actions/setup-dotnet@v4
+  X dotnet test Core (TRX + blame-hang; Cobertura solo en Candidato y trunk)
+  - Normalize coverage path
+  - Upload Cobertura coverage
+  ✓ Upload Core test diagnostics (TRX + blame)
+  - Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+- Build Plugin without AutoCAD in 0s (ID 136057173276)
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-dotnet@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build UI (WPF, valida API de Application): .github#6
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-dotnet@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Tests (Domain + Application): .github#3
+
+X Process completed with exit code 1.
+Tests (Domain + Application): .github#234
+
+! Theory method 'LA_PREPARACION_NO_ABRE_LA_TRANSACCION_SEMANTICA' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#184
+
+! Theory method 'LA_PRIMITIVA_NO_BAJA_POR_UN_WRAPPER_SELF_OWNED' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#161
+
+! Theory method 'LA_PRIMITIVA_NO_IMPORTA_BLOQUES' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#147
+
+! Theory method 'LA_PRIMITIVA_NO_REGENERA' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#140
+
+! Theory method 'LA_PRIMITIVA_NO_BLOQUEA_EL_DOCUMENTO' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#133
+
+! Theory method 'LA_PRIMITIVA_NO_ABRE_TRANSACCION' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#126
+
+! Theory method 'LA_PRIMITIVA_NO_COMMITEA' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#119
+
+! Theory method 'CADA_FACHADA_EXPONE_UN_SEAM_DE_PREPARACION' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#110
+
+! Theory method 'CADA_FACHADA_EXPONE_UNA_PRIMITIVA_CALLER_OWNED' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#103
+
+! Do not use Assert.Equal() to check for collection size. Use Assert.Single instead. (https://xunit.net/xunit.analyzers/rules/xUnit2013)
+Tests (Domain + Application): tests/RackCad.Tests/Workspace/WorkspaceSourceGuardExceptionTests.cs#160
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* architecture/workspace-persistente-rackcad CI · 44666242222
+Triggered via push about 3 minutes ago
+
+JOBS
+* UI Tests (WPF controls, net8.0-windows) (ID 136056128798)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  * dotnet test UI controls (TRX + blame-hang)
+  * Upload UI test diagnostics (TRX + blame)
+  * Post Run actions/setup-dotnet@v4
+  * Post Run actions/checkout@v4
+✓ Build UI (WPF, valida API de Application) in 1m20s (ID 136056129108)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  ✓ dotnet build UI
+  ✓ Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+X Tests (Domain + Application) in 2m41s (ID 136056129123)
+  ✓ Set up job
+  ✓ Cadencia de cobertura y SHA objetivo
+  ✓ Run actions/checkout@v4
+  ✓ Verificar que el checkout es el SHA pedido
+  ✓ Run actions/setup-dotnet@v4
+  X dotnet test Core (TRX + blame-hang; Cobertura solo en Candidato y trunk)
+  - Normalize coverage path
+  - Upload Cobertura coverage
+  ✓ Upload Core test diagnostics (TRX + blame)
+  - Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+- Build Plugin without AutoCAD in 0s (ID 136057173276)
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-dotnet@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build UI (WPF, valida API de Application): .github#6
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-dotnet@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Tests (Domain + Application): .github#3
+
+X Process completed with exit code 1.
+Tests (Domain + Application): .github#234
+
+! Theory method 'LA_PREPARACION_NO_ABRE_LA_TRANSACCION_SEMANTICA' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#184
+
+! Theory method 'LA_PRIMITIVA_NO_BAJA_POR_UN_WRAPPER_SELF_OWNED' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#161
+
+! Theory method 'LA_PRIMITIVA_NO_IMPORTA_BLOQUES' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#147
+
+! Theory method 'LA_PRIMITIVA_NO_REGENERA' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#140
+
+! Theory method 'LA_PRIMITIVA_NO_BLOQUEA_EL_DOCUMENTO' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#133
+
+! Theory method 'LA_PRIMITIVA_NO_ABRE_TRANSACCION' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#126
+
+! Theory method 'LA_PRIMITIVA_NO_COMMITEA' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#119
+
+! Theory method 'CADA_FACHADA_EXPONE_UN_SEAM_DE_PREPARACION' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#110
+
+! Theory method 'CADA_FACHADA_EXPONE_UNA_PRIMITIVA_CALLER_OWNED' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#103
+
+! Do not use Assert.Equal() to check for collection size. Use Assert.Single instead. (https://xunit.net/xunit.analyzers/rules/xUnit2013)
+Tests (Domain + Application): tests/RackCad.Tests/Workspace/WorkspaceSourceGuardExceptionTests.cs#160
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* architecture/workspace-persistente-rackcad CI · 44666242222
+Triggered via push about 4 minutes ago
+
+JOBS
+* UI Tests (WPF controls, net8.0-windows) (ID 136056128798)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  * dotnet test UI controls (TRX + blame-hang)
+  * Upload UI test diagnostics (TRX + blame)
+  * Post Run actions/setup-dotnet@v4
+  * Post Run actions/checkout@v4
+✓ Build UI (WPF, valida API de Application) in 1m20s (ID 136056129108)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  ✓ dotnet build UI
+  ✓ Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+X Tests (Domain + Application) in 2m41s (ID 136056129123)
+  ✓ Set up job
+  ✓ Cadencia de cobertura y SHA objetivo
+  ✓ Run actions/checkout@v4
+  ✓ Verificar que el checkout es el SHA pedido
+  ✓ Run actions/setup-dotnet@v4
+  X dotnet test Core (TRX + blame-hang; Cobertura solo en Candidato y trunk)
+  - Normalize coverage path
+  - Upload Cobertura coverage
+  ✓ Upload Core test diagnostics (TRX + blame)
+  - Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+- Build Plugin without AutoCAD in 0s (ID 136057173276)
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-dotnet@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build UI (WPF, valida API de Application): .github#6
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-dotnet@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Tests (Domain + Application): .github#3
+
+X Process completed with exit code 1.
+Tests (Domain + Application): .github#234
+
+! Theory method 'LA_PREPARACION_NO_ABRE_LA_TRANSACCION_SEMANTICA' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#184
+
+! Theory method 'LA_PRIMITIVA_NO_BAJA_POR_UN_WRAPPER_SELF_OWNED' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#161
+
+! Theory method 'LA_PRIMITIVA_NO_IMPORTA_BLOQUES' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#147
+
+! Theory method 'LA_PRIMITIVA_NO_REGENERA' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#140
+
+! Theory method 'LA_PRIMITIVA_NO_BLOQUEA_EL_DOCUMENTO' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#133
+
+! Theory method 'LA_PRIMITIVA_NO_ABRE_TRANSACCION' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#126
+
+! Theory method 'LA_PRIMITIVA_NO_COMMITEA' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#119
+
+! Theory method 'CADA_FACHADA_EXPONE_UN_SEAM_DE_PREPARACION' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#110
+
+! Theory method 'CADA_FACHADA_EXPONE_UNA_PRIMITIVA_CALLER_OWNED' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#103
+
+! Do not use Assert.Equal() to check for collection size. Use Assert.Single instead. (https://xunit.net/xunit.analyzers/rules/xUnit2013)
+Tests (Domain + Application): tests/RackCad.Tests/Workspace/WorkspaceSourceGuardExceptionTests.cs#160
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* architecture/workspace-persistente-rackcad CI · 44666242222
+Triggered via push about 4 minutes ago
+
+JOBS
+* UI Tests (WPF controls, net8.0-windows) (ID 136056128798)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  * dotnet test UI controls (TRX + blame-hang)
+  * Upload UI test diagnostics (TRX + blame)
+  * Post Run actions/setup-dotnet@v4
+  * Post Run actions/checkout@v4
+✓ Build UI (WPF, valida API de Application) in 1m20s (ID 136056129108)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  ✓ dotnet build UI
+  ✓ Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+X Tests (Domain + Application) in 2m41s (ID 136056129123)
+  ✓ Set up job
+  ✓ Cadencia de cobertura y SHA objetivo
+  ✓ Run actions/checkout@v4
+  ✓ Verificar que el checkout es el SHA pedido
+  ✓ Run actions/setup-dotnet@v4
+  X dotnet test Core (TRX + blame-hang; Cobertura solo en Candidato y trunk)
+  - Normalize coverage path
+  - Upload Cobertura coverage
+  ✓ Upload Core test diagnostics (TRX + blame)
+  - Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+- Build Plugin without AutoCAD in 0s (ID 136057173276)
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-dotnet@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build UI (WPF, valida API de Application): .github#6
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-dotnet@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Tests (Domain + Application): .github#3
+
+X Process completed with exit code 1.
+Tests (Domain + Application): .github#234
+
+! Theory method 'LA_PREPARACION_NO_ABRE_LA_TRANSACCION_SEMANTICA' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#184
+
+! Theory method 'LA_PRIMITIVA_NO_BAJA_POR_UN_WRAPPER_SELF_OWNED' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#161
+
+! Theory method 'LA_PRIMITIVA_NO_IMPORTA_BLOQUES' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#147
+
+! Theory method 'LA_PRIMITIVA_NO_REGENERA' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#140
+
+! Theory method 'LA_PRIMITIVA_NO_BLOQUEA_EL_DOCUMENTO' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#133
+
+! Theory method 'LA_PRIMITIVA_NO_ABRE_TRANSACCION' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#126
+
+! Theory method 'LA_PRIMITIVA_NO_COMMITEA' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#119
+
+! Theory method 'CADA_FACHADA_EXPONE_UN_SEAM_DE_PREPARACION' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#110
+
+! Theory method 'CADA_FACHADA_EXPONE_UNA_PRIMITIVA_CALLER_OWNED' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#103
+
+! Do not use Assert.Equal() to check for collection size. Use Assert.Single instead. (https://xunit.net/xunit.analyzers/rules/xUnit2013)
+Tests (Domain + Application): tests/RackCad.Tests/Workspace/WorkspaceSourceGuardExceptionTests.cs#160
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* architecture/workspace-persistente-rackcad CI · 44666242222
+Triggered via push about 5 minutes ago
+
+JOBS
+* UI Tests (WPF controls, net8.0-windows) (ID 136056128798)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  * dotnet test UI controls (TRX + blame-hang)
+  * Upload UI test diagnostics (TRX + blame)
+  * Post Run actions/setup-dotnet@v4
+  * Post Run actions/checkout@v4
+✓ Build UI (WPF, valida API de Application) in 1m20s (ID 136056129108)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  ✓ dotnet build UI
+  ✓ Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+X Tests (Domain + Application) in 2m41s (ID 136056129123)
+  ✓ Set up job
+  ✓ Cadencia de cobertura y SHA objetivo
+  ✓ Run actions/checkout@v4
+  ✓ Verificar que el checkout es el SHA pedido
+  ✓ Run actions/setup-dotnet@v4
+  X dotnet test Core (TRX + blame-hang; Cobertura solo en Candidato y trunk)
+  - Normalize coverage path
+  - Upload Cobertura coverage
+  ✓ Upload Core test diagnostics (TRX + blame)
+  - Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+- Build Plugin without AutoCAD in 0s (ID 136057173276)
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-dotnet@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build UI (WPF, valida API de Application): .github#6
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-dotnet@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Tests (Domain + Application): .github#3
+
+X Process completed with exit code 1.
+Tests (Domain + Application): .github#234
+
+! Theory method 'LA_PREPARACION_NO_ABRE_LA_TRANSACCION_SEMANTICA' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#184
+
+! Theory method 'LA_PRIMITIVA_NO_BAJA_POR_UN_WRAPPER_SELF_OWNED' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#161
+
+! Theory method 'LA_PRIMITIVA_NO_IMPORTA_BLOQUES' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#147
+
+! Theory method 'LA_PRIMITIVA_NO_REGENERA' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#140
+
+! Theory method 'LA_PRIMITIVA_NO_BLOQUEA_EL_DOCUMENTO' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#133
+
+! Theory method 'LA_PRIMITIVA_NO_ABRE_TRANSACCION' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#126
+
+! Theory method 'LA_PRIMITIVA_NO_COMMITEA' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#119
+
+! Theory method 'CADA_FACHADA_EXPONE_UN_SEAM_DE_PREPARACION' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#110
+
+! Theory method 'CADA_FACHADA_EXPONE_UNA_PRIMITIVA_CALLER_OWNED' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#103
+
+! Do not use Assert.Equal() to check for collection size. Use Assert.Single instead. (https://xunit.net/xunit.analyzers/rules/xUnit2013)
+Tests (Domain + Application): tests/RackCad.Tests/Workspace/WorkspaceSourceGuardExceptionTests.cs#160
+
+X architecture/workspace-persistente-rackcad CI · 44666242222
+Triggered via push about 5 minutes ago
+
+JOBS
+X UI Tests (WPF controls, net8.0-windows) in 5m40s (ID 136056128798)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  X dotnet test UI controls (TRX + blame-hang)
+  ✓ Upload UI test diagnostics (TRX + blame)
+  - Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+✓ Build UI (WPF, valida API de Application) in 1m20s (ID 136056129108)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  ✓ dotnet build UI
+  ✓ Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+X Tests (Domain + Application) in 2m41s (ID 136056129123)
+  ✓ Set up job
+  ✓ Cadencia de cobertura y SHA objetivo
+  ✓ Run actions/checkout@v4
+  ✓ Verificar que el checkout es el SHA pedido
+  ✓ Run actions/setup-dotnet@v4
+  X dotnet test Core (TRX + blame-hang; Cobertura solo en Candidato y trunk)
+  - Normalize coverage path
+  - Upload Cobertura coverage
+  ✓ Upload Core test diagnostics (TRX + blame)
+  - Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+- Build Plugin without AutoCAD in 0s (ID 136057173276)
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-dotnet@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build UI (WPF, valida API de Application): .github#6
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-dotnet@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Tests (Domain + Application): .github#3
+
+X Process completed with exit code 1.
+Tests (Domain + Application): .github#234
+
+! Theory method 'LA_PREPARACION_NO_ABRE_LA_TRANSACCION_SEMANTICA' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#184
+
+! Theory method 'LA_PRIMITIVA_NO_BAJA_POR_UN_WRAPPER_SELF_OWNED' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#161
+
+! Theory method 'LA_PRIMITIVA_NO_IMPORTA_BLOQUES' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#147
+
+! Theory method 'LA_PRIMITIVA_NO_REGENERA' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#140
+
+! Theory method 'LA_PRIMITIVA_NO_BLOQUEA_EL_DOCUMENTO' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#133
+
+! Theory method 'LA_PRIMITIVA_NO_ABRE_TRANSACCION' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#126
+
+! Theory method 'LA_PRIMITIVA_NO_COMMITEA' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#119
+
+! Theory method 'CADA_FACHADA_EXPONE_UN_SEAM_DE_PREPARACION' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#110
+
+! Theory method 'CADA_FACHADA_EXPONE_UNA_PRIMITIVA_CALLER_OWNED' on test class 'CallerOwnedFacadeGuardTests' does not use parameter 'facade'. Use the parameter, or remove the parameter and associated data. (https://xunit.net/xunit.analyzers/rules/xUnit1026)
+Tests (Domain + Application): tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs#103
+
+! Do not use Assert.Equal() to check for collection size. Use Assert.Single instead. (https://xunit.net/xunit.analyzers/rules/xUnit2013)
+Tests (Domain + Application): tests/RackCad.Tests/Workspace/WorkspaceSourceGuardExceptionTests.cs#160
+

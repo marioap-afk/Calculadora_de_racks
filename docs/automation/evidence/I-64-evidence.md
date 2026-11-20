@@ -8400,3 +8400,34 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - **La verificación** lleva las tres comprobaciones deterministas de F4B-E15, y la planificación, las colecciones opacas puestas por la sesión (F4B-E21).
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 268. PB-T3a: los dos intentos, las decisiones del Owner y el cierre (F4B-E43)
+
+**Qué se custodia:**
+- **Las unidades del intento 1,** en `F4B-PBT3A-FULL-WRITE-MODEL/1/`: la planificación `903c`, nc4 `7aa0` y el Worker `7d92`, parado con PBT3A-C02 y con sus parches.
+- **Las unidades del intento 2,** en `/2/`, cada una con su manifiesto:
+  - la planificación `fc50`, con nc4 `9811`;
+  - el Worker `f006`;
+  - la verificación `6d41`;
+  - los controles nc1 `c736`, nc2 `ad66` y nc3 `5eac`;
+  - el sustituto de nc2 `882e`, que dio FAIL.
+- **Las revisiones,** con su encargo.
+- **La decisión del Owner sobre nc2:** `owner-pbt3a-nc2-decision.md`.
+- **El sustituto de nc1 de PD-F4B-01,** con su revisión.
+- **El paquete de cierre.**
+- **La nota de `docs/ideas-futuras.md`.**
+- **El estado.**
+
+**El intento 2:**
+- **RED y GREEN:** el RED `5dbc9661` y el GREEN `6919e17a`.
+- **CI:** las corridas `44666242222` y `44668584248`; la del GREEN, 4/4 (Core 19 107 y UI 2 451).
+- **Revisión independiente:** 0/0/9.
+- **Verificación:** 14/14.
+- **Controles:**
+  - nc1 y nc3: CONTROL PASS;
+  - nc2: por disposición del Owner, porque la firma era exacta y el sustituto de PB-T2 no reconoce el texto de PB-T3.
+
+**Límites:**
+- solo documentación;
+- sin AutoCAD;
+- los eventos y las transcripciones, solo por SHA-256.

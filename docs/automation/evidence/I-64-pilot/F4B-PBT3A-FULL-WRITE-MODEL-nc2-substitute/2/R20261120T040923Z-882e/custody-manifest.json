@@ -1,0 +1,48 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Unit": "F4B-PBT3A-FULL-WRITE-MODEL-nc2-substitute/2/R20261120T040923Z-882e",
+  "SourceRoot": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL-nc2-substitute/2/R20261120T040923Z-882e",
+  "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
+  "Counts": {
+    "CUSTODIED": 4,
+    "EXCLUDED": 0
+  },
+  "Files": [
+    {
+      "Path": "adaptation.json",
+      "Bytes": 1367,
+      "Sha256": "0410a4ce7e13985b237abe32c82a63c8098196a467ca0637c17108be6b688f58",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "5c7527a1a44e3698fdd32f1605fc5c48f6a9a6e982c116d139b2e22a368d00e6",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <scratchpad>"
+      ]
+    },
+    {
+      "Path": "nc2_exact_whitelist_substitute_f4b.py",
+      "Bytes": 35304,
+      "Sha256": "2c5492b93e8966a12d8927c74fd099be8516eaae5cfabd82c30aec75aba3617c",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "run.txt",
+      "Bytes": 3467,
+      "Sha256": "6288dce3d7b6e04166951b064c44f13592c3eb663567d6b98a21fe5a9c5bde89",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "72d984414be14b8ccacd34dadbb7e3a9153be624b48b5d272bed028411de1598",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)"
+    },
+    {
+      "Path": "substitute-result.json",
+      "Bytes": 16740,
+      "Sha256": "840534eefb17f22f6958226b3599d5c2a4561c1df72e46923c849481e7f2352c",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "fd635709142310e7bbcce141e68a53b140a6ba014c47efae545ddc84faa98b05",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>"
+      ]
+    }
+  ]
+}

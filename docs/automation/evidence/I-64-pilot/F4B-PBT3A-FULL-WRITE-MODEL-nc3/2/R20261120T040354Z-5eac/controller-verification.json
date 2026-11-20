@@ -1,0 +1,77 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT3A-FULL-WRITE-MODEL",
+  "RunId": "R20261120T040354Z-5eac",
+  "DelegationRunId": "R20261120T024916Z-fc50",
+  "WorkRunId": "R20261120T025240Z-f006",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Phase WORK, Outcome.Kind COMPLETED, TerminalEvent finalizacion del subagente, DeathConfirmed true; cession 2026-11-20T02:52:45Z to 03:43:56Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json exists and matches TaskId F4B-PBT3A-FULL-WRITE-MODEL, Attempt 2, DelegationRunId R20261120T024916Z-fc50, RunId R20261120T025240Z-f006; OutputWrittenUtc follows cession start."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Read AUTOMATION_PLAN 16.3 and applicable authorities from Git. git merge-base --is-ancestor 5bda5569330d75fb2f03ae809ada1a47676139da 485b5651bcec132761347b40ed38b60cfec0db04 exited 0. git diff --name-only AuthorityRevision BaseSha returned four docs paths; none classified EXTERNAL or UNIT_CHANGE. Snapshot K hash matches relay input and output."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Planning Acceptance A1-A8 all pass. Delegation and contract agree on TaskId, Gate, AuthorityRevision, both scopes, RequiredTests, StopConditions, Authorities, ExpectedEvidence and Invariants. byte-fidelity-check.json: PASS; all eight opaque collections have equal UTF-8 bytes."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "Handoff CurrentSha=6919e17af9fdd5c702d454a97a3c5b6cc6be1739; git rev-parse HEAD=6919e17af9fdd5c702d454a97a3c5b6cc6be1739; git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad=6919e17af9fdd5c702d454a97a3c5b6cc6be1739. Branch and worktree match delegation; BaseSha and RedSha are ancestors of CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: ls-remote equals CurrentSha, origin/main equals delegated MainSha 812baf879612320653094a8aaf46aca0bac81383. CurrentRun is push on refs/heads/architecture/workspace-persistente-rackcad with exact CurrentSha."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha lists 14 paths, each exactly in delegation AllowedWriteScope; none intersects ForbiddenWriteScope. BaseSha..RedSha contains the 14 allowed paths, all added. ChainRedFiles from git diff --name-only ChainBaseSha RedSha -- tests/: PushBackDraftWriteGuardTests.cs, PushBackFullDraftClassifierTests.cs, PushBackFullDraftCompositionTests.cs, PushBackFullDraftLoadTests.cs, PushBackFullDraftViewTests.cs, PushBackFullDraftWindowParityTests.cs. git diff --name-only RedSha CurrentSha -- tests/ is empty; GREEN changes seven Draft files."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain is empty. git check-ignore -v on the supplied worker-handoff input returns .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts CurrentRun 44668584248 is completed push on the exact branch and CurrentSha; all four required jobs succeeded. RedRun 44666242222 is completed push on the same branch and RedSha; Core and UI test jobs failed as expected, Build UI succeeded, Plugin build was skipped by needs. No hang or timeout recorded."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Parsed supplied current and RED TRX files against RequiredTests in the matching suite. Current Core: 19107 passed, 0 failed; current UI: 2430 passed, 0 failed, 21 NotExecuted. RED Core: 10/10 PushBackFullDraft failures by Assert.Equal; RED UI: 1/1 parity failure by Assert.Equal. RED Core guards selected 3/3 passed; no other Core failures. RED UI had 21 NotExecuted and no other failure. First stack lines are under tests/ for all 11 expected failures. G-9 and its self-test passed in both Core TRX files. ChainRedFiles are the six test paths listed in Scope; RedSha..CurrentSha changes no tests. TestsExecuted shows UI runs used contract filters, not a full suite or method filter."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%H%n%B BaseSha..CurrentSha shows RED 5dbc9661 and GREEN 6919e17a; both include the declared Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>. No repair commit."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 at high effort. Work relay records ModelEffective claude-sonnet-5-5 and EffortEffective high; 214 assistant turns recorded with that model."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "Read all seven complete handoff text fields and scanned case-insensitively for the 16.10 terms as whole words or phrases. WorkCompleted is 9893 characters and has one match at its final sentence, immediately after the fragment 'de la linea base llevan el arbol de BaseSha.' No matches in the other six fields."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work Notes report zero permission denials and no pending failed tool results. TriggeredStopConditions in handoff is empty."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "The handoff WorkCompleted field contains one prohibited two-word phrase at its end; the other six free text fields have no matches."
+  ],
+  "RecommendedNextAction": "Remove the detected phrase from WorkCompleted and submit the corrected handoff for another verification."
+}

@@ -1,0 +1,28 @@
+{
+  "Source": "<scratchpad>/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt2acc2/nc2-substitute-f4b/nc2_exact_whitelist_substitute_f4b.py",
+  "SourceSha256": "6CCAF12DBF9122C0BDDC5B724BCFF573705C95698AF38BF750BF69459EE2FFD3",
+  "AdaptedSha256": "2C5492B93E8966A12D8927C74FD099BE8516EAAE5CFABD82C30AEC75ABA3617C",
+  "Rule": "PBT3A-C11: solo cambian el id y el ambito (y el registro que lleva el id)",
+  "Replacements": [
+    {
+      "Old": "PBT2A-NC2-EXACT-WHITELIST-F4B-01",
+      "New": "PBT3A-NC2-EXACT-WHITELIST-F4B-01",
+      "Count": 2
+    },
+    {
+      "Old": "solo para F4B-PBT2A-DRAFT-STATE-PORT (intento 2, verificacion R20261119T074453Z-10a9)",
+      "New": "solo para F4B-PBT3A-FULL-WRITE-MODEL (intento 2, verificacion R20261120T034433Z-6d41)",
+      "Count": 1
+    },
+    {
+      "Old": "'Scope': 'solo F4B-PBT2A-DRAFT-STATE-PORT, intento 2 (verificacion R20261119T074453Z-10a9); no reemplaza al Controller ni a nc2 en otras tareas'",
+      "New": "'Scope': 'solo F4B-PBT3A-FULL-WRITE-MODEL, intento 2 (verificacion R20261120T034433Z-6d41); no reemplaza al Controller ni a nc2 en otras tareas'",
+      "Count": 1
+    },
+    {
+      "Old": "'SATISFIED_UNDER_PBT2A_EXACT_WHITELIST_SUBSTITUTE_F4B'",
+      "New": "'SATISFIED_UNDER_PBT3A_EXACT_WHITELIST_SUBSTITUTE_F4B'",
+      "Count": 1
+    }
+  ]
+}

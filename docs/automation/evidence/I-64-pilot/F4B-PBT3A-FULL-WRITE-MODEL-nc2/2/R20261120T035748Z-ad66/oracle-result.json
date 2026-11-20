@@ -1,0 +1,56 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261120T035748Z-ad66",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Contract",
+  "MutatedCheck": {
+    "Scope": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "fail",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Contract",
+    "Scope"
+  ],
+  "PreviousSameAsReal": false,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "S-04",
+    "P-03",
+    "PBT3A-C01"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Scope": "Read-only scope script printed the delegation AllowedWriteScope count (13) and each entry, then checked git diff --name-only BaseSha CurrentSha, BaseSha RedSha, and ChainBaseSha CurrentSha -- src tests by exact string equality. Each 14-path diff includes src/RackCad.Application/Systems/PushBack/Draft/PushBackConflictClassifier.cs with allowed=false; the other 13 paths are allowed. git diff --name-only RedSha CurrentSha -- src tests contains only seven Draft files and no tests. The missing delegated path triggers PBT3A-C01."
+  },
+  "OutputSha256": "DBD03122E0E7A051207166DFCAA3FF7D5F303C4EA69F17F9BF7CA020F896F7A7",
+  "ManualFreeText1610": []
+}

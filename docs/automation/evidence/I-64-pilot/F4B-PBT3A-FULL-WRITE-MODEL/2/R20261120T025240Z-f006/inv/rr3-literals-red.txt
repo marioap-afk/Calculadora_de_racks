@@ -1,0 +1,6 @@
+PushBackFullDraftWindowParityTests.cs lineas=3 valores=0 ausentes=[]
+PushBackFullDraftLoadTests.cs lineas=46 valores=0 ausentes=[]
+PushBackFullDraftCompositionTests.cs lineas=3 valores=3 ausentes=[]
+PushBackFullDraftViewTests.cs lineas=11 valores=0 ausentes=[]
+PushBackFullDraftClassifierTests.cs lineas=37 valores=4 ausentes=[]
+PushBackDraftWriteGuardTests.cs lineas=23 valores=0 ausentes=['L: reglas-sin-coincidencias=True']
