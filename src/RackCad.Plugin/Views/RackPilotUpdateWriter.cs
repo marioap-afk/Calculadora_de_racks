@@ -23,7 +23,8 @@ namespace RackCad.Plugin.Views
     /// I-64 F4-T4B (D-T4B-03) — the writer of the update of the bounded Push Back pilot. It only does PRIMITIVE operations of the drawing,
     /// inside scopes that live for ONE run, and it only returns FACTS: the origin, the survivors, the locked layers, the names that the
     /// views must carry and every warning are decided by the pure run of Application. It never takes the lock of the document: the one lock
-    /// around PREPARE, MUTATE and POST is the one of the adapter that runs it. It never erases a view.
+    /// around PREPARE, MUTATE and POST is the one of the adapter that runs it. It erases a view only through the caller-owned facade, inside
+    /// the one scope of MUTATE, and only the views that the plan asks to take away.
     ///
     /// This class is the port of ONE run (I-64 F4-T4C1-HOST, D-T4C-07): it is created only by the target of the adapter, with the exact document
     /// that the adapter locked, and it can begin once. The target retires it on every exit. The objects of AutoCAD live only in the two scope
@@ -73,6 +74,7 @@ namespace RackCad.Plugin.Views
         private readonly bool _documentMatches;
         private readonly Dictionary<string, ObjectId> _definitions = new(StringComparer.Ordinal);
         private readonly Dictionary<string, (PreparedViewRedraw Prepared, DimensionViewKind Kind)> _prepared = new(StringComparer.Ordinal);
+        private readonly Dictionary<string, ObjectId> _erasures = new(StringComparer.Ordinal);
         private readonly HashSet<ObjectId> _staleDefinitions = new();
         private RackCatalog? _catalog;
         private bool _disposed;
@@ -107,6 +109,17 @@ namespace RackCad.Plugin.Views
             var database = _document!.Database;
             var store = new RackEmbedStore();
             _prepared.Clear();
+            _erasures.Clear();
+
+            // The views to take away are only resolved here: nothing is prepared for them, and a key that is gone fails before anything is imported.
+            foreach (var key in plan.Erasures)
+            {
+                if (!_definitions.TryGetValue(key, out var definitionId))
+                    return PushBackPilotImportResult.Failed("La definición " + key + " ya no está en el dibujo.");
+
+                _erasures[key] = definitionId;
+            }
+
             foreach (var member in plan.Members)
             {
                 if (!_definitions.TryGetValue(member.Key, out var blockId))
@@ -153,7 +166,7 @@ namespace RackCad.Plugin.Views
                 return PushBackPilotMutationStart.Rejected(PushBackPilotUpdateRun.ForeignScopeOpenCause);
 
             var transaction = database.TransactionManager.StartTransaction();
-            return PushBackPilotMutationStart.Started(new RackPilotMutationScope(database, transaction, _prepared, _staleDefinitions));
+            return PushBackPilotMutationStart.Started(new RackPilotMutationScope(database, transaction, _prepared, _erasures, _staleDefinitions));
         }
 
         // POST: the tidy-up, in the order of the classic editor, and the facts of the drawing afterwards. It never decides a warning.
@@ -211,6 +224,7 @@ namespace RackCad.Plugin.Views
             _disposed = true;
             _definitions.Clear();
             _prepared.Clear();
+            _erasures.Clear();
             _staleDefinitions.Clear();
         }
 
@@ -222,9 +236,10 @@ namespace RackCad.Plugin.Views
 
     /// <summary>
     /// The ONE owned scope of MUTATE. It owns the semantic scope of the drawing that it starts with, and releasing it without a seal is an
-    /// abort. It never purges, renames, regenerates or erases: that is POST, which runs after the run released this scope.
+    /// abort. It never purges, renames or regenerates; it erases only the planned views, through the caller-owned facade. The tidy-up is
+    /// POST, which runs after the run released this scope.
     /// </summary>
-    internal sealed class RackPilotMutationScope : IPushBackPilotMutationScope
+    internal sealed class RackPilotMutationScope : IPushBackPilotMutationScope, IPushBackPilotViewEraser
     {
         private const string UnitVariable = "RACKCAD_DEBUG_FAIL_PILOT_UPDATE_UNIT";
         private const string SealVariable = "RACKCAD_DEBUG_FAIL_PILOT_UPDATE_SEAL";
@@ -232,6 +247,7 @@ namespace RackCad.Plugin.Views
         private readonly Database _database;
         private readonly Transaction _transaction;
         private readonly IReadOnlyDictionary<string, (PreparedViewRedraw Prepared, DimensionViewKind Kind)> _prepared;
+        private readonly IReadOnlyDictionary<string, ObjectId> _erasures;
         private readonly HashSet<ObjectId> _staleDefinitions;
         private int _units;
         private bool _disposed;
@@ -240,11 +256,13 @@ namespace RackCad.Plugin.Views
             Database database,
             Transaction transaction,
             IReadOnlyDictionary<string, (PreparedViewRedraw Prepared, DimensionViewKind Kind)> prepared,
+            IReadOnlyDictionary<string, ObjectId> erasures,
             HashSet<ObjectId> staleDefinitions)
         {
             _database = database;
             _transaction = transaction;
             _prepared = prepared;
+            _erasures = erasures;
             _staleDefinitions = staleDefinitions;
         }
 
@@ -256,6 +274,8 @@ namespace RackCad.Plugin.Views
             var matches = new Dictionary<string, bool>(StringComparer.Ordinal);
             foreach (var pair in _prepared)
                 matches[pair.Key] = scan.Definitions.TryGetValue(pair.Key, out var found) && found == pair.Value.Prepared.BlockId;
+            foreach (var pair in _erasures)
+                matches[pair.Key] = scan.Definitions.TryGetValue(pair.Key, out var found) && found == pair.Value;
             return RackPilotUpdateWriter.ValuesOf(scan, null, matches);
         }
 
@@ -296,6 +316,21 @@ namespace RackCad.Plugin.Views
                 .Distinct(StringComparer.Ordinal)
                 .ToList();
             return new PushBackPilotUnitResult(missing);
+        }
+
+        // The view that the update takes away, inside this same scope: the facade erases its references and its definition, and what it
+        // nested goes to the tidy-up of POST, together with what the writes left without a use.
+        public PushBackPilotUnitResult EraseUnit(string memberKey)
+        {
+            EnsureOwned();
+            if (!_erasures.TryGetValue(memberKey, out var definitionId))
+                throw new InvalidOperationException("La vista " + memberKey + " no está en el plan de borrado.");
+
+            _units++;
+            FailUnitIfRequested(_units);
+
+            foreach (var nested in RackViewBlockEraser.EraseInTransaction(_transaction, definitionId)) _staleDefinitions.Add(nested);
+            return new PushBackPilotUnitResult(Array.Empty<string>());
         }
 
         public void Seal()
