@@ -1,4 +1,17 @@
-"""Contrato de gate de F4B-PBT3B-FULL-WRITE-RUN (ASCII), desde el paquete del contrato de PB-T3 v4.5 (docs/initiatives/I-64-f4b-pbt3-gate-contract-package.md:
+"""Contrato de gate de F4B-PBT3B-FULL-WRITE-RUN (ASCII), REEMITIDO para la correccion en el intento 2 de 3 (F4B-E45), desde el paquete del contrato de
+PB-T3 v4.6 (docs/initiatives/I-64-f4b-pbt3-gate-contract-package.md: section 3, D-PBT3-09 y D-PBT3-10; section 4 y 4.1; section 5.0 y 5.3; section 6.0
+y 6.2; la precondicion 12), con el patron de make_pbt3a_contract.py y de su reemision (F4B-E42).
+La reemision (F4B-E45, "Renombrar los metodos nuevos"): el intento 1 (el Worker R20261120T055235Z-a45b, delegacion R20261120T054837Z-814c) paro con
+PBT3B-C02 y PBT3B-C07 antes del RED, sin commits: con el esqueleto de la v4.5, RackCad.Tests no compilaba (CS0121 en WorkspacePilotUpdateRunTests.cs:669
+y :799). La v4.6 da nombre propio a los metodos nuevos del modelo completo (ExecuteFull y ComparePostFull, de la sesion; PrepareFull, por el barrido
+ampliado del section 4.1). Ademas de lo de la emision, comprueba: la revision desciende de la emision de PB-T3b (eab27a9e, F4B-E44) y su src y sus
+tests son los de esa emision (sin commits del intento 1); el contrato emitido de PB-T3b esta en la emision con su sha256; y el reemitido solo difiere
+de el en el Objective (v4.5 -> v4.6), PBT3B-C13 (los nombres), las autoridades (la decision del Owner F4B-E45 y el analisis de la sesion), IssuedBy y
+las revisiones (REISSUE_OK). El bloque citado de PBT3x-C11 de la v4.6 ya es el PBT3B-C11 emitido: sin sustituciones.
+Lo que entrega el commit X de la reemision (la v4.6 custodiada, F4B-E45, la decision, el analisis, R-22 del registro, la recomprobacion de la v4.6 de
+CA-T3b y BOUNDED_RESULT) es AVISO en seco y error al escribir.
+--- la cabecera de la emision (F4B-E44), que sigue valiendo en lo demas:
+Contrato de gate de F4B-PBT3B-FULL-WRITE-RUN (ASCII), desde el paquete del contrato de PB-T3 v4.5 (docs/initiatives/I-64-f4b-pbt3-gate-contract-package.md:
 section 3, D-PBT3-09 y D-PBT3-10; section 4 y 4.1; section 5.0 y 5.3; section 6.0 y 6.2), con el patron de make_pbt3a_contract.py. La variante es
 (A) (F4B-E29, D-1): nada de la (A') no elegida va al contrato. La base es el cierre de PB-T3a (PT3A_CLOSE, F4B-E43): el src de la BaseSha es el
 del cierre (section 6.0, "en PB-T3b y PB-T3c, frente al cierre de la subtarea anterior de PB-T3 (vacio)").
@@ -53,18 +66,30 @@ PT3A_EMIT_ENTRY, PT3A_STOP_ENTRY = 'F4B-E41', 'F4B-E42'
 PT3A_TASK = 'F4B-PBT3A-FULL-WRITE-MODEL'
 D1_REV = 'd8ccbcb870f4d1804d7e7afd3855ac64b44693a8'      # F4B-E29 (D-1, la variante (A)) en git desde aqui (precondicion 4)
 D1_ENTRY = 'F4B-E29'
-# ---------------------------------------------------------------- lo que depende de la emision de PB-T3b
-EMIT_ENTRY = 'F4B-E44'      # la numeracion prevista (la sesion): F4B-E44, evidencia 269 (X) y 270 (BASE)
-X_EV, BASE_EV = '269', '270'
+# ---------------------------------------------------------------- la reemision (F4B-E45): sobre la emision de PB-T3b, sin commits del intento 1
+PT3B_EMIT = 'eab27a9e340afa9ffe66a4a9866949806b6dfee3'    # la BASE de la emision de PB-T3b con la v4.5 (F4B-E44); HEAD al reemitir
+PT3B_EMIT_X = '05b6f04e1799857c5c488b61c30e1af8ee7ae257'  # su commit X (la AuthorityRevision del contrato emitido)
+PT3B_EMIT_ENTRY = 'F4B-E44'
+PT3B_EMITTED_SHA = 'ae1e7462b2a9b63a59632cdceb2e9d23f1340bd37ea3261c9161271759c6c0dc'  # el contrato emitido, en la emision
+RUN1, DELEG1 = 'R20261120T055235Z-a45b', 'R20261120T054837Z-814c'  # el Worker y la delegacion del intento 1 (PBT3B-C02 y PBT3B-C07 antes del RED)
+NAMES_E45 = ('PrepareFull', 'ExecuteFull', 'ComparePostFull')  # V46-06: ExecuteFull y ComparePostFull, de la sesion; PrepareFull, del barrido (V46-07)
+# ---------------------------------------------------------------- lo que depende de la reemision de PB-T3b
+EMIT_ENTRY = 'F4B-E45'      # la numeracion prevista (la sesion): F4B-E45 (la parada, la decision y la reemision), evidencia 271 (X) y 272 (BASE)
+PREV_EV = '270'  # parametros (una asignacion cada uno, para leerlos con ast): el generador comprueba que siguen a la ultima seccion de la evidencia
+X_EV = '271'
+BASE_EV = '272'
 # la autorizacion de emision del Owner (precondicion 10; V43-07): F4B-E35, pregunta 3, que cubre PB-T3a, PB-T3b y PB-T3c en orden
 ISSUE_AUTH = ('F4B-E35', 'docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-f4b-pbt3-emission-red-repair-decisions.md')
-# el veredicto literal de la comprobacion acotada de PB-T3b (CA-T3b, independent-review-pbt3b-check.md): su primera ronda y su seccion 12, la
-# recomprobacion sobre el seco r2 (precondiciones 3 y 10); bounded_check lo compara con el informe
-BOUNDED_RESULT = ('EMITIBLE; B 0 / I 0 / M 4; sin importantes; sin decisiones nuevas del Owner; recomprobacion v4.5: EMITIBLE, B 0 / I 0 / M 1')
-PKG_VERSION = 'v4.5'       # la version del paquete con la que se emite PB-T3b (custodiada desde 5bda5569)
-CUSTODY_SHA256 = {         # el paquete revisado, byte a byte: la v4.5 final (282 234 bytes, LF), ya custodiada
-    'docs/initiatives/I-64-f4b-pbt3-gate-contract-package.md': '64ab03df27cc8f441883442ca999036e5f7555ede9269eb3f4f768ab8a07fdbd',
+# el veredicto literal de la comprobacion acotada de PB-T3b (CA-T3b, independent-review-pbt3b-check.md) con su recomprobacion de la v4.6 (la
+# precondicion 12): UN MARCADOR hasta que CA-T3b la haga; tiene que nombrar 'recomprobacion v4.6: '. El de la emision era:
+# 'EMITIBLE; B 0 / I 0 / M 4; sin importantes; sin decisiones nuevas del Owner; recomprobacion v4.5: EMITIBLE, B 0 / I 0 / M 1'
+BOUNDED_RESULT = 'EMITIBLE; B 0 / I 0 / M 4; sin importantes; sin decisiones nuevas del Owner; recomprobacion v4.5: EMITIBLE, B 0 / I 0 / M 1; recomprobacion v4.6: EMITIBLE, B 0 / I 0 / M 2'
+BOUNDED_REDO = 'recomprobacion v4.6: '
+PKG_VERSION = 'v4.6'       # la version del paquete con la que se reemite PB-T3b (la custodia el commit X de la reemision)
+CUSTODY_SHA256 = {         # el paquete revisado, byte a byte: la v4.6 de la correccion (313 702 bytes, LF)
+    'docs/initiatives/I-64-f4b-pbt3-gate-contract-package.md': '09210abe2ed5482c87bec1829f5798790d31090de490e615574c6c845d9e804a',
 }
+PKG45_SHA = '64ab03df27cc8f441883442ca999036e5f7555ede9269eb3f4f768ab8a07fdbd'  # la v4.5, custodiada en la revision hasta el commit X
 # la Snapshot K (F4B-E37; V43-08): P-01 y su autoridad
 SNAP_K = 'docs/automation/evidence/I-64-pilot/F4-ENVIRONMENT/snapshot-K/snapshot-k.json'
 SNAP_K_DEC = 'docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-config-snapshot-k-decision.md'
@@ -83,8 +108,8 @@ NC2_V2 = NC2_DIR + 'nc2_exact_whitelist_substitute_f4b_v2.py'
 NC2_V2_SHA = 'c033e96ce147963feb9c04733e9bfbec7493fea33d8ff79b1c2e8ab860798e45'
 NC2_V2_REVIEW = NC2_DIR + 'review/independent-review-substitute-f4b-v2.md'
 NC2_V2_LIMITS = NC2_DIR + 'limits-declared.md'
-CUSTODY_HEADS = {          # el registro gana la remedicion de PB-T3b sobre el cierre de PB-T3a (R-21)
-    'docs/initiatives/I-64-f4b-pbt3-measurements.md': ['## R-0. ', '## R-6. ', '## R-15. ', '## R-18. ', '## R-19. ', '## R-20. ', '## R-21. '],
+CUSTODY_HEADS = {          # el registro gana la remedicion de PB-T3b (R-21) y, con la reemision, el barrido de sobrecargas y reflexion (R-22)
+    'docs/initiatives/I-64-f4b-pbt3-measurements.md': ['## R-0. ', '## R-6. ', '## R-15. ', '## R-18. ', '## R-19. ', '## R-20. ', '## R-21. ', '## R-22. '],
 }
 MAIN_CHECKOUT = '<checkout-principal>'  # Redaccion para el repo publico: la ruta local del checkout principal  # solo con --objects-rev; se redacta al custodiar ('<checkout-principal>')
 WT = '<worktree-de-I-64>'  # Redaccion para el repo publico: la ruta local del worktree  # solo al escribir; se redacta al custodiar
@@ -144,6 +169,9 @@ F4B_E25 = CO + 'owner-f4b-correction-unit-change-decision.md'
 F4B_E25_RET = PILOT + '/F4B-DRAFTS/pbt1b/owner-return-verify-stop.md'
 PT3A_TCP = PILOT + '/' + PT3A_TASK + '/task-close-package.md'
 PBT3AC = PILOT + '/' + PT3A_TASK + '/coordinator/gate-contract.json'
+PBT3BC = PILOT + '/' + TASK + '/coordinator/gate-contract.json'  # el contrato emitido de PB-T3b (F4B-E44), en PT3B_EMIT
+DECISION = CO + 'owner-pbt3b-overload-decision.md'             # la decision del Owner F4B-E45; la custodia el commit X
+ANALYSIS = PILOT + '/' + TASK + '/1/' + RUN1 + '/analysis.md'  # el analisis de la sesion para la correccion; lo custodia el commit X
 WARN = []
 
 def git(*args, inp=None):
@@ -224,11 +252,15 @@ DRAFT_NAMES = ['PushBackFullDraftState.cs', 'PushBackFullDraftStateComparer.cs',
 
 # ---------------------------------------------------------------- el anclaje (precondiciones 1 y 5; section 6.0: frente al cierre de PB-T3a, vacio)
 for _short, _full in (('c40eea4a', PT3A_CLOSE), ('6919e17a', GREEN_T3A), ('5dbc9661', RED_T3A), ('485b5651', PT3A_REISSUE), ('5bda5569', PT3A_REISSUE_X),
-                      ('18e4b783', PT3A_EMIT), ('d8ccbcb8', D1_REV)):
+                      ('18e4b783', PT3A_EMIT), ('d8ccbcb8', D1_REV), ('eab27a9e', PT3B_EMIT), ('05b6f04e', PT3B_EMIT_X)):
     assert git('rev-parse', _short).stdout.decode('ascii').strip() == _full, ('SHA', _short)
 for _anc, _name in ((D1_REV, 'F4B-E29 (D-1)'), (PT3A_EMIT, 'la emision de PB-T3a (F4B-E41)'), (PT3A_REISSUE, 'la reemision de PB-T3a (F4B-E42)'),
-                    (GREEN_T3A, 'el GREEN de PB-T3a'), (PT3A_CLOSE, 'el cierre de PB-T3a (F4B-E43)')):
+                    (GREEN_T3A, 'el GREEN de PB-T3a'), (PT3A_CLOSE, 'el cierre de PB-T3a (F4B-E43)'), (PT3B_EMIT, 'la emision de PB-T3b (F4B-E44)')):
     assert git('merge-base', '--is-ancestor', _anc, REV).returncode == 0, ('la revision no desciende de ' + _name)
+assert git('merge-base', '--is-ancestor', PT3B_EMIT_X, PT3B_EMIT).returncode == 0, 'el commit X de la emision de PB-T3b no es antecesor de su BASE'
+# la reemision (F4B-E45; precondicion 12): sobre la emision de PB-T3b, que no dejo commits del intento 1 en src/ ni en tests/
+assert git('diff', '--quiet', PT3B_EMIT, REV, '--', 'src', 'tests').returncode == 0, \
+    'src o tests cambiaron desde la emision de PB-T3b: la reemision va sobre ella, sin commits del intento 1 (F4B-E45)'
 assert git('merge-base', '--is-ancestor', RED_T3A, GREEN_T3A).returncode == 0, 'el RED de PB-T3a no es antecesor de su GREEN'
 assert git('diff', '--quiet', PT3A_CLOSE, REV, '--', 'src', 'tests').returncode == 0, \
     'src o tests cambiaron desde el cierre de PB-T3a (section 6.0: el diff de src frente al cierre de la subtarea anterior, vacio)'
@@ -252,9 +284,16 @@ assert ('Core %s y UI %s (%s pasadas y %d omitidas)' % (format(_core, ',').repla
     ('los recuentos de CI_BASE_T3A no son los de la entrada de cierre', CI_BASE_T3A)
 for _n in DRAFT_NAMES:
     assert in_head(DRAFT + _n), ('el cierre de PB-T3a sin su archivo de Draft/', _n)
-ANCHOR_SRC = ('desciende de %s (%s), %s (%s), %s (reemision, %s), el GREEN %s y el cierre %s (%s); src y tests == el cierre == el GREEN de PB-T3a; '
-              'los ocho de Draft/' % (D1_REV[:8], D1_ENTRY, PT3A_EMIT[:8], PT3A_EMIT_ENTRY, PT3A_REISSUE[:8], PT3A_STOP_ENTRY, GREEN_T3A[:8],
-                                       PT3A_CLOSE[:8], PT3A_CLOSE_ENTRY))
+ANCHOR_SRC = ('desciende de %s (%s), %s (%s), %s (reemision, %s), el GREEN %s, el cierre %s (%s) y la emision de PB-T3b %s (%s); src y tests == la '
+              'emision de PB-T3b == el cierre == el GREEN de PB-T3a (sin commits del intento 1); los ocho de Draft/'
+              % (D1_REV[:8], D1_ENTRY, PT3A_EMIT[:8], PT3A_EMIT_ENTRY, PT3A_REISSUE[:8], PT3A_STOP_ENTRY, GREEN_T3A[:8], PT3A_CLOSE[:8],
+                 PT3A_CLOSE_ENTRY, PT3B_EMIT[:8], PT3B_EMIT_ENTRY))
+# el contrato emitido de PB-T3b (F4B-E44), en su emision: el reemitido solo difiere de el donde lo dice la v4.6 (REISSUE_OK, al final)
+_c3b_raw = show_bytes(PBT3BC, PT3B_EMIT)
+assert hashlib.sha256(_c3b_raw).hexdigest() == PT3B_EMITTED_SHA, 'el contrato de PB-T3b de la emision no es el emitido (sha256)'
+pbt3b_emitted = json.loads(_c3b_raw.decode('ascii'))
+assert pbt3b_emitted['TaskId'] == TASK and pbt3b_emitted['AuthorityRevision'] == PT3B_EMIT_X, 'el contrato emitido de PB-T3b'
+T3B_EMITTED_STOP = {s['Id']: s['Text'] for s in pbt3b_emitted['StopConditions']}
 
 # ---------------------------------------------------------------- el contrato emitido de PB-T3a: las listas, los filtros, las celdas y las paradas
 pbt3a = json.loads(show(PBT3AC))
@@ -574,10 +613,11 @@ for _g in D1_GUARDS:  # ningun Skip en los tres archivos de guardas antes del RE
 # del piloto (D-PBT3-10: PushBackPilotDraftState pasa a TState)
 C13_NEW = ['PushBackFullPrepareInput', 'BuildCore', 'BuildFull', 'BlockedPrefix', 'FrontalBOfOneWayPrefix', 'FrontalBOfOneWaySuffix', 'AllViewsObsoleteReason',
            'Erasures', 'PostOriginKey', 'ErasedKeys', 'ComparePostCore', 'EraseUnsupportedReason', 'PostErasedStillPresentPrefix', '_prepare', '_originOf',
-           '_postRead', '_origin', 'IPushBackPilotViewEraser', 'EraseUnit']
+           '_postRead', '_origin', 'IPushBackPilotViewEraser', 'EraseUnit'] + list(NAMES_E45)  # con los nombres de F4B-E45 (V46-06)
 _gg = git('grep', '-l', '-w', *sum([['-e', n] for n in C13_NEW], []), REV, '--', PILOTD)
 assert _gg.returncode == 1 and not _gg.stdout.strip(), ('un nombre nuevo de PBT3B-C13 ya existe en Pilot/', _gg.stdout.decode('utf-8')[:300])
-_gg = git('grep', '-l', '-w', '-e', 'PushBackFullPrepareInput', '-e', 'IPushBackPilotViewEraser', '-e', 'PilotEraseScopeDouble', REV, '--', 'src', 'tests')
+_gg = git('grep', '-l', '-w', '-e', 'PushBackFullPrepareInput', '-e', 'IPushBackPilotViewEraser', '-e', 'PilotEraseScopeDouble',
+          *sum([['-e', n] for n in NAMES_E45], []), REV, '--', 'src', 'tests')
 assert _gg.returncode == 1, ('un tipo nuevo de PB-T3b ya existe en src/ o tests/', _gg.stdout.decode('utf-8')[:300])
 _pp, _ur = '\n'.join(TEXT[PP]), '\n'.join(TEXT[UR])
 for _txt, _what, _n in ((_pp, 'public static PushBackPilotPrepareResult Prepare(', 1), (_pp, 'private static string ComposeMemberEnvelope(', 1),
@@ -660,8 +700,10 @@ def md_fold(lines):
 VARIANT = "(A')"  # la variante (A') de D-1 en ASCII (el prime se pliega a "'"): no elegida (F4B-E29), no va al contrato
 PKG = 'docs/initiatives/I-64-f4b-pbt3-gate-contract-package.md'
 MEAS = 'docs/initiatives/I-64-f4b-pbt3-measurements.md'
-# la v4.5 revisada esta custodiada desde 5bda5569: la de la revision, siempre por su sha256
-assert hashlib.sha256(show_bytes(PKG)).hexdigest() == CUSTODY_SHA256[PKG], 'el paquete custodiado en la revision no es la v4.5 revisada (sha256)'
+# el paquete custodiado en la revision: la v4.6 desde el commit X de la reemision; antes, la v4.5 de la emision (AVISO en seco)
+_pkg_rev_sha = hashlib.sha256(show_bytes(PKG)).hexdigest()
+assert _pkg_rev_sha in (CUSTODY_SHA256[PKG], PKG45_SHA), ('el paquete custodiado en la revision no es la v4.5 ni la v4.6 revisadas (sha256)', _pkg_rev_sha)
+soft(_pkg_rev_sha == CUSTODY_SHA256[PKG], 'reemision: el paquete custodiado en la revision es aun la v4.5 (64ab03df); la v4.6 la custodia el commit X')
 if PKG_FILE:
     PKG_RAW, PKG_SRC = open(PKG_FILE, 'rb').read(), '--package-file ' + os.path.basename(PKG_FILE)
 else:
@@ -756,7 +798,9 @@ def rr_pkg_check(sec_lines, classes, sub='PB-T3b'):
                                                              'F4 (los Skip de D-1);') != 1:
         errors.append('la verificacion con una reparacion sin el tramo RedSha..RedRepairSha de PB-T3b (PP, UR, la interfaz y los tres de guardas)')
     rows = [l for l in sec_lines if re.match(r'^\| PB-T3[abc] \| `', l)]
-    mine = [re.match(r'^\| %s \| `(\w+)`' % re.escape(sub), l).group(1) for l in rows if l.startswith('| %s |' % sub)]
+    # la fila del doble con borrado (V46-02: "`PilotEraseScopeDouble` (el doble ...") no es una clase nueva: se mira en rr3_table_check
+    mine = [re.match(r'^\| %s \| `(\w+)`' % re.escape(sub), l).group(1) for l in rows if l.startswith('| %s |' % sub)
+            and not re.match(r'^\| %s \| `\w+` \(el doble ' % re.escape(sub), l)]
     if sorted(mine) != sorted(classes):
         errors.append('la tabla cerrada de RR-3 no nombra exactamente las clases nuevas de %s: %s' % (sub, ascii(mine)))
     return errors
@@ -812,12 +856,15 @@ def rr3_table_check(sec_lines, classes, sec53, sub='PB-T3b'):
     errors, info, seen = [], {}, []
     for row in [l for l in sec_lines if l.startswith('| %s | `' % sub)]:
         cells = row.strip()[2:-2].split(' | ') if row.strip().endswith(' |') else []
-        cm = re.match(r'`(\w+)` \(CT-', cells[1]) if len(cells) == 3 else None
+        # la v4.6 (V46-02) anade la fila del doble con borrado, "| PB-T3b | `PilotEraseScopeDouble` (el doble con borrado ...) | ... |": se lee igual
+        # y va a info, pero no cuenta como una de las clases nuevas (vive en PushBackFullWriteSupport.cs)
+        cm = re.match(r'`(\w+)` \((CT-|el doble )', cells[1]) if len(cells) == 3 else None
         if not cm:
             errors.append('una fila de %s de la tabla de RR-3 sin la forma "| %s | `Clase` (CT-...) | ... |": %s' % (sub, sub, ascii(row[:80])))
             continue
         cls, body = cm.group(1), cells[2]
-        seen.append(cls)
+        if cm.group(2) == 'CT-':
+            seen.append(cls)
         lines, values, derived = [], [], []
         for seg in [s.strip() for s in body.split('<br>')]:
             lm = re.match(r'\*\*([LlVv])(?:ineas|alores):\*\* ', fold(seg))
@@ -874,13 +921,14 @@ def rr3_table_check(sec_lines, classes, sec53, sub='PB-T3b'):
 # ---- rr3_table_check (fin)
 
 
-# Los textos de la v4.5 para PB-T3b, en ASCII (md_fold) y sin las "Nota (no va al contrato)". El contrato los lleva tal cual.
+# Los textos de la v4.6 para PB-T3b, en ASCII (md_fold) y sin las "Nota (no va al contrato)". El contrato los lleva tal cual. Frente a la v4.5 (la
+# emision) cambian el Objective (v4.6), el esqueleto del RED y PBT3B-C13, con los nombres de F4B-E45 (V46-05 y V46-06); lo demas, igual.
 OBJECTIVE = (
     'Generalizar en su sitio el plan y la corrida de la actualizacion del Workspace de Push Back para que sirvan el modelo del piloto, conectado, y '
     'el modelo completo de PB-T3a, sin conectar: la barrera de diagnosticos con PushBackEditorOutputGate para los dos modelos (el unico cambio visible '
     'del piloto, sobre un diseno bloqueado), el borrado de laterales obsoletos con la regla del ultimo vinculo y el origen de POST reanclado cuando se '
     'borra el origen, el rechazo del frontal B de un rack sin lado B, el renombrado con el nombre del borrador, ComparePost generico y la capacidad de '
-    'borrar como interfaz nueva, con un solo BeginMutation y un solo Seal, segun el paquete del contrato de PB-T3 v4.5, la decision del Owner D-1 '
+    'borrar como interfaz nueva, con un solo BeginMutation y un solo Seal, segun el paquete del contrato de PB-T3 v4.6, la decision del Owner D-1 '
     '(F4B-E29, un solo codigo) y la lista cerrada CT-PBT3B-01..15. El RED es el esqueleto inerte del API nuevo, la interfaz, las pruebas nuevas y el '
     'Skip de las pruebas sustituidas por D-1; el GREEN toca solo el plan y la corrida. Si hiciera falta mutar el rack resuelto o el informe de modulos '
     'dentro del tiempo de vida del borrador: STOP y se reabre L-1. El Plugin, el anfitrion, el puerto del panel, la ventana, el clasico y Domain no '
@@ -892,10 +940,10 @@ ALLOWED_PKG = (
     'WorkspacePilotPrepareGuardTests.cs, .../WorkspacePilotUpdateGuardTests.cs y .../WorkspacePilotUpdateIntegrationGuardTests.cs. El registro '
     'F4B-DRAFTS/superseding-characterization.md no entra: lo escribe la sesion en el commit de emision (section 8.2).')
 SKELETON = (
-    'El esqueleto exacto del RED: en PP: PushBackFullPrepareInput completo (es un contenedor con su From); la sobrecarga completa de Prepare devuelve '
+    'El esqueleto exacto del RED: en PP: PushBackFullPrepareInput completo (es un contenedor con su From); PrepareFull devuelve '
     'WithInvalid(MissingInputReason); Erasures y ErasedKeys, vacias; PostOriginKey = OriginKey; los constructores nuevos y las constantes nuevas, '
-    'completos; en UR: Precheck completo devuelve Go(); Execute completo devuelve NotAppliedFailure(UpdateNotRunReason); la sobrecarga completa de '
-    'ComparePost devuelve PostRereadMissingReason; las constantes nuevas, completas; el camino del piloto, sin cambio.')
+    'completos; en UR: Precheck completo devuelve Go(); ExecuteFull devuelve NotAppliedFailure(UpdateNotRunReason); ComparePostFull devuelve '
+    'PostRereadMissingReason; las constantes nuevas, completas; el camino del piloto, sin cambio.')
 SKIP_PKG = ('El Skip de D-1, con el motivo literal de section 5.3 (con F4B-E29), en los seis metodos S-1 a S-6. Es el unico cambio permitido en esos '
             'archivos; git diff -U0 lo comprueba.')
 # el motivo literal del Skip (section 5.3; V2-26 y V41-02), con <E-n> el equivalente de cada metodo: el Worker lo escribe tal cual, sin ASCII
@@ -931,11 +979,11 @@ C13_TXT = (
     'panel port; or adding in PP, UR or IPushBackPilotViewEraser.cs a declaration whose name does not exist in PP or UR at BaseSha, or a further '
     'declaration of a name that does (an overload), of any visibility (type, constructor, method, property, field, constant or nested type), other '
     'than those that D-PBT3-09 and D-PBT3-10 prescribe: in PP: the type PushBackFullPrepareInput and its nine members (its private constructor, RackId, '
-    'StaleBase, InitialDraftState, CurrentDraftState, HasPendingText, IsDirty, ConsideredStatus and From); in PushBackPilotUpdatePlanner, a second '
-    'Prepare (the one that takes a PushBackFullPrepareInput), BuildCore, BuildFull and the constants BlockedPrefix, FrontalBOfOneWayPrefix, '
+    'StaleBase, InitialDraftState, CurrentDraftState, HasPendingText, IsDirty, ConsideredStatus and From); in PushBackPilotUpdatePlanner, '
+    'PrepareFull, BuildCore, BuildFull and the constants BlockedPrefix, FrontalBOfOneWayPrefix, '
     'FrontalBOfOneWaySuffix and AllViewsObsoleteReason; in PushBackPilotUpdatePlan, Erasures, PostOriginKey and a second internal constructor (the one '
     'with postOriginKey and erasures); in PushBackPilotPostExpectation, ErasedKeys and a second internal constructor (the one with erasedKeys); in UR: a '
-    'second Precheck, a second Execute and a second ComparePost (the ones that take the full model), ComparePostCore and the constants '
+    'second Precheck (the one that takes the full model), ExecuteFull, ComparePostFull, ComparePostCore and the constants '
     'EraseUnsupportedReason and PostErasedStillPresentPrefix; and, in Execution<TState>, the fields _prepare, _originOf, _postRead and _origin; in '
     'IPushBackPilotViewEraser.cs: the interface IPushBackPilotViewEraser and its method EraseUnit. Two changes of private members are prescribed, and '
     'neither is a new declaration: ComposeMemberEnvelope gains the parameter string name after source and remains the only member with that name; and '
@@ -1011,7 +1059,7 @@ assert one(B62, 'ExpectedEvidence: ') == 'ExpectedEvidence: ' + ' '.join([EVID_F
 assert one(B62, 'Linea base de la CI') == CI_LINE_PKG, 'la linea base de la CI del section 6.2 difiere'
 # las notas que no van al contrato del section 6.2: seis con la forma de V2-31 y dos con la de (A') con dos puntos (no se copian: no empiezan
 # por un rotulo que se copia)
-assert sum(1 for l in SEC62 if l.strip().startswith('- **Nota (no va al contrato).**')) == 6, 'las notas que no van al contrato del section 6.2'
+assert sum(1 for l in SEC62 if l.strip().startswith('- **Nota (no va al contrato).**')) == 7, 'las notas que no van al contrato del section 6.2 (6 y la de M-03, V46-03)'
 assert sum(1 for l in SEC62 if l.strip().startswith('- **Nota (no va al contrato):')) == 1, 'la nota de PBT3B-C13 con (A\')'
 # los comunes del section 6.0, que el contrato de PB-T3a ya lleva, comprobados contra el paquete y con el prefijo de PB-T3b
 T3A_INV = {i.split('. ')[0]: i for i in pbt3a['Invariants']}
@@ -1028,17 +1076,37 @@ for cid in COMMON_STOPS:
     STOP_COMMON[cid] = _t
 assert 'CT-PBT3A-04, CT-PBT3B-06 and 10' in STOP_COMMON['C07'] and 'Only two exceptions, both in PB-T3b' in STOP_COMMON['C02']
 one(B60, 'PBT3x-C08 y PBT3x-C12, con el texto de [PKT1] section 6.0 y el prefijo cambiado: ')
-one(B60, 'PBT3x-C11, con el sustituto de nc2 adaptado a F4B (F4B-E34; V43-09). ')
-assert T3A_STOP['PBT3A-C11'] == C11_FOLD, 'el bloque citado de PBT3x-C11 del paquete difiere del PBT3A-C11 del contrato de PB-T3a'
+_c11h = one(B60, 'PBT3x-C11, con los sustitutos de las decisiones del Owner (F4B-E40 y F4B-E43; V46-01, CA-T3b M-01; ')
+assert 'en PB-T3c, con su prefijo (PBT3C, --task PBT3C y "PB-T3c"):' in _c11h, ('la cabecera del bloque de C11 de la v4.6 (V46-01)', _c11h[:200])
+assert T3B_EMITTED_STOP['PBT3B-C11'] == C11_FOLD, 'el bloque citado de PBT3x-C11 de la v4.6 no es el PBT3B-C11 del contrato emitido de PB-T3b (V46-01)'
+# la reemision de PB-T3b en el section 6.0 (V46-10) y los nombres de F4B-E45 en D-PBT3-10 y en CT-13 (V46-06)
+_s60r = md_fold(SEC60)
+for _need in ('PB-T3a y PB-T3b, en su reemision, van en el intento 2 de 3 (F4B-E42 y V45-06; F4B-E45 y V46-10);',
+              'La reemision de PB-T3b en el intento 2 (F4B-E45; V46-10).', 'La correccion, C-1: los nombres de V46-06, y nada mas: ExecuteFull, '
+              'ComparePostFull y PrepareFull, con la misma firma.', 'La reemision: con la precondicion 12 y el mismo TaskId.'):
+    assert _need in _s60r, ('la reemision de PB-T3b del section 6.0', _need[:60])
+_pkg_all = '\n'.join(PKG_LINES)
+for _need in ('public static PushBackPilotPrepareResult PrepareFull(PushBackFullPrepareInput input, PushBackFullIntentResult reread, RackCatalog catalog)',
+              'public static DraftApplyOutcome<PushBackFullDraftState> ExecuteFull(',
+              'public static string? ComparePostFull(PushBackPilotUpdatePlan plan, PushBackFullIntentResult? postRead);',
+              'ni llama a `PushBackPilotUpdateRun.ExecuteFull`, ni a `Precheck` con un `DraftSession<PushBackFullDraftState>`',
+              '12. **La reemisi' + chr(0xF3) + 'n de PB-T3b con la v4.6** (F4B-E45; V46-10).'):
+    assert _pkg_all.count(_need) == 1, ('los nombres de F4B-E45 en el paquete', _need[:60])
 # la regla RR del section 6.0 con su lectura para PB-T3b, y la tabla de RR-3 en sus filas de PB-T3b
 _err = rr_pkg_check(SEC60, [c for _, c, _ in CLASS_CTS])
 assert not _err, ('la regla RR del section 6.0 (PB-T3b)', _err)
 _err, RR3_INFO = rr3_table_check(SEC60, [c for _, c, _ in CLASS_CTS], SEC53)
 assert not _err, ('la tabla de RR-3 del section 6.0, filas de PB-T3b', _err)
 RR3_DERIVED = [(c, w, len(g)) for c, (_, _, d) in RR3_INFO.items() for w, g in d]
-RR3_SUMMARY = ('4 clases, una fila cada una; %s; derivadas de 5.3 (no enumeradas en la fila): %s'
+# la v4.6 (V46-02): las filas de PB-T3b van enumeradas, sin nada derivado de 5.3; la del doble, con sus dos literales; CT-13 con el nombre nuevo (V46-06)
+assert not RR3_DERIVED, ('la v4.6 enumera las filas de PB-T3b de la tabla de RR-3: nada se deriva de 5.3', RR3_DERIVED)
+assert RR3_INFO.get('PilotEraseScopeDouble') == (['EraseUnit:', 'PreparedBlockMatches'], [], []), ('la fila del doble de la tabla de RR-3',
+                                                                                                   RR3_INFO.get('PilotEraseScopeDouble'))
+assert 'PushBackPilotUpdateRun.ExecuteFull' in RR3_INFO['PushBackWritePathGuardTests'][0] and \
+    'PushBackPilotUpdateRun.Execute' not in RR3_INFO['PushBackWritePathGuardTests'][0], 'la fila de CT-13 de la tabla de RR-3 con ExecuteFull'
+RR3_SUMMARY = ('4 clases, una fila cada una, y la del doble; %s; PilotEraseScopeDouble %d lineas; derivadas de 5.3: %s'
                % ('; '.join('%s %d lineas y %d valores' % (c, len(RR3_INFO[c][0]), len(RR3_INFO[c][1])) for _, c, _ in CLASS_CTS),
-                  '; '.join('%s: %s -> %d' % (c, w, n) for c, w, n in RR3_DERIVED) or 'ninguna'))
+                  len(RR3_INFO['PilotEraseScopeDouble'][0]), '; '.join('%s: %s -> %d' % (c, w, n) for c, w, n in RR3_DERIVED) or 'ninguna'))
 _s60 = md_fold(SEC60)
 assert ('P-01 dice "' + P01 % ('K', SNAP_K) + '"') in _s60, 'P-01 del section 6.0 (la Snapshot K)'
 assert 'El limite de D2, en cada contrato: PBT3x-C17, con el texto literal del Owner ([PKT1] section 6.0).' in _s60, 'C17 del section 6.0'
@@ -1092,9 +1160,9 @@ for _sid, _path, _line, _kind, _name, _eq in D1_METHODS:
     assert re.search(r'\| %s \| `%s` \(%s:%d' % (_sid, _name, _short, _line), _meas), ('R-6 sin ' + _sid + ' en su linea', _name)
 PKG_CHECKS = ["sin (A') en %d textos copiados" % len(_copied), 'Objective', 'AllowedWriteScope (11)', 'UNIT_CHANGE (PP y UR)', 'esqueleto del RED',
               'Skip de D-1', 'RequiredTests (tabla)', 'INV-PBT3B-01..06 y 15', 'paradas propias (C04, C13, C14, C16, C17)', 'ExpectedEvidence (6 vinetas)',
-              'linea base de la CI', 'seis notas fuera (6.2) y la de (A\') con dos puntos', 'invariantes comunes 07..14 == PB-T3a',
-              'paradas comunes == PB-T3a', 'C11 citado == PBT3A-C11', 'regla RR con la lectura de PB-T3b (RR-2, dos lecturas, cadena, tramo)',
-              'tabla de RR-3, filas de PB-T3b', 'P-01 K', 'C17', 'TaskId 24..26', 'UNIT_CHANGE de 6.0', 'CI del RED de PB-T3b (ui-tests en success)', 'celdas',
+              'linea base de la CI', 'siete notas fuera (6.2) y la de (A\') con dos puntos', 'invariantes comunes 07..14 == PB-T3a',
+              'paradas comunes == PB-T3a', 'C11 citado == PBT3B-C11 emitido (V46-01)', 'la reemision de PB-T3b (6.0) y los nombres de F4B-E45', 'regla RR con la lectura de PB-T3b (RR-2, dos lecturas, cadena, tramo)',
+              'tabla de RR-3, filas de PB-T3b enumeradas, el doble y CT-13 con ExecuteFull', 'P-01 K', 'C17', 'TaskId 24..26', 'UNIT_CHANGE de 6.0', 'CI del RED de PB-T3b (ui-tests en success)', 'celdas',
               'ForbiddenWriteScope de tests/ (76 de 79)', 'anclaje frente al cierre de PB-T3a', 'F4B-E30', 'clases y CT de 5.3', 'E-1..E-6',
               'motivo literal del Skip', 'lo esperado con (A)', 'R-6 con S-1..S-6']
 # el sha256 del revisado, al final, para que una copia mutada falle antes en su texto
@@ -1142,10 +1210,13 @@ C11_SUBS = [
      'the Owner on the nc2 of PB-T3a (F4B-E43) does not extend -,'),
     ('no one-off acceptance extends to PB-T3a', 'no one-off acceptance extends to PB-T3b'),
 ]
+# la v4.6 (V46-01): el bloque citado YA es el PBT3B-C11 del contrato emitido de PB-T3b. Los cambios que la emision aplicaba sobre el bloque de la
+# v4.5 (C11_SUBS_EMISSION) quedan como registro: cada uno esta ya en el bloque, una vez, y su texto viejo no
+C11_SUBS_EMISSION, C11_SUBS = C11_SUBS, []
 C11 = C11_FOLD
-for _old, _new in C11_SUBS:
-    assert C11.count(_old) == 1, ('PBT3B-C11: un cambio no aplica una sola vez sobre el bloque citado del paquete', _old[:70])
-    C11 = C11.replace(_old, _new)
+assert C11 == T3B_EMITTED_STOP['PBT3B-C11'], 'PBT3B-C11: el bloque citado de la v4.6 no es el del contrato emitido de PB-T3b'
+for _old, _new in C11_SUBS_EMISSION:
+    assert C11.count(_new) == 1 and _old not in C11, ('PBT3B-C11: un cambio de la emision no esta, una vez, en el bloque de la v4.6', _new[:70])
 assert C11.endswith('no one-off acceptance extends to PB-T3b') and not re.search(r'PBT3A|PBT1[ABC]-NC|PBT2[BC]-NC|F4T1B-NC2|IDENTITY-SIGNAL', C11), \
     'PBT3B-C11: el final, los ids y ningun resto de PB-T3a'
 assert C11.count('PB-T3a') == 1 and 'the nc2 of PB-T3a (F4B-E43) does not extend' in C11, 'PBT3B-C11: PB-T3a solo en la disposicion de su nc2, que no se extiende'
@@ -1396,13 +1467,25 @@ DISP_LAST = 'F4B-E%02d' % _disp_ids[-1]
 for _e, _needle in (('F4B-E24', 'owner-f4b-dpb07-extensiondata-decisions.md'), ('F4B-E25', 'owner-f4b-correction-unit-change-decision.md'),
                     (D1_ENTRY, 'owner-pbt3-d1-decision.md'), ('F4B-E30', 'PBT1C-C07'), ('F4B-E34', 'owner-pbt2a-controls-decisions.md'),
                     (ISSUE_AUTH[0], 'owner-f4b-pbt3-emission-red-repair-decisions.md'), ('F4B-E37', 'Snapshot K'), ('F4B-E40', 'owner-pbt2c-nc1-decision.md'),
-                    (PT3A_EMIT_ENTRY, PT3A_TASK), (PT3A_STOP_ENTRY, 'owner-pbt3a-g9-decision.md'), (PT3A_CLOSE_ENTRY, 'owner-pbt3a-nc2-decision.md')):
+                    (PT3A_EMIT_ENTRY, PT3A_TASK), (PT3A_STOP_ENTRY, 'owner-pbt3a-g9-decision.md'), (PT3A_CLOSE_ENTRY, 'owner-pbt3a-nc2-decision.md'),
+                    (PT3B_EMIT_ENTRY, TASK)):
     _i = _disp.index('\n## %s. ' % _e)
     assert _needle in _disp[_i:_disp.find('\n## F4B-E', _i + 1) if _disp.find('\n## F4B-E', _i + 1) > 0 else len(_disp)], (_e, _needle)
-# la emision de PB-T3b (F4B-E44): la entrega el commit X; hasta entonces, AVISO
-E44_OK = bool(re.search(r'(?m)^## %s\. Emisi\S+n de %s' % (EMIT_ENTRY, TASK), _disp))
-soft(E44_OK, 'emision: %s (la emision de %s) aun no esta en f4b-dispositions.md' % (EMIT_ENTRY, TASK))
-assert DISP_LAST in (PT3A_CLOSE_ENTRY, EMIT_ENTRY), ('f4b-dispositions.md termina en una entrada que no es el cierre de PB-T3a ni la emision de PB-T3b', DISP_LAST)
+assert re.search(r'(?m)^## %s\. Emisi\S+n de %s' % (PT3B_EMIT_ENTRY, TASK), _disp), 'F4B-E44, la emision de PB-T3b, no esta en f4b-dispositions.md'
+# la parada del intento 1, la decision del Owner y la reemision (F4B-E45): la entrega el commit X; hasta entonces, AVISO
+E45_OK = bool(re.search(r'(?m)^## %s\. Parada de %s' % (EMIT_ENTRY, TASK), _disp))
+if soft(E45_OK, 'reemision: %s (la parada PBT3B-C02 y PBT3B-C07 del intento 1, la decision del Owner y la reemision) aun no esta en '
+                'f4b-dispositions.md' % EMIT_ENTRY):
+    _i = _disp.index('\n## %s. ' % EMIT_ENTRY)
+    _e45 = _disp[_i:]
+    assert all(x in _e45 for x in ('PBT3B-C02', 'PBT3B-C07', 'owner-pbt3b-overload-decision.md', RUN1) + NAMES_E45), \
+        'F4B-E45 sin la parada, la decision, el Worker o los nombres nuevos'
+assert DISP_LAST in (PT3B_EMIT_ENTRY, EMIT_ENTRY), ('f4b-dispositions.md termina en una entrada que no es la emision de PB-T3b ni su reemision', DISP_LAST)
+assert int(EMIT_ENTRY.split('E')[-1]) == int(PT3B_EMIT_ENTRY.split('E')[-1]) + 1, ('la numeracion: la reemision sigue a la emision', EMIT_ENTRY)
+# las secciones de la evidencia: X y BASE siguen a la ultima de la revision (PREV_EV), o ya estan (tras el commit X, la de X)
+_evs = re.findall(r'(?m)^## (\d+)\. ', show('docs/automation/evidence/I-64-evidence.md'))
+assert _evs[-1] in (PREV_EV, X_EV) and int(X_EV) == int(PREV_EV) + 1 and int(BASE_EV) == int(X_EV) + 1, ('las secciones de la evidencia', _evs[-3:],
+                                                                                                        PREV_EV, X_EV, BASE_EV)
 # F4B-E35: la pregunta 3 (la emision condicional de PB-T3, que cubre PB-T3b tras el cierre de PB-T3a) y la pregunta 4 (la regla RR)
 _e35 = show(ISSUE_AUTH[1])
 _err = rr_check(_e35) + q3_check(_e35)
@@ -1412,19 +1495,22 @@ assert 'Un solo c' in _d1 and 'docs/initiatives/I-64-f4b-pbt3-gate-contract-pack
 # la AuthorityRevision contiene F4B-E29 (precondicion 4) y el cierre de PB-T3a: si esta en el almacen; si no (un seco con otra), AVISO
 if soft(git('cat-file', '-e', AR + '^{commit}').returncode == 0, 'emision: la AuthorityRevision %s no esta en el almacen de objetos (seco): no se '
                                                                   'comprueba que contenga F4B-E29 y el cierre de PB-T3a' % AR[:8]):
-    assert git('merge-base', '--is-ancestor', D1_REV, AR).returncode == 0 and git('merge-base', '--is-ancestor', PT3A_CLOSE, AR).returncode == 0, \
-        'la AuthorityRevision no contiene F4B-E29 (precondicion 4) o el cierre de PB-T3a'
+    assert git('merge-base', '--is-ancestor', D1_REV, AR).returncode == 0 and git('merge-base', '--is-ancestor', PT3A_CLOSE, AR).returncode == 0 \
+        and git('merge-base', '--is-ancestor', PT3B_EMIT, AR).returncode == 0, \
+        'la AuthorityRevision no contiene F4B-E29 (precondicion 4), el cierre de PB-T3a o la emision de PB-T3b'
 F4T4 = sorted(p for p in tracked('docs/initiatives/') if re.fullmatch(r'docs/initiatives/I-64-f4-t4[a-z0-9-]*-gate-contract-package\.md', p))
 assert len(F4T4) == 6, F4T4
 UNIT_CHANGE = [(PP, 'el plan de la actualizacion del piloto: PB-T3b lo generaliza en su sitio (D-PBT3-09; section 6.0 del paquete, F4B-E25)'),
                (UR, 'la corrida de la actualizacion del piloto: PB-T3b la generaliza en su sitio (D-PBT3-10; section 6.0 del paquete, F4B-E25)')]
 EXISTING = [
-    (PKG, 'archivo completo (' + PKG_VERSION + ', sha256 ' + CUSTODY_SHA256[PKG][:8] + '): section 3 (D-PBT3-09, el plan generalizado, y D-PBT3-10, la '
-          'corrida generalizada y ComparePost, con la variante (A); D-PBT3-12 a D-PBT3-14), section 4 (las guardas, con S-1 a S-6) y 4.1 (el barrido de '
-          'colisiones), section 5.0 (las reglas, el momento de cada lectura, los gestos que no cambian nada, la comprobacion de los archivos nuevos y '
-          'tocados frente a las guardas y el doble con borrado) y 5.3 (CT-PBT3B-01 a 15, los equivalentes E-1 a E-6, el motivo literal del Skip y la '
-          'medicion sobre el GREEN), section 6.0 (lo comun, con la regla RR y su lectura en PB-T3b, la tabla cerrada de RR-3 y el bloque citado de '
-          'PBT3x-C11) y 6.2 (el contrato de PB-T3b, con la variante elegida), section 7, section 8 (D-1, decidida en F4B-E29) y section 10'),
+    (PKG, 'archivo completo (' + PKG_VERSION + ', sha256 ' + CUSTODY_SHA256[PKG][:8] + '; la de la correccion, F4B-E45): section 3 (D-PBT3-09, el plan '
+          'generalizado, y D-PBT3-10, la corrida generalizada y ComparePost, con la variante (A) y los nombres de F4B-E45, PrepareFull, ExecuteFull y '
+          'ComparePostFull; D-PBT3-12 a D-PBT3-14), section 4 (las guardas, con S-1 a S-6) y 4.1 (el barrido de colisiones y el de la resolucion de '
+          'sobrecargas y la reflexion, V46-07), section 5.0 (las reglas, el momento de cada lectura, los gestos que no cambian nada, la comprobacion de '
+          'los archivos nuevos y tocados frente a las guardas, las sobrecargas y el doble con borrado) y 5.3 (CT-PBT3B-01 a 15, los equivalentes E-1 a '
+          'E-6, el motivo literal del Skip y la medicion sobre el GREEN), section 6.0 (lo comun, con la regla RR y su lectura en PB-T3b, la tabla cerrada '
+          'de RR-3, el bloque citado de PBT3x-C11 y la reemision de PB-T3b en el intento 2) y 6.2 (el contrato de PB-T3b, con la variante elegida), la '
+          'precondicion 12 (la reemision), section 7, section 8 (D-1, decidida en F4B-E29; F4B-E45) y section 10'),
     (PHASE, 'paquete de la fase F4B v3.1 ([P]): la fila de PB-T3 del section 5 (:505); H-PB-16 a H-PB-23; OB-04.1 y OB-04.2; OB-05.1 a OB-05.5; '
             'section 6.4; OB-10.1; section 7.3 y 7.4; OB-T1B.1 a OB-T1B.3; R-PB-03, R-PB-05, R-PB-06, R-PB-09 y R-PB-11'),
     (CO + 'owner-f4b-disposition.md', 'archivo completo ([OD]): la fila de PB-T3; D-PB-04 (borrar si); D-PB-05; D-PB-10 (1/3; el intento 3 vuelve al '
@@ -1482,7 +1568,8 @@ EXISTING = [
                                                                                   'latente de ForWrite en PP, en la llamada de BuildFull, que la v4.5 '
                                                                                   'resuelve con ForFullWrite'),
     (MEAS, 'el registro de mediciones del paquete (R-0 a R-20): R-6 (las guardas de F4, S-1 a S-6), R-11, R-15 (tests/RackCad.Tests/Workspace/, 79 y '
-           '76), R-18 (las declaraciones de PP y UR) y R-20 (la lectura de G-9 corregida); y la remedicion de PB-T3b sobre el cierre de PB-T3a (R-21)'),
+           '76), R-18 (las declaraciones de PP y UR) y R-20 (la lectura de G-9 corregida); la remedicion de PB-T3b sobre el cierre de PB-T3a (R-21); y '
+           'la resolucion de sobrecargas y la reflexion sobre la emision de PB-T3b (R-22; F4B-E45)'),
     (REVIEW, 'la revision independiente adversarial del paquete y sus recomprobaciones (section 1 a 13), aplicadas en la v2 a la v4.2'),
     (CAT3A, 'la comprobacion acotada de PB-T3a (CA-T3a), con su recomprobacion de la v4.4 (section 10) y la de la v4.5 (section 11): lo que vale tambien '
             'para PB-T3b del paquete (I-01: CT-PBT3B-01 sin el gesto inerte de BeamDepth)'),
@@ -1510,15 +1597,28 @@ CUSTODY = [
     (D3 + 'pbt3b-anchors-out.txt', 'la salida de la remedicion de PB-T3b sobre el cierre de PB-T3a (precondicion 2 y section 6.0 del paquete): las anclas '
                                    'de PP, UR y de las guardas, S-1 a S-6, la lista de Workspace/, los recuentos, la linea base de la CI, la Snapshot '
                                    'vigente, el censo de los disenos de las clases de F4 y el barrido de las guardas sobre el cierre (section 5.0 y 4.1)'),
-    (BOUNDED_CHECK, 'la comprobacion acotada de PB-T3b (CA-T3b), sobre el contrato en seco y la v4.5 (precondicion 3 y section 6.0 del paquete)'),
+    (BOUNDED_CHECK, 'la comprobacion acotada de PB-T3b (CA-T3b), sobre el contrato en seco y la v4.5, con su recomprobacion de la v4.6 para la '
+                    'reemision (precondiciones 3 y 12 y section 6.0 del paquete)'),
     (SUPERSEDING, 'el registro declarado de las sustituciones: su seccion de PB-T3b, con S-1 a S-6, sus equivalentes E-1 a E-6, la autoridad ([OD] fila de '
                   'PB-T3, D-PB-04 y F4B-E29) y el motivo, que nombra el motivo literal del Skip (section 5.3 y 8.2 del paquete)'),
+    # la reemision (F4B-E45): la decision del Owner y el analisis de la sesion sobre el intento 1, autoridades del contrato reemitido (las custodia X)
+    (DECISION, 'archivo completo (' + EMIT_ENTRY + '): "Renombrar los metodos nuevos (Recomendado)": la parada PBT3B-C02 y PBT3B-C07 del intento 1 (' + RUN1 +
+               ', antes del RED) por dos CS0121 en WorkspacePilotUpdateRunTests.cs:669 y :799; los nombres que fija la sesion, ExecuteFull y '
+               'ComparePostFull, con la misma firma, y, en su nota posterior, PrepareFull, el mismo remedio para el tercer choque (la reflexion de '
+               'WorkspacePilotPrepareTests.cs:2155-2160); la compilacion de comprobacion y el barrido ampliado antes de reemitir; la correccion en el '
+               'intento 2 de 3'),
+    (ANALYSIS, 'el analisis de la sesion para la correccion del intento 2 (' + EMIT_ENTRY + '): FailureClass StopCondition (PBT3B-C02 y PBT3B-C07), C-1 (los '
+               'nombres), C-2 (el RED entero: el intento 1 no hizo RED; ChainRedSha null y ChainRedFiles vacio), C-3 (el GREEN) y C-4 (la reparacion '
+               'del RED sigue); blocked-skeleton.patch no es autoridad'),
 ]
 CUSTODY_HEADS[SUPERSEDING] = ['## PB-T3b ']
+# lo que custodian la emision (las seis primeras, ya en la revision) y el commit X de la reemision (las demas), sin ser autoridad
 CUSTODY_EXTRA = [D3 + n for n in ('independent-review-pbt3b-check-prompt.md', 'make_pbt3b_contract-dry.txt', 'measure_pbt3b.py', 'guard_sweep.py',
-                                  'sweep_t3b_diff.py', 'sweep-pbt3b-close.txt')]
-assert len(CUSTODY) == 3 and len(CUSTODY_EXTRA) == 6 == len(set(CUSTODY_EXTRA))
-CUSTODY_FREE = [D3 + 'pbt3b-anchors-out.txt', BOUNDED_CHECK] + CUSTODY_EXTRA
+                                  'sweep_t3b_diff.py', 'sweep-pbt3b-close.txt',
+                                  'package-v45.md', 'v46-delta.md', 'make_v46.py', 'check_v46.py', 'check-v46-out.txt', 'overload_sweep.py',
+                                  'overload-sweep-eab27a9e.txt', 'name_check_v46.py', 'name-check-v46-eab27a9e.txt', 'compile-check-pbt3b/compile-check.md')]
+assert len(CUSTODY) == 5 and len(CUSTODY_EXTRA) == 16 == len(set(CUSTODY_EXTRA))
+CUSTODY_FREE = [DECISION, ANALYSIS] + CUSTODY_EXTRA[6:]
 # el sustituto de nc2 v2 (F4B-E43), autoridad de PBT3B-C11 cuando se custodie revisado (NC2_V2_SHA)
 PENDING_AUTH = [(NC2_V2, 'el sustituto de nc2 ampliado (F4B-E43), la v2 de PBTx-NC2-EXACT-WHITELIST-F4B-01, SHA-256 ' + NC2_V2_TXT + ', con su '
                          'autoprueba y su revision independiente: el de PBT3B-C11, con --task PBT3B y su lista cerrada de literales (PB-T2 y PB-T3)'),
@@ -1535,7 +1635,7 @@ EXTERNAL = [
 ]
 _auth_all = CUSTODY + EXISTING + PENDING_AUTH + UNIT_CHANGE + EXTERNAL
 assert len({p for p, _ in _auth_all}) == len(_auth_all), 'una autoridad repetida'
-for p, _ in EXISTING + EXTERNAL + UNIT_CHANGE:
+for p, _ in EXISTING + EXTERNAL + UNIT_CHANGE + PENDING_AUTH:  # el sustituto de nc2 v2, custodiado desde la emision (05b6f04e)
     assert in_head(p), ('autoridad inexistente en la revision', p)
 assert MEAS in [p for p, _ in EXISTING] and SUPERSEDING in [p for p, _ in CUSTODY]
 c = {
@@ -1551,7 +1651,14 @@ c = {
     'Invariants': INV,
     'RequiredTests': [{'Project': p, 'Filter': f, 'MinSelected': m, 'ExpectRed': e} for p, f, m, e in REQ],
     'ExpectedEvidence': EVID, 'StopConditions': STOPS, 'EligibleCells': cells, 'RoutingEnforcement': 'required', 'CorrectionsAuthorized': True,
-    'IssuedBy': ('Sesion principal de I-64 (Claude), emision de la segunda subtarea de PB-T3 (' + EMIT_ENTRY + ') por ' + ISSUE_AUTH[0] + ', pregunta 3, la '
+    'IssuedBy': ('Sesion principal de I-64 (Claude), reemision de la segunda subtarea de PB-T3 en el intento 2 de 3 por ' + EMIT_ENTRY + ' '
+                 '(owner-pbt3b-overload-decision.md, "Renombrar los metodos nuevos (Recomendado)"): el intento 1 (' + RUN1 + ') paro antes del RED con '
+                 'PBT3B-C02 y PBT3B-C07, porque con el esqueleto de la v4.5 RackCad.Tests no compilaba (CS0121 en WorkspacePilotUpdateRunTests.cs:669 '
+                 'y :799); la v4.6 da nombre propio a los metodos nuevos del modelo completo (ExecuteFull, ComparePostFull y PrepareFull, que fija '
+                 'la sesion; PrepareFull por el tercer choque que encontro el barrido ampliado), con la compilacion de comprobacion (Core 19 107 de '
+                 '19 107 con los tres nombres), el analisis de la sesion (analysis.md) y la recomprobacion de CA-T3b. Sobre la emision ('
+                 + PT3B_EMIT_ENTRY + ', AuthorityRevision ' + PT3B_EMIT_X[:8] + ', BaseSha ' + PT3B_EMIT[:8] + '), que fue: '
+                 'emision de la segunda subtarea de PB-T3 por ' + ISSUE_AUTH[0] + ', pregunta 3, la '
                  'emision condicional de PB-T3 (' + os.path.basename(ISSUE_AUTH[1]) + '): PB-T3b tras el cierre de PB-T3a (' + PT3A_CLOSE[:8] + ', '
                  + PT3A_CLOSE_ENTRY + '; CLOSED / PASS WITH LIMITATIONS sobre ' + GREEN_T3A[:8] + '), con su remedicion sobre ese cierre y su comprobacion '
                  'acotada (' + (BOUNDED_RESULT or '<resultado por rellenar>') + '); F4B-E29, D-1, la variante (A) (owner-pbt3-d1-decision.md): S-1 a S-6 '
@@ -1582,6 +1689,29 @@ for bad in ('C:' + chr(92), 'C:' + '/', 'D:' + '/', 'D:' + chr(92), 'Users', 'al
     assert bad not in b.decode('ascii'), bad
 # la variante (A') no elegida (F4B-E29): tampoco en el contrato entero, con lo copiado del contrato de PB-T3a
 assert VARIANT.encode('ascii') not in b, "el contrato lleva la variante (A') no elegida"
+# la reemision (F4B-E45): frente al contrato emitido de PB-T3b solo cambian el Objective (v4.5 -> v4.6), PBT3B-C13 (los nombres de V46-06), las
+# autoridades (la decision y el analisis; el paquete y lo que custodia X), IssuedBy y las revisiones. Ni el alcance, ni los invariantes, ni las demas
+# paradas, ni la evidencia, ni los filtros, ni las celdas
+REISSUE_CHANGED_OK = {'Objective', 'Authorities', 'StopConditions', 'IssuedBy', 'IssuedUtc', 'AuthorityRevision'}
+REISSUE_CHANGED = sorted(k for k in set(c) | set(pbt3b_emitted) if c.get(k) != pbt3b_emitted.get(k))
+assert set(REISSUE_CHANGED) <= REISSUE_CHANGED_OK, ('el contrato reemitido cambia algo mas que lo esperado', sorted(set(REISSUE_CHANGED) - REISSUE_CHANGED_OK))
+assert c['Objective'] == pbt3b_emitted['Objective'].replace('segun el paquete del contrato de PB-T3 v4.5,', 'segun el paquete del contrato de PB-T3 v4.6,') \
+    and c['Objective'] != pbt3b_emitted['Objective'], 'el Objective reemitido: solo v4.5 -> v4.6'
+assert [s['Id'] for s in c['StopConditions']] == [s['Id'] for s in pbt3b_emitted['StopConditions']], 'los Id de las paradas'
+REISSUE_STOPS = [s['Id'] for s, t in zip(c['StopConditions'], pbt3b_emitted['StopConditions']) if s['Text'] != t['Text']]
+assert REISSUE_STOPS == ['PBT3B-C13'], ('solo PBT3B-C13 cambia entre las paradas', REISSUE_STOPS)
+_c13_old = T3B_EMITTED_STOP['PBT3B-C13']
+for _a, _b in (('in PushBackPilotUpdatePlanner, a second Prepare (the one that takes a PushBackFullPrepareInput), BuildCore,',
+                'in PushBackPilotUpdatePlanner, PrepareFull, BuildCore,'),
+               ('in UR: a second Precheck, a second Execute and a second ComparePost (the ones that take the full model), ComparePostCore',
+                'in UR: a second Precheck (the one that takes the full model), ExecuteFull, ComparePostFull, ComparePostCore')):
+    assert _c13_old.count(_a) == 1, ('PBT3B-C13 emitido sin su texto de la v4.5', _a[:60])
+    _c13_old = _c13_old.replace(_a, _b)
+assert [s['Text'] for s in c['StopConditions'] if s['Id'] == 'PBT3B-C13'] == [_c13_old], 'PBT3B-C13 reemitido: solo los nombres de V46-06'
+_emitted_auth = [a['Path'] for a in pbt3b_emitted['Authorities']]
+REISSUE_AUTH_NEW = [a['Path'] for a in c['Authorities'] if a['Path'] not in _emitted_auth]
+assert REISSUE_AUTH_NEW == [DECISION, ANALYSIS] and not [p for p in _emitted_auth if p not in [a['Path'] for a in c['Authorities']]], \
+    ('las autoridades del contrato reemitido: las del emitido mas la decision y el analisis', REISSUE_AUTH_NEW)
 
 
 # ---- bounded_check (inicio)
@@ -1666,6 +1796,9 @@ def bounded_check(report, result, pkg_lines, reviewer='CA-T3a'):
 soft(BOUNDED_RESULT, 'emision: falta BOUNDED_RESULT, el veredicto literal de la comprobacion acotada de PB-T3b (CA-T3b; precondiciones 3 y 10)')
 assert BOUNDED_RESULT is None or (all(ord(ch) < 0x80 for ch in BOUNDED_RESULT) and re.match(r'EMITIBLE(?: TRAS CORRECCIONES)?[.,;]', BOUNDED_RESULT)), \
     ('BOUNDED_RESULT: solo la familia EMITIBLE (EMITIBLE o EMITIBLE TRAS CORRECCIONES; DU-18)', BOUNDED_RESULT)
+# la reemision (precondicion 12): BOUNDED_RESULT nombra la recomprobacion de la v4.6, y el informe la lleva como su ultima recomprobacion
+assert BOUNDED_RESULT is None or BOUNDED_REDO in BOUNDED_RESULT, ('BOUNDED_RESULT sin "%s": la reemision exige la recomprobacion de la v4.6'
+                                                                  % BOUNDED_REDO.strip(), BOUNDED_RESULT)
 BOUNDED_SRC = None  # de donde leyo bounded_check el informe de CA-T3b: en seco, el local (--bounded-file) manda, porque crece antes del commit X
 if BOUNDED_FILE:
     _rep = open(BOUNDED_FILE, 'rb').read().decode('utf-8')
@@ -1682,6 +1815,8 @@ if BOUNDED_SRC:
         assert not _err, ('la comprobacion acotada de PB-T3b', BOUNDED_SRC, _err)
 else:
     soft(False, 'emision: la comprobacion acotada de PB-T3b (%s) aun no existe (ni en la revision ni --bounded-file)' % BOUNDED_CHECK)
+soft(BOUNDED_LAST == PKG_VERSION, 'reemision: la comprobacion acotada de PB-T3b (%s) aun no tiene su recomprobacion de la %s (la ultima: %s)'
+     % (BOUNDED_SRC or BOUNDED_CHECK, PKG_VERSION, BOUNDED_LAST))
 # las autoridades pendientes (el sustituto de nc2 v2, sus limites y su revision) ya dan su AVISO, uno, con NC2_V2_OK
 assert [p for p, _ in PENDING_AUTH] == [NC2_V2, NC2_V2_LIMITS, NC2_V2_REVIEW]
 
@@ -1722,12 +1857,16 @@ if DRY:
           '(68 + 1); src: %d' % (PBT3AC + ' en ' + REV_SHA[:8], len(CORE_T), len(UI_T), len(SRCF)))
     print('D-1 (F4B-E29): S-1 a S-6 en %s, sin Skip en la base; %d filas (5 Fact y las 5 de S-2) | Workspace/: %d archivos, %d en la lista explicita'
           % (', '.join(sorted({os.path.basename(p) for _, p, _, _, _, _ in D1_METHODS})), D1_ROWS, len(WS_FILES), len(WS_LIST)))
-    print('PBT3B-C13: %d nombres nuevos libres en Pilot/; Prepare, Precheck, Execute y ComparePost una vez; Execution con %d miembros tipados en el '
-          'piloto; censo de la base: PP %d y UR %d declaraciones' % (len(C13_NEW), len(EXEC_TYPED), len(CENSUS_BASE[PP]), len(CENSUS_BASE[UR])))
-    print('PBT3B-C11: el bloque citado del paquete con %d cambios (nc2 v2 de F4B-E43, nc1 PD-F4B-01 de F4B-E40, las diferencias admitidas, las '
-          'variaciones que vuelven al Owner y el final); sustituto de nc1 en la revision con SHA-256 %s; sustituto de nc2 v2: %s'
-          % (len(C11_SUBS), NC1_SUBST_SHA[:8], ('en la revision con SHA-256 ' + NC2_V2_SHA[:8]) if NC2_V2_OK else
+    print('PBT3B-C13: %d nombres nuevos libres en Pilot/ (con %s de F4B-E45); Prepare, Precheck, Execute y ComparePost una vez; Execution con %d '
+          'miembros tipados en el piloto; censo de la base: PP %d y UR %d declaraciones' % (len(C13_NEW), ', '.join(NAMES_E45), len(EXEC_TYPED),
+                                                                                           len(CENSUS_BASE[PP]), len(CENSUS_BASE[UR])))
+    print('PBT3B-C11: el bloque citado de la v4.6 == el PBT3B-C11 emitido, sin cambios (los %d de la emision ya estan en el bloque); sustituto de nc1 en '
+          'la revision con SHA-256 %s; sustituto de nc2 v2: %s'
+          % (len(C11_SUBS_EMISSION), NC1_SUBST_SHA[:8], ('en la revision con SHA-256 ' + NC2_V2_SHA[:8]) if NC2_V2_OK else
              (('SHA-256 fijado (%s), por custodiar con su revision y sus limites' % NC2_V2_SHA[:8]) if NC2_V2_SHA else 'por custodiar (NC2_V2_SHA)')))
+    print('reemision frente al contrato emitido (%s, %s): cambian %s; paradas cambiadas: %s; autoridades %d -> %d (nuevas: %s)'
+          % (PBT3BC.rsplit('/', 3)[-3], PT3B_EMITTED_SHA[:8], ', '.join(REISSUE_CHANGED), ', '.join(REISSUE_STOPS), len(pbt3b_emitted['Authorities']),
+             len(c['Authorities']), ', '.join(p.rsplit('/', 1)[-1] for p in REISSUE_AUTH_NEW)))
     _free = [p for p in CUSTODY_FREE if not in_head(p)]
     print('nombres de custodia nuevos de F4B-DRAFTS/pbt3/ libres en la revision: %d de %d' % (len(_free), len(CUSTODY_FREE)))
     print('Snapshot K (F4B-E37): ConfigSha256 %s y sonda neutra %s con Pass | C07, C18 y los comunes == los de PB-T3a | F4B-E35: preguntas 3 y 4 y RR-1 a '
@@ -1736,7 +1875,8 @@ if DRY:
         BOUNDED_RESULT or 'por rellenar',
         (('sin errores sobre ' + BOUNDED_SRC) if BOUNDED_RESULT else ('no corre sin BOUNDED_RESULT (informe: %s)' % BOUNDED_SRC)) if BOUNDED_SRC
         else 'sin informe (ni en la revision ni --bounded-file)', BOUNDED_LAST))
-    print('emision (%s): %s en f4b-dispositions.md: %s' % (EMIT_ENTRY, EMIT_ENTRY, 'si' if E44_OK else 'no (lo entrega el commit X)'))
+    print('reemision (%s, sobre %s): %s en f4b-dispositions.md: %s | evidencia: X %s y BASE %s, tras la %s' % (
+        EMIT_ENTRY, PT3B_EMIT_ENTRY, EMIT_ENTRY, 'si' if E45_OK else 'no (lo entrega el commit X)', X_EV, BASE_EV, PREV_EV))
     print('tabla de RR-3 (filas de PB-T3b): %s' % RR3_SUMMARY)
     print('D1: needs de build-plugin =', _needs, '| F4B-E30: clases de UI de los filtros que crean el configurador real: %d (de %d archivos)'
           % (len(_cfg), len(UI_FILES)), "| (A') en el contrato: %d" % b.count(VARIANT.encode('ascii')))
@@ -1760,8 +1900,10 @@ if DRY:
         sys.stdout.flush()
         sys.stdout.buffer.write(b)
     sys.exit(0)
-assert ISSUE_AUTH and BOUNDED_RESULT and in_head(BOUNDED_CHECK) and NC2_V2_OK and E44_OK, \
-    'faltan BOUNDED_RESULT, la comprobacion acotada, el sustituto de nc2 v2 revisado o F4B-E44'
+assert ISSUE_AUTH and BOUNDED_RESULT and in_head(BOUNDED_CHECK) and NC2_V2_OK and E45_OK and BOUNDED_LAST == PKG_VERSION, \
+    'faltan BOUNDED_RESULT, la comprobacion acotada con su recomprobacion de la v4.6, el sustituto de nc2 v2 revisado o F4B-E45'
+assert in_head(DECISION) and in_head(ANALYSIS) and hashlib.sha256(show_bytes(PKG)).hexdigest() == CUSTODY_SHA256[PKG], \
+    'la reemision: la decision del Owner, el analisis o la v4.6 no estan custodiados en la revision (el commit X)'
 assert not WARN, WARN
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
 open(OUT, 'wb').write(b)

@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: none
   attempts: 2
-  next_action: "F4B-PBT3B-FULL-WRITE-RUN: intento 1 parado con PBT3B-C02 y PBT3B-C07 antes del RED (dos CS0121 por las sobrecargas nuevas del modelo completo); decision del Owner F4B-E45 (Renombrar los metodos nuevos), paquete de PB-T3 v4.6 y analisis de la correccion custodiados; siguiente: reemitir el contrato con la v4.6 para la correccion en el intento 2 de 3"
+  next_action: "F4B-PBT3B-FULL-WRITE-RUN: contrato emitido de nuevo con la v4.6 (AuthorityRevision 2bb3b759, correccion en el intento 2 de 3); siguiente: planificacion de la correccion (CorrectionOf R20261120T055235Z-a45b, analysis.md custodiado), colecciones opacas por la sesion (F4B-E21), comparacion byte a byte, A1-A8, nc4 y Worker"
   last_evidence_commit: 0f49f69160cdffc1d2933d6165d5f472b5793d84
 execution_context:
   mode: manual
