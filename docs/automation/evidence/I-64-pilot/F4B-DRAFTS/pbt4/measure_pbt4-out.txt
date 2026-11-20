@@ -1,0 +1,179 @@
+# measure_pbt4: salida (rev 7dfc7c21)
+7dfc7c21a0b30f5e04d691768b1717778e5c4ad7 I-64 F4B PB-T3c: emite el contrato de gate (AuthorityRevision e3c293b1)
+e3c293b173a9d0914803bb344595f0e48dde0390 I-64 F4B PB-T3c: paquete del contrato v4.7, remedicion sobre el cierre de PB-T3b y registro de D-2 (F4B-E47)
+
+## M-1. El anfitrion: el tipo del borrador de Push Back y sus puntos de uso
+- `_drafts\.Begin\(` en WHC: 1 -> 347
+- `Find<PushBackPilotDraftState>` en WHC: 9 -> 403, 498, 583, 667, 754, 859, 1307, 1723, 1909
+- `Find<PushBackFullDraftState>` en WHC: 0 -> 
+- `KeepMineOnCurrentVersion\(` en WHC: 1 -> 694
+- `PushBackPilotUpdateRun\.(Execute|ExecuteFull|Precheck)\s*\(` en WHC: 2 -> 864, 895
+- `public\s+\w[\w<>?]*\s+TryUpdatePilot\s*\(` en WHC: 0 -> 
+- `PushBackPilotFieldAdapter` en WHC: 4 -> 42, 1136, 1778, 1781
+- `NotePilotEdit\s*\(` en WHC: 6 -> 832, 926, 1139, 1167, 1221, 1252
+- `SetModalRackCadActive\s*\(` en WHC: 3 -> 123, 163, 166
+
+## M-2. Lo que nada del producto llama todavia
+- `ForDraft\s*\(` en src: 1
+    src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs:296:        public static RackPushBackSystemWindow ForDraft(PushBackDraftEditorLaunch launch)
+- `PushBackDraftSessionPort` en src: 3
+    src/RackCad.Application/Systems/PushBack/PushBackDraftStatePort.cs:42:    public sealed class PushBackDraftSessionPort : IPushBackDraftStatePort
+    src/RackCad.Application/Systems/PushBack/PushBackDraftStatePort.cs:46:        public PushBackDraftSessionPort(DraftSession<PushBackEditableState> draft)
+    src/RackCad.Application/Systems/PushBack/PushBackDraftStatePort.cs:64:            return new PushBackDraftEditorLaunch(draft.CurrentDraftState, draft.RackId, sourceProject, new Pus
+- `LaunchFor\s*\(` en src: 1
+    src/RackCad.Application/Systems/PushBack/PushBackDraftStatePort.cs:61:        public static PushBackDraftEditorLaunch LaunchFor(DraftSession<PushBackEditableState> draft, RackProje
+- `EnterPanelModal\s*\(` en src: 1
+    src/RackCad.Plugin/Workspace/WorkspaceController.cs:141:        public IDisposable EnterPanelModal()
+- `ExecuteFull\s*\(` en src: 1
+    src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs:201:        public static DraftApplyOutcome<PushBackFullDraftState> ExecuteFull(
+- `PrepareFull\s*\(` en src: 3
+    src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs:445:        public static PushBackPilotPrepareResult PrepareFull(PushBackFullPrepareInput input, PushBackF
+    src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs:149:            var result = PushBackPilotUpdatePlanner.PrepareFull(PushBackFullPrepareInput.From(draft), n
+    src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs:220:                (_, scan, catalog) => PushBackPilotUpdatePlanner.PrepareFull(input!, PushBackFullDraftR
+- `PushBackFullComposition\.KeepOn` en src: 0
+- `PushBackConflictClassifier\.Classify` en src: 0
+- `:\s*[^{]*IPushBackPilotViewEraser` en src: 0
+- `Editar todo` en src: 0
+
+## M-3. El panel: botones, gestos y fronteras
+- `x:Name="BrowserField\w*Button"` en WorkspacePanelView.xaml: 9
+    src/RackCad.UI/Workspace/WorkspacePanelView.xaml:219:                            <Button x:Name="BrowserFieldEditButton" Content="Editar" Margin="0,2,6,0" Padding="10,3"
+    src/RackCad.UI/Workspace/WorkspacePanelView.xaml:224:                            <Button x:Name="BrowserFieldReloadButton" Content="Recargar" Margin="0,2,6,0" Padding="10,3"
+    src/RackCad.UI/Workspace/WorkspacePanelView.xaml:229:                            <Button x:Name="BrowserFieldDiscardButton" Content="Descartar" Margin="0,2,6,0" Padding="10,3"
+    src/RackCad.UI/Workspace/WorkspacePanelView.xaml:234:                            <Button x:Name="BrowserFieldCheckButton" Content="Comprobar ahora" Margin="0,2,6,0" Padding="10,3"
+    src/RackCad.UI/Workspace/WorkspacePanelView.xaml:239:                            <Button x:Name="BrowserFieldUpdateButton" Content="Actualizar" Margin="0,2,6,0" Padding="10,3"
+    src/RackCad.UI/Workspace/WorkspacePanelView.xaml:244:                            <Button x:Name="BrowserFieldDiscardAndReloadButton" Content="Descartar y recargar" Margin="0,2,6,0"
+    src/RackCad.UI/Workspace/WorkspacePanelView.xaml:249:                            <Button x:Name="BrowserFieldKeepMineButton" Content="Conservar mi borrador" Margin="0,2,6,0" Paddin
+    src/RackCad.UI/Workspace/WorkspacePanelView.xaml:263:                                    <Button x:Name="BrowserFieldChoiceYesButton" Content="Sí" Margin="0,0,6,0" Padding="10,3"
+    src/RackCad.UI/Workspace/WorkspacePanelView.xaml:267:                                    <Button x:Name="BrowserFieldChoiceNoButton" Content="No" Padding="10,3"
+- `Content="Editar` en WorkspacePanelView.xaml: 1
+    src/RackCad.UI/Workspace/WorkspacePanelView.xaml:219:                            <Button x:Name="BrowserFieldEditButton" Content="Editar" Margin="0,2,6,0" Padding="10,3"
+- `enum\s+PilotBoundaryKind` en IWorkspacePilotEditPort.cs: 1
+    src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs:181:    public enum PilotBoundaryKind
+- `public\s+void\s+\w+\s*\(\s*\)` en WorkspacePilotFieldViewModel.cs: 10
+    src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs:320:        public void Clear()
+    src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs:353:        public void BeginEdit()
+    src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs:404:        public void CommitPending()
+    src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs:442:        public void Rematerialize()
+    src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs:463:        public void CheckNow()
+    src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs:518:        public void Update()
+    src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs:580:        public void RequestDiscardAndReload() => AskChoice(ChoiceKind.DiscardAndReload);
+    src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs:583:        public void RequestKeepMine() => AskChoice(ChoiceKind.KeepMine);
+    src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs:589:        public void ConfirmChoice()
+    src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs:639:        public void CancelChoice()
+- `_port\.TryKeepMine|_port\.RequestUpdate|_port\.CrossBoundary` en WorkspacePilotFieldViewModel.cs: 3
+    src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs:538:                var crossed = _port.CrossBoundary(new WorkspaceRequest(session), rack, PilotBoundaryKind.Update);
+    src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs:554:                var start = _port.RequestUpdate(request);
+    src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs:623:                var outcome = kind == ChoiceKind.KeepMine ? _port.TryKeepMine(request) : _port.TryDiscardAndReload(requ
+
+## M-4. La ventana en WORKSPACE: las anclas que PB-T4 usa
+- `public\s+static\s+RackPushBackSystemWindow\s+ForDraft`: 296
+- `private\s+RackPushBackSystemWindow\s*\(\s*PushBackDraftEditorLaunch`: 172
+- `PendingWork\s*\(\s*\)`: 3407, 3427
+- `WorkspaceUnappliedQuestion`: 3432, 3455
+- `HasUnappliedDraftChanges\s*\(`: 3267, 3432, 3439
+- `OnClosing\s*\(`: 3405, 3413
+- `RefuseInWorkspace\s*\(\s*\)\s*$|private\s+bool\s+RefuseInWorkspace`: 3316
+
+## M-5. Las pruebas que fijan el piloto en el panel (archivos:recuento)
+- `KeepPilotEditsOn`: 4 archivos
+    tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs:11
+    tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:3
+    tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1
+    tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs:1
+- `PushBackPilotUpdateRun\.Execute\b`: 4 archivos
+    tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:9
+    tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:2
+    tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:1
+    tests/RackCad.Tests/Workspace/WorkspacePilotUpdateScopeDouble.cs:1
+- `Find<PushBackPilotDraftState>`: 12 archivos
+    tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs:6
+    tests/RackCad.Tests/PushBackWritePathGuardTests.cs:5
+    tests/RackCad.Tests/Workspace/WorkspaceLifecycleHostTests.cs:3
+    tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs:3
+    tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRequestTests.cs:3
+    tests/RackCad.Tests/Workspace/WorkspaceAssociativeBookkeepingTests.cs:2
+    tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs:2
+    tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorTests.cs:1
+    tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs:1
+    tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1
+    tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs:1
+    tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:1
+- `PushBackPilotStateComparer`: 10 archivos
+    tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs:13
+    tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs:8
+    tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:7
+    tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:6
+    tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs:3
+    tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs:2
+    tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs:2
+    tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs:1
+    tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs:1
+    tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs:1
+- `PushBackPilotFieldAdapter`: 5 archivos
+    tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs:14
+    tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs:10
+    tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs:4
+    tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs:3
+    tests/RackCad.UI.Tests/PushBackFieldValidationConcordanceTests.cs:2
+- `OutOfPilotDiagnostic|CompositeOutOfPilotReason`: 5 archivos
+    tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentReadTests.cs:12
+    tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs:4
+    tests/RackCad.Tests/PushBackFullDraftLoadTests.cs:2
+    tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs:1
+    tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs:1
+- `NonPilotContentReason`: 2 archivos
+    tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs:4
+    tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1
+
+## M-6. Las clases que construyen el anfitrion real, y los metodos de las candidatas
+- `new WorkspaceHostCore(` en tests: WorkspaceEditIntentHostTests.cs, WorkspaceHostDrainTests.cs, WorkspaceHostLifecycleTests.cs, WorkspaceHostTestSupport.cs, WorkspaceIdleSchedulerTests.cs, WorkspaceLifecycleHostTests.cs, WorkspaceNavigationEchoTests.cs, WorkspacePilotEditHostTests.cs
+- WorkspacePilotEditHostTests: 59 metodos, 28 menciones de PushBack
+- WorkspaceEditIntentHostTests: 62 metodos, 43 menciones de PushBack
+- WorkspacePilotReconciliationHostTests: 28 metodos, 34 menciones de PushBack
+- WorkspacePilotUpdateHostTests: 35 metodos, 17 menciones de PushBack
+- WorkspacePilotUpdateHostRunTests: 27 metodos, 32 menciones de PushBack
+- WorkspacePilotUpdateRequestTests: 44 metodos, 35 menciones de PushBack
+- WorkspaceLifecycleHostTests: 69 metodos, 12 menciones de PushBack
+- WorkspaceAssociativeBookkeepingTests: 10 metodos, 3 menciones de PushBack
+- WorkspaceCommandAdvisorTests: 54 metodos, 4 menciones de PushBack
+- WorkspaceEditIntentGuardTests: 66 metodos, 24 menciones de PushBack
+- WorkspaceLifecycleGuardTests: 44 metodos, 2 menciones de PushBack
+- WorkspacePilotUpdateIntegrationGuardTests: 43 metodos, 109 menciones de PushBack
+- WorkspacePilotUpdateGuardTests: 42 metodos, 80 menciones de PushBack
+- WorkspacePilotEditGuardTests: 39 metodos, 14 menciones de PushBack
+- WorkspacePilotPrepareGuardTests: 17 metodos, 41 menciones de PushBack
+- PushBackWritePathGuardTests: 2 metodos
+- PushBackDraftWriteGuardTests: 3 metodos
+- total de metodos en las clases candidatas: 644 (cota superior: no todas fallan)
+
+## M-7. Las guardas que condicionan el diseno (anclas)
+- WorkspacePilotSurfaceGuardTests.cs `EnterPanelModal\|ShowModalWindow|ShowModalWindow\|ShowDialog`: 341
+- WorkspaceBrowserHostGuardTests.cs `Abrir en editor`: 263
+- WorkspacePilotCloseSyncGuardTests.cs `Assert\.Equal\(33`: 442, 443, 444
+- WorkspacePilotReconciliationGuardTests.cs `TheSixButtons =|TheFiveGestures =`: 155, 370
+- WorkspaceEditIntentGuardTests.cs `KeepPilotEditsOn`: 711, 776, 805
+- WorkspaceBridgeSourceGuardTests.cs `ForbiddenCallNames =|ShowModalDialog\|ShowModelessDialog`: 139, 142
+- WorkspaceModelBoundaryTests.cs `PersistenceOrWriteAuthorities = `: 41
+- WorkspacePilotUpdateIntegrationGuardTests.cs `PushBackPilotUpdateRun\\\\.Execute|runCallers|G-9: the pilot`: 500, 501, 677
+- PushBackWritePathGuardTests.cs `Find<|ExecuteFull|PushBackFullPrepareInput`: 235, 265, 271, 275, 276, 291, 292, 293, 294, 295, 296
+- PushBackDraftWriteGuardTests.cs `PushBackViewDispositions|WorkspaceHostCore`: 44, 74, 86, 88
+
+## M-8. Los sustitutos de nc1 y nc2: como se ligan a la tarea
+    docs/automation/evidence/I-64-pilot/F4B-DRAFTS/nc1-cascade-substitute/nc1_cascade_signal_substitute.py:41:TASKS = {'PBT3A': 'PB-T3a', 'PBT3B': 'PB-T3b', 'PBT3C': 'PB-T3c', 'PBT4': 'PB-T4', 'PBT5': 'PB
+    docs/automation/evidence/I-64-pilot/F4B-DRAFTS/nc1-cascade-substitute/nc1_cascade_signal_substitute.py:205:    prefix = 'F4B-%s-' % tag if tag else 'F4B-'
+    docs/automation/evidence/I-64-pilot/F4B-DRAFTS/nc2-substitute-f4b-v2/nc2_exact_whitelist_substitute_f4b_v2.py:4:--task: PBT2A, PBT3A, PBT3B, PBT3C, PBT4, PBT5 (ligado a los datos: el TaskId de la dele
+    docs/automation/evidence/I-64-pilot/F4B-DRAFTS/nc2-substitute-f4b-v2/nc2_exact_whitelist_substitute_f4b_v2.py:14:TASKS = {'PBT2A': 'PB-T2a', 'PBT3A': 'PB-T3a', 'PBT3B': 'PB-T3b', 'PBT3C': 'PB-T3c', 'P
+    docs/automation/evidence/I-64-pilot/F4B-DRAFTS/nc2-substitute-f4b-v2/nc2_exact_whitelist_substitute_f4b_v2.py:17:F4B_EXACT_EVIDENCES = (
+    docs/automation/evidence/I-64-pilot/F4B-DRAFTS/nc2-substitute-f4b-v2/nc2_exact_whitelist_substitute_f4b_v2.py:410:    """v2: --task ligado a los datos: el TaskId de la delegacion real empieza por F4B-
+
+## M-9. Los TaskId propuestos (24 a 26 caracteres, prefijo F4B-PBT4-)
+- F4B-PBT4-FULL-DRAFT-PANEL: 25 caracteres; prefijo F4B-PBT4-: True
+- F4B-PBT4-EDIT-ALL-WINDOW: 24 caracteres; prefijo F4B-PBT4-: True
+
+## M-10. La linea base: el contrato de PB-T3c
+- "TaskId": F4B-PBT3C-FULL-WRITE-ERASE
+- "AuthorityRevision": e3c293b173a9d0914803bb344595f0e48dde0390
+- "MainSha": 812baf879612320653094a8aaf46aca0bac81383
+    Linea base de la CI: la del cierre de PB-T3b (F4B-E46): run 44707482956 sobre el GREEN c7582785, Core 19 124 resultados, con 19 118 Passed y 6 Skipped, los de D-1 (la TRX cuenta la Theory S-2 con Skip como una fila; F4B-DRAFTS/pbt3/nc3-row-count-pbt3b/count-ro
+- tamano del contrato de PB-T3c: 54162 bytes

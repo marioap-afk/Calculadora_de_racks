@@ -1624,3 +1624,80 @@ El «limit reached» de los eventos de nc1 y nc2 es el texto de la parada S-11 d
 **Resultado:** **F4B-PBT3C-FULL-WRITE-ERASE = CLOSED / PASS WITH LIMITATIONS** sobre `938a35f0`, con attempts 1 de 3. El escritor de la actualización del Workspace borra las vistas obsoletas del plan dentro de la única transacción de MUTATE, por la fachada caller-owned `RackViewBlockEraser.EraseInTransaction`. La limitación es la de siempre: sin AutoCAD, el borrado real en el dibujo queda para el Smoke-PB (D-PB-09). **PB-T3 queda completa.**
 
 **Siguiente:** el paquete de PB-T4 («Editar todo»), en revisión. Su emisión no está autorizada: va al Owner en una sola vuelta, con la lista de pruebas sustituidas medida sobre este cierre.
+
+## F4B-E49. Decisiones del Owner sobre PB-T4: el piloto, la presentación, las pruebas del panel, la emisión, y la retirada y la lista de PB-T4b
+
+**Fecha:** 2026-11-20. **Registros literales,** en este commit, en `F4B-DRAFTS/coordinator/`:
+- `owner-pbt4-decisions.md`: las cuatro preguntas sobre PB-T4. La sesión las hizo en una sola vuelta, tras la revisión independiente del paquete de PB-T4 (`F4B-DRAFTS/pbt4/independent-review-v1.md`, con sus §13 a §15). Los números eran recuentos por texto sobre el cierre de PB-T3c (`7f0d9aa3`, F4B-E48).
+- `owner-pbt4b-retire-list-decisions.md`: las dos preguntas sobre PB-T4b, después. Las redactó la revisión, en su §16, porque con las listas exactas de la v4.1 la lista de PB-T4b superaba la cota que había visto el Owner y cambiaban dos premisas de sus respuestas. La sesión las hizo en una sola vuelta.
+
+**Las cuatro respuestas sobre PB-T4, literales:**
+- **Pregunta 1, el piloto:** «Retirarlo (Recomendado)». Se retira lo que solo usaba el panel; queda la carga dentro del lector, que el modelo completo usa para AUTH-13. Sus pruebas propias y E-3, E-5 y E-6 de D-1 se sustituyen con registro. Cuándo se retira lo fija la segunda tanda: en PB-T4d.
+- **Pregunta 2, la presentación:** «Por grupos (Recomendado)». «Conservar mi borrador» presenta los cambios por grupos.
+- **Pregunta 3, las pruebas del panel de F4:** «Saltar y duplicar (Recomendado)». Las 428 se saltan y se duplican con un kit nuevo, como en D-1, con un guion que comprueba que cada copia solo cambia el kit. No hay excepción a la regla de no editar pruebas ni ayudantes.
+- **Pregunta 4, la emisión:** «Sí, con condiciones (Recomendado)». Es la emisión condicional de PB-T4a, PB-T4b y PB-T4c, en ese orden y cada una tras el cierre de la anterior.
+  - **Las condiciones:** la comprobación acotada da 0 bloqueantes y 0 importantes sin resolver; la remedición no cambia nada material; y la lista emitida es la que vio el Owner o una parte de ella.
+  - **Vuelve al Owner** por una decisión nueva, un control con una firma no prevista, un intento 3, un efecto material sin medir o una prueba que falle fuera de la lista. Si eso pasa en mitad de una subtarea, el Worker para.
+
+**Las dos respuestas sobre PB-T4b, literales:**
+- **Pregunta 1, la retirada:** «Retirar tras PB-T4c (Recomendado)». El código del piloto no se retira en PB-T4b: queda sin uso hasta una subtarea propia, **PB-T4d**, que va después de PB-T4c.
+  - PB-T4d sustituye las 139 pruebas de la retirada y borra con registro las 55 originales saltadas y los 29 ayudantes, que para entonces ya no corren.
+  - **PB-T4d vuelve al Owner con su lista antes de emitirse.** La emisión condicional de la pregunta 4 no la cubre.
+- **Pregunta 2, la lista de PB-T4b:** «Sí, esa lista (Recomendado)». La lista exacta de PB-T4b son **470 pruebas,** y el Owner la toma como la que vio:
+  - las 428 del panel: 375 copias que comprueba el guion y 53 equivalentes escritos a mano, con su registro;
+  - 15 guardas de texto;
+  - 27 pruebas de la interfaz de «Conservar».
+
+  PB-T4b se emite con esa lista por la emisión condicional, si se cumple el resto de la condición. Una prueba que falle fuera de ella vuelve al Owner.
+
+**Lo que aplica el paquete:** la v4.3 (`docs/initiatives/I-64-f4b-pbt4-gate-contract-package.md`) quita las ramas no elegidas y guarda las listas en `F4B-DRAFTS/pbt4/`:
+- las de sustituciones (`pbt4-substitution-lists.md`);
+- la exacta de PB-T4b, fijada por su sha256 (`pbt4b-substitution-list.tsv`);
+- y la de PB-T4d (`pbt4d-retire-list.tsv`).
+
+**PB-T4a no cambia con la segunda tanda** (su lista es de 1), ni PB-T4c (de 2): las dos siguen con la emisión condicional de la pregunta 4.
+
+## F4B-E50. Emisión de F4B-PBT4-FULL-READ-PATH (PB-T4a), con el paquete de PB-T4 v4.3
+
+**Fecha:** 2026-11-20.
+
+**Autoridad de emisión:** la decisión del Owner F4B-E49, pregunta 4: «Sí, con condiciones (Recomendado)». Cubre PB-T4a, PB-T4b y PB-T4c, en ese orden y cada una tras el cierre de la anterior.
+- **Las condiciones que exige:**
+  - la comprobación acotada de la subtarea da 0 bloqueantes y 0 importantes sin resolver;
+  - la remedición sobre el cierre anterior, el de PB-T3c, no cambia nada material;
+  - la lista emitida es la que vio el Owner o una parte de ella. La de PB-T4a es una sola: CT-PBT3A-12.
+- **Cuándo se vuelve al Owner:** por una decisión nueva, un control con una firma no prevista, un intento 3, un efecto material sin medir o una prueba que falle fuera de la lista. No se da ninguno.
+
+**El cierre de PB-T3c** (F4B-E48, `7f0d9aa3`): PB-T3c CLOSED / PASS WITH LIMITATIONS sobre `938a35f0`, en el intento 1 de 3; PB-T3 queda completa. CI del GREEN `44757675821`, 4/4: Core 19 129 = 19 123 + 6 omitidas (las de D-1), y UI 2 451 = 2 430 + 21.
+
+**Qué es PB-T4a:** la lectura de la intención de edición del Workspace trae también el modelo completo de PB-T3 sobre el mismo escaneo (`FromReads`), y las cinco relecturas de un borrador abierto van al origen del borrador por su texto (A-T3-8).
+- **Es un cambio observable declarado:** las relecturas dejan de ir al `Primary`.
+- **La firma de `RackPilotIntentAdapter.Read` no cambia** (EIG:139-141): RIA gana `AtOrigin`, que NH llama.
+- **`AtOrigin` solo llama a `PushBackOriginByText.ReadAt`** (B-08, la §16 de la revisión): las dos relecturas puras sobre el escaneo ya tomado van en `Draft/`, porque EIG:350-364 admite un solo `PushBackPilotIntentReader.Read(` y un solo `new PushBackPilotIntentScan(` en todo RIA.
+- **`UNIT_CHANGE`:** WEI, WHC, RIA y NH (F4B-E25).
+
+**La única sustitución, con registro:** CT-PBT3A-12 (`CT_PBT3A_12_NoSourceFileOutsideTheFolderOfTheModelNamesItsTypes`), con un `Skip` de motivo literal; la sustituye CT-PBT4A-06. La entrada «## PB-T4a» de `F4B-DRAFTS/superseding-characterization.md` va en esta emisión, y su tabla de ejecución se completa al cerrar.
+
+**El total exacto de su única rama** (F4B-E46): PB-T4a añade ocho `[Fact]` y salta uno.
+- **RED:** Core 19 137 = 19 125 + 5 `Failed` (CT-PBT4A-01 a 04 y 07) + 7 `Skipped`.
+- **GREEN:** Core 19 137 = 19 130 + 0 + 7.
+- **UI, en los dos:** 2 451 = 2 430 + 21.
+
+**Los controles** (PBT4A-C11): nc1 con la firma PD-F4B-01 y su sustituto (F4B-E40), y nc2 con el sustituto v2 (F4B-E43), los dos con `--task PBT4`. La primera entrada de la `ExpectedEvidence` es, byte a byte, la del contrato de PB-T3c (`F4B_EXACT_EVIDENCES` del sustituto v2).
+
+**La reparación del RED** (F4B-E35, pregunta 4): la regla RR, con la lectura de PB-T4a. Una reparación no toca `src/` (el esqueleto) ni `PushBackDraftWriteGuardTests.cs` (el `Skip`).
+
+**Antes de emitir** (la precondición 6 del paquete):
+- **el barrido de sobrecargas, de reflexión y de nombres** sobre `7f0d9aa3`, sin colisión;
+- **el recorrido de las guardas por marcas** sobre el texto literal del GREEN (§4.1: 1 026 pruebas en 46 clases, de las que solo cae la de su lista), la ampliación de CA-T4a (97 archivos, ninguno cae) y las aserciones traducidas (`measure_pbt4_v43-out.txt`, 36 de 36);
+- **la compilación de comprobación de la sesión,** sobre copias exportadas de la base, con el esqueleto exacto (`pbt4a-skeleton.patch`) y con el `src/` del GREEN literal (`apply_green_pbt4a.py`): Core-tests y UI-tests en Debug y el Plugin en Release (con -o), 0 errores y ningun aviso CS (solo los MSB3277 locales de las referencias de AutoCAD); los tipos de los dos archivos nuevos del esqueleto en el ensamblado de Application; la suite completa de Core sobre la copia exportada de 7f0d9aa3, 19 129 = 19 122 pasadas + 0 fallidas + 7 omitidas (S-1 a S-6 de D-1 y CT-PBT3A-12), tambien con el GREEN literal del paquete; los filtros de UI del contrato, en verde; control negativo: sin el Skip y con un tipo del modelo nombrado en RIA, CT-PBT3A-12 falla. Su custodia está en `F4B-DRAFTS/pbt4/compile-check-pbt4a/`.
+
+**Fe de erratas de la v4.3:** la precondición 8 dice «las versiones v1 a v4.1» y «los fragmentos de `v41/` y `v42/`», pero la custodia lleva de la v1 a la v4.2 y de `v41/` a `v43/`; y en §4.1, "CA-T4a leyó las 100 señaladas": releyó las que cuentan sobre un archivo entero o sobre un cuerpo que cambia, y aceptó las demás por grupos (CA-T4a, §11). Los dos textos se corregirán en la versión siguiente del paquete.
+
+**La comprobación acotada de PB-T4a** (CA-T4a, `independent-review-pbt4a-check.md`, con su encargo), sobre el contrato en seco y la v4.3. El resultado que lleva el contrato es `EMITIBLE TRAS CORRECCIONES; B 0 / I 1 / M 4; las importantes corregidas en el paquete v4.3 (I-01, la anotacion string? de PushBackOriginByText.cs: aviso CS8632 que rompe build-plugin); sin decisiones nuevas del Owner; remedicion sobre 7f0d9aa3 sin cambios materiales; recomprobacion v4.3: EMITIBLE, B 0 / I 0 / M 2`.
+
+**El contrato:**
+- **P-01:** la Snapshot K (F4B-E37).
+- **La cadena:** primera delegación; `attempts` 1 de 3.
+- **La planificación:** con las colecciones opacas puestas por la sesión (F4B-E21).
+- **La verificación:** con las comprobaciones deterministas de F4B-E15.

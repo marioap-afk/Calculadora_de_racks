@@ -1,0 +1,125 @@
+diff --git a/src/RackCad.Application/Workspace/WorkspaceEditIntent.cs b/src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+index e94c9bf..6d907be 100644
+--- a/src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
++++ b/src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+@@ -2,6 +2,8 @@
+ using System;
+ using System.Collections.Generic;
+ using System.Linq;
++using RackCad.Application.Catalogs;
++using RackCad.Application.Systems.PushBack.Draft;
+ using RackCad.Application.Systems.PushBack.Pilot;
+ 
+ namespace RackCad.Application.Workspace
+@@ -34,11 +36,13 @@
+     /// </summary>
+     public readonly struct EditIntentReadResult
+     {
+-        private EditIntentReadResult(EditIntentReadStatus status, string? reason, PushBackPilotIntentResult? pilotRead)
++        private EditIntentReadResult(EditIntentReadStatus status, string? reason, PushBackPilotIntentResult? pilotRead, PushBackFullIntentResult? fullRead, RackCatalog? catalog)
+         {
+             Status = status;
+             Reason = reason;
+             PilotRead = pilotRead;
++            FullRead = fullRead;
++            Catalog = catalog;
+         }
+ 
+         public EditIntentReadStatus Status { get; }
+@@ -48,19 +52,27 @@
+         /// <summary>The read of the pilot; null unless the status is Read.</summary>
+         public PushBackPilotIntentResult? PilotRead { get; }
+ 
++        /// <summary>I-64 F4B PB-T4a: the read of the full model over the same scan; null unless the read came from <see cref="FromReads"/>.</summary>
++        public PushBackFullIntentResult? FullRead { get; }
++
++        /// <summary>I-64 F4B PB-T4a: the catalog of the read; null unless the read came from <see cref="FromReads"/>.</summary>
++        public RackCatalog? Catalog { get; }
++
+         public static EditIntentReadResult FromPilot(PushBackPilotIntentResult pilotRead)
+         {
+             if (pilotRead == null) throw new ArgumentNullException(nameof(pilotRead));
+-            return new EditIntentReadResult(EditIntentReadStatus.Read, null, pilotRead);
+-        }
+-
+-        public static EditIntentReadResult NoActiveDocument(string reason) => new(EditIntentReadStatus.NoActiveDocument, reason, null);
+-
+-        public static EditIntentReadResult Busy(string reason) => new(EditIntentReadStatus.Busy, reason, null);
+-
+-        public static EditIntentReadResult Rejected(string reason) => new(EditIntentReadStatus.Rejected, reason, null);
+-
+-        public static EditIntentReadResult Failed(string reason) => new(EditIntentReadStatus.Failed, reason, null);
++            return new EditIntentReadResult(EditIntentReadStatus.Read, null, pilotRead, null, null);
++        }
++
++        public static EditIntentReadResult FromReads(PushBackPilotIntentResult pilotRead, PushBackFullIntentResult fullRead, RackCatalog catalog) => new EditIntentReadResult(EditIntentReadStatus.Read, null, pilotRead, null, null);
++
++        public static EditIntentReadResult NoActiveDocument(string reason) => new(EditIntentReadStatus.NoActiveDocument, reason, null, null, null);
++
++        public static EditIntentReadResult Busy(string reason) => new(EditIntentReadStatus.Busy, reason, null, null, null);
++
++        public static EditIntentReadResult Rejected(string reason) => new(EditIntentReadStatus.Rejected, reason, null, null, null);
++
++        public static EditIntentReadResult Failed(string reason) => new(EditIntentReadStatus.Failed, reason, null, null, null);
+     }
+ 
+     /// <summary>
+diff --git a/src/RackCad.Application/Workspace/IWorkspaceEditIntentOriginReader.cs b/src/RackCad.Application/Workspace/IWorkspaceEditIntentOriginReader.cs
+new file mode 100644
+index 0000000..963cc1d
+--- /dev/null
++++ b/src/RackCad.Application/Workspace/IWorkspaceEditIntentOriginReader.cs
+@@ -0,0 +1,12 @@
++#nullable enable
++namespace RackCad.Application.Workspace
++{
++    /// <summary>
++    /// I-64 F4B PB-T4a (D-PBT4-03, A-T3-8) — the reader of the edit intention that can read again at the origin of an open draft,
++    /// found by its text. It is optional: a reader without it is read as today.
++    /// </summary>
++    public interface IWorkspaceEditIntentOriginReader
++    {
++        EditIntentReadResult ReadIntentAtOrigin(SessionId session, string rackId, string originText, EditIntentWitness? witness);
++    }
++}
+diff --git a/src/RackCad.Application/Systems/PushBack/Draft/PushBackOriginByText.cs b/src/RackCad.Application/Systems/PushBack/Draft/PushBackOriginByText.cs
+new file mode 100644
+index 0000000..1d707a9
+--- /dev/null
++++ b/src/RackCad.Application/Systems/PushBack/Draft/PushBackOriginByText.cs
+@@ -0,0 +1,22 @@
++using System;
++using System.Linq;
++using RackCad.Application.Catalogs;
++using RackCad.Application.Systems.PushBack.Pilot;
++using RackCad.Application.Workspace.Drafts;
++
++namespace RackCad.Application.Systems.PushBack.Draft
++{
++    /// <summary>
++    /// I-64 F4B PB-T4a (D-PBT4-03, A-T3-8) — the origin of an open draft, found by its text: the key of the ONLY mutable member
++    /// whose raw text is, byte for byte, the origin of the draft (the rule of the run, UR:640-650), the same scan at that key, and
++    /// the two pure reads over it (the pilot and the full model), as PushBackFullDraftReader does.
++    /// </summary>
++    public static class PushBackOriginByText
++    {
++        public static string Choose(DraftStaleBase staleBase, string originText) => null;
++
++        public static PushBackPilotIntentScan AtKey(PushBackPilotIntentScan scan, string originKey) => scan;
++
++        public static (PushBackPilotIntentScan Scan, PushBackPilotIntentResult Pilot, PushBackFullIntentResult Full)? ReadAt(PushBackPilotIntentScan scan, string originText, RackCatalog catalog) => null;
++    }
++}
+diff --git a/tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs b/tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs
+index 25abbbb..7c64862 100644
+--- a/tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs
++++ b/tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs
+@@ -57,7 +57,7 @@
+                     .Select(name => file.Path + ": " + name))
+                 .ToList();
+ 
+-        [Fact]
++        [Fact(Skip = "I-64 F4B PB-T4a: sustituida por CT-PBT4A-06 de PushBackFullReadGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 4).")]
+         public void CT_PBT3A_12_NoSourceFileOutsideTheFolderOfTheModelNamesItsTypes()
+         {
+             var log = new List<string>();

@@ -1,0 +1,4 @@
+BOUNDED_RESULT (266 chars, ascii): EMITIBLE TRAS CORRECCIONES; B 0 / I 1 / M 4; las importantes corregidas en el paquete v4.3 (I-01, la anotacion string? de PushBackOriginByText.cs: aviso CS8632 que rompe build-plugin); sin decisiones nuevas del Owner; remedicion sobre 7f0d9aa3 sin cambios materiales
+v4.2 as is: 1 error(s)
+  - ningun registro de cambios del paquete corrige I-01 de CA-T4a
+with a V43-01 row naming CA-T4a I-01: 0 error(s)

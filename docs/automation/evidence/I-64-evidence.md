@@ -8618,3 +8618,31 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - solo documentación;
 - sin AutoCAD;
 - los eventos y las transcripciones, solo por SHA-256.
+
+## 277. PB-T4: decisiones del Owner (F4B-E49), paquete del contrato v4.3, comprobación acotada de PB-T4a y registro de CT-PBT3A-12 (F4B-E50)
+
+**Qué se custodia:**
+- **El paquete del contrato de PB-T4,** v4.3, en `docs/initiatives/I-64-f4b-pbt4-gate-contract-package.md`. Su historia, de la v1 a la v4.2, va en `F4B-DRAFTS/pbt4/package-v1.md` a `package-v42.md`.
+- **El registro de mediciones** `docs/initiatives/I-64-f4b-pbt4-measurements.md`.
+- **Las decisiones del Owner sobre PB-T4** (F4B-E49), literales, en dos registros de `F4B-DRAFTS/coordinator/`: `owner-pbt4-decisions.md` (las cuatro de PB-T4) y `owner-pbt4b-retire-list-decisions.md` (PB-T4d y la lista de PB-T4b).
+- **El registro declarado** `F4B-DRAFTS/superseding-characterization.md`, con su entrada de PB-T4a: el `Skip` de CT-PBT3A-12, su motivo literal y CT-PBT4A-06.
+- **En `F4B-DRAFTS/pbt4/`:**
+  - la revisión independiente del paquete (la v1 y sus §13 a §16) con sus encargos, y las preguntas al Owner;
+  - las mediciones, sus guiones y sus salidas, con las sondas; las instrucciones de cada versión, y los fragmentos con los que se arman la v4.1, la v4.2 y la v4.3 (`v41/`, `v42/` y `v43/`);
+  - el guion que escribe el `src/` del GREEN literal de PB-T4a en una copia exportada (`apply_green_pbt4a.py`, con su autoprueba y su salida);
+  - las listas: las de sustituciones (`pbt4-substitution-lists.md` y `.tsv`, `pbt4-copy-map.tsv` y `pbt4-retire-compile.tsv`), la exacta de PB-T4b (`pbt4b-substitution-list.tsv`) y la de PB-T4d (`pbt4d-retire-list.tsv`);
+  - el recorrido de las guardas de PB-T4a por marcas, sobre el texto literal del GREEN (`pbt4a-guard-walk.tsv`, `pbt4a-guard-walk-out.txt`, `pbt4a-guard-walk-flagged.txt` y `pbt4a-guard-walk-flagged-v43.txt`), con la ampliación de CA-T4a entre los guiones del revisor;
+  - el barrido de sobrecargas, reflexión y nombres sobre el cierre de PB-T3c;
+  - el esqueleto de PB-T4a como parche (`pbt4a-skeleton.patch`, con `make_pbt4a_skeleton.py` y su salida) y la compilación de comprobación de la sesión (`compile-check-pbt4a/`, redactada, con su manifiesto);
+  - la comprobación acotada de PB-T4a (CA-T4a, `independent-review-pbt4a-check.md`), con su encargo, y lo que dejo el revisor (sus guiones, sus salidas y sus listas): `cat4a_added_lines-all-out.txt`, `cat4a_added_lines-out.txt`, `cat4a_added_lines.py`, `cat4a_bounded-out.txt`, `cat4a_bounded.py`, `cat4a_bounded_v43-out.txt`, `cat4a_bounded_v43.py`, `cat4a_candidates.txt`, `cat4a_compare-out.txt`, `cat4a_compare-v43-out.txt`, `cat4a_compare.py`, `cat4a_dump-out.txt`, `cat4a_dump-v43-out.txt`, `cat4a_dump.py`, `cat4a_extra_classes.txt`, `cat4a_green_shas.py`, `cat4a_n.txt`, `cat4a_one.txt`, `cat4a_outside.txt`, `cat4a_outside_folders.txt`, `cat4a_pbt3c-contract.json`, `cat4a_q.txt`, `cat4a_tests_forbidden.py`, `cat4a_walk46.txt`, `cat4a_walk_extra-out.txt`, `cat4a_walk_extra-v43-out.txt`, `cat4a_walk_extra.py`, `cat4a_walk_gap-out.txt`, `cat4a_walk_gap.py`; fuera de la custodia, porque se regeneran con git, los listados de `git ls-tree` del revisor: `cat4a_lstree-7f0d9aa3.txt` (sha256 `5eabf658e5cdad2ec8c8f1c85644ae506e2deb55aa84c18cfe668432dba75797`) y `cat4a_lstree-root-7f0d9aa3.txt` (sha256 `bac76a6b207b021f45d03e703f5c6a5df3b409b7a9969fcfe28bce0bd3a52935`);
+  - la salida en seco del generador sobre el cierre, `make_pbt4a_contract-dry.txt`.
+
+  Los textos con rutas locales van con la redacción común.
+
+**La base:** el cierre de PB-T3c, F4B-E48 (`7f0d9aa3`), con la CI `44757675821`: Core 19 129 = 19 123 + 6, y UI 2 451 = 2 430 + 21.
+
+**Las comprobaciones:**
+- **la compilación de comprobación:** Core-tests y UI-tests en Debug y el Plugin en Release (con -o), 0 errores y ningun aviso CS (solo los MSB3277 locales de las referencias de AutoCAD); los tipos de los dos archivos nuevos del esqueleto en el ensamblado de Application; la suite completa de Core sobre la copia exportada de 7f0d9aa3, 19 129 = 19 122 pasadas + 0 fallidas + 7 omitidas (S-1 a S-6 de D-1 y CT-PBT3A-12), tambien con el GREEN literal del paquete; los filtros de UI del contrato, en verde; control negativo: sin el Skip y con un tipo del modelo nombrado en RIA, CT-PBT3A-12 falla;
+- **la comprobación acotada,** `BOUNDED_RESULT`: `EMITIBLE TRAS CORRECCIONES; B 0 / I 1 / M 4; las importantes corregidas en el paquete v4.3 (I-01, la anotacion string? de PushBackOriginByText.cs: aviso CS8632 que rompe build-plugin); sin decisiones nuevas del Owner; remedicion sobre 7f0d9aa3 sin cambios materiales; recomprobacion v4.3: EMITIBLE, B 0 / I 0 / M 2`.
+
+**Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.

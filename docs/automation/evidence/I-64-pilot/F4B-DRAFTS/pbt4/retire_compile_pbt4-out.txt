@@ -1,0 +1,38 @@
+pruebas afectadas por compilacion: 179 {'NUEVA': 67, 'ya en la lista': 57, 'las 9 clases': 55}
+  NUEVA tests/RackCad.Tests/PushBackFullWritePrepareTests.cs 6
+  NUEVA tests/RackCad.Tests/PushBackFullWriteRunTests.cs 1
+  NUEVA tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs 1
+  NUEVA tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs 8
+  NUEVA tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs 7
+  NUEVA tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs 42
+  NUEVA tests/RackCad.UI.Tests/PushBackDeclaredCorrectionPilotParityTests.cs 2
+miembros de apoyo afectados (no pruebas): 29
+    PushBackDeclaredCorrectionSupport.cs Paridad
+    PushBackDeclaredCorrectionSupport.cs PilotoEscribe
+    PushBackFieldValidationConcordanceTests.cs Iguales
+    PushBackFullWritePrepareTests.cs Auth13
+    PushBackFullWritePrepareTests.cs Barrier
+    PushBackFullWritePrepareTests.cs Campos
+    PushBackFullWritePrepareTests.cs FilaEstilo
+    PushBackFullWritePrepareTests.cs FilaF
+    PushBackFullWritePrepareTests.cs FrontCase
+    WorkspaceDraftPilotCanonicalLineEndingTests.cs AssertRoundTripByteForByte
+    WorkspaceDraftPilotIntentStaleBaseTests.cs UnknownAfterACommitThatThrew
+    WorkspaceDraftPilotMaterializationTests.cs BeginOn
+    WorkspaceDraftPilotMaterializationTests.cs Comparer
+    WorkspaceDraftPilotMaterializationTests.cs RoundTrip
+    WorkspaceDraftPilotMaterializationTests.cs WriteFrom
+    WorkspaceDraftPilotOwnershipTests.cs Both
+    WorkspaceDraftPilotOwnershipTests.cs Pilot
+    WorkspaceDraftPilotStateTests.cs Comparer
+    WorkspaceDraftPilotWindowLoadCharacterizationTests.cs PilotWrites
+    WorkspacePilotEditHostTests.cs Equals
+    WorkspacePilotEditHostTests.cs GetHashCode
+    WorkspacePilotEditHostTests.cs Key
+    WorkspacePilotEditHostTests.cs OpenUndecidable
+    WorkspacePilotPrepareTests.cs DraftOf
+    WorkspacePilotPrepareTests.cs Hold
+    WorkspacePilotPrepareTests.cs Prepare
+    WorkspacePilotReconciliationHostTests.cs AssertHeld
+    WorkspacePilotUpdateScopeDouble.cs ExpectedPlan
+    WorkspacePilotUpdateScopeDouble.cs Run

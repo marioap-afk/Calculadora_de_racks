@@ -1,0 +1,12 @@
+patch sha256 25771775bf8fe8d4844cc0b2fb8ee26c5044b321f3cc0f5b0d4f73804b379515
+esqueleto aplicado: 4 archivos, 2 nuevos
+core-tests rc=0 errores=0
+ui-tests rc=0 errores=0
+plugin rc=0 errores=0
+control positivo: IWorkspaceEditIntentOriginReader=1 en RackCad.Application.dll
+control positivo: PushBackOriginByText=1 en RackCad.Application.dll
+core-test rc=0
+filas 19129 {'Passed': 19122, 'NotExecuted': 7}
+build-server shutdown rc=0
+MAINCO []
+rc=0

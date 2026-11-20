@@ -1,0 +1,266 @@
+added lines: 134
+== tests/RackCad.Tests/BomExcel/ConsolidatedBomXlsxDetailTests.cs (4)
+   'Rack' ~ WorkspaceHostCore.cs: ? originReader.ReadIntentAtOrigin(request.Session, request.RackId, draft.CurrentDraftState
+   'RackCad.Application' ~ WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+   'name' ~ WorkspaceEditIntent.cs: if (pilotRead == null) throw new ArgumentNullException(nameof(pilotRead));
+== tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs (2)
+   'PushBack' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.Tests/CallerOwnedTransactionGuardTests.cs (1)
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.Tests/CantileverPluginSourceGuardTests.cs (3)
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+   '[CommandMethod("RACKCANTILEVER")]' ~ WorkspaceHostCore.cs: var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader
+   '[CommandMethod("RCT")]' ~ WorkspaceHostCore.cs: var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader
+== tests/RackCad.Tests/CantileverRoundTwoSourceGuardTests.cs (3)
+   'RackCad.Application' ~ WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+   'RackId' ~ WorkspaceHostCore.cs: ? originReader.ReadIntentAtOrigin(request.Session, request.RackId, draft.CurrentDraftState
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.Tests/CantileverSourceGuardTests.cs (8)
+   'Document' ~ WorkspaceEditIntent.cs: public static EditIntentReadResult NoActiveDocument(string reason) => new(EditIntentReadSt
+   'Member' ~ PushBackOriginByText.cs: .Where(entry => entry.Membership == DraftMembership.Mutable && string.Equals(entry.Envelop
+   'Members' ~ PushBackOriginByText.cs: .Where(entry => entry.Membership == DraftMembership.Mutable && string.Equals(entry.Envelop
+   'Preview' ~ PushBackOriginByText.cs: scan.PreviewWitness);
+   'RackCad.Application' ~ WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+   '\\bRackCad\\.Application\\b' ~ WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+   '\\bRackCatalog\\b' ~ WorkspaceEditIntent.cs: private EditIntentReadResult(EditIntentReadStatus status, string? reason, PushBackPilotInt
+== tests/RackCad.Tests/CantileverVisualRoleTests.cs (1)
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.Tests/ComputedParameters/ComputedParametersPopulationGuardTests.cs (3)
+   '(==|!=)\\s*null|\\bis\\s+(not\\s+)?null\\b' ~ WorkspaceEditIntent.cs: if (pilotRead == null) throw new ArgumentNullException(nameof(pilotRead));
+   'Build' ~ PushBackOriginByText.cs: var key = Choose(PushBackPilotIntentReader.BuildStaleBase(scan), originText);
+   '\\b(?:public|private|internal|protected)\\s+(?:static\\s+)?[\\w<>\\[\\],.?]+' ~ WorkspaceEditIntent.cs: public PushBackFullIntentResult? FullRead { get; }
+== tests/RackCad.Tests/ComputedParameters/RackMetricProviderPurityTests.cs (2)
+   'RackCad.Application' ~ WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+   '\\b\\w*Catalog\\w*\\b' ~ WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+== tests/RackCad.Tests/CustomPropertiesEdgeGuardTests.cs (8)
+   'Read' ~ WorkspaceHostCore.cs: var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader
+   '\\bcatch\\b' ~ WorkspaceNavigationHost.cs: catch (System.Exception ex)
+   '\\bthrow\\b' ~ WorkspaceEditIntent.cs: if (pilotRead == null) throw new ArgumentNullException(nameof(pilotRead));
+   'catch' ~ WorkspaceNavigationHost.cs: catch (System.Exception ex)
+   'if (!result.IsPlanned || !CustomPropertiesPreflight.ForRack(null, null' ~ WorkspaceEditIntent.cs: if (pilotRead == null) throw new ArgumentNullException(nameof(pilotRead));
+   'if (!result.IsPlanned || !RackCustomPropertiesAuthority.Evaluate(fresh' ~ WorkspaceEditIntent.cs: if (pilotRead == null) throw new ArgumentNullException(nameof(pilotRead));
+   'if (!result.IsPlanned || result.FreshOutcome == null)' ~ WorkspaceEditIntent.cs: if (pilotRead == null) throw new ArgumentNullException(nameof(pilotRead));
+   'string' ~ WorkspaceEditIntent.cs: private EditIntentReadResult(EditIntentReadStatus status, string? reason, PushBackPilotInt
+== tests/RackCad.Tests/CustomPropertiesEnvelopeGuardTests.cs (1)
+   'null' ~ WorkspaceEditIntent.cs: /// <summary>I-64 F4B PB-T4a: the read of the full model over the same scan; null unless t
+== tests/RackCad.Tests/CustomPropertiesTestKit.cs (1)
+   'RackCad.Application' ~ WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+== tests/RackCad.Tests/ElevationOverrideSourceGuardTests.cs (1)
+   'PushBack' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.Tests/ExpressionCoreGuardTests.cs (6)
+   'Catalogs' ~ WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+   'RackCad.Application' ~ WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+   'RackCad.Application.Catalogs' ~ WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+   'RackCad.Application.Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+   'namespace ' ~ IWorkspaceEditIntentOriginReader.cs: namespace RackCad.Application.Workspace
+== tests/RackCad.Tests/I55DeferredProductFixCharacterizationTests.cs (2)
+   'PushBack' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.Tests/I55G14FoundationConsumerTests.cs (1)
+   'RackCad.Application' ~ WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+== tests/RackCad.Tests/I55G15Auth15ConsumerTests.cs (1)
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.Tests/I59F3ConsumerIntegrationTests.cs (1)
+   'same' ~ WorkspaceEditIntent.cs: /// <summary>I-64 F4B PB-T4a: the read of the full model over the same scan; null unless t
+== tests/RackCad.Tests/I59F4ConformanceTests.cs (2)
+   'RackCad.Application' ~ WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.Tests/InsertRedrawLayerAccessCharacterizationTests.cs (1)
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.Tests/LegacyViewPayloadCompositionCharacterizationTests.cs (1)
+   'name' ~ WorkspaceEditIntent.cs: if (pilotRead == null) throw new ArgumentNullException(nameof(pilotRead));
+== tests/RackCad.Tests/LengthUnitsAuthorityGuardTests.cs (2)
+   'name' ~ WorkspaceEditIntent.cs: if (pilotRead == null) throw new ArgumentNullException(nameof(pilotRead));
+   '|MillimetersPerInch|MillimeterPerInch|InchesToMillimeters|InchToMillim' ~ WorkspaceHostCore.cs: var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader
+== tests/RackCad.Tests/LengthUnitsTests.cs (2)
+   'RackCad.Application' ~ WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.Tests/MainMenuStructuralSectionAccessGuardTests.cs (1)
+   '[CommandMethod("RACKSECCION")]' ~ WorkspaceHostCore.cs: var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader
+== tests/RackCad.Tests/NamespaceFolderGuardTests.cs (4)
+   'Preview' ~ PushBackOriginByText.cs: scan.PreviewWitness);
+   'PushBack' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+   'RackCad.Application.Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+   'namespace ' ~ IWorkspaceEditIntentOriginReader.cs: namespace RackCad.Application.Workspace
+== tests/RackCad.Tests/NoProductPlannerGuardTests.cs (2)
+   'RackCad.Application' ~ WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.Tests/ProductPolicyIndependenceGuardTests.cs (3)
+   'RackCad.Application' ~ WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+   'string.Equals' ~ PushBackOriginByText.cs: .Where(entry => entry.Membership == DraftMembership.Mutable && string.Equals(entry.Envelop
+== tests/RackCad.Tests/ProjectVariableMutationExecutorTests.cs (1)
+   'RackCad.Application' ~ WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+== tests/RackCad.Tests/ProjectVariablesConformanceTests.cs (3)
+   '(?![A-Za-z0-9_])' ~ WorkspaceHostCore.cs: var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader
+   '(?<![A-Za-z0-9_])' ~ WorkspaceHostCore.cs: var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader
+   'RackCad.Application' ~ WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+== tests/RackCad.Tests/ProjectVariablesWorkspaceTests.cs (2)
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+   '[CommandMethod("RACKVARIABLES")]' ~ WorkspaceHostCore.cs: var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader
+== tests/RackCad.Tests/PushBackBomCommandGuardTests.cs (1)
+   'name' ~ WorkspaceEditIntent.cs: if (pilotRead == null) throw new ArgumentNullException(nameof(pilotRead));
+== tests/RackCad.Tests/PushBackCellConfigurationDeliveryTests.cs (3)
+   'PushBack' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+   'RackCad.Application' ~ WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.Tests/PushBackClassicCharacterizationPluginGuardTests.cs (2)
+   'PushBack' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.Tests/PushBackDerivedPostAndLineTests.cs (2)
+   'RackCad.Application' ~ WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.Tests/PushBackDraftPortSharedReferenceGuardTests.cs (5)
+   '(?:List|IList|ICollection|Collection|HashSet|Dictionary|IDictionary)' ~ PushBackOriginByText.cs: .ToList();
+   '(?:\\bvar|[\\w<>\\[\\]?,.]+)?\\s+(\\w+)\\s*=(?![=>])\\s*([^;{}]*)' ~ WorkspaceHostCore.cs: var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader
+   '(?:\\s*\\??\\.\\s*\\w+(?:\\s*\\([^()]*\\))?|\\s*\\[[^\\]]*\\])' ~ WorkspaceHostCore.cs: ? originReader.ReadIntentAtOrigin(request.Session, request.RackId, draft.CurrentDraftState
+   '[^;{}]*?\\s+as\\s+' ~ RackPilotIntentAdapter.cs: /// more of the drawing. Without exactly one other mutable member with that text, the read
+   '[^;{}]*?\\s+is\\s+' ~ WorkspaceHostCore.cs: var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader
+== tests/RackCad.Tests/PushBackModuleEditorCharacterizationTests.cs (3)
+   'PushBack' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+   'RackCad.Application' ~ WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.Tests/PushBackPluginSourceGuardTests.cs (5)
+   'PushBack' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+   '[CommandMethod("RACKEDITAR")]' ~ WorkspaceHostCore.cs: var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader
+   '[CommandMethod("RACKPUSHBACK")]' ~ WorkspaceHostCore.cs: var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader
+   '[CommandMethod("RPB")]' ~ WorkspaceHostCore.cs: var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader
+== tests/RackCad.Tests/PushBackRoundTripSourceGuardTests.cs (4)
+   'Compare' ~ PushBackOriginByText.cs: scan.RawEnvelopes.ToDictionary(pair => pair.Key, pair => (string?)pair.Value, StringCompar
+   'Equals' ~ PushBackOriginByText.cs: .Where(entry => entry.Membership == DraftMembership.Mutable && string.Equals(entry.Envelop
+   'PushBack' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+   '[CommandMethod("RACKEDITAR")]' ~ WorkspaceHostCore.cs: var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader
+== tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs (8)
+   '(?:List|IList|ICollection|Collection|HashSet|Dictionary|IDictionary)' ~ PushBackOriginByText.cs: .ToList();
+   '(?:\\bvar|[\\w<>\\[\\]?,.]+)?\\s+(\\w+)\\s*=(?![=>])\\s*([^;{}]*)' ~ WorkspaceHostCore.cs: var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader
+   '(?:\\s*\\??\\.\\s*\\w+(?:\\s*\\([^()]*\\))?|\\s*\\[[^\\]]*\\])' ~ WorkspaceHostCore.cs: ? originReader.ReadIntentAtOrigin(request.Session, request.RackId, draft.CurrentDraftState
+   'PushBack' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+   'RackCad.Application' ~ WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+   'Workspace' ~ WorkspaceHostCore.cs: var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader
+   '[^;{}]*?\\s+as\\s+' ~ RackPilotIntentAdapter.cs: /// more of the drawing. Without exactly one other mutable member with that text, the read
+   '[^;{}]*?\\s+is\\s+' ~ WorkspaceHostCore.cs: var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader
+== tests/RackCad.Tests/RackCountInvariantCharacterizationTests.cs (2)
+   'Rack' ~ WorkspaceHostCore.cs: ? originReader.ReadIntentAtOrigin(request.Session, request.RackId, draft.CurrentDraftState
+   'RackCad.Application' ~ WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+== tests/RackCad.Tests/RackDefinitionCreatorGuardTests.cs (3)
+   'RackCad.Application' ~ WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+   'catch (System.Exception' ~ WorkspaceNavigationHost.cs: catch (System.Exception ex)
+== tests/RackCad.Tests/RackEditPreflightCharacterizationTests.cs (1)
+   'PushBack' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.Tests/RackUnitsGuardSourceTests.cs (1)
+   'from' ~ WorkspaceEditIntent.cs: /// <summary>I-64 F4B PB-T4a: the read of the full model over the same scan; null unless t
+== tests/RackCad.Tests/SelectiveBindingIntentTests.cs (1)
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.Tests/SelectiveDuplicationFailClosedTests.cs (7)
+   '\\b(?:public|private|internal|protected)\\s+(?:(?:static|override|virtua' ~ WorkspaceEditIntent.cs: private EditIntentReadResult(EditIntentReadStatus status, string? reason, PushBackPilotInt
+   '\\b(?:throw|return|break|continue)\\b' ~ WorkspaceEditIntent.cs: return new EditIntentReadResult(EditIntentReadStatus.Read, null, pilotRead, null, null);
+   'catch (' ~ WorkspaceNavigationHost.cs: catch (System.Exception ex)
+   'name' ~ WorkspaceEditIntent.cs: if (pilotRead == null) throw new ArgumentNullException(nameof(pilotRead));
+   'names' ~ IWorkspaceEditIntentOriginReader.cs: namespace RackCad.Application.Workspace
+   'open' ~ RackPilotIntentAdapter.cs: /// I-64 F4B PB-T4a (D-PBT4-03): the same read at the origin of an open draft, chosen by i
+   'text' ~ RackPilotIntentAdapter.cs: /// I-64 F4B PB-T4a (D-PBT4-03): the same read at the origin of an open draft, chosen by i
+== tests/RackCad.Tests/SelectiveLibraryExportTests.cs (2)
+   'RackCad.Application' ~ WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.Tests/SelectiveTopeFamilyIsolationGuardTests.cs (2)
+   '.ToList();' ~ PushBackOriginByText.cs: .ToList();
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.Tests/SharedViewFoundationCt04V2CharacterizationTests.cs (2)
+   'RackCad.Application' ~ WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.Tests/SiblingRedrawSeamGuardTests.cs (2)
+   'RackId' ~ WorkspaceHostCore.cs: ? originReader.ReadIntentAtOrigin(request.Session, request.RackId, draft.CurrentDraftState
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisCantileverBoundaryTests.cs (3)
+   'PushBack' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+   'RackCad.Application' ~ WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonHardeningDumpReaderTests.cs (1)
+   'RackCad.Application' ~ WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+== tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonHardeningToolTests.cs (2)
+   'reason' ~ WorkspaceEditIntent.cs: private EditIntentReadResult(EditIntentReadStatus status, string? reason, PushBackPilotInt
+   'text' ~ RackPilotIntentAdapter.cs: /// I-64 F4B PB-T4a (D-PBT4-03): the same read at the origin of an open draft, chosen by i
+== tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonToolTests.cs (3)
+   'name' ~ WorkspaceEditIntent.cs: if (pilotRead == null) throw new ArgumentNullException(nameof(pilotRead));
+   'nothing' ~ RackPilotIntentAdapter.cs: /// <see cref="Read"/> already took, by the pure reread of the full model (PushBackOriginB
+   'status' ~ WorkspaceEditIntent.cs: private EditIntentReadResult(EditIntentReadStatus status, string? reason, PushBackPilotInt
+== tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsDumpSourceTests.cs (4)
+   '(?m)^using ([\\w.]+);' ~ WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+   'RackCad\\.Application\\.Systems|\\bSystems\\b' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+   'System' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+   'System.Linq' ~ PushBackOriginByText.cs: using System.Linq;
+== tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsGuardTests.cs (1)
+   'RackCad\\.Application\\.Systems|\\bSystems\\b' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsPackageWriterTests.cs (2)
+   'RackCad.Application' ~ WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+   'RamElements|RAM Elements|\\bRam[A-Z]|\\bProviders\\b|\\bSystems\\b|manifest' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceEntryTests.cs (5)
+   'Build' ~ PushBackOriginByText.cs: var key = Choose(PushBackPilotIntentReader.BuildStaleBase(scan), originText);
+   'Document' ~ WorkspaceEditIntent.cs: public static EditIntentReadResult NoActiveDocument(string reason) => new(EditIntentReadSt
+   'Preview' ~ PushBackOriginByText.cs: scan.PreviewWitness);
+   'RackCad.Application' ~ WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceGuardTests.cs (2)
+   '\\bSystems\\b|\\bProviders\\b' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+   '|MillimetersPerInch|MillimeterPerInch|InchesToMillimeters|InchToMillim' ~ WorkspaceHostCore.cs: var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader
+== tests/RackCad.Tests/StructuralSectionPluginSourceGuardTests.cs (3)
+   'RackCatalog' ~ WorkspaceEditIntent.cs: private EditIntentReadResult(EditIntentReadStatus status, string? reason, PushBackPilotInt
+   '[CommandMethod("RACKSECCION")]' ~ WorkspaceHostCore.cs: var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader
+   'catch (System.Exception ex)' ~ WorkspaceNavigationHost.cs: catch (System.Exception ex)
+== tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs (5)
+   'Drafts' ~ PushBackOriginByText.cs: using RackCad.Application.Workspace.Drafts;
+   'Rack' ~ WorkspaceHostCore.cs: ? originReader.ReadIntentAtOrigin(request.Session, request.RackId, draft.CurrentDraftState
+   'RackCad.Application' ~ WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+   'Workspace' ~ WorkspaceHostCore.cs: var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader
+   'pilot' ~ WorkspaceEditIntent.cs: private EditIntentReadResult(EditIntentReadStatus status, string? reason, PushBackPilotInt
+== tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs (5)
+   'RackCad.Application' ~ WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+   'RackCad.Application.Workspace' ~ IWorkspaceEditIntentOriginReader.cs: namespace RackCad.Application.Workspace
+   'Subscription|Editor|Draft' ~ WorkspaceHostCore.cs: ? originReader.ReadIntentAtOrigin(request.Session, request.RackId, draft.CurrentDraftState
+   'Tab|Subscription|Draft|Handler' ~ WorkspaceHostCore.cs: ? originReader.ReadIntentAtOrigin(request.Session, request.RackId, draft.CurrentDraftState
+   'Workspace' ~ WorkspaceHostCore.cs: var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader
+== tests/RackCad.UI.Tests/BoundedEditorCharacterizationTests.cs (2)
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+   'name' ~ WorkspaceEditIntent.cs: if (pilotRead == null) throw new ArgumentNullException(nameof(pilotRead));
+== tests/RackCad.UI.Tests/BoundedEditorContractTests.cs (1)
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.UI.Tests/CustomPropertiesHelpCensusTests.cs (2)
+   'name' ~ WorkspaceEditIntent.cs: if (pilotRead == null) throw new ArgumentNullException(nameof(pilotRead));
+   'rack' ~ WorkspaceNavigationHost.cs: return ReadOnActiveDocument(session, rackId, chosenReference, witness, null);
+== tests/RackCad.UI.Tests/CustomPropertiesWindowTestKit.cs (2)
+   'Base' ~ PushBackOriginByText.cs: public static string? Choose(DraftStaleBase staleBase, string originText)
+   'null' ~ WorkspaceEditIntent.cs: /// <summary>I-64 F4B PB-T4a: the read of the full model over the same scan; null unless t
+== tests/RackCad.UI.Tests/DialogWindowCharacterizationTests.cs (3)
+   'Result' ~ WorkspaceEditIntent.cs: private EditIntentReadResult(EditIntentReadStatus status, string? reason, PushBackPilotInt
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+   'name' ~ WorkspaceEditIntent.cs: if (pilotRead == null) throw new ArgumentNullException(nameof(pilotRead));
+== tests/RackCad.UI.Tests/DialogWindowContractTests.cs (1)
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.UI.Tests/DynamicHeaderReuseWindowTests.cs (2)
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+   '[override]' ~ WorkspaceHostCore.cs: var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader
+== tests/RackCad.UI.Tests/EditorVisualShellTests.cs (1)
+   'PushBack' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.UI.Tests/FirstViewFreedomTests.cs (1)
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.UI.Tests/FirstViewGateCharacterizationTests.cs (1)
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.UI.Tests/PushBackClassicCharacterizationSourceGuardTests.cs (2)
+   'PushBack' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.UI.Tests/SelectiveHeaderBatchSeamTests.cs (1)
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.UI.Tests/SelectiveTransactionBoundaryGuardTests.cs (1)
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+== tests/RackCad.UI.Tests/UiSystemBoundaryGuardTests.cs (1)
+   'namespace ' ~ IWorkspaceEditIntentOriginReader.cs: namespace RackCad.Application.Workspace
+== tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs (3)
+   'PushBack' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+   'Systems' ~ WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+   'origin' ~ WorkspaceHostCore.cs: var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader

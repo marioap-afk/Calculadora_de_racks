@@ -1,0 +1,3 @@
+filas 1 {'Failed': 1}
+  Failed RackCad.Tests.PushBackDraftWriteGuardTests.CT_PBT3A_12_NoSourceFileOutsideTheFolderOfTheModelNamesItsTypes
+      Assert.Equal() Failure: Collections differ ↓ (pos 0) Expected: ["sin-conectar archivos-revisados>0=True coincidenci"···, "autoprueba-PushBackFullDraftState-en-WorkspaceHost"···, "autoprueba-PushBackFu

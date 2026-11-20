@@ -1,0 +1,22 @@
+Serie de pruebas para <copia>\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll (.NETCoreApp,Version=v8.0)
+Versión 17.11.1 (x64) de VSTest
+
+Iniciando la ejecución de pruebas, espere...
+1 archivos de prueba en total coincidieron con el patrón especificado.
+[xUnit.net 00:00:26.42]     RackCad.Tests.WorkspacePilotUpdateGuardTests.TheRunReleasesBothScopesInFinallyBlocksOfItsOwnAndNeverWithAUsing [SKIP]
+  Omitidas RackCad.Tests.WorkspacePilotUpdateGuardTests.TheRunReleasesBothScopesInFinallyBlocksOfItsOwnAndNeverWithAUsing [1 ms]
+[xUnit.net 00:00:46.50]     RackCad.Tests.WorkspacePilotPrepareGuardTests.TheMemberPlansAreBuiltOnlyFromTheMutableMembersOfTheRereadInOrdinalOrderAndNeverErase [SKIP]
+  Omitidas RackCad.Tests.WorkspacePilotPrepareGuardTests.TheMemberPlansAreBuiltOnlyFromTheMutableMembersOfTheRereadInOrdinalOrderAndNeverErase [1 ms]
+[xUnit.net 00:00:46.53]     RackCad.Tests.WorkspacePilotPrepareGuardTests.TheFileOfThePlanComposesExactlyOnceInAMemberOfItsOwnWithAParameterSourceAndTheNameOfTheRereadEnvelope [SKIP]
+[xUnit.net 00:00:46.55]     RackCad.Tests.WorkspacePilotPrepareGuardTests.TheComposeGuardTripsOnAnotherCallAnUnsourcedCompositionANullableSourceOrAnotherName [SKIP]
+  Omitidas RackCad.Tests.WorkspacePilotPrepareGuardTests.TheFileOfThePlanComposesExactlyOnceInAMemberOfItsOwnWithAParameterSourceAndTheNameOfTheRereadEnvelope [1 ms]
+  Omitidas RackCad.Tests.WorkspacePilotPrepareGuardTests.TheComposeGuardTripsOnAnotherCallAnUnsourcedCompositionANullableSourceOrAnotherName [1 ms]
+[xUnit.net 00:02:31.33]     RackCad.Tests.PushBackDraftWriteGuardTests.CT_PBT3A_12_NoSourceFileOutsideTheFolderOfTheModelNamesItsTypes [SKIP]
+  Omitidas RackCad.Tests.PushBackDraftWriteGuardTests.CT_PBT3A_12_NoSourceFileOutsideTheFolderOfTheModelNamesItsTypes [1 ms]
+[xUnit.net 00:04:57.65]     RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.M01TheEscapeGuardTripsOnACatchThatDoesNotConsultTheStateAndOnAnEscapeThatAnswersAPlainFailureFirst [SKIP]
+[xUnit.net 00:04:57.65]     RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.M01TheEscapeOfTheRunIsClassifiedByTheStateThatTheRunAlreadyHadAndNeverAsAPlainFailureAfterAWriteOrASeal [SKIP]
+  Omitidas RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.M01TheEscapeGuardTripsOnACatchThatDoesNotConsultTheStateAndOnAnEscapeThatAnswersAPlainFailureFirst [1 ms]
+  Omitidas RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.M01TheEscapeOfTheRunIsClassifiedByTheStateThatTheRunAlreadyHadAndNeverAsAPlainFailureAfterAWriteOrASeal [1 ms]
+Archivo de resultados: <copia>\_trx\core.trx
+
+Correctas! - Con error:     0, Superado: 19122, Omitido:     7, Total: 19129, Duración: 5 m 6 s - RackCad.Tests.dll (net8.0)

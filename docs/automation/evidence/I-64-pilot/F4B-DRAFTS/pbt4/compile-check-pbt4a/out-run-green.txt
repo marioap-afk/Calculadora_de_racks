@@ -1,0 +1,33 @@
+fase green; patch sha256 25771775bf8fe8d4844cc0b2fb8ee26c5044b321f3cc0f5b0d4f73804b379515; contrato sha256 bead322a0f24ecd2e540c32ef17a2e7cbb3bed6aa7944bac62c695abd980d293
+de la parte de tests/ del parche: 1 archivo(s)
+apply_green sha256 b53a6b3231fcd8979430a68fc49a0b2673206418e977c541dde7726769082fb9
+escrito src/RackCad.Application/Systems/PushBack/Draft/PushBackOriginByText.cs    2317 bytes  63084fae75dc7bbf15a3dd17f3ea2060262cd4caf9ac35585e06cff2833d7537
+escrito src/RackCad.Application/Workspace/IWorkspaceEditIntentOriginReader.cs      508 bytes  becb8d69b38f649f91fd0342e049a24f7a790a3bbc50292e75c3160c652e84ca
+escrito src/RackCad.Application/Workspace/WorkspaceEditIntent.cs                 35102 bytes  6be957c3ae916c6947f9b43e7d97211d9a7aa498e549c0483e0667ea3d035285
+escrito src/RackCad.Application/Workspace/WorkspaceHostCore.cs                  104888 bytes  63943612a23495afdad052c9978246bf1bc4095999aa6d15efccacceb8a13431
+escrito src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs                       10733 bytes  658342fac1fbfa12df0b9e7aec97e538b19857b1f6c7296910c831aaf4e9154d
+escrito src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs                  14798 bytes  915b560bca3f4ef6af614449f4bfbfd026f926774288153435afe369312b884e
+conjunto  7d29d396d8181e4ae83c5ec2693ed20e6f71b2846938eb07816967d33f4586cd  (6 archivos; sha256 de las líneas «<sha256>  <ruta>» ordenadas, con LF)
+core-tests rc=0 errores=0 avisos-CS=0
+ui-tests rc=0 errores=0 avisos-CS=0
+plugin rc=0 errores=0 avisos-CS=0
+avisos CS en total: 0 (tienen que ser 0: build-plugin de la CI falla con cualquier warning CS)
+control positivo: IWorkspaceEditIntentOriginReader=1 en RackCad.Application.dll
+control positivo: PushBackOriginByText=1 en RackCad.Application.dll
+core-test rc=0
+filas 19129 {'Passed': 19122, 'NotExecuted': 7}
+ui 1 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackFullDraftWindowParityTests :: filas 1 {'Passed': 1}
+ui 2 rc=0 FullyQualifiedName~RackCad.UI.Tests.Workspace :: filas 681 {'Passed': 680, 'NotExecuted': 1}
+ui 3 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackWindowOnStateTests :: filas 2 {'Passed': 2}
+ui 4 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization :: filas 55 {'Passed': 55}
+ui 5 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization :: filas 18 {'Passed': 16, 'NotExecuted': 2}
+ui 6 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackStateNet :: filas 14 {'Passed': 14}
+ui 7 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection :: filas 14 {'Passed': 14}
+ui 8 rc=0 FullyQualifiedName~RackCad.UI.Tests.Cantilever :: filas 67 {'Passed': 67}
+ui 9 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceModeTests :: filas 3 {'Passed': 3}
+ui 10 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests :: filas 4 {'Passed': 4}
+ui 11 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackFieldValidationConcordanceTests :: filas 1 {'Passed': 1}
+ui 12 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceCarryoverTests :: filas 3 {'Passed': 3}
+build-server shutdown rc=0
+MAINCO []
+rc=0

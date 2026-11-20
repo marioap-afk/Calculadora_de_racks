@@ -348,3 +348,33 @@ I-64 F4B PB-T3b: sustituida por <E-n> de PushBackPilotUpdateEquivalenceGuardTest
 | **GREEN** | `938a35f0f1636b4306d844eb9e34000e8967c05e` (CI `44757675821` 4/4; Core 19 129 = 19 123 Passed + 0 Failed + 6 Skipped, los de D-1; UI 2 451 = 2 430 + 21). Toca solo WR y la fachada; `WriterProhibitionViolations` (UpdateGuard:182-212) y G-9 siguen en verde |
 | **Los comentarios de WR, en el GREEN** | Cambiados como dice D-PBT3-11: el de cabecera (`RackPilotUpdateWriter.cs:26-27`) dice que el escritor borra una vista solo por la fachada caller-owned, dentro del único ámbito de MUTATE y solo las que pide el plan; el del ámbito de MUTATE (`:238-240`) lleva el texto literal del paquete («It never purges, renames or regenerates; it erases only the planned views, through the caller-owned facade») más una frase sobre POST. Ninguna guarda los lee |
 | **Estado** | EJECUTADA |
+
+## PB-T4a — CT-PBT3A-12, el censo de los tipos del modelo completo, sustituida por CT-PBT4A-06
+
+**Estado: EMITIDA** (2026-11-20, emisión de PB-T4a, F4B-E50, sobre el cierre de PB-T3c `7f0d9aa3`). Lo escribe la sesión principal; el Worker no escribe en este archivo. La ejecución se completa al cerrar.
+
+**Autoridad:**
+- **[OD], el bloque sobre T1B:** «create a declared superseding characterization/change record. Do not silently weaken the old guard».
+- **Las decisiones del Owner sobre PB-T4** (F4B-E49, `docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt4-decisions.md`), pregunta 4: la lista de PB-T4a es una sola, CT-PBT3A-12.
+- **El contrato:** `docs/initiatives/I-64-f4b-pbt4-gate-contract-package.md` (v4.3), §4.1, §5.1 y §6.1, y `docs/automation/evidence/I-64-pilot/F4B-PBT4-FULL-READ-PATH/coordinator/gate-contract.json`.
+
+**El motivo:** RIA, el adaptador de la lectura del Plugin, pasa a nombrar `PushBackFullDraftReader` para leer el modelo completo sobre el mismo escaneo (D-PBT4-02). CT-PBT3A-12 fija por su letra que fuera de `Draft/`, PP y UR nadie nombra los cinco tipos del modelo, y fallaría. No se edita: queda con `Skip` y su sustituta, CT-PBT4A-06, que hace el mismo censo admitiendo RIA y nada más.
+
+**El `Skip`, literal** (§6.1 de la v4.3; `PushBackDraftWriteGuardTests.cs:60`, la única línea que cambia en el archivo):
+
+```text
+[Fact(Skip = "I-64 F4B PB-T4a: sustituida por CT-PBT4A-06 de PushBackFullReadGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 4).")]
+```
+
+| La prueba vieja (con `Skip`) | La sustituta | Qué fija la sustituta |
+|---|---|---|
+| `PushBackDraftWriteGuardTests.CT_PBT3A_12_NoSourceFileOutsideTheFolderOfTheModelNamesItsTypes` (`[Fact]`, `tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs:60-61`) | CT-PBT4A-06 (`PushBackFullReadGuardTests`) | Solo `Draft/`, PP, UR y RIA nombran los cinco tipos (`PushBackFullDraftState`, `PushBackFullDraftReader`, `PushBackFullComposition`, `PushBackConflictClassifier` y `PushBackViewDispositions`), con las líneas de CT-PBT3A-12 iguales |
+
+### Ejecución de PB-T4a (se completa al cerrar)
+
+| | |
+|---|---|
+| **RED** | (al cerrar) |
+| **GREEN** | (al cerrar) |
+| **CT-PBT4A-06, en el GREEN** | (al cerrar) |
+| **Estado** | EMITIDA |

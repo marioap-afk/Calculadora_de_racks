@@ -1,0 +1,770 @@
+# measure_pbt4_v3: salida (rev 7dfc7c21)
+## A. Las clases del lector doble y del kit del piloto (C-0)
+- WorkspaceLifecycleHostTests.cs: 69 metodos; por texto: C-1=2, C-2=0, C-3=0, C-4=0, C-6=0; con alguna firma C-1..C-6: 2
+- WorkspacePilotPrepareTests.cs: 67 metodos; por texto: C-1=11, C-2=0, C-3=4, C-4=1, C-6=0; con alguna firma C-1..C-6: 15
+- WorkspaceEditIntentHostTests.cs: 62 metodos; por texto: C-1=4, C-2=1, C-3=0, C-4=0, C-6=0; con alguna firma C-1..C-6: 5
+- WorkspacePilotEditHostTests.cs: 59 metodos; por texto: C-1=5, C-2=0, C-3=0, C-4=0, C-6=5; con alguna firma C-1..C-6: 9
+- WorkspaceCommandAdvisorTests.cs: 54 metodos; por texto: C-1=1, C-2=0, C-3=1, C-4=0, C-6=0; con alguna firma C-1..C-6: 1
+- WorkspacePilotUpdateRequestTests.cs: 44 metodos; por texto: C-1=3, C-2=0, C-3=2, C-4=0, C-6=0; con alguna firma C-1..C-6: 5
+- WorkspacePilotUpdateHostTests.cs: 35 metodos; por texto: C-1=3, C-2=0, C-3=0, C-4=0, C-6=0; con alguna firma C-1..C-6: 3
+- WorkspaceHostLifecycleTests.cs: 33 metodos; por texto: C-1=0, C-2=0, C-3=0, C-4=0, C-6=0; con alguna firma C-1..C-6: 0
+- WorkspaceHostDrainTests.cs: 32 metodos; por texto: C-1=0, C-2=0, C-3=0, C-4=0, C-6=0; con alguna firma C-1..C-6: 0
+- WorkspacePilotReconciliationHostTests.cs: 28 metodos; por texto: C-1=1, C-2=2, C-3=0, C-4=0, C-6=0; con alguna firma C-1..C-6: 3
+- WorkspaceOwnMutationTests.cs: 17 metodos; por texto: C-1=0, C-2=0, C-3=0, C-4=0, C-6=0; con alguna firma C-1..C-6: 0
+- WorkspaceHostAuthorizationTests.cs: 13 metodos; por texto: C-1=0, C-2=0, C-3=0, C-4=0, C-6=0; con alguna firma C-1..C-6: 0
+- WorkspaceBridgeCommandStateTests.cs: 11 metodos; por texto: C-1=0, C-2=0, C-3=0, C-4=0, C-6=0; con alguna firma C-1..C-6: 0
+- WorkspaceBridgeNoActiveDocumentTests.cs: 11 metodos; por texto: C-1=0, C-2=0, C-3=0, C-4=0, C-6=0; con alguna firma C-1..C-6: 0
+- WorkspaceAssociativeBookkeepingTests.cs: 10 metodos; por texto: C-1=1, C-2=0, C-3=0, C-4=0, C-6=0; con alguna firma C-1..C-6: 1
+- TOTAL: 545 metodos en 15 archivos; con alguna firma: 44
+
+## B. Las hojas del diseno de los fixtures (Q2)
+- pb-01-base: 7 rutas de hoja distintas (indices normalizados); primer nivel: Design, Id, Kind, Name, SchemaVersion, Section, View
+    Design (texto JSON anidado): 136 rutas de hoja
+    primer nivel de Design: Cantilever, DynamicSystem, FlowBed, Header, Kind, Larguero, PushBack, SchemaVersion, SelectiveRack
+- pb-20-ab: 7 rutas de hoja distintas (indices normalizados); primer nivel: Design, Id, Kind, Name, SchemaVersion, Section, View
+    Design (texto JSON anidado): 165 rutas de hoja
+    primer nivel de Design: Cantilever, DynamicSystem, FlowBed, Header, Kind, Larguero, PushBack, SchemaVersion, SelectiveRack
+- pb-07-combinado: 7 rutas de hoja distintas (indices normalizados); primer nivel: Design, Id, Kind, Name, SchemaVersion, Section, View
+    Design (texto JSON anidado): 139 rutas de hoja
+    primer nivel de Design: Cantilever, DynamicSystem, FlowBed, Header, Kind, Larguero, PushBack, SchemaVersion, SelectiveRack
+
+### B05-a el adaptador del panel en el controlador — src/RackCad.Plugin/Workspace/WorkspaceController.cs:40-60
+   40             _bridge = new AutoCadEventBridge();
+   41             _echo = new NavigationEcho();
+   42             _host = new WorkspaceHostCore(
+   43                 new BridgeLink(_bridge),
+   44                 new HostProbe(_bridge),
+   45                 new WorkspaceSelectionReader(_echo),
+   46                 new WorkspaceInstrumentation(),
+   47                 LogFault,
+   48                 _echo);
+   49             _port = new WorkspaceHostPort(_host);
+   51             // The edit port of the pilot (I-64 F4-T3A): the panel never receives the host core, only an adapter over the gate of notices.
+   52             _pilotEdit = new PilotEditAdapter(new WorkspacePilotEditGate(_host, _noticeDepth));
+   54             // The lifecycle of the drafts (I-64 F4-T2B2B, F4-T3C2): the bridge asks one advisor about the close and the destruction of a
+   55             // document. That advisor is the wrapper over the host: every decision is the host's, and the wrapper only adds the notices of
+   56             // the command line. It is wired by assignment, so the constructor of the core and the subscriptions of the bridge do not change.
+   57             _closeAdvisor = new WorkspaceCloseAdvisorRelay(
+   58                 _host,
+   59                 _pilotEdit,
+   60                 DocumentNameOf,
+
+### B05-b PilotEditAdapter — src/RackCad.Plugin/Workspace/WorkspaceController.cs:280-336
+  280         private static void LogFault(string context, System.Exception exception) => RackLog.Exception(context, exception);
+  282         // The adapter that the panel receives as the edit port: it only forwards to the gate of notices.
+  283         private sealed class PilotEditAdapter : IWorkspacePilotEditPort
+  284         {
+  285             private readonly IWorkspacePilotEditPort _gate;
+  287             public PilotEditAdapter(IWorkspacePilotEditPort gate)
+  288             {
+  289                 _gate = gate;
+  290             }
+  292             public EditIntentOutcome TryBeginEdit(EditIntentRequest request) => _gate.TryBeginEdit(request);
+  294             public EditCheckOutcome TryCheckNow(EditIntentRequest request) => _gate.TryCheckNow(request);
+  296             public EditIntentOutcome TryReload(EditIntentRequest request) => _gate.TryReload(request);
+  298             public EditConfirmOutcome TryConfirmBase(EditIntentRequest request) => _gate.TryConfirmBase(request);
+  300             public EditIntentOutcome TryKeepMine(EditIntentRequest request) => _gate.TryKeepMine(request);
+  302             public EditIntentOutcome TryDiscardAndReload(EditIntentRequest request) => _gate.TryDiscardAndReload(request);
+  304             public PilotFieldView GetField(WorkspaceRequest origin, string rackId) => _gate.GetField(origin, rackId);
+  306             public PilotFieldResult SetPendingText(WorkspaceRequest origin, string rackId, string text) =>
+  307                 _gate.SetPendingText(origin, rackId, text);
+  309             public PilotFieldResult CommitField(WorkspaceRequest origin, string rackId) => _gate.CommitField(origin, rackId);
+  311             public PilotBoundaryResult CrossBoundary(WorkspaceRequest origin, string rackId, PilotBoundaryKind kind) =>
+  312                 _gate.CrossBoundary(origin, rackId, kind);
+  314             public EditDiscardOutcome DiscardRack(WorkspaceRequest origin, string rackId) => _gate.DiscardRack(origin, rackId);
+  316             public EditDiscardOutcome DiscardDocument(WorkspaceRequest origin) => _gate.DiscardDocument(origin);
+  318             public PilotRiskView GetRacksAtRisk(WorkspaceRequest origin) => _gate.GetRacksAtRisk(origin);
+  320             public System.Collections.Generic.IReadOnlyList<PilotLossView> TakeLossNotices() => _gate.TakeLossNotices();
+  322             public System.Collections.Generic.IReadOnlyList<PilotCloseView> TakeCloseNotices() => _gate.TakeCloseNotices();
+  324             public EditUpdateStart RequestUpdate(EditIntentRequest request) => _gate.RequestUpdate(request);
+  326             public EditUpdateProgress TakeUpdateProgress(WorkspaceRequest origin, string rackId) => _gate.TakeUpdateProgress(origin, rackId);
+  327         }
+  329         // The link of the pure host core to the single bridge: forwards to its facades and nothing else.
+  330         private sealed class BridgeLink : IWorkspaceBridgeLink
+  331         {
+  332             private readonly AutoCadEventBridge _bridge;
+  334             public BridgeLink(AutoCadEventBridge bridge)
+  335             {
+  336                 _bridge = bridge;
+
+### B05-c ControllerViolations — tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs:676-700
+  676         {
+  677             var navigation = getter.IndexOf("Navigation", StringComparison.Ordinal);
+  678             var ret = getter.IndexOf("return", StringComparison.Ordinal);
+  679             if (navigation < 0 || ret < 0 || navigation > ret) yield return "the getter does not reach Navigation before it returns";
+  680             if (!Regex.IsMatch(getter, @"return\s+_pilotEdit\s*;")) yield return "the getter does not return the adapter";
+  681         }
+  683         if (!Regex.IsMatch(controller, @"_pilotEdit\s*=\s*new\s+PilotEditAdapter\s*\(\s*new\s+WorkspacePilotEditGate\s*\(\s*_host\s*,\s*_noticeDepth\s*\)\s*\)\s*;"))
+  684             yield return "the adapter is not built over the decorator of the host";
+  686         var adapter = TryBody(controller, @"private\s+sealed\s+class\s+PilotEditAdapter\s*:\s*IWorkspacePilotEditPort\b[^{]*");
+  687         if (adapter == null) yield return "the nested adapter is missing";
+  688         else
+  689         {
+  690             foreach (var (name, _) in Operations)
+  691             {
+  692                 var body = TryBody(adapter, @"public\s+[\w<>,.\s?]+?\s+" + name + @"\s*\(");
+  693                 if (body == null) yield return "the adapter lacks " + name;
+  694                 else if (!Regex.IsMatch(Squash(body), @"=>_gate\." + name + @"\([\w,]*\);$")) yield return "the adapter does not only delegate " + name;
+  695             }
+  696         }
+  698         // The panel never receives the host core (M-8).
+  699         if (Regex.IsMatch(controller, @"\bpublic\s+(?:readonly\s+)?WorkspaceHostCore\b")) yield return "the controller exposes the host core";
+  700         if (Src.Count(controller, @"\bpublic\s+IWorkspacePilotEditPort\b") != 1) yield return "the controller does not expose exactly one edit port";
+
+### B05-d la compuerta de avisos — src/RackCad.Application/Workspace/WorkspacePilotSupport.cs:150-200
+  150     /// read the drawing (three since F4-T3A, six since F4-T4A1) answer Waiting without delegating and without reading; everything else
+  151     /// is delegated as it is. So a handler of a state notice can never start a read, however it is written.
+  152     /// </summary>
+  153     public sealed class WorkspacePilotEditGate : IWorkspacePilotEditPort
+  154     {
+  155         /// <summary>The reason of the Waiting answers of the gate.</summary>
+  156         public const string InsideNoticeReason = "Se está entregando un aviso del panel.";
+  158         private readonly IWorkspacePilotEditPort _inner;
+  159         private readonly WorkspaceNoticeDepth _depth;
+  161         public WorkspacePilotEditGate(IWorkspacePilotEditPort inner, WorkspaceNoticeDepth depth)
+  162         {
+  163             _inner = inner ?? throw new ArgumentNullException(nameof(inner));
+  164             _depth = depth ?? throw new ArgumentNullException(nameof(depth));
+  165         }
+  167         public EditIntentOutcome TryBeginEdit(EditIntentRequest request) =>
+  168             _depth.IsInside ? EditIntentOutcome.Waiting(InsideNoticeReason) : _inner.TryBeginEdit(request);
+  170         public EditCheckOutcome TryCheckNow(EditIntentRequest request) =>
+  171             _depth.IsInside ? EditCheckOutcome.Waiting(InsideNoticeReason) : _inner.TryCheckNow(request);
+  173         public EditIntentOutcome TryReload(EditIntentRequest request) =>
+  174             _depth.IsInside ? EditIntentOutcome.Waiting(InsideNoticeReason) : _inner.TryReload(request);
+  176         public EditConfirmOutcome TryConfirmBase(EditIntentRequest request) =>
+  177             _depth.IsInside ? EditConfirmOutcome.Waiting(InsideNoticeReason) : _inner.TryConfirmBase(request);
+  179         public EditIntentOutcome TryKeepMine(EditIntentRequest request) =>
+  180             _depth.IsInside ? EditIntentOutcome.Waiting(InsideNoticeReason) : _inner.TryKeepMine(request);
+  182         public EditIntentOutcome TryDiscardAndReload(EditIntentRequest request) =>
+  183             _depth.IsInside ? EditIntentOutcome.Waiting(InsideNoticeReason) : _inner.TryDiscardAndReload(request);
+  185         public PilotFieldView GetField(WorkspaceRequest origin, string rackId) => _inner.GetField(origin, rackId);
+  187         public PilotFieldResult SetPendingText(WorkspaceRequest origin, string rackId, string text) =>
+  188             _inner.SetPendingText(origin, rackId, text);
+  190         public PilotFieldResult CommitField(WorkspaceRequest origin, string rackId) => _inner.CommitField(origin, rackId);
+  192         public PilotBoundaryResult CrossBoundary(WorkspaceRequest origin, string rackId, PilotBoundaryKind kind) =>
+  193             _inner.CrossBoundary(origin, rackId, kind);
+  195         public EditDiscardOutcome DiscardRack(WorkspaceRequest origin, string rackId) => _inner.DiscardRack(origin, rackId);
+  197         public EditDiscardOutcome DiscardDocument(WorkspaceRequest origin) => _inner.DiscardDocument(origin);
+  199         public PilotRiskView GetRacksAtRisk(WorkspaceRequest origin) => _inner.GetRacksAtRisk(origin);
+
+### I12-a EIG comprobar ahora — tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:555-580
+  555         // The constructor, the arguments of the host core and the port of the host do not change.
+  556         Assert.Matches(
+  557             @"public\s+WorkspaceHostCore\s*\(\s*IWorkspaceBridgeLink\s+bridge\s*,\s*IWorkspaceHostProbe\s+probe\s*,\s*IWorkspaceSelectionReader\s+reader\s*,\s*WorkspaceInstrumentation\s+instrumentatio
+  558             core);
+  559         Assert.DoesNotMatch(new Regex(@"TryBeginPilotEdit|TryCheckPilotEdit|EditIntent"), Src.Code(Src.ApplicationWorkspace + "IWorkspaceHostPort.cs"));
+  560     }
+  562     [Fact]
+  563     public void BothOperationsFollowTheOrderOfTheTableOfThePackageWithOneReadAndNoReadBeforeStepSix()
+  564     {
+  565         var intent = IntentBody();
+  566         var check = CheckBody();
+  568         AssertInOrder(intent, "string.IsNullOrWhiteSpace(request.RackId)", "PassGate(", "_drafts.Contains(", "_editIntentReader!.ReadIntent(", "_drafts.Begin(");
+  569         AssertInOrder(check, "string.IsNullOrWhiteSpace(request.RackId)", "PassGate(", "_drafts.Find<", "_editIntentReader!.ReadIntent(", ".CheckNow(");
+  570         Assert.Equal(1, Src.Count(intent, @"\.ReadIntent\s*\("));
+  571         Assert.Equal(1, Src.Count(check, @"\.ReadIntent\s*\("));
+  572         // The count is per body: the whole file is not counted, because a further operation of the host (F4-T2B2B) reads too.
+  573         Assert.Equal(1, Src.Count(intent, @"_editIntentReader\s*[.!]"));
+  574         Assert.Equal(1, Src.Count(check, @"_editIntentReader\s*[.!]"));
+  576         // Steps 2 to 5 read nothing: the gate asks the probe and the authorization only.
+  577         var gate = Src.BodyOf(Core(), @"private\s+EditGate\s+PassGate\s*\(");
+  578         AssertInOrder(gate, "_editIntentReader == null", "_probe.ActiveDocumentNativeId", "_modalRackCadActive", "_probe.IsActiveDocumentQuiescent", "Authorize(");
+  579         Assert.DoesNotMatch(new Regex(@"ReadIntent|_reader\b|_drafts|_bridge\.TryGetSession"), gate);
+  580     }
+
+### I12-b EIG reconciliacion — tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:750-775
+  750         var detected = Regex.IsMatch(injectedText, @"\.PilotRead\b") || Regex.IsMatch(WithoutTheAllowedConsumers(injectedText), BaseOrReadUse.ToString());
+  751         Assert.True(detected, injected);
+  752     }
+  754     [Fact]
+  755     public void TheThreeBodiesOfTheReconciliationFollowTheStepsOfTheCheckAndTheReloadWithTheApplicabilityBeforeTheOneRead()
+  756     {
+  757         var confirm = ConfirmBody();
+  758         var keep = KeepBody();
+  759         var discard = DiscardAndReloadBody();
+  761         AssertInOrder(confirm, "string.IsNullOrWhiteSpace(request.RackId)", "HasWitnessWithoutKey(request)", "PassGate(", "_drafts.Find<", "NotCheckableReason", "_editIntentReader!.ReadIntent(", ".Con
+  762         AssertInOrder(keep, "string.IsNullOrWhiteSpace(request.RackId)", "HasWitnessWithoutKey(request)", "PassGate(", "_drafts.Find<", "DraftStatus.Applying", "NotKeepableReason", "_editIntentReader!
+  763         AssertInOrder(discard, "string.IsNullOrWhiteSpace(request.RackId)", "HasWitnessWithoutKey(request)", "PassGate(", "_drafts.Find<", "DraftStatus.Applying", "_editIntentReader!.ReadIntent(", ".D
+  764         foreach (var body in new[] { confirm, keep, discard })
+  765         {
+  766             Assert.Equal(1, Src.Count(body, @"\.ReadIntent\s*\("));
+  767             Assert.Equal(1, Src.Count(body, @"_editIntentReader\s*[.!]"));
+  768             // The mark of known clean is removed in the result that changed the draft, never before the read.
+  769             Assert.True(IndexOf(body, "_knownClean.Remove(") > IndexOf(body, "_editIntentReader!.ReadIntent("));
+  770         }
+  772         Assert.Equal(1, Src.Count(confirm, @"_knownClean\.Remove\s*\("));
+  773         Assert.Equal(1, Src.Count(keep, @"_knownClean\.Remove\s*\("));
+  774         Assert.Equal(1, Src.Count(discard, @"_knownClean\.Remove\s*\("));
+  775         // The keep is called with the function of the pilot and the confirmation that the gesture already is.
+
+### I12-c recarga — tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs:636-660
+  637     // ------------------------------------------------------------------ INV-F4T2B2B-06: the reload
+  639     private static string ReloadBody() => Src.BodyOf(Host(), @"public\s+EditIntentOutcome\s+TryReloadPilotEdit\s*\(\s*EditIntentRequest\s+request\s*\)");
+  641     [Fact]
+  642     public void TheReloadIsAMethodOfItsOwnWithTheGateAndTheEightStepsOfTheTableAndOneReadThatOnlyReachesDiscardAndReload()
+  643     {
+  644         var body = ReloadBody();
+  646         AssertInOrder(
+  647             body,
+  648             "string.IsNullOrWhiteSpace(request.RackId)",
+  649             "HasWitnessWithoutKey(request)",
+  650             "PassGate(",
+  651             "_drafts.Find<PushBackPilotDraftState>(",
+  652             ".NeedsLazyReload",
+  653             "_editIntentReader!.ReadIntent(",
+  654             ".DiscardAndReload(pilot.Read);");
+  655         Assert.Equal(1, Src.Count(body, @"\.ReadIntent\s*\("));
+  656         Assert.Equal(1, Src.Count(body, @"_editIntentReader\s*[.!]"));
+  657         Assert.Equal(1, Src.Count(body, @"\bpilot\.Read\b"));
+  658         Assert.Matches(@"\.DiscardAndReload\s*\(\s*pilot\.Read\s*\)\s*;", body);
+  659         // F4-T3A (M-2): the call is fixed in the body of the reload, not in the whole file, so a later operation of the host that reloads
+  660         // does not trip a guard that is about this one.
+
+### I13-a resultado de la corrida — src/RackCad.Application/Workspace/Drafts/DraftApplyOutcome.cs:40-75
+   40     public sealed class DraftApplyOutcome<TState>
+   41     {
+   42         private DraftApplyOutcome(
+   43             DraftApplyOutcomeKind kind,
+   44             string? cause,
+   45             IReadOnlyList<DraftDifference> differences,
+   46             IReadOnlyList<string> warnings,
+   47             DraftIntentRead<TState>? postRead)
+   48         {
+   49             Kind = kind;
+   50             Cause = cause;
+   51             Differences = differences;
+   52             Warnings = warnings;
+   53             PostRead = postRead;
+   54         }
+   56         public DraftApplyOutcomeKind Kind { get; }
+   58         public string? Cause { get; }
+   60         /// <summary>What changed, for NotAppliedConflict.</summary>
+   61         public IReadOnlyList<DraftDifference> Differences { get; }
+   63         /// <summary>The warnings of AppliedWithWarnings.</summary>
+   64         public IReadOnlyList<string> Warnings { get; }
+   66         /// <summary>The re-read of POST, which Applied and AppliedWithWarnings require.</summary>
+   67         public DraftIntentRead<TState>? PostRead { get; }
+   69         public static DraftApplyOutcome<TState> NotAppliedConflict(IReadOnlyList<DraftDifference> differences)
+   70         {
+   71             if (differences == null) throw new ArgumentNullException(nameof(differences));
+   72             // A copy taken on receipt: changing the caller's list afterwards changes nothing here.
+   73             return new(DraftApplyOutcomeKind.NotAppliedConflict, null, differences.ToArray(), Array.Empty<string>(), null);
+   74         }
+
+### I13-b el origen de POST en la corrida — src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs:595-650
+  595                             _warnings.Add(NameDiffersPrefix + pair.Key + " no es «" + expected + "».");
+  596                     }
+  598                     if (values.RegenFailure != null) _warnings.Add(RegenFailedPrefix + values.RegenFailure);
+  599                     if (values.Scan == null) return PostFailed(PostRereadMissingReason);
+  601                     // The origin of POST is the key of the plan that is read again: the origin of the draft, or, when the update erased it, the first
+  602                     // view that was redrawn. The definition does not change, even if its text is the new one now.
+  603                     var (read, cause) = _postRead(ScanOf(values.Scan, plan.PostOriginKey), _catalog, plan);
+  604                     if (cause != null) return PostFailed(cause);
+  606                     return _warnings.Count == 0
+  607                         ? DraftApplyOutcome<TState>.Applied(read)
+  608                         : DraftApplyOutcome<TState>.AppliedWithWarnings(read, _warnings);
+  609                 }
+  610                 catch (Exception ex)
+  611                 {
+  612                     return PostFailed(PostFailurePrefix + ex.Message);
+  613                 }
+  614             }
+  616             // A failure of the rule of the names must not stop POST: the tidy-up and the re-read still run, and the failure is a warning.
+  617             private IReadOnlyDictionary<string, string> DesiredNamesOrNone(PushBackPilotUpdatePlan plan)
+  618             {
+  619                 try
+  620                 {
+  621                     return DesiredNamesOf(plan, _catalog!);
+  622                 }
+  623                 catch (Exception ex)
+  624                 {
+  625                     _warnings.Add(DesiredNamesFailedPrefix + ex.Message);
+  626                     return new Dictionary<string, string>(StringComparer.Ordinal);
+  627                 }
+  628             }
+  630             // ------------------------------------------------------------------ pure helpers
+  632             private PushBackPilotIntentScan ScanOf(PushBackPilotScanValues values, string originKey) =>
+  633                 new(
+  634                     _request.RackId,
+  635                     originKey,
+  636                     values.Facts,
+  637                     values.RawEnvelopes.ToDictionary(pair => pair.Key, pair => (string?)pair.Value, StringComparer.Ordinal),
+  638                     CompletenessEvidence);
+  640             // The origin is the ONLY mutable member whose raw text is, byte for byte, the origin of the draft. Zero or several is a
+  641             // preflight refusal with its own reason, and never the misleading "origin missing" of the reader.
+  642             private DraftApplyOutcome<TState>? ChooseOrigin(PushBackPilotScanValues values, string origin, out string? key)
+  643             {
+  644                 key = null;
+  645                 var staleBase = PushBackPilotIntentReader.BuildStaleBase(ScanOf(values, string.Empty));
+  646                 var matches = staleBase.Entries.Values
+  647                     .Where(entry => entry.Membership == DraftMembership.Mutable && string.Equals(entry.EnvelopeText, origin, StringComparison.Ordinal))
+  648                     .Select(entry => entry.Key)
+  649                     .ToList();
+  650                 if (matches.Count == 0) return NotAppliedPreflight(PushBackPilotUpdatePlanner.NoOriginReason);
+
+### I13-c EIG UpdateNeverReads — tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:1116-1130
+ 1116         Assert.NotEmpty(UpdateContainmentViolations(body.Replace("var start = draft.TryBeginApply();", "var start = draft.TryBeginApply(); draft.CompleteApply(x);", StringComparison.Ordinal)));
+ 1117         Assert.NotEmpty(UpdateContainmentViolations(body.Replace("closed = draft.CompleteApply(outcome);", "closed = draft.CompleteApply(outcome); draft.CompleteApply(outcome);", StringComparison.Ordi
+ 1118         Assert.NotEmpty(UpdateContainmentViolations(body.Replace("finally", "catch (InvalidOperationException)", StringComparison.Ordinal)));
+ 1119         Assert.NotEmpty(UpdateContainmentViolations(body.Replace("Report(\"WorkspaceHostCore.TryUpdatePilot\", ex);", string.Empty, StringComparison.Ordinal)));
+ 1120         Assert.NotEmpty(UpdateContainmentViolations(body.Replace("return EditUpdateOutcome.Failed(ex.Message);", "_faulted.Add(request.Session); return EditUpdateOutcome.Failed(ex.Message);", StringCo
+ 1121     }
+ 1123     private static readonly Regex UpdateNeverReads = new(
+ 1124         @"ReadIntent|_editIntentReader|\bChosenReference\b|\bWitness\b|HasWitnessWithoutKey|\bPassGate\s*\(|\bpilot\b|PilotRead|_reader\b|\.StaleBase\b|\.InitialDraftState\b|\.InitialState\b|\.Entries
+ 1126     [Fact]
+ 1127     public void TheUpdateNeverReadsTheDrawingNorTheIntentionAndNamesNeitherTheWitnessNorTheChosenReferenceNorThePilotRead()
+ 1128     {
+ 1129         var body = UpdateBody();
+
+### I13-d el estado del piloto — src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs:1-40
+    1 #nullable enable
+    2 using System;
+    4 namespace RackCad.Application.Systems.PushBack.Pilot
+    5 {
+    6     /// <summary>
+    7     /// I-64 F4-T2A (D-T2-03) — the editable state of the bounded Push Back pilot (F4-PILOT-PUSHBACK-01). It GROUPS the
+    8     /// state that already exists and defines no parallel model: ONE <see cref="PushBackCompositeEditorState"/>, ONE
+    9     /// <see cref="PushBackEditorInputs"/> and the immutable <see cref="Origin"/>. It persists nothing and exposes no
+   10     /// operation that assembles a design: a design is only ever assembled from a composition made by
+   11     /// <see cref="PushBackPilotMaterializer.ComposeForWrite"/>, never directly over the state of a draft.
+   12     /// </summary>
+   13     public sealed class PushBackPilotDraftState
+   14     {
+   15         public PushBackPilotDraftState(PushBackCompositeEditorState editor, PushBackEditorInputs inputs, string origin)
+   16         {
+   17             Editor = editor ?? throw new ArgumentNullException(nameof(editor));
+   18             Inputs = inputs ?? throw new ArgumentNullException(nameof(inputs));
+   19             Origin = origin ?? throw new ArgumentNullException(nameof(origin));
+   20         }
+   22         /// <summary>The composite editor state the classic window edits. A single-sided rack uses side A only.</summary>
+   23         public PushBackCompositeEditorState Editor { get; }
+   25         /// <summary>The rack-wide inputs the classic window reads from its controls (annotations included).</summary>
+   26         public PushBackEditorInputs Inputs { get; }
+   28         /// <summary>
+   29         /// The raw authored envelope text this state was materialized from: an immutable string. In the initial state of
+   30         /// a draft it is always the CURRENT base, because every read that rebases the draft replaces it.
+   31         /// </summary>
+   32         public string Origin { get; }
+   33     }
+   34 }
+
+### I14-a EIG Keep — tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:660-725
+  661     private static string WithoutTheAllowedConsumers(string code) =>
+  662         AllowedAdmissionDiagnostic.Replace(AllowedConsumers.Replace(code, string.Empty), string.Empty);
+  664     [Fact]
+  665     public void TheBaseOfAResultOfThePilotOnlyReachesBeginCheckNowOrDiscardAndReloadInTheHostCoreAndTheTwoOperationsCountTheirOwnUses()
+  666     {
+  667         var core = Core();
+  669         // Whatever the number of operations of the host, every use of the base or of the read of a result is an argument of a consumer.
+  670         Assert.DoesNotMatch(BaseOrReadUse, WithoutTheAllowedConsumers(core));
+  671         foreach (var code in new[] { Src.Code(IntentPath), Src.Code(InterfacePath) })
+  672             Assert.DoesNotMatch(BaseOrReadUse, WithoutTheAllowedConsumers(code));
+  674         // Per operation (these counts are about the two operations of this task, not about the whole file): the intention hands the
+  675         // read to Begin and never the base to CheckNow, and "check now" hands the base to CheckNow and never the read to Begin.
+  676         var intent = IntentBody();
+  677         Assert.Equal(1, Src.Count(intent, @"\bpilot\.Read\b"));
+  678         Assert.Matches(@"\.Begin\s*\(\s*[^;]*?\bpilot\.Read\b[^;]*?\)\s*;", intent);
+  679         Assert.Equal(0, Src.Count(intent, @"\.StaleBase\b|\.CheckNow\s*\("));
+  681         var check = CheckBody();
+  682         Assert.Equal(1, Src.Count(check, @"\.StaleBase\b"));
+  683         Assert.Matches(@"\.CheckNow\s*\(\s*\w+\.StaleBase\s*\)", check);
+  684         // I-64 F4-T4C2 (D-T4C-12, row 12 of D-T4C-20): "check now" carries the diagnostic of the admission of the SAME reread, so the expression is in its
+  685         // body exactly once and the read is named exactly twice, both inside that one expression. The reader is still called once.
+  686         Assert.Equal(1, Src.Count(check, AdmissionDiagnosticPattern));
+  687         Assert.Equal(2, Src.Count(check, @"\bpilot\.Read\b"));
+  688         Assert.Equal(0, Src.Count(WithoutTheAllowedConsumers(check), @"\bpilot\.Read\b"));
+  689         Assert.Equal(0, Src.Count(check, @"\.Begin\s*\("));
+  690     }
+  692     [Fact]
+  693     public void ThePerOperationCountsOfTheBaseAndOfTheReadInTheThreeBodiesOfTheReconciliationAreTheirOwnConsumer()
+  694     {
+  695         var confirm = ConfirmBody();
+  696         Assert.Equal(1, Src.Count(confirm, @"\.StaleBase\b"));
+  697         Assert.Matches(@"\.ConfirmBase\s*\(\s*\w+\.StaleBase\s*\)", confirm);
+  698         Assert.Equal(0, Src.Count(confirm, @"\.Begin\s*\(|\.CheckNow\s*\("));
+  699         // The one use of the read in the general check is the diagnostic of the admission of a confirmed check (M-5), and it is counted:
+  700         // the read is named exactly twice in the body (IsAdmitted and Admission.Diagnostic), both inside that one explicit expression.
+  701         Assert.Equal(1, Src.Count(confirm, AdmissionDiagnosticPattern));
+  702         Assert.Equal(2, Src.Count(confirm, @"\bpilot\.Read\b"));
+  703         Assert.Equal(0, Src.Count(WithoutTheAllowedConsumers(confirm), @"\bpilot\.Read\b"));
+  704         // I-64 F4-T4C2 (row 12, RR N-05): "check now" leaves the loop of zero and has exactly one; the other three bodies stay at zero.
+  705         Assert.Equal(1, Src.Count(CheckBody(), AdmissionDiagnosticPattern));
+  706         foreach (var other in new[] { IntentBody(), KeepBody(), DiscardAndReloadBody() })
+  707             Assert.Equal(0, Src.Count(other, AdmissionDiagnosticPattern));
+  709         var keep = KeepBody();
+  710         Assert.Equal(1, Src.Count(keep, @"\bpilot\.Read\b"));
+  711         Assert.Matches(@"\.KeepMineOnCurrentVersion\s*\(\s*pilot\.Read\s*,\s*PushBackPilotMaterializer\.KeepPilotEditsOn\s*,\s*confirmed\s*:\s*true\s*\)", keep);
+  712         Assert.Equal(0, Src.Count(keep, @"\.StaleBase\b|\.InitialState\b|\.Begin\s*\("));
+  714         var discard = DiscardAndReloadBody();
+  715         Assert.Equal(1, Src.Count(discard, @"\bpilot\.Read\b"));
+  716         Assert.Matches(@"\.DiscardAndReload\s*\(\s*pilot\.Read\s*\)", discard);
+  717         Assert.Equal(0, Src.Count(discard, @"\.StaleBase\b|\.InitialState\b|\.Begin\s*\("));
+  719         // The host never names the initial state of a draft: the keep gets it through the draft and the function of the pilot.
+  720         Assert.DoesNotMatch(new Regex(@"\.InitialState\b|\.InitialDraftState\b"), Core());
+  721     }
+  723     // The read of a result of the pilot has ONE name in the host core, "pilot", and it is only ever assigned by one statement. So no alias
+  724     // or renamed variable can stand for it and escape the guard of the use of the base (F4-T4A1, INV-F4T4A1-04).
+  725     private static readonly Regex PilotReadAssignment = new(@"var\s+pilot\s*=\s*read\.PilotRead\s*;");
+
+### I14-b los once estados — tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1340-1356
+ 1340                  {
+ 1341                      EditConfirmOutcome.Unavailable("x"), EditConfirmOutcome.Waiting("x"), EditConfirmOutcome.Rejected("x"),
+ 1342                      EditConfirmOutcome.NotFound("x"), EditConfirmOutcome.NotApplicable("x"), EditConfirmOutcome.Failed("x"),
+ 1343                  })
+ 1344         {
+ 1345             Assert.Equal("x", outcome.Reason);
+ 1346             Assert.Empty(outcome.Differences);
+ 1347             Assert.Null(outcome.AdmissionDiagnostic);
+ 1348         }
+ 1350         // Kept is the one new state of the intention, after the ten that stay as an ordered prefix; Reloaded is reused by the discard.
+ 1351         var intent = Enum.GetNames<EditIntentStatus>();
+ 1352         Assert.Equal(11, intent.Length);
+ 1353         Assert.Equal("Kept", intent[10]);
+ 1354         Assert.Equal(EditIntentStatus.Kept, EditIntentOutcome.Kept(EditWitnessStatus.Changed).Status);
+ 1355         Assert.Equal(EditWitnessStatus.Changed, EditIntentOutcome.Kept(EditWitnessStatus.Changed).Witness);
+ 1356     }
+
+### I14-c el XAML de la escala — tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs:76-99
+   77                 Assert.Equal(classic.Value.Value, applied);
+   78             }
+   79         }
+   81         [Fact]
+   82         public void TheClassicControlIsARequiredNumberGreaterThanZero()
+   83         {
+   84             // The parity above is only meaningful while the classic box keeps the rule it is compared with.
+   85             var dir = new DirectoryInfo(AppContext.BaseDirectory);
+   86             while (dir != null && !File.Exists(Path.Combine(dir.FullName, "RackCad.sln"))) dir = dir.Parent;
+   87             Assert.NotNull(dir);
+   88             var xaml = File.ReadAllText(Path.Combine(dir.FullName, "src", "RackCad.UI", "Systems", "PushBack", "RackPushBackSystemWindow.xaml"));
+   89             var start = xaml.IndexOf("x:Name=\"AnnotationScaleBox\"", StringComparison.Ordinal);
+   90             Assert.True(start >= 0);
+   91             var element = xaml.Substring(start, xaml.IndexOf("/>", start, StringComparison.Ordinal) - start);
+   93             Assert.Contains("Minimum=\"0\"", element);
+   94             Assert.Contains("MinimumInclusive=\"False\"", element);
+   95             Assert.DoesNotContain("IsOptional", element);
+   96             Assert.DoesNotContain("IntegerOnly", element);
+   97             Assert.DoesNotContain("Maximum", element);
+   98         }
+   99     }
+
+### I14-d nueve archivos (EIG) — tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:1005-1030
+ 1005         {
+ 1006             Assert.DoesNotMatch(lifecycle, body);
+ 1007             Assert.Matches(lifecycle, body + "\n" + injected);
+ 1008         }
+ 1009     }
+ 1011     [Fact]
+ 1012     public void TheFoldersKeepTheirFilesAndTheTwoNewFilesOfTheApplicationAreExactFiles()
+ 1013     {
+ 1014         var plugin = Src.PluginFiles().Select(f => f.Path).OrderBy(p => p, StringComparer.Ordinal).ToArray();
+ 1015         Assert.Equal(9, plugin.Length);
+ 1016         Assert.Empty(plugin.Where(p => p.Substring(Src.PluginWorkspace.Length).Contains('/')));
+ 1017         Assert.DoesNotContain(plugin, p => p.Contains("Intent", StringComparison.Ordinal));
+ 1019         var application = Src.ApplicationFiles().Select(f => f.Path).ToHashSet(StringComparer.Ordinal);
+ 1020         Assert.Contains(InterfacePath, application);
+ 1021         Assert.Contains(IntentPath, application);
+ 1022         Assert.True(Src.Exists(AdapterPath));
+ 1023         Assert.Equal(new[] { AdapterPath }, Src.Files("src/RackCad.Plugin/Views/").Where(f => f.Path.EndsWith("RackPilotIntentAdapter.cs", StringComparison.Ordinal)).Select(f => f.Path).ToArray());
+ 1024     }
+ 1026     // ------------------------------------------------------------------ the new files of Application: purity and the traps of the neighbouring guards
+ 1028     [Fact]
+ 1029     public void TheThreeFilesOfTheApplicationAreNullableEnabledNameNoHostTypeAndKeepTheWordsThatTheNeighbouringGuardsForbidEvenInComments()
+ 1030     {
+
+### I14-e nueve archivos (navegacion) — tests/RackCad.Tests/Workspace/WorkspaceNavigationHostTests.cs:708-726
+  708         Assert.Equal(3, Src.Count(controller, @"\+="));
+  709         Assert.Equal(0, Src.Count(controller, @"-="));
+  710         Assert.DoesNotMatch(new Regex(@"\bINavigationEffects\b|\bNavigationActionPolicy\b|\bNavigationActionPlan\b|\bTask\b|\basync\b"), controller);
+  711     }
+  713     [Fact]
+  714     public void EveryNewPluginFileIsAnExactFileOfTheFolderAndTheFolderHoldsNineFiles()
+  715     {
+  716         var files = Src.PluginFiles().Select(f => f.Path).OrderBy(p => p, StringComparer.Ordinal).ToArray();
+  718         Assert.Equal(9, files.Length);
+  719         Assert.Contains(HostPath, files);
+  720         Assert.Contains(FactsPath, files);
+  721         Assert.Contains(EffectsPath, files);
+  722         Assert.Empty(files.Where(f => f.Substring(Src.PluginWorkspace.Length).Contains('/')));
+  723     }
+  725     // ------------------------------------------------------------------ I-64 F2-T2B (INV-F2T2B-07): TargetCount, the additive field
+  726     // The panel presents a copy "k of M" without counting targets itself: M is the number of targets of the set of the requested
+
+### I14-f los estados de la intencion — src/RackCad.Application/Workspace/WorkspaceEditIntent.cs:120-200
+  121         /// <summary>The draft is not marked as possibly stale and clean, so it does not need to be reloaded: nothing was read.</summary>
+  122         NotNeeded,
+  124         /// <summary>The draft was replaced from the one read: its stale base, initial state and current state are the new ones.</summary>
+  125         Reloaded,
+  127         // The state below belongs to "keep my draft" (I-64 F4-T4A1, D-T4A1-03). It comes AFTER the ten above, which stay as an ordered prefix.
+  129         /// <summary>
+  130         /// The draft was kept on the current version, after an explicit confirmation: its stale base and initial state are the new ones and
+  131         /// its edits and its pending text stay.
+  132         /// </summary>
+  133         Kept,
+  134     }
+  136     /// <summary>
+  137     /// I-64 F4-T2B2A (D-T2B2-06) — the answer of the host to the intention of editing a rack of the pilot. A value: it carries no
+  138     /// draft and no type of the pilot. Every state carries the status of the witness.
+  139     /// </summary>
+  140     public readonly struct EditIntentOutcome
+  141     {
+  142         private EditIntentOutcome(
+  143             EditIntentStatus status,
+  144             EditWitnessStatus witness,
+  145             string? reason,
+  146             string? diagnostic,
+  147             string? detail,
+  148             string? classicEditorHint)
+  149         {
+  150             Status = status;
+  151             Witness = witness;
+  152             Reason = reason;
+  153             Diagnostic = diagnostic;
+  154             Detail = detail;
+  155             ClassicEditorHint = classicEditorHint;
+  156         }
+  158         public EditIntentStatus Status { get; }
+  160         public EditWitnessStatus Witness { get; }
+  162         /// <summary>Why the operation did not read or did not finish; null for AlreadyOpen, NotAdmitted and Admitted.</summary>
+  163         public string? Reason { get; }
+  165         /// <summary>The visible diagnostic of a read that was not admitted; null otherwise.</summary>
+  166         public string? Diagnostic { get; }
+  168         /// <summary>The technical detail behind the diagnostic; never part of its main text.</summary>
+  169         public string? Detail { get; }
+  171         /// <summary>The hint to the classic editor; present when the read was not admitted.</summary>
+  172         public string? ClassicEditorHint { get; }
+  174         public bool IsAdmitted => Status == EditIntentStatus.Admitted;
+  176         public static EditIntentOutcome Unavailable(string reason) => Without(EditIntentStatus.Unavailable, reason);
+  178         public static EditIntentOutcome Waiting(string reason) => Without(EditIntentStatus.Waiting, reason);
+  180         public static EditIntentOutcome Rejected(string reason, EditWitnessStatus witness = EditWitnessStatus.NotEvaluated) =>
+  181             new(EditIntentStatus.Rejected, witness, reason, null, null, null);
+  183         public static EditIntentOutcome AlreadyOpen() => Without(EditIntentStatus.AlreadyOpen, null);
+  185         public static EditIntentOutcome NotAdmitted(string diagnostic, string? detail, string? classicEditorHint, EditWitnessStatus witness) =>
+  186             new(EditIntentStatus.NotAdmitted, witness, null, diagnostic, detail, classicEditorHint);
+  188         public static EditIntentOutcome Admitted(EditWitnessStatus witness) =>
+  189             new(EditIntentStatus.Admitted, witness, null, null, null, null);
+  191         public static EditIntentOutcome Failed(string reason) => Without(EditIntentStatus.Failed, reason);
+  193         public static EditIntentOutcome NotFound(string reason) => Without(EditIntentStatus.NotFound, reason);
+  195         public static EditIntentOutcome NotNeeded(string reason) => Without(EditIntentStatus.NotNeeded, reason);
+  197         public static EditIntentOutcome Reloaded(EditWitnessStatus witness) =>
+  198             new(EditIntentStatus.Reloaded, witness, null, null, null, null);
+  200         public static EditIntentOutcome Kept(EditWitnessStatus witness) =>
+
+### I15 RequestUpdate — src/RackCad.Application/Workspace/WorkspaceHostCore.cs:1376-1395
+ 1376         EditUpdateStart IWorkspacePilotEditPort.RequestUpdate(EditIntentRequest request)
+ 1377         {
+ 1378             try
+ 1379             {
+ 1380                 if (request == null) throw new ArgumentNullException(nameof(request));
+ 1381                 if (string.IsNullOrWhiteSpace(request.RackId)) return EditUpdateStart.Rejected(NoDraftReason);
+ 1383                 // The previous update of the same rack that expired just now is reported here, by the start value, and nothing new is accepted.
+ 1384                 var expired = ExpireStaleUpdate(request.Session, request.RackId);
+ 1385                 if (expired != null && string.Equals(expired.RackId, request.RackId, StringComparison.Ordinal))
+ 1386                     return EditUpdateStart.Failed(PushBackPilotHostTexts.HostNotRunReason);
+ 1388                 if (_pilotReadInProgress) return EditUpdateStart.Busy(PilotReadInProgressReason);
+ 1389                 if (_tickets.ContainsKey(request.Session)) return EditUpdateStart.Busy(PushBackPilotHostTexts.UpdateInFlightReason);
+ 1390                 if (_updateHost == null) return EditUpdateStart.Unavailable(PushBackPilotHostTexts.HostUnavailableReason);
+ 1392                 var gate = PassGate(request.Session, out var reason);
+ 1393                 if (gate == EditGate.Unavailable) return EditUpdateStart.Unavailable(reason);
+ 1394                 if (gate == EditGate.Waiting) return EditUpdateStart.Waiting(reason);
+ 1395                 if (gate == EditGate.Rejected) return EditUpdateStart.Rejected(reason);
+
+### I16 D2: las condiciones — docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-d1-d2-decisions.md:89-160
+   89 The PB-T1 copied state may retain shared references ONLY for:
+   91 1. resolved rack;
+   92 2. module report.
+   94 Everything else governed by the extracted editable state must satisfy the
+   95 normal no-aliasing requirement.
+   97 ======================================================================
+   98 WHY THE EXCEPTION IS ACCEPTED
+  100 These two objects already behave as shared/reference objects in the current
+  101 product.
+  103 Their known post-editor use is limited to the existing drawing path, where
+  104 the resolved rack may receive the established name adjustment after the
+  105 window has closed.
+  107 PB-T1 is a state-extraction task, not a redesign of those authorities.
+  109 Therefore cloning them merely to satisfy a blanket alias rule would add a
+  110 new semantic boundary without evidence that it is needed.
+  112 ======================================================================
+  113 L-1 SAFETY CONDITIONS
+  115 The exception is valid only if PB-T1 proves all of the following:
+  117 1. the exact two shared-reference types are enumerated;
+  118 2. no other mutable component of editable state aliases the source;
+  119 3. DraftSession editing does not mutate either shared object;
+  120 4. validation does not mutate either shared object;
+  121 5. pending-text/edit operations do not mutate either shared object;
+  122 6. discard/reload does not mutate either shared object;
+  123 7. comparing InitialDraftState vs CurrentDraftState does not depend on
+  124     mutable changes inside those shared objects;
+  125 8. the current permitted post-window name adjustment remains outside the
+  126     draft editing lifetime or is otherwise explicitly controlled;
+  127 9. a test proves that mutating all ordinary editable state in the copy does
+  128     not change the source;
+  129 10. source guards/tests identify any future added mutation of resolved rack
+  130     or module report inside the draft/editing path.
+  132 ======================================================================
+  133 IMPORTANT LIMIT
+  135 This is NOT authorization for general shallow copying.
+  137 It is exactly:
+  139 two declared shared references.
+  141 If later PB-T1/PB-T2/PB-T3 needs to mutate either:
+  143 * resolved rack;
+  144 * module report;
+  146 inside the Workspace draft lifetime:
+  148 STOP and reopen L-1.
+  150 At that point the object must either:
+  152 * be cloned;
+  153 * be made immutable;
+  154 * or be replaced by a value snapshot appropriate to the draft model.
+  156 ======================================================================
+  157 PB-T1 PLAN
+  159 With L-1 resolved, the PB-T1 v2.1 decomposition is accepted in principle:
+
+### M16 la clave del origen en RIA — src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs:100-110
+  100             RackCatalog catalog)
+  101         {
+  102             try
+  103             {
+  104                 AssertNoOpenTransaction(document, "before");
+  106                 var originKey = originDefinitionHandle <= 0 ? string.Empty : ToHandle(originDefinitionHandle).ToString();
+  108                 PushBackPilotPreviewWitness? witness = null;
+  109                 if (witnessKey != null)
+  110                 {
+
+### A13-a la costura de escenificar — tests/RackCad.UI.Tests/PushBackHeaderAuthorityWindowTests.cs:95-110
+   95                     var before = Staged(w, headerId)?.Height
+   96                                  ?? w.EditorStateForTest.ModuleSession.Modules.First(m => m.ModuleId == headerId).Length;
+   97                     var custom = 187.0;
+   98                     Assert.NotEqual(custom, before);
+  100                     w.HeaderConfiguratorPresenter = QuickConfigAt(custom);
+  101                     Click(Btn(w, "ConfigureModuleHeaderButton"));
+  103                     var staged = Staged(w, headerId);
+  104                     Assert.NotNull(staged);
+  105                     Assert.Equal(custom, staged.Height, 4);
+  106                     Assert.True(w.EditorStateForTest.ModuleSession.HasPendingChanges);
+  107                 }
+  108                 finally { w.Close(); }
+  109             });
+  110         }
+
+### A13-b el resultado de la intencion — src/RackCad.Application/Workspace/WorkspaceEditIntent.cs:200-300
+  200         public static EditIntentOutcome Kept(EditWitnessStatus witness) =>
+  201             new(EditIntentStatus.Kept, witness, null, null, null, null);
+  203         private static EditIntentOutcome Without(EditIntentStatus status, string? reason) =>
+  204             new(status, EditWitnessStatus.NotEvaluated, reason, null, null, null);
+  205     }
+  207     public enum EditCheckStatus
+  208     {
+  209         Unavailable,
+  211         /// <summary>
+  212         /// The check waits and nothing was read. Besides the reasons of the intention (no active document, a RackCad modal, a command or
+  213         /// no rest), through the edit port of the panel there are two more: a read of the pilot is already in progress, or a notice of
+  214         /// the panel is being delivered.
+  215         /// </summary>
+  216         Waiting,
+  217         Rejected,
+  219         /// <summary>There is no draft for (session, rack).</summary>
+  220         NotFound,
+  222         /// <summary>The draft is not unknown after a commit that threw: nothing was read.</summary>
+  223         NotApplicable,
+  225         /// <summary>The reread differs from the base before the attempt: the draft is now in conflict.</summary>
+  226         Conflict,
+  228         /// <summary>The reread matches the base before the attempt: the draft recovered its previous status.</summary>
+  229         Recovered,
+  231         Failed,
+  232     }
+  234     /// <summary>
+  235     /// I-64 F4-T2B2A (D-T2B2-06) — the answer of the host to "check now". A value: the differences are text, so it names no draft
+  236     /// type and no type of the pilot.
+  237     /// </summary>
+  238     public readonly struct EditCheckOutcome
+  239     {
+  240         private readonly IReadOnlyList<string>? _differences;
+  242         private EditCheckOutcome(
+  243             EditCheckStatus status,
+  244             string? reason,
+  245             IReadOnlyList<string> differences,
+  246             string? admissionDiagnostic,
+  247             string? classicEditorHint)
+  248         {
+  249             Status = status;
+  250             Reason = reason;
+  251             _differences = differences;
+  252             AdmissionDiagnostic = admissionDiagnostic;
+  253             ClassicEditorHint = classicEditorHint;
+  254         }
+  256         public EditCheckStatus Status { get; }
+  258         public string? Reason { get; }
+  260         /// <summary>
+  261         /// What differs, as "key:kind" lines (the variable registry has no key); empty unless the status is Conflict. Never null,
+  262         /// also for a default value of this struct.
+  263         /// </summary>
+  264         public IReadOnlyList<string> Differences => _differences ?? Array.Empty<string>();
+  266         /// <summary>
+  267         /// The diagnostic of the admission of the reread, set for a Recovered or a Conflict whose reread was not admitted (I-64 F4-T4C2, D-T4C-12);
+  268         /// null otherwise. It never changes the status: the status only comes from the comparison of the bases.
+  269         /// </summary>
+  270         public string? AdmissionDiagnostic { get; }
+  272         /// <summary>The hint to the classic editor; set only next to a diagnostic, null otherwise.</summary>
+  273         public string? ClassicEditorHint { get; }
+  275         public static EditCheckOutcome Unavailable(string reason) => Without(EditCheckStatus.Unavailable, reason);
+  277         public static EditCheckOutcome Waiting(string reason) => Without(EditCheckStatus.Waiting, reason);
+  279         public static EditCheckOutcome Rejected(string reason) => Without(EditCheckStatus.Rejected, reason);
+  281         public static EditCheckOutcome NotFound(string reason) => Without(EditCheckStatus.NotFound, reason);
+  283         public static EditCheckOutcome NotApplicable(string reason) => Without(EditCheckStatus.NotApplicable, reason);
+  285         public static EditCheckOutcome Conflict(IReadOnlyList<string> differences, string? admissionDiagnostic = null, string? classicEditorHint = null)
+  286         {
+  287             if (differences == null) throw new ArgumentNullException(nameof(differences));
+  288             return new EditCheckOutcome(EditCheckStatus.Conflict, null, differences, admissionDiagnostic, classicEditorHint);
+  289         }
+  291         public static EditCheckOutcome Recovered(string? admissionDiagnostic = null, string? classicEditorHint = null) =>
+  292             new(EditCheckStatus.Recovered, null, Array.Empty<string>(), admissionDiagnostic, classicEditorHint);
+  294         public static EditCheckOutcome Failed(string reason) => Without(EditCheckStatus.Failed, reason);
+  296         private static EditCheckOutcome Without(EditCheckStatus status, string? reason) =>
+  297             new(status, reason, Array.Empty<string>(), null, null);
+  298     }
+  300     public enum EditConfirmStatus
+
+### Q2 la tabla de propiedad — src/RackCad.Application/Systems/PushBack/PushBackEditableStateOwnership.cs:128-180
+  128             var rest = path.Substring(2);
+  129             var end = rest.IndexOfAny(new[] { '.', '[' });
+  130             return end < 0 ? rest : rest.Substring(0, end);
+  131         }
+  133         private static IReadOnlyList<PushBackOwnershipRow> BuildTable()
+  134         {
+  135             var rows = new List<PushBackOwnershipRow>();
+  137             foreach (var path in new[] { "$.SchemaVersion", "$.Kind", "$.View", "$.Section", "$.Id", "$.CustomProperties" })
+  138             {
+  139                 rows.Add(new PushBackOwnershipRow(PushBackDocumentLevel.Envelope, path, PushBackFieldOwner.Envelope, EmbedDocument));
+  140             }
+  142             rows.Add(new PushBackOwnershipRow(PushBackDocumentLevel.Envelope, "$.Name", PushBackFieldOwner.Editor, EditorSource));
+  143             rows.Add(new PushBackOwnershipRow(
+  144                 PushBackDocumentLevel.Envelope, "$.Design", PushBackFieldOwner.Container,
+  145                 "RackEmbedDocument.cs, RackEmbedDocument.Design"));
+  147             foreach (var path in new[]
+  148                      {
+  149                          "$.SchemaVersion", "$.Kind", "$.Header", "$.DynamicSystem", "$.SelectiveRack", "$.FlowBed",
+  150                          "$.Larguero", "$.Cantilever",
+  151                      })
+  152             {
+  153                 rows.Add(new PushBackOwnershipRow(
+  154                     PushBackDocumentLevel.Project, path, PushBackFieldOwner.Envelope,
+  155                     ProjectDocument + "; RackPushBackSystemWindow.xaml.cs, SaveLibrary_Click (WithSourceMetadataFrom)"));
+  156             }
+  158             rows.Add(new PushBackOwnershipRow(
+  159                 PushBackDocumentLevel.Project, "$.PushBack", PushBackFieldOwner.Container,
+  160                 "RackProjectDocument.cs, RackProjectDocument.PushBack"));
+  162             rows.Add(new PushBackOwnershipRow(
+  163                 PushBackDocumentLevel.Payload, "$.SchemaVersion", PushBackFieldOwner.Envelope, PayloadDocument));
+  165             foreach (var path in new[]
+  166                      {
+  167                          "$.Structure", "$.Fronts", "$.LegacyHighEndBeamPeralte", "$.RearTopeSaque", "$.RearTopePieceId",
+  168                          "$.DefensePieceId", "$.RearTopeOffCells", "$.SideB", "$.Composite",
+  169                      })
+  170             {
+  171                 rows.Add(new PushBackOwnershipRow(PushBackDocumentLevel.Payload, path, PushBackFieldOwner.Editor, DesignAssemblers));
+  172             }
+  174             return rows;
+  175         }
+  176     }
+  177 }

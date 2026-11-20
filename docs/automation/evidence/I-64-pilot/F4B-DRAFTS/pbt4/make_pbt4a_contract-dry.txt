@@ -1,0 +1,62 @@
+DRY rev 7f0d9aa3 (objetos del checkout principal) allowed 10 forbidden 316 (src 190 tests 109 [core 40 ui 69] root 17 ) inv 14 stops 34 required 38 evidence 15 authorities 47 anchors-ok 12 bytes 64560 sha256 C59D5C245A5BA61FBA9392FB06B11BAE48FB79AFA64D618D0BE9F0C5B34E1BE1
+anclaje: desciende de d8ccbcb8 (F4B-E29), fe1c67f4 (F4B-E46), 7dfc7c21 (F4B-E47) y el cierre 7f0d9aa3 (F4B-E48); src y tests == el cierre == el GREEN 938a35f0; la CI 44757675821 (Core 19129 con 6 Skipped; UI 2451 con 21) | f4b-dispositions hasta F4B-E48
+paquete leido: --package-file I-64-f4b-pbt4-gate-contract-package-v43.md -> v4.3 | sha256 4f4822798920d3f1 | el bloque ASCII de 6.1.1: TaskId, Objective, INV-PBT4A-01..14, PBT4A-C01..C18 sin C15, [0]..[14]; la tabla de RequiredTests (38); el alcance de 6.1 (10); la lista CT-PBT4A-01..08 de 5.1 (8 CT, 5 con ExpectRed)
+contrato de PB-T3c: docs/automation/evidence/I-64-pilot/F4B-PBT3C-FULL-WRITE-ERASE/coordinator/gate-contract.json en 7f0d9aa3 (AuthorityRevision e3c293b1): las 17 paradas estandar, C08/C12/C17 iguales, EVID[0], los 36 filtros (DWG en 2), la raiz y las listas de tests/
+PBT4A-C11 == PBT3C-C11 con PBT3C -> PBT4 y PB-T3c -> PB-T4a; nc1 41440edc y nc2 v2 c033e96c con --task PBT4; EVID[0] en F4B_EXACT_EVIDENCES
+el registro de mediciones (CA-T4a M-02): R-0 a R-43, de pbt4-measurements.md junto a --package-file; la cabecera del paquete lo cita igual
+el Skip (6.1): [Fact(Skip = "I-64 F4B PB-T4a: sustituida por CT-PBT4A-06 de PushBackFullReadGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 4).")]
+tabla de RR-3 (filas de PB-T4a): PushBackFullReadPathTests 6 lineas y 0 valores; PushBackFullReadGuardTests 33 lineas y 0 valores; PushBackFullReadSupport 2 lineas y 0 valores
+la CI prevista (F4B-E46, su unica rama): RED 19137 = 19125 + 5 Failed + 7 Skipped; GREEN 19137 = 19130 + 0 + 7; UI 2451 = 2430 + 21 en los dos
+BOUNDED_RESULT: EMITIBLE TRAS CORRECCIONES; B 0 / I 1 / M 4; las importantes corregidas en el paquete v4.3 (I-01, la anotacion string? de PushBackOriginByText.cs: aviso CS8632 que rompe build-plugin); sin decisiones nuevas del Owner; remedicion sobre 7f0d9aa3 sin cambios materiales; recomprobacion v4.3: EMITIBLE, B 0 / I 0 / M 2 | bounded_check: sin errores sobre --bounded-file independent-review-pbt4a-check.md
+RequiredTests (criterio de count_tests_git.py sobre los objetos de la revision):
+  Core Tests.PushBackFullReadPathTests                  MinSelected=5     ExpectRed=True  medido: clases=0 ejecutables=0 skip=0 memberdata=0  new
+  Core Tests.PushBackFullReadGuardTests                 MinSelected=3     ExpectRed=False medido: clases=0 ejecutables=0 skip=0 memberdata=0  new
+  Core Tests.PushBackViewEraseGuardTests                MinSelected=4     ExpectRed=False medido: clases=1 ejecutables=4 skip=0 memberdata=0  t3c
+  Core Tests.PushBackWritePathPluginGuardTests          MinSelected=1     ExpectRed=False medido: clases=1 ejecutables=1 skip=0 memberdata=0  t3c
+  Core Tests.WorkspacePilotUpdateGuardTests             MinSelected=86    ExpectRed=False medido: clases=1 ejecutables=86 skip=1 memberdata=0  t3c
+  Core Tests.WorkspacePilotUpdateIntegrationGuardTests  MinSelected=123   ExpectRed=False medido: clases=1 ejecutables=123 skip=2 memberdata=0  t3c
+  Core Tests.PushBackSharedReferenceGuardTests          MinSelected=2     ExpectRed=False medido: clases=1 ejecutables=2 skip=0 memberdata=0  t3c
+  UI   UI.Tests.PushBackFullDraftWindowParityTests      MinSelected=1     ExpectRed=False medido: clases=1 ejecutables=1 skip=0 memberdata=0  t3c
+  Core Tests.PushBackFullWrite                          MinSelected=13    ExpectRed=False medido: clases=2 ejecutables=13 skip=0 memberdata=0  t3c
+  Core Tests.PushBackPilotUpdateEquivalenceGuardTests   MinSelected=6     ExpectRed=False medido: clases=1 ejecutables=6 skip=0 memberdata=0  t3c
+  Core Tests.PushBackWritePathGuardTests                MinSelected=2     ExpectRed=False medido: clases=1 ejecutables=2 skip=0 memberdata=0  t3c
+  Core Tests.Workspace                                  MinSelected=3261  ExpectRed=False medido: clases=74 ejecutables=3261 skip=10 memberdata=33  t3c
+  Core Tests.PushBackFullDraft                          MinSelected=10    ExpectRed=False medido: clases=4 ejecutables=10 skip=0 memberdata=0  t3c
+  Core Tests.PushBackDraftWriteGuardTests               MinSelected=2     ExpectRed=False medido: clases=1 ejecutables=3 skip=0 memberdata=0  t3c (el Skip de CT-PBT3A-12: 3 - 1 = 2)
+  UI   UI.Tests.Workspace                               MinSelected=547   ExpectRed=False medido: clases=20 ejecutables=547 skip=0 memberdata=16  t3c
+  Core Tests.PushBackEditableState                      MinSelected=13    ExpectRed=False medido: clases=3 ejecutables=13 skip=0 memberdata=0  t3c
+  Core Tests.PushBackEditorOutputGate                   MinSelected=1     ExpectRed=False medido: clases=1 ejecutables=1 skip=0 memberdata=0  t3c
+  Core Tests.PushBackWindowSharedReferenceGuardTests    MinSelected=1     ExpectRed=False medido: clases=1 ejecutables=1 skip=0 memberdata=0  t3c
+  Core Tests.PushBackWindowOnStateSourceGuardTests      MinSelected=1     ExpectRed=False medido: clases=1 ejecutables=1 skip=0 memberdata=0  t3c
+  UI   UI.Tests.PushBackWindowOnStateTests              MinSelected=2     ExpectRed=False medido: clases=1 ejecutables=2 skip=0 memberdata=0  t3c
+  UI   UI.Tests.PushBackClassicCharacterization         MinSelected=55    ExpectRed=False medido: clases=6 ejecutables=55 skip=0 memberdata=0  t3c
+  Core Tests.PushBackClassicCharacterization            MinSelected=10    ExpectRed=False medido: clases=1 ejecutables=7 skip=0 memberdata=1  t3c
+  UI   UI.Tests.PushBackFullEditorCharacterization      MinSelected=16    ExpectRed=False medido: clases=6 ejecutables=16 skip=2 memberdata=0  t3c
+  Core Tests.PushBackFullEditorCharacterization         MinSelected=3     ExpectRed=False medido: clases=3 ejecutables=3 skip=0 memberdata=0  t3c
+  UI   UI.Tests.PushBackStateNet                        MinSelected=14    ExpectRed=False medido: clases=6 ejecutables=14 skip=0 memberdata=0  t3c
+  UI   UI.Tests.PushBackDeclaredCorrection              MinSelected=14    ExpectRed=False medido: clases=7 ejecutables=14 skip=0 memberdata=0  t3c
+  UI   UI.Tests.Cantilever                              MinSelected=67    ExpectRed=False medido: clases=3 ejecutables=67 skip=0 memberdata=0  t3c
+  Core Tests.I58F1                                      MinSelected=10    ExpectRed=False medido: clases=2 ejecutables=8 skip=0 memberdata=2  t3c
+  Core Tests.CustomPropertiesEnvelopeGuardTests         MinSelected=9     ExpectRed=False medido: clases=1 ejecutables=18 skip=0 memberdata=1  t3c
+  Core Tests.NamespaceFolderGuardTests                  MinSelected=7     ExpectRed=False medido: clases=1 ejecutables=7 skip=0 memberdata=0  t3c
+  Core Tests.PushBackDraftStatePortTests                MinSelected=3     ExpectRed=False medido: clases=1 ejecutables=3 skip=0 memberdata=0  t3c
+  Core Tests.PushBackDraftPortSharedReferenceGuardTests MinSelected=1     ExpectRed=False medido: clases=1 ejecutables=1 skip=0 memberdata=0  t3c
+  Core Tests.PushBackWorkspaceModeSourceGuardTests      MinSelected=1     ExpectRed=False medido: clases=1 ejecutables=1 skip=0 memberdata=0  t3c
+  Core Tests.PushBackWorkspaceSharedReferenceGuardTests MinSelected=1     ExpectRed=False medido: clases=1 ejecutables=1 skip=0 memberdata=0  t3c
+  UI   UI.Tests.PushBackWorkspaceModeTests              MinSelected=3     ExpectRed=False medido: clases=1 ejecutables=3 skip=0 memberdata=0  t3c
+  UI   UI.Tests.PushBackWorkspaceApplyCloseTests        MinSelected=4     ExpectRed=False medido: clases=1 ejecutables=4 skip=0 memberdata=0  t3c
+  UI   UI.Tests.PushBackFieldValidationConcordanceTests MinSelected=1     ExpectRed=False medido: clases=1 ejecutables=1 skip=0 memberdata=0  t3c
+  UI   UI.Tests.PushBackWorkspaceCarryoverTests         MinSelected=3     ExpectRed=False medido: clases=1 ejecutables=3 skip=0 memberdata=0  t3c
+AVISOS (12):
+  - emision: F4B-E49 (las decisiones del Owner sobre PB-T4) aun no esta en f4b-dispositions.md
+  - emision: F4B-E50 (la emision de F4B-PBT4-FULL-READ-PATH) aun no esta en f4b-dispositions.md
+  - emision: el registro de las decisiones del Owner sobre PB-T4 (docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt4-decisions.md) aun no esta en la revision
+  - emision: el registro de las decisiones del Owner sobre PB-T4b y PB-T4d (docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt4b-retire-list-decisions.md) aun no esta en la revision
+  - emision: el paquete de PB-T4 v4.3 aun no esta custodiado en la revision (docs/initiatives/I-64-f4b-pbt4-gate-contract-package.md): lo custodia el commit X de PB-T4a
+  - emision: a custodiar con la emision de PB-T4a, aun no en la revision: docs/initiatives/I-64-f4b-pbt4-gate-contract-package.md
+  - emision: a custodiar con la emision de PB-T4a, aun no en la revision: docs/initiatives/I-64-f4b-pbt4-measurements.md
+  - emision: a custodiar con la emision de PB-T4a, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt4-decisions.md
+  - emision: a custodiar con la emision de PB-T4a, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt4b-retire-list-decisions.md
+  - emision: a custodiar con la emision de PB-T4a, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4-substitution-lists.md
+  - emision: a custodiar con la emision de PB-T4a, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/independent-review-pbt4a-check.md
+  - emision: al custodiado le faltan apartados (## PB-T4a ): docs/automation/evidence/I-64-pilot/F4B-DRAFTS/superseding-characterization.md

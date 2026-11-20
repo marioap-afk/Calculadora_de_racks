@@ -1,0 +1,88 @@
+# ir4_measure_v3: salida (rev 7f0d9aa3)
+## 1. src/ y tests/ entre 7dfc7c21 y 7f0d9aa3
+     src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs  |  43 ++-
+     src/RackCad.Plugin/Views/RackViewBlockEraser.cs    |  41 +++
+     tests/RackCad.Tests/PushBackViewEraseGuardTests.cs | 408 +++++++++++++++++++++
+     .../PushBackWritePathPluginGuardTests.cs           | 238 ++++++++++++
+     4 files changed, 726 insertions(+), 4 deletions(-)
+
+## 2. Las 9 clases: metodos (por llaves) y senales de fallo con la opcion 1 (texto del metodo + ayudantes del archivo, un nivel)
+- WorkspaceLifecycleHostTests: 69 metodos; directos C1-C6: 2; con ayudantes y las senales nuevas: 24; C1-tipo=22, C2-AB=0, C3-conservar=0, C4-actualizar=0, C6-adaptador=0, campo-sin-regla=3, FromPilot-directo=0
+    ayudantes con C1-tipo: MakeDirty, Pilot, StalePilot, UnknownPilot
+- WorkspacePilotPrepareTests: 67 metodos; directos C1-C6: 23; con ayudantes y las senales nuevas: 59; C1-tipo=54, C2-AB=0, C3-conservar=16, C4-actualizar=1, C6-adaptador=0, campo-sin-regla=12, FromPilot-directo=12
+    ayudantes con C1-tipo: DraftHeld, DraftOf, DraftToConflict, Edit, Hold, Open, PathAfter, Prepare, Reread, SetScale
+    ayudantes con campo-sin-regla: Keepable
+- WorkspaceEditIntentHostTests: 62 metodos; directos C1-C6: 8; con ayudantes y las senales nuevas: 29; C1-tipo=22, C2-AB=1, C3-conservar=1, C4-actualizar=3, C6-adaptador=0, campo-sin-regla=4, FromPilot-directo=6
+    ayudantes con C1-tipo: Draft, UnknownDraft
+    ayudantes con FromPilot-directo: ReadOf
+- WorkspacePilotEditHostTests: 59 metodos; directos C1-C6: 9; con ayudantes y las senales nuevas: 48; C1-tipo=42, C2-AB=0, C3-conservar=0, C4-actualizar=0, C6-adaptador=5, campo-sin-regla=43, FromPilot-directo=0
+    ayudantes con C1-tipo: Equals, GetHashCode, Open, OpenUndecidable, ScaleOf
+    ayudantes con campo-sin-regla: Commit, Type
+- WorkspaceCommandAdvisorTests: 54 metodos; directos C1-C6: 0; con ayudantes y las senales nuevas: 6; C1-tipo=6, C2-AB=0, C3-conservar=0, C4-actualizar=0, C6-adaptador=0, campo-sin-regla=0, FromPilot-directo=0
+    ayudantes con C1-tipo: MakeDirty, Pilot
+    ayudantes con C3-conservar: TryKeepMine
+    ayudantes con campo-sin-regla: CommitField, SetPendingText
+- WorkspacePilotUpdateRequestTests: 44 metodos; directos C1-C6: 6; con ayudantes y las senales nuevas: 43; C1-tipo=43, C2-AB=0, C3-conservar=2, C4-actualizar=3, C6-adaptador=0, campo-sin-regla=3, FromPilot-directo=0
+    ayudantes con C1-tipo: Open
+- WorkspacePilotUpdateHostTests: 35 metodos; directos C1-C6: 8; con ayudantes y las senales nuevas: 23; C1-tipo=22, C2-AB=0, C3-conservar=0, C4-actualizar=23, C6-adaptador=0, campo-sin-regla=1, FromPilot-directo=0
+    ayudantes con C1-tipo: Open
+    ayudantes con C4-actualizar: Update
+- WorkspacePilotReconciliationHostTests: 28 metodos; directos C1-C6: 10; con ayudantes y las senales nuevas: 23; C1-tipo=23, C2-AB=2, C3-conservar=8, C4-actualizar=0, C6-adaptador=0, campo-sin-regla=4, FromPilot-directo=8
+    ayudantes con C1-tipo: AssertHeld, Edit, Held, Hold, Open, UnknownDraft
+- WorkspaceAssociativeBookkeepingTests: 10 metodos; directos C1-C6: 1; con ayudantes y las senales nuevas: 1; C1-tipo=1, C2-AB=0, C3-conservar=0, C4-actualizar=0, C6-adaptador=0, campo-sin-regla=0, FromPilot-directo=0
+- TOTAL: 428 metodos; directos C1-C6: 67; con ayudantes y senales nuevas: 256
+
+## 3. FromPilot( y PrepareKit.Reread( fuera del kit (siguen sin FullRead con la opcion 1)
+    tests/RackCad.Tests/PushBackFullWritePrepareTests.cs:527:                var read = PrepareKit.Reread(PushBackPilotIntentReader.BuildStaleBase(scan), PilotKit.Admitted(scan.RawEnvelopes["A1"]));
+    tests/RackCad.Tests/PushBackFullWriteRunTests.cs:282:                    return PrepareKit.Reread(staleBase, state);
+    tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs:52:        EditIntentReadResult.FromPilot(PushBackPilotIntentReader.Read(scan, PilotKit.Catalog));
+    tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs:770:        rig.Reader.Answer = _ => EditIntentReadResult.FromPilot(without);
+    tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs:1193:        Assert.Throws<ArgumentNullException>(() => EditIntentReadResult.FromPilot(null!));
+    tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1471:        foreach (var reread in new PushBackPilotIntentResult?[] { null, IntentKit.Read(PrepareKit.RealScan("pb-02-modulos")), PrepareKi
+    tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1520:        var notAdmitted = PrepareKit.Reread(draft.StaleBase, notAdmitted: PushBackPilotIntentReader.OriginMissingDiagnostic);
+    tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1569:        var noneResult = PrepareKit.Prepare(none, PrepareKit.Reread(none.StaleBase));
+    tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1578:        var severalResult = PrepareKit.Prepare(several, PrepareKit.Reread(twice));
+    tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1607:            var result = PrepareKit.Prepare(draft, PrepareKit.Reread(members));
+    tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1627:        var result = PrepareKit.Prepare(draft, PrepareKit.Reread(members));
+    tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1768:            var result = PrepareKit.Prepare(draft, PrepareKit.Reread(members));
+    tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1791:        var result = PrepareKit.Prepare(draft, PrepareKit.Reread(members));
+    tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1831:        var notAdmitted = PrepareKit.Reread(read.StaleBase, notAdmitted: "x");
+    tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1897:        var ready = PrepareKit.Prepare(draft, PrepareKit.Reread(members));
+    tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:2004:        var result = PrepareKit.Prepare(draft, PrepareKit.Reread(withPhantom));
+    tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:2013:        var ready = PrepareKit.Prepare(clean, PrepareKit.Reread(without));
+    tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:2033:        var result = PrepareKit.Prepare(draft, PrepareKit.Reread(members));
+    tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:2066:        var notAdmitted = PrepareKit.Reread(read.StaleBase, notAdmitted: "x");
+    tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs:244:        rig.Reader.Answer = _ => EditIntentReadResult.FromPilot(PrepareKit.Reread(same, notAdmitted: PushBackPilotIntentReade
+    tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs:262:        rig.Reader.Answer = _ => EditIntentReadResult.FromPilot(PrepareKit.Reread(other, notAdmitted: PushBackPilotIntentRead
+    tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs:369:        rig.Reader.Answer = _ => EditIntentReadResult.FromPilot(PrepareKit.Reread(broken));
+    tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs:596:        rig.Reader.Answer = _ => EditIntentReadResult.FromPilot(read);
+    tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs:615:        rig.Reader.Answer = _ => EditIntentReadResult.FromPilot(read);
+    tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs:660:        notAdmitted.Reader.Answer = _ => EditIntentReadResult.FromPilot(NotAdmittedWithTheSameBase());
+    tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs:688:        recovered.Reader.Answer = _ => EditIntentReadResult.FromPilot(WithoutRead(sameBase));
+    tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs:702:        conflict.Reader.Answer = _ => EditIntentReadResult.FromPilot(WithoutRead(anotherBase));
+    tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs:719:        rig.Reader.Answer = _ => EditIntentReadResult.FromPilot(NotAdmittedWithTheSameBase());
+
+## 4. Q1 (Retirar): metodos de prueba que nombran lo que se retira, por archivo
+- tests/RackCad.Tests/PushBackFullWritePrepareTests.cs: 3 de 9 metodos
+- tests/RackCad.Tests/PushBackWritePathGuardTests.cs: 1 de 2 metodos
+- tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs: 4 de 22 metodos
+- tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs: 22 de 41 metodos
+- tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs: 0 de 16 metodos
+- tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs: 15 de 27 metodos
+- tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs: 3 de 66 metodos
+- tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs: 2 de 62 metodos
+- tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs: 11 de 39 metodos
+- tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs: 9 de 59 metodos
+- tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs: 3 de 17 metodos
+- tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs: 31 de 67 metodos
+- tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs: 7 de 28 metodos
+- tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs: 3 de 42 metodos
+- tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs: 3 de 43 metodos
+- tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs: 6 de 49 metodos
+- tests/RackCad.Tests/Workspace/WorkspacePilotUpdateScopeDouble.cs: (kit, sin pruebas)
+- tests/RackCad.UI.Tests/PushBackDeclaredCorrectionSupport.cs: (kit, sin pruebas)
+- tests/RackCad.UI.Tests/PushBackFieldValidationConcordanceTests.cs: 1 de 1 metodos
+- tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotCanonicalLineEndingTests.cs: 2 de 2 metodos
+- tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs: 2 de 3 metodos
+- tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs: 2 de 4 metodos
+- TOTAL: 130 metodos en 20 archivos con pruebas
