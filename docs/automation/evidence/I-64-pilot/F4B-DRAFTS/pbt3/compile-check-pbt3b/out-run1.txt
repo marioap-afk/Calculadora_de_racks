@@ -1,0 +1,10 @@
+== A: esqueleto tal cual
+A-core-tests rc=1 errores=4
+tests/RackCad.Tests\RackCad.Tests.csproj]
+== B: con ExecuteFull y ComparePostFull
+ok <copia>\src\RackCad.Application\Systems\PushBack\Pilot\PushBackPilotUpdateRun.cs 33335 -> 33343
+B-core-tests rc=0 errores=0
+B-ui-tests rc=0 errores=0
+B-plugin rc=0 errores=0
+build-server shutdown rc=0
+MAINCO []

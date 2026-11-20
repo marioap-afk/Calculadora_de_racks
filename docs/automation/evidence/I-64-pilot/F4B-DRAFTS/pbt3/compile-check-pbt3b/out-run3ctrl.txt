@@ -1,0 +1,7 @@
+core-tests rc=0 errores=0
+core-test rc=1
+counters {'total': '91', 'executed': '91', 'passed': '90', 'failed': '1', 'notExecuted': '0'}
+failed methods 1 rows 1
+  FAIL 1 RackCad.Tests.WorkspacePilotPrepareTests.ThePlanTypesLiveInThePilotNamespaceAndTheirSignaturesNameNoTypeOfTheHostOrOfTheDrawing
+restaurado PrepareFull: 1
+build-server shutdown rc=0

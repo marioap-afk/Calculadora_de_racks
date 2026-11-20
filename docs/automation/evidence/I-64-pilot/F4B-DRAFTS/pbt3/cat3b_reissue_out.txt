@@ -1,0 +1,51 @@
+emitido eab27a9e AE1E7462B2A9B63A 73249 | reemision 65AD7868CE8D989F 75226 | ASCII: True
+claves iguales: True
+== cambia: Objective
+    replace '5' -> '6'
+== cambia: AuthorityRevision
+    insert '' -> 'eab27a9e34'
+    replace '5' -> 'afa9ffe66a4a9866949806'
+    insert '' -> 'd'
+    delete '04e1799857c5c488b61c30e1af8' -> ''
+    replace '7ae257' -> '3'
+== cambia: Authorities
+   entradas: 64 -> 66
+    @@ -2 +2 @@
+    -{"Class": "UNIT_DOC", "Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt3/independent-review-pbt3b-check.md", "Section": "la comprobacion acotada de PB-T3b (CA-T3b), sobre el contrato en seco y la v4.5 (precondicion 3 y section 6.0 del paquete)"}
+    +{"Class": "UNIT_DOC", "Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt3/independent-review-pbt3b-check.md", "Section": "la comprobacion acotada de PB-T3b (CA-T3b), sobre el contrato en seco y la v4.5, con su recomprobacion de la v4.6 para la reemision (precondiciones 3 y 12 y section 6.0 del paquete)"}
+    @@ -4 +4,3 @@
+    -{"Class": "UNIT_DOC", "Path": "docs/initiatives/I-64-f4b-pbt3-gate-contract-package.md", "Section": "archivo completo (v4.5, sha256 64ab03df): section 3 (D-PBT3-09, el plan generalizado, y D-PBT3-10, la corrida generalizada y ComparePost, con la variante (A); D-PBT3-12 a D-PBT3-14), section 4 (las guardas, con S-1 a S-6) y 4.1 (el barrido de colisiones), section 5.0 (las reglas, el momento de cada lectura, los gesto
+    +{"Class": "UNIT_DOC", "Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt3b-overload-decision.md", "Section": "archivo completo (F4B-E45): \"Renombrar los metodos nuevos (Recomendado)\": la parada PBT3B-C02 y PBT3B-C07 del intento 1 (R20261120T055235Z-a45b, antes del RED) por dos CS0121 en WorkspacePilotUpdateRunTests.cs:669 y :799; los nombres que fija la sesion, ExecuteFull y ComparePostF
+    +{"Class": "UNIT_DOC", "Path": "docs/automation/evidence/I-64-pilot/F4B-PBT3B-FULL-WRITE-RUN/1/R20261120T055235Z-a45b/analysis.md", "Section": "el analisis de la sesion para la correccion del intento 2 (F4B-E45): FailureClass StopCondition (PBT3B-C02 y PBT3B-C07), C-1 (los nombres), C-2 (el RED entero: el intento 1 no hizo RED; ChainRedSha null y ChainRedFiles vacio), C-3 (el GREEN) y C-4 (la reparacion del RED sigue
+    +{"Class": "UNIT_DOC", "Path": "docs/initiatives/I-64-f4b-pbt3-gate-contract-package.md", "Section": "archivo completo (v4.6, sha256 09210abe; la de la correccion, F4B-E45): section 3 (D-PBT3-09, el plan generalizado, y D-PBT3-10, la corrida generalizada y ComparePost, con la variante (A) y los nombres de F4B-E45, PrepareFull, ExecuteFull y ComparePostFull; D-PBT3-12 a D-PBT3-14), section 4 (las guardas, con S-1 a S-
+    @@ -33 +35 @@
+    -{"Class": "UNIT_DOC", "Path": "docs/initiatives/I-64-f4b-pbt3-measurements.md", "Section": "el registro de mediciones del paquete (R-0 a R-20): R-6 (las guardas de F4, S-1 a S-6), R-11, R-15 (tests/RackCad.Tests/Workspace/, 79 y 76), R-18 (las declaraciones de PP y UR) y R-20 (la lectura de G-9 corregida); y la remedicion de PB-T3b sobre el cierre de PB-T3a (R-21)"}
+    +{"Class": "UNIT_DOC", "Path": "docs/initiatives/I-64-f4b-pbt3-measurements.md", "Section": "el registro de mediciones del paquete (R-0 a R-20): R-6 (las guardas de F4, S-1 a S-6), R-11, R-15 (tests/RackCad.Tests/Workspace/, 79 y 76), R-18 (las declaraciones de PP y UR) y R-20 (la lectura de G-9 corregida); la remedicion de PB-T3b sobre el cierre de PB-T3a (R-21); y la resolucion de sobrecargas y la reflexion sobre l
+== cambia: StopConditions
+   entradas: 34 -> 34
+    @@ -30 +30 @@
+    -{"Id": "PBT3B-C13", "Text": "doing the task would require changing the signature of an existing public or internal member of PP or UR; touching UP, the Plugin, WHC or the panel port; or adding in PP, UR or IPushBackPilotViewEraser.cs a declaration whose name does not exist in PP or UR at BaseSha, or a further declaration of a name that does (an overload), of any visibility (type, constructor, method, property, field
+    +{"Id": "PBT3B-C13", "Text": "doing the task would require changing the signature of an existing public or internal member of PP or UR; touching UP, the Plugin, WHC or the panel port; or adding in PP, UR or IPushBackPilotViewEraser.cs a declaration whose name does not exist in PP or UR at BaseSha, or a further declaration of a name that does (an overload), of any visibility (type, constructor, method, property, field
+== cambia: IssuedBy
+    insert '' -> ' reemision de la segunda subtarea de PB-T3 en el intento 2 de 3 por F4B-E45 (owner-pbt3b-overload-decision.md, "Renombrar los metodos nuevos (Recomendado)"): el intento 1 (R20261120T055235Z-a45b) paro'
+    delete ' (F4B-E44)' -> ''
+    replace 'EMITIBLE;' -> '<resultado'
+    delete 'B 0 / I 0 / M 4; sin im' -> ''
+    delete 'tantes; sin decisiones nuevas del Owner;' -> ''
+    replace 'comp' -> 'llena'
+    replace 'obacion v4.5: EMITIBLE, B 0 / I 0 / M 1' -> '>'
+    replace '5' -> '6'
+== cambia: IssuedUtc
+    replace '5' -> '0'
+    replace '47' -> '00'
+    replace '48' -> '00'
+== C13, diff:
+    delete 'n PushBackPilotUpdatePlanner, a second Prepare (t' -> 'n PushBackPilotUpdatePlanner, PrepareFul'
+    delete 'pdatePlanner, a second Prepare (the one that takes a PushBackFullPrepar' -> 'ackPilotUpdatePlanner, PrepareFull, Buil'
+    delete ' one that takes a PushBackFullPrepareInput), BuildCor' -> 'ilotUpdatePlanner, PrepareFull, BuildCor'
+    delete 'eys); in UR: a second Precheck, a second Execute and a second ComparePost (the ones' -> 'eys); in UR: a second Precheck (the one '
+    delete ' a second ComparePost (the ones that take' -> 'UR: a second Precheck (the one that take'
+    insert 'omparePost (the ones that take the full ' -> 'nd Precheck (the one that takes the full '
+    insert 'ones that take the full model), CompareP' -> 'one that takes the full model), ExecuteFull, ComparePostFull, CompareP'
+== C13 de la reemision:
+doing the task would require changing the signature of an existing public or internal member of PP or UR; touching UP, the Plugin, WHC or the panel port; or adding in PP, UR or IPushBackPilotViewEraser.cs a declaration whose name does not exist in PP or UR at BaseSha, or a further declaration of a name that does (an overload), of any visibility (type, constructor, method, property, field, constant or nested type), other than those that D-PBT3-09 and D-PBT3-10 prescribe: in PP: the type PushBackFullPrepareInput and its nine members (its private constructor, RackId, StaleBase, InitialDraftState, CurrentDraftState, HasPendingText, IsDirty, ConsideredStatus and From); in PushBackPilotUpdatePlanner, PrepareFull, BuildCore, BuildFull and the constants BlockedPrefix, FrontalBOfOneWayPrefix, FrontalBOfOneWaySuffix and AllViewsObsoleteReason; in PushBackPilotUpdatePlan, Erasures, PostOriginKey and a second internal constructor (the one with postOriginKey and erasures); in PushBackPilotPostExpectation, ErasedKeys and a second internal constructor (the one with erasedKeys); in UR: a second Precheck (the one that takes the full model), ExecuteFull, ComparePostFull, ComparePostCore and the constants EraseUnsupportedReason and PostErasedStillPresentPrefix; and, in Execution<TState>, the fields _prepare, _originOf, _postRead and _origin; in IPushBackPilotViewEraser.cs: the interface IPushBackPilotViewEraser and its method EraseUnit. Two changes of private members are prescribed, and neither is a new declaration: ComposeMemberEnvelope gains the parameter string name after source and remains the only member with that name; and Execution becomes Execution<TState>, loses the field _input, and its constructor gains the three delegates of _prepare, _originOf and _postRead, while each of its other members keeps its name and its parameters, with PushBackPilotDraftState replaced by TState where it appears (the field _draft, Run, OutcomeOfAnEscape, Prepare, Mutate, Write, WithAbortFailure, Post, ChooseOrigin, SurvivorsAndLayers, WithScopeDisposeFailure, PostFailed, NotAppliedFailure and NotAppliedPreflight). The Worker stops before adding it.

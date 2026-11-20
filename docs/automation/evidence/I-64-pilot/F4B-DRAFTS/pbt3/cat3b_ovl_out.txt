@@ -1,0 +1,36 @@
+== (1) llamadas con null o default en un argumento: 13
+   src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs:126  PushBackPilotUpdatePlanner.Prepare(PushBackPilotPrepareInput.From(draft), null!, null!)
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1474  PushBackPilotUpdatePlanner.Prepare(PushBackPilotPrepareInput.From(draft), reread!, null!)
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1807  PushBackPilotUpdatePlanner.Prepare(null!, read, PilotKit.Catalog)
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1808  PushBackPilotUpdatePlanner.Prepare(input, null!, PilotKit.Catalog)
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1809  PushBackPilotUpdatePlanner.Prepare(input, read, null!)
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1833  PushBackPilotUpdatePlanner.Prepare(input, changed, null!)
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1834  PushBackPilotUpdatePlanner.Prepare(input, notAdmitted, null!)
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1835  PushBackPilotUpdatePlanner.Prepare(input, read, null!)
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1844  PushBackPilotUpdatePlanner.Prepare(input, null!, PilotKit.Catalog)
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:669  PushBackPilotUpdateRun.Execute(null!, setup.Request, setup.Port)
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:670  PushBackPilotUpdateRun.Execute(setup.Draft, null!, setup.Port)
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:671  PushBackPilotUpdateRun.Execute(setup.Draft, setup.Request, null!)
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:799  PushBackPilotUpdateRun.ComparePost(plan, null)
+== (2) grupos de metodos (el nombre sin parentesis): 1
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:501  if (!runCallers.SequenceEqual(new[] { CorePath })) yield return "PushBackPilotUpdateRun.Execute is named in " + string.Join(", ", runCallers);
+== (3) reflexion o nameof sobre los tipos: 10
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1958  foreach (var type in new[] { typeof(PushBackPilotUpdatePlan), typeof(PushBackPilotMemberPlan), typeof(PushBackPilotPostExpectation) })
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:2147  typeof(PushBackPilotPrepareInput), typeof(PushBackPilotPrepareResult), typeof(PushBackPilotUpdatePlan),
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:2148  typeof(PushBackPilotMemberPlan), typeof(PushBackPilotPostExpectation), typeof(PushBackPilotKeyedText),
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:2149  typeof(PushBackPilotUpdatePlanner), typeof(PushBackPilotPrepareKind),
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:2155  var members = typeof(PushBackPilotUpdatePlanner).GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.DeclaredOnly);
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:2158  new[] { typeof(PushBackPilotPrepareInput), typeof(PushBackPilotIntentResult), typeof(RackCatalog) },
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:2160  Assert.Equal(typeof(PushBackPilotPrepareResult), prepare.ReturnType);
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:100  Assert.DoesNotMatch(new Regex(@"Transaction"), nameof(PushBackPilotUpdateRun.ForeignScopeOpenCause));
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs:507  Assert.Equal(new[] { typeof(EditIntentRequest), typeof(IPushBackPilotUpdatePort) }, method.GetParameters().Select(p => p.ParameterType).ToArray());
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:474  Assert.NotEmpty(G3FieldTypeViolations(real.Append(("_port", typeof(IPushBackPilotUpdatePort)))));
+== (4) constructores: 8
+   src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs:427  var expectation = new PushBackPilotPostExpectation(scale, plans.Select(plan => new PushBackPilotKeyedText(plan.Key, plan.EnvelopeText)));
+   src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs:428  return PushBackPilotPrepareResult.WithPlan(new PushBackPilotUpdatePlan(
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1971  var reversed = new PushBackPilotUpdatePlan(
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1975  var sameAgain = new PushBackPilotUpdatePlan(
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1980  Assert.True(new PushBackPilotPostExpectation(double.NaN, Array.Empty<PushBackPilotKeyedText>())
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1981  .Equals(new PushBackPilotPostExpectation(double.NaN, Array.Empty<PushBackPilotKeyedText>())));
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:878  var plan = new PushBackPilotUpdatePlan(
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:880  new PushBackPilotPostExpectation(2.25, Array.Empty<PushBackPilotKeyedText>()));

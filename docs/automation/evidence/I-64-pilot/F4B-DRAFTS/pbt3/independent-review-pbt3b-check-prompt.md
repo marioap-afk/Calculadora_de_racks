@@ -94,3 +94,61 @@ Tu CA-T3b dio EMITIBLE, B 0 / I 0 / M 4. Ahora toca la r2.
 - el veredicto;
 - los hallazgos;
 - el literal final.
+
+## 3. Recomprobación 2 (2026-11-20T07:20:29.664Z)
+
+Recomprobación de CA-T3b sobre la v4.6 (la reemisión de PB-T3b, intento 2).
+
+**Qué pasó:** PB-T3b se emitió (F4B-E44, BASE `eab27a9e`) con el contrato `AE1E7462…`. El Worker del intento 1 (`R20261120T055235Z-a45b`) paró antes del RED, sin commits.
+- Con el esqueleto del §6.2 de la v4.5 había dos CS0121 en pruebas de F4 que no se pueden editar: `WorkspacePilotUpdateRunTests.cs:669` y `:799`. Las sobrecargas nuevas `Execute` y `ComparePost` del modelo completo volvían ambiguo un `null`.
+- El Owner eligió «Renombrar los métodos nuevos».
+- Después, el barrido ampliado encontró un tercer choque, por reflexión, en `WorkspacePilotPrepareTests.cs:2155-2160` (`Assert.Single(... "Prepare")`). La sesión le aplica el mismo remedio.
+- Los nombres nuevos son `ExecuteFull`, `ComparePostFull` y `PrepareFull`.
+
+Ni tu CA-T3b ni la §12 compilaron ni ejecutaron el esqueleto, y es lo que faltó.
+
+**Añade** al final de `hs65\pbt3\independent-review-pbt3b-check.md` una sección «§13. Recomprobación sobre la v4.6». Que tenga ese título exacto, porque `bounded_check` reconoce «Recomprobación sobre la vX.Y». Pon el veredicto en línea propia, «**Veredicto: EMITIBLE …**», y no reescribas lo anterior.
+
+**Entradas:**
+- **En `hs65\pbt3\`:**
+  - la v4.6, `I-64-f4b-pbt3-gate-contract-package-v46.md` (`09210abe…`, 313 702 B), con su `v46-delta.md` (V46-01 a V46-10), `make_v46.py`, `check_v46.py` y `check-v46-out.txt`;
+  - el barrido de sobrecargas y nombres: `overload_sweep.py`, `overload-sweep-eab27a9e.txt`, `name_check_v46.py`, `name-check-v46-eab27a9e.txt` y la R-22 de `pbt3-measurements.md`;
+  - el generador de la reemisión, `make_pbt3b_contract.py` (`f8b69f2d…`);
+  - el seco, `dry-pbt3b-reissue.txt` y `contract-dry-pbt3b-reissue.json` (`65ad7868…`), con `neg-pbt3b-reissue.txt` (88 de 88);
+  - `issue_pbt3b_rev2.py` con su selftest y su `--dry-objects`;
+  - `f4b-e45.md`.
+- **En `hs65\pbt3bcc\`:**
+  - la decisión del Owner y su nota de la sesión: `owner-pbt3b-overload-decision.md`;
+  - el análisis, `analysis.md`, con C-1 ya en tres nombres;
+  - la compilación de comprobación, en `compile\`:
+    - `compile-check.md` y `out-run1.txt` (dos nombres: A reproduce los CS0121 y B compila);
+    - `compile_check3.sh` y `out-run3.txt` (tres nombres, la compilación y **la suite completa de Core ejecutada**). Esta todavía corre; mírala al final y, si no está, dilo.
+- **En `hs65\pbt3bcc\attempt1\`:** el esqueleto del intento 1, `blocked-skeleton.patch`, y su `worker-handoff.json`.
+
+**Qué comprobar:**
+1. **¿La v4.6 aplica fielmente la decisión y su nota?**
+   - Que estén los tres nombres, que no cambie ninguna firma existente y que ninguna prueba existente se toque.
+   - Que no quede nada del API de la v4.5 en lo normativo de PB-T3b y de PB-T3c.
+   - Que `Precheck` se quede (V46-08). ¿Es correcto?
+2. **¿El barrido de sobrecargas es completo?** Revisa los `null`, `default` y tipos convertibles, la reflexión, los grupos de métodos, los constructores y las conversiones implícitas. Busca tú también, sobre `eab27a9e` por objetos git, otras pruebas que lean por reflexión PP, UR o la interfaz.
+3. **¿Lo que la v4.6 cambiaba solo como texto de referencia para PB-T3b sigue siendo correcto ahora que rige PB-T3b?** Revisa la tabla de RR-3, con la fila del doble y el literal de CT-13, y la nota de M-03.
+4. **El delta del seco frente al emitido:** solo `Objective`, C13, las autoridades (de 64 a 66), `IssuedBy` y las revisiones. ¿Es completo?
+5. **El régimen de corrección:** CorrectionOf, la base y las precondiciones nuevas (la 12).
+6. **¿Hay alguna decisión nueva para el Owner?** En particular: ¿el tercer nombre necesita pregunta o basta la nota de la sesión?
+7. **La salida de `out-run3.txt`,** si ya está: ¿solo fallan S-1 a S-6?
+
+**El literal:** propón el `BOUNDED_RESULT` final, que debe nombrar la recomprobación de la v4.6 y pasar el `bounded_check` del generador nuevo.
+
+**Las reglas** son las de siempre, con el prefijo `cat3b_`. El worktree está parado, así que léelo solo por objetos git desde el checkout principal.
+
+**Responde con:**
+- el veredicto;
+- los hallazgos;
+- el literal.
+
+### 3.1. Complemento enviado durante esta ronda (2026-11-20T07:28:21.547Z)
+
+Mensaje de la sesión, para tu §13: ya está la segunda comprobación. El resumen está en `hs65\pbt3bcc\compile\compile-check.md`, en la sección «Segunda comprobación».
+- **`out-run3.txt`:** con los tres nombres compilan los tres proyectos, y la suite completa de Core pasa entera, 19 107 de 19 107, con 0 fallos.
+- **`out-run3ctrl.txt`:** es el control negativo. Con `Prepare` en lugar de `PrepareFull` falla exactamente la prueba de reflexión `WorkspacePilotPrepareTests.ThePlanTypesLiveInThePilotNamespaceAndTheirSignaturesNameNoTypeOfTheHostOrOfTheDrawing`, 1 de 91.
+- **Sobre D-1:** sin los `Skip`, S-1 a S-6 también pasan sobre el esqueleto inerte. Mi frase del análisis, «solo pueden fallar S-1 a S-6», se cumple con 0 fallos. Si prefieres que la redacte de otra forma, dilo.

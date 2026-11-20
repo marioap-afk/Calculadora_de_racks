@@ -406,3 +406,28 @@ Con `ForFullWrite` (V45-01) no hay colisión con G-9 ni con ninguna otra guarda.
 | La Snapshot K, C11, F4B-E35 y la tabla de RR-3 | Como en el §6.0. C11 sale del bloque citado con los sustitutos de F4B-E40 y F4B-E43 | Las salidas de nc1 y nc2 cambian por esas dos decisiones del Owner |
 
 **Consecuencia:** la remedición no cambia nada material. El seco de PB-T3b sobre el cierre solo deja los AVISOS de la emisión: el commit X, la comprobación acotada y el sustituto de nc2 v2.
+
+## R-22. La resolución de sobrecargas y la reflexión, sobre la emisión de PB-T3b (`eab27a9e`; F4B-E45; V46-07)
+
+**Qué mide:** lo que el barrido de texto de R-21 y del §4.1 de la v4.5 no veía. El Worker `R20261120T055235Z-a45b` (delegación `R20261120T054837Z-814c`) paró con PBT3B-C02 y PBT3B-C07 antes del RED: con el esqueleto exacto de la v4.5, `RackCad.Tests` no compila (CS0121 en `WorkspacePilotUpdateRunTests.cs:669` y `:799`). La decisión del Owner es F4B-E45, «Renombrar los métodos nuevos» (`F4B-DRAFTS/coordinator/owner-pbt3b-overload-decision.md`).
+
+**Método:**
+- `overload_sweep.py`, por objetos git (`git ls-tree` y `git cat-file --batch`) en `eab27a9e`, sobre los 1 796 archivos C# de `src/` y `tests/`. La salida, `overload-sweep-eab27a9e.txt`.
+- Para cada método o constructor existente que recibe en PB-T3b o en PB-T3c una sobrecarga nueva o una firma cambiada: cada uso con sus argumentos, los grupos de métodos, los literales con el nombre exacto y la reflexión sobre los tipos tocados. Repite los nombres de la v4.5 como control positivo.
+- `name_check_v46.py`: los nombres nuevos contra los literales de las guardas, con un nombre neutro de control. La salida, `name-check-v46-eab27a9e.txt`.
+- La orden: `python -I overload_sweep.py <checkout-principal> eab27a9e340afa9ffe66a4a9866949806b6dfee3 overload-sweep-eab27a9e.txt`, y la misma forma para `name_check_v46.py`.
+- Nada se ejecutó con dotnet y no se leyó el worktree.
+
+| Hecho | Medido en `eab27a9e` |
+|---|---|
+| El control positivo (los nombres de la v4.5) | `Execute`: 11 usos, uno con `null!` en la posición que difiere, `WorkspacePilotUpdateRunTests.cs:669`. `ComparePost`: 9 usos, uno con `null`, `:799`. Son las dos llamadas del CS0121 del Worker, y ninguna más |
+| `Prepare` de `PushBackPilotUpdatePlanner` con una sobrecarga | 16 usos, todos con un argumento tipado en una de las dos posiciones que difieren: el compilador no se queja. **Pero la reflexión sí:** `WorkspacePilotPrepareTests.cs:2155-2160` (`ThePlanTypesLiveInThePilotNamespaceAndTheirSignaturesNameNoTypeOfTheHostOrOfTheDrawing`) exige `Assert.Single(members, m => m.Name == "Prepare")` sobre sus métodos públicos estáticos. Con un segundo `Prepare`, falla al ejecutar |
+| `Precheck` con una sobrecarga | 5 usos (WHC:864 y `WorkspacePilotUpdateRunTests.cs:34`, `:42`, `:51` y `:58`), todos con un borrador tipado del piloto; ningún grupo de métodos; ninguna reflexión sobre `PushBackPilotUpdateRun` |
+| Los constructores internos nuevos | `PushBackPilotUpdatePlan`: 4 usos de 7 argumentos; `PushBackPilotPostExpectation`: 4 de 2. La sobrecarga nueva tiene otra aridad, y ninguno lleva parámetros opcionales |
+| El constructor de `RackPilotMutationScope` (PB-T3c) | Un solo uso, WR:156 |
+| Las conversiones entre los tipos viejos y los nuevos | Todos `sealed`; ningún `implicit operator` en `src/` ni en `tests/` |
+| La reflexión sobre los tipos tocados | `:2155` (la de arriba) y `ThePlanIsImmutableAndItsEqualityIsExplicitOrdinalElementByElementAndInOrder` (`WorkspacePilotPrepareTests.cs:1958-1962`): ninguna propiedad con `SetMethod` y todo campo de instancia `readonly` en `PushBackPilotUpdatePlan`, `PushBackPilotMemberPlan` y `PushBackPilotPostExpectation` |
+| Los nombres nuevos | `PrepareFull`, `ExecuteFull`, `ComparePostFull` y los demás de PBT3B-C13 y PBT3C-C13: libres en PP, UR y WR. `BuildCore` existe en `DynamicSystemLateralBuilder`, otro tipo |
+| Los literales de las guardas | 8 filas propias de `ExecuteFull`, 3 de `ComparePostFull` y 1 de `PrepareFull`, de 22 548 literales en 165 archivos. Ninguna lee PP ni UR |
+
+**Consecuencia:** con `ExecuteFull` y `ComparePostFull` (los de la sesión) la reemisión aún habría fallado por `Prepare`, en una prueba de comportamiento de F4 (PBT3B-C14). La v4.6 lo renombra a `PrepareFull` (V46-06). `Precheck` sigue como sobrecarga (V46-08). Con los tres nombres: ninguna llamada ambigua, ningún grupo de métodos y ninguna reflexión rota.

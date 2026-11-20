@@ -1,0 +1,393 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Unit": "F4B-PBT3B-FULL-WRITE-RUN/1/R20261120T055235Z-a45b",
+  "SourceRoot": "artifacts/orchestration/I-64/F4B-PBT3B-FULL-WRITE-RUN/1/R20261120T055235Z-a45b",
+  "Rules": "rutas locales, usuario y maquina nunca se versionan; de la carpeta del Worker del intento 1 se custodia, redactado, lo que fija la sesion (F4B-E45): la entrega, el patch, el prompt, config, processes, cession, la limpieza y los registros .log de s0 y b0, que prueban la parada (CS0121) y la linea base; los binarios, las copias de catalogos y la TRX, solo por SHA-256; CRLF se custodia en LF con el SHA-256 original; analysis.md de la unidad es de la sesion y no esta en este manifiesto",
+  "Counts": {
+    "CUSTODIED": 16,
+    "EXCLUDED": 33
+  },
+  "Files": [
+    {
+      "Path": "blocked-skeleton.patch",
+      "Bytes": 13624,
+      "Sha256": "4abfa01adeb1d56a55a7577c8de85c2d0cae5c33539a6c0936eddcb8e6f927e1",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "cession-end.txt",
+      "Bytes": 21,
+      "Sha256": "42ee46148d47b9a84236787a9487e4d78cdfb36df2221eb3790a6eace6835a39",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "cession-start.txt",
+      "Bytes": 21,
+      "Sha256": "b69916f39551bd6c46b7238e1bda02851cb189e4e21cbde3b3f78916553d4651",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "clean/after.txt",
+      "Bytes": 258,
+      "Sha256": "4ac7776aa55a0dc44602a4e696981892474cd0bb11c2daab3418fec71226c8dc",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "cc004ceb8869534edbc4812f2f4ac6a8d21aeb860f3ca1644283a65435fe0046",
+      "Normalization": "CRLF->LF (finales mixtos; el SHA-256 original identifica el archivo)"
+    },
+    {
+      "Path": "clean/before.txt",
+      "Bytes": 258,
+      "Sha256": "4ac7776aa55a0dc44602a4e696981892474cd0bb11c2daab3418fec71226c8dc",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "cc004ceb8869534edbc4812f2f4ac6a8d21aeb860f3ca1644283a65435fe0046",
+      "Normalization": "CRLF->LF (finales mixtos; el SHA-256 original identifica el archivo)"
+    },
+    {
+      "Path": "config-entry.json",
+      "Bytes": 3434,
+      "Sha256": "b57611b0a163b558d5a8e34e1dc8f05144d99b66421b6098c290cd41d8d30464",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "config-exit.json",
+      "Bytes": 3434,
+      "Sha256": "7c637b89baf009f95297fc8416a54c13d6c356566b97baf87e58fce5a13b2738",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "processes-entry.json",
+      "Bytes": 1281,
+      "Sha256": "421dc14aa868ccd7f1cff86963137b8a4114236cd999e08a795e4390f41fdebd",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "5fdfbaba99254ffe3c67bb985bf3fe5a0ae1f558e56511dd972759f291e18c86",
+      "Normalization": "CRLF->LF (finales mixtos; el SHA-256 original identifica el archivo)"
+    },
+    {
+      "Path": "processes-exit.json",
+      "Bytes": 1279,
+      "Sha256": "3ba4b20ffccd3c8562f41b9fbbe90da04ae68e6703cb8a517bdd4cde7b040ced",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "8a18a24da49c3f4643c3e77334c1e5136a72d1a0fce57018275e9251da26ffa6",
+      "Normalization": "CRLF->LF (finales mixtos; el SHA-256 original identifica el archivo)"
+    },
+    {
+      "Path": "prompt.md",
+      "Bytes": 112090,
+      "Sha256": "09f55ab2d0db9ce1bdabef09c6a16116dfec467c396a28987c9f0d0e4a27de7c",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "49d27b9f52ed90b1d3c94cc3cfff906d0bda8e959117e470d4e255cfaa7baf8e",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <checkout-principal>",
+        "ubicacion local sustituida por: <worktree-de-I-64>",
+        "ubicacion local sustituida por: <datos-locales-del-usuario>",
+        "ubicacion local sustituida por: <datos-locales-del-usuario>"
+      ]
+    },
+    {
+      "Path": "tests/b0/build-core-release.log",
+      "Bytes": 65663,
+      "Sha256": "f0a7464476c5a681b5297349710b0c8cf51e54fa70ff43132de7c97340633eac",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "a9b88e3c09f76743efb37f43f1ee79e13c0e9cc96b24b34b91e2709665e4d3ed",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>"
+      ]
+    },
+    {
+      "Path": "tests/b0/build-plugin-release.log",
+      "Bytes": 39478,
+      "Sha256": "9a5e7d3950c21f11c6f12ecbf7ae67146cc70ca502fa76123e886a58fa7e3854",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "2160fc0a64570100b29a11148a57cdff6c67e39352878acbe9238749663f4b66",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>",
+        "ubicacion local sustituida por: <datos-locales-del-usuario>",
+        "ubicacion local sustituida por: <programas>"
+      ]
+    },
+    {
+      "Path": "tests/b0/build-ui-release.log",
+      "Bytes": 14640,
+      "Sha256": "044bbb873a67d3899046eea5a4319437d4726138350fedd410146fe0b18db013",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "4b0b830bb849449b0d144c4b07239c7f32fc8a4f7237a9af85f0e708c05a146d",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>"
+      ]
+    },
+    {
+      "Path": "tests/b0/plugin-out/RackCad.Application.deps.json",
+      "Bytes": 842,
+      "Sha256": "5f85684e60ed85ae12ca4a3e4293beec4a203369dedbc98ad7dd851a1b6866e3",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la compilacion del Plugin en la linea base (DLL, PDB, deps.json y copias de los catalogos del repositorio): no se custodian binarios ni copias; solo por SHA-256"
+    },
+    {
+      "Path": "tests/b0/plugin-out/RackCad.Application.dll",
+      "Bytes": 2573824,
+      "Sha256": "1225feda296aa22b2b64c48b2b2d4b07d6c7ecf563d9dfa96ba34feed2da4f17",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la compilacion del Plugin en la linea base (DLL, PDB, deps.json y copias de los catalogos del repositorio): no se custodian binarios ni copias; solo por SHA-256"
+    },
+    {
+      "Path": "tests/b0/plugin-out/RackCad.Application.pdb",
+      "Bytes": 759636,
+      "Sha256": "abffe5e541ed3850aaf119226767ae4e0a67685c6623d94937d0fe7c4ff209c8",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la compilacion del Plugin en la linea base (DLL, PDB, deps.json y copias de los catalogos del repositorio): no se custodian binarios ni copias; solo por SHA-256"
+    },
+    {
+      "Path": "tests/b0/plugin-out/RackCad.Domain.deps.json",
+      "Bytes": 434,
+      "Sha256": "95c7e257c0fb8924d4acb0720918682bbc6a663a298b0f6a84f13b44d18acd78",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la compilacion del Plugin en la linea base (DLL, PDB, deps.json y copias de los catalogos del repositorio): no se custodian binarios ni copias; solo por SHA-256"
+    },
+    {
+      "Path": "tests/b0/plugin-out/RackCad.Domain.dll",
+      "Bytes": 120320,
+      "Sha256": "876b52905d5e5afdb31a486207b77e20d68fb57b4754514c2ef7840394cca505",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la compilacion del Plugin en la linea base (DLL, PDB, deps.json y copias de los catalogos del repositorio): no se custodian binarios ni copias; solo por SHA-256"
+    },
+    {
+      "Path": "tests/b0/plugin-out/RackCad.Domain.pdb",
+      "Bytes": 56488,
+      "Sha256": "7f83906991ba5095b64c7191b20ef70c0a4b01808bd63de7315fc011f90fdb5e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la compilacion del Plugin en la linea base (DLL, PDB, deps.json y copias de los catalogos del repositorio): no se custodian binarios ni copias; solo por SHA-256"
+    },
+    {
+      "Path": "tests/b0/plugin-out/RackCad.Plugin.deps.json",
+      "Bytes": 1736,
+      "Sha256": "7d9a01a0ef81a064fb5a24fb40b5c6fdcf9a83ae99fc177d0cace0e452c4e953",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la compilacion del Plugin en la linea base (DLL, PDB, deps.json y copias de los catalogos del repositorio): no se custodian binarios ni copias; solo por SHA-256"
+    },
+    {
+      "Path": "tests/b0/plugin-out/RackCad.Plugin.dll",
+      "Bytes": 306688,
+      "Sha256": "9235b7fbe56df272ba4547f8465e5b73a6fecdc662a46fac138792f3f8993f11",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la compilacion del Plugin en la linea base (DLL, PDB, deps.json y copias de los catalogos del repositorio): no se custodian binarios ni copias; solo por SHA-256"
+    },
+    {
+      "Path": "tests/b0/plugin-out/RackCad.Plugin.pdb",
+      "Bytes": 111256,
+      "Sha256": "b4b5b1b0accb9b5cadf35aadb586982afdaca071abc35cf16c4bc2ed3f827043",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la compilacion del Plugin en la linea base (DLL, PDB, deps.json y copias de los catalogos del repositorio): no se custodian binarios ni copias; solo por SHA-256"
+    },
+    {
+      "Path": "tests/b0/plugin-out/RackCad.UI.deps.json",
+      "Bytes": 1266,
+      "Sha256": "589ab4a6abd9ffd778f93d92f1927cbdcc410c4d913fe20c5104fb23497941cd",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la compilacion del Plugin en la linea base (DLL, PDB, deps.json y copias de los catalogos del repositorio): no se custodian binarios ni copias; solo por SHA-256"
+    },
+    {
+      "Path": "tests/b0/plugin-out/RackCad.UI.dll",
+      "Bytes": 1006592,
+      "Sha256": "3d3c7e3c7bef61a762918c3fc0674b12da481c950112f6ff599582dae02a3384",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la compilacion del Plugin en la linea base (DLL, PDB, deps.json y copias de los catalogos del repositorio): no se custodian binarios ni copias; solo por SHA-256"
+    },
+    {
+      "Path": "tests/b0/plugin-out/RackCad.UI.pdb",
+      "Bytes": 364608,
+      "Sha256": "54b35b2ec87a16f8f0d354ae8556b466a7ff339f2af93640d90c5f74e0a708e1",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la compilacion del Plugin en la linea base (DLL, PDB, deps.json y copias de los catalogos del repositorio): no se custodian binarios ni copias; solo por SHA-256"
+    },
+    {
+      "Path": "tests/b0/plugin-out/catalogs/base-plates.csv",
+      "Bytes": 353,
+      "Sha256": "23536e17ecfe2304b0ce5f07cb328afd0c1a8373d4ca59c40fcda9d80b37ab62",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la compilacion del Plugin en la linea base (DLL, PDB, deps.json y copias de los catalogos del repositorio): no se custodian binarios ni copias; solo por SHA-256"
+    },
+    {
+      "Path": "tests/b0/plugin-out/catalogs/blocks.csv",
+      "Bytes": 6979,
+      "Sha256": "7b4b7677a8f307499892c97d74619590877c865617ebcca313204b2fda762874",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la compilacion del Plugin en la linea base (DLL, PDB, deps.json y copias de los catalogos del repositorio): no se custodian binarios ni copias; solo por SHA-256"
+    },
+    {
+      "Path": "tests/b0/plugin-out/catalogs/connection-layout.csv",
+      "Bytes": 2850,
+      "Sha256": "c9a27a10f87ca6bb5a615a39fed070bb75949150f43b9dcfbc44c19e6d847929",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la compilacion del Plugin en la linea base (DLL, PDB, deps.json y copias de los catalogos del repositorio): no se custodian binarios ni copias; solo por SHA-256"
+    },
+    {
+      "Path": "tests/b0/plugin-out/catalogs/connection-points.csv",
+      "Bytes": 1352,
+      "Sha256": "cd4df19aff84fb5f71be7ba83f71764e5ab2418e072a504a4681bd4a48bfe473",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la compilacion del Plugin en la linea base (DLL, PDB, deps.json y copias de los catalogos del repositorio): no se custodian binarios ni copias; solo por SHA-256"
+    },
+    {
+      "Path": "tests/b0/plugin-out/catalogs/defaults.json",
+      "Bytes": 495,
+      "Sha256": "eeb44e182b13808bff376649211a9408e3fee7ed91eef102ef4ede2a9d40d189",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la compilacion del Plugin en la linea base (DLL, PDB, deps.json y copias de los catalogos del repositorio): no se custodian binarios ni copias; solo por SHA-256"
+    },
+    {
+      "Path": "tests/b0/plugin-out/catalogs/flow-bed-profiles.csv",
+      "Bytes": 599,
+      "Sha256": "57ca9be5816960a5d9f4a180e89a5889e9be7a1b4aa56a5ca4d42cab8e92ed8e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la compilacion del Plugin en la linea base (DLL, PDB, deps.json y copias de los catalogos del repositorio): no se custodian binarios ni copias; solo por SHA-256"
+    },
+    {
+      "Path": "tests/b0/plugin-out/catalogs/header-templates.json",
+      "Bytes": 2813,
+      "Sha256": "945931d2cab5a7df322e3b329ce4cf7f55586535d8a3a4824a4efa6bed44715e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la compilacion del Plugin en la linea base (DLL, PDB, deps.json y copias de los catalogos del repositorio): no se custodian binarios ni copias; solo por SHA-256"
+    },
+    {
+      "Path": "tests/b0/plugin-out/catalogs/mensulas.csv",
+      "Bytes": 365,
+      "Sha256": "903e12147ccdda4ae45e1cca27db6f93597d78fa101bba0a8bd33626919c2081",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la compilacion del Plugin en la linea base (DLL, PDB, deps.json y copias de los catalogos del repositorio): no se custodian binarios ni copias; solo por SHA-256"
+    },
+    {
+      "Path": "tests/b0/plugin-out/catalogs/secciones.csv",
+      "Bytes": 1282,
+      "Sha256": "8e5f2e9c22eeb54210ce49c8ba145ec5a102de430a533244e37d5d0da65f5ee1",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la compilacion del Plugin en la linea base (DLL, PDB, deps.json y copias de los catalogos del repositorio): no se custodian binarios ni copias; solo por SHA-256"
+    },
+    {
+      "Path": "tests/b0/plugin-out/catalogs/seguridad.csv",
+      "Bytes": 1505,
+      "Sha256": "474c67e1623786809cb28d10a1242a96b00463bb3a186656daed019d05a08eac",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la compilacion del Plugin en la linea base (DLL, PDB, deps.json y copias de los catalogos del repositorio): no se custodian binarios ni copias; solo por SHA-256"
+    },
+    {
+      "Path": "tests/b0/plugin-out/catalogs/structural-section-sources.csv",
+      "Bytes": 301,
+      "Sha256": "ad2ac2302fc92d5c956ff1fd2f94c2ac91338609166a3fa74abfaee03298b385",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la compilacion del Plugin en la linea base (DLL, PDB, deps.json y copias de los catalogos del repositorio): no se custodian binarios ni copias; solo por SHA-256"
+    },
+    {
+      "Path": "tests/b0/plugin-out/catalogs/structural-section-status.csv",
+      "Bytes": 26,
+      "Sha256": "7b4cb158af88769bd90ab9ce2ce3d21010edb7f7fb334e591917b6f5342e6d7d",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la compilacion del Plugin en la linea base (DLL, PDB, deps.json y copias de los catalogos del repositorio): no se custodian binarios ni copias; solo por SHA-256"
+    },
+    {
+      "Path": "tests/b0/plugin-out/catalogs/structural-sections-c.csv",
+      "Bytes": 9052,
+      "Sha256": "e42871a455ad2f78e9c9550e6b9d65431b678bb6cc867c841ec4e6bbef66f63e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la compilacion del Plugin en la linea base (DLL, PDB, deps.json y copias de los catalogos del repositorio): no se custodian binarios ni copias; solo por SHA-256"
+    },
+    {
+      "Path": "tests/b0/plugin-out/catalogs/structural-sections-hss-rect.csv",
+      "Bytes": 93588,
+      "Sha256": "fdc8e3e436dfa33421d0ed8a06f8cac7b82c232f997802b6a95cc25498443f0d",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la compilacion del Plugin en la linea base (DLL, PDB, deps.json y copias de los catalogos del repositorio): no se custodian binarios ni copias; solo por SHA-256"
+    },
+    {
+      "Path": "tests/b0/plugin-out/catalogs/structural-sections-l.csv",
+      "Bytes": 38455,
+      "Sha256": "6b5077003388735502febac99281266b37c3688faeea2d2ab1bdb399e44bf2fc",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la compilacion del Plugin en la linea base (DLL, PDB, deps.json y copias de los catalogos del repositorio): no se custodian binarios ni copias; solo por SHA-256"
+    },
+    {
+      "Path": "tests/b0/plugin-out/catalogs/structural-sections-manifest.json",
+      "Bytes": 1541,
+      "Sha256": "1d632563abe50d3f85856078e1524b294ae91cd03ba1df1824e992af346dd86b",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la compilacion del Plugin en la linea base (DLL, PDB, deps.json y copias de los catalogos del repositorio): no se custodian binarios ni copias; solo por SHA-256"
+    },
+    {
+      "Path": "tests/b0/plugin-out/catalogs/structural-sections-s.csv",
+      "Bytes": 6732,
+      "Sha256": "c081cd93f95a1bbd5f701c6975d18803aa6cc2e798d94b5038544383e8cf3707",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la compilacion del Plugin en la linea base (DLL, PDB, deps.json y copias de los catalogos del repositorio): no se custodian binarios ni copias; solo por SHA-256"
+    },
+    {
+      "Path": "tests/b0/plugin-out/catalogs/structural-sections-w.csv",
+      "Bytes": 71118,
+      "Sha256": "9259f672cddc6855e321e0483f819f5875967145c6f218571f3d8e1fdce78f1e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la compilacion del Plugin en la linea base (DLL, PDB, deps.json y copias de los catalogos del repositorio): no se custodian binarios ni copias; solo por SHA-256"
+    },
+    {
+      "Path": "tests/b0/plugin-out/catalogs/views.csv",
+      "Bytes": 244,
+      "Sha256": "bad65d2ffc652dbb23f003406de7125814dff85fcd1a85bc3787b15d51041075",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la compilacion del Plugin en la linea base (DLL, PDB, deps.json y copias de los catalogos del repositorio): no se custodian binarios ni copias; solo por SHA-256"
+    },
+    {
+      "Path": "tests/b0/plugin-out/structural-analysis/ram-elements/section-material-map.json",
+      "Bytes": 3336,
+      "Sha256": "b22f7d9dc45c6f59a37d29477e5d9a21fa0b61062d780b57805d93366dbb2e7d",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la compilacion del Plugin en la linea base (DLL, PDB, deps.json y copias de los catalogos del repositorio): no se custodian binarios ni copias; solo por SHA-256"
+    },
+    {
+      "Path": "tests/b0/test-ws.log",
+      "Bytes": 34124,
+      "Sha256": "471ca5b7f2137fab787411153d3fcacb2801319f59884d22bf79e629b043cb69",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "4c0515dbb5a45809c22be8d7c5008eeece6e72abf21702d2144f010bb977e0c1",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>"
+      ]
+    },
+    {
+      "Path": "tests/b0/ws.trx",
+      "Bytes": 5463106,
+      "Sha256": "56f96cc636e7288539c8def7e02d40f8ea4bdedb5e7f8172467c212b5f7e3df7",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX cruda de la linea base de Workspace: su cuenta (3 482 de 3 482) consta en worker-handoff.json y en test-ws.log; solo por SHA-256"
+    },
+    {
+      "Path": "tests/s0/build-core-debug.log",
+      "Bytes": 67851,
+      "Sha256": "a2971f671d1f990c17c451f1a8b243cdbfa7ba7a83ad50a2973a93b401ee9c17",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "259c0b7689c79a5a9a45c958b44489615a27dc158b8c35f4e885be933b78bb7a",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>"
+      ]
+    },
+    {
+      "Path": "worker-handoff.json",
+      "Bytes": 10224,
+      "Sha256": "d4a1cbc779b717070001ba0d61ebaf592262f4c06ca14f6e525bf387bb53bf24",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "5d2e7252ccc25ce4ecae2bfa16e3728bd7155a3b7fa79b25883f0f35fd2fdc8e",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>",
+        "ubicacion local sustituida por: <datos-locales-del-usuario>"
+      ]
+    }
+  ]
+}

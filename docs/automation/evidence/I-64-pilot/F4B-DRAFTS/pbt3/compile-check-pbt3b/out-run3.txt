@@ -1,0 +1,11 @@
+ok PushBackPilotUpdatePlan.cs Prepare -> PrepareFull
+ok PushBackPilotUpdateRun.cs Execute -> ExecuteFull
+ok PushBackPilotUpdateRun.cs ComparePost -> ComparePostFull
+core-tests rc=0 errores=0
+ui-tests rc=0 errores=0
+plugin rc=0 errores=0
+core-test rc=0
+counters {'total': '19107', 'executed': '19107', 'passed': '19107', 'failed': '0', 'notExecuted': '0'}
+failed methods 0 rows 0
+build-server shutdown rc=0
+MAINCO []

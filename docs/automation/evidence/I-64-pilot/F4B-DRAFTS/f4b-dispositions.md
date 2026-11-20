@@ -1432,3 +1432,37 @@ No hay cambios materiales.
 - **La cadena:** primera delegación; `attempts` 1 de 3.
 - **La planificación:** con las colecciones opacas puestas por la sesión (F4B-E21).
 - **La verificación:** con las comprobaciones deterministas de F4B-E15.
+## F4B-E45. Parada de F4B-PBT3B-FULL-WRITE-RUN en el intento 1 (PBT3B-C02 y PBT3B-C07), decisión del Owner (Renombrar los métodos nuevos) y reemisión con el paquete de PB-T3 v4.6
+
+**Fecha:** 2026-11-20.
+
+**La parada:** el Worker `R20261120T055235Z-a45b` (delegación `R20261120T054837Z-814c`, intento 1) paró con **PBT3B-C02 y PBT3B-C07 antes del commit RED**, sin commits ni push. HEAD siguió en `eab27a9e` y el árbol quedó limpio.
+- **Lo que falla:** con el esqueleto exacto del §6.2 de la v4.5, `RackCad.Tests` no compila. Hay dos CS0121, de llamada ambigua, en una prueba existente de F4 que el contrato prohíbe editar:
+  - `WorkspacePilotUpdateRunTests.cs:669`, `PushBackPilotUpdateRun.Execute(null!, setup.Request, setup.Port)`;
+  - `WorkspacePilotUpdateRunTests.cs:799`, `PushBackPilotUpdateRun.ComparePost(plan, null)`.
+- **La causa, un defecto del paquete:** las firmas existentes no cambian, pero las sobrecargas nuevas del modelo completo, con el mismo nombre y un parámetro de tipo referencia, vuelven ambiguo un `null`. El barrido de guardas del §4.1 de la v4.5 solo miraba el texto.
+- **El Worker** no eligió ninguna salida: editar esas dos líneas habría sido C02, y cambiar el API nuevo, C13. Dejó `blocked-skeleton.patch`, el esqueleto probado sin aplicar, que no es autoridad.
+
+**La decisión del Owner** (`F4B-DRAFTS/coordinator/owner-pbt3b-overload-decision.md`): «Renombrar los métodos nuevos (Recomendado)». Los nombres que fija la sesión son `ExecuteFull` y `ComparePostFull`, con la misma firma, y, en una nota posterior de la misma decisión, `PrepareFull`: es el mismo remedio, aplicado al tercer choque que encontró el barrido ampliado. Ninguna firma ni prueba existente cambia.
+
+**El paquete v4.6** (V46-06 a V46-10, con el borrador V46-01 a V46-05):
+- `ExecuteFull` y `ComparePostFull`, y `PrepareFull` para la sobrecarga completa de `Prepare`: el barrido ampliado encontró que `WorkspacePilotPrepareTests.cs:2156` exige con `Assert.Single` un solo `Prepare` en `PushBackPilotUpdatePlanner`, y fallaría al ejecutar. `Precheck` sigue como sobrecarga, con su porqué (V46-08);
+- el barrido del §4.1 se amplía a la resolución de sobrecargas y a la reflexión (`overload_sweep.py`, con el control positivo de los dos CS0121), y los nombres nuevos contra los literales de las guardas (`name_check_v46.py`): sin choque con los tres nombres;
+- la lección del §5.0 y R-22 del registro;
+- la precondición 12 es la reemisión.
+
+**La compilación de comprobación** de la sesión, sobre copias exportadas de `eab27a9e`, fuera del worktree (`F4B-DRAFTS/pbt3/compile-check-pbt3b/`):
+- con el esqueleto del intento 1 tal cual, los dos CS0121; con `ExecuteFull` y `ComparePostFull`, Core-tests, UI-tests y el Plugin sin errores;
+- **la segunda, con los tres nombres:** los tres proyectos sin errores y la suite completa de Core, 19 107 de 19 107. Su control negativo, con `Prepare` en lugar de `PrepareFull`, falla exactamente la prueba de reflexión, 1 de 91 en `WorkspacePilotPrepareTests`.
+
+**Su comprobación acotada** (la §13 de CA-T3b, la recomprobación de la v4.6): `EMITIBLE; B 0 / I 0 / M 4; sin importantes; sin decisiones nuevas del Owner; recomprobacion v4.5: EMITIBLE, B 0 / I 0 / M 1; recomprobacion v4.6: EMITIBLE, B 0 / I 0 / M 2`. Da **EMITIBLE, B 0 / I 0 / M 2**, sin decisiones nuevas del Owner:
+- **M-06,** el cierre de la «Segunda comprobación» de `compile-check.md`, desfasado: lo corrigió la sesión antes de la custodia, y se custodia la versión corregida;
+- **M-07,** redactar el §5.0 y la precondición 12 como «ejecutar la suite completa de Core» sobre la copia, en lugar de «compilar con las pruebas que hacen reflexión»: **no se aplica a la v4.6**, porque movería su SHA-256 y pediría otra recomprobación. Lo cubre la evidencia de la segunda comprobación (la suite completa de Core en verde), y pasa a la revisión del paquete para PB-T3c.
+
+**La comunicación al Owner del tercer nombre:** `PrepareFull` aplica el remedio que eligió el Owner a un tercer choque; no es una decisión nueva (la nota posterior de la decisión, y la §13.7 de CA-T3b). La sesión se lo comunica al Owner en el chat antes de la delegación nueva, para que pueda objetar a tiempo.
+
+**La reemisión:** el contrato de `F4B-PBT3B-FULL-WRITE-RUN` se emite de nuevo con la v4.6 y sustituye al de `eab27a9e` (F4B-E44), que queda en la historia de Git.
+- **La corrección va en el intento 2 de 3:** la parada del intento 1 consume intento (16.8). `FailureClass` es `StopCondition`; `ChainRedSha` es null y `ChainRedFiles` está vacío, porque el intento 1 no hizo RED. El RED es el entero de la v4.6.
+- **El análisis de la sesión** está custodiado en `F4B-PBT3B-FULL-WRITE-RUN/1/R20261120T055235Z-a45b/analysis.md` (sha256 `27d3ff05baad1cb59578a38d8e7d47f524d35321749efa4d827c62c63d7434c1`): C-1, los nombres; C-2, el RED entero; C-3, el GREEN; C-4, la reparación del RED, que sigue disponible.
+- **La carpeta del Worker del intento 1** se custodia al lado, con su manifiesto: lo que la sesión leyó para la parada, sin binarios.
+- **Lo que no cambia:** el diseño, D-1, las listas cerradas de CT, los `MinSelected`, el GREEN previsto y las pruebas existentes.

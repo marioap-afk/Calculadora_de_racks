@@ -334,3 +334,244 @@ Así, la barrera no cambia ningún resultado del piloto (INV-PBT3B-04).
 | M-05 | M | `NC2_V2_EXTRA` de `issue_pbt3b.py` (la custodia de `F4B-DRAFTS/nc2-substitute-f4b-v2/`) | **El problema:** la custodia lleva el script, las notas, los resúmenes, las corridas reales, los límites y la revisión. No lleva los ayudantes que citan `notes.md` (`checks/`, `verify_literals.py`) ni los guiones de la revisión (`review/selftest_matrix*.py`, `mutations*.py` y sus salidas). Es lo mismo que pasó con el v1 | Añadirlos a `NC2_V2_EXTRA`, redactados, en `review/` y `checks/` dentro de la carpeta de la v2, por el criterio de DU-23. Si se dejan fuera, decirlo en la nota de redacción de `notes.md` |
 
 **Observación (no es hallazgo):** el generador se cambió en su sitio y su versión anterior, la del seco `5EE38DAB…`, ya no existe en ninguna parte. Para la custodia conviene dejar un diff del generador junto a `delta-r2.txt`.
+
+## §13. Recomprobación sobre la v4.6
+
+**Veredicto: EMITIBLE.** B/I/M = **0 / 0 / 2**
+
+**En breve:**
+- **La v4.6 aplica fielmente F4B-E45 y la nota de la sesión.** Los tres nombres (`PrepareFull`, `ExecuteFull` y `ComparePostFull`) están en todo el texto normativo. Ninguna firma existente cambia y ninguna prueba existente se toca. Lo que queda del API de la v4.5 está solo en el registro y en la historia.
+- **`Precheck` como sobrecarga es correcto (V46-08).** Mi barrido no encuentra ninguna llamada suya con `null` o `default`, ningún grupo de métodos ni ninguna conversión.
+- **El barrido de sobrecargas es completo para lo que decide el compilador y para la reflexión por nombre.** Hay un hueco: los 38 escaneos de ensamblado (`Assembly.GetTypes()` y `GetExportedTypes()`) que ningún barrido por nombre ve. Los leí uno a uno y ninguno puede fallar por PB-T3b. Además, los cubre de hecho la corrida 3, con la suite completa de Core en verde (M-07).
+- **El texto de referencia que ahora gobierna PB-T3b es correcto.** Esto incluye la tabla de RR-3 con la fila del doble y el literal de CT-13, y la nota de M-03.
+- **El delta del seco es exactamente el que se declara.** Cambian `Objective`, `AuthorityRevision`, `Authorities` (de 64 a 66), solo C13 entre las paradas, `IssuedBy` e `IssuedUtc`.
+- **El régimen de corrección y la precondición 12 son coherentes con el precedente.**
+- **No hay decisiones nuevas para el Owner.** Para el tercer nombre basta la nota de la sesión.
+- **La corrida 3 ha terminado.** Pasan 19 107 de 19 107, sin ningún fallo, y S-1 a S-6 también pasan. El control negativo falla exactamente en la prueba de reflexión.
+- **Una menor nueva sobre la evidencia (M-06):** el cierre de la «Segunda comprobación» de `compile-check.md` está desfasado.
+- **Corrección de este informe:** lo que dice el §2 sobre 3 261 es inexacto (§13.9).
+
+**`BOUNDED_RESULT` final (ASCII):**
+
+`EMITIBLE; B 0 / I 0 / M 4; sin importantes; sin decisiones nuevas del Owner; recomprobacion v4.5: EMITIBLE, B 0 / I 0 / M 1; recomprobacion v4.6: EMITIBLE, B 0 / I 0 / M 2`
+
+### 13.1 Método y límites
+
+**Qué se leyó.** Todo por objetos git de `eab27a9e` desde el checkout principal, o en `hs65`:
+- **El paquete:** la v4.6 (`I-64-f4b-pbt3-gate-contract-package-v46.md`, sha256 `09210abe…`, 313 702 bytes), `v46-delta.md` y `check-v46-out.txt`.
+- **Los barridos:** `overload-sweep-eab27a9e.txt` y la cola de `name-check-v46-eab27a9e.txt`.
+- **El generador:** `make_pbt3b_contract.py` (sha256 `f8b69f2d…`).
+- **El seco de la reemisión:** `contract-dry-pbt3b-reissue.json` (`65AD7868…`, 75 226 bytes).
+- **Las pruebas y el emisor:** `neg-pbt3b-reissue.txt` (88 de 88, contra ese generador), e `issue_pbt3b_rev2.py`, con su autoprueba y la salida de `--dry-objects`.
+- **La decisión:** `f4b-e45.md` y, en `pbt3bcc`, la decisión del Owner con su nota y `analysis.md`.
+- **La compilación:** `compile/`, con `compile-check.md`, `rename_overloads3.py`, `out-run1.txt`, `out-run3.txt`, `out-run3ctrl.txt` y `out3/core.trx`.
+- **El intento 1:** `attempt1/blocked-skeleton.patch` y `worker-handoff.json`.
+
+**Los guiones de esta ronda** (en `hs65/pbt3/`, todos con `python -I`):
+- **`cat3b_reissue.py`:** compara campo a campo y entrada a entrada el contrato emitido en `eab27a9e` con el seco de la reemisión, y saca el diff de C13. La salida va a `cat3b_reissue_out.txt`.
+- **`cat3b_c13.py`,** ya existente: C13, C14 y C16 del seco frente a la v4.6.
+- **`cat3b_ovl.py`:** mi barrido independiente sobre los `.cs` de `src/` y `tests/` en `eab27a9e`. Busca llamadas con `null` o `default`, grupos de métodos, reflexión y `nameof` sobre los tipos de PP, UR y la interfaz, y los constructores. La salida va a `cat3b_ovl_out.txt`.
+- **`cat3b_trx.py`:** los resultados que selecciona cada filtro de las `RequiredTests` en el TRX de la corrida 3. La salida va a `cat3b_trx_out.txt`.
+- **`cat3b_bounded.py`,** ya existente, ahora con la v4.6.
+- **Fuera de Python:** usé `git grep` sobre `eab27a9e` para los escaneos de ensamblado, los operadores de conversión y los tipos sellados, y `cat3a_ctx.py` para leer líneas por objetos git.
+
+**Dos incidencias, declaradas:**
+- **Un `-c` vacío.** Un comando de Bash ejecutó `python -I -c ""`, sin código. No leyó ni escribió nada, pero se aparta de la regla «sin `-c`».
+- **La primera corrida de `cat3b_ovl.py` se cortó.** Iba con un límite de tiempo y salió vacía. La repetí en segundo plano, y la salida que vale es `cat3b_ovl_out.txt`.
+
+**Lo que no se hizo:**
+- no ejecuté dotnet;
+- no leí nada del worktree;
+- no escribí fuera de `hs65/pbt3/`: solo este informe, los `cat3b_*.py` y sus salidas.
+
+### 13.2 Fidelidad de la v4.6 (punto 1)
+
+**Los tres nombres están en el texto normativo:**
+- D-PBT3-09 usa `PrepareFull` (l.729).
+- D-PBT3-10 usa `ExecuteFull` y `ComparePostFull`, que delegan en `ComparePostCore` (l.806-851).
+- También están en E-5 (l.1200), en las CT 01, 07, 09, 10, 12, 13 y 15, en el esqueleto del §6.2 (l.1559-1560) y en la lista cerrada de C13.
+- `check-v46-out.txt` los cuenta: `PrepareFull` 16, `ExecuteFull` 9 y `ComparePostFull` 7.
+
+**No cambia ninguna firma existente ni se toca ninguna prueba:**
+- **`rename_overloads3.py`** cambia solo las tres declaraciones nuevas del esqueleto, y exige que cada sustitución se haga exactamente una vez.
+- **C13 sigue prohibiendo** cambiar la firma de cualquier miembro existente de PP o UR.
+- **El esqueleto del intento 1, con los tres nombres, es el del §6.2.** Lo leí línea a línea, y los cuerpos coinciden:
+  - `PrepareFull` devuelve `WithInvalid(MissingInputReason)`;
+  - el `Precheck` completo devuelve `Go()`;
+  - `ExecuteFull` devuelve `NotAppliedFailure(UpdateNotRunReason)`;
+  - `ComparePostFull` devuelve `PostRereadMissingReason`.
+- **Sus declaraciones están todas en la lista cerrada de C13:**
+  - la interfaz y `EraseUnit`;
+  - `PushBackFullPrepareInput`, con sus nueve miembros;
+  - los dos constructores internos nuevos, y `Erasures`, `PostOriginKey` y `ErasedKeys`, todas `{ get; }`;
+  - las cuatro constantes del planificador y las dos de UR;
+  - `PrepareFull`, el segundo `Precheck`, `ExecuteFull` y `ComparePostFull`.
+- **Al GREEN solo le quedan** `BuildCore`, `BuildFull`, `ComparePostCore` y los campos de `Execution<TState>`.
+- **Así que la advertencia de `compile-check.md` no se activa.** Decía que habría que repetir la comprobación si la v4.6 cambiaba algo más en el esqueleto, y el §6.2 solo cambia los nombres.
+
+**El API de la v4.5 queda solo en el registro y la historia** (l.34-35, 147, 192, 796, 800, 1015, 1594-1595 y 1721). En el texto normativo de PB-T3b y de PB-T3c no queda nada: lo dice `check-v46-out.txt` y lo confirma mi lectura.
+
+**`Precheck` como sobrecarga (V46-08): correcto.**
+- **Por qué no puede romper nada:**
+  - **ninguna llamada ambigua:** `cat3b_ovl.py` no encuentra ninguna llamada a `Precheck` con `null` o `default`;
+  - **ningún grupo de métodos:** el único que sale es un falso positivo, el texto de una cadena en `WorkspacePilotUpdateIntegrationGuardTests.cs:501`;
+  - **ninguna conversión:** en `src` no hay ni un `implicit operator` ni un `explicit operator`, y los tipos de los parámetros (`DraftSession<TState>` y los dos estados) son clases selladas;
+  - **ninguna guarda que cuente su nombre cambia:** la que cuenta `PushBackPilotUpdateRun.Precheck(` lee `TryUpdatePilot` en WHC, que PB-T3b no toca.
+- **Lo que queda está bien tratado.** Una llamada nueva con un `null` sin tipo no compila, y se arregla en el RED (§5.0, l.1084).
+- **Una precisión, que no es hallazgo.** V46-08 dice «ni reflexión sobre `PushBackPilotUpdateRun`». Hay un `nameof(PushBackPilotUpdateRun.ForeignScopeOpenCause)` en `WorkspacePilotUpdateGuardTests.cs:100`, pero es de compilación y sobre un miembro que PB-T3b no toca. Lo que afirma V46-08 se sostiene.
+- **La guarda G-4 tampoco se ve afectada** (`WorkspacePilotUpdateIntegrationGuardTests.cs:500`). Busca `PushBackPilotUpdateRun\.Execute\s*\(` y no casa con `ExecuteFull(`. Quién llama a `ExecuteFull` lo guarda CT-13 (ii).
+
+### 13.3 El barrido de sobrecargas (punto 2)
+
+**Mi barrido, independiente del de la sesión (`cat3b_ovl.py`):**
+- **Llamadas con `null` o `default`: 13.**
+  - Nueve a `Prepare`: `PushBackPilotUpdateRun.cs:126`, en `src`, y en `WorkspacePilotPrepareTests.cs` las l.1474, 1807-1809, 1833-1835 y 1844.
+  - Tres a `Execute` (`WorkspacePilotUpdateRunTests.cs:669-671`) y una a `ComparePost` (`:799`).
+  - Ninguna a `Precheck`.
+  - Con la v4.6, cada uno de esos nombres conserva una sola declaración en su tipo, así que ninguna llamada puede ser ambigua.
+  - Con la v4.5, solo :669 y :799 llevaban el `null` en una posición donde los tipos difieren. Cuadra con la corrida A: exactamente dos CS0121.
+- **Grupos de métodos: 0,** quitado el falso positivo de la cadena.
+- **Reflexión o `nameof` por el nombre del tipo: 10 líneas.**
+  - **`WorkspacePilotPrepareTests.cs:1958-1962`** exige que ninguna propiedad tenga setter y que todos los campos sean de solo lectura. Las tres propiedades nuevas son `{ get; }` en el esqueleto, como manda la v4.6 (l.1084).
+  - **`:2147-2149`** comprueba el espacio de nombres de una lista fija de tipos.
+  - **`:2155-2160`** es el tercer choque (`Assert.Single` sobre `Prepare`), y `PrepareFull` lo resuelve.
+  - **Las otras tres no miran nada que PB-T3b cambie:**
+    - el `nameof` de `UpdateGuardTests:100`;
+    - la reflexión sobre `WorkspaceHostCore.TryUpdatePilot` en `UpdateHostTests:507`;
+    - G-3 sobre los campos de WHC en `IntegrationGuardTests:474`.
+- **Constructores: 8 sitios,** todos con la aridad de los constructores existentes. Los internos nuevos llevan más parámetros (`postOriginKey` y `erasures`; `erasedKeys`), y no hay `GetConstructors` sobre esos tipos.
+- **Las conversiones implícitas y la inferencia:** no hay operadores de conversión, y ninguno de los métodos es genérico.
+
+**Lo que ningún barrido por nombre ve: los escaneos de ensamblado.**
+- **Cuántos:** en `tests` hay 38 llamadas a `Assembly.GetTypes()` o `GetExportedTypes()`, en 29 archivos (en `src` no hay ninguna). Ni el barrido de la sesión ni el mío los encuentran, porque no nombran ningún tipo de PP ni de UR. Leí sus filtros:
+  - **11 están en `tests/RackCad.Tests/Workspace/`,** dentro del filtro `RackCad.Tests.Workspace` de las `RequiredTests`.
+  - **Los otros 27 no pueden ver PB-T3b:**
+    - filtran por otro espacio de nombres (CustomProperties, el núcleo de expresiones, Shared, `Views.Preparation`, StructuralAnalysis…);
+    - o por un prefijo de nombre;
+    - o, en UI, por ser `Window` o `RackBoundedEditorShell`;
+    - o exigen que algo exista: `RequireNamedCapability` de G9, que un nombre nuevo no puede hacer fallar;
+    - o prohíben un nombre concreto: `RackModuleCustomizationPolicy`.
+- **Lo cubre la corrida 3.** Ejecutó la suite completa de Core en verde con el esqueleto, que declara todos los nombres no privados de C13.
+- **El hueco es de redacción, no de hecho (M-07).** El §5.0 y la precondición 12 piden la compilación «con las pruebas que hacen reflexión sobre esos tipos», y basta con un control: el de `WorkspacePilotPrepareTests`. Lo que de verdad cierra el hueco es la suite completa de Core, que es lo que hizo la sesión.
+
+### 13.4 El texto que ahora gobierna PB-T3b (punto 3)
+
+**La tabla de RR-3 de PB-T3b (l.1430-1434) es correcta:**
+- **Las filas están enumeradas:**
+  - las 11 líneas F;
+  - CT-06 (ii) entera;
+  - las 4 líneas de CT-10;
+  - la fila de CT-13, con `PushBackPilotUpdateRun.ExecuteFull`, el método que el RED va a nombrar;
+  - la fila nueva del doble: `PilotEraseScopeDouble`, con `EraseUnit:` y `PreparedBlockMatches`.
+- **Lo que guarda CT-13 (ii):** quién llama a `ExecuteFull` y a `Precheck`. `PrepareFull` queda cubierto de forma indirecta, por `PushBackFullPrepareInput`. `ComparePostFull` no está guardado, pero tampoco lo estaba con la v4.5, así que no hay regresión.
+
+**La nota de M-03 (l.1612) sigue siendo verdad.** PB-T3c gana el filtro de paridad de UI (l.1628).
+
+### 13.5 El delta del seco frente al contrato emitido (punto 4)
+
+**El delta es completo** (`cat3b_reissue.py`).
+- **Los dos contratos:** el emitido en `eab27a9e` (`AE1E7462…`, 73 249 bytes) y el seco de la reemisión (`65AD7868…`, 75 226 bytes, ASCII). Tienen las mismas claves.
+- **Lo que cambia:**
+  - **`Objective`:** de la v4.5 a la v4.6;
+  - **`AuthorityRevision`:** en el seco es `eab27a9e`, y X la sustituye por el SHA de X (`assert cj['AuthorityRevision'] == X`, como en el precedente);
+  - **`Authorities`, de 64 a 66:**
+    - la entrada de CA-T3b nombra esta recomprobación y las precondiciones 3 y 12;
+    - entran la decisión del Owner y `analysis.md`;
+    - el paquete pasa a la v4.6, `09210abe`;
+    - las mediciones ganan R-22;
+  - **en `StopConditions`, solo C13,** con los tres nombres; `cat3b_c13.py` da C13, C14 y C16 iguales a la v4.6;
+  - **`IssuedBy` e `IssuedUtc`.**
+- **El emisor dice lo mismo:** es exactamente el `CHANGED_OK` de `issue_pbt3b_rev2.py`, con su `assert st == ['PBT3B-C13']`.
+
+**Las `RequiredTests` no cambian, y sus mínimos se cumplen en la base.** Lo medí con `cat3b_trx.py`, en el TRX de la corrida 3. Esa corrida usa el esqueleto inerte, que no añade pruebas, así que selecciona lo mismo que la base:
+
+| Filtro | Resultados | Métodos | `MinSelected` |
+|---|---|---|---|
+| `RackCad.Tests.Workspace` | 3 482 | 2 102 | 3 261 |
+| `PushBackFullDraft` | 10 | 10 | 10 |
+| `PushBackDraftWriteGuardTests` | 3 | 3 | 3 |
+| Las tres clases nuevas | 0 | 0 | (son nuevas) |
+
+### 13.6 El régimen de corrección (punto 5)
+
+**Coherente con F4-T4A1 y con PB-T3a.**
+- **Los campos:**
+  - `FailureClass`: StopCondition;
+  - `ChainRedSha`: null, y `ChainRedFiles`: vacío, porque el intento 1 no hizo RED;
+  - `BaseSha` y `ChainBaseSha`: la BASE de la reemisión;
+  - `CorrectionOf`: {`R20261120T055235Z-a45b`, StopCondition, `AnalysisSha256`};
+  - los intentos pasan de 1 a 2.
+- **Dónde lo comprobé:** en el estado de X, l.304-313 y 574-581 de `issue_pbt3b_rev2.py`.
+- **`analysis.md` dice lo mismo.**
+
+**La precondición 12 (l.279) cierra lo que hacía falta:**
+- **El barrido ampliado** sobre `BaseSha`: está hecho.
+- **La compilación sobre una copia exportada:** hecha, con las corridas 1 y 3 y el control.
+- **La CA en 0 / 0:** es esta sección.
+- **`git diff --name-only eab27a9e <BaseSha> -- src tests` vacío:** se comprueba al emitir, y es lo que hace que lo medido sobre `eab27a9e` valga para `BaseSha`.
+- **F4B-E45 y el análisis en la revisión de autoridades:** sí.
+
+### 13.7 Decisiones del Owner (punto 6)
+
+**Ninguna nueva. Para el tercer nombre basta la nota.**
+- **Lo que decidió el Owner:**
+  - **La pregunta** nombraba dos métodos.
+  - **La opción elegida** dice: «los dos métodos nuevos pasan a tener nombres propios… Las firmas existentes y las pruebas de F4 no se tocan».
+- **El tercero es el mismo caso:**
+  - **la causa es la misma:** una sobrecarga nueva rompe una prueba existente de F4 sin cambiar ninguna firma;
+  - **el remedio es el mismo,** y las alternativas, editar una prueba de F4 o parar, son las que el Owner no eligió.
+- **`PrepareFull` no cambia nada de fondo:**
+  - no amplía el alcance, porque C13 ya permitía una declaración nueva en PP;
+  - no cambia el diseño, ni D-1 ni RR.
+- **El supuesto está declarado:** en la nota de la decisión, en F4B-E45 y en el análisis.
+- **Una observación (no es hallazgo).** La nota dice que la sesión «se lo comunica al Owner». Conviene que esa comunicación conste antes de la delegación nueva, para que el Owner pueda objetar a tiempo.
+
+### 13.8 La corrida 3 (punto 7)
+
+**Ha terminado.**
+- **La corrida 3** (`out-run3.txt`):
+  - las tres sustituciones salen bien;
+  - las pruebas de Core, las de UI y el Plugin compilan con rc 0 y 0 errores;
+  - la suite completa de Core da `total 19107, passed 19107, failed 0, notExecuted 0`. `cat3b_trx.py` lee lo mismo en `out3/core.trx`: 19 107 Passed.
+- **Así que ni siquiera S-1 a S-6 fallan.** El patch solo toca `src`, sin `Skip`, y esas pruebas pasan sobre el esqueleto inerte.
+- **El control** (`out-run3ctrl.txt`): con `Prepare` en lugar de `PrepareFull`, de las 91 pruebas de `WorkspacePilotPrepareTests` falla exactamente una, `ThePlanTypesLiveInThePilotNamespaceAndTheirSignaturesNameNoTypeOfTheHostOrOfTheDrawing`. El tercer choque es real, y `PrepareFull` lo resuelve.
+- **El tropiezo de la sesión** está declarado: el filtro equivocado seleccionó 0 de 0, y la salida que vale es la segunda.
+
+**La frase del análisis no hay que cambiarla.** «Sin los `Skip` de D-1, solo pueden fallar los métodos S-1 a S-6» es una cota, y se cumple con 0 fallos. Si se quiere, puede añadirse «medido: 0 fallos, S-1 a S-6 incluidos», pero es opcional.
+
+**M-06:** el cierre de la «Segunda comprobación» de `compile-check.md` no se ha actualizado. Ese archivo se custodia en `compile-check-pbt3b/`.
+- Bajo «Lo que esta comprobación no cubre» todavía dice «las pruebas: aquí solo se compila» y «el patch del intento 1 con los dos nombres cambiados».
+- Eso contradice su propia tabla: la suite se ejecutó, y con tres nombres.
+
+### 13.9 Corrección de este informe (el §2)
+
+**El error:** el §2 (l.59) dice que 3 261 «son los `Passed` del RED en cualquiera de las dos lecturas de la TRX», y lo cuenta como 3 271 − 10 o 3 267 − 6. No es exacto:
+- **En la base, el filtro `RackCad.Tests.Workspace` selecciona 3 482 resultados** (2 102 métodos). Lo dicen el `worker-handoff.json` del intento 1 y mi cuenta sobre el TRX de la corrida 3.
+- **La causa:** mi cuenta estática no contaba las filas de las `Theory` que salen de sus fuentes de datos.
+
+**Lo que no cambia:**
+- **El contrato:** 3 261 es un `MinSelected`, un mínimo, y se cumple.
+- **Los hallazgos del §10:** ninguno dependía de esa cifra.
+- **El §2:** no lo reescribo; la corrección queda aquí.
+
+### 13.10 Hallazgos nuevos
+
+| Id | Sev. | Dónde | Hallazgo | Qué hacer |
+|---|---|---|---|---|
+| M-06 | M | `pbt3bcc/compile/compile-check.md`, en el cierre de la «Segunda comprobación» (se custodia en `compile-check-pbt3b/`) | La lista «Lo que esta comprobación no cubre» se quedó en la primera comprobación: dice «las pruebas: aquí solo se compila» y «con los dos nombres cambiados». Contradice la tabla de la misma sección, que ejecuta la suite completa de Core con los tres nombres | Antes del `--commit`, actualizar esa lista a la segunda comprobación o moverla bajo la primera. Lo que de verdad no cubre la segunda: la suite de UI y los avisos de Release, y el GREEN, porque el esqueleto es inerte |
+| M-07 | M | v4.6, §5.0 (l.1084) y precondición 12 (l.279) | Piden compilar el esqueleto «con las pruebas que hacen reflexión sobre esos tipos», y basta el control de `WorkspacePilotPrepareTests`. Pero hay 38 escaneos de ensamblado en `tests` que ningún barrido por nombre ve. Ninguno puede fallar por PB-T3b, y la corrida 3 los cubrió al ejecutar la suite completa | Redactarlo como se hizo: la suite completa de Core sobre la copia con el esqueleto. Si no se cambia el texto, basta con la evidencia de la corrida 3, que ya se custodia |
+
+### 13.11 El `BOUNDED_RESULT` (lo que pide el encargo)
+
+**Cómo se comprobó:** `cat3b_bounded.py` aplica la `bounded_check` de `make_pbt3b_contract.py` (sha256 `f8b69f2d…`, el mismo de `neg-pbt3b-reissue.txt`), con `reviewer='CA-T3b'`. La aplica a este informe entero con la §13, a la v4.6 y al literal de arriba.
+
+**Lo que tiene que cumplir el literal:**
+- es ASCII;
+- empieza por «EMITIBLE;»;
+- lleva la cuenta del primer veredicto, «B 0 / I 0 / M 4»;
+- nombra la última recomprobación: «recomprobacion v4.6: EMITIBLE, B 0 / I 0 / M 2».
+- Conserva también la de la v4.5, aunque la función solo exige la última.
+
+**Lo que da:**
+- **Con el literal final:** 0 errores, y el informe no lleva rutas locales. La función reconoce las dos recomprobaciones (§12 sobre la v4.5 y §13 sobre la v4.6), y la última da EMITIBLE con 0 / 0.
+- **Con el literal de la §12,** el que no nombra la v4.6: da 1 error, el esperado, «BOUNDED_RESULT no nombra la ultima recomprobacion: falta 'recomprobacion v4.6: EMITIBLE, B 0 / I 0 / M 2'».

@@ -8468,3 +8468,28 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - **La verificación** lleva las tres comprobaciones deterministas de F4B-E15, y la planificación, las colecciones opacas puestas por la sesión (F4B-E21).
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+## 271. PB-T3b: parada del intento 1, decisión del Owner y paquete del contrato v4.6 (F4B-E45)
+
+**Qué se custodia:**
+- **El paquete** `docs/initiatives/I-64-f4b-pbt3-gate-contract-package.md`, en su v4.6, byte a byte: el generador fija su SHA-256. La v4.5 que estaba custodiada pasa a la historia, como `F4B-DRAFTS/pbt3/package-v45.md`.
+- **El registro** `docs/initiatives/I-64-f4b-pbt3-measurements.md`, con una entrada nueva, R-22: la resolución de sobrecargas y la reflexión sobre la emisión de PB-T3b (F4B-E45, V46-07). Las demás entradas no se reescriben.
+- **En `F4B-DRAFTS/pbt3/`:**
+  - el delta v4.5 → v4.6, `v46-delta.md`, con `make_v46.py`, `check_v46.py` y su salida, `check-v46-out.txt`;
+  - el barrido ampliado del §4.1 (V46-07): `overload_sweep.py` y `overload-sweep-eab27a9e.txt`; `name_check_v46.py` y `name-check-v46-eab27a9e.txt`;
+  - la compilación de comprobación de la sesión, en `compile-check-pbt3b/`, con las rutas locales como marcadores y su manifiesto:
+    - la primera: `compile-check.md`, `compile_check.sh`, `rename_overloads.py`, `out-run1.txt` y los registros de `out/`;
+    - la segunda, con los tres nombres y la suite de Core ejecutada (19 107 de 19 107), y su control negativo (1 de 91, la prueba de reflexión): `compile_check3.sh`, `rename_overloads3.py`, `trx_failed.py`, `compile_check3_ctrl.sh`, `out-run3.txt`, `out-run3ctrl.txt` y los registros de `out3/` y `out3ctrl/`. Las dos TRX van solo por SHA-256;
+  - la comprobación acotada de PB-T3b (CA-T3b), con su recomprobación de la v4.6 y el encargo literal de cada ronda;
+  - la salida en seco del generador para la reemisión, sobre `eab27a9e`.
+  - los guiones del revisor nuevos o cambiados: `cat3b_ovl.py`, `cat3b_ovl_out.txt`, `cat3b_reissue.py`, `cat3b_reissue_out.txt`, `cat3b_trx.py`, `cat3b_trx_out.txt`.
+- **La decisión del Owner:** `F4B-DRAFTS/coordinator/owner-pbt3b-overload-decision.md`.
+- **El análisis de la sesión** para la corrección del intento 2: `F4B-PBT3B-FULL-WRITE-RUN/1/R20261120T055235Z-a45b/analysis.md` (sha256 `27d3ff05baad1cb59578a38d8e7d47f524d35321749efa4d827c62c63d7434c1`).
+  - Va en este commit, y no en el de la reemisión, porque el contrato reemitido lo nombra como autoridad, y el generador solo lee lo que ya está en la revisión.
+  - El commit de la reemisión, que es la `ChainBaseSha` de la corrección, lo contiene igual.
+- **La carpeta del Worker del intento 1**, en la misma unidad, con `custody-manifest.json`: 16 archivos custodiados y 33 excluidos solo por SHA-256: los binarios, las copias de catalogos y la TRX de la linea base.
+
+**La base:** la emisión de PB-T3b, F4B-E44 (`eab27a9e`), sin commits del intento 1.
+
+**Las comprobaciones:** la comprobación acotada de la v4.6: `EMITIBLE; B 0 / I 0 / M 4; sin importantes; sin decisiones nuevas del Owner; recomprobacion v4.5: EMITIBLE, B 0 / I 0 / M 1; recomprobacion v4.6: EMITIBLE, B 0 / I 0 / M 2`.
+
+**Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.
