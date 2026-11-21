@@ -1,0 +1,24 @@
+# PBT4C-C13 por texto: GREEN (green_pbt4c_v51.green) y esqueleto (green_pbt4c_v51.skeleton) frente a la base 6adff90d
+src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs: nuevas=1 esperadas=1 igual=True quitadas=[] | esqueleto nuevas=1 dentro-de-la-lista=True quitadas=[]
+src/RackCad.Application/Workspace/WorkspaceEditIntent.cs: nuevas=21 esperadas=21 igual=True quitadas=[] | esqueleto nuevas=21 dentro-de-la-lista=True quitadas=[]
+src/RackCad.Application/Workspace/WorkspaceHostCore.cs: nuevas=8 esperadas=8 igual=True quitadas=[] | esqueleto nuevas=1 dentro-de-la-lista=True quitadas=[]
+src/RackCad.Application/Workspace/WorkspacePilotSupport.cs: nuevas=1 esperadas=1 igual=True quitadas=[] | esqueleto nuevas=0 dentro-de-la-lista=True quitadas=[]
+src/RackCad.Plugin/Workspace/WorkspaceController.cs: nuevas=6 esperadas=6 igual=True quitadas=[] | esqueleto nuevas=0 dentro-de-la-lista=True quitadas=[]
+src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs: nuevas=7 esperadas=7 igual=True quitadas=[] | esqueleto nuevas=2 dentro-de-la-lista=True quitadas=[]
+src/RackCad.UI/Workspace/WorkspacePanelView.xaml: nuevas=1 esperadas=1 igual=True quitadas=[] | esqueleto nuevas=0 dentro-de-la-lista=True quitadas=[]
+src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs: nuevas=1 esperadas=1 igual=True quitadas=[] | esqueleto nuevas=0 dentro-de-la-lista=True quitadas=[]
+src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs: nuevas=1 esperadas=1 igual=True quitadas=[] | esqueleto nuevas=0 dentro-de-la-lista=True quitadas=[]
+src/RackCad.Application/Workspace/IWorkspaceFullEditHost.cs: nuevas=2 esperadas=2 igual=True quitadas=[] | esqueleto nuevas=2 dentro-de-la-lista=True quitadas=[]
+src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftLaunch.cs: nuevas=3 esperadas=3 igual=True quitadas=[] | esqueleto nuevas=2 dentro-de-la-lista=True quitadas=[]
+src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftStatePort.cs: nuevas=5 esperadas=5 igual=True quitadas=[] | esqueleto nuevas=5 dentro-de-la-lista=True quitadas=[]
+src/RackCad.Plugin/Views/RackWorkspaceEditorWindow.cs: nuevas=2 esperadas=2 igual=True quitadas=[] | esqueleto nuevas=2 dentro-de-la-lista=True quitadas=[]
+nombres de RackCad.Application.Workspace: violaciones=[]
+autoprueba-constante=falla
+autoprueba-sobrecarga=falla
+autoprueba-propiedad=falla
+autoprueba-miembro-de-enum=falla
+autoprueba-tipo-anidado=falla
+autoprueba-x:Name=falla
+autoprueba-quitada=falla
+Lo que no ve: la visibilidad y la firma (solo el nombre y su cuenta), los miembros generados por el compilador, las declaraciones locales y las lambdas; la reflexion sobre el ensamblado la mide la suite completa de Core.
+censo C13: PASA

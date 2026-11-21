@@ -1925,3 +1925,82 @@ El resultado que lleva el contrato es `EMITIBLE TRAS CORRECCIONES; B 0 / I 1 / M
 - la lista que vio el Owner.
 
 PB-T4d vuelve al Owner con su lista antes de emitirse.
+
+## F4B-E54. Emisión de F4B-PBT4-EDIT-ALL-WINDOW (PB-T4c), con el paquete de PB-T4 v5.1
+
+**Fecha:** 2026-11-21.
+
+**Autoridad de emisión:** la decisión del Owner F4B-E49, pregunta 4: «Sí, con condiciones (Recomendado)». Cubre PB-T4a, PB-T4b y PB-T4c, en ese orden y cada una tras el cierre de la anterior. PB-T4c es la última de las tres.
+- **Las condiciones que exige, cumplidas:**
+  - la comprobación acotada de la subtarea, CA-T4c, da 0 bloqueantes y 0 importantes sin resolver: su importante, I-01, está corregida en la v5.1, y su recomprobación da EMITIBLE, 0/0/1;
+  - la remedición sobre el cierre anterior, el de PB-T4b, no cambia nada material: la precondición 6 corre sobre copias exportadas de `6adff90d`;
+  - la lista emitida es la que vio el Owner: las 4 de `pbt4c-substitution-list-4.tsv` (sha256 `9bd4c17a0eda837c92a7a0b7b3562d4ab17f1608baf3ffa8efaf560d8b1f82de`), las 2 de la pregunta 4 más la de la octava tanda y la de la novena.
+- **Cuándo se vuelve al Owner:** por una decisión nueva, un control con una firma no prevista, un intento 3, un efecto material sin medir o una prueba que falle fuera de la lista. Cada prueba que cayó fuera de la lista volvió al Owner antes de emitir (la octava y la novena tandas). No queda ninguna.
+
+**El cierre de PB-T4b** (F4B-E53, `6adff90d`): PB-T4b CLOSED / PASS WITH LIMITATIONS sobre `c065080d`, en el intento 1 de 3, con una reparación del RED. CI del GREEN `44903818806`, 4/4: Core 19 605 = 19 147 + 0 + 458, y UI 2 481 = 2 433 + 0 + 48.
+
+**Qué es PB-T4c:** «Editar todo» en el panel del Workspace de Push Back, sobre el borrador completo de PB-T4b (D-PBT4-12 a D-PBT4-17).
+- **Un botón y su gesto,** que confirma el texto pendiente antes de abrir (R-PB-10).
+- **`TryEditAll`,** en el puerto, en el anfitrión y en sus dos reenvíos: empieza el borrador si hace falta, mantiene la marca de lectura mientras la ventana está abierta (K = 1) y abre la ventana de Push Back en modo WORKSPACE, modal, sobre el borrador completo, sin traducir estados.
+- **«Cerrar» en WORKSPACE** hace una sola pregunta si hay a la vez un módulo escenificado y cambios sin aplicar: es la decisión del Owner A-T2b-OWNER-01 (F4B-E38).
+- **Cero escrituras en el DWG** desde la ventana. Ni el camino clásico, ni RACKEDITAR, ni la ventana en CLASSIC cambian.
+- **`UNIT_CHANGE`:** las 9 existentes de `src/` del GREEN (F4B-E25).
+
+**Las 4 sustituciones, con registro** («Saltar y duplicar», la pregunta 3 de la primera tanda): cada una con un `Skip` de motivo literal y su equivalente en una clase nueva, que genera el guion desde el original, sin tocar la prueba original.
+- **En Core, 3 (C-5):** PEG:155-163, CT-PBT1B-15 y CT-PBT4B-20, esta de la octava tanda;
+- **En UI, 1 (C-3):** CT-PBT2B-06, de la novena tanda. Su equivalente cae en el RED, por aserción, y pasa en el GREEN, así que su filtro va con `ExpectRed`.
+
+La entrada «## PB-T4c» de `F4B-DRAFTS/superseding-characterization.md` va en esta emisión, con los motivos literales y el `EquivalentSha` y el cambio declarado de cada equivalente. Su tabla de ejecución se completa al cerrar.
+
+**El total exacto de cada rama** (F4B-E46):
+- **GREEN:** Core 19 619 = 19 158 + 0 + 461; UI 2 486 = 2 437 + 0 + 49.
+- **RED:** Core 19 619 = 19 149 + 9 + 461; UI 2 486 = 2 432 + 5 + 49, con las 4 CT de UI y el equivalente de CT-PBT2B-06 entre los `Failed`.
+
+**Las tandas del Owner sobre PB-T4c** (§8.5 de la v5.1), nuevas en esta emisión y literales en `F4B-DRAFTS/coordinator/`. Las siete anteriores las declararon F4B-E49, F4B-E51 y F4B-E52.
+
+8. `owner-pbt4c-list-3-decision.md`: «Añadirla a la lista (Recomendado)». La lista pasa de 2 a 3, con CT-PBT4B-20.
+9. `owner-pbt4c-list-4-decision.md`: «Añadirla a la lista (Recomendado)». La lista pasa de 3 a 4, con CT-PBT2B-06.
+
+**Las decisiones de diseño de la sesión,** que no son del Owner (`F4B-DRAFTS/pbt4/session-pbt4c-design-decisions.md`, sha256 `d1912d978f03cab40fd88b93b9574170bee93841e43fdaca29b1e1512a4c3e83`). Ninguna cambia la lista ni el comportamiento visible que decidió el Owner:
+- **D-S7:** CT-PBT4C-09 escenifica el módulo con `HeaderConfiguratorDialog`, que no construye el configurador real (C05).
+- **D-S8:** cada clase nueva de PB-T4c tiene su propio filtro, por su nombre exacto. Ningún filtro nuevo selecciona una clase con el otro `ExpectRed`, y ningún filtro heredado selecciona una clase nueva.
+- **D-S9:** el host del editor completo se llama `IWorkspaceFullEditHost`, con `SetFullEditHost` y `_fullEditHost`, para que `WorkspaceModelBoundaryTests.ThereIsNoPerTabStateOrPerTabSubscriptions` siga en verde sin tocarla. Se midió en la copia `r5e`.
+- **D-S10:** CT-PBT4C-09 cubre lo que se puede alcanzar. En WORKSPACE, escenificar un módulo deja siempre cambios sin aplicar, y la pregunta del módulo sola es la de CLASSIC.
+
+**La vuelta parada de la precondición 6** (historia; no vale para la emisión), en las copias `r5a` a `r5e`, con las piezas de antes de D-S9 y las listas de 2 y de 3:
+- **`r5a`:** solo los dos `Skip` de la lista de 2, sin GREEN. Cae CT-PBT4B-20, y de ahí la octava tanda. Su registro va en `F4B-DRAFTS/pbt4/v50/out-probe-skips-r5a/`.
+- **`r5b`:** la compilación del RED y del GREEN con `IWorkspaceFullEditorHost`, sin errores ni avisos CS.
+- **`r5c`:** la precondición 6 con la lista de 3. Cae `WorkspaceModelBoundaryTests.ThereIsNoPerTabStateOrPerTabSubscriptions` en las dos ramas, por «Editor», y CT-PBT2B-06 en el GREEN: de ahí D-S9 y la novena tanda.
+- **`r5d`:** la sonda de CT-03, 04, 05 y 12 con las piezas de la primera vuelta.
+- **`r5e`:** la medida de D-S9, con los tres nombres cambiados: Core 19 608 = 19 147 + 0 + 461 en las dos ramas. Sus salidas de texto van en `F4B-DRAFTS/pbt4/cc4c/r5e/`.
+
+Los registros de `r5b` a `r5d` van en `cc4c/`, con las corridas que valen.
+
+**La autoridad n.º 37:** en el contrato de PB-T4b, «este contrato» apuntaba al contrato de PB-T4a (`F4B-PBT4-FULL-READ-PATH/coordinator/gate-contract.json`). En el de PB-T4c es su propio contrato, `F4B-PBT4-EDIT-ALL-WINDOW/coordinator/gate-contract.json` (§6.3.2 de la v5.1), que escribe la BASE. El contrato anterior, el de PB-T4b, es la n.º 29.
+
+**La comprobación acotada de PB-T4c** (CA-T4c), en `F4B-DRAFTS/pbt4/independent-review-v1.md`, con su encargo `independent-review-pbt4c-check-prompt.md`:
+- **§22,** CA-T4c sobre el contrato en seco y la v5.0: EMITIBLE TRAS CORRECCIONES, 0/1/3. Su importante, I-01: los dos archivos nuevos de `Draft/` empezaban por `#nullable enable`, y la pureza de CT-PBT4C-15 lo prohíbe;
+- **§23,** la recomprobación de la v5.1: EMITIBLE, 0/0/1.
+
+El resultado que lleva el contrato es `EMITIBLE TRAS CORRECCIONES; B 0 / I 1 / M 3; las importantes corregidas en el paquete v5.1 (I-01, los dos archivos nuevos de Draft/ empiezan por #nullable enable y la pureza de CT-PBT4C-15 lo prohibe: sin la directiva y sin el ? de ProjectOf); sin decisiones nuevas del Owner; precondicion 6 sobre 6adff90d: pasos 2 a 7 cumplen, sin las CT; recomprobacion v5.1: EMITIBLE, B 0 / I 0 / M 1`.
+
+**Fe de erratas** (CA-T4c, §23 M-01). El paquete no se toca, porque el contrato cita su sha256:
+- **En la tabla de §5.3 de la v5.1** (:1628 y :1631), las líneas `conflict` y `error` de CT-03 citan `DraftSession.cs:331-332`, el `CanEdit` del borrador. Lo que decide en `EditAllOfPilot` es `view.CanEdit`, en `WorkspaceHostCore.cs:1805-1806` de `6adff90d`: registrado y Clean, Dirty o Conflict.
+- El resultado es el mismo: Conflict abre y Error se rechaza. Valen las dos citas.
+
+**El paso a la v5.1:** corrige CA-T4c I-01 en el esqueleto y en el GREEN. Los dos archivos nuevos de `Draft/` van sin `#nullable enable`, y `ProjectOf` sin el `?` de `RackProject?`, que sin la directiva daría CS8632. Corrige también los menores M-01 a M-03 de la §22. No cambia la lista, los totales ni los filtros, y no necesita al Owner. La v5.0 pasa a la historia.
+- **La lección de I-01:** la precondición 6 no corría las CT. La v5.1 le añade el paso 8: el ensayo de las CT de texto sobre `src/` (CT-01, 07, 08, 13 y 15), en las dos ramas, con su control sobre las piezas de la v5.0, que ve I-01, y el censo de C13 y de los nombres.
+- **`compile-check.md`** da el resultado de cada clase que corre, también el de las que la custodia solo lleva por sha256.
+
+**Antes de emitir, la precondición 6** de la v5.1, sobre el cierre `6adff90d`: pasos 1 a 9, otra vez, en copias exportadas nuevas de 6adff90d (`r5j` para los pasos 2 a 6, `r5i` para las sondas del paso 7 y el ensayo del paso 8, `r5k` para el coste de IsDirty y `r5l` para el control del ensayo sobre las piezas de la v5.0): la compilacion de Core-tests, UI-tests y el Plugin en Release sin errores ni avisos CS; el RED exacto y el GREEN literal, sin las CT, con la suite completa de Core (19 608 = 19 147 + 0 + 461 en las dos ramas, con las 3 de Core de la lista omitidas con su motivo y sus 3 equivalentes en verde) y los 18 filtros de UI (en el RED solo cae el equivalente de CT-PBT2B-06, por asercion; en el GREEN, 0 Failed), sin ninguna prueba que falle fuera de las 4 (D = 0, K = 4, E = 4); los Skip, comprobados (4 archivos, 4 Skip y nada mas), y los filtros, cada uno solo con su clase (D-S8); las sondas de las lineas de CT-03, 04, 05 y 12 y de CT-09 (D-S10), las mismas de la v5.0 por sha256; el ensayo de las CT de texto (CT-01, 07, 08, 13 y 15) pasa en las dos ramas, con CT-01, 08 y 13 en Failed por asercion en el RED, y su control sobre las piezas de la v5.0 ve I-01; el censo de C13 y de los nombres pasa; el coste de IsDirty, el de PB-T4b, dentro del ruido; y compile-check.md da el resultado de cada clase que corre. Las corridas de la v5.0 (`r5f` a `r5h`) y la vuelta parada (`r5a` a `r5e`), como historia. Su custodia está en `F4B-DRAFTS/pbt4/cc4c/`, redactada y con su manifiesto, y su resumen en `F4B-DRAFTS/pbt4/pbt4c-precondition6.json`.
+
+**Los controles** (PBT4C-C11): nc1 con la firma PD-F4B-01 y su sustituto (F4B-E40), y nc2 con el sustituto v2 (F4B-E43), los dos con `--task PBT4`. La primera entrada de la `ExpectedEvidence` es, byte a byte, la de `F4B_EXACT_EVIDENCES` del sustituto v2.
+
+**La reparación del RED** (F4B-E35): la regla RR, solo en las cinco clases de las CT. Una reparación no toca `src/` (el esqueleto), ni los cuatro equivalentes, ni los cuatro archivos de los `Skip`.
+
+**El contrato:**
+- **P-01:** la Snapshot K (F4B-E37).
+- **La cadena:** primera delegación; `attempts` 1 de 3.
+- **La planificación:** con las colecciones opacas puestas por la sesión (F4B-E21).
+- **La verificación:** con las comprobaciones deterministas de F4B-E15.
+- **La etiqueta «PorAsercion»** de las Notes del relevo del trabajo cuenta por la regla del contrato o se renombra en esta cadena (F4B-E53, la decisión sobre nc3).

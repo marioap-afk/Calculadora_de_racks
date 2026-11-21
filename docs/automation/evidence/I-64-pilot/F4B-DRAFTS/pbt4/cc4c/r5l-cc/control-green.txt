@@ -1,0 +1,17 @@
+RackCad.Tests.TmpPbt4cTextCt07 CT07 Passed
+RackCad.Tests.TmpPbt4cTextCt01 CT01 Passed
+RackCad.Tests.TmpPbt4cTextCt15 CT15 Failed por-asercion=True
+  | Assert.Equal() Failure: Strings differ
+  |                                   ↓ (pos 371)
+  | Expected: ···"ivos=2 violaciones=[]\nautoprueba-#nullabl"···
+  | Actual:   ···"ivos=2 violaciones=[src/RackCad.Applicati"···
+  |                                   ↑ (pos 371)
+RackCad.Tests.TmpPbt4cTextCt08 CT08 Passed
+RackCad.Tests.TmpPbt4cTextCt13 CT13 Passed
+esperado CT01 Passed: OK
+esperado CT07 Passed: OK
+esperado CT08 Passed: OK
+esperado CT13 Passed: OK
+  la primera diferencia de CT-15, en la pureza: True (Actual:   ···"ivos=2 violaciones=[src/RackCad.Applicati"···)
+esperado CT15 Failed: OK
+control green: VE I-01

@@ -1,0 +1,6 @@
+## RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests.CT_PBT2B_06_ClosingAsksOnlyForWhatWasNotApplied
+Assert.Equal() Failure: Collections differ
+                                                                                                                                                                                           ↓ (pos 4)
+Expected: [···, "cerrar-con-cambios-no avisos=1 pregunta=Hay cambio"···, "cerrar-con-cambios-si avisos=2 cerrada=True borrad"···, "cerrar-tras-aplicar avisos=0 cerrada=True llamadas"···, "cerrar-con-modulo avisos=1 pregunta=Hay cambios de"···, "clasico-con-cambios avisos=0 cerrada=True peticion"···]
+Actual:   [···, "cerrar-con-cambios-no avisos=1 pregunta=Hay cambio"···, "cerrar-con-cambios-si avisos=2 cerrada=True borrad"···, "cerrar-tras-aplicar avisos=0 cerrada=True llamadas"···, "cerrar-con-modulo avisos=1 pregunta=Hay un cambio "···, "clasico-con-cambios avisos=0 cerrada=True peticion"···]
+                                                                                                                                                                                           ↑ (pos 4)

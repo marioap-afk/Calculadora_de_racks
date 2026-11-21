@@ -1,0 +1,2 @@
+filas 4 {'NotExecuted': 1, 'Passed': 3}; inicio 2026-11-21T12:44:29.3009963-06:00; fin 2026-11-21T12:44:33.7401577-06:00
+  NotExecuted RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests.CT_PBT2B_06_ClosingAsksOnlyForWhatWasNotApplied |  | I-64 F4B PB-T4c: sustituida por su equivalente en PushBackEditAllApplyCloseTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4c-list-4-decision.md).

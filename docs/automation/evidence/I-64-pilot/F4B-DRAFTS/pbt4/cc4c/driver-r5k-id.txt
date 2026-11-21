@@ -1,0 +1,17 @@
+coste de IsDirty; copia /d/r5k; salida r5k-id; revision 6adff90d856026a7a51067c1e9d7248f3d81641c
+  pieza 03dbb6a76d1e50c7c1935926727e4a5172f44c30a3cc6bc11ddac51197bd5102 apply_red_pbt4c_v51.py
+  pieza 8b9445455b60521598a113e14e870fe5218d3b1b4b142308fbac934016d9bd49 apply_green_pbt4c_v51.py
+  pieza a8a3afa2a0a71674ccd7eafc1f4e52eea183fef7cbf8bc5fd319be9dfb639215 green_pbt4c_v51.py
+  pieza 081ef77e66a390cf3637f15851b5fe05a5cdf07f6e0065928fc5c841b250dc16 pbt4c-green-v51.txt
+  pieza f8840c67fd41c3bbdabf125d9b80941e3f3aedf5e610681c8ce15f111e7b392e pbt4c-skeleton-v51.txt
+  pieza fb3c8ae13b7f69cb1bed6721d4e93e27536e96cb0a55acd7e8570dea8f711195 TmpIsDirtyCostProbe.cs
+  pieza 6faf8fc9052c1a7185e1c5f431f40272883f66f678830a25645cb6c3f1fc646e trx_message_v50.py
+  pieza 0505ee2b0e165c98568448b0682eba56b4388f71ecd20937c4bc21b6367a9a9b p6_isdirty_pbt4c_v51.sh
+RED de PB-T4c escrito: 16 archivos (esqueleto 8, Skip 4, equivalentes 4), sin las CT
+GREEN de PB-T4c escrito: 13 archivos de src/
+build-release rc=0 errores=0 avisos-CS=0
+resultados=1 lineas=11
+test isdirty.trx rc=1 segundos=48 trx-sha256=1adff95131ee17ec5ab34df152fd4c03f30306bd89d9ba9bd1c791d9c7a37205
+build-server shutdown rc=0
+procesos: 0
+MAINCO []

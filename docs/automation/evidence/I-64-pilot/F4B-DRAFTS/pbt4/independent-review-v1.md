@@ -1694,3 +1694,442 @@ Los 40 tramos (`ir4_v49diff-out.txt`) son todos de la tabla V49:
 - **Nada se compiló ni se ejecutó.** Las medidas son las del autor; las comprobé por sus salidas y sus sha256.
 - **La copia de la v4.9 que leí es la del modo de medida.** La partida de `/d/r4v` la cubren su sha256 en el JSON y CT-20.
 - **El generador** lo leí en `11520ae6…`, todavía en la v4.8. A las 22:36 pasó a `fc7da17d…`, con `PKG_VERSION = 'v4.9'`. De esa versión solo miré los textos de M-08 y `bounded_check`; el paso a la v4.9 no lo revisé.
+
+## §22. Comprobación acotada de PB-T4c (CA-T4c) sobre la v5.0
+
+**Veredicto: EMITIBLE TRAS CORRECCIONES.** B/I/M = **0 / 1 / 3**
+
+**En resumen:**
+- **La lista de 4 está bien:**
+  - cada `Skip` lleva su motivo literal;
+  - cada equivalente es la copia literal con solo lo declarado cambiado;
+  - por texto, la UI de fuera de los filtros no ve nada nuevo.
+- **D-S7 a D-S10 se sostienen por texto y por sus medidas.** La pregunta combinada cumple A-T2b-OWNER-01 tal como lo decidió el Owner.
+- **El contrato literal cuadra:**
+  - las 26 rutas y los 9 `UNIT_CHANGE`;
+  - la lista cerrada de C13 frente al GREEN;
+  - las 85 filas frente a las 77 de PB-T4b;
+  - los totales de cada rama y las autoridades.
+- **En el GREEN no hay traducción de estado,** y D2 se cumple: la ventana y el borrador copian.
+- **Una importante, segura por texto:** CT-PBT4C-15 no puede pasar, ni en el RED ni en el GREEN.
+  - Los dos archivos nuevos de `Draft/` empiezan por `#nullable enable`, y la pureza que copia CT-15 lo prohíbe.
+  - La precondición 6 no corre las CT, así que no lo vio.
+  - Se corrige en el texto, sin el Owner.
+- **Quedan tres menores** y **ninguna decisión nueva para el Owner.**
+
+**Qué se revisó y cómo:**
+- **el paquete:** `I-64-f4b-pbt4-gate-contract-package-v50.md` (`d19dd830…`), frente a la v4.9 (`043f196d…`), con un `diff` palabra a palabra (`ir4_v50diff-out.txt`: 55 tramos);
+- **las decisiones:** `owner-pbt4c-list-3-decision.md` (`a98537ac…`), `owner-pbt4c-list-4-decision.md` (`e9847011…`) y `session-pbt4c-design-decisions.md` (`d1912d97…`);
+- **la lista:** `pbt4c-substitution-list-4.tsv` (`9bd4c17a…`);
+- **las piezas:** `pbt4c-green-v50.txt` (`6b304a00…`), entera, y `pbt4c-skeleton-v50.txt` (`48e097a7…`);
+- **los guiones:** `pbt4c_skips_v50.py`, `make_equivalents_pbt4c_v50.py` y `check_skips_pbt4c_v50.py`;
+- **las sondas:** `pbt4c-probe-editall.cs` (`0d668ed9…`);
+- **la precondición 6:** `compile-check.md` (`bca9fde8…`) y las salidas de `/d/r5f`, `/d/r5g` y `/d/r5h`;
+- **la lectura RR-3:** `v50/check_rr3_v50-out.txt`;
+- **el contrato de PB-T4b emitido:** el objeto git `F4B-PBT4-FULL-DRAFT-PANEL/coordinator/gate-contract.json` de `6adff90d`, igual por sha256 a `v50/pbt4b-gate-contract-6adff90d.json`.
+
+Las pruebas, por objetos git en `6adff90d856026a7a51067c1e9d7248f3d81641c`; sin worktree, sin compilar y sin ejecutar pruebas. Los guiones nuevos, con su `-out.txt`: `ir4_t4c_eq.py`, `ir4_t4c_ui.py`, `ir4_t4c_filters.py` y, para el `diff`, `ir4_v49diff.py`.
+
+### §22.1 La lista de 4 y las dos caídas que añadió el Owner (punto 1)
+
+**Los `Skip`** (`ir4_t4c_eq-out.txt`):
+- los cuatro van en la línea `[Fact]` de su prueba en `6adff90d` (PEG:155, `PushBackSharedReferenceGuardTests.cs:306`, `WorkspaceFullCopyGuardTests.cs:568` y `PushBackWorkspaceApplyCloseTests.cs:686`), con el método en la línea siguiente;
+- el motivo es literal y ASCII, y nombra su equivalente y su decisión;
+- **cada prueba es un `[Fact]`,** así que cada `Skip` deja un solo resultado omitido;
+- **en `/d/r5g`,** `check_skips_pbt4c_v50.py` da PASA (4 archivos, 4 `Skip`, nada más), y las omitidas de la lista llevan sus motivos literales (`check-core-red.txt` y `check-core-green.txt`).
+
+**Los equivalentes.** Los generé en memoria con `make_equivalents_pbt4c_v50.equivalents` sobre los objetos git (`ir4_t4c_eq-out.txt`):
+- **coinciden por sha256** con el `EquivalentSha` del anexo y con lo que escribió `/d/r5g` (`apply-red.txt`);
+- **el texto del anexo** es el generado (en los tres que lo traen entero);
+- **las líneas que no son del original,** en cada uno, son su comentario de cabecera, la línea de su clase y su cambio declarado:
+  - **PEG:155-163:** la fila de `TryEditAll` al final de `Operations`, con su comentario;
+  - **CT-PBT1B-15:** `"archivos=15"`;
+  - **CT-PBT4B-20:**
+    - la clase renombrada;
+    - `Restore`, que además devuelve a `[Fact]` la línea exacta del `Skip` de PB-T4c en PEG:155, con su comentario y la constante `EditAllSkipLine`;
+    - lo demás, el archivo entero, igual: `SkipLine` sigue contando solo los de PB-T4b, así que `skip=` y las líneas esperadas no cambian;
+  - **CT-PBT2B-06:** solo la línea de la ventana 4, a la pregunta combinada, y su `[Collection]` es el del original.
+
+**Medido en `/d/r5g`:**
+- los tres de Core pasan en el RED y en el GREEN;
+- el de UI cae en el RED por aserción y pasa en el GREEN (`check-ui-red.txt` y `check-ui-green.txt`).
+
+**¿Puede caer otra fuera de las 4?**
+- **Core:** la suite completa pasó en las dos ramas, con 19 608 = 19 147 + 0 + 461.
+- **UI de fuera de los filtros** (`ir4_t4c_ui-out.txt`). El GREEN toca FVM, `WorkspacePanelView.xaml` y su `.cs`, y `PendingWork()` de W. Siete clases de fuera de los 19 filtros de UI lo nombran o barren el árbol:
+  - `EditorClosePolicyTests` solo usa `EditorPendingWork`;
+  - `RichEditorCloseContractTests` construye la ventana en CLASSIC (`canInsertInAutoCad: true`), donde nada cambia;
+  - `UiSystemBoundaryGuardTests` mira `x:Class`, las carpetas y los pack URI, y lo nuevo no añade ninguno;
+  - las otras cuatro barren carpetas ajenas;
+  - el botón nuevo usa `SecondaryButtonStyle` y `FlagToVisibility`, que ya usa el archivo.
+
+  **Por texto, ninguna cae.** Lo demás lo ve la CI (C16).
+
+### §22.2 D-S9 y los nombres (punto 2)
+
+`WorkspaceModelBoundaryTests` de `6adff90d` recorre por reflexión los tipos de `RackCad.Application.Workspace`. Sus reglas:
+- `Subscription|Editor|Draft` (:101);
+- `Tab`, salvo `BrowserTab*` (:102);
+- en los nombres de los tipos y de sus miembros públicos, `ProjectSummary|Metric|Provider|TotalRacks|Aggregat|Bom\b` (:83);
+- y, en los archivos de `Workspace/`, ni `Autodesk.`, ni `System.Windows`, ni `RackCad.Plugin`/`UI`, ni las autoridades de escritura (:34-35, :41-42).
+
+**Los nombres nuevos no casan con ninguna:**
+- los tipos nuevos de ese espacio son `EditAllStatus`, `EditAllOutcome` e `IWorkspaceFullEditHost` («Edit», no «Editor»; ninguno lleva `tab`);
+- los miembros públicos nuevos son los siete estados, `Status`, `Reason`, `Begin`, `Applied` y los siete métodos de `EditAllOutcome`, `ShowModal`, `SetFullEditHost` y el `TryEditAll` del soporte;
+- `CommitField(` no es `\bCommit\(`.
+
+**Los nombres de fuera de ese espacio:**
+- `FullEditorModal` (WCo) y `RackWorkspaceEditorWindow` están en el espacio del Plugin, que esa guarda no recorre;
+- PEG:1015, PEG:1079, el censo de portadores y WHHG los mide la suite completa de Core del GREEN, en verde (con las copias de PB-T4b fijadas por `CopySha`).
+
+**WHC conserva sus dos interfaces:** ningún bloque `EDIT` toca la línea de la clase, y `TryEditAll` es una implementación explícita del puerto.
+
+### §22.3 D-S10 y CT-09 (punto 3)
+
+**La sonda** (`probe-ui-lines.txt`, `3ee13f60…`), en WORKSPACE:
+- los dos gestos que escenifican un módulo (la cabecera con `HeaderConfiguratorDialog` y `StageModuleEdit`) dan la pregunta combinada;
+- el conmutador y la selección no escenifican nada;
+- en CLASSIC, la cabecera da la pregunta del módulo.
+
+**La razón estructural lo cierra:**
+- `HasUnappliedDraftChanges()` compara `editable` con `appliedState` (W:3439-3441);
+- `editable` lleva la autoridad de módulos (W:177).
+
+Así que, en WORKSPACE, escenificar deja siempre cambios sin aplicar, y la rama «solo el módulo» de `PendingWork()` solo se alcanza en CLASSIC.
+
+**CT-09 cubre las cuatro respuestas alcanzables:** la combinada, la de solo sin aplicar, ninguna y la del módulo en CLASSIC.
+- **El caso del Owner con otro cambio** (el módulo y la tolerancia), «por ejemplo, la tolerancia», lo fija el equivalente de CT-PBT2B-06 (su ventana 4, n.º 86).
+- También lo midió la sonda (`cabecera-y-sin-aplicar`).
+
+**A-T2b-OWNER-01** (`owner-pbt2b-close-decisions.md:36`) pide «una sola pregunta que nombre las dos cosas, con su prueba». El GREEN (`pbt4c-green-v50.txt:430-433` y :442-443) lo cumple.
+- **En la novena tanda,** el Owner rechazó expresamente la opción 2, que limitaba la pregunta a cambios que no vinieran del propio módulo.
+- **Así que la combinada,** también cuando lo sin aplicar es el propio módulo, es lo que decidió.
+
+M-03, por el comentario del GREEN.
+
+### §22.4 D-S7 y D-S8 (punto 4)
+
+**D-S7:** en `6adff90d` hay dos costuras.
+- `HeaderConfiguratorDialog` (W:1488) es un `Func<RackFrameConfiguration, RackFrameConfiguration>`, y `ConfigureModuleHeader` lo llama en lugar del diálogo (W:1901-1903).
+- `HeaderConfiguratorPresenter` (W:2373) recibe un `RackFrameConfiguratorWindow` ya construido.
+- CT-09 (v5.0:1564) usa la primera, así que **no se construye el configurador** (C05).
+
+**D-S8** (`ir4_t4c_filters-out.txt`):
+- **las 85 filas** son las 77 del contrato de PB-T4b, con su número, su filtro y su `ExpectRed` false. Solo bajan el n.º 7 (2 → 1), el 12 (2 718 → 2 716: PEG:155 y `WorkspaceFullCopyGuardTests`, que el filtro selecciona por subcadena) y el 36 (4 → 3). **El n.º 43 sale;**
+- **las 9 nuevas son del n.º 78 al 86:**
+  - cada una selecciona solo su clase;
+  - ninguna de esas clases existe en `6adff90d` (1 117 clases leídas);
+  - ningún filtro heredado selecciona una clase nueva;
+- **coincide con lo medido** (`filter-overlap-v50b.txt`, sobre las TRX).
+
+**Las dos clases de las CT que pasan en el RED** (n.º 80 y 81: CT-07 y CT-15) van con `ExpectRed` false. Así que ningún filtro con `ExpectRed` true selecciona una prueba que pase (C04), salvo por I-01, que afecta al n.º 81 al revés: falla donde debe pasar.
+
+### §22.5 El contrato literal (punto 5)
+
+**El alcance y el cambio:**
+- **`AllowedWriteScope`** tiene 26 rutas:
+  - 9 existentes y 4 nuevas de `src/`;
+  - 5 clases de las CT;
+  - 4 equivalentes;
+  - 4 archivos de `Skip`.
+- **Los 13 de `src/`** son los que escribe `/d/r5g` (`apply-green.txt`).
+- **`UNIT_CHANGE`** son las 9 existentes.
+
+**Los invariantes:**
+- **INV-03** cuadra: `ForDraft` y `EnterPanelModal()` no tienen ningún llamador en `src/` de `6adff90d`, así que con el GREEN tienen uno cada uno.
+- **INV-05 e INV-06,** con D-S9 y D-S10.
+
+**C13 frente al GREEN:** la lista cerrada (v5.0:2398) es, nombre a nombre, lo que declara el GREEN:
+- el puerto;
+- WEI: el enumerado con sus 7 estados y la estructura con su constructor privado, 4 propiedades y 7 métodos;
+- WHC: 4 constantes, el campo, `SetFullEditHost`, la implementación explícita y `EditAllOfPilot`;
+- la compuerta;
+- WCo: el reenvío del adaptador, y `FullEditorModal` con sus dos campos, su constructor y `ShowModal`;
+- FVM: 3 constantes, `ShowEditAllButton`, `EditAll`, `EditAllNoticeOf` y `SentenceOf`;
+- el `x:Name` del botón y su manejador;
+- la constante de W;
+- y los cuatro archivos nuevos, con sus miembros.
+
+Los cambios que no son declaraciones también cuadran: en WHC ningún cuerpo existente cambia, `RaiseAll` gana una línea, `PendingWork` gana su primer `if` y el cableado va en WCo.
+
+**Los totales** (`[14]`), por la aritmética de la base de PB-T4b (Core 19 605 = 19 147 + 458; UI 2 481 = 2 433 + 48):
+- **las piezas:** 4 `Skip` de `[Fact]` (3 en Core y 1 en UI), 4 equivalentes `[Fact]`, y 15 CT: 11 de Core, con 6 + 3 + 1 + 1, y 4 de UI;
+- **Core:**
+  - GREEN 19 605 + 3 + 11 = **19 619** = 19 158 + 0 + 461;
+  - RED, 9 `Failed` (las de los n.º 78 y 79): 19 149 + 9 + 461;
+- **UI:**
+  - GREEN 2 481 + 1 + 4 = **2 486** = 2 437 + 0 + 49;
+  - RED, 5 `Failed` (4 CT y el equivalente): 2 432 + 5 + 49;
+- **lo medido sin las CT** en `/d/r5g`: Core 19 608 = 19 147 + 0 + 461 en las dos ramas;
+- **`[13]`** describe la entrada «## PB-T4c» del registro declarado con lo que hay.
+
+**Las autoridades.**
+- **Se quitan** las n.º 43 a 64 y 66 a 71 del contrato de PB-T4b. Ninguna la necesita PB-T4c:
+  - el equivalente de CT-PBT4B-20 lleva sus sha256 escritos en el código, y no lee la lista, el mapa ni el JSON;
+  - el kit está en `tests/` y lo protege el `ForbiddenWriteScope`.
+- **Se añaden:**
+  - las dos tandas y D-S7 a D-S10;
+  - `owner-pbt2b-close-decisions.md` (:36 es, en efecto, el registro de A-T2b-OWNER-01);
+  - `owner-pbt4b-code-decisions.md`: existe en `6adff90d` y manda sus vacíos a PB-T4d, no a PB-T4c.
+
+### §22.6 El GREEN literal (punto 6)
+
+**Leí la pieza entera.** Cumple D-PBT4-12 a 17:
+- **el gesto:**
+  - `EditAll` confirma el texto pendiente con `CommitField` antes de abrir (R-PB-10);
+  - con `Invalid`, `Busy` o `Rejected` no llama a `TryEditAll`;
+  - comprueba que la superficie sigue siendo suya;
+- **`TryEditAll`:**
+  - va en el puerto con su cuerpo por defecto;
+  - en WHC, con la marca de lectura alrededor de todo (K = 1);
+  - la compuerta, antes que la actualización en vuelo;
+  - empieza el borrador si falta, por `TryBeginPilotEdit`, con su lectura;
+  - las excepciones, contenidas con `Report`;
+  - `NotePilotEdit` en cada aplicar;
+- **los dos reenvíos:** el de la compuerta, con `Waiting` dentro de un aviso, y el del adaptador de WCo;
+- **el modal en dos piezas:**
+  - `FullEditorModal`, con `EnterPanelModal`;
+  - `RackWorkspaceEditorWindow.Show`, sin dueño;
+- **«Cerrar»** en W.
+
+**No hay traducción de estado:**
+- el lanzamiento lleva el `Editable` del borrador completo;
+- `ApplyToDraft` construye `PushBackFullDraftState(edited, Origin)` con el origen que el borrador ya tiene.
+
+**D2 se cumple:**
+- la ventana copia el estado al cargar (`PushBackEditableStateComparer.Copy(launch.State)`, W:177);
+- `DraftSession.SetCurrentDraftState` guarda una copia (`DraftSession.cs:342-350`);
+- así que ninguna copia comparte un objeto mutable con su original, y CT-11 lo fija con las huellas.
+
+**El proyecto del sobre** se lee con `RackEmbedStore` y `RackProjectStore`, como `PushBackFullDraftMaterializer.cs:55-60`. Esos dos no están entre los términos prohibidos de la pureza.
+
+**Pero esos mismos dos archivos rompen la pureza por la directiva:** I-01.
+
+### §22.7 RR-3 (punto 7)
+
+**Las filas de PB-T4c** (v5.0:1845-1849):
+- una por clase de las CT, con su clase y sus CT, en la forma de la de CT-19 de PB-T4b;
+- sus CT suman las 15, y la de CT-08 nombra `PushBackEditAllGuardTests`.
+
+**La lectura de la cadena** (`check_rr3_v50-out.txt`):
+- **0 errores**, y las cinco clases, con sus líneas y nada pendiente;
+- **los cuatro equivalentes,** `sin-fila` con «PENDIENTE», y aun así `RESULTADO PASA`.
+
+Es lo que dice §6.0 (v5.0:1729): los equivalentes no admiten reparación (RR-2). El n.º 86, el equivalente de UI con `ExpectRed` true, no se puede reparar, y si cayera donde no se espera sería C07.
+
+### §22.8 Decisiones nuevas para el Owner (punto 8)
+
+**Ninguna.**
+- I-01 se corrige en el texto de dos archivos nuevos de `src/`, sin cambiar la lista, el comportamiento visible ni los totales.
+- Las dos tandas de PB-T4c ya están decididas.
+
+### §22.9 Hallazgos
+
+| Id | Grav. | Dónde | Qué | Arreglo |
+|---|---|---|---|---|
+| **I-01** | I | `pbt4c-green-v50.txt:462` y :495; `pbt4c-skeleton-v50.txt:40` y :59; el anexo V50-A; CT-PBT4C-15 (v5.0:1570); la regla del §5.0 (v5.0:1438-1439) | **CT-PBT4C-15 no puede pasar.**<br>• **El texto:** `PushBackFullDraftLaunch.cs` y `PushBackFullDraftStatePort.cs`, en `Draft/`, empiezan por `#nullable enable`, en el esqueleto y en el GREEN.<br>• **La regla:** CT-15 copia la pureza de CT-PBT3A-14, y `Purity` da `#nullable` en cuanto ve `^\s*#nullable` (`PushBackFullReadGuardTests.cs:293-296` y `PushBackDraftWriteGuardTests.cs:294-298` de `6adff90d`). Su línea esperada es `pureza archivos=2 violaciones=[]`.<br>• **El precedente:** ningún archivo de `Draft/` de `6adff90d` lleva la directiva, y CT-PBT4B-19 lo exige a los tres de PB-T4b.<br>• **El RED:** el n.º 81 (`PushBackDraftLaunchGuardTests`, `ExpectRed` false) falla, y el criterio del RED no se cumple.<br>• **El GREEN:** una línea esperada no se cumple (C07). El Worker no puede tocar el `src/` literal ni la línea esperada, y una reparación del RED no puede cambiarla.<br>• **Por qué no se vio:** la precondición 6 no corre las CT, y las sondas no cubren la CT-15 | **Quitar `#nullable enable` de los dos archivos,** en el esqueleto y en el GREEN.<br>**Y, por la regla del §5.0 (CA-T4a I-01),** quitar también el `?` de `private static RackProject? ProjectOf(string origin)` (GREEN :485). Sin la directiva daría CS8632, porque `Nullable` está en `disable`.<br>**Lo que sigue:**<br>• el sha256 de las dos piezas cambia;<br>• la precondición 6 repite los pasos 2 a 7, para la compilación con 0 avisos CS;<br>• conviene una sonda de las líneas de CT-15 sobre el GREEN.<br>No cambian la lista, los totales ni los filtros, y no necesita al Owner |
+| M-01 | M | v5.0:1548 | **«Las líneas de CT-03, 04, 05 y 12 son las que dio la sonda»** no es del todo así.<br>• **Lo que no salió de la sonda:** `probe-core-lines.txt` no trae las líneas `cola`, `conflict` ni `error` de CT-03, ni `adaptador-aplica` de CT-04. Salen del texto.<br>• **Lo derivado:** el `lecturas-dentro=0` de CT-05 se deriva. La sonda imprime `lecturas-dentro=1`, que es el total del lector con la lectura de `Begin` (`pbt4c-probe-editall.cs:198`).<br>• **La cita:** es de la vuelta parada, `out-probes-v50-r5d/probe-editall-lines.txt`; la que vale es `out-probes-v50b-r5f/probe-core-lines.txt` | **Decir qué líneas se midieron y cuáles se derivan del texto;**<br>**definir `lecturas-dentro`** como las lecturas durante `ShowModal;`<br>**citar `/d/r5f`** |
+| M-02 | M | el anexo V50-A, :3902 y siguientes; `make_equivalents_pbt4c_v50.py` (`E1_HEAD`) | **El equivalente de PEG:155-163 conserva el nombre «…ThePortDeclaresTheSeventeenOperations…»** y afirma dieciocho. Es la copia literal que decidió el Owner, pero no se declara (como §20 M-02) | Una frase en §6.3.1: el nombre se conserva, y la regla es la de la tabla |
+| M-03 | M | `pbt4c-green-v50.txt:430-431` | **El comentario del GREEN contradice D-S10.** Dice «each of them alone asks the question of today». En WORKSPACE, el módulo solo no se alcanza (D-S10, INV-05): lo hace la rama de CLASSIC. No cambia el comportamiento | Ajustar el comentario: «in WORKSPACE a staged module always leaves unapplied changes (D-S10); the module question alone is the one of CLASSIC» |
+
+### §22.10 Lo que hay que hacer antes de emitir, y la línea BOUNDED
+
+1. **El paquete v5.1:**
+   - I-01: las dos piezas, el anexo y la CT-15 intacta;
+   - M-01 a M-03;
+   - una fila del registro de cambios que nombre «**CA-T4c I-01**».
+2. **La precondición 6, otra vez,** de los pasos 2 a 7, con las piezas nuevas. **Lo esperado:**
+   - la compilación con 0 avisos CS, el Plugin incluido;
+   - los mismos totales sin las CT (Core 19 608 = 19 147 + 0 + 461);
+   - y la sonda de CT-15.
+3. **Una recomprobación corta,** como §23.
+
+**La línea BOUNDED** que propongo, en ASCII:
+
+> EMITIBLE TRAS CORRECCIONES; B 0 / I 1 / M 3; las importantes corregidas en el paquete v5.1 (I-01, los dos archivos nuevos de Draft/ empiezan por #nullable enable y la pureza de CT-PBT4C-15 lo prohibe: sin la directiva y sin el ? de ProjectOf); sin decisiones nuevas del Owner; precondicion 6 sobre 6adff90d: pasos 2 a 7 cumplen, sin las CT
+
+**Tras la recomprobación,** se le añade `; recomprobacion v5.1: EMITIBLE, B 0 / I 0 / M <n>`.
+
+**`bounded_check` de `make_pbt4c_contract.py`** (`77aaa3be…`), extraído entre sus marcas con su función del tramo, sobre esta §22, la v5.0 y la línea (`ir4_t4c_bounded.py`, `ir4_t4c_bounded-out.txt`):
+- encuentra la sección 22;
+- la línea es ASCII, de 339 caracteres;
+- **sobre la v5.0 da un solo error, el esperado:** «ningun registro de cambios del paquete corrige I-01 de CA-T4c»;
+- **con una fila `| **V51-01** | **CA-T4c I-01** …`** en el paquete, da 0 errores.
+
+### §22.11 Límites
+
+- **Nada se compiló ni se ejecutó.** Las medidas son las del autor; las comprobé por sus salidas y sus sha256.
+- **Las CT no las ha ejecutado nadie:** las escribe el Worker.
+  - Las líneas que no midieron las sondas las comprobé por texto donde se podía (CT-01, 07, 08, 13 y 15). I-01 sale de ahí.
+  - Las de comportamiento (CT-02, 06, 10, 11 y 14) las acepté por su coherencia con el GREEN.
+- **El barrido de la UI de fuera de los filtros es por texto,** con patrones. Una prueba que lea la UI de otra forma solo la vería la CI.
+- **No revisé** `make_v50.py`, `walk_guards_pbt4c_v50.py` ni la remedición de anclajes de V50-01. Lo de PB-T4a y PB-T4b lo comprobé con el `diff`: los tramos fuera de PB-T4c son las filas de PB-T4c en tablas comunes, sin cambiar lo de PB-T4a ni lo de PB-T4b.
+
+## §23. Recomprobación de la v5.1
+
+**Veredicto: EMITIBLE.** B/I/M = **0 / 0 / 1**
+
+**En resumen:**
+- **I-01 está corregida.**
+  - Los dos archivos de `Draft/` quedan sin `#nullable` y sin el `?`, en el esqueleto y en el GREEN.
+  - La pureza de CT-15 se cumple por texto.
+  - Ningún otro archivo nuevo incumple una regla de texto que le aplique.
+- **M-01 a M-03 están aplicados.** La tabla de §5.3 dice la verdad frente a la sonda, línea a línea.
+- **El paso 8 nuevo se sostiene:**
+  - el ensayo usa las líneas literales de §5.3;
+  - su control sobre la v5.0 ve I-01;
+  - el censo de C13 es correcto;
+  - y lo que no cubre está declarado.
+- **De la v5.0 a la v5.1 no cambia nada más** que lo de la tabla V51: ni la lista, ni los totales, ni los filtros, ni las decisiones.
+- **Queda una menor de cita,** y **no hay ninguna decisión nueva para el Owner.**
+
+**Qué se revisó y cómo:**
+- **el paquete:** `I-64-f4b-pbt4-gate-contract-package-v51.md` (`34ca0026…`), frente a la v5.0 (`d19dd830…`), con el `diff` palabra a palabra (`ir4_v51diff-out.txt`: 40 tramos);
+- **las piezas:** `pbt4c-green-v51.txt` (`081ef77e…`) y `pbt4c-skeleton-v51.txt` (`f8840c67…`), con `diff` frente a las de la v5.0;
+- **las CT como datos:** `pbt4c_ct_table_v51.py` (`5ee03f8e…`), frente al de la v5.0;
+- **el ensayo:** `pbt4c-rehearsal-textct.cs` (`ede5d822…`);
+- **la precondición 6:** `compile-check.md` (`060c5c8b…`) y las salidas de `/d/r5i` (`r5i-en/`), `/d/r5j` (`r5j-rg/`) y `/d/r5l` (`r5l-cc/`), con el censo (`census-c13.txt`);
+- **la lectura RR-3:** `v51/check_rr3_v51-out.txt`.
+
+Las pruebas, por objetos git en `6adff90d`; sin worktree y sin compilar. Los guiones nuevos, con su `-out.txt`: `ir4_t4c51_purity.py` (sobre la v5.1 y, como control, sobre la v5.0) e `ir4_t4c51_rehearsal.py`; y, para el `diff`, `ir4_v49diff.py`.
+
+### §23.1 I-01 (punto 1)
+
+**Las piezas:** frente a las de la v5.0 solo cambian:
+- la cabecera de cada pieza;
+- en el GREEN, las dos líneas `#nullable enable` (:462 y :495 de la v5.0), `RackProject? ProjectOf` → `RackProject ProjectOf` (:485) y el comentario de W (M-03);
+- en el esqueleto, las dos líneas `#nullable enable` (:40 y :59).
+
+**Por texto** (`ir4_t4c51_purity-out.txt`): apliqué la `Purity` de CT-PBT3A-14, tal como la copia CT-15 (la directiva, un solo espacio de nombres en bloque y los 13 términos), a los dos archivos de `Draft/`.
+- **En el GREEN y en el esqueleto:** `violaciones=[]`, y ningún `?` de tipo de referencia.
+- **El mismo guion sobre la v5.0** da `#nullable` en los dos y `RackProject?`: el control ve lo que debía.
+
+**Los otros dos archivos nuevos conservan la directiva,** y eso es correcto:
+- **`IWorkspaceFullEditHost.cs`** está en `Application/Workspace`, donde la llevan WHC, WEI y la interfaz del puerto. Su guarda (`WorkspaceModelBoundaryTests`) no mira la directiva.
+- **`RackWorkspaceEditorWindow.cs`** está en `Plugin/Views`, como RIA, que también la lleva.
+- **Las reglas de texto que les aplican** las cumplen, en las dos ramas:
+  - CT-07 y CT-08 (el ensayo, §23.3);
+  - el censo de archivos del Plugin del equivalente de CT-PBT1B-15, y las guardas del Plugin y de `Workspace/` (la suite completa de Core, en verde en `/d/r5j`).
+- **La regla del §5.0** los admite: llevan la directiva, y no tienen ningún `?`.
+
+**Medido:** en `/d/r5j`, 0 errores y 0 `warning CS` en Core, UI y el Plugin, en las dos ramas.
+
+### §23.2 M-01 a M-03 (punto 2)
+
+**M-01** (V51-02). Comparé las 38 líneas de CT-03, 04, 05 y 12 de la tabla de §5.3 (v5.1:1618-1660) con `probe-core-lines.txt`:
+- **la tabla dice la verdad,** línea a línea:
+  - **22 tal cual:** las 4 de CT-04 y las 18 de CT-05;
+  - **9 con los campos de la CT:** la sonda imprime además `aplicadas`, `motivo`, `lecturas` o `estado-del-borrador`, con los mismos valores en lo que la CT fija;
+  - **3 derivadas:** `borrador=Clean`, `borrador=Dirty` y `lecturas-dentro=0`, con su regla;
+  - **4 del texto,** que la sonda no tiene: `cola`, `conflict`, `error` y `adaptador-aplica`;
+- **la definición de `lecturas-dentro`** (las lecturas durante `ShowModal`) está, y la cita de `/d/r5d` sale;
+- **las líneas de la sonda en `/d/r5i`** son, por sha256, las de `/d/r5f` (`cbbd8457…` y `3ee13f60…`);
+- **los datos de las CT** (`pbt4c_ct_table_v51.py`) son los de la v5.0, salvo su comentario de cabecera.
+
+M-01 de esta sección, por una cita.
+
+**M-02** (V51-03): está en §6.3.1 (v5.1:2527). Dice que el nombre se conserva por ser la copia literal, y que lo que fija es la tabla.
+
+**M-03** (V51-04): el comentario del GREEN (`pbt4c-green-v51.txt:430-432`) dice ahora que, en WORKSPACE, un módulo escenificado deja siempre cambios sin aplicar (D-S10). Así, la pregunta del módulo sola es la de CLASSIC. Casa con D-S10 y con INV-05, y el código no cambia.
+
+### §23.3 El paso 8 (punto 3)
+
+**El ensayo usa las líneas literales.** Comparé los arreglos de su `Assert.Equal` con las líneas de `pbt4c_ct_table_v51.py` y con §5.3 (`ir4_t4c51_rehearsal-out.txt`):
+- **son, en su orden, las mismas,** sin ninguna calculada: CT-01 4 de 4, CT-07 54 de 54, CT-08 4 de 4, CT-13 3 de 3 y CT-15 33 de 33;
+- **cada línea está en §5.3** entre comillas invertidas;
+- **la `Purity` y los `ForbiddenTerms` de su CT-15** son los de CT-PBT3A-14, sobre los dos archivos de `Draft/`.
+
+**Lo medido en `/d/r5i`:**
+- **en el RED:** CT-01, 08 y 13 caen por aserción, con la primera línea del StackTrace en el ensayo, y CT-07 y CT-15 pasan;
+- **en el GREEN:** pasan las cinco;
+- **lo que eso confirma:** el reparto de `ExpectRed`, con los n.º 79, 80 y 81. En el RED, el esqueleto es inerte y no lanza nada: las caídas son por las líneas, no por una excepción (C04).
+
+**El control discrimina** (`r5l-cc/control-red.txt` y `control-green.txt`). Sobre las piezas de la v5.0:
+- CT-15 cae en las dos ramas, con su primera diferencia en `pureza archivos=2 violaciones=[src/…`;
+- las otras cuatro dan lo mismo que con la v5.1.
+
+Así que el ensayo habría visto I-01.
+
+**El censo es correcto** (`census-c13.txt`). Lo rehice a mano frente al GREEN de la §22.5, y las cuentas coinciden:
+- el puerto, 1;
+- WEI, 21: el enumerado y sus 7 estados, la estructura, su constructor, 4 propiedades y 7 métodos;
+- WHC, 8;
+- la compuerta, 1;
+- WCo, 6;
+- FVM, 7;
+- el XAML, el `.cs` y W, 1 cada uno;
+- y los cuatro nuevos: 2, 3, 5 y 2.
+
+Las del esqueleto también: WHC 1, FVM 2, el lanzamiento 2 y los demás nuevos enteros, todas dentro de la lista. Además, el censo lleva sus siete autopruebas, todas `falla`, y los nombres de `RackCad.Application.Workspace` sin violaciones.
+
+**Lo que no cubre está declarado, y con honradez** (v5.1:2543-2547):
+- **lo que el paso 8 no cubre:**
+  - CT-02, 06 y 14 (la FVM con un doble, en UI);
+  - CT-10 y CT-11;
+  - las cuatro líneas de CT-03 y 04 que salen del texto;
+  - y el RED de las CT de comportamiento;
+- **lo que no ve el censo:** la visibilidad, la firma, los miembros que genera el compilador, las locales y las lambdas;
+- **la razón** de no ensayar las de comportamiento: un ensayo sería una versión de la sesión, no la CT del Worker.
+
+Lo que queda fuera lo verían la CI del RED y la del GREEN, como dice el paquete.
+
+### §23.4 El diff de la v5.0 a la v5.1 (punto 4)
+
+Los 40 tramos son todos de la tabla V51:
+- **la cabecera** y la tabla V51, con la de la v5.0 pasada a historia;
+- **los nombres de las piezas** y de los guiones v5.1, con sus sha256 (D-PBT4-13, §6.3, §6.3.1 y §6.3.2);
+- **§5.3:** la frase de las procedencias y la tabla línea a línea (V51-02);
+- **la frase de M-02** (V51-03);
+- **los pasos 8 y 9 de la precondición 6,** lo que cubre y lo medido en la v5.1 (V51-05 y V51-06);
+- **R-T4-29 en §7,** y §9 y §11 con las corridas nuevas;
+- **en el anexo,** el comentario de W y las cuatro líneas de la directiva y el `?`.
+
+**Lo que no cambia, comprobado:**
+- **la lista:** ni una fila ni su sha256 (`9bd4c17a…`);
+- **los `Skip`, los equivalentes y su `EquivalentSha`;**
+- **la tabla de las CT:** las filas 01 a 15;
+- **los 85 `RequiredTests`;**
+- **los totales** de `[14]`;
+- **las autoridades,** salvo la sección de la n.º 65 («§23»);
+- **las decisiones del Owner y de la sesión.**
+
+**Medido en `/d/r5j`:**
+- Core 19 608 = 19 147 + 0 + 461 en las dos ramas;
+- en la UI, en el RED solo cae el n.º 18 (el equivalente de CT-PBT2B-06) y en el GREEN, ninguno;
+- los `Skip` y los filtros: PASA;
+- D = 0, K = 4 y E = 4.
+
+**RR-3** (`check_rr3_v51-out.txt`, sobre la v5.1): 0 errores, las cinco clases con sus líneas, y los cuatro equivalentes sin fila, como en la v5.0.
+
+### §23.5 Hallazgos
+
+| Id | Grav. | Dónde | Qué | Arreglo |
+|---|---|---|---|---|
+| M-01 | M | v5.1:1628 y :1631 (la tabla de §5.3, `conflict` y `error`) | **La razón de las dos líneas cita `DraftSession.cs:331-332`,** el `CanEdit` del borrador. Lo que decide en `EditAllOfPilot` es `view.CanEdit` (`WorkspaceHostCore.cs:1805-1806` de `6adff90d`: registrado y Clean, Dirty o Conflict). Da lo mismo: Conflict abre y Error se rechaza | Citar `WorkspaceHostCore.cs:1805-1806` junto a `DraftSession.cs` |
+
+### §23.6 Decisiones nuevas para el Owner (punto 5)
+
+**Ninguna.**
+- I-01 se corrigió en el texto de dos archivos nuevos, sin cambiar la lista, los totales, los filtros ni el comportamiento visible.
+- El paso 8 es una comprobación de la sesión.
+
+### §23.7 La línea BOUNDED
+
+**La cola:**
+
+> ; recomprobacion v5.1: EMITIBLE, B 0 / I 0 / M 1
+
+**La línea entera,** la de la §22.10 con la cola, en ASCII:
+
+> EMITIBLE TRAS CORRECCIONES; B 0 / I 1 / M 3; las importantes corregidas en el paquete v5.1 (I-01, los dos archivos nuevos de Draft/ empiezan por #nullable enable y la pureza de CT-PBT4C-15 lo prohibe: sin la directiva y sin el ? de ProjectOf); sin decisiones nuevas del Owner; precondicion 6 sobre 6adff90d: pasos 2 a 7 cumplen, sin las CT; recomprobacion v5.1: EMITIBLE, B 0 / I 0 / M 1
+
+**`bounded_check` de `make_pbt4c_contract.py`** (`1af60d9a…`), extraído entre sus marcas con su función del tramo, sobre las secciones 22 y 23 de este informe, la v5.1 y esa línea (`ir4_t4c51_bounded.py`, `ir4_t4c51_bounded-out.txt`):
+- encuentra las secciones 22 y 23;
+- la línea es ASCII, de 387 caracteres;
+- da **0 errores**.
+
+### §23.8 Límites
+
+- **Nada se compiló ni se ejecutó.** Las medidas son las del autor; las comprobé por sus salidas y sus sha256.
+- **El ensayo es la versión de la sesión de las CT de texto.** Prueba que las líneas literales se pueden cumplir sobre el `src/` literal, no que la CT del Worker sea igual.
+- **No revisé** `make_v51.py`, `make_pieces_v51.py`, `make_tools_v51.py` ni `make_rehearsal_v51.py` por dentro. Comprobé sus salidas: las piezas, por `diff`; el ensayo, por sus líneas y su `Purity`.

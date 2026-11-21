@@ -1,0 +1,6 @@
+| Clase | GREEN (P / F / S) |
+|---|---|
+| `RackCad.Tests.TmpIsDirtyCostProbe` | 0 / 1 / 0 |
+| **Total (1 clases)** | **0 / 1 / 0** |
+
+TRX leidas (1): GREEN isdirty.trx 1adff95131ee

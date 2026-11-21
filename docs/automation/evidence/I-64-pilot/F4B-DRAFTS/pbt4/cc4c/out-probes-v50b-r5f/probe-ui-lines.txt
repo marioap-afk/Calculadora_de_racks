@@ -1,0 +1,9 @@
+## RackCad.UI.Tests.TmpPbt4cCloseProbe.Probe
+ninguna antes=ninguna modulo-escenificado=False pregunta=ninguna
+solo-conmutador antes=ninguna modulo-escenificado=False pregunta=ninguna
+solo-seleccion antes=ninguna modulo-escenificado=False pregunta=ninguna
+cabecera antes=ninguna modulo-escenificado=True pregunta=[Hay un cambio de módulo sin confirmar y cambios sin aplicar al borrador; se perderán los dos al cerrar. ¿Deseas continuar?]
+stage-module-edit antes=ninguna modulo-escenificado=True pregunta=[Hay un cambio de módulo sin confirmar y cambios sin aplicar al borrador; se perderán los dos al cerrar. ¿Deseas continuar?]
+solo-sin-aplicar antes=ninguna modulo-escenificado=False pregunta=[Hay cambios sin aplicar al borrador que se perderán al cerrar. ¿Deseas continuar?]
+cabecera-y-sin-aplicar antes=ninguna modulo-escenificado=True pregunta=[Hay un cambio de módulo sin confirmar y cambios sin aplicar al borrador; se perderán los dos al cerrar. ¿Deseas continuar?]
+clasico-cabecera modulo-escenificado=True pregunta=[Hay cambios de módulo sin confirmar que se perderán al cerrar. ¿Deseas continuar?]

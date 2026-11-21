@@ -1,0 +1,5 @@
+BOUNDED (339 chars, ascii True); sections ('22', '23')
+cat4c_report: sections found ['22']; slice 270 lines
+v5.0 as is: 1 error(s)
+  - ningun registro de cambios del paquete corrige I-01 de CA-T4c
+with a V51-01 row naming CA-T4c I-01: 0 error(s)

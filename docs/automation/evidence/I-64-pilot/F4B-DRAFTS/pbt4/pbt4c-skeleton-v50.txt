@@ -1,0 +1,100 @@
+@@@@ PB-T4c (paquete v5.0): el esqueleto exacto de src/ del RED. FROMGREEN toma enteros los bloques del GREEN de esa ruta (pbt4c-green-v50.txt);
+@@@@ los demas bloques son los del esqueleto. Gate, WCo, PV, PV.xaml.cs y W no cambian en el RED. Saltos de linea \n.
+@@@@ FROMGREEN src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs
+@@@@ FROMGREEN src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+@@@@ FROMGREEN src/RackCad.Application/Workspace/IWorkspaceFullEditHost.cs
+@@@@ EDIT src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+@@@@ OLD
+        public void SetPilotUpdateHost(IPushBackPilotUpdateHost host) =>
+            _updateHost = host ?? throw new ArgumentNullException(nameof(host));
+@@@@ NEW
+        public void SetPilotUpdateHost(IPushBackPilotUpdateHost host) =>
+            _updateHost = host ?? throw new ArgumentNullException(nameof(host));
+
+        /// <summary>I-64 F4B PB-T4c (RED): the setter of the host of the full editor of "Editar todo", still without effect.</summary>
+        public void SetFullEditHost(IWorkspaceFullEditHost host)
+        {
+        }
+@@@@ END
+@@@@ EDIT src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+@@@@ OLD
+        public bool ShowEditButton => _showEdit;
+@@@@ NEW
+        public bool ShowEditButton => _showEdit;
+
+        /// <summary>I-64 F4B PB-T4c (RED): the "Editar todo" button, still never offered.</summary>
+        public bool ShowEditAllButton => false;
+@@@@ END
+@@@@ EDIT src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+@@@@ OLD
+        /// <summary>Enter or leaving the box: commits the pending text, only with pending text and an editable box.</summary>
+@@@@ NEW
+        /// <summary>I-64 F4B PB-T4c (RED): "Editar todo", still without effect: it calls no operation of the port.</summary>
+        public void EditAll()
+        {
+        }
+
+        /// <summary>Enter or leaving the box: commits the pending text, only with pending text and an editable box.</summary>
+@@@@ END
+@@@@ NEWFILE src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftLaunch.cs
+#nullable enable
+using System;
+using RackCad.Application.Workspace.Drafts;
+
+namespace RackCad.Application.Systems.PushBack.Draft
+{
+    /// <summary>I-64 F4B PB-T4c (RED): the launch of the full Push Back editor over the full draft of the panel, still without the project of its origin.</summary>
+    public static class PushBackFullDraftLaunch
+    {
+        public static PushBackDraftEditorLaunch For(DraftSession<PushBackFullDraftState> draft, IPushBackDraftStatePort port)
+        {
+            if (draft == null) throw new ArgumentNullException(nameof(draft));
+            if (port == null) throw new ArgumentNullException(nameof(port));
+            return new PushBackDraftEditorLaunch(draft.CurrentDraftState.Editable, draft.RackId, null, port);
+        }
+    }
+}
+@@@@ END
+@@@@ NEWFILE src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftStatePort.cs
+#nullable enable
+using System;
+using RackCad.Application.Workspace.Drafts;
+
+namespace RackCad.Application.Systems.PushBack.Draft
+{
+    /// <summary>I-64 F4B PB-T4c (RED): the port of the full editor over the full draft of the panel, still without effect: it hands nothing to the draft.</summary>
+    public sealed class PushBackFullDraftStatePort : IPushBackDraftStatePort
+    {
+        private readonly DraftSession<PushBackFullDraftState> _draft;
+        private readonly Action _applied;
+
+        public PushBackFullDraftStatePort(DraftSession<PushBackFullDraftState> draft, Action applied)
+        {
+            _draft = draft ?? throw new ArgumentNullException(nameof(draft));
+            _applied = applied ?? throw new ArgumentNullException(nameof(applied));
+        }
+
+        public PushBackDraftApplyResult ApplyToDraft(PushBackEditableState edited)
+        {
+            if (edited == null) throw new ArgumentNullException(nameof(edited));
+            return new PushBackDraftApplyResult(PushBackDraftApplyStatus.NotEditable, _draft.IsDirty && _applied != null);
+        }
+    }
+}
+@@@@ END
+@@@@ NEWFILE src/RackCad.Plugin/Views/RackWorkspaceEditorWindow.cs
+#nullable enable
+using RackCad.Application.Systems.PushBack;
+
+namespace RackCad.Plugin.Views
+{
+    /// <summary>I-64 F4B PB-T4c (RED): the opener of the full Push Back editor for "Editar todo", still without effect.</summary>
+    internal static class RackWorkspaceEditorWindow
+    {
+        internal static void Show(object launch)
+        {
+            _ = launch as PushBackDraftEditorLaunch;
+        }
+    }
+}
+@@@@ END

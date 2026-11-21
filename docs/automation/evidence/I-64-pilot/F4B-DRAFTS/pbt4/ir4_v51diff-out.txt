@@ -1,0 +1,295 @@
+== replace v4.8:3-3 -> v4.9:3-3
+   - v5.0
+   + v5.1
+== replace v4.8:5-5 -> v4.9:5-48
+   < **Estado:** v5.0. Escribe **PB-T4c** (`F4B-PBT4-EDIT-ALL-WINDOW`, «Editar todo») en forma literal, como la v4.4 a la v4.9 lo hicieron con PB-T4b, sobre el **cierre de PB-T4b** (`6adff90d`, F4B-E53: CERRADA, intento 1 de 3; el GREEN `c065080d` es el texto literal de la v4.9). La remedición se hizo po
+   > **Estado:** v5.1. Corrige **PB-T4c** con la comprobación acotada **CA-T4c** (`independent-review-v1.md`, §22: EMITIBLE TRAS CORRECCIONES, **0/1/3**, sin decisiones nuevas del Owner):
+   > - **I-01:** los dos archivos nuevos de `Draft/`, sin `#nullable enable` y sin el `?` de `ProjectOf`;
+   > - **M-01 a M-03**;
+   > - y **la lección:** la precondición 6 no corría las CT. Gana un paso, el 8: el ensayo de las CT de texto y el censo de C13.
+   > 
+   > La precondición 6 se repitió entera en copias nuevas (`/d/r5i` a `/d/r5l`), porque cambian el esqueleto y el GREEN.
+   > 
+   > **Lo que cambia:**
+   > - las dos piezas (`pbt4c-green-v51.txt` y `pbt4c-skeleton-v51.txt`) y sus tres guiones (`green_pbt4c_v51.py`, `apply_red_pbt4c_v51.py` y `apply_green_pbt4c_v51.py`);
+   > - el docstring de las CT como datos (`pbt4c_ct_table_v51.py`); las CT y sus líneas son las mismas;
+   > - §5.3 (M-01), §6.3, §6.3.1 (M-02, el paso 8 y lo medido) y §6.3.2;
+   > - §7, §9 y §11;
+   > - y el anexo V51-A, que sustituye al V50-A.
+   > 
+   > **Lo que no cambia:** la lista de 4, los `Skip`, los equivalentes y su `EquivalentSha`, las CT y sus líneas, los `RequiredTests`, los totales, las autoridades (salvo la sección de las n.º 0 y 65), D-S7 a D-S10, PB-T4a, PB-T4b y PB-T4d.
+   > 
+   > **Lo que sale de la v5.1 (PB-T4c):**
+   > - las piezas, desde las de la v5.0 (`v51/make_pieces_v51.py`), y los guiones, desde los de la v5.0 (`v51/make_tools_v51.py`);
+   > - el ensayo de las CT de texto (`pbt4c-rehearsal-textct.cs`, que escribe `v51/make_rehearsal_v51.py` desde los objetos git de la base) y el censo de C13 (`pbt4ccc/compile/census_c13_v51.py`);
+   > - el conductor de la precondición 6 (`p6_pbt4c_v51.sh`), sus lecturas del ensayo (`rehearsal_check_v51.py`) y de cada clase (`classes_v51.py`), el coste (`p6_isdirty_pbt4c_v51.sh`), el control del ensayo sobre la v5.0 (`p6_control50_v51.sh` y `control_check_v51.py`), el resumen (`p6_json_pbt4c_v51.p
+   > - la lectura RR-3 sobre esta versión (`v51/check_rr3_v51.py`);
+   > - y `make_v51.py`, que arma esta versión desde la v5.0.
+   > 
+   > ---
+   > 
+   > ## Registro de cambios v5.0 → v5.1
+   > 
+   > | Id | Hallazgo | Qué cambia | Dónde |
+   > |---|---|---|---|
+   > | **V51-01** | **CA-T4c I-01** (importante): **CT-PBT4C-15 no podía pasar, ni en el RED ni en el GREEN.** `PushBackFullDraftLaunch.cs` y `PushBackFullDraftStatePort.cs` empezaban por `#nullable enable`, en el esqueleto y en el GREEN, y la pureza que CT-15 copia de CT-PBT3A-14 da `#nullable` en cuant
+   > | V51-02 | CA-T4c M-01 | **De dónde sale cada línea de CT-03, 04, 05 y 12, línea a línea:** 22 tal cual de la sonda, 9 con los campos de la CT, 3 derivadas (y cómo) y 4 del texto del GREEN. **`lecturas-dentro`** son las lecturas durante `ShowModal`. Las corridas: `/d/r5f` (la válida de la v5.0) y `/
+   > | V51-03 | CA-T4c M-02 | **El nombre del equivalente de PEG:155-163** conserva «…SeventeenOperations…» aunque su tabla tenga dieciocho operaciones: es la copia literal; lo que fija es la tabla (como la §20 M-02) | §6.3.1 |
+   > | V51-04 | CA-T4c M-03 | **El comentario del GREEN en `PendingWork()` de W** casa con D-S10: en WORKSPACE, un módulo escenificado deja siempre cambios sin aplicar, así que la pregunta del módulo sola es la de CLASSIC. Solo comentario | la pieza del GREEN; el anexo V51-A |
+   > | **V51-05** | **La lección de I-01: la precondición 6 no corría las CT** | **El paso 8, nuevo:** el ensayo de las CT de texto sobre `src/` (CT-01, 07, 08, 13 y 15), en clases temporales con sus líneas literales de §5.3, sobre el RED y sobre el GREEN, con su control sobre las piezas de la v5.0 (que 
+   > | V51-06 | La precondición 6, otra vez, pasos 1 a 9 | `/d/r5i` (el ensayo y las sondas), `/d/r5j` (el RED exacto y el GREEN literal), `/d/r5k` (el coste) y `/d/r5l` (el control del ensayo sobre la v5.0). Lo previsto, con D = 0. Las de la v5.0 (`/d/r5f`, `/d/r5g` y `/d/r5h`) pasan a historia | §5.3; 
+   > | V51-07 | La custodia de `compile-check.md` | **El resultado de cada clase que corre** (Passed, Failed y Skipped), también de las que la custodia solo lleva por sha256; las salidas nuevas, con nombres cortos: ninguna ruta pasa de 150 caracteres con el prefijo de `cc4c/` | §6.3.2 |
+   > | V51-08 | La versión | El `Objective` cita la v5.1. CA-T4c: la §22 y su recomprobación (§23). Los guiones y las piezas, por su nombre de la v5.1 en §6.3.2 | §6.3.1; §6.3.2 |
+   > 
+   > ---
+   > 
+   > ## La cabecera de la v5.0, sin cambio salvo lo que dice el registro v5.0 → v5.1
+   > 
+   > 
+   > **Estado de la v5.0:** Escribe **PB-T4c** (`F4B-PBT4-EDIT-ALL-WINDOW`, «Editar todo») en forma literal, como la v4.4 a la v4.9 lo hicieron con PB-T4b, sobre el **cierre de PB-T4b** (`6adff90d`, F4B-E53: CERRADA, intento 1 de 3; el GREEN `c065080d` es el texto literal de la v4.9). La remedición se hi
+== replace v4.8:15-15 -> v4.9:58-58
+   - sale
+   + salió
+== replace v4.8:1062-1062 -> v4.9:1105-1105
+   - `pbt4c-green-v50.txt`
+   + `pbt4c-green-v51.txt`
+   - `pbt4c-skeleton-v50.txt`
+   + `pbt4c-skeleton-v51.txt`
+   - V50-A.
+   + V51-A.
+== replace v4.8:1373-1373 -> v4.9:1416-1416
+   - 6,
+   + 6
+   - `/d/r5g`;
+   + de la v5.1, `/d/r5j`;
+== replace v4.8:1548-1548 -> v4.9:1591-1595
+   < **Desde la v5.0, entera y literal,** como §5.2 para PB-T4b: las CT-01 a 13 de la v3 (las 01 a 11 de la v2 con los cambios de la v3), la CT-14 de la v4 y la CT-15 de la v4.1, con lo que fijó la v4.9 y las líneas medidas sobre el GREEN literal. **Las líneas de CT-03, 04, 05 y 12 son las que dio la son
+   > **Desde la v5.0, entera y literal,** como §5.2 para PB-T4b: las CT-01 a 13 de la v3 (las 01 a 11 de la v2 con los cambios de la v3), la CT-14 de la v4 y la CT-15 de la v4.1, con lo que fijó la v4.9 y las líneas medidas sobre el GREEN literal. **De dónde sale cada línea** (V51-02; CA-T4c M-01):
+   > - **las de CT-03, 04, 05 y 12,** de la sonda de Core sobre el GREEN literal (`pbt4c-probe-editall.cs`, una clase temporal sobre la copia con el GREEN), como dice, línea a línea, la tabla de después de la de las CT. La corrida válida de la v5.0 es `/d/r5f` (`pbt4ccc/compile/out-probes-v50b-r5f/probe-
+   > - **las de CT-01, 07, 08, 13 y 15,** del ensayo de las CT de texto (§6.3.1, el paso 8), que las da tal cual sobre el GREEN (y, sobre el RED, las de CT-07 y CT-15, mientras CT-01, 08 y 13 caen por su `Assert.Equal`);
+   > - **las de CT-09,** de la sonda de UI (`pbt4c-probe-close-ui.cs`; D-S10);
+   > - **las de CT-02, 06, 10, 11 y 14,** del texto literal del GREEN (anexo V51-A), sin ejecutar.
+== insert v4.8:1571-1570 -> v4.9:1618-1660
+   > 
+   > **De dónde sale cada línea de CT-03, 04, 05 y 12** (V51-02; CA-T4c M-01): **22 tal cual** de la sonda, **9 con los campos de la CT** (la sonda imprime además campos que la CT no fija, con los mismos valores en los que sí fija), **3 derivadas** y **4 del texto** del GREEN, que la sonda no tiene.
+   > 
+   > | CT | La línea de §5.3 | De dónde sale |
+   > |---|---|---|
+   > | CT-03 | `sin-anfitrion estado=NotAvailable motivo=[No editable aquí: el panel no tiene el editor completo.] abierto=False lecturas=0 borrador=False` | de la sonda, **con los campos de la CT**: la sonda imprime además `aplicadas` |
+   > | CT-03 | `sin-borrador estado=Closed abierto=True lecturas=1 borrador=Clean` | derivada: `borrador=Clean` es el `estado-del-borrador=Clean` de la sonda (su `borrador=True` dice que existe) |
+   > | CT-03 | `cola estado=NotBegun inicio=NotAdmitted diagnostico-fuera-del-piloto=True pista=True abierto=False borrador=False` | del texto del GREEN: la sonda no la tiene (el `Begin` de la cola aparcada da `NotAdmitted`, como CT-PBT4B-02 en `PushBackFullPanelTests.cs:230`) |
+   > | CT-03 | `clean estado=Closed abierto=True lecturas=0` | de la sonda, **con los campos de la CT**: la sonda imprime además `aplicadas`, `motivo` |
+   > | CT-03 | `dirty estado=Closed abierto=True lecturas=0` | de la sonda, **con los campos de la CT**: la sonda imprime además `aplicadas`, `estado-del-borrador`, `motivo` |
+   > | CT-03 | `conflict estado=Closed abierto=True lecturas=0` | del texto del GREEN: la sonda no la tiene. En Conflict el borrador admite cambios (`DraftSession.cs:331-332`), así que abre como Clean y Dirty |
+   > | CT-03 | `applying estado=Waiting motivo=[El borrador se está aplicando o se retiró: el editor no se abre.] abierto=False` | de la sonda, **con los campos de la CT**: la sonda imprime además `aplicadas`, `lecturas` |
+   > | CT-03 | `unknown estado=Refused motivo=[El borrador no admite el editor completo en su estado actual.] abierto=False` | de la sonda, **con los campos de la CT**: la sonda imprime además `aplicadas`, `estado-del-borrador`, `lecturas` |
+   > | CT-03 | `error estado=Refused motivo=[El borrador no admite el editor completo en su estado actual.] abierto=False` | del texto del GREEN: la sonda no la tiene. En Error el borrador no admite cambios (`DraftSession.cs:331-332`), así que se rechaza como Unknown |
+   > | CT-03 | `texto-pendiente estado=Refused motivo=[Hay texto sin confirmar en el campo.] abierto=False` | de la sonda, **con los campos de la CT**: la sonda imprime además `aplicadas`, `lecturas` |
+   > | CT-03 | `otra-sesion estado=Rejected motivo=[La petición no es del documento activo.] abierto=False lecturas=0` | de la sonda, **con los campos de la CT**: la sonda imprime además `aplicadas` |
+   > | CT-04 | `lanzamiento estado-igual=True rack=True proyecto=True proyecto-con-diseno=True` | de la sonda, **tal cual** |
+   > | CT-04 | `aplicar-1 estado=Applied isdirty=True origen-igual=True escala=2.5` | de la sonda, **tal cual** |
+   > | CT-04 | `aplicar-2 estado=Applied isdirty=True escala=3` | de la sonda, **tal cual** |
+   > | CT-04 | `tras-aplicar estado=Closed aplicadas=2 borrador=Dirty origen-igual=True` | derivada: `borrador=Dirty` es el `estado-del-borrador=Dirty` de la sonda |
+   > | CT-04 | `adaptador-no-editable estado=NotEditable llamadas=0` | de la sonda, **tal cual** |
+   > | CT-04 | `adaptador-aplica estado=Applied llamadas=1` | del texto del GREEN: la sonda no la tiene (el adaptador sobre un borrador que admite el cambio) |
+   > | CT-05 | `k1 SetPendingText Busy [Hay una lectura del piloto en curso.]` | de la sonda, **tal cual** |
+   > | CT-05 | `k1 CommitField Busy [Hay una lectura del piloto en curso.]` | de la sonda, **tal cual** |
+   > | CT-05 | `k1 CrossBoundary Busy [Hay una lectura del piloto en curso.]` | de la sonda, **tal cual** |
+   > | CT-05 | `k1 DiscardRack Busy [Hay una lectura del piloto en curso.]` | de la sonda, **tal cual** |
+   > | CT-05 | `k1 DiscardDocument Busy [Hay una lectura del piloto en curso.]` | de la sonda, **tal cual** |
+   > | CT-05 | `k1 TryBeginEdit Waiting [Hay una lectura del piloto en curso.]` | de la sonda, **tal cual** |
+   > | CT-05 | `k1 TryCheckNow Waiting [Hay una lectura del piloto en curso.]` | de la sonda, **tal cual** |
+   > | CT-05 | `k1 TryReload Waiting [Hay una lectura del piloto en curso.]` | de la sonda, **tal cual** |
+   > | CT-05 | `k1 TryConfirmBase Waiting [Hay una lectura del piloto en curso.]` | de la sonda, **tal cual** |
+   > | CT-05 | `k1 TryKeepMine Waiting [Hay una lectura del piloto en curso.]` | de la sonda, **tal cual** |
+   > | CT-05 | `k1 TryDiscardAndReload Waiting [Hay una lectura del piloto en curso.]` | de la sonda, **tal cual** |
+   > | CT-05 | `k1 TryEditAll Waiting [Hay una lectura del piloto en curso.]` | de la sonda, **tal cual** |
+   > | CT-05 | `k1 RequestUpdate Busy [Hay una lectura del piloto en curso.]` | de la sonda, **tal cual** |
+   > | CT-05 | `k1 GetField existe=True estado=Clean` | de la sonda, **tal cual** |
+   > | CT-05 | `k1 GetRacksAtRisk conocido=True` | de la sonda, **tal cual** |
+   > | CT-05 | `k1 TakeLossNotices 0 TakeCloseNotices 0` | de la sonda, **tal cual** |
+   > | CT-05 | `k1 TakeUpdateProgress en-vuelo=False` | de la sonda, **tal cual** |
+   > | CT-05 | `k1-cerrado estado=Closed lecturas-dentro=0` | derivada: `lecturas-dentro` son las lecturas del lector **durante `ShowModal`**. La sonda imprime `lecturas-dentro=1`, el total del lector tras `TryEditAll`, con la lectura de `Begin` de antes (`pbt4c-probe-editall.cs:198`); la de `Begin` es u
+   > | CT-05 | `despues SetPendingText Applied TryBeginEdit AlreadyOpen` | de la sonda, **tal cual** |
+   > | CT-12 | `compuerta-dentro estado=Waiting motivo=[Se está entregando un aviso del panel.] abierto=False lecturas=0` | de la sonda, **con los campos de la CT**: la sonda imprime además `aplicadas` |
+   > | CT-12 | `compuerta-fuera estado=Closed abierto=True lecturas=1` | de la sonda, **con los campos de la CT**: la sonda imprime además `aplicadas`, `motivo` |
+== replace v4.8:1614-1614 -> v4.9:1704-1704
+   - (`/d/r5g`),
+   + de la v5.1 (`/d/r5j`),
+   - `0cb67aee2b2d925d68235bb6444566b4222205a6cf97f472b3851fd0795b2f51`,
+   + `29179a12ef8623f4c276f943a725ece6f3ffd84464f16705e1feda757efbce1a`,
+   - `bca9fde88b3a4ac881860769260780354a4440a48a94c9690b8c08f7acaefc44`).
+   + `060c5c8b4ea1197079bcde5f5c5d8d299d5b71dde6295d2a468982e5fb1bb02c`); y, en la v5.0, en `/d/r5g`, como historia.
+== replace v4.8:2347-2347 -> v4.9:2437-2437
+   - (`pbt4c-skeleton-v50.txt`,
+   + (`pbt4c-skeleton-v51.txt`,
+   - `48e097a7a579bd311fdeb2f6b87ff57ec0ada157573b174ad3a02935e5ab816c`,
+   + `f8840c67fd41c3bbdabf125d9b80941e3f3aedf5e610681c8ce15f111e7b392e`,
+   - `green_pbt4c_v50.py`):
+   + `green_pbt4c_v51.py`):
+== replace v4.8:2351-2352 -> v4.9:2441-2442
+   - apply_red_pbt4c_v50.py
+   + apply_red_pbt4c_v51.py
+   - `pbt4c-green-v50.txt`
+   + `pbt4c-green-v51.txt`
+   - `6b304a009d05ff586603ed4bbb9fa69b9973977bea09222c688ef80faa983e1b`;
+   + `081ef77e66a390cf3637f15851b5fe05a5cdf07f6e0065928fc5c841b250dc16`;
+   - `apply_green_pbt4c_v50.py`
+   + `apply_green_pbt4c_v51.py`
+== replace v4.8:2367-2367 -> v4.9:2457-2457
+   - v5.0,
+   + v5.1,
+== replace v4.8:2371-2371 -> v4.9:2461-2461
+   - (pbt4c-skeleton-v50.txt:
+   + (pbt4c-skeleton-v51.txt:
+   - (pbt4c-green-v50.txt).
+   + (pbt4c-green-v51.txt).
+== replace v4.8:2430-2430 -> v4.9:2520-2520
+   - V50-A;
+   + V51-A;
+== replace v4.8:2437-2437 -> v4.9:2527-2529
+   < **La precondición 6** (I-02; §11.6), que corre la sesión antes de emitir, sobre copias exportadas del cierre de PB-T4b, fuera de todo commit (`pbt4ccc/compile/`, que la emisión custodia en `F4B-DRAFTS/pbt4/cc4c/`; el resumen, `pbt4c-precondition6.json`, sha256 `0cb67aee2b2d925d68235bb6444566b4222205
+   > **El nombre del equivalente de PEG:155-163** (V51-03; CA-T4c M-02) conserva el de su original, `ThePortDeclaresTheSeventeenOperationsWithTheEnumsAsOrderedPrefixesAndNamesNoTypeOfTheDraftsNorOfThePilot`, aunque su tabla tenga dieciocho operaciones: es la copia literal (`owner-pbt4-decisions.md`, preg
+   > 
+   > **La precondición 6** (I-02; §11.6), que corre la sesión antes de emitir, sobre copias exportadas del cierre de PB-T4b, fuera de todo commit (`pbt4ccc/compile/`, que la emisión custodia en `F4B-DRAFTS/pbt4/cc4c/`; el resumen, `pbt4c-precondition6.json`, sha256 `29179a12ef8623f4c276f943a725ece6f3ffd8
+== replace v4.8:2439-2439 -> v4.9:2531-2531
+   - apply_red_pbt4c_v50.py
+   + apply_red_pbt4c_v51.py
+== replace v4.8:2443-2443 -> v4.9:2535-2535
+   - (`apply_green_pbt4c_v50.py`):
+   + (`apply_green_pbt4c_v51.py`):
+== replace v4.8:2445-2445 -> v4.9:2537-2541
+   < 8. el contrato lleva por sha256 las piezas del GREEN y del esqueleto, los 4 equivalentes (`EquivalentSha`) y la lista.
+   > 8. **el ensayo de las CT de texto y el censo de C13** (V51-05; nuevo en la v5.1, por CA-T4c I-01):
+   >    - **el ensayo:** `pbt4c-rehearsal-textct.cs` (sha256 `ede5d822d30e8d5dc022f124a2a42f4e7cb562f53de7862be11b2d7b0b0e13ba`), cinco clases temporales (`TmpPbt4cTextCt01`, `07`, `08`, `13` y `15`) que no entran en ningún commit, cada una con un `[Fact]` que acaba en el `Assert.Equal` de sus líneas lit
+   >    - **su control:** el mismo ensayo sobre las piezas de la v5.0 (`p6_control50_v51.sh`) **ve I-01**: CT-15 cae en las dos ramas, con su primera diferencia en la línea de la pureza, y las otras cuatro dan lo mismo que con la v5.1 (`control_check_v51.py`);
+   >    - **el censo** (`census_c13_v51.py`, `83a88e3895716dfe8810d360b20c8bce1751a178356cd90591e308a5844343cc`), por texto y por objetos git: la diferencia de declaraciones del GREEN frente a la base es, nombre a nombre y con su cuenta, la lista cerrada de PBT4C-C13, la del esqueleto es una parte de ell
+   > 9. el contrato lleva por sha256 las piezas del GREEN y del esqueleto, los 4 equivalentes (`EquivalentSha`) y la lista.
+== replace v4.8:2447-2447 -> v4.9:2543-2555
+   < **Lo medido** (`/d/r5g` para los pasos 2 a 6, `/d/r5f` para el 7 y `/d/r5h` para el coste; la vuelta parada, `/d/r5a` a `/d/r5e`, es historia, con la medida de D-S9 en `/d/r5e`): lo previsto, con D = 0, K = 4, E = 4 y cero `warning CS`. **La duración de la suite de Core:** 785 s en el RED y 591 s en
+   > **Qué cubre el paso 8 y qué no** (V51-05):
+   > - **Cubre, literal y en las dos ramas,** las cinco CT de texto sobre `src/` (CT-01, 07, 08, 13 y 15: todas las de PB-T4c que leen texto), con su `ExpectRed`; y, por texto, la lista cerrada de C13 y los nombres.
+   > - **Cubren las sondas, solo sobre el GREEN,** las líneas de CT-03, 04, 05 y 12 que dice §5.3 (22 tal cual, 9 con sus campos y 3 derivadas) y las de CT-09.
+   > - **No cubre** CT-02, 06 y 14 (la FVM con un doble del puerto, en UI), CT-10 (de punta a punta, con `PilotEraseScopeDouble`) ni CT-11 (las huellas de D2), ni las cuatro líneas de CT-03 y 04 que salen del texto, ni el RED de las CT de comportamiento.
+   > - **Por qué esas no se escriben literales:** §5.3 fija sus líneas y lo que hacen, no cómo se construyen (los fixtures de la cola, del conflicto y del error, el doble del borrado, las huellas). Un ensayo sería una versión de la sesión, no la CT del Worker. Lo que el ensayo no ve lo ven la CI del RED 
+   > 
+   > **Lo medido en la v5.1** (V51-06): `/d/r5j` para los pasos 2 a 6, `/d/r5i` para las sondas del 7 y el ensayo del 8, `/d/r5k` para el coste y `/d/r5l` para el control del ensayo. Lo previsto, con D = 0, K = 4, E = 4 y cero `warning CS`:
+   > - **Core, sin las CT:** 19 608 = 19 147 + 0 + 461 en las dos ramas; **UI,** los 18 filtros: en el RED solo cae el equivalente de CT-PBT2B-06, por aserción, y en el GREEN, 0 `Failed`;
+   > - **el ensayo:** PASA en las dos ramas; **su control sobre la v5.0:** ve I-01; **el censo:** PASA; **las líneas de las sondas:** las mismas que en `/d/r5f`, por sha256;
+   > - **la duración de la suite de Core:** 736 s en el RED y 622 s en el GREEN;
+   > - **el coste de `IsDirty`:** el de PB-T4b, dentro del ruido (pb-20-ab, mediana limpia 9.7677 ms, frente a 9.35 ms en PB-T4b y 9.64 ms en la v5.0).
+   > 
+   > **Las corridas de la v5.0** (`/d/r5f`, `/d/r5g` y `/d/r5h`) y la vuelta parada (`/d/r5a` a `/d/r5e`, con la medida de D-S9 en `/d/r5e`) son historia: las piezas que midieron no son las de la v5.1.
+== replace v4.8:2539-2539 -> v4.9:2647-2647
+   - `/d/r5g`:
+   + `/d/r5j`:
+   - `pbt4ccc/compile/out-redgreen-v50b-r5g/filter-overlap-v50b.txt`).
+   + `pbt4ccc/compile/r5j-rg/filtros.txt`).
+== replace v4.8:2546-2546 -> v4.9:2654-2654
+   - v5.0,
+   + v5.1,
+== replace v4.8:2555-2559 -> v4.9:2663-2668
+   < | **El esqueleto y el GREEN** | `pbt4c-skeleton-v50.txt` y `pbt4c-green-v50.txt`, con `green_pbt4c_v50.py` | **Por su texto en el paquete**, no como parche: dos piezas de texto sin escapes, con bloques `EDIT` (un `OLD` que aparece exactamente una vez y su `NEW`) y `NEWFILE`, y `FROMGREEN` en el esqu
+   < | **Los `Skip`, los equivalentes y su comprobación** | §6.3.1 | Por sha256: `pbt4c_skips_v50.py` (`a59a3aedc982bb15312a04eb5ddbe92afa2a868a1177e7c8b4c3f49332970f7f`), `make_equivalents_pbt4c_v50.py` (`d81fcb41bed684b8ac35949841e3a7fba2277120bdf3e882d0267f8176e4a896`), `apply_red_pbt4c_v50.py` (`3fee
+   < | **Las CT como datos** | `pbt4c_ct_table_v50.py` | sha256 `39728a5419264d6ce4f444fedc81e2982944dde45c391d830704c39715500e36`: la tabla de §5.3, que lee la lectura RR-3 de la cadena. **Pasada sobre esta versión** (`pbt4ccc/pbt4c_rr3_reading.py`, `7585a87e…`, sin tocarla; `v50/check_rr3_v50.py` y su 
+   < | **La precondición 6** | `pbt4ccc/compile/pbt4c-precondition6.json` | Schema `rackcad-pbt4c-precondition6/v1`; `Revision` (`6adff90d…`), `List` (su sha256, K = 4: 3 de Core y 1 de UI), `Pieces` (el sha256 de cada pieza), `Skeleton`, `GreenFiles`, `SkipFiles` y `EquivalentSha` (el sha256 de cada arc
+   < | **CA-T4c** | `independent-review-v1.md` | **`BOUNDED_SECTIONS`: la §22** (la comprobación acotada de PB-T4c sobre esta versión, la v5.0; en `6adff90d`, el informe acaba en la §21, la recomprobación de la v4.9) y, si hay recomprobación, la siguiente; el revisor las escribe tras leer el paquete. **L
+   > | **El esqueleto y el GREEN** | `pbt4c-skeleton-v51.txt` y `pbt4c-green-v51.txt`, con `green_pbt4c_v51.py` | **Por su texto en el paquete**, no como parche: dos piezas de texto sin escapes, con bloques `EDIT` (un `OLD` que aparece exactamente una vez y su `NEW`) y `NEWFILE`, y `FROMGREEN` en el esqu
+   > | **Los `Skip`, los equivalentes y su comprobación** | §6.3.1 | Por sha256: `pbt4c_skips_v50.py` (`a59a3aedc982bb15312a04eb5ddbe92afa2a868a1177e7c8b4c3f49332970f7f`), `make_equivalents_pbt4c_v50.py` (`d81fcb41bed684b8ac35949841e3a7fba2277120bdf3e882d0267f8176e4a896`), `apply_red_pbt4c_v51.py` (`03db
+   > | **Las CT como datos** | `pbt4c_ct_table_v51.py` | sha256 `5ee03f8ebe411b1bf689102753ff93f77c1988266432cf9ea2f3e46df116623f`: la tabla de §5.3, que lee la lectura RR-3 de la cadena. **Pasada sobre esta versión** (`pbt4ccc/pbt4c_rr3_reading.py`, `7585a87e…`, sin tocarla; `v51/check_rr3_v51.py` y su 
+   > | **El ensayo y el censo** (el paso 8) | `pbt4c-rehearsal-textct.cs` y `pbt4ccc/compile/census_c13_v51.py` | sha256 `ede5d822d30e8d5dc022f124a2a42f4e7cb562f53de7862be11b2d7b0b0e13ba` y `83a88e3895716dfe8810d360b20c8bce1751a178356cd90591e308a5844343cc`; el generador del ensayo, `v51/make_rehearsal_v5
+   > | **La precondición 6** | `pbt4ccc/compile/pbt4c-precondition6.json` | Schema `rackcad-pbt4c-precondition6/v1`; `Revision` (`6adff90d…`), `List` (su sha256, K = 4: 3 de Core y 1 de UI), `Pieces` (el sha256 de cada pieza), `Skeleton`, `GreenFiles`, `SkipFiles` y `EquivalentSha` (el sha256 de cada arc
+   > | **CA-T4c** | `independent-review-v1.md` | **`BOUNDED_SECTIONS`: la §22** (la comprobación acotada de PB-T4c sobre la v5.0: EMITIBLE TRAS CORRECCIONES, 0/1/3) **y la §23** (su recomprobación, sobre esta versión, la v5.1). **La línea `BOUNDED_RESULT`:** como en PB-T4b (`make_pbt4b_contract.py:53-60`
+== replace v4.8:2565-2565 -> v4.9:2674-2674
+   - v5.0,
+   + v5.1,
+== replace v4.8:2571-2571 -> v4.9:2680-2680
+   - si
+   + (nada)
+   - hay.
+   + §23.
+== replace v4.8:2579-2579 -> v4.9:2688-2688
+   - `pbt4c-green-v50.txt`).
+   + `pbt4c-green-v51.txt`).
+== insert v4.8:2608-2607 -> v4.9:2717-2717
+   > | **R-T4-29, las CT no corren en la precondición 6** (CA-T4c I-01; V51-05) | El paso 8: el ensayo de las CT de texto, sobre el RED y sobre el GREEN, con su control sobre la v5.0, y el censo de C13. Lo que no cubre, declarado (§6.3.1) |
+== replace v4.8:2716-2716 -> v4.9:2826-2826
+   - (V50-12):
+   + (V50-12; V51-06):
+   - (`/d/r5g`),
+   + (`/d/r5j`),
+   - (`/d/r5h`) y
+   + (`/d/r5k`),
+   - (`/d/r5f`).
+   + y el ensayo de las CT de texto (`/d/r5i`), y el control del ensayo sobre la v5.0 (`/d/r5l`); los de la v5.0 (`/d/r5f`, `/d/r5g` y `/d/r5h`), como historia. **Lo que el ensayo no cubre:** las CT de comportamiento salvo por las sondas (§6.3.1).
+== replace v4.8:2742-2742 -> v4.9:2852-2852
+   - ocho
+   + nueve
+   - `apply_red_pbt4c_v50.py`,
+   + `apply_red_pbt4c_v51.py`,
+   - (nada)
+   + **el ensayo de las CT de texto** (PASA en las dos ramas, y su control sobre la v5.0 ve I-01) **y el censo de C13** (PASA);
+   - (nada)
+   + en la v5.1
+   - `0cb67aee2b2d925d68235bb6444566b4222205a6cf97f472b3851fd0795b2f51`).
+   + `29179a12ef8623f4c276f943a725ece6f3ffd84464f16705e1feda757efbce1a`).
+== replace v4.8:2748-2748 -> v4.9:2858-2858
+   - (v5.0),
+   + (v5.1) y la v5.0,
+   - (nada)
+   + y los guiones
+   - `v50/`,
+   + `v50/` y de `v51/`,
+   - con
+   + las de la v5.1 en `r5i-en/`, `r5j-rg/`, `r5k-id/` y `r5l-cc/`, y como historia las de la v5.0,
+   - como historia
+   + (nada)
+   - (nada)
+   + el ensayo de las CT de texto y el censo de C13 con sus salidas,
+== replace v4.8:3238-3238 -> v4.9:3348-3348
+   - V50-A.
+   + V51-A.
+   - (nada)
+   + (v5.1)
+== replace v4.8:3240-3240 -> v4.9:3350-3350
+   - `make_v50.py`.
+   + `make_v51.py`; sustituye al anexo V50-A de la v5.0.
+   - (nada)
+   + Frente a la v5.0 (V51-01 y V51-04): sin `#nullable enable` en los dos archivos de `Draft/` (las dos piezas), sin el `?` de `ProjectOf` y con el comentario nuevo de `PendingWork()` (el GREEN), y la cabecera de cada pieza.
+== replace v4.8:3242-3242 -> v4.9:3352-3352
+   - `pbt4c-green-v50.txt`
+   + `pbt4c-green-v51.txt`
+   - `6b304a009d05ff586603ed4bbb9fa69b9973977bea09222c688ef80faa983e1b`)
+   + `081ef77e66a390cf3637f15851b5fe05a5cdf07f6e0065928fc5c841b250dc16`)
+== replace v4.8:3245-3246 -> v4.9:3355-3356
+   - v5.0):
+   + v5.1):
+   - green_pbt4c_v50.py
+   + green_pbt4c_v51.py
+== replace v4.8:3674-3675 -> v4.9:3784-3786
+   <             // I-64 F4B PB-T4c (D-PBT4-17; A-T2b-OWNER-01): in WORKSPACE, a staged module AND unapplied changes ask one question that names
+   <             // both; each of them alone asks the question of today. In CLASSIC there are never unapplied changes, so nothing changes there.
+   >             // I-64 F4B PB-T4c (D-PBT4-17; A-T2b-OWNER-01): a staged module AND unapplied changes ask one question that names both. In
+   >             // WORKSPACE a staged module always leaves unapplied changes (D-S10), so the module question alone is the one of CLASSIC, where
+   >             // there are never unapplied changes; unapplied changes alone ask the question of today.
+== delete v4.8:3706-3706 -> v4.9:3817-3816
+   < #nullable enable
+== replace v4.8:3729-3729 -> v4.9:3839-3839
+   - RackProject?
+   + RackProject
+== delete v4.8:3739-3739 -> v4.9:3849-3848
+   < #nullable enable
+== replace v4.8:3797-3797 -> v4.9:3906-3906
+   - `pbt4c-skeleton-v50.txt`
+   + `pbt4c-skeleton-v51.txt`
+   - `48e097a7a579bd311fdeb2f6b87ff57ec0ada157573b174ad3a02935e5ab816c`)
+   + `f8840c67fd41c3bbdabf125d9b80941e3f3aedf5e610681c8ce15f111e7b392e`)
+== replace v4.8:3800-3800 -> v4.9:3909-3909
+   - v5.0):
+   + v5.1):
+   - (pbt4c-green-v50.txt);
+   + (pbt4c-green-v51.txt);
+== delete v4.8:3839-3839 -> v4.9:3948-3947
+   < #nullable enable
+== delete v4.8:3858-3858 -> v4.9:3966-3965
+   < #nullable enable

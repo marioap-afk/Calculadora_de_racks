@@ -1,0 +1,29 @@
+RackCad.Tests.TmpPbt4cTextCt08 CT08 Failed por-asercion=True
+  at RackCad.Tests.TmpPbt4cTextCt08.CT08() in <copia>\tests\RackCad.Tests\TmpPbt4cTextCt.cs:line 185
+  | Assert.Equal() Failure: Strings differ
+  |                                   ↓ (pos 22)
+  | Expected: ···"dal FullEditorModal=1 implementa=IWorkspa"···
+  | Actual:   ···"dal FullEditorModal=0 implementa=null usi"···
+  |                                   ↑ (pos 22)
+RackCad.Tests.TmpPbt4cTextCt13 CT13 Failed por-asercion=True
+  at RackCad.Tests.TmpPbt4cTextCt13.CT13() in <copia>\tests\RackCad.Tests\TmpPbt4cTextCt.cs:line 271
+  | Assert.Equal() Failure: Strings differ
+  |                                   ↓ (pos 38)
+  | Expected: ···"nes=18 violaciones=[]\nautoprueba-sin-reen"···
+  | Actual:   ···"nes=18 violaciones=[the adapter lacks Try"···
+  |                                   ↑ (pos 38)
+RackCad.Tests.TmpPbt4cTextCt15 CT15 Passed
+RackCad.Tests.TmpPbt4cTextCt07 CT07 Passed
+RackCad.Tests.TmpPbt4cTextCt01 CT01 Failed por-asercion=True
+  at RackCad.Tests.TmpPbt4cTextCt01.CT01() in <copia>\tests\RackCad.Tests\TmpPbt4cTextCt.cs:line 40
+  | Assert.Equal() Failure: Strings differ
+  |                                   ↓ (pos 31)
+  | Expected: ···"rFieldEditAllButton=1 en-el-panel-de-los-"···
+  | Actual:   ···"rFieldEditAllButton=0 en-el-panel-de-los-"···
+  |                                   ↑ (pos 31)
+esperado CT01 Failed: OK
+esperado CT07 Passed: OK
+esperado CT08 Failed: OK
+esperado CT13 Failed: OK
+esperado CT15 Passed: OK
+ensayo red: PASA

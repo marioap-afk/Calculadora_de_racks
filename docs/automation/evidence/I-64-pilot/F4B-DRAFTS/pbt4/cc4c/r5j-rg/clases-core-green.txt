@@ -1,0 +1,27 @@
+| TRX | Clase | Passed | Failed | Skipped |
+|---|---|---|---|---|
+| `core-green.trx` | `RackCad.Tests.PushBackDraftWriteGuardTests` | 2 | 0 | 1 |
+| `core-green.trx` | `RackCad.Tests.PushBackFullReadGuardTests` | 1 | 0 | 2 |
+| `core-green.trx` | `RackCad.Tests.PushBackFullReadPathTests` | 4 | 0 | 1 |
+| `core-green.trx` | `RackCad.Tests.PushBackSharedReferenceGuardTests` | 1 | 0 | 1 |
+| `core-green.trx` | `RackCad.Tests.PushBackWritePathGuardTests` | 1 | 0 | 1 |
+| `core-green.trx` | `RackCad.Tests.WorkspaceAssociativeBookkeepingTests` | 0 | 0 | 10 |
+| `core-green.trx` | `RackCad.Tests.WorkspaceCommandAdvisorTests` | 0 | 0 | 54 |
+| `core-green.trx` | `RackCad.Tests.WorkspaceEditIntentGuardTests` | 145 | 0 | 7 |
+| `core-green.trx` | `RackCad.Tests.WorkspaceEditIntentHostTests` | 0 | 0 | 62 |
+| `core-green.trx` | `RackCad.Tests.WorkspaceFullCopyGuardTests` | 0 | 0 | 1 |
+| `core-green.trx` | `RackCad.Tests.WorkspaceHostHardeningGuardTests` | 99 | 0 | 1 |
+| `core-green.trx` | `RackCad.Tests.WorkspaceLifecycleGuardTests` | 57 | 0 | 2 |
+| `core-green.trx` | `RackCad.Tests.WorkspaceLifecycleHostTests` | 0 | 0 | 69 |
+| `core-green.trx` | `RackCad.Tests.WorkspacePilotEditGuardTests` | 121 | 0 | 6 |
+| `core-green.trx` | `RackCad.Tests.WorkspacePilotEditHostTests` | 0 | 0 | 59 |
+| `core-green.trx` | `RackCad.Tests.WorkspacePilotPrepareGuardTests` | 22 | 0 | 3 |
+| `core-green.trx` | `RackCad.Tests.WorkspacePilotPrepareTests` | 0 | 0 | 67 |
+| `core-green.trx` | `RackCad.Tests.WorkspacePilotReconciliationGuardTests` | 25 | 0 | 1 |
+| `core-green.trx` | `RackCad.Tests.WorkspacePilotReconciliationHostTests` | 0 | 0 | 28 |
+| `core-green.trx` | `RackCad.Tests.WorkspacePilotUpdateGuardTests` | 85 | 0 | 2 |
+| `core-green.trx` | `RackCad.Tests.WorkspacePilotUpdateHostTests` | 0 | 0 | 35 |
+| `core-green.trx` | `RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests` | 121 | 0 | 4 |
+| `core-green.trx` | `RackCad.Tests.WorkspacePilotUpdateRequestTests` | 0 | 0 | 44 |
+
+Las otras 681 clases: todas Passed.

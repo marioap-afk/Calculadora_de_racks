@@ -455,3 +455,59 @@ I-64 F4B PB-T3b: sustituida por <E-n> de PushBackPilotUpdateEquivalenceGuardTest
 | **GREEN** | `c065080d3fd1dd8bb1937b98b81e9a0c1714777b` (CI `44903818806` 4/4; Core 19 605 = 19 147 Passed + 0 Failed + 458 Skipped; UI 2 481 = 2 433 + 0 + 48). Toca solo nueve archivos de código de `src/`, iguales byte a byte al GREEN literal del paquete; ninguna prueba de `tests/` cambia tras la reparación del RED, y ningún archivo de `Pilot/` |
 | **Los recuentos por clase, en el GREEN** | Las 478 de la lista, en Skipped con su motivo: 451 en Core y 27 en UI, las mismas por clase que la tabla de arriba. Los Skipped de las CI son esas más los de la base: 7 en Core (D-1 y CT-PBT3A-12) y 21 en UI. Las copias pasan enteras: en Core, 614 filas en 29 clases `FullPanelCopy<Clase>RedTests` y `FullPanelCopy<Clase>GreenTests` de 19 archivos; en UI, 36 en 2 clases. Las 21 CT pasan: `PushBackFullPanelTests` 11, `PushBackFullPanelGuardTests` 4, `PushBackFullPanelCensusGuardTests` 1, `PushBackPanelDraftGuardTests` 1, `WorkspaceFullCopyGuardTests` 1 (su comprobación (5), acotada a las nueve clases de C-0 por la errata que ratificó el Owner) y `PushBackFullPanelFieldTests` 3 |
 | **Estado** | EJECUTADA |
+
+## PB-T4c — las 4 pruebas que «Editar todo» sustituye, cada una por su equivalente
+
+**Estado: EMITIDA** (2026-11-21, emisión de PB-T4c, F4B-E54, sobre el cierre de PB-T4b `6adff90d`). Lo escribe la sesión principal; el Worker no escribe en este archivo. La ejecución se completa al cerrar.
+
+**Autoridad:**
+- **[OD], el bloque sobre T1B:** «create a declared superseding characterization/change record. Do not silently weaken the old guard».
+- **Las decisiones del Owner sobre PB-T4,** en `docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/`:
+  - la primera (`owner-pbt4-decisions.md`): la pregunta 3, «Saltar y duplicar», por la que cada prueba que se rompe se salta con registro y se duplica, y la pregunta 4, la emisión condicional con la lista que vio el Owner, que para PB-T4c eran 2 (PEG:155-163 y CT-PBT1B-15);
+  - la octava (`owner-pbt4c-list-3-decision.md`): CT-PBT4B-20, y la lista pasa a 3;
+  - la novena (`owner-pbt4c-list-4-decision.md`): CT-PBT2B-06, y la lista pasa a 4.
+- **El contrato:** `docs/initiatives/I-64-f4b-pbt4-gate-contract-package.md` (v5.1), D-PBT4-12 a D-PBT4-17, §4.3, §5.3 y §6.3, y `docs/automation/evidence/I-64-pilot/F4B-PBT4-EDIT-ALL-WINDOW/coordinator/gate-contract.json`.
+
+**La lista:** `F4B-DRAFTS/pbt4/pbt4c-substitution-list-4.tsv`, sha256 `9bd4c17a0eda837c92a7a0b7b3562d4ab17f1608baf3ffa8efaf560d8b1f82de`. Ninguna prueba original se edita: cada una queda con un `Skip` de motivo literal en su línea de atributo `[Fact]`, y su equivalente va en una clase nueva, que genera `make_equivalents_pbt4c_v50.py` desde el original de `6adff90d`, con un solo cambio declarado.
+
+| N.º | La prueba, con su `Skip` | Proyecto | La causa | La decisión del Owner | El equivalente | `EquivalentSha` | El cambio declarado |
+|---|---|---|---|---|---|---|---|
+| 1 | `WorkspacePilotEditGuardTests.ThePortDeclaresTheSeventeenOperationsWithTheEnumsAsOrderedPrefixesAndNamesNoTypeOfTheDraftsNorOfThePilot` (`tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs:155`) | Core | C-5: PEG:155-163, las 17 operaciones del puerto pasan a 18 (TryEditAll) | `owner-pbt4-decisions.md`, pregunta 4 | `PushBackEditAllPortEquivalenceGuardTests` (`tests/RackCad.Tests/PushBackEditAllPortEquivalenceGuardTests.cs`) | `1a2607d3a35ae8f9737fffb0eb32a4acd8100318fe83e5b0098d30428f57d250` | PEG:155-163, con la fila de `TryEditAll` al final de `Operations` (18) |
+| 2 | `PushBackSharedReferenceGuardTests.CT_PBT1B_15_TheWritersOfNameInThePluginRunAfterTheWindowCloses` (`tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs:306`) | Core | C-5: CT-PBT1B-15, archivos=14 pasa a archivos=15 con RackWorkspaceEditorWindow.cs | `owner-pbt4-decisions.md`, pregunta 4 | `PushBackEditAllNameWritersGuardTests` (`tests/RackCad.Tests/PushBackEditAllNameWritersGuardTests.cs`) | `3744992127be8b7e1d8d822a769b8eb2a6886789c73285c8436e5baec6bf7b6b` | CT-PBT1B-15, con «archivos=15» |
+| 3 | `WorkspaceFullCopyGuardTests.CT_PBT4B_20_TheScriptOfSkipAndDuplicateGivesTheCopiesTheKitAndTheSkipsOfTheClosedList` (`tests/RackCad.Tests/WorkspaceFullCopyGuardTests.cs:568`) | Core | C-5: CT-PBT4B-20 (1), el Skip de PB-T4c en PEG:155 deja PEG distinto de su BaseSha | `owner-pbt4c-list-3-decision.md` | `PushBackEditAllFullCopyGuardTests` (`tests/RackCad.Tests/PushBackEditAllFullCopyGuardTests.cs`) | `4619b6d310340f9c97a7d9f31bda1db852d2fcda905b91bb857510f7e6b7e6ce` | CT-PBT4B-20, con la clase renombrada y `Restore`, que además devuelve la línea exacta del `Skip` de PB-T4c de PEG:155 |
+| 4 | `PushBackWorkspaceApplyCloseTests.CT_PBT2B_06_ClosingAsksOnlyForWhatWasNotApplied` (`tests/RackCad.UI.Tests/PushBackWorkspaceApplyCloseTests.cs:686`) | UI | C-3: CT-PBT2B-06, la ventana 4 (un modulo escenificado y cambios sin aplicar) pide la pregunta del modulo; D-PBT4-17 (A-T2b-OWNER-01) la cambia por una que nombra las dos | `owner-pbt4c-list-4-decision.md` | `PushBackEditAllApplyCloseTests` (`tests/RackCad.UI.Tests/PushBackEditAllApplyCloseTests.cs`) | `7c2458260ef301d7f05bfaff8e1e8c4a4a618f25fd7022705d55dee32dbe78d2` | CT-PBT2B-06, con la línea de la ventana 4 a la pregunta combinada; cae en el RED y pasa en el GREEN (`ExpectRed` true) |
+
+**Los motivos de los `Skip`, literales** (`pbt4c_skips_v50.py`; ASCII):
+
+- `tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs:155` (`ThePortDeclaresTheSeventeenOperationsWithTheEnumsAsOrderedPrefixesAndNamesNoTypeOfTheDraftsNorOfThePilot`):
+
+  ```text
+  [Fact(Skip = "I-64 F4B PB-T4c: sustituida por su equivalente en PushBackEditAllPortEquivalenceGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 4).")]
+  ```
+
+- `tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs:306` (`CT_PBT1B_15_TheWritersOfNameInThePluginRunAfterTheWindowCloses`):
+
+  ```text
+  [Fact(Skip = "I-64 F4B PB-T4c: sustituida por su equivalente en PushBackEditAllNameWritersGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 4).")]
+  ```
+
+- `tests/RackCad.Tests/WorkspaceFullCopyGuardTests.cs:568` (`CT_PBT4B_20_TheScriptOfSkipAndDuplicateGivesTheCopiesTheKitAndTheSkipsOfTheClosedList`):
+
+  ```text
+  [Fact(Skip = "I-64 F4B PB-T4c: sustituida por su equivalente en PushBackEditAllFullCopyGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4c-list-3-decision.md).")]
+  ```
+
+- `tests/RackCad.UI.Tests/PushBackWorkspaceApplyCloseTests.cs:686` (`CT_PBT2B_06_ClosingAsksOnlyForWhatWasNotApplied`):
+
+  ```text
+  [Fact(Skip = "I-64 F4B PB-T4c: sustituida por su equivalente en PushBackEditAllApplyCloseTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4c-list-4-decision.md).")]
+  ```
+
+### Ejecución de PB-T4c (se completa al cerrar)
+
+| | |
+|---|---|
+| **RED** | (al cerrar) |
+| **GREEN** | (al cerrar) |
+| **Los equivalentes, en el RED y en el GREEN** | (al cerrar) |
+| **Estado** | EMITIDA |

@@ -1,0 +1,52 @@
+== tests/RackCad.Tests/PushBackEditAllPortEquivalenceGuardTests.cs (from tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs): 103 lines, sha256 1a2607d3a35a
+   annex EquivalentSha 1a2607d3a35a: True; written in /d/r5g: False
+   annex block == the generated text: True
+   lines that are not lines of the original: 6
+     :12 // I-64 F4B PB-T4c (owner-pbt4-decisions.md, pregunta 4; D-PBT4-13): the equivalent of WorkspacePilotEditGuardTests:155-163, whose Skip is in the
+     :13 // closed list of PB-T4c. It is that test with the members of its file that it reaches, literal, and ONE more row in the table of the operations:
+     :14 // TryEditAll, with its default body, at the end of the port, so the port declares eighteen operations and the reflection sees the eighteen.
+     :15 public class PushBackEditAllPortEquivalenceGuardTests
+     :45         // I-64 F4B PB-T4c (D-PBT4-13; owner-pbt4-decisions.md, pregunta 4): "Editar todo", with its default body, at the end of the port.
+     :46         ("TryEditAll", @"EditAllOutcome\s+TryEditAll\s*\(\s*EditIntentRequest\s+\w+\s*\)\s*=>\s*EditAllOutcome\.NotAvailable\s*\(\s*null\s*\)\s*;"),
+== tests/RackCad.Tests/PushBackEditAllNameWritersGuardTests.cs (from tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs): 186 lines, sha256 3744992127be
+   annex EquivalentSha 3744992127be: True; written in /d/r5g: False
+   annex block == the generated text: True
+   lines that are not lines of the original: 6
+     :11     /// I-64 F4B PB-T4c (owner-pbt4-decisions.md, pregunta 4; D-PBT4-15): the equivalent of CT-PBT1B-15 of PushBackSharedReferenceGuardTests, whose
+     :12     /// Skip is in the closed list of PB-T4c. It is that test with the members of its file that it reaches, literal, with one change: the census of
+     :13     /// the files of the Plugin that name PushBack has 15, the 14 of before and the opener of the full editor (RackWorkspaceEditorWindow.cs),
+     :14     /// which writes no Name; the seven assignments, the order and the self-tests do not change.
+     :16     public sealed class PushBackEditAllNameWritersGuardTests
+     :165                     "archivos=15",
+== tests/RackCad.Tests/PushBackEditAllFullCopyGuardTests.cs (from tests/RackCad.Tests/WorkspaceFullCopyGuardTests.cs): 660 lines, sha256 4619b6d31034
+   annex EquivalentSha 4619b6d31034: True; written in /d/r5g: False
+   annex block == the generated text: False
+   lines that are not lines of the original: 5
+     :27     public sealed class PushBackEditAllFullCopyGuardTests
+     :232         // I-64 F4B PB-T4c (owner-pbt4c-list-3-decision.md): the one Skip of PB-T4c in an original, the one of WorkspacePilotEditGuardTests:155,
+     :233         // goes back to its [Fact] too, by its exact line; the count of the Skip of PB-T4b and the expected lines do not change.
+     :234         private const string EditAllSkipLine = "    [Fact(Skip = \"I-64 F4B PB-T4c: sustituida por su equivalente en PushBackEditAllPortEquivalenceGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4
+     :236         private static string Restore(string text) => SkipLine.Replace(text, "$1[$2]").Replace(EditAllSkipLine + "\n", "    [Fact]\n");
+== tests/RackCad.UI.Tests/PushBackEditAllApplyCloseTests.cs (from tests/RackCad.UI.Tests/PushBackWorkspaceApplyCloseTests.cs): 163 lines, sha256 7c2458260ef3
+   annex EquivalentSha 7c2458260ef3: True; written in /d/r5g: False
+   annex block == the generated text: True
+   lines that are not lines of the original: 6
+     :22     /// I-64 F4B PB-T4c (owner-pbt4c-list-4-decision.md; D-PBT4-17, A-T2b-OWNER-01): the equivalent of CT-PBT2B-06 of
+     :23     /// PushBackWorkspaceApplyCloseTests, whose Skip is in the closed list of PB-T4c. It is that test with the members of its file that it
+     :24     /// reaches (Sesion, Nueva and Cierre), literal, with one change: the expected line of window 4, where a staged module and unapplied changes
+     :25     /// are pending together, is the one question that names both (WorkspaceStagedAndUnappliedQuestion of the window).
+     :28     public sealed class PushBackEditAllApplyCloseTests
+     :156                 "cerrar-con-modulo avisos=1 pregunta=Hay un cambio de módulo sin confirmar y cambios sin aplicar al borrador; se perderán los dos al cerrar. ¿Deseas continuar? cerrada=True",
+== the Skip lines
+  tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs:155 was '[Fact]'; method on the next line: True
+     skip: [Fact(Skip = "I-64 F4B PB-T4c: sustituida por su equivalente en PushBackEditAllPortEquivalenceGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 4).")]
+     the equivalent named in the reason exists in the four: True
+  tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs:306 was '[Fact]'; method on the next line: True
+     skip: [Fact(Skip = "I-64 F4B PB-T4c: sustituida por su equivalente en PushBackEditAllNameWritersGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 4).")]
+     the equivalent named in the reason exists in the four: True
+  tests/RackCad.Tests/WorkspaceFullCopyGuardTests.cs:568 was '[Fact]'; method on the next line: True
+     skip: [Fact(Skip = "I-64 F4B PB-T4c: sustituida por su equivalente en PushBackEditAllFullCopyGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4c-list-3-decision.md).")]
+     the equivalent named in the reason exists in the four: True
+  tests/RackCad.UI.Tests/PushBackWorkspaceApplyCloseTests.cs:686 was '[Fact]'; method on the next line: True
+     skip: [Fact(Skip = "I-64 F4B PB-T4c: sustituida por su equivalente en PushBackEditAllApplyCloseTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4c-list-4-decision.md).")]
+     the equivalent named in the reason exists in the four: True

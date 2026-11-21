@@ -1,0 +1,3 @@
+skip tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs:155 ThePortDeclaresTheSeventeenOperationsWithTheEnumsAsOrderedPrefixesAndNamesNoTypeOfTheDraftsNorOfThePilot (crlf=True)
+skip tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs:306 CT_PBT1B_15_TheWritersOfNameInThePluginRunAfterTheWindowCloses (crlf=True)
+sonda: 2 Skip puestos

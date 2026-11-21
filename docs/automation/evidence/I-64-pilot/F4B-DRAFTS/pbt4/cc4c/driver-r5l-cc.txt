@@ -1,0 +1,21 @@
+control del ensayo sobre la v5.0; copia /d/r5l; salida r5l-cc; revision 6adff90d856026a7a51067c1e9d7248f3d81641c
+  pieza 3fee9212e5ad57cdd3e437dc46f62682fc1d3d7f0c921c236e1bc6e2a30f4003 apply_red_pbt4c_v50.py
+  pieza eb4b4d6d94f93767469c7bc6debcabf39e0f63cd7a3d67877a559b06a31fa3ff apply_green_pbt4c_v50.py
+  pieza d459501c7657706be6133123ff82608f8035d135827b5b92b1839ace0cb56c6a green_pbt4c_v50.py
+  pieza 6b304a009d05ff586603ed4bbb9fa69b9973977bea09222c688ef80faa983e1b pbt4c-green-v50.txt
+  pieza 48e097a7a579bd311fdeb2f6b87ff57ec0ada157573b174ad3a02935e5ab816c pbt4c-skeleton-v50.txt
+  pieza ede5d822d30e8d5dc022f124a2a42f4e7cb562f53de7862be11b2d7b0b0e13ba pbt4c-rehearsal-textct.cs
+  pieza ec74af4484ae7496fc4e8f0258a71a2f88b124dd42933b5734314d4682384262 control_check_v51.py
+  pieza bb2c983b53121020df80e63655743e2cee943c318f25653362bcb8561f8d9486 p6_check_pbt4c_v50b.py
+  pieza 612b80ab7a60969c772b9f3c58ca50f7cd01c1890aa1ccfa334570142ed97dd3 p6_control50_v51.sh
+RED de PB-T4c escrito: 16 archivos (esqueleto 8, Skip 4, equivalentes 4), sin las CT
+cc-red-core rc=0 errores=0 avisos-CS=0
+test cc-red.trx trx-sha256=54578149c1d4984b89b9eec2c992d6597a608911e10228bab6eedd5edfed12d1 :: filas 5 {'Failed': 4, 'Passed': 1}; inicio 2026-11-21T13:05:47.8735032-06:00; fin 2026-11-21T13:05:47.9358546-06:00
+control red: VE I-01
+GREEN de PB-T4c escrito: 13 archivos de src/
+cc-green-core rc=0 errores=0 avisos-CS=0
+test cc-green.trx trx-sha256=356956f9054d9cf2ebcf2f102ee65f7ed673204f637f3becde677d195a905dc6 :: filas 5 {'Failed': 1, 'Passed': 4}; inicio 2026-11-21T13:06:43.2430533-06:00; fin 2026-11-21T13:06:43.3500323-06:00
+control green: VE I-01
+build-server shutdown rc=0
+procesos: 0
+MAINCO []

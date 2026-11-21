@@ -1,0 +1,10 @@
+| Clase | RED (P / F / S) | GREEN (P / F / S) |
+|---|---|---|
+| `RackCad.Tests.TmpPbt4cTextCt01` | 0 / 1 / 0 | 1 / 0 / 0 |
+| `RackCad.Tests.TmpPbt4cTextCt07` | 1 / 0 / 0 | 1 / 0 / 0 |
+| `RackCad.Tests.TmpPbt4cTextCt08` | 0 / 1 / 0 | 1 / 0 / 0 |
+| `RackCad.Tests.TmpPbt4cTextCt13` | 0 / 1 / 0 | 1 / 0 / 0 |
+| `RackCad.Tests.TmpPbt4cTextCt15` | 0 / 1 / 0 | 0 / 1 / 0 |
+| **Total (5 clases)** | **1 / 4 / 0** | **4 / 1 / 0** |
+
+TRX leidas (2): RED cc-red.trx 54578149c1d4; GREEN cc-green.trx 356956f9054d

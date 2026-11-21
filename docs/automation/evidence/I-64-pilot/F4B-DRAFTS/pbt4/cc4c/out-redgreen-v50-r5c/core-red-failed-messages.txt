@@ -1,0 +1,4 @@
+## RackCad.Tests.WorkspaceModelBoundaryTests.ThereIsNoPerTabStateOrPerTabSubscriptions
+Assert.DoesNotContain() Failure: Filter matched in collection
+                                                                                                                                                            ↓ (pos 26)
+Collection: [···, typeof(RackCad.Application.Workspace.IWorkspaceEditIntentOriginReader), typeof(RackCad.Application.Workspace.IWorkspaceEditIntentReader), typeof(RackCad.Application.Workspace.IWorkspaceFullEditorHost), typeof(RackCad.Application.Workspace.IWorkspaceHostPort), typeof(RackCad.Application.Workspace.IWorkspaceLifecycleAdvisor), ···]

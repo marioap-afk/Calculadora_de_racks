@@ -1,8 +1,95 @@
 > **Redacción para el repo público:** las rutas locales se sustituyen por marcadores (`<checkout-principal>`, `<carpeta-del-paquete>`). El resto no cambia.
 
-# I-64 F4B — Paquete del contrato de PB-T4 («Editar todo» en el panel del Workspace), v4.9
+# I-64 F4B — Paquete del contrato de PB-T4 («Editar todo» en el panel del Workspace), v5.1
 
-**Estado:** v4.9. Corrige la parte de **PB-T4b** con la comprobación acotada **CA-T4b** (`independent-review-v1.md`, §20: EMITIBLE TRAS CORRECCIONES, 0/1/8) y con la **séptima tanda del Owner**, el coste de la lectura (`owner-pbt4b-cost-decision.md`, sha256 `d0f4ca259f26fbf91676538d0895eca7acf921b76d5c56eb47885965213f5576`: «Darlo por cumplido (Recomendado)»). Los registros de la sesión van en `session-pbt4b-design-decisions.md` (sha256 `8b18add602766c705260e976e3566b151e13567ee3f2b40a0c0ff12bd193e934`, con M-03 a M-06 y la corrección de I-01 de la CA-T4b).
+**Estado:** v5.1. Corrige **PB-T4c** con la comprobación acotada **CA-T4c** (`independent-review-v1.md`, §22: EMITIBLE TRAS CORRECCIONES, **0/1/3**, sin decisiones nuevas del Owner):
+- **I-01:** los dos archivos nuevos de `Draft/`, sin `#nullable enable` y sin el `?` de `ProjectOf`;
+- **M-01 a M-03**;
+- y **la lección:** la precondición 6 no corría las CT. Gana un paso, el 8: el ensayo de las CT de texto y el censo de C13.
+
+La precondición 6 se repitió entera en copias nuevas (`/d/r5i` a `/d/r5l`), porque cambian el esqueleto y el GREEN.
+
+**Lo que cambia:**
+- las dos piezas (`pbt4c-green-v51.txt` y `pbt4c-skeleton-v51.txt`) y sus tres guiones (`green_pbt4c_v51.py`, `apply_red_pbt4c_v51.py` y `apply_green_pbt4c_v51.py`);
+- el docstring de las CT como datos (`pbt4c_ct_table_v51.py`); las CT y sus líneas son las mismas;
+- §5.3 (M-01), §6.3, §6.3.1 (M-02, el paso 8 y lo medido) y §6.3.2;
+- §7, §9 y §11;
+- y el anexo V51-A, que sustituye al V50-A.
+
+**Lo que no cambia:** la lista de 4, los `Skip`, los equivalentes y su `EquivalentSha`, las CT y sus líneas, los `RequiredTests`, los totales, las autoridades (salvo la sección de las n.º 0 y 65), D-S7 a D-S10, PB-T4a, PB-T4b y PB-T4d.
+
+**Lo que sale de la v5.1 (PB-T4c):**
+- las piezas, desde las de la v5.0 (`v51/make_pieces_v51.py`), y los guiones, desde los de la v5.0 (`v51/make_tools_v51.py`);
+- el ensayo de las CT de texto (`pbt4c-rehearsal-textct.cs`, que escribe `v51/make_rehearsal_v51.py` desde los objetos git de la base) y el censo de C13 (`pbt4ccc/compile/census_c13_v51.py`);
+- el conductor de la precondición 6 (`p6_pbt4c_v51.sh`), sus lecturas del ensayo (`rehearsal_check_v51.py`) y de cada clase (`classes_v51.py`), el coste (`p6_isdirty_pbt4c_v51.sh`), el control del ensayo sobre la v5.0 (`p6_control50_v51.sh` y `control_check_v51.py`), el resumen (`p6_json_pbt4c_v51.py`) y su registro (`compile_check_v51.py`, que escribe `compile-check.md` con el resultado de cada clase);
+- la lectura RR-3 sobre esta versión (`v51/check_rr3_v51.py`);
+- y `make_v51.py`, que arma esta versión desde la v5.0.
+
+---
+
+## Registro de cambios v5.0 → v5.1
+
+| Id | Hallazgo | Qué cambia | Dónde |
+|---|---|---|---|
+| **V51-01** | **CA-T4c I-01** (importante): **CT-PBT4C-15 no podía pasar, ni en el RED ni en el GREEN.** `PushBackFullDraftLaunch.cs` y `PushBackFullDraftStatePort.cs` empezaban por `#nullable enable`, en el esqueleto y en el GREEN, y la pureza que CT-15 copia de CT-PBT3A-14 da `#nullable` en cuanto ve `^\s*#nullable` (`PushBackFullReadGuardTests.cs:293-296` y `PushBackDraftWriteGuardTests.cs:294-298` de `6adff90d`). La precondición 6 no corre las CT, y las sondas no cubrían la CT-15 | **Sin la directiva en los dos archivos,** en las dos piezas, **y sin el `?` de `RackProject? ProjectOf`**: sin la directiva daría CS8632, porque `Directory.Build.props:28` fija `Nullable` en `disable` (CA-T4a I-01; la regla del §5.0). Los demás archivos nuevos, repasados contra las reglas de las CT de texto que les aplican, con el ensayo del paso 8 (V51-05). No cambian CT-15, la lista, los totales ni los filtros | las dos piezas; el anexo V51-A; §6.3; §6.3.1 |
+| V51-02 | CA-T4c M-01 | **De dónde sale cada línea de CT-03, 04, 05 y 12, línea a línea:** 22 tal cual de la sonda, 9 con los campos de la CT, 3 derivadas (y cómo) y 4 del texto del GREEN. **`lecturas-dentro`** son las lecturas durante `ShowModal`. Las corridas: `/d/r5f` (la válida de la v5.0) y `/d/r5i` (la de la v5.1), iguales por sha256. La cita de la vuelta parada (`/d/r5d`) sale | §5.3 |
+| V51-03 | CA-T4c M-02 | **El nombre del equivalente de PEG:155-163** conserva «…SeventeenOperations…» aunque su tabla tenga dieciocho operaciones: es la copia literal; lo que fija es la tabla (como la §20 M-02) | §6.3.1 |
+| V51-04 | CA-T4c M-03 | **El comentario del GREEN en `PendingWork()` de W** casa con D-S10: en WORKSPACE, un módulo escenificado deja siempre cambios sin aplicar, así que la pregunta del módulo sola es la de CLASSIC. Solo comentario | la pieza del GREEN; el anexo V51-A |
+| **V51-05** | **La lección de I-01: la precondición 6 no corría las CT** | **El paso 8, nuevo:** el ensayo de las CT de texto sobre `src/` (CT-01, 07, 08, 13 y 15), en clases temporales con sus líneas literales de §5.3, sobre el RED y sobre el GREEN, con su control sobre las piezas de la v5.0 (que ve I-01), y el censo de C13 y de los nombres, por texto, con sus autopruebas. **Qué cubre y qué no,** declarado | §6.3.1; §7; §11 |
+| V51-06 | La precondición 6, otra vez, pasos 1 a 9 | `/d/r5i` (el ensayo y las sondas), `/d/r5j` (el RED exacto y el GREEN literal), `/d/r5k` (el coste) y `/d/r5l` (el control del ensayo sobre la v5.0). Lo previsto, con D = 0. Las de la v5.0 (`/d/r5f`, `/d/r5g` y `/d/r5h`) pasan a historia | §5.3; §6.3.1; §9; §11 |
+| V51-07 | La custodia de `compile-check.md` | **El resultado de cada clase que corre** (Passed, Failed y Skipped), también de las que la custodia solo lleva por sha256; las salidas nuevas, con nombres cortos: ninguna ruta pasa de 150 caracteres con el prefijo de `cc4c/` | §6.3.2 |
+| V51-08 | La versión | El `Objective` cita la v5.1. CA-T4c: la §22 y su recomprobación (§23). Los guiones y las piezas, por su nombre de la v5.1 en §6.3.2 | §6.3.1; §6.3.2 |
+
+---
+
+## La cabecera de la v5.0, sin cambio salvo lo que dice el registro v5.0 → v5.1
+
+
+**Estado de la v5.0:** Escribe **PB-T4c** (`F4B-PBT4-EDIT-ALL-WINDOW`, «Editar todo») en forma literal, como la v4.4 a la v4.9 lo hicieron con PB-T4b, sobre el **cierre de PB-T4b** (`6adff90d`, F4B-E53: CERRADA, intento 1 de 3; el GREEN `c065080d` es el texto literal de la v4.9). La remedición se hizo por objetos git (`v50/remeasure_pbt4c_v50.py`), y la precondición 6, en copias exportadas de `6adff90d` (`/d/r5a` en adelante; `pbt4ccc/compile/`).
+
+**Las decisiones que la fijan:**
+- **El Owner, dos veces, sobre la lista de PB-T4c:** la de 2 que vio (`owner-pbt4-decisions.md`, pregunta 4) pasó a 3 con CT-PBT4B-20 («Añadirla a la lista (Recomendado)», `owner-pbt4c-list-3-decision.md`, sha256 `a98537acd2af674de4147eb3edc94f6483fa5db38fdaf692072c4a7395d7ed13`) y a **4** con CT-PBT2B-06 (`owner-pbt4c-list-4-decision.md`, sha256 `e98470114a04d8c7bb6102ebe66e9d106c8950e8dc2604702d97caf4e286d31a`): **`pbt4c-substitution-list-4.tsv`**, sha256 `9bd4c17a0eda837c92a7a0b7b3562d4ab17f1608baf3ffa8efaf560d8b1f82de` (la de 3, `pbt4c-substitution-list-3.tsv`, `d83e0a817144fa99f95ed4bfd151b822a4fc1035c10f736f77e8f8e6350186c1`, queda como historia).
+- **La sesión:** D-S7 a D-S10 (`session-pbt4c-design-decisions.md`, sha256 `d1912d978f03cab40fd88b93b9574170bee93841e43fdaca29b1e1512a4c3e83`): la costura de CT-09, los filtros por clase exacta, el nombre `IWorkspaceFullEditHost` y lo que cubre CT-09.
+
+**Lo que cambia:** PB-T4c entera: D-PBT4-12 a 17, §4.3, §5.3, §6.0 (sus filas), §6.3 con §6.3.1 y §6.3.2, §8.3, §8.5, §9, §11 y el anexo V50-A, con el texto literal del GREEN, del esqueleto, de los `Skip` y de los equivalentes, y las líneas medidas de las CT.
+
+**Lo que no cambia:** PB-T4a y PB-T4b (sus §5.1, §5.2, §6.1 y §6.2, enteros), PB-T4d (§6.4) y D-S1 a D-S6.
+
+**Lo que salió de la v5.0 (PB-T4c):**
+- las piezas literales `pbt4c-green-v50.txt` y `pbt4c-skeleton-v50.txt` y su generador, `green_pbt4c_v50.py`;
+- los `Skip` (`pbt4c_skips_v50.py`), los equivalentes (`make_equivalents_pbt4c_v50.py`) y su comprobación (`check_skips_pbt4c_v50.py`);
+- el RED y el GREEN en una copia (`apply_red_pbt4c_v50.py` y `apply_green_pbt4c_v50.py`);
+- la lista (`make_list_pbt4c_4.py`), las CT como datos (`pbt4c_ct_table_v50.py`), el paseo de guardas (`walk_guards_pbt4c_v50.py`) y las sondas;
+- y `make_v50.py`, que arma esta versión desde la v4.9.
+
+---
+
+## Registro de cambios v4.9 → v5.0
+
+| Id | Hallazgo | Qué cambia | Dónde |
+|---|---|---|---|
+| **V50-01** | **La remedición sobre `6adff90d`** (por objetos git; `v50/remeasure_pbt4c_v50-out.txt`): ningún anclaje de PB-T4c cambió de texto salvo los que tocó PB-T4b. **Citas de la v4.9 corregidas:** «archivos=14» está en **:384** (no :381); WHS 398-421, EIG 1011-1024 y 1155-1184, WNH 713-723, WBS 361-366, URT 1108-1109, `ControllerViolations` 659-707, EIH:1060 y :1079. **Movido por PB-T4b** (+38 en WHC): «two-phase» en :1187 (era :1149), `TryBeginEdit` 1058-1070, `RequestUpdate` 1414-1473 (la marca en :1426 y `PassGate` en :1430), `PassGate` :1959, `UpdateGate` :1023; `TryKeepPilotEdit` (652-751) y `SetPendingText` cambiaron. **La fila «PEG:380-385, verde» de §4.3 era obsoleta:** PEG:379-386 está en la lista de 478 y su copia (`WorkspacePilotEditGuardFull.cs:266-272`, fijada por `CopySha`) exige las dos interfaces de WHC | D-PBT4-12 a 17; §4.3 |
+| **V50-02** | **La lista, de 2 a 4,** con dos decisiones del Owner: **CT-PBT4B-20** (el `Skip` de PEG deja el archivo distinto de su `BaseSha`; medido en `/d/r5a` con solo los dos `Skip`) y **CT-PBT2B-06** (su ventana 4 fija que la pregunta del módulo «manda primero»: es lo que A-T2b-OWNER-01, F4B-E38, mandó corregir en PB-T4; la revisión v1 decía «Ninguna prueba fija hoy la pregunta con las dos cosas pendientes», y no era cierto) | §0; §4.3; §8.3; §8.5; la lista |
+| **V50-03** | **El GREEN y el esqueleto, literales** (anexo V50-A), aplicados por anclajes exactos sobre `6adff90d`: 9 archivos existentes y 4 nuevos; el RED, 4 existentes y 4 nuevos. Compilan con 0 errores y 0 `warning CS`, el Plugin incluido | D-PBT4-12 a 17; §6.3.1; anexo V50-A |
+| **V50-04** | **Los cuatro `Skip` y los cuatro equivalentes,** literales, que genera el guion desde los originales, con un cambio declarado cada uno. **El de CT-PBT2B-06 falla en el RED** (la ventana del esqueleto no cambia) y pasa en el GREEN, así que su filtro va con `ExpectRed` true | §5.3; §6.3.1; anexo V50-A |
+| **V50-05** | **La tabla entera de las CT,** CT-01 a 15, con su clase y sus líneas literales, para la lectura RR-3 de la cadena (la v4.9 solo traía la de la CT-15 y remitía a la v3) | §5.3 |
+| **V50-06** | **Las filas de PB-T4c de la tabla de RR-3,** una por clase, cada una con su clase y sus CT, como la de CT-19 de PB-T4b; la de CT-08 nombra su clase (`PushBackEditAllGuardTests`) | §6.0 |
+| **V50-07** | **Los totales, en cifras** (F4B-E46), sin fórmulas: GREEN Core 19 619 = 19 158 + 0 + 461 y UI 2 486 = 2 437 + 0 + 49; RED Core 19 619 = 19 149 + 9 + 461 y UI 2 486 = 2 432 + 5 + 49 | §5.3; §6.3.1 [14] |
+| **V50-08** | **D-S7:** CT-09 escenifica el módulo con `HeaderConfiguratorDialog` (no con `HeaderConfiguratorPresenter`, que construiría un `RackFrameConfiguratorWindow` real: C05) | D-PBT4-17; CT-09 |
+| **V50-09** | **D-S8:** los filtros nuevos, por clase exacta; ninguno selecciona una clase con el otro `ExpectRed`, y ningún filtro heredado selecciona una clase nueva | §6.3.1 |
+| **V50-10** | **Las restricciones medidas que el GREEN cumple:** WHC con sus dos interfaces; los nombres prohibidos de PEG:1015; el comentario de PEG:1079; `EditAllOutcome` fuera del censo de portadores; los 30 textos de WHHG; los límites de WCo | D-PBT4-13; §4.3 |
+| **V50-11** | **D-S9:** `IWorkspaceFullEditHost` (y `SetFullEditHost`, `_fullEditHost`), porque `WorkspaceModelBoundaryTests:101` prohíbe «Editor» en los tipos de `RackCad.Application.Workspace` y el paquete nombraba `IWorkspaceFullEditorHost` desde la v4 (medido en `/d/r5c`, y el arreglo en `/d/r5e`) | D-PBT4-13 y 15; anexo V50-A |
+| **V50-12** | **El paseo de guardas** sobre el GREEN, con el método de la v4.8 (las tuplas) y las pruebas de `6adff90d`, que incluyen las de PB-T4b. **Lo que no ve, declarado:** la reflexión sobre tipos (la caída de V50-11) y el comportamiento de la UI (la de CT-PBT2B-06). Lo que vale es la suite completa de Core y los filtros de UI de la precondición 6 | §4.3; §9 |
+| **V50-13** | **Las dudas del generador** (`generator-doubts-pbt4c.md`): el contrato literal, sus piezas por sha256, la precondición 6 y su resumen, y CA-T4c | §6.3.1; §6.3.2 |
+| **V50-14** | **Cuándo se ofrece «Editar todo»:** con las condiciones de «Editar» salvo la de solo lectura (si no, desaparecería con el borrador abierto) | D-PBT4-12 |
+| **V50-15** | **K = 1, medido** con la sonda (CT-05): las 17 operaciones con su respuesta y su motivo | D-PBT4-14; CT-05 |
+| **V50-16** | **Los filtros heredados:** el n.º 12 (`RackCad.Tests.Workspace`) **sí selecciona** PEG:155-163 y CT-PBT4B-20 (2 718 → 2 716); el n.º 7, de 2 a 1; el n.º 36 (UI), de 4 a 3; **el n.º 43 queda en 0 y su fila sale**; `MinSelected` cuenta resultados (medido en las TRX) | §6.3.1 |
+| **V50-17** | **CT-09 y «solo un módulo escenificado» (D-S10):** en WORKSPACE no se puede alcanzar. Escenificar un módulo deja siempre cambios sin aplicar, porque el estado editable lleva la autoridad de módulos (W:177; la sonda de UI en `/d/r5f`). CT-09 cubre `ambas`, `solo-sin-aplicar`, `ninguna` y `clasico-modulo` | D-PBT4-17; CT-09 |
+| **V50-18** | **Por qué un equivalente cae en el RED:** el de CT-PBT2B-06 fija la pregunta combinada, que solo trae el GREEN (W no cambia en el esqueleto, o CT-09 pasaría en el RED). Los otros tres son de guardas que el RED ya cumple. En PB-T4b, la mayoría de las copias pasaban en el RED porque fijaban lo que PB-T4b no cambia | §5.3 |
+
+## La cabecera de la v4.9, sin cambio salvo lo que dice el registro v4.9 → v5.0
+
+**Estado de la v4.9:** Corrige la parte de **PB-T4b** con la comprobación acotada **CA-T4b** (`independent-review-v1.md`, §20: EMITIBLE TRAS CORRECCIONES, 0/1/8) y con la **séptima tanda del Owner**, el coste de la lectura (`owner-pbt4b-cost-decision.md`, sha256 `d0f4ca259f26fbf91676538d0895eca7acf921b76d5c56eb47885965213f5576`: «Darlo por cumplido (Recomendado)»). Los registros de la sesión van en `session-pbt4b-design-decisions.md` (sha256 `8b18add602766c705260e976e3566b151e13567ee3f2b40a0c0ff12bd193e934`, con M-03 a M-06 y la corrección de I-01 de la CA-T4b).
 
 **Lo que cambia:**
 - **CA-T4b I-01** (V49-01): el equivalente de WHHG `NoneOfThe30…` trae, tras su `Assert.Empty`, **la autoprueba de la guarda** (WHHG:501-526: sus dos variables y sus 13 `Assert.NotEmpty`, literales), sobre su propio `LiteralViolations` y su tabla con 0, 6 y 0. Es lo que hace el equivalente de G-4 con la autoprueba de IG:510-517.
@@ -19,7 +106,7 @@
 
 **La precondición 6 repite los pasos 1 a 6** con los guiones de la v4.9, en copias nuevas (`/d/r4u` en adelante). Sus resultados van en `pbt4bcc/compile/`.
 
-**Lo que sale de la v4.9 (PB-T4b):**
+**Lo que salió de la v4.9 (PB-T4b):**
 - las ediciones (`pbt4b_hand_edits_v49.py`);
 - el guion de la copia (`make_copies_pbt4b_v49.py`) y su revisión (`pbt4b-equivalents-review-v49.txt`, 114 entradas);
 - el RED (`apply_red_pbt4b_v49.py`);
@@ -386,10 +473,10 @@ Los `Skip`, la partición y las comprobaciones son los de la v4.8.
 |---|---|---|---|---|
 | **PB-T4a** | `F4B-PBT4-FULL-READ-PATH` (23) | El Plugin lee también el modelo completo sobre el mismo escaneo; el resultado lleva lo completo y el catálogo. Las relecturas de un borrador abierto van al origen del borrador por su texto, con una relectura pura en `Draft/` sobre el escaneo ya tomado (A-T3-8): es un cambio observable declarado. La firma de `RackPilotIntentAdapter.Read` no cambia | **1** (CT-PBT3A-12) | Condicional (pregunta 4) |
 | **PB-T4b** | `F4B-PBT4-FULL-DRAFT-PANEL` (25) | El borrador del panel pasa al completo; OB-03.2; la regla única de la escala, en Application; «Actualizar» por `ExecuteFull`; «Conservar mi borrador» con dos «Sí», la presentación «Por grupos» y `KeepOn` (D-S2); una sola materialización del modelo completo por lectura (D-S4). **El código del piloto queda sin uso, sin retirarlo** | **478** (428 de las 9 clases, «Saltar y duplicar», 356 copias y 72 a mano; 23 de la letra; 27 de la UI), la lista que el Owner tomó como la que vio, con las cinco de la tercera tanda y las dos de la quinta | Condicional, con esa lista, sobre el cierre de PB-T4a (`78a7cef3`) |
-| **PB-T4c** | `F4B-PBT4-EDIT-ALL-WINDOW` (24) | «Editar todo», con el abridor en dos piezas | **2** (PEG:155-163 y CT-PBT1B-15) | Condicional |
+| **PB-T4c** | `F4B-PBT4-EDIT-ALL-WINDOW` (24) | «Editar todo», con el abridor en dos piezas | **4** (PEG:155-163, CT-PBT1B-15, CT-PBT4B-20 y CT-PBT2B-06), la lista que el Owner tomó como la que vio tras sus dos decisiones de PB-T4c (`owner-pbt4c-list-3-decision.md` y `owner-pbt4c-list-4-decision.md`) | Condicional, con esa lista, sobre el cierre de PB-T4b (`6adff90d`) |
 | **PB-T4d** | `F4B-PBT4-RETIRE-PILOT` (21, propuesto) | Retira el código del piloto que el panel ya no usa | **138** sustituciones (la v4.3, 139), **55** originales y **29** miembros de apoyo borrados con registro (esbozo, §6.4) | **Vuelve al Owner con su lista** |
 
-**Las decisiones del Owner,** tomadas (§8.2): Q1 «Retirarlo», Q2 «Por grupos», Q3 «Saltar y duplicar» y Q4 «Sí, con condiciones» (`owner-pbt4-decisions.md`); después, «Retirar tras PB-T4c» y «Sí, esa lista» (`owner-pbt4b-retire-list-decisions.md`); y, en la tercera tanda, «Añadirlas a la lista» (`owner-pbt4b-breaks-decision.md`). Después, «Cerrar y optimizar en PB-T4b» (`owner-pbt4a-cost-decision.md`) ; en la quinta tanda, «Añadirlas a la lista» (`owner-pbt4b-list-477-decision.md`), y en la sexta, «Añadirla a la lista» (`owner-pbt4b-list-478-decision.md`); y en la séptima, sobre el coste de la lectura de PB-T4b, «Darlo por cumplido» (`owner-pbt4b-cost-decision.md`). La sesión decidió D-S1 a D-S3, D-S5 y D-S6 (`session-pbt4b-design-decisions.md`) y D-S4 (D-PBT4-21; §8.5).
+**Las decisiones del Owner,** tomadas (§8.2): Q1 «Retirarlo», Q2 «Por grupos», Q3 «Saltar y duplicar» y Q4 «Sí, con condiciones» (`owner-pbt4-decisions.md`); después, «Retirar tras PB-T4c» y «Sí, esa lista» (`owner-pbt4b-retire-list-decisions.md`); y, en la tercera tanda, «Añadirlas a la lista» (`owner-pbt4b-breaks-decision.md`). Después, «Cerrar y optimizar en PB-T4b» (`owner-pbt4a-cost-decision.md`) ; en la quinta tanda, «Añadirlas a la lista» (`owner-pbt4b-list-477-decision.md`), y en la sexta, «Añadirla a la lista» (`owner-pbt4b-list-478-decision.md`); y en la séptima, sobre el coste de la lectura de PB-T4b, «Darlo por cumplido» (`owner-pbt4b-cost-decision.md`). Sobre PB-T4c, dos veces «Añadirla a la lista» (`owner-pbt4c-list-3-decision.md` y `owner-pbt4c-list-4-decision.md`). La sesión decidió D-S1 a D-S3, D-S5 y D-S6 (`session-pbt4b-design-decisions.md`), D-S4 (D-PBT4-21; §8.5) y, para PB-T4c, D-S7 a D-S10 (`session-pbt4c-design-decisions.md`).
 
 **PB-T4a es la primera que se emite.** Su parte del paquete está completa y sin remisiones: el diseño (D-PBT4-02 y 03, con el texto literal del GREEN y `ReadAt`, B-08), las roturas medidas con el recorrido por marcas de sus guardas y la ampliación de CA-T4a (§4.1), la lista cerrada CT-PBT4A-01 a 08 con sus totales (§5.1), lo común (§6.0) y el contrato propuesto con lo que necesita su generador (§6.1).
 
@@ -411,6 +498,9 @@ Las de la v1 (§1), sin cambio. Además, la revisión de la v1 y las instruccion
 | **La decisión del Owner sobre las dos de PB-T4a** (`owner-pbt4b-list-477-decision.md`, 2026-11-20) | «Añadirlas a la lista»: 477 en PB-T4b (§8.5) |
 | **La decisión del Owner sobre la guarda de los textos del anfitrión** (`owner-pbt4b-list-478-decision.md`, 2026-11-20, la sexta tanda) | «Añadirla a la lista»: **478** en PB-T4b (§8.5) |
 | **La decisión del Owner sobre el coste de la lectura de PB-T4b** (`owner-pbt4b-cost-decision.md`, 2026-11-21, la séptima tanda) | «Darlo por cumplido»: el paso 7 de la precondición 6, con dos de tres corridas (§8.5) |
+| **Las dos decisiones del Owner sobre la lista de PB-T4c** (`owner-pbt4c-list-3-decision.md` y `owner-pbt4c-list-4-decision.md`, 2026-11-21, la octava y la novena tandas) | «Añadirla a la lista», dos veces: **4** en PB-T4c (§8.5) |
+| **Las decisiones de diseño de la sesión para PB-T4c** (`session-pbt4c-design-decisions.md`, 2026-11-21) | D-S7 a D-S10 (§8.5) |
+| **El arrastre A-T2b-OWNER-01** (F4B-E38; `owner-pbt2b-close-decisions.md:36`) | «Cerrar» en WORKSPACE con una sola pregunta (D-PBT4-17) |
 | **Las decisiones de diseño de la sesión** (`session-pbt4b-design-decisions.md`, 2026-11-20) y las §17 y §18 de `independent-review-v1.md` | D-S1 a D-S3, D-S5 y D-S6, y D-S4 (§8.5, D-PBT4-21); la verificación de las cinco roturas y la revisión de la v4.4 |
 
 ---
@@ -456,7 +546,7 @@ Medidos en `7dfc7c21` (v1 a v3) y vueltos a medir en `7f0d9aa3`, el cierre de PB
 **Por qué así:**
 - PB-T4a deja el camino de la lectura completa y la relectura con el origen, con **una sola** sustitución por letra;
 - PB-T4b concentra el cambio de tipo y su lista;
-- PB-T4c es casi aditiva, con dos sustituciones por letra;
+- PB-T4c es casi aditiva, con cuatro sustituciones con registro (la lista de 4; V50-02);
 - PB-T4d retira el código del piloto cuando ya no corre ninguna prueba que lo use (D-PBT4-10).
 
 **Los TaskId** empiezan por `F4B-PBT4-` y tienen como mucho 26 caracteres (23, 25, 24 y, el propuesto de PB-T4d, 21), para los sustitutos de nc1 y nc2 (§6.0; V41-11).
@@ -1012,75 +1102,125 @@ M-01 a M-08 son de palabra completa; MU no cambia ningún nombre, solo añade la
 
 ### PB-T4c
 
+**Desde la v5.0, entero y literal** (V50-01 a V50-03, V50-08, V50-10, V50-14 y V50-15): medido por objetos git en el cierre de PB-T4b (`6adff90d`, F4B-E53). El texto del GREEN y del esqueleto es el de las piezas `pbt4c-green-v51.txt` y `pbt4c-skeleton-v51.txt` (§6.3.2), copiadas en el anexo V51-A. Las citas de líneas son de `6adff90d` (`v50/remeasure_pbt4c_v50-out.txt`).
+
 #### D-PBT4-12. El gesto, con `CommitField` como frontera (R-PB-10; I-02)
 
-- **El botón:** `BrowserFieldEditAllButton`, `Content="Editar todo"`, `AutomationProperties.Name="Editar el rack completo en el editor"`. Va en el `WrapPanel` de PV:218-254, tras «Editar». Lo maneja `OnBrowserFieldEditAllClick` con `Contained(() => _viewModel.Browser.Field.EditAll())`. Es visible con `Browser.Field.ShowEditAllButton`, en las mismas condiciones que «Editar».
-- **El gesto `EditAll()`** en FVM:
-  1. si el campo tiene texto pendiente, `_port.CommitField(origin, rack)`, «the same two-phase step as a blocking boundary» (WHC:1149):
-     - `Invalid`: no abre, y muestra «No se abrió el editor: <mensaje>.»;
-     - `Busy` o `Rejected`: no abre, y muestra su motivo;
-     - `Applied` o `NotEditable` por falta de borrador: sigue;
-  2. `_port.TryEditAll(new EditIntentRequest(session, rack, null, null))`.
-  
-  La petición lleva `ChosenReference` nulo, porque el origen lo guarda el anfitrión (D-PBT4-03), y sin testigo.
-- **Sin valor nuevo en `PilotBoundaryKind`:** URT:1107-1109 sigue en verde.
+- **El botón** (PV): `BrowserFieldEditAllButton`, `Content="Editar todo"`, `AutomationProperties.Name="Editar el rack completo en el editor"`, en el `WrapPanel` de los botones del campo (PV:218-254), justo tras «Editar» (PV:219-223). Su `Visibility` es `Browser.Field.ShowEditAllButton` y su `Click`, `OnBrowserFieldEditAllClick`, que en `WorkspacePanelView.xaml.cs` es `Contained(() => _viewModel.Browser.Field.EditAll())` (junto a `OnBrowserFieldEditClick`, :83).
+- **Cuándo se ofrece** (V50-14): la v4.9 decía «en las mismas condiciones que «Editar»». «Editar» (`ShowEditButton`, FVM:1136) solo se ofrece con la caja en solo lectura, así que desaparecería en cuanto el borrador está abierto y editable. Por eso `ShowEditAllButton` tiene las condiciones de «Editar» **salvo la de solo lectura**:
+  - una superficie fijada (no la vista previa: el gesto no pasa por el navegador, que fija la pestaña de «Editar»);
+  - sin fallo, sin diagnóstico que se quede y sin elección pendiente;
+  - y sin borrador, o con uno que el editor abre (`CanEdit`: registrado y Clean, Dirty o Conflict).
+- **El gesto `EditAll()`** (FVM, junto a `BeginEdit`):
+  1. `GetField`; con texto pendiente, `_port.CommitField(origin, rack)`, «the same two-phase step as a blocking boundary» (WHC:1187):
+     - `Invalid`: no abre; el campo muestra el texto tal cual, con su mensaje, y el aviso «No se abrió el editor: <mensaje>.»;
+     - `Busy` o `Rejected`: no abre, y el aviso es el de hoy para un texto que no se aplicó (`RefusalOf`, FVM:1225);
+     - `Applied` o `NotEditable`: sigue;
+  2. `_port.TryEditAll(new EditIntentRequest(session, rack, null, null))`: sin referencia (el origen lo guarda el anfitrión, D-PBT4-03) y sin testigo;
+  3. si la superficie cambió entre tanto, el aviso de hoy (`SurfaceChangedText`); si el anfitrión no empezó el borrador con una lectura no admitida, su diagnóstico y su pista, como `BeginEdit`; si no, el aviso de `EditAllNoticeOf`: «Editor cerrado: sus cambios están en el borrador.» con algún aplicar, «Editor cerrado sin cambios en el borrador.» sin ninguno, y para lo demás el prefijo de hoy («En espera: », «Rechazado: », el de `Describe` de la intención) o «No se abrió el editor: <motivo>.»;
+  4. `Render()` (`GetField`) y `_changed?.Invoke()`: el navegador rehace su tira (el resumen y « *» salen de la vista del campo, como hoy).
+- **Sin valor nuevo en `PilotBoundaryKind`:** URT:1108-1109 sigue en verde.
 - **El anfitrión no abre si el borrador aún tiene texto pendiente,** por si el gesto no lo confirmó: «Hay texto sin confirmar en el campo.».
-
-
 
 #### D-PBT4-13. El anfitrión, los dos reenvíos y el puerto generalizado (A-T3-11, A2-1; B-05)
 
-Como en la v3: `TryEditAll`, con cuerpo por defecto, con las reglas de `TryKeepPilotEdit`, y sus resultados.
-- **Los dos reenvíos explícitos:** `WorkspacePilotEditGate.TryEditAll` y `PilotEditAdapter.TryEditAll`. Lo prueban CT-PBT4C-12 y 13.
-- **El lanzamiento y el adaptador del puerto,** en `Draft/`.
+**`TryEditAll` es el único miembro nuevo del puerto** (`IWorkspacePilotEditPort.cs`, al final, tras `TakeUpdateProgress`), con cuerpo por defecto, `=> EditAllOutcome.NotAvailable(null);`, para que el doble `WorkspacePilotEditPortDouble` no se edite (C02). **`EditAllOutcome`** (un valor) y **`EditAllStatus`** (`NotAvailable`, `Waiting`, `Rejected`, `NotBegun`, `Refused`, `Closed` y `Failed`; el valor por defecto es `NotAvailable`) van en WEI, tras `EditIntentOutcome`. `EditAllOutcome` lleva `Status`, `Reason`, `Begin` (el `EditIntentOutcome` de la intención que no empezó el borrador) y `Applied` (los aplicar del editor).
+
+**En WHC** (V50-03):
+- el campo `_fullEditHost` (`IWorkspaceFullEditHost?`, de `Application.Workspace`: EIH:1079 sigue con un solo campo de `Systems`, `_updateHost`) y su asignación `SetFullEditHost`, junto a `SetPilotUpdateHost` (WHC:292);
+- **la operación del puerto, explícita,** `EditAllOutcome IWorkspacePilotEditPort.TryEditAll(EditIntentRequest request)`, tras la de `TryDiscardAndReload` (WHC:1130-1142): **la marca de lectura como envoltorio** (`_pilotReadInProgress`, como `TryKeepMine`, WHC:1116-1128), **mantenida durante `ShowModal`**;
+- **su cuerpo,** el ayudante privado `EditAllOfPilot`, con las reglas de `TryKeepPilotEdit` (WHC:652-751; I-09): `PassGate` primero (`Unavailable` → `NotAvailable`, `Waiting` y `Rejected`), `UpdateInFlightForRequest` después, la contención con `Report("WorkspaceHostCore.TryEditAll", …)`, y `NotePilotEdit(session)` por cada aplicar.
+
+**Los resultados** (medidos con la sonda de la precondición 6, §5.3):
+- sin anfitrión del editor: `NotAvailable`, «No editable aquí: el panel no tiene el editor completo.», sin leer;
+- **sin borrador, lo empieza:** `TryBeginPilotEdit` (su lectura, su admisión y su diagnóstico); si no admite (la cola aparcada, AUTH-13), `NotBegun` con ese resultado y sin abrir;
+- Clean, Dirty o Conflict: abre;
+- Applying, o un borrador que ya no está registrado: `Waiting`, «El borrador se está aplicando o se retiró: el editor no se abre.»;
+- Unknown, Error o Undecidable (`CanEdit` falso): `Refused`, «El borrador no admite el editor completo en su estado actual.»;
+- con texto pendiente: `Refused`, «Hay texto sin confirmar en el campo.»;
+- otra sesión: `Rejected`, el motivo de `PassGate`;
+- al cerrar: `Closed`, con los aplicar.
+
+**Los dos reenvíos entre el panel y el anfitrión** (B-05; R-22). El panel recibe `new PilotEditAdapter(new WorkspacePilotEditGate(_host, _noticeDepth))` (WCo:52). Con cuerpo por defecto, ninguno reenviaría. Los dos reenvían, de forma explícita:
+- **la compuerta** (`WorkspacePilotSupport.cs:153-209`): `public EditAllOutcome TryEditAll(EditIntentRequest request) => _depth.IsInside ? EditAllOutcome.Waiting(InsideNoticeReason) : _inner.TryEditAll(request);`, tras `RequestUpdate`. Lo prueba CT-PBT4C-12;
+- **el adaptador del Plugin** (`PilotEditAdapter`, WCo:283-327): `public EditAllOutcome TryEditAll(EditIntentRequest request) => _gate.TryEditAll(request);`, al final. Lo prueba la guarda de texto CT-PBT4C-13.
+
+**El lanzamiento y el adaptador del puerto,** en `Draft/` (puros, CT-PBT4C-15):
+- `PushBackFullDraftLaunch.For(DraftSession<PushBackFullDraftState> draft, IPushBackDraftStatePort port)`: el `Editable` actual del borrador (la ventana lo copia al cargar), el `RackId` y el proyecto del sobre del `Origin` (`RackEmbedStore` y `RackProjectStore`, como `PushBackFullDraftMaterializer`; nulo si el texto no lo trae, que el lanzamiento admite);
+- `PushBackFullDraftStatePort : IPushBackDraftStatePort` (`ctor(draft, Action applied)`): `ApplyToDraft(edited)` llama a `SetCurrentDraftState(new PushBackFullDraftState(edited, draft.CurrentDraftState.Origin))`, así que **el origen se conserva**; con `Updated`, llama una vez a `applied()` y responde `Applied`; si no, `NotEditable`.
+
+`PushBackDraftSessionPort` y `LaunchFor` (PB-T2a) se conservan sin uso, con su registro en DISP.
+
+**Las restricciones medidas que el GREEN cumple** (V50-10; las guardas siguen en verde en la suite completa, §4.3):
+- **WHC conserva sus dos interfaces:** la copia de PEG:379-386 en `WorkspacePilotEditGuardFull.cs:266-272`, que fija `CopySha`, exige `IWorkspaceLifecycleAdvisor` e `IWorkspacePilotEditPort` y nada más. Por eso `TryEditAll` va en el puerto, y no en una interfaz nueva de WHC;
+- **los nombres de los tipos del puerto y del soporte** evitan `Draft|Editor|Subscription|Tab` (PEG:1015, `NameViolations`): `EditAllOutcome` y `EditAllStatus` los evitan, e `IWorkspaceFullEditHost` va en su propio archivo;
+- **ningún tipo de `RackCad.Application.Workspace` lleva `Subscription|Editor|Draft` en su nombre** (`WorkspaceModelBoundaryTests:101`, por reflexión): por eso el host del editor completo se llama `IWorkspaceFullEditHost` (D-S9; el paquete nombraba `IWorkspaceFullEditorHost` desde la v4, y la precondición 6 lo vio caer en `/d/r5c`);
+- **el comentario del puerto** conserva «only the six operations of the edit intention read the drawing» y «while one of the six reads is in progress» (PEG:1079). `TryEditAll` solo lee por la intención, y su comentario lo dice;
+- **`EditAllOutcome` queda fuera del censo de portadores** (`CarriersWithoutCensus`, EIH y su copia: `^Edit(?:Intent|Check|Confirm|Update)(?:Request|Witness|Outcome|Start|Progress)$`);
+- **ninguno de los 30 textos de la guarda de WHHG se repite** en WHC ni en el soporte (el equivalente de `NoneOfThe30…` cuenta cada uno): `TryEditAll` usa textos propios y, donde comparte uno, su constante (`PilotReadInProgressReason`, `InsideNoticeReason`);
+- `ControllerViolations` (PEG:659-707): un solo `public IWorkspacePilotEditPort`, tres `+=`, ningún `-=` y un solo `event` en WCo;
+- la compuerta no gana `static` (`GateViolations`, PEG:602-631, y su prueba, :633);
+- en las carpetas del Workspace, ningún diálogo fuera de `EnterPanelModal` (`ModalScopes` y `DialogViolations`, PEG:809-839, y su prueba, :841): `FullEditorModal` solo llama a `_open`.
 
 #### D-PBT4-14. Los estados de cada operación durante el editor (I-01; I-15)
 
-Como en la v3. `RequestUpdate` da `Busy` por la marca (WHC:1388).
+**Medido** con la sonda de la precondición 6 (CT-PBT4C-05), con la ventana abierta (dentro de `ShowModal`; el doble pone el modal):
+
+| Operación | Responde | Por qué |
+|---|---|---|
+| `SetPendingText`, `CommitField`, `CrossBoundary` (una frontera bloqueante), `DiscardRack` y `DiscardDocument` | `Busy`, «Hay una lectura del piloto en curso.» | Miran la marca (WHC:1165, :1193, :1246, :1281 y :1308) |
+| `TryBeginEdit`, `TryCheckNow`, `TryReload`, `TryConfirmBase`, `TryKeepMine`, `TryDiscardAndReload` y `TryEditAll` | `Waiting`, el mismo texto | La marca, en el envoltorio de cada una (WHC:1058-1142 y el de `TryEditAll`) |
+| **`RequestUpdate`** | **`Busy`, el mismo texto** | **Mira la marca antes que nada** (WHC:1426), antes de `PassGate` (:1430) |
+| `GetField`, `GetRacksAtRisk`, `TakeLossNotices`, `TakeCloseNotices` y `TakeUpdateProgress` | De memoria, como hoy | |
+
+El texto de `Busy` dice «lectura en curso» mientras el editor está abierto. **Ninguna lectura del dibujo** dentro (`lecturas-dentro=0`), y al cerrar el panel vuelve a responder. Se declara: en AutoCAD la paleta está deshabilitada por el modal WPF, y eso solo se ve en el Smoke-PB.
 
 #### D-PBT4-15. El modal y el abridor, en dos piezas (I-01; B-07; M-14)
 
-**Por qué dos piezas.** Una sola no cabe en ningún sitio sin romper una guarda medida:
-- **en WCo** (anidada) tiene que nombrar la ventana, de `RackCad.UI.Systems.PushBack`, y `WorkspaceHostSourceGuardTests.cs:398-420` prohíbe `RackCad.UI` en todo archivo de `Plugin/Workspace/` salvo la paleta y el puente;
-- **en un archivo nuevo de `Plugin/Workspace/`** rompe las dos guardas de 9 archivos (EIG:1011-1022; `WorkspaceNavigationHostTests:714-723`);
-- **fuera de `Plugin/Workspace/`,** si implementa una interfaz de `RackCad.Application.Workspace`, rompe `WorkspaceBridgeSourceGuardTests.cs:364-367`.
+**Por qué dos piezas** (medido en `6adff90d`). Una sola no cabe en ningún sitio sin romper una guarda:
+- **en WCo** (anidada) tendría que nombrar la ventana, de `RackCad.UI.Systems.PushBack`, y `WorkspaceHostSourceGuardTests.cs:398-421` prohíbe `RackCad.UI` en todo archivo de `Plugin/Workspace/` salvo la paleta y el puente;
+- **en un archivo nuevo de `Plugin/Workspace/`** rompería las dos guardas de 9 archivos (EIG:1011-1024; `WorkspaceNavigationHostTests:713-723`);
+- **fuera de `Plugin/Workspace/`,** si implementara una interfaz de `RackCad.Application.Workspace`, rompería `WorkspaceBridgeSourceGuardTests.cs:361-366`.
 
 **Las dos piezas:**
-1. **El modal, anidado en WCo:** `private sealed class FullEditorModal : IWorkspaceFullEditorHost`. Su único método es `public void ShowModal<TLaunch>(TLaunch launch) where TLaunch : class { using (_controller.EnterPanelModal()) _open(launch); }`, y `_open` es un `Action<object>`.
-   - **No nombra `RackCad.UI`** (398-420 sigue en verde) **ni `PushBack`** (WCo no está en el censo de CT-PBT1B-15, R-31).
-   - Se asigna en WCo con `_host.SetFullEditorHost(new FullEditorModal(this, RackWorkspaceEditorWindow.Show))`, después de `SetPilotUpdateHost`, así que EIG:1150-1190 sigue en verde.
+1. **El modal, anidado en WCo,** tras `PilotEditAdapter`: `private sealed class FullEditorModal : IWorkspaceFullEditHost`, con `ctor(WorkspaceController controller, Action<object> open)` y un solo método, `public void ShowModal<TLaunch>(TLaunch launch) where TLaunch : class { using (_controller.EnterPanelModal()) _open(launch); }`.
+   - **No nombra `RackCad.UI`** (398-421 sigue en verde) **ni `PushBack`** (WCo no entra en el censo de CT-PBT1B-15).
+   - Se asigna en el getter de la navegación de WCo, justo tras `_host.SetPilotUpdateHost(new RackPilotUpdateCommandContext());` (WCo:110): `_host.SetFullEditHost(new FullEditorModal(this, RackWorkspaceEditorWindow.Show));`. EIG:1155-1184 sigue en verde.
 2. **La ventana, en `src/RackCad.Plugin/Views/RackWorkspaceEditorWindow.cs`:** `internal static class RackWorkspaceEditorWindow`, con un solo método, `internal static void Show(object launch)`:
-   - `var window = RackPushBackSystemWindow.ForDraft((PushBackDraftEditorLaunch)launch);`
-   - `AcApplication.ShowModalWindow(window);`, sin `Owner`, como el abridor clásico.
-   - **No nombra `RackCad.Application.Workspace`** (364-367 sigue en verde) ni ningún término de G-9 (no nombra el piloto).
+   - `var window = RackPushBackSystemWindow.ForDraft((PushBackDraftEditorLaunch)launch);` (W:296-300);
+   - `AcApplication.ShowModalWindow(window);`, sin `Owner`, como el abridor clásico (`PushBackClassicCharacterizationPluginGuardTests.cs:195-210`);
+   - **no nombra `RackCad.Application.Workspace`** (361-366 sigue en verde) ni ningún término de G-9 (IG:593-595); no lee ni escribe el dibujo, ni hace nada tras cerrar.
 
-**`IWorkspaceFullEditorHost`,** en `Application/Workspace/`, con el método genérico `void ShowModal<TLaunch>(TLaunch launch) where TLaunch : class;`. WHC lo llama con el `PushBackDraftEditorLaunch`. El campo `_fullEditorHost` es de un tipo de `Application.Workspace`, así que EIH:1088 sigue en verde. Se declara como excepción a R-PB-05 y a ADR-0029 D12.
+**`IWorkspaceFullEditHost`,** en `src/RackCad.Application/Workspace/IWorkspaceFullEditHost.cs`, con el método genérico `void ShowModal<TLaunch>(TLaunch launch) where TLaunch : class;`. WHC lo llama con el `PushBackDraftEditorLaunch`. Se declara como excepción a R-PB-05 y a ADR-0029 D12.
 
-**La guarda que rompe: CT-PBT1B-15** (`PushBackSharedReferenceGuardTests:306-` y :381: «archivos=14»). `RackWorkspaceEditorWindow.cs` nombra `PushBack` (la ventana y el lanzamiento), así que el censo pasa a 15. **Ninguna carpeta lo evita:** todo archivo nuevo que abra la ventana nombra `PushBack`, y ponerlo en uno de los 14 existentes mezclaría el abridor con el camino clásico o con el escritor (R-31). Se sustituye con registro en PB-T4c (C-5), con un equivalente: «archivos=15 (los 14 y el abridor); asignaciones=7, sin cambio»; las demás líneas, iguales.
+**La guarda que rompe: CT-PBT1B-15** (`PushBackSharedReferenceGuardTests.cs:306-403`, «archivos=14» en **:384**; la v4.9 citaba :381). `RackWorkspaceEditorWindow.cs` nombra `PushBack` (la ventana y el lanzamiento), así que el censo pasa a 15. **Ninguna carpeta lo evita:** todo archivo nuevo que abra la ventana nombra `PushBack`, y ponerlo en uno de los 14 existentes mezclaría el abridor con el camino clásico o con el escritor (R-31). Se sustituye con registro (C-5), con su equivalente: «archivos=15 (los 14 y el abridor); asignaciones=7», lo demás igual (§5.3).
 
 #### D-PBT4-16. La guarda de OB-01.3 (M-05, M-09)
 
-CT-PBT4C-07 mira **seis sujetos**:
+CT-PBT4C-07 mira **seis sujetos**, en texto sin comentarios:
 - `RackWorkspaceEditorWindow.cs`;
 - el cuerpo de `FullEditorModal` en WCo;
-- `TryEditAll` y sus ayudantes en WHC;
-- el gesto `EditAll` en FVM;
+- los cuerpos de `TryEditAll` y de `EditAllOfPilot` en WHC;
+- el de `EditAll` en FVM;
 - `Draft/PushBackFullDraftLaunch.cs`;
 - `Draft/PushBackFullDraftStatePort.cs`.
 
-Ninguno nombra `RackPushBackCommands`, `RackMenuCommands`, `EditorModules`, `RackViewBatchExecution`, `DrawAndPlace`, `RedrawInPlace`, `InsertRequested` ni `InsertionRequest`. La autoprueba en negativo inyecta cada nombre en cada sujeto.
+Ninguno nombra `RackPushBackCommands`, `RackMenuCommands`, `EditorModules`, `RackViewBatchExecution`, `DrawAndPlace`, `RedrawInPlace`, `InsertRequested` ni `InsertionRequest`. La autoprueba en negativo inyecta cada nombre en cada sujeto (48). En el RED, un sujeto que falta es su texto vacío, y la guarda pasa.
 
 **`RackWorkspaceEditorWindow.cs` no lleva** `LockDocument`, transacción ni nada tras cerrar.
 
+#### D-PBT4-17. «Cerrar» con las dos cosas (A-T2b-OWNER-01; M-12; D-S7 y D-S10)
 
-#### D-PBT4-17. «Cerrar» con las dos cosas (A-T2b-OWNER-01; M-12)
+`PendingWork()` de W (W:3427-3433), **solo en WORKSPACE**:
+- un módulo escenificado **y** cambios sin aplicar: una sola pregunta, `WorkspaceStagedAndUnappliedQuestion` = «Hay un cambio de módulo sin confirmar y cambios sin aplicar al borrador; se perderán los dos al cerrar. ¿Deseas continuar?», con un `if` antes de la línea de hoy, que no cambia;
+- solo cambios sin aplicar: la de hoy, «Hay cambios sin aplicar al borrador…»;
+- **en CLASSIC, nada cambia:** `HasUnappliedDraftChanges()` es `false` fuera de WORKSPACE (W:3439-3441), y un módulo escenificado pregunta lo de hoy.
 
-`PendingWork()` de W, **solo en WORKSPACE**:
-- un módulo escenificado y cambios sin aplicar: una sola pregunta, `WorkspaceStagedAndUnappliedQuestion`, con el texto de la v2;
-- uno solo: la de hoy;
-- en CLASSIC, nada cambia.
+**Medido (D-S10):** en WORKSPACE, **escenificar un módulo deja siempre cambios sin aplicar**, porque el estado editable de la ventana lleva la autoridad de módulos (W:177: «el editor, la cola, la autoridad de modulos y los portadores»). La sonda de UI sobre el GREEN literal (`/d/r5f`, `pbt4c-probe-close-ui.cs`) lo vio con los dos gestos que escenifican: la cabecera con `HeaderConfiguratorDialog` y `StageModuleEdit` dan la pregunta combinada; el conmutador `AdvancedModulesToggle` o la sola elección del módulo no dejan nada pendiente. **Así que en WORKSPACE «solo un módulo escenificado» no se puede alcanzar:** la rama de `PendingWork()` que pregunta solo por el módulo queda para CLASSIC. La decisión del Owner (A-T2b-OWNER-01, F4B-E38) se cumple con la pregunta combinada.
 
-**La prueba** (CT-PBT4C-09) lee `PendingWork()` sin cerrar la ventana. **Escenifica el módulo con la costura existente,** `HeaderConfiguratorPresenter` y `ConfigureModuleHeaderButton` (`PushBackHeaderAuthorityWindowTests.cs:99-106`), sin el configurador real.
+**Lo que cambia en una prueba existente:** CT-PBT2B-06, ventana 4, fijaba que con `StageModuleEdit` mandaba la pregunta del módulo. Está en la lista de 4 (`owner-pbt4c-list-4-decision.md`), con su equivalente.
+
+**La prueba** (CT-PBT4C-09) lee `PendingWork()` sin cerrar la ventana y cubre lo que se puede alcanzar (D-S10): `ambas`, `solo-sin-aplicar`, `ninguna` y `clasico-modulo`. **Escenifica la cabecera con `HeaderConfiguratorDialog` (W:1488) y `ConfigureModuleHeaderButton`** (D-S7): `ConfigureModuleHeader` llama a la costura en lugar de `ShowHeaderConfigurator` (W:1901-1903), así que no se construye el configurador. La v4.9 nombraba `HeaderConfiguratorPresenter` (W:2373), que recibe un `RackFrameConfiguratorWindow` real ya construido, y C05 lo prohíbe. W solo cambia `PendingWork()` y su constante; `W.xaml` no cambia.
 
 ### Común
 
@@ -1271,20 +1411,43 @@ Las otras pruebas de las mismas guardas que nombran lo retirado solo por su ayud
 | EIG:670 y :720 (la base en WHC), y la `Theory` EIG:743 (el alias) | WHC no nombra `.InitialDraftState`, `.StaleBase` ni `.Entries` fuera de los consumidores, y `pilot` solo es `read.PilotRead` (D-S3) |
 | RG:104, :128 y :132 a :140 | D-S2: `TryKeepMine` sigue nombrado una vez, como `_port.TryKeepMine(request)`, dentro de `ConfirmChoice` (`v44/measure_rg_pbt4b-out.txt`) |
 
-### 4.3 PB-T4c
+### 4.3 PB-T4c (V50-01, V50-02, V50-10 a V50-12 y V50-16)
 
-| Guarda | Causa | Resultado |
-|---|---|---|
-| PEG:155-163 (17 nombres) | C-5 | Se sustituye: 18 |
-| **CT-PBT1B-15** (`PushBackSharedReferenceGuardTests:306-403`, «archivos=14») | **C-5 (B-07)** | **Se sustituye:** «archivos=15» con `RackWorkspaceEditorWindow.cs`; lo demás, igual |
-| `WorkspaceHostSourceGuardTests:398-420` | — | **Verde:** WCo no nombra `RackCad.UI` |
-| EIG:1011-1022 y `WorkspaceNavigationHostTests:714-723` | — | **Verdes:** ningún archivo nuevo en `Plugin/Workspace/` |
-| `WorkspaceBridgeSourceGuardTests:364-367` | — | **Verde:** `RackWorkspaceEditorWindow.cs` no nombra `RackCad.Application.Workspace` |
-| `WorkspaceBridgeSourceGuardTests:139-142` | — | Verde: `FullEditorModal` no nombra los prohibidos |
-| G-9 | — | Verde: el abridor no nombra el piloto |
-| EIG:1150-1190, CT-PBT2B-08, URT:1107-1109, EIH:1066 y PEG:380-385 | — | Verdes |
+**Medido en el cierre de PB-T4b** (`6adff90d`): por objetos git, con el paseo de guardas sobre el GREEN literal, y por ejecución, con la suite completa de Core y los filtros de UI de §6.3.1 sobre el RED exacto y sobre el GREEN literal (la precondición 6 de la v5.1, `/d/r5j`; §6.3.1).
 
-**Si cualquier otra prueba falla,** fuera de las tablas y de la lista, es C16 y vuelve al Owner (pregunta 4).
+**La lista de 4** (`pbt4c-substitution-list-4.tsv`, sha256 `9bd4c17a0eda837c92a7a0b7b3562d4ab17f1608baf3ffa8efaf560d8b1f82de`), la que el Owner tomó como la que vio:
+
+| # | Guarda o prueba | Causa | Su sustituta |
+|---|---|---|---|
+| 1 | **PEG:155-163** (`ThePortDeclaresTheSeventeenOperations…`), las 17 operaciones por reflexión | C-5: `TryEditAll` es la 18.ª | `PushBackEditAllPortEquivalenceGuardTests`: la prueba y los miembros de PEG que alcanza, con la fila de `TryEditAll` al final de `Operations` (18) |
+| 2 | **CT-PBT1B-15** (`PushBackSharedReferenceGuardTests.cs:306-403`; «archivos=14» en :384) | C-5 (B-07): `RackWorkspaceEditorWindow.cs` nombra `PushBack` | `PushBackEditAllNameWritersGuardTests`: la prueba y sus ayudantes, con «archivos=15»; lo demás, igual |
+| 3 | **CT-PBT4B-20** (`WorkspaceFullCopyGuardTests.cs:568-654`) | C-5: el `Skip` de PEG:155 deja PEG distinto de su `BaseSha` (PEG es uno de sus 21 originales y `SkipLine` solo devuelve los `Skip` de PB-T4b); medido en `/d/r5a` con solo los dos primeros `Skip`: 19 605 = 19 144 + 1 + 460 (`owner-pbt4c-list-3-decision.md`) | `PushBackEditAllFullCopyGuardTests`: el archivo entero, con la clase renombrada y `Restore`, que además devuelve a `[Fact]` la línea exacta del `Skip` de PB-T4c de PEG:155; sus líneas esperadas no cambian |
+| 4 | **CT-PBT2B-06** (`PushBackWorkspaceApplyCloseTests.cs:686-779`, UI) | C-3: su ventana 4 (`StageModuleEdit`) deja pendientes un módulo y cambios sin aplicar, y fija que la pregunta del módulo «manda primero»; D-PBT4-17 (A-T2b-OWNER-01) la cambia por la combinada; medido en `/d/r5c` (`owner-pbt4c-list-4-decision.md`) | `PushBackEditAllApplyCloseTests` (UI): la prueba y lo que alcanza de su archivo, con la línea de la ventana 4 cambiada a la pregunta nueva |
+
+**Las que siguen en verde,** medidas (los anclajes, en `v50/remeasure_pbt4c_v50-out.txt`):
+
+| Guarda | Por qué sigue en verde |
+|---|---|
+| `WorkspaceHostSourceGuardTests:398-421` | WCo no nombra `RackCad.UI` (el modal está anidado y no nombra la ventana) |
+| EIG:1011-1024 y `WorkspaceNavigationHostTests:713-723` (9 archivos en `Plugin/Workspace/`) | Ningún archivo nuevo en `Plugin/Workspace/` |
+| `WorkspaceBridgeSourceGuardTests:361-366` y :139-142 | `RackWorkspaceEditorWindow.cs` no nombra `RackCad.Application.Workspace`; `FullEditorModal` no nombra ningún diálogo |
+| G-9 (IG:593-595) | El abridor no nombra el piloto ni cuenta en las cuentas de RIA y NH |
+| EIG:1155-1184 (el cableado de `SetPilotUpdateHost`) | `SetFullEditHost` va después, en el mismo getter |
+| CT-PBT2B-08 (`PushBackWorkspaceModeSourceGuardTests:307-364`) | R10 cuenta los once literales uno a uno (:271); el literal nuevo no es uno de ellos |
+| URT:1108-1109, EIH:1060 y EIH:1079 | Sin valor nuevo de `PilotBoundaryKind`; `TryEditAll` no lleva «Update»; `_fullEditHost` es de `Application.Workspace` |
+| La copia de PEG:379-386 (`WorkspacePilotEditGuardFull.cs:266-272`) | WHC conserva sus dos interfaces |
+| PEG:1015 y PEG:1079 | Los nombres de los tipos del puerto y del soporte evitan `Draft\|Editor\|Subscription\|Tab`; el comentario del puerto conserva «six» |
+| `ControllerViolations` (PEG:659-707), la compuerta (PEG:602-633) y los diálogos (PEG:809-841) | Los límites de WCo y de la compuerta, sin cambio |
+| El censo de portadores (EIH y su copia) | `EditAllOutcome` no casa con la familia de nombres |
+| El equivalente de `NoneOfThe30…` (WHHG) | `TryEditAll` no repite ninguno de los 30 textos |
+| `WorkspaceModelBoundaryTests:93-104` | **D-S9:** `IWorkspaceFullEditHost`, sin «Editor» (con `IWorkspaceFullEditorHost` caía; `/d/r5c`, y el arreglo en `/d/r5e`) |
+| CT-PBT4B-12, 13, 16, 19 y 21 | Medidas con la suite completa: en verde |
+
+**El paseo de guardas** (`walk_guards_pbt4c_v50.py`, el método de la v4.8 con sus tuplas, sobre el GREEN literal y las pruebas de `6adff90d`, que incluyen las de PB-T4b, y los cuatro equivalentes por su ruta virtual): **295 clases y 3 902 pruebas sin `Skip` de las clases que nombran un archivo tocado o su carpeta; 596 marcadas (A: un literal cambia de cuenta), 514 sin diferencia y 2 792 que no leen ninguno (`v50/pbt4c-guard-walk-v50b-out.txt`; la lectura por tipo de diferencia, `v50/walk-analysis-v50b-out.txt`)**. Casi todas las marcas salen de los literales que aparecen en los cuatro archivos nuevos o de cuentas que crecen en archivos que la guarda lee entero; las que importan, las ve la suite completa.
+
+**Lo que el paseo no ve** (V50-12), declarado: **la reflexión sobre tipos** (la caída de D-S9: `WorkspaceModelBoundaryTests` recorre los tipos del ensamblado, sin ningún literal de archivo) y **el comportamiento de la UI** (la de CT-PBT2B-06: una prueba de ventana, sin texto de fuente). **Por eso lo que vale es la suite completa de Core y los filtros de UI** de la precondición 6, que las vieron las dos.
+
+**Si cualquier otra prueba falla,** fuera de la lista de 4, es PBT4C-C16 y vuelve al Owner (pregunta 4).
 
 ## 5. La red de pruebas
 
@@ -1423,35 +1586,122 @@ Las otras pruebas de las mismas guardas que nombran lo retirado solo por su ayud
 - **R_C y R_UI** son los resultados (las filas) de las pruebas de las clases `FullPanelCopy…RedTests` de Core y de UI: **`<medido en la precondicion 6>`**, con la partición (`partition_pbt4b_v48.py red`, que da el número de resultados de cada clase, y R_C y R_UI). **La regla:** una prueba cuyos resultados del RED son todos `Failed` por aserción va a `FullPanelCopy…RedTests`; todos `Passed`, a `FullPanelCopy…GreenTests`; **una `Theory` que mezcla se parte por filas en dos equivalentes escritos a mano** (D-S5; V47-02): uno en `FullPanelCopy…RedTests` con las filas que fallan y otro en `FullPanelCopy…GreenTests` con las que pasan, con el mismo cuerpo y las mismas aserciones; la partición da para ella dos filas, Red y Green, y lo admite solo para las declaradas en el paquete (las cuatro de D-S5, con sus filas Red: `SPLIT` y `RED_KEYS` de `pbt4b_hand_edits_v48.py`, los de la v4.7). **Para la emisión** una prueba que mezcla sin estar declarada (se le aplica D-S5 con una versión del paquete), una declarada que no mezcla o mezcla otras filas, y una que se salta o falla sin aserción (C04). **Por aserción** es la regla de INV-PBT4B-02 (I-02): **la primera línea del StackTrace del resultado está bajo `tests/`**; entra así un `NullReferenceException` en el código de la prueba (con el anfitrión del piloto, `Find<PushBackFullDraftState>` da null), y para una cuya primera línea está en `src/` o no tiene ruta.
 - **D = 0** (I-25): ninguna otra prueba falla. **En el RED,** lo mide la precondición 6 con la suite completa de Core y los filtros de UI sobre la copia con el RED exacto, sin las CT: 19 587 y 2 478, con R_C y R_UI `Failed`, que tienen que ser los de la partición. **En el GREEN,** lo sostienen el recorrido de §4.2 y la revisión (§17 y §18), y **lo mide la precondición 6** con `apply_green_pbt4b_v45.py`: la suite completa de Core y los filtros de UI sobre la copia con el GREEN literal, con 0 `Failed` y ningún `warning CS`. **Una copia que no pase en el GREEN pasa a equivalente escrito a mano** (D-S1), con su texto literal, y la emisión necesita una versión del paquete con él; **una prueba que falle fuera de la lista de 478 vuelve al Owner.**
 
-### 5.3 PB-T4c: la lista cerrada CT-PBT4C-01 a 15
+### 5.3 PB-T4c: la lista cerrada CT-PBT4C-01 a 15 (entera; V50-05 a V50-07)
 
-Las CT-01 a 13 de la v3 y la CT-14 de la v4, con estos cambios:
-- **CT-07:** los seis sujetos de D-PBT4-16.
-- **CT-08 (M-30):** las dos piezas del abridor, en texto:
-  - `FullEditorModal` en WCo, con un `using (_controller.EnterPanelModal())` y la llamada a `_open`, sin `RackCad.UI` ni `PushBack`;
-  - `RackWorkspaceEditorWindow.Show(object launch)`, con **esta línea literal, una vez:** `var window = RackPushBackSystemWindow.ForDraft((PushBackDraftEditorLaunch)launch);`; después `AcApplication.ShowModalWindow(window);`, una vez; sin `Owner =` ni `RackCad.Application.Workspace`;
-  - y el cableado en WCo, `_host.SetFullEditorHost(new FullEditorModal(this, RackWorkspaceEditorWindow.Show))`, después de `SetPilotUpdateHost`.
-  - Sus líneas llevan el literal de la conversión: `abridor conversion=[var window = RackPushBackSystemWindow.ForDraft((PushBackDraftEditorLaunch)launch);] veces=1`.
-- **CT-10 (Core):** puerto real (`WorkspacePilotEditGate` sobre WHC) → `TryEditAll` → el doble de `IWorkspaceFullEditorHost` aplica por el puerto (incluido un gesto compuesto, F4B-E30) → «Actualizar» con `PilotEraseScopeDouble` → `Applied` y Clean.
-- **CT-14 (UI; I-20):** la FVM real, sobre un doble nuevo del puerto que registra: `EditAll` llama a `CommitField` si hay texto y después a `TryEditAll`, con la petición de D-PBT4-12.
+**Desde la v5.0, entera y literal,** como §5.2 para PB-T4b: las CT-01 a 13 de la v3 (las 01 a 11 de la v2 con los cambios de la v3), la CT-14 de la v4 y la CT-15 de la v4.1, con lo que fijó la v4.9 y las líneas medidas sobre el GREEN literal. **De dónde sale cada línea** (V51-02; CA-T4c M-01):
+- **las de CT-03, 04, 05 y 12,** de la sonda de Core sobre el GREEN literal (`pbt4c-probe-editall.cs`, una clase temporal sobre la copia con el GREEN), como dice, línea a línea, la tabla de después de la de las CT. La corrida válida de la v5.0 es `/d/r5f` (`pbt4ccc/compile/out-probes-v50b-r5f/probe-core-lines.txt`) y la de la v5.1, `/d/r5i` (`pbt4ccc/compile/r5i-en/sonda-core-lineas.txt`): iguales, sha256 `cbbd8457149afd6919dbfb763b63c47a60283bc44d01f05c0b92aae1652ea59f`;
+- **las de CT-01, 07, 08, 13 y 15,** del ensayo de las CT de texto (§6.3.1, el paso 8), que las da tal cual sobre el GREEN (y, sobre el RED, las de CT-07 y CT-15, mientras CT-01, 08 y 13 caen por su `Assert.Equal`);
+- **las de CT-09,** de la sonda de UI (`pbt4c-probe-close-ui.cs`; D-S10);
+- **las de CT-02, 06, 10, 11 y 14,** del texto literal del GREEN (anexo V51-A), sin ejecutar.
 
-**Y una nueva:**
+**Las reglas de §5.0,** enteras: un `[Fact]` por CT, que acaba en un `Assert.Equal` de las líneas unidas por `\n`; ninguna `[Theory]` nueva; la regla «EXCEPCION»; las de UI; los ayudantes existentes sin editar. **Las CT de Core van en `tests/RackCad.Tests/`, con `namespace RackCad.Tests`; las de UI, en `tests/RackCad.UI.Tests/`, con `namespace RackCad.UI.Tests`.** Ninguna clase nueva empieza por `Workspace` ni por un prefijo de un filtro heredado (D-S8, §6.3.1).
 
-| CT | Qué fija | Las líneas | Clase | `ExpectRed` |
+**Los ayudantes de las CT:** `FullReadRig`, `FullEditIntentFakeReader`, `FullEditIntentKit` y `FullPrepareKit` (`WorkspaceFullReadKit.cs`), `IntentKit`, `PilotKit`, `DraftKit`, `WorkspaceHostRig`, `FullWriteKit` y `PilotEraseScopeDouble` (Core), y en UI la FVM real, sin editarlos. **Los dobles nuevos** (el de `IWorkspaceFullEditHost`, que pone el modal con `SetModalRackCadActive` y lee el lanzamiento; y el del puerto de la UI, que registra las llamadas y responde lo que la CT le da) **van dentro de su clase**, como clases anidadas privadas. Lo que una CT copia de otra clase (por ejemplo, `Rig`, `ThreeViews` y `LessOneFront` de `PushBackFullPanelTests` para CT-10) se copia, sin referenciarlo.
+
+| CT | Qué fija | Las líneas (literales del paquete) | Clase | `ExpectRed` |
 |---|---|---|---|---|
-| **15** | **I-24:** G-L1 y la pureza sobre los dos archivos nuevos de `Draft/` de PB-T4c: `PushBackFullDraftLaunch.cs` y `PushBackFullDraftStatePort.cs` (§5.0). **Cubre `ApplyToDraft`** | **33:** `g-l1 archivos=2 reglas-sin-coincidencias=True`; las 15 autopruebas de G-L1; `pureza archivos=2 violaciones=[]`; las 15 de la pureza; y `cubre ApplyToDraft=PushBackFullDraftStatePort.cs` | `PushBackDraftLaunchGuardTests` (Core) | **false** |
+| **01** | **El botón, en texto** (D-PBT4-12): en `WorkspacePanelView.xaml`, `BrowserFieldEditAllButton` una vez, en el `WrapPanel` de los botones del campo y justo tras `BrowserFieldEditButton`, con sus cuatro atributos literales; en `WorkspacePanelView.xaml.cs`, `OnBrowserFieldEditAllClick` una vez, con su cuerpo literal | `xaml BrowserFieldEditAllButton=1 en-el-panel-de-los-botones=True tras=BrowserFieldEditButton`; `xaml Content=[Editar todo] AutomationProperties.Name=[Editar el rack completo en el editor]`; `xaml Visibility=[{Binding Browser.Field.ShowEditAllButton, Converter={StaticResource FlagToVisibility}}] Click=[OnBrowserFieldEditAllClick]`; `code-behind OnBrowserFieldEditAllClick=1 cuerpo=[Contained(() => _viewModel.Browser.Field.EditAll())]` | `PushBackEditAllGuardTests` | true |
+| **02** | **El gesto y sus avisos** (D-PBT4-12; R-PB-10), con la FVM real sobre un doble nuevo del puerto, en la clase, que registra y responde `Closed` sin aplicar: con texto pendiente, `CommitField` `Invalid` (mensaje `Valor no numérico.`), `Busy` (motivo `Hay una lectura del piloto en curso.`) o `Rejected` (motivo `La petición no es del documento activo.`) no llaman a `TryEditAll`; `Applied` y `NotEditable`, sí | `invalido TryEditAll=0 mensaje=[Valor no numérico.] aviso=[No se abrió el editor: Valor no numérico.]`; `ocupado TryEditAll=0 aviso=[El texto no se aplicó: Hay una lectura del piloto en curso.]`; `rechazado TryEditAll=0 aviso=[El texto no se aplicó: La petición no es del documento activo.]`; `valido TryEditAll=1 aviso=[Editor cerrado sin cambios en el borrador.]`; `no-editable TryEditAll=1 aviso=[Editor cerrado sin cambios en el borrador.]` | `PushBackEditAllWindowTests` (UI) | true |
+| **03** | **`TryEditAll` del anfitrión** (D-PBT4-13), por el puerto (`IWorkspacePilotEditPort`) sobre `FullReadRig` y el lector del kit, con un doble de `IWorkspaceFullEditHost` que registra y no aplica: sin anfitrión; sin borrador (lo empieza, con su lectura); la cola aparcada (`pb-21-cola`); Clean, Dirty y Conflict; Applying; Unknown y Error; texto pendiente; y otra sesión | `sin-anfitrion estado=NotAvailable motivo=[No editable aquí: el panel no tiene el editor completo.] abierto=False lecturas=0 borrador=False`; `sin-borrador estado=Closed abierto=True lecturas=1 borrador=Clean`; `cola estado=NotBegun inicio=NotAdmitted diagnostico-fuera-del-piloto=True pista=True abierto=False borrador=False`; `clean estado=Closed abierto=True lecturas=0`; `dirty estado=Closed abierto=True lecturas=0`; `conflict estado=Closed abierto=True lecturas=0`; `applying estado=Waiting motivo=[El borrador se está aplicando o se retiró: el editor no se abre.] abierto=False`; `unknown estado=Refused motivo=[El borrador no admite el editor completo en su estado actual.] abierto=False`; `error estado=Refused motivo=[El borrador no admite el editor completo en su estado actual.] abierto=False`; `texto-pendiente estado=Refused motivo=[Hay texto sin confirmar en el campo.] abierto=False`; `otra-sesion estado=Rejected motivo=[La petición no es del documento activo.] abierto=False lecturas=0` | `PushBackEditAllTests` | true |
+| **04** | **El lanzamiento y el adaptador del puerto** (D-PBT4-13): dentro de `ShowModal`, el doble lee el lanzamiento (el estado del borrador, el rack y el proyecto del sobre del origen) y aplica dos veces por su puerto (escala `2.5` y `3`); el origen se conserva; tras cerrar, `Closed` con las dos y el borrador Dirty. Y el adaptador solo, sobre un borrador Applying y sobre uno Clean | `lanzamiento estado-igual=True rack=True proyecto=True proyecto-con-diseno=True`; `aplicar-1 estado=Applied isdirty=True origen-igual=True escala=2.5`; `aplicar-2 estado=Applied isdirty=True escala=3`; `tras-aplicar estado=Closed aplicadas=2 borrador=Dirty origen-igual=True`; `adaptador-no-editable estado=NotEditable llamadas=0`; `adaptador-aplica estado=Applied llamadas=1` | `PushBackEditAllTests` | true |
+| **05** | **K = 1** (D-PBT4-14; R-PB-10): dentro de `ShowModal` (el doble pone el modal con `SetModalRackCadActive`), cada operación del puerto sobre el borrador abierto, con su respuesta y su motivo; ninguna lectura del dibujo dentro; y, tras cerrar, el panel vuelve a responder | `k1 SetPendingText Busy [Hay una lectura del piloto en curso.]`; `k1 CommitField Busy [Hay una lectura del piloto en curso.]`; `k1 CrossBoundary Busy [Hay una lectura del piloto en curso.]`; `k1 DiscardRack Busy [Hay una lectura del piloto en curso.]`; `k1 DiscardDocument Busy [Hay una lectura del piloto en curso.]`; `k1 TryBeginEdit Waiting [Hay una lectura del piloto en curso.]`; `k1 TryCheckNow Waiting [Hay una lectura del piloto en curso.]`; `k1 TryReload Waiting [Hay una lectura del piloto en curso.]`; `k1 TryConfirmBase Waiting [Hay una lectura del piloto en curso.]`; `k1 TryKeepMine Waiting [Hay una lectura del piloto en curso.]`; `k1 TryDiscardAndReload Waiting [Hay una lectura del piloto en curso.]`; `k1 TryEditAll Waiting [Hay una lectura del piloto en curso.]`; `k1 RequestUpdate Busy [Hay una lectura del piloto en curso.]`; `k1 GetField existe=True estado=Clean`; `k1 GetRacksAtRisk conocido=True`; `k1 TakeLossNotices 0 TakeCloseNotices 0`; `k1 TakeUpdateProgress en-vuelo=False`; `k1-cerrado estado=Closed lecturas-dentro=0`; `despues SetPendingText Applied TryBeginEdit AlreadyOpen` | `PushBackEditAllTests` | true |
+| **06** | **El resumen y «Modificado» al cerrar** (A2-9), con la FVM real sobre el doble del puerto de CT-02: con un aplicar, el doble pasa su campo a Dirty y responde `Closed` con 1; sin aplicar, `Closed` con 0; el navegador recibe su aviso de cambio una vez | `con-aplicar estado=[Modificado] aviso=[Editor cerrado: sus cambios están en el borrador.] cambiado=1`; `sin-aplicar estado=[Limpio] aviso=[Editor cerrado sin cambios en el borrador.] cambiado=1` | `PushBackEditAllWindowTests` (UI) | true |
+| **07** | **La guarda de OB-01.3** (D-PBT4-16), en texto sin comentarios, sobre los seis sujetos: `RackWorkspaceEditorWindow.cs`, el cuerpo de `FullEditorModal` en WCo, los de `TryEditAll` y `EditAllOfPilot` en WHC, el de `EditAll` en FVM, `Draft/PushBackFullDraftLaunch.cs` y `Draft/PushBackFullDraftStatePort.cs`. Ninguno nombra los ocho; la autoprueba inyecta cada nombre en cada sujeto. Un sujeto que falta (en el RED) es su texto vacío | `sujeto RackWorkspaceEditorWindow.cs prohibidos=[]`; `sujeto FullEditorModal prohibidos=[]`; `sujeto TryEditAll prohibidos=[]`; `sujeto EditAll prohibidos=[]`; `sujeto PushBackFullDraftLaunch.cs prohibidos=[]`; `sujeto PushBackFullDraftStatePort.cs prohibidos=[]`; `autoprueba-RackPushBackCommands-en-RackWorkspaceEditorWindow.cs=falla`; `autoprueba-RackMenuCommands-en-RackWorkspaceEditorWindow.cs=falla`; `autoprueba-EditorModules-en-RackWorkspaceEditorWindow.cs=falla`; `autoprueba-RackViewBatchExecution-en-RackWorkspaceEditorWindow.cs=falla`; `autoprueba-DrawAndPlace-en-RackWorkspaceEditorWindow.cs=falla`; `autoprueba-RedrawInPlace-en-RackWorkspaceEditorWindow.cs=falla`; `autoprueba-InsertRequested-en-RackWorkspaceEditorWindow.cs=falla`; `autoprueba-InsertionRequest-en-RackWorkspaceEditorWindow.cs=falla`; `autoprueba-RackPushBackCommands-en-FullEditorModal=falla`; `autoprueba-RackMenuCommands-en-FullEditorModal=falla`; `autoprueba-EditorModules-en-FullEditorModal=falla`; `autoprueba-RackViewBatchExecution-en-FullEditorModal=falla`; `autoprueba-DrawAndPlace-en-FullEditorModal=falla`; `autoprueba-RedrawInPlace-en-FullEditorModal=falla`; `autoprueba-InsertRequested-en-FullEditorModal=falla`; `autoprueba-InsertionRequest-en-FullEditorModal=falla`; `autoprueba-RackPushBackCommands-en-TryEditAll=falla`; `autoprueba-RackMenuCommands-en-TryEditAll=falla`; `autoprueba-EditorModules-en-TryEditAll=falla`; `autoprueba-RackViewBatchExecution-en-TryEditAll=falla`; `autoprueba-DrawAndPlace-en-TryEditAll=falla`; `autoprueba-RedrawInPlace-en-TryEditAll=falla`; `autoprueba-InsertRequested-en-TryEditAll=falla`; `autoprueba-InsertionRequest-en-TryEditAll=falla`; `autoprueba-RackPushBackCommands-en-EditAll=falla`; `autoprueba-RackMenuCommands-en-EditAll=falla`; `autoprueba-EditorModules-en-EditAll=falla`; `autoprueba-RackViewBatchExecution-en-EditAll=falla`; `autoprueba-DrawAndPlace-en-EditAll=falla`; `autoprueba-RedrawInPlace-en-EditAll=falla`; `autoprueba-InsertRequested-en-EditAll=falla`; `autoprueba-InsertionRequest-en-EditAll=falla`; `autoprueba-RackPushBackCommands-en-PushBackFullDraftLaunch.cs=falla`; `autoprueba-RackMenuCommands-en-PushBackFullDraftLaunch.cs=falla`; `autoprueba-EditorModules-en-PushBackFullDraftLaunch.cs=falla`; `autoprueba-RackViewBatchExecution-en-PushBackFullDraftLaunch.cs=falla`; `autoprueba-DrawAndPlace-en-PushBackFullDraftLaunch.cs=falla`; `autoprueba-RedrawInPlace-en-PushBackFullDraftLaunch.cs=falla`; `autoprueba-InsertRequested-en-PushBackFullDraftLaunch.cs=falla`; `autoprueba-InsertionRequest-en-PushBackFullDraftLaunch.cs=falla`; `autoprueba-RackPushBackCommands-en-PushBackFullDraftStatePort.cs=falla`; `autoprueba-RackMenuCommands-en-PushBackFullDraftStatePort.cs=falla`; `autoprueba-EditorModules-en-PushBackFullDraftStatePort.cs=falla`; `autoprueba-RackViewBatchExecution-en-PushBackFullDraftStatePort.cs=falla`; `autoprueba-DrawAndPlace-en-PushBackFullDraftStatePort.cs=falla`; `autoprueba-RedrawInPlace-en-PushBackFullDraftStatePort.cs=falla`; `autoprueba-InsertRequested-en-PushBackFullDraftStatePort.cs=falla`; `autoprueba-InsertionRequest-en-PushBackFullDraftStatePort.cs=falla` | `PushBackOpenerClassicPathGuardTests` | **false** |
+| **08** | **Las dos piezas del abridor, en texto** (D-PBT4-15; M-30): `FullEditorModal` en WCo, que implementa `IWorkspaceFullEditHost`, con un `using (_controller.EnterPanelModal())` y la llamada a `_open`, sin `RackCad.UI` ni `PushBack`; `RackWorkspaceEditorWindow.Show`, con la conversión y la llamada literales, una vez cada una, sin `Owner =` ni `RackCad.Application.Workspace`; y el cableado en WCo, una vez, tras `SetPilotUpdateHost` | `modal FullEditorModal=1 implementa=IWorkspaceFullEditHost using-EnterPanelModal=1 _open=1 RackCad.UI=0 PushBack=0`; `abridor conversion=[var window = RackPushBackSystemWindow.ForDraft((PushBackDraftEditorLaunch)launch);] veces=1`; `abridor mostrar=[AcApplication.ShowModalWindow(window);] veces=1 Owner-asignado=0 RackCad.Application.Workspace=0`; `cableado [_host.SetFullEditHost(new FullEditorModal(this, RackWorkspaceEditorWindow.Show));] veces=1 tras-SetPilotUpdateHost=True` | `PushBackEditAllGuardTests` | true |
+| **09** | **«Cerrar» con las dos cosas** (D-PBT4-17; A-T2b-OWNER-01; D-S7 y D-S10), con la ventana real: `PendingWork()` sin cerrar la ventana. En WORKSPACE (`pb-31-v2-modulos`), la cabecera escenificada con `SelectModule(w, "M3")`, `HeaderConfiguratorDialog` (una copia con `PanelClear` 40) y `ConfigureModuleHeaderButton`, sin construir el configurador, que deja también cambios sin aplicar (D-S10); en WORKSPACE (`pb-01-base`), solo cambios sin aplicar (`ToleranceBox` a 4.5) y ninguno; en CLASSIC (`pb-31-v2-modulos`), la misma cabecera | `ambas pregunta=[Hay un cambio de módulo sin confirmar y cambios sin aplicar al borrador; se perderán los dos al cerrar. ¿Deseas continuar?]`; `solo-sin-aplicar pregunta=[Hay cambios sin aplicar al borrador que se perderán al cerrar. ¿Deseas continuar?]`; `ninguna pendiente=False`; `clasico-modulo pregunta=[Hay cambios de módulo sin confirmar que se perderán al cerrar. ¿Deseas continuar?]` | `PushBackEditAllWindowTests` (UI) | true |
+| **10** | **De punta a punta sin AutoCAD** (A2-11; F4B-E30): el puerto real (`WorkspacePilotEditGate` sobre WHC) → `TryEditAll` → el doble de `IWorkspaceFullEditHost` aplica por el puerto del lanzamiento un gesto compuesto (un frente menos y la escala), una vez → «Actualizar» con `PilotEraseScopeDouble` (como CT-PBT4B-05) → `Applied` y Clean | `editar-todo estado=Closed aplicadas=1 borrador=Dirty`; `lo-aplicado-es-el-editado=True`; `actualizar estado=Applied begin-mutation=1 seal=1 borrador=Clean`; `borrado EraseUnit:B2` | `PushBackEditAllTests` | true |
+| **11** | **D2 en `ApplyToDraft`** (D-PBT4-18): la huella de las dos referencias compartidas antes y después de cada aplicar, y la condición 7 por el puerto (la línea base resuelta del estado aplicado, sustituida por la de otro fixture) | `ApplyToDraft-1 estado=Applied huellas-iguales=True`; `ApplyToDraft-2 estado=Applied huellas-iguales=True`; `sustituir-referencia estado=Applied isdirty=False` | `PushBackEditAllTests` | true |
+| **12** | **La compuerta reenvía `TryEditAll`** (B-05): `new WorkspacePilotEditGate(core, depth)`, por el puerto: dentro de un aviso, `Waiting` con `InsideNoticeReason` y sin abrir; fuera, llega al anfitrión y abre | `compuerta-dentro estado=Waiting motivo=[Se está entregando un aviso del panel.] abierto=False lecturas=0`; `compuerta-fuera estado=Closed abierto=True lecturas=1` | `PushBackEditAllTests` | true |
+| **13** | **El adaptador del Plugin reenvía `TryEditAll`** (B-05): `ControllerViolations` (PEG:659-707) copiada con las 18 operaciones (la tabla del equivalente de PEG:155-163), con dos autopruebas: un adaptador sin el reenvío y uno que no solo delega | `adaptador operaciones=18 violaciones=[]`; `autoprueba-sin-reenvio-de-TryEditAll=falla`; `autoprueba-reenvio-que-no-solo-delega=falla` | `PushBackEditAllGuardTests` | true |
+| **14** | **La FVM llama al puerto en su orden** (I-20), sobre el doble de CT-02: con texto pendiente, `CommitField` y después `TryEditAll`; sin él, solo `TryEditAll`; la petición de D-PBT4-12; y cuándo se ofrece el botón | `con-texto llamadas=[GetField,CommitField,TryEditAll,GetField] cambiado=1`; `sin-texto llamadas=[GetField,TryEditAll,GetField] cambiado=1`; `peticion sesion-del-campo=True rack-del-campo=True referencia=null testigo=null`; `boton sin-borrador=True editable=True no-editable=False vista-previa=False` | `PushBackEditAllWindowTests` (UI) | true |
+| **15** | **I-24:** G-L1 y la pureza sobre los dos archivos nuevos de `Draft/` de PB-T4c: `PushBackFullDraftLaunch.cs` y `PushBackFullDraftStatePort.cs` (§5.0; como CT-PBT4B-19). **Cubre `ApplyToDraft`** | `g-l1 archivos=2 reglas-sin-coincidencias=True`; `autoprueba-a=falla`; `autoprueba-b=falla`; `autoprueba-c=falla`; `autoprueba-e=falla`; `autoprueba-f1=falla`; `autoprueba-f2=falla`; `autoprueba-f3=falla`; `autoprueba-g1=falla`; `autoprueba-g2=falla`; `autoprueba-h1=falla`; `autoprueba-h2=falla`; `autoprueba-i=falla`; `autoprueba-j=falla`; `autoprueba-k1=falla`; `autoprueba-k2=falla`; `pureza archivos=2 violaciones=[]`; `autoprueba-#nullable=falla`; `autoprueba-namespace RackCad.Application.Systems.PushBack.Draft=falla`; `autoprueba-Autodesk=falla`; `autoprueba-RackCad.Plugin=falla`; `autoprueba-RackCad.UI=falla`; `autoprueba-System.Windows=falla`; `autoprueba-Transaction=falla`; `autoprueba-Database=falla`; `autoprueba-async=falla`; `autoprueba-await=falla`; `autoprueba-Task=falla`; `autoprueba-File.=falla`; `autoprueba-System.IO=falla`; `autoprueba-RackEmbedComposer=falla`; `autoprueba-new RackEmbedDocument=falla`; `cubre ApplyToDraft=PushBackFullDraftStatePort.cs` | `PushBackDraftLaunchGuardTests` | **false** |
 
-CT-15 pasa en el RED: el esqueleto de PB-T4c crea los dos archivos (inertes y puros).
+**De dónde sale cada línea de CT-03, 04, 05 y 12** (V51-02; CA-T4c M-01): **22 tal cual** de la sonda, **9 con los campos de la CT** (la sonda imprime además campos que la CT no fija, con los mismos valores en los que sí fija), **3 derivadas** y **4 del texto** del GREEN, que la sonda no tiene.
 
-**Los totales:** K_C = 2 (PEG:155-163 y CT-PBT1B-15, dos `[Fact]`), con la base C = el cierre de PB-T4b:
+| CT | La línea de §5.3 | De dónde sale |
+|---|---|---|
+| CT-03 | `sin-anfitrion estado=NotAvailable motivo=[No editable aquí: el panel no tiene el editor completo.] abierto=False lecturas=0 borrador=False` | de la sonda, **con los campos de la CT**: la sonda imprime además `aplicadas` |
+| CT-03 | `sin-borrador estado=Closed abierto=True lecturas=1 borrador=Clean` | derivada: `borrador=Clean` es el `estado-del-borrador=Clean` de la sonda (su `borrador=True` dice que existe) |
+| CT-03 | `cola estado=NotBegun inicio=NotAdmitted diagnostico-fuera-del-piloto=True pista=True abierto=False borrador=False` | del texto del GREEN: la sonda no la tiene (el `Begin` de la cola aparcada da `NotAdmitted`, como CT-PBT4B-02 en `PushBackFullPanelTests.cs:230`) |
+| CT-03 | `clean estado=Closed abierto=True lecturas=0` | de la sonda, **con los campos de la CT**: la sonda imprime además `aplicadas`, `motivo` |
+| CT-03 | `dirty estado=Closed abierto=True lecturas=0` | de la sonda, **con los campos de la CT**: la sonda imprime además `aplicadas`, `estado-del-borrador`, `motivo` |
+| CT-03 | `conflict estado=Closed abierto=True lecturas=0` | del texto del GREEN: la sonda no la tiene. En Conflict el borrador admite cambios (`DraftSession.cs:331-332`), así que abre como Clean y Dirty |
+| CT-03 | `applying estado=Waiting motivo=[El borrador se está aplicando o se retiró: el editor no se abre.] abierto=False` | de la sonda, **con los campos de la CT**: la sonda imprime además `aplicadas`, `lecturas` |
+| CT-03 | `unknown estado=Refused motivo=[El borrador no admite el editor completo en su estado actual.] abierto=False` | de la sonda, **con los campos de la CT**: la sonda imprime además `aplicadas`, `estado-del-borrador`, `lecturas` |
+| CT-03 | `error estado=Refused motivo=[El borrador no admite el editor completo en su estado actual.] abierto=False` | del texto del GREEN: la sonda no la tiene. En Error el borrador no admite cambios (`DraftSession.cs:331-332`), así que se rechaza como Unknown |
+| CT-03 | `texto-pendiente estado=Refused motivo=[Hay texto sin confirmar en el campo.] abierto=False` | de la sonda, **con los campos de la CT**: la sonda imprime además `aplicadas`, `lecturas` |
+| CT-03 | `otra-sesion estado=Rejected motivo=[La petición no es del documento activo.] abierto=False lecturas=0` | de la sonda, **con los campos de la CT**: la sonda imprime además `aplicadas` |
+| CT-04 | `lanzamiento estado-igual=True rack=True proyecto=True proyecto-con-diseno=True` | de la sonda, **tal cual** |
+| CT-04 | `aplicar-1 estado=Applied isdirty=True origen-igual=True escala=2.5` | de la sonda, **tal cual** |
+| CT-04 | `aplicar-2 estado=Applied isdirty=True escala=3` | de la sonda, **tal cual** |
+| CT-04 | `tras-aplicar estado=Closed aplicadas=2 borrador=Dirty origen-igual=True` | derivada: `borrador=Dirty` es el `estado-del-borrador=Dirty` de la sonda |
+| CT-04 | `adaptador-no-editable estado=NotEditable llamadas=0` | de la sonda, **tal cual** |
+| CT-04 | `adaptador-aplica estado=Applied llamadas=1` | del texto del GREEN: la sonda no la tiene (el adaptador sobre un borrador que admite el cambio) |
+| CT-05 | `k1 SetPendingText Busy [Hay una lectura del piloto en curso.]` | de la sonda, **tal cual** |
+| CT-05 | `k1 CommitField Busy [Hay una lectura del piloto en curso.]` | de la sonda, **tal cual** |
+| CT-05 | `k1 CrossBoundary Busy [Hay una lectura del piloto en curso.]` | de la sonda, **tal cual** |
+| CT-05 | `k1 DiscardRack Busy [Hay una lectura del piloto en curso.]` | de la sonda, **tal cual** |
+| CT-05 | `k1 DiscardDocument Busy [Hay una lectura del piloto en curso.]` | de la sonda, **tal cual** |
+| CT-05 | `k1 TryBeginEdit Waiting [Hay una lectura del piloto en curso.]` | de la sonda, **tal cual** |
+| CT-05 | `k1 TryCheckNow Waiting [Hay una lectura del piloto en curso.]` | de la sonda, **tal cual** |
+| CT-05 | `k1 TryReload Waiting [Hay una lectura del piloto en curso.]` | de la sonda, **tal cual** |
+| CT-05 | `k1 TryConfirmBase Waiting [Hay una lectura del piloto en curso.]` | de la sonda, **tal cual** |
+| CT-05 | `k1 TryKeepMine Waiting [Hay una lectura del piloto en curso.]` | de la sonda, **tal cual** |
+| CT-05 | `k1 TryDiscardAndReload Waiting [Hay una lectura del piloto en curso.]` | de la sonda, **tal cual** |
+| CT-05 | `k1 TryEditAll Waiting [Hay una lectura del piloto en curso.]` | de la sonda, **tal cual** |
+| CT-05 | `k1 RequestUpdate Busy [Hay una lectura del piloto en curso.]` | de la sonda, **tal cual** |
+| CT-05 | `k1 GetField existe=True estado=Clean` | de la sonda, **tal cual** |
+| CT-05 | `k1 GetRacksAtRisk conocido=True` | de la sonda, **tal cual** |
+| CT-05 | `k1 TakeLossNotices 0 TakeCloseNotices 0` | de la sonda, **tal cual** |
+| CT-05 | `k1 TakeUpdateProgress en-vuelo=False` | de la sonda, **tal cual** |
+| CT-05 | `k1-cerrado estado=Closed lecturas-dentro=0` | derivada: `lecturas-dentro` son las lecturas del lector **durante `ShowModal`**. La sonda imprime `lecturas-dentro=1`, el total del lector tras `TryEditAll`, con la lectura de `Begin` de antes (`pbt4c-probe-editall.cs:198`); la de `Begin` es una sola (`sin-borrador … lecturas=1`), así que durante `ShowModal` son 1 − 1 = **0** |
+| CT-05 | `despues SetPendingText Applied TryBeginEdit AlreadyOpen` | de la sonda, **tal cual** |
+| CT-12 | `compuerta-dentro estado=Waiting motivo=[Se está entregando un aviso del panel.] abierto=False lecturas=0` | de la sonda, **con los campos de la CT**: la sonda imprime además `aplicadas` |
+| CT-12 | `compuerta-fuera estado=Closed abierto=True lecturas=1` | de la sonda, **con los campos de la CT**: la sonda imprime además `aplicadas`, `motivo` |
+
+**Las clases:**
+- Core, `ExpectRed` true: **`PushBackEditAllTests`** (CT-03, 04, 05, 10, 11 y 12: 6) y **`PushBackEditAllGuardTests`** (CT-01, 08 y 13: 3);
+- Core, `ExpectRed` false: **`PushBackOpenerClassicPathGuardTests`** (CT-07) y **`PushBackDraftLaunchGuardTests`** (CT-15);
+- UI, `ExpectRed` true: **`PushBackEditAllWindowTests`** (CT-02, 06, 09 y 14: 4).
+- **11 CT de Core y 4 de UI: 15.**
+
+**Y los cuatro equivalentes de la lista de 4** (no son CT; su texto es el del guion, `EquivalentSha`, y no admiten reparación; §6.3.1):
+- en Core, `ExpectRed` false: `PushBackEditAllPortEquivalenceGuardTests` (PEG:155-163, con 18 operaciones), `PushBackEditAllNameWritersGuardTests` (CT-PBT1B-15, con «archivos=15») y `PushBackEditAllFullCopyGuardTests` (CT-PBT4B-20, que además devuelve el `Skip` de PB-T4c de PEG:155);
+- en UI, **`ExpectRed` true:** `PushBackEditAllApplyCloseTests` (CT-PBT2B-06, con la pregunta combinada en la ventana 4).
+
+**Por qué esta vez un equivalente cae en el RED** (V50-04), cuando en PB-T4b la mayoría pasaban:
+- **En PB-T4b,** las copias reproducían pruebas del panel con el kit completo. La mayoría fijaban un comportamiento que PB-T4b no cambia, y pasaban ya en el RED; solo caían las que fijaban lo que el GREEN cambia (las clases `FullPanelCopy…RedTests` de la partición).
+- **En PB-T4c, tres de los cuatro equivalentes son de guardas de texto o de reflexión.** Sus condiciones las cumple ya el RED: el esqueleto declara `TryEditAll`, el abridor inerte nombra `PushBack` y los `Skip` van en el RED. Por eso pasan en las dos ramas.
+- **El cuarto fija un comportamiento que solo trae el GREEN:** la pregunta combinada de «Cerrar» (D-PBT4-17). W no cambia en el esqueleto, porque si cambiara, CT-09 pasaría en el RED (C04). Así que el equivalente de CT-PBT2B-06 cae por aserción en el RED y pasa en el GREEN, como una clase Red de la partición de PB-T4b, y su filtro va con `ExpectRed` true.
+
+**Lo que fija cada `ExpectRed`:**
+- **En el RED,** el esqueleto exacto de §6.3.1: el puerto con `TryEditAll` y su cuerpo por defecto, WEI con `EditAllOutcome` y `EditAllStatus`, `IWorkspaceFullEditHost.cs` entero, WHC solo con `SetFullEditHost` sin efecto, FVM con `ShowEditAllButton` en `false` y `EditAll` sin efecto, los dos archivos nuevos de `Draft/` y el abridor, inertes; la compuerta, WCo, PV, `WorkspacePanelView.xaml.cs` y W, sin cambio. Fallan por aserción:
+  - CT-03, 05, 10 y 12: el puerto responde `NotAvailable` sin motivo;
+  - CT-04 y 11: el adaptador inerte responde `NotEditable`;
+  - CT-01, 08 y 13: los textos no están;
+  - CT-02, 06, 09 y 14: la FVM no llama al puerto y W pregunta lo de hoy;
+  - y el equivalente de CT-PBT2B-06.
+- **Pasan en el RED:**
+  - CT-07: los sujetos inertes o ausentes no nombran nada;
+  - CT-15: los dos archivos inertes son puros;
+  - los tres equivalentes de Core.
+
+**Los totales de PB-T4c** (F4B-E46; V50-07), **en cifras,** con la base del cierre de PB-T4b (F4B-E53, `6adff90d`; la CI de su GREEN, `44903818806` sobre `c065080d`: Core **19 605 = 19 147 + 0 + 458** y UI **2 481 = 2 433 + 0 + 48**):
+- **cada una de las 4 de la lista suma exactamente un resultado:** su original pasa a uno solo, omitido, y su equivalente es un `[Fact]`;
+- **Core:** 3 de la lista, 3 equivalentes y 11 CT. **UI:** 1 de la lista, 1 equivalente y 4 CT.
 
 | Rama | Core | UI |
 |---|---|---|
-| **RED** | (C + 11 + 2 − D_C) = (C_P − 2 + 4) `Passed` + 9 `Failed` + (C_S + 2) `Skipped` | + 4, con 4 `Failed` |
-| **GREEN** | El mismo total, con 0 `Failed` | + 4, con 0 `Failed` |
+| **GREEN** | **19 619 = 19 158 `Passed` + 0 `Failed` + 461 `Skipped`** | **2 486 = 2 437 `Passed` + 0 `Failed` + 49 `Skipped`** |
+| **RED** | **19 619 = 19 149 `Passed` + 9 `Failed` + 461 `Skipped`** | **2 486 = 2 432 `Passed` + 5 `Failed` + 49 `Skipped`** |
+| **RED sin las CT** (la suite completa de Core y los filtros de UI de la precondición 6) | **19 608 = 19 147 `Passed` + 0 `Failed` + 461 `Skipped`** | los 18 filtros de UI de la precondición 6: solo cae el equivalente de CT-PBT2B-06, por aserción |
+| **GREEN sin las CT** (la precondición 6) | **19 608 = 19 147 `Passed` + 0 `Failed` + 461 `Skipped`** | los 18 filtros: 0 `Failed` |
 
-- En el RED pasan CT-07, CT-15 y los dos equivalentes.
-- D_C = 0. Se confirma en la precondición 6.
+- Core: 19 619 = 19 605 + 3 + 11; 19 158 = 19 147 − 3 + 3 + 11; 461 = 458 + 3.
+- UI: 2 486 = 2 481 + 1 + 4; 2 437 = 2 433 − 1 + 1 + 4; 49 = 48 + 1; en el RED, 2 432 = 2 437 − 5.
+- Sin las CT: 19 608 = 19 605 + 3; 19 147 = 19 147 − 3 + 3.
+- **9** son las CT de Core con `ExpectRed` true (6 + 3); en UI, las 4 CT y el equivalente de CT-PBT2B-06 (**5**).
+- **K = 4, D = 0 y E = 4** (§9 y §11): los `Skip` de la lista, las pruebas que fallan fuera de ella y los equivalentes. **D = 0 medido** en la precondición 6 de la v5.1 (`/d/r5j`), con la suite completa de Core sobre el RED exacto y sobre el GREEN literal, sin las CT, y los 18 filtros de UI (`pbt4ccc/compile/pbt4c-precondition6.json`, sha256 `29179a12ef8623f4c276f943a725ece6f3ffd84464f16705e1feda757efbce1a`, y `compile-check.md`, `060c5c8b4ea1197079bcde5f5c5d8d299d5b71dde6295d2a468982e5fb1bb02c`); y, en la v5.0, en `/d/r5g`, como historia.
 
 ### 5.4 La CI del RED
 
@@ -1505,7 +1755,7 @@ Si no, hay que añadir un literal al sustituto y volver a revisarlo (F4B-E43).
 **Las rutas `UNIT_CHANGE` y F4B-E25:** cada contrato declara `UNIT_CHANGE` las rutas **existentes** de producto que cambia:
 - **PB-T4a:** WEI, WHC, RIA y NH;
 - **PB-T4b:** WHC, WEI, FVM, PV, `src/RackCad.UI/Controls/NumericFieldValidation.cs` y RIA (D-S4, V45-02; el GREEN literal no toca `WorkspacePilotSupport.cs`, WCo ni NH). **Ningún archivo de `Pilot/`:** la retirada es de PB-T4d;
-- **PB-T4c:** WHC, `IWorkspacePilotEditPort.cs`, `WorkspacePilotSupport.cs`, WEI, FVM, PV, WCo y W;
+- **PB-T4c:** WHC, `IWorkspacePilotEditPort.cs`, `WorkspacePilotSupport.cs`, WEI, FVM, `WorkspacePanelView.xaml` y `WorkspacePanelView.xaml.cs`, WCo y `RackPushBackSystemWindow.xaml.cs` (W; `W.xaml` no cambia);
 - **PB-T4d:** los archivos de `Pilot/` que retira (§6.4), con su contrato.
 
 **En una corrección** (F4B-E25, `F4B-DRAFTS/coordinator/owner-f4b-correction-unit-change-decision.md`), una ruta `UNIT_CHANGE` que aparezca en `git diff --name-only AuthorityRevision BaseSha` no incumple 16.3 si se cumplen las tres condiciones del Owner, que el Controller comprueba con git:
@@ -1566,7 +1816,7 @@ El Worker no elige ninguna salida.
 **La verificación con una reparación del RED** (F4B-E35, RR-7):
 - **n.º 10 (`Tests`):** el RED se acredita con `RedSha` y con la CI del RED original, y sus TRX, con los filtros con `ExpectRed` entre los fallidos. La cláusula «`git diff --name-only RedSha CurrentSha` no toca `RT` ∪ `ChainRedFiles`» se comprueba desde `RedRepairSha`.
 - **n.º 11 (`Trailer`):** el trailer va también en el commit «RED repair».
-- **Lo que el Controller comprueba de RR** (si algo falla, es C18): RR-1, RR-2, RR-4, RR-5 y RR-6, como en PB-T3c. **Por subtarea, además,** el tramo `RedSha..RedRepairSha` no toca: en PB-T4a, ningún archivo de `src/` ni `PushBackDraftWriteGuardTests.cs`; en PB-T4b, ningún archivo de `src/`, ni los 21 archivos de los `Skip`, ni el kit, ni las copias; en PB-T4c, ningún archivo de `src/` ni PEG ni `PushBackSharedReferenceGuardTests.cs`.
+- **Lo que el Controller comprueba de RR** (si algo falla, es C18): RR-1, RR-2, RR-4, RR-5 y RR-6, como en PB-T3c. **Por subtarea, además,** el tramo `RedSha..RedRepairSha` no toca: en PB-T4a, ningún archivo de `src/` ni `PushBackDraftWriteGuardTests.cs`; en PB-T4b, ningún archivo de `src/`, ni los 21 archivos de los `Skip`, ni el kit, ni las copias; en PB-T4c, ningún archivo de `src/`, ni los cuatro equivalentes, ni los cuatro archivos de los `Skip` (PEG, `PushBackSharedReferenceGuardTests.cs`, `WorkspaceFullCopyGuardTests.cs` y `PushBackWorkspaceApplyCloseTests.cs`). **Los equivalentes no admiten reparación** (RR-2): su texto es el del guion, con su `EquivalentSha` (§6.3.1), y no tienen fila en la tabla de abajo, que es la de las clases de las CT.
 - **La ayuda mecánica de RR-3:** es parada C07 que un literal de la lista cerrada de la clase reparada (la tabla de abajo) cambie entre `RedSha` y `RedRepairSha`: una línea o un fragmento, si no aparece como subcadena exacta el mismo número de veces; un valor de gesto, si no aparece como token el mismo número de veces.
 - **Indicios para la revisión, no parada:** una cadena `<campo>=` añadida o quitada en `git diff -U0 RedSha RedRepairSha`, o un cambio en el primer argumento de un `Assert.Equal`.
 
@@ -1682,12 +1932,15 @@ El Worker no elige ninguna salida.
 | PB-T4b | `WorkspaceHostHardeningGuardFull`, `NoneOfThe30LiteralsInEnglishStaysInTheHostOrTheSupportAndTheFourIdentifiersAreKept` (equivalente de una guarda, C-5; owner-pbt4b-list-478-decision.md) | **El texto entero de la prueba, el del guion** (el `CopySha` de su archivo): no admite reparación (RR-2) |
 | PB-T4b | `WorkspaceHostHardeningGuardFull`, el ayudante `Table` (las tres cuentas nuevas, V48-03) | **El texto entero del ayudante, el del guion** (el `CopySha` de su archivo): no admite reparación (RR-2) |
 | PB-T4b | Las 356 copias mecánicas, las 27 de la interfaz y el kit | **El texto entero, el del guion o el custodiado** (`CopySha` y el sha256 del kit): no admiten reparación (RR-2) |
+| PB-T4c | `PushBackEditAllTests` (CT-03, 04, 05, 10, 11 y 12) | **Líneas:** las de esas CT en §5.3, literales **Valores:** `2.5` y `3` |
+| PB-T4c | `PushBackEditAllGuardTests` (CT-01, 08 y 13) | **Líneas:** las de esas CT en §5.3, literales |
+| PB-T4c | `PushBackOpenerClassicPathGuardTests` (CT-07) | **Líneas:** las de esas CT en §5.3, literales |
 | PB-T4c | `PushBackDraftLaunchGuardTests` (CT-15) | **Líneas:** `g-l1 archivos=2 reglas-sin-coincidencias=True`, `pureza archivos=2 violaciones=[]`, `cubre ApplyToDraft=PushBackFullDraftStatePort.cs`, y las fichas y los términos de la fila de CT-PBT4A-08 |
-| PB-T4c | La de CT-08 | **Líneas:** `var window = RackPushBackSystemWindow.ForDraft((PushBackDraftEditorLaunch)launch);` y `AcApplication.ShowModalWindow(window);` |
+| PB-T4c | `PushBackEditAllWindowTests` (UI; CT-02, 06, 09 y 14) | **Líneas:** las de esas CT en §5.3, literales **Valores:** `4.5` |
 
-Las filas de PB-T4c, con sus líneas medidas, van en su contrato.
+**Las filas de PB-T4c** (V50-06) son una por clase de las CT, con su clase y sus CT, en la forma de la de CT-19 de PB-T4b; las líneas de CT-08, entre ellas la conversión y la llamada del abridor, son de `PushBackEditAllGuardTests`.
 
-**La lectura de `Ci` en el RED:** Core falla a propósito en el RED, y `build-plugin` tiene `needs: [tests, build-ui]` (`.github/workflows/ci.yml`), así que sale **omitido**. `ExpectedEvidence` lo pide así: `tests` en `failure`, `build-ui` en `success`, `build-plugin` omitido y `ui-tests` en `success` (PB-T4a) o en `failure` (PB-T4b y PB-T4c), sin cuelgue. **El total exacto de cada rama** (F4B-E46). En el GREEN, 4/4 en `success`.
+**La lectura de `Ci` en el RED:** Core falla a propósito en el RED, y `build-plugin` tiene `needs: [tests, build-ui]` (`.github/workflows/ci.yml`), así que sale **omitido**. `ExpectedEvidence` lo pide así: `tests` en `failure`, `build-ui` en `success`, `build-plugin` omitido y `ui-tests` en `success` (PB-T4a) o en `failure` (PB-T4b y PB-T4c; en PB-T4c, con las 4 CT de UI y el equivalente de CT-PBT2B-06), sin cuelgue. **El total exacto de cada rama** (F4B-E46). En el GREEN, 4/4 en `success`.
 
 **El `Trailer`:** el de `worker-handoff.json` es el trailer real de los commits RED, «RED repair» (si lo hay) y GREEN, nunca `null` si los commits lo llevan.
 
@@ -2166,21 +2419,273 @@ El atributo pasa de `[Fact]` a `[Fact(Skip = "<motivo>")]` y de `[Theory]` a `[T
 
 **Las autoridades de PB-T4b:** las de PB-T4a (§6.1.2) y, además: `owner-pbt4b-breaks-decision.md` (la tercera tanda), `owner-pbt4a-cost-decision.md` (la decisión del Owner sobre el coste de la lectura, de la que sale D-S4; en `F4B-DRAFTS/coordinator/` del cierre `78a7cef3`), `owner-pbt4b-list-477-decision.md` (la quinta tanda) , `owner-pbt4b-list-478-decision.md` (la sexta) y `owner-pbt4b-cost-decision.md` (la séptima, el coste), que la emisión de PB-T4b custodiará junto a las otras tandas y a `session-pbt4b-design-decisions.md`, `session-pbt4b-design-decisions.md` (D-S1 a D-S3, D-S5 y D-S6; D-S4, en §8.5 y D-PBT4-21), las §17 y §18 de `independent-review-v1.md` y el cierre de PB-T4a (F4B-E51); este paquete (v4.9), con su comprobación acotada de PB-T4b (CA-T4b: la §20 de `independent-review-v1.md`, sobre la v4.8), y la §19 de `independent-review-v1.md`. **No son autoridades de PB-T4b** `owner-pbt4a-verify-stop-decision.md` ni `owner-pbt4a-nc1-decision.md`: son de la cadena de PB-T4a.
 
-### 6.3 PB-T4c — `F4B-PBT4-EDIT-ALL-WINDOW`
+### 6.3 PB-T4c — `F4B-PBT4-EDIT-ALL-WINDOW` (entero; V50-03, V50-04, V50-09, V50-13 y V50-16)
 
-- **Objective** (ASCII):
-  > Anadir Editar todo al panel del Workspace de Push Back sobre el borrador completo de PB-T4b: un boton y su gesto, que confirma el texto pendiente con CommitField antes de abrir (R-PB-10); TryEditAll en el anfitrion y en sus dos reenvios (la compuerta de avisos y el adaptador del panel del Plugin), que empieza el borrador si hace falta, mantiene la marca de lectura mientras la ventana esta abierta (K = 1) y abre la ventana de Push Back en modo WORKSPACE en dos piezas: el modal del panel en una clase anidada del controlador del Plugin y la ventana, sin dueno, en una clase nueva de Plugin/Views; el adaptador del puerto que conserva Origin y acaba la marca known clean; la guarda de texto de OB-01.3 sobre los seis sujetos del camino; Cerrar con una sola pregunta si hay a la vez un modulo escenificado y cambios sin aplicar; y el resumen y Modificado al cerrar, segun el paquete del contrato de PB-T4 v4.9 y la lista cerrada CT-PBT4C-01..15. Solo se sustituyen con registro la guarda de las operaciones del puerto (PEG:155-163) y el censo de archivos del Plugin con PushBack (CT-PBT1B-15). Ni el camino clasico, ni RACKEDITAR, ni la ventana en CLASSIC; cero escrituras en el DWG desde la ventana; no se ejecuta AutoCAD.
-- **`AllowedWriteScope`:**
-  - WHC, `IWorkspacePilotEditPort.cs`, `WorkspacePilotSupport.cs`, WEI, FVM, PV, WCo y W;
-  - los nuevos `IWorkspaceFullEditorHost.cs`, `Draft/PushBackFullDraftLaunch.cs`, `Draft/PushBackFullDraftStatePort.cs` y `src/RackCad.Plugin/Views/RackWorkspaceEditorWindow.cs`;
-  - las clases nuevas (con `PushBackDraftLaunchGuardTests`, CT-15);
-  - **solo para los `Skip`:** PEG y `PushBackSharedReferenceGuardTests.cs`.
-- **`RequiredTests`:**
-  - Core `PushBackEditAll`: 9, true;
-  - Core `PushBackOpenerClassicPathGuardTests`, `PushBackDraftLaunchGuardTests` y las dos guardas equivalentes: 4, false;
-  - UI `PushBackEditAllWindowTests`: 4, true;
-  - y el resto.
+**Se emite por la autorización condicional** (`owner-pbt4-decisions.md`, pregunta 4) **con la lista exacta de 4** que el Owner tomó como la que vio (las 2 de la pregunta 4, CT-PBT4B-20 de `owner-pbt4c-list-3-decision.md` y CT-PBT2B-06 de `owner-pbt4c-list-4-decision.md`; `pbt4c-substitution-list-4.tsv`, sha256 `9bd4c17a0eda837c92a7a0b7b3562d4ab17f1608baf3ffa8efaf560d8b1f82de`), si se cumple el resto de la condición, **sobre el cierre de PB-T4b** (F4B-E53, `6adff90d`).
 
+- **Objective** (ASCII): el de §6.3.1.
+- **`AllowedWriteScope`** (26), ruta a ruta, en este orden:
+  - **src/, existentes (UNIT_CHANGE, 9):** 1. `src/RackCad.Application/Workspace/WorkspaceHostCore.cs`, 2. `src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs`, 3. `src/RackCad.Application/Workspace/WorkspacePilotSupport.cs`, 4. `src/RackCad.Application/Workspace/WorkspaceEditIntent.cs`, 5. `src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs`, 6. `src/RackCad.UI/Workspace/WorkspacePanelView.xaml`, 7. `src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs`, 8. `src/RackCad.Plugin/Workspace/WorkspaceController.cs`, 9. `src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs`;
+  - **src/, nuevos (4):** 10. `src/RackCad.Application/Workspace/IWorkspaceFullEditHost.cs`, 11. `src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftLaunch.cs`, 12. `src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftStatePort.cs`, 13. `src/RackCad.Plugin/Views/RackWorkspaceEditorWindow.cs`;
+  - **las clases de las CT (5):** 14. `tests/RackCad.Tests/PushBackEditAllTests.cs`, 15. `tests/RackCad.Tests/PushBackEditAllGuardTests.cs`, 16. `tests/RackCad.Tests/PushBackOpenerClassicPathGuardTests.cs`, 17. `tests/RackCad.Tests/PushBackDraftLaunchGuardTests.cs`, 18. `tests/RackCad.UI.Tests/PushBackEditAllWindowTests.cs`;
+  - **los equivalentes (4), nuevos, que genera el guion:** 19. `tests/RackCad.Tests/PushBackEditAllPortEquivalenceGuardTests.cs`, 20. `tests/RackCad.Tests/PushBackEditAllNameWritersGuardTests.cs`, 21. `tests/RackCad.Tests/PushBackEditAllFullCopyGuardTests.cs`, 22. `tests/RackCad.UI.Tests/PushBackEditAllApplyCloseTests.cs`;
+  - **solo para los Skip (4):** 23. `tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs`, 24. `tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs`, 25. `tests/RackCad.Tests/WorkspaceFullCopyGuardTests.cs`, 26. `tests/RackCad.UI.Tests/PushBackWorkspaceApplyCloseTests.cs`;
+  - **ningún archivo de `Pilot/`, ni NH, ni RIA, ni `RackPushBackSystemWindow.xaml`:** el GREEN literal no los cambia.
+- **`UNIT_CHANGE`:** las 9 existentes de `src/` (las de la primera fila; F4B-E25).
+- **`ForbiddenWriteScope`:** el método de [PKC-C] con el precedente de PB-T3c, PB-T4a y PB-T4b en `tests/` (la lista explícita del contrato anterior, menos las rutas de `tests/` de este alcance; un prefijo prohibido que cubre una de ellas se sustituye por la lista de sus archivos), más las clases de PB-T4b tras su cierre (sus seis clases de las CT, el kit y las 21 copias), salvo las de este alcance (`WorkspaceFullCopyGuardTests.cs`, solo para su `Skip`). **El número lo da la regla del generador sobre el alcance final en `6adff90d`** (`<medido por el generador>`).
+- **El RED** (un commit, con su push antes del GREEN):
+  - **el esqueleto exacto de `src/`** (`pbt4c-skeleton-v51.txt`, sha256 `f8840c67fd41c3bbdabf125d9b80941e3f3aedf5e610681c8ce15f111e7b392e`, que aplica `green_pbt4c_v51.py`): 4 existentes (el puerto, WEI, WHC y FVM) y 4 nuevos (`IWorkspaceFullEditHost.cs`, los dos de `Draft/` y el abridor), inertes; la compuerta, WCo, PV, `WorkspacePanelView.xaml.cs` y W no cambian;
+  - **los 4 `Skip`** literales, en los 4 archivos de la lista, y nada más en esos archivos;
+  - **los 4 equivalentes,** byte a byte los que genera `make_equivalents_pbt4c_v50.py` (su sha256, `EquivalentSha`, va en el contrato);
+  - **las cinco clases de las CT.**
+  - **La herramienta:** `python -I apply_red_pbt4c_v51.py <dir-copia> --repo <checkout> --rev 6adff90d` escribe exactamente eso salvo las CT, tras comprobar que la copia es de la revisión; el Worker puede usarla sobre su worktree o copiar sus salidas. Imprime el sha256 de cada archivo.
+- **El GREEN:** solo `src/`, los 13 archivos del texto literal de `pbt4c-green-v51.txt` (sha256 `081ef77e66a390cf3637f15851b5fe05a5cdf07f6e0065928fc5c841b250dc16`; `apply_green_pbt4c_v51.py` lo escribe en una copia). `tests/` no cambia después del RED (salvo una reparación del RED, solo en las clases de las CT).
+- **`RequiredTests`:** la tabla de §6.3.1.
+- **Invariantes:** INV-PBT4C-01 a 06 (§6.3.1) y los comunes 07 a 14.
+- **`StopConditions`:** las 17 estándar y PBT4C-C01 a C14, C16, C17 y C18 (§6.3.1): 34.
+- **`ExpectedEvidence`:** §6.3.1.
+- **La línea base:** el cierre de PB-T4b (F4B-E53, `6adff90d`), con la CI de su GREEN (`44903818806` sobre `c065080d`).
+
+#### 6.3.1 Los textos literales del contrato de PB-T4c
+
+Para la comparación del generador, en ASCII, campo a campo. Todo está medido en `6adff90d`; lo que da el generador va como `<medido por el generador>`.
+
+```text
+TaskId: F4B-PBT4-EDIT-ALL-WINDOW
+
+Objective:
+Anadir Editar todo al panel del Workspace de Push Back sobre el borrador completo de PB-T4b: un boton y su gesto, que confirma el texto pendiente con CommitField antes de abrir (R-PB-10); TryEditAll en el puerto, con su cuerpo por defecto, en el anfitrion y en sus dos reenvios (la compuerta de avisos y el adaptador del panel del Plugin), que empieza el borrador si hace falta, mantiene la marca de lectura mientras la ventana esta abierta (K = 1) y abre la ventana de Push Back en modo WORKSPACE en dos piezas: el modal del panel, en una clase anidada del controlador del Plugin sobre IWorkspaceFullEditHost, y la ventana, sin dueno, en una clase nueva de Plugin/Views; el lanzamiento y el adaptador del puerto de Draft/, que conservan Origin y acaban la marca known clean; la guarda de texto de OB-01.3 sobre los seis sujetos del camino; Cerrar en WORKSPACE con una sola pregunta si hay a la vez un modulo escenificado y cambios sin aplicar (A-T2b-OWNER-01); y el resumen y Modificado al cerrar, segun el paquete del contrato de PB-T4 v5.1, las decisiones del Owner sobre PB-T4 (con las dos de la lista de PB-T4c), la lista cerrada CT-PBT4C-01..15 y la lista exacta de 4 sustituciones que el Owner tomo como la que vio: cada una con su Skip de motivo literal y su equivalente, literal del paquete. Solo se sustituyen con registro la guarda de las operaciones del puerto (PEG:155-163), el censo de archivos del Plugin con PushBack (CT-PBT1B-15), la guarda del guion de Saltar y duplicar (CT-PBT4B-20) y la pregunta de Cerrar con un modulo escenificado (CT-PBT2B-06). Ni el camino clasico, ni RACKEDITAR, ni la ventana en CLASSIC; cero escrituras en el DWG desde la ventana; no se ejecuta AutoCAD.
+
+Invariants:
+INV-PBT4C-01. Alcance: dentro de las 26 rutas. git diff BaseSha..CurrentSha -- src/RackCad.Domain vacio; en src/RackCad.Plugin solo Workspace/WorkspaceController.cs y Views/RackWorkspaceEditorWindow.cs; en src/RackCad.Application solo WHC, IWorkspacePilotEditPort.cs, WorkspacePilotSupport.cs, WEI, Workspace/IWorkspaceFullEditHost.cs y los dos archivos nuevos de Systems/PushBack/Draft/; en src/RackCad.UI solo FVM, Workspace/WorkspacePanelView.xaml, Workspace/WorkspacePanelView.xaml.cs y Systems/PushBack/RackPushBackSystemWindow.xaml.cs; ningun archivo de Pilot/; en tests/ solo las cinco clases de las CT, los cuatro equivalentes y las lineas de atributo con Skip de los cuatro archivos de la lista.
+INV-PBT4C-02. RED y GREEN: el RED son las cinco clases de las CT, los cuatro equivalentes byte a byte (su sha256, EquivalentSha), los cuatro Skip y el esqueleto exacto de src/ (pbt4c-skeleton-v51.txt: el puerto con TryEditAll y su cuerpo por defecto, WEI con EditAllStatus y EditAllOutcome, IWorkspaceFullEditHost.cs entero, WHC solo con SetFullEditHost sin efecto, FVM con ShowEditAllButton en false y EditAll sin efecto, y los dos archivos nuevos de Draft/ y el abridor, inertes; la compuerta, WCo, WorkspacePanelView.xaml, WorkspacePanelView.xaml.cs y RackPushBackSystemWindow.xaml.cs sin cambio); el GREEN solo toca src/, con el texto literal del paquete (pbt4c-green-v51.txt). En el RED, cada filtro con ExpectRed da todos Failed por asercion (la primera linea del StackTrace bajo tests/), con Failed == Selected, tambien el del equivalente de CT-PBT2B-06; los filtros con ExpectRed false pasan y sus autopruebas fallan sobre el texto inyectado. Con una reparacion del RED (F4B-E35, RR): RedSha..RedRepairSha solo toca las cinco clases de las CT y ningun archivo de src/, ni los cuatro equivalentes, ni los cuatro archivos de los Skip; el criterio se repite entero sobre RedRepairSha; y RedRepairSha..CurrentSha es el GREEN de arriba.
+INV-PBT4C-03. La API: exactamente la de D-PBT4-12 a D-PBT4-17, con el texto literal del GREEN del paquete; TryEditAll es el unico miembro nuevo del puerto, con su cuerpo por defecto, y sus dos reenvios explicitos, uno en la compuerta y otro en el adaptador del Plugin, y nada mas; ForDraft tiene un solo llamador en src/ (RackWorkspaceEditorWindow.Show) y EnterPanelModal() otro (FullEditorModal.ShowModal).
+INV-PBT4C-04. Cero escrituras: ninguno de los seis sujetos de CT-PBT4C-07 nombra LockDocument, una transaccion, Commit( ni una API de escritura del dibujo; la ventana solo entrega sus ediciones al puerto del lanzamiento; nada despues de cerrar.
+INV-PBT4C-05. La ventana: solo cambia PendingWork() y su constante WorkspaceStagedAndUnappliedQuestion, en WORKSPACE (en WORKSPACE, un modulo escenificado deja siempre cambios sin aplicar: D-S10); ni el camino clasico, ni RACKEDITAR, ni la ventana en CLASSIC cambian; RackPushBackSystemWindow.xaml no cambia.
+INV-PBT4C-06. K = 1 y los nombres: la marca de lectura envuelve TryEditAll, con el inicio del borrador y ShowModal; con el editor abierto, la tabla de D-PBT4-14 (CT-PBT4C-05); WHC conserva sus dos interfaces; los tipos del puerto y del soporte evitan Draft, Editor, Subscription y Tab, y ningun tipo de RackCad.Application.Workspace lleva Subscription, Editor ni Draft (D-S9).
+INV-PBT4C-07. Las redes: section 5 en verde. Ninguna prueba existente se edita, se salta, se reactiva ni se borra, salvo las 4 de la lista cerrada (pbt4c-substitution-list-4.tsv, sha256 9bd4c17a0eda837c92a7a0b7b3562d4ab17f1608baf3ffa8efaf560d8b1f82de), cada una con su Skip de motivo literal. En CurrentSha, el git diff -U0 BaseSha..CurrentSha de los cuatro archivos de pruebas existentes solo lleva las lineas de atributo con Skip.
+INV-PBT4C-08. Las pruebas de UI: las reglas de section 5.0.
+INV-PBT4C-09. Determinismo: GUID fijo, cultura invariante, "R" y orden ordinal; ni hora ni aleatoriedad.
+INV-PBT4C-10. Las corridas locales: solo los filtros del contrato en UI; nunca la suite completa de UI en local; la de Core, si; sin copias de arboles; las corridas temporales terminan en Assert.Fail(string.Join("\n", lineas)), corren dentro de EditorDiscardPrompt.Substitute cuando abren ventanas, no entran en ningun commit y guardan TRX y log como artefactos.
+INV-PBT4C-11. La evidencia: rutas relativas comprobadas en worker-handoff.json; TreeSha real o null; el Trailer, el real; el Worker no escribe en docs/.
+INV-PBT4C-12. Las reglas de F4B; sin AutoCAD; la verificacion con las tres comprobaciones deterministas de F4B-E15.
+INV-PBT4C-13. Las declaraciones nuevas en src/: las de la lista cerrada de PBT4C-C13, y ninguna mas, por nombre y acotada a los archivos que tocan, sobrecargas incluidas.
+INV-PBT4C-14. D2: fuera de las dos referencias de cada lado, ninguna copia comparte un objeto mutable con su original. Ninguna linea anadida muta un PushBackSystem ni un RackModuleReconciliationResult adoptado.
+
+StopConditions (propias):
+PBT4C-C01: doing the task would require writing outside the AllowedWriteScope.
+PBT4C-C02: it would require editing, skipping, re-enabling or deleting an existing test or helper, or touching InternalsVisibleTo, the packages, a .csproj or Fixtures/I64. No exception outside the closed list of PB-T4c: the Skip of each of the 4 tests of pbt4c-substitution-list-4.tsv (sha256 9bd4c17a0eda837c92a7a0b7b3562d4ab17f1608baf3ffa8efaf560d8b1f82de), with its literal reason, in its attribute line, and nothing else in those 4 files. Any existing test that fails, outside that list, returns to the Owner.
+PBT4C-C03: an observable change of RACKEDITAR appears, or of the panel or of the window other than the declared ones (the Editar todo button and its gesture; the full editor opened from the panel, modal, over the full draft; Cerrar in WORKSPACE with one question when a staged module and unapplied changes would be lost together; the summary and Modificado after closing). STOP and return to the Owner.
+PBT4C-C04: a method of a filter with ExpectRed passes on the skeleton, or fails by an exception and not by an assertion.
+PBT4C-C05: a CT would need AutoCAD, a real MessageBox, the real configurator, the BOM, "Guardar en biblioteca", "Insertar", real keyboard or focus, or writing to the profile or to disk.
+PBT4C-C06: the GREEN CI fails outside the new tests, reproducibly and not attributable to them.
+PBT4C-C07: a fact of section 2 does not hold in a way that changes a CT or the design; or an expected line is not met in the GREEN; or a self-checking recipe (the self-tests of CT-PBT4C-07, CT-PBT4C-13 and CT-PBT4C-15) does not exercise its path. The Worker does not adjust what is expected; except under F4B-E35 (the RED repair rule, RR): a writing error in a new CT of this task (one of its five classes; never the four equivalents, whose text is the package one), found after the RED push and before the GREEN, is repaired without this stop and without spending an attempt by one declared RED repair commit that touches only test files the RED added and changes only the when or the how of a reading or a gesture the package already prescribes, and no expected line, literal or oracle of the package or the contract, with the full RED criterion rerun on RedRepairSha; a second writing error in the same attempt, a repair that needs an expected line changed, or a literal line the package fixes for the repaired class (an expected line or a literal) that does not stay byte for byte in it, is this stop. An equivalent of the list that fails in the GREEN, or one of the three of Core that fails in the RED, is this stop too: the session issues a package version with its text.
+PBT4C-C08: a planning output rejected ONLY by the literal byte-fidelity comparison of the collections before the Worker allows ONE replanning with a reinforced prompt, without consuming an attempt ([DP] question 2); a second planning fidelity rejection is STOP and returns to the Owner; any other planning rejection (A1-A8 or another cause) is STOP and returns to the Owner
+PBT4C-C09: a test would hang, leave a window, a modal or a dispatcher alive, write to the profile or depend on machine paths.
+PBT4C-C10: doing the task would require what the scope of PB-T4c excludes: retiring or editing the code of the pilot (Pilot/); touching the classic editor, RACKEDITAR, the classic path or the menu; the window in CLASSIC; creating views; translating a state; a member of the edit port other than TryEditAll; a new value of PilotBoundaryKind; reading or writing the drawing from the window or after it closes; or touching a test of the list other than by its Skip.
+PBT4C-C11: a negative control (nc1, nc2 or nc3) does not give CONTROL PASS: its ordinary output is kept as is and there are only two exits without returning to the Owner ([DP] question 1, "Extender firmas exactas"): (1) nc2 with the EXACT signature of PD-F4-01 (source f4-dispositions.md:1103-1106: Scope in fail on the removed path; Contract in fail only by the exactness clause; EXECUTION_BLOCKED/STOP; applied literally at :1540: no check other than the real verification differs; the exactness clause includes Contract evidence citing the contrast of the narrowed AllowedWriteScope with the contract or with byte-fidelity-check.json, f4-dispositions.md:520, :562, and nothing else) -> substitute PBT4-NC2-EXACT-WHITELIST-F4B-01, the version 2 of PBTx-NC2-EXACT-WHITELIST-F4B-01 (F4B-E43: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/nc2-substitute-f4b-v2/nc2_exact_whitelist_substitute_f4b_v2.py, SHA-256 c033e96ce147963feb9c04733e9bfbec7493fea33d8ff79b1c2e8ab860798e45; owner-pbt3a-nc2-decision.md, "Aceptar y ampliar el sustituto"), whose property 8 admits only the closed list of the exact literals of the evidence entry of the byte-by-byte comparison, one per package (PB-T2 and PB-T3), with its reviewed text unchanged and run with --task PBT4 in the F4B-E21 mode with the injection note and the raw output of this task's accepted planning, recorded as nc2 = SATISFIED_UNDER_PBT4_EXACT_WHITELIST_SUBSTITUTE_F4B; if inject_opaque.py changed since that run, the substitute is reviewed before it is reused; (2) nc1 with the signature PD-F4B-01, the false SHA cascade (F4B-E40: owner-pbt2c-nc1-decision.md, its conditions (a) to (f): the mutation only changes the CurrentSha of the handoff to a SHA that does not exist in the repository; EXECUTION_BLOCKED / STOP with S-04 among the stops; Handoff is the first check in fail; the failing checks are a subset of Handoff, Identity, Remote, Scope, Ci and Tests that always includes Handoff and Identity, and all the others pass as in the real verification; each failing evidence cites the false SHA and none attributes the failure to another cause; the Identity evidence also writes the real HEAD), of which the EXACT signature of PD-F4-04 (source owner-f4t3-authorization.md:255-265; as applied in F4, f4-dispositions.md:1657-1660) is a particular case -> substitute PBT3x-NC1-CASCADE-SIGNAL-01 (F4B-E40 and F4B-E43: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/nc1-cascade-substitute/nc1_cascade_signal_substitute.py, SHA-256 41440edc4a963bef890e4336dccb885837424008c027cdb172d2b926e0f49b40, reviewed APTO, with its declared limits), with its reviewed text unchanged and run with --task PBT4, recorded as nc1 = SATISFIED_UNDER_PBT4_NC1_CASCADE_SUBSTITUTE. Matching is decided never by check name: the control output is compared with the real verification check by check (the set of failing checks, the first failing check, Outcome and StopClass, and the evidence text); the only admitted differences are those listed for each signature in section 6.0 of the PB-T1 contract package ([PT1], docs/initiatives/I-64-f4b-pbt1-gate-contract-package.md) and, for PD-F4B-01, its conditions (a) to (f); the session records the comparison table in f4b-dispositions.md. Any other signature or variation (PD-F4-05, PD-F4-06, nc2 with Ci or Trailer also in fail, any nc1 that does not meet PD-F4B-01 - the one-off acceptances of nc1 in PB-TC (F4B-E08), in PB-TC2 attempt 1 (F4B-E12), in PB-T2a (F4B-E34), in PB-T2b (F4B-E38) and in PB-T2c (F4B-E40) do not extend -, an nc2 that the version 2 of the substitute does not give PASS - the disposition of the Owner on the nc2 of PB-T3a (F4B-E43) does not extend -, a substitute that does not give PASS, any failure of nc3, or an evidence text that cannot be assigned to an admitted difference) returns to the Owner before any substitute or acceptance; no one-off acceptance extends to PB-T4c
+PBT4C-C12: a correction would be attempt 3 of 3: it returns to the Owner before it is issued (D-PB-10)
+PBT4C-C13: doing the task would require touching a file of src/ other than the 13 of the AllowedWriteScope; or adding a declaration of any visibility (type, constructor, method, property, field, constant, enum member, nested type or x:Name; an overload is one more) whose name is not in this closed list: in IWorkspacePilotEditPort.cs, the method TryEditAll of the interface, with its default body; in WorkspaceEditIntent.cs, the enum EditAllStatus with its seven members (NotAvailable, Waiting, Rejected, NotBegun, Refused, Closed, Failed) and the struct EditAllOutcome with its private constructor, its properties Status, Reason, Begin and Applied and its static methods NotAvailable, Waiting, Rejected, NotBegun, Refused, Closed and Failed; in WorkspaceHostCore.cs, the private constants EditAllNoEditorReason, EditAllPendingTextReason, EditAllBusyDraftReason and EditAllStateReason, the private field _fullEditHost, the public method SetFullEditHost, the explicit implementation IWorkspacePilotEditPort.TryEditAll and the private method EditAllOfPilot; in WorkspacePilotSupport.cs, in WorkspacePilotEditGate, the public method TryEditAll; in WorkspaceController.cs, in PilotEditAdapter, the public method TryEditAll, and the private nested class FullEditorModal with its private fields _controller and _open, its public constructor and its public method ShowModal; in WorkspacePilotFieldViewModel.cs, the private constants EditAllNotOpenedPrefix, EditAllAppliedText and EditAllNothingAppliedText, the property ShowEditAllButton, the method EditAll and the private methods EditAllNoticeOf and SentenceOf; in WorkspacePanelView.xaml, the Button BrowserFieldEditAllButton; in WorkspacePanelView.xaml.cs, the private method OnBrowserFieldEditAllClick; in RackPushBackSystemWindow.xaml.cs, the private constant WorkspaceStagedAndUnappliedQuestion; in IWorkspaceFullEditHost.cs, the interface IWorkspaceFullEditHost with its method ShowModal; in PushBackFullDraftLaunch.cs, the static class PushBackFullDraftLaunch with its method For and its private method ProjectOf; in PushBackFullDraftStatePort.cs, the class PushBackFullDraftStatePort with its private fields _draft and _applied, its constructor and its method ApplyToDraft; in RackWorkspaceEditorWindow.cs, the static class RackWorkspaceEditorWindow with its method Show. Prescribed changes that are not new declarations: WHC changes no existing body; FVM changes RaiseAll; PendingWork of the window gains its first if; the getter Navigation of WCo gains the call to SetFullEditHost. The Worker stops before adding anything else.
+PBT4C-C14: a design of the corpus changes its admission or its lock (the pilot reader, the full reader, AUTH-13 or the parked tail).
+PBT4C-C16: an existing test outside the closed list of substitutions of PB-T4c (the 4 of pbt4c-substitution-list-4.tsv) fails, including one that reads the text or the types in a way only seen when it runs. It returns to the Owner (owner-pbt4-decisions.md, question 4). An equivalent of the list that fails where the package does not expect it is not this stop: it is PBT4C-C07.
+PBT4C-C17: (F4B-E11, D2, IMPORTANT LIMIT) doing the task would need to MUTATE the resolved rack (PushBackSystem) or the module report (RackModuleReconciliationResult) inside the editing or draft lifetime, or to share by reference any other mutable object between a copy of the state and its original, or a measurement already finds such a mutation in the editing path: STOP and L-1 is reopened. The Owner text, literal: "This is NOT authorization for general shallow copying. It is exactly: two declared shared references. If later PB-T1/PB-T2/PB-T3 needs to mutate either: resolved rack; module report; inside the Workspace draft lifetime: STOP and reopen L-1. At that point the object must either: be cloned; be made immutable; or be replaced by a value snapshot appropriate to the draft model." The Worker chooses none of the three exits: the Owner does
+PBT4C-C18: a RED repair does not meet the F4B-E35 rule (RR-1 to RR-6): it is not after the RED push and before the GREEN, or it is the second one in the attempt; it touches a file the RED did not add, an existing test, src/, a fixture or anything outside the AllowedWriteScope; it changes an expected line, literal or oracle, or anything other than the when or the how of a reading or a gesture the package already prescribes (RR-3); the full RED criterion and its CI are not rerun on RedRepairSha; or it is not declared as RR-5 says. The rule does not apply and the repair counts as touching tests/ after the RED (AUTOMATION_PLAN 16.8): STOP.
+
+ExpectedEvidence:
+[0] antes del Worker: el contrato, la salida del Controller (output.json, con las ocho colecciones opacas vacias), la delegacion final con esas colecciones puestas por la sesion (delegation.json; F4B-E21), la comparacion byte a byte sobre la delegacion final, A1-A8 y nc4;
+[1] el commit RED y su push antes del GREEN; con una reparacion del RED (F4B-E35, RR-4), ademas, el commit "RED repair" y su push antes del GREEN, con su CI, registrada como la del RED reparado, y los TRX de cada filtro con ExpectRed sobre RedRepairSha;
+[2] la CI del RED como en section 6.0 (tests y ui-tests en failure, build-ui en success, build-plugin omitido, sin cuelgue); la del RED reparado, si lo hay, da lo mismo;
+[3] la tabla "CT -> la asercion que falla en el RED", con el equivalente de CT-PBT2B-06 (PushBackEditAllApplyCloseTests), que falla por asercion en el RED, y las autopruebas de CT-PBT4C-07, 13 y 15;
+[4] el GREEN y su CI 4/4;
+[5] en local: el build Release con el Plugin sin avisos nuevos, los filtros sobre el RED, sobre RedRepairSha si hay reparacion, y sobre el GREEN, y tres corridas en verde de los filtros con ExpectRed sobre el GREEN;
+[6] la entrega con el mapa CT -> metodo, las rutas relativas comprobadas, el sha256 de cada uno de los cuatro equivalentes (iguales a EquivalentSha) y el Trailer real de los commits RED, "RED repair" (si lo hay) y GREEN; con una reparacion del RED, ademas, RedRepairSha, la prueba y la linea corregidas, el error y por que no cambia ninguna linea esperada, con el diff, y RedSha, que sigue siendo el commit RED original (F4B-E35, RR-5);
+[7] la verificacion con las tres comprobaciones de F4B-E15, y nc1 a nc3;
+[8] con una reparacion del RED, la verificacion la lee como parte de la entrega (F4B-E35, RR-7; section 6.0): n.o 10 (Tests): el RED se acredita con RedSha y con la CI del RED original, y sus TRX, con los filtros con ExpectRed entre los fallidos. La clausula "git diff --name-only RedSha CurrentSha no toca RT U ChainRedFiles" se comprueba desde RedRepairSha: git diff --name-only RedRepairSha CurrentSha. n.o 11 (Trailer): el trailer va tambien en el commit "RED repair". Lo que el Controller comprueba de RR (si algo falla, es C18): RR-1, un solo commit "RED repair", hijo directo de RedSha y anterior al GREEN; RR-2, git diff --name-only RedSha RedRepairSha dentro de las cinco clases de las CT; RR-4, la CI de RedRepairSha, registrada como la del RED reparado, y los TRX de los filtros con ExpectRed sobre el; RR-5, la declaracion de la entrega, con el diff, y RedSha, el commit RED original; RR-6, con el tramo RedSha..RedRepairSha. En PB-T4c, ademas: RedSha..RedRepairSha no toca ningun archivo de src/ (el esqueleto), ni los cuatro equivalentes, ni los cuatro archivos de los Skip. La ayuda mecanica de RR-3: es parada C07, una violacion cierta de RR-3, que un literal de la lista cerrada de la clase reparada (section 6.0 del paquete, la tabla de RR-3) cambie entre RedSha y RedRepairSha: una linea o un fragmento, si no aparece como subcadena exacta el mismo numero de veces; un valor de gesto, si no aparece como token el mismo numero de veces. Indicios para la revision, no parada: una cadena <campo>= anadida o quitada en git diff -U0 RedSha RedRepairSha, o un cambio en el primer argumento de un Assert.Equal. Pueden dar falsos positivos, como una linea que solo se mueve de sitio, asi que van a Findings y a la revision, con la declaracion de RR-5.
+[9] la CI del RED con tests y ui-tests en failure, build-ui en success y build-plugin omitido;
+[10] la del GREEN 4/4, con el Plugin compilado;
+[11] el censo de declaraciones de WHC, IWorkspacePilotEditPort.cs, WorkspacePilotSupport.cs, WEI, FVM, WorkspacePanelView.xaml, WorkspacePanelView.xaml.cs, WCo y RackPushBackSystemWindow.xaml.cs, y de los cuatro archivos nuevos, en BaseSha y en CurrentSha, contadas una a una con su nombre (una sobrecarga es una declaracion mas): la diferencia es la lista cerrada de PBT4C-C13;
+[12] el Trailer real;
+[13] la entrada "## PB-T4c" de superseding-characterization.md, escrita por la sesion en el commit de emision: la tabla de las 4 (PEG:155-163, CT-PBT1B-15 y CT-PBT4B-20, C-5, en Core; CT-PBT2B-06, C-3, en UI), el sha256 de la lista, los motivos literales de los Skip, el equivalente de cada una con su EquivalentSha y su cambio declarado, y las decisiones del Owner (owner-pbt4-decisions.md, pregunta 4; owner-pbt4c-list-3-decision.md; owner-pbt4c-list-4-decision.md); su tabla de ejecucion se completa al cerrar;
+[14] Linea base de la CI: la del cierre de PB-T4b (F4B-E53, 6adff90d): run 44903818806 sobre su GREEN c065080d, Core 19 605 resultados, con 19 147 Passed y 458 Skipped, y UI 2 481, con 2 433 Passed y 48 Skipped. Previstos, con el total exacto de cada rama (F4B-E46): PB-T4c pone 4 Skip (3 en Core y 1 en UI), cada uno sobre una prueba que pasa a un solo resultado omitido, anade 4 equivalentes (3 en Core y 1 en UI), un [Fact] cada uno, y 15 CT (11 de Core y 4 de UI), sin ninguna Theory nueva. El GREEN: Core 19 619 resultados, con 19 158 Passed, 0 Failed y 461 Skipped; UI 2 486, con 2 437 Passed, 0 Failed y 49 Skipped. El RED: Core 19 619, con 19 149 Passed, 9 Failed y 461 Skipped; UI 2 486, con 2 432 Passed, 5 Failed (las 4 CT de UI y el equivalente de CT-PBT2B-06) y 49 Skipped.
+[15] la comprobacion mecanica de los Skip, check_skips_pbt4c_v50.py, sobre RedSha y sobre CurrentSha frente a BaseSha: los cuatro archivos, iguales a su base con su Skip literal y nada mas (4 Skip).
+```
+
+**Los `Skip` literales** (`pbt4c_skips_v50.py`, sha256 `a59a3aedc982bb15312a04eb5ddbe92afa2a868a1177e7c8b4c3f49332970f7f`; ASCII), cada uno en la línea de atributo `[Fact]` de su prueba en `6adff90d`:
+
+- `tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs`:155 (`ThePortDeclaresTheSeventeenOperationsWithTheEnumsAsOrderedPrefixesAndNamesNoTypeOfTheDraftsNorOfThePilot`): `[Fact(Skip = "I-64 F4B PB-T4c: sustituida por su equivalente en PushBackEditAllPortEquivalenceGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 4).")]`
+- `tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs`:306 (`CT_PBT1B_15_TheWritersOfNameInThePluginRunAfterTheWindowCloses`): `[Fact(Skip = "I-64 F4B PB-T4c: sustituida por su equivalente en PushBackEditAllNameWritersGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 4).")]`
+- `tests/RackCad.Tests/WorkspaceFullCopyGuardTests.cs`:568 (`CT_PBT4B_20_TheScriptOfSkipAndDuplicateGivesTheCopiesTheKitAndTheSkipsOfTheClosedList`): `[Fact(Skip = "I-64 F4B PB-T4c: sustituida por su equivalente en PushBackEditAllFullCopyGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4c-list-3-decision.md).")]`
+- `tests/RackCad.UI.Tests/PushBackWorkspaceApplyCloseTests.cs`:686 (`CT_PBT2B_06_ClosingAsksOnlyForWhatWasNotApplied`): `[Fact(Skip = "I-64 F4B PB-T4c: sustituida por su equivalente en PushBackEditAllApplyCloseTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4c-list-4-decision.md).")]`
+
+**Los equivalentes, literales** (`make_equivalents_pbt4c_v50.py`, sha256 `d81fcb41bed684b8ac35949841e3a7fba2277120bdf3e882d0267f8176e4a896`, desde los originales de `6adff90d`; su texto, en el anexo V51-A; `EquivalentSha`, del texto con `\n`):
+
+- `tests/RackCad.Tests/PushBackEditAllPortEquivalenceGuardTests.cs`, `1a2607d3a35ae8f9737fffb0eb32a4acd8100318fe83e5b0098d30428f57d250`: PEG:155-163, con la fila de `TryEditAll` al final de `Operations` (18); Core, `ExpectRed` false
+- `tests/RackCad.Tests/PushBackEditAllNameWritersGuardTests.cs`, `3744992127be8b7e1d8d822a769b8eb2a6886789c73285c8436e5baec6bf7b6b`: CT-PBT1B-15, con «archivos=15»; Core, `ExpectRed` false
+- `tests/RackCad.Tests/PushBackEditAllFullCopyGuardTests.cs`, `4619b6d310340f9c97a7d9f31bda1db852d2fcda905b91bb857510f7e6b7e6ce`: CT-PBT4B-20, con la clase renombrada y `Restore`, que además devuelve la línea exacta del `Skip` de PB-T4c de PEG:155; Core, `ExpectRed` false
+- `tests/RackCad.UI.Tests/PushBackEditAllApplyCloseTests.cs`, `7c2458260ef301d7f05bfaff8e1e8c4a4a618f25fd7022705d55dee32dbe78d2`: CT-PBT2B-06, con la línea de la ventana 4 a la pregunta combinada; UI, **`ExpectRed` true** (cae en el RED, V50-18)
+
+**El nombre del equivalente de PEG:155-163** (V51-03; CA-T4c M-02) conserva el de su original, `ThePortDeclaresTheSeventeenOperationsWithTheEnumsAsOrderedPrefixesAndNamesNoTypeOfTheDraftsNorOfThePilot`, aunque su tabla tenga dieciocho operaciones: es la copia literal (`owner-pbt4-decisions.md`, pregunta 4), y lo que fija es la tabla, no el nombre (como la §20 M-02 de CA-T4b con las copias de D-S1).
+
+**La precondición 6** (I-02; §11.6), que corre la sesión antes de emitir, sobre copias exportadas del cierre de PB-T4b, fuera de todo commit (`pbt4ccc/compile/`, que la emisión custodia en `F4B-DRAFTS/pbt4/cc4c/`; el resumen, `pbt4c-precondition6.json`, sha256 `29179a12ef8623f4c276f943a725ece6f3ffd84464f16705e1feda757efbce1a`, y su registro, `compile-check.md`, `060c5c8b4ea1197079bcde5f5c5d8d299d5b71dde6295d2a468982e5fb1bb02c`):
+1. `git archive` de `6adff90d` a una carpeta nueva, fuera del worktree;
+2. `python -I apply_red_pbt4c_v51.py <copia> --repo <checkout> --rev 6adff90d`: el esqueleto, los 4 `Skip` y los 4 equivalentes, sin las CT;
+3. la compilación de Core y de UI en Debug y del Plugin en Release con `-o`, sin ningún `warning CS`;
+4. `check_skips_pbt4c_v50.py` sobre la copia: los 4 archivos, iguales a su base con su `Skip`; y los filtros (`filter_overlap_pbt4c_v50b.py`, D-S8);
+5. **el RED exacto, sin las CT:** la suite completa de Core, **19 608 = 19 147 + 0 + 461**, con las 3 de Core de la lista omitidas con su motivo y los 3 equivalentes de Core en verde; y los 18 filtros de UI (los 17 heredados y el del equivalente de UI), donde **solo cae el equivalente de CT-PBT2B-06, por aserción**, y CT-PBT2B-06 está omitida con su motivo (D = 0);
+6. **sobre la misma copia, el GREEN literal** (`apply_green_pbt4c_v51.py`): la suite completa de Core, **19 608 = 19 147 + 0 + 461**, y los 18 filtros de UI, **0 `Failed`**, sin ningún `warning CS`. **Una prueba que falle fuera de la lista de 4** vuelve al Owner; **un equivalente que no pase donde se espera** necesita una versión del paquete;
+7. **las sondas, sobre el GREEN,** como clases temporales que no entran en ningún commit y acaban en `Assert.Fail(texto)`, cada una con su filtro: `pbt4c-probe-editall.cs` (las líneas de CT-03, 04, 05 y 12) y `pbt4c-probe-close-ui.cs` (CT-09 y D-S10); y el coste de `IsDirty` con la sonda de PB-T4b (`pbt4bcc/compile/TmpIsDirtyCostProbe.cs`), en Release;
+8. **el ensayo de las CT de texto y el censo de C13** (V51-05; nuevo en la v5.1, por CA-T4c I-01):
+   - **el ensayo:** `pbt4c-rehearsal-textct.cs` (sha256 `ede5d822d30e8d5dc022f124a2a42f4e7cb562f53de7862be11b2d7b0b0e13ba`), cinco clases temporales (`TmpPbt4cTextCt01`, `07`, `08`, `13` y `15`) que no entran en ningún commit, cada una con un `[Fact]` que acaba en el `Assert.Equal` de sus líneas literales de §5.3. Las escribe `v51/make_rehearsal_v51.py` (`d7db45cb78b5769196edecc737537105855d5d680850a9765e64118ea3fcf60e`): CT-15 con G-L1 y la pureza de `PushBackPanelDraftGuardTests.cs` (CT-PBT4B-19) y CT-13 con `ControllerViolations` de PEG (PEG:659-707), copiados de los objetos git de la base; CT-01, 07 y 08, desde su fila de §5.3. **Sobre el RED,** CT-07 y CT-15 pasan y CT-01, 08 y 13 caen por su `Assert.Equal`; **sobre el GREEN,** las cinco pasan (`rehearsal_check_v51.py`);
+   - **su control:** el mismo ensayo sobre las piezas de la v5.0 (`p6_control50_v51.sh`) **ve I-01**: CT-15 cae en las dos ramas, con su primera diferencia en la línea de la pureza, y las otras cuatro dan lo mismo que con la v5.1 (`control_check_v51.py`);
+   - **el censo** (`census_c13_v51.py`, `83a88e3895716dfe8810d360b20c8bce1751a178356cd90591e308a5844343cc`), por texto y por objetos git: la diferencia de declaraciones del GREEN frente a la base es, nombre a nombre y con su cuenta, la lista cerrada de PBT4C-C13, la del esqueleto es una parte de ella, nada se quita, y ningún nombre nuevo de `RackCad.Application.Workspace` cae en las reglas de `WorkspaceModelBoundaryTests:83`, :101 y :102; con siete autopruebas (una constante, una sobrecarga, una propiedad, un miembro de enumerado, un tipo anidado y un `x:Name` de más, y un campo de menos);
+9. el contrato lleva por sha256 las piezas del GREEN y del esqueleto, los 4 equivalentes (`EquivalentSha`) y la lista.
+
+**Qué cubre el paso 8 y qué no** (V51-05):
+- **Cubre, literal y en las dos ramas,** las cinco CT de texto sobre `src/` (CT-01, 07, 08, 13 y 15: todas las de PB-T4c que leen texto), con su `ExpectRed`; y, por texto, la lista cerrada de C13 y los nombres.
+- **Cubren las sondas, solo sobre el GREEN,** las líneas de CT-03, 04, 05 y 12 que dice §5.3 (22 tal cual, 9 con sus campos y 3 derivadas) y las de CT-09.
+- **No cubre** CT-02, 06 y 14 (la FVM con un doble del puerto, en UI), CT-10 (de punta a punta, con `PilotEraseScopeDouble`) ni CT-11 (las huellas de D2), ni las cuatro líneas de CT-03 y 04 que salen del texto, ni el RED de las CT de comportamiento.
+- **Por qué esas no se escriben literales:** §5.3 fija sus líneas y lo que hacen, no cómo se construyen (los fixtures de la cola, del conflicto y del error, el doble del borrado, las huellas). Un ensayo sería una versión de la sesión, no la CT del Worker. Lo que el ensayo no ve lo ven la CI del RED (C04) y la del GREEN (C07).
+
+**Lo medido en la v5.1** (V51-06): `/d/r5j` para los pasos 2 a 6, `/d/r5i` para las sondas del 7 y el ensayo del 8, `/d/r5k` para el coste y `/d/r5l` para el control del ensayo. Lo previsto, con D = 0, K = 4, E = 4 y cero `warning CS`:
+- **Core, sin las CT:** 19 608 = 19 147 + 0 + 461 en las dos ramas; **UI,** los 18 filtros: en el RED solo cae el equivalente de CT-PBT2B-06, por aserción, y en el GREEN, 0 `Failed`;
+- **el ensayo:** PASA en las dos ramas; **su control sobre la v5.0:** ve I-01; **el censo:** PASA; **las líneas de las sondas:** las mismas que en `/d/r5f`, por sha256;
+- **la duración de la suite de Core:** 736 s en el RED y 622 s en el GREEN;
+- **el coste de `IsDirty`:** el de PB-T4b, dentro del ruido (pb-20-ab, mediana limpia 9.7677 ms, frente a 9.35 ms en PB-T4b y 9.64 ms en la v5.0).
+
+**Las corridas de la v5.0** (`/d/r5f`, `/d/r5g` y `/d/r5h`) y la vuelta parada (`/d/r5a` a `/d/r5e`, con la medida de D-S9 en `/d/r5e`) son historia: las piezas que midieron no son las de la v5.1.
+
+**`RequiredTests`** (76 heredados + 9 nuevos = 85). Los heredados son los 77 del contrato de PB-T4b (`F4B-PBT4-FULL-DRAFT-PANEL`, emitido), con su número, **todos con `ExpectRed` false** (las CT, las clases Red de la partición y sus filtros pasan desde el cierre de PB-T4b), y sus `MinSelected` bajan en una por cada prueba de la lista que seleccionan; **el n.º 43 queda en 0 y su fila sale** (V50-16). Los nuevos, del 78 al 86, por clase exacta (D-S8):
+
+| # | Project | Filter | MinSelected | ExpectRed |
+|---|---|---|---|---|
+| 1 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackFullReadPathTests` | 4 | false |
+| 2 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackFullReadGuardTests` | 1 | false |
+| 3 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackViewEraseGuardTests` | 4 | false |
+| 4 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackWritePathPluginGuardTests` | 1 | false |
+| 5 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.WorkspacePilotUpdateGuardTests` | 85 | false |
+| 6 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests` | 121 | false |
+| 7 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackSharedReferenceGuardTests` | **1** | false |
+| 8 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackFullDraftWindowParityTests` | 1 | false |
+| 9 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackFullWrite` | 13 | false |
+| 10 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackPilotUpdateEquivalenceGuardTests` | 6 | false |
+| 11 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackWritePathGuardTests` | 1 | false |
+| 12 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.Workspace` | **2716** | false |
+| 13 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackFullDraft` | 10 | false |
+| 14 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackDraftWriteGuardTests` | 2 | false |
+| 15 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.Workspace` | 521 | false |
+| 16 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackEditableState` | 13 | false |
+| 17 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackEditorOutputGate` | 1 | false |
+| 18 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackWindowSharedReferenceGuardTests` | 1 | false |
+| 19 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackWindowOnStateSourceGuardTests` | 1 | false |
+| 20 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackWindowOnStateTests` | 2 | false |
+| 21 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization` | 55 | false |
+| 22 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization` | 10 | false |
+| 23 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization` | 16 | false |
+| 24 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization` | 3 | false |
+| 25 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackStateNet` | 14 | false |
+| 26 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection` | 14 | false |
+| 27 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.Cantilever` | 67 | false |
+| 28 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.I58F1` | 10 | false |
+| 29 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.CustomPropertiesEnvelopeGuardTests` | 9 | false |
+| 30 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.NamespaceFolderGuardTests` | 7 | false |
+| 31 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackDraftStatePortTests` | 3 | false |
+| 32 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackDraftPortSharedReferenceGuardTests` | 1 | false |
+| 33 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackWorkspaceModeSourceGuardTests` | 1 | false |
+| 34 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackWorkspaceSharedReferenceGuardTests` | 1 | false |
+| 35 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceModeTests` | 3 | false |
+| 36 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests` | **3** | false |
+| 37 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackFieldValidationConcordanceTests` | 1 | false |
+| 38 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceCarryoverTests` | 3 | false |
+| 39 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackFullPanelTests` | 11 | false |
+| 40 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackFullPanelGuardTests` | 4 | false |
+| 41 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackFullPanelCensusGuardTests` | 1 | false |
+| 42 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackPanelDraftGuardTests` | 1 | false |
+| 44 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackFullPanelFieldTests` | 3 | false |
+| 45 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.NumericFieldValidationTests` | 13 | false |
+| 46 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.NumericFieldTests` | 10 | false |
+| 47 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceLifecycleHostRedTests` | 24 | false |
+| 48 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceLifecycleHostGreenTests` | 69 | false |
+| 49 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotPrepareRedTests` | 44 | false |
+| 50 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotPrepareGreenTests` | 47 | false |
+| 51 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceEditIntentHostRedTests` | 24 | false |
+| 52 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceEditIntentHostGreenTests` | 57 | false |
+| 53 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditHostRedTests` | 59 | false |
+| 54 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditHostGreenTests` | 17 | false |
+| 55 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceCommandAdvisorRedTests` | 6 | false |
+| 56 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceCommandAdvisorGreenTests` | 70 | false |
+| 57 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateRequestRedTests` | 53 | false |
+| 58 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateRequestGreenTests` | 1 | false |
+| 59 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateHostRedTests` | 29 | false |
+| 60 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateHostGreenTests` | 18 | false |
+| 61 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotReconciliationHostRedTests` | 23 | false |
+| 62 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotReconciliationHostGreenTests` | 5 | false |
+| 63 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceAssociativeBookkeepingRedTests` | 1 | false |
+| 64 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceAssociativeBookkeepingGreenTests` | 21 | false |
+| 65 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyPushBackWritePathGuardRedTests` | 1 | false |
+| 66 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateIntegrationGuardRedTests` | 2 | false |
+| 67 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceEditIntentGuardRedTests` | 13 | false |
+| 68 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditGuardRedTests` | 6 | false |
+| 69 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditGuardGreenTests` | 17 | false |
+| 70 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotReconciliationGuardGreenTests` | 1 | false |
+| 71 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceLifecycleGuardRedTests` | 2 | false |
+| 72 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateGuardRedTests` | 1 | false |
+| 73 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationGreenTests` | 30 | false |
+| 74 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationViewGreenTests` | 6 | false |
+| 75 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyPushBackFullReadPathRedTests` | 1 | false |
+| 76 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyPushBackFullReadGuardRedTests` | 1 | false |
+| 77 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceHostHardeningGuardRedTests` | 1 | false |
+| 78 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackEditAllTests` | 6 | true |
+| 79 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackEditAllGuardTests` | 3 | true |
+| 80 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackOpenerClassicPathGuardTests` | 1 | false |
+| 81 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackDraftLaunchGuardTests` | 1 | false |
+| 82 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllWindowTests` | 4 | true |
+| 83 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackEditAllPortEquivalenceGuardTests` | 1 | false |
+| 84 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackEditAllNameWritersGuardTests` | 1 | false |
+| 85 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackEditAllFullCopyGuardTests` | 1 | false |
+| 86 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllApplyCloseTests` | 1 | true |
+
+- **Nota (no va al contrato).** `MinSelected` cuenta resultados no omitidos, como en el contrato de PB-T4b (medido en las TRX de `/d/r5j`: n.º 5, 85 resultados de 40 métodos). **Los cuatro que bajan:** n.º 7, `PushBackSharedReferenceGuardTests` (CT-PBT1B-15), de 2 a **1**; **n.º 12, `RackCad.Tests.Workspace`, que selecciona PEG y `WorkspaceFullCopyGuardTests`** (PEG:155-163 y CT-PBT4B-20; la duda del generador decía que PEG no caía en ningún filtro heredado, y no es así: el filtro es una subcadena del nombre completo `RackCad.Tests.WorkspacePilotEditGuardTests…`), de 2 718 a **2 716**; n.º 36, `PushBackWorkspaceApplyCloseTests` (CT-PBT2B-06), de 4 a **3**; y n.º 43, `WorkspaceFullCopyGuardTests`, de 1 a 0, así que sale. **La prueba de PEG de la lista no necesita filtro nuevo:** su equivalente tiene el suyo (n.º 83) y el n.º 12 sigue cubriendo las demás de PEG. Ningún filtro heredado selecciona una clase nueva, y cada filtro nuevo solo la suya (`filter_overlap_pbt4c_v50b.py`; `pbt4ccc/compile/r5j-rg/filtros.txt`).
+
+#### 6.3.2 Lo que necesita el generador de PB-T4c (las dudas de la fase 1, `generator-doubts-pbt4c.md`)
+
+| Pieza | Dónde, en este paquete | Lo que comprueba el generador |
+|---|---|---|
+| **`TaskId`** | §6.3.1 | `F4B-PBT4-EDIT-ALL-WINDOW`, 24 caracteres, ≤ 26 |
+| **`Objective`** | §6.3.1 | ASCII, byte a byte; cita el paquete v5.1, CT-PBT4C-01..15 y las **4** sustituciones |
+| **`AllowedWriteScope`** | §6.3 | Las 26 rutas, en ese orden y con su número; ninguna de `Pilot/`; de `src/RackCad.Plugin/`, solo WCo y `Views/RackWorkspaceEditorWindow.cs` |
+| **`ForbiddenWriteScope`** | §6.0 y §6.3 | Su regla, sobre el alcance final en `6adff90d` (`<medido por el generador>`) |
+| **`UNIT_CHANGE`** | §6.0 y §6.3 | Las 9 existentes de `src/` |
+| **`Invariants`** | §6.3.1 | INV-PBT4C-01 a 14, literales |
+| **`StopConditions`** | §6.0 y §6.3.1 | Las 17 estándar del contrato de PB-T4b y PBT4C-C01 a C14, C16, C17 y C18: **34**. **C11** es `PBT4B-C11` con «PB-T4b» → «PB-T4c». **C02** no tiene excepción fuera de los `Skip` de la lista de 4 |
+| **`RequiredTests`** | §6.3.1 | Las 85 filas: los 76 heredados con su número y sus `MinSelected` (n.º 7: **1**; n.º 12: **2 716**; n.º 36: **3**; el n.º 43 sale), todos con `ExpectRed` false, y los 9 nuevos (n.º 78 a 86), por clase exacta (D-S8): 5 de las CT y 4 de los equivalentes |
+| **`ExpectedEvidence`** | §6.3.1 | 16; `[0]` byte a byte el de PB-T3c; `[13]`, la entrada «## PB-T4c» del registro declarado; `[14]`, con los totales de §5.3 y la base de PB-T4b; la cuenta de CT (**15**), de `[Fact]` (15), de `Skip` (**4**) y de filtros con `ExpectRed` true (**4**: 2 de Core y 2 de UI, con 14 resultados: 9 de Core y 5 de UI) |
+| **La lista** | `pbt4c-substitution-list-4.tsv` | sha256 `9bd4c17a0eda837c92a7a0b7b3562d4ab17f1608baf3ffa8efaf560d8b1f82de`; 4 filas (3 C-5 en Core y 1 C-3 en UI), cada una un `[Fact]` sin `Skip` en su rango en `6adff90d`; la genera `make_list_pbt4c_4.py` (`02096c2ae404238263759cc88854205f922e7c1980fec5ce224a70761a6eb777`). La de 3 (`d83e0a817144fa99f95ed4bfd151b822a4fc1035c10f736f77e8f8e6350186c1`) y las filas «PB-T4c» de `pbt4-substitution-lists.tsv` quedan como historia |
+| **El esqueleto y el GREEN** | `pbt4c-skeleton-v51.txt` y `pbt4c-green-v51.txt`, con `green_pbt4c_v51.py` | **Por su texto en el paquete**, no como parche: dos piezas de texto sin escapes, con bloques `EDIT` (un `OLD` que aparece exactamente una vez y su `NEW`) y `NEWFILE`, y `FROMGREEN` en el esqueleto; el generador las aplica sobre `6adff90d` y comprueba que cada `OLD` está una vez. sha256: `f8840c67fd41c3bbdabf125d9b80941e3f3aedf5e610681c8ce15f111e7b392e`, `081ef77e66a390cf3637f15851b5fe05a5cdf07f6e0065928fc5c841b250dc16` y `a8a3afa2a0a71674ccd7eafc1f4e52eea183fef7cbf8bc5fd319be9dfb639215`. Su texto, en el anexo V51-A |
+| **Los `Skip`, los equivalentes y su comprobación** | §6.3.1 | Por sha256: `pbt4c_skips_v50.py` (`a59a3aedc982bb15312a04eb5ddbe92afa2a868a1177e7c8b4c3f49332970f7f`), `make_equivalents_pbt4c_v50.py` (`d81fcb41bed684b8ac35949841e3a7fba2277120bdf3e882d0267f8176e4a896`), `apply_red_pbt4c_v51.py` (`03dbb6a76d1e50c7c1935926727e4a5172f44c30a3cc6bc11ddac51197bd5102`), `apply_green_pbt4c_v51.py` (`8b9445455b60521598a113e14e870fe5218d3b1b4b142308fbac934016d9bd49`) y `check_skips_pbt4c_v50.py` (`71521e52abdd7f371fb4b067d2b4400bb508c2d1d6a246ca83df4bb39127ee22`); los 4 `EquivalentSha` |
+| **Las CT como datos** | `pbt4c_ct_table_v51.py` | sha256 `5ee03f8ebe411b1bf689102753ff93f77c1988266432cf9ea2f3e46df116623f`: la tabla de §5.3, que lee la lectura RR-3 de la cadena. **Pasada sobre esta versión** (`pbt4ccc/pbt4c_rr3_reading.py`, `7585a87e…`, sin tocarla; `v51/check_rr3_v51.py` y su salida, sobre la v5.1): 0 errores; las cinco clases de las CT, con sus líneas iguales a las de sus CT y nada pendiente; los cuatro equivalentes, sin fila (no admiten reparación) |
+| **El ensayo y el censo** (el paso 8) | `pbt4c-rehearsal-textct.cs` y `pbt4ccc/compile/census_c13_v51.py` | sha256 `ede5d822d30e8d5dc022f124a2a42f4e7cb562f53de7862be11b2d7b0b0e13ba` y `83a88e3895716dfe8810d360b20c8bce1751a178356cd90591e308a5844343cc`; el generador del ensayo, `v51/make_rehearsal_v51.py` (`d7db45cb78b5769196edecc737537105855d5d680850a9765e64118ea3fcf60e`); su lectura, `rehearsal_check_v51.py` (`772f35eebc2589bfdd3d64adef7183b6109044c4d3ac8bf7f1cadc2054b20428`); su control, `p6_control50_v51.sh` (`612b80ab7a60969c772b9f3c58ca50f7cd01c1890aa1ccfa334570142ed97dd3`) y `control_check_v51.py` (`ec74af4484ae7496fc4e8f0258a71a2f88b124dd42933b5734314d4682384262`). **No van al contrato:** son de la sesión, como las sondas |
+| **La precondición 6** | `pbt4ccc/compile/pbt4c-precondition6.json` | Schema `rackcad-pbt4c-precondition6/v1`; `Revision` (`6adff90d…`), `List` (su sha256, K = 4: 3 de Core y 1 de UI), `Pieces` (el sha256 de cada pieza), `Skeleton`, `GreenFiles`, `SkipFiles` y `EquivalentSha` (el sha256 de cada archivo escrito), `Builds` y `CsWarnings` (0), `Red` y `Green` (los totales de Core y cada filtro de UI con su TRX), `D` (0), `E` (4), `SuiteDurationSeconds`, `InheritedCoreFiltersGreen` (los resultados y métodos de cada filtro heredado), `FilterOverlap`, `CheckSkips`, `Probes`, `IsDirtyCost` y `History` (las corridas de la v5.0 y la vuelta parada); **y, desde la v5.1, con el mismo Schema** (las claves nuevas no cambian las de la v1): `Rehearsal` (el ensayo en cada rama), `Control` (el ensayo sobre la v5.0), `Census` (el censo de C13) y `ClassResults` (el sha256 de las tablas de cada clase). sha256 `29179a12ef8623f4c276f943a725ece6f3ffd84464f16705e1feda757efbce1a`; la corrida, en su `compile-check.md` (`060c5c8b4ea1197079bcde5f5c5d8d299d5b71dde6295d2a468982e5fb1bb02c`), **con el resultado de cada clase que corre** (Passed, Failed y Skipped). La carpeta va a `F4B-DRAFTS/pbt4/cc4c/`; **las salidas de la v5.1 tienen nombres cortos:** ninguna ruta pasa de 150 caracteres con ese prefijo (V51-07) |
+| **CA-T4c** | `independent-review-v1.md` | **`BOUNDED_SECTIONS`: la §22** (la comprobación acotada de PB-T4c sobre la v5.0: EMITIBLE TRAS CORRECCIONES, 0/1/3) **y la §23** (su recomprobación, sobre esta versión, la v5.1). **La línea `BOUNDED_RESULT`:** como en PB-T4b (`make_pbt4b_contract.py:53-60`), la línea BOUNDED literal de la §22.10, en ASCII, con la cola de la recomprobación de la §23 (`; recomprobacion v5.1: EMITIBLE, B 0 / I 0 / M <n>`); el generador la comprueba con `bounded_check` contra esas secciones. La emisión necesita 0 bloqueantes y 0 importantes sin resolver (pregunta 4) |
+| **La numeración** | — | F4B-E53 (el cierre de PB-T4b), F4B-E54 (la emisión) y las secciones 283 (X) y 284 (BASE) |
+
+**Las autoridades de PB-T4c** (la n.º y la ruta son las del contrato de PB-T4b emitido, con sus 72):
+- **Siguen, sin cambio:** las n.º 1 a 5, 7 a 27 y 30 a 35, y 38 a 42.
+- **Siguen, con su sección al día:**
+  - la n.º 0, el paquete, en la v5.1, con sus secciones de PB-T4c (D-PBT4-12 a 17, §4.3, §5.3, §6.0 y §6.3);
+  - la n.º 6, `superseding-characterization.md`, con su entrada «## PB-T4c» (`[13]`);
+  - la n.º 28, `f4b-dispositions.md`, hasta F4B-E53;
+  - la n.º 29, el contrato anterior: el de PB-T4b (`F4B-PBT4-FULL-DRAFT-PANEL/coordinator/gate-contract.json`), en lugar del de PB-T3c;
+  - la n.º 36, la base: el cierre de PB-T4b (`F4B-PBT4-FULL-DRAFT-PANEL/task-close-package.md`, F4B-E53, con la CI de la línea base, `44903818806`), en lugar del de PB-T3c;
+  - la n.º 37, «este contrato»: `F4B-PBT4-EDIT-ALL-WINDOW/coordinator/gate-contract.json`;
+  - la n.º 65, `independent-review-v1.md`, con su §22 (CA-T4c) y su recomprobación, la §23.
+- **No son autoridades de PB-T4c:** las n.º 43 a 64 (las tandas, la lista de 478, el mapa, el kit, los guiones de la copia, su revisión y la precondición 6 de PB-T4b) y las n.º 66 a 71 (los `UNIT_CHANGE` de PB-T4b).
+- **Se añaden:**
+  - `owner-pbt4c-list-3-decision.md` y `owner-pbt4c-list-4-decision.md` (la octava y la novena tandas, sobre la lista de PB-T4c);
+  - `session-pbt4c-design-decisions.md` (D-S7 a D-S10);
+  - `owner-pbt2b-close-decisions.md` (F4B-E38; A-T2b-OWNER-01, :36);
+  - `owner-pbt4b-code-decisions.md` (F4B-E53; los vacíos de M-04 van a la lista de PB-T4d, no a esta);
+  - `pbt4c-substitution-list-4.tsv`, las piezas y los guiones de §6.3.2 y `pbt4c-precondition6.json` (UNIT_DOC);
+  - y los 9 `UNIT_CHANGE` de `src/` (el texto literal del GREEN de PB-T4c, `pbt4c-green-v51.txt`).
 
 ### 6.4 PB-T4d — la retirada del piloto (esbozo; V42-01)
 
@@ -2207,6 +2712,9 @@ Los de la v1 (R-T4-01 a 15) y la v4 (R-T4-16 a 21), con lo que hacen la v4.1 y l
 | R-T4-01, la lista | Las listas, guardadas método a método, con su causa y su destino; la de PB-T4b, fijada por sha256 y aprobada por el Owner (470; en la tercera tanda, 475; en la quinta, 477; en la sexta, 478) |
 | R-T4-08, los miembros por defecto | Solo `TryEditAll`, con sus dos reenvíos explícitos (CT-PBT4C-12 y 13) |
 | R-T4-13, el modal y el abridor | Dos piezas; CT-PBT4C-08 fija el literal de la conversión (M-30) |
+| **R-T4-27, lo que el paseo no ve** (V50-12) | La reflexión sobre tipos y el comportamiento de la UI: las dos caídas de la v5.0 las vio la suite completa de Core y los filtros de UI de la precondición 6, no el paseo. Lo que vale es la suite completa |
+| **R-T4-28, un nombre fijado y nunca ejecutado** (D-S9) | `IWorkspaceFullEditorHost` estaba en el paquete desde la v4 y una guarda por reflexión lo prohibía; se midió al compilar y correr el GREEN literal |
+| **R-T4-29, las CT no corren en la precondición 6** (CA-T4c I-01; V51-05) | El paso 8: el ensayo de las CT de texto, sobre el RED y sobre el GREEN, con su control sobre la v5.0, y el censo de C13. Lo que no cubre, declarado (§6.3.1) |
 | R-T4-16, la doble lectura del piloto | Se mide en la precondición 6. En PB-T4a, la relectura en el origen repite las dos lecturas puras sobre el mismo escaneo, en `Draft/`, sin acceso nuevo al dibujo. En PB-T4b, D-S4 deja una sola materialización del modelo completo por lectura (D-PBT4-21), y la precondición 6 mide el coste con la sonda de `read-cost` |
 | R-T4-17, el coste de `IsDirty` | Sin cambio |
 | R-T4-19, la duración de la suite de Core | Se mide en la precondición 6 de PB-T4b; si pasa de 15 min, vuelve a la sesión |
@@ -2255,7 +2763,7 @@ Las de la v1 (§8.1): [OD] con D-PB-01 y D-PB-05; F4B-E28 Q3; F4B-E38; F4B-E29 (
 | PB-T4b | La letra de las guardas (C-5 y C-6) | «unas 12»; en la tercera tanda, 20; en la quinta, 22; en la sexta, **23** | **23** (15, las cinco de la tercera tanda, las dos de PB-T4a y la de la sexta) | |
 | PB-T4b | La UI de la elección (C-3) | «hasta 21», recontada a unas 25 | **27** | |
 | PB-T4b | **Total** | **unas 465**; en la segunda vuelta, **470**; en la tercera, **475**; en la quinta, 477; en la sexta, **478** | **478** | **Aprobada como la que vio** (segunda vuelta, pregunta 2, y tercera, quinta y sexta tandas); `pbt4b-substitution-list-478.tsv`, sha256 `8b0fcd0ca775ce3a5e46ef2059f4b06e7ec7319883daf3cb37b1fe91290e9e8b` (las de 477, `5975c5b6…a651`, 475, `654c3b7b…0707c`, y 470, `44393b19…63e4`, quedan como historia) |
-| PB-T4c | PEG:155-163 y CT-PBT1B-15 (C-5) | 2 | **2** | Autorización condicional |
+| PB-T4c | PEG:155-163, CT-PBT1B-15 y CT-PBT4B-20 (C-5, Core), y CT-PBT2B-06 (C-3, UI) | 2; tras la remedición, 3 y 4 | **4** | **Aprobada como la que vio** (`owner-pbt4c-list-3-decision.md` y `owner-pbt4c-list-4-decision.md`); `pbt4c-substitution-list-4.tsv`, sha256 `9bd4c17a0eda837c92a7a0b7b3562d4ab17f1608baf3ffa8efaf560d8b1f82de` (la de 3, `d83e0a817144fa99f95ed4bfd151b822a4fc1035c10f736f77e8f8e6350186c1`, queda como historia) |
 | PB-T4d | C-7: 71 por texto (con E-3, E-5 y E-6) y 67 por compilación | «unas 100»; en la segunda vuelta, 139; en la tercera, 138 | **138** | **Vuelve al Owner con su lista** (esbozo en `pbt4d-retire-list-138.tsv`, sha256 `d5467dc162e2cda8c539a829cc8f3a7c46260a119f70e840b34e6f78dde0387c`) |
 | PB-T4d | Las originales de las 9 clases que dejan de compilar al retirar, borradas con registro | 55 | **55** | Ídem |
 | PB-T4d | Los miembros de apoyo que nombran lo retirado | 29 | **29** | Ídem |
@@ -2297,7 +2805,11 @@ Lo de la v3 (§8.3): el orden de las subtareas, los nombres, las CT y las guarda
 | **6.ª** (2026-11-20) | `owner-pbt4b-list-478-decision.md` | «Guarda T4b»: «Añadirla a la lista (Recomendado)». «Mantener las cuentas» y «No emitir PB-T4b» no se hacen | **La lista de PB-T4b pasa de 477 a 478** (WHHG `NoneOfThe30…`), con su `Skip` y su equivalente `WorkspaceHostHardeningGuardFull`, la misma tabla con las cuentas 0, 6 y 0, cada una con su `// before N`; es la lista que vio el Owner, y si aparece otra prueba que falle fuera de ella, vuelve al Owner |
 | **7.ª** (2026-11-21) | `owner-pbt4b-cost-decision.md` | «Coste T4b»: «Darlo por cumplido (Recomendado)». «Sonda dedicada antes» y «No emitir PB-T4b» no se hacen | **El coste de la lectura de la precondición 6 se da por cumplido** con dos de tres corridas que cumplen todo (la primera incumple un solo caso, `pb-20-ab x4 vistas +200 racks ajenos`, `origen-es-Primary`); las tres corridas y sus TRX, por sha256, van con la emisión; el coste real en AutoCAD queda para el Smoke-PB; **no cambia ningún criterio del paquete** |
 
+| **8.ª** (2026-11-21) | `owner-pbt4c-list-3-decision.md` | «Lista T4c»: «Añadirla a la lista (Recomendado)». «Otro diseño sin tocarla» y «No emitir PB-T4c» no se hacen | **La lista de PB-T4c pasa de 2 a 3** (CT-PBT4B-20), con su `Skip` y su equivalente, copia literal que además reconoce el `Skip` de PB-T4c (lo que fija para PB-T4c) |
+| **9.ª** (2026-11-21) | `owner-pbt4c-list-4-decision.md` | «Lista T4c»: «Añadirla a la lista (Recomendado)». «Preguntar distinto» y «No cambiar «Cerrar» ahora» no se hacen | **La lista de PB-T4c pasa de 3 a 4** (CT-PBT2B-06), con su `Skip` y su equivalente, copia literal con la línea de la ventana 4 a la pregunta nueva (lo que fija para PB-T4c) |
+
 **Las decisiones de la sesión,** que no son del Owner:
+- **D-S7 a D-S10** (`session-pbt4c-design-decisions.md`, 2026-11-21; para PB-T4c): **D-S7**, la costura de CT-09 es `HeaderConfiguratorDialog`; **D-S8**, los filtros nuevos, por clase exacta; **D-S9**, `IWorkspaceFullEditHost` (y `SetFullEditHost`, `_fullEditHost`), por `WorkspaceModelBoundaryTests:101`; **D-S10**, CT-09 cubre lo que se puede alcanzar (en WORKSPACE, un módulo escenificado deja siempre cambios sin aplicar). Ninguna cambia la lista ni el comportamiento visible decidido por el Owner;
 - **D-S1 a D-S3, D-S5 y D-S6** (`session-pbt4b-design-decisions.md`, 2026-11-20): **D-S1**, las siete copias mecánicas que no pueden pasar en el GREEN, y las que encuentre la precondición 6, pasan a equivalentes escritos a mano, con su registro y su texto literal, y la lista no cambia por eso; **en la v4.6**, la sesión aplica D-S1 a ocho más, que no compilaban sobre el modelo completo (V46-02), y decide que el guion añada la directiva de `Draft/` (MU, V46-01) y admita ediciones de ayudante en las copias de C-0, sin volver al Owner; **D-S5** (tras la v4.6; V47-01 y V47-02), las cuatro `Theory` que mezclan resultados en el RED (WLHT, PEG y las dos de WPP) se parten por filas en dos equivalentes escritos a mano, con el mismo cuerpo y las mismas aserciones (las dos de `MemberData`, con dos miembros de datos nuevos en la copia), y la regla de la partición se amplía solo para eso, con el mecanismo de D-S1 y sin volver al Owner, porque la lista, las aserciones, las filas y los totales no cambian (358/70 en C-0); **D-S6** (tras la v4.7; V48-01), las copias en el espacio de nombres raíz de su ensamblado, con el prefijo `FullPanelCopy` en sus clases, para que `NamespaceFolderGuardTests` siga en verde sin tocarla ni tocar ningún filtro heredado (el precedente de D-S2); y **D-S1 en la v4.8** (V48-02), las dos copias de WPP que fijaban que el piloto nunca borra una vista pasan a equivalentes que afirman lo que ya fijan D-PB-04, D-PBT3-09 (e) y D-PBT4-07 (356/72 en C-0); **D-S2**, «Conservar» con dos «Sí», rechazada la variante en la que el núcleo conserva sin testigo; **D-S3**, el alias, el testigo desde `Draft/` y `FullPrepareKit`. El Owner fue informado de D-S1 y D-S2 antes de la tercera tanda, con el texto exacto que copia `owner-pbt4b-breaks-decision.md`;
 - **D-S4** (en desarrollo de la 4.ª tanda; D-PBT4-21): la lectura completa del `Primary`, diferida en RIA (`System.Lazy`), y `Full` como `_full?.Value`; `AtOrigin`, NH y `ReadAt` sin cambio; RIA en el alcance como `UNIT_CHANGE`; CT-PBT4B-21; y la sonda del coste en la precondición 6, con una materialización en los cuatro casos.
 
@@ -2311,7 +2823,8 @@ Se declaran en la emisión de PB-T4b (F4B-E52), que custodia los siete registros
 - **Las listas son recuentos por texto** (el método y los ayudantes de su archivo, a un nivel) **y, para la retirada, por referencia de código transitiva.** Pueden contar de más (un nombre común que casa en otro sentido) o de menos (una dependencia por reflexión o por un nombre que no se ve en el texto). La de PB-T4b es la que aprobó el Owner (470, 475 en la tercera tanda, 477 en la quinta y 478 en la sexta); la de PB-T4d (138) es un esbozo que se vuelve a medir.
 - **Las guardas de PB-T4a se recorrieron por marcas, por diferencia,** sobre el texto literal del GREEN que prescribe este paquete (§4.1), y las 100 señaladas se leyeron una a una. **No es un recorrido entero** (CA-T4a M-01): las marcas no ven las rutas compuestas con `Path.Combine` ni los barridos de todo `src/`, de todo Application o de todo el Plugin; CA-T4a midió aparte esos 97 archivos, y ninguno cae. Lo que queda es una lectura que solo se ve al ejecutar: la mide la precondición 6 con `apply_green_pbt4a.py`, y si cae una prueba fuera de la lista es PBT4A-C16.
 - **El léxico de C# de las mediciones** (`lists_core.py`) se corrigió en la v4.2 para las cadenas verbatim que empiezan por una comilla escapada (`@"""…`), que tomaba por cadenas crudas: tres archivos de las listas las tienen (EIG, RG y `WorkspacePilotUpdateGuardTests`). **Las listas y sus sha256 no cambian** (comprobado: `pbt4-substitution-lists.tsv` sigue en `f24c2dbc…`).
-- **Quedan para la copia exportada:** K, D y E de PB-T4c; en PB-T4b, la partición de las copias en el RED (R_C y R_UI), el RED exacto entero, que las copias pasen en el GREEN, las lecturas de las guardas que solo se ven al ejecutar (el recorrido por diferencia, §4.2, no las ve), las líneas «presentar» de CT-PBT4B-06, el coste de la lectura con D-S4, el coste de `IsDirty` y la duración de la suite de Core.
+- **Medidos en la copia exportada, para PB-T4c** (V50-12; V51-06): K = 4, D = 0 y E = 4 (`/d/r5j`), el coste de `IsDirty` (`/d/r5k`), las líneas de las sondas y el ensayo de las CT de texto (`/d/r5i`), y el control del ensayo sobre la v5.0 (`/d/r5l`); los de la v5.0 (`/d/r5f`, `/d/r5g` y `/d/r5h`), como historia. **Lo que el ensayo no cubre:** las CT de comportamiento salvo por las sondas (§6.3.1). **Lo que el paseo de guardas no ve:** la reflexión sobre tipos y el comportamiento de la UI; lo ve la suite completa de Core y los filtros de UI.
+- **Quedaban para la copia exportada:** K, D y E de PB-T4c; en PB-T4b, la partición de las copias en el RED (R_C y R_UI), el RED exacto entero, que las copias pasen en el GREEN, las lecturas de las guardas que solo se ven al ejecutar (el recorrido por diferencia, §4.2, no las ve), las líneas «presentar» de CT-PBT4B-06, el coste de la lectura con D-S4, el coste de `IsDirty` y la duración de la suite de Core.
 - **El miembro del informe de reconciliación** para la condición 7 se nombra como el que lee CT-PBT1B-16. La línea base va por `SetWorkingBaseline`.
 
 ## 10. Lo que queda para PB-T5
@@ -2323,7 +2836,7 @@ Se declaran en la emisión de PB-T4b (F4B-E52), que custodia los siete registros
 ## 11. Las precondiciones de emisión
 
 1. **PB-T3c CERRADA:** cumplida (`7f0d9aa3`, F4B-E48).
-2. **Las respuestas del Owner:** cumplidas (`owner-pbt4-decisions.md`, `owner-pbt4b-retire-list-decisions.md` y, para PB-T4b, `owner-pbt4b-breaks-decision.md`, `owner-pbt4a-cost-decision.md`, `owner-pbt4b-list-477-decision.md`, `owner-pbt4b-list-478-decision.md` y `owner-pbt4b-cost-decision.md`), con su número F4B-E al custodiarlas; y las decisiones de la sesión, `session-pbt4b-design-decisions.md` (D-S1 a D-S3, D-S5 y D-S6) y D-S4 (§8.5), declaradas en F4B-E52.
+2. **Las respuestas del Owner:** cumplidas (`owner-pbt4-decisions.md`, `owner-pbt4b-retire-list-decisions.md` y, para PB-T4b, `owner-pbt4b-breaks-decision.md`, `owner-pbt4a-cost-decision.md`, `owner-pbt4b-list-477-decision.md`, `owner-pbt4b-list-478-decision.md` y `owner-pbt4b-cost-decision.md`; y, para PB-T4c, `owner-pbt4c-list-3-decision.md` y `owner-pbt4c-list-4-decision.md`), con su número F4B-E al custodiarlas; y las decisiones de la sesión, `session-pbt4b-design-decisions.md` (D-S1 a D-S3, D-S5 y D-S6) y D-S4 (§8.5), declaradas en F4B-E52.
 3. **La comprobación acotada** de cada subtarea: 0 bloqueantes y 0 importantes sin resolver (pregunta 4).
 4. **Las celdas, la Snapshot y el binario,** vigentes.
 5. **La remedición sobre el cierre de la subtarea anterior** no cambia nada material (pregunta 4).
@@ -2336,13 +2849,13 @@ Se declaran en la emisión de PB-T4b (F4B-E52), que custodia los siete registros
    - **los 12 filtros de UI** de los `RequiredTests` de PB-T4a (n.º 8, 15, 20, 21, 23, 25 a 27 y 35 a 38) sobre la copia, o la declaración, en `compile-check.md` y en `COMPILE_RESULT`, de que no se corrieron; en ese caso los cubre el trabajo `ui-tests` de la CI del RED (CA-T4a M-03);
    - el barrido de nombres y de sobrecargas;
    - **PB-T4b** (V45-04, V46-07, V47-05, V48-06 y V49-06; los ocho pasos de §6.2.1, con los guiones de la v4.9, y el paso 7, el de la v4.8 (V49-06); la corrida, en `pbt4bcc/compile/compile-check.md`), sobre copias exportadas del cierre de PB-T4a (`78a7cef3`): `apply_red_pbt4b_v49.py` en modo de medida y `partition_pbt4b_v48.py red` (con la regla de INV-PBT4B-02 y el reparto por filas de D-S5): la partición, su sha256 y R_C y R_UI; **el RED exacto** con la partición, sin las CT: la suite completa de Core y los filtros de UI, **Core 19 587 = (19 129 − R_C) + R_C + 458** y **UI 2 478 = (2 430 − R_UI) + R_UI + 48**; **el GREEN literal** (`apply_green_pbt4b_v45.py`): **Core 19 587 = 19 129 + 0 + 458** y **UI 2 478 = 2 430 + 0 + 48** (con las CT, 19 605 = 19 147 + 0 + 458 y 2 481 = 2 433 + 0 + 48), cero `warning CS` y `partition_pbt4b_v48.py green`: todas las copias pasan; **las dos sondas** sobre la copia del GREEN, en clases temporales fuera de todo commit: las líneas «presentar» de CT-06 (`pbt4b-ct06-presentar-probe.cs`) y **el coste de la lectura** (`pbt4b-read-cost-probe.cs`: una materialización en los cuatro casos, y lo esperado de §6.2.1); `check_skips_pbt4b_v48.py`; el coste de `IsDirty` y la duración de la suite. **Una copia que no pase** pasa a equivalente escrito a mano (D-S1), **una `Theory` que mezcle** se parte por filas (D-S5) y la emisión necesita una versión del paquete con su texto; **una prueba que falle fuera de la lista de 478** vuelve al Owner; **un coste que no cumpla lo esperado** vuelve a la sesión, que lo lleva al Owner (el de la v4.8 lo dio por cumplido el Owner, `owner-pbt4b-cost-decision.md`);
-   - en PB-T4c, además: K, D y E, el coste de `IsDirty` y la duración de la suite.
-7. **La lista que se emite es la aprobada, o una parte:** PB-T4a, 1; **PB-T4b, las 478 de `pbt4b-substitution-list-478.tsv`** (sha256 `8b0fcd0ca775ce3a5e46ef2059f4b06e7ec7319883daf3cb37b1fe91290e9e8b`), que el generador comprueba; PB-T4c, 2. **PB-T4d no se emite por la autorización condicional:** vuelve al Owner con su lista.
+   - **PB-T4c** (los nueve pasos de §6.3.1; `pbt4ccc/compile/compile-check.md`), sobre copias exportadas del cierre de PB-T4b (`6adff90d`): `apply_red_pbt4c_v51.py`, la compilación sin ningún `warning CS`, `check_skips_pbt4c_v50.py` y los filtros; **el RED exacto,** sin las CT: **Core 19 608 = 19 147 + 0 + 461** y los 18 filtros de UI, donde solo cae el equivalente de CT-PBT2B-06, por aserción; **el GREEN literal:** **Core 19 608 = 19 147 + 0 + 461** y los 18 filtros, 0 `Failed`; las sondas de las líneas de las CT y el coste de `IsDirty`; **el ensayo de las CT de texto** (PASA en las dos ramas, y su control sobre la v5.0 ve I-01) **y el censo de C13** (PASA); **K = 4, D = 0 y E = 4**, y la duración de la suite. Medido en la v5.1 (`pbt4c-precondition6.json`, `29179a12ef8623f4c276f943a725ece6f3ffd84464f16705e1feda757efbce1a`). **Una prueba que falle fuera de la lista de 4** vuelve al Owner.
+7. **La lista que se emite es la aprobada, o una parte:** PB-T4a, 1; **PB-T4b, las 478 de `pbt4b-substitution-list-478.tsv`** (sha256 `8b0fcd0ca775ce3a5e46ef2059f4b06e7ec7319883daf3cb37b1fe91290e9e8b`), que el generador comprueba; **PB-T4c, las 4 de `pbt4c-substitution-list-4.tsv`** (sha256 `9bd4c17a0eda837c92a7a0b7b3562d4ab17f1608baf3ffa8efaf560d8b1f82de`). **PB-T4d no se emite por la autorización condicional:** vuelve al Owner con su lista.
 8. **La custodia,** en el commit de emisión de PB-T4a:
    - este paquete (como `docs/initiatives/I-64-f4b-pbt4-gate-contract-package.md`), las versiones v1 a v4.1, el registro de mediciones, la revisión y su encargo, las instrucciones de cada versión, los guiones y sus salidas, las listas (`pbt4-substitution-lists.md` y `.tsv`, `pbt4b-substitution-list.tsv`, `pbt4d-retire-list.tsv`, `pbt4-copy-map.tsv` y `pbt4-retire-compile.tsv`), el recorrido de las guardas (`pbt4a-guard-walk.tsv`, `pbt4a-guard-walk-out.txt` y `pbt4a-guard-walk-flagged.txt`) y los fragmentos de `v41/` y `v42/`;
    - los dos registros del Owner (`F4B-DRAFTS/coordinator/owner-pbt4-decisions.md` y `owner-pbt4b-retire-list-decisions.md`);
    - la entrada «## PB-T4a» de `superseding-characterization.md`.
-9. **Para PB-T4b y PB-T4c:** la anterior CERRADA y su remedición (**PB-T4a, CERRADA: F4B-E51, `78a7cef3`**). **En el commit de emisión de PB-T4b,** además: esta versión (v4.9), la v4.8, la v4.7, la v4.6, la v4.5 y la v4.4, sus fragmentos de `v44/`, `v45/`, `v46/`, `v47/`, `v48/` y `v49/`, las listas (`pbt4b-substitution-list-478.tsv`, `pbt4b-substitution-list-477.tsv`, `pbt4b-substitution-list-475.tsv` y `pbt4d-retire-list-138.tsv`), los mapas de la copia v2 a v5, el kit de la v4.5, los guiones de la v4.4 a la v4.9 y sus salidas, la partición y las 21 copias generadas con ella (por sha256), `pbt4b-equivalents-review-v45.txt`, `pbt4b-equivalents-review-v46.txt`, `pbt4b-equivalents-review-v47.txt`, `pbt4b-equivalents-review-v48.txt` y `pbt4b-equivalents-review-v49.txt`, el análisis de la v4.7 (`v47/analysis-outside-477.md`), la regla de la tercera corrida del coste (`v48/session-cost-rerun-rule.md`), la corrida de la precondición 6 (`pbt4bcc/compile/`: `compile-check.md`, `pbt4b-precondition6.json`, sus guiones, sus registros y el sha256 de sus TRX y binarios), las dos sondas y sus TRX con su sha256, los registros del Owner de la tercera, la quinta, la sexta y la séptima tandas (`owner-pbt4b-breaks-decision.md`, `owner-pbt4b-list-477-decision.md`, `owner-pbt4b-list-478-decision.md` y, la séptima, `owner-pbt4b-cost-decision.md`; `owner-pbt4a-cost-decision.md` ya está en el cierre de PB-T4a), la decisión de la sesión y la entrada «## PB-T4b» de `superseding-characterization.md`. **Para PB-T4d:** el cierre de PB-T4c, su lista vuelta a medir y la respuesta del Owner.
+9. **Para PB-T4b y PB-T4c:** la anterior CERRADA y su remedición (**PB-T4a, CERRADA: F4B-E51, `78a7cef3`**). **En el commit de emisión de PB-T4b,** además: esta versión (v4.9), la v4.8, la v4.7, la v4.6, la v4.5 y la v4.4, sus fragmentos de `v44/`, `v45/`, `v46/`, `v47/`, `v48/` y `v49/`, las listas (`pbt4b-substitution-list-478.tsv`, `pbt4b-substitution-list-477.tsv`, `pbt4b-substitution-list-475.tsv` y `pbt4d-retire-list-138.tsv`), los mapas de la copia v2 a v5, el kit de la v4.5, los guiones de la v4.4 a la v4.9 y sus salidas, la partición y las 21 copias generadas con ella (por sha256), `pbt4b-equivalents-review-v45.txt`, `pbt4b-equivalents-review-v46.txt`, `pbt4b-equivalents-review-v47.txt`, `pbt4b-equivalents-review-v48.txt` y `pbt4b-equivalents-review-v49.txt`, el análisis de la v4.7 (`v47/analysis-outside-477.md`), la regla de la tercera corrida del coste (`v48/session-cost-rerun-rule.md`), la corrida de la precondición 6 (`pbt4bcc/compile/`: `compile-check.md`, `pbt4b-precondition6.json`, sus guiones, sus registros y el sha256 de sus TRX y binarios), las dos sondas y sus TRX con su sha256, los registros del Owner de la tercera, la quinta, la sexta y la séptima tandas (`owner-pbt4b-breaks-decision.md`, `owner-pbt4b-list-477-decision.md`, `owner-pbt4b-list-478-decision.md` y, la séptima, `owner-pbt4b-cost-decision.md`; `owner-pbt4a-cost-decision.md` ya está en el cierre de PB-T4a), la decisión de la sesión y la entrada «## PB-T4b» de `superseding-characterization.md`. **En el commit de emisión de PB-T4c,** además: esta versión (v5.1) y la v5.0, los fragmentos y los guiones de `v50/` y de `v51/`, las listas (`pbt4c-substitution-list-4.tsv` y la de 3), las piezas y los guiones de §6.3.2 y sus salidas, las sondas, la remedición (`v50/remeasure_pbt4c_v50.py` y su salida), el paseo de guardas, la corrida de la precondición 6 (`pbt4ccc/compile/`: `compile-check.md`, `pbt4c-precondition6.json`, sus guiones, sus registros y el sha256 de sus TRX y binarios, las de la v5.1 en `r5i-en/`, `r5j-rg/`, `r5k-id/` y `r5l-cc/`, y como historia las de la v5.0, la vuelta parada y la medida de D-S9 de `v50/variant-rename/`), el ensayo de las CT de texto y el censo de C13 con sus salidas, los registros del Owner de la octava y la novena tandas, `session-pbt4c-design-decisions.md` y la entrada «## PB-T4c» de `superseding-characterization.md`. **Para PB-T4d:** el cierre de PB-T4c, su lista vuelta a medir y la respuesta del Owner.
 
 
 ## Anexo V49-A. El texto literal de lo escrito a mano de la v4.8 y la v4.9, y de las cuatro `Theory` partidas por filas
@@ -2830,5 +3343,1155 @@ Copiado por `make_v49.py` de la revisión del guion, `pbt4b-equivalents-review-v
 
         return data;
     }
+```
+
+## Anexo V51-A. El texto literal de PB-T4c: el GREEN, el esqueleto y los equivalentes (v5.1)
+
+Copiado por `make_v51.py`; sustituye al anexo V50-A de la v5.0. **Lo que manda es el sha256 de cada pieza** (§6.3.2); este anexo es para leerlo sin generar nada. Frente a la v5.0 (V51-01 y V51-04): sin `#nullable enable` en los dos archivos de `Draft/` (las dos piezas), sin el `?` de `ProjectOf` y con el comentario nuevo de `PendingWork()` (el GREEN), y la cabecera de cada pieza.
+
+### La pieza del GREEN, `pbt4c-green-v51.txt` (sha256 `081ef77e66a390cf3637f15851b5fe05a5cdf07f6e0065928fc5c841b250dc16`)
+
+```text
+@@@@ PB-T4c (paquete v5.1): el texto literal del GREEN de src/. Cada bloque EDIT sustituye su OLD (exactamente una vez) por su NEW en el
+@@@@ archivo de 6adff90d; cada bloque NEWFILE es un archivo nuevo entero. Saltos de linea \n; green_pbt4c_v51.py lo aplica y lo comprueba.
+@@@@ EDIT src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs
+@@@@ OLD
+        EditUpdateProgress TakeUpdateProgress(WorkspaceRequest origin, string rackId);
+    }
+@@@@ NEW
+        EditUpdateProgress TakeUpdateProgress(WorkspaceRequest origin, string rackId);
+
+        /// <summary>
+        /// I-64 F4B PB-T4c (D-PBT4-13): "Editar todo" for one rack. Without work for the rack it begins it through the edit intention, so its
+        /// one read is the one of the intention; then it opens the full editor over the work and keeps the mark of the reads until the editor
+        /// closes, so while it is open every operation of the panel answers Busy or Waiting (K = 1). The editor only hands its edits to the
+        /// work: nothing here writes the drawing. A port that does not offer it answers NotAvailable.
+        /// </summary>
+        EditAllOutcome TryEditAll(EditIntentRequest request) => EditAllOutcome.NotAvailable(null);
+    }
+@@@@ END
+@@@@ EDIT src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+@@@@ OLD
+        private static EditIntentOutcome Without(EditIntentStatus status, string? reason) =>
+            new(status, EditWitnessStatus.NotEvaluated, reason, null, null, null);
+    }
+@@@@ NEW
+        private static EditIntentOutcome Without(EditIntentStatus status, string? reason) =>
+            new(status, EditWitnessStatus.NotEvaluated, reason, null, null, null);
+    }
+
+    /// <summary>How "Editar todo" ended (I-64 F4B PB-T4c, D-PBT4-13). The default value is NotAvailable.</summary>
+    public enum EditAllStatus
+    {
+        /// <summary>The port does not offer the full editor, no reader is assigned or there is no full editor here: nothing was read or opened.</summary>
+        NotAvailable,
+
+        /// <summary>It waits: the gate, a read in progress, a notice of the panel, an update in flight or a work that is being applied.</summary>
+        Waiting,
+
+        /// <summary>The request is not of the active document: nothing was read or opened.</summary>
+        Rejected,
+
+        /// <summary>There was no work and the edit intention did not begin it: the outcome carries the one of the intention.</summary>
+        NotBegun,
+
+        /// <summary>The work is in a state that the editor does not open (unknown, in error or undecidable), or it still has pending text.</summary>
+        Refused,
+
+        /// <summary>The full editor was opened over the work and is closed again; Applied counts the edits that it handed to the work.</summary>
+        Closed,
+
+        /// <summary>A failure of the host during the operation: contained, and the session is not degraded.</summary>
+        Failed,
+    }
+
+    /// <summary>
+    /// I-64 F4B PB-T4c (D-PBT4-13) — the answer of the host to "Editar todo". A value: it names no type of the work and no type of the
+    /// systems, and the outcome of the intention that it may carry is the value of the edit intention.
+    /// </summary>
+    public readonly struct EditAllOutcome
+    {
+        private EditAllOutcome(EditAllStatus status, string? reason, EditIntentOutcome begin, int applied)
+        {
+            Status = status;
+            Reason = reason;
+            Begin = begin;
+            Applied = applied;
+        }
+
+        public EditAllStatus Status { get; }
+
+        /// <summary>Why the editor did not open; null for Closed and NotBegun.</summary>
+        public string? Reason { get; }
+
+        /// <summary>The outcome of the edit intention that did not begin the work (NotBegun); the default value otherwise.</summary>
+        public EditIntentOutcome Begin { get; }
+
+        /// <summary>How many times the editor handed its edits to the work (Closed); 0 otherwise.</summary>
+        public int Applied { get; }
+
+        public static EditAllOutcome NotAvailable(string? reason) => new(EditAllStatus.NotAvailable, reason, default, 0);
+
+        public static EditAllOutcome Waiting(string reason) => new(EditAllStatus.Waiting, reason, default, 0);
+
+        public static EditAllOutcome Rejected(string reason) => new(EditAllStatus.Rejected, reason, default, 0);
+
+        public static EditAllOutcome NotBegun(EditIntentOutcome begin) => new(EditAllStatus.NotBegun, null, begin, 0);
+
+        public static EditAllOutcome Refused(string reason) => new(EditAllStatus.Refused, reason, default, 0);
+
+        public static EditAllOutcome Closed(int applied) => new(EditAllStatus.Closed, null, default, applied);
+
+        public static EditAllOutcome Failed(string reason) => new(EditAllStatus.Failed, reason, default, 0);
+    }
+@@@@ END
+@@@@ EDIT src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+@@@@ OLD
+        private const string NotKeepableReason ="Solo se conserva un borrador en conflicto o con cambios marcados como posiblemente obsoletos.";
+@@@@ NEW
+        private const string NotKeepableReason ="Solo se conserva un borrador en conflicto o con cambios marcados como posiblemente obsoletos.";
+
+        // I-64 F4B PB-T4c (D-PBT4-13): the reasons of "Editar todo".
+        private const string EditAllNoEditorReason = "No editable aquí: el panel no tiene el editor completo.";
+        private const string EditAllPendingTextReason = "Hay texto sin confirmar en el campo.";
+        private const string EditAllBusyDraftReason = "El borrador se está aplicando o se retiró: el editor no se abre.";
+        private const string EditAllStateReason = "El borrador no admite el editor completo en su estado actual.";
+@@@@ END
+@@@@ EDIT src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+@@@@ OLD
+        private IPushBackPilotUpdateHost? _updateHost;
+@@@@ NEW
+        private IPushBackPilotUpdateHost? _updateHost;
+
+        // I-64 F4B PB-T4c (D-PBT4-15): the host of the full editor (assigned once, it keeps nothing): it enters the modal of the panel and
+        // shows the editor over the launch.
+        private IWorkspaceFullEditHost? _fullEditHost;
+@@@@ END
+@@@@ EDIT src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+@@@@ OLD
+        public void SetPilotUpdateHost(IPushBackPilotUpdateHost host) =>
+            _updateHost = host ?? throw new ArgumentNullException(nameof(host));
+@@@@ NEW
+        public void SetPilotUpdateHost(IPushBackPilotUpdateHost host) =>
+            _updateHost = host ?? throw new ArgumentNullException(nameof(host));
+
+        /// <summary>
+        /// Assigns the host of the full editor of "Editar todo" (I-64 F4B PB-T4c, D-PBT4-15), by assignment like the executor of the update and
+        /// never by constructor. It has no state. Without it "Editar todo" answers NotAvailable.
+        /// </summary>
+        public void SetFullEditHost(IWorkspaceFullEditHost host) =>
+            _fullEditHost = host ?? throw new ArgumentNullException(nameof(host));
+@@@@ END
+@@@@ EDIT src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+@@@@ OLD
+        EditIntentOutcome IWorkspacePilotEditPort.TryDiscardAndReload(EditIntentRequest request)
+        {
+            if (_pilotReadInProgress) return EditIntentOutcome.Waiting(PilotReadInProgressReason);
+            _pilotReadInProgress = true;
+            try
+            {
+                return TryDiscardAndReloadPilotEdit(request);
+            }
+            finally
+            {
+                _pilotReadInProgress = false;
+            }
+        }
+@@@@ NEW
+        EditIntentOutcome IWorkspacePilotEditPort.TryDiscardAndReload(EditIntentRequest request)
+        {
+            if (_pilotReadInProgress) return EditIntentOutcome.Waiting(PilotReadInProgressReason);
+            _pilotReadInProgress = true;
+            try
+            {
+                return TryDiscardAndReloadPilotEdit(request);
+            }
+            finally
+            {
+                _pilotReadInProgress = false;
+            }
+        }
+
+        // I-64 F4B PB-T4c (D-PBT4-13, D-PBT4-14): "Editar todo". The mark of the reads wraps the whole operation, the begin of the work and the
+        // editor included, so while the full editor is open every operation of the panel answers Busy or Waiting (K = 1).
+        EditAllOutcome IWorkspacePilotEditPort.TryEditAll(EditIntentRequest request)
+        {
+            if (_pilotReadInProgress) return EditAllOutcome.Waiting(PilotReadInProgressReason);
+            _pilotReadInProgress = true;
+            try
+            {
+                return EditAllOfPilot(request);
+            }
+            finally
+            {
+                _pilotReadInProgress = false;
+            }
+        }
+
+        // The rules of the keep of the pilot (I-09): the gate first, the update in flight after it, the exceptions contained with Report, and
+        // NotePilotEdit for every edit that the editor hands to the work. Nothing here writes the drawing.
+        private EditAllOutcome EditAllOfPilot(EditIntentRequest request)
+        {
+            try
+            {
+                if (request == null) throw new ArgumentNullException(nameof(request));
+
+                var gate = PassGate(request.Session, out var reason);
+                if (gate == EditGate.Unavailable) return EditAllOutcome.NotAvailable(reason);
+                if (gate == EditGate.Waiting) return EditAllOutcome.Waiting(reason);
+                if (gate == EditGate.Rejected) return EditAllOutcome.Rejected(reason);
+
+                if (UpdateInFlightForRequest(request)) return EditAllOutcome.Waiting(PushBackPilotHostTexts.UpdateInFlightReason);
+                if (_fullEditHost == null) return EditAllOutcome.NotAvailable(EditAllNoEditorReason);
+
+                // Without work for the rack the edit intention begins it, with its one read, its admission and its diagnostic.
+                var draft = FindPilotDraft(request.Session, request.RackId);
+                if (draft == null)
+                {
+                    var begun = TryBeginPilotEdit(request);
+                    if (begun.Status != EditIntentStatus.Admitted) return EditAllOutcome.NotBegun(begun);
+                    draft = FindPilotDraft(request.Session, request.RackId);
+                    if (draft == null) return EditAllOutcome.Failed(EditAllBusyDraftReason);
+                }
+
+                var view = ViewOfPilotDraft(draft);
+                if (view.State == PilotFieldState.Applying || !draft.IsRegistered) return EditAllOutcome.Waiting(EditAllBusyDraftReason);
+                if (!view.CanEdit) return EditAllOutcome.Refused(EditAllStateReason);
+                if (draft.HasPendingText) return EditAllOutcome.Refused(EditAllPendingTextReason);
+
+                // The port keeps the origin of the work, and every edit that it hands to the work ends the "known clean" mark of the session.
+                var applied = 0;
+                var port = new PushBackFullDraftStatePort(draft, () =>
+                {
+                    applied++;
+                    NotePilotEdit(request.Session);
+                });
+                _fullEditHost.ShowModal(PushBackFullDraftLaunch.For(draft, port));
+                return EditAllOutcome.Closed(applied);
+            }
+            catch (Exception ex)
+            {
+                Report("WorkspaceHostCore.TryEditAll", ex);
+                return EditAllOutcome.Failed(ex.Message);
+            }
+        }
+@@@@ END
+@@@@ EDIT src/RackCad.Application/Workspace/WorkspacePilotSupport.cs
+@@@@ OLD
+        public EditUpdateStart RequestUpdate(EditIntentRequest request) =>
+            _depth.IsInside ? EditUpdateStart.Waiting(InsideNoticeReason) : _inner.RequestUpdate(request);
+@@@@ NEW
+        public EditUpdateStart RequestUpdate(EditIntentRequest request) =>
+            _depth.IsInside ? EditUpdateStart.Waiting(InsideNoticeReason) : _inner.RequestUpdate(request);
+
+        // I-64 F4B PB-T4c (D-PBT4-13): "Editar todo" may begin the work, so it waits inside a notice like the reads.
+        public EditAllOutcome TryEditAll(EditIntentRequest request) =>
+            _depth.IsInside ? EditAllOutcome.Waiting(InsideNoticeReason) : _inner.TryEditAll(request);
+@@@@ END
+@@@@ EDIT src/RackCad.Plugin/Workspace/WorkspaceController.cs
+@@@@ OLD
+                    _host.SetPilotUpdateHost(new RackPilotUpdateCommandContext());
+@@@@ NEW
+                    _host.SetPilotUpdateHost(new RackPilotUpdateCommandContext());
+
+                    // The host of the full editor of "Editar todo" (I-64 F4B PB-T4c, D-PBT4-15) is wired the same way, after the executor: the
+                    // modal of the panel, nested here, over the opener of the window, in the views of the Plugin.
+                    _host.SetFullEditHost(new FullEditorModal(this, RackWorkspaceEditorWindow.Show));
+@@@@ END
+@@@@ EDIT src/RackCad.Plugin/Workspace/WorkspaceController.cs
+@@@@ OLD
+            public EditUpdateProgress TakeUpdateProgress(WorkspaceRequest origin, string rackId) => _gate.TakeUpdateProgress(origin, rackId);
+        }
+@@@@ NEW
+            public EditUpdateProgress TakeUpdateProgress(WorkspaceRequest origin, string rackId) => _gate.TakeUpdateProgress(origin, rackId);
+
+            public EditAllOutcome TryEditAll(EditIntentRequest request) => _gate.TryEditAll(request);
+        }
+
+        // I-64 F4B PB-T4c (D-PBT4-15): the modal of the panel for the full editor. It names neither the interface nor the system: it enters the
+        // modal of the panel and hands the launch to the opener, which shows the window without an owner and returns when it closes.
+        private sealed class FullEditorModal : IWorkspaceFullEditHost
+        {
+            private readonly WorkspaceController _controller;
+            private readonly Action<object> _open;
+
+            public FullEditorModal(WorkspaceController controller, Action<object> open)
+            {
+                _controller = controller;
+                _open = open;
+            }
+
+            public void ShowModal<TLaunch>(TLaunch launch) where TLaunch : class
+            {
+                using (_controller.EnterPanelModal()) _open(launch);
+            }
+        }
+@@@@ END
+@@@@ EDIT src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+@@@@ OLD
+        private const string ListSeparator = "; ";
+@@@@ NEW
+        private const string ListSeparator = "; ";
+
+        // I-64 F4B PB-T4c (D-PBT4-12): the notices of "Editar todo".
+        private const string EditAllNotOpenedPrefix = "No se abrió el editor: ";
+        private const string EditAllAppliedText = "Editor cerrado: sus cambios están en el borrador.";
+        private const string EditAllNothingAppliedText = "Editor cerrado sin cambios en el borrador.";
+@@@@ END
+@@@@ EDIT src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+@@@@ OLD
+        public bool ShowEditButton => _showEdit;
+@@@@ NEW
+        public bool ShowEditButton => _showEdit;
+
+        /// <summary>
+        /// I-64 F4B PB-T4c (D-PBT4-12): the "Editar todo" button. It has the conditions of the Edit button but the read-only one: a pinned
+        /// surface, no failure, no diagnostic that stays and no choice waiting, and no work yet or a work that the editor opens.
+        /// </summary>
+        public bool ShowEditAllButton =>
+            _failure == null && _session.HasValue && !_isPreview && _persistDiagnostic == null && !HasChoice && (!_view.Exists || _view.CanEdit);
+@@@@ END
+@@@@ EDIT src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+@@@@ OLD
+        /// <summary>Enter or leaving the box: commits the pending text, only with pending text and an editable box.</summary>
+@@@@ NEW
+        /// <summary>
+        /// I-64 F4B PB-T4c (D-PBT4-12): "Editar todo". The pending text is committed first, the same two-phase step as a blocking boundary: an
+        /// invalid text does not open the editor and shows its message, and a field that is busy or refused does not open it either. Then the
+        /// port is asked to open the full editor over the work of the rack, with no reference and no witness: the port begins the work if there
+        /// is none and holds the panel while the editor is open. When it closes, the field and the strip are shown again from the port.
+        /// </summary>
+        public void EditAll()
+        {
+            if (_port == null || !_session.HasValue || _rack == null) return;
+
+            var session = _session.Value;
+            var rack = _rack;
+            try
+            {
+                ClearNotices();
+                var view = _port.GetField(new WorkspaceRequest(session), rack);
+                if (view.PendingText != null)
+                {
+                    var committed = _port.CommitField(new WorkspaceRequest(session), rack);
+                    if (committed.Status == PilotFieldStatus.Invalid)
+                    {
+                        Apply(committed.View);
+                        _messageText = committed.Message ?? committed.View.PendingMessage ?? string.Empty;
+                        _noticeText = EditAllNotOpenedPrefix + SentenceOf(_messageText);
+                        RaiseAll();
+                        return;
+                    }
+
+                    if (committed.Status != PilotFieldStatus.Applied && committed.Status != PilotFieldStatus.NotEditable)
+                    {
+                        Render();
+                        _noticeText = RefusalOf(committed);
+                        RaiseAll();
+                        return;
+                    }
+                }
+
+                var outcome = _port.TryEditAll(new EditIntentRequest(session, rack, null, null));
+                if (!IsMine(session, rack))
+                {
+                    // The editor closed over another surface: its result is not shown here.
+                    Render();
+                    _noticeText = SurfaceChangedText;
+                    RaiseAll();
+                    return;
+                }
+
+                if (outcome.Status == EditAllStatus.NotBegun && outcome.Begin.Status == EditIntentStatus.NotAdmitted)
+                {
+                    _diagnostic = outcome.Begin.Diagnostic ?? string.Empty;
+                    _hint = outcome.Begin.ClassicEditorHint ?? string.Empty;
+                }
+                else
+                {
+                    _noticeText = EditAllNoticeOf(outcome);
+                }
+
+                Render();
+                _changed?.Invoke();
+            }
+            catch (Exception ex)
+            {
+                EnterFailure(ex);
+            }
+        }
+
+        /// <summary>Enter or leaving the box: commits the pending text, only with pending text and an editable box.</summary>
+@@@@ END
+@@@@ EDIT src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+@@@@ OLD
+            OnPropertyChanged(nameof(ShowEditButton));
+@@@@ NEW
+            OnPropertyChanged(nameof(ShowEditButton));
+            OnPropertyChanged(nameof(ShowEditAllButton));
+@@@@ END
+@@@@ EDIT src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+@@@@ OLD
+        // The prefix of a check that did not reread the drawing: the ones of Describe, the one of a draft that does not apply, and a default.
+@@@@ NEW
+        // I-64 F4B PB-T4c (D-PBT4-12): the notice of "Editar todo" once the editor closed, or when it did not open.
+        private static string EditAllNoticeOf(EditAllOutcome outcome)
+        {
+            switch (outcome.Status)
+            {
+                case EditAllStatus.Closed: return outcome.Applied > 0 ? EditAllAppliedText : EditAllNothingAppliedText;
+                case EditAllStatus.NotAvailable: return SentenceOf(outcome.Reason);
+                case EditAllStatus.Waiting: return "En espera: " + SentenceOf(outcome.Reason);
+                case EditAllStatus.Rejected: return "Rechazado: " + SentenceOf(outcome.Reason);
+                case EditAllStatus.NotBegun: return Describe(outcome.Begin.Status, outcome.Begin.Reason);
+                default: return EditAllNotOpenedPrefix + SentenceOf(outcome.Reason);
+            }
+        }
+
+        // A text as the end of a sentence: one final period, and "sin detalle." for a missing one.
+        private static string SentenceOf(string text) => string.IsNullOrWhiteSpace(text) ? "sin detalle." : text.TrimEnd('.') + ".";
+
+        // The prefix of a check that did not reread the drawing: the ones of Describe, the one of a draft that does not apply, and a default.
+@@@@ END
+@@@@ EDIT src/RackCad.UI/Workspace/WorkspacePanelView.xaml
+@@@@ OLD
+                                    Click="OnBrowserFieldEditClick" />
+@@@@ NEW
+                                    Click="OnBrowserFieldEditClick" />
+                            <Button x:Name="BrowserFieldEditAllButton" Content="Editar todo" Margin="0,2,6,0" Padding="10,3"
+                                    Style="{StaticResource SecondaryButtonStyle}"
+                                    AutomationProperties.Name="Editar el rack completo en el editor"
+                                    Visibility="{Binding Browser.Field.ShowEditAllButton, Converter={StaticResource FlagToVisibility}}"
+                                    Click="OnBrowserFieldEditAllClick" />
+@@@@ END
+@@@@ EDIT src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs
+@@@@ OLD
+        private void OnBrowserFieldEditClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.BeginFieldEdit());
+@@@@ NEW
+        private void OnBrowserFieldEditClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.BeginFieldEdit());
+
+        // I-64 F4B PB-T4c (D-PBT4-12): "Editar todo" goes straight to the gesture of the field, which commits the pending text first.
+        private void OnBrowserFieldEditAllClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.Field.EditAll());
+@@@@ END
+@@@@ EDIT src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@@@ OLD
+                "Hay cambios de módulo sin confirmar que se perderán al cerrar. ¿Deseas continuar?");
+            return modules.HasPendingWork ? modules : EditorPendingWork.When(HasUnappliedDraftChanges(), WorkspaceUnappliedQuestion);
+        }
+@@@@ NEW
+                "Hay cambios de módulo sin confirmar que se perderán al cerrar. ¿Deseas continuar?");
+
+            // I-64 F4B PB-T4c (D-PBT4-17; A-T2b-OWNER-01): a staged module AND unapplied changes ask one question that names both. In
+            // WORKSPACE a staged module always leaves unapplied changes (D-S10), so the module question alone is the one of CLASSIC, where
+            // there are never unapplied changes; unapplied changes alone ask the question of today.
+            if (modules.HasPendingWork && HasUnappliedDraftChanges()) return EditorPendingWork.When(true, WorkspaceStagedAndUnappliedQuestion);
+            return modules.HasPendingWork ? modules : EditorPendingWork.When(HasUnappliedDraftChanges(), WorkspaceUnappliedQuestion);
+        }
+@@@@ END
+@@@@ EDIT src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@@@ OLD
+        private const string WorkspaceUnappliedQuestion = "Hay cambios sin aplicar al borrador que se perderán al cerrar. ¿Deseas continuar?";
+@@@@ NEW
+        private const string WorkspaceUnappliedQuestion = "Hay cambios sin aplicar al borrador que se perderán al cerrar. ¿Deseas continuar?";
+
+        // I-64 F4B PB-T4c (D-PBT4-17): the one question when a staged module and unapplied changes would be lost together.
+        private const string WorkspaceStagedAndUnappliedQuestion = "Hay un cambio de módulo sin confirmar y cambios sin aplicar al borrador; se perderán los dos al cerrar. ¿Deseas continuar?";
+@@@@ END
+@@@@ NEWFILE src/RackCad.Application/Workspace/IWorkspaceFullEditHost.cs
+#nullable enable
+namespace RackCad.Application.Workspace
+{
+    /// <summary>
+    /// I-64 F4B PB-T4c (D-PBT4-15) — the host of the full editor of "Editar todo": it shows the editor modally over the launch that the host
+    /// core hands it, inside the modal of the panel, and returns when the editor closes. It is generic so that the workspace names no type of
+    /// the systems; it keeps nothing, and the editor only hands its edits to the port of the launch. It is a declared exception to R-PB-05
+    /// and to ADR-0029 D12: it lives with the workspace and not with the system.
+    /// </summary>
+    public interface IWorkspaceFullEditHost
+    {
+        void ShowModal<TLaunch>(TLaunch launch) where TLaunch : class;
+    }
+}
+@@@@ END
+@@@@ NEWFILE src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftLaunch.cs
+using System;
+using RackCad.Application.Persistence;
+using RackCad.Application.Workspace.Drafts;
+
+namespace RackCad.Application.Systems.PushBack.Draft
+{
+    /// <summary>
+    /// I-64 F4B PB-T4c (D-PBT4-13) — the launch of the full Push Back editor over the full draft of the panel: the editable state of the draft
+    /// (the window copies it when it loads), the identity of the rack, the project of the envelope of its origin and the port through which the
+    /// edits go back to the draft. It reads no drawing: the project comes from the text of the origin that the draft already holds.
+    /// </summary>
+    public static class PushBackFullDraftLaunch
+    {
+        public static PushBackDraftEditorLaunch For(DraftSession<PushBackFullDraftState> draft, IPushBackDraftStatePort port)
+        {
+            if (draft == null) throw new ArgumentNullException(nameof(draft));
+            if (port == null) throw new ArgumentNullException(nameof(port));
+            var current = draft.CurrentDraftState;
+            return new PushBackDraftEditorLaunch(current.Editable, draft.RackId, ProjectOf(current.Origin), port);
+        }
+
+        // The project of the envelope of the origin, with its metadata, or null when the text does not hold one: the launch admits a null one.
+        private static RackProject ProjectOf(string origin)
+        {
+            var envelope = new RackEmbedStore().Deserialize(origin);
+            if (envelope == null) return null;
+            return new RackProjectStore().TryDeserialize(envelope.Design, out var project, out _) ? project : null;
+        }
+    }
+}
+@@@@ END
+@@@@ NEWFILE src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftStatePort.cs
+using System;
+using RackCad.Application.Workspace.Drafts;
+
+namespace RackCad.Application.Systems.PushBack.Draft
+{
+    /// <summary>
+    /// I-64 F4B PB-T4c (D-PBT4-13) — the port of the full editor over the full draft of the panel. It hands the edited state to the draft with
+    /// the origin that the draft holds, so the origin is kept, and the draft keeps a COPY of it. Every edit that the draft takes calls back
+    /// once, so the host ends the "known clean" mark of the session. It copies nothing and calls no other operation of the draft.
+    /// </summary>
+    public sealed class PushBackFullDraftStatePort : IPushBackDraftStatePort
+    {
+        private readonly DraftSession<PushBackFullDraftState> _draft;
+        private readonly Action _applied;
+
+        public PushBackFullDraftStatePort(DraftSession<PushBackFullDraftState> draft, Action applied)
+        {
+            _draft = draft ?? throw new ArgumentNullException(nameof(draft));
+            _applied = applied ?? throw new ArgumentNullException(nameof(applied));
+        }
+
+        public PushBackDraftApplyResult ApplyToDraft(PushBackEditableState edited)
+        {
+            if (edited == null) throw new ArgumentNullException(nameof(edited));
+            var result = _draft.SetCurrentDraftState(new PushBackFullDraftState(edited, _draft.CurrentDraftState.Origin));
+            if (result.Status != DraftEditStatus.Updated) return new PushBackDraftApplyResult(PushBackDraftApplyStatus.NotEditable, result.IsDirty);
+            _applied();
+            return new PushBackDraftApplyResult(PushBackDraftApplyStatus.Applied, result.IsDirty);
+        }
+    }
+}
+@@@@ END
+@@@@ NEWFILE src/RackCad.Plugin/Views/RackWorkspaceEditorWindow.cs
+#nullable enable
+using RackCad.Application.Systems.PushBack;
+using RackCad.UI.Systems.PushBack;
+using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
+
+namespace RackCad.Plugin.Views
+{
+    /// <summary>
+    /// I-64 F4B PB-T4c (D-PBT4-15) — the opener of the full Push Back editor for "Editar todo". It builds the window over the launch and shows
+    /// it modally, without an owner, like the classic opener; the modal of the panel is its caller's. It reads and writes nothing of the
+    /// drawing and does nothing after the window closes: the window only hands its edits to the port of the launch.
+    /// </summary>
+    internal static class RackWorkspaceEditorWindow
+    {
+        internal static void Show(object launch)
+        {
+            var window = RackPushBackSystemWindow.ForDraft((PushBackDraftEditorLaunch)launch);
+            AcApplication.ShowModalWindow(window);
+        }
+    }
+}
+@@@@ END
+```
+
+### La pieza del esqueleto, `pbt4c-skeleton-v51.txt` (sha256 `f8840c67fd41c3bbdabf125d9b80941e3f3aedf5e610681c8ce15f111e7b392e`)
+
+```text
+@@@@ PB-T4c (paquete v5.1): el esqueleto exacto de src/ del RED. FROMGREEN toma enteros los bloques del GREEN de esa ruta (pbt4c-green-v51.txt);
+@@@@ los demas bloques son los del esqueleto. Gate, WCo, PV, PV.xaml.cs y W no cambian en el RED. Saltos de linea \n.
+@@@@ FROMGREEN src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs
+@@@@ FROMGREEN src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+@@@@ FROMGREEN src/RackCad.Application/Workspace/IWorkspaceFullEditHost.cs
+@@@@ EDIT src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+@@@@ OLD
+        public void SetPilotUpdateHost(IPushBackPilotUpdateHost host) =>
+            _updateHost = host ?? throw new ArgumentNullException(nameof(host));
+@@@@ NEW
+        public void SetPilotUpdateHost(IPushBackPilotUpdateHost host) =>
+            _updateHost = host ?? throw new ArgumentNullException(nameof(host));
+
+        /// <summary>I-64 F4B PB-T4c (RED): the setter of the host of the full editor of "Editar todo", still without effect.</summary>
+        public void SetFullEditHost(IWorkspaceFullEditHost host)
+        {
+        }
+@@@@ END
+@@@@ EDIT src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+@@@@ OLD
+        public bool ShowEditButton => _showEdit;
+@@@@ NEW
+        public bool ShowEditButton => _showEdit;
+
+        /// <summary>I-64 F4B PB-T4c (RED): the "Editar todo" button, still never offered.</summary>
+        public bool ShowEditAllButton => false;
+@@@@ END
+@@@@ EDIT src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+@@@@ OLD
+        /// <summary>Enter or leaving the box: commits the pending text, only with pending text and an editable box.</summary>
+@@@@ NEW
+        /// <summary>I-64 F4B PB-T4c (RED): "Editar todo", still without effect: it calls no operation of the port.</summary>
+        public void EditAll()
+        {
+        }
+
+        /// <summary>Enter or leaving the box: commits the pending text, only with pending text and an editable box.</summary>
+@@@@ END
+@@@@ NEWFILE src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftLaunch.cs
+using System;
+using RackCad.Application.Workspace.Drafts;
+
+namespace RackCad.Application.Systems.PushBack.Draft
+{
+    /// <summary>I-64 F4B PB-T4c (RED): the launch of the full Push Back editor over the full draft of the panel, still without the project of its origin.</summary>
+    public static class PushBackFullDraftLaunch
+    {
+        public static PushBackDraftEditorLaunch For(DraftSession<PushBackFullDraftState> draft, IPushBackDraftStatePort port)
+        {
+            if (draft == null) throw new ArgumentNullException(nameof(draft));
+            if (port == null) throw new ArgumentNullException(nameof(port));
+            return new PushBackDraftEditorLaunch(draft.CurrentDraftState.Editable, draft.RackId, null, port);
+        }
+    }
+}
+@@@@ END
+@@@@ NEWFILE src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftStatePort.cs
+using System;
+using RackCad.Application.Workspace.Drafts;
+
+namespace RackCad.Application.Systems.PushBack.Draft
+{
+    /// <summary>I-64 F4B PB-T4c (RED): the port of the full editor over the full draft of the panel, still without effect: it hands nothing to the draft.</summary>
+    public sealed class PushBackFullDraftStatePort : IPushBackDraftStatePort
+    {
+        private readonly DraftSession<PushBackFullDraftState> _draft;
+        private readonly Action _applied;
+
+        public PushBackFullDraftStatePort(DraftSession<PushBackFullDraftState> draft, Action applied)
+        {
+            _draft = draft ?? throw new ArgumentNullException(nameof(draft));
+            _applied = applied ?? throw new ArgumentNullException(nameof(applied));
+        }
+
+        public PushBackDraftApplyResult ApplyToDraft(PushBackEditableState edited)
+        {
+            if (edited == null) throw new ArgumentNullException(nameof(edited));
+            return new PushBackDraftApplyResult(PushBackDraftApplyStatus.NotEditable, _draft.IsDirty && _applied != null);
+        }
+    }
+}
+@@@@ END
+@@@@ NEWFILE src/RackCad.Plugin/Views/RackWorkspaceEditorWindow.cs
+#nullable enable
+using RackCad.Application.Systems.PushBack;
+
+namespace RackCad.Plugin.Views
+{
+    /// <summary>I-64 F4B PB-T4c (RED): the opener of the full Push Back editor for "Editar todo", still without effect.</summary>
+    internal static class RackWorkspaceEditorWindow
+    {
+        internal static void Show(object launch)
+        {
+            _ = launch as PushBackDraftEditorLaunch;
+        }
+    }
+}
+@@@@ END
+```
+
+### El equivalente de PEG:155-163, `tests/RackCad.Tests/PushBackEditAllPortEquivalenceGuardTests.cs` (`EquivalentSha` `1a2607d3a35ae8f9737fffb0eb32a4acd8100318fe83e5b0098d30428f57d250`)
+
+```csharp
+#nullable enable
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using RackCad.Application.Workspace;
+using Xunit;
+using Src = RackCad.Tests.WorkspaceHostSource;
+
+namespace RackCad.Tests;
+
+// I-64 F4B PB-T4c (owner-pbt4-decisions.md, pregunta 4; D-PBT4-13): the equivalent of WorkspacePilotEditGuardTests:155-163, whose Skip is in the
+// closed list of PB-T4c. It is that test with the members of its file that it reaches, literal, and ONE more row in the table of the operations:
+// TryEditAll, with its default body, at the end of the port, so the port declares eighteen operations and the reflection sees the eighteen.
+public class PushBackEditAllPortEquivalenceGuardTests
+{
+    private const string PortPath = "src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs";
+
+    private static string Port() => Src.Code(PortPath);
+
+    private static string? TryBody(string code, string signature) => Regex.IsMatch(code, signature) ? Src.BodyOf(code, signature) : null;
+
+    private static readonly (string Name, string Interface)[] Operations =
+    {
+        ("TryBeginEdit", @"EditIntentOutcome\s+TryBeginEdit\s*\(\s*EditIntentRequest\s+\w+\s*\)\s*;"),
+        ("TryCheckNow", @"EditCheckOutcome\s+TryCheckNow\s*\(\s*EditIntentRequest\s+\w+\s*\)\s*;"),
+        ("TryReload", @"EditIntentOutcome\s+TryReload\s*\(\s*EditIntentRequest\s+\w+\s*\)\s*;"),
+        ("TryConfirmBase", @"EditConfirmOutcome\s+TryConfirmBase\s*\(\s*EditIntentRequest\s+\w+\s*\)\s*;"),
+        ("TryKeepMine", @"EditIntentOutcome\s+TryKeepMine\s*\(\s*EditIntentRequest\s+\w+\s*\)\s*;"),
+        ("TryDiscardAndReload", @"EditIntentOutcome\s+TryDiscardAndReload\s*\(\s*EditIntentRequest\s+\w+\s*\)\s*;"),
+        ("GetField", @"PilotFieldView\s+GetField\s*\(\s*WorkspaceRequest\s+\w+\s*,\s*string\s+\w+\s*\)\s*;"),
+        ("SetPendingText", @"PilotFieldResult\s+SetPendingText\s*\(\s*WorkspaceRequest\s+\w+\s*,\s*string\s+\w+\s*,\s*string\s+\w+\s*\)\s*;"),
+        ("CommitField", @"PilotFieldResult\s+CommitField\s*\(\s*WorkspaceRequest\s+\w+\s*,\s*string\s+\w+\s*\)\s*;"),
+        ("CrossBoundary", @"PilotBoundaryResult\s+CrossBoundary\s*\(\s*WorkspaceRequest\s+\w+\s*,\s*string\s+\w+\s*,\s*PilotBoundaryKind\s+\w+\s*\)\s*;"),
+        ("DiscardRack", @"EditDiscardOutcome\s+DiscardRack\s*\(\s*WorkspaceRequest\s+\w+\s*,\s*string\s+\w+\s*\)\s*;"),
+        ("DiscardDocument", @"EditDiscardOutcome\s+DiscardDocument\s*\(\s*WorkspaceRequest\s+\w+\s*\)\s*;"),
+        ("GetRacksAtRisk", @"PilotRiskView\s+GetRacksAtRisk\s*\(\s*WorkspaceRequest\s+\w+\s*\)\s*;"),
+        ("TakeLossNotices", @"IReadOnlyList<PilotLossView>\s+TakeLossNotices\s*\(\s*\)\s*;"),
+        ("TakeCloseNotices", @"IReadOnlyList<PilotCloseView>\s+TakeCloseNotices\s*\(\s*\)\s*;"),
+
+        // I-64 F4-T4C1-HOST (D-T4C-20, row 5): the two operations of the update, at the end of the port.
+        ("RequestUpdate", @"EditUpdateStart\s+RequestUpdate\s*\(\s*EditIntentRequest\s+\w+\s*\)\s*;"),
+        ("TakeUpdateProgress", @"EditUpdateProgress\s+TakeUpdateProgress\s*\(\s*WorkspaceRequest\s+\w+\s*,\s*string\s+\w+\s*\)\s*;"),
+
+        // I-64 F4B PB-T4c (D-PBT4-13; owner-pbt4-decisions.md, pregunta 4): "Editar todo", with its default body, at the end of the port.
+        ("TryEditAll", @"EditAllOutcome\s+TryEditAll\s*\(\s*EditIntentRequest\s+\w+\s*\)\s*=>\s*EditAllOutcome\.NotAvailable\s*\(\s*null\s*\)\s*;"),
+    };
+
+    private static readonly Regex DraftOrPilotNames = new(@"\bDraft\w*|\bPushBack\w*|RackCad\.Application\.Systems|Workspace\.Drafts");
+
+    private static readonly (string Enum, string[] Prefix)[] OrderedEnums =
+    {
+        ("PilotFieldState", new[] { "NotOpen", "Clean", "Dirty", "Conflict", "Applying", "Unknown", "Error", "Undecidable" }),
+        ("PilotBoundaryDecision", new[] { "Proceeded", "Aborted", "Kept", "Busy" }),
+        ("PilotBoundaryKind", new[] { "TabChange", "RackChange", "DocumentChange", "PanelHide", "Dematerialize", "DocumentClose", "Update" }),
+    };
+
+    private static IReadOnlyList<string>? EnumMembers(string code, string name)
+    {
+        var body = TryBody(code, @"public\s+enum\s+" + name + @"\b");
+        if (body == null) return null;
+        var inner = body.Substring(body.IndexOf('{') + 1).TrimEnd('}');
+        return inner.Split(',').Select(m => m.Trim()).Where(m => m.Length > 0).ToArray();
+    }
+
+    private static IEnumerable<string> PortViolations(string port)
+    {
+        if (!Regex.IsMatch(port, @"\bpublic\s+interface\s+IWorkspacePilotEditPort\b")) yield return "the interface is missing";
+        if (Src.Count(port, @"\bnamespace\s+RackCad\.Application\.Workspace\s*\{") != 1) yield return "the namespace is not the one of the workspace";
+
+        // The seventeen operations (the two of the update are the last) are a lower bound: a later task may add its own to this port.
+        foreach (var (name, signature) in Operations)
+            if (Src.Count(port, signature) != 1) yield return "the port lacks " + name;
+
+        foreach (Match match in DraftOrPilotNames.Matches(port)) yield return "the port names " + match.Value;
+
+        foreach (var (name, prefix) in OrderedEnums)
+        {
+            var members = EnumMembers(port, name);
+            if (members == null) yield return "the enum " + name + " is missing";
+            else if (!members.Take(prefix.Length).SequenceEqual(prefix)) yield return "the enum " + name + " lost its ordered prefix";
+        }
+
+        var status = EnumMembers(port, "PilotFieldStatus");
+        if (status == null) yield return "the enum PilotFieldStatus is missing";
+        else
+        {
+            foreach (var name in new[] { "Applied", "Rejected", "NotEditable", "Busy", "Invalid" })
+                if (!status.Contains(name)) yield return "PilotFieldStatus lacks " + name;
+            if (status.Count == 0 || status[0] != "Rejected") yield return "the default of PilotFieldStatus is not the inert Rejected";
+        }
+    }
+
+    [Fact]
+    public void ThePortDeclaresTheSeventeenOperationsWithTheEnumsAsOrderedPrefixesAndNamesNoTypeOfTheDraftsNorOfThePilot()
+    {
+        Assert.Empty(PortViolations(Port()));
+        Assert.Equal(
+            Operations.Select(o => o.Name).OrderBy(n => n, StringComparer.Ordinal).ToArray(),
+            typeof(IWorkspacePilotEditPort).GetMethods().Select(m => m.Name).OrderBy(n => n, StringComparer.Ordinal).ToArray());
+        Assert.StartsWith("#nullable enable", Src.Text(PortPath).TrimStart((char)0xFEFF));
+    }
+}
+```
+
+### El equivalente de CT-PBT1B-15, `tests/RackCad.Tests/PushBackEditAllNameWritersGuardTests.cs` (`EquivalentSha` `3744992127be8b7e1d8d822a769b8eb2a6886789c73285c8436e5baec6bf7b6b`)
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using Xunit;
+
+namespace RackCad.Tests
+{
+    /// <summary>
+    /// I-64 F4B PB-T4c (owner-pbt4-decisions.md, pregunta 4; D-PBT4-15): the equivalent of CT-PBT1B-15 of PushBackSharedReferenceGuardTests, whose
+    /// Skip is in the closed list of PB-T4c. It is that test with the members of its file that it reaches, literal, with one change: the census of
+    /// the files of the Plugin that name PushBack has 15, the 14 of before and the opener of the full editor (RackWorkspaceEditorWindow.cs),
+    /// which writes no Name; the seven assignments, the order and the self-tests do not change.
+    /// </summary>
+    public sealed class PushBackEditAllNameWritersGuardTests
+    {
+        /// <summary>The text without comments, with the string and character literals emptied (as the source guards do).</summary>
+        private static string Clean(string source)
+        {
+            source = Regex.Replace(source, "@\"(?:[^\"]|\"\")*\"", "\"\"");
+            source = Regex.Replace(source, "\\$?\"(?:\\\\.|[^\"\\\\\\n])*\"", "\"\"");
+            source = Regex.Replace(source, "'(?:\\\\.|[^'\\\\\\n])'", "''");
+            source = Regex.Replace(source, @"/\*.*?\*/", " ", RegexOptions.Singleline);
+            source = Regex.Replace(source, @"//[^\n]*", string.Empty);
+            return source;
+        }
+
+        private static string Collapse(string text)
+            => string.Join(" ", text.Split((char[])null, StringSplitOptions.RemoveEmptyEntries));
+
+        private static string Root => PilotKit.RepoRoot().FullName;
+
+        /// <summary>An injected line, inside a member appended to the real text of a file (never written to disk).</summary>
+        private static string Inject(string source, string line)
+        {
+            var classEnd = source.LastIndexOf('}', source.LastIndexOf('}') - 1);
+            return source.Substring(0, classEnd) + "void Inyectado() { " + line + " }\n" + source.Substring(classEnd);
+        }
+
+        private const string NameWriter = @"(?<![\w.])\w+(?:\s*\.\s*\w+)*\s*\.\s*Name\s*=(?![=>])";
+
+        private static IEnumerable<string> SourceFiles(string folder)
+            => Directory.GetFiles(Path.Combine(Root, folder), "*.cs", SearchOption.AllDirectories)
+                .Where(path => !path.Contains(Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar)
+                               && !path.Contains(Path.DirectorySeparatorChar + "obj" + Path.DirectorySeparatorChar))
+                .OrderBy(path => path, StringComparer.Ordinal);
+
+        /// <summary>M07: the WHOLE statement of each assignment (up to its semicolon), so a change of its right-hand side shows.</summary>
+        private const string NameStatement = NameWriter + @"[^;]*;";
+
+        private static List<(string File, string Text)> Assignments(IReadOnlyDictionary<string, string> cleanedFiles)
+            => cleanedFiles
+                .SelectMany(file => Regex.Matches(file.Value, NameStatement).Cast<Match>().Select(match => (file.Key, Collapse(match.Value))))
+                .ToList();
+
+        /// <summary>The text of a method, from its signature to its closing brace (the text has no comments and its literals are emptied).</summary>
+        private static string MethodText(string text, string signature)
+        {
+            var start = text.IndexOf(signature, StringComparison.Ordinal);
+            if (start < 0) return string.Empty;
+            var open = text.IndexOf('{', start);
+            if (open < 0) return string.Empty;
+            var depth = 0;
+            for (var index = open; index < text.Length; index++)
+            {
+                if (text[index] == '{') depth++;
+                else if (text[index] == '}' && --depth == 0) return text.Substring(start, index - start + 1);
+            }
+
+            return string.Empty;
+        }
+
+        /// <summary>M07: the first writer must be INSIDE <c>DrawPushBackView</c>, not merely after its declaration.</summary>
+        private static bool WriterInsideDrawPushBackView(string commands)
+            => MethodText(commands, "static void DrawPushBackView(").Contains("system.Name = rackName;");
+
+        private static bool OrderOf(string text, string method, string modal, string writer)
+        {
+            var start = text.IndexOf(method, StringComparison.Ordinal);
+            if (start < 0) return false;
+            var shown = text.IndexOf(modal, start, StringComparison.Ordinal);
+            var written = text.IndexOf(writer, start, StringComparison.Ordinal);
+            return shown >= 0 && written >= 0 && shown < written;
+        }
+
+        [Fact]
+        public void CT_PBT1B_15_TheWritersOfNameInThePluginRunAfterTheWindowCloses()
+        {
+            var log = new List<string>();
+            var cleaned = new Dictionary<string, string>(StringComparer.Ordinal);
+            foreach (var path in SourceFiles("src/RackCad.Plugin"))
+            {
+                var text = Clean(File.ReadAllText(path));
+                if (text.Contains("PushBack")) cleaned[Path.GetFileName(path)] = text;
+            }
+
+            var assignments = Assignments(cleaned);
+            log.Add("archivos=" + cleaned.Count);
+            log.Add("asignaciones=" + assignments.Count);
+            foreach (var assignment in assignments) log.Add(assignment.File + ": " + assignment.Text);
+
+            var pushBack = assignments.Where(a => a.File == "RackPushBackCommands.cs" || a.Text.StartsWith("pushBack", StringComparison.Ordinal)).ToList();
+            log.Add("escritores-pushback=" + pushBack.Count);
+
+            var commands = cleaned.ContainsKey("RackPushBackCommands.cs") ? cleaned["RackPushBackCommands.cs"] : string.Empty;
+            var menu = cleaned.ContainsKey("RackMenuCommands.cs") ? cleaned["RackMenuCommands.cs"] : string.Empty;
+
+            // The call to DrawPushBackView is the first occurrence (the declaration comes later); the writer is inside it (M07).
+            var modalFirst = commands.IndexOf("AcApplication.ShowModalWindow(window);", StringComparison.Ordinal);
+            var call = commands.IndexOf("DrawPushBackView(", StringComparison.Ordinal);
+            var declaration = commands.IndexOf("static void DrawPushBackView(", StringComparison.Ordinal);
+            log.Add("orden=" + (modalFirst >= 0 && modalFirst < call && call < declaration && WriterInsideDrawPushBackView(commands)));
+            log.Add("orden=" + OrderOf(commands, "static void EditPushBack(", "AcApplication.ShowModalWindow(window);", "system.Name = name;"));
+            log.Add("orden=" + OrderOf(menu, "public void RackCad()", "AcApplication.ShowModalWindow(menu);", "pushBack.System.Name = pushBackName;"));
+
+            var calls = 0;
+            foreach (var path in SourceFiles("src"))
+            {
+                var text = Clean(File.ReadAllText(path));
+                calls += Regex.Matches(text, @"\bDrawPushBackView\s*\(").Cast<Match>()
+                    .Count(match => !Regex.IsMatch(text.Substring(Math.Max(0, match.Index - 12), Math.Min(12, match.Index)), @"void\s+$"));
+            }
+
+            log.Add("DrawPushBackView-llamadas=" + calls);
+
+            // Self-tests, over the real text with an injected change: an eighth assignment, and the writer of EditPushBack moved
+            // before its ShowModalWindow.
+            var injected = new Dictionary<string, string>(cleaned, StringComparer.Ordinal)
+            {
+                ["RackPushBackCommands.cs"] = Inject(commands, "state.Editor.SideA.WorkingBaseline.Name = \"x\";"),
+            };
+            log.Add("autoprueba-octava=" + (Assignments(injected).Count == 7 ? "pasa" : "falla"));
+
+            var editStart = commands.IndexOf("static void EditPushBack(", StringComparison.Ordinal);
+            var moved = commands;
+            if (editStart >= 0)
+            {
+                var writer = moved.IndexOf("system.Name = name;", editStart, StringComparison.Ordinal);
+                var modal = moved.IndexOf("AcApplication.ShowModalWindow(window);", editStart, StringComparison.Ordinal);
+                if (writer >= 0 && modal >= 0)
+                {
+                    moved = moved.Remove(writer, "system.Name = name;".Length).Insert(modal, "system.Name = name; ");
+                }
+            }
+
+            log.Add("autoprueba-orden=" + (OrderOf(moved, "static void EditPushBack(", "AcApplication.ShowModalWindow(window);", "system.Name = name;") ? "pasa" : "falla"));
+
+            // M07: the writer of DrawPushBackView moved out of the method (to just before its declaration) no longer counts as inside it.
+            var outside = commands;
+            if (declaration >= 0)
+            {
+                var inside = outside.IndexOf("system.Name = rackName;", declaration, StringComparison.Ordinal);
+                if (inside >= 0)
+                {
+                    outside = outside.Remove(inside, "system.Name = rackName;".Length).Insert(declaration, "system.Name = rackName; ");
+                }
+            }
+
+            log.Add("autoprueba-escritor-fuera-de-DrawPushBackView=" + (WriterInsideDrawPushBackView(outside) ? "pasa" : "falla"));
+
+            Assert.Equal(
+                new[]
+                {
+                    "archivos=15",
+                    "asignaciones=7",
+                    "RackMenuCommands.cs: header.Configuration.Name = Systems.Shared.RackNewRackName.Resolve( document, global::RackCad.Domain.Systems.Shared.RackSystemKind.Selective, header.Configuration.Name);",
+                    "RackMenuCommands.cs: dynamic.System.Name = dynamicName;",
+                    "RackMenuCommands.cs: selective.System.Name = selectiveName;",
+                    "RackMenuCommands.cs: cantilever.Design.Name = cantileverName;",
+                    "RackMenuCommands.cs: pushBack.System.Name = pushBackName;",
+                    "RackPushBackCommands.cs: system.Name = rackName;",
+                    "RackPushBackCommands.cs: system.Name = name;",
+                    "escritores-pushback=3",
+                    "orden=True",
+                    "orden=True",
+                    "orden=True",
+                    "DrawPushBackView-llamadas=1",
+                    "autoprueba-octava=falla",
+                    "autoprueba-orden=falla",
+                    "autoprueba-escritor-fuera-de-DrawPushBackView=falla",
+                },
+                log);
+        }
+    }
+}
+```
+
+### El equivalente de CT-PBT2B-06, `tests/RackCad.UI.Tests/PushBackEditAllApplyCloseTests.cs` (`EquivalentSha` `7c2458260ef301d7f05bfaff8e1e8c4a4a618f25fd7022705d55dee32dbe78d2`)
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Windows;
+using RackCad.Application.Persistence;
+using RackCad.Application.Systems.PushBack;
+using RackCad.Application.Workspace.Drafts;
+using RackCad.Domain.Systems.PushBack;
+using RackCad.Domain.Systems.Selective;
+using RackCad.UI;
+using RackCad.UI.Shell;
+using RackCad.UI.Systems.PushBack;
+using Xunit;
+using static RackCad.UI.Tests.PushBackDeclaredCorrectionSupport;
+using static RackCad.UI.Tests.PushBackFullEditorCharacterizationSupport;
+using static RackCad.UI.Tests.PushBackWorkspaceSupport;
+
+namespace RackCad.UI.Tests
+{
+    /// <summary>
+    /// I-64 F4B PB-T4c (owner-pbt4c-list-4-decision.md; D-PBT4-17, A-T2b-OWNER-01): the equivalent of CT-PBT2B-06 of
+    /// PushBackWorkspaceApplyCloseTests, whose Skip is in the closed list of PB-T4c. It is that test with the members of its file that it
+    /// reaches (Sesion, Nueva and Cierre), literal, with one change: the expected line of window 4, where a staged module and unapplied changes
+    /// are pending together, is the one question that names both (WorkspaceStagedAndUnappliedQuestion of the window).
+    /// </summary>
+    [Collection(EditorDiscardPromptCollection.Name)]
+    public sealed class PushBackEditAllApplyCloseTests
+    {
+        /// <summary>Una ventana de WORKSPACE con su borrador, su puerto contado y el estado del borrador de antes de abrirla.</summary>
+        private sealed class Sesion
+        {
+            public RackPushBackSystemWindow W;
+            public DraftSession<PushBackEditableState> Draft;
+            public PuertoContado Puerto;
+            public PushBackEditableState Antes;
+        }
+
+        private static Sesion Nueva(List<string> log, PushBackEditableState estado, RackProject proyecto = null)
+        {
+            var (_, draft) = Borrador(estado);
+            var puerto = new PuertoContado(draft);
+            var antes = Copy(draft.CurrentDraftState);
+            var w = Paso(log, () => VentanaBorrador(draft, proyecto, puerto));
+            return w == null ? null : new Sesion { W = w, Draft = draft, Puerto = puerto, Antes = antes };
+        }
+
+        /// <summary>Una ventana de WORKSPACE sobre su propio borrador: sonda, gestos y, en el <c>finally</c>, «Si» y <c>Cerrar</c>.</summary>
+        private static bool Cierre(List<string> log, PromptProbe avisos, Action<Sesion> gestos)
+        {
+            var s = Nueva(log, Estado(Fixture(DisenoBase)));
+            if (s == null) return false;
+            try
+            {
+                avisos.Reiniciar();
+                if (!Sondeo(log, s.W)) return false;
+                gestos(s);
+                return true;
+            }
+            finally
+            {
+                // `CloseQuietly` de T-CL no cierra una ventana sin mostrar: se contesta «Si» y se cierra con `Cerrar`.
+                avisos.Answer = true;
+                CerrarVentana(s.W);
+            }
+        }
+
+        [Fact]
+        public void CT_PBT2B_06_ClosingAsksOnlyForWhatWasNotApplied()
+        {
+            var log = new List<string>();
+            var avisos = new PromptProbe(true);
+            // El primer Sta del proceso crea el hilo STA e instala en el su aviso de descarte permanente: se arranca ANTES de sustituir
+            // el aviso de esta prueba, o el primero que corra en el proceso la dejaria sin su sustituto.
+            Sta(() => { });
+            using (EditorDiscardPrompt.Substitute(avisos.Ask))
+            {
+                Sta(() =>
+                {
+                    // Ventana 1: sin cambios, «Cerrar» cierra sin preguntar.
+                    if (!Cierre(log, avisos, s =>
+                    {
+                        Click(s.W, "CloseButton");
+                        log.Add("cerrar-sin-cambios avisos=" + avisos.Asked + " cerrada=" + EstaCerradaVentana(s.W)
+                            + " borrador-igual=" + Igual(s.Draft.CurrentDraftState, s.Antes));
+                    }))
+                    {
+                        return;
+                    }
+
+                    // Ventana 2: una edicion sin aplicar; «No» la deja abierta, «Si» la cierra y el borrador queda como estaba.
+                    if (!Cierre(log, avisos, s =>
+                    {
+                        SetNumberR(s.W, "ToleranceBox", 4.5);
+                        avisos.Answer = false;
+                        Click(s.W, "CloseButton");
+                        log.Add("cerrar-con-cambios-no avisos=" + avisos.Asked + " pregunta=" + avisos.Question + " cerrada=" + EstaCerradaVentana(s.W));
+                        avisos.Answer = true;
+                        Click(s.W, "CloseButton");
+                        log.Add("cerrar-con-cambios-si avisos=" + avisos.Asked + " cerrada=" + EstaCerradaVentana(s.W)
+                            + " borrador-igual=" + Igual(s.Draft.CurrentDraftState, s.Antes) + " llamadas=" + s.Puerto.Llamadas);
+                    }))
+                    {
+                        return;
+                    }
+
+                    // Ventana 3: lo editado se aplico, y «Cerrar» no pregunta.
+                    if (!Cierre(log, avisos, s =>
+                    {
+                        SetNumberR(s.W, "ToleranceBox", 4.5);
+                        Click(s.W, "UpdateButton");
+                        Click(s.W, "CloseButton");
+                        log.Add("cerrar-tras-aplicar avisos=" + avisos.Asked + " cerrada=" + EstaCerradaVentana(s.W) + " llamadas=" + s.Puerto.Llamadas);
+                    }))
+                    {
+                        return;
+                    }
+
+                    // Ventana 4: un modulo escenificado sin confirmar manda primero, con su texto de siempre.
+                    if (!Cierre(log, avisos, s =>
+                    {
+                        StageModuleEdit(s.W);
+                        avisos.Answer = true;
+                        Click(s.W, "CloseButton");
+                        log.Add("cerrar-con-modulo avisos=" + avisos.Asked + " pregunta=" + avisos.Question + " cerrada=" + EstaCerradaVentana(s.W));
+                    }))
+                    {
+                        return;
+                    }
+
+                    // CLASSIC: «Cerrar» no pregunta por lo editado, como siempre (ADR-0029 D8).
+                    var clasica = Ventana();
+                    try
+                    {
+                        avisos.Reiniciar();
+                        Cargar(clasica, Fixture(DisenoBase));
+                        SetNumberR(clasica, "ToleranceBox", 4.5);
+                        Click(clasica, "CloseButton");
+                        log.Add("clasico-con-cambios avisos=" + avisos.Asked + " cerrada=" + EstaCerradaVentana(clasica)
+                            + " peticion=" + clasica.InsertRequested);
+                    }
+                    finally
+                    {
+                        avisos.Answer = true;
+                        CerrarVentana(clasica);
+                    }
+                });
+            }
+
+            var esperadas = new List<string>
+            {
+                "cerrar-sin-cambios avisos=0 cerrada=True borrador-igual=True",
+                "cerrar-con-cambios-no avisos=1 pregunta=" + PreguntaSinAplicar + " cerrada=False",
+                "cerrar-con-cambios-si avisos=2 cerrada=True borrador-igual=True llamadas=0",
+                "cerrar-tras-aplicar avisos=0 cerrada=True llamadas=1",
+                "cerrar-con-modulo avisos=1 pregunta=Hay un cambio de módulo sin confirmar y cambios sin aplicar al borrador; se perderán los dos al cerrar. ¿Deseas continuar? cerrada=True",
+                "clasico-con-cambios avisos=0 cerrada=True peticion=False",
+            };
+
+            Assert.Equal(esperadas, log);
+        }
+    }
+}
+```
+
+### El equivalente de CT-PBT4B-20, `tests/RackCad.Tests/PushBackEditAllFullCopyGuardTests.cs` (`EquivalentSha` `4619b6d310340f9c97a7d9f31bda1db852d2fcda905b91bb857510f7e6b7e6ce`)
+
+Es `tests/RackCad.Tests/WorkspaceFullCopyGuardTests.cs` de `6adff90d` entero (656 líneas), con dos cambios y nada más:
+
+1. la clase: `public sealed class WorkspaceFullCopyGuardTests` → `public sealed class PushBackEditAllFullCopyGuardTests`;
+
+2. `Restore`:
+
+```csharp
+        private static string Restore(string text) => SkipLine.Replace(text, "$1[$2]");
+```
+
+pasa a:
+
+```csharp
+        // I-64 F4B PB-T4c (owner-pbt4c-list-3-decision.md): the one Skip of PB-T4c in an original, the one of WorkspacePilotEditGuardTests:155,
+        // goes back to its [Fact] too, by its exact line; the count of the Skip of PB-T4b and the expected lines do not change.
+        private const string EditAllSkipLine = "    [Fact(Skip = \"I-64 F4B PB-T4c: sustituida por su equivalente en PushBackEditAllPortEquivalenceGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 4).\")]";
+
+        private static string Restore(string text) => SkipLine.Replace(text, "$1[$2]").Replace(EditAllSkipLine + "\n", "    [Fact]\n");
 ```
 

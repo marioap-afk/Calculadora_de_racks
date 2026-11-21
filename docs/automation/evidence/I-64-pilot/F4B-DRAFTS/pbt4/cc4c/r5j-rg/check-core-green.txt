@@ -1,0 +1,70 @@
+rama green: filas 19608 {'NotExecuted': 461, 'Passed': 19147}
+totales OK: 19608 = 19147 Passed + 0 Failed + 461 Skipped, esperado 19608 = 19147 + 0 + 461
+omitidas de la lista (Core): 3 (esperado 3), motivos literales=True
+omitidas de la base (las 458 de PB-T4b): 458
+equivalente PushBackEditAllPortEquivalenceGuardTests Passed
+equivalente PushBackEditAllNameWritersGuardTests Passed
+equivalente PushBackEditAllFullCopyGuardTests Passed
+inicio 2026-11-21T12:47:13.7202745-06:00 fin 2026-11-21T12:57:25.7769640-06:00
+filtros heredados de Core (n.o, filtro, MinSelected de PB-T4b, ExpectRed de PB-T4b, resultados no omitidos, metodos distintos no omitidos):
+  1	FullyQualifiedName~RackCad.Tests.PushBackFullReadPathTests	4	False	4	4
+  2	FullyQualifiedName~RackCad.Tests.PushBackFullReadGuardTests	1	False	1	1
+  3	FullyQualifiedName~RackCad.Tests.PushBackViewEraseGuardTests	4	False	4	4
+  4	FullyQualifiedName~RackCad.Tests.PushBackWritePathPluginGuardTests	1	False	1	1
+  5	FullyQualifiedName~RackCad.Tests.WorkspacePilotUpdateGuardTests	85	False	85	40
+  6	FullyQualifiedName~RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests	121	False	121	39
+  7	FullyQualifiedName~RackCad.Tests.PushBackSharedReferenceGuardTests	2	False	1	1
+  9	FullyQualifiedName~RackCad.Tests.PushBackFullWrite	13	False	13	13
+  10	FullyQualifiedName~RackCad.Tests.PushBackPilotUpdateEquivalenceGuardTests	6	False	6	6
+  11	FullyQualifiedName~RackCad.Tests.PushBackWritePathGuardTests	1	False	1	1
+  12	FullyQualifiedName~RackCad.Tests.Workspace	2718	False	2860	1648
+  13	FullyQualifiedName~RackCad.Tests.PushBackFullDraft	10	False	10	10
+  14	FullyQualifiedName~RackCad.Tests.PushBackDraftWriteGuardTests	2	False	2	2
+  16	FullyQualifiedName~RackCad.Tests.PushBackEditableState	13	False	13	13
+  17	FullyQualifiedName~RackCad.Tests.PushBackEditorOutputGate	1	False	1	1
+  18	FullyQualifiedName~RackCad.Tests.PushBackWindowSharedReferenceGuardTests	1	False	1	1
+  19	FullyQualifiedName~RackCad.Tests.PushBackWindowOnStateSourceGuardTests	1	False	1	1
+  22	FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization	10	False	10	8
+  24	FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization	3	False	3	3
+  28	FullyQualifiedName~RackCad.Tests.I58F1	10	False	1912	10
+  29	FullyQualifiedName~RackCad.Tests.CustomPropertiesEnvelopeGuardTests	9	False	22	9
+  30	FullyQualifiedName~RackCad.Tests.NamespaceFolderGuardTests	7	False	7	7
+  31	FullyQualifiedName~RackCad.Tests.PushBackDraftStatePortTests	3	False	3	3
+  32	FullyQualifiedName~RackCad.Tests.PushBackDraftPortSharedReferenceGuardTests	1	False	1	1
+  33	FullyQualifiedName~RackCad.Tests.PushBackWorkspaceModeSourceGuardTests	1	False	1	1
+  34	FullyQualifiedName~RackCad.Tests.PushBackWorkspaceSharedReferenceGuardTests	1	False	1	1
+  39	FullyQualifiedName~RackCad.Tests.PushBackFullPanelTests	11	True	11	11
+  40	FullyQualifiedName~RackCad.Tests.PushBackFullPanelGuardTests	4	True	4	4
+  41	FullyQualifiedName~RackCad.Tests.PushBackFullPanelCensusGuardTests	1	False	1	1
+  42	FullyQualifiedName~RackCad.Tests.PushBackPanelDraftGuardTests	1	False	1	1
+  43	FullyQualifiedName~RackCad.Tests.WorkspaceFullCopyGuardTests	1	False	0	0
+  47	FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceLifecycleHostRedTests	24	True	24	22
+  48	FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceLifecycleHostGreenTests	69	False	69	48
+  49	FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotPrepareRedTests	44	True	44	22
+  50	FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotPrepareGreenTests	47	False	47	47
+  51	FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceEditIntentHostRedTests	24	True	24	18
+  52	FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceEditIntentHostGreenTests	57	False	57	44
+  53	FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditHostRedTests	59	True	59	49
+  54	FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditHostGreenTests	17	False	17	10
+  55	FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceCommandAdvisorRedTests	6	True	6	6
+  56	FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceCommandAdvisorGreenTests	70	False	70	48
+  57	FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateRequestRedTests	53	True	53	43
+  58	FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateRequestGreenTests	1	False	1	1
+  59	FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateHostRedTests	29	True	29	22
+  60	FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateHostGreenTests	18	False	18	13
+  61	FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotReconciliationHostRedTests	23	True	23	23
+  62	FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotReconciliationHostGreenTests	5	False	5	5
+  63	FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceAssociativeBookkeepingRedTests	1	True	1	1
+  64	FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceAssociativeBookkeepingGreenTests	21	False	21	9
+  65	FullyQualifiedName~RackCad.Tests.FullPanelCopyPushBackWritePathGuardRedTests	1	True	1	1
+  66	FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateIntegrationGuardRedTests	2	True	2	2
+  67	FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceEditIntentGuardRedTests	13	True	13	7
+  68	FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditGuardRedTests	6	True	6	4
+  69	FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditGuardGreenTests	17	False	17	2
+  70	FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotReconciliationGuardGreenTests	1	False	1	1
+  71	FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceLifecycleGuardRedTests	2	True	2	2
+  72	FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateGuardRedTests	1	True	1	1
+  75	FullyQualifiedName~RackCad.Tests.FullPanelCopyPushBackFullReadPathRedTests	1	True	1	1
+  76	FullyQualifiedName~RackCad.Tests.FullPanelCopyPushBackFullReadGuardRedTests	1	True	1	1
+  77	FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceHostHardeningGuardRedTests	1	True	1	1
+core green: PASA

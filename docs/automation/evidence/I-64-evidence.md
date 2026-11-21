@@ -8799,3 +8799,35 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - solo documentación;
 - sin AutoCAD;
 - los eventos y las transcripciones, solo por SHA-256.
+
+## 283. PB-T4c: paquete del contrato v5.1, tandas del Owner, precondición 6, comprobación acotada y registro de las 4 (F4B-E54)
+
+**Qué se custodia:**
+- **El paquete del contrato de PB-T4,** v5.1 (sha256 `34ca002650780aeb1347ee2db7c4d7c285578e2e99634129ca006a6e835094c3`), en `docs/initiatives/I-64-f4b-pbt4-gate-contract-package.md`. Su historia nueva, la v4.9 y la v5.0, va en `F4B-DRAFTS/pbt4/package-v49.md` y `package-v50.md`, junto a la de la v1 a la v4.8, que custodiaron las emisiones de PB-T4a y PB-T4b.
+- **Las tandas del Owner nuevas,** literales, en `F4B-DRAFTS/coordinator/`: la octava (`owner-pbt4c-list-3-decision.md`) y la novena (`owner-pbt4c-list-4-decision.md`). Las siete anteriores ya estaban custodiadas.
+- **El registro declarado** `F4B-DRAFTS/superseding-characterization.md`, con su entrada de PB-T4c: las 4, con su causa, los motivos literales de los `Skip` y el equivalente de cada una, con su `EquivalentSha` y su cambio declarado.
+- **En `F4B-DRAFTS/pbt4/`:**
+  - la decisión de la sesión, `session-pbt4c-design-decisions.md` (D-S7 a D-S10);
+  - las listas: la de PB-T4c (`pbt4c-substitution-list-4.tsv`, sha256 `9bd4c17a0eda837c92a7a0b7b3562d4ab17f1608baf3ffa8efaf560d8b1f82de`), con la de 3 como historia, y sus guiones;
+  - las piezas literales del esqueleto y del GREEN (`pbt4c-green-v50.txt`, `pbt4c-green-v51.txt`, `pbt4c-skeleton-v50.txt` y `pbt4c-skeleton-v51.txt`), byte a byte, y los guiones de los `Skip`, de los equivalentes, del RED, del GREEN, de la comprobación de los `Skip`, de las CT como datos y del paseo de guardas, con sus salidas;
+  - las carpetas de la versión: `v50/` y `v51/`, con la remedición sobre `6adff90d`, el paseo de guardas y el contrato de PB-T4b leído por el autor;
+  - las dos sondas (`pbt4c-probe-editall.cs` y `pbt4c-probe-close-ui.cs`) y el ensayo de las CT de texto del paso 8 (`pbt4c-rehearsal-textct.cs`), byte a byte;
+  - la precondición 6 de la sesión: `cc4c/` y `pbt4c-precondition6.json`. **`cc4c/` es la precondición 6 de PB-T4c, su `compile-check`, en una carpeta corta por el límite de rutas de Windows**; va redactada, con su manifiesto. En `cc4c/r5e/` va la medida de D-S9, y en `v50/out-probe-skips-r5a/`, la sonda de la octava tanda, las dos con su manifiesto;
+  - la revisión independiente, `independent-review-v1.md`, que crece con sus §22 y §23 (la comprobación acotada CA-T4c y su recomprobación), los guiones del revisor y el encargo de CA-T4c (`independent-review-pbt4c-check-prompt.md`);
+  - las dudas y el traspaso del generador, y la salida en seco del generador sobre el cierre, `make_pbt4c_contract-dry.txt`.
+
+  Los textos con rutas locales van con la redacción común, y la copia exportada `<unidad>:\r5<letra>` de los registros de la precondición 6 pasa a `<copia>`. Las etiquetas `/d/r4<letra>` y `/d/r5<letra>` de las copias exportadas quedan tal cual en lo custodiado, también en el paquete, porque no identifican a nadie; las rutas con perfil o usuario sí se redactan. Una sustitución local lleva su nota al principio del archivo: en `independent-review-v1.md`, la carpeta de worktrees de Codex (`<worktrees-de-Codex>`).
+
+**Fuera de la custodia, por el sha256 de su conjunto** (se regeneran con los guiones custodiados):
+- `F4B-DRAFTS/pbt4/v50/eq-tree/`: 4 archivos, sha256 del conjunto `2083bac2a7a17b51ed683ba9b4a7a726afa3e355197668dbce90eac4ec463632`;
+- `F4B-DRAFTS/pbt4/v50/eq-tree4/`: 5 archivos, sha256 del conjunto `6f005154b211b91b2ae42edc3be709368f9bc5d7380961c724e30d8e8ffa8fd9`;
+- `F4B-DRAFTS/pbt4/v50/variant-rename/`: 98 archivos, sha256 del conjunto `4150c409e7a53cb094ed94c96b08201203ef24df4bef4aec2ccf72e6adc58283` (salvo las salidas de texto de la medida de D-S9, `r5e`, que van en `cc4c/r5e/`);
+- en `cc4c/`, `cc4c/r5e/` y `v50/out-probe-skips-r5a/`, cada uno con su sha256 en el manifiesto de su carpeta: las TRX, los binarios, el bytecode de Python y los registros `.log` (44), y los archivos cuya ruta en el repositorio pasaría de 156 caracteres (17), el límite que fija la sesión por MAX_PATH. `compile-check.md` da el resultado de la clase de cada uno de estos.
+
+**La base:** el cierre de PB-T4b, F4B-E53 (`6adff90d`), con la CI `44903818806`: Core 19 605 = 19 147 + 0 + 458, y UI 2 481 = 2 433 + 0 + 48.
+
+**Las comprobaciones:**
+- **la precondición 6:** pasos 1 a 9, otra vez, en copias exportadas nuevas de 6adff90d (`r5j` para los pasos 2 a 6, `r5i` para las sondas del paso 7 y el ensayo del paso 8, `r5k` para el coste de IsDirty y `r5l` para el control del ensayo sobre las piezas de la v5.0): la compilacion de Core-tests, UI-tests y el Plugin en Release sin errores ni avisos CS; el RED exacto y el GREEN literal, sin las CT, con la suite completa de Core (19 608 = 19 147 + 0 + 461 en las dos ramas, con las 3 de Core de la lista omitidas con su motivo y sus 3 equivalentes en verde) y los 18 filtros de UI (en el RED solo cae el equivalente de CT-PBT2B-06, por asercion; en el GREEN, 0 Failed), sin ninguna prueba que falle fuera de las 4 (D = 0, K = 4, E = 4); los Skip, comprobados (4 archivos, 4 Skip y nada mas), y los filtros, cada uno solo con su clase (D-S8); las sondas de las lineas de CT-03, 04, 05 y 12 y de CT-09 (D-S10), las mismas de la v5.0 por sha256; el ensayo de las CT de texto (CT-01, 07, 08, 13 y 15) pasa en las dos ramas, con CT-01, 08 y 13 en Failed por asercion en el RED, y su control sobre las piezas de la v5.0 ve I-01; el censo de C13 y de los nombres pasa; el coste de IsDirty, el de PB-T4b, dentro del ruido; y compile-check.md da el resultado de cada clase que corre. Las corridas de la v5.0 (`r5f` a `r5h`) y la vuelta parada (`r5a` a `r5e`), como historia;
+- **la comprobación acotada,** `BOUNDED_RESULT`: `EMITIBLE TRAS CORRECCIONES; B 0 / I 1 / M 3; las importantes corregidas en el paquete v5.1 (I-01, los dos archivos nuevos de Draft/ empiezan por #nullable enable y la pureza de CT-PBT4C-15 lo prohibe: sin la directiva y sin el ? de ProjectOf); sin decisiones nuevas del Owner; precondicion 6 sobre 6adff90d: pasos 2 a 7 cumplen, sin las CT; recomprobacion v5.1: EMITIBLE, B 0 / I 0 / M 1`.
+
+**Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.

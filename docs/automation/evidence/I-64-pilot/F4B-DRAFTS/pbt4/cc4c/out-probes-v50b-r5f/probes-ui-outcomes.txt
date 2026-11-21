@@ -1,0 +1,2 @@
+filas 1 {'Failed': 1}; inicio 2026-11-21T10:44:39.5305743-06:00; fin 2026-11-21T10:44:39.5305917-06:00
+  Failed RackCad.UI.Tests.TmpPbt4cCloseProbe.Probe | at RackCad.UI.Tests.TmpPbt4cCloseProbe.Probe() in <copia>\tests\RackCad.UI.Tests\Tmpcloseui.cs:line 95 | ninguna antes=ninguna modulo-escenificado=False pregunta=ninguna

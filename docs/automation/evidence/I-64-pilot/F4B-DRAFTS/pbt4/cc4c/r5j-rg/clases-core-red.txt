@@ -1,0 +1,27 @@
+| TRX | Clase | Passed | Failed | Skipped |
+|---|---|---|---|---|
+| `core-red.trx` | `RackCad.Tests.PushBackDraftWriteGuardTests` | 2 | 0 | 1 |
+| `core-red.trx` | `RackCad.Tests.PushBackFullReadGuardTests` | 1 | 0 | 2 |
+| `core-red.trx` | `RackCad.Tests.PushBackFullReadPathTests` | 4 | 0 | 1 |
+| `core-red.trx` | `RackCad.Tests.PushBackSharedReferenceGuardTests` | 1 | 0 | 1 |
+| `core-red.trx` | `RackCad.Tests.PushBackWritePathGuardTests` | 1 | 0 | 1 |
+| `core-red.trx` | `RackCad.Tests.WorkspaceAssociativeBookkeepingTests` | 0 | 0 | 10 |
+| `core-red.trx` | `RackCad.Tests.WorkspaceCommandAdvisorTests` | 0 | 0 | 54 |
+| `core-red.trx` | `RackCad.Tests.WorkspaceEditIntentGuardTests` | 145 | 0 | 7 |
+| `core-red.trx` | `RackCad.Tests.WorkspaceEditIntentHostTests` | 0 | 0 | 62 |
+| `core-red.trx` | `RackCad.Tests.WorkspaceFullCopyGuardTests` | 0 | 0 | 1 |
+| `core-red.trx` | `RackCad.Tests.WorkspaceHostHardeningGuardTests` | 99 | 0 | 1 |
+| `core-red.trx` | `RackCad.Tests.WorkspaceLifecycleGuardTests` | 57 | 0 | 2 |
+| `core-red.trx` | `RackCad.Tests.WorkspaceLifecycleHostTests` | 0 | 0 | 69 |
+| `core-red.trx` | `RackCad.Tests.WorkspacePilotEditGuardTests` | 121 | 0 | 6 |
+| `core-red.trx` | `RackCad.Tests.WorkspacePilotEditHostTests` | 0 | 0 | 59 |
+| `core-red.trx` | `RackCad.Tests.WorkspacePilotPrepareGuardTests` | 22 | 0 | 3 |
+| `core-red.trx` | `RackCad.Tests.WorkspacePilotPrepareTests` | 0 | 0 | 67 |
+| `core-red.trx` | `RackCad.Tests.WorkspacePilotReconciliationGuardTests` | 25 | 0 | 1 |
+| `core-red.trx` | `RackCad.Tests.WorkspacePilotReconciliationHostTests` | 0 | 0 | 28 |
+| `core-red.trx` | `RackCad.Tests.WorkspacePilotUpdateGuardTests` | 85 | 0 | 2 |
+| `core-red.trx` | `RackCad.Tests.WorkspacePilotUpdateHostTests` | 0 | 0 | 35 |
+| `core-red.trx` | `RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests` | 121 | 0 | 4 |
+| `core-red.trx` | `RackCad.Tests.WorkspacePilotUpdateRequestTests` | 0 | 0 | 44 |
+
+Las otras 681 clases: todas Passed.

@@ -1,0 +1,19 @@
+green-ui-RackCad_UI_Tests_PushBackFullDraftWindowParityTests.trx filas 1 {'Passed': 1}
+green-ui-RackCad_UI_Tests_Workspace.trx filas 672 {'NotExecuted': 28, 'Passed': 644}
+green-ui-RackCad_UI_Tests_PushBackWindowOnStateTests.trx filas 2 {'Passed': 2}
+green-ui-RackCad_UI_Tests_PushBackClassicCharacterization.trx filas 55 {'Passed': 55}
+green-ui-RackCad_UI_Tests_PushBackFullEditorCharacterization.trx filas 18 {'NotExecuted': 2, 'Passed': 16}
+green-ui-RackCad_UI_Tests_PushBackStateNet.trx filas 14 {'Passed': 14}
+green-ui-RackCad_UI_Tests_PushBackDeclaredCorrection.trx filas 14 {'Passed': 14}
+green-ui-RackCad_UI_Tests_Cantilever.trx filas 67 {'Passed': 67}
+green-ui-RackCad_UI_Tests_PushBackWorkspaceModeTests.trx filas 3 {'Passed': 3}
+green-ui-RackCad_UI_Tests_PushBackWorkspaceApplyCloseTests.trx filas 4 {'Failed': 1, 'Passed': 3}
+  Failed RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests.CT_PBT2B_06_ClosingAsksOnlyForWhatWasNotApplied | at RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests.CT_PBT2B_06_ClosingAsksOnlyForWhatWasNotApplied() in <copia>\tests\RackCad.UI.Tests\PushBackWorkspaceApplyCloseTests.cs:line 778 | Assert.Equal() Failure: Collections differ
+green-ui-RackCad_UI_Tests_PushBackFieldValidationConcordanceTests.trx filas 1 {'Passed': 1}
+green-ui-RackCad_UI_Tests_PushBackWorkspaceCarryoverTests.trx filas 3 {'Passed': 3}
+green-ui-RackCad_UI_Tests_PushBackFullPanelFieldTests.trx filas 3 {'Passed': 3}
+green-ui-RackCad_UI_Tests_NumericFieldValidationTests.trx filas 13 {'Passed': 13}
+green-ui-RackCad_UI_Tests_NumericFieldTests.trx filas 10 {'Passed': 10}
+green-ui-RackCad_UI_Tests_FullPanelCopyWorkspacePilotReconciliationGreenTests.trx filas 30 {'Passed': 30}
+green-ui-RackCad_UI_Tests_FullPanelCopyWorkspacePilotReconciliationViewGreenTests.trx filas 6 {'Passed': 6}
+ui: PARA (Failed 1)

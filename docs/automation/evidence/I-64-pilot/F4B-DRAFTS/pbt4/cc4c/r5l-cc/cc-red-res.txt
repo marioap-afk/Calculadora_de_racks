@@ -1,0 +1,5 @@
+filas 5 {'Failed': 4, 'Passed': 1}; inicio 2026-11-21T13:05:47.8735032-06:00; fin 2026-11-21T13:05:47.9358546-06:00
+  Failed RackCad.Tests.TmpPbt4cTextCt13.CT13 | at RackCad.Tests.TmpPbt4cTextCt13.CT13() in <copia>\tests\RackCad.Tests\TmpPbt4cTextCt.cs:line 271 | Assert.Equal() Failure: Strings differ
+  Failed RackCad.Tests.TmpPbt4cTextCt15.CT15 | at RackCad.Tests.TmpPbt4cTextCt15.CT15() in <copia>\tests\RackCad.Tests\TmpPbt4cTextCt.cs:line 519 | Assert.Equal() Failure: Strings differ
+  Failed RackCad.Tests.TmpPbt4cTextCt01.CT01 | at RackCad.Tests.TmpPbt4cTextCt01.CT01() in <copia>\tests\RackCad.Tests\TmpPbt4cTextCt.cs:line 40 | Assert.Equal() Failure: Strings differ
+  Failed RackCad.Tests.TmpPbt4cTextCt08.CT08 | at RackCad.Tests.TmpPbt4cTextCt08.CT08() in <copia>\tests\RackCad.Tests\TmpPbt4cTextCt.cs:line 185 | Assert.Equal() Failure: Strings differ
