@@ -158,6 +158,11 @@ namespace RackCad.UI.Workspace
         private PilotUnknownOrigin _choiceOrigin;
         private string _choiceText = string.Empty;
 
+        // I-64 F4B PB-T4b (D-PBT4-08, D-PBT4-09; D-S2): what the first "Si" of "keep my draft" presented, by groups, and the witness of that
+        // read, which the second "Si" hands back. They belong to the choice and go away with it.
+        private EditIntentWitness _keepWitness;
+        private IReadOnlyList<string> _keepLines = Array.Empty<string>();
+
         /// <param name="port">The edit port of the pilot; null leaves the field inert and not available.</param>
         /// <param name="changed">Called after an operation that changed the draft, so the browser rebuilds its strip. It is a method, not a subscription.</param>
         public WorkspacePilotFieldViewModel(IWorkspacePilotEditPort port, Action changed = null)
@@ -263,11 +268,11 @@ namespace RackCad.UI.Workspace
         /// <summary>The question of the choice that waits; empty without one.</summary>
         public string ChoiceText => HasChoice ? _choiceText : string.Empty;
 
-        /// <summary>The lines of the presentation of "keep my draft". INERT in the RED of PB-T4b.</summary>
-        public string KeepMinePresentationText => string.Empty;
+        /// <summary>The lines of the presentation of "keep my draft", one per line, while its choice waits for the second Yes; empty otherwise.</summary>
+        public string KeepMinePresentationText => HasChoice && _choice == ChoiceKind.KeepMine ? string.Join("\n", _keepLines) : string.Empty;
 
-        /// <summary>Whether the presentation of "keep my draft" is shown above Yes and No. INERT in the RED of PB-T4b.</summary>
-        public bool ShowKeepMinePresentation => false;
+        /// <summary>Whether the presentation of "keep my draft" is shown above Yes and No.</summary>
+        public bool ShowKeepMinePresentation => KeepMinePresentationText.Length > 0;
 
         /// <summary>What the reconciliation of the draft needs the user to know: what changed and why, or that the outcome is unknown.</summary>
         public string ReconcileText => ReconcileTextOf(_view);
@@ -604,6 +609,7 @@ namespace RackCad.UI.Workspace
             var pending = _choicePending;
             var committed = _choiceCommitted;
             var origin = _choiceOrigin;
+            var keepWitness = _keepWitness;
             try
             {
                 ClearNotices();
@@ -625,7 +631,8 @@ namespace RackCad.UI.Workspace
                     return;
                 }
 
-                var request = new EditIntentRequest(session, rack, null, null);
+                // The first "Si" of "keep my draft" carries no witness and only gets the presentation; the second carries the witness of that read.
+                var request = new EditIntentRequest(session, rack, null, kind == ChoiceKind.KeepMine ? keepWitness : null);
                 var outcome = kind == ChoiceKind.KeepMine ? _port.TryKeepMine(request) : _port.TryDiscardAndReload(request);
                 if (!IsMine(session, rack))
                 {
@@ -692,6 +699,8 @@ namespace RackCad.UI.Workspace
             _choiceCommitted = null;
             _choiceOrigin = PilotUnknownOrigin.None;
             _choiceText = string.Empty;
+            _keepWitness = null;
+            _keepLines = Array.Empty<string>();
         }
 
         // Reads the memory of the port for the surface and shows it. It never reads the drawing and keeps the notices.
@@ -893,6 +902,22 @@ namespace RackCad.UI.Workspace
                     _persistHint = null;
                     notice = ReloadedText;
                     break;
+                case EditIntentStatus.Presented when kind == ChoiceKind.KeepMine:
+                    // The first "Si", or a second one whose witness no longer held: the choice is asked again, with the lines and the witness of
+                    // the read that the host classified. Nothing was kept and the draft did not change.
+                    AskChoice(ChoiceKind.KeepMine);
+                    if (_choice != ChoiceKind.KeepMine)
+                    {
+                        if (_failure != null) return;
+                        _noticeText = SituationChangedText;
+                        RaiseAll();
+                        return;
+                    }
+
+                    _keepWitness = outcome.KeepWitness;
+                    _keepLines = outcome.PresentationLines;
+                    RaiseAll();
+                    return;
                 case EditIntentStatus.Kept when kind == ChoiceKind.KeepMine:
                     _persistDiagnostic = null;
                     _persistHint = null;
@@ -1187,6 +1212,8 @@ namespace RackCad.UI.Workspace
             OnPropertyChanged(nameof(ShowKeepMineButton));
             OnPropertyChanged(nameof(HasChoice));
             OnPropertyChanged(nameof(ChoiceText));
+            OnPropertyChanged(nameof(KeepMinePresentationText));
+            OnPropertyChanged(nameof(ShowKeepMinePresentation));
             OnPropertyChanged(nameof(ReconcileText));
             OnPropertyChanged(nameof(StateText));
             OnPropertyChanged(nameof(MessageText));

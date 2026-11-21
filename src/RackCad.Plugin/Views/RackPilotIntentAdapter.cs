@@ -39,16 +39,31 @@ namespace RackCad.Plugin.Views
         internal RackPilotIntentReadResult(PushBackPilotIntentResult pilot, PushBackFullIntentResult full, PushBackPilotIntentScan input)
         {
             Pilot = pilot;
-            Full = full;
+            _full = new System.Lazy<PushBackFullIntentResult>(full);
             Input = input;
             FailureReason = string.Empty;
         }
+
+        /// <summary>
+        /// I-64 F4B PB-T4b (D-S4, OWNER-02): the read with the full model of its input still to be read. It is read the
+        /// first time <see cref="Full"/> is asked for, and only then, so that a reread at another origin, which brings the full
+        /// model of that origin, never materializes the one of the Primary: one materialization of the full model per read.
+        /// </summary>
+        internal RackPilotIntentReadResult(PushBackPilotIntentResult pilot, System.Lazy<PushBackFullIntentResult> full, PushBackPilotIntentScan input)
+        {
+            Pilot = pilot;
+            _full = full;
+            Input = input;
+            FailureReason = string.Empty;
+        }
+
+        private readonly System.Lazy<PushBackFullIntentResult>? _full;
 
         internal bool Succeeded => Pilot != null;
 
         internal PushBackPilotIntentResult? Pilot { get; }
 
-        internal PushBackFullIntentResult? Full { get; }
+        internal PushBackFullIntentResult? Full => _full?.Value;
 
         internal PushBackPilotIntentScan? Input { get; }
 
@@ -133,7 +148,7 @@ namespace RackCad.Plugin.Views
                 var input = new PushBackPilotIntentScan(rackId, originKey, scan.Facts, scan.RawEnvelopes, CompletenessEvidence, witness);
                 var read = PushBackPilotIntentReader.Read(input, catalog);
 
-                return new RackPilotIntentReadResult(read, PushBackFullDraftReader.Read(input, catalog), input);
+                return new RackPilotIntentReadResult(read, new System.Lazy<PushBackFullIntentResult>(() => PushBackFullDraftReader.Read(input, catalog)), input);
             }
             catch (Autodesk.AutoCAD.Runtime.Exception ex) when (ex.ErrorStatus == ErrorStatus.LockViolation)
             {

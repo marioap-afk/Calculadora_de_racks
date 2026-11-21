@@ -259,6 +259,10 @@
                             <StackPanel>
                                 <TextBlock x:Name="BrowserFieldChoiceText" Text="{Binding Browser.Field.ChoiceText}" TextWrapping="Wrap"
                                            Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                <!-- I-64 F4B PB-T4b (D-PBT4-08, D-PBT4-09): what changed, by groups, above Si and No, after the first Si of "keep my draft". -->
+                                <TextBlock x:Name="BrowserFieldKeepMinePresentationText" Text="{Binding Browser.Field.KeepMinePresentationText}"
+                                           TextWrapping="Wrap" Margin="0,4,0,0" Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                                           Visibility="{Binding Browser.Field.ShowKeepMinePresentation, Converter={StaticResource FlagToVisibility}}" />
                                 <WrapPanel Margin="0,6,0,0">
                                     <Button x:Name="BrowserFieldChoiceYesButton" Content="Sí" Margin="0,0,6,0" Padding="10,3"
                                             Style="{StaticResource SecondaryButtonStyle}"

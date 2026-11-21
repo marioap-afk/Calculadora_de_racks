@@ -40,12 +40,83 @@ namespace RackCad.Application.Systems.PushBack.Draft
         /// <summary>True when the reread was admitted and classified.</summary>
         public bool IsAdmitted => Diagnostic == null;
 
-        /// <summary>INERT in the RED of PB-T4b: no line.</summary>
-        public static PushBackKeepMinePresentation Of(PushBackConflictClassification classification) =>
-            new PushBackKeepMinePresentation(Array.Empty<string>(), null, null);
+        /// <summary>The lines of a classification: each group once, in the order of <see cref="PushBackChangeGroup"/>, joined with commas and a last " y ".</summary>
+        public static PushBackKeepMinePresentation Of(PushBackConflictClassification classification)
+        {
+            if (classification == null) throw new ArgumentNullException(nameof(classification));
 
-        /// <summary>INERT in the RED of PB-T4b: no line.</summary>
-        public static PushBackKeepMinePresentation Read(DraftSession<PushBackFullDraftState> draft, PushBackFullIntentResult read, RackCatalog catalog) =>
-            new PushBackKeepMinePresentation(Array.Empty<string>(), null, null);
+            var lines = new List<string>();
+            AddGroups(lines, "Cambiado fuera: ", classification.ChangedExternally);
+            AddGroups(lines, "Cambiado por ti: ", classification.ChangedByUser);
+            AddGroups(lines, "Cambiado en los dos: ", classification.Overlapping);
+            AddGroups(lines, "Cambios estructurales: ", classification.Structural);
+
+            var erased = classification.ViewsToErase.Count;
+            if (erased == 1) lines.Add("Vistas: se borrará 1 lateral obsoleto.");
+            else if (erased > 1) lines.Add("Vistas: se borrarán " + erased.ToString(CultureInfo.InvariantCulture) + " laterales obsoletos.");
+
+            var rejected = classification.ViewsRejected.Count;
+            if (rejected == 1) lines.Add("Vistas: 1 no se puede conservar.");
+            else if (rejected > 1) lines.Add("Vistas: " + rejected.ToString(CultureInfo.InvariantCulture) + " no se pueden conservar.");
+
+            if (classification.AllViewsObsolete) lines.Add("Todas las vistas quedarían obsoletas.");
+            return new PushBackKeepMinePresentation(lines.AsReadOnly(), null, null);
+        }
+
+        /// <summary>
+        /// Classifies the draft against the reread of its rack: the base is the initial state of the draft, the current rack is the state of the
+        /// reread, the draft is its current state, and the members are the mutable envelopes of the base of the reread. A reread that is not
+        /// admitted is not classified: the presentation carries its diagnostic and no line. It changes neither the draft nor the reread.
+        /// </summary>
+        public static PushBackKeepMinePresentation Read(DraftSession<PushBackFullDraftState> draft, PushBackFullIntentResult read, RackCatalog catalog)
+        {
+            if (draft == null) throw new ArgumentNullException(nameof(draft));
+            if (read == null) throw new ArgumentNullException(nameof(read));
+            if (!read.Read.IsAdmitted)
+            {
+                return new PushBackKeepMinePresentation(
+                    Array.Empty<string>(), null, read.Read.Admission.Diagnostic ?? PushBackPilotIntentReader.MaterializeDiagnostic);
+            }
+
+            var current = read.Read.InitialState;
+            var envelopes = new RackEmbedStore();
+            var members = new List<KeyValuePair<string, RackEmbedDocument>>();
+            foreach (var entry in read.StaleBase.Entries.Values
+                         .Where(e => e.Membership == DraftMembership.Mutable && e.EnvelopeText != null)
+                         .OrderBy(e => e.Key, StringComparer.Ordinal))
+            {
+                var embed = envelopes.Deserialize(entry.EnvelopeText);
+                if (embed != null) members.Add(new KeyValuePair<string, RackEmbedDocument>(entry.Key, embed));
+            }
+
+            var classification = PushBackConflictClassifier.Classify(draft.InitialDraftState, current, draft.CurrentDraftState, members, catalog);
+            return new PushBackKeepMinePresentation(Of(classification).Lines, current.Origin, null);
+        }
+
+        private static void AddGroups(List<string> lines, string prefix, IReadOnlyList<PushBackChangeEntry> entries)
+        {
+            var groups = entries.Select(entry => entry.Group).Distinct().OrderBy(group => (int)group).Select(TextOf).ToList();
+            if (groups.Count == 0) return;
+            lines.Add(prefix + Join(groups) + ".");
+        }
+
+        private static string Join(IReadOnlyList<string> items)
+            => items.Count == 1 ? items[0] : string.Join(", ", items.Take(items.Count - 1)) + " y " + items[items.Count - 1];
+
+        private static string TextOf(PushBackChangeGroup group)
+        {
+            switch (group)
+            {
+                case PushBackChangeGroup.Name: return "el nombre";
+                case PushBackChangeGroup.Rack: return "el rack";
+                case PushBackChangeGroup.Annotations: return "las anotaciones";
+                case PushBackChangeGroup.Safety: return "la seguridad";
+                case PushBackChangeGroup.Fronts: return "los frentes";
+                case PushBackChangeGroup.Modules: return "los módulos";
+                case PushBackChangeGroup.SideB: return "el lado B";
+                case PushBackChangeGroup.Composite: return "la parte compuesta";
+                default: return "fuera del editor";
+            }
+        }
     }
 }

@@ -25,9 +25,30 @@ namespace RackCad.Application.Systems.PushBack.Draft
 
         public const string UnknownFieldMessage = "Campo desconocido para el panel.";
 
-        // INERT in the RED of PB-T4b.
-        public DraftFieldValidation Validate(string fieldKey, string text) => DraftFieldValidation.Invalid(UnknownFieldMessage);
+        public DraftFieldValidation Validate(string fieldKey, string text)
+        {
+            if (!string.Equals(fieldKey, AnnotationScaleKey, StringComparison.Ordinal))
+            {
+                return DraftFieldValidation.Invalid(UnknownFieldMessage);
+            }
 
-        public PushBackFullDraftState Apply(PushBackFullDraftState current, IReadOnlyDictionary<string, string> pendingText) => current;
+            return PushBackAnnotationScaleRule.Validate(text);
+        }
+
+        public PushBackFullDraftState Apply(PushBackFullDraftState current, IReadOnlyDictionary<string, string> pendingText)
+        {
+            if (current == null) throw new ArgumentNullException(nameof(current));
+            if (pendingText == null) throw new ArgumentNullException(nameof(pendingText));
+
+            // The core only calls Apply with text that already passed Validate; a value that does not, or another key, is left alone.
+            if (pendingText.TryGetValue(AnnotationScaleKey, out var text)
+                && Validate(AnnotationScaleKey, text).IsValid
+                && LocalizedNumberParser.TryDouble(text, out var scale))
+            {
+                current.Editable.AnnotationScale = scale;
+            }
+
+            return current;
+        }
     }
 }

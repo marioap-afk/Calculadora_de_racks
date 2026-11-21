@@ -60,7 +60,7 @@ namespace RackCad.Application.Formatting
         public const string EmptyRequiredMessage = "Escribe un valor.";
         public const string NotANumberMessage = "Valor no numérico.";
 
-        /// <summary>Checks <paramref name="text"/> against the rules of one field. INERT in the RED of PB-T4b: the GREEN moves the rule here.</summary>
+        /// <summary>Checks <paramref name="text"/> against the rules of one field.</summary>
         public static NumericTextCheck Check(
             string text,
             bool isOptional,
@@ -68,6 +68,57 @@ namespace RackCad.Application.Formatting
             double? minimum,
             double? maximum,
             bool minimumInclusive,
-            bool maximumInclusive) => new NumericTextCheck(NumericTextStatus.NotANumber, null, null);
+            bool maximumInclusive)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return isOptional
+                    ? new NumericTextCheck(NumericTextStatus.EmptyOptional, null, null)
+                    : new NumericTextCheck(NumericTextStatus.EmptyRequired, null, EmptyRequiredMessage);
+            }
+
+            double parsed;
+            if (integerOnly)
+            {
+                if (!LocalizedNumberParser.TryInteger(text, out var integer))
+                {
+                    return new NumericTextCheck(NumericTextStatus.NotANumber, null, NotANumberMessage);
+                }
+
+                parsed = integer;
+            }
+            else if (!LocalizedNumberParser.TryDouble(text, out parsed))
+            {
+                return new NumericTextCheck(NumericTextStatus.NotANumber, null, NotANumberMessage);
+            }
+
+            if (minimum.HasValue)
+            {
+                var below = minimumInclusive ? parsed < minimum.Value : parsed <= minimum.Value;
+                if (below)
+                {
+                    return new NumericTextCheck(NumericTextStatus.BelowMinimum, parsed, MinimumMessage(minimum.Value, minimumInclusive));
+                }
+            }
+
+            if (maximum.HasValue)
+            {
+                var above = maximumInclusive ? parsed > maximum.Value : parsed >= maximum.Value;
+                if (above)
+                {
+                    return new NumericTextCheck(NumericTextStatus.AboveMaximum, parsed, MaximumMessage(maximum.Value, maximumInclusive));
+                }
+            }
+
+            return new NumericTextCheck(NumericTextStatus.Valid, parsed, null);
+        }
+
+        private static string MinimumMessage(double minimum, bool inclusive)
+            => $"El valor debe ser {(inclusive ? "≥" : ">")} {Format(minimum)}.";
+
+        private static string MaximumMessage(double maximum, bool inclusive)
+            => $"El valor debe ser {(inclusive ? "≤" : "<")} {Format(maximum)}.";
+
+        private static string Format(double value) => value.ToString("0.###", CultureInfo.CurrentCulture);
     }
 }

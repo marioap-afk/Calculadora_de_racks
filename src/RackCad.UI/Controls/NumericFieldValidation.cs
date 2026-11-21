@@ -1,4 +1,3 @@
-using System.Globalization;
 using RackCad.Application.Formatting;
 
 namespace RackCad.UI.Controls
@@ -60,8 +59,8 @@ namespace RackCad.UI.Controls
     /// </summary>
     public static class NumericFieldValidation
     {
-        public const string EmptyRequiredMessage = "Escribe un valor.";
-        public const string NotANumberMessage = "Valor no numérico.";
+        public const string EmptyRequiredMessage = NumericTextRule.EmptyRequiredMessage;
+        public const string NotANumberMessage = NumericTextRule.NotANumberMessage;
 
         /// <summary>
         /// Validates <paramref name="text"/> against the field's rules.
@@ -82,57 +81,10 @@ namespace RackCad.UI.Controls
             bool minimumInclusive = true,
             bool maximumInclusive = true)
         {
-            if (string.IsNullOrWhiteSpace(text))
-            {
-                return isOptional
-                    ? new NumericFieldValidationResult(NumericFieldStatus.EmptyOptional, null, null)
-                    : new NumericFieldValidationResult(NumericFieldStatus.EmptyRequired, null, EmptyRequiredMessage);
-            }
-
-            double parsed;
-            if (integerOnly)
-            {
-                if (!LocalizedNumberParser.TryInteger(text, out var integer))
-                {
-                    return new NumericFieldValidationResult(NumericFieldStatus.NotANumber, null, NotANumberMessage);
-                }
-
-                parsed = integer;
-            }
-            else if (!LocalizedNumberParser.TryDouble(text, out parsed))
-            {
-                return new NumericFieldValidationResult(NumericFieldStatus.NotANumber, null, NotANumberMessage);
-            }
-
-            if (minimum.HasValue)
-            {
-                var below = minimumInclusive ? parsed < minimum.Value : parsed <= minimum.Value;
-                if (below)
-                {
-                    return new NumericFieldValidationResult(
-                        NumericFieldStatus.BelowMinimum, parsed, MinimumMessage(minimum.Value, minimumInclusive));
-                }
-            }
-
-            if (maximum.HasValue)
-            {
-                var above = maximumInclusive ? parsed > maximum.Value : parsed >= maximum.Value;
-                if (above)
-                {
-                    return new NumericFieldValidationResult(
-                        NumericFieldStatus.AboveMaximum, parsed, MaximumMessage(maximum.Value, maximumInclusive));
-                }
-            }
-
-            return new NumericFieldValidationResult(NumericFieldStatus.Valid, parsed, null);
+            // I-64 F4B PB-T4b (D-PBT4-06): the one rule lives in Application (NumericTextRule); this keeps its public surface and only
+            // translates the result. The two enumerations have the same members in the same order.
+            var check = NumericTextRule.Check(text, isOptional, integerOnly, minimum, maximum, minimumInclusive, maximumInclusive);
+            return new NumericFieldValidationResult((NumericFieldStatus)(int)check.Status, check.Value, check.Message);
         }
-
-        private static string MinimumMessage(double minimum, bool inclusive)
-            => $"El valor debe ser {(inclusive ? "≥" : ">")} {Format(minimum)}.";
-
-        private static string MaximumMessage(double maximum, bool inclusive)
-            => $"El valor debe ser {(inclusive ? "≤" : "<")} {Format(maximum)}.";
-
-        private static string Format(double value) => value.ToString("0.###", CultureInfo.CurrentCulture);
     }
 }

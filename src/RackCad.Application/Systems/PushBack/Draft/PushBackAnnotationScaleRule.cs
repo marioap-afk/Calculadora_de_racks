@@ -14,7 +14,10 @@ namespace RackCad.Application.Systems.PushBack.Draft
 
         public const bool MinimumInclusive = false;
 
-        // INERT in the RED of PB-T4b.
-        public static DraftFieldValidation Validate(string text) => DraftFieldValidation.Invalid(string.Empty);
+        public static DraftFieldValidation Validate(string text)
+        {
+            var check = NumericTextRule.Check(text, false, false, Minimum, null, MinimumInclusive, true);
+            return check.IsValid ? DraftFieldValidation.Valid : DraftFieldValidation.Invalid(check.Message);
+        }
     }
 }

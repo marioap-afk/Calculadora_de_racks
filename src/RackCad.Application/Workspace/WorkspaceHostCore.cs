@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RackCad.Application.Systems.PushBack.Draft;
 using RackCad.Application.Systems.PushBack.Pilot;
 using RackCad.Application.Workspace.Drafts;
 
@@ -37,14 +38,16 @@ namespace RackCad.Application.Workspace
     /// </summary>
     public sealed class WorkspaceHostCore : IWorkspaceLifecycleAdvisor, IWorkspacePilotEditPort
     {
-        // I-64 F4-T3A (D-T3-02): the one adapter of the pending text of the pilot. It keeps no state, so it is shared; it is never an
-        // instance field of the host.
-        private static readonly PushBackPilotFieldAdapter PilotFieldAdapter = new();
+        // I-64 F4-T3A (D-T3-02): the one adapter of the pending text of the field. It keeps no state, so it is shared; it is never an
+        // instance field of the host. Since I-64 F4B PB-T4b (D-PBT4-04, D-PBT4-06) it is the adapter of the full draft, with the one rule
+        // of the scale (PushBackAnnotationScaleRule), by default.
+        private static readonly PushBackFullFieldAdapter PilotFieldAdapter = new();
 
         private const string PilotReadInProgressReason = "Hay una lectura del piloto en curso.";
         private const string NotThisDocumentReason = "La petición no es del documento activo.";
         private const string NoDraftReason = "No hay borrador para el rack.";
         private const string NotCheckableReason = "El borrador no admite comprobación en su estado actual.";
+        private const string FullReadMissingReason = "No editable aquí: la lectura no trae el modelo completo.";
         private const string NotKeepableReason ="Solo se conserva un borrador en conflicto o con cambios marcados como posiblemente obsoletos.";
 
         /// <summary>Native identity used when no document is open: it matches no session.</summary>
@@ -343,13 +346,18 @@ namespace RackCad.Application.Workspace
                 if (pilot == null) return EditIntentOutcome.Failed("La lectura de la intención de edición no trajo resultado.");
                 var witness = WorkspaceEditIntent.WitnessStatusOf(pilot.PreviewWitness);
 
-                // 8: the base of the read only goes to Begin, with the comparer and the copier of the pilot.
+                // I-64 F4B PB-T4b (D-PBT4-04): the draft of the panel is the full one; a read without the full model begins no draft.
+                var full = read.FullRead;
+                if (full == null)
+                    return EditIntentOutcome.NotAdmitted(FullReadMissingReason, null, PushBackPilotIntentReader.ClassicEditorHint, witness);
+
+                // 8: the base of the read only goes to Begin, with the comparer and the copier of the full model.
                 var begun = _drafts.Begin(
                     request.Session,
                     request.RackId,
-                    pilot.Read,
-                    PushBackPilotStateComparer.Instance,
-                    PushBackPilotStateComparer.Copy);
+                    full.Read,
+                    PushBackFullDraftStateComparer.Instance,
+                    PushBackFullDraftStateComparer.Copy);
                 switch (begun.Status)
                 {
                     case DraftBeginStatus.Created:
@@ -360,8 +368,8 @@ namespace RackCad.Application.Workspace
                     case DraftBeginStatus.NotAdmitted:
                         return EditIntentOutcome.NotAdmitted(
                             begun.Admission.Diagnostic ?? PushBackPilotIntentReader.MaterializeDiagnostic,
-                            pilot.Detail,
-                            pilot.ClassicEditorHint,
+                            full.Detail,
+                            full.ClassicEditorHint,
                             witness);
                     default:
                         return EditIntentOutcome.Rejected("La sesión se retiró.", witness);
@@ -400,7 +408,7 @@ namespace RackCad.Application.Workspace
                 if (gate == EditGate.Rejected) return EditCheckOutcome.Rejected(reason);
 
                 // 6: only an Unknown draft after a commit that threw is checked; nothing is read for any other.
-                var draft = _drafts.Find<PushBackPilotDraftState>(request.Session, request.RackId);
+                var draft = _drafts.Find<PushBackFullDraftState>(request.Session, request.RackId);
                 if (draft == null) return EditCheckOutcome.NotFound("No hay borrador para el rack.");
                 if (draft.Status != DraftStatus.Unknown || draft.UnknownOrigin != DraftUnknownOrigin.CommitThrew)
                     return EditCheckOutcome.NotApplicable("El borrador no quedó desconocido tras una aplicación fallida.");
@@ -422,8 +430,8 @@ namespace RackCad.Application.Workspace
                         return EditCheckOutcome.Failed(read.Reason ?? "Falló la relectura.");
                 }
 
-                var pilot = read.PilotRead;
-                if (pilot == null) return EditCheckOutcome.Failed("La relectura no trajo resultado.");
+                var full = read.FullRead;
+                if (full == null) return EditCheckOutcome.Failed(FullReadMissingReason);
 
                 // 7, continued (I-64 F4-T4C2, D-T4C-12): the diagnostic of the admission comes from the SAME reread, before its base goes to CheckNow, and in its
                 // own try. A failure of it gives null and never changes the answer: Recovered and Conflict only come from the comparison of the bases.
@@ -431,8 +439,8 @@ namespace RackCad.Application.Workspace
                 string? hint = null;
                 try
                 {
-                    admission = pilot.Read.IsAdmitted ? null : pilot.Read.Admission.Diagnostic;
-                    hint = admission == null ? null : pilot.ClassicEditorHint;
+                    admission = full.Read.IsAdmitted ? null : full.Read.Admission.Diagnostic;
+                    hint = admission == null ? null : full.ClassicEditorHint;
                 }
                 catch (Exception diagnosticFailure)
                 {
@@ -442,7 +450,7 @@ namespace RackCad.Application.Workspace
                 }
 
                 // 8: the base of the reread only goes to CheckNow.
-                var check = draft.CheckNow(pilot.StaleBase);
+                var check = draft.CheckNow(full.StaleBase);
                 switch (check.Status)
                 {
                     case DraftCheckStatus.Recovered:
@@ -497,7 +505,7 @@ namespace RackCad.Application.Workspace
                 if (gate == EditGate.Rejected) return EditIntentOutcome.Rejected(reason);
 
                 // 6: only a clean draft marked as possibly stale is reloaded; nothing is read for any other.
-                var draft = _drafts.Find<PushBackPilotDraftState>(request.Session, request.RackId);
+                var draft = _drafts.Find<PushBackFullDraftState>(request.Session, request.RackId);
                 if (draft == null) return EditIntentOutcome.NotFound("No hay borrador para el rack.");
                 if (!draft.NeedsLazyReload) return EditIntentOutcome.NotNeeded("El borrador no necesita recargarse.");
 
@@ -521,9 +529,11 @@ namespace RackCad.Application.Workspace
                 var pilot = read.PilotRead;
                 if (pilot == null) return EditIntentOutcome.Failed("La lectura para la recarga no trajo resultado.");
                 var witness = WorkspaceEditIntent.WitnessStatusOf(pilot.PreviewWitness);
+                var full = read.FullRead;
+                if (full == null) return EditIntentOutcome.Failed(FullReadMissingReason);
 
                 // 8: the read only goes to DiscardAndReload.
-                var reloaded = draft.DiscardAndReload(pilot.Read);
+                var reloaded = draft.DiscardAndReload(full.Read);
                 switch (reloaded.Status)
                 {
                     case DraftReloadStatus.Reloaded:
@@ -532,8 +542,8 @@ namespace RackCad.Application.Workspace
                     case DraftReloadStatus.NotAdmitted:
                         return EditIntentOutcome.NotAdmitted(
                             reloaded.Admission.Diagnostic ?? PushBackPilotIntentReader.MaterializeDiagnostic,
-                            pilot.Detail,
-                            pilot.ClassicEditorHint,
+                            full.Detail,
+                            full.ClassicEditorHint,
                             witness);
                     case DraftReloadStatus.NotAllowed:
                         return EditIntentOutcome.Waiting("El borrador se está aplicando o ya no está registrado.");
@@ -584,7 +594,7 @@ namespace RackCad.Application.Workspace
                 if (UpdateInFlightForRequest(request)) return EditConfirmOutcome.Waiting(PushBackPilotHostTexts.UpdateInFlightReason);
 
                 // 3 and 4: a missing draft, and a draft whose status is not clean, dirty or in conflict, read nothing.
-                var draft = _drafts.Find<PushBackPilotDraftState>(request.Session, request.RackId);
+                var draft = _drafts.Find<PushBackFullDraftState>(request.Session, request.RackId);
                 if (draft == null) return EditConfirmOutcome.NotFound(NoDraftReason);
                 var before = draft.Status;
                 if (before != DraftStatus.Clean && before != DraftStatus.Dirty && before != DraftStatus.Conflict)
@@ -607,13 +617,13 @@ namespace RackCad.Application.Workspace
                         return EditConfirmOutcome.Failed(read.Reason ?? "Falló la relectura.");
                 }
 
-                var pilot = read.PilotRead;
-                if (pilot == null) return EditConfirmOutcome.Failed("La relectura no trajo resultado.");
+                var full = read.FullRead;
+                if (full == null) return EditConfirmOutcome.Failed(FullReadMissingReason);
 
                 // 7: the base of the reread only goes to ConfirmBase.
-                var confirm = draft.ConfirmBase(pilot.StaleBase);
-                var admission = pilot.Read.IsAdmitted ? null : pilot.Read.Admission.Diagnostic;
-                var hint = admission == null ? null : pilot.ClassicEditorHint;
+                var confirm = draft.ConfirmBase(full.StaleBase);
+                var admission = full.Read.IsAdmitted ? null : full.Read.Admission.Diagnostic;
+                var hint = admission == null ? null : full.ClassicEditorHint;
                 switch (confirm.Status)
                 {
                     case DraftConfirmStatus.Confirmed:
@@ -670,7 +680,7 @@ namespace RackCad.Application.Workspace
 
                 // 3 and 4: a missing draft is NotFound, a draft that is being applied waits and one that does not need to be kept is not
                 // needed; none of them reads anything.
-                var draft = _drafts.Find<PushBackPilotDraftState>(request.Session, request.RackId);
+                var draft = _drafts.Find<PushBackFullDraftState>(request.Session, request.RackId);
                 if (draft == null) return EditIntentOutcome.NotFound(NoDraftReason);
                 var before = draft.Status;
                 if (before == DraftStatus.Applying) return EditIntentOutcome.Waiting("El borrador se está aplicando o ya no está registrado.");
@@ -697,9 +707,25 @@ namespace RackCad.Application.Workspace
                 var pilot = read.PilotRead;
                 if (pilot == null) return EditIntentOutcome.Failed("La lectura para la recarga no trajo resultado.");
                 var witness = WorkspaceEditIntent.WitnessStatusOf(pilot.PreviewWitness);
+                var full = read.FullRead;
+                if (full == null) return EditIntentOutcome.Failed(FullReadMissingReason);
 
-                // 7: the read only goes to the atomic form of KeepMineOnCurrentVersion, which has been confirmed by the gesture itself.
-                var kept = draft.KeepMineOnCurrentVersion(pilot.Read, PushBackPilotMaterializer.KeepPilotEditsOn, confirmed: true);
+                // 7 (I-64 F4B PB-T4b, D-PBT4-08): without a witness, or with one that no longer holds, the operation only presents what changed,
+                // by groups, with the witness of this read; the draft does not change. Only the witness that still holds reaches the keep.
+                if (request.Witness == null || witness != EditWitnessStatus.Unchanged)
+                {
+                    if (!draft.IsRegistered || (draft.Status != DraftStatus.Dirty && draft.Status != DraftStatus.Conflict))
+                        return EditIntentOutcome.Waiting("El borrador se está aplicando o ya no está registrado.");
+
+                    // The classification and its admission are of the pure function of Draft/: the host names the read only in its consumers.
+                    var presentation = PushBackKeepMinePresentation.Read(draft, full, read.Catalog!);
+                    if (!presentation.IsAdmitted)
+                        return EditIntentOutcome.NotAdmitted(presentation.Diagnostic, full.Detail, full.ClassicEditorHint, witness);
+                    return EditIntentOutcome.Presented(presentation.Lines, new EditIntentWitness(full.OriginKey, presentation.OriginText), witness);
+                }
+
+                // 7, continued: the read only goes to the atomic form of KeepMineOnCurrentVersion, confirmed by the second "Si" with the witness.
+                var kept = draft.KeepMineOnCurrentVersion(full.Read, PushBackFullComposition.KeepOn, confirmed: true);
                 switch (kept.Status)
                 {
                     case DraftReloadStatus.Reloaded:
@@ -708,8 +734,8 @@ namespace RackCad.Application.Workspace
                     case DraftReloadStatus.NotAdmitted:
                         return EditIntentOutcome.NotAdmitted(
                             kept.Admission.Diagnostic ?? PushBackPilotIntentReader.MaterializeDiagnostic,
-                            pilot.Detail,
-                            pilot.ClassicEditorHint,
+                            full.Detail,
+                            full.ClassicEditorHint,
                             witness);
                     case DraftReloadStatus.NotAllowed:
                         return EditIntentOutcome.Waiting("El borrador se está aplicando o ya no está registrado.");
@@ -759,7 +785,7 @@ namespace RackCad.Application.Workspace
                 if (UpdateInFlightForRequest(request)) return EditIntentOutcome.Waiting(PushBackPilotHostTexts.UpdateInFlightReason);
 
                 // 3 and 4: a missing draft is NotFound and a draft that is being applied waits; none of them reads anything.
-                var draft = _drafts.Find<PushBackPilotDraftState>(request.Session, request.RackId);
+                var draft = _drafts.Find<PushBackFullDraftState>(request.Session, request.RackId);
                 if (draft == null) return EditIntentOutcome.NotFound(NoDraftReason);
                 if (draft.Status == DraftStatus.Applying) return EditIntentOutcome.Waiting("El borrador se está aplicando o ya no está registrado.");
 
@@ -783,9 +809,11 @@ namespace RackCad.Application.Workspace
                 var pilot = read.PilotRead;
                 if (pilot == null) return EditIntentOutcome.Failed("La lectura para la recarga no trajo resultado.");
                 var witness = WorkspaceEditIntent.WitnessStatusOf(pilot.PreviewWitness);
+                var full = read.FullRead;
+                if (full == null) return EditIntentOutcome.Failed(FullReadMissingReason);
 
                 // 7: the read only goes to DiscardAndReload; the status is the one of the reload of the lazy kind.
-                var reloaded = draft.DiscardAndReload(pilot.Read);
+                var reloaded = draft.DiscardAndReload(full.Read);
                 switch (reloaded.Status)
                 {
                     case DraftReloadStatus.Reloaded:
@@ -794,8 +822,8 @@ namespace RackCad.Application.Workspace
                     case DraftReloadStatus.NotAdmitted:
                         return EditIntentOutcome.NotAdmitted(
                             reloaded.Admission.Diagnostic ?? PushBackPilotIntentReader.MaterializeDiagnostic,
-                            pilot.Detail,
-                            pilot.ClassicEditorHint,
+                            full.Detail,
+                            full.ClassicEditorHint,
                             witness);
                     case DraftReloadStatus.NotAllowed:
                         return EditIntentOutcome.Waiting("El borrador se está aplicando o ya no está registrado.");
@@ -853,7 +881,7 @@ namespace RackCad.Application.Workspace
         /// </summary>
         public EditUpdateOutcome TryUpdatePilot(EditIntentRequest request, IPushBackPilotUpdatePort port)
         {
-            DraftSession<PushBackPilotDraftState> draft;
+            DraftSession<PushBackFullDraftState> draft;
             long documentId;
             try
             {
@@ -866,7 +894,7 @@ namespace RackCad.Application.Workspace
 
                 // 2: the draft. A rack without identity has none.
                 if (string.IsNullOrWhiteSpace(request.RackId)) return EditUpdateOutcome.NoDraft(NoDraftReason);
-                var found = _drafts.Find<PushBackPilotDraftState>(request.Session, request.RackId);
+                var found = _drafts.Find<PushBackFullDraftState>(request.Session, request.RackId);
                 if (found == null) return EditUpdateOutcome.NoDraft(NoDraftReason);
                 draft = found;
 
@@ -898,16 +926,16 @@ namespace RackCad.Application.Workspace
             }
 
             // 5 and 6: the run is total, and the slot is closed exactly once, with the outcome of the run in every case.
-            var outcome = DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedFailure(PushBackPilotUpdateRun.UpdateNotRunReason);
+            var outcome = DraftApplyOutcome<PushBackFullDraftState>.NotAppliedFailure(PushBackPilotUpdateRun.UpdateNotRunReason);
             DraftApplyResult closed;
             try
             {
-                outcome = PushBackPilotUpdateRun.Execute(draft, new PushBackPilotUpdateRequest(documentId, request.RackId), port);
+                outcome = PushBackPilotUpdateRun.ExecuteFull(draft, new PushBackPilotUpdateRequest(documentId, request.RackId), port);
             }
             catch (Exception ex)
             {
                 Report("WorkspaceHostCore.TryUpdatePilot", ex);
-                outcome = DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedFailure(PushBackPilotUpdateRun.UpdateNotRunReason + " " + ex.Message);
+                outcome = DraftApplyOutcome<PushBackFullDraftState>.NotAppliedFailure(PushBackPilotUpdateRun.UpdateNotRunReason + " " + ex.Message);
             }
             finally
             {
@@ -971,7 +999,7 @@ namespace RackCad.Application.Workspace
         }
 
         // The draft did not accept the close of the update: the draft was not rebased, so the answer is built from what the run decided.
-        private static EditUpdateOutcome AnswerOfAClosedThatWasNotAccepted(DraftApplyOutcome<PushBackPilotDraftState> outcome, DraftApplyOutcomeKind kind)
+        private static EditUpdateOutcome AnswerOfAClosedThatWasNotAccepted(DraftApplyOutcome<PushBackFullDraftState> outcome, DraftApplyOutcomeKind kind)
         {
             switch (kind)
             {
@@ -1143,7 +1171,7 @@ namespace RackCad.Application.Workspace
                 var before = ViewOfPilotDraft(draft);
                 if (!before.CanEdit) return PilotFieldResult.NotEditable("El campo no se puede editar ahora.", before);
 
-                var edit = draft.SetPendingText(PushBackPilotFieldAdapter.AnnotationScaleKey, text);
+                var edit = draft.SetPendingText(PushBackFullFieldAdapter.AnnotationScaleKey, text);
                 if (edit.Status != DraftEditStatus.Updated) return PilotFieldResult.NotEditable("El campo no se puede editar ahora.", before);
 
                 NotePilotEdit(origin.Origin);
@@ -1314,7 +1342,7 @@ namespace RackCad.Application.Workspace
                 var uncertain = new List<string>();
                 foreach (var rackId in _drafts.RackIdsOf(session))
                 {
-                    var draft = _drafts.Find<PushBackPilotDraftState>(session, rackId);
+                    var draft = _drafts.Find<PushBackFullDraftState>(session, rackId);
                     if (draft == null)
                     {
                         uncertain.Add(rackId);
@@ -1729,8 +1757,8 @@ namespace RackCad.Application.Workspace
             }
         }
 
-        private DraftSession<PushBackPilotDraftState>? FindPilotDraft(SessionId session, string rackId) =>
-            string.IsNullOrWhiteSpace(rackId) ? null : _drafts.Find<PushBackPilotDraftState>(session, rackId);
+        private DraftSession<PushBackFullDraftState>? FindPilotDraft(SessionId session, string rackId) =>
+            string.IsNullOrWhiteSpace(rackId) ? null : _drafts.Find<PushBackFullDraftState>(session, rackId);
 
         // True when the session still has racks at risk, or when that cannot be decided (a comparer failed): then the notice stays.
         private bool SessionStillAtRisk(SessionId session)
@@ -1745,7 +1773,7 @@ namespace RackCad.Application.Workspace
             }
         }
 
-        private static PilotFieldView ViewOfPilotDraft(DraftSession<PushBackPilotDraftState> draft)
+        private static PilotFieldView ViewOfPilotDraft(DraftSession<PushBackFullDraftState> draft)
         {
             PilotFieldState state;
             try
@@ -1777,18 +1805,14 @@ namespace RackCad.Application.Workspace
             var canEdit = draft.IsRegistered
                 && (state == PilotFieldState.Clean || state == PilotFieldState.Dirty || state == PilotFieldState.Conflict);
 
-            string? committed = null;
-            string? reason;
-            var annotations = draft.CurrentDraftState.Inputs.Annotations;
-            if (annotations == null) reason = "El rack no tiene escala de anotación.";
-            else committed = WorkspacePilotValueText.Show(annotations.AnnotationScale, out reason);
+            var committed = WorkspacePilotValueText.Show(draft.CurrentDraftState.Editable.AnnotationScale, out var reason);
 
             string? pending = null;
             string? message = null;
-            if (draft.PendingText.TryGetValue(PushBackPilotFieldAdapter.AnnotationScaleKey, out var typed))
+            if (draft.PendingText.TryGetValue(PushBackFullFieldAdapter.AnnotationScaleKey, out var typed))
             {
                 pending = typed;
-                var verdict = PilotFieldAdapter.Validate(PushBackPilotFieldAdapter.AnnotationScaleKey, typed);
+                var verdict = PilotFieldAdapter.Validate(PushBackFullFieldAdapter.AnnotationScaleKey, typed);
                 message = verdict.IsValid ? null : verdict.Message;
             }
 
@@ -1916,7 +1940,7 @@ namespace RackCad.Application.Workspace
         private void MarkPilotDraftsPossiblyStale(SessionId session)
         {
             foreach (var rackId in _drafts.RackIdsOf(session))
-                _drafts.Find<PushBackPilotDraftState>(session, rackId)?.MarkPossiblyStale();
+                _drafts.Find<PushBackFullDraftState>(session, rackId)?.MarkPossiblyStale();
         }
 
         // A witness that is present (not null) with a null, empty or blank key cannot be compared with anything (INV-27).
