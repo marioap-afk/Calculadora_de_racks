@@ -221,6 +221,11 @@
                                     AutomationProperties.Name="Editar el campo"
                                     Visibility="{Binding Browser.Field.ShowEditButton, Converter={StaticResource FlagToVisibility}}"
                                     Click="OnBrowserFieldEditClick" />
+                            <Button x:Name="BrowserFieldEditAllButton" Content="Editar todo" Margin="0,2,6,0" Padding="10,3"
+                                    Style="{StaticResource SecondaryButtonStyle}"
+                                    AutomationProperties.Name="Editar el rack completo en el editor"
+                                    Visibility="{Binding Browser.Field.ShowEditAllButton, Converter={StaticResource FlagToVisibility}}"
+                                    Click="OnBrowserFieldEditAllClick" />
                             <Button x:Name="BrowserFieldReloadButton" Content="Recargar" Margin="0,2,6,0" Padding="10,3"
                                     Style="{StaticResource SecondaryButtonStyle}"
                                     AutomationProperties.Name="Recargar el campo"

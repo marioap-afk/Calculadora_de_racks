@@ -3429,6 +3429,11 @@ namespace RackCad.UI.Systems.PushBack
             var modules = EditorPendingWork.When(
                 moduleOwner.ModuleSession != null && moduleOwner.ModuleSession.HasPendingChanges,
                 "Hay cambios de módulo sin confirmar que se perderán al cerrar. ¿Deseas continuar?");
+
+            // I-64 F4B PB-T4c (D-PBT4-17; A-T2b-OWNER-01): a staged module AND unapplied changes ask one question that names both. In
+            // WORKSPACE a staged module always leaves unapplied changes (D-S10), so the module question alone is the one of CLASSIC, where
+            // there are never unapplied changes; unapplied changes alone ask the question of today.
+            if (modules.HasPendingWork && HasUnappliedDraftChanges()) return EditorPendingWork.When(true, WorkspaceStagedAndUnappliedQuestion);
             return modules.HasPendingWork ? modules : EditorPendingWork.When(HasUnappliedDraftChanges(), WorkspaceUnappliedQuestion);
         }
 
@@ -3453,6 +3458,9 @@ namespace RackCad.UI.Systems.PushBack
         private const string WorkspaceAppliedMessage = "Cambios aplicados al borrador. El dibujo cambia con «Actualizar» del panel.";
         private const string WorkspaceNotEditableMessage = "El borrador no admite cambios ahora: cierra el editor y revisa el panel.";
         private const string WorkspaceUnappliedQuestion = "Hay cambios sin aplicar al borrador que se perderán al cerrar. ¿Deseas continuar?";
+
+        // I-64 F4B PB-T4c (D-PBT4-17): the one question when a staged module and unapplied changes would be lost together.
+        private const string WorkspaceStagedAndUnappliedQuestion = "Hay un cambio de módulo sin confirmar y cambios sin aplicar al borrador; se perderán los dos al cerrar. ¿Deseas continuar?";
 
         // ---- BOM + library ---------------------------------------------------------------------------------------
 

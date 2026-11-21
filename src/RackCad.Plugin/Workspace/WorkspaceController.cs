@@ -108,6 +108,10 @@ namespace RackCad.Plugin.Workspace
                     // The executor of the update of the pilot (I-64 F4-T4C1-HOST, D-T4C-06) is wired the same way, right after the reader:
                     // it has no state, and nothing asks it until the panel offers the gesture.
                     _host.SetPilotUpdateHost(new RackPilotUpdateCommandContext());
+
+                    // The host of the full editor of "Editar todo" (I-64 F4B PB-T4c, D-PBT4-15) is wired the same way, after the executor: the
+                    // modal of the panel, nested here, over the opener of the window, in the views of the Plugin.
+                    _host.SetFullEditHost(new FullEditorModal(this, RackWorkspaceEditorWindow.Show));
                 }
 
                 return _navigation;
@@ -324,6 +328,27 @@ namespace RackCad.Plugin.Workspace
             public EditUpdateStart RequestUpdate(EditIntentRequest request) => _gate.RequestUpdate(request);
 
             public EditUpdateProgress TakeUpdateProgress(WorkspaceRequest origin, string rackId) => _gate.TakeUpdateProgress(origin, rackId);
+
+            public EditAllOutcome TryEditAll(EditIntentRequest request) => _gate.TryEditAll(request);
+        }
+
+        // I-64 F4B PB-T4c (D-PBT4-15): the modal of the panel for the full editor. It names neither the interface nor the system: it enters the
+        // modal of the panel and hands the launch to the opener, which shows the window without an owner and returns when it closes.
+        private sealed class FullEditorModal : IWorkspaceFullEditHost
+        {
+            private readonly WorkspaceController _controller;
+            private readonly Action<object> _open;
+
+            public FullEditorModal(WorkspaceController controller, Action<object> open)
+            {
+                _controller = controller;
+                _open = open;
+            }
+
+            public void ShowModal<TLaunch>(TLaunch launch) where TLaunch : class
+            {
+                using (_controller.EnterPanelModal()) _open(launch);
+            }
         }
 
         // The link of the pure host core to the single bridge: forwards to its facades and nothing else.

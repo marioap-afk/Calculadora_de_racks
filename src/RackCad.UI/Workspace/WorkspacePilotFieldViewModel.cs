@@ -104,6 +104,11 @@ namespace RackCad.UI.Workspace
         private const string WarningsPrefix = " Avisos: ";
         private const string ListSeparator = "; ";
 
+        // I-64 F4B PB-T4c (D-PBT4-12): the notices of "Editar todo".
+        private const string EditAllNotOpenedPrefix = "No se abrió el editor: ";
+        private const string EditAllAppliedText = "Editor cerrado: sus cambios están en el borrador.";
+        private const string EditAllNothingAppliedText = "Editor cerrado sin cambios en el borrador.";
+
         // The classification that a closed-in-error update kept (M-03), in words: it is what the update was before the draft failed to take its close.
         private const string ClassifiedAppliedName = "aplicada";
         private const string ClassifiedAppliedWithWarningsName = "aplicada con avisos";
@@ -224,8 +229,12 @@ namespace RackCad.UI.Workspace
         /// <summary>The Edit button: the box is read-only and a gesture can open it.</summary>
         public bool ShowEditButton => _showEdit;
 
-        /// <summary>I-64 F4B PB-T4c (RED): the "Editar todo" button, still never offered.</summary>
-        public bool ShowEditAllButton => false;
+        /// <summary>
+        /// I-64 F4B PB-T4c (D-PBT4-12): the "Editar todo" button. It has the conditions of the Edit button but the read-only one: a pinned
+        /// surface, no failure, no diagnostic that stays and no choice waiting, and no work yet or a work that the editor opens.
+        /// </summary>
+        public bool ShowEditAllButton =>
+            _failure == null && _session.HasValue && !_isPreview && _persistDiagnostic == null && !HasChoice && (!_view.Exists || _view.CanEdit);
 
         /// <summary>
         /// Whether a click or a key on the box, or the double click on the tab, may start the first gesture: only while the Edit button is
@@ -414,9 +423,70 @@ namespace RackCad.UI.Workspace
             }
         }
 
-        /// <summary>I-64 F4B PB-T4c (RED): "Editar todo", still without effect: it calls no operation of the port.</summary>
+        /// <summary>
+        /// I-64 F4B PB-T4c (D-PBT4-12): "Editar todo". The pending text is committed first, the same two-phase step as a blocking boundary: an
+        /// invalid text does not open the editor and shows its message, and a field that is busy or refused does not open it either. Then the
+        /// port is asked to open the full editor over the work of the rack, with no reference and no witness: the port begins the work if there
+        /// is none and holds the panel while the editor is open. When it closes, the field and the strip are shown again from the port.
+        /// </summary>
         public void EditAll()
         {
+            if (_port == null || !_session.HasValue || _rack == null) return;
+
+            var session = _session.Value;
+            var rack = _rack;
+            try
+            {
+                ClearNotices();
+                var view = _port.GetField(new WorkspaceRequest(session), rack);
+                if (view.PendingText != null)
+                {
+                    var committed = _port.CommitField(new WorkspaceRequest(session), rack);
+                    if (committed.Status == PilotFieldStatus.Invalid)
+                    {
+                        Apply(committed.View);
+                        _messageText = committed.Message ?? committed.View.PendingMessage ?? string.Empty;
+                        _noticeText = EditAllNotOpenedPrefix + SentenceOf(_messageText);
+                        RaiseAll();
+                        return;
+                    }
+
+                    if (committed.Status != PilotFieldStatus.Applied && committed.Status != PilotFieldStatus.NotEditable)
+                    {
+                        Render();
+                        _noticeText = RefusalOf(committed);
+                        RaiseAll();
+                        return;
+                    }
+                }
+
+                var outcome = _port.TryEditAll(new EditIntentRequest(session, rack, null, null));
+                if (!IsMine(session, rack))
+                {
+                    // The editor closed over another surface: its result is not shown here.
+                    Render();
+                    _noticeText = SurfaceChangedText;
+                    RaiseAll();
+                    return;
+                }
+
+                if (outcome.Status == EditAllStatus.NotBegun && outcome.Begin.Status == EditIntentStatus.NotAdmitted)
+                {
+                    _diagnostic = outcome.Begin.Diagnostic ?? string.Empty;
+                    _hint = outcome.Begin.ClassicEditorHint ?? string.Empty;
+                }
+                else
+                {
+                    _noticeText = EditAllNoticeOf(outcome);
+                }
+
+                Render();
+                _changed?.Invoke();
+            }
+            catch (Exception ex)
+            {
+                EnterFailure(ex);
+            }
         }
 
         /// <summary>Enter or leaving the box: commits the pending text, only with pending text and an editable box.</summary>
@@ -1212,6 +1282,7 @@ namespace RackCad.UI.Workspace
             OnPropertyChanged(nameof(IsEditable));
             OnPropertyChanged(nameof(IsReadOnly));
             OnPropertyChanged(nameof(ShowEditButton));
+            OnPropertyChanged(nameof(ShowEditAllButton));
             OnPropertyChanged(nameof(ShowReloadButton));
             OnPropertyChanged(nameof(ShowDiscardButton));
             OnPropertyChanged(nameof(ShowCheckButton));
@@ -1259,6 +1330,23 @@ namespace RackCad.UI.Workspace
                 default: return "No se pudo abrir la edición: " + detail;
             }
         }
+
+        // I-64 F4B PB-T4c (D-PBT4-12): the notice of "Editar todo" once the editor closed, or when it did not open.
+        private static string EditAllNoticeOf(EditAllOutcome outcome)
+        {
+            switch (outcome.Status)
+            {
+                case EditAllStatus.Closed: return outcome.Applied > 0 ? EditAllAppliedText : EditAllNothingAppliedText;
+                case EditAllStatus.NotAvailable: return SentenceOf(outcome.Reason);
+                case EditAllStatus.Waiting: return "En espera: " + SentenceOf(outcome.Reason);
+                case EditAllStatus.Rejected: return "Rechazado: " + SentenceOf(outcome.Reason);
+                case EditAllStatus.NotBegun: return Describe(outcome.Begin.Status, outcome.Begin.Reason);
+                default: return EditAllNotOpenedPrefix + SentenceOf(outcome.Reason);
+            }
+        }
+
+        // A text as the end of a sentence: one final period, and "sin detalle." for a missing one.
+        private static string SentenceOf(string text) => string.IsNullOrWhiteSpace(text) ? "sin detalle." : text.TrimEnd('.') + ".";
 
         // The prefix of a check that did not reread the drawing: the ones of Describe, the one of a draft that does not apply, and a default.
         private static string CheckPrefixOf(EditConfirmStatus status)

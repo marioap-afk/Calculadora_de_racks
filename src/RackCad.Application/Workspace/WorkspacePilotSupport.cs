@@ -205,6 +205,10 @@ namespace RackCad.Application.Workspace
         public EditUpdateStart RequestUpdate(EditIntentRequest request) =>
             _depth.IsInside ? EditUpdateStart.Waiting(InsideNoticeReason) : _inner.RequestUpdate(request);
 
+        // I-64 F4B PB-T4c (D-PBT4-13): "Editar todo" may begin the work, so it waits inside a notice like the reads.
+        public EditAllOutcome TryEditAll(EditIntentRequest request) =>
+            _depth.IsInside ? EditAllOutcome.Waiting(InsideNoticeReason) : _inner.TryEditAll(request);
+
         public EditUpdateProgress TakeUpdateProgress(WorkspaceRequest origin, string rackId) => _inner.TakeUpdateProgress(origin, rackId);
     }
 }

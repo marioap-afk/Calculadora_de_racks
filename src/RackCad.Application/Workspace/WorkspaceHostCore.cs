@@ -50,6 +50,12 @@ namespace RackCad.Application.Workspace
         private const string FullReadMissingReason = "No editable aquí: la lectura no trae el modelo completo.";
         private const string NotKeepableReason ="Solo se conserva un borrador en conflicto o con cambios marcados como posiblemente obsoletos.";
 
+        // I-64 F4B PB-T4c (D-PBT4-13): the reasons of "Editar todo".
+        private const string EditAllNoEditorReason = "No editable aquí: el panel no tiene el editor completo.";
+        private const string EditAllPendingTextReason = "Hay texto sin confirmar en el campo.";
+        private const string EditAllBusyDraftReason = "El borrador se está aplicando o se retiró: el editor no se abre.";
+        private const string EditAllStateReason = "El borrador no admite el editor completo en su estado actual.";
+
         /// <summary>Native identity used when no document is open: it matches no session.</summary>
         private const long NoDocumentNativeId = -1;
 
@@ -78,6 +84,10 @@ namespace RackCad.Application.Workspace
         // I-64 F4-T4C1-HOST (D-T4C-02, D-T4C-06): the executor of the update (assigned once, it keeps nothing), the ticket in flight by
         // session, the outcome that nobody took by (session, rack) and the counter of the witnesses of the tickets. All in memory.
         private IPushBackPilotUpdateHost? _updateHost;
+
+        // I-64 F4B PB-T4c (D-PBT4-15): the host of the full editor (assigned once, it keeps nothing): it enters the modal of the panel and
+        // shows the editor over the launch.
+        private IWorkspaceFullEditHost? _fullEditHost;
         private readonly Dictionary<SessionId, UpdateTicket> _tickets = new();
         private readonly Dictionary<(SessionId Session, string RackId), EditUpdateOutcome> _updateOutcomes = new();
         private long _lastUpdateWitness;
@@ -292,10 +302,12 @@ namespace RackCad.Application.Workspace
         public void SetPilotUpdateHost(IPushBackPilotUpdateHost host) =>
             _updateHost = host ?? throw new ArgumentNullException(nameof(host));
 
-        /// <summary>I-64 F4B PB-T4c (RED): the setter of the host of the full editor of "Editar todo", still without effect.</summary>
-        public void SetFullEditHost(IWorkspaceFullEditHost host)
-        {
-        }
+        /// <summary>
+        /// Assigns the host of the full editor of "Editar todo" (I-64 F4B PB-T4c, D-PBT4-15), by assignment like the executor of the update and
+        /// never by constructor. It has no state. Without it "Editar todo" answers NotAvailable.
+        /// </summary>
+        public void SetFullEditHost(IWorkspaceFullEditHost host) =>
+            _fullEditHost = host ?? throw new ArgumentNullException(nameof(host));
 
         /// <summary>
         /// The edit intention of the user for one rack of the bounded Push Back pilot (D-T2B2-06): at most ONE logical read, and a
@@ -1143,6 +1155,70 @@ namespace RackCad.Application.Workspace
             finally
             {
                 _pilotReadInProgress = false;
+            }
+        }
+
+        // I-64 F4B PB-T4c (D-PBT4-13, D-PBT4-14): "Editar todo". The mark of the reads wraps the whole operation, the begin of the work and the
+        // editor included, so while the full editor is open every operation of the panel answers Busy or Waiting (K = 1).
+        EditAllOutcome IWorkspacePilotEditPort.TryEditAll(EditIntentRequest request)
+        {
+            if (_pilotReadInProgress) return EditAllOutcome.Waiting(PilotReadInProgressReason);
+            _pilotReadInProgress = true;
+            try
+            {
+                return EditAllOfPilot(request);
+            }
+            finally
+            {
+                _pilotReadInProgress = false;
+            }
+        }
+
+        // The rules of the keep of the pilot (I-09): the gate first, the update in flight after it, the exceptions contained with Report, and
+        // NotePilotEdit for every edit that the editor hands to the work. Nothing here writes the drawing.
+        private EditAllOutcome EditAllOfPilot(EditIntentRequest request)
+        {
+            try
+            {
+                if (request == null) throw new ArgumentNullException(nameof(request));
+
+                var gate = PassGate(request.Session, out var reason);
+                if (gate == EditGate.Unavailable) return EditAllOutcome.NotAvailable(reason);
+                if (gate == EditGate.Waiting) return EditAllOutcome.Waiting(reason);
+                if (gate == EditGate.Rejected) return EditAllOutcome.Rejected(reason);
+
+                if (UpdateInFlightForRequest(request)) return EditAllOutcome.Waiting(PushBackPilotHostTexts.UpdateInFlightReason);
+                if (_fullEditHost == null) return EditAllOutcome.NotAvailable(EditAllNoEditorReason);
+
+                // Without work for the rack the edit intention begins it, with its one read, its admission and its diagnostic.
+                var draft = FindPilotDraft(request.Session, request.RackId);
+                if (draft == null)
+                {
+                    var begun = TryBeginPilotEdit(request);
+                    if (begun.Status != EditIntentStatus.Admitted) return EditAllOutcome.NotBegun(begun);
+                    draft = FindPilotDraft(request.Session, request.RackId);
+                    if (draft == null) return EditAllOutcome.Failed(EditAllBusyDraftReason);
+                }
+
+                var view = ViewOfPilotDraft(draft);
+                if (view.State == PilotFieldState.Applying || !draft.IsRegistered) return EditAllOutcome.Waiting(EditAllBusyDraftReason);
+                if (!view.CanEdit) return EditAllOutcome.Refused(EditAllStateReason);
+                if (draft.HasPendingText) return EditAllOutcome.Refused(EditAllPendingTextReason);
+
+                // The port keeps the origin of the work, and every edit that it hands to the work ends the "known clean" mark of the session.
+                var applied = 0;
+                var port = new PushBackFullDraftStatePort(draft, () =>
+                {
+                    applied++;
+                    NotePilotEdit(request.Session);
+                });
+                _fullEditHost.ShowModal(PushBackFullDraftLaunch.For(draft, port));
+                return EditAllOutcome.Closed(applied);
+            }
+            catch (Exception ex)
+            {
+                Report("WorkspaceHostCore.TryEditAll", ex);
+                return EditAllOutcome.Failed(ex.Message);
             }
         }
 

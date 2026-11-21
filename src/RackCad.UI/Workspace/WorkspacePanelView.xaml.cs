@@ -82,6 +82,9 @@ namespace RackCad.UI.Workspace
         // property; here live the buttons, the gestures that open a read-only box and the keys Enter and Esc of an editable one.
         private void OnBrowserFieldEditClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.BeginFieldEdit());
 
+        // I-64 F4B PB-T4c (D-PBT4-12): "Editar todo" goes straight to the gesture of the field, which commits the pending text first.
+        private void OnBrowserFieldEditAllClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.Field.EditAll());
+
         private void OnBrowserFieldReloadClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.ReloadField());
 
         // The reconciliation of the field (I-64 F4-T4A2): each click is one explicit interaction of the user, and each handler only calls its own
