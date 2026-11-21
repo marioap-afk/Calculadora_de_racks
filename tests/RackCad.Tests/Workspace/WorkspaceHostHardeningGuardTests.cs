@@ -488,7 +488,7 @@ public class WorkspaceHostHardeningGuardTests
         if (!host.Contains("(variable registry)", StringComparison.Ordinal)) yield return "DescribeDifferences changed";
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente en WorkspaceHostHardeningGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-list-478-decision.md).")]
     public void NoneOfThe30LiteralsInEnglishStaysInTheHostOrTheSupportAndTheFourIdentifiersAreKept()
     {
         Assert.Equal(30, Table.Length);

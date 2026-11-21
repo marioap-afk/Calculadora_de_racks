@@ -113,7 +113,7 @@ public class WorkspaceEditIntentHostTests
 
     // ------------------------------------------------------------------ obligation 4: one intention is one read
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnIntentionIsOneReadOfTheReaderAndAnAdmittedReadCreatesTheDraftFromThatSameRead()
     {
         var rig = new Rig();
@@ -138,7 +138,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Equal(2, draft.StaleBase.Entries.Count);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheDraftIsBornWithTheComparerAndTheCopierOfThePilot()
     {
         var rig = new Rig();
@@ -158,7 +158,7 @@ public class WorkspaceEditIntentHostTests
         Assert.True(draft.IsDirty);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheRequestReachesTheReaderUnchangedWithTheChosenReferenceAndTheWitness()
     {
         var rig = new Rig();
@@ -177,7 +177,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Null(plain.Witness);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheIntentionReadsNothingByItselfAndTheDrawingIsReadOnlyThroughTheReader()
     {
         var rig = new Rig();
@@ -192,7 +192,7 @@ public class WorkspaceEditIntentHostTests
 
     // ------------------------------------------------------------------ the states before the read: nothing is read
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void WithoutAReaderTheIntentionIsUnavailableAndReadsNothing()
     {
         var rig = new Rig(assignReader: false);
@@ -205,7 +205,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Equal(0, rig.Core.OpenDrafts.CountOf(rig.Session));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ABlankRackIdIsNotAdmittedWithNoIdentityBeforeAnythingElseAndTheRegistryIsNeverTouched()
     {
         foreach (var assign in new[] { true, false })
@@ -227,7 +227,7 @@ public class WorkspaceEditIntentHostTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void WithNoActiveDocumentTheIntentionWaitsAndReadsNothing()
     {
         var rig = new Rig();
@@ -241,7 +241,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Empty(rig.Reader.Calls);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void WhileARackCadModalIsOpenTheIntentionWaitsAndReadsNothing()
     {
         var rig = new Rig();
@@ -257,7 +257,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Equal(EditIntentStatus.Admitted, rig.Core.TryBeginPilotEdit(rig.Request()).Status);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void WhileACommandRunsOrTheDocumentIsNotAtRestTheIntentionWaitsAndReadsNothing()
     {
         var rig = new Rig();
@@ -273,7 +273,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Single(rig.Reader.Calls);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnOpenDraftIsAlreadyOpenAndIsNeverReadAgain()
     {
         var rig = new Rig();
@@ -292,7 +292,7 @@ public class WorkspaceEditIntentHostTests
 
     // ------------------------------------------------------------------ a draft only from an admitted read
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AReadThatIsNotAdmittedCreatesNoDraftAndCarriesTheDiagnosticTheDetailAndTheClassicEditorHint()
     {
         var rig = new Rig();
@@ -311,7 +311,7 @@ public class WorkspaceEditIntentHostTests
         Assert.False(rig.Core.OpenDrafts.Contains(rig.Session, RackA));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheTechnicalDetailOfTheDiagnosticTravelsApartFromItsMainText()
     {
         var rig = new Rig();
@@ -327,7 +327,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Equal(0, rig.Core.OpenDrafts.CountOf(rig.Session));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ARackThatWasNotAdmittedCanBeAdmittedLaterWhenTheDrawingAllowsIt()
     {
         var rig = new Rig();
@@ -342,7 +342,7 @@ public class WorkspaceEditIntentHostTests
         Assert.NotNull(rig.Draft());
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheRegistryIsOneForEverySessionWithKeysOfSessionAndRack()
     {
         var rig = new Rig();
@@ -362,7 +362,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Equal(new[] { RackA }, rig.Core.OpenDrafts.RackIdsOf(b).ToArray());
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ARetiredSessionNeverGetsADraftAndTheRequestIsRejected()
     {
         var rig = new Rig();
@@ -375,7 +375,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Null(rig.Draft());
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheHostOwnsTheClosePolicyOfItsOneRegistry()
     {
         var rig = new Rig();
@@ -391,7 +391,7 @@ public class WorkspaceEditIntentHostTests
 
     // ------------------------------------------------------------------ what the reader answers when it does not read
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     [InlineData(EditIntentReadStatus.NoActiveDocument, EditIntentStatus.Waiting)]
     [InlineData(EditIntentReadStatus.Busy, EditIntentStatus.Waiting)]
     [InlineData(EditIntentReadStatus.Rejected, EditIntentStatus.Rejected)]
@@ -417,7 +417,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Empty(rig.Host.Faults);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnEmptyAnswerOfTheReaderIsAFailureAndNeverAnAdmission()
     {
         var rig = new Rig();
@@ -431,7 +431,7 @@ public class WorkspaceEditIntentHostTests
 
     // ------------------------------------------------------------------ D-17: a failure is contained and does not degrade the session
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnExceptionOfTheReaderIsContainedAsFailedLoggedAndDoesNotDegradeTheSession()
     {
         var rig = new Rig();
@@ -452,7 +452,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Equal(WorkspaceHostStatus.Ready, rig.Core.GetSnapshot().Status);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ANullRequestIsContainedAsFailedAndNeverThrows()
     {
         var rig = new Rig();
@@ -467,7 +467,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Empty(rig.Reader.Calls);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AFailingLogDoesNotBecomeASecondFailure()
     {
         var rig = new Rig();
@@ -481,7 +481,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Equal(EditIntentStatus.Failed, core.TryBeginPilotEdit(rig.Request()).Status);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheReaderCanBeAssignedAgainAndOnlyANullReaderIsRefused()
     {
         var rig = new Rig();
@@ -497,7 +497,7 @@ public class WorkspaceEditIntentHostTests
 
     // ------------------------------------------------------------------ INV-22 and obligation 13: the session of A never operates on B
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ARequestOfTheSessionOfADocumentThatIsNotTheActiveOneIsRejectedWithZeroReadsAndNoDraft()
     {
         var rig = new Rig();
@@ -522,7 +522,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Equal(1, rig.Core.OpenDrafts.CountOf(b));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ARecycledNativeIdentityNeverRevivesTheOldSessionForTheIntention()
     {
         var rig = new Rig();
@@ -544,7 +544,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Single(rig.Reader.Calls);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ASessionThatNeverExistedIsRejectedWithoutAReadOrADraft()
     {
         var rig = new Rig();
@@ -559,7 +559,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Equal(0, rig.Core.OpenDrafts.CountOf(ghost));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void WithADraftOfSessionAAndBActiveTheIntentionOfARejectsBeforeAnythingAboutTheDraftAndReadsNothing()
     {
         // M-9: the authorization (step 5) comes before the open draft (step 6), so the session that is not the active one is
@@ -594,7 +594,7 @@ public class WorkspaceEditIntentHostTests
         new object?[] { "\t" },
     };
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     [MemberData(nameof(WitnessKeysWithoutAValue))]
     public void APresentWitnessWithoutAKeyIsAFailureOfTheIntentionWithAReasonAndReadsNothingAndTouchesNoRegistry(string? key)
     {
@@ -615,7 +615,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Single(rig.Reader.Calls);
     }
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     [MemberData(nameof(WitnessKeysWithoutAValue))]
     public void APresentWitnessWithoutAKeyIsAFailureOfCheckNowWithAReasonAndReadsNothingAndLeavesTheUnknownDraftAsItWas(string? key)
     {
@@ -636,7 +636,7 @@ public class WorkspaceEditIntentHostTests
 
     // ------------------------------------------------------------------ INV-27: the witness of the preview
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void WithoutAWitnessTheStatusIsNotSuppliedAndNeverUnchanged()
     {
         var rig = new Rig();
@@ -648,7 +648,7 @@ public class WorkspaceEditIntentHostTests
         Assert.NotEqual(EditWitnessStatus.Unchanged, outcome.Witness);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AWitnessThatMatchesTheReadIsUnchanged()
     {
         var rig = new Rig();
@@ -661,7 +661,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Equal(EditWitnessStatus.Unchanged, outcome.Witness);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AChangedWitnessIsReportedAsChangedAndNoKeystrokeIsAppliedToTheNewDraft()
     {
         var rig = new Rig();
@@ -681,7 +681,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Equal(IntentKit.Variant("pb-01-base", RackA), draft.CurrentDraftState.Origin);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheWitnessIsAlsoReportedWhenTheReadIsNotAdmitted()
     {
         var rig = new Rig();
@@ -697,7 +697,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Equal(EditWitnessStatus.Changed, outcome.Witness);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void EveryOutcomeWithoutAReadCarriesNotEvaluatedForTheWitnessAndTheEnumHasTheFourValues()
     {
         Assert.Equal(new[] { "NotEvaluated", "NotSupplied", "Unchanged", "Changed" }, Enum.GetNames<EditWitnessStatus>());
@@ -710,7 +710,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Equal(EditIntentStatus.Unavailable, default(EditIntentOutcome).Status);
     }
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     [InlineData(PushBackPilotPreviewWitnessStatus.NotSupplied, EditWitnessStatus.NotSupplied)]
     [InlineData(PushBackPilotPreviewWitnessStatus.Unchanged, EditWitnessStatus.Unchanged)]
     [InlineData(PushBackPilotPreviewWitnessStatus.Changed, EditWitnessStatus.Changed)]
@@ -719,7 +719,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Equal(expected, WorkspaceEditIntent.WitnessStatusOf(pilot));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnUnknownStatusOfThePilotIsNeverTranslatedToUnchanged()
     {
         Assert.Equal(EditWitnessStatus.Changed, WorkspaceEditIntent.WitnessStatusOf((PushBackPilotPreviewWitnessStatus)99));
@@ -727,7 +727,7 @@ public class WorkspaceEditIntentHostTests
 
     // ------------------------------------------------------------------ "check now" (obligation 11): the reread of authored data
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void CheckNowRecoversAnUnknownDraftWhenTheRereadMatchesTheBaseFromBeforeTheAttempt()
     {
         var rig = new Rig();
@@ -744,7 +744,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Same(draft, rig.Draft());
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void CheckNowTakesTheUnknownDraftToConflictWhenTheRereadDiffersAndNamesWhatDiffers()
     {
         var rig = new Rig();
@@ -759,7 +759,7 @@ public class WorkspaceEditIntentHostTests
         Assert.All(outcome.Differences, line => Assert.StartsWith("B2:", line));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void CheckNowUsesTheBaseOfARereadThatIsNotAdmittedToo()
     {
         // The base is total and independent of the admission: a reread without admission still says whether the drawing changed.
@@ -775,7 +775,7 @@ public class WorkspaceEditIntentHostTests
         Assert.NotEqual(DraftStatus.Unknown, draft.Status);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void WithoutAnUnknownDraftCheckNowIsNotApplicableAndReadsNothing()
     {
         var rig = new Rig();
@@ -801,7 +801,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Equal(reads, rig.Reader.Calls.Count);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnUnknownDraftWhoseOriginIsThePostRereadIsNotApplicableAndReadsNothing()
     {
         var rig = new Rig();
@@ -820,7 +820,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Equal(DraftStatus.Unknown, draft.Status);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void CheckNowWithoutADraftIsNotFoundAndReadsNothing()
     {
         var rig = new Rig();
@@ -833,7 +833,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Empty(rig.Reader.Calls);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void CheckNowHasTheSameGateAsTheIntentionAndReadsNothingBeforeIt()
     {
         var noReader = new Rig(assignReader: false);
@@ -859,7 +859,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Equal(DraftStatus.Unknown, draft.Status);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void CheckNowOfAnotherSessionIsRejectedWithZeroReadsAndTheDraftIsUntouched()
     {
         var rig = new Rig();
@@ -877,7 +877,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Equal(DraftStatus.Unknown, draft.Status);
     }
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     [InlineData(EditIntentReadStatus.NoActiveDocument, EditCheckStatus.Waiting)]
     [InlineData(EditIntentReadStatus.Busy, EditCheckStatus.Waiting)]
     [InlineData(EditIntentReadStatus.Rejected, EditCheckStatus.Rejected)]
@@ -901,7 +901,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Equal(DraftUnknownOrigin.CommitThrew, draft.UnknownOrigin);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnExceptionOfTheReaderDuringCheckNowIsContainedAsFailedAndDoesNotDegradeTheSession()
     {
         var rig = new Rig();
@@ -921,7 +921,7 @@ public class WorkspaceEditIntentHostTests
 
     // ------------------------------------------------------------------ INV-F4T2B2A-09: nothing is called from the drain
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void NoOperationIsCalledFromTheDrainAndTheDrainNeverCallsTheReaderOfTheIntention()
     {
         var rig = new Rig();
@@ -974,7 +974,7 @@ public class WorkspaceEditIntentHostTests
             .ToArray();
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ACarrierOfTheEditIntentionThatIsNotInTheCensusTripsTheGuardAndTheCensusHasThemAll()
     {
         Assert.Empty(CarriersWithoutCensus(Carriers));
@@ -987,7 +987,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Equal(Carriers.Length, CarriersWithoutCensus(Array.Empty<Type>()).Count);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheSignaturesOfTheTwoOperationsAndTheirValuesNameNoTypeOfADraftNorOfThePilot()
     {
         var begin = typeof(WorkspaceHostCore).GetMethod("TryBeginPilotEdit", BindingFlags.Public | BindingFlags.Instance);
@@ -1035,7 +1035,7 @@ public class WorkspaceEditIntentHostTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheUpdateOfThePilotIsAPublicMethodOfTheCoreWhoseSecondParameterIsThePortOfTheUpdateAndItsOutcomeNamesNoTypeOfTheDraftsNorOfThePilot()
     {
         var update = typeof(WorkspaceHostCore).GetMethod("TryUpdatePilot", BindingFlags.Public | BindingFlags.Instance);
@@ -1060,7 +1060,7 @@ public class WorkspaceEditIntentHostTests
         methodNames.Where(n => n.Contains("Update", StringComparison.Ordinal)).OrderBy(n => n, StringComparer.Ordinal)
             .SequenceEqual(new[] { "RequestUpdate", "TakeUpdateProgress" });
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ThePortHasExactlyTheTwoMethodsOfTheRequestWithUpdateInTheirNameAndRejectsAThirdOne()
     {
         var names = typeof(IWorkspacePilotEditPort).GetMethods().Select(m => m.Name).ToList();
@@ -1084,7 +1084,7 @@ public class WorkspaceEditIntentHostTests
         return violations;
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheHostCoreHasExactlyOneFieldOfSystemsTheExecutorOfTheUpdateAndRejectsASecondOneOrAPort()
     {
         var fields = typeof(WorkspaceHostCore)
@@ -1098,7 +1098,7 @@ public class WorkspaceEditIntentHostTests
         Assert.NotEmpty(SystemsFieldViolations(fields.Select(f => f.Name == "_updateHost" ? ("_updateHost", typeof(RackCad.Application.Systems.PushBack.Pilot.IPushBackPilotUpdatePort)) : f)));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void NoFieldOfTheHostCoreIsOfATypeOfThePilotExceptTheExecutorOrOfTheResultOfTheReadAndTheFieldOfTheReaderIsNotCalledReader()
     {
         var fields = typeof(WorkspaceHostCore).GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly);
@@ -1122,7 +1122,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Single(fields, f => f.FieldType == typeof(DraftClosePolicy));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheOutcomesAreValuesAndTheStatesHaveTheExactNamesAndOrderOfThePackage()
     {
         Assert.True(typeof(EditIntentOutcome).IsValueType);
@@ -1149,7 +1149,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Equal(EditIntentStatus.Kept, EditIntentOutcome.Kept(EditWitnessStatus.NotSupplied).Status);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheDifferencesOfACheckOutcomeAreNeverNullAndAreEmptyUnlessTheStatusIsConflictAlsoForTheDefaultValue()
     {
         // M-7: a consumer may count the differences of any outcome, including a default one, without a null reference.
@@ -1172,7 +1172,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Equal(new[] { "B2:Membership" }, conflict.Differences.ToArray());
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheReadResultCarriesThePilotReadOnlyWhenItIsARead()
     {
         var read = EditIntentKit.Admitted(RackA);
@@ -1203,7 +1203,7 @@ public class WorkspaceEditIntentHostTests
             targets.Select(t => new NavigationTarget(t.Reference, t.Definition, NavigationViewOrder.Frontal, "pushback", "frontal", 0, "name")).ToArray(),
             Array.Empty<NavigationDiagnostic>());
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     [InlineData(0x101L, 0xAL)]
     [InlineData(0x102L, 0xAL)]
     [InlineData(0x103L, 0xBL)]
@@ -1214,7 +1214,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Equal(expected, WorkspaceEditIntent.ChooseOriginDefinition(set, chosen));
     }
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     [InlineData(0x999L)]
     [InlineData(0L)]
     [InlineData(-5L)]
@@ -1226,7 +1226,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Equal(0L, WorkspaceEditIntent.ChooseOriginDefinition(set, chosen));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void WithoutAChosenReferenceTheOriginIsThePrimaryTargetInTheDeterministicOrderNotTheLowestHandle()
     {
         var set = Set((0x300, 0xC), (0x101, 0xA), (0x102, 0xB));
@@ -1235,7 +1235,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Equal(set.Primary!.DefinitionHandle, WorkspaceEditIntent.ChooseOriginDefinition(set, null));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void WithoutTargetsTheOriginIsZeroWhetherOrNotAReferenceWasChosen()
     {
         var empty = Set();
@@ -1244,13 +1244,13 @@ public class WorkspaceEditIntentHostTests
         Assert.Equal(0L, WorkspaceEditIntent.ChooseOriginDefinition(empty, 0x101));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ANullSetOfTargetsIsAProgrammingErrorAndNotAnOrigin()
     {
         Assert.Throws<ArgumentNullException>(() => WorkspaceEditIntent.ChooseOriginDefinition(null!, null));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AReferenceThatVanishedOrNowBelongsToAnotherRackGivesZeroAfterTheRevalidationOfTheSameOperation()
     {
         var facts = new FakeNavigationFacts().With(
@@ -1282,7 +1282,7 @@ public class WorkspaceEditIntentHostTests
         Assert.Equal(10L, WorkspaceEditIntent.ChooseOriginDefinition(gone.Fresh, null));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheDiagnosticOfAnOriginThatIsGoneSaysItIsNoLongerThereAndNeverThatItBelongsToAnotherRack()
     {
         // N-13: a reference that now belongs to another rack also gives 0, so the read answers OriginMissing, and its text must not

@@ -111,7 +111,7 @@ public class WorkspaceCommandAdvisorTests
 
     // ------------------------------------------------------------------ D-T3C2-01: the access that never creates
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ExistingIsNullBeforeTheFirstCreationAndAskingForItNeverCreatesNorCallsTheFactory()
     {
         var factoryCalls = 0;
@@ -131,7 +131,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.False(holder.IsCreated);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ExistingIsTheCreatedInstanceAfterwardsAndDoesNotChangeTheCreateCount()
     {
         var holder = new WorkspaceLazyInstance<object>(() => new object());
@@ -145,7 +145,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.True(holder.IsCreated);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ExistingStaysNullWhenTheFactoryFailed()
     {
         var holder = new WorkspaceLazyInstance<object>(() => throw new InvalidOperationException("the factory failed"));
@@ -222,7 +222,7 @@ public class WorkspaceCommandAdvisorTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void WithoutAControllerTheCommandSaysSoAndAsksNothingAtAll()
     {
         var rig = new CommandRig();
@@ -237,7 +237,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Empty(rig.Port.Calls);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void WithoutAnActiveSessionTheCommandSaysSoAndNeitherReadsNorAsksNorDiscards()
     {
         var rig = new CommandRig { Active = null };
@@ -251,7 +251,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Empty(rig.Port.Calls);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnAmbiguousTargetSaysSoWithoutReadingTheRiskWithoutAskingAndWithoutDiscarding()
     {
         var rig = new CommandRig { Authorizes = false };
@@ -267,7 +267,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Empty(rig.Port.Calls);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnUnknownFirstReadIsAnExplicitFailureAndNeverNothingAtRisk()
     {
         var rig = new CommandRig();
@@ -282,7 +282,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Equal(0, rig.Port.Count(CommandAdvisorPortDouble.DiscardDocumentOp));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AFirstReadThatThrowsCountsAsTheUnknownAndTheExceptionDoesNotEscape()
     {
         var rig = new CommandRig();
@@ -296,7 +296,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Equal(0, rig.Port.Count(CommandAdvisorPortDouble.DiscardDocumentOp));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void WhenNothingIsAtRiskTheCommandSaysSoAndAsksNothing()
     {
         var rig = new CommandRig();
@@ -310,7 +310,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Equal(new[] { CommandAdvisorPortDouble.RisksOp }, rig.Port.Calls.Select(c => c.Operation).ToArray());
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void WithRacksAtRiskTheCommandListsThemByRackIdAsksAndOnYesDiscardsTheWholeDocumentOnce()
     {
         var rig = new CommandRig();
@@ -339,7 +339,7 @@ public class WorkspaceCommandAdvisorTests
         rig.AssertOnlyTheTwoOperationsOfTheCommand();
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheUncertainRacksAreListedApartAndAreDiscardedWithTheRestAfterTheConfirmation()
     {
         var rig = new CommandRig();
@@ -360,7 +360,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Equal(1, rig.Port.Count(CommandAdvisorPortDouble.DiscardDocumentOp));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void WithOnlyUncertainRacksTheCommandListsThemAndTheFinalTextSaysTheDocumentWasDiscarded()
     {
         var rig = new CommandRig();
@@ -380,7 +380,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Equal(1, rig.Port.Count(CommandAdvisorPortDouble.DiscardDocumentOp));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnythingButAYesDiscardsNothing()
     {
         // The command line maps No, Enter, Escape and cancel to a false answer: here they are all the same false (C2-M-8). Enter and
@@ -399,7 +399,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Equal(0, rig.Port.Count(CommandAdvisorPortDouble.DiscardDocumentOp));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void NothingIsDiscardedBeforeTheYes()
     {
         var rig = new CommandRig();
@@ -413,7 +413,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Equal(1, rig.Port.Count(CommandAdvisorPortDouble.DiscardDocumentOp));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void WhenTheActiveSessionChangesDuringTheQuestionNothingIsDiscardedAndTheOtherSessionIsNeverAsked()
     {
         var rig = new CommandRig();
@@ -429,7 +429,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.DoesNotContain(rig.Port.Calls, c => c.Origin == B);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void WhenTheActiveSessionDisappearsDuringTheQuestionNothingIsDiscarded()
     {
         var rig = new CommandRig();
@@ -442,7 +442,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Equal(0, rig.Port.Count(CommandAdvisorPortDouble.DiscardDocumentOp));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void WhenTheSessionStopsAuthorizingAfterTheYesTheTargetIsAmbiguousAndNothingIsReadAgainOrDiscarded()
     {
         var rig = new CommandRig();
@@ -457,7 +457,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Equal(0, rig.Port.Count(CommandAdvisorPortDouble.DiscardDocumentOp));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheTargetIsOnlyAskedAboutTheSessionThatTheActiveDelegateJustGave()
     {
         var rig = new CommandRig();
@@ -470,7 +470,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.All(rig.Port.Calls, c => Assert.Equal(A, c.Origin));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnUnknownSecondReadDiscardsNothing()
     {
         var rig = new CommandRig();
@@ -484,7 +484,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Equal(0, rig.Port.Count(CommandAdvisorPortDouble.DiscardDocumentOp));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ASecondReadThatThrowsCountsAsTheUnknownAndDiscardsNothing()
     {
         var rig = new CommandRig();
@@ -508,7 +508,7 @@ public class WorkspaceCommandAdvisorTests
         { "nothing left", new[] { "R-1" }, Array.Empty<string>(), Array.Empty<string>(), Array.Empty<string>() },
     };
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     [MemberData(nameof(ChangedRisks))]
     public void IfEitherListChangedBetweenTheTwoReadsNothingIsDiscarded(
         string why, string[] firstKnown, string[] firstUncertain, string[] secondKnown, string[] secondUncertain)
@@ -525,7 +525,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.False(string.IsNullOrEmpty(why));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheDiscardOfTheDocumentWithTheSameListsAfterTheYesIsTheOnlyOperationWithAnEffect()
     {
         var rig = new CommandRig();
@@ -554,7 +554,7 @@ public class WorkspaceCommandAdvisorTests
         { "Throws| ", "RackCad: No se descartaron los borradores del documento: falló. sin detalle." },
     };
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     [MemberData(nameof(NotDiscardedOutcomes))]
     public void EveryAnswerThatIsNotDiscardedSaysWhyWithTheExactText(string answer, string expected)
     {
@@ -575,7 +575,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Equal(1, rig.Port.Count(CommandAdvisorPortDouble.DiscardDocumentOp));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheDefaultOutcomeOfTheDiscardIsTreatedAsARejection()
     {
         var rig = new CommandRig();
@@ -587,7 +587,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Equal("RackCad: No se descartaron los borradores del documento: se rechazó. sin detalle.", rig.LastText);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ADelegateThatThrowsIsNotContainedAndNothingWasDiscardedBeforeTheDiscardItself()
     {
         var confirmThrows = new CommandRig { Answer = _ => throw new InvalidOperationException("the question failed") };
@@ -610,7 +610,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Equal(1, lateWrite.Port.Count(CommandAdvisorPortDouble.DiscardDocumentOp));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheDelegatesOfTheSessionAndOfTheTargetAreNotContainedEither()
     {
         var port = new CommandAdvisorPortDouble();
@@ -627,7 +627,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Empty(written);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ANullDelegateIsRefused()
     {
         var port = new CommandAdvisorPortDouble();
@@ -707,7 +707,7 @@ public class WorkspaceCommandAdvisorTests
     private static string Veto02(string document) =>
         "RackCad: No se cerró " + document + ": puede tener borradores del panel Workspace con trabajo sin aplicar. Actívalo primero; después descártalos en el panel con \"Descartar borradores de este documento\" o con el comando RACKPANELDESCARTAR, y vuelve a cerrarlo.";
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheWrapperRefusesANullInnerPortNameActivityOrWriterAndAcceptsANullReport()
     {
         var rig = new RelayRig();
@@ -723,7 +723,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Null(Record.Exception(() => new WorkspaceCloseAdvisorRelay(rig.Inner, rig.Port, name, active, write, null)));
     }
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     [InlineData(CloseDecision.Allow)]
     [InlineData(CloseDecision.Veto)]
     public void TheDecisionOfTheWrapperIsAlwaysTheOneOfTheInnerAdvisorAndItIsAskedOncePerAttempt(CloseDecision answer)
@@ -743,7 +743,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Empty(rig.Reports);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnInnerAdvisorThatThrowsIsAVetoWithTheNoticeAndTheReportOfThatContext()
     {
         var rig = new RelayRig();
@@ -762,7 +762,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Equal(new[] { Veto01("«" + DocumentName + "»") }, rig.Written.ToArray());
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AVetoOfTheActiveDocumentWritesV01AndTheOneOfAnotherDocumentWritesV02()
     {
         var active = new RelayRig();
@@ -777,7 +777,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Equal(new[] { Veto02("«" + DocumentName + "»") }, other.Written.ToArray());
     }
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     [InlineData(@"C:\Dibujos\Planta A.dwg", "Planta A.dwg")]
     [InlineData("C:/Dibujos/Planta A.dwg", "Planta A.dwg")]
     [InlineData(@"D:\Uno/Dos\Tres.dwg", "Tres.dwg")]
@@ -792,7 +792,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Equal(new[] { Veto01("«" + shown + "»") }, rig.Written.ToArray());
     }
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     [InlineData(null)]
     [InlineData("")]
     [InlineData("   ")]
@@ -808,7 +808,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Empty(rig.Reports);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AQueryThatThrowsNeverChangesTheDecisionAndTheNoticeStillSaysTheDocument()
     {
         var rig = new RelayRig
@@ -830,7 +830,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Equal(new[] { "no name", "no activity" }, rig.Reports.Select(r => r.Error.Message).ToArray());
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AWriterThatThrowsNeverChangesTheDecisionAndIsReportedAsTheVetoMessage()
     {
         var rig = new RelayRig { WriteHook = _ => throw new InvalidOperationException("no command line") };
@@ -846,7 +846,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Equal("no command line", report.Error.Message);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AReportThatThrowsIsIgnoredAndTheWrapperWorksWithoutAReportToo()
     {
         var throwing = new RelayRig { ReportHook = (_, _) => throw new InvalidOperationException("the report failed") };
@@ -866,7 +866,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Single(throwing.Written);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheWrapperNeverWritesWhenTheInnerAllowsEvenIfTheQueriesWouldFail()
     {
         var rig = new RelayRig { NameOf = _ => throw new InvalidOperationException("never asked") };
@@ -880,7 +880,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Empty(rig.Reports);
     }
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     [InlineData(true)]
     [InlineData(false)]
     public void TheDestructionDelegatesExactlyOnceWithTheIntactFlagAsItCame(bool intact)
@@ -898,7 +898,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Empty(rig.Written);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheRiskIsReadBeforeTheDelegationAndTheMessageWaitsWithoutBeingWritten()
     {
         var rig = new RelayRig();
@@ -922,7 +922,7 @@ public class WorkspaceCommandAdvisorTests
             relay.TakeMessages(B).ToArray());
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ALossWithRacksAndUncertainOnesSaysBothAndALossWithOnlyUncertainOnesSaysThat()
     {
         var both = new RelayRig();
@@ -943,7 +943,7 @@ public class WorkspaceCommandAdvisorTests
             uncertainRelay.TakeMessages(A).ToArray());
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnUnknownRiskIsNeverNothingAtRiskAndIsNeverSilentAndAKnownEmptyRiskSaysNothing()
     {
         var unknown = new RelayRig();
@@ -963,7 +963,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Empty(unknown.Reports);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ARiskReadThatThrowsIsTheUnknownIsReportedAndStillDelegatesExactlyOnce()
     {
         var rig = new RelayRig();
@@ -982,7 +982,7 @@ public class WorkspaceCommandAdvisorTests
             relay.TakeMessages(A).ToArray());
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ARiskReadThatThrowsWithAReportThatAlsoThrowsStillDelegatesExactlyOnce()
     {
         var rig = new RelayRig { ReportHook = (_, _) => throw new InvalidOperationException("the report failed") };
@@ -995,7 +995,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Equal(new[] { (A, false) }, rig.Inner.Destroyed.ToArray());
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnInnerAdvisorThatThrowsWhenTheSessionIsDestroyedIsNotContainedAndTheWorkBeforeItWasDone()
     {
         var rig = new RelayRig();
@@ -1011,7 +1011,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Single(relay.TakeMessages(A));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheMessagesWaitForAnActiveSessionAreTakenOnceAndKeepTheirOrder()
     {
         var rig = new RelayRig();
@@ -1035,7 +1035,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Empty(rig.Written);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheWrapperOnlyEverCallsTheReadOfTheRiskOfThePort()
     {
         var rig = new RelayRig();
@@ -1160,7 +1160,7 @@ public class WorkspaceCommandAdvisorTests
         public EditUpdateProgress TakeUpdateProgress(WorkspaceRequest origin, string rackId) => _calls.TakeUpdateProgress(origin, rackId);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void OverTheRealBridgeAndHostACleanDocumentIsAllowedAndNothingIsWritten()
     {
         var env = new Env();
@@ -1173,7 +1173,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Empty(env.Reports);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void OverTheRealBridgeAndHostTheDecisionIsTheOneOfTheHostForVetoAndForAllowAndTheDraftIsNeverTouched()
     {
         var env = new Env();
@@ -1197,7 +1197,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Empty(env.Port.Calls);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void OverTheRealBridgeTheVetoOfAnotherDocumentSaysToActivateItFirst()
     {
         var env = new Env();
@@ -1213,7 +1213,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Equal(new[] { Veto02("«" + DocumentName + "»") }, env.Written.ToArray());
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void OverTheRealBridgeAnInnerThatThrowsIsAVetoWithoutDegradingTheSessionAndWithoutAFaultOfTheCore()
     {
         var hr = new WorkspaceHostRig().WithDocument(100);
@@ -1242,7 +1242,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Equal(2, inner.Advised.Count);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void OverTheRealBridgeTheCloseSequenceIntactFlagReachesTheInnerAdvisorAsTheCoreDecidedIt()
     {
         var hr = new WorkspaceHostRig().WithDocument(100);
@@ -1261,7 +1261,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Equal(new[] { (closed, true), (other, false) }, inner.Destroyed.ToArray());
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void OverTheRealBridgeAndHostALostDocumentIsReadBeforeTheHostRetiresItAndTheMessageWaitsForTheNextActiveSession()
     {
         var env = new Env();
@@ -1287,7 +1287,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.Equal(new[] { CommandAdvisorPortDouble.RisksOp }, env.Port.Operations().ToArray());
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void OverTheRealBridgeADestroyedSessionIsNotAskedToTheBridgeNorToTheQueries()
     {
         var env = new Env();
@@ -1319,7 +1319,7 @@ public class WorkspaceCommandAdvisorTests
         Assert.False(env.Bridge.TryGetSession(env.Session, out _));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void WithoutWiringTheWrapperTheRealBridgeStillDecidesAsTheHostAndWritesNothing()
     {
         var env = new Env(wire: false);

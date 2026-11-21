@@ -104,7 +104,7 @@ public class WorkspacePilotUpdateRequestTests
 
     // ------------------------------------------------------------------ the start values
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ARequestOnADirtyDraftIsAcceptedAndTheOutcomeOfTheUpdateIsTakenOnceByRack()
     {
         var rig = new Rig();
@@ -124,7 +124,7 @@ public class WorkspacePilotUpdateRequestTests
         Assert.Equal(EditUpdateStatus.Unavailable, rig.Take(RackB).Outcome.Status);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheStartValueWithoutAnExecutorOrAReaderIsUnavailableAndTheDefaultValuesAreInert()
     {
         var noExecutor = new Rig(executor: false);
@@ -148,7 +148,7 @@ public class WorkspacePilotUpdateRequestTests
             Enum.GetNames<EditUpdateStartStatus>());
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheGateAnswersWaitingForNoDocumentAModalAndNoRestAndRejectedForAnotherSessionAndRunsNothing()
     {
         var rig = new Rig();
@@ -171,7 +171,7 @@ public class WorkspacePilotUpdateRequestTests
         Assert.Empty(rig.Writer.Calls);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ARequestInsideANoticeOfThePanelWaitsAndAnyOtherStartIsNotATerminalFailure()
     {
         var rig = new Rig();
@@ -189,7 +189,7 @@ public class WorkspacePilotUpdateRequestTests
         Assert.Equal(EditUpdateStartStatus.Accepted, gate.RequestUpdate(rig.Request()).Status);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ARequestWhileAReadOfThePilotIsInProgressIsBusyAndAsksNothing()
     {
         var rig = new Rig();
@@ -208,7 +208,7 @@ public class WorkspacePilotUpdateRequestTests
         Assert.Equal(0, rig.Kit.Executor.TryRequests);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnExecutorThatThrowsIsAFailedStartValueAndLeavesNoTicketNorOutcome()
     {
         var rig = new Rig();
@@ -227,7 +227,7 @@ public class WorkspacePilotUpdateRequestTests
 
     // ------------------------------------------------------------------ one update at a time (tests 9 and 18)
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ASecondRequestWhileTheFirstIsInFlightIsBusyAndTheExecutorIsAskedOnceAndAnotherIsAcceptedAfterTheEnd()
     {
         var rig = new Rig();
@@ -250,7 +250,7 @@ public class WorkspacePilotUpdateRequestTests
         Assert.Equal(EditUpdateStartStatus.Accepted, rig.Start().Status);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheUpdateOfT4BRunsOncePerAcceptedRequestAlsoWithTwoClicksAndARepeatedCallback()
     {
         var rig = new Rig();
@@ -270,7 +270,7 @@ public class WorkspacePilotUpdateRequestTests
 
     // ------------------------------------------------------------------ the document and the session (tests 2 and 3)
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ADocumentThatChangedBeforeTheCallbackIsARejectedOutcomeAndTheDraftIsUntouched()
     {
         var rig = new Rig();
@@ -291,7 +291,7 @@ public class WorkspacePilotUpdateRequestTests
         Assert.Equal(EditUpdateStartStatus.Accepted, rig.Start().Status);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ASessionDestroyedBetweenTheAcceptanceAndTheCallbackIsStoppedBeforeTheLockAndLeavesNoTicketNorOutcome()
     {
         var rig = new Rig();
@@ -309,7 +309,7 @@ public class WorkspacePilotUpdateRequestTests
         Assert.Equal(EditUpdateStatus.Unavailable, rig.Take().Outcome.Status);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ARecycledNativeIdentityFindsTheNewDocumentAndTheAdmissionOfTheOldSessionStopsItBeforeTheLock()
     {
         var rig = new Rig();
@@ -331,7 +331,7 @@ public class WorkspacePilotUpdateRequestTests
 
     // ------------------------------------------------------------------ a failure of the host before the update (tests 10 and R-02)
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AContextThatFailsBeforeTheCallbackIsOnlyAFailedStartValueAndNoUpdateRunsAndTheDraftKeepsEverything()
     {
         var rig = new Rig();
@@ -349,7 +349,7 @@ public class WorkspacePilotUpdateRequestTests
         Assert.False(rig.Take().InFlight);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ANativeRefusalThatNeverRunsNorCompletesExpiresWithTheFirstForeignCommandAndLeavesAFailedOnceAndFreesEverything()
     {
         var rig = new Rig();
@@ -375,7 +375,7 @@ public class WorkspacePilotUpdateRequestTests
         Assert.Equal(EditDiscardStatus.Discarded, rig.Port.DiscardRack(rig.Origin(), RackA).Status);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ALateCallbackWithTheWitnessOfAnExpiredTicketDoesNothingAndLeavesNoSecondOutcome()
     {
         var rig = new Rig();
@@ -394,7 +394,7 @@ public class WorkspacePilotUpdateRequestTests
         Assert.False(rig.Take().InFlight);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ARetiredSessionTakesTheTicketAndTheStoreWithIt()
     {
         var rig = new Rig();
@@ -411,7 +411,7 @@ public class WorkspacePilotUpdateRequestTests
 
     // ------------------------------------------------------------------ the bound of the ticket: complete or foreign command (decision of the Owner on C12)
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheEntriesIntoRestAndTheStartOfTheOwnCommandThatH0MeasuredBeforeTheCallbackDoNotExpireTheTicket()
     {
         var rig = new Rig();
@@ -431,7 +431,7 @@ public class WorkspacePilotUpdateRequestTests
         Assert.Equal(EditUpdateStartStatus.Accepted, rig.Start().Status);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheCompletionReleasesTheTicketAfterTheUpdateAndUntilThenARequestIsBusyAndTheProgressIsNotInFlight()
     {
         var rig = new Rig();
@@ -451,7 +451,7 @@ public class WorkspacePilotUpdateRequestTests
         Assert.Equal(EditUpdateStartStatus.Accepted, rig.Start().Status);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ACompletionWithoutAnyCallbackLeavesAFailedOutcomeOnceAndReleasesTheTicket()
     {
         var rig = new Rig();
@@ -469,7 +469,7 @@ public class WorkspacePilotUpdateRequestTests
         Assert.Equal(EditUpdateStartStatus.Accepted, rig.Start().Status);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ATicketThatNeverEndedAfterAnAdmissionExpiresWithTheNextForeignCommandAndAnUpdateInExecuteNeverExpires()
     {
         // An executor that admits the run and returns without a terminal call: the defense in depth of the bound.
@@ -505,7 +505,7 @@ public class WorkspacePilotUpdateRequestTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ASessionThatIsDegradedIsUnavailableAndOneDegradedBeforeTheCallbackExpiresTheTicket()
     {
         var degraded = new Rig();
@@ -528,7 +528,7 @@ public class WorkspacePilotUpdateRequestTests
         Assert.Empty(later.Writer.Calls);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheExpiryOfATicketOfTheSameRackInsideARequestIsTheStartValueFailedAndNothingIsAcceptedNorStored()
     {
         var rig = new Rig();
@@ -550,7 +550,7 @@ public class WorkspacePilotUpdateRequestTests
         Assert.Equal(2, rig.Kit.Executor.TryRequests);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheExpiryOfATicketOfAnotherRackInsideARequestKeepsItsFailedUnderItsRackAndTheRequestGoesOn()
     {
         var rig = new Rig();
@@ -574,7 +574,7 @@ public class WorkspacePilotUpdateRequestTests
 
     // ------------------------------------------------------------------ B-01: a ticket that ended and whose completion never arrives
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ATicketThatEndedWhoseCompletionNeverArrivesExpiresWithTheNextForeignCommandAndFreesTheRequestAndTheDiscardsAndKeepsTheOutcomeOnce()
     {
         // B-01 (a): the callback runs and the update ends, but the completion never comes (the hop failed, or there was no scheduler).
@@ -608,7 +608,7 @@ public class WorkspacePilotUpdateRequestTests
         Assert.Equal(EditUpdateStatus.Unavailable, rig.Take().Outcome.Status);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AForeignCommandDuringTheUpdateDoesNotExpireTheTicketDuringTheRunAndAfterTheRunTheTicketIsFreedByTheNextCheckWithoutASecondOutcome()
     {
         // B-01 (b): a ticket in Execute never expires, but only while Execute lasts.
@@ -660,7 +660,7 @@ public class WorkspacePilotUpdateRequestTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ASecondTerminalCallOnATicketThatAlreadyEndedDoesNothingAndTheFirstOutcomeIsKept()
     {
         // M-06 (a): a host that does not honor the latch of the runner cannot overwrite the outcome that was stored.
@@ -706,7 +706,7 @@ public class WorkspacePilotUpdateRequestTests
         Assert.Equal("first", first.Reason);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnExecutorThatThrowsAfterTheCallbackBeganIsAnAcceptedStartValueAndTheOutcomeIsTheOnlyChannel()
     {
         // M-06 (b): the callback already ran and stored its outcome, so the start value cannot be a second failure.
@@ -725,7 +725,7 @@ public class WorkspacePilotUpdateRequestTests
         Assert.Contains(rig.Host.Faults, f => f.Context.Contains("RequestUpdate", StringComparison.Ordinal));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnExecutorThatThrowsBeforeTheCallbackBeganIsStillAFailedStartValueEvenInTheDeferredMode()
     {
         var rig = new Rig();
@@ -740,7 +740,7 @@ public class WorkspacePilotUpdateRequestTests
         Assert.Equal(EditUpdateStatus.Unavailable, rig.Take().Outcome.Status);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AComparerOrAnythingThatFailsWhileLookingForADraftBeingAppliedAnswersFalseAndIsLoggedSoTheDiscardIsNeverStuckInBusy()
     {
         // M-06 (c): the registry cannot be made to fail from a test, so the rule is read from the text of the core.
@@ -756,7 +756,7 @@ public class WorkspacePilotUpdateRequestTests
 
     // ------------------------------------------------------------------ M-01: the flight is looked at after the authorization
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ARequestOfASessionThatIsNoLongerTheActiveOneIsRejectedByItsAuthorizationAndNeverWaitsForTheFlightOfThreeOperations()
     {
         var rig = new Rig();
@@ -777,7 +777,7 @@ public class WorkspacePilotUpdateRequestTests
 
     // ------------------------------------------------------------------ the outcome of T4B is kept as it is (tests 12 to 16)
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AConflictOfT4BIsKeptWithItsDifferencesAndTheHostWritesNothingMore()
     {
         var rig = new Rig();
@@ -814,7 +814,7 @@ public class WorkspacePilotUpdateRequestTests
         }
     }
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     [MemberData(nameof(TheOutcomesOfT4B))]
     public void TheOutcomeThatT4BGivesIsKeptWithTheSameStatusReasonDifferencesAndWarningsAsThePlainCallOfTheUpdate(string name)
     {
@@ -835,7 +835,7 @@ public class WorkspacePilotUpdateRequestTests
         Assert.Equal(expected.Warnings.ToArray(), kept.Warnings.ToArray());
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnUnknownOutcomeOfT4BIsNeverTranslatedAndAnUnlockThatThrowsAfterwardsDoesNotChangeIt()
     {
         var rig = new Rig();
@@ -859,7 +859,7 @@ public class WorkspacePilotUpdateRequestTests
         Assert.Equal(EditUpdateStatus.AppliedPostRereadFailed, post.Take().Outcome.Status);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnAppliedOutcomeKeepsTheDraftCleanOnlyByTheClassificationOfT4BAndTheWarningsAreCopied()
     {
         var rig = new Rig();
@@ -883,7 +883,7 @@ public class WorkspacePilotUpdateRequestTests
             yield return new object[] { name };
     }
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     [MemberData(nameof(TheHostFailures))]
     public void AHostFailureAfterTheAdmissionAlwaysRemovesTheTicketClosesTheOwnMutationIfItWasOpenedAndALaterRequestIsAccepted(string failure)
     {
@@ -926,7 +926,7 @@ public class WorkspacePilotUpdateRequestTests
         Assert.False(rig.Take().InFlight);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ALockThatThrowsLeavesAFailedOutcomeWithItsPrefixAndNeverOpensTheOwnMutation()
     {
         var rig = new Rig();
@@ -944,7 +944,7 @@ public class WorkspacePilotUpdateRequestTests
 
     // ------------------------------------------------------------------ the own mutation of the run
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheRunOpensTheOwnMutationOnceBeforeTheUpdateAndAFailureBeforeTheUpdateClosesIt()
     {
         var rig = new Rig();
@@ -969,7 +969,7 @@ public class WorkspacePilotUpdateRequestTests
     private static (DraftStatus Status, string Pending, double Scale) Snapshot(DraftSession<PushBackPilotDraftState> draft) =>
         (draft.Status, string.Join("|", draft.PendingText.Select(p => p.Key + "=" + p.Value)), draft.CurrentDraftState.Inputs.Annotations.AnnotationScale);
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void DuringTheFlightTheFiveOperationsThatCouldChangeTheDraftAnswerBusyOrWaitingAndTheDraftDoesNotChange()
     {
         var rig = new Rig();
@@ -1002,7 +1002,7 @@ public class WorkspacePilotUpdateRequestTests
         Assert.NotEqual(PilotFieldStatus.Busy, rig.Port.SetPendingText(rig.Origin(), RackA, "4").Status);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheGeneralCheckDuringTheFlightWaitsBeforeItsRereadEvenWhenTheRereadWouldDifferAndTheDraftStaysDirty()
     {
         var rig = new Rig();
@@ -1019,7 +1019,7 @@ public class WorkspacePilotUpdateRequestTests
         Assert.Equal(DraftStatus.Dirty, draft.Status);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnotherRackOfTheSessionIsStillEditableDuringTheFlightOfTheFirst()
     {
         var rig = new Rig();
@@ -1032,7 +1032,7 @@ public class WorkspacePilotUpdateRequestTests
         Assert.Equal(PilotFieldStatus.Applied, rig.Port.SetPendingText(rig.Origin(), RackB, "3").Status);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheDiscardsAnswerBusyDuringTheFlightAndOnAnApplyingDraftAndTheRegistryIsUnchanged()
     {
         var rig = new Rig();
@@ -1064,7 +1064,7 @@ public class WorkspacePilotUpdateRequestTests
         Assert.NotNull(applying.Core.OpenDrafts.Find<PushBackPilotDraftState>(applying.Session, RackA));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheDiscardsAreServedAgainWhenTheTicketExpiresWithAForeignCommand()
     {
         var rig = new Rig();
@@ -1080,7 +1080,7 @@ public class WorkspacePilotUpdateRequestTests
 
     // ------------------------------------------------------------------ the frontier of the update and the arrastres of T4B
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheUpdateBoundaryIsBlockingAndAppliesAValidPendingTextAndAbortsAnInvalidOneAndNeedsTheAuthorization()
     {
         var rig = new Rig();
@@ -1109,7 +1109,7 @@ public class WorkspacePilotUpdateRequestTests
             Enum.GetNames<PilotBoundaryKind>());
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheTextsOfTheGateOfTheUpdateAreTheConstantsOfTheRunWithTheirOldWording()
     {
         var modal = new Rig();
@@ -1128,7 +1128,7 @@ public class WorkspacePilotUpdateRequestTests
 
     // ------------------------------------------------------------------ the answer of a close that was not accepted is never a success (M-01)
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnUpdateOfTheCoreThatRunsOverASlotThatWasTakenAwayNeverAnswersAnApplied()
     {
         // The slot is taken from the draft while the run is in its write: CompleteApply finds no update to close (NotApplying).

@@ -50,7 +50,7 @@ namespace RackCad.Tests
 
         // ------------------------------------------------------------------------------------------------- CT-05
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente en PushBackFullReadGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-list-477-decision.md).")]
         public void CT_PBT4A_05_WithAReaderWithoutTheNewInterfaceTheFiveRereadsUseReadIntentAsToday()
         {
             var log = new List<string>();
@@ -94,7 +94,7 @@ namespace RackCad.Tests
                     .Select(name => file.Path + ": " + name))
                 .ToList();
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4b: sustituida por CT-PBT4B-13 de PushBackFullPanelCensusGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
         public void CT_PBT4A_06_OnlyTheFolderOfTheModelThePlanTheRunAndTheAdapterOfThePluginNameItsTypes()
         {
             var log = new List<string>();

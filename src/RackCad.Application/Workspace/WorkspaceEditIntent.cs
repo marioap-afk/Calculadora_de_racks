@@ -149,6 +149,15 @@ namespace RackCad.Application.Workspace
         /// its edits and its pending text stay.
         /// </summary>
         Kept,
+
+        // The state below belongs to the presentation of "keep my draft" (I-64 F4B PB-T4b, D-PBT4-08). It comes AFTER the eleven above,
+        // which stay as an ordered prefix.
+
+        /// <summary>
+        /// "Keep my draft" without a witness that still holds: nothing was kept and the draft did not change. The outcome carries the lines
+        /// of the presentation, by groups, and the witness of the read they describe, which the confirmation hands back.
+        /// </summary>
+        Presented,
     }
 
     /// <summary>
@@ -171,7 +180,24 @@ namespace RackCad.Application.Workspace
             Diagnostic = diagnostic;
             Detail = detail;
             ClassicEditorHint = classicEditorHint;
+            _presentationLines = null;
+            KeepWitness = null;
         }
+
+        // I-64 F4B PB-T4b (D-PBT4-08): the presentation of "keep my draft", with its lines and the witness of the read they describe.
+        private EditIntentOutcome(EditIntentStatus status, EditWitnessStatus witness, IReadOnlyList<string> presentationLines, EditIntentWitness keepWitness)
+        {
+            Status = status;
+            Witness = witness;
+            Reason = null;
+            Diagnostic = null;
+            Detail = null;
+            ClassicEditorHint = null;
+            _presentationLines = presentationLines;
+            KeepWitness = keepWitness;
+        }
+
+        private readonly IReadOnlyList<string>? _presentationLines;
 
         public EditIntentStatus Status { get; }
 
@@ -188,6 +214,12 @@ namespace RackCad.Application.Workspace
 
         /// <summary>The hint to the classic editor; present when the read was not admitted.</summary>
         public string? ClassicEditorHint { get; }
+
+        /// <summary>The lines of the presentation of "keep my draft" (Presented); empty for every other state.</summary>
+        public IReadOnlyList<string> PresentationLines => _presentationLines ?? Array.Empty<string>();
+
+        /// <summary>The witness of the read that the presentation describes (Presented): the key and the text of the envelope of its origin; null otherwise.</summary>
+        public EditIntentWitness? KeepWitness { get; }
 
         public bool IsAdmitted => Status == EditIntentStatus.Admitted;
 
@@ -217,6 +249,13 @@ namespace RackCad.Application.Workspace
 
         public static EditIntentOutcome Kept(EditWitnessStatus witness) =>
             new(EditIntentStatus.Kept, witness, null, null, null, null);
+
+        public static EditIntentOutcome Presented(IReadOnlyList<string> lines, EditIntentWitness keepWitness, EditWitnessStatus witness)
+        {
+            if (lines == null) throw new ArgumentNullException(nameof(lines));
+            if (keepWitness == null) throw new ArgumentNullException(nameof(keepWitness));
+            return new EditIntentOutcome(EditIntentStatus.Presented, witness, Array.AsReadOnly(lines.ToArray()), keepWitness);
+        }
 
         private static EditIntentOutcome Without(EditIntentStatus status, string? reason) =>
             new(status, EditWitnessStatus.NotEvaluated, reason, null, null, null);

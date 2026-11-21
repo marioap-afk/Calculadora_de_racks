@@ -106,7 +106,7 @@ public class WorkspacePilotReconciliationGuardTests
         Assert.Empty(ReaderViolations(UiFiles()));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente en WorkspacePilotReconciliationGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
     public void TheGuardOfWhoReadsSeesAKeepInTheRequestACheckInThePresentationAnyOfTheFourInTheBrowserAndANameof()
     {
         var files = UiFiles();

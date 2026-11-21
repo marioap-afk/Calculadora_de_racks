@@ -149,7 +149,7 @@ namespace RackCad.Tests
 
         // ------------------------------------------------------------------------------------------------- CT-03
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente en PushBackFullReadPathFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-list-477-decision.md).")]
         public void CT_PBT4A_03_TheFiveRereadsOfAnOpenDraftReadAtTheOriginOfTheDraftAndBeginReadsAsToday()
         {
             var log = new List<string>();

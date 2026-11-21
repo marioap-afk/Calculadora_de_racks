@@ -376,7 +376,7 @@ public class WorkspacePilotEditGuardTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente en WorkspacePilotEditGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
     public void TheHostImplementsThePortExplicitlyAndNeverReadsOutsideTheThreeReadsAndChangesOnlyThroughNotePilotEdit()
     {
         Assert.Empty(HostViolations(Host()));
@@ -385,7 +385,7 @@ public class WorkspacePilotEditGuardTests
         Assert.Equal(new[] { "IWorkspaceLifecycleAdvisor", "IWorkspacePilotEditPort" }, typeof(WorkspaceHostCore).GetInterfaces().Select(i => i.Name).OrderBy(n => n, StringComparer.Ordinal).ToArray());
     }
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente en WorkspacePilotEditGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
     [InlineData("public sealed class WorkspaceHostCore : IWorkspaceLifecycleAdvisor, IWorkspacePilotEditPort", "public sealed class WorkspaceHostCore : IWorkspacePilotEditPort, IWorkspaceLifecycleAdvisor")]
     [InlineData("PilotFieldView IWorkspacePilotEditPort.GetField(", "public PilotFieldView GetField(")]
     [InlineData("PilotFieldResult IWorkspacePilotEditPort.CommitField(", "public PilotFieldResult CommitField(")]
@@ -492,7 +492,7 @@ public class WorkspacePilotEditGuardTests
     }
 
     // M-01: the same order when the authorization is the gate (PassGate) and not an Authorize of the body itself: the flight before the gate trips.
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente en WorkspacePilotEditGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
     [InlineData("TryKeepPilotEdit")]
     [InlineData("TryDiscardAndReloadPilotEdit")]
     [InlineData("TryConfirmPilotBase")]
@@ -525,7 +525,7 @@ public class WorkspacePilotEditGuardTests
         Assert.NotEmpty(HostViolations(host.Replace(body, withoutGate, StringComparison.Ordinal)));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente en WorkspacePilotEditGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
     public void TheHostGuardAllowsWhatTheNextTaskWouldAddAnUpdateOperationThatWrites()
     {
         var update = "PilotFieldResult IWorkspacePilotEditPort.Update(WorkspaceRequest origin, string rackId)\n{\n    var tr = db.TransactionManager.StartTransaction(); tr.Commit(); btr.AppendEntity(e);\n    return default;\n}\n";
@@ -1030,7 +1030,7 @@ public class WorkspacePilotEditGuardTests
         Assert.StartsWith("#nullable enable", Src.Text(SupportPath).TrimStart((char)0xFEFF));
     }
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente en WorkspacePilotEditGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
     [InlineData("public sealed class WorkspacePilotDraftGate { }")]
     [InlineData("public sealed class WorkspaceStableThing { }")]
     [InlineData("public sealed class WorkspacePilotTableView { }")]

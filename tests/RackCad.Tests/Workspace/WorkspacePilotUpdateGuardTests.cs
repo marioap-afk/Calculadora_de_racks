@@ -819,7 +819,7 @@ public class WorkspacePilotUpdateGuardTests
         Assert.NotEmpty(UpdateGateViolations(core.Replace(body, body.Replace(from, to, StringComparison.Ordinal), StringComparison.Ordinal)));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente en WorkspacePilotUpdateGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-breaks-decision.md).")]
     public void TheBodyOfTheUpdateFollowsTheOrderOfThePackageAndEndsTheMarkOfKnownCleanAfterTheClose()
     {
         var body = Src.BodyOf(Src.Code(CorePath), @"public\s+EditUpdateOutcome\s+TryUpdatePilot\s*\(");

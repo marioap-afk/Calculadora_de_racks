@@ -76,7 +76,7 @@ namespace RackCad.UI.Tests
 
         // ------------------------------------------------------------------ the buttons: content, automation name and visibility
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationViewFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
         public void TheFiveButtonsHaveTheirContentTheirAutomationNameAndTheOrderOfTheTable()
         {
             StaTestRunner.Run(() =>
@@ -103,7 +103,7 @@ namespace RackCad.UI.Tests
             });
         }
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationViewFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
         public void TheButtonsAreVisibleOnlyWhereTheViewModelOffersThem()
         {
             StaTestRunner.Run(() =>
@@ -171,7 +171,7 @@ namespace RackCad.UI.Tests
             });
         }
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationViewFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
         public void ARealClickOnAnOptionOnlyAsksForTheConfirmationAndShowsTheQuestionAndTheTwoButtons()
         {
             StaTestRunner.Run(() =>
@@ -195,7 +195,7 @@ namespace RackCad.UI.Tests
             });
         }
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationViewFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
         public void ARealClickOnYesCallsTheChosenOperationOnceAndNeverTheOtherForEachOption()
         {
             StaTestRunner.Run(() =>
@@ -235,7 +235,7 @@ namespace RackCad.UI.Tests
             });
         }
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationViewFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
         public void ARealClickOnNoCallsNothingAndLeavesTheDraftAsItWasForEachOption()
         {
             StaTestRunner.Run(() =>
@@ -260,7 +260,7 @@ namespace RackCad.UI.Tests
             });
         }
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationViewFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
         public void YesAndNoAreNotSwappedAClickOnEachDoesWhatItsLabelSays()
         {
             StaTestRunner.Run(() =>

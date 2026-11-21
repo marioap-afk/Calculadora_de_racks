@@ -501,7 +501,7 @@ public class WorkspacePilotUpdateIntegrationGuardTests
         if (!runCallers.SequenceEqual(new[] { CorePath })) yield return "PushBackPilotUpdateRun.Execute is named in " + string.Join(", ", runCallers);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente en WorkspacePilotUpdateIntegrationGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
     public void G4OnlyTheExecuteOfTheRunOfTheCoreCallsTheUpdateAndOnlyTheCoreCallsTheRunOfT4B()
     {
         Assert.Empty(G4Violations(Product()));
@@ -516,7 +516,7 @@ public class WorkspacePilotUpdateIntegrationGuardTests
         Assert.NotEmpty(G4Violations(With(Product(), CorePath, code => code.Replace("public EditUpdateOutcome TryUpdatePilot(", "public EditUpdateOutcome Other() { return TryUpdatePilot(null!, null!); }\n        public EditUpdateOutcome TryUpdatePilot(", StringComparison.Ordinal))));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente en WorkspacePilotUpdateIntegrationGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
     public void G4TripsOnAGroupOfMethodsOfTheUpdateOutsideTheCoreAndInsideItAndNotOnTheNameInsideAString()
     {
         var product = Product();

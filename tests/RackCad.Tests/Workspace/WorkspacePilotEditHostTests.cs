@@ -147,7 +147,7 @@ public class WorkspacePilotEditHostTests
 
     // ------------------------------------------------------------------ 1: a valid text and the gesture of the field
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AValidTextAndTheGestureOfTheFieldApplyItClearThePendingTextAndEndTheMark()
     {
         var env = new Env();
@@ -168,7 +168,7 @@ public class WorkspacePilotEditHostTests
         Assert.Empty(env.Hr.Faults);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheGestureOfTheFieldEndsTheMarkOfKnownCleanWhenItAppliesTheText()
     {
         // The pending text is put straight in the draft, so only the gesture of the field can end the mark that the Allow put.
@@ -179,13 +179,13 @@ public class WorkspacePilotEditHostTests
         }));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnEditOfTheUserEndsTheMarkOfKnownClean()
     {
         Assert.Equal("conservative", new Env().PathAfter(env => Assert.Equal(PilotFieldStatus.Applied, env.Type("2.5").Status)));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AValidTextAtABlockingBoundaryProceedsAppliesItAndEndsTheMark()
     {
         var env = new Env();
@@ -207,7 +207,7 @@ public class WorkspacePilotEditHostTests
         }));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void WithoutPendingTextTheGestureAndTheBlockingBoundariesChangeNothingAndWithoutADraftTheyProceed()
     {
         var env = new Env();
@@ -228,7 +228,7 @@ public class WorkspacePilotEditHostTests
 
     // ------------------------------------------------------------------ 2, 3 and 4: an invalid text
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     [InlineData("abc", PushBackPilotFieldAdapter.NotANumberMessage)]
     [InlineData("0", PushBackPilotFieldAdapter.NotPositiveMessage)]
     [InlineData("-3", PushBackPilotFieldAdapter.NotPositiveMessage)]
@@ -250,7 +250,7 @@ public class WorkspacePilotEditHostTests
         Assert.Equal(PilotFieldState.Dirty, env.Field().State);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnInvalidTextProtectsTheRackPutsItAtRiskAndVetoesTheCloseWithItsNotice()
     {
         var env = new Env();
@@ -272,7 +272,7 @@ public class WorkspacePilotEditHostTests
         Assert.False(notice.IsUncertain);
     }
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     [InlineData(PilotBoundaryKind.TabChange)]
     [InlineData(PilotBoundaryKind.RackChange)]
     public void AnInvalidTextAbortsEachBlockingBoundaryWithTheFieldAndTheMessageAndNothingChanges(PilotBoundaryKind kind)
@@ -295,7 +295,7 @@ public class WorkspacePilotEditHostTests
 
     // ------------------------------------------------------------------ 5, 6, 7 and 8: the non-blocking boundaries and the documents
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     [InlineData(PilotBoundaryKind.DocumentChange)]
     [InlineData(PilotBoundaryKind.PanelHide)]
     [InlineData(PilotBoundaryKind.Dematerialize)]
@@ -321,7 +321,7 @@ public class WorkspacePilotEditHostTests
         Assert.Empty(env.Hr.Faults);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ANonBlockingBoundaryKeepsTheTextAlsoWhenItIsValidAndDoesNotApplyIt()
     {
         var env = new Env();
@@ -335,7 +335,7 @@ public class WorkspacePilotEditHostTests
         Assert.Equal(Env.InitialScale, Env.ScaleOf(draft));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ThePendingTextOfADocumentStaysInItAfterTheDocumentChangeAndComesBackWhenTheDocumentIsActiveAgain()
     {
         var env = new Env();
@@ -360,7 +360,7 @@ public class WorkspacePilotEditHostTests
 
     // ------------------------------------------------------------------ 11 and 14: the discard
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void DiscardRackRemovesTheDraftAndItsPendingTextOfOneRackWithoutTouchingTheOthers()
     {
         var env = new Env();
@@ -387,7 +387,7 @@ public class WorkspacePilotEditHostTests
         Assert.Empty(env.Hr.Faults);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void DiscardRackNeedsNoComparerAndRemovesAnUndecidableDraftToo()
     {
         var env = new Env();
@@ -404,7 +404,7 @@ public class WorkspacePilotEditHostTests
         Assert.Empty(env.Hr.Faults);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void DiscardRackOfARackWithoutADraftIsDiscardedWithEmptyListsAndABlankRackToo()
     {
         var env = new Env();
@@ -420,7 +420,7 @@ public class WorkspacePilotEditHostTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void DiscardRackAndDiscardDocumentRemoveTheStateAndTheNextCloseIsAllowed()
     {
         var env = new Env();
@@ -442,7 +442,7 @@ public class WorkspacePilotEditHostTests
         Assert.Equal(CloseDecision.Allow, env.Close());
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheDiscardOfARackEndsTheMarkOfKnownClean()
     {
         Assert.Equal("conservative", new Env().PathAfter(env => Assert.Equal(EditDiscardStatus.Discarded, env.Port.DiscardRack(env.Origin(), RackA).Status)));
@@ -450,7 +450,7 @@ public class WorkspacePilotEditHostTests
 
     // ------------------------------------------------------------------ 13: the state persists without a discard
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void WithoutADiscardTheStateOfTheDraftPersistsThroughQueriesAndNonBlockingBoundaries()
     {
         var env = new Env();
@@ -476,7 +476,7 @@ public class WorkspacePilotEditHostTests
 
     // ------------------------------------------------------------------ 17: isolation between documents
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheOperationsOfADocumentNeverTouchTheDraftsOfAnotherAndABlockingMutationOfAnotherDocumentIsRejected()
     {
         var env = new Env();
@@ -515,7 +515,7 @@ public class WorkspacePilotEditHostTests
 
     // ------------------------------------------------------------------ 18: the modal scope
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheModalScopeSwitchesOnBeforeItReturnsOffAtTheDisposeAlsoWithAnExceptionAndNestsAndDisposesTwiceHarmlessly()
     {
         var calls = new List<bool>();
@@ -554,7 +554,7 @@ public class WorkspacePilotEditHostTests
         Assert.Equal(0, scope.Depth);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void WithTheModalActiveTheIntentionWaitsAndCanDrainNowIsFalseUntilTheLastScopeEnds()
     {
         var env = new Env();
@@ -581,7 +581,7 @@ public class WorkspacePilotEditHostTests
 
     // ------------------------------------------------------------------ GetField in every state
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void GetFieldReportsEveryStateOfTheFieldAndWhatCanBeEdited()
     {
         var env = new Env();
@@ -624,7 +624,7 @@ public class WorkspacePilotEditHostTests
         Assert.True(clean.IsRegistered);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AComparerThatThrowsMakesTheFieldUndecidableProtectedAndNotEditableAndGetFieldNeverThrows()
     {
         var env = new Env();
@@ -643,7 +643,7 @@ public class WorkspacePilotEditHostTests
         Assert.Empty(env.Hr.Faults);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void GetFieldAndGetRacksAtRiskNeedNoAuthorizationAndNeverThrowEvenForABlankRackOrADocumentThatIsNotActive()
     {
         var env = new Env();
@@ -667,7 +667,7 @@ public class WorkspacePilotEditHostTests
 
     // ------------------------------------------------------------------ SetPendingText: refusals, the key and the text that lives
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void SetPendingTextIsRefusedWhenTheFieldCannotBeEditedWithoutAuthorizationAndWhenThereIsNoDraft()
     {
         var env = new Env();
@@ -694,7 +694,7 @@ public class WorkspacePilotEditHostTests
         Assert.Empty(env.Hr.Faults);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheKeyOfThePendingTextIsAlwaysTheOneOfTheAdapterAndAnEmptyTextIsKeptToo()
     {
         var env = new Env();
@@ -709,7 +709,7 @@ public class WorkspacePilotEditHostTests
         Assert.Equal(PushBackPilotFieldAdapter.EmptyMessage, env.Field().PendingMessage);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AfterAnySequenceOfAcceptedAndRejectedEditsTheFieldHoldsTheLastAcceptedText()
     {
         var env = new Env();
@@ -746,7 +746,7 @@ public class WorkspacePilotEditHostTests
         env.Hr.Idle();
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void WhileTheReloadReadsEveryOperationThatChangesSomethingAnswersBusyAndASecondReadWaitsAllWithoutEffect()
     {
         var env = new Env();
@@ -795,7 +795,7 @@ public class WorkspacePilotEditHostTests
         Assert.Equal(PilotFieldState.Clean, env.Field().State);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheMarkOfReadInProgressIsClearedWhenTheReadEndsAlsoWhenTheReaderThrows()
     {
         var env = new Env();
@@ -814,7 +814,7 @@ public class WorkspacePilotEditHostTests
         Assert.Equal(EditIntentStatus.NotNeeded, again.Status);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ABeginInsideABeginAndACheckInsideACheckWaitWithoutReading()
     {
         var env = new Env();
@@ -842,7 +842,7 @@ public class WorkspacePilotEditHostTests
         Assert.Contains(check.Status, new[] { EditCheckStatus.Recovered, EditCheckStatus.Conflict });
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheThreeReadsOfThePortAreTheOperationsOfTheHostAndNothingElseReadsTheDrawing()
     {
         var env = new Env();
@@ -878,7 +878,7 @@ public class WorkspacePilotEditHostTests
 
     // ------------------------------------------------------------------ the gate of notices
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void InsideANoticeOfThePanelTheThreeReadsWaitWithoutDelegatingAndWithoutReading()
     {
         var env = new Env();
@@ -914,7 +914,7 @@ public class WorkspacePilotEditHostTests
         Assert.Equal(0, depth.Value);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheDepthOfNoticesNestsNeverGoesBelowZeroAndTheGateDelegatesEverythingElseAsItIs()
     {
         var env = new Env();
@@ -985,7 +985,7 @@ public class WorkspacePilotEditHostTests
         }
     }
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     [InlineData("es-MX")]
     [InlineData("en-US")]
     [InlineData("de-DE")]
@@ -1016,7 +1016,7 @@ public class WorkspacePilotEditHostTests
         });
     }
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     [InlineData("es-MX", ".")]
     [InlineData("en-US", ".")]
     [InlineData("de-DE", ",")]
@@ -1038,7 +1038,7 @@ public class WorkspacePilotEditHostTests
         });
     }
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     [InlineData(0.0)]
     [InlineData(-1.5)]
     [InlineData(double.NaN)]
@@ -1052,7 +1052,7 @@ public class WorkspacePilotEditHostTests
         Assert.False(string.IsNullOrEmpty(reason));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ShowingTheCommittedValueNeverCreatesPendingTextAndCommittingTheShownTextIsNotADirtyChange()
     {
         InCulture("de-DE", () =>
@@ -1082,7 +1082,7 @@ public class WorkspacePilotEditHostTests
 
     // ------------------------------------------------------------------ the queues of notices
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheLossNoticesAreTakenInOrderAsValuesAndLeaveTheQueueEmpty()
     {
         var env = new Env();
@@ -1109,7 +1109,7 @@ public class WorkspacePilotEditHostTests
         Assert.Empty(env.Core.LossNotices);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheCloseNoticesAreOnePerSessionTheLastOneAndAreTakenInOrderLeavingTheQueueEmpty()
     {
         var env = new Env();
@@ -1135,7 +1135,7 @@ public class WorkspacePilotEditHostTests
         Assert.Empty(second);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ATestOfTheCloseThatFailsLeavesAnUncertainNoticeWithoutAListOfRacks()
     {
         var env = new Env();
@@ -1152,7 +1152,7 @@ public class WorkspacePilotEditHostTests
         Assert.False(env.Bridge.IsDegraded(env.Session));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheNoticeOfAVetoOfADocumentThatIsNotActiveIsQueuedToo()
     {
         var env = new Env();
@@ -1168,7 +1168,7 @@ public class WorkspacePilotEditHostTests
         Assert.Equal(new[] { RackA }, notice.RackIds.ToArray());
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheNoticeOfAVetoExpiresWhenTheSessionIsDiscardedWhenTheNextAdviceAllowsAndWhenTheSessionIsRetired()
     {
         // DiscardRack that leaves the session without risk.
@@ -1216,7 +1216,7 @@ public class WorkspacePilotEditHostTests
         Assert.Single(env.Port.TakeLossNotices());
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AdviseCloseStillReadsNothingAuthorizesNothingAndDoesNotDiscardOrRetireAndTheDecisionIsTheSame()
     {
         var env = new Env();
@@ -1237,7 +1237,7 @@ public class WorkspacePilotEditHostTests
 
     // ------------------------------------------------------------------ the racks at risk
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheRacksAtRiskAreOrderedOrdinallyAndAComparerThatThrowsMakesThemUncertainApart()
     {
         var env = new Env();
@@ -1257,7 +1257,7 @@ public class WorkspacePilotEditHostTests
         Assert.Empty(env.Hr.Faults);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheRacksAtRiskOfASessionThatIsNotTheActiveOneAreAnsweredAndADefaultValueNeverHasANullList()
     {
         var env = new Env();
@@ -1286,7 +1286,7 @@ public class WorkspacePilotEditHostTests
 
     // ------------------------------------------------------------------ exceptions are contained as values
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnExceptionOfAnOperationIsContainedAsAValueWithAReasonAndDoesNotDegradeTheSession()
     {
         var hr = new WorkspaceHostRig().WithDocument(100);
@@ -1322,7 +1322,7 @@ public class WorkspacePilotEditHostTests
 
     // ------------------------------------------------------------------ the critical oracle: zero authored writes
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void NoOperationOfThePortWritesAuthoredDataOfTheDrawing()
     {
         var env = new Env();
@@ -1375,7 +1375,7 @@ public class WorkspacePilotEditHostTests
 
     // (a) A blocking boundary on a draft that cannot be edited (in error, unknown or being applied) with pending text does not validate and
     // does not apply: it answers Kept, the transition is allowed to go on and the pending text is exactly where it was (D-T3B1-11, minor 3).
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ABlockingBoundaryOnADraftThatCannotBeEditedKeepsItsPendingTextAndNeverValidatesOrApplies()
     {
         var env = new Env();
@@ -1421,7 +1421,7 @@ public class WorkspacePilotEditHostTests
 
     // (b) The operations that change nothing keep the mark of "known clean" that the Allow of the close put: the session is retired as known
     // safe, not conservatively, after each of them.
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheOperationsThatChangeNothingKeepTheMarkOfKnownClean()
     {
         Assert.Equal("known-safe", new Env().PathAfter(env => env.Field()));
@@ -1438,7 +1438,7 @@ public class WorkspacePilotEditHostTests
         }));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ARejectedOrBusyTextKeepsTheMarkOfKnownClean()
     {
         Assert.Equal("known-safe", new Env().PathAfter(env =>
@@ -1462,7 +1462,7 @@ public class WorkspacePilotEditHostTests
 
     // (c) The outer catch of GetField, reached through OpenDrafts with a copier of the state that answers null: the state of the draft is null,
     // the view cannot be built, and the answer is the view in Error, protected and not editable, with the fault logged and nothing thrown.
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheOuterCatchOfGetFieldAnswersTheViewInErrorWhenTheCopierOfTheStateAnswersNull()
     {
         var env = new Env();
@@ -1487,7 +1487,7 @@ public class WorkspacePilotEditHostTests
     // ------------------------------------------------------------------ I-64 F4-T3C1 (D-T3C1-01, 03, 04, 05, 06): the host hardened
 
     // The default value of the risk is the unknown (it could not be decided); only the constructor builds a known one.
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheDefaultRiskViewIsTheUnknownAndEveryValueBuiltWithTheConstructorIsKnown()
     {
         var unknown = default(PilotRiskView);
@@ -1501,7 +1501,7 @@ public class WorkspacePilotEditHostTests
         Assert.Throws<ArgumentNullException>(() => new PilotRiskView(Array.Empty<string>(), null!));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheFallbackByDraftIsKnownAndKeepsTheUncertainOnesApart()
     {
         var env = new Env();
@@ -1517,7 +1517,7 @@ public class WorkspacePilotEditHostTests
         Assert.Empty(env.Hr.Faults);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ASessionWithoutDraftsAnswersKnownAndEmptyAndNeverTheUnknown()
     {
         var env = new Env();
@@ -1535,7 +1535,7 @@ public class WorkspacePilotEditHostTests
         Assert.Empty(env.Hr.Faults);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AKnownRiskWithRacksInRiskStaysKnown()
     {
         var env = new Env();
@@ -1549,7 +1549,7 @@ public class WorkspacePilotEditHostTests
         Assert.Empty(risk.UncertainRackIds);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheReasonsOfTheFieldAreInSpanishExactlyAsTheTableOfThePackageSays()
     {
         var env = new Env();
@@ -1596,7 +1596,7 @@ public class WorkspacePilotEditHostTests
         Assert.Equal("Hay una lectura del piloto en curso.", busyDiscard);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheReasonOfAFieldThatCannotBeReadIsInSpanish()
     {
         var env = new Env();
@@ -1611,7 +1611,7 @@ public class WorkspacePilotEditHostTests
         Assert.Null(view.ErrorReason);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheReasonsOfTheGateAndOfTheIntentionReadsAreInSpanish()
     {
         var env = new Env();
@@ -1640,7 +1640,7 @@ public class WorkspacePilotEditHostTests
     }
 
     // D-T3C1-06: the reason of the Error crosses the port, only in the state Error and exactly as the draft holds it.
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheReasonOfTheErrorOfADraftCrossesThePortOnlyInTheStateError()
     {
         var env = new Env();
@@ -1664,7 +1664,7 @@ public class WorkspacePilotEditHostTests
     }
 
     // D-T3C1-04: the notice of a vetoed close of a destroyed session goes away after the retirement, and only that one.
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void DestroyingASessionDropsOnlyItsOwnNoticeOfVetoAndQueuesItsLoss()
     {
         var env = new Env();

@@ -485,7 +485,7 @@ namespace RackCad.UI.Tests
             AssertOnlyTheErrorIsShown(rig.Field);
         }
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
         public void AChoiceWhoseMemoryCannotBeReadAgainAfterTheOperationIsNeverPresentedAsDone()
         {
             var discard = new Rig(Conflict(true));
@@ -627,7 +627,7 @@ namespace RackCad.UI.Tests
             Assert.Equal("Sin borrador.", rig.Field.StateText);
         }
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
         public void ASurfaceThatChangesDuringTheReadOfAnUnknownDraftAndDuringAChoiceShowsTheSameNotice()
         {
             var unknown = new Rig(Unknown(PilotUnknownOrigin.CommitThrew));
@@ -663,7 +663,7 @@ namespace RackCad.UI.Tests
             Assert.Equal(A205b, rig.Field.NoticeText);
         }
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
         public void KeepIsNotOfferedWithAPendingTextWhetherItIsValidOrNotAndTheLineSaysWhy()
         {
             foreach (var pending in new[] { "2x", "3.5" })
@@ -727,7 +727,7 @@ namespace RackCad.UI.Tests
             Assert.False(new Rig(Dirty(stale: true)).Field.ShowKeepMineButton);
         }
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
         public void TheOptionsAreNotOfferedOnAPreviewTabWithAFailureWithAPersistentDiagnosticOrWithAChoiceThatWaits()
         {
             var preview = new Rig(Conflict(true), preview: true);
@@ -748,7 +748,7 @@ namespace RackCad.UI.Tests
             Assert.False(asked.Field.ShowKeepMineButton);
         }
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
         public void TheTextOfEachConfirmationIsTheOneOfTheTableForTheStateTheOwnWorkAndThePendingText()
         {
             var own = new Rig(Conflict(true, committed: "2.5"));
@@ -776,7 +776,7 @@ namespace RackCad.UI.Tests
             Assert.Equal(A223, unknown.Field.ChoiceText);
         }
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
         public void AskingForAnOptionCallsNoOperationOfThePortAndOnlyReadsItsMemory()
         {
             foreach (var keep in new[] { false, true })
@@ -793,7 +793,7 @@ namespace RackCad.UI.Tests
             }
         }
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
         public void AnOptionThatIsNotOfferedDoesNothingWhenItIsAsked()
         {
             var rig = new Rig(Dirty());
@@ -832,7 +832,7 @@ namespace RackCad.UI.Tests
             Assert.Equal(1, rig.Changed);
         }
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
         public void YesOnKeepCallsThatOperationOnceWithTheSessionAndTheRackAndNeverTheDiscard()
         {
             var rig = new Rig(Conflict(true));
@@ -894,7 +894,7 @@ namespace RackCad.UI.Tests
             Assert.Equal("Desconocido", rig.Field.StateText);
         }
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
         public void NoCallsNothingChangesNothingAndSaysSoForEachOfTheTwoChoices()
         {
             foreach (var keep in new[] { false, true })
@@ -930,7 +930,7 @@ namespace RackCad.UI.Tests
             Assert.Equal(string.Empty, rig.Field.NoticeText);
         }
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
         public void AChoiceThatWaitsMakesTheBoxReadOnlyAndOffersOnlyYesAndNo()
         {
             var rig = new Rig(Conflict(true));
@@ -995,7 +995,7 @@ namespace RackCad.UI.Tests
             Assert.False(rig.Field.HasChoice);
         }
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
         public void IfTheViewChangedAfterAskingForKeepYesCallsNeitherOperation()
         {
             var rig = new Rig(Conflict(true, committed: "2.5"));
@@ -1010,7 +1010,7 @@ namespace RackCad.UI.Tests
             Assert.Equal(0, rig.Count(WorkspacePilotEditPortDouble.DiscardAndReloadOp));
         }
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
         public void TheChoiceIsWithdrawnInSilenceByAChangeOfSurfaceByClearAndByAFailure()
         {
             var surface = new Rig(Conflict(true));
@@ -1037,7 +1037,7 @@ namespace RackCad.UI.Tests
             Assert.Equal("Error: boom", failed.Field.StateText);
         }
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
         public void TheChoiceIsWithdrawnByAnyNewGestureOfTheField()
         {
             var rig = new Rig(Conflict(true));
@@ -1055,7 +1055,7 @@ namespace RackCad.UI.Tests
             Assert.False(rig.Field.HasChoice);
         }
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
         public void TheChoiceIsWithdrawnWithTheSituationNoticeWhenThePresentationFindsThatTheViewNoLongerOffersIt()
         {
             var gone = new Rig(Conflict(true));
@@ -1081,7 +1081,7 @@ namespace RackCad.UI.Tests
             Assert.Equal(string.Empty, kept.Field.NoticeText);
         }
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
         public void ADiscardFromTheBrowserOfTheDraftThatTheChoiceWasAboutWithdrawsTheChoiceToo()
         {
             var host = new WorkspaceBrowserSummaryPortDouble();
@@ -1107,7 +1107,7 @@ namespace RackCad.UI.Tests
 
         // ------------------------------------------------------------------ the answer of the choice (D-T4A2-03, step 5)
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
         public void AnAnswerThatDoesNotMatchTheChoiceIsNeverPresentedAsDone()
         {
             var discard = new Rig(Conflict(true));
@@ -1137,7 +1137,7 @@ namespace RackCad.UI.Tests
             new object[] { UnknownIntent(), "No se aplicó la elección: forged" + A233 },
         };
 
-        [Theory]
+        [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
         [MemberData(nameof(ChoiceStatusesThatDidNothing))]
         public void AnAnswerOfTheChoiceThatDidNothingHasItsPrefixItsReasonAndTheTextOfNothingDone(EditIntentOutcome outcome, string expected)
         {
@@ -1158,7 +1158,7 @@ namespace RackCad.UI.Tests
             }
         }
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
         public void AnExceptionOfTheChosenOperationIsTheErrorOfTheFieldAndTheChoiceIsGone()
         {
             var rig = new Rig(Conflict(true));
@@ -1173,7 +1173,7 @@ namespace RackCad.UI.Tests
             Assert.Equal(1, rig.Count(WorkspacePilotEditPortDouble.KeepMineOp));
         }
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
         public void ARefusalOfTheChoiceForANotAdmittedReadIsAPersistentDiagnosticAndTheDraftIsKeptAsItWas()
         {
             foreach (var keep in new[] { false, true })
@@ -1412,7 +1412,7 @@ namespace RackCad.UI.Tests
 
         // ------------------------------------------------------------------ the check on a preview tab and without a port
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
         public void APreviewTabOffersNeitherTheCheckNorTheOptionsAndCallsNothing()
         {
             var rig = new Rig(Conflict(true), preview: true);
@@ -1425,7 +1425,7 @@ namespace RackCad.UI.Tests
             Assert.False(rig.Field.HasChoice);
         }
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
         public void AFieldWithoutThePortOffersNothingAndDoesNothing()
         {
             var field = new WorkspacePilotFieldViewModel(null);

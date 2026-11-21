@@ -142,7 +142,7 @@ public class WorkspacePilotPrepareTests
 
     // ================================================================== INV-F4T4A1-02: ConfirmBase over the draft session
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ConfirmBaseDoesNotApplyToADraftThatIsNotRegisteredApplyingUnknownOrInError()
     {
         var detached = DraftKit.Born();
@@ -183,7 +183,7 @@ public class WorkspacePilotPrepareTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AMatchInACleanOrDirtyDraftOnlyClearsThePossiblyStaleMarkAndNeverCleansDirty()
     {
         foreach (var dirty in new[] { false, true })
@@ -208,7 +208,7 @@ public class WorkspacePilotPrepareTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ADifferenceInACleanOrDirtyDraftPutsItInConflictWithTheOrderedDifferencesAndChangesNothingElse()
     {
         foreach (var dirty in new[] { false, true })
@@ -236,7 +236,7 @@ public class WorkspacePilotPrepareTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AMatchInAConflictAnswersConfirmedAndTheDraftStaysInConflictWithAllItsData()
     {
         var draft = DraftKit.ToConflict(DraftKit.Dirty());
@@ -256,7 +256,7 @@ public class WorkspacePilotPrepareTests
         AssertHeld(before, draft);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ADifferenceInAConflictReplacesTheDifferencesAndTheDraftStaysInConflict()
     {
         var draft = DraftKit.ToConflict(DraftKit.Dirty());
@@ -275,7 +275,7 @@ public class WorkspacePilotPrepareTests
         AssertHeld(before, draft);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ConfirmBaseNeverTakesTheSlotOfTheUpdateAndNeverReadsAnything()
     {
         var registry = new DraftRegistry();
@@ -293,7 +293,7 @@ public class WorkspacePilotPrepareTests
         Assert.True(registry.HasUpdateInProgress);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ConfirmBaseWithoutAReReadThrowsAndChangesNothing()
     {
         var draft = DraftKit.Dirty();
@@ -306,7 +306,7 @@ public class WorkspacePilotPrepareTests
         Assert.Equal(DraftStatus.Dirty, draft.Status);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ConfirmBaseDoesNotChangeWhatCheckNowDoesForAnUnknownDraft()
     {
         var draft = DraftKit.ToUnknownCommit(DraftKit.Dirty());
@@ -332,7 +332,7 @@ public class WorkspacePilotPrepareTests
     private static DraftIntentRead<DraftForm> NewRead(string name = "Newer", int width = 55) =>
         DraftIntentRead<DraftForm>.Admitted(OtherBase(), DraftKit.Form(name, width, "{new}"));
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void KeepWithANullKeepOnThrowsBeforeAnythingElseAndChangesNothing()
     {
         var draft = Keepable(conflict: true);
@@ -347,7 +347,7 @@ public class WorkspacePilotPrepareTests
         Assert.Equal(DraftStatus.Conflict, draft.Status);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void KeepChecksNotAllowedThenNotConfirmedThenNotAdmittedInTheOrderOfTheOtherVersionAndNeverCallsKeepOnWithoutAdmission()
     {
         var calls = 0;
@@ -381,7 +381,7 @@ public class WorkspacePilotPrepareTests
         AssertHeld(dirtyBefore, dirty);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void KeepReplacesTheBaseTheInitialAndTheCurrentStateInOneStepAndKeepsThePendingTextAndTheEdits()
     {
         foreach (var conflict in new[] { false, true })
@@ -422,7 +422,7 @@ public class WorkspacePilotPrepareTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AKeepOnThatThrowsOrACopyThatThrowsLeavesTheDraftExactlyAsItWas()
     {
         // The copier fails at its n-th call after it is armed: the two copies of the initial state and the copy of the substitute are
@@ -467,7 +467,7 @@ public class WorkspacePilotPrepareTests
         Assert.NotEmpty(plain.ConflictDifferences);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheVersionOfTwoParametersStillKeepsTheCurrentStateAsItWas()
     {
         var draft = Keepable(conflict: true);
@@ -539,7 +539,7 @@ public class WorkspacePilotPrepareTests
 
     // ------------------------------------------------------------------ the request and the gate: nothing is read
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheThreeOperationsAnswerUnavailableWithoutAReaderAndReadNothing()
     {
         var rig = new Rig(assignReader: false);
@@ -550,7 +550,7 @@ public class WorkspacePilotPrepareTests
         Assert.Empty(rig.Reader.Calls);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ABlankRackIdIsAnsweredBeforeAnythingElseWithTheTextsOfTheOtherOperationsAndReadsNothing()
     {
         foreach (var assign in new[] { true, false })
@@ -579,7 +579,7 @@ public class WorkspacePilotPrepareTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AWitnessWithoutAKeyIsAFailureOfTheRequestBeforeTheGateTheDraftAndTheReader()
     {
         var rig = new Rig();
@@ -601,7 +601,7 @@ public class WorkspacePilotPrepareTests
         Assert.Equal(DraftStatus.Dirty, draft.Status);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheGateAnswersWaitingOrRejectedForTheThreeOperationsAndReadsNothing()
     {
         var rig = new Rig();
@@ -644,7 +644,7 @@ public class WorkspacePilotPrepareTests
         Check("La petición no es del documento activo.", EditConfirmStatus.Rejected, EditIntentStatus.Rejected);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AMissingDraftIsNotFoundWithoutReading()
     {
         var rig = new Rig();
@@ -700,7 +700,7 @@ public class WorkspacePilotPrepareTests
         return data;
     }
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     [MemberData(nameof(StatusNames))]
     public void ConfirmAppliesOnlyToCleanDirtyAndConflictAndTheOthersReadNothing(string name)
     {
@@ -724,7 +724,7 @@ public class WorkspacePilotPrepareTests
         }
     }
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     [MemberData(nameof(StatusNames))]
     public void KeepAppliesToConflictAndToDirtyMarkedStaleApplyingWaitsAndTheOthersAreNotNeededAllWithoutReading(string name)
     {
@@ -755,7 +755,7 @@ public class WorkspacePilotPrepareTests
         }
     }
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     [MemberData(nameof(StatusNames))]
     public void DiscardAndReloadAppliesToEveryStatusButApplyingWhichWaitsAllWithTheOneRead(string name)
     {
@@ -787,7 +787,7 @@ public class WorkspacePilotPrepareTests
 
     // ------------------------------------------------------------------ the read: one, with the mark, and the mapping of what it answers
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void EachOperationReadsOnceAndSetsTheMarkOfReadInProgressAroundTheReadAndResetsItAfterwards()
     {
         var rig = new Rig();
@@ -829,7 +829,7 @@ public class WorkspacePilotPrepareTests
         Assert.Equal(4, rig.Reader.Calls.Count);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnExceptionOfTheReaderIsFailedWithTheMessageReportedAndTheMarkAndTheSessionAreNotTouched()
     {
         foreach (var operation in new[] { "confirm", "keep", "discard" })
@@ -877,7 +877,7 @@ public class WorkspacePilotPrepareTests
         }
     }
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     [InlineData(EditIntentReadStatus.NoActiveDocument, "no document", "Waiting")]
     [InlineData(EditIntentReadStatus.Busy, "busy", "Waiting")]
     [InlineData(EditIntentReadStatus.Rejected, "not yours", "Rejected")]
@@ -912,7 +912,7 @@ public class WorkspacePilotPrepareTests
         Assert.True(draft.IsPossiblyStale);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AReadWithoutReasonOrWithoutResultUsesTheTextsOfTheOtherOperations()
     {
         var rig = new Rig();
@@ -938,7 +938,7 @@ public class WorkspacePilotPrepareTests
 
     // ------------------------------------------------------------------ the consumption of the read
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ConfirmWithAMatchAnswersConfirmedWithoutDiagnosticAndKeepsTheStatusAndTheEdits()
     {
         var rig = new Rig();
@@ -959,7 +959,7 @@ public class WorkspacePilotPrepareTests
         Assert.Equal(2.25, draft.CurrentDraftState.Inputs.Annotations.AnnotationScale);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ConfirmWithAMatchThatIsNotAdmittedCarriesTheDiagnosticOfTheAdmissionAndOnlyThen()
     {
         var rig = new Rig();
@@ -974,7 +974,7 @@ public class WorkspacePilotPrepareTests
         Assert.Equal(DraftStatus.Dirty, draft.Status);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ConfirmWithADifferenceAnswersConflictWithTheDescribedDifferencesAndPutsTheDraftInConflict()
     {
         var rig = new Rig();
@@ -996,7 +996,7 @@ public class WorkspacePilotPrepareTests
         Assert.Equal(2.25, draft.CurrentDraftState.Inputs.Annotations.AnnotationScale);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ConfirmWithAMatchInConflictAnswersConfirmedAndTheDraftStaysInConflict()
     {
         var rig = new Rig();
@@ -1011,7 +1011,7 @@ public class WorkspacePilotPrepareTests
         Assert.Single(draft.ConflictDifferences);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void KeepAfterAChangeOfTheDrawingStaysOnTheNewVersionWithTheScaleAndThePendingTextOfTheDraft()
     {
         var rig = new Rig();
@@ -1038,7 +1038,7 @@ public class WorkspacePilotPrepareTests
         Assert.Equal("typed", draft.PendingText["field"]);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void KeepAConflictLeavesItAndTheDraftIsDirtyOnTheNewVersion()
     {
         var rig = new Rig();
@@ -1054,7 +1054,7 @@ public class WorkspacePilotPrepareTests
         Assert.Empty(draft.ConflictDifferences);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void KeepWithAReadThatIsNotAdmittedKeepsTheDraftAsItWasAndCarriesTheDiagnostic()
     {
         var rig = new Rig();
@@ -1074,7 +1074,7 @@ public class WorkspacePilotPrepareTests
         Assert.Equal(2.25, draft.CurrentDraftState.Inputs.Annotations.AnnotationScale);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void KeepThatFindsTheDraftBeingAppliedAfterTheReadAnswersWaitingAndChangesNothing()
     {
         var rig = new Rig();
@@ -1096,7 +1096,7 @@ public class WorkspacePilotPrepareTests
         Assert.Same(before, draft.StaleBase);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void DiscardAndReloadReplacesTheDraftFromTheOneReadAndAReadThatIsNotAdmittedKeepsIt()
     {
         var rig = new Rig();
@@ -1125,7 +1125,7 @@ public class WorkspacePilotPrepareTests
         Assert.False(draft.HasPendingText);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void DiscardAndReloadTakesAnUnknownAfterTheWriteOutOfItAndAnErrorToo()
     {
         var rig = new Rig();
@@ -1163,7 +1163,7 @@ public class WorkspacePilotPrepareTests
         return "conservative";
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AConfirmedCheckKeepsTheMarkAndAConflictFoundByTheCheckEndsIt()
     {
         Assert.Equal("known-safe", PathAfter(rig => rig.Open(), (rig, draft) =>
@@ -1176,7 +1176,7 @@ public class WorkspacePilotPrepareTests
         }));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AKeepThatIsKeptEndsTheMarkAndOneThatIsNotNeededOrNotAdmittedDoesNot()
     {
         Assert.Equal("conservative", PathAfter(rig => rig.Open(), (rig, draft) =>
@@ -1199,7 +1199,7 @@ public class WorkspacePilotPrepareTests
         }));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ADiscardAndReloadThatReloadsEndsTheMarkAndOneThatIsNotAdmittedDoesNot()
     {
         Assert.Equal("conservative", PathAfter(rig => rig.Open(), (rig, draft) =>
@@ -1214,7 +1214,7 @@ public class WorkspacePilotPrepareTests
 
     // ------------------------------------------------------------------ the gate of notices and the state of the field
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void InsideANoticeTheGateAnswersWaitingForTheThreeOperationsWithoutDelegatingAndOutsideItDelegates()
     {
         var rig = new Rig();
@@ -1243,7 +1243,7 @@ public class WorkspacePilotPrepareTests
         Assert.Equal(2, rig.Reader.Calls.Count);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheFieldViewCarriesTheOriginOfUnknownTheTextOfTheConflictAndTheLastCauseAsTheDraftHoldsThem()
     {
         var rig = new Rig();
@@ -1298,7 +1298,7 @@ public class WorkspacePilotPrepareTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheDefaultFieldViewHasTheThreeNewValuesInert()
     {
         var unset = default(PilotFieldView);
@@ -1316,7 +1316,7 @@ public class WorkspacePilotPrepareTests
         Assert.Equal(PilotUnknownOrigin.None, oldShape.UnknownOrigin);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheNewOutcomesAreValuesWithTheStatesOfThePackageAndTheDefaultIsUnavailable()
     {
         Assert.True(typeof(EditConfirmOutcome).IsValueType);
@@ -1357,7 +1357,7 @@ public class WorkspacePilotPrepareTests
 
     // ================================================================== INV-F4T4A1-07 and 08: the snapshot and the order of PREPARE
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheSnapshotIsBuiltOnlyByFromWithCopiesAndTheStatusBeforeAnAttemptWhileApplying()
     {
         var read = IntentKit.Read(PrepareKit.RealScan());
@@ -1395,7 +1395,7 @@ public class WorkspacePilotPrepareTests
         Assert.Throws<ArgumentNullException>(() => PushBackPilotPrepareInput.From(null!));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheSevenOutcomesAreEvaluatedInTheDeclaredOrder()
     {
         Assert.Equal(
@@ -1403,7 +1403,7 @@ public class WorkspacePilotPrepareTests
             Enum.GetNames<PushBackPilotPrepareKind>());
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ADraftThatIsNotCleanOrDirtyIsNotApplicableWhateverTheReread()
     {
         var read = IntentKit.Read(PrepareKit.RealScan());
@@ -1445,7 +1445,7 @@ public class WorkspacePilotPrepareTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void PendingTextComesBeforeEverythingButNotApplicableAndBeforeTheReread()
     {
         var read = IntentKit.Read(PrepareKit.RealScan());
@@ -1462,7 +1462,7 @@ public class WorkspacePilotPrepareTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ACleanDraftHasNothingToApplyAndTheRereadIsNotLookedAt()
     {
         var draft = PrepareKit.DraftOf(IntentKit.Read(PrepareKit.RealScan()));
@@ -1483,7 +1483,7 @@ public class WorkspacePilotPrepareTests
         Assert.Equal(PushBackPilotPrepareKind.NothingToApply, PrepareKit.Prepare(draft, IntentKit.Read(PrepareKit.RealScan())).Kind);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ADifferenceOfTheBaseIsAConflictBeforeTheAdmissionAndWithTheOrderedDifferences()
     {
         var read = IntentKit.Read(PrepareKit.RealScan());
@@ -1511,7 +1511,7 @@ public class WorkspacePilotPrepareTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ARereadThatMatchesButIsNotAdmittedIsNotAdmittedWithItsDiagnostic()
     {
         var scan = PrepareKit.RealScan();
@@ -1529,7 +1529,7 @@ public class WorkspacePilotPrepareTests
 
     // ================================================================== INV-F4T4A1-07, 08, 09: the Invalid cases (a) to (e) and the plan
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void InvalidA_ACurrentStateThatDoesNotComposeIsInvalidWithTheReasonOfTheCompositionAndOverTheCarryOversOfTheMaterializer()
     {
         var read = IntentKit.Read(PrepareKit.RealScan());
@@ -1555,7 +1555,7 @@ public class WorkspacePilotPrepareTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void InvalidB_NoMutableMemberWithTheTextOfTheOriginOrSeveralOfThemIsInvalid()
     {
         var a1 = PrepareKit.Frontal();
@@ -1580,7 +1580,7 @@ public class WorkspacePilotPrepareTests
         Assert.Equal(PushBackPilotUpdatePlanner.SeveralOriginsReason, severalResult.Reason);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void InvalidC_AnInnerDesignOfAnotherKindOrOfANewerMajorAbortsThePreflightAndTheUpdateIsInvalid()
     {
         var origin = PilotKit.Text("pb-01-base");
@@ -1612,7 +1612,7 @@ public class WorkspacePilotPrepareTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void InvalidA_AnOriginThatNoLongerMaterializesIsInvalidWithTheReasonOfTheMaterializerBeforeAnythingElse()
     {
         // The inner design of the origin cannot be read: the composition (a) is the first to find it, so the reason is the one of the materializer.
@@ -1630,7 +1630,7 @@ public class WorkspacePilotPrepareTests
         Assert.Equal(PushBackPilotMaterializer.UnreadableOrFutureDiagnostic, result.Reason);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void InvalidD_ABuilderThatCannotBuildTheOutgoingSystemIsInvalidWithTheTypedErrorAndNothingIsWritten()
     {
         var scan = PrepareKit.RealScan();
@@ -1743,7 +1743,7 @@ public class WorkspacePilotPrepareTests
         private bool Fails() => Touches > _allowed;
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void InvalidE_AMutableMemberThatIsNotAvailableInTheOutgoingSystemOrWhoseEnvelopeDoesNotDecodeIsInvalidAndNeverErasesAView()
     {
         var origin = PilotKit.Text("pb-01-base");
@@ -1779,7 +1779,7 @@ public class WorkspacePilotPrepareTests
         Assert.NotEqual(origin, originFrontal);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void InvalidE_AnEnvelopeThatDoesNotDecodeIsInvalidWithItsKey()
     {
         var garbage = new DraftStaleBaseEntry("B2", DraftMembership.Mutable, "lateral", "1", "{ not an envelope");
@@ -1794,7 +1794,7 @@ public class WorkspacePilotPrepareTests
         Assert.StartsWith(PushBackPilotUpdatePlanner.UnreadableViewPrefix + "B2", result.Reason, StringComparison.Ordinal);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void PrepareIsTotalAMissingPieceIsInvalidAndNeverAnException()
     {
         var read = IntentKit.Read(PrepareKit.RealScan());
@@ -1820,7 +1820,7 @@ public class WorkspacePilotPrepareTests
 
     // M-6 (I-64 F4-T4B): the missing catalog is answered at the start of Build, so a difference of the base and a read that is not admitted
     // are told as such even when the catalog is missing; with a read that matches and is admitted, the missing catalog is still Invalid.
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AMissingCatalogIsAnsweredAfterTheConflictAndTheAdmissionAndNotBeforeThem()
     {
         var read = IntentKit.Read(PrepareKit.RealScan());
@@ -1862,7 +1862,7 @@ public class WorkspacePilotPrepareTests
         return (draft, read, result.Plan!);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheReadyPlanHoldsTheRackTheOriginTheExpectedBaseTheScaleAndTheMembersByKeyInOrdinalOrder()
     {
         var (draft, read, plan) = ReadyPlan();
@@ -1880,7 +1880,7 @@ public class WorkspacePilotPrepareTests
         Assert.True(draft.StaleBase.CompareWith(read.StaleBase).IsMatch);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheOutgoingDesignAndEnvelopeOfEachViewComeFromTheRereadEnvelopeAndNeverFromTheDraft()
     {
         // The three views carry a name that is not the one of the fixture and an unknown JSON member that a newer build wrote, and the
@@ -1934,7 +1934,7 @@ public class WorkspacePilotPrepareTests
                 [member] = System.Text.Json.JsonDocument.Parse("\"value of " + member + "\"").RootElement.Clone(),
             });
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ThePlanIsImmutableAndItsEqualityIsExplicitOrdinalElementByElementAndInOrder()
     {
         var (_, _, plan) = ReadyPlan();
@@ -1981,7 +1981,7 @@ public class WorkspacePilotPrepareTests
             .Equals(new PushBackPilotPostExpectation(double.NaN, Array.Empty<PushBackPilotKeyedText>())));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ThePlanIsBuiltOnlyFromTheRereadSoAChangeOfTheCurrentScaleOnlyChangesTheScaleAndTheTextsThatCarryIt()
     {
         var (_, _, first) = ReadyPlan(scale: 2.25);
@@ -1993,7 +1993,7 @@ public class WorkspacePilotPrepareTests
         Assert.All(first.Members.Zip(second.Members), pair => Assert.NotEqual(pair.First.EnvelopeText, pair.Second.EnvelopeText));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ThePilotNeverErasesAViewAPhantomThatWasAlreadyInTheDrawingMakesTheUpdateInvalidAndIsNeverInThePlan()
     {
         var origin = PrepareKit.Frontal();
@@ -2015,7 +2015,7 @@ public class WorkspacePilotPrepareTests
         Assert.Equal(new[] { "A1", "B2" }, ready.Plan!.Members.Select(m => m.Key).ToArray());
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ReadOnlyAndNonMutableMembersOfTheRereadNeverEnterThePlan()
     {
         var origin = PrepareKit.Frontal();
@@ -2058,7 +2058,7 @@ public class WorkspacePilotPrepareTests
         draft.PendingText.Select(p => p.Key + "=" + p.Value).ToArray(), draft.LastApplyCause, draft.Warnings.Count, draft.ConflictDifferences.Count,
         draft.CurrentDraftState.Inputs.Annotations.AnnotationScale.ToString("R", CultureInfo.InvariantCulture));
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void PrepareNeverChangesTheDraftWhateverItsOutcome()
     {
         var read = IntentKit.Read(PrepareKit.RealScan());
@@ -2118,7 +2118,7 @@ public class WorkspacePilotPrepareTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void PrepareDoesNotPutTheDraftInConflictNorCleanDirtyNorTakeTheSlotOfTheUpdate()
     {
         var registry = new DraftRegistry();
@@ -2139,7 +2139,7 @@ public class WorkspacePilotPrepareTests
 
     // ================================================================== the types of the plan name nothing of the drawing
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ThePlanTypesLiveInThePilotNamespaceAndTheirSignaturesNameNoTypeOfTheHostOrOfTheDrawing()
     {
         foreach (var type in new[]

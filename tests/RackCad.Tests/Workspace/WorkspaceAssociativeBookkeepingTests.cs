@@ -65,7 +65,7 @@ public class WorkspaceAssociativeBookkeepingTests
 
     // ------------------------------------------------------------------ test 3a: a bookkeeping event queues nothing and hooks nothing
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceAssociativeBookkeepingFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     [InlineData(BridgeSource.ObjectAppended)]
     [InlineData(BridgeSource.ObjectErased)]
     [InlineData(BridgeSource.ObjectModified)]
@@ -92,7 +92,7 @@ public class WorkspaceAssociativeBookkeepingTests
 
     // ------------------------------------------------------------------ test 3b: the bookkeeping of the end of the update does not mark the drafts
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceAssociativeBookkeepingFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AfterTheUpdateClosedItsScopeTheBookkeepingOfTheReReadDoesNotMarkTheDrafts()
     {
         var (rig, session) = Started();
@@ -142,7 +142,7 @@ public class WorkspaceAssociativeBookkeepingTests
         public SessionId Session { get; }
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceAssociativeBookkeepingFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AReadThatOnlyRaisesBookkeepingLeavesTheDraftUnmarked()
     {
         var rig = new Rig(Bookkeeping);
@@ -170,7 +170,7 @@ public class WorkspaceAssociativeBookkeepingTests
 
     // ------------------------------------------------------------------ test 4: what the correction must not change
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceAssociativeBookkeepingFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     [InlineData(BridgeSource.ObjectAppended)]
     [InlineData(BridgeSource.ObjectErased)]
     [InlineData(BridgeSource.ObjectModified)]
@@ -191,7 +191,7 @@ public class WorkspaceAssociativeBookkeepingTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceAssociativeBookkeepingFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ADrawingObjectChangeAndTheEndOfACommandDrainTheListOfTheBridgeTestsOfTheDrain()
     {
         // The list that WorkspaceBridgeHintAndDrainTests fixes for ObjectModified followed by CommandEnded, now through the new entry.
@@ -204,7 +204,7 @@ public class WorkspaceAssociativeBookkeepingTests
         Assert.Equal(new[] { DrainOperation.InvalidateNavigationCaches, DrainOperation.MarkDraftsPossiblyStale }, outcome.Result.Operations);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceAssociativeBookkeepingFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnySourceThatIsNotAnObjectOneHasTheEffectOfASourceEventWhateverTheSubject()
     {
         foreach (var source in Enum.GetValues<BridgeSource>().Where(s => !ObjectSources.Contains(s)))
@@ -238,7 +238,7 @@ public class WorkspaceAssociativeBookkeepingTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceAssociativeBookkeepingFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void EveryObjectEventAlsoTheBookkeepingOneStillForgetsTheCloseSequence()
     {
         // Control: an allowed close followed by nothing is intact when the document is destroyed.
@@ -272,7 +272,7 @@ public class WorkspaceAssociativeBookkeepingTests
         }
     }
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceAssociativeBookkeepingFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     [InlineData(BridgeSource.ObjectAppended)]
     [InlineData(BridgeSource.ObjectErased)]
     [InlineData(BridgeSource.ObjectModified)]
@@ -304,7 +304,7 @@ public class WorkspaceAssociativeBookkeepingTests
         Assert.False(StateValue<bool>(running.Core, runningSession, "Quiescent"));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceAssociativeBookkeepingFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ASessionThatIsUnknownDegradedOrDestroyedGivesNoEffectToAnObjectEventOfEitherSubject()
     {
         foreach (var subject in Enum.GetValues<ObjectEventSubject>())
@@ -338,7 +338,7 @@ public class WorkspaceAssociativeBookkeepingTests
         Assert.Equal(0, cold.Source.AttachCalls);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceAssociativeBookkeepingFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnUndoRightAfterTheUpdateIsForeignAndMarksTheDraftsAlsoWithTheBookkeepingAroundIt()
     {
         var (rig, session) = Started();

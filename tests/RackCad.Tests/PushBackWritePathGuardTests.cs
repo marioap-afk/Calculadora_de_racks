@@ -248,7 +248,7 @@ namespace RackCad.Tests
             return found.Count > 0 && found.All(argument => argument == "PushBackPilotDraftState");
         }
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente en PushBackWritePathGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
         public void CT_PBT3B_13_NoFileOutsideThePlanTheRunAndTheModelNamesTheFullWriteAndTheHostFindsOnlyTheDraftOfThePilot()
         {
             var log = new List<string>();

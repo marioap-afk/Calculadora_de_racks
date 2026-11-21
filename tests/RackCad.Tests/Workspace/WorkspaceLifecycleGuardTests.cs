@@ -623,7 +623,7 @@ public class WorkspaceLifecycleGuardTests
         Assert.DoesNotMatch(new Regex(@"TryReloadPilotEdit|DiscardPilotEdits|NotePilotEdit|RetireKnownSafe|RetireConservative|DiscardAllByUser|DiscardAndReload|ReadIntent|_editIntentReader|PassGate"), body);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente en WorkspaceLifecycleGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-breaks-decision.md).")]
     public void TheMarkingOnlyTouchesTheDraftsOfThePilotOfTheSessionAndIsOnlyAHint()
     {
         var body = Src.BodyOf(Host(), @"private\s+void\s+MarkPilotDraftsPossiblyStale\s*\(\s*SessionId\s+\w+\s*\)");
@@ -638,7 +638,7 @@ public class WorkspaceLifecycleGuardTests
 
     private static string ReloadBody() => Src.BodyOf(Host(), @"public\s+EditIntentOutcome\s+TryReloadPilotEdit\s*\(\s*EditIntentRequest\s+request\s*\)");
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente en WorkspaceLifecycleGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-breaks-decision.md).")]
     public void TheReloadIsAMethodOfItsOwnWithTheGateAndTheEightStepsOfTheTableAndOneReadThatOnlyReachesDiscardAndReload()
     {
         var body = ReloadBody();

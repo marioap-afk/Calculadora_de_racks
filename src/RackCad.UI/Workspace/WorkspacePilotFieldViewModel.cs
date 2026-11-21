@@ -263,6 +263,12 @@ namespace RackCad.UI.Workspace
         /// <summary>The question of the choice that waits; empty without one.</summary>
         public string ChoiceText => HasChoice ? _choiceText : string.Empty;
 
+        /// <summary>The lines of the presentation of "keep my draft". INERT in the RED of PB-T4b.</summary>
+        public string KeepMinePresentationText => string.Empty;
+
+        /// <summary>Whether the presentation of "keep my draft" is shown above Yes and No. INERT in the RED of PB-T4b.</summary>
+        public bool ShowKeepMinePresentation => false;
+
         /// <summary>What the reconciliation of the draft needs the user to know: what changed and why, or that the outcome is unknown.</summary>
         public string ReconcileText => ReconcileTextOf(_view);
 

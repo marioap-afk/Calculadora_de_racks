@@ -129,7 +129,7 @@ public class WorkspaceLifecycleHostTests
 
     // ------------------------------------------------------------------ INV-F4T2B2B-01: the advisor and the bridge
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheAdvisorIsAssignedByAssignmentAndANullAdvisorIsRefused()
     {
         var rig = new WorkspaceBridgeRig();
@@ -141,7 +141,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Equal(2, typeof(EventBridgeCore).GetConstructors()[0].GetParameters().Length);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void WithoutAnAdvisorTheCloseIsAllowedAsBeforeAndTheDestructionNeedsNone()
     {
         var rig = new WorkspaceBridgeRig();
@@ -156,7 +156,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Empty(rig.Faults);
     }
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     [InlineData(CloseDecision.Allow)]
     [InlineData(CloseDecision.Veto)]
     public void WithAnAdvisorTheDecisionOfTheCloseIsTheOneOfTheAdvisor(CloseDecision answer)
@@ -173,7 +173,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Equal(new[] { a, b }, advisor.Advised.ToArray());
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ASecondCallToSetLifecycleAdvisorReplacesTheAdvisor()
     {
         var rig = new WorkspaceBridgeRig();
@@ -193,7 +193,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Single(second.Destroyed);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnAdvisorThatThrowsGivesVetoIsLoggedWithoutFaultAndDoesNotDegradeTheSession()
     {
         var rig = new WorkspaceBridgeRig();
@@ -220,7 +220,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Equal(CloseDecision.Allow, rig.Core.OnBeginDocumentClose(a));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheCloseOfADegradedSessionStillGoesThroughTheAdvisorSoItSurvivesTheDegradation()
     {
         var rig = new WorkspaceBridgeRig();
@@ -236,7 +236,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Equal(1, rig.Source.CountFor(a, BridgeSource.BeginDocumentClose));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheDestructionTellsTheAdvisorSynchronouslyAfterTheSessionLeftTheRegistryAndTheActiveSlotForAnActiveAndAnInactiveSession()
     {
         var rig = new WorkspaceBridgeRig();
@@ -261,7 +261,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Equal(2, seen.Count);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ADestructionWithAnUnknownNativeIdTellsNobody()
     {
         var rig = new WorkspaceBridgeRig();
@@ -277,7 +277,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Equal(1, rig.Core.LiveSessionCount);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnAdvisorThatThrowsWhenTheSessionIsDestroyedStopsNothingOfTheDestructionAndTheNextIdIsANewSession()
     {
         var rig = new WorkspaceBridgeRig();
@@ -325,7 +325,7 @@ public class WorkspaceLifecycleHostTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ARecycledNativeIdAfterAnAdvisorThatThrewHasANewSessionWithoutDraftsAndTheOldOneIsRetired()
     {
         var env = new Env(wire: false);
@@ -361,7 +361,7 @@ public class WorkspaceLifecycleHostTests
         return (rig, advisor, a, b);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnAllowedCloseFollowedDirectlyByTheDestructionLeavesTheSequenceIntactForAnActiveAndAnInactiveSession()
     {
         var (rig, advisor, a, b) = SequenceRig();
@@ -374,7 +374,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Equal(new[] { (a, true), (b, true) }, advisor.Destroyed.ToArray());
     }
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     [InlineData("source-event")]
     [InlineData("idle")]
     [InlineData("document-created")]
@@ -422,7 +422,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Equal((a, false), Assert.Single(advisor.Destroyed, d => d.Session == a));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ADestructionWithoutItsOwnCloseNeverHasAnIntactSequence()
     {
         var (rig, advisor, a, b) = SequenceRig();
@@ -433,7 +433,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Equal(new[] { (a, false), (b, false) }, advisor.Destroyed.ToArray());
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnAllowedCloseOfAnotherSessionDoesNotMakeTheSequenceOfThisOneIntact()
     {
         var (rig, advisor, a, b) = SequenceRig();
@@ -444,7 +444,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Equal((a, false), Assert.Single(advisor.Destroyed));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnAdvisorThatThrowsAtTheSecondCloseBreaksTheSequenceOfTheFirstAllow()
     {
         var (rig, advisor, a, _) = SequenceRig();
@@ -457,7 +457,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Equal((a, false), Assert.Single(advisor.Destroyed));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ASessionDegradedBeforeTheAllowIsNeverIntactEvenWithNoInputBetweenTheAllowAndTheDestruction()
     {
         var (rig, advisor, a, _) = SequenceRig();
@@ -470,7 +470,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Equal((a, false), Assert.Single(advisor.Destroyed));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheQueriesAndTheAssignmentOfTheAdvisorDoNotEndTheSequence()
     {
         var (rig, advisor, a, _) = SequenceRig();
@@ -494,7 +494,7 @@ public class WorkspaceLifecycleHostTests
 
     // ------------------------------------------------------------------ INV-F4T2B2B-03: the table of the Owner (the veto)
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ADraftThatIsDirtyForAKnownComparerVetoesTheClose()
     {
         var env = new Env();
@@ -506,7 +506,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Equal(1, env.Core.OpenDrafts.CountOf(env.Session));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ADraftWithPendingTextVetoesTheCloseWithoutAskingTheComparer()
     {
         var env = new Env();
@@ -521,7 +521,7 @@ public class WorkspaceLifecycleHostTests
         Assert.True(draft.IsRegistered);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ADraftThatMayBeDirtyBecauseTheComparerFailedVetoesTheCloseIsLoggedAndDoesNotDegradeTheSession()
     {
         var env = new Env();
@@ -543,7 +543,7 @@ public class WorkspaceLifecycleHostTests
         Assert.True(draft.IsRegistered);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ADraftThatIsKnownCleanLetsTheNormalCloseProceedAndTheCloseRemovesNothing()
     {
         var env = new Env();
@@ -558,7 +558,7 @@ public class WorkspaceLifecycleHostTests
         Assert.False(env.Core.OpenDrafts.IsRetired(env.Session));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ADirtyDraftOfThePilotVetoesTheCloseAndACleanOneAllowsIt()
     {
         var env = new Env();
@@ -571,7 +571,7 @@ public class WorkspaceLifecycleHostTests
         Assert.True(draft.IsDirty);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnExplicitDiscardOfTheHostRemovesTheDraftsAndTheNextCloseProceedsEvenWithAComparerThatThrows()
     {
         var env = new Env();
@@ -594,7 +594,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Equal(CloseDecision.Allow, env.Close());
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnExplicitDiscardOfTheRegistryThatNeedsNoComparerAlsoLetsTheNextCloseProceed()
     {
         var env = new Env();
@@ -611,7 +611,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Equal(CloseDecision.Allow, env.Close());
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void EachSuccessiveAttemptToCloseIsVetoedAgainRepeatingIsNeverConsent()
     {
         var env = new Env();
@@ -630,7 +630,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Equal(CloseDecision.Allow, env.Close());
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ASessionWithoutDraftsAllowsTheCloseAndTheCloseReadsAndWritesNothing()
     {
         var env = new Env();
@@ -643,7 +643,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Empty(env.Hr.Faults);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheVetoIsPerSessionADirtyDraftOfAnotherDocumentDoesNotVetoThisOne()
     {
         var env = new Env();
@@ -655,7 +655,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Equal(CloseDecision.Veto, env.Close(b));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheCloseOfADegradedSessionWithADirtyDraftIsVetoedAndTheNextOneProceedsAfterTheDiscard()
     {
         // Degraded, edited, dirty, closed, vetoed: the close survives the degradation (BridgeSource, EventBridgeCore).
@@ -697,25 +697,25 @@ public class WorkspaceLifecycleHostTests
         return "conservative";
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnAllowFollowedByTheDestructionWithAnIntactSequenceRetiresWithoutAskingTheComparer()
     {
         Assert.Equal("known-safe", PathAfter(null, null));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ADestructionThatTheBridgeDidNotSeeAfterItsAllowRetiresConservativelyEvenWithTheMarkOfTheHost()
     {
         Assert.Equal("conservative", PathAfter(null, null, intact: false));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ADestructionWithoutTheMarkOfTheHostRetiresConservativelyEvenWithAnIntactSequence()
     {
         Assert.Equal("conservative", PathAfter(null, null, allow: false));
     }
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     [InlineData("a-veto")]
     [InlineData("a-failure-of-the-evaluation")]
     [InlineData("an-admitted-intention")]
@@ -769,7 +769,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Equal("conservative", PathAfter(before, between));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ADiscardThatTheAuthorizationRefusesHasNoEffectSoItDoesNotEndTheMark()
     {
         var path = PathAfter(null, env => Assert.Equal(EditDiscardStatus.Rejected, RefusedDiscard(env).Status));
@@ -783,7 +783,7 @@ public class WorkspaceLifecycleHostTests
         return env.Core.DiscardPilotEdits(env.Session);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnInPlaceEditAfterTheAllowThatIsNotNotedIsTheExactResidualOfTheDesignAndANoteMakesTheRetirementConservative()
     {
         // The residual declared by D-T2B2-10: a mutation WITHOUT NotePilotEdit after an Allow, with a destruction that the bridge saw as
@@ -805,7 +805,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Equal("reported:" + RackA, Run(noted: true));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheMarkIsPerSessionAnAllowOfOneSessionNeverMarksAnother()
     {
         var env = new Env(wire: false);
@@ -820,7 +820,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Equal(new[] { "R1" }, notice.UncertainRackIds.ToArray());
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AVetoEndsTheMarkOfAnEarlierAllowAndTheAdvisorOfTheHostReadsAuthorizesDiscardsAndRetiresNothing()
     {
         var env = new Env(wire: false);
@@ -847,7 +847,7 @@ public class WorkspaceLifecycleHostTests
 
     // ------------------------------------------------------------------ INV-F4T2B2B-07: the retirement and the notice of loss
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ADestroyedActiveSessionRetiresItsDraftsAndNoticesTheLossInTheQueueAndInTheLog()
     {
         var env = new Env();
@@ -871,7 +871,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Equal(RequestDecision.RejectedSessionDestroyed, env.Core.Authorize(new WorkspaceRequest(env.Session)));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ADestroyedInactiveSessionIsRetiredAndNoticedWhileTheDraftsOfTheActiveOneAreUntouched()
     {
         var env = new Env();
@@ -895,7 +895,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Equal(1, env.Core.OpenDrafts.CountOf(b));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ASessionWithoutLossQueuesNothingAndLogsNothingSoTheQueueDoesNotGrowWithEveryClosedDocument()
     {
         var env = new Env();
@@ -915,7 +915,7 @@ public class WorkspaceLifecycleHostTests
         Assert.True(second.Core.OpenDrafts.IsRetired(second.Session));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheLogOfALossListsTheLostRacksAndApartTheUncertainOnesWithTheReasonOfTheComparer()
     {
         var env = new Env();
@@ -943,7 +943,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Contains("comparer exploded", uncertainPart);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ADestructionWithoutItsCloseWithADirtyDraftLosesItAndNoticesIt()
     {
         // Obligation 14: destroying the document retires the session and its drafts, and the loss is noticed.
@@ -959,7 +959,7 @@ public class WorkspaceLifecycleHostTests
         Assert.False(draft.IsRegistered);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AFailingLogDoesNotStopTheRetirementNorTheQueueNorTheDestruction()
     {
         var hr = new WorkspaceHostRig().WithDocument(100);
@@ -982,7 +982,7 @@ public class WorkspaceLifecycleHostTests
 
     // ------------------------------------------------------------------ INV-F4T2B2B-05: the stale hint of the drain
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ADrainWithAChangeOfTheDrawingMarksEveryDraftOfThePilotOfTheSessionAsPossiblyStaleWithoutAReadOrAConflict()
     {
         var env = new Env();
@@ -1002,7 +1002,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Empty(env.Hr.Faults);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheEndOfACommandAlsoMarksTheDraftsBecauseItProducesTheSameHint()
     {
         var env = new Env();
@@ -1013,7 +1013,7 @@ public class WorkspaceLifecycleHostTests
         Assert.True(draft.IsPossiblyStale);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ADrainThatOnlyCarriesTheSelectionMarksNothing()
     {
         var env = new Env();
@@ -1027,7 +1027,7 @@ public class WorkspaceLifecycleHostTests
         Assert.True(env.Hr.Reader.ReadCalls > 0);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheMarkOfADrainTouchesTheDraftsOfThatSessionAndNoneOfAnother()
     {
         var env = new Env();
@@ -1044,7 +1044,7 @@ public class WorkspaceLifecycleHostTests
         Assert.False(formInB.IsPossiblyStale);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheMarkIsAppliedBeforeTheEarlyReturnsOfTheDrainSoADrainOfAnInactiveSessionOrOfAHiddenPanelMarksToo()
     {
         var env = new Env();
@@ -1065,7 +1065,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Empty(env.Hr.Faults);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnEchoAndAChangeOfTheDrawingInTheSameDrainStillMarkTheDrafts()
     {
         var hr = new WorkspaceHostRig().WithDocument(100);
@@ -1090,7 +1090,7 @@ public class WorkspaceLifecycleHostTests
         Assert.True(hr.Reader.ReadCalls > 0);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ADraftOfAnotherStateTypeIsNotMarkedAndNothingFailsBecauseOfIt()
     {
         var env = new Env();
@@ -1105,7 +1105,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Equal(WorkspaceHostStatus.Ready, env.Core.GetSnapshot().Status);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ADirtyDraftIsMarkedAsPossiblyStaleButStaysDirtyAndNeverReloadsLazily()
     {
         var env = new Env();
@@ -1121,7 +1121,7 @@ public class WorkspaceLifecycleHostTests
 
     // ------------------------------------------------------------------ INV-F4T2B2B-06: the lazy reload
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheReloadOfACleanDraftMarkedAsPossiblyStaleDoesOneReadAndReplacesTheDraftFromIt()
     {
         var env = new Env();
@@ -1142,7 +1142,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Empty(env.Hr.Faults);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheReloadReadsOnlyWhenTheDraftNeedsIt()
     {
         var env = new Env();
@@ -1167,7 +1167,7 @@ public class WorkspaceLifecycleHostTests
         Assert.False(clean.IsPossiblyStale);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ADraftThatWasNeverMarkedIsNotReloadedAndNothingIsRead()
     {
         var env = new Env();
@@ -1182,7 +1182,7 @@ public class WorkspaceLifecycleHostTests
         Assert.False(draft.IsPossiblyStale);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheReloadOfARackWithoutDraftIsNotFoundAndReadsNothing()
     {
         var env = new Env();
@@ -1194,7 +1194,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Empty(env.Reader.Calls);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AReloadThatIsNotAdmittedKeepsTheDraftMarkedAndCarriesTheDiagnosticTheDetailAndTheClassicEditorHint()
     {
         var env = new Env();
@@ -1213,7 +1213,7 @@ public class WorkspaceLifecycleHostTests
         Assert.True(draft.NeedsLazyReload);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ADraftThatLeavesTheRegistryWhileTheReadRunsMakesTheReloadWaitInsteadOfFailing()
     {
         var env = new Env();
@@ -1230,7 +1230,7 @@ public class WorkspaceLifecycleHostTests
         Assert.False(env.Core.OpenDrafts.Contains(env.Session, RackA));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheReloadGoesThroughTheSameGateAsTheIntention()
     {
         var env = new Env();
@@ -1253,7 +1253,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Equal(EditIntentStatus.Unavailable, new Env(reader: false).Core.TryReloadPilotEdit(env.Request()).Status);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheReloadOfABlankRackAndANullRequestAreContainedWithoutReadingAndWithoutDegradingTheSession()
     {
         var env = new Env();
@@ -1274,7 +1274,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Equal(WorkspaceHostStatus.Ready, env.Core.GetSnapshot().Status);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnExceptionOfTheReaderDuringTheReloadIsContainedAsFailedLoggedAndDoesNotDegradeTheSession()
     {
         var env = new Env();
@@ -1294,7 +1294,7 @@ public class WorkspaceLifecycleHostTests
         Assert.True(env.Hr.Reader.ReadCalls > 0);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void NoDrainEverReloadsADraftAndNoDrainReadsForTheLifecycle()
     {
         var env = new Env();
@@ -1316,7 +1316,7 @@ public class WorkspaceLifecycleHostTests
 
     // ------------------------------------------------------------------ INV-F4T2B2B-08: the explicit discard of the host
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void DiscardPilotEditsRemovesEveryDraftOfTheSessionAndSaysWhichOnesHadPendingText()
     {
         var env = new Env();
@@ -1343,7 +1343,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Equal(0, env.Hr.Reader.ReadCalls);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void DiscardPilotEditsWorksWithTheProbeNotAtRestWithARackCadModalOpenAndWithoutAReader()
     {
         var env = new Env(reader: false);
@@ -1359,7 +1359,7 @@ public class WorkspaceLifecycleHostTests
         Assert.False(draft.IsRegistered);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void DiscardPilotEditsWithoutDraftsIsDiscardedWithEmptyListsThatAreNeverNull()
     {
         var env = new Env();
@@ -1373,7 +1373,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Empty(outcome.PendingTextRackIds);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void DiscardPilotEditsIsRejectedWithoutEffectsWhenAnotherSessionIsActiveWhenThereIsNoActiveDocumentOrTheSessionIsDestroyed()
     {
         var env = new Env();
@@ -1398,7 +1398,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Equal(1, env.Core.OpenDrafts.CountOf(a));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void DiscardPilotEditsWithAComparerThatThrowsIsDiscardedAndTheNextCloseProceeds()
     {
         var env = new Env();
@@ -1422,7 +1422,7 @@ public class WorkspaceLifecycleHostTests
         public bool IsActiveDocumentQuiescent => true;
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnExceptionOfTheDiscardIsContainedAsFailedAndDoesNotDegradeTheSession()
     {
         var hr = new WorkspaceHostRig().WithDocument(100);
@@ -1448,7 +1448,7 @@ public class WorkspaceLifecycleHostTests
         Assert.False(hr.Bridge.Core.IsDegraded(session));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheDefaultValueOfTheDiscardOutcomeIsTheInertRejectedWithListsThatAreNeverNull()
     {
         var unset = default(EditDiscardOutcome);
@@ -1463,7 +1463,7 @@ public class WorkspaceLifecycleHostTests
         Assert.Equal(EditDiscardStatus.Rejected, default(EditDiscardStatus));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheDiscardOutcomeNamesNeitherADraftNorATypeOfThePilot()
     {
         var types = typeof(EditDiscardOutcome).GetProperties().Select(p => p.PropertyType)
@@ -1481,7 +1481,7 @@ public class WorkspaceLifecycleHostTests
         });
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheExtendedStatesOfTheIntentionAreAnOrderedPrefixAndTheNewOutcomesCarryTheirWitness()
     {
         Assert.Equal(

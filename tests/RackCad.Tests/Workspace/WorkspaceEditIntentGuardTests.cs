@@ -661,7 +661,7 @@ public class WorkspaceEditIntentGuardTests
     private static string WithoutTheAllowedConsumers(string code) =>
         AllowedAdmissionDiagnostic.Replace(AllowedConsumers.Replace(code, string.Empty), string.Empty);
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente en WorkspaceEditIntentGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
     public void TheBaseOfAResultOfThePilotOnlyReachesBeginCheckNowOrDiscardAndReloadInTheHostCoreAndTheTwoOperationsCountTheirOwnUses()
     {
         var core = Core();
@@ -689,7 +689,7 @@ public class WorkspaceEditIntentGuardTests
         Assert.Equal(0, Src.Count(check, @"\.Begin\s*\("));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente en WorkspaceEditIntentGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
     public void ThePerOperationCountsOfTheBaseAndOfTheReadInTheThreeBodiesOfTheReconciliationAreTheirOwnConsumer()
     {
         var confirm = ConfirmBody();
@@ -724,7 +724,7 @@ public class WorkspaceEditIntentGuardTests
     // or renamed variable can stand for it and escape the guard of the use of the base (F4-T4A1, INV-F4T4A1-04).
     private static readonly Regex PilotReadAssignment = new(@"var\s+pilot\s*=\s*read\.PilotRead\s*;");
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente en WorkspaceEditIntentGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
     public void TheResultOfThePilotIsOnlyEverNamedPilotInTheHostCoreSoNoAliasEscapesTheGuardOfTheUseOfTheBase()
     {
         var core = Core();
@@ -751,7 +751,7 @@ public class WorkspaceEditIntentGuardTests
         Assert.True(detected, injected);
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente en WorkspaceEditIntentGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
     public void TheThreeBodiesOfTheReconciliationFollowTheStepsOfTheCheckAndTheReloadWithTheApplicabilityBeforeTheOneRead()
     {
         var confirm = ConfirmBody();
@@ -796,7 +796,7 @@ public class WorkspaceEditIntentGuardTests
         Assert.Matches(BaseOrReadUse, WithoutTheAllowedConsumers(real + "\n" + injected));
     }
 
-    [Theory]
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente en WorkspaceEditIntentGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
     [InlineData("draft.DiscardAndReload(pilot.Read);")]
     [InlineData("draft.DiscardAndReload(reload.Read, pilot.StaleBase);")]
     [InlineData("var check = draft.CheckNow(pilot.StaleBase);")]
@@ -867,7 +867,7 @@ public class WorkspaceEditIntentGuardTests
     // diagnostic of a read.
     private const string AnotherDiagnosticExpression = "\nvar again = pilot.Read.IsAdmitted ? null : pilot.Read.Admission.Diagnostic;";
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente en WorkspaceEditIntentGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-breaks-decision.md).")]
     public void TheExpressionOfTheDiagnosticOfTheAdmissionIsInTheWholeHostCoreExactlyTwiceOnceInTheGeneralCheckAndOnceInCheckNow()
     {
         var core = Core();
@@ -879,7 +879,7 @@ public class WorkspaceEditIntentGuardTests
             Assert.Equal(0, Src.Count(body, AdmissionDiagnosticPattern));
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente en WorkspaceEditIntentGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-breaks-decision.md).")]
     public void TheGuardOfTheExpressionOfTheDiagnosticSeesAThirdOneInTheCoreASecondOneInCheckNowAndOneInKeep()
     {
         var core = Core();
