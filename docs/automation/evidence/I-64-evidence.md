@@ -8831,3 +8831,19 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - **la comprobación acotada,** `BOUNDED_RESULT`: `EMITIBLE TRAS CORRECCIONES; B 0 / I 1 / M 3; las importantes corregidas en el paquete v5.1 (I-01, los dos archivos nuevos de Draft/ empiezan por #nullable enable y la pureza de CT-PBT4C-15 lo prohibe: sin la directiva y sin el ? de ProjectOf); sin decisiones nuevas del Owner; precondicion 6 sobre 6adff90d: pasos 2 a 7 cumplen, sin las CT; recomprobacion v5.1: EMITIBLE, B 0 / I 0 / M 1`.
 
 **Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.
+
+## 284. Contrato de F4B-PBT4-EDIT-ALL-WINDOW
+
+**Contrato:** `I-64-pilot/F4B-PBT4-EDIT-ALL-WINDOW/coordinator/gate-contract.json` (F4B-E54), con su script generador al lado.
+- **Alcance:** una lista blanca exacta de 26 rutas:
+  - las 9 existentes de `src/` que cambia el GREEN (`UNIT_CHANGE`) y sus 4 archivos nuevos;
+  - las cinco clases de las CT y los cuatro equivalentes, que genera el guion (su sha256, en `EquivalentSha`);
+  - solo para los 4 `Skip`, los 4 archivos de la lista.
+- **`ForbiddenWriteScope`:** 510 entradas, con el método de PB-T0 ([PKC-C]).
+- **Invariantes y paradas:** 14 invariantes y 17 paradas propias. P-01 va en la Snapshot K (F4B-E37). C11 lleva los sustitutos de nc1 (F4B-E40) y de nc2 v2 (F4B-E43), con `--task PBT4`.
+- **Filtros:** 85 filas de `RequiredTests`: 66 de `RackCad.Tests.csproj`, 19 de `RackCad.UI.Tests.csproj`; 4 con `ExpectRed` (14 resultados).
+- **La CI prevista,** con el total exacto de cada rama (F4B-E46): GREEN Core 19 619 = 19 158 + 0 + 461 y UI 2 486 = 2 437 + 0 + 49; el RED, Core 19 619 = 19 149 + 9 + 461 y UI 2 486 = 2 432 + 5 + 49.
+- **Revisiones:** `AuthorityRevision` `a8e9cbe686785eef5f741a798f1e54f4419f35a1` y `MainSha` `812baf879612320653094a8aaf46aca0bac81383`. El anclaje es el cierre de PB-T4b (`6adff90d`).
+- **`attempts`:** 1 de 3.
+
+**Límites:** solo documentación en este paso; sin AutoCAD.
