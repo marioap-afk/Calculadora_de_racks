@@ -1,0 +1,54 @@
+### CT_PBT4A_03_TheFiveRereadsOfAnOpenDraftReadAtTheOriginOfTheDraftAndBeginReadsAsToday (tests/RackCad.Tests/PushBackFullReadPathTests.cs)
+--- original
++++ equivalente
+@@ -1 +1,3 @@
++        // ------------------------------------------------------------------------------------------------- CT-03
++
+         [Fact]
+@@ -6,3 +8,4 @@
+             var opening = new PushBackOriginReaderDouble();
+-            Paso(log, () => new PushBackFullReadRig(opening).Begin());
++            // I-64 F4B PB-T4b (owner-pbt4b-list-477-decision.md): the draft of the panel is the full one, so the rig finds the full draft.
++            Paso(log, () => new FullReadRig(opening).Begin());
+             log.Add("Begin lector=" + (opening.Kinds.Count == 1 ? opening.Kinds[0] : opening.Kinds.Count + " lecturas"));
+@@ -14,3 +17,3 @@
+                 var reader = new PushBackOriginReaderDouble();
+-                var rig = new PushBackFullReadRig(reader);
++                var rig = new FullReadRig(reader);
+                 var draft = Paso(log, () => rig.Begin());
+
+### CT_PBT4A_05_WithAReaderWithoutTheNewInterfaceTheFiveRereadsUseReadIntentAsToday (tests/RackCad.Tests/PushBackFullReadGuardTests.cs)
+--- original
++++ equivalente
+@@ -1 +1,3 @@
++        // ------------------------------------------------------------------------------------------------- CT-05
++
+         [Fact]
+@@ -8,4 +10,6 @@
+                 expected.Add(operation + " lector=ReadIntent");
+-                var reader = new EditIntentFakeReader();
+-                var rig = new PushBackFullReadRig(reader);
++                // I-64 F4B PB-T4b (owner-pbt4b-list-477-decision.md): a reader without the new interface that answers with the full read too
++                // (FromReads), as the reader of the Plugin does; the draft of the panel is the full one, so the rig finds the full draft.
++                var reader = new FullEditIntentFakeReader();
++                var rig = new FullReadRig(reader);
+                 var draft = Paso(log, () => rig.Begin());
+
+### TheBaseOfAResultOfThePilotOnlyReachesBeginCheckNowOrDiscardAndReloadInTheHostCoreAndTheTwoOperationsCountTheirOwnUses (tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs)
+--- original
++++ equivalente
+@@ -13,4 +13,4 @@
+         var intent = IntentBody();
+-        Assert.Equal(1, Src.Count(intent, @"\bpilot\.Read\b"));
+-        Assert.Matches(@"\.Begin\s*\(\s*[^;]*?\bpilot\.Read\b[^;]*?\)\s*;", intent);
++        Assert.Equal(1, Src.Count(intent, @"\bfull\.Read\b"));
++        Assert.Matches(@"\.Begin\s*\(\s*[^;]*?\bfull\.Read\b[^;]*?\)\s*;", intent);
+         Assert.Equal(0, Src.Count(intent, @"\.StaleBase\b|\.CheckNow\s*\("));
+@@ -23,4 +23,4 @@
+         Assert.Equal(1, Src.Count(check, AdmissionDiagnosticPattern));
+-        Assert.Equal(2, Src.Count(check, @"\bpilot\.Read\b"));
+-        Assert.Equal(0, Src.Count(WithoutTheAllowedConsumers(check), @"\bpilot\.Read\b"));
++        Assert.Equal(2, Src.Count(check, @"\bfull\.Read\b"));
++        Assert.Equal(0, Src.Count(WithoutTheAllowedConsumers(check), @"\bfull\.Read\b"));
+         Assert.Equal(0, Src.Count(check, @"\.Begin\s*\("));
+

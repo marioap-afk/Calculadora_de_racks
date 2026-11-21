@@ -1,0 +1,9 @@
+copy lines 108; original lines 814
+copy lines that are not lines of the original: 4
+  :16 public class FullPanelCopyWorkspaceHostHardeningGuardProbeTests
+  :41         ("The reread carries no result.", "La relectura no trajo resultado.", 0), // before 2 (I-64 F4B PB-T4b, owner-pbt4b-list-478-decision.md)
+  :45         ("The draft is being applied or is no longer registered.", "El borrador se está aplicando o ya no está registrado.", 6), // before 5 (I-64 F4B PB-T4b, owner-pbt4b-list-478-decision.md)
+  :51         ("The rack has no annotation scale.", "El rack no tiene escala de anotación.", 0), // before 1 (I-64 F4B PB-T4b, owner-pbt4b-list-478-decision.md)
+test body equal to the original (trimmed): True
+self-test TheGuardOfTheLiteralsTrips... in the copy: False
+tests in the copy: ['public void NoneOfThe30LiteralsInEnglishStaysInTheHostOrTheSupportAndTheFourIdentifiersAreKept()']

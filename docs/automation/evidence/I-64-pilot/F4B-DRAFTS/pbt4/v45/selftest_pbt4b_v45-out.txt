@@ -1,0 +1,46 @@
+1. GREEN v4.5: 10 archivos (NumericFieldValidation.cs, NumericTextRule.cs, PushBackAnnotationScaleRule.cs, PushBackFullFieldAdapter.cs, PushBackKeepMinePresentation.cs, RackPilotIntentAdapter.cs, WorkspaceEditIntent.cs, WorkspaceHostCore.cs, WorkspacePanelView.xaml, WorkspacePilotFieldViewModel.cs); esqueleto: 6 (RIA no cambia en el RED); WHC nombra la lectura del piloto 0 veces (M-01: 0)
+2. Skip: 20 archivos, 477 (Core 450, UI 27)
+3. BaseSha (LF) en 78a7cef3:
+   97dff70cf57d866895eaae78ebde98e4350135743d747018c7de0a0a4758eb75  tests/RackCad.Tests/PushBackFullReadGuardTests.cs  skip=2
+   f6611c3ad90d0e8d481b6a2b56788b53d37f3f0f08af4f1ae5d3cb81783ab28f  tests/RackCad.Tests/PushBackFullReadPathTests.cs  skip=1
+   996adc5d4ddfc80462e7ade23ef44a8f18fabd0fdbf814b88f2505f437af65b6  tests/RackCad.Tests/PushBackWritePathGuardTests.cs  skip=1
+   07573661e65b0a4658796a92bf90fd33e79c667a3ccf2f4615588519899bf3f1  tests/RackCad.Tests/Workspace/WorkspaceAssociativeBookkeepingTests.cs  skip=10
+   27f26a28a760225bed676f8ca0d52fb1fd4b64d1d601f64bfdfb1b83f6786a66  tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorTests.cs  skip=54
+   da9d341f6b544d3d85eaafdd01cffe7796fa5367a8ead1e2f0071e2110e5cab4  tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs  skip=7
+   df1dd9e118ce78162b304052f64f356cfac30d8c7fd9e6a8ea1eb6f680887b0b  tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs  skip=62
+   4044c8678c60a0e05cef7eb6fa8d6b8161651f4dbf17f8b1ced04498b3975997  tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs  skip=2
+   1808ac7a22c33938b575063e3b7a049450f187b493c5b09b4464ddc37acfc5f0  tests/RackCad.Tests/Workspace/WorkspaceLifecycleHostTests.cs  skip=69
+   1ef3b59be954177391a0a0c5df07d2daa65728bb90d6f4d20dd46e8531903d35  tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs  skip=5
+   43afc8f34423a9ee00bc830c3b78473cebc71f08a3f3bdb4551f1e751148400b  tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs  skip=59
+   d85407d0961082f01066c61a6cd6e21e95038f001572660d00f7414737390ade  tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs  skip=67
+   48dead3420e3ac272bb05e43732bae50d8e47eccacf09bb8f37578acc5d35494  tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardTests.cs  skip=1
+   e6557a8032ef69f37f6b4a91f1c918510a19d13f64d5bff61912b1b91f3a0aac  tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs  skip=28
+   e7db8e72cb4bfcd182f686b907128c8428f59fd14ec812365fd1b10a5dc089fc  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs  skip=1
+   d602daf657aae175f9972052e1594034959c0706fd2466644f740d981bfa18fe  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs  skip=35
+   d5c075112c4eee1e47ebdcae641e80c78d10cb4fda4a5b70eac8833bddccafb2  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs  skip=2
+   cabfb232768fe69e1e7b686722fa87d05efe97b44474c1b4b8a411db598b130e  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRequestTests.cs  skip=44
+   1cedca91c973b0dfe8825e002bfcab4fc883d71219bf7fc4612f19dc4ea8300a  tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs  skip=21
+   e8db638a72da2a517cba2ea66a762a79b25ddd75621e9d3e95c07ef97a2bd568  tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationViewTests.cs  skip=6
+4. copias en el modo de medida: 20 archivos, conjunto db63117d1141ec78caf373b87bf6a1d0c05cb1e514a083063f98f306aa9173fe; revision: 81 pruebas; kit v4.5 sha256 b4ed29f92838e5761faf1afaba1f33e58ba82a56541900f52db8c5ecb6239b9a
+5. M-00, los tipos de primer nivel que la copia renombra (T -> T + Full), por archivo de origen:
+   PushBackFullReadGuardTests: (ninguno)
+   PushBackFullReadPathTests: (ninguno)
+   PushBackWritePathGuardTests: (ninguno)
+   WorkspaceAssociativeBookkeepingTests: (ninguno)
+   WorkspaceCommandAdvisorTests: CommandAdvisorPortDouble
+   WorkspaceEditIntentGuardTests: (ninguno)
+   WorkspaceEditIntentHostTests: (ninguno)
+   WorkspaceLifecycleGuardTests: (ninguno)
+   WorkspaceLifecycleHostTests: LifecycleScriptedAdvisor
+   WorkspacePilotEditGuardTests: (ninguno)
+   WorkspacePilotEditHostTests: PilotEditThrowingComparer, PilotEditThrowingProbe, PilotEditAuditedReader, PilotEditOutcomeProbe
+   WorkspacePilotPrepareTests: (ninguno)
+   WorkspacePilotReconciliationGuardTests: (ninguno)
+   WorkspacePilotReconciliationHostTests: (ninguno)
+   WorkspacePilotUpdateGuardTests: TraverseBaseline
+   WorkspacePilotUpdateHostTests: (ninguno)
+   WorkspacePilotUpdateIntegrationGuardTests: (ninguno)
+   WorkspacePilotUpdateRequestTests: (ninguno)
+   WorkspacePilotReconciliationTests: (ninguno)
+   WorkspacePilotReconciliationViewTests: (ninguno)
+6. selftest de la regla de la asercion: 4 de 4

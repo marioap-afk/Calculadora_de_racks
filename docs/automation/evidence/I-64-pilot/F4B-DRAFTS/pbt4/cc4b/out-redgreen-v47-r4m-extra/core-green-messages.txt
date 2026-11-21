@@ -1,0 +1,945 @@
+== RackCad.Tests.WorkspacePilotUpdateHostTests.RowAllTheDeferredErrorIsStillAppliedAfterTheBranchWhetherOrNotTheCopierThrew NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotReconciliationHostTests.ASessionThatNeverExistedIsRejectedForTheThreeOperationsWithoutReadingAndWithoutChange NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.AKeepOnThatThrowsOrACopyThatThrowsLeavesTheDraftExactlyAsItWas NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.WithADraftOfSessionAAndBActiveTheIntentionOfARejectsBeforeAnythingAboutTheDraftAndReadsNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.PushBackDraftWriteGuardTests.CT_PBT3A_12_NoSourceFileOutsideTheFolderOfTheModelNamesItsTypes NotExecuted
+I-64 F4B PB-T4a: sustituida por CT-PBT4A-06 de PushBackFullReadGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 4).
+== RackCad.Tests.WorkspaceLifecycleGuardTests.TheMarkingOnlyTouchesTheDraftsOfThePilotOfTheSessionAndIsOnlyAHint NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente en WorkspaceLifecycleGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-breaks-decision.md).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.WhenTheActiveSessionDisappearsDuringTheQuestionNothingIsDiscarded NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.CheckNowRecoversAnUnknownDraftWhenTheRereadMatchesTheBaseFromBeforeTheAttempt NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceAssociativeBookkeepingTests.AnUndoRightAfterTheUpdateIsForeignAndMarksTheDraftsAlsoWithTheBookkeepingAroundIt NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceAssociativeBookkeepingFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.AFailingLogDoesNotBecomeASecondFailure NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.TheWrapperOnlyEverCallsTheReadOfTheRiskOfThePort NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.PrepareDoesNotPutTheDraftInConflictNorCleanDirtyNorTakeTheSlotOfTheUpdate NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.TheWrapperNeverWritesWhenTheInnerAllowsEvenIfTheQueriesWouldFail NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.NothingIsDiscardedBeforeTheYes NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.TheDefaultRiskViewIsTheUnknownAndEveryValueBuiltWithTheConstructorIsKnown NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.ThePilotNeverErasesAViewAPhantomThatWasAlreadyInTheDrawingMakesTheUpdateInvalidAndIsNeverInThePlan NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.DestroyingASessionDropsOnlyItsOwnNoticeOfVetoAndQueuesItsLoss NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.TheDiscardOfTheDocumentWithTheSameListsAfterTheYesIsTheOnlyOperationWithAnEffect NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.WithoutADiscardTheStateOfTheDraftPersistsThroughQueriesAndNonBlockingBoundaries NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.ADiscardThatTheAuthorizationRefusesHasNoEffectSoItDoesNotEndTheMark NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.TheMessagesWaitForAnActiveSessionAreTakenOnceAndKeepTheirOrder NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.WhileARackCadModalIsOpenTheIntentionWaitsAndReadsNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotReconciliationHostTests.KeepAndDiscardOfAnUnreadableEnvelopeAnswerNotAdmittedWithItsDiagnosticAndChangeNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.AnErrorThatArrivesDuringACommitThatThrewKeepsTheUnknownVisibleAsTheClassificationWithItsCause NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.TheHostOwnsTheClosePolicyOfItsOneRegistry NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotReconciliationHostTests.ConfirmWithAChangeOfTheScaleAndOfAnotherFieldIsAConflictAndKeepAfterwardsKeepsTheScaleOfTheDraftOnTheNewVersion NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotReconciliationHostTests.TheAnswerOfCheckNowOnlyCarriesAStateTextAndListsOfTextAndTheStatusesAreStillTheEightOfBefore NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.AFirstReadThatThrowsCountsAsTheUnknownAndTheExceptionDoesNotEscape NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.ConfirmBaseNeverTakesTheSlotOfTheUpdateAndNeverReadsAnything NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.EachOperationThatCanChangeADraftEndsTheMarkSoTheSessionIsRetiredConservatively NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.TheMarkIsPerSessionAnAllowOfOneSessionNeverMarksAnother NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.AnInvalidTextProtectsTheRackPutsItAtRiskAndVetoesTheCloseWithItsNotice NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.AnExplicitDiscardOfTheRegistryThatNeedsNoComparerAlsoLetsTheNextCloseProceed NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.ADiscardAndReloadThatReloadsEndsTheMarkAndOneThatIsNotAdmittedDoesNot NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.ADifferenceInACleanOrDirtyDraftPutsItInConflictWithTheOrderedDifferencesAndChangesNothingElse NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.InsideANoticeTheGateAnswersWaitingForTheThreeOperationsWithoutDelegatingAndOutsideItDelegates NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.PushBackFullReadPathTests.CT_PBT4A_03_TheFiveRereadsOfAnOpenDraftReadAtTheOriginOfTheDraftAndBeginReadsAsToday NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente en PushBackFullReadPathFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-list-477-decision.md).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.TheDecisionOfTheWrapperIsAlwaysTheOneOfTheInnerAdvisorAndItIsAskedOncePerAttempt NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.ARequestOfTheSessionOfADocumentThatIsNotTheActiveOneIsRejectedWithZeroReadsAndNoDraft NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.TheWitnessIsAlsoReportedWhenTheReadIsNotAdmitted NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.NoFieldOfTheHostCoreIsOfATypeOfThePilotExceptTheExecutorOrOfTheResultOfTheReadAndTheFieldOfTheReaderIsNotCalledReader NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.WithNoActiveDocumentTheIntentionWaitsAndReadsNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.AnOpenDraftIsAlreadyOpenAndIsNeverReadAgain NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.ASecondReadThatThrowsCountsAsTheUnknownAndDiscardsNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.TheVersionOfTwoParametersStillKeepsTheCurrentStateAsItWas NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.DiscardPilotEditsWithoutDraftsIsDiscardedWithEmptyListsThatAreNeverNull NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.ASessionWithoutLossQueuesNothingAndLogsNothingSoTheQueueDoesNotGrowWithEveryClosedDocument NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleGuardTests.TheReloadIsAMethodOfItsOwnWithTheGateAndTheEightStepsOfTheTableAndOneReadThatOnlyReachesDiscardAndReload NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente en WorkspaceLifecycleGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-breaks-decision.md).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.AFailureBeforeTheSlotIsFailedAndLoggedAndTheSessionIsNotDegraded NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.AnUnknownSecondReadDiscardsNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.TheRegistryIsOneForEverySessionWithKeysOfSessionAndRack NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.ARecycledNativeIdentityFindsTheNewDocumentAndTheAdmissionOfTheOldSessionStopsItBeforeTheLock NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.DiscardPilotEditsWithAComparerThatThrowsIsDiscardedAndTheNextCloseProceeds NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.AnExceptionOfTheReaderIsFailedWithTheMessageReportedAndTheMarkAndTheSessionAreNotTouched NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.AContextThatFailsBeforeTheCallbackIsOnlyAFailedStartValueAndNoUpdateRunsAndTheDraftKeepsEverything NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.ASessionDestroyedBetweenTheAcceptanceAndTheCallbackIsStoppedBeforeTheLockAndLeavesNoTicketNorOutcome NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.SetPendingTextIsRefusedWhenTheFieldCannotBeEditedWithoutAuthorizationAndWhenThereIsNoDraft NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditGuardTests.TheHostGuardTripsOnAPublicOperationAnOrderOfBasesOrAnAdapterThatIsAFieldOfInstance NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente en WorkspacePilotEditGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.ANullDelegateIsRefused NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.ADraftThatIsNotCleanOrDirtyIsNotApplicableWhateverTheReread NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceAssociativeBookkeepingTests.AReadThatOnlyRaisesBookkeepingLeavesTheDraftUnmarked NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceAssociativeBookkeepingFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.TheFactoriesOfTheOutcomeCarryTheirStatusTheirReasonAndCopiesOfTheLists NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.TheAnswerOfAnUpdateHasTheStatusOfTheClassOfOutcomeThatClosedTheDraftForEveryClass NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.WithoutAnActiveSessionTheCommandSaysSoAndNeitherReadsNorAsksNorDiscards NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotReconciliationHostTests.ConfirmOfADeletedRackIsAConflictWithTheDiagnosticAndTheHintOfTheClassicEditor NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.WithoutWiringTheWrapperTheRealBridgeStillDecidesAsTheHostAndWritesNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.TheDiscardsAreServedAgainWhenTheTicketExpiresWithAForeignCommand NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.TheReloadReadsOnlyWhenTheDraftNeedsIt NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.WithoutTargetsTheOriginIsZeroWhetherOrNotAReferenceWasChosen NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.AnAllowFollowedByTheDestructionWithAnIntactSequenceRetiresWithoutAskingTheComparer NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.DiscardPilotEditsWorksWithTheProbeNotAtRestWithARackCadModalOpenAndWithoutAReader NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.AnAdvisorThatThrowsWhenTheSessionIsDestroyedStopsNothingOfTheDestructionAndTheNextIdIsANewSession NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotReconciliationHostTests.ConfirmOfAConflictWithAnInvalidPendingTextKeepsTheTextTheConflictAndTheDifferences NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.WithoutAnUnknownDraftCheckNowIsNotApplicableAndReadsNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.RowAppliedAndAppliedWithWarningsWhoseCopierThrowsIsUnknownPostRereadWithCauseAndNothingIsRebased NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.ASecondTerminalCallOnATicketThatAlreadyEndedDoesNothingAndTheFirstOutcomeIsKept NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.TheReasonOfTheErrorOfADraftCrossesThePortOnlyInTheStateError NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotReconciliationHostTests.KeepAndDiscardOfADeletedRackAnswerNotAdmittedWithTheDiagnosticAndTheHintAndChangeNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.APresentWitnessWithoutAKeyIsAFailureOfCheckNowWithAReasonAndReadsNothingAndLeavesTheUnknownDraftAsItWas NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.TheLossNoticesAreTakenInOrderAsValuesAndLeaveTheQueueEmpty NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.TheOutgoingDesignAndEnvelopeOfEachViewComeFromTheRereadEnvelopeAndNeverFromTheDraft NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.ShowingTheCommittedValueNeverCreatesPendingTextAndCommittingTheShownTextIsNotADirtyChange NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.AnInvalidTextAndTheGestureOfTheFieldAnswerInvalidKeepTheTextAsTypedAndLeaveTheValue NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.TheNameOfTheDocumentIsItsLastSegmentBetweenGuillemets NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.AMissingDraftIsNotFoundWithoutReading NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotReconciliationHostTests.TheDiagnosticOfCheckNowReadsTheDrawingExactlyOnceAndWritesNothingAndANotAdmittedRereadStillReadsOnce NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.ASealThatThrewIsCommitThrewAndTheDraftIsUnknownWithItsOrigin NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.TheExpiryOfATicketOfTheSameRackInsideARequestIsTheStartValueFailedAndNothingIsAcceptedNorStored NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.AReferenceThatVanishedOrNowBelongsToAnotherRackGivesZeroAfterTheRevalidationOfTheSameOperation NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.TheGateRejectsAModalAWrongSessionAndNoDocumentWithoutReadingAnythingAndWithoutTheSlot NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.ARereadThatMatchesButIsNotAdmittedIsNotAdmittedWithItsDiagnostic NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.AnAllowedCloseFollowedDirectlyByTheDestructionLeavesTheSequenceIntactForAnActiveAndAnInactiveSession NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.WithoutAWitnessTheStatusIsNotSuppliedAndNeverUnchanged NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.EachOperationReadsOnceAndSetsTheMarkOfReadInProgressAroundTheReadAndResetsItAfterwards NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.ARiskReadThatThrowsIsTheUnknownIsReportedAndStillDelegatesExactlyOnce NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.ANotAdmittedReadWithTheBaseOfTheDraftIsNotAppliedAdmissionAndTheDraftKeepsItsStatus NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.TheEndOfACommandAlsoMarksTheDraftsBecauseItProducesTheSameHint NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotReconciliationHostTests.CheckNowWithAnAdmittedRereadCarriesNoDiagnosticNorHintInARecoveryNorInAConflict NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareGuardTests.TheComposeGuardTripsOnAnotherCallAnUnsourcedCompositionANullableSourceOrAnotherName NotExecuted
+I-64 F4B PB-T3b: sustituida por E-2 de PushBackPilotUpdateEquivalenceGuardTests (registro declarado superseding-characterization.md; decisión del Owner F4B-E29, D-1).
+== RackCad.Tests.WorkspacePilotPrepareTests.InvalidE_AMutableMemberThatIsNotAvailableInTheOutgoingSystemOrWhoseEnvelopeDoesNotDecodeIsInvalidAndNeverErasesAView NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditGuardTests.TheHostGuardAllowsWhatTheNextTaskWouldAddAnUpdateOperationThatWrites NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente en WorkspacePilotEditGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.AnUpdateOfTheCoreThatRunsOverASlotThatWasTakenAwayNeverAnswersAnApplied NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.ANativeRefusalThatNeverRunsNorCompletesExpiresWithTheFirstForeignCommandAndLeavesAFailedOnceAndFreesEverything NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.KeepAfterAChangeOfTheDrawingStaysOnTheNewVersionWithTheScaleAndThePendingTextOfTheDraft NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.TheNewOutcomesAreValuesWithTheStatesOfThePackageAndTheDefaultIsUnavailable NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.ReadOnlyAndNonMutableMembersOfTheRereadNeverEnterThePlan NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotReconciliationHostTests.ConfirmOfAnUnreadableEnvelopeCarriesTheDiagnosticOfAnUnreadableOrFutureEnvelopeAndTheHint NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.AChosenReferenceThatIsNoLongerAmongTheTargetsGivesZeroEvenIfTheNumberIsADefinitionOfTheSet NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.ARequestOnADirtyDraftIsAcceptedAndTheOutcomeOfTheUpdateIsTakenOnceByRack NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.ADirtyDraftOfThePilotVetoesTheCloseAndACleanOneAllowsIt NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.AnEmptyAnswerOfTheReaderIsAFailureAndNeverAnAdmission NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.ConfirmBaseDoesNotApplyToADraftThatIsNotRegisteredApplyingUnknownOrInError NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.TheDefaultFieldViewHasTheThreeNewValuesInert NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.AnInnerAdvisorThatThrowsWhenTheSessionIsDestroyedIsNotContainedAndTheWorkBeforeItWasDone NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.TheReloadGoesThroughTheSameGateAsTheIntention NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.TheSevenOutcomesAreEvaluatedInTheDeclaredOrder NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.ACompletionWithoutAnyCallbackLeavesAFailedOutcomeOnceAndReleasesTheTicket NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.AnEchoAndAChangeOfTheDrawingInTheSameDrainStillMarkTheDrafts NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.PrepareIsTotalAMissingPieceIsInvalidAndNeverAnException NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.TheShownTextHasTheExpectedPlainDigitsAndTheDecimalSeparatorOfTheCurrentCulture NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.KeepReplacesTheBaseTheInitialAndTheCurrentStateInOneStepAndKeepsThePendingTextAndTheEdits NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.ADifferenceOfTheBaseIsAConflictBeforeTheAdmissionAndWithTheOrderedDifferences NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.AChangedWitnessIsReportedAsChangedAndNoKeystrokeIsAppliedToTheNewDraft NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.ARequestInsideANoticeOfThePanelWaitsAndAnyOtherStartIsNotATerminalFailure NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.ADraftThatWasNeverMarkedIsNotReloadedAndNothingIsRead NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.ATicketThatNeverEndedAfterAnAdmissionExpiresWithTheNextForeignCommandAndAnUpdateInExecuteNeverExpires NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.OverTheRealBridgeTheVetoOfAnotherDocumentSaysToActivateItFirst NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullRedTests.ThePilotNeverErasesAViewAPhantomThatWasAlreadyInTheDrawingMakesTheUpdateInvalidAndIsNeverInThePlan Failed
+Assert.Equal() Failure: Values differ
+Expected: Invalid
+Actual:   Ready
+== RackCad.Tests.WorkspacePilotEditHostTests.ABlockingBoundaryOnADraftThatCannotBeEditedKeepsItsPendingTextAndNeverValidatesOrApplies NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.EveryOutcomeWithoutAReadCarriesNotEvaluatedForTheWitnessAndTheEnumHasTheFourValues NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.ARackThatWasNotAdmittedCanBeAdmittedLaterWhenTheDrawingAllowsIt NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.ADrainThatOnlyCarriesTheSelectionMarksNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.WhileACommandRunsOrTheDocumentIsNotAtRestTheIntentionWaitsAndReadsNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.AnAdvisorThatThrowsAtTheSecondCloseBreaksTheSequenceOfTheFirstAllow NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotReconciliationHostTests.ConfirmOfARackThatIsNoLongerEditableWithAnotherBaseIsAConflictWithBothThings NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceAssociativeBookkeepingTests.AnySourceThatIsNotAnObjectOneHasTheEffectOfASourceEventWhateverTheSubject NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceAssociativeBookkeepingFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.ASecondCallToSetLifecycleAdvisorReplacesTheAdvisor NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.TheRequestReachesTheReaderUnchangedWithTheChosenReferenceAndTheWitness NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.NoOperationIsCalledFromTheDrainAndTheDrainNeverCallsTheReaderOfTheIntention NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.AfterAnySequenceOfAcceptedAndRejectedEditsTheFieldHoldsTheLastAcceptedText NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.TheCloseOfADegradedSessionStillGoesThroughTheAdvisorSoItSurvivesTheDegradation NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.EveryAnswerOfTheReaderThatIsNotARead_IsMappedToItsStateAndCreatesNoDraft NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.TheStatesOfTheUpdateHaveTheExactNamesAndOrderOfThePackageAndNotApplyingIsNotOneOfThem NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.APresentWitnessWithoutAKeyIsAFailureOfTheIntentionWithAReasonAndReadsNothingAndTouchesNoRegistry NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.ARequestWhileAReadOfThePilotIsInProgressIsBusyAndAsksNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.TheLogOfALossListsTheLostRacksAndApartTheUncertainOnesWithTheReasonOfTheComparer NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.AnEditOfTheUserEndsTheMarkOfKnownClean NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.AnAppliedUpdateWithWarningsKeepsThemAndTheDraftIsClean NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.ExistingStaysNullWhenTheFactoryFailed NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.DiscardAndReloadAppliesToEveryStatusButApplyingWhichWaitsAllWithTheOneRead NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.AnUnknownFirstReadIsAnExplicitFailureAndNeverNothingAtRisk NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.TheFallbackByDraftIsKnownAndKeepsTheUncertainOnesApart NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.ASessionWithoutDraftsAllowsTheCloseAndTheCloseReadsAndWritesNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.AValueOutsideTheDomainHasNoTextAndABlankTextIsNeverCreated NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceAssociativeBookkeepingTests.AnAssociativeBookkeepingObjectEventQueuesNoHintAndHooksNoIdle NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceAssociativeBookkeepingFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceAssociativeBookkeepingTests.EveryObjectEventAlsoTheBookkeepingOneStillForgetsTheCloseSequence NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceAssociativeBookkeepingFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.RowAppliedCopiesBeforeTheSlotIsFreedSoAnotherUpdateStillCannotTakeItWhileTheCopyRuns NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.InvalidD_ABuilderThatCannotBuildTheOutgoingSystemIsInvalidWithTheTypedErrorAndNothingIsWritten NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.AForeignCommandDuringTheUpdateDoesNotExpireTheTicketDuringTheRunAndAfterTheRunTheTicketIsFreedByTheNextCheckWithoutASecondOutcome NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.AKnownRiskWithRacksInRiskStaysKnown NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.ConfirmWithAMatchAnswersConfirmedWithoutDiagnosticAndKeepsTheStatusAndTheEdits NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.AKeepThatIsKeptEndsTheMarkAndOneThatIsNotNeededOrNotAdmittedDoesNot NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.ANullSetOfTargetsIsAProgrammingErrorAndNotAnOrigin NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.AnAmbiguousTargetSaysSoWithoutReadingTheRiskWithoutAskingAndWithoutDiscarding NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.ASessionDegradedBeforeTheAllowIsNeverIntactEvenWithNoInputBetweenTheAllowAndTheDestruction NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.EveryAnswerThatIsNotDiscardedSaysWhyWithTheExactText NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.AReloadThatIsNotAdmittedKeepsTheDraftMarkedAndCarriesTheDiagnosticTheDetailAndTheClassicEditorHint NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.CheckNowWithoutADraftIsNotFoundAndReadsNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.ARetiredSessionNeverGetsADraftAndTheRequestIsRejected NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.ADocumentThatChangedBeforeTheCallbackIsARejectedOutcomeAndTheDraftIsUntouched NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullRedTests.InvalidE_AMutableMemberThatIsNotAvailableInTheOutgoingSystemOrWhoseEnvelopeDoesNotDecodeIsInvalidAndNeverErasesAView Failed
+phantom-lateral
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.TheRunOpensTheOwnMutationOnceBeforeTheUpdateAndAFailureBeforeTheUpdateClosesIt NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.AnotherUpdateInProgressInTheRegistryAnswersItAndRunsNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.TheDiagnosticOfAnOriginThatIsGoneSaysItIsNoLongerThereAndNeverThatItBelongsToAnotherRack NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.TheTechnicalDetailOfTheDiagnosticTravelsApartFromItsMainText NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.TheGateAnswersWaitingOrRejectedForTheThreeOperationsAndReadsNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.EveryAnswerOfTheReaderThatIsNotAReadIsMappedWithItsReasonAndChangesNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.TheDestructionDelegatesExactlyOnceWithTheIntactFlagAsItCame NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.AnErrorThatArrivesDuringAConflictKeepsTheConflictAsTheClassificationAndWritesNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.TheOuterCatchOfGetFieldAnswersTheViewInErrorWhenTheCopierOfTheStateAnswersNull NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.TheGeneralCheckDuringTheFlightWaitsBeforeItsRereadEvenWhenTheRereadWouldDifferAndTheDraftStaysDirty NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.DiscardPilotEditsIsRejectedWithoutEffectsWhenAnotherSessionIsActiveWhenThereIsNoActiveDocumentOrTheSessionIsDestroyed NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.ABlankRackAndAnUnknownRackHaveNoDraftAndNothingIsRun NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.ALossWithRacksAndUncertainOnesSaysBothAndALossWithOnlyUncertainOnesSaysThat NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.TheThreeReadsOfThePortAreTheOperationsOfTheHostAndNothingElseReadsTheDrawing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.TheRacksAtRiskAreOrderedOrdinallyAndAComparerThatThrowsMakesThemUncertainApart NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotReconciliationHostTests.ADiagnosticAndAHintOnlyComeWithAReadThatWasNotAdmitted NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.APostThatFailedIsAppliedPostRereadFailedWithTheCauseAndTheWarningsAndTheDraftIsUnknown NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.RowNotAppliedWhoseStateCannotBeComputedGoesToErrorWithItsReasonAndNeverToApplied NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.NoDrainEverReloadsADraftAndNoDrainReadsForTheLifecycle NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.AMatchInACleanOrDirtyDraftOnlyClearsThePossiblyStaleMarkAndNeverCleansDirty NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.InvalidA_ACurrentStateThatDoesNotComposeIsInvalidWithTheReasonOfTheCompositionAndOverTheCarryOversOfTheMaterializer NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.AWitnessThatMatchesTheReadIsUnchanged NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.AConflictOfT4BIsKeptWithItsDifferencesAndTheHostWritesNothingMore NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.NoOperationOfThePortWritesAuthoredDataOfTheDrawing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.ConfirmBaseDoesNotChangeWhatCheckNowDoesForAnUnknownDraft NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateGuardTests.TheRunReleasesBothScopesInFinallyBlocksOfItsOwnAndNeverWithAUsing NotExecuted
+I-64 F4B PB-T3b: sustituida por E-4 de PushBackPilotUpdateEquivalenceGuardTests (registro declarado superseding-characterization.md; decisión del Owner F4B-E29, D-1).
+== RackCad.Tests.WorkspacePilotEditHostTests.TheMarkOfReadInProgressIsClearedWhenTheReadEndsAlsoWhenTheReaderThrows NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.AHostFailureAfterTheAdmissionAlwaysRemovesTheTicketClosesTheOwnMutationIfItWasOpenedAndALaterRequestIsAccepted NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.TheCheckBeforeTheSlotAnswersNothingToApplyPendingTextAndNotApplicableWithoutTakingTheSlot NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.ThePlanTypesLiveInThePilotNamespaceAndTheirSignaturesNameNoTypeOfTheHostOrOfTheDrawing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotReconciliationHostTests.CheckNowWithARereadThatIsNotAdmittedAndMatchesTheBaseIsRecoveredAndCarriesTheDiagnosticAndTheHint NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.ThePendingTextOfADocumentStaysInItAfterTheDocumentChangeAndComesBackWhenTheDocumentIsActiveAgain NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.TheAdvisorIsAssignedByAssignmentAndANullAdvisorIsRefused NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceAssociativeBookkeepingTests.AfterTheUpdateClosedItsScopeTheBookkeepingOfTheReReadDoesNotMarkTheDrafts NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceAssociativeBookkeepingFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotReconciliationHostTests.TheDiagnosticNeverDecidesTheClassificationTheSameBaseGivesTheSameAnswerAndTheSameDraftWithOrWithoutAdmission NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.TheStartValueWithoutAnExecutorOrAReaderIsUnavailableAndTheDefaultValuesAreInert NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.AnExceptionOfTheDiscardIsContainedAsFailedAndDoesNotDegradeTheSession NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.InvalidA_AnOriginThatNoLongerMaterializesIsInvalidWithTheReasonOfTheMaterializerBeforeAnythingElse NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.AnythingButAYesDiscardsNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.WhenNothingIsAtRiskTheCommandSaysSoAndAsksNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.TheOutcomesAreValuesAndTheStatesHaveTheExactNamesAndOrderOfThePackage NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.InvalidC_AnInnerDesignOfAnotherKindOrOfANewerMajorAbortsThePreflightAndTheUpdateIsInvalid NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.OverTheRealBridgeADestroyedSessionIsNotAskedToTheBridgeNorToTheQueries NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.EachNonBlockingBoundaryKeepsAnInvalidTextCharacterByCharacterWithoutValidatingCommittingOrAuthorizing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceAssociativeBookkeepingTests.ASessionThatIsUnknownDegradedOrDestroyedGivesNoEffectToAnObjectEventOfEitherSubject NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceAssociativeBookkeepingFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.TheExtendedStatesOfTheIntentionAreAnOrderedPrefixAndTheNewOutcomesCarryTheirWitness NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.AReadWithoutReasonOrWithoutResultUsesTheTextsOfTheOtherOperations NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentGuardTests.TheExpressionOfTheDiagnosticOfTheAdmissionIsInTheWholeHostCoreExactlyTwiceOnceInTheGeneralCheckAndOnceInCheckNow NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente en WorkspaceEditIntentGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-breaks-decision.md).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.ADraftThatWasDiscardedDuringTheRunIsClosedDetachedAndTheSlotIsFree NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.ARecycledNativeIdAfterAnAdvisorThatThrewHasANewSessionWithoutDraftsAndTheOldOneIsRetired NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.KeepAConflictLeavesItAndTheDraftIsDirtyOnTheNewVersion NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.ADraftOfAnotherStateTypeIsNotMarkedAndNothingFailsBecauseOfIt NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.ARecycledNativeIdentityNeverRevivesTheOldSessionForTheIntention NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.TheExpiryOfATicketOfAnotherRackInsideARequestKeepsItsFailedUnderItsRackAndTheRequestGoesOn NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.AComparerThatThrowsMakesTheFieldUndecidableProtectedAndNotEditableAndGetFieldNeverThrows NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.ACleanDraftHasNothingToApplyAndTheRereadIsNotLookedAt NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.TheMarkIsAppliedBeforeTheEarlyReturnsOfTheDrainSoADrainOfAnInactiveSessionOrOfAHiddenPanelMarksToo NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.ADifferenceInAConflictReplacesTheDifferencesAndTheDraftStaysInConflict NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.ARequestOfASessionThatIsNoLongerTheActiveOneIsRejectedByItsAuthorizationAndNeverWaitsForTheFlightOfThreeOperations NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.AValidTextAtABlockingBoundaryProceedsAppliesItAndEndsTheMark NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotReconciliationHostTests.ADefaultReadResultAnswersFailedForTheThreeOperationsAndChangesNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.CheckNowUsesTheBaseOfARereadThatIsNotAdmittedToo NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.PushBackFullReadGuardTests.CT_PBT4A_05_WithAReaderWithoutTheNewInterfaceTheFiveRereadsUseReadIntentAsToday NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente en PushBackFullReadGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-list-477-decision.md).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.TheCompletionReleasesTheTicketAfterTheUpdateAndUntilThenARequestIsBusyAndTheProgressIsNotInFlight NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.AWriterThatThrowsNeverChangesTheDecisionAndIsReportedAsTheVetoMessage NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.TheUpdateOfThePilotIsAPublicMethodOfTheCoreWhoseSecondParameterIsThePortOfTheUpdateAndItsOutcomeNamesNoTypeOfTheDraftsNorOfThePilot NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotReconciliationHostTests.ConfirmOfARackThatIsNoLongerEditableWithTheSameBaseIsConfirmedWithTheDiagnosticAndTheHint NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.OverTheRealBridgeAndHostALostDocumentIsReadBeforeTheHostRetiresItAndTheMessageWaitsForTheNextActiveSession NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.PushBackFullReadGuardTests.CT_PBT4A_06_OnlyTheFolderOfTheModelThePlanTheRunAndTheAdapterOfThePluginNameItsTypes NotExecuted
+I-64 F4B PB-T4b: sustituida por CT-PBT4B-13 de PushBackFullPanelCensusGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).
+== RackCad.Tests.WorkspaceEditIntentHostTests.TheReadResultCarriesThePilotReadOnlyWhenItIsARead NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.TheThreeOperationsAnswerUnavailableWithoutAReaderAndReadNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.PrepareNeverChangesTheDraftWhateverItsOutcome NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.ADraftThatIsDirtyForAKnownComparerVetoesTheClose NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.OverTheRealBridgeAndHostACleanDocumentIsAllowedAndNothingIsWritten NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.ThePlanIsBuiltOnlyFromTheRereadSoAChangeOfTheCurrentScaleOnlyChangesTheScaleAndTheTextsThatCarryIt NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.AnAdvisorThatThrowsGivesVetoIsLoggedWithoutFaultAndDoesNotDegradeTheSession NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotReconciliationGuardTests.TheGuardOfWhoReadsSeesAKeepInTheRequestACheckInThePresentationAnyOfTheFourInTheBrowserAndANameof NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente en WorkspacePilotReconciliationGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).
+== RackCad.Tests.WorkspaceLifecycleHostTests.TheDefaultValueOfTheDiscardOutcomeIsTheInertRejectedWithListsThatAreNeverNull NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.ADestructionThatTheBridgeDidNotSeeAfterItsAllowRetiresConservativelyEvenWithTheMarkOfTheHost NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.KeepAppliesToConflictAndToDirtyMarkedStaleApplyingWaitsAndTheOthersAreNotNeededAllWithoutReading NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.AConflictOfMutateIsNotAppliedConflictWithTheDifferencesAndTheDraftGoesToConflict NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.ADestroyedInactiveSessionIsRetiredAndNoticedWhileTheDraftsOfTheActiveOneAreUntouched NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.WithoutAReaderTheIntentionIsUnavailableAndReadsNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.TheDraftIsBornWithTheComparerAndTheCopierOfThePilot NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotReconciliationHostTests.ConfirmWithAChangeOnlyOfTheTextOfTheScaleIsAConflictOfTheOriginAndNothingElse NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.TheOperationsOfADocumentNeverTouchTheDraftsOfAnotherAndABlockingMutationOfAnotherDocumentIsRejected NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.TheReaderCanBeAssignedAgainAndOnlyANullReaderIsRefused NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.TheDiscardOfARackEndsTheMarkOfKnownClean NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.KeepThatFindsTheDraftBeingAppliedAfterTheReadAnswersWaitingAndChangesNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceAssociativeBookkeepingTests.ADrawingObjectChangeAndTheEndOfACommandDrainTheListOfTheBridgeTestsOfTheDrain NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceAssociativeBookkeepingFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.TheGateAnswersWaitingForNoDocumentAModalAndNoRestAndRejectedForAnotherSessionAndRunsNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.TheDefaultOutcomeOfTheDiscardIsTreatedAsARejection NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.TheModalScopeSwitchesOnBeforeItReturnsOffAtTheDisposeAlsoWithAnExceptionAndNestsAndDisposesTwiceHarmlessly NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.ASecondRequestWhileTheFirstIsInFlightIsBusyAndTheExecutorIsAskedOnceAndAnotherIsAcceptedAfterTheEnd NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.GetFieldReportsEveryStateOfTheFieldAndWhatCanBeEdited NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.TheUpdateBoundaryIsBlockingAndAppliesAValidPendingTextAndAbortsAnInvalidOneAndNeedsTheAuthorization NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.APreflightAndAFailureKeepTheDraftAsItWasAndCarryTheirCause NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.AReportThatThrowsIsIgnoredAndTheWrapperWorksWithoutAReportToo NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.AWitnessWithoutAKeyIsAFailureOfTheRequestBeforeTheGateTheDraftAndTheReader NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.ThePlanIsImmutableAndItsEqualityIsExplicitOrdinalElementByElementAndInOrder NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.AnIntentionIsOneReadOfTheReaderAndAnAdmittedReadCreatesTheDraftFromThatSameRead NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.ATicketThatEndedWhoseCompletionNeverArrivesExpiresWithTheNextForeignCommandAndFreesTheRequestAndTheDiscardsAndKeepsTheOutcomeOnce NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.PendingTextComesBeforeEverythingButNotApplicableAndBeforeTheReread NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.CheckNowTakesTheUnknownDraftToConflictWhenTheRereadDiffersAndNamesWhatDiffers NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.TheSignaturesOfTheTwoOperationsAndTheirValuesNameNoTypeOfADraftNorOfThePilot NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.TheRiskIsReadBeforeTheDelegationAndTheMessageWaitsWithoutBeingWritten NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.TheTargetIsOnlyAskedAboutTheSessionThatTheActiveDelegateJustGave NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotReconciliationHostTests.TheFactoriesOfTheAnswerCarryTheDiagnosticAndTheHintOnlyWhereTheyAreGivenAndTheOtherAnswersCarryNone NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.AnUnknownStatusOfThePilotIsNeverTranslatedToUnchanged NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.AnExecutorThatThrowsAfterTheCallbackBeganIsAnAcceptedStartValueAndTheOutcomeIsTheOnlyChannel NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.ARetiredSessionTakesTheTicketAndTheStoreWithIt NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.ASessionThatIsDegradedIsUnavailableAndOneDegradedBeforeTheCallbackExpiresTheTicket NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotReconciliationHostTests.AnInvalidPendingTextDoesNotBlockTheThreeOperationsConfirmAndKeepLeaveItExactlyAsTypedAndDiscardEmptiesIt NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotReconciliationHostTests.AFailureOfTheDiagnosticGivesNullAndNeverChangesTheClassificationNorTurnsAChangedDraftIntoFailed NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.TheDepthOfNoticesNestsNeverGoesBelowZeroAndTheGateDelegatesEverythingElseAsItIs NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.ATestOfTheCloseThatFailsLeavesAnUncertainNoticeWithoutAListOfRacks NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.AnyOtherInputThatChangesTheStateOfTheCoreBetweenTheAllowAndTheDestructionBreaksTheSequence NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.TheOutcomeThatT4BGivesIsKeptWithTheSameStatusReasonDifferencesAndWarningsAsThePlainCallOfTheUpdate NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.TheDifferencesOfACheckOutcomeAreNeverNullAndAreEmptyUnlessTheStatusIsConflictAlsoForTheDefaultValue NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.AnInvalidTextAbortsEachBlockingBoundaryWithTheFieldAndTheMessageAndNothingChanges NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.ADelegateThatThrowsIsNotContainedAndNothingWasDiscardedBeforeTheDiscardItself NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.DuringTheFlightTheFiveOperationsThatCouldChangeTheDraftAnswerBusyOrWaitingAndTheDraftDoesNotChange NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.RowAllADraftThatLeftTheRegistryDuringTheUpdateIsClosedDetachedWithoutEvaluatingTheComparer NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.ExistingIsNullBeforeTheFirstCreationAndAskingForItNeverCreatesNorCallsTheFactory NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.InvalidE_AnEnvelopeThatDoesNotDecodeIsInvalidWithItsKey NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.DiscardRackNeedsNoComparerAndRemovesAnUndecidableDraftToo NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.AnExecutorThatThrowsBeforeTheCallbackBeganIsStillAFailedStartValueEvenInTheDeferredMode NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditGuardTests.TheTrapGuardTripsOnEachNameAndEachWordThatTheNeighbouringGuardsForbid NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente en WorkspacePilotEditGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).
+== RackCad.Tests.WorkspaceEditIntentHostTests.ThePortHasExactlyTheTwoMethodsOfTheRequestWithUpdateInTheirNameAndRejectsAThirdOne NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.ADestructionWithoutItsCloseWithADirtyDraftLosesItAndNoticesIt NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.ConfirmWithAMatchThatIsNotAdmittedCarriesTheDiagnosticOfTheAdmissionAndOnlyThen NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.TheNoticeOfAVetoExpiresWhenTheSessionIsDiscardedWhenTheNextAdviceAllowsAndWhenTheSessionIsRetired NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.DiscardPilotEditsRemovesEveryDraftOfTheSessionAndSaysWhichOnesHadPendingText NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.AnErrorThatArrivesDuringTheRunIsAppliedAfterTheClassificationAndTheAnswerIsClosedInError NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateGuardTests.TheBodyOfTheUpdateFollowsTheOrderOfThePackageAndEndsTheMarkOfKnownCleanAfterTheClose NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente en WorkspacePilotUpdateGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-breaks-decision.md).
+== RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.G4TripsOnAGroupOfMethodsOfTheUpdateOutsideTheCoreAndInsideItAndNotOnTheNameInsideAString NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente en WorkspacePilotUpdateIntegrationGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).
+== RackCad.Tests.WorkspacePilotReconciliationHostTests.ConfirmWithAChangeOnlyOfAnotherFieldIsAConflictToo NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.CheckNowOfAnotherSessionIsRejectedWithZeroReadsAndTheDraftIsUntouched NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.OverTheRealBridgeAnInnerThatThrowsIsAVetoWithoutDegradingTheSessionAndWithoutAFaultOfTheCore NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.TheReasonsOfTheGateAndOfTheIntentionReadsAreInSpanish NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.GetFieldAndGetRacksAtRiskNeedNoAuthorizationAndNeverThrowEvenForABlankRackOrADocumentThatIsNotActive NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.WithoutAChosenReferenceTheOriginIsThePrimaryTargetInTheDeterministicOrderNotTheLowestHandle NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.AnAllowedCloseOfAnotherSessionDoesNotMakeTheSequenceOfThisOneIntact NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotReconciliationHostTests.TheAnswerOfCheckNowCarriesTheDiagnosticOnlyWhereItIsGivenAndEveryOtherAnswerHasNone NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.InsideANoticeOfThePanelTheThreeReadsWaitWithoutDelegatingAndWithoutReading NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.TheClosedOutcomeCopiesTheListsOnReceiptAndMutatingTheOriginAfterwardsChangesNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.ADestructionWithoutTheMarkOfTheHostRetiresConservativelyEvenWithAnIntactSequence NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.TheAnswerOfAnUpdateAlwaysComesFromTheCloseAndTheOutcomeNeverNamesADraft NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.TheWarningsThatWereKnownSurviveWhenThePostRereadFailsOrIsNotAdmitted NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.AFailingLogDoesNotStopTheRetirementNorTheQueueNorTheDestruction NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.TheUpdateOfT4BRunsOncePerAcceptedRequestAlsoWithTwoClicksAndARepeatedCallback NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.WithoutPendingTextTheGestureAndTheBlockingBoundariesChangeNothingAndWithoutADraftTheyProceed NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.ABeginInsideABeginAndACheckInsideACheckWaitWithoutReading NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotReconciliationHostTests.TheThreeOperationsStillReadTheDrawingExactlyOnceAndTheGeneralCheckStillComparesWithTheBaseOfTheDraft NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.InvalidB_NoMutableMemberWithTheTextOfTheOriginOrSeveralOfThemIsInvalid NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.WithOnlyUncertainRacksTheCommandListsThemAndTheFinalTextSaysTheDocumentWasDiscarded NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.TheNoticeOfAVetoOfADocumentThatIsNotActiveIsQueuedToo NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.AnotherRackOfTheSessionIsStillEditableDuringTheFlightOfTheFirst NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.IfEitherListChangedBetweenTheTwoReadsNothingIsDiscarded NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.M01TheEscapeOfTheRunIsClassifiedByTheStateThatTheRunAlreadyHadAndNeverAsAPlainFailureAfterAWriteOrASeal NotExecuted
+I-64 F4B PB-T3b: sustituida por E-5 de PushBackPilotUpdateEquivalenceGuardTests (registro declarado superseding-characterization.md; decisión del Owner F4B-E29, D-1).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.ADraftThatIsAlreadyApplyingIsRefusedWithTheNameOfTheRefusal NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.AnExecutorThatThrowsIsAFailedStartValueAndLeavesNoTicketNorOutcome NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.TheShownTextOfAFiniteValueGreaterThanZeroIsReadBackAsTheSameDoubleAndPassesTheValidationInEveryCulture NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.ADraftThatMayBeDirtyBecauseTheComparerFailedVetoesTheCloseIsLoggedAndDoesNotDegradeTheSession NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.TheDiscardsAnswerBusyDuringTheFlightAndOnAnApplyingDraftAndTheRegistryIsUnchanged NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.TheMarkOfADrainTouchesTheDraftsOfThatSessionAndNoneOfAnother NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.AdviseCloseStillReadsNothingAuthorizesNothingAndDoesNotDiscardOrRetireAndTheDecisionIsTheSame NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.AConfirmedCheckKeepsTheMarkAndAConflictFoundByTheCheckEndsIt NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.AnExceptionOfTheReaderIsContainedAsFailedLoggedAndDoesNotDegradeTheSession NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.OverTheRealBridgeTheCloseSequenceIntactFlagReachesTheInnerAdvisorAsTheCoreDecidedIt NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.AReadThatIsNotAdmittedCreatesNoDraftAndCarriesTheDiagnosticTheDetailAndTheClassicEditorHint NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.AnErrorThatArrivesDuringAnUpdateWithWarningsKeepsTheWarningsAndTheClassificationOfTheClosedInErrorAnswer NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.WithoutAnAdvisorTheCloseIsAllowedAsBeforeAndTheDestructionNeedsNone NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.ADraftWithPendingTextVetoesTheCloseWithoutAskingTheComparer NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.TheDiscardOutcomeNamesNeitherADraftNorATypeOfThePilot NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.AMatchInAConflictAnswersConfirmedAndTheDraftStaysInConflictWithAllItsData NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.TheQueriesAndTheAssignmentOfTheAdvisorDoNotEndTheSequence NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.NamespaceFolderGuardTests.TestProjects_KeepExactlyOneAssemblyRootNamespace Failed
+Las pruebas conservan UN namespace de ensamblado por excepción explícita de I-23:
+RackCad.Tests/PushBackFullReadGuardFull.cs: declara 'RackCad.Tests.FullPanelCopies', la excepción exige 'RackCad.Tests'
+RackCad.Tests/PushBackFullReadPathFull.cs: declara 'RackCad.Tests.FullPanelCopies', la excepción exige 'RackCad.Tests'
+RackCad.Tests/PushBackWritePathGuardFull.cs: declara 'RackCad.Tests.FullPanelCopies', la excepción exige 'RackCad.Tests'
+RackCad.Tests/Workspace/WorkspaceAssociativeBookkeepingFull.cs: declara 'RackCad.Tests.FullPanelCopies', la excepción exige 'RackCad.Tests'
+RackCad.Tests/Workspace/WorkspaceCommandAdvisorFull.cs: declara 'RackCad.Tests.FullPanelCopies', la excepción exige 'RackCad.Tests'
+RackCad.Tests/Workspace/WorkspaceEditIntentGuardFull.cs: declara 'RackCad.Tests.FullPanelCopies', la excepción exige 'RackCad.Tests'
+RackCad.Tests/Workspace/WorkspaceEditIntentHostFull.cs: declara 'RackCad.Tests.FullPanelCopies', la excepción exige 'RackCad.Tests'
+RackCad.Tests/Workspace/WorkspaceLifecycleGuardFull.cs: declara 'RackCad.Tests.FullPanelCopies', la excepción exige 'RackCad.Tests'
+RackCad.Tests/Workspace/WorkspaceLifecycleHostFull.cs: declara 'RackCad.Tests.FullPanelCopies', la excepción exige 'RackCad.Tests'
+RackCad.Tests/Workspace/WorkspacePilotEditGuardFull.cs: declara 'RackCad.Tests.FullPanelCopies', la excepción exige 'RackCad.Tests'
+RackCad.Tests/Workspace/WorkspacePilotEditHostFull.cs: declara 'RackCad.Tests.FullPanelCopies', la excepción exige 'RackCad.Tests'
+RackCad.Tests/Workspace/WorkspacePilotPrepareFull.cs: declara 'RackCad.Tests.FullPanelCopies', la excepción exige 'RackCad.Tests'
+RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardFull.cs: declara 'RackCad.Tests.FullPanelCopies', la excepción exige 'RackCad.Tests'
+RackCad.Tests/Workspace/WorkspacePilotReconciliationHostFull.cs: declara 'RackCad.Tests.FullPanelCopies', la excepción exige 'RackCad.Tests'
+RackCad.Tests/Workspace/WorkspacePilotUpdateGuardFull.cs: declara 'RackCad.Tests.FullPanelCopies', la excepción exige 'RackCad.Tests'
+RackCad.Tests/Workspace/WorkspacePilotUpdateHostFull.cs: declara 'RackCad.Tests.FullPanelCopies', la excepción exige 'RackCad.Tests'
+RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardFull.cs: declara 'RackCad.Tests.FullPanelCopies', la excepción exige 'RackCad.Tests'
+RackCad.Tests/Workspace/WorkspacePilotUpdateRequestFull.cs: declara 'RackCad.Tests.FullPanelCopies', la excepción exige 'RackCad.Tests'
+RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationFull.cs: declara 'RackCad.UI.Tests.FullPanelCopies', la excepción exige 'RackCad.UI.Tests'
+RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationViewFull.cs: declara 'RackCad.UI.Tests.FullPanelCopies', la excepción exige 'RackCad.UI.Tests'
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.AComparerOrAnythingThatFailsWhileLookingForADraftBeingAppliedAnswersFalseAndIsLoggedSoTheDiscardIsNeverStuckInBusy NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentGuardTests.ThePerOperationCountsOfTheBaseAndOfTheReadInTheThreeBodiesOfTheReconciliationAreTheirOwnConsumer NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente en WorkspaceEditIntentGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.AnAppliedOutcomeKeepsTheDraftCleanOnlyByTheClassificationOfT4BAndTheWarningsAreCopied NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.AnUnknownOutcomeOfT4BIsNeverTranslatedAndAnUnlockThatThrowsAfterwardsDoesNotChangeIt NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.WhileTheReloadReadsEveryOperationThatChangesSomethingAnswersBusyAndASecondReadWaitsAllWithoutEffect NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.ASessionThatNeverExistedIsRejectedWithoutAReadOrADraft NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.KeepWithANullKeepOnThrowsBeforeAnythingElseAndChangesNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.TheCloseOfADegradedSessionWithADirtyDraftIsVetoedAndTheNextOneProceedsAfterTheDiscard NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.TheGestureOfTheFieldEndsTheMarkOfKnownCleanWhenItAppliesTheText NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.ADestroyedActiveSessionRetiresItsDraftsAndNoticesTheLossInTheQueueAndInTheLog NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.TheReasonOfAFieldThatCannotBeReadIsInSpanish NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.AnExceptionOfTheReaderDuringTheReloadIsContainedAsFailedLoggedAndDoesNotDegradeTheSession NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotReconciliationHostTests.CheckNowWithARereadThatIsNotAdmittedAndDiffersFromTheBaseIsAConflictAndCarriesTheDiagnosticAndTheHint NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.ARiskReadThatThrowsWithAReportThatAlsoThrowsStillDelegatesExactlyOnce NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.TheWitnessStatusOfThePilotIsTranslatedToTheOneOfTheHost NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceHostHardeningGuardTests.NoneOfThe30LiteralsInEnglishStaysInTheHostOrTheSupportAndTheFourIdentifiersAreKept Failed
+Assert.Empty() Failure: Collection was not empty
+Collection: ["the Spanish text of 'The reread carries no result."···, "the Spanish text of 'The draft is being applied or"···, "the Spanish text of 'The rack has no annotation sc"···]
+== RackCad.Tests.WorkspaceEditIntentGuardTests.TheBaseGuardAllowsTheConsumersOfTheObligation NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente en WorkspaceEditIntentGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).
+== RackCad.Tests.WorkspacePilotPrepareGuardTests.TheFileOfThePlanComposesExactlyOnceInAMemberOfItsOwnWithAParameterSourceAndTheNameOfTheRereadEnvelope NotExecuted
+I-64 F4B PB-T3b: sustituida por E-1 de PushBackPilotUpdateEquivalenceGuardTests (registro declarado superseding-characterization.md; decisión del Owner F4B-E29, D-1).
+== RackCad.Tests.WorkspaceEditIntentHostTests.AnUnknownDraftWhoseOriginIsThePostRereadIsNotApplicableAndReadsNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotReconciliationHostTests.AnotherActiveDocumentRejectsTheThreeOperationsWithoutReadingAndLeavesTheBaseTheInitialTheCurrentAndThePendingTextIntact NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.ADraftThatIsKnownCleanLetsTheNormalCloseProceedAndTheCloseRemovesNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.TheReloadOfABlankRackAndANullRequestAreContainedWithoutReadingAndWithoutDegradingTheSession NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.WhenTheActiveSessionChangesDuringTheQuestionNothingIsDiscardedAndTheOtherSessionIsNeverAsked NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.ASessionWithoutDraftsAnswersKnownAndEmptyAndNeverTheUnknown NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.ADrainWithAChangeOfTheDrawingMarksEveryDraftOfThePilotOfTheSessionAsPossiblyStaleWithoutAReadOrAConflict NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentGuardTests.TheGuardOfTheExpressionOfTheDiagnosticSeesAThirdOneInTheCoreASecondOneInCheckNowAndOneInKeep NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente en WorkspaceEditIntentGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-breaks-decision.md).
+== RackCad.Tests.WorkspacePilotPrepareTests.ConfirmWithADifferenceAnswersConflictWithTheDescribedDifferencesAndPutsTheDraftInConflict NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.KeepWithAReadThatIsNotAdmittedKeepsTheDraftAsItWasAndCarriesTheDiagnostic NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.TheOperationsThatChangeNothingKeepTheMarkOfKnownClean NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.TheSnapshotIsBuiltOnlyByFromWithCopiesAndTheStatusBeforeAnAttemptWhileApplying NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.TheWrapperRefusesANullInnerPortNameActivityOrWriterAndAcceptsANullReport NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.ADraftThatLeavesTheRegistryWhileTheReadRunsMakesTheReloadWaitInsteadOfFailing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.ADestructionWithoutItsOwnCloseNeverHasAnIntactSequence NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.TheUpdateOfThePilotNeverUsesTheReaderOfTheIntention NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.TheReadyPlanHoldsTheRackTheOriginTheExpectedBaseTheScaleAndTheMembersByKeyInOrdinalOrder NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentGuardTests.TheResultOfThePilotIsOnlyEverNamedPilotInTheHostCoreSoNoAliasEscapesTheGuardOfTheUseOfTheBase NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente en WorkspaceEditIntentGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).
+== RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.M01TheEscapeGuardTripsOnACatchThatDoesNotConsultTheStateAndOnAnEscapeThatAnswersAPlainFailureFirst NotExecuted
+I-64 F4B PB-T3b: sustituida por E-6 de PushBackPilotUpdateEquivalenceGuardTests (registro declarado superseding-characterization.md; decisión del Owner F4B-E29, D-1).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.WithoutAControllerTheCommandSaysSoAndAsksNothingAtAll NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.TheHostCoreHasExactlyOneFieldOfSystemsTheExecutorOfTheUpdateAndRejectsASecondOneOrAPort NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.TheReloadOfACleanDraftMarkedAsPossiblyStaleDoesOneReadAndReplacesTheDraftFromIt NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.TheFieldViewCarriesTheOriginOfUnknownTheTextOfTheConflictAndTheLastCauseAsTheDraftHoldsThem NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.ABlankRackIdIsNotAdmittedWithNoIdentityBeforeAnythingElseAndTheRegistryIsNeverTouched NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.RowNotAppliedConflictKeepsItsClassificationEvenWhenTheComparerThrows NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditGuardTests.TheHostImplementsThePortExplicitlyAndNeverReadsOutsideTheThreeReadsAndChangesOnlyThroughNotePilotEdit NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente en WorkspacePilotEditGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).
+== RackCad.Tests.WorkspacePilotReconciliationHostTests.AnExceptionInsideTheComparisonOfTheGeneralCheckIsFailedReportedAndChangesNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.AnExceptionOfAnOperationIsContainedAsAValueWithAReasonAndDoesNotDegradeTheSession NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.AnExplicitDiscardOfTheHostRemovesTheDraftsAndTheNextCloseProceedsEvenWithAComparerThatThrows NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.ADestructionWithAnUnknownNativeIdTellsNobody NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.AnExceptionOfTheReaderDuringCheckNowIsContainedAsFailedAndDoesNotDegradeTheSession NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceAssociativeBookkeepingTests.ADrawingObjectEventHasExactlyTheEffectOfASourceEventAlsoInsideTheOwnScope NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceAssociativeBookkeepingFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentGuardTests.TheBaseOfAResultOfThePilotOnlyReachesBeginCheckNowOrDiscardAndReloadInTheHostCoreAndTheTwoOperationsCountTheirOwnUses NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente en WorkspaceEditIntentGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).
+== RackCad.Tests.WorkspaceLifecycleHostTests.AnInPlaceEditAfterTheAllowThatIsNotNotedIsTheExactResidualOfTheDesignAndANoteMakesTheRetirementConservative NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.RowAppliedWhoseComparatorThrowsIsUnknownPostRereadAndNothingIsRebased NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.WithRacksAtRiskTheCommandListsThemByRackIdAsksAndOnYesDiscardsTheWholeDocumentOnce NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.ConfirmBaseWithoutAReReadThrowsAndChangesNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.ExistingIsTheCreatedInstanceAfterwardsAndDoesNotChangeTheCreateCount NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.RowCommitThrewIsKeptAsUnknownCommitThrewAndNoStateIsComputed NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.ConfirmWithAMatchInConflictAnswersConfirmedAndTheDraftStaysInConflict NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.ALockThatThrowsLeavesAFailedOutcomeWithItsPrefixAndNeverOpensTheOwnMutation NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.EachSuccessiveAttemptToCloseIsVetoedAgainRepeatingIsNeverConsent NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.WhenTheSessionStopsAuthorizingAfterTheYesTheTargetIsAmbiguousAndNothingIsReadAgainOrDiscarded NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.CheckNowHasTheSameGateAsTheIntentionAndReadsNothingBeforeIt NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotReconciliationHostTests.ARackDeletedFromTheDrawingReadsAnEmptyBaseAndThatAdmissionIsNotAdmittedWithTheMissingOrigin NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.AnInnerAdvisorThatThrowsIsAVetoWithTheNoticeAndTheReportOfThatContext NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.EveryAnswerOfTheReaderThatIsNotAReadLeavesTheUnknownDraftAsItWasForCheckNow NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.AVetoEndsTheMarkOfAnEarlierAllowAndTheAdvisorOfTheHostReadsAuthorizesDiscardsAndRetiresNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.AValidTextAndTheGestureOfTheFieldApplyItClearThePendingTextAndEndTheMark NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.TheKeyOfThePendingTextIsAlwaysTheOneOfTheAdapterAndAnEmptyTextIsKeptToo NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.DiscardAndReloadReplacesTheDraftFromTheOneReadAndAReadThatIsNotAdmittedKeepsIt NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.AVetoOfTheActiveDocumentWritesV01AndTheOneOfAnotherDocumentWritesV02 NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentGuardTests.TheThreeBodiesOfTheReconciliationFollowTheStepsOfTheCheckAndTheReloadWithTheApplicabilityBeforeTheOneRead NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente en WorkspaceEditIntentGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).
+== RackCad.Tests.WorkspacePilotPrepareTests.ConfirmAppliesOnlyToCleanDirtyAndConflictAndTheOthersReadNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.AMissingOrEmptyNameSaysTheDocument NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareGuardTests.TheMemberPlansAreBuiltOnlyFromTheMutableMembersOfTheRereadInOrdinalOrderAndNeverErase NotExecuted
+I-64 F4B PB-T3b: sustituida por E-3 de PushBackPilotUpdateEquivalenceGuardTests (registro declarado superseding-characterization.md; decisión del Owner F4B-E29, D-1).
+== RackCad.Tests.WorkspaceEditIntentHostTests.ACarrierOfTheEditIntentionThatIsNotInTheCensusTripsTheGuardAndTheCensusHasThemAll NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.TheSlotIsClosedExactlyOnceAndIsFreeAfterEveryAnswer NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.AnUnknownRiskIsNeverNothingAtRiskAndIsNeverSilentAndAKnownEmptyRiskSaysNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.ADirtyDraftIsMarkedAsPossiblyStaleButStaysDirtyAndNeverReloadsLazily NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.ANonBlockingBoundaryKeepsTheTextAlsoWhenItIsValidAndDoesNotApplyIt NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.TheUncertainRacksAreListedApartAndAreDiscardedWithTheRestAfterTheConfirmation NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.AMissingCatalogIsAnsweredAfterTheConflictAndTheAdmissionAndNotBeforeThem NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.ABlankRackIdIsAnsweredBeforeAnythingElseWithTheTextsOfTheOtherOperationsAndReadsNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.DiscardRackRemovesTheDraftAndItsPendingTextOfOneRackWithoutTouchingTheOthers NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.AnAppliedUpdateRebasesTheDraftAndRunsThePortWithTheAuthorizedDocumentAndTheRack NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditGuardTests.TheFlightGuardTripsWhenTheFlightIsCheckedBeforeTheGateThatAuthorizesInTheThreeReconciliations NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente en WorkspacePilotEditGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).
+== RackCad.Tests.WorkspacePilotEditHostTests.TheRacksAtRiskOfASessionThatIsNotTheActiveOneAreAnsweredAndADefaultValueNeverHasANullList NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.ARejectedOrBusyTextKeepsTheMarkOfKnownClean NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.TheEntriesIntoRestAndTheStartOfTheOwnCommandThatH0MeasuredBeforeTheCallbackDoNotExpireTheTicket NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.AQueryThatThrowsNeverChangesTheDecisionAndTheNoticeStillSaysTheDocument NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.DiscardRackOfARackWithoutADraftIsDiscardedWithEmptyListsAndABlankRackToo NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.ANullRequestIsContainedAsFailedAndNeverThrows NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.PushBackWritePathGuardTests.CT_PBT3B_13_NoFileOutsideThePlanTheRunAndTheModelNamesTheFullWriteAndTheHostFindsOnlyTheDraftOfThePilot NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente en PushBackWritePathGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).
+== RackCad.Tests.WorkspaceLifecycleHostTests.TheDestructionTellsTheAdvisorSynchronouslyAfterTheSessionLeftTheRegistryAndTheActiveSlotForAnActiveAndAnInactiveSession NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.TheIntentionReadsNothingByItselfAndTheDrawingIsReadOnlyThroughTheReader NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.TheCloseNoticesAreOnePerSessionTheLastOneAndAreTakenInOrderLeavingTheQueueEmpty NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.DiscardAndReloadTakesAnUnknownAfterTheWriteOutOfItAndAnErrorToo NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceAssociativeBookkeepingTests.TheBookkeepingNeitherOpensNorClosesTheOwnScopeNorChangesTheStateOfRestNorTheCountOfForeignCommands NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceAssociativeBookkeepingFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.TheVetoIsPerSessionADirtyDraftOfAnotherDocumentDoesNotVetoThisOne NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.ALateCallbackWithTheWitnessOfAnExpiredTicketDoesNothingAndLeavesNoSecondOutcome NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.TheReloadOfARackWithoutDraftIsNotFoundAndReadsNothing NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.TheDelegatesOfTheSessionAndOfTheTargetAreNotContainedEither NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotReconciliationHostTests.TheAnswerOfTheGeneralCheckOnlyCarriesAStateTextAndListsOfTextSoItCannotAuthorizeAWrite NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.G4OnlyTheExecuteOfTheRunOfTheCoreCallsTheUpdateAndOnlyTheCoreCallsTheRunOfT4B NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente en WorkspacePilotUpdateIntegrationGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).
+== RackCad.Tests.WorkspacePilotEditHostTests.WithTheModalActiveTheIntentionWaitsAndCanDrainNowIsFalseUntilTheLastScopeEnds NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceLifecycleHostTests.WithAnAdvisorTheDecisionOfTheCloseIsTheOneOfTheAdvisor NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceLifecycleHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateHostTests.TheGateHasNoRestAndNoReaderSoACommandInProgressAndAMissingReaderDoNotStopTheUpdate NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotPrepareTests.KeepChecksNotAllowedThenNotConfirmedThenNotAdmittedInTheOrderOfTheOtherVersionAndNeverCallsKeepOnWithoutAdmission NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotPrepareFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.DiscardRackAndDiscardDocumentRemoveTheStateAndTheNextCloseIsAllowed NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceCommandAdvisorTests.OverTheRealBridgeAndHostTheDecisionIsTheOneOfTheHostForVetoAndForAllowAndTheDraftIsNeverTouched NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceCommandAdvisorFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotEditHostTests.TheReasonsOfTheFieldAreInSpanishExactlyAsTheTableOfThePackageSays NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspaceEditIntentHostTests.AChosenReferenceThatIsStillAmongTheTargetsGivesItsDefinition NotExecuted
+I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).
+== RackCad.Tests.WorkspacePilotUpdateRequestTests.TheTextsOfTheGateOfTheUpdateAreTheConstantsOfTheRunWithTheirOldWording NotExecuted
+I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotUpdateRequestFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).

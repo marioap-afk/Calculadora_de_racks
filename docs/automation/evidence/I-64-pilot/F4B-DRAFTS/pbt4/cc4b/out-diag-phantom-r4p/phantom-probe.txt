@@ -1,0 +1,12 @@
+== RackCad.Tests.TmpPhantomProbe.ThePrepareOfThePilotAndOfTheFullModelOverTheCasesOfTheTwoCopies Failed
+piloto   phantom-lateral kind=Invalid plan=null reason=El piloto no borra vistas y la vista B2 ya no está disponible en el sistema saliente: usa RACKEDITAR.
+completo phantom-lateral kind=Ready plan=miembros=A1 borrados=B2 reason=null
+piloto   side-b kind=Invalid plan=null reason=El piloto no borra vistas y la vista B2 ya no está disponible en el sistema saliente: usa RACKEDITAR.
+completo side-b kind=Invalid plan=null reason=La vista B2 es un frontal del lado B en un rack sin lado B: el panel no la borra ni la redibuja; usa RACKEDITAR.
+piloto   corrupt-descriptor kind=Invalid plan=null reason=El descriptor de la vista B2 no se puede interpretar: usa RACKEDITAR.
+completo corrupt-descriptor kind=Invalid plan=null reason=El descriptor de la vista B2 no se puede interpretar: usa RACKEDITAR.
+piloto   section-out-of-range kind=Invalid plan=null reason=El descriptor de la vista B2 no se puede interpretar: usa RACKEDITAR.
+completo section-out-of-range kind=Invalid plan=null reason=El descriptor de la vista B2 no se puede interpretar: usa RACKEDITAR.
+piloto   existing-lateral kind=Ready plan=miembros=A1,B2 borrados= reason=null
+completo existing-lateral kind=Ready plan=miembros=A1,B2 borrados= reason=null
+prefijos ViewUnavailable=[El piloto no borra vistas y la vista ] FrontalBOfOneWay=[La vista ] ViewAddress=[El descriptor de la vista ]

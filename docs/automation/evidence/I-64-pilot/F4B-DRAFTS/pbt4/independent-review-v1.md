@@ -793,3 +793,904 @@ Las opciones:
 - **Nada se compiló.** B-08 se deduce del texto de EIG:350-364 y de la v4.1:383. La cuenta es una expresión regular sobre `Src.Code(AdapterPath)`, y la llamada de `AtOrigin` es código.
 - **No recorrí todas las guardas de NH** (I-25).
 - **Los números de PB-T4b** los comprobé por muestreo y sobre las salidas de los guiones del generador. No rehíce los guiones.
+
+## §17. Las roturas de PB-T4b fuera de la lista
+
+**Resultado:** las cinco caen de verdad sobre el GREEN literal de PB-T4b, y las cinco salen del propio diseño. El borrador del panel pasa al modelo completo (D-PBT4-04), y «Actualizar» usa la escritura completa (D-PBT4-07). Ninguna se puede evitar sin código muerto, y la 4.ª y la 5.ª ni siquiera con él. Hay que volver al Owner (§17.5).
+
+**Qué se revisó y cómo:**
+- `session-pbt4b-design-decisions.md`;
+- `green_pbt4b.py` (`adbb6ad0…`) y sus volcados `v44/base` (el GREEN de PB-T4a) y `v44/green_b`;
+- `walk_guards_pbt4b.py`, `v44/pbt4b-guard-walk.tsv` y `v44/pbt4b-guard-walk-out.txt`;
+- `v44/flagged_walk_b-out.txt`;
+- `v44/measure_rg_pbt4b.py` y su salida;
+- las listas guardadas.
+
+Las pruebas, por objetos git en `5aaacce3`, sin worktree y sin compilar. Los guiones nuevos:
+- `ir4b_breaks.py`: las cinco aserciones traducidas, sobre la base y el GREEN;
+- `ir4b_sample.py`: dos guardas que cuentan literales en WHC;
+- `ir4b_gap.py`: lo que el recorrido no selecciona, frente a las líneas que añade el GREEN.
+
+Sus salidas son `ir4b_*-out.txt`, en `hs65\pbt4\`.
+
+### §17.1 Las cinco, una a una (punto 1)
+
+Medidas con `ir4b_breaks-out.txt`, con los ayudantes de `WorkspaceHostSourceSupport.cs` (`CodeOnly`, `BodyOf` y `Count`). Pasan las cinco sobre la base y caen las cinco sobre el GREEN:
+
+| # | La prueba | Qué exige | En el GREEN | ¿Se evita por diseño? |
+|---|---|---|---|---|
+| 1 | EIG:871, `TheExpressionOfTheDiagnosticOfTheAdmissionIsInTheWholeHostCoreExactlyTwice…` | `pilot.Read.IsAdmitted ? null : pilot.Read.Admission.Diagnostic` dos veces en WHC: una en `TryConfirmPilotBase` y otra en `TryCheckPilotEdit` | 0, 0 y 0: el diagnóstico sale de `full.Read` (WHC:442 y :625) | **No.** Con el diagnóstico del piloto, un rack A/B saldría «no admitido» en «Comprobar ahora» y en «Confirmar», contra OB-03.2. Conservar la letra pide dos líneas muertas que calculan el diagnóstico del piloto y no lo usan, o llamar `pilot` a la lectura completa. Eso ya no es posible: `pilot` es `read.PilotRead` en esos cuerpos (D-S3). Además, sería cambiar en silencio lo que fija la guarda |
+| 2 | EIG:883, `TheGuardOfTheExpressionOfTheDiagnosticSeesAThirdOne…` (su autoprueba) | 3, 2 y 1 al inyectar una más en el núcleo, en «Comprobar ahora» y en «Conservar» | 1, 1 y 1 | **No:** cae con la 1, porque presupone las dos del núcleo |
+| 3 | WLG:627, `TheMarkingOnlyTouchesTheDraftsOfThePilotOfTheSessionAndIsOnlyAHint` | el literal `_drafts.Find<PushBackPilotDraftState>(session, rackId)` en `MarkPilotDraftsPossiblyStale` | `_drafts.Find<PushBackFullDraftState>(session, rackId)?.MarkPossiblyStale();` | **Solo con código muerto:** un segundo `Find<PushBackPilotDraftState>` que no encuentra nunca nada, porque en PB-T4b el panel ya no crea borradores del piloto |
+| 4 | WLG:642, `TheReloadIsAMethodOfItsOwnWithTheGateAndTheEightSteps…` | en orden, `_drafts.Find<PushBackPilotDraftState>(` … `.DiscardAndReload(pilot.Read);`, con un solo `.DiscardAndReload(` y un solo `pilot.Read` | `Find<PushBackFullDraftState>` y `draft.DiscardAndReload(full.Read)`: faltan el `Find` del piloto y `pilot.Read` | **No, ni con código muerto:** el único `DiscardAndReload` del cuerpo tiene que ser el real, con la lectura completa, y la guarda lo exige con `pilot.Read` |
+| 5 | WPUG:823, `TheBodyOfTheUpdateFollowsTheOrderOfThePackageAndEndsTheMark…` | `_drafts.Find<PushBackPilotDraftState>(` y un solo `PushBackPilotUpdateRun.Execute(`, en orden | `Find<PushBackFullDraftState>` y `ExecuteFull`: 0 `Execute` | **No:** es D-PBT4-07. Ya está en la lista de PB-T4d (C-7, por texto), pero cae en PB-T4b |
+
+**Mi error en la §16 (M-33).** Dije que 470 «es exacto con cualquier opción» porque las 9 de las 15 de la letra que nombran lo retirado caen por el cambio del anfitrión. No miré las que la lista de la retirada clasificó por texto, como la 5.ª, y entonces no había GREEN de PB-T4b sobre el que medir las otras cuatro.
+
+### §17.2 Las 108 que siguen en verde (punto 2, por muestreo)
+
+`flagged_walk_b-out.txt` lista las 113 con sus diferencias de literales, sin veredicto. Leí y medí una muestra de las que cuentan en WHC y en FVM, y todas siguen en verde:
+- **EIG:1350-1355,** las siete respuestas del vuelo, y **EIG:1281-1292,** los textos de «Actualizar» como constantes: medidas en `ir4b_sample-out.txt`, sin ninguna violación en la base ni en el GREEN. Las cuatro constantes de la corrida siguen.
+- **IG:510-517** (`G4TripsOnACaller…`) sigue en verde, pero **solo en vacío**: G4 ya tiene una violación en el GREEN, porque el núcleo deja de nombrar `Execute`. Su autoprueba ya no discrimina. La guarda madre, `G4Only…`, está en la lista, y su sustituta debe traer su autoprueba.
+- **RG:464-508:** `ButtonViolations` mira los seis botones por nombre. El `TextBlock` nuevo (`BrowserFieldKeepMinePresentationText`) no es ninguno de ellos.
+- **WNHT:911-919:** la regla `Dictionary<|HashSet<|List<…` se aplica solo al modelo de vista de la navegación, no a FVM. **WNHT:956-970** no ve ningún `Width` ni `Height` en lo nuevo.
+- **WPCSG:448-452:** la forma pública de 33 firmas es la del modelo de vista del navegador, que el GREEN no toca.
+- **D-S2 (RG:104, :116, :117, :120 y :132 a :140):** medido en `measure_rg_pbt4b-out.txt`, `ReaderViolations` vacío en la base y en el GREEN, y la mutación de RG:132 sigue viéndose.
+- **WMB** (`WorkspaceModelBoundaryTests`, por reflexión): los miembros nuevos de WEI son `Presented`, `PresentationLines` y `KeepWitness`. Ninguno casa con `Subscription|Editor|Draft`, `Tab|…|Handler` ni `ProjectSummary|Metric|Provider|…`.
+
+### §17.3 La cobertura del recorrido (punto 3)
+
+**Tiene el mismo hueco que el de PB-T4a (CA-T4a M-01).** Las marcas de `walk_guards_pbt4b.py` (:60-62) no ven:
+- las rutas compuestas con `Path.Combine`;
+- los barridos de todo `src/`, de todo Application o de toda la UI.
+
+Además, **las 34 clases recorridas son todas de `tests/RackCad.Tests`:** no hay ninguna del proyecto de pruebas de UI.
+
+**Lo medí aparte** (`ir4b_gap-out.txt`):
+- **Los archivos de fuera:** 101 nombran como literal una carpeta antecesora de alguno de los 9 archivos que el GREEN toca o añade.
+- **Sus literales,** probados contra las 414 líneas que el GREEN añade o cambia:
+  - casan sobre todo fichas genéricas (`Systems`, `RackCad.Application`, `PushBack`, `Dynamic`, `Views`) en barridos acotados a otros archivos, más falsos positivos de la herramienta;
+  - lo específico: el archivo nuevo `Draft/PushBackKeepMinePresentation.cs` nombra `RackEmbedDocument` y `RackEmbedStore`.
+- **Lo que leí de lo específico:**
+  - T-GRD-01 de `CustomPropertiesEnvelopeGuardTests`, que está en los `RequiredTests`, solo cuenta construcciones del sobre (`new RackEmbedDocument`, `new()` con ese tipo destino, o un método que lo devuelve con `return new(`), y `new List<KeyValuePair<string, RackEmbedDocument>>()` no casa. El precedente, `PushBackConflictClassifier`, ya usa ese tipo en `Draft/`.
+  - La lista de prohibidos de `CustomPropertiesCommandGuardTests`:295 es la de un archivo de comando.
+  - La de `StructuralSectionPluginSourceGuardTests` es la de sus archivos fijos.
+  - **Ninguna cae por texto.**
+
+**Lo que no se puede saber por texto** lo medirá la precondición 6, ejecutando la suite sobre el GREEN literal de PB-T4b:
+- la reflexión sobre los tipos de UI y de Application;
+- las pruebas de UI que no nombran la ruta;
+- el comportamiento de las copias (D-S1);
+- cualquier regla que no se escriba como literal.
+
+### §17.4 D-S2 (punto 4)
+
+**Está medido y se cumple:**
+- **RG:104,** `ReaderViolations`, vacío en la base y en el GREEN;
+- **una sola llamada:** `TryKeepMine` sigue nombrado una vez, como `_port.TryKeepMine(request)` dentro de `ConfirmChoice` (FVM:636);
+- **los literales de RG:116, :117, :120 y :132 a :134** están una vez cada uno;
+- **la mutación** de RG:132 y la de RG:116 siguen dando violaciones.
+
+**El flujo de dos «Sí»** cumple OB-05.4:
+- `RequestKeepMine` sigue preguntando desde la memoria (`AskChoice`);
+- el primer «Sí» recibe `Presented` y guarda `KeepWitness` en `_keepWitness`, y las líneas se muestran encima de Sí/No;
+- el segundo «Sí» lleva el testigo.
+
+Es un cambio visible y está bien declararlo (PBT4B-C03, F4B-E52). No pide decisión: el número de clics no lo fija ninguna decisión del Owner.
+
+### §17.5 La vuelta al Owner: el texto exacto
+
+**¿Hace falta una segunda pregunta sobre lo que encuentre la precondición 6? No.** La regla vigente ya lo cubre: «una prueba que falle fuera de [la lista] te sigue volviendo» (segunda tanda, pregunta 2). Preguntarla otra vez no decide nada, y una autorización previa para «las del mismo tipo» ensancharía la lista sin que el Owner la vea, contra su condición de emisión. Basta con recordarlo en la opción 1.
+
+**El texto que va antes de la pregunta,** sin preguntar:
+
+> Te informo de dos cosas de PB-T4b que no necesitan tu decisión, porque no cambian la lista de 470 pruebas que aprobaste:
+> - Siete de las 375 copias que iban a hacerse por guion no pueden pasar, porque fijan justo lo que PB-T4b cambia a propósito: el estado nuevo de «Conservar» y que sin testigo ahora se presentan los cambios en lugar de conservar. Pasan a equivalentes escritos a mano, con su registro: el reparto queda en 368 copias y 60 a mano, quizá alguna más cuando se ejecuten, siempre dentro de las 470.
+> - «Conservar mi borrador» pide dos «Sí»: el primero muestra los cambios por grupos encima del Sí/No y el segundo conserva. Así no se rompen dos guardas del panel que no están en la lista, y sigue sin escribirse nada hasta que confirmas.
+
+**La pregunta.** Encabezado: «Roturas T4b».
+
+> Al escribir PB-T4b sobre PB-T4a, cinco pruebas de guarda que no están en la lista de 470 caen por el propio diseño que ya decidiste: el borrador del panel pasa al modelo completo y «Actualizar» usa la escritura completa. Dos fijan que el diagnóstico de admisión sale de la lectura del piloto; dos, que el anfitrión marca y recarga borradores del piloto; y una, que «Actualizar» llama a la corrida del piloto. Esta última ya estaba en la lista de la retirada (PB-T4d), pero cae antes. Ninguna se puede evitar sin añadir código que nunca se ejecuta, y dos ni siquiera así. ¿Cómo sigo?
+
+Las opciones:
+1. **«Añadirlas a la lista» (Recomendado):** La lista de PB-T4b pasa de 470 a 475. Las cinco se saltan y se sustituyen con registro por equivalentes que fijan lo mismo sobre el modelo completo. La quinta sale de la lista de PB-T4d, que pasa de 139 a 138, y el mínimo del filtro de su clase baja de 86 a 85. Si la comprobación sobre el código compilado encuentra otra fuera de la lista, te vuelve, como ahora.
+2. **«Mantener código muerto»:** Se añaden líneas que nunca se ejecutan o no sirven para nada, para conservar la letra de tres de las cinco. Las otras dos se sustituyen igual, y la lista pasa de 470 a 472. Ese código queda en el producto hasta PB-T4d y hace que esas guardas sigan pasando sin proteger lo que protegían.
+
+**Las comprobaciones del formato:**
+- el encabezado tiene 11 caracteres;
+- las etiquetas, 4 y 3 palabras sin contar «(Recomendado)».
+
+**Por qué se recomienda la opción 1:**
+- la opción 2 no evita la vuelta, porque la lista pasa igual de 470;
+- deja en el producto código que no corre;
+- y hace pasar las guardas sin que protejan nada, que es lo que [OD] prohíbe en T1B: «Do not silently weaken the old guard».
+
+**Lo que cambia en el paquete según la respuesta:**
+- **Con la opción 1:**
+  - `pbt4b-substitution-list.tsv` gana las cinco filas, con un sha256 nuevo;
+  - `pbt4d-retire-list.tsv` pierde WPUG:822-840;
+  - el filtro de WPUG baja a 85;
+  - cada sustituta lleva su CT y su autoprueba.
+
+  La de G4 debe traer además la autoprueba que IG:510-517 ya no discrimina (§17.2).
+- **Con la opción 2:** las líneas muertas van literales en el paquete, con su registro, y la lista pasa a 472.
+
+### §17.6 Límites
+
+- **Nada se compiló ni se ejecutó.** El GREEN de PB-T4b es el volcado del autor del paquete (`v44/green_b`), que no comparé línea a línea con un paquete v4.4, porque aún no existe.
+- **Las 108 «en verde»** las comprobé por muestreo. Las demás se apoyan en el recorrido del autor y en la precondición 6.
+- **El hueco del recorrido** lo medí por literales; lo que solo se ve al ejecutar queda para la precondición 6.
+
+## §18. Revisión de PB-T4b en la v4.4
+
+**Veredicto: NECESITA v4.5** B/I/M = **0 / 2 / 6**
+
+**En resumen:**
+- **Es fiel a las decisiones:**
+  - la lista emitible es exactamente la de 475;
+  - nada de `src/` traduce estado;
+  - «Conservar» con dos «Sí» cumple OB-05.4 y D-PB-05;
+  - el piloto no se retira.
+- **Los equivalentes que muestreé conservan lo que protegían el original y su autoprueba:** los 7 de D-S1, los 5 de la tercera tanda, G-4, CT-PBT3B-13, el alias de EIG y varios a mano.
+- **Hay dos importantes, y los dos son de especificación:**
+  - **I-01:** CT-PBT4B-20, tal como está escrita, no puede pasar en el RED;
+  - **I-02:** el criterio de la partición no es el de INV-PBT4B-02, y la precondición 6 no está cerrada en dos puntos.
+- **Los dos se corrigen en la v4.5**, que llega de todos modos con la optimización del Owner.
+- **No hay decisiones nuevas para el Owner por la v4.4.** Lo que la v4.5 puede traer va marcado como «afectado por la v4.5» (§18.6).
+
+**Qué se revisó y cómo:**
+- `I-64-f4b-pbt4-gate-contract-package-v44.md` (`517673fa…`): V44-01 a 10, D-PBT4-04 a 11, §4.2, §5.2, §6.2, §6.2.1 (parcial: las invariantes y las paradas que se citan), §6.2.2 y §11;
+- `pbt4b-substitution-list-475.tsv`, `pbt4d-retire-list-138.tsv`, `pbt4b-copy-map-v2.tsv` y `pbt4b-equivalents-review.txt`;
+- `pbt4b-kit-WorkspaceFullReadKit.cs`, `pbt4b_hand_edits.py` y `partition_pbt4b.py` (las partes citadas);
+- los volcados de `v44/`;
+- `owner-pbt4b-breaks-decision.md` y `session-pbt4b-design-decisions.md`.
+
+Las pruebas, por objetos git en `5aaacce3`, sin worktree y sin compilar. Un guion nuevo, `ir4b_eqdiff.py`: el diff de cada equivalente frente a su original, con sus salidas `ir4b_eqdiff-*-out.txt`.
+
+### §18.1 Hallazgos
+
+| Id | Grav. | Dónde | Qué | Arreglo |
+|---|---|---|---|---|
+| **I-01** | I | **CT-PBT4B-20**: §5.2, la fila 20, y RR-3 (§6.0:1302) | **La CT, como está escrita, cae en el RED, y es `ExpectRed` false:**<br>• **Le falta M-00.** El punto (3) dice que cada copia mecánica es «su original con M-01 a M-08», y RR-3 fija «las ocho parejas de M-01 a M-08». Las copias llevan además M-00, el cambio de nombre de los tipos de primer nivel. Los cuerpos de las pruebas los usan: `new LifecycleScriptedAdvisor` (WLHT:168), `new PilotEditThrowingComparer()` (WPEH:118, :1470, :1604), `new PilotEditThrowingProbe()` (WPEH:1296)… Esas copias no son «el original con M-01 a M-08».<br>• **No quita el `Skip`.** El punto (3) compara «el texto del método, de su primera línea de atributo a su llave de cierre», y el original del RED ya lleva `[Fact(Skip = "…")]`, frente al `[Fact]` de la copia. No dice que se compare con el texto de `BaseSha` o sin el `Skip`, como decía la v4.1.<br>• **Hashea sin normalizar.** Los puntos (1) y (4) comparan sha256 de archivos (`BaseSha` y `CopySha`) sin decir que se normalicen los saltos de línea. El repositorio trabaja con `core.autocrlf=true`, según su propio `.gitattributes`, así que en un clon de Windows el archivo en disco lleva CRLF | En §5.2 y en RR-3:<br>• «con M-00 a M-08», con los tipos de M-00 de cada clase literales en la CT (`LifecycleScriptedAdvisor`, `PilotEditThrowingComparer`, `PilotEditThrowingProbe`, `PilotEditAuditedReader`, `PilotEditOutcomeProbe` y `CommandAdvisorPortDouble`);<br>• «frente al texto del método en `BaseSha`», o «sin la línea del `Skip`»;<br>• «el sha256 del texto con los saltos de línea normalizados a `\n`», en (1) y en (4) |
+| **I-02** | I | **La partición y la precondición 6**: §5.2, «La regla»; `partition_pbt4b.py:82-86`; §11.6 | **La partición mide con otra regla que el contrato, y la precondición no está cerrada:**<br>• **La partición es más estricta que el contrato.** Para la partición, una copia que falla en el RED cuenta «sin aserción» si el mensaje no empieza por `Assert.` ni lleva `Xunit.Sdk`, y entonces para. INV-PBT4B-02 define la falta por aserción por «la primera línea del StackTrace bajo `tests/`».<br>• **Y eso le pasará a muchas copias en el RED.** El anfitrión aún es el del piloto, y `DraftRegistry.Find<TState>` devuelve null con otro tipo (`entry as DraftSession<TState>`). Las copias que leen el borrador completo (`Find<PushBackFullDraftState>(…)!`, o `draft.Status` tras un `Open` del kit) caen por `NullReferenceException` en el propio código de prueba. El contrato admite esa caída; la partición la para. La precondición 6 pararía, o forzaría equivalentes a mano innecesarios.<br>• **Faltan dos pasos en la precondición 6.** Las líneas «presentar» de CT-06 «se confirman en la precondición 6», pero no hay ninguna sonda definida: qué código, dónde se corre y que no entra en ningún commit. Y §11.6 no nombra la suite completa sobre la copia con el RED exacto (D = 0 en el RED, que §5.2 sí promete), con sus totales | **La partición:** la misma regla que INV-PBT4B-02 (la primera línea del StackTrace bajo `tests/`). Una caída cuya primera línea está en `src/` sigue parando.<br>**La sonda de CT-06:** su texto literal (el anfitrión de CT-06, en una clase temporal) y su corrida sobre la copia del GREEN, fuera de todo commit, como la de `read-cost`.<br>**En §11.6:** la suite completa de Core y los filtros de UI sobre la copia con el RED exacto, con sus totales sin las CT: 19 584 = (19 129 − R_C) + R_C + 455 en Core, y 2 478 = (2 430 − R_UI) + R_UI + 48 en UI |
+| M-01 | M | Los equivalentes de EIG (`HELPER_EDITS`, `pbt4b_hand_edits.py:228-229`) | **`BaseOrReadUse` cambia `pilot` por `full`.** La copia deja de ver `pilot.Read` (y sus variantes `pilot?.Read`, `pilot !. Read`) fuera de los consumidores, y `pilot` sigue vivo en WHC, en cuatro sentencias (D-S3). CT-12 prohíbe `pilot.Read` en WHC, pero solo con el literal | Que la copia mantenga las dos: `\b(?:pilot\|full\|result)\.Read\b\|\b(?:pilot\|full)\s*[?!]?\s*\.\s*Read\b` |
+| M-02 | M | D-PBT4-09, las líneas 5 a 7 | **Las vistas pueden ocupar hasta tres líneas** (borrar, rechazadas y todas obsoletas). La opción que eligió el Owner dice «más una línea de lo estructural y **otra de las vistas**» | Unir las vistas en una línea (por ejemplo, «Vistas: se borrarán 2 laterales obsoletos; 1 no se puede conservar.»), o declararlo en F4B-E52 |
+| M-03 | M | D-PBT4-11 y §4.2 | **28 pruebas se saltan y se sustituyen por una copia idéntica,** porque con D-S2 su texto sigue valiendo: las 27 de la UI y RG:109-123. Es fiel a la lista de 475, pero la condición del Owner admite emitir «una parte». Dejarlas correr tal cual sería más limpio | Valorar emitir 447 (con su sha256), o declarar en el registro que son copias sin cambio |
+| M-04 | M | El kit, `FullPrepareKit.Reread` (:126-148) | **El gemelo completo lleva siempre el estado de `pb-01-base`,** aunque se pase otro `state` al piloto. Hoy ninguna llamada pasa `state` (WPP y WPRH: 17 llamadas, sin estado), pero el parámetro es una trampa | `Assert.Null(state)`, o el gemelo a partir del origen de ese estado |
+| M-05 | M | El kit, `FullHandKit.FullOf` (:205-232) | **Para las lecturas hechas a mano repite, en código de prueba, la decisión de admisión de `PushBackFullDraftReader`:** lo que el piloto rechaza se rechaza, salvo el A/B, y lo demás se materializa. Si el lector cambia, la réplica se aparta sin que nada lo vea | Una comprobación del kit o una línea de CT: `FullOf` de las lecturas de `IntentKit` sobre los escaneos del kit da lo mismo que `PushBackFullDraftReader.Read` |
+| M-06 | M | §6.2.2 | **El tamaño frente a los 30 000 bytes de un prompt** no se trata en el paquete: el contrato saldrá hacia 75 a 80 KB, con 27 KB del `ForbiddenWriteScope`. La cadena sí lo resuelve (`pbt4bcc/adapt-notes-pbt4b.md`): cita por ruta y sha256, y `check_prompt_size.sh` aborta con 93 | Citarlo en §6.2.2: el contrato y las listas no van nunca en línea en un prompt |
+
+### §18.2 La fidelidad a las decisiones (punto 1)
+
+- **La lista es exactamente la de 475** (`654c3b7b…`):
+  - sus primeras 470 filas son, byte a byte, la de 470 (`44393b19…`);
+  - las cinco del final son EIG:870-880 y :882-894, WLG:626-635 y :641-664, y WPUG:822-840;
+  - los recuentos son 428 de C-0, 20 de C-5 y 27 de la UI.
+- **La lista de PB-T4d** solo pierde WPUG:822-840.
+- **La exactitud** la fijan la precondición 7 y C02.
+- **Nada de `src/` traduce estado:**
+  - el borrador nace en `Begin` con `full.Read`, y sin `FullRead` responde `NotAdmitted` sin crear nada;
+  - la clasificación de «Conservar» usa el clasificador real sobre la relectura.
+  - **En el código de prueba,** `FullHandKit.FullOf` reconstruye una lectura completa a partir de la base de una lectura del piloto hecha a mano (M-05). Es código de prueba y no viola la regla del Owner, pero es la réplica que hay que vigilar.
+- **«Conservar» con dos «Sí»** cumple OB-05.4 y D-PB-05:
+  - la presentación va antes de la confirmación;
+  - `KeepOn` solo se hace con el testigo vigente (`Unchanged`); con cualquier otro, vuelve a presentar;
+  - «No» no llama al puerto;
+  - el límite M-20 está declarado;
+  - y el cambio visible, en PBT4B-C03.
+- **«Por grupos»** es lo que vio el Owner:
+  - los nueve nombres fijos, en su orden;
+  - las líneas de «fuera», «por ti» y «los dos»;
+  - la línea de lo estructural.
+
+  La salvedad son las vistas (M-02).
+- **El piloto no se retira:**
+  - ningún archivo de `Pilot/` está en el alcance (53 rutas);
+  - INV-PBT4B-01 lo prohíbe;
+  - C10 para si hiciera falta.
+
+### §18.3 Los equivalentes (punto 2, por muestreo)
+
+Diff de cada uno frente a su original (`ir4b_eqdiff-third-out.txt`, `-ds1-out.txt` y `-sample-out.txt`), con las ediciones de ayudante de `pbt4b_hand_edits.py`:
+
+- **Los 7 de D-S1:** conservan todas las aserciones del original (el estado, el borrador, el texto pendiente, la escala y las lecturas por llamada), y añaden el primer tiempo:
+  - `Presented`;
+  - el borrador sin cambiar, o el conflicto;
+  - el segundo, con `KeepWitness` (`FullHandKit.Seen`), que da `Kept`.
+  - En «cada operación lee una vez», cada una de las dos llamadas lee una vez.
+  - El de los estados exige 12, con `Presented` en el 11, y las propiedades nuevas. No debilita nada.
+- **Los 5 de la tercera tanda:**
+  - **EIG:871:** el cuerpo es igual, y el patrón del ayudante pasa a `full.Read…`. Sigue exigiendo dos, en las dos comprobaciones, y ninguno en `Begin`, «Conservar» ni «Descartar».
+  - **EIG:883:** su autoprueba, sobre `full`.
+  - **WLG:627 y :642:** `Find<PushBackFullDraftState>`, y `DiscardAndReload(full.Read)` con un solo `full.Read`.
+  - **WPUG:823:** el orden, con `ExecuteFull`, uno solo.
+  - Las cinco fijan lo mismo sobre el modelo completo.
+- **G-4:** el cuerpo de `G4Only…` añade la autoprueba que IG:510-517 ya no discrimina, y `G4Violations` cuenta `ExecuteFull`:
+  - un llamador de la corrida fuera del núcleo;
+  - llamadores de la actualización en el controlador y en el adaptador;
+  - una segunda llamada en el núcleo.
+- **CT-PBT3B-13:** admite WHC, que ahora escribe con el modelo completo. Su autoprueba queda solo sobre `WorkspacePilotSupport.cs` y el control se invierte: es la consecuencia de la admisión, no un debilitamiento, y CT-12 fija que WHC nombra `ExecuteFull` y `Precheck` una vez cada uno.
+- **El alias de EIG (`TheResultOfThePilotIsOnlyEverNamedPilot…`) queda más fuerte:** seis `var full = read.FullRead;` y cuatro `var pilot = read.PilotRead;`, sin `.PilotRead` ni `.FullRead` fuera.
+- **Los de WPP con H-01 a H-03, y `InvalidA_ACurrentState…`:** invierten a propósito el «contenido que el piloto no edita», que ahora el completo compone, y conservan los casos de escala.
+- **Los de WPRH con `ReadWithoutFullRead`:** conservan la clasificación.
+- **Lo único que se pierde está en M-01.**
+
+### §18.4 Las 368 copias mecánicas, la partición y el GREEN (puntos 3 y 4)
+
+- **El mapa M basta para describir la copia,** pero CT-20 no lo comprueba entero (I-01).
+- **La partición está bien definida en su regla:** todos los resultados `Failed` van a Red, todos `Passed` a Green, y una que mezcla para, sin partir ninguna `Theory`. Lo que falla es su criterio de «aserción» (I-02).
+- **El GREEN literal:**
+  - **la regla del §5.0 se cumple:** en los archivos sin `#nullable` del GREEN no hay ningún `?` nuevo de un tipo de referencia (los cuatro nuevos, `NumericFieldValidation.cs` y FVM, donde los dos `SessionId?` ya estaban en la base);
+  - **el recorrido marca 108 en verde**, ya muestreadas en la §17.2;
+  - **el hueco del recorrido lo cierra la precondición 6** al ejecutar el GREEN literal (§11.6 lo dice).
+- **El kit:**
+  - **conserva los tipos de lectura del piloto** (D-S3);
+  - **`ReadOf` usa `PushBackFullDraftReader.Read` sobre el mismo escaneo**, sin réplica;
+  - **lo hecho a mano pasa por `FullOf`** (M-05);
+  - **`Reread` y el estado:** M-04.
+
+### §18.5 El contrato propuesto y la precondición 6 (puntos 5 y 6)
+
+- **Los 82 `RequiredTests`** salen de 38 heredados, 6 clases de las CT, `NumericFieldValidationTests`, `NumericFieldTests` (por archivo, la duda 4) y hasta 36 clases de copia.
+  - Los `MinSelected` heredados que bajan cuadran con la lista: el n.º 2 a 2, el n.º 5 a 85, el n.º 6 a 121, el n.º 11 a 1, y el n.º 12 y el n.º 15 medidos.
+  - Ningún filtro heredado selecciona `RackCad.Tests.FullPanelCopies` ni las clases `PushBackFullPanel…`.
+- **Los totales de la rama única del GREEN cuadran:**
+  - **Core:** 19 601 = 19 137 + 447 + 17; 19 146 = 19 130 − 1 + 17; 455 = 7 + 448;
+  - **UI:** 2 481 = 2 451 + 27 + 3; 2 433 = 2 430 + 3; 48 = 21 + 27.
+
+  El RED queda en función de R_C y R_UI, medidos (F4B-E46).
+- **Las paradas son 35:** las 17 estándar más C01 a C14, C16, C17, C18 y C20.
+  - C11 es la de PB-T4a con «PB-T4b».
+  - C02 no tiene excepción fuera de los 475 `Skip`.
+  - C16 deja claro que una copia que cae en el GREEN es C07, no C16.
+- **RR y RR-3:** una fila por equivalente a mano, que no admite reparación (RR-2), y CT-20 con sus literales (I-01).
+- **El tamaño:** M-06.
+- **La precondición 6:** es ejecutable por la sesión (`apply_red_pbt4b.py`, `partition_pbt4b.py`, `apply_green_pbt4b.py` y `check_skips_pbt4b.py` existen), y cubre el hueco del recorrido al ejecutar el GREEN literal. No está cerrada en los dos puntos de I-02.
+
+### §18.6 Afectado por la v4.5 (la optimización del Owner, `owner-pbt4a-cost-decision.md`)
+
+**Elegir la vista de origen antes de leer cambia la lectura de PB-T4a** (RIA, NH y `Draft/PushBackOriginByText`), que PB-T4b no tocaba. Queda afectado:
+- **el alcance:** 53 rutas sin RIA ni NH, y `UNIT_CHANGE`;
+- **las guardas de RIA y de NH:** EIG:350-364, la firma de `Read` en EIG:139-141, CAG y G-9;
+- **las CT de PB-T4a que fijan la forma de hoy:** CT-PBT4A-04 (`readat …`) y CT-PBT4A-07 (`ria-AtOrigin readat=1 piloto=0 completo=0 …`, `nh-AtOrigin=1 dentro-del-bloqueo=True tras-Read=True`). Si alguna cae, queda fuera de la lista de 475 y **vuelve al Owner** por su propia decisión;
+- **el recorrido de §4.2:** su base `v44/base` es el GREEN de PB-T4a de hoy;
+- **los textos que dependen de la lectura:** `green_pbt4b.py`, CT-PBT4B-17 y el paso 1 de D-PBT4-08 (la relectura con el origen);
+- **la precondición 6,** que gana la nueva medida del coste de lectura, con la misma prueba que `read-cost`.
+
+### §18.7 Decisiones nuevas para el Owner (punto 7)
+
+**Ninguna por la v4.4.**
+- I-01, I-02 y los menores son de especificación y de medida.
+- M-03, emitir 447 en lugar de 475, cabe en la condición del Owner («una parte»), y no necesita preguntar.
+- La v4.5 puede traer una vuelta si su optimización rompe una prueba fuera de la lista (§18.6).
+
+### §18.8 Límites
+
+- **Nada se compiló ni se ejecutó.** La partición y los totales del RED solo los dará la precondición 6.
+- **De los 79 equivalentes, leí con su diff unos 20,** los pedidos y una muestra de los a mano. Los demás se apoyan en el guion y en la precondición 6.
+- **De §6.2.1 solo leí** las invariantes y las paradas que cito, no el bloque entero línea a línea.
+- **Un desliz de forma mío:** una orden lanzó `python -I -` con un heredoc vacío, que quedó colgada sin ejecutar nada y la paré. No leyó ni escribió nada, pero la regla pide Python solo desde guiones escritos con Write.
+
+## §19. Recomprobación de la v4.5 (PB-T4b)
+
+**Veredicto: LISTO PARA LA PRECONDICIÓN 6.** B/I/M = **0 / 0 / 4**
+
+**En resumen:**
+- **Lo de la §18 está resuelto:** I-01, I-02 y M-01 a M-06.
+- **D-S4 consigue una sola materialización por lectura,** no traduce estado y no rompe ninguna guarda de las que muestreé.
+- **Las dos nuevas de la lista** (CT-PBT4A-03 y 05) fijan lo mismo sobre el borrador completo.
+- **Los totales y los `MinSelected` cuadran.**
+- **La precondición 6** está cerrada y es suficiente en sus ocho pasos.
+- **Quedan cuatro menores de texto,** y ninguna decisión nueva para el Owner.
+
+**Qué se revisó y cómo:**
+- **el paquete:** `I-64-f4b-pbt4-gate-contract-package-v45.md` (`6543b99d…`): V45-01 a 13, D-PBT4-21, D-PBT4-11 (M-05), §5.2 (CT-20 y CT-21), §6.2.1 (los ocho pasos y los `RequiredTests`), §6.2.2 y §8.5;
+- **la lista de 477** (`5975c5b6…`);
+- **el kit v4.5**, `green_pbt4b_v45.py` (RIA), `partition_pbt4b_v45.py` y `pbt4b_hand_edits_v45.py`;
+- **las dos sondas;**
+- **las salidas de `v45/`:** `check_ria_v45-78a7`, `compare_walks_v45`, el recorrido delta y `ria_added_lines_v45`;
+- **las tandas del Owner:** `owner-pbt4b-list-477-decision.md` y `owner-pbt4a-cost-decision.md`.
+
+Las pruebas, por objetos git en `78a7cef3`. Sin worktree y sin compilar. Lo nuevo de este paso: `ir4b_eqdiff.py` sobre las dos nuevas (`ir4b_eqdiff-v45-out.txt`).
+
+### §19.1 I-01, I-02 y M-01 a M-06 de la §18 (punto 1)
+
+- **I-01, resuelto** (CT-20, §5.2 y RR-3):
+  - la copia mecánica es el texto de su método en la base, sin el `Skip`, con M-00 a M-08;
+  - los seis tipos de M-00 van literales, con su clase, y RR-3 lleva «las nueve parejas de M-00 a M-08»;
+  - cada texto se normaliza a `\n` antes de comparar o hashear (`BaseSha` y `CopySha`), por `core.autocrlf=true`.
+- **I-02, resuelto:**
+  - `partition_pbt4b_v45.py` usa la regla de INV-PBT4B-02 (la primera línea del StackTrace bajo `tests/`, con las barras normalizadas) y la prueba con StackTrace fabricados, entre ellos una `NullReferenceException` en la copia;
+  - la precondición 6 gana la sonda de las líneas «presentar» de CT-06 (`pbt4b-ct06-presentar-probe.cs`) y la suite completa sobre el RED exacto, con sus totales (paso 5).
+- **M-01, resuelto:** `BaseOrReadUse` busca `pilot` y `full` (`pbt4b_hand_edits_v45.py:29`).
+- **M-02:** se queda en hasta tres líneas de vistas, medidas en CT-06 y declaradas en F4B-E52 y en §8.5. Aceptable.
+- **M-03:** las 28 copias idénticas se quedan, declaradas. Aceptable: la lista es la que vio el Owner.
+- **M-04 y M-05, resueltos:**
+  - `FullPrepareKit.Reread` hace `Assert.Null(state)`;
+  - `FullHandKit.FullOfMatchesTheReader` corre en CT-20, punto (6), con `kit FullOf-igual-al-lector=True escaneos=5`.
+
+  Queda un desajuste de texto (M-07).
+- **M-06, resuelto:** §6.2.2 dice que el contrato y las listas nunca van en línea en un prompt.
+
+### §19.2 D-S4 (punto 2)
+
+**Consigue una sola materialización por lectura.** Lo leí en el texto literal (`v45/ria_added_lines_v45-out.txt`, 11 líneas de RIA):
+- **La línea del éxito de `Read`** deja la lectura completa del `Primary` en un `System.Lazy` sobre el mismo `input`. `Full` es `_full?.Value`.
+- **NH** hace, dentro del bloqueo, `read = AtOrigin(...)` y después un solo `FromReads(read.Pilot, read.Full, …)`.
+  - **Sin coincidencia de origen,** `AtOrigin` devuelve el mismo `read`, y `Full` materializa el `Primary` una vez.
+  - **Con coincidencia,** `AtOrigin` construye un resultado con el `Full` que trae `ReadAt` (el constructor de valor, `new Lazy<T>(T)`, que existe en net8.0). El `Lazy` del `Primary` no se evalúa nunca.
+  - `AtOrigin` solo mira `Succeeded` e `Input`.
+
+**No traduce estado.** Lo completo sigue saliendo del lector completo sobre el mismo escaneo.
+
+**No cambia ningún motivo de fallo.** `PushBackFullDraftReader.Read` contiene sus excepciones (:54-116, `catch (Exception ex)`), salvo un `scan` nulo, que aquí no se da.
+
+**No rompe ninguna guarda de la muestra:**
+- en el RED y en el GREEN, `check_ria_v45-78a7-out.txt` da las mismas cuentas de B-08 (un escaneo, una lectura de cada lector, en `Read` y en orden), de CAG (7 literales y 2 `ex.Message` en `Read`), de G-9 e INV-14, y nada público;
+- **CT-PBT4A-07, con su código real** (FRP:257-375 de `78a7cef3`), da sus 13 líneas. Leí su código: `afterThePilot` busca `PushBackFullDraftReader.Read(input, catalog)` en el cuerpo de `Read`, y la línea diferida lo contiene.
+
+**El recorrido.**
+- **Lo que da:** el delta de D-S4 marca 24 pruebas (el autor dice 23; la diferencia es CT-PBT3A-12, saltada), y el recorrido entero, 149.
+- **Lo que muestreé del delta, y sigue en verde:**
+  - las de EIG sobre RIA: los `catch` de `Read` y de la vista previa, el `AssertNoOpenTransaction` antes y después, un `CaptureDrawing` y un `new Handle`, y el escritor;
+  - CAG: los motivos, sin literal nuevo;
+  - G-9: RIA nombra el piloto, sin API de escritura ni bloqueo nuevo;
+  - las de WBSG y WHSG: las diferencias son de expresiones que, como expresión regular, son clases de caracteres (`[CommandMethod("…")]`), ruido de la herramienta.
+- **El hueco del recorrido** lo cierra la precondición 6, que ejecuta el GREEN literal.
+
+**Un matiz de forma, no de fondo (M-08).** La decisión del Owner dice «elegir la vista de origen antes de leer». D-S4 lee el piloto del `Primary` (de 2 a 10 ms, medido) y difiere el modelo completo hasta saber el origen. El resultado es el que pide el Owner: una materialización completa por lectura.
+
+### §19.3 Las dos nuevas de la lista y sus equivalentes (punto 3)
+
+- **La lista de 477:** sus primeras 475 filas son, byte a byte, la de 475. Las dos del final son CT-PBT4A-03 (FRP:152-186) y CT-PBT4A-05 (FRG:53-74), con causa C-5.
+- **Sus equivalentes** (`ir4b_eqdiff-v45-out.txt`) solo cambian el banco de prueba y el lector:
+  - CT-03 pasa de `new PushBackFullReadRig(…)` a `new FullReadRig(…)`, que busca `Find<PushBackFullDraftState>`;
+  - CT-05 pasa de `EditIntentFakeReader` (que responde `FromPilot`) a `FullEditIntentFakeReader` (`FromReads`, como el lector real).
+  - Sus líneas esperadas no cambian. Fijan lo mismo sobre el borrador completo.
+- **¿Cae alguna otra?**
+  - **Por texto, ninguna:**
+    - CT-PBT4A-01 (`FromReads`) y 02 (`PushBackFullReadKit.Reads`) no usan el banco de prueba;
+    - CT-04 es pura;
+    - CT-07 está medida;
+    - CT-08 (`Draft/`) no cambia;
+    - CT-06 ya está en la lista.
+
+    Los otros usos de `PushBackFullReadRig` son solo CT-03 y CT-05 (`git grep` en `78a7cef3`).
+  - **La respuesta definitiva** la da la precondición 6, en los pasos 5 y 6: la suite completa de Core sobre el RED exacto y sobre el GREEN literal.
+  - **En la UI** corren solo los filtros del contrato (M-10).
+
+### §19.4 Los totales y los `MinSelected` (punto 4)
+
+**La base** es la CI real del cierre de PB-T4a (F4B-E51, `f4b-dispositions.md:1718`): Core 19 137 = 19 130 + 0 + 7, y UI 2 451 = 2 430 + 21.
+
+**La lista** tiene 450 pruebas de Core (448 + 2) y 27 de la UI. Hay 449 copias o equivalentes en Core (todas salvo CT-PBT4A-06) y 27 en la UI. Hay 18 CT de Core (17 + CT-21) y 3 de la UI.
+
+| | Total | `Passed` | `Skipped` |
+|---|---|---|---|
+| **GREEN, Core** | 19 604 = 19 137 + 449 + 18 | 19 147 = 19 130 − 1 + 18 | 457 = 7 + 450 |
+| **GREEN, UI** | 2 481 | 2 433 | 48 |
+| **Sin las CT, Core** | 19 586 | 19 129 | |
+| **Sin las CT, UI** | 2 478 | 2 430 | |
+
+En el RED, `Failed` es R_C en Core y R_UI en la UI. **Cuadra.**
+
+**Los `MinSelected` que cambian también cuadran:**
+- el n.º 1, `PushBackFullReadPathTests`, pasa de 5 a **4**, con `ExpectRed` false (sale CT-03);
+- el n.º 2, `PushBackFullReadGuardTests`, de 3 a **1** (salen CT-05 y CT-06; queda CT-08);
+- el n.º 5, WPUG, a **85**;
+- los n.º 12 y 15, en **2 719** y **521**, medidos por el generador.
+
+### §19.5 La precondición 6 (punto 5; solo el procedimiento)
+
+**Es cerrada y suficiente.** Ocho pasos, con su orden de ejecución y lo esperado en cada uno:
+- la partición con la regla del contrato;
+- el RED exacto con D = 0;
+- el GREEN literal con D = 0 y cero `warning CS`;
+- las dos sondas, en clases temporales fuera de todo commit;
+- y el contrato por sha256.
+
+**Dónde para:**
+- una copia que mezcla resultados, que no corre o que falla sin aserción;
+- una prueba fuera de la lista de 477, que vuelve al Owner;
+- un coste fuera de lo esperado, que la sesión lleva al Owner.
+
+**Los márgenes del coste son razonables:**
+- **la relectura con el origen** no pasa de `Begin` + el piloto + `BuildStaleBase` + max(10 ms, 30 %), y queda por debajo del 75 % de la de PB-T4a;
+- **los demás casos** no pasan de su valor en PB-T4a + max(10 ms, 30 %).
+
+**Dos matices de lo que mide, que hay que declarar:**
+- **M-09:** el recuento `materializaciones … =1` de `pbt4b-read-cost-probe.cs` es el de su propia réplica del orden de RIA, NH y `AtOrigin`, porque las pruebas no referencian el Plugin (sus líneas 21-22 y 81-93). No prueba nada de RIA: lo de RIA lo fija CT-PBT4B-21 por texto. Lo que la sonda mide de verdad es el coste del orden.
+- **M-10:** la UI se comprueba solo con los filtros del contrato, por la regla de no correr en local la suite completa de UI. Una prueba de UI fuera de esos filtros que cayera solo se vería en la CI del RED o del GREEN (C16, vuelta al Owner).
+
+### §19.6 Las autoridades y §8.5 (punto 6)
+
+- **§8.5 cita las cinco tandas del Owner** sobre PB-T4, con su respuesta literal:
+  - la primera, las cuatro preguntas;
+  - la segunda, la retirada y la lista;
+  - la tercera, las roturas;
+  - la cuarta, la de PB-T4a sobre el coste;
+  - la quinta, la lista de 477.
+
+  Cita también D-S1 a D-S4 como de la sesión, y excluye bien las dos de la cadena de PB-T4a.
+- **Las autoridades de PB-T4b** (§6.2.2) añaden la tercera, cuarta y quinta tanda, `session-pbt4b-design-decisions.md`, las §17 y §18 y el cierre F4B-E51. Coinciden.
+- **El registro de la quinta tanda** (`owner-pbt4b-list-477-decision.md`) es literal y coherente con V45-01.
+
+### §19.7 Hallazgos nuevos
+
+| Id | Grav. | Dónde | Qué | Arreglo |
+|---|---|---|---|---|
+| M-07 | M | V45-08 y D-PBT4-11 (:761), frente a CT-20 (6) y RR-3 (:1395) | La prosa dice que `FullOfMatchesTheReader` corre «sobre seis escaneos»; la CT enumera cinco y su línea literal es `escaneos=5` | «cinco» |
+| M-08 | M | D-PBT4-21 y F4B-E52 | La decisión dice «elegir la vista de origen antes de leer». D-S4 lee el piloto del `Primary` y difiere solo el modelo completo. El resultado es el que pide el Owner | Declararlo así en F4B-E52: el mecanismo y el coste residual del piloto, que mide la sonda (`solo el piloto`) |
+| M-09 | M | §6.2.1, paso 7 | El recuento de materializaciones es el de la réplica de la sonda, no el de RIA | Decirlo en el paso 7 y en F4B-E52; lo de RIA lo fija CT-PBT4B-21 |
+| M-10 | M | §6.2.1, pasos 5 y 6 | La UI solo con sus filtros: una prueba de UI de fuera de los filtros se vería en la CI | Declararlo como límite de la precondición 6 |
+
+### §19.8 Decisiones nuevas para el Owner (punto 7)
+
+**Ninguna.** D-S4 cumple la cuarta tanda sin romper nada fuera de la lista (medido por texto; lo confirma la precondición 6), y la quinta ya está aplicada. Los menores son de texto. Si la precondición 6 encuentra una prueba que falle fuera de las 477, o un coste fuera de lo esperado, vuelve al Owner, como ya está decidido.
+
+### §19.9 Límites
+
+- **Nada se compiló ni se ejecutó.**
+- **Los resultados de la precondición 6 no los he visto todavía:** este juicio es del procedimiento.
+- **Del recorrido de la v4.5** muestreé el delta de D-S4, no las 149.
+- **Que no caiga ninguna otra prueba de PB-T4a, de Core,** lo dirá la suite de los pasos 5 y 6.
+
+## §20. Comprobación acotada de PB-T4b (CA-T4b) sobre la v4.8
+
+**Veredicto: EMITIBLE TRAS CORRECCIONES.** B/I/M = **0 / 1 / 8**
+
+**En resumen:**
+- **M-07 a M-10 de la §19:** aplicados o declarados.
+- **D-S5:** en las cuatro `Theory` partidas, cada mitad tiene el cuerpo de la copia, y entre las dos reparten sus filas sin cambiar ninguna. La regla de la partición sigue cerrada, y CT-20 la fija.
+- **D-S6:**
+  - ningún filtro que no sea de copia selecciona una copia;
+  - ninguna clase del repositorio empieza por `FullPanelCopy`;
+  - la guarda de espacios de nombres se cumple por texto.
+- **Las dos copias de WPP** afirman lo que fija D-PBT3-09 (e) para el modelo completo.
+- **La tabla de WHHG** es la original con 0, 6 y 0, y nada más. Las cuentas salen del GREEN literal.
+- **La lista de 478** es la de 477 más una fila, byte a byte.
+- **Las cifras cuadran con la precondición 6:** los totales, R_C = 291, R_UI = 0 y la fila n.º 12.
+- **El paseo corregido** solo cambia `FIELD`.
+- **Una importante:** la autoprueba de la guarda de los textos de WHHG pasa en vacío en el GREEN, y el paquete da otra razón. Se corrige como G-4, sin el Owner.
+- **El coste:** no tiene causa en el código del GREEN y es compatible con ruido. Lo decide el Owner.
+- **No hay otra decisión nueva para el Owner.**
+
+**Qué se revisó y cómo:**
+- **el paquete:** `I-64-f4b-pbt4-gate-contract-package-v48.md` (`6ddc239d…`):
+  - V46-01 a 07, V47-01 a 05 y V48-01 a 06;
+  - §4.2, CT-20 (§5.2), los totales, §6.2.1 con los `RequiredTests`, y el anexo V48-A;
+  - la v4.6 y la v4.7, solo para los deltas;
+- **el registro de la sesión,** `session-pbt4b-design-decisions.md`, en su versión actual (`586454dc…`): con D-S4 y la lectura del paseo, las dos secciones añadidas mientras revisaba;
+- **las decisiones del Owner:** `owner-pbt4b-list-477-decision.md` y `owner-pbt4b-list-478-decision.md` (`a18afbb4…`); y `v47/analysis-outside-477.md`;
+- **la lista y el mapa:** `pbt4b-substitution-list-478.tsv` (`8b0fcd0c…`) y `pbt4b-copy-map-v5.tsv` (`bda79bb7…`);
+- **los guiones:** `pbt4b_hand_edits_v48.py` (y el de la v4.7, del que toma `SPLIT` y `RED_KEYS`), y los `*_v48.py` frente a los de la v4.7;
+- **las copias:** las del modo de medida, en `v48/copies_probe_v48`;
+- **la precondición 6:** `compile-check.md` (`25103dba…`) y sus salidas `out-probe-v48-r4q`, `out-redgreen-v48-r4r` y `out-probes-v48-r4s`;
+- **el coste:** `v48/session-cost-rerun-rule.md` (`85f32a42…`) y la sonda `pbt4b-read-cost-probe.cs` (`91acfca3…`).
+
+Las pruebas, por objetos git en `78a7cef3`. Sin worktree, sin compilar y sin ejecutar pruebas. Los guiones nuevos, todos `ir4_`, con su `-out.txt`: `ir4_whhg.py`, `ir4_whhgcopy.py`, `ir4_ds6.py`, `ir4_part.py`, `ir4_split.py`, `ir4_vacuous.py`, `ir4_uiout.py` y `ir4_uidiff.py`.
+
+### §20.1 M-07 a M-10 de la §19 (punto 1)
+
+| §19 | Qué pedía | En la v4.8 |
+|---|---|---|
+| M-07 | «cinco escaneos» | **Aplicado:** V45-08 (v4.8:190), D-PBT4-11 (:884), CT-20 (6) (:1342) y su línea `escaneos=5` (:1536). «Seis escaneos» solo queda en la fila que lo corrige (V46-03, :116) |
+| M-08 | el mecanismo de D-S4 | **Declarado:** D-PBT4-21 (:957) y V46-04 (:117), para F4B-E52 |
+| M-09 | lo que cuenta la sonda | **Declarado:** el paso 7 (:1999) y V46-05 (:118). El recuento es el de la réplica, y lo de RIA lo fija CT-PBT4B-21 |
+| M-10 | la UI, con sus filtros | **Declarado:** los pasos 5 y 6 (:1995) y V46-06 (:119), con C16 |
+
+### §20.2 D-S5 (punto 2)
+
+**El cuerpo y las aserciones** (`ir4_split-out.txt`). En cada una de las cuatro, la mitad Red y la mitad Green del anexo (:2449-2725) son, salvo sus filas y su `SPLIT_COMMENT`, la `Theory` entera de la copia del modo de medida, línea a línea:
+- **las de `InlineData`:**
+  - WLHT tiene 10 filas: 3 Red y 7 Green;
+  - PEG tiene 4: 1 Red y 3 Green;
+  - ninguna fila está en las dos mitades, y cada mitad conserva el orden de la copia;
+  - los primeros argumentos de las filas Red son `RED_KEYS`;
+- **las filas de WLHT** son las del original;
+- **las de PEG** solo cambian por la edición de guarda de la v4.5 (`PushBackPilotFieldAdapter` → `PushBackFullFieldAdapter`), no por D-S5;
+- **en las dos de `MemberData`** solo cambia `nameof(StatusNames)`, por `StatusNamesRed` o `StatusNamesGreen`.
+
+**Los miembros nuevos** (anexo :2727-2759):
+- filtran `StatusNames()` por `"Clean"`, en ordinal. En WPP de `78a7cef3`, `StatusNames()` son los nombres de `Statuses()`;
+- Red da todos menos `Clean`, y Green da `Clean`. Juntos son `StatusNames`, en su orden y sin repetirse;
+- `STATUS_RED` tiene los 7 estados que no son `Clean`. La partición medida da 7 y 1 en las dos.
+
+**La regla sigue cerrada.**
+- `partition_pbt4b_v48.py` solo cambia la expresión de las clases (D-S6) y la fuente de la lista (478). Lo demás lo delega en la v4.7 (`partition_pbt4b_v47.py:105-137`), que parte por filas solo si se cumplen las tres condiciones:
+  - la prueba está declarada;
+  - mezcla resultados;
+  - sus filas que fallan son exactamente las declaradas.
+- Para en todos los demás casos:
+  - una declarada que no mezcla;
+  - una que mezcla sin estar declarada;
+  - una declarada sin resultados;
+  - una falta sin aserción.
+- **La comparación por prefijo de los nombres truncados de xUnit (`···`) no confunde filas.** En PEG, la fila Red y las tres Green ya difieren en sus primeros 50 caracteres. Los estados se comparan enteros, así que `Dirty` y `DirtyStale` no se mezclan.
+
+**Medido:**
+- la partición de `/d/r4q` tiene 481 filas y es igual, como conjunto, a la sintética (`ir4_part-out.txt`);
+- las cuatro se parten en 3/7, 1/3, 7/1 y 7/1, los números de la línea de CT-20 (:1342).
+
+**CT-20 (7) la fija:**
+- las cuatro están en las dos clases;
+- sus mitades son iguales salvo las filas y el `SPLIT_COMMENT`;
+- las filas `InlineData`, juntas, son las del original con su M o su edición de guarda;
+- las de `MemberData` se comprueban por reflexión;
+- ninguna otra prueba de la lista está en las dos clases;
+- y da sus cuatro líneas `particion-por-filas … filas-del-original=True`.
+
+### §20.3 D-S6 (punto 3)
+
+Lo medido está en `ir4_ds6-out.txt`.
+
+**La tabla:** 88 filas seguidas, 46 que no son de copia y 42 de copia (21 Red con `ExpectRed` true y 21 Green con false).
+
+**Los filtros:**
+- **ningún filtro que no sea de copia selecciona una clase de copia:** 0 de 46. Se mide por subcadena, como hace `FullyQualifiedName~`, contra los 42 nombres y las 21 clases `…ProbeTests` del modo de medida;
+- **coincide con la medida del autor** (`out-diag-analysis/filter-overlap.txt`): 0 con el prefijo, y 2 con el espacio raíz y los nombres de hoy (n.º 12 y n.º 15);
+- **ningún filtro de copia selecciona otra clase de copia.**
+
+**Las colisiones:**
+- ninguna clase de `78a7cef3` empieza por `FullPanelCopy` (`git grep` en `tests/` y `src/`: ninguna);
+- los 28 tipos de primer nivel de las copias no tienen ningún tipo del mismo nombre en su proyecto de pruebas.
+
+**La guarda, por texto:**
+- `NamespaceFolderGuardTests:211-247` exige que cada `.cs` de `tests/<proyecto>` tenga exactamente una línea que empiece por `namespace `, con el nombre del proyecto;
+- las 21 copias la cumplen: una línea cada una, `RackCad.Tests` o `RackCad.UI.Tests`;
+- el kit, también (`pbt4b-kit-WorkspaceFullReadKit-v45.cs:15`);
+- medido: la guarda pasa en el RED y en el GREEN de `/d/r4r`.
+
+**El reconocimiento de las clases:** la partición y `p6_check_v48.py` las reconocen con `^RackCad(?:\.UI)?\.Tests\.FullPanelCopy(\w+)(Probe|Red|Green)Tests$`. Su autoprueba rechaza los nombres de la v4.7 y la clase de CT-20.
+
+### §20.4 Las dos copias de WPP (punto 4)
+
+Se comparan los originales (WPP:1746-1780 y :1996-2016 de `78a7cef3`) con el anexo (:2308-2385).
+
+**`InvalidE_…`:**
+- **siguen `Invalid`, con el plan nulo,** tres casos: `side-b`, `corrupt-descriptor` y `section-out-of-range`;
+- **`side-b`** usa ahora `FrontalBOfOneWayPrefix` y `FrontalBOfOneWaySuffix`;
+- **los dos descriptores** usan `ViewAddress…`, como hoy;
+- **el lateral fantasma** sale de los `Invalid` y se comprueba aparte: `Ready`, miembros [A1] y borrados [B2].
+
+**`ThePilotNeverErases…`:**
+- con el fantasma: `Ready`, [A1] y [B2];
+- sin él: `Ready` con [A1, B2] y, como aserción nueva, sin borrados.
+
+**Es lo que fijan las autoridades:**
+- **D-PBT3-09 (e) del modelo completo** (el paquete de PB-T3 en `78a7cef3`): `FrontalBOfOneWay` da `Invalid` con su prefijo, y `ObsoleteLateral` va a `Erasures`. `ViewUnavailable…` solo lo da el piloto;
+- **D-PB-04:** «borrar vistas obsoletas, sí; crear vistas no está autorizado» (`f4b-dispositions.md:13`).
+
+**La protección:**
+- **se conserva:**
+  - los textos de los descriptores;
+  - el `Invalid` del lado B;
+  - que el fantasma nunca esté en el plan de las vistas redibujadas;
+  - el plan sin fantasma;
+- **se pierde** que «el piloto nunca borra», que es justo el cambio decidido; su original se salta con registro;
+- **se refuerza** con la aserción nueva, sin borrados.
+
+**Medido:** las dos pasan en el RED y en el GREEN, así que van a la clase Green.
+- De la v4.7 a la v4.8, las dos pasan de Red a Green.
+- WPP Green: 47 pruebas, 47 resultados (`ir4_part-out.txt`).
+- El mapa v5 es el v4 salvo esas dos filas, que pasan de `mecanica` a `R-D-S1-borra`: 356/72.
+
+Los nombres, en M-02.
+
+### §20.5 La guarda de WHHG (punto 5)
+
+**La tabla** (`ir4_whhg-out.txt`):
+- 30 filas en las dos tablas, con los textos idénticos;
+- cambian tres cuentas: 2→0, 5→6 y 1→0;
+- en la base, sobre WHC y `WorkspacePilotSupport.cs` de `78a7cef3` sin comentarios, las 30 cuentas son las de la tabla original;
+- en el GREEN literal (`green_pbt4b_v45.py`), las tres cuentas son 0, 6 y 0. **Salen del GREEN literal;**
+- no queda ningún literal en inglés.
+
+**La copia** (`ir4_whhgcopy-out.txt`):
+- difiere del original solo en el nombre de la clase y en esas tres líneas de la tabla, con su `// before N`;
+- el cuerpo de la prueba es el del original;
+- su partición es Red, con 1 resultado, como preveía V48-03.
+
+**Su hermana, la autoprueba,** en I-01.
+
+### §20.6 La lista de 478 y las cifras (punto 6)
+
+**La lista** (`ir4_part-out.txt`):
+- **byte a byte:** la de 477 es prefijo de la de 478, y la fila nueva es la última;
+- ningún par (archivo, método) se repite;
+- C-0 428, C-5 23 y UI 27; Core 451;
+- 21 archivos. La fila de CT-PBT4A-06 lleva la ruta `(PB-T4a) …PushBackFullReadGuardTests.cs`, el mismo archivo que CT-PBT4A-05.
+
+**Los totales** (v4.8:1363-1376) cuadran:
+- **con las CT:** 19 605 = 19 137 + 450 + 18; 19 147 = 19 130 − 1 + 18; 458 = 7 + 451;
+- **UI:** 2 481 = 2 451 + 27 + 3; 2 433 = 2 430 + 3; 48 = 21 + 27;
+- **sin las CT:** Core 19 587 y UI 2 478.
+
+**Lo medido** (`check-red.txt`, `e4a99a0b…`, y `check-green.txt`, `f7b4b0fc…`):
+- **el RED:**
+  - Core 19 587 = 18 838 + 291 + 458;
+  - las `Failed` son exactamente las Red de la partición;
+  - las omitidas fuera de la lista son las 7 de la base;
+- **el GREEN:** Core 19 587 = 19 129 + 0 + 458;
+- **la UI:** 913 filas, la suma de los 15 filtros, con 0 `Failed` en las dos ramas.
+
+**La partición:**
+- **R_C = 291 = 292 + 1 − 2,** la suma de los resultados Red de Core en la partición;
+- **R_UI = 0;**
+- su sha256, `e87e024c…`, es el de `compile-check.md`;
+- 614 resultados de copia en Core, como en el TRX (291 `Failed` y 323 `Passed`), y 36 en UI.
+
+**La fila n.º 12:** 2 718 = 2 719 − 1, por el `Skip` de WHHG (en `RackCad.Tests.WorkspaceHostHardeningGuardTests`). Es aritmética sobre la cifra de la v4.7; las copias no las selecciona (§20.3).
+
+**Los `MinSelected` de las copias:**
+- 31 de las 42 clases tienen pruebas, y las 11 vacías salen de la tabla (v4.8:2095 y :2108);
+- el JSON escribe las 42, con ceros (`p6_check_v48.py:284-291`), y el generador salta los ceros (`make_pbt4b_contract.py:930-931`).
+
+**El `AllowedWriteScope`:** de 57 a 59 (una copia y un archivo con `Skip` más).
+
+### §20.7 El paseo corregido (punto 7)
+
+**El cambio:** `walk_guards_pbt4b_v48.py`, frente al de la v4.5, cambia solo `FIELD` (:99-103).
+- Además, conserva la expresión antigua (`FIELD_V45`) para un informe de los campos nuevos (:282-290), y cambia la documentación. Nada más.
+- El tipo nuevo admite una tupla y un genérico con espacios.
+- No confunde un método con un campo: tras el nombre exige `=`, `;`, `{ get` o `=>`.
+
+**WCAG `TheCatalogBody…` (WCAG:467-474):**
+- **qué hace:** solo `DoesNotMatch` sobre `CatalogBody()` y sobre la columna `Spanish`;
+- **por qué la marca el paseo:** alcanza `ReasonTable`, cuya columna `Body` lleva `"Read"` (WCAG:415-419), y `"Read"` pasa de 21 a 22 en RIA;
+- **es un falso positivo,** y la prueba sigue discriminando: el `DoesNotMatch` es sobre el cuerpo real de `LoadCatalog`.
+
+Las citas, en M-03.
+
+**WHHG `TheGuardOfTheLiteralsTrips…` (WHHG:501-526):** el paseo la marca con las mismas tres cuentas que a su hermana. **Pasa en el GREEN, pero en vacío:** I-01.
+
+**El mismo mecanismo en las guardas de C-5, por texto** (`ir4_vacuous-out.txt`):
+- **las autopruebas de PEG de fuera de la lista** que exigen `NotEmpty` sobre `HostViolations` (31 resultados) también pasan en vacío, porque el anfitrión del GREEN ya incumple la regla del adaptador estático (PEG:279-280). M-01;
+- **IG:510-517** es la que el paquete ya declara;
+- **las de `WriteViolations` siguen discriminando:** dos de ellas exigen `Empty` sobre su propia base y pasan.
+
+### §20.8 El coste (punto 8; lo decide el Owner)
+
+**La regla** (`85f32a42…`): **neutral en el procedimiento.**
+- Se fijó antes de la tercera corrida: su sha256 está en la cabecera de `out-run-costrerun-v48-r4t.txt`.
+- Usa la misma sonda y los mismos criterios.
+- Anota los procesos.
+- La sesión no acepta el coste.
+- Las tres corridas van al Owner.
+
+**Su recomendación cuenta corridas** («dos de tres»). El argumento más fuerte está dentro de la primera corrida y no depende de la tercera (M-07).
+
+**Causa en el código del GREEN: ninguna.**
+- **El mismo código en los dos casos:** en la sonda (`pbt4b-read-cost-probe.cs:83-95`), `origen-es-Primary` y `cae-al-Primary` de t4b corren el mismo código:
+  - `ReadAt` devuelve null en los dos: con el texto del `Primary` y sin coincidencia;
+  - `FromReads` pide el `Lazy` una sola vez.
+- **La única diferencia es la coincidencia de `ReadAt`,** que es código de PB-T4a y es la misma en t4a. Allí, `es-Primary` (65,2 ms) ≈ `cae` (67,0).
+- **Solo cambia un bloque.** En la primera corrida:
+  - `cae-al-Primary` de t4b, medido en el bloque justo anterior, dio 67,5 ms;
+  - `parte: solo el completo`, justo después, 66,4 ms;
+  - solo el bloque de `es-Primary` está en 98,2 ms (p95 130,6), con n = 200, unos 20 s.
+- **Por qué un solo bloque:** la sonda mide cada caso en un bloque seguido (:97-119), así que una perturbación de unos 20 s toca una sola cifra.
+- **La máquina estaba cargada:** toda la primera corrida va un 35 % más alta que la segunda.
+- **La conclusión:** compatible con ruido. Ningún motivo de código hace que `es-Primary` difiera de `cae-al-Primary`.
+- **Las materializaciones:** 1 en todos los casos, en la réplica (M-09 de la §19, declarado).
+
+**La tercera corrida terminó mientras escribía** (`check-cost-run3.txt`, `8754253f…`): **COSTE: CUMPLE.**
+- En `pb-20-ab x4`, `es-Primary` da 60,1 ms en t4b frente a 65,4 en t4a.
+- En esa corrida, el p95 de t4a `es-Primary` es 157,2: la misma perturbación de bloque, esta vez del otro lado.
+- No es una entrada de esta comprobación; solo la leí.
+
+### §20.9 Decisiones y lo que no corrió la precondición 6 (punto 9)
+
+**Ninguna decisión nueva para el Owner, salvo el coste.**
+- I-01 no cambia la lista ni los totales.
+- Sigue el precedente de G-4 y lo que el Owner ya leyó:
+  - en la opción de la 478: «como hicieron las tareas anteriores»;
+  - en la vuelta de la 475: «cada sustituta lleva su CT y su autoprueba» (§17.5).
+
+**La UI de fuera de los filtros.** El GREEN cambia tres archivos de la UI (`ir4_uidiff-out.txt`):
+- **`NumericFieldValidation.cs`:** delega (6 líneas añadidas y 54 quitadas);
+- **`WorkspacePanelView.xaml`:** añade un `TextBlock` con `FlagToVisibility` y `ShellTextPrimaryBrush`, que el archivo ya usa (:15 y :39);
+- **FVM:** añade 34 líneas, sin ningún `using` ni tipo de sistema.
+
+Lo que corrió y lo que no (`ir4_uiout-out.txt`):
+- **las clases que nombran esos archivos** están todas en los filtros;
+- **26 clases de fuera de los filtros** barren el árbol de la UI por texto, por ejemplo `WindowCensusGuardTests`, `UiSystemBoundaryGuardTests` y `EditorVisualShellTests`, y no corrieron;
+- **por texto, no ven nada nuevo:** ni ventana, ni espacio de nombres, ni recurso;
+- **lo demás lo ve la CI** (C16), como está declarado (V46-06).
+
+### §20.10 Hallazgos
+
+| Id | Grav. | Dónde | Qué | Arreglo |
+|---|---|---|---|---|
+| **I-01** | I | v4.8:1207 (§4.2); el registro de la sesión, :144; WHHG:501-526 de `78a7cef3`; el anexo V48-A, :2387-2445 | **La autoprueba de la guarda de los textos pasa en vacío en el GREEN.**<br>• **Cómo trabaja:** `TheGuardOfTheLiteralsTrips…` llama a `LiteralViolations` sobre el anfitrión y el soporte reales (`Src.Code(HostPath)` y `Src.Code(SupportPath)`, WHHG:504-505), con la `Table` del original (2, 5 y 1). Solo exige `NotEmpty`, 14 veces, sin una línea base vacía.<br>• **Por qué pasa en vacío:** en el GREEN, esas tres cuentas ya no casan (0, 6 y 0). `LiteralViolations`, sin mutar, ya da tres violaciones, y las 14 aserciones se cumplen sea cual sea la mutación. Pasa, pero ya no discrimina.<br>• **Lo que no cubre nadie:** el equivalente solo copia `NoneOfThe30…` (una prueba; `ir4_whhgcopy-out.txt`). Nada comprueba que la guarda salte con la tabla nueva.<br>• **El precedente:** es el caso de IG:510-517 (§17.2). Por eso el equivalente de G-4 trae su autoprueba (v4.8:1216).<br>• **Las razones que se dan:**<br>  – el paquete: «es una autoprueba que inyecta textos sobre el anfitrión y pasa»;<br>  – el registro: «Trabaja sobre su propia entrada», que no es cierto | **Como G-4:**<br>• el equivalente de `NoneOfThe30…` trae, tras su `Assert.Empty`, las 14 `NotEmpty` de la autoprueba sobre su propio `LiteralViolations` y su tabla, con el texto literal en el anexo de una v4.9;<br>• §4.2, el registro y F4B-E52 dicen que la original pasa en vacío en el GREEN.<br>**No cambia** la lista, los totales ni la partición: en el RED, el `Assert.Empty` cae antes (Red, 1 resultado).<br>**Sí cambia** el `CopySha` de `WorkspaceHostHardeningGuardFull.cs`: la precondición 6 repite los pasos 2 a 6.<br>**La alternativa, más débil:** declararlo solo, con su mitigación:<br>• CT-20 (1) y (4) fijan el texto de `LiteralViolations` del original y de la copia;<br>• la autoprueba sí discrimina en el RED.<br>Ninguna de las dos necesita al Owner |
+| M-01 | M | v4.8:1216; PEG:279-280; PEG:401-416, :418-431, :433-451, :453-468, :470-492 y :516-526 | **Lo mismo, sin declarar, en las autopruebas de `HostViolations` de fuera de la lista** (6 métodos, 31 resultados). El anfitrión del GREEN ya incumple la regla del adaptador estático del piloto, así que esas `NotEmpty` se cumplen sin la mutación. El paquete dice «siguen en verde», y solo declara «en vacío» para IG:510-517 | **Declararlo,** con la mitigación:<br>• CT-20 (1) y (4) fijan `HostViolations` del original y de la copia;<br>• la copia conserva parte del lado que salta: la `Theory` partida de D-S5, la del orden del vuelo y la de la trampa;<br>• PB-T4d (C-7) las sustituye |
+| M-02 | M | el anexo, :2308 y :2357; v4.8:39 y :913 | **Los nombres de las dos copias de WPP dicen lo contrario de lo que afirman** («…NeverErasesAView…», «…MakesTheUpdateInvalid…»). El nombre no puede cambiar: lo fijan CT-20 (2) y la partición. El comentario del cuerpo lo explica, pero el paquete no lo declara | Una frase en V48-02 y en §8.3: el nombre se conserva por el mecanismo, y la regla es la del cuerpo |
+| M-03 | M | v4.8:1208; el registro, :141 | **WCAG:408 y :447 no son donde `"Read"` es el valor de la columna `Body`.**<br>• :408 es la declaración de `ReasonTable`.<br>• :447 es de otra prueba (`TheTenReasons…`).<br>• Las filas que cuenta el paseo son WCAG:415-419.<br>La lectura, falso positivo, es correcta | Citar WCAG:408-419 |
+| M-04 | M | el registro, :61; V45-02 (v4.8:184) | «`AtOrigin`, NH, `ReadAt` y WHC no cambian»: lo que quiere decir es que **D-S4** no los toca (D-PBT4-21, :955). WHC sí cambia en el GREEN de PB-T4b (D-PBT4-04 y 08; las cuentas de WHHG) | «D-S4 no toca NH, `AtOrigin`, `ReadAt` ni WHC» |
+| M-05 | M | el registro, :77 y :85 | **D-S5 en el registro:**<br>• una frase rota: «dice que una prueba que mezcla para la emisión y que no se parte una `Theory`»;<br>• la regla, más ancha que la del paquete. El registro no dice que solo se parten las declaradas, ni que una que mezcle sin estar declarada para y necesita versión. El paquete (:1378) y `partition_pbt4b_v47.py:110-131` sí lo hacen | Corregir la frase y copiar la condición del paquete |
+| M-06 | M | el registro, :108 y :119 | **Dos datos del registro no casan con el paquete:**<br>• D-S6 dice «las filas n.º 47 a 84», y el paquete, «n.º 47 a 88» (V48-01). Con 40 filas serían de la 47 a la 86;<br>• D-S1 cita `InvalidE_…` en «:1745-1779», pero el método ocupa WPP:1746-1780, como dicen la lista y el mapa v5 | «47 a 88» y «:1746-1780» |
+| M-07 | M | `v48/session-cost-rerun-rule.md`, punto 3 | **El texto al Owner debería dar la causa, no solo el recuento de corridas.**<br>• **La razón de dentro de la primera corrida:** el mismo código de t4b (`cae-al-Primary` en el bloque anterior, y `solo el completo` en el siguiente) dio 67,5 y 66,4 ms; solo un bloque de unos 20 s se aparta.<br>• **«Con la máquina en las mismas condiciones»** no se puede comprobar: solo se anotan los procesos.<br>• **Una sonda dedicada debería intercalar** t4a y t4b por muestra, para que una perturbación de bloque no toque solo una cifra | Añadirlo a la pregunta del coste, sin cambiar la regla ni el criterio |
+| M-08 | M | `make_pbt4b_contract.py` (`30d7c7c6…`, en curso; :85, :891, :957, :972-973, :999 y :1035) | **El generador de PB-T4b, en la versión que leí:**<br>• busca la CA-T4b en `independent-review-pbt4b-check.md`, no en esta §20;<br>• cita «D-S1 a D-S3» (las decisiones son D-S1 a D-S6) y «la de 470 con las cinco»;<br>• dice «82 filas» y «36 de las copias» (son 88 y 42) | Custodiar la §20 con ese nombre, o cambiar `BOUNDED_CHECK`; y poner al día esos textos |
+
+### §20.11 Lo que hay que hacer antes de emitir, y la línea BOUNDED
+
+1. **El paquete v4.9:**
+   - I-01: el equivalente con su autoprueba y su texto literal en el anexo; y la declaración en §4.2, en el registro y en F4B-E52;
+   - M-01 a M-06, de texto;
+   - una fila del registro de cambios que nombre «**CA-T4b I-01**».
+2. **La precondición 6, los pasos 2 a 6** sobre una copia exportada nueva, porque cambia el `CopySha` de `WorkspaceHostHardeningGuardFull.cs`. **Lo esperado:**
+   - la misma partición: `e87e024c…`, con su texto sin cambios;
+   - R_C = 291 y R_UI = 0;
+   - los mismos totales.
+
+   El paso 7 no hace falta: `src/` no cambia, y el coste va al Owner con las tres corridas.
+3. **Una recomprobación corta** sobre la v4.9.
+
+**La línea BOUNDED** que propongo, en ASCII:
+
+> EMITIBLE TRAS CORRECCIONES; B 0 / I 1 / M 8; las importantes corregidas en el paquete v4.9 (I-01, la autoprueba de la guarda de los textos del anfitrion pasa en vacio en el GREEN: el equivalente de NoneOfThe30 trae su autoprueba sobre la tabla nueva, como G-4); sin decisiones nuevas del Owner salvo el coste de la lectura (pb-20-ab x4, origen-es-Primary, primera corrida); precondicion 6 sobre 78a7cef3: pasos 1 a 6 cumplen
+
+- **Tras la recomprobación,** se le añade: `; recomprobacion v4.9: EMITIBLE, B 0 / I 0 / M <n>`.
+- **Si la sesión elige solo declarar I-01,** el paréntesis pasa a: `(I-01, la autoprueba de la guarda de los textos del anfitrion pasa en vacio en el GREEN: declarada con su mitigacion)`.
+- **El generador de PB-T4b no tiene `bounded_check`:** solo comprueba que el literal exista y sea ASCII (`make_pbt4b_contract.py:131` y :1033).
+
+### §20.12 Límites
+
+- **Nada se compiló ni se ejecutó.** Las medidas son las del autor; las comprobé por sus salidas y por sus sha256.
+- **Las copias que leí** son las del modo de medida (`v48/copies_probe_v48`), no las partidas de `/d/r4r`. Las mitades partidas, las comprobé en el anexo y por la especificación de CT-20.
+- **El barrido de I-01 y M-01 (`ir4_vacuous.py`) es heurístico.**
+  - Busca, en el mismo archivo, ayudantes que una prueba C-5 de la lista llama con `Empty` y una prueba de fuera llama con `NotEmpty`.
+  - No ve otras formas, como `Equal` o los recuentos.
+  - No releí las 133 marcadas de fuera de la lista.
+- **La UI de fuera de los filtros,** solo por texto.
+- **Coincidí con la tercera corrida del coste** (de las 21:00 a las 21:16, aproximadamente). En la misma máquina corrían mis lecturas con `git` y Python, de unos segundos cada una. Su cabecera anota los procesos de antes y de después, no los míos.
+- **El generador** lo leí en su sha256 de ese momento (`30d7c7c6…`, modificado a las 21:21); estaba en curso.
+
+## §21. Recomprobación de la v4.9
+
+**Veredicto: EMITIBLE.** B/I/M = **0 / 0 / 3**
+
+**En resumen:**
+- **I-01 está corregida.**
+  - El equivalente de `NoneOfThe30…` trae, tras su `Assert.Empty`, la autoprueba de la guarda, byte a byte, sobre su propio `LiteralViolations` y su tabla 0/6/0, y nada más.
+  - §4.2 declara el vacío con la razón correcta.
+  - En la precondición 6, el equivalente cae como Red en el RED, en su `Assert.Empty`, y pasa en el GREEN.
+- **Son 13 `NotEmpty`, no 14.** Me equivoqué en la §20: la §20.10 se lee con 13.
+- **M-01 a M-04, en el paquete, y M-03 a M-06, en el registro:** aplicados.
+- **M-07:** la nota posterior del registro del coste dice lo que pedía, fuera del literal.
+- **M-08:** el generador ya apunta a §20 y §21 y tiene los textos al día.
+- **El paso 7 se conserva con razón:** `step7_inputs_v49.py` compara lo necesario.
+- **De la v4.8 a la v4.9 no cambia nada más** que lo de la tabla V49: ni la lista, ni los totales, ni la partición, ni R_C, ni los `MinSelected`, ni los filtros.
+- **Quedan tres menores:** el «14» copiado en el registro, una frase del generador y una comparación que el guion del paso 7 no hace (la hice yo, y se cumple).
+- **No hay ninguna decisión nueva para el Owner.**
+
+**Qué se revisó:**
+- **el paquete:** `I-64-f4b-pbt4-gate-contract-package-v49.md` (`043f196d…c886`), frente a la v4.8 (`6ddc239d…`), entero, con un `diff` palabra a palabra (`ir4_v49diff.py`: 40 tramos);
+- **los guiones:** `pbt4b_hand_edits_v49.py` (`a10461f6…`). El encargo lo llama `pbt4_hand_edits_v49.py`; es el mismo archivo, por su sha256;
+- **la copia de WHHG de la v4.9:** `v49/copies_probe_v49`;
+- **la autoprueba:** `v49/selftest_pbt4b_v49-out.txt`;
+- **la precondición 6:** `compile-check.md` (`597e4529…`), `pbt4b-precondition6.json` (`8df3e566…`), `step7_inputs_v49.py` (`82987dd1…`) y las salidas de `/d/r4u` y `/d/r4v`;
+- **los registros:** `session-pbt4b-design-decisions.md` (`8b18add6…`) y `owner-pbt4b-cost-decision.md` (`d0f4ca25…`);
+- **el generador:** `make_pbt4b_contract.py` (`11520ae6…`; y `fc7da17d…`, la que había a las 22:36).
+
+Guiones nuevos, con su `-out.txt`: `ir4_v49diff.py`, `ir4_i01.py` y `ir4_json49.py`. Las pruebas, por objetos git en `78a7cef3`; sin worktree y sin compilar.
+
+### §21.1 I-01 (punto 1)
+
+**El recuento: son 13.** En WHHG:501-526 de `78a7cef3` hay 13 `Assert.NotEmpty`, en las líneas 508, 509, 511, 512, 514, 515, 517, 518, 519, 520, 522, 524 y 525, y ninguna otra aserción (`ir4_i01-out.txt`).
+- La §20.10, la §20.11 y la línea BOUNDED de la §20 no dependen del número.
+- Donde la §20.10 dice «14 veces» y «las 14 `NotEmpty`», hay que leer **13**.
+- Fue un error mío de recuento. El resto del hallazgo no cambia.
+
+**El equivalente** (`ir4_i01-out.txt`):
+- **frente a la de la v4.8,** la copia de `WorkspaceHostHardeningGuardFull.cs` de la v4.9 solo añade un bloque de 27 líneas, justo tras `Assert.Empty(LiteralViolations(Src.Code(HostPath), Src.Code(SupportPath)));` y antes del cierre de `NoneOfThe30…`;
+- **qué lleva el bloque:**
+  - una línea en blanco;
+  - el comentario de I-01, de cuatro líneas;
+  - y **WHHG:504-525, byte a byte**: las dos variables y las 13 `NotEmpty`, con sus comentarios;
+- **la tabla de la copia** es la de la v4.8, con 0, 6 y 0, y su cuerpo anterior no cambia. **Nada más;**
+- **en el paquete,** el anexo V49-A trae el bloque y el comentario, literales;
+- **la autoprueba del autor** (`selftest_pbt4b_v49.py`) compara el bloque con el objeto git y cuenta 13.
+
+**§4.2** (v4.9:1252):
+- dice que la autoprueba original pasa en las dos suites, pero en vacío;
+- da la razón correcta: el anfitrión y el soporte reales, la tabla del original (2, 5 y 1) y 13 `NotEmpty` sin línea base vacía;
+- cita la razón que daba la v4.8 como la que se corrige;
+- v4.9:1261 lo enlaza con las de PEG (M-01).
+
+**La precondición 6** (`/d/r4u` y `/d/r4v`):
+- **el RED:** el equivalente falla en su `Assert.Empty` (`WorkspaceHostHardeningGuardFull.cs:105`), con las tres cuentas de la base (`out-redgreen-v49-r4v-extra/core-red-messages.txt`:277-279):
+  - es un fallo por aserción, y la partición lo admite;
+  - la partición es la de la v4.8 byte a byte (`e87e024c…`, comparada con `cmp`): WHHG, Red, 1 resultado;
+- **el GREEN:** Core 19 587 = 19 129 + 0 + 458, sin ningún `Failed` (`check-green.txt`, `2443ecd6…`), así que el equivalente pasa. Como su `Assert.Empty` pasa antes con el texto sin mutar, cada una de las 13 `NotEmpty` discrimina de verdad;
+- **la UI:** 913 filas, 0 `Failed`, en las dos ramas.
+
+### §21.2 M-01 a M-08 de la §20 (puntos 2 a 4)
+
+| §20 | Dónde | En la v4.9 |
+|---|---|---|
+| M-01 | el paquete | **Aplicado:** v4.9:1261 (V49-02). Las 6 autopruebas de `HostViolations` de PEG, con sus líneas, 31 resultados, pasan en vacío, con la causa (PEG:279-280) y la mitigación |
+| M-02 | el paquete | **Aplicado:** V48-02 (v4.9:83) y §8.3 (v4.9:2254; V49-03). El nombre se conserva por el mecanismo, y la regla es la del cuerpo |
+| M-03 | el paquete y el registro | **Aplicado:** v4.9:1253 y el registro :144. WCAG:408-419, con las filas :415-419 |
+| M-04 | el paquete y el registro | **Aplicado:**<br>• en el registro, :61: «D-S4 no toca…»;<br>• en el paquete, el mismo equívoco estaba también en D-PBT4-03 (v4.8:654), y se corrige allí (v4.9:699; V49-05);<br>• V45-02 queda como historia, con la aclaración de V49-05 |
+| M-05 | el registro | **Aplicado:** :85-88. La regla solo admite las declaradas, con las otras causas de parada. **La primera mitad de mi M-05 era una mala lectura mía:** la frase de :77 era correcta, porque «para» es el verbo *parar* («una prueba que mezcla para la emisión»). La sesión la retocó, y sigue siendo correcta |
+| M-06 | el registro | **Aplicado:** «47 a 88» (:111) y «:1746-1780» (:122) |
+| M-07 | `owner-pbt4b-cost-decision.md` | **Aplicado, fuera del literal:** la nota va tras «Lo que queda decidido», con su fecha, y dice que no forma parte de la pregunta ni de la respuesta. Lleva:<br>• el argumento de dentro de la primera corrida (67,5 y 66,4 ms, un solo bloque de unos 20 s);<br>• que en el GREEN no hay ninguna causa;<br>• que una sonda dedicada debería intercalar t4a y t4b.<br>La pregunta y la respuesta no cambian, y ya decían «No sé qué cargaba la máquina». La sesión se lo informa al Owner al emitir, sin repetir la pregunta: la nota apoya la opción elegida |
+| M-08 | el generador | **Aplicado,** ya en `11520ae6…` y en la versión siguiente, `fc7da17d…` (modificada a las 22:36, mientras escribía). Las líneas son de esta última:<br>• `BOUNDED_CHECK` es `independent-review-v1.md`, con `BOUNDED_SECTIONS = ('20', '21')` (:56 y :976);<br>• el tramo va de la §20 al siguiente `## ` que no sea de esas dos (:1140-1149);<br>• corre `bounded_check` sobre ese tramo (:1169);<br>• dice «D-S1 a D-S6» (:98, :991, :1022 y :1174) y «88… las 42 de las copias» (:909).<br>**La versión:** `11520ae6…` seguía en la v4.8, como se dijo; `fc7da17d…` ya tiene `PKG_VERSION = 'v4.9'` (:58), y eso no lo revisé. Una frase, en M-02 de esta sección |
+
+### §21.3 El paso 7 (punto 5)
+
+`step7_inputs_v49.py` comprueba lo necesario (`out-redgreen-v49-r4v-extra/step7-inputs.txt`, `9097ce55…`).
+
+**Lo que compara:**
+1. **El GREEN de `src/`:** los 10 archivos, iguales por sha256 en `/d/r4s` y en `/d/r4v`.
+2. **El RED de debajo:** los 49 archivos. Cambia solo la copia de WHHG, y el kit es el mismo.
+3. **Las tres sondas:** su sha256 es el que imprimió `/d/r4s` y, la del coste, también `/d/r4t`.
+4. **Lo que usan las sondas:** ninguna nombra un tipo declarado en las 21 copias; solo usan el kit. Así que la copia que cambia no entra en ninguna sonda.
+
+**Lo que el guion no compara:**
+- **Los criterios y las líneas esperadas del paso 7,** que están en el paquete. El `diff` muestra que no cambian: en el paso 7 solo se añade la frase de la decisión del Owner (v4.9:2044), y CT-06, en §5.2, no cambia.
+- **Las entradas de `/d/r4t`**, la tercera corrida, que es una de las dos que cuentan. El guion lee de `/d/r4t` solo el sha256 de la sonda, y `compile-check.md` (§3, punto 2) afirma que su RED era el de `/d/r4s`.
+  - Lo comprobé: las listas ordenadas de `apply-red.txt` y `apply-green.txt` de `/d/r4t` son idénticas a las de `/d/r4s`.
+  - Frente a `/d/r4v` solo cambia la línea de la copia de WHHG.
+  - Así que se cumple, pero el guion debería comprobarlo (M-03).
+
+**El JSON** (`ir4_json49-out.txt`), frente a `pbt4b-precondition6-v48.json` (`4bdde2e7…`):
+- **cambia solo** el `CopySha` de `WorkspaceHostHardeningGuardFull.cs` (`5c5461f6…` → `f8280683…`, el de `apply-red.txt` de `/d/r4v`), además del campo `Cost`;
+- **`Cost` remite** a la decisión (`d0f4ca25…`), a la regla (`85f32a42…`), al JSON de la v4.8 y a las tres TRX, con los sha256 de `compile-check-v48.md`; y lleva `Step7InputsUnchanged` con el sha256 de la comprobación;
+- **son los mismos** la partición, R_C = 291, R_UI = 0 y los 42 `MinSelected` (31 con pruebas).
+
+### §21.4 El diff de la v4.8 a la v4.9 (punto 6)
+
+Los 40 tramos (`ir4_v49diff-out.txt`) son todos de la tabla V49:
+- **la cabecera nueva y la tabla V49;** la de la v4.8 pasa a historia («Lo que sale» → «Lo que salió»);
+- **V49-01:** D-PBT4-11 (:883, :892, :921, :963, :965 y :967), §4.2 (:1237, :1252), el anexo (:2433, :2435 y las 27 líneas :2446-2472) y los nombres de los guiones v4.9;
+- **V49-02 a V49-05:** :1261, :83 y :2254, :1253 y :699;
+- **V49-06 y V49-07:**
+  - la séptima tanda en las autoridades (:392 y :413) y en §8.5 (:2298, :2304 y :2306);
+  - el paso 7 (:2044);
+  - el `Objective` (:1933), §6.2.2 (:2147-2172) y §11 (:2326-2350).
+
+**Lo que no cambia, comprobado:**
+- **la lista:** la misma, `8b0fcd0c…`;
+- **los totales:** ni sus líneas (v4.8:1363-1379) ni [14];
+- **los `RequiredTests`:** ni sus 88 filas ni sus filtros;
+- **la partición, R_C, R_UI y los `MinSelected`:** los del JSON, los mismos;
+- **CT-20:** tampoco cambia su texto. Lo que cambia es el `CopySha` que fija, que viene del JSON.
+
+### §21.5 Hallazgos
+
+| Id | Grav. | Dónde | Qué | Arreglo |
+|---|---|---|---|---|
+| M-01 | M | `session-pbt4b-design-decisions.md`, :148 y :150 | **El registro dice «14 veces» y «las 14 `NotEmpty`»,** copiado de mi §20. Son 13, como dicen el paquete (V49-01, §4.2) y `pbt4b_hand_edits_v49.py` | «13» |
+| M-02 | M | `make_pbt4b_contract.py:992` (`fc7da17d…`; :987 en `11520ae6…`) | **«La de 478 con las siete tandas del Owner (la de 470 mas 8 filas)».** Solo cuatro tandas tocan la lista: la 2.ª (470), la 3.ª (+5), la 5.ª (+2) y la 6.ª (+1). La 1.ª, la 4.ª y la 7.ª no la tocan | «la de 470 mas las 8 filas de las tandas 3.ª, 5.ª y 6.ª», o sin el número de tandas |
+| M-03 | M | `step7_inputs_v49.py`, el punto 2 | **El guion compara el RED y el GREEN de `/d/r4s` con los de la v4.9, pero no los de `/d/r4t`,** la tercera corrida del coste, que es una de las dos que cuentan. Se cumple (§21.3), pero solo lo afirma `compile-check.md` | Que el guion compare también `apply-red.txt` y `apply-green.txt` de `/d/r4t`, o que `compile-check.md` cite esta comprobación |
+
+### §21.6 Decisiones nuevas para el Owner (punto 7)
+
+**Ninguna.**
+- La séptima tanda, el coste, ya está decidida («Darlo por cumplido»).
+- I-01 no cambió la lista, los totales ni la partición, como estaba previsto.
+- La nota posterior del coste apoya la opción elegida.
+- Los tres menores son de texto o de un guion de comprobación.
+
+### §21.7 La línea BOUNDED
+
+**La cola:**
+
+> ; recomprobacion v4.9: EMITIBLE, B 0 / I 0 / M 3
+
+**La línea entera,** la de la §20.11 con la cola, en ASCII:
+
+> EMITIBLE TRAS CORRECCIONES; B 0 / I 1 / M 8; las importantes corregidas en el paquete v4.9 (I-01, la autoprueba de la guarda de los textos del anfitrion pasa en vacio en el GREEN: el equivalente de NoneOfThe30 trae su autoprueba sobre la tabla nueva, como G-4); sin decisiones nuevas del Owner salvo el coste de la lectura (pb-20-ab x4, origen-es-Primary, primera corrida); precondicion 6 sobre 78a7cef3: pasos 1 a 6 cumplen; recomprobacion v4.9: EMITIBLE, B 0 / I 0 / M 3
+
+**`bounded_check` del generador** (en `fc7da17d…`, y otra vez en `a5a97ff9…`, porque el generador cambió mientras escribía), extraído entre sus marcas con su `cat4b_report`, sobre este informe, el paquete v4.9 y esa línea (`ir4_bounded.py`, `ir4_bounded-out.txt`):
+- encuentra las secciones 20 y 21;
+- la línea es ASCII, de 472 caracteres;
+- da **0 errores**. El paquete tiene la fila `| **V49-01** | **CA-T4b I-01** …`.
+
+### §21.8 Límites
+
+- **Nada se compiló ni se ejecutó.** Las medidas son las del autor; las comprobé por sus salidas y sus sha256.
+- **La copia de la v4.9 que leí es la del modo de medida.** La partida de `/d/r4v` la cubren su sha256 en el JSON y CT-20.
+- **El generador** lo leí en `11520ae6…`, todavía en la v4.8. A las 22:36 pasó a `fc7da17d…`, con `PKG_VERSION = 'v4.9'`. De esa versión solo miré los textos de M-08 y `bounded_check`; el paso a la v4.9 no lo revisé.

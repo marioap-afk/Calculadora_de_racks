@@ -1,0 +1,414 @@
+touched/new by the GREEN of PB-T4b: 9 files; added or changed lines: 414; walked classes: 33; test files outside: 881
+outside files that name a touched folder or file: 101
+== tests/RackCad.Tests/BomExcel/ConsolidatedBomXlsxDetailTests.cs tests=12 folders=['src'] names=[] matches=5
+   'Push Back' ~ NumericTextRule.cs: /// from the numeric field of the UI, which keeps its public surface and delegat
+   'Rack' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   'RackCad.Application' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   'name' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+== tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs tests=15 folders=['src'] names=[] matches=3
+   ' Apply(' ~ PushBackFullFieldAdapter.cs: public PushBackFullDraftState Apply(PushBackFullDraftState current, IReadOnlyDic
+   'PushBack' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+== tests/RackCad.Tests/CallerOwnedTransactionGuardTests.cs tests=15 folders=['src'] names=[] matches=1
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+== tests/RackCad.Tests/CantileverPluginSourceGuardTests.cs tests=17 folders=['src'] names=[] matches=3
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   '[CommandMethod(\\"RACKCANTILEVER\\")]' ~ NumericTextRule.cs: using System.Globalization;
+   '[CommandMethod(\\"RCT\\")]' ~ NumericTextRule.cs: using System.Globalization;
+== tests/RackCad.Tests/CantileverRoundTwoSourceGuardTests.cs tests=22 folders=['src'] names=[] matches=5
+   'Editor' ~ WorkspaceEditIntent.cs: ClassicEditorHint = null;
+   'RackCad.Application' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   'RackId' ~ WorkspaceHostCore.cs: var draft = _drafts.Find<PushBackFullDraftState>(request.Session, request.RackId
+   'Shell' ~ WorkspacePanelView.xaml: TextWrapping="Wrap" Margin="0,4,0,0" Foreground="{DynamicResource ShellTextPrima
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+== tests/RackCad.Tests/CantileverSourceGuardTests.cs tests=45 folders=['src'] names=[] matches=11
+   '.Side' ~ PushBackKeepMinePresentation.cs: case PushBackChangeGroup.SideB: return "el lado B";
+   'Document' ~ PushBackKeepMinePresentation.cs: var members = new List<KeyValuePair<string, RackEmbedDocument>>();
+   'Member' ~ PushBackKeepMinePresentation.cs: .Where(e => e.Membership == DraftMembership.Mutable && e.EnvelopeText != null)
+   'Members' ~ PushBackKeepMinePresentation.cs: .Where(e => e.Membership == DraftMembership.Mutable && e.EnvelopeText != null)
+   'Owner' ~ PushBackKeepMinePresentation.cs: /// the Owner, "Por grupos"), one line per class of change, the structural one a
+   'RackCad.Application' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   '\\bRackCad\\.Application\\b' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   '\\bRackCatalog\\b' ~ PushBackKeepMinePresentation.cs: public static PushBackKeepMinePresentation Read(DraftSession<PushBackFullDraftSt
+   '\\bRackEmbedDocument\\b' ~ PushBackKeepMinePresentation.cs: var members = new List<KeyValuePair<string, RackEmbedDocument>>();
+== tests/RackCad.Tests/CantileverVisualRoleTests.cs tests=15 folders=['src'] names=[] matches=1
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+== tests/RackCad.Tests/ComputedParameters/ComputedParametersPopulationGuardTests.cs tests=3 folders=['src'] names=[] matches=2
+   '(==|!=)\\s*null|\\bis\\s+(not\\s+)?null\\b' ~ PushBackFullFieldAdapter.cs: if (current == null) throw new ArgumentNullException(nameof(current));
+   '\\b(?:public|private|internal|protected)\\s+(?:static\\s+)?[\\w<' ~ NumericTextRule.cs: public enum NumericTextStatus
+== tests/RackCad.Tests/ComputedParameters/RackMetricProviderPurityTests.cs tests=3 folders=['src'] names=[] matches=3
+   'RackCad.Application' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   '\\b\\w*Catalog\\w*\\b' ~ PushBackKeepMinePresentation.cs: using RackCad.Application.Catalogs;
+   '\\b\\w*Store\\b' ~ PushBackKeepMinePresentation.cs: var envelopes = new RackEmbedStore();
+== tests/RackCad.Tests/CustomPropertiesCommandGuardTests.cs tests=6 folders=['src'] names=[] matches=8
+   'RackEmbedDocument' ~ PushBackKeepMinePresentation.cs: var members = new List<KeyValuePair<string, RackEmbedDocument>>();
+   'RackEmbedStore' ~ PushBackKeepMinePresentation.cs: var envelopes = new RackEmbedStore();
+   '[CommandMethod(\\"RACKPROPIEDADESPROYECTO\\")]' ~ NumericTextRule.cs: using System.Globalization;
+   '[CommandMethod(\\"RACKPROPIEDADES\\")]' ~ NumericTextRule.cs: using System.Globalization;
+   '[CommandMethod(\\"RPR\\")]' ~ NumericTextRule.cs: using System.Globalization;
+   '[CommandMethod(\\"RPR\\")] [CommandMethod(\\"RPRO\\")]' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   '[CommandMethod(\\"rpr\\")]' ~ NumericTextRule.cs: using System.Globalization;
+   'name' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+== tests/RackCad.Tests/CustomPropertiesEdgeGuardTests.cs tests=12 folders=['src', 'src/RackCad.Application', 'src/RackCad.UI'] names=[] matches=11
+   'Read' ~ PushBackFullFieldAdapter.cs: public PushBackFullDraftState Apply(PushBackFullDraftState current, IReadOnlyDic
+   'TryGet' ~ PushBackFullFieldAdapter.cs: if (pendingText.TryGetValue(AnnotationScaleKey, out var text)
+   '\\b(?:Json\\w*|CustomPropertiesStore|Deserialize|Serialize)\\b' ~ PushBackKeepMinePresentation.cs: var embed = envelopes.Deserialize(entry.EnvelopeText);
+   '\\bTryGetValue\\s*\\(' ~ PushBackFullFieldAdapter.cs: if (pendingText.TryGetValue(AnnotationScaleKey, out var text)
+   '\\bthrow\\b' ~ PushBackFullFieldAdapter.cs: if (current == null) throw new ArgumentNullException(nameof(current));
+   'field' ~ NumericTextRule.cs: /// numeric field of the UI, in the same order, because the UI delegates to this
+   'foreach' ~ PushBackKeepMinePresentation.cs: foreach (var entry in read.StaleBase.Entries.Values
+   'if (!result.IsPlanned || !CustomPropertiesPreflight.ForRack(' ~ NumericTextRule.cs: if (string.IsNullOrWhiteSpace(text))
+   'if (!result.IsPlanned || !RackCustomPropertiesAuthority.Eval' ~ NumericTextRule.cs: if (string.IsNullOrWhiteSpace(text))
+   'if (!result.IsPlanned || result.FreshOutcome == null)' ~ NumericTextRule.cs: if (string.IsNullOrWhiteSpace(text))
+== tests/RackCad.Tests/CustomPropertiesEnvelopeGuardTests.cs tests=9 folders=['src'] names=[] matches=5
+   'Execute' ~ WorkspaceHostCore.cs: outcome = PushBackPilotUpdateRun.ExecuteFull(draft, new PushBackPilotUpdateReque
+   'RackEmbedDocument' ~ PushBackKeepMinePresentation.cs: var members = new List<KeyValuePair<string, RackEmbedDocument>>();
+   '\\bDeserialize\\s*\\(' ~ PushBackKeepMinePresentation.cs: var embed = envelopes.Deserialize(entry.EnvelopeText);
+   'null' ~ NumericTextRule.cs: /// <summary>Blank and allowed to be blank: valid with a null value.</summary>
+   'source' ~ WorkspacePanelView.xaml: TextWrapping="Wrap" Margin="0,4,0,0" Foreground="{DynamicResource ShellTextPrima
+== tests/RackCad.Tests/CustomPropertiesTestKit.cs tests=0 folders=['src'] names=[] matches=2
+   'Persistence' ~ PushBackKeepMinePresentation.cs: using RackCad.Application.Persistence;
+   'RackCad.Application' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+== tests/RackCad.Tests/ElevationOverrideSourceGuardTests.cs tests=3 folders=['src'] names=[] matches=2
+   'Dynamic' ~ WorkspacePanelView.xaml: TextWrapping="Wrap" Margin="0,4,0,0" Foreground="{DynamicResource ShellTextPrima
+   'PushBack' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+== tests/RackCad.Tests/ExpressionCoreGuardTests.cs tests=6 folders=['src'] names=[] matches=8
+   'Catalogs' ~ PushBackKeepMinePresentation.cs: using RackCad.Application.Catalogs;
+   'Persistence' ~ PushBackKeepMinePresentation.cs: using RackCad.Application.Persistence;
+   'RackCad.Application' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   'RackCad.Application.Catalogs' ~ PushBackKeepMinePresentation.cs: using RackCad.Application.Catalogs;
+   'RackCad.Application.Persistence' ~ PushBackKeepMinePresentation.cs: using RackCad.Application.Persistence;
+   'RackCad.Application.Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   'namespace ' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+== tests/RackCad.Tests/FirstViewFreedomGuardTests.cs tests=3 folders=['src'] names=[] matches=1
+   'Editor' ~ WorkspaceEditIntent.cs: ClassicEditorHint = null;
+== tests/RackCad.Tests/G16ProjectedEnvelopeTests.cs tests=12 folders=['src'] names=[] matches=1
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+== tests/RackCad.Tests/G9bInsertWiringGuardTests.cs tests=5 folders=['src'] names=[] matches=0
+== tests/RackCad.Tests/I55CantileverPlantaVisibilityPropagationTests.cs tests=1 folders=['src'] names=[] matches=0
+== tests/RackCad.Tests/I55DeferredProductFixCharacterizationTests.cs tests=3 folders=['src'] names=[] matches=3
+   'PushBack' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   'Scale' ~ PushBackAnnotationScaleRule.cs: public static class PushBackAnnotationScaleRule
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+== tests/RackCad.Tests/I55G14FoundationConsumerTests.cs tests=8 folders=['src'] names=[] matches=2
+   'RackCad.Application' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   'Views' ~ PushBackKeepMinePresentation.cs: var erased = classification.ViewsToErase.Count;
+== tests/RackCad.Tests/I55G15Auth15ConsumerTests.cs tests=5 folders=['src'] names=[] matches=2
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   'Views' ~ PushBackKeepMinePresentation.cs: var erased = classification.ViewsToErase.Count;
+== tests/RackCad.Tests/I59F2BoundaryGuardTests.cs tests=2 folders=['src'] names=[] matches=0
+== tests/RackCad.Tests/I59F3ConsumerIntegrationTests.cs tests=8 folders=['src'] names=[] matches=2
+   'Accepted' ~ WorkspaceHostCore.cs: private static EditUpdateOutcome AnswerOfAClosedThatWasNotAccepted(DraftApplyOut
+   'same' ~ NumericTextRule.cs: /// numeric field of the UI, in the same order, because the UI delegates to this
+== tests/RackCad.Tests/I59F3CorrectionTests.cs tests=6 folders=['src'] names=[] matches=3
+   'Missing' ~ WorkspaceHostCore.cs: private const string FullReadMissingReason = "No editable aquí: la lectura no tr
+   'Present' ~ PushBackKeepMinePresentation.cs: public sealed class PushBackKeepMinePresentation
+   'Unknown' ~ PushBackFullFieldAdapter.cs: public const string UnknownFieldMessage = "Campo desconocido para el panel.";
+== tests/RackCad.Tests/I59F4ConformanceTests.cs tests=4 folders=['src'] names=[] matches=5
+   '.Persistence' ~ PushBackKeepMinePresentation.cs: using RackCad.Application.Persistence;
+   'Accepted' ~ WorkspaceHostCore.cs: private static EditUpdateOutcome AnswerOfAClosedThatWasNotAccepted(DraftApplyOut
+   'Name:' ~ PushBackKeepMinePresentation.cs: case PushBackChangeGroup.Name: return "el nombre";
+   'RackCad.Application' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+== tests/RackCad.Tests/I60BatchCreationNamingTests.cs tests=10 folders=['src'] names=[] matches=1
+   'Views' ~ PushBackKeepMinePresentation.cs: var erased = classification.ViewsToErase.Count;
+== tests/RackCad.Tests/I60RackLogicalNameTests.cs tests=15 folders=['src'] names=[] matches=1
+   'lateral' ~ PushBackKeepMinePresentation.cs: if (erased == 1) lines.Add("Vistas: se borrará 1 lateral obsoleto.");
+== tests/RackCad.Tests/InsertBlankIdFlowCharacterizationTests.cs tests=4 folders=['src'] names=[] matches=1
+   'return;' ~ PushBackKeepMinePresentation.cs: if (groups.Count == 0) return;
+== tests/RackCad.Tests/InsertRedrawLayerAccessCharacterizationTests.cs tests=4 folders=['src'] names=[] matches=1
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+== tests/RackCad.Tests/KindHandlerGuardSourceTests.cs tests=2 folders=['src'] names=[] matches=0
+== tests/RackCad.Tests/LegacyViewPayloadCompositionCharacterizationTests.cs tests=3 folders=['src'] names=[] matches=1
+   'name' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+== tests/RackCad.Tests/LengthUnitsAuthorityGuardTests.cs tests=4 folders=['src'] names=[] matches=5
+   '\\"[^\\"\\\\r\\\\n]*\\\\[\\\\s*(mm|in|ft)\\\\s*\\\\][^\\"\\\\r\\\\n]*\\"' ~ WorkspacePilotFieldViewModel.cs: public string KeepMinePresentationText => HasChoice && _choice == ChoiceKind.Kee
+   'name' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   'number' ~ NumericTextRule.cs: /// <summary>A number that satisfies every rule.</summary>
+   'tail' ~ WorkspaceEditIntent.cs: Detail = null;
+   '|MillimetersPerInch|MillimeterPerInch|InchesToMillimeters|In' ~ NumericTextRule.cs: using System.Globalization;
+== tests/RackCad.Tests/LengthUnitsTests.cs tests=5 folders=['src'] names=[] matches=3
+   'Dynamic' ~ WorkspacePanelView.xaml: TextWrapping="Wrap" Margin="0,4,0,0" Foreground="{DynamicResource ShellTextPrima
+   'RackCad.Application' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+== tests/RackCad.Tests/LinkedPropertyViewPayloadTests.cs tests=6 folders=['src'] names=[] matches=0
+== tests/RackCad.Tests/MainMenuStructuralSectionAccessGuardTests.cs tests=12 folders=['src'] names=[] matches=4
+   'RackEmbedDocument' ~ PushBackKeepMinePresentation.cs: var members = new List<KeyValuePair<string, RackEmbedDocument>>();
+   '[CommandMethod(\\"RACKSECCION\\")]' ~ NumericTextRule.cs: using System.Globalization;
+   'case ' ~ PushBackKeepMinePresentation.cs: case PushBackChangeGroup.Name: return "el nombre";
+   'return;' ~ PushBackKeepMinePresentation.cs: if (groups.Count == 0) return;
+== tests/RackCad.Tests/NamespaceFolderGuardTests.cs tests=7 folders=['src'] names=[] matches=6
+   'Dynamic' ~ WorkspacePanelView.xaml: TextWrapping="Wrap" Margin="0,4,0,0" Foreground="{DynamicResource ShellTextPrima
+   'Editor' ~ WorkspaceEditIntent.cs: ClassicEditorHint = null;
+   'PushBack' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   'RackCad.Application.Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   'Shell' ~ WorkspacePanelView.xaml: TextWrapping="Wrap" Margin="0,4,0,0" Foreground="{DynamicResource ShellTextPrima
+   'namespace ' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+== tests/RackCad.Tests/NoProductPlannerGuardTests.cs tests=3 folders=['src'] names=[] matches=3
+   'RackCad.Application' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   'Views' ~ PushBackKeepMinePresentation.cs: var erased = classification.ViewsToErase.Count;
+== tests/RackCad.Tests/ProductPolicyIndependenceGuardTests.cs tests=2 folders=['src'] names=[] matches=4
+   'RackCad.Application' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   'Views' ~ PushBackKeepMinePresentation.cs: var erased = classification.ViewsToErase.Count;
+   'string.Equals' ~ PushBackFullFieldAdapter.cs: if (!string.Equals(fieldKey, AnnotationScaleKey, StringComparison.Ordinal))
+== tests/RackCad.Tests/ProjectVariableMutationExecutorTests.cs tests=28 folders=['src'] names=[] matches=1
+   'RackCad.Application' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+== tests/RackCad.Tests/ProjectVariableScanProjectionTests.cs tests=13 folders=['src'] names=[] matches=0
+== tests/RackCad.Tests/ProjectVariablesConformanceTests.cs tests=10 folders=['src'] names=[] matches=3
+   '(?![A-Za-z0-9_])' ~ NumericTextRule.cs: using System.Globalization;
+   '(?<![A-Za-z0-9_])' ~ NumericTextRule.cs: using System.Globalization;
+   'RackCad.Application' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+== tests/RackCad.Tests/ProjectVariablesWorkspaceTests.cs tests=46 folders=['src'] names=[] matches=2
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   '[CommandMethod(\\"RACKVARIABLES\\")]' ~ NumericTextRule.cs: using System.Globalization;
+== tests/RackCad.Tests/PushBackBomCommandGuardTests.cs tests=4 folders=['src'] names=[] matches=2
+   'name' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   'return;' ~ PushBackKeepMinePresentation.cs: if (groups.Count == 0) return;
+== tests/RackCad.Tests/PushBackCellConfigurationDeliveryTests.cs tests=17 folders=['src'] names=[] matches=4
+   'Dynamic' ~ WorkspacePanelView.xaml: TextWrapping="Wrap" Margin="0,4,0,0" Foreground="{DynamicResource ShellTextPrima
+   'PushBack' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   'RackCad.Application' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+== tests/RackCad.Tests/PushBackClassicCharacterizationPluginGuardTests.cs tests=8 folders=['src'] names=[] matches=3
+   'PushBack' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   'Views' ~ PushBackKeepMinePresentation.cs: var erased = classification.ViewsToErase.Count;
+== tests/RackCad.Tests/PushBackDerivedPostAndLineTests.cs tests=20 folders=['src'] names=[] matches=3
+   'Dynamic' ~ WorkspacePanelView.xaml: TextWrapping="Wrap" Margin="0,4,0,0" Foreground="{DynamicResource ShellTextPrima
+   'RackCad.Application' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+== tests/RackCad.Tests/PushBackDraftPortSharedReferenceGuardTests.cs tests=1 folders=['src/RackCad.Application/Systems/PushBack'] names=[] matches=8
+   '(?:Add|AddRange|Clear|Remove|RemoveAt|RemoveAll|RemoveRange|' ~ PushBackKeepMinePresentation.cs: AddGroups(lines, "Cambiado fuera: ", classification.ChangedExternally);
+   '(?:List|IList|ICollection|Collection|HashSet|Dictionary|IDic' ~ PushBackFullFieldAdapter.cs: using System.Collections.Generic;
+   '(?:\\bvar|[\\w<>\\[\\]?,.]+)?\\s+(\\w+)\\s*=(?![=>])\\s*([^;{}]*)' ~ NumericTextRule.cs: /// I-64 F4B PB-T4b (D-PBT4-06) — the outcome of one numeric text under <see cre
+   '(?:\\s*\\??\\.\\s*\\w+(?:\\s*\\([^()]*\\))?|\\s*\\[[^\\]]*\\])' ~ NumericTextRule.cs: using System.Globalization;
+   '[^;{}]*?\\s+as\\s+' ~ WorkspaceEditIntent.cs: // which stay as an ordered prefix.
+   '[^;{}]*?\\s+is\\s+' ~ NumericTextRule.cs: /// <summary>The Spanish message, or null when there is nothing to report.</summ
+   '\\s*(?:\\??\\.\\s*\\w+|\\[[^\\]]*\\])\\s*(?:=(?![=>])|\\+=|-=|\\*=|/=|\\' ~ PushBackFullFieldAdapter.cs: current.Editable.AnnotationScale = scale;
+   'foreach' ~ PushBackKeepMinePresentation.cs: foreach (var entry in read.StaleBase.Entries.Values
+== tests/RackCad.Tests/PushBackModuleEditorCharacterizationTests.cs tests=15 folders=['src'] names=[] matches=3
+   'PushBack' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   'RackCad.Application' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+== tests/RackCad.Tests/PushBackPluginSourceGuardTests.cs tests=9 folders=['src'] names=[] matches=5
+   'PushBack' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   '[CommandMethod(\\"RACKEDITAR\\")]' ~ NumericTextRule.cs: using System.Globalization;
+   '[CommandMethod(\\"RACKPUSHBACK\\")]' ~ NumericTextRule.cs: using System.Globalization;
+   '[CommandMethod(\\"RPB\\")]' ~ NumericTextRule.cs: using System.Globalization;
+== tests/RackCad.Tests/PushBackRoundTripSourceGuardTests.cs tests=24 folders=['src'] names=[] matches=5
+   'Compare' ~ PushBackKeepMinePresentation.cs: .OrderBy(e => e.Key, StringComparer.Ordinal))
+   'Equals' ~ PushBackFullFieldAdapter.cs: if (!string.Equals(fieldKey, AnnotationScaleKey, StringComparison.Ordinal))
+   'Kind' ~ WorkspaceHostCore.cs: private static EditUpdateOutcome AnswerOfAClosedThatWasNotAccepted(DraftApplyOut
+   'PushBack' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   '[CommandMethod(\\"RACKEDITAR\\")]' ~ NumericTextRule.cs: using System.Globalization;
+== tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs tests=2 folders=['src', 'src/RackCad.Application/Systems/PushBack'] names=[] matches=11
+   '(?:Add|AddRange|Clear|Remove|RemoveAt|RemoveAll|RemoveRange|' ~ PushBackKeepMinePresentation.cs: AddGroups(lines, "Cambiado fuera: ", classification.ChangedExternally);
+   '(?:List|IList|ICollection|Collection|HashSet|Dictionary|IDic' ~ PushBackFullFieldAdapter.cs: using System.Collections.Generic;
+   '(?:\\bvar|[\\w<>\\[\\]?,.]+)?\\s+(\\w+)\\s*=(?![=>])\\s*([^;{}]*)' ~ NumericTextRule.cs: /// I-64 F4B PB-T4b (D-PBT4-06) — the outcome of one numeric text under <see cre
+   '(?:\\s*\\??\\.\\s*\\w+(?:\\s*\\([^()]*\\))?|\\s*\\[[^\\]]*\\])' ~ NumericTextRule.cs: using System.Globalization;
+   'PushBack' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   'RackCad.Application' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   'Workspace' ~ PushBackAnnotationScaleRule.cs: using RackCad.Application.Workspace.Drafts;
+   '[^;{}]*?\\s+as\\s+' ~ WorkspaceEditIntent.cs: // which stay as an ordered prefix.
+   '[^;{}]*?\\s+is\\s+' ~ NumericTextRule.cs: /// <summary>The Spanish message, or null when there is nothing to report.</summ
+   '\\s*(?:\\??\\.\\s*\\w+|\\[[^\\]]*\\])\\s*(?:=(?![=>])|\\+=|-=|\\*=|/=|\\' ~ PushBackFullFieldAdapter.cs: current.Editable.AnnotationScale = scale;
+== tests/RackCad.Tests/PushBackViewEraseGuardTests.cs tests=5 folders=['src'] names=[] matches=7
+   ' || definition.IsLayout' ~ NumericTextRule.cs: using System.Globalization;
+   'PushBack' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   'PushBackPilot\\w*|RackPilot\\w*|RackCad\\.Application\\.Systems\\' ~ WorkspaceHostCore.cs: return EditIntentOutcome.NotAdmitted(FullReadMissingReason, null, PushBackPilotI
+   '\\b(?:internal|private|public|protected)\\b' ~ NumericTextRule.cs: public enum NumericTextStatus
+   '\\breturn\\s+\\w+\\s*;' ~ PushBackFullFieldAdapter.cs: return current;
+   'completo' ~ WorkspaceHostCore.cs: private const string FullReadMissingReason = "No editable aquí: la lectura no tr
+   'modelo' ~ WorkspaceHostCore.cs: private const string FullReadMissingReason = "No editable aquí: la lectura no tr
+== tests/RackCad.Tests/RackCountInvariantCharacterizationTests.cs tests=3 folders=['src'] names=[] matches=2
+   'Rack' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   'RackCad.Application' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+== tests/RackCad.Tests/RackDefinitionCreatorGuardTests.cs tests=26 folders=['src'] names=[] matches=5
+   'Editor' ~ WorkspaceEditIntent.cs: ClassicEditorHint = null;
+   'RackCad.Application' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   '\\bstatic\\s+(readonly\\s+)?(?!RackDefinitionCreationResult)[\\w' ~ PushBackFullFieldAdapter.cs: /// static adapter serves every draft; <see cref="Validate"/> changes nothing, a
+   'foreach' ~ PushBackKeepMinePresentation.cs: foreach (var entry in read.StaleBase.Entries.Values
+== tests/RackCad.Tests/RackEditPreflightCharacterizationTests.cs tests=3 folders=['src'] names=[] matches=2
+   'PushBack' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   'return;' ~ PushBackKeepMinePresentation.cs: if (groups.Count == 0) return;
+== tests/RackCad.Tests/RackUnitsGuardSourceTests.cs tests=8 folders=['src'] names=[] matches=1
+   'from' ~ NumericTextRule.cs: /// from the numeric field of the UI, which keeps its public surface and delegat
+== tests/RackCad.Tests/RackViewBatchDriverGuardTests.cs tests=4 folders=['src'] names=[] matches=2
+   'Views' ~ PushBackKeepMinePresentation.cs: var erased = classification.ViewsToErase.Count;
+   'first' ~ WorkspacePanelView.xaml: <!-- I-64 F4B PB-T4b (D-PBT4-08, D-PBT4-09): what changed, by groups, above Si a
+== tests/RackCad.Tests/RedefinedViewReferenceUndoTouchGuardTests.cs tests=4 folders=['src'] names=[] matches=0
+== tests/RackCad.Tests/RegistryCommitAccreditationTests.cs tests=12 folders=['src'] names=[] matches=1
+   'number' ~ NumericTextRule.cs: /// <summary>A number that satisfies every rule.</summary>
+== tests/RackCad.Tests/SelectiveAuthoredCarrierAdoptionTests.cs tests=12 folders=['src'] names=[] matches=0
+== tests/RackCad.Tests/SelectiveBindingIntentTests.cs tests=22 folders=['src'] names=[] matches=1
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+== tests/RackCad.Tests/SelectiveBomAuthorityTests.cs tests=27 folders=['src'] names=[] matches=0
+== tests/RackCad.Tests/SelectiveDuplicationFailClosedTests.cs tests=24 folders=['src'] names=[] matches=13
+   '.ToString(' ~ NumericTextRule.cs: private static string Format(double value) => value.ToString("0.###", CultureInf
+   'Erase' ~ PushBackKeepMinePresentation.cs: var erased = classification.ViewsToErase.Count;
+   '\\b(?:Deserialize|Serialize|RestampDesign)\\s*\\(' ~ PushBackKeepMinePresentation.cs: var embed = envelopes.Deserialize(entry.EnvelopeText);
+   '\\b(?:public|private|internal|protected)\\s+(?:(?:static|overr' ~ NumericTextRule.cs: public enum NumericTextStatus
+   '\\b(?:throw|return|break|continue)\\b' ~ NumericTextRule.cs: return isOptional
+   '\\s*\\.\\s*ToString\\s*\\(' ~ NumericTextRule.cs: private static string Format(double value) => value.ToString("0.###", CultureInf
+   'members' ~ PushBackKeepMinePresentation.cs: /// state of the reread, the draft is its current state, and the members are the
+   'name' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   'names' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   'result' ~ NumericTextRule.cs: /// <summary>The immutable result of <see cref="NumericTextRule.Check"/>: the st
+== tests/RackCad.Tests/SelectiveEditorOpenTests.cs tests=33 folders=['src'] names=[] matches=2
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   'value' ~ NumericTextRule.cs: /// <summary>Blank and allowed to be blank: valid with a null value.</summary>
+== tests/RackCad.Tests/SelectiveLibraryExportTests.cs tests=21 folders=['src'] names=[] matches=3
+   'Persistence' ~ PushBackKeepMinePresentation.cs: using RackCad.Application.Persistence;
+   'RackCad.Application' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+== tests/RackCad.Tests/SelectiveTopeFamilyIsolationGuardTests.cs tests=3 folders=['src'] names=[] matches=3
+   '.ToList();' ~ PushBackKeepMinePresentation.cs: var groups = entries.Select(entry => entry.Group).Distinct().OrderBy(group => (i
+   'Dynamic' ~ WorkspacePanelView.xaml: TextWrapping="Wrap" Margin="0,4,0,0" Foreground="{DynamicResource ShellTextPrima
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+== tests/RackCad.Tests/SharedViewFoundationCt04V2CharacterizationTests.cs tests=7 folders=['src'] names=[] matches=3
+   'Invalid' ~ PushBackAnnotationScaleRule.cs: return check.IsValid ? DraftFieldValidation.Valid : DraftFieldValidation.Invalid
+   'RackCad.Application' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+== tests/RackCad.Tests/SiblingRedrawSeamGuardTests.cs tests=5 folders=['src'] names=[] matches=2
+   'RackId' ~ WorkspaceHostCore.cs: var draft = _drafts.Find<PushBackFullDraftState>(request.Session, request.RackId
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+== tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisCantileverBoundaryTests.cs tests=25 folders=['src'] names=[] matches=5
+   'Deserialize' ~ PushBackKeepMinePresentation.cs: var embed = envelopes.Deserialize(entry.EnvelopeText);
+   'PushBack' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   'RackCad.Application' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   'line' ~ PushBackKeepMinePresentation.cs: /// the Owner, "Por grupos"), one line per class of change, the structural one a
+== tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonHardeningDumpReaderTests.cs tests=12 folders=['src'] names=[] matches=1
+   'RackCad.Application' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+== tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonHardeningToolTests.cs tests=24 folders=['src'] names=[] matches=6
+   'compare' ~ PushBackFullFieldAdapter.cs: /// <summary>The only field key of the panel, compared ordinally. Any other key 
+   'members' ~ PushBackKeepMinePresentation.cs: /// state of the reread, the draft is its current state, and the members are the
+   'reason' ~ WorkspaceHostCore.cs: var committed = WorkspacePilotValueText.Show(draft.CurrentDraftState.Editable.An
+   'rows' ~ WorkspacePanelView.xaml: <TextBlock x:Name="BrowserFieldKeepMinePresentationText" Text="{Binding Browser.
+   'text' ~ NumericTextRule.cs: /// I-64 F4B PB-T4b (D-PBT4-06) — the outcome of one numeric text under <see cre
+   'verdict' ~ WorkspaceHostCore.cs: var verdict = PilotFieldAdapter.Validate(PushBackFullFieldAdapter.AnnotationScal
+== tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonToolTests.cs tests=25 folders=['src'] names=[] matches=7
+   'compare' ~ PushBackFullFieldAdapter.cs: /// <summary>The only field key of the panel, compared ordinally. Any other key 
+   'kind' ~ WorkspaceHostCore.cs: private static EditUpdateOutcome AnswerOfAClosedThatWasNotAccepted(DraftApplyOut
+   'members' ~ PushBackKeepMinePresentation.cs: /// state of the reread, the draft is its current state, and the members are the
+   'name' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   'nothing' ~ NumericTextRule.cs: /// <summary>The Spanish message, or null when there is nothing to report.</summ
+   'status' ~ NumericTextRule.cs: /// I-64 F4B PB-T4b (D-PBT4-06) — the outcome of one numeric text under <see cre
+   'verdict' ~ WorkspaceHostCore.cs: var verdict = PilotFieldAdapter.Validate(PushBackFullFieldAdapter.AnnotationScal
+== tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsDumpSourceTests.cs tests=21 folders=['src'] names=[] matches=6
+   '(?m)^using ([\\w.]+);' ~ NumericTextRule.cs: using System.Globalization;
+   'RackCad\\.Application\\.Systems|\\bSystems\\b' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   'System' ~ NumericTextRule.cs: using System.Globalization;
+   'System.Collections.Generic' ~ PushBackFullFieldAdapter.cs: using System.Collections.Generic;
+   'System.Linq' ~ PushBackKeepMinePresentation.cs: using System.Linq;
+   'public sealed class ' ~ PushBackFullFieldAdapter.cs: public sealed class PushBackFullFieldAdapter : IDraftPendingTextAdapter<PushBack
+== tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsGuardTests.cs tests=13 folders=['src'] names=[] matches=1
+   'RackCad\\.Application\\.Systems|\\bSystems\\b' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+== tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsPackageWriterTests.cs tests=23 folders=['src'] names=[] matches=3
+   'RackCad.Application' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   'RamElements|RAM Elements|\\bRam[A-Z]|\\bProviders\\b|\\bSystems\\' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   'keep' ~ NumericTextRule.cs: /// from the numeric field of the UI, which keeps its public surface and delegat
+== tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceEntryTests.cs tests=17 folders=['src'] names=[] matches=4
+   'Document' ~ PushBackKeepMinePresentation.cs: var members = new List<KeyValuePair<string, RackEmbedDocument>>();
+   'Dynamic' ~ WorkspacePanelView.xaml: TextWrapping="Wrap" Margin="0,4,0,0" Foreground="{DynamicResource ShellTextPrima
+   'RackCad.Application' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+== tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceGuardTests.cs tests=27 folders=['src', 'src/RackCad.Application', 'src/RackCad.Application/Systems', 'src/RackCad.UI'] names=[] matches=2
+   '\\bSystems\\b|\\bProviders\\b' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   '|MillimetersPerInch|MillimeterPerInch|InchesToMillimeters|In' ~ NumericTextRule.cs: using System.Globalization;
+== tests/RackCad.Tests/StructuralSectionPluginSourceGuardTests.cs tests=23 folders=['src'] names=[] matches=7
+   'Erase()' ~ PushBackKeepMinePresentation.cs: var erased = classification.ViewsToErase.Count;
+   'RackCatalog' ~ PushBackKeepMinePresentation.cs: public static PushBackKeepMinePresentation Read(DraftSession<PushBackFullDraftSt
+   'RackEmbedDocument' ~ PushBackKeepMinePresentation.cs: var members = new List<KeyValuePair<string, RackEmbedDocument>>();
+   'RackEmbedStore' ~ PushBackKeepMinePresentation.cs: var envelopes = new RackEmbedStore();
+   '[CommandMethod(\\"RACKSECCION\\")]' ~ NumericTextRule.cs: using System.Globalization;
+   'false' ~ PushBackAnnotationScaleRule.cs: public const bool MinimumInclusive = false;
+   'return;' ~ PushBackKeepMinePresentation.cs: if (groups.Count == 0) return;
+== tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs tests=16 folders=['src'] names=[] matches=5
+   'Drafts' ~ PushBackAnnotationScaleRule.cs: using RackCad.Application.Workspace.Drafts;
+   'Rack' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   'RackCad.Application' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   'Workspace' ~ PushBackAnnotationScaleRule.cs: using RackCad.Application.Workspace.Drafts;
+   'keep' ~ NumericTextRule.cs: /// from the numeric field of the UI, which keeps its public surface and delegat
+== tests/RackCad.Tests/Workspace/WorkspaceHostSourceSupport.cs tests=0 folders=['src', 'src/RackCad.Application/Workspace'] names=[] matches=0
+== tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs tests=7 folders=['src'] names=[] matches=5
+   'RackCad.Application' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   'RackCad.Application.Workspace' ~ PushBackAnnotationScaleRule.cs: using RackCad.Application.Workspace.Drafts;
+   'Subscription|Editor|Draft' ~ PushBackAnnotationScaleRule.cs: using RackCad.Application.Workspace.Drafts;
+   'Tab|Subscription|Draft|Handler' ~ PushBackAnnotationScaleRule.cs: using RackCad.Application.Workspace.Drafts;
+   'Workspace' ~ PushBackAnnotationScaleRule.cs: using RackCad.Application.Workspace.Drafts;
+== tests/RackCad.UI.Tests/BlankFrontDesviadorHandoffTests.cs tests=14 folders=['src'] names=[] matches=0
+== tests/RackCad.UI.Tests/BoundedEditorCharacterizationTests.cs tests=19 folders=['src'] names=[] matches=6
+   'Dirty' ~ WorkspaceHostCore.cs: if (!draft.IsRegistered || (draft.Status != DraftStatus.Dirty && draft.Status !=
+   'Pending' ~ PushBackFullFieldAdapter.cs: public sealed class PushBackFullFieldAdapter : IDraftPendingTextAdapter<PushBack
+   'Shell' ~ WorkspacePanelView.xaml: TextWrapping="Wrap" Margin="0,4,0,0" Foreground="{DynamicResource ShellTextPrima
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   'name' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   'type' ~ WorkspaceHostCore.cs: if (draft.PendingText.TryGetValue(PushBackFullFieldAdapter.AnnotationScaleKey, o
+== tests/RackCad.UI.Tests/BoundedEditorContractTests.cs tests=19 folders=['src'] names=[] matches=2
+   'Pending' ~ PushBackFullFieldAdapter.cs: public sealed class PushBackFullFieldAdapter : IDraftPendingTextAdapter<PushBack
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+== tests/RackCad.UI.Tests/CustomPropertiesHelpCensusTests.cs tests=6 folders=['src'] names=[] matches=3
+   'name' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+   'rack' ~ PushBackAnnotationScaleRule.cs: /// I-64 F4B PB-T4b (D-PBT4-06; B-02, B-07; Q-PBT2-3) — the one rule of the anno
+   'vistas' ~ PushBackKeepMinePresentation.cs: if (classification.AllViewsObsolete) lines.Add("Todas las vistas quedarían obsol
+== tests/RackCad.UI.Tests/CustomPropertiesWindowTestKit.cs tests=0 folders=['src'] names=[] matches=3
+   'Base' ~ PushBackKeepMinePresentation.cs: foreach (var entry in read.StaleBase.Entries.Values
+   'lateral' ~ PushBackKeepMinePresentation.cs: if (erased == 1) lines.Add("Vistas: se borrará 1 lateral obsoleto.");
+   'null' ~ NumericTextRule.cs: /// <summary>Blank and allowed to be blank: valid with a null value.</summary>
+== tests/RackCad.UI.Tests/DialogWindowCharacterizationTests.cs tests=23 folders=['src'] names=[] matches=6
+   'Dirty' ~ WorkspaceHostCore.cs: if (!draft.IsRegistered || (draft.Status != DraftStatus.Dirty && draft.Status !=
+   'Pending' ~ PushBackFullFieldAdapter.cs: public sealed class PushBackFullFieldAdapter : IDraftPendingTextAdapter<PushBack
+   'Result' ~ PushBackKeepMinePresentation.cs: public static PushBackKeepMinePresentation Read(DraftSession<PushBackFullDraftSt
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   'Todas' ~ PushBackKeepMinePresentation.cs: if (classification.AllViewsObsolete) lines.Add("Todas las vistas quedarían obsol
+   'name' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+== tests/RackCad.UI.Tests/DialogWindowContractTests.cs tests=11 folders=['src'] names=[] matches=2
+   'Safety' ~ PushBackKeepMinePresentation.cs: case PushBackChangeGroup.Safety: return "la seguridad";
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+== tests/RackCad.UI.Tests/DynamicHeaderReuseWindowTests.cs tests=14 folders=['src'] names=[] matches=3
+   'Dynamic' ~ WorkspacePanelView.xaml: TextWrapping="Wrap" Margin="0,4,0,0" Foreground="{DynamicResource ShellTextPrima
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   '[override]' ~ NumericTextRule.cs: using System.Globalization;
+== tests/RackCad.UI.Tests/EditorVisualShellTests.cs tests=27 folders=['src'] names=[] matches=6
+   'Dynamic' ~ WorkspacePanelView.xaml: TextWrapping="Wrap" Margin="0,4,0,0" Foreground="{DynamicResource ShellTextPrima
+   'DynamicResource' ~ WorkspacePanelView.xaml: TextWrapping="Wrap" Margin="0,4,0,0" Foreground="{DynamicResource ShellTextPrima
+   'Editor' ~ WorkspaceEditIntent.cs: ClassicEditorHint = null;
+   'PushBack' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   'Shell' ~ WorkspacePanelView.xaml: TextWrapping="Wrap" Margin="0,4,0,0" Foreground="{DynamicResource ShellTextPrima
+   'ShellTextPrimaryBrush' ~ WorkspacePanelView.xaml: TextWrapping="Wrap" Margin="0,4,0,0" Foreground="{DynamicResource ShellTextPrima
+== tests/RackCad.UI.Tests/FirstViewFreedomTests.cs tests=9 folders=['src'] names=[] matches=3
+   'Dynamic' ~ WorkspacePanelView.xaml: TextWrapping="Wrap" Margin="0,4,0,0" Foreground="{DynamicResource ShellTextPrima
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   'lateral' ~ PushBackKeepMinePresentation.cs: if (erased == 1) lines.Add("Vistas: se borrará 1 lateral obsoleto.");
+== tests/RackCad.UI.Tests/FirstViewGateCharacterizationTests.cs tests=3 folders=['src'] names=[] matches=1
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+== tests/RackCad.UI.Tests/PushBackClassicCharacterizationSourceGuardTests.cs tests=12 folders=['src'] names=[] matches=4
+   'Editor' ~ WorkspaceEditIntent.cs: ClassicEditorHint = null;
+   'PushBack' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   'Views' ~ PushBackKeepMinePresentation.cs: var erased = classification.ViewsToErase.Count;
+== tests/RackCad.UI.Tests/RichEditorCharacterizationTests.cs tests=12 folders=['src'] names=[] matches=1
+   'Push Back' ~ NumericTextRule.cs: /// from the numeric field of the UI, which keeps its public surface and delegat
+== tests/RackCad.UI.Tests/RichEditorContractTests.cs tests=5 folders=['src'] names=[] matches=1
+   'Push Back' ~ NumericTextRule.cs: /// from the numeric field of the UI, which keeps its public surface and delegat
+== tests/RackCad.UI.Tests/SelectiveHeaderBatchSeamTests.cs tests=5 folders=['src'] names=[] matches=1
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+== tests/RackCad.UI.Tests/SelectiveTransactionBoundaryGuardTests.cs tests=2 folders=['src'] names=[] matches=1
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+== tests/RackCad.UI.Tests/StructuralSectionPickerTests.cs tests=10 folders=['src'] names=[] matches=1
+   'Todas' ~ PushBackKeepMinePresentation.cs: if (classification.AllViewsObsolete) lines.Add("Todas las vistas quedarían obsol
+== tests/RackCad.UI.Tests/UiSystemBoundaryGuardTests.cs tests=3 folders=['src'] names=[] matches=1
+   'namespace ' ~ NumericTextRule.cs: namespace RackCad.Application.Formatting
+== tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs tests=3 folders=['src'] names=[] matches=4
+   'Maximum' ~ NumericTextRule.cs: AboveMaximum,
+   'PushBack' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   'Systems' ~ PushBackAnnotationScaleRule.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   'origin' ~ PushBackKeepMinePresentation.cs: /// of its rack with the classifier of the full model and keeps the text of the 

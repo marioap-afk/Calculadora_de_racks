@@ -1,0 +1,2 @@
+filas 1 {'Failed': 1}; inicio 2026-11-20T20:55:50.2647303-06:00; fin 2026-11-20T20:56:34.8009467-06:00
+  Failed RackCad.Tests.TmpIsDirtyCostProbe.RackCad.Tests.TmpIsDirtyCostProbe.Measure_the_cost_of_IsDirty_of_a_full_draft | at RackCad.Tests.TmpIsDirtyCostProbe.Measure_the_cost_of_IsDirty_of_a_full_draft() in <copia>\tests\RackCad.Tests\TmpIsDirtyCostProbe.cs:line 65 | copia=<el GREEN de PB-T4b> (IsDirty, R-T4-17, paquete v4.5) escenario pb-01-base limpio-isdirty=False sucio-isdirty=True medida | pb-01-base | IsDirty limpio | mediana=2.9427 ms | p95=4.2867 ms | n=10

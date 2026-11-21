@@ -1,0 +1,15 @@
+WHHG:501 [Fact]
+WHHG:502 public void TheGuardOfTheLiteralsTripsOnAnEnglishLiteralAMissingSpanishTextAndALostIdentifier()
+WHHG:526 }
+Assert.NotEmpty in WHHG:501-526: 13 (lines [508, 509, 511, 512, 514, 515, 517, 518, 519, 520, 522, 524, 525])
+other assertions in WHHG:501-526: []
+v4.9 copy vs v4.8: first difference at line 106; v4.8 lines replaced: 0; v4.9 lines inserted: 27
+the line before the block: Assert.Empty(LiteralViolations(Src.Code(HostPath), Src.Code(SupportPath)));
+the line after the block: }
+block: 5 leading lines (blank and the I-01 comment): ['', '// I-64 F4B PB-T4b (CA-T4b I-01; owner-pbt4b-list-', '// copy. In the GREEN the original self-test passe', '// LiteralViolations already answers three violati', '// above), so each of the 13 mutations has to make']
+block after them == WHHG:504-525 byte for byte: True
+NotEmpty in the block: 13
+method holding the block: public void NoneOfThe30LiteralsInEnglishStaysInTheHostOrTheSupportAndTheFourIdentifiersAreKept()
+the table of the copy, v4.9 == v4.8: True
+the annex V49-A carries the block (WHHG:504-525) literally: True
+the annex V49-A carries the I-01 comment literally: True

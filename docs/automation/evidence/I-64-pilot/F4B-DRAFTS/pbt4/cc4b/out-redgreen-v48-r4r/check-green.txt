@@ -1,0 +1,19 @@
+GREEN Core: filas 19587 {'Passed': 19129, 'NotExecuted': 458}; inicio 2026-11-20T20:14:45.6746871-06:00; fin 2026-11-20T20:27:11.7076182-06:00
+  previsto 19 587 = 19 129 + 0 + 458: True
+  omitidas fuera de la lista (las 7 de la base): 7 ['RackCad.Tests.PushBackDraftWriteGuardTests.CT_PBT3A_12_NoSourceFileOutsideTheFolderOfTheModelNamesItsTypes', 'RackCad.Tests.WorkspacePilotPrepareGuardTests.TheComposeGuardTripsOnAnotherCallAnUnsourcedCompositionANullableSourceOrAnotherName', 'RackCad.Tests.WorkspacePilotPrepareGuardTests.TheFileOfThePlanComposesExactlyOnceInAMemberOfItsOwnWithAParameterSourceAndTheNameOfTheRereadEnvelope', 'RackCad.Tests.WorkspacePilotPrepareGuardTests.TheMemberPlansAreBuiltOnlyFromTheMutableMembersOfTheRereadInOrdinalOrderAndNeverErase', 'RackCad.Tests.WorkspacePilotUpdateGuardTests.TheRunReleasesBothScopesInFinallyBlocksOfItsOwnAndNeverWithAUsing', 'RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.M01TheEscapeGuardTripsOnACatchThatDoesNotConsultTheStateAndOnAnEscapeThatAnswersAPlainFailureFirst', 'RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.M01TheEscapeOfTheRunIsClassifiedByTheStateThatTheRunAlreadyHadAndNeverAsAPlainFailureAfterAWriteOrASeal']
+  UI green-ui-RackCad_UI_Tests_PushBackFullDraftWindowParityTests.trx: filas 1 {'Passed': 1}
+  UI green-ui-RackCad_UI_Tests_Workspace.trx: filas 672 {'Passed': 644, 'NotExecuted': 28}
+  UI green-ui-RackCad_UI_Tests_PushBackWindowOnStateTests.trx: filas 2 {'Passed': 2}
+  UI green-ui-RackCad_UI_Tests_PushBackClassicCharacterization.trx: filas 55 {'Passed': 55}
+  UI green-ui-RackCad_UI_Tests_PushBackFullEditorCharacterization.trx: filas 18 {'Passed': 16, 'NotExecuted': 2}
+  UI green-ui-RackCad_UI_Tests_PushBackStateNet.trx: filas 14 {'Passed': 14}
+  UI green-ui-RackCad_UI_Tests_PushBackDeclaredCorrection.trx: filas 14 {'Passed': 14}
+  UI green-ui-RackCad_UI_Tests_Cantilever.trx: filas 67 {'Passed': 67}
+  UI green-ui-RackCad_UI_Tests_PushBackWorkspaceModeTests.trx: filas 3 {'Passed': 3}
+  UI green-ui-RackCad_UI_Tests_PushBackWorkspaceApplyCloseTests.trx: filas 4 {'Passed': 4}
+  UI green-ui-RackCad_UI_Tests_PushBackFieldValidationConcordanceTests.trx: filas 1 {'Passed': 1}
+  UI green-ui-RackCad_UI_Tests_PushBackWorkspaceCarryoverTests.trx: filas 3 {'Passed': 3}
+  UI green-ui-RackCad_UI_Tests_NumericFieldValidationTests.trx: filas 13 {'Passed': 13}
+  UI green-ui-RackCad_UI_Tests_NumericFieldTests.trx: filas 10 {'Passed': 10}
+  UI green-ui-RackCad_UI_Tests_FullPanelCopy.trx: filas 36 {'Passed': 36}
+GREEN: CUMPLE

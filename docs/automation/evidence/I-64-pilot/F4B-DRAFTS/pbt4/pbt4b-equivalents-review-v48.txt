@@ -1,0 +1,3182 @@
+====================================================================================================
+tests/RackCad.Tests/PushBackFullReadGuardTests.cs :: CT_PBT4A_05_WithAReaderWithoutTheNewInterfaceTheFiveRereadsUseReadIntentAsToday
+====================================================================================================
+
+        // ------------------------------------------------------------------------------------------------- CT-05
+
+        [Fact]
+        public void CT_PBT4A_05_WithAReaderWithoutTheNewInterfaceTheFiveRereadsUseReadIntentAsToday()
+        {
+            var log = new List<string>();
+            var expected = new List<string>();
+            foreach (var operation in PushBackFullReadKit.Operations)
+            {
+                expected.Add(operation + " lector=ReadIntent");
+                // I-64 F4B PB-T4b (owner-pbt4b-list-477-decision.md): a reader without the new interface that answers with the full read too
+                // (FromReads), as the reader of the Plugin does; the draft of the panel is the full one, so the rig finds the full draft.
+                var reader = new FullEditIntentFakeReader();
+                var rig = new FullReadRig(reader);
+                var draft = Paso(log, () => rig.Begin());
+                if (draft == null) continue;
+
+                // The reading is armed right after its last gesture: the calls of the opening are not counted.
+                var before = reader.Calls.Count;
+                Paso(log, () => rig.Run(operation, draft));
+                var reads = reader.Calls.Count - before;
+                log.Add(operation + (reads == 1 ? " lector=ReadIntent" : " lector=" + reads + " lecturas"));
+            }
+
+            Assert.Equal(string.Join("\n", expected), string.Join("\n", log));
+        }
+
+====================================================================================================
+tests/RackCad.Tests/PushBackFullReadPathTests.cs :: CT_PBT4A_03_TheFiveRereadsOfAnOpenDraftReadAtTheOriginOfTheDraftAndBeginReadsAsToday
+====================================================================================================
+
+        // ------------------------------------------------------------------------------------------------- CT-03
+
+        [Fact]
+        public void CT_PBT4A_03_TheFiveRereadsOfAnOpenDraftReadAtTheOriginOfTheDraftAndBeginReadsAsToday()
+        {
+            var log = new List<string>();
+
+            var opening = new PushBackOriginReaderDouble();
+            // I-64 F4B PB-T4b (owner-pbt4b-list-477-decision.md): the draft of the panel is the full one, so the rig finds the full draft.
+            Paso(log, () => new FullReadRig(opening).Begin());
+            log.Add("Begin lector=" + (opening.Kinds.Count == 1 ? opening.Kinds[0] : opening.Kinds.Count + " lecturas"));
+
+            var expected = new List<string> { "Begin lector=ReadIntent" };
+            foreach (var operation in PushBackFullReadKit.Operations)
+            {
+                expected.Add(operation + " lector=ReadIntentAtOrigin origen-del-borrador=True");
+                var reader = new PushBackOriginReaderDouble();
+                var rig = new FullReadRig(reader);
+                var draft = Paso(log, () => rig.Begin());
+                if (draft == null) continue;
+
+                // The reading is armed right after its last gesture: the origin of the draft is taken before the reread.
+                var origin = draft.CurrentDraftState.Origin;
+                var before = reader.Kinds.Count;
+                Paso(log, () => rig.Run(operation, draft));
+                var kinds = reader.Kinds.Skip(before).ToList();
+                if (kinds.Count != 1)
+                {
+                    log.Add(operation + " lector=" + kinds.Count + " lecturas");
+                    continue;
+                }
+
+                var received = reader.Origins[before];
+                log.Add(operation + " lector=" + kinds[0] + (received == null ? string.Empty : " origen-del-borrador=" + string.Equals(received, origin, StringComparison.Ordinal)));
+            }
+
+            Assert.Equal(string.Join("\n", expected), string.Join("\n", log));
+        }
+
+====================================================================================================
+tests/RackCad.Tests/PushBackWritePathGuardTests.cs :: CT_PBT3B_13_NoFileOutsideThePlanTheRunAndTheModelNamesTheFullWriteAndTheHostFindsOnlyTheDraftOfThePilot
+====================================================================================================
+
+        [Fact]
+        public void CT_PBT3B_13_NoFileOutsideThePlanTheRunAndTheModelNamesTheFullWriteAndTheHostFindsOnlyTheDraftOfThePilot()
+        {
+            var log = new List<string>();
+            var files = Directory.GetFiles(Path.Combine(Root, "src"), "*.cs", SearchOption.AllDirectories)
+                .Where(path => !InBuildFolder(path))
+                .Select(path => Path.GetRelativePath(Root, path).Replace(Path.DirectorySeparatorChar, '/'))
+                .OrderBy(path => path, StringComparer.Ordinal)
+                .ToList();
+            var texts = files.Select(path => (Path: path, Text: Read(path))).ToList();
+            log.Add("sin-conectar archivos-revisados>0=" + (texts.Count(file => !MayNameTheFullWrite(file.Path)) > 0)
+                + " coincidencias=[" + string.Join(", ", NamingTheFullWrite(texts)) + "]");
+
+            var host = Read(HostPath);
+            log.Add("host Find<PushBackFullDraftState>-es-el-unico-Find<=" + OnlyThePilotDraftIsFound(host) + " busquedas>0=" + (FindArguments(host).Count > 0));
+
+            // The self-tests: each of the names injected in the host and in the support of the pilot makes the guard fail.
+            var expected = new List<string>
+            {
+                "sin-conectar archivos-revisados>0=True coincidencias=[]",
+                "host Find<PushBackFullDraftState>-es-el-unico-Find<=True busquedas>0=True",
+            };
+            var injections = new (string Name, string Line)[]
+            {
+                ("PushBackFullPrepareInput", "var input = PushBackFullPrepareInput.From(draft);"),
+                ("PushBackPilotUpdateRun.ExecuteFull", "var outcome = PushBackPilotUpdateRun.ExecuteFull(draft, request, port);"),
+                ("Precheck", "var check = PushBackPilotUpdateRun.Precheck(full as DraftSession<PushBackFullDraftState>);"),
+            };
+            // I-64 F4B PB-T4b: the host core runs the full write, so the self-tests inject the names in the support of the panel only.
+            foreach (var destination in new[] { "WorkspacePilotSupport.cs" })
+            {
+                var path = "src/RackCad.Application/Workspace/" + destination;
+                var real = Read(path);
+                foreach (var injection in injections)
+                {
+                    var injected = new[] { (Path: path, Text: real + "\n" + injection.Line + "\n") };
+                    log.Add("autoprueba-" + injection.Name + "-en-" + destination + "=" + (NamingTheFullWrite(injected).Count > 0 ? "falla" : "pasa"));
+                    expected.Add("autoprueba-" + injection.Name + "-en-" + destination + "=falla");
+                }
+            }
+
+            log.Add("autoprueba-Find<PushBackPilotDraftState>-en-WorkspaceHostCore.cs="
+                + (OnlyThePilotDraftIsFound(host + "\n_drafts.Find<PushBackPilotDraftState>(session, rackId);\n") ? "pasa" : "falla"));
+            log.Add("control-Find<PushBackFullDraftState>-en-WorkspaceHostCore.cs="
+                + (OnlyThePilotDraftIsFound(host + "\n_drafts.Find<PushBackFullDraftState>(session, rackId);\n") ? "pasa" : "falla"));
+            expected.Add("autoprueba-Find<PushBackPilotDraftState>-en-WorkspaceHostCore.cs=falla");
+            expected.Add("control-Find<PushBackFullDraftState>-en-WorkspaceHostCore.cs=pasa");
+
+            Assert.Equal(string.Join("\n", expected), string.Join("\n", log));
+        }
+
+====================================================================================================
+tests/RackCad.Tests/PushBackWritePathGuardTests.cs :: ayudante MayNameTheFullWrite
+====================================================================================================
+
+        // ------------------------------------------------------------------------------------------------- CT-13 (ii)
+
+        /// <summary>The plan, the run and the folder of the model: the only files that may name the full write (the plan and the run are
+        /// the two files that PB-T3b generalizes, and the model lives in its own folder).</summary>
+        private static bool MayNameTheFullWrite(string relative)
+            => relative == PlanPath || relative == RunPath || relative == HostPath || relative.StartsWith(DraftFolder, StringComparison.Ordinal);
+
+====================================================================================================
+tests/RackCad.Tests/PushBackWritePathGuardTests.cs :: ayudante OnlyThePilotDraftIsFound
+====================================================================================================
+
+        private static bool OnlyThePilotDraftIsFound(string host)
+        {
+            var found = FindArguments(host);
+            return found.Count > 0 && found.All(argument => argument == "PushBackFullDraftState");
+        }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs :: TheBaseGuardAllowsTheConsumersOfTheObligation
+====================================================================================================
+
+    [Theory]
+    [InlineData("draft.DiscardAndReload(full.Read);")]
+    [InlineData("draft.DiscardAndReload(reload.Read, full.StaleBase);")]
+    [InlineData("var check = draft.CheckNow(full.StaleBase);")]
+    [InlineData("var begun = _drafts.Begin(session, rack, full.Read, comparer, copy);")]
+    [InlineData("var confirmed = draft.ConfirmBase(full.StaleBase);")]
+    [InlineData("var kept = draft.KeepMineOnCurrentVersion(full.Read, PushBackFullComposition.KeepOn, confirmed: true);")]
+    [InlineData("return EditConfirmOutcome.Confirmed(full.Read.IsAdmitted ? null : full.Read.Admission.Diagnostic);")]
+    public void TheBaseGuardAllowsTheConsumersOfTheObligation(string injected)
+    {
+        Assert.DoesNotMatch(BaseOrReadUse, WithoutTheAllowedConsumers(Core() + "\n" + injected));
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs :: TheBaseOfAResultOfThePilotOnlyReachesBeginCheckNowOrDiscardAndReloadInTheHostCoreAndTheTwoOperationsCountTheirOwnUses
+====================================================================================================
+
+    [Fact]
+    public void TheBaseOfAResultOfThePilotOnlyReachesBeginCheckNowOrDiscardAndReloadInTheHostCoreAndTheTwoOperationsCountTheirOwnUses()
+    {
+        var core = Core();
+
+        // Whatever the number of operations of the host, every use of the base or of the read of a result is an argument of a consumer.
+        Assert.DoesNotMatch(BaseOrReadUse, WithoutTheAllowedConsumers(core));
+        foreach (var code in new[] { Src.Code(IntentPath), Src.Code(InterfacePath) })
+            Assert.DoesNotMatch(BaseOrReadUse, WithoutTheAllowedConsumers(code));
+
+        // Per operation (these counts are about the two operations of this task, not about the whole file): the intention hands the
+        // read to Begin and never the base to CheckNow, and "check now" hands the base to CheckNow and never the read to Begin.
+        var intent = IntentBody();
+        Assert.Equal(1, Src.Count(intent, @"\bfull\.Read\b"));
+        Assert.Matches(@"\.Begin\s*\(\s*[^;]*?\bfull\.Read\b[^;]*?\)\s*;", intent);
+        Assert.Equal(0, Src.Count(intent, @"\.StaleBase\b|\.CheckNow\s*\("));
+
+        var check = CheckBody();
+        Assert.Equal(1, Src.Count(check, @"\.StaleBase\b"));
+        Assert.Matches(@"\.CheckNow\s*\(\s*\w+\.StaleBase\s*\)", check);
+        // I-64 F4-T4C2 (D-T4C-12, row 12 of D-T4C-20): "check now" carries the diagnostic of the admission of the SAME reread, so the expression is in its
+        // body exactly once and the read is named exactly twice, both inside that one expression. The reader is still called once.
+        Assert.Equal(1, Src.Count(check, AdmissionDiagnosticPattern));
+        Assert.Equal(2, Src.Count(check, @"\bfull\.Read\b"));
+        Assert.Equal(0, Src.Count(WithoutTheAllowedConsumers(check), @"\bfull\.Read\b"));
+        Assert.Equal(0, Src.Count(check, @"\.Begin\s*\("));
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs :: TheExpressionOfTheDiagnosticOfTheAdmissionIsInTheWholeHostCoreExactlyTwiceOnceInTheGeneralCheckAndOnceInCheckNow
+====================================================================================================
+
+    [Fact]
+    public void TheExpressionOfTheDiagnosticOfTheAdmissionIsInTheWholeHostCoreExactlyTwiceOnceInTheGeneralCheckAndOnceInCheckNow()
+    {
+        var core = Core();
+
+        Assert.Equal(2, Src.Count(core, AdmissionDiagnosticPattern));
+        Assert.Equal(1, Src.Count(ConfirmBody(), AdmissionDiagnosticPattern));
+        Assert.Equal(1, Src.Count(CheckBody(), AdmissionDiagnosticPattern));
+        foreach (var body in new[] { IntentBody(), KeepBody(), DiscardAndReloadBody() })
+            Assert.Equal(0, Src.Count(body, AdmissionDiagnosticPattern));
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs :: TheGuardOfTheExpressionOfTheDiagnosticSeesAThirdOneInTheCoreASecondOneInCheckNowAndOneInKeep
+====================================================================================================
+
+    [Fact]
+    public void TheGuardOfTheExpressionOfTheDiagnosticSeesAThirdOneInTheCoreASecondOneInCheckNowAndOneInKeep()
+    {
+        var core = Core();
+
+        // The third in the whole core.
+        Assert.Equal(3, Src.Count(core + AnotherDiagnosticExpression, AdmissionDiagnosticPattern));
+        // A second in the body of "check now" and one in the body of the keep: the per-body rules see them.
+        Assert.Equal(2, Src.Count(CheckBody() + AnotherDiagnosticExpression, AdmissionDiagnosticPattern));
+        Assert.Equal(1, Src.Count(KeepBody() + AnotherDiagnosticExpression, AdmissionDiagnosticPattern));
+        // The expression itself is the one of the package: the same text, once more, is not allowed by the consumers.
+        Assert.Matches(BaseOrReadUse, WithoutTheAllowedConsumers(core + "\nvar d = full.Read.Admission.Diagnostic;"));
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs :: ThePerOperationCountsOfTheBaseAndOfTheReadInTheThreeBodiesOfTheReconciliationAreTheirOwnConsumer
+====================================================================================================
+
+    [Fact]
+    public void ThePerOperationCountsOfTheBaseAndOfTheReadInTheThreeBodiesOfTheReconciliationAreTheirOwnConsumer()
+    {
+        var confirm = ConfirmBody();
+        Assert.Equal(1, Src.Count(confirm, @"\.StaleBase\b"));
+        Assert.Matches(@"\.ConfirmBase\s*\(\s*\w+\.StaleBase\s*\)", confirm);
+        Assert.Equal(0, Src.Count(confirm, @"\.Begin\s*\(|\.CheckNow\s*\("));
+        // The one use of the read in the general check is the diagnostic of the admission of a confirmed check (M-5), and it is counted:
+        // the read is named exactly twice in the body (IsAdmitted and Admission.Diagnostic), both inside that one explicit expression.
+        Assert.Equal(1, Src.Count(confirm, AdmissionDiagnosticPattern));
+        Assert.Equal(2, Src.Count(confirm, @"\bfull\.Read\b"));
+        Assert.Equal(0, Src.Count(WithoutTheAllowedConsumers(confirm), @"\bfull\.Read\b"));
+        // I-64 F4-T4C2 (row 12, RR N-05): "check now" leaves the loop of zero and has exactly one; the other three bodies stay at zero.
+        Assert.Equal(1, Src.Count(CheckBody(), AdmissionDiagnosticPattern));
+        foreach (var other in new[] { IntentBody(), KeepBody(), DiscardAndReloadBody() })
+            Assert.Equal(0, Src.Count(other, AdmissionDiagnosticPattern));
+
+        var keep = KeepBody();
+        Assert.Equal(1, Src.Count(keep, @"\bfull\.Read\b"));
+        Assert.Matches(@"\.KeepMineOnCurrentVersion\s*\(\s*full\.Read\s*,\s*PushBackFullComposition\.KeepOn\s*,\s*confirmed\s*:\s*true\s*\)", keep);
+        Assert.Equal(0, Src.Count(keep, @"\.StaleBase\b|\.InitialState\b|\.Begin\s*\("));
+
+        var discard = DiscardAndReloadBody();
+        Assert.Equal(1, Src.Count(discard, @"\bfull\.Read\b"));
+        Assert.Matches(@"\.DiscardAndReload\s*\(\s*full\.Read\s*\)", discard);
+        Assert.Equal(0, Src.Count(discard, @"\.StaleBase\b|\.InitialState\b|\.Begin\s*\("));
+
+        // The host never names the initial state of a draft: the keep gets it through the draft and the function of the pilot.
+        Assert.DoesNotMatch(new Regex(@"\.InitialState\b|\.InitialDraftState\b"), Core());
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs :: TheResultOfThePilotIsOnlyEverNamedPilotInTheHostCoreSoNoAliasEscapesTheGuardOfTheUseOfTheBase
+====================================================================================================
+
+    [Fact]
+    public void TheResultOfThePilotIsOnlyEverNamedPilotInTheHostCoreSoNoAliasEscapesTheGuardOfTheUseOfTheBase()
+    {
+        var core = Core();
+        var withoutTheAssignments = FullReadAssignment.Replace(PilotReadAssignment.Replace(core, string.Empty), string.Empty);
+
+        // I-64 F4B PB-T4b: the full read is only ever named "full", once per operation that reads (the intention, the check, the reload,
+        // the general check, the keep and the discard), and the read of the pilot only for the witness of the preview (four).
+        Assert.DoesNotMatch(new Regex(@"\.PilotRead\b"), withoutTheAssignments);
+        Assert.DoesNotMatch(new Regex(@"\.FullRead\b"), withoutTheAssignments);
+        Assert.Equal(6, FullReadAssignment.Matches(core).Count);
+        Assert.Equal(4, PilotReadAssignment.Matches(core).Count);
+        Assert.Equal(6, Src.Count(core, @"\.ReadIntent\s*\("));
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs :: TheThreeBodiesOfTheReconciliationFollowTheStepsOfTheCheckAndTheReloadWithTheApplicabilityBeforeTheOneRead
+====================================================================================================
+
+    [Fact]
+    public void TheThreeBodiesOfTheReconciliationFollowTheStepsOfTheCheckAndTheReloadWithTheApplicabilityBeforeTheOneRead()
+    {
+        var confirm = ConfirmBody();
+        var keep = KeepBody();
+        var discard = DiscardAndReloadBody();
+
+        AssertInOrder(confirm, "string.IsNullOrWhiteSpace(request.RackId)", "HasWitnessWithoutKey(request)", "PassGate(", "_drafts.Find<", "NotCheckableReason", "_editIntentReader!.ReadIntent(", ".ConfirmBase(");
+        AssertInOrder(keep, "string.IsNullOrWhiteSpace(request.RackId)", "HasWitnessWithoutKey(request)", "PassGate(", "_drafts.Find<", "DraftStatus.Applying", "NotKeepableReason", "_editIntentReader!.ReadIntent(", ".KeepMineOnCurrentVersion(");
+        AssertInOrder(discard, "string.IsNullOrWhiteSpace(request.RackId)", "HasWitnessWithoutKey(request)", "PassGate(", "_drafts.Find<", "DraftStatus.Applying", "_editIntentReader!.ReadIntent(", ".DiscardAndReload(");
+        foreach (var body in new[] { confirm, keep, discard })
+        {
+            Assert.Equal(1, Src.Count(body, @"\.ReadIntent\s*\("));
+            Assert.Equal(1, Src.Count(body, @"_editIntentReader\s*[.!]"));
+            // The mark of known clean is removed in the result that changed the draft, never before the read.
+            Assert.True(IndexOf(body, "_knownClean.Remove(") > IndexOf(body, "_editIntentReader!.ReadIntent("));
+        }
+
+        Assert.Equal(1, Src.Count(confirm, @"_knownClean\.Remove\s*\("));
+        Assert.Equal(1, Src.Count(keep, @"_knownClean\.Remove\s*\("));
+        Assert.Equal(1, Src.Count(discard, @"_knownClean\.Remove\s*\("));
+        // The keep is called with the function of the full model and the confirmation of the second "Si" with the witness.
+        Assert.Contains("PushBackFullComposition.KeepOn", keep);
+        Assert.Contains("confirmed: true", keep);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs :: ayudante AdmissionDiagnosticPattern
+====================================================================================================
+
+    // The ONE other use of a read that the obligation allows, since F4-T4A1 (M-5): the diagnostic of the admission of a confirmed check, read
+    // as pilot.Read.IsAdmitted and pilot.Read.Admission.Diagnostic and nothing else of the read. It is explicit and it is counted per
+    // operation (only the bodies of the general check and, since F4-T4C2, of "check now" have it); no alias and no renamed variable stands for it.
+    private const string AdmissionDiagnosticPattern = @"\bfull\.Read\.IsAdmitted\s*\?\s*null\s*:\s*full\.Read\.Admission\.Diagnostic\b";
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs :: ayudante AnotherDiagnosticExpression
+====================================================================================================
+
+    // M-3 (I-64 F4-T4A2), changed by F4-T4C2 (D-T4C-12, row 12): the expression of the diagnostic of the admission is in the whole host core exactly
+    // twice, once in the body of the general check and once in the body of "check now", so no other operation and no helper can reach the
+    // diagnostic of a read.
+    private const string AnotherDiagnosticExpression = "\nvar again = full.Read.IsAdmitted ? null : full.Read.Admission.Diagnostic;";
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs :: ayudante BaseOrReadUse
+====================================================================================================
+
+    // ------------------------------------------------------------------ obligation 10: the base of a result only reaches Begin, CheckNow or DiscardAndReload
+
+    // The ways to use the base or the read of a result of the pilot: the base, the initial state, the read itself and its entries.
+    // M-2 (I-64 F4-T4A2): besides the form without spaces, the read through the name of the pilot is seen with a null-conditional or a null-forgiving
+    // operator and with spaces or line breaks (pilot?.Read, pilot!.Read, pilot . Read). The alternative of result is kept as it was.
+    private static readonly Regex BaseOrReadUse = new(@"\.StaleBase\b|\.InitialState\b|\b(?:pilot|full|result)\.Read\b|\b(?:pilot|full)\s*[?!]?\s*\.\s*Read\b|\.Entries\b");
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs :: ayudante PilotReadAssignment
+====================================================================================================
+
+    // The read of a result of the pilot has ONE name in the host core, "pilot", and it is only ever assigned by one statement. So no alias
+    // or renamed variable can stand for it and escape the guard of the use of the base (F4-T4A1, INV-F4T4A1-04).
+    private static readonly Regex PilotReadAssignment = new(@"var\s+pilot\s*=\s*read\.PilotRead\s*;");
+
+    // I-64 F4B PB-T4b: the full read of a result has ONE name in the host core, "full", assigned by one statement per operation that reads.
+    private static readonly Regex FullReadAssignment = new(@"var\s+full\s*=\s*read\.FullRead\s*;");
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs :: CheckNowUsesTheBaseOfARereadThatIsNotAdmittedToo
+====================================================================================================
+
+    [Fact]
+    public void CheckNowUsesTheBaseOfARereadThatIsNotAdmittedToo()
+    {
+        // The base is total and independent of the admission: a reread without admission still says whether the drawing changed.
+        var rig = new Rig();
+        var draft = rig.UnknownDraft();
+        var without = PushBackPilotIntentReader.Read(FullEditIntentKit.TwoViews(RackA), null);
+        Assert.False(without.Read.IsAdmitted);
+        rig.Reader.Answer = _ => FullHandKit.ReadOfPilot(without);
+
+        var outcome = rig.Core.TryCheckPilotEdit(rig.Request());
+
+        Assert.Equal(EditCheckStatus.Recovered, outcome.Status);
+        Assert.NotEqual(DraftStatus.Unknown, draft.Status);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs :: ThePortHasExactlyTheTwoMethodsOfTheRequestWithUpdateInTheirNameAndRejectsAThirdOne
+====================================================================================================
+
+    [Fact]
+    public void ThePortHasExactlyTheTwoMethodsOfTheRequestWithUpdateInTheirNameAndRejectsAThirdOne()
+    {
+        var names = typeof(IWorkspacePilotEditPort).GetMethods().Select(m => m.Name).ToList();
+        Assert.True(PortUpdateMethodsAreExactlyTheTwoOfTheRequest(names));
+
+        // The negatives: a third method with "Update" in its name, and the absence of one of the two.
+        Assert.False(PortUpdateMethodsAreExactlyTheTwoOfTheRequest(names.Append("TryUpdatePilot")));
+        Assert.False(PortUpdateMethodsAreExactlyTheTwoOfTheRequest(names.Where(n => n != "TakeUpdateProgress")));
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs :: TheReadResultCarriesThePilotReadOnlyWhenItIsARead
+====================================================================================================
+
+    [Fact]
+    public void TheReadResultCarriesThePilotReadOnlyWhenItIsARead()
+    {
+        var read = FullEditIntentKit.Admitted(RackA);
+
+        Assert.Equal(EditIntentReadStatus.Read, read.Status);
+        Assert.NotNull(read.PilotRead);
+        Assert.Null(read.Reason);
+        foreach (var other in new[]
+                 {
+                     EditIntentReadResult.NoActiveDocument("a"), EditIntentReadResult.Busy("b"), EditIntentReadResult.Rejected("c"), EditIntentReadResult.Failed("d"),
+                 })
+        {
+            Assert.NotEqual(EditIntentReadStatus.Read, other.Status);
+            Assert.Null(other.PilotRead);
+            Assert.False(string.IsNullOrEmpty(other.Reason));
+        }
+
+        Assert.Throws<ArgumentNullException>(() => EditIntentReadResult.FromPilot(null!));
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs :: TheTechnicalDetailOfTheDiagnosticTravelsApartFromItsMainText
+====================================================================================================
+
+    [Fact]
+    public void TheTechnicalDetailOfTheDiagnosticTravelsApartFromItsMainText()
+    {
+        var rig = new Rig();
+        rig.Reader.Answer = rack => FullEditIntentKit.ReadOf(IntentKit.Scan(rack, "A1", IntentKit.Member("A1", IntentKit.Variant("pb-01-base", rack, kind: "selective"))));
+
+        var outcome = rig.Core.TryBeginPilotEdit(rig.Request());
+
+        Assert.Equal(EditIntentStatus.NotAdmitted, outcome.Status);
+        Assert.Equal(PushBackPilotIntentReader.OutOfPilotDiagnostic, outcome.Diagnostic);
+        Assert.Equal("selective", outcome.Detail);
+        Assert.DoesNotContain("selective", outcome.Diagnostic!);
+        Assert.Equal(PushBackPilotIntentReader.ClassicEditorHint, outcome.ClassicEditorHint);
+        Assert.Equal(0, rig.Core.OpenDrafts.CountOf(rig.Session));
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs :: TheUpdateOfThePilotIsAPublicMethodOfTheCoreWhoseSecondParameterIsThePortOfTheUpdateAndItsOutcomeNamesNoTypeOfTheDraftsNorOfThePilot
+====================================================================================================
+
+    [Fact]
+    public void TheUpdateOfThePilotIsAPublicMethodOfTheCoreWhoseSecondParameterIsThePortOfTheUpdateAndItsOutcomeNamesNoTypeOfTheDraftsNorOfThePilot()
+    {
+        var update = typeof(WorkspaceHostCore).GetMethod("TryUpdatePilot", BindingFlags.Public | BindingFlags.Instance);
+
+        Assert.NotNull(update);
+        Assert.Equal(typeof(EditUpdateOutcome), update!.ReturnType);
+        Assert.Equal(new[] { typeof(EditIntentRequest), typeof(RackCad.Application.Systems.PushBack.Pilot.IPushBackPilotUpdatePort) }, update.GetParameters().Select(p => p.ParameterType).ToArray());
+        // It is not an operation of the edit port of the panel. Since F4-T4C1-HOST (D-T4C-20, row 2) the port has exactly two methods with
+        // "Update" in their name: the request and the progress of the update, never the update itself.
+        Assert.True(PortUpdateMethodsAreExactlyTheTwoOfTheRequest(typeof(IWorkspacePilotEditPort).GetMethods().Select(m => m.Name)));
+        foreach (var property in typeof(EditUpdateOutcome).GetProperties(BindingFlags.Public | BindingFlags.Instance))
+        {
+            foreach (var type in Flatten(property.PropertyType))
+            {
+                Assert.False((type.Namespace ?? string.Empty).StartsWith("RackCad.Application.Workspace.Drafts", StringComparison.Ordinal), type.FullName);
+                Assert.False((type.Namespace ?? string.Empty).StartsWith("RackCad.Application.Systems", StringComparison.Ordinal), type.FullName);
+            }
+        }
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspaceHostHardeningGuardTests.cs :: NoneOfThe30LiteralsInEnglishStaysInTheHostOrTheSupportAndTheFourIdentifiersAreKept
+====================================================================================================
+
+    [Fact]
+    public void NoneOfThe30LiteralsInEnglishStaysInTheHostOrTheSupportAndTheFourIdentifiersAreKept()
+    {
+        Assert.Equal(30, Table.Length);
+        Assert.Equal(30, Table.Select(t => t.English).Distinct().Count());
+        Assert.Equal(30, Table.Select(t => t.Spanish).Distinct().Count());
+
+        Assert.Empty(LiteralViolations(Src.Code(HostPath), Src.Code(SupportPath)));
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspaceHostHardeningGuardTests.cs :: ayudante Table
+====================================================================================================
+
+    // ------------------------------------------------------------------ H-07: the 30 literals of the port of the pilot are in Spanish
+
+    // The table of the package (H-07, and the two rows A1-01 and A1-02 of F4-T4A1): the literal in English, its Spanish text and how many times it
+    // stands in the host and the support. Since F4-T4A1 the three operations of the reconciliation reuse the texts of the others, and the count of each
+    // one is the EXACT number of its occurrences now (the value before the task is in the comment of each row that changed).
+    private static readonly (string English, string Spanish, int Times)[] Table =
+    {
+        ("A read of the pilot is in progress.", "Hay una lectura del piloto en curso.", 1),
+        ("The request does not belong to the active document.", "La petición no es del documento activo.", 6),
+        ("There is no draft for the rack.", "No hay borrador para el rack.", 3),
+        ("The preview witness has no key.", "El testigo de la vista previa no tiene clave.", 6), // before 3
+        ("The drawing is not ready to be read.", "El dibujo no está listo para leerse.", 6), // before 3
+        ("The read of the edit intention failed.", "Falló la lectura de la intención de edición.", 1),
+        ("The read of the edit intention carries no result.", "La lectura de la intención de edición no trajo resultado.", 1),
+        ("The session was retired.", "La sesión se retiró.", 1),
+        ("A blank rack has no draft.", "Un rack sin identificador no tiene borrador.", 2), // before 1
+        ("The draft is not unknown after a commit that threw.", "El borrador no quedó desconocido tras una aplicación fallida.", 2),
+        ("The reread failed.", "Falló la relectura.", 2), // before 1
+        ("The reread carries no result.", "La relectura no trajo resultado.", 0), // before 2 (I-64 F4B PB-T4b, owner-pbt4b-list-478-decision.md)
+        ("The draft does not need to be reloaded.", "El borrador no necesita recargarse.", 1),
+        ("The read for the reload failed.", "Falló la lectura para la recarga.", 3), // before 1
+        ("The read for the reload carries no result.", "La lectura para la recarga no trajo resultado.", 3), // before 1
+        ("The draft is being applied or is no longer registered.", "El borrador se está aplicando o ya no está registrado.", 6), // before 5 (I-64 F4B PB-T4b, owner-pbt4b-list-478-decision.md)
+        ("The draft was not reloaded.", "El borrador no se recargó.", 3), // before 1
+        ("The state of the field could not be read.", "No se pudo leer el estado del campo.", 1),
+        ("The text is required.", "El texto es obligatorio.", 1),
+        ("The field cannot be edited now.", "El campo no se puede editar ahora.", 4),
+        ("The boundary is not known.", "La frontera no se conoce.", 1),
+        ("The rack has no annotation scale.", "El rack no tiene escala de anotación.", 0), // before 1 (I-64 F4B PB-T4b, owner-pbt4b-list-478-decision.md)
+        ("No reader of the edit intention is assigned.", "No hay un lector de la intención de edición asignado.", 1),
+        ("There is no active document.", "No hay documento activo.", 1),
+        ("A RackCad window is open.", "Hay una ventana de RackCad abierta.", 1),
+        ("A command is in progress.", "Hay un comando en curso.", 1),
+        ("The value is not a finite number greater than zero.", "El valor no es un número finito mayor que cero.", 1),
+        ("A notice of the panel is being delivered.", "Se está entregando un aviso del panel.", 1),
+        // The two rows that F4-T4A1 adds (table T-A1 of the package), each one declared as a private constant of the host.
+        ("The draft cannot be checked in its current status.", "El borrador no admite comprobación en su estado actual.", 1),
+        ("Only a draft in conflict or with edits marked as possibly stale is kept.", "Solo se conserva un borrador en conflicto o con cambios marcados como posiblemente obsoletos.", 1),
+    };
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs :: TheMarkingOnlyTouchesTheDraftsOfThePilotOfTheSessionAndIsOnlyAHint
+====================================================================================================
+
+    [Fact]
+    public void TheMarkingOnlyTouchesTheDraftsOfThePilotOfTheSessionAndIsOnlyAHint()
+    {
+        var body = Src.BodyOf(Host(), @"private\s+void\s+MarkPilotDraftsPossiblyStale\s*\(\s*SessionId\s+\w+\s*\)");
+
+        Assert.Contains("_drafts.RackIdsOf(session)", body);
+        Assert.Contains("_drafts.Find<PushBackFullDraftState>(session, rackId)", body);
+        Assert.Contains(".MarkPossiblyStale()", body);
+        Assert.DoesNotMatch(new Regex(@"ReadIntent|_editIntentReader|CheckNow|DiscardAndReload|EnterError|SetCurrentDraftState|\bThrow\b"), body);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs :: TheReloadIsAMethodOfItsOwnWithTheGateAndTheEightStepsOfTheTableAndOneReadThatOnlyReachesDiscardAndReload
+====================================================================================================
+
+    [Fact]
+    public void TheReloadIsAMethodOfItsOwnWithTheGateAndTheEightStepsOfTheTableAndOneReadThatOnlyReachesDiscardAndReload()
+    {
+        var body = ReloadBody();
+
+        AssertInOrder(
+            body,
+            "string.IsNullOrWhiteSpace(request.RackId)",
+            "HasWitnessWithoutKey(request)",
+            "PassGate(",
+            "_drafts.Find<PushBackFullDraftState>(",
+            ".NeedsLazyReload",
+            "_editIntentReader!.ReadIntent(",
+            ".DiscardAndReload(full.Read);");
+        Assert.Equal(1, Src.Count(body, @"\.ReadIntent\s*\("));
+        Assert.Equal(1, Src.Count(body, @"_editIntentReader\s*[.!]"));
+        Assert.Equal(1, Src.Count(body, @"\bfull\.Read\b"));
+        Assert.Matches(@"\.DiscardAndReload\s*\(\s*full\.Read\s*\)\s*;", body);
+        // F4-T3A (M-2): the call is fixed in the body of the reload, not in the whole file, so a later operation of the host that reloads
+        // does not trip a guard that is about this one.
+        Assert.Equal(1, Src.Count(body, @"\.DiscardAndReload\s*\("));
+        Assert.Equal(0, Src.Count(body, @"\.StaleBase\b|\.CheckNow\s*\(|\.Begin\s*\("));
+        Assert.DoesNotMatch(new Regex(@"\.(?:RetireSession|DiscardAll|EvaluateClose|MarkPossiblyStale|KeepMineOnCurrentVersion)\s*\("), body);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspaceLifecycleHostTests.cs :: EachOperationThatCanChangeADraftEndsTheMarkSoTheSessionIsRetiredConservatively
+====================================================================================================
+
+    [Theory]
+    [InlineData("a-veto")]
+    [InlineData("a-failure-of-the-evaluation")]
+    [InlineData("an-admitted-intention")]
+    [InlineData("a-check-that-finds-a-conflict")]
+    [InlineData("a-check-that-recovers")]
+    [InlineData("a-reload")]
+    [InlineData("a-discard-of-the-host")]
+    [InlineData("a-drain")]
+    [InlineData("a-drain-with-the-stale-hint")]
+    [InlineData("a-note-of-an-edit")]
+    public void EachOperationThatCanChangeADraftEndsTheMarkSoTheSessionIsRetiredConservatively(string operation)
+    {
+        Action<Env>? before = operation switch
+        {
+            "a-check-that-finds-a-conflict" or "a-check-that-recovers" => env => env.UnknownPilot(),
+            "a-reload" => env => env.StalePilot(),
+            _ => null,
+        };
+
+        Action<Env> between = operation switch
+        {
+            "a-veto" => env =>
+            {
+                var dirty = env.Seed("R1");
+                dirty.SetCurrentDraftState(dirty.CurrentDraftState with { Name = "Edited" });
+                Assert.Equal(CloseDecision.Veto, env.Advisor.AdviseClose(env.Session));
+                env.Core.OpenDrafts.DiscardByUser(env.Session, "R1");
+            },
+            "a-failure-of-the-evaluation" => env =>
+            {
+                var comparer = new DraftThrowingComparer();
+                env.Seed("R1", comparer);
+                comparer.Throw = true;
+                Assert.Equal(CloseDecision.Veto, env.Advisor.AdviseClose(env.Session));
+                env.Core.OpenDrafts.DiscardByUser(env.Session, "R1");
+            },
+            "an-admitted-intention" => env => Assert.Equal(EditIntentStatus.Admitted, env.Core.TryBeginPilotEdit(env.Request()).Status),
+            "a-check-that-finds-a-conflict" => env =>
+            {
+                env.Reader.Answer = FullEditIntentKit.MemberBecameBlocking;
+                Assert.Equal(EditCheckStatus.Conflict, env.Core.TryCheckPilotEdit(env.Request()).Status);
+            },
+            "a-check-that-recovers" => env => Assert.Equal(EditCheckStatus.Recovered, env.Core.TryCheckPilotEdit(env.Request()).Status),
+            "a-reload" => env => Assert.Equal(EditIntentStatus.Reloaded, env.Core.TryReloadPilotEdit(env.Request()).Status),
+            "a-discard-of-the-host" => env => Assert.Equal(EditDiscardStatus.Discarded, env.Core.DiscardPilotEdits(env.Session).Status),
+            "a-drain" => env => env.Core.OnDrained(Outcome(env.Session)),
+            "a-drain-with-the-stale-hint" => env => env.Core.OnDrained(Outcome(env.Session, DrainOperation.MarkDraftsPossiblyStale)),
+            _ => env => env.Core.NotePilotEdit(env.Session),
+        };
+
+        Assert.Equal("conservative", PathAfter(before, between));
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspaceLifecycleHostTests.cs :: EachOperationThatCanChangeADraftEndsTheMarkSoTheSessionIsRetiredConservatively (Green, D-S5)
+====================================================================================================
+
+    // I-64 F4B PB-T4b (D-S5): this Theory is split by rows by the partition of the RED; here, the rows that pass there, and in the other class of the partition, the rest.
+    [Theory]
+    [InlineData("a-veto")]
+    [InlineData("a-failure-of-the-evaluation")]
+    [InlineData("an-admitted-intention")]
+    [InlineData("a-discard-of-the-host")]
+    [InlineData("a-drain")]
+    [InlineData("a-drain-with-the-stale-hint")]
+    [InlineData("a-note-of-an-edit")]
+    public void EachOperationThatCanChangeADraftEndsTheMarkSoTheSessionIsRetiredConservatively(string operation)
+    {
+        Action<Env>? before = operation switch
+        {
+            "a-check-that-finds-a-conflict" or "a-check-that-recovers" => env => env.UnknownPilot(),
+            "a-reload" => env => env.StalePilot(),
+            _ => null,
+        };
+
+        Action<Env> between = operation switch
+        {
+            "a-veto" => env =>
+            {
+                var dirty = env.Seed("R1");
+                dirty.SetCurrentDraftState(dirty.CurrentDraftState with { Name = "Edited" });
+                Assert.Equal(CloseDecision.Veto, env.Advisor.AdviseClose(env.Session));
+                env.Core.OpenDrafts.DiscardByUser(env.Session, "R1");
+            },
+            "a-failure-of-the-evaluation" => env =>
+            {
+                var comparer = new DraftThrowingComparer();
+                env.Seed("R1", comparer);
+                comparer.Throw = true;
+                Assert.Equal(CloseDecision.Veto, env.Advisor.AdviseClose(env.Session));
+                env.Core.OpenDrafts.DiscardByUser(env.Session, "R1");
+            },
+            "an-admitted-intention" => env => Assert.Equal(EditIntentStatus.Admitted, env.Core.TryBeginPilotEdit(env.Request()).Status),
+            "a-check-that-finds-a-conflict" => env =>
+            {
+                env.Reader.Answer = FullEditIntentKit.MemberBecameBlocking;
+                Assert.Equal(EditCheckStatus.Conflict, env.Core.TryCheckPilotEdit(env.Request()).Status);
+            },
+            "a-check-that-recovers" => env => Assert.Equal(EditCheckStatus.Recovered, env.Core.TryCheckPilotEdit(env.Request()).Status),
+            "a-reload" => env => Assert.Equal(EditIntentStatus.Reloaded, env.Core.TryReloadPilotEdit(env.Request()).Status),
+            "a-discard-of-the-host" => env => Assert.Equal(EditDiscardStatus.Discarded, env.Core.DiscardPilotEdits(env.Session).Status),
+            "a-drain" => env => env.Core.OnDrained(Outcome(env.Session)),
+            "a-drain-with-the-stale-hint" => env => env.Core.OnDrained(Outcome(env.Session, DrainOperation.MarkDraftsPossiblyStale)),
+            _ => env => env.Core.NotePilotEdit(env.Session),
+        };
+
+        Assert.Equal("conservative", PathAfter(before, between));
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspaceLifecycleHostTests.cs :: EachOperationThatCanChangeADraftEndsTheMarkSoTheSessionIsRetiredConservatively (Red, D-S5)
+====================================================================================================
+
+    // I-64 F4B PB-T4b (D-S5): this Theory is split by rows by the partition of the RED; here, the rows that fail there, and in the other class of the partition, the rest.
+    [Theory]
+    [InlineData("a-check-that-finds-a-conflict")]
+    [InlineData("a-check-that-recovers")]
+    [InlineData("a-reload")]
+    public void EachOperationThatCanChangeADraftEndsTheMarkSoTheSessionIsRetiredConservatively(string operation)
+    {
+        Action<Env>? before = operation switch
+        {
+            "a-check-that-finds-a-conflict" or "a-check-that-recovers" => env => env.UnknownPilot(),
+            "a-reload" => env => env.StalePilot(),
+            _ => null,
+        };
+
+        Action<Env> between = operation switch
+        {
+            "a-veto" => env =>
+            {
+                var dirty = env.Seed("R1");
+                dirty.SetCurrentDraftState(dirty.CurrentDraftState with { Name = "Edited" });
+                Assert.Equal(CloseDecision.Veto, env.Advisor.AdviseClose(env.Session));
+                env.Core.OpenDrafts.DiscardByUser(env.Session, "R1");
+            },
+            "a-failure-of-the-evaluation" => env =>
+            {
+                var comparer = new DraftThrowingComparer();
+                env.Seed("R1", comparer);
+                comparer.Throw = true;
+                Assert.Equal(CloseDecision.Veto, env.Advisor.AdviseClose(env.Session));
+                env.Core.OpenDrafts.DiscardByUser(env.Session, "R1");
+            },
+            "an-admitted-intention" => env => Assert.Equal(EditIntentStatus.Admitted, env.Core.TryBeginPilotEdit(env.Request()).Status),
+            "a-check-that-finds-a-conflict" => env =>
+            {
+                env.Reader.Answer = FullEditIntentKit.MemberBecameBlocking;
+                Assert.Equal(EditCheckStatus.Conflict, env.Core.TryCheckPilotEdit(env.Request()).Status);
+            },
+            "a-check-that-recovers" => env => Assert.Equal(EditCheckStatus.Recovered, env.Core.TryCheckPilotEdit(env.Request()).Status),
+            "a-reload" => env => Assert.Equal(EditIntentStatus.Reloaded, env.Core.TryReloadPilotEdit(env.Request()).Status),
+            "a-discard-of-the-host" => env => Assert.Equal(EditDiscardStatus.Discarded, env.Core.DiscardPilotEdits(env.Session).Status),
+            "a-drain" => env => env.Core.OnDrained(Outcome(env.Session)),
+            "a-drain-with-the-stale-hint" => env => env.Core.OnDrained(Outcome(env.Session, DrainOperation.MarkDraftsPossiblyStale)),
+            _ => env => env.Core.NotePilotEdit(env.Session),
+        };
+
+        Assert.Equal("conservative", PathAfter(before, between));
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs :: TheFlightGuardTripsWhenTheFlightIsCheckedBeforeTheGateThatAuthorizesInTheThreeReconciliations
+====================================================================================================
+
+    // M-01: the same order when the authorization is the gate (PassGate) and not an Authorize of the body itself: the flight before the gate trips.
+    [Theory]
+    [InlineData("TryKeepPilotEdit")]
+    [InlineData("TryDiscardAndReloadPilotEdit")]
+    [InlineData("TryConfirmPilotBase")]
+    public void TheFlightGuardTripsWhenTheFlightIsCheckedBeforeTheGateThatAuthorizesInTheThreeReconciliations(string operation)
+    {
+        var host = Host();
+        Assert.Empty(HostViolations(host));
+        var body = Src.BodyOf(host, FlightBodies.Single(b => b.Name == operation).Signature);
+        var statement = Regex.Match(body, @"if\s*\(\s*UpdateInFlightForRequest\s*\(\s*request\s*\)\s*\)\s*return\s+[^;]*;");
+        var gate = body.IndexOf("var gate = PassGate(", StringComparison.Ordinal);
+        Assert.True(statement.Success, "the body does not check the flight with the request");
+        Assert.True(gate >= 0 && gate < statement.Index, "the body does not pass the gate before it checks the flight");
+
+        var moved = body.Remove(statement.Index, statement.Length).Insert(gate, statement.Value + " ");
+        var mutated = host.Replace(body, moved, StringComparison.Ordinal);
+
+        Assert.NotEqual(host, mutated);
+        Assert.NotEmpty(HostViolations(mutated));
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs :: TheHostGuardAllowsWhatTheNextTaskWouldAddAnUpdateOperationThatWrites
+====================================================================================================
+
+    [Fact]
+    public void TheHostGuardAllowsWhatTheNextTaskWouldAddAnUpdateOperationThatWrites()
+    {
+        var update = "PilotFieldResult IWorkspacePilotEditPort.Update(WorkspaceRequest origin, string rackId)\n{\n    var tr = db.TransactionManager.StartTransaction(); tr.Commit(); btr.AppendEntity(e);\n    return default;\n}\n";
+        var host = Host().Replace("private DraftSession<PushBackFullDraftState>? FindPilotDraft", update + "private DraftSession<PushBackFullDraftState>? FindPilotDraft", StringComparison.Ordinal);
+
+        Assert.Contains("IWorkspacePilotEditPort.Update(", host);
+        Assert.Empty(HostViolations(host));
+        Assert.Empty(WriteViolations(host, Support()));
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs :: TheHostGuardTripsOnAPublicOperationAnOrderOfBasesOrAnAdapterThatIsAFieldOfInstance
+====================================================================================================
+
+    [Theory]
+    [InlineData("public sealed class WorkspaceHostCore : IWorkspaceLifecycleAdvisor, IWorkspacePilotEditPort", "public sealed class WorkspaceHostCore : IWorkspacePilotEditPort, IWorkspaceLifecycleAdvisor")]
+    [InlineData("PilotFieldView IWorkspacePilotEditPort.GetField(", "public PilotFieldView GetField(")]
+    [InlineData("PilotFieldResult IWorkspacePilotEditPort.CommitField(", "public PilotFieldResult CommitField(")]
+    [InlineData("private static readonly PushBackFullFieldAdapter PilotFieldAdapter = new();", "private readonly PushBackFullFieldAdapter _adapter = new();")]
+    public void TheHostGuardTripsOnAPublicOperationAnOrderOfBasesOrAnAdapterThatIsAFieldOfInstance(string from, string to)
+    {
+        var host = Host();
+        Assert.Contains(from, host);
+
+        Assert.NotEmpty(HostViolations(host.Replace(from, to, StringComparison.Ordinal)));
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs :: TheHostGuardTripsOnAPublicOperationAnOrderOfBasesOrAnAdapterThatIsAFieldOfInstance (Green, D-S5)
+====================================================================================================
+
+    // I-64 F4B PB-T4b (D-S5): this Theory is split by rows by the partition of the RED; here, the rows that pass there, and in the other class of the partition, the rest.
+    [Theory]
+    [InlineData("public sealed class WorkspaceHostCore : IWorkspaceLifecycleAdvisor, IWorkspacePilotEditPort", "public sealed class WorkspaceHostCore : IWorkspacePilotEditPort, IWorkspaceLifecycleAdvisor")]
+    [InlineData("PilotFieldView IWorkspacePilotEditPort.GetField(", "public PilotFieldView GetField(")]
+    [InlineData("PilotFieldResult IWorkspacePilotEditPort.CommitField(", "public PilotFieldResult CommitField(")]
+    public void TheHostGuardTripsOnAPublicOperationAnOrderOfBasesOrAnAdapterThatIsAFieldOfInstance(string from, string to)
+    {
+        var host = Host();
+        Assert.Contains(from, host);
+
+        Assert.NotEmpty(HostViolations(host.Replace(from, to, StringComparison.Ordinal)));
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs :: TheHostGuardTripsOnAPublicOperationAnOrderOfBasesOrAnAdapterThatIsAFieldOfInstance (Red, D-S5)
+====================================================================================================
+
+    // I-64 F4B PB-T4b (D-S5): this Theory is split by rows by the partition of the RED; here, the rows that fail there, and in the other class of the partition, the rest.
+    [Theory]
+    [InlineData("private static readonly PushBackFullFieldAdapter PilotFieldAdapter = new();", "private readonly PushBackFullFieldAdapter _adapter = new();")]
+    public void TheHostGuardTripsOnAPublicOperationAnOrderOfBasesOrAnAdapterThatIsAFieldOfInstance(string from, string to)
+    {
+        var host = Host();
+        Assert.Contains(from, host);
+
+        Assert.NotEmpty(HostViolations(host.Replace(from, to, StringComparison.Ordinal)));
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs :: TheHostImplementsThePortExplicitlyAndNeverReadsOutsideTheThreeReadsAndChangesOnlyThroughNotePilotEdit
+====================================================================================================
+
+    [Fact]
+    public void TheHostImplementsThePortExplicitlyAndNeverReadsOutsideTheThreeReadsAndChangesOnlyThroughNotePilotEdit()
+    {
+        Assert.Empty(HostViolations(Host()));
+        Assert.True(typeof(IWorkspacePilotEditPort).IsAssignableFrom(typeof(WorkspaceHostCore)));
+        foreach (var (name, _) in Operations) Assert.Null(typeof(WorkspaceHostCore).GetMethod(name));
+        Assert.Equal(new[] { "IWorkspaceLifecycleAdvisor", "IWorkspacePilotEditPort" }, typeof(WorkspaceHostCore).GetInterfaces().Select(i => i.Name).OrderBy(n => n, StringComparer.Ordinal).ToArray());
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs :: TheTrapGuardTripsOnEachNameAndEachWordThatTheNeighbouringGuardsForbid
+====================================================================================================
+
+    [Theory]
+    [InlineData("public sealed class WorkspacePilotDraftGate { }")]
+    [InlineData("public sealed class WorkspaceStableThing { }")]
+    [InlineData("public sealed class WorkspacePilotTableView { }")]
+    [InlineData("public sealed class PilotEditorPart { }")]
+    [InlineData("public sealed class PilotSubscriptionX { }")]
+    [InlineData("public sealed class PilotMetricView { }")]
+    [InlineData("public sealed class Status { }")]
+    [InlineData("public sealed class BomView { }")]
+    [InlineData("var t = db.TransactionManager;")]
+    [InlineData("var d = Database.Open();")]
+    [InlineData("var l = doc.LockDocument();")]
+    [InlineData("tr.Commit();")]
+    [InlineData("RackLog.Exception(\"x\", null);")]
+    [InlineData("var p = new PushBackPilotFieldAdapter();")]
+    public void TheTrapGuardTripsOnEachNameAndEachWordThatTheNeighbouringGuardsForbid(string injected)
+    {
+        Assert.Empty(TrapViolations(Port(), Support(), Host()));
+
+        Assert.NotEmpty(TrapViolations(Port() + "\n" + injected, Support(), Host()));
+        Assert.NotEmpty(TrapViolations(Port(), Support() + "\n" + injected, Host()));
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs :: ayudante HostViolations
+====================================================================================================
+
+    // ------------------------------------------------------------------ INV-F4T3A-01 to 03: the host core
+
+    private static IEnumerable<string> HostViolations(string host)
+    {
+        // The interface of the advisor stays the first base (WorkspaceLifecycleGuardTests), and the port is the second.
+        if (!Regex.IsMatch(host, @"public\s+sealed\s+class\s+WorkspaceHostCore\s*:\s*IWorkspaceLifecycleAdvisor\s*,\s*IWorkspacePilotEditPort\b"))
+            yield return "the host is not : IWorkspaceLifecycleAdvisor, IWorkspacePilotEditPort";
+
+        // Explicit implementations only: the public surface of the host does not grow.
+        foreach (var (name, _) in Operations)
+        {
+            if (Src.Count(host, HostSignature(name)) != 1) yield return "the host does not implement " + name + " explicitly exactly once";
+            if (Regex.IsMatch(host, @"\bpublic\s+[\w<>,\s?]+\s+" + name + @"\s*\(")) yield return "the host exposes " + name + " publicly";
+        }
+
+        // The adapter of the pilot is static, never a field of instance (H-10).
+        if (Regex.IsMatch(host, @"private\s+(?:readonly\s+)?PushBackFullFieldAdapter\s+_\w+")) yield return "the adapter of the field is a field of instance";
+        if (Src.Count(host, @"private\s+static\s+readonly\s+PushBackFullFieldAdapter\s+\w+") != 1) yield return "the adapter of the field is not the one static field";
+
+        // Only the three reads read the drawing (C03): the other nine operations never name the reader, the probe or the gate of reading.
+        // Row 5: the request of the update is the one exception, with its own rules below.
+        foreach (var (name, _) in Operations.Where(o => !ReadOperations.Contains(o.Name) && !UpdateOperations.Contains(o.Name)))
+        {
+            var body = TryBody(host, HostSignature(name));
+            if (body == null) continue;
+            if (Regex.IsMatch(body, @"_editIntentReader|ReadIntent|_reader\b|PassGate|_probe\b|_bridge\b")) yield return name + " reaches a reader, the probe or the bridge";
+        }
+
+        // The request of the update: it passes the gate of the document, the only place of the rest, and it is the one caller of the executor.
+        foreach (var name in UpdateOperations)
+        {
+            var body = TryBody(host, HostSignature(name));
+            if (body == null) continue;
+            if (!Regex.IsMatch(body, @"\bPassGate\s*\(")) yield return name + " does not pass the gate of the document";
+            if (Regex.IsMatch(body, @"_editIntentReader|ReadIntent|_reader\b")) yield return name + " reads the drawing";
+            if (Src.Count(body, @"\.TryRequest\s*\(") != 1) yield return name + " does not ask the executor exactly once";
+            if (Regex.IsMatch(body, @"TryUpdatePilot|\.Execute\s*\(")) yield return name + " runs the update itself";
+        }
+
+        // The lazy bound of the ticket: it only reads the count of foreign commands of the bridge, and it never touches the own mutation,
+        // the reader, the probe or the gate (RR N-04). The same for the progress, which is memory only.
+        var expire = TryBody(host, @"private\s+UpdateTicket\?\s+ExpireStaleUpdate\s*\(");
+        if (expire == null) yield return "ExpireStaleUpdate is missing";
+        else
+        {
+            if (Regex.IsMatch(expire, @"CloseOwnMutation|OpenOwnMutation|_editIntentReader|_reader\b|_probe\b|PassGate")) yield return "ExpireStaleUpdate reaches more than the count of foreign commands";
+            if (Regex.Matches(expire, @"_bridge\.(\w+)").Cast<Match>().Any(m => m.Groups[1].Value != "ForeignCommandStartsOf")) yield return "ExpireStaleUpdate names a member of the bridge other than ForeignCommandStartsOf";
+            if (!Regex.IsMatch(expire, @"_bridge\.ForeignCommandStartsOf\s*\(")) yield return "ExpireStaleUpdate does not read the count of foreign commands";
+        }
+
+        var progress = TryBody(host, HostSignature("TakeUpdateProgress"));
+        if (progress != null && Regex.IsMatch(progress, @"OwnMutation|_bridge\b|_probe\b|PassGate|_lastAllowedClose")) yield return "TakeUpdateProgress mutates the bridge or looks at the document";
+
+        // While an update is in flight (D-T4C-08, D-T4C-10; M-01): the check of the flight comes after the authorization (Authorize or
+        // PassGate) and after the mark of the reads where the body has it. A body without any authorization has no order to keep: it trips.
+        foreach (var (name, signature, markInBody) in FlightBodies)
+        {
+            var body = TryBody(host, signature);
+            if (body == null) { yield return name + " is missing"; continue; }
+
+            var check = FlightCheck.Match(body);
+            var mark = body.IndexOf("_pilotReadInProgress", StringComparison.Ordinal);
+            var authorize = FirstAuthorization(body);
+            if (!check.Success) yield return name + " does not look at the update in flight";
+            else if (authorize < 0 || check.Index < authorize) yield return name + " looks at the update in flight before its authorization";
+            else if (markInBody && (mark < 0 || check.Index < mark)) yield return name + " looks at the update in flight before the mark of the reads";
+        }
+
+        // Memory only: no authorization at all.
+        foreach (var name in MemoryOperations)
+        {
+            var body = TryBody(host, HostSignature(name));
+            if (body != null && Regex.IsMatch(body, @"\bAuthorize\b|_pilotReadInProgress")) yield return name + " authorizes or looks at the mark of the reads";
+        }
+
+        // The operations that change something: authorization, then the mark of the reads, then the effect.
+        foreach (var name in MutatingOperations)
+        {
+            var body = TryBody(host, HostSignature(name));
+            if (body == null) continue;
+
+            // The request of the update authorizes through the gate of the document, which ends with the authorization of the session.
+            var authorizes = Regex.IsMatch(body, @"\bAuthorize\s*\(") || (UpdateOperations.Contains(name) && Regex.IsMatch(body, @"\bPassGate\s*\("));
+            if (!authorizes) yield return name + " does not authorize";
+            if (!Regex.IsMatch(body, @"if\s*\(\s*_pilotReadInProgress\s*\)")) yield return name + " does not look at the mark of the reads";
+        }
+
+        // NotePilotEdit (or the discard of the session) in every operation that changes a draft (D-T3-02).
+        foreach (var name in new[] { "SetPendingText", "CommitField", "CrossBoundary", "DiscardRack" })
+        {
+            var body = TryBody(host, HostSignature(name));
+            if (body != null && !Regex.IsMatch(body, @"\bNotePilotEdit\s*\(")) yield return name + " does not call NotePilotEdit";
+        }
+
+        var document = TryBody(host, HostSignature("DiscardDocument"));
+        if (document != null && !Regex.IsMatch(document, @"\bDiscardPilotEdits\s*\(")) yield return "DiscardDocument does not delegate in DiscardPilotEdits";
+
+        // A non-blocking boundary needs no authorization: it answers Kept before the one authorization of the blocking ones.
+        var cross = TryBody(host, HostSignature("CrossBoundary"));
+        if (cross != null)
+        {
+            var kept = cross.IndexOf("PilotBoundaryDecision.Kept", StringComparison.Ordinal);
+            var authorize = cross.IndexOf("Authorize(", StringComparison.Ordinal);
+            if (kept < 0 || authorize < 0 || kept > authorize) yield return "CrossBoundary does not keep the non-blocking boundaries before it authorizes";
+        }
+
+        // The ways the host contains an exception: a value with a reason, never the degradation of the session.
+        foreach (var name in new[] { "SetPendingText", "CommitField", "CrossBoundary", "DiscardRack", "DiscardDocument", "GetField", "GetRacksAtRisk", "RequestUpdate", "TakeUpdateProgress" })
+        {
+            var body = TryBody(host, HostSignature(name));
+            if (body == null) continue;
+            if (!Regex.IsMatch(body, @"catch\s*\(\s*Exception")) yield return name + " does not contain its exception";
+            if (Regex.IsMatch(body, @"_faulted|\bContain\s*\(|\bthrow\s*;")) yield return name + " degrades the session or rethrows";
+        }
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs :: AComparerThatThrowsMakesTheFieldUndecidableProtectedAndNotEditableAndGetFieldNeverThrows
+====================================================================================================
+
+    [Fact]
+    public void AComparerThatThrowsMakesTheFieldUndecidableProtectedAndNotEditableAndGetFieldNeverThrows()
+    {
+        var env = new Env();
+        env.OpenUndecidable("R9");
+
+        PilotFieldView view = default;
+        var thrown = Record.Exception(() => view = env.Field("R9"));
+
+        Assert.Null(thrown);
+        Assert.Equal(PilotFieldState.Undecidable, view.State);
+        Assert.True(view.IsProtected);
+        Assert.False(view.CanEdit);
+        Assert.True(view.Exists);
+        Assert.Equal(PilotFieldStatus.NotEditable, env.Type("2", "R9").Status);
+        Assert.Equal(PilotFieldStatus.NotEditable, env.Commit("R9").Status);
+        Assert.Empty(env.Hr.Faults);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs :: DiscardRackNeedsNoComparerAndRemovesAnUndecidableDraftToo
+====================================================================================================
+
+    [Fact]
+    public void DiscardRackNeedsNoComparerAndRemovesAnUndecidableDraftToo()
+    {
+        var env = new Env();
+        var draft = env.OpenUndecidable("R9");
+        Assert.Equal(PilotFieldState.Undecidable, env.Field("R9").State);
+
+        PilotEditOutcomeProbe.Run(() => env.Port.DiscardRack(env.Origin(), "R9"), out var outcome, out var thrown);
+
+        Assert.Null(thrown);
+        Assert.Equal(EditDiscardStatus.Discarded, outcome.Status);
+        Assert.Equal(new[] { "R9" }, outcome.RemovedRackIds.ToArray());
+        Assert.Empty(outcome.PendingTextRackIds);
+        Assert.False(draft.IsRegistered);
+        Assert.Empty(env.Hr.Faults);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs :: TheFallbackByDraftIsKnownAndKeepsTheUncertainOnesApart
+====================================================================================================
+
+    [Fact]
+    public void TheFallbackByDraftIsKnownAndKeepsTheUncertainOnesApart()
+    {
+        var env = new Env();
+        env.Open(RackB);
+        env.Type("1x", RackB);
+        env.OpenUndecidable("R9");
+
+        var risk = env.Port.GetRacksAtRisk(env.Origin());
+
+        Assert.True(risk.IsKnown);
+        Assert.Equal(new[] { RackB }, risk.RackIds.ToArray());
+        Assert.Equal(new[] { "R9" }, risk.UncertainRackIds.ToArray());
+        Assert.Empty(env.Hr.Faults);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs :: TheOuterCatchOfGetFieldAnswersTheViewInErrorWhenTheCopierOfTheStateAnswersNull
+====================================================================================================
+
+    // (c) The outer catch of GetField, reached through OpenDrafts with a copier of the state that answers null: the state of the draft is null,
+    // the view cannot be built, and the answer is the view in Error, protected and not editable, with the fault logged and nothing thrown.
+    [Fact]
+    public void TheOuterCatchOfGetFieldAnswersTheViewInErrorWhenTheCopierOfTheStateAnswersNull()
+    {
+        var env = new Env();
+        // I-64 F4B PB-T4b (D-S1): the draft of the panel is the full one, so it is begun with the full read of the same scan.
+        var read = FullEditIntentKit.Admitted("R9").FullRead!.Read;
+        var begun = env.Core.OpenDrafts.Begin(env.Session, "R9", read, new PilotEditThrowingComparer(), _ => null!);
+        Assert.Equal(DraftBeginStatus.Created, begun.Status);
+        env.Hr.Faults.Clear();
+
+        PilotFieldView view = default;
+        var thrown = Record.Exception(() => view = env.Field("R9"));
+
+        Assert.Null(thrown);
+        Assert.True(view.Exists);
+        Assert.Equal(PilotFieldState.Error, view.State);
+        Assert.True(view.IsProtected);
+        Assert.False(view.CanEdit);
+        Assert.Null(view.CommittedText);
+        Assert.False(string.IsNullOrWhiteSpace(view.CommittedTextReason));
+        Assert.Contains(env.Hr.Faults, fault => fault.Context == "WorkspaceHostCore.GetField");
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs :: TheRacksAtRiskAreOrderedOrdinallyAndAComparerThatThrowsMakesThemUncertainApart
+====================================================================================================
+
+    // ------------------------------------------------------------------ the racks at risk
+
+    [Fact]
+    public void TheRacksAtRiskAreOrderedOrdinallyAndAComparerThatThrowsMakesThemUncertainApart()
+    {
+        var env = new Env();
+        env.Open(RackB);
+        env.Open(RackA);
+        env.Type("1x", RackB);
+        env.Type("2x", RackA);
+        env.OpenUndecidable("R9");
+        env.Open("R5");
+
+        PilotRiskView risk = default;
+        var thrown = Record.Exception(() => risk = env.Port.GetRacksAtRisk(env.Origin()));
+
+        Assert.Null(thrown);
+        Assert.Equal(new[] { RackA, RackB }.OrderBy(r => r, StringComparer.Ordinal).ToArray(), risk.RackIds.ToArray());
+        Assert.Equal(new[] { "R9" }, risk.UncertainRackIds.ToArray());
+        Assert.Empty(env.Hr.Faults);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs :: TheReasonOfAFieldThatCannotBeReadIsInSpanish
+====================================================================================================
+
+    [Fact]
+    public void TheReasonOfAFieldThatCannotBeReadIsInSpanish()
+    {
+        var env = new Env();
+        // I-64 F4B PB-T4b (D-S1): the draft of the panel is the full one, so it is begun with the full read of the same scan.
+        var read = FullEditIntentKit.Admitted("R9").FullRead!.Read;
+        var begun = env.Core.OpenDrafts.Begin(env.Session, "R9", read, new PilotEditThrowingComparer(), _ => null!);
+        Assert.Equal(DraftBeginStatus.Created, begun.Status);
+
+        var view = env.Field("R9");
+
+        Assert.Equal(PilotFieldState.Error, view.State);
+        Assert.Equal("No se pudo leer el estado del campo.", view.CommittedTextReason);
+        Assert.Null(view.ErrorReason);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs :: ayudante Env
+====================================================================================================
+
+    private sealed class Env
+    {
+        public Env(bool wire = true)
+        {
+            Hr = new WorkspaceHostRig().WithDocument(100);
+            Hr.Host.OpenPanel();
+            Session = Hr.ActiveSession;
+            Hr.Idle();
+            Hr.Reader.Reads.Clear();
+            Hr.Reader.Invalidations.Clear();
+            Fake = new FullEditIntentFakeReader();
+            Audited = new PilotEditAuditedReader(Fake);
+            Core.SetEditIntentReader(Audited);
+            if (wire) Bridge.SetLifecycleAdvisor(Core);
+        }
+
+        public WorkspaceHostRig Hr { get; }
+
+        public WorkspaceHostCore Core => Hr.Host;
+
+        public IWorkspacePilotEditPort Port => Core;
+
+        public EventBridgeCore Bridge => Hr.Bridge.Core;
+
+        public FullEditIntentFakeReader Fake { get; }
+
+        public PilotEditAuditedReader Audited { get; }
+
+        public SessionId Session { get; }
+
+        public WorkspaceRequest Origin(SessionId? session = null) => new(session ?? Session);
+
+        public EditIntentRequest Request(string rack = RackA, SessionId? session = null) => new(session ?? Session, rack, null, null);
+
+        public CloseDecision Close(SessionId? session = null) => Bridge.OnBeginDocumentClose(session ?? Session);
+
+        public void Destroy(long nativeId = 100) => Bridge.OnDocumentToBeDestroyed(nativeId);
+
+        public DraftSession<PushBackFullDraftState> Open(string rack = RackA, SessionId? session = null)
+        {
+            var outcome = Port.TryBeginEdit(Request(rack, session));
+            Assert.Equal(EditIntentStatus.Admitted, outcome.Status);
+            var draft = Core.OpenDrafts.Find<PushBackFullDraftState>(session ?? Session, rack);
+            Assert.NotNull(draft);
+            return draft!;
+        }
+
+        /// <summary>A draft of the pilot born with a comparer that throws (it cannot tell whether it is dirty).</summary>
+        public DraftSession<PushBackFullDraftState> OpenUndecidable(string rack = "R9", SessionId? session = null)
+        {
+            // I-64 F4B PB-T4b (D-S1): the draft of the panel is the full one, so it is begun with the full read of the same scan.
+            var read = FullEditIntentKit.Admitted(rack).FullRead!.Read;
+            var begun = Core.OpenDrafts.Begin(session ?? Session, rack, read, new PilotEditThrowingComparer(), PushBackFullDraftStateComparer.Copy);
+            Assert.Equal(DraftBeginStatus.Created, begun.Status);
+            return begun.Draft!;
+        }
+
+        public PilotFieldView Field(string rack = RackA, SessionId? session = null) => Port.GetField(Origin(session), rack);
+
+        public PilotFieldResult Type(string text, string rack = RackA, SessionId? session = null) => Port.SetPendingText(Origin(session), rack, text);
+
+        public PilotFieldResult Commit(string rack = RackA, SessionId? session = null) => Port.CommitField(Origin(session), rack);
+
+        public PilotBoundaryResult Cross(PilotBoundaryKind kind, string rack = RackA, SessionId? session = null) => Port.CrossBoundary(Origin(session), rack, kind);
+
+        /// <summary>The annotation scale of the base that the double of the reader answers with.</summary>
+        public const double InitialScale = 1.5;
+
+        public static double ScaleOf(DraftSession<PushBackFullDraftState> draft) => draft.CurrentDraftState.Editable.AnnotationScale;
+
+        /// <summary>The way the host retired the session after the destruction: the "known clean" mark is shown by a clean draft whose comparer throws.</summary>
+        public string PathAfter(Action<Env> operation)
+        {
+            Open();
+            Assert.Equal(CloseDecision.Allow, Close());
+            Core.OpenDrafts.Begin(Session, "R9", DraftKit.Read(), new DraftThrowingComparer { Throw = true }, DraftKit.CopyForm);
+            operation(this);
+            Destroy();
+            return Core.LossNotices.Any(n => n.UncertainRackIds.Contains("R9")) ? "conservative" : "known-safe";
+        }
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs :: ACleanDraftHasNothingToApplyAndTheRereadIsNotLookedAt
+====================================================================================================
+
+    [Fact]
+    public void ACleanDraftHasNothingToApplyAndTheRereadIsNotLookedAt()
+    {
+        var draft = FullPrepareKit.DraftOf(IntentKit.Read(FullPrepareKit.RealScan()));
+        FullHandKit.Prepare(PushBackFullPrepareInput.From(draft), IntentKit.Read(FullPrepareKit.RealScan()), PilotKit.Catalog);
+
+        foreach (var reread in new PushBackPilotIntentResult?[] { null, IntentKit.Read(FullPrepareKit.RealScan("pb-02-modulos")), FullPrepareKit.Reread(DraftKit.DefaultBase(), notAdmitted: "x") })
+        {
+            PushBackPilotPrepareResult? result = null;
+            var thrown = Record.Exception(() => result = FullHandKit.Prepare(PushBackFullPrepareInput.From(draft), reread!, null!));
+
+            Assert.Null(thrown);
+            Assert.Equal(PushBackPilotPrepareKind.NothingToApply, result!.Kind);
+            Assert.Null(result.Plan);
+        }
+
+        // A clean draft that began an update is NothingToApply too (N-8): it never takes the slot.
+        Assert.True(draft.TryBeginApply().IsStarted);
+        Assert.Equal(PushBackPilotPrepareKind.NothingToApply, FullPrepareKit.Prepare(draft, IntentKit.Read(FullPrepareKit.RealScan())).Kind);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs :: AKeepThatIsKeptEndsTheMarkAndOneThatIsNotNeededOrNotAdmittedDoesNot
+====================================================================================================
+
+    [Fact]
+    public void AKeepThatIsKeptEndsTheMarkAndOneThatIsNotNeededOrNotAdmittedDoesNot()
+    {
+        Assert.Equal("conservative", PathAfter(rig => rig.Open(), (rig, draft) =>
+        {
+            Rig.Edit(draft);
+            draft.MarkPossiblyStale();
+            rig.Reader.Answer = Changed;
+            // I-64 F4B PB-T4b (D-S1, D-PBT4-08): the presentation does not end the mark; the keep with the witness does.
+            var presented = rig.Core.TryKeepPilotEdit(rig.Request());
+            Assert.Equal(EditIntentStatus.Presented, presented.Status);
+            rig.Reader.Answer = rack => FullHandKit.Seen(Changed(rack), presented.KeepWitness!);
+            Assert.Equal(EditIntentStatus.Kept, rig.Core.TryKeepPilotEdit(rig.Request(witness: presented.KeepWitness)).Status);
+        }));
+
+        Assert.Equal("known-safe", PathAfter(rig => rig.Open(), (rig, draft) =>
+            Assert.Equal(EditIntentStatus.NotNeeded, rig.Core.TryKeepPilotEdit(rig.Request()).Status)));
+
+        Assert.Equal("known-safe", PathAfter(rig => rig.Open(), (rig, draft) =>
+        {
+            Rig.Edit(draft);
+            draft.MarkPossiblyStale();
+            rig.Reader.Answer = FullEditIntentKit.OriginMissing;
+            Assert.Equal(EditIntentStatus.NotAdmitted, rig.Core.TryKeepPilotEdit(rig.Request()).Status);
+        }));
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs :: AMissingCatalogIsAnsweredAfterTheConflictAndTheAdmissionAndNotBeforeThem
+====================================================================================================
+
+    // M-6 (I-64 F4-T4B): the missing catalog is answered at the start of Build, so a difference of the base and a read that is not admitted
+    // are told as such even when the catalog is missing; with a read that matches and is admitted, the missing catalog is still Invalid.
+    [Fact]
+    public void AMissingCatalogIsAnsweredAfterTheConflictAndTheAdmissionAndNotBeforeThem()
+    {
+        var read = IntentKit.Read(FullPrepareKit.RealScan());
+        var draft = FullPrepareKit.DraftOf(read);
+        FullPrepareKit.SetScale(draft, 2.25);
+        var input = PushBackFullPrepareInput.From(draft);
+        var changed = IntentKit.Read(FullPrepareKit.RealScan("pb-02-modulos"));
+        var notAdmitted = FullPrepareKit.Reread(read.StaleBase, notAdmitted: "x");
+
+        var conflict = FullHandKit.Prepare(input, changed, null!);
+        var refused = FullHandKit.Prepare(input, notAdmitted, null!);
+        var missing = FullHandKit.Prepare(input, read, null!);
+
+        Assert.Equal(PushBackPilotPrepareKind.Conflict, conflict.Kind);
+        Assert.NotEmpty(conflict.Differences);
+        Assert.Equal(PushBackPilotPrepareKind.NotAdmitted, refused.Kind);
+        Assert.Equal("x", refused.Reason);
+        Assert.Equal(PushBackPilotPrepareKind.Invalid, missing.Kind);
+        Assert.Equal(PushBackPilotUpdatePlanner.MissingInputReason, missing.Reason);
+        // Without a re-read there is still nothing to look at: Invalid.
+        Assert.Equal(PushBackPilotPrepareKind.Invalid, FullHandKit.Prepare(input, null!, PilotKit.Catalog).Kind);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs :: AnExceptionOfTheReaderIsFailedWithTheMessageReportedAndTheMarkAndTheSessionAreNotTouched
+====================================================================================================
+
+    [Fact]
+    public void AnExceptionOfTheReaderIsFailedWithTheMessageReportedAndTheMarkAndTheSessionAreNotTouched()
+    {
+        foreach (var operation in new[] { "confirm", "keep", "discard" })
+        {
+            var rig = new Rig();
+            var draft = rig.Open();
+            Rig.Edit(draft);
+            draft.MarkPossiblyStale();
+            rig.Reader.Throw = new InvalidOperationException("the reader threw");
+
+            string? message;
+            string context;
+            switch (operation)
+            {
+                case "confirm":
+                    var confirm = rig.Port.TryConfirmBase(rig.Request());
+                    Assert.Equal(EditConfirmStatus.Failed, confirm.Status);
+                    message = confirm.Reason;
+                    context = "WorkspaceHostCore.TryConfirmPilotBase";
+                    break;
+                case "keep":
+                    var keep = rig.Port.TryKeepMine(rig.Request());
+                    Assert.Equal(EditIntentStatus.Failed, keep.Status);
+                    message = keep.Reason;
+                    context = "WorkspaceHostCore.TryKeepPilotEdit";
+                    break;
+                default:
+                    var discard = rig.Port.TryDiscardAndReload(rig.Request());
+                    Assert.Equal(EditIntentStatus.Failed, discard.Status);
+                    message = discard.Reason;
+                    context = "WorkspaceHostCore.TryDiscardAndReloadPilotEdit";
+                    break;
+            }
+
+            Assert.Equal("the reader threw", message);
+            var fault = Assert.Single(rig.Host.Faults);
+            Assert.Equal(context, fault.Context);
+            Assert.Equal(WorkspaceHostStatus.Ready, rig.Core.GetSnapshot().Status);
+            Assert.False(rig.Host.Bridge.Core.IsDegraded(rig.Session));
+            Assert.Equal(DraftStatus.Dirty, draft.Status);
+            Assert.True(draft.IsPossiblyStale);
+            // The mark of the read was released by the finally: a second call reads again.
+            rig.Reader.Throw = null;
+            Assert.NotEqual("Hay una lectura del piloto en curso.", rig.Port.TryBeginEdit(rig.Request()).Reason);
+        }
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs :: ConfirmAppliesOnlyToCleanDirtyAndConflictAndTheOthersReadNothing
+====================================================================================================
+
+    [Theory]
+    [MemberData(nameof(StatusNames))]
+    public void ConfirmAppliesOnlyToCleanDirtyAndConflictAndTheOthersReadNothing(string name)
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+        Statuses().Single(s => s.Name == name).Put(rig, draft);
+        var applies = name is "Clean" or "Dirty" or "DirtyStale" or "Conflict";
+
+        var outcome = rig.Core.TryConfirmPilotBase(rig.Request());
+
+        if (applies)
+        {
+            Assert.Equal(EditConfirmStatus.Confirmed, outcome.Status);
+            Assert.Single(rig.Reader.Calls);
+        }
+        else
+        {
+            Assert.Equal(EditConfirmStatus.NotApplicable, outcome.Status);
+            Assert.Equal("El borrador no admite comprobación en su estado actual.", outcome.Reason);
+            Assert.Empty(rig.Reader.Calls);
+        }
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs :: ConfirmAppliesOnlyToCleanDirtyAndConflictAndTheOthersReadNothing (Green, D-S5)
+====================================================================================================
+
+    // I-64 F4B PB-T4b (D-S5): this Theory is split by rows by the partition of the RED; here, the rows that pass there, and in the other class of the partition, the rest.
+    [Theory]
+    [MemberData(nameof(StatusNamesGreen))]
+    public void ConfirmAppliesOnlyToCleanDirtyAndConflictAndTheOthersReadNothing(string name)
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+        Statuses().Single(s => s.Name == name).Put(rig, draft);
+        var applies = name is "Clean" or "Dirty" or "DirtyStale" or "Conflict";
+
+        var outcome = rig.Core.TryConfirmPilotBase(rig.Request());
+
+        if (applies)
+        {
+            Assert.Equal(EditConfirmStatus.Confirmed, outcome.Status);
+            Assert.Single(rig.Reader.Calls);
+        }
+        else
+        {
+            Assert.Equal(EditConfirmStatus.NotApplicable, outcome.Status);
+            Assert.Equal("El borrador no admite comprobación en su estado actual.", outcome.Reason);
+            Assert.Empty(rig.Reader.Calls);
+        }
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs :: ConfirmAppliesOnlyToCleanDirtyAndConflictAndTheOthersReadNothing (Red, D-S5)
+====================================================================================================
+
+    // I-64 F4B PB-T4b (D-S5): this Theory is split by rows by the partition of the RED; here, the rows that fail there, and in the other class of the partition, the rest.
+    [Theory]
+    [MemberData(nameof(StatusNamesRed))]
+    public void ConfirmAppliesOnlyToCleanDirtyAndConflictAndTheOthersReadNothing(string name)
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+        Statuses().Single(s => s.Name == name).Put(rig, draft);
+        var applies = name is "Clean" or "Dirty" or "DirtyStale" or "Conflict";
+
+        var outcome = rig.Core.TryConfirmPilotBase(rig.Request());
+
+        if (applies)
+        {
+            Assert.Equal(EditConfirmStatus.Confirmed, outcome.Status);
+            Assert.Single(rig.Reader.Calls);
+        }
+        else
+        {
+            Assert.Equal(EditConfirmStatus.NotApplicable, outcome.Status);
+            Assert.Equal("El borrador no admite comprobación en su estado actual.", outcome.Reason);
+            Assert.Empty(rig.Reader.Calls);
+        }
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs :: EachOperationReadsOnceAndSetsTheMarkOfReadInProgressAroundTheReadAndResetsItAfterwards
+====================================================================================================
+
+    // ------------------------------------------------------------------ the read: one, with the mark, and the mapping of what it answers
+
+    [Fact]
+    public void EachOperationReadsOnceAndSetsTheMarkOfReadInProgressAroundTheReadAndResetsItAfterwards()
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+        Rig.Edit(draft);
+        draft.MarkPossiblyStale();
+        var nested = new List<(string Operation, string Status, string? Reason)>();
+        rig.Reader.Answer = rack =>
+        {
+            var confirm = rig.Port.TryConfirmBase(rig.Request());
+            var keep = rig.Port.TryKeepMine(rig.Request());
+            var discard = rig.Port.TryDiscardAndReload(rig.Request());
+            var begin = rig.Port.TryBeginEdit(rig.Request());
+            nested.Add(("confirm", confirm.Status.ToString(), confirm.Reason));
+            nested.Add(("keep", keep.Status.ToString(), keep.Reason));
+            nested.Add(("discard", discard.Status.ToString(), discard.Reason));
+            nested.Add(("begin", begin.Status.ToString(), begin.Reason));
+            return FullEditIntentKit.Admitted(rack);
+        };
+
+        var results = new string[3];
+        results[0] = rig.Port.TryConfirmBase(rig.Request()).Status.ToString();
+        draft.MarkPossiblyStale();
+        results[1] = rig.Port.TryKeepMine(rig.Request()).Status.ToString();
+        results[2] = rig.Port.TryDiscardAndReload(rig.Request()).Status.ToString();
+
+        // Each of the three outer calls read once; the nested ones answered Waiting without reading and without effect.
+        Assert.Equal(3, rig.Reader.Calls.Count);
+        Assert.Equal(12, nested.Count);
+        Assert.All(nested, n =>
+        {
+            Assert.Equal("Waiting", n.Status);
+            Assert.Equal("Hay una lectura del piloto en curso.", n.Reason);
+        });
+        // I-64 F4B PB-T4b (D-PBT4-08): «Conservar» sin testigo presenta y no cambia el borrador.
+        Assert.Equal(new[] { "Confirmed", "Presented", "Reloaded" }, results);
+        // The mark is reset afterwards: the next call reads again.
+        rig.Reader.Answer = FullEditIntentKit.Admitted;
+        Assert.Equal(EditConfirmStatus.Confirmed, rig.Port.TryConfirmBase(rig.Request()).Status);
+        Assert.Equal(4, rig.Reader.Calls.Count);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs :: InsideANoticeTheGateAnswersWaitingForTheThreeOperationsWithoutDelegatingAndOutsideItDelegates
+====================================================================================================
+
+    // ------------------------------------------------------------------ the gate of notices and the state of the field
+
+    [Fact]
+    public void InsideANoticeTheGateAnswersWaitingForTheThreeOperationsWithoutDelegatingAndOutsideItDelegates()
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+        Rig.Edit(draft);
+        var depth = new WorkspaceNoticeDepth();
+        IWorkspacePilotEditPort gate = new WorkspacePilotEditGate(rig.Core, depth);
+        depth.Enter();
+
+        var confirm = gate.TryConfirmBase(rig.Request());
+        var keep = gate.TryKeepMine(rig.Request());
+        var discard = gate.TryDiscardAndReload(rig.Request());
+
+        Assert.Equal(EditConfirmStatus.Waiting, confirm.Status);
+        Assert.Equal(WorkspacePilotEditGate.InsideNoticeReason, confirm.Reason);
+        Assert.Equal(EditIntentStatus.Waiting, keep.Status);
+        Assert.Equal(WorkspacePilotEditGate.InsideNoticeReason, keep.Reason);
+        Assert.Equal(EditIntentStatus.Waiting, discard.Status);
+        Assert.Equal(WorkspacePilotEditGate.InsideNoticeReason, discard.Reason);
+        Assert.Empty(rig.Reader.Calls);
+
+        depth.Leave();
+        Assert.Equal(EditConfirmStatus.Confirmed, gate.TryConfirmBase(rig.Request()).Status);
+        Assert.Equal(EditIntentStatus.NotNeeded, gate.TryKeepMine(rig.Request()).Status);
+        Assert.Equal(EditIntentStatus.Reloaded, gate.TryDiscardAndReload(rig.Request()).Status);
+        Assert.Equal(2, rig.Reader.Calls.Count);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs :: InvalidA_ACurrentStateThatDoesNotComposeIsInvalidWithTheReasonOfTheCompositionAndOverTheCarryOversOfTheMaterializer
+====================================================================================================
+
+    // ================================================================== INV-F4T4A1-07, 08, 09: the Invalid cases (a) to (e) and the plan
+
+    [Fact]
+    public void InvalidA_ACurrentStateThatDoesNotComposeIsInvalidWithTheReasonOfTheCompositionAndOverTheCarryOversOfTheMaterializer()
+    {
+        var read = IntentKit.Read(FullPrepareKit.RealScan());
+
+        // I-64 F4B PB-T4b (D-PBT4-04): content that the pilot did not edit is edited by the full model, and it composes.
+        var content = FullPrepareKit.DraftOf(read);
+        FullPrepareKit.SetScale(content, 2.25);
+        content.CurrentDraftState.Editable.PalletTolerance += 1.0;
+        var accepted = FullPrepareKit.Prepare(content, read);
+        Assert.True(accepted.Kind == PushBackPilotPrepareKind.Ready, accepted.Reason);
+        Assert.NotNull(accepted.Plan);
+
+        // A scale that is not valid (6), with the scale that Dirty needs to be set apart.
+        foreach (var scale in new[] { double.NaN, double.PositiveInfinity, double.NegativeInfinity, 0.0, -1.0 })
+        {
+            var invalid = FullPrepareKit.DraftOf(read);
+            FullPrepareKit.SetScale(invalid, scale);
+
+            var result = FullPrepareKit.Prepare(invalid, read);
+
+            Assert.Equal(PushBackPilotPrepareKind.Invalid, result.Kind);
+            Assert.Equal(PushBackPilotMaterializer.InvalidScaleReason, result.Reason);
+        }
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs :: InvalidA_AnOriginThatNoLongerMaterializesIsInvalidWithTheReasonOfTheMaterializerBeforeAnythingElse
+====================================================================================================
+
+    [Fact]
+    public void InvalidA_AnOriginThatNoLongerMaterializesIsInvalidWithTheReasonOfTheMaterializerBeforeAnythingElse()
+    {
+        // The inner design of the origin cannot be read: the composition (a) is the first to find it, so the reason is the one of the materializer.
+        var origin = IntentKit.Rewrite(PilotKit.Text("pb-01-base"), embed => embed.Design = "{ not json");
+        var members = FullPrepareKit.BaseOf(("A1", origin));
+        var editable = FullHandKit.FullState("pb-01-base").Editable;
+        var draft = new DraftRegistry().Begin(
+            DraftKit.S1, FullPrepareKit.Rack, DraftIntentRead<PushBackFullDraftState>.Admitted(members, new PushBackFullDraftState(editable, origin)),
+            PushBackFullDraftStateComparer.Instance, PushBackFullDraftStateComparer.Copy).Draft!;
+        FullPrepareKit.SetScale(draft, 2.25);
+
+        var result = FullPrepareKit.Prepare(draft, FullPrepareKit.Reread(members));
+
+        Assert.Equal(PushBackPilotPrepareKind.Invalid, result.Kind);
+        Assert.Equal(PushBackPilotMaterializer.UnreadableOrFutureDiagnostic, result.Reason);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs :: InvalidD_ABuilderThatCannotBuildTheOutgoingSystemIsInvalidWithTheTypedErrorAndNothingIsWritten
+====================================================================================================
+
+    [Fact]
+    public void InvalidD_ABuilderThatCannotBuildTheOutgoingSystemIsInvalidWithTheTypedErrorAndNothingIsWritten()
+    {
+        var scan = FullPrepareKit.RealScan();
+        var read = IntentKit.Read(scan);
+        var draft = FullPrepareKit.DraftOf(read);
+        FullPrepareKit.SetScale(draft, 2.25);
+
+        // A catalog that counts its touches and fails after the n-th one. The touches of the stages of PREPARE are measured with the
+        // real planner: the composition (a) and the builder (d) both read the catalog, and the failure is armed to come in the builder.
+        var armed = new CountingCatalog(PilotKit.Catalog, int.MaxValue);
+        var ready = FullHandKit.Prepare(PushBackFullPrepareInput.From(draft), read, armed.Catalog);
+        Assert.Equal(PushBackPilotPrepareKind.Ready, ready.Kind);
+        var total = armed.Touches;
+        Assert.True(total > 0);
+
+        var failures = new List<PushBackPilotPrepareResult>();
+        for (var allowed = 0; allowed < total; allowed++)
+        {
+            var failing = new CountingCatalog(PilotKit.Catalog, allowed);
+            failures.Add(FullHandKit.Prepare(PushBackFullPrepareInput.From(draft), read, failing.Catalog));
+        }
+
+        // Every failure is a typed Invalid and never an exception; at least one of them is the failure of the builder (d).
+        Assert.All(failures, f =>
+        {
+            Assert.Equal(PushBackPilotPrepareKind.Invalid, f.Kind);
+            Assert.Null(f.Plan);
+            Assert.False(string.IsNullOrEmpty(f.Reason));
+        });
+        Assert.Contains(failures, f => f.Reason!.StartsWith(PushBackPilotUpdatePlanner.SystemFailurePrefix, StringComparison.Ordinal));
+        Assert.Contains(failures, f => f.Reason!.Contains("catalog-boom", StringComparison.Ordinal));
+        Assert.Equal(DraftStatus.Dirty, draft.Status);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs :: InvalidE_AMutableMemberThatIsNotAvailableInTheOutgoingSystemOrWhoseEnvelopeDoesNotDecodeIsInvalidAndNeverErasesAView
+====================================================================================================
+
+    [Fact]
+    public void InvalidE_AMutableMemberThatIsNotAvailableInTheOutgoingSystemOrWhoseEnvelopeDoesNotDecodeIsInvalidAndNeverErasesAView()
+    {
+        var origin = PilotKit.Text("pb-01-base");
+        var originFrontal = FullPrepareKit.Frontal();
+        var cases = new Dictionary<string, string>
+        {
+            // The frontal view of side B in a rack that has only side A.
+            ["side-b"] = FullPrepareKit.Frontal(section: 2),
+            // A frontal view with the section of the fixtures (-1) is a corrupt descriptor: it is never coerced into another view.
+            ["corrupt-descriptor"] = PilotKit.Text("pb-01-base"),
+            ["section-out-of-range"] = FullPrepareKit.Frontal(section: 9),
+        };
+
+        foreach (var (name, text) in cases)
+        {
+            var members = FullPrepareKit.BaseOf(("A1", originFrontal), ("B2", text));
+            var draft = FullPrepareKit.DraftOf(members, originFrontal);
+            FullPrepareKit.SetScale(draft, 2.25);
+
+            var result = FullPrepareKit.Prepare(draft, FullPrepareKit.Reread(members));
+
+            Assert.True(result.Kind == PushBackPilotPrepareKind.Invalid, name);
+            Assert.Null(result.Plan);
+            // M-5 (I-64 F4-T4B): a descriptor that does not decode has no address to ask about, so it has its own text and is never reported as a
+            // view that is "no longer available".
+            var corrupt = name is "corrupt-descriptor" or "section-out-of-range";
+            // I-64 F4B PB-T4b (D-S1; D-PBT3-09 (e)): with the full model, the frontal of side B of a rack without side B has its own text.
+            Assert.StartsWith((corrupt ? PushBackPilotUpdatePlanner.ViewAddressPrefix : PushBackPilotUpdatePlanner.FrontalBOfOneWayPrefix) + "B2", result.Reason, StringComparison.Ordinal);
+            Assert.EndsWith(corrupt ? PushBackPilotUpdatePlanner.ViewAddressSuffix : PushBackPilotUpdatePlanner.FrontalBOfOneWaySuffix, result.Reason, StringComparison.Ordinal);
+        }
+
+        // I-64 F4B PB-T4b (D-S1; D-PB-04, D-PBT3-09 (e) and D-PBT4-07): the full model erases the obsolete lateral, so the phantom is not
+        // a view that is no longer available: the update is Ready, the phantom is erased and it is never in the plan of the redrawn views.
+        var phantomMembers = FullPrepareKit.BaseOf(("A1", originFrontal), ("B2", FullPrepareKit.Lateral(FullPrepareKit.MissingPost)));
+        var phantomDraft = FullPrepareKit.DraftOf(phantomMembers, originFrontal);
+        FullPrepareKit.SetScale(phantomDraft, 2.25);
+        var phantom = FullPrepareKit.Prepare(phantomDraft, FullPrepareKit.Reread(phantomMembers));
+        Assert.Equal(PushBackPilotPrepareKind.Ready, phantom.Kind);
+        Assert.Equal(new[] { "A1" }, phantom.Plan!.Members.Select(m => m.Key).ToArray());
+        Assert.Equal(new[] { "B2" }, phantom.Plan!.Erasures.ToArray());
+
+        Assert.NotEqual(origin, originFrontal);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs :: KeepAConflictLeavesItAndTheDraftIsDirtyOnTheNewVersion
+====================================================================================================
+
+    [Fact]
+    public void KeepAConflictLeavesItAndTheDraftIsDirtyOnTheNewVersion()
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+        Rig.Edit(draft);
+        DraftToConflict(draft);
+        rig.Reader.Answer = Changed;
+
+        // I-64 F4B PB-T4b (D-S1, D-PBT4-08): the first call presents and leaves the conflict; the second, with the witness, keeps.
+        var presented = rig.Core.TryKeepPilotEdit(rig.Request());
+        Assert.Equal(EditIntentStatus.Presented, presented.Status);
+        Assert.Equal(DraftStatus.Conflict, draft.Status);
+        rig.Reader.Answer = rack => FullHandKit.Seen(Changed(rack), presented.KeepWitness!);
+        var outcome = rig.Core.TryKeepPilotEdit(rig.Request(witness: presented.KeepWitness));
+
+        Assert.Equal(EditIntentStatus.Kept, outcome.Status);
+        Assert.Equal(DraftStatus.Dirty, draft.Status);
+        Assert.Empty(draft.ConflictDifferences);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs :: KeepAfterAChangeOfTheDrawingStaysOnTheNewVersionWithTheScaleAndThePendingTextOfTheDraft
+====================================================================================================
+
+    [Fact]
+    public void KeepAfterAChangeOfTheDrawingStaysOnTheNewVersionWithTheScaleAndThePendingTextOfTheDraft()
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+        Rig.Edit(draft);
+        draft.MarkPossiblyStale();
+        draft.SetPendingText("field", "typed");
+        var reread = Changed(RackA).PilotRead!;
+        rig.Reader.Answer = Changed;
+        var expectedCurrent = PushBackFullComposition.KeepOn(Changed(RackA).FullRead!.Read.InitialState!, draft.CurrentDraftState);
+
+        // I-64 F4B PB-T4b (D-PBT4-08): the first call presents and changes nothing; the second, with the witness of that read, keeps.
+        var presented = rig.Core.TryKeepPilotEdit(rig.Request());
+        Assert.Equal(EditIntentStatus.Presented, presented.Status);
+        Assert.True(draft.IsPossiblyStale);
+        rig.Reader.Answer = rack => FullHandKit.Seen(Changed(rack), presented.KeepWitness!);
+        var outcome = rig.Core.TryKeepPilotEdit(rig.Request(witness: presented.KeepWitness));
+
+        Assert.Equal(EditIntentStatus.Kept, outcome.Status);
+        Assert.Equal(EditWitnessStatus.Unchanged, outcome.Witness);
+        Assert.Null(outcome.Reason);
+        Assert.True(draft.StaleBase.CompareWith(reread.StaleBase).IsMatch);
+        Assert.Equal(IntentKit.Variant("pb-02-modulos", RackA), draft.InitialDraftState.Origin);
+        Assert.False(draft.IsPossiblyStale);
+        Assert.True(draft.IsDirty);
+        Assert.Equal(2.25, draft.CurrentDraftState.Editable.AnnotationScale);
+        Assert.True(PushBackFullDraftStateComparer.Instance.Equals(expectedCurrent, draft.CurrentDraftState));
+        Assert.Equal("typed", draft.PendingText["field"]);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs :: KeepAppliesToConflictAndToDirtyMarkedStaleApplyingWaitsAndTheOthersAreNotNeededAllWithoutReading
+====================================================================================================
+
+    [Theory]
+    [MemberData(nameof(StatusNames))]
+    public void KeepAppliesToConflictAndToDirtyMarkedStaleApplyingWaitsAndTheOthersAreNotNeededAllWithoutReading(string name)
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+        Statuses().Single(s => s.Name == name).Put(rig, draft);
+        rig.Reader.Answer = Changed;
+
+        var outcome = rig.Core.TryKeepPilotEdit(rig.Request());
+
+        switch (name)
+        {
+            case "DirtyStale":
+            case "Conflict":
+                // I-64 F4B PB-T4b (D-S1, D-PBT4-08): the first call presents; the second, with the witness of that read, keeps.
+                Assert.Equal(EditIntentStatus.Presented, outcome.Status);
+                Assert.Single(rig.Reader.Calls);
+                rig.Reader.Answer = rack => FullHandKit.Seen(Changed(rack), outcome.KeepWitness!);
+                Assert.Equal(EditIntentStatus.Kept, rig.Core.TryKeepPilotEdit(rig.Request(witness: outcome.KeepWitness)).Status);
+                Assert.Equal(2, rig.Reader.Calls.Count);
+                break;
+            case "Applying":
+                Assert.Equal(EditIntentStatus.Waiting, outcome.Status);
+                Assert.Equal("El borrador se está aplicando o ya no está registrado.", outcome.Reason);
+                Assert.Empty(rig.Reader.Calls);
+                break;
+            default:
+                Assert.Equal(EditIntentStatus.NotNeeded, outcome.Status);
+                Assert.Equal("Solo se conserva un borrador en conflicto o con cambios marcados como posiblemente obsoletos.", outcome.Reason);
+                Assert.Empty(rig.Reader.Calls);
+                break;
+        }
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs :: KeepAppliesToConflictAndToDirtyMarkedStaleApplyingWaitsAndTheOthersAreNotNeededAllWithoutReading (Green, D-S5)
+====================================================================================================
+
+    // I-64 F4B PB-T4b (D-S5): this Theory is split by rows by the partition of the RED; here, the rows that pass there, and in the other class of the partition, the rest.
+    [Theory]
+    [MemberData(nameof(StatusNamesGreen))]
+    public void KeepAppliesToConflictAndToDirtyMarkedStaleApplyingWaitsAndTheOthersAreNotNeededAllWithoutReading(string name)
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+        Statuses().Single(s => s.Name == name).Put(rig, draft);
+        rig.Reader.Answer = Changed;
+
+        var outcome = rig.Core.TryKeepPilotEdit(rig.Request());
+
+        switch (name)
+        {
+            case "DirtyStale":
+            case "Conflict":
+                // I-64 F4B PB-T4b (D-S1, D-PBT4-08): the first call presents; the second, with the witness of that read, keeps.
+                Assert.Equal(EditIntentStatus.Presented, outcome.Status);
+                Assert.Single(rig.Reader.Calls);
+                rig.Reader.Answer = rack => FullHandKit.Seen(Changed(rack), outcome.KeepWitness!);
+                Assert.Equal(EditIntentStatus.Kept, rig.Core.TryKeepPilotEdit(rig.Request(witness: outcome.KeepWitness)).Status);
+                Assert.Equal(2, rig.Reader.Calls.Count);
+                break;
+            case "Applying":
+                Assert.Equal(EditIntentStatus.Waiting, outcome.Status);
+                Assert.Equal("El borrador se está aplicando o ya no está registrado.", outcome.Reason);
+                Assert.Empty(rig.Reader.Calls);
+                break;
+            default:
+                Assert.Equal(EditIntentStatus.NotNeeded, outcome.Status);
+                Assert.Equal("Solo se conserva un borrador en conflicto o con cambios marcados como posiblemente obsoletos.", outcome.Reason);
+                Assert.Empty(rig.Reader.Calls);
+                break;
+        }
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs :: KeepAppliesToConflictAndToDirtyMarkedStaleApplyingWaitsAndTheOthersAreNotNeededAllWithoutReading (Red, D-S5)
+====================================================================================================
+
+    // I-64 F4B PB-T4b (D-S5): this Theory is split by rows by the partition of the RED; here, the rows that fail there, and in the other class of the partition, the rest.
+    [Theory]
+    [MemberData(nameof(StatusNamesRed))]
+    public void KeepAppliesToConflictAndToDirtyMarkedStaleApplyingWaitsAndTheOthersAreNotNeededAllWithoutReading(string name)
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+        Statuses().Single(s => s.Name == name).Put(rig, draft);
+        rig.Reader.Answer = Changed;
+
+        var outcome = rig.Core.TryKeepPilotEdit(rig.Request());
+
+        switch (name)
+        {
+            case "DirtyStale":
+            case "Conflict":
+                // I-64 F4B PB-T4b (D-S1, D-PBT4-08): the first call presents; the second, with the witness of that read, keeps.
+                Assert.Equal(EditIntentStatus.Presented, outcome.Status);
+                Assert.Single(rig.Reader.Calls);
+                rig.Reader.Answer = rack => FullHandKit.Seen(Changed(rack), outcome.KeepWitness!);
+                Assert.Equal(EditIntentStatus.Kept, rig.Core.TryKeepPilotEdit(rig.Request(witness: outcome.KeepWitness)).Status);
+                Assert.Equal(2, rig.Reader.Calls.Count);
+                break;
+            case "Applying":
+                Assert.Equal(EditIntentStatus.Waiting, outcome.Status);
+                Assert.Equal("El borrador se está aplicando o ya no está registrado.", outcome.Reason);
+                Assert.Empty(rig.Reader.Calls);
+                break;
+            default:
+                Assert.Equal(EditIntentStatus.NotNeeded, outcome.Status);
+                Assert.Equal("Solo se conserva un borrador en conflicto o con cambios marcados como posiblemente obsoletos.", outcome.Reason);
+                Assert.Empty(rig.Reader.Calls);
+                break;
+        }
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs :: PendingTextComesBeforeEverythingButNotApplicableAndBeforeTheReread
+====================================================================================================
+
+    [Fact]
+    public void PendingTextComesBeforeEverythingButNotApplicableAndBeforeTheReread()
+    {
+        var read = IntentKit.Read(FullPrepareKit.RealScan());
+        var draft = FullPrepareKit.DraftOf(read);
+        FullPrepareKit.SetScale(draft, 2.25);
+        draft.SetPendingText("AnnotationScale", "3");
+
+        foreach (var reread in new[] { read, IntentKit.Read(FullPrepareKit.RealScan("pb-02-modulos")), null })
+        {
+            var result = FullHandKit.Prepare(PushBackFullPrepareInput.From(draft), reread!, PilotKit.Catalog);
+
+            Assert.Equal(PushBackPilotPrepareKind.PendingText, result.Kind);
+            Assert.Null(result.Plan);
+        }
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs :: PrepareDoesNotPutTheDraftInConflictNorCleanDirtyNorTakeTheSlotOfTheUpdate
+====================================================================================================
+
+    [Fact]
+    public void PrepareDoesNotPutTheDraftInConflictNorCleanDirtyNorTakeTheSlotOfTheUpdate()
+    {
+        var registry = new DraftRegistry();
+        var read = IntentKit.Read(FullPrepareKit.RealScan());
+        // I-64 F4B PB-T4b (D-S1): the draft of the panel is the full one, begun with the full read of the same base.
+        var begun = registry.Begin(DraftKit.S1, FullPrepareKit.Rack, FullHandKit.FullOf(read)!.Read, PushBackFullDraftStateComparer.Instance, PushBackFullDraftStateComparer.Copy);
+        var draft = begun.Draft!;
+        FullPrepareKit.SetScale(draft, 2.25);
+        var changed = IntentKit.Read(FullPrepareKit.RealScan("pb-02-modulos"));
+
+        var conflict = FullPrepareKit.Prepare(draft, changed);
+
+        Assert.Equal(PushBackPilotPrepareKind.Conflict, conflict.Kind);
+        Assert.Equal(DraftStatus.Dirty, draft.Status);
+        Assert.Empty(draft.ConflictDifferences);
+        Assert.False(registry.HasUpdateInProgress);
+        Assert.True(draft.IsDirty);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs :: PrepareIsTotalAMissingPieceIsInvalidAndNeverAnException
+====================================================================================================
+
+    [Fact]
+    public void PrepareIsTotalAMissingPieceIsInvalidAndNeverAnException()
+    {
+        var read = IntentKit.Read(FullPrepareKit.RealScan());
+        var draft = FullPrepareKit.DraftOf(read);
+        FullPrepareKit.SetScale(draft, 2.25);
+        var input = PushBackFullPrepareInput.From(draft);
+
+        foreach (var (name, call) in new (string, Func<PushBackPilotPrepareResult>)[]
+                 {
+                     ("input", () => FullHandKit.Prepare(null!, read, PilotKit.Catalog)),
+                     ("reread", () => FullHandKit.Prepare(input, null!, PilotKit.Catalog)),
+                     ("catalog", () => FullHandKit.Prepare(input, read, null!)),
+                 })
+        {
+            PushBackPilotPrepareResult? result = null;
+            var thrown = Record.Exception(() => result = call());
+
+            Assert.True(thrown == null, name);
+            Assert.Equal(PushBackPilotPrepareKind.Invalid, result!.Kind);
+            Assert.Equal(PushBackPilotUpdatePlanner.MissingInputReason, result.Reason);
+        }
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs :: TheNewOutcomesAreValuesWithTheStatesOfThePackageAndTheDefaultIsUnavailable
+====================================================================================================
+
+    [Fact]
+    public void TheNewOutcomesAreValuesWithTheStatesOfThePackageAndTheDefaultIsUnavailable()
+    {
+        Assert.True(typeof(EditConfirmOutcome).IsValueType);
+        Assert.Equal(
+            new[] { "Unavailable", "Waiting", "Rejected", "NotFound", "NotApplicable", "Confirmed", "Conflict", "Failed" },
+            Enum.GetNames<EditConfirmStatus>());
+        var unset = default(EditConfirmOutcome);
+        Assert.Equal(EditConfirmStatus.Unavailable, unset.Status);
+        Assert.Equal(EditConfirmStatus.Unavailable, default(EditConfirmStatus));
+        Assert.NotNull(unset.Differences);
+        Assert.Empty(unset.Differences);
+        Assert.Null(unset.AdmissionDiagnostic);
+
+        Assert.Equal(EditConfirmStatus.Confirmed, EditConfirmOutcome.Confirmed().Status);
+        Assert.Null(EditConfirmOutcome.Confirmed().AdmissionDiagnostic);
+        Assert.Equal("why", EditConfirmOutcome.Confirmed("why").AdmissionDiagnostic);
+        var conflict = EditConfirmOutcome.Conflict(new[] { "B2:Membership" });
+        Assert.Equal(new[] { "B2:Membership" }, conflict.Differences.ToArray());
+        Assert.Null(conflict.AdmissionDiagnostic);
+        foreach (var outcome in new[]
+                 {
+                     EditConfirmOutcome.Unavailable("x"), EditConfirmOutcome.Waiting("x"), EditConfirmOutcome.Rejected("x"),
+                     EditConfirmOutcome.NotFound("x"), EditConfirmOutcome.NotApplicable("x"), EditConfirmOutcome.Failed("x"),
+                 })
+        {
+            Assert.Equal("x", outcome.Reason);
+            Assert.Empty(outcome.Differences);
+            Assert.Null(outcome.AdmissionDiagnostic);
+        }
+
+        // Kept comes after the ten that stay as an ordered prefix; Reloaded is reused by the discard. I-64 F4B PB-T4b (D-S1, D-PBT4-08):
+        // Presented, the presentation of the keep, comes after Kept, with the eleven as an ordered prefix.
+        var intent = Enum.GetNames<EditIntentStatus>();
+        Assert.Equal(12, intent.Length);
+        Assert.Equal("Kept", intent[10]);
+        Assert.Equal("Presented", intent[11]);
+        Assert.Equal(EditIntentStatus.Kept, EditIntentOutcome.Kept(EditWitnessStatus.Changed).Status);
+        Assert.Equal(EditWitnessStatus.Changed, EditIntentOutcome.Kept(EditWitnessStatus.Changed).Witness);
+        Assert.Empty(EditIntentOutcome.Kept(EditWitnessStatus.Changed).PresentationLines);
+        Assert.Null(EditIntentOutcome.Kept(EditWitnessStatus.Changed).KeepWitness);
+        var keepWitness = new EditIntentWitness("A1", "texto");
+        var presented = EditIntentOutcome.Presented(new[] { "Cambiado fuera: el nombre." }, keepWitness, EditWitnessStatus.NotSupplied);
+        Assert.Equal(EditIntentStatus.Presented, presented.Status);
+        Assert.Equal(new[] { "Cambiado fuera: el nombre." }, presented.PresentationLines.ToArray());
+        Assert.Same(keepWitness, presented.KeepWitness);
+        Assert.Null(presented.Reason);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs :: TheOutgoingDesignAndEnvelopeOfEachViewComeFromTheRereadEnvelopeAndNeverFromTheDraft
+====================================================================================================
+
+    [Fact]
+    public void TheOutgoingDesignAndEnvelopeOfEachViewComeFromTheRereadEnvelopeAndNeverFromTheDraft()
+    {
+        // The three views carry a name that is not the one of the fixture and an unknown JSON member that a newer build wrote, and the
+        // envelope that goes out keeps both. The reader of the intention does not admit an envelope with unknown members, so the re-read is
+        // built by hand over the same texts, exactly as a later read of the drawing would hand them over.
+        var post = FullPrepareKit.ExistingPost();
+        var a1 = WithExtra(FullPrepareKit.Frontal(name: "Name of the rack"), "x1");
+        var members = FullPrepareKit.BaseOf(
+            ("A1", a1),
+            ("B2", WithExtra(FullPrepareKit.Lateral(post, name: "Name of the rack"), "x2")),
+            ("C3", WithExtra(FullPrepareKit.Planta(name: "Name of the rack"), "x3")));
+        var draft = FullPrepareKit.DraftOf(members, a1);
+        FullPrepareKit.SetScale(draft, 2.25);
+        var ready = FullPrepareKit.Prepare(draft, FullPrepareKit.Reread(members));
+        Assert.True(ready.Kind == PushBackPilotPrepareKind.Ready, ready.Reason);
+        var plan = ready.Plan!;
+        var composition = PushBackFullComposition.ForFullWrite(draft.InitialDraftState, draft.CurrentDraftState, PilotKit.Catalog);
+        var design = new PushBackCompositeEditorAssembler(PilotKit.Catalog).BuildDesign(composition.Editor!, composition.Inputs!);
+        var store = new RackProjectStore();
+
+        foreach (var member in plan.Members)
+        {
+            var source = new RackEmbedStore().Deserialize(members.Entries[member.Key].EnvelopeText!)!;
+            var expectedDesign = store.Serialize(RackProject.ForPushBack(design).WithSourceMetadataFrom(store.Deserialize(source.Design)));
+            var envelope = new RackEmbedStore().Deserialize(member.EnvelopeText)!;
+
+            Assert.Equal(expectedDesign, member.DesignText);
+            Assert.Equal(member.DesignText, envelope.Design);
+            Assert.Equal(RackEmbedDocument.KindPushBack, envelope.Kind);
+            Assert.Equal(source.Id, envelope.Id);
+            // Name never comes from the draft: it is the name of the envelope that was re-read for that view.
+            Assert.Equal(source.Name, envelope.Name);
+            Assert.Equal("Name of the rack", envelope.Name);
+            Assert.Equal(member.View, envelope.View);
+            Assert.Equal(member.Section, envelope.Section);
+            Assert.NotNull(envelope.ExtensionData);
+            Assert.Contains(envelope.ExtensionData!.Keys, k => k.StartsWith("x", StringComparison.Ordinal));
+            // The scale is the only thing the pilot changed in the design that goes out.
+            Assert.Contains("2.25", member.DesignText, StringComparison.Ordinal);
+        }
+
+        Assert.Equal(plan.Members.Select(m => m.EnvelopeText).ToArray(), plan.PostExpectation.Envelopes.Select(e => e.Text).ToArray());
+        Assert.Equal(plan.Members.Select(m => m.Key).ToArray(), plan.PostExpectation.Envelopes.Select(e => e.Key).ToArray());
+        Assert.Equal(2.25, plan.PostExpectation.AnnotationScale);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs :: ThePilotNeverErasesAViewAPhantomThatWasAlreadyInTheDrawingMakesTheUpdateInvalidAndIsNeverInThePlan
+====================================================================================================
+
+    [Fact]
+    public void ThePilotNeverErasesAViewAPhantomThatWasAlreadyInTheDrawingMakesTheUpdateInvalidAndIsNeverInThePlan()
+    {
+        var origin = FullPrepareKit.Frontal();
+        var withPhantom = FullPrepareKit.BaseOf(("A1", origin), ("B2", FullPrepareKit.Lateral(FullPrepareKit.MissingPost)));
+        var draft = FullPrepareKit.DraftOf(withPhantom, origin);
+        FullPrepareKit.SetScale(draft, 2.25);
+
+        var result = FullPrepareKit.Prepare(draft, FullPrepareKit.Reread(withPhantom));
+
+        // I-64 F4B PB-T4b (D-S1; D-PB-04, D-PBT3-09 (e) and D-PBT4-07): the full model erases the obsolete lateral, so the phantom is not
+        // a view that is no longer available: the update is Ready, the phantom is erased and it is never in the plan of the redrawn views.
+        Assert.Equal(PushBackPilotPrepareKind.Ready, result.Kind);
+        Assert.Equal(new[] { "A1" }, result.Plan!.Members.Select(m => m.Key).ToArray());
+        Assert.Equal(new[] { "B2" }, result.Plan!.Erasures.ToArray());
+
+        // The same rack without the phantom is Ready, and the plan redraws only the views that exist.
+        var without = FullPrepareKit.BaseOf(("A1", origin), ("B2", FullPrepareKit.Lateral(FullPrepareKit.ExistingPost())));
+        var clean = FullPrepareKit.DraftOf(without, origin);
+        FullPrepareKit.SetScale(clean, 2.25);
+        var ready = FullPrepareKit.Prepare(clean, FullPrepareKit.Reread(without));
+        Assert.Equal(PushBackPilotPrepareKind.Ready, ready.Kind);
+        Assert.Equal(new[] { "A1", "B2" }, ready.Plan!.Members.Select(m => m.Key).ToArray());
+        Assert.Empty(ready.Plan!.Erasures);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs :: TheSnapshotIsBuiltOnlyByFromWithCopiesAndTheStatusBeforeAnAttemptWhileApplying
+====================================================================================================
+
+    // ================================================================== INV-F4T4A1-07 and 08: the snapshot and the order of PREPARE
+
+    [Fact]
+    public void TheSnapshotIsBuiltOnlyByFromWithCopiesAndTheStatusBeforeAnAttemptWhileApplying()
+    {
+        var read = IntentKit.Read(FullPrepareKit.RealScan());
+        var draft = FullPrepareKit.DraftOf(read);
+        FullPrepareKit.SetScale(draft, 2.25);
+
+        var input = PushBackFullPrepareInput.From(draft);
+
+        Assert.Equal(FullPrepareKit.Rack, input.RackId);
+        Assert.Same(draft.StaleBase, input.StaleBase);
+        Assert.Equal(DraftStatus.Dirty, input.ConsideredStatus);
+        Assert.True(input.IsDirty);
+        Assert.False(input.HasPendingText);
+        Assert.NotSame(draft.CurrentDraftState, input.CurrentDraftState);
+        Assert.Equal(2.25, input.CurrentDraftState.Editable.AnnotationScale);
+        Assert.NotSame(draft.InitialDraftState, input.InitialDraftState);
+        // Changing the copies changes nothing of the draft.
+        input.CurrentDraftState.Editable.AnnotationScale = 9.0;
+        input.InitialDraftState.Editable.AnnotationScale = 9.0;
+        Assert.Equal(2.25, draft.CurrentDraftState.Editable.AnnotationScale);
+        Assert.NotEqual(9.0, draft.InitialDraftState.Editable.AnnotationScale);
+
+        draft.SetPendingText("AnnotationScale", "3");
+        Assert.True(PushBackFullPrepareInput.From(draft).HasPendingText);
+        draft.RemovePendingText("AnnotationScale");
+
+        // Under Applying the considered status is the one before the attempt (N-7), not Applying.
+        Assert.True(draft.TryBeginApply().IsStarted);
+        Assert.Equal(DraftStatus.Applying, draft.Status);
+        Assert.Equal(DraftStatus.Dirty, PushBackFullPrepareInput.From(draft).ConsideredStatus);
+
+        var clean = FullPrepareKit.DraftOf(IntentKit.Read(FullPrepareKit.RealScan()));
+        Assert.True(clean.TryBeginApply().IsStarted);
+        Assert.Equal(DraftStatus.Clean, PushBackFullPrepareInput.From(clean).ConsideredStatus);
+        Assert.Throws<ArgumentNullException>(() => PushBackFullPrepareInput.From(null!));
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs :: ayudante nuevo StatusNamesGreen
+====================================================================================================
+
+    // I-64 F4B PB-T4b (D-S5): the row of StatusNames that passes in the RED (Clean), for the half of the Theories split by rows that goes to
+    // the Green class.
+    public static TheoryData<string> StatusNamesGreen()
+    {
+        var data = new TheoryData<string>();
+        foreach (string name in StatusNames())
+        {
+            if (string.Equals(name, "Clean", StringComparison.Ordinal)) data.Add(name);
+        }
+
+        return data;
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs :: ayudante nuevo StatusNamesRed
+====================================================================================================
+
+    // I-64 F4B PB-T4b (D-S5): the rows of StatusNames that fail in the RED (every status but Clean, whose draft the rig edits), for the half
+    // of the Theories split by rows that goes to the Red class. With the member of the Green class they are, row by row, the rows of
+    // StatusNames.
+    public static TheoryData<string> StatusNamesRed()
+    {
+        var data = new TheoryData<string>();
+        foreach (string name in StatusNames())
+        {
+            if (!string.Equals(name, "Clean", StringComparison.Ordinal)) data.Add(name);
+        }
+
+        return data;
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardTests.cs :: TheGuardOfWhoReadsSeesAKeepInTheRequestACheckInThePresentationAnyOfTheFourInTheBrowserAndANameof
+====================================================================================================
+
+    [Fact]
+    public void TheGuardOfWhoReadsSeesAKeepInTheRequestACheckInThePresentationAnyOfTheFourInTheBrowserAndANameof()
+    {
+        var files = UiFiles();
+        var field = CodeOf(files, FieldPath);
+        var browser = CodeOf(files, BrowserPath);
+
+        Assert.NotEmpty(ReaderViolations(With(files, FieldPath, Mutate(field, "public void RequestKeepMine() => AskChoice(ChoiceKind.KeepMine);", "public void RequestKeepMine() { _port.TryKeepMine(null); }"))));
+        Assert.NotEmpty(ReaderViolations(With(files, FieldPath, Mutate(field, "PilotFieldView view;", "PilotFieldView view; _port.TryConfirmBase(null);"))));
+        Assert.NotEmpty(ReaderViolations(With(files, FieldPath, Mutate(field, "PilotFieldView view;", "PilotFieldView view; _port.TryDiscardAndReload(null);"))));
+        Assert.NotEmpty(ReaderViolations(With(files, FieldPath, Mutate(field, "PilotFieldView view;", "PilotFieldView view; _port.TryCheckNow(null);"))));
+        Assert.NotEmpty(ReaderViolations(With(files, FieldPath, Mutate(field, "private const string SurfaceChangedText", "private static readonly string Aliased = nameof(IWorkspacePilotEditPort.TryKeepMine); private const string SurfaceChangedText"))));
+        foreach (var token in TheFourReads.Select(r => r.Token))
+            Assert.NotEmpty(ReaderViolations(With(files, BrowserPath, Mutate(browser, "public void ReloadField() => Field.Rematerialize();", "public void ReloadField() { _pilotEdit." + token + "(null); }"))));
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs :: AFailureOfTheDiagnosticGivesNullAndNeverChangesTheClassificationNorTurnsAChangedDraftIntoFailed
+====================================================================================================
+
+    [Fact]
+    public void AFailureOfTheDiagnosticGivesNullAndNeverChangesTheClassificationNorTurnsAChangedDraftIntoFailed()
+    {
+        var recovered = new Rig();
+        var recoveredDraft = UnknownDraft(recovered);
+        var sameBase = FullEditIntentKit.Admitted(RackA).PilotRead!.StaleBase;
+        recovered.Reader.Answer = _ => FullHandKit.ReadWithoutFullRead(sameBase);
+
+        var outcome = recovered.Core.TryCheckPilotEdit(recovered.Request());
+
+        Assert.Equal(EditCheckStatus.Recovered, outcome.Status);
+        Assert.Null(outcome.AdmissionDiagnostic);
+        Assert.Null(outcome.ClassicEditorHint);
+        Assert.NotEqual(DraftStatus.Unknown, recoveredDraft.Status);
+        Assert.Single(recovered.Reader.Calls);
+        Assert.False(recovered.Host.Bridge.Core.IsDegraded(recovered.Session));
+
+        var conflict = new Rig();
+        var conflictDraft = UnknownDraft(conflict);
+        var anotherBase = FullEditIntentKit.MemberBecameBlocking(RackA).PilotRead!.StaleBase;
+        conflict.Reader.Answer = _ => FullHandKit.ReadWithoutFullRead(anotherBase);
+
+        var other = conflict.Core.TryCheckPilotEdit(conflict.Request());
+
+        Assert.Equal(EditCheckStatus.Conflict, other.Status);
+        Assert.Contains("B2:Membership", other.Differences);
+        Assert.Null(other.AdmissionDiagnostic);
+        Assert.Null(other.ClassicEditorHint);
+        Assert.Equal(DraftStatus.Conflict, conflictDraft.Status);
+        Assert.Single(conflict.Reader.Calls);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs :: AnExceptionInsideTheComparisonOfTheGeneralCheckIsFailedReportedAndChangesNothing
+====================================================================================================
+
+    [Fact]
+    public void AnExceptionInsideTheComparisonOfTheGeneralCheckIsFailedReportedAndChangesNothing()
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+        Rig.Edit(draft);
+        draft.MarkPossiblyStale();
+        // A base that was never constructed: comparing against it throws inside ConfirmBase, after the one read.
+        var broken = (DraftStaleBase)RuntimeHelpers.GetUninitializedObject(typeof(DraftStaleBase));
+        rig.Reader.Answer = _ => FullHandKit.ReadOfPilot(FullPrepareKit.Reread(broken));
+        var before = Hold(draft);
+
+        var outcome = rig.Core.TryConfirmPilotBase(rig.Request());
+
+        Assert.Equal(EditConfirmStatus.Failed, outcome.Status);
+        Assert.False(string.IsNullOrWhiteSpace(outcome.Reason));
+        Assert.Null(outcome.AdmissionDiagnostic);
+        Assert.Null(outcome.ClassicEditorHint);
+        AssertHeld(before, draft);
+        var fault = Assert.Single(rig.Host.Faults);
+        Assert.Equal("WorkspaceHostCore.TryConfirmPilotBase", fault.Context);
+        Assert.False(rig.Host.Bridge.Core.IsDegraded(rig.Session));
+        Assert.Single(rig.Reader.Calls);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs :: AnInvalidPendingTextDoesNotBlockTheThreeOperationsConfirmAndKeepLeaveItExactlyAsTypedAndDiscardEmptiesIt
+====================================================================================================
+
+    [Fact]
+    public void AnInvalidPendingTextDoesNotBlockTheThreeOperationsConfirmAndKeepLeaveItExactlyAsTypedAndDiscardEmptiesIt()
+    {
+        var confirmRig = new Rig();
+        var confirmDraft = confirmRig.Open();
+        Rig.Edit(confirmDraft);
+        confirmDraft.SetPendingText("field", InvalidText);
+        var before = Hold(confirmDraft);
+        Assert.Equal(EditConfirmStatus.Confirmed, confirmRig.Core.TryConfirmPilotBase(confirmRig.Request()).Status);
+        AssertHeld(before, confirmDraft);
+        Assert.Equal(InvalidText, confirmDraft.PendingText["field"]);
+
+        var keepRig = new Rig();
+        var keepDraft = keepRig.Open();
+        Rig.Edit(keepDraft);
+        keepDraft.SetPendingText("field", InvalidText);
+        keepDraft.MarkPossiblyStale();
+        keepRig.Reader.Answer = rack => OriginChanged(rack, (ToleranceFrom, ToleranceTo));
+        // I-64 F4B PB-T4b (D-S1, D-PBT4-08): the first call presents; the second, with the witness of that read, keeps.
+        var presented = keepRig.Core.TryKeepPilotEdit(keepRig.Request());
+        Assert.Equal(EditIntentStatus.Presented, presented.Status);
+        Assert.Equal(InvalidText, keepDraft.PendingText["field"]);
+        keepRig.Reader.Answer = rack => FullHandKit.Seen(OriginChanged(rack, (ToleranceFrom, ToleranceTo)), presented.KeepWitness!);
+        Assert.Equal(EditIntentStatus.Kept, keepRig.Core.TryKeepPilotEdit(new EditIntentRequest(keepRig.Session, RackA, null, presented.KeepWitness)).Status);
+        Assert.Equal(InvalidText, keepDraft.PendingText["field"]);
+        Assert.Equal(2.25, keepDraft.CurrentDraftState.Editable.AnnotationScale);
+
+        var discardRig = new Rig();
+        var discardDraft = discardRig.Open();
+        Rig.Edit(discardDraft);
+        discardDraft.SetPendingText("field", InvalidText);
+        discardRig.Reader.Answer = rack => OriginChanged(rack, (ToleranceFrom, ToleranceTo));
+        Assert.Equal(EditIntentStatus.Reloaded, discardRig.Core.TryDiscardAndReloadPilotEdit(discardRig.Request()).Status);
+        Assert.False(discardDraft.HasPendingText);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs :: CheckNowWithARereadThatIsNotAdmittedAndDiffersFromTheBaseIsAConflictAndCarriesTheDiagnosticAndTheHint
+====================================================================================================
+
+    [Fact]
+    public void CheckNowWithARereadThatIsNotAdmittedAndDiffersFromTheBaseIsAConflictAndCarriesTheDiagnosticAndTheHint()
+    {
+        var rig = new Rig();
+        var draft = UnknownDraft(rig);
+        var read = NotAdmittedWithAnotherBase();
+        rig.Reader.Answer = _ => FullHandKit.ReadOfPilot(read);
+
+        var outcome = rig.Core.TryCheckPilotEdit(rig.Request());
+
+        Assert.Equal(EditCheckStatus.Conflict, outcome.Status);
+        Assert.Contains("B2:Membership", outcome.Differences);
+        Assert.Equal(read.Read.Admission.Diagnostic, outcome.AdmissionDiagnostic);
+        Assert.Equal(read.ClassicEditorHint, outcome.ClassicEditorHint);
+        Assert.Equal(DraftStatus.Conflict, draft.Status);
+        Assert.Single(rig.Reader.Calls);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs :: CheckNowWithARereadThatIsNotAdmittedAndMatchesTheBaseIsRecoveredAndCarriesTheDiagnosticAndTheHint
+====================================================================================================
+
+    [Fact]
+    public void CheckNowWithARereadThatIsNotAdmittedAndMatchesTheBaseIsRecoveredAndCarriesTheDiagnosticAndTheHint()
+    {
+        var rig = new Rig();
+        var draft = UnknownDraft(rig);
+        var read = NotAdmittedWithTheSameBase();
+        rig.Reader.Answer = _ => FullHandKit.ReadOfPilot(read);
+
+        var outcome = rig.Core.TryCheckPilotEdit(rig.Request());
+
+        Assert.Equal(EditCheckStatus.Recovered, outcome.Status);
+        Assert.False(string.IsNullOrWhiteSpace(outcome.AdmissionDiagnostic));
+        Assert.Equal(read.Read.Admission.Diagnostic, outcome.AdmissionDiagnostic);
+        Assert.Equal(read.ClassicEditorHint, outcome.ClassicEditorHint);
+        Assert.False(string.IsNullOrWhiteSpace(outcome.ClassicEditorHint));
+        Assert.NotEqual(DraftStatus.Unknown, draft.Status);
+        Assert.Single(rig.Reader.Calls);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs :: ConfirmOfARackThatIsNoLongerEditableWithAnotherBaseIsAConflictWithBothThings
+====================================================================================================
+
+    [Fact]
+    public void ConfirmOfARackThatIsNoLongerEditableWithAnotherBaseIsAConflictWithBothThings()
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+        Rig.Edit(draft);
+        var other = FullEditIntentKit.MemberBecameBlocking(RackA).PilotRead!.StaleBase;
+        rig.Reader.Answer = _ => FullHandKit.ReadOfPilot(FullPrepareKit.Reread(other, notAdmitted: PushBackPilotIntentReader.OutOfPilotDiagnostic));
+
+        var outcome = rig.Core.TryConfirmPilotBase(rig.Request());
+
+        Assert.Equal(EditConfirmStatus.Conflict, outcome.Status);
+        Assert.NotEmpty(outcome.Differences);
+        Assert.Equal(PushBackPilotIntentReader.OutOfPilotDiagnostic, outcome.AdmissionDiagnostic);
+        Assert.Equal(PushBackPilotIntentReader.ClassicEditorHint, outcome.ClassicEditorHint);
+        Assert.Equal(DraftStatus.Conflict, draft.Status);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs :: ConfirmOfARackThatIsNoLongerEditableWithTheSameBaseIsConfirmedWithTheDiagnosticAndTheHint
+====================================================================================================
+
+    // ------------------------------------------------------------------ scenario 6: the rack is no longer editable
+
+    [Fact]
+    public void ConfirmOfARackThatIsNoLongerEditableWithTheSameBaseIsConfirmedWithTheDiagnosticAndTheHint()
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+        Rig.Edit(draft);
+        var same = draft.StaleBase;
+        rig.Reader.Answer = _ => FullHandKit.ReadOfPilot(FullPrepareKit.Reread(same, notAdmitted: PushBackPilotIntentReader.OutOfPilotDiagnostic));
+
+        var outcome = rig.Core.TryConfirmPilotBase(rig.Request());
+
+        Assert.Equal(EditConfirmStatus.Confirmed, outcome.Status);
+        Assert.Empty(outcome.Differences);
+        Assert.Equal(PushBackPilotIntentReader.OutOfPilotDiagnostic, outcome.AdmissionDiagnostic);
+        Assert.Equal(PushBackPilotIntentReader.ClassicEditorHint, outcome.ClassicEditorHint);
+        Assert.Equal(DraftStatus.Dirty, draft.Status);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs :: ConfirmWithAChangeOfTheScaleAndOfAnotherFieldIsAConflictAndKeepAfterwardsKeepsTheScaleOfTheDraftOnTheNewVersion
+====================================================================================================
+
+    [Fact]
+    public void ConfirmWithAChangeOfTheScaleAndOfAnotherFieldIsAConflictAndKeepAfterwardsKeepsTheScaleOfTheDraftOnTheNewVersion()
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+        Rig.Edit(draft);
+        rig.Reader.Answer = rack => OriginChanged(rack, (ScaleFrom, ScaleTo), (ToleranceFrom, ToleranceTo));
+
+        var confirm = rig.Core.TryConfirmPilotBase(rig.Request());
+        Assert.Equal(EditConfirmStatus.Conflict, confirm.Status);
+        Assert.Equal(new[] { "A1:EnvelopeText", "B2:EnvelopeText" }, confirm.Differences.ToArray());
+        Assert.Equal(DraftStatus.Conflict, draft.Status);
+
+        // I-64 F4B PB-T4b (D-S1, D-PBT4-08): the first call presents and leaves the conflict; the second, with the witness, keeps.
+        var presented = rig.Core.TryKeepPilotEdit(rig.Request());
+        Assert.Equal(EditIntentStatus.Presented, presented.Status);
+        Assert.Equal(DraftStatus.Conflict, draft.Status);
+        rig.Reader.Answer = rack => FullHandKit.Seen(OriginChanged(rack, (ScaleFrom, ScaleTo), (ToleranceFrom, ToleranceTo)), presented.KeepWitness!);
+        var keep = rig.Core.TryKeepPilotEdit(new EditIntentRequest(rig.Session, RackA, null, presented.KeepWitness));
+
+        Assert.Equal(EditIntentStatus.Kept, keep.Status);
+        Assert.Equal(2.25, draft.CurrentDraftState.Editable.AnnotationScale);
+        Assert.Equal(DraftStatus.Dirty, draft.Status);
+        Assert.Equal(5.0, draft.InitialDraftState.Editable.PalletTolerance);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs :: TheDiagnosticNeverDecidesTheClassificationTheSameBaseGivesTheSameAnswerAndTheSameDraftWithOrWithoutAdmission
+====================================================================================================
+
+    [Fact]
+    public void TheDiagnosticNeverDecidesTheClassificationTheSameBaseGivesTheSameAnswerAndTheSameDraftWithOrWithoutAdmission()
+    {
+        var admitted = new Rig();
+        var admittedDraft = UnknownDraft(admitted);
+        var admittedOutcome = admitted.Core.TryCheckPilotEdit(admitted.Request());
+
+        var notAdmitted = new Rig();
+        var notAdmittedDraft = UnknownDraft(notAdmitted);
+        notAdmitted.Reader.Answer = _ => FullHandKit.ReadOfPilot(NotAdmittedWithTheSameBase());
+        var notAdmittedOutcome = notAdmitted.Core.TryCheckPilotEdit(notAdmitted.Request());
+
+        Assert.Equal(admittedOutcome.Status, notAdmittedOutcome.Status);
+        Assert.Equal(admittedOutcome.Differences.ToArray(), notAdmittedOutcome.Differences.ToArray());
+        Assert.Equal(admittedDraft.Status, notAdmittedDraft.Status);
+        Assert.Equal(admittedDraft.IsDirty, notAdmittedDraft.IsDirty);
+        Assert.Equal(admittedDraft.IsPossiblyStale, notAdmittedDraft.IsPossiblyStale);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs :: TheDiagnosticOfCheckNowReadsTheDrawingExactlyOnceAndWritesNothingAndANotAdmittedRereadStillReadsOnce
+====================================================================================================
+
+    [Fact]
+    public void TheDiagnosticOfCheckNowReadsTheDrawingExactlyOnceAndWritesNothingAndANotAdmittedRereadStillReadsOnce()
+    {
+        var rig = new Rig();
+        var draft = UnknownDraft(rig);
+        rig.Reader.Answer = _ => FullHandKit.ReadOfPilot(NotAdmittedWithTheSameBase());
+        var scale = draft.CurrentDraftState.Editable.AnnotationScale;
+
+        rig.Core.TryCheckPilotEdit(rig.Request());
+
+        Assert.Single(rig.Reader.Calls);
+        Assert.Equal(scale, draft.CurrentDraftState.Editable.AnnotationScale);
+        Assert.Empty(rig.Host.Reader.Reads);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs :: TheThreeOperationsStillReadTheDrawingExactlyOnceAndTheGeneralCheckStillComparesWithTheBaseOfTheDraft
+====================================================================================================
+
+    [Fact]
+    public void TheThreeOperationsStillReadTheDrawingExactlyOnceAndTheGeneralCheckStillComparesWithTheBaseOfTheDraft()
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+        Rig.Edit(draft);
+        draft.MarkPossiblyStale();
+
+        var confirm = Record.Exception(() => rig.Core.TryConfirmPilotBase(rig.Request()));
+        Assert.Null(confirm);
+        Assert.Single(rig.Reader.Calls);
+        rig.Reader.Calls.Clear();
+
+        rig.Reader.Answer = rack => OriginChanged(rack, (ToleranceFrom, ToleranceTo));
+        draft.MarkPossiblyStale();
+        // I-64 F4B PB-T4b (D-S1, D-PBT4-08): each of the two calls of the keep reads the drawing exactly once.
+        var presented = rig.Core.TryKeepPilotEdit(rig.Request());
+        Assert.Equal(EditIntentStatus.Presented, presented.Status);
+        Assert.Single(rig.Reader.Calls);
+        rig.Reader.Calls.Clear();
+        rig.Reader.Answer = rack => FullHandKit.Seen(OriginChanged(rack, (ToleranceFrom, ToleranceTo)), presented.KeepWitness!);
+        Assert.Equal(EditIntentStatus.Kept, rig.Core.TryKeepPilotEdit(new EditIntentRequest(rig.Session, RackA, null, presented.KeepWitness)).Status);
+        Assert.Single(rig.Reader.Calls);
+        rig.Reader.Calls.Clear();
+
+        rig.Core.TryDiscardAndReloadPilotEdit(rig.Request());
+        Assert.Single(rig.Reader.Calls);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs :: TheBodyOfTheUpdateFollowsTheOrderOfThePackageAndEndsTheMarkOfKnownCleanAfterTheClose
+====================================================================================================
+
+    [Fact]
+    public void TheBodyOfTheUpdateFollowsTheOrderOfThePackageAndEndsTheMarkOfKnownCleanAfterTheClose()
+    {
+        var body = Src.BodyOf(Src.Code(CorePath), @"public\s+EditUpdateOutcome\s+TryUpdatePilot\s*\(");
+
+        AssertInOrder(
+            body,
+            "UpdateGate(",
+            "string.IsNullOrWhiteSpace(request.RackId)",
+            "_drafts.Find<PushBackFullDraftState>(",
+            "PushBackPilotUpdateRun.Precheck(",
+            ".TryBeginApply(",
+            "PushBackPilotUpdateRun.ExecuteFull(",
+            ".CompleteApply(",
+            "_knownClean.Remove(request.Session);");
+        Assert.Equal(1, Src.Count(body, @"PushBackPilotUpdateRun\.ExecuteFull\s*\("));
+        Assert.Equal(1, Src.Count(body, @"PushBackPilotUpdateRun\.Precheck\s*\("));
+        Assert.DoesNotMatch(new Regex(@"\.SetCurrentDraftState\s*\(|\.DiscardAndReload\s*\(|\.KeepMineOnCurrentVersion\s*\(|\.ConfirmBase\s*\(|\.CheckNow\s*\(|\.Begin\s*\("), body);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs :: ABlankRackAndAnUnknownRackHaveNoDraftAndNothingIsRun
+====================================================================================================
+
+    // ------------------------------------------------------------------ the draft and the check before the slot
+
+    [Fact]
+    public void ABlankRackAndAnUnknownRackHaveNoDraftAndNothingIsRun()
+    {
+        var rig = new Rig();
+        rig.Open();
+
+        foreach (var rack in new[] { "", "  ", RackB })
+        {
+            var outcome = rig.Core.TryUpdatePilot(rig.Request(rack), rig.Port);
+            Assert.Equal(EditUpdateStatus.NoDraft, outcome.Status);
+            Assert.Equal("No hay borrador para el rack.", outcome.Reason);
+        }
+
+        Assert.Empty(rig.Port.Calls);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs :: AConflictOfMutateIsNotAppliedConflictWithTheDifferencesAndTheDraftGoesToConflict
+====================================================================================================
+
+    [Fact]
+    public void AConflictOfMutateIsNotAppliedConflictWithTheDifferencesAndTheDraftGoesToConflict()
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+        rig.Port.RereadDrawing = Rig.Members().Select(m => m.Fact.DefinitionKey == "C3" ? IntentKit.Member("C3", FullPrepareKit.Planta("pb-02-modulos")) : m).ToArray();
+
+        var outcome = rig.Update();
+
+        Assert.Equal(EditUpdateStatus.NotAppliedConflict, outcome.Status);
+        Assert.Equal(new[] { "C3:EnvelopeText" }, outcome.Differences.ToArray());
+        Assert.Null(outcome.Reason);
+        Assert.Equal(DraftStatus.Conflict, draft.Status);
+        Assert.Empty(rig.Port.Written);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs :: ADraftThatIsAlreadyApplyingIsRefusedWithTheNameOfTheRefusal
+====================================================================================================
+
+    [Fact]
+    public void ADraftThatIsAlreadyApplyingIsRefusedWithTheNameOfTheRefusal()
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+        Assert.True(draft.TryBeginApply().IsStarted);
+
+        var outcome = rig.Update();
+
+        Assert.Equal(EditUpdateStatus.Refused, outcome.Status);
+        Assert.Equal(DraftApplyRefusal.InvalidStatus.ToString(), outcome.Reason);
+        Assert.Empty(rig.Port.Calls);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs :: ADraftThatWasDiscardedDuringTheRunIsClosedDetachedAndTheSlotIsFree
+====================================================================================================
+
+    [Fact]
+    public void ADraftThatWasDiscardedDuringTheRunIsClosedDetachedAndTheSlotIsFree()
+    {
+        var rig = new Rig();
+        rig.Open();
+        rig.Port.HookAt["WriteUnit:A1"] = () => rig.Core.OpenDrafts.Discard(rig.Session, RackA);
+
+        var outcome = rig.Update();
+
+        Assert.Equal(EditUpdateStatus.ClosedDetached, outcome.Status);
+        Assert.Null(rig.Core.OpenDrafts.Find<PushBackFullDraftState>(rig.Session, RackA));
+        rig.Reader.Answer = FullEditIntentKit.Admitted;
+        Assert.Equal(EditIntentStatus.Admitted, rig.Core.TryBeginPilotEdit(rig.Request(RackB)).Status);
+        Assert.True(rig.Core.OpenDrafts.Find<PushBackFullDraftState>(rig.Session, RackB)!.TryBeginApply().IsStarted);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs :: AFailureBeforeTheSlotIsFailedAndLoggedAndTheSessionIsNotDegraded
+====================================================================================================
+
+    [Fact]
+    public void AFailureBeforeTheSlotIsFailedAndLoggedAndTheSessionIsNotDegraded()
+    {
+        var rig = new Rig();
+        rig.Open();
+
+        var noRequest = rig.Core.TryUpdatePilot(null!, rig.Port);
+        var noPort = rig.Core.TryUpdatePilot(rig.Request(), null!);
+
+        Assert.Equal(EditUpdateStatus.Failed, noRequest.Status);
+        Assert.Equal(EditUpdateStatus.Failed, noPort.Status);
+        Assert.False(string.IsNullOrEmpty(noRequest.Reason));
+        Assert.Equal(2, rig.Host.Faults.Count(f => f.Context == "WorkspaceHostCore.TryUpdatePilot"));
+        Assert.Equal(EditUpdateStatus.Applied, rig.Update().Status);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs :: ANotAdmittedReadWithTheBaseOfTheDraftIsNotAppliedAdmissionAndTheDraftKeepsItsStatus
+====================================================================================================
+
+    [Fact]
+    public void ANotAdmittedReadWithTheBaseOfTheDraftIsNotAppliedAdmissionAndTheDraftKeepsItsStatus()
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+        // Without a catalog the read cannot materialize the state: not admitted, with the base unchanged. The comparison goes first and the
+        // missing catalog is answered after the admission (M-6).
+        rig.Port.NullCatalog = true;
+
+        var outcome = rig.Update();
+
+        Assert.Equal(EditUpdateStatus.NotAppliedAdmission, outcome.Status);
+        Assert.False(string.IsNullOrEmpty(outcome.Reason));
+        Assert.Equal(DraftStatus.Dirty, draft.Status);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs :: APostThatFailedIsAppliedPostRereadFailedWithTheCauseAndTheWarningsAndTheDraftIsUnknown
+====================================================================================================
+
+    [Fact]
+    public void APostThatFailedIsAppliedPostRereadFailedWithTheCauseAndTheWarningsAndTheDraftIsUnknown()
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+        rig.Port.MissingPieces["C3"] = new[] { "PIEZA_Z" };
+        rig.Port.ThrowAt["Post"] = Boom("post boom");
+
+        var outcome = rig.Update();
+
+        Assert.Equal(EditUpdateStatus.AppliedPostRereadFailed, outcome.Status);
+        Assert.Contains("post boom", outcome.Reason!, StringComparison.Ordinal);
+        Assert.Single(outcome.Warnings);
+        Assert.Equal(DraftStatus.Unknown, draft.Status);
+        Assert.Equal(DraftUnknownOrigin.PostReread, draft.UnknownOrigin);
+        Assert.Single(draft.Warnings);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs :: APreflightAndAFailureKeepTheDraftAsItWasAndCarryTheirCause
+====================================================================================================
+
+    [Fact]
+    public void APreflightAndAFailureKeepTheDraftAsItWasAndCarryTheirCause()
+    {
+        var preflight = new Rig();
+        var first = preflight.Open();
+        preflight.Port.LockedAtPrepare = new[] { "B2" };
+        var locked = preflight.Update();
+        Assert.Equal(EditUpdateStatus.NotAppliedPreflight, locked.Status);
+        Assert.Equal(PushBackPilotUpdateRun.LockedLayerPrefix + "B2", locked.Reason);
+        Assert.Equal(DraftStatus.Dirty, first.Status);
+
+        var failure = new Rig();
+        var second = failure.Open();
+        failure.Port.ThrowAt["Reread"] = Boom("reread boom");
+        var failed = failure.Update();
+        Assert.Equal(EditUpdateStatus.NotAppliedFailure, failed.Status);
+        Assert.Contains("reread boom", failed.Reason!, StringComparison.Ordinal);
+        Assert.Equal(DraftStatus.Dirty, second.Status);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs :: ASealThatThrewIsCommitThrewAndTheDraftIsUnknownWithItsOrigin
+====================================================================================================
+
+    [Fact]
+    public void ASealThatThrewIsCommitThrewAndTheDraftIsUnknownWithItsOrigin()
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+        rig.Port.ThrowAt["Seal"] = Boom("seal boom");
+
+        var outcome = rig.Update();
+
+        Assert.Equal(EditUpdateStatus.CommitThrew, outcome.Status);
+        Assert.StartsWith(PushBackPilotUpdateRun.SealFailedPrefix, outcome.Reason!, StringComparison.Ordinal);
+        Assert.Equal(DraftStatus.Unknown, draft.Status);
+        Assert.Equal(DraftUnknownOrigin.CommitThrew, draft.UnknownOrigin);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs :: AnAppliedUpdateRebasesTheDraftAndRunsThePortWithTheAuthorizedDocumentAndTheRack
+====================================================================================================
+
+    // ------------------------------------------------------------------ the answer comes from the close of the draft
+
+    [Fact]
+    public void AnAppliedUpdateRebasesTheDraftAndRunsThePortWithTheAuthorizedDocumentAndTheRack()
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+
+        var outcome = rig.Update();
+
+        Assert.Equal(EditUpdateStatus.Applied, outcome.Status);
+        Assert.Null(outcome.Reason);
+        Assert.Empty(outcome.Warnings);
+        Assert.Empty(outcome.Differences);
+        Assert.Equal(DraftStatus.Clean, draft.Status);
+        Assert.Equal(2.25, draft.CurrentDraftState.Editable.AnnotationScale);
+        Assert.Equal(new PushBackPilotUpdateRequest(100, RackA), rig.Port.Request);
+        Assert.Equal(PilotUpdateScopeDouble.Steps(), rig.Port.Calls.ToArray());
+        // The draft is Clean now: a second update has nothing to apply and does not touch the port.
+        Assert.Equal(EditUpdateStatus.NothingToApply, rig.Update().Status);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs :: AnAppliedUpdateWithWarningsKeepsThemAndTheDraftIsClean
+====================================================================================================
+
+    [Fact]
+    public void AnAppliedUpdateWithWarningsKeepsThemAndTheDraftIsClean()
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+        rig.Port.MissingPieces["B2"] = new[] { "POSTE_X" };
+
+        var outcome = rig.Update();
+
+        Assert.Equal(EditUpdateStatus.AppliedWithWarnings, outcome.Status);
+        var warning = Assert.Single(outcome.Warnings);
+        Assert.Contains("POSTE_X", warning, StringComparison.Ordinal);
+        Assert.Equal(DraftStatus.Clean, draft.Status);
+        Assert.Equal(outcome.Warnings.ToArray(), draft.Warnings.ToArray());
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs :: AnErrorThatArrivesDuringACommitThatThrewKeepsTheUnknownVisibleAsTheClassificationWithItsCause
+====================================================================================================
+
+    [Fact]
+    public void AnErrorThatArrivesDuringACommitThatThrewKeepsTheUnknownVisibleAsTheClassificationWithItsCause()
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+        rig.Port.ThrowAt["Seal"] = Boom("seal boom");
+        rig.Port.HookAt["Seal"] = () => draft.EnterError("the surface failed");
+
+        var outcome = rig.Update();
+
+        Assert.Equal(EditUpdateStatus.ClosedInError, outcome.Status);
+        Assert.Equal(EditUpdateStatus.CommitThrew, outcome.Classification);
+        Assert.StartsWith(PushBackPilotUpdateRun.SealFailedPrefix, outcome.Cause!, StringComparison.Ordinal);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs :: AnErrorThatArrivesDuringAConflictKeepsTheConflictAsTheClassificationAndWritesNothing
+====================================================================================================
+
+    [Fact]
+    public void AnErrorThatArrivesDuringAConflictKeepsTheConflictAsTheClassificationAndWritesNothing()
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+        rig.Port.RereadDrawing = Rig.Members().Select(m => m.Fact.DefinitionKey == "C3" ? IntentKit.Member("C3", FullPrepareKit.Planta("pb-02-modulos")) : m).ToArray();
+        rig.Port.HookAt["Reread"] = () => draft.EnterError("the surface failed");
+
+        var outcome = rig.Update();
+
+        Assert.Equal(EditUpdateStatus.ClosedInError, outcome.Status);
+        Assert.Equal(EditUpdateStatus.NotAppliedConflict, outcome.Classification);
+        Assert.Equal(DraftStatus.Error, draft.Status);
+        Assert.Empty(rig.Port.Written);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs :: AnErrorThatArrivesDuringAnUpdateWithWarningsKeepsTheWarningsAndTheClassificationOfTheClosedInErrorAnswer
+====================================================================================================
+
+    [Fact]
+    public void AnErrorThatArrivesDuringAnUpdateWithWarningsKeepsTheWarningsAndTheClassificationOfTheClosedInErrorAnswer()
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+        rig.Port.MissingPieces["B2"] = new[] { "POSTE_X" };
+        rig.Port.HookAt["Seal"] = () => draft.EnterError("the surface failed");
+
+        var outcome = rig.Update();
+
+        Assert.Equal(EditUpdateStatus.ClosedInError, outcome.Status);
+        Assert.Equal(EditUpdateStatus.AppliedWithWarnings, outcome.Classification);
+        var warning = Assert.Single(outcome.Warnings);
+        Assert.Contains("POSTE_X", warning, StringComparison.Ordinal);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs :: AnErrorThatArrivesDuringTheRunIsAppliedAfterTheClassificationAndTheAnswerIsClosedInError
+====================================================================================================
+
+    [Fact]
+    public void AnErrorThatArrivesDuringTheRunIsAppliedAfterTheClassificationAndTheAnswerIsClosedInError()
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+        rig.Port.HookAt["Seal"] = () => draft.EnterError("the surface failed");
+
+        var outcome = rig.Update();
+
+        Assert.Equal(EditUpdateStatus.ClosedInError, outcome.Status);
+        Assert.Equal("the surface failed", outcome.Reason);
+        Assert.Equal(DraftStatus.Error, draft.Status);
+        // The write happened and the re-read of POST was made: the content is the rebased one, whatever the status says.
+        Assert.Equal(2.25, draft.CurrentDraftState.Editable.AnnotationScale);
+
+        // M-03: the answer keeps the classification of the update, and it is the one of the close, never a success that is lost.
+        Assert.Equal(EditUpdateStatus.Applied, outcome.Classification);
+        Assert.Null(outcome.Cause);
+        Assert.Empty(outcome.Warnings);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs :: AnotherUpdateInProgressInTheRegistryAnswersItAndRunsNothing
+====================================================================================================
+
+    // ------------------------------------------------------------------ the slot (INV-F4T4B-09)
+
+    [Fact]
+    public void AnotherUpdateInProgressInTheRegistryAnswersItAndRunsNothing()
+    {
+        var rig = new Rig();
+        rig.Open();
+        rig.Reader.Answer = FullEditIntentKit.Admitted;
+        Assert.Equal(EditIntentStatus.Admitted, rig.Core.TryBeginPilotEdit(rig.Request(RackB)).Status);
+        var other = rig.Core.OpenDrafts.Find<PushBackFullDraftState>(rig.Session, RackB)!;
+        Assert.True(other.TryBeginApply().IsStarted);
+
+        var outcome = rig.Update();
+
+        Assert.Equal(EditUpdateStatus.AnotherUpdateInProgress, outcome.Status);
+        Assert.Empty(rig.Port.Calls);
+        Assert.Equal(DraftStatus.Dirty, rig.Core.OpenDrafts.Find<PushBackFullDraftState>(rig.Session, RackA)!.Status);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs :: TheAnswerOfAnUpdateAlwaysComesFromTheCloseAndTheOutcomeNeverNamesADraft
+====================================================================================================
+
+    [Fact]
+    public void TheAnswerOfAnUpdateAlwaysComesFromTheCloseAndTheOutcomeNeverNamesADraft()
+    {
+        var method = typeof(WorkspaceHostCore).GetMethod("TryUpdatePilot", BindingFlags.Public | BindingFlags.Instance);
+
+        Assert.NotNull(method);
+        Assert.Equal(typeof(EditUpdateOutcome), method!.ReturnType);
+        Assert.Equal(new[] { typeof(EditIntentRequest), typeof(IPushBackPilotUpdatePort) }, method.GetParameters().Select(p => p.ParameterType).ToArray());
+        Assert.True(typeof(EditUpdateOutcome).IsValueType);
+        Assert.Equal(EditUpdateStatus.Unavailable, default(EditUpdateOutcome).Status);
+        Assert.Null(default(EditUpdateOutcome).Reason);
+        Assert.NotNull(default(EditUpdateOutcome).Differences);
+        Assert.Empty(default(EditUpdateOutcome).Differences);
+        Assert.NotNull(default(EditUpdateOutcome).Warnings);
+        Assert.Empty(default(EditUpdateOutcome).Warnings);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs :: TheAnswerOfAnUpdateHasTheStatusOfTheClassOfOutcomeThatClosedTheDraftForEveryClass
+====================================================================================================
+
+    [Theory]
+    [MemberData(nameof(EveryClassOfOutcome))]
+    public void TheAnswerOfAnUpdateHasTheStatusOfTheClassOfOutcomeThatClosedTheDraftForEveryClass(string className)
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+        switch (className)
+        {
+            case "NotAppliedConflict":
+                rig.Port.RereadDrawing = Rig.Members().Select(m => m.Fact.DefinitionKey == "C3" ? IntentKit.Member("C3", FullPrepareKit.Planta("pb-02-modulos")) : m).ToArray();
+                break;
+            case "NotAppliedAdmission":
+                rig.Port.NullCatalog = true;
+                break;
+            case "NotAppliedPreflight":
+                rig.Port.LockedAtPrepare = new[] { "B2" };
+                break;
+            case "NotAppliedFailure":
+                rig.Port.ThrowAt["Reread"] = Boom("reread boom");
+                break;
+            case "CommitThrew":
+                rig.Port.ThrowAt["Seal"] = Boom("seal boom");
+                break;
+            case "AppliedWithWarnings":
+                rig.Port.MissingPieces["B2"] = new[] { "POSTE_X" };
+                break;
+            case "AppliedPostRereadFailed":
+                rig.Port.ThrowAt["Post"] = Boom("post boom");
+                break;
+        }
+
+        var outcome = rig.Update();
+
+        Assert.Equal(className, outcome.Status.ToString());
+        Assert.Equal(outcome.Status, outcome.Classification);
+        Assert.NotEqual(DraftStatus.Applying, draft.Status);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs :: TheCheckBeforeTheSlotAnswersNothingToApplyPendingTextAndNotApplicableWithoutTakingTheSlot
+====================================================================================================
+
+    [Fact]
+    public void TheCheckBeforeTheSlotAnswersNothingToApplyPendingTextAndNotApplicableWithoutTakingTheSlot()
+    {
+        var clean = new Rig();
+        var cleanDraft = clean.Open(edit: false);
+        Assert.Equal(DraftStatus.Clean, cleanDraft.Status);
+        var nothing = clean.Update();
+        Assert.Equal(EditUpdateStatus.NothingToApply, nothing.Status);
+        Assert.Equal(PushBackPilotUpdateRun.NothingToApplyReason, nothing.Reason);
+        Assert.Empty(clean.Port.Calls);
+        Assert.Equal(DraftStatus.Clean, cleanDraft.Status);
+
+        var pending = new Rig();
+        var pendingDraft = pending.Open();
+        pendingDraft.SetPendingText("AnnotationScale", "3");
+        var typed = pending.Update();
+        Assert.Equal(EditUpdateStatus.PendingText, typed.Status);
+        Assert.Equal(PushBackPilotUpdateRun.PendingTextReason, typed.Reason);
+        Assert.Equal(DraftStatus.Dirty, pendingDraft.Status);
+        Assert.Empty(pending.Port.Calls);
+
+        var conflict = new Rig();
+        var conflictDraft = conflict.Open();
+        conflictDraft.ConfirmBase(FullPrepareKit.BaseOf(("A1", FullPrepareKit.Frontal("pb-02-modulos"))));
+        Assert.Equal(DraftStatus.Conflict, conflictDraft.Status);
+        var notApplicable = conflict.Update();
+        Assert.Equal(EditUpdateStatus.NotApplicable, notApplicable.Status);
+        Assert.Equal(PushBackPilotUpdateRun.NotApplicableReason, notApplicable.Reason);
+        Assert.Empty(conflict.Port.Calls);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs :: TheGateHasNoRestAndNoReaderSoACommandInProgressAndAMissingReaderDoNotStopTheUpdate
+====================================================================================================
+
+    [Fact]
+    public void TheGateHasNoRestAndNoReaderSoACommandInProgressAndAMissingReaderDoNotStopTheUpdate()
+    {
+        var rig = new Rig();
+        rig.Open();
+        rig.Host.Probe.IsActiveDocumentQuiescent = false;
+
+        var outcome = rig.Update();
+
+        Assert.Equal(EditUpdateStatus.Applied, outcome.Status);
+        Assert.Empty(rig.Reader.Calls.Skip(1));
+
+        // No reader was ever assigned to this host: the update answers like any other, and not Unavailable.
+        var fresh = new WorkspaceHostRig().WithDocument(100);
+        fresh.Host.OpenPanel();
+        var session = fresh.ActiveSession;
+        fresh.Idle();
+        Assert.Equal(EditUpdateStatus.NoDraft, fresh.Host.TryUpdatePilot(new EditIntentRequest(session, RackA, null, null), new PilotUpdateScopeDouble()).Status);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs :: TheGateRejectsAModalAWrongSessionAndNoDocumentWithoutReadingAnythingAndWithoutTheSlot
+====================================================================================================
+
+    // ------------------------------------------------------------------ the gate of its own: no rest and no reader
+
+    [Fact]
+    public void TheGateRejectsAModalAWrongSessionAndNoDocumentWithoutReadingAnythingAndWithoutTheSlot()
+    {
+        var modal = new Rig();
+        var draft = modal.Open();
+        modal.Core.SetModalRackCadActive(true);
+        var rejected = modal.Update();
+        Assert.Equal(EditUpdateStatus.Rejected, rejected.Status);
+        Assert.False(string.IsNullOrEmpty(rejected.Reason));
+        Assert.Empty(modal.Port.Calls);
+        Assert.Equal(DraftStatus.Dirty, draft.Status);
+
+        var other = new Rig();
+        other.Open();
+        var wrong = other.Core.TryUpdatePilot(other.Request(session: new SessionId(777)), other.Port);
+        Assert.Equal(EditUpdateStatus.Rejected, wrong.Status);
+        Assert.Equal("La petición no es del documento activo.", wrong.Reason);
+        Assert.Empty(other.Port.Calls);
+
+        var none = new Rig(document: false);
+        var nothing = none.Core.TryUpdatePilot(none.Request(), none.Port);
+        Assert.Equal(EditUpdateStatus.Rejected, nothing.Status);
+        Assert.Empty(none.Port.Calls);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs :: TheSlotIsClosedExactlyOnceAndIsFreeAfterEveryAnswer
+====================================================================================================
+
+    [Fact]
+    public void TheSlotIsClosedExactlyOnceAndIsFreeAfterEveryAnswer()
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+        rig.Port.ThrowAt["PrepareUnits"] = Boom("import boom");
+
+        var outcome = rig.Update();
+
+        Assert.Equal(EditUpdateStatus.NotAppliedFailure, outcome.Status);
+        // The close already happened: a second close finds no update in progress, and another draft can take the slot.
+        Assert.False(draft.CompleteApply(DraftApplyOutcome<PushBackFullDraftState>.NotAppliedFailure("again")).Accepted);
+        rig.Reader.Answer = FullEditIntentKit.Admitted;
+        Assert.Equal(EditIntentStatus.Admitted, rig.Core.TryBeginPilotEdit(rig.Request(RackB)).Status);
+        Assert.True(rig.Core.OpenDrafts.Find<PushBackFullDraftState>(rig.Session, RackB)!.TryBeginApply().IsStarted);
+        Assert.Equal(DraftStatus.Dirty, draft.Status);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs :: TheUpdateOfThePilotNeverUsesTheReaderOfTheIntention
+====================================================================================================
+
+    [Fact]
+    public void TheUpdateOfThePilotNeverUsesTheReaderOfTheIntention()
+    {
+        var rig = new Rig();
+        rig.Open();
+        var reads = rig.Reader.Calls.Count;
+
+        var outcome = rig.Update();
+
+        Assert.Equal(EditUpdateStatus.Applied, outcome.Status);
+        Assert.Equal(reads, rig.Reader.Calls.Count);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs :: G4OnlyTheExecuteOfTheRunOfTheCoreCallsTheUpdateAndOnlyTheCoreCallsTheRunOfT4B
+====================================================================================================
+
+    [Fact]
+    public void G4OnlyTheExecuteOfTheRunOfTheCoreCallsTheUpdateAndOnlyTheCoreCallsTheRunOfT4B()
+    {
+        Assert.Empty(G4Violations(Product()));
+        // I-64 F4B PB-T4b (the self-test of IG:510-517 over the full run): a caller of the run outside the core, a caller of the update
+        // outside the core and a second call in the core trip the guard.
+        Assert.NotEmpty(G4Violations(Append(Product(), HostRunPath, "var o = PushBackPilotUpdateRun.ExecuteFull(draft, request, port);")));
+        Assert.NotEmpty(G4Violations(Append(Product(), ControllerPath, "var u = _host.TryUpdatePilot(request, port);")));
+        Assert.NotEmpty(G4Violations(Append(Product(), AdapterPath, "var u = core.TryUpdatePilot(request, port);")));
+        Assert.NotEmpty(G4Violations(With(Product(), CorePath, code => code.Replace("public EditUpdateOutcome TryUpdatePilot(", "public EditUpdateOutcome Other() { return TryUpdatePilot(null!, null!); }\n        public EditUpdateOutcome TryUpdatePilot(", StringComparison.Ordinal))));
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs :: G4TripsOnAGroupOfMethodsOfTheUpdateOutsideTheCoreAndInsideItAndNotOnTheNameInsideAString
+====================================================================================================
+
+    [Fact]
+    public void G4TripsOnAGroupOfMethodsOfTheUpdateOutsideTheCoreAndInsideItAndNotOnTheNameInsideAString()
+    {
+        var product = Product();
+
+        Assert.Empty(G4Violations(product));
+        // M-07: no parenthesis at all, so the old expression of the guard did not see these.
+        Assert.NotEmpty(G4Violations(Append(product, ControllerPath, "Func<EditIntentRequest, IPushBackPilotUpdatePort, EditUpdateOutcome> f = core.TryUpdatePilot;")));
+        Assert.NotEmpty(G4Violations(Append(product, AdapterPath, "var f = (Delegate)host.TryUpdatePilot;")));
+        Assert.NotEmpty(G4Violations(Append(product, CorePath, "Func<EditIntentRequest, IPushBackPilotUpdatePort, EditUpdateOutcome> f = TryUpdatePilot;")));
+        // The name of the method that the log of the core carries in a string is not an identifier: the guard does not count it.
+        Assert.Contains("\"WorkspaceHostCore.TryUpdatePilot\"", CodeOf(CorePath));
+        Assert.Empty(G4Violations(Append(product, CorePath, "var context = \"WorkspaceHostCore.TryUpdatePilot\";")));
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs :: ayudante G4Violations
+====================================================================================================
+
+    private static IEnumerable<string> G4Violations(IReadOnlyList<(string Path, string Code)> product)
+    {
+        // M-07: the IDENTIFIER, as a whole word and outside the text of a string, so that a group of methods (a delegate that is the method itself)
+        // is seen too: it appears in the core twice (its declaration and its one call) and nowhere else.
+        var callers = product.Where(f => Regex.IsMatch(WithoutStrings(f.Code), @"\bTryUpdatePilot\b")).Select(f => f.Path).ToArray();
+        if (!callers.SequenceEqual(new[] { CorePath })) yield return "the callers are in " + string.Join(", ", callers);
+
+        var core = product.Single(f => f.Path == CorePath).Code;
+        var run = Src.BodyOf(core, @"private\s+sealed\s+class\s+PilotUpdateRun\b");
+        var execute = Src.BodyOf(run, @"public\s+void\s+Execute\s*\(");
+        if (Src.Count(core, @"\.TryUpdatePilot\s*\(") != 1 || Src.Count(execute, @"\.TryUpdatePilot\s*\(") != 1) yield return "TryUpdatePilot is not called exactly once, from Execute of the run of the core";
+        if (Src.Count(WithoutStrings(core), @"\bTryUpdatePilot\b") != 2) yield return "the identifier TryUpdatePilot appears other than as its declaration and its one call";
+
+        var runCallers = product.Where(f => Regex.IsMatch(f.Code, @"PushBackPilotUpdateRun\.ExecuteFull\s*\(")).Select(f => f.Path).ToArray();
+        if (!runCallers.SequenceEqual(new[] { CorePath })) yield return "PushBackPilotUpdateRun.ExecuteFull is named in " + string.Join(", ", runCallers);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRequestTests.cs :: ARequestOfASessionThatIsNoLongerTheActiveOneIsRejectedByItsAuthorizationAndNeverWaitsForTheFlightOfThreeOperations
+====================================================================================================
+
+    // ------------------------------------------------------------------ M-01: the flight is looked at after the authorization
+
+    [Fact]
+    public void ARequestOfASessionThatIsNoLongerTheActiveOneIsRejectedByItsAuthorizationAndNeverWaitsForTheFlightOfThreeOperations()
+    {
+        var rig = new Rig();
+        rig.Open();
+        rig.Kit.Primitives.Mode = PilotHostMode.Deferred;
+        rig.Start();
+        // Another document becomes the active one: the session of the flight is not the one of the active document any more.
+        rig.Host.Activate(200);
+
+        var confirm = rig.Port.TryConfirmBase(rig.Request());
+        var keep = rig.Port.TryKeepMine(rig.Request());
+        var discard = rig.Port.TryDiscardAndReload(rig.Request());
+
+        Assert.Equal(EditConfirmStatus.Rejected, confirm.Status);
+        Assert.Equal(EditIntentStatus.Rejected, keep.Status);
+        Assert.Equal(EditIntentStatus.Rejected, discard.Status);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRequestTests.cs :: AnUpdateOfTheCoreThatRunsOverASlotThatWasTakenAwayNeverAnswersAnApplied
+====================================================================================================
+
+    // ------------------------------------------------------------------ the answer of a close that was not accepted is never a success (M-01)
+
+    [Fact]
+    public void AnUpdateOfTheCoreThatRunsOverASlotThatWasTakenAwayNeverAnswersAnApplied()
+    {
+        // The slot is taken from the draft while the run is in its write: CompleteApply finds no update to close (NotApplying).
+        var rig = new Rig();
+        var draft = rig.Open();
+        rig.Writer.HookAt["Seal"] = () => Assert.True(draft.CompleteApply(DraftApplyOutcome<PushBackFullDraftState>.NotAppliedFailure("taken away")).Accepted);
+
+        var outcome = rig.Core.TryUpdatePilot(rig.Request(), rig.Writer);
+
+        Assert.NotEqual(EditUpdateStatus.Applied, outcome.Status);
+        Assert.NotEqual(EditUpdateStatus.AppliedWithWarnings, outcome.Status);
+        Assert.Equal(EditUpdateStatus.ClosedInError, outcome.Status);
+        Assert.Equal(EditUpdateStatus.Applied, outcome.Classification);
+        Assert.Equal(PushBackPilotHostTexts.UpdateNotClosedReason, outcome.Reason);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRequestTests.cs :: DuringTheFlightTheFiveOperationsThatCouldChangeTheDraftAnswerBusyOrWaitingAndTheDraftDoesNotChange
+====================================================================================================
+
+    [Fact]
+    public void DuringTheFlightTheFiveOperationsThatCouldChangeTheDraftAnswerBusyOrWaitingAndTheDraftDoesNotChange()
+    {
+        var rig = new Rig();
+        var draft = rig.Open();
+        rig.Kit.Primitives.Mode = PilotHostMode.Deferred;
+        rig.Start();
+        var before = Snapshot(draft);
+        var reads = rig.Reader.Calls.Count;
+
+        var set = rig.Port.SetPendingText(rig.Origin(), RackA, "4");
+        var commit = rig.Port.CommitField(rig.Origin(), RackA);
+        var keep = rig.Port.TryKeepMine(rig.Request());
+        var discard = rig.Port.TryDiscardAndReload(rig.Request());
+        var confirm = rig.Port.TryConfirmBase(rig.Request());
+
+        Assert.Equal(PilotFieldStatus.Busy, set.Status);
+        Assert.Equal(PushBackPilotHostTexts.UpdateInFlightReason, set.Reason);
+        Assert.Equal(PilotFieldStatus.Busy, commit.Status);
+        Assert.Equal(EditIntentStatus.Waiting, keep.Status);
+        Assert.Equal(PushBackPilotHostTexts.UpdateInFlightReason, keep.Reason);
+        Assert.Equal(EditIntentStatus.Waiting, discard.Status);
+        Assert.Equal(EditConfirmStatus.Waiting, confirm.Status);
+        Assert.Equal(PushBackPilotHostTexts.UpdateInFlightReason, confirm.Reason);
+        Assert.Equal(before, Snapshot(draft));
+        Assert.Equal(reads, rig.Reader.Calls.Count);
+
+        // After the end they are admitted again.
+        rig.Kit.Primitives.RunDeferred();
+        rig.Take();
+        Assert.NotEqual(PilotFieldStatus.Busy, rig.Port.SetPendingText(rig.Origin(), RackA, "4").Status);
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRequestTests.cs :: TheOutcomeThatT4BGivesIsKeptWithTheSameStatusReasonDifferencesAndWarningsAsThePlainCallOfTheUpdate
+====================================================================================================
+
+    [Theory]
+    [MemberData(nameof(TheOutcomesOfT4B))]
+    public void TheOutcomeThatT4BGivesIsKeptWithTheSameStatusReasonDifferencesAndWarningsAsThePlainCallOfTheUpdate(string name)
+    {
+        var direct = new Rig();
+        direct.Open();
+        Arrange(direct.Writer, name);
+        var expected = direct.Core.TryUpdatePilot(direct.Request(), direct.Writer);
+
+        var rig = new Rig();
+        rig.Open();
+        Arrange(rig.Writer, name);
+        rig.Start();
+        var kept = rig.Take().Outcome;
+
+        Assert.Equal(expected.Status, kept.Status);
+        Assert.Equal(expected.Reason, kept.Reason);
+        Assert.Equal(expected.Differences.ToArray(), kept.Differences.ToArray());
+        Assert.Equal(expected.Warnings.ToArray(), kept.Warnings.ToArray());
+    }
+
+====================================================================================================
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRequestTests.cs :: TheTextsOfTheGateOfTheUpdateAreTheConstantsOfTheRunWithTheirOldWording
+====================================================================================================
+
+    [Fact]
+    public void TheTextsOfTheGateOfTheUpdateAreTheConstantsOfTheRunWithTheirOldWording()
+    {
+        var modal = new Rig();
+        modal.Open();
+        modal.Core.SetModalRackCadActive(true);
+        var rejected = modal.Core.TryUpdatePilot(modal.Request(), modal.Writer);
+        Assert.Equal(EditUpdateStatus.Rejected, rejected.Status);
+        Assert.Equal(PushBackPilotUpdateRun.ModalOpenReason, rejected.Reason);
+
+        var none = new Rig();
+        none.Open();
+        none.Host.Probe.ActiveDocumentNativeId = null;
+        var waiting = none.Core.TryUpdatePilot(none.Request(), none.Writer);
+        Assert.Equal(PushBackPilotUpdateRun.NoActiveDocumentReason, waiting.Reason);
+    }
+

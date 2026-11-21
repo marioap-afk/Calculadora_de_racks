@@ -1,0 +1,20 @@
+> **Redaccion para el repo publico:** las rutas locales y las variables de entorno de carpetas del usuario se sustituyen por marcadores (`<scratchpad>`, `<worktree-de-I-64>`, `<checkout-principal>`, `<datos-locales-del-usuario>`, `<datos-de-aplicacion-del-usuario>`). El resto no cambia.
+
+<scratchpad>\hs65\pbt4\walk_guards_pbt4b_v48.py:121: FutureWarning: Possible set union at position 119
+  rx = re.compile(lit)
+<scratchpad>\hs65\pbt4\walk_guards_pbt4b_v48.py:121: FutureWarning: Possible set union at position 142
+  rx = re.compile(lit)
+<scratchpad>\hs65\pbt4\walk_guards_pbt4b_v48.py:146: FutureWarning: Possible set union at position 119
+  n = len(re.findall(lit, new_views[p]))
+<scratchpad>\hs65\pbt4\walk_guards_pbt4b_v48.py:146: FutureWarning: Possible set union at position 142
+  n = len(re.findall(lit, new_views[p]))
+<scratchpad>\hs65\pbt4\walk_guards_pbt4b_v48.py:200: FutureWarning: Possible set union at position 119
+  if re.search(l, head) and name in head:
+<scratchpad>\hs65\pbt4\walk_guards_pbt4b_v48.py:200: FutureWarning: Possible set union at position 142
+  if re.search(l, head) and name in head:
+<scratchpad>\hs65\pbt4\walk_guards_pbt4b_v48.py:121: FutureWarning: Possible set union at position 166
+  rx = re.compile(lit)
+<scratchpad>\hs65\pbt4\walk_guards_pbt4b_v48.py:146: FutureWarning: Possible set union at position 166
+  n = len(re.findall(lit, new_views[p]))
+<scratchpad>\hs65\pbt4\walk_guards_pbt4b_v48.py:200: FutureWarning: Possible set union at position 166
+  if re.search(l, head) and name in head:

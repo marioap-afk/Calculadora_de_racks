@@ -1,0 +1,3 @@
+pbt4b-substitution-list-477.tsv sha256 5975c5b6b9111c3a4048193b5ebf10b619a567996dea8707b88ff6a00105a651 105044 bytes; filas 477 {'PB-T4b C-5': 22, 'PB-T4b UI': 27, 'PB-T4b C-0': 428}
+  + PB-T4b C-5	tests/RackCad.Tests/PushBackFullReadPathTests.cs	CT_PBT4A_03_TheFiveRereadsOfAnOpenDraftReadAtTheOriginOfTheDraftAndBeginReadsAsToday	152-186	C-5: CT-PBT4A-03 (su ayudante PushBackFullReadRig busca el borrador del piloto; owner-pbt4b-list-477-decision.md)
+  + PB-T4b C-5	tests/RackCad.Tests/PushBackFullReadGuardTests.cs	CT_PBT4A_05_WithAReaderWithoutTheNewInterfaceTheFiveRereadsUseReadIntentAsToday	53-74	C-5: CT-PBT4A-05 (su lector EditIntentFakeReader responde FromPilot, sin la lectura completa; owner-pbt4b-list-477-decision.md)

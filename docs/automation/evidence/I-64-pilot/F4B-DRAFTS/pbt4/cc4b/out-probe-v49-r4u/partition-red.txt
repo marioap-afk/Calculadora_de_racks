@@ -1,0 +1,33 @@
+particion: 481 filas (477 pruebas; 4 partidas por filas, D-S5); sha256 e87e024c168dd81d05c1ba1ae9dfa0027da8724ee0d9fd219cce74fe1f613dec
+  PushBackFullReadGuardTests                         Red   pruebas=  1 resultados=   1
+  PushBackFullReadPathTests                          Red   pruebas=  1 resultados=   1
+  PushBackWritePathGuardTests                        Red   pruebas=  1 resultados=   1
+  WorkspaceAssociativeBookkeepingTests               Green pruebas=  9 resultados=  21
+  WorkspaceAssociativeBookkeepingTests               Red   pruebas=  1 resultados=   1
+  WorkspaceCommandAdvisorTests                       Green pruebas= 48 resultados=  70
+  WorkspaceCommandAdvisorTests                       Red   pruebas=  6 resultados=   6
+  WorkspaceEditIntentGuardTests                      Red   pruebas=  7 resultados=  13
+  WorkspaceEditIntentHostTests                       Green pruebas= 44 resultados=  57
+  WorkspaceEditIntentHostTests                       Red   pruebas= 18 resultados=  24
+  WorkspaceHostHardeningGuardTests                   Red   pruebas=  1 resultados=   1
+  WorkspaceLifecycleGuardTests                       Red   pruebas=  2 resultados=   2
+  WorkspaceLifecycleHostTests                        Green pruebas= 48 resultados=  69
+  WorkspaceLifecycleHostTests                        Red   pruebas= 22 resultados=  24
+  WorkspacePilotEditGuardTests                       Green pruebas=  2 resultados=  17
+  WorkspacePilotEditGuardTests                       Red   pruebas=  4 resultados=   6
+  WorkspacePilotEditHostTests                        Green pruebas= 10 resultados=  17
+  WorkspacePilotEditHostTests                        Red   pruebas= 49 resultados=  59
+  WorkspacePilotPrepareTests                         Green pruebas= 47 resultados=  47
+  WorkspacePilotPrepareTests                         Red   pruebas= 22 resultados=  44
+  WorkspacePilotReconciliationGuardTests             Green pruebas=  1 resultados=   1
+  WorkspacePilotReconciliationHostTests              Green pruebas=  5 resultados=   5
+  WorkspacePilotReconciliationHostTests              Red   pruebas= 23 resultados=  23
+  WorkspacePilotReconciliationTests                  Green pruebas= 21 resultados=  30
+  WorkspacePilotReconciliationViewTests              Green pruebas=  6 resultados=   6
+  WorkspacePilotUpdateGuardTests                     Red   pruebas=  1 resultados=   1
+  WorkspacePilotUpdateHostTests                      Green pruebas= 13 resultados=  18
+  WorkspacePilotUpdateHostTests                      Red   pruebas= 22 resultados=  29
+  WorkspacePilotUpdateIntegrationGuardTests          Red   pruebas=  2 resultados=   2
+  WorkspacePilotUpdateRequestTests                   Green pruebas=  1 resultados=   1
+  WorkspacePilotUpdateRequestTests                   Red   pruebas= 43 resultados=  53
+R_C=291 R_UI=0

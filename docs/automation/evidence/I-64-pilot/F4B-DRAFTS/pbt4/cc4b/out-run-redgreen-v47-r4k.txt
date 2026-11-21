@@ -1,0 +1,172 @@
+fase redgreen; copia /d/r4k; salida /tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4bcc/compile/out-redgreen-v47-r4k; revision 78a7cef3e9260f0955addd48344fc5a44b9c9957
+paquete sha256 2a851e33861747b170dee1636789ccdbeb51c2bb6f13ebd59686f670854a3afb I-64-f4b-pbt4-gate-contract-package-v47.md
+particion sha256 2e67b4c4a6c4a531c8fd6848f882ba43179f26599c39b0933b16bd9f0e5dc2f0
+  guion fed6eb54bffc8a6b7ddeeb13b2bcf683fb97fbccbfd74c1f5a822fc296f38863 apply_red_pbt4b_v47.py
+  guion 2a96b2afb6ce84824047809101f0aed052d0f42717bc64382d917815667dd247 make_copies_pbt4b_v47.py
+  guion 9c46a61d5fb470cad7bbb259a99b934039b0a080f9f70e50dd8dc221b359d93a pbt4b_hand_edits_v47.py
+  guion b2d621163142760c83f451e1ec2c2acc083378c545e1b54cd0ba3c5f5b7b022d pbt4b_skips_v47.py
+  guion 0c5abc6d00d9dfc9943812aae4c9fd31338c3b64f17cbff632f949378e9d9b1c pbt4b-copy-map-v4.tsv
+  guion 96f75552b53aa1a0635cfc8b0e2fc1fff896f9ddebb8ab1a20c79496ca299e63 partition_pbt4b_v47.py
+  guion 3cc8e56cfc2609d567e69577a28f03ac5801c5b46f0bddba5c6692cc715ecdd6 make_copies_pbt4b_v46.py
+  guion 46167c571245148e597af36a6efe5c8b6d5811d0b457eefb0101f035fea7e93e pbt4b_hand_edits_v46.py
+  guion a77b0baa08fe36b752828fe6f15dc9ae369eae3cd1e6a450b6a48c0580a3e281 make_copies_pbt4b_v45.py
+  guion 7403c43f3589d17fe5bdb120bb6016dbacf440ab52de37a168f493eb4a8ce4e5 pbt4b_hand_edits_v45.py
+  guion 26e75ebd13330f1a0422974dfb0aa1988246acec5e9bd06f7441dd47e2ba2d98 pbt4b_skips_v45.py
+  guion 6d9ee13790f527216ce0f3ece7e2ec79fa8e573e320bd6c902fe8294947ce59b partition_pbt4b_v45.py
+  guion ae55163a7519cf35882aedaa96a4deb3bd3ac4185ad11d3d91bd2cd16ef80bd0 apply_green_pbt4b_v45.py
+  guion 47662f52b8008ce802a0dc52395c8995c462d21276236cf1cd34f39a288ae1c4 green_pbt4b_v45.py
+  guion b4ed29f92838e5761faf1afaba1f33e58ba82a56541900f52db8c5ecb6239b9a pbt4b-kit-WorkspaceFullReadKit-v45.cs
+  guion ea5dead9d0e4b00a6857a3e4098907615aa2f482429df9d342dcf6fd4bcf1c32 /tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4bcc/compile/p6_check_v47.py
+  guion 59b7ce7a7bdb0171651eabe2f54a5d132f26b75d55142868d81539f2d7757753 /tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4bcc/compile/check_skips_copy_v47.py
+  guion db73d01adfbc25370e9111082f71a86e4852df88671b5947c9c15bd95cb953d5 /tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4bcc/compile/ui_filters_p6.py
+  guion 78e596b519a67772431b656f98bc4a8ee126ff82a6742a16cbbf894be13806c2 p6_pbt4b_v47.sh
+copia exportada: 12886 archivos
+ESCRITOS 47 archivos; conjunto ebfd231fe16e9e6f5245684d8cb5e2b64a7bc0a88c66fdeb24a93fc32b260ecf
+check_skips (RED) rc=0 :: archivos: 20; mal: 0; Skip leidos: 477
+red-core-tests rc=1 errores=12 avisos-CS=0
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotPrepareFull.cs(1016,31): error CS0030: No se puede convertir el tipo 'char' en 'string' [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotPrepareFull.cs(1016,92): error CS0030: No se puede convertir el tipo 'char' en 'string' [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotPrepareFull.cs(128,32): error CS0030: No se puede convertir el tipo 'char' en 'string' [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotPrepareFull.cs(128,93): error CS0030: No se puede convertir el tipo 'char' en 'string' [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotPrepareFull.cs(141,31): error CS0030: No se puede convertir el tipo 'char' en 'string' [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotPrepareFull.cs(141,92): error CS0030: No se puede convertir el tipo 'char' en 'string' [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+red-ui-tests rc=0 errores=0 avisos-CS=0
+red-plugin rc=0 errores=0 avisos-CS=0
+red: errores 12, avisos CS 0 (en total, hasta aqui)
+  binario a6ea96de670f72f4df802ae4a8da46486b23ef88046e23993cddace6e78dd88f tests/RackCad.UI.Tests/bin/Debug/net8.0-windows/RackCad.UI.Tests.dll
+  binario 9b07d0627a6f3448aafdb985098b44677d9298969a5dd0acf26d8c955bb2b29e _plugin-out-red/RackCad.Plugin.dll
+Traceback (most recent call last):
+  File "<scratchpad>\hs65\pbt4bcc\compile\p6_check_v47.py", line 320, in <module>
+    main()
+    ~~~~^^
+  File "<scratchpad>\hs65\pbt4bcc\compile\p6_check_v47.py", line 302, in main
+    cmd_summary(a[1], a[2])
+    ~~~~~~~~~~~^^^^^^^^^^^^
+  File "<scratchpad>\hs65\pbt4bcc\compile\p6_check_v47.py", line 112, in cmd_summary
+    rs, (start, finish) = results(trx)
+                          ~~~~~~~^^^^^
+  File "<scratchpad>\hs65\pbt4bcc\compile\p6_check_v47.py", line 43, in results
+    root = ET.parse(trx).getroot()
+           ~~~~~~~~^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 1223, in parse
+    tree.parse(source, parser)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 566, in parse
+    source = open(source, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: '<copia>/_trx/core-red.trx'
+sha256sum: /d/r4k/_trx/core-red.trx: No such file or directory
+head: cannot open '/tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4bcc/compile/out-redgreen-v47-r4k/core-red-outcomes.txt' for reading: No such file or directory
+test core-red.trx rc=1 segundos=1 trx-sha256= :: 
+test red-ui-RackCad_UI_Tests_PushBackFullDraftWindowParityTests.trx rc=0 segundos=7 trx-sha256=3dd92b6cfa1cea96c074a62a1ed7f5d65693e09b22871b729e83c3e85f7ae42a :: filas 1 {'Passed': 1}; inicio 2026-11-20T17:51:26.7802773-06:00; fin 2026-11-20T17:51:32.6636483-06:00
+test red-ui-RackCad_UI_Tests_Workspace.trx rc=0 segundos=8 trx-sha256=ab574079b86d9acbcdbc1d08c40471e96ea28d11815bd9b3c5d6d49ade6ff500 :: filas 672 {'Passed': 644, 'NotExecuted': 28}; inicio 2026-11-20T17:51:34.8822154-06:00; fin 2026-11-20T17:51:41.6979144-06:00
+test red-ui-RackCad_UI_Tests_PushBackWindowOnStateTests.trx rc=0 segundos=21 trx-sha256=38d39fdd968cd9c6480ea1e3d860f9fd032442815baeabb5c0c16502f2d5b43f :: filas 2 {'Passed': 2}; inicio 2026-11-20T17:51:43.7048588-06:00; fin 2026-11-20T17:52:03.1662595-06:00
+test red-ui-RackCad_UI_Tests_PushBackClassicCharacterization.trx rc=0 segundos=11 trx-sha256=3011daa43cfa455fd9c7cf04c4f34ba38ce0f330905a24172b16e956a1ce1b6f :: filas 55 {'Passed': 55}; inicio 2026-11-20T17:52:05.4772581-06:00; fin 2026-11-20T17:52:15.2673734-06:00
+test red-ui-RackCad_UI_Tests_PushBackFullEditorCharacterization.trx rc=0 segundos=14 trx-sha256=a8c187a6869bb77f8c18e40a26d7da9f36be796a95452ed1d292d342a3773145 :: filas 18 {'Passed': 16, 'NotExecuted': 2}; inicio 2026-11-20T17:52:17.4234560-06:00; fin 2026-11-20T17:52:30.2355355-06:00
+test red-ui-RackCad_UI_Tests_PushBackStateNet.trx rc=0 segundos=23 trx-sha256=de6878b9c9ee51aa185c4043f140d2ff55c3dfa9281eaf728d4b0698d9ad1741 :: filas 14 {'Passed': 14}; inicio 2026-11-20T17:52:32.2032331-06:00; fin 2026-11-20T17:52:54.0349972-06:00
+test red-ui-RackCad_UI_Tests_PushBackDeclaredCorrection.trx rc=0 segundos=13 trx-sha256=cec185a0147555c806f4f8926c630c6ed91b87577f755dc8206360d5c54ec9c4 :: filas 14 {'Passed': 14}; inicio 2026-11-20T17:52:55.9695484-06:00; fin 2026-11-20T17:53:07.8306816-06:00
+test red-ui-RackCad_UI_Tests_Cantilever.trx rc=0 segundos=5 trx-sha256=8b193c9732c8393fca6d2c5c5da3eaf914f32d535fd35a435412df12d64eb6c5 :: filas 67 {'Passed': 67}; inicio 2026-11-20T17:53:09.8390030-06:00; fin 2026-11-20T17:53:13.2737854-06:00
+test red-ui-RackCad_UI_Tests_PushBackWorkspaceModeTests.trx rc=0 segundos=11 trx-sha256=dc7f8800864e3c7282360995f128a89c5271442caa96cd3ad6eb6a75945922f1 :: filas 3 {'Passed': 3}; inicio 2026-11-20T17:53:15.2603283-06:00; fin 2026-11-20T17:53:25.6184416-06:00
+test red-ui-RackCad_UI_Tests_PushBackWorkspaceApplyCloseTests.trx rc=0 segundos=11 trx-sha256=f40d24beb19dbefb5d87461b64294e429839f297566039a99c9901e2bbe8fe79 :: filas 4 {'Passed': 4}; inicio 2026-11-20T17:53:27.5191051-06:00; fin 2026-11-20T17:53:36.9378271-06:00
+test red-ui-RackCad_UI_Tests_PushBackFieldValidationConcordanceTests.trx rc=0 segundos=3 trx-sha256=95f9e4e9a4fc47607fb1e0cf3c1eff589314c7b8bab569ee9fe346ee68ac50ae :: filas 1 {'Passed': 1}; inicio 2026-11-20T17:53:39.0786229-06:00; fin 2026-11-20T17:53:40.2862267-06:00
+test red-ui-RackCad_UI_Tests_PushBackWorkspaceCarryoverTests.trx rc=0 segundos=18 trx-sha256=19195e125814ebbe0642621c406cbb4a949d6ed534ce82e73f79ae8e449482ae :: filas 3 {'Passed': 3}; inicio 2026-11-20T17:53:42.4437521-06:00; fin 2026-11-20T17:53:59.8272273-06:00
+test red-ui-RackCad_UI_Tests_NumericFieldValidationTests.trx rc=0 segundos=2 trx-sha256=59ad9ac1c13cfaf2af1e63f212c2242a49b274098fcfb9c2c261b4e82bc2258d :: filas 13 {'Passed': 13}; inicio 2026-11-20T17:54:01.8048653-06:00; fin 2026-11-20T17:54:02.8437092-06:00
+test red-ui-RackCad_UI_Tests_NumericFieldTests.trx rc=0 segundos=3 trx-sha256=196b5d5458c2c926445bad9ea6895ef934b96c6752ad2c4da04260a5ad4054cd :: filas 10 {'Passed': 10}; inicio 2026-11-20T17:54:05.3942098-06:00; fin 2026-11-20T17:54:06.6004810-06:00
+test red-ui-RackCad_UI_Tests_FullPanelCopies.trx rc=0 segundos=3 trx-sha256=690567bcdbed41f70184c1bff2f1db9a5fdd7523bfecb1016fbdcfad83029f63 :: filas 36 {'Passed': 36}; inicio 2026-11-20T17:54:08.8962070-06:00; fin 2026-11-20T17:54:10.5375686-06:00
+Traceback (most recent call last):
+  File "<scratchpad>\hs65\pbt4bcc\compile\p6_check_v47.py", line 320, in <module>
+    main()
+    ~~~~^^
+  File "<scratchpad>\hs65\pbt4bcc\compile\p6_check_v47.py", line 304, in main
+    cmd_red(a[1], a[2], a[3], a[4:])
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<scratchpad>\hs65\pbt4bcc\compile\p6_check_v47.py", line 151, in cmd_red
+    rs, (start, finish) = results(core)
+                          ~~~~~~~^^^^^^
+  File "<scratchpad>\hs65\pbt4bcc\compile\p6_check_v47.py", line 43, in results
+    root = ET.parse(trx).getroot()
+           ~~~~~~~~^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 1223, in parse
+    tree.parse(source, parser)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 566, in parse
+    source = open(source, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: '<copia>/_trx/core-red.trx'
+tail: cannot open '/tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4bcc/compile/out-redgreen-v47-r4k/check-red.txt' for reading: No such file or directory
+check red rc=1 :: 
+ESCRITOS 10 archivos; conjunto f93c726219cf566964003ca5638e79ce2731e3b3f7b830c83fd841203af34c45
+check_skips (GREEN) rc=0 :: archivos: 20; mal: 0; Skip leidos: 477
+green-core-tests rc=1 errores=12 avisos-CS=0
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotPrepareFull.cs(1016,31): error CS0030: No se puede convertir el tipo 'char' en 'string' [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotPrepareFull.cs(1016,92): error CS0030: No se puede convertir el tipo 'char' en 'string' [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotPrepareFull.cs(128,32): error CS0030: No se puede convertir el tipo 'char' en 'string' [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotPrepareFull.cs(128,93): error CS0030: No se puede convertir el tipo 'char' en 'string' [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotPrepareFull.cs(141,31): error CS0030: No se puede convertir el tipo 'char' en 'string' [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotPrepareFull.cs(141,92): error CS0030: No se puede convertir el tipo 'char' en 'string' [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+green-ui-tests rc=0 errores=0 avisos-CS=0
+green-plugin rc=0 errores=0 avisos-CS=0
+green: errores 12, avisos CS 0 (en total, hasta aqui)
+  binario 38fcef0dcebba96b0b401f660c978d1475631550abaa0a568947fd1ea29e6490 tests/RackCad.UI.Tests/bin/Debug/net8.0-windows/RackCad.UI.Tests.dll
+  binario ba3d5814f987fe43e445a1a4d88c993e5dbdd662b6507ad3fac35b57bb1614a1 _plugin-out-green/RackCad.Plugin.dll
+Traceback (most recent call last):
+  File "<scratchpad>\hs65\pbt4bcc\compile\p6_check_v47.py", line 320, in <module>
+    main()
+    ~~~~^^
+  File "<scratchpad>\hs65\pbt4bcc\compile\p6_check_v47.py", line 302, in main
+    cmd_summary(a[1], a[2])
+    ~~~~~~~~~~~^^^^^^^^^^^^
+  File "<scratchpad>\hs65\pbt4bcc\compile\p6_check_v47.py", line 112, in cmd_summary
+    rs, (start, finish) = results(trx)
+                          ~~~~~~~^^^^^
+  File "<scratchpad>\hs65\pbt4bcc\compile\p6_check_v47.py", line 43, in results
+    root = ET.parse(trx).getroot()
+           ~~~~~~~~^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 1223, in parse
+    tree.parse(source, parser)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 566, in parse
+    source = open(source, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: '<copia>/_trx/core-green.trx'
+sha256sum: /d/r4k/_trx/core-green.trx: No such file or directory
+head: cannot open '/tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4bcc/compile/out-redgreen-v47-r4k/core-green-outcomes.txt' for reading: No such file or directory
+test core-green.trx rc=1 segundos=1 trx-sha256= :: 
+test green-ui-RackCad_UI_Tests_PushBackFullDraftWindowParityTests.trx rc=0 segundos=7 trx-sha256=36e41c9d40b06cb611892d3c754a82bf819d088c22676a81ac8a061a1c9cbfd6 :: filas 1 {'Passed': 1}; inicio 2026-11-20T17:55:51.1064871-06:00; fin 2026-11-20T17:55:56.6248441-06:00
+test green-ui-RackCad_UI_Tests_Workspace.trx rc=0 segundos=8 trx-sha256=832b15de6cf38ef5e486387225917781150b3fe9237c28c4513b699166b57b41 :: filas 672 {'Passed': 644, 'NotExecuted': 28}; inicio 2026-11-20T17:55:58.5340642-06:00; fin 2026-11-20T17:56:05.2059345-06:00
+test green-ui-RackCad_UI_Tests_PushBackWindowOnStateTests.trx rc=0 segundos=21 trx-sha256=e414b85a70bb8374b0ffdec8b5b553cd0b4e5e8ae9d2bae2f37a2f54db08b47a :: filas 2 {'Passed': 2}; inicio 2026-11-20T17:56:07.5237682-06:00; fin 2026-11-20T17:56:27.1177225-06:00
+test green-ui-RackCad_UI_Tests_PushBackClassicCharacterization.trx rc=0 segundos=11 trx-sha256=7a3b8fd9a5c75a8de032ecf5bc5348adc42e753037d758834bb9f4fb5c6eb1af :: filas 55 {'Passed': 55}; inicio 2026-11-20T17:56:29.0784286-06:00; fin 2026-11-20T17:56:38.4209739-06:00
+test green-ui-RackCad_UI_Tests_PushBackFullEditorCharacterization.trx rc=0 segundos=13 trx-sha256=2cdfb9075180063ea5b3ad39de6ce8bfbc24c9864f156f34e577f477b9cf760e :: filas 18 {'Passed': 16, 'NotExecuted': 2}; inicio 2026-11-20T17:56:40.4045683-06:00; fin 2026-11-20T17:56:51.9399983-06:00
+test green-ui-RackCad_UI_Tests_PushBackStateNet.trx rc=0 segundos=23 trx-sha256=461c0cf8638d484403abedbb3133545be183cf70af294fda567cdf96e9d4dcaa :: filas 14 {'Passed': 14}; inicio 2026-11-20T17:56:53.8724247-06:00; fin 2026-11-20T17:57:15.1381495-06:00
+test green-ui-RackCad_UI_Tests_PushBackDeclaredCorrection.trx rc=0 segundos=13 trx-sha256=4d9f61fb624a07d2150a44ca4b6809ff6c4284e75715a8fa70056ef444f8f764 :: filas 14 {'Passed': 14}; inicio 2026-11-20T17:57:17.1393489-06:00; fin 2026-11-20T17:57:29.8053035-06:00
+test green-ui-RackCad_UI_Tests_Cantilever.trx rc=0 segundos=5 trx-sha256=f16be36a4324839088d8f9dbb7e4e65cb7e27f51d33591afbdb458de584e43b0 :: filas 67 {'Passed': 67}; inicio 2026-11-20T17:57:31.7524629-06:00; fin 2026-11-20T17:57:35.2738464-06:00
+test green-ui-RackCad_UI_Tests_PushBackWorkspaceModeTests.trx rc=0 segundos=12 trx-sha256=03bc57e7b33ad1096951b3a17bacd4841190ba3dc7670341cff5af9841e9a276 :: filas 3 {'Passed': 3}; inicio 2026-11-20T17:57:37.6480651-06:00; fin 2026-11-20T17:57:48.0096726-06:00
+test green-ui-RackCad_UI_Tests_PushBackWorkspaceApplyCloseTests.trx rc=0 segundos=11 trx-sha256=14d0d029278ea8583355eb6aac25e6a5da6ed81e173816f4793c88d2f61b755f :: filas 4 {'Passed': 4}; inicio 2026-11-20T17:57:49.9648799-06:00; fin 2026-11-20T17:57:59.4834321-06:00
+test green-ui-RackCad_UI_Tests_PushBackFieldValidationConcordanceTests.trx rc=0 segundos=2 trx-sha256=6af559978277cfe6691b8716dfe785f9c113a29a83cfb5ac21402bf6f12984ba :: filas 1 {'Passed': 1}; inicio 2026-11-20T17:58:01.4126003-06:00; fin 2026-11-20T17:58:02.4944829-06:00
+test green-ui-RackCad_UI_Tests_PushBackWorkspaceCarryoverTests.trx rc=0 segundos=18 trx-sha256=a3826078fce919d9a49074468031632b1bbdb34de269153f28614ab9990b1b86 :: filas 3 {'Passed': 3}; inicio 2026-11-20T17:58:04.9028873-06:00; fin 2026-11-20T17:58:21.5894696-06:00
+test green-ui-RackCad_UI_Tests_NumericFieldValidationTests.trx rc=0 segundos=2 trx-sha256=4afb39e752ae8962752ba586bfb44d074877441ce96f0de1071098ed7a1273ce :: filas 13 {'Passed': 13}; inicio 2026-11-20T17:58:23.4782557-06:00; fin 2026-11-20T17:58:24.4056530-06:00
+test green-ui-RackCad_UI_Tests_NumericFieldTests.trx rc=0 segundos=2 trx-sha256=b53fe1d0a478158457a50c5b06908f5822a8a0ec3fa07dea65db48b779c9fbac :: filas 10 {'Passed': 10}; inicio 2026-11-20T17:58:26.4500695-06:00; fin 2026-11-20T17:58:27.5927261-06:00
+test green-ui-RackCad_UI_Tests_FullPanelCopies.trx rc=0 segundos=3 trx-sha256=84ddf874521f1bd4893605f9232af546dcf3706942e0d0d6f30ea67f6feb1693 :: filas 36 {'Passed': 36}; inicio 2026-11-20T17:58:29.5165228-06:00; fin 2026-11-20T17:58:31.1776961-06:00
+Traceback (most recent call last):
+  File "<scratchpad>\hs65\pbt4bcc\compile\p6_check_v47.py", line 320, in <module>
+    main()
+    ~~~~^^
+  File "<scratchpad>\hs65\pbt4bcc\compile\p6_check_v47.py", line 306, in main
+    cmd_green(a[1], a[2], a[3:])
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "<scratchpad>\hs65\pbt4bcc\compile\p6_check_v47.py", line 183, in cmd_green
+    rs, (start, finish) = results(core)
+                          ~~~~~~~^^^^^^
+  File "<scratchpad>\hs65\pbt4bcc\compile\p6_check_v47.py", line 43, in results
+    root = ET.parse(trx).getroot()
+           ~~~~~~~~^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 1223, in parse
+    tree.parse(source, parser)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 566, in parse
+    source = open(source, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: '<copia>/_trx/core-green.trx'
+tail: cannot open '/tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4bcc/compile/out-redgreen-v47-r4k/check-green.txt' for reading: No such file or directory
+check green rc=1 :: 
+partition green rc=1 :: Traceback (most recent call last):
+build-server shutdown rc=0
+procesos: 0
+MAINCO []
+rc=0

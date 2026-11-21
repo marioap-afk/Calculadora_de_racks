@@ -1,0 +1,39 @@
+== WorkspaceLifecycleHost.EachOperationThatCanChangeADraftEndsTheMarkSoTheSessionIsRetiredConservatively (inline)
+  original -> probe copy: 2 changed lines
+    -                env.Reader.Answer = EditIntentKit.MemberBecameBlocking;
+    +                env.Reader.Answer = FullEditIntentKit.MemberBecameBlocking;
+  split comments: red 1, green 1
+  body (all but the InlineData rows): red == probe True, green == probe True
+  rows: probe 10, red 3, green 7; red+green == probe as a multiset True; each half keeps the probe order True
+  red first arguments == RED_KEYS: True
+  any row both halves: []
+  rows of the probe == rows of the original: True
+== WorkspacePilotEditGuard.TheHostGuardTripsOnAPublicOperationAnOrderOfBasesOrAnAdapterThatIsAFieldOfInstance (inline)
+  original -> probe copy: 2 changed lines
+    -    [InlineData("private static readonly PushBackPilotFieldAdapter PilotFieldAdapter = new();", "private readonly PushBackPilotFieldAdapter _adapter = new();")]
+    +    [InlineData("private static readonly PushBackFullFieldAdapter PilotFieldAdapter = new();", "private readonly PushBackFullFieldAdapter _adapter = new();")]
+  split comments: red 1, green 1
+  body (all but the InlineData rows): red == probe True, green == probe True
+  rows: probe 4, red 1, green 3; red+green == probe as a multiset True; each half keeps the probe order True
+  red first arguments == RED_KEYS: True
+  any row both halves: []
+  rows of the probe == rows of the original: False
+== WorkspacePilotPrepare.ConfirmAppliesOnlyToCleanDirtyAndConflictAndTheOthersReadNothing (member)
+  original -> probe copy: 0 changed lines
+  split comments: red 1, green 1
+  MemberData: red ['[MemberData(nameof(StatusNamesRed))]'], green ['[MemberData(nameof(StatusNamesGreen))]']
+  red half == probe (with StatusNames): True; green half == probe: True
+== WorkspacePilotPrepare.KeepAppliesToConflictAndToDirtyMarkedStaleApplyingWaitsAndTheOthersAreNotNeededAllWithoutReading (member)
+  original -> probe copy: 6 changed lines
+    -                Assert.Equal(EditIntentStatus.Kept, outcome.Status);
+    +                // I-64 F4B PB-T4b (D-S1, D-PBT4-08): the first call presents; the second, with the witness of that read, keeps.
+    +                Assert.Equal(EditIntentStatus.Presented, outcome.Status);
+    +                rig.Reader.Answer = rack => FullHandKit.Seen(Changed(rack), outcome.KeepWitness!);
+    +                Assert.Equal(EditIntentStatus.Kept, rig.Core.TryKeepPilotEdit(rig.Request(witness: outcome.KeepWitness)).Status);
+    +                Assert.Equal(2, rig.Reader.Calls.Count);
+  split comments: red 1, green 1
+  MemberData: red ['[MemberData(nameof(StatusNamesRed))]'], green ['[MemberData(nameof(StatusNamesGreen))]']
+  red half == probe (with StatusNames): True; green half == probe: True
+== StatusNames in the original: True
+  var data = new TheoryData<string>(); | foreach (var status in Statuses()) data.Add(status.Name); | return data;
+  string rows: []; nameof rows: []

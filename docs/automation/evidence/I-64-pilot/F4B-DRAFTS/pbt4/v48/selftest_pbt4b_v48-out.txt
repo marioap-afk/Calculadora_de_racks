@@ -1,0 +1,14 @@
+1. Skip: 478 en 21 archivos; con el motivo a mano: 72; con la decision de la lista de 478: 1 (I-64 F4B PB-T4b: sustituida por su equivalente en WorkspaceHostHardeningGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-list-478-decision.md).)
+2. modo de medida: 21 copias, conjunto f4c0baf61f2d5e797df09f822773c369b12b6647922a38b0788ceda4040b1fa0; revision: 114 entradas
+   las 21: el espacio raiz de su ensamblado, sin FullPanelCopies, con una sola clase FullPanelCopy<Raiz>ProbeTests: True
+3. D-S1 en las dos de WPP: InvalidE sin el fantasma entre los Invalid=True; InvalidE con FrontalBOfOneWayPrefix y sin ViewUnavailablePrefix=True; InvalidE: el fantasma Ready con borrados [B2]=True; NeverErases: Ready, miembros [A1] y borrados [B2]=True; NeverErases: sin el fantasma, sin borrados, y ningun Invalid=True
+4. la guarda nueva: filas de la tabla 30 en el original y 30 en la copia; cambian 3, las de la decision: True
+   ("The reread carries no result.", "La relectura no trajo resultado.", 0), // before 2 (I-64 F4B PB-T4b, owner-pbt4b-list-478-decision.md)
+   ("The draft is being applied or is no longer registered.", "El borrador se está aplicando o ya no está registrado.", 6), // before 5 (I-64 F4B PB-T4b, owner-pbt4b-list-478-decision.md)
+   ("The rack has no annotation scale.", "El rack no tiene escala de anotación.", 0), // before 1 (I-64 F4B PB-T4b, owner-pbt4b-list-478-decision.md)
+5. con la particion sintetica (partition-synthetic-v48.tsv, sha256 05c3a9800f4fc3d5ba0c50fd4e75b890b92e8ed8a7454bdb18064af23bdcead6, 481 filas): 21 copias
+   WorkspaceLifecycleHostFull.EachOperationThatCanChangeADraftEndsTheMarkSoTheSessionIsRetiredConservatively: en FullPanelCopyWorkspaceLifecycleHostRedTests y ...GreenTests=True, dos veces=True
+   WorkspacePilotEditGuardFull.TheHostGuardTripsOnAPublicOperationAnOrderOfBasesOrAnAdapterThatIsAFieldOfInstance: en FullPanelCopyWorkspacePilotEditGuardRedTests y ...GreenTests=True, dos veces=True
+   WorkspacePilotPrepareFull.ConfirmAppliesOnlyToCleanDirtyAndConflictAndTheOthersReadNothing: en FullPanelCopyWorkspacePilotPrepareRedTests y ...GreenTests=True, dos veces=True
+   WorkspacePilotPrepareFull.KeepAppliesToConflictAndToDirtyMarkedStaleApplyingWaitsAndTheOthersAreNotNeededAllWithoutReading: en FullPanelCopyWorkspacePilotPrepareRedTests y ...GreenTests=True, dos veces=True
+   la guarda nueva, en FullPanelCopyWorkspaceHostHardeningGuardRedTests: True

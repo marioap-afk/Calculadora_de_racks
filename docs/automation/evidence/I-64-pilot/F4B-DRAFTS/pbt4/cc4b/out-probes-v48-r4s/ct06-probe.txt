@@ -1,0 +1,5 @@
+== RackCad.Tests.TmpCt06PresentarProbe.Measure_the_presentar_lines_of_ct_pbt4b_06_on_the_green Failed
+copia=<el GREEN de PB-T4b> (sonda de CT-PBT4B-06, paquete v4.5)
+presentar estado=Presented testigo-clave=A1 testigo-texto-igual-al-origen=True borrador-igual=True origen-igual=True lecturas=1 lineas=2
+presentar Cambiado fuera: el nombre.
+presentar Cambiado por ti: las anotaciones.

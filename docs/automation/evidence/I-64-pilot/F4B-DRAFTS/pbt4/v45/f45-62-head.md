@@ -1,0 +1,33 @@
+### 6.2 PB-T4b — `F4B-PBT4-FULL-DRAFT-PANEL` (entero; V44-09; V45-01, V45-02, V45-10)
+
+**Se emite por la autorización condicional** (`owner-pbt4-decisions.md`, pregunta 4) **con la lista exacta de 477** que el Owner tomó como la que vio (las 470 de `owner-pbt4b-retire-list-decisions.md`, pregunta 2, las cinco de `owner-pbt4b-breaks-decision.md` y las dos de `owner-pbt4b-list-477-decision.md`; `pbt4b-substitution-list-477.tsv`, sha256 `5975c5b6…a651`), si se cumple el resto de la condición, **sobre el cierre de PB-T4a** (F4B-E51, `78a7cef3`). **No retira nada:** la retirada es de PB-T4d.
+
+- **Objective** (ASCII): el de §6.2.1.
+- **`AllowedWriteScope`** (57), ruta a ruta:
+  - **`src/`, existentes (`UNIT_CHANGE`, 6):** `src/RackCad.Application/Workspace/WorkspaceHostCore.cs` (WHC), `src/RackCad.Application/Workspace/WorkspaceEditIntent.cs` (WEI), `src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs` (FVM), `src/RackCad.UI/Workspace/WorkspacePanelView.xaml` (PV), `src/RackCad.UI/Controls/NumericFieldValidation.cs` y `src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs` (RIA; D-S4);
+  - **`src/`, nuevos (4):** `src/RackCad.Application/Formatting/NumericTextRule.cs`, `src/RackCad.Application/Systems/PushBack/Draft/PushBackAnnotationScaleRule.cs`, `src/RackCad.Application/Systems/PushBack/Draft/PushBackFullFieldAdapter.cs` y `src/RackCad.Application/Systems/PushBack/Draft/PushBackKeepMinePresentation.cs`;
+  - **las clases de las CT (6):** `tests/RackCad.Tests/PushBackFullPanelTests.cs`, `tests/RackCad.Tests/PushBackFullPanelGuardTests.cs`, `tests/RackCad.Tests/PushBackFullPanelCensusGuardTests.cs`, `tests/RackCad.Tests/PushBackPanelDraftGuardTests.cs`, `tests/RackCad.Tests/WorkspaceFullCopyGuardTests.cs` y `tests/RackCad.UI.Tests/PushBackFullPanelFieldTests.cs`;
+  - **el kit (1):** `tests/RackCad.Tests/Workspace/WorkspaceFullReadKit.cs`;
+  - **las copias (20), nuevas, que genera el guion:** en `tests/RackCad.Tests/Workspace/`, `WorkspaceLifecycleHostFull.cs`, `WorkspacePilotPrepareFull.cs`, `WorkspaceEditIntentHostFull.cs`, `WorkspacePilotEditHostFull.cs`, `WorkspaceCommandAdvisorFull.cs`, `WorkspacePilotUpdateRequestFull.cs`, `WorkspacePilotUpdateHostFull.cs`, `WorkspacePilotReconciliationHostFull.cs`, `WorkspaceAssociativeBookkeepingFull.cs`, `WorkspacePilotUpdateIntegrationGuardFull.cs`, `WorkspaceEditIntentGuardFull.cs`, `WorkspacePilotEditGuardFull.cs`, `WorkspacePilotReconciliationGuardFull.cs`, `WorkspaceLifecycleGuardFull.cs` y `WorkspacePilotUpdateGuardFull.cs`; en `tests/RackCad.Tests/`, `PushBackWritePathGuardFull.cs`, `PushBackFullReadPathFull.cs` y `PushBackFullReadGuardFull.cs`; y en `tests/RackCad.UI.Tests/Workspace/`, `WorkspacePilotReconciliationFull.cs` y `WorkspacePilotReconciliationViewFull.cs`;
+  - **solo para los `Skip` (20):** los 20 archivos de origen: las 9 clases de C-0, `PushBackWritePathGuardTests.cs`, IG, EIG, PEG, RG, WLG, WPUG, los dos de la interfaz, `tests/RackCad.Tests/PushBackFullReadPathTests.cs` (CT-PBT4A-03) y `tests/RackCad.Tests/PushBackFullReadGuardTests.cs` (CT-PBT4A-05 y 06).
+  - **Ningún archivo de `Pilot/`, ni WCo, ni `WorkspacePilotSupport.cs`, ni `WorkspacePanelView.xaml.cs`, ni NH, ni `Draft/PushBackOriginByText.cs`, ni `PushBackFullReadSupport.cs`:** el GREEN literal no los cambia.
+- **`UNIT_CHANGE`:** WHC, WEI, FVM, PV, `NumericFieldValidation.cs` y RIA (F4B-E25).
+- **`ForbiddenWriteScope`:** el método de [PKC-C] con el precedente de PB-T3c y PB-T4a en `tests/` (la lista explícita del contrato anterior, menos las rutas de `tests/` de este alcance; un prefijo prohibido que cubre una de ellas se sustituye por la lista de sus archivos), más las clases de PB-T4a tras su cierre, salvo las dos de este alcance (FRP y FRG). **El número lo da la regla del generador sobre el alcance final de la v4.5 en `78a7cef3`** (`<medido por el generador>`): con el alcance de la v4.4 le salían **407** entradas en `78a7cef3` (405 en `5aaacce3`: el GREEN de PB-T4a añadió dos archivos a `src/`, que parten dos entradas más), y RIA, FRP, FRG y las dos copias nuevas entran ahora en el alcance. La v4.4 tomaba 452, que venía del alcance provisional de la fase 1.
+- **El RED** (un commit, con su push antes del GREEN):
+  - **el esqueleto exacto de `src/`** (`green_pbt4b_v45.skeleton`, el de la v4.4): WEI con su API entera (el estado `Presented` y lo que lleva `EditIntentOutcome`; el anfitrión del RED no la usa); FVM con `KeepMinePresentationText` y `ShowKeepMinePresentation` inertes (`string.Empty` y `false`); `NumericTextRule.cs` con su tipo, su enumerado y sus constantes, y `Check` inerte (`NotANumber` sin mensaje); `PushBackAnnotationScaleRule.cs` con sus constantes y `Validate` inerte (`Invalid` vacío); `PushBackFullFieldAdapter.cs` con sus cinco constantes, `Validate` inerte (`Invalid(UnknownFieldMessage)`) y `Apply` que devuelve el estado; `PushBackKeepMinePresentation.cs` con sus propiedades y `Of` y `Read` inertes (sin líneas). **WHC, RIA, PV y `NumericFieldValidation.cs` no cambian** (M-29);
+  - **los 477 `Skip`** literales, en los 20 archivos de origen, y nada más en esos archivos;
+  - **el kit,** byte a byte el custodiado (`pbt4b-kit-WorkspaceFullReadKit-v45.cs`);
+  - **las 20 copias,** byte a byte las que genera `make_copies_pbt4b_v45.py` con la partición cerrada de §6.2.1 (su sha256, `CopySha`, va en el contrato);
+  - **las seis clases de las CT.**
+  - **La herramienta:** `python -I apply_red_pbt4b_v45.py <dir-copia> --repo <checkout> --rev 78a7cef3 --partition <pbt4b-copy-partition.tsv>` escribe exactamente eso salvo las CT, tras comprobar que la copia es de la revisión; el Worker puede usarla sobre su worktree o copiar sus salidas. Imprime el sha256 de cada archivo.
+- **El GREEN:** solo `src/`, los diez archivos del texto literal de `green_pbt4b_v45.py` (los nueve de la v4.4 y RIA; `apply_green_pbt4b_v45.py` lo escribe en una copia). `tests/` no cambia después del RED (salvo una reparación del RED, solo en las clases de las CT).
+- **`RequiredTests`:** la tabla de §6.2.1.
+- **Invariantes:** INV-PBT4B-01 a 06 (§6.2.1) y los comunes 07 a 14.
+- **`StopConditions`:** las 17 estándar y PBT4B-C01 a C14, C16, C17, C18 y C20 (§6.2.1): 35.
+- **`ExpectedEvidence`:** §6.2.1.
+- **La línea base:** el cierre de PB-T4a (F4B-E51, `78a7cef3`), con la CI de su GREEN (`44814418683` sobre `faef7020`).
+
+#### 6.2.1 Los textos literales del contrato de PB-T4b
+
+Para la comparación del generador, en ASCII, campo a campo. Lo que dependía del cierre de PB-T4a está medido en `78a7cef3`; lo que depende de ejecutar va como `<medido en la precondicion 6>`, con su regla: el generador lo sustituye al emitir.
+

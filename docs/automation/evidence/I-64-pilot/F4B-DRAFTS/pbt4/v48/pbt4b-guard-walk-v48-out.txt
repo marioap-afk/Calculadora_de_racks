@@ -1,0 +1,53 @@
+clases=57 pruebas=1097 A=117 B=53 sin-diferencia=167 no-leen=760 | A-o-B fuera de la lista=152 | archivos locales=22
+cambian: WHC: FindPilotDraft, MarkPilotDraftsPossiblyStale, TryBeginPilotEdit, TryCheckPilotEdit, TryConfirmPilotBase, TryDiscardAndReloadPilotEdit, TryKeepPilotEdit, TryReloadPilotEdit, TryUpdatePilot, ViewOfPilotDraft; WEI: Presented; FVM: ConfirmChoice, PresentChoice, RaiseAll, RemoveChoice; PV: ; NFV: Format, MaximumMessage, MinimumMessage, Validate; RIA: Read
+G16ProjectedEnvelopeTests.cs                                           pruebas= 12 A-o-B=  1 fuera-de-la-lista=  1
+I60BatchCreationNamingTests.cs                                         pruebas= 10 A-o-B=  1 fuera-de-la-lista=  1
+PushBackDraftWriteGuardTests.cs                                        pruebas=  2 A-o-B=  2 fuera-de-la-lista=  2
+PushBackFullReadGuardTests.cs                                          pruebas=  3 A-o-B=  2 fuera-de-la-lista=  2
+PushBackFullReadPathTests.cs                                           pruebas=  5 A-o-B=  1 fuera-de-la-lista=  1
+PushBackWritePathGuardTests.cs                                         pruebas=  2 A-o-B=  1 fuera-de-la-lista=  0
+SelectiveEditorOpenTests.cs                                            pruebas= 33 A-o-B=  3 fuera-de-la-lista=  3
+WorkspaceBridgeSourceGuardTests.cs                                     pruebas= 21 A-o-B=  7 fuera-de-la-lista=  7
+WorkspaceBrowserHostGuardTests.cs                                      pruebas= 19 A-o-B=  2 fuera-de-la-lista=  2
+WorkspaceBrowserSummaryTests.cs                                        pruebas= 24 A-o-B=  1 fuera-de-la-lista=  1
+WorkspaceCommandAdvisorGuardTests.cs                                   pruebas= 32 A-o-B=  3 fuera-de-la-lista=  3
+WorkspaceEditIntentGuardTests.cs                                       pruebas= 66 A-o-B= 35 fuera-de-la-lista= 30
+WorkspaceHostHardeningGuardTests.cs                                    pruebas= 34 A-o-B=  6 fuera-de-la-lista=  5
+WorkspaceHostSourceGuardTests.cs                                       pruebas= 45 A-o-B=  3 fuera-de-la-lista=  3
+WorkspaceLifecycleGuardTests.cs                                        pruebas= 44 A-o-B= 12 fuera-de-la-lista= 10
+WorkspaceNavigationHostTests.cs                                        pruebas= 56 A-o-B=  4 fuera-de-la-lista=  4
+WorkspacePilotCloseSyncGuardTests.cs                                   pruebas= 40 A-o-B= 14 fuera-de-la-lista= 14
+WorkspacePilotEditGuardTests.cs                                        pruebas= 39 A-o-B= 21 fuera-de-la-lista= 16
+WorkspacePilotPrepareGuardTests.cs                                     pruebas= 14 A-o-B=  1 fuera-de-la-lista=  1
+WorkspacePilotReconciliationGuardTests.cs                              pruebas= 26 A-o-B= 16 fuera-de-la-lista= 15
+WorkspacePilotUpdateGuardTests.cs                                      pruebas= 41 A-o-B=  3 fuera-de-la-lista=  2
+WorkspacePilotUpdateIntegrationGuardTests.cs                           pruebas= 41 A-o-B= 11 fuera-de-la-lista=  9
+WorkspaceSourceGuardExceptionTests.cs                                  pruebas= 21 A-o-B=  1 fuera-de-la-lista=  1
+PushBackWritePathGuardFull.cs                                          pruebas=  1 A-o-B=  1 fuera-de-la-lista=  1
+WorkspaceEditIntentGuardFull.cs                                        pruebas=  7 A-o-B=  6 fuera-de-la-lista=  6
+WorkspaceHostHardeningGuardFull.cs                                     pruebas=  1 A-o-B=  1 fuera-de-la-lista=  1
+WorkspaceLifecycleGuardFull.cs                                         pruebas=  2 A-o-B=  2 fuera-de-la-lista=  2
+WorkspacePilotEditGuardFull.cs                                         pruebas=  5 A-o-B=  5 fuera-de-la-lista=  5
+WorkspacePilotReconciliationGuardFull.cs                               pruebas=  1 A-o-B=  1 fuera-de-la-lista=  1
+WorkspacePilotUpdateGuardFull.cs                                       pruebas=  1 A-o-B=  1 fuera-de-la-lista=  1
+WorkspacePilotUpdateIntegrationGuardFull.cs                            pruebas=  2 A-o-B=  2 fuera-de-la-lista=  2
+campos que reconoce la FIELD de la v4.8 y no la de la v4.5: 19 archivos
+  G16FirstViewCorrectiveTests.cs: Designs
+  PushBackViewEraseGuardTests.cs: EraseUnitSteps, EraserSteps
+  WorkspaceBridgeObjectSubjectGuardTests.cs: ObjectBlocks, SourceEventBlocks
+  WorkspaceBrowserSummaryTests.cs: Facts
+  WorkspaceCommandAdvisorGuardTests.cs: ReasonTable
+  WorkspaceDraftPilotIntentGuardTests.cs: NeverRead, Prohibited
+  WorkspaceEditIntentGuardTests.cs: FlightTextBodies, UpdateTextBodies
+  WorkspaceHostHardeningGuardTests.cs: Identifiers, Table
+  WorkspaceLifecycleGuardTests.cs: ForgettingEntries
+  WorkspaceNavigationHostTests.cs: _byRead
+  WorkspacePilotEditGuardTests.cs: FlightBodies, Operations, OrderedEnums
+  WorkspacePilotPrepareGuardTests.cs: Forbidden
+  WorkspacePilotReconciliationGuardTests.cs: TheFiveGestures, TheFourReads, TheSixButtons
+  WorkspacePilotUpdateGuardTests.cs: Definitions, Envelopes, Impure, Layers, Properties, RawEnvelopes
+  WorkspacePilotUpdateIntegrationGuardTests.cs: PilotExceptions, RunnerImpure, TaskCensus, WorkspaceExceptions, WriteTerms
+  WorkspaceHostHardeningGuardFull.cs: Identifiers, Table
+  WorkspacePilotEditGuardFull.cs: FlightBodies, Operations
+  WorkspacePilotReconciliationGuardFull.cs: TheFourReads
+  WorkspacePilotUpdateGuardFull.cs: Definitions, Envelopes, Layers, Properties, RawEnvelopes

@@ -1,0 +1,45 @@
+fase probes; copia /d/r4s; salida /tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4bcc/compile/out-probes-v48-r4s; revision 78a7cef3e9260f0955addd48344fc5a44b9c9957
+paquete sha256 6ddc239d4db7509d50b2a2497a7adc91b6808ea4ee3511098a66446c9b25e0a2 I-64-f4b-pbt4-gate-contract-package-v48.md
+particion sha256 e87e024c168dd81d05c1ba1ae9dfa0027da8724ee0d9fd219cce74fe1f613dec
+  guion d44ab45cc3c0296a22ea94d584113652af1cc451874a7bdef0a0dc314423ded6 apply_red_pbt4b_v48.py
+  guion 74f15dbd7686596ccd4d66e2989f3888f61adaa2fd8a37dc11cf92c81674317f make_copies_pbt4b_v48.py
+  guion 7d98d007d647f125596088ecf29eccec7352dc9682decb520d7e4369d3dde9fa pbt4b_hand_edits_v48.py
+  guion a1bfbc199cccb2cc8788be04b9d624aa59f47eaeeae35da32795f1571afc0fd9 pbt4b_skips_v48.py
+  guion bda79bb7fb6e1dfe885cdc5942b2af45dfac8861663ccc99dbb38a61b8844524 pbt4b-copy-map-v5.tsv
+  guion 8b0fcd0ca775ce3a5e46ef2059f4b06e7ec7319883daf3cb37b1fe91290e9e8b pbt4b-substitution-list-478.tsv
+  guion 2a96b2afb6ce84824047809101f0aed052d0f42717bc64382d917815667dd247 make_copies_pbt4b_v47.py
+  guion d2e4429dffda21640278f2c739e7a6dad8f7db0a08d0c58c6c23496fca88c000 pbt4b_hand_edits_v47.py
+  guion 96f75552b53aa1a0635cfc8b0e2fc1fff896f9ddebb8ab1a20c79496ca299e63 partition_pbt4b_v47.py
+  guion a2f0af751bda36d8d9b56bc451068142d958d20f97e3d102c69f6b388c06d6b0 partition_pbt4b_v48.py
+  guion 3cc8e56cfc2609d567e69577a28f03ac5801c5b46f0bddba5c6692cc715ecdd6 make_copies_pbt4b_v46.py
+  guion 46167c571245148e597af36a6efe5c8b6d5811d0b457eefb0101f035fea7e93e pbt4b_hand_edits_v46.py
+  guion a77b0baa08fe36b752828fe6f15dc9ae369eae3cd1e6a450b6a48c0580a3e281 make_copies_pbt4b_v45.py
+  guion 7403c43f3589d17fe5bdb120bb6016dbacf440ab52de37a168f493eb4a8ce4e5 pbt4b_hand_edits_v45.py
+  guion 26e75ebd13330f1a0422974dfb0aa1988246acec5e9bd06f7441dd47e2ba2d98 pbt4b_skips_v45.py
+  guion 6d9ee13790f527216ce0f3ece7e2ec79fa8e573e320bd6c902fe8294947ce59b partition_pbt4b_v45.py
+  guion ae55163a7519cf35882aedaa96a4deb3bd3ac4185ad11d3d91bd2cd16ef80bd0 apply_green_pbt4b_v45.py
+  guion 47662f52b8008ce802a0dc52395c8995c462d21276236cf1cd34f39a288ae1c4 green_pbt4b_v45.py
+  guion b4ed29f92838e5761faf1afaba1f33e58ba82a56541900f52db8c5ecb6239b9a pbt4b-kit-WorkspaceFullReadKit-v45.cs
+  guion 643a3de9a827274a236ada9a7b6c80edbdc916c366366aec394e1383f2048af2 /tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4bcc/compile/p6_check_v48.py
+  guion 6e7b9026331fbd3020551ad6a6aa9b2313ba13e4206d703c0278a821c25dad1d /tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4bcc/compile/check_skips_copy_v48.py
+  guion 26b098a871364a742b586db7b461dd1f42a54fe9543c4c983f972cba363c3edb /tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4bcc/compile/ui_filters_p6_v48.py
+  guion d0e1e9a12fc7063a3c49c59321cf2ef9b43559d2f89e50793dfa1d572fe4d41c p6_pbt4b_v48.sh
+copia exportada: 12886 archivos
+ESCRITOS 49 archivos; conjunto abcfbfe9f7e3ba834378cf1a9e083f52e9fdd5701544585ce34e24669beac041
+ESCRITOS 10 archivos; conjunto f93c726219cf566964003ca5638e79ce2731e3b3f7b830c83fd841203af34c45
+sonda 91acfca3328029538348b9f2feb00a9c756f1f1cdaf8650876b843691df7ba0e TmpReadCostProbe.cs
+sonda 32d9fbc4fb6ff6a7a7fe35844777100fbd588cc5868dbc3d393b57a65a118f65 TmpCt06PresentarProbe.cs
+sonda fb3c8ae13b7f69cb1bed6721d4e93e27536e96cb0a55acd7e8570dea8f711195 TmpIsDirtyCostProbe.cs
+probes-core-tests-debug rc=0 errores=0 avisos-CS=0
+probes-core-tests-release rc=0 errores=0 avisos-CS=0
+probes: errores 0, avisos CS 0
+test ct06.trx rc=1 segundos=14 trx-sha256=71116b910d24b50d8f9616e1180262e514d0165fe43da52bcc8d43c9d6157aa9 :: filas 1 {'Failed': 1}; inicio 2026-11-20T20:34:31.8761529-06:00; fin 2026-11-20T20:34:41.2404260-06:00
+check ct06 rc=0 :: CT-06: CUMPLE
+test cost-run1.trx rc=1 segundos=695 trx-sha256=6487a1c3862d8b76a5cda928260a99faeaa384908eb4217c30412241159759f1 :: filas 1 {'Failed': 1}; inicio 2026-11-20T20:34:44.7100523-06:00; fin 2026-11-20T20:46:17.8644044-06:00
+test cost-run2.trx rc=1 segundos=567 trx-sha256=ca1bea9caa79691fe73b753a04e454f4c687895cbe9e0be4a02609321ec28420 :: filas 1 {'Failed': 1}; inicio 2026-11-20T20:46:22.1081836-06:00; fin 2026-11-20T20:55:46.4353105-06:00
+check cost rc=1 :: COSTE: NO CUMPLE
+test isdirty.trx rc=1 segundos=46 trx-sha256=8da7524a49b73d2e27d51f31ce7f24a9bfd5c641d87143c595c6e57e16833e66 :: filas 1 {'Failed': 1}; inicio 2026-11-20T20:55:50.2647303-06:00; fin 2026-11-20T20:56:34.8009467-06:00
+build-server shutdown rc=0
+procesos: 0
+MAINCO []
+rc=0

@@ -1,0 +1,124 @@
+### KeepAppliesToConflictAndToDirtyMarkedStaleApplyingWaitsAndTheOthersAreNotNeededAllWithoutReading (tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs)
+--- original
++++ equivalente
+@@ -15,4 +15,8 @@
+             case "Conflict":
+-                Assert.Equal(EditIntentStatus.Kept, outcome.Status);
++                // I-64 F4B PB-T4b (D-S1, D-PBT4-08): the first call presents; the second, with the witness of that read, keeps.
++                Assert.Equal(EditIntentStatus.Presented, outcome.Status);
+                 Assert.Single(rig.Reader.Calls);
++                rig.Reader.Answer = rack => FullHandKit.Seen(Changed(rack), outcome.KeepWitness!);
++                Assert.Equal(EditIntentStatus.Kept, rig.Core.TryKeepPilotEdit(rig.Request(witness: outcome.KeepWitness)).Status);
++                Assert.Equal(2, rig.Reader.Calls.Count);
+                 break;
+
+### KeepAConflictLeavesItAndTheDraftIsDirtyOnTheNewVersion (tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs)
+--- original
++++ equivalente
+@@ -9,3 +9,8 @@
+ 
+-        var outcome = rig.Core.TryKeepPilotEdit(rig.Request());
++        // I-64 F4B PB-T4b (D-S1, D-PBT4-08): the first call presents and leaves the conflict; the second, with the witness, keeps.
++        var presented = rig.Core.TryKeepPilotEdit(rig.Request());
++        Assert.Equal(EditIntentStatus.Presented, presented.Status);
++        Assert.Equal(DraftStatus.Conflict, draft.Status);
++        rig.Reader.Answer = rack => FullHandKit.Seen(Changed(rack), presented.KeepWitness!);
++        var outcome = rig.Core.TryKeepPilotEdit(rig.Request(witness: presented.KeepWitness));
+ 
+
+### AKeepThatIsKeptEndsTheMarkAndOneThatIsNotNeededOrNotAdmittedDoesNot (tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs)
+--- original
++++ equivalente
+@@ -8,3 +8,7 @@
+             rig.Reader.Answer = Changed;
+-            Assert.Equal(EditIntentStatus.Kept, rig.Core.TryKeepPilotEdit(rig.Request()).Status);
++            // I-64 F4B PB-T4b (D-S1, D-PBT4-08): the presentation does not end the mark; the keep with the witness does.
++            var presented = rig.Core.TryKeepPilotEdit(rig.Request());
++            Assert.Equal(EditIntentStatus.Presented, presented.Status);
++            rig.Reader.Answer = rack => FullHandKit.Seen(Changed(rack), presented.KeepWitness!);
++            Assert.Equal(EditIntentStatus.Kept, rig.Core.TryKeepPilotEdit(rig.Request(witness: presented.KeepWitness)).Status);
+         }));
+@@ -18,3 +22,3 @@
+             draft.MarkPossiblyStale();
+-            rig.Reader.Answer = EditIntentKit.OriginMissing;
++            rig.Reader.Answer = FullEditIntentKit.OriginMissing;
+             Assert.Equal(EditIntentStatus.NotAdmitted, rig.Core.TryKeepPilotEdit(rig.Request()).Status);
+
+### TheNewOutcomesAreValuesWithTheStatesOfThePackageAndTheDefaultIsUnavailable (tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs)
+--- original
++++ equivalente
+@@ -31,8 +31,18 @@
+ 
+-        // Kept is the one new state of the intention, after the ten that stay as an ordered prefix; Reloaded is reused by the discard.
++        // Kept comes after the ten that stay as an ordered prefix; Reloaded is reused by the discard. I-64 F4B PB-T4b (D-S1, D-PBT4-08):
++        // Presented, the presentation of the keep, comes after Kept, with the eleven as an ordered prefix.
+         var intent = Enum.GetNames<EditIntentStatus>();
+-        Assert.Equal(11, intent.Length);
++        Assert.Equal(12, intent.Length);
+         Assert.Equal("Kept", intent[10]);
++        Assert.Equal("Presented", intent[11]);
+         Assert.Equal(EditIntentStatus.Kept, EditIntentOutcome.Kept(EditWitnessStatus.Changed).Status);
+         Assert.Equal(EditWitnessStatus.Changed, EditIntentOutcome.Kept(EditWitnessStatus.Changed).Witness);
++        Assert.Empty(EditIntentOutcome.Kept(EditWitnessStatus.Changed).PresentationLines);
++        Assert.Null(EditIntentOutcome.Kept(EditWitnessStatus.Changed).KeepWitness);
++        var keepWitness = new EditIntentWitness("A1", "texto");
++        var presented = EditIntentOutcome.Presented(new[] { "Cambiado fuera: el nombre." }, keepWitness, EditWitnessStatus.NotSupplied);
++        Assert.Equal(EditIntentStatus.Presented, presented.Status);
++        Assert.Equal(new[] { "Cambiado fuera: el nombre." }, presented.PresentationLines.ToArray());
++        Assert.Same(keepWitness, presented.KeepWitness);
++        Assert.Null(presented.Reason);
+     }
+
+### ConfirmWithAChangeOfTheScaleAndOfAnotherFieldIsAConflictAndKeepAfterwardsKeepsTheScaleOfTheDraftOnTheNewVersion (tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs)
+--- original
++++ equivalente
+@@ -13,8 +13,13 @@
+ 
+-        var keep = rig.Core.TryKeepPilotEdit(rig.Request());
++        // I-64 F4B PB-T4b (D-S1, D-PBT4-08): the first call presents and leaves the conflict; the second, with the witness, keeps.
++        var presented = rig.Core.TryKeepPilotEdit(rig.Request());
++        Assert.Equal(EditIntentStatus.Presented, presented.Status);
++        Assert.Equal(DraftStatus.Conflict, draft.Status);
++        rig.Reader.Answer = rack => FullHandKit.Seen(OriginChanged(rack, (ScaleFrom, ScaleTo), (ToleranceFrom, ToleranceTo)), presented.KeepWitness!);
++        var keep = rig.Core.TryKeepPilotEdit(new EditIntentRequest(rig.Session, RackA, null, presented.KeepWitness));
+ 
+         Assert.Equal(EditIntentStatus.Kept, keep.Status);
+-        Assert.Equal(2.25, draft.CurrentDraftState.Inputs.Annotations.AnnotationScale);
++        Assert.Equal(2.25, draft.CurrentDraftState.Editable.AnnotationScale);
+         Assert.Equal(DraftStatus.Dirty, draft.Status);
+-        Assert.Equal(5.0, draft.InitialDraftState.Inputs.PalletTolerance);
++        Assert.Equal(5.0, draft.InitialDraftState.Editable.PalletTolerance);
+     }
+
+### AnInvalidPendingTextDoesNotBlockTheThreeOperationsConfirmAndKeepLeaveItExactlyAsTypedAndDiscardEmptiesIt (tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs)
+--- original
++++ equivalente
+@@ -18,5 +18,10 @@
+         keepRig.Reader.Answer = rack => OriginChanged(rack, (ToleranceFrom, ToleranceTo));
+-        Assert.Equal(EditIntentStatus.Kept, keepRig.Core.TryKeepPilotEdit(keepRig.Request()).Status);
++        // I-64 F4B PB-T4b (D-S1, D-PBT4-08): the first call presents; the second, with the witness of that read, keeps.
++        var presented = keepRig.Core.TryKeepPilotEdit(keepRig.Request());
++        Assert.Equal(EditIntentStatus.Presented, presented.Status);
+         Assert.Equal(InvalidText, keepDraft.PendingText["field"]);
+-        Assert.Equal(2.25, keepDraft.CurrentDraftState.Inputs.Annotations.AnnotationScale);
++        keepRig.Reader.Answer = rack => FullHandKit.Seen(OriginChanged(rack, (ToleranceFrom, ToleranceTo)), presented.KeepWitness!);
++        Assert.Equal(EditIntentStatus.Kept, keepRig.Core.TryKeepPilotEdit(new EditIntentRequest(keepRig.Session, RackA, null, presented.KeepWitness)).Status);
++        Assert.Equal(InvalidText, keepDraft.PendingText["field"]);
++        Assert.Equal(2.25, keepDraft.CurrentDraftState.Editable.AnnotationScale);
+ 
+
+### TheThreeOperationsStillReadTheDrawingExactlyOnceAndTheGeneralCheckStillComparesWithTheBaseOfTheDraft (tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs)
+--- original
++++ equivalente
+@@ -15,3 +15,9 @@
+         draft.MarkPossiblyStale();
+-        Assert.Equal(EditIntentStatus.Kept, rig.Core.TryKeepPilotEdit(rig.Request()).Status);
++        // I-64 F4B PB-T4b (D-S1, D-PBT4-08): each of the two calls of the keep reads the drawing exactly once.
++        var presented = rig.Core.TryKeepPilotEdit(rig.Request());
++        Assert.Equal(EditIntentStatus.Presented, presented.Status);
++        Assert.Single(rig.Reader.Calls);
++        rig.Reader.Calls.Clear();
++        rig.Reader.Answer = rack => FullHandKit.Seen(OriginChanged(rack, (ToleranceFrom, ToleranceTo)), presented.KeepWitness!);
++        Assert.Equal(EditIntentStatus.Kept, rig.Core.TryKeepPilotEdit(new EditIntentRequest(rig.Session, RackA, null, presented.KeepWitness)).Status);
+         Assert.Single(rig.Reader.Calls);
+

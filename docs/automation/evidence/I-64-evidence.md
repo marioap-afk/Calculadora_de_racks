@@ -8703,3 +8703,43 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - solo documentación;
 - sin AutoCAD;
 - los eventos y las transcripciones, solo por SHA-256.
+
+## 280. PB-T4b: paquete del contrato v4.9, tandas del Owner, precondición 6, comprobación acotada y registro de las 478 (F4B-E52)
+
+**Qué se custodia:**
+- **El paquete del contrato de PB-T4,** v4.9 (sha256 `043f196d8452588530784eb04fd3cd3b63c3594d3e961df5e204f0109329c886`), en `docs/initiatives/I-64-f4b-pbt4-gate-contract-package.md`. Su historia, de la v4.3 a la v4.8, va en `F4B-DRAFTS/pbt4/package-v43.md` a `package-v48.md`, junto a la de la v1 a la v4.2, que custodió la emisión de PB-T4a.
+- **Las tandas del Owner nuevas,** literales, en `F4B-DRAFTS/coordinator/`: la tercera (`owner-pbt4b-breaks-decision.md`), la quinta (`owner-pbt4b-list-477-decision.md`), la sexta (`owner-pbt4b-list-478-decision.md`) y la séptima (`owner-pbt4b-cost-decision.md`, con su nota posterior). La primera, la segunda y la cuarta ya estaban custodiadas.
+- **El registro declarado** `F4B-DRAFTS/superseding-characterization.md`, con su entrada de PB-T4b: las 478 por clase y por causa, los motivos literales de los `Skip`, la sustituta de cada una y las 28 copias sin cambio.
+- **En `F4B-DRAFTS/pbt4/`:**
+  - la decisión de la sesión, `session-pbt4b-design-decisions.md` (D-S1 a D-S6 y la lectura de las dos pruebas del paseo);
+  - las listas: la de PB-T4b (`pbt4b-substitution-list-478.tsv`, sha256 `8b0fcd0ca775ce3a5e46ef2059f4b06e7ec7319883daf3cb37b1fe91290e9e8b`), con las de 475 y 477 como historia, y la de PB-T4d (`pbt4d-retire-list-138.tsv`); los mapas de la copia v2 a v5;
+  - el kit de la v4.5 (y el de la v4.4, como historia), los guiones de la copia y de las ediciones a mano de la v4.4 a la v4.9, los del RED, del GREEN, de los `Skip`, de la partición y del paseo de guardas, con sus autopruebas y sus salidas, y las revisiones de los equivalentes;
+  - las carpetas de cada versión, de `v44/` a `v49/`, con el análisis de la v4.7 (`v47/analysis-outside-477.md`) y la regla de la tercera corrida del coste (`v48/session-cost-rerun-rule.md`);
+  - las dos sondas (`pbt4b-ct06-presentar-probe.cs` y `pbt4b-read-cost-probe.cs`);
+  - la precondición 6 de la sesión: `cc4b/` y `pbt4b-precondition6.json`. **`cc4b/` es la precondición 6 de PB-T4b, su `compile-check`, en una carpeta corta por el límite de rutas de Windows**; va redactada, con su manifiesto;
+  - la revisión independiente, `independent-review-v1.md`, que crece con sus §17 a §21 (la revisión de PB-T4b, su recomprobación y la comprobación acotada CA-T4b con la suya), los guiones del revisor y el encargo de CA-T4b (`independent-review-pbt4b-check-prompt.md`);
+  - las dudas del generador y la salida en seco del generador sobre el cierre, `make_pbt4b_contract-dry.txt`.
+
+  Los textos con rutas locales van con la redacción común. Las etiquetas `/d/r4<letra>` de las copias exportadas de la precondición 6 quedan tal cual en lo custodiado, también en el paquete, porque no identifican a nadie; las rutas con perfil o usuario sí se redactan. Dos sustituciones locales llevan su nota al principio del archivo: en `independent-review-v1.md`, la carpeta de worktrees de Codex (`<worktrees-de-Codex>`), y en `partition_pbt4b_v45.py`, la letra de unidad de las rutas inventadas de sus casos de prueba, escrita partida; su autoprueba da lo mismo.
+
+**Fuera de la custodia, por el sha256 de su conjunto** (se regeneran desde los objetos git y los guiones custodiados):
+- `F4B-DRAFTS/pbt4/v44/base/`: 424 archivos, sha256 del conjunto `c12f2773b59539b58316c9bdeb797348200ef44666c9019bb96a560597f9484b`;
+- `F4B-DRAFTS/pbt4/v44/copies_probe/`: 18 archivos, sha256 del conjunto `d05e647e2ad225d4ae1c866b9bce2c7f32820d4d0ad8e159f5a61d78e339b72b`;
+- `F4B-DRAFTS/pbt4/v44/copies_probe_v44/`: 18 archivos, sha256 del conjunto `d05e647e2ad225d4ae1c866b9bce2c7f32820d4d0ad8e159f5a61d78e339b72b`;
+- `F4B-DRAFTS/pbt4/v44/green_b/`: 9 archivos, sha256 del conjunto `4fd0c3c08c5a98c1a17a4adfe853fc5db55f9a2793c70b41a8d610e018b331d0`;
+- `F4B-DRAFTS/pbt4/v45/copies_probe_v45/`: 20 archivos, sha256 del conjunto `db63117d1141ec78caf373b87bf6a1d0c05cb1e514a083063f98f306aa9173fe`;
+- `F4B-DRAFTS/pbt4/v45/fakecopy/`: 51 archivos, sha256 del conjunto `b3647c59f7ff8336841ecbad8d758da13a4ca0348525c4f87bdc2ddc82f24fc7`;
+- `F4B-DRAFTS/pbt4/v46/copies_probe_v46/`: 20 archivos, sha256 del conjunto `f72b1f2f7b9e7ce2fced8caef466ecec4d87016ec07333fb1ad91c1301e4fb58`;
+- `F4B-DRAFTS/pbt4/v46/copies_probe_v46b/`: 20 archivos, sha256 del conjunto `f72b1f2f7b9e7ce2fced8caef466ecec4d87016ec07333fb1ad91c1301e4fb58`;
+- `F4B-DRAFTS/pbt4/v47/copies_probe_v47/`: 20 archivos, sha256 del conjunto `f72b1f2f7b9e7ce2fced8caef466ecec4d87016ec07333fb1ad91c1301e4fb58`;
+- `F4B-DRAFTS/pbt4/v48/copies_probe_v48/`: 21 archivos, sha256 del conjunto `f4c0baf61f2d5e797df09f822773c369b12b6647922a38b0788ceda4040b1fa0`;
+- `F4B-DRAFTS/pbt4/v49/copies_probe_v49/`: 21 archivos, sha256 del conjunto `4ff5b6705a409478cbfaa69ff49b78bd0fdeb6549c64003c367df3a2ddeb595e`;
+- en `cc4b/`, las TRX, los binarios, el bytecode de Python y tres registros de corridas ya superadas (decision de la sesion), cada uno con su sha256 en el manifiesto.
+
+**La base:** el cierre de PB-T4a, F4B-E51 (`78a7cef3`), con la CI `44814418683`: Core 19 137 = 19 130 + 7, y UI 2 451 = 2 430 + 21.
+
+**Las comprobaciones:**
+- **la precondición 6:** pasos 1 a 6, otra vez, en dos copias exportadas nuevas (`r4u` y `r4v`): la compilacion de Core-tests, UI-tests y el Plugin en Release sin errores ni avisos CS; la particion, la misma de la v4.8 byte a byte (e87e024c); el RED y el GREEN exactos, con la suite completa de Core y los 15 filtros de UI de la subtarea (sin las CT: Core 19 587 = 18 838 + 291 Failed + 458 omitidas en el RED, y 19 129 + 0 + 458 en el GREEN; R_C = 291 y R_UI = 0), sin ninguna prueba que falle fuera de las 478; el equivalente nuevo de WHHG cae en el RED por su Assert.Empty y pasa en el GREEN con sus 13 Assert.NotEmpty; el paso 7 es el de la v4.8 (CT-06 y el coste de la lectura en tres corridas), con sus entradas sin cambio por sha256 (step7_inputs_v49.py) y el coste dado por cumplido por el Owner (la septima tanda);
+- **la comprobación acotada,** `BOUNDED_RESULT`: `EMITIBLE TRAS CORRECCIONES; B 0 / I 1 / M 8; las importantes corregidas en el paquete v4.9 (I-01, la autoprueba de la guarda de los textos del anfitrion pasa en vacio en el GREEN: el equivalente de NoneOfThe30 trae su autoprueba sobre la tabla nueva, como G-4); sin decisiones nuevas del Owner salvo el coste de la lectura (pb-20-ab x4, origen-es-Primary, primera corrida); precondicion 6 sobre 78a7cef3: pasos 1 a 6 cumplen; recomprobacion v4.9: EMITIBLE, B 0 / I 0 / M 3`.
+
+**Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.

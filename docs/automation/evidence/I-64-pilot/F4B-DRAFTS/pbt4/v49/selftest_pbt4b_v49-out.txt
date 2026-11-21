@@ -1,0 +1,3 @@
+1. modo de medida: 21 copias; iguales a la v4.8: 20; distintas: ['tests/RackCad.Tests/Workspace/WorkspaceHostHardeningGuardFull.cs']
+2. WorkspaceHostHardeningGuardFull.cs: un solo bloque tras el Assert.Empty=True; el bloque es el comentario de I-01 y las lineas WHHG:504-525 de 78a7cef3, literales=True; Assert.NotEmpty: 13
+3. con la particion de la v4.8 (pbt4b-copy-partition.tsv, sha256 e87e024c168dd81d05c1ba1ae9dfa0027da8724ee0d9fd219cce74fe1f613dec): iguales a la v4.8: 20 de 21; la de WHHG en su clase Red=True

@@ -1,0 +1,26 @@
+Serie de pruebas para <copia>\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll (.NETCoreApp,Version=v8.0)
+Versión 17.11.1 (x64) de VSTest
+
+Iniciando la ejecución de pruebas, espere...
+1 archivos de prueba en total coincidieron con el patrón especificado.
+[xUnit.net 00:00:10.16]     RackCad.Tests.TmpPhantomProbe.ThePrepareOfThePilotAndOfTheFullModelOverTheCasesOfTheTwoCopies [FAIL]
+  Con error RackCad.Tests.TmpPhantomProbe.ThePrepareOfThePilotAndOfTheFullModelOverTheCasesOfTheTwoCopies [2 s]
+  Mensaje de error:
+   piloto   phantom-lateral kind=Invalid plan=null reason=El piloto no borra vistas y la vista B2 ya no está disponible en el sistema saliente: usa RACKEDITAR.
+completo phantom-lateral kind=Ready plan=miembros=A1 borrados=B2 reason=null
+piloto   side-b kind=Invalid plan=null reason=El piloto no borra vistas y la vista B2 ya no está disponible en el sistema saliente: usa RACKEDITAR.
+completo side-b kind=Invalid plan=null reason=La vista B2 es un frontal del lado B en un rack sin lado B: el panel no la borra ni la redibuja; usa RACKEDITAR.
+piloto   corrupt-descriptor kind=Invalid plan=null reason=El descriptor de la vista B2 no se puede interpretar: usa RACKEDITAR.
+completo corrupt-descriptor kind=Invalid plan=null reason=El descriptor de la vista B2 no se puede interpretar: usa RACKEDITAR.
+piloto   section-out-of-range kind=Invalid plan=null reason=El descriptor de la vista B2 no se puede interpretar: usa RACKEDITAR.
+completo section-out-of-range kind=Invalid plan=null reason=El descriptor de la vista B2 no se puede interpretar: usa RACKEDITAR.
+piloto   existing-lateral kind=Ready plan=miembros=A1,B2 borrados= reason=null
+completo existing-lateral kind=Ready plan=miembros=A1,B2 borrados= reason=null
+prefijos ViewUnavailable=[El piloto no borra vistas y la vista ] FrontalBOfOneWay=[La vista ] ViewAddress=[El descriptor de la vista ]
+  Seguimiento de la pila:
+     at RackCad.Tests.TmpPhantomProbe.ThePrepareOfThePilotAndOfTheFullModelOverTheCasesOfTheTwoCopies() in <copia>\tests\RackCad.Tests\TmpPhantomProbe.cs:line 41
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+Archivo de resultados: <copia>\_trx\phantom.trx
+
+Con error! - Con error:     1, Superado:     0, Omitido:     0, Total:     1, Duración: < 1 ms - RackCad.Tests.dll (net8.0)

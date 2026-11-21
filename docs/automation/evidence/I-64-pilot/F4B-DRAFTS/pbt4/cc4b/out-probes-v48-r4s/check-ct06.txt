@@ -1,0 +1,5 @@
+CT-06 sonda: 3 lineas
+  presentar estado=Presented testigo-clave=A1 testigo-texto-igual-al-origen=True borrador-igual=True origen-igual=True lecturas=1 lineas=2
+  presentar Cambiado fuera: el nombre.
+  presentar Cambiado por ti: las anotaciones.
+CT-06: CUMPLE

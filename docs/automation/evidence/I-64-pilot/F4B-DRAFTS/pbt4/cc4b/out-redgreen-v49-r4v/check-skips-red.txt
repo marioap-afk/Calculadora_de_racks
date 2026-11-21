@@ -1,0 +1,22 @@
+OK   tests/RackCad.Tests/PushBackFullReadGuardTests.cs skip=2
+OK   tests/RackCad.Tests/PushBackFullReadPathTests.cs skip=1
+OK   tests/RackCad.Tests/PushBackWritePathGuardTests.cs skip=1
+OK   tests/RackCad.Tests/Workspace/WorkspaceAssociativeBookkeepingTests.cs skip=10
+OK   tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorTests.cs skip=54
+OK   tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs skip=7
+OK   tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs skip=62
+OK   tests/RackCad.Tests/Workspace/WorkspaceHostHardeningGuardTests.cs skip=1
+OK   tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs skip=2
+OK   tests/RackCad.Tests/Workspace/WorkspaceLifecycleHostTests.cs skip=69
+OK   tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs skip=5
+OK   tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs skip=59
+OK   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs skip=67
+OK   tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardTests.cs skip=1
+OK   tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs skip=28
+OK   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs skip=1
+OK   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs skip=35
+OK   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs skip=2
+OK   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRequestTests.cs skip=44
+OK   tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs skip=21
+OK   tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationViewTests.cs skip=6
+archivos: 21; mal: 0; Skip leidos: 478

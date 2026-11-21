@@ -1,0 +1,33 @@
+rows original=30 annex=30
+A read of the pilot is in progress.                          orig=1 base=1 ok | annex=1 green=1 ok 
+The request does not belong to the active document.          orig=6 base=6 ok | annex=6 green=6 ok 
+There is no draft for the rack.                              orig=3 base=3 ok | annex=3 green=3 ok 
+The preview witness has no key.                              orig=6 base=6 ok | annex=6 green=6 ok // before 3
+The drawing is not ready to be read.                         orig=6 base=6 ok | annex=6 green=6 ok // before 3
+The read of the edit intention failed.                       orig=1 base=1 ok | annex=1 green=1 ok 
+The read of the edit intention carries no result.            orig=1 base=1 ok | annex=1 green=1 ok 
+The session was retired.                                     orig=1 base=1 ok | annex=1 green=1 ok 
+A blank rack has no draft.                                   orig=2 base=2 ok | annex=2 green=2 ok // before 1
+The draft is not unknown after a commit that threw.          orig=2 base=2 ok | annex=2 green=2 ok 
+The reread failed.                                           orig=2 base=2 ok | annex=2 green=2 ok // before 1
+The reread carries no result.                                orig=2 base=2 ok | annex=0 green=0 ok  <== CHANGED // before 2 (I-64 F4B PB-T4b, owner-pbt4b-list-478-decision.md)
+The draft does not need to be reloaded.                      orig=1 base=1 ok | annex=1 green=1 ok 
+The read for the reload failed.                              orig=3 base=3 ok | annex=3 green=3 ok // before 1
+The read for the reload carries no result.                   orig=3 base=3 ok | annex=3 green=3 ok // before 1
+The draft is being applied or is no longer registered.       orig=5 base=5 ok | annex=6 green=6 ok  <== CHANGED // before 5 (I-64 F4B PB-T4b, owner-pbt4b-list-478-decision.md)
+The draft was not reloaded.                                  orig=3 base=3 ok | annex=3 green=3 ok // before 1
+The state of the field could not be read.                    orig=1 base=1 ok | annex=1 green=1 ok 
+The text is required.                                        orig=1 base=1 ok | annex=1 green=1 ok 
+The field cannot be edited now.                              orig=4 base=4 ok | annex=4 green=4 ok 
+The boundary is not known.                                   orig=1 base=1 ok | annex=1 green=1 ok 
+The rack has no annotation scale.                            orig=1 base=1 ok | annex=0 green=0 ok  <== CHANGED // before 1 (I-64 F4B PB-T4b, owner-pbt4b-list-478-decision.md)
+No reader of the edit intention is assigned.                 orig=1 base=1 ok | annex=1 green=1 ok 
+There is no active document.                                 orig=1 base=1 ok | annex=1 green=1 ok 
+A RackCad window is open.                                    orig=1 base=1 ok | annex=1 green=1 ok 
+A command is in progress.                                    orig=1 base=1 ok | annex=1 green=1 ok 
+The value is not a finite number greater than zero.          orig=1 base=1 ok | annex=1 green=1 ok 
+A notice of the panel is being delivered.                    orig=1 base=1 ok | annex=1 green=1 ok 
+The draft cannot be checked in its current status.           orig=1 base=1 ok | annex=1 green=1 ok 
+Only a draft in conflict or with edits marked as possibly st orig=1 base=1 ok | annex=1 green=1 ok 
+rows changed: 3; texts identical: True
+English literals left in the GREEN: []

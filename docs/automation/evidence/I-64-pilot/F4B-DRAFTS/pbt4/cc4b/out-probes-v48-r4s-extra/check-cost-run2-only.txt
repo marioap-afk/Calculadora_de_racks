@@ -1,0 +1,13 @@
+== cost-run2.txt
+  materializaciones pb-01-base x2 vistas: Begin=1 origen-encontrado=1 cae-al-Primary=1 origen-es-Primary=1 (bien)
+  materializaciones pb-07-combinado x2 vistas: Begin=1 origen-encontrado=1 cae-al-Primary=1 origen-es-Primary=1 (bien)
+  materializaciones pb-21-cola x2 vistas: Begin=1 origen-encontrado=1 cae-al-Primary=1 origen-es-Primary=1 (bien)
+  materializaciones pb-20-ab x2 vistas: Begin=1 origen-encontrado=1 cae-al-Primary=1 origen-es-Primary=1 (bien)
+  materializaciones pb-07-combinado x4 vistas +200 racks ajenos: Begin=1 origen-encontrado=1 cae-al-Primary=1 origen-es-Primary=1 (bien)
+  materializaciones pb-20-ab x4 vistas +200 racks ajenos: Begin=1 origen-encontrado=1 cae-al-Primary=1 origen-es-Primary=1 (bien)
+  pb-01-base x2 vistas: base 2.7 | t4a Begin 41.4 origen 80.7 cae 39.6 es-Primary 39.8 | t4b Begin 35.1 origen 38.7 cae 35.5 es-Primary 36.4 | origen<=48.5 True; origen<0.75*t4a (60.5) True; sin regresion True; aumento sobre la base: Begin +32, origen +36 (t4a +78)
+  pb-07-combinado x2 vistas: base 4.3 | t4a Begin 39.0 origen 73.8 cae 38.5 es-Primary 37.8 | t4b Begin 36.3 origen 40.3 cae 36.5 es-Primary 36.8 | origen<=50.4 True; origen<0.75*t4a (55.4) True; sin regresion True; aumento sobre la base: Begin +32, origen +36 (t4a +70)
+  pb-20-ab x2 vistas: base 3.3 | t4a Begin 40.2 origen 82.0 cae 40.5 es-Primary 40.9 | t4b Begin 41.0 origen 44.6 cae 41.2 es-Primary 40.7 | origen<=57.2 True; origen<0.75*t4a (61.5) True; sin regresion True; aumento sobre la base: Begin +38, origen +41 (t4a +79)
+  pb-07-combinado x4 vistas +200 racks ajenos: base 4.6 | t4a Begin 36.3 origen 72.1 cae 36.6 es-Primary 36.6 | t4b Begin 35.4 origen 41.0 cae 36.7 es-Primary 36.4 | origen<=51.2 True; origen<0.75*t4a (54.1) True; sin regresion True; aumento sobre la base: Begin +31, origen +36 (t4a +68)
+  pb-20-ab x4 vistas +200 racks ajenos: base 6.3 | t4a Begin 45.7 origen 93.4 cae 46.6 es-Primary 46.5 | t4b Begin 47.1 origen 53.4 cae 48.8 es-Primary 47.2 | origen<=68.5 True; origen<0.75*t4a (70.0) True; sin regresion True; aumento sobre la base: Begin +41, origen +47 (t4a +87)
+COSTE: CUMPLE

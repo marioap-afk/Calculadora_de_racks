@@ -1,0 +1,10 @@
+654c3b7b045c66c3d7bf0f1c3c1eac42721182aa85ee4c006de444314fd0707c  pbt4b-substitution-list-475.tsv  104502 bytes
+d5467dc162e2cda8c539a829cc8f3a7c46260a119f70e840b34e6f78dde0387c  pbt4d-retire-list-138.tsv  54952 bytes
+3ffadf5b1f19461564d2e3f2f1c3e829395b8ade2f6d43293742619ffe359e01  pbt4b-copy-map-v2.tsv  54925 bytes
+  + WorkspaceEditIntentGuardTests.cs 870-880 TheExpressionOfTheDiagnosticOfTheAdmissionIsInTheWholeHostCo
+  + WorkspaceEditIntentGuardTests.cs 882-894 TheGuardOfTheExpressionOfTheDiagnosticSeesAThirdOneInTheCore
+  + WorkspaceLifecycleGuardTests.cs 626-635 TheMarkingOnlyTouchesTheDraftsOfThePilotOfTheSessionAndIsOnl
+  + WorkspaceLifecycleGuardTests.cs 641-664 TheReloadIsAMethodOfItsOwnWithTheGateAndTheEightStepsOfTheTa
+  + WorkspacePilotUpdateGuardTests.cs 822-840 TheBodyOfTheUpdateFollowsTheOrderOfThePackageAndEndsTheMarkO
+PB-T4d: {'PB-T4d C-7': 138, 'PB-T4d original': 55, 'PB-T4d apoyo': 29}
+reparto: {'mecanica': 368, 'a mano': 60}

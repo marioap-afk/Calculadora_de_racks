@@ -1,0 +1,5 @@
+PARA:
+  WorkspaceLifecycleHostTests.cs.EachOperationThatCanChangeADraftEndsTheMarkSoTheSessionIsRetiredConservatively: resultados ['Failed', 'Passed']
+  WorkspacePilotEditGuardTests.cs.TheHostGuardTripsOnAPublicOperationAnOrderOfBasesOrAnAdapterThatIsAFieldOfInstance: resultados ['Failed', 'Passed']
+  WorkspacePilotPrepareTests.cs.ConfirmAppliesOnlyToCleanDirtyAndConflictAndTheOthersReadNothing: resultados ['Failed', 'Passed']
+  WorkspacePilotPrepareTests.cs.KeepAppliesToConflictAndToDirtyMarkedStaleApplyingWaitsAndTheOthersAreNotNeededAllWithoutReading: resultados ['Failed', 'Passed']

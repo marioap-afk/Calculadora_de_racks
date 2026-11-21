@@ -1,0 +1,35 @@
+== G-keep 24 lineas en 20 pruebas
+  WorkspacePilotPrepareTests.TheThreeOperationsAnswerUnavailableWithoutAReaderAndReadNothing:548  Assert.Equal(EditIntentStatus.Unavailable, rig.Core.TryKeepPilotEdit(rig.Request()).Status);
+  WorkspacePilotPrepareTests.ABlankRackIdIsAnsweredBeforeAnythingElseWithTheTextsOfTheOtherOperationsAndReadsNothing:563  var keep = rig.Core.TryKeepPilotEdit(rig.Request(blank));
+  WorkspacePilotPrepareTests.AWitnessWithoutAKeyIsAFailureOfTheRequestBeforeTheGateTheDraftAndTheReader:591  var keep = rig.Core.TryKeepPilotEdit(rig.Request(witness: witness));
+  WorkspacePilotPrepareTests.TheGateAnswersWaitingOrRejectedForTheThreeOperationsAndReadsNothing:614  var keep = rig.Core.TryKeepPilotEdit(rig.Request());
+  WorkspacePilotPrepareTests.AMissingDraftIsNotFoundWithoutReading:653  var keep = rig.Core.TryKeepPilotEdit(rig.Request());
+  WorkspacePilotPrepareTests.KeepAppliesToConflictAndToDirtyMarkedStaleApplyingWaitsAndTheOthersAreNotNeededAllWithoutReading:736  var outcome = rig.Core.TryKeepPilotEdit(rig.Request());
+  WorkspacePilotPrepareTests.EveryAnswerOfTheReaderThatIsNotAReadIsMappedWithItsReasonAndChangesNothing:900  var keep = rig.Core.TryKeepPilotEdit(rig.Request());
+  WorkspacePilotPrepareTests.AReadWithoutReasonOrWithoutResultUsesTheTextsOfTheOtherOperations:925  Assert.Equal("El dibujo no está listo para leerse.", rig.Core.TryKeepPilotEdit(rig.Request()).Reason);
+  WorkspacePilotPrepareTests.AReadWithoutReasonOrWithoutResultUsesTheTextsOfTheOtherOperations:930  Assert.Equal("La petición no es del documento activo.", rig.Core.TryKeepPilotEdit(rig.Request()).Reason);
+  WorkspacePilotPrepareTests.AReadWithoutReasonOrWithoutResultUsesTheTextsOfTheOtherOperations:935  Assert.Equal("Falló la lectura para la recarga.", rig.Core.TryKeepPilotEdit(rig.Request()).Reason);
+  WorkspacePilotPrepareTests.KeepAConflictLeavesItAndTheDraftIsDirtyOnTheNewVersion:1050  var outcome = rig.Core.TryKeepPilotEdit(rig.Request());
+  WorkspacePilotPrepareTests.KeepWithAReadThatIsNotAdmittedKeepsTheDraftAsItWasAndCarriesTheDiagnostic:1067  var outcome = rig.Core.TryKeepPilotEdit(rig.Request());
+  WorkspacePilotPrepareTests.KeepThatFindsTheDraftBeingAppliedAfterTheReadAnswersWaitingAndChangesNothing:1091  var outcome = rig.Core.TryKeepPilotEdit(rig.Request());
+  WorkspacePilotPrepareTests.AKeepThatIsKeptEndsTheMarkAndOneThatIsNotNeededOrNotAdmittedDoesNot:1187  Assert.Equal(EditIntentStatus.Kept, rig.Core.TryKeepPilotEdit(rig.Request()).Status);
+  WorkspacePilotPrepareTests.AKeepThatIsKeptEndsTheMarkAndOneThatIsNotNeededOrNotAdmittedDoesNot:1191  Assert.Equal(EditIntentStatus.NotNeeded, rig.Core.TryKeepPilotEdit(rig.Request()).Status)));
+  WorkspacePilotPrepareTests.AKeepThatIsKeptEndsTheMarkAndOneThatIsNotNeededOrNotAdmittedDoesNot:1198  Assert.Equal(EditIntentStatus.NotAdmitted, rig.Core.TryKeepPilotEdit(rig.Request()).Status);
+  WorkspacePilotReconciliationHostTests.ConfirmWithAChangeOfTheScaleAndOfAnotherFieldIsAConflictAndKeepAfterwardsKeepsTheScaleOfTheDraftOnTheNewVersion:173  var keep = rig.Core.TryKeepPilotEdit(rig.Request());
+  WorkspacePilotReconciliationHostTests.KeepAndDiscardOfADeletedRackAnswerNotAdmittedWithTheDiagnosticAndTheHintAndChangeNothing:225  var outcome = operation == "keep" ? rig.Core.TryKeepPilotEdit(rig.Request()) : rig.Core.TryDiscardAndReloadPilotEdit(rig.Request());
+  WorkspacePilotReconciliationHostTests.KeepAndDiscardOfAnUnreadableEnvelopeAnswerNotAdmittedWithItsDiagnosticAndChangeNothing:327  var outcome = operation == "keep" ? rig.Core.TryKeepPilotEdit(rig.Request()) : rig.Core.TryDiscardAndReloadPilotEdit(rig.Request());
+  WorkspacePilotReconciliationHostTests.ADefaultReadResultAnswersFailedForTheThreeOperationsAndChangesNothing:349  var keep = rig.Core.TryKeepPilotEdit(rig.Request());
+  WorkspacePilotReconciliationHostTests.AnInvalidPendingTextDoesNotBlockTheThreeOperationsConfirmAndKeepLeaveItExactlyAsTypedAndDiscardEmptiesIt:407  Assert.Equal(EditIntentStatus.Kept, keepRig.Core.TryKeepPilotEdit(keepRig.Request()).Status);
+  WorkspacePilotReconciliationHostTests.ASessionThatNeverExistedIsRejectedForTheThreeOperationsWithoutReadingAndWithoutChange:452  var keep = rig.Core.TryKeepPilotEdit(rig.Request(session: never));
+  WorkspacePilotReconciliationHostTests.AnotherActiveDocumentRejectsTheThreeOperationsWithoutReadingAndLeavesTheBaseTheInitialTheCurrentAndThePendingTextIntact:482  var keep = rig.Core.TryKeepPilotEdit(rig.Request());
+  WorkspacePilotReconciliationHostTests.TheThreeOperationsStillReadTheDrawingExactlyOnceAndTheGeneralCheckStillComparesWithTheBaseOfTheDraft:551  Assert.Equal(EditIntentStatus.Kept, rig.Core.TryKeepPilotEdit(rig.Request()).Status);
+== G-enum 4 lineas en 3 pruebas
+  WorkspaceLifecycleHostTests.TheExtendedStatesOfTheIntentionAreAnOrderedPrefixAndTheNewOutcomesCarryTheirWitness:1489  Enum.GetNames<EditIntentStatus>().Take(10).ToArray());
+  WorkspacePilotPrepareTests.TheNewOutcomesAreValuesWithTheStatesOfThePackageAndTheDefaultIsUnavailable:1351  var intent = Enum.GetNames<EditIntentStatus>();
+  WorkspaceEditIntentHostTests.TheOutcomesAreValuesAndTheStatesHaveTheExactNamesAndOrderOfThePackage:1134  Assert.Equal(new[] { "Unavailable", "Waiting", "Rejected", "AlreadyOpen", "NotAdmitted", "Admitted", "Failed" }, Enum.GetNames<EditIntentStatus>().Tak
+  WorkspaceEditIntentHostTests.TheOutcomesAreValuesAndTheStatesHaveTheExactNamesAndOrderOfThePackage:1148  Assert.Equal("Kept", Enum.GetNames<EditIntentStatus>()[10]);
+== G-ab 0 lineas en 0 pruebas
+== G-sin-escala 0 lineas en 0 pruebas
+== G-campo 0 lineas en 0 pruebas
+== G-annot-null 0 lineas en 0 pruebas
+== G-presented 0 lineas en 0 pruebas

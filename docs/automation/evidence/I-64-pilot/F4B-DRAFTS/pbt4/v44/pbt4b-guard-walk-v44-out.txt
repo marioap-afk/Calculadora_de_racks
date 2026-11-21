@@ -1,0 +1,19 @@
+clases=34 pruebas=885 A=83 B=42 sin-diferencia=136 no-leen=624 | A-o-B fuera de la lista=108
+cambian: WHC: FindPilotDraft, MarkPilotDraftsPossiblyStale, TryBeginPilotEdit, TryCheckPilotEdit, TryConfirmPilotBase, TryDiscardAndReloadPilotEdit, TryKeepPilotEdit, TryReloadPilotEdit, TryUpdatePilot, ViewOfPilotDraft; WEI: Presented; FVM: ConfirmChoice, PresentChoice, RaiseAll, RemoveChoice; PV: ; NFV: Format, MaximumMessage, MinimumMessage, Validate
+PushBackDraftWriteGuardTests.cs                                        pruebas=  3 A-o-B=  3 fuera-de-la-lista=  3
+PushBackWritePathGuardTests.cs                                         pruebas=  2 A-o-B=  1 fuera-de-la-lista=  0
+WorkspaceBridgeSourceGuardTests.cs                                     pruebas= 21 A-o-B=  3 fuera-de-la-lista=  3
+WorkspaceBrowserHostGuardTests.cs                                      pruebas= 19 A-o-B=  2 fuera-de-la-lista=  2
+WorkspaceBrowserSummaryTests.cs                                        pruebas= 24 A-o-B=  1 fuera-de-la-lista=  1
+WorkspaceEditIntentGuardTests.cs                                       pruebas= 66 A-o-B= 26 fuera-de-la-lista= 21
+WorkspaceHostHardeningGuardTests.cs                                    pruebas= 34 A-o-B=  4 fuera-de-la-lista=  4
+WorkspaceHostSourceGuardTests.cs                                       pruebas= 45 A-o-B=  2 fuera-de-la-lista=  2
+WorkspaceLifecycleGuardTests.cs                                        pruebas= 44 A-o-B= 12 fuera-de-la-lista= 10
+WorkspaceNavigationHostTests.cs                                        pruebas= 56 A-o-B=  4 fuera-de-la-lista=  4
+WorkspacePilotCloseSyncGuardTests.cs                                   pruebas= 40 A-o-B= 14 fuera-de-la-lista= 14
+WorkspacePilotEditGuardTests.cs                                        pruebas= 39 A-o-B= 21 fuera-de-la-lista= 16
+WorkspacePilotPrepareGuardTests.cs                                     pruebas= 14 A-o-B=  1 fuera-de-la-lista=  1
+WorkspacePilotReconciliationGuardTests.cs                              pruebas= 26 A-o-B= 16 fuera-de-la-lista= 15
+WorkspacePilotUpdateGuardTests.cs                                      pruebas= 41 A-o-B=  3 fuera-de-la-lista=  2
+WorkspacePilotUpdateIntegrationGuardTests.cs                           pruebas= 41 A-o-B= 11 fuera-de-la-lista=  9
+WorkspaceSourceGuardExceptionTests.cs                                  pruebas= 21 A-o-B=  1 fuera-de-la-lista=  1

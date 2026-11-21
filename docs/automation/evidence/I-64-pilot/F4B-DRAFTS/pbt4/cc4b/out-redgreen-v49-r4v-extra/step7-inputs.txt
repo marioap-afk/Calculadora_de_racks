@@ -1,0 +1,9 @@
+1. el GREEN de src/: 10 archivos en la v4.8 y 10 en la v4.9; iguales por sha256: True
+2. el RED debajo: 49 archivos en la v4.8 y 49 en la v4.9; cambian: ['tests/RackCad.Tests/Workspace/WorkspaceHostHardeningGuardFull.cs']; el kit igual: True (b4ed29f92838)
+3. la sonda pbt4b-read-cost-probe.cs: 91acfca3328029538348b9f2feb00a9c756f1f1cdaf8650876b843691df7ba0e; la misma que en /d/r4s: True; y que en /d/r4t: True
+3. la sonda pbt4b-ct06-presentar-probe.cs: 32d9fbc4fb6ff6a7a7fe35844777100fbd588cc5868dbc3d393b57a65a118f65; la misma que en /d/r4s: True
+3. la sonda TmpIsDirtyCostProbe.cs: fb3c8ae13b7f69cb1bed6721d4e93e27536e96cb0a55acd7e8570dea8f711195; la misma que en /d/r4s: True
+4. la sonda pbt4b-read-cost-probe.cs nombra tipos de las copias: ninguno; del kit: []
+4. la sonda pbt4b-ct06-presentar-probe.cs nombra tipos de las copias: ninguno; del kit: ['FullEditIntentFakeReader', 'FullEditIntentKit', 'FullPrepareKit', 'FullReadRig']
+4. la sonda TmpIsDirtyCostProbe.cs nombra tipos de las copias: ninguno; del kit: ['FullPrepareKit']
+EL PASO 7 DE LA v4.8 SIGUE VALIENDO: SI

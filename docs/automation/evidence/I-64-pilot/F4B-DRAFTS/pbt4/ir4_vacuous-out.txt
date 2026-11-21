@@ -1,0 +1,21 @@
+== PushBackFullReadGuardTests.cs: 1 listed C-5 tests; helpers checked for emptiness/truth on them: []
+== PushBackFullReadPathTests.cs: 1 listed C-5 tests; helpers checked for emptiness/truth on them: []
+== PushBackWritePathGuardTests.cs: 1 listed C-5 tests; helpers checked for emptiness/truth on them: []
+== WorkspaceEditIntentGuardTests.cs: 7 listed C-5 tests; helpers checked for emptiness/truth on them: ['IndexOf']
+== WorkspaceHostHardeningGuardTests.cs: 1 listed C-5 tests; helpers checked for emptiness/truth on them: ['LiteralViolations']
+  outside the list: TheGuardOfTheLiteralsTripsOnAnEnglishLiteralAMissingSpanishTextAndALostIdentifier (:501-526) calls ['LiteralViolations']; real text True; Contains precondition False; empty baseline inside False
+== WorkspaceLifecycleGuardTests.cs: 2 listed C-5 tests; helpers checked for emptiness/truth on them: []
+== WorkspacePilotEditGuardTests.cs: 5 listed C-5 tests; helpers checked for emptiness/truth on them: ['HostViolations', 'TrapViolations', 'WriteViolations', 'typeof']
+  outside the list: TheHostGuardTripsOnAReadAnAuthorizationOrAMarkWhereTheOperationMustNotHaveThem (:401-416) calls ['HostViolations']; real text True; Contains precondition False; empty baseline inside False
+  outside the list: TheHostGuardTripsWhenAnOperationThatChangesADraftLeavesOutNotePilotEdit (:418-431) calls ['HostViolations']; real text True; Contains precondition False; empty baseline inside False
+  outside the list: TheUpdateRequestGuardTripsWithoutTheGateWithASecondRequestWithTheUpdateItselfOrWhereTheProgressAuthorizesOrMutates (:433-451) calls ['HostViolations']; real text True; Contains precondition True; empty baseline inside False
+  outside the list: TheBoundGuardTripsWhenTheLazyExpiryReachesTheOwnMutationTheProbeTheGateTheReaderOrAnotherMemberOfTheBridge (:453-468) calls ['HostViolations']; real text True; Contains precondition False; empty baseline inside False
+  outside the list: TheFlightGuardTripsWhenTheCheckOfTheFlightIsMissingOrComesBeforeTheAuthorizationAndTheMarkOfTheReads (:470-492) calls ['HostViolations']; real text True; Contains precondition False; empty baseline inside False
+  outside the list: TheFlightGuardTripsOnABodyThatChecksTheFlightWithNoAuthorizationAtAll (:516-526) calls ['HostViolations']; real text True; Contains precondition False; empty baseline inside False
+  outside the list: TheWriteGuardTripsOnAWriteInEachOperationOfThePort (:922-944) calls ['WriteViolations']; real text True; Contains precondition False; empty baseline inside False
+  outside the list: TheWriteGuardTripsOnAWriteInEachPublicBodyOfTheExplicitReconciliation (:946-960) calls ['WriteViolations']; real text True; Contains precondition False; empty baseline inside True
+  outside the list: TheWriteGuardTripsOnAWriteInTheDecoratorAndAllowsAnOperationThatTheNextTaskAdds (:962-975) calls ['WriteViolations']; real text True; Contains precondition False; empty baseline inside True
+== WorkspacePilotReconciliationGuardTests.cs: 1 listed C-5 tests; helpers checked for emptiness/truth on them: []
+== WorkspacePilotUpdateGuardTests.cs: 1 listed C-5 tests; helpers checked for emptiness/truth on them: []
+== WorkspacePilotUpdateIntegrationGuardTests.cs: 2 listed C-5 tests; helpers checked for emptiness/truth on them: ['G4Violations']
+  outside the list: G4TripsOnACallerInTheControllerTheAdapterOrASecondCallInTheCore (:510-517) calls ['G4Violations']; real text False; Contains precondition False; empty baseline inside False

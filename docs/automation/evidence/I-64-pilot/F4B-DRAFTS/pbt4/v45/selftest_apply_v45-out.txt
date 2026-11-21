@@ -1,0 +1,6 @@
+copia minima: 26 archivos
+apply_red_pbt4b_v45.py --dry -> 0: SECO 47 archivos; conjunto 25412d8457bae8320c7b58ca89e532bfb627cee3c63ebcea89f2e30cecd2bd2f
+apply_red_pbt4b_v45.py  -> 0: ESCRITOS 47 archivos; conjunto 25412d8457bae8320c7b58ca89e532bfb627cee3c63ebcea89f2e30cecd2bd2f
+apply_green_pbt4b_v45.py --dry -> 0: SECO 10 archivos; conjunto f93c726219cf566964003ca5638e79ce2731e3b3f7b830c83fd841203af34c45
+apply_green_pbt4b_v45.py  -> 0: ESCRITOS 10 archivos; conjunto f93c726219cf566964003ca5638e79ce2731e3b3f7b830c83fd841203af34c45
+Skip escritos: 477; copias: 20; kit: b4ed29f92838e5761faf1afaba1f33e58ba82a56541900f52db8c5ecb6239b9a; RIA con la lectura diferida: True

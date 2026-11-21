@@ -1,0 +1,62 @@
+UI filters of the table (copies folded into one): 16
+  RackCad.UI.Tests.Cantilever
+  RackCad.UI.Tests.FullPanelCopy
+  RackCad.UI.Tests.NumericFieldTests
+  RackCad.UI.Tests.NumericFieldValidationTests
+  RackCad.UI.Tests.PushBackClassicCharacterization
+  RackCad.UI.Tests.PushBackDeclaredCorrection
+  RackCad.UI.Tests.PushBackFieldValidationConcordanceTests
+  RackCad.UI.Tests.PushBackFullDraftWindowParityTests
+  RackCad.UI.Tests.PushBackFullEditorCharacterization
+  RackCad.UI.Tests.PushBackFullPanelFieldTests
+  RackCad.UI.Tests.PushBackStateNet
+  RackCad.UI.Tests.PushBackWindowOnStateTests
+  RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests
+  RackCad.UI.Tests.PushBackWorkspaceCarryoverTests
+  RackCad.UI.Tests.PushBackWorkspaceModeTests
+  RackCad.UI.Tests.Workspace
+UI test files that name a changed UI file or sweep the UI tree: 44 classes
+  BlankFrontDesviadorHandoffTests.cs                           BlankFrontDesviadorHandoffTests                    sweeps-ui-text               OUTSIDE the filters
+  BoundedEditorCharacterizationTests.cs                        BoundedEditorCharacterizationTests                 sweeps-ui-text               OUTSIDE the filters
+  BoundedEditorContractTests.cs                                BoundedEditorContractTests                         sweeps-ui-text               OUTSIDE the filters
+  CustomPropertiesHelpCensusTests.cs                           CustomPropertiesHelpCensusTests                    sweeps-ui-text               OUTSIDE the filters
+  CustomPropertiesWindowTestKit.cs                             CustomPropertiesWindowTestKit                      sweeps-ui-text               OUTSIDE the filters
+  DialogWindowCharacterizationTests.cs                         DialogWindowCharacterizationTests                  sweeps-ui-text               OUTSIDE the filters
+  DialogWindowContractTests.cs                                 DialogWindowContractTests                          sweeps-ui-text               OUTSIDE the filters
+  DynamicHeaderReuseWindowTests.cs                             DynamicHeaderReuseWindowTests                      sweeps-ui-text               OUTSIDE the filters
+  EditorVisualShellTests.cs                                    EditorVisualShellTests                             sweeps-ui-text               OUTSIDE the filters
+  FirstViewFreedomTests.cs                                     FirstViewFreedomTests                              sweeps-ui-text               OUTSIDE the filters
+  FirstViewGateCharacterizationTests.cs                        FirstViewGateCharacterizationTests                 sweeps-ui-text               OUTSIDE the filters
+  NumericFieldValidationTests.cs                               NumericFieldValidationTests                        names-changed                in RackCad.UI.Tests.NumericFieldValidationTests
+  PushBackClassicCharacterizationSourceGuardTests.cs           PushBackClassicCharacterizationSourceGuardTests    sweeps-ui-text               in RackCad.UI.Tests.PushBackClassicCharacterization
+  PushBackFieldValidationConcordanceTests.cs                   PushBackFieldValidationConcordanceTests            names-changed                in RackCad.UI.Tests.PushBackFieldValidationConcordanceTests
+  PushBackFullEditorCharacterizationCatalogTests.cs            PushBackFullEditorCharacterizationCatalogTests     sweeps-ui-text               in RackCad.UI.Tests.PushBackFullEditorCharacterization
+  PushBackFullEditorCharacterizationStateTests.cs              PushBackFullEditorCharacterizationStateTests       sweeps-ui-text               in RackCad.UI.Tests.PushBackFullEditorCharacterization
+  PushBackFullEditorCharacterizationSupport.cs                 PushBackFullEditorCharacterizationSupport          sweeps-ui-text               in RackCad.UI.Tests.PushBackFullEditorCharacterization
+  RichEditorCharacterizationTests.cs                           RichEditorCharacterizationTests                    sweeps-ui-text               OUTSIDE the filters
+  RichEditorContractTests.cs                                   RichEditorContractTests                            sweeps-ui-text               OUTSIDE the filters
+  SelectiveHeaderBatchSeamTests.cs                             SelectiveHeaderBatchSeamTests                      sweeps-ui-text               OUTSIDE the filters
+  SelectiveTransactionBoundaryGuardTests.cs                    SelectiveTransactionBoundaryGuardTests             sweeps-ui-text               OUTSIDE the filters
+  SelectiveWindowConstructionGuardTests.cs                     SelectiveWindowConstructionGuardTests              sweeps-ui-text               OUTSIDE the filters
+  StructuralSectionPickerTests.cs                              StructuralSectionPickerTests                       sweeps-ui-text               OUTSIDE the filters
+  UiSystemBoundaryGuardTests.cs                                UiSystemBoundaryGuardTests                         sweeps-ui-text               OUTSIDE the filters
+  WindowCensusGuardTests.cs                                    WindowCensusGuardTests                             sweeps-ui-text               OUTSIDE the filters
+  Workspace/WorkspaceBrowserScenarioHarnessTests.cs            WorkspaceBrowserScenarioHarnessTests               names-changed                in RackCad.UI.Tests.Workspace
+  Workspace/WorkspaceBrowserViewModelTests.cs                  WorkspaceBrowserViewModelTests                     names-changed                in RackCad.UI.Tests.Workspace
+  Workspace/WorkspaceBrowserViewTests.cs                       WorkspaceBrowserViewTests                          names-changed                in RackCad.UI.Tests.Workspace
+  Workspace/WorkspaceDraftPilotValidationParityTests.cs        WorkspaceDraftPilotValidationParityTests           names-changed,sweeps-ui-text in RackCad.UI.Tests.Workspace
+  Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs WorkspaceDraftPilotWindowLoadCharacterizationTests sweeps-ui-text               in RackCad.UI.Tests.Workspace
+  Workspace/WorkspaceNavigationViewModelTests.cs               WorkspaceNavigationViewModelTests                  names-changed                in RackCad.UI.Tests.Workspace
+  Workspace/WorkspaceNavigationViewTests.cs                    WorkspaceNavigationViewTests                       names-changed                in RackCad.UI.Tests.Workspace
+  Workspace/WorkspacePanelContextTests.cs                      WorkspacePanelContextTests                         names-changed                in RackCad.UI.Tests.Workspace
+  Workspace/WorkspacePanelErrorTests.cs                        WorkspacePanelErrorTests                           names-changed                in RackCad.UI.Tests.Workspace
+  Workspace/WorkspacePanelInstrumentationTests.cs              WorkspacePanelInstrumentationTests                 names-changed                in RackCad.UI.Tests.Workspace
+  Workspace/WorkspacePanelNoWorkTests.cs                       WorkspacePanelNoWorkTests                          names-changed                in RackCad.UI.Tests.Workspace
+  Workspace/WorkspacePanelStateTests.cs                        WorkspacePanelStateTests                           names-changed                in RackCad.UI.Tests.Workspace
+  Workspace/WorkspacePanelViewTests.cs                         WorkspacePanelViewTests                            names-changed                in RackCad.UI.Tests.Workspace
+  Workspace/WorkspacePilotCloseSyncTests.cs                    WorkspacePilotCloseSyncTests                       names-changed                in RackCad.UI.Tests.Workspace
+  Workspace/WorkspacePilotCloseSyncViewTests.cs                WorkspacePilotCloseSyncViewTests                   names-changed                in RackCad.UI.Tests.Workspace
+  Workspace/WorkspacePilotFieldViewModelTests.cs               WorkspacePilotFieldViewModelTests                  names-changed                in RackCad.UI.Tests.Workspace
+  Workspace/WorkspacePilotFieldViewTests.cs                    WorkspacePilotFieldViewTests                       names-changed                in RackCad.UI.Tests.Workspace
+  Workspace/WorkspacePilotReconciliationTests.cs               WorkspacePilotReconciliationTests                  names-changed                in RackCad.UI.Tests.Workspace
+  Workspace/WorkspacePilotReconciliationViewTests.cs           WorkspacePilotReconciliationViewTests              names-changed                in RackCad.UI.Tests.Workspace

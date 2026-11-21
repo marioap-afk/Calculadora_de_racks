@@ -1,0 +1,75 @@
+fase probe; copia /d/r4q; salida /tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4bcc/compile/out-probe-v48-r4q; revision 78a7cef3e9260f0955addd48344fc5a44b9c9957
+paquete: el v48 no esta escrito (esta fase no lo lee)
+  guion d44ab45cc3c0296a22ea94d584113652af1cc451874a7bdef0a0dc314423ded6 apply_red_pbt4b_v48.py
+  guion 74f15dbd7686596ccd4d66e2989f3888f61adaa2fd8a37dc11cf92c81674317f make_copies_pbt4b_v48.py
+  guion 7d98d007d647f125596088ecf29eccec7352dc9682decb520d7e4369d3dde9fa pbt4b_hand_edits_v48.py
+  guion a1bfbc199cccb2cc8788be04b9d624aa59f47eaeeae35da32795f1571afc0fd9 pbt4b_skips_v48.py
+  guion bda79bb7fb6e1dfe885cdc5942b2af45dfac8861663ccc99dbb38a61b8844524 pbt4b-copy-map-v5.tsv
+  guion 8b0fcd0ca775ce3a5e46ef2059f4b06e7ec7319883daf3cb37b1fe91290e9e8b pbt4b-substitution-list-478.tsv
+  guion 2a96b2afb6ce84824047809101f0aed052d0f42717bc64382d917815667dd247 make_copies_pbt4b_v47.py
+  guion d2e4429dffda21640278f2c739e7a6dad8f7db0a08d0c58c6c23496fca88c000 pbt4b_hand_edits_v47.py
+  guion 96f75552b53aa1a0635cfc8b0e2fc1fff896f9ddebb8ab1a20c79496ca299e63 partition_pbt4b_v47.py
+  guion a2f0af751bda36d8d9b56bc451068142d958d20f97e3d102c69f6b388c06d6b0 partition_pbt4b_v48.py
+  guion 3cc8e56cfc2609d567e69577a28f03ac5801c5b46f0bddba5c6692cc715ecdd6 make_copies_pbt4b_v46.py
+  guion 46167c571245148e597af36a6efe5c8b6d5811d0b457eefb0101f035fea7e93e pbt4b_hand_edits_v46.py
+  guion a77b0baa08fe36b752828fe6f15dc9ae369eae3cd1e6a450b6a48c0580a3e281 make_copies_pbt4b_v45.py
+  guion 7403c43f3589d17fe5bdb120bb6016dbacf440ab52de37a168f493eb4a8ce4e5 pbt4b_hand_edits_v45.py
+  guion 26e75ebd13330f1a0422974dfb0aa1988246acec5e9bd06f7441dd47e2ba2d98 pbt4b_skips_v45.py
+  guion 6d9ee13790f527216ce0f3ece7e2ec79fa8e573e320bd6c902fe8294947ce59b partition_pbt4b_v45.py
+  guion ae55163a7519cf35882aedaa96a4deb3bd3ac4185ad11d3d91bd2cd16ef80bd0 apply_green_pbt4b_v45.py
+  guion 47662f52b8008ce802a0dc52395c8995c462d21276236cf1cd34f39a288ae1c4 green_pbt4b_v45.py
+  guion b4ed29f92838e5761faf1afaba1f33e58ba82a56541900f52db8c5ecb6239b9a pbt4b-kit-WorkspaceFullReadKit-v45.cs
+  guion 643a3de9a827274a236ada9a7b6c80edbdc916c366366aec394e1383f2048af2 /tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4bcc/compile/p6_check_v48.py
+  guion 6e7b9026331fbd3020551ad6a6aa9b2313ba13e4206d703c0278a821c25dad1d /tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4bcc/compile/check_skips_copy_v48.py
+  guion 26b098a871364a742b586db7b461dd1f42a54fe9543c4c983f972cba363c3edb /tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4bcc/compile/ui_filters_p6_v48.py
+  guion d0e1e9a12fc7063a3c49c59321cf2ef9b43559d2f89e50793dfa1d572fe4d41c p6_pbt4b_v48.sh
+copia exportada: 12886 archivos
+ESCRITOS 49 archivos; conjunto cccd98f2117c8b330fb221be57590697fc3fdd5cf79fe99d2e6e68824d4d0779
+probe-core-tests rc=0 errores=0 avisos-CS=0
+probe-ui-tests rc=0 errores=0 avisos-CS=0
+probe-plugin rc=0 errores=0 avisos-CS=0
+probe: errores 0, avisos CS 0 (en total, hasta aqui)
+  binario 011b6117ff448a32d0beab12bb5d561203e6694d3e64afef9042c89b2a8b4e31 tests/RackCad.Tests/bin/Debug/net8.0/RackCad.Application.dll
+  binario ff156813ba9bdf7046672c67b11b70cb923fc495af4e5e9ca652bfb725483b63 tests/RackCad.Tests/bin/Debug/net8.0/RackCad.Tests.dll
+  binario d9549d1c8b5546d25fd206eefa2dd7934035f4800f93cbced782e914bc78ad33 tests/RackCad.UI.Tests/bin/Debug/net8.0-windows/RackCad.UI.Tests.dll
+  binario b75f41aa28b59caefc9906302e910273abb71b3afd87cd4dbda70dc3d31edfe6 _plugin-out-probe/RackCad.Plugin.dll
+test core-probe.trx rc=1 segundos=455 trx-sha256=6318dcb76a156a42bf67dcf58a179463d18dda672fe9b5afe5c31f61dd9859de :: filas 614 {'Passed': 323, 'Failed': 291}; inicio 2026-11-20T19:46:25.4719174-06:00; fin 2026-11-20T19:53:58.2057180-06:00
+test ui-probe.trx rc=0 segundos=4 trx-sha256=29525244c4d7d983cfb9214aaa4dd447f34907a0e499fc0a05d5e3973d82b2da :: filas 36 {'Passed': 36}; inicio 2026-11-20T19:54:00.9781424-06:00; fin 2026-11-20T19:54:03.3303707-06:00
+partition red rc=0
+particion: 481 filas (477 pruebas; 4 partidas por filas, D-S5); sha256 e87e024c168dd81d05c1ba1ae9dfa0027da8724ee0d9fd219cce74fe1f613dec
+  PushBackFullReadGuardTests                         Red   pruebas=  1 resultados=   1
+  PushBackFullReadPathTests                          Red   pruebas=  1 resultados=   1
+  PushBackWritePathGuardTests                        Red   pruebas=  1 resultados=   1
+  WorkspaceAssociativeBookkeepingTests               Green pruebas=  9 resultados=  21
+  WorkspaceAssociativeBookkeepingTests               Red   pruebas=  1 resultados=   1
+  WorkspaceCommandAdvisorTests                       Green pruebas= 48 resultados=  70
+  WorkspaceCommandAdvisorTests                       Red   pruebas=  6 resultados=   6
+  WorkspaceEditIntentGuardTests                      Red   pruebas=  7 resultados=  13
+  WorkspaceEditIntentHostTests                       Green pruebas= 44 resultados=  57
+  WorkspaceEditIntentHostTests                       Red   pruebas= 18 resultados=  24
+  WorkspaceHostHardeningGuardTests                   Red   pruebas=  1 resultados=   1
+  WorkspaceLifecycleGuardTests                       Red   pruebas=  2 resultados=   2
+  WorkspaceLifecycleHostTests                        Green pruebas= 48 resultados=  69
+  WorkspaceLifecycleHostTests                        Red   pruebas= 22 resultados=  24
+  WorkspacePilotEditGuardTests                       Green pruebas=  2 resultados=  17
+  WorkspacePilotEditGuardTests                       Red   pruebas=  4 resultados=   6
+  WorkspacePilotEditHostTests                        Green pruebas= 10 resultados=  17
+  WorkspacePilotEditHostTests                        Red   pruebas= 49 resultados=  59
+  WorkspacePilotPrepareTests                         Green pruebas= 47 resultados=  47
+  WorkspacePilotPrepareTests                         Red   pruebas= 22 resultados=  44
+  WorkspacePilotReconciliationGuardTests             Green pruebas=  1 resultados=   1
+  WorkspacePilotReconciliationHostTests              Green pruebas=  5 resultados=   5
+  WorkspacePilotReconciliationHostTests              Red   pruebas= 23 resultados=  23
+  WorkspacePilotReconciliationTests                  Green pruebas= 21 resultados=  30
+  WorkspacePilotReconciliationViewTests              Green pruebas=  6 resultados=   6
+  WorkspacePilotUpdateGuardTests                     Red   pruebas=  1 resultados=   1
+  WorkspacePilotUpdateHostTests                      Green pruebas= 13 resultados=  18
+  WorkspacePilotUpdateHostTests                      Red   pruebas= 22 resultados=  29
+  WorkspacePilotUpdateIntegrationGuardTests          Red   pruebas=  2 resultados=   2
+  WorkspacePilotUpdateRequestTests                   Green pruebas=  1 resultados=   1
+  WorkspacePilotUpdateRequestTests                   Red   pruebas= 43 resultados=  53
+R_C=291 R_UI=0
+build-server shutdown rc=0
+procesos: 0
+MAINCO []
+rc=0

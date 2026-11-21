@@ -1,0 +1,11 @@
+RG:104 ReaderViolations base = []
+RG:104 ReaderViolations green = []
+RG:116 RequestKeepMine       base=1 green=1
+RG:117 PilotFieldView view;  base=1 green=1
+RG:120 SurfaceChangedText    base=1 green=1
+RG:132 choice                base=1 green=1
+RG:133 confirm               base=1 green=1
+RG:134 check                 base=1 green=1
+RG:139 TryKeepMine en ConfirmChoice tras la mutacion = 1
+RG:140 violaciones tras la mutacion (no vacia) = True
+RG:116 violaciones tras la mutacion (no vacia) = True

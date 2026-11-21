@@ -1,0 +1,71 @@
+pruebas de copia: 476; todas Passed 249 (345 filas); todas Failed 223 (274 filas); mezclan 4; fallos sin asercion en las Red: 0 []
+== WorkspaceLifecycleHostFull.EachOperationThatCanChangeADraftEndsTheMarkSoTheSessionIsRetiredConservatively: 10 filas, {'Passed': 7, 'Failed': 3}
+   Failed RackCad.Tests.FullPanelCopies.WorkspaceLifecycleHostFullProbeTests.EachOperationThatCanChangeADraftEndsTheMarkSoTheSessionIsRetiredConservatively(operation: "a-check-that-finds-a-conflict")
+        at RackCad.Tests.FullPanelCopies.WorkspaceLifecycleHostFullProbeTests.Env.Pilot(String rack, Nullable`1 session) in <copia>\tests\RackCad.Tests\Workspace\WorkspaceLifecycleHostFull.cs:line 96
+        Assert.NotNull() Failure: Value is null
+   Failed RackCad.Tests.FullPanelCopies.WorkspaceLifecycleHostFullProbeTests.EachOperationThatCanChangeADraftEndsTheMarkSoTheSessionIsRetiredConservatively(operation: "a-check-that-recovers")
+        at RackCad.Tests.FullPanelCopies.WorkspaceLifecycleHostFullProbeTests.Env.Pilot(String rack, Nullable`1 session) in <copia>\tests\RackCad.Tests\Workspace\WorkspaceLifecycleHostFull.cs:line 96
+        Assert.NotNull() Failure: Value is null
+   Failed RackCad.Tests.FullPanelCopies.WorkspaceLifecycleHostFullProbeTests.EachOperationThatCanChangeADraftEndsTheMarkSoTheSessionIsRetiredConservatively(operation: "a-reload")
+        at RackCad.Tests.FullPanelCopies.WorkspaceLifecycleHostFullProbeTests.Env.Pilot(String rack, Nullable`1 session) in <copia>\tests\RackCad.Tests\Workspace\WorkspaceLifecycleHostFull.cs:line 96
+        Assert.NotNull() Failure: Value is null
+   Passed RackCad.Tests.FullPanelCopies.WorkspaceLifecycleHostFullProbeTests.EachOperationThatCanChangeADraftEndsTheMarkSoTheSessionIsRetiredConservatively(operation: "a-discard-of-the-host")
+   Passed RackCad.Tests.FullPanelCopies.WorkspaceLifecycleHostFullProbeTests.EachOperationThatCanChangeADraftEndsTheMarkSoTheSessionIsRetiredConservatively(operation: "a-drain")
+   Passed RackCad.Tests.FullPanelCopies.WorkspaceLifecycleHostFullProbeTests.EachOperationThatCanChangeADraftEndsTheMarkSoTheSessionIsRetiredConservatively(operation: "a-drain-with-the-stale-hint")
+   Passed RackCad.Tests.FullPanelCopies.WorkspaceLifecycleHostFullProbeTests.EachOperationThatCanChangeADraftEndsTheMarkSoTheSessionIsRetiredConservatively(operation: "a-failure-of-the-evaluation")
+   Passed RackCad.Tests.FullPanelCopies.WorkspaceLifecycleHostFullProbeTests.EachOperationThatCanChangeADraftEndsTheMarkSoTheSessionIsRetiredConservatively(operation: "a-note-of-an-edit")
+   Passed RackCad.Tests.FullPanelCopies.WorkspaceLifecycleHostFullProbeTests.EachOperationThatCanChangeADraftEndsTheMarkSoTheSessionIsRetiredConservatively(operation: "a-veto")
+   Passed RackCad.Tests.FullPanelCopies.WorkspaceLifecycleHostFullProbeTests.EachOperationThatCanChangeADraftEndsTheMarkSoTheSessionIsRetiredConservatively(operation: "an-admitted-intention")
+== WorkspacePilotEditGuardFull.TheHostGuardTripsOnAPublicOperationAnOrderOfBasesOrAnAdapterThatIsAFieldOfInstance: 4 filas, {'Passed': 3, 'Failed': 1}
+   Failed RackCad.Tests.FullPanelCopies.WorkspacePilotEditGuardFullProbeTests.TheHostGuardTripsOnAPublicOperationAnOrderOfBasesOrAnAdapterThatIsAFieldOfInstance(from: "private static readonly PushBackFullFieldAdapter P"···, to: "p
+        at RackCad.Tests.FullPanelCopies.WorkspacePilotEditGuardFullProbeTests.TheHostGuardTripsOnAPublicOperationAnOrderOfBasesOrAnAdapterThatIsAFieldOfInstance(String from, String to) in <copia>\tests\RackCa
+        Assert.Contains() Failure: Sub-string not found String: "#nullable enable\r\nusing System;\r\nusing Sy"··· Not found: "private static readonly PushBackFullField"···
+   Passed RackCad.Tests.FullPanelCopies.WorkspacePilotEditGuardFullProbeTests.TheHostGuardTripsOnAPublicOperationAnOrderOfBasesOrAnAdapterThatIsAFieldOfInstance(from: "PilotFieldResult IWorkspacePilotEditPort.CommitFie"···, to: "p
+   Passed RackCad.Tests.FullPanelCopies.WorkspacePilotEditGuardFullProbeTests.TheHostGuardTripsOnAPublicOperationAnOrderOfBasesOrAnAdapterThatIsAFieldOfInstance(from: "PilotFieldView IWorkspacePilotEditPort.GetField(", to: "public
+   Passed RackCad.Tests.FullPanelCopies.WorkspacePilotEditGuardFullProbeTests.TheHostGuardTripsOnAPublicOperationAnOrderOfBasesOrAnAdapterThatIsAFieldOfInstance(from: "public sealed class WorkspaceHostCore : IWorkspace"···, to: "p
+== WorkspacePilotPrepareFull.ConfirmAppliesOnlyToCleanDirtyAndConflictAndTheOthersReadNothing: 8 filas, {'Passed': 1, 'Failed': 7}
+   Failed RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullProbeTests.ConfirmAppliesOnlyToCleanDirtyAndConflictAndTheOthersReadNothing(name: "Applying")
+        at RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullProbeTests.Rig.Edit(DraftSession`1 draft, Double scale) in <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotPrepareFull.cs:line 114
+        System.NullReferenceException : Object reference not set to an instance of an object.
+   Failed RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullProbeTests.ConfirmAppliesOnlyToCleanDirtyAndConflictAndTheOthersReadNothing(name: "Conflict")
+        at RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullProbeTests.Rig.Edit(DraftSession`1 draft, Double scale) in <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotPrepareFull.cs:line 114
+        System.NullReferenceException : Object reference not set to an instance of an object.
+   Failed RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullProbeTests.ConfirmAppliesOnlyToCleanDirtyAndConflictAndTheOthersReadNothing(name: "Dirty")
+        at RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullProbeTests.Rig.Edit(DraftSession`1 draft, Double scale) in <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotPrepareFull.cs:line 114
+        System.NullReferenceException : Object reference not set to an instance of an object.
+   Failed RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullProbeTests.ConfirmAppliesOnlyToCleanDirtyAndConflictAndTheOthersReadNothing(name: "DirtyStale")
+        at RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullProbeTests.Rig.Edit(DraftSession`1 draft, Double scale) in <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotPrepareFull.cs:line 114
+        System.NullReferenceException : Object reference not set to an instance of an object.
+   Failed RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullProbeTests.ConfirmAppliesOnlyToCleanDirtyAndConflictAndTheOthersReadNothing(name: "Error")
+        at RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullProbeTests.Rig.Edit(DraftSession`1 draft, Double scale) in <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotPrepareFull.cs:line 114
+        System.NullReferenceException : Object reference not set to an instance of an object.
+   Failed RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullProbeTests.ConfirmAppliesOnlyToCleanDirtyAndConflictAndTheOthersReadNothing(name: "UnknownCommit")
+        at RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullProbeTests.Rig.Edit(DraftSession`1 draft, Double scale) in <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotPrepareFull.cs:line 114
+        System.NullReferenceException : Object reference not set to an instance of an object.
+   Failed RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullProbeTests.ConfirmAppliesOnlyToCleanDirtyAndConflictAndTheOthersReadNothing(name: "UnknownPost")
+        at RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullProbeTests.Rig.Edit(DraftSession`1 draft, Double scale) in <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotPrepareFull.cs:line 114
+        System.NullReferenceException : Object reference not set to an instance of an object.
+   Passed RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullProbeTests.ConfirmAppliesOnlyToCleanDirtyAndConflictAndTheOthersReadNothing(name: "Clean")
+== WorkspacePilotPrepareFull.KeepAppliesToConflictAndToDirtyMarkedStaleApplyingWaitsAndTheOthersAreNotNeededAllWithoutReading: 8 filas, {'Passed': 1, 'Failed': 7}
+   Failed RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullProbeTests.KeepAppliesToConflictAndToDirtyMarkedStaleApplyingWaitsAndTheOthersAreNotNeededAllWithoutReading(name: "Applying")
+        at RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullProbeTests.Rig.Edit(DraftSession`1 draft, Double scale) in <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotPrepareFull.cs:line 114
+        System.NullReferenceException : Object reference not set to an instance of an object.
+   Failed RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullProbeTests.KeepAppliesToConflictAndToDirtyMarkedStaleApplyingWaitsAndTheOthersAreNotNeededAllWithoutReading(name: "Conflict")
+        at RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullProbeTests.Rig.Edit(DraftSession`1 draft, Double scale) in <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotPrepareFull.cs:line 114
+        System.NullReferenceException : Object reference not set to an instance of an object.
+   Failed RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullProbeTests.KeepAppliesToConflictAndToDirtyMarkedStaleApplyingWaitsAndTheOthersAreNotNeededAllWithoutReading(name: "Dirty")
+        at RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullProbeTests.Rig.Edit(DraftSession`1 draft, Double scale) in <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotPrepareFull.cs:line 114
+        System.NullReferenceException : Object reference not set to an instance of an object.
+   Failed RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullProbeTests.KeepAppliesToConflictAndToDirtyMarkedStaleApplyingWaitsAndTheOthersAreNotNeededAllWithoutReading(name: "DirtyStale")
+        at RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullProbeTests.Rig.Edit(DraftSession`1 draft, Double scale) in <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotPrepareFull.cs:line 114
+        System.NullReferenceException : Object reference not set to an instance of an object.
+   Failed RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullProbeTests.KeepAppliesToConflictAndToDirtyMarkedStaleApplyingWaitsAndTheOthersAreNotNeededAllWithoutReading(name: "Error")
+        at RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullProbeTests.Rig.Edit(DraftSession`1 draft, Double scale) in <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotPrepareFull.cs:line 114
+        System.NullReferenceException : Object reference not set to an instance of an object.
+   Failed RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullProbeTests.KeepAppliesToConflictAndToDirtyMarkedStaleApplyingWaitsAndTheOthersAreNotNeededAllWithoutReading(name: "UnknownCommit")
+        at RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullProbeTests.Rig.Edit(DraftSession`1 draft, Double scale) in <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotPrepareFull.cs:line 114
+        System.NullReferenceException : Object reference not set to an instance of an object.
+   Failed RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullProbeTests.KeepAppliesToConflictAndToDirtyMarkedStaleApplyingWaitsAndTheOthersAreNotNeededAllWithoutReading(name: "UnknownPost")
+        at RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullProbeTests.Rig.Edit(DraftSession`1 draft, Double scale) in <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotPrepareFull.cs:line 114
+        System.NullReferenceException : Object reference not set to an instance of an object.
+   Passed RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullProbeTests.KeepAppliesToConflictAndToDirtyMarkedStaleApplyingWaitsAndTheOthersAreNotNeededAllWithoutReading(name: "Clean")

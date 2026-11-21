@@ -1,0 +1,3 @@
+copias en las TRX del GREEN: 476 pruebas; no pasan: 2
+  D-S1: WorkspacePilotPrepareTests.cs.InvalidE_AMutableMemberThatIsNotAvailableInTheOutgoingSystemOrWhoseEnvelopeDoesNotDecodeIsInvalidAndNeverErasesAView ['Failed']
+  D-S1: WorkspacePilotPrepareTests.cs.ThePilotNeverErasesAViewAPhantomThatWasAlreadyInTheDrawingMakesTheUpdateInvalidAndIsNeverInThePlan ['Failed']

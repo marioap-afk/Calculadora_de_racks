@@ -1,0 +1,10 @@
+v4.4: 108 marcadas fuera de la lista; delta de D-S4: 23; v4.5 entero: 149 (de ellas, 18 en las copias o el kit)
+del recorrido entero, en las 108 de la v4.4: 107; en el delta: 23; en las dos: 5
+de las 108 de la v4.4 que ya no salen marcadas fuera de la lista: 1 (PushBackDraftWriteGuardTests.cs.CT_PBT3A_12_NoSourceFileOutsideTheFolderOfTheModelNamesItsTypes)
+marcadas que no estan en ninguno de los tres grupos: 6
+  G16ProjectedEnvelopeTests.cs.G16_ID19_TheAuth15PreconditionIsExactlyIdAndKind
+  I60BatchCreationNamingTests.cs.I60_A1_NoProjectionFileNamesARack
+  PushBackFullReadGuardTests.cs.CT_PBT4A_08_TheNewFileOfTheFolderOfTheModelDoesNotMutateTheResolvedRackAndIsPure
+  SelectiveEditorOpenTests.cs.GUARDA_EL_EDITOR_SELECTIVO_NO_ADMINISTRA_NI_REPARA_VARIABLES
+  SelectiveEditorOpenTests.cs.GUARDA_LA_UI_SIGUE_SIENDO_AUTOCAD_FREE
+  SelectiveEditorOpenTests.cs.GUARDA_NI_PLUGIN_NI_UI_RESUELVEN_VINCULOS

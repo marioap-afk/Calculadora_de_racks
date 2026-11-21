@@ -1,0 +1,22 @@
+RED Core: filas 19587 {'Passed': 18838, 'Failed': 291, 'NotExecuted': 458}; inicio 2026-11-20T19:57:35.0439586-06:00; fin 2026-11-20T20:09:19.4296761-06:00; R_C de la particion 291
+  previsto 19 587 = (19 129 - 291) + 291 + 458: True
+  pruebas partidas por filas (D-S5) en la particion: 4 ['WorkspaceLifecycleHost.EachOperationThatCanChangeADraftEndsTheMarkSoTheSessionIsRetiredConservatively', 'WorkspacePilotEditGuard.TheHostGuardTripsOnAPublicOperationAnOrderOfBasesOrAnAdapterThatIsAFieldOfInstance', 'WorkspacePilotPrepare.ConfirmAppliesOnlyToCleanDirtyAndConflictAndTheOthersReadNothing', 'WorkspacePilotPrepare.KeepAppliesToConflictAndToDirtyMarkedStaleApplyingWaitsAndTheOthersAreNotNeededAllWithoutReading']
+  las Failed son exactamente las Red de Core de la particion, en su clase Red y con sus resultados: True (de mas: []; de menos: [])
+  omitidas fuera de la lista (las 7 de la base): 7 ['RackCad.Tests.PushBackDraftWriteGuardTests.CT_PBT3A_12_NoSourceFileOutsideTheFolderOfTheModelNamesItsTypes', 'RackCad.Tests.WorkspacePilotPrepareGuardTests.TheComposeGuardTripsOnAnotherCallAnUnsourcedCompositionANullableSourceOrAnotherName', 'RackCad.Tests.WorkspacePilotPrepareGuardTests.TheFileOfThePlanComposesExactlyOnceInAMemberOfItsOwnWithAParameterSourceAndTheNameOfTheRereadEnvelope', 'RackCad.Tests.WorkspacePilotPrepareGuardTests.TheMemberPlansAreBuiltOnlyFromTheMutableMembersOfTheRereadInOrdinalOrderAndNeverErase', 'RackCad.Tests.WorkspacePilotUpdateGuardTests.TheRunReleasesBothScopesInFinallyBlocksOfItsOwnAndNeverWithAUsing', 'RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.M01TheEscapeGuardTripsOnACatchThatDoesNotConsultTheStateAndOnAnEscapeThatAnswersAPlainFailureFirst', 'RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.M01TheEscapeOfTheRunIsClassifiedByTheStateThatTheRunAlreadyHadAndNeverAsAPlainFailureAfterAWriteOrASeal']
+  UI red-ui-RackCad_UI_Tests_PushBackFullDraftWindowParityTests.trx: filas 1 {'Passed': 1}
+  UI red-ui-RackCad_UI_Tests_Workspace.trx: filas 672 {'Passed': 644, 'NotExecuted': 28}
+  UI red-ui-RackCad_UI_Tests_PushBackWindowOnStateTests.trx: filas 2 {'Passed': 2}
+  UI red-ui-RackCad_UI_Tests_PushBackClassicCharacterization.trx: filas 55 {'Passed': 55}
+  UI red-ui-RackCad_UI_Tests_PushBackFullEditorCharacterization.trx: filas 18 {'Passed': 16, 'NotExecuted': 2}
+  UI red-ui-RackCad_UI_Tests_PushBackStateNet.trx: filas 14 {'Passed': 14}
+  UI red-ui-RackCad_UI_Tests_PushBackDeclaredCorrection.trx: filas 14 {'Passed': 14}
+  UI red-ui-RackCad_UI_Tests_Cantilever.trx: filas 67 {'Passed': 67}
+  UI red-ui-RackCad_UI_Tests_PushBackWorkspaceModeTests.trx: filas 3 {'Passed': 3}
+  UI red-ui-RackCad_UI_Tests_PushBackWorkspaceApplyCloseTests.trx: filas 4 {'Passed': 4}
+  UI red-ui-RackCad_UI_Tests_PushBackFieldValidationConcordanceTests.trx: filas 1 {'Passed': 1}
+  UI red-ui-RackCad_UI_Tests_PushBackWorkspaceCarryoverTests.trx: filas 3 {'Passed': 3}
+  UI red-ui-RackCad_UI_Tests_NumericFieldValidationTests.trx: filas 13 {'Passed': 13}
+  UI red-ui-RackCad_UI_Tests_NumericFieldTests.trx: filas 10 {'Passed': 10}
+  UI red-ui-RackCad_UI_Tests_FullPanelCopy.trx: filas 36 {'Passed': 36}
+  UI: las Failed son exactamente las Red de UI de la particion: True; resultados Failed 0 (R_UI de la particion 0)
+RED: CUMPLE

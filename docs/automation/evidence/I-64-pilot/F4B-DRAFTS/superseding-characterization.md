@@ -378,3 +378,80 @@ I-64 F4B PB-T3b: sustituida por <E-n> de PushBackPilotUpdateEquivalenceGuardTest
 | **GREEN** | `faef702055990d1350a73bf4d254eb9e898d5670` (CI `44814418683` 4/4; Core 19 137 = 19 130 Passed + 0 Failed + 7 Skipped; UI 2 451 = 2 430 + 21). Toca solo las seis rutas de `src/` del alcance; ninguna prueba de `tests/` cambia tras el RED |
 | **CT-PBT4A-06, en el GREEN** | `PushBackFullReadGuardTests.CT_PBT4A_06_OnlyTheFolderOfTheModelThePlanTheRunAndTheAdapterOfThePluginNameItsTypes` (`tests/RackCad.Tests/PushBackFullReadGuardTests.cs:98`): pasa en el RED y en el GREEN, con el mismo censo que CT-PBT3A-12 admitiendo RIA. CT-PBT3A-12 sale en Skipped con su motivo literal en las dos CI |
 | **Estado** | EJECUTADA |
+
+## PB-T4b — las 478 pruebas que el modelo completo del panel sustituye, cada una por su copia o su equivalente
+
+**Estado: EMITIDA** (2026-11-21, emisión de PB-T4b, F4B-E52, sobre el cierre de PB-T4a `78a7cef3`). Lo escribe la sesión principal; el Worker no escribe en este archivo. La ejecución se completa al cerrar.
+
+**Autoridad:**
+- **[OD], el bloque sobre T1B:** «create a declared superseding characterization/change record. Do not silently weaken the old guard».
+- **Las tandas del Owner sobre PB-T4,** en `docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/`:
+  - la primera, pregunta 3, «Saltar y duplicar» (`owner-pbt4-decisions.md`): cada prueba que el modelo completo rompe se salta con registro y se duplica sobre el modelo completo;
+  - la segunda, «Sí, esa lista» (`owner-pbt4b-retire-list-decisions.md`): la lista de 470;
+  - la tercera (`owner-pbt4b-breaks-decision.md`), la quinta (`owner-pbt4b-list-477-decision.md`) y la sexta (`owner-pbt4b-list-478-decision.md`): las 8 que la llevan a 478.
+- **El contrato:** `docs/initiatives/I-64-f4b-pbt4-gate-contract-package.md` (v4.9), D-PBT4-11, §4.2 y §6.2, y `docs/automation/evidence/I-64-pilot/F4B-PBT4-FULL-DRAFT-PANEL/coordinator/gate-contract.json`.
+
+**La lista:** `F4B-DRAFTS/pbt4/pbt4b-substitution-list-478.tsv`, sha256 `8b0fcd0ca775ce3a5e46ef2059f4b06e7ec7319883daf3cb37b1fe91290e9e8b`. Ninguna prueba original se edita: cada una queda con un `Skip` de motivo literal, y su sustituta va en una clase `<Clase>Full` nueva, en el espacio de nombres raíz de su ensamblado (D-S6).
+- **C-0** (428, en 9 clases): 356 copias mecánicas, que el guion de la copia genera desde el original, y 72 equivalentes escritos a mano (D-S1), con su texto literal en el paquete. Cuatro `Theory` se parten por filas en las dos clases de la partición, sin cambiar ninguna fila (D-S5).
+- **C-5** (23): las guardas que fijan por su letra lo que PB-T4b cambia, cada una con su equivalente. Entre ellas, las dos de PB-T4a (CT-PBT4A-03 y CT-PBT4A-05) y la de la sexta tanda (WHHG `NoneOfThe30…`). CT-PBT4A-06 la sustituye CT-PBT4B-13.
+- **UI** (27): copias.
+
+**Las 28 copias sin cambio:** las 27 de la UI y RG:109-123 se saltan y se sustituyen por una copia idéntica, porque con D-S2 su texto sigue valiendo. Se quedan en la lista, declaradas aquí como copias sin cambio.
+
+**Los motivos de los `Skip`, literales** (`<Clase>` es la clase original sin `Tests`):
+
+| N.º | Causa | El motivo |
+|---|---|---|
+| 1 | C-0, copia mecánica | `I-64 F4B PB-T4b: sustituida por su copia en <Clase>Full (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).` |
+| 2 | C-0, a mano | `I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en <Clase>Full (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).` |
+| 3 | C-5 de la v4.3 | `I-64 F4B PB-T4b: sustituida por su equivalente en <Clase>Full (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).` |
+| 4 | CT-PBT4A-06 | `I-64 F4B PB-T4b: sustituida por CT-PBT4B-13 de PushBackFullPanelCensusGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).` |
+| 5 | C-5, las cinco de la tercera tanda | `I-64 F4B PB-T4b: sustituida por su equivalente en <Clase>Full (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-breaks-decision.md).` |
+| 6 | C-5, las dos de PB-T4a (CT-PBT4A-03 y 05) | `I-64 F4B PB-T4b: sustituida por su equivalente en <Clase>Full (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-list-477-decision.md).` |
+| 7 | C-5, la de la sexta tanda (WHHG) | `I-64 F4B PB-T4b: sustituida por su equivalente en <Clase>Full (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-list-478-decision.md).` |
+| 8 | UI | `I-64 F4B PB-T4b: sustituida por su copia en <Clase>Full (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).` |
+
+**Por clase y por causa:**
+
+| La clase original | Cuántas | La sustituta | El motivo (n.º) |
+|---|---|---|---|
+| `tests/RackCad.Tests/PushBackFullReadGuardTests.cs` | 1 | CT-PBT4B-13 (`PushBackFullPanelCensusGuardTests`) | 4 |
+| `tests/RackCad.Tests/PushBackFullReadGuardTests.cs` | 1 | `PushBackFullReadGuardFull` | 6 |
+| `tests/RackCad.Tests/PushBackFullReadPathTests.cs` | 1 | `PushBackFullReadPathFull` | 6 |
+| `tests/RackCad.Tests/PushBackWritePathGuardTests.cs` | 1 | `PushBackWritePathGuardFull` | 3 |
+| `tests/RackCad.Tests/Workspace/WorkspaceAssociativeBookkeepingTests.cs` | 10 | `WorkspaceAssociativeBookkeepingFull` | 1 |
+| `tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorTests.cs` | 54 | `WorkspaceCommandAdvisorFull` | 1 |
+| `tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs` | 5 | `WorkspaceEditIntentGuardFull` | 3 |
+| `tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs` | 2 | `WorkspaceEditIntentGuardFull` | 5 |
+| `tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs` | 57 | `WorkspaceEditIntentHostFull` | 1 |
+| `tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs` | 5 | `WorkspaceEditIntentHostFull` | 2 |
+| `tests/RackCad.Tests/Workspace/WorkspaceHostHardeningGuardTests.cs` | 1 | `WorkspaceHostHardeningGuardFull` | 7 |
+| `tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs` | 2 | `WorkspaceLifecycleGuardFull` | 5 |
+| `tests/RackCad.Tests/Workspace/WorkspaceLifecycleHostTests.cs` | 68 | `WorkspaceLifecycleHostFull` | 1 |
+| `tests/RackCad.Tests/Workspace/WorkspaceLifecycleHostTests.cs` | 1 | `WorkspaceLifecycleHostFull` | 2 |
+| `tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs` | 5 | `WorkspacePilotEditGuardFull` | 3 |
+| `tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs` | 53 | `WorkspacePilotEditHostFull` | 1 |
+| `tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs` | 6 | `WorkspacePilotEditHostFull` | 2 |
+| `tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs` | 46 | `WorkspacePilotPrepareFull` | 1 |
+| `tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs` | 21 | `WorkspacePilotPrepareFull` | 2 |
+| `tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardTests.cs` | 1 | `WorkspacePilotReconciliationGuardFull` | 3 |
+| `tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs` | 17 | `WorkspacePilotReconciliationHostFull` | 1 |
+| `tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs` | 11 | `WorkspacePilotReconciliationHostFull` | 2 |
+| `tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs` | 1 | `WorkspacePilotUpdateGuardFull` | 5 |
+| `tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs` | 12 | `WorkspacePilotUpdateHostFull` | 1 |
+| `tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs` | 23 | `WorkspacePilotUpdateHostFull` | 2 |
+| `tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs` | 2 | `WorkspacePilotUpdateIntegrationGuardFull` | 3 |
+| `tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRequestTests.cs` | 39 | `WorkspacePilotUpdateRequestFull` | 1 |
+| `tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRequestTests.cs` | 5 | `WorkspacePilotUpdateRequestFull` | 2 |
+| `tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs` | 21 | `WorkspacePilotReconciliationFull` | 8 |
+| `tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationViewTests.cs` | 6 | `WorkspacePilotReconciliationViewFull` | 8 |
+| **Total** | **478** | | |
+
+### Ejecución de PB-T4b (se completa al cerrar)
+
+| | |
+|---|---|
+| **RED** | (al cerrar) |
+| **GREEN** | (al cerrar) |
+| **Los recuentos por clase, en el GREEN** | (al cerrar) |
+| **Estado** | EMITIDA |

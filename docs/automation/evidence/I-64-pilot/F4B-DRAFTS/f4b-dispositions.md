@@ -1753,3 +1753,77 @@ El registro literal de las dos decisiones es `F4B-DRAFTS/coordinator/owner-pbt4a
 - sin AutoCAD, la relectura real en el origen del dibujo queda para el Smoke-PB.
 
 **Siguiente:** PB-T4b, con su paquete en v4.5 (la lista de 475 que vio el Owner y la optimización de la lectura), su remedición sobre este cierre, la precondición 6 y su comprobación acotada, por la emisión condicional de F4B-E49.
+
+## F4B-E52. Emisión de F4B-PBT4-FULL-DRAFT-PANEL (PB-T4b), con el paquete de PB-T4 v4.9
+
+**Fecha:** 2026-11-21.
+
+**Autoridad de emisión:** la decisión del Owner F4B-E49, pregunta 4: «Sí, con condiciones (Recomendado)». Cubre PB-T4a, PB-T4b y PB-T4c, en ese orden y cada una tras el cierre de la anterior.
+- **Las condiciones que exige, cumplidas:**
+  - la comprobación acotada de la subtarea, CA-T4b, da 0 bloqueantes y 0 importantes sin resolver: su importante, I-01, está corregida en la v4.9, y su recomprobación da EMITIBLE, 0/0/3;
+  - la remedición sobre el cierre anterior, el de PB-T4a, no cambia nada material: la precondición 6 corre sobre copias exportadas de `78a7cef3`;
+  - la lista emitida es la que vio el Owner: las 478 de `pbt4b-substitution-list-478.tsv` (sha256 `8b0fcd0ca775ce3a5e46ef2059f4b06e7ec7319883daf3cb37b1fe91290e9e8b`), la de 470 de la segunda tanda más las 8 de la tercera, la quinta y la sexta.
+- **Cuándo se vuelve al Owner:** por una decisión nueva, un control con una firma no prevista, un intento 3, un efecto material sin medir o una prueba que falle fuera de la lista. Cada prueba que cayó fuera de la lista volvió al Owner antes de emitir (la tercera, la quinta y la sexta tandas), y el coste de la lectura también (la séptima). No queda ninguna.
+
+**El cierre de PB-T4a** (F4B-E51, `78a7cef3`): PB-T4a CLOSED / PASS WITH LIMITATIONS sobre `faef7020`, en el intento 1 de 3. CI del GREEN `44814418683`, 4/4: Core 19 137 = 19 130 + 7 omitidas, y UI 2 451 = 2 430 + 21.
+
+**Qué es PB-T4b:** el borrador del panel del Workspace de Push Back pasa al modelo completo de PB-T3, con la lectura completa de PB-T4a y sin traducir estados.
+- **«Actualizar»** escribe por `ExecuteFull`; **«Conservar mi borrador»** pide dos «Sí» (D-S2); la presentación de los cambios es «Por grupos» (la pregunta 2 de la primera tanda).
+- **La lectura completa del `Primary` se materializa una sola vez** por lectura (D-S4, de la cuarta tanda).
+- **`UNIT_CHANGE`:** WHC, WEI, FVM, PV, `NumericFieldValidation.cs` y RIA (F4B-E25).
+
+**Las 478 sustituciones, con registro** («Saltar y duplicar», la pregunta 3 de la primera tanda): cada una con un `Skip` de motivo literal y su sustituta en una clase `<Clase>Full`, sin tocar la prueba original.
+- **C-0:** 428, en 9 clases: 356 copias mecánicas y 72 equivalentes escritos a mano (D-S1), con cuatro `Theory` partidas por filas (D-S5);
+- **C-5, las guardas por su letra:** 23;
+- **UI:** 27.
+
+La entrada «## PB-T4b» de `F4B-DRAFTS/superseding-characterization.md` va en esta emisión, por clase y por causa, con los motivos literales y las 28 copias sin cambio declaradas como tales. Su tabla de ejecución se completa al cerrar.
+
+**El total exacto de cada rama** (F4B-E46):
+- **GREEN:** Core 19 605 = 19 147 + 0 + 458 omitidas; UI 2 481 = 2 433 + 0 + 48.
+- **RED:** los mismos totales y las mismas omitidas, con 15 + R_C = 306 `Failed` en Core y 3 + R_UI = 3 en UI. R_C = 291 y R_UI = 0 son los resultados de las clases `FullPanelCopy<Raiz>RedTests` de la partición, medidos en la precondición 6.
+
+**Las siete tandas del Owner sobre PB-T4** (§8.5 de la v4.9), literales en `F4B-DRAFTS/coordinator/`:
+1. `owner-pbt4-decisions.md` (F4B-E49): «Retirarlo», «Por grupos», «Saltar y duplicar» y «Sí, con condiciones»;
+2. `owner-pbt4b-retire-list-decisions.md` (F4B-E49): «Retirar tras PB-T4c» y «Sí, esa lista»: la lista de PB-T4b, 470;
+3. `owner-pbt4b-breaks-decision.md`, nuevo en esta emisión: «Añadirlas a la lista»: la lista pasa a 475;
+4. `owner-pbt4a-cost-decision.md` (F4B-E51): «Cerrar y optimizar en PB-T4b»: la materialización única, D-S4;
+5. `owner-pbt4b-list-477-decision.md`, nuevo: «Añadirlas a la lista»: 477, con CT-PBT4A-03 y CT-PBT4A-05;
+6. `owner-pbt4b-list-478-decision.md`, nuevo: «Añadirla a la lista»: 478, con WHHG `NoneOfThe30…`;
+7. `owner-pbt4b-cost-decision.md`, nuevo: «Darlo por cumplido»: el coste de la lectura de la precondición 6, con dos de tres corridas que cumplen todo.
+   - **Su nota posterior,** de la sesión, va tras «Lo que queda decidido» y no forma parte de la pregunta ni de la respuesta (CA-T4b M-07). Recoge el argumento de dentro de la primera corrida, que en el GREEN no hay ninguna causa y que una sonda dedicada debería intercalar las dos órdenes.
+   - La sesión se lo informa al Owner con esta emisión, sin repetir la pregunta: la nota apoya la opción elegida.
+
+**Las decisiones de diseño de la sesión,** que no son del Owner (`F4B-DRAFTS/pbt4/session-pbt4b-design-decisions.md`, sha256 `8b18add602766c705260e976e3566b151e13567ee3f2b40a0c0ff12bd193e934`):
+- **D-S1:** las copias mecánicas que no pueden pasar en el GREEN pasan a equivalentes escritos a mano, con su registro y su texto literal; la lista no cambia por eso. **Aplicada en la v4.8 a dos copias de WPP.**
+- **D-S2:** «Conservar mi borrador» con dos «Sí», el flujo compatible con las guardas del lector.
+- **D-S3:** lo que se corrige en el paquete, sin decisión.
+- **D-S4:** una sola materialización del modelo completo por lectura (en desarrollo de la cuarta tanda; su texto normativo es D-PBT4-21).
+- **D-S5:** las cuatro `Theory` que mezclan resultados en el RED se parten por filas.
+- **D-S6:** las copias van en el espacio de nombres raíz de su ensamblado, con el prefijo `FullPanelCopy`.
+- **La lectura de la sesión de las dos pruebas que marca el paseo de guardas corregido y que no entran en la lista,** porque no fallan:
+  - WCAG `TheCatalogBody…` (:468-474): un falso positivo del paseo;
+  - WHHG `TheGuardOfTheLiteralsTrips…` (:501-526): pasa en el GREEN, pero en vacío (CA-T4b I-01). Por eso el equivalente de `NoneOfThe30…` trae su autoprueba.
+
+**Fe de erratas** (CA-T4b, §21). Los archivos no se tocan, porque la v4.9 cita su sha256:
+- **M-01:** el registro de la sesión (`8b18add6…`, :148 y :150) dice «14 veces» y «las 14 `NotEmpty`»; léase 13. Lo comprobaron la sesión y el revisor, en WHHG:501-526 de `78a7cef3`.
+- **M-03:** `step7_inputs_v49.py` no compara las entradas de la copia `r4t`, la tercera corrida del coste. El revisor las comprobó, y son idénticas a las de `r4s` (`independent-review-v1.md`, §21, M-03).
+
+**La comprobación acotada de PB-T4b** (CA-T4b), en `F4B-DRAFTS/pbt4/independent-review-v1.md`, con su encargo `independent-review-pbt4b-check-prompt.md`:
+- **§19,** la recomprobación de la v4.5: LISTO PARA LA PRECONDICIÓN 6, 0/0/4;
+- **§20,** CA-T4b sobre el contrato en seco y la v4.8: EMITIBLE TRAS CORRECCIONES, 0/1/8;
+- **§21,** la recomprobación de la v4.9: EMITIBLE, 0/0/3.
+
+El resultado que lleva el contrato es `EMITIBLE TRAS CORRECCIONES; B 0 / I 1 / M 8; las importantes corregidas en el paquete v4.9 (I-01, la autoprueba de la guarda de los textos del anfitrion pasa en vacio en el GREEN: el equivalente de NoneOfThe30 trae su autoprueba sobre la tabla nueva, como G-4); sin decisiones nuevas del Owner salvo el coste de la lectura (pb-20-ab x4, origen-es-Primary, primera corrida); precondicion 6 sobre 78a7cef3: pasos 1 a 6 cumplen; recomprobacion v4.9: EMITIBLE, B 0 / I 0 / M 3`.
+
+**Antes de emitir, la precondición 6** de la v4.9, sobre el cierre `78a7cef3`: pasos 1 a 6, otra vez, en dos copias exportadas nuevas (`r4u` y `r4v`): la compilacion de Core-tests, UI-tests y el Plugin en Release sin errores ni avisos CS; la particion, la misma de la v4.8 byte a byte (e87e024c); el RED y el GREEN exactos, con la suite completa de Core y los 15 filtros de UI de la subtarea (sin las CT: Core 19 587 = 18 838 + 291 Failed + 458 omitidas en el RED, y 19 129 + 0 + 458 en el GREEN; R_C = 291 y R_UI = 0), sin ninguna prueba que falle fuera de las 478; el equivalente nuevo de WHHG cae en el RED por su Assert.Empty y pasa en el GREEN con sus 13 Assert.NotEmpty; el paso 7 es el de la v4.8 (CT-06 y el coste de la lectura en tres corridas), con sus entradas sin cambio por sha256 (step7_inputs_v49.py) y el coste dado por cumplido por el Owner (la septima tanda). Su custodia está en `F4B-DRAFTS/pbt4/cc4b/`, redactada y con su manifiesto, y su resumen en `F4B-DRAFTS/pbt4/pbt4b-precondition6.json`.
+
+**Los controles** (PBT4B-C11): nc1 con la firma PD-F4B-01 y su sustituto (F4B-E40), y nc2 con el sustituto v2 (F4B-E43), los dos con `--task PBT4`. La primera entrada de la `ExpectedEvidence` es, byte a byte, la de `F4B_EXACT_EVIDENCES` del sustituto v2.
+
+**La reparación del RED** (F4B-E35): la regla RR, con la lectura de PB-T4b. Una reparación no toca `src/` (el esqueleto), ni el kit, ni las 21 copias, ni los 21 archivos de los `Skip`.
+
+**El contrato:**
+- **P-01:** la Snapshot K (F4B-E37).
+- **La cadena:** primera delegación; `attempts` 1 de 3.
+- **La planificación:** con las colecciones opacas puestas por la sesión (F4B-E21).
+- **La verificación:** con las comprobaciones deterministas de F4B-E15.

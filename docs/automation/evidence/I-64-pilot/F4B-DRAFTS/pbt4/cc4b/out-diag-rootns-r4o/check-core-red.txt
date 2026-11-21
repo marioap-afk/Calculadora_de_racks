@@ -1,0 +1,4 @@
+resultados {'Passed': 18837, 'Failed': 292, 'NotExecuted': 457}
+Failed de las copias: 292; las Red de la particion: 292
+iguales a la particion (clase Red y numero de resultados): True; de mas []; de menos []
+Failed fuera de las copias: 0

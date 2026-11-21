@@ -1,0 +1,11 @@
+== RackCad.Tests.TmpIsDirtyCostProbe.Measure_the_cost_of_IsDirty_of_a_full_draft Failed
+copia=<el GREEN de PB-T4b> (IsDirty, R-T4-17, paquete v4.5)
+escenario pb-01-base limpio-isdirty=False sucio-isdirty=True
+medida | pb-01-base | IsDirty limpio | mediana=2.9427 ms | p95=4.2867 ms | n=1000
+medida | pb-01-base | IsDirty sucio | mediana=2.8926 ms | p95=3.6148 ms | n=1000
+escenario pb-07-combinado limpio-isdirty=False sucio-isdirty=True
+medida | pb-07-combinado | IsDirty limpio | mediana=3.9268 ms | p95=5.0317 ms | n=1000
+medida | pb-07-combinado | IsDirty sucio | mediana=3.9373 ms | p95=5.2017 ms | n=1000
+escenario pb-20-ab limpio-isdirty=False sucio-isdirty=True
+medida | pb-20-ab | IsDirty limpio | mediana=9.3452 ms | p95=12.5492 ms | n=1000
+medida | pb-20-ab | IsDirty sucio | mediana=9.4551 ms | p95=11.9094 ms | n=1000

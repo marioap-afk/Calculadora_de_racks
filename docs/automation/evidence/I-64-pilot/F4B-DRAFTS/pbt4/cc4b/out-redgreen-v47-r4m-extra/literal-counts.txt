@@ -1,0 +1,6 @@
+base 78a7cef3 | La relectura no trajo resultado. | en WHC 2, en el soporte 0, en total 2; la guarda exige 2 | el ingles entre comillas: 0
+base 78a7cef3 | El borrador se está aplicando o ya no está registrado. | en WHC 5, en el soporte 0, en total 5; la guarda exige 5 | el ingles entre comillas: 0
+base 78a7cef3 | El rack no tiene escala de anotación. | en WHC 1, en el soporte 0, en total 1; la guarda exige 1 | el ingles entre comillas: 0
+GREEN de la copia | La relectura no trajo resultado. | en WHC 0, en el soporte 0, en total 0; la guarda exige 2 | el ingles entre comillas: 0
+GREEN de la copia | El borrador se está aplicando o ya no está registrado. | en WHC 6, en el soporte 0, en total 6; la guarda exige 5 | el ingles entre comillas: 0
+GREEN de la copia | El rack no tiene escala de anotación. | en WHC 0, en el soporte 0, en total 0; la guarda exige 1 | el ingles entre comillas: 0

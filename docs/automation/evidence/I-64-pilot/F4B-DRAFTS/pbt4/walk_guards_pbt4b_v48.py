@@ -1,0 +1,293 @@
+"""PB-T4b (v4.8): walk_guards_pbt4b_v45.py (que no se toca) con UNA corrección: la expresión FIELD, que reconoce los campos y las propiedades de
+los archivos de las guardas como ayudantes, no admitía espacios en el tipo, así que no veía un campo de tipo tupla (`(string English, string
+Spanish, int Times)[] Table`, WorkspaceHostHardeningGuardTests.cs:421) ni uno genérico con varios argumentos (`Dictionary<string, int>`), y sus
+literales no entraban en la comparación (análisis de la v4.7, punto 2.4). Ahora el tipo admite, además de lo de antes, un grupo entre paréntesis
+(la tupla, con espacios, sin saltos de línea) y un grupo entre ángulos (con espacios, hasta un nivel de anidamiento). Lo demás, igual.
+
+Uso: python -I walk_guards_pbt4b_v48.py <checkout> <rev> <lista.tsv> <salida.tsv> <salida-resumen.txt> [<archivo-local>=<ruta-virtual> ...]
+
+El texto que sigue es el de la v4.5.
+
+PB-T4b (v4.5): el recorrido, por diferencia, de walk_guards_pbt4b.py (v4.4) sobre el GREEN de la v4.5 (green_pbt4b_v45.py), que añade RIA.
+Solo objetos git (`git show`, `git ls-tree`, `git cat-file --batch`) y los archivos locales que se le pasan (leídos, nunca escritos). Escribe
+solo las dos salidas.
+
+El método es el de la v4.4, sin cambio: para cada prueba sin `Skip` de una clase que nombra un archivo tocado o su carpeta, los literales de
+cadena de su texto y de los ayudantes de su archivo que alcanza se evalúan, como expresión regular y como subcadena, sobre los archivos
+tocados con el GREEN de PB-T4a (la base) y con el GREEN de la v4.5: la cuenta en todo el archivo y en cada miembro. Lo nuevo:
+- RIA (`src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs`) entra en los archivos tocados, con las marcas, las carpetas y los ayudantes del
+  recorrido de PB-T4a (walk_guards_pbt4a.py);
+- además de las pruebas de la revisión, las de los archivos locales que se le pasan: las clases de las CT de PB-T4a (su GREEN real, que no
+  está en los objetos de 5aaacce3), las 18 copias y el kit.
+"""
+import re
+import subprocess
+import sys
+import importlib.util
+from collections import defaultdict, Counter
+
+base_dir = __file__.replace('walk_guards_pbt4b_v48.py', '')
+
+
+def load(name):
+    spec = importlib.util.spec_from_file_location(name, base_dir + name + '.py')
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+lc = load('lists_core')
+gb = load('green_pbt4b_v45')
+repo, rev, list_file, out_tsv, out_txt = sys.argv[1:6]
+DELTA = '--delta-v44' in sys.argv[6:]
+extra = [a.split('=', 1) for a in sys.argv[6:] if a != '--delta-v44']
+lc.REPO, lc.REV = repo, rev
+base, green = gb.green(repo, rev)
+TOUCHED = list(gb.EXISTING)
+NEW = list(gb.NEW)
+if DELTA:
+    # --delta-v44: la base es el GREEN de la v4.4 (todo igual salvo RIA, que es el del GREEN de PB-T4a), así que solo marca lo que cambia la
+    # optimización de la v4.5; los cuatro archivos nuevos son los mismos en la v4.4 y en la v4.5 y no cuentan como nuevos.
+    base = {p: (green[p] if p != gb.RIA_P else base[p]) for p in TOUCHED}
+    for p in TOUCHED:
+        assert p == gb.RIA_P or base[p] == green[p]
+    NEW = []
+SHORT = {gb.WHC_P: 'WHC', gb.WEI_P: 'WEI', gb.FVM_P: 'FVM', gb.PV_P: 'PV', gb.NFV_P: 'NFV', gb.RIA_P: 'RIA', gb.RULE_P: 'RULE', gb.SCALE_P: 'SCALE',
+         gb.ADAPTER_P: 'ADAPTER', gb.PRES_P: 'PRES'}
+LISTED = set()
+for line in open(list_file, encoding='utf-8').read().split('\n')[1:]:
+    if line:
+        c = line.split('\t')
+        LISTED.add((c[1], c[2]))
+
+
+def code_only(text):
+    return re.sub(r'//[^\r\n]*', '', re.sub(r'/\*.*?\*/', '', text, flags=re.S))
+
+
+views = {}
+for p in TOUCHED:
+    for side, src in (('base', base[p]), ('green', green[p])):
+        c = code_only(src) if p.endswith('.cs') else src
+        per = defaultdict(str)
+        if p.endswith('.cs'):
+            for m in lc.members(c):
+                per[m['name']] += '\n' + m['body']
+        views[(p, side)] = (c, per)
+new_views = {p: code_only(green[p]) for p in NEW}
+
+MARKERS = ['WorkspaceHostCore.cs', 'WorkspaceEditIntent.cs', 'WorkspacePilotFieldViewModel.cs', 'WorkspacePanelView.xaml', 'NumericFieldValidation.cs',
+           'Application/Workspace', 'UI/Workspace', 'UI/Controls', 'PushBack/Draft', 'Application/Formatting', 'ApplicationWorkspace', 'AllProduct()',
+           'ApplicationFiles()', 'UiFiles()', 'UiFolder',
+           'RackPilotIntentAdapter.cs', 'Plugin/Views', 'PluginFiles()', 'PluginWorkspace', 'Plugin/Workspace', 'RackPilotIntentAdapter']
+paths = lc.ls('tests')
+batch = subprocess.run(['git', '-C', repo, 'cat-file', '--batch'], input=''.join('%s:%s\n' % (rev, p) for p in paths).encode('utf-8'), capture_output=True)
+data, pos, texts = batch.stdout, 0, {}
+for p in paths:
+    nl = data.index(b'\n', pos)
+    size = int(data[pos:nl].split()[2])
+    texts[p] = data[nl + 1:nl + 1 + size].decode('utf-8', 'replace').replace('\r\n', '\n')
+    pos = nl + 1 + size + 1
+for local, virtual in extra:
+    assert virtual not in texts, 'la ruta virtual ya existe en la revisión: ' + virtual
+    texts[virtual] = open(local, encoding='utf-8').read().lstrip('﻿').replace('\r\n', '\n')
+    paths.append(virtual)
+guards = [p for p in paths if p.endswith('.cs') and any(m in texts[p] for m in MARKERS)]
+
+LIT = re.compile(r'@\$"(?:[^"]|"")*"|\$@"(?:[^"]|"")*"|@"(?:[^"]|"")*"|\$"(?:\\.|[^"\\\n])*"|"(?:\\.|[^"\\\n])*"')
+ESC = {'\\\\': '\\', '\\"': '"', '\\n': '\n', '\\r': '\r', '\\t': '\t', '\\0': '\0', "\\'": "'"}
+# v4.8: el tipo admite una tupla entre paréntesis y un grupo genérico entre ángulos, con espacios (sin saltos de línea); la v4.5 era
+# [\w<>\[\],.?()]+, sin espacios.
+FIELD_TYPE = r'(?:\((?:[^()\n]|\([^()\n]*\))*\)|<(?:[^<>\n]|<[^<>\n]*>)*>|[\w\[\],.?])+'
+FIELD = re.compile(r'^[ \t]*(?:(?:private|public|internal|protected|static|readonly|const)\s+)+' + FIELD_TYPE + r'\s+(\w+)\s*(?:=(?!>)|;|\{\s*get|=>)', re.M)
+FIELD_V45 = re.compile(r'^[ \t]*(?:(?:private|public|internal|protected|static|readonly|const)\s+)+[\w<>\[\],.?()]+\s+(\w+)\s*(?:=(?!>)|;|\{\s*get|=>)', re.M)
+SKIPPED = re.compile(r'\bSkip\s*=')
+
+
+def decode(lit):
+    if lit.startswith(('@"', '@$"', '$@"')):
+        inner = lit[lit.index('"') + 1:-1].replace('""', '"')
+    else:
+        inner = lit[lit.index('"') + 1:-1]
+        inner = re.sub(r'\\[\\"nrt0\']', lambda m: ESC[m.group(0)], inner)
+    if '$' in lit[:2]:
+        inner = re.sub(r'\{[^{}]*\}', '', inner)
+    return inner
+
+
+def counts(lit, text, per):
+    out = []
+    try:
+        rx = re.compile(lit)
+        out.append(('re', len(rx.findall(text)), tuple(sorted((k, len(rx.findall(v))) for k, v in per.items()))))
+    except re.error:
+        pass
+    out.append(('sub', text.count(lit), tuple(sorted((k, v.count(lit)) for k, v in per.items()))))
+    return out
+
+
+cache = {}
+
+
+def diffs_of(lit):
+    if lit in cache:
+        return cache[lit]
+    res = []
+    for p in TOUCHED:
+        b = counts(lit, *views[(p, 'base')])
+        g = counts(lit, *views[(p, 'green')])
+        for (kind, bc, bper), (_, gc, gper) in zip(b, g):
+            bd, gd = dict(bper), dict(gper)
+            changed = sorted(k for k in set(bd) | set(gd) if bd.get(k, 0) != gd.get(k, 0))
+            if bc != gc or changed:
+                res.append((p, '%s %s %d->%d [%s]' % (SHORT[p], kind, bc, gc, ','.join(changed[:4]))))
+    for p in NEW:
+        try:
+            n = len(re.findall(lit, new_views[p]))
+        except re.error:
+            n = new_views[p].count(lit)
+        if n:
+            res.append((p, '%s nuevo %d' % (SHORT[p], n)))
+    cache[lit] = res
+    return res
+
+
+APP_WS = ['src/RackCad.Application/Workspace', 'src/RackCad.Application', 'src/RackCad.Application/']
+UI_WS = ['src/RackCad.UI/Workspace', 'src/RackCad.UI', 'src/RackCad.UI/']
+DRAFT_F = ['src/RackCad.Application/Systems/PushBack/Draft', 'src/RackCad.Application/Systems/PushBack', 'src/RackCad.Application/Systems',
+           'src/RackCad.Application', 'src/RackCad.Application/']
+FOLDERS = {
+    gb.WHC_P: APP_WS, gb.WEI_P: APP_WS, gb.FVM_P: UI_WS, gb.PV_P: UI_WS,
+    gb.NFV_P: ['src/RackCad.UI/Controls', 'src/RackCad.UI', 'src/RackCad.UI/'],
+    gb.RIA_P: ['src/RackCad.Plugin/Views', 'src/RackCad.Plugin', 'src/RackCad.Plugin/'],
+    gb.RULE_P: ['src/RackCad.Application/Formatting', 'src/RackCad.Application', 'src/RackCad.Application/'],
+    gb.SCALE_P: DRAFT_F, gb.ADAPTER_P: DRAFT_F, gb.PRES_P: DRAFT_F,
+}
+AH = r'\bApplicationWorkspace\b|\bApplicationFiles\s*\(|\bAllProduct\s*\('
+UH = r'\bUiFiles\s*\(|\bUiFolder\b|\bAllProduct\s*\('
+HELPERS = {gb.WHC_P: AH, gb.WEI_P: AH, gb.FVM_P: UH, gb.PV_P: UH, gb.NFV_P: r'\bAllProduct\s*\(', gb.RULE_P: AH, gb.SCALE_P: r'\bAllProduct\s*\(',
+           gb.ADAPTER_P: r'\bAllProduct\s*\(', gb.PRES_P: r'\bAllProduct\s*\(', gb.RIA_P: r'\bAllProduct\s*\(|\bPluginFiles\s*\(|\bPluginWorkspace\b'}
+
+
+def reads(text, lits):
+    out = set()
+    for p in TOUCHED + NEW:
+        name = p.rsplit('/', 1)[-1]
+        folders = [f.rstrip('/') for f in FOLDERS[p]] + ['src']
+        if any(name in l or p in l or l.rstrip('/').replace('\\', '/') in folders for l in lits) or re.search(HELPERS[p], text):
+            out.add(p)
+    return out
+
+
+RELEVANT = re.compile(r'[A-Za-z_]{4,}')
+CHANGED = {}
+for p in TOUCHED:
+    b, g = views[(p, 'base')][1], views[(p, 'green')][1]
+    CHANGED[p] = sorted(k for k in set(b) | set(g) if b.get(k) != g.get(k))
+
+
+def selects_changed(lits, files):
+    hits = []
+    for p in files & set(TOUCHED):
+        code = views[(p, 'base')][0]
+        for name in CHANGED[p]:
+            for mm in re.finditer(r'[^\n]*\b' + re.escape(name) + r'\b[^\n]*', code):
+                head = mm.group(0)
+                for l in lits:
+                    if not RELEVANT.search(l) or name not in l and not re.search(r'\\s|\\b|\(', l):
+                        continue
+                    try:
+                        if re.search(l, head) and name in head:
+                            hits.append('%s:%s' % (SHORT[p], name))
+                    except re.error:
+                        pass
+    return sorted(set(hits))
+
+
+CONST = re.compile(r'(?:const\s+string|static\s+readonly\s+string)\s+(\w+)\s*=\s*([^;]+);')
+consts = defaultdict(list)
+for p in paths:
+    if not p.endswith('.cs'):
+        continue
+    for cm in CONST.finditer(lc.blank_comments(texts[p])):
+        consts[cm.group(1)].extend(decode(l) for l in LIT.findall(cm.group(2)))
+QUAL = re.compile(r'\b[A-Z]\w*\.([A-Z]\w*)\b')
+
+
+def external_literals(text):
+    out = []
+    for qm in QUAL.finditer(text):
+        out.extend(consts.get(qm.group(1), []))
+    return out
+
+
+rows, summary = [], defaultdict(lambda: [0, 0, 0])
+for g in guards:
+    code = lc.blank_comments(texts[g])
+    ms = lc.members(code)
+    spans = [(m['first'], m['last']) for m in ms]
+    helpers = {}
+    for m in ms:
+        if not m['test']:
+            helpers.setdefault(m['name'], []).append(m['body'])
+    for fm in FIELD.finditer(code):
+        line = code.count('\n', 0, fm.start()) + 1
+        if not any(a <= line <= b for a, b in spans):
+            end = code.find(';', fm.end())
+            helpers.setdefault(fm.group(1), []).append(code[fm.start():end + 1])
+    hx = {h: re.compile(r'\b' + re.escape(h) + r'\b') for h in helpers}
+    for m in ms:
+        if not m['test'] or SKIPPED.search(m['attrs']):
+            continue
+        seen, todo, text = set(), [m['attrs'] + m['body']], ''
+        while todo:
+            t = todo.pop()
+            text += '\n' + t
+            for h, rx in hx.items():
+                if h not in seen and h != m['name'] and rx.search(t):
+                    seen.add(h)
+                    todo.extend(helpers[h])
+        lits = sorted({decode(l) for l in LIT.findall(text)} - {''})
+        files = reads(text, lits + external_literals(text))
+        found = []
+        for l in lits:
+            if not RELEVANT.search(l):
+                continue
+            d = [t for p, t in diffs_of(l) if p in files]
+            if d:
+                found.append((l, d))
+        sel = selects_changed(lits, files)
+        cat = 'A' if found else ('B' if sel else ('-' if files else 'no-lee'))
+        listed = 'lista' if (g, m['name']) in LISTED else '-'
+        summary[g][0] += 1
+        if cat in ('A', 'B'):
+            summary[g][1] += 1
+            if listed == '-':
+                summary[g][2] += 1
+        rows.append((g, m['name'], '%d-%d' % (m['first'], m['last']), cat, listed, ','.join(sorted(SHORT[f] for f in files)) or '-', ','.join(sel) or '-',
+                     ' || '.join('%r: %s' % (l[:70], '; '.join(d)) for l, d in found) or '-'))
+
+with open(out_tsv, 'w', encoding='utf-8', newline='\n') as f:
+    f.write('clase\tprueba\tlineas\tcategoria\tlista\tlee\tcuerpos-que-cambian\tdiferencias\n')
+    for r in rows:
+        f.write('\t'.join(r) + '\n')
+cats = Counter(r[3] for r in rows)
+flag_out = sum(1 for r in rows if r[3] in ('A', 'B') and r[4] == '-')
+lines = ['clases=%d pruebas=%d A=%d B=%d sin-diferencia=%d no-leen=%d | A-o-B fuera de la lista=%d | archivos locales=%d' % (
+    len(guards), len(rows), cats['A'], cats['B'], cats['-'], cats['no-lee'], flag_out, len(extra)),
+    'cambian: ' + '; '.join('%s: %s' % (SHORT[p], ', '.join(CHANGED[p])) for p in TOUCHED)]
+for g in guards:
+    if summary[g][1]:
+        lines.append('%-70s pruebas=%3d A-o-B=%3d fuera-de-la-lista=%3d' % (g.rsplit('/', 1)[-1], summary[g][0], summary[g][1], summary[g][2]))
+# v4.8: los campos que la corrección de FIELD reconoce y la v4.5 no, por archivo de guarda
+new_fields = []
+for g in guards:
+    code = lc.blank_comments(texts[g])
+    extra_names = sorted({m.group(1) for m in FIELD.finditer(code)} - {m.group(1) for m in FIELD_V45.finditer(code)})
+    if extra_names:
+        new_fields.append('  %s: %s' % (g.rsplit('/', 1)[-1], ', '.join(extra_names)))
+lines.append('campos que reconoce la FIELD de la v4.8 y no la de la v4.5: %d archivos' % len(new_fields))
+lines.extend(new_fields)
+with open(out_txt, 'w', encoding='utf-8', newline='\n') as f:
+    f.write('\n'.join(lines) + '\n')
+print('\n'.join(lines))

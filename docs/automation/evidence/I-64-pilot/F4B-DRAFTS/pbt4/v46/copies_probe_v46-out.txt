@@ -1,0 +1,22 @@
+ce6a2cb9a3664ffb2d588450b30d4d367acef06873b402d5394f19f488a2e5e6     3032  tests/RackCad.Tests/PushBackFullReadGuardFull.cs
+4d7125a310c49e827eef659e01f1ccf12831fa36a9ac8be936ca72d08ce01ae4     3921  tests/RackCad.Tests/PushBackFullReadPathFull.cs  (+using Draft)
+239aeea77b70cde0432f7de77578f6bcfebcdd5c6f012f1497624bb96184e369     7067  tests/RackCad.Tests/PushBackWritePathGuardFull.cs
+4789a30760ca75b4629566c5d4fec41abbdf69e550a91316a964f27e17904b5b    18315  tests/RackCad.Tests/Workspace/WorkspaceAssociativeBookkeepingFull.cs  (+using Draft)
+ffc0db1fe8324b61bd4509e7a55847f6b48e8545cae9b0f4f0a39d05de743469    55641  tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorFull.cs  (+using Draft)
+25dc6e047bd726693e0ccb5e65af35a02c94594637d706177a6136ac9532bd30    15199  tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardFull.cs
+b20b766a87deeccfd534d3fc06b85252068d85db41fd8e080fa6d5a08831fec4    58106  tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostFull.cs  (+using Draft)
+8468c3702cba33c5abc2d3597c5204e016c4e890632156c4daa97d1e1d06ed72     4452  tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardFull.cs
+e3d471d4b3e7b6d4799c3c2cdd82083585bdbd98bf8ac7a5098db44da969b29f    62359  tests/RackCad.Tests/Workspace/WorkspaceLifecycleHostFull.cs  (+using Draft)
+d5e2cdc22e9206820b830319958a7651906be97eab4d64fd6c33ae08c2955694    25729  tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardFull.cs
+4c0f2e50f9511047779b22d8859ecf471810d3b8e7f51ddf56fbdec5b6086c91    72833  tests/RackCad.Tests/Workspace/WorkspacePilotEditHostFull.cs  (+using Draft)
+07730378460d2f1e4f1c9eecc07c8895ed3caba5b2c882efbbfb6c9fbd59f205   100861  tests/RackCad.Tests/Workspace/WorkspacePilotPrepareFull.cs  (+using Draft)
+9d54b269d8096c054fb78c06e2cd5fd39d1ae9e30dfc9c6665bd148aed7441ed     5924  tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardFull.cs
+746f4f0f822aafaa6e8db5b001031b6bcb93fa00d5a3f1540555998f292b07a7    36961  tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostFull.cs  (+using Draft)
+94a2f7cd460a65d3d9e656f6f366125f056c5383df5f6c96d65cc994fac6dd88    12137  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardFull.cs
+f22692e8ad3491aafad99b23862240a8b8f9e2a33900f07370bc30c272734057    38726  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostFull.cs  (+using Draft)
+7e725fc821e4641bbf8ee66d53a438c1c70616e1c7176db7bc8fa059cd21fa2e     5947  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardFull.cs
+19c188cb4c7a73de496464ba0987f984e0de728b11ded774d2b62cacd3aa4d38    48988  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRequestFull.cs  (+using Draft)
+9c8dcdae30da858fab3bd27677a64b377c2e003a45f520c0d2a546048a921dfc    26172  tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationFull.cs
+584f4372894a26aedfb2448cdc23c540fb867ab06d614a1b48ed2240cc20321f    12300  tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationViewFull.cs
+conjunto f72b1f2f7b9e7ce2fced8caef466ecec4d87016ec07333fb1ad91c1301e4fb58
+revision 90 entradas -> pbt4b-equivalents-review-v46.txt

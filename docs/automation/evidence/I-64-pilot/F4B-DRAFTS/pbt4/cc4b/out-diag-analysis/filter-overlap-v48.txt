@@ -1,0 +1,47 @@
+filtros heredados y de las CT de §6.2.1 (sin los de las copias): 88
+hoy (FullPanelCopies): 0 filtros seleccionan copias
+raiz, nombres de hoy: 2 filtros seleccionan copias
+  #12 RackCad.Tests.Workspace (MinSelected **2718**, ExpectRed false): 30 clases de copia, 15 Red
+  #15 RackCad.UI.Tests.Workspace (MinSelected **521**, ExpectRed false): 4 clases de copia, 2 Red
+raiz, prefijo FullCopy: 0 filtros seleccionan copias
+raiz, prefijo FullPanelCopy: 40 filtros seleccionan copias
+  #47 RackCad.Tests.FullPanelCopyWorkspaceLifecycleHostRedTests (MinSelected `<medido en la precondicion 6>`, ExpectRed true): 1 clases de copia, 1 Red
+  #48 RackCad.Tests.FullPanelCopyWorkspaceLifecycleHostGreenTests (MinSelected `<medido en la precondicion 6>`, ExpectRed false): 1 clases de copia, 0 Red
+  #49 RackCad.Tests.FullPanelCopyWorkspacePilotPrepareRedTests (MinSelected `<medido en la precondicion 6>`, ExpectRed true): 1 clases de copia, 1 Red
+  #50 RackCad.Tests.FullPanelCopyWorkspacePilotPrepareGreenTests (MinSelected `<medido en la precondicion 6>`, ExpectRed false): 1 clases de copia, 0 Red
+  #51 RackCad.Tests.FullPanelCopyWorkspaceEditIntentHostRedTests (MinSelected `<medido en la precondicion 6>`, ExpectRed true): 1 clases de copia, 1 Red
+  #52 RackCad.Tests.FullPanelCopyWorkspaceEditIntentHostGreenTests (MinSelected `<medido en la precondicion 6>`, ExpectRed false): 1 clases de copia, 0 Red
+  #53 RackCad.Tests.FullPanelCopyWorkspacePilotEditHostRedTests (MinSelected `<medido en la precondicion 6>`, ExpectRed true): 1 clases de copia, 1 Red
+  #54 RackCad.Tests.FullPanelCopyWorkspacePilotEditHostGreenTests (MinSelected `<medido en la precondicion 6>`, ExpectRed false): 1 clases de copia, 0 Red
+  #55 RackCad.Tests.FullPanelCopyWorkspaceCommandAdvisorRedTests (MinSelected `<medido en la precondicion 6>`, ExpectRed true): 1 clases de copia, 1 Red
+  #56 RackCad.Tests.FullPanelCopyWorkspaceCommandAdvisorGreenTests (MinSelected `<medido en la precondicion 6>`, ExpectRed false): 1 clases de copia, 0 Red
+  #57 RackCad.Tests.FullPanelCopyWorkspacePilotUpdateRequestRedTests (MinSelected `<medido en la precondicion 6>`, ExpectRed true): 1 clases de copia, 1 Red
+  #58 RackCad.Tests.FullPanelCopyWorkspacePilotUpdateRequestGreenTests (MinSelected `<medido en la precondicion 6>`, ExpectRed false): 1 clases de copia, 0 Red
+  #59 RackCad.Tests.FullPanelCopyWorkspacePilotUpdateHostRedTests (MinSelected `<medido en la precondicion 6>`, ExpectRed true): 1 clases de copia, 1 Red
+  #60 RackCad.Tests.FullPanelCopyWorkspacePilotUpdateHostGreenTests (MinSelected `<medido en la precondicion 6>`, ExpectRed false): 1 clases de copia, 0 Red
+  #61 RackCad.Tests.FullPanelCopyWorkspacePilotReconciliationHostRedTests (MinSelected `<medido en la precondicion 6>`, ExpectRed true): 1 clases de copia, 1 Red
+  #62 RackCad.Tests.FullPanelCopyWorkspacePilotReconciliationHostGreenTests (MinSelected `<medido en la precondicion 6>`, ExpectRed false): 1 clases de copia, 0 Red
+  #63 RackCad.Tests.FullPanelCopyWorkspaceAssociativeBookkeepingRedTests (MinSelected `<medido en la precondicion 6>`, ExpectRed true): 1 clases de copia, 1 Red
+  #64 RackCad.Tests.FullPanelCopyWorkspaceAssociativeBookkeepingGreenTests (MinSelected `<medido en la precondicion 6>`, ExpectRed false): 1 clases de copia, 0 Red
+  #65 RackCad.Tests.FullPanelCopyPushBackWritePathGuardRedTests (MinSelected `<medido en la precondicion 6>`, ExpectRed true): 1 clases de copia, 1 Red
+  #66 RackCad.Tests.FullPanelCopyPushBackWritePathGuardGreenTests (MinSelected `<medido en la precondicion 6>`, ExpectRed false): 1 clases de copia, 0 Red
+  #67 RackCad.Tests.FullPanelCopyWorkspacePilotUpdateIntegrationGuardRedTests (MinSelected `<medido en la precondicion 6>`, ExpectRed true): 1 clases de copia, 1 Red
+  #68 RackCad.Tests.FullPanelCopyWorkspacePilotUpdateIntegrationGuardGreenTests (MinSelected `<medido en la precondicion 6>`, ExpectRed false): 1 clases de copia, 0 Red
+  #69 RackCad.Tests.FullPanelCopyWorkspaceEditIntentGuardRedTests (MinSelected `<medido en la precondicion 6>`, ExpectRed true): 1 clases de copia, 1 Red
+  #70 RackCad.Tests.FullPanelCopyWorkspaceEditIntentGuardGreenTests (MinSelected `<medido en la precondicion 6>`, ExpectRed false): 1 clases de copia, 0 Red
+  #71 RackCad.Tests.FullPanelCopyWorkspacePilotEditGuardRedTests (MinSelected `<medido en la precondicion 6>`, ExpectRed true): 1 clases de copia, 1 Red
+  #72 RackCad.Tests.FullPanelCopyWorkspacePilotEditGuardGreenTests (MinSelected `<medido en la precondicion 6>`, ExpectRed false): 1 clases de copia, 0 Red
+  #73 RackCad.Tests.FullPanelCopyWorkspacePilotReconciliationGuardRedTests (MinSelected `<medido en la precondicion 6>`, ExpectRed true): 1 clases de copia, 1 Red
+  #74 RackCad.Tests.FullPanelCopyWorkspacePilotReconciliationGuardGreenTests (MinSelected `<medido en la precondicion 6>`, ExpectRed false): 1 clases de copia, 0 Red
+  #75 RackCad.Tests.FullPanelCopyWorkspaceLifecycleGuardRedTests (MinSelected `<medido en la precondicion 6>`, ExpectRed true): 1 clases de copia, 1 Red
+  #76 RackCad.Tests.FullPanelCopyWorkspaceLifecycleGuardGreenTests (MinSelected `<medido en la precondicion 6>`, ExpectRed false): 1 clases de copia, 0 Red
+  #77 RackCad.Tests.FullPanelCopyWorkspacePilotUpdateGuardRedTests (MinSelected `<medido en la precondicion 6>`, ExpectRed true): 1 clases de copia, 1 Red
+  #78 RackCad.Tests.FullPanelCopyWorkspacePilotUpdateGuardGreenTests (MinSelected `<medido en la precondicion 6>`, ExpectRed false): 1 clases de copia, 0 Red
+  #79 RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationRedTests (MinSelected `<medido en la precondicion 6>`, ExpectRed true): 1 clases de copia, 1 Red
+  #80 RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationGreenTests (MinSelected `<medido en la precondicion 6>`, ExpectRed false): 1 clases de copia, 0 Red
+  #81 RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationViewRedTests (MinSelected `<medido en la precondicion 6>`, ExpectRed true): 1 clases de copia, 1 Red
+  #82 RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationViewGreenTests (MinSelected `<medido en la precondicion 6>`, ExpectRed false): 1 clases de copia, 0 Red
+  #83 RackCad.Tests.FullPanelCopyPushBackFullReadPathRedTests (MinSelected `<medido en la precondicion 6>`, ExpectRed true): 1 clases de copia, 1 Red
+  #84 RackCad.Tests.FullPanelCopyPushBackFullReadPathGreenTests (MinSelected `<medido en la precondicion 6>`, ExpectRed false): 1 clases de copia, 0 Red
+  #85 RackCad.Tests.FullPanelCopyPushBackFullReadGuardRedTests (MinSelected `<medido en la precondicion 6>`, ExpectRed true): 1 clases de copia, 1 Red
+  #86 RackCad.Tests.FullPanelCopyPushBackFullReadGuardGreenTests (MinSelected `<medido en la precondicion 6>`, ExpectRed false): 1 clases de copia, 0 Red
