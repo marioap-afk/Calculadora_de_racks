@@ -1962,3 +1962,78 @@ Son los menores de la revisión independiente del código de PB-T3c, intento 1. 
 **Dos lecciones de la cadena** (aplicadas en la de PB-T4b):
 - **El prompt de un Controller no debe pasar de 30 000 bytes:** Windows corta la línea de órdenes y Codex no arranca. Los bloques grandes van a `inputs/` con su sha256, y una guarda de tamaño en los guiones previos lo impide.
 - **Las reglas del prompt se escriben como condición explícita** («si … es PBT4A-C07»), nunca como «<hecho>, <parada>.». Además, el prompt de la verificación aclara que una ruta del diff de emisión que no figura en Authorities la admite 16.3.
+
+## I-64 F4B PB-T4b — el texto de «Conservar», menores de la revisión, RR-3 pendiente, el sustituto de nc1 y riesgos para el Smoke-PB (2026-11-21, registrados sin corregir)
+
+**El texto de la presentación de «Conservar» (PBT4B-IR-OWNER-01; decisión del Owner «Es lo esperado»):**
+- **El comportamiento:** con «Conservar mi borrador» y después «Actualizar», el rack se queda con el nombre del borrador aunque alguien lo renombrara en el dibujo fuera del panel. Es D-PB-05, paso 4: gana el diseño editable completo, y el nombre es editable.
+- **Lo que falta en el texto:** la presentación lo avisa antes del segundo «Sí» como «Cambiado fuera: el nombre.», pero no dice qué valor gana.
+- **La mejora,** para la etapa de la interfaz: que el texto diga que se conserva el valor del borrador.
+
+**Los menores de la revisión independiente del código** (ninguno pide cambiar `src/`):
+- **PBT4B-IR-M01:** tras la reparación, la línea `resto-del-rack-actual` de CT-PBT4B-08 no discrimina.
+  - El escenario solo cambia el nombre entre el rack de base y el actual, así que los cinco campos que quedan del sobre son iguales en el viejo y en el actual.
+  - **La mejora:** una variante en la que el rack actual difiera del borrador en un campo del sobre que no sea del editor.
+  - La procedencia del sobre la cubre hoy el equivalente de WPP `TheOutgoingDesignAndEnvelopeOfEachViewComeFromTheRereadEnvelopeAndNeverFromTheDraft`.
+- **PBT4B-IR-M02:** CT-PBT4B-20 es más débil que el §5.2 en (1) y en (7), sin declararlo.
+  - (1) acepta cualquier motivo `I-64 F4B PB-T4b: …` en vez del motivo literal de cada causa.
+  - (7) no compara las dos mitades de cada `Theory` de D-S5 salvo sus filas.
+  - La revisión lo comprobó aparte y está bien.
+  - **La mejora,** si se reabre CT-20: añadir las dos comprobaciones.
+- **PBT4B-IR-M03:** las autopruebas de CT-PBT4B-20 no aíslan (3). `autoprueba-asercion-cambiada` y `autoprueba-sin-copia` cambian el texto de la copia, así que `sha256=False` basta, y un `ApplyMap` que siempre diera `True` pasaría.
+  - **La mejora:** una autoprueba que mute la copia y recalcule el hash, o que compare sin el sha.
+- **PBT4B-IR-M07:** el registro del relevo del trabajo etiqueta mal «PorAsercion».
+  - Cuenta solo los fallos con mensaje `Assert.*`: 135.
+  - Con la regla del contrato (la primera línea del StackTrace bajo `tests/`) son 306 de 306.
+  - **La mejora:** renombrar el campo, o añadir el recuento por la regla del contrato.
+  - **Decidido:** se corrige en la cadena de PB-T4c (decisión del Owner sobre nc3, F4B-E53). Es lo que confundió a nc3, que leyó como excepciones 171 de los 306 fallos del RED.
+- **PBT4B-IR-M08:** el texto «El valor debe ser > 0.» tiene dos fuentes:
+  - la constante `NotPositiveMessage` de `PushBackFullFieldAdapter`, que exige el paquete;
+  - el mensaje que compone `NumericTextRule` con `Format(0)`.
+
+  Hoy coinciden en toda cultura. **La mejora:** que PB-T4d lo derive, o que una prueba lo fije.
+
+**RR-3: tres clases de PB-T4b pendientes en la lectura de la cadena** (`pbt4b_rr3_reading.py`, F4B-E53). Sus filas de §6.0 de la v4.9 remiten a literales que el paquete no enumera, así que la lectura no las resuelve sin interpretar, y la cadena para si una reparación del RED las toca:
+- **`WorkspaceFullCopyGuardTests` (CT-20):**
+  - «los 21 nombres de clase de origen»;
+  - «las nueve parejas de M-00 a M-08 (con los seis tipos de M-00 de §5.2)»;
+  - «los `BaseSha` de los 21 archivos de los `Skip` (§6.2.1) y los `CopySha` de las 21 copias y del kit»;
+  - «los cinco escaneos de M-05»;
+  - «las cuatro `particion-por-filas` con …».
+- **`PushBackFullPanelGuardTests`:**
+  - «los seis nombres de CT-12»;
+  - «las de CT-21 en §5.2 y sus expresiones literales»;
+  - el marcador `<nombre>` de una línea de CT-12 en §5.2.
+- **`PushBackFullPanelFieldTests` (UI):**
+  - «Valores: los diez textos de CT-PBT2B-10 y los once casos de CT-18»;
+  - los marcadores `<n>` de CT-04 y de CT-18 en §5.2.
+
+**La mejora:** que el paquete de la próxima subtarea enumere en la tabla de RR-3 los literales de cada fila, o que su generador traiga `rr3_table_check`. La lectura de PB-T4a no leía las filas de PB-T4b.
+
+**Para la lista de PB-T4d** (decisión del Owner «Llevarlas a PB-T4d»; la lista vuelve al Owner antes de emitirse): los vacíos de PBT4B-IR-M04, guardas de PEG que en el GREEN siguen en verde sin comprobar nada:
+- `tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs:592-597`, `TheReadGuardAllowsAnotherReadThatALaterTaskWouldAddWithItsOwnMark`: su `Replace` de `FindPilotDraft` ya no encuentra nada, así que el control positivo no inyecta nada;
+- `tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs:906-909` y `:917-920`, `TheOperationsOfThePortAndTheDecoratorNameNoApiOfWritingTheDrawing`: la expresión de `FindPilotDraft` sigue con el tipo del piloto y el bucle la salta;
+- `tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardFull.cs:255-258`: el mismo vacío, heredado en la copia.
+
+**Para el Smoke-PB de PB-T5 (D-PB-09):**
+- **PBT4B-IR-OWNER-01:** el nombre tras «Conservar» y «Actualizar» en el dibujo real.
+- **PBT4B-IR-OWNER-04:** el segundo «Sí» sin cambios en el dibujo real.
+  - Ninguna CT ejecuta RIA ni NH evaluando el testigo tras `AtOrigin`.
+  - Si el testigo no volviera `Unchanged`, «Conservar» presentaría en bucle.
+  - «Conservar» lee ahora el dibujo dos veces.
+- **El coste real de la lectura,** con una sola materialización por lectura (D-S4).
+- **Lo que ya estaba:** PBT3C-IR-OWNER-1 a OWNER-3 de PB-T3c y PBT4A-IR-OWNER-01 y OWNER-03 de PB-T4a.
+
+**nc1, candidato a revisar su sustituto** (sin cambio ahora; decisión del Owner «Aceptarlo solo esta vez»):
+- **El caso:** nc1 lleva en F4B **seis** variaciones de la cascada del SHA falso: PB-TC, PB-TC2, PB-T2a, PB-T2b, PB-T4a y PB-T4b.
+- **La de PB-T4b:** la cascada llega también a Trailer, con la misma causa dicha con otras palabras («no existe el objeto CurrentSha»). El sustituto de PD-F4B-01 (ScriptSha256 `41440edc…`) da FAIL en `d1_FailSetWithinAllowed` y `e2_OtherFailCitesFakeSha`.
+- **La lección:** la firma exacta del sustituto no sigue la variación natural de cómo el Controller redacta la cascada. Cada variación vuelve al Owner.
+- **Lo que se podría revisar:** que el sustituto admita la cascada en Trailer cuando su evidencia nombre la ausencia del objeto del CurrentSha falso. La firma nueva volvería al Owner con esa revisión.
+
+**Tres lecciones de la cadena:**
+- **Una entrega grande no cabe en el tope de 600 s de la verificación.** La primera corrió 600 s, con 50 órdenes, y el lanzador la cortó. Ahora:
+  - el tope de los lanzadores es de 1800 s;
+  - el relevo registra un TIMEOUT como lanzamiento no productivo;
+  - el cierre lo custodia como unidad propia.
+- **Un esqueleto que el paquete fija con un generador, y no con un parche,** se compara con lo que da ese generador custodiado y con el registro de la precondición 6, archivo a archivo.
+- **Una etiqueta de un registro de la sesión puede confundir a un Controller:** «PorAsercion» solo contaba los `Assert`, y nc3 la leyó contra la regla del contrato. Los registros nombran lo que cuentan, con la regla del contrato.

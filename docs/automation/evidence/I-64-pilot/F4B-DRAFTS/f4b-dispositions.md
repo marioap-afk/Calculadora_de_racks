@@ -1827,3 +1827,101 @@ El resultado que lleva el contrato es `EMITIBLE TRAS CORRECCIONES; B 0 / I 1 / M
 - **La cadena:** primera delegación; `attempts` 1 de 3.
 - **La planificación:** con las colecciones opacas puestas por la sesión (F4B-E21).
 - **La verificación:** con las comprobaciones deterministas de F4B-E15.
+
+## F4B-E53. Cierre de F4B-PBT4-FULL-DRAFT-PANEL, con una reparación del RED, cinco decisiones del Owner (tres sobre el código y dos sobre los controles) y la verificación tras un TIMEOUT
+
+**Paquete de cierre:** `F4B-PBT4-FULL-DRAFT-PANEL/task-close-package.md`.
+
+**La cadena:**
+- **La emisión** (F4B-E52): X `f5ff00ee` y BASE `8f783df5`, con el paquete de PB-T4 v4.9 y las tandas del Owner sobre PB-T4 (F4B-E49 y siguientes).
+  - El esqueleto del RED no es un parche: lo da el generador custodiado `F4B-DRAFTS/pbt4/green_pbt4b_v45.py`, y la precondición 6 registró sus seis archivos en `F4B-DRAFTS/pbt4/cc4b/out-redgreen-v49-r4v/apply-red.txt`.
+  - La precondición 6 fija la partición `e87e024c`, con R_C = 291 y R_UI = 0, y el `CopySha` de las 21 copias.
+- **La planificación** `R20261121T084940Z-a2b4` se aceptó al primer lanzamiento: inyección PASS 8/8, A1-A8 8/8 y 15 criterios. nc4 es `R20261121T085348Z-e944`: solo A3 en fail, y el oráculo relativo se cumple.
+- **El Worker** `R20261121T085458Z-5ef5` (claude-sonnet-5-5/high) dio IMPLEMENTATION_COMPLETE, con una reparación del RED y una desviación declarada.
+  - **El RED `c1e4f458`** (55 rutas) lleva:
+    - el esqueleto, seis archivos de `src/` iguales byte a byte al registro de la precondición 6;
+    - los 478 `Skip`, en 21 archivos;
+    - las 21 copias y el kit, iguales a los de la precondición 6;
+    - las seis clases de las CT.
+  - **La reparación `9b2d1893`,** hijo directo del RED, solo toca `tests/RackCad.Tests/PushBackFullPanelTests.cs`: CT-PBT4B-08 deja de comparar `Name` en «el resto del sobre del rack actual». `Name` es un campo editable, y la fila 08 del §5.2 habla de «los campos no editables, la identidad y la versión».
+  - **El GREEN `c065080d`** toca nueve archivos de código, iguales byte a byte al GREEN literal del generador, y ninguno de `tests/` ni de `Pilot/`.
+
+**CI** (los totales exactos de cada rama, F4B-E46):
+- **RED `44893322578`:** tests y ui-tests en failure; build-ui en success; build-plugin omitido. Core 19 605 = 18 841 + 306 Failed + 458 Skipped; UI 2 481 = 2 430 + 3 + 48.
+- **La reparación `44899232904`:** los mismos 306 + 3 fallos, con la misma forma.
+- **GREEN `44903818806`:** 4/4. Core 19 605 = 19 147 + 0 + 458; UI 2 481 = 2 433 + 0 + 48.
+
+**La reparación del RED (RR, F4B-E35):**
+- `rr_check` dio PASS en RR-1, RR-2 y RR-6, la n.º 10 y RR-3 (a). La clase reparada lleva 45 literales (42 líneas y 3 valores), todos en RedSha, y ninguno cambia su cuenta.
+- **La lectura RR-3 estuvo diferida hasta la reparación:**
+  - El generador del contrato emitido no trae `rr3_table_check`, y la lectura de PB-T4a no lee las filas de PB-T4b.
+  - La planificación no la exigió, y un `RedRepairSha` sin ella habría parado el relevo, la verificación y `rr_check`. Era una falla cerrada y una parada de herramienta.
+  - **Al aparecer la reparación,** la cadena escribió su lectura de las 105 filas de PB-T4b de §6.0 (`pbt4b_rr3_reading.py`, con su autoprueba sobre las filas reales). Resuelve solo lo que el paquete fija.
+  - **La clase reparada,** `PushBackFullPanelTests`, queda resuelta.
+  - **Quedan pendientes tres clases,** porque sus filas remiten a literales que el paquete no enumera: `WorkspaceFullCopyGuardTests`, `PushBackFullPanelGuardTests` y `PushBackFullPanelFieldTests`. Si una reparación las tocara, la cadena pararía.
+
+**Revisiones:**
+- **La directa:** conforme, con una desviación que el Owner ratificó.
+- **La independiente:** ACEPTABLE CON MENORES 0/1/8, condicionada a I-01, con cuatro hallazgos para el Owner:
+  - OWNER-01: el nombre tras «Conservar» y «Actualizar»;
+  - OWNER-02: la disposición de I-01;
+  - OWNER-03: los vacíos de M-04;
+  - OWNER-04: el segundo «Sí» sin cambios en el dibujo real.
+
+**Las tres decisiones del Owner sobre el código** (`F4B-DRAFTS/coordinator/owner-pbt4b-code-decisions.md`, literales):
+1. **CT-20 (5), la desviación I-01: «Ratificar como errata (Recomendado)».**
+   - La comprobación (5) vale sobre las nueve clases de C-0 (`WorkspaceFullCopyGuardTests.cs:630-632`). Tal cual daría `False` por cinco apariciones en literales de cadena de dos copias de guarda custodiadas.
+   - Solo para este caso y sin cambio de código.
+2. **Los vacíos de M-04: «Llevarlas a PB-T4d (Recomendado)».** Dos guardas de PEG, y lo que hereda su copia, pasan en vacío en el GREEN. Entran en la lista de PB-T4d, que vuelve al Owner antes de emitirse.
+3. **El nombre tras «Conservar» y «Actualizar»: «Es lo esperado (Recomendado)»** (D-PB-05, paso 4). El Smoke-PB lo comprueba, y la mejora del texto de la presentación queda en `docs/ideas-futuras.md`.
+
+**La verificación**, en dos corridas. La primera se custodia tal cual, como unidad propia:
+1. **`R20261121T132429Z-db16`, lanzamiento no productivo por tiempo (TIMEOUT).**
+   - El Controller trabajó 600 s, completó 50 órdenes y el lanzador lo cortó con exit 124, sin `turn.completed` ni `output.json`.
+   - La sesión la dio por no productiva, como la `611f` de PB-T4a (`F4B-DRAFTS/pbt4/session-verify-timeout-decision.md`): no es una verificación ni gasta intento.
+   - El tope de los lanzadores de la verificación y de los controles pasó de 600 a 1800 s, sin otro cambio.
+   - El relevo la registra como `TIMEOUT`.
+2. **`R20261121T133638Z-1b82`, EXECUTION_VERIFIED / NONE, 14/14,** con `inputs/coordinator-disposition.md` (`F4B-DRAFTS/pbt4/coordinator-disposition-ct20-pbt4b.md`). Tiene un solo hallazgo: la disposición solo ratifica la errata de CT-20 (5).
+
+**Controles:**
+- **nc1** `R20261121T134602Z-5688`: CONTROL NOT PASSED, con la cascada del SHA falso.
+  - Difieren de la verificación real Handoff, Identity, Remote, Scope, Ci, Tests y Trailer, con S-04 y PBT4B-C18.
+  - Su sustituto de PD-F4B-01 (`R20261121T140108Z-d3ca`, ScriptSha256 `41440edc…`, `--task PBT4`) dio FAIL en `d1_FailSetWithinAllowed` y `e2_OtherFailCitesFakeSha`. Trailer está entre los fallos, y su evidencia da la misma causa con otras palabras («no existe el objeto CurrentSha»), sin citar el SHA falso.
+  - Es la **sexta variación de nc1 en F4B**, tras PB-TC, PB-TC2, PB-T2a, PB-T2b y PB-T4a.
+  - El Owner eligió «Aceptarlo solo esta vez (Recomendado)», así que **nc1 = SATISFIED_BY_OWNER_DISPOSITION**. El sustituto no cambia y no se amplía ninguna firma.
+- **nc2** `R20261121T135034Z-464a`: **CONTROL PASS,** ordinario: Scope, con PBT4B-C01.
+- **nc3** `R20261121T135520Z-2bac`: CONTROL NOT PASSED.
+  - FreeText detecta la frase inyectada, pero antes difiere Tests, con PBT4B-C04: el control lee 171 de los 306 fallos del RED (`NullReferenceException` en código de prueba) como no producidos por aserción.
+  - Con la regla de INV-PBT4B-02 (la primera línea del StackTrace bajo `tests/`), los 306 son por aserción, como dieron la verificación real y la revisión independiente (M-07). No hay sustituto de nc3.
+  - El Owner eligió «Aceptarlo solo esta vez (Recomendado)», así que **nc3 = SATISFIED_BY_OWNER_DISPOSITION**.
+  - La etiqueta «PorAsercion» de las Notes del relevo del trabajo se corrige en la cadena de PB-T4c.
+
+**Las dos decisiones del Owner sobre los controles** (`F4B-DRAFTS/coordinator/owner-pbt4b-controls-decisions.md`, literales): nc1, «Aceptarlo solo esta vez (Recomendado)», y nc3, «Aceptarlo solo esta vez (Recomendado)». Con las tres del código, son las cinco decisiones del Owner de esta cadena.
+
+**El registro declarado de las 478** (`F4B-DRAFTS/superseding-characterization.md`, «## PB-T4b»): este cierre completa su tabla de ejecución y la pasa a EJECUTADA. Cambian cinco líneas, con el texto y la fuente en `F4B-DRAFTS/pbt4/superseding-pbt4b-close-fill.md`.
+
+**Resultado:** **F4B-PBT4-FULL-DRAFT-PANEL = CLOSED / PASS WITH LIMITATIONS** sobre `c065080d`, con attempts 1 de 3.
+- **El borrador del panel del Workspace es el modelo completo de PB-T3,** sobre la lectura completa de PB-T4a, sin traducir estados.
+- **La regla de la escala,** única y en Application (`NumericTextRule`): `NumericFieldValidation` delega en ella sin cambiar su comportamiento, y `PushBackAnnotationScaleRule` la usa.
+- **«Actualizar»** va por `PrepareFull` y `ExecuteFull`.
+- **«Conservar mi borrador»** va en dos «Sí», con la presentación «Por grupos» y su testigo.
+- **Cada lectura materializa el modelo completo una sola vez.**
+- **Las 478 pruebas de la lista** quedan saltadas con su motivo literal, cada una sustituida por su copia o su equivalente.
+- **El código del piloto queda sin uso;** lo retira PB-T4d.
+
+**Las limitaciones:**
+- el nombre tras «Conservar» y «Actualizar» (OWNER-01): es lo esperado, y lo comprueba el Smoke-PB;
+- el segundo «Sí» sin cambios en el dibujo real (OWNER-04): lo comprueba el Smoke-PB;
+- el coste real de la lectura, sin AutoCAD;
+- los vacíos de M-04, que van a la lista de PB-T4d;
+- RR-3, con tres clases pendientes;
+- los menores M-01 a M-08, en `docs/ideas-futuras.md`;
+- nc1 y nc3, satisfechos por disposición del Owner. La sexta variación de nc1 hace del sustituto un candidato a revisar, sin cambio ahora;
+- sin AutoCAD, OB-03.2, «Actualizar», «Conservar» y el borrado de vistas reales quedan para el Smoke-PB.
+
+**Siguiente:** el paquete de PB-T4c, con su emisión condicional (F4B-E49, pregunta 4):
+- la comprobación acotada en 0/0;
+- la remedición sobre este cierre, sin cambio material;
+- la lista que vio el Owner.
+
+PB-T4d vuelve al Owner con su lista antes de emitirse.

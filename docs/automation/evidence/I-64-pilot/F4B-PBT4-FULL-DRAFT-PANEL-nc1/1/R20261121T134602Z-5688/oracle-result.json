@@ -1,0 +1,60 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261121T134602Z-5688",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Handoff",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "fail",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "fail",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "fail",
+    "Tests": "fail",
+    "Trailer": "fail",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Handoff",
+    "Identity",
+    "Remote",
+    "Scope",
+    "Ci",
+    "Tests",
+    "Trailer"
+  ],
+  "PreviousSameAsReal": false,
+  "LaterSameAsReal": false,
+  "TriggeredStopConditions": [
+    "S-04",
+    "PBT4B-C18"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Identity": "worker-handoff.json CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef; git rev-parse HEAD=c065080d3fd1dd8bb1937b98b81e9a0c1714777b; git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad=c065080d3fd1dd8bb1937b98b81e9a0c1714777b. git merge-base --is-ancestor BaseSha CurrentSha falla con bad object; BaseSha RedSha pasa."
+  },
+  "OutputSha256": "2E8D9DF9B50C18121867BBF2F83B8B5B3F11D0D33D11DC2935B891683A2BFA60",
+  "ManualFreeText1610": []
+}

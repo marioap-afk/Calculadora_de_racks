@@ -1,0 +1,6 @@
+e78a6429013d0793 *src/RackCad.Application/Formatting/NumericTextRule.cs
+d7706f5298bd860f *src/RackCad.Application/Systems/PushBack/Draft/PushBackAnnotationScaleRule.cs
+eff6f487ba78f517 *src/RackCad.Application/Systems/PushBack/Draft/PushBackFullFieldAdapter.cs
+6a2d8d327ffd7aba *src/RackCad.Application/Systems/PushBack/Draft/PushBackKeepMinePresentation.cs
+151b3437fd27d691 *src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+3cd599f7c13c70b6 *src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs

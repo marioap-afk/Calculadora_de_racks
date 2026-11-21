@@ -1,0 +1,80 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT4-FULL-DRAFT-PANEL",
+  "RunId": "R20261121T135520Z-2bac",
+  "DelegationRunId": "R20261121T084940Z-a2b4",
+  "WorkRunId": "R20261121T085458Z-5ef5",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Entry reports zero persistent participants and zero unattributable processes. Cession.SessionOperated=false."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json IDs match TaskId, Attempt=1, DelegationRunId and WorkRunId. OutputWrittenUtc=2026-11-21T06:35:33.509979-06:00 is after Cession.StartUtc=2026-11-21T08:55:17Z; handoff is present at the expected WorkRunId path."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor f5ff00eed6bf2c2b9dcd0994474ffefde88d5796 8f783df58fb0e5688d58299951fcbdcde727f33e exited 0. git log shows BaseSha is one commit above AuthorityRevision. git diff --name-only reports four docs paths: two UNIT_DOC, two absent from Authorities; none is EXTERNAL or UNIT_CHANGE. git show read AUTOMATION_PLAN sections 16.3, 16.8, 16.9, 16.10 at AuthorityRevision and README section 8 plus AGENTS.md at MainSha."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "delegation.json and gate-contract.json match on Authorities, AllowedWriteScope, ForbiddenWriteScope, Invariants, RequiredTests, ExpectedEvidence, StopConditions and Objective. byte-fidelity-check.json reports PASS for all eight collections; AllowedWriteScope has 59 entries and RequiredTests has 77."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "Handoff CurrentSha=c065080d3fd1dd8bb1937b98b81e9a0c1714777b; git rev-parse HEAD=c065080d3fd1dd8bb1937b98b81e9a0c1714777b; git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad=c065080d3fd1dd8bb1937b98b81e9a0c1714777b. Branch and worktree match delegation. BaseSha and RedSha are ancestors of CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json records Entry.LsRemoteSha=CurrentSha and Entry.OriginMainSha=812baf879612320653094a8aaf46aca0bac81383, equal to MainSha. CurrentRun is completed push 44903818806 for the exact branch and CurrentSha."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "Read-only scope script checked git diff --name-only for Base..Current (59 paths), Base..Red (55), Red..RedRepair (1), RedRepair..Current (9), and ChainBase..Current. Every path is in the 59-entry AllowedWriteScope; none intersects ForbiddenWriteScope. RED matches all 55 paths in scope-lists.txt; the six src blobs match skeleton-red.json after CRLF-to-LF normalization. RR changes only tests/RackCad.Tests/PushBackFullPanelTests.cs; post-repair changes are the nine declared GREEN paths."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned empty. git check-ignore -v for the handoff path matched .gitignore rule artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "relay-record-work.json records CurrentRun 44903818806 as completed push on refs/heads/architecture/workspace-persistente-rackcad at CurrentSha; all four required jobs succeeded. RedRun 44893322578 and repair run 44899232904 are completed pushes at their respective SHAs; each has Core and UI test jobs failed, Build UI succeeded and Plugin build skipped as recorded."
+    },
+    "Tests": {
+      "Result": "fail",
+      "RedPart": "fail",
+      "Evidence": "required-tests.txt SHA-256 matches 9BCC07AA7F636D36C4C1E4E1B4ED7C80D283CF790319928A21CE49681769649C and its 77 filters match the contract. TRX totals match ExpectedCounts for GREEN, RED and RED repair; all filters meet their selection and outcome counts. However, inspection of ci-core-red/44893322578/core.trx found 171 of its 306 failures report exception-type messages, including System.NullReferenceException, rather than assertion failures. The same issue appears in ci-core-rr/44899232904/core.trx. This triggers PBT4B-C04 and invalidates the RED criterion."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha shows RED, RED repair and GREEN commits each contain Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching worker-handoff.json Worker.Trailer and the effective model."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 with Deep/high effort. relay-record-work.json records effective claude-sonnet-5-5 and high effort; ModelRequested=sonnet is the permitted subagent launch family."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "Full-field scan of the seven required handoff fields found one prohibited phrase match in WorkCompleted, length 2153 characters, in its final sentence. The matched phrase is omitted from this report."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json records zero permission denials, five tool errors with none pending after reread, and no usage-limit warning. Output and entry process rereads report no persistent foreign or unattributable process."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Tests",
+  "TriggeredStopConditions": [
+    "PBT4B-C04"
+  ],
+  "Findings": [
+    "PBT4B-C04 is triggered: 171 Core failures in both the RED and RED-repair TRX report exceptions instead of assertion failures.",
+    "The handoff free-text scan also found one restricted-phrase match in WorkCompleted."
+  ],
+  "RecommendedNextAction": "Return the exception failures and handoff text issue to the Coordinator for the required stop handling."
+}

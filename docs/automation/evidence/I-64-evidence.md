@@ -8760,3 +8760,42 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - **El generador custodiado** abre el pendiente de las `Theory` de `MemberData` solo cuando falta la precondición 6, después de leerla de la revisión. La primera BASE, sobre `f5ff00ee`, no llegó a escribirse: el generador abría ese pendiente antes de leer la precondición 6 custodiada en X, y al emitir abortaba. Su salida en seco sobre el cierre de PB-T4a es la misma byte a byte (`make_pbt4b_contract-dry.txt`, en X).
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 282. PB-T4b: la cadena, una reparación del RED, cinco decisiones del Owner y el cierre (F4B-E53)
+
+**Qué se custodia:**
+- **Las unidades de la delegación,** en `F4B-PBT4-FULL-DRAFT-PANEL/1/`, cada una con su manifiesto:
+  - la planificación `a2b4`, con nc4 `e944`;
+  - el Worker `5ef5`;
+  - la verificación válida `1b82`;
+  - los controles nc1 `5688`, nc2 `464a` y nc3 `2bac`.
+- **La verificación anterior, como unidad propia:** `db16`, el lanzamiento no productivo por tiempo (TIMEOUT, exit 124 a los 600 s).
+- **El sustituto de nc1** `d3ca` (FAIL), como unidad propia. nc2 pasó sin sustituto, y nc3 no tiene.
+- **Las revisiones,** con su encargo.
+- **Las cinco decisiones del Owner, con su texto literal:**
+  - las tres sobre el código: la errata de CT-20 (5), los vacíos a PB-T4d y el nombre tras «Conservar»;
+  - las dos sobre los controles: nc1 y nc3, aceptados solo esta vez.
+- **Las dos piezas de la verificación:**
+  - la disposición de CT-20, que la verificación recibió como entrada;
+  - la decisión de la sesión sobre el TIMEOUT.
+- **La lectura RR-3 de la cadena** (`pbt4b_rr3_reading.py`), con su autoprueba sobre las filas reales y la salida de `rr_check` sobre la reparación.
+- **El registro declarado de las 478,** completado, con sus cinco sustituciones.
+- **El paquete de cierre.**
+- **La nota de `docs/ideas-futuras.md`.**
+- **El estado.**
+
+**La delegación:**
+- **RED, reparación y GREEN:** el RED `c1e4f458`, la reparación del RED `9b2d1893` (solo `PushBackFullPanelTests.cs`, CT-PBT4B-08) y el GREEN `c065080d`.
+- **CI:** las corridas `44893322578` (el RED), `44899232904` (la reparación) y `44903818806` (el GREEN).
+  - La del GREEN da 4/4: Core 19 605 = 19 147 + 0 + 458 y UI 2 481 = 2 433 + 0 + 48, los totales exactos de su rama.
+- **Revisión independiente:** 0/1/8, más OWNER-01 a OWNER-04. I-01 la ratificó el Owner como errata.
+- **Verificación:** 14/14, la segunda corrida.
+- **Controles:**
+  - nc1 por disposición del Owner (su sustituto dio FAIL: la sexta variación en F4B);
+  - nc2 CONTROL PASS;
+  - nc3 por disposición del Owner (Tests difiere antes que FreeText).
+
+**Límites:**
+- solo documentación;
+- sin AutoCAD;
+- los eventos y las transcripciones, solo por SHA-256.

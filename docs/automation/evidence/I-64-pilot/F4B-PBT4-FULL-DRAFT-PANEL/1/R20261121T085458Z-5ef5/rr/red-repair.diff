@@ -1,0 +1,15 @@
+diff --git a/tests/RackCad.Tests/PushBackFullPanelTests.cs b/tests/RackCad.Tests/PushBackFullPanelTests.cs
+index f8884b66..dc2530e7 100644
+--- a/tests/RackCad.Tests/PushBackFullPanelTests.cs
++++ b/tests/RackCad.Tests/PushBackFullPanelTests.cs
+@@ -481,7 +481,9 @@ namespace RackCad.Tests
+                     var now = store.Deserialize(setup.After.RawEnvelopes[key]);
+                     var materialized = PushBackFullDraftMaterializer.Materialize(text, PilotKit.Catalog);
+                     design = design && materialized.IsAdmitted && materialized.State.Editable.AnnotationScale == 2.25;
+-                    rest = rest && written.Name == now.Name && written.Id == now.Id && written.SchemaVersion == now.SchemaVersion
++                    // The name is of the draft, which keeps it (it is an edited field of the design); the rest of the envelope, the identity, the
++                    // version, the kind, the view and the section, is the one of the current rack.
++                    rest = rest && written.Id == now.Id && written.SchemaVersion == now.SchemaVersion
+                         && written.Kind == now.Kind && written.View == now.View && written.Section == now.Section;
+                 }
+ 
