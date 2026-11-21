@@ -565,7 +565,7 @@ namespace RackCad.Tests
 
         // ------------------------------------------------------------------------------------------------- CT-20
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4c: sustituida por su equivalente en PushBackEditAllFullCopyGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4c-list-3-decision.md).")]
         public void CT_PBT4B_20_TheScriptOfSkipAndDuplicateGivesTheCopiesTheKitAndTheSkipsOfTheClosedList()
         {
             var log = new List<string>();

@@ -292,6 +292,11 @@ namespace RackCad.Application.Workspace
         public void SetPilotUpdateHost(IPushBackPilotUpdateHost host) =>
             _updateHost = host ?? throw new ArgumentNullException(nameof(host));
 
+        /// <summary>I-64 F4B PB-T4c (RED): the setter of the host of the full editor of "Editar todo", still without effect.</summary>
+        public void SetFullEditHost(IWorkspaceFullEditHost host)
+        {
+        }
+
         /// <summary>
         /// The edit intention of the user for one rack of the bounded Push Back pilot (D-T2B2-06): at most ONE logical read, and a
         /// draft only when the read is admitted. Steps 1 to 5 read nothing; the order is the one of the table of the package.

@@ -303,7 +303,7 @@ namespace RackCad.Tests
             return shown >= 0 && written >= 0 && shown < written;
         }
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4c: sustituida por su equivalente en PushBackEditAllNameWritersGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 4).")]
         public void CT_PBT1B_15_TheWritersOfNameInThePluginRunAfterTheWindowCloses()
         {
             var log = new List<string>();

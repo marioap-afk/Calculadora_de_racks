@@ -224,6 +224,9 @@ namespace RackCad.UI.Workspace
         /// <summary>The Edit button: the box is read-only and a gesture can open it.</summary>
         public bool ShowEditButton => _showEdit;
 
+        /// <summary>I-64 F4B PB-T4c (RED): the "Editar todo" button, still never offered.</summary>
+        public bool ShowEditAllButton => false;
+
         /// <summary>
         /// Whether a click or a key on the box, or the double click on the tab, may start the first gesture: only while the Edit button is
         /// offered, with no diagnostic of a read that was not admitted for this surface and with no Error. Only the Edit button reads again
@@ -409,6 +412,11 @@ namespace RackCad.UI.Workspace
             {
                 EnterFailure(ex);
             }
+        }
+
+        /// <summary>I-64 F4B PB-T4c (RED): "Editar todo", still without effect: it calls no operation of the port.</summary>
+        public void EditAll()
+        {
         }
 
         /// <summary>Enter or leaving the box: commits the pending text, only with pending text and an editable box.</summary>

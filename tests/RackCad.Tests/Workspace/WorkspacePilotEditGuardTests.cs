@@ -152,7 +152,7 @@ public class WorkspacePilotEditGuardTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4c: sustituida por su equivalente en PushBackEditAllPortEquivalenceGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 4).")]
     public void ThePortDeclaresTheSeventeenOperationsWithTheEnumsAsOrderedPrefixesAndNamesNoTypeOfTheDraftsNorOfThePilot()
     {
         Assert.Empty(PortViolations(Port()));

@@ -261,6 +261,71 @@ namespace RackCad.Application.Workspace
             new(status, EditWitnessStatus.NotEvaluated, reason, null, null, null);
     }
 
+    /// <summary>How "Editar todo" ended (I-64 F4B PB-T4c, D-PBT4-13). The default value is NotAvailable.</summary>
+    public enum EditAllStatus
+    {
+        /// <summary>The port does not offer the full editor, no reader is assigned or there is no full editor here: nothing was read or opened.</summary>
+        NotAvailable,
+
+        /// <summary>It waits: the gate, a read in progress, a notice of the panel, an update in flight or a work that is being applied.</summary>
+        Waiting,
+
+        /// <summary>The request is not of the active document: nothing was read or opened.</summary>
+        Rejected,
+
+        /// <summary>There was no work and the edit intention did not begin it: the outcome carries the one of the intention.</summary>
+        NotBegun,
+
+        /// <summary>The work is in a state that the editor does not open (unknown, in error or undecidable), or it still has pending text.</summary>
+        Refused,
+
+        /// <summary>The full editor was opened over the work and is closed again; Applied counts the edits that it handed to the work.</summary>
+        Closed,
+
+        /// <summary>A failure of the host during the operation: contained, and the session is not degraded.</summary>
+        Failed,
+    }
+
+    /// <summary>
+    /// I-64 F4B PB-T4c (D-PBT4-13) — the answer of the host to "Editar todo". A value: it names no type of the work and no type of the
+    /// systems, and the outcome of the intention that it may carry is the value of the edit intention.
+    /// </summary>
+    public readonly struct EditAllOutcome
+    {
+        private EditAllOutcome(EditAllStatus status, string? reason, EditIntentOutcome begin, int applied)
+        {
+            Status = status;
+            Reason = reason;
+            Begin = begin;
+            Applied = applied;
+        }
+
+        public EditAllStatus Status { get; }
+
+        /// <summary>Why the editor did not open; null for Closed and NotBegun.</summary>
+        public string? Reason { get; }
+
+        /// <summary>The outcome of the edit intention that did not begin the work (NotBegun); the default value otherwise.</summary>
+        public EditIntentOutcome Begin { get; }
+
+        /// <summary>How many times the editor handed its edits to the work (Closed); 0 otherwise.</summary>
+        public int Applied { get; }
+
+        public static EditAllOutcome NotAvailable(string? reason) => new(EditAllStatus.NotAvailable, reason, default, 0);
+
+        public static EditAllOutcome Waiting(string reason) => new(EditAllStatus.Waiting, reason, default, 0);
+
+        public static EditAllOutcome Rejected(string reason) => new(EditAllStatus.Rejected, reason, default, 0);
+
+        public static EditAllOutcome NotBegun(EditIntentOutcome begin) => new(EditAllStatus.NotBegun, null, begin, 0);
+
+        public static EditAllOutcome Refused(string reason) => new(EditAllStatus.Refused, reason, default, 0);
+
+        public static EditAllOutcome Closed(int applied) => new(EditAllStatus.Closed, null, default, applied);
+
+        public static EditAllOutcome Failed(string reason) => new(EditAllStatus.Failed, reason, default, 0);
+    }
+
     public enum EditCheckStatus
     {
         Unavailable,

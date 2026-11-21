@@ -683,7 +683,7 @@ namespace RackCad.UI.Tests
             }
         }
 
-        [Fact]
+        [Fact(Skip = "I-64 F4B PB-T4c: sustituida por su equivalente en PushBackEditAllApplyCloseTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4c-list-4-decision.md).")]
         public void CT_PBT2B_06_ClosingAsksOnlyForWhatWasNotApplied()
         {
             var log = new List<string>();

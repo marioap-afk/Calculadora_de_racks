@@ -113,6 +113,14 @@ namespace RackCad.Application.Workspace
         /// reads nothing and never throws; taking the outcome consumes it.
         /// </summary>
         EditUpdateProgress TakeUpdateProgress(WorkspaceRequest origin, string rackId);
+
+        /// <summary>
+        /// I-64 F4B PB-T4c (D-PBT4-13): "Editar todo" for one rack. Without work for the rack it begins it through the edit intention, so its
+        /// one read is the one of the intention; then it opens the full editor over the work and keeps the mark of the reads until the editor
+        /// closes, so while it is open every operation of the panel answers Busy or Waiting (K = 1). The editor only hands its edits to the
+        /// work: nothing here writes the drawing. A port that does not offer it answers NotAvailable.
+        /// </summary>
+        EditAllOutcome TryEditAll(EditIntentRequest request) => EditAllOutcome.NotAvailable(null);
     }
 
     /// <summary>The state of the field of one rack, as the port reports it. The default value is NotOpen.</summary>
