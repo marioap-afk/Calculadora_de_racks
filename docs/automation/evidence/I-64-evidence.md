@@ -8743,3 +8743,20 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - **la comprobación acotada,** `BOUNDED_RESULT`: `EMITIBLE TRAS CORRECCIONES; B 0 / I 1 / M 8; las importantes corregidas en el paquete v4.9 (I-01, la autoprueba de la guarda de los textos del anfitrion pasa en vacio en el GREEN: el equivalente de NoneOfThe30 trae su autoprueba sobre la tabla nueva, como G-4); sin decisiones nuevas del Owner salvo el coste de la lectura (pb-20-ab x4, origen-es-Primary, primera corrida); precondicion 6 sobre 78a7cef3: pasos 1 a 6 cumplen; recomprobacion v4.9: EMITIBLE, B 0 / I 0 / M 3`.
 
 **Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.
+
+## 281. Contrato de F4B-PBT4-FULL-DRAFT-PANEL
+
+**Contrato:** `I-64-pilot/F4B-PBT4-FULL-DRAFT-PANEL/coordinator/gate-contract.json` (F4B-E52), con su script generador al lado.
+- **Alcance:** una lista blanca exacta de 59 rutas:
+  - WHC, WEI, FVM, PV, `NumericFieldValidation.cs` y RIA (`UNIT_CHANGE`);
+  - los archivos nuevos de `src/` y de `tests/` que nombra el paquete, con el kit y las 21 copias de la partición (su sha256, en `CopySha`);
+  - solo para los 478 `Skip`, los 21 archivos de la lista.
+- **`ForbiddenWriteScope`:** 458 entradas, con el método de PB-T0 ([PKC-C]).
+- **Invariantes y paradas:** 14 invariantes y 18 paradas propias. P-01 va en la Snapshot K (F4B-E37). C11 lleva los sustitutos de nc1 (F4B-E40) y de nc2 v2 (F4B-E43), con `--task PBT4`.
+- **Filtros:** 77 filas de `RequiredTests`: 60 de `RackCad.Tests.csproj`, 17 de `RackCad.UI.Tests.csproj`; 21 con `ExpectRed`.
+- **La CI prevista,** con el total exacto de cada rama (F4B-E46): GREEN Core 19 605 = 19 147 + 0 + 458 y UI 2 481 = 2 433 + 0 + 48; el RED, con los mismos totales y 306 `Failed` en Core y 3 en UI.
+- **Revisiones:** `AuthorityRevision` `f5ff00eed6bf2c2b9dcd0994474ffefde88d5796` y `MainSha` `812baf879612320653094a8aaf46aca0bac81383`. El anclaje es el cierre de PB-T4a (`78a7cef3`).
+- **`attempts`:** 1 de 3.
+- **El generador custodiado** abre el pendiente de las `Theory` de `MemberData` solo cuando falta la precondición 6, después de leerla de la revisión. La primera BASE, sobre `f5ff00ee`, no llegó a escribirse: el generador abría ese pendiente antes de leer la precondición 6 custodiada en X, y al emitir abortaba. Su salida en seco sobre el cierre de PB-T4a es la misma byte a byte (`make_pbt4b_contract-dry.txt`, en X).
+
+**Límites:** solo documentación en este paso; sin AutoCAD.
