@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: none
   attempts: 1
-  next_action: "F4B PB-T4d: paquete de PB-T4 v5.4, las tandas del Owner 10 a 14, las decisiones de la sesion (D-S11 a D-S16), la precondicion 6, la comprobacion acotada de PB-T4d (CA-T4d y sus recomprobaciones) y la entrada de PB-T4d del registro declarado custodiados; siguiente: emitir el contrato de F4B-PBT4-RETIRE-PILOT con attempts 1 de 3 (F4B-E56)"
+  next_action: "F4B-PBT4-RETIRE-PILOT: contrato emitido (AuthorityRevision 23c29236, attempts 1 de 3); siguiente: planificacion del Controller (colecciones opacas por la sesion, F4B-E21), comparacion byte a byte, A1-A8, nc4 y Worker"
   last_evidence_commit: 0f49f69160cdffc1d2933d6165d5f472b5793d84
 execution_context:
   mode: manual
