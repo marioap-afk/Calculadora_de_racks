@@ -1,0 +1,570 @@
+{
+ "Seed": 20261122,
+ "Exhaustive": {
+  "Count": 240000,
+  "Seconds": 3.5
+ },
+ "Random": {
+  "Count": 60000,
+  "Seconds": 34.0
+ },
+ "Stats": {
+  "total": 300019,
+  "mismatch": 0,
+  "v2True": 76204,
+  "v2False": 223815,
+  "pNone": 46562,
+  "pIsPrefix": 62576,
+  "caDup": 117548,
+  "changedEmpty": 33125,
+  "coveredByPrefixOnly": 29524,
+  "forbiddenHit": 74185,
+  "excl_min_when_p": 2,
+  "maxN": 12,
+  "byN": {
+   "0": 6311,
+   "1": 8358,
+   "2": 35111,
+   "3": 211507,
+   "8": 5843,
+   "5": 5832,
+   "7": 5713,
+   "6": 5697,
+   "4": 5890,
+   "9": 3084,
+   "12": 2571,
+   "11": 2015,
+   "10": 2087
+  }
+ },
+ "Mismatches": [],
+ "Edges": [
+  {
+   "Edge": "p igual a un prefijo del alcance",
+   "p": "a/",
+   "ca": [
+    "a/"
+   ],
+   "changed": [
+    "a/"
+   ],
+   "forbidden": [],
+   "v2": [
+    "ok",
+    true
+   ],
+   "v2_excl": 3,
+   "v3": [
+    "ok",
+    true
+   ],
+   "Same": true
+  },
+  {
+   "Edge": "p cubierto solo por prefijo",
+   "p": "a/b/c",
+   "ca": [
+    "a/",
+    "x"
+   ],
+   "changed": [
+    "a/b/c"
+   ],
+   "forbidden": [],
+   "v2": [
+    "ok",
+    true
+   ],
+   "v2_excl": 6,
+   "v3": [
+    "ok",
+    true
+   ],
+   "Same": true
+  },
+  {
+   "Edge": "p cubierto por prefijo y exacto",
+   "p": "a/b",
+   "ca": [
+    "a/",
+    "a/b"
+   ],
+   "changed": [
+    "a/b",
+    "a/c"
+   ],
+   "forbidden": [],
+   "v2": [
+    "ok",
+    true
+   ],
+   "v2_excl": 5,
+   "v3": [
+    "ok",
+    true
+   ],
+   "Same": true
+  },
+  {
+   "Edge": "p no cubierto",
+   "p": "c",
+   "ca": [
+    "a/",
+    "b"
+   ],
+   "changed": [
+    "c"
+   ],
+   "forbidden": [],
+   "v2": [
+    "ok",
+    false
+   ],
+   "v2_excl": 8,
+   "v3": [
+    "ok",
+    false
+   ],
+   "Same": true
+  },
+  {
+   "Edge": "changed vacio con p",
+   "p": "a",
+   "ca": [
+    "a"
+   ],
+   "changed": [],
+   "forbidden": [],
+   "v2": [
+    "ok",
+    true
+   ],
+   "v2_excl": 2,
+   "v3": [
+    "ok",
+    true
+   ],
+   "Same": true
+  },
+  {
+   "Edge": "changed vacio y p None",
+   "p": null,
+   "ca": [
+    "a"
+   ],
+   "changed": [],
+   "forbidden": [],
+   "v2": [
+    "ok",
+    false
+   ],
+   "v2_excl": 0,
+   "v3": [
+    "ok",
+    false
+   ],
+   "Same": true
+  },
+  {
+   "Edge": "alcance vacio",
+   "p": "a",
+   "ca": [],
+   "changed": [
+    "a"
+   ],
+   "forbidden": [],
+   "v2": [
+    "ok",
+    false
+   ],
+   "v2_excl": 2,
+   "v3": [
+    "ok",
+    false
+   ],
+   "Same": true
+  },
+  {
+   "Edge": "duplicados de p en el alcance",
+   "p": "a",
+   "ca": [
+    "a",
+    "a",
+    "b"
+   ],
+   "changed": [
+    "a",
+    "b"
+   ],
+   "forbidden": [],
+   "v2": [
+    "ok",
+    true
+   ],
+   "v2_excl": 10,
+   "v3": [
+    "ok",
+    true
+   ],
+   "Same": true
+  },
+  {
+   "Edge": "duplicados del prefijo",
+   "p": "a/x",
+   "ca": [
+    "a/",
+    "a/"
+   ],
+   "changed": [
+    "a/x"
+   ],
+   "forbidden": [],
+   "v2": [
+    "ok",
+    true
+   ],
+   "v2_excl": 5,
+   "v3": [
+    "ok",
+    true
+   ],
+   "Same": true
+  },
+  {
+   "Edge": "p prohibido exacto",
+   "p": "a",
+   "ca": [
+    "a",
+    "b"
+   ],
+   "changed": [
+    "a"
+   ],
+   "forbidden": [
+    "a"
+   ],
+   "v2": [
+    "ok",
+    false
+   ],
+   "v2_excl": 6,
+   "v3": [
+    "ok",
+    false
+   ],
+   "Same": true
+  },
+  {
+   "Edge": "p prohibido por prefijo",
+   "p": "a/x",
+   "ca": [
+    "a/x"
+   ],
+   "changed": [
+    "a/x"
+   ],
+   "forbidden": [
+    "a/"
+   ],
+   "v2": [
+    "ok",
+    false
+   ],
+   "v2_excl": 3,
+   "v3": [
+    "ok",
+    false
+   ],
+   "Same": true
+  },
+  {
+   "Edge": "prefijo prohibido que no cubre",
+   "p": "a/x",
+   "ca": [
+    "a/x"
+   ],
+   "changed": [
+    "a/x"
+   ],
+   "forbidden": [
+    "a/x/"
+   ],
+   "v2": [
+    "ok",
+    true
+   ],
+   "v2_excl": 3,
+   "v3": [
+    "ok",
+    true
+   ],
+   "Same": true
+  },
+  {
+   "Edge": "cadena vacia como p",
+   "p": "",
+   "ca": [
+    ""
+   ],
+   "changed": [
+    ""
+   ],
+   "forbidden": [],
+   "v2": [
+    "ok",
+    true
+   ],
+   "v2_excl": 3,
+   "v3": [
+    "ok",
+    true
+   ],
+   "Same": true
+  },
+  {
+   "Edge": "cadena vacia en el alcance, p distinto",
+   "p": "a",
+   "ca": [
+    ""
+   ],
+   "changed": [
+    "a"
+   ],
+   "forbidden": [],
+   "v2": [
+    "ok",
+    false
+   ],
+   "v2_excl": 4,
+   "v3": [
+    "ok",
+    false
+   ],
+   "Same": true
+  },
+  {
+   "Edge": "\"/\" como prefijo universal de rutas con /",
+   "p": "/a",
+   "ca": [
+    "/"
+   ],
+   "changed": [
+    "/a"
+   ],
+   "forbidden": [],
+   "v2": [
+    "ok",
+    true
+   ],
+   "v2_excl": 3,
+   "v3": [
+    "ok",
+    true
+   ],
+   "Same": true
+  },
+  {
+   "Edge": "readme10 sobre prefijo que cubre p y otros",
+   "p": "a/b",
+   "ca": [
+    "a/"
+   ],
+   "changed": [
+    "a/b",
+    "a/c",
+    "a/d"
+   ],
+   "forbidden": [],
+   "v2": [
+    "ok",
+    true
+   ],
+   "v2_excl": 3,
+   "v3": [
+    "ok",
+    true
+   ],
+   "Same": true
+  },
+  {
+   "Edge": "p no es sorted(changed)[0]",
+   "p": "b",
+   "ca": [
+    "a",
+    "b"
+   ],
+   "changed": [
+    "a",
+    "b"
+   ],
+   "forbidden": [],
+   "v2": [
+    "ok",
+    true
+   ],
+   "v2_excl": 4,
+   "v3": [
+    "ok",
+    true
+   ],
+   "Same": true
+  },
+  {
+   "Edge": "p = sorted(changed)[0] cubierto por prefijo",
+   "p": "a/a",
+   "ca": [
+    "a/",
+    "b"
+   ],
+   "changed": [
+    "a/a",
+    "a/b",
+    "b"
+   ],
+   "forbidden": [],
+   "v2": [
+    "ok",
+    true
+   ],
+   "v2_excl": 6,
+   "v3": [
+    "ok",
+    true
+   ],
+   "Same": true
+  },
+  {
+   "Edge": "sin clave ForbiddenWriteScope",
+   "p": "a",
+   "ca": [
+    "a"
+   ],
+   "changed": [
+    "a"
+   ],
+   "forbidden": null,
+   "v2": [
+    "ok",
+    true
+   ],
+   "v2_excl": 3,
+   "v3": [
+    "ok",
+    true
+   ],
+   "Same": true
+  }
+ ],
+ "NonString": [
+  {
+   "Case": "int tras la ruta",
+   "v2": [
+    "exc",
+    "AttributeError"
+   ],
+   "v3": [
+    "ok",
+    true
+   ],
+   "Same": false
+  },
+  {
+   "Case": "int antes de la ruta",
+   "v2": [
+    "exc",
+    "AttributeError"
+   ],
+   "v3": [
+    "exc",
+    "AttributeError"
+   ],
+   "Same": true
+  },
+  {
+   "Case": "null",
+   "v2": [
+    "exc",
+    "AttributeError"
+   ],
+   "v3": [
+    "ok",
+    true
+   ],
+   "Same": false
+  },
+  {
+   "Case": "bool",
+   "v2": [
+    "exc",
+    "AttributeError"
+   ],
+   "v3": [
+    "exc",
+    "AttributeError"
+   ],
+   "Same": true
+  },
+  {
+   "Case": "lista",
+   "v2": [
+    "exc",
+    "AttributeError"
+   ],
+   "v3": [
+    "ok",
+    true
+   ],
+   "Same": false
+  },
+  {
+   "Case": "objeto",
+   "v2": [
+    "exc",
+    "AttributeError"
+   ],
+   "v3": [
+    "ok",
+    true
+   ],
+   "Same": false
+  },
+  {
+   "Case": "int y p None",
+   "v2": [
+    "ok",
+    false
+   ],
+   "v3": [
+    "ok",
+    false
+   ],
+   "Same": true
+  },
+  {
+   "Case": "alcance null",
+   "v2": [
+    "exc",
+    "TypeError"
+   ],
+   "v3": [
+    "exc",
+    "TypeError"
+   ],
+   "Same": true
+  },
+  {
+   "Case": "alcance cadena",
+   "v2": [
+    "ok",
+    true
+   ],
+   "v3": [
+    "ok",
+    true
+   ],
+   "Same": true
+  }
+ ],
+ "ExtractedBlockV2": "    # 10. ninguna mutacion alternativa de un campo conserva el contrato exacto y a la vez excluye la ruta cambiada\n    #     Solo AllowedWriteScope decide si la lista blanca admite la ruta (16.9 Scope). Como el contrato la cubre, toda lista que no la cubra difiere\n    #     de la lista exacta del contrato. Se comprueba ademas por enumeracion: todos los subconjuntos del alcance del contrato y sus variantes de README 10.\n    cands = []\n    for r in range(len(ca) + 1):\n        for comb in itertools.combinations(ca, r):\n            cands.append(list(comb))\n            if p is not None:\n                cands.append(readme10_mutation(list(comb), changed)[1] if changed else list(comb))\n    excl = [c for c in cands if p is not None and not covered(p, c)]\n    N['AlternativeCandidatesExcludingPath'] = len(excl)\n    P['10_NoAlternativeOneFieldMutation'] = p is not None and covered(p, ca) and len(excl) > 0 and all(c != ca for c in excl) \\\n        and not covered(p, ct.get('ForbiddenWriteScope', []))\n",
+ "ExtractedBlockV3": "    # 10. ninguna mutacion alternativa de un campo conserva el contrato exacto y a la vez excluye la ruta cambiada\n    #     Solo AllowedWriteScope decide si la lista blanca admite la ruta (16.9 Scope). Como el contrato la cubre, toda lista que no la cubra difiere\n    #     de la lista exacta del contrato. v3: la forma cerrada de la enumeracion de la v2 (todos los subconjuntos del alcance del contrato y sus variantes\n    #     de README 10): la lista vacia no cubre p, asi que hay al menos una candidata que la excluye, y ninguna que la excluya es igual a ca si ca cubre p.\n    N['AlternativeCandidatesExcludingPath'] = 'forma cerrada (v3): al menos 1; ninguna igual al alcance del contrato si este cubre la ruta (2^%d subconjuntos sin enumerar)' % len(ca)\n    P['10_NoAlternativeOneFieldMutation'] = p is not None and covered(p, ca) and not covered(p, ct.get('ForbiddenWriteScope', []))\n"
+}

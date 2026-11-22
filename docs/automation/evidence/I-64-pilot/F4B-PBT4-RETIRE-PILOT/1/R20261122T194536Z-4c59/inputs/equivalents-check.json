@@ -1,0 +1,40 @@
+{
+  "Regla": "Las clases nuevas que no son CT (INV-PBT4D-05: byte a byte, su NewFileSha, el sha256 de RedFiles de la precondicion 6 docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4d-precondition6.json; aqui, EquivalentSha), medidas por la sesion con pbt4d_lib.equiv_sha_check sobre git show RedSha:<ruta> (el blob, con CRLF normalizado a LF y sin BOM): Ok true y Mal vacio; Sha256 es el medido de cada uno y EquivalentSha el de la precondicion 6. Filtro: el del RequiredTests de su clase exacta (D-S8), con su ExpectRed. Una que falla en el RED o en el GREEN es PBT4D-C07, no PBT4D-C16. GreenLiteral: el GREEN literal del paquete (INV-PBT4D-02, pbt4d-green-v54.txt): para cada ruta, git show CurrentSha:<ruta>, con CRLF normalizado a LF, tiene ese sha256 (el de GreenFiles de la precondicion 6) y, con Sha256LF null (GreenDeleted), la ruta no existe en CurrentSha; el GREEN no toca otra ruta.",
+  "BaseSha": "399c9bec6d4778aa50096ab6204859c0bd015419",
+  "RedSha": "aa65ecfde87bfe274e9ba518f63dfe94c9e9f61a",
+  "RedRepairSha": null,
+  "Ok": true,
+  "Mal": {},
+  "Equivalentes": {
+    "tests/RackCad.Tests/PushBackRetirePilotFullCopyGuardTests.cs": {
+      "Sha256": "ee9b6f1513f549065da391c10d6da947cc8e197644efbc7d72cf41e46443e6cf",
+      "EquivalentSha": "ee9b6f1513f549065da391c10d6da947cc8e197644efbc7d72cf41e46443e6cf",
+      "Filtro": "FullyQualifiedName~RackCad.Tests.PushBackRetirePilotFullCopyGuardTests",
+      "ExpectRed": false
+    },
+    "tests/RackCad.Tests/PushBackRetirePilotPlanGuardTests.cs": {
+      "Sha256": "48c2f4a9619e2f3e7e5de4f1ad98bf68024635c268866fa1242f65f329d8ca43",
+      "EquivalentSha": "48c2f4a9619e2f3e7e5de4f1ad98bf68024635c268866fa1242f65f329d8ca43",
+      "Filtro": "FullyQualifiedName~RackCad.Tests.PushBackRetirePilotPlanGuardTests",
+      "ExpectRed": false
+    },
+    "tests/RackCad.Tests/PushBackRetirePilotRunTests.cs": {
+      "Sha256": "3554df0d960f18ef6bb2b930f4ac7757e8ca7438ebf6a9eda8934ef9acf8fe69",
+      "EquivalentSha": "3554df0d960f18ef6bb2b930f4ac7757e8ca7438ebf6a9eda8934ef9acf8fe69",
+      "Filtro": "FullyQualifiedName~RackCad.Tests.PushBackRetirePilotRunTests",
+      "ExpectRed": false
+    }
+  },
+  "GreenLiteral": {
+    "Pieza": "pbt4d-green-v54.txt",
+    "Sha256LF": {
+      "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs": "7b7f2fb46a7e036789eecc7382093a7b2a5f8bb023f3c4bf765c805aa67ee9cb",
+      "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs": "f70febaaea02a6f84c8f6502f5b540e72fdb5197bbd02c4493800fe43938078f",
+      "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs": "5c936519abbaf49f0b68fdc6484d8ea877a0370412af505f1bf3e13aa6d33b7b",
+      "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs": "a545dbffe26c25e147a0821470b00e7ea300bb77b8b4b1451cc2b7ed098d9f97",
+      "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs": null,
+      "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotFieldAdapter.cs": null
+    }
+  },
+  "TablaDeRR3": "leida con la lectura del generador"
+}

@@ -1,0 +1,77 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT4-RETIRE-PILOT",
+  "RunId": "R20261122T200420Z-4be7",
+  "DelegationRunId": "R20261122T172759Z-039a",
+  "WorkRunId": "R20261122T173325Z-c9e1",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.SessionOperated=false."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json matches TaskId, Attempt, DelegationRunId, and RunId; relay Outcome.OutputWrittenUtc=2026-11-22T19:04:43.270934Z is after Cession.StartUtc=2026-11-22T17:33:44Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor 23c2923616352a7b32fb3c68d8181c41c7feb2c9 399c9bec exited 0. git diff --name-only 23c29236 399c9bec lists four docs paths; none is EXTERNAL or UNIT_CHANGE. The unlisted generator path is not an authority. Required authority files were read with git show at AuthorityRevision or MainSha by class."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Delegation and contract TaskId, AuthorityRevision, MainSha, and write scopes agree; AllowedWriteScope is equal elementwise and in order (37 entries). byte-fidelity-check.json reports PASS for all eight collections."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "worker-handoff CurrentSha=7db6fd0c4e4a27ec05d56cce0daaf0883940a4e2; git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad return the same SHA. git merge-base --is-ancestor succeeds for AuthorityRevision..BaseSha, BaseSha..RedSha, and RedSha..CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay RemoteFacts: LsRemoteSha=7db6fd0c4e4a27ec05d56cce0daaf0883940a4e2 and OriginMainSha=812baf879612320653094a8aaf46aca0bac81383. CurrentRun is push on the exact branch and SHA, completed success; RedRun is push on the exact branch and RedSha, completed failure."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "Required read-only scope script printed 37 AllowedWriteScope entries. All 37 paths in git diff --name-only BaseSha CurrentSha, all 31 in BaseSha..RedSha, and all 37 in ChainBaseSha..CurrentSha -- src tests were exact list members. Forbidden intersection is empty; Domain, UI, and Plugin diff is empty."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned empty. git check-ignore -v identifies the handoff input under artifacts/ as ignored by .gitignore:3."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts CurrentRun 45057868915 has event=push, exact ref and HeadSha, completed success, and all four required jobs success. RedRun 45054587789 has Tests failure, UI and Build UI success, Plugin skipped. The four supplied TRX files are present for both SHAs."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "required-tests.txt SHA256 matches FBBCC0098744764FB2056E97EEA95FE90336F6FFCB06695F06849048B9DCE837; its 88 rows match contract RequiredTests. A read-only TRX parser found no filter below minimum or with an unexpected outcome across RED and GREEN. Totals match: Core RED 19418=19014 Passed+1 Failed+403 NotExecuted; Core GREEN 19418=19015+0+403; UI RED and GREEN each 2464=2416+0+48. The sole RED failure is CT-PBT4D-01 with a stack trace under tests/; GREEN touches no tests, so RT and ChainRedFiles are the 31 RED test paths. All 31 RED blob hashes and all 6 GREEN literal paths match their manifests. deletion-check.json is Ok for all 26 files; the 284-row retire list hash matches. equivalents-check.json is Ok with Mal empty. Owner disposition accepts the two stated file self-check limits for this attempt. warnings-cs.json has 215 records and ConWarningCS is empty."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B 399c9bec..7db6fd0c shows exactly the RED and GREEN commits; both contain Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching the declared trailer."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 and high effort. Relay records launch alias sonnet, effective model claude-sonnet-5-5, and effective effort high, consistent with subagent transport."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "The required full-field, case-insensitive whole-term scan reports one reserved-term match in WorkCompleted (508 characters), with context at the field end. It reports no matches in the other six fields."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work Notes report zero permission denials, no usage-limit warning, and three tool errors with none pending. Process reread reports zero persistent participants and zero persistent unattributable processes."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "FreeText contains one reserved-term match in WorkCompleted; the other six fields have no matches. No listed STOP condition was triggered."
+  ],
+  "RecommendedNextAction": "Remove the reserved term from WorkCompleted and issue a new verification."
+}

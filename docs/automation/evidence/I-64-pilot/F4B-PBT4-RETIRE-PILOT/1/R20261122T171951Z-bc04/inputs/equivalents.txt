@@ -1,0 +1,3 @@
+tests/RackCad.Tests/PushBackRetirePilotFullCopyGuardTests.cs | ee9b6f1513f549065da391c10d6da947cc8e197644efbc7d72cf41e46443e6cf | FullyQualifiedName~RackCad.Tests.PushBackRetirePilotFullCopyGuardTests | False | -
+tests/RackCad.Tests/PushBackRetirePilotPlanGuardTests.cs | 48c2f4a9619e2f3e7e5de4f1ad98bf68024635c268866fa1242f65f329d8ca43 | FullyQualifiedName~RackCad.Tests.PushBackRetirePilotPlanGuardTests | False | -
+tests/RackCad.Tests/PushBackRetirePilotRunTests.cs | 3554df0d960f18ef6bb2b930f4ac7757e8ca7438ebf6a9eda8934ef9acf8fe69 | FullyQualifiedName~RackCad.Tests.PushBackRetirePilotRunTests | False | -

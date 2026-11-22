@@ -1,0 +1,9 @@
+PBT4D-v3.json  casos=63 ok=63 pass=True det=True igual_a_la_primera=True
+PBT2A-v3.json  casos=63 ok=63 pass=True det=True igual_a_la_primera=True
+PBT3A-v3.json  casos=63 ok=63 pass=True det=True igual_a_la_primera=True
+PBT4A-v3.json  casos=63 ok=63 pass=True det=True igual_a_la_primera=True
+PBT4C-v3.json  casos=63 ok=63 pass=True det=True igual_a_la_primera=True
+PBT2A-v2.json  casos=63 ok=63 pass=True det=True igual_a_la_primera=True
+PBT3A-v2.json  casos=63 ok=63 pass=True det=True igual_a_la_primera=True
+PBT4A-v2.json  casos=63 ok=63 pass=True det=True igual_a_la_primera=True
+PBT4C-v2.json  casos=63 ok=63 pass=True det=True igual_a_la_primera=True

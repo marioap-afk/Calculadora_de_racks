@@ -1,0 +1,12 @@
+RED: 119 bloques EDIT con su OLD exactamente una vez; 23 archivos existentes, 5 nuevos, 3 borrados
+GREEN: 34 bloques EDIT con su OLD exactamente una vez; 4 archivos cambiados, 2 borrados
+nuevo tests/RackCad.Tests/PushBackRetirePilotCensusGuardTests.cs existe-en-BaseSha=False
+nuevo tests/RackCad.Tests/PushBackRetirePilotFullCopyGuardTests.cs existe-en-BaseSha=False
+nuevo tests/RackCad.Tests/PushBackRetirePilotGuardTests.cs existe-en-BaseSha=False
+nuevo tests/RackCad.Tests/PushBackRetirePilotPlanGuardTests.cs existe-en-BaseSha=False
+nuevo tests/RackCad.Tests/PushBackRetirePilotRunTests.cs existe-en-BaseSha=False
+lista: 284 filas
+miembro sin aparecer: tests/RackCad.UI.Tests/PushBackFieldValidationConcordanceTests.cs :: archivo (fila 275, borrar con registro)
+miembro sin aparecer: tests/RackCad.UI.Tests/PushBackDeclaredCorrectionPilotParityTests.cs :: archivo (fila 276, borrar con registro)
+miembro sin aparecer: tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotCanonicalLineEndingTests.cs :: archivo (fila 277, borrar con registro)
+miembros de la lista comprobados: 281; observaciones: 3

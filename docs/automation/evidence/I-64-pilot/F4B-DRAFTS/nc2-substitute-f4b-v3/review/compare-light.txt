@@ -1,0 +1,88 @@
+== PBT2A-v2.json  vs  PBT2A-v3.json
+  SubstituteResult: PASS | PASS
+  Properties iguales: True | falsas: [] [] | n: 10 10
+  Measured iguales salvo AlternativeCandidatesExcludingPath: True | Alt: (24, 'forma cerrada (v3): al menos 1; ninguna igual al alcance del contrato si este cubre la ruta (2^4 subconjuntos sin enumerar)')
+  SelfTest iguales: True | casos: 63 63 | Ok: 63 63 | SelfTestPass/Deterministic: True True True True
+  Record: SATISFIED_UNDER_PBT2A_EXACT_WHITELIST_SUBSTITUTE_F4B | SATISFIED_UNDER_PBT2A_EXACT_WHITELIST_SUBSTITUTE_F4B
+  rutas que difieren (2):
+    .Measured.AlternativeCandidatesExcludingPath: 24 | forma cerrada (v3): al menos 1; ninguna igual al alcance del contrato si este cubre la ruta (2^4 subconjuntos 
+    .ScriptSha256: C033E96CE147963FEB9C04733E9BFBEC7493FEA33D8FF79B1C2E8AB860798E45 | E68B6E5993B522DF83E7CD4CD2B136DDF503E237FD560B1A97067F24664328C6
+== PBT3A-v2.json  vs  PBT3A-v3.json
+  SubstituteResult: PASS | PASS
+  Properties iguales: True | falsas: [] [] | n: 10 10
+  Measured iguales salvo AlternativeCandidatesExcludingPath: True | Alt: (24576, 'forma cerrada (v3): al menos 1; ninguna igual al alcance del contrato si este cubre la ruta (2^14 subconjuntos sin enumerar)')
+  SelfTest iguales: True | casos: 63 63 | Ok: 63 63 | SelfTestPass/Deterministic: True True True True
+  Record: SATISFIED_UNDER_PBT3A_EXACT_WHITELIST_SUBSTITUTE_F4B | SATISFIED_UNDER_PBT3A_EXACT_WHITELIST_SUBSTITUTE_F4B
+  rutas que difieren (2):
+    .Measured.AlternativeCandidatesExcludingPath: 24576 | forma cerrada (v3): al menos 1; ninguna igual al alcance del contrato si este cubre la ruta (2^14 subconjuntos
+    .ScriptSha256: C033E96CE147963FEB9C04733E9BFBEC7493FEA33D8FF79B1C2E8AB860798E45 | E68B6E5993B522DF83E7CD4CD2B136DDF503E237FD560B1A97067F24664328C6
+== PBT4A-v2.json  vs  PBT4A-v3.json
+  SubstituteResult: PASS | PASS
+  Properties iguales: True | falsas: [] [] | n: 10 10
+  Measured iguales salvo AlternativeCandidatesExcludingPath: True | Alt: (1536, 'forma cerrada (v3): al menos 1; ninguna igual al alcance del contrato si este cubre la ruta (2^10 subconjuntos sin enumerar)')
+  SelfTest iguales: True | casos: 63 63 | Ok: 63 63 | SelfTestPass/Deterministic: True True True True
+  Record: SATISFIED_UNDER_PBT4_EXACT_WHITELIST_SUBSTITUTE_F4B | SATISFIED_UNDER_PBT4_EXACT_WHITELIST_SUBSTITUTE_F4B
+  rutas que difieren (2):
+    .Measured.AlternativeCandidatesExcludingPath: 1536 | forma cerrada (v3): al menos 1; ninguna igual al alcance del contrato si este cubre la ruta (2^10 subconjuntos
+    .ScriptSha256: C033E96CE147963FEB9C04733E9BFBEC7493FEA33D8FF79B1C2E8AB860798E45 | E68B6E5993B522DF83E7CD4CD2B136DDF503E237FD560B1A97067F24664328C6
+== substitute-result.json  vs  PBT4A-v2.json
+  SubstituteResult: PASS | PASS
+  Properties iguales: True | falsas: [] [] | n: 10 10
+  Measured iguales salvo AlternativeCandidatesExcludingPath: True | Alt: (1536, 1536)
+  SelfTest iguales: True | casos: 63 63 | Ok: 63 63 | SelfTestPass/Deterministic: True True True True
+  Record: SATISFIED_UNDER_PBT4_EXACT_WHITELIST_SUBSTITUTE_F4B | SATISFIED_UNDER_PBT4_EXACT_WHITELIST_SUBSTITUTE_F4B
+  rutas que difieren (0):
+== v2-pbt3a.json  vs  PBT3A-v2.json
+  SubstituteResult: PASS | PASS
+  Properties iguales: True | falsas: [] [] | n: 10 10
+  Measured iguales salvo AlternativeCandidatesExcludingPath: True | Alt: (24576, 24576)
+  SelfTest iguales: True | casos: 63 63 | Ok: 63 63 | SelfTestPass/Deterministic: True True True True
+  Record: SATISFIED_UNDER_PBT3A_EXACT_WHITELIST_SUBSTITUTE_F4B | SATISFIED_UNDER_PBT3A_EXACT_WHITELIST_SUBSTITUTE_F4B
+  rutas que difieren (0):
+== substitute-result.json  vs  PBT2A-v2.json
+  SubstituteResult: PASS | PASS
+  Properties iguales: True | falsas: [] [] | n: 10 10
+  Measured iguales salvo AlternativeCandidatesExcludingPath: False | Alt: (24, 24)
+  SelfTest iguales: False | casos: 50 63 | Ok: 50 63 | SelfTestPass/Deterministic: True True True True
+  Record: SATISFIED_UNDER_PBT2A_EXACT_WHITELIST_SUBSTITUTE_F4B | SATISFIED_UNDER_PBT2A_EXACT_WHITELIST_SUBSTITUTE_F4B
+  rutas que difieren (73):
+    .GenericId: <ausente> | PBTx-NC2-EXACT-WHITELIST-F4B-01
+    .Measured.ExactEvidenceMatched: <ausente> | PB-T2
+    .Measured.ExactWhitelistBy: F4B_EXACT_EVIDENCE+BFC | F4B_EXACT_EVIDENCES+BFC
+    .ScriptSha256: <ausente> | C033E96CE147963FEB9C04733E9BFBEC7493FEA33D8FF79B1C2E8AB860798E45
+    .SelfTest[50].Case: <ausente> | AY
+    .SelfTest[50].Description: <ausente> | v2: el literal de PB-T3 (segundo de la lista cerrada) pasa
+    .SelfTest[50].Expected: <ausente> | PASS
+    .SelfTest[50].Ok: <ausente> | True
+    .SelfTest[50].Result: <ausente> | PASS
+    .SelfTest[51].Case: <ausente> | AZ
+    .SelfTest[51].Description: <ausente> | v2: variante del literal de PB-T3 sin "ocho"
+    .SelfTest[51].Expected: <ausente> | FAIL
+    .SelfTest[51].Ok: <ausente> | True
+    .SelfTest[51].Result: <ausente> | FAIL
+    .SelfTest[52].Case: <ausente> | BA
+    .SelfTest[52].Description: <ausente> | v2: variante del literal de PB-T3 con un espacio de mas dentro
+    .SelfTest[52].Expected: <ausente> | FAIL
+    .SelfTest[52].Ok: <ausente> | True
+    .SelfTest[52].Result: <ausente> | FAIL
+    .SelfTest[53].Case: <ausente> | BB
+    .SelfTest[53].Description: <ausente> | v2: el literal de PB-T3 con un espacio final
+    .SelfTest[53].Expected: <ausente> | FAIL
+    .SelfTest[53].Ok: <ausente> | True
+    .SelfTest[53].Result: <ausente> | FAIL
+    .SelfTest[54].Case: <ausente> | BC
+    .SelfTest[54].Description: <ausente> | v2: el literal de PB-T3 con el punto y coma final cambiado por un punto
+    .SelfTest[54].Expected: <ausente> | FAIL
+    .SelfTest[54].Ok: <ausente> | True
+    .SelfTest[54].Result: <ausente> | FAIL
+    .SelfTest[55].Case: <ausente> | BD
+    .SelfTest[55].Description: <ausente> | v2: el literal de PB-T3 con la inicial en mayuscula
+    .SelfTest[55].Expected: <ausente> | FAIL
+    .SelfTest[55].Ok: <ausente> | True
+    .SelfTest[55].Result: <ausente> | FAIL
+    .SelfTest[56].Case: <ausente> | BE
+    .SelfTest[56].Description: <ausente> | v2: el literal de PB-T2 con "ocho" (mezcla de los dos: no esta en la lista)
+    .SelfTest[56].Expected: <ausente> | FAIL
+    .SelfTest[56].Ok: <ausente> | True
+    .SelfTest[56].Result: <ausente> | FAIL
+    .SelfTest[57].Case: <ausente> | T1

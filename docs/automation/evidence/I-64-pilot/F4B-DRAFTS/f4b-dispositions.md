@@ -2163,3 +2163,159 @@ El resultado que lleva el contrato es `EMITIBLE TRAS CORRECCIONES; B 0 / I 2 / M
 - **La cadena:** primera delegación; `attempts` 1 de 3.
 - **La planificación:** con las colecciones opacas puestas por la sesión (F4B-E21).
 - **La verificación:** con las comprobaciones deterministas de F4B-E15.
+
+## F4B-E57. Decisión del Owner sobre el config.toml tras la actualización de la app de Codex: Snapshot L
+
+**Fuente:** `F4B-DRAFTS/coordinator/owner-config-snapshot-l-decision.md`, con la pregunta y la respuesta literales.
+
+**Los hechos:**
+- **La parada:** la preparación de la planificación de PB-T4d, `R20261122T171951Z-bc04`, paró con P-01 sin lanzar nada. La app de Codex se había actualizado el 2026-11-22 y había reescrito `config.toml` a las 09:29Z. El hash pasó de `E1F69847…` (Snapshot K) a `B71650A6…`.
+- **Lo que cambió:**
+  - `mcp_servers.node_repl.env.BROWSER_USE_CODEX_APP_VERSION` pasa de 26.1111.71704 a 26.1117.41037. Cambian dos valores, los que llevan la versión de la app; la lista exacta está en `ChangedValuesVsK` del registro;
+  - entra una clave nueva, `mcp_servers.node_repl.env.NODE_REPL_LAZY_TRUSTED_WORKER = "0"`. Los nombres pasan de 104 a 105 (`OrderedNamesSha256` `3ECF8E07…`).
+
+**La respuesta del Owner:** «Sonda neutra, luego L (Recomendado)».
+
+**La sonda neutra** `F4-ENVIRONMENT/probe-R20261122T172638Z-2c14` da **PASS**:
+- binario acreditado `4F91AE86…`, gpt-6-luna / high efectivos, solo lectura y CLI 0.167.0-alpha.3.2: es lo que exige su PASS;
+- frente a la referencia, la planificación `R20261121T205457Z-af49` de PB-T4c (Snapshot K, mismo binario), el contexto efectivo solo difiere en `root_turn_id`;
+- el repositorio y `config.toml` no cambiaron durante la sonda.
+
+**Resultado:** la **Snapshot L** (`B71650A637551747F522BB1D2F4BA1BB9E25AAFF1A61CE1B7BC066197FFFEBB3`) sustituye a la K como línea base activa del Controller en I-64. Su registro está en `F4-ENVIRONMENT/snapshot-L/snapshot-l.json`.
+- **La comprobación de config de la cadena la admite.** `f4/cfg_check_f4.py` lleva ahora la lista de nombres por snapshot (`NAMES_BY`): la L, con sus 105 nombres; las demás, con la lista y los 104 de antes. El cambio lo hizo `_apply_snapshot_l_cfg.py`, con reemplazos exactos.
+- **La verificación de PB-T4d nombra la L** en su línea de `config.toml`. Es un reemplazo exacto de esa línea, con `_apply_snapshot_l_verify.py`.
+- **La planificación de PB-T4d** se lanzó con una preparación nueva, `039a`. La `bc04` no se reutiliza.
+- **La custodia:** el registro y esta decisión se custodian con el cierre de PB-T4d, y no antes, porque la base de su cadena tenía que seguir siendo su emisión.
+- **El contrato** de PB-T4d se emitió con «today Snapshot K». Su frase operativa, «the accepted Snapshot in force», es la L desde esta decisión, y su verificación lo recibió así.
+
+**Las herramientas** van en `F4-ENVIRONMENT/snapshot-L/tools/`, con su manifiesto. Son las 15 de la carpeta de la sesión:
+- la sonda y el registro, derivados de los de la K con reemplazos exactos (`_gen_snapL.py`), y la comparación con la K (`diff_vs_k.py`);
+- los dos cambios de la cadena (`_apply_snapshot_l_cfg.py` y `_apply_snapshot_l_verify.py`), con la copia de antes de cada archivo (`*.before-L.py`).
+
+12 van como texto, con la redacción común. Las 3 que, tras la redacción, aún llevan una ruta o un nombre local van solo por SHA-256, declaradas en el manifiesto: `make_pbt4d_verify.before-L.py` (el generador de la verificación antes del cambio), `record_snapshot_l.py` y `diff_vs_k.py`. `cfg_check_f4.before-L.py` no lleva rutas y va como texto.
+
+## F4B-E58. nc2 de PB-T4d: el sustituto v2 acaba sin veredicto, y la decisión del Owner, la v3 del sustituto con su revisión
+
+**Fuente:** `F4B-DRAFTS/coordinator/owner-pbt4d-nc2-decision.md`, con la pregunta y la respuesta literales.
+
+**Los hechos:**
+- **nc2** `R20261122T195517Z-096b` dio CONTROL NOT PASSED: EXECUTION_BLOCKED / STOP, FailureClass Contract, con Contract y Scope en fail y S-04, P-03 y PBT4D-C01. La evidencia de Scope nombra la ruta quitada, `src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs`. Es la firma de PD-F4-01 en el modo F4B-E21, la misma que en PB-T3a.
+- **El sustituto v2 revisado** (`PBTx-NC2-EXACT-WHITELIST-F4B-01` v2, `C033E96C…`, F4B-E43) no dio veredicto. Corrió en `R20261122T201101Z-bb30`, de `F4B-PBT4-RETIRE-PILOT-nc2-substitute/1/`, y acabó en `FAIL (entrada ausente o mal formada: MemoryError: )`. Su propiedad 10 enumera los 2^n subconjuntos del AllowedWriteScope del contrato, y PB-T4d tiene 37 rutas (PB-T4c tenía 21).
+- **El diagnóstico de la sesión** (`diag_nc2_p10.py`) no es evidencia ni un sustituto. Corre el código de la v2 tal cual, con solo la propiedad 10 en su forma cerrada: da PASS en las diez propiedades, y las 63 autopruebas siguen pasando.
+
+**La respuesta del Owner:** «Sustituto v3 y revisión (Recomendado)».
+
+**La v3** es `nc2_exact_whitelist_substitute_f4b_v3.py`, SHA-256 `E68B6E5993B522DF83E7CD4CD2B136DDF503E237FD560B1A97067F24664328C6`. La escribe `_make_v3.py` desde la v2 revisada, con reemplazos exactos.
+- **Un solo cambio de lógica:** la propiedad 10, en su forma cerrada, es `p is not None and covered(p, ca) and not covered(p, ForbiddenWriteScope)`. Es la misma proposición: toda lista candidata que no cubre la ruta cambiada difiere de la del contrato, que sí la cubre, y la lista vacía no la cubre.
+- **Cambian además** el docstring y el campo informativo `AlternativeCandidatesExcludingPath`.
+- **No cambian** el id, la autoprueba, `--task` y su ligadura, ni las propiedades 1 a 9.
+- **La firma no cambia:** el sustituto solo se usa con la firma autorizada (F4B-E43, PD-F4-01 en el modo F4B-E21). Cualquier otra variación vuelve al Owner.
+
+**La revisión independiente** (`review/independent-review-substitute-v3.md`): **APTO**, B 0 / I 0 / M 4. Comprobó que la v3 solo cambia la propiedad 10 (el AST, nodo a nodo; el generador la reproduce byte a byte), demostró la equivalencia lógica de la propiedad 10 y la contrastó en 300 019 comparaciones sintéticas y 6000 perturbaciones de `evaluate()` sin ninguna discrepancia; la autoprueba da 63 de 63, determinista e idéntica a la de la v2; en los cuatro casos reales en los que la v2 termina (PB-T2a, PB-T3a, PB-T4a y PB-T4c), la v3 da el mismo resultado, las mismas propiedades y las mismas medidas, salvo el campo informativo y `ScriptSha256` (en PB-T4c, la v2 tarda 290,6 s con un pico de unos 25 GB; la v3, 1,1 s); y ninguna mutación de PB-T4c da PASS en la v3 con FAIL en la v2. Sus cuatro menores son de texto y no cambian el script: M-1, el campo informativo es una frase fija (y falsa con `p = None`); M-2, textos de uso desfasados; M-3, `import itertools` sin uso; y M-4, la pregunta al Owner decía que PB-T4c tenía 21 rutas y tiene 26 (el 21 es el diff del RED que cita la evidencia de Scope); M-4 es una errata de la sesión, que no cambia la decisión.
+
+**La corrida de la v3** sobre este nc2, con `--task PBT4`: `R20261122T212159Z-50c9`, de `F4B-PBT4-RETIRE-PILOT-nc2-substitute/1/`, con el script byte a byte (`E68B6E59…`): `PBT4-NC2-EXACT-WHITELIST-F4B-01 F4B-E21 PASS`, las propiedades 1 a 10 en true y `Record.nc2 = SATISFIED_UNDER_PBT4_EXACT_WHITELIST_SUBSTITUTE_F4B`.
+
+**Resultado:** con la revisión APTO y la v3 en PASS sobre este nc2, `nc2 = SATISFIED_UNDER_PBT4_EXACT_WHITELIST_SUBSTITUTE_F4B` para F4B-PBT4-RETIRE-PILOT, intento 1 (F4B-E59).
+- La v3 sustituye a la v2 de aquí en adelante, PB-T5 incluida.
+- La corrida ordinaria de nc2 y la corrida fallida de la v2 se conservan tal cual.
+- La v3 se custodia en `F4B-DRAFTS/nc2-substitute-f4b-v3/`, con su nota de custodia (`CUSTODY-NOTE.md`) y su manifiesto. Lleva el script byte a byte, sus dos generadores (`_make_v3.py` y `_make_apply_v3.py`), la revisión en `review/` y el diagnóstico de la sesión en `diag-sesion/`.
+
+## F4B-E59. Cierre de F4B-PBT4-RETIRE-PILOT, sin reparación del RED, con tres decisiones del Owner sobre el código
+
+**Paquete de cierre:** `F4B-PBT4-RETIRE-PILOT/task-close-package.md`.
+
+**La cadena:**
+- **La emisión** (F4B-E56): X `23c29236` y BASE `399c9bec`, con el paquete de PB-T4 v5.4 y las tandas 10 a 14 del Owner sobre PB-T4d.
+  - **La lista exacta** es `F4B-DRAFTS/pbt4/pbt4d-retire-list-271.tsv` (`05a4d3d1…`), la del alcance B que eligió el Owner. Tiene 284 filas: 271 con acción (borrar 198, reescribir 39, sustituir 33 y acotar 1) y 13 que se quedan.
+  - **Sin esqueleto** (D-S11): el RED lleva todo lo de `tests/`, con el texto literal de la pieza `pbt4d-red-v54.txt`, y el GREEN solo `src/`, con el de `pbt4d-green-v54.txt`. Los dos salen de los generadores custodiados, `red_pbt4d_v53.py` y `green_pbt4d_v53.py`.
+  - **La forma de la retirada:** la cadena de primera delegación lee del contrato las rutas de `Pilot/` del AllowedWriteScope, los borrados del RED y del GREEN y la lista. Las formas de PB-T4b y PB-T4c siguen intactas en sus ramas.
+- **La Snapshot L** (F4B-E57): la preparación `bc04` paró por P-01 antes de la planificación.
+- **La planificación** `R20261122T172759Z-039a` se aceptó al primer lanzamiento: inyección PASS 8/8, A1-A8 8/8 y 12 criterios. nc4 es `R20261122T173145Z-27af`: solo A3 en fail, y el oráculo relativo se cumple.
+- **El Worker** `R20261122T173325Z-c9e1` (claude-sonnet-5-5/high) dio IMPLEMENTATION_COMPLETE, sin reparación del RED y sin desviaciones.
+  - **El RED `aa65ecfd`** (31 rutas, solo de `tests/`: 23 M, 5 A y 3 D): cada archivo es el texto literal de la pieza del RED, que escribe la herramienta del paquete `apply_red_pbt4d_v53.py`; los 3 que borra no están. Lleva:
+    - las bajas y las ediciones con registro;
+    - los 3 `Skip`, con su equivalente;
+    - la prueba lenta, acotada (D-S14);
+    - los vacíos de M-04, en su sitio;
+    - las 29 sustitutas de WPUR;
+    - las dos CT.
+  - **El GREEN `7db6fd0c`** (6 rutas de `Pilot/`: 4 M y 2 D) es el texto literal de la pieza del GREEN, que escribe `apply_green_pbt4d_v53.py`, igual a `GreenFiles` y `GreenDeleted`. No toca `tests/`.
+
+**CI** (los totales exactos de cada rama, F4B-E46):
+- **RED `45054587789`:** tests en failure; ui-tests y build-ui en success; build-plugin omitido. Core 19 418 = 19 014 + 1 Failed + 403 Skipped; UI 2 464 = 2 416 + 0 + 48. Solo cae CT-PBT4D-01, por aserción.
+- **GREEN `45057868915`:** 4/4. Core 19 418 = 19 015 + 0 + 403; UI 2 464 = 2 416 + 0 + 48.
+- **La CI de la emisión** (OWNER-01 de la revisión, informativo): la del commit de emisión `399c9bec`, run `45043090710`, quedó en rojo. El detector de cuelgue de la CI (blame-hang, 5 minutos de inactividad) abortó Core en `FullPanelCopyWorkspacePilotPrepareGreenTests.InvalidD_…`, la prueba lenta que PB-T4d acota (D-S14). Es una causa conocida, resuelta en esta cadena: con la cota del RED, la prueba pasa en 7,6 s en la CI del RED y en 9,2 s en la del GREEN. Ese commit solo llevaba documentos.
+
+**El relevo del trabajo:** válido. Comprueba:
+- el RED literal y el GREEN literal;
+- C02 de la retirada: 138 pruebas borradas y 45 cambiadas, cada una con su fila de la lista, y ninguna otra;
+- las tres clases nuevas que no son CT, con su `NewFileSha`;
+- los totales exactos;
+- cero `warning CS` en 215 registros de build.
+
+**Revisiones:**
+- **La directa:** conforme, con un límite del diseño que el Owner ratificó (M-02, abajo).
+- **La independiente:** ACEPTABLE CON MENORES 0/0/3, con tres hallazgos OWNER informativos.
+  - **M-01:** `RedFiles` de la precondición 6 lleva, en `WorkspacePilotUpdateRunTests.cs`, el RED de la v5.3. Contra la pieza v5.4 (`7ea61704…`), que es la que manda el contrato, el RED es exacto. Es M-16 de la emisión y queda de constancia.
+  - **M-02:** en el RED, las dos autopruebas de archivo de CT-PBT4D-01 no discriminan.
+  - **M-03:** quedan nombres de pruebas y comentarios que describen como presente el código retirado.
+  - **OWNER-01:** la CI de la emisión (arriba).
+  - **OWNER-02:** hay tres caminos de `BuildCore` cuyo texto cambia, para el Smoke-PB.
+  - **OWNER-03:** la limpieza de M-03.
+
+**Las tres decisiones del Owner sobre el código** (`F4B-DRAFTS/coordinator/owner-pbt4d-code-decisions.md`, literales):
+1. **M-02, las autopruebas de archivo de CT-PBT4D-01: «Ratificar como límite del diseño (Recomendado)».**
+   - INV-PBT4D-02 dice que, en el RED, «las autopruebas de CT-PBT4D-01 y 02 fallan sobre el texto inyectado». Las dos de archivo (`tests/RackCad.Tests/PushBackRetirePilotGuardTests.cs:111-115`) inyectan un archivo retirado que en el RED aún existe, así que allí no discriminan. Las otras 12 de CT-01 y todas las de CT-02 discriminan en el RED, y en el GREEN discriminan las 14 de CT-01.
+   - El criterio del RED se cumple: CT-PBT4D-01 cae por aserción, con Failed == Selected.
+   - Es un límite del diseño literal de la CT y una errata de la letra de INV-PBT4D-02, solo para este caso y sin cambio de código. La verificación lo recibió como disposición (`F4B-DRAFTS/pbt4/coordinator-disposition-m02-pbt4d.md`).
+2. **OWNER-02, el Smoke-PB: «Sí, sumarlos (Recomendado)».** El Smoke-PB de PB-T5 suma tres caminos de `BuildCore`, junto a la pasada de «Editar todo» → «Actualizar» que ya estaba prevista:
+   - un plan que borra un lateral obsoleto;
+   - un borrador con el nombre en blanco, que escribe el del sobre de origen en todas las vistas;
+   - el rechazo de la frontal B de un rack sin lado B.
+3. **OWNER-03, la limpieza de M-03: «Apuntarla en ideas futuras (Recomendado)».** Va a `docs/ideas-futuras.md` como limpieza opcional. No se hace nada en PB-T4d ni en PB-T5.
+
+**La verificación** `R20261122T194536Z-4c59`: **EXECUTION_VERIFIED / NONE, 14/14,** sin hallazgos, con `inputs/coordinator-disposition.md` (`F4B-DRAFTS/pbt4/coordinator-disposition-m02-pbt4d.md`).
+- `rr_check` da PASS: no hubo reparación del RED.
+- El relevo es válido.
+- El Controller no cita la disposición de M-02, porque no evaluó las autopruebas una a una.
+
+**Controles:**
+- **nc1:** `R20261122T195309Z-fc6e` da CONTROL NOT PASSED, con la firma exacta de PD-F4B-01: Handoff es la primera en fail, con S-04, y fallan Handoff, Identity, Remote, Scope, Ci y Tests.
+  - El sustituto revisado (F4B-E40, `--task PBT4`) corrió en `R20261122T201052Z-07ea`, de `F4B-PBT4-RETIRE-PILOT-nc1-substitute/1/`, y da `PBT4-NC1-CASCADE-SIGNAL-01 PBT4 PASS`: **nc1 queda SATISFIED_UNDER_PBT4_NC1_CASCADE_SUBSTITUTE.**
+  - Lo autoriza el contrato (PBT4D-C11) por F4B-E40. No es una variación nueva.
+- **nc2:** `R20261122T195517Z-096b` da CONTROL NOT PASSED, con la firma de PD-F4-01 en el modo F4B-E21 (F4B-E58).
+  - El sustituto v2 (`R20261122T201101Z-bb30`) acabó sin veredicto, con MemoryError.
+  - La v3, revisada, corrió en `R20261122T212159Z-50c9` y da `PBT4-NC2-EXACT-WHITELIST-F4B-01 F4B-E21 PASS`: **nc2 queda SATISFIED_UNDER_PBT4_EXACT_WHITELIST_SUBSTITUTE_F4B.**
+- **nc3:** `R20261122T200420Z-4be7` da **CONTROL PASS** ordinario: FreeText, con EXECUTION_REWORK_REQUIRED / REWORK.
+
+Los tres controles quedan satisfechos: nc1 y nc2 por sus sustitutos (el de nc2, la v3 que decidió el Owner en F4B-E58) y nc3 por su corrida ordinaria.
+
+**El registro declarado de las 271** (`F4B-DRAFTS/superseding-characterization.md`, «## PB-T4d»): este cierre completa su tabla de ejecución y la pasa a EJECUTADA. Cambian cinco líneas, con el texto y la fuente en `F4B-DRAFTS/pbt4/superseding-pbt4d-close-fill.md`.
+
+**Resultado:** **F4B-PBT4-RETIRE-PILOT = CLOSED / PASS WITH LIMITATIONS** sobre `7db6fd0c`, con attempts 1 de 3.
+- **Se retira el código del piloto que el panel ya no usa desde PB-T4b** (D-PBT4-10, el alcance B):
+  - el comparador, con `StructuralEquality`, y el adaptador del campo, borrados;
+  - `ComposeForWrite`, `KeepPilotEditsOn` y `PushBackPilotComposition`, fuera del materializador;
+  - `PushBackPilotPrepareInput`, `Prepare` y `Build`, fuera del plan;
+  - el `Precheck`, el `Execute` y el `ComparePost` del piloto, fuera de la corrida;
+  - la rama muerta de `BuildCore`: sin `allowErase`, y `BuildFull` sin su argumento.
+
+  Salen exactamente las 57 declaraciones de C13, y no entra ninguna nueva.
+- **Lo que se queda, una vez:** el lector, `Materialize`, `PushBackPilotDraftState`, las constantes, `PrepareFull`, `PushBackFullPrepareInput`, `BuildFull`, `BuildCore`, `ExecuteFull`, el `Precheck` completo, `ComparePostFull` y `ComparePostCore`.
+- **Las 271 filas con acción de la lista:**
+  - las bajas, las ediciones y las sustituciones, con registro;
+  - los 3 `Skip`, con su equivalente;
+  - las 29 sustitutas de WPUR, sobre el modelo completo;
+  - los vacíos de M-04, en su sitio (D-S13);
+  - la prueba lenta, acotada (D-S14).
+- **Ningún cambio de comportamiento:** ni el panel, ni la ventana, ni RACKEDITAR, ni el Plugin. `BuildCore` sin `allowErase` es equivalente para su único llamador, y no hay ninguna escritura en el DWG.
+
+**Las limitaciones:**
+- Las dos autopruebas de archivo de CT-PBT4D-01 no discriminan en el RED (M-02). Es un límite del diseño, que ratificó el Owner.
+- Los tres caminos de `BuildCore` cuyo texto cambia los comprueba el Smoke-PB en el dibujo real (OWNER-02).
+- Los nombres y comentarios desfasados (M-03) van a `docs/ideas-futuras.md` como limpieza opcional (OWNER-03).
+- M-01, que es M-16 de la emisión (`RedFiles` de WPUR en el JSON de la precondición 6), queda de constancia: el contrato manda la pieza, y contra ella el RED es exacto.
+- La cobertura de INV-PBT4D-06 la da la precondición 6, que PASA. La revisión no la midió otra vez, porque pide coverlet.
+- Sin AutoCAD. El Smoke-PB de PB-T5 comprueba en el dibujo real lo que le dejan PB-T3c, PB-T4a, PB-T4b, PB-T4c y PB-T4d.
+
+**Siguiente:** la tarea propia de la recarga de «Editar todo» sobre un borrador Clean posiblemente obsoleto. Es OWNER-02 de PB-T4c, y su sitio lo decidió el Owner en `owner-pbt4d-list-decisions.md`, pregunta 2: «Tarea propia después (Recomendado)». Vuelve al Owner con su lista antes de emitirse. Después viene PB-T5: la CI exacta, el Smoke-PB con la firma del Owner y el gate-close de F4B.

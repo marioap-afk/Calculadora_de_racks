@@ -1,0 +1,81 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT4-RETIRE-PILOT",
+  "RunId": "R20261122T195309Z-fc6e",
+  "DelegationRunId": "R20261122T172759Z-039a",
+  "WorkRunId": "R20261122T173325Z-c9e1",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json indica Outcome.Kind=COMPLETED y DeathConfirmed=true."
+    },
+    "Handoff": {
+      "Result": "fail",
+      "Evidence": "worker-handoff.json contiene CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, incompatible con Git HEAD 7db6fd0c4e4a27ec05d56cce0daaf0883940a4e2. La entrega no presenta DelegationRunId; su RunId es R20261122T173325Z-c9e1, mientras el RunId asignado a esta invocacion es R20261122T195309Z-fc6e."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor 23c2923616352a7b32fb3c68d8181c41c7feb2c9 399c9bec6d4778aa50096ab6204859c0bd015419 salio 0. git diff --name-only entre esas revisiones dio cuatro rutas docs/: docs/automation/evidence/I-64-evidence.md, docs/automation/evidence/I-64-pilot/F4B-PBT4-RETIRE-PILOT/coordinator/gate-contract.json, docs/automation/evidence/I-64-pilot/F4B-PBT4-RETIRE-PILOT/coordinator/make_pbt4d_contract.py y docs/automation/state/I-64.yml. revision-diff.txt coincide con SHA256 DD1AF863DAAC5F22480ABB64D6B868CE9060159AED545A1528EC9D38335EDF6B; ninguna ruta del diff es autoridad EXTERNAL ni UNIT_CHANGE."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "delegation.json y gate-contract.json identifican F4B-PBT4-RETIRE-PILOT, intento 1, AuthorityRevision 23c29236 y MainSha 812baf87. byte-fidelity-check.json registra PASS en las ocho colecciones opacas; relay-record-planning.json registra A1-A8 8/8 y nc4."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "git rev-parse HEAD = 7db6fd0c4e4a27ec05d56cce0daaf0883940a4e2; git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad = 7db6fd0c4e4a27ec05d56cce0daaf0883940a4e2; branch = architecture/workspace-persistente-rackcad. BaseSha 399c9bec es ancestro de HEAD y RedSha aa65ecfd esta en el historial, pero el CurrentSha declarado es deadbeefdeadbeefdeadbeefdeadbeefdeadbeef."
+    },
+    "Remote": {
+      "Result": "fail",
+      "Evidence": "RemoteFacts registra ls-remote=7db6fd0c4e4a27ec05d56cce0daaf0883940a4e2 y origin/main=812baf879612320653094a8aaf46aca0bac81383; el ls-remote registrado no coincide con el CurrentSha deadbeef declarado en worker-handoff.json."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "git diff --name-only BaseSha CurrentSha no puede resolverse con el CurrentSha deadbeef declarado. El diff medido para HEAD real tiene 37 rutas; aunque coincide en forma con el alcance declarado, no acredita el SHA de la entrega. revision-diff.txt y scope-lists.txt tienen sus SHA256 esperados; no se atribuye ese diff a deadbeef."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain no produjo salida. git check-ignore -v sobre la ruta de worker-handoff.json indico .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts identifica la corrida push 45057868915, ref refs/heads/architecture/workspace-persistente-rackcad, head_sha 7db6fd0c4e4a27ec05d56cce0daaf0883940a4e2 y los cuatro jobs requeridos en success; no coincide con CurrentSha deadbeef de la entrega. Para RedSha aa65ecfde87bfe274e9ba518f63dfe94c9e9f61a, la corrida push 45054587789 tiene Core failure, UI success, Build UI success y Plugin skipped, conforme al criterio RED."
+    },
+    "Tests": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "Los cuatro TRX adjuntos registran ci-core-red 19418/19014/1, ci-core 19418/19015/0, ci-ui-red 2464/2416/0 y ci-ui 2464/2416/0 para total/pass/fail; sus corridas corresponden a RedSha y al HEAD real 7db6fd0c, no al CurrentSha deadbeef declarado. required-tests.txt tiene 89 lineas incluyendo cabecera y SHA256 FBBCC0098744764FB2056E97EEA95FE90336F6FFCB06695F06849048B9DCE837; al no coincidir el SHA medido con el declarado no se acredita RequiredTests para la entrega. El RED tiene la unica falla indicada por el registro: PushBackRetirePilotGuardTests. No se puede atribuir ChainRedFiles a un CurrentSha inexistente."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B aa65ecfde87bfe274e9ba518f63dfe94c9e9f61a..7db6fd0c4e4a27ec05d56cce0daaf0883940a4e2 muestra el commit GREEN con Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>; relay-record-work.json identifica el modelo efectivo Claude Sonnet 5.5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "delegation.json solicita claude-sonnet-5-5 con effort high. relay-record-work.json registra lanzamiento con alias sonnet y effort high; Participant.ModelEffective registra claude-sonnet-5-5."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Script PowerShell de solo lectura busco los 16 terminos de AUTOMATION_PLAN 16.10, sin distinguir mayusculas y con limites de palabra/frase, en los siete campos de texto libre de worker-handoff.json; no encontro coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra 0 denegaciones de permisos y 3 resultados de herramienta con error, ninguno pendiente."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Handoff",
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "Findings": [
+    "La entrega no es coherente con Git: declara CurrentSha deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, mientras HEAD y la rama remota local apuntan a 7db6fd0c4e4a27ec05d56cce0daaf0883940a4e2.",
+    "La corrida CI y los TRX corresponden al HEAD real, por lo que no verifican el CurrentSha declarado.",
+    "rr-rule.txt coincide con SHA256 74E55A7D6A3C252DDA10D967598018299B9CE72E4A1EB65BA5B368113BF6ECCD; required-tests.txt, revision-diff.txt y scope-lists.txt tambien coinciden con los hashes declarados."
+  ],
+  "RecommendedNextAction": "Detener esta verificacion y resolver la discrepancia de identidad de la entrega antes de volver a evaluar."
+}

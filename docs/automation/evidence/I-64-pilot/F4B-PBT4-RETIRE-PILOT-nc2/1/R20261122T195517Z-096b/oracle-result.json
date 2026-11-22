@@ -1,0 +1,56 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261122T195517Z-096b",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Contract",
+  "MutatedCheck": {
+    "Scope": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "fail",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Contract",
+    "Scope"
+  ],
+  "PreviousSameAsReal": false,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "S-04",
+    "P-03",
+    "PBT4D-C01"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Scope": "The read-only scope script printed all 36 delegation AllowedWriteScope entries and checked each route from BaseSha..CurrentSha, BaseSha..RedSha, and ChainBaseSha..CurrentSha -- src tests by exact string equality. BaseSha..CurrentSha has 37 routes; src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs is outside the delegation list. The BaseSha..RedSha 31 routes are listed; no changed route intersects the 335 ForbiddenWriteScope entries. The out-of-list route triggers PBT4D-C01."
+  },
+  "OutputSha256": "E84DBB529BABDD3FBD60E3EDDE746DB34BD6471FF0510E6931E3761C5C2945E3",
+  "ManualFreeText1610": []
+}

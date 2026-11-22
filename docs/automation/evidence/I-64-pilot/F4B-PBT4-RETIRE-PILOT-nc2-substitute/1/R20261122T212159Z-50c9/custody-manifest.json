@@ -1,0 +1,34 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Unit": "F4B-PBT4-RETIRE-PILOT-nc2-substitute/1/R20261122T212159Z-50c9",
+  "SourceRoot": "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT-nc2-substitute/1/R20261122T212159Z-50c9",
+  "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
+  "Counts": {
+    "CUSTODIED": 1,
+    "EXCLUDED": 2
+  },
+  "Files": [
+    {
+      "Path": "nc2_exact_whitelist_substitute_f4b_v3.py",
+      "Bytes": 41770,
+      "Sha256": "e68b6e5993b522df83e7cd4cd2b136ddf503e237fd560b1a97067f24664328c6",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a F4B-DRAFTS/nc2-substitute-f4b-v3/nc2_exact_whitelist_substitute_f4b_v3.py, ya custodiado"
+    },
+    {
+      "Path": "run.txt",
+      "Bytes": 4187,
+      "Sha256": "620c363aa6ab6b5d4acbb72e4c8c214d281371792afdd2b999b72905335bd2fc",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "025308f9336c3eda9bfcad85cd4fc56ec914bf1d297a42231b2211e3231ee4bc",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)"
+    },
+    {
+      "Path": "substitute-result.json",
+      "Bytes": 24437,
+      "Sha256": "3f3371633d048517c6196976191c5b07ed79708237bc20c25f753fe3e75f706d",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a F4B-DRAFTS/nc2-substitute-f4b-v3/review/runs/PBT4D-v3.json, ya custodiado"
+    }
+  ]
+}

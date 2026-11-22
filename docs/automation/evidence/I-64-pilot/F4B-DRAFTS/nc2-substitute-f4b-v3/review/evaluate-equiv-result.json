@@ -1,0 +1,500 @@
+{
+ "SelfTest": {
+  "V2Count": 63,
+  "V3Count": 63,
+  "V2AllOk": true,
+  "V3AllOk": true,
+  "V2Deterministic": true,
+  "V3Deterministic": true,
+  "V2EqualsV3": true,
+  "Cases": [
+   "A",
+   "B",
+   "C",
+   "D",
+   "E",
+   "F",
+   "G",
+   "H",
+   "I",
+   "J",
+   "K",
+   "L",
+   "M",
+   "N",
+   "O",
+   "P",
+   "Q",
+   "R",
+   "S",
+   "T",
+   "U",
+   "V",
+   "W",
+   "X",
+   "Y",
+   "Z",
+   "AA",
+   "AB",
+   "AC",
+   "AD",
+   "AE",
+   "AF",
+   "AG",
+   "AH",
+   "AI",
+   "AJ",
+   "AK",
+   "AL",
+   "AO",
+   "AP",
+   "AQ",
+   "AR",
+   "AS",
+   "AT",
+   "AU",
+   "AV",
+   "AW",
+   "AX",
+   "AM",
+   "AN",
+   "AY",
+   "AZ",
+   "BA",
+   "BB",
+   "BC",
+   "BD",
+   "BE",
+   "T1",
+   "T2",
+   "T3",
+   "T4",
+   "T5",
+   "T6"
+  ],
+  "PassCases": [
+   "A",
+   "N",
+   "O",
+   "AY",
+   "T1",
+   "T4"
+  ]
+ },
+ "Synthetic": {
+  "SameBundles": true,
+  "Count": 57,
+  "AllSame": true,
+  "P10FalseCases": [
+   "B",
+   "M"
+  ],
+  "CasesFailingOnlyBy10": [],
+  "Rows": [
+   {
+    "Case": "A",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "B",
+    "Same": true,
+    "P10": false,
+    "Alt_v2": 0
+   },
+   {
+    "Case": "C",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "D",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "E",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "F",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "G",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "H",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "I",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "J",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "K",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "L",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "M",
+    "Same": true,
+    "P10": false,
+    "Alt_v2": 0
+   },
+   {
+    "Case": "N",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 6
+   },
+   {
+    "Case": "O",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "P",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "Q",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "R",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "S",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "T",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "U",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "V",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "W",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "X",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "Y",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "Z",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "AA",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "AB",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "AC",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "AD",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "AE",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "AF",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "AG",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "AH",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "AI",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "AJ",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "AK",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "AL",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "AO",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "AP",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "AQ",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "AR",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "AS",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "AT",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "AU",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "AV",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "AW",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "AX",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "AM",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "AN",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "AY",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "AZ",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "BA",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "BB",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "BC",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "BD",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   },
+   {
+    "Case": "BE",
+    "Same": true,
+    "P10": true,
+    "Alt_v2": 24
+   }
+  ]
+ },
+ "Perturbations": {
+  "Seed": 7,
+  "Stats": {
+   "n": 6000,
+   "same": 6000,
+   "diff": 0,
+   "exc_same": 0,
+   "P10True": 2140,
+   "P10False": 3860,
+   "P1P2True": 864,
+   "ImplicationViolations": 0,
+   "OverallPASS": 483,
+   "seconds": 5.9
+  },
+  "Diffs": []
+ },
+ "NonStringProbes": [
+  {
+   "Probe": "int al final",
+   "v2": {
+    "Overall": "FAIL (excepcion)",
+    "Exception": "AttributeError"
+   },
+   "v3": {
+    "Overall": "FAIL (excepcion)",
+    "Exception": "AttributeError"
+   }
+  },
+  {
+   "Probe": "null al final",
+   "v2": {
+    "Overall": "FAIL (excepcion)",
+    "Exception": "AttributeError"
+   },
+   "v3": {
+    "Overall": "FAIL (excepcion)",
+    "Exception": "AttributeError"
+   }
+  },
+  {
+   "Probe": "lista al final",
+   "v2": {
+    "Overall": "FAIL (excepcion)",
+    "Exception": "AttributeError"
+   },
+   "v3": {
+    "Overall": "FAIL (excepcion)",
+    "Exception": "AttributeError"
+   }
+  },
+  {
+   "Probe": "objeto al final",
+   "v2": {
+    "Overall": "FAIL (excepcion)",
+    "Exception": "AttributeError"
+   },
+   "v3": {
+    "Overall": "FAIL (excepcion)",
+    "Exception": "AttributeError"
+   }
+  }
+ ]
+}

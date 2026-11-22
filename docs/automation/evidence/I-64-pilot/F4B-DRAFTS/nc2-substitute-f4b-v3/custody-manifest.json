@@ -1,0 +1,566 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Unit": "F4B-DRAFTS/nc2-substitute-f4b-v3",
+  "SourceRoot": "hs65/nc2-substitute-f4b-v3/ (el sustituto v3, sus generadores y su revision) y, en diag-sesion/, dos archivos de hs65/_session_t4d/ (el diagnostico de la sesion), de la carpeta de la sesion (fuera del repositorio); CUSTODY-NOTE.md, de la cadena del cierre",
+  "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
+  "Counts": {
+    "CUSTODIED": 45,
+    "EXCLUDED": 24
+  },
+  "Files": [
+    {
+      "Path": "CUSTODY-NOTE.md",
+      "Bytes": 2809,
+      "Sha256": "6be874031bafa3922f9c8d100169307d0b054e4ce19c2f23b780b16d1fd8dcb9",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "_make_apply_v3.py",
+      "Bytes": 1914,
+      "Sha256": "09232b59c14a4764df056cedb708192b3f93759b6dc72b93e82d50787f3ef95b",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "_make_v3.py",
+      "Bytes": 3640,
+      "Sha256": "9ec6b465c3007da903f3f9739fdc6fd4441f949e65d51c5b377c1319ccc4beb8",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "diag-sesion/diag-nc2-p10-result.json",
+      "Bytes": 24372,
+      "Sha256": "ae2b5eea9e15384dafcdf4828c05efffc79b5d595df01d7bfc41b55d42035c98",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "a7527a2b2a01bf38b3d5e2d842a16afc6418c5b88b7c98083c95ff4b2f6b68e3",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>"
+      ]
+    },
+    {
+      "Path": "diag-sesion/diag_nc2_p10.py",
+      "Bytes": 2180,
+      "Sha256": "a14a51fec5e65e05ca78856dc2341b989bdd4c6fe36be0bf6ed253dc5f0f62d0",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "nc2_exact_whitelist_substitute_f4b_v3.py",
+      "Bytes": 41770,
+      "Sha256": "e68b6e5993b522df83e7cd4cd2b136ddf503e237fd560b1a97067f24664328c6",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "review/cases.json",
+      "Bytes": 4906,
+      "Sha256": "c46338aae2fca76be35b2b23d617156698c93ef39df0f530840bbcb5def416ca",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "416e3adb550d3e52f7d59adccc8045b05e56e96a118c9b0185d8f0db8077649c",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>",
+        "ubicacion local sustituida por: <scratchpad>"
+      ]
+    },
+    {
+      "Path": "review/compare-light.txt",
+      "Bytes": 6352,
+      "Sha256": "219ddc6e9440b491f7fb69bfa78bc680f3b0e89b754aa2f3fdd6b138249a6895",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "c83e1e3471e624c8d147001043887fd05e24ff3c38736ed94e785f80aaa75de4",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)"
+    },
+    {
+      "Path": "review/compare-pbt4c.txt",
+      "Bytes": 1390,
+      "Sha256": "c67d70b912c9b75b5750716d650e98bc1bf621d78a6b5b7b402ede09435627b6",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "3a88041e6c50429bfca5e7a7e296b443f0c0a04092c3be711e4d8c29f91d6f36",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)"
+    },
+    {
+      "Path": "review/compare-pbt4d-diag.txt",
+      "Bytes": 1025,
+      "Sha256": "e5131e78b8713b9c8e1cf2c121b5a336ccc4710308f7ea6615f323b98d6502a1",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "e81cecbe1a5d427bd959c8fdda11f81dc2d251eefcadc5b2c4c689aa83b6fa48",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)"
+    },
+    {
+      "Path": "review/compare_runs.py",
+      "Bytes": 2316,
+      "Sha256": "a64bf0536f7fed0fb22706fd61b9357b1e29abd0868db43825bd6d57cbd7e8aa",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "review/diff-ast-check.txt",
+      "Bytes": 1642,
+      "Sha256": "0926a35fde88c802759b7e0befec2a97136617f8a08334af0580f444d49c0087",
+      "Disposition": "EXCLUDED",
+      "Reason": "no es texto UTF-8 (binario o en otra codificacion): solo por SHA-256; no se versiona"
+    },
+    {
+      "Path": "review/diff-v2-v3.txt",
+      "Bytes": 3422,
+      "Sha256": "f707fbb8eaa371c74f13725633d774f603e6c1efb67ee44120a6d2a14c8d5660",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "review/diff_ast_check.py",
+      "Bytes": 2803,
+      "Sha256": "f5fb72d6ec89824c413788f11a38385d82cf7faf0f2f2c156fb1bcad85da6094",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "review/evaluate-equiv-result.json",
+      "Bytes": 6680,
+      "Sha256": "2de438ed4c1c95fd30005c3c91322da0db9edb82215c59c08fcc63dc19230751",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "review/evaluate-equiv-run.txt",
+      "Bytes": 1175,
+      "Sha256": "966002e2b5fc9839659995daf4a2e19f438b343e4cd51c4270ea6b81fb43a90c",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "8d7eee7641a5197976b7a11af551a6d1499eb394d819c3417918a09513db98df",
+      "Normalization": "CRLF->LF (finales mixtos; el SHA-256 original identifica el archivo)"
+    },
+    {
+      "Path": "review/evaluate_equiv.py",
+      "Bytes": 7641,
+      "Sha256": "055f848ae5d0634ae348b20e15eb7bf414a1b7d3ceb77c53a9dd8270d8e54aeb",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "review/independent-review-substitute-v3.md",
+      "Bytes": 25383,
+      "Sha256": "85dc25ded260b6d4d743faa5a46f77626c8fc8da0af92d407c29a6fcea8c09b6",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "review/inspect-cases.txt",
+      "Bytes": 5090,
+      "Sha256": "94efd519c12864e0affcf812533e0a22b344e60d5a5753b4955c6a2d5d7a803f",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "e27761ad8ac699bd73f8d7cb287f0ad323ddbbbc90354b2f735e1e6617aeb7a4",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)"
+    },
+    {
+      "Path": "review/inspect_cases.py",
+      "Bytes": 2275,
+      "Sha256": "1478c2ec7b6d269ad35f68b15a49c0a580e67354d2a999a7c4058dcbbf174c35",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "review/mut/K0.json",
+      "Bytes": 1885,
+      "Sha256": "06273fd0aef6c56f53603fa07f15a519e09a72ae996267eed68d5fa94e7fbda3",
+      "Disposition": "EXCLUDED",
+      "Reason": "copia de trabajo de datos (bajo data/, mut/ o mut2/): solo por SHA-256; no se versiona"
+    },
+    {
+      "Path": "review/mut/K1.json",
+      "Bytes": 2789,
+      "Sha256": "7a700a245a15b85aab6b05b6ba9d4f8eff992668bfbaeef2a0b237f25fe63a39",
+      "Disposition": "EXCLUDED",
+      "Reason": "copia de trabajo de datos (bajo data/, mut/ o mut2/): solo por SHA-256; no se versiona"
+    },
+    {
+      "Path": "review/mut/K2.json",
+      "Bytes": 2770,
+      "Sha256": "bdb55a26d5d23da00289fd19632fd2796b4e4dffdbda6a8cff38222709a83341",
+      "Disposition": "EXCLUDED",
+      "Reason": "copia de trabajo de datos (bajo data/, mut/ o mut2/): solo por SHA-256; no se versiona"
+    },
+    {
+      "Path": "review/mut/K3.json",
+      "Bytes": 2749,
+      "Sha256": "a8fa67b7b8f70a462317069ea2761294c946a7b4bd0cfe39182e57ad7d846960",
+      "Disposition": "EXCLUDED",
+      "Reason": "copia de trabajo de datos (bajo data/, mut/ o mut2/): solo por SHA-256; no se versiona"
+    },
+    {
+      "Path": "review/mut/K4.json",
+      "Bytes": 2878,
+      "Sha256": "b7cafcefb4990e2e0b44af06e38b3692351e94a3c015bcb26e8fd28ffe12792c",
+      "Disposition": "EXCLUDED",
+      "Reason": "copia de trabajo de datos (bajo data/, mut/ o mut2/): solo por SHA-256; no se versiona"
+    },
+    {
+      "Path": "review/mut/K5.json",
+      "Bytes": 2730,
+      "Sha256": "502992789ba93c9bd0255f93e82fb56eb522447f3895381ec36014757731ae5e",
+      "Disposition": "EXCLUDED",
+      "Reason": "copia de trabajo de datos (bajo data/, mut/ o mut2/): solo por SHA-256; no se versiona"
+    },
+    {
+      "Path": "review/mut/full-run.txt",
+      "Bytes": 2683,
+      "Sha256": "97dbef5446790c909b8f21fb225da60d115b104337f99fc7fa08080127cc80dc",
+      "Disposition": "EXCLUDED",
+      "Reason": "copia de trabajo de datos (bajo data/, mut/ o mut2/): solo por SHA-256; no se versiona"
+    },
+    {
+      "Path": "review/mut/mK0.json",
+      "Bytes": 2514,
+      "Sha256": "fa33bef54682abd7eb9f16ee73abedc02d50f3381eac4a3c0db64ea9cc529529",
+      "Disposition": "EXCLUDED",
+      "Reason": "copia de trabajo de datos (bajo data/, mut/ o mut2/): solo por SHA-256; no se versiona"
+    },
+    {
+      "Path": "review/mut/mK1.json",
+      "Bytes": 2740,
+      "Sha256": "d6a53f454b9bcd669a74a95aec3f0134d04e2a39523a734f99f6fef7327be4de",
+      "Disposition": "EXCLUDED",
+      "Reason": "copia de trabajo de datos (bajo data/, mut/ o mut2/): solo por SHA-256; no se versiona"
+    },
+    {
+      "Path": "review/mut/mK2.json",
+      "Bytes": 2749,
+      "Sha256": "ff96f0721a6605182847d56e87486b117f1adf75c319f944dfe4a1fa05a641ba",
+      "Disposition": "EXCLUDED",
+      "Reason": "copia de trabajo de datos (bajo data/, mut/ o mut2/): solo por SHA-256; no se versiona"
+    },
+    {
+      "Path": "review/mut/mK3.json",
+      "Bytes": 2706,
+      "Sha256": "12004cf5fa4eef758d03f20b75dc836318cb2c455f825a84fcbd628c222f3af0",
+      "Disposition": "EXCLUDED",
+      "Reason": "copia de trabajo de datos (bajo data/, mut/ o mut2/): solo por SHA-256; no se versiona"
+    },
+    {
+      "Path": "review/mut/mK4.json",
+      "Bytes": 2840,
+      "Sha256": "2766a8f7d736a9393c7d94a52c8c7d144bff76a5528a00fcaf745a63a48f6788",
+      "Disposition": "EXCLUDED",
+      "Reason": "copia de trabajo de datos (bajo data/, mut/ o mut2/): solo por SHA-256; no se versiona"
+    },
+    {
+      "Path": "review/mut/mK5.json",
+      "Bytes": 2710,
+      "Sha256": "a22a74d9055b08d500cf57b3272f31dc699e5838fb1eb1ee08888ce50b78150f",
+      "Disposition": "EXCLUDED",
+      "Reason": "copia de trabajo de datos (bajo data/, mut/ o mut2/): solo por SHA-256; no se versiona"
+    },
+    {
+      "Path": "review/mut/mK6.json",
+      "Bytes": 2701,
+      "Sha256": "06f36b0c149c2179fb944db9e8ec176db6a0301c8a0c5d82c7382fcf1af5f22f",
+      "Disposition": "EXCLUDED",
+      "Reason": "copia de trabajo de datos (bajo data/, mut/ o mut2/): solo por SHA-256; no se versiona"
+    },
+    {
+      "Path": "review/mut/mK7.json",
+      "Bytes": 2576,
+      "Sha256": "2b8c0b841f35d1ace738097753a29ffffbab88cce7ae9a24c3700d2ff6b9db2f",
+      "Disposition": "EXCLUDED",
+      "Reason": "copia de trabajo de datos (bajo data/, mut/ o mut2/): solo por SHA-256; no se versiona"
+    },
+    {
+      "Path": "review/mut/mK8.json",
+      "Bytes": 2539,
+      "Sha256": "d7c40eccfe60dbcf34fe4816e4d8733674d2171da34f2e7edfa7b1a3c403ba92",
+      "Disposition": "EXCLUDED",
+      "Reason": "copia de trabajo de datos (bajo data/, mut/ o mut2/): solo por SHA-256; no se versiona"
+    },
+    {
+      "Path": "review/mut/mK9.json",
+      "Bytes": 2541,
+      "Sha256": "97254ba76b2dc3cf363c821ddfe84133dae15c7be98314b9a2bf880ac2361a6d",
+      "Disposition": "EXCLUDED",
+      "Reason": "copia de trabajo de datos (bajo data/, mut/ o mut2/): solo por SHA-256; no se versiona"
+    },
+    {
+      "Path": "review/mut/mini-run.txt",
+      "Bytes": 3907,
+      "Sha256": "e164a0b0fbf1422af3d40476a1523344893b26c3cd1092c841ef7d1ab2d0335d",
+      "Disposition": "EXCLUDED",
+      "Reason": "copia de trabajo de datos (bajo data/, mut/ o mut2/): solo por SHA-256; no se versiona"
+    },
+    {
+      "Path": "review/mutations_t4c.py",
+      "Bytes": 10769,
+      "Sha256": "b5ca805599f598d73b9b74b738f27c342a99c6da5be2a6a9a622ba2c926a0615",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "review/p10-equiv-result.json",
+      "Bytes": 8710,
+      "Sha256": "897b71c04928ac8aec4fb88a91ba5a24c418f508c24ee3291c7998bd8563b147",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "review/p10-equiv-run.txt",
+      "Bytes": 2394,
+      "Sha256": "aab05fe2d23db5f246875c4154d43bd4ab2d1454562bb4d8a7e4afe62c3040cc",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "04ffba350a2564bbff19c08833ab2e1baa5dcb45b1926b4dfdd0a3de86ac0222",
+      "Normalization": "CRLF->LF (finales mixtos; el SHA-256 original identifica el archivo)"
+    },
+    {
+      "Path": "review/p10_equiv.py",
+      "Bytes": 9696,
+      "Sha256": "0747d63146a8bb004b06b55a0f93911e03f1ac46522821a1277dbae2d4f69b13",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "review/pbt4d-crosscheck.txt",
+      "Bytes": 960,
+      "Sha256": "23614592d559cf221fbfcd61f0c1d75962e179f8afcae5e6c9c2fdd475e99e6c",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "fbb9c53406c1a967045a9c21bab448222870d85667fbb1f9ad102d1568a2c903",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)"
+    },
+    {
+      "Path": "review/pbt4d_crosscheck.py",
+      "Bytes": 3458,
+      "Sha256": "6545d8cf8beffc5f06b417cd59f535adc6a810b48b38fda1f46dead9a2cd1387",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "review/regen/nc2-substitute-f4b-v2/nc2_exact_whitelist_substitute_f4b_v2.py",
+      "Bytes": 41362,
+      "Sha256": "c033e96ce147963feb9c04733e9bfbec7493fea33d8ff79b1c2e8ab860798e45",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a F4B-PBT4-FULL-READ-PATH-nc2-substitute/1/R20261120T220537Z-60ab/nc2_exact_whitelist_substitute_f4b_v2.py, ya custodiado"
+    },
+    {
+      "Path": "review/regen/nc2-substitute-f4b-v3/_make_v3.py",
+      "Bytes": 3640,
+      "Sha256": "9ec6b465c3007da903f3f9739fdc6fd4441f949e65d51c5b377c1319ccc4beb8",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a F4B-DRAFTS/nc2-substitute-f4b-v3/_make_v3.py, ya custodiado"
+    },
+    {
+      "Path": "review/regen/nc2-substitute-f4b-v3/nc2_exact_whitelist_substitute_f4b_v3.py",
+      "Bytes": 41770,
+      "Sha256": "e68b6e5993b522df83e7cd4cd2b136ddf503e237fd560b1a97067f24664328c6",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a F4B-DRAFTS/nc2-substitute-f4b-v3/nc2_exact_whitelist_substitute_f4b_v3.py, ya custodiado"
+    },
+    {
+      "Path": "review/run_case.py",
+      "Bytes": 1507,
+      "Sha256": "b91c0f178080241efe617ab8caac1eebb5ab42215593cfc5b38cf10f1d02dd7e",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "review/runs/PBT2A-v2.json",
+      "Bytes": 17035,
+      "Sha256": "40f05850bffeac1e136797a745a1ae4587d98e8433f7f5e48723e90f2d65ab33",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "a29cc1778ed276b9cb37dedaa54025b311c88ae295c9b8636242f66a9347c818",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>"
+      ]
+    },
+    {
+      "Path": "review/runs/PBT2A-v2.txt",
+      "Bytes": 4853,
+      "Sha256": "650bf2e3c3c5e88cd4491f20d544596b6367f87c5a068970356805a3e20370da",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "5e9c04e78a2f785d4df3480c4c9b10e39ed2e4f379a76f1b010308f41c0700ed",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>",
+        "ubicacion local sustituida por: <scratchpad>"
+      ]
+    },
+    {
+      "Path": "review/runs/PBT2A-v3.json",
+      "Bytes": 17158,
+      "Sha256": "dbde69c7287e56f4b163230ef8c3525ded86ddec880cdf4ab629f32c9bb4b87e",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "7280612ae7f0fe9c24ea8a2d23f8db5e601ec2c8b3bf8390e822f02b485b5552",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>"
+      ]
+    },
+    {
+      "Path": "review/runs/PBT2A-v3.txt",
+      "Bytes": 4976,
+      "Sha256": "d6c28bebe8a6a822f2ce9b69cfd2a3302e9533aa7cae5c818c300756695baf1e",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "9597b05eec4eae41f4668e9343b476a5ddef40ecb3653b335c119f619860b345",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>",
+        "ubicacion local sustituida por: <scratchpad>"
+      ]
+    },
+    {
+      "Path": "review/runs/PBT3A-v2.json",
+      "Bytes": 19477,
+      "Sha256": "5219e204815414e82f8d064320bb2bbd8454b98a4c0ec5e8a1d699d9a26fd232",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "7c1be3798f7f0746a91eda9bde63ae3c8ff8063d372213ebf319d5df5f4816e0",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <scratchpad>"
+      ]
+    },
+    {
+      "Path": "review/runs/PBT3A-v2.txt",
+      "Bytes": 4976,
+      "Sha256": "98dc4f160ed5a89b187f169870a23e1dda4b8c7603b0147981904adde0f5e237",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "5aca2ef8d3a526ec62d2b11b885bcf5f93f7bc4871bd52d47d0c5849f0e55215",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>",
+        "ubicacion local sustituida por: <scratchpad>"
+      ]
+    },
+    {
+      "Path": "review/runs/PBT3A-v3.json",
+      "Bytes": 19598,
+      "Sha256": "1eab73c0e22133f3b5effcb339dd4fd26def41dddda93fd395a16c186ff3abd1",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "87f162e07f76593ebc4d80d8d94f22e0d6775dc0eba655fae08c408c8d823887",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <scratchpad>"
+      ]
+    },
+    {
+      "Path": "review/runs/PBT3A-v3.txt",
+      "Bytes": 5097,
+      "Sha256": "3989926c3715edf013a8814e3f8bbf3f0ba765f24eb1da6e6a67b7f1e1f04e47",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "69295d6db4e19ac7d5c93887818cc8853e7568a11edb8383694a67ceef9b4bc2",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>",
+        "ubicacion local sustituida por: <scratchpad>"
+      ]
+    },
+    {
+      "Path": "review/runs/PBT4A-v2.json",
+      "Bytes": 18126,
+      "Sha256": "5d5f2ca9ba8ed4e894ca6f8cebf947942dc76d8cc4abf326b6b8fc47afdec2c3",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a F4B-PBT4-FULL-READ-PATH-nc2-substitute/1/R20261120T220537Z-60ab/substitute-result.json, ya custodiado"
+    },
+    {
+      "Path": "review/runs/PBT4A-v2.txt",
+      "Bytes": 4843,
+      "Sha256": "9eccbab9d34fc0c0fa55db2c3ca3574b7f9485cdc19b0aa723feb4579f56e2eb",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "bcae357f614453550feb0370a9af375b5db73e95ba7d9e9ca09e4310a1843967",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>",
+        "ubicacion local sustituida por: <scratchpad>"
+      ]
+    },
+    {
+      "Path": "review/runs/PBT4A-v3.json",
+      "Bytes": 18248,
+      "Sha256": "3c1c2285b36a674b8af56a50a0b0a1bf0485d27b9d08d8bfab3cedf28f51e481",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "37d8cb15188096bc723a83b4d3c41dfe2984dfad10a941d4d916c51a40b0b36d",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>"
+      ]
+    },
+    {
+      "Path": "review/runs/PBT4A-v3.txt",
+      "Bytes": 4965,
+      "Sha256": "0f0003ef48b8ee0b8984d776f00ae9b583ed4b208a1d6e7a74e5ad7ebbff90c1",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "d8c9ee36283736d09fde8199cbb6919220a97cb5fb080857290a1c36386648dc",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>",
+        "ubicacion local sustituida por: <scratchpad>"
+      ]
+    },
+    {
+      "Path": "review/runs/PBT4C-v2.json",
+      "Bytes": 21290,
+      "Sha256": "7d1771b801642218f82c3db2173ea728c85cb7147ff39730684c86d0ba72ff47",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a F4B-PBT4-EDIT-ALL-WINDOW-nc2-substitute/1/R20261122T000958Z-4719/substitute-result.json, ya custodiado"
+    },
+    {
+      "Path": "review/runs/PBT4C-v2.txt",
+      "Bytes": 4857,
+      "Sha256": "43a09a3957d9e64286d927b5e6f26c79fb026ede898e231be1360963a554e60c",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "ecced42b46e14d3c5e4b71b887ddf2a7f2790fc49b904df6c1c763f4b42ca118",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>",
+        "ubicacion local sustituida por: <scratchpad>"
+      ]
+    },
+    {
+      "Path": "review/runs/PBT4C-v3.json",
+      "Bytes": 21407,
+      "Sha256": "0d8bffd3980dbd285d9b6c528392f1d2cf87abe2e3b8393d2c62fb8a448cf9d2",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "beefaf6663be536cd8e1c6221578a84aaa45651097774f43514216cd59086337",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>"
+      ]
+    },
+    {
+      "Path": "review/runs/PBT4C-v3.txt",
+      "Bytes": 4972,
+      "Sha256": "976980ff9e19489c5176072f5615ac538cc04a541fe6e040799bd6df9a4d0345",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "b5c5c62aee8797c860200b5bfba1b48ed2a2ca7b44cc6d0bb41af0cf66999710",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>",
+        "ubicacion local sustituida por: <scratchpad>"
+      ]
+    },
+    {
+      "Path": "review/runs/PBT4D-v3.json",
+      "Bytes": 24437,
+      "Sha256": "3f3371633d048517c6196976191c5b07ed79708237bc20c25f753fe3e75f706d",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "f98cdd74d7183378a5cc0440730dfe7fa057a4830e0dda1781c00cb122ad086d",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>"
+      ]
+    },
+    {
+      "Path": "review/runs/PBT4D-v3.txt",
+      "Bytes": 4960,
+      "Sha256": "b2a16e3b9504a691061e22a29cb5b2b0489f300d3b0410d41571c1bbe6cbd881",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "27f407e2abcde6aabc42e65e911f77c12043ac9bd55b73f55e3ae6b4ce0cfd35",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>",
+        "ubicacion local sustituida por: <scratchpad>"
+      ]
+    },
+    {
+      "Path": "review/selftest-across-runs.txt",
+      "Bytes": 666,
+      "Sha256": "7624bd6b3e7c1711505b198750069886c8cced67b8cdfbadcb5076c6f25e4caf",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "3413be70796b1364354041e1eca28186d8e6fa64f0ff1d5950254c64b389b1fb",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)"
+    },
+    {
+      "Path": "review/selftest_across_runs.py",
+      "Bytes": 570,
+      "Sha256": "7706141ab5fea1ff8c432ff31e25177c0dbef4afb3763bbff730bb6977a57c2f",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "review/show_args.py",
+      "Bytes": 893,
+      "Sha256": "72606392f4b588b7bbb4f2011c19570d6e0ad794bd0baf7015ac70b7d6b99e79",
+      "Disposition": "CUSTODIED"
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+RED (git diff --name-status BaseSha RedSha -- src tests: el estado y la ruta, exactamente estas):
+M tests/RackCad.Tests/PushBackEditAllFullCopyGuardTests.cs
+M tests/RackCad.Tests/PushBackFullWritePrepareTests.cs
+M tests/RackCad.Tests/PushBackFullWriteRunTests.cs
+M tests/RackCad.Tests/PushBackPilotUpdateEquivalenceGuardTests.cs
+A tests/RackCad.Tests/PushBackRetirePilotCensusGuardTests.cs
+A tests/RackCad.Tests/PushBackRetirePilotFullCopyGuardTests.cs
+A tests/RackCad.Tests/PushBackRetirePilotGuardTests.cs
+A tests/RackCad.Tests/PushBackRetirePilotPlanGuardTests.cs
+A tests/RackCad.Tests/PushBackRetirePilotRunTests.cs
+M tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs
+M tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs
+M tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs
+M tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs
+M tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs
+M tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardFull.cs
+M tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs
+M tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs
+M tests/RackCad.Tests/Workspace/WorkspacePilotPrepareFull.cs
+M tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs
+M tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs
+M tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs
+M tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs
+M tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs
+M tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs
+M tests/RackCad.Tests/Workspace/WorkspacePilotUpdateScopeDouble.cs
+D tests/RackCad.UI.Tests/PushBackDeclaredCorrectionPilotParityTests.cs
+M tests/RackCad.UI.Tests/PushBackDeclaredCorrectionSupport.cs
+D tests/RackCad.UI.Tests/PushBackFieldValidationConcordanceTests.cs
+D tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotCanonicalLineEndingTests.cs
+M tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs
+M tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs
+GREEN (git diff --name-only RedSha CurrentSha -- src tests: solo rutas de esta lista):
+src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs
+src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotFieldAdapter.cs
+src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs
+src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs
+src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs
+GREEN-ESTADO (la retirada: git diff --name-status RedSha CurrentSha -- src tests, exactamente estas; D = se borra):
+M src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs
+D src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotFieldAdapter.cs
+M src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs
+D src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs
+M src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+M src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs
+SKIPPED-BASE (los siete metodos de la base con su Skip, D-1 y CT-PBT3A-12; sin los que la retirada borra: clave = archivo:metodo):
+S-1 = WorkspacePilotPrepareGuardTests.cs:TheFileOfThePlanComposesExactlyOnceInAMemberOfItsOwnWithAParameterSourceAndTheNameOfTheRereadEnvelope
+S-2 = WorkspacePilotPrepareGuardTests.cs:TheComposeGuardTripsOnAnotherCallAnUnsourcedCompositionANullableSourceOrAnotherName
+S-3 = WorkspacePilotPrepareGuardTests.cs:TheMemberPlansAreBuiltOnlyFromTheMutableMembersOfTheRereadInOrdinalOrderAndNeverErase
+S-4 = WorkspacePilotUpdateGuardTests.cs:TheRunReleasesBothScopesInFinallyBlocksOfItsOwnAndNeverWithAUsing
+S-5 = WorkspacePilotUpdateIntegrationGuardTests.cs:M01TheEscapeOfTheRunIsClassifiedByTheStateThatTheRunAlreadyHadAndNeverAsAPlainFailureAfterAWriteOrASeal
+S-6 = WorkspacePilotUpdateIntegrationGuardTests.cs:M01TheEscapeGuardTripsOnACatchThatDoesNotConsultTheStateAndOnAnEscapeThatAnswersAPlainFailureFirst
+CT-PBT3A-12 = PushBackDraftWriteGuardTests.cs:CT_PBT3A_12_NoSourceFileOutsideTheFolderOfTheModelNamesItsTypes

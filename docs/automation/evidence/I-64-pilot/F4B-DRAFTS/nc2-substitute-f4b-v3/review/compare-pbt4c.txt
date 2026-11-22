@@ -1,0 +1,16 @@
+== PBT4C-v2.json  vs  PBT4C-v3.json
+  SubstituteResult: PASS | PASS
+  Properties iguales: True | falsas: [] [] | n: 10 10
+  Measured iguales salvo AlternativeCandidatesExcludingPath: True | Alt: (100663296, 'forma cerrada (v3): al menos 1; ninguna igual al alcance del contrato si este cubre la ruta (2^26 subconjuntos sin enumerar)')
+  SelfTest iguales: True | casos: 63 63 | Ok: 63 63 | SelfTestPass/Deterministic: True True True True
+  Record: SATISFIED_UNDER_PBT4_EXACT_WHITELIST_SUBSTITUTE_F4B | SATISFIED_UNDER_PBT4_EXACT_WHITELIST_SUBSTITUTE_F4B
+  rutas que difieren (2):
+    .Measured.AlternativeCandidatesExcludingPath: 100663296 | forma cerrada (v3): al menos 1; ninguna igual al alcance del contrato si este cubre la ruta (2^26 subconjuntos
+    .ScriptSha256: C033E96CE147963FEB9C04733E9BFBEC7493FEA33D8FF79B1C2E8AB860798E45 | E68B6E5993B522DF83E7CD4CD2B136DDF503E237FD560B1A97067F24664328C6
+== substitute-result.json  vs  PBT4C-v2.json
+  SubstituteResult: PASS | PASS
+  Properties iguales: True | falsas: [] [] | n: 10 10
+  Measured iguales salvo AlternativeCandidatesExcludingPath: True | Alt: (100663296, 100663296)
+  SelfTest iguales: True | casos: 63 63 | Ok: 63 63 | SelfTestPass/Deterministic: True True True True
+  Record: SATISFIED_UNDER_PBT4_EXACT_WHITELIST_SUBSTITUTE_F4B | SATISFIED_UNDER_PBT4_EXACT_WHITELIST_SUBSTITUTE_F4B
+  rutas que difieren (0):

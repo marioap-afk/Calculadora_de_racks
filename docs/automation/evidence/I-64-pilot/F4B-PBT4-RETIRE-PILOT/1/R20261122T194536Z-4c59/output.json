@@ -1,0 +1,75 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT4-RETIRE-PILOT",
+  "RunId": "R20261122T194536Z-4c59",
+  "DelegationRunId": "R20261122T172759Z-039a",
+  "WorkRunId": "R20261122T173325Z-c9e1",
+  "Attempt": 1,
+  "VerifiedSha": "7db6fd0c4e4a27ec05d56cce0daaf0883940a4e2",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Outcome.Kind=COMPLETED, DeathConfirmed=true; output escrito 2026-11-22T13:04:43.270934-06:00, posterior al inicio de cesion."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json valida como rackcad-worker-handoff/v1; TaskId, RunId, DelegationRunId y Attempt coinciden con la delegacion. OutputSha256 registrado: 2C5FEF56D4A2169E350649D8CA502642947F3AB30AC970BE2AAE005C96C47EEC."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha: exit 0; MainSha es ancestro de AuthorityRevision. git diff --name-only AuthorityRevision BaseSha muestra cuatro rutas docs/; una no figura en Authorities y ninguna es EXTERNAL o UNIT_CHANGE. Cinco rutas EXTERNAL: iguales entre MainSha y AuthorityRevision. Leidos con git show en MainSha AUTOMATION_PLAN.md, README.md de agent-execution y AGENTS.md. revision-diff.txt SHA-256 coincide."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "byte-fidelity-check.json Result=PASS, Utf8BytesEqual=true en las ocho colecciones. AllowedWriteScope: 37 rutas; RequiredTests: 88 filas; ambas coinciden con las copias de entrada. A3-A5 verificadas contra gate-contract.json."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "CurrentSha=7db6fd0c4e4a27ec05d56cce0daaf0883940a4e2; git rev-parse HEAD=7db6fd0c4e4a27ec05d56cce0daaf0883940a4e2; git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad=7db6fd0c4e4a27ec05d56cce0daaf0883940a4e2. Rama y worktree coinciden; BaseSha y RedSha son ancestros de CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: LsRemoteSha=7db6fd0c4e4a27ec05d56cce0daaf0883940a4e2, OriginMainSha=812baf879612320653094a8aaf46aca0bac81383; CurrentRun y RedRun son eventos push con ref de la rama exacta."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "Script de solo lectura comparo cada ruta de git diff --name-only BaseSha CurrentSha, BaseSha RedSha y ChainBaseSha CurrentSha -- src tests contra las 37 entradas exactas de delegation.json: todas IN, ninguna OUT. Diffs: 37, 31 y 37 rutas. ForbiddenWriteScope sin intersecciones; cambios restringidos a las rutas declaradas."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain vacio. git check-ignore artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T194536Z-4c59/inputs/worker-handoff.json devolvio la ruta ignorada."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts CurrentRun 45057868915: push, ref y HeadSha exactos; los cuatro jobs requeridos success. RedRun 45054587789: push de RedSha; Tests failure, UI success, Build UI success, Plugin skipped por needs, conforme al RED exigido."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "required-tests.txt leido completo: SHA-256 FBBCC0098744764FB2056E97EEA95FE90336F6FFCB06695F06849048B9DCE837; 88/88 filtros, cero discrepancias de MinSelected/outcomes. TRX RED Core 19418/19014/1/403 y UI 2464/2416/0/48; GREEN Core 19418/19015/0/403 y UI 2464/2416/0/48. Un fallo RED por asercion en PushBackRetirePilotGuardTests; los demas filtros pasan; todos pasan en GREEN. ChainRedFiles=31 rutas de tests/; el GREEN toca solo seis rutas src/ y no toca RT. deletion-check.json Ok=true en 26 archivos; equivalentes y literales RED/GREEN verificados con git show y SHA-256. warnings-cs.json: 215 registros, cero warning CS. Sin reparacion RED."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha muestra commits RED y GREEN; ambos incluyen Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, consistente con el modelo efectivo claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "delegation.json solicita claude-sonnet-5-5 y effort high; relay-record-work.json registra ModelEffective=claude-sonnet-5-5 y EffortEffective=high. El alias de lanzamiento sonnet corresponde al transporte subagent."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Script de solo lectura reviso los siete campos completos de worker-handoff.json, con coincidencia insensible a mayusculas por palabra o frase: longitudes WorkCompleted 497, Evidence 9659, UnexpectedFindings 416, KnownLimitations 836, Deviations 0, OpenQuestions 0 y RecommendedNextAction 136 caracteres. Cero coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes: cero denegaciones de permisos, tres resultados de herramienta con error y ninguno pendiente; sin aviso de limite."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [],
+  "RecommendedNextAction": "Continuar con las revisiones restantes previstas en el registro de relevo."
+}

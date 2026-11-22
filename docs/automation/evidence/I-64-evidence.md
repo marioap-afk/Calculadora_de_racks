@@ -8927,3 +8927,47 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - **`attempts`:** 1 de 3.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 288. PB-T4d: la Snapshot L, la v3 del sustituto de nc2, la cadena, tres decisiones del Owner y el cierre (F4B-E57, F4B-E58 y F4B-E59)
+
+**Qué se custodia:**
+- **La Snapshot L** (F4B-E57):
+  - la preparación `R20261122T171951Z-bc04`, parada por P-01 sin lanzarse;
+  - la sonda neutra `F4-ENVIRONMENT/probe-R20261122T172638Z-2c14`, en PASS;
+  - el registro `F4-ENVIRONMENT/snapshot-L/snapshot-l.json`;
+  - la decisión `owner-config-snapshot-l-decision.md`;
+  - las herramientas, en `F4-ENVIRONMENT/snapshot-L/tools/`, con su manifiesto: 12 como texto y 3 solo por SHA-256.
+- **La v3 del sustituto de nc2** (F4B-E58):
+  - la decisión `owner-pbt4d-nc2-decision.md`;
+  - en `F4B-DRAFTS/nc2-substitute-f4b-v3/`, con su nota de custodia y su manifiesto: el script, byte a byte, sus dos generadores, la revisión independiente y el diagnóstico de la sesión.
+- **Las unidades de la delegación,** en `F4B-PBT4-RETIRE-PILOT/1/`, cada una con su manifiesto:
+  - la planificación `039a`, con nc4 `27af`;
+  - el Worker `c9e1`;
+  - la verificación `4c59`;
+  - los controles nc1 `fc6e`, nc2 `096b` y nc3 `4be7`;
+  - el sustituto de nc1 `07ea`, en `F4B-PBT4-RETIRE-PILOT-nc1-substitute/1/`;
+  - los sustitutos de nc2, en `F4B-PBT4-RETIRE-PILOT-nc2-substitute/1/`: la v2 `bb30`, sin veredicto, y la v3 `50c9`.
+- **Las revisiones:** la directa, la independiente y su encargo.
+- **Las tres decisiones del Owner sobre el código, con su texto literal:** M-02 como límite del diseño, los tres caminos de `BuildCore` al Smoke-PB y la limpieza de M-03 a ideas futuras.
+- **La disposición de M-02,** que la verificación recibió como entrada.
+- **El registro declarado de las 271,** completado, con sus cinco sustituciones.
+- **El paquete de cierre.**
+- **La nota de `docs/ideas-futuras.md`.**
+- **El estado.**
+
+**La delegación:**
+- **RED y GREEN:** el RED `aa65ecfd` y el GREEN `7db6fd0c`, sin reparación del RED.
+- **CI:** las corridas `45054587789` (el RED) y `45057868915` (el GREEN).
+  - La del GREEN da 4/4: Core 19 418 = 19 015 + 0 + 403 y UI 2 464 = 2 416 + 0 + 48, los totales exactos de su rama.
+  - La de la emisión, `45043090710`, quedó en rojo por el cuelgue de la prueba lenta que esta subtarea acota. Es una causa conocida, resuelta en la cadena.
+- **Revisión independiente:** 0/0/3, más OWNER-01 a OWNER-03, informativos. El Owner ratificó M-02 como límite del diseño, sumó al Smoke-PB los tres caminos de `BuildCore` y mandó la limpieza de M-03 a ideas futuras.
+- **Verificación:** 14/14, con `rr_check` PASS.
+- **Controles:**
+  - nc1, por su sustituto (F4B-E40), PASS;
+  - nc2, por la v3 de su sustituto (F4B-E58), `50c9`, en PASS;
+  - nc3, CONTROL PASS ordinario.
+
+**Límites:**
+- solo documentación;
+- sin AutoCAD;
+- los eventos y las transcripciones, solo por SHA-256.

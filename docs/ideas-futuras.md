@@ -2099,3 +2099,59 @@ Son los menores de la revisión independiente del código de PB-T3c, intento 1. 
   - el GREEN literal, con lo que da el generador custodiado (igual al `GreenFiles` de la precondición 6).
   La cadena lee la forma del contrato y no escribe nada del régimen a mano.
 - **La copia para los revisores** (M-06) no llevó `relay-subst-check.json` ni la carpeta de la prueba de limpieza. **La mejora:** que la cadena siguiente las copie con la entrega.
+
+## I-64 F4B PB-T4d — los nombres que aún describen el piloto retirado, riesgos para el Smoke-PB y lecciones de la retirada (2026-11-22, registrados sin corregir)
+
+**La limpieza de los nombres de prueba y los comentarios que siguen describiendo como presente el código retirado del piloto** (PBT4D-IR-M03; decisión del Owner «Apuntarla en ideas futuras»). Es opcional: no se hace en PB-T4d ni en PB-T5.
+- **Los ejemplos de la revisión** (en `7db6fd0c`):
+  - **nombres de prueba:**
+    - `tests/RackCad.Tests/PushBackFullWritePrepareTests.cs:549`, `CT_PBT3B_06_…OfTheFullModelAndOfThePilot`;
+    - `tests/RackCad.Tests/PushBackFullWriteRunTests.cs:246`, `CT_PBT3B_09_…AndThePilotKeepsItsComparison`;
+    - `tests/RackCad.Tests/PushBackRetirePilotRunTests.cs:79`, `AViewThatIsNotAvailable…`, que ahora prueba la frontal B (el cambio a mano que declara §5.6);
+    - la clase `WorkspacePilotUpdateRunTests`;
+  - **los resúmenes de las guardas** en `tests/RackCad.Tests/PushBackPilotUpdateEquivalenceGuardTests.cs`: el de `E3Violations` (`:104-106`) dice que el piloto nunca borra una vista que no está disponible, y el de `E5Violations` (`:183`) nombra como las dos corridas que deben existir `Execute`, la del piloto, y `ExecuteFull`;
+  - **fuera del alcance de PB-T4d,** en `src/RackCad.Application/Workspace/WorkspaceHostCore.cs`:
+    - la etiqueta `"WorkspaceHostCore.PilotUpdateRun.Execute"` (`:1783`);
+    - «the adapter of the pilot» (`:1240` y `:1268`), que es el campo `PilotFieldAdapter`, de tipo `PushBackFullFieldAdapter`.
+- **Por qué no es trivial:**
+  - casi todo es texto literal de la pieza del RED o de un archivo que PB-T4d tenía prohibido (C10);
+  - renombrar una prueba cambia su identidad y los filtros `FullyQualifiedName~` de los contratos.
+- **La mejora:** una tarea de limpieza que renombre esas pruebas, corrija los comentarios y ponga al día sus filtros, si el Owner la quiere.
+
+**Los menores de la revisión independiente del código que quedan abiertos:**
+- **PBT4D-IR-M01, `RedFiles` de WPUR** (M-16 de la emisión, abierta):
+  - `RedFiles` de `F4B-DRAFTS/pbt4/pbt4d-precondition6.json` lleva, para `tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs`, el sha256 del RED de la v5.3 (`62c6ff80…`);
+  - el RED de la pieza v5.4, que manda el contrato, da `7ea61704…`, y solo difiere en comentarios;
+  - cualquier comprobación contra `RedFiles` daría un falso «no coincide» en 1 de 28 archivos. Por eso la disposición de la verificación de PB-T4d recuerda que se compara con la pieza: `red-literal.json` lleva su sha256.
+  - **La mejora:** si se corrige el JSON, que sea en una tarea de documentos.
+- **Lo que la revisión no comprobó:** que no queden en `tests/` ayudantes `internal` o `public` sin uso. IDE0051 solo ve los privados, y la compilación no lo ve.
+
+**Para el Smoke-PB de PB-T5 (D-PB-09):**
+- **PBT4D-IR-OWNER-02** (decisión del Owner «Sí, sumarlos»): tres caminos de `BuildCore` cuyo texto cambia en PB-T4d, sin cambio de comportamiento.
+  - Van en una pasada de «Editar todo» → «Actualizar» en el dibujo real, junto a la que ya estaba prevista:
+    - un plan que borra un lateral obsoleto;
+    - un borrador con el nombre en blanco, que escribe el del sobre de origen en todas las vistas;
+    - el rechazo de la frontal B de un rack sin lado B.
+  - Core ya los cubre: CT-PBT3B-02, 04 y 05, y la sustituta n.º 10.
+- **Lo que ya estaba:**
+  - PBT3C-IR-OWNER-1 a OWNER-3, de PB-T3c;
+  - PBT4A-IR-OWNER-01 y OWNER-03, de PB-T4a;
+  - PBT4B-IR-OWNER-01 y OWNER-04, y el coste real de la lectura, de PB-T4b;
+  - PBT4C-IR-OWNER-02 a OWNER-04 y lo que solo se ve en AutoCAD, de PB-T4c.
+
+**RR-3 de las dos CT de PB-T4d, pendiente en la lectura de la cadena** (`pbt4d_rr3_reading.py`). Una reparación del RED en cualquiera de las dos clases habría parado la cadena (RR3_PENDING), sin gastar intento. No la hubo, así que no tuvo efecto. Lo que la lectura no resuelve:
+- **«las 35 de CT-01 en §5.6, literales»** y **«las 11 de CT-02»:** §5.6 las da, literales, en la columna de líneas de su fila, con «(35)» y «(11)» al final de la celda. La regla de la lectura solo admite «las de CT-NN en §5.n», sin el número.
+- **«las expresiones e inyecciones de su tabla `Retired`»** (`RetiredUses`, en CT-02): §5.6 no las da. Están en el texto de la clase, en el anexo V54-A, y leerlas exige interpretar el C#.
+- **La mejora:** que el paquete de la próxima subtarea enumere en la tabla de RR-3 los literales de cada fila, como ya pedía la nota de PB-T4b.
+
+**Cuatro lecciones de la retirada:**
+- **Una retirada es una forma del alcance propia.** Lleva:
+  - las rutas de `Pilot/` en el AllowedWriteScope;
+  - los borrados del RED y del GREEN (D en `git diff --name-status`);
+  - C02 con la lista cerrada de lo que se borra y de lo que cambia;
+  - un RED sin esqueleto.
+
+  La cadena la lee del contrato y deja intactas las formas de PB-T4b y PB-T4c.
+- **Una autoprueba de una guarda de ausencia no discrimina mientras lo ausente todavía existe** (PBT4D-IR-M02). Las dos autopruebas de archivo de CT-PBT4D-01 inyectan un archivo retirado: en el RED ese archivo aún existe, así que la inyección no cambia nada y solo discriminan en el GREEN. **La mejora,** en una próxima retirada: que el paquete diga en qué rama discrimina cada autoprueba, o que la autoprueba de archivo inyecte la ausencia.
+- **Una prueba lenta frente al detector de cuelgue** puede tumbar la CI de un commit que solo lleva documentos: le pasó a la emisión de PB-T4d (`45043090710`). La cota de D-S14 lo resolvió: la prueba pasó de minutos a menos de 10 s en la CI.
+- **Un sustituto que enumera los subconjuntos del alcance no escala** con el tamaño del contrato. La v2 del sustituto de nc2 enumeraba los 2^n subconjuntos del AllowedWriteScope en su propiedad 10: con las 21 rutas de PB-T4c terminó, y con las 37 de PB-T4d acabó en MemoryError, sin veredicto. La v3 (F4B-E58) calcula la misma proposición en su forma cerrada. **La mejora:** que la revisión de un sustituto mida también su coste frente al alcance más grande previsto, PB-T5 incluida.

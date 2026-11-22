@@ -1,0 +1,426 @@
+{
+  "Regla": "C02 de la retirada (INV-PBT4D-07), medido por la sesion con pbt4d_lib.deletion_check (el parser del generador, pbt4d_lists_core.py) sobre git show BaseSha:<ruta> y git show RedSha:<ruta> (null si el RED la borra) de cada archivo existente de tests/ del alcance, con las filas de la lista (docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4d-retire-list-271.tsv, sha256 05a4d3d1905529c5bc4d53e0684d27d97eaa96502098eebeb9d16bfd931c75ac) de ese archivo: Borradas, las pruebas [Fact] o [Theory] que su fila borra (o todas, si el archivo se borra); Cambiadas, las que cambian con una fila que lo permite; Nuevas, las que aparecen con su fila; Errores, lo que cambia, falta o aparece sin una fila que lo permita: vacio en todos (Ok true en todos). El texto exacto de cada archivo lo fija el RED literal (red-literal.json).",
+  "BaseSha": "399c9bec6d4778aa50096ab6204859c0bd015419",
+  "RedSha": "aa65ecfde87bfe274e9ba518f63dfe94c9e9f61a",
+  "Ok": true,
+  "PorArchivo": {
+    "tests/RackCad.Tests/PushBackEditAllFullCopyGuardTests.cs": {
+      "Ok": true,
+      "Estado": "M",
+      "Borradas": [],
+      "Cambiadas": [
+        "CT_PBT4B_20_TheScriptOfSkipAndDuplicateGivesTheCopiesTheKitAndTheSkipsOfTheClosedList"
+      ],
+      "Nuevas": [],
+      "Errores": []
+    },
+    "tests/RackCad.Tests/PushBackFullWritePrepareTests.cs": {
+      "Ok": true,
+      "Estado": "M",
+      "Borradas": [],
+      "Cambiadas": [
+        "CT_PBT3B_05_TheNameOfTheDraftReachesEveryViewAndABlankNameTakesTheOneOfTheOrigin",
+        "CT_PBT3B_06_TheBarrierOfTheDiagnosticsStopsABlockedDesignOfTheFullModelAndOfThePilot"
+      ],
+      "Nuevas": [],
+      "Errores": []
+    },
+    "tests/RackCad.Tests/PushBackFullWriteRunTests.cs": {
+      "Ok": true,
+      "Estado": "M",
+      "Borradas": [],
+      "Cambiadas": [
+        "CT_PBT3B_09_ComparePostFullChecksTheErasedKeysTheKeysTheEnvelopesAndTheScaleAndThePilotKeepsItsComparison"
+      ],
+      "Nuevas": [],
+      "Errores": []
+    },
+    "tests/RackCad.Tests/PushBackPilotUpdateEquivalenceGuardTests.cs": {
+      "Ok": true,
+      "Estado": "M",
+      "Borradas": [],
+      "Cambiadas": [
+        "E_3_TheMemberPlansAreBuiltOnlyFromTheMutableMembersOfTheRereadInOrdinalOrderAndErasuresOnlyComeFromAnObsoleteLateralOfAModelThatErases"
+      ],
+      "Nuevas": [],
+      "Errores": []
+    },
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs": {
+      "Ok": true,
+      "Estado": "M",
+      "Borradas": [],
+      "Cambiadas": [
+        "ARereadThatIsEqualRecoversTheUnknownDraft",
+        "ARereadThatIsNotAdmittedBecauseAMemberBecameBlockingTakesTheUnknownDraftToConflictWithTheDifferences",
+        "ARereadThatIsNotAdmittedBecauseAuth13FindsDivergenceTakesTheUnknownDraftToConflictWithTheDifferences",
+        "ARereadThatIsNotAdmittedOnlyForTheCatalogStillRecoversBecauseTheBaseIsTheSame"
+      ],
+      "Nuevas": [],
+      "Errores": []
+    },
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs": {
+      "Ok": true,
+      "Estado": "M",
+      "Borradas": [
+        "ACanonicalDesignComesBackAsTheIdenticalPersistedDocument",
+        "ACleanDraftComposesExactlyItsBase",
+        "AnExceptionInsideComposeForWriteItselfIsARejectionWithTheComposePrefix",
+        "AnExceptionInsideTheBaseOfComposeForWriteIsARejectionWithTheExceptionPrefix",
+        "AnInPlaceEditOfTheCurrentEditorOutsideThePilotMakesComposeForWriteReject",
+        "AnOlderDrawingComesBackWithExactlyTheCanonicalizationOfTheApplicationPath",
+        "CarryOver1_TheRejectionComparesTheCurrentStateAsItIsAgainstACopyOfTheInitialOneWithItsScaleNeutralizedAndMutatesNeitherState",
+        "CarryOver2_AKeepOnThatFailsLeavesTheDraftWithoutTheIntermediateStateAndThePendingTextStays",
+        "CarryOver2_KeepAfterAnExternalChangeOfContentThePilotDoesNotEditNeverLeavesTheStepThatWouldRevertItAndComposesAtOnce",
+        "CarryOver2_KeepAfterAnExternalModuleChangeIsOneAtomicStepThatComposesTheNewModulesAndTheScaleOfTheDraft",
+        "CarryOver3_ABaseThatMaterializedAgainIsNotTheInitialStateIsRejectedBeforeComposingAndANormalBaseStillComposes",
+        "CarryOver6_AScaleThatIsNotAFiniteNumberGreaterThanZeroIsRejectedAndNeverComposedAndTheInfiniteOneIsADeclaredExtension",
+        "ComposeForWriteIgnoresTheOriginOfTheCurrentState",
+        "ComposeForWriteIsPureAndMutatesNeitherState",
+        "ComposeForWriteIsTotalAndRejectsABaseThatNoLongerMaterializes",
+        "ComposeForWriteRejectsAnyDifferenceOtherThanTheScaleAndNeverRevertsOrWritesItInSilence",
+        "ComposeForWriteTakesWhatIsEditedFromTheDraftAndWhatIsNotFromTheCurrentBase",
+        "EditingTheScaleOfACanonicalDesignChangesOnlyThatField",
+        "EditingTheScaleOfAnOlderDrawingAddsOnlyTheEditedFieldToTheCanonicalization",
+        "KeepMineAfterAnExternalChangeOfContentThePilotDoesNotEditNeverRevertsItAndComposesTheNewContentPlusTheScaleOfTheDraft",
+        "KeepMineAfterAnExternalModuleChangeWritesTheNewModulesAndTheScaleOfTheDraftAndReturnsToCleanWhenTheScaleIsRestored",
+        "KeepPilotEditsOnIsPureAndGivesTheNewBaseWithTheScaleOfTheDraft"
+      ],
+      "Cambiadas": [
+        "MaterializeReproducesTheApplicationPartOfTheWindowLoadInTheSameOrder"
+      ],
+      "Nuevas": [],
+      "Errores": []
+    },
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs": {
+      "Ok": true,
+      "Estado": "M",
+      "Borradas": [
+        "ThePilotStateKeepsTheInPlaceEditModelOfTheCurrentState"
+      ],
+      "Cambiadas": [
+        "MutatingTheObjectOfThePostReadAfterTheRebaseOfAnAppliedUpdateChangesNothing"
+      ],
+      "Nuevas": [],
+      "Errores": []
+    },
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs": {
+      "Ok": true,
+      "Estado": "M",
+      "Borradas": [
+        "ACopyOfAStateMaterializedFromAnOriginIsStillEqualAndNeverHasItsBaseline",
+        "AnEditedScaleMakesTheStatesDifferent",
+        "AnyKeyThatIsNotExactlyAnnotationScaleIsInvalidByOrdinalComparison",
+        "ApplyLeavesTheStateAloneForAnyPendingTextThatIsNotTheOneValidField",
+        "ApplyParsesTheTextInTheCurrentCulture",
+        "ApplyReturnsTheSameObjectItReceivedWithTheScaleAppliedInPlace",
+        "EveryEditableFieldIsExercisedByTheRichStateAndMutatingItMakesTheStatesDifferent",
+        "MutatingEveryFieldOfTheCopyNeverChangesTheOriginal",
+        "MutatingEverySelectionFieldTheModuleAuthorityAndTheOriginLeavesTheStatesEqual",
+        "OriginsWithDifferentTextAndEquivalentContentAreEqual",
+        "TheAdapterKeepsNoReferenceToAnyState",
+        "TheAdapterRunsInsideTheTwoPhaseCommitOfTheDraftCore",
+        "TheComparatorIsReflexiveAndSymmetricAndTwoMaterializationsOfTheSameOriginAreEqual",
+        "TheComparatorIsSymmetricAndSeparatesDifferentDesigns",
+        "TheComparatorTreatsNullAndNaNWithoutBreakingReflexivity",
+        "TheCopyDoesNotCarryTheModuleAndTailAuthority",
+        "TheCopyIsEqualForTheComparatorAndSharesTheOriginString",
+        "TheCopyOfTheRichStateKeepsEveryEditableValueAndTheSameSelection",
+        "TheCopySharesNoMutableObjectWithTheOriginal",
+        "TheKeyOfTheOneFieldIsExactlyAnnotationScale",
+        "TheScaleValidationIsTheRuleOfTheClassicBoxInEveryCulture",
+        "ValidateMutatesNothing"
+      ],
+      "Cambiadas": [],
+      "Nuevas": [],
+      "Errores": []
+    },
+    "tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs": {
+      "Ok": true,
+      "Estado": "M",
+      "Borradas": [
+        "AChangedWitnessIsReportedAsChangedAndNoKeystrokeIsAppliedToTheNewDraft",
+        "TheDraftIsBornWithTheComparerAndTheCopierOfThePilot"
+      ],
+      "Cambiadas": [],
+      "Nuevas": [],
+      "Errores": []
+    },
+    "tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardFull.cs": {
+      "Ok": true,
+      "Estado": "M",
+      "Borradas": [],
+      "Cambiadas": [],
+      "Nuevas": [],
+      "Errores": []
+    },
+    "tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs": {
+      "Ok": true,
+      "Estado": "M",
+      "Borradas": [],
+      "Cambiadas": [
+        "TheReadGuardAllowsAnotherReadThatALaterTaskWouldAddWithItsOwnMark"
+      ],
+      "Nuevas": [],
+      "Errores": []
+    },
+    "tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs": {
+      "Ok": true,
+      "Estado": "M",
+      "Borradas": [
+        "ABlockingBoundaryOnADraftThatCannotBeEditedKeepsItsPendingTextAndNeverValidatesOrApplies",
+        "AComparerThatThrowsMakesTheFieldUndecidableProtectedAndNotEditableAndGetFieldNeverThrows",
+        "AValidTextAtABlockingBoundaryProceedsAppliesItAndEndsTheMark",
+        "AfterAnySequenceOfAcceptedAndRejectedEditsTheFieldHoldsTheLastAcceptedText",
+        "AnInvalidTextAbortsEachBlockingBoundaryWithTheFieldAndTheMessageAndNothingChanges",
+        "AnInvalidTextAndTheGestureOfTheFieldAnswerInvalidKeepTheTextAsTypedAndLeaveTheValue",
+        "DiscardRackNeedsNoComparerAndRemovesAnUndecidableDraftToo",
+        "EachNonBlockingBoundaryKeepsAnInvalidTextCharacterByCharacterWithoutValidatingCommittingOrAuthorizing",
+        "GetFieldReportsEveryStateOfTheFieldAndWhatCanBeEdited",
+        "TheFallbackByDraftIsKnownAndKeepsTheUncertainOnesApart",
+        "TheGestureOfTheFieldEndsTheMarkOfKnownCleanWhenItAppliesTheText",
+        "TheKeyOfThePendingTextIsAlwaysTheOneOfTheAdapterAndAnEmptyTextIsKeptToo",
+        "TheNoticeOfAVetoExpiresWhenTheSessionIsDiscardedWhenTheNextAdviceAllowsAndWhenTheSessionIsRetired",
+        "TheOperationsOfADocumentNeverTouchTheDraftsOfAnotherAndABlockingMutationOfAnotherDocumentIsRejected",
+        "TheOuterCatchOfGetFieldAnswersTheViewInErrorWhenTheCopierOfTheStateAnswersNull",
+        "TheRacksAtRiskAreOrderedOrdinallyAndAComparerThatThrowsMakesThemUncertainApart",
+        "TheReasonOfAFieldThatCannotBeReadIsInSpanish",
+        "TheShownTextOfAFiniteValueGreaterThanZeroIsReadBackAsTheSameDoubleAndPassesTheValidationInEveryCulture"
+      ],
+      "Cambiadas": [],
+      "Nuevas": [],
+      "Errores": []
+    },
+    "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareFull.cs": {
+      "Ok": true,
+      "Estado": "M",
+      "Borradas": [
+        "ThePlanTypesLiveInThePilotNamespaceAndTheirSignaturesNameNoTypeOfTheHostOrOfTheDrawing"
+      ],
+      "Cambiadas": [
+        "InvalidD_ABuilderThatCannotBuildTheOutgoingSystemIsInvalidWithTheTypedErrorAndNothingIsWritten"
+      ],
+      "Nuevas": [],
+      "Errores": []
+    },
+    "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs": {
+      "Ok": true,
+      "Estado": "M",
+      "Borradas": [],
+      "Cambiadas": [
+        "TheAfterMatchGuardTripsOnAnotherCallerAndOnACallBeforeTheComparison",
+        "TheFileOfThePlanIsNullableEnabledInTheNamespaceOfThePilotWithBracesAndDeclaresTheTypesOfThePackage",
+        "TheOrderOfPrepareIsTheOneOfThePackageAndNoOutcomeBeforeConflictLooksAtTheReread"
+      ],
+      "Nuevas": [],
+      "Errores": []
+    },
+    "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs": {
+      "Ok": true,
+      "Estado": "M",
+      "Borradas": [
+        "ACleanDraftHasNothingToApplyAndTheRereadIsNotLookedAt",
+        "ADifferenceInACleanOrDirtyDraftPutsItInConflictWithTheOrderedDifferencesAndChangesNothingElse",
+        "ADifferenceInAConflictReplacesTheDifferencesAndTheDraftStaysInConflict",
+        "ADifferenceOfTheBaseIsAConflictBeforeTheAdmissionAndWithTheOrderedDifferences",
+        "ADraftThatIsNotCleanOrDirtyIsNotApplicableWhateverTheReread",
+        "AKeepOnThatThrowsOrACopyThatThrowsLeavesTheDraftExactlyAsItWas",
+        "AMatchInACleanOrDirtyDraftOnlyClearsThePossiblyStaleMarkAndNeverCleansDirty",
+        "AMatchInAConflictAnswersConfirmedAndTheDraftStaysInConflictWithAllItsData",
+        "AMissingCatalogIsAnsweredAfterTheConflictAndTheAdmissionAndNotBeforeThem",
+        "ARereadThatMatchesButIsNotAdmittedIsNotAdmittedWithItsDiagnostic",
+        "ConfirmBaseDoesNotApplyToADraftThatIsNotRegisteredApplyingUnknownOrInError",
+        "ConfirmBaseWithoutAReReadThrowsAndChangesNothing",
+        "InvalidA_ACurrentStateThatDoesNotComposeIsInvalidWithTheReasonOfTheCompositionAndOverTheCarryOversOfTheMaterializer",
+        "InvalidA_AnOriginThatNoLongerMaterializesIsInvalidWithTheReasonOfTheMaterializerBeforeAnythingElse",
+        "InvalidB_NoMutableMemberWithTheTextOfTheOriginOrSeveralOfThemIsInvalid",
+        "InvalidC_AnInnerDesignOfAnotherKindOrOfANewerMajorAbortsThePreflightAndTheUpdateIsInvalid",
+        "InvalidD_ABuilderThatCannotBuildTheOutgoingSystemIsInvalidWithTheTypedErrorAndNothingIsWritten",
+        "InvalidE_AMutableMemberThatIsNotAvailableInTheOutgoingSystemOrWhoseEnvelopeDoesNotDecodeIsInvalidAndNeverErasesAView",
+        "InvalidE_AnEnvelopeThatDoesNotDecodeIsInvalidWithItsKey",
+        "KeepAfterAChangeOfTheDrawingStaysOnTheNewVersionWithTheScaleAndThePendingTextOfTheDraft",
+        "KeepChecksNotAllowedThenNotConfirmedThenNotAdmittedInTheOrderOfTheOtherVersionAndNeverCallsKeepOnWithoutAdmission",
+        "KeepWithANullKeepOnThrowsBeforeAnythingElseAndChangesNothing",
+        "PendingTextComesBeforeEverythingButNotApplicableAndBeforeTheReread",
+        "PrepareDoesNotPutTheDraftInConflictNorCleanDirtyNorTakeTheSlotOfTheUpdate",
+        "PrepareIsTotalAMissingPieceIsInvalidAndNeverAnException",
+        "PrepareNeverChangesTheDraftWhateverItsOutcome",
+        "ReadOnlyAndNonMutableMembersOfTheRereadNeverEnterThePlan",
+        "TheOutgoingDesignAndEnvelopeOfEachViewComeFromTheRereadEnvelopeAndNeverFromTheDraft",
+        "ThePilotNeverErasesAViewAPhantomThatWasAlreadyInTheDrawingMakesTheUpdateInvalidAndIsNeverInThePlan",
+        "ThePlanIsBuiltOnlyFromTheRereadSoAChangeOfTheCurrentScaleOnlyChangesTheScaleAndTheTextsThatCarryIt",
+        "ThePlanIsImmutableAndItsEqualityIsExplicitOrdinalElementByElementAndInOrder",
+        "ThePlanTypesLiveInThePilotNamespaceAndTheirSignaturesNameNoTypeOfTheHostOrOfTheDrawing",
+        "TheReadyPlanHoldsTheRackTheOriginTheExpectedBaseTheScaleAndTheMembersByKeyInOrdinalOrder",
+        "TheSnapshotIsBuiltOnlyByFromWithCopiesAndTheStatusBeforeAnAttemptWhileApplying"
+      ],
+      "Cambiadas": [],
+      "Nuevas": [],
+      "Errores": []
+    },
+    "tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs": {
+      "Ok": true,
+      "Estado": "M",
+      "Borradas": [
+        "ADefaultReadResultAnswersFailedForTheThreeOperationsAndChangesNothing",
+        "ASessionThatNeverExistedIsRejectedForTheThreeOperationsWithoutReadingAndWithoutChange",
+        "AnExceptionInsideTheComparisonOfTheGeneralCheckIsFailedReportedAndChangesNothing",
+        "AnInvalidPendingTextDoesNotBlockTheThreeOperationsConfirmAndKeepLeaveItExactlyAsTypedAndDiscardEmptiesIt",
+        "AnotherActiveDocumentRejectsTheThreeOperationsWithoutReadingAndLeavesTheBaseTheInitialTheCurrentAndThePendingTextIntact",
+        "KeepAndDiscardOfADeletedRackAnswerNotAdmittedWithTheDiagnosticAndTheHintAndChangeNothing",
+        "KeepAndDiscardOfAnUnreadableEnvelopeAnswerNotAdmittedWithItsDiagnosticAndChangeNothing"
+      ],
+      "Cambiadas": [],
+      "Nuevas": [],
+      "Errores": []
+    },
+    "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs": {
+      "Ok": true,
+      "Estado": "M",
+      "Borradas": [
+        "TheCompositionForWritingComparesTheCurrentStateAsItIsAndNeverCopiesIt",
+        "TheGuardOfTheCompositionTripsWhenTheCurrentStateIsCopiedBeforeTheComparison"
+      ],
+      "Cambiadas": [],
+      "Nuevas": [],
+      "Errores": []
+    },
+    "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs": {
+      "Ok": true,
+      "Estado": "M",
+      "Borradas": [
+        "G4TripsOnACallerInTheControllerTheAdapterOrASecondCallInTheCore"
+      ],
+      "Cambiadas": [],
+      "Nuevas": [],
+      "Errores": []
+    },
+    "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs": {
+      "Ok": true,
+      "Estado": "M",
+      "Borradas": [
+        "ADifferenceFoundByTheRereadOfMutateIsAConflictAndNoUnitIsWritten",
+        "ADocumentThatIsNotTheAuthorizedOneStopsTheRunBeforeAnythingIsImported",
+        "ALockedLayerOfADefinitionThatIsNotInThePlanIsIgnored",
+        "ALockedLayerOfAMemberOfThePlanStopsTheRunBeforeTheImportAndLeavesNoResidue",
+        "APostThatThrowsIsAppliedPostRereadFailedWithTheWarningsThatWereKnown",
+        "AReadThatIsNotAdmittedWithTheBaseOfTheDraftIsNotAppliedAdmission",
+        "ASealThatThrowsIsCommitThrewAndPostIsNeverReached",
+        "AViewWithABlankNameHasNoDesiredNameAndGivesNoWarningEvenIfItsDefinitionHasAnotherName",
+        "AbortFailedOnlyAppliesToANotAppliedFailureWithAUnitStarted",
+        "AnExceptionBeforeTheSealIsNotAppliedFailureWithItsCauseAndTheSealIsNeverCalled",
+        "AnExtraMemberAppearingBetweenPrepareAndMutateIsAConflictToo",
+        "EveryWriteUnitReceivesTheTextOfThePlanForItsKeyInOrdinalOrder",
+        "TheDesiredNamesFollowTheRuleOfTheClassicEditorPerView",
+        "TheDraftIsRebasedAndCleanFromTheRereadOfPostWhenTheRunIsClosed",
+        "ThePostComparisonSeesAnotherScaleInTheStateThatTheRereadMaterializes",
+        "ThePostRereadUsesTheKeyOfTheOriginOfThePlanAndNotTheOneOfTheTextThatChanged",
+        "ThePrecheckOnlyStopsForTheThreeKindsThatNeedNeitherAReadNorACatalog",
+        "TheRunFollowsTheOrderOfThePackageAndEndsAppliedWithTheRereadOfPost",
+        "TheRunKeepsNoTextOfTheDrawingBetweenTwoRuns"
+      ],
+      "Cambiadas": [
+        "ABlockThatIsNotTheOneThatWasPreparedIsAPreflightAndNothingIsWritten",
+        "ACleanDraftIsNothingToApplyAndAConflictDraftIsNotApplicableAndAPendingTextIsPendingTextEvenWithoutTheSlot",
+        "AComparisonThatThrowsAfterTheSealIsAppliedPostRereadFailed",
+        "AConflictOrAPreflightOfMutateStaysWhatItIsEvenWhenTheReleaseOfTheScopeOfMutateThrows",
+        "ADifferenceOfTheBaseInPrepareIsAConflictWithItsDifferencesAndNothingIsImported",
+        "ADocumentThatChangedBetweenPrepareAndMutateIsAPreflightWithoutWrites",
+        "AForeignScopeOpenAtPostIsAppliedPostRereadFailedWithItsCauseAndTheWarnings",
+        "AForeignScopeOpenIsRejectedAsAValueAndNothingIsRereadWrittenOrReleased",
+        "ANameThatDiffersAfterTheRenameIsAWarningAndACaseOnlyDifferenceIsNot",
+        "APostWithoutValuesOrWithoutItsRereadIsAppliedPostRereadFailed",
+        "AReleaseThatFailsWithoutSealAndWithoutAUnitStartedIsNotAppliedFailureAndNotAnUncertainOutcome",
+        "ASealThatReturnsAndAReleaseThatThrowsGoesToPostAndTheReleaseIsAWarning",
+        "ASealThatThrewKeepsBeingCommitThrewBecauseOfTheSealEvenIfTheAbortThrowsToo",
+        "AViewThatIsNotAvailableInTheOutgoingSystemIsAPreflightAndNothingIsImported",
+        "AbortThatFailsAfterAUnitStartedIsCommitThrewWithAbortFailedAndNoRollbackIsClaimed",
+        "AnImportThatFailsIsAPreflightWithItsCauseAndNoScopeOfMutationIsStarted",
+        "AnOuterReleaseThatThrowsAfterPostTurnsAppliedIntoAppliedWithWarningsAndKeepsTheOtherWarnings",
+        "AnOuterReleaseThatThrowsOnAConflictIsDroppedBecauseAConflictCarriesNoCause",
+        "AnOuterReleaseThatThrowsOutsidePostAddsItsCauseToTheClassificationThatWasAlreadyDecided",
+        "SeveralMembersWithTheTextOfTheOriginAreAPreflightWithTheirOwnReasonAndNotTheMisleadingOneOfTheReader",
+        "TheMissingPiecesAndAFailedRegenerationAreWarningsAndTheStateStaysClean",
+        "ThePostComparisonDoesNotNormalizeAnything",
+        "ThePostComparisonFailsForAnotherSetOfKeysAnotherEnvelopeAndAnotherScale",
+        "TheRunNeverThrowsForMissingArgumentsOrForAPortThatAnswersNothing",
+        "TheSurvivorsAndTheLockedLayersAreCheckedAgainInMutateAndNothingIsWritten",
+        "TheSystemIsRebuiltFromTheDesignTextOfAMemberOfThePlan",
+        "TheSystemRebuiltForAMemberCarriesTheRackNameOfItsEnvelope",
+        "ThereIsNoOriginWhenNoMutableMemberHasTheTextOfTheOriginOfTheDraft",
+        "WithoutSurvivorsNothingIsImportedAndTheRunStops"
+      ],
+      "Nuevas": [],
+      "Errores": []
+    },
+    "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateScopeDouble.cs": {
+      "Ok": true,
+      "Estado": "M",
+      "Borradas": [],
+      "Cambiadas": [],
+      "Nuevas": [],
+      "Errores": []
+    },
+    "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionPilotParityTests.cs": {
+      "Ok": true,
+      "Estado": "D",
+      "Borradas": [
+        "CT_PBTC_06_TheWindowAndThePilotWriteTheSameDesignForTheFourteenDesigns",
+        "CT_PBTC_10_TheWindowAndThePilotWriteTheSameDesignForEveryExactFieldAndForCustomModules"
+      ],
+      "Cambiadas": [],
+      "Nuevas": [],
+      "Errores": []
+    },
+    "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionSupport.cs": {
+      "Ok": true,
+      "Estado": "M",
+      "Borradas": [],
+      "Cambiadas": [],
+      "Nuevas": [],
+      "Errores": []
+    },
+    "tests/RackCad.UI.Tests/PushBackFieldValidationConcordanceTests.cs": {
+      "Ok": true,
+      "Estado": "D",
+      "Borradas": [
+        "CT_PBT2B_10_ThePanelScaleFieldAndTheWindowScaleBoxAcceptAndRejectTheSameTexts"
+      ],
+      "Cambiadas": [],
+      "Nuevas": [],
+      "Errores": []
+    },
+    "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotCanonicalLineEndingTests.cs": {
+      "Ok": true,
+      "Estado": "D",
+      "Borradas": [
+        "EachOfTheEightCanonicalDesignsIsAFileOfTheFixturesFolderAndItsRoundTripIsByteForByte",
+        "ThePersistedDocumentOfThePilotWithoutAnEditIsTheInnerDesignOfTheEnvelopeByteForByteWithoutNormalizingTheLineEndings"
+      ],
+      "Cambiadas": [],
+      "Nuevas": [],
+      "Errores": []
+    },
+    "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs": {
+      "Ok": true,
+      "Estado": "M",
+      "Borradas": [
+        "AValidTextAppliesTheSameNumberTheClassicBoxParses",
+        "TheAdapterGivesTheSameVerdictAndMessageAsTheClassicBoxInEveryCulture"
+      ],
+      "Cambiadas": [],
+      "Nuevas": [],
+      "Errores": []
+    },
+    "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs": {
+      "Ok": true,
+      "Estado": "M",
+      "Borradas": [
+        "TheDocumentThePilotWritesAfterKeepMineOpensInTheClassicWindowWithTheNewBaseAndTheScaleOfTheDraft",
+        "TheWindowAndThePilotDifferOnlyInTheKnownClasses"
+      ],
+      "Cambiadas": [],
+      "Nuevas": [],
+      "Errores": []
+    }
+  }
+}

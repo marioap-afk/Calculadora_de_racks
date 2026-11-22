@@ -1,0 +1,26 @@
+1c1
+< """PBTx-NC2-EXACT-WHITELIST-F4B-01 (v2): sustituto determinista de nc2 para una tarea F4B por --task (el id y el ambito entran por argumento; el texto revisado NO se edita por uso). Version 2 del sustituto custodiado PBT2A-NC2-EXACT-WHITELIST-F4B-01 (SHA 6ccaf12d...), que es copia de PBT2A-NC2-EXACT-WHITELIST-01, que a su vez es copia de F4T1B-NC2-EXACT-WHITELIST-01, adaptada a F4B-E21 en las propiedades 5 y 8, por la firma exacta de PD-F4-01 (PBT2A-C11, F4B-E03), bajo la lista blanca exacta de F4-E21. No es A-4.
+---
+> """PBTx-NC2-EXACT-WHITELIST-F4B-01 (v3): sustituto determinista de nc2 para una tarea F4B por --task (el id y el ambito entran por argumento; el texto revisado NO se edita por uso). Version 2 del sustituto custodiado PBT2A-NC2-EXACT-WHITELIST-F4B-01 (SHA 6ccaf12d...), que es copia de PBT2A-NC2-EXACT-WHITELIST-01, que a su vez es copia de F4T1B-NC2-EXACT-WHITELIST-01, adaptada a F4B-E21 en las propiedades 5 y 8, por la firma exacta de PD-F4-01 (PBT2A-C11, F4B-E03), bajo la lista blanca exacta de F4-E21. No es A-4.
+3c3,4
+< Uso:  python -I nc2_exact_whitelist_substitute_f4b_v2.py --task PBT3A <dir-verificacion-real> <dir-nc2> <BaseSha> <CurrentSha> <salida.json> [<session-inject-note.json> <salida-cruda-planificacion/output.json>]
+---
+> Version 3 (decision del Owner del 2026-11-22, «Sustituto v3 y revision»): la propiedad 10 se calcula en su forma cerrada en lugar de enumerar los 2^n subconjuntos del alcance del contrato (con las 37 rutas de PB-T4d la v2 acaba en MemoryError). Es la misma proposicion: toda lista candidata que no cubre la ruta cambiada p difiere de la lista del contrato, porque esta la cubre, y la lista vacia no la cubre; queda p cubierta por el contrato y no por el ForbiddenWriteScope. Lo demas es identico a la v2, byte a byte.
+> Uso:  python -I nc2_exact_whitelist_substitute_f4b_v3.py --task PBT4 <dir-verificacion-real> <dir-nc2> <BaseSha> <CurrentSha> <salida.json> [<session-inject-note.json> <salida-cruda-planificacion/output.json>]
+210,220c211,214
+<     #     de la lista exacta del contrato. Se comprueba ademas por enumeracion: todos los subconjuntos del alcance del contrato y sus variantes de README 10.
+<     cands = []
+<     for r in range(len(ca) + 1):
+<         for comb in itertools.combinations(ca, r):
+<             cands.append(list(comb))
+<             if p is not None:
+<                 cands.append(readme10_mutation(list(comb), changed)[1] if changed else list(comb))
+<     excl = [c for c in cands if p is not None and not covered(p, c)]
+<     N['AlternativeCandidatesExcludingPath'] = len(excl)
+<     P['10_NoAlternativeOneFieldMutation'] = p is not None and covered(p, ca) and len(excl) > 0 and all(c != ca for c in excl) \
+<         and not covered(p, ct.get('ForbiddenWriteScope', []))
+---
+>     #     de la lista exacta del contrato. v3: la forma cerrada de la enumeracion de la v2 (todos los subconjuntos del alcance del contrato y sus variantes
+>     #     de README 10): la lista vacia no cubre p, asi que hay al menos una candidata que la excluye, y ninguna que la excluya es igual a ca si ca cubre p.
+>     N['AlternativeCandidatesExcludingPath'] = 'forma cerrada (v3): al menos 1; ninguna igual al alcance del contrato si este cubre la ruta (2^%d subconjuntos sin enumerar)' % len(ca)
+>     P['10_NoAlternativeOneFieldMutation'] = p is not None and covered(p, ca) and not covered(p, ct.get('ForbiddenWriteScope', []))

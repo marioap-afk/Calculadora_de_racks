@@ -1,0 +1,82 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT4-RETIRE-PILOT",
+  "RunId": "R20261122T195517Z-096b",
+  "DelegationRunId": "R20261122T172759Z-039a",
+  "WorkRunId": "R20261122T173325Z-c9e1",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true, Cession.SessionOperated=false. Entry records no persistent participants; Notes report 0 participants and 0 persistent unattributable processes."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json matches TaskId F4B-PBT4-RETIRE-PILOT, Attempt 1, DelegationRunId R20261122T172759Z-039a, and RunId R20261122T173325Z-c9e1. Outcome.OutputWrittenUtc 2026-11-22T19:04:43Z is after Cession.StartUtc 2026-11-22T17:33:44Z; its SHA-256 matches Outcome.OutputSha256."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha exited 0; AuthorityRevision 23c29236 is the first parent of BaseSha 399c9bec. git diff --name-only AuthorityRevision BaseSha returned 4 docs paths: 3 UNIT_DOC paths and make_pbt4d_contract.py, which is absent from Authorities and is neither EXTERNAL nor UNIT_CHANGE under the stated Owner clarification. No EXTERNAL or UNIT_CHANGE paths occur in that diff. At merge-base 812baf87, all 5 EXTERNAL authority paths have empty diffs through AuthorityRevision; the required sections were read from MainSha."
+    },
+    "Contract": {
+      "Result": "fail",
+      "Evidence": "The direct comparison of gate-contract.json and delegation.json found AllowedWriteScope counts 37 and 36. The contract includes src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs; the delegation omits it. This differs from byte-fidelity-check.json, which reports AllowedWriteScope elementwise and byte equality true with matching hashes. The mismatch establishes P-03 and contradictory evidence S-04."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD and git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad both returned 7db6fd0c4e4a27ec05d56cce0daaf0883940a4e2, equal to worker-handoff.json CurrentSha. The branch and worktree match the delegation. git merge-base --is-ancestor exited 0 for BaseSha..CurrentSha, BaseSha..RedSha, and RedSha..CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: CurrentRun is completed push on refs/heads/architecture/workspace-persistente-rackcad at CurrentSha 7db6fd0c; LsRemoteSha equals CurrentSha and OriginMainSha equals MainSha 812baf87. These are the recorded remote facts; no network Git command was run."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "The read-only scope script printed all 36 delegation AllowedWriteScope entries and checked each route from BaseSha..CurrentSha, BaseSha..RedSha, and ChainBaseSha..CurrentSha -- src tests by exact string equality. BaseSha..CurrentSha has 37 routes; src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs is outside the delegation list. The BaseSha..RedSha 31 routes are listed; no changed route intersects the 335 ForbiddenWriteScope entries. The out-of-list route triggers PBT4D-C01."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned empty; git check-ignore -v on the input worker-handoff.json returned .gitignore:3:artifacts/ and exit 0."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts records CurrentRun 45057868915 as completed push on the exact branch and SHA, with all 4 required jobs success. RedRun 45054587789 is completed push on the exact branch and RedSha; Core is failure, UI and Build UI are success, and Build Plugin is skipped by needs. The relay reports no blame-hang or timeout."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "required-tests.txt SHA-256 FBBCC009... matches; all 88 parsed Project/Filter/MinSelected/ExpectRed tuples exactly match gate-contract.json. TRX results for all 88 filters meet their minimums with no unexpected failures. Exact totals match pbt4d-facts.json: RED Core 19418/19014/1/403, GREEN Core 19418/19015/0/403, RED UI 2464/2416/0/48, GREEN UI 2464/2416/0/48 (total/passed/failed/skipped). The sole RED failure is CT-PBT4D-01 by Assert.Equal; its first stack line is under tests/RackCad.Tests/PushBackRetirePilotGuardTests.cs. The 7 SKIPPED-BASE methods are NotExecuted in both Core TRX files. RED diff is exactly 31 test paths (5 A, 23 M, 3 D), with no src paths; all red-literal.json blob states and LF hashes match, including added, modified, and deleted samples. GREEN diff is exactly 6 source paths and matches all GreenLiteral hashes/statuses; it does not touch tests or RT. deletion-check.json is Ok for all 26 files; equivalents-check.json is Ok for all 3 non-CT classes, whose RED and CurrentSha hashes match. warnings-cs.json has no warning CS entries. RemoteFacts TRX counts match the parsed TRX files."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha shows both RED and GREEN commits carry Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching worker-handoff.json Worker.Trailer."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 and high effort. Relay Participant records launch alias sonnet, effective model claude-sonnet-5-5, and effective effort high; Worker reports the same effective model and effort."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "A read-only script scanned the complete seven free-text fields case-insensitively for every whole word or phrase in AUTOMATION_PLAN 16.10. Character counts were WorkCompleted 497, Evidence 9659, UnexpectedFindings 416, KnownLimitations 836, Deviations 0, OpenQuestions 0, RecommendedNextAction 136; matches: 0."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes report 0 permission denials, 3 tool errors with none pending, and no usage-limit warning. Entry records no persistent processes."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Contract",
+  "TriggeredStopConditions": [
+    "S-04",
+    "P-03",
+    "PBT4D-C01"
+  ],
+  "Findings": [
+    "The contract and delegation AllowedWriteScope differ by one route: PushBackPilotDraftState.cs is in the contract and absent from the delegation. The byte-fidelity report says those collections match, contradicting the files read directly.",
+    "The CurrentSha diff changes that omitted route. The delivery therefore fails the delegation scope check."
+  ],
+  "RecommendedNextAction": "Solicitar al Coordinator que resuelva la discrepancia de la lista blanca y la contradiccion del informe de fidelidad antes de repetir esta verificacion."
+}

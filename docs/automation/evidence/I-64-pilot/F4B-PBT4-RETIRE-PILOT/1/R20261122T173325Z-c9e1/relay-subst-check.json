@@ -1,0 +1,922 @@
+{
+ "Copias": {
+  "Particion": {
+   "DelContrato": false,
+   "Medida": {},
+   "Sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "PorClase": {}
+ },
+ "CopySha": {
+  "Copias": 0,
+  "Mal": {}
+ },
+ "Equivalentes": {
+  "Equivalentes": 3,
+  "Mal": {},
+  "Sha256": {
+   "tests/RackCad.Tests/PushBackRetirePilotFullCopyGuardTests.cs": "ee9b6f1513f549065da391c10d6da947cc8e197644efbc7d72cf41e46443e6cf",
+   "tests/RackCad.Tests/PushBackRetirePilotPlanGuardTests.cs": "48c2f4a9619e2f3e7e5de4f1ad98bf68024635c268866fa1242f65f329d8ca43",
+   "tests/RackCad.Tests/PushBackRetirePilotRunTests.cs": "3554df0d960f18ef6bb2b930f4ac7757e8ca7438ebf6a9eda8934ef9acf8fe69"
+  }
+ },
+ "Firmas": {
+  "PushBackPilotFieldAdapter": [
+   "public sealed class PushBackPilotFieldAdapter : IDraftPendingTextAdapter<PushBackPilotDraftState>",
+   "public const string AnnotationScaleKey = \"AnnotationScale\";",
+   "public const string EmptyMessage = \"Escribe un valor.\";",
+   "public const string NotANumberMessage = \"Valor no numérico.\";",
+   "public const string NotPositiveMessage = \"El valor debe ser > 0.\";",
+   "public const string UnknownFieldMessage = \"Campo desconocido para el piloto.\";",
+   "public DraftFieldValidation Validate(string fieldKey, string text)",
+   "public PushBackPilotDraftState Apply(PushBackPilotDraftState current, IReadOnlyDictionary<string, string> pendingText)"
+  ],
+  "PushBackPilotMaterializer": [
+   "public sealed class PushBackPilotComposition",
+   "public PushBackCompositeEditorState? Editor { get; }",
+   "public PushBackEditorInputs? Inputs { get; }",
+   "public static PushBackPilotComposition Composed(PushBackCompositeEditorState editor, PushBackEditorInputs inputs)",
+   "public static PushBackPilotComposition Rejected(string reason)",
+   "public static PushBackPilotComposition ComposeForWrite(",
+   "public static PushBackPilotDraftState KeepPilotEditsOn(PushBackPilotDraftState newInitial, PushBackPilotDraftState current)"
+  ],
+  "PushBackPilotStateComparer": [
+   "public sealed class PushBackPilotStateComparer : IEqualityComparer<PushBackPilotDraftState>",
+   "public static PushBackPilotStateComparer Instance { get; } = new PushBackPilotStateComparer();",
+   "public bool Equals(PushBackPilotDraftState? x, PushBackPilotDraftState? y)",
+   "public int GetHashCode(PushBackPilotDraftState obj)",
+   "public static PushBackPilotDraftState Copy(PushBackPilotDraftState state)",
+   "public static bool Equal(object? a, object? b) => Equal(a, b, 0);"
+  ],
+  "PushBackPilotUpdatePlan": [
+   "public sealed class PushBackPilotPrepareInput",
+   "public PushBackPilotDraftState InitialDraftState { get; }",
+   "public PushBackPilotDraftState CurrentDraftState { get; }",
+   "public static PushBackPilotPrepareInput From(DraftSession<PushBackPilotDraftState> draft)",
+   "public const string ViewUnavailablePrefix = \"El piloto no borra vistas y la vista \";",
+   "public const string ViewUnavailableSuffix = \" ya no está disponible en el sistema saliente: usa RACKEDITAR.\";",
+   "public static PushBackPilotPrepareResult Prepare(PushBackPilotPrepareInput input, PushBackPilotIntentResult reread, RackCatalog catalog)"
+  ],
+  "PushBackPilotUpdateRun": [
+   "public static PushBackPilotPrecheck Precheck(DraftSession<PushBackPilotDraftState> draft)",
+   "public static DraftApplyOutcome<PushBackPilotDraftState> Execute(",
+   "public static string? ComparePost(PushBackPilotUpdatePlan plan, PushBackPilotIntentResult? postRead)"
+  ]
+ },
+ "Forma": "sin copias",
+ "GreenLiteral": {
+  "Archivos": [
+   "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs",
+   "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotFieldAdapter.cs",
+   "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs",
+   "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs",
+   "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs",
+   "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs"
+  ],
+  "Pieza": "pbt4d-green-v54.txt"
+ },
+ "Kit": {
+  "Custodiado": null,
+  "Ruta": null,
+  "Sha256DelRed": null
+ },
+ "Lista": {
+  "Filas": 284,
+  "Ruta": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4d-retire-list-271.tsv",
+  "Sha256": "05a4d3d1905529c5bc4d53e0684d27d97eaa96502098eebeb9d16bfd931c75ac"
+ },
+ "MapaDeLaCopia": {
+  "Ruta": null,
+  "Sha256": null
+ },
+ "ModuloDeMotivos": null,
+ "Precondicion6": {
+  "Claves": [
+   "AllAsExpected",
+   "Alone",
+   "BaseCoverage",
+   "Builds",
+   "Census",
+   "ClassResults",
+   "Control",
+   "Coverage",
+   "CsWarnings",
+   "Expected",
+   "Green",
+   "GreenDeleted",
+   "GreenFiles",
+   "GreenUiCoverage",
+   "GreenWithCoverage",
+   "History",
+   "List",
+   "Noise",
+   "Package",
+   "Pieces",
+   "Reapply",
+   "Red",
+   "RedDeleted",
+   "RedFiles",
+   "Rehearsal",
+   "RequiredTests",
+   "Revision",
+   "Schema",
+   "SlowTestSeconds",
+   "SuiteDurationSeconds",
+   "Task",
+   "UiTotals"
+  ],
+  "Ruta": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4d-precondition6.json"
+ },
+ "Retirada": {
+  "Borradas": {
+   "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotFieldAdapter.cs": "green",
+   "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs": "green",
+   "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionPilotParityTests.cs": "red",
+   "tests/RackCad.UI.Tests/PushBackFieldValidationConcordanceTests.cs": "red",
+   "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotCanonicalLineEndingTests.cs": "red"
+  },
+  "C02PorArchivo": {
+   "tests/RackCad.Tests/PushBackEditAllFullCopyGuardTests.cs": {
+    "Archivo": "tests/RackCad.Tests/PushBackEditAllFullCopyGuardTests.cs",
+    "Borradas": [],
+    "Cambiadas": [
+     "CT_PBT4B_20_TheScriptOfSkipAndDuplicateGivesTheCopiesTheKitAndTheSkipsOfTheClosedList"
+    ],
+    "Errores": [],
+    "Nuevas": []
+   },
+   "tests/RackCad.Tests/PushBackFullWritePrepareTests.cs": {
+    "Archivo": "tests/RackCad.Tests/PushBackFullWritePrepareTests.cs",
+    "Borradas": [],
+    "Cambiadas": [
+     "CT_PBT3B_05_TheNameOfTheDraftReachesEveryViewAndABlankNameTakesTheOneOfTheOrigin",
+     "CT_PBT3B_06_TheBarrierOfTheDiagnosticsStopsABlockedDesignOfTheFullModelAndOfThePilot"
+    ],
+    "Errores": [],
+    "Nuevas": []
+   },
+   "tests/RackCad.Tests/PushBackFullWriteRunTests.cs": {
+    "Archivo": "tests/RackCad.Tests/PushBackFullWriteRunTests.cs",
+    "Borradas": [],
+    "Cambiadas": [
+     "CT_PBT3B_09_ComparePostFullChecksTheErasedKeysTheKeysTheEnvelopesAndTheScaleAndThePilotKeepsItsComparison"
+    ],
+    "Errores": [],
+    "Nuevas": []
+   },
+   "tests/RackCad.Tests/PushBackPilotUpdateEquivalenceGuardTests.cs": {
+    "Archivo": "tests/RackCad.Tests/PushBackPilotUpdateEquivalenceGuardTests.cs",
+    "Borradas": [],
+    "Cambiadas": [
+     "E_3_TheMemberPlansAreBuiltOnlyFromTheMutableMembersOfTheRereadInOrdinalOrderAndErasuresOnlyComeFromAnObsoleteLateralOfAModelThatErases"
+    ],
+    "Errores": [],
+    "Nuevas": []
+   },
+   "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs": {
+    "Archivo": "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs",
+    "Borradas": [],
+    "Cambiadas": [
+     "ARereadThatIsEqualRecoversTheUnknownDraft",
+     "ARereadThatIsNotAdmittedBecauseAMemberBecameBlockingTakesTheUnknownDraftToConflictWithTheDifferences",
+     "ARereadThatIsNotAdmittedBecauseAuth13FindsDivergenceTakesTheUnknownDraftToConflictWithTheDifferences",
+     "ARereadThatIsNotAdmittedOnlyForTheCatalogStillRecoversBecauseTheBaseIsTheSame"
+    ],
+    "Errores": [],
+    "Nuevas": []
+   },
+   "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs": {
+    "Archivo": "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs",
+    "Borradas": [
+     "ACanonicalDesignComesBackAsTheIdenticalPersistedDocument",
+     "ACleanDraftComposesExactlyItsBase",
+     "AnExceptionInsideComposeForWriteItselfIsARejectionWithTheComposePrefix",
+     "AnExceptionInsideTheBaseOfComposeForWriteIsARejectionWithTheExceptionPrefix",
+     "AnInPlaceEditOfTheCurrentEditorOutsideThePilotMakesComposeForWriteReject",
+     "AnOlderDrawingComesBackWithExactlyTheCanonicalizationOfTheApplicationPath",
+     "CarryOver1_TheRejectionComparesTheCurrentStateAsItIsAgainstACopyOfTheInitialOneWithItsScaleNeutralizedAndMutatesNeitherState",
+     "CarryOver2_AKeepOnThatFailsLeavesTheDraftWithoutTheIntermediateStateAndThePendingTextStays",
+     "CarryOver2_KeepAfterAnExternalChangeOfContentThePilotDoesNotEditNeverLeavesTheStepThatWouldRevertItAndComposesAtOnce",
+     "CarryOver2_KeepAfterAnExternalModuleChangeIsOneAtomicStepThatComposesTheNewModulesAndTheScaleOfTheDraft",
+     "CarryOver3_ABaseThatMaterializedAgainIsNotTheInitialStateIsRejectedBeforeComposingAndANormalBaseStillComposes",
+     "CarryOver6_AScaleThatIsNotAFiniteNumberGreaterThanZeroIsRejectedAndNeverComposedAndTheInfiniteOneIsADeclaredExtension",
+     "ComposeForWriteIgnoresTheOriginOfTheCurrentState",
+     "ComposeForWriteIsPureAndMutatesNeitherState",
+     "ComposeForWriteIsTotalAndRejectsABaseThatNoLongerMaterializes",
+     "ComposeForWriteRejectsAnyDifferenceOtherThanTheScaleAndNeverRevertsOrWritesItInSilence",
+     "ComposeForWriteTakesWhatIsEditedFromTheDraftAndWhatIsNotFromTheCurrentBase",
+     "EditingTheScaleOfACanonicalDesignChangesOnlyThatField",
+     "EditingTheScaleOfAnOlderDrawingAddsOnlyTheEditedFieldToTheCanonicalization",
+     "KeepMineAfterAnExternalChangeOfContentThePilotDoesNotEditNeverRevertsItAndComposesTheNewContentPlusTheScaleOfTheDraft",
+     "KeepMineAfterAnExternalModuleChangeWritesTheNewModulesAndTheScaleOfTheDraftAndReturnsToCleanWhenTheScaleIsRestored",
+     "KeepPilotEditsOnIsPureAndGivesTheNewBaseWithTheScaleOfTheDraft"
+    ],
+    "Cambiadas": [
+     "MaterializeReproducesTheApplicationPartOfTheWindowLoadInTheSameOrder"
+    ],
+    "Errores": [],
+    "Nuevas": []
+   },
+   "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs": {
+    "Archivo": "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs",
+    "Borradas": [
+     "ThePilotStateKeepsTheInPlaceEditModelOfTheCurrentState"
+    ],
+    "Cambiadas": [
+     "MutatingTheObjectOfThePostReadAfterTheRebaseOfAnAppliedUpdateChangesNothing"
+    ],
+    "Errores": [],
+    "Nuevas": []
+   },
+   "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs": {
+    "Archivo": "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs",
+    "Borradas": [
+     "ACopyOfAStateMaterializedFromAnOriginIsStillEqualAndNeverHasItsBaseline",
+     "AnEditedScaleMakesTheStatesDifferent",
+     "AnyKeyThatIsNotExactlyAnnotationScaleIsInvalidByOrdinalComparison",
+     "ApplyLeavesTheStateAloneForAnyPendingTextThatIsNotTheOneValidField",
+     "ApplyParsesTheTextInTheCurrentCulture",
+     "ApplyReturnsTheSameObjectItReceivedWithTheScaleAppliedInPlace",
+     "EveryEditableFieldIsExercisedByTheRichStateAndMutatingItMakesTheStatesDifferent",
+     "MutatingEveryFieldOfTheCopyNeverChangesTheOriginal",
+     "MutatingEverySelectionFieldTheModuleAuthorityAndTheOriginLeavesTheStatesEqual",
+     "OriginsWithDifferentTextAndEquivalentContentAreEqual",
+     "TheAdapterKeepsNoReferenceToAnyState",
+     "TheAdapterRunsInsideTheTwoPhaseCommitOfTheDraftCore",
+     "TheComparatorIsReflexiveAndSymmetricAndTwoMaterializationsOfTheSameOriginAreEqual",
+     "TheComparatorIsSymmetricAndSeparatesDifferentDesigns",
+     "TheComparatorTreatsNullAndNaNWithoutBreakingReflexivity",
+     "TheCopyDoesNotCarryTheModuleAndTailAuthority",
+     "TheCopyIsEqualForTheComparatorAndSharesTheOriginString",
+     "TheCopyOfTheRichStateKeepsEveryEditableValueAndTheSameSelection",
+     "TheCopySharesNoMutableObjectWithTheOriginal",
+     "TheKeyOfTheOneFieldIsExactlyAnnotationScale",
+     "TheScaleValidationIsTheRuleOfTheClassicBoxInEveryCulture",
+     "ValidateMutatesNothing"
+    ],
+    "Cambiadas": [],
+    "Errores": [],
+    "Nuevas": []
+   },
+   "tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs": {
+    "Archivo": "tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs",
+    "Borradas": [
+     "AChangedWitnessIsReportedAsChangedAndNoKeystrokeIsAppliedToTheNewDraft",
+     "TheDraftIsBornWithTheComparerAndTheCopierOfThePilot"
+    ],
+    "Cambiadas": [],
+    "Errores": [],
+    "Nuevas": []
+   },
+   "tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardFull.cs": {
+    "Archivo": "tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardFull.cs",
+    "Borradas": [],
+    "Cambiadas": [],
+    "Errores": [],
+    "Nuevas": []
+   },
+   "tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs": {
+    "Archivo": "tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs",
+    "Borradas": [],
+    "Cambiadas": [
+     "TheReadGuardAllowsAnotherReadThatALaterTaskWouldAddWithItsOwnMark"
+    ],
+    "Errores": [],
+    "Nuevas": []
+   },
+   "tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs": {
+    "Archivo": "tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs",
+    "Borradas": [
+     "ABlockingBoundaryOnADraftThatCannotBeEditedKeepsItsPendingTextAndNeverValidatesOrApplies",
+     "AComparerThatThrowsMakesTheFieldUndecidableProtectedAndNotEditableAndGetFieldNeverThrows",
+     "AValidTextAtABlockingBoundaryProceedsAppliesItAndEndsTheMark",
+     "AfterAnySequenceOfAcceptedAndRejectedEditsTheFieldHoldsTheLastAcceptedText",
+     "AnInvalidTextAbortsEachBlockingBoundaryWithTheFieldAndTheMessageAndNothingChanges",
+     "AnInvalidTextAndTheGestureOfTheFieldAnswerInvalidKeepTheTextAsTypedAndLeaveTheValue",
+     "DiscardRackNeedsNoComparerAndRemovesAnUndecidableDraftToo",
+     "EachNonBlockingBoundaryKeepsAnInvalidTextCharacterByCharacterWithoutValidatingCommittingOrAuthorizing",
+     "GetFieldReportsEveryStateOfTheFieldAndWhatCanBeEdited",
+     "TheFallbackByDraftIsKnownAndKeepsTheUncertainOnesApart",
+     "TheGestureOfTheFieldEndsTheMarkOfKnownCleanWhenItAppliesTheText",
+     "TheKeyOfThePendingTextIsAlwaysTheOneOfTheAdapterAndAnEmptyTextIsKeptToo",
+     "TheNoticeOfAVetoExpiresWhenTheSessionIsDiscardedWhenTheNextAdviceAllowsAndWhenTheSessionIsRetired",
+     "TheOperationsOfADocumentNeverTouchTheDraftsOfAnotherAndABlockingMutationOfAnotherDocumentIsRejected",
+     "TheOuterCatchOfGetFieldAnswersTheViewInErrorWhenTheCopierOfTheStateAnswersNull",
+     "TheRacksAtRiskAreOrderedOrdinallyAndAComparerThatThrowsMakesThemUncertainApart",
+     "TheReasonOfAFieldThatCannotBeReadIsInSpanish",
+     "TheShownTextOfAFiniteValueGreaterThanZeroIsReadBackAsTheSameDoubleAndPassesTheValidationInEveryCulture"
+    ],
+    "Cambiadas": [],
+    "Errores": [],
+    "Nuevas": []
+   },
+   "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareFull.cs": {
+    "Archivo": "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareFull.cs",
+    "Borradas": [
+     "ThePlanTypesLiveInThePilotNamespaceAndTheirSignaturesNameNoTypeOfTheHostOrOfTheDrawing"
+    ],
+    "Cambiadas": [
+     "InvalidD_ABuilderThatCannotBuildTheOutgoingSystemIsInvalidWithTheTypedErrorAndNothingIsWritten"
+    ],
+    "Errores": [],
+    "Nuevas": []
+   },
+   "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs": {
+    "Archivo": "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs",
+    "Borradas": [],
+    "Cambiadas": [
+     "TheAfterMatchGuardTripsOnAnotherCallerAndOnACallBeforeTheComparison",
+     "TheFileOfThePlanIsNullableEnabledInTheNamespaceOfThePilotWithBracesAndDeclaresTheTypesOfThePackage",
+     "TheOrderOfPrepareIsTheOneOfThePackageAndNoOutcomeBeforeConflictLooksAtTheReread"
+    ],
+    "Errores": [],
+    "Nuevas": []
+   },
+   "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs": {
+    "Archivo": "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs",
+    "Borradas": [
+     "ACleanDraftHasNothingToApplyAndTheRereadIsNotLookedAt",
+     "ADifferenceInACleanOrDirtyDraftPutsItInConflictWithTheOrderedDifferencesAndChangesNothingElse",
+     "ADifferenceInAConflictReplacesTheDifferencesAndTheDraftStaysInConflict",
+     "ADifferenceOfTheBaseIsAConflictBeforeTheAdmissionAndWithTheOrderedDifferences",
+     "ADraftThatIsNotCleanOrDirtyIsNotApplicableWhateverTheReread",
+     "AKeepOnThatThrowsOrACopyThatThrowsLeavesTheDraftExactlyAsItWas",
+     "AMatchInACleanOrDirtyDraftOnlyClearsThePossiblyStaleMarkAndNeverCleansDirty",
+     "AMatchInAConflictAnswersConfirmedAndTheDraftStaysInConflictWithAllItsData",
+     "AMissingCatalogIsAnsweredAfterTheConflictAndTheAdmissionAndNotBeforeThem",
+     "ARereadThatMatchesButIsNotAdmittedIsNotAdmittedWithItsDiagnostic",
+     "ConfirmBaseDoesNotApplyToADraftThatIsNotRegisteredApplyingUnknownOrInError",
+     "ConfirmBaseWithoutAReReadThrowsAndChangesNothing",
+     "InvalidA_ACurrentStateThatDoesNotComposeIsInvalidWithTheReasonOfTheCompositionAndOverTheCarryOversOfTheMaterializer",
+     "InvalidA_AnOriginThatNoLongerMaterializesIsInvalidWithTheReasonOfTheMaterializerBeforeAnythingElse",
+     "InvalidB_NoMutableMemberWithTheTextOfTheOriginOrSeveralOfThemIsInvalid",
+     "InvalidC_AnInnerDesignOfAnotherKindOrOfANewerMajorAbortsThePreflightAndTheUpdateIsInvalid",
+     "InvalidD_ABuilderThatCannotBuildTheOutgoingSystemIsInvalidWithTheTypedErrorAndNothingIsWritten",
+     "InvalidE_AMutableMemberThatIsNotAvailableInTheOutgoingSystemOrWhoseEnvelopeDoesNotDecodeIsInvalidAndNeverErasesAView",
+     "InvalidE_AnEnvelopeThatDoesNotDecodeIsInvalidWithItsKey",
+     "KeepAfterAChangeOfTheDrawingStaysOnTheNewVersionWithTheScaleAndThePendingTextOfTheDraft",
+     "KeepChecksNotAllowedThenNotConfirmedThenNotAdmittedInTheOrderOfTheOtherVersionAndNeverCallsKeepOnWithoutAdmission",
+     "KeepWithANullKeepOnThrowsBeforeAnythingElseAndChangesNothing",
+     "PendingTextComesBeforeEverythingButNotApplicableAndBeforeTheReread",
+     "PrepareDoesNotPutTheDraftInConflictNorCleanDirtyNorTakeTheSlotOfTheUpdate",
+     "PrepareIsTotalAMissingPieceIsInvalidAndNeverAnException",
+     "PrepareNeverChangesTheDraftWhateverItsOutcome",
+     "ReadOnlyAndNonMutableMembersOfTheRereadNeverEnterThePlan",
+     "TheOutgoingDesignAndEnvelopeOfEachViewComeFromTheRereadEnvelopeAndNeverFromTheDraft",
+     "ThePilotNeverErasesAViewAPhantomThatWasAlreadyInTheDrawingMakesTheUpdateInvalidAndIsNeverInThePlan",
+     "ThePlanIsBuiltOnlyFromTheRereadSoAChangeOfTheCurrentScaleOnlyChangesTheScaleAndTheTextsThatCarryIt",
+     "ThePlanIsImmutableAndItsEqualityIsExplicitOrdinalElementByElementAndInOrder",
+     "ThePlanTypesLiveInThePilotNamespaceAndTheirSignaturesNameNoTypeOfTheHostOrOfTheDrawing",
+     "TheReadyPlanHoldsTheRackTheOriginTheExpectedBaseTheScaleAndTheMembersByKeyInOrdinalOrder",
+     "TheSnapshotIsBuiltOnlyByFromWithCopiesAndTheStatusBeforeAnAttemptWhileApplying"
+    ],
+    "Cambiadas": [],
+    "Errores": [],
+    "Nuevas": []
+   },
+   "tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs": {
+    "Archivo": "tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs",
+    "Borradas": [
+     "ADefaultReadResultAnswersFailedForTheThreeOperationsAndChangesNothing",
+     "ASessionThatNeverExistedIsRejectedForTheThreeOperationsWithoutReadingAndWithoutChange",
+     "AnExceptionInsideTheComparisonOfTheGeneralCheckIsFailedReportedAndChangesNothing",
+     "AnInvalidPendingTextDoesNotBlockTheThreeOperationsConfirmAndKeepLeaveItExactlyAsTypedAndDiscardEmptiesIt",
+     "AnotherActiveDocumentRejectsTheThreeOperationsWithoutReadingAndLeavesTheBaseTheInitialTheCurrentAndThePendingTextIntact",
+     "KeepAndDiscardOfADeletedRackAnswerNotAdmittedWithTheDiagnosticAndTheHintAndChangeNothing",
+     "KeepAndDiscardOfAnUnreadableEnvelopeAnswerNotAdmittedWithItsDiagnosticAndChangeNothing"
+    ],
+    "Cambiadas": [],
+    "Errores": [],
+    "Nuevas": []
+   },
+   "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs": {
+    "Archivo": "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs",
+    "Borradas": [
+     "TheCompositionForWritingComparesTheCurrentStateAsItIsAndNeverCopiesIt",
+     "TheGuardOfTheCompositionTripsWhenTheCurrentStateIsCopiedBeforeTheComparison"
+    ],
+    "Cambiadas": [],
+    "Errores": [],
+    "Nuevas": []
+   },
+   "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs": {
+    "Archivo": "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs",
+    "Borradas": [
+     "G4TripsOnACallerInTheControllerTheAdapterOrASecondCallInTheCore"
+    ],
+    "Cambiadas": [],
+    "Errores": [],
+    "Nuevas": []
+   },
+   "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs": {
+    "Archivo": "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs",
+    "Borradas": [
+     "ADifferenceFoundByTheRereadOfMutateIsAConflictAndNoUnitIsWritten",
+     "ADocumentThatIsNotTheAuthorizedOneStopsTheRunBeforeAnythingIsImported",
+     "ALockedLayerOfADefinitionThatIsNotInThePlanIsIgnored",
+     "ALockedLayerOfAMemberOfThePlanStopsTheRunBeforeTheImportAndLeavesNoResidue",
+     "APostThatThrowsIsAppliedPostRereadFailedWithTheWarningsThatWereKnown",
+     "AReadThatIsNotAdmittedWithTheBaseOfTheDraftIsNotAppliedAdmission",
+     "ASealThatThrowsIsCommitThrewAndPostIsNeverReached",
+     "AViewWithABlankNameHasNoDesiredNameAndGivesNoWarningEvenIfItsDefinitionHasAnotherName",
+     "AbortFailedOnlyAppliesToANotAppliedFailureWithAUnitStarted",
+     "AnExceptionBeforeTheSealIsNotAppliedFailureWithItsCauseAndTheSealIsNeverCalled",
+     "AnExtraMemberAppearingBetweenPrepareAndMutateIsAConflictToo",
+     "EveryWriteUnitReceivesTheTextOfThePlanForItsKeyInOrdinalOrder",
+     "TheDesiredNamesFollowTheRuleOfTheClassicEditorPerView",
+     "TheDraftIsRebasedAndCleanFromTheRereadOfPostWhenTheRunIsClosed",
+     "ThePostComparisonSeesAnotherScaleInTheStateThatTheRereadMaterializes",
+     "ThePostRereadUsesTheKeyOfTheOriginOfThePlanAndNotTheOneOfTheTextThatChanged",
+     "ThePrecheckOnlyStopsForTheThreeKindsThatNeedNeitherAReadNorACatalog",
+     "TheRunFollowsTheOrderOfThePackageAndEndsAppliedWithTheRereadOfPost",
+     "TheRunKeepsNoTextOfTheDrawingBetweenTwoRuns"
+    ],
+    "Cambiadas": [
+     "ABlockThatIsNotTheOneThatWasPreparedIsAPreflightAndNothingIsWritten",
+     "ACleanDraftIsNothingToApplyAndAConflictDraftIsNotApplicableAndAPendingTextIsPendingTextEvenWithoutTheSlot",
+     "AComparisonThatThrowsAfterTheSealIsAppliedPostRereadFailed",
+     "AConflictOrAPreflightOfMutateStaysWhatItIsEvenWhenTheReleaseOfTheScopeOfMutateThrows",
+     "ADifferenceOfTheBaseInPrepareIsAConflictWithItsDifferencesAndNothingIsImported",
+     "ADocumentThatChangedBetweenPrepareAndMutateIsAPreflightWithoutWrites",
+     "AForeignScopeOpenAtPostIsAppliedPostRereadFailedWithItsCauseAndTheWarnings",
+     "AForeignScopeOpenIsRejectedAsAValueAndNothingIsRereadWrittenOrReleased",
+     "ANameThatDiffersAfterTheRenameIsAWarningAndACaseOnlyDifferenceIsNot",
+     "APostWithoutValuesOrWithoutItsRereadIsAppliedPostRereadFailed",
+     "AReleaseThatFailsWithoutSealAndWithoutAUnitStartedIsNotAppliedFailureAndNotAnUncertainOutcome",
+     "ASealThatReturnsAndAReleaseThatThrowsGoesToPostAndTheReleaseIsAWarning",
+     "ASealThatThrewKeepsBeingCommitThrewBecauseOfTheSealEvenIfTheAbortThrowsToo",
+     "AViewThatIsNotAvailableInTheOutgoingSystemIsAPreflightAndNothingIsImported",
+     "AbortThatFailsAfterAUnitStartedIsCommitThrewWithAbortFailedAndNoRollbackIsClaimed",
+     "AnImportThatFailsIsAPreflightWithItsCauseAndNoScopeOfMutationIsStarted",
+     "AnOuterReleaseThatThrowsAfterPostTurnsAppliedIntoAppliedWithWarningsAndKeepsTheOtherWarnings",
+     "AnOuterReleaseThatThrowsOnAConflictIsDroppedBecauseAConflictCarriesNoCause",
+     "AnOuterReleaseThatThrowsOutsidePostAddsItsCauseToTheClassificationThatWasAlreadyDecided",
+     "SeveralMembersWithTheTextOfTheOriginAreAPreflightWithTheirOwnReasonAndNotTheMisleadingOneOfTheReader",
+     "TheMissingPiecesAndAFailedRegenerationAreWarningsAndTheStateStaysClean",
+     "ThePostComparisonDoesNotNormalizeAnything",
+     "ThePostComparisonFailsForAnotherSetOfKeysAnotherEnvelopeAndAnotherScale",
+     "TheRunNeverThrowsForMissingArgumentsOrForAPortThatAnswersNothing",
+     "TheSurvivorsAndTheLockedLayersAreCheckedAgainInMutateAndNothingIsWritten",
+     "TheSystemIsRebuiltFromTheDesignTextOfAMemberOfThePlan",
+     "TheSystemRebuiltForAMemberCarriesTheRackNameOfItsEnvelope",
+     "ThereIsNoOriginWhenNoMutableMemberHasTheTextOfTheOriginOfTheDraft",
+     "WithoutSurvivorsNothingIsImportedAndTheRunStops"
+    ],
+    "Errores": [],
+    "Nuevas": []
+   },
+   "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateScopeDouble.cs": {
+    "Archivo": "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateScopeDouble.cs",
+    "Borradas": [],
+    "Cambiadas": [],
+    "Errores": [],
+    "Nuevas": []
+   },
+   "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionPilotParityTests.cs": {
+    "Archivo": "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionPilotParityTests.cs",
+    "Borradas": [
+     "CT_PBTC_06_TheWindowAndThePilotWriteTheSameDesignForTheFourteenDesigns",
+     "CT_PBTC_10_TheWindowAndThePilotWriteTheSameDesignForEveryExactFieldAndForCustomModules"
+    ],
+    "Cambiadas": [],
+    "Errores": [],
+    "Nuevas": []
+   },
+   "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionSupport.cs": {
+    "Archivo": "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionSupport.cs",
+    "Borradas": [],
+    "Cambiadas": [],
+    "Errores": [],
+    "Nuevas": []
+   },
+   "tests/RackCad.UI.Tests/PushBackFieldValidationConcordanceTests.cs": {
+    "Archivo": "tests/RackCad.UI.Tests/PushBackFieldValidationConcordanceTests.cs",
+    "Borradas": [
+     "CT_PBT2B_10_ThePanelScaleFieldAndTheWindowScaleBoxAcceptAndRejectTheSameTexts"
+    ],
+    "Cambiadas": [],
+    "Errores": [],
+    "Nuevas": []
+   },
+   "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotCanonicalLineEndingTests.cs": {
+    "Archivo": "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotCanonicalLineEndingTests.cs",
+    "Borradas": [
+     "EachOfTheEightCanonicalDesignsIsAFileOfTheFixturesFolderAndItsRoundTripIsByteForByte",
+     "ThePersistedDocumentOfThePilotWithoutAnEditIsTheInnerDesignOfTheEnvelopeByteForByteWithoutNormalizingTheLineEndings"
+    ],
+    "Cambiadas": [],
+    "Errores": [],
+    "Nuevas": []
+   },
+   "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs": {
+    "Archivo": "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs",
+    "Borradas": [
+     "AValidTextAppliesTheSameNumberTheClassicBoxParses",
+     "TheAdapterGivesTheSameVerdictAndMessageAsTheClassicBoxInEveryCulture"
+    ],
+    "Cambiadas": [],
+    "Errores": [],
+    "Nuevas": []
+   },
+   "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs": {
+    "Archivo": "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs",
+    "Borradas": [
+     "TheDocumentThePilotWritesAfterKeepMineOpensInTheClassicWindowWithTheNewBaseAndTheScaleOfTheDraft",
+     "TheWindowAndThePilotDifferOnlyInTheKnownClasses"
+    ],
+    "Cambiadas": [],
+    "Errores": [],
+    "Nuevas": []
+   }
+  },
+  "Rutas": {
+   "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs": [
+    null,
+    "M"
+   ],
+   "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotFieldAdapter.cs": [
+    null,
+    "D"
+   ],
+   "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs": [
+    null,
+    "M"
+   ],
+   "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs": [
+    null,
+    "D"
+   ],
+   "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs": [
+    null,
+    "M"
+   ],
+   "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs": [
+    null,
+    "M"
+   ],
+   "tests/RackCad.Tests/PushBackEditAllFullCopyGuardTests.cs": [
+    "M",
+    null
+   ],
+   "tests/RackCad.Tests/PushBackFullWritePrepareTests.cs": [
+    "M",
+    null
+   ],
+   "tests/RackCad.Tests/PushBackFullWriteRunTests.cs": [
+    "M",
+    null
+   ],
+   "tests/RackCad.Tests/PushBackPilotUpdateEquivalenceGuardTests.cs": [
+    "M",
+    null
+   ],
+   "tests/RackCad.Tests/PushBackRetirePilotCensusGuardTests.cs": [
+    "A",
+    null
+   ],
+   "tests/RackCad.Tests/PushBackRetirePilotFullCopyGuardTests.cs": [
+    "A",
+    null
+   ],
+   "tests/RackCad.Tests/PushBackRetirePilotGuardTests.cs": [
+    "A",
+    null
+   ],
+   "tests/RackCad.Tests/PushBackRetirePilotPlanGuardTests.cs": [
+    "A",
+    null
+   ],
+   "tests/RackCad.Tests/PushBackRetirePilotRunTests.cs": [
+    "A",
+    null
+   ],
+   "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs": [
+    "M",
+    null
+   ],
+   "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs": [
+    "M",
+    null
+   ],
+   "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs": [
+    "M",
+    null
+   ],
+   "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs": [
+    "M",
+    null
+   ],
+   "tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs": [
+    "M",
+    null
+   ],
+   "tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardFull.cs": [
+    "M",
+    null
+   ],
+   "tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs": [
+    "M",
+    null
+   ],
+   "tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs": [
+    "M",
+    null
+   ],
+   "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareFull.cs": [
+    "M",
+    null
+   ],
+   "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs": [
+    "M",
+    null
+   ],
+   "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs": [
+    "M",
+    null
+   ],
+   "tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs": [
+    "M",
+    null
+   ],
+   "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs": [
+    "M",
+    null
+   ],
+   "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs": [
+    "M",
+    null
+   ],
+   "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs": [
+    "M",
+    null
+   ],
+   "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateScopeDouble.cs": [
+    "M",
+    null
+   ],
+   "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionPilotParityTests.cs": [
+    "D",
+    null
+   ],
+   "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionSupport.cs": [
+    "M",
+    null
+   ],
+   "tests/RackCad.UI.Tests/PushBackFieldValidationConcordanceTests.cs": [
+    "D",
+    null
+   ],
+   "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotCanonicalLineEndingTests.cs": [
+    "D",
+    null
+   ],
+   "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs": [
+    "M",
+    null
+   ],
+   "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs": [
+    "M",
+    null
+   ]
+  }
+ },
+ "SaltadasEnElRed": {
+  "Detalle": {},
+  "PorArchivo": {},
+  "Sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+  "Total": 0
+ },
+ "TrxSaltadasDeLaLista": {
+  "Green": [
+   "RackCad.Tests.PushBackEditAllFullCopyGuardTests.CT_PBT4B_20_TheScriptOfSkipAndDuplicateGivesTheCopiesTheKitAndTheSkipsOfTheClosedList",
+   "RackCad.Tests.WorkspacePilotPrepareGuardTests.TheFileOfThePlanIsNullableEnabledInTheNamespaceOfThePilotWithBracesAndDeclaresTheTypesOfThePackage",
+   "RackCad.Tests.WorkspacePilotPrepareGuardTests.TheOrderOfPrepareIsTheOneOfThePackageAndNoOutcomeBeforeConflictLooksAtTheReread"
+  ],
+  "Red": [
+   "RackCad.Tests.PushBackEditAllFullCopyGuardTests.CT_PBT4B_20_TheScriptOfSkipAndDuplicateGivesTheCopiesTheKitAndTheSkipsOfTheClosedList",
+   "RackCad.Tests.WorkspacePilotPrepareGuardTests.TheFileOfThePlanIsNullableEnabledInTheNamespaceOfThePilotWithBracesAndDeclaresTheTypesOfThePackage",
+   "RackCad.Tests.WorkspacePilotPrepareGuardTests.TheOrderOfPrepareIsTheOneOfThePackageAndNoOutcomeBeforeConflictLooksAtTheReread"
+  ]
+ },
+ "WarningsCS": {
+  "ConWarning": {},
+  "RegistrosLeidos": [
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/b0/build-RackCad.Plugin.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/b0/build-RackCad.Tests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/b0/build-RackCad.UI.Tests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/b0/build-debug-RackCad.Tests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/b0/build-debug-RackCad.UI.Tests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/b0/test-core-full.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/b0ui/ui01.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/b0ui/ui02.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/b0ui/ui03.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/b0ui/ui04.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/b0ui/ui05.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/b0ui/ui06.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/b0ui/ui07.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/b0ui/ui08.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/b0ui/ui09.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/b0ui/ui10.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/b0ui/ui11.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/b0ui/ui12.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/b0ui/ui13.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/b0ui/ui14.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/b0ui/ui15.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/b0ui/ui16.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/b0ui/ui17.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/b0ui/ui18.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1/build-RackCad.Plugin.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1/build-RackCad.Tests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1/build-RackCad.UI.Tests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1/build-debug-RackCad.Tests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1/build-debug-RackCad.UI.Tests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1/test-core-full.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core01.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core02.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core03.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core04.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core05.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core06.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core07.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core08.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core09.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core10.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core11.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core12.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core13.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core14.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core15.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core16.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core17.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core18.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core19.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core20.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core21.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core22.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core23.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core24.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core25.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core26.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core27.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core28.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core29.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core30.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core31.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core32.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core33.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core34.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core35.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core36.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core37.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core38.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core39.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core40.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core41.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core42.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core43.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core44.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core45.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core46.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core47.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core48.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core49.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core50.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core51.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core52.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core53.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core54.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core55.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core56.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core57.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core58.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core59.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core60.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core61.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core62.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core63.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core64.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core65.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core66.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core67.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core68.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core69.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1c/core70.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1r/core01.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1u/ui01.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1u/ui02.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1u/ui03.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1u/ui04.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1u/ui05.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1u/ui06.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1u/ui07.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1u/ui08.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1u/ui09.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1u/ui10.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1u/ui11.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1u/ui12.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1u/ui13.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1u/ui14.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1u/ui15.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1u/ui16.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1u/ui17.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g1u/ui18.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g2r/core01.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/g3r/core01.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1/build-RackCad.Plugin.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1/build-RackCad.Tests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1/build-RackCad.UI.Tests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1/build-debug-RackCad.Tests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1/build-debug-RackCad.UI.Tests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1/test-core-full.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core01.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core02.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core03.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core04.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core05.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core06.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core07.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core08.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core09.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core10.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core11.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core12.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core13.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core14.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core15.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core16.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core17.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core18.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core19.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core20.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core21.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core22.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core23.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core24.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core25.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core26.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core27.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core28.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core29.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core30.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core31.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core32.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core33.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core34.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core35.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core36.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core37.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core38.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core39.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core40.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core41.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core42.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core43.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core44.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core45.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core46.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core47.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core48.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core49.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core50.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core51.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core52.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core53.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core54.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core55.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core56.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core57.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core58.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core59.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core60.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core61.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core62.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core63.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core64.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core65.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core66.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core67.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core68.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core69.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1c/core70.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1u/ui01.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1u/ui02.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1u/ui03.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1u/ui04.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1u/ui05.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1u/ui06.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1u/ui07.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1u/ui08.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1u/ui09.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1u/ui10.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1u/ui11.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1u/ui12.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1u/ui13.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1u/ui14.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1u/ui15.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1u/ui16.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1u/ui17.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1/tests/r1u/ui18.log"
+  ],
+  "Sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+ }
+}

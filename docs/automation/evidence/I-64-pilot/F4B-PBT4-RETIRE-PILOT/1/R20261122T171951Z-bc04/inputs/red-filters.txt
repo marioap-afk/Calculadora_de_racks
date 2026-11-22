@@ -1,0 +1,1 @@
+FullyQualifiedName~RackCad.Tests.PushBackRetirePilotGuardTests | MinSelected 1 | tests/RackCad.Tests/RackCad.Tests.csproj
