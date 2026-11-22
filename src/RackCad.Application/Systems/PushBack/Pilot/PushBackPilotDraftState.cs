@@ -7,8 +7,7 @@ namespace RackCad.Application.Systems.PushBack.Pilot
     /// I-64 F4-T2A (D-T2-03) — the editable state of the bounded Push Back pilot (F4-PILOT-PUSHBACK-01). It GROUPS the
     /// state that already exists and defines no parallel model: ONE <see cref="PushBackCompositeEditorState"/>, ONE
     /// <see cref="PushBackEditorInputs"/> and the immutable <see cref="Origin"/>. It persists nothing and exposes no
-    /// operation that assembles a design: a design is only ever assembled from a composition made by
-    /// <see cref="PushBackPilotMaterializer.ComposeForWrite"/>, never directly over the state of a draft.
+    /// operation that assembles a design: a design is never assembled directly over the state of a draft.
     /// </summary>
     public sealed class PushBackPilotDraftState
     {

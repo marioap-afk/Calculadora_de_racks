@@ -37,7 +37,8 @@ namespace RackCad.Application.Systems.PushBack.Pilot
     }
 
     /// <summary>
-    /// I-64 F4-T4B (D-T4B-02) — the pure and TOTAL run of the update of the bounded Push Back pilot: it decides, classifies and
+    /// I-64 F4-T4B (D-T4B-02) — the pure and TOTAL run of the update, born for the bounded Push Back pilot and, since I-64 F4B
+    /// PB-T4d, the one of the full model only (the run of the pilot is retired): it decides, classifies and
     /// compares, and it never touches the drawing by itself: everything that does goes through <see cref="IPushBackPilotUpdatePort"/>.
     /// It never throws: every failure is one of the outcomes of D-13, by the frontier where it happened.
     ///
@@ -46,8 +47,9 @@ namespace RackCad.Application.Systems.PushBack.Pilot
     /// MUTATE, the re-read that is the authority of MUTATE, one write per member, the seal and POST. POST is only reached once the seal
     /// returned, and its interpretation (the names that the views must carry, the warnings and the comparison) is made here.
     ///
-    /// I-64 F4B PB-T3b (D-PBT3-10) — the same run serves the two models of the draft: the one of the pilot and the full one. The views that the
-    /// update leaves obsolete are taken away between the start of MUTATE and its seal, by the capacity that the scope of MUTATE may implement.
+    /// I-64 F4B PB-T3b (D-PBT3-10) — the same run served the two models of the draft, the one of the pilot and the full one; since I-64 F4B
+    /// PB-T4d it serves only the full one (ExecuteFull), because the run of the pilot is retired. The views that the update leaves obsolete
+    /// are taken away between the start of MUTATE and its seal, by the capacity that the scope of MUTATE may implement.
     /// </summary>
     public static class PushBackPilotUpdateRun
     {
@@ -123,24 +125,6 @@ namespace RackCad.Application.Systems.PushBack.Pilot
 
         private const string CompletenessEvidence = "RackSiblingScan/CaptureDrawing";
 
-        /// <summary>
-        /// The check before the slot (step 1): the pure PREPARE without a re-read and without a catalog. It only stops for the three kinds
-        /// that need neither; anything else goes on.
-        /// </summary>
-        public static PushBackPilotPrecheck Precheck(DraftSession<PushBackPilotDraftState> draft)
-        {
-            if (draft == null) throw new ArgumentNullException(nameof(draft));
-
-            var result = PushBackPilotUpdatePlanner.Prepare(PushBackPilotPrepareInput.From(draft), null!, null!);
-            switch (result.Kind)
-            {
-                case PushBackPilotPrepareKind.NotApplicable: return PushBackPilotPrecheck.Stop(result.Kind, NotApplicableReason);
-                case PushBackPilotPrepareKind.PendingText: return PushBackPilotPrecheck.Stop(result.Kind, PendingTextReason);
-                case PushBackPilotPrepareKind.NothingToApply: return PushBackPilotPrecheck.Stop(result.Kind, NothingToApplyReason);
-                default: return PushBackPilotPrecheck.Go();
-            }
-        }
-
         /// <summary>The same check for a draft of the FULL model (D-PBT3-10): the same three kinds, over its own snapshot.</summary>
         public static PushBackPilotPrecheck Precheck(DraftSession<PushBackFullDraftState> draft)
         {
@@ -157,46 +141,8 @@ namespace RackCad.Application.Systems.PushBack.Pilot
         }
 
         /// <summary>
-        /// The whole update under the slot. TOTAL: it never throws. The outcome is the one that the draft must be closed with.
-        /// </summary>
-        public static DraftApplyOutcome<PushBackPilotDraftState> Execute(
-            DraftSession<PushBackPilotDraftState> draft,
-            PushBackPilotUpdateRequest request,
-            IPushBackPilotUpdatePort port)
-        {
-            if (draft == null || request == null || port == null)
-                return DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedFailure(MissingArgumentsReason);
-
-            // M-01: the state of the run lives outside the try, so what escapes is classified with what the run already did.
-            PushBackPilotPrepareInput? input = null;
-            var execution = new Execution<PushBackPilotDraftState>(
-                draft,
-                request,
-                port,
-                snapshotted =>
-                {
-                    input = PushBackPilotPrepareInput.From(snapshotted);
-                    return input.InitialDraftState.Origin;
-                },
-                (_, scan, catalog) => PushBackPilotUpdatePlanner.Prepare(input!, PushBackPilotIntentReader.Read(scan, catalog), catalog),
-                (scan, catalog, plan) =>
-                {
-                    var read = PushBackPilotIntentReader.Read(scan, catalog);
-                    return (read.Read, ComparePost(plan, read));
-                });
-            try
-            {
-                return execution.Run();
-            }
-            catch (Exception ex)
-            {
-                return execution.OutcomeOfAnEscape(ex);
-            }
-        }
-
-        /// <summary>
-        /// The whole update under the slot for a draft of the FULL model (D-PBT3-10). TOTAL: it never throws. It is the same run as the one of the
-        /// pilot, with the plan, the re-read and the comparison of the full model.
+        /// The whole update under the slot for a draft of the FULL model (D-PBT3-10). TOTAL: it never throws. It is the generic run, with the plan,
+        /// the re-read and the comparison of the full model (the run of the pilot that shared it is retired in I-64 F4B PB-T4d).
         /// </summary>
         public static DraftApplyOutcome<PushBackFullDraftState> ExecuteFull(
             DraftSession<PushBackFullDraftState> draft,
@@ -233,19 +179,8 @@ namespace RackCad.Application.Systems.PushBack.Pilot
             }
         }
 
-        /// <summary>
-        /// The comparison of POST, without normalizing anything (D-T4B-05): the same keys as the plan, the envelope of each key equal
-        /// ordinally, and the same scale. Null when everything matches; otherwise the cause.
-        /// </summary>
-        public static string? ComparePost(PushBackPilotUpdatePlan plan, PushBackPilotIntentResult? postRead)
-        {
-            if (plan == null) throw new ArgumentNullException(nameof(plan));
-            if (postRead == null) return PostRereadMissingReason;
-
-            return ComparePostCore(plan, postRead.Read.Admission, postRead.StaleBase, postRead.Read.InitialState?.Inputs.Annotations.AnnotationScale);
-        }
-
-        /// <summary>The comparison of POST for the FULL model (D-PBT3-10): the erased views are gone, and the rest as for the pilot.</summary>
+        /// <summary>The comparison of POST for the FULL model (D-PBT3-10): the erased views are gone, and the keys, the envelopes and the
+        /// scale are the ones of the plan.</summary>
         public static string? ComparePostFull(PushBackPilotUpdatePlan plan, PushBackFullIntentResult? postRead)
         {
             if (plan == null) throw new ArgumentNullException(nameof(plan));

@@ -12,68 +12,10 @@ using RackCad.Domain.Systems.Shared;
 
 namespace RackCad.Application.Systems.PushBack.Pilot
 {
-    /// <summary>
-    /// I-64 F4-T4A1 (D-T4A1-04, N-7) — the explicit snapshot of a draft that <see cref="PushBackPilotUpdatePlanner.Prepare"/> reads. It
-    /// is built by ONE factory, <see cref="From"/>, so no other code names the base or the states of a draft to prepare an update.
-    /// The two states are copies, and <see cref="ConsideredStatus"/> is the status the draft had before an attempt that is in flight.
-    /// </summary>
-    public sealed class PushBackPilotPrepareInput
-    {
-        private PushBackPilotPrepareInput(
-            string rackId,
-            DraftStaleBase staleBase,
-            PushBackPilotDraftState initialDraftState,
-            PushBackPilotDraftState currentDraftState,
-            bool hasPendingText,
-            bool isDirty,
-            DraftStatus consideredStatus)
-        {
-            RackId = rackId;
-            StaleBase = staleBase;
-            InitialDraftState = initialDraftState;
-            CurrentDraftState = currentDraftState;
-            HasPendingText = hasPendingText;
-            IsDirty = isDirty;
-            ConsideredStatus = consideredStatus;
-        }
-
-        public string RackId { get; }
-
-        /// <summary>The base of the draft: what the last read of the drawing saw.</summary>
-        public DraftStaleBase StaleBase { get; }
-
-        /// <summary>A COPY of the initial state of the draft.</summary>
-        public PushBackPilotDraftState InitialDraftState { get; }
-
-        /// <summary>A COPY of the current state of the draft.</summary>
-        public PushBackPilotDraftState CurrentDraftState { get; }
-
-        public bool HasPendingText { get; }
-
-        public bool IsDirty { get; }
-
-        /// <summary>The status of the draft, and under Applying the status it had before the attempt began.</summary>
-        public DraftStatus ConsideredStatus { get; }
-
-        /// <summary>The one construction of the snapshot of a draft.</summary>
-        public static PushBackPilotPrepareInput From(DraftSession<PushBackPilotDraftState> draft)
-        {
-            if (draft == null) throw new ArgumentNullException(nameof(draft));
-            var status = draft.Status;
-            return new PushBackPilotPrepareInput(
-                draft.RackId,
-                draft.StaleBase,
-                draft.InitialDraftState,
-                PushBackPilotStateComparer.Copy(draft.CurrentDraftState),
-                draft.HasPendingText,
-                draft.IsDirty,
-                status == DraftStatus.Applying ? draft.StatusBeforeAttempt : status);
-        }
-    }
 
     /// <summary>
-    /// I-64 F4B PB-T3b (D-PBT3-09) — the explicit snapshot of a draft of the FULL model that the full PREPARE reads. It is the twin of
-    /// <see cref="PushBackPilotPrepareInput"/>, which does not change, and it is built by ONE factory, <see cref="From"/>.
+    /// I-64 F4B PB-T3b (D-PBT3-09) — the explicit snapshot of a draft of the FULL model that the full PREPARE reads. It is built by ONE
+    /// factory, <see cref="From"/>.
     /// The two states are copies, and <see cref="ConsideredStatus"/> is the status the draft had before an attempt that is in flight.
     /// </summary>
     public sealed class PushBackFullPrepareInput
@@ -130,7 +72,7 @@ namespace RackCad.Application.Systems.PushBack.Pilot
         }
     }
 
-    /// <summary>The seven outcomes of <see cref="PushBackPilotUpdatePlanner.Prepare"/>, in the order in which they are evaluated.</summary>
+    /// <summary>The seven outcomes of <see cref="PushBackPilotUpdatePlanner.PrepareFull"/>, in the order in which they are evaluated.</summary>
     public enum PushBackPilotPrepareKind
     {
         /// <summary>The draft is not Clean or Dirty: there is nothing to prepare.</summary>
@@ -155,7 +97,7 @@ namespace RackCad.Application.Systems.PushBack.Pilot
         Ready,
     }
 
-    /// <summary>The result of <see cref="PushBackPilotUpdatePlanner.Prepare"/>. Immutable.</summary>
+    /// <summary>The result of <see cref="PushBackPilotUpdatePlanner.PrepareFull"/>. Immutable.</summary>
     public sealed class PushBackPilotPrepareResult
     {
         private PushBackPilotPrepareResult(
@@ -198,7 +140,7 @@ namespace RackCad.Application.Systems.PushBack.Pilot
     public readonly record struct PushBackPilotKeyedText(string Key, string Text);
 
     /// <summary>
-    /// What the plan redraws for one member that the pilot may change: the view and the section as RACKEDITAR writes them, the text
+    /// What the plan redraws for one member that the update may change: the view and the section as RACKEDITAR writes them, the text
     /// of the outgoing design of that view and the text of its outgoing envelope. Strings and one number, immutable.
     /// </summary>
     public sealed class PushBackPilotMemberPlan : IEquatable<PushBackPilotMemberPlan>
@@ -257,7 +199,7 @@ namespace RackCad.Application.Systems.PushBack.Pilot
         /// <summary>The outgoing envelope text of each member, ordered by key (ordinal).</summary>
         public IReadOnlyList<PushBackPilotKeyedText> Envelopes { get; }
 
-        /// <summary>The keys of the views that the update erases, ordered by key (ordinal); empty in the pilot.</summary>
+        /// <summary>The keys of the views that the update erases, ordered by key (ordinal).</summary>
         public IReadOnlyList<string> ErasedKeys { get; }
 
         public bool Equals(PushBackPilotPostExpectation? other) =>
@@ -321,7 +263,7 @@ namespace RackCad.Application.Systems.PushBack.Pilot
         /// <summary>The key of the member that POST reads again: the origin, or, when the update erases it, another one that survives.</summary>
         public string PostOriginKey { get; }
 
-        /// <summary>The keys of the views that the update erases, ordered by key (ordinal); empty in the pilot.</summary>
+        /// <summary>The keys of the views that the update erases, ordered by key (ordinal).</summary>
         public IReadOnlyList<string> Erasures { get; }
 
         /// <summary>The entries of the base of the draft, ordered by key (ordinal): MUTATE compares them with its own re-read.</summary>
@@ -333,7 +275,7 @@ namespace RackCad.Application.Systems.PushBack.Pilot
         /// <summary>The new annotation scale.</summary>
         public double AnnotationScale { get; }
 
-        /// <summary>The members that the pilot may change, ordered by key (ordinal).</summary>
+        /// <summary>The members that the update may change, ordered by key (ordinal).</summary>
         public IReadOnlyList<PushBackPilotMemberPlan> Members { get; }
 
         public PushBackPilotPostExpectation PostExpectation { get; }
@@ -364,7 +306,8 @@ namespace RackCad.Application.Systems.PushBack.Pilot
     }
 
     /// <summary>
-    /// I-64 F4-T4A1 (D-T4A1-04) — the pure PREPARE of an update of the bounded Push Back pilot. It reads a snapshot of the draft and
+    /// I-64 F4-T4A1 (D-T4A1-04) — the pure PREPARE of an update, born for the bounded Push Back pilot and, since I-64 F4B PB-T4d, the
+    /// one of the full model only (the PREPARE of the pilot is retired). It reads a snapshot of the draft and
     /// ONE re-read of the intention and gives the plan of what would be written, or why nothing can be. It never changes the draft,
     /// never reads the drawing and never writes it.
     /// </summary>
@@ -386,10 +329,6 @@ namespace RackCad.Application.Systems.PushBack.Pilot
 
         public const string UnreadableViewPrefix = "No se pudo leer el sobre de la vista ";
 
-        public const string ViewUnavailablePrefix = "El piloto no borra vistas y la vista ";
-
-        public const string ViewUnavailableSuffix = " ya no está disponible en el sistema saliente: usa RACKEDITAR.";
-
         public const string ViewAddressPrefix = "El descriptor de la vista ";
 
         public const string ViewAddressSuffix = " no se puede interpretar: usa RACKEDITAR.";
@@ -405,40 +344,8 @@ namespace RackCad.Application.Systems.PushBack.Pilot
         public const string AllViewsObsoleteReason = "Todas las vistas del rack quedarían obsoletas: no se elimina el último vínculo del rack.";
 
         /// <summary>
-        /// The pure PREPARE of an update. It evaluates, in this order and returning at the first that holds: NotApplicable (the draft is
-        /// not Clean or Dirty), PendingText, NothingToApply (Clean; the re-read is not looked at), Conflict (the raw comparison of the
-        /// base with the re-read, BEFORE the admission), NotAdmitted (only with a match), Invalid (a to e) and Ready. It is total: any
-        /// exception is an Invalid with its reason. It changes nothing, reads nothing and writes nothing.
-        /// </summary>
-        public static PushBackPilotPrepareResult Prepare(PushBackPilotPrepareInput input, PushBackPilotIntentResult reread, RackCatalog catalog)
-        {
-            try
-            {
-                if (input == null) return PushBackPilotPrepareResult.WithInvalid(MissingInputReason);
-
-                if (input.ConsideredStatus != DraftStatus.Clean && input.ConsideredStatus != DraftStatus.Dirty)
-                    return PushBackPilotPrepareResult.Without(PushBackPilotPrepareKind.NotApplicable);
-                if (input.HasPendingText) return PushBackPilotPrepareResult.Without(PushBackPilotPrepareKind.PendingText);
-                if (input.ConsideredStatus == DraftStatus.Clean) return PushBackPilotPrepareResult.Without(PushBackPilotPrepareKind.NothingToApply);
-
-                if (reread == null) return PushBackPilotPrepareResult.WithInvalid(MissingInputReason);
-
-                var comparison = input.StaleBase.CompareWith(reread.StaleBase);
-                if (!comparison.IsMatch) return PushBackPilotPrepareResult.WithConflict(comparison.Differences);
-
-                if (!reread.Read.IsAdmitted)
-                    return PushBackPilotPrepareResult.WithNotAdmitted(reread.Read.Admission.Diagnostic ?? PushBackPilotIntentReader.MaterializeDiagnostic);
-
-                return Build(input, reread, catalog);
-            }
-            catch (Exception ex)
-            {
-                return PushBackPilotPrepareResult.WithInvalid(PrepareFailurePrefix + ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// The pure PREPARE of an update of the FULL model (D-PBT3-09), with the same order as the one of the pilot: NotApplicable,
+        /// The pure PREPARE of an update of the FULL model (D-PBT3-09), in the order that the PREPARE of the pilot had (D-T4A1-04; retired
+        /// in I-64 F4B PB-T4d): NotApplicable,
         /// PendingText, NothingToApply, Conflict (the comparison of the base BEFORE the admission), NotAdmitted and the plan. It is total and
         /// changes nothing.
         /// </summary>
@@ -469,30 +376,8 @@ namespace RackCad.Application.Systems.PushBack.Pilot
             }
         }
 
-        // The base of the draft and the re-read match here, and the re-read is admitted: the plan can be built, or it is Invalid.
-        private static PushBackPilotPrepareResult Build(PushBackPilotPrepareInput input, PushBackPilotIntentResult reread, RackCatalog catalog)
-        {
-            // A missing catalog is answered here, after the comparison and the admission (M-6): a difference of the base or a read that is not
-            // admitted is told as such even when the catalog is missing.
-            if (catalog == null) return PushBackPilotPrepareResult.WithInvalid(MissingInputReason);
-
-            // The current state is composed over the base that matches the re-read (H-06), with the carry-overs of D-T4A1-05. The pilot never erases a view.
-            var composition = PushBackPilotMaterializer.ComposeForWrite(input.InitialDraftState, input.CurrentDraftState, catalog);
-            return BuildCore(
-                catalog,
-                input.RackId,
-                input.StaleBase,
-                reread.StaleBase,
-                input.InitialDraftState.Origin,
-                input.CurrentDraftState.Inputs.Annotations.AnnotationScale,
-                false,
-                null,
-                composition.Editor,
-                composition.Inputs,
-                composition.IsComposed ? null : composition.Reason ?? PushBackPilotMaterializer.NonPilotContentReason);
-        }
-
-        // The same, for the full model: the composition is the one of the model of the draft, and the plan may erase the laterals that the edition leaves obsolete.
+        // The base of the draft and the re-read match here, and the re-read is admitted: the plan can be built, or it is Invalid. The composition
+        // is the one of the model of the draft, and the plan may erase the laterals that the edition leaves obsolete.
         private static PushBackPilotPrepareResult BuildFull(PushBackFullPrepareInput input, PushBackFullIntentResult reread, RackCatalog catalog)
         {
             if (catalog == null) return PushBackPilotPrepareResult.WithInvalid(MissingInputReason);
@@ -505,15 +390,14 @@ namespace RackCad.Application.Systems.PushBack.Pilot
                 reread.StaleBase,
                 input.InitialDraftState.Origin,
                 input.CurrentDraftState.Editable.AnnotationScale,
-                true,
                 composition.Name,
                 composition.Editor,
                 composition.Inputs,
                 composition.IsComposed ? null : composition.Reason ?? PushBackPilotMaterializer.NonPilotContentReason);
         }
 
-        // The building of the plan, common to the two models: the composition (or why it was rejected), the base of the draft, the base of the re-read
-        // and the origin of the draft, the scale, whether the model may erase views and the name of the draft.
+        // The building of the plan: the composition (or why it was rejected), the base of the draft, the base of the re-read and the origin of the
+        // draft, the scale and the name of the draft. The plan may erase the laterals that the edition leaves obsolete.
         private static PushBackPilotPrepareResult BuildCore(
             RackCatalog catalog,
             string rackId,
@@ -521,7 +405,6 @@ namespace RackCad.Application.Systems.PushBack.Pilot
             DraftStaleBase rereadBase,
             string origin,
             double scale,
-            bool allowErase,
             string? draftName,
             PushBackCompositeEditorState? editor,
             PushBackEditorInputs? inputs,
@@ -576,8 +459,8 @@ namespace RackCad.Application.Systems.PushBack.Pilot
 
             if (blocked != null) return PushBackPilotPrepareResult.WithInvalid(BlockedPrefix + blocked);
 
-            // (e) What the edition does to each view, by key (ordinal). The pilot never erases a view: a member that is not available in the outgoing
-            // system makes its update Invalid. The full model erases an obsolete lateral and rejects the frontal of side B of a rack without it.
+            // (e) What the edition does to each view, by key (ordinal): an obsolete lateral is erased, and the frontal of side B of a rack without it
+            // is rejected.
             var plans = new List<PushBackPilotMemberPlan>(members.Count);
             var erasures = new List<string>();
             for (var index = 0; index < members.Count; index++)
@@ -587,18 +470,16 @@ namespace RackCad.Application.Systems.PushBack.Pilot
                 var disposition = dispositions.Members.First(pair => string.Equals(pair.Key, entry.Key, StringComparison.Ordinal)).Value;
 
                 // A descriptor that does not decode has no address to ask about (M-5): it has its own text, and it is never coerced into a view.
-                if (!decoded.HasAddress || (allowErase && disposition == PushBackViewDispositionKind.NoAddress))
+                if (!decoded.HasAddress || disposition == PushBackViewDispositionKind.NoAddress)
                     return PushBackPilotPrepareResult.WithInvalid(ViewAddressPrefix + entry.Key + ViewAddressSuffix);
-                if (disposition == PushBackViewDispositionKind.ObsoleteLateral && allowErase)
+                if (disposition == PushBackViewDispositionKind.ObsoleteLateral)
                 {
                     erasures.Add(entry.Key);
                     continue;
                 }
 
-                if (disposition == PushBackViewDispositionKind.FrontalBOfOneWay && allowErase)
+                if (disposition == PushBackViewDispositionKind.FrontalBOfOneWay)
                     return PushBackPilotPrepareResult.WithInvalid(FrontalBOfOneWayPrefix + entry.Key + FrontalBOfOneWaySuffix);
-                if (disposition != PushBackViewDispositionKind.Redraw)
-                    return PushBackPilotPrepareResult.WithInvalid(ViewUnavailablePrefix + entry.Key + ViewUnavailableSuffix);
 
                 string view;
                 int section;
@@ -618,15 +499,14 @@ namespace RackCad.Application.Systems.PushBack.Pilot
                         break;
                 }
 
-                // (f) The name: the pilot keeps the one of each envelope that was re-read; the full model writes the one of the draft, or, when it is
-                // blank, the one of the envelope that was re-read for the origin, in every view.
-                var memberName = allowErase ? (string.IsNullOrWhiteSpace(draftName) ? origins[0].Embed.Name : draftName) : embed.Name;
+                // (f) The name: the one of the draft, or, when it is blank, the one of the envelope that was re-read for the origin, in every view.
+                var memberName = string.IsNullOrWhiteSpace(draftName) ? origins[0].Embed.Name : draftName;
                 var designText = store.Serialize(RackProject.ForPushBack(design).WithSourceMetadataFrom(preflight.ResolvedSources[index]));
                 plans.Add(new PushBackPilotMemberPlan(entry.Key, view, section, designText, ComposeMemberEnvelope(embed, memberName, view, section, designText)));
             }
 
             // Every view that is left would be obsolete: the last link of the rack is never erased.
-            if (allowErase && dispositions.AllObsolete) return PushBackPilotPrepareResult.WithInvalid(AllViewsObsoleteReason);
+            if (dispositions.AllObsolete) return PushBackPilotPrepareResult.WithInvalid(AllViewsObsoleteReason);
 
             // (h) The origin of POST is the origin of the draft, or, when the update erases it, the first view that is redrawn.
             var originKey = origins[0].Entry.Key;
