@@ -1,0 +1,26 @@
+  Determinando los proyectos que se van a restaurar...
+  Se ha restaurado <copia>\src\RackCad.Domain\RackCad.Domain.csproj (en 98 ms).
+  Se ha restaurado <copia>\tools\RackCad.StructuralAnalysis.RamTool\RackCad.StructuralAnalysis.RamTool.csproj (en 99 ms).
+  Se ha restaurado <copia>\tools\RackCad.StructuralSections.Import\RackCad.StructuralSections.Import.csproj (en 99 ms).
+  Se ha restaurado <copia>\src\RackCad.Application\RackCad.Application.csproj (en 99 ms).
+  Se ha restaurado <copia>\tests\RackCad.Tests\RackCad.Tests.csproj (en 311 ms).
+  fatal: not a git repository (or any of the parent directories): .git
+  RackCad.Domain -> <copia>\src\RackCad.Domain\bin\Debug\net8.0\RackCad.Domain.dll
+  fatal: not a git repository (or any of the parent directories): .git
+  RackCad.Application -> <copia>\src\RackCad.Application\bin\Debug\net8.0\RackCad.Application.dll
+  fatal: not a git repository (or any of the parent directories): .git
+  fatal: not a git repository (or any of the parent directories): .git
+  RackCad.StructuralAnalysis.RamTool -> <copia>\tools\RackCad.StructuralAnalysis.RamTool\bin\Debug\net8.0\RackCad.StructuralAnalysis.RamTool.dll
+  RackCad.StructuralSections.Import -> <copia>\tools\RackCad.StructuralSections.Import\bin\Debug\net8.0\RackCad.StructuralSections.Import.dll
+  fatal: not a git repository (or any of the parent directories): .git
+<copia>\tests\RackCad.Tests\Workspace\WorkspacePilotEditHostTests.cs(15,51): error CS0535: 'PilotEditThrowingComparer' no implementa el miembro de interfaz 'IEqualityComparer<PushBackPilotDraftState>.Equals(PushBackPilotDraftState?, PushBackPilotDraftState?)' [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+<copia>\tests\RackCad.Tests\Workspace\WorkspacePilotEditHostTests.cs(15,51): error CS0535: 'PilotEditThrowingComparer' no implementa el miembro de interfaz 'IEqualityComparer<PushBackPilotDraftState>.GetHashCode(PushBackPilotDraftState)' [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+
+ERROR al compilar.
+
+<copia>\tests\RackCad.Tests\Workspace\WorkspacePilotEditHostTests.cs(15,51): error CS0535: 'PilotEditThrowingComparer' no implementa el miembro de interfaz 'IEqualityComparer<PushBackPilotDraftState>.Equals(PushBackPilotDraftState?, PushBackPilotDraftState?)' [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+<copia>\tests\RackCad.Tests\Workspace\WorkspacePilotEditHostTests.cs(15,51): error CS0535: 'PilotEditThrowingComparer' no implementa el miembro de interfaz 'IEqualityComparer<PushBackPilotDraftState>.GetHashCode(PushBackPilotDraftState)' [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    0 Advertencia(s)
+    2 Errores
+
+Tiempo transcurrido 00:00:39.71

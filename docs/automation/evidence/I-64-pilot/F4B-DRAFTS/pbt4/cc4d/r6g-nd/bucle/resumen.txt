@@ -1,0 +1,1 @@
+vuelta 0: bajas 0, errores 42 (distintos 20), miembros nuevos 11, sin resolver 4

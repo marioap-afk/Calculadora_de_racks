@@ -1,0 +1,47 @@
+retirada, variante B; copia /d/r6e; salida r6e-B; revision 6c2820bab4d8b41e3e229e23f3a1638ccbb04735
+  pieza 920c57cacfdf6dc5b94e6ed6deba04db1b312418fe9779dbf8e631e1602cb96c retire_pbt4d_v52.py
+  pieza ba521e9d1981efd5004f397dc6608ae25498c19d79dd26acd15698bf2c2327f7 measure_retire_v52.py
+  pieza 3d172421b24d6bd64655e349c52906463f8de779b42a30a319da6ad1d8fb82a1 lists_core.py
+  pieza d5467dc162e2cda8c539a829cc8f3a7c46260a119f70e840b34e6f78dde0387c pbt4d-retire-list-138.tsv
+  pieza 48a9404cea2a359fceb330d7efa65920bad9fed2b5a698a758a69709eb1bac23 pbt4d-probe-fullcopy.cs
+  pieza a41ceff37fc16baa51681bda6c77b9558ba9c3e865c0bf3089ca5c24161c05fb p6d_check_v52.py
+  pieza f7c7ada64a34c3a3fcba04553b5d3448ddafffa66adc69ae9c210f129f1f62b6 run_classes_v51.py
+  pieza 19182fbc10012c160453df237ad2657568affdc586e2f7ce9cad8feccdef7815 ui_filters_pbt4c_v50b.txt
+  pieza d28d5becbad593fb61b3bca46922f8a3b30db67dcbc2969a30a4d74a4dc3215a p6d_retire_v52.sh
+copia exportada: 14571 archivos
+vuelta 0: bajas 223, errores 6 (distintos 2), miembros nuevos 2, sin resolver 0
+vuelta 1: bajas 225, errores 18 (distintos 9), miembros nuevos 6, sin resolver 0
+vuelta 2: bajas 231, errores 2 (distintos 1), miembros nuevos 1, sin resolver 0
+vuelta 3: bajas 232, errores 70 (distintos 18), miembros nuevos 3, sin resolver 0
+vuelta 4: bajas 235, errores 0 (distintos 0), miembros nuevos 0, sin resolver 0
+bajas finales 235 (de la lista 222, SUS-01 1, por compilacion 12)
+b-core rc=0 errores=0 avisos-CS=0
+b-ui rc=0 errores=0 avisos-CS=0
+b-plugin rc=0 errores=0 avisos-CS=0
+compilacion: errores 0, avisos CS 0
+test core.trx rc=1 segundos=887 trx-sha256=e7e944eef148dc179ecb433627e598ede037a6b7461a661a2bb63aaa671aa4d5 :: filas 19322 {'Failed': 3, 'NotExecuted': 400, 'Passed': 18919}; omitidas por origen {'PB-T4b': 390, 'PB-T4c': 3, 'otro': 7} | no pasan: 3
+test ui-01.trx rc=0 segundos=11 trx-sha256=a20f9e070044c5458716450bdc8e7144bc530d211930a1213ee649e8d917e277 :: filas 1 {'Passed': 1}; omitidas por origen {} | no pasan: 0
+test ui-02.trx rc=0 segundos=10 trx-sha256=c0b49df64d287f86919fc9d2fac8da95a7bdd3bd06777330b699deccc291c0ed :: filas 653 {'NotExecuted': 27, 'Passed': 626}; omitidas por origen {'PB-T4b': 27} | no pasan: 0
+test ui-03.trx rc=0 segundos=30 trx-sha256=9814ef209e685a3ebd593665807b87f5ad9a356385712f5f67f5994c0997f9f3 :: filas 2 {'Passed': 2}; omitidas por origen {} | no pasan: 0
+test ui-04.trx rc=0 segundos=15 trx-sha256=a1ba369fa7e0bec0bcf9763e89f1b7fc30feb503481d4344c9b5e647e0c22df1 :: filas 55 {'Passed': 55}; omitidas por origen {} | no pasan: 0
+test ui-05.trx rc=0 segundos=19 trx-sha256=81665b53b825dd89df52871f2432444f344a68bdfc657dfc305c140c737ebd2d :: filas 18 {'NotExecuted': 2, 'Passed': 16}; omitidas por origen {'otro': 2} | no pasan: 0
+test ui-06.trx rc=0 segundos=32 trx-sha256=683c78277c351700f53dc13c45c0b86b230b5318632c972e0d23abb046fb61aa :: filas 14 {'Passed': 14}; omitidas por origen {} | no pasan: 0
+test ui-07.trx rc=0 segundos=15 trx-sha256=66564c8a768fb5f4b902fbecb4bdab377814f3939cd96a50b47eb279aedcf85c :: filas 12 {'Passed': 12}; omitidas por origen {} | no pasan: 0
+test ui-08.trx rc=0 segundos=6 trx-sha256=bcf8bd326f727fd4575424588bb6ab131c930494a777bacd3ca42644a883f7f9 :: filas 67 {'Passed': 67}; omitidas por origen {} | no pasan: 0
+test ui-09.trx rc=0 segundos=15 trx-sha256=bc7548468dce864c7abcd81dd4ca0c56d7b822245d356bc71c32741d37d9811f :: filas 3 {'Passed': 3}; omitidas por origen {} | no pasan: 0
+test ui-10.trx rc=0 segundos=12 trx-sha256=06961833fc65c8081b1e6f1c55dd0661c96dd5f98186574ab1459ea874989491 :: filas 4 {'NotExecuted': 1, 'Passed': 3}; omitidas por origen {'PB-T4c': 1} | no pasan: 0
+test ui-11.trx rc=0 segundos=3 trx-sha256=d172e805129e719ca9229951600a0521201819a80ab92acc64dcc457e2497a4c :: filas 0 {}; omitidas por origen {} | no pasan: 0
+test ui-12.trx rc=0 segundos=26 trx-sha256=1a3bdc516dfdc4919917d1c7270a98d14b53b8855a701f39e56226386e63d14a :: filas 3 {'Passed': 3}; omitidas por origen {} | no pasan: 0
+test ui-13.trx rc=0 segundos=4 trx-sha256=d7de21a362da5087596237f753d0b39fdaa9dc4f9fa89d670830b012ebe68d07 :: filas 3 {'Passed': 3}; omitidas por origen {} | no pasan: 0
+test ui-14.trx rc=0 segundos=2 trx-sha256=104c14d077f8b32af009f6b6ad59f7f258aa8aa52f5f702b969636713e652c7d :: filas 13 {'Passed': 13}; omitidas por origen {} | no pasan: 0
+test ui-15.trx rc=0 segundos=3 trx-sha256=2a84fe975b8362f4c813db3067083435bdbeeca7a28857bba096aa1fbef460ab :: filas 10 {'Passed': 10}; omitidas por origen {} | no pasan: 0
+test ui-16.trx rc=0 segundos=3 trx-sha256=514ce19b65d79aaaaab689dccebc61d9dcf5489a334cea45c76d99ca5ebefb45 :: filas 30 {'Passed': 30}; omitidas por origen {} | no pasan: 0
+test ui-17.trx rc=0 segundos=3 trx-sha256=02293c4159159b4acb2bdd58bc6f6e675f7a99f0164ad8e5499581e1865d42c0 :: filas 6 {'Passed': 6}; omitidas por origen {} | no pasan: 0
+test ui-18.trx rc=0 segundos=5 trx-sha256=927b1f070f8265a1f52a2f12d4d31ad597f4c73152d71ccd36cc1f63e8e162fc :: filas 1 {'Passed': 1}; omitidas por origen {} | no pasan: 0
+b-sonda rc=0 errores=0 avisos-CS=0
+test sonda.trx rc=1 segundos=12 trx-sha256=f87baba12edbc7a19c164d6c4892c84e4d1bef1f8b483154813ab279af8473c5 :: filas 1 {'Failed': 1}; omitidas por origen {} | no pasan: 1
+resultados=1 lineas=109
+clases=764 trx=19 {'RUN': {'Passed': 19784, 'NotExecuted': 430, 'Failed': 3}}
+build-server shutdown rc=0
+procesos: 0
+MAINCO []

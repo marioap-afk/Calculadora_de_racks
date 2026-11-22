@@ -1,0 +1,28 @@
+reemplazo titulo y cabecera
+reemplazo el registro anterior se queda
+reemplazo §0 la fila de PB-T4d
+reemplazo §1 las autoridades de PB-T4d
+reemplazo D-PBT4-10, lo que retira PB-T4d
+reemplazo §4.4
+reemplazo §5.4
+reemplazo §5.6
+reemplazo §6.0 UNIT_CHANGE
+reemplazo §6.0 RR-2
+reemplazo §6.0 el Controller
+reemplazo §6.0 RR-3
+reemplazo §6.0 las filas de PB-T4d
+reemplazo §6.0 la CI del RED
+reemplazo §6.4 entera
+reemplazo §7
+reemplazo §8.3 fila vieja  C-7: 71 por texto
+reemplazo §8.3 fila vieja  Las originales de l
+reemplazo §8.3 fila vieja  Los miembros de apo
+reemplazo §8.3 la fila de PB-T4d
+reemplazo §8.5 las tandas de PB-T4d
+reemplazo §8.5 D-S11 a D-S15
+reemplazo §9 PB-T4d
+reemplazo §11.2
+reemplazo §11.6
+reemplazo §11.7
+reemplazo §11.9
+v5.2 466ab3dbbde0a59279001c5250bdbca85892e0929e7f81829558f92a5464f13e 821086 bytes; reemplazos 27

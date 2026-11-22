@@ -1,0 +1,12 @@
+PARA: retire_pbt4d_v52.py fallo en la vuelta 0
+ Traceback (most recent call last):
+  File "<scratchpad>\hs65\pbt4\v52\retire_pbt4d_v52.py", line 137, in <module>
+    files[path][0] = remove_by_regex(files[path][0], rx)
+                     ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "<scratchpad>\hs65\pbt4\v52\retire_pbt4d_v52.py", line 106, in remove_by_regex
+    spans = [lines_of_span(text, m.start(), body_end(masked, m.end())) for m in ms]
+                                            ~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "<scratchpad>\hs65\pbt4\v52\retire_pbt4d_v52.py", line 88, in body_end
+    raise AssertionError('sin final')
+AssertionError: sin final
+

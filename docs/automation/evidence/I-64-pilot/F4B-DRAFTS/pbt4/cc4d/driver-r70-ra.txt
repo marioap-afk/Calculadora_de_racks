@@ -1,0 +1,22 @@
+las piezas de la v5.4; copia /d/r70; salida r70-ra; revision 6c2820bab4d8b41e3e229e23f3a1638ccbb04735
+  pieza 80f8cc0c5c9f54de033648e7eec95728fa0fc0d28e31886101207e3dbec381db pbt4d-red-v54.txt
+  pieza aaf6cab882cfb3eba6939fd8b64ec1fa15c22431ba8bdaeb9bcdf4dbb89ffbf0 pbt4d-green-v54.txt
+  pieza 7a67652e3515083367aa12c829c1560b6742a007a30a354c205f0aa0eb7de5c2 red_pbt4d_v53.py
+  pieza b99635ea0c26230c74611abc2560a05952850fd12916f06fc588fbe2a445a7dc apply_red_pbt4d_v53.py
+  pieza ea7b2086630ae827309164e7a33610b4cae694c9d3c406a2d457aa0a5858cc73 green_pbt4d_v53.py
+  pieza 70e7dd04a52b6975c1e228d26a07f9bb2749d206b36e32ca9172ae9d606062a0 apply_green_pbt4d_v53.py
+  pieza e4d3a0dd1218e0a4ebdcc7a17989bd9a91d8337fa5112c6c3eb7674881d7c71d p6_reapply_v54.sh
+RED de PB-T4d escrito: 23 archivos existentes de tests/, 5 nuevos y 3 borrados; src/ sin tocar
+r-core rc=0 errores=0 avisos-CS=0
+r-ui rc=0 errores=0 avisos-CS=0
+GREEN de PB-T4d escrito: 4 archivos de src/ cambiados y 2 borrados
+g-core rc=0 errores=0 avisos-CS=0
+g-ui rc=0 errores=0 avisos-CS=0
+g-plugin rc=0 errores=0 avisos-CS=0
+tests/ frente a la v5.3 (/d/r6y):
+  archivos solo en uno: []
+  cambia el texto: ['tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs']
+  cambia el codigo (sin comentarios ni lineas en blanco): []
+src/ frente a la v5.3: 0 diferencias
+build-server shutdown rc=0
+MAINCO []

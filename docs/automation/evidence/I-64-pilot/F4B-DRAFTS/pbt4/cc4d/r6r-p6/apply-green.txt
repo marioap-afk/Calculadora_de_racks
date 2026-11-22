@@ -1,0 +1,7 @@
+borrado src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs
+borrado src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotFieldAdapter.cs
+green a545dbffe26c25e147a0821470b00e7ea300bb77b8b4b1451cc2b7ed098d9f97 src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs
+green cffdef1bff24a4212a6d26fefdc855659f1d52dcea955ff40831907152367d07 src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs
+green 1ae67b271974dfee9422b93adc275b92a6fdc54bbcd4469585a166ff44d99188 src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+green 86ffeef60c3c2ad5aa6a597cc7590a31a913d18beea4947cf9276311c4c0d674 src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs
+GREEN de PB-T4d escrito: 4 archivos de src/ cambiados y 2 borrados

@@ -1,0 +1,10 @@
+repeticiones de la union de UI con cobertura; copia /d/r6w; salida r6w-bc; procesos al empezar: 0 (07:43:04)
+ui base-ui-cov-r-1 rc=0 segundos=186 :: filas 921 {'NotExecuted': 31, 'Passed': 890}; omitidas por origen {'PB-T4b': 27, 'PB-T4c': 1, 'otro': 3} json=c08465a0b4f0fb34
+ui base-ui-cov-r-2 rc=0 segundos=183 :: filas 921 {'NotExecuted': 31, 'Passed': 890}; omitidas por origen {'PB-T4b': 27, 'PB-T4c': 1, 'otro': 3} json=075b8016f11d6804
+build-server shutdown rc=0
+procesos al acabar: 0 (07:49:19)
+repeticiones de la union de UI con cobertura; copia /d/r6x; salida r6x-t2; procesos al empezar: 0 (07:49:20)
+ui g-ui-cov-r-1 rc=0 segundos=181 :: filas 899 {'NotExecuted': 30, 'Passed': 869}; omitidas por origen {'PB-T4b': 27, 'PB-T4c': 1, 'otro': 2} json=4f29beec5d6c9143
+ui g-ui-cov-r-2 rc=0 segundos=174 :: filas 899 {'NotExecuted': 30, 'Passed': 869}; omitidas por origen {'PB-T4b': 27, 'PB-T4c': 1, 'otro': 2} json=949d2a51b27f0010
+build-server shutdown rc=0
+procesos al acabar: 0 (07:55:20)

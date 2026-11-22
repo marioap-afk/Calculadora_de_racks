@@ -1,0 +1,6 @@
+cobertura de referencia de la base; copia /d/r6p; salida r6p-bc; revision 6c2820bab4d8b41e3e229e23f3a1638ccbb04735
+  pieza 9b39ce68c170741c7773cc1ceaec04791957a3fc3457e7a882d9231560ccae99 p6d_basecov_v52.sh
+  pieza c2e5b835b7c53f1cffb3a9157b721e774e1ea6347fb668e7879ba6638cc8de37 cov_v52b.runsettings
+  pieza a41ceff37fc16baa51681bda6c77b9558ba9c3e865c0bf3089ca5c24161c05fb p6d_check_v52.py
+copia exportada: 14571 archivos
+b-core rc=0 errores=0 avisos-CS=0

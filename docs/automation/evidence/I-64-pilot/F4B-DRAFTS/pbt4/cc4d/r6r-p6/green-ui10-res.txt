@@ -1,0 +1,2 @@
+filas 4 {'NotExecuted': 1, 'Passed': 3}; omitidas por origen {'PB-T4c': 1}
+no pasan: 0

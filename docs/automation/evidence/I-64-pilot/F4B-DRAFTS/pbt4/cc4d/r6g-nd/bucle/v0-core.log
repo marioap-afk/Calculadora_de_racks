@@ -1,0 +1,38 @@
+  Determinando los proyectos que se van a restaurar...
+  Se ha restaurado <copia>\tools\RackCad.StructuralSections.Import\RackCad.StructuralSections.Import.csproj (en 107 ms).
+  Se ha restaurado <copia>\src\RackCad.Domain\RackCad.Domain.csproj (en 107 ms).
+  Se ha restaurado <copia>\tools\RackCad.StructuralAnalysis.RamTool\RackCad.StructuralAnalysis.RamTool.csproj (en 107 ms).
+  Se ha restaurado <copia>\src\RackCad.Application\RackCad.Application.csproj (en 107 ms).
+  Se ha restaurado <copia>\tests\RackCad.Tests\RackCad.Tests.csproj (en 427 ms).
+  fatal: not a git repository (or any of the parent directories): .git
+  RackCad.Domain -> <copia>\src\RackCad.Domain\bin\Debug\net8.0\RackCad.Domain.dll
+  fatal: not a git repository (or any of the parent directories): .git
+  RackCad.Application -> <copia>\src\RackCad.Application\bin\Debug\net8.0\RackCad.Application.dll
+  fatal: not a git repository (or any of the parent directories): .git
+  fatal: not a git repository (or any of the parent directories): .git
+  RackCad.StructuralSections.Import -> <copia>\tools\RackCad.StructuralSections.Import\bin\Debug\net8.0\RackCad.StructuralSections.Import.dll
+  RackCad.StructuralAnalysis.RamTool -> <copia>\tools\RackCad.StructuralAnalysis.RamTool\bin\Debug\net8.0\RackCad.StructuralAnalysis.RamTool.dll
+  fatal: not a git repository (or any of the parent directories): .git
+<copia>\tests\RackCad.Tests\Workspace\WorkspaceDraftPilotMaterializationTests.cs(31,44): error CS0246: El nombre del tipo o del espacio de nombres 'PushBackPilotComposition' no se encontró (¿falta una directiva using o una referencia de ensamblado?) [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+<copia>\tests\RackCad.Tests\Workspace\WorkspaceDraftPilotMaterializationTests.cs(20,29): error CS0246: El nombre del tipo o del espacio de nombres 'PushBackPilotStateComparer' no se encontró (¿falta una directiva using o una referencia de ensamblado?) [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+<copia>\tests\RackCad.Tests\Workspace\WorkspacePilotEditHostTests.cs(65,32): error CS0103: El nombre 'PushBackPilotFieldAdapter' no existe en el contexto actual [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+<copia>\tests\RackCad.Tests\Workspace\WorkspacePilotEditHostTests.cs(232,24): error CS0103: El nombre 'PushBackPilotFieldAdapter' no existe en el contexto actual [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+<copia>\tests\RackCad.Tests\Workspace\WorkspacePilotEditHostTests.cs(233,22): error CS0103: El nombre 'PushBackPilotFieldAdapter' no existe en el contexto actual [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+<copia>\tests\RackCad.Tests\Workspace\WorkspacePilotEditHostTests.cs(234,23): error CS0103: El nombre 'PushBackPilotFieldAdapter' no existe en el contexto actual [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+<copia>\tests\RackCad.Tests\Workspace\WorkspacePilotEditHostTests.cs(235,21): error CS0103: El nombre 'PushBackPilotFieldAdapter' no existe en el contexto actual [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+<copia>\tests\RackCad.Tests\Workspace\WorkspaceDraftPilotStateTests.cs(661,29): error CS0246: El nombre del tipo o del espacio de nombres 'PushBackPilotStateComparer' no se encontró (¿falta una directiva using o una referencia de ensamblado?) [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+
+ERROR al compilar.
+
+<copia>\tests\RackCad.Tests\Workspace\WorkspaceDraftPilotMaterializationTests.cs(31,44): error CS0246: El nombre del tipo o del espacio de nombres 'PushBackPilotComposition' no se encontró (¿falta una directiva using o una referencia de ensamblado?) [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+<copia>\tests\RackCad.Tests\Workspace\WorkspaceDraftPilotMaterializationTests.cs(20,29): error CS0246: El nombre del tipo o del espacio de nombres 'PushBackPilotStateComparer' no se encontró (¿falta una directiva using o una referencia de ensamblado?) [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+<copia>\tests\RackCad.Tests\Workspace\WorkspacePilotEditHostTests.cs(65,32): error CS0103: El nombre 'PushBackPilotFieldAdapter' no existe en el contexto actual [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+<copia>\tests\RackCad.Tests\Workspace\WorkspacePilotEditHostTests.cs(232,24): error CS0103: El nombre 'PushBackPilotFieldAdapter' no existe en el contexto actual [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+<copia>\tests\RackCad.Tests\Workspace\WorkspacePilotEditHostTests.cs(233,22): error CS0103: El nombre 'PushBackPilotFieldAdapter' no existe en el contexto actual [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+<copia>\tests\RackCad.Tests\Workspace\WorkspacePilotEditHostTests.cs(234,23): error CS0103: El nombre 'PushBackPilotFieldAdapter' no existe en el contexto actual [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+<copia>\tests\RackCad.Tests\Workspace\WorkspacePilotEditHostTests.cs(235,21): error CS0103: El nombre 'PushBackPilotFieldAdapter' no existe en el contexto actual [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+<copia>\tests\RackCad.Tests\Workspace\WorkspaceDraftPilotStateTests.cs(661,29): error CS0246: El nombre del tipo o del espacio de nombres 'PushBackPilotStateComparer' no se encontró (¿falta una directiva using o una referencia de ensamblado?) [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    0 Advertencia(s)
+    8 Errores
+
+Tiempo transcurrido 00:00:40.64

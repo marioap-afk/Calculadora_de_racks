@@ -1,0 +1,91 @@
+cobertura de la corrida generica; copia /d/r6i; salida r6i-cv; revision 6c2820bab4d8b41e3e229e23f3a1638ccbb04735
+  pieza e9316851269c2411483e63217e96b5d9ffff5b78da94f0932d49b3b3655fc5ff p6d_cov_v52.sh
+copia exportada: 14571 archivos
+b-core rc=0 errores=0 avisos-CS=0
+Traceback (most recent call last):
+  File "<scratchpad>\hs65\pbt4dcc\compile\p6d_check_v52.py", line 14, in <module>
+    root = ET.parse(trx).getroot()
+           ~~~~~~~~^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 1223, in parse
+    tree.parse(source, parser)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 566, in parse
+    source = open(source, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: '<copia>/_cov/wpur/wpur.trx'
+head: cannot open '/tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4dcc/compile/r6i-cv/wpur-res.txt' for reading: No such file or directory
+cov wpur rc=1 segundos=3 cobertura= :: 
+Traceback (most recent call last):
+  File "<scratchpad>\hs65\pbt4dcc\compile\p6d_check_v52.py", line 14, in <module>
+    root = ET.parse(trx).getroot()
+           ~~~~~~~~^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 1223, in parse
+    tree.parse(source, parser)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 566, in parse
+    source = open(source, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: '<copia>/_cov/fwr/fwr.trx'
+head: cannot open '/tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4dcc/compile/r6i-cv/fwr-res.txt' for reading: No such file or directory
+cov fwr rc=1 segundos=2 cobertura= :: 
+Traceback (most recent call last):
+  File "<scratchpad>\hs65\pbt4dcc\compile\p6d_check_v52.py", line 14, in <module>
+    root = ET.parse(trx).getroot()
+           ~~~~~~~~^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 1223, in parse
+    tree.parse(source, parser)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 566, in parse
+    source = open(source, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: '<copia>/_cov/wpuh/wpuh.trx'
+head: cannot open '/tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4dcc/compile/r6i-cv/wpuh-res.txt' for reading: No such file or directory
+cov wpuh rc=1 segundos=2 cobertura= :: 
+Traceback (most recent call last):
+  File "<scratchpad>\hs65\pbt4dcc\compile\p6d_check_v52.py", line 14, in <module>
+    root = ET.parse(trx).getroot()
+           ~~~~~~~~^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 1223, in parse
+    tree.parse(source, parser)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 566, in parse
+    source = open(source, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: '<copia>/_cov/wpuq/wpuq.trx'
+head: cannot open '/tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4dcc/compile/r6i-cv/wpuq-res.txt' for reading: No such file or directory
+cov wpuq rc=1 segundos=2 cobertura= :: 
+Traceback (most recent call last):
+  File "<scratchpad>\hs65\pbt4dcc\compile\p6d_check_v52.py", line 14, in <module>
+    root = ET.parse(trx).getroot()
+           ~~~~~~~~^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 1223, in parse
+    tree.parse(source, parser)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 566, in parse
+    source = open(source, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: '<copia>/_cov/fpt/fpt.trx'
+head: cannot open '/tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4dcc/compile/r6i-cv/fpt-res.txt' for reading: No such file or directory
+cov fpt rc=1 segundos=2 cobertura= :: 
+Traceback (most recent call last):
+  File "<scratchpad>\hs65\pbt4dcc\compile\p6d_check_v52.py", line 14, in <module>
+    root = ET.parse(trx).getroot()
+           ~~~~~~~~^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 1223, in parse
+    tree.parse(source, parser)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 566, in parse
+    source = open(source, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: '<copia>/_cov/fwp/fwp.trx'
+head: cannot open '/tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4dcc/compile/r6i-cv/fwp-res.txt' for reading: No such file or directory
+cov fwp rc=1 segundos=2 cobertura= :: 
+Traceback (most recent call last):
+  File "<scratchpad>\hs65\pbt4dcc\compile\p6d_check_v52.py", line 14, in <module>
+    root = ET.parse(trx).getroot()
+           ~~~~~~~~^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 1223, in parse
+    tree.parse(source, parser)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 566, in parse
+    source = open(source, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: '<copia>/_cov/resto/resto.trx'
+head: cannot open '/tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4dcc/compile/r6i-cv/resto-res.txt' for reading: No such file or directory
+cov resto rc=1 segundos=2 cobertura= :: 
+build-server shutdown rc=0
+procesos: 0
+MAINCO []

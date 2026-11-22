@@ -1,0 +1,41 @@
+# de las lineas de la corrida generica que ejercita WPUR (sin las retiradas): las que el resto cubre sin las cinco clases del modelo completo
+# (fwr, wpuh, wpuq, fpt, fwp), y las ramas que WPUR cubre por encima de esas cinco clases
+lineas 436; otras 7; ramas de WPUR por encima del modelo completo 27
+
+## las otras (las cubre el resto, ninguna de las cinco clases)
+  PushBackPilotUpdatePlan.cs:176  resto 0/0  public IReadOnlyList<DraftDifference> Differences { get; }
+  PushBackPilotUpdatePlan.cs:244  resto 0/0  : this(annotationScale, envelopes, Array.Empty<string>())
+  PushBackPilotUpdatePlan.cs:245  resto 0/0  {
+  PushBackPilotUpdatePlan.cs:246  resto 0/0  }
+  PushBackPilotUpdatePlan.cs:290  resto 0/0  : this(rackId, originKey, originKey, expectedBase, expectedVariableRegistryText, annotationScale, members, Array.Empty<string>(), postExpect
+  PushBackPilotUpdatePlan.cs:291  resto 0/0  {
+  PushBackPilotUpdatePlan.cs:292  resto 0/0  }
+
+## las ramas (WPUR cubre mas que las cinco clases)
+  PushBackPilotUpdatePlan.cs:600  wpur 2/2  resto 1  completo 1  if (disposition != PushBackViewDispositionKind.Redraw)
+  PushBackPilotUpdateRun.cs:261  wpur 3/4  resto 1  completo 1  if (!admission.IsAdmitted) return PostNotAdmittedPrefix + (admission.Diagnostic ?? "sin diagnóstico");
+  PushBackPilotUpdateRun.cs:368  wpur 2/2  resto 1  completo 1  if (scope == null)
+  PushBackPilotUpdateRun.cs:418  wpur 2/2  resto 1  completo 1  if (!values.DocumentMatches) return NotAppliedPreflight(DocumentMismatchReason);
+  PushBackPilotUpdateRun.cs:422  wpur 2/2  resto 1  completo 1  if (origin != null) return origin;
+  PushBackPilotUpdateRun.cs:425  wpur 8/8  resto 2  completo 2  switch (prepared.Kind)
+  PushBackPilotUpdateRun.cs:441  wpur 1/2  resto 0  completo 0  return NotAppliedPreflight(prepared.Reason ?? PushBackPilotUpdatePlanner.MissingInputReason);
+  PushBackPilotUpdateRun.cs:449  wpur 5/8  resto 2  completo 2  if (import == null || !import.Ok) return NotAppliedPreflight(import?.Cause ?? ImportFailedReason);
+  PushBackPilotUpdateRun.cs:459  wpur 2/2  resto 1  completo 1  if (start == null) return NotAppliedFailure(NoMutationScopeReason);
+  PushBackPilotUpdateRun.cs:460  wpur 2/2  resto 1  completo 1  if (start.RejectionCode != null) return NotAppliedPreflight(start.RejectionCode);
+  PushBackPilotUpdateRun.cs:492  wpur 2/2  resto 1  completo 1  if (_mutationDisposeFailure != null) _warnings.Add(DisposeWarningPrefix + _mutationDisposeFailure.Message);
+  PushBackPilotUpdateRun.cs:510  wpur 2/2  resto 1  completo 1  if (!values.DocumentMatches) return NotAppliedPreflight(DocumentMismatchReason);
+  PushBackPilotUpdateRun.cs:525  wpur 5/8  resto 4  completo 4  if (mutable.Count != planned.Count
+  PushBackPilotUpdateRun.cs:559  wpur 2/2  resto 1  completo 1  if (failure == null) return decided;
+  PushBackPilotUpdateRun.cs:562  wpur 4/4  resto 0  completo 0  switch (decided.Kind)
+  PushBackPilotUpdateRun.cs:566  wpur 2/2  resto 0  completo 0  return _writeStarted
+  PushBackPilotUpdateRun.cs:588  wpur 2/2  resto 1  completo 1  if (values == null) return PostFailed(PostMissingReason);
+  PushBackPilotUpdateRun.cs:589  wpur 2/2  resto 1  completo 1  if (values.ForeignScopeOpenAtPost) return PostFailed(ForeignScopeOpenCause);
+  PushBackPilotUpdateRun.cs:594  wpur 4/4  resto 2  completo 2  if (!values.NamesByKey.TryGetValue(pair.Key, out var actual) || !string.Equals(actual, expected, StringComparison.OrdinalIgnoreCase))
+  PushBackPilotUpdateRun.cs:598  wpur 2/2  resto 1  completo 1  if (values.RegenFailure != null) _warnings.Add(RegenFailedPrefix + values.RegenFailure);
+  PushBackPilotUpdateRun.cs:599  wpur 2/2  resto 1  completo 1  if (values.Scan == null) return PostFailed(PostRereadMissingReason);
+  PushBackPilotUpdateRun.cs:604  wpur 2/2  resto 1  completo 1  if (cause != null) return PostFailed(cause);
+  PushBackPilotUpdateRun.cs:650  wpur 2/2  resto 1  completo 1  if (matches.Count == 0) return NotAppliedPreflight(PushBackPilotUpdatePlanner.NoOriginReason);
+  PushBackPilotUpdateRun.cs:651  wpur 2/2  resto 1  completo 1  if (matches.Count > 1) return NotAppliedPreflight(PushBackPilotUpdatePlanner.SeveralOriginsReason);
+  PushBackPilotUpdateRun.cs:666  wpur 2/2  resto 2  completo 1  .Where(key => plan.Members.Any(member => string.Equals(member.Key, key, StringComparison.Ordinal))
+  PushBackPilotUpdateRun.cs:678  wpur 2/2  resto 1  completo 1  if (failure == null) return decided;
+  PushBackPilotUpdateRun.cs:681  wpur 6/8  resto 0  completo 0  switch (decided.Kind)

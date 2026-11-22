@@ -1,0 +1,5 @@
+vuelta 0: bajas 223, errores 4 (distintos 1), miembros nuevos 1, sin resolver 0
+vuelta 1: bajas 224, errores 10 (distintos 5), miembros nuevos 3, sin resolver 2
+  PARA sin miembro tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1168 CS0117 'PrepareKit' no contiene una definición para 'DraftOf'
+  PARA sin miembro tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1170 CS0117 'PrepareKit' no contiene una definición para 'Prepare'
+bajas finales 224 (de la lista 222, SUS-01 1, por compilacion 1)

@@ -1,0 +1,6 @@
+## RackCad.Tests.PushBackRetirePilotGuardTests.CT_PBT4D_01_TheCodeOfThePilotThatThePanelNoLongerUsesIsRetiredAndWhatTheFullModelUsesStays
+Assert.Equal() Failure: Strings differ
+                                  ↓ (pos 260)
+Expected: ···"ackPilotComposition=0\nretirado PushBackPi"···
+Actual:   ···"ackPilotComposition=1\nretirado PushBackPi"···
+                                  ↑ (pos 260)

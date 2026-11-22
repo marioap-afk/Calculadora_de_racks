@@ -2091,3 +2091,75 @@ Los tres controles quedan satisfechos sin ninguna decisión del Owner.
 - la prueba lenta (OWNER-05).
 
 La emisión condicional de F4B-E49 (pregunta 4) termina con PB-T4c.
+
+## F4B-E56. Emisión de F4B-PBT4-RETIRE-PILOT (PB-T4d), con el paquete de PB-T4 v5.4
+
+**Fecha:** 2026-11-22.
+
+**Autoridad de emisión:** la decisión del Owner sobre PB-T4d, `owner-pbt4d-list-decisions.md`, pregunta 4: «Sí, con condiciones (Recomendado)».
+- **Las condiciones que exige, cumplidas:**
+  - la comprobación acotada de la subtarea, CA-T4d, da 0 bloqueantes y 0 importantes sin resolver: sus dos importantes, I-01 e I-02, las resolvió el Owner (la quinta tanda de PB-T4d) y las corrige la v5.3; sus recomprobaciones dan la de la v5.3, EMITIBLE, 0/0/6; la de la v5.4, EMITIBLE, 0/0/3, y la última, sin bloqueantes ni importantes;
+  - la remedición sobre el cierre anterior, el de PB-T4c, no cambia nada material: la precondición 6 corre sobre copias exportadas de `6c2820ba`;
+  - la lista emitida es la que eligió el Owner: el alcance B, con las sustitutas, las 29 de WPUR y la rama muerta de `BuildCore`: las 271 filas con acción de `pbt4d-retire-list-271.tsv` (sha256 `05a4d3d1905529c5bc4d53e0684d27d97eaa96502098eebeb9d16bfd931c75ac`; 284 filas, 13 que se quedan sin tocar).
+- **Cuándo se vuelve al Owner:** por una decisión nueva, un control con una firma no prevista, un intento 3, un efecto material sin medir o una prueba que falle fuera de la lista (PBT4D-C16).
+
+**El cierre de PB-T4c** (F4B-E55, `6c2820ba`): PB-T4c CLOSED / PASS WITH LIMITATIONS sobre `7cc1076e`, en el intento 1 de 3, sin reparación del RED. CI del GREEN `44959653142`, 4/4: Core 19 619 = 19 158 + 0 + 461, y UI 2 486 = 2 437 + 0 + 49.
+
+**Qué es PB-T4d:** la retirada del código del piloto que el panel ya no usa desde PB-T4b (D-PBT4-10), con el alcance B.
+- **El GREEN** solo toca `src/`, con el texto literal del paquete: 4 archivos de `Pilot/` cambian y 2 se borran (`PushBackPilotStateComparer.cs` y `PushBackPilotFieldAdapter.cs`). Son los 6 `UNIT_CHANGE` (F4B-E25).
+- **El RED** lleva todo lo de `tests/` (D-S11), sin esqueleto: las bajas con registro, las ediciones con registro, los 3 `Skip` con su equivalente, la prueba lenta acotada, los vacíos de M-04, las 29 sustitutas de WPUR, los 3 archivos que se quedan sin pruebas (bloques DELETE) y los 5 archivos nuevos, con las dos CT.
+- **Ningún cambio de comportamiento:** ni el panel, ni la ventana, ni RACKEDITAR, ni el Plugin; cero escrituras en el DWG.
+
+**La lista, por acción:** borrar con registro, 198, reescribir con registro, 39, sustituir con registro, 33 y acotar con registro, 1; se quedan sin tocar 13. La entrada «## PB-T4d» de `F4B-DRAFTS/superseding-characterization.md` va en esta emisión, por grupo y acción, con los motivos literales de los `Skip`, los archivos nuevos con su `NewFileSha` y las ediciones con registro. Su tabla de ejecución se completa al cerrar.
+
+**El total exacto de cada rama** (F4B-E46):
+- **GREEN:** Core 19 418 = 19 015 + 0 + 403; UI 2 464 = 2 416 + 0 + 48.
+- **RED:** Core 19 418 = 19 014 + 1 + 403, con CT-PBT4D-01 como único `Failed`; UI 2 464 = 2 416 + 0 + 48.
+
+**Las tandas del Owner sobre PB-T4d** (§8.5 de la v5.4), nuevas en esta emisión y literales en `F4B-DRAFTS/coordinator/`:
+
+10. `owner-pbt4d-list-decisions.md`: «Alcance B», la recarga de «Editar todo» a una tarea propia después, la prueba lenta acotada en PB-T4d y la emisión condicional.
+11. `owner-pbt4d-substitutes-decision.md`: «Sustitutas donde hace falta».
+12. `owner-pbt4d-run-coverage-decision.md`: «Sustituir las 21», con la cobertura medida otra vez.
+13. `owner-pbt4d-deadcode-27-decisions.md`: «Quitarla en PB-T4d» (la rama muerta de `BuildCore`) y «Sí, 27» (las sustitutas de la corrida).
+14. `owner-pbt4d-cat4d-decisions.md`, sobre CA-T4d: «Sustituirlas» (la n.º 48 y la n.º 49 de WPUR pasan a sustitutas: 29) y «Sustituirlos siempre» (la cobertura de la precondición 6 mira todo `src/` que se queda).
+
+**Las decisiones de diseño de la sesión,** que no son del Owner (`F4B-DRAFTS/pbt4/session-pbt4d-design-decisions.md`, sha256 `bd02d2103c7a671c51c1de8901bf76608e4944f98ad0fabcca1fdd253d3801c8`): D-S11 (el RED con todo lo de `tests/`, sin esqueleto, y dos CT), D-S12 (los tres `Skip` con su equivalente, el prefijo `PushBackRetirePilot` y los filtros por clase exacta), D-S13 (M-04 en su sitio), D-S14 (la prueba lenta, cada 97.º toque y el último), D-S15 (los cuatro `cref` y el comentario) y D-S16 (la cobertura de la UI como unión de corridas, y la lista de lo que baja). Ninguna cambia la lista ni el comportamiento visible que decidió el Owner.
+
+**Las decisiones de la sesión sobre el contrato y su emisión** (2026-11-22; tampoco son del Owner):
+- **Las autoridades:** de las 70 del contrato de PB-T4c siguen las que no son de su subtarea; la sección se pone al día en la n.º 0, 6, 28, 29, 36 y 37; la n.º 43 pasa, en su sitio, al informe de CA-T4d; la n.º 48 (`owner-pbt4b-code-decisions.md`, M-04) se queda con su sección nueva; salen la 44 a la 47 y la 49 a la 69; se añaden las de §6.4.2, con la quinta tanda detrás de las cuatro del Owner. Los guiones de §6.4.2 se comprueban por sha256, pero no son autoridad.
+- **El `ForbiddenWriteScope`:** el literal de §6.4, con las cinco clases de las CT y los cuatro equivalentes de PB-T4c; el paquete manda.
+- **La precondición 6:** `Package` y `Task` se leen; `RedDeleted` se lee (los bloques DELETE del RED y `Expected.red-deleted-3`); `Noise` es un dato informativo que no se lee.
+- **La custodia de `cc4d/`:** la cobertura en XML y JSON, solo por sha256, como las TRX; la raíz de `pbt4dcc`, `_sim/` y `_tools/` quedan fuera, porque son herramientas de la cadena de la sesión.
+- **`RedFiles` de la precondición 6 frente a la v5.4:** cada archivo, el del RED de la v5.4 aplicado en memoria, salvo los de `Reapply.TestsTextChanged` (hoy, `WorkspacePilotUpdateRunTests.cs`), que son los del RED de la v5.3, y el generador comprueba él mismo que los dos textos dan el mismo código sin comentarios ni líneas en blanco; además, `TestsCodeChanged` vacío y `SrcDifferences` 0. **La razón:** la precondición 6 corrió con el texto de la v5.3, y fijar los sha256 del RED de la v5.4 diría que se midió algo que no se midió.
+- **La copia exportada:** la etiqueta de copia, antes `r4<letra>` a `r6<letra>`, pasa a `r4` a `r9` seguida de una letra o una cifra (entra `r70`, la de la reaplicación): una carpeta corta, sin nada personal, que se tapa con `<copia>`, también en los textos de fuera de `cc4d/`; lo que tras tapar la copia aún lleve una ruta o un nombre local va solo por sha256, declarado.
+- **`_write_cat4d_prompt.py`,** reescrito por la sesión sin rutas ni nombres locales (los lee de un archivo de la sesión que no se custodia), va como texto.
+- **Las subcarpetas de la versión:** `v52/{ct,frag,run,seco,sub}`, `v53/{frag,g52,run,sanity}` y `v54/frag`, como texto, con la redacción de siempre (`v52/sub/cov-sides.txt` lo cita un registro del Owner); `v52/try/`, `v53/try/` y `v54/try/`, fuera, por el sha256 de su conjunto.
+- **El veredicto de CA-T4d:** se lee de su informe propio, con su sección de recomprobación, con la misma comprobación que `bounded_check` en la forma de ese informe.
+
+**Las erratas que declara la emisión** (la recomprobación 2 de CA-T4d, sobre el diff de la v5.3 a la v5.4: EMITIBLE, B 0 / I 0 / M 3; la sesión las corrige en este commit, sin una v5.5):
+- **M-14:** «Lo que cambia» de la cabecera de la v5.4 nombra §7, que no cambia, y omite D-PBT4-10, §5.6 y la apertura de §6.4; la columna «Dónde» de V54-04 omite §8.5. Todo lo que cambia cabe en alguna fila V54.
+- **M-15:** la nota de D-S16 de `session-pbt4d-design-decisions.md` (cuyo sha256 cita la v5.4, y no se toca) dice `cov_p6_v53.py`, y lo aplica `cov_p6_v54.py`; la definición de PERDIDA de `cov_p6_v54.py:248-249` y `:327` no se ajustó a la ESTABLE nueva (el caso medido da 0); y su «Uso» (`:17`) dice v53. Nada de esto cambia la medida.
+- **M-16:** `RedFiles` de la precondición 6 es el RED de la copia `r6y`, el de la v5.3: en `WorkspacePilotUpdateRunTests.cs`, el RED de la v5.4 da `7ea6170422f48334f18ff2cd3b1cb1b32c79264861dd52a6e6b56570daf7ba13`, que solo difiere en comentarios (lo comprueba el generador; decisión de la sesión). `pbt4d-red-v53.txt`, `pbt4d-green-v53.txt` y `pbt4d-retire-list-270.tsv` se custodian como historia.
+
+**Para el Coordinator:** M-14 es el mismo modo que M-10: «Lo que cambia» escrito a mano y no sacado del diff.
+
+**La autoridad n.º 37** es este contrato, `F4B-PBT4-RETIRE-PILOT/coordinator/gate-contract.json`, que escribe la BASE. El contrato anterior, el de PB-T4c, es la n.º 29.
+
+**La comprobación acotada de PB-T4d** (CA-T4d), en `F4B-DRAFTS/pbt4/independent-review-pbt4d-check.md`, con su encargo `independent-review-pbt4d-check-prompt.md`:
+- **sobre la v5.2:** EMITIBLE TRAS CORRECCIONES, 0/2/7. Sus importantes: I-01, dos bajas de WPUR dejaban sin prueba código que se queda; I-02, el universo de la cobertura era más estrecho que lo pedido;
+- **sus recomprobaciones:** la de la v5.3, EMITIBLE, 0/0/6; la de la v5.4, EMITIBLE, 0/0/3.
+
+El resultado que lleva el contrato es `EMITIBLE TRAS CORRECCIONES; B 0 / I 2 / M 7; las importantes a corregir en una v5.3 (I-01: las pruebas 48 y 49 de WPUR prueban PushBackPilotSystemRebuild, que se queda, y la lista las borra; I-02: el criterio de cobertura solo mira 436 lineas de 2 archivos); con una decision nueva del Owner (I-01, por su regla de owner-pbt4d-run-coverage-decision.md: sustituir la 48 y la 49, 29 sustitutas, o declarar la perdida); precondicion 6 sobre 6c2820ba: base 19619 = 19158 + 0 + 461 igual a la CI 44959653142 registrada, RED 19416 = 19012 + 1 + 403, GREEN 19416 = 19013 + 0 + 403, UI 2464 = 2416 + 0 + 48, las 436 lineas PASAN pero la suite completa de Core pierde PushBackPilotSystemRebuild.cs:32 y 6 ramas (I-01) y 1 rama de PushBackCompositeEditorState.cs:233 (M-02); GREEN y RED reproducidos por objetos git con los mismos sha256; recomprobacion v5.3: EMITIBLE; B 0 / I 0 / M 6 (M-08 a M-13, para una v5.4 de solo texto); I-01 resuelto (29 sustitutas, 26 por el mapa; PushBackPilotSystemRebuild.cs:32 y sus 6 ramas cubiertas por Core en el GREEN) e I-02 resuelto (cobertura de todo src/ reproducida desde los 43 JSON de coverlet: 0 lineas y 0 ramas perdidas, Core sola solo pierde PushBackCompositeEditorState.cs:233, que cubren 7 filtros de UI en su proceso, PERDIDA 0, bajan 16801 + 118, ninguna solo por las corridas juntas); M-01 a M-07 aplicados; 1 sustituta nueva sobre las 29; sin decisiones nuevas del Owner; los tres desajustes del generador son menores, y el 1 pide fijar los sha256 de los 18 JSON de UI por filtro del GREEN, no solo quitar GreenUiCoverage; precondicion 6 sobre 6c2820ba: base 19619 = 19158 + 0 + 461 igual a la CI, RED 19418 = 19014 + 1 + 403, GREEN 19418 = 19015 + 0 + 403, UI 2464 = 2416 + 0 + 48, copia principal sola, 0 warning CS; recomprobacion v5.4: EMITIBLE; B 0 / I 0 / M 3 (M-14 a M-16, de texto y de custodia, sin decision del Owner); M-08 a M-13 resueltos: el JSON fija el sha256 de los 3 + 18 JSON de UI del GREEN y el completo de las TRX y los JSON de los 19 filtros de la base, recalculados por mi y casan, y 6.4.2 nombra sus 32 claves en orden con RedDeleted contra los DELETE y Noise sin leer; [13] dice D-S11 a D-S16; la cabecera de la v5.3 nombra 0, 1, 6.0, 7 y 9; cov_p6_v54.py exige un filtro en su proceso para ESTABLE solo por la UI, PASA, PERDIDA 0, VARIA 0, ESTABLE 16801 + 118, y en el GREEN hay 0 claves que solo cubran las corridas juntas; el RED v5.4 solo cambia comentarios de WPUR (codigo igual en los 28 archivos, aplicado por mi) y el GREEN solo su cabecera; la lista 271 solo cambia el porque de la fila 282 y anade la 284 (directiva); el paso de 436 a 537 queda explicado; nuevos: M-14 (Lo que cambia de la v5.4 nombra la seccion 7, que no cambia, y omite D-PBT4-10, 5.6 y 6.4, el modo de M-10), M-15 (la nota de D-S16 dice cov_p6_v53.py y la definicion de PERDIDA no se ajusto) y M-16 (RedFiles de WPUR es el RED v5.3 sin declararlo, y 11.9 no custodia las piezas de la v5.3); totales, RequiredTests, filtros y decisiones sin cambio`.
+
+**Antes de emitir, la precondición 6** de la v5.4, sobre el cierre `6c2820ba`: los nueve pasos de 6.4.1, en copias exportadas nuevas de 6c2820ba (`r6y`, la principal, sola: el RED literal y el GREEN literal de la v5.3, la suite completa de Core en las dos ramas, los 18 filtros de UI del contrato, el Plugin y la cobertura del GREEN; `r6w`, la base sin cambios, sola, con cobertura: la referencia de la cobertura ampliada y la base de los MinSelected; `r6z`, el control del ensayo de las CT; y `r70`, las piezas de la v5.4 reaplicadas, que solo cambian comentarios de un archivo de tests/, WorkspacePilotUpdateRunTests.cs): la compilacion de Core, de UI y del Plugin sin errores ni avisos CS, tambien con las piezas de la v5.4; Core en el RED, 19418 = 19014 + 1 + 403, y solo cae CT-PBT4D-01, por asercion; en el GREEN, 19418 = 19015 + 0 + 403; los 18 filtros de UI, 0 Failed en las dos ramas; la cobertura ampliada de todo src/ que se queda (Core completa y la union de los filtros de UI de PB-T4c y de PB-T4d, linea a linea y rama por rama, con el sha256 de cada JSON de cobertura): 0 lineas sin ejecutar y 0 ramas perdidas en el GREEN, PASA; el ensayo de las CT (CT-01 cae en el RED y pasa en el GREEN; CT-02 pasa en las dos) y su control (la base con solo las dos CT: caen las dos; el RED con la variante A: cae CT-01); el censo de C13, PASA; los RequiredTests, 83 heredados y 5 nuevos, sin solapamientos; los totales de UI de la CI, 2464 = 2416 + 0 + 48 en las dos ramas; y compile-check.md da el resultado de cada clase que corre. Las corridas de la v5.2 (`r6a` a `r6u`) y los dos ensayos de la v5.3 (`r6v` y `r6x`), como historia. Su custodia está en `F4B-DRAFTS/pbt4/cc4d/`, redactada y con su manifiesto, y su resumen en `F4B-DRAFTS/pbt4/pbt4d-precondition6.json`.
+
+**Los controles** (PBT4D-C11): nc1 con la firma PD-F4B-01 y su sustituto (F4B-E40), y nc2 con el sustituto v2 (F4B-E43), los dos con `--task PBT4`. La primera entrada de la `ExpectedEvidence` es, byte a byte, la de `F4B_EXACT_EVIDENCES` del sustituto v2.
+
+**La reparación del RED** (F4B-E35): la regla RR, solo en las dos clases de las CT. Una reparación no toca `src/`, ni los 26 archivos existentes de `tests/` del alcance, ni las tres clases nuevas que no son CT.
+
+**El contrato:**
+- **P-01:** la Snapshot K (F4B-E37).
+- **La cadena:** primera delegación; `attempts` 1 de 3.
+- **La planificación:** con las colecciones opacas puestas por la sesión (F4B-E21).
+- **La verificación:** con las comprobaciones deterministas de F4B-E15.

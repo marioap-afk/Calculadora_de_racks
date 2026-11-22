@@ -1,0 +1,18 @@
+retirada, variante A; copia /d/r6c; salida r6c-A; revision 6c2820bab4d8b41e3e229e23f3a1638ccbb04735
+  pieza 920c57cacfdf6dc5b94e6ed6deba04db1b312418fe9779dbf8e631e1602cb96c retire_pbt4d_v52.py
+  pieza fef65d16f0818ff0c068b0ba76e8133e4de5e3a663dc3037b0602dcec557c730 measure_retire_v52.py
+  pieza 3d172421b24d6bd64655e349c52906463f8de779b42a30a319da6ad1d8fb82a1 lists_core.py
+  pieza d5467dc162e2cda8c539a829cc8f3a7c46260a119f70e840b34e6f78dde0387c pbt4d-retire-list-138.tsv
+  pieza 48a9404cea2a359fceb330d7efa65920bad9fed2b5a698a758a69709eb1bac23 pbt4d-probe-fullcopy.cs
+  pieza a41ceff37fc16baa51681bda6c77b9558ba9c3e865c0bf3089ca5c24161c05fb p6d_check_v52.py
+  pieza f7c7ada64a34c3a3fcba04553b5d3448ddafffa66adc69ae9c210f129f1f62b6 run_classes_v51.py
+  pieza 19182fbc10012c160453df237ad2657568affdc586e2f7ce9cad8feccdef7815 ui_filters_pbt4c_v50b.txt
+  pieza e6597f65b64ba685703cc12de6348998f54247d228633a721591351de6fee4c1 p6d_retire_v52.sh
+copia exportada: 14571 archivos
+vuelta 0: bajas 223, errores 4 (distintos 1), miembros nuevos 1, sin resolver 0
+vuelta 1: bajas 224, errores 10 (distintos 5), miembros nuevos 3, sin resolver 2
+  PARA sin miembro tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1168 CS0117 'PrepareKit' no contiene una definición para 'DraftOf'
+  PARA sin miembro tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1170 CS0117 'PrepareKit' no contiene una definición para 'Prepare'
+bajas finales 224 (de la lista 222, SUS-01 1, por compilacion 1)
+PARA: el bucle de compilacion no cerro (rc=6)
+MAINCO []

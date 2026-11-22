@@ -1,0 +1,17 @@
+precondicion 6 de PB-T4d (v5.3), la base con cobertura; copia /d/r6w; salida r6w-bc; revision 6c2820bab4d8b41e3e229e23f3a1638ccbb04735
+procesos al empezar: 0 (06:57:40)
+  pieza 7a095fc622a0e4fbb3ce5fb1f10caffe6377063e2f963b785bbd914c752fe362 p6d_basecov_v53.sh
+  pieza a41ceff37fc16baa51681bda6c77b9558ba9c3e865c0bf3089ca5c24161c05fb p6d_check_v52.py
+  pieza 98a962da6ae75f01dfccac13582ed76dcbeee3f2b341be226779a190f616e5e1 cov_v53.runsettings
+  pieza 4c45807c8048c47193bdef1972172ed7fb6c9086e72cd7e7934b68b251faf93f ui_union_v53.txt
+copia exportada: 14571 archivos
+b-core rc=0 errores=0 avisos-CS=0
+b-ui rc=0 errores=0 avisos-CS=0
+core base-core-cov rc=0 segundos=1190 trx=e96657e911ebd64c :: filas 19619 {'NotExecuted': 461, 'Passed': 19158}; omitidas por origen {'PB-T4b': 451, 'PB-T4c': 3, 'otro': 7}
+no pasan: 0
+  cobertura json=f3db9d9730ae5181 cobertura=05c042aec817b151
+ui base-ui-cov rc=0 segundos=193 :: filas 921 {'NotExecuted': 31, 'Passed': 890}; omitidas por origen {'PB-T4b': 27, 'PB-T4c': 1, 'otro': 3}
+  cobertura json=2a733541902046d2 cobertura=c827212bdb6ce949
+build-server shutdown rc=0
+procesos al acabar: 0 (07:22:48)
+MAINCO []

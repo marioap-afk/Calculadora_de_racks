@@ -1,0 +1,463 @@
+@@@@ # PB-T4d (I-64 F4B), paquete v5.2: el GREEN literal de src/, la retirada del piloto con el alcance B (owner-pbt4d-list-decisions.md, pregunta 1),
+@@@@ # la limpieza de cuatro cref y un comentario (D-S15, solo comentarios) y, al final, la rama muerta de BuildCore (el parametro
+@@@@ # allowErase y lo que solo existe con el; owner-pbt4d-deadcode-27-decisions.md, pregunta 1).
+@@@@ # Bloques: EDIT <ruta> / OLD / NEW / END (el OLD esta exactamente una vez en el texto que se va editando; un NEW sin lineas es el texto vacio)
+@@@@ # y DELETE <ruta> (el archivo se borra). Los textos, con saltos de linea \n. Lo aplica green_pbt4d_v52.py sobre 6c2820ba.
+
+@@@@ DELETE src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs
+
+@@@@ DELETE src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotFieldAdapter.cs
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs
+@@@@ OLD
+    /// <summary>
+    /// The pair <see cref="PushBackCompositeEditorAssembler.BuildDesign"/> consumes, or the reason the base cannot be
+    /// composed. The state and the inputs of a composition belong to the caller: they are fresh objects, never one of the
+    /// states of a draft.
+    /// </summary>
+    public sealed class PushBackPilotComposition
+    {
+        private PushBackPilotComposition(PushBackCompositeEditorState? editor, PushBackEditorInputs? inputs, string? reason)
+        {
+            Editor = editor;
+            Inputs = inputs;
+            Reason = reason;
+        }
+
+        public bool IsComposed => Editor != null && Inputs != null;
+
+        /// <summary>The composite state to hand to the assembler; null when the composition was rejected.</summary>
+        public PushBackCompositeEditorState? Editor { get; }
+
+        /// <summary>The rack-wide inputs to hand to the assembler; null when the composition was rejected.</summary>
+        public PushBackEditorInputs? Inputs { get; }
+
+        /// <summary>Why the composition was rejected; null when it was composed.</summary>
+        public string? Reason { get; }
+
+        public static PushBackPilotComposition Composed(PushBackCompositeEditorState editor, PushBackEditorInputs inputs)
+            => new PushBackPilotComposition(
+                editor ?? throw new ArgumentNullException(nameof(editor)),
+                inputs ?? throw new ArgumentNullException(nameof(inputs)),
+                null);
+
+        public static PushBackPilotComposition Rejected(string reason)
+            => new PushBackPilotComposition(null, null, reason);
+    }
+
+@@@@ NEW
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs
+@@@@ OLD
+        /// <summary>
+        /// The composition to write (IC-07 point 2, D-12): what the pilot does not edit comes from the CURRENT base, never from
+        /// the draft. (1) If the editable content of <paramref name="current"/> differs from the one of
+        /// <paramref name="initial"/> in anything other than <c>Inputs.Annotations.AnnotationScale</c> (the pilot comparator
+        /// with that one field neutralized), it is a typed rejection: nothing that the pilot does not edit is ever reverted or
+        /// written in silence. (2) Otherwise it materializes AGAIN from <c>initial.Origin</c> — the current base, which gives
+        /// a fresh module authority — and applies to it ONLY the scale of <paramref name="current"/>. It returns the pair
+        /// <see cref="PushBackCompositeEditorAssembler.BuildDesign"/> consumes. Pure and total: it mutates neither state, it
+        /// ignores <c>current.Origin</c> and it never throws; a base that no longer materializes gives a typed rejection.
+        /// Since F4-T4A1 (D-T4A1-05, the carry-overs of F4-E25) the comparison of (1) is made on the current state as it is, a scale that
+        /// is not finite or not greater than zero is rejected (6), and so is a base that, materialized again, no longer equals the
+        /// initial state (3). It is only safe AFTER a match of the base with a re-read (H-06): the plan of an update calls it then.
+        /// </summary>
+        public static PushBackPilotComposition ComposeForWrite(
+            PushBackPilotDraftState initial, PushBackPilotDraftState current, RackCatalog catalog)
+        {
+            try
+            {
+                if (initial == null || current == null) return PushBackPilotComposition.Rejected("Falta el estado inicial o el actual.");
+                if (initial.Inputs.Annotations == null || current.Inputs.Annotations == null)
+                    return PushBackPilotComposition.Rejected(NonPilotContentReason);
+
+                // (6) An invalid scale that arrived by an edit in place is never written: not a number, infinite, zero or negative.
+                var scale = current.Inputs.Annotations.AnnotationScale;
+                if (double.IsNaN(scale) || double.IsInfinity(scale) || scale <= 0.0)
+                    return PushBackPilotComposition.Rejected(InvalidScaleReason);
+
+                // (1) The current state is compared as it is, never normalized: it is the copy of the INITIAL state that has its scale
+                // neutralized (it takes the scale of the current one), so nothing of the current state is hidden by a copy.
+                var neutralInitial = PushBackPilotStateComparer.Copy(initial);
+                neutralInitial.Inputs.Annotations.AnnotationScale = scale;
+                if (!PushBackPilotStateComparer.Instance.Equals(neutralInitial, current))
+                    return PushBackPilotComposition.Rejected(NonPilotContentReason);
+
+                var fresh = Materialize(initial.Origin, catalog);
+                if (!fresh.IsAdmitted || fresh.State == null)
+                    return PushBackPilotComposition.Rejected(fresh.Reason ?? UnreadableOrFutureDiagnostic);
+
+                // (3) The base that is materialized AGAIN must still be the initial state: if the catalog changed in the meantime, the
+                // base is no longer the one the user saw and nothing is composed over it.
+                if (!PushBackPilotStateComparer.Instance.Equals(initial, fresh.State))
+                    return PushBackPilotComposition.Rejected(BaseChangedReason);
+
+                if (fresh.State.Inputs.Annotations == null) return PushBackPilotComposition.Rejected(NonPilotContentReason);
+                fresh.State.Inputs.Annotations.AnnotationScale = current.Inputs.Annotations.AnnotationScale;
+                return PushBackPilotComposition.Composed(fresh.State.Editor, fresh.State.Inputs);
+            }
+            catch (Exception ex)
+            {
+                return PushBackPilotComposition.Rejected(ComposeFailurePrefix + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// After the user keeps the draft on a newer version (KeepMineOnCurrentVersion) the surface needs a current state that
+        /// is the NEW base plus the one thing the pilot edits: a copy of <paramref name="newInitial"/> carrying the
+        /// <c>AnnotationScale</c> of <paramref name="current"/>. Pure: it mutates neither argument and shares no mutable
+        /// object with them; the surface sets the result as the current state of the draft.
+        /// </summary>
+        public static PushBackPilotDraftState KeepPilotEditsOn(PushBackPilotDraftState newInitial, PushBackPilotDraftState current)
+        {
+            if (newInitial == null) throw new ArgumentNullException(nameof(newInitial));
+            if (current == null) throw new ArgumentNullException(nameof(current));
+
+            var kept = PushBackPilotStateComparer.Copy(newInitial);
+            if (kept.Inputs.Annotations != null && current.Inputs.Annotations != null)
+                kept.Inputs.Annotations.AnnotationScale = current.Inputs.Annotations.AnnotationScale;
+            return kept;
+        }
+@@@@ NEW
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+    /// <summary>
+    /// I-64 F4-T4A1 (D-T4A1-04, N-7) — the explicit snapshot of a draft that <see cref="PushBackPilotUpdatePlanner.Prepare"/> reads. It
+    /// is built by ONE factory, <see cref="From"/>, so no other code names the base or the states of a draft to prepare an update.
+    /// The two states are copies, and <see cref="ConsideredStatus"/> is the status the draft had before an attempt that is in flight.
+    /// </summary>
+    public sealed class PushBackPilotPrepareInput
+    {
+        private PushBackPilotPrepareInput(
+            string rackId,
+            DraftStaleBase staleBase,
+            PushBackPilotDraftState initialDraftState,
+            PushBackPilotDraftState currentDraftState,
+            bool hasPendingText,
+            bool isDirty,
+            DraftStatus consideredStatus)
+        {
+            RackId = rackId;
+            StaleBase = staleBase;
+            InitialDraftState = initialDraftState;
+            CurrentDraftState = currentDraftState;
+            HasPendingText = hasPendingText;
+            IsDirty = isDirty;
+            ConsideredStatus = consideredStatus;
+        }
+
+        public string RackId { get; }
+
+        /// <summary>The base of the draft: what the last read of the drawing saw.</summary>
+        public DraftStaleBase StaleBase { get; }
+
+        /// <summary>A COPY of the initial state of the draft.</summary>
+        public PushBackPilotDraftState InitialDraftState { get; }
+
+        /// <summary>A COPY of the current state of the draft.</summary>
+        public PushBackPilotDraftState CurrentDraftState { get; }
+
+        public bool HasPendingText { get; }
+
+        public bool IsDirty { get; }
+
+        /// <summary>The status of the draft, and under Applying the status it had before the attempt began.</summary>
+        public DraftStatus ConsideredStatus { get; }
+
+        /// <summary>The one construction of the snapshot of a draft.</summary>
+        public static PushBackPilotPrepareInput From(DraftSession<PushBackPilotDraftState> draft)
+        {
+            if (draft == null) throw new ArgumentNullException(nameof(draft));
+            var status = draft.Status;
+            return new PushBackPilotPrepareInput(
+                draft.RackId,
+                draft.StaleBase,
+                draft.InitialDraftState,
+                PushBackPilotStateComparer.Copy(draft.CurrentDraftState),
+                draft.HasPendingText,
+                draft.IsDirty,
+                status == DraftStatus.Applying ? draft.StatusBeforeAttempt : status);
+        }
+    }
+@@@@ NEW
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+        /// The pure PREPARE of an update. It evaluates, in this order and returning at the first that holds: NotApplicable (the draft is
+        /// not Clean or Dirty), PendingText, NothingToApply (Clean; the re-read is not looked at), Conflict (the raw comparison of the
+        /// base with the re-read, BEFORE the admission), NotAdmitted (only with a match), Invalid (a to e) and Ready. It is total: any
+        /// exception is an Invalid with its reason. It changes nothing, reads nothing and writes nothing.
+        /// </summary>
+        public static PushBackPilotPrepareResult Prepare(PushBackPilotPrepareInput input, PushBackPilotIntentResult reread, RackCatalog catalog)
+        {
+            try
+            {
+                if (input == null) return PushBackPilotPrepareResult.WithInvalid(MissingInputReason);
+
+                if (input.ConsideredStatus != DraftStatus.Clean && input.ConsideredStatus != DraftStatus.Dirty)
+                    return PushBackPilotPrepareResult.Without(PushBackPilotPrepareKind.NotApplicable);
+                if (input.HasPendingText) return PushBackPilotPrepareResult.Without(PushBackPilotPrepareKind.PendingText);
+                if (input.ConsideredStatus == DraftStatus.Clean) return PushBackPilotPrepareResult.Without(PushBackPilotPrepareKind.NothingToApply);
+
+                if (reread == null) return PushBackPilotPrepareResult.WithInvalid(MissingInputReason);
+
+                var comparison = input.StaleBase.CompareWith(reread.StaleBase);
+                if (!comparison.IsMatch) return PushBackPilotPrepareResult.WithConflict(comparison.Differences);
+
+                if (!reread.Read.IsAdmitted)
+                    return PushBackPilotPrepareResult.WithNotAdmitted(reread.Read.Admission.Diagnostic ?? PushBackPilotIntentReader.MaterializeDiagnostic);
+
+                return Build(input, reread, catalog);
+            }
+            catch (Exception ex)
+            {
+                return PushBackPilotPrepareResult.WithInvalid(PrepareFailurePrefix + ex.Message);
+            }
+        }
+
+        /// <summary>
+@@@@ NEW
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+        private static PushBackPilotPrepareResult Build(PushBackPilotPrepareInput input, PushBackPilotIntentResult reread, RackCatalog catalog)
+        {
+            // A missing catalog is answered here, after the comparison and the admission (M-6): a difference of the base or a read that is not
+            // admitted is told as such even when the catalog is missing.
+            if (catalog == null) return PushBackPilotPrepareResult.WithInvalid(MissingInputReason);
+
+            // The current state is composed over the base that matches the re-read (H-06), with the carry-overs of D-T4A1-05. The pilot never erases a view.
+            var composition = PushBackPilotMaterializer.ComposeForWrite(input.InitialDraftState, input.CurrentDraftState, catalog);
+            return BuildCore(
+                catalog,
+                input.RackId,
+                input.StaleBase,
+                reread.StaleBase,
+                input.InitialDraftState.Origin,
+                input.CurrentDraftState.Inputs.Annotations.AnnotationScale,
+                false,
+                null,
+                composition.Editor,
+                composition.Inputs,
+                composition.IsComposed ? null : composition.Reason ?? PushBackPilotMaterializer.NonPilotContentReason);
+        }
+@@@@ NEW
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs
+@@@@ OLD
+        /// <summary>
+        /// The check before the slot (step 1): the pure PREPARE without a re-read and without a catalog. It only stops for the three kinds
+        /// that need neither; anything else goes on.
+        /// </summary>
+        public static PushBackPilotPrecheck Precheck(DraftSession<PushBackPilotDraftState> draft)
+        {
+            if (draft == null) throw new ArgumentNullException(nameof(draft));
+
+            var result = PushBackPilotUpdatePlanner.Prepare(PushBackPilotPrepareInput.From(draft), null!, null!);
+            switch (result.Kind)
+            {
+                case PushBackPilotPrepareKind.NotApplicable: return PushBackPilotPrecheck.Stop(result.Kind, NotApplicableReason);
+                case PushBackPilotPrepareKind.PendingText: return PushBackPilotPrecheck.Stop(result.Kind, PendingTextReason);
+                case PushBackPilotPrepareKind.NothingToApply: return PushBackPilotPrecheck.Stop(result.Kind, NothingToApplyReason);
+                default: return PushBackPilotPrecheck.Go();
+            }
+        }
+
+@@@@ NEW
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs
+@@@@ OLD
+        /// <summary>
+        /// The whole update under the slot. TOTAL: it never throws. The outcome is the one that the draft must be closed with.
+        /// </summary>
+        public static DraftApplyOutcome<PushBackPilotDraftState> Execute(
+            DraftSession<PushBackPilotDraftState> draft,
+            PushBackPilotUpdateRequest request,
+            IPushBackPilotUpdatePort port)
+        {
+            if (draft == null || request == null || port == null)
+                return DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedFailure(MissingArgumentsReason);
+
+            // M-01: the state of the run lives outside the try, so what escapes is classified with what the run already did.
+            PushBackPilotPrepareInput? input = null;
+            var execution = new Execution<PushBackPilotDraftState>(
+                draft,
+                request,
+                port,
+                snapshotted =>
+                {
+                    input = PushBackPilotPrepareInput.From(snapshotted);
+                    return input.InitialDraftState.Origin;
+                },
+                (_, scan, catalog) => PushBackPilotUpdatePlanner.Prepare(input!, PushBackPilotIntentReader.Read(scan, catalog), catalog),
+                (scan, catalog, plan) =>
+                {
+                    var read = PushBackPilotIntentReader.Read(scan, catalog);
+                    return (read.Read, ComparePost(plan, read));
+                });
+            try
+            {
+                return execution.Run();
+            }
+            catch (Exception ex)
+            {
+                return execution.OutcomeOfAnEscape(ex);
+            }
+        }
+
+@@@@ NEW
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs
+@@@@ OLD
+        /// <summary>
+        /// The comparison of POST, without normalizing anything (D-T4B-05): the same keys as the plan, the envelope of each key equal
+        /// ordinally, and the same scale. Null when everything matches; otherwise the cause.
+        /// </summary>
+        public static string? ComparePost(PushBackPilotUpdatePlan plan, PushBackPilotIntentResult? postRead)
+        {
+            if (plan == null) throw new ArgumentNullException(nameof(plan));
+            if (postRead == null) return PostRereadMissingReason;
+
+            return ComparePostCore(plan, postRead.Read.Admission, postRead.StaleBase, postRead.Read.InitialState?.Inputs.Annotations.AnnotationScale);
+        }
+
+@@@@ NEW
+@@@@ END
+
+@@@@ # D-S15 (la sesion): solo comentarios, sobre el texto anterior: los cuatro cref a lo retirado y el comentario que se queda sin su Build.
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs
+@@@@ OLD
+    /// operation that assembles a design: a design is only ever assembled from a composition made by
+    /// <see cref="PushBackPilotMaterializer.ComposeForWrite"/>, never directly over the state of a draft.
+@@@@ NEW
+    /// operation that assembles a design: a design is never assembled directly over the state of a draft.
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+    /// I-64 F4B PB-T3b (D-PBT3-09) — the explicit snapshot of a draft of the FULL model that the full PREPARE reads. It is the twin of
+    /// <see cref="PushBackPilotPrepareInput"/>, which does not change, and it is built by ONE factory, <see cref="From"/>.
+@@@@ NEW
+    /// I-64 F4B PB-T3b (D-PBT3-09) — the explicit snapshot of a draft of the FULL model that the full PREPARE reads. It is built by ONE
+    /// factory, <see cref="From"/>.
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+    /// <summary>The seven outcomes of <see cref="PushBackPilotUpdatePlanner.Prepare"/>, in the order in which they are evaluated.</summary>
+@@@@ NEW
+    /// <summary>The seven outcomes of <see cref="PushBackPilotUpdatePlanner.PrepareFull"/>, in the order in which they are evaluated.</summary>
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+    /// <summary>The result of <see cref="PushBackPilotUpdatePlanner.Prepare"/>. Immutable.</summary>
+@@@@ NEW
+    /// <summary>The result of <see cref="PushBackPilotUpdatePlanner.PrepareFull"/>. Immutable.</summary>
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+        // The base of the draft and the re-read match here, and the re-read is admitted: the plan can be built, or it is Invalid.
+
+        // The same, for the full model: the composition is the one of the model of the draft, and the plan may erase the laterals that the edition leaves obsolete.
+@@@@ NEW
+        // The base of the draft and the re-read match here, and the re-read is admitted: the plan can be built, or it is Invalid. The composition
+        // is the one of the model of the draft, and the plan may erase the laterals that the edition leaves obsolete.
+@@@@ END
+
+@@@@ # La rama muerta de BuildCore (owner-pbt4d-deadcode-27-decisions.md, pregunta 1): el parametro allowErase y lo que solo existe con el,
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+        public const string ViewUnavailablePrefix = "El piloto no borra vistas y la vista ";
+
+        public const string ViewUnavailableSuffix = " ya no está disponible en el sistema saliente: usa RACKEDITAR.";
+
+@@@@ NEW
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+                input.CurrentDraftState.Editable.AnnotationScale,
+                true,
+@@@@ NEW
+                input.CurrentDraftState.Editable.AnnotationScale,
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+        // The building of the plan, common to the two models: the composition (or why it was rejected), the base of the draft, the base of the re-read
+        // and the origin of the draft, the scale, whether the model may erase views and the name of the draft.
+@@@@ NEW
+        // The building of the plan: the composition (or why it was rejected), the base of the draft, the base of the re-read and the origin of the
+        // draft, the scale and the name of the draft. The plan may erase the laterals that the edition leaves obsolete.
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+            double scale,
+            bool allowErase,
+@@@@ NEW
+            double scale,
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+            // (e) What the edition does to each view, by key (ordinal). The pilot never erases a view: a member that is not available in the outgoing
+            // system makes its update Invalid. The full model erases an obsolete lateral and rejects the frontal of side B of a rack without it.
+@@@@ NEW
+            // (e) What the edition does to each view, by key (ordinal): an obsolete lateral is erased, and the frontal of side B of a rack without it
+            // is rejected.
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+                if (!decoded.HasAddress || (allowErase && disposition == PushBackViewDispositionKind.NoAddress))
+@@@@ NEW
+                if (!decoded.HasAddress || disposition == PushBackViewDispositionKind.NoAddress)
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+                if (disposition == PushBackViewDispositionKind.ObsoleteLateral && allowErase)
+@@@@ NEW
+                if (disposition == PushBackViewDispositionKind.ObsoleteLateral)
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+                if (disposition == PushBackViewDispositionKind.FrontalBOfOneWay && allowErase)
+                    return PushBackPilotPrepareResult.WithInvalid(FrontalBOfOneWayPrefix + entry.Key + FrontalBOfOneWaySuffix);
+                if (disposition != PushBackViewDispositionKind.Redraw)
+                    return PushBackPilotPrepareResult.WithInvalid(ViewUnavailablePrefix + entry.Key + ViewUnavailableSuffix);
+@@@@ NEW
+                if (disposition == PushBackViewDispositionKind.FrontalBOfOneWay)
+                    return PushBackPilotPrepareResult.WithInvalid(FrontalBOfOneWayPrefix + entry.Key + FrontalBOfOneWaySuffix);
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+                // (f) The name: the pilot keeps the one of each envelope that was re-read; the full model writes the one of the draft, or, when it is
+                // blank, the one of the envelope that was re-read for the origin, in every view.
+                var memberName = allowErase ? (string.IsNullOrWhiteSpace(draftName) ? origins[0].Embed.Name : draftName) : embed.Name;
+@@@@ NEW
+                // (f) The name: the one of the draft, or, when it is blank, the one of the envelope that was re-read for the origin, in every view.
+                var memberName = string.IsNullOrWhiteSpace(draftName) ? origins[0].Embed.Name : draftName;
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+            if (allowErase && dispositions.AllObsolete) return PushBackPilotPrepareResult.WithInvalid(AllViewsObsoleteReason);
+@@@@ NEW
+            if (dispositions.AllObsolete) return PushBackPilotPrepareResult.WithInvalid(AllViewsObsoleteReason);
+@@@@ END

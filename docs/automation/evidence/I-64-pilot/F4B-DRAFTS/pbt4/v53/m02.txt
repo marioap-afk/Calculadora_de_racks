@@ -1,0 +1,1 @@
+Core sola pierde la rama del lado activo B de `PushBackCompositeEditorState.cs:233` (en la base la cubría el `Copy` del comparador del piloto, en pruebas que se borran), pero la UI de los filtros la cubre en la base y en el GREEN: en «Bajan», ESTABLE (GREEN: las tres corridas de todos los filtros juntos la cubren). No queda sin prueba: sin sustituta

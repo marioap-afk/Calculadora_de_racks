@@ -1,0 +1,16 @@
+# pieza pbt4d-green-v52.txt; archivos 4; borrados 2
+PushBackPilotDraftState.cs:7  /// I-64 F4-T2A (D-T2-03) — the editable state of the bounded Push Back pilot (F4-PILOT-PUSHBACK-01). It GROUPS the
+PushBackPilotMaterializer.cs:12  /// <summary>The envelope is a single-sided Push Back the pilot can edit: <see cref="PushBackPilotMaterialization.State"/> is set.</summary>
+PushBackPilotMaterializer.cs:15  /// <summary>A readable Push Back the pilot does not serve (an A/B rack, or one that parks a dormant tail): it is read-only here.</summary>
+PushBackPilotMaterializer.cs:56  /// I-64 F4-T2A (D-T2-03, D-T2-04) — materializes the pilot state from the authored envelope text and composes the
+PushBackPilotMaterializer.cs:88  /// Materializes the state of the pilot from the raw authored envelope text. It never throws: the outcome is a typed
+PushBackPilotUpdatePlan.cs:143  /// What the plan redraws for one member that the pilot may change: the view and the section as RACKEDITAR writes them, the text
+PushBackPilotUpdatePlan.cs:202  /// <summary>The keys of the views that the update erases, ordered by key (ordinal); empty in the pilot.</summary>
+PushBackPilotUpdatePlan.cs:266  /// <summary>The keys of the views that the update erases, ordered by key (ordinal); empty in the pilot.</summary>
+PushBackPilotUpdatePlan.cs:278  /// <summary>The members that the pilot may change, ordered by key (ordinal).</summary>
+PushBackPilotUpdatePlan.cs:309  /// I-64 F4-T4A1 (D-T4A1-04) — the pure PREPARE of an update of the bounded Push Back pilot. It reads a snapshot of the draft and
+PushBackPilotUpdatePlan.cs:346  /// The pure PREPARE of an update of the FULL model (D-PBT3-09), with the same order as the one of the pilot: NotApplicable,
+PushBackPilotUpdateRun.cs:40  /// I-64 F4-T4B (D-T4B-02) — the pure and TOTAL run of the update of the bounded Push Back pilot: it decides, classifies and
+PushBackPilotUpdateRun.cs:49  /// I-64 F4B PB-T3b (D-PBT3-10) — the same run serves the two models of the draft: the one of the pilot and the full one. The views that the
+PushBackPilotUpdateRun.cs:143  /// pilot, with the plan, the re-read and the comparison of the full model.
+PushBackPilotUpdateRun.cs:180  /// <summary>The comparison of POST for the FULL model (D-PBT3-10): the erased views are gone, and the rest as for the pilot.</summary>

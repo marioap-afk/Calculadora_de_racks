@@ -1,0 +1,989 @@
+{
+  "Schema": "rackcad-pbt4d-precondition6/v1",
+  "Package": "v5.3",
+  "Task": "F4B-PBT4-RETIRE-PILOT",
+  "Revision": "6c2820bab4d8b41e3e229e23f3a1638ccbb04735",
+  "Pieces": {
+    "apply_green_pbt4d_v53.py": "70e7dd04a52b6975c1e228d26a07f9bb2749d206b36e32ca9172ae9d606062a0",
+    "apply_red_pbt4d_v53.py": "b99635ea0c26230c74611abc2560a05952850fd12916f06fc588fbe2a445a7dc",
+    "classes_v51.py": "48e093c372ba5f98899327986020727ee164b901d87348e523787a97072edf74",
+    "cov_v53.runsettings": "98a962da6ae75f01dfccac13582ed76dcbeee3f2b341be226779a190f616e5e1",
+    "green_pbt4d_v53.py": "ea7b2086630ae827309164e7a33610b4cae694c9d3c406a2d457aa0a5858cc73",
+    "p6_pbt4d_v53.sh": "b40f2889801910af8143203c139ed9cfb14c6bba375ea3aaf9ed03d9742bdce4",
+    "p6d_check_v52.py": "a41ceff37fc16baa51681bda6c77b9558ba9c3e865c0bf3089ca5c24161c05fb",
+    "pbt4d-green-v53.txt": "51a402092c14c5766e8f3f2ae27419f49f5d1e6e6830c1d26b3ef7e9835d1436",
+    "pbt4d-red-v53.txt": "de0d3a0e1961eb5c6d2f699eab086984310681bf558c14f09e5486d8ea9bc24e",
+    "red_pbt4d_v53.py": "7a67652e3515083367aa12c829c1560b6742a007a30a354c205f0aa0eb7de5c2",
+    "ui_filters_pbt4d_v53.txt": "4432ca308e5651b9656c444c5a885e5f911c12eb3840e7986d7b2b771c261bba",
+    "ui_union_v53.txt": "4c45807c8048c47193bdef1972172ed7fb6c9086e72cd7e7934b68b251faf93f",
+    "pbt4d-retire-list-270.tsv": "7e65c9e49c00f92c330eecf309976add3e9ecda374f4d8166075e0eccf58081f",
+    "pbt4d_test_edits_v53.py": "81f62c6a8f31e96bb525c6734d25990d0bf7e9790aae6cb54ee5b70f28dd7182",
+    "v53/make_red_v53.py": "309a840817b6855da91eed3bfeffb424201ea0bae34516b65ba88d0c6d94d580",
+    "v53/make_green_v53.py": "00a30017756dd6082625eb45a25b95934ea33e27474522675abb46f95b85fa92",
+    "v53/make_list_v53.py": "52f5cfef2fb5e1e957539d64fa43fb27da6b9ffb5ea8c56b5c7a93cfc6012beb",
+    "v53/make_run_eq_v53.py": "cd9fe688c5ce3eea136d87bf8893c6697b1c8d45f04629ab686765a3f2d1fb73",
+    "v53/unused_v53.py": "b76acd7364052add873aca2bd1dbd72136e5085d86a1fecd27e6be1ea19d54c8",
+    "v52/make_fullcopy_eq_v52.py": "98065a8e8351bd32d698613a725c7128ad34e6b7c8087311fefaf0c74449f2c1",
+    "v52/retire_pbt4d_v52.py": "920c57cacfdf6dc5b94e6ed6deba04db1b312418fe9779dbf8e631e1602cb96c",
+    "v53/run/PushBackRetirePilotRunTests.cs": "3554df0d960f18ef6bb2b930f4ac7757e8ca7438ebf6a9eda8934ef9acf8fe69",
+    "v52/ct/PushBackRetirePilotGuardTests.cs": "0d64806a53b36ea0719bc7647dcfd3c15e8169a66a4494517097a82ce12fadb3",
+    "v52/ct/PushBackRetirePilotCensusGuardTests.cs": "1874c47811ddda428745a1f5566f1e7290b31fa2a2e65b07c2ff52059f863f20",
+    "v52/try/PushBackRetirePilotPlanGuardTests.cs": "48c2f4a9619e2f3e7e5de4f1ad98bf68024635c268866fa1242f65f329d8ca43"
+  },
+  "List": {
+    "File": "pbt4d-retire-list-270.tsv",
+    "Sha256": "7e65c9e49c00f92c330eecf309976add3e9ecda374f4d8166075e0eccf58081f",
+    "Rows": 283,
+    "WithAction": 270,
+    "ByAction": {
+      "acotar con registro": 1,
+      "borrar con registro": 198,
+      "reescribir con registro": 38,
+      "se queda": 13,
+      "sustituir con registro": 33
+    },
+    "ByGroupAndAction": {
+      "C-7 | borrar con registro": 75,
+      "C-7 | reescribir con registro": 27,
+      "C-7 | se queda": 7,
+      "C-7 | sustituir con registro": 29,
+      "M-03 | borrar con registro": 35,
+      "M-04 | reescribir con registro": 3,
+      "SUS-01 | borrar con registro": 1,
+      "apoyo | borrar con registro": 21,
+      "apoyo | reescribir con registro": 2,
+      "apoyo | se queda": 6,
+      "ayudante-editado | reescribir con registro": 6,
+      "compilacion | borrar con registro": 11,
+      "compilacion | sustituir con registro": 1,
+      "ejecucion | sustituir con registro": 3,
+      "lenta | acotar con registro": 1,
+      "original | borrar con registro": 55
+    }
+  },
+  "RedFiles": {
+    "tests/RackCad.Tests/PushBackEditAllFullCopyGuardTests.cs": {
+      "kind": "red",
+      "sha256": "802ae5977e0d107be6ec0ab43bafba1fd5eb1356eca54fb915278b56104eab97"
+    },
+    "tests/RackCad.Tests/PushBackFullWritePrepareTests.cs": {
+      "kind": "red",
+      "sha256": "c9a4ef8cb9dfa61d8b8f47c8fb79a55b59a3302c454e5bdaf12219ae2331c130"
+    },
+    "tests/RackCad.Tests/PushBackFullWriteRunTests.cs": {
+      "kind": "red",
+      "sha256": "7187c508adc48fa876042d762e87e7d579aaf07566cb601dc44223d8966181f1"
+    },
+    "tests/RackCad.Tests/PushBackPilotUpdateEquivalenceGuardTests.cs": {
+      "kind": "red",
+      "sha256": "18824527611a0cacde8ead55d62455eff8845ef15801012102c8ec6e90503abb"
+    },
+    "tests/RackCad.Tests/PushBackRetirePilotCensusGuardTests.cs": {
+      "kind": "nuevo",
+      "sha256": "1874c47811ddda428745a1f5566f1e7290b31fa2a2e65b07c2ff52059f863f20"
+    },
+    "tests/RackCad.Tests/PushBackRetirePilotFullCopyGuardTests.cs": {
+      "kind": "nuevo",
+      "sha256": "ee9b6f1513f549065da391c10d6da947cc8e197644efbc7d72cf41e46443e6cf"
+    },
+    "tests/RackCad.Tests/PushBackRetirePilotGuardTests.cs": {
+      "kind": "nuevo",
+      "sha256": "0d64806a53b36ea0719bc7647dcfd3c15e8169a66a4494517097a82ce12fadb3"
+    },
+    "tests/RackCad.Tests/PushBackRetirePilotPlanGuardTests.cs": {
+      "kind": "nuevo",
+      "sha256": "48c2f4a9619e2f3e7e5de4f1ad98bf68024635c268866fa1242f65f329d8ca43"
+    },
+    "tests/RackCad.Tests/PushBackRetirePilotRunTests.cs": {
+      "kind": "nuevo",
+      "sha256": "3554df0d960f18ef6bb2b930f4ac7757e8ca7438ebf6a9eda8934ef9acf8fe69"
+    },
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs": {
+      "kind": "red",
+      "sha256": "b1d8a5828320bcc3a40dcfd55877f9447b6453688b56bb428c1869edd5143d5b"
+    },
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs": {
+      "kind": "red",
+      "sha256": "d3e229f65cd22dd0222b8d8a09f31c755faa415f3a4401eb786feeeaacea99fb"
+    },
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs": {
+      "kind": "red",
+      "sha256": "ff7391a05faff1200339b58bd43adb91f4ec207e5499f84e6d27ae6f6537ead3"
+    },
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs": {
+      "kind": "red",
+      "sha256": "b2e42a0280c8dc2777cc7eb0582a32920f56cd58c5018742133063edcbb3e2e5"
+    },
+    "tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs": {
+      "kind": "red",
+      "sha256": "33311e3e3314d04161ade42c05404438fb0c203aceb3f52d6f673ee8770b3fbe"
+    },
+    "tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardFull.cs": {
+      "kind": "red",
+      "sha256": "70d4f004c432c23c96e939f0cc1916b864db27f90e1ed30d704bef152349e331"
+    },
+    "tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs": {
+      "kind": "red",
+      "sha256": "083a614556055a65f0c30df239ec091e8ff3fd7c001550aa43d08343f880e191"
+    },
+    "tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs": {
+      "kind": "red",
+      "sha256": "99ed04b8c049cee513b42a1442f10c08f3745f3cc4db6c6baa9148aff446115a"
+    },
+    "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareFull.cs": {
+      "kind": "red",
+      "sha256": "ca88ddf8d16af66548081c290b038e9f4b017eceabab3c9d77ac1fef3d8dfc8d"
+    },
+    "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs": {
+      "kind": "red",
+      "sha256": "14ad8bc2e3c748f31d96301e580a174ed5ac282a25ad8bb51cdf3cad54d407b3"
+    },
+    "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs": {
+      "kind": "red",
+      "sha256": "5751749586377c57a646ee767087c97de2355caa7fb3362431427851a4cdb4af"
+    },
+    "tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs": {
+      "kind": "red",
+      "sha256": "f8d32936b1bd5ba85973195601c8c5f2b2c8de2f15da7cdc5fbcab3da47878bb"
+    },
+    "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs": {
+      "kind": "red",
+      "sha256": "2407dc943a681f9724af928b448bf5f2c784241114b86e3d2183fccbc313f6de"
+    },
+    "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs": {
+      "kind": "red",
+      "sha256": "36bf5e5671f1005fface4a2a0ee375e40e3a9ec8d707d7da6fbe5203ca9aba41"
+    },
+    "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs": {
+      "kind": "red",
+      "sha256": "62c6ff807daa62724ac1e09a0effb89a5ecd52ff988df523dd7e44bad92f5489"
+    },
+    "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateScopeDouble.cs": {
+      "kind": "red",
+      "sha256": "73c5c1d64265bba787e2a2419c4638574e70e8d02a46b0e75e96cd3fd1bcedfd"
+    },
+    "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionSupport.cs": {
+      "kind": "red",
+      "sha256": "fc61368ed22143fe000aefdf3a9e513af259e70bb0f15538429983461ba8ed06"
+    },
+    "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs": {
+      "kind": "red",
+      "sha256": "fd712dea08a8f6f6d411d8da5025ad5dc8c4c0eaeed2b938599c68d288d4f07f"
+    },
+    "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs": {
+      "kind": "red",
+      "sha256": "dbf525e408dda781798e3d0aec6341f53d1760357dd81f9810063d2f1a709de0"
+    }
+  },
+  "RedDeleted": [
+    "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionPilotParityTests.cs",
+    "tests/RackCad.UI.Tests/PushBackFieldValidationConcordanceTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotCanonicalLineEndingTests.cs"
+  ],
+  "GreenFiles": {
+    "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs": {
+      "kind": "green",
+      "sha256": "a545dbffe26c25e147a0821470b00e7ea300bb77b8b4b1451cc2b7ed098d9f97"
+    },
+    "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs": {
+      "kind": "green",
+      "sha256": "7b7f2fb46a7e036789eecc7382093a7b2a5f8bb023f3c4bf765c805aa67ee9cb"
+    },
+    "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs": {
+      "kind": "green",
+      "sha256": "f70febaaea02a6f84c8f6502f5b540e72fdb5197bbd02c4493800fe43938078f"
+    },
+    "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs": {
+      "kind": "green",
+      "sha256": "5c936519abbaf49f0b68fdc6484d8ea877a0370412af505f1bf3e13aa6d33b7b"
+    }
+  },
+  "GreenDeleted": [
+    "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs",
+    "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotFieldAdapter.cs"
+  ],
+  "Builds": {
+    "r-core": {
+      "rc": 0,
+      "errors": 0,
+      "csWarnings": 0
+    },
+    "r-ui": {
+      "rc": 0,
+      "errors": 0,
+      "csWarnings": 0
+    },
+    "g-core": {
+      "rc": 0,
+      "errors": 0,
+      "csWarnings": 0
+    },
+    "g-ui": {
+      "rc": 0,
+      "errors": 0,
+      "csWarnings": 0
+    },
+    "g-plugin": {
+      "rc": 0,
+      "errors": 0,
+      "csWarnings": 0
+    }
+  },
+  "CsWarnings": 0,
+  "Alone": {
+    "ProcessesAtStart": 0,
+    "Start": "08:06:00",
+    "ProcessesAtEnd": 0,
+    "End": "08:47:37"
+  },
+  "Red": {
+    "Core": {
+      "Total": 19418,
+      "Passed": 19014,
+      "Failed": 1,
+      "Skipped": 403,
+      "FailedTests": [
+        "RackCad.Tests.PushBackRetirePilotGuardTests.CT_PBT4D_01_TheCodeOfThePilotThatThePanelNoLongerUsesIsRetiredAndWhatTheFullModelUsesStays"
+      ],
+      "SlowTestSeconds": 13.1,
+      "Trx": "7cb899e46aee9904ddd2aa03c33c53a5964a617cde61a6d7b2ce10514b2b2949"
+    },
+    "UI": [
+      {
+        "n": 1,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullDraftWindowParityTests",
+        "Total": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "9ecb56d644d9caab857ace2902020c57a622062bee6e841e8fdf0e7a25d925d5"
+      },
+      {
+        "n": 2,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.Workspace",
+        "Total": 653,
+        "Passed": 626,
+        "Failed": 0,
+        "Skipped": 27,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "cc6ac7eafbd693aeb62b3b0b39f0a2cdb5d276d6593045ebfc80f1e67770031c"
+      },
+      {
+        "n": 3,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWindowOnStateTests",
+        "Total": 2,
+        "Passed": 2,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "a7895ab9107250708a277d64c6f732a10a7aa217296b7fdbd652f025df83f50f"
+      },
+      {
+        "n": 4,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization",
+        "Total": 55,
+        "Passed": 55,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "b33175d98abc17bd10b2826eca70dc5d87329e544f75ae3800122e5367828527"
+      },
+      {
+        "n": 5,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization",
+        "Total": 18,
+        "Passed": 16,
+        "Failed": 0,
+        "Skipped": 2,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "1ec698f248cc0f06c1ae66ae5aa25aa9bd4c96cd4ea8a91c9fb79675d15a9d6f"
+      },
+      {
+        "n": 6,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackStateNet",
+        "Total": 14,
+        "Passed": 14,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "d057e2c8e08169d3681518bee495e6fd0ecd4724f4c47177d4e77b689912997e"
+      },
+      {
+        "n": 7,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection",
+        "Total": 12,
+        "Passed": 12,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "bfd69a6535deffb50ce842866b16e61dc87cb658245c4f4b323856a06d44a68f"
+      },
+      {
+        "n": 8,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.Cantilever",
+        "Total": 67,
+        "Passed": 67,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "a5945983acb3a71504cd449c7a6e1bd9775df0f3915850e046025564ecb2c736"
+      },
+      {
+        "n": 9,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceModeTests",
+        "Total": 3,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "576a91eefa5f40c57b5ac4abe56318803ee9299e9ea897852ce36be7160ff37f"
+      },
+      {
+        "n": 10,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests",
+        "Total": 4,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 1,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "0c6c6fff90b0b31aa980c4f359bea9e752c20db7f7f36a6417b1d0dd22495ca8"
+      },
+      {
+        "n": 11,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceCarryoverTests",
+        "Total": 3,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "ed35ac70595de5f1ab842428f48adabb483f7ac0baadf83d240e7cf3d4c324c3"
+      },
+      {
+        "n": 12,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullPanelFieldTests",
+        "Total": 3,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "a724e989c21646c8b7488ed7731a810730378cac0a1d589759fea09de3000bdf"
+      },
+      {
+        "n": 13,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.NumericFieldValidationTests",
+        "Total": 13,
+        "Passed": 13,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "823da09c3c5be55419f6446df4feeba22e035975d3da06d9ae340486867acb3f"
+      },
+      {
+        "n": 14,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.NumericFieldTests",
+        "Total": 10,
+        "Passed": 10,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "7594187a7c8492b9658b1a928c7defcecf92c26ef4307c3feaadd5f8459cd5cf"
+      },
+      {
+        "n": 15,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationGreenTests",
+        "Total": 30,
+        "Passed": 30,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "016a911ba97a6196286c78baa77dae54dc65db2ba7144fc7323f4ae4929515d8"
+      },
+      {
+        "n": 16,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationViewGreenTests",
+        "Total": 6,
+        "Passed": 6,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "a7ef537a41acaf0078028c53e353d0deab8129f79e2213adf01795ab743089e4"
+      },
+      {
+        "n": 17,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllWindowTests",
+        "Total": 4,
+        "Passed": 4,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "ab16dbd674f97786af350ffc8c4f2e8b17839480bf056cf08b420800834e1b10"
+      },
+      {
+        "n": 18,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllApplyCloseTests",
+        "Total": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "eb5c5477616129a87ce6b0326edc5d58270325c47ead4d7dcfeca5ad15ee2b6f"
+      }
+    ]
+  },
+  "Green": {
+    "Core": {
+      "Total": 19418,
+      "Passed": 19015,
+      "Failed": 0,
+      "Skipped": 403,
+      "FailedTests": [],
+      "SlowTestSeconds": 17.0,
+      "Trx": "4178fa580f0b90c9fc0c2a4130ec4932238eb4933d07dd0a32494a3a98c4f59b"
+    },
+    "UI": [
+      {
+        "n": 1,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullDraftWindowParityTests",
+        "Total": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "517c0062d2fa4f987be1d3b9ca0e2f3d37689779c59a8231e6cc7ac87948dd99"
+      },
+      {
+        "n": 2,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.Workspace",
+        "Total": 653,
+        "Passed": 626,
+        "Failed": 0,
+        "Skipped": 27,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "1611ae4df6fa6788cc4fd5f71f89188059b10ac316e2e1cc46d874944bcf3d62"
+      },
+      {
+        "n": 3,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWindowOnStateTests",
+        "Total": 2,
+        "Passed": 2,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "81cb6cabebfdd75c2cdc982d5f1ce33406c225a1817a3ccb6d919e2fb9114f7d"
+      },
+      {
+        "n": 4,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization",
+        "Total": 55,
+        "Passed": 55,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "9fc4eaece48dadf2d9c388e2290508c40e6159e0631354448eb956b4b1a33d2d"
+      },
+      {
+        "n": 5,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization",
+        "Total": 18,
+        "Passed": 16,
+        "Failed": 0,
+        "Skipped": 2,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "a8511fba3957ea3638673e3420e1892a018c11438414c4df22c83458a228bfb2"
+      },
+      {
+        "n": 6,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackStateNet",
+        "Total": 14,
+        "Passed": 14,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "2e0dfd2a6fa6b0cd70629bef57cd873063a22ab2d185a1d0d7e0196fa84e00f1"
+      },
+      {
+        "n": 7,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection",
+        "Total": 12,
+        "Passed": 12,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "87614512cc26c1a77f9c6d592bf9c6df6cc653d46cbfb9f714450fb1f3aa4966"
+      },
+      {
+        "n": 8,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.Cantilever",
+        "Total": 67,
+        "Passed": 67,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "7195985011789484ff6926bfc6dfc3a7714c5c1bc61ffdb09251dec318a743c7"
+      },
+      {
+        "n": 9,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceModeTests",
+        "Total": 3,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "ef4c5f17bc3779479e9e0c260ca213d2033dbd82d63695fd4aa5c364ce6b6bd4"
+      },
+      {
+        "n": 10,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests",
+        "Total": 4,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 1,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "29b80316dcc6ae26a4a8401f30582da8a6367149735361ec275f950912e2ea8a"
+      },
+      {
+        "n": 11,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceCarryoverTests",
+        "Total": 3,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "922ad08a1d0522f1482c41b3fb7558a47c64ce42c87bdef5eda5ce31c86dad0c"
+      },
+      {
+        "n": 12,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullPanelFieldTests",
+        "Total": 3,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "7ddd8dc7841e9392cdef833eaf43bb64a46cf73b8936365fc0691623049982c7"
+      },
+      {
+        "n": 13,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.NumericFieldValidationTests",
+        "Total": 13,
+        "Passed": 13,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "e5c7154d2cae7886a5c43ae65a45a3275d422b06deeda7e7491250b95bec4424"
+      },
+      {
+        "n": 14,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.NumericFieldTests",
+        "Total": 10,
+        "Passed": 10,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "d54591e8aecc8cfd429e64da3473523b6a5ef13784fa9afcd8b683d95ff36a10"
+      },
+      {
+        "n": 15,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationGreenTests",
+        "Total": 30,
+        "Passed": 30,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "4a62aefd66051b33f32b9205fc47ca223c03030a959b65ac4661cf8ab3dac010"
+      },
+      {
+        "n": 16,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationViewGreenTests",
+        "Total": 6,
+        "Passed": 6,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "2155a490df734a413dc05cb5ade2a765c2341bbef5a839bc30bf91d9d741da11"
+      },
+      {
+        "n": 17,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllWindowTests",
+        "Total": 4,
+        "Passed": 4,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "0c95f60445880274987762d27999ea7707124e2f9af4222633b86b19e04ad40c"
+      },
+      {
+        "n": 18,
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllApplyCloseTests",
+        "Total": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "84e9a556f78e1215019d9bc92ef934162c4f61ac8ef609395ce1754ed5660f12"
+      }
+    ]
+  },
+  "GreenWithCoverage": {
+    "Core": {
+      "Total": 19418,
+      "Passed": 19015,
+      "Failed": 0,
+      "Skipped": 403,
+      "FailedTests": [],
+      "SlowTestSeconds": 36.7,
+      "Trx": "efcfc64387ac596b2027fc02139c3d7ce4303b99cf9cd2f5d176c7ecd58364b0"
+    },
+    "UI": {
+      "Total": 899,
+      "Passed": 869,
+      "Failed": 0,
+      "Skipped": 30,
+      "FailedTests": [],
+      "SlowTestSeconds": null,
+      "Trx": "1d89e9563e380b307a66f0d2b3317b3dc47887cbdf11b7157f28a0b4be9642d6"
+    },
+    "UIRepeats": [
+      {
+        "Total": 899,
+        "Passed": 869,
+        "Failed": 0,
+        "Skipped": 30,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "ac01318ae63e04b4192064a035b75592e68bc521a70bc9243d00373d8fe804fa",
+        "Json": "87082a7ec1738a5d6c92d346e06f2fdae0fac1d8b681b2cc1fce18557e1895ce"
+      },
+      {
+        "Total": 899,
+        "Passed": 869,
+        "Failed": 0,
+        "Skipped": 30,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "5d9197a20b523950636e89ed9f2aed9239f4c6daab36348c6829a506f90ab640",
+        "Json": "a4df3f919d478c26b8369957463067bfcfe92445e09eb1220de6ca4f0364183b"
+      }
+    ]
+  },
+  "SuiteDurationSeconds": {
+    "Red": 325,
+    "Green": 261,
+    "GreenWithCoverage": 355
+  },
+  "SlowTestSeconds": {
+    "Red": 13.1,
+    "Green": 17.0
+  },
+  "BaseCoverage": {
+    "Copy": "/d/r6w",
+    "Driver": "a2128bce701b6d83145d5dca965f134e499dc35ebd75705a180c22f16095fabb",
+    "Core": {
+      "Total": 19619,
+      "Passed": 19158,
+      "Failed": 0,
+      "Skipped": 461,
+      "FailedTests": [],
+      "SlowTestSeconds": 997.0,
+      "Trx": "e96657e911ebd64c01ce6dafc7262540928b5f592dde960d9714098bc8be0c6e"
+    },
+    "UI": {
+      "Total": 921,
+      "Passed": 890,
+      "Failed": 0,
+      "Skipped": 31,
+      "FailedTests": [],
+      "SlowTestSeconds": null,
+      "Trx": "27de1e2fd0f573a584dd9ab6acaf6ac3f22aa34efb2730a20ff44d44d8bbf584"
+    },
+    "CoreJson": "f3db9d9730ae5181fe50de01f3fdeb19f315e8227e5546893c1b3ce817c89092",
+    "UiJson": "2a733541902046d28a9d3bc02029302d4d1594fba654641bb4ab8ceb60bd6f92",
+    "Builds": [
+      "b-core rc=0 errores=0 avisos-CS=0",
+      "b-ui rc=0 errores=0 avisos-CS=0"
+    ],
+    "Alone": [
+      "procesos al empezar: 0",
+      "procesos al acabar: 0"
+    ],
+    "UIRepeats": [
+      {
+        "Total": 921,
+        "Passed": 890,
+        "Failed": 0,
+        "Skipped": 31,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "ced756fc999cb4cec9e51cd3cdbc4f6a56642e888f9dff35650f2338f08e21c8",
+        "Json": "c08465a0b4f0fb3449c740c029dd17a0094e92f8e66fbcb27406711bfdbd6cfc"
+      },
+      {
+        "Total": 921,
+        "Passed": 890,
+        "Failed": 0,
+        "Skipped": 31,
+        "FailedTests": [],
+        "SlowTestSeconds": null,
+        "Trx": "e3315812f7e7842e0f0b7046bfcfe90fd3d5195b557f65501c5f740ff2573da2",
+        "Json": "075b8016f11d6804c901691a21ca00c68d1cf30dd09b1f335d8cff6f78f9fc46"
+      }
+    ],
+    "UIRepeatsDriver": "c81d367aa201e7c10a0ebb1c399ba8ed1c3d71b3d88222c48c987309247c4c62",
+    "UIByFilter": {
+      "Driver": "b3b829cbe375a056e607eac817b7da4209e04a757606fc535d39f58f31fee40f",
+      "Runs": [
+        [
+          "base-uif-01",
+          "FullyQualifiedName~RackCad.UI.Tests.PushBackFullDraftWindowParityTests",
+          "{'Passed': 1}"
+        ],
+        [
+          "base-uif-02",
+          "FullyQualifiedName~RackCad.UI.Tests.Workspace",
+          "{'NotExecuted': 28, 'Passed': 644}"
+        ],
+        [
+          "base-uif-03",
+          "FullyQualifiedName~RackCad.UI.Tests.PushBackWindowOnStateTests",
+          "{'Passed': 2}"
+        ],
+        [
+          "base-uif-04",
+          "FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization",
+          "{'Passed': 55}"
+        ],
+        [
+          "base-uif-05",
+          "FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization",
+          "{'NotExecuted': 2, 'Passed': 16}"
+        ],
+        [
+          "base-uif-06",
+          "FullyQualifiedName~RackCad.UI.Tests.PushBackStateNet",
+          "{'Passed': 14}"
+        ],
+        [
+          "base-uif-07",
+          "FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection",
+          "{'Passed': 14}"
+        ],
+        [
+          "base-uif-08",
+          "FullyQualifiedName~RackCad.UI.Tests.Cantilever",
+          "{'Passed': 67}"
+        ],
+        [
+          "base-uif-09",
+          "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceModeTests",
+          "{'Passed': 3}"
+        ],
+        [
+          "base-uif-10",
+          "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests",
+          "{'NotExecuted': 1, 'Passed': 3}"
+        ],
+        [
+          "base-uif-11",
+          "FullyQualifiedName~RackCad.UI.Tests.PushBackFieldValidationConcordanceTests",
+          "{'Passed': 1}"
+        ],
+        [
+          "base-uif-12",
+          "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceCarryoverTests",
+          "{'Passed': 3}"
+        ],
+        [
+          "base-uif-13",
+          "FullyQualifiedName~RackCad.UI.Tests.PushBackFullPanelFieldTests",
+          "{'Passed': 3}"
+        ],
+        [
+          "base-uif-14",
+          "FullyQualifiedName~RackCad.UI.Tests.NumericFieldValidationTests",
+          "{'Passed': 13}"
+        ],
+        [
+          "base-uif-15",
+          "FullyQualifiedName~RackCad.UI.Tests.NumericFieldTests",
+          "{'Passed': 10}"
+        ],
+        [
+          "base-uif-16",
+          "FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationGreenTests",
+          "{'Passed': 30}"
+        ],
+        [
+          "base-uif-17",
+          "FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationViewGreenTests",
+          "{'Passed': 6}"
+        ],
+        [
+          "base-uif-18",
+          "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllApplyCloseTests",
+          "{'Passed': 1}"
+        ],
+        [
+          "base-uif-19",
+          "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllWindowTests",
+          "{'Passed': 4}"
+        ]
+      ]
+    }
+  },
+  "Noise": {
+    "Driver": "a26f561bb8cd92b8db6374573902496c63e1e78abda33fbd1d673686d4fb8864",
+    "Script": "b3ded98a11d4f7998ff6b186c4d98d6283d7d3891f839da02affe80187794abe",
+    "Lines": "src/RackCad.UI/Views/RackViewBatchDialogPresenter.cs:37-38",
+    "Runs": [
+      [
+        "r6w",
+        "1",
+        "1"
+      ],
+      [
+        "r6w",
+        "0",
+        "0"
+      ],
+      [
+        "r6w",
+        "1",
+        "1"
+      ],
+      [
+        "r6x",
+        "1",
+        "1"
+      ],
+      [
+        "r6x",
+        "1",
+        "1"
+      ],
+      [
+        "r6x",
+        "1",
+        "1"
+      ]
+    ]
+  },
+  "Coverage": {
+    "Output": "8090f08a87f9d82c60b2a6225fb47126f790be91a25ef196a7b64b06085c6615",
+    "Script": "6495db6ecf8da5324ce23c7f5a8ca9a308cadb5ebe99e4a775d3e20a7be06552",
+    "Summary": "archivos de src/ instrumentados 775; lineas ejecutadas en la base que se quedan 69842 (ramas cubiertas 28818); retiradas por el GREEN 419; texto cambiado 4; lineas sin ejecutar en el GREEN 0; lineas con ramas perdidas 0",
+    "Verdict": "PASA",
+    "Watched": "conjunto vigilado de la v5.2: 537 lineas de WPUR, 433 se quedan, 0 sin cubrir en el GREEN; bajan (informativo) 16801, de ellas PERDIDA 0",
+    "GreenCoreJson": "46bdc1a38f90fd258bcfd020f896ae32f7c4da8ade4571cd517aca3081d1f325",
+    "GreenUiJson": "518b76a086b3effda5850bb4b784a0edee6637f4da58f417556c091de8368075",
+    "Bajan": {
+      "Summary": "entradas 16801: PERDIDA 0, VARIA 0, ESTABLE 16801; y, solo por la corrida de un filtro que no esta en el GREEN (RackCad.UI.Tests.PushBackFieldValidationConcordanceTests), 118 lineas o ramas en 3 archivos",
+      "Perdida": [],
+      "Varia": [],
+      "Estable": 16801,
+      "EstableGroups": 305
+    }
+  },
+  "Census": {
+    "Verdict": "PASA",
+    "Output": "4707048ba75183f98111837a1780f5a14f5c0c06f3115467b74ab0071b96d027",
+    "Script": "60de77d11d67254a92c18ad95617ae3354b1fd988619fc851f4bd7873e66aab3"
+  },
+  "Control": {
+    "base-cts": {
+      "Trx": "21f15e8aa213520a",
+      "Results": 2,
+      "Outcomes": "{'Failed': 2}"
+    },
+    "red-A": {
+      "Trx": "7e709d2628a023c4",
+      "Results": 2,
+      "Outcomes": "{'Failed': 1, 'Passed': 1}"
+    }
+  },
+  "Rehearsal": {
+    "Red": {
+      "CT-PBT4D-01": "Failed",
+      "CT-PBT4D-02": "Passed"
+    },
+    "Green": {
+      "CT-PBT4D-01": "Passed",
+      "CT-PBT4D-02": "Passed"
+    }
+  },
+  "ClassResults": {
+    "red": "5d51faa115e6b7523d88fae1544be5ae508fe3ea1ba804bd32272c31e133e212",
+    "green": "16f0c4861e1c6607b537f4b2e81947b51314fd5a0b1a5a81cd46fc6aa6a6fc73"
+  },
+  "RequiredTests": {
+    "Tsv": "0b7f55937722defa36067166d77a111ca9abfac5df5c4c4ce7c025d3e26d5d72",
+    "Summary": "heredados 83 de 85 (salen 2) + nuevos 5 = 88",
+    "Overlap": "solapamientos: 0 []"
+  },
+  "UiTotals": {
+    "red": "UI red: 2464 = 2416 + 0 + 48 (Passed + Failed + Skipped)",
+    "green": "UI green: 2464 = 2416 + 0 + 48 (Passed + Failed + Skipped)"
+  },
+  "History": {
+    "/d/r6a a /d/r6q": "v5.2: medidas de la lista, de la necesidad y de la cobertura, y ensayos (pbt4d-precondition6-v52.json, History)",
+    "/d/r6r": "v5.2: la copia principal; no corrio sola (su cobertura se solapo con r6s, r6t y r6u) y sus 18 filtros de UI eran los de PB-T4c sin PushBackEditAllWindowTests (CA-T4d M-07)",
+    "/d/r6s": "v5.2: la base con cobertura de Core (Application)",
+    "/d/r6t": "v5.2: el control de las CT",
+    "/d/r6u": "v5.2: los 19 filtros de UI en la base",
+    "/d/r6v": "v5.3: ensayo 1 (IDE0051/IDE0052 solo en la copia): 17 privados sin uso tras la retirada (CA-T4d M-03)",
+    "/d/r6x": "v5.3: ensayo 2: la segunda vuelta de M-03 y la cobertura ampliada del borrador del RED"
+  },
+  "Expected": {
+    "red-only-ct01": true,
+    "green-0-failed": true,
+    "ui-0-failed": true,
+    "cs-0": true,
+    "same-totals": true,
+    "alone": true,
+    "coverage": true,
+    "census": true,
+    "rehearsal": true,
+    "control": true,
+    "no-overlap": true,
+    "base-is-ci-baseline": true,
+    "base-alone": true,
+    "red-deleted-3": true,
+    "bajan-sin-perdida": true
+  },
+  "AllAsExpected": true
+}

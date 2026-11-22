@@ -1,0 +1,6 @@
+# el GREEN de la v5.3: el de la v5.2 (4059860f629c7190d268fc874e7ae4fc430ba937de755bc3d84a2ea8aafa4932) y 11 bloques de solo comentarios (CA-T4d M-05 (a))
+pieza 51a402092c14c5766e8f3f2ae27419f49f5d1e6e6830c1d26b3ef7e9835d1436 pbt4d-green-v53.txt (564 lineas)
+src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs: v52 a545dbffe26c25e1 -> v53 a545dbffe26c25e1 (34 -> 34 lineas; el codigo, sin comentarios, igual)
+src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs: v52 cffdef1bff24a421 -> v53 7b7f2fb46a7e0367 (150 -> 151 lineas; el codigo, sin comentarios, igual)
+src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs: v52 1ae67b271974dfee -> v53 f70febaaea02a6f8 (527 -> 529 lineas; el codigo, sin comentarios, igual)
+src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs: v52 86ffeef60c3c2ad5 -> v53 5c936519abbaf49f (646 -> 649 lineas; el codigo, sin comentarios, igual)

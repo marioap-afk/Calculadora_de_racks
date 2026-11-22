@@ -1,0 +1,58 @@
+retirada, variante A; copia /d/r6d; salida r6d-A; revision 6c2820bab4d8b41e3e229e23f3a1638ccbb04735
+  pieza 920c57cacfdf6dc5b94e6ed6deba04db1b312418fe9779dbf8e631e1602cb96c retire_pbt4d_v52.py
+  pieza 146d2172922ecc1218f99a5391367daa7b1bf15dfa35b81ed59304cfba6cb243 measure_retire_v52.py
+  pieza 3d172421b24d6bd64655e349c52906463f8de779b42a30a319da6ad1d8fb82a1 lists_core.py
+  pieza d5467dc162e2cda8c539a829cc8f3a7c46260a119f70e840b34e6f78dde0387c pbt4d-retire-list-138.tsv
+  pieza 48a9404cea2a359fceb330d7efa65920bad9fed2b5a698a758a69709eb1bac23 pbt4d-probe-fullcopy.cs
+  pieza a41ceff37fc16baa51681bda6c77b9558ba9c3e865c0bf3089ca5c24161c05fb p6d_check_v52.py
+  pieza f7c7ada64a34c3a3fcba04553b5d3448ddafffa66adc69ae9c210f129f1f62b6 run_classes_v51.py
+  pieza 19182fbc10012c160453df237ad2657568affdc586e2f7ce9cad8feccdef7815 ui_filters_pbt4c_v50b.txt
+  pieza e6597f65b64ba685703cc12de6348998f54247d228633a721591351de6fee4c1 p6d_retire_v52.sh
+copia exportada: 14571 archivos
+vuelta 0: bajas 223, errores 4 (distintos 1), miembros nuevos 1, sin resolver 0
+vuelta 1: bajas 224, errores 10 (distintos 5), miembros nuevos 4, sin resolver 0
+vuelta 2: bajas 228, errores 70 (distintos 18), miembros nuevos 3, sin resolver 0
+vuelta 3: bajas 231, errores 0 (distintos 0), miembros nuevos 0, sin resolver 0
+bajas finales 231 (de la lista 222, SUS-01 1, por compilacion 8)
+core rc=0 errores=0 avisos-CS=10
+     10 warning CS8618
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotUpdateScopeDouble.cs(243,36): warning CS8618: El elemento propiedad "Scan" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador "required'"o declarar el propiedad como un valor que acepta valores NULL. [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotUpdateScopeDouble.cs(245,50): warning CS8618: El elemento propiedad "Draft" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador "required'"o declarar el propiedad como un valor que acepta valores NULL. [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotUpdateScopeDouble.cs(247,25): warning CS8618: El elemento propiedad "Members" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador "required'"o declarar el propiedad como un valor que acepta valores NULL. [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotUpdateScopeDouble.cs(249,35): warning CS8618: El elemento propiedad "Port" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador "required'"o declarar el propiedad como un valor que acepta valores NULL. [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotUpdateScopeDouble.cs(251,39): warning CS8618: El elemento propiedad "Request" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador "required'"o declarar el propiedad como un valor que acepta valores NULL. [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+ui rc=0 errores=0 avisos-CS=0
+plugin rc=0 errores=0 avisos-CS=0
+compilacion: errores 0, avisos CS 10
+test core.trx rc=1 segundos=835 trx-sha256=d1aab859dc4041e709b0c2dec32fbc62186ff571833ab21e9235929d556cb53e :: filas 19324 {'Failed': 4, 'NotExecuted': 401, 'Passed': 18919}; omitidas por origen {'PB-T4b': 391, 'PB-T4c': 3, 'otro': 7} | no pasan: 4
+test ui-01.trx rc=0 segundos=12 trx-sha256=7061b46d2126611bc27a52993622f4360a353766c1f5cd01a57149809184e9b7 :: filas 1 {'Passed': 1}; omitidas por origen {} | no pasan: 0
+test ui-02.trx rc=0 segundos=11 trx-sha256=2b1e0ef5390c893bc905dcfa5adb10daa0ab7fada25431abee736515660c85dc :: filas 653 {'NotExecuted': 27, 'Passed': 626}; omitidas por origen {'PB-T4b': 27} | no pasan: 0
+test ui-03.trx rc=0 segundos=30 trx-sha256=aaf99316db35959bf0ac7b36cb1116ac7475974adad219c26041b362067b82b8 :: filas 2 {'Passed': 2}; omitidas por origen {} | no pasan: 0
+test ui-04.trx rc=0 segundos=15 trx-sha256=8516c0dc1ac289603dcc39f83234d0101b304f0b0c638847ee3df984dadf2b9f :: filas 55 {'Passed': 55}; omitidas por origen {} | no pasan: 0
+test ui-05.trx rc=0 segundos=18 trx-sha256=bbe26363f9edd439169d8994817c326d7b0f6f39cb44f896d456378365e013a9 :: filas 18 {'NotExecuted': 2, 'Passed': 16}; omitidas por origen {'otro': 2} | no pasan: 0
+test ui-06.trx rc=0 segundos=32 trx-sha256=0749204bfb6e7af0e530fce6cbbedfe05047f0e34b05496922916edea8114570 :: filas 14 {'Passed': 14}; omitidas por origen {} | no pasan: 0
+test ui-07.trx rc=0 segundos=14 trx-sha256=92a7a69e160e7080ae8b706286a6839d0ac783c2e81ddc3d7a6419d2f9b9d406 :: filas 12 {'Passed': 12}; omitidas por origen {} | no pasan: 0
+test ui-08.trx rc=0 segundos=6 trx-sha256=4c5e5ebca4c780805f8a8384af1eb6425fd03ee24f474e411b5491ffe4344692 :: filas 67 {'Passed': 67}; omitidas por origen {} | no pasan: 0
+test ui-09.trx rc=0 segundos=15 trx-sha256=8ffa62947c5ffff72a7123b90a16c105b5b74497be8ea9fd78ce0122b17018e0 :: filas 3 {'Passed': 3}; omitidas por origen {} | no pasan: 0
+test ui-10.trx rc=0 segundos=12 trx-sha256=e8e7c7825a152fd6c6d963f800b7fe50ce2c97941825f0b238170bcbd2dc3db7 :: filas 4 {'NotExecuted': 1, 'Passed': 3}; omitidas por origen {'PB-T4c': 1} | no pasan: 0
+test ui-11.trx rc=0 segundos=3 trx-sha256=a1c8ed5a78c578ab9bb4e467dc5ac72fe5342a3ea14323b929f0e3a6acef92ac :: filas 0 {}; omitidas por origen {} | no pasan: 0
+test ui-12.trx rc=0 segundos=26 trx-sha256=04cfc17a1a472b6eacc7f20b290e42829300c68154dcdca394e05987991ae8bd :: filas 3 {'Passed': 3}; omitidas por origen {} | no pasan: 0
+test ui-13.trx rc=0 segundos=4 trx-sha256=06b6dfa3ce0a9916f05d64de647db8539f33306630f4853b25801bf16f0deecd :: filas 3 {'Passed': 3}; omitidas por origen {} | no pasan: 0
+test ui-14.trx rc=0 segundos=3 trx-sha256=b13cd45ff555eb2ba57b893e1f40e24b6e3cba875b20ee40cd42df338527f4fd :: filas 13 {'Passed': 13}; omitidas por origen {} | no pasan: 0
+test ui-15.trx rc=0 segundos=2 trx-sha256=d29105683cacaf5d7436ab63ca7ef28e289e4dc4854e435674ad689df2f63e29 :: filas 10 {'Passed': 10}; omitidas por origen {} | no pasan: 0
+test ui-16.trx rc=0 segundos=3 trx-sha256=2009e31c4c4528c602cd1128445b42dff2155f437b05a7d6484c2912e157fb64 :: filas 30 {'Passed': 30}; omitidas por origen {} | no pasan: 0
+test ui-17.trx rc=0 segundos=4 trx-sha256=98c944eebe7d7580da5efd93de8fd061f95153f63659571480f22765cd6c1553 :: filas 6 {'Passed': 6}; omitidas por origen {} | no pasan: 0
+test ui-18.trx rc=0 segundos=5 trx-sha256=ecb8ac9877a7c21e3b7655db2587766c98221a4b37c0969cbf449bf29affcf3b :: filas 1 {'Passed': 1}; omitidas por origen {} | no pasan: 0
+sonda rc=0 errores=0 avisos-CS=10
+     10 warning CS8618
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotUpdateScopeDouble.cs(243,36): warning CS8618: El elemento propiedad "Scan" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador "required'"o declarar el propiedad como un valor que acepta valores NULL. [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotUpdateScopeDouble.cs(245,50): warning CS8618: El elemento propiedad "Draft" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador "required'"o declarar el propiedad como un valor que acepta valores NULL. [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotUpdateScopeDouble.cs(247,25): warning CS8618: El elemento propiedad "Members" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador "required'"o declarar el propiedad como un valor que acepta valores NULL. [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotUpdateScopeDouble.cs(249,35): warning CS8618: El elemento propiedad "Port" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador "required'"o declarar el propiedad como un valor que acepta valores NULL. [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotUpdateScopeDouble.cs(251,39): warning CS8618: El elemento propiedad "Request" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador "required'"o declarar el propiedad como un valor que acepta valores NULL. [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+test sonda.trx rc=1 segundos=11 trx-sha256=46a15ed20dc8b4e83c616cafeb6d77da1437cec80fd6bf3b91759c3abc184fcb :: filas 1 {'Failed': 1}; omitidas por origen {} | no pasan: 1
+resultados=1 lineas=109
+clases=764 trx=19 {'RUN': {'Passed': 19784, 'Failed': 4, 'NotExecuted': 431}}
+build-server shutdown rc=0
+procesos: 0
+MAINCO []

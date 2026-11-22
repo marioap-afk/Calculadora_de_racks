@@ -1,0 +1,23 @@
+control de las CT de PB-T4d; copia /d/r6z; salida r6z-ct; revision 6c2820bab4d8b41e3e229e23f3a1638ccbb04735
+  pieza de0d3a0e1961eb5c6d2f699eab086984310681bf558c14f09e5486d8ea9bc24e pbt4d-red-v53.txt
+  pieza 7a67652e3515083367aa12c829c1560b6742a007a30a354c205f0aa0eb7de5c2 red_pbt4d_v53.py
+  pieza b99635ea0c26230c74611abc2560a05952850fd12916f06fc588fbe2a445a7dc apply_red_pbt4d_v53.py
+  pieza 920c57cacfdf6dc5b94e6ed6deba04db1b312418fe9779dbf8e631e1602cb96c retire_pbt4d_v52.py
+  pieza ffb27dd56baa59a82272a4d6f4aa3953e9f401112c75d8cc0d0cb807f3572703 p6_control_v53.sh
+  pieza 6c07322825249007e41ea23ca5c402e8e7f7b1a0ea966d48f0c3ababbf0bc0b0 write_cts_v52.py
+  pieza a41ceff37fc16baa51681bda6c77b9558ba9c3e865c0bf3089ca5c24161c05fb p6d_check_v52.py
+nuevo 0d64806a53b36ea0719bc7647dcfd3c15e8169a66a4494517097a82ce12fadb3 tests/RackCad.Tests/PushBackRetirePilotGuardTests.cs
+nuevo 1874c47811ddda428745a1f5566f1e7290b31fa2a2e65b07c2ff52059f863f20 tests/RackCad.Tests/PushBackRetirePilotCensusGuardTests.cs
+b-base-cts rc=0 errores=0 avisos-CS=0
+test base-cts trx=21f15e8aa213520a :: filas 2 {'Failed': 2}; omitidas por origen {}
+  Failed RackCad.Tests.PushBackRetirePilotCensusGuardTests.RackCad.Tests.PushBackRetirePilotCensusGuardTests.CT_PBT4D_02_NoFileOfTheTestsNamesWhatTheRetirementOfThePilotRemoves | at RackCad.Tests.Push
+  Failed RackCad.Tests.PushBackRetirePilotGuardTests.RackCad.Tests.PushBackRetirePilotGuardTests.CT_PBT4D_01_TheCodeOfThePilotThatThePanelNoLongerUsesIsRetiredAndWhatTheFullModelUsesStays | at RackCad
+no pasan: 2
+RED de PB-T4d escrito: 23 archivos existentes de tests/, 5 nuevos y 3 borrados; src/ sin tocar
+variante A: 3 archivos escritos, 2 borrados, 0 bajas de tests, 0 no encontradas
+b-red-A rc=0 errores=0 avisos-CS=0
+test red-A trx=7e709d2628a023c4 :: filas 2 {'Failed': 1, 'Passed': 1}; omitidas por origen {}
+  Failed RackCad.Tests.PushBackRetirePilotGuardTests.RackCad.Tests.PushBackRetirePilotGuardTests.CT_PBT4D_01_TheCodeOfThePilotThatThePanelNoLongerUsesIsRetiredAndWhatTheFullModelUsesStays | at RackCad
+no pasan: 1
+build-server shutdown rc=0
+MAINCO []

@@ -1,0 +1,32 @@
+ensayo v5.3; copia /d/r6x; salida r6x-t2; revision 6c2820bab4d8b41e3e229e23f3a1638ccbb04735
+  pieza de0d3a0e1961eb5c6d2f699eab086984310681bf558c14f09e5486d8ea9bc24e red-d3.txt
+  pieza 51a402092c14c5766e8f3f2ae27419f49f5d1e6e6830c1d26b3ef7e9835d1436 pbt4d-green-v53.txt
+  pieza 7a67652e3515083367aa12c829c1560b6742a007a30a354c205f0aa0eb7de5c2 red_pbt4d_v53.py
+  pieza b99635ea0c26230c74611abc2560a05952850fd12916f06fc588fbe2a445a7dc apply_red_pbt4d_v53.py
+  pieza ea7b2086630ae827309164e7a33610b4cae694c9d3c406a2d457aa0a5858cc73 green_pbt4d_v53.py
+  pieza 70e7dd04a52b6975c1e228d26a07f9bb2749d206b36e32ca9172ae9d606062a0 apply_green_pbt4d_v53.py
+  pieza 2f30e13c8af7ba1bb22bb353290feb496cc13e4577cc4bcaad2f5469134b0152 t53_trial2_v53.sh
+RED de PB-T4d escrito: 23 archivos existentes de tests/, 5 nuevos y 3 borrados; src/ sin tocar
+r-core rc=0 errores=0 avisos-CS=0 IDE0051/52=2
+r-ui rc=0 errores=0 avisos-CS=0 IDE0051/52=4
+core core-red rc=1 :: filas 44 {'Failed': 1, 'Passed': 43}; omitidas por origen {}
+  Failed RackCad.Tests.PushBackRetirePilotGuardTests.RackCad.Tests.PushBackRetirePilotGuardTests.CT_PBT4D_01_TheCodeOfThePilotThatThePanelNoLongerUsesIsRetiredAndWhatTheFullModelUsesStays | at RackCad.Tests.PushBackRetirePilotGuardTests.CT_PBT4D_01_TheCodeOfThePilotThatThePanelNoLongerUsesIsRetiredA
+no pasan: 1
+GREEN de PB-T4d escrito: 4 archivos de src/ cambiados y 2 borrados
+g-core rc=0 errores=0 avisos-CS=0 IDE0051/52=2
+g-ui rc=0 errores=0 avisos-CS=0 IDE0051/52=4
+core core-green rc=0 :: filas 44 {'Passed': 44}; omitidas por origen {}
+no pasan: 0
+cov g-core-cov rc=0 segundos=386 :: filas 19418 {'NotExecuted': 403, 'Passed': 19015}; omitidas por origen {'PB-T4b': 390, 'PB-T4c': 3, 'otro': 10}
+  json=192aa4b9f0beb419
+cov g-ui-cov rc=0 segundos=198 :: filas 899 {'NotExecuted': 30, 'Passed': 869}; omitidas por origen {'PB-T4b': 27, 'PB-T4c': 1, 'otro': 2}
+  json=ed0d88378035ecc9
+IDE nuevos en el RED (core):
+IDE nuevos en el GREEN frente al RED (core):
+IDE nuevos en el RED (ui):
+    src/RackCad.UI/RackCad.UI_znuwxnap_wpftmp.csproj]
+IDE nuevos en el GREEN frente al RED (ui):
+    src/RackCad.UI/RackCad.UI_togwqja5_wpftmp.csproj]
+build-server shutdown rc=0
+procesos: 0
+MAINCO []

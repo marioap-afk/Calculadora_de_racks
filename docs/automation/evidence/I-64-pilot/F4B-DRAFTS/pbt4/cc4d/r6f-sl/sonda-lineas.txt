@@ -1,0 +1,8 @@
+## RackCad.Tests.TmpPbt4dSlowProbe.Probe
+prepare-completo estado=Ready toques=4936 ms=159.4
+falla-en-el-toque 0 estado=Invalid ms=65.0
+falla-en-el-toque 1234 estado=Invalid ms=73.1
+falla-en-el-toque 2468 estado=Invalid ms=104.9
+falla-en-el-toque 3702 estado=Invalid ms=112.1
+falla-en-el-toque 4935 estado=Invalid ms=136.5
+vueltas-del-bucle=4936 estimacion-s=485

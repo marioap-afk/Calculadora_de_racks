@@ -1,0 +1,25 @@
+la prueba lenta; copia /d/r6f; salida r6f-sl; revision 6c2820bab4d8b41e3e229e23f3a1638ccbb04735
+  pieza 8c1dcacdb0b8fb7c25360ad3005e0aa6c2cc9d699b83bdd17b458659c5e37bed pbt4d-probe-slow.cs
+  pieza a41ceff37fc16baa51681bda6c77b9558ba9c3e865c0bf3089ca5c24161c05fb p6d_check_v52.py
+  pieza 6faf8fc9052c1a7185e1c5f431f40272883f66f678830a25645cb6c3f1fc646e trx_message_v50.py
+  pieza 0b76048435340c8019b79b503fc5b252348a2b7544dbfa355271f588365e3b9b p6d_slow_v52.sh
+base rc=0 errores=0 avisos-CS=0
+test lenta-1.trx rc=0 segundos=401 trx-sha256=e326de099f3894b5064de857a3b945a29f842dca5218cd4ffbdf0f2c7c7e5322 :: filas 1 {'Passed': 1}; omitidas por origen {}
+  duration="00:06:28.6416848"
+test lenta-2.trx rc=0 segundos=404 trx-sha256=4fd39716fdf4173a06bee2ba39cd0c63a14b422a08209ac92ffd7f49504d1eec :: filas 1 {'Passed': 1}; omitidas por origen {}
+  duration="00:06:34.6306753"
+sonda rc=0 errores=0 avisos-CS=0
+test sonda.trx rc=1 segundos=11 trx-sha256=3ba0f1e30b1ea7bfe8c75ea70f23ff89d81e607df84447624f87f523c2def987 :: filas 1 {'Failed': 1}; omitidas por origen {}
+  duration="00:00:01.0213081"
+resultados=1 lineas=8
+## RackCad.Tests.TmpPbt4dSlowProbe.Probe
+prepare-completo estado=Ready toques=4936 ms=159.4
+falla-en-el-toque 0 estado=Invalid ms=65.0
+falla-en-el-toque 1234 estado=Invalid ms=73.1
+falla-en-el-toque 2468 estado=Invalid ms=104.9
+falla-en-el-toque 3702 estado=Invalid ms=112.1
+falla-en-el-toque 4935 estado=Invalid ms=136.5
+vueltas-del-bucle=4936 estimacion-s=485
+build-server shutdown rc=0
+procesos: 0
+MAINCO []

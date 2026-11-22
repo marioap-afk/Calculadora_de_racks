@@ -1,0 +1,2 @@
+nuevo 0d64806a53b36ea0719bc7647dcfd3c15e8169a66a4494517097a82ce12fadb3 tests/RackCad.Tests/PushBackRetirePilotGuardTests.cs
+nuevo 1874c47811ddda428745a1f5566f1e7290b31fa2a2e65b07c2ff52059f863f20 tests/RackCad.Tests/PushBackRetirePilotCensusGuardTests.cs

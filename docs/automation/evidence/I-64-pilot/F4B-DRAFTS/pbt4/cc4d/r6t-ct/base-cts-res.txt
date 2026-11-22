@@ -1,0 +1,4 @@
+filas 2 {'Failed': 2}; omitidas por origen {}
+  Failed RackCad.Tests.PushBackRetirePilotCensusGuardTests.RackCad.Tests.PushBackRetirePilotCensusGuardTests.CT_PBT4D_02_NoFileOfTheTestsNamesWhatTheRetirementOfThePilotRemoves | at RackCad.Tests.PushBackRetirePilotCensusGuardTests.CT_PBT4D_02_NoFileOfTheTestsNamesWhatTheRetirementOfThePilotRemoves() in <copia>\tests\RackCad.Tests\PushBackRetirePilotCensusGuardTests.cs:line 154 | Assert.Equal() Failure: Strings differ
+  Failed RackCad.Tests.PushBackRetirePilotGuardTests.RackCad.Tests.PushBackRetirePilotGuardTests.CT_PBT4D_01_TheCodeOfThePilotThatThePanelNoLongerUsesIsRetiredAndWhatTheFullModelUsesStays | at RackCad.Tests.PushBackRetirePilotGuardTests.CT_PBT4D_01_TheCodeOfThePilotThatThePanelNoLongerUsesIsRetiredAndWhatTheFullModelUsesStays() in <copia>\tests\RackCad.Tests\PushBackRetirePilotGuardTests.cs:line 165 | Assert.Equal() Failure: Strings differ
+no pasan: 2

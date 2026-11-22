@@ -1,6 +1,113 @@
 > **Redacción para el repo público:** las rutas locales se sustituyen por marcadores (`<checkout-principal>`, `<carpeta-del-paquete>`). El resto no cambia.
 
-# I-64 F4B — Paquete del contrato de PB-T4 («Editar todo» en el panel del Workspace), v5.1
+# I-64 F4B — Paquete del contrato de PB-T4 («Editar todo» en el panel del Workspace), v5.4
+
+**Estado:** v5.4, **solo de texto**. Corrige la v5.3 de **PB-T4d** (`F4B-PBT4-RETIRE-PILOT`) tras la recomprobación 1 de CA-T4d (al final de `independent-review-pbt4d-check.md`, sha256 `76a10c8bde8a3c0532d0c7ffa1dda18d339882d22873fedcd0ecc2854b1b679f`: EMITIBLE, B 0 / I 0 / M 6, M-08 a M-13), sobre la misma base (`6c2820ba`). No se repite ninguna corrida de pruebas: los cambios del RED son solo de comentarios (el código sin comentarios es el de la v5.3) y los del GREEN, solo su cabecera; las piezas de la v5.4 se reaplicaron en una copia nueva (`/d/r70`), con 0 errores y 0 `warning CS`, y la cobertura se volvió a leer de los mismos JSON.
+
+**Las decisiones:** sin decisiones nuevas del Owner. **La sesión:** D-S16 con su nota (`session-pbt4d-design-decisions.md`, sha256 `bd02d2103c7a671c51c1de8901bf76608e4944f98ad0fabcca1fdd253d3801c8`): cada entrada de «Bajan» nombra la corrida, no la prueba, y ESTABLE solo por la UI exige también un filtro en su proceso.
+
+**Lo que cambia:** la cabecera (este registro) y la de la v5.3 (M-10); §4.4; §6.4.1 y §6.4.2; §7; §8.5; §11 y el anexo, que pasa a V54-A; las cifras de la lista en §0 y §8.3. **Lo que no cambia:** el resto de PB-T4d, PB-T4a, PB-T4b y PB-T4c.
+
+**Lo que sale de la v5.4 (PB-T4d):** las piezas `pbt4d-red-v54.txt` y `pbt4d-green-v54.txt` (con los módulos y aplicadores de la v5.3, `--pieza`), `pbt4d_test_edits_v54.py`, `v54/make_red_v54.py`, `v54/make_list_v54.py` y la lista `pbt4d-retire-list-271.tsv`; `cov_p6_v54.py`, `p6_json_pbt4d_v54.py`, `post_p6_v54.sh` y `p6_reapply_v54.sh`; y `make_v54.py`, que arma esta versión. Lo de la v5.3, como historia.
+
+---
+
+## Registro de cambios v5.3 → v5.4
+
+| Id | Hallazgo | Qué cambia | Dónde |
+|---|---|---|---|
+| V54-01 | **Recomprobación 1 de CA-T4d M-08:** el JSON no fijaba por hash todas las entradas de la cobertura, y §6.4.2 no decía sus claves exactas | El JSON fija el sha256 de los JSON de UI del GREEN (`GreenUiCoverage`: las 3 corridas juntas y los 18 filtros, también en `Green.UI[n].Json`) y el completo de los 19 de la base (`BaseCoverage.UIByFilter.Runs`); la reaplicación de la v5.4 va en `Reapply`. §6.4.2 lista las claves exactas: el generador lee `RedDeleted` (comparada con los bloques DELETE) y no lee `Noise` (informativo). Sin correr pruebas | §6.4.2; `pbt4d-precondition6.json`; `compile-check.md` |
+| V54-02 | **Recomprobación 1 de CA-T4d M-09:** [13] de §6.4.1 | «D-S11 a D-S15 y lo que la sesión fijó tras CA-T4d» pasa a «D-S11 a D-S16» | §6.4.1 ([13]) |
+| V54-03 | **Recomprobación 1 de CA-T4d M-10:** «Lo que cambia» de la v5.3 no nombraba §0, §1, §6.0, §7 ni §9 | La cabecera de la v5.3 los nombra, y la columna «Dónde» de su registro también | La cabecera de la v5.3 y su registro |
+| V54-04 | **Recomprobación 1 de CA-T4d M-11:** «Bajan» y la definición de ESTABLE | (a) Cada entrada nombra la corrida que la cubría, no la prueba (coverlet no da la prueba): se declara. (b) ESTABLE solo por la UI exige las tres corridas juntas **y** al menos un filtro en su proceso (`cov_p6_v54.py`). Vuelto a leer de los mismos JSON: entradas 16801: PERDIDA 0, VARIA 0, ESTABLE 16801; y, solo por la corrida de un filtro que no esta en el GREEN (RackCad.UI.Tests.PushBackFieldValidationConcordanceTests), 118 lineas o ramas en 3 archivos; igual que con la regla de la v5.3 | §4.4; `cov-p6-v54.txt` |
+| V54-05 | **Recomprobación 1 de CA-T4d M-12:** el texto que quedaba | (a) WPUR en el RED: el resumen de la clase y los comentarios de la n.º 48 y la n.º 49, que se quedaban sin su prueba (dos ediciones con registro, solo comentarios): `pbt4d-red-v54.txt`. (b) La cabecera de la pieza del GREEN nombraba el módulo de la v5.2: `pbt4d-green-v54.txt` (solo esa cabecera; los bloques, los de la v5.3). (c) El porqué de la fila de `WriteViolations` (PEG:906), el de su edición de M-04. (d) La directiva `using` de Draft/ que el RED añade en `WorkspaceDraftPilotIntentStaleBaseTests.cs` tiene su fila (grupo `directiva`): la lista pasa a `pbt4d-retire-list-271.tsv` | §6.4; la lista; el anexo |
+| V54-06 | **Recomprobación 1 de CA-T4d M-13:** el conjunto vigilado de 436 a 537 líneas | Una frase: desde la v5.3 entran también las líneas de WPUR dentro de los tramos que el GREEN borra enteros, que la v5.2 quitaba antes de contar | §4.4 |
+| V54-07 | La versión y la reaplicación | El `Objective` cita la v5.4. Las piezas de la v5.4, reaplicadas en `/d/r70` (`p6_reapply_v54.sh`): 5 compilaciones con 0 errores y 0 `warning CS`; frente a la copia principal de la v5.3 (`/d/r6y`), el texto de `tests/` solo cambia en WPUR, su código sin comentarios no cambia y `src/` es igual | §6.4.1; §11 |
+
+---
+
+## La cabecera de la v5.3, sin cambio salvo lo que dice el registro v5.3 → v5.4
+
+**Estado:** v5.3. Corrige la v5.2 de **PB-T4d** (`F4B-PBT4-RETIRE-PILOT`) tras su comprobación acotada (CA-T4d, `independent-review-pbt4d-check.md`, sha256 `439837f9b31d5cfae625ec8614fe33d921a16b339faf3959c04a92d5748dced3`: EMITIBLE TRAS CORRECCIONES, B 0 / I 2 / M 7), sobre la misma base, el **cierre de PB-T4c** (`6c2820ba`, F4B-E55). La precondición 6 se repitió entera en copias exportadas nuevas (`/d/r6v` en adelante; `pbt4dcc/compile/`).
+
+**Las decisiones que la fijan, además de las de la v5.2:**
+- **el Owner,** `owner-pbt4d-cat4d-decisions.md` (sha256 `fa07db3831fcf604fd6f95f3e461af7888bec2607196174c0bec49f144a03fa1`): «Sustituirlas» (la n.º 48 y la n.º 49 de WPUR pasan a sustitutas: 29) y «Sustituirlos siempre» (la cobertura de la precondición 6 mira todo `src/` que se queda; todo camino que se queda y pierde su única prueba recibe una sustituta sobre el modelo completo, sin volver al Owner, salvo que una no se pueda escribir o salgan más de 10 nuevas sobre las 29);
+- **la sesión,** en su orden para la v5.3: M-01 a M-07 de la comprobación acotada, con la regla del Owner donde toca; y **D-S16** (`session-pbt4d-design-decisions.md`, sha256 `27010f8fdb5b9a51564cefad6804d498e1f143ab24458bf2f477579b34aea52e`): la cobertura de la UI como unión de corridas, y la lista de lo que baja.
+
+**Lo que cambia:** PB-T4d: §0, §1, D-PBT4-10, §4.4, §5.6, §6.0, §6.4 (con §6.4.1 y §6.4.2), §7, §8.3, §8.5, §9, §11 y el anexo, que pasa a V53-A (§0, §1, §6.0, §7 y §9, nombrados desde la v5.4: recomprobación 1 de CA-T4d, M-10). **Lo que no cambia:** PB-T4a, PB-T4b y PB-T4c, D-S1 a D-S15 y el anexo V51-A. **Nueva:** D-S16 de la sesión (la UI de la cobertura como unión de corridas, y la lista de lo que baja).
+
+**Lo que sale de la v5.3 (PB-T4d):**
+- las dos piezas literales, `pbt4d-green-v53.txt` y `pbt4d-red-v53.txt`, y sus módulos y aplicadores (`green_pbt4d_v53.py`, `apply_green_pbt4d_v53.py`, `red_pbt4d_v53.py` y `apply_red_pbt4d_v53.py`; los de la RED leen además bloques DELETE);
+- sus generadores (`v53/make_green_v53.py`, `v53/make_red_v53.py`, `v53/unused_v53.py`), las ediciones como datos (`pbt4d_test_edits_v53.py`), las 29 sustitutas (`v53/make_run_eq_v53.py`) y la lista (`v53/make_list_v53.py`); los guiones de la v5.2 que se llaman sin cambio (`v52/retire_pbt4d_v52.py`, `v52/make_fullcopy_eq_v52.py`);
+- la precondición 6 (`pbt4dcc/compile/`: `p6_pbt4d_v53.sh`, `p6d_basecov_v53.sh`, `p6_control_v53.sh`, `cov_p6_v53.py`, `required_pbt4d_v53.py`, `p6_json_pbt4d_v53.py`, y los de la v5.2 que no cambian, `census_c13_v52.py` y `ui_totals_v52.py`); las salidas de la v5.2 quedan como historia, con el sufijo `-v52`;
+- y `make_v53.py`, que arma esta versión desde la v5.2.
+
+---
+
+## Registro de cambios v5.2 → v5.3
+
+| Id | Hallazgo | Qué cambia | Dónde |
+|---|---|---|---|
+| **V53-01** | **CA-T4d I-01:** dos bajas de WPUR dejaban sin prueba código que se queda | La n.º 48 (`TheSystemIsRebuiltFromTheDesignTextOfAMemberOfThePlan`) y la n.º 49 (`TheSystemRebuiltForAMemberCarriesTheRackNameOfItsEnvelope`) no prueban la corrida, sino `PushBackPilotSystemRebuild`, que se queda; eran las únicas de su línea 32 y de 6 ramas. El Owner: «Sustituirlas» (`owner-pbt4d-cat4d-decisions.md`, pregunta 1). Pasan a `PushBackRetirePilotRunTests` sobre el plan del PREPARE completo (`FullUpdateSetup`): **29 sustitutas, 31 resultados**. Sus filas, «sustituir con registro», con su porqué verdadero | §0; §1; D-PBT4-10; §4.4; §5.6; §6.4; la lista; el anexo |
+| **V53-02** | **CA-T4d I-02:** el universo de la cobertura era más estrecho que lo pedido | La precondición 6 compara la cobertura de toda la suite de Core y de la unión de los filtros de UI, en la base y en el GREEN, sobre todo `src/` que se queda (Domain, Application y UI), línea a línea y rama por rama, con el JSON de coverlet (`cov_p6_v53.py`); la UI de cada rama, la unión de tres corridas de la unión de los filtros y de cada filtro en su proceso, porque un binding de WPF da golpes que dependen de lo que corrió antes (R-T4-38). La regla del Owner (pregunta 2). Reescritos INV-PBT4D-06, PBT4D-C16, el paso 7 y «Lo que la medida no ve» de §4.4 (§1: D-S16; §7: R-T4-34 y R-T4-38). **Lo medido:** archivos de src/ instrumentados 775; lineas ejecutadas en la base que se quedan 69842 (ramas cubiertas 28818); retiradas por el GREEN 419; texto cambiado 4; lineas sin ejecutar en el GREEN 0; lineas con ramas perdidas 0; **PASA** (`cov-p6-v53.txt`); conjunto vigilado de la v5.2: 537 lineas de WPUR, 433 se quedan, 0 sin cubrir en el GREEN; bajan (informativo) 16801, de ellas PERDIDA 0 | §4.4; §6.4.1 |
+| V53-03 | **CA-T4d M-01:** el corpus de CT-PBT3B-06 (iii) | (iii) pasaba 15 diseños del corpus por `BuildCore`, el ensamblador y la barrera, y era la única prueba de que la barrera no bloquea diseños válidos. Con la regla del Owner, se queda en su sitio, sobre el modelo completo: los 15 diseños, como borradores completos (`FullWriteKit`), por `PrepareFull`, y dan `Ready`; sus líneas esperadas son las mismas. Sale solo (ii), del piloto | §6.4; la lista (CT-PBT3B-06); el anexo |
+| V53-04 | **CA-T4d M-02:** la rama de `MirrorSelection` con el lado activo B | Medida con la cobertura de la unión de los filtros de UI, como pide la regla: Core sola pierde la rama del lado activo B de `PushBackCompositeEditorState.cs:233` (en la base la cubría el `Copy` del comparador del piloto, en pruebas que se borran), pero la UI de los filtros la cubre en la base y en el GREEN: en «Bajan», ESTABLE (GREEN: las tres corridas de todos los filtros juntos la cubren). No queda sin prueba: sin sustituta | §4.4; §6.4.1 |
+| V53-05 | **CA-T4d M-03:** ayudantes sin uso tras la retirada | Medidos en el árbol del RED (IDE0051/IDE0052 en una copia, y por texto), en vueltas hasta que no sale ninguno: **32 ayudantes** «borrar con registro (ayudante sin uso tras la retirada)», y **3 clases que quedaban sin pruebas** (`PushBackFieldValidationConcordanceTests`, `PushBackDeclaredCorrectionPilotParityTests` y `WorkspaceDraftPilotCanonicalLineEndingTests`, de UI), que se borran enteras: la pieza del RED gana bloques DELETE. No queda código muerto en `tests/` | §4.4; §6.0 (RR-2); §6.4; §7 (R-T4-36); la lista (grupo `M-03`) |
+| V53-06 | **CA-T4d M-04:** la lista no describía, fila a fila, lo que edita el RED | Dos columnas nuevas, `declaraciones-6c2820ba` (las sobrecargas) y `tramo-editado` (medido miembro a miembro contra el árbol del RED); **6 filas** `ayudante-editado` para los ayudantes que el RED edita sin fila propia (`E3Violations`, `E5Violations`, `HostViolations`, `WriteViolations` de WPEG:906, `AfterMatchViolations` y `Kinds`); y los porqué de C-7 dicen «borrar», no «sustituir». `make_list_v53.py` comprueba que toda línea de código que el RED cambia cae en una fila | §4.4; la lista |
+| V53-07 | **CA-T4d M-05:** comentarios del GREEN y «tres ramas» | (a) El GREEN gana 11 bloques de solo comentarios, al final: el resumen de `PushBackPilotMaterializer`, el de la corrida, el de `ExecuteFull`, el de `ComparePostFull`, el del planificador y el de `PrepareFull`, y los de `ErasedKeys`, `Erasures`, `Members` y `PushBackPilotMemberPlan`, que describían el piloto como presente; el código, sin comentarios, es el mismo. (b) «la condición allowErase de sus tres ramas» pasa a «cuatro condiciones: tres en el bucle y la de `AllObsolete`» | D-PBT4-10; §6.4.1 (C13); el anexo |
+| V53-08 | **CA-T4d M-06:** el número de la clase y la errata de la pregunta | El comentario de `PushBackRetirePilotRunTests` dice el número real (29 sustitutas; de las otras 20, 19 se borran y una se queda). La errata de la pregunta del Owner de `owner-pbt4d-deadcode-27-decisions.md` («se borran 22», que eran 21) se declara en §8.5 | §5.6; §8.5; el anexo |
+| V53-09 | **CA-T4d M-07:** la copia principal no corrió sola ni con los 18 filtros del contrato | La copia principal corre sola (su conductor lo comprueba al empezar y lo registra al acabar) y con los 18 filtros de UI de `RequiredTests` de PB-T4d (`ui_filters_pbt4d_v53.txt`). Lo de `/d/r6r` (v5.2), declarado en `compile-check.md` | §6.4.1; §7 (R-T4-37); `compile-check.md` |
+| V53-10 | La precondición 6, entera otra vez | En copias nuevas: los ensayos (`/d/r6v`, `/d/r6x`), la base con cobertura (`/d/r6w`), la principal (`/d/r6y`), el control de las CT (`/d/r6z`), el censo de C13, la cobertura ampliada, los `RequiredTests` y los totales. `Package` `v5.3` | §6.4.1; §9; §11 |
+| V53-11 | La versión | El `Objective` cita la v5.3 | §6.4.1 |
+
+---
+
+## La cabecera de la v5.2, sin cambio salvo lo que dice el registro v5.2 → v5.3
+
+**Estado:** v5.2. Escribe **PB-T4d** (`F4B-PBT4-RETIRE-PILOT`, la retirada del código del piloto) en forma literal, como la v5.0 y la v5.1 lo hicieron con PB-T4c, sobre el **cierre de PB-T4c** (`6c2820ba`, F4B-E55: CERRADA, intento 1 de 3, sin reparación del RED). La remedición se hizo por objetos git (`v52/remeasure_pbt4d_v52.py`) y compilando y ejecutando en copias exportadas de `6c2820ba` (`/d/r6a` en adelante; `pbt4dcc/compile/`).
+
+**Las decisiones que la fijan:**
+- **El Owner, en cuatro registros sobre PB-T4d:**
+  - `owner-pbt4d-list-decisions.md` (sha256 `40a52fea22c441c436758d6e3826ef03d938827465d771eb3ab350ba67472962`): el alcance B, la recarga de «Editar todo» a una tarea propia, la prueba lenta acotada en PB-T4d y la emisión condicional;
+  - `owner-pbt4d-substitutes-decision.md` (`12a41c3f509de5fc759e1733d0d0b555087c9d1d2fa8bc6436296baa09440d75`): «Sustitutas donde hace falta»;
+  - `owner-pbt4d-run-coverage-decision.md` (`5c852b6a8e99eba0a000026adf25a27f718548e19bded942b9a7336ee3120c2f`): «Sustituir las 21», con la cobertura medida otra vez;
+  - `owner-pbt4d-deadcode-27-decisions.md` (`61b0c77d20b8130751706e43c39542a5e849abe6bf936ab96f9363d9146fc853`): «Quitarla en PB-T4d», la rama muerta de `BuildCore`, y «Sí, 27», las sustitutas de la corrida.
+- **La sesión:** D-S11 a D-S15 (`session-pbt4d-design-decisions.md`, sha256 `c5ddb9370cd73cb74540d7ecdc227dd6063ef55d91cb444fca0b9d45e12a80f2`): el RED con todo lo de `tests/` y dos CT, los `Skip` con su equivalente y el prefijo `PushBackRetirePilot`, M-04 en su sitio, la prueba lenta acotada y la limpieza de los comentarios.
+
+**Lo que cambia:** PB-T4d entera:
+- D-PBT4-10;
+- §0, §1, §4.4 (nueva), §5.4 y §5.6 (nueva);
+- §6.0 (sus filas de PB-T4d) y §6.4, con §6.4.1 y §6.4.2;
+- §7, §8.3, §8.5, §9 y §11;
+- y el anexo V52-A, con el texto literal del GREEN, de las ediciones con registro, de los `Skip` y de los archivos nuevos.
+
+**Lo que no cambia:** PB-T4a, PB-T4b y PB-T4c (sus §5.1 a §5.3 y §6.1 a §6.3, enteros), D-S1 a D-S10 y el anexo V51-A.
+
+**Lo que sale de la v5.2 (PB-T4d):**
+- las dos piezas literales, `pbt4d-green-v52.txt` y `pbt4d-red-v52.txt`, y sus módulos y aplicadores (`green_pbt4d_v52.py`, `apply_green_pbt4d_v52.py`, `red_pbt4d_v52.py` y `apply_red_pbt4d_v52.py`);
+- sus generadores (`v52/make_green_v52.py` y `v52/make_red_v52.py`), las ediciones como datos (`pbt4d_test_edits_v52.py`), las 27 sustitutas (`v52/make_run_eq_v52.py`), el equivalente de CT-PBT4B-20 (`v52/make_fullcopy_eq_v52.py`) y la lista (`v52/make_list_v52.py`);
+- las medidas de la remedición, de la necesidad y de la cobertura (`v52/` y `pbt4dcc/compile/`), y el alto del relevo (`v52/sub/`);
+- la precondición 6 (`pbt4dcc/compile/`: `p6_pbt4d_v52.sh`, `p6d_basecov_v52.sh`, `p6_control_v52.sh`, `cov_p6_v52.py`, `census_c13_v52.py`, `required_pbt4d_v52.py`, `ui_totals_v52.py` y `p6_json_pbt4d_v52.py`);
+- y `make_v52.py`, que arma esta versión desde la v5.1.
+
+---
+
+## Registro de cambios v5.1 → v5.2
+
+| Id | Hallazgo | Qué cambia | Dónde |
+|---|---|---|---|
+| **V52-01** | **PB-T4d vuelve al Owner con su lista** (`owner-pbt4b-retire-list-decisions.md`, pregunta 1) | La lista, vuelta a medir sobre el cierre de PB-T4c, por texto y compilando y ejecutando: dos alcances (A y B); el Owner elige **B** y la emisión condicional (`owner-pbt4d-list-decisions.md`). La recarga de «Editar todo», fuera | D-PBT4-10; §0; §4.4; §6.4 |
+| **V52-02** | **Las 138 usaban el piloto como vehículo de código que se queda** | Medido desde cero bajas en `/d/r6h`: 201 de las 235 bajas de B hacen falta y 34 no. El Owner: «Sustitutas donde hace falta» (`owner-pbt4d-substitutes-decision.md`): se quedan 7 CT de PB-T3b y sus 6 ayudantes; lo que también prueba código que se queda conserva esa parte, como edición con registro; lo demás se borra con registro | §4.4; §6.4.1; la lista |
+| **V52-03** | **La corrida genérica que solo cubría WPUR** | Medida con coverlet (`/d/r6j`, `/d/r6k`): 436 líneas de la corrida que se queda, 35 solo de WPUR. El Owner: «Sustituir las 21». Al preparar las sustitutas, el relevo midió rama por rama (`v52/sub/cov-sides.txt`): **7 ramas más** solo las cubrían otras 6 pruebas. El Owner: **«Sí, 27»** (`owner-pbt4d-deadcode-27-decisions.md`, pregunta 2): `PushBackRetirePilotRunTests`, sobre `ExecuteFull`, con `FullUpdateSetup` | §4.4; §6.4; el anexo V52-A |
+| **V52-04** | **Código muerto tras la retirada** | Sin el `Build` del piloto, `BuildCore` solo lo llama `BuildFull` con `allowErase` true, y la rama de la vista no disponible no se alcanza. El Owner: **«Quitarla en PB-T4d»** (pregunta 1): el GREEN quita `allowErase` y lo que solo existe con él (la rama, sus dos constantes, el nombre de cada sobre releído). La n.º 10 de WPUR pasa a mano al `Invalid` de la frontal B de un rack sin lado B. E-3 de D-1 pierde sus reglas de `allowErase` y de `ViewUnavailable` (edición con registro); CT-01 y CT-02 cuentan lo nuevo retirado | D-PBT4-10; §5.6; §6.4.1; la pieza del GREEN |
+| V52-05 | Las decisiones de la sesión | D-S11 (el RED con todo lo de `tests/`, sin esqueleto, y dos CT), D-S12 (tres `Skip` y sus equivalentes, prefijo `PushBackRetirePilot`, filtros por clase exacta), D-S13 (M-04 en su sitio), D-S14 (la prueba lenta, cada 97.º toque y el último) y D-S15 (los cuatro `cref` y el comentario) | §5.6; §6.4; §8.5 |
+| V52-06 | La precondición 6 de PB-T4d | En copias nuevas (`/d/r6r` en adelante): el RED literal, el GREEN literal, la cobertura rama por rama frente a la base, el control de las CT, el censo de C13, los `RequiredTests` y los totales. Las copias anteriores, historia | §6.4.1; §9; §11 |
+| V52-07 | Los textos literales | §6.4.1: `Objective`, `AllowedWriteScope` ruta a ruta, INV-PBT4D-01 a 14, PBT4D-C01 a C18, `ExpectedEvidence`, `RequiredTests` y los `Skip`; el anexo V52-A | §6.4; el anexo V52-A |
+| V52-08 | La versión | El `Objective` cita la v5.2. `TaskId` `F4B-PBT4-RETIRE-PILOT` (21) | §6.4.1 |
+
+---
+
+## La cabecera de la v5.1, sin cambio salvo lo que dice el registro v5.1 → v5.2
 
 **Estado:** v5.1. Corrige **PB-T4c** con la comprobación acotada **CA-T4c** (`independent-review-v1.md`, §22: EMITIBLE TRAS CORRECCIONES, **0/1/3**, sin decisiones nuevas del Owner):
 - **I-01:** los dos archivos nuevos de `Draft/`, sin `#nullable enable` y sin el `?` de `ProjectOf`;
@@ -474,7 +581,7 @@ Los `Skip`, la partición y las comprobaciones son los de la v4.8.
 | **PB-T4a** | `F4B-PBT4-FULL-READ-PATH` (23) | El Plugin lee también el modelo completo sobre el mismo escaneo; el resultado lleva lo completo y el catálogo. Las relecturas de un borrador abierto van al origen del borrador por su texto, con una relectura pura en `Draft/` sobre el escaneo ya tomado (A-T3-8): es un cambio observable declarado. La firma de `RackPilotIntentAdapter.Read` no cambia | **1** (CT-PBT3A-12) | Condicional (pregunta 4) |
 | **PB-T4b** | `F4B-PBT4-FULL-DRAFT-PANEL` (25) | El borrador del panel pasa al completo; OB-03.2; la regla única de la escala, en Application; «Actualizar» por `ExecuteFull`; «Conservar mi borrador» con dos «Sí», la presentación «Por grupos» y `KeepOn` (D-S2); una sola materialización del modelo completo por lectura (D-S4). **El código del piloto queda sin uso, sin retirarlo** | **478** (428 de las 9 clases, «Saltar y duplicar», 356 copias y 72 a mano; 23 de la letra; 27 de la UI), la lista que el Owner tomó como la que vio, con las cinco de la tercera tanda y las dos de la quinta | Condicional, con esa lista, sobre el cierre de PB-T4a (`78a7cef3`) |
 | **PB-T4c** | `F4B-PBT4-EDIT-ALL-WINDOW` (24) | «Editar todo», con el abridor en dos piezas | **4** (PEG:155-163, CT-PBT1B-15, CT-PBT4B-20 y CT-PBT2B-06), la lista que el Owner tomó como la que vio tras sus dos decisiones de PB-T4c (`owner-pbt4c-list-3-decision.md` y `owner-pbt4c-list-4-decision.md`) | Condicional, con esa lista, sobre el cierre de PB-T4b (`6adff90d`) |
-| **PB-T4d** | `F4B-PBT4-RETIRE-PILOT` (21, propuesto) | Retira el código del piloto que el panel ya no usa | **138** sustituciones (la v4.3, 139), **55** originales y **29** miembros de apoyo borrados con registro (esbozo, §6.4) | **Vuelve al Owner con su lista** |
+| **PB-T4d** | `F4B-PBT4-RETIRE-PILOT` (21) | Retira el código del piloto que el panel ya no usa, con el alcance B y la rama muerta de `BuildCore`; el RED lleva todo lo de `tests/` (D-S11) | **271** filas con acción de `pbt4d-retire-list-271.tsv` (borrar, reescribir, sustituir y acotar con registro), con las 29 sustitutas de WPUR y los ayudantes sin uso borrados (§4.4; v5.3) | Condicional (`owner-pbt4d-list-decisions.md`, pregunta 4), con esa lista, sobre el cierre de PB-T4c (`6c2820ba`) |
 
 **Las decisiones del Owner,** tomadas (§8.2): Q1 «Retirarlo», Q2 «Por grupos», Q3 «Saltar y duplicar» y Q4 «Sí, con condiciones» (`owner-pbt4-decisions.md`); después, «Retirar tras PB-T4c» y «Sí, esa lista» (`owner-pbt4b-retire-list-decisions.md`); y, en la tercera tanda, «Añadirlas a la lista» (`owner-pbt4b-breaks-decision.md`). Después, «Cerrar y optimizar en PB-T4b» (`owner-pbt4a-cost-decision.md`) ; en la quinta tanda, «Añadirlas a la lista» (`owner-pbt4b-list-477-decision.md`), y en la sexta, «Añadirla a la lista» (`owner-pbt4b-list-478-decision.md`); y en la séptima, sobre el coste de la lectura de PB-T4b, «Darlo por cumplido» (`owner-pbt4b-cost-decision.md`). Sobre PB-T4c, dos veces «Añadirla a la lista» (`owner-pbt4c-list-3-decision.md` y `owner-pbt4c-list-4-decision.md`). La sesión decidió D-S1 a D-S3, D-S5 y D-S6 (`session-pbt4b-design-decisions.md`), D-S4 (D-PBT4-21; §8.5) y, para PB-T4c, D-S7 a D-S10 (`session-pbt4c-design-decisions.md`).
 
@@ -500,6 +607,13 @@ Las de la v1 (§1), sin cambio. Además, la revisión de la v1 y las instruccion
 | **La decisión del Owner sobre el coste de la lectura de PB-T4b** (`owner-pbt4b-cost-decision.md`, 2026-11-21, la séptima tanda) | «Darlo por cumplido»: el paso 7 de la precondición 6, con dos de tres corridas (§8.5) |
 | **Las dos decisiones del Owner sobre la lista de PB-T4c** (`owner-pbt4c-list-3-decision.md` y `owner-pbt4c-list-4-decision.md`, 2026-11-21, la octava y la novena tandas) | «Añadirla a la lista», dos veces: **4** en PB-T4c (§8.5) |
 | **Las decisiones de diseño de la sesión para PB-T4c** (`session-pbt4c-design-decisions.md`, 2026-11-21) | D-S7 a D-S10 (§8.5) |
+| **Las decisiones del Owner sobre la lista de PB-T4d** (`owner-pbt4d-list-decisions.md`, 2026-11-22, la 10.ª tanda) | «Alcance B», «Tarea propia después» (la recarga), «Acotarla en PB-T4d» (la prueba lenta) y «Sí, con condiciones» (§8.5) |
+| **La decisión del Owner sobre las sustitutas** (`owner-pbt4d-substitutes-decision.md`, 2026-11-22, la 11.ª) | «Sustitutas donde hace falta» (§8.5) |
+| **La decisión del Owner sobre la corrida genérica** (`owner-pbt4d-run-coverage-decision.md`, 2026-11-22, la 12.ª) | «Sustituir las 21» (§8.5) |
+| **Las dos decisiones del Owner sobre la rama muerta y las 27** (`owner-pbt4d-deadcode-27-decisions.md`, 2026-11-22, la 13.ª) | «Quitarla en PB-T4d» y «Sí, 27» (§8.5) |
+| **Las decisiones de diseño de la sesión para PB-T4d** (`session-pbt4d-design-decisions.md`, 2026-11-22) | D-S11 a D-S15 y, tras CA-T4d, D-S16 (§8.5) |
+| **La comprobación acotada de la v5.2** (`independent-review-pbt4d-check.md`, 2026-11-22) | EMITIBLE TRAS CORRECCIONES, B 0 / I 2 / M 7: la v5.3 corrige los nueve (registro v5.2 → v5.3) |
+| **Las dos decisiones del Owner tras CA-T4d** (`owner-pbt4d-cat4d-decisions.md`, 2026-11-22, la 14.ª) | «Sustituirlas» (la 48 y la 49) y «Sustituirlos siempre» (la regla de los huecos de la cobertura ampliada) (§8.5) |
 | **El arrastre A-T2b-OWNER-01** (F4B-E38; `owner-pbt2b-close-decisions.md:36`) | «Cerrar» en WORKSPACE con una sola pregunta (D-PBT4-17) |
 | **Las decisiones de diseño de la sesión** (`session-pbt4b-design-decisions.md`, 2026-11-20) y las §17 y §18 de `independent-review-v1.md` | D-S1 a D-S3, D-S5 y D-S6, y D-S4 (§8.5, D-PBT4-21); la verificación de las cinco roturas y la revisión de la v4.4 |
 
@@ -949,25 +1063,29 @@ Ningún literal empieza por «i» ni por «hi», así que la conjunción es siem
 - **PB-T4b no borra ni edita ninguna prueba ni ningún ayudante:** solo pone los `Skip` de su lista (D-PBT4-11), como en D-1;
 - la regla de la escala queda, mientras tanto, también en `PushBackPilotFieldAdapter`, sin uso; la única que usa el panel es `PushBackAnnotationScaleRule` (D-PBT4-06).
 
-**Lo que retira PB-T4d** (lo que el panel ya no usa):
-- el comparador (`PushBackPilotStateComparer`);
-- el adaptador del campo (`PushBackPilotFieldAdapter`);
+**Lo que retira PB-T4d** (v5.3; el alcance B, `owner-pbt4d-list-decisions.md`, pregunta 1, y la rama muerta, `owner-pbt4d-deadcode-27-decisions.md`, pregunta 1):
+- el comparador (`PushBackPilotStateComparer`, con su tipo anidado `StructuralEquality`) y el adaptador del campo (`PushBackPilotFieldAdapter`): sus dos archivos se borran;
 - `KeepPilotEditsOn` y `ComposeForWrite`;
-- `PushBackPilotUpdatePlanner.Prepare` (del piloto);
-- `PushBackPilotUpdateRun.Precheck` y `Execute` (del piloto).
+- **lo que queda sin uso en `src/`** (el alcance B): la composición del piloto (`PushBackPilotComposition`), su instantánea (`PushBackPilotPrepareInput`) y su `ComparePost`;
+- `PushBackPilotUpdatePlanner.Prepare` y su `Build` privado (del piloto);
+- `PushBackPilotUpdateRun.Precheck(DraftSession<PushBackPilotDraftState>)` y `Execute` (del piloto);
+- **en `BuildCore`, el modo que no borra vistas:** el parámetro `allowErase` y lo que solo existe con él (sin el `Build` del piloto, `BuildFull` es su único llamador, con `true`): la condición `allowErase` de sus cuatro condiciones (tres en el bucle, `NoAddress`, `ObsoleteLateral` y `FrontalBOfOneWay`, y la de `AllObsolete`; CA-T4d M-05 b), la rama de la vista no disponible y sus dos constantes (`ViewUnavailablePrefix` y `ViewUnavailableSuffix`) y el nombre de cada sobre releído;
+- y los cuatro `cref` y el comentario que nombran lo retirado (D-S15; solo comentarios), y los comentarios que describían como presentes la corrida, el PREPARE y la composición para escribir del piloto (CA-T4d M-05 a; solo comentarios).
+
+El texto literal es la pieza del GREEN (`pbt4d-green-v54.txt`; el anexo V54-A). **El censo de C13** lo cuenta: 57 declaraciones quitadas, ninguna nueva (§6.4.1).
 
 **Lo que se queda,** porque el modelo completo lo usa (R-17):
 - el lector del piloto (`PushBackPilotIntentReader`) y su materialización (`PushBackPilotMaterializer.Materialize`);
 - el tipo `PushBackPilotDraftState` que devuelve ese lector;
-- las constantes de `PushBackPilotMaterializer`.
+- las constantes de `PushBackPilotMaterializer`;
+- `PrepareFull`, `PushBackFullPrepareInput`, `BuildFull` y `BuildCore`, y `ExecuteFull`, el `Precheck` del borrador completo, `ComparePostFull`, `ComparePostCore` y `DesiredNamesOf`.
 - **La copia de la carga de A-5** (PM:150-172, dentro de `Materialize`) no se puede retirar entera, porque el lector la usa. Se declara: queda solo como la admisión del lector.
 
-**El esbozo de PB-T4d** (su contrato completo viene después, con su paquete; §6.4):
-- **sustituye con registro 138 pruebas** (causa C-7; la v4.3, 139, antes de que WPUG:822-840 pasara a PB-T4b, V44-01): 71 que nombran lo retirado por texto, con E-3, E-5 y E-6 de D-1 (F4B-E29: «PB-T4 sustituirá tres de esos equivalentes al quitar el piloto»), y 67 que dejan de compilar al borrarlo (R-36);
-- **borra con registro las 55 originales de las 9 clases** que siguen saltadas desde PB-T4b y que dejan de compilar al borrar lo retirado, y **los 29 miembros de apoyo** que lo nombran (R-36);
-- **la lista,** en `pbt4d-retire-list-138.tsv` (§8.3; la de la v4.3, `pbt4d-retire-list.tsv`, queda como historia), es un esbozo medido en `7f0d9aa3`: PB-T4d la vuelve a medir sobre el cierre de PB-T4c y vuelve al Owner con ella antes de emitirse;
-- **lo que cambia, y lo que no** (I-26): la retirada después de PB-T4c **no evita el borrado** de las 55 originales y de los 29 miembros de apoyo: cuando se retire, dejarán de compilar igual. Lo que cambia es que, para entonces, ninguna corre, porque sus copias o sus equivalentes están en verde desde PB-T4b; y que PB-T4b conserva la premisa de la pregunta 3 («No hace falta ninguna excepción a la regla de no editar pruebas ni ayudantes»);
-- **lo que PB-T4d tendrá que ajustar de PB-T4b:** el punto 1 de CT-PBT4B-20 (el original igual a la base salvo los `Skip`) deja de valer para las 55 que se borran, así que CT-20 entra en su lista;
+**La lista de PB-T4d** (§4.4 y §6.4; `pbt4d-retire-list-271.tsv`), medida sobre el cierre de PB-T4c compilando y ejecutando, desde cero bajas:
+- **se quedan sin tocar** 7 CT de PB-T3b y sus 6 ayudantes, que pasan sobre el modelo completo (`owner-pbt4d-substitutes-decision.md`);
+- **se reescriben con registro** las pruebas que también prueban código que se queda (CT-PBT3B-05, 06, con su corpus (iii) sobre el modelo completo (CA-T4d M-01), y 09, E-3, E-5 y E-6 de D-1, H-06 de WPPG, la regla del adaptador de PEG, Ownership, StaleBase, `MaterializeReproduces…`), los vacíos de M-04 (D-S13) y la prueba lenta, acotada (D-S14);
+- **se sustituyen con registro** las 29 de WPUR que cubren líneas o ramas de código que se queda que nada más cubre (sobre el modelo completo, en `PushBackRetirePilotRunTests`): 27 de la corrida genérica, sobre `ExecuteFull`, y las n.º 48 y 49, de `PushBackPilotSystemRebuild` (CA-T4d I-01); y las tres que caen al ejecutar (`Skip` y equivalente, D-S12);
+- **se borran con registro** las demás: lo que solo fija lo retirado o pasa en vacío, las 55 originales saltadas desde PB-T4b y sus ayudantes, la `Theory` de UI de SUS-01, lo que deja de compilar con la retirada B y, para que no quede código muerto en `tests/`, los ayudantes que la retirada deja sin uso y las tres clases que deja sin pruebas (CA-T4d M-03);
 - queda una sola regla de la escala.
 
 #### D-PBT4-11. La lista de sustituciones, «Saltar y duplicar» y el guion de la copia (B-03, B-04, B-06, I-03, I-04, I-18, I-21, I-22, I-23; V41-03 y V41-04; V42-01, V42-03, M-33, M-34; D-S1, V44-01, V44-03 a V44-05; V45-01, V45-05, V45-07, V45-08; V46-01, V46-02; V47-01; V48-01 a V48-03; V49-01)
@@ -1449,6 +1567,49 @@ Las otras pruebas de las mismas guardas que nombran lo retirado solo por su ayud
 
 **Si cualquier otra prueba falla,** fuera de la lista de 4, es PBT4C-C16 y vuelve al Owner (pregunta 4).
 
+### 4.4 PB-T4d (V52-01 a V52-04; V53-01 a V53-04; V54-01, V54-04 y V54-06)
+
+**Medido en el cierre de PB-T4c** (`6c2820ba`): por objetos git (la remedición, `v52/remeasure_pbt4d_v52-out.txt`) y compilando y ejecutando en copias exportadas: la necesidad de cada baja desde cero bajas (`/d/r6h`), la cobertura de la corrida genérica (`/d/r6j` y `/d/r6k`, y rama por rama en `v52/sub/cov-sides.txt`), dos ensayos (`/d/r6l` y `/d/r6n`), y la precondición 6 de la v5.2 y, tras la comprobación acotada CA-T4d, la de la v5.3 (§6.4.1), con sus ensayos (`/d/r6v` y `/d/r6x`).
+
+**La lista** (`pbt4d-retire-list-271.tsv`, sha256 `05a4d3d1905529c5bc4d53e0684d27d97eaa96502098eebeb9d16bfd931c75ac`), por grupo y acción:
+
+| Grupo | Acción | Filas |
+|---|---|---|
+| C-7 | borrar con registro | 75 |
+| C-7 | reescribir con registro | 27 |
+| C-7 | se queda | 7 |
+| C-7 | sustituir con registro | 29 |
+| M-03 | borrar con registro | 35 |
+| M-04 | reescribir con registro | 3 |
+| SUS-01 | borrar con registro | 1 |
+| apoyo | borrar con registro | 21 |
+| apoyo | reescribir con registro | 2 |
+| apoyo | se queda | 6 |
+| ayudante-editado | reescribir con registro | 6 |
+| compilacion | borrar con registro | 11 |
+| compilacion | sustituir con registro | 1 |
+| directiva | reescribir con registro | 1 |
+| ejecucion | sustituir con registro | 3 |
+| lenta | acotar con registro | 1 |
+| original | borrar con registro | 55 |
+| **Total** | | **284** (271 con acción) |
+
+**Los grupos:** C-7, las 138 de la lista de la v4.4 (por texto o por compilación); `original`, las 55 originales saltadas desde PB-T4b; `apoyo`, sus ayudantes; `compilacion`, lo que deja de compilar con la retirada B (medido en `/d/r6e`); `ejecucion`, las tres que caen al ejecutar (D-S12); M-04 (D-S13); `lenta` (D-S14); SUS-01; `M-03`, los ayudantes que la retirada deja sin uso y las tres clases que deja sin pruebas (CA-T4d M-03); `ayudante-editado`, los ayudantes que el RED edita sin fila propia (CA-T4d M-04 b). **Las acciones:** «borrar con registro» (la baja va en el RED), «reescribir con registro» (se queda, editada en su sitio), «sustituir con registro» (`Skip` y equivalente, o, en WPUR, baja con su equivalente en `PushBackRetirePilotRunTests`), «acotar con registro» y «se queda» (sin tocar; no se emite). **Desde la v5.3** (CA-T4d M-04), dos columnas más: `declaraciones-6c2820ba`, todas las declaraciones del nombre en su archivo (las sobrecargas), y `tramo-editado`, las líneas de la base que el RED cambia dentro de ellas, medidas miembro a miembro contra el árbol final del RED; `make_list_v53.py` comprueba que toda línea de código que el RED cambia cae en alguna fila. Los porqué de C-7 dicen lo que se hace (borrar), no «sustituir».
+
+**Lo que cambia la medida frente a la lista por texto** (V52-02 y V52-03):
+- **34 de las 235 bajas de B no hacen falta** (`/d/r6h`): 7 CT de PB-T3b y sus 6 ayudantes se quedan; las otras se reescriben o se borran por lo que fijan;
+- **las 48 de WPUR** recorrían 436 líneas de la corrida genérica que se queda; el resto de la suite cubría 401. **27 sustitutas** cubren lo demás, línea a línea y rama por rama (`owner-pbt4d-deadcode-27-decisions.md`, pregunta 2); **y la 48 y la 49** no prueban la corrida, sino `PushBackPilotSystemRebuild`, que se queda (lo usan `DesiredNamesOf` y el escritor real de «Actualizar»), y son las únicas que cubren su línea 32 y 6 ramas (CA-T4d I-01): **29 sustitutas** (`owner-pbt4d-cat4d-decisions.md`, pregunta 1); las otras 19 se borran, y una se queda en WPUR;
+- **la rama muerta de `BuildCore`** (V52-04): la vista no disponible solo la alcanzaba el piloto; el GREEN la quita, y E-3 de D-1 pierde las dos reglas que la nombraban.
+
+**Las que siguen en verde,** medidas con la suite completa de Core y los filtros de UI (§6.4.1): las guardas que leen el texto del plan (`PushBackDraftWriteGuardTests`, `PushBackFullPanelCensusGuardTests`, `PushBackFullReadGuard*`, `PushBackWritePathGuardTests` y su copia, `CustomPropertiesEnvelopeGuardTests`), las 24 copias candidatas de la remedición (falsos positivos de la lectura por texto) y la copia lenta de OWNER-05, acotada.
+
+**La cobertura, ampliada** (CA-T4d I-02; `owner-pbt4d-cat4d-decisions.md`, pregunta 2): la precondición 6 compara la cobertura de **toda la suite de Core** y de la **unión de los filtros de UI** de PB-T4c y de PB-T4d, en la base sin cambios y en el GREEN, sobre **todo el código de `src/` que se queda** (Domain, Application y UI, instrumentados con coverlet en JSON), línea a línea y rama por rama (`cov_p6_v54.py`). Lo que solo cubre la UI se mide con la cobertura de sus filtros antes de darlo por perdido. **La regla del Owner:** todo camino que se queda y pierde su única prueba recibe una sustituta sobre el modelo completo, sin volver a él; vuelve solo si una sustituta no se puede escribir o si salen más de 10 sustitutas nuevas sobre las 29. Las 436 líneas de la v5.2 y sus 9 ramas se quedan como conjunto vigilado; **desde la v5.3 se cuentan 537** (433 se quedan), porque ahora entran también las líneas de WPUR que caen dentro de los tramos que el GREEN borra enteros, que la v5.2 quitaba antes de contar (recomprobación 1 de CA-T4d, M-13). La UI de cada rama es la unión de tres corridas de la unión de los filtros y de cada filtro en su proceso: un binding de WPF da golpes que dependen de lo que corrió antes (`noise-batch/`; R-T4-38). **Lo medido en la v5.3:** archivos de src/ instrumentados 775; lineas ejecutadas en la base que se quedan 69842 (ramas cubiertas 28818); retiradas por el GREEN 419; texto cambiado 4; lineas sin ejecutar en el GREEN 0; lineas con ramas perdidas 0; **PASA** (`cov-p6-v54.txt`); conjunto vigilado de la v5.2: 537 lineas de WPUR, 433 se quedan, 0 sin cubrir en el GREEN; bajan (informativo) 16801, de ellas PERDIDA 0. **Bajan** (informativo; D-S16: lo que cubren más corridas en la base que en el GREEN, por componente emparejado; no cambia el PASA; cada entrada nombra la corrida que la cubría, no la prueba, porque coverlet no da la prueba; y ESTABLE solo por la UI exige las tres corridas juntas y al menos un filtro en su proceso: recomprobación 1 de CA-T4d, M-11): entradas 16801: PERDIDA 0, VARIA 0, ESTABLE 16801; y, solo por la corrida de un filtro que no esta en el GREEN (RackCad.UI.Tests.PushBackFieldValidationConcordanceTests), 118 lineas o ramas en 3 archivos; **ninguna PERDIDA**; VARIA, declaradas (una prueba que no cambia y una cobertura que varía entre corridas, no caminos perdidos): ninguna; las ESTABLE (16801) las sigue cubriendo el GREEN con Core, o con las tres corridas de todos los filtros juntos y al menos un filtro en su proceso (`cov-p6-v54.txt`, «Bajan (informativo)»). Las 37-38 de `RackViewBatchDialogPresenter.cs`, el ruido que motivó D-S16, no bajan en esta corrida (la unión las cubre en los dos lados); se declaran igual en `compile-check.md`: no son un camino perdido.
+
+**Lo que la medida no ve,** declarado: la cobertura de datos (que un corpus pase entero por un camino que ya está cubierto línea a línea; por eso M-01 se resolvió por lectura, no por la medida); el Plugin, que no carga ninguna prueba; y la UI fuera de los filtros, que no cambia (el RED solo quita pruebas de UI dentro de ellos y el GREEN no toca la UI); la CI completa de UI lo cubre (C06/C16).
+
+**Si cualquier otra prueba falla,** fuera de la lista, es PBT4D-C16 y vuelve al Owner (`owner-pbt4d-list-decisions.md`, pregunta 4).
+
+
 ## 5. La red de pruebas
 
 ### 5.0 Reglas comunes (enteras; V41-12)
@@ -1705,7 +1866,7 @@ Las otras pruebas de las mismas guardas que nombran lo retirado solo por su ayud
 
 ### 5.4 La CI del RED
 
-`tests` en failure, `build-ui` en success y `build-plugin` omitido. `ui-tests`: en failure en PB-T4b y PB-T4c; en success en PB-T4a, que no añade pruebas de UI.
+`tests` en failure, `build-ui` en success y `build-plugin` omitido. `ui-tests`: en failure en PB-T4b y PB-T4c; en success en PB-T4a, que no añade pruebas de UI, y en PB-T4d, que no añade ninguna CT de UI y cuyas bajas de UI no caen.
 
 ### 5.5 Lo que queda para el Smoke-PB (PB-T5, D-PB-09; I-10; M-27)
 
@@ -1730,6 +1891,33 @@ Más los riesgos del borrado real de PB-T3c (F4B-E48, `f4b-dispositions.md:1609`
 - OWNER-3: los bloques dinámicos.
 
 Se observan con «Editar todo» → «Actualizar» sobre racks reales, y junto a la línea «Vistas: se borrará…» de la presentación. Los racks A/B fabricados se rotulan «CONSTRUCTED REPRESENTATIVE TEST CASES».
+
+### 5.6 PB-T4d: la lista cerrada CT-PBT4D-01 y 02 (entera; V52-04; V53-01)
+
+**Las reglas de §5.0,** enteras: un `[Fact]` por CT, que acaba en un `Assert.Equal` de las líneas unidas por `\n`; ninguna `[Theory]` nueva; la regla «EXCEPCION». Las dos CT van en `tests/RackCad.Tests/`, con `namespace RackCad.Tests` y `#nullable enable` en su cabecera. Ningún nombre de clase nueva empieza por `Workspace` ni por el prefijo de un filtro heredado: el prefijo `PushBackRetirePilot` no lo es de ninguno (D-S12).
+
+**De dónde sale cada línea:** de su clase, literal del paquete (anexo V54-A; sin cambio desde la v5.2). El ensayo de las CT de texto (§6.4.1, el paso 8) las corre tal cual sobre el RED y sobre el GREEN.
+
+| CT | Qué fija | Las líneas (literales del paquete) | Clase | `ExpectRed` |
+|---|---|---|---|---|
+| **01** | **La retirada, en texto** (D-PBT4-10; D-S11; `owner-pbt4d-deadcode-27-decisions.md`, pregunta 1): sobre el texto de `src/` sin comentarios, los dos archivos que se borran no existen; ninguna de las once declaraciones retiradas está en su archivo (las dos últimas, el modo de `BuildCore` que no borra vistas, `allowErase`, y su texto para una vista no disponible, `ViewUnavailablePrefix` y `ViewUnavailableSuffix`); ningún archivo de `src/` nombra lo retirado; y las siete piezas que se quedan están una vez. Con autopruebas sobre texto inyectado en memoria | `retirado-archivo PushBackPilotStateComparer.cs existe=False`; `retirado-archivo PushBackPilotFieldAdapter.cs existe=False`; `retirado PushBackPilotMaterializer.ComposeForWrite=0`; `retirado PushBackPilotMaterializer.KeepPilotEditsOn=0`; `retirado PushBackPilotComposition=0`; `retirado PushBackPilotPrepareInput=0`; `retirado PushBackPilotUpdatePlanner.Prepare=0`; `retirado PushBackPilotUpdatePlanner.Build=0`; `retirado PushBackPilotUpdateRun.Precheck(piloto)=0`; `retirado PushBackPilotUpdateRun.Execute=0`; `retirado PushBackPilotUpdateRun.ComparePost=0`; `retirado PushBackPilotUpdatePlanner.BuildCore(allowErase)=0`; `retirado PushBackPilotUpdatePlanner.ViewUnavailable=0`; `src-nombra-lo-retirado archivos=[]`; `se-queda PushBackPilotIntentReader.Read=1`; `se-queda PushBackPilotMaterializer.Materialize=1`; `se-queda PushBackPilotDraftState=1`; `se-queda PushBackPilotUpdatePlanner.PrepareFull=1`; `se-queda PushBackPilotUpdateRun.ExecuteFull=1`; `se-queda PushBackPilotUpdateRun.Precheck(completo)=1`; `se-queda PushBackPilotUpdateRun.ComparePostFull=1`; `autoprueba-archivo-PushBackPilotStateComparer.cs=falla`; `autoprueba-archivo-PushBackPilotFieldAdapter.cs=falla`; `autoprueba-PushBackPilotMaterializer.ComposeForWrite=falla`; `autoprueba-PushBackPilotMaterializer.KeepPilotEditsOn=falla`; `autoprueba-PushBackPilotComposition=falla`; `autoprueba-PushBackPilotPrepareInput=falla`; `autoprueba-PushBackPilotUpdatePlanner.Prepare=falla`; `autoprueba-PushBackPilotUpdatePlanner.Build=falla`; `autoprueba-PushBackPilotUpdateRun.Precheck(piloto)=falla`; `autoprueba-PushBackPilotUpdateRun.Execute=falla`; `autoprueba-PushBackPilotUpdateRun.ComparePost=falla`; `autoprueba-PushBackPilotUpdatePlanner.BuildCore(allowErase)=falla`; `autoprueba-PushBackPilotUpdatePlanner.ViewUnavailable=falla`; `autoprueba-uso-en-WorkspaceHostCore.cs=falla` (35) | `PushBackRetirePilotGuardTests` | true |
+| **02** | **El censo de `tests/`** (D-S11): ningún archivo `.cs` de los dos proyectos de pruebas nombra lo retirado como código (sin comentarios ni literales de cadena o de carácter, también los literales verbatim, interpolados y crudos). Con autopruebas: cada nombre, inyectado como código en el texto de un archivo en memoria | `tests archivos-revisados>0=True nombran-lo-retirado=[]`; `autoprueba-PushBackPilotStateComparer-en-WorkspacePilotPrepareFull.cs=falla`; `autoprueba-PushBackPilotFieldAdapter-en-WorkspacePilotPrepareFull.cs=falla`; `autoprueba-ComposeForWrite-en-WorkspacePilotPrepareFull.cs=falla`; `autoprueba-KeepPilotEditsOn-en-WorkspacePilotPrepareFull.cs=falla`; `autoprueba-PushBackPilotPrepareInput-en-WorkspacePilotPrepareFull.cs=falla`; `autoprueba-PushBackPilotComposition-en-WorkspacePilotPrepareFull.cs=falla`; `autoprueba-ComparePost-en-WorkspacePilotPrepareFull.cs=falla`; `autoprueba-PushBackPilotUpdatePlanner.Prepare-en-WorkspacePilotPrepareFull.cs=falla`; `autoprueba-PushBackPilotUpdateRun.Execute-en-WorkspacePilotPrepareFull.cs=falla`; `autoprueba-ViewUnavailable-en-WorkspacePilotPrepareFull.cs=falla` (11) | `PushBackRetirePilotCensusGuardTests` | **false** |
+
+- **En CT-01,** las expresiones de cada declaración son las de la clase (anexo V52-A): las de lo retirado se cuentan en su archivo (`allowErase` como palabra; las dos constantes con `\bViewUnavailable(?:Prefix|Suffix)\b`); `src-nombra-lo-retirado` busca los siete nombres como palabra y las dos llamadas (`PushBackPilotUpdatePlanner.Prepare(` y `PushBackPilotUpdateRun.Execute(`) en todo `src/` sin comentarios; un archivo que no existe es su texto vacío, y la autoprueba de un archivo le da un texto.
+- **En CT-02,** los nombres son los mismos siete, las dos llamadas y las dos constantes de la vista no disponible; `ComparePost` se busca como palabra, así que `ComparePostFull` y `ComparePostCore` no casan.
+
+**Lo que fija cada `ExpectRed`:**
+- **En el RED,** `src/` sigue con el piloto: CT-01 cae por su `Assert.Equal` (los dos archivos existen, las once declaraciones están y cinco archivos de `Pilot/` nombran lo retirado). CT-02 pasa: el RED ya quitó de `tests/` todo lo que lo nombra.
+- **En el GREEN,** las dos pasan.
+
+**Las clases:** Core, `ExpectRed` true: **`PushBackRetirePilotGuardTests`** (CT-01); Core, `ExpectRed` false: **`PushBackRetirePilotCensusGuardTests`** (CT-02). **2 CT de Core y ninguna de UI.**
+
+**Y las tres clases nuevas que no son CT** (su texto es el de la pieza del RED y no admiten reparación; §6.4.1), en Core y con `ExpectRed` false:
+- **`PushBackRetirePilotFullCopyGuardTests`** (D-S12): el equivalente de PB-T4c de CT-PBT4B-20, copia literal con los `BaseSha`, los `Skip`, las `CopySha` y los recuentos que PB-T4d cambia (`make_fullcopy_eq_v52.py`, sobre los textos finales del RED de la v5.3); sus líneas esperadas son las del original, las mismas 53;
+- **`PushBackRetirePilotPlanGuardTests`** (D-S12): las dos guardas de `WorkspacePilotPrepareGuardTests`, cada una con su cambio declarado;
+- **`PushBackRetirePilotRunTests`** (`owner-pbt4d-run-coverage-decision.md`; `owner-pbt4d-deadcode-27-decisions.md`, pregunta 2; `owner-pbt4d-cat4d-decisions.md`, pregunta 1): las 29 sustitutas de `WorkspacePilotUpdateRunTests` sobre el modelo completo, con el ayudante `FullUpdateSetup` (`v53/make_run_eq_v53.py`): 27 de la corrida genérica, sobre `ExecuteFull`, y la n.º 48 y la n.º 49, de `PushBackPilotSystemRebuild` sobre el plan del PREPARE completo (CA-T4d I-01). 26 por el mapa de PB-T4b (la n.º 48, con una nota); a mano, la n.º 10 (el `Invalid` de PREPARE dentro de la corrida es la frontal B de un rack sin lado B), la n.º 43 (la lectura y la comparación de POST del modelo completo) y la n.º 49 (solo el comentario del lector). 31 resultados (la n.º 42 es una `Theory` de 3).
+
+Las tres pasan en las dos ramas: el RED ya lleva los textos de `tests/` que miden, y `PrepareFull`, `PushBackFullPrepareInput`, su fábrica, `ExecuteFull` y `PushBackPilotSystemRebuild` no cambian en el GREEN.
 
 ## 6. Los contratos propuestos
 
@@ -1756,7 +1944,7 @@ Si no, hay que añadir un literal al sustituto y volver a revisarlo (F4B-E43).
 - **PB-T4a:** WEI, WHC, RIA y NH;
 - **PB-T4b:** WHC, WEI, FVM, PV, `src/RackCad.UI/Controls/NumericFieldValidation.cs` y RIA (D-S4, V45-02; el GREEN literal no toca `WorkspacePilotSupport.cs`, WCo ni NH). **Ningún archivo de `Pilot/`:** la retirada es de PB-T4d;
 - **PB-T4c:** WHC, `IWorkspacePilotEditPort.cs`, `WorkspacePilotSupport.cs`, WEI, FVM, `WorkspacePanelView.xaml` y `WorkspacePanelView.xaml.cs`, WCo y `RackPushBackSystemWindow.xaml.cs` (W; `W.xaml` no cambia);
-- **PB-T4d:** los archivos de `Pilot/` que retira (§6.4), con su contrato.
+- **PB-T4d:** los seis archivos de `Pilot/` del alcance (§6.4): `PushBackPilotMaterializer.cs`, `PushBackPilotUpdatePlan.cs`, `PushBackPilotUpdateRun.cs` y `PushBackPilotDraftState.cs` (solo comentarios, D-S15), que cambian, y `PushBackPilotStateComparer.cs` y `PushBackPilotFieldAdapter.cs`, que se borran.
 
 **En una corrección** (F4B-E25, `F4B-DRAFTS/coordinator/owner-f4b-correction-unit-change-decision.md`), una ruta `UNIT_CHANGE` que aparezca en `git diff --name-only AuthorityRevision BaseSha` no incumple 16.3 si se cumplen las tres condiciones del Owner, que el Controller comprueba con git:
 1. todo commit de `AuthorityRevision..BaseSha` que la toca es un `RedSha` o un `CurrentSha` de una entrega de un Worker de la misma cadena (el mismo `TaskId`), según su `worker-handoff.json`;
@@ -1806,7 +1994,7 @@ El Worker no elige ninguna salida.
 
 **La reparación del RED** (F4B-E35, pregunta 4, la regla RR del Owner; como en [P3] §6.0): un error de escritura en una prueba nueva de la tarea, visto después del commit RED, se repara sin gastar intento (RR-7) si se cumple todo lo que sigue. La regla excepciona AUTOMATION_PLAN 16.8 («tests/ no se toca tras el RED») solo en estas condiciones:
 - **RR-1, cuándo:** después del commit RED y su push, y antes del commit GREEN; como mucho una reparación por intento. Un segundo error de escritura en el mismo intento es la parada de siempre (C07).
-- **RR-2, qué toca:** solo archivos de `tests/` que el commit RED de la tarea añadió; nunca una prueba existente, ni `src/` (tampoco el esqueleto inerte del RED), ni un fixture, ni nada fuera del `AllowedWriteScope`. **En PB-T4a,** `PushBackDraftWriteGuardTests.cs` no lo añadió el RED, sino que lo cambió (el `Skip`): una reparación no lo toca, y un error en el `Skip` o en su motivo literal es la parada de siempre. **En PB-T4b,** lo mismo para los 21 archivos con sus `Skip`; y una reparación tampoco toca el kit ni las 21 copias, cuyo texto es el del paquete.
+- **RR-2, qué toca:** solo archivos de `tests/` que el commit RED de la tarea añadió; nunca una prueba existente, ni `src/` (tampoco el esqueleto inerte del RED), ni un fixture, ni nada fuera del `AllowedWriteScope`. **En PB-T4a,** `PushBackDraftWriteGuardTests.cs` no lo añadió el RED, sino que lo cambió (el `Skip`): una reparación no lo toca, y un error en el `Skip` o en su motivo literal es la parada de siempre. **En PB-T4b,** lo mismo para los 21 archivos con sus `Skip`; y una reparación tampoco toca el kit ni las 21 copias, cuyo texto es el del paquete. **En PB-T4d,** el RED cambia 26 archivos existentes de `tests/` (edita 23 y, desde la v5.3, borra 3) y añade cinco: una reparación solo toca las dos clases de las CT (`PushBackRetirePilotGuardTests.cs` y `PushBackRetirePilotCensusGuardTests.cs`), nunca los 26 existentes ni las tres clases nuevas que no son CT, cuyo texto es el del paquete.
 - **RR-3, sin cambiar lo esperado:** ninguna línea esperada, literal ni oráculo del paquete o del contrato cambia; la reparación corrige solo el cuándo y el cómo de una lectura o de un gesto que el paquete ya prescribe. Si para que la prueba pase hace falta cambiar una línea esperada, es C07.
 - **RR-4, el RED repetido entero:** sobre `RedRepairSha` se vuelve a pasar el criterio completo del RED del contrato (INV-PBT4x-02); el commit se empuja y su CI se registra como la del RED reparado.
 - **RR-5, declarado:** el commit se titula «RED repair» y nombra la tarea; la entrega declara `RedRepairSha`, la prueba y la línea corregidas, el error y por qué no cambia ninguna línea esperada, con el diff; `RedSha` sigue siendo el commit RED original.
@@ -1816,7 +2004,7 @@ El Worker no elige ninguna salida.
 **La verificación con una reparación del RED** (F4B-E35, RR-7):
 - **n.º 10 (`Tests`):** el RED se acredita con `RedSha` y con la CI del RED original, y sus TRX, con los filtros con `ExpectRed` entre los fallidos. La cláusula «`git diff --name-only RedSha CurrentSha` no toca `RT` ∪ `ChainRedFiles`» se comprueba desde `RedRepairSha`.
 - **n.º 11 (`Trailer`):** el trailer va también en el commit «RED repair».
-- **Lo que el Controller comprueba de RR** (si algo falla, es C18): RR-1, RR-2, RR-4, RR-5 y RR-6, como en PB-T3c. **Por subtarea, además,** el tramo `RedSha..RedRepairSha` no toca: en PB-T4a, ningún archivo de `src/` ni `PushBackDraftWriteGuardTests.cs`; en PB-T4b, ningún archivo de `src/`, ni los 21 archivos de los `Skip`, ni el kit, ni las copias; en PB-T4c, ningún archivo de `src/`, ni los cuatro equivalentes, ni los cuatro archivos de los `Skip` (PEG, `PushBackSharedReferenceGuardTests.cs`, `WorkspaceFullCopyGuardTests.cs` y `PushBackWorkspaceApplyCloseTests.cs`). **Los equivalentes no admiten reparación** (RR-2): su texto es el del guion, con su `EquivalentSha` (§6.3.1), y no tienen fila en la tabla de abajo, que es la de las clases de las CT.
+- **Lo que el Controller comprueba de RR** (si algo falla, es C18): RR-1, RR-2, RR-4, RR-5 y RR-6, como en PB-T3c. **Por subtarea, además,** el tramo `RedSha..RedRepairSha` no toca: en PB-T4a, ningún archivo de `src/` ni `PushBackDraftWriteGuardTests.cs`; en PB-T4b, ningún archivo de `src/`, ni los 21 archivos de los `Skip`, ni el kit, ni las copias; en PB-T4c, ningún archivo de `src/`, ni los cuatro equivalentes, ni los cuatro archivos de los `Skip` (PEG, `PushBackSharedReferenceGuardTests.cs`, `WorkspaceFullCopyGuardTests.cs` y `PushBackWorkspaceApplyCloseTests.cs`); en PB-T4d, ningún archivo de `src/`, ni los 26 archivos existentes de `tests/` que el RED edita, ni las tres clases nuevas que no son CT (`PushBackRetirePilotRunTests`, `PushBackRetirePilotFullCopyGuardTests` y `PushBackRetirePilotPlanGuardTests`). **Los equivalentes no admiten reparación** (RR-2): su texto es el del guion, con su `EquivalentSha` (§6.3.1), y no tienen fila en la tabla de abajo, que es la de las clases de las CT.
 - **La ayuda mecánica de RR-3:** es parada C07 que un literal de la lista cerrada de la clase reparada (la tabla de abajo) cambie entre `RedSha` y `RedRepairSha`: una línea o un fragmento, si no aparece como subcadena exacta el mismo número de veces; un valor de gesto, si no aparece como token el mismo número de veces.
 - **Indicios para la revisión, no parada:** una cadena `<campo>=` añadida o quitada en `git diff -U0 RedSha RedRepairSha`, o un cambio en el primer argumento de un `Assert.Equal`.
 
@@ -1937,10 +2125,14 @@ El Worker no elige ninguna salida.
 | PB-T4c | `PushBackOpenerClassicPathGuardTests` (CT-07) | **Líneas:** las de esas CT en §5.3, literales |
 | PB-T4c | `PushBackDraftLaunchGuardTests` (CT-15) | **Líneas:** `g-l1 archivos=2 reglas-sin-coincidencias=True`, `pureza archivos=2 violaciones=[]`, `cubre ApplyToDraft=PushBackFullDraftStatePort.cs`, y las fichas y los términos de la fila de CT-PBT4A-08 |
 | PB-T4c | `PushBackEditAllWindowTests` (UI; CT-02, 06, 09 y 14) | **Líneas:** las de esas CT en §5.3, literales **Valores:** `4.5` |
+| PB-T4d | `PushBackRetirePilotGuardTests` (CT-01) | **Líneas:** las 35 de CT-01 en §5.6, literales, y las expresiones e inyecciones de su tabla `Retired` |
+| PB-T4d | `PushBackRetirePilotCensusGuardTests` (CT-02) | **Líneas:** las 11 de CT-02 en §5.6, literales, y las expresiones e inyecciones de su tabla `RetiredUses` |
 
 **Las filas de PB-T4c** (V50-06) son una por clase de las CT, con su clase y sus CT, en la forma de la de CT-19 de PB-T4b; las líneas de CT-08, entre ellas la conversión y la llamada del abridor, son de `PushBackEditAllGuardTests`.
 
-**La lectura de `Ci` en el RED:** Core falla a propósito en el RED, y `build-plugin` tiene `needs: [tests, build-ui]` (`.github/workflows/ci.yml`), así que sale **omitido**. `ExpectedEvidence` lo pide así: `tests` en `failure`, `build-ui` en `success`, `build-plugin` omitido y `ui-tests` en `success` (PB-T4a) o en `failure` (PB-T4b y PB-T4c; en PB-T4c, con las 4 CT de UI y el equivalente de CT-PBT2B-06), sin cuelgue. **El total exacto de cada rama** (F4B-E46). En el GREEN, 4/4 en `success`.
+**Las filas de PB-T4d** (V52-07) son una por clase de las CT, como las de PB-T4c. Las tres clases nuevas que no son CT no tienen fila: no admiten reparación (RR-2).
+
+**La lectura de `Ci` en el RED:** Core falla a propósito en el RED, y `build-plugin` tiene `needs: [tests, build-ui]` (`.github/workflows/ci.yml`), así que sale **omitido**. `ExpectedEvidence` lo pide así: `tests` en `failure`, `build-ui` en `success`, `build-plugin` omitido y `ui-tests` en `success` (PB-T4a) o en `failure` (PB-T4b y PB-T4c; en PB-T4c, con las 4 CT de UI y el equivalente de CT-PBT2B-06), y en `success` en PB-T4d (sin CT de UI; sus bajas de UI no caen), sin cuelgue. **El total exacto de cada rama** (F4B-E46). En el GREEN, 4/4 en `success`.
 
 **El `Trailer`:** el de `worker-handoff.json` es el trailer real de los commits RED, «RED repair» (si lo hay) y GREEN, nunca `null` si los commits lo llevan.
 
@@ -2687,21 +2879,235 @@ ExpectedEvidence:
   - `pbt4c-substitution-list-4.tsv`, las piezas y los guiones de §6.3.2 y `pbt4c-precondition6.json` (UNIT_DOC);
   - y los 9 `UNIT_CHANGE` de `src/` (el texto literal del GREEN de PB-T4c, `pbt4c-green-v51.txt`).
 
-### 6.4 PB-T4d — la retirada del piloto (esbozo; V42-01)
+### 6.4 PB-T4d — `F4B-PBT4-RETIRE-PILOT` (entero; V52-01 a V52-08; V53-01 a V53-11; V54-01 a V54-07)
 
-**Solo un esbozo con su lista** (`owner-pbt4b-retire-list-decisions.md`): su contrato completo viene después, con su paquete y su comprobación, y **vuelve al Owner con su lista antes de emitirse**, porque la autorización condicional de `owner-pbt4-decisions.md` (pregunta 4) no la cubre.
+**Se emite por la autorización condicional de PB-T4d** (`owner-pbt4d-list-decisions.md`, pregunta 4: «Sí, con condiciones (Recomendado)»): si la comprobación acotada da 0 bloqueantes y 0 importantes, la remedición no cambia nada material y la lista es la elegida o una parte. **La lista** es la del alcance B (pregunta 1), con las sustitutas de `owner-pbt4d-substitutes-decision.md`, las 29 de WPUR (`owner-pbt4d-run-coverage-decision.md`, `owner-pbt4d-deadcode-27-decisions.md`, pregunta 2, y `owner-pbt4d-cat4d-decisions.md`, pregunta 1), la rama muerta de `BuildCore` (`owner-pbt4d-deadcode-27-decisions.md`, pregunta 1) y lo que la regla del Owner de `owner-pbt4d-cat4d-decisions.md` (pregunta 2) y la sesión añaden tras la comprobación acotada CA-T4d (M-01 y M-03): **`pbt4d-retire-list-271.tsv`**, sha256 `05a4d3d1905529c5bc4d53e0684d27d97eaa96502098eebeb9d16bfd931c75ac` (284 filas, 271 con acción y 13 que se quedan sin tocar). **La base:** el cierre de PB-T4c (F4B-E55, `6c2820bab4d8b41e3e229e23f3a1638ccbb04735`).
 
-- **`TaskId` propuesto:** `F4B-PBT4-RETIRE-PILOT` (21 caracteres, ≤ 26), con el prefijo `F4B-PBT4-` de los sustitutos de nc1 y nc2. Lo fija su paquete.
-- **Cuándo:** después del cierre de PB-T4c, cuando las copias y los equivalentes de PB-T4b llevan dos subtareas en verde.
-- **Qué hace:** retira lo de D-PBT4-10 (el comparador, el adaptador del campo, `KeepPilotEditsOn`, `ComposeForWrite`, y el `Prepare`, el `Precheck` y el `Execute` del piloto); se quedan el lector del piloto, su materialización, `PushBackPilotDraftState` y las constantes de `PushBackPilotMaterializer`.
-- **Su lista, medida en `7f0d9aa3`** (`pbt4d-retire-list-138.tsv`, sha256 `d5467dc162e2cda8c539a829cc8f3a7c46260a119f70e840b34e6f78dde0387c`, 54 952 bytes, la de la v4.3 sin WPUG:822-840; la genera `make_lists_475.py` desde `pbt4d-retire-list.tsv`, `1c9d67e8…8b71`, que hizo `split_lists_pbt4.py`):
-  - **138 sustituciones con registro** (C-7): 71 por texto, con E-3, E-5 y E-6 de D-1, y 67 que dejan de compilar (R-36); WPUG:822-840 pasó a PB-T4b (V44-01). Por clase, las de más peso: `WorkspacePilotUpdateRunTests` 48 de sus 49 (6 por texto y 42 por compilación), `WorkspaceDraftPilotMaterializationTests` 23, `WorkspaceDraftPilotStateTests` 22 y `PushBackFullWritePrepareTests` 9 de sus 9 (3 por texto y 6 por compilación);
-  - **55 borrados con registro** de originales de las 9 clases, saltadas desde PB-T4b, que dejan de compilar al retirar (EIH 2, WPEH 16, WPP 30 y WPRH 7);
-  - **29 miembros de apoyo** que nombran lo retirado, que se borran o se editan con registro (entre ellos `PilotUpdateSetup.Run` y `ExpectedPlan`, `PilotoEscribe` y `Paridad`, los dos campos `Comparer`, `OwnershipKits.Pilot` y la constante `Key` de `WorkspacePilotEditHostTests`);
-  - **CT-PBT4B-20,** cuyo punto 1 deja de valer para las 55 que se borran.
-- **La lista se vuelve a medir sobre el cierre de PB-T4c** antes de ir al Owner: PB-T4b y PB-T4c añaden pruebas, y alguna puede alcanzar lo que se retira.
-- **Su `UNIT_CHANGE`:** los archivos de `Pilot/` que retira.
-- **C02, con excepción declarada:** los borrados y las ediciones de su lista, cada uno con su registro; es lo que el Owner eligió al poner la retirada después de PB-T4c, cuando ya no corre ninguna de esas pruebas (I-26).
+- **Objective** (ASCII): el de §6.4.1.
+- **`AllowedWriteScope`** (37), ruta a ruta, en este orden:
+  - **src/, existentes que cambian (UNIT_CHANGE, 4):** 1. `src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs`, 2. `src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs`, 3. `src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs`, 4. `src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs` (solo comentarios, D-S15);
+  - **src/, existentes que se borran (UNIT_CHANGE, 2):** 5. `src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs`, 6. `src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotFieldAdapter.cs`;
+  - **tests/, existentes que el RED edita (23) o borra (3, bloques DELETE; CA-T4d M-03):** 7. `tests/RackCad.Tests/PushBackEditAllFullCopyGuardTests.cs`, 8. `tests/RackCad.Tests/PushBackFullWritePrepareTests.cs`, 9. `tests/RackCad.Tests/PushBackFullWriteRunTests.cs`, 10. `tests/RackCad.Tests/PushBackPilotUpdateEquivalenceGuardTests.cs`, 11. `tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs`, 12. `tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs`, 13. `tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs`, 14. `tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs`, 15. `tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs`, 16. `tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardFull.cs`, 17. `tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs`, 18. `tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs`, 19. `tests/RackCad.Tests/Workspace/WorkspacePilotPrepareFull.cs`, 20. `tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs`, 21. `tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs`, 22. `tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs`, 23. `tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs`, 24. `tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs`, 25. `tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs`, 26. `tests/RackCad.Tests/Workspace/WorkspacePilotUpdateScopeDouble.cs`, 27. `tests/RackCad.UI.Tests/PushBackDeclaredCorrectionPilotParityTests.cs` (se borra), 28. `tests/RackCad.UI.Tests/PushBackDeclaredCorrectionSupport.cs`, 29. `tests/RackCad.UI.Tests/PushBackFieldValidationConcordanceTests.cs` (se borra), 30. `tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotCanonicalLineEndingTests.cs` (se borra), 31. `tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs`, 32. `tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs`;
+  - **tests/, nuevos (5):** 33. `tests/RackCad.Tests/PushBackRetirePilotGuardTests.cs`, 34. `tests/RackCad.Tests/PushBackRetirePilotCensusGuardTests.cs`, 35. `tests/RackCad.Tests/PushBackRetirePilotRunTests.cs`, 36. `tests/RackCad.Tests/PushBackRetirePilotFullCopyGuardTests.cs`, 37. `tests/RackCad.Tests/PushBackRetirePilotPlanGuardTests.cs`;
+  - **ningún otro archivo de `src/`** (ni de `Pilot/`), ni la ventana, ni el panel, ni el Plugin: el GREEN literal no los cambia.
+- **`UNIT_CHANGE`:** las 6 de `src/` (4 que cambian y 2 que se borran; F4B-E25).
+- **`ForbiddenWriteScope`:** el método de [PKC-C] con el precedente de PB-T3c y de PB-T4a a PB-T4c en `tests/` (la lista explícita del contrato anterior, menos las rutas de `tests/` de este alcance; un prefijo prohibido que cubre una de ellas se sustituye por la lista de sus archivos), más las clases de PB-T4c tras su cierre (sus cinco clases de las CT y sus cuatro equivalentes), salvo las de este alcance (`PushBackEditAllFullCopyGuardTests.cs`, solo para su `Skip`). **El número lo da la regla del generador sobre el alcance final en `6c2820ba`** (`<medido por el generador>`).
+- **El RED** (un commit, con su push antes del GREEN; D-S11): **todo lo de `tests/`,** el texto literal de la pieza `pbt4d-red-v54.txt` (sha256 `80f8cc0c5c9f54de033648e7eec95728fa0fc0d28e31886101207e3dbec381db`): las bajas con registro, las ediciones con registro, los 3 `Skip` (D-S12), la prueba lenta acotada (D-S14), los vacíos de M-04 (D-S13), las 29 sustitutas de WPUR, el corpus de CT-PBT3B-06 sobre el modelo completo (CA-T4d M-01), los ayudantes sin uso y los 3 archivos sin pruebas que se borran (CA-T4d M-03) y los 5 archivos nuevos. **`src/` queda intacto: no hay esqueleto.** **La herramienta:** `python -I apply_red_pbt4d_v53.py <dir-copia> --repo <checkout> --rev 6c2820ba` escribe exactamente eso (y borra los 3 archivos de los bloques DELETE), tras comprobar que la copia es de la revisión; el Worker puede usarla sobre su worktree o copiar sus salidas. Imprime el sha256 de cada archivo.
+- **El GREEN:** solo `src/`, el texto literal de `pbt4d-green-v54.txt` (sha256 `aaf6cab882cfb3eba6939fd8b64ec1fa15c22431ba8bdaeb9bcdf4dbb89ffbf0`; `apply_green_pbt4d_v53.py` lo escribe en una copia): 4 archivos cambiados y 2 borrados. `tests/` no cambia después del RED (salvo una reparación del RED, solo en las dos clases de las CT).
+- **`RequiredTests`:** la tabla de §6.4.1 (88: 83 heredados y 5 nuevos).
+- **Invariantes:** INV-PBT4D-01 a 07 y 13 (§6.4.1) y los comunes 08 a 12 y 14.
+- **`StopConditions`:** las 17 estándar y PBT4D-C01 a C14, C16, C17 y C18 (§6.4.1): 34.
+- **`ExpectedEvidence`:** §6.4.1.
+- **La línea base:** el cierre de PB-T4c (F4B-E55, `6c2820ba`), con la CI de su GREEN (`44959653142` sobre `7cc1076e`).
+
+#### 6.4.1 Los textos literales del contrato de PB-T4d
+
+Para la comparación del generador, en ASCII, campo a campo. Todo está medido en `6c2820ba`; lo que da el generador va como `<medido por el generador>`.
+
+```text
+TaskId: F4B-PBT4-RETIRE-PILOT
+
+Objective:
+Retirar el codigo del piloto de Push Back que el panel ya no usa desde PB-T4b, con el alcance B que eligio el Owner (owner-pbt4d-list-decisions.md, pregunta 1): el comparador del piloto y el adaptador de su campo, enteros; ComposeForWrite, KeepPilotEditsOn y la composicion del piloto (PushBackPilotComposition); la instantanea del piloto (PushBackPilotPrepareInput), su Prepare y su Build; el Precheck, el Execute y el ComparePost del piloto; y, en BuildCore, el modo que no borra vistas (el parametro allowErase y lo que solo existe con el: la rama de la vista no disponible y sus dos constantes, ViewUnavailablePrefix y ViewUnavailableSuffix; owner-pbt4d-deadcode-27-decisions.md, pregunta 1); y limpiar los cuatro cref y el comentario que nombran lo retirado (D-S15) y los comentarios que describian como presentes la corrida, el PREPARE y la composicion para escribir del piloto (CA-T4d M-05). Se quedan el lector del piloto, su materializacion, PushBackPilotDraftState, las constantes de PushBackPilotMaterializer, PrepareFull, ExecuteFull, el Precheck del borrador completo, ComparePostFull, BuildFull y BuildCore. El RED lleva todo lo de tests/ con el texto literal del paquete (D-S11): la lista exacta pbt4d-retire-list-271.tsv, cada fila con su accion (borrar con registro, reescribir con registro, sustituir con registro, acotar con registro), los tres Skip con su equivalente (D-S12), los vacios de M-04 reescritos (D-S13), la prueba lenta acotada (D-S14), las 29 sustitutas de WorkspacePilotUpdateRunTests sobre el modelo completo (27 de la corrida generica sobre ExecuteFull, owner-pbt4d-deadcode-27-decisions.md, pregunta 2, y 2 de PushBackPilotSystemRebuild, owner-pbt4d-cat4d-decisions.md, pregunta 1), el corpus de CT-PBT3B-06 sobre PrepareFull (CA-T4d M-01), los ayudantes que la retirada deja sin uso y las tres clases que deja sin pruebas, borrados con registro (CA-T4d M-03), y las dos CT, CT-PBT4D-01 y 02; el GREEN solo toca src/, con el texto literal del paquete, segun el paquete del contrato de PB-T4 v5.4. Ningun cambio de comportamiento: ni el panel, ni la ventana, ni RACKEDITAR, ni el Plugin; la recarga de Editar todo va a una tarea propia (pregunta 2); cero escrituras en el DWG; no se ejecuta AutoCAD.
+
+Invariants:
+INV-PBT4D-01. Alcance: dentro de las 37 rutas. git diff BaseSha..CurrentSha -- src/RackCad.Domain src/RackCad.UI src/RackCad.Plugin vacio; en src/RackCad.Application solo los seis archivos de Systems/PushBack/Pilot/ del alcance (cuatro cambian y dos se borran); en tests/ solo los 26 archivos existentes (23 que el RED edita y 3 que borra) y los 5 nuevos del alcance, con el texto literal de la pieza del RED.
+INV-PBT4D-02. RED y GREEN: el RED es la pieza literal de tests/ (pbt4d-red-v54.txt, sha256 80f8cc0c5c9f54de033648e7eec95728fa0fc0d28e31886101207e3dbec381db), byte a byte, y src/ sin cambio (no hay esqueleto, D-S11); el GREEN solo toca src/, con el texto literal del paquete (pbt4d-green-v54.txt, sha256 aaf6cab882cfb3eba6939fd8b64ec1fa15c22431ba8bdaeb9bcdf4dbb89ffbf0). En el RED, el filtro con ExpectRed (CT-PBT4D-01, PushBackRetirePilotGuardTests) da Failed por asercion (la primera linea del StackTrace bajo tests/), con Failed == Selected; los filtros con ExpectRed false pasan, y las autopruebas de CT-PBT4D-01 y 02 fallan sobre el texto inyectado. Con una reparacion del RED (F4B-E35, RR): RedSha..RedRepairSha solo toca las dos clases de las CT y ningun archivo de src/, ni los 26 archivos existentes de tests/, ni las tres clases nuevas que no son CT; el criterio se repite entero sobre RedRepairSha; y RedRepairSha..CurrentSha es el GREEN de arriba.
+INV-PBT4D-03. Lo retirado y lo que se queda: exactamente D-PBT4-10 (v5.3) con el texto literal del GREEN del paquete; lo retirado no esta en src/ ni lo nombra ningun archivo de src/, y las siete piezas que se quedan (el lector del piloto, Materialize, PushBackPilotDraftState, PrepareFull, ExecuteFull, el Precheck del borrador completo y ComparePostFull) estan una vez (CT-PBT4D-01); ningun archivo de tests/ nombra lo retirado como codigo (CT-PBT4D-02).
+INV-PBT4D-04. Sin cambio de comportamiento: el panel, la ventana, RACKEDITAR y el Plugin no cambian; la corrida generica, el plan y la comparacion de POST del modelo completo dan lo mismo que en BaseSha (la red de section 5, las 29 sustitutas y las ediciones con registro en verde).
+INV-PBT4D-05. Las sustitutas y los equivalentes, literales: PushBackRetirePilotRunTests (las 29 de WPUR sobre el modelo completo: 27 de la corrida, sobre ExecuteFull, y 2 de PushBackPilotSystemRebuild), PushBackRetirePilotFullCopyGuardTests (el equivalente de CT-PBT4B-20) y PushBackRetirePilotPlanGuardTests (las dos guardas de WorkspacePilotPrepareGuardTests), byte a byte el texto de la pieza del RED, con su sha256 (NewFileSha); los tres originales de D-S12 con su Skip de motivo literal en su linea de atributo.
+INV-PBT4D-06. La cobertura, de todo el codigo de src/ que se queda (CA-T4d I-02; owner-pbt4d-cat4d-decisions.md, pregunta 2): cada linea que la suite completa de Core o los filtros de UI de PB-T4c y de PB-T4d ejecutan en BaseSha, fuera de lo que retira el GREEN literal, se ejecuta en CurrentSha, y cada rama que cubren en BaseSha sigue cubierta en CurrentSha (medido en la precondicion 6, linea a linea y rama por rama, con coverlet en JSON sobre RackCad.Domain, RackCad.Application y RackCad.UI). Todo camino que se queda y pierda su unica prueba tiene una sustituta sobre el modelo completo; las 436 lineas y las 9 ramas de la v5.2 son un conjunto vigilado dentro de este.
+INV-PBT4D-07. Las redes: section 5 en verde. Ninguna prueba existente se edita, se salta, se reactiva ni se borra, salvo las 271 filas con accion de la lista cerrada (pbt4d-retire-list-271.tsv, sha256 05a4d3d1905529c5bc4d53e0684d27d97eaa96502098eebeb9d16bfd931c75ac), cada una como dice su accion y con el texto literal de la pieza del RED.
+INV-PBT4D-08. Las pruebas de UI: las reglas de section 5.0.
+INV-PBT4D-09. Determinismo: GUID fijo, cultura invariante, "R" y orden ordinal; ni hora ni aleatoriedad.
+INV-PBT4D-10. Las corridas locales: solo los filtros del contrato en UI; nunca la suite completa de UI en local; la de Core, si; sin copias de arboles; las corridas temporales terminan en Assert.Fail(string.Join("\n", lineas)), corren dentro de EditorDiscardPrompt.Substitute cuando abren ventanas, no entran en ningun commit y guardan TRX y log como artefactos.
+INV-PBT4D-11. La evidencia: rutas relativas comprobadas en worker-handoff.json; TreeSha real o null; el Trailer, el real; el Worker no escribe en docs/.
+INV-PBT4D-12. Las reglas de F4B; sin AutoCAD; la verificacion con las tres comprobaciones deterministas de F4B-E15.
+INV-PBT4D-13. Las declaraciones de src/: ninguna nueva; las quitadas, exactamente las de la lista cerrada de PBT4D-C13, por nombre y con su cuenta, sobrecargas y tipos anidados incluidos; y allowErase no aparece en src/.
+INV-PBT4D-14. D2: fuera de las dos referencias de cada lado, ninguna copia comparte un objeto mutable con su original. Ninguna linea anadida muta un PushBackSystem ni un RackModuleReconciliationResult adoptado.
+
+StopConditions (propias):
+PBT4D-C01: doing the task would require writing outside the AllowedWriteScope.
+PBT4D-C02: it would require editing, skipping, re-enabling or deleting an existing test or helper, or touching InternalsVisibleTo, the packages, a .csproj or Fixtures/I64. No exception outside the closed list of PB-T4d: the 271 rows with an action of pbt4d-retire-list-271.tsv (sha256 05a4d3d1905529c5bc4d53e0684d27d97eaa96502098eebeb9d16bfd931c75ac), each as its action says (delete with record, rewrite with record, substitute with record, bound with record), with the literal text of the RED piece pbt4d-red-v54.txt (sha256 80f8cc0c5c9f54de033648e7eec95728fa0fc0d28e31886101207e3dbec381db), and nothing else in tests/. Any existing test that fails, outside that list, returns to the Owner.
+PBT4D-C03: an observable change appears, of RACKEDITAR, of the panel, of the window, of the Plugin or of the write of the drawing: PB-T4d retires code that the panel no longer uses and changes no behaviour. STOP and return to the Owner.
+PBT4D-C04: a method of a filter with ExpectRed passes on the RED, or fails by an exception and not by an assertion.
+PBT4D-C05: a CT would need AutoCAD, a real MessageBox, the real configurator, the BOM, "Guardar en biblioteca", "Insertar", real keyboard or focus, or writing to the profile or to disk.
+PBT4D-C06: the GREEN CI fails outside the new tests, reproducibly and not attributable to them.
+PBT4D-C07: a fact of section 2 does not hold in a way that changes a CT or the design; or an expected line is not met in the GREEN; or a self-checking recipe (the self-tests of CT-PBT4D-01 and CT-PBT4D-02) does not exercise its path. The Worker does not adjust what is expected; except under F4B-E35 (the RED repair rule, RR): a writing error in a new CT of this task (one of its two classes; never the three new classes that are not CTs, whose text is the package one), found after the RED push and before the GREEN, is repaired without this stop and without spending an attempt by one declared RED repair commit that touches only test files the RED added and changes only the when or the how of a reading the package already prescribes, and no expected line, literal or oracle of the package or the contract, with the full RED criterion rerun on RedRepairSha; a second writing error in the same attempt, a repair that needs an expected line changed, or a literal line the package fixes for the repaired class that does not stay byte for byte in it, is this stop. A substitute or an equivalent of the three new classes that fails in the RED or in the GREEN is this stop too: the session issues a package version with its text.
+PBT4D-C08: a planning output rejected ONLY by the literal byte-fidelity comparison of the collections before the Worker allows ONE replanning with a reinforced prompt, without consuming an attempt ([DP] question 2); a second planning fidelity rejection is STOP and returns to the Owner; any other planning rejection (A1-A8 or another cause) is STOP and returns to the Owner
+PBT4D-C09: a test would hang, leave a window, a modal or a dispatcher alive, write to the profile or depend on machine paths.
+PBT4D-C10: doing the task would require what the scope of PB-T4d excludes: touching a file of src/ other than the six of Pilot/ of the AllowedWriteScope, or a text of those six other than the literal GREEN; retiring or changing what stays (the reader of the pilot, its materialization, PushBackPilotDraftState, the constants of PushBackPilotMaterializer, PrepareFull, PushBackFullPrepareInput, BuildFull, BuildCore, ExecuteFull, the Precheck of the full draft, ComparePostFull, ComparePostCore or DesiredNamesOf); the reload of Editar todo over a clean draft that may be stale (owner-pbt4d-list-decisions.md, question 2: its own task after PB-T4d); touching the classic editor, RACKEDITAR, the window, the panel or the Plugin; or touching tests/ other than with the literal RED piece.
+PBT4D-C11: a negative control (nc1, nc2 or nc3) does not give CONTROL PASS: its ordinary output is kept as is and there are only two exits without returning to the Owner ([DP] question 1, "Extender firmas exactas"): (1) nc2 with the EXACT signature of PD-F4-01 (source f4-dispositions.md:1103-1106: Scope in fail on the removed path; Contract in fail only by the exactness clause; EXECUTION_BLOCKED/STOP; applied literally at :1540: no check other than the real verification differs; the exactness clause includes Contract evidence citing the contrast of the narrowed AllowedWriteScope with the contract or with byte-fidelity-check.json, f4-dispositions.md:520, :562, and nothing else) -> substitute PBT4-NC2-EXACT-WHITELIST-F4B-01, the version 2 of PBTx-NC2-EXACT-WHITELIST-F4B-01 (F4B-E43: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/nc2-substitute-f4b-v2/nc2_exact_whitelist_substitute_f4b_v2.py, SHA-256 c033e96ce147963feb9c04733e9bfbec7493fea33d8ff79b1c2e8ab860798e45; owner-pbt3a-nc2-decision.md, "Aceptar y ampliar el sustituto"), whose property 8 admits only the closed list of the exact literals of the evidence entry of the byte-by-byte comparison, one per package (PB-T2 and PB-T3), with its reviewed text unchanged and run with --task PBT4 in the F4B-E21 mode with the injection note and the raw output of this task's accepted planning, recorded as nc2 = SATISFIED_UNDER_PBT4_EXACT_WHITELIST_SUBSTITUTE_F4B; if inject_opaque.py changed since that run, the substitute is reviewed before it is reused; (2) nc1 with the signature PD-F4B-01, the false SHA cascade (F4B-E40: owner-pbt2c-nc1-decision.md, its conditions (a) to (f): the mutation only changes the CurrentSha of the handoff to a SHA that does not exist in the repository; EXECUTION_BLOCKED / STOP with S-04 among the stops; Handoff is the first check in fail; the failing checks are a subset of Handoff, Identity, Remote, Scope, Ci and Tests that always includes Handoff and Identity, and all the others pass as in the real verification; each failing evidence cites the false SHA and none attributes the failure to another cause; the Identity evidence also writes the real HEAD), of which the EXACT signature of PD-F4-04 (source owner-f4t3-authorization.md:255-265; as applied in F4, f4-dispositions.md:1657-1660) is a particular case -> substitute PBT3x-NC1-CASCADE-SIGNAL-01 (F4B-E40 and F4B-E43: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/nc1-cascade-substitute/nc1_cascade_signal_substitute.py, SHA-256 41440edc4a963bef890e4336dccb885837424008c027cdb172d2b926e0f49b40, reviewed APTO, with its declared limits), with its reviewed text unchanged and run with --task PBT4, recorded as nc1 = SATISFIED_UNDER_PBT4_NC1_CASCADE_SUBSTITUTE. Matching is decided never by check name: the control output is compared with the real verification check by check (the set of failing checks, the first failing check, Outcome and StopClass, and the evidence text); the only admitted differences are those listed for each signature in section 6.0 of the PB-T1 contract package ([PT1], docs/initiatives/I-64-f4b-pbt1-gate-contract-package.md) and, for PD-F4B-01, its conditions (a) to (f); the session records the comparison table in f4b-dispositions.md. Any other signature or variation (PD-F4-05, PD-F4-06, nc2 with Ci or Trailer also in fail, any nc1 that does not meet PD-F4B-01 - the one-off acceptances of nc1 in PB-TC (F4B-E08), in PB-TC2 attempt 1 (F4B-E12), in PB-T2a (F4B-E34), in PB-T2b (F4B-E38) and in PB-T2c (F4B-E40) do not extend -, an nc2 that the version 2 of the substitute does not give PASS - the disposition of the Owner on the nc2 of PB-T3a (F4B-E43) does not extend -, a substitute that does not give PASS, any failure of nc3, or an evidence text that cannot be assigned to an admitted difference) returns to the Owner before any substitute or acceptance; no one-off acceptance extends to PB-T4d
+PBT4D-C12: a correction would be attempt 3 of 3: it returns to the Owner before it is issued (D-PB-10)
+PBT4D-C13: doing the task would require touching a file of src/ other than the six of the AllowedWriteScope; or adding a declaration of any visibility in src/ (none is added); or removing a declaration that is not in this closed list (57 by the census of the package, an overload is one more): the type PushBackPilotStateComparer with its nested type StructuralEquality and all their members, and the type PushBackPilotFieldAdapter with all its members (their two files are deleted); in PushBackPilotMaterializer.cs, the methods ComposeForWrite and KeepPilotEditsOn and the type PushBackPilotComposition with all its members; in PushBackPilotUpdatePlan.cs, the type PushBackPilotPrepareInput with all its members, the methods Prepare and Build of PushBackPilotUpdatePlanner and its constants ViewUnavailablePrefix and ViewUnavailableSuffix; in PushBackPilotUpdateRun.cs, the overload Precheck(DraftSession<PushBackPilotDraftState>) and the methods Execute and ComparePost. Prescribed changes that are not declarations: BuildCore loses its parameter allowErase, the condition allowErase of its four conditions (three in the loop and the one of AllObsolete), the branch of a view that is not available and the name of each re-read envelope; BuildFull calls it without the argument true; and the four cref and the comment of D-S15 and the comments of CA-T4d M-05 change (comments only). The Worker stops before removing or adding anything else.
+PBT4D-C14: a design of the corpus changes its admission or its lock (the pilot reader, the full reader, AUTH-13 or the parked tail).
+PBT4D-C16: an existing test outside the closed list of PB-T4d (the 271 rows with an action of pbt4d-retire-list-271.tsv) fails, including one that reads the text or the types in a way only seen when it runs; or a line or a branch of src/ that stays (RackCad.Domain, RackCad.Application or RackCad.UI), executed or covered in BaseSha by the full Core suite or by the UI filters of PB-T4c and PB-T4d, is no longer executed or covered in CurrentSha. It returns to the Owner (owner-pbt4d-list-decisions.md, question 4; owner-pbt4d-deadcode-27-decisions.md; owner-pbt4d-cat4d-decisions.md, question 2: before the emission, every such path gets a substitute over the full model, and only a substitute that cannot be written, or more than 10 new substitutes over the 29, return to the Owner). A substitute or an equivalent of the three new classes that fails where the package does not expect it is not this stop: it is PBT4D-C07.
+PBT4D-C17: (F4B-E11, D2, IMPORTANT LIMIT) doing the task would need to MUTATE the resolved rack (PushBackSystem) or the module report (RackModuleReconciliationResult) inside the editing or draft lifetime, or to share by reference any other mutable object between a copy of the state and its original, or a measurement already finds such a mutation in the editing path: STOP and L-1 is reopened. The Owner text, literal: "This is NOT authorization for general shallow copying. It is exactly: two declared shared references. If later PB-T1/PB-T2/PB-T3 needs to mutate either: resolved rack; module report; inside the Workspace draft lifetime: STOP and reopen L-1. At that point the object must either: be cloned; be made immutable; or be replaced by a value snapshot appropriate to the draft model." The Worker chooses none of the three exits: the Owner does
+PBT4D-C18: a RED repair does not meet the F4B-E35 rule (RR-1 to RR-6): it is not after the RED push and before the GREEN, or it is the second one in the attempt; it touches a file the RED did not add, an existing test, src/, a fixture, one of the three new classes that are not CTs or anything outside the AllowedWriteScope; it changes an expected line, literal or oracle, or anything other than the when or the how of a reading the package already prescribes (RR-3); the full RED criterion and its CI are not rerun on RedRepairSha; or it is not declared as RR-5 says. The rule does not apply and the repair counts as touching tests/ after the RED (AUTOMATION_PLAN 16.8): STOP.
+
+ExpectedEvidence:
+[0] antes del Worker: el contrato, la salida del Controller (output.json, con las ocho colecciones opacas vacias), la delegacion final con esas colecciones puestas por la sesion (delegation.json; F4B-E21), la comparacion byte a byte sobre la delegacion final, A1-A8 y nc4;
+[1] el commit RED y su push antes del GREEN; con una reparacion del RED (F4B-E35, RR-4), ademas, el commit "RED repair" y su push antes del GREEN, con su CI, registrada como la del RED reparado, y los TRX de cada filtro con ExpectRed sobre RedRepairSha;
+[2] la CI del RED como en section 6.0 (tests en failure, por CT-PBT4D-01; ui-tests en success; build-ui en success; build-plugin omitido; sin cuelgue); la del RED reparado, si lo hay, da lo mismo;
+[3] la tabla "CT -> la asercion que falla en el RED": CT-PBT4D-01 cae por su Assert.Equal (src/ sigue con el piloto) y CT-PBT4D-02 pasa, con las autopruebas de las dos;
+[4] el GREEN y su CI 4/4;
+[5] en local: el build Release con el Plugin sin avisos nuevos, los filtros sobre el RED, sobre RedRepairSha si hay reparacion, y sobre el GREEN, y tres corridas en verde de los filtros con ExpectRed sobre el GREEN;
+[6] la entrega con el mapa CT -> metodo, las rutas relativas comprobadas, el sha256 de cada uno de los cinco archivos nuevos (iguales a NewFileSha) y de cada uno de los 23 archivos existentes de tests/ que el RED edita en RedSha (iguales a los de la pieza del RED), y la ausencia en RedSha de los 3 que borra, y el Trailer real de los commits RED, "RED repair" (si lo hay) y GREEN; con una reparacion del RED, ademas, RedRepairSha, la prueba y la linea corregidas, el error y por que no cambia ninguna linea esperada, con el diff, y RedSha, que sigue siendo el commit RED original (F4B-E35, RR-5);
+[7] la verificacion con las tres comprobaciones de F4B-E15, y nc1 a nc3;
+[8] con una reparacion del RED, la verificacion la lee como parte de la entrega (F4B-E35, RR-7; section 6.0): n.o 10 (Tests): el RED se acredita con RedSha y con la CI del RED original, y sus TRX, con los filtros con ExpectRed entre los fallidos. La clausula "git diff --name-only RedSha CurrentSha no toca RT U ChainRedFiles" se comprueba desde RedRepairSha: git diff --name-only RedRepairSha CurrentSha. n.o 11 (Trailer): el trailer va tambien en el commit "RED repair". Lo que el Controller comprueba de RR (si algo falla, es C18): RR-1, un solo commit "RED repair", hijo directo de RedSha y anterior al GREEN; RR-2, git diff --name-only RedSha RedRepairSha dentro de las dos clases de las CT; RR-4, la CI de RedRepairSha, registrada como la del RED reparado, y los TRX de los filtros con ExpectRed sobre el; RR-5, la declaracion de la entrega, con el diff, y RedSha, el commit RED original; RR-6, con el tramo RedSha..RedRepairSha. En PB-T4d, ademas: RedSha..RedRepairSha no toca ningun archivo de src/, ni los 26 archivos existentes de tests/ que el RED edita o borra, ni las tres clases nuevas que no son CT. La ayuda mecanica de RR-3: es parada C07, una violacion cierta de RR-3, que un literal de la lista cerrada de la clase reparada (section 6.0 del paquete, la tabla de RR-3) cambie entre RedSha y RedRepairSha: una linea o un fragmento, si no aparece como subcadena exacta el mismo numero de veces; un valor de gesto, si no aparece como token el mismo numero de veces. Indicios para la revision, no parada: una cadena <campo>= anadida o quitada en git diff -U0 RedSha RedRepairSha, o un cambio en el primer argumento de un Assert.Equal. Pueden dar falsos positivos, como una linea que solo se mueve de sitio, asi que van a Findings y a la revision, con la declaracion de RR-5.
+[9] la CI del RED con tests en failure, ui-tests en success, build-ui en success y build-plugin omitido;
+[10] la del GREEN 4/4, con el Plugin compilado;
+[11] el censo de declaraciones de los seis archivos de Pilot/ del alcance, en BaseSha y en CurrentSha, contadas una a una con su nombre (una sobrecarga es una declaracion mas; un tipo anidado tambien): ninguna nueva; las quitadas, la lista cerrada de PBT4D-C13 (57); y allowErase no aparece en src/;
+[12] el Trailer real;
+[13] la entrada "## PB-T4d" de superseding-characterization.md, escrita por la sesion en el commit de emision: la lista (pbt4d-retire-list-271.tsv, con su sha256) por grupo y accion, los motivos literales de los tres Skip, cada equivalente y sustituta con su NewFileSha y su cambio declarado, las ediciones con registro, y las decisiones del Owner (owner-pbt4d-list-decisions.md, owner-pbt4d-substitutes-decision.md, owner-pbt4d-run-coverage-decision.md, owner-pbt4d-deadcode-27-decisions.md y owner-pbt4d-cat4d-decisions.md) y de la sesion (D-S11 a D-S16); su tabla de ejecucion se completa al cerrar;
+[14] Linea base de la CI: la del cierre de PB-T4c (F4B-E55, 6c2820ba): run 44959653142 sobre su GREEN 7cc1076e, Core 19 619 resultados, con 19 158 Passed y 461 Skipped, y UI 2 486, con 2 437 Passed y 49 Skipped. Previstos, con el total exacto de cada rama (F4B-E46): PB-T4d borra con registro las bajas de su lista, pone 3 Skip en Core, anade 3 clases nuevas que no son CT (las 29 sustitutas, el equivalente de CT-PBT4B-20 y las dos guardas de WPPG) y 2 CT de Core, sin ninguna CT de UI, y borra 3 archivos de UI sin pruebas. El GREEN: Core 19418 resultados, con 19015 Passed, 0 Failed y 403 Skipped; UI 2464, con 2416 Passed, 0 Failed y 48 Skipped. El RED: Core 19418 resultados, con 19014 Passed, 1 Failed (CT-PBT4D-01) y 403 Skipped; UI 2464, con 2416 Passed, 0 Failed y 48 Skipped;
+[15] la comprobacion mecanica de las piezas: sobre RedSha, el texto de cada archivo de tests/ del alcance es el que da red_pbt4d_v53.red sobre BaseSha, y los 3 de los bloques DELETE no estan (red_pbt4d_v53.red_full; apply_red_pbt4d_v53.py), y src/ es el de BaseSha; sobre CurrentSha, src/ es el que da green_pbt4d_v53.green (apply_green_pbt4d_v53.py) y tests/ el de RedSha.
+```
+
+**Los `Skip` literales** (`pbt4d_test_edits_v54.py`, `SKIPS`; ASCII), cada uno en la línea de atributo `[Fact]` de su prueba en `6c2820ba`:
+
+- `tests/RackCad.Tests/PushBackEditAllFullCopyGuardTests.cs`:572 (`CT_PBT4B_20_TheScriptOfSkipAndDuplicateGivesTheCopiesTheKitAndTheSkipsOfTheClosedList`): `[Fact(Skip = "I-64 F4B PB-T4d: sustituida por su equivalente en PushBackRetirePilotFullCopyGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4d-list-decisions.md, pregunta 1).")]`
+- `tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs`:81 (`TheFileOfThePlanIsNullableEnabledInTheNamespaceOfThePilotWithBracesAndDeclaresTheTypesOfThePackage`): `[Fact(Skip = "I-64 F4B PB-T4d: sustituida por su equivalente en PushBackRetirePilotPlanGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4d-list-decisions.md, pregunta 1).")]`
+- `tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs`:194 (`TheOrderOfPrepareIsTheOneOfThePackageAndNoOutcomeBeforeConflictLooksAtTheReread`): `[Fact(Skip = "I-64 F4B PB-T4d: sustituida por su equivalente en PushBackRetirePilotPlanGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4d-list-decisions.md, pregunta 1).")]`
+
+**Los archivos nuevos, literales** (su texto, en el anexo V54-A; `NewFileSha`, del texto con `\n`), en Core:
+
+- `tests/RackCad.Tests/PushBackRetirePilotGuardTests.cs`, `0d64806a53b36ea0719bc7647dcfd3c15e8169a66a4494517097a82ce12fadb3`: CT-PBT4D-01; **`ExpectRed` true**
+- `tests/RackCad.Tests/PushBackRetirePilotCensusGuardTests.cs`, `1874c47811ddda428745a1f5566f1e7290b31fa2a2e65b07c2ff52059f863f20`: CT-PBT4D-02; `ExpectRed` false
+- `tests/RackCad.Tests/PushBackRetirePilotRunTests.cs`, `3554df0d960f18ef6bb2b930f4ac7757e8ca7438ebf6a9eda8934ef9acf8fe69`: las 29 sustitutas de WPUR sobre el modelo completo, con `FullUpdateSetup` (`v53/make_run_eq_v53.py`): 27 de la corrida genérica sobre `ExecuteFull` y la n.º 48 y la n.º 49 de `PushBackPilotSystemRebuild` (CA-T4d I-01); 26 por el mapa de PB-T4b; a mano la n.º 10, la n.º 43 y la n.º 49 (solo su comentario); `ExpectRed` false
+- `tests/RackCad.Tests/PushBackRetirePilotFullCopyGuardTests.cs`, `ee9b6f1513f549065da391c10d6da947cc8e197644efbc7d72cf41e46443e6cf`: el equivalente de CT-PBT4B-20 de PB-T4c, copia literal con los `BaseSha`, los `Skip`, las `CopySha` y los recuentos que PB-T4d cambia (`make_fullcopy_eq_v52.py`, sobre los textos finales del RED de la v5.3); `ExpectRed` false
+- `tests/RackCad.Tests/PushBackRetirePilotPlanGuardTests.cs`, `48c2f4a9619e2f3e7e5de4f1ad98bf68024635c268866fa1242f65f329d8ca43`: las dos guardas de `WorkspacePilotPrepareGuardTests` (D-S12), cada una con su cambio declarado; `ExpectRed` false
+
+**Las ediciones con registro** (`pbt4d_test_edits_v54.py`, `EDITS`, y la llamada de StaleBase, `STALE_CALL`): las de §8.3 de la lista, con su texto literal en el anexo V54-A. **Las bajas con registro:** las filas «borrar con registro» y «sustituir con registro» de la lista, que la pieza del RED quita (`v54/make_red_v54.py` con `retire_pbt4d_v52.py` en seco: 193 bajas de las 201 necesarias de `/d/r6h`, menos las 17 que se quedan editadas, más las 9 que compilan y se quitan; y, desde la v5.3, los 32 ayudantes sin uso de M-03, que quita `v53/unused_v53.py` tras las ediciones, y los 3 archivos sin pruebas, en bloques DELETE).
+
+**La precondición 6** (I-02; §11.6), que corre la sesión antes de emitir, sobre copias exportadas del cierre de PB-T4c, fuera de todo commit (`pbt4dcc/compile/`, que la emisión custodia en `F4B-DRAFTS/pbt4/cc4d/`; el resumen, `pbt4d-precondition6.json`, sha256 `52e03e061cd62c79597f51b8eaf144a27d68b3bf5db876406a804be2fa978989`, y su registro, `compile-check.md`, `d13afdb02216d385c32ade81b5cf9508c648a970337cf92b9d964b936933de42`):
+1. `git archive` de `6c2820ba` a una carpeta nueva, fuera del worktree;
+2. `python -I apply_red_pbt4d_v53.py <copia> --repo <checkout> --rev 6c2820ba`: el RED literal de `tests/`;
+3. la compilación de Core y de UI en Debug, sin ningún `warning CS`;
+4. **el RED exacto:** la suite completa de Core, donde **solo cae CT-PBT4D-01, por aserción** (las 2 CT, los 3 `Skip` con su motivo y las tres clases nuevas en verde), y **los 18 filtros de UI del contrato** (los de `RequiredTests`, `ui_filters_pbt4d_v53.txt`; CA-T4d M-07 b), **0 `Failed`**. **La copia principal corre sola** (CA-T4d M-07 a): el conductor comprueba al empezar que no hay otro `dotnet` ni `testhost`;
+5. **sobre la misma copia, el GREEN literal** (`apply_green_pbt4d_v53.py`): la compilación de Core y de UI en Debug y del Plugin en Release con `-o`, sin ningún `warning CS`;
+6. **el GREEN:** la suite completa de Core, **0 `Failed`**, y los 18 filtros de UI, **0 `Failed`**, con la duración de la suite y de la prueba lenta acotada. **Una prueba que falle fuera de la lista** vuelve al Owner (PBT4D-C16); **una sustituta o un equivalente que no pase** necesita una versión del paquete (PBT4D-C07);
+7. **la cobertura ampliada de todo `src/` que se queda, línea a línea y rama por rama** (CA-T4d I-02; `owner-pbt4d-cat4d-decisions.md`, pregunta 2): la suite completa de Core y la unión de los filtros de UI de PB-T4c y de PB-T4d (`ui_union_v53.txt`), con coverlet en JSON sobre Domain, Application y UI (`cov_v53.runsettings`), en el GREEN de la copia principal y en la base sin cambios, sola, en otra copia (`p6d_basecov_v53.sh` y `p6d_uirep_v53.sh`; la referencia); la UI de cada rama, la unión de tres corridas de la unión de los filtros y de cada filtro por separado, en su proceso, como los corre el contrato (`p6d_uirep_v53.sh` y `p6d_uifilt_v53.sh`; los golpes de un binding de WPF dependen de lo que corrió antes en el mismo proceso: `noise-batch/`, R-T4-38); `cov_p6_v54.py` lleva cada línea de la base al GREEN (por texto en los archivos que el GREEN cambia) y exige que cada línea ejecutada en la base (Core o UI) siga ejecutada y cada rama cubierta siga cubierta; las de texto cambiado, ejecutadas y con todas sus ramas; las retiradas, listadas; lo que Core sola pierde y cubre la UI, listado aparte; y el conjunto vigilado de la v5.2 (las 436 líneas y las 9 ramas). **Un camino que se queda sin su única prueba** recibe una sustituta sobre el modelo completo (la regla del Owner); **vuelve al Owner** si una no se puede escribir o si salen más de 10 nuevas sobre las 29;
+8. **el ensayo de las CT de texto y el censo de C13:** las dos CT son clases literales del RED, así que el ensayo es su resultado en la suite completa de cada rama (CT-01 cae en el RED y pasa en el GREEN; CT-02 pasa en las dos), con su **control** en otra copia (`p6_control_v53.sh`): la base con solo las dos CT (caen las dos) y el RED con la retirada incompleta de la variante A en `src/` (cae CT-01 y pasa CT-02); y **el censo** (`census_c13_v52.py`, por objetos git): ninguna declaración nueva en `src/`, las quitadas iguales a la lista cerrada de PBT4D-C13 y ningún `allowErase`, con cuatro autopruebas;
+9. los `RequiredTests` y los totales (`required_pbt4d_v53.py`, con la base de UI en la corrida de la unión, y `ui_totals_v52.py`), y el contrato lleva por sha256 las dos piezas, los cinco archivos nuevos (`NewFileSha`) y la lista.
+
+**Lo medido en la v5.3** (V53-06 y V54-01; la v5.2, historia): `/d/r6y` para los pasos 2 a 7 (el RED, el GREEN y la cobertura del GREEN; **sola**: 0 procesos al empezar), `/d/r6w` para la referencia de la cobertura (la base sin cambios, sola: la suite de Core, 19619 = 19158 + 0 + 461, y la unión de los filtros de UI, 921 = 890 + 0 + 31) y la base de los `MinSelected`, y `/d/r6z` para el control del ensayo; el censo, por objetos git. Lo previsto, con cero `warning CS`:
+- **Core:** en el RED, 19418 = 19014 + 1 + 403, y solo cae CT-PBT4D-01, por aserción; en el GREEN, 19418 = 19015 + 0 + 403;
+- **UI,** los 18 filtros del contrato: 0 `Failed` en las dos ramas;
+- **la duración de la suite de Core:** 325 s en el RED y 261 s en el GREEN (355 s con la cobertura); **la prueba lenta acotada:** 13.1 s en el RED y 17.0 s en el GREEN (la de PB-T4c tardaba unos 390 s sola, `/d/r6f`);
+- **la cobertura ampliada:** archivos de src/ instrumentados 775; lineas ejecutadas en la base que se quedan 69842 (ramas cubiertas 28818); retiradas por el GREEN 419; texto cambiado 4; lineas sin ejecutar en el GREEN 0; lineas con ramas perdidas 0; **PASA** (`cov-p6-v54.txt`); conjunto vigilado de la v5.2: 537 lineas de WPUR, 433 se quedan, 0 sin cubrir en el GREEN; bajan (informativo) 16801, de ellas PERDIDA 0;
+- **el ensayo:** CT-01 cae en el RED y pasa en el GREEN; CT-02 pasa en las dos; **su control:** sobre la base con solo las dos CT, caen las dos; sobre el RED con la variante A en `src/`, cae CT-01 y pasa CT-02; **el censo:** PASA;
+- **los totales de UI de la CI** (la línea base menos lo que quitan las bajas de UI, medido en la unión de los filtros): UI red: 2464 = 2416 + 0 + 48 (Passed + Failed + Skipped) y UI green: 2464 = 2416 + 0 + 48 (Passed + Failed + Skipped).
+
+**Las corridas anteriores** son historia: las de la v5.2 (`/d/r6a` a `/d/r6u`; lo de `/d/r6r`, declarado en `compile-check.md`, CA-T4d M-07) y los dos ensayos de la v5.3 (`/d/r6v` y `/d/r6x`).
+
+**`RequiredTests`** (88: 83 heredados y 5 nuevos). Los heredados son los del contrato de PB-T4c (`F4B-PBT4-EDIT-ALL-WINDOW`, emitido), con su número de allí, **todos con `ExpectRed` false**, y su `MinSelected` medido sobre el GREEN literal (resultados no omitidos); salen los que quedan en 0: el n.º 37 (`RackCad.UI.Tests.PushBackFieldValidationConcordanceTests`, de 1 a 0: 1 resultados en la base y 0 en el GREEN) y el n.º 85 (`RackCad.Tests.PushBackEditAllFullCopyGuardTests`, de 1 a 0: 1 resultados en la base y 0 en el GREEN). Los nuevos, por clase exacta (D-S12): las dos CT y las tres clases nuevas que no son CT. Ningún filtro heredado selecciona una clase nueva, y cada filtro nuevo solo la suya, en las dos ramas (`required_pbt4d_v53.py`).
+
+| n.º | Project | Filter | MinSelected | ExpectRed | Origen |
+|---|---|---|---|---|---|
+| 1 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackFullReadPathTests` | 4 | false | PB-T4c n.º 1 |
+| 2 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackFullReadGuardTests` | 1 | false | PB-T4c n.º 2 |
+| 3 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackViewEraseGuardTests` | 4 | false | PB-T4c n.º 3 |
+| 4 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackWritePathPluginGuardTests` | 1 | false | PB-T4c n.º 4 |
+| 5 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.WorkspacePilotUpdateGuardTests` | 83 | false | PB-T4c n.º 5 |
+| 6 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests` | 120 | false | PB-T4c n.º 6 |
+| 7 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackSharedReferenceGuardTests` | 1 | false | PB-T4c n.º 7 |
+| 8 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackFullDraftWindowParityTests` | 1 | false | PB-T4c n.º 8 |
+| 9 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackFullWrite` | 13 | false | PB-T4c n.º 9 |
+| 10 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackPilotUpdateEquivalenceGuardTests` | 6 | false | PB-T4c n.º 10 |
+| 11 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackWritePathGuardTests` | 1 | false | PB-T4c n.º 11 |
+| 12 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.Workspace` | 2539 | false | PB-T4c n.º 12 |
+| 13 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackFullDraft` | 10 | false | PB-T4c n.º 13 |
+| 14 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackDraftWriteGuardTests` | 2 | false | PB-T4c n.º 14 |
+| 15 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.Workspace` | 503 | false | PB-T4c n.º 15 |
+| 16 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackEditableState` | 13 | false | PB-T4c n.º 16 |
+| 17 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackEditorOutputGate` | 1 | false | PB-T4c n.º 17 |
+| 18 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackWindowSharedReferenceGuardTests` | 1 | false | PB-T4c n.º 18 |
+| 19 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackWindowOnStateSourceGuardTests` | 1 | false | PB-T4c n.º 19 |
+| 20 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackWindowOnStateTests` | 2 | false | PB-T4c n.º 20 |
+| 21 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization` | 55 | false | PB-T4c n.º 21 |
+| 22 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization` | 10 | false | PB-T4c n.º 22 |
+| 23 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization` | 16 | false | PB-T4c n.º 23 |
+| 24 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization` | 3 | false | PB-T4c n.º 24 |
+| 25 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackStateNet` | 14 | false | PB-T4c n.º 25 |
+| 26 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection` | 12 | false | PB-T4c n.º 26 |
+| 27 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.Cantilever` | 67 | false | PB-T4c n.º 27 |
+| 28 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.I58F1` | 10 | false | PB-T4c n.º 28 |
+| 29 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.CustomPropertiesEnvelopeGuardTests` | 9 | false | PB-T4c n.º 29 |
+| 30 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.NamespaceFolderGuardTests` | 7 | false | PB-T4c n.º 30 |
+| 31 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackDraftStatePortTests` | 3 | false | PB-T4c n.º 31 |
+| 32 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackDraftPortSharedReferenceGuardTests` | 1 | false | PB-T4c n.º 32 |
+| 33 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackWorkspaceModeSourceGuardTests` | 1 | false | PB-T4c n.º 33 |
+| 34 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackWorkspaceSharedReferenceGuardTests` | 1 | false | PB-T4c n.º 34 |
+| 35 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceModeTests` | 3 | false | PB-T4c n.º 35 |
+| 36 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests` | 3 | false | PB-T4c n.º 36 |
+| 37 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceCarryoverTests` | 3 | false | PB-T4c n.º 38 |
+| 38 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackFullPanelTests` | 11 | false | PB-T4c n.º 39 |
+| 39 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackFullPanelGuardTests` | 4 | false | PB-T4c n.º 40 |
+| 40 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackFullPanelCensusGuardTests` | 1 | false | PB-T4c n.º 41 |
+| 41 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackPanelDraftGuardTests` | 1 | false | PB-T4c n.º 42 |
+| 42 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackFullPanelFieldTests` | 3 | false | PB-T4c n.º 44 |
+| 43 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.NumericFieldValidationTests` | 13 | false | PB-T4c n.º 45 |
+| 44 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.NumericFieldTests` | 10 | false | PB-T4c n.º 46 |
+| 45 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceLifecycleHostRedTests` | 24 | false | PB-T4c n.º 47 |
+| 46 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceLifecycleHostGreenTests` | 69 | false | PB-T4c n.º 48 |
+| 47 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotPrepareRedTests` | 44 | false | PB-T4c n.º 49 |
+| 48 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotPrepareGreenTests` | 46 | false | PB-T4c n.º 50 |
+| 49 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceEditIntentHostRedTests` | 24 | false | PB-T4c n.º 51 |
+| 50 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceEditIntentHostGreenTests` | 57 | false | PB-T4c n.º 52 |
+| 51 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditHostRedTests` | 59 | false | PB-T4c n.º 53 |
+| 52 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditHostGreenTests` | 17 | false | PB-T4c n.º 54 |
+| 53 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceCommandAdvisorRedTests` | 6 | false | PB-T4c n.º 55 |
+| 54 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceCommandAdvisorGreenTests` | 70 | false | PB-T4c n.º 56 |
+| 55 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateRequestRedTests` | 53 | false | PB-T4c n.º 57 |
+| 56 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateRequestGreenTests` | 1 | false | PB-T4c n.º 58 |
+| 57 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateHostRedTests` | 29 | false | PB-T4c n.º 59 |
+| 58 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateHostGreenTests` | 18 | false | PB-T4c n.º 60 |
+| 59 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotReconciliationHostRedTests` | 23 | false | PB-T4c n.º 61 |
+| 60 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotReconciliationHostGreenTests` | 5 | false | PB-T4c n.º 62 |
+| 61 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceAssociativeBookkeepingRedTests` | 1 | false | PB-T4c n.º 63 |
+| 62 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceAssociativeBookkeepingGreenTests` | 21 | false | PB-T4c n.º 64 |
+| 63 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyPushBackWritePathGuardRedTests` | 1 | false | PB-T4c n.º 65 |
+| 64 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateIntegrationGuardRedTests` | 2 | false | PB-T4c n.º 66 |
+| 65 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceEditIntentGuardRedTests` | 13 | false | PB-T4c n.º 67 |
+| 66 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditGuardRedTests` | 6 | false | PB-T4c n.º 68 |
+| 67 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditGuardGreenTests` | 17 | false | PB-T4c n.º 69 |
+| 68 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotReconciliationGuardGreenTests` | 1 | false | PB-T4c n.º 70 |
+| 69 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceLifecycleGuardRedTests` | 2 | false | PB-T4c n.º 71 |
+| 70 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateGuardRedTests` | 1 | false | PB-T4c n.º 72 |
+| 71 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationGreenTests` | 30 | false | PB-T4c n.º 73 |
+| 72 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationViewGreenTests` | 6 | false | PB-T4c n.º 74 |
+| 73 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyPushBackFullReadPathRedTests` | 1 | false | PB-T4c n.º 75 |
+| 74 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyPushBackFullReadGuardRedTests` | 1 | false | PB-T4c n.º 76 |
+| 75 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceHostHardeningGuardRedTests` | 1 | false | PB-T4c n.º 77 |
+| 76 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackEditAllTests` | 6 | false | PB-T4c n.º 78 |
+| 77 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackEditAllGuardTests` | 3 | false | PB-T4c n.º 79 |
+| 78 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackOpenerClassicPathGuardTests` | 1 | false | PB-T4c n.º 80 |
+| 79 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackDraftLaunchGuardTests` | 1 | false | PB-T4c n.º 81 |
+| 80 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllWindowTests` | 4 | false | PB-T4c n.º 82 |
+| 81 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackEditAllPortEquivalenceGuardTests` | 1 | false | PB-T4c n.º 83 |
+| 82 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackEditAllNameWritersGuardTests` | 1 | false | PB-T4c n.º 84 |
+| 83 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllApplyCloseTests` | 1 | false | PB-T4c n.º 86 |
+| 84 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackRetirePilotGuardTests` | 1 | true | nuevo: CT-PBT4D-01 |
+| 85 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackRetirePilotCensusGuardTests` | 1 | false | nuevo: CT-PBT4D-02 |
+| 86 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackRetirePilotFullCopyGuardTests` | 1 | false | nuevo: equivalente de CT-PBT4B-20 (D-S12) |
+| 87 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackRetirePilotPlanGuardTests` | 2 | false | nuevo: equivalente de las dos guardas de WPPG (D-S12) |
+| 88 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackRetirePilotRunTests` | 31 | false | nuevo: las 29 sustitutas de WPUR (CA-T4d I-01) |
+
+#### 6.4.2 Lo que necesita el generador de PB-T4d
+
+| Pieza | Dónde | Lo que es |
+|---|---|---|
+| **La pieza del RED** | `pbt4/pbt4d-red-v54.txt` | sha256 `80f8cc0c5c9f54de033648e7eec95728fa0fc0d28e31886101207e3dbec381db`. Bloques EDIT (un OLD que está exactamente una vez en el texto que se va editando), DELETE (desde la v5.3) y NEWFILE, con `\n`; la aplican `red_pbt4d_v53.py` (`7a67652e3515083367aa12c829c1560b6742a007a30a354c205f0aa0eb7de5c2`) y `apply_red_pbt4d_v53.py` (`b99635ea0c26230c74611abc2560a05952850fd12916f06fc588fbe2a445a7dc`). La genera `v54/make_red_v54.py` (la de la v5.3 con las dos ediciones de comentarios de WPUR de M-12 a) (`7ed0074e03cbc49cc3a883416411ab96e9056815cdfb73d244a0e267147c268f`) desde los objetos git de la base, con `pbt4d_test_edits_v54.py` (`b8c78f726a32f6768c576f636d80f78a55922c7f9c475b389c4444974b360aea`), `v53/make_run_eq_v53.py` (`cd9fe688c5ce3eea136d87bf8893c6697b1c8d45f04629ab686765a3f2d1fb73`), `v53/unused_v53.py` (`b76acd7364052add873aca2bd1dbd72136e5085d86a1fecd27e6be1ea19d54c8`) y `v52/make_fullcopy_eq_v52.py` (`98065a8e8351bd32d698613a725c7128ad34e6b7c8087311fefaf0c74449f2c1`) |
+| **La pieza del GREEN** | `pbt4/pbt4d-green-v54.txt` | sha256 `aaf6cab882cfb3eba6939fd8b64ec1fa15c22431ba8bdaeb9bcdf4dbb89ffbf0`. Bloques EDIT y DELETE; la aplican `green_pbt4d_v53.py` (`ea7b2086630ae827309164e7a33610b4cae694c9d3c406a2d457aa0a5858cc73`) y `apply_green_pbt4d_v53.py` (`70e7dd04a52b6975c1e228d26a07f9bb2749d206b36e32ca9172ae9d606062a0`). La genera `v53/make_green_v53.py` (`00a30017756dd6082625eb45a25b95934ea33e27474522675abb46f95b85fa92`): la pieza de la v5.2 (de `v52/make_green_v52.py`, desde la retirada B medida en `/d/r6e`, con la limpieza de D-S15 y la rama muerta de `BuildCore`), sin cambiar ninguno de sus bloques, y 11 bloques de solo comentarios de CA-T4d M-05 (a); en la v5.4, `pbt4d-green-v54.txt` es esa pieza con solo su cabecera corregida (recomprobación 1 de CA-T4d, M-12 b) |
+| **La lista** | `pbt4/pbt4d-retire-list-271.tsv` | sha256 `05a4d3d1905529c5bc4d53e0684d27d97eaa96502098eebeb9d16bfd931c75ac`; la genera `v54/make_list_v54.py` (`5e6acc3263f2fbe3e457c117c0ed309a2616beb4ec35db76830d6dc3be8bdc05`): una fila por baja, edición o sustitución, con su grupo, archivo, miembro, líneas en `6c2820ba`, `Skip`, acción y porqué, y, desde la v5.3, sus declaraciones y su tramo editado (CA-T4d M-04) |
+| **Los archivos nuevos** | en la pieza del RED (NEWFILE) | `NewFileSha` de cada uno (arriba) |
+| **La precondición 6** | `pbt4dcc/compile/pbt4d-precondition6.json` | Schema `rackcad-pbt4d-precondition6/v1`; metadatos `Schema`, `Package`, `Task`; y, en este orden, `Revision`, `Pieces`, `List`, `RedFiles`, `RedDeleted` (los 3 borrados; el generador la compara con los bloques DELETE de la pieza del RED), `GreenFiles`, `GreenDeleted`, `Builds`, `CsWarnings`, `Alone`, `Red`, `Green`, `GreenWithCoverage`, `GreenUiCoverage` (las 3 corridas juntas y los 18 filtros del GREEN, con el sha256 de su TRX y de su JSON), `SuiteDurationSeconds`, `SlowTestSeconds`, `BaseCoverage`, `Reapply` (las piezas de la v5.4 reaplicadas en `/d/r70`), `Noise` (informativo: el ruido de D-S16; el generador no lo lee), `Coverage`, `Census`, `Control`, `Rehearsal`, `ClassResults`, `RequiredTests`, `UiTotals`, `History`, `Expected`, `AllAsExpected`; `Green.UI[n]` lleva también `Json`, y `BaseCoverage.UIByFilter.Runs`, el sha256 completo de la TRX y del JSON de cada filtro. sha256 `52e03e061cd62c79597f51b8eaf144a27d68b3bf5db876406a804be2fa978989`; la corrida, en su `compile-check.md` (`d13afdb02216d385c32ade81b5cf9508c648a970337cf92b9d964b936933de42`), con el resultado de cada clase que corre (Passed, Failed y Skipped) en cada rama. La carpeta va a `F4B-DRAFTS/pbt4/cc4d/`; **nombres cortos:** ninguna ruta pasa de 156 caracteres con el prefijo `docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/` |
+
+**Las autoridades de PB-T4d** (la n.º y la ruta son las del contrato de PB-T4c emitido):
+- **Siguen, sin cambio:** las de PB-T4c que no son de su subtarea.
+- **No son autoridades de PB-T4d:** las de las tandas, las listas, los equivalentes y la precondición 6 de PB-T4c, y sus `UNIT_CHANGE`.
+- **Se añaden:** `owner-pbt4d-list-decisions.md`, `owner-pbt4d-substitutes-decision.md`, `owner-pbt4d-run-coverage-decision.md`, `owner-pbt4d-deadcode-27-decisions.md`, `owner-pbt4d-cat4d-decisions.md` y `session-pbt4d-design-decisions.md` (D-S11 a D-S16); la comprobación acotada de la v5.2 (`independent-review-pbt4d-check.md`); esta versión del paquete (v5.4); la lista; las dos piezas; y la precondición 6 (`pbt4d-precondition6.json` y `compile-check.md`).
 
 ## 7. Riesgos y lecciones aplicadas
 
@@ -2715,6 +3121,15 @@ Los de la v1 (R-T4-01 a 15) y la v4 (R-T4-16 a 21), con lo que hacen la v4.1 y l
 | **R-T4-27, lo que el paseo no ve** (V50-12) | La reflexión sobre tipos y el comportamiento de la UI: las dos caídas de la v5.0 las vio la suite completa de Core y los filtros de UI de la precondición 6, no el paseo. Lo que vale es la suite completa |
 | **R-T4-28, un nombre fijado y nunca ejecutado** (D-S9) | `IWorkspaceFullEditorHost` estaba en el paquete desde la v4 y una guarda por reflexión lo prohibía; se midió al compilar y correr el GREEN literal |
 | **R-T4-29, las CT no corren en la precondición 6** (CA-T4c I-01; V51-05) | El paso 8: el ensayo de las CT de texto, sobre el RED y sobre el GREEN, con su control sobre la v5.0, y el censo de C13. Lo que no cubre, declarado (§6.3.1) |
+| **R-T4-30, la lista por texto no es la necesaria** (V52-02) | Se mide desde cero bajas, compilando (`/d/r6h`): 34 de las 235 bajas de B no hacían falta, entre ellas 7 CT de PB-T3b |
+| **R-T4-31, compilar no basta** | Un nombre que se queda sin su campo se resuelve como otro (`Comparer.Equals` como `System.Collections.Comparer`): la prueba compila y cae, o pasa en falso. Se corre la suite completa |
+| **R-T4-32, «lo cubren otras» se mide, rama por rama** (V52-03) | Con coverlet: primero por líneas (`/d/r6j`, `/d/r6k`), y el relevo vio que el método prueba a prueba contaba ramas, no cuáles; la precondición 6 compara la base y el GREEN rama por rama, en JSON |
+| **R-T4-33, código muerto tras la retirada** (V52-04) | Una rama que solo alcanzaba lo retirado no la puede cubrir ninguna sustituta: el GREEN la quita (`allowErase`), por decisión del Owner |
+| **R-T4-34, el universo de la cobertura** (CA-T4d I-02; V53-02) | Medir solo lo que una clase ejecutaba no ve a quien llama desde otro archivo ni lo que pierden las demás bajas: se compara toda la suite (Core y los filtros de UI) sobre todo `src/` que se queda |
+| **R-T4-35, un porqué que no se mide** (CA-T4d I-01; V53-01) | «Usa la corrida del piloto como vehículo» valía para 19 de las 21 bajas de WPUR; la 48 y la 49 probaban otra cosa. Un porqué de baja se comprueba con la cobertura ampliada |
+| **R-T4-36, código muerto en `tests/`** (CA-T4d M-03; V53-05) | Una retirada deja ayudantes sin uso y clases sin pruebas: se miden con IDE0051/IDE0052 en una copia y por texto, en vueltas hasta que no sale ninguno, y se borran con registro |
+| **R-T4-37, la copia principal, sola** (CA-T4d M-07; V53-09) | Una corrida solapada no cambia los resultados, pero sí las duraciones: el conductor comprueba al empezar que no hay otro `dotnet` ni `testhost` |
+| **R-T4-38, el ruido de la cobertura de UI** (V53-02) | Un binding de WPF da golpes que dependen del despachador (`RackViewBatchDialogPresenter.cs:37-38`: la base da 1, 0 y 1 en tres corridas de la misma prueba, y en la unión de los filtros el GREEN da 0 tres veces y 1 tres veces con su filtro solo, `noise-batch/`): la UI de cada rama es la unión de tres corridas de la unión de los filtros y de cada filtro en su proceso, como los corre el contrato |
 | R-T4-16, la doble lectura del piloto | Se mide en la precondición 6. En PB-T4a, la relectura en el origen repite las dos lecturas puras sobre el mismo escaneo, en `Draft/`, sin acceso nuevo al dibujo. En PB-T4b, D-S4 deja una sola materialización del modelo completo por lectura (D-PBT4-21), y la precondición 6 mide el coste con la sonda de `read-cost` |
 | R-T4-17, el coste de `IsDirty` | Sin cambio |
 | R-T4-19, la duración de la suite de Core | Se mide en la precondición 6 de PB-T4b; si pasa de 15 min, vuelve a la sesión |
@@ -2764,9 +3179,7 @@ Las de la v1 (§8.1): [OD] con D-PB-01 y D-PB-05; F4B-E28 Q3; F4B-E38; F4B-E29 (
 | PB-T4b | La UI de la elección (C-3) | «hasta 21», recontada a unas 25 | **27** | |
 | PB-T4b | **Total** | **unas 465**; en la segunda vuelta, **470**; en la tercera, **475**; en la quinta, 477; en la sexta, **478** | **478** | **Aprobada como la que vio** (segunda vuelta, pregunta 2, y tercera, quinta y sexta tandas); `pbt4b-substitution-list-478.tsv`, sha256 `8b0fcd0ca775ce3a5e46ef2059f4b06e7ec7319883daf3cb37b1fe91290e9e8b` (las de 477, `5975c5b6…a651`, 475, `654c3b7b…0707c`, y 470, `44393b19…63e4`, quedan como historia) |
 | PB-T4c | PEG:155-163, CT-PBT1B-15 y CT-PBT4B-20 (C-5, Core), y CT-PBT2B-06 (C-3, UI) | 2; tras la remedición, 3 y 4 | **4** | **Aprobada como la que vio** (`owner-pbt4c-list-3-decision.md` y `owner-pbt4c-list-4-decision.md`); `pbt4c-substitution-list-4.tsv`, sha256 `9bd4c17a0eda837c92a7a0b7b3562d4ab17f1608baf3ffa8efaf560d8b1f82de` (la de 3, `d83e0a817144fa99f95ed4bfd151b822a4fc1035c10f736f77e8f8e6350186c1`, queda como historia) |
-| PB-T4d | C-7: 71 por texto (con E-3, E-5 y E-6) y 67 por compilación | «unas 100»; en la segunda vuelta, 139; en la tercera, 138 | **138** | **Vuelve al Owner con su lista** (esbozo en `pbt4d-retire-list-138.tsv`, sha256 `d5467dc162e2cda8c539a829cc8f3a7c46260a119f70e840b34e6f78dde0387c`) |
-| PB-T4d | Las originales de las 9 clases que dejan de compilar al retirar, borradas con registro | 55 | **55** | Ídem |
-| PB-T4d | Los miembros de apoyo que nombran lo retirado | 29 | **29** | Ídem |
+| PB-T4d | La lista del alcance B fila a fila (C-7, originales, apoyo, compilación, ejecución, M-04, la lenta, SUS-01, M-03 y los ayudantes editados), con las 29 sustitutas de WPUR, la rama muerta de `BuildCore` y, desde la v5.3, sus declaraciones y su tramo editado | El esbozo: 138 + 55 + 29; B medida: 235 bajas | **271** con acción (284 filas) | **La elegida** (`owner-pbt4d-list-decisions.md`, pregunta 1, con `owner-pbt4d-substitutes-decision.md`, `owner-pbt4d-run-coverage-decision.md`, `owner-pbt4d-deadcode-27-decisions.md` y `owner-pbt4d-cat4d-decisions.md`); `pbt4d-retire-list-271.tsv`, sha256 `05a4d3d1905529c5bc4d53e0684d27d97eaa96502098eebeb9d16bfd931c75ac` (la de la v5.2, `pbt4d-retire-list-229.tsv`, `1943468ba9a9f342b74bb8ea2c57e1b664c7751b52344e7a712ea7bc2e151fad`, y el esbozo, `pbt4d-retire-list-138.tsv`, `d5467dc162e2cda8c539a829cc8f3a7c46260a119f70e840b34e6f78dde0387c`, quedan como historia) |
 
 **Las cifras que corrige la v4.2** (M-32): de las 67 pruebas que dejan de compilar al retirar, `WorkspacePilotUpdateRunTests` da **42** y `PushBackFullWritePrepareTests`, **6**; en C-7, por texto y por compilación, son **48** (de las 49 de la clase) y **9** (de 9). Las demás de compilación: `WorkspaceDraftPilotOwnershipTests` 8, `WorkspaceDraftPilotStateTests` 7, `PushBackDeclaredCorrectionPilotParityTests` 2, `PushBackFullWriteRunTests` 1 y `WorkspaceDraftPilotMaterializationTests` 1.
 
@@ -2807,9 +3220,18 @@ Lo de la v3 (§8.3): el orden de las subtareas, los nombres, las CT y las guarda
 
 | **8.ª** (2026-11-21) | `owner-pbt4c-list-3-decision.md` | «Lista T4c»: «Añadirla a la lista (Recomendado)». «Otro diseño sin tocarla» y «No emitir PB-T4c» no se hacen | **La lista de PB-T4c pasa de 2 a 3** (CT-PBT4B-20), con su `Skip` y su equivalente, copia literal que además reconoce el `Skip` de PB-T4c (lo que fija para PB-T4c) |
 | **9.ª** (2026-11-21) | `owner-pbt4c-list-4-decision.md` | «Lista T4c»: «Añadirla a la lista (Recomendado)». «Preguntar distinto» y «No cambiar «Cerrar» ahora» no se hacen | **La lista de PB-T4c pasa de 3 a 4** (CT-PBT2B-06), con su `Skip` y su equivalente, copia literal con la línea de la ventana 4 a la pregunta nueva (lo que fija para PB-T4c) |
+| **10.ª** (2026-11-22) | `owner-pbt4d-list-decisions.md` | «Lista T4d»: «Alcance B (Recomendado)». «Recarga»: «Tarea propia después (Recomendado)». «Prueba lenta»: «Acotarla en PB-T4d (Recomendado)». «Emisión T4d»: «Sí, con condiciones (Recomendado)» | PB-T4d retira el alcance B; la recarga de «Editar todo» va a una tarea propia; la prueba lenta se acota (D-S14); la emisión es condicional (lo que fija para PB-T4d) |
+| **11.ª** (2026-11-22) | `owner-pbt4d-substitutes-decision.md` | «Las 138»: «Sustitutas donde hace falta (Recomendado)» | Se quedan 7 CT de PB-T3b y sus 6 ayudantes; lo que también prueba código que se queda conserva esa parte; lo demás se borra con registro |
+| **12.ª** (2026-11-22) | `owner-pbt4d-run-coverage-decision.md` | «Corrida»: «Sustituir las 21 (Recomendado)» | Las 21 de WPUR, equivalentes sobre `ExecuteFull` en `PushBackRetirePilotRunTests`; la precondición 6 mide otra vez la cobertura |
+| **13.ª** (2026-11-22) | `owner-pbt4d-deadcode-27-decisions.md` | «Rama muerta»: «Quitarla en PB-T4d (Recomendado)». «27 en vez de 21»: «Sí, 27 (Recomendado)» | El GREEN quita `allowErase` y lo que solo existe con él; las sustitutas pasan a 27 (y la 06, 07, 16, 19, 29 y 42) y se borran 21; la cobertura, rama por rama |
+| **14.ª** (2026-11-22) | `owner-pbt4d-cat4d-decisions.md` | «48 y 49»: «Sustituirlas (Recomendado)». «Huecos nuevos»: «Sustituirlos siempre (Recomendado)» | La 48 y la 49 de WPUR pasan a sustitutas sobre el modelo completo (29); la cobertura de la precondición 6 mira todo `src/` que se queda; todo camino que se queda y pierde su única prueba recibe una sustituta sin volver al Owner, salvo que una no se pueda escribir o salgan más de 10 nuevas sobre las 29; lo que cubra la UI se mide con sus filtros |
 
 **Las decisiones de la sesión,** que no son del Owner:
 - **D-S7 a D-S10** (`session-pbt4c-design-decisions.md`, 2026-11-21; para PB-T4c): **D-S7**, la costura de CT-09 es `HeaderConfiguratorDialog`; **D-S8**, los filtros nuevos, por clase exacta; **D-S9**, `IWorkspaceFullEditHost` (y `SetFullEditHost`, `_fullEditHost`), por `WorkspaceModelBoundaryTests:101`; **D-S10**, CT-09 cubre lo que se puede alcanzar (en WORKSPACE, un módulo escenificado deja siempre cambios sin aplicar). Ninguna cambia la lista ni el comportamiento visible decidido por el Owner;
+- **D-S11 a D-S15** (`session-pbt4d-design-decisions.md`, 2026-11-22; para PB-T4d): **D-S11**, el RED lleva todo lo de `tests/`, sin esqueleto, y dos CT (CT-PBT4D-01 con `ExpectRed` true y CT-PBT4D-02 con false); **D-S12**, las tres que caen al ejecutar, con `Skip` y equivalente, prefijo `PushBackRetirePilot` y filtros por clase exacta; **D-S13**, los vacíos de M-04, en su sitio; **D-S14**, la prueba lenta, cada 97.º toque y el último; **D-S15**, los cuatro `cref` y el comentario, y `PushBackPilotDraftState.cs` en `UNIT_CHANGE`.
+- **Tras CA-T4d** (la sesión, en su orden para la v5.3; no son decisiones del Owner): M-01, el corpus de CT-PBT3B-06 (iii) pasa al modelo completo en su sitio, con la regla del Owner; M-02, la rama de `MirrorSelection`, medida con la cobertura de los filtros de UI; M-03, los ayudantes sin uso y las clases sin pruebas, borrados con registro; M-04, la lista fila a fila con sus declaraciones y su tramo editado; M-05, los comentarios del GREEN que describían el piloto como presente, y «cuatro condiciones»; M-06, el número de la clase de las sustitutas; M-07, la copia principal sola y con los 18 filtros del contrato.
+- **D-S16** (`session-pbt4d-design-decisions.md`, 2026-11-22; para PB-T4d, tras CA-T4d): la cobertura de la UI de cada lado es la unión de tres corridas de todos los filtros juntos y de una de cada filtro en su proceso (un binding de WPF da golpes que dependen de lo que corrió antes; R-T4-38), y el informe lista lo que baja (informativo); **con su nota tras la recomprobación 1 de CA-T4d** (M-11): cada entrada nombra la corrida, no la prueba, y ESTABLE solo por la UI exige también un filtro en su proceso.
+- **Una errata, declarada** (CA-T4d M-06): la pregunta 2 de `owner-pbt4d-deadcode-27-decisions.md` dice «se borran 22 en vez de 27»; eran **21** pruebas (48 − 27): con `StatusAfter`, 22 filas de WPUR salían del archivo, pero `StatusAfter` va copiado en la clase nueva. La v5.2 la aplicó como 21 sin declararla. En la v5.3, con la 48 y la 49 sustituidas, se borran 19 y una se queda en WPUR.
 - **D-S1 a D-S3, D-S5 y D-S6** (`session-pbt4b-design-decisions.md`, 2026-11-20): **D-S1**, las siete copias mecánicas que no pueden pasar en el GREEN, y las que encuentre la precondición 6, pasan a equivalentes escritos a mano, con su registro y su texto literal, y la lista no cambia por eso; **en la v4.6**, la sesión aplica D-S1 a ocho más, que no compilaban sobre el modelo completo (V46-02), y decide que el guion añada la directiva de `Draft/` (MU, V46-01) y admita ediciones de ayudante en las copias de C-0, sin volver al Owner; **D-S5** (tras la v4.6; V47-01 y V47-02), las cuatro `Theory` que mezclan resultados en el RED (WLHT, PEG y las dos de WPP) se parten por filas en dos equivalentes escritos a mano, con el mismo cuerpo y las mismas aserciones (las dos de `MemberData`, con dos miembros de datos nuevos en la copia), y la regla de la partición se amplía solo para eso, con el mecanismo de D-S1 y sin volver al Owner, porque la lista, las aserciones, las filas y los totales no cambian (358/70 en C-0); **D-S6** (tras la v4.7; V48-01), las copias en el espacio de nombres raíz de su ensamblado, con el prefijo `FullPanelCopy` en sus clases, para que `NamespaceFolderGuardTests` siga en verde sin tocarla ni tocar ningún filtro heredado (el precedente de D-S2); y **D-S1 en la v4.8** (V48-02), las dos copias de WPP que fijaban que el piloto nunca borra una vista pasan a equivalentes que afirman lo que ya fijan D-PB-04, D-PBT3-09 (e) y D-PBT4-07 (356/72 en C-0); **D-S2**, «Conservar» con dos «Sí», rechazada la variante en la que el núcleo conserva sin testigo; **D-S3**, el alias, el testigo desde `Draft/` y `FullPrepareKit`. El Owner fue informado de D-S1 y D-S2 antes de la tercera tanda, con el texto exacto que copia `owner-pbt4b-breaks-decision.md`;
 - **D-S4** (en desarrollo de la 4.ª tanda; D-PBT4-21): la lectura completa del `Primary`, diferida en RIA (`System.Lazy`), y `Full` como `_full?.Value`; `AtOrigin`, NH y `ReadAt` sin cambio; RIA en el alcance como `UNIT_CHANGE`; CT-PBT4B-21; y la sonda del coste en la precondición 6, con una materialización en los cuatro casos.
 
@@ -2824,6 +3246,7 @@ Se declaran en la emisión de PB-T4b (F4B-E52), que custodia los siete registros
 - **Las guardas de PB-T4a se recorrieron por marcas, por diferencia,** sobre el texto literal del GREEN que prescribe este paquete (§4.1), y las 100 señaladas se leyeron una a una. **No es un recorrido entero** (CA-T4a M-01): las marcas no ven las rutas compuestas con `Path.Combine` ni los barridos de todo `src/`, de todo Application o de todo el Plugin; CA-T4a midió aparte esos 97 archivos, y ninguno cae. Lo que queda es una lectura que solo se ve al ejecutar: la mide la precondición 6 con `apply_green_pbt4a.py`, y si cae una prueba fuera de la lista es PBT4A-C16.
 - **El léxico de C# de las mediciones** (`lists_core.py`) se corrigió en la v4.2 para las cadenas verbatim que empiezan por una comilla escapada (`@"""…`), que tomaba por cadenas crudas: tres archivos de las listas las tienen (EIG, RG y `WorkspacePilotUpdateGuardTests`). **Las listas y sus sha256 no cambian** (comprobado: `pbt4-substitution-lists.tsv` sigue en `f24c2dbc…`).
 - **Medidos en la copia exportada, para PB-T4c** (V50-12; V51-06): K = 4, D = 0 y E = 4 (`/d/r5j`), el coste de `IsDirty` (`/d/r5k`), las líneas de las sondas y el ensayo de las CT de texto (`/d/r5i`), y el control del ensayo sobre la v5.0 (`/d/r5l`); los de la v5.0 (`/d/r5f`, `/d/r5g` y `/d/r5h`), como historia. **Lo que el ensayo no cubre:** las CT de comportamiento salvo por las sondas (§6.3.1). **Lo que el paseo de guardas no ve:** la reflexión sobre tipos y el comportamiento de la UI; lo ve la suite completa de Core y los filtros de UI.
+- **Medidos en copias exportadas, para PB-T4d** (V52-06; V53-10): la necesidad de cada baja (`/d/r6h`), la cobertura (`/d/r6j`, `/d/r6k`), los ensayos (`/d/r6l`, `/d/r6n`, `/d/r6v` y `/d/r6x`) y la precondición 6 de la v5.3 (`/d/r6w`, `/d/r6y` y `/d/r6z`); las demás, historia. **Lo que la cobertura no ve:** la cobertura de datos, el Plugin y la UI fuera de los filtros (§4.4).
 - **Quedaban para la copia exportada:** K, D y E de PB-T4c; en PB-T4b, la partición de las copias en el RED (R_C y R_UI), el RED exacto entero, que las copias pasen en el GREEN, las lecturas de las guardas que solo se ven al ejecutar (el recorrido por diferencia, §4.2, no las ve), las líneas «presentar» de CT-PBT4B-06, el coste de la lectura con D-S4, el coste de `IsDirty` y la duración de la suite de Core.
 - **El miembro del informe de reconciliación** para la condición 7 se nombra como el que lee CT-PBT1B-16. La línea base va por `SetWorkingBaseline`.
 
@@ -2836,7 +3259,7 @@ Se declaran en la emisión de PB-T4b (F4B-E52), que custodia los siete registros
 ## 11. Las precondiciones de emisión
 
 1. **PB-T3c CERRADA:** cumplida (`7f0d9aa3`, F4B-E48).
-2. **Las respuestas del Owner:** cumplidas (`owner-pbt4-decisions.md`, `owner-pbt4b-retire-list-decisions.md` y, para PB-T4b, `owner-pbt4b-breaks-decision.md`, `owner-pbt4a-cost-decision.md`, `owner-pbt4b-list-477-decision.md`, `owner-pbt4b-list-478-decision.md` y `owner-pbt4b-cost-decision.md`; y, para PB-T4c, `owner-pbt4c-list-3-decision.md` y `owner-pbt4c-list-4-decision.md`), con su número F4B-E al custodiarlas; y las decisiones de la sesión, `session-pbt4b-design-decisions.md` (D-S1 a D-S3, D-S5 y D-S6) y D-S4 (§8.5), declaradas en F4B-E52.
+2. **Las respuestas del Owner:** cumplidas (`owner-pbt4-decisions.md`, `owner-pbt4b-retire-list-decisions.md` y, para PB-T4b, `owner-pbt4b-breaks-decision.md`, `owner-pbt4a-cost-decision.md`, `owner-pbt4b-list-477-decision.md`, `owner-pbt4b-list-478-decision.md` y `owner-pbt4b-cost-decision.md`; y, para PB-T4c, `owner-pbt4c-list-3-decision.md` y `owner-pbt4c-list-4-decision.md`), con su número F4B-E al custodiarlas; y las decisiones de la sesión, `session-pbt4b-design-decisions.md` (D-S1 a D-S3, D-S5 y D-S6) y D-S4 (§8.5), declaradas en F4B-E52. **Para PB-T4d:** `owner-pbt4d-list-decisions.md`, `owner-pbt4d-substitutes-decision.md`, `owner-pbt4d-run-coverage-decision.md`, `owner-pbt4d-deadcode-27-decisions.md` y `owner-pbt4d-cat4d-decisions.md`, y `session-pbt4d-design-decisions.md` (D-S11 a D-S15), con su número F4B-E al custodiarlas.
 3. **La comprobación acotada** de cada subtarea: 0 bloqueantes y 0 importantes sin resolver (pregunta 4).
 4. **Las celdas, la Snapshot y el binario,** vigentes.
 5. **La remedición sobre el cierre de la subtarea anterior** no cambia nada material (pregunta 4).
@@ -2850,12 +3273,13 @@ Se declaran en la emisión de PB-T4b (F4B-E52), que custodia los siete registros
    - el barrido de nombres y de sobrecargas;
    - **PB-T4b** (V45-04, V46-07, V47-05, V48-06 y V49-06; los ocho pasos de §6.2.1, con los guiones de la v4.9, y el paso 7, el de la v4.8 (V49-06); la corrida, en `pbt4bcc/compile/compile-check.md`), sobre copias exportadas del cierre de PB-T4a (`78a7cef3`): `apply_red_pbt4b_v49.py` en modo de medida y `partition_pbt4b_v48.py red` (con la regla de INV-PBT4B-02 y el reparto por filas de D-S5): la partición, su sha256 y R_C y R_UI; **el RED exacto** con la partición, sin las CT: la suite completa de Core y los filtros de UI, **Core 19 587 = (19 129 − R_C) + R_C + 458** y **UI 2 478 = (2 430 − R_UI) + R_UI + 48**; **el GREEN literal** (`apply_green_pbt4b_v45.py`): **Core 19 587 = 19 129 + 0 + 458** y **UI 2 478 = 2 430 + 0 + 48** (con las CT, 19 605 = 19 147 + 0 + 458 y 2 481 = 2 433 + 0 + 48), cero `warning CS` y `partition_pbt4b_v48.py green`: todas las copias pasan; **las dos sondas** sobre la copia del GREEN, en clases temporales fuera de todo commit: las líneas «presentar» de CT-06 (`pbt4b-ct06-presentar-probe.cs`) y **el coste de la lectura** (`pbt4b-read-cost-probe.cs`: una materialización en los cuatro casos, y lo esperado de §6.2.1); `check_skips_pbt4b_v48.py`; el coste de `IsDirty` y la duración de la suite. **Una copia que no pase** pasa a equivalente escrito a mano (D-S1), **una `Theory` que mezcle** se parte por filas (D-S5) y la emisión necesita una versión del paquete con su texto; **una prueba que falle fuera de la lista de 478** vuelve al Owner; **un coste que no cumpla lo esperado** vuelve a la sesión, que lo lleva al Owner (el de la v4.8 lo dio por cumplido el Owner, `owner-pbt4b-cost-decision.md`);
    - **PB-T4c** (los nueve pasos de §6.3.1; `pbt4ccc/compile/compile-check.md`), sobre copias exportadas del cierre de PB-T4b (`6adff90d`): `apply_red_pbt4c_v51.py`, la compilación sin ningún `warning CS`, `check_skips_pbt4c_v50.py` y los filtros; **el RED exacto,** sin las CT: **Core 19 608 = 19 147 + 0 + 461** y los 18 filtros de UI, donde solo cae el equivalente de CT-PBT2B-06, por aserción; **el GREEN literal:** **Core 19 608 = 19 147 + 0 + 461** y los 18 filtros, 0 `Failed`; las sondas de las líneas de las CT y el coste de `IsDirty`; **el ensayo de las CT de texto** (PASA en las dos ramas, y su control sobre la v5.0 ve I-01) **y el censo de C13** (PASA); **K = 4, D = 0 y E = 4**, y la duración de la suite. Medido en la v5.1 (`pbt4c-precondition6.json`, `29179a12ef8623f4c276f943a725ece6f3ffd84464f16705e1feda757efbce1a`). **Una prueba que falle fuera de la lista de 4** vuelve al Owner.
-7. **La lista que se emite es la aprobada, o una parte:** PB-T4a, 1; **PB-T4b, las 478 de `pbt4b-substitution-list-478.tsv`** (sha256 `8b0fcd0ca775ce3a5e46ef2059f4b06e7ec7319883daf3cb37b1fe91290e9e8b`), que el generador comprueba; **PB-T4c, las 4 de `pbt4c-substitution-list-4.tsv`** (sha256 `9bd4c17a0eda837c92a7a0b7b3562d4ab17f1608baf3ffa8efaf560d8b1f82de`). **PB-T4d no se emite por la autorización condicional:** vuelve al Owner con su lista.
+   - **PB-T4d** (los nueve pasos de §6.4.1; `pbt4dcc/compile/compile-check.md`), sobre copias exportadas del cierre de PB-T4c (`6c2820ba`): el RED literal y el GREEN literal, sin ningún `warning CS`; **Core:** en el RED, 19418 = 19014 + 1 + 403, y solo cae CT-PBT4D-01, por aserción; en el GREEN, 19418 = 19015 + 0 + 403; los 18 filtros de UI del contrato, 0 `Failed`; la copia principal, sola; **la cobertura ampliada de todo `src/` que se queda, PASA**; el ensayo de las CT y su control, y el censo de C13 (PASA). Medido en la v5.3 (`pbt4d-precondition6.json`, `52e03e061cd62c79597f51b8eaf144a27d68b3bf5db876406a804be2fa978989`). **Una prueba que falle fuera de la lista** vuelve al Owner.
+7. **La lista que se emite es la aprobada, o una parte:** PB-T4a, 1; **PB-T4b, las 478 de `pbt4b-substitution-list-478.tsv`** (sha256 `8b0fcd0ca775ce3a5e46ef2059f4b06e7ec7319883daf3cb37b1fe91290e9e8b`), que el generador comprueba; **PB-T4c, las 4 de `pbt4c-substitution-list-4.tsv`** (sha256 `9bd4c17a0eda837c92a7a0b7b3562d4ab17f1608baf3ffa8efaf560d8b1f82de`). **PB-T4d, las 271 filas con acción de `pbt4d-retire-list-271.tsv`** (sha256 `05a4d3d1905529c5bc4d53e0684d27d97eaa96502098eebeb9d16bfd931c75ac`), la elegida (`owner-pbt4d-list-decisions.md`, pregunta 1, con las sustitutas y la rama muerta de sus decisiones siguientes), que el generador comprueba; se emite por su autorización condicional (pregunta 4).
 8. **La custodia,** en el commit de emisión de PB-T4a:
    - este paquete (como `docs/initiatives/I-64-f4b-pbt4-gate-contract-package.md`), las versiones v1 a v4.1, el registro de mediciones, la revisión y su encargo, las instrucciones de cada versión, los guiones y sus salidas, las listas (`pbt4-substitution-lists.md` y `.tsv`, `pbt4b-substitution-list.tsv`, `pbt4d-retire-list.tsv`, `pbt4-copy-map.tsv` y `pbt4-retire-compile.tsv`), el recorrido de las guardas (`pbt4a-guard-walk.tsv`, `pbt4a-guard-walk-out.txt` y `pbt4a-guard-walk-flagged.txt`) y los fragmentos de `v41/` y `v42/`;
    - los dos registros del Owner (`F4B-DRAFTS/coordinator/owner-pbt4-decisions.md` y `owner-pbt4b-retire-list-decisions.md`);
    - la entrada «## PB-T4a» de `superseding-characterization.md`.
-9. **Para PB-T4b y PB-T4c:** la anterior CERRADA y su remedición (**PB-T4a, CERRADA: F4B-E51, `78a7cef3`**). **En el commit de emisión de PB-T4b,** además: esta versión (v4.9), la v4.8, la v4.7, la v4.6, la v4.5 y la v4.4, sus fragmentos de `v44/`, `v45/`, `v46/`, `v47/`, `v48/` y `v49/`, las listas (`pbt4b-substitution-list-478.tsv`, `pbt4b-substitution-list-477.tsv`, `pbt4b-substitution-list-475.tsv` y `pbt4d-retire-list-138.tsv`), los mapas de la copia v2 a v5, el kit de la v4.5, los guiones de la v4.4 a la v4.9 y sus salidas, la partición y las 21 copias generadas con ella (por sha256), `pbt4b-equivalents-review-v45.txt`, `pbt4b-equivalents-review-v46.txt`, `pbt4b-equivalents-review-v47.txt`, `pbt4b-equivalents-review-v48.txt` y `pbt4b-equivalents-review-v49.txt`, el análisis de la v4.7 (`v47/analysis-outside-477.md`), la regla de la tercera corrida del coste (`v48/session-cost-rerun-rule.md`), la corrida de la precondición 6 (`pbt4bcc/compile/`: `compile-check.md`, `pbt4b-precondition6.json`, sus guiones, sus registros y el sha256 de sus TRX y binarios), las dos sondas y sus TRX con su sha256, los registros del Owner de la tercera, la quinta, la sexta y la séptima tandas (`owner-pbt4b-breaks-decision.md`, `owner-pbt4b-list-477-decision.md`, `owner-pbt4b-list-478-decision.md` y, la séptima, `owner-pbt4b-cost-decision.md`; `owner-pbt4a-cost-decision.md` ya está en el cierre de PB-T4a), la decisión de la sesión y la entrada «## PB-T4b» de `superseding-characterization.md`. **En el commit de emisión de PB-T4c,** además: esta versión (v5.1) y la v5.0, los fragmentos y los guiones de `v50/` y de `v51/`, las listas (`pbt4c-substitution-list-4.tsv` y la de 3), las piezas y los guiones de §6.3.2 y sus salidas, las sondas, la remedición (`v50/remeasure_pbt4c_v50.py` y su salida), el paseo de guardas, la corrida de la precondición 6 (`pbt4ccc/compile/`: `compile-check.md`, `pbt4c-precondition6.json`, sus guiones, sus registros y el sha256 de sus TRX y binarios, las de la v5.1 en `r5i-en/`, `r5j-rg/`, `r5k-id/` y `r5l-cc/`, y como historia las de la v5.0, la vuelta parada y la medida de D-S9 de `v50/variant-rename/`), el ensayo de las CT de texto y el censo de C13 con sus salidas, los registros del Owner de la octava y la novena tandas, `session-pbt4c-design-decisions.md` y la entrada «## PB-T4c» de `superseding-characterization.md`. **Para PB-T4d:** el cierre de PB-T4c, su lista vuelta a medir y la respuesta del Owner.
+9. **Para PB-T4b y PB-T4c:** la anterior CERRADA y su remedición (**PB-T4a, CERRADA: F4B-E51, `78a7cef3`**). **En el commit de emisión de PB-T4b,** además: esta versión (v4.9), la v4.8, la v4.7, la v4.6, la v4.5 y la v4.4, sus fragmentos de `v44/`, `v45/`, `v46/`, `v47/`, `v48/` y `v49/`, las listas (`pbt4b-substitution-list-478.tsv`, `pbt4b-substitution-list-477.tsv`, `pbt4b-substitution-list-475.tsv` y `pbt4d-retire-list-138.tsv`), los mapas de la copia v2 a v5, el kit de la v4.5, los guiones de la v4.4 a la v4.9 y sus salidas, la partición y las 21 copias generadas con ella (por sha256), `pbt4b-equivalents-review-v45.txt`, `pbt4b-equivalents-review-v46.txt`, `pbt4b-equivalents-review-v47.txt`, `pbt4b-equivalents-review-v48.txt` y `pbt4b-equivalents-review-v49.txt`, el análisis de la v4.7 (`v47/analysis-outside-477.md`), la regla de la tercera corrida del coste (`v48/session-cost-rerun-rule.md`), la corrida de la precondición 6 (`pbt4bcc/compile/`: `compile-check.md`, `pbt4b-precondition6.json`, sus guiones, sus registros y el sha256 de sus TRX y binarios), las dos sondas y sus TRX con su sha256, los registros del Owner de la tercera, la quinta, la sexta y la séptima tandas (`owner-pbt4b-breaks-decision.md`, `owner-pbt4b-list-477-decision.md`, `owner-pbt4b-list-478-decision.md` y, la séptima, `owner-pbt4b-cost-decision.md`; `owner-pbt4a-cost-decision.md` ya está en el cierre de PB-T4a), la decisión de la sesión y la entrada «## PB-T4b» de `superseding-characterization.md`. **En el commit de emisión de PB-T4c,** además: esta versión (v5.1) y la v5.0, los fragmentos y los guiones de `v50/` y de `v51/`, las listas (`pbt4c-substitution-list-4.tsv` y la de 3), las piezas y los guiones de §6.3.2 y sus salidas, las sondas, la remedición (`v50/remeasure_pbt4c_v50.py` y su salida), el paseo de guardas, la corrida de la precondición 6 (`pbt4ccc/compile/`: `compile-check.md`, `pbt4c-precondition6.json`, sus guiones, sus registros y el sha256 de sus TRX y binarios, las de la v5.1 en `r5i-en/`, `r5j-rg/`, `r5k-id/` y `r5l-cc/`, y como historia las de la v5.0, la vuelta parada y la medida de D-S9 de `v50/variant-rename/`), el ensayo de las CT de texto y el censo de C13 con sus salidas, los registros del Owner de la octava y la novena tandas, `session-pbt4c-design-decisions.md` y la entrada «## PB-T4c» de `superseding-characterization.md`. **Para PB-T4d:** el cierre de PB-T4c (CERRADA: F4B-E55, `6c2820ba`), su lista vuelta a medir y las respuestas del Owner (cumplidas); **en el commit de emisión de PB-T4d,** además: esta versión (v5.4), los fragmentos y los guiones de `v52/` (con `v52/sub/`, el alto del relevo), de `v53/` y de `v54/`, la comprobación acotada de la v5.2 (`independent-review-pbt4d-check.md`), la lista (`pbt4d-retire-list-271.tsv`; la de la v5.2, `pbt4d-retire-list-229.tsv`, como historia), las dos piezas y sus módulos y aplicadores, la remedición, las medidas de la necesidad y de la cobertura, la corrida de la precondición 6 (`pbt4dcc/compile/`, en `F4B-DRAFTS/pbt4/cc4d/`: `compile-check.md`, `pbt4d-precondition6.json`, sus guiones, sus registros y el sha256 de sus TRX y de sus coberturas, y como historia las copias anteriores), los cinco registros del Owner de las tandas 10.ª a 14.ª, `session-pbt4d-design-decisions.md` (D-S11 a D-S16) y la entrada «## PB-T4d» de `superseding-characterization.md`.
 
 
 ## Anexo V49-A. El texto literal de lo escrito a mano de la v4.8 y la v4.9, y de las cuatro `Theory` partidas por filas
@@ -4495,3 +4919,2876 @@ pasa a:
         private static string Restore(string text) => SkipLine.Replace(text, "$1[$2]").Replace(EditAllSkipLine + "\n", "    [Fact]\n");
 ```
 
+## Anexo V54-A. El texto literal de PB-T4d: el GREEN, las ediciones con registro, los ayudantes sin uso, los `Skip` y los archivos nuevos (v5.4)
+
+Las bajas con registro no van aquí: son las filas «borrar con registro» y «sustituir con registro» de la lista, y su texto es el de la pieza del RED (`pbt4d-red-v54.txt`, sha256 `80f8cc0c5c9f54de033648e7eec95728fa0fc0d28e31886101207e3dbec381db`), que las quita. Los anexos V52-A y V53-A de la v5.2 y la v5.3 quedan como historia.
+
+### La pieza del GREEN, `pbt4d-green-v54.txt` (sha256 `aaf6cab882cfb3eba6939fd8b64ec1fa15c22431ba8bdaeb9bcdf4dbb89ffbf0`)
+
+```text
+@@@@ # PB-T4d (I-64 F4B), paquete v5.4: el GREEN literal de src/, la retirada del piloto con el alcance B (owner-pbt4d-list-decisions.md, pregunta 1),
+@@@@ # la limpieza de cuatro cref y un comentario (D-S15, solo comentarios), la rama muerta de BuildCore (el parametro allowErase y lo que
+@@@@ # solo existe con el; owner-pbt4d-deadcode-27-decisions.md, pregunta 1) y, al final, los comentarios que describian el piloto como
+@@@@ # presente (CA-T4d M-05 (a), solo comentarios). Los bloques de la v5.2 no cambian.
+@@@@ # Bloques: EDIT <ruta> / OLD / NEW / END (el OLD esta exactamente una vez en el texto que se va editando; un NEW sin lineas es el texto vacio)
+@@@@ # y DELETE <ruta> (el archivo se borra). Los textos, con saltos de linea \n. Lo aplica green_pbt4d_v53.py (apply_green_pbt4d_v53.py) sobre 6c2820ba; desde la v5.3, solo cambia esta cabecera.
+
+@@@@ DELETE src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs
+
+@@@@ DELETE src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotFieldAdapter.cs
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs
+@@@@ OLD
+    /// <summary>
+    /// The pair <see cref="PushBackCompositeEditorAssembler.BuildDesign"/> consumes, or the reason the base cannot be
+    /// composed. The state and the inputs of a composition belong to the caller: they are fresh objects, never one of the
+    /// states of a draft.
+    /// </summary>
+    public sealed class PushBackPilotComposition
+    {
+        private PushBackPilotComposition(PushBackCompositeEditorState? editor, PushBackEditorInputs? inputs, string? reason)
+        {
+            Editor = editor;
+            Inputs = inputs;
+            Reason = reason;
+        }
+
+        public bool IsComposed => Editor != null && Inputs != null;
+
+        /// <summary>The composite state to hand to the assembler; null when the composition was rejected.</summary>
+        public PushBackCompositeEditorState? Editor { get; }
+
+        /// <summary>The rack-wide inputs to hand to the assembler; null when the composition was rejected.</summary>
+        public PushBackEditorInputs? Inputs { get; }
+
+        /// <summary>Why the composition was rejected; null when it was composed.</summary>
+        public string? Reason { get; }
+
+        public static PushBackPilotComposition Composed(PushBackCompositeEditorState editor, PushBackEditorInputs inputs)
+            => new PushBackPilotComposition(
+                editor ?? throw new ArgumentNullException(nameof(editor)),
+                inputs ?? throw new ArgumentNullException(nameof(inputs)),
+                null);
+
+        public static PushBackPilotComposition Rejected(string reason)
+            => new PushBackPilotComposition(null, null, reason);
+    }
+
+@@@@ NEW
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs
+@@@@ OLD
+        /// <summary>
+        /// The composition to write (IC-07 point 2, D-12): what the pilot does not edit comes from the CURRENT base, never from
+        /// the draft. (1) If the editable content of <paramref name="current"/> differs from the one of
+        /// <paramref name="initial"/> in anything other than <c>Inputs.Annotations.AnnotationScale</c> (the pilot comparator
+        /// with that one field neutralized), it is a typed rejection: nothing that the pilot does not edit is ever reverted or
+        /// written in silence. (2) Otherwise it materializes AGAIN from <c>initial.Origin</c> — the current base, which gives
+        /// a fresh module authority — and applies to it ONLY the scale of <paramref name="current"/>. It returns the pair
+        /// <see cref="PushBackCompositeEditorAssembler.BuildDesign"/> consumes. Pure and total: it mutates neither state, it
+        /// ignores <c>current.Origin</c> and it never throws; a base that no longer materializes gives a typed rejection.
+        /// Since F4-T4A1 (D-T4A1-05, the carry-overs of F4-E25) the comparison of (1) is made on the current state as it is, a scale that
+        /// is not finite or not greater than zero is rejected (6), and so is a base that, materialized again, no longer equals the
+        /// initial state (3). It is only safe AFTER a match of the base with a re-read (H-06): the plan of an update calls it then.
+        /// </summary>
+        public static PushBackPilotComposition ComposeForWrite(
+            PushBackPilotDraftState initial, PushBackPilotDraftState current, RackCatalog catalog)
+        {
+            try
+            {
+                if (initial == null || current == null) return PushBackPilotComposition.Rejected("Falta el estado inicial o el actual.");
+                if (initial.Inputs.Annotations == null || current.Inputs.Annotations == null)
+                    return PushBackPilotComposition.Rejected(NonPilotContentReason);
+
+                // (6) An invalid scale that arrived by an edit in place is never written: not a number, infinite, zero or negative.
+                var scale = current.Inputs.Annotations.AnnotationScale;
+                if (double.IsNaN(scale) || double.IsInfinity(scale) || scale <= 0.0)
+                    return PushBackPilotComposition.Rejected(InvalidScaleReason);
+
+                // (1) The current state is compared as it is, never normalized: it is the copy of the INITIAL state that has its scale
+                // neutralized (it takes the scale of the current one), so nothing of the current state is hidden by a copy.
+                var neutralInitial = PushBackPilotStateComparer.Copy(initial);
+                neutralInitial.Inputs.Annotations.AnnotationScale = scale;
+                if (!PushBackPilotStateComparer.Instance.Equals(neutralInitial, current))
+                    return PushBackPilotComposition.Rejected(NonPilotContentReason);
+
+                var fresh = Materialize(initial.Origin, catalog);
+                if (!fresh.IsAdmitted || fresh.State == null)
+                    return PushBackPilotComposition.Rejected(fresh.Reason ?? UnreadableOrFutureDiagnostic);
+
+                // (3) The base that is materialized AGAIN must still be the initial state: if the catalog changed in the meantime, the
+                // base is no longer the one the user saw and nothing is composed over it.
+                if (!PushBackPilotStateComparer.Instance.Equals(initial, fresh.State))
+                    return PushBackPilotComposition.Rejected(BaseChangedReason);
+
+                if (fresh.State.Inputs.Annotations == null) return PushBackPilotComposition.Rejected(NonPilotContentReason);
+                fresh.State.Inputs.Annotations.AnnotationScale = current.Inputs.Annotations.AnnotationScale;
+                return PushBackPilotComposition.Composed(fresh.State.Editor, fresh.State.Inputs);
+            }
+            catch (Exception ex)
+            {
+                return PushBackPilotComposition.Rejected(ComposeFailurePrefix + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// After the user keeps the draft on a newer version (KeepMineOnCurrentVersion) the surface needs a current state that
+        /// is the NEW base plus the one thing the pilot edits: a copy of <paramref name="newInitial"/> carrying the
+        /// <c>AnnotationScale</c> of <paramref name="current"/>. Pure: it mutates neither argument and shares no mutable
+        /// object with them; the surface sets the result as the current state of the draft.
+        /// </summary>
+        public static PushBackPilotDraftState KeepPilotEditsOn(PushBackPilotDraftState newInitial, PushBackPilotDraftState current)
+        {
+            if (newInitial == null) throw new ArgumentNullException(nameof(newInitial));
+            if (current == null) throw new ArgumentNullException(nameof(current));
+
+            var kept = PushBackPilotStateComparer.Copy(newInitial);
+            if (kept.Inputs.Annotations != null && current.Inputs.Annotations != null)
+                kept.Inputs.Annotations.AnnotationScale = current.Inputs.Annotations.AnnotationScale;
+            return kept;
+        }
+@@@@ NEW
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+    /// <summary>
+    /// I-64 F4-T4A1 (D-T4A1-04, N-7) — the explicit snapshot of a draft that <see cref="PushBackPilotUpdatePlanner.Prepare"/> reads. It
+    /// is built by ONE factory, <see cref="From"/>, so no other code names the base or the states of a draft to prepare an update.
+    /// The two states are copies, and <see cref="ConsideredStatus"/> is the status the draft had before an attempt that is in flight.
+    /// </summary>
+    public sealed class PushBackPilotPrepareInput
+    {
+        private PushBackPilotPrepareInput(
+            string rackId,
+            DraftStaleBase staleBase,
+            PushBackPilotDraftState initialDraftState,
+            PushBackPilotDraftState currentDraftState,
+            bool hasPendingText,
+            bool isDirty,
+            DraftStatus consideredStatus)
+        {
+            RackId = rackId;
+            StaleBase = staleBase;
+            InitialDraftState = initialDraftState;
+            CurrentDraftState = currentDraftState;
+            HasPendingText = hasPendingText;
+            IsDirty = isDirty;
+            ConsideredStatus = consideredStatus;
+        }
+
+        public string RackId { get; }
+
+        /// <summary>The base of the draft: what the last read of the drawing saw.</summary>
+        public DraftStaleBase StaleBase { get; }
+
+        /// <summary>A COPY of the initial state of the draft.</summary>
+        public PushBackPilotDraftState InitialDraftState { get; }
+
+        /// <summary>A COPY of the current state of the draft.</summary>
+        public PushBackPilotDraftState CurrentDraftState { get; }
+
+        public bool HasPendingText { get; }
+
+        public bool IsDirty { get; }
+
+        /// <summary>The status of the draft, and under Applying the status it had before the attempt began.</summary>
+        public DraftStatus ConsideredStatus { get; }
+
+        /// <summary>The one construction of the snapshot of a draft.</summary>
+        public static PushBackPilotPrepareInput From(DraftSession<PushBackPilotDraftState> draft)
+        {
+            if (draft == null) throw new ArgumentNullException(nameof(draft));
+            var status = draft.Status;
+            return new PushBackPilotPrepareInput(
+                draft.RackId,
+                draft.StaleBase,
+                draft.InitialDraftState,
+                PushBackPilotStateComparer.Copy(draft.CurrentDraftState),
+                draft.HasPendingText,
+                draft.IsDirty,
+                status == DraftStatus.Applying ? draft.StatusBeforeAttempt : status);
+        }
+    }
+@@@@ NEW
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+        /// The pure PREPARE of an update. It evaluates, in this order and returning at the first that holds: NotApplicable (the draft is
+        /// not Clean or Dirty), PendingText, NothingToApply (Clean; the re-read is not looked at), Conflict (the raw comparison of the
+        /// base with the re-read, BEFORE the admission), NotAdmitted (only with a match), Invalid (a to e) and Ready. It is total: any
+        /// exception is an Invalid with its reason. It changes nothing, reads nothing and writes nothing.
+        /// </summary>
+        public static PushBackPilotPrepareResult Prepare(PushBackPilotPrepareInput input, PushBackPilotIntentResult reread, RackCatalog catalog)
+        {
+            try
+            {
+                if (input == null) return PushBackPilotPrepareResult.WithInvalid(MissingInputReason);
+
+                if (input.ConsideredStatus != DraftStatus.Clean && input.ConsideredStatus != DraftStatus.Dirty)
+                    return PushBackPilotPrepareResult.Without(PushBackPilotPrepareKind.NotApplicable);
+                if (input.HasPendingText) return PushBackPilotPrepareResult.Without(PushBackPilotPrepareKind.PendingText);
+                if (input.ConsideredStatus == DraftStatus.Clean) return PushBackPilotPrepareResult.Without(PushBackPilotPrepareKind.NothingToApply);
+
+                if (reread == null) return PushBackPilotPrepareResult.WithInvalid(MissingInputReason);
+
+                var comparison = input.StaleBase.CompareWith(reread.StaleBase);
+                if (!comparison.IsMatch) return PushBackPilotPrepareResult.WithConflict(comparison.Differences);
+
+                if (!reread.Read.IsAdmitted)
+                    return PushBackPilotPrepareResult.WithNotAdmitted(reread.Read.Admission.Diagnostic ?? PushBackPilotIntentReader.MaterializeDiagnostic);
+
+                return Build(input, reread, catalog);
+            }
+            catch (Exception ex)
+            {
+                return PushBackPilotPrepareResult.WithInvalid(PrepareFailurePrefix + ex.Message);
+            }
+        }
+
+        /// <summary>
+@@@@ NEW
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+        private static PushBackPilotPrepareResult Build(PushBackPilotPrepareInput input, PushBackPilotIntentResult reread, RackCatalog catalog)
+        {
+            // A missing catalog is answered here, after the comparison and the admission (M-6): a difference of the base or a read that is not
+            // admitted is told as such even when the catalog is missing.
+            if (catalog == null) return PushBackPilotPrepareResult.WithInvalid(MissingInputReason);
+
+            // The current state is composed over the base that matches the re-read (H-06), with the carry-overs of D-T4A1-05. The pilot never erases a view.
+            var composition = PushBackPilotMaterializer.ComposeForWrite(input.InitialDraftState, input.CurrentDraftState, catalog);
+            return BuildCore(
+                catalog,
+                input.RackId,
+                input.StaleBase,
+                reread.StaleBase,
+                input.InitialDraftState.Origin,
+                input.CurrentDraftState.Inputs.Annotations.AnnotationScale,
+                false,
+                null,
+                composition.Editor,
+                composition.Inputs,
+                composition.IsComposed ? null : composition.Reason ?? PushBackPilotMaterializer.NonPilotContentReason);
+        }
+@@@@ NEW
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs
+@@@@ OLD
+        /// <summary>
+        /// The check before the slot (step 1): the pure PREPARE without a re-read and without a catalog. It only stops for the three kinds
+        /// that need neither; anything else goes on.
+        /// </summary>
+        public static PushBackPilotPrecheck Precheck(DraftSession<PushBackPilotDraftState> draft)
+        {
+            if (draft == null) throw new ArgumentNullException(nameof(draft));
+
+            var result = PushBackPilotUpdatePlanner.Prepare(PushBackPilotPrepareInput.From(draft), null!, null!);
+            switch (result.Kind)
+            {
+                case PushBackPilotPrepareKind.NotApplicable: return PushBackPilotPrecheck.Stop(result.Kind, NotApplicableReason);
+                case PushBackPilotPrepareKind.PendingText: return PushBackPilotPrecheck.Stop(result.Kind, PendingTextReason);
+                case PushBackPilotPrepareKind.NothingToApply: return PushBackPilotPrecheck.Stop(result.Kind, NothingToApplyReason);
+                default: return PushBackPilotPrecheck.Go();
+            }
+        }
+
+@@@@ NEW
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs
+@@@@ OLD
+        /// <summary>
+        /// The whole update under the slot. TOTAL: it never throws. The outcome is the one that the draft must be closed with.
+        /// </summary>
+        public static DraftApplyOutcome<PushBackPilotDraftState> Execute(
+            DraftSession<PushBackPilotDraftState> draft,
+            PushBackPilotUpdateRequest request,
+            IPushBackPilotUpdatePort port)
+        {
+            if (draft == null || request == null || port == null)
+                return DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedFailure(MissingArgumentsReason);
+
+            // M-01: the state of the run lives outside the try, so what escapes is classified with what the run already did.
+            PushBackPilotPrepareInput? input = null;
+            var execution = new Execution<PushBackPilotDraftState>(
+                draft,
+                request,
+                port,
+                snapshotted =>
+                {
+                    input = PushBackPilotPrepareInput.From(snapshotted);
+                    return input.InitialDraftState.Origin;
+                },
+                (_, scan, catalog) => PushBackPilotUpdatePlanner.Prepare(input!, PushBackPilotIntentReader.Read(scan, catalog), catalog),
+                (scan, catalog, plan) =>
+                {
+                    var read = PushBackPilotIntentReader.Read(scan, catalog);
+                    return (read.Read, ComparePost(plan, read));
+                });
+            try
+            {
+                return execution.Run();
+            }
+            catch (Exception ex)
+            {
+                return execution.OutcomeOfAnEscape(ex);
+            }
+        }
+
+@@@@ NEW
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs
+@@@@ OLD
+        /// <summary>
+        /// The comparison of POST, without normalizing anything (D-T4B-05): the same keys as the plan, the envelope of each key equal
+        /// ordinally, and the same scale. Null when everything matches; otherwise the cause.
+        /// </summary>
+        public static string? ComparePost(PushBackPilotUpdatePlan plan, PushBackPilotIntentResult? postRead)
+        {
+            if (plan == null) throw new ArgumentNullException(nameof(plan));
+            if (postRead == null) return PostRereadMissingReason;
+
+            return ComparePostCore(plan, postRead.Read.Admission, postRead.StaleBase, postRead.Read.InitialState?.Inputs.Annotations.AnnotationScale);
+        }
+
+@@@@ NEW
+@@@@ END
+
+@@@@ # D-S15 (la sesion): solo comentarios, sobre el texto anterior: los cuatro cref a lo retirado y el comentario que se queda sin su Build.
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs
+@@@@ OLD
+    /// operation that assembles a design: a design is only ever assembled from a composition made by
+    /// <see cref="PushBackPilotMaterializer.ComposeForWrite"/>, never directly over the state of a draft.
+@@@@ NEW
+    /// operation that assembles a design: a design is never assembled directly over the state of a draft.
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+    /// I-64 F4B PB-T3b (D-PBT3-09) — the explicit snapshot of a draft of the FULL model that the full PREPARE reads. It is the twin of
+    /// <see cref="PushBackPilotPrepareInput"/>, which does not change, and it is built by ONE factory, <see cref="From"/>.
+@@@@ NEW
+    /// I-64 F4B PB-T3b (D-PBT3-09) — the explicit snapshot of a draft of the FULL model that the full PREPARE reads. It is built by ONE
+    /// factory, <see cref="From"/>.
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+    /// <summary>The seven outcomes of <see cref="PushBackPilotUpdatePlanner.Prepare"/>, in the order in which they are evaluated.</summary>
+@@@@ NEW
+    /// <summary>The seven outcomes of <see cref="PushBackPilotUpdatePlanner.PrepareFull"/>, in the order in which they are evaluated.</summary>
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+    /// <summary>The result of <see cref="PushBackPilotUpdatePlanner.Prepare"/>. Immutable.</summary>
+@@@@ NEW
+    /// <summary>The result of <see cref="PushBackPilotUpdatePlanner.PrepareFull"/>. Immutable.</summary>
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+        // The base of the draft and the re-read match here, and the re-read is admitted: the plan can be built, or it is Invalid.
+
+        // The same, for the full model: the composition is the one of the model of the draft, and the plan may erase the laterals that the edition leaves obsolete.
+@@@@ NEW
+        // The base of the draft and the re-read match here, and the re-read is admitted: the plan can be built, or it is Invalid. The composition
+        // is the one of the model of the draft, and the plan may erase the laterals that the edition leaves obsolete.
+@@@@ END
+
+@@@@ # La rama muerta de BuildCore (owner-pbt4d-deadcode-27-decisions.md, pregunta 1): el parametro allowErase y lo que solo existe con el,
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+        public const string ViewUnavailablePrefix = "El piloto no borra vistas y la vista ";
+
+        public const string ViewUnavailableSuffix = " ya no está disponible en el sistema saliente: usa RACKEDITAR.";
+
+@@@@ NEW
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+                input.CurrentDraftState.Editable.AnnotationScale,
+                true,
+@@@@ NEW
+                input.CurrentDraftState.Editable.AnnotationScale,
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+        // The building of the plan, common to the two models: the composition (or why it was rejected), the base of the draft, the base of the re-read
+        // and the origin of the draft, the scale, whether the model may erase views and the name of the draft.
+@@@@ NEW
+        // The building of the plan: the composition (or why it was rejected), the base of the draft, the base of the re-read and the origin of the
+        // draft, the scale and the name of the draft. The plan may erase the laterals that the edition leaves obsolete.
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+            double scale,
+            bool allowErase,
+@@@@ NEW
+            double scale,
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+            // (e) What the edition does to each view, by key (ordinal). The pilot never erases a view: a member that is not available in the outgoing
+            // system makes its update Invalid. The full model erases an obsolete lateral and rejects the frontal of side B of a rack without it.
+@@@@ NEW
+            // (e) What the edition does to each view, by key (ordinal): an obsolete lateral is erased, and the frontal of side B of a rack without it
+            // is rejected.
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+                if (!decoded.HasAddress || (allowErase && disposition == PushBackViewDispositionKind.NoAddress))
+@@@@ NEW
+                if (!decoded.HasAddress || disposition == PushBackViewDispositionKind.NoAddress)
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+                if (disposition == PushBackViewDispositionKind.ObsoleteLateral && allowErase)
+@@@@ NEW
+                if (disposition == PushBackViewDispositionKind.ObsoleteLateral)
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+                if (disposition == PushBackViewDispositionKind.FrontalBOfOneWay && allowErase)
+                    return PushBackPilotPrepareResult.WithInvalid(FrontalBOfOneWayPrefix + entry.Key + FrontalBOfOneWaySuffix);
+                if (disposition != PushBackViewDispositionKind.Redraw)
+                    return PushBackPilotPrepareResult.WithInvalid(ViewUnavailablePrefix + entry.Key + ViewUnavailableSuffix);
+@@@@ NEW
+                if (disposition == PushBackViewDispositionKind.FrontalBOfOneWay)
+                    return PushBackPilotPrepareResult.WithInvalid(FrontalBOfOneWayPrefix + entry.Key + FrontalBOfOneWaySuffix);
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+                // (f) The name: the pilot keeps the one of each envelope that was re-read; the full model writes the one of the draft, or, when it is
+                // blank, the one of the envelope that was re-read for the origin, in every view.
+                var memberName = allowErase ? (string.IsNullOrWhiteSpace(draftName) ? origins[0].Embed.Name : draftName) : embed.Name;
+@@@@ NEW
+                // (f) The name: the one of the draft, or, when it is blank, the one of the envelope that was re-read for the origin, in every view.
+                var memberName = string.IsNullOrWhiteSpace(draftName) ? origins[0].Embed.Name : draftName;
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+            if (allowErase && dispositions.AllObsolete) return PushBackPilotPrepareResult.WithInvalid(AllViewsObsoleteReason);
+@@@@ NEW
+            if (dispositions.AllObsolete) return PushBackPilotPrepareResult.WithInvalid(AllViewsObsoleteReason);
+@@@@ END
+
+@@@@ # CA-T4d M-05 (a) (la sesion): solo comentarios, sobre el texto anterior: los que describian como presentes la corrida, el PREPARE y
+@@@@ # la composicion para escribir del piloto, que se retiran.
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs
+@@@@ OLD
+    /// I-64 F4-T2A (D-T2-03, D-T2-04) — materializes the pilot state from the authored envelope text and composes the
+    /// state to write. It owns NO parser: it reads through the existing RACKEDITAR path (<see cref="RackEmbedStore"/>, the
+@@@@ NEW
+    /// I-64 F4-T2A (D-T2-03, D-T2-04) — materializes the pilot state from the authored envelope text; since I-64 F4B PB-T4d it no
+    /// longer composes a state to write (that went with the run of the pilot). It owns NO parser: it reads through the existing
+    /// RACKEDITAR path (<see cref="RackEmbedStore"/>, the
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs
+@@@@ OLD
+    /// I-64 F4-T4B (D-T4B-02) — the pure and TOTAL run of the update of the bounded Push Back pilot: it decides, classifies and
+@@@@ NEW
+    /// I-64 F4-T4B (D-T4B-02) — the pure and TOTAL run of the update, born for the bounded Push Back pilot and, since I-64 F4B
+    /// PB-T4d, the one of the full model only (the run of the pilot is retired): it decides, classifies and
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs
+@@@@ OLD
+    /// I-64 F4B PB-T3b (D-PBT3-10) — the same run serves the two models of the draft: the one of the pilot and the full one. The views that the
+    /// update leaves obsolete are taken away between the start of MUTATE and its seal, by the capacity that the scope of MUTATE may implement.
+@@@@ NEW
+    /// I-64 F4B PB-T3b (D-PBT3-10) — the same run served the two models of the draft, the one of the pilot and the full one; since I-64 F4B
+    /// PB-T4d it serves only the full one (ExecuteFull), because the run of the pilot is retired. The views that the update leaves obsolete
+    /// are taken away between the start of MUTATE and its seal, by the capacity that the scope of MUTATE may implement.
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs
+@@@@ OLD
+        /// The whole update under the slot for a draft of the FULL model (D-PBT3-10). TOTAL: it never throws. It is the same run as the one of the
+        /// pilot, with the plan, the re-read and the comparison of the full model.
+@@@@ NEW
+        /// The whole update under the slot for a draft of the FULL model (D-PBT3-10). TOTAL: it never throws. It is the generic run, with the plan,
+        /// the re-read and the comparison of the full model (the run of the pilot that shared it is retired in I-64 F4B PB-T4d).
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs
+@@@@ OLD
+        /// <summary>The comparison of POST for the FULL model (D-PBT3-10): the erased views are gone, and the rest as for the pilot.</summary>
+@@@@ NEW
+        /// <summary>The comparison of POST for the FULL model (D-PBT3-10): the erased views are gone, and the keys, the envelopes and the
+        /// scale are the ones of the plan.</summary>
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+    /// What the plan redraws for one member that the pilot may change: the view and the section as RACKEDITAR writes them, the text
+@@@@ NEW
+    /// What the plan redraws for one member that the update may change: the view and the section as RACKEDITAR writes them, the text
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+        public IReadOnlyList<PushBackPilotKeyedText> Envelopes { get; }
+
+        /// <summary>The keys of the views that the update erases, ordered by key (ordinal); empty in the pilot.</summary>
+@@@@ NEW
+        public IReadOnlyList<PushBackPilotKeyedText> Envelopes { get; }
+
+        /// <summary>The keys of the views that the update erases, ordered by key (ordinal).</summary>
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+        public string PostOriginKey { get; }
+
+        /// <summary>The keys of the views that the update erases, ordered by key (ordinal); empty in the pilot.</summary>
+@@@@ NEW
+        public string PostOriginKey { get; }
+
+        /// <summary>The keys of the views that the update erases, ordered by key (ordinal).</summary>
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+        /// <summary>The members that the pilot may change, ordered by key (ordinal).</summary>
+@@@@ NEW
+        /// <summary>The members that the update may change, ordered by key (ordinal).</summary>
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+    /// I-64 F4-T4A1 (D-T4A1-04) — the pure PREPARE of an update of the bounded Push Back pilot. It reads a snapshot of the draft and
+@@@@ NEW
+    /// I-64 F4-T4A1 (D-T4A1-04) — the pure PREPARE of an update, born for the bounded Push Back pilot and, since I-64 F4B PB-T4d, the
+    /// one of the full model only (the PREPARE of the pilot is retired). It reads a snapshot of the draft and
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+@@@@ OLD
+        /// The pure PREPARE of an update of the FULL model (D-PBT3-09), with the same order as the one of the pilot: NotApplicable,
+@@@@ NEW
+        /// The pure PREPARE of an update of the FULL model (D-PBT3-09), in the order that the PREPARE of the pilot had (D-T4A1-04; retired
+        /// in I-64 F4B PB-T4d): NotApplicable,
+@@@@ END
+```
+
+### Las ediciones con registro (`pbt4d_test_edits_v54.py`, `EDITS`, en su orden, sobre el texto ya sin las bajas)
+
+**`tests/RackCad.Tests/PushBackFullWritePrepareTests.cs`:** CT-PBT3B-05 fija el nombre del modelo completo; la linea del piloto nombraba su Prepare, que se retira.
+
+Desde la línea que contiene el texto de abajo hasta la anterior a la que contiene `Finish(`:
+
+```text
+            // The pilot keeps the name of each envelope that was re-read.
+```
+
+Pasa a:
+
+```text
+            // I-64 F4B PB-T4d (owner-pbt4d-substitutes-decision.md): the part of the pilot (its Prepare, retired) goes; what the full model writes stays.
+```
+
+**`tests/RackCad.Tests/PushBackFullWritePrepareTests.cs`:** CT-PBT3B-05: sale la linea esperada del piloto.
+
+El texto, una vez en el archivo:
+
+```text
+                    "nombre-en-blanco prepare=Ready A1=Origen B2=Origen C3=Origen",
+                    "piloto prepare=Ready A1=Origen B2=Otro-B C3=Otro-C",
+```
+
+Pasa a:
+
+```text
+                    "nombre-en-blanco prepare=Ready A1=Origen B2=Origen C3=Origen",
+```
+
+**`tests/RackCad.Tests/PushBackFullWritePrepareTests.cs`:** CT-PBT3B-06: (ii) es del piloto (ComposeForWrite y su Prepare); (i) fija la barrera del modelo completo; (iii), el corpus por el ensamblador y la barrera, pasa a borradores del modelo completo por PrepareFull (CA-T4d M-01).
+
+Desde la línea que contiene el texto de abajo hasta la anterior a la que contiene `const string blockedPrefix = "El diseño tiene un error que impide escribirlo: ";`:
+
+```text
+            // (ii) a draft of the PILOT over pb-01-base with the manual structure of A at 1: the pilot admits it, and now the barrier stops it.
+```
+
+Pasa a:
+
+```text
+            // I-64 F4B PB-T4d (owner-pbt4d-substitutes-decision.md): (ii) was a draft of the PILOT (its Prepare and ComposeForWrite, retired)
+            // and goes; the barrier over the full model, (i), stays. (owner-pbt4d-cat4d-decisions.md, CA-T4d M-01): (iii), the designs of the
+            // corpus, was a draft of the pilot too, and passes now as drafts of the FULL model through PrepareFull, the assembler and the barrier.
+
+            // (iii) the designs of the corpus that the full model admits are not blocked: the same edit gives Ready.
+            var fixtures = new[]
+            {
+                "pb-01-base", "pb-02-modulos", "pb-03-fondos", "pb-04-blanco", "pb-05-topes", "pb-06-seguridad", "pb-07-combinado", "pb-08-redondeo",
+                "pb-10-sin-datum", "pb-11-sin-i41", "pb-12-poste-nulo", "pb-13-sideb-no-presente", "pb-14-peralte-heredado", "pb-15-sin-composite",
+                "pb-31-v2-modulos",
+            };
+            foreach (var fixture in fixtures)
+            {
+                Paso(log, () =>
+                {
+                    var read = FullWriteKit.Read(IntentKit.Scan(Rack, "A1", IntentKit.Member("A1", PrepareKit.Frontal(fixture))));
+                    var draft = FullWriteKit.DraftOf(read);
+                    var scale = fixture == "pb-02-modulos" ? 2.5 : 2.0;
+                    FullWriteKit.Edit(draft, state => state.Editable.AnnotationScale = scale);
+                    var result = PrepareFull(log, draft, read);
+                    log.Add(fixture + " admitido=" + read.Read.IsAdmitted + " prepare=" + Describe(result));
+                });
+            }
+```
+
+**`tests/RackCad.Tests/PushBackFullWritePrepareTests.cs`:** CT-PBT3B-06: sale la linea esperada de (ii), del piloto; las de (iii), el corpus, se quedan (CA-T4d M-01).
+
+Desde la línea que contiene el texto de abajo hasta la anterior a la que contiene `Finish(log, expected);`:
+
+```text
+                "celda-no-cabe prepare=Invalid estado-igual-al-primer-bloqueante-de-Evaluate=True",
+```
+
+Pasa a:
+
+```text
+                "celda-no-cabe prepare=Invalid estado-igual-al-primer-bloqueante-de-Evaluate=True",
+            };
+            expected.AddRange(fixtures.Select(fixture => fixture + " admitido=True prepare=Ready"));
+```
+
+**`tests/RackCad.Tests/PushBackFullWriteRunTests.cs`:** CT-PBT3B-09 fija ComparePostFull; las dos lineas del piloto nombraban ComparePost, que se retira.
+
+Desde la línea que contiene el texto de abajo hasta la anterior a la que contiene `Finish(`:
+
+```text
+            // The pilot, with a plan without erasures, gives what it gives today in the same cases.
+```
+
+Pasa a:
+
+```text
+            // I-64 F4B PB-T4d (owner-pbt4d-substitutes-decision.md): the comparison of the pilot (ComparePost, retired) goes; ComparePostFull stays.
+```
+
+**`tests/RackCad.Tests/PushBackFullWriteRunTests.cs`:** CT-PBT3B-09: salen las dos lineas esperadas del piloto.
+
+El texto, una vez en el archivo:
+
+```text
+                    "erased-keys=[B2]",
+                    "piloto-todo-igual <null>",
+                    "piloto-escala-distinta True",
+```
+
+Pasa a:
+
+```text
+                    "erased-keys=[B2]",
+```
+
+**`tests/RackCad.Tests/PushBackPilotUpdateEquivalenceGuardTests.cs`:** E-3: el Build del piloto se retira; lo de BuildCore y del modelo completo se queda.
+
+El texto, una vez en el archivo:
+
+```text
+            var build = Src.BodyOf(plan, @"private\s+static\s+PushBackPilotPrepareResult\s+Build\s*\(");
+```
+
+Pasa a:
+
+```text
+            // I-64 F4B PB-T4d (owner-pbt4d-substitutes-decision.md): the Build of the pilot is retired; what E-3 protected of BuildCore and of
+            // the full model stays.
+```
+
+**`tests/RackCad.Tests/PushBackPilotUpdateEquivalenceGuardTests.cs`:** E-3: sale la regla del Build del piloto.
+
+El texto, una vez en el archivo:
+
+```text
+            if (!Regex.IsMatch(build, @"\bBuildCore\s*\([^;]*\bfalse\b")) yield return "the pilot does not call BuildCore without the capacity to erase";
+```
+
+Pasa a:
+
+```text
+(nada)
+```
+
+**`tests/RackCad.Tests/PushBackPilotUpdateEquivalenceGuardTests.cs`:** E-3: sale la regla de la escala del piloto.
+
+El texto, una vez en el archivo:
+
+```text
+            if (!build.Contains("input.CurrentDraftState.Inputs.Annotations.AnnotationScale", StringComparison.Ordinal)) yield return "the pilot does not take the scale of its current state";
+```
+
+Pasa a:
+
+```text
+(nada)
+```
+
+**`tests/RackCad.Tests/PushBackPilotUpdateEquivalenceGuardTests.cs`:** E-5 y E-6: el Execute del piloto se retira; las reglas de M-01 sobre ExecuteFull y Execution<TState> se quedan.
+
+El texto, una vez en el archivo:
+
+```text
+                ("Execute", @"public\s+static\s+DraftApplyOutcome<PushBackPilotDraftState>\s+Execute\s*\("),
+```
+
+Pasa a:
+
+```text
+                // I-64 F4B PB-T4d (owner-pbt4d-substitutes-decision.md): the Execute of the pilot is retired; ExecuteFull stays.
+```
+
+**`tests/RackCad.Tests/PushBackPilotUpdateEquivalenceGuardTests.cs`:** E-3 y la rama muerta de BuildCore: salen las reglas de allowErase y de ViewUnavailable; los borrados siguen condicionados a una lateral obsoleta.
+
+El texto, una vez en el archivo:
+
+```text
+            if (!core.Contains("PushBackViewDispositionKind.ObsoleteLateral && allowErase", StringComparison.Ordinal)) yield return "the erasures are not conditioned to an obsolete lateral and to a model that admits erasing";
+            // The pilot keeps its text for a view that is not available.
+            if (!core.Contains("ViewUnavailablePrefix + entry.Key + ViewUnavailableSuffix", StringComparison.Ordinal)) yield return "the pilot does not keep ViewUnavailablePrefix";
+            if (!Regex.IsMatch(full, @"\bBuildCore\s*\([^;]*\btrue\b")) yield return "the full model does not call BuildCore with the capacity to erase";
+```
+
+Pasa a:
+
+```text
+            // I-64 F4B PB-T4d (owner-pbt4d-deadcode-27-decisions.md, pregunta 1): the mode of the pilot that never erases (allowErase) is retired
+            // with the text of BuildCore for a view that is not available; the erasures stay conditioned to an obsolete lateral.
+            if (!core.Contains("disposition == PushBackViewDispositionKind.ObsoleteLateral", StringComparison.Ordinal)) yield return "the erasures are not conditioned to an obsolete lateral";
+```
+
+**`tests/RackCad.Tests/PushBackPilotUpdateEquivalenceGuardTests.cs`:** E-3 y la rama muerta de BuildCore: las dos comprobaciones directas del texto, con el de los borrados que se queda.
+
+El texto, una vez en el archivo:
+
+```text
+            Assert.Contains("PushBackViewDispositionKind.ObsoleteLateral && allowErase", plan);
+            Assert.Contains("ViewUnavailablePrefix + entry.Key + ViewUnavailableSuffix", plan);
+```
+
+Pasa a:
+
+```text
+            Assert.Contains("disposition == PushBackViewDispositionKind.ObsoleteLateral", plan);
+```
+
+**`tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs`:** H-06 (WPPG): ComposeForWrite se retira; la propiedad sigue sobre ForFullWrite, la composicion del modelo completo.
+
+El texto, una vez en el archivo:
+
+```text
+        var callers = product
+            .Where(f => !f.Path.EndsWith("/PushBackPilotMaterializer.cs", StringComparison.Ordinal)
+                        && Regex.IsMatch(f.Code, @"\bPushBackPilotMaterializer\s*\.\s*ComposeForWrite\s*\("))
+            .ToArray();
+        if (callers.Length != 1 || callers[0].Path != PlanPath) yield return "ComposeForWrite has callers other than the planner: " + string.Join(", ", callers.Select(c => c.Path));
+        foreach (var (_, code) in callers.Where(c => c.Path == PlanPath))
+        {
+            var compare = code.IndexOf(".CompareWith(", StringComparison.Ordinal);
+            var compose = code.IndexOf("PushBackPilotMaterializer.ComposeForWrite(", StringComparison.Ordinal);
+            if (compare < 0 || compose < compare) yield return "ComposeForWrite is called before the comparison of the base";
+            if (Regex.Matches(code, @"\bPushBackPilotMaterializer\s*\.\s*ComposeForWrite\s*\(").Count != 1) yield return "ComposeForWrite is called more than once";
+        }
+```
+
+Pasa a:
+
+```text
+        // I-64 F4B PB-T4d (owner-pbt4d-substitutes-decision.md): ComposeForWrite is retired; H-06 holds for the composition that stays,
+        // PushBackFullComposition.ForFullWrite.
+        var callers = product
+            .Where(f => !f.Path.EndsWith("/PushBackFullComposition.cs", StringComparison.Ordinal)
+                        && Regex.IsMatch(f.Code, @"\bPushBackFullComposition\s*\.\s*ForFullWrite\s*\("))
+            .ToArray();
+        if (callers.Length != 1 || callers[0].Path != PlanPath) yield return "ForFullWrite has callers other than the planner: " + string.Join(", ", callers.Select(c => c.Path));
+        foreach (var (_, code) in callers.Where(c => c.Path == PlanPath))
+        {
+            var compare = code.IndexOf(".CompareWith(", StringComparison.Ordinal);
+            var compose = code.IndexOf("PushBackFullComposition.ForFullWrite(", StringComparison.Ordinal);
+            if (compare < 0 || compose < compare) yield return "ForFullWrite is called before the comparison of the base";
+            if (Regex.Matches(code, @"\bPushBackFullComposition\s*\.\s*ForFullWrite\s*\(").Count != 1) yield return "ForFullWrite is called more than once";
+        }
+```
+
+**`tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs`:** H-06 (WPPG), su autoprueba: el llamador inyectado es de ForFullWrite.
+
+El texto, una vez en el archivo:
+
+```text
+        Assert.NotEmpty(AfterMatchViolations(product.Append(("src/RackCad.Application/Workspace/Other.cs", "var c = PushBackPilotMaterializer.ComposeForWrite(a, b, catalog);"))));
+```
+
+Pasa a:
+
+```text
+        Assert.NotEmpty(AfterMatchViolations(product.Append(("src/RackCad.Application/Workspace/Other.cs", "var c = PushBackFullComposition.ForFullWrite(a, b, catalog);"))));
+```
+
+**`tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs`:** H-06 (WPPG), su autoprueba: la composicion inyectada antes de la comparacion es ForFullWrite.
+
+El texto, una vez en el archivo:
+
+```text
+"var early = PushBackPilotMaterializer.ComposeForWrite(i, c, catalog); var comparison = input.StaleBase.CompareWith(reread.StaleBase);"
+```
+
+Pasa a:
+
+```text
+"var early = PushBackFullComposition.ForFullWrite(i, c, catalog); var comparison = input.StaleBase.CompareWith(reread.StaleBase);"
+```
+
+**`tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs`:** PEG, HostViolations: la regla del adaptador estatico pasa a la del adaptador completo, como en su copia (GUARD_EDITS de PB-T4b); las seis autopruebas de la lista vuelven a discriminar (paquete, seccion 4.2: «PB-T4d (C-7) las sustituye»).
+
+El texto, una vez en el archivo:
+
+```text
+        if (Regex.IsMatch(host, @"private\s+(?:readonly\s+)?PushBackPilotFieldAdapter\s+_\w+")) yield return "the adapter of the pilot is a field of instance";
+        if (Src.Count(host, @"private\s+static\s+readonly\s+PushBackPilotFieldAdapter\s+\w+") != 1) yield return "the adapter of the pilot is not the one static field";
+```
+
+Pasa a:
+
+```text
+        if (Regex.IsMatch(host, @"private\s+(?:readonly\s+)?PushBackFullFieldAdapter\s+_\w+")) yield return "the adapter of the field is a field of instance";
+        if (Src.Count(host, @"private\s+static\s+readonly\s+PushBackFullFieldAdapter\s+\w+") != 1) yield return "the adapter of the field is not the one static field";
+```
+
+**`tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs`:** M-04 (PEG:591-598): el Replace busca FindPilotDraft con la firma del borrador completo.
+
+El texto, una vez en el archivo:
+
+```text
+        var host = Host().Replace("private DraftSession<PushBackPilotDraftState>? FindPilotDraft", extra + "private DraftSession<PushBackPilotDraftState>? FindPilotDraft", StringComparison.Ordinal);
+```
+
+Pasa a:
+
+```text
+        var host = Host().Replace("private DraftSession<PushBackFullDraftState>? FindPilotDraft", extra + "private DraftSession<PushBackFullDraftState>? FindPilotDraft", StringComparison.Ordinal);
+```
+
+**`tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs`:** M-04 (PEG:916-920, su ayudante WriteViolations, PEG:906): FindPilotDraft con la firma del borrador completo.
+
+El texto, una vez en el archivo:
+
+```text
+        foreach (var helper in new[] { @"private\s+DraftSession<PushBackPilotDraftState>\?\s+FindPilotDraft\b",
+```
+
+Pasa a:
+
+```text
+        foreach (var helper in new[] { @"private\s+DraftSession<PushBackFullDraftState>\?\s+FindPilotDraft\b",
+```
+
+**`tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardFull.cs`:** M-04 (WorkspacePilotEditGuardFull.cs:255-258): el ayudante de la copia, con la firma del borrador completo.
+
+El texto, una vez en el archivo:
+
+```text
+        foreach (var helper in new[] { @"private\s+DraftSession<PushBackPilotDraftState>\?\s+FindPilotDraft\b",
+```
+
+Pasa a:
+
+```text
+        foreach (var helper in new[] { @"private\s+DraftSession<PushBackFullDraftState>\?\s+FindPilotDraft\b",
+```
+
+**`tests/RackCad.Tests/Workspace/WorkspacePilotPrepareFull.cs`:** la prueba lenta (OWNER-05): su bucle se acota a cada 97.o toque del catalogo y al ultimo; las aserciones no cambian.
+
+El texto, una vez en el archivo:
+
+```text
+        var failures = new List<PushBackPilotPrepareResult>();
+        for (var allowed = 0; allowed < total; allowed++)
+        {
+```
+
+Pasa a:
+
+```text
+        // I-64 F4B PB-T4d (OWNER-05; owner-pbt4d-list-decisions.md, pregunta 3; D-S14): the loop is bounded to every 97th touch and the
+        // last one, instead of every touch (4 936 PREPARE, about 6.5 minutes); the failures of the composition (a) and of the builder (d)
+        // are among them, and the assertions do not change.
+        var failures = new List<PushBackPilotPrepareResult>();
+        foreach (var allowed in Enumerable.Range(0, total).Where(touch => touch % 97 == 0 || touch == total - 1))
+        {
+```
+
+**`tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs`:** Ownership: el nucleo del borrador; se quedan las filas box de las ocho Theory.
+
+El texto, una vez en el archivo:
+
+```text
+    public static IEnumerable<object[]> Kinds() => new[] { new object[] { "box" }, new object[] { "pilot" } };
+```
+
+Pasa a:
+
+```text
+    // I-64 F4B PB-T4d (owner-pbt4d-substitutes-decision.md): the rows of the pilot go (its comparer is retired); the ones of the
+    // mutable test state, which test the ownership boundary of the draft core, stay.
+    public static IEnumerable<object[]> Kinds() => new[] { new object[] { "box" } };
+```
+
+**`tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs`:** Ownership: Both solo con el estado de prueba.
+
+El texto, una vez en el archivo:
+
+```text
+        if (kind == "box") scenario(new Ownership<DraftBox>(OwnershipKits.Box()));
+        else scenario(new Ownership<PushBackPilotDraftState>(OwnershipKits.Pilot()));
+```
+
+Pasa a:
+
+```text
+        Assert.Equal("box", kind);
+        scenario(new Ownership<DraftBox>(OwnershipKits.Box()));
+```
+
+**`tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs`:** Ownership: salen las dos filas del piloto de la Theory de POST.
+
+El texto, una vez en el archivo:
+
+```text
+    [InlineData("box", false)]
+    [InlineData("box", true)]
+    [InlineData("pilot", false)]
+    [InlineData("pilot", true)]
+```
+
+Pasa a:
+
+```text
+    [InlineData("box", false)]
+    [InlineData("box", true)]
+```
+
+**`tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs`:** StaleBase: el nucleo del borrador (Check now de un borrador Unknown); el borrador nace de la lectura completa.
+
+El texto, una vez en el archivo:
+
+```text
+    private static DraftSession<PushBackPilotDraftState> UnknownAfterACommitThatThrew(PushBackPilotIntentResult first)
+    {
+        Assert.True(first.Read.IsAdmitted);
+        var begun = new DraftRegistry().Begin(DraftKit.S1, "R1", first.Read, PushBackPilotStateComparer.Instance, PushBackPilotStateComparer.Copy);
+        Assert.Equal(DraftBeginStatus.Created, begun.Status);
+        var draft = begun.Draft!;
+        Assert.True(draft.TryBeginApply().IsStarted);
+        draft.CompleteApply(DraftApplyOutcome<PushBackPilotDraftState>.CommitThrew("the commit threw"));
+```
+
+Pasa a:
+
+```text
+    // I-64 F4B PB-T4d (owner-pbt4d-substitutes-decision.md): the draft is born from the read of the FULL model of the same scan (the
+    // comparer of the pilot is retired); the base that Check now compares is the same, and the rereads are still the ones of the reader.
+    private static DraftSession<PushBackFullDraftState> UnknownAfterACommitThatThrew(PushBackPilotIntentScan scan)
+    {
+        var first = PushBackFullDraftReader.Read(scan, PilotKit.Catalog);
+        Assert.True(first.Read.IsAdmitted);
+        var begun = new DraftRegistry().Begin(DraftKit.S1, "R1", first.Read, PushBackFullDraftStateComparer.Instance, PushBackFullDraftStateComparer.Copy);
+        Assert.Equal(DraftBeginStatus.Created, begun.Status);
+        var draft = begun.Draft!;
+        Assert.True(draft.TryBeginApply().IsStarted);
+        draft.CompleteApply(DraftApplyOutcome<PushBackFullDraftState>.CommitThrew("the commit threw"));
+```
+
+**`tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs`:** StaleBase: la directiva del modelo completo.
+
+El texto, una vez en el archivo:
+
+```text
+using RackCad.Application.Systems.PushBack.Pilot;
+```
+
+Pasa a:
+
+```text
+using RackCad.Application.Systems.PushBack.Draft;
+using RackCad.Application.Systems.PushBack.Pilot;
+```
+
+**`tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs`:** Materialize se queda (lo usa el lector del modelo completo); su comparacion con la carga de la ventana pasa del comparador del piloto al diseno armado.
+
+El texto, una vez en el archivo:
+
+```text
+        Assert.True(Comparer.Equals(byHand, materialized));
+```
+
+Pasa a:
+
+```text
+        // I-64 F4B PB-T4d (owner-pbt4d-substitutes-decision.md): the comparer of the pilot is retired; the two states are compared by
+        // the design that the product assembles from them.
+        Assert.Equal(
+            PilotKit.Persist(new PushBackCompositeEditorAssembler(PilotKit.Catalog).BuildDesign(byHand.Editor, byHand.Inputs)),
+            PilotKit.Persist(new PushBackCompositeEditorAssembler(PilotKit.Catalog).BuildDesign(materialized.Editor, materialized.Inputs)));
+```
+
+**`tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs`:** WPUR: HappyCalls, Boom, Cause y NamedScan quedan sin uso, y los titulos de sus secciones y el comentario de la n.o 42 sin prueba (CA-T4d M-03).
+
+Desde la línea que contiene el texto de abajo hasta la anterior a la que contiene `// M-06 (d): the names of the views of a composite rack carry the side of each cut. The pilot refuses a composite rack (its reader says it is`:
+
+```text
+    private static readonly string[] HappyCalls =
+```
+
+Pasa a:
+
+```text
+    // I-64 F4B PB-T4d (CA-T4d M-03): the tests of the run of the pilot go (29 of them have their substitute over the full model in
+    // PushBackRetirePilotRunTests), and with them their helpers and the titles of their sections; what stays is the rule of the names of a
+    // composite rack, over a plan built by hand.
+```
+
+**`tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs`:** WPUR: el resumen de la clase describia la corrida del piloto, que se retira (recomprobacion 1 de CA-T4d, M-12 a; solo comentarios).
+
+El texto, una vez en el archivo:
+
+```text
+// I-64 F4-T4B-MUTATE-POST (INV-F4T4B-01, 02, 03, 05, 06, 10, 16): the pure and TOTAL run of the update of the pilot, with the real draft
+// session, the real planner and the real reader, and a double of the port that simulates the drawing. The classification is the table of
+// D-13 by frontier, with the three rows of the abort, the row of the outer release, the precedence and its two declared exceptions.
+```
+
+Pasa a:
+
+```text
+// I-64 F4-T4B-MUTATE-POST (INV-F4T4B-01, 02, 03, 05, 06, 10, 16) tested here the run of the update of the pilot, which PB-T4d retires.
+// I-64 F4B PB-T4d (recomprobacion 1 de CA-T4d, M-12): what stays is the rule of the names of the views of a composite rack (DesiredNamesOf), over a plan
+// built by hand; the run itself is tested over the full model in PushBackRetirePilotRunTests.
+```
+
+**`tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs`:** WPUR: los comentarios de la n.o 48 y la n.o 49, que se quedaban sin su prueba (las dos van sustituidas en PushBackRetirePilotRunTests; recomprobacion 1 de CA-T4d, M-12 a; solo comentarios).
+
+El texto, una vez en el archivo:
+
+```text
+    }
+
+    // The system of the outgoing design, rebuilt apart from the text of a member of the plan with the same resolver as PREPARE.
+
+    // I-64 F4-T4-HOST-C1 (D-C1-01, INV-C1-01, test 1 of D-C1-09): the system that the writer redraws carries the rack name of the envelope of ITS
+    // member, raw, because the label of the name of the views is drawn only from it. Everything runs over the text kits of the plan: the members
+    // are only deserialized, nothing is drawn.
+}
+```
+
+Pasa a:
+
+```text
+    }
+}
+```
+
+**`tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs`:** las 4 llamadas `UnknownAfterACommitThatThrew(IntentKit.Read(IntentKit.TwoViews()))` pasan a `UnknownAfterACommitThatThrew(IntentKit.TwoViews())`.
+
+### Los ayudantes sin uso tras la retirada (CA-T4d M-03; `pbt4d_test_edits_v54.py`, `UNUSED` y `DELETE_FILES`)
+
+Después de las ediciones, `v53/unused_v53.py` quita cada uno (su declaración, sus `///`, sus atributos y el `//` pegado encima, y una línea en blanco de las dos que la rodean); los de `edicion` los quita la última edición de WPUR. Los tres archivos, en bloques DELETE.
+
+- `tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs`: `HappyCalls` (edicion)
+- `tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs`: `Boom` (edicion)
+- `tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs`: `Cause` (edicion)
+- `tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs`: `NamedScan` (edicion)
+- `tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs`: `AssertHeld` (quitar)
+- `tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs`: `Held` (quitar)
+- `tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs`: `YetAnotherBase` (quitar)
+- `tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs`: `WithExtra` (quitar)
+- `tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs`: `DraftHeld` (quitar)
+- `tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs`: `Hold` (quitar)
+- `tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs`: `ComposeForWriteViolations` (quitar)
+- `tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs`: `MaterializerPath` (quitar)
+- `tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs`: `ScalePath` (quitar)
+- `tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs`: `Variant` (quitar)
+- `tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs`: `CanonicalCorpus` (quitar)
+- `tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs`: `LegacyCorpus` (quitar)
+- `tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs`: `TextCorpus` (quitar)
+- `tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs`: `IsContainer`, la declaración n.º 2 del archivo (quitar)
+- `tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs`: `ScaleCases` (quitar)
+- `tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs`: `Cultures` (quitar)
+- `tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs`: `PilotRich` (quitar)
+- `tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs`: `InCulture` (quitar)
+- `tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs`: `Texts` (quitar)
+- `tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs`: `Cultures` (quitar)
+- `tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs`: `DesignNumber` (quitar)
+- `tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs`: `Diff` (quitar)
+- `tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs`: `Fixture` (quitar)
+- `tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs`: `LoadInWindow` (quitar)
+- `tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs`: `Mutator` (quitar)
+- `tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs`: `Held` (quitar)
+- `tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs`: `WindowResult` (quitar)
+- `tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs`: `Persist` (quitar)
+- `tests/RackCad.UI.Tests/PushBackFieldValidationConcordanceTests.cs`: **se borra el archivo** (su unica prueba (CT-PBT2B-10) se borra: la clase queda vacia)
+- `tests/RackCad.UI.Tests/PushBackDeclaredCorrectionPilotParityTests.cs`: **se borra el archivo** (sus dos pruebas (CT-PBTC-06 y CT-PBTC-10) se borran: la clase queda vacia)
+- `tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotCanonicalLineEndingTests.cs`: **se borra el archivo** (sus pruebas se borran: la clase queda con solo ayudantes sin uso (Canonical, Designs, RepoRoot y Fixture))
+
+### Los `Skip`
+
+- `tests/RackCad.Tests/PushBackEditAllFullCopyGuardTests.cs`:572 (`CT_PBT4B_20_TheScriptOfSkipAndDuplicateGivesTheCopiesTheKitAndTheSkipsOfTheClosedList`): `[Fact(Skip = "I-64 F4B PB-T4d: sustituida por su equivalente en PushBackRetirePilotFullCopyGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4d-list-decisions.md, pregunta 1).")]`
+- `tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs`:81 (`TheFileOfThePlanIsNullableEnabledInTheNamespaceOfThePilotWithBracesAndDeclaresTheTypesOfThePackage`): `[Fact(Skip = "I-64 F4B PB-T4d: sustituida por su equivalente en PushBackRetirePilotPlanGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4d-list-decisions.md, pregunta 1).")]`
+- `tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs`:194 (`TheOrderOfPrepareIsTheOneOfThePackageAndNoOutcomeBeforeConflictLooksAtTheReread`): `[Fact(Skip = "I-64 F4B PB-T4d: sustituida por su equivalente en PushBackRetirePilotPlanGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4d-list-decisions.md, pregunta 1).")]`
+
+### `tests/RackCad.Tests/PushBackRetirePilotGuardTests.cs` (`NewFileSha` `0d64806a53b36ea0719bc7647dcfd3c15e8169a66a4494517097a82ce12fadb3`)
+
+```csharp
+#nullable enable
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using Xunit;
+using Src = RackCad.Tests.WorkspaceHostSource;
+
+namespace RackCad.Tests;
+
+/// <summary>
+/// I-64 F4B PB-T4d — CT-PBT4D-01 (D-PBT4-10; D-S11): the code of the pilot that the panel no longer uses is retired, and what the full
+/// model uses stays. Over the text of src/ without comments: the two files that are deleted do not exist, none of the eleven retired
+/// declarations is declared in its file (the last two, the mode of BuildCore that never erases and its text for a view that is not
+/// available, by owner-pbt4d-deadcode-27-decisions.md, pregunta 1), no file of src/ names what is retired, and the seven pieces that stay
+/// are there once. It fails
+/// on the RED (src/ still has the pilot) and passes on the GREEN. Its self-tests run the same reading over text injected in memory.
+/// </summary>
+public sealed class PushBackRetirePilotGuardTests
+{
+    private const string Pilot = "src/RackCad.Application/Systems/PushBack/Pilot/";
+
+    private static readonly (string Name, string File)[] RetiredFiles =
+    {
+        ("PushBackPilotStateComparer.cs", Pilot + "PushBackPilotStateComparer.cs"),
+        ("PushBackPilotFieldAdapter.cs", Pilot + "PushBackPilotFieldAdapter.cs"),
+    };
+
+    // The retired declarations: a name, its file and the expression of its declaration.
+    private static readonly (string Name, string File, string Pattern, string Injected)[] Retired =
+    {
+        ("PushBackPilotMaterializer.ComposeForWrite", Pilot + "PushBackPilotMaterializer.cs", @"\bComposeForWrite\s*\(",
+            "public static object ComposeForWrite(object initial, object current, object catalog) => null;"),
+        ("PushBackPilotMaterializer.KeepPilotEditsOn", Pilot + "PushBackPilotMaterializer.cs", @"\bKeepPilotEditsOn\s*\(",
+            "public static object KeepPilotEditsOn(object newInitial, object current) => null;"),
+        ("PushBackPilotComposition", Pilot + "PushBackPilotMaterializer.cs", @"\bclass\s+PushBackPilotComposition\b",
+            "public sealed class PushBackPilotComposition { }"),
+        ("PushBackPilotPrepareInput", Pilot + "PushBackPilotUpdatePlan.cs", @"\bclass\s+PushBackPilotPrepareInput\b",
+            "public sealed class PushBackPilotPrepareInput { }"),
+        ("PushBackPilotUpdatePlanner.Prepare", Pilot + "PushBackPilotUpdatePlan.cs", @"\bpublic\s+static\s+PushBackPilotPrepareResult\s+Prepare\s*\(",
+            "public static PushBackPilotPrepareResult Prepare(object input, object reread, object catalog) => null;"),
+        ("PushBackPilotUpdatePlanner.Build", Pilot + "PushBackPilotUpdatePlan.cs", @"\bprivate\s+static\s+PushBackPilotPrepareResult\s+Build\s*\(",
+            "private static PushBackPilotPrepareResult Build(object input, object reread, object catalog) => null;"),
+        ("PushBackPilotUpdateRun.Precheck(piloto)", Pilot + "PushBackPilotUpdateRun.cs", @"\bPrecheck\s*\(\s*DraftSession\s*<\s*PushBackPilotDraftState\s*>",
+            "public static PushBackPilotPrecheck Precheck(DraftSession<PushBackPilotDraftState> draft) => null;"),
+        ("PushBackPilotUpdateRun.Execute", Pilot + "PushBackPilotUpdateRun.cs", @"\bDraftApplyOutcome\s*<\s*PushBackPilotDraftState\s*>\s+Execute\s*\(",
+            "public static DraftApplyOutcome<PushBackPilotDraftState> Execute(object draft, object request, object port) => null;"),
+        ("PushBackPilotUpdateRun.ComparePost", Pilot + "PushBackPilotUpdateRun.cs", @"\bComparePost\s*\(",
+            "public static string ComparePost(object plan, object postRead) => null;"),
+        ("PushBackPilotUpdatePlanner.BuildCore(allowErase)", Pilot + "PushBackPilotUpdatePlan.cs", @"\ballowErase\b",
+            "private static readonly bool allowErase = false;"),
+        ("PushBackPilotUpdatePlanner.ViewUnavailable", Pilot + "PushBackPilotUpdatePlan.cs", @"\bViewUnavailable(?:Prefix|Suffix)\b",
+            "public const string ViewUnavailablePrefix = \"\";"),
+    };
+
+    // A use of what is retired, as code, anywhere in src/.
+    private static readonly Regex Uses = new Regex(
+        @"\b(?:PushBackPilotStateComparer|PushBackPilotFieldAdapter|ComposeForWrite|KeepPilotEditsOn|PushBackPilotPrepareInput|PushBackPilotComposition|ComparePost)\b"
+        + @"|\bPushBackPilotUpdatePlanner\s*\.\s*Prepare\s*\(|\bPushBackPilotUpdateRun\s*\.\s*Execute\s*\(");
+
+    // What stays, because the full model uses it (D-PBT4-10, R-17): once each.
+    private static readonly (string Name, string File, string Pattern)[] Kept =
+    {
+        ("PushBackPilotIntentReader.Read", Pilot + "PushBackPilotIntentReader.cs", @"\bpublic\s+static\s+PushBackPilotIntentResult\s+Read\s*\("),
+        ("PushBackPilotMaterializer.Materialize", Pilot + "PushBackPilotMaterializer.cs", @"\bpublic\s+static\s+PushBackPilotMaterialization\s+Materialize\s*\("),
+        ("PushBackPilotDraftState", Pilot + "PushBackPilotDraftState.cs", @"\bclass\s+PushBackPilotDraftState\b"),
+        ("PushBackPilotUpdatePlanner.PrepareFull", Pilot + "PushBackPilotUpdatePlan.cs", @"\bpublic\s+static\s+PushBackPilotPrepareResult\s+PrepareFull\s*\("),
+        ("PushBackPilotUpdateRun.ExecuteFull", Pilot + "PushBackPilotUpdateRun.cs", @"\bDraftApplyOutcome\s*<\s*PushBackFullDraftState\s*>\s+ExecuteFull\s*\("),
+        ("PushBackPilotUpdateRun.Precheck(completo)", Pilot + "PushBackPilotUpdateRun.cs", @"\bPrecheck\s*\(\s*DraftSession\s*<\s*PushBackFullDraftState\s*>"),
+        ("PushBackPilotUpdateRun.ComparePostFull", Pilot + "PushBackPilotUpdateRun.cs", @"\bpublic\s+static\s+string\?\s+ComparePostFull\s*\("),
+    };
+
+    /// <summary>The «EXCEPCION» rule: a step that throws becomes a line, and the expected lines never contain one.</summary>
+    private static T Paso<T>(List<string> log, Func<T> step)
+    {
+        try
+        {
+            return step();
+        }
+        catch (Exception error)
+        {
+            log.Add("EXCEPCION " + error.GetType().Name + ": " + error.Message);
+            return default!;
+        }
+    }
+
+    /// <summary>The lines of the reading, over a source given as a function: the code of a file without comments, or null when it does not exist.</summary>
+    private static List<string> Lines(Func<string, string?> code, IReadOnlyList<(string Path, string Code)> product)
+    {
+        var lines = new List<string>();
+        foreach (var (name, file) in RetiredFiles) lines.Add("retirado-archivo " + name + " existe=" + (code(file) != null));
+        foreach (var (name, file, pattern, _) in Retired) lines.Add("retirado " + name + "=" + Src.Count(code(file) ?? string.Empty, pattern));
+        var naming = product.Where(f => Uses.IsMatch(f.Code)).Select(f => f.Path.Substring(f.Path.LastIndexOf('/') + 1)).ToArray();
+        lines.Add("src-nombra-lo-retirado archivos=[" + string.Join(",", naming) + "]");
+        foreach (var (name, file, pattern) in Kept) lines.Add("se-queda " + name + "=" + Src.Count(code(file) ?? string.Empty, pattern));
+        return lines;
+    }
+
+    private static string? Read(string file) => Src.Exists(file) ? Src.Code(file) : null;
+
+    [Fact]
+    public void CT_PBT4D_01_TheCodeOfThePilotThatThePanelNoLongerUsesIsRetiredAndWhatTheFullModelUsesStays()
+    {
+        var log = new List<string>();
+        var product = Paso(log, () => Src.AllProduct()) ?? Array.Empty<(string, string)>();
+        var real = Paso(log, () => Lines(Read, product)) ?? new List<string>();
+        log.AddRange(real);
+
+        // The self-tests: each one makes the reading see what is retired again, in memory, and the lines must differ from the real ones.
+        foreach (var (name, file) in RetiredFiles)
+        {
+            var injected = Paso(log, () => Lines(f => f == file ? "public sealed class Injected { }" : Read(f), product));
+            log.Add("autoprueba-archivo-" + name + "=" + (injected != null && !injected.SequenceEqual(real) ? "falla" : "pasa"));
+        }
+
+        foreach (var (name, file, _, text) in Retired)
+        {
+            var injected = Paso(log, () => Lines(f => f == file ? (Read(f) ?? string.Empty) + "\n" + text + "\n" : Read(f), product));
+            log.Add("autoprueba-" + name + "=" + (injected != null && !injected.SequenceEqual(real) ? "falla" : "pasa"));
+        }
+
+        var withUse = product.Select(f => f.Path.EndsWith("/WorkspaceHostCore.cs", StringComparison.Ordinal) ? (f.Path, f.Code + "\nvar c = new PushBackPilotStateComparer();\n") : f).ToList();
+        var used = Paso(log, () => Lines(Read, withUse));
+        log.Add("autoprueba-uso-en-WorkspaceHostCore.cs=" + (used != null && !used.SequenceEqual(real) ? "falla" : "pasa"));
+
+        var expected = new List<string>
+        {
+            "retirado-archivo PushBackPilotStateComparer.cs existe=False",
+            "retirado-archivo PushBackPilotFieldAdapter.cs existe=False",
+            "retirado PushBackPilotMaterializer.ComposeForWrite=0",
+            "retirado PushBackPilotMaterializer.KeepPilotEditsOn=0",
+            "retirado PushBackPilotComposition=0",
+            "retirado PushBackPilotPrepareInput=0",
+            "retirado PushBackPilotUpdatePlanner.Prepare=0",
+            "retirado PushBackPilotUpdatePlanner.Build=0",
+            "retirado PushBackPilotUpdateRun.Precheck(piloto)=0",
+            "retirado PushBackPilotUpdateRun.Execute=0",
+            "retirado PushBackPilotUpdateRun.ComparePost=0",
+            "retirado PushBackPilotUpdatePlanner.BuildCore(allowErase)=0",
+            "retirado PushBackPilotUpdatePlanner.ViewUnavailable=0",
+            "src-nombra-lo-retirado archivos=[]",
+            "se-queda PushBackPilotIntentReader.Read=1",
+            "se-queda PushBackPilotMaterializer.Materialize=1",
+            "se-queda PushBackPilotDraftState=1",
+            "se-queda PushBackPilotUpdatePlanner.PrepareFull=1",
+            "se-queda PushBackPilotUpdateRun.ExecuteFull=1",
+            "se-queda PushBackPilotUpdateRun.Precheck(completo)=1",
+            "se-queda PushBackPilotUpdateRun.ComparePostFull=1",
+            "autoprueba-archivo-PushBackPilotStateComparer.cs=falla",
+            "autoprueba-archivo-PushBackPilotFieldAdapter.cs=falla",
+            "autoprueba-PushBackPilotMaterializer.ComposeForWrite=falla",
+            "autoprueba-PushBackPilotMaterializer.KeepPilotEditsOn=falla",
+            "autoprueba-PushBackPilotComposition=falla",
+            "autoprueba-PushBackPilotPrepareInput=falla",
+            "autoprueba-PushBackPilotUpdatePlanner.Prepare=falla",
+            "autoprueba-PushBackPilotUpdatePlanner.Build=falla",
+            "autoprueba-PushBackPilotUpdateRun.Precheck(piloto)=falla",
+            "autoprueba-PushBackPilotUpdateRun.Execute=falla",
+            "autoprueba-PushBackPilotUpdateRun.ComparePost=falla",
+            "autoprueba-PushBackPilotUpdatePlanner.BuildCore(allowErase)=falla",
+            "autoprueba-PushBackPilotUpdatePlanner.ViewUnavailable=falla",
+            "autoprueba-uso-en-WorkspaceHostCore.cs=falla",
+        };
+        Assert.Equal(string.Join("\n", expected), string.Join("\n", log));
+    }
+}
+```
+
+### `tests/RackCad.Tests/PushBackRetirePilotCensusGuardTests.cs` (`NewFileSha` `1874c47811ddda428745a1f5566f1e7290b31fa2a2e65b07c2ff52059f863f20`)
+
+```csharp
+#nullable enable
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using Xunit;
+using Src = RackCad.Tests.WorkspaceHostSource;
+
+namespace RackCad.Tests;
+
+/// <summary>
+/// I-64 F4B PB-T4d — CT-PBT4D-02 (D-S11): no file of tests/ names what the retirement of the pilot removes, as code. The text of every
+/// .cs file of the two test projects is read without comments, without string and character literals; a use of a retired name there would
+/// stop compiling on the GREEN, and the GREEN can no longer touch tests/ (AUTOMATION_PLAN 16.8). It passes on the RED and on the GREEN; its
+/// self-tests inject each name, as code, in the text of one file in memory.
+/// </summary>
+public sealed class PushBackRetirePilotCensusGuardTests
+{
+    private const string Sample = "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareFull.cs";
+
+    private static readonly (string Name, string Pattern, string Injected)[] RetiredUses =
+    {
+        ("PushBackPilotStateComparer", @"\bPushBackPilotStateComparer\b", "var x = new PushBackPilotStateComparer();"),
+        ("PushBackPilotFieldAdapter", @"\bPushBackPilotFieldAdapter\b", "var x = new PushBackPilotFieldAdapter();"),
+        ("ComposeForWrite", @"\bComposeForWrite\b", "var x = PushBackPilotMaterializer.ComposeForWrite(a, b, c);"),
+        ("KeepPilotEditsOn", @"\bKeepPilotEditsOn\b", "var x = PushBackPilotMaterializer.KeepPilotEditsOn(a, b);"),
+        ("PushBackPilotPrepareInput", @"\bPushBackPilotPrepareInput\b", "var x = PushBackPilotPrepareInput.From(d);"),
+        ("PushBackPilotComposition", @"\bPushBackPilotComposition\b", "PushBackPilotComposition x = null;"),
+        ("ComparePost", @"\bComparePost\b", "var x = PushBackPilotUpdateRun.ComparePost(p, r);"),
+        ("PushBackPilotUpdatePlanner.Prepare", @"\bPushBackPilotUpdatePlanner\s*\.\s*Prepare\s*\(", "var x = PushBackPilotUpdatePlanner.Prepare(i, r, c);"),
+        ("PushBackPilotUpdateRun.Execute", @"\bPushBackPilotUpdateRun\s*\.\s*Execute\s*\(", "var x = PushBackPilotUpdateRun.Execute(d, r, p);"),
+        // owner-pbt4d-deadcode-27-decisions.md, pregunta 1: the text of BuildCore for a view that is not available goes with the mode that never erases.
+        ("ViewUnavailable", @"\bViewUnavailable(?:Prefix|Suffix)\b", "var x = PushBackPilotUpdatePlanner.ViewUnavailablePrefix;"),
+    };
+
+    /// <summary>The code of a C# text without comments and without the text of string and character literals (regular, verbatim,
+    /// interpolated and raw), each replaced by a space.</summary>
+    private static string Mask(string text)
+    {
+        var s = new StringBuilder(text.Length);
+        var i = 0;
+        while (i < text.Length)
+        {
+            var c = text[i];
+            if (c == '/' && i + 1 < text.Length && text[i + 1] == '/')
+            {
+                while (i < text.Length && text[i] != '\n') i++;
+                continue;
+            }
+
+            if (c == '/' && i + 1 < text.Length && text[i + 1] == '*')
+            {
+                var end = text.IndexOf("*/", i + 2, StringComparison.Ordinal);
+                i = end < 0 ? text.Length : end + 2;
+                s.Append(' ');
+                continue;
+            }
+
+            if (c == '"' && i + 2 < text.Length && text[i + 1] == '"' && text[i + 2] == '"')
+            {
+                var run = 0;
+                while (i + run < text.Length && text[i + run] == '"') run++;
+                var close = text.IndexOf(new string('"', run), i + run, StringComparison.Ordinal);
+                i = close < 0 ? text.Length : close + run;
+                s.Append(' ');
+                continue;
+            }
+
+            var verbatim = (c == '@' || c == '$') && i + 1 < text.Length
+                && (text[i + 1] == '"' || ((text[i + 1] == '@' || text[i + 1] == '$') && i + 2 < text.Length && text[i + 2] == '"'))
+                && (c == '@' || text[i + 1] == '@');
+            if (verbatim)
+            {
+                i = text.IndexOf('"', i) + 1;
+                while (i < text.Length)
+                {
+                    if (text[i] == '"' && i + 1 < text.Length && text[i + 1] == '"') { i += 2; continue; }
+                    if (text[i] == '"') { i++; break; }
+                    i++;
+                }
+
+                s.Append(' ');
+                continue;
+            }
+
+            if (c == '"' || c == '\'')
+            {
+                i++;
+                while (i < text.Length && text[i] != c && text[i] != '\n')
+                {
+                    if (text[i] == '\\') i++;
+                    i++;
+                }
+
+                i++;
+                s.Append(' ');
+                continue;
+            }
+
+            s.Append(c);
+            i++;
+        }
+
+        return s.ToString();
+    }
+
+    private static IReadOnlyList<(string Path, string Code)> TestFiles()
+    {
+        var root = Src.RepoRoot();
+        return new[] { "tests/RackCad.Tests", "tests/RackCad.UI.Tests" }
+            .SelectMany(folder => Directory.GetFiles(Path.Combine(root, folder.Replace('/', Path.DirectorySeparatorChar)), "*.cs", SearchOption.AllDirectories))
+            .Where(f => !f.Contains(Path.DirectorySeparatorChar + "obj" + Path.DirectorySeparatorChar) && !f.Contains(Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar))
+            .Select(f => (Path.GetRelativePath(root, f).Replace(Path.DirectorySeparatorChar, '/'), Mask(File.ReadAllText(f))))
+            .OrderBy(f => f.Item1, StringComparer.Ordinal)
+            .ToList();
+    }
+
+    private static string Naming(IEnumerable<(string Path, string Code)> files)
+    {
+        var hits = files.SelectMany(f => RetiredUses.Where(r => Regex.IsMatch(f.Code, r.Pattern)).Select(r => f.Path.Substring(f.Path.LastIndexOf('/') + 1) + ":" + r.Name));
+        return "[" + string.Join(",", hits) + "]";
+    }
+
+    [Fact]
+    public void CT_PBT4D_02_NoFileOfTheTestsNamesWhatTheRetirementOfThePilotRemoves()
+    {
+        var log = new List<string>();
+        var files = TestFiles();
+        log.Add("tests archivos-revisados>0=" + (files.Count > 0) + " nombran-lo-retirado=" + Naming(files));
+
+        var real = Naming(files);
+        foreach (var (name, _, injected) in RetiredUses)
+        {
+            var mutated = files.Select(f => f.Path == Sample ? (f.Path, f.Code + "\n" + Mask(injected) + "\n") : f).ToList();
+            log.Add("autoprueba-" + name + "-en-WorkspacePilotPrepareFull.cs=" + (Naming(mutated) != real ? "falla" : "pasa"));
+        }
+
+        var expected = new List<string>
+        {
+            "tests archivos-revisados>0=True nombran-lo-retirado=[]",
+            "autoprueba-PushBackPilotStateComparer-en-WorkspacePilotPrepareFull.cs=falla",
+            "autoprueba-PushBackPilotFieldAdapter-en-WorkspacePilotPrepareFull.cs=falla",
+            "autoprueba-ComposeForWrite-en-WorkspacePilotPrepareFull.cs=falla",
+            "autoprueba-KeepPilotEditsOn-en-WorkspacePilotPrepareFull.cs=falla",
+            "autoprueba-PushBackPilotPrepareInput-en-WorkspacePilotPrepareFull.cs=falla",
+            "autoprueba-PushBackPilotComposition-en-WorkspacePilotPrepareFull.cs=falla",
+            "autoprueba-ComparePost-en-WorkspacePilotPrepareFull.cs=falla",
+            "autoprueba-PushBackPilotUpdatePlanner.Prepare-en-WorkspacePilotPrepareFull.cs=falla",
+            "autoprueba-PushBackPilotUpdateRun.Execute-en-WorkspacePilotPrepareFull.cs=falla",
+            "autoprueba-ViewUnavailable-en-WorkspacePilotPrepareFull.cs=falla",
+        };
+        Assert.Equal(string.Join("\n", expected), string.Join("\n", log));
+    }
+}
+```
+
+### `tests/RackCad.Tests/PushBackRetirePilotRunTests.cs` (`NewFileSha` `3554df0d960f18ef6bb2b930f4ac7757e8ca7438ebf6a9eda8934ef9acf8fe69`)
+
+```csharp
+#nullable enable
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using RackCad.Application.Persistence;
+using RackCad.Application.Systems.PushBack.Draft;
+using RackCad.Application.Systems.PushBack.Pilot;
+using RackCad.Application.Views.Redraw;
+using RackCad.Application.Workspace.Drafts;
+using Xunit;
+
+namespace RackCad.Tests;
+
+/// <summary>
+/// I-64 F4B PB-T4d (owner-pbt4d-run-coverage-decision.md; owner-pbt4d-deadcode-27-decisions.md, pregunta 2; owner-pbt4d-cat4d-decisions.md,
+/// pregunta 1): the substitutes, over the full model, of the 29 tests of WorkspacePilotUpdateRunTests that exercise lines or branches of code
+/// that stays and that nothing else exercises, measured line by line and branch by branch: 27 of the generic run (Execution&lt;TState&gt;) and
+/// of the plan, over ExecuteFull, and 2 of the rebuild of the system of a member (PushBackPilotSystemRebuild), over the plan of the full
+/// PREPARE. The run of the pilot that they used as a vehicle is retired; the run, the planner and the reader are the real ones of the full
+/// model, with the double of the port that simulates the drawing. Each test keeps the name and the assertions of its original, with the map
+/// of PB-T4b (the kit of the copies, the full draft and ExecuteFull); the ones that do not fit the map say so. Of the other 20 tests of the
+/// original class, 19 are deleted with their record and one stays in it.
+/// </summary>
+public class PushBackRetirePilotRunTests
+{
+    private static InvalidOperationException Boom(string message) => new(message);
+
+    private static string Cause(DraftApplyOutcome<PushBackFullDraftState> outcome) => outcome.Cause ?? string.Empty;
+
+    [Fact]
+    public void ThereIsNoOriginWhenNoMutableMemberHasTheTextOfTheOriginOfTheDraft()
+    {
+        var setup = new FullUpdateSetup();
+        // The origin of the draft is the text of A1; the drawing no longer has it in any member.
+        var others = setup.Members.Select(m => m.Fact.DefinitionKey == "A1" ? IntentKit.Member("A1", FullPrepareKit.Frontal("pb-02-modulos")) : m).ToArray();
+        setup.Port.PrepareDrawing = others;
+
+        var outcome = setup.Run();
+
+        Assert.Equal(DraftApplyOutcomeKind.NotAppliedPreflight, outcome.Kind);
+        Assert.Equal(PushBackPilotUpdatePlanner.NoOriginReason, outcome.Cause);
+        Assert.DoesNotContain("PrepareUnits", setup.Port.Calls);
+        Assert.DoesNotContain("BeginMutation", setup.Port.Calls);
+    }
+
+    [Fact]
+    public void SeveralMembersWithTheTextOfTheOriginAreAPreflightWithTheirOwnReasonAndNotTheMisleadingOneOfTheReader()
+    {
+        var setup = new FullUpdateSetup();
+        var twin = IntentKit.Member("D4", setup.Scan.RawEnvelopes["A1"]);
+        setup.Port.PrepareDrawing = setup.Members.Append(twin).ToArray();
+
+        var outcome = setup.Run();
+
+        Assert.Equal(DraftApplyOutcomeKind.NotAppliedPreflight, outcome.Kind);
+        Assert.Equal(PushBackPilotUpdatePlanner.SeveralOriginsReason, outcome.Cause);
+        Assert.DoesNotContain("PrepareUnits", setup.Port.Calls);
+    }
+
+    [Fact]
+    public void ADifferenceOfTheBaseInPrepareIsAConflictWithItsDifferencesAndNothingIsImported()
+    {
+        var setup = new FullUpdateSetup();
+        setup.Port.PrepareDrawing = setup.Members.Select(m => m.Fact.DefinitionKey == "B2" ? IntentKit.Member("B2", FullPrepareKit.Lateral(FullPrepareKit.ExistingPost(), "pb-02-modulos")) : m).ToArray();
+
+        var outcome = setup.Run();
+
+        Assert.Equal(DraftApplyOutcomeKind.NotAppliedConflict, outcome.Kind);
+        Assert.Contains(new DraftDifference("B2", DraftDifferenceKind.EnvelopeText), outcome.Differences);
+        Assert.Null(outcome.Cause);
+        Assert.DoesNotContain("PrepareUnits", setup.Port.Calls);
+        Assert.DoesNotContain("BeginMutation", setup.Port.Calls);
+    }
+
+    // I-64 F4B PB-T4d (owner-pbt4d-deadcode-27-decisions.md, pregunta 1): by hand. The full model erases a lateral that is not available, and
+    // BuildCore no longer has a view that is not available (the mode of the pilot that never erases is retired with it); the Invalid of PREPARE
+    // inside the run is the frontal of side B of a rack without side B, prepared as in CT-PBT3B-04 (ii), and nothing is imported.
+    [Fact]
+    public void AViewThatIsNotAvailableInTheOutgoingSystemIsAPreflightAndNothingIsImported()
+    {
+        var scan = IntentKit.Scan(FullPrepareKit.Rack, "A1", IntentKit.Member("A1", FullPrepareKit.Frontal("pb-20-ab")), IntentKit.Member("FB", FullPrepareKit.Frontal("pb-20-ab", 2)));
+        var draft = FullWriteKit.DraftOf(FullWriteKit.Read(scan));
+        FullWriteKit.Edit(draft, state => state.Editable.Editor.SetSideBPresent(false));
+        var port = new PilotUpdateScopeDouble(FullWriteKit.ItemsOf(scan));
+        Assert.True(draft.TryBeginApply().IsStarted);
+
+        var outcome = PushBackPilotUpdateRun.ExecuteFull(draft, new PushBackPilotUpdateRequest(100, FullPrepareKit.Rack), port);
+
+        Assert.Equal(DraftApplyOutcomeKind.NotAppliedPreflight, outcome.Kind);
+        Assert.Equal(PushBackPilotUpdatePlanner.FrontalBOfOneWayPrefix + "FB" + PushBackPilotUpdatePlanner.FrontalBOfOneWaySuffix, outcome.Cause);
+        Assert.DoesNotContain("PrepareUnits", port.Calls);
+    }
+
+    [Fact]
+    public void ACleanDraftIsNothingToApplyAndAConflictDraftIsNotApplicableAndAPendingTextIsPendingTextEvenWithoutTheSlot()
+    {
+        var clean = new FullUpdateSetup();
+        clean.Draft.CurrentDraftState.Editable.AnnotationScale = clean.Draft.InitialDraftState.Editable.AnnotationScale;
+        Assert.Equal(DraftStatus.Clean, clean.Draft.Status);
+        var nothing = PushBackPilotUpdateRun.ExecuteFull(clean.Draft, clean.Request, clean.Port);
+        Assert.Equal(DraftApplyOutcomeKind.NotAppliedPreflight, nothing.Kind);
+        Assert.Equal(PushBackPilotUpdateRun.NothingToApplyReason, nothing.Cause);
+
+        var pending = new FullUpdateSetup();
+        pending.Draft.SetPendingText("AnnotationScale", "3");
+        var typed = PushBackPilotUpdateRun.ExecuteFull(pending.Draft, pending.Request, pending.Port);
+        Assert.Equal(DraftApplyOutcomeKind.NotAppliedPreflight, typed.Kind);
+        Assert.Equal(PushBackPilotUpdateRun.PendingTextReason, typed.Cause);
+
+        var conflict = new FullUpdateSetup();
+        conflict.Draft.ConfirmBase(FullPrepareKit.BaseOf(("A1", FullPrepareKit.Frontal("pb-02-modulos"))));
+        var notApplicable = PushBackPilotUpdateRun.ExecuteFull(conflict.Draft, conflict.Request, conflict.Port);
+        Assert.Equal(DraftApplyOutcomeKind.NotAppliedPreflight, notApplicable.Kind);
+        Assert.Equal(PushBackPilotUpdateRun.NotApplicableReason, notApplicable.Cause);
+    }
+
+    [Fact]
+    public void WithoutSurvivorsNothingIsImportedAndTheRunStops()
+    {
+        var setup = new FullUpdateSetup();
+        setup.Port.PrepareDrawing = setup.Members.Select(m => new IntentItem(PilotUpdateScopeDouble.FactOf(m.Fact.DefinitionKey, m.Text!, layoutReferences: 0), m.Text)).ToArray();
+
+        var outcome = setup.Run();
+
+        Assert.Equal(DraftApplyOutcomeKind.NotAppliedPreflight, outcome.Kind);
+        Assert.Equal(PushBackPilotUpdateRun.NoSurvivorsReason, outcome.Cause);
+        Assert.DoesNotContain("PrepareUnits", setup.Port.Calls);
+    }
+
+    [Fact]
+    public void AnImportThatFailsIsAPreflightWithItsCauseAndNoScopeOfMutationIsStarted()
+    {
+        var setup = new FullUpdateSetup();
+        setup.Port.Import = PushBackPilotImportResult.Failed("no block library");
+
+        var outcome = setup.Run();
+
+        Assert.Equal(DraftApplyOutcomeKind.NotAppliedPreflight, outcome.Kind);
+        Assert.Equal("no block library", outcome.Cause);
+        Assert.DoesNotContain("BeginMutation", setup.Port.Calls);
+    }
+
+    [Fact]
+    public void AForeignScopeOpenIsRejectedAsAValueAndNothingIsRereadWrittenOrReleased()
+    {
+        var setup = new FullUpdateSetup();
+        setup.Port.Rejection = PushBackPilotUpdateRun.ForeignScopeOpenCause;
+
+        var outcome = setup.Run();
+
+        Assert.Equal(DraftApplyOutcomeKind.NotAppliedPreflight, outcome.Kind);
+        Assert.Equal("TOP_TRANSACTION_OPEN", outcome.Cause);
+        Assert.Equal(new[] { "Begin", "ReadForPrepare", "PrepareUnits", "BeginMutation", "Dispose:scope" }, setup.Port.Calls.ToArray());
+    }
+
+    [Fact]
+    public void ADocumentThatChangedBetweenPrepareAndMutateIsAPreflightWithoutWrites()
+    {
+        var setup = new FullUpdateSetup();
+        setup.Port.DocumentMatchesAtReread = false;
+
+        var outcome = setup.Run();
+
+        Assert.Equal(DraftApplyOutcomeKind.NotAppliedPreflight, outcome.Kind);
+        Assert.Equal(PushBackPilotUpdateRun.DocumentMismatchReason, outcome.Cause);
+        Assert.Empty(setup.Port.Written);
+    }
+
+    [Fact]
+    public void ABlockThatIsNotTheOneThatWasPreparedIsAPreflightAndNothingIsWritten()
+    {
+        var setup = new FullUpdateSetup();
+        setup.Port.PreparedBlockMatches = key => key != "B2";
+
+        var outcome = setup.Run();
+
+        Assert.Equal(DraftApplyOutcomeKind.NotAppliedPreflight, outcome.Kind);
+        Assert.Equal(PushBackPilotUpdateRun.DestinationChangedReason, outcome.Cause);
+        Assert.Empty(setup.Port.Written);
+        Assert.DoesNotContain("Seal", setup.Port.Calls);
+    }
+
+    [Fact]
+    public void TheSurvivorsAndTheLockedLayersAreCheckedAgainInMutateAndNothingIsWritten()
+    {
+        var noSurvivors = new FullUpdateSetup();
+        noSurvivors.Port.RereadDrawing = noSurvivors.Members.Select(m => new IntentItem(PilotUpdateScopeDouble.FactOf(m.Fact.DefinitionKey, m.Text!, layoutReferences: 0), m.Text)).ToArray();
+        var first = noSurvivors.Run();
+        Assert.Equal(DraftApplyOutcomeKind.NotAppliedPreflight, first.Kind);
+        Assert.Equal(PushBackPilotUpdateRun.NoSurvivorsReason, first.Cause);
+        Assert.Empty(noSurvivors.Port.Written);
+        Assert.Contains("PrepareUnits", noSurvivors.Port.Calls);
+
+        var locked = new FullUpdateSetup();
+        locked.Port.LockedAtReread = new[] { "C3" };
+        var second = locked.Run();
+        Assert.Equal(DraftApplyOutcomeKind.NotAppliedPreflight, second.Kind);
+        Assert.Equal(PushBackPilotUpdateRun.LockedLayerPrefix + "C3", second.Cause);
+        Assert.Empty(locked.Port.Written);
+        Assert.DoesNotContain("Seal", locked.Port.Calls);
+    }
+
+    [Fact]
+    public void AbortThatFailsAfterAUnitStartedIsCommitThrewWithAbortFailedAndNoRollbackIsClaimed()
+    {
+        var setup = new FullUpdateSetup();
+        setup.Port.ThrowAt["WriteUnit:B2"] = Boom("unit boom");
+        setup.Port.ThrowAt["Dispose:mutation"] = Boom("abort boom");
+
+        var outcome = setup.Run();
+
+        Assert.Equal(DraftApplyOutcomeKind.CommitThrew, outcome.Kind);
+        Assert.StartsWith(PushBackPilotUpdateRun.AbortFailedPrefix, Cause(outcome), StringComparison.Ordinal);
+        Assert.Contains("abort boom", Cause(outcome), StringComparison.Ordinal);
+        Assert.DoesNotContain("Seal", setup.Port.Calls);
+        Assert.DoesNotContain("Post", setup.Port.Calls);
+
+        var closed = setup.Draft.CompleteApply(outcome);
+        Assert.Equal(DraftStatus.Unknown, setup.Draft.Status);
+        Assert.Equal(DraftUnknownOrigin.CommitThrew, setup.Draft.UnknownOrigin);
+        Assert.Equal(DraftApplyOutcomeKind.CommitThrew, closed.Kind);
+    }
+
+    [Fact]
+    public void AReleaseThatFailsWithoutSealAndWithoutAUnitStartedIsNotAppliedFailureAndNotAnUncertainOutcome()
+    {
+        var setup = new FullUpdateSetup();
+        setup.Port.ThrowAt["Reread"] = Boom("reread boom");
+        setup.Port.ThrowAt["Dispose:mutation"] = Boom("abort boom");
+
+        var outcome = setup.Run();
+
+        Assert.Equal(DraftApplyOutcomeKind.NotAppliedFailure, outcome.Kind);
+        Assert.Contains("reread boom", Cause(outcome), StringComparison.Ordinal);
+        Assert.Contains("abort boom", Cause(outcome), StringComparison.Ordinal);
+        Assert.Empty(setup.Port.Written);
+    }
+
+    [Fact]
+    public void ASealThatReturnsAndAReleaseThatThrowsGoesToPostAndTheReleaseIsAWarning()
+    {
+        var setup = new FullUpdateSetup();
+        setup.Port.ThrowAt["Dispose:mutation"] = Boom("release boom");
+
+        var outcome = setup.Run();
+
+        Assert.Equal(DraftApplyOutcomeKind.AppliedWithWarnings, outcome.Kind);
+        Assert.Contains(outcome.Warnings, w => w.Contains("release boom", StringComparison.Ordinal));
+        Assert.Contains("Post", setup.Port.Calls);
+        Assert.True(outcome.PostRead!.IsAdmitted);
+    }
+
+    [Fact]
+    public void APostWithoutValuesOrWithoutItsRereadIsAppliedPostRereadFailed()
+    {
+        var withoutValues = new FullUpdateSetup();
+        withoutValues.Port.NullPostValues = true;
+        Assert.Equal(DraftApplyOutcomeKind.AppliedPostRereadFailed, withoutValues.Run().Kind);
+
+        var withoutScan = new FullUpdateSetup();
+        withoutScan.Port.NullPostScan = true;
+        var outcome = withoutScan.Run();
+        Assert.Equal(DraftApplyOutcomeKind.AppliedPostRereadFailed, outcome.Kind);
+        Assert.Equal(PushBackPilotUpdateRun.PostRereadMissingReason, outcome.Cause);
+    }
+
+    [Fact]
+    public void AForeignScopeOpenAtPostIsAppliedPostRereadFailedWithItsCauseAndTheWarnings()
+    {
+        var setup = new FullUpdateSetup();
+        setup.Port.MissingPieces["A1"] = new[] { "PLACA_Y" };
+        setup.Port.ForeignAtPost = true;
+
+        var outcome = setup.Run();
+
+        Assert.Equal(DraftApplyOutcomeKind.AppliedPostRereadFailed, outcome.Kind);
+        Assert.Equal(PushBackPilotUpdateRun.ForeignScopeOpenCause, outcome.Cause);
+        Assert.Single(outcome.Warnings);
+        var closed = setup.Draft.CompleteApply(outcome);
+        Assert.Equal(DraftApplyOutcomeKind.AppliedPostRereadFailed, closed.Kind);
+        Assert.Equal(DraftStatus.Unknown, setup.Draft.Status);
+        Assert.Equal(DraftUnknownOrigin.PostReread, setup.Draft.UnknownOrigin);
+        Assert.Single(setup.Draft.Warnings);
+    }
+
+    [Fact]
+    public void AComparisonThatThrowsAfterTheSealIsAppliedPostRereadFailed()
+    {
+        var setup = new FullUpdateSetup();
+        // The scan of POST carries a null fact: building the read of POST throws after the seal.
+        setup.Port.PostOverride = request => new PushBackPilotPostValues(
+            false,
+            new PushBackPilotScanValues(true, new RackSiblingScanFact[] { null! }, new Dictionary<string, string>()),
+            new Dictionary<string, string>(),
+            null);
+
+        var outcome = setup.Run();
+
+        Assert.Equal(DraftApplyOutcomeKind.AppliedPostRereadFailed, outcome.Kind);
+        Assert.StartsWith(PushBackPilotUpdateRun.PostFailurePrefix, Cause(outcome), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AnOuterReleaseThatThrowsAfterPostTurnsAppliedIntoAppliedWithWarningsAndKeepsTheOtherWarnings()
+    {
+        var plain = new FullUpdateSetup();
+        plain.Port.ThrowAt["Dispose:scope"] = Boom("outer boom");
+        var outcome = plain.Run();
+        Assert.Equal(DraftApplyOutcomeKind.AppliedWithWarnings, outcome.Kind);
+        Assert.Contains(outcome.Warnings, w => w.Contains("outer boom", StringComparison.Ordinal));
+
+        var warned = new FullUpdateSetup();
+        warned.Port.MissingPieces["C3"] = new[] { "PIEZA_Z" };
+        warned.Port.ThrowAt["Dispose:scope"] = Boom("outer boom");
+        var second = warned.Run();
+        Assert.Equal(DraftApplyOutcomeKind.AppliedWithWarnings, second.Kind);
+        Assert.Equal(2, second.Warnings.Count);
+        Assert.True(second.PostRead!.IsAdmitted);
+
+        // Both end Clean: the warnings do not change the status of the draft.
+        Assert.Equal(DraftStatus.Clean, StatusAfter(plain, outcome));
+    }
+
+    private static DraftStatus StatusAfter(FullUpdateSetup setup, DraftApplyOutcome<PushBackFullDraftState> outcome)
+    {
+        setup.Draft.CompleteApply(outcome);
+        return setup.Draft.Status;
+    }
+
+    [Fact]
+    public void AnOuterReleaseThatThrowsOutsidePostAddsItsCauseToTheClassificationThatWasAlreadyDecided()
+    {
+        var preflight = new FullUpdateSetup();
+        preflight.Port.DocumentMatches = false;
+        preflight.Port.ThrowAt["Dispose:scope"] = Boom("outer boom");
+        var first = preflight.Run();
+        Assert.Equal(DraftApplyOutcomeKind.NotAppliedPreflight, first.Kind);
+        Assert.StartsWith(PushBackPilotUpdateRun.DocumentMismatchReason, Cause(first), StringComparison.Ordinal);
+        Assert.Contains("outer boom", Cause(first), StringComparison.Ordinal);
+
+        var failure = new FullUpdateSetup();
+        failure.Port.ThrowAt["PrepareUnits"] = Boom("import boom");
+        failure.Port.ThrowAt["Dispose:scope"] = Boom("outer boom");
+        var second = failure.Run();
+        Assert.Equal(DraftApplyOutcomeKind.NotAppliedFailure, second.Kind);
+        Assert.Contains("import boom", Cause(second), StringComparison.Ordinal);
+        Assert.Contains("outer boom", Cause(second), StringComparison.Ordinal);
+
+        var committed = new FullUpdateSetup();
+        committed.Port.ThrowAt["Seal"] = Boom("seal boom");
+        committed.Port.ThrowAt["Dispose:scope"] = Boom("outer boom");
+        var third = committed.Run();
+        Assert.Equal(DraftApplyOutcomeKind.CommitThrew, third.Kind);
+        Assert.Contains("outer boom", Cause(third), StringComparison.Ordinal);
+
+        var abort = new FullUpdateSetup();
+        abort.Port.ThrowAt["WriteUnit:A1"] = Boom("unit boom");
+        abort.Port.ThrowAt["Dispose:mutation"] = Boom("abort boom");
+        abort.Port.ThrowAt["Dispose:scope"] = Boom("outer boom");
+        var fourth = abort.Run();
+        Assert.Equal(DraftApplyOutcomeKind.CommitThrew, fourth.Kind);
+        Assert.Contains("abort boom", Cause(fourth), StringComparison.Ordinal);
+        Assert.Contains("outer boom", Cause(fourth), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AnOuterReleaseThatThrowsOnAConflictIsDroppedBecauseAConflictCarriesNoCause()
+    {
+        var setup = new FullUpdateSetup();
+        setup.Port.RereadDrawing = setup.Members.Select(m => m.Fact.DefinitionKey == "C3" ? IntentKit.Member("C3", FullPrepareKit.Planta("pb-02-modulos")) : m).ToArray();
+        setup.Port.ThrowAt["Dispose:scope"] = Boom("outer boom");
+
+        var outcome = setup.Run();
+
+        // The declared limitation of the package: the exception of the release is lost, the classification is not.
+        Assert.Equal(DraftApplyOutcomeKind.NotAppliedConflict, outcome.Kind);
+        Assert.Null(outcome.Cause);
+    }
+
+    [Fact]
+    public void AConflictOrAPreflightOfMutateStaysWhatItIsEvenWhenTheReleaseOfTheScopeOfMutateThrows()
+    {
+        var conflict = new FullUpdateSetup();
+        conflict.Port.RereadDrawing = conflict.Members.Select(m => m.Fact.DefinitionKey == "C3" ? IntentKit.Member("C3", FullPrepareKit.Planta("pb-02-modulos")) : m).ToArray();
+        conflict.Port.ThrowAt["Dispose:mutation"] = Boom("release boom");
+        var first = conflict.Run();
+        Assert.Equal(DraftApplyOutcomeKind.NotAppliedConflict, first.Kind);
+        Assert.NotEmpty(first.Differences);
+
+        var preflight = new FullUpdateSetup();
+        preflight.Port.LockedAtReread = new[] { "B2" };
+        preflight.Port.ThrowAt["Dispose:mutation"] = Boom("release boom");
+        var second = preflight.Run();
+        Assert.Equal(DraftApplyOutcomeKind.NotAppliedPreflight, second.Kind);
+        Assert.StartsWith(PushBackPilotUpdateRun.LockedLayerPrefix + "B2", Cause(second), StringComparison.Ordinal);
+        Assert.Contains("release boom", Cause(second), StringComparison.Ordinal);
+        Assert.Empty(preflight.Port.Written);
+    }
+
+    [Fact]
+    public void ASealThatThrewKeepsBeingCommitThrewBecauseOfTheSealEvenIfTheAbortThrowsToo()
+    {
+        var setup = new FullUpdateSetup();
+        setup.Port.ThrowAt["Seal"] = Boom("seal boom");
+        setup.Port.ThrowAt["Dispose:mutation"] = Boom("abort boom");
+
+        var outcome = setup.Run();
+
+        Assert.Equal(DraftApplyOutcomeKind.CommitThrew, outcome.Kind);
+        Assert.StartsWith(PushBackPilotUpdateRun.SealFailedPrefix, Cause(outcome), StringComparison.Ordinal);
+        Assert.Contains("abort boom", Cause(outcome), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void TheRunNeverThrowsForMissingArgumentsOrForAPortThatAnswersNothing()
+    {
+        var setup = new FullUpdateSetup();
+
+        Assert.Equal(DraftApplyOutcomeKind.NotAppliedFailure, PushBackPilotUpdateRun.ExecuteFull(null!, setup.Request, setup.Port).Kind);
+        Assert.Equal(DraftApplyOutcomeKind.NotAppliedFailure, PushBackPilotUpdateRun.ExecuteFull(setup.Draft, null!, setup.Port).Kind);
+        Assert.Equal(DraftApplyOutcomeKind.NotAppliedFailure, PushBackPilotUpdateRun.ExecuteFull(setup.Draft, setup.Request, null!).Kind);
+
+        var noScope = new FullUpdateSetup();
+        noScope.Port.ReturnNullScope = true;
+        var outcome = noScope.Run();
+        Assert.Equal(DraftApplyOutcomeKind.NotAppliedFailure, outcome.Kind);
+        Assert.Equal(PushBackPilotUpdateRun.NoScopeReason, outcome.Cause);
+
+        var noStart = new FullUpdateSetup();
+        noStart.Port.NullMutationStart = true;
+        Assert.Equal(DraftApplyOutcomeKind.NotAppliedFailure, noStart.Run().Kind);
+        Assert.Contains("Dispose:scope", noStart.Port.Calls);
+    }
+
+    private static PushBackPilotIntentScan NamedScan(string name) => FullPrepareKit.Scan(
+        IntentKit.Member("A1", FullPrepareKit.Frontal(name: name)),
+        IntentKit.Member("B2", FullPrepareKit.Lateral(FullPrepareKit.ExistingPost(), name: name)),
+        IntentKit.Member("C3", FullPrepareKit.Planta(name: name)));
+
+    [Fact]
+    public void ANameThatDiffersAfterTheRenameIsAWarningAndACaseOnlyDifferenceIsNot()
+    {
+        var differs = new FullUpdateSetup(() => NamedScan("Mi rack"));
+        differs.Port.NameAfterPost = (key, desired) => key == "C3" ? "Ocupado" : desired;
+        var outcome = differs.Run();
+        Assert.Equal(DraftApplyOutcomeKind.AppliedWithWarnings, outcome.Kind);
+        var warning = Assert.Single(outcome.Warnings);
+        Assert.Contains("C3", warning, StringComparison.Ordinal);
+
+        var sameCase = new FullUpdateSetup(() => NamedScan("Mi rack"));
+        sameCase.Port.NameAfterPost = (key, desired) => desired.ToUpperInvariant();
+        Assert.Equal(DraftApplyOutcomeKind.Applied, sameCase.Run().Kind);
+    }
+
+    [Fact]
+    public void TheMissingPiecesAndAFailedRegenerationAreWarningsAndTheStateStaysClean()
+    {
+        var setup = new FullUpdateSetup();
+        setup.Port.MissingPieces["A1"] = new[] { "POSTE_Q", "PLACA_R" };
+        setup.Port.RegenFailure = "InvalidOperationException: regen";
+
+        var outcome = setup.Run();
+
+        Assert.Equal(DraftApplyOutcomeKind.AppliedWithWarnings, outcome.Kind);
+        Assert.Equal(3, outcome.Warnings.Count);
+        Assert.Contains(outcome.Warnings, w => w.Contains("POSTE_Q", StringComparison.Ordinal) && w.Contains("A1", StringComparison.Ordinal));
+        Assert.Contains(outcome.Warnings, w => w.Contains("regen", StringComparison.Ordinal));
+        var closed = setup.Draft.CompleteApply(outcome);
+        Assert.True(closed.Rebased);
+        Assert.Equal(DraftStatus.Clean, setup.Draft.Status);
+        Assert.Equal(outcome.Warnings.ToArray(), setup.Draft.Warnings.ToArray());
+    }
+
+    // The comparison of POST is byte for byte: nothing is normalized, so each of these differences fails it.
+    [Theory]
+    [InlineData("trailing")]
+    [InlineData("crlf")]
+    [InlineData("case")]
+    public void ThePostComparisonDoesNotNormalizeAnything(string change)
+    {
+        var setup = new FullUpdateSetup();
+        setup.Port.TextAfterSeal = (key, text) =>
+        {
+            if (key != "B2") return text;
+            return change switch
+            {
+                "trailing" => text + " ",
+                "crlf" => text.Replace("\n", "\r\n", StringComparison.Ordinal) + "\r\n",
+                _ => text.Replace("\"lateral\"", "\"Lateral\"", StringComparison.Ordinal),
+            };
+        };
+
+        var outcome = setup.Run();
+
+        Assert.NotEqual(DraftApplyOutcomeKind.Applied, outcome.Kind);
+        Assert.NotEqual(DraftApplyOutcomeKind.AppliedWithWarnings, outcome.Kind);
+        Assert.Equal(DraftApplyOutcomeKind.AppliedPostRereadFailed, outcome.Kind);
+
+        // M-06 (b): the cause names the envelope that differs (B2), not just any cause.
+        Assert.StartsWith(PushBackPilotUpdateRun.PostEnvelopeDiffersPrefix + "B2", outcome.Cause, StringComparison.Ordinal);
+    }
+
+    // I-64 F4B PB-T4d (owner-pbt4d-run-coverage-decision.md): by hand over the map. The comparison of POST of the full model, ComparePostFull,
+    // over the full read of each re-read (the comparison of the pilot, ComparePost, is retired); the cases and the causes are the same.
+    [Fact]
+    public void ThePostComparisonFailsForAnotherSetOfKeysAnotherEnvelopeAndAnotherScale()
+    {
+        var plan = new FullUpdateSetup().ExpectedPlan();
+        var good = FullWriteKit.Read(IntentKit.Scan(FullPrepareKit.Rack, "A1", plan.Members.Select(m => IntentKit.Member(m.Key, m.EnvelopeText)).ToArray()));
+        Assert.Null(PushBackPilotUpdateRun.ComparePostFull(plan, good));
+
+        var fewer = FullWriteKit.Read(IntentKit.Scan(FullPrepareKit.Rack, "A1", plan.Members.Take(2).Select(m => IntentKit.Member(m.Key, m.EnvelopeText)).ToArray()));
+        Assert.Equal(PushBackPilotUpdateRun.PostKeysDifferReason, PushBackPilotUpdateRun.ComparePostFull(plan, fewer));
+
+        var more = FullWriteKit.Read(IntentKit.Scan(FullPrepareKit.Rack, "A1", plan.Members.Select(m => IntentKit.Member(m.Key, m.EnvelopeText)).Append(IntentKit.Member("D4", plan.Envelope("C3")!)).ToArray()));
+        Assert.Equal(PushBackPilotUpdateRun.PostKeysDifferReason, PushBackPilotUpdateRun.ComparePostFull(plan, more));
+
+        var edited = FullWriteKit.Read(IntentKit.Scan(FullPrepareKit.Rack, "A1", plan.Members.Select(m => IntentKit.Member(m.Key, m.Key == "C3" ? m.EnvelopeText + " " : m.EnvelopeText)).ToArray()));
+        Assert.StartsWith(PushBackPilotUpdateRun.PostEnvelopeDiffersPrefix + "C3", PushBackPilotUpdateRun.ComparePostFull(plan, edited), StringComparison.Ordinal);
+
+        Assert.Equal(PushBackPilotUpdateRun.PostRereadMissingReason, PushBackPilotUpdateRun.ComparePostFull(plan, null));
+        var notAdmitted = FullWriteKit.Read(IntentKit.Scan(FullPrepareKit.Rack, "ZZ", IntentKit.Member("A1", plan.Envelope("A1")!)));
+        Assert.StartsWith(PushBackPilotUpdateRun.PostNotAdmittedPrefix, PushBackPilotUpdateRun.ComparePostFull(plan, notAdmitted), StringComparison.Ordinal);
+    }
+
+    // I-64 F4B PB-T4d (owner-pbt4d-cat4d-decisions.md, pregunta 1): the map; the plan is the one of the full PREPARE (FullUpdateSetup) and
+    // the rebuild, PushBackPilotSystemRebuild, stays.
+    // The system of the outgoing design, rebuilt apart from the text of a member of the plan with the same resolver as PREPARE.
+    [Fact]
+    public void TheSystemIsRebuiltFromTheDesignTextOfAMemberOfThePlan()
+    {
+        var plan = new FullUpdateSetup().ExpectedPlan();
+
+        var system = PushBackPilotSystemRebuild.Build(plan.Members[0].DesignText, PilotKit.Catalog);
+
+        Assert.NotNull(system);
+        Assert.False(PushBackPilotSystemRebuild.IsComposite(system));
+        Assert.Throws<InvalidOperationException>(() => PushBackPilotSystemRebuild.Build("not a design", PilotKit.Catalog));
+        Assert.Throws<ArgumentNullException>(() => PushBackPilotSystemRebuild.Build(null!, PilotKit.Catalog));
+        Assert.Throws<ArgumentNullException>(() => PushBackPilotSystemRebuild.IsComposite(null!));
+    }
+
+    // I-64 F4B PB-T4d (owner-pbt4d-cat4d-decisions.md, pregunta 1): the map, and by hand only the comment of the reader; the plan is the one
+    // of the full PREPARE (FullUpdateSetup) and the rebuild, PushBackPilotSystemRebuild, stays.
+    // I-64 F4-T4-HOST-C1 (D-C1-01, INV-C1-01, test 1 of D-C1-09): the system that the writer redraws carries the rack name of the envelope of ITS
+    // member, raw, because the label of the name of the views is drawn only from it. Everything runs over the text kits of the plan: the members
+    // are only deserialized, nothing is drawn.
+    [Fact]
+    public void TheSystemRebuiltForAMemberCarriesTheRackNameOfItsEnvelope()
+    {
+        var store = new RackEmbedStore();
+
+        // Every member of the plan of a rack carries the name of its envelope, and nothing else of the system changes. (The full reader
+        // admits a rack whose views share one name, so the three views carry the same one here; different names come below, by hand.)
+        var scan = FullPrepareKit.Scan(
+            IntentKit.Member("A1", FullPrepareKit.Frontal(name: "PB G")),
+            IntentKit.Member("B2", FullPrepareKit.Lateral(FullPrepareKit.ExistingPost(), name: "PB G")),
+            IntentKit.Member("C3", FullPrepareKit.Planta(name: "PB G")));
+        var plan = new FullUpdateSetup(() => scan).ExpectedPlan();
+        Assert.Equal(new[] { "A1", "B2", "C3" }, plan.Members.Select(m => m.Key).OrderBy(k => k, StringComparer.Ordinal).ToArray());
+        foreach (var member in plan.Members)
+        {
+            var system = PushBackPilotSystemRebuild.BuildForMember(member, PilotKit.Catalog);
+            var plain = PushBackPilotSystemRebuild.Build(member.DesignText, PilotKit.Catalog);
+
+            Assert.Equal(store.Deserialize(member.EnvelopeText)!.Name, system.Name);
+            Assert.Equal("PB G", system.Name);
+            Assert.Equal(plain.IsComposite, system.IsComposite);
+            Assert.Equal(plain.TotalLength, system.TotalLength);
+            Assert.Equal(plain.Fronts!.Count, system.Fronts!.Count);
+            Assert.Equal(plain.InOutBeamCatalogId, system.InOutBeamCatalogId);
+            Assert.Equal(plain.HighEndBeamCatalogId, system.HighEndBeamCatalogId);
+            Assert.Equal(plain.DefensePieceId, system.DefensePieceId);
+        }
+
+        // The name goes as it is written: with spaces around it, identical; a blank one, or none, stays blank and draws no label.
+        var design = store.Deserialize(FullPrepareKit.Frontal())!.Design;
+        PushBackPilotMemberPlan Member(string text) => new("K0", RackEmbedDocument.ViewFrontal, 0, design!, text);
+        string? NameOf(string? written) =>
+            PushBackPilotSystemRebuild.BuildForMember(Member(IntentKit.Rewrite(FullPrepareKit.Frontal(), e => e.Name = written)), PilotKit.Catalog).Name;
+
+        // Each member carries the name of its OWN envelope, also when the views of a drawing were named differently.
+        Assert.Equal("Rack uno", NameOf("Rack uno"));
+        Assert.Equal("Rack dos", NameOf("Rack dos"));
+        Assert.Equal("  Mi rack  ", NameOf("  Mi rack  "));
+        Assert.Equal("   ", NameOf("   "));
+        Assert.True(string.IsNullOrWhiteSpace(NameOf("   ")));
+        Assert.True(string.IsNullOrWhiteSpace(NameOf(string.Empty)));
+        Assert.True(string.IsNullOrWhiteSpace(NameOf(null)));
+
+        // The arguments and the envelope that cannot be read: the same exceptions as the help that it extends, and one reason of its own.
+        var noMember = Record.Exception(() => PushBackPilotSystemRebuild.BuildForMember(null!, PilotKit.Catalog));
+        Assert.IsType<ArgumentNullException>(noMember);
+        var noCatalog = Record.Exception(() => PushBackPilotSystemRebuild.BuildForMember(Member(FullPrepareKit.Frontal()), null!));
+        Assert.IsType<ArgumentNullException>(noCatalog);
+        var notADesign = Record.Exception(() => PushBackPilotSystemRebuild.BuildForMember(new PushBackPilotMemberPlan("K0", RackEmbedDocument.ViewFrontal, 0, "not a design", FullPrepareKit.Frontal()), PilotKit.Catalog));
+        Assert.IsType<InvalidOperationException>(notADesign);
+        Assert.Equal(PushBackPilotSystemRebuild.UnreadableDesignReason, notADesign!.Message);
+        var unreadable = Record.Exception(() => PushBackPilotSystemRebuild.BuildForMember(Member("{ not an envelope"), PilotKit.Catalog));
+        Assert.IsType<InvalidOperationException>(unreadable);
+        Assert.Equal(PushBackPilotSystemRebuild.UnreadableEnvelopeReason, unreadable!.Message);
+    }
+}
+
+/// <summary>
+/// I-64 F4B PB-T4d (owner-pbt4d-run-coverage-decision.md): the copy of PilotUpdateSetup for the FULL model, the helper of the substitutes of
+/// the run: the standard rack, a full draft born from the full read with an edited scale, and the double of the port; the plan is the one of
+/// the full PREPARE and the run is ExecuteFull.
+/// </summary>
+internal sealed class FullUpdateSetup
+{
+    public const double NewScale = 2.25;
+
+    public FullUpdateSetup(Func<PushBackPilotIntentScan>? scan = null, double scale = NewScale)
+    {
+        Scan = (scan ?? (() => FullPrepareKit.RealScan()))();
+        var read = FullWriteKit.Read(Scan);
+        Assert.True(read.Read.IsAdmitted);
+        Draft = FullWriteKit.DraftOf(read);
+        FullWriteKit.Edit(Draft, s => s.Editable.AnnotationScale = scale);
+        Members = Scan.Facts.Select(f => new IntentItem(f, Scan.RawEnvelopes[f.DefinitionKey])).ToArray();
+        Port = new PilotUpdateScopeDouble(Members);
+        Request = new PushBackPilotUpdateRequest(100, FullPrepareKit.Rack);
+    }
+
+    public PushBackPilotIntentScan Scan { get; }
+
+    public DraftSession<PushBackFullDraftState> Draft { get; }
+
+    public IntentItem[] Members { get; }
+
+    public PilotUpdateScopeDouble Port { get; }
+
+    public PushBackPilotUpdateRequest Request { get; }
+
+    /// <summary>The plan that the run builds for the standard rack, computed apart with the pure full PREPARE.</summary>
+    public PushBackPilotUpdatePlan ExpectedPlan()
+    {
+        var result = PushBackPilotUpdatePlanner.PrepareFull(PushBackFullPrepareInput.From(Draft), FullWriteKit.Read(Scan), PilotKit.Catalog);
+        Assert.True(result.Kind == PushBackPilotPrepareKind.Ready, result.Reason);
+        return result.Plan!;
+    }
+
+    /// <summary>Takes the slot like the host does, and runs.</summary>
+    public DraftApplyOutcome<PushBackFullDraftState> Run()
+    {
+        Assert.True(Draft.TryBeginApply().IsStarted);
+        return PushBackPilotUpdateRun.ExecuteFull(Draft, Request, Port);
+    }
+}
+```
+
+### `tests/RackCad.Tests/PushBackRetirePilotFullCopyGuardTests.cs` (`NewFileSha` `ee9b6f1513f549065da391c10d6da947cc8e197644efbc7d72cf41e46443e6cf`)
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
+using RackCad.Application.Persistence;
+using Xunit;
+
+namespace RackCad.Tests
+{
+    /// <summary>
+    /// I-64 F4B PB-T4d: the equivalent of the equivalent of PB-T4c (PushBackEditAllFullCopyGuardTests), with the BaseSha, the Skip, the CopySha and the
+    /// counts of the originals and the copies that the retirement of the pilot edits; nothing else changes.
+    /// I-64 F4B PB-T4b — the script of «Saltar y duplicar» (CT-PBT4B-20; D-PBT4-11), in execution. It is a GUARD: it passes on the skeleton
+    /// and on the implementation, because the copies, the kit and the Skip travel in the RED, and it discriminates through its negative
+    /// self-tests, run over text injected in memory (never written). EVERY text is normalized to <c>\n</c> before it is compared or hashed
+    /// (the repository works with <c>core.autocrlf=true</c>; I-01).
+    ///
+    /// <para>
+    /// (1) Each of the 21 original files is its base but for the lines of attribute that carry their Skip. (2) Each test of the list, but
+    /// CT-PBT4A-06, has a test of the same name in its copy. (3) In the nine classes of C-0, each mechanical copy is the text of its method in
+    /// the base with the closed map M. (4) Each copy and the kit have the sha256 of the contract. (5) No copy names the kit of the pilot.
+    /// (6) The full read that the kit derives is the one that the reader gives. (7) The four Theory split by rows are, together, the original.
+    /// </para>
+    /// </summary>
+    public sealed class PushBackRetirePilotFullCopyGuardTests
+    {
+        private static string Root => PilotKit.RepoRoot().FullName;
+
+        // The base of each original: the sha256 of its text in BaseSha with the line ends as \n (section 6.2.1 of the package), and its number of Skip.
+        private static readonly (string Path, string BaseSha, int Skips)[] Origins =
+        {
+            ("tests/RackCad.Tests/PushBackFullReadGuardTests.cs",
+             "97dff70cf57d866895eaae78ebde98e4350135743d747018c7de0a0a4758eb75", 2),
+            ("tests/RackCad.Tests/PushBackFullReadPathTests.cs",
+             "f6611c3ad90d0e8d481b6a2b56788b53d37f3f0f08af4f1ae5d3cb81783ab28f", 1),
+            ("tests/RackCad.Tests/PushBackWritePathGuardTests.cs",
+             "996adc5d4ddfc80462e7ade23ef44a8f18fabd0fdbf814b88f2505f437af65b6", 1),
+            ("tests/RackCad.Tests/Workspace/WorkspaceAssociativeBookkeepingTests.cs",
+             "07573661e65b0a4658796a92bf90fd33e79c667a3ccf2f4615588519899bf3f1", 10),
+            ("tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorTests.cs",
+             "27f26a28a760225bed676f8ca0d52fb1fd4b64d1d601f64bfdfb1b83f6786a66", 54),
+            ("tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs",
+             "da9d341f6b544d3d85eaafdd01cffe7796fa5367a8ead1e2f0071e2110e5cab4", 7),
+            ("tests/RackCad.Tests/Workspace/WorkspaceHostHardeningGuardTests.cs",
+             "f52072b53b819edd270e05ec38c987a54aa6772fbe09c18aee71afb4f4067b80", 1),
+            ("tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs",
+             "0279187354a9bbacc1f0c487b6741d6286a7ab3db7a5fb47aba175ec1cdfde50", 60),
+            ("tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs",
+             "4044c8678c60a0e05cef7eb6fa8d6b8161651f4dbf17f8b1ced04498b3975997", 2),
+            ("tests/RackCad.Tests/Workspace/WorkspaceLifecycleHostTests.cs",
+             "1808ac7a22c33938b575063e3b7a049450f187b493c5b09b4464ddc37acfc5f0", 69),
+            ("tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs",
+             "60cb0f3d2412fb7fd630fa97be708f3c449f0a3c6ee786951732c1bf98e92c49", 5),
+            ("tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs",
+             "235fc42968106cb9915e6e392ef095edddf46d192f42efd3e0a0ea8343e43289", 41),
+            ("tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs",
+             "6f5844735f7568bb94b3a295e64420b36d7718e71b72437cab15a2f3521af40f", 33),
+            ("tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardTests.cs",
+             "48dead3420e3ac272bb05e43732bae50d8e47eccacf09bb8f37578acc5d35494", 1),
+            ("tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs",
+             "a4f0e37fbac6db89d19969b14ef1b1a8bd7e7727e5526fcae133ed83c85554e9", 21),
+            ("tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs",
+             "73a491cf46d161186d02aba330136fc1b08dc67cd1b71d53db99b3a8946fc8df", 1),
+            ("tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs",
+             "d602daf657aae175f9972052e1594034959c0706fd2466644f740d981bfa18fe", 35),
+            ("tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs",
+             "df9f8ef808307b71a925cf97a38863abcc50247dddc5df6b4c839d8488b94103", 2),
+            ("tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRequestTests.cs",
+             "cabfb232768fe69e1e7b686722fa87d05efe97b44474c1b4b8a411db598b130e", 44),
+            ("tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs",
+             "1cedca91c973b0dfe8825e002bfcab4fc883d71219bf7fc4612f19dc4ea8300a", 21),
+            ("tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationViewTests.cs",
+             "e8db638a72da2a517cba2ea66a762a79b25ddd75621e9d3e95c07ef97a2bd568", 6),
+        };
+
+        // The sha256 of each copy: its text with the line ends as LF (CopySha of the contract).
+        private static readonly Dictionary<string, string> CopySha = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["tests/RackCad.Tests/PushBackFullReadGuardFull.cs"] =
+                "ee09002b03cc3231c76ccfe4900919ee1241ffc85ea5d42d8d83278cbba3aa35",
+            ["tests/RackCad.Tests/PushBackFullReadPathFull.cs"] =
+                "8d4cfb2eebdbcfc0615243368feca221a4f4834bef704abb4e097528d9039bc7",
+            ["tests/RackCad.Tests/PushBackWritePathGuardFull.cs"] =
+                "38cb158d8464ff303eaadddf9e1722e49057618d39bb83b9ee32150fd3ea5a3c",
+            ["tests/RackCad.Tests/Workspace/WorkspaceAssociativeBookkeepingFull.cs"] =
+                "5d54905f0a3f76ba786dce1d0adaa89eee3fe50c867197e575d50b07cf958a01",
+            ["tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorFull.cs"] =
+                "af0929f95082d0bd896ed11afbdc2f1cdc6f10749e34ab678193955fcf924522",
+            ["tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardFull.cs"] =
+                "a6c90caec73f6f440b2228e60279f478372409cce0bdce8504c7cc29d5da76ed",
+            ["tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostFull.cs"] =
+                "c269eac4774b6f5bf5ee20c7a9a2a02097b15060c6e6c3b8d5dd32d9f316ad9e",
+            ["tests/RackCad.Tests/Workspace/WorkspaceHostHardeningGuardFull.cs"] =
+                "f82806835c6da858abda885bbfc8296b28c7952d64038e72eebbabd5cb27d9ea",
+            ["tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardFull.cs"] =
+                "f4523b11a73c223ece1bbd930a578f9be637cb38af8a2066b110a060bfd1dac7",
+            ["tests/RackCad.Tests/Workspace/WorkspaceLifecycleHostFull.cs"] =
+                "91aa5c15a095ddcdafcba74d73c2e0a78d013d8bfe53a4d4f3af6708cf075c16",
+            ["tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardFull.cs"] =
+                "70d4f004c432c23c96e939f0cc1916b864db27f90e1ed30d704bef152349e331",
+            ["tests/RackCad.Tests/Workspace/WorkspacePilotEditHostFull.cs"] =
+                "7fed50bac4d5bc4bfe440f75c6eac37647142c0538f42278cb9612c5f9fdc95c",
+            ["tests/RackCad.Tests/Workspace/WorkspacePilotPrepareFull.cs"] =
+                "ca88ddf8d16af66548081c290b038e9f4b017eceabab3c9d77ac1fef3d8dfc8d",
+            ["tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardFull.cs"] =
+                "b07cf90219fa182786e2a731c6a5e6fbc06cabe4480bd811418e4b8ab78f7bfc",
+            ["tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostFull.cs"] =
+                "83980964cfd66ae88dc0d93f2f6e9e6e9d3bac5a60ce99698039230d96f0c97d",
+            ["tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardFull.cs"] =
+                "30a47920ea337b6620472a2614a3cad2c8a699e3238259fb0741b348535911c4",
+            ["tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostFull.cs"] =
+                "4ba5042576e0ca28771120ad322c18f7021b870db49999b5ce66a430f398b4f0",
+            ["tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardFull.cs"] =
+                "889f5d86a7097db0cecd9e6bb216e5c587d7c5e934eea8d37f048f667b0cd383",
+            ["tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRequestFull.cs"] =
+                "e81cc9d319544140c31850bb8f876d884f19a3b0f77d2ade3184b25209ca0fbb",
+            ["tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationFull.cs"] =
+                "985f9b1ff90da56e7093a6675196f7586436842eedea643991bc1c9d6d3c502d",
+            ["tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationViewFull.cs"] =
+                "54953f62130a7dc3f4f57b43039bbffd291ae628957766e90e427d1f9f792bdf",
+        };
+
+        private const string KitPath = "tests/RackCad.Tests/Workspace/WorkspaceFullReadKit.cs";
+        private const string KitSha = "b4ed29f92838e5761faf1afaba1f33e58ba82a56541900f52db8c5ecb6239b9a";
+
+
+        // The nine classes of C-0 (the mechanical copies and the equivalents written by hand), and the numbers of the map of the copy v5.
+        private static readonly Dictionary<string, (int Tests, int Mechanical, int Hand)> NineCounts = new Dictionary<string, (int, int, int)>(StringComparer.Ordinal)
+        {
+            ["WorkspaceAssociativeBookkeeping"] = (10, 10, 0),
+            ["WorkspaceCommandAdvisor"] = (54, 54, 0),
+            ["WorkspaceEditIntentHost"] = (60, 55, 5),
+            ["WorkspaceLifecycleHost"] = (69, 68, 1),
+            ["WorkspacePilotEditHost"] = (41, 41, 0),
+            ["WorkspacePilotPrepare"] = (33, 25, 8),
+            ["WorkspacePilotReconciliationHost"] = (21, 12, 9),
+            ["WorkspacePilotUpdateHost"] = (35, 12, 23),
+            ["WorkspacePilotUpdateRequest"] = (44, 39, 5),
+        };
+
+        // The tests of the other twelve originals that have a copy (the guards and the two of the interface); the CT of the census has none.
+        private static readonly Dictionary<string, int> OtherCounts = new Dictionary<string, int>(StringComparer.Ordinal)
+        {
+            ["PushBackFullReadGuard"] = 1,
+            ["PushBackFullReadPath"] = 1,
+            ["PushBackWritePathGuard"] = 1,
+            ["WorkspaceEditIntentGuard"] = 7,
+            ["WorkspaceHostHardeningGuard"] = 1,
+            ["WorkspaceLifecycleGuard"] = 2,
+            ["WorkspacePilotEditGuard"] = 5,
+            ["WorkspacePilotReconciliationGuard"] = 1,
+            ["WorkspacePilotUpdateGuard"] = 1,
+            ["WorkspacePilotUpdateIntegrationGuard"] = 2,
+            ["WorkspacePilotReconciliation"] = 21,
+            ["WorkspacePilotReconciliationView"] = 6,
+        };
+
+        // M-00: the types of the nine classes that are copied with the suffix Full (the others of the nine have none).
+        private static readonly Dictionary<string, string[]> TypesOfTheCopy = new Dictionary<string, string[]>(StringComparer.Ordinal)
+        {
+            ["WorkspaceCommandAdvisor"] = new[] { "CommandAdvisorPortDouble" },
+            ["WorkspaceLifecycleHost"] = new[] { "LifecycleScriptedAdvisor" },
+            ["WorkspacePilotEditHost"] = new[] { "PilotEditThrowingComparer", "PilotEditThrowingProbe", "PilotEditAuditedReader", "PilotEditOutcomeProbe" },
+        };
+
+        // M-01 to M-08, closed and in this order.
+        private static readonly (string Pattern, string Replacement)[] MapM =
+        {
+            (@"\bEditIntentFakeReader\b", "FullEditIntentFakeReader"),
+            (@"\bEditIntentKit\b", "FullEditIntentKit"),
+            (@"\bPrepareKit\b", "FullPrepareKit"),
+            (@"\bPushBackPilotDraftState\b", "PushBackFullDraftState"),
+            (@"\bPushBackPilotStateComparer\b", "PushBackFullDraftStateComparer"),
+            (@"\bPushBackPilotFieldAdapter\b", "PushBackFullFieldAdapter"),
+            (@"\.Inputs\.Annotations!?\.AnnotationScale\b", ".Editable.AnnotationScale"),
+            (@"\.Inputs\.PalletTolerance\b", ".Editable.PalletTolerance"),
+        };
+
+        // The four Theory that the partition of the RED splits by rows (D-S5): the class, the method and whether their rows are a MemberData.
+        private static readonly (string Stem, string Method, bool Member)[] Splits =
+        {
+            ("WorkspaceLifecycleHost", "EachOperationThatCanChangeADraftEndsTheMarkSoTheSessionIsRetiredConservatively", false),
+            ("WorkspacePilotEditGuard", "TheHostGuardTripsOnAPublicOperationAnOrderOfBasesOrAnAdapterThatIsAFieldOfInstance", false),
+            ("WorkspacePilotPrepare", "ConfirmAppliesOnlyToCleanDirtyAndConflictAndTheOthersReadNothing", true),
+            ("WorkspacePilotPrepare", "KeepAppliesToConflictAndToDirtyMarkedStaleApplyingWaitsAndTheOthersAreNotNeededAllWithoutReading", true),
+        };
+
+        private static readonly Dictionary<string, (int Red, int Green)> SplitRows = new Dictionary<string, (int, int)>(StringComparer.Ordinal)
+        {
+            ["WorkspaceLifecycleHost.EachOperationThatCanChangeADraftEndsTheMarkSoTheSessionIsRetiredConservatively"] = (3, 7),
+            ["WorkspacePilotEditGuard.TheHostGuardTripsOnAPublicOperationAnOrderOfBasesOrAnAdapterThatIsAFieldOfInstance"] = (1, 3),
+            ["WorkspacePilotPrepare.ConfirmAppliesOnlyToCleanDirtyAndConflictAndTheOthersReadNothing"] = (7, 1),
+            ["WorkspacePilotPrepare.KeepAppliesToConflictAndToDirtyMarkedStaleApplyingWaitsAndTheOthersAreNotNeededAllWithoutReading"] = (7, 1),
+        };
+
+        private static readonly Regex SkipLine = new Regex(
+            @"^([ \t]*)\[(Fact|Theory)\(Skip = ""I-64 F4B PB-T4b: [^""]*""\)\]", RegexOptions.Multiline);
+
+        private static readonly Regex KitOfThePilot = new Regex(
+            @"\b(?:EditIntentFakeReader|EditIntentKit|PrepareKit|PushBackPilotDraftState|PushBackPilotStateComparer|PushBackPilotFieldAdapter|PushBackFullReadRig)\b");
+
+        // ---------------------------------------------------------------------------------------------- helpers
+
+        /// <summary>The «EXCEPCION» rule: a step that throws becomes a line, and the expected lines never contain one.</summary>
+        private static T Paso<T>(List<string> log, Func<T> step)
+        {
+            try
+            {
+                return step();
+            }
+            catch (Exception error)
+            {
+                log.Add("EXCEPCION " + error.GetType().Name + ": " + error.Message);
+                return default(T);
+            }
+        }
+
+        private static string Normalize(string text) => text.Replace("\r\n", "\n");
+
+        private static string ReadText(string relative) => Normalize(File.ReadAllText(Path.Combine(Root, relative)));
+
+        private static string Sha(string text)
+        {
+            using (var sha = SHA256.Create())
+            {
+                return string.Concat(sha.ComputeHash(new UTF8Encoding(false).GetBytes(text)).Select(b => b.ToString("x2")));
+            }
+        }
+
+        // I-64 F4B PB-T4c (owner-pbt4c-list-3-decision.md): the one Skip of PB-T4c in an original, the one of WorkspacePilotEditGuardTests:155,
+        // goes back to its [Fact] too, by its exact line; the count of the Skip of PB-T4b and the expected lines do not change.
+        private const string EditAllSkipLine = "    [Fact(Skip = \"I-64 F4B PB-T4c: sustituida por su equivalente en PushBackEditAllPortEquivalenceGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 4).\")]";
+
+        private static string Restore(string text) => SkipLine.Replace(text, "$1[$2]").Replace(EditAllSkipLine + "\n", "    [Fact]\n");
+
+        private static string Stem(string path)
+        {
+            var name = Path.GetFileNameWithoutExtension(path);
+            return name.EndsWith("Tests", StringComparison.Ordinal) ? name.Substring(0, name.Length - "Tests".Length) : name;
+        }
+
+        private static string CopyPathOf(string path) => path.Substring(0, path.Length - "Tests.cs".Length) + "Full.cs";
+
+        private static string ApplyMap(string stem, string text)
+        {
+            foreach (var (pattern, replacement) in MapM) text = Regex.Replace(text, pattern, replacement);
+            if (TypesOfTheCopy.TryGetValue(stem, out var types))
+            {
+                foreach (var type in types) text = Regex.Replace(text, @"\b" + Regex.Escape(type) + @"\b", type + "Full");
+            }
+
+            return text;
+        }
+
+        // ---------------------------------------------------------------------------------------------- the lexicon and the members
+
+        private static void Blank(StringBuilder builder, string code, int from, int to)
+        {
+            for (var x = from; x < to; x++) builder.Append(code[x] == '\n' ? '\n' : ' ');
+        }
+
+        /// <summary>The text with the comments and the inside of the strings and of the characters blanked, without moving a character.</summary>
+        private static string Mask(string code)
+        {
+            var builder = new StringBuilder(code.Length);
+            var i = 0;
+            var n = code.Length;
+            while (i < n)
+            {
+                var c = code[i];
+                if (c == '/' && i + 1 < n && code[i + 1] == '/')
+                {
+                    var end = code.IndexOf('\n', i);
+                    if (end < 0) end = n;
+                    Blank(builder, code, i, end);
+                    i = end;
+                    continue;
+                }
+
+                if (c == '/' && i + 1 < n && code[i + 1] == '*')
+                {
+                    var end = code.IndexOf("*/", i + 2, StringComparison.Ordinal);
+                    end = end < 0 ? n : end + 2;
+                    Blank(builder, code, i, end);
+                    i = end;
+                    continue;
+                }
+
+                var k = i;
+                var verbatim = false;
+                var interpolated = false;
+                while (k < n && (code[k] == '$' || code[k] == '@'))
+                {
+                    if (code[k] == '@') verbatim = true;
+                    else interpolated = true;
+                    k++;
+                }
+
+                if (k < n && code[k] == '"' && (k > i || i == 0 || !(char.IsLetterOrDigit(code[i - 1]) || code[i - 1] == '_')))
+                {
+                    var j = k + 1;
+                    var depth = 0;
+                    var closed = false;
+                    while (j < n)
+                    {
+                        var ch = code[j];
+                        if (interpolated && ch == '{')
+                        {
+                            if (depth == 0 && j + 1 < n && code[j + 1] == '{')
+                            {
+                                j += 2;
+                                continue;
+                            }
+
+                            depth++;
+                        }
+                        else if (interpolated && ch == '}' && depth > 0)
+                        {
+                            depth--;
+                        }
+                        else if (depth == 0)
+                        {
+                            if (verbatim && ch == '"')
+                            {
+                                if (j + 1 < n && code[j + 1] == '"')
+                                {
+                                    j += 2;
+                                    continue;
+                                }
+
+                                closed = true;
+                                break;
+                            }
+
+                            if (!verbatim && ch == '\\')
+                            {
+                                j += 2;
+                                continue;
+                            }
+
+                            if (!verbatim && ch == '"')
+                            {
+                                closed = true;
+                                break;
+                            }
+
+                            if (!verbatim && ch == '\n') break;
+                        }
+
+                        j++;
+                    }
+
+                    j = Math.Min(j, n);
+                    builder.Append(code, i, k + 1 - i);
+                    Blank(builder, code, k + 1, j);
+                    if (closed && j < n)
+                    {
+                        builder.Append('"');
+                        j++;
+                    }
+
+                    i = j;
+                    continue;
+                }
+
+                if (c == '\'')
+                {
+                    var j = i + 1;
+                    if (j < n && code[j] == '\\')
+                    {
+                        j += 2;
+                        while (j < n && code[j] != '\'' && code[j] != '\n') j++;
+                    }
+                    else
+                    {
+                        j++;
+                    }
+
+                    if (j < n && code[j] == '\'')
+                    {
+                        builder.Append('\'');
+                        Blank(builder, code, i + 1, j);
+                        builder.Append('\'');
+                        i = j + 1;
+                        continue;
+                    }
+                }
+
+                builder.Append(c);
+                i++;
+            }
+
+            return builder.ToString();
+        }
+
+        private sealed class Method
+        {
+            public string Name { get; set; }
+
+            public int Start { get; set; }
+
+            /// <summary>The attribute lines above the declaration.</summary>
+            public string Header { get; set; }
+
+            /// <summary>From the first line of attribute to the closing brace, without the line end.</summary>
+            public string Text { get; set; }
+        }
+
+        private static readonly Regex Declaration = new Regex(@"\bpublic\s+(?:async\s+)?(?:void|Task)\s+(\w+)\s*\(");
+
+        /// <summary>The tests of a text ([Fact] and [Theory]) with their attribute lines and their text, from the first attribute to the closing brace.</summary>
+        private static List<Method> Methods(string text)
+        {
+            var masked = Mask(text);
+            var lines = masked.Split('\n');
+            var starts = new int[lines.Length];
+            for (var line = 1; line < lines.Length; line++) starts[line] = starts[line - 1] + lines[line - 1].Length + 1;
+
+            var result = new List<Method>();
+            foreach (Match match in Declaration.Matches(masked))
+            {
+                var at = Array.BinarySearch(starts, match.Index);
+                if (at < 0) at = ~at - 1;
+                var first = at - 1;
+                while (first >= 0 && lines[first].TrimStart().StartsWith("[", StringComparison.Ordinal)) first--;
+                first++;
+                if (first == at) continue;
+                var attributes = string.Join("\n", lines.Skip(first).Take(at - first));
+                if (!Regex.IsMatch(attributes, @"\[(?:Fact|Theory)\b")) continue;
+
+                var depth = 1;
+                var p = match.Index + match.Length;
+                while (p < masked.Length && depth > 0)
+                {
+                    if (masked[p] == '(') depth++;
+                    else if (masked[p] == ')') depth--;
+                    p++;
+                }
+
+                while (p < masked.Length && char.IsWhiteSpace(masked[p])) p++;
+                int close;
+                if (p < masked.Length && masked[p] == '{')
+                {
+                    var braces = 0;
+                    close = p;
+                    for (; close < masked.Length; close++)
+                    {
+                        if (masked[close] == '{') braces++;
+                        else if (masked[close] == '}' && --braces == 0) break;
+                    }
+                }
+                else
+                {
+                    close = masked.IndexOf(';', p);
+                }
+
+                var lineEnd = text.IndexOf('\n', Math.Min(close, text.Length - 1));
+                if (lineEnd < 0) lineEnd = text.Length;
+                var start = starts[first];
+                result.Add(new Method
+                {
+                    Name = match.Groups[1].Value,
+                    Start = start,
+                    Header = text.Substring(start, starts[at] - start),
+                    Text = text.Substring(start, lineEnd - start),
+                });
+            }
+
+            return result;
+        }
+
+        /// <summary>The tests of an original that carry the Skip of PB-T4b, with its reason.</summary>
+        private static List<(string Name, string Reason)> Listed(string original)
+            => Methods(original)
+                .Select(method => (method.Name, Match: Regex.Match(method.Header, @"Skip = ""(I-64 F4B PB-T4b: [^""]*)""")))
+                .Where(item => item.Match.Success)
+                .Select(item => (item.Name, item.Match.Groups[1].Value))
+                .ToList();
+
+        /// <summary>CT-PBT4A-06 is replaced by CT-PBT4B-13 and has no copy; every other test of the list has one.</summary>
+        private static bool HasCopy(string reason) => !reason.Contains("CT-PBT4B-13");
+
+        // ---------------------------------------------------------------------------------------------- the lines
+
+        private static string OriginalLine((string Path, string BaseSha, int Skips) origin, string text)
+            => "original " + Stem(origin.Path) + " igual-a-la-base=" + (Sha(Restore(text)) == origin.BaseSha) + " skip=" + SkipLine.Matches(text).Count;
+
+        private static string CopyLine((string Path, string BaseSha, int Skips) origin, string original, string copy)
+        {
+            var stem = Stem(origin.Path);
+            var copySha = CopySha[CopyPathOf(origin.Path)];
+            var listed = Listed(original).Where(item => HasCopy(item.Reason)).ToList();
+            var copyMethods = Methods(copy);
+            if (!NineCounts.ContainsKey(stem))
+            {
+                var present = listed.Count(item => copyMethods.Any(method => method.Name == item.Name));
+                return "copia " + stem + " pruebas=" + present + " sha256=" + (Sha(copy) == copySha);
+            }
+
+            var baseMethods = Methods(Restore(original)).GroupBy(method => method.Name).ToDictionary(group => group.Key, group => group.First());
+            var tests = 0;
+            var mechanical = 0;
+            var hand = 0;
+            var equal = true;
+            foreach (var item in listed)
+            {
+                var found = copyMethods.Where(method => method.Name == item.Name).ToList();
+                if (found.Count == 0) continue;
+                tests++;
+                if (item.Reason.Contains("su equivalente escrito a mano en"))
+                {
+                    hand++;
+                    continue;
+                }
+
+                mechanical++;
+                equal = equal && found.Count == 1 && baseMethods.ContainsKey(item.Name) && found[0].Text == ApplyMap(stem, baseMethods[item.Name].Text);
+            }
+
+            return "copia " + stem + " pruebas=" + tests + " mecanicas=" + mechanical + " a-mano=" + hand + " igual-al-mapa=" + equal + " sha256=" + (Sha(copy) == copySha);
+        }
+
+        private static List<string> RowsOf(Method method)
+            => method.Header.Split('\n').Where(line => line.TrimStart().StartsWith("[InlineData(", StringComparison.Ordinal)).ToList();
+
+        private static List<string> MemberRows(string typeName, string member)
+        {
+            var type = typeof(WorkspaceFullCopyGuardTests).Assembly.GetType(typeName);
+            var method = type == null ? null : type.GetMethod(member, BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+            var rows = method == null ? null : method.Invoke(null, null) as System.Collections.IEnumerable;
+            return rows == null ? new List<string> { "<sin filas>" } : rows.Cast<object[]>().Select(row => Convert.ToString(row[0])).ToList();
+        }
+
+        private static string SplitLine((string Stem, string Method, bool Member) split, string original, string copy)
+        {
+            var label = split.Stem + "." + split.Method;
+            var redAt = copy.IndexOf("class FullPanelCopy" + split.Stem + "RedTests", StringComparison.Ordinal);
+            var greenAt = copy.IndexOf("class FullPanelCopy" + split.Stem + "GreenTests", StringComparison.Ordinal);
+            var methods = Methods(copy).Where(method => method.Name == split.Method).ToList();
+            var inRed = methods.Where(method => redAt >= 0 && method.Start > redAt && (greenAt < 0 || method.Start < greenAt)).ToList();
+            var inGreen = methods.Where(method => greenAt >= 0 && method.Start > greenAt).ToList();
+            if (redAt < 0 || greenAt < redAt || inRed.Count != 1 || inGreen.Count != 1) return "particion-por-filas " + label + " sin-las-dos-mitades";
+
+            List<string> redRows;
+            List<string> greenRows;
+            List<string> originalRows;
+            if (split.Member)
+            {
+                redRows = MemberRows("RackCad.Tests.FullPanelCopy" + split.Stem + "RedTests", "StatusNamesRed");
+                greenRows = MemberRows("RackCad.Tests.FullPanelCopy" + split.Stem + "GreenTests", "StatusNamesGreen");
+                originalRows = MemberRows("RackCad.Tests." + split.Stem + "Tests", "StatusNames");
+            }
+            else
+            {
+                redRows = RowsOf(inRed[0]);
+                greenRows = RowsOf(inGreen[0]);
+                var source = Methods(Restore(original)).First(method => method.Name == split.Method);
+                originalRows = RowsOf(source).Select(row => ApplyMap(split.Stem, row)).ToList();
+            }
+
+            var together = redRows.Concat(greenRows).OrderBy(row => row, StringComparer.Ordinal).ToList();
+            var same = together.SequenceEqual(originalRows.OrderBy(row => row, StringComparer.Ordinal), StringComparer.Ordinal) && together.Distinct().Count() == together.Count;
+            return "particion-por-filas " + label + " red=" + redRows.Count + " green=" + greenRows.Count + " filas-del-original=" + same;
+        }
+
+        private static (string Path, string BaseSha, int Skips) OriginOf(string stem) => Origins.First(origin => Stem(origin.Path) == stem);
+
+        // ------------------------------------------------------------------------------------------------- CT-20
+
+        [Fact]
+        public void CT_PBT4B_20_TheScriptOfSkipAndDuplicateGivesTheCopiesTheKitAndTheSkipsOfTheClosedList()
+        {
+            var log = new List<string>();
+            var expected = new List<string>();
+            var originals = new Dictionary<string, string>(StringComparer.Ordinal);
+            var copies = new Dictionary<string, string>(StringComparer.Ordinal);
+            foreach (var origin in Origins)
+            {
+                originals[origin.Path] = Paso(log, () => ReadText(origin.Path)) ?? string.Empty;
+                copies[origin.Path] = Paso(log, () => ReadText(CopyPathOf(origin.Path))) ?? string.Empty;
+            }
+
+            // (1) The 21 originals.
+            foreach (var origin in Origins)
+            {
+                log.Add(OriginalLine(origin, originals[origin.Path]));
+                expected.Add("original " + Stem(origin.Path) + " igual-a-la-base=True skip=" + origin.Skips);
+            }
+
+            // (2), (3) and (4): the nine classes of C-0 and then the twelve copies of the guards and of the interface.
+            foreach (var origin in Origins.Where(origin => NineCounts.ContainsKey(Stem(origin.Path))))
+            {
+                log.Add(Paso(log, () => CopyLine(origin, originals[origin.Path], copies[origin.Path])));
+                var counts = NineCounts[Stem(origin.Path)];
+                expected.Add("copia " + Stem(origin.Path) + " pruebas=" + counts.Tests + " mecanicas=" + counts.Mechanical + " a-mano=" + counts.Hand + " igual-al-mapa=True sha256=True");
+            }
+
+            foreach (var origin in Origins.Where(origin => !NineCounts.ContainsKey(Stem(origin.Path))))
+            {
+                log.Add(Paso(log, () => CopyLine(origin, originals[origin.Path], copies[origin.Path])));
+                expected.Add("copia " + Stem(origin.Path) + " pruebas=" + OtherCounts[Stem(origin.Path)] + " sha256=True");
+            }
+
+            var kit = Paso(log, () => ReadText(KitPath)) ?? string.Empty;
+            log.Add("kit sha256=" + (Sha(kit) == KitSha));
+            expected.Add("kit sha256=True");
+
+            // (7) The four Theory split by rows.
+            foreach (var split in Splits)
+            {
+                var origin = OriginOf(split.Stem);
+                log.Add(Paso(log, () => SplitLine(split, originals[origin.Path], copies[origin.Path])));
+                var rows = SplitRows[split.Stem + "." + split.Method];
+                expected.Add("particion-por-filas " + split.Stem + "." + split.Method + " red=" + rows.Red + " green=" + rows.Green + " filas-del-original=True");
+            }
+
+            // (6) M-05: the full read that the kit derives is the one that the reader gives, over five scans.
+            var scans = Paso(log, () => new[]
+            {
+                FullEditIntentKit.TwoViews(FullEditIntentKit.RackA),
+                FullPrepareKit.RealScan(),
+                IntentKit.Scan(new RackEmbedStore().Deserialize(PilotKit.Text("pb-20-ab")).Id, "H1", IntentKit.Member("H1", PilotKit.Text("pb-20-ab"))),
+                IntentKit.Scan(
+                    IntentKit.Rack,
+                    "A1",
+                    IntentKit.Member("A1", IntentKit.Rewrite(IntentKit.BaseText(), e => e.Design = I58F1Fixtures.Set(I58F1Fixtures.Rich("pushback"), "PushBack.Future", "1")))),
+                IntentKit.Scan(FullEditIntentKit.RackA, "ZZ", IntentKit.Member("A1", IntentKit.Variant("pb-01-base", FullEditIntentKit.RackA))),
+            });
+            log.Add("kit FullOf-igual-al-lector=" + (scans != null && scans.All(scan => FullHandKit.FullOfMatchesTheReader(scan))) + " escaneos=" + (scans == null ? 0 : scans.Length));
+            expected.Add("kit FullOf-igual-al-lector=True escaneos=5");
+
+            // (5) No copy of the nine classes of C-0 names the kit of the pilot (the guards name the state of the pilot in the text they inject).
+            log.Add("sin-nombres-del-kit-del-piloto=" + !Origins.Where(origin => NineCounts.ContainsKey(Stem(origin.Path))).Any(origin => KitOfThePilot.IsMatch(copies[origin.Path])));
+            expected.Add("sin-nombres-del-kit-del-piloto=True");
+
+            // The self-tests, over text injected in memory: each makes the guard see another line than the real one.
+            var sample = OriginOf("WorkspaceAssociativeBookkeeping");
+            var original = originals[sample.Path];
+            var copy = copies[sample.Path];
+            var realOriginal = OriginalLine(sample, original);
+            var realCopy = Paso(log, () => CopyLine(sample, original, copy));
+            log.Add("autoprueba-linea-de-mas=" + (OriginalLine(sample, original + "\n// una linea de mas\n") == realOriginal ? "pasa" : "falla"));
+            var changedAssertion = new Regex(@"Assert\.Equal\(").Replace(copy, "Assert.NotEqual(", 1);
+            log.Add("autoprueba-asercion-cambiada=" + (Paso(log, () => CopyLine(sample, original, changedAssertion)) == realCopy ? "pasa" : "falla"));
+            var extraSkip = original + "\n    [Fact(Skip = \"I-64 F4B PB-T4b: otra\")]\n    public void Otra() { }\n";
+            log.Add("autoprueba-skip-de-mas=" + (OriginalLine(sample, extraSkip) == realOriginal ? "pasa" : "falla"));
+            var firstName = Listed(original).First().Name;
+            var withoutCopy = new Regex(@"\bpublic void " + Regex.Escape(firstName) + @"\(").Replace(copy, "public void Renombrada(", 1);
+            log.Add("autoprueba-sin-copia=" + (Paso(log, () => CopyLine(sample, original, withoutCopy)) == realCopy ? "pasa" : "falla"));
+            expected.Add("autoprueba-linea-de-mas=falla");
+            expected.Add("autoprueba-asercion-cambiada=falla");
+            expected.Add("autoprueba-skip-de-mas=falla");
+            expected.Add("autoprueba-sin-copia=falla");
+
+            Assert.Equal(string.Join("\n", expected), string.Join("\n", log));
+        }
+    }
+}
+```
+
+### `tests/RackCad.Tests/PushBackRetirePilotPlanGuardTests.cs` (`NewFileSha` `48c2f4a9619e2f3e7e5de4f1ad98bf68024635c268866fa1242f65f329d8ca43`)
+
+```csharp
+#nullable enable
+using System;
+using System.Text.RegularExpressions;
+using Xunit;
+using Src = RackCad.Tests.WorkspaceHostSource;
+
+namespace RackCad.Tests;
+
+// I-64 F4B PB-T4d (owner-pbt4d-list-decisions.md, pregunta 1): the equivalents of two guards of WorkspacePilotPrepareGuardTests (F4-T4A1)
+// that name what the retirement of the pilot removes. Each one is its original with one declared change and nothing else:
+// (1) the types of the package lose the snapshot of the pilot (PushBackPilotPrepareInput) and keep the one of the full model
+//     (PushBackFullPrepareInput), with its private constructor, its one factory From over a draft of the full model and its one construction;
+// (2) the order of PREPARE is read in PrepareFull, the PREPARE that stays, whose last step is BuildFull.
+public class PushBackRetirePilotPlanGuardTests
+{
+    private const string PlanPath = "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs";
+    private const string PilotFolder = "src/RackCad.Application/Systems/PushBack/Pilot/";
+
+    private static string Plan() => Src.Code(PlanPath);
+
+    [Fact]
+    public void TheFileOfThePlanIsNullableEnabledInTheNamespaceOfThePilotWithBracesAndDeclaresTheTypesOfThePackage()
+    {
+        var text = Src.Text(PlanPath);
+
+        Assert.StartsWith("#nullable enable", text.TrimStart((char)0xFEFF));
+        var namespaces = Regex.Matches(Src.CodeOnly(text), @"^\s*namespace\s+([\w\.]+)\s*(\{|;)", RegexOptions.Multiline);
+        var declared = Assert.Single(namespaces);
+        Assert.Equal("RackCad.Application.Systems.PushBack.Pilot", declared.Groups[1].Value);
+        Assert.Equal("{", declared.Groups[2].Value);
+        Assert.Equal(PilotFolder + "PushBackPilotUpdatePlan.cs", PlanPath);
+        foreach (var type in new[] { "PushBackFullPrepareInput", "PushBackPilotUpdatePlanner", "PushBackPilotUpdatePlan", "PushBackPilotPrepareResult", "PushBackPilotPrepareKind" })
+            Assert.Matches(@"\b(?:class|enum)\s+" + type + @"\b", Plan());
+        // The one construction of the snapshot is its factory: the constructor is private.
+        Assert.Matches(@"private\s+PushBackFullPrepareInput\s*\(", Plan());
+        Assert.Matches(@"public\s+static\s+PushBackFullPrepareInput\s+From\s*\(\s*DraftSession<PushBackFullDraftState>\s+draft\s*\)", Plan());
+        Assert.Equal(1, Src.Count(Plan(), @"\bnew\s+PushBackFullPrepareInput\s*\("));
+    }
+
+    [Fact]
+    public void TheOrderOfPrepareIsTheOneOfThePackageAndNoOutcomeBeforeConflictLooksAtTheReread()
+    {
+        var plan = Plan();
+        var prepare = Src.BodyOf(plan, @"public\s+static\s+PushBackPilotPrepareResult\s+PrepareFull\s*\(");
+
+        var order = new[]
+        {
+            "PushBackPilotPrepareKind.NotApplicable",
+            "PushBackPilotPrepareKind.PendingText",
+            "PushBackPilotPrepareKind.NothingToApply",
+            ".CompareWith(",
+            "WithConflict(",
+            "reread.Read.IsAdmitted",
+            "WithNotAdmitted(",
+            "BuildFull(",
+        };
+        var previous = -1;
+        foreach (var needle in order)
+        {
+            var at = prepare.IndexOf(needle, StringComparison.Ordinal);
+            Assert.True(at > previous, "out of order or missing: " + needle);
+            previous = at;
+        }
+
+        // The re-read is not named before NothingToApply: it is not looked at for a clean draft.
+        var nothing = prepare.IndexOf("PushBackPilotPrepareKind.NothingToApply", StringComparison.Ordinal);
+        Assert.DoesNotContain("reread.", prepare.Substring(0, nothing), StringComparison.Ordinal);
+        // The conflict comes before the admission.
+        Assert.True(prepare.IndexOf("WithConflict(", StringComparison.Ordinal) < prepare.IndexOf("reread.Read.IsAdmitted", StringComparison.Ordinal));
+        // Any exception is an Invalid with its reason, never an exception to the caller.
+        Assert.Matches(@"catch\s*\(\s*Exception\s+ex\s*\)\s*\{\s*return\s+PushBackPilotPrepareResult\.WithInvalid\s*\(", prepare);
+        Assert.DoesNotMatch(new Regex(@"\bthrow\b"), prepare);
+    }
+}
+```

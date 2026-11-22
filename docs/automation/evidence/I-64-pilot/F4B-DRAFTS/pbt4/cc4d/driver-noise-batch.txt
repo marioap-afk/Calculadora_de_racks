@@ -1,0 +1,14 @@
+r6w corrida 1 rc=0 Correctas! - Con error:     0, Superado:    55, Omitido:     0, Total:    55, Duración: 12 s - RackCad.UI.Tests.dll (ne
+  golpes 30:1 31:1 33:1 36:0 37:1 38:1
+r6w corrida 2 rc=0 Correctas! - Con error:     0, Superado:    55, Omitido:     0, Total:    55, Duración: 11 s - RackCad.UI.Tests.dll (ne
+  golpes 30:1 31:1 33:1 36:0 37:0 38:0
+r6w corrida 3 rc=0 Correctas! - Con error:     0, Superado:    55, Omitido:     0, Total:    55, Duración: 12 s - RackCad.UI.Tests.dll (ne
+  golpes 30:1 31:1 33:1 36:0 37:1 38:1
+r6x corrida 1 rc=0 Correctas! - Con error:     0, Superado:    55, Omitido:     0, Total:    55, Duración: 10 s - RackCad.UI.Tests.dll (ne
+  golpes 30:1 31:1 33:1 36:0 37:1 38:1
+r6x corrida 2 rc=0 Correctas! - Con error:     0, Superado:    55, Omitido:     0, Total:    55, Duración: 11 s - RackCad.UI.Tests.dll (ne
+  golpes 30:1 31:1 33:1 36:0 37:1 38:1
+r6x corrida 3 rc=0 Correctas! - Con error:     0, Superado:    55, Omitido:     0, Total:    55, Duración: 10 s - RackCad.UI.Tests.dll (ne
+  golpes 30:1 31:1 33:1 36:0 37:1 38:1
+build-server shutdown rc=0
+procesos: 0

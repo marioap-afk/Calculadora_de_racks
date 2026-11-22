@@ -1,0 +1,50 @@
+# la necesidad de las bajas de B, medida en r6h-nd
+# grupo | estado | tipo | cuantas
+SUS-01 | compilacion | - | 1
+compilacion | compilacion | - | 12
+lista PB-T4d C-7 | compilacion | - | 110
+lista PB-T4d C-7 | ejecucion | mixta | 2
+lista PB-T4d C-7 | ejecucion | piloto | 10
+lista PB-T4d C-7 | pasa-o-saltada | mixta | 5
+lista PB-T4d C-7 | pasa-o-saltada | piloto | 11
+lista PB-T4d apoyo | compilacion | - | 23
+lista PB-T4d apoyo | pasa-o-saltada | mixta | 6
+lista PB-T4d original | compilacion | - | 55
+
+## ejecucion
+lista PB-T4d C-7 | WorkspacePilotPrepareGuardTests.cs | ComposeForWriteIsCalledOnlyByThePlannerAndOnlyAfterTheComparisonOfTheBase | piloto | Failed RackCad.Tests.WorkspacePilotPrepareGuardTests.RackCad.Tests.WorkspacePilotPrepareGuardTests.ComposeForWriteIsCalledOnlyByThePlannerAndOnlyAfterTheComparisonOfTheBase | at RackCad.Tests.Workspac
+lista PB-T4d C-7 | WorkspacePilotUpdateGuardTests.cs | TheCompositionForWritingComparesTheCurrentStateAsItIsAndNeverCopiesIt | piloto | Failed RackCad.Tests.WorkspacePilotUpdateGuardTests.RackCad.Tests.WorkspacePilotUpdateGuardTests.TheCompositionForWritingComparesTheCurrentStateAsItIsAndNeverCopiesIt | at RackCad.Tests.WorkspaceHostS
+lista PB-T4d C-7 | WorkspacePilotUpdateGuardTests.cs | TheGuardOfTheCompositionTripsWhenTheCurrentStateIsCopiedBeforeTheComparison | piloto | Failed RackCad.Tests.WorkspacePilotUpdateGuardTests.RackCad.Tests.WorkspacePilotUpdateGuardTests.TheGuardOfTheCompositionTripsWhenTheCurrentStateIsCopiedBeforeTheComparison | at RackCad.Tests.Workspac
+lista PB-T4d C-7 | WorkspaceDraftPilotMaterializationTests.cs | MaterializeReproducesTheApplicationPartOfTheWindowLoadInTheSameOrder | piloto | Failed RackCad.Tests.WorkspaceDraftPilotMaterializationTests.RackCad.Tests.WorkspaceDraftPilotMaterializationTests.MaterializeReproducesTheApplicationPartOfTheWindowLoadInTheSameOrder | at RackCad.Tes
+lista PB-T4d C-7 | WorkspaceDraftPilotStateTests.cs | EveryEditableFieldIsExercisedByTheRichStateAndMutatingItMakesTheStatesDifferent | piloto | Failed RackCad.Tests.WorkspaceDraftPilotStateTests.RackCad.Tests.WorkspaceDraftPilotStateTests.EveryEditableFieldIsExercisedByTheRichStateAndMutatingItMakesTheStatesDifferent | at RackCad.Tests.Worksp
+lista PB-T4d C-7 | WorkspaceDraftPilotStateTests.cs | MutatingEverySelectionFieldTheModuleAuthorityAndTheOriginLeavesTheStatesEqual | piloto | Failed RackCad.Tests.WorkspaceDraftPilotStateTests.RackCad.Tests.WorkspaceDraftPilotStateTests.MutatingEverySelectionFieldTheModuleAuthorityAndTheOriginLeavesTheStatesEqual | at RackCad.Tests.Workspac
+lista PB-T4d C-7 | WorkspaceDraftPilotStateTests.cs | OriginsWithDifferentTextAndEquivalentContentAreEqual | piloto | Failed RackCad.Tests.WorkspaceDraftPilotStateTests.RackCad.Tests.WorkspaceDraftPilotStateTests.OriginsWithDifferentTextAndEquivalentContentAreEqual | at RackCad.Tests.WorkspaceDraftPilotStateTests.Ori
+lista PB-T4d C-7 | WorkspaceDraftPilotStateTests.cs | TheComparatorIsSymmetricAndSeparatesDifferentDesigns | piloto | Failed RackCad.Tests.WorkspaceDraftPilotStateTests.RackCad.Tests.WorkspaceDraftPilotStateTests.TheComparatorIsSymmetricAndSeparatesDifferentDesigns | at RackCad.Tests.WorkspaceDraftPilotStateTests.The
+lista PB-T4d C-7 | WorkspaceDraftPilotStateTests.cs | TheComparatorTreatsNullAndNaNWithoutBreakingReflexivity | piloto | Failed RackCad.Tests.WorkspaceDraftPilotStateTests.RackCad.Tests.WorkspaceDraftPilotStateTests.TheComparatorTreatsNullAndNaNWithoutBreakingReflexivity | at RackCad.Tests.WorkspaceDraftPilotStateTests.
+lista PB-T4d C-7 | PushBackPilotUpdateEquivalenceGuardTests.cs | E_3_TheMemberPlansAreBuiltOnlyFromTheMutableMembersOfTheRereadInOrdinalOrderAndErasuresOnlyComeFromAnObsoleteLateralOfAModelThatErases | piloto | Failed RackCad.Tests.PushBackPilotUpdateEquivalenceGuardTests.RackCad.Tests.PushBackPilotUpdateEquivalenceGuardTests.E_3_TheMemberPlansAreBuiltOnlyFromTheMutableMembersOfTheRereadInOrdinalOrderAndEras
+lista PB-T4d C-7 | PushBackPilotUpdateEquivalenceGuardTests.cs | E_5_TheEscapeOfEachRunIsClassifiedByTheStateThatTheRunAlreadyHadAndNeverAsAPlainFailureAfterAWriteOrASeal | mixta | Failed RackCad.Tests.PushBackPilotUpdateEquivalenceGuardTests.RackCad.Tests.PushBackPilotUpdateEquivalenceGuardTests.E_5_TheEscapeOfEachRunIsClassifiedByTheStateThatTheRunAlreadyHadAndNeverAsAPlainFai
+lista PB-T4d C-7 | PushBackPilotUpdateEquivalenceGuardTests.cs | E_6_TheEscapeGuardTripsOnACatchThatDoesNotConsultTheStateAndOnAnEscapeThatAnswersAPlainFailureFirst | mixta | Failed RackCad.Tests.PushBackPilotUpdateEquivalenceGuardTests.RackCad.Tests.PushBackPilotUpdateEquivalenceGuardTests.E_6_TheEscapeGuardTripsOnACatchThatDoesNotConsultTheStateAndOnAnEscapeThatAnswersAP
+## pasa-o-saltada
+lista PB-T4d C-7 | PushBackFullWritePrepareTests.cs | CT_PBT3B_15_ThePrecheckOfTheFullModelAndTheOrderOfPrepareFullAreTheOnesOfThePilot | mixta | -
+lista PB-T4d C-7 | WorkspacePilotEditGuardTests.cs | TheHostGuardTripsOnAReadAnAuthorizationOrAMarkWhereTheOperationMustNotHaveThem | piloto | -
+lista PB-T4d C-7 | WorkspacePilotEditGuardTests.cs | TheHostGuardTripsWhenAnOperationThatChangesADraftLeavesOutNotePilotEdit | piloto | -
+lista PB-T4d C-7 | WorkspacePilotEditGuardTests.cs | TheUpdateRequestGuardTripsWithoutTheGateWithASecondRequestWithTheUpdateItselfOrWhereTheProgressAuthorizesOrMutates | piloto | -
+lista PB-T4d C-7 | WorkspacePilotEditGuardTests.cs | TheBoundGuardTripsWhenTheLazyExpiryReachesTheOwnMutationTheProbeTheGateTheReaderOrAnotherMemberOfTheBridge | piloto | -
+lista PB-T4d C-7 | WorkspacePilotEditGuardTests.cs | TheFlightGuardTripsWhenTheCheckOfTheFlightIsMissingOrComesBeforeTheAuthorizationAndTheMarkOfTheReads | piloto | -
+lista PB-T4d C-7 | WorkspacePilotEditGuardTests.cs | TheFlightGuardTripsOnABodyThatChecksTheFlightWithNoAuthorizationAtAll | piloto | -
+lista PB-T4d C-7 | WorkspacePilotPrepareGuardTests.cs | TheAfterMatchGuardTripsOnAnotherCallerAndOnACallBeforeTheComparison | piloto | -
+lista PB-T4d C-7 | WorkspacePilotUpdateIntegrationGuardTests.cs | G4TripsOnACallerInTheControllerTheAdapterOrASecondCallInTheCore | piloto | -
+lista PB-T4d C-7 | PushBackFullWritePrepareTests.cs | CT_PBT3B_01_PrepareFullWritesTheFieldsTheNameAndTheDesignOfTheDraftOverTheEnvelopeThatWasReread | mixta | -
+lista PB-T4d C-7 | PushBackFullWritePrepareTests.cs | CT_PBT3B_02_TheFrontsRedrawEveryViewAndTheObsoleteLateralIsErasedWithTheOriginReanchored | piloto | -
+lista PB-T4d C-7 | PushBackFullWritePrepareTests.cs | CT_PBT3B_03_AModuleLengthOfEachSideReachesTheOutgoingDesignAndNoViewIsErased | mixta | -
+lista PB-T4d C-7 | PushBackFullWritePrepareTests.cs | CT_PBT3B_04_TheSideBIsComposedRejectedAsAFrontalOfAOneWayRackOrRemovedWithItsLaterals | mixta | -
+lista PB-T4d C-7 | PushBackFullWritePrepareTests.cs | CT_PBT3B_10_Auth13RejectsTheWriteOfADesignWithANestedUnknownFieldWithoutAnyCallOfWriting | piloto | -
+lista PB-T4d C-7 | PushBackFullWritePrepareTests.cs | CT_PBT3B_11_TheEnvelopeThatWasRereadIsCarriedOverAndTheDraftKeepsItsDesignAndItsName | mixta | -
+lista PB-T4d C-7 | WorkspaceDraftPilotStateTests.cs | AnEditedScaleMakesTheStatesDifferent | piloto | -
+lista PB-T4d apoyo | PushBackFullWritePrepareTests.cs | Auth13 | mixta | -
+lista PB-T4d apoyo | PushBackFullWritePrepareTests.cs | Barrier | mixta | -
+lista PB-T4d apoyo | PushBackFullWritePrepareTests.cs | Campos | mixta | -
+lista PB-T4d apoyo | PushBackFullWritePrepareTests.cs | FilaEstilo | mixta | -
+lista PB-T4d apoyo | PushBackFullWritePrepareTests.cs | FilaF | mixta | -
+lista PB-T4d apoyo | PushBackFullWritePrepareTests.cs | FrontCase | mixta | -
+## fuera-de-B

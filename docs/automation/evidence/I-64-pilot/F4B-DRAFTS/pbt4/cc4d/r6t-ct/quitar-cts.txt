@@ -1,0 +1,2 @@
+quitado tests/RackCad.Tests/PushBackRetirePilotGuardTests.cs
+quitado tests/RackCad.Tests/PushBackRetirePilotCensusGuardTests.cs

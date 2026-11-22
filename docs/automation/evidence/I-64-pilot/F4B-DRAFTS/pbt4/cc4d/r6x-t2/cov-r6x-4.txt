@@ -1,0 +1,47 @@
+# la cobertura ampliada de PB-T4d: todo src/ que se queda, linea a linea y rama por rama (Core completa + filtros de UI), base frente al GREEN
+# pieza pbt4d-green-v53.txt; BASE_CORE base-core-cov.coverage.json; BASE_UI base-ui-cov.coverage.json, base-ui-cov-r-1.coverage.json, base-ui-cov-r-2.coverage.json, coverage.json, coverage.json, coverage.json; GREEN_CORE g-core-cov.coverage.json; GREEN_UI g-ui-cov.coverage.json, g-ui-cov-r-1.coverage.json, g-ui-cov-r-2.coverage.json, coverage.json, coverage.json, coverage.json
+archivos de src/ instrumentados 775; lineas ejecutadas en la base que se quedan 69842 (ramas cubiertas 28818); retiradas por el GREEN 419; texto cambiado 4; lineas sin ejecutar en el GREEN 0; lineas con ramas perdidas 0
+cobertura PASA
+conjunto vigilado de la v5.2: 537 lineas de WPUR, 433 se quedan, 0 sin cubrir en el GREEN
+
+## lineas que se quedan, ejecutadas en la base y no en el GREEN
+
+## ramas cubiertas en la base y no en el GREEN (punto, path)
+
+## solo para informar: lo que Core sola pierde y cubre la UI de los filtros (1)
+  src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorState.cs:233  var target = (ActiveSide == PushBackSide.A ? SideB : SideA).Structure;
+
+## Core sola, lineas
+
+## Core sola, ramas
+  src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorState.cs:233 -> 233 base 2/2 green 1/2 sin cubrir [(0, 0)]  var target = (ActiveSide == PushBackSide.A ? SideB : SideA).Structure;
+
+## vigiladas: las 9 de la corrida (v5.2) y las de CA-T4d I-01 y M-02
+  PushBackPilotUpdateRun.cs:422 -> 357 base hits 141 ramas [(0, 0), (0, 1)] de 2; green hits 120 ramas [(0, 0), (0, 1)] de 2  if (origin != null) return origin;
+  PushBackPilotUpdateRun.cs:460 -> 395 base hits 113 ramas [(0, 0), (0, 1)] de 2; green hits 96 ramas [(0, 0), (0, 1)] de 2  if (start.RejectionCode != null) return NotAppliedPreflight(start.RejectionCode);
+  PushBackPilotUpdateRun.cs:510 -> 445 base hits 105 ramas [(0, 0), (0, 1)] de 2; green hits 89 ramas [(0, 0), (0, 1)] de 2  if (!values.DocumentMatches) return NotAppliedPreflight(DocumentMismatchReason);
+  PushBackPilotUpdateRun.cs:525 -> 460 base hits 94 ramas [(0, 0), (1, 0), (2, 0), (3, 0), (3, 1)] de 8; green hits 80 ramas [(0, 0), (1, 0), (2, 0), (3, 0), (3, 1)] de 8  if (mutable.Count != planned.Count
+  PushBackPilotUpdateRun.cs:589 -> 524 base hits 68 ramas [(0, 0), (0, 1)] de 2; green hits 59 ramas [(0, 0), (0, 1)] de 2  if (values.ForeignScopeOpenAtPost) return PostFailed(ForeignScopeOpenCause);
+  PushBackPilotUpdateRun.cs:594 -> 529 base hits 189 ramas [(0, 0), (0, 1), (1, 0), (1, 1)] de 4; green hits 165 ramas [(0, 0), (0, 1), (1, 0), (1, 1)] de 4  if (!values.NamesByKey.TryGetValue(pair.Key, out var actual) || !string.Equals(actual, expected, StringCompari
+  PushBackPilotUpdateRun.cs:604 -> 539 base hits 67 ramas [(0, 0), (0, 1)] de 2; green hits 58 ramas [(0, 0), (0, 1)] de 2  if (cause != null) return PostFailed(cause);
+  PushBackPilotUpdateRun.cs:650 -> 585 base hits 243 ramas [(0, 0), (0, 1)] de 2; green hits 206 ramas [(0, 0), (0, 1)] de 2  if (matches.Count == 0) return NotAppliedPreflight(PushBackPilotUpdatePlanner.NoOriginReason);
+  PushBackPilotUpdateRun.cs:651 -> 586 base hits 242 ramas [(0, 0), (0, 1)] de 2; green hits 205 ramas [(0, 0), (0, 1)] de 2  if (matches.Count > 1) return NotAppliedPreflight(PushBackPilotUpdatePlanner.SeveralOriginsReason);
+  PushBackPilotSystemRebuild.cs:28 -> 28 base hits 99 ramas [(0, 0), (0, 1)] de 2; green hits 90 ramas [(0, 0), (0, 1)] de 2  if (designText == null) throw new ArgumentNullException(nameof(designText));
+  PushBackPilotSystemRebuild.cs:29 -> 29 base hits 98 ramas [(0, 0), (0, 1)] de 2; green hits 89 ramas [(0, 0), (0, 1)] de 2  if (catalog == null) throw new ArgumentNullException(nameof(catalog));
+  PushBackPilotSystemRebuild.cs:31 -> 31 base hits 96 ramas [(0, 0), (0, 1), (1, 0), (1, 1)] de 4; green hits 87 ramas [(0, 0), (0, 1), (1, 0), (1, 1)] de 4  if (!new RackProjectStore().TryDeserialize(designText, out var project, out _) || project == null)
+  PushBackPilotSystemRebuild.cs:32 -> 32 base hits 2 ramas [] de 0; green hits 2 ramas [] de 0  throw new InvalidOperationException(UnreadableDesignReason);
+  PushBackPilotSystemRebuild.cs:48 -> 48 base hits 17 ramas [(0, 0), (0, 1)] de 2; green hits 17 ramas [(0, 0), (0, 1)] de 2  if (member == null) throw new ArgumentNullException(nameof(member));
+  PushBackPilotSystemRebuild.cs:51 -> 51 base hits 13 ramas [(0, 0), (0, 1)] de 2; green hits 13 ramas [(0, 0), (0, 1)] de 2  var envelope = new RackEmbedStore().Deserialize(member.EnvelopeText)
+  PushBackPilotSystemRebuild.cs:60 -> 60 base hits 80 ramas [(0, 0), (0, 1)] de 2; green hits 71 ramas [(0, 0), (0, 1)] de 2  if (system == null) throw new ArgumentNullException(nameof(system));
+  PushBackCompositeEditorState.cs:233 -> 233 base hits 287 ramas [(0, 0), (0, 1)] de 2; green hits 273 ramas [(0, 0), (0, 1)] de 2  var target = (ActiveSide == PushBackSide.A ? SideB : SideA).Structure;
+
+## texto cambiado por el GREEN
+  src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs:590 -> 473 hits 533 -> 452 ramas base 6/6 green 4/4 bien
+  src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs:592 -> 475 hits 531 -> 450 ramas base 2/2 green 2/2 bien
+  src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs:598 -> 481 hits 512 -> 431 ramas base 2/2 green 2/2 bien
+  src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs:629 -> 509 hits 198 -> 171 ramas base 4/4 green 2/2 bien
+
+## lineas nuevas del GREEN con codigo
+  src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs:503 hits 428 ramas 2/2 bien  var memberName = string.IsNullOrWhiteSpace(draftName) ? origins[0].Embed.Name : draftName;
+
+## el conjunto vigilado de la v5.2 sin cubrir

@@ -1,0 +1,11 @@
+Serie de pruebas para <copia>\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll (.NETCoreApp,Version=v8.0)
+Versión 17.11.1 (x64) de VSTest
+
+Iniciando la ejecución de pruebas, espere...
+1 archivos de prueba en total coincidieron con el patrón especificado.
+Archivo de resultados: <copia>\_cov\wpur\wpur.trx
+
+Correctas! - Con error:     0, Superado:    57, Omitido:     0, Total:    57, Duración: 5 s - RackCad.Tests.dll (net8.0)
+
+Datos adjuntos:
+  <copia>\_cov\wpur\9e7162b0-9036-4194-be56-efbb2ec176d4\coverage.cobertura.xml

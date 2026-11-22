@@ -1,0 +1,2 @@
+filas 17 {'Passed': 17}; omitidas por origen {}
+no pasan: 0

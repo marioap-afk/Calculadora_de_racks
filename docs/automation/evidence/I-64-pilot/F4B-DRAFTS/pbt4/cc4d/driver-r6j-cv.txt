@@ -1,0 +1,15 @@
+cobertura de la corrida generica; copia /d/r6j; salida r6j-cv; revision 6c2820bab4d8b41e3e229e23f3a1638ccbb04735
+  pieza dad3da7abb36a8229bd670fc7abeca8c9d78b8822475dce3c77a979cf3d7aebb p6d_cov_v52.sh
+  pieza 90ff0a45fc85dcfcd66502a5cbc80e200c9facd99761d30cb27e544b951eaae7 cov_v52.runsettings
+copia exportada: 14571 archivos
+b-core rc=0 errores=0 avisos-CS=0
+cov wpur rc=0 segundos=33 cobertura=34c5e292e12c5b3e :: filas 57 {'Passed': 57}; omitidas por origen {}
+cov fwr rc=0 segundos=28 cobertura=f2dc5c8047a01d8a :: filas 4 {'Passed': 4}; omitidas por origen {}
+cov wpuh rc=0 segundos=37 cobertura=b56cfa4d9afdf084 :: filas 47 {'Passed': 47}; omitidas por origen {}
+cov wpuq rc=0 segundos=50 cobertura=eb71ac6dbef48d09 :: filas 54 {'Passed': 54}; omitidas por origen {}
+cov fpt rc=0 segundos=30 cobertura=4b411af646b5267a :: filas 17 {'Passed': 17}; omitidas por origen {}
+cov fwp rc=0 segundos=34 cobertura=7c9d631714c79ae0 :: filas 9 {'Passed': 9}; omitidas por origen {}
+cov resto rc=0 segundos=1834 cobertura=1f5782c17b8cc707 :: filas 19562 {'NotExecuted': 461, 'Passed': 19101}; omitidas por origen {'PB-T4b': 451, 'PB-T4c': 3, 'otro': 7}
+build-server shutdown rc=0
+procesos: 6
+MAINCO []

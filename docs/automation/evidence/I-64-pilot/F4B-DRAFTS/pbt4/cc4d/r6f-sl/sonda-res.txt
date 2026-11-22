@@ -1,0 +1,3 @@
+filas 1 {'Failed': 1}; omitidas por origen {}
+  Failed RackCad.Tests.TmpPbt4dSlowProbe.RackCad.Tests.TmpPbt4dSlowProbe.Probe | at RackCad.Tests.TmpPbt4dSlowProbe.Probe() in <copia>\tests\RackCad.Tests\TmpSlow.cs:line 128 | prepare-completo estado=Ready toques=4936 ms=159.4
+no pasan: 1

@@ -1,0 +1,79 @@
+# PB-T4d, la remedicion sobre 6c2820ba (6c2820bab4d8b41e3e229e23f3a1638ccbb04735), frente a 7f0d9aa3; la lista d5467dc162e2cda8c539a829cc8f3a7c46260a119f70e840b34e6f78dde0387c
+
+## 1. Las filas de la lista en 6c2820ba
+  PB-T4d C-7       sigue            igual   -            138
+  PB-T4d apoyo     se-movio         igual   -            29
+  PB-T4d original  sigue            igual   Skip PB-T4b  55
+
+## 2. Lo que deja de compilar al retirar (lectura transitiva por texto; la fase 2 lo mide compilando)
+  7f0d9aa3: 180 pruebas y 29 miembros de apoyo
+    NUEVA                Skip otro    firme          1
+    PB-T4d C-7           -            firme          124
+    PB-T4d original      -            firme          55
+  6c2820ba: 204 pruebas y 31 miembros de apoyo
+    NUEVA                -            firme          24
+    NUEVA                Skip otro    firme          1
+    PB-T4d C-7           -            firme          124
+    PB-T4d original      Skip PB-T4b  firme          55
+    NUEVA en tests/RackCad.Tests/Workspace/WorkspacePilotEditHostFull.cs: 4
+    NUEVA en tests/RackCad.Tests/Workspace/WorkspacePilotPrepareFull.cs: 20
+    NUEVA en tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs: 1
+    apoyo nuevo (no en la lista): 2 [('WorkspacePilotEditHostFull.cs', 'Equals'), ('WorkspacePilotEditHostFull.cs', 'GetHashCode')]
+    apoyo de la lista que ya no sale: 0 []
+
+## 3. Las referencias por texto a lo retirado (codigo sin cadenas ni comentarios), por archivo de tests/
+  tests/RackCad.Tests/PushBackFullWritePrepareTests.cs                                       8 -> 8
+  tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs                   2 -> 2
+  tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs                   48 -> 48
+  tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs                         2 -> 2
+  tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs                             22 -> 22
+  tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs                              2 -> 2
+  tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs                               13 -> 13
+  tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs                                27 -> 27
+  tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs                     1 -> 1
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs                              13 -> 13
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateScopeDouble.cs                           2 -> 2
+  tests/RackCad.UI.Tests/PushBackDeclaredCorrectionSupport.cs                                1 -> 1
+  tests/RackCad.UI.Tests/PushBackFieldValidationConcordanceTests.cs                          2 -> 2
+  tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotCanonicalLineEndingTests.cs            1 -> 1
+  tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs               4 -> 4
+  tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs     5 -> 5
+
+## 4. src/ en 6c2820ba
+  src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotFieldAdapter.cs: nombra [(21, 'PushBackPilotFieldAdapter')]
+  src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs: nombra [(196, 'ComposeForWrite'), (212, 'PushBackPilotStateComparer'), (214, 'PushBackPilotStateComparer'), (223, 'PushBackPilotStateComparer'), (242, 'KeepPilotEditsOn'), (247, 'PushBackPilotStateComparer')]
+  src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs: nombra [(26, 'PushBackPilotStateComparer'), (28, 'PushBackPilotStateComparer'), (28, 'PushBackPilotStateComparer')]
+  src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs: nombra [(67, 'PushBackPilotStateComparer'), (480, 'ComposeForWrite')]
+  src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs: nombra [(134, 'PushBackPilotUpdatePlanner.Prepare('), (181, 'PushBackPilotUpdatePlanner.Prepare(')]
+  FUERA DE Pilot/ src/RackCad.Application/Workspace/WorkspaceHostCore.cs: nombra [(919, 'PushBackPilotUpdateRun.Precheck(')]
+  Lo que queda con uso o sin el (referencias por codigo, fuera de su archivo; src/ y tests/):
+    PushBackPilotPrepareInput      src=9 (fuera de Pilot/: 0) tests=21
+    PushBackPilotComposition       src=16 (fuera de Pilot/: 0) tests=5
+    ComparePost                    src=2 (fuera de Pilot/: 0) tests=10
+    NonPilotContentReason          src=6 (fuera de Pilot/: 0) tests=5
+    InvalidScaleReason             src=3 (fuera de Pilot/: 1) tests=4
+    BaseChangedReason              src=3 (fuera de Pilot/: 1) tests=2
+    ComposeFailurePrefix           src=3 (fuera de Pilot/: 1) tests=1
+    PushBackPilotHostRun           src=0 (fuera de Pilot/: 0) tests=0
+    PushBackPilotSystemRebuild     src=3 (fuera de Pilot/: 1) tests=15
+    PushBackPilotIntentResult      src=15 (fuera de Pilot/: 9) tests=38
+    PushBackPilotMaterializer      src=20 (fuera de Pilot/: 15) tests=118
+    PushBackPilotIntentReader      src=35 (fuera de Pilot/: 28) tests=196
+    PushBackPilotDraftState        src=36 (fuera de Pilot/: 0) tests=143
+    IPushBackPilotUpdatePort       src=13 (fuera de Pilot/: 5) tests=21
+    IPushBackPilotViewEraser       src=2 (fuera de Pilot/: 1) tests=1
+
+## 5. M-04, el punto 1 de CT-PBT4B-20 y OWNER-05
+  M-04 PEG TheReadGuardAllowsAnotherReadThatALaterTaskWouldAddWithItsOwnMark: ['591-598 -']
+  M-04 PEG TheOperationsOfThePortAndTheDecoratorNameNoApiOfWritingTheDrawing: ['916-920 -']
+  M-04 la copia tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardFull.cs:255-258:
+    255|         foreach (var helper in new[] { @"private\s+DraftSession<PushBackPilotDraftState>\?\s+FindPilotDraft\b", @"private\s+static\s+PilotFieldView\s+
+    256|         {
+    257|             var body = TryBody(host, helper);
+    258|             if (body == null) continue;
+  CT-PBT4B-20 en tests/RackCad.Tests/PushBackEditAllFullCopyGuardTests.cs: 43 rutas de tests/ nombradas; con originales que PB-T4d borra: ['tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs', 'tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs', 'tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs', 'tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs']
+  CT-PBT4B-20 en tests/RackCad.Tests/WorkspaceFullCopyGuardTests.cs: 43 rutas de tests/ nombradas; con originales que PB-T4d borra: ['tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs', 'tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs', 'tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs', 'tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs']
+  OWNER-05 tests/RackCad.Tests/Workspace/WorkspacePilotPrepareFull.cs InvalidD_ABuilderThatCannotBuildTheOutgoingSystemIsInvalidWi 1911-1944 - retirado=False
+  OWNER-05 tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs InvalidD_ABuilderThatCannotBuildTheOutgoingSystemIsInvalidWi 1633-1666 Skip PB-T4b retirado=True
+
+tabla pbt4d-remeasure-v52.tsv 426 filas

@@ -511,3 +511,127 @@ I-64 F4B PB-T3b: sustituida por <E-n> de PushBackPilotUpdateEquivalenceGuardTest
 | **GREEN** | `7cc1076eae8159294a1498ab556851977223b64c` (CI `44959653142` 4/4; Core 19 619 = 19 158 Passed + 0 Failed + 461 Skipped; UI 2 486 = 2 437 + 0 + 49). Toca solo 10 archivos de `src/`, y los 13 del GREEN literal del paquete (`pbt4c-green-v51.txt`) son byte a byte su texto; ninguna prueba de `tests/` cambia tras el RED, y ningún archivo de `Pilot/` |
 | **Los equivalentes, en el RED y en el GREEN** | Los 4, nuevos y byte a byte su `EquivalentSha`, sin cambio después del RED. En el RED pasan los tres de Core, con `ExpectRed` false (`PushBackEditAllPortEquivalenceGuardTests`, `PushBackEditAllNameWritersGuardTests` y `PushBackEditAllFullCopyGuardTests`, 1 Passed cada uno), y cae por aserción el de UI, con `ExpectRed` true (`PushBackEditAllApplyCloseTests`, 1 Failed); en el GREEN pasan los cuatro. Las 4 de la lista quedan en Skipped con su motivo en las dos ramas, 3 en Core y 1 en UI; los Skipped de las CI son esas más los de la línea base (458 en Core y 48 en UI). Las CT: en el RED caen por aserción `PushBackEditAllTests` 6, `PushBackEditAllGuardTests` 3 y `PushBackEditAllWindowTests` 4, y pasan `PushBackOpenerClassicPathGuardTests` 1 y `PushBackDraftLaunchGuardTests` 1; en el GREEN pasan las 15 |
 | **Estado** | EJECUTADA |
+
+## PB-T4d — la retirada del piloto: las 271 filas con acción de su lista
+
+**Estado: EMITIDA** (2026-11-22, emisión de PB-T4d, F4B-E56, sobre el cierre de PB-T4c `6c2820ba`). Lo escribe la sesión principal; el Worker no escribe en este archivo. La ejecución se completa al cerrar.
+
+**Autoridad:**
+- **[OD], el bloque sobre T1B:** «create a declared superseding characterization/change record. Do not silently weaken the old guard».
+- **Las decisiones del Owner sobre PB-T4d,** en `docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/`: `owner-pbt4d-list-decisions.md` (el alcance B y la emisión condicional), `owner-pbt4d-substitutes-decision.md` («Sustitutas donde hace falta»), `owner-pbt4d-run-coverage-decision.md` («Sustituir las 21»), `owner-pbt4d-deadcode-27-decisions.md` («Quitarla en PB-T4d» y «Sí, 27») y `owner-pbt4d-cat4d-decisions.md` («Sustituirlas» y «Sustituirlos siempre»).
+- **Las decisiones de la sesión:** D-S11 a D-S16 (`F4B-DRAFTS/pbt4/session-pbt4d-design-decisions.md`).
+- **El contrato:** `docs/initiatives/I-64-f4b-pbt4-gate-contract-package.md` (v5.4), D-PBT4-10, §4.4, §5.6 y §6.4, y `docs/automation/evidence/I-64-pilot/F4B-PBT4-RETIRE-PILOT/coordinator/gate-contract.json`.
+
+**La lista:** `F4B-DRAFTS/pbt4/pbt4d-retire-list-271.tsv`, sha256 `05a4d3d1905529c5bc4d53e0684d27d97eaa96502098eebeb9d16bfd931c75ac`: 284 filas, 271 con acción y 13 que se quedan sin tocar. Cada fila lleva su grupo, su archivo, su miembro, sus líneas en `6c2820ba`, su `Skip`, su acción y su porqué. Todo lo de `tests/` va en el RED, con el texto literal de la pieza `pbt4d-red-v54.txt` (D-S11).
+
+**Por grupo y acción:**
+
+| Grupo | Acción | Filas |
+|---|---|---|
+| C-7 | borrar con registro | 75 |
+| C-7 | reescribir con registro | 27 |
+| C-7 | se queda | 7 |
+| C-7 | sustituir con registro | 29 |
+| M-03 | borrar con registro | 35 |
+| M-04 | reescribir con registro | 3 |
+| SUS-01 | borrar con registro | 1 |
+| apoyo | borrar con registro | 21 |
+| apoyo | reescribir con registro | 2 |
+| apoyo | se queda | 6 |
+| ayudante-editado | reescribir con registro | 6 |
+| compilacion | borrar con registro | 11 |
+| compilacion | sustituir con registro | 1 |
+| directiva | reescribir con registro | 1 |
+| ejecucion | sustituir con registro | 3 |
+| lenta | acotar con registro | 1 |
+| original | borrar con registro | 55 |
+| **Total** | | **284** (271 con acción) |
+
+**Los motivos de los `Skip`, literales** (`pbt4d_test_edits_v54.py`, `SKIPS`; ASCII), cada uno en la línea de atributo `[Fact]` de su prueba en `6c2820ba`:
+
+- `tests/RackCad.Tests/PushBackEditAllFullCopyGuardTests.cs:572` (`CT_PBT4B_20_TheScriptOfSkipAndDuplicateGivesTheCopiesTheKitAndTheSkipsOfTheClosedList`):
+
+  ```text
+  [Fact(Skip = "I-64 F4B PB-T4d: sustituida por su equivalente en PushBackRetirePilotFullCopyGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4d-list-decisions.md, pregunta 1).")]
+  ```
+
+- `tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs:81` (`TheFileOfThePlanIsNullableEnabledInTheNamespaceOfThePilotWithBracesAndDeclaresTheTypesOfThePackage`):
+
+  ```text
+  [Fact(Skip = "I-64 F4B PB-T4d: sustituida por su equivalente en PushBackRetirePilotPlanGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4d-list-decisions.md, pregunta 1).")]
+  ```
+
+- `tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs:194` (`TheOrderOfPrepareIsTheOneOfThePackageAndNoOutcomeBeforeConflictLooksAtTheReread`):
+
+  ```text
+  [Fact(Skip = "I-64 F4B PB-T4d: sustituida por su equivalente en PushBackRetirePilotPlanGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4d-list-decisions.md, pregunta 1).")]
+  ```
+
+**Los archivos nuevos, literales** (en la pieza del RED; `NewFileSha` del texto con `\n`):
+
+| Archivo | `NewFileSha` | Qué es |
+|---|---|---|
+| `tests/RackCad.Tests/PushBackRetirePilotGuardTests.cs` | `0d64806a53b36ea0719bc7647dcfd3c15e8169a66a4494517097a82ce12fadb3` | CT-PBT4D-01; **`ExpectRed` true** |
+| `tests/RackCad.Tests/PushBackRetirePilotCensusGuardTests.cs` | `1874c47811ddda428745a1f5566f1e7290b31fa2a2e65b07c2ff52059f863f20` | CT-PBT4D-02; `ExpectRed` false |
+| `tests/RackCad.Tests/PushBackRetirePilotRunTests.cs` | `3554df0d960f18ef6bb2b930f4ac7757e8ca7438ebf6a9eda8934ef9acf8fe69` | las 29 sustitutas de WPUR sobre el modelo completo, con `FullUpdateSetup` (`v53/make_run_eq_v53.py`): 27 de la corrida genérica sobre `ExecuteFull` y la n.º 48 y la n.º 49 de `PushBackPilotSystemRebuild` (CA-T4d I-01); 26 por el mapa de PB-T4b; a mano la n.º 10, la n.º 43 y la n.º 49 (solo su comentario); `ExpectRed` false |
+| `tests/RackCad.Tests/PushBackRetirePilotFullCopyGuardTests.cs` | `ee9b6f1513f549065da391c10d6da947cc8e197644efbc7d72cf41e46443e6cf` | el equivalente de CT-PBT4B-20 de PB-T4c, copia literal con los `BaseSha`, los `Skip`, las `CopySha` y los recuentos que PB-T4d cambia (`make_fullcopy_eq_v52.py`, sobre los textos finales del RED de la v5.3); `ExpectRed` false |
+| `tests/RackCad.Tests/PushBackRetirePilotPlanGuardTests.cs` | `48c2f4a9619e2f3e7e5de4f1ad98bf68024635c268866fa1242f65f329d8ca43` | las dos guardas de `WorkspacePilotPrepareGuardTests` (D-S12), cada una con su cambio declarado; `ExpectRed` false |
+
+**Las ediciones con registro** («reescribir» y «acotar con registro»), fila a fila:
+
+| N.º | Grupo | Archivo y líneas | Miembro | Acción |
+|---|---|---|---|---|
+| 1 | C-7 | `tests/RackCad.Tests/PushBackFullWritePrepareTests.cs:474-544` | `CT_PBT3B_05_TheNameOfTheDraftReachesEveryViewAndABlankNameTakesTheOneOfTheOrigin` | reescribir con registro |
+| 2 | C-7 | `tests/RackCad.Tests/PushBackFullWritePrepareTests.cs:558-629` | `CT_PBT3B_06_TheBarrierOfTheDiagnosticsStopsABlockedDesignOfTheFullModelAndOfThePilot` | reescribir con registro |
+| 4 | C-7 | `tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs:551-568` | `ARereadThatIsNotAdmittedBecauseAMemberBecameBlockingTakesTheUnknownDraftToConflictWithTheDifferences` | reescribir con registro |
+| 5 | C-7 | `tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs:570-586` | `ARereadThatIsNotAdmittedBecauseAuth13FindsDivergenceTakesTheUnknownDraftToConflictWithTheDifferences` | reescribir con registro |
+| 6 | C-7 | `tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs:588-602` | `ARereadThatIsEqualRecoversTheUnknownDraft` | reescribir con registro |
+| 7 | C-7 | `tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs:604-615` | `ARereadThatIsNotAdmittedOnlyForTheCatalogStillRecoversBecauseTheBaseIsTheSame` | reescribir con registro |
+| 46 | C-7 | `tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs:401-416` | `TheHostGuardTripsOnAReadAnAuthorizationOrAMarkWhereTheOperationMustNotHaveThem` | reescribir con registro |
+| 47 | C-7 | `tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs:418-431` | `TheHostGuardTripsWhenAnOperationThatChangesADraftLeavesOutNotePilotEdit` | reescribir con registro |
+| 48 | C-7 | `tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs:434-451` | `TheUpdateRequestGuardTripsWithoutTheGateWithASecondRequestWithTheUpdateItselfOrWhereTheProgressAuthorizesOrMutates` | reescribir con registro |
+| 49 | C-7 | `tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs:453-468` | `TheBoundGuardTripsWhenTheLazyExpiryReachesTheOwnMutationTheProbeTheGateTheReaderOrAnotherMemberOfTheBridge` | reescribir con registro |
+| 50 | C-7 | `tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs:470-492` | `TheFlightGuardTripsWhenTheCheckOfTheFlightIsMissingOrComesBeforeTheAuthorizationAndTheMarkOfTheReads` | reescribir con registro |
+| 51 | C-7 | `tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs:516-526` | `TheFlightGuardTripsOnABodyThatChecksTheFlightWithNoAuthorizationAtAll` | reescribir con registro |
+| 52 | C-7 | `tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs:172-176` | `ComposeForWriteIsCalledOnlyByThePlannerAndOnlyAfterTheComparisonOfTheBase` | reescribir con registro |
+| 53 | C-7 | `tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs:178-190` | `TheAfterMatchGuardTripsOnAnotherCallerAndOnACallBeforeTheComparison` | reescribir con registro |
+| 75 | C-7 | `tests/RackCad.Tests/PushBackFullWriteRunTests.cs:245-304` | `CT_PBT3B_09_ComparePostFullChecksTheErasedKeysTheKeysTheEnvelopesAndTheScaleAndThePilotKeepsItsComparison` | reescribir con registro |
+| 76 | C-7 | `tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs:317-332` | `MaterializeReproducesTheApplicationPartOfTheWindowLoadInTheSameOrder` | reescribir con registro |
+| 77 | C-7 | `tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs:283-286` | `EditingTheCurrentStateInPlaceLeavesTheDraftDirtyAndTheCloseVetoed` | reescribir con registro |
+| 78 | C-7 | `tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs:258-264` | `MutatingTheObjectOfThePostReadAfterTheRebaseOfAnAppliedUpdateChangesNothing` | reescribir con registro |
+| 79 | C-7 | `tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs:243-246` | `MutatingTheObjectOfTheReadAfterBeginChangesNeitherTheInitialStateNorDirty` | reescribir con registro |
+| 80 | C-7 | `tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs:248-251` | `MutatingTheObjectOfTheReadAfterDiscardAndReloadChangesNothing` | reescribir con registro |
+| 81 | C-7 | `tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs:253-256` | `MutatingTheObjectOfTheReadAfterKeepMineChangesNothing` | reescribir con registro |
+| 82 | C-7 | `tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs:266-269` | `MutatingTheObjectPassedToSetCurrentDraftStateAfterTheCallDoesNotChangeTheCurrentState` | reescribir con registro |
+| 83 | C-7 | `tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs:271-274` | `MutatingTheObjectReturnedByInitialDraftStateDoesNotChangeTheInternalInitialState` | reescribir con registro |
+| 84 | C-7 | `tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs:276-279` | `ReusingOneObjectOfOriginForTwoDraftsOrTwoSessionsLeavesThemIndependent` | reescribir con registro |
+| 136 | C-7 | `tests/RackCad.Tests/PushBackPilotUpdateEquivalenceGuardTests.cs:136-145` | `E_3_TheMemberPlansAreBuiltOnlyFromTheMutableMembersOfTheRereadInOrdinalOrderAndErasuresOnlyComeFromAnObsoleteLateralOfAModelThatErases` | reescribir con registro |
+| 137 | C-7 | `tests/RackCad.Tests/PushBackPilotUpdateEquivalenceGuardTests.cs:220-228` | `E_5_TheEscapeOfEachRunIsClassifiedByTheStateThatTheRunAlreadyHadAndNeverAsAPlainFailureAfterAWriteOrASeal` | reescribir con registro |
+| 138 | C-7 | `tests/RackCad.Tests/PushBackPilotUpdateEquivalenceGuardTests.cs:230-249` | `E_6_TheEscapeGuardTripsOnACatchThatDoesNotConsultTheStateAndOnAnEscapeThatAnswersAPlainFailureFirst` | reescribir con registro |
+| 204 | apoyo | `tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs:538-549` | `UnknownAfterACommitThatThrew` | reescribir con registro |
+| 209 | apoyo | `tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs:76-80` | `Both` | reescribir con registro |
+| 239 | M-04 | `tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs:591-598` | `TheReadGuardAllowsAnotherReadThatALaterTaskWouldAddWithItsOwnMark` | reescribir con registro |
+| 240 | M-04 | `tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs:916-920` | `TheOperationsOfThePortAndTheDecoratorNameNoApiOfWritingTheDrawing` | reescribir con registro |
+| 241 | M-04 | `tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardFull.cs:255-258` | `WriteViolations` | reescribir con registro |
+| 242 | lenta | `tests/RackCad.Tests/Workspace/WorkspacePilotPrepareFull.cs:1911-1944` | `InvalidD_ABuilderThatCannotBuildTheOutgoingSystemIsInvalidWithTheTypedErrorAndNothingIsWritten` | acotar con registro |
+| 278 | ayudante-editado | `tests/RackCad.Tests/PushBackPilotUpdateEquivalenceGuardTests.cs:105-134` | `E3Violations` | reescribir con registro |
+| 279 | ayudante-editado | `tests/RackCad.Tests/PushBackPilotUpdateEquivalenceGuardTests.cs:186-218` | `E5Violations` | reescribir con registro |
+| 280 | ayudante-editado | `tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs:74-74` | `Kinds` | reescribir con registro |
+| 281 | ayudante-editado | `tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs:265-377` | `HostViolations` | reescribir con registro |
+| 282 | ayudante-editado | `tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs:874-914` | `WriteViolations` | reescribir con registro |
+| 283 | ayudante-editado | `tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs:156-170` | `AfterMatchViolations` | reescribir con registro |
+| 284 | directiva | `tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs:-` | `using RackCad.Application.Systems.PushBack.Draft;` | reescribir con registro |
+
+**Las erratas que declara la emisión** (la recomprobación 2 de CA-T4d, sobre el diff de la v5.3 a la v5.4: EMITIBLE, B 0 / I 0 / M 3; la sesión las corrige en este commit, sin una v5.5):
+- **M-14:** «Lo que cambia» de la cabecera de la v5.4 nombra §7, que no cambia, y omite D-PBT4-10, §5.6 y la apertura de §6.4; la columna «Dónde» de V54-04 omite §8.5. Todo lo que cambia cabe en alguna fila V54.
+- **M-15:** la nota de D-S16 de `session-pbt4d-design-decisions.md` (cuyo sha256 cita la v5.4, y no se toca) dice `cov_p6_v53.py`, y lo aplica `cov_p6_v54.py`; la definición de PERDIDA de `cov_p6_v54.py:248-249` y `:327` no se ajustó a la ESTABLE nueva (el caso medido da 0); y su «Uso» (`:17`) dice v53. Nada de esto cambia la medida.
+- **M-16:** `RedFiles` de la precondición 6 es el RED de la copia `r6y`, el de la v5.3: en `WorkspacePilotUpdateRunTests.cs`, el RED de la v5.4 da `7ea6170422f48334f18ff2cd3b1cb1b32c79264861dd52a6e6b56570daf7ba13`, que solo difiere en comentarios (lo comprueba el generador; decisión de la sesión). `pbt4d-red-v53.txt`, `pbt4d-green-v53.txt` y `pbt4d-retire-list-270.tsv` se custodian como historia.
+
+### Ejecución de PB-T4d (se completa al cerrar)
+
+| | |
+|---|---|
+| **RED** | (al cerrar) |
+| **GREEN** | (al cerrar) |
+| **Las sustitutas y los equivalentes, en el RED y en el GREEN** | (al cerrar) |
+| **Estado** | EMITIDA |
