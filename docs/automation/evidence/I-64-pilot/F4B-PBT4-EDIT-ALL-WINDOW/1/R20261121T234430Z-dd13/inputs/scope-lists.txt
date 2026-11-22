@@ -1,0 +1,44 @@
+RED (git diff --name-status BaseSha RedSha -- src tests: el estado y la ruta, exactamente estas):
+A src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftLaunch.cs
+A src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftStatePort.cs
+A src/RackCad.Application/Workspace/IWorkspaceFullEditHost.cs
+M src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs
+M src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+M src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+A src/RackCad.Plugin/Views/RackWorkspaceEditorWindow.cs
+M src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+A tests/RackCad.Tests/PushBackDraftLaunchGuardTests.cs
+A tests/RackCad.Tests/PushBackEditAllFullCopyGuardTests.cs
+A tests/RackCad.Tests/PushBackEditAllGuardTests.cs
+A tests/RackCad.Tests/PushBackEditAllNameWritersGuardTests.cs
+A tests/RackCad.Tests/PushBackEditAllPortEquivalenceGuardTests.cs
+A tests/RackCad.Tests/PushBackEditAllTests.cs
+A tests/RackCad.Tests/PushBackOpenerClassicPathGuardTests.cs
+M tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs
+M tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs
+M tests/RackCad.Tests/WorkspaceFullCopyGuardTests.cs
+A tests/RackCad.UI.Tests/PushBackEditAllApplyCloseTests.cs
+A tests/RackCad.UI.Tests/PushBackEditAllWindowTests.cs
+M tests/RackCad.UI.Tests/PushBackWorkspaceApplyCloseTests.cs
+GREEN (git diff --name-only RedSha CurrentSha -- src tests: solo rutas de esta lista):
+src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftLaunch.cs
+src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftStatePort.cs
+src/RackCad.Application/Workspace/IWorkspaceFullEditHost.cs
+src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs
+src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+src/RackCad.Application/Workspace/WorkspacePilotSupport.cs
+src/RackCad.Plugin/Views/RackWorkspaceEditorWindow.cs
+src/RackCad.Plugin/Workspace/WorkspaceController.cs
+src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+src/RackCad.UI/Workspace/WorkspacePanelView.xaml
+src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs
+src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+SKIPPED-BASE (los siete metodos de la base con su Skip, D-1 y CT-PBT3A-12: clave = archivo:metodo):
+S-1 = WorkspacePilotPrepareGuardTests.cs:TheFileOfThePlanComposesExactlyOnceInAMemberOfItsOwnWithAParameterSourceAndTheNameOfTheRereadEnvelope
+S-2 = WorkspacePilotPrepareGuardTests.cs:TheComposeGuardTripsOnAnotherCallAnUnsourcedCompositionANullableSourceOrAnotherName
+S-3 = WorkspacePilotPrepareGuardTests.cs:TheMemberPlansAreBuiltOnlyFromTheMutableMembersOfTheRereadInOrdinalOrderAndNeverErase
+S-4 = WorkspacePilotUpdateGuardTests.cs:TheRunReleasesBothScopesInFinallyBlocksOfItsOwnAndNeverWithAUsing
+S-5 = WorkspacePilotUpdateIntegrationGuardTests.cs:M01TheEscapeOfTheRunIsClassifiedByTheStateThatTheRunAlreadyHadAndNeverAsAPlainFailureAfterAWriteOrASeal
+S-6 = WorkspacePilotUpdateIntegrationGuardTests.cs:M01TheEscapeGuardTripsOnACatchThatDoesNotConsultTheStateAndOnAnEscapeThatAnswersAPlainFailureFirst
+CT-PBT3A-12 = PushBackDraftWriteGuardTests.cs:CT_PBT3A_12_NoSourceFileOutsideTheFolderOfTheModelNamesItsTypes

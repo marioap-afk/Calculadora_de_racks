@@ -8847,3 +8847,36 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - **`attempts`:** 1 de 3.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 285. PB-T4c: la cadena, dos decisiones del Owner y el cierre (F4B-E55)
+
+**Qué se custodia:**
+- **Las unidades de la delegación,** en `F4B-PBT4-EDIT-ALL-WINDOW/1/`, cada una con su manifiesto:
+  - la planificación `af49`, con nc4 `fbe4`;
+  - el Worker `41db`;
+  - la verificación `dd13`;
+  - los controles nc1 `94db`, nc2 `2fc5` y nc3 `3ec1`;
+  - el sustituto de nc2 `4719`, en `F4B-PBT4-EDIT-ALL-WINDOW-nc2-substitute/1/`.
+- **Las revisiones:** la directa, la independiente y su encargo.
+- **Las dos decisiones del Owner sobre el código, con su texto literal:** la errata de CT-PBT4C-11 y «Editar todo» sobre un borrador Clean posiblemente obsoleto.
+- **La disposición de CT-PBT4C-11,** que la verificación recibió como entrada.
+- **El registro declarado de las 4,** completado, con sus cinco sustituciones.
+- **El paquete de cierre.**
+- **La nota de `docs/ideas-futuras.md`.**
+- **El estado.**
+
+**La delegación:**
+- **RED y GREEN:** el RED `280c79be` y el GREEN `7cc1076e`, sin reparación del RED.
+- **CI:** las corridas `44956801926` (el RED) y `44959653142` (el GREEN).
+  - La del GREEN da 4/4: Core 19 619 = 19 158 + 0 + 461 y UI 2 486 = 2 437 + 0 + 49, los totales exactos de su rama.
+- **Revisión independiente:** 0/1/7, más OWNER-01 a OWNER-05. El Owner ratificó I-01 como errata y aceptó OWNER-02 para corregirlo después.
+- **Verificación:** 14/14.
+- **Controles:**
+  - nc1, CONTROL PASS ordinario;
+  - nc2, por su sustituto v2 (F4B-E43), PASS;
+  - nc3, CONTROL PASS ordinario.
+
+**Límites:**
+- solo documentación;
+- sin AutoCAD;
+- los eventos y las transcripciones, solo por SHA-256.

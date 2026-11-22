@@ -1,0 +1,99 @@
+# comprobaciones de solo lectura: base=d502601477c21972ca2109b0d5c25c6fddfe4989 actual=7cc1076eae8159294a1498ab556851977223b64c red=280c79beac61d31b03f86488c03686eef4f694bc
+src cambiados (13): ['src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftLaunch.cs', 'src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftStatePort.cs', 'src/RackCad.Application/Workspace/IWorkspaceFullEditHost.cs', 'src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs', 'src/RackCad.Application/Workspace/WorkspaceEditIntent.cs', 'src/RackCad.Application/Workspace/WorkspaceHostCore.cs', 'src/RackCad.Application/Workspace/WorkspacePilotSupport.cs', 'src/RackCad.Plugin/Views/RackWorkspaceEditorWindow.cs', 'src/RackCad.Plugin/Workspace/WorkspaceController.cs', 'src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs', 'src/RackCad.UI/Workspace/WorkspacePanelView.xaml', 'src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs', 'src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs']
+tests cambiados (13): ['tests/RackCad.Tests/PushBackDraftLaunchGuardTests.cs', 'tests/RackCad.Tests/PushBackEditAllFullCopyGuardTests.cs', 'tests/RackCad.Tests/PushBackEditAllGuardTests.cs', 'tests/RackCad.Tests/PushBackEditAllNameWritersGuardTests.cs', 'tests/RackCad.Tests/PushBackEditAllPortEquivalenceGuardTests.cs', 'tests/RackCad.Tests/PushBackEditAllTests.cs', 'tests/RackCad.Tests/PushBackOpenerClassicPathGuardTests.cs', 'tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs', 'tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs', 'tests/RackCad.Tests/WorkspaceFullCopyGuardTests.cs', 'tests/RackCad.UI.Tests/PushBackEditAllApplyCloseTests.cs', 'tests/RackCad.UI.Tests/PushBackEditAllWindowTests.cs', 'tests/RackCad.UI.Tests/PushBackWorkspaceApplyCloseTests.cs']
+INV-PBT4C-01 src == los 13 del GREEN: PASA | de mas=[] de menos=[]
+INV-PBT4C-01 tests == 5 CT + 4 equivalentes + 4 de los Skip: PASA | de mas=[] de menos=[]
+INV-PBT4C-01 Domain, Pilot/, RackPushBackCommands, RackCommandSupport, RackPilotIntentAdapter y WorkspaceNavigationHost sin cambio: PASA | []
+INV-PBT4C-01 en src/RackCad.Plugin solo WCo y el abridor: PASA | ['src/RackCad.Plugin/Views/RackWorkspaceEditorWindow.cs', 'src/RackCad.Plugin/Workspace/WorkspaceController.cs']
+INV-PBT4C-02 el GREEN toca al menos WPS, PV, PV.cs, WCo y W: PASA
+desde el RED: src=['src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftLaunch.cs', 'src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftStatePort.cs', 'src/RackCad.Application/Workspace/WorkspaceHostCore.cs', 'src/RackCad.Application/Workspace/WorkspacePilotSupport.cs', 'src/RackCad.Plugin/Views/RackWorkspaceEditorWindow.cs', 'src/RackCad.Plugin/Workspace/WorkspaceController.cs', 'src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs', 'src/RackCad.UI/Workspace/WorkspacePanelView.xaml', 'src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs', 'src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs'] tests=[]
+INV-PBT4C-02 RedSha..actual: src == los 13 del GREEN que no estaban en el esqueleto o cambian, y tests vacio: PASA | src=10 tests=0
+Skip tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs: PASA | lineas distintas=1
+Skip tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs: PASA | lineas distintas=1
+Skip tests/RackCad.Tests/WorkspaceFullCopyGuardTests.cs: PASA | lineas distintas=1
+Skip tests/RackCad.UI.Tests/PushBackWorkspaceApplyCloseTests.cs: PASA | lineas distintas=1
+equivalente tests/RackCad.Tests/PushBackEditAllPortEquivalenceGuardTests.cs: PASA | sha256=1a2607d3a35ae8f9737fffb0eb32a4acd8100318fe83e5b0098d30428f57d250
+equivalente tests/RackCad.Tests/PushBackEditAllNameWritersGuardTests.cs: PASA | sha256=3744992127be8b7e1d8d822a769b8eb2a6886789c73285c8436e5baec6bf7b6b
+equivalente tests/RackCad.Tests/PushBackEditAllFullCopyGuardTests.cs: PASA | sha256=4619b6d310340f9c97a7d9f31bda1db852d2fcda905b91bb857510f7e6b7e6ce
+equivalente tests/RackCad.UI.Tests/PushBackEditAllApplyCloseTests.cs: PASA | sha256=7c2458260ef301d7f05bfaff8e1e8c4a4a618f25fd7022705d55dee32dbe78d2
+GREEN literal src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftLaunch.cs: PASA | sha256=e93aa1d793588c5eb4d842db97a6ac55716bedaab607059046fdbecc79feb28b
+GREEN literal src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftStatePort.cs: PASA | sha256=b08cf5c7437810427645efb5e2f4592c6c5032cea5abe27d01291f42a0e53b5a
+GREEN literal src/RackCad.Application/Workspace/IWorkspaceFullEditHost.cs: PASA | sha256=9d8aa1b5770c5705cc4daf38541bd01cc00df70652741547b9a83ef582d3dadf
+GREEN literal src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs: PASA | sha256=b3a2622b490e2e787088680743662365bf9e4b0016cad7578703281b6b1c0863
+GREEN literal src/RackCad.Application/Workspace/WorkspaceEditIntent.cs: PASA | sha256=b937f893360b39c5751b5b5da9fe3f976a76b256799fbf685a2dc4193f141e96
+GREEN literal src/RackCad.Application/Workspace/WorkspaceHostCore.cs: PASA | sha256=3fcabacbc9a568cc2b777d4e8bd356b76f55273f674d0ab604177f36ffeb5fee
+GREEN literal src/RackCad.Application/Workspace/WorkspacePilotSupport.cs: PASA | sha256=a86d1f72c7884d5870d9107df65d4e1b5d577f801cfc080db5cb7202bcffcd4d
+GREEN literal src/RackCad.Plugin/Views/RackWorkspaceEditorWindow.cs: PASA | sha256=12e7786a1e39cf9f7c3b5be4137baf93df6b262fac2683eb0d04775a5e1a9401
+GREEN literal src/RackCad.Plugin/Workspace/WorkspaceController.cs: PASA | sha256=9448d170263905e37c24035699cf69e8419c381add53c45c389cd415d6669539
+GREEN literal src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs: PASA | sha256=597fa16486e836a5dad62251367029d4c8939ae3fb11834ee26b3598a70a31b0
+GREEN literal src/RackCad.UI/Workspace/WorkspacePanelView.xaml: PASA | sha256=3fffd2cdd707bbf37ac903ff1d65d8040ddde091a319dc6c439255440f63a70b
+GREEN literal src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs: PASA | sha256=b21633ea1b82507da4d69b0d119d958cde30480d0f023798d1bad24d5b0f4342
+GREEN literal src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs: PASA | sha256=417c36cd68267ecec960e89c4908a237d8c9d89093ab93aecebd3f80a862f845
+censo src/RackCad.Application/Workspace/WorkspaceHostCore.cs: base=127 actual=135
+  nuevas (8): ['WorkspaceHostCore.EditAllBusyDraftReason', 'WorkspaceHostCore.EditAllNoEditorReason', 'WorkspaceHostCore.EditAllOfPilot', 'WorkspaceHostCore.EditAllPendingTextReason', 'WorkspaceHostCore.EditAllStateReason', 'WorkspaceHostCore.IWorkspacePilotEditPort.TryEditAll', 'WorkspaceHostCore.SetFullEditHost', 'WorkspaceHostCore._fullEditHost']
+  quitadas (0): []
+censo C13 src/RackCad.Application/Workspace/WorkspaceHostCore.cs: la diferencia es la lista cerrada: PASA | de mas=[] de menos=[]
+censo src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs: base=107 actual=108
+  nuevas (1): ['IWorkspacePilotEditPort.TryEditAll']
+  quitadas (0): []
+censo C13 src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs: la diferencia es la lista cerrada: PASA | de mas=[] de menos=[]
+censo src/RackCad.Application/Workspace/WorkspacePilotSupport.cs: base=42 actual=43
+  nuevas (1): ['WorkspacePilotEditGate.TryEditAll']
+  quitadas (0): []
+censo C13 src/RackCad.Application/Workspace/WorkspacePilotSupport.cs: la diferencia es la lista cerrada: PASA | de mas=[] de menos=[]
+censo src/RackCad.Application/Workspace/WorkspaceEditIntent.cs: base=199 actual=220
+  nuevas (21): ['EditAllOutcome.Applied', 'EditAllOutcome.Begin', 'EditAllOutcome.Closed', 'EditAllOutcome.EditAllOutcome', 'EditAllOutcome.Failed', 'EditAllOutcome.NotAvailable', 'EditAllOutcome.NotBegun', 'EditAllOutcome.Reason', 'EditAllOutcome.Refused', 'EditAllOutcome.Rejected', 'EditAllOutcome.Status', 'EditAllOutcome.Waiting', 'EditAllStatus.Closed', 'EditAllStatus.Failed', 'EditAllStatus.NotAvailable', 'EditAllStatus.NotBegun', 'EditAllStatus.Refused', 'EditAllStatus.Rejected', 'EditAllStatus.Waiting', 'tipo:EditAllOutcome', 'tipo:EditAllStatus']
+  quitadas (0): []
+censo C13 src/RackCad.Application/Workspace/WorkspaceEditIntent.cs: la diferencia es la lista cerrada: PASA | de mas=[] de menos=[]
+censo src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs: base=182 actual=189
+  nuevas (7): ['WorkspacePilotFieldViewModel.EditAll', 'WorkspacePilotFieldViewModel.EditAllAppliedText', 'WorkspacePilotFieldViewModel.EditAllNotOpenedPrefix', 'WorkspacePilotFieldViewModel.EditAllNothingAppliedText', 'WorkspacePilotFieldViewModel.EditAllNoticeOf', 'WorkspacePilotFieldViewModel.SentenceOf', 'WorkspacePilotFieldViewModel.ShowEditAllButton']
+  quitadas (0): []
+censo C13 src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs: la diferencia es la lista cerrada: PASA | de mas=[] de menos=[]
+censo src/RackCad.UI/Workspace/WorkspacePanelView.xaml: base=59 actual=60
+  nuevas (1): ['x:Name.BrowserFieldEditAllButton']
+  quitadas (0): []
+censo C13 src/RackCad.UI/Workspace/WorkspacePanelView.xaml: la diferencia es la lista cerrada: PASA | de mas=[] de menos=[]
+censo src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs: base=41 actual=42
+  nuevas (1): ['WorkspacePanelView.OnBrowserFieldEditAllClick']
+  quitadas (0): []
+censo C13 src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs: la diferencia es la lista cerrada: PASA | de mas=[] de menos=[]
+censo src/RackCad.Plugin/Workspace/WorkspaceController.cs: base=74 actual=80
+  nuevas (6): ['FullEditorModal.FullEditorModal', 'FullEditorModal.ShowModal', 'FullEditorModal._controller', 'FullEditorModal._open', 'PilotEditAdapter.TryEditAll', 'tipo:FullEditorModal']
+  quitadas (0): []
+censo C13 src/RackCad.Plugin/Workspace/WorkspaceController.cs: la diferencia es la lista cerrada: PASA | de mas=[] de menos=[]
+censo src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs: base=307 actual=308
+  nuevas (1): ['RackPushBackSystemWindow.WorkspaceStagedAndUnappliedQuestion']
+  quitadas (0): []
+censo C13 src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs: la diferencia es la lista cerrada: PASA | de mas=[] de menos=[]
+censo src/RackCad.Application/Workspace/IWorkspaceFullEditHost.cs: base=0 actual=2
+  nuevas (2): ['IWorkspaceFullEditHost.ShowModal', 'tipo:IWorkspaceFullEditHost']
+  quitadas (0): []
+censo C13 src/RackCad.Application/Workspace/IWorkspaceFullEditHost.cs: la diferencia es la lista cerrada: PASA | de mas=[] de menos=[]
+censo src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftLaunch.cs: base=0 actual=3
+  nuevas (3): ['PushBackFullDraftLaunch.For', 'PushBackFullDraftLaunch.ProjectOf', 'tipo:PushBackFullDraftLaunch']
+  quitadas (0): []
+censo C13 src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftLaunch.cs: la diferencia es la lista cerrada: PASA | de mas=[] de menos=[]
+censo src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftStatePort.cs: base=0 actual=5
+  nuevas (5): ['PushBackFullDraftStatePort.ApplyToDraft', 'PushBackFullDraftStatePort.PushBackFullDraftStatePort', 'PushBackFullDraftStatePort._applied', 'PushBackFullDraftStatePort._draft', 'tipo:PushBackFullDraftStatePort']
+  quitadas (0): []
+censo C13 src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftStatePort.cs: la diferencia es la lista cerrada: PASA | de mas=[] de menos=[]
+censo src/RackCad.Plugin/Views/RackWorkspaceEditorWindow.cs: base=0 actual=2
+  nuevas (2): ['RackWorkspaceEditorWindow.Show', 'tipo:RackWorkspaceEditorWindow']
+  quitadas (0): []
+censo C13 src/RackCad.Plugin/Views/RackWorkspaceEditorWindow.cs: la diferencia es la lista cerrada: PASA | de mas=[] de menos=[]
+warning CS en tests/b0/build-core.log: 0
+warning CS en tests/b0/build-plugin.log: 0
+warning CS en tests/b0/build-ui.log: 0
+warning CS en tests/g1/build-core.log: 0
+warning CS en tests/g1/build-plugin.log: 0
+warning CS en tests/g1/build-ui.log: 0
+warning CS en tests/r1/build-core.log: 0
+warning CS en tests/r1/build-plugin.log: 0
+warning CS en tests/r1/build-ui.log: 0
+warning CS en tests/s1/build-core.log: 0
+warning CS en tests/s1/build-plugin.log: 0
+warning CS en tests/s1/build-ui.log: 0
+0 lineas "warning CS" en todos los registros de build: PASA | total=0
+D2: lineas anadidas en src=391; las que nombran las dos referencias compartidas o un PushBackSystem (sin comentarios): 0
+D2 ninguna linea anadida de src/ nombra las dos referencias compartidas ni un PushBackSystem: PASA
+RESULTADO: PASA

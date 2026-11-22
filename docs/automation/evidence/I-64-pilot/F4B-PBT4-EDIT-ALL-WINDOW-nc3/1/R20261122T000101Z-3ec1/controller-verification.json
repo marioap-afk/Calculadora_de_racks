@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT4-EDIT-ALL-WINDOW",
+  "RunId": "R20261122T000101Z-3ec1",
+  "DelegationRunId": "R20261121T205457Z-af49",
+  "WorkRunId": "R20261121T205731Z-41db",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true. Cession.StartUtc=2026-11-21T20:57:41Z; OutputWrittenUtc=2026-11-21T17:10:51.520227-06:00, equivalente a 2026-11-21T23:10:51.520227Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json existe y su SHA-256 coincide con Outcome.OutputSha256: 2113E92B7F593B5D4EEE3A31906D0BA937562A8D177BF4DA9B405BFCC3561D0F. TaskId, Attempt, DelegationRunId y RunId coinciden con la tarea y el relevo; la fecha es posterior al inicio."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leidos desde Git AUTOMATION_PLAN.md en MainSha (16.3, 16.8-16.10), agent-execution/README.md en MainSha (section 8) y AGENTS.md en MainSha. git merge-base --is-ancestor AuthorityRevision BaseSha tuvo exit 0; BaseSha^ = a8e9cbe686785eef5f741a798f1e54f4419f35a1. git diff --name-only AuthorityRevision BaseSha da cuatro rutas: tres UNIT_DOC y make_pbt4c_contract.py, que no figura en Authorities; ninguna es EXTERNAL ni UNIT_CHANGE."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparacion de delegacion.json y gate-contract.json: TaskId, Unit, Gate, AuthorityRevision y MainSha coinciden; Objective, AllowedWriteScope, ForbiddenWriteScope, Invariants, RequiredTests, ExpectedEvidence, StopConditions y Authorities son iguales. byte-fidelity-check.json: PASS, 8 campos iguales byte a byte; relay de planificacion registra A1-A8 8/8 y nc4. config.toml conserva el hash E1F69847610FD810D5286B82C86E00FE85D9F497F89E9FD9645E0EEA113322FE de Snapshot K."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git branch --show-current = architecture/workspace-persistente-rackcad; worktree = el esperado. CurrentSha=7cc1076eae8159294a1498ab556851977223b64c; git rev-parse HEAD y refs/remotes/origin/architecture/workspace-persistente-rackcad dan ese mismo SHA. merge-base --is-ancestor BaseSha RedSha y RedSha CurrentSha tuvo exit 0."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "Segun RemoteFacts del relevo: Exit LsRemoteSha y HeadSha = d502601477c21972ca2109b0d5c25c6fddfe4989; Entry LsRemoteSha y HeadSha = 7cc1076eae8159294a1498ab556851977223b64c. OriginMainSha = 812baf879612320653094a8aaf46aca0bac81383, igual a MainSha; no se hizo consulta Git de red."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "Script sobre AllowedWriteScope de delegation.json: 26 entradas. git diff --name-only BaseSha CurrentSha da 26 rutas y las 26 pertenecen a la lista exacta; BaseSha RedSha -- src tests da las 21 rutas de la seccion RED; ChainBaseSha CurrentSha -- src tests da 26, todas admitidas. ForbiddenWriteScope no intersecta; los paths excluidos de INV-PBT4C-01 y Pilot/ no cambian. RedSha CurrentSha cambia 10 rutas de src/tests dentro de las 13 permitidas; ninguna de tests/. Hashes de scope-lists.txt y revision-diff.txt coinciden."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain no produjo salida. git check-ignore del paquete de entradas devolvio la ruta bajo artifacts/orchestration/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts: run 44959653142 es push de refs/heads/architecture/workspace-persistente-rackcad sobre CurrentSha; los cuatro jobs requeridos terminaron success. Run RED 44956801926 es push de la misma ref y RedSha; Tests y UI Tests terminaron failure, Build UI success y Build Plugin skipped, conforme al RED requerido."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "required-tests.txt SHA-256 D50C2EE8BDCFEECCFE02D8D39FD95A8AE5D755DF68B0FAA4057A0CEF41FCE332; 85 filas coinciden con RequiredTests del contrato. Conteo por FQN en los cuatro TRX: 85 filtros, ninguno bajo el minimo ni con resultado inesperado. RED Core 19619=19149 Passed+9 Failed+461 NotExecuted; UI 2486=2432+5+49. GREEN Core 19619=19158+0+461; UI 2486=2437+0+49. Los 14 fallos RED quedan en los cuatro filtros ExpectRed y sus trazas empiezan bajo tests/; no hay fallos adicionales. Siete filas D-1 aparecen NotExecuted en Core RED y GREEN. skip-check.json valida los cuatro archivos, sin errores ni metodos fuera de lista; los cuatro equivalentes y los 13 blobs GREEN coinciden con sus hashes LF. Los ocho blobs del esqueleto coinciden con skeleton-red.json. La lista de sustitucion en BaseSha tiene el SHA esperado. warnings-cs.json contiene 107 registros y cero warning CS. ChainRedFiles = RT (13 rutas): tests/RackCad.Tests/PushBackDraftLaunchGuardTests.cs; PushBackEditAllFullCopyGuardTests.cs; PushBackEditAllGuardTests.cs; PushBackEditAllNameWritersGuardTests.cs; PushBackEditAllPortEquivalenceGuardTests.cs; PushBackEditAllTests.cs; PushBackOpenerClassicPathGuardTests.cs; PushBackSharedReferenceGuardTests.cs; Workspace/WorkspacePilotEditGuardTests.cs; WorkspaceFullCopyGuardTests.cs; tests/RackCad.UI.Tests/PushBackEditAllApplyCloseTests.cs; PushBackEditAllWindowTests.cs; PushBackWorkspaceApplyCloseTests.cs. 65 invocaciones locales de pruebas UI tienen filtro de clase del contrato, sin invocacion sin filtro ni filtro por metodo."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha muestra los dos commits, RED y GREEN, cada uno con Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, coincidente con Worker.Trailer y el modelo efectivo."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegacion solicita claude-sonnet-5-5 y effort high. El relevo registra ModelRequested=sonnet como alias de lanzamiento del transporte subagent, ModelEffective=claude-sonnet-5-5 y EffortEffective=high; coinciden con lo solicitado."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "Script sobre el texto completo de los siete campos, sin distinguir mayusculas y con limites de palabra/frase: WorkCompleted 1037 caracteres, Evidence 11436, UnexpectedFindings 699, KnownLimitations 1015, Deviations 1681, OpenQuestions 0, RecommendedNextAction 108. Una coincidencia en WorkCompleted, offset 1027, contexto final: \"... no se uso la reparacion del RED. [frase terminal prohibida].\" Los otros seis campos no tienen coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "Notes del relevo registran cero denegaciones de permisos, cuatro resultados de herramienta con error y ninguno pendiente; la relectura registra cero participantes o procesos no atribuibles persistentes."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "Una frase terminal prohibida aparece al final de WorkCompleted; es la unica comprobacion fallida.",
+    "La identidad Git, el alcance, las corridas CI y los conteos TRX coinciden con los registros y artefactos examinados."
+  ],
+  "RecommendedNextAction": "Corregir WorkCompleted para retirar la afirmacion terminal y repetir la verificacion con el handoff actualizado."
+}

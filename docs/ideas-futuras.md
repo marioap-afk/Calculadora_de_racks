@@ -2037,3 +2037,65 @@ Son los menores de la revisión independiente del código de PB-T3c, intento 1. 
   - el cierre lo custodia como unidad propia.
 - **Un esqueleto que el paquete fija con un generador, y no con un parche,** se compara con lo que da ese generador custodiado y con el registro de la precondición 6, archivo a archivo.
 - **Una etiqueta de un registro de la sesión puede confundir a un Controller:** «PorAsercion» solo contaba los `Assert`, y nc3 la leyó contra la regla del contrato. Los registros nombran lo que cuentan, con la regla del contrato.
+## I-64 F4B PB-T4c — la recarga de «Editar todo», menores de la revisión, la prueba lenta y riesgos para el Smoke-PB (2026-11-21, registrados sin corregir)
+
+**La recarga de «Editar todo» (PBT4C-IR-OWNER-02; decisión del Owner «Aceptarlo y corregir luego»):**
+- **El comportamiento:** con un borrador Clean marcado como posiblemente obsoleto (el dibujo cambió fuera), «Editar» recarga antes de editar (`TryReload`, la carga perezosa), y «Editar todo» no.
+  - `EditAllOfPilot` no mira `IsPossiblyStale` ni `NeedsLazyReload`, y el botón se ofrece igual.
+  - El editor se abre sobre la base vieja. Al editar, el borrador pasa a sucio y obsoleto, y al aplicar sale el camino de «Conservar mi borrador», que avisa de lo que cambió fuera antes de escribir.
+  - No se escribe nada sin avisar, pero el usuario no recibe la recarga silenciosa que da «Editar».
+- **La corrección,** para PB-T4d o una tarea posterior, que vuelve al Owner con su lista: que «Editar todo» recargue antes, como «Editar».
+
+**Los menores de la revisión independiente del código que son mejoras** (ninguno pide cambiar `src/` en PB-T4c):
+- **PBT4C-IR-M01:** §5.3 pide para CT-PBT4C-10 «el puerto real (`WorkspacePilotEditGate` sobre WHC)», y la CT llama a `TryEditAll` sobre el anfitrión, sin la compuerta (`tests/RackCad.Tests/PushBackEditAllTests.cs:106` y :425).
+  - Las líneas no cambian, y el reenvío de la compuerta lo fija CT-PBT4C-12.
+  - **La mejora:** que CT-10 vaya por la compuerta, como pide el paquete.
+- **PBT4C-IR-M02:** dos debilidades de discriminación que vienen de la letra del paquete.
+  - **CT-PBT4C-07:** la autoprueba inyecta el nombre en el texto del sujeto, así que «falla» aunque el sujeto esté vacío. No vería una extracción que dejara de casar, y la guarda pasaría en vacío. Hoy las cinco expresiones casan en el GREEN.
+  - **CT-PBT4C-04,** `estado-igual`: el estado del lanzamiento es, por referencia, el estado editable actual del borrador, así que la comparación da `True` por identidad.
+  - **La mejora,** en una versión futura del paquete: una línea «sujeto … longitud>0» en el GREEN, y la comparación por valor.
+- **PBT4C-IR-M03:** `VentanaBorrador` (`tests/RackCad.UI.Tests/PushBackEditAllWindowTests.cs:343-361`) construye la ventana y carga el borrador fuera del `try`.
+  - §5.0 pide la carga dentro del `try` y «Cerrar» en `finally`.
+  - Si la carga lanzara, la excepción escaparía de la CT y la ventana no se cerraría. La rama clásica sí sigue la regla.
+  - **La mejora:** mover la carga dentro del `try`.
+- **PBT4C-IR-M04:** si `ShowModal` lanza después de aplicar, `EditAllOfPilot` devuelve `Failed` con `Applied` a 0.
+  - Pero el borrador ya tiene la edición y `NotePilotEdit` ya corrió.
+  - El campo dice «No se abrió el editor: <mensaje>.», que es falso: el editor se abrió y hay cambios.
+  - Es la letra del GREEN del paquete (`WorkspaceHostCore.cs:1210-1222`; FVM:1344).
+  - **La mejora,** en una versión futura: distinguir el fallo tras aplicar. El Smoke-PB mira el aviso.
+
+**Para la lista de PB-T4d** (vuelve al Owner antes de emitirse):
+- **La recarga de «Editar todo»** (arriba).
+- **PBT4C-IR-OWNER-05, la prueba lenta frente al detector de cuelgue de la CI:**
+  - la prueba es `FullPanelCopyWorkspacePilotPrepareGreenTests.InvalidD_ABuilderThatCannotBuild…` (`tests/RackCad.Tests/Workspace/WorkspacePilotPrepareFull.cs:1912-1945`, del RED de PB-T4b), que hace un `Prepare` completo por cada número de toques del catálogo;
+  - tarda 276 s en la CI de PB-T4b, y 321 s y 188 s en las del RED y el GREEN de PB-T4c;
+  - el detector de cuelgue de la CI está en 5 min (`ci.yml`), y el comentario del job dice que su máximo observado es de unos 2,5 min;
+  - en el RED de PB-T4c pasó del umbral sin abortar, probablemente porque el detector mide la inactividad y otras pruebas terminaban en paralelo;
+  - es frágil: si cambian el paralelismo o la máquina, la CI de PB-T4d podría abortar. PB-T4c no lo causa.
+- **Los vacíos de PBT4B-IR-M04** de PB-T4b, que ya estaban en la lista (F4B-E53).
+
+**Para el Smoke-PB de PB-T5 (D-PB-09):**
+- **PBT4C-IR-OWNER-02:** «Editar todo» con un borrador Clean y un cambio externo del dibujo.
+- **PBT4C-IR-OWNER-03:** el BOM y «Guardar en biblioteca» desde la ventana de «Editar todo».
+  - En WORKSPACE siguen visibles (D-PB-07): solo se ocultan las inserciones.
+  - Escriben en disco: «Guardar en biblioteca» un `.rackcad.json`, y el BOM puede exportar XLSX o CSV.
+  - «Guardar en biblioteca» ejecuta además `EnsureId` y `SetName` sobre la identidad de la ventana. Hay que mirar si ese `SetName` llega al borrador con «Aplicar al borrador».
+- **PBT4C-IR-OWNER-04:**
+  - la pregunta combinada de «Cerrar», con el aviso real de AutoCAD;
+  - el resumen y «Modificado» del campo tras cerrar;
+  - el aviso «No se abrió el editor» cuando sí hubo cambios (M-04).
+- **Lo que solo se ve en AutoCAD:** el modal real, con la paleta deshabilitada; el foco y el teclado; «Actualizar» tras editar; los eventos del puente durante el modal; el redibujo.
+- **Lo que ya estaba:**
+  - PBT3C-IR-OWNER-1 a OWNER-3, de PB-T3c;
+  - PBT4A-IR-OWNER-01 y OWNER-03, de PB-T4a;
+  - PBT4B-IR-OWNER-01, el nombre tras «Conservar» y «Actualizar», de PB-T4b;
+  - PBT4B-IR-OWNER-04, el segundo «Sí» sin cambios en el dibujo real, de PB-T4b;
+  - el coste real de la lectura, de PB-T4b.
+
+**Dos lecciones de la cadena:**
+- **Un alcance sin copias:**
+  - los equivalentes se comparan con su `EquivalentSha`;
+  - los `Skip`, con el comprobador que nombra la ExpectedEvidence;
+  - el GREEN literal, con lo que da el generador custodiado (igual al `GreenFiles` de la precondición 6).
+  La cadena lee la forma del contrato y no escribe nada del régimen a mano.
+- **La copia para los revisores** (M-06) no llevó `relay-subst-check.json` ni la carpeta de la prueba de limpieza. **La mejora:** que la cadena siguiente las copie con la entrega.

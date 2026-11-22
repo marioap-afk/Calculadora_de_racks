@@ -2004,3 +2004,90 @@ El resultado que lleva el contrato es `EMITIBLE TRAS CORRECCIONES; B 0 / I 1 / M
 - **La planificación:** con las colecciones opacas puestas por la sesión (F4B-E21).
 - **La verificación:** con las comprobaciones deterministas de F4B-E15.
 - **La etiqueta «PorAsercion»** de las Notes del relevo del trabajo cuenta por la regla del contrato o se renombra en esta cadena (F4B-E53, la decisión sobre nc3).
+## F4B-E55. Cierre de F4B-PBT4-EDIT-ALL-WINDOW, sin reparación del RED, con dos decisiones del Owner sobre el código
+
+**Paquete de cierre:** `F4B-PBT4-EDIT-ALL-WINDOW/task-close-package.md`.
+
+**La cadena:**
+- **La emisión** (F4B-E54): X `a8e9cbe6` y BASE `d5026014`, con el paquete de PB-T4 v5.1 y las tandas del Owner sobre PB-T4 (F4B-E49, con la octava y la novena sobre la lista de PB-T4c).
+  - **La lista exacta de 4** (`F4B-DRAFTS/pbt4/pbt4c-substitution-list-4.tsv`, `9bd4c17a…`), la que vio el Owner: PEG:155-163, CT-PBT1B-15 y CT-PBT4B-20 (C-5, Core) y CT-PBT2B-06 (C-3, UI). Cada una con su `Skip` de motivo literal y su equivalente.
+  - **El esqueleto del RED no es un parche:** lo da el generador custodiado `F4B-DRAFTS/pbt4/green_pbt4c_v51.py`, con sus dos piezas, y la precondición 6 registró sus ocho archivos en `F4B-DRAFTS/pbt4/cc4c/r5j-rg/apply-red.txt`.
+  - **La precondición 6** fija el `EquivalentSha` de los 4 equivalentes y el `GreenFiles` del GREEN literal (`pbt4c-green-v51.txt`).
+  - **Sin copias:** la cadena de primera delegación lee esta forma del alcance (los equivalentes, el comprobador de los `Skip` de la ExpectedEvidence y el GREEN literal). La de PB-T4b, con copias, sigue intacta en su rama.
+- **La planificación** `R20261121T205457Z-af49` se aceptó al primer lanzamiento: inyección PASS 8/8, A1-A8 8/8 y 14 criterios. nc4 es `R20261121T205711Z-fbe4`: solo A3 en fail, y el oráculo relativo se cumple.
+- **El Worker** `R20261121T205731Z-41db` (claude-sonnet-5-5/high) dio IMPLEMENTATION_COMPLETE, sin reparación del RED.
+  - **El RED `280c79be`** (21 rutas) lleva:
+    - el esqueleto, ocho archivos de `src/` iguales byte a byte al registro de la precondición 6, que escribe la herramienta del paquete `apply_red_pbt4c_v51.py`;
+    - los 4 `Skip`, en los 4 archivos de la lista, solo en la línea del atributo;
+    - los 4 equivalentes, byte a byte su `EquivalentSha`;
+    - las cinco clases de las CT, CT-PBT4C-01 a 15.
+  - **El GREEN `7cc1076e`** toca 10 archivos de `src/`. Los 13 del GREEN literal son byte a byte su texto, y no toca ninguno de `tests/` ni de `Pilot/`.
+  - **Dos desviaciones de procedimiento local, declaradas:**
+    - la suite local de Core en tres particiones disjuntas, con suma exacta;
+    - más tiempo del detector de cuelgue local para una clase lenta, tras dos cortes.
+    La revisión independiente las da por procedimiento local, que el contrato no regula. La prueba lenta es la de PB-T4b, `FullPanelCopyWorkspacePilotPrepareGreenTests.InvalidD_ABuilderThatCannotBuild…`: 276 s en la CI de PB-T4b, 321 s y 188 s en las de PB-T4c.
+
+**CI** (los totales exactos de cada rama, F4B-E46):
+- **RED `44956801926`:** tests y ui-tests en failure; build-ui en success; build-plugin omitido. Core 19 619 = 19 149 + 9 Failed + 461 Skipped; UI 2 486 = 2 432 + 5 + 49. Los 5 de UI son las 4 CT de UI y el equivalente de CT-PBT2B-06.
+- **GREEN `44959653142`:** 4/4. Core 19 619 = 19 158 + 0 + 461; UI 2 486 = 2 437 + 0 + 49.
+
+**El relevo del trabajo:** válido. Comprueba la forma del RED, el esqueleto, los `Skip`, los `EquivalentSha`, el GREEN literal y cero `warning CS`.
+
+**Revisiones:**
+- **La directa:** conforme, con una desviación que el Owner ratificó.
+- **La independiente:** ACEPTABLE CON MENORES 0/1/7, condicionada a I-01, con cinco hallazgos para el Owner:
+  - OWNER-01: la disposición de I-01;
+  - OWNER-02: «Editar todo» sobre un borrador Clean marcado como posiblemente obsoleto;
+  - OWNER-03: el BOM y «Guardar en biblioteca» desde la ventana de «Editar todo»;
+  - OWNER-04: lo que §5.5 no lista (la pregunta combinada de «Cerrar», «Modificado» tras cerrar y el aviso de M-04);
+  - OWNER-05: la prueba lenta, frente al detector de cuelgue de la CI.
+
+**Las dos decisiones del Owner sobre el código** (`F4B-DRAFTS/coordinator/owner-pbt4c-code-decisions.md`, literales):
+1. **CT-PBT4C-11, la desviación I-01: «Ratificar como errata (Recomendado)».**
+   - La segunda receta de la prueba (`tests/RackCad.Tests/PushBackEditAllTests.cs:589-600`) sustituye `Editor.SideA.LastModuleReconciliation` por un objeto vacío, y no la línea base resuelta por la de otro fixture (§5.3, fila 11). Es la misma forma que CT-PBT4B-10.
+   - La línea esperada `sustituir-referencia estado=Applied isdirty=False` se cumple.
+   - Solo para este caso y sin cambio de código.
+2. **«Editar todo» sobre un borrador Clean posiblemente obsoleto (OWNER-02): «Aceptarlo y corregir luego (Recomendado)».**
+   - Se queda así en PB-T4c. No se escribe nada sin avisar: al aplicar sale el camino de «Conservar mi borrador».
+   - El Smoke-PB lo comprueba con un cambio externo del dibujo y un borrador Clean.
+   - La corrección, que «Editar todo» recargue antes, como «Editar», queda para PB-T4d o una tarea posterior, que vuelve al Owner con su lista.
+
+**La verificación** `R20261121T234430Z-dd13`: **EXECUTION_VERIFIED / NONE, 14/14,** con `inputs/coordinator-disposition.md` (`F4B-DRAFTS/pbt4/coordinator-disposition-ct11-pbt4c.md`).
+
+**Controles:**
+- **nc1:** `R20261121T235038Z-94db`, **CONTROL PASS** ordinario. Para en Identity con S-04, con la cascada del SHA falso en Remote, Scope, Ci y Tests y el oráculo relativo cumplido.
+- **nc2:** `R20261121T235550Z-2fc5`, CONTROL NOT PASSED. Para en Contract y Scope con S-04 y PBT4C-C01: es la firma de PD-F4-01 en el modo F4B-E21. El sustituto v2 revisado (`apply_nc2_f4b_pbt4c.sh`, `--task PBT4`, F4B-E43), en la corrida `R20261122T000958Z-4719` de `F4B-PBT4-EDIT-ALL-WINDOW-nc2-substitute/1/`, da **PASS** sin condiciones fallidas: nc2 queda SATISFIED_UNDER_PBT4_EXACT_WHITELIST_SUBSTITUTE_F4B.
+- **nc3:** `R20261122T000101Z-3ec1`, **CONTROL PASS** ordinario: FreeText con EXECUTION_REWORK_REQUIRED / REWORK. Con el criterio de «por aserción» corregido en la cadena (M-07 de PB-T4b), Tests ya no difiere.
+
+Los tres controles quedan satisfechos sin ninguna decisión del Owner.
+
+**El registro declarado de las 4** (`F4B-DRAFTS/superseding-characterization.md`, «## PB-T4c»): este cierre completa su tabla de ejecución y la pasa a EJECUTADA. Cambian cinco líneas, con el texto y la fuente en `F4B-DRAFTS/pbt4/superseding-pbt4c-close-fill.md`.
+
+**Resultado:** **F4B-PBT4-EDIT-ALL-WINDOW = CLOSED / PASS WITH LIMITATIONS** sobre `7cc1076e`, con attempts 1 de 3.
+- **«Editar todo» en el panel del Workspace de Push Back,** sobre el borrador completo de PB-T4b: el botón y su gesto, que confirma el texto pendiente con `CommitField` antes de abrir.
+- **`TryEditAll`,** en el puerto con su cuerpo por defecto, en el anfitrión y en sus dos reenvíos. Mantiene la marca de lectura mientras la ventana está abierta (K = 1).
+- **La ventana de Push Back en WORKSPACE, modal,** en dos piezas:
+  - el modal del panel, en una clase anidada del controlador del Plugin;
+  - la ventana sin dueño, en `Plugin/Views`.
+- **«Cerrar» en WORKSPACE** con una sola pregunta si hay a la vez un módulo escenificado y cambios sin aplicar (A-T2b-OWNER-01). El resumen y «Modificado» se muestran al cerrar.
+- **Las 4 pruebas de la lista** quedan saltadas con su motivo literal, cada una sustituida por su equivalente.
+- **El código del piloto queda sin uso;** lo retira PB-T4d.
+
+**Las limitaciones:**
+- «Editar todo» sobre un borrador Clean posiblemente obsoleto no recarga (OWNER-02). Lo acepta el Owner; el Smoke-PB lo comprueba, y la corrección va a PB-T4d o después.
+- El BOM y «Guardar en biblioteca» desde la ventana de «Editar todo» escriben en disco (OWNER-03). Lo comprueba el Smoke-PB.
+- La pregunta combinada de «Cerrar», «Modificado» tras cerrar y el aviso «No se abrió el editor» cuando sí hubo cambios (OWNER-04; M-04) los comprueba el Smoke-PB.
+- La prueba lenta, frente al detector de cuelgue de la CI (OWNER-05), va a PB-T4d.
+- Los menores M-01 a M-04 van a `docs/ideas-futuras.md`. M-05 a M-07 quedan de constancia.
+- Sin AutoCAD, el Smoke-PB comprueba en el dibujo real:
+  - el modal con la paleta deshabilitada;
+  - el foco y el teclado;
+  - «Actualizar» tras editar;
+  - los eventos del puente durante el modal.
+
+**Siguiente:** PB-T4d, la retirada del código del piloto. Vuelve al Owner con su lista antes de emitirse. La lista lleva:
+- los vacíos de M-04 de PB-T4b (F4B-E53);
+- la recarga de «Editar todo» (OWNER-02);
+- la prueba lenta (OWNER-05).
+
+La emisión condicional de F4B-E49 (pregunta 4) termina con PB-T4c.

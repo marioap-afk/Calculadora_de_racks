@@ -1,0 +1,309 @@
+{
+  "ExpectedCounts": {
+    "green": [
+      19619,
+      19158,
+      0,
+      461
+    ],
+    "ui_green": [
+      2486,
+      2437,
+      0,
+      49
+    ],
+    "red": [
+      19619,
+      19149,
+      9,
+      461
+    ],
+    "ui_red": [
+      2486,
+      2432,
+      5,
+      49
+    ]
+  },
+  "SkeletonSource": {
+    "generator": [
+      "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/green_pbt4c_v51.py",
+      "a8a3afa2a0a71674ccd7eafc1f4e52eea183fef7cbf8bc5fd319be9dfb639215"
+    ],
+    "modules": [
+      [
+        "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4c-skeleton-v51.txt",
+        "f8840c67fd41c3bbdabf125d9b80941e3f3aedf5e610681c8ce15f111e7b392e"
+      ],
+      [
+        "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4c-green-v51.txt",
+        "081ef77e66a390cf3637f15851b5fe05a5cdf07f6e0065928fc5c841b250dc16"
+      ]
+    ],
+    "record": [
+      "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/cc4c/r5j-rg/apply-red.txt",
+      "8c4d1426c0717c9499fbe4915bd62d0666641ad16204c4ade66af243f1db748a"
+    ],
+    "patch": null
+  },
+  "SkeletonFiles": {
+    "src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftLaunch.cs": "df5a861b24df997e7a642d1b77114addcec78dbc6ab7d247243171438990dff5",
+    "src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftStatePort.cs": "cf6df103212c472b519d3098592e09cf3df71a0ecaf84abf00ed0f69324e43c0",
+    "src/RackCad.Application/Workspace/IWorkspaceFullEditHost.cs": "9d8aa1b5770c5705cc4daf38541bd01cc00df70652741547b9a83ef582d3dadf",
+    "src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs": "b3a2622b490e2e787088680743662365bf9e4b0016cad7578703281b6b1c0863",
+    "src/RackCad.Application/Workspace/WorkspaceEditIntent.cs": "b937f893360b39c5751b5b5da9fe3f976a76b256799fbf685a2dc4193f141e96",
+    "src/RackCad.Application/Workspace/WorkspaceHostCore.cs": "1425519a2355fea7ed6f5f537193ebf0aa89d6ff327fb2275cc39ae32b98e715",
+    "src/RackCad.Plugin/Views/RackWorkspaceEditorWindow.cs": "da22310eda522f3e98306b2f68b86c81a8cbf2269370bad76a84efa6335a6f44",
+    "src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs": "57a4919e5d04e22482637a87ef321d7cf385442d264391ef6eb5eab18fd2e82c"
+  },
+  "WorkspaceMinSelected": 2716,
+  "Nc2ExactEvidenceEntries": [
+    0
+  ],
+  "Nc2SubstituteSha256": "C033E96CE147963FEB9C04733E9BFBEC7493FEA33D8FF79B1C2E8AB860798E45",
+  "Rr3": {
+    "PushBackEditAllTests": 45,
+    "PushBackEditAllGuardTests": 11,
+    "PushBackOpenerClassicPathGuardTests": 54,
+    "PushBackDraftLaunchGuardTests": 26,
+    "PushBackEditAllWindowTests": 15
+  },
+  "Rr3Reading": true,
+  "PackagePath": "docs/initiatives/I-64-f4b-pbt4-gate-contract-package.md",
+  "PackageVersion": "5.1",
+  "NewTests": [
+    "tests/RackCad.Tests/PushBackEditAllTests.cs",
+    "tests/RackCad.Tests/PushBackEditAllGuardTests.cs",
+    "tests/RackCad.Tests/PushBackOpenerClassicPathGuardTests.cs",
+    "tests/RackCad.Tests/PushBackDraftLaunchGuardTests.cs",
+    "tests/RackCad.UI.Tests/PushBackEditAllWindowTests.cs",
+    "tests/RackCad.Tests/PushBackEditAllPortEquivalenceGuardTests.cs",
+    "tests/RackCad.Tests/PushBackEditAllNameWritersGuardTests.cs",
+    "tests/RackCad.Tests/PushBackEditAllFullCopyGuardTests.cs",
+    "tests/RackCad.UI.Tests/PushBackEditAllApplyCloseTests.cs"
+  ],
+  "CtClasses": [
+    "PushBackEditAllTests",
+    "PushBackEditAllGuardTests",
+    "PushBackOpenerClassicPathGuardTests",
+    "PushBackDraftLaunchGuardTests",
+    "PushBackEditAllWindowTests"
+  ],
+  "SkipFiles": [
+    "tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs",
+    "tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs",
+    "tests/RackCad.Tests/WorkspaceFullCopyGuardTests.cs",
+    "tests/RackCad.UI.Tests/PushBackWorkspaceApplyCloseTests.cs"
+  ],
+  "RedFilters": [
+    "FullyQualifiedName~RackCad.Tests.PushBackEditAllTests",
+    "FullyQualifiedName~RackCad.Tests.PushBackEditAllGuardTests",
+    "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllWindowTests",
+    "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllApplyCloseTests"
+  ],
+  "UiFilters": [
+    "FullyQualifiedName~RackCad.UI.Tests.PushBackFullDraftWindowParityTests",
+    "FullyQualifiedName~RackCad.UI.Tests.Workspace",
+    "FullyQualifiedName~RackCad.UI.Tests.PushBackWindowOnStateTests",
+    "FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization",
+    "FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization",
+    "FullyQualifiedName~RackCad.UI.Tests.PushBackStateNet",
+    "FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection",
+    "FullyQualifiedName~RackCad.UI.Tests.Cantilever",
+    "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceModeTests",
+    "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests",
+    "FullyQualifiedName~RackCad.UI.Tests.PushBackFieldValidationConcordanceTests",
+    "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceCarryoverTests",
+    "FullyQualifiedName~RackCad.UI.Tests.PushBackFullPanelFieldTests",
+    "FullyQualifiedName~RackCad.UI.Tests.NumericFieldValidationTests",
+    "FullyQualifiedName~RackCad.UI.Tests.NumericFieldTests",
+    "FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationGreenTests",
+    "FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationViewGreenTests",
+    "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllWindowTests",
+    "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllApplyCloseTests"
+  ],
+  "SubstList": {
+    "Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4c-substitution-list-4.tsv",
+    "Sha256": "9bd4c17a0eda837c92a7a0b7b3562d4ab17f1608baf3ffa8efaf560d8b1f82de",
+    "Rows": 4,
+    "Groups": {
+      "PB-T4c C-5": 3,
+      "PB-T4c C-3": 1
+    },
+    "Files": 4
+  },
+  "CopyMap": {
+    "Path": null,
+    "Sha256": null,
+    "Tests": 0,
+    "Mechanical": 0,
+    "Hand": 0,
+    "PerClass": {}
+  },
+  "CopyPartition": null,
+  "CopyPartitionPath": null,
+  "CopyPartitionSha256": null,
+  "Form": "sin copias",
+  "Equivalents": {
+    "tests/RackCad.Tests/PushBackEditAllFullCopyGuardTests.cs": "4619b6d310340f9c97a7d9f31bda1db852d2fcda905b91bb857510f7e6b7e6ce",
+    "tests/RackCad.Tests/PushBackEditAllNameWritersGuardTests.cs": "3744992127be8b7e1d8d822a769b8eb2a6886789c73285c8436e5baec6bf7b6b",
+    "tests/RackCad.Tests/PushBackEditAllPortEquivalenceGuardTests.cs": "1a2607d3a35ae8f9737fffb0eb32a4acd8100318fe83e5b0098d30428f57d250",
+    "tests/RackCad.UI.Tests/PushBackEditAllApplyCloseTests.cs": "7c2458260ef301d7f05bfaff8e1e8c4a4a618f25fd7022705d55dee32dbe78d2"
+  },
+  "EquivalentFilters": {
+    "tests/RackCad.Tests/PushBackEditAllFullCopyGuardTests.cs": "FullyQualifiedName~RackCad.Tests.PushBackEditAllFullCopyGuardTests",
+    "tests/RackCad.Tests/PushBackEditAllNameWritersGuardTests.cs": "FullyQualifiedName~RackCad.Tests.PushBackEditAllNameWritersGuardTests",
+    "tests/RackCad.Tests/PushBackEditAllPortEquivalenceGuardTests.cs": "FullyQualifiedName~RackCad.Tests.PushBackEditAllPortEquivalenceGuardTests",
+    "tests/RackCad.UI.Tests/PushBackEditAllApplyCloseTests.cs": "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllApplyCloseTests"
+  },
+  "CtFiles": [
+    "tests/RackCad.Tests/PushBackEditAllTests.cs",
+    "tests/RackCad.Tests/PushBackEditAllGuardTests.cs",
+    "tests/RackCad.Tests/PushBackOpenerClassicPathGuardTests.cs",
+    "tests/RackCad.Tests/PushBackDraftLaunchGuardTests.cs",
+    "tests/RackCad.UI.Tests/PushBackEditAllWindowTests.cs"
+  ],
+  "SkipFileShas": {
+    "tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs": "b240d196b840a3985007576f479001477d7f2e1a93391bacf5d77825665f55aa",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs": "0fc5a84e0760ff4bd2cbd9d5a0b8ca3ac5791148f73f0ad799a7b3fb5e555f4c",
+    "tests/RackCad.Tests/WorkspaceFullCopyGuardTests.cs": "14b69604c616ad16a04ceee28a876e65e7a72f70cb2ed3df1a70b6113a978bd0",
+    "tests/RackCad.UI.Tests/PushBackWorkspaceApplyCloseTests.cs": "d6c77a79594975ae4e7b7c5dc58abe1af374c2228da3048916aca3512a8278e2"
+  },
+  "GreenLiteral": {
+    "src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs": "b3a2622b490e2e787088680743662365bf9e4b0016cad7578703281b6b1c0863",
+    "src/RackCad.Application/Workspace/WorkspaceEditIntent.cs": "b937f893360b39c5751b5b5da9fe3f976a76b256799fbf685a2dc4193f141e96",
+    "src/RackCad.Application/Workspace/WorkspaceHostCore.cs": "3fcabacbc9a568cc2b777d4e8bd356b76f55273f674d0ab604177f36ffeb5fee",
+    "src/RackCad.Application/Workspace/WorkspacePilotSupport.cs": "a86d1f72c7884d5870d9107df65d4e1b5d577f801cfc080db5cb7202bcffcd4d",
+    "src/RackCad.Plugin/Workspace/WorkspaceController.cs": "9448d170263905e37c24035699cf69e8419c381add53c45c389cd415d6669539",
+    "src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs": "417c36cd68267ecec960e89c4908a237d8c9d89093ab93aecebd3f80a862f845",
+    "src/RackCad.UI/Workspace/WorkspacePanelView.xaml": "3fffd2cdd707bbf37ac903ff1d65d8040ddde091a319dc6c439255440f63a70b",
+    "src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs": "b21633ea1b82507da4d69b0d119d958cde30480d0f023798d1bad24d5b0f4342",
+    "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs": "597fa16486e836a5dad62251367029d4c8939ae3fb11834ee26b3598a70a31b0",
+    "src/RackCad.Application/Workspace/IWorkspaceFullEditHost.cs": "9d8aa1b5770c5705cc4daf38541bd01cc00df70652741547b9a83ef582d3dadf",
+    "src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftLaunch.cs": "e93aa1d793588c5eb4d842db97a6ac55716bedaab607059046fdbecc79feb28b",
+    "src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftStatePort.cs": "b08cf5c7437810427645efb5e2f4592c6c5032cea5abe27d01291f42a0e53b5a",
+    "src/RackCad.Plugin/Views/RackWorkspaceEditorWindow.cs": "12e7786a1e39cf9f7c3b5be4137baf93df6b262fac2683eb0d04775a5e1a9401"
+  },
+  "GreenPiece": "pbt4c-green-v51.txt",
+  "Baseline": {
+    "core": [
+      19605,
+      19147,
+      0,
+      458
+    ],
+    "ui": [
+      2481,
+      2433,
+      0,
+      48
+    ]
+  },
+  "CtCounts": [
+    15,
+    11,
+    4
+  ],
+  "RedTool": [
+    "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/apply_red_pbt4c_v51.py",
+    "03dbb6a7"
+  ],
+  "GreenTool": [
+    "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/apply_green_pbt4c_v51.py",
+    "8b944545"
+  ],
+  "EquivalentGenerator": [
+    "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/make_equivalents_pbt4c_v50.py",
+    "d81fcb41"
+  ],
+  "AssertRule": "la primera linea del StackTrace bajo tests/",
+  "CopyPaths": {},
+  "KitPath": null,
+  "CopyClasses": {},
+  "CopyTools": {
+    "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/check_skips_pbt4c_v50.py": "71521e52abdd7f371fb4b067d2b4400bb508c2d1d6a246ca83df4bb39127ee22",
+    "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4c_skips_v50.py": "a59a3aedc982bb15312a04eb5ddbe92afa2a868a1177e7c8b4c3f49332970f7f"
+  },
+  "CopyFiles": [],
+  "Precondition6": {
+    "Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4c-precondition6.json",
+    "Keys": [
+      "Binaries",
+      "Builds",
+      "Census",
+      "CheckSkips",
+      "Checks",
+      "ClassResults",
+      "Control",
+      "CsWarnings",
+      "D",
+      "DriverPieces",
+      "E",
+      "EquivalentSha",
+      "FilterOverlap",
+      "Green",
+      "GreenFiles",
+      "History",
+      "InheritedCoreFiltersGreen",
+      "IsDirtyCost",
+      "List",
+      "Package",
+      "Pieces",
+      "Probes",
+      "Red",
+      "Rehearsal",
+      "Revision",
+      "Schema",
+      "Skeleton",
+      "SkipFiles",
+      "SuiteDurationSeconds"
+    ]
+  },
+  "Kit": {
+    "Src": null,
+    "Sha256": null
+  },
+  "CtLast": 15,
+  "SkipModule": {
+    "Checker": "check_skips_pbt4c_v50.py",
+    "Module": "pbt4c_skips_v50.py",
+    "Files": [
+      {
+        "Name": "check_skips_pbt4c_v50.py",
+        "Sha256": "71521e52abdd7f371fb4b067d2b4400bb508c2d1d6a246ca83df4bb39127ee22",
+        "Source": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/check_skips_pbt4c_v50.py"
+      },
+      {
+        "Name": "pbt4c_skips_v50.py",
+        "Sha256": "a59a3aedc982bb15312a04eb5ddbe92afa2a868a1177e7c8b4c3f49332970f7f",
+        "Source": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4c_skips_v50.py"
+      }
+    ]
+  },
+  "NewNames": [
+    "PushBackEditAllTests",
+    "PushBackEditAllGuardTests",
+    "PushBackOpenerClassicPathGuardTests",
+    "PushBackDraftLaunchGuardTests",
+    "PushBackEditAllWindowTests",
+    "PushBackEditAllPortEquivalenceGuardTests",
+    "PushBackEditAllNameWritersGuardTests",
+    "PushBackEditAllFullCopyGuardTests",
+    "PushBackEditAllApplyCloseTests",
+    "IWorkspaceFullEditHost",
+    "PushBackFullDraftLaunch",
+    "PushBackFullDraftStatePort",
+    "RackWorkspaceEditorWindow"
+  ],
+  "LastF4BE": 54,
+  "EmissionF4BE": 54,
+  "CopyForms": null,
+  "CopyNamespaces": {},
+  "CopySplit": {},
+  "Inputs": {
+    "red-filters.txt": "93104f6489853de98d22b252a7b0c4567f71ef44971d137ab863233df4d5127d",
+    "equivalents.txt": "1d666c7e08778ebb3758c6c92ca66dfc9796dbce61eec8957a6955a6df8a5d45",
+    "new-tests.txt": "ba41c40c2bfc5f0cb0057e135ee5c82cfeac31037130df54da9063c920e70eb3",
+    "new-names.txt": "44112aac602ee2a646be2c7df58df3759d36fa9c87dee8fb4e9c1e30aa62f37a"
+  }
+}
