@@ -78,7 +78,7 @@ public class WorkspacePilotPrepareGuardTests
         }
     }
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4d: sustituida por su equivalente en PushBackRetirePilotPlanGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4d-list-decisions.md, pregunta 1).")]
     public void TheFileOfThePlanIsNullableEnabledInTheNamespaceOfThePilotWithBracesAndDeclaresTheTypesOfThePackage()
     {
         var text = Src.Text(PlanPath);
@@ -155,17 +155,19 @@ public class WorkspacePilotPrepareGuardTests
 
     private static IEnumerable<string> AfterMatchViolations(IEnumerable<(string Path, string Code)> product)
     {
+        // I-64 F4B PB-T4d (owner-pbt4d-substitutes-decision.md): ComposeForWrite is retired; H-06 holds for the composition that stays,
+        // PushBackFullComposition.ForFullWrite.
         var callers = product
-            .Where(f => !f.Path.EndsWith("/PushBackPilotMaterializer.cs", StringComparison.Ordinal)
-                        && Regex.IsMatch(f.Code, @"\bPushBackPilotMaterializer\s*\.\s*ComposeForWrite\s*\("))
+            .Where(f => !f.Path.EndsWith("/PushBackFullComposition.cs", StringComparison.Ordinal)
+                        && Regex.IsMatch(f.Code, @"\bPushBackFullComposition\s*\.\s*ForFullWrite\s*\("))
             .ToArray();
-        if (callers.Length != 1 || callers[0].Path != PlanPath) yield return "ComposeForWrite has callers other than the planner: " + string.Join(", ", callers.Select(c => c.Path));
+        if (callers.Length != 1 || callers[0].Path != PlanPath) yield return "ForFullWrite has callers other than the planner: " + string.Join(", ", callers.Select(c => c.Path));
         foreach (var (_, code) in callers.Where(c => c.Path == PlanPath))
         {
             var compare = code.IndexOf(".CompareWith(", StringComparison.Ordinal);
-            var compose = code.IndexOf("PushBackPilotMaterializer.ComposeForWrite(", StringComparison.Ordinal);
-            if (compare < 0 || compose < compare) yield return "ComposeForWrite is called before the comparison of the base";
-            if (Regex.Matches(code, @"\bPushBackPilotMaterializer\s*\.\s*ComposeForWrite\s*\(").Count != 1) yield return "ComposeForWrite is called more than once";
+            var compose = code.IndexOf("PushBackFullComposition.ForFullWrite(", StringComparison.Ordinal);
+            if (compare < 0 || compose < compare) yield return "ForFullWrite is called before the comparison of the base";
+            if (Regex.Matches(code, @"\bPushBackFullComposition\s*\.\s*ForFullWrite\s*\(").Count != 1) yield return "ForFullWrite is called more than once";
         }
     }
 
@@ -180,10 +182,10 @@ public class WorkspacePilotPrepareGuardTests
     {
         var product = Src.AllProduct().ToList();
 
-        Assert.NotEmpty(AfterMatchViolations(product.Append(("src/RackCad.Application/Workspace/Other.cs", "var c = PushBackPilotMaterializer.ComposeForWrite(a, b, catalog);"))));
+        Assert.NotEmpty(AfterMatchViolations(product.Append(("src/RackCad.Application/Workspace/Other.cs", "var c = PushBackFullComposition.ForFullWrite(a, b, catalog);"))));
 
         var plan = Src.Code(PlanPath);
-        var before = plan.Replace("var comparison = input.StaleBase.CompareWith(reread.StaleBase);", "var early = PushBackPilotMaterializer.ComposeForWrite(i, c, catalog); var comparison = input.StaleBase.CompareWith(reread.StaleBase);", StringComparison.Ordinal);
+        var before = plan.Replace("var comparison = input.StaleBase.CompareWith(reread.StaleBase);", "var early = PushBackFullComposition.ForFullWrite(i, c, catalog); var comparison = input.StaleBase.CompareWith(reread.StaleBase);", StringComparison.Ordinal);
         Assert.NotEqual(plan, before);
         var mutated = product.Select(f => f.Path == PlanPath ? (f.Path, before) : f).ToList();
         Assert.NotEmpty(AfterMatchViolations(mutated));
@@ -191,7 +193,7 @@ public class WorkspacePilotPrepareGuardTests
 
     // ------------------------------------------------------------------ Prepare changes nothing and follows the order of the package
 
-    [Fact]
+    [Fact(Skip = "I-64 F4B PB-T4d: sustituida por su equivalente en PushBackRetirePilotPlanGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4d-list-decisions.md, pregunta 1).")]
     public void TheOrderOfPrepareIsTheOneOfThePackageAndNoOutcomeBeforeConflictLooksAtTheReread()
     {
         var plan = Plan();

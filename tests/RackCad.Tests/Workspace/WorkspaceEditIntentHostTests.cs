@@ -139,26 +139,6 @@ public class WorkspaceEditIntentHostTests
     }
 
     [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
-    public void TheDraftIsBornWithTheComparerAndTheCopierOfThePilot()
-    {
-        var rig = new Rig();
-        var outcome = rig.Core.TryBeginPilotEdit(rig.Request());
-        Assert.Equal(EditIntentStatus.Admitted, outcome.Status);
-        var draft = rig.Draft()!;
-
-        // Clean means "the current state equals the initial one for the comparer of the pilot", and neither is the object of the read.
-        Assert.False(draft.IsDirty);
-        Assert.True(PushBackPilotStateComparer.Instance.Equals(draft.CurrentDraftState, draft.InitialDraftState));
-        Assert.NotSame(draft.CurrentDraftState, draft.InitialDraftState);
-        var origin = draft.CurrentDraftState.Origin;
-        Assert.Equal(IntentKit.Variant("pb-01-base", RackA), origin);
-
-        // The editable content decides Dirty (INV-26): changing the pending text makes it Dirty, and that is not a raw JSON comparison.
-        draft.SetPendingText("field", "1");
-        Assert.True(draft.IsDirty);
-    }
-
-    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheRequestReachesTheReaderUnchangedWithTheChosenReferenceAndTheWitness()
     {
         var rig = new Rig();
@@ -659,26 +639,6 @@ public class WorkspaceEditIntentHostTests
 
         Assert.Equal(EditIntentStatus.Admitted, outcome.Status);
         Assert.Equal(EditWitnessStatus.Unchanged, outcome.Witness);
-    }
-
-    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
-    public void AChangedWitnessIsReportedAsChangedAndNoKeystrokeIsAppliedToTheNewDraft()
-    {
-        var rig = new Rig();
-        rig.Reader.Answer = rack => EditIntentKit.ReadOf(EditIntentKit.TwoViews(rack, new PushBackPilotPreviewWitness("A1", "{ stale preview")));
-
-        var outcome = rig.Core.TryBeginPilotEdit(rig.Request(witness: new EditIntentWitness("A1", "{ stale preview")));
-
-        // The surface is re-rendered from the new read: the draft is born from THAT read, Clean, with no pending text.
-        Assert.Equal(EditIntentStatus.Admitted, outcome.Status);
-        Assert.Equal(EditWitnessStatus.Changed, outcome.Witness);
-        var draft = rig.Draft()!;
-        Assert.Equal(DraftStatus.Clean, draft.Status);
-        Assert.False(draft.IsDirty);
-        Assert.False(draft.HasPendingText);
-        Assert.Empty(draft.PendingText);
-        Assert.True(PushBackPilotStateComparer.Instance.Equals(draft.CurrentDraftState, draft.InitialDraftState));
-        Assert.Equal(IntentKit.Variant("pb-01-base", RackA), draft.CurrentDraftState.Origin);
     }
 
     [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspaceEditIntentHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]

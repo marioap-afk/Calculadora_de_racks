@@ -276,8 +276,8 @@ public class WorkspacePilotEditGuardTests
         }
 
         // The adapter of the pilot is static, never a field of instance (H-10).
-        if (Regex.IsMatch(host, @"private\s+(?:readonly\s+)?PushBackPilotFieldAdapter\s+_\w+")) yield return "the adapter of the pilot is a field of instance";
-        if (Src.Count(host, @"private\s+static\s+readonly\s+PushBackPilotFieldAdapter\s+\w+") != 1) yield return "the adapter of the pilot is not the one static field";
+        if (Regex.IsMatch(host, @"private\s+(?:readonly\s+)?PushBackFullFieldAdapter\s+_\w+")) yield return "the adapter of the field is a field of instance";
+        if (Src.Count(host, @"private\s+static\s+readonly\s+PushBackFullFieldAdapter\s+\w+") != 1) yield return "the adapter of the field is not the one static field";
 
         // Only the three reads read the drawing (C03): the other nine operations never name the reader, the probe or the gate of reading.
         // Row 5: the request of the update is the one exception, with its own rules below.
@@ -592,7 +592,7 @@ public class WorkspacePilotEditGuardTests
     public void TheReadGuardAllowsAnotherReadThatALaterTaskWouldAddWithItsOwnMark()
     {
         var extra = "EditIntentOutcome IWorkspacePilotEditPort.TryReadAgain(EditIntentRequest request)\n{\n    if (_pilotReadInProgress) return EditIntentOutcome.Waiting(\"x\");\n    _pilotReadInProgress = true;\n    try { return TryBeginPilotEdit(request); } finally { _pilotReadInProgress = false; }\n}\n";
-        var host = Host().Replace("private DraftSession<PushBackPilotDraftState>? FindPilotDraft", extra + "private DraftSession<PushBackPilotDraftState>? FindPilotDraft", StringComparison.Ordinal);
+        var host = Host().Replace("private DraftSession<PushBackFullDraftState>? FindPilotDraft", extra + "private DraftSession<PushBackFullDraftState>? FindPilotDraft", StringComparison.Ordinal);
 
         Assert.Empty(ReadGateViolations(host));
     }
@@ -903,7 +903,7 @@ public class WorkspacePilotEditGuardTests
         }
 
         // The helpers that the operations use, and the value helpers of the support file, write nothing either.
-        foreach (var helper in new[] { @"private\s+DraftSession<PushBackPilotDraftState>\?\s+FindPilotDraft\b", @"private\s+static\s+PilotFieldView\s+ViewOfPilotDraft\b", @"private\s+bool\s+SessionStillAtRisk\b" })
+        foreach (var helper in new[] { @"private\s+DraftSession<PushBackFullDraftState>\?\s+FindPilotDraft\b", @"private\s+static\s+PilotFieldView\s+ViewOfPilotDraft\b", @"private\s+bool\s+SessionStillAtRisk\b" })
         {
             var body = TryBody(host, helper);
             if (body == null) continue;

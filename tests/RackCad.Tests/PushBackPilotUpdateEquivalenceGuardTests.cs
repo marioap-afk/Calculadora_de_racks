@@ -108,7 +108,8 @@ namespace RackCad.Tests
         private static IEnumerable<string> E3Violations(string plan, string disposition)
         {
             var core = Core(plan);
-            var build = Src.BodyOf(plan, @"private\s+static\s+PushBackPilotPrepareResult\s+Build\s*\(");
+            // I-64 F4B PB-T4d (owner-pbt4d-substitutes-decision.md): the Build of the pilot is retired; what E-3 protected of BuildCore and of
+            // the full model stays.
             var full = Src.BodyOf(plan, @"private\s+static\s+PushBackPilotPrepareResult\s+BuildFull\s*\(");
             var of = Src.BodyOf(disposition, @"public\s+static\s+PushBackViewDispositionPlan\s+Of\s*\(");
 
@@ -123,13 +124,10 @@ namespace RackCad.Tests
 
             // The erasures: only with a model that admits them, only with an obsolete lateral, and in one place.
             if (Regex.Matches(core, @"\berasures\.Add\s*\(").Count != 1) yield return "the erasures are not filled in exactly one place";
-            if (!core.Contains("PushBackViewDispositionKind.ObsoleteLateral && allowErase", StringComparison.Ordinal)) yield return "the erasures are not conditioned to an obsolete lateral and to a model that admits erasing";
-            // The pilot keeps its text for a view that is not available.
-            if (!core.Contains("ViewUnavailablePrefix + entry.Key + ViewUnavailableSuffix", StringComparison.Ordinal)) yield return "the pilot does not keep ViewUnavailablePrefix";
-            if (!Regex.IsMatch(build, @"\bBuildCore\s*\([^;]*\bfalse\b")) yield return "the pilot does not call BuildCore without the capacity to erase";
-            if (!Regex.IsMatch(full, @"\bBuildCore\s*\([^;]*\btrue\b")) yield return "the full model does not call BuildCore with the capacity to erase";
+            // I-64 F4B PB-T4d (owner-pbt4d-deadcode-27-decisions.md, pregunta 1): the mode of the pilot that never erases (allowErase) is retired
+            // with the text of BuildCore for a view that is not available; the erasures stay conditioned to an obsolete lateral.
+            if (!core.Contains("disposition == PushBackViewDispositionKind.ObsoleteLateral", StringComparison.Ordinal)) yield return "the erasures are not conditioned to an obsolete lateral";
             // The scale of the plan is the one of the current state of the model.
-            if (!build.Contains("input.CurrentDraftState.Inputs.Annotations.AnnotationScale", StringComparison.Ordinal)) yield return "the pilot does not take the scale of its current state";
             if (!full.Contains("input.CurrentDraftState.Editable.AnnotationScale", StringComparison.Ordinal)) yield return "the full model does not take the scale of its current state";
         }
 
@@ -139,8 +137,7 @@ namespace RackCad.Tests
             var plan = Plan();
             var disposition = Src.Code(DispositionPath);
 
-            Assert.Contains("PushBackViewDispositionKind.ObsoleteLateral && allowErase", plan);
-            Assert.Contains("ViewUnavailablePrefix + entry.Key + ViewUnavailableSuffix", plan);
+            Assert.Contains("disposition == PushBackViewDispositionKind.ObsoleteLateral", plan);
             Assert.Equal(string.Empty, Join(E3Violations(plan, disposition)));
         }
 
@@ -189,7 +186,7 @@ namespace RackCad.Tests
         {
             foreach (var (label, signature) in new[]
             {
-                ("Execute", @"public\s+static\s+DraftApplyOutcome<PushBackPilotDraftState>\s+Execute\s*\("),
+                // I-64 F4B PB-T4d (owner-pbt4d-substitutes-decision.md): the Execute of the pilot is retired; ExecuteFull stays.
                 ("ExecuteFull", @"public\s+static\s+DraftApplyOutcome<PushBackFullDraftState>\s+ExecuteFull\s*\("),
             })
             {

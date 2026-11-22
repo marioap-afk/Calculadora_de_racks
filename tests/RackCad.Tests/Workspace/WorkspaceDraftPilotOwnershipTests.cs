@@ -55,28 +55,19 @@ internal static class OwnershipKits
         comparer: DraftKit.BoxComparer,
         copy: DraftKit.CopyBox);
 
-    public static OwnershipKit<PushBackPilotDraftState> Pilot() => new(
-        make: n =>
-        {
-            var state = PilotKit.State("pb-01-base");
-            state.Inputs.Annotations.AnnotationScale = 1.0 + n / 4.0;
-            return state;
-        },
-        mutate: state => state.Inputs.Annotations.AnnotationScale += 100.0,
-        fingerprint: state => state.Inputs.Annotations.AnnotationScale.ToString("R", System.Globalization.CultureInfo.InvariantCulture),
-        comparer: new PushBackPilotStateComparer(),
-        copy: PushBackPilotStateComparer.Copy);
 }
 
 // I-64 F4-T2A-PILOT-STATE: INV-F4T2A-10 (the core copies what enters and the initial state it hands out) and 11 (adversarial).
 public class WorkspaceDraftPilotOwnershipTests
 {
-    public static IEnumerable<object[]> Kinds() => new[] { new object[] { "box" }, new object[] { "pilot" } };
+    // I-64 F4B PB-T4d (owner-pbt4d-substitutes-decision.md): the rows of the pilot go (its comparer is retired); the ones of the
+    // mutable test state, which test the ownership boundary of the draft core, stay.
+    public static IEnumerable<object[]> Kinds() => new[] { new object[] { "box" } };
 
     private static void Both(string kind, Action<IOwnership> scenario)
     {
-        if (kind == "box") scenario(new Ownership<DraftBox>(OwnershipKits.Box()));
-        else scenario(new Ownership<PushBackPilotDraftState>(OwnershipKits.Pilot()));
+        Assert.Equal("box", kind);
+        scenario(new Ownership<DraftBox>(OwnershipKits.Box()));
     }
 
     private interface IOwnership
@@ -258,8 +249,6 @@ public class WorkspaceDraftPilotOwnershipTests
     [Theory]
     [InlineData("box", false)]
     [InlineData("box", true)]
-    [InlineData("pilot", false)]
-    [InlineData("pilot", true)]
     public void MutatingTheObjectOfThePostReadAfterTheRebaseOfAnAppliedUpdateChangesNothing(string kind, bool withWarnings) =>
         Both(kind, scenario => scenario.MutatingThePostReadObjectAfterAnAppliedRebaseChangesNothing(withWarnings));
 
@@ -293,22 +282,6 @@ public class WorkspaceDraftPilotOwnershipTests
         Assert.Same(draft.CurrentDraftState, draft.CurrentDraftState);
         Assert.NotSame(draft.InitialDraftState, draft.InitialDraftState);
         Assert.NotSame(draft.InitialDraftState, draft.CurrentDraftState);
-    }
-
-    [Fact]
-    public void ThePilotStateKeepsTheInPlaceEditModelOfTheCurrentState()
-    {
-        var kit = OwnershipKits.Pilot();
-        var registry = new DraftRegistry();
-        var draft = kit.Born(registry, PilotKit.State("pb-01-base"));
-        var current = draft.CurrentDraftState;
-
-        current.Inputs.Annotations.AnnotationScale = 3.5;
-
-        Assert.Same(current, draft.CurrentDraftState);
-        Assert.True(draft.IsDirty);
-        Assert.Equal(1.5, draft.InitialDraftState.Inputs.Annotations.AnnotationScale);
-        Assert.True(new DraftClosePolicy(registry).EvaluateClose(DraftKit.S1).IsVeto);
     }
 
     [Fact]

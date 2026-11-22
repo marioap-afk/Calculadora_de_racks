@@ -270,22 +270,7 @@ namespace RackCad.Tests
                 log.Add("erased-keys=" + Keys(plan.PostExpectation.ErasedKeys));
             });
 
-            // The pilot, with a plan without erasures, gives what it gives today in the same cases.
-            Paso(log, () =>
-            {
-                var plan = new PilotUpdateSetup().ExpectedPlan();
-                PushBackPilotIntentResult Read(IEnumerable<(string Key, string Text)> members, double scale)
-                {
-                    var staleBase = PrepareKit.BaseOf(members.ToArray());
-                    var state = PilotKit.State("pb-01-base");
-                    state.Inputs.Annotations.AnnotationScale = scale;
-                    return PrepareKit.Reread(staleBase, state);
-                }
-
-                var texts = plan.PostExpectation.Envelopes.Select(item => (item.Key, item.Text)).ToList();
-                log.Add("piloto-todo-igual " + (PushBackPilotUpdateRun.ComparePost(plan, Read(texts, plan.PostExpectation.AnnotationScale)) ?? "<null>"));
-                log.Add("piloto-escala-distinta " + (PushBackPilotUpdateRun.ComparePost(plan, Read(texts, 2.0)) == PushBackPilotUpdateRun.PostScaleDiffersReason));
-            });
+            // I-64 F4B PB-T4d (owner-pbt4d-substitutes-decision.md): the comparison of the pilot (ComparePost, retired) goes; ComparePostFull stays.
 
             Finish(
                 log,
@@ -298,8 +283,6 @@ namespace RackCad.Tests
                     "escala-distinta " + PushBackPilotUpdateRun.PostScaleDiffersReason,
                     "sin-relectura " + PushBackPilotUpdateRun.PostRereadMissingReason,
                     "erased-keys=[B2]",
-                    "piloto-todo-igual <null>",
-                    "piloto-escala-distinta True",
                 });
         }
 

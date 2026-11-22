@@ -252,7 +252,7 @@ public class FullPanelCopyWorkspacePilotEditGuardRedTests
         }
 
         // The helpers that the operations use, and the value helpers of the support file, write nothing either.
-        foreach (var helper in new[] { @"private\s+DraftSession<PushBackPilotDraftState>\?\s+FindPilotDraft\b", @"private\s+static\s+PilotFieldView\s+ViewOfPilotDraft\b", @"private\s+bool\s+SessionStillAtRisk\b" })
+        foreach (var helper in new[] { @"private\s+DraftSession<PushBackFullDraftState>\?\s+FindPilotDraft\b", @"private\s+static\s+PilotFieldView\s+ViewOfPilotDraft\b", @"private\s+bool\s+SessionStillAtRisk\b" })
         {
             var body = TryBody(host, helper);
             if (body == null) continue;

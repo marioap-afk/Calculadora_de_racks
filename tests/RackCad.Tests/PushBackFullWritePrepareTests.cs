@@ -520,16 +520,7 @@ namespace RackCad.Tests
                 log.Add("nombre-en-blanco prepare=" + (IsReady(result) ? "Ready " + NamesOf(result.Plan) : Describe(result)));
             });
 
-            // The pilot keeps the name of each envelope that was re-read.
-            Paso(log, () =>
-            {
-                var scan = NamedViews("A1");
-                var read = PrepareKit.Reread(PushBackPilotIntentReader.BuildStaleBase(scan), PilotKit.Admitted(scan.RawEnvelopes["A1"]));
-                var draft = PrepareKit.DraftOf(read);
-                PrepareKit.SetScale(draft, 2.25);
-                var result = PushBackPilotUpdatePlanner.Prepare(PushBackPilotPrepareInput.From(draft), read, Catalog);
-                log.Add("piloto prepare=" + (result.Kind == PushBackPilotPrepareKind.Ready ? "Ready " + NamesOf(result.Plan) : Describe(result)));
-            });
+            // I-64 F4B PB-T4d (owner-pbt4d-substitutes-decision.md): the part of the pilot (its Prepare, retired) goes; what the full model writes stays.
 
             Finish(
                 log,
@@ -539,7 +530,6 @@ namespace RackCad.Tests
                     "nombres-deseados-del-clasico=True",
                     "nombres-deseados-compuesto=True",
                     "nombre-en-blanco prepare=Ready A1=Origen B2=Origen C3=Origen",
-                    "piloto prepare=Ready A1=Origen B2=Otro-B C3=Otro-C",
                 });
         }
 
@@ -579,22 +569,11 @@ namespace RackCad.Tests
                     + (first != null && result != null && result.Reason == "El diseño tiene un error que impide escribirlo: " + first.Message));
             });
 
-            // (ii) a draft of the PILOT over pb-01-base with the manual structure of A at 1: the pilot admits it, and now the barrier stops it.
-            Paso(log, () =>
-            {
-                var text = EditInner(PrepareKit.Frontal(), inner => inner["PushBack"]["Composite"]["StructureOverrideA"] = 1);
-                var scan = IntentKit.Scan(Rack, "A1", IntentKit.Member("A1", text));
-                var read = IntentKit.Read(scan);
-                var draft = PrepareKit.DraftOf(read);
-                PrepareKit.SetScale(draft, 2.0);
-                var composition = PushBackPilotMaterializer.ComposeForWrite(read.Read.InitialState, draft.CurrentDraftState, Catalog);
-                var system = new PushBackResolver(Catalog).Resolve(new PushBackCompositeEditorAssembler(Catalog).BuildDesign(composition.Editor, composition.Inputs));
-                var blocked = PushBackEditorOutputGate.IsBlocked(composition.Editor, system);
-                var result = PushBackPilotUpdatePlanner.Prepare(PushBackPilotPrepareInput.From(draft), read, Catalog);
-                log.Add("piloto-bloqueado admitido=" + read.Read.IsAdmitted + " bloqueado=" + blocked + " prepare=" + Describe(result));
-            });
+            // I-64 F4B PB-T4d (owner-pbt4d-substitutes-decision.md): (ii) was a draft of the PILOT (its Prepare and ComposeForWrite, retired)
+            // and goes; the barrier over the full model, (i), stays. (owner-pbt4d-cat4d-decisions.md, CA-T4d M-01): (iii), the designs of the
+            // corpus, was a draft of the pilot too, and passes now as drafts of the FULL model through PrepareFull, the assembler and the barrier.
 
-            // (iii) the designs of the corpus that the pilot admits are not blocked: the same edit gives Ready.
+            // (iii) the designs of the corpus that the full model admits are not blocked: the same edit gives Ready.
             var fixtures = new[]
             {
                 "pb-01-base", "pb-02-modulos", "pb-03-fondos", "pb-04-blanco", "pb-05-topes", "pb-06-seguridad", "pb-07-combinado", "pb-08-redondeo",
@@ -605,13 +584,12 @@ namespace RackCad.Tests
             {
                 Paso(log, () =>
                 {
-                    var text = PrepareKit.Frontal(fixture);
-                    var admitted = PushBackPilotMaterializer.Materialize(text, Catalog).Kind == PushBackPilotMaterializationKind.Admitted;
-                    var read = IntentKit.Read(IntentKit.Scan(Rack, "A1", IntentKit.Member("A1", text)));
-                    var draft = PrepareKit.DraftOf(read);
-                    PrepareKit.SetScale(draft, fixture == "pb-02-modulos" ? 2.5 : 2.0);
-                    var result = PushBackPilotUpdatePlanner.Prepare(PushBackPilotPrepareInput.From(draft), read, Catalog);
-                    log.Add(fixture + " admitido=" + admitted + " prepare=" + Describe(result));
+                    var read = FullWriteKit.Read(IntentKit.Scan(Rack, "A1", IntentKit.Member("A1", PrepareKit.Frontal(fixture))));
+                    var draft = FullWriteKit.DraftOf(read);
+                    var scale = fixture == "pb-02-modulos" ? 2.5 : 2.0;
+                    FullWriteKit.Edit(draft, state => state.Editable.AnnotationScale = scale);
+                    var result = PrepareFull(log, draft, read);
+                    log.Add(fixture + " admitido=" + read.Read.IsAdmitted + " prepare=" + Describe(result));
                 });
             }
 
@@ -622,7 +600,6 @@ namespace RackCad.Tests
                 "separador-sin-hueco prepare=Invalid motivo=[" + blockedPrefix + "El separador central necesita un hueco mayor que cero: sin el no hay donde colocarlo.]",
                 "override-no-construible prepare=Invalid motivo=[" + blockedPrefix + "Lado A: la estructura manual (1) no es construible; el minimo fisico es 2 fondos. Corrige el valor o pulsa «Restaurar estructura» para volver a la propuesta.]",
                 "celda-no-cabe prepare=Invalid estado-igual-al-primer-bloqueante-de-Evaluate=True",
-                "piloto-bloqueado admitido=True bloqueado=True prepare=Invalid motivo=[El diseño tiene un error que impide escribirlo: Lado A: la estructura manual (1) no es construible; el minimo fisico es 2 fondos. Corrige el valor o pulsa «Restaurar estructura» para volver a la propuesta.]",
             };
             expected.AddRange(fixtures.Select(fixture => fixture + " admitido=True prepare=Ready"));
             Finish(log, expected);

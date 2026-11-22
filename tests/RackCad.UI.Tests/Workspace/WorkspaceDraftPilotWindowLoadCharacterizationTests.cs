@@ -46,63 +46,7 @@ namespace RackCad.UI.Tests
             return dir;
         }
 
-        private static string Fixture(string name)
-        {
-            var path = Path.Combine(RepoRoot().FullName, "tests", "RackCad.Tests", "Fixtures", "I64", name + ".json");
-            Assert.True(File.Exists(path), "missing fixture " + path);
-            return File.ReadAllText(path);
-        }
-
-        private static string Persist(RackCad.Domain.Systems.PushBack.PushBackDesign design) =>
-            new RackProjectStore().Serialize(RackProject.ForPushBack(design)).Replace("\r\n", "\n");
-
-        /// <summary>What the classic window ends up with after LoadExisting; Design is null when it rejects the values.</summary>
-        private sealed class WindowResult
-        {
-            public string Design;
-            public RackCatalog Catalog;
-        }
-
-        private static WindowResult LoadInWindow(string text)
-        {
-            return StaTestRunner.Run(() =>
-            {
-                var embed = new RackEmbedStore().Deserialize(text);
-                var project = new RackProjectStore().Deserialize(embed.Design);
-                var window = new RackPushBackSystemWindow(canInsertInAutoCad: true);
-                window.LoadExisting(project.PushBackDesign, embed.Id, embed.Name, project);
-                var result = new WindowResult { Catalog = window.Session.Catalog };
-                if (window.CurrentInputsAreValid && window.LastComputation != null && window.LastComputation.IsValid)
-                {
-                    result.Design = Persist(window.LastComputation.Design);
-                }
-
-                return result;
-            });
-        }
-
-        private static string PilotWrites(string text, RackCatalog catalog)
-        {
-            var materialized = PushBackPilotMaterializer.Materialize(text, catalog);
-            Assert.Equal(PushBackPilotMaterializationKind.Admitted, materialized.Kind);
-            var composition = PushBackPilotMaterializer.ComposeForWrite(materialized.State, materialized.State, catalog);
-            Assert.True(composition.IsComposed, composition.Reason);
-            return Persist(new PushBackCompositeEditorAssembler(catalog).BuildDesign(composition.Editor, composition.Inputs));
-        }
-
         // ---- JSON delta ---------------------------------------------------------------------------------------------
-
-        private static List<string> Diff(string window, string pilot)
-        {
-            var into = new List<string>();
-            using (var a = JsonDocument.Parse(window))
-            using (var b = JsonDocument.Parse(pilot))
-            {
-                Walk(a.RootElement, b.RootElement, "$", into);
-            }
-
-            return into;
-        }
 
         private static bool IsContainer(JsonElement element) =>
             element.ValueKind == JsonValueKind.Object || element.ValueKind == JsonValueKind.Array;
@@ -228,29 +172,6 @@ namespace RackCad.UI.Tests
             return "OUTSIDE";
         }
 
-        [Theory(Skip = "SUSTITUIDA por PB-TC (D-PB-06), registro docs/automation/evidence/I-64-pilot/F4B-DRAFTS/superseding-characterization.md fila SUS-01: la ejecuta PushBackDeclaredCorrectionPilotParityTests.CT_PBTC_06_TheWindowAndThePilotWriteTheSameDesignForTheFourteenDesigns")]
-        [MemberData(nameof(Corpus))]
-        public void TheWindowAndThePilotDifferOnlyInTheKnownClasses(string fixture)
-        {
-            var text = Fixture(fixture);
-            var window = LoadInWindow(text);
-            if (window.Design == null)
-            {
-                // The window rejects the values: the case is recorded as "the window does not admit it", without comparing.
-                Assert.True(Expected.TryGetValue(fixture, out var recorded) && recorded.Length == 1 && recorded[0] == "WINDOW-NOT-ADMITTED", fixture + " WINDOW-NOT-ADMITTED");
-                return;
-            }
-
-            var pilot = PilotWrites(text, window.Catalog);
-            var delta = Diff(window.Design, pilot).OrderBy(line => line, StringComparer.Ordinal).ToArray();
-
-            // A delta outside classes (a) to (d) is a stop condition (F4T2A-C03): it is never pinned.
-            Assert.DoesNotContain(delta, line => ClassOf(line) == "OUTSIDE");
-            Assert.True(
-                Expected.TryGetValue(fixture, out var pinned) && pinned.SequenceEqual(delta),
-                fixture + " delta (window -> pilot):" + Environment.NewLine + string.Join(Environment.NewLine, delta));
-        }
-
         [Fact]
         public void ClassAIsEvidencedWithDataTheScaleAndACellValueWithMoreThanThreeDecimalsAreRoundedByTheControls()
         {
@@ -261,63 +182,6 @@ namespace RackCad.UI.Tests
             Assert.Contains(delta, line => line.StartsWith("$.PushBack.Structure.AnnotationScale: ", StringComparison.Ordinal));
             Assert.Contains(delta, line => line.StartsWith("$.PushBack.Structure.Fronts[0].Levels[0].PalletHeight: ", StringComparison.Ordinal));
             Assert.Contains(Expected.Values.SelectMany(lines => lines), line => ClassOf(line) == "b");
-        }
-
-        /// <summary>
-        /// What the pilot writes after Keep-mine (V2 changed content the pilot does not edit; the draft changed the scale) opens in
-        /// the classic window with the content of V2 and the scale of the draft: nothing of V2 is reverted on the way.
-        /// </summary>
-        [Fact]
-        public void TheDocumentThePilotWritesAfterKeepMineOpensInTheClassicWindowWithTheNewBaseAndTheScaleOfTheDraft()
-        {
-            var v1 = Fixture("pb-01-base");
-            var catalog = LoadInWindow(v1).Catalog;
-
-            // V2: the same rack with another pallet tolerance, assembled by the product itself.
-            var changed = PushBackPilotMaterializer.Materialize(v1, catalog).State;
-            changed.Inputs.PalletTolerance += 2.0;
-            var store = new RackEmbedStore();
-            var embed = store.Deserialize(v1);
-            embed.Design = new RackProjectStore().Serialize(RackProject.ForPushBack(
-                new PushBackCompositeEditorAssembler(catalog).BuildDesign(changed.Editor, changed.Inputs)));
-            var v2 = store.Serialize(embed);
-            var v1Tolerance = DesignNumber(LoadInWindow(v1).Design, "PalletTolerance");
-            var v2Tolerance = DesignNumber(LoadInWindow(v2).Design, "PalletTolerance");
-            Assert.NotEqual(v1Tolerance, v2Tolerance);
-
-            // The draft opens V1, edits the scale and keeps its edits on V2.
-            var draft = new DraftRegistry().Begin(
-                new SessionId(1), "R1",
-                DraftIntentRead<PushBackPilotDraftState>.Admitted(
-                    DraftStaleBase.Create(new[] { new DraftStaleBaseEntry("D1", DraftMembership.Mutable, "frontal", "-1", v1) }),
-                    PushBackPilotMaterializer.Materialize(v1, catalog).State),
-                PushBackPilotStateComparer.Instance, PushBackPilotStateComparer.Copy).Draft;
-            draft.CurrentDraftState.Inputs.Annotations.AnnotationScale = 2.25;
-            var second = PushBackPilotMaterializer.Materialize(v2, catalog).State;
-            var keep = draft.KeepMineOnCurrentVersion(
-                DraftIntentRead<PushBackPilotDraftState>.Admitted(
-                    DraftStaleBase.Create(new[] { new DraftStaleBaseEntry("D1", DraftMembership.Mutable, "frontal", "-1", v2) }), second),
-                confirmed: true);
-            Assert.Equal(DraftReloadStatus.Reloaded, keep.Status);
-            draft.SetCurrentDraftState(PushBackPilotMaterializer.KeepPilotEditsOn(second, draft.CurrentDraftState));
-
-            var composition = PushBackPilotMaterializer.ComposeForWrite(draft.InitialDraftState, draft.CurrentDraftState, catalog);
-            Assert.True(composition.IsComposed, composition.Reason);
-            embed.Design = new RackProjectStore().Serialize(RackProject.ForPushBack(
-                new PushBackCompositeEditorAssembler(catalog).BuildDesign(composition.Editor, composition.Inputs)));
-            var opened = LoadInWindow(store.Serialize(embed));
-
-            Assert.NotNull(opened.Design);
-            Assert.Equal(2.25, DesignNumber(opened.Design, "AnnotationScale"));
-            Assert.Equal(v2Tolerance, DesignNumber(opened.Design, "PalletTolerance"));
-        }
-
-        private static double DesignNumber(string design, string structureProperty)
-        {
-            using (var document = JsonDocument.Parse(design))
-            {
-                return document.RootElement.GetProperty("PushBack").GetProperty("Structure").GetProperty(structureProperty).GetDouble();
-            }
         }
 
         [Fact]

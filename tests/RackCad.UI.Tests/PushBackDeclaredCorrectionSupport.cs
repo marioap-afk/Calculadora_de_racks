@@ -124,35 +124,6 @@ namespace RackCad.UI.Tests
 
         // ---- El piloto y la paridad ------------------------------------------------------------------------------
 
-        /// <summary>PilotoEscribe(t, catalog): lo que el piloto escribe, copia de WLC:84-91 sin referenciarla.</summary>
-        internal static string PilotoEscribe(string t, RackCatalog catalog)
-        {
-            var materialized = PushBackPilotMaterializer.Materialize(t, catalog);
-            Assert.Equal(PushBackPilotMaterializationKind.Admitted, materialized.Kind);
-            var composition = PushBackPilotMaterializer.ComposeForWrite(materialized.State, materialized.State, catalog);
-            Assert.True(composition.IsComposed, composition.Reason);
-            return Persist(new PushBackCompositeEditorAssembler(catalog).BuildDesign(composition.Editor, composition.Inputs));
-        }
-
-        /// <summary>
-        /// La linea <c>&lt;nombre&gt; admitida=&lt;b&gt; delta=[…]</c> de una fila: la ventana carga el sobre, y su diseño se
-        /// compara con lo que escribe el piloto. La ventana se crea, se carga y se cierra aqui, con la carga dentro del <c>try</c>.
-        /// </summary>
-        internal static string Paridad(string nombre, string t)
-        {
-            var w = Ventana();
-            try
-            {
-                Cargar(w, t);
-                var admitida = w.CurrentInputsAreValid && w.LastComputation != null && w.LastComputation.IsValid;
-                var delta = admitida
-                    ? Delta(Persist(w.LastComputation.Design), PilotoEscribe(t, w.Session.Catalog))
-                    : new List<string> { "NO-ADMITIDA: " + StatusText(w) };
-                return nombre + " admitida=" + admitida + " delta=[" + string.Join(" ;; ", delta) + "]";
-            }
-            finally { Cerrar(w); }
-        }
-
         // ---- El estilo de cotas ----------------------------------------------------------------------------------
 
         /// <summary>EstiloPb(): copia de <c>PushBackDimensionViewsWindowTests.cs:65-92</c> con política nula y estilo «ESTILO_PB».</summary>

@@ -1924,8 +1924,11 @@ public class FullPanelCopyWorkspacePilotPrepareGreenTests
         var total = armed.Touches;
         Assert.True(total > 0);
 
+        // I-64 F4B PB-T4d (OWNER-05; owner-pbt4d-list-decisions.md, pregunta 3; D-S14): the loop is bounded to every 97th touch and the
+        // last one, instead of every touch (4 936 PREPARE, about 6.5 minutes); the failures of the composition (a) and of the builder (d)
+        // are among them, and the assertions do not change.
         var failures = new List<PushBackPilotPrepareResult>();
-        for (var allowed = 0; allowed < total; allowed++)
+        foreach (var allowed in Enumerable.Range(0, total).Where(touch => touch % 97 == 0 || touch == total - 1))
         {
             var failing = new CountingCatalog(PilotKit.Catalog, allowed);
             failures.Add(FullHandKit.Prepare(PushBackFullPrepareInput.From(draft), read, failing.Catalog));
@@ -2307,24 +2310,4 @@ public class FullPanelCopyWorkspacePilotPrepareGreenTests
 
     // ================================================================== the types of the plan name nothing of the drawing
 
-    [Fact]
-    public void ThePlanTypesLiveInThePilotNamespaceAndTheirSignaturesNameNoTypeOfTheHostOrOfTheDrawing()
-    {
-        foreach (var type in new[]
-                 {
-                     typeof(PushBackPilotPrepareInput), typeof(PushBackPilotPrepareResult), typeof(PushBackPilotUpdatePlan),
-                     typeof(PushBackPilotMemberPlan), typeof(PushBackPilotPostExpectation), typeof(PushBackPilotKeyedText),
-                     typeof(PushBackPilotUpdatePlanner), typeof(PushBackPilotPrepareKind),
-                 })
-        {
-            Assert.Equal("RackCad.Application.Systems.PushBack.Pilot", type.Namespace);
-        }
-
-        var members = typeof(PushBackPilotUpdatePlanner).GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.DeclaredOnly);
-        var prepare = Assert.Single(members, m => m.Name == "Prepare");
-        Assert.Equal(
-            new[] { typeof(PushBackPilotPrepareInput), typeof(PushBackPilotIntentResult), typeof(RackCatalog) },
-            prepare.GetParameters().Select(p => p.ParameterType).ToArray());
-        Assert.Equal(typeof(PushBackPilotPrepareResult), prepare.ReturnType);
-    }
 }

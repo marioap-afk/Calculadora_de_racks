@@ -11,20 +11,6 @@ using Xunit;
 
 namespace RackCad.Tests;
 
-/// <summary>I-64 F4-T3A: a comparer of the pilot state that can be told to throw (the draft then cannot decide whether it is dirty).</summary>
-internal sealed class PilotEditThrowingComparer : IEqualityComparer<PushBackPilotDraftState>
-{
-    public bool Throw { get; set; } = true;
-
-    public bool Equals(PushBackPilotDraftState? x, PushBackPilotDraftState? y)
-    {
-        if (Throw) throw new InvalidOperationException("the comparer threw");
-        return PushBackPilotStateComparer.Instance.Equals(x, y);
-    }
-
-    public int GetHashCode(PushBackPilotDraftState obj) => PushBackPilotStateComparer.Instance.GetHashCode(obj);
-}
-
 /// <summary>I-64 F4-T3A: a probe whose active document fails, to prove that every operation of the port contains its exception.</summary>
 internal sealed class PilotEditThrowingProbe : IWorkspaceHostProbe
 {
@@ -62,7 +48,6 @@ public class WorkspacePilotEditHostTests
 {
     private const string RackA = EditIntentKit.RackA;
     private const string RackB = EditIntentKit.RackB;
-    private const string Key = PushBackPilotFieldAdapter.AnnotationScaleKey;
 
     private sealed class Env
     {
@@ -109,15 +94,6 @@ public class WorkspacePilotEditHostTests
             var draft = Core.OpenDrafts.Find<PushBackPilotDraftState>(session ?? Session, rack);
             Assert.NotNull(draft);
             return draft!;
-        }
-
-        /// <summary>A draft of the pilot born with a comparer that throws (it cannot tell whether it is dirty).</summary>
-        public DraftSession<PushBackPilotDraftState> OpenUndecidable(string rack = "R9", SessionId? session = null)
-        {
-            var read = EditIntentKit.Admitted(rack).PilotRead!.Read;
-            var begun = Core.OpenDrafts.Begin(session ?? Session, rack, read, new PilotEditThrowingComparer(), PushBackPilotStateComparer.Copy);
-            Assert.Equal(DraftBeginStatus.Created, begun.Status);
-            return begun.Draft!;
         }
 
         public PilotFieldView Field(string rack = RackA, SessionId? session = null) => Port.GetField(Origin(session), rack);
@@ -169,42 +145,9 @@ public class WorkspacePilotEditHostTests
     }
 
     [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
-    public void TheGestureOfTheFieldEndsTheMarkOfKnownCleanWhenItAppliesTheText()
-    {
-        // The pending text is put straight in the draft, so only the gesture of the field can end the mark that the Allow put.
-        Assert.Equal("conservative", new Env().PathAfter(env =>
-        {
-            env.Core.OpenDrafts.Find<PushBackPilotDraftState>(env.Session, RackA)!.SetPendingText(Key, "2.5");
-            Assert.Equal(PilotFieldStatus.Applied, env.Commit().Status);
-        }));
-    }
-
-    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnEditOfTheUserEndsTheMarkOfKnownClean()
     {
         Assert.Equal("conservative", new Env().PathAfter(env => Assert.Equal(PilotFieldStatus.Applied, env.Type("2.5").Status)));
-    }
-
-    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
-    public void AValidTextAtABlockingBoundaryProceedsAppliesItAndEndsTheMark()
-    {
-        var env = new Env();
-        var draft = env.Open();
-        env.Type("3");
-
-        var crossed = env.Cross(PilotBoundaryKind.TabChange);
-
-        Assert.Equal(PilotBoundaryDecision.Proceeded, crossed.Decision);
-        Assert.True(crossed.StateChanged);
-        Assert.Empty(crossed.InvalidFields);
-        Assert.Equal(3.0, Env.ScaleOf(draft));
-        Assert.False(draft.HasPendingText);
-
-        Assert.Equal("conservative", new Env().PathAfter(e =>
-        {
-            e.Core.OpenDrafts.Find<PushBackPilotDraftState>(e.Session, RackA)!.SetPendingText(Key, "4");
-            Assert.Equal(PilotBoundaryDecision.Proceeded, e.Cross(PilotBoundaryKind.RackChange).Decision);
-        }));
     }
 
     [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
@@ -228,28 +171,6 @@ public class WorkspacePilotEditHostTests
 
     // ------------------------------------------------------------------ 2, 3 and 4: an invalid text
 
-    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
-    [InlineData("abc", PushBackPilotFieldAdapter.NotANumberMessage)]
-    [InlineData("0", PushBackPilotFieldAdapter.NotPositiveMessage)]
-    [InlineData("-3", PushBackPilotFieldAdapter.NotPositiveMessage)]
-    [InlineData("", PushBackPilotFieldAdapter.EmptyMessage)]
-    public void AnInvalidTextAndTheGestureOfTheFieldAnswerInvalidKeepTheTextAsTypedAndLeaveTheValue(string text, string message)
-    {
-        var env = new Env();
-        var draft = env.Open();
-        env.Type(text);
-
-        var committed = env.Commit();
-
-        Assert.Equal(PilotFieldStatus.Invalid, committed.Status);
-        Assert.Equal(message, committed.Message);
-        Assert.Equal(text, committed.View.PendingText);
-        Assert.Equal(message, committed.View.PendingMessage);
-        Assert.Equal(text, draft.PendingText[Key]);
-        Assert.Equal(Env.InitialScale, Env.ScaleOf(draft));
-        Assert.Equal(PilotFieldState.Dirty, env.Field().State);
-    }
-
     [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AnInvalidTextProtectsTheRackPutsItAtRiskAndVetoesTheCloseWithItsNotice()
     {
@@ -272,54 +193,7 @@ public class WorkspacePilotEditHostTests
         Assert.False(notice.IsUncertain);
     }
 
-    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
-    [InlineData(PilotBoundaryKind.TabChange)]
-    [InlineData(PilotBoundaryKind.RackChange)]
-    public void AnInvalidTextAbortsEachBlockingBoundaryWithTheFieldAndTheMessageAndNothingChanges(PilotBoundaryKind kind)
-    {
-        var env = new Env();
-        var draft = env.Open();
-        env.Type("1x2");
-
-        var crossed = env.Cross(kind);
-
-        Assert.Equal(PilotBoundaryDecision.Aborted, crossed.Decision);
-        Assert.Equal(kind, crossed.Kind);
-        Assert.False(crossed.StateChanged);
-        var problem = Assert.Single(crossed.InvalidFields);
-        Assert.Equal(Key, problem.FieldKey);
-        Assert.Equal(PushBackPilotFieldAdapter.NotANumberMessage, problem.Message);
-        Assert.Equal("1x2", draft.PendingText[Key]);
-        Assert.Equal(Env.InitialScale, Env.ScaleOf(draft));
-    }
-
     // ------------------------------------------------------------------ 5, 6, 7 and 8: the non-blocking boundaries and the documents
-
-    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
-    [InlineData(PilotBoundaryKind.DocumentChange)]
-    [InlineData(PilotBoundaryKind.PanelHide)]
-    [InlineData(PilotBoundaryKind.Dematerialize)]
-    [InlineData(PilotBoundaryKind.DocumentClose)]
-    public void EachNonBlockingBoundaryKeepsAnInvalidTextCharacterByCharacterWithoutValidatingCommittingOrAuthorizing(PilotBoundaryKind kind)
-    {
-        var env = new Env();
-        var draft = env.Open();
-        const string typed = " 12abc,,x\t";
-        env.Type(typed);
-        // The session of the rack is no longer the active one: a non-blocking boundary needs no authorization.
-        env.Hr.Activate(200);
-
-        var crossed = env.Cross(kind);
-        var again = env.Field();
-
-        Assert.Equal(PilotBoundaryDecision.Kept, crossed.Decision);
-        Assert.False(crossed.StateChanged);
-        Assert.Empty(crossed.InvalidFields);
-        Assert.Equal(typed, draft.PendingText[Key]);
-        Assert.Equal(typed, again.PendingText);
-        Assert.Equal(Env.InitialScale, Env.ScaleOf(draft));
-        Assert.Empty(env.Hr.Faults);
-    }
 
     [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ANonBlockingBoundaryKeepsTheTextAlsoWhenItIsValidAndDoesNotApplyIt()
@@ -384,23 +258,6 @@ public class WorkspacePilotEditHostTests
         Assert.Equal("6", env.Field(RackB).PendingText);
         Assert.True(b.IsRegistered);
         Assert.Equal("7", env.Field(RackA, other).PendingText);
-        Assert.Empty(env.Hr.Faults);
-    }
-
-    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
-    public void DiscardRackNeedsNoComparerAndRemovesAnUndecidableDraftToo()
-    {
-        var env = new Env();
-        var draft = env.OpenUndecidable("R9");
-        Assert.Equal(PilotFieldState.Undecidable, env.Field("R9").State);
-
-        PilotEditOutcomeProbe.Run(() => env.Port.DiscardRack(env.Origin(), "R9"), out var outcome, out var thrown);
-
-        Assert.Null(thrown);
-        Assert.Equal(EditDiscardStatus.Discarded, outcome.Status);
-        Assert.Equal(new[] { "R9" }, outcome.RemovedRackIds.ToArray());
-        Assert.Empty(outcome.PendingTextRackIds);
-        Assert.False(draft.IsRegistered);
         Assert.Empty(env.Hr.Faults);
     }
 
@@ -476,43 +333,6 @@ public class WorkspacePilotEditHostTests
 
     // ------------------------------------------------------------------ 17: isolation between documents
 
-    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
-    public void TheOperationsOfADocumentNeverTouchTheDraftsOfAnotherAndABlockingMutationOfAnotherDocumentIsRejected()
-    {
-        var env = new Env();
-        var a = env.Session;
-        var draftA = env.Open(RackA, a);
-        env.Type("2", RackA, a);
-        var b = env.Hr.Activate(200);
-        var draftB = env.Open(RackA, b);
-        env.Type("8x", RackA, b);
-        env.Hr.Activate(100);
-
-        // With A active, the operations that change something and name B are refused and change nothing.
-        var typed = env.Type("77", RackA, b);
-        var committed = env.Commit(RackA, b);
-        var crossed = env.Cross(PilotBoundaryKind.TabChange, RackA, b);
-        var discarded = env.Port.DiscardRack(env.Origin(b), RackA);
-        var all = env.Port.DiscardDocument(env.Origin(b));
-
-        Assert.Equal(PilotFieldStatus.Rejected, typed.Status);
-        Assert.Equal(PilotFieldStatus.Rejected, committed.Status);
-        Assert.Equal(PilotBoundaryDecision.Aborted, crossed.Decision);
-        Assert.False(string.IsNullOrEmpty(crossed.Reason));
-        Assert.Equal(EditDiscardStatus.Rejected, discarded.Status);
-        Assert.Equal(EditDiscardStatus.Rejected, all.Status);
-        Assert.Equal("8x", draftB.PendingText[Key]);
-        Assert.True(draftB.IsRegistered);
-        Assert.Equal("2", draftA.PendingText[Key]);
-
-        // And the operations of A change A alone.
-        Assert.Equal(PilotFieldStatus.Applied, env.Type("3", RackA, a).Status);
-        Assert.Equal("8x", draftB.PendingText[Key]);
-        Assert.Equal(PilotFieldStatus.Applied, env.Commit(RackA, a).Status);
-        Assert.Equal(3.0, Env.ScaleOf(draftA));
-        Assert.Equal(Env.InitialScale, Env.ScaleOf(draftB));
-    }
-
     // ------------------------------------------------------------------ 18: the modal scope
 
     [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
@@ -582,68 +402,6 @@ public class WorkspacePilotEditHostTests
     // ------------------------------------------------------------------ GetField in every state
 
     [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
-    public void GetFieldReportsEveryStateOfTheFieldAndWhatCanBeEdited()
-    {
-        var env = new Env();
-        Assert.Equal(PilotFieldState.NotOpen, env.Field().State);
-        Assert.False(env.Field().Exists);
-        Assert.False(env.Field().CanEdit);
-
-        var clean = env.Open(RackA);
-        var view = env.Field();
-        Assert.Equal((true, PilotFieldState.Clean, false, false, true), (view.Exists, view.State, view.IsPossiblyStale, view.IsProtected, view.CanEdit));
-        Assert.Equal(WorkspacePilotValueText.Show(Env.InitialScale, out _), view.CommittedText);
-        Assert.Null(view.PendingText);
-        Assert.Null(view.PendingMessage);
-
-        env.Type("abc");
-        var dirty = env.Field();
-        Assert.Equal((PilotFieldState.Dirty, true, true), (dirty.State, dirty.IsProtected, dirty.CanEdit));
-        Assert.Equal(PushBackPilotFieldAdapter.NotANumberMessage, dirty.PendingMessage);
-        Assert.Equal("abc", dirty.PendingText);
-
-        var conflict = env.Open(RackB);
-        Assert.True(conflict.TryBeginApply().IsStarted);
-        var applying = env.Field(RackB);
-        Assert.Equal((PilotFieldState.Applying, false), (applying.State, applying.CanEdit));
-        conflict.CompleteApply(DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedConflict(new[] { new DraftDifference("A1", DraftDifferenceKind.EnvelopeText) }));
-        var conflicted = env.Field(RackB);
-        Assert.Equal((PilotFieldState.Conflict, true), (conflicted.State, conflicted.CanEdit));
-
-        var unknown = env.Open("R7");
-        Assert.True(unknown.TryBeginApply().IsStarted);
-        unknown.CompleteApply(DraftApplyOutcome<PushBackPilotDraftState>.CommitThrew("the write threw"));
-        var unknownView = env.Field("R7");
-        Assert.Equal((PilotFieldState.Unknown, false), (unknownView.State, unknownView.CanEdit));
-
-        var error = env.Open("R8");
-        error.EnterError("boom");
-        var errorView = env.Field("R8");
-        Assert.Equal((PilotFieldState.Error, false), (errorView.State, errorView.CanEdit));
-
-        Assert.True(clean.IsRegistered);
-    }
-
-    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
-    public void AComparerThatThrowsMakesTheFieldUndecidableProtectedAndNotEditableAndGetFieldNeverThrows()
-    {
-        var env = new Env();
-        env.OpenUndecidable("R9");
-
-        PilotFieldView view = default;
-        var thrown = Record.Exception(() => view = env.Field("R9"));
-
-        Assert.Null(thrown);
-        Assert.Equal(PilotFieldState.Undecidable, view.State);
-        Assert.True(view.IsProtected);
-        Assert.False(view.CanEdit);
-        Assert.True(view.Exists);
-        Assert.Equal(PilotFieldStatus.NotEditable, env.Type("2", "R9").Status);
-        Assert.Equal(PilotFieldStatus.NotEditable, env.Commit("R9").Status);
-        Assert.Empty(env.Hr.Faults);
-    }
-
-    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void GetFieldAndGetRacksAtRiskNeedNoAuthorizationAndNeverThrowEvenForABlankRackOrADocumentThatIsNotActive()
     {
         var env = new Env();
@@ -692,50 +450,6 @@ public class WorkspacePilotEditHostTests
         Assert.False(string.IsNullOrEmpty(unauthorized.Reason));
         Assert.False(draft.HasPendingText);
         Assert.Empty(env.Hr.Faults);
-    }
-
-    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
-    public void TheKeyOfThePendingTextIsAlwaysTheOneOfTheAdapterAndAnEmptyTextIsKeptToo()
-    {
-        var env = new Env();
-        var draft = env.Open();
-
-        env.Type("4");
-        env.Type(string.Empty);
-
-        Assert.Equal(new[] { PushBackPilotFieldAdapter.AnnotationScaleKey }, draft.PendingText.Keys.ToArray());
-        Assert.Equal(string.Empty, draft.PendingText[Key]);
-        Assert.Equal(string.Empty, env.Field().PendingText);
-        Assert.Equal(PushBackPilotFieldAdapter.EmptyMessage, env.Field().PendingMessage);
-    }
-
-    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
-    public void AfterAnySequenceOfAcceptedAndRejectedEditsTheFieldHoldsTheLastAcceptedText()
-    {
-        var env = new Env();
-        var draft = env.Open();
-        var lastAccepted = (string?)null;
-
-        foreach (var text in new[] { "1", "12", "12x", "", "  7 ", "9,5" })
-        {
-            Assert.Equal(PilotFieldStatus.Applied, env.Type(text).Status);
-            lastAccepted = text;
-            Assert.Equal(lastAccepted, env.Field().PendingText);
-        }
-
-        // The field stops being editable: the edits are refused and the last accepted text stays.
-        draft.EnterError("boom");
-        foreach (var text in new[] { "100", "abc" })
-        {
-            Assert.Equal(PilotFieldStatus.NotEditable, env.Type(text).Status);
-            Assert.Equal(lastAccepted, env.Field().PendingText);
-        }
-
-        // A request of another session is refused too.
-        env.Hr.Activate(200);
-        Assert.Equal(PilotFieldStatus.Rejected, env.Type("5", RackA, env.Session).Status);
-        Assert.Equal(lastAccepted, env.Field(RackA, env.Session).PendingText);
-        Assert.Equal(lastAccepted, draft.PendingText[Key]);
     }
 
     // ------------------------------------------------------------------ the gate of reentry of the three reads
@@ -961,61 +675,6 @@ public class WorkspacePilotEditHostTests
         }
     }
 
-    private static IEnumerable<double> TextCorpus()
-    {
-        yield return 1;
-        yield return 2.25;
-        yield return 1.23456;
-        yield return 0.1;
-        yield return 1E-05;
-        yield return 1E+15;
-        yield return 1E+20;
-        yield return 123456789.125;
-        yield return 100;
-        yield return double.Epsilon;
-        yield return double.MaxValue;
-        var random = new Random(20261113);
-        var count = 0;
-        while (count < 400)
-        {
-            var value = BitConverter.Int64BitsToDouble(random.NextInt64());
-            if (double.IsNaN(value) || double.IsInfinity(value) || value <= 0.0) continue;
-            count++;
-            yield return value;
-        }
-    }
-
-    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
-    [InlineData("es-MX")]
-    [InlineData("en-US")]
-    [InlineData("de-DE")]
-    [InlineData("")]
-    public void TheShownTextOfAFiniteValueGreaterThanZeroIsReadBackAsTheSameDoubleAndPassesTheValidationInEveryCulture(string culture)
-    {
-        InCulture(culture, () =>
-        {
-            var separator = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
-            var adapter = new PushBackPilotFieldAdapter();
-            foreach (var value in TextCorpus())
-            {
-                var text = WorkspacePilotValueText.Show(value, out var reason);
-
-                Assert.NotNull(text);
-                Assert.Null(reason);
-                Assert.True(LocalizedNumberParser.TryDouble(text!, out var back), "unreadable: " + text);
-                Assert.Equal(BitConverter.DoubleToInt64Bits(value), BitConverter.DoubleToInt64Bits(back));
-                Assert.True(adapter.Validate(Key, text!).IsValid, "invalid: " + text);
-                Assert.DoesNotContain("E", text!, StringComparison.OrdinalIgnoreCase);
-                Assert.DoesNotContain("+", text!, StringComparison.Ordinal);
-                Assert.DoesNotContain("-", text!, StringComparison.Ordinal);
-                Assert.True(text!.Split(separator).Length <= 2);
-                Assert.False(text.StartsWith(separator, StringComparison.Ordinal));
-                Assert.False(text.EndsWith(separator, StringComparison.Ordinal));
-                Assert.True(text.Length == 1 || text[0] != '0' || text.StartsWith("0" + separator, StringComparison.Ordinal));
-            }
-        });
-    }
-
     [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     [InlineData("es-MX", ".")]
     [InlineData("en-US", ".")]
@@ -1169,54 +828,6 @@ public class WorkspacePilotEditHostTests
     }
 
     [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
-    public void TheNoticeOfAVetoExpiresWhenTheSessionIsDiscardedWhenTheNextAdviceAllowsAndWhenTheSessionIsRetired()
-    {
-        // DiscardRack that leaves the session without risk.
-        var env = new Env();
-        env.Open();
-        env.Type("abc");
-        Assert.Equal(CloseDecision.Veto, env.Close());
-        env.Port.DiscardRack(env.Origin(), RackA);
-        Assert.Empty(env.Port.TakeCloseNotices());
-
-        // DiscardRack that leaves another rack at risk keeps the notice.
-        env = new Env();
-        env.Open(RackA);
-        env.Open(RackB);
-        env.Type("abc", RackA);
-        env.Type("def", RackB);
-        Assert.Equal(CloseDecision.Veto, env.Close());
-        env.Port.DiscardRack(env.Origin(), RackA);
-        Assert.Single(env.Port.TakeCloseNotices());
-
-        // DiscardDocument.
-        env = new Env();
-        env.Open();
-        env.Type("abc");
-        Assert.Equal(CloseDecision.Veto, env.Close());
-        env.Port.DiscardDocument(env.Origin());
-        Assert.Empty(env.Port.TakeCloseNotices());
-
-        // The next advice gives Allow because the pending text went away by other means.
-        env = new Env();
-        var draft = env.Open();
-        env.Type("abc");
-        Assert.Equal(CloseDecision.Veto, env.Close());
-        draft.RemovePendingText(Key);
-        Assert.Equal(CloseDecision.Allow, env.Close());
-        Assert.Empty(env.Port.TakeCloseNotices());
-
-        // The session is retired: its notice goes and the loss notice takes over.
-        env = new Env();
-        env.Open();
-        env.Type("abc");
-        Assert.Equal(CloseDecision.Veto, env.Close());
-        env.Destroy();
-        Assert.Empty(env.Port.TakeCloseNotices());
-        Assert.Single(env.Port.TakeLossNotices());
-    }
-
-    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void AdviseCloseStillReadsNothingAuthorizesNothingAndDoesNotDiscardOrRetireAndTheDecisionIsTheSame()
     {
         var env = new Env();
@@ -1236,26 +847,6 @@ public class WorkspacePilotEditHostTests
     }
 
     // ------------------------------------------------------------------ the racks at risk
-
-    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
-    public void TheRacksAtRiskAreOrderedOrdinallyAndAComparerThatThrowsMakesThemUncertainApart()
-    {
-        var env = new Env();
-        env.Open(RackB);
-        env.Open(RackA);
-        env.Type("1x", RackB);
-        env.Type("2x", RackA);
-        env.OpenUndecidable("R9");
-        env.Open("R5");
-
-        PilotRiskView risk = default;
-        var thrown = Record.Exception(() => risk = env.Port.GetRacksAtRisk(env.Origin()));
-
-        Assert.Null(thrown);
-        Assert.Equal(new[] { RackA, RackB }.OrderBy(r => r, StringComparer.Ordinal).ToArray(), risk.RackIds.ToArray());
-        Assert.Equal(new[] { "R9" }, risk.UncertainRackIds.ToArray());
-        Assert.Empty(env.Hr.Faults);
-    }
 
     [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void TheRacksAtRiskOfASessionThatIsNotTheActiveOneAreAnsweredAndADefaultValueNeverHasANullList()
@@ -1375,49 +966,6 @@ public class WorkspacePilotEditHostTests
 
     // (a) A blocking boundary on a draft that cannot be edited (in error, unknown or being applied) with pending text does not validate and
     // does not apply: it answers Kept, the transition is allowed to go on and the pending text is exactly where it was (D-T3B1-11, minor 3).
-    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
-    public void ABlockingBoundaryOnADraftThatCannotBeEditedKeepsItsPendingTextAndNeverValidatesOrApplies()
-    {
-        var env = new Env();
-
-        var error = env.Open("R8");
-        Assert.Equal(DraftEditStatus.Updated, error.SetPendingText(Key, "abc").Status);
-        error.EnterError("boom");
-
-        // A draft is never applied with pending text (TryBeginApply refuses it) and a draft that cannot be edited takes none, so an unknown
-        // or applying draft has no pending text and its crossing proceeds with nothing to validate; only a draft that went into error with
-        // pending text can be blocked-and-not-editable at once, and for that one the crossing keeps.
-        var unknown = env.Open("R7");
-        Assert.True(unknown.TryBeginApply().IsStarted);
-        unknown.CompleteApply(DraftApplyOutcome<PushBackPilotDraftState>.CommitThrew("the write threw"));
-
-        var applying = env.Open(RackB);
-        Assert.True(applying.TryBeginApply().IsStarted);
-
-        foreach (var (rack, state, pending, decision) in new[]
-                 {
-                     ("R8", PilotFieldState.Error, "abc", PilotBoundaryDecision.Kept),
-                     ("R7", PilotFieldState.Unknown, (string?)null, PilotBoundaryDecision.Proceeded),
-                     (RackB, PilotFieldState.Applying, (string?)null, PilotBoundaryDecision.Proceeded),
-                 })
-        {
-            Assert.False(env.Field(rack).CanEdit);
-            Assert.Equal(state, env.Field(rack).State);
-
-            foreach (var kind in new[] { PilotBoundaryKind.TabChange, PilotBoundaryKind.RackChange })
-            {
-                var crossed = env.Cross(kind, rack);
-
-                Assert.Equal(decision, crossed.Decision);
-                Assert.False(crossed.StateChanged);
-                Assert.Empty(crossed.InvalidFields);
-                Assert.Null(crossed.Reason);
-                Assert.Equal(pending, env.Field(rack).PendingText);
-            }
-        }
-
-        Assert.Empty(env.Hr.Faults);
-    }
 
     // (b) The operations that change nothing keep the mark of "known clean" that the Allow of the close put: the session is retired as known
     // safe, not conservatively, after each of them.
@@ -1462,27 +1010,6 @@ public class WorkspacePilotEditHostTests
 
     // (c) The outer catch of GetField, reached through OpenDrafts with a copier of the state that answers null: the state of the draft is null,
     // the view cannot be built, and the answer is the view in Error, protected and not editable, with the fault logged and nothing thrown.
-    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
-    public void TheOuterCatchOfGetFieldAnswersTheViewInErrorWhenTheCopierOfTheStateAnswersNull()
-    {
-        var env = new Env();
-        var read = EditIntentKit.Admitted("R9").PilotRead!.Read;
-        var begun = env.Core.OpenDrafts.Begin(env.Session, "R9", read, new PilotEditThrowingComparer(), _ => null!);
-        Assert.Equal(DraftBeginStatus.Created, begun.Status);
-        env.Hr.Faults.Clear();
-
-        PilotFieldView view = default;
-        var thrown = Record.Exception(() => view = env.Field("R9"));
-
-        Assert.Null(thrown);
-        Assert.True(view.Exists);
-        Assert.Equal(PilotFieldState.Error, view.State);
-        Assert.True(view.IsProtected);
-        Assert.False(view.CanEdit);
-        Assert.Null(view.CommittedText);
-        Assert.False(string.IsNullOrWhiteSpace(view.CommittedTextReason));
-        Assert.Contains(env.Hr.Faults, fault => fault.Context == "WorkspaceHostCore.GetField");
-    }
 
     // ------------------------------------------------------------------ I-64 F4-T3C1 (D-T3C1-01, 03, 04, 05, 06): the host hardened
 
@@ -1499,22 +1026,6 @@ public class WorkspacePilotEditHostTests
         Assert.True(new PilotRiskView(new[] { RackA }, new[] { "R9" }).IsKnown);
         Assert.Throws<ArgumentNullException>(() => new PilotRiskView(null!, Array.Empty<string>()));
         Assert.Throws<ArgumentNullException>(() => new PilotRiskView(Array.Empty<string>(), null!));
-    }
-
-    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
-    public void TheFallbackByDraftIsKnownAndKeepsTheUncertainOnesApart()
-    {
-        var env = new Env();
-        env.Open(RackB);
-        env.Type("1x", RackB);
-        env.OpenUndecidable("R9");
-
-        var risk = env.Port.GetRacksAtRisk(env.Origin());
-
-        Assert.True(risk.IsKnown);
-        Assert.Equal(new[] { RackB }, risk.RackIds.ToArray());
-        Assert.Equal(new[] { "R9" }, risk.UncertainRackIds.ToArray());
-        Assert.Empty(env.Hr.Faults);
     }
 
     [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
@@ -1594,21 +1105,6 @@ public class WorkspacePilotEditHostTests
         Assert.Equal(EditIntentStatus.NotAdmitted, env.Port.TryBeginEdit(env.Request("R5")).Status);
         Assert.Equal("Hay una lectura del piloto en curso.", busy);
         Assert.Equal("Hay una lectura del piloto en curso.", busyDiscard);
-    }
-
-    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
-    public void TheReasonOfAFieldThatCannotBeReadIsInSpanish()
-    {
-        var env = new Env();
-        var read = EditIntentKit.Admitted("R9").PilotRead!.Read;
-        var begun = env.Core.OpenDrafts.Begin(env.Session, "R9", read, new PilotEditThrowingComparer(), _ => null!);
-        Assert.Equal(DraftBeginStatus.Created, begun.Status);
-
-        var view = env.Field("R9");
-
-        Assert.Equal(PilotFieldState.Error, view.State);
-        Assert.Equal("No se pudo leer el estado del campo.", view.CommittedTextReason);
-        Assert.Null(view.ErrorReason);
     }
 
     [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotEditHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]

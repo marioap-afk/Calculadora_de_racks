@@ -23,7 +23,6 @@ public class WorkspacePilotUpdateGuardTests
     private const string WriterPath = "src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs";
     private const string ScanPath = "src/RackCad.Plugin/Views/RackSiblingScan.cs";
     private const string CorePath = "src/RackCad.Application/Workspace/WorkspaceHostCore.cs";
-    private const string MaterializerPath = PilotFolder + "PushBackPilotMaterializer.cs";
 
     private static readonly string[] PureFiles = { PortPath, RunPath, RebuildPath };
 
@@ -932,32 +931,6 @@ public class WorkspacePilotUpdateGuardTests
 
     // ------------------------------------------------------------------ M-1: the composition for writing never copies the current state
 
-    private static IEnumerable<string> ComposeForWriteViolations(string materializer)
-    {
-        var body = Src.BodyOf(materializer, @"public\s+static\s+PushBackPilotComposition\s+ComposeForWrite\s*\(");
-        if (Regex.IsMatch(body, @"Copy\s*\(\s*current\s*\)")) yield return "ComposeForWrite copies the current state: it hides what the edit changed";
-        if (Src.Count(body, @"PushBackPilotStateComparer\.Copy\s*\(\s*initial\s*\)") != 1) yield return "ComposeForWrite does not copy the initial state exactly once";
-        if (!Regex.IsMatch(body, @"PushBackPilotStateComparer\.Instance\.Equals\s*\(\s*neutralInitial\s*,\s*current\s*\)")) yield return "ComposeForWrite does not compare the current state as it is";
-    }
-
-    [Fact]
-    public void TheCompositionForWritingComparesTheCurrentStateAsItIsAndNeverCopiesIt()
-    {
-        Assert.Empty(ComposeForWriteViolations(Src.Code(MaterializerPath)));
-    }
-
-    [Fact]
-    public void TheGuardOfTheCompositionTripsWhenTheCurrentStateIsCopiedBeforeTheComparison()
-    {
-        var code = Src.Code(MaterializerPath);
-
-        Assert.NotEmpty(ComposeForWriteViolations(code.Replace(
-            "PushBackPilotStateComparer.Instance.Equals(neutralInitial, current)",
-            "PushBackPilotStateComparer.Instance.Equals(neutralInitial, PushBackPilotStateComparer.Copy(current))",
-            StringComparison.Ordinal)));
-        Assert.NotEmpty(ComposeForWriteViolations(code.Replace("var neutralInitial = PushBackPilotStateComparer.Copy(initial);", "var neutralInitial = initial;", StringComparison.Ordinal)));
-        Assert.NotEmpty(ComposeForWriteViolations(code.Replace("PushBackPilotStateComparer.Instance.Equals(neutralInitial, current)", "PushBackPilotStateComparer.Instance.Equals(current, neutralInitial)", StringComparison.Ordinal)));
-    }
 }
 
 /// <summary>

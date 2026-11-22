@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
+using RackCad.Application.Systems.PushBack.Draft;
 using RackCad.Application.Systems.PushBack.Pilot;
 using RackCad.Application.Views.Redraw;
 using RackCad.Application.Workspace.Drafts;
@@ -535,14 +536,17 @@ public class WorkspaceDraftPilotIntentStaleBaseTests
 
     // ------------------------------------------------------------------ Check now with the real core (INV-F4T2B1-11, B-1)
 
-    private static DraftSession<PushBackPilotDraftState> UnknownAfterACommitThatThrew(PushBackPilotIntentResult first)
+    // I-64 F4B PB-T4d (owner-pbt4d-substitutes-decision.md): the draft is born from the read of the FULL model of the same scan (the
+    // comparer of the pilot is retired); the base that Check now compares is the same, and the rereads are still the ones of the reader.
+    private static DraftSession<PushBackFullDraftState> UnknownAfterACommitThatThrew(PushBackPilotIntentScan scan)
     {
+        var first = PushBackFullDraftReader.Read(scan, PilotKit.Catalog);
         Assert.True(first.Read.IsAdmitted);
-        var begun = new DraftRegistry().Begin(DraftKit.S1, "R1", first.Read, PushBackPilotStateComparer.Instance, PushBackPilotStateComparer.Copy);
+        var begun = new DraftRegistry().Begin(DraftKit.S1, "R1", first.Read, PushBackFullDraftStateComparer.Instance, PushBackFullDraftStateComparer.Copy);
         Assert.Equal(DraftBeginStatus.Created, begun.Status);
         var draft = begun.Draft!;
         Assert.True(draft.TryBeginApply().IsStarted);
-        draft.CompleteApply(DraftApplyOutcome<PushBackPilotDraftState>.CommitThrew("the commit threw"));
+        draft.CompleteApply(DraftApplyOutcome<PushBackFullDraftState>.CommitThrew("the commit threw"));
         Assert.Equal(DraftStatus.Unknown, draft.Status);
         Assert.Equal(DraftUnknownOrigin.CommitThrew, draft.UnknownOrigin);
         return draft;
@@ -551,7 +555,7 @@ public class WorkspaceDraftPilotIntentStaleBaseTests
     [Fact]
     public void ARereadThatIsNotAdmittedBecauseAMemberBecameBlockingTakesTheUnknownDraftToConflictWithTheDifferences()
     {
-        var draft = UnknownAfterACommitThatThrew(IntentKit.Read(IntentKit.TwoViews()));
+        var draft = UnknownAfterACommitThatThrew(IntentKit.TwoViews());
         var reread = IntentKit.Read(IntentKit.Scan(
             IntentKit.Rack,
             "A1",
@@ -570,7 +574,7 @@ public class WorkspaceDraftPilotIntentStaleBaseTests
     [Fact]
     public void ARereadThatIsNotAdmittedBecauseAuth13FindsDivergenceTakesTheUnknownDraftToConflictWithTheDifferences()
     {
-        var draft = UnknownAfterACommitThatThrew(IntentKit.Read(IntentKit.TwoViews()));
+        var draft = UnknownAfterACommitThatThrew(IntentKit.TwoViews());
         var reread = IntentKit.Read(IntentKit.Scan(
             IntentKit.Rack,
             "A1",
@@ -589,7 +593,7 @@ public class WorkspaceDraftPilotIntentStaleBaseTests
     public void ARereadThatIsEqualRecoversTheUnknownDraft()
     {
         // The read before the commit is admitted; the reread has the same base, and it is the base that Check now compares.
-        var draft = UnknownAfterACommitThatThrew(IntentKit.Read(IntentKit.TwoViews()));
+        var draft = UnknownAfterACommitThatThrew(IntentKit.TwoViews());
         var reread = IntentKit.Read(IntentKit.TwoViews());
         Assert.NotEmpty(reread.StaleBase.Entries);
 
@@ -605,7 +609,7 @@ public class WorkspaceDraftPilotIntentStaleBaseTests
     public void ARereadThatIsNotAdmittedOnlyForTheCatalogStillRecoversBecauseTheBaseIsTheSame()
     {
         // Two reads of the same facts can differ in admission only through what the base does not hold (the catalog): the base is the same.
-        var draft = UnknownAfterACommitThatThrew(IntentKit.Read(IntentKit.TwoViews()));
+        var draft = UnknownAfterACommitThatThrew(IntentKit.TwoViews());
         var withoutCatalog = PushBackPilotIntentReader.Read(IntentKit.TwoViews(), null);
         Assert.False(withoutCatalog.Read.IsAdmitted);
 

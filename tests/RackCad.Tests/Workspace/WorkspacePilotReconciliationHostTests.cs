@@ -56,45 +56,6 @@ public class WorkspacePilotReconciliationHostTests
             draft.CurrentDraftState.Inputs.Annotations.AnnotationScale = scale;
     }
 
-    // What the three operations must leave alone when they do not apply.
-    // The base and the current state are held by reference. The initial state is a COPY by contract of the draft (N-2: every read of
-    // InitialDraftState makes a new one), so its reference can never be the same: it is held as the copy that was made when it was
-    // held and compared with the pilot's own comparer, which is the equality the draft itself uses to decide that it is dirty.
-    private sealed record Held(
-        DraftStaleBase Base,
-        PushBackPilotDraftState Initial,
-        PushBackPilotDraftState Current,
-        string InitialOrigin,
-        double Scale,
-        IReadOnlyList<KeyValuePair<string, string>> Pending,
-        DraftStatus Status,
-        bool IsPossiblyStale,
-        bool IsDirty);
-
-    private static Held Hold(DraftSession<PushBackPilotDraftState> draft) => new(
-        draft.StaleBase,
-        draft.InitialDraftState,
-        draft.CurrentDraftState,
-        draft.InitialDraftState.Origin,
-        draft.CurrentDraftState.Inputs.Annotations.AnnotationScale,
-        draft.PendingText.OrderBy(p => p.Key, StringComparer.Ordinal).ToArray(),
-        draft.Status,
-        draft.IsPossiblyStale,
-        draft.IsDirty);
-
-    private static void AssertHeld(Held before, DraftSession<PushBackPilotDraftState> draft)
-    {
-        Assert.Same(before.Base, draft.StaleBase);
-        Assert.Same(before.Current, draft.CurrentDraftState);
-        Assert.True(PushBackPilotStateComparer.Instance.Equals(before.Initial, draft.InitialDraftState), "the initial state of the draft changed");
-        Assert.Equal(before.InitialOrigin, draft.InitialDraftState.Origin);
-        Assert.Equal(before.Scale, draft.CurrentDraftState.Inputs.Annotations.AnnotationScale);
-        Assert.Equal(before.Pending, draft.PendingText.OrderBy(p => p.Key, StringComparer.Ordinal).ToArray());
-        Assert.Equal(before.Status, draft.Status);
-        Assert.Equal(before.IsPossiblyStale, draft.IsPossiblyStale);
-        Assert.Equal(before.IsDirty, draft.IsDirty);
-    }
-
     private static string Lateral(string rack) => IntentKit.Variant("pb-01-base", rack, view: "lateral", section: 3);
 
     // The envelope of a view with a design that differs from pb-01-base only where the edit says, found by its text and not assumed. Every
@@ -209,29 +170,6 @@ public class WorkspacePilotReconciliationHostTests
         Assert.Equal(DraftStatus.Conflict, draft.Status);
     }
 
-    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
-    public void KeepAndDiscardOfADeletedRackAnswerNotAdmittedWithTheDiagnosticAndTheHintAndChangeNothing()
-    {
-        foreach (var operation in new[] { "keep", "discard" })
-        {
-            var rig = new Rig();
-            var draft = rig.Open();
-            Rig.Edit(draft);
-            draft.MarkPossiblyStale();
-            draft.SetPendingText("field", "typed");
-            rig.Reader.Answer = RackDeleted;
-            var before = Hold(draft);
-
-            var outcome = operation == "keep" ? rig.Core.TryKeepPilotEdit(rig.Request()) : rig.Core.TryDiscardAndReloadPilotEdit(rig.Request());
-
-            Assert.Equal(EditIntentStatus.NotAdmitted, outcome.Status);
-            Assert.Equal(PushBackPilotIntentReader.OriginMissingDiagnostic, outcome.Diagnostic);
-            Assert.Equal(PushBackPilotIntentReader.ClassicEditorHint, outcome.ClassicEditorHint);
-            AssertHeld(before, draft);
-            Assert.Single(rig.Reader.Calls);
-        }
-    }
-
     // ------------------------------------------------------------------ scenario 6: the rack is no longer editable
 
     [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
@@ -312,110 +250,11 @@ public class WorkspacePilotReconciliationHostTests
         Assert.Equal(PushBackPilotIntentReader.ClassicEditorHint, outcome.ClassicEditorHint);
     }
 
-    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
-    public void KeepAndDiscardOfAnUnreadableEnvelopeAnswerNotAdmittedWithItsDiagnosticAndChangeNothing()
-    {
-        foreach (var operation in new[] { "keep", "discard" })
-        {
-            var rig = new Rig();
-            var draft = rig.Open();
-            Rig.Edit(draft);
-            draft.MarkPossiblyStale();
-            rig.Reader.Answer = Unreadable;
-            var before = Hold(draft);
-
-            var outcome = operation == "keep" ? rig.Core.TryKeepPilotEdit(rig.Request()) : rig.Core.TryDiscardAndReloadPilotEdit(rig.Request());
-
-            Assert.Equal(EditIntentStatus.NotAdmitted, outcome.Status);
-            Assert.Equal(PushBackPilotIntentReader.UnreadableDiagnostic, outcome.Diagnostic);
-            Assert.Equal(PushBackPilotIntentReader.ClassicEditorHint, outcome.ClassicEditorHint);
-            AssertHeld(before, draft);
-        }
-    }
-
     // ------------------------------------------------------------------ scenario 8: an exception of the read or of the comparison
-
-    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
-    public void ADefaultReadResultAnswersFailedForTheThreeOperationsAndChangesNothing()
-    {
-        var rig = new Rig();
-        var draft = rig.Open();
-        Rig.Edit(draft);
-        draft.MarkPossiblyStale();
-        rig.Reader.Answer = _ => default;
-        var before = Hold(draft);
-
-        var confirm = rig.Core.TryConfirmPilotBase(rig.Request());
-        var keep = rig.Core.TryKeepPilotEdit(rig.Request());
-        var discard = rig.Core.TryDiscardAndReloadPilotEdit(rig.Request());
-
-        Assert.Equal(EditConfirmStatus.Failed, confirm.Status);
-        Assert.Equal(EditIntentStatus.Failed, keep.Status);
-        Assert.Equal(EditIntentStatus.Failed, discard.Status);
-        Assert.Equal(3, rig.Reader.Calls.Count);
-        AssertHeld(before, draft);
-        Assert.Equal(WorkspaceHostStatus.Ready, rig.Core.GetSnapshot().Status);
-    }
-
-    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
-    public void AnExceptionInsideTheComparisonOfTheGeneralCheckIsFailedReportedAndChangesNothing()
-    {
-        var rig = new Rig();
-        var draft = rig.Open();
-        Rig.Edit(draft);
-        draft.MarkPossiblyStale();
-        // A base that was never constructed: comparing against it throws inside ConfirmBase, after the one read.
-        var broken = (DraftStaleBase)RuntimeHelpers.GetUninitializedObject(typeof(DraftStaleBase));
-        rig.Reader.Answer = _ => EditIntentReadResult.FromPilot(PrepareKit.Reread(broken));
-        var before = Hold(draft);
-
-        var outcome = rig.Core.TryConfirmPilotBase(rig.Request());
-
-        Assert.Equal(EditConfirmStatus.Failed, outcome.Status);
-        Assert.False(string.IsNullOrWhiteSpace(outcome.Reason));
-        Assert.Null(outcome.AdmissionDiagnostic);
-        Assert.Null(outcome.ClassicEditorHint);
-        AssertHeld(before, draft);
-        var fault = Assert.Single(rig.Host.Faults);
-        Assert.Equal("WorkspaceHostCore.TryConfirmPilotBase", fault.Context);
-        Assert.False(rig.Host.Bridge.Core.IsDegraded(rig.Session));
-        Assert.Single(rig.Reader.Calls);
-    }
 
     // ------------------------------------------------------------------ scenario 13: an invalid pending text and the three operations
 
     private const string InvalidText = "  1:5x \t";
-
-    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente escrito a mano en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
-    public void AnInvalidPendingTextDoesNotBlockTheThreeOperationsConfirmAndKeepLeaveItExactlyAsTypedAndDiscardEmptiesIt()
-    {
-        var confirmRig = new Rig();
-        var confirmDraft = confirmRig.Open();
-        Rig.Edit(confirmDraft);
-        confirmDraft.SetPendingText("field", InvalidText);
-        var before = Hold(confirmDraft);
-        Assert.Equal(EditConfirmStatus.Confirmed, confirmRig.Core.TryConfirmPilotBase(confirmRig.Request()).Status);
-        AssertHeld(before, confirmDraft);
-        Assert.Equal(InvalidText, confirmDraft.PendingText["field"]);
-
-        var keepRig = new Rig();
-        var keepDraft = keepRig.Open();
-        Rig.Edit(keepDraft);
-        keepDraft.SetPendingText("field", InvalidText);
-        keepDraft.MarkPossiblyStale();
-        keepRig.Reader.Answer = rack => OriginChanged(rack, (ToleranceFrom, ToleranceTo));
-        Assert.Equal(EditIntentStatus.Kept, keepRig.Core.TryKeepPilotEdit(keepRig.Request()).Status);
-        Assert.Equal(InvalidText, keepDraft.PendingText["field"]);
-        Assert.Equal(2.25, keepDraft.CurrentDraftState.Inputs.Annotations.AnnotationScale);
-
-        var discardRig = new Rig();
-        var discardDraft = discardRig.Open();
-        Rig.Edit(discardDraft);
-        discardDraft.SetPendingText("field", InvalidText);
-        discardRig.Reader.Answer = rack => OriginChanged(rack, (ToleranceFrom, ToleranceTo));
-        Assert.Equal(EditIntentStatus.Reloaded, discardRig.Core.TryDiscardAndReloadPilotEdit(discardRig.Request()).Status);
-        Assert.False(discardDraft.HasPendingText);
-    }
 
     [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
     public void ConfirmOfAConflictWithAnInvalidPendingTextKeepsTheTextTheConflictAndTheDifferences()
@@ -437,58 +276,6 @@ public class WorkspacePilotReconciliationHostTests
     }
 
     // ------------------------------------------------------------------ scenarios 14 and 15: the session and the document
-
-    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
-    public void ASessionThatNeverExistedIsRejectedForTheThreeOperationsWithoutReadingAndWithoutChange()
-    {
-        var rig = new Rig();
-        var draft = rig.Open();
-        Rig.Edit(draft);
-        draft.MarkPossiblyStale();
-        var before = Hold(draft);
-        var never = new SessionId(987654);
-
-        var confirm = rig.Core.TryConfirmPilotBase(rig.Request(session: never));
-        var keep = rig.Core.TryKeepPilotEdit(rig.Request(session: never));
-        var discard = rig.Core.TryDiscardAndReloadPilotEdit(rig.Request(session: never));
-
-        Assert.Equal(EditConfirmStatus.Rejected, confirm.Status);
-        Assert.Equal(EditIntentStatus.Rejected, keep.Status);
-        Assert.Equal(EditIntentStatus.Rejected, discard.Status);
-        Assert.Equal("La petición no es del documento activo.", confirm.Reason);
-        Assert.Equal("La petición no es del documento activo.", keep.Reason);
-        Assert.Equal("La petición no es del documento activo.", discard.Reason);
-        Assert.Empty(rig.Reader.Calls);
-        AssertHeld(before, draft);
-    }
-
-    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su copia en WorkspacePilotReconciliationHostFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 3).")]
-    public void AnotherActiveDocumentRejectsTheThreeOperationsWithoutReadingAndLeavesTheBaseTheInitialTheCurrentAndThePendingTextIntact()
-    {
-        var rig = new Rig();
-        var draft = rig.Open();
-        Rig.Edit(draft);
-        draft.SetPendingText("field", InvalidText);
-        draft.MarkPossiblyStale();
-        var before = Hold(draft);
-        var first = rig.Session;
-
-        rig.Host.Activate(200);
-        rig.Core.RefreshPanel();
-        rig.Host.Idle();
-        Assert.NotEqual(first, rig.Host.ActiveSession);
-
-        var confirm = rig.Core.TryConfirmPilotBase(rig.Request());
-        var keep = rig.Core.TryKeepPilotEdit(rig.Request());
-        var discard = rig.Core.TryDiscardAndReloadPilotEdit(rig.Request());
-
-        Assert.Equal(EditConfirmStatus.Rejected, confirm.Status);
-        Assert.Equal(EditIntentStatus.Rejected, keep.Status);
-        Assert.Equal(EditIntentStatus.Rejected, discard.Status);
-        Assert.Empty(rig.Reader.Calls);
-        AssertHeld(before, draft);
-        Assert.Equal(InvalidText, draft.PendingText["field"]);
-    }
 
     // ------------------------------------------------------------------ the value of the answer (INV-F4T4A2-10 and 16)
 

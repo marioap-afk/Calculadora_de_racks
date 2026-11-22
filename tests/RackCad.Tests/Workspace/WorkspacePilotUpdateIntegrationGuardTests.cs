@@ -507,15 +507,6 @@ public class WorkspacePilotUpdateIntegrationGuardTests
         Assert.Empty(G4Violations(Product()));
     }
 
-    [Fact]
-    public void G4TripsOnACallerInTheControllerTheAdapterOrASecondCallInTheCore()
-    {
-        Assert.NotEmpty(G4Violations(Append(Product(), ControllerPath, "var u = _host.TryUpdatePilot(request, port);")));
-        Assert.NotEmpty(G4Violations(Append(Product(), AdapterPath, "var u = core.TryUpdatePilot(request, port);")));
-        Assert.NotEmpty(G4Violations(Append(Product(), HostRunPath, "var o = PushBackPilotUpdateRun.Execute(draft, request, port);")));
-        Assert.NotEmpty(G4Violations(With(Product(), CorePath, code => code.Replace("public EditUpdateOutcome TryUpdatePilot(", "public EditUpdateOutcome Other() { return TryUpdatePilot(null!, null!); }\n        public EditUpdateOutcome TryUpdatePilot(", StringComparison.Ordinal))));
-    }
-
     [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente en WorkspacePilotUpdateIntegrationGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
     public void G4TripsOnAGroupOfMethodsOfTheUpdateOutsideTheCoreAndInsideItAndNotOnTheNameInsideAString()
     {
