@@ -9195,3 +9195,49 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - solo documentación y evidencia; sin cambios en `src/` ni en `tests/`;
 - la rama de I-64, su worktree y `main`, sin tocar;
 - sin usar AutoCAD.
+
+## 295. A-14 ACTIVA: Coordinator AGREED, firma del Owner (tramo 1 = fases 0 a 4) y activación en la rama lateral
+
+**Solo en la rama lateral `architecture/workspace-persistente-rackcad-a14`** (Q-C1). La rama de I-64 sigue en `fa59bd82` y no se toca. A-14 es `docs/initiatives/I-64-A-14.md` en `ab0170b76c34249b4d772ac18cc571c1b5a587f1` (blob `427ce303…`), sin editar: es append-only desde ese commit.
+
+**La cadena completa** (A-14 §10):
+1. **La redacción y las revisiones independientes**, del v1 a la v2.3 (sección 293): la última comprobación da EMITIBLE A ARCHITECT, y la v2.3 aplica sus 4 menores.
+2. **Q-C1 y Q-C2**, decididas por el Owner como Coordinator: la rama lateral, y la celda gpt-6-luna / high / read-only (sección 293).
+3. **El versionado** en `ab0170b7`, con las fuentes en `A-14/` y `sha256.txt`. Su CI exacta es la `45263171189`: success, 4/4 (sección 293).
+4. **La configuración de la revisión:** la Snapshot M, por la quinta ronda del Owner («Sonda neutra, luego M»). La sonda `282c` da PASS (sección 294).
+5. **La revisión formal del Architect** `R20261123T212253Z-ab02` da **AGREED**, con REQUIRED 0 y OPTIONAL 0. M-01 a M-08 = YES; Q01 a Q13 = YES y Q14 y Q15 = NO, todas conformes (sección 294).
+6. **Coordinator AGREED,** en la sexta ronda: «AGREED (Recomendado)», sobre «la A-14 tal como está en ab0170b7». Está en `A-14/coordinator/coordinator-a14-agreed.md`.
+7. **La firma del Owner,** en la sexta ronda: «SATISFIED, tramo 1 = fases 0-4 (Recomendado)». Está en `A-14/coordinator/owner-a14-satisfied.md`.
+   - **La frase firmada** es la exacta de la §11 de `ab0170b7`, líneas 940 a 962. Solo cambian el `<SHA>`, que pasa a `ab0170b7…`, y la materia (11), que queda en «tramo 1 = fases 0 a 4, como se propone».
+   - El archivo trae la frase completa y sus SHA-256.
+   - Como la materia (11) queda en la propuesta, no hace falta la A-n de tramos.
+8. **La activación** en el estado de I-64 (`docs/automation/state/I-64.yml`, en esta rama):
+   - **`f4b_a14_status`** = A-14 ACTIVA, con los tres acuerdos y el tramo 1 = fases 0 a 4. Sigue la forma de `f2_a13_status`.
+   - **`codex_environment`** = la Snapshot M, como línea base activa del Controller, en lugar de la L (F4B-E57).
+   - **`current_phase`** sigue en F4B. `next_action` tampoco cambia: el Smoke-PB.
+
+**La orden de la revisión:** su anexo `A-14/coordinator/coordinator-a14-review-order-annex.md` registra lo que pasó, sin editar la orden custodiada (su SHA-256 sigue siendo el de su manifiesto):
+- **Su cabecera de preparación:** la orden la emitió la quinta ronda del Owner, y la consumió la revisión `ab02`.
+- **Sus campos `[COORDINATOR]`:** la revisión se lanzó con la propuesta de A-14 §9 y §12 en cada uno, y el Architect y el Coordinator AGREED los cubren como se detalla.
+- **Las dos desviaciones del prompt:**
+  - dice «config Snapshot L», el texto de Q-C2, frente a la Snapshot M medida a la salida y a la entrada;
+  - nombra la ruta de la orden en el worktree, donde no existió.
+
+**Lo que no cambia:**
+- F4B, el contrato de PB-T5 y el Smoke-PB, que sigue en curso (A-14 §6, fase 0; Relation to F4B);
+- los textos de A-1 a A-13 y de IC-01 a IC-11; las únicas sustituciones son las de IC-02, IC-03 e IC-05, que hacen C-02 y C-03 y están dentro de la firma;
+- F1, F2, F3 y F4, que no se reabren.
+
+**Lo que sigue:**
+- **Fase 0 = el cierre de F4B.** El Smoke-PB de PB-T5 sigue pendiente, con las reglas de su contrato (F4B-E62).
+- **El paquete de la fase 1** (la ventana) espera a que F4B cierre (A-14 §10, paso 8). Como toda fase, necesita su paquete, su revisión independiente y la orden del Owner y del Coordinator antes de emitirse (A-14 §6).
+- **La línea D** (el diseño por sistema, sin código) empieza por **Dinámico**, por la quinta ronda del Owner. Selectivo se aplaza, porque su editor cambiará en otra iniciativa del Owner.
+- **Al unir** esta rama lateral con la de I-64, después del cierre de F4B:
+  - se renumeran las secciones 293 a 295 de esta evidencia, si la rama de I-64 añade antes las suyas;
+  - se reconcilia `I-64.yml`.
+
+**Límites:**
+- solo documentación y estado; sin cambios en `src/` ni en `tests/`;
+- la rama de I-64, su worktree y `main`, sin tocar;
+- sin AutoCAD;
+- ninguna fase de A-14 emitida.
