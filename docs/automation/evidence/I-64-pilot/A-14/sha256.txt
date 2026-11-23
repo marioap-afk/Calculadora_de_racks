@@ -1,0 +1,24 @@
+7c7bff35b9754987b59b7c61262a6998e85401ba9e83ab5087252330873d4e6c  coordinator/owner-a14-decisions.md  bytes=7245 lines=93 cr=0 nul=0 hits=0 admitidos=0
+79175286541f67b9538920c177f06d37dea6d672ce748ba41d32edbdc47e8a4f  replaneacion-i64.html  bytes=19528 lines=183 cr=0 nul=0 hits=0 admitidos=0
+4386ef631c162c01365b9ac67d73e113d512de9fab808e67786e40b01d96342e  prototipo/Main.dc.html  bytes=42868 lines=733 cr=0 nul=0 hits=0 admitidos=0 original=0d0ee1198ae441e0b1eb3324965fea96cd1c389e4ed8797a59d43205ad67a097
+5baf8529df57fd445e58e3e394aeca3cbf0ef9f42f7d5066e37d8c1eecb6c6d7  prototipo/canvas.json  bytes=983 lines=15 cr=0 nul=0 hits=0 admitidos=0
+7571e16509b6be965efa9d6f6346f8c7701eb9ab104c9d81595ba39fb3342dfb  I-64-A-14-draft-v1.md  bytes=50104 lines=598 cr=0 nul=0 hits=0 admitidos=0
+65e252e2e24db490dbb5b5261f8dc48b6f428647cea9ebe16ad02cb33b1492e4  I-64-A-14-draft-v2.md  bytes=79284 lines=859 cr=0 nul=0 hits=0 admitidos=0
+e4758ae9132dd89d62239307ef8e45da81352faac339ce35858dcda362a25925  I-64-A-14-draft-v2.1.md  bytes=98221 lines=1028 cr=0 nul=0 hits=0 admitidos=0
+89670c2f76c31c4fc1c8f9523feb8f9c97e30a7f5eb6ef7c9ed98826e3b695f5  I-64-A-14-draft-v2.2.md  bytes=102504 lines=1066 cr=0 nul=0 hits=0 admitidos=0
+edf20bd23d508e76a3ebdbabeb17c862dc842ec7c47d975012952ec032304f13  I-64-A-14-draft-v2.3.md  bytes=103688 lines=1081 cr=0 nul=0 hits=0 admitidos=0
+d3a13ef00d676067be9d5e98a173ea3c585c477341efacdf16a8afae5a3822b4  review/independent-review-a14-v1.md  bytes=34924 lines=415 cr=0 nul=0 hits=0 admitidos=0
+48e0e0bf184b97ed1d13264dd99e7f620a36cbe8a593ba896619c75fed194f18  review/independent-review-a14-v2-check.md  bytes=33187 lines=293 cr=0 nul=0 hits=0 admitidos=0
+be9d965987ebd2e26b49cf74f08d97de25b048578c4e63a18dce86f4c9996913  review/independent-review-a14-v21-check.md  bytes=16532 lines=167 cr=0 nul=0 hits=0 admitidos=0
+4354e08195632dfa475878b94bf5b22c24d620f8bad3596c250056b51eb8e75f  review/independent-review-a14-v22-check.md  bytes=9812 lines=99 cr=0 nul=0 hits=0 admitidos=0
+eb8bd6f643a8740e2bac2cac665e29d603cc58bdce56207b3acd479d52c1238e  review/a14-v2-disposition.md  bytes=10587 lines=52 cr=0 nul=0 hits=0 admitidos=0
+c410c93bd10dfef48c331861e1b8ded1d34eed21dc40d51647d39a6db0e1ed53  review/a14-v21-disposition.md  bytes=8594 lines=50 cr=0 nul=0 hits=0 admitidos=0
+3693ca3ddb1de89679c3508e2fa1e5ca9e1d96318da0663fd9748cc7425540ca  review/a14-v22-disposition.md  bytes=3978 lines=29 cr=0 nul=0 hits=0 admitidos=0
+2df56e71e82ceba0e57df4781f0110cb46cdaf3d63ce13b2e8c2786b018870d5  review/a14-v23-disposition.md  bytes=2385 lines=19 cr=0 nul=0 hits=0 admitidos=0
+6015bec840fb249c5f11a5072222cc66f5e159cb7dc8f62f49a00dfa2f3eefa5  encargos/a14-drafting-brief.md  bytes=7191 lines=83 cr=0 nul=0 hits=0 admitidos=1 original=d5e77580d35b604e8f18d69f58ca89475b704ad0ef28070387ad08f75f4e7ecd
+0bc9dc18980ace77a5e1fdf6156b6fb5b83a5f715505be30f99a1640accc01f6  encargos/a14-review-v1-brief.md  bytes=3411 lines=52 cr=0 nul=0 hits=0 admitidos=0 original=f3f9ee0cfa9b544e598b66b4260f5f05c94119998c3b973477f940c4ad290b97
+b53f301c5d42ea8bba71d4e2df9011b5b82e2e8d571141ec83b359da94ee4b34  encargos/a14-v2-check-prompt.md  bytes=1781 lines=28 cr=0 nul=0 hits=0 admitidos=0
+f97b7c36947cd9a4b75a39a2f4262e816f9a735dd9c8025568a19dd9aa5ee14d  encargos/a14-v2-instructions.md  bytes=3832 lines=52 cr=0 nul=0 hits=0 admitidos=0
+f378885abe2bb5e4eee861e0f7a020e308030526662e298ca46f69ab0e8d122a  encargos/a14-v21-instructions.md  bytes=3129 lines=46 cr=0 nul=0 hits=0 admitidos=0
+aa989804903581279d94bd6a38377ce79dfb8346e4e4cf36a6a25dc01b79f92e  encargos/a14-versioning-brief.md  bytes=5169 lines=82 cr=0 nul=0 hits=0 admitidos=6 original=f23eee95953c8c572c886264c9d9f917a5f7851927208203831bfb9c8f8ac8ba
+8a25ca721362f3839c92494538256cf5ed62c67fafb73093c1f5866c4ac75e7c  a14-drafting-notes.md  bytes=31405 lines=389 cr=0 nul=0 hits=0 admitidos=2

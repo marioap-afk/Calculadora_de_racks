@@ -1,0 +1,733 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>RackCad sin bloqueo</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:Inter,system-ui,sans-serif;color:#1f2933;background:#e9edf2}
+a{color:#1d4ed8}a:hover{color:#1e3a8a}
+.app{display:flex;flex-direction:column;min-height:900px;width:100%}
+.ribbon{background:#2b2f36;color:#d9dee5;padding:8px 16px;display:flex;gap:18px;align-items:center;flex-wrap:wrap;font-size:13px}
+.ribbon-title{font-weight:600;color:#ffffff}
+.work{display:flex;flex-wrap:wrap;flex:1;min-height:0}
+.dwg{flex:999 1 420px;min-width:0;background:#1c1f24;color:#cfd6df;display:flex;flex-direction:column}
+.dwg-tools{display:flex;gap:8px;padding:10px 12px;flex-wrap:wrap;align-items:center;border-bottom:1px solid #2f343c}
+.dwg-note{font-size:12px;color:#aab3bf}
+.dwg-btn{background:#2f3540;color:#e5e9ef;border:1px solid #4b5563;border-radius:6px;padding:8px 12px;font:inherit;font-size:13px;cursor:pointer;min-height:36px}
+.dwg-btn:hover{background:#3a414d}
+.canvas{flex:1;padding:16px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;overflow:auto;max-height:680px}
+.rk{background:transparent;border:2px solid #3fb950;color:#d1f7d6;width:104px;height:56px;border-radius:3px;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;padding:5px 6px;text-align:left;font:inherit}
+.rk-sel{border-color:#60a5fa;box-shadow:0 0 0 3px rgba(96,165,250,.35);color:#dbeafe}
+.rk-name{font-weight:600;font-size:12px}
+.rk-sub{font-size:11px;color:#b7c4d1}
+.rk-ext{font-size:10px;color:#fcd34d}
+.cmdline{border-top:1px solid #2f343c;padding:8px 12px;font-family:Consolas,Menlo,monospace;font-size:12px;background:#15171b;color:#c3cad3;display:flex;flex-direction:column;gap:2px}
+.pal{flex:1 1 780px;min-width:0;max-width:940px;background:#f7f9fb;border-left:1px solid #cfd6de;display:flex;flex-direction:column;position:relative}
+.pal-head{display:flex;align-items:center;gap:12px;padding:10px 14px;background:#ffffff;border-bottom:1px solid #dde3ea;flex-wrap:wrap}
+.brand{font-weight:700;font-size:15px;color:#111827}
+.doc{font-size:12px;color:#52606d}
+.spacer{flex:1}
+.btn{border:1px solid #c3ccd6;background:#ffffff;color:#1f2933;border-radius:6px;padding:8px 12px;font:inherit;font-size:13px;cursor:pointer;min-height:36px}
+.btn:hover{background:#f1f5f9}
+.btn:disabled{opacity:.45;cursor:default}
+.btn-pri{background:#1d4ed8;border-color:#1d4ed8;color:#ffffff}
+.btn-pri:hover{background:#1e40af}
+.btn-all{background:#0f766e;border-color:#0f766e;color:#ffffff;font-weight:600}
+.btn-all:hover{background:#115e59}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+.dot-limpio{background:#16a34a}.dot-modificado{background:#d97706}.dot-obsoleto{background:#dc2626}.dot-nuevo{background:#2563eb}
+.body{display:flex;flex-wrap:wrap;flex:1;min-height:0}
+.side{flex:1 1 230px;max-width:280px;border-right:1px solid #dde3ea;padding:12px;display:flex;flex-direction:column;gap:12px;background:#f1f4f8}
+.main{flex:999 1 440px;min-width:0;padding:16px;display:flex;flex-direction:column;gap:14px}
+.sec{display:flex;flex-direction:column;gap:2px}
+.sec-btn{text-align:left;border:none;background:transparent;padding:8px 10px;border-radius:6px;font:inherit;font-size:13px;cursor:pointer;color:#323f4b;min-height:36px}
+.sec-btn:hover{background:#e3e9f0}
+.sec-on{background:#dbe7fb;color:#1e3a8a;font-weight:600}
+.lbl{font-size:11px;font-weight:600;color:#52606d;text-transform:uppercase;letter-spacing:.04em}
+.filters{display:flex;flex-direction:column;gap:8px}
+.sr{position:absolute;left:-9999px}
+.inp{border:1px solid #c3ccd6;border-radius:6px;padding:8px;font:inherit;font-size:13px;color:#1f2933;background:#ffffff;width:100%;box-sizing:border-box}
+.count{font-size:12px;color:#52606d}
+.nav-list{display:flex;flex-direction:column;gap:2px;max-height:430px;overflow-y:auto;padding-right:2px}
+.nav-kind{font-size:12px;color:#52606d;margin:6px 0 2px;display:flex;justify-content:space-between}
+.nav-item{display:flex;align-items:center;gap:8px;text-align:left;border:none;background:transparent;padding:6px 8px;border-radius:6px;font:inherit;font-size:13px;cursor:pointer;color:#1f2933;min-height:32px}
+.nav-item:hover{background:#e3e9f0}
+.nav-on{background:#dbe7fb;font-weight:600}
+.nav-sel{outline:2px solid #60a5fa;outline-offset:-2px}
+.empty{font-size:12px;color:#52606d;padding:8px}
+.sel-box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px;font-size:12px;color:#1e3a8a;display:flex;flex-direction:column;gap:8px}
+.head-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.h1{font-size:20px;font-weight:700;margin:0;color:#111827}
+.h2{font-size:15px;font-weight:600;margin:0;color:#111827}
+.muted{font-size:12px;color:#52606d}
+.chip{font-size:12px;padding:3px 9px;border-radius:999px;font-weight:600}
+.chip-limpio{background:#dcfce7;color:#14532d}
+.chip-modificado{background:#fef3c7;color:#78350f}
+.chip-obsoleto{background:#fee2e2;color:#7f1d1d}
+.chip-nuevo{background:#dbeafe;color:#1e3a8a}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.card{background:#ffffff;border:1px solid #dde3ea;border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.field{display:flex;flex-direction:column;gap:4px;font-size:12px;color:#52606d}
+.field input{border:1px solid #c3ccd6;border-radius:6px;padding:8px;font:inherit;font-size:13px;color:#1f2933;background:#ffffff}
+.mx{display:flex;flex-direction:column;gap:4px;overflow-x:auto}
+.mx-row{display:flex;gap:4px;align-items:center}
+.mx-lbl{width:62px;font-size:11px;color:#52606d;flex:none}
+.mx-cell{min-width:64px;height:32px;border:1px solid #d5dce4;border-radius:4px;background:#f8fafc;font-size:10px;color:#52606d;display:flex;align-items:center;justify-content:center;flex:none}
+.pv{background:#111418;border-radius:6px;padding:12px;display:flex;flex-direction:column;overflow-x:auto}
+.pv-row{display:flex}
+.pv-cell{width:14px;height:20px;border-left:2px solid #3fb950;border-bottom:2px solid #60a5fa;flex:none}
+.banner{background:#eef2ff;border:1px solid #c7d2fe;color:#312e81;border-radius:8px;padding:10px 12px;font-size:13px;line-height:1.45}
+.banner-warn{background:#fff7ed;border:1px solid #fed7aa;color:#7c2d12;border-radius:8px;padding:10px 12px;font-size:13px;line-height:1.45}
+.toast{font-size:13px;color:#14532d;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:6px;padding:8px 10px}
+.overlay{position:absolute;inset:0;background:rgba(15,23,42,.35);display:flex;align-items:flex-start;justify-content:center;padding-top:70px}
+.dlg{background:#ffffff;border-radius:10px;width:min(540px,92%);padding:18px;display:flex;flex-direction:column;gap:12px;box-shadow:0 12px 30px rgba(0,0,0,.2)}
+.dlg-list{margin:0;padding-left:18px;font-size:13px;display:flex;flex-direction:column;gap:6px}
+.tbl-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{border-bottom:1px solid #e4e7eb;padding:7px 8px;text-align:left;vertical-align:middle}
+th{color:#52606d;font-weight:600;font-size:12px}
+.grid-new{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.new-card{text-align:left;border:1px solid #dde3ea;background:#ffffff;border-radius:8px;padding:12px;font:inherit;cursor:pointer;display:flex;flex-direction:column;gap:4px;min-height:70px}
+.new-card:hover{border-color:#93c5fd;background:#f8fbff}
+.new-title{font-weight:600;font-size:14px;color:#111827}
+.check{display:flex;gap:8px;align-items:center;font-size:13px;color:#1f2933}
+.scroll-tbl{max-height:360px;overflow:auto}
+</style>
+</helmet>
+<div class="app">
+  <div class="ribbon">
+    <span class="ribbon-title">AutoCAD — Planta ejemplo.dwg</span>
+    <span>Inicio</span><span>Insertar</span><span>Anotar</span><span>Vista</span>
+    <span class="spacer"></span>
+    <span>AutoCAD sigue disponible con RackCad abierto</span>
+  </div>
+  <div class="work">
+    <div class="dwg">
+      <div class="dwg-tools">
+        <button class="dwg-btn" onClick="{{simulate}}">Simular un cambio en el dibujo ({{simTarget}})</button>
+        <button class="dwg-btn" onClick="{{zoom}}">Zoom</button>
+        <button class="dwg-btn" onClick="{{undo}}">Deshacer (U)</button>
+        <span class="dwg-note">Pulsa un rack para seleccionarlo.</span>
+      </div>
+      <div class="canvas">
+        <sc-for list="{{drawing}}" as="d" hint-placeholder-count="12">
+          <button class="{{d.cls}}" onClick="{{d.onClick}}" aria-label="Seleccionar {{d.label}} en el dibujo">
+            <span class="rk-name">{{d.label}}</span>
+            <sc-if value="{{d.ext}}" hint-placeholder-val="{{ false }}"><span class="rk-ext">cambiado</span></sc-if>
+            <span class="rk-sub">{{d.sub}}</span>
+          </button>
+        </sc-for>
+      </div>
+      <div class="cmdline" aria-live="polite">
+        <sc-for list="{{log}}" as="line" hint-placeholder-count="3"><div>{{line}}</div></sc-for>
+      </div>
+    </div>
+
+    <div class="pal">
+      <div class="pal-head">
+        <span class="brand">RackCad</span>
+        <span class="doc">Planta ejemplo.dwg · {{rackCount}} racks</span>
+        <span class="spacer"></span>
+        <span class="muted">{{pendingText}}</span>
+        <button class="btn btn-all" onClick="{{openAll}}" disabled="{{allDisabled}}">Actualizar todo ({{pendingCount}})</button>
+      </div>
+
+      <div class="body">
+        <div class="side">
+          <div class="sec">
+            <span class="lbl">RackCad</span>
+            <sc-for list="{{sections}}" as="sc" hint-placeholder-count="5">
+              <button class="{{sc.cls}}" onClick="{{sc.onClick}}">{{sc.label}}</button>
+            </sc-for>
+          </div>
+
+          <div class="filters">
+            <span class="lbl">Racks del dibujo</span>
+            <label><span class="sr">Buscar rack por nombre</span><input class="inp" type="search" placeholder="Buscar rack…" value="{{q}}" onChange="{{setQ}}"></label>
+            <label><span class="sr">Filtrar por sistema</span>
+              <select class="inp" value="{{kindF}}" onChange="{{setKind}}">
+                <sc-for list="{{kindOptions}}" as="o" hint-placeholder-count="5"><option value="{{o.v}}">{{o.l}}</option></sc-for>
+              </select>
+            </label>
+            <label class="check"><input type="checkbox" checked="{{onlyChanged}}" onChange="{{toggleChanged}}">Solo con cambios sin escribir</label>
+            <label class="check"><input type="checkbox" checked="{{follow}}" onChange="{{toggleFollow}}">Seguir la selección de AutoCAD</label>
+            <span class="count">{{shownText}}</span>
+          </div>
+
+          <sc-if value="{{showSelBox}}" hint-placeholder-val="{{ false }}">
+            <div class="sel-box">
+              <span>Seleccionado en AutoCAD: <strong>{{selName}}</strong></span>
+              <button class="btn" onClick="{{openSelected}}">Abrir</button>
+            </div>
+          </sc-if>
+
+          <div class="nav-list">
+            <sc-for list="{{navGroups}}" as="g" hint-placeholder-count="3">
+              <span class="nav-kind"><span>{{g.kind}}</span><span>{{g.countText}}</span></span>
+              <sc-for list="{{g.items}}" as="n" hint-placeholder-count="4">
+                <button class="{{n.cls}}" onClick="{{n.onClick}}">
+                  <span class="{{n.dotCls}}" aria-hidden="true"></span>
+                  <span>{{n.name}}</span>
+                </button>
+              </sc-for>
+            </sc-for>
+            <sc-if value="{{noResults}}" hint-placeholder-val="{{ false }}"><span class="empty">Ningún rack coincide con el filtro.</span></sc-if>
+          </div>
+        </div>
+
+        <div class="main">
+          <sc-if value="{{hasToast}}" hint-placeholder-val="{{ false }}"><div class="toast" role="status">{{toast}}</div></sc-if>
+
+          <sc-if value="{{isRack}}" hint-placeholder-val="{{ true }}">
+            <div class="head-row">
+              <h1 class="h1">{{rv.name}}</h1>
+              <span class="{{rv.chipCls}}">{{rv.statusLabel}}</span>
+              <span class="muted">{{rv.kind}} · vistas: {{rv.views}}</span>
+            </div>
+            <div class="actions">
+              <button class="btn btn-pri" onClick="{{rv.onUpdate}}" disabled="{{rv.updateDisabled}}">{{rv.updateLabel}}</button>
+              <button class="btn" onClick="{{rv.onDiscard}}" disabled="{{rv.discardDisabled}}">Descartar cambios</button>
+              <button class="btn" onClick="{{rv.onCheck}}">Comprobar ahora</button>
+              <sc-if value="{{rv.notNew}}" hint-placeholder-val="{{ true }}">
+                <button class="btn" onClick="{{rv.onSelect}}">Seleccionar</button>
+                <button class="btn" onClick="{{rv.onCenter}}">Centrar</button>
+                <button class="btn" onClick="{{rv.onClassic}}">Abrir en editor clásico</button>
+              </sc-if>
+            </div>
+            <sc-if value="{{rv.isObsoleto}}" hint-placeholder-val="{{ false }}">
+              <div class="banner-warn">Este rack cambió en el dibujo mientras lo editabas. Al pulsar «Actualizar» podrás elegir: volver a leer el dibujo o conservar tu borrador.</div>
+            </sc-if>
+            <sc-if value="{{rv.isNew}}" hint-placeholder-val="{{ false }}">
+              <div class="banner">Sistema nuevo, todavía sin insertar. «Insertar en el dibujo» te pedirá el punto en AutoCAD. Hoy, «Nuevo» abre la ventana clásica de ese sistema; la meta es esta vista.</div>
+            </sc-if>
+            <div class="banner">Los cambios van al borrador de este rack; el dibujo no cambia hasta «{{rv.updateLabel}}» o «Actualizar todo». Puedes pasar a otro rack sin perderlos. {{rv.editorNote}}</div>
+            <div class="card">
+              <h2 class="h2">Datos generales</h2>
+              <div class="fields">
+                <sc-for list="{{rv.fields}}" as="f" hint-placeholder-count="5">
+                  <label class="field">{{f.label}}<input value="{{f.value}}" onChange="{{f.onChange}}"></label>
+                </sc-for>
+              </div>
+            </div>
+            <div class="card">
+              <h2 class="h2">Matriz frente × nivel</h2>
+              <div class="mx">
+                <sc-for list="{{rv.rows}}" as="row" hint-placeholder-count="4">
+                  <div class="mx-row">
+                    <span class="mx-lbl">{{row.label}}</span>
+                    <sc-for list="{{row.cells}}" as="c" hint-placeholder-count="6"><span class="mx-cell">{{c.t}}</span></sc-for>
+                  </div>
+                </sc-for>
+              </div>
+              <sc-if value="{{rv.hasMore}}" hint-placeholder-val="{{ true }}"><span class="muted">{{rv.moreText}}</span></sc-if>
+            </div>
+            <div class="card">
+              <h2 class="h2">Vista previa (lateral)</h2>
+              <div class="pv" role="img" aria-label="Vista previa esquemática del rack">
+                <sc-for list="{{rv.pvRows}}" as="pr" hint-placeholder-count="4">
+                  <div class="pv-row"><sc-for list="{{pr.cells}}" as="pc" hint-placeholder-count="12"><span class="pv-cell"></span></sc-for></div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{isInicio}}" hint-placeholder-val="{{ false }}">
+            <h1 class="h1">Nuevo</h1>
+            <p class="muted" style="margin: 0">Elige el sistema: aparece en la lista de racks como «Nuevo, sin insertar», con su editor, sin tocar el dibujo.</p>
+            <div class="grid-new">
+              <sc-for list="{{kinds}}" as="k" hint-placeholder-count="6">
+                <button class="new-card" onClick="{{k.onClick}}">
+                  <span class="new-title">{{k.label}}</span>
+                  <span class="muted">{{k.desc}}</span>
+                </button>
+              </sc-for>
+            </div>
+            <div class="banner">Paso intermedio: mientras se migran los editores, «Nuevo» abre la ventana clásica de ese sistema. La meta es abrirlo aquí.</div>
+            <div class="card">
+              <h2 class="h2">Recientes de la biblioteca</h2>
+              <sc-for list="{{library}}" as="lb" hint-placeholder-count="3">
+                <div class="head-row">
+                  <span style="flex: 1; font-size: 13px">{{lb.name}}</span>
+                  <button class="btn" onClick="{{lb.onOpen}}">Abrir como nuevo</button>
+                </div>
+              </sc-for>
+            </div>
+            <p class="muted" style="margin: 0">Siguen como órdenes de AutoCAD: RACKPROYECTAR y RACKEDITAR (editor clásico).</p>
+          </sc-if>
+
+          <sc-if value="{{isVariables}}" hint-placeholder-val="{{ false }}">
+            <div class="head-row">
+              <h1 class="h1">Variables</h1>
+              <span class="spacer"></span>
+              <button class="btn" onClick="{{discardVars}}" disabled="{{varsClean}}">Descartar cambios</button>
+            </div>
+            <div class="banner">Los cambios de variables se escriben con «Actualizar todo», junto con los racks que las usan.</div>
+            <div class="card tbl-wrap">
+              <table>
+                <thead><tr><th>Nombre</th><th>Expresión</th><th>Valor</th><th>Usada en</th></tr></thead>
+                <tbody>
+                  <sc-for list="{{varsView}}" as="v" hint-placeholder-count="3">
+                    <tr>
+                      <td>{{v.name}}</td>
+                      <td><label class="field"><span class="sr">Expresión de {{v.name}}</span><input value="{{v.expr}}" onChange="{{v.onChange}}"></label></td>
+                      <td>{{v.value}}</td>
+                      <td>{{v.used}}</td>
+                    </tr>
+                  </sc-for>
+                </tbody>
+              </table>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{isBom}}" hint-placeholder-val="{{ false }}">
+            <div class="head-row">
+              <h1 class="h1">BOM y lista de racks</h1>
+              <span class="spacer"></span>
+              <button class="btn" onClick="{{exportXlsx}}">Exportar Excel</button>
+              <button class="btn" onClick="{{exportCsv}}">Exportar CSV</button>
+            </div>
+            <div class="card">
+              <h2 class="h2">Racks del dibujo ({{rackCount}})</h2>
+              <div class="tbl-wrap scroll-tbl">
+                <table>
+                  <thead><tr><th>Nombre</th><th>Sistema</th><th>Vistas</th><th>Estado</th><th></th></tr></thead>
+                  <tbody>
+                    <sc-for list="{{listView}}" as="li" hint-placeholder-count="4">
+                      <tr><td>{{li.name}}</td><td>{{li.kind}}</td><td>{{li.views}}</td><td><span class="{{li.chipCls}}">{{li.statusLabel}}</span></td><td><button class="btn" onClick="{{li.onOpen}}">Abrir</button></td></tr>
+                    </sc-for>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card tbl-wrap">
+              <h2 class="h2">BOM total (lo escrito en el dibujo)</h2>
+              <table>
+                <thead><tr><th>Componente</th><th>Cantidad</th></tr></thead>
+                <tbody>
+                  <sc-for list="{{bom}}" as="b" hint-placeholder-count="4"><tr><td>{{b.c}}</td><td>{{b.q}}</td></tr></sc-for>
+                </tbody>
+              </table>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{isBiblioteca}}" hint-placeholder-val="{{ false }}">
+            <h1 class="h1">Biblioteca de diseños</h1>
+            <div class="card">
+              <sc-for list="{{library}}" as="lb" hint-placeholder-count="3">
+                <div class="head-row">
+                  <span style="flex: 1; font-size: 13px">{{lb.name}}</span>
+                  <span class="muted">{{lb.kind}}</span>
+                  <button class="btn" onClick="{{lb.onOpen}}">Abrir como nuevo</button>
+                </div>
+              </sc-for>
+            </div>
+            <div class="actions">
+              <button class="btn" onClick="{{saveToLib}}" disabled="{{saveDisabled}}">Guardar el rack abierto en la biblioteca</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{isConfig}}" hint-placeholder-val="{{ false }}">
+            <h1 class="h1">Configuración</h1>
+            <div class="card">
+              <div class="fields">
+                <sc-for list="{{cfgFields}}" as="cf" hint-placeholder-count="3">
+                  <label class="field">{{cf.label}}<input value="{{cf.value}}" onChange="{{cf.onChange}}"></label>
+                </sc-for>
+              </div>
+              <label class="check"><input type="checkbox" checked="{{cfgAuto}}" onChange="{{toggleAuto}}">Abrir RackCad al iniciar AutoCAD</label>
+              <label class="check"><input type="checkbox" checked="{{cfgUnits}}" onChange="{{toggleUnits}}">Avisar si el dibujo no está en pulgadas (INSUNITS)</label>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+
+      <sc-if value="{{dialogOpen}}" hint-placeholder-val="{{ false }}">
+        <div class="overlay">
+          <div class="dlg" role="dialog" aria-label="{{dlgTitle}}">
+            <h2 class="h2">{{dlgTitle}}</h2>
+            <sc-if value="{{isAllDialog}}" hint-placeholder-val="{{ false }}">
+              <p class="muted" style="margin: 0">Todo o nada: si uno no se puede escribir, no se escribe ninguno. Un solo «U» en AutoCAD lo deshace todo.</p>
+              <ul class="dlg-list">
+                <sc-for list="{{pendingView}}" as="p" hint-placeholder-count="2"><li><strong>{{p.name}}</strong> — {{p.change}}</li></sc-for>
+              </ul>
+              <div class="actions">
+                <button class="btn btn-all" onClick="{{confirmAll}}">Actualizar todo</button>
+                <button class="btn" onClick="{{closeDialog}}">Cancelar</button>
+              </div>
+            </sc-if>
+            <sc-if value="{{isResultDialog}}" hint-placeholder-val="{{ false }}">
+              <p style="margin: 0; font-size: 13px; line-height: 1.5">{{resultText}}</p>
+              <div class="actions">
+                <sc-if value="{{resultConflict}}" hint-placeholder-val="{{ false }}">
+                  <button class="btn" onClick="{{resultReread}}">Volver a leer (descartar mi borrador)</button>
+                  <button class="btn btn-pri" onClick="{{resultKeep}}">Conservar mi borrador</button>
+                </sc-if>
+                <sc-if value="{{resultGo}}" hint-placeholder-val="{{ false }}">
+                  <button class="btn btn-pri" onClick="{{resultGoRack}}">Ir al rack</button>
+                </sc-if>
+                <button class="btn" onClick="{{closeDialog}}">Cerrar</button>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    var racks = {}, order = [];
+    function add(id, kind, name, views, fronts, levels, depth) {
+      racks[id] = { id: id, kind: kind, views: views, isNew: false, external: false, draft: null, base: { name: name, scale: '1', fronts: fronts, levels: levels, depth: depth } };
+      order.push(id);
+    }
+    var i;
+    for (i = 1; i <= 18; i++) add('sel' + i, 'Selectivo', 'Selectivo ' + i, 'frontal, lateral, planta', String(8 + (i % 5) * 2), String(3 + (i % 2)), '42');
+    for (i = 1; i <= 36; i++) add('pb' + i, 'Push Back', 'PB ' + i, 'lateral, planta', String(20 + (i % 6) * 4), '4', '48');
+    for (i = 1; i <= 12; i++) add('din' + i, 'Dinámico', 'Dinámico ' + i, 'lateral, planta', String(6 + (i % 4)), '3', '60');
+    for (i = 1; i <= 4; i++) add('can' + i, 'Cantilever', 'Cantilever ' + i, 'frontal, lateral', String(5 + i), '4', '36');
+    racks.pb2.draft = Object.assign({}, racks.pb2.base, { scale: '2.5', fronts: String(parseInt(racks.pb2.base.fronts, 10) - 1) });
+    racks.sel7.draft = Object.assign({}, racks.sel7.base, { levels: '5' });
+    this.state = {
+      active: 'pb2', selected: 'pb2', follow: true,
+      q: '', kindF: 'todos', onlyChanged: false,
+      order: order, racks: racks,
+      vars: [
+        { name: 'ALTURA_NIVEL', base: '60', draft: null, value: '60', used: '31 racks' },
+        { name: 'FONDO_TARIMA', base: '48', draft: null, value: '48', used: '36 racks' },
+        { name: 'HOLGURA', base: 'ALTURA_NIVEL / 10', draft: null, value: '6', used: '18 racks' }
+      ],
+      cfg: { blocks: '<datos-locales-del-usuario>\\bloques.dwg', designs: '<datos-locales-del-usuario>\\Disenos', catalogs: '<datos-locales-del-usuario>\\Catalogos', auto: true, units: true },
+      dialog: null, result: null, toast: '', seq: 1,
+      log: ['Comando: RACKCAD', 'RackCad: ventana abierta (no bloquea AutoCAD).', 'Comando:']
+    };
+  }
+
+  cur(r) { return r.draft || r.base; }
+  status(r) {
+    if (r.isNew) return 'nuevo';
+    if (r.draft && r.external) return 'obsoleto';
+    if (r.draft) return 'modificado';
+    return 'limpio';
+  }
+  statusLabel(st) {
+    return { limpio: 'Limpio', modificado: 'Modificado', obsoleto: 'Posiblemente obsoleto', nuevo: 'Nuevo, sin insertar' }[st];
+  }
+  pushLog(log, line) {
+    var l = log.filter(function (x) { return x !== 'Comando:'; }).concat([line, 'Comando:']);
+    return l.slice(-5);
+  }
+  withRack(s, id, patch) {
+    var racks = Object.assign({}, s.racks);
+    racks[id] = Object.assign({}, s.racks[id], patch);
+    return racks;
+  }
+  same(a, b) {
+    return a.name === b.name && a.scale === b.scale && a.fronts === b.fronts && a.levels === b.levels && a.depth === b.depth;
+  }
+  changeText(r) {
+    if (r.isNew) return 'insertar el sistema nuevo en el dibujo';
+    var a = r.base, b = r.draft, parts = [];
+    var names = { name: 'nombre', scale: 'escala', fronts: 'frentes', levels: 'niveles', depth: 'fondo de tarima' };
+    Object.keys(names).forEach(function (k) { if (a[k] !== b[k]) parts.push(names[k] + ' ' + a[k] + ' → ' + b[k]); });
+    return parts.join(' · ');
+  }
+  pendingIds(s) {
+    return s.order.filter(function (id) { var r = s.racks[id]; return r.isNew || r.draft; });
+  }
+  varsChanged(s) { return s.vars.filter(function (v) { return v.draft !== null; }).length; }
+
+  openRack(id) {
+    this.setState(function (s) {
+      return { active: id, selected: s.racks[id].isNew ? s.selected : id, toast: '' };
+    });
+  }
+  pick(id) {
+    var self = this;
+    this.setState(function (s) {
+      return { selected: id, active: s.follow ? id : s.active, toast: '', log: self.pushLog(s.log, 'Comando: (selección en el dibujo) ' + s.racks[id].base.name) };
+    });
+  }
+  edit(id, key, value) {
+    var self = this;
+    this.setState(function (s) {
+      var r = s.racks[id];
+      var d = Object.assign({}, r.draft || r.base);
+      d[key] = value;
+      var draft = (!r.isNew && self.same(d, r.base)) ? null : d;
+      return { racks: self.withRack(s, id, { draft: draft, external: draft ? r.external : false }), toast: '' };
+    });
+  }
+  discard(id) {
+    this.setState(function (s) {
+      var r = s.racks[id];
+      if (r.isNew) {
+        var racks = Object.assign({}, s.racks); delete racks[id];
+        return { racks: racks, order: s.order.filter(function (o) { return o !== id; }), active: 'inicio', toast: 'Sistema nuevo descartado.' };
+      }
+      var racks2 = Object.assign({}, s.racks); racks2[id] = Object.assign({}, r, { draft: null, external: false });
+      return { racks: racks2, toast: 'Borrador descartado; se muestra lo que hay en el dibujo.' };
+    });
+  }
+  check(id) {
+    var r = this.state.racks[id];
+    var t = r.external ? 'El dibujo cambió desde que empezaste: borrador posiblemente obsoleto.' : 'Sin cambios: el dibujo coincide con la base del borrador.';
+    this.setState({ toast: t });
+  }
+  applyRack(s, id, racks) {
+    var r = s.racks[id];
+    racks[id] = Object.assign({}, r, { base: r.draft || r.base, draft: null, external: false, isNew: false, views: r.isNew ? 'lateral, planta' : r.views });
+  }
+  updateOne(id) {
+    var self = this;
+    var r0 = this.state.racks[id], st = this.status(r0);
+    if (st === 'obsoleto') {
+      this.setState({ dialog: 'result', result: { conflict: true, rackId: id, title: r0.base.name + ' cambió en el dibujo', text: 'Alguien cambió este rack en AutoCAD mientras lo editabas. Elige: volver a leer el dibujo (pierdes tu borrador) o conservar tu borrador (se escribirá encima del cambio).' } });
+      return;
+    }
+    this.setState(function (s) {
+      var r = s.racks[id];
+      var racks = Object.assign({}, s.racks);
+      self.applyRack(s, id, racks);
+      var verb = r.isNew ? ' insertado' : ' actualizado';
+      return { racks: racks, toast: '', log: self.pushLog(s.log, 'RackCad: ' + self.cur(r).name + verb + ' (1 paso de Deshacer).') };
+    });
+  }
+  reread(id) {
+    var self = this;
+    this.setState(function (s) {
+      return { racks: self.withRack(s, id, { draft: null, external: false }), dialog: null, result: null, toast: 'Releído del dibujo; borrador descartado.' };
+    });
+  }
+  keepMine(id) {
+    var self = this;
+    this.setState(function (s) {
+      return { racks: self.withRack(s, id, { external: false }), dialog: null, result: null, toast: 'Se conserva tu borrador: pulsa «Actualizar» o «Actualizar todo» para escribirlo.' };
+    });
+  }
+  simulate() {
+    var self = this;
+    this.setState(function (s) {
+      var id = (s.selected && s.racks[s.selected] && !s.racks[s.selected].isNew) ? s.selected : 'pb2';
+      var r = s.racks[id];
+      var line = 'Comando: MOVER (cambio hecho en AutoCAD sobre ' + r.base.name + ')';
+      if (!r.draft) {
+        return { log: self.pushLog(s.log, line), toast: r.base.name + ' cambió en el dibujo; como no tenía borrador, el panel lo releyó solo.' };
+      }
+      return { racks: self.withRack(s, id, { external: true }), log: self.pushLog(s.log, line), toast: '' };
+    });
+  }
+  confirmAll() {
+    var self = this;
+    var s0 = this.state;
+    var ids = this.pendingIds(s0);
+    var conflicts = ids.filter(function (id) { return self.status(s0.racks[id]) === 'obsoleto'; });
+    if (conflicts.length) {
+      var names = conflicts.map(function (id) { return s0.racks[id].base.name; }).join(', ');
+      this.setState({ dialog: 'result', result: { conflict: false, goId: conflicts[0], title: 'No se escribió nada', text: 'Todo o nada: ' + names + ' cambió en el dibujo mientras lo editabas. Resuélvelo en ese rack (volver a leer o conservar tu borrador) y pulsa otra vez «Actualizar todo».' } });
+      return;
+    }
+    var nVars = this.varsChanged(s0);
+    var total = ids.length + (nVars ? 1 : 0);
+    this.setState(function (s) {
+      var racks = Object.assign({}, s.racks);
+      ids.forEach(function (id) { self.applyRack(s, id, racks); });
+      var vars = s.vars.map(function (v) { return v.draft !== null ? Object.assign({}, v, { base: v.draft, draft: null }) : v; });
+      return { racks: racks, vars: vars, dialog: 'result', result: { conflict: false, title: 'Listo', text: 'Se escribieron ' + total + ' cambios en un solo paso. Un «U» en AutoCAD los deshace todos.' }, log: self.pushLog(s.log, 'RackCad: Actualizar todo: ' + total + ' cambios escritos (1 paso de Deshacer).') };
+    });
+  }
+  newSystem(kind, tpl) {
+    this.setState(function (s) {
+      var id = 'n' + s.seq;
+      var base = tpl || { name: 'Nuevo ' + kind + ' ' + s.seq, scale: '1', fronts: '10', levels: '4', depth: '48' };
+      var racks = Object.assign({}, s.racks);
+      racks[id] = { id: id, kind: kind, views: 'sin insertar', isNew: true, external: false, draft: null, base: base };
+      return { racks: racks, order: s.order.concat([id]), active: id, seq: s.seq + 1, toast: '' };
+    });
+  }
+  setVar(i, value) {
+    this.setState(function (s) {
+      var vars = s.vars.map(function (v, k) { return k === i ? Object.assign({}, v, { draft: value === v.base ? null : value }) : v; });
+      return { vars: vars };
+    });
+  }
+
+  renderVals() {
+    var self = this, s = this.state;
+    var kindsOrder = ['Selectivo', 'Push Back', 'Dinámico', 'Cantilever', 'Cabecera', 'Cama'];
+    var ids = this.pendingIds(s);
+    var nVars = this.varsChanged(s);
+    var pendingCount = ids.length + (nVars ? 1 : 0);
+    var total = s.order.length;
+
+    var sectionDefs = [['inicio', 'Nuevo'], ['variables', 'Variables'], ['bom', 'BOM y lista de racks'], ['biblioteca', 'Biblioteca de diseños'], ['config', 'Configuración']];
+    var sections = sectionDefs.map(function (d) {
+      return { label: d[1], cls: 'sec-btn' + (s.active === d[0] ? ' sec-on' : ''), onClick: function () { self.setState({ active: d[0], toast: '' }); } };
+    });
+
+    var q = s.q.trim().toLowerCase();
+    var shown = 0;
+    var navGroups = kindsOrder.map(function (k) {
+      var all = s.order.filter(function (id) { return s.racks[id].kind === k; });
+      var items = all.filter(function (id) {
+        var r = s.racks[id];
+        if (s.kindF !== 'todos' && s.kindF !== k) return false;
+        if (s.onlyChanged && self.status(r) === 'limpio') return false;
+        if (q && self.cur(r).name.toLowerCase().indexOf(q) < 0) return false;
+        return true;
+      }).map(function (id) {
+        var r = s.racks[id], st = self.status(r);
+        return {
+          name: self.cur(r).name, dotCls: 'dot dot-' + st,
+          cls: 'nav-item' + (s.active === id ? ' nav-on' : '') + (s.selected === id ? ' nav-sel' : ''),
+          onClick: function () { self.openRack(id); }
+        };
+      });
+      shown += items.length;
+      return { kind: k, items: items, countText: items.length + ' de ' + all.length };
+    }).filter(function (g) { return g.items.length; });
+
+    var kindOptions = [{ v: 'todos', l: 'Todos los sistemas' }].concat(kindsOrder.filter(function (k) {
+      return s.order.some(function (id) { return s.racks[id].kind === k; });
+    }).map(function (k) { return { v: k, l: k }; }));
+
+    var drawing = s.order.filter(function (id) { return !s.racks[id].isNew; }).map(function (id) {
+      var r = s.racks[id];
+      return {
+        label: r.base.name, sub: r.base.fronts + ' fr · ' + r.base.levels + ' niv',
+        ext: r.external, cls: 'rk' + (s.selected === id ? ' rk-sel' : ''),
+        onClick: function () { self.pick(id); }
+      };
+    });
+
+    var isRack = !!s.racks[s.active];
+    var rv = { fields: [], rows: [], pvRows: [] };
+    if (isRack) {
+      var id = s.active, r = s.racks[id], st = this.status(r), c = this.cur(r);
+      var nLev = Math.max(1, Math.min(parseInt(c.levels, 10) || 1, 6));
+      var nFr = Math.max(1, parseInt(c.fronts, 10) || 1);
+      var shownFr = Math.min(nFr, 10);
+      var rows = [];
+      for (var lv = nLev; lv >= 1; lv--) {
+        var cells = [];
+        for (var f = 0; f < shownFr; f++) cells.push({ t: '×1 tarima' });
+        rows.push({ label: 'Nivel ' + lv, cells: cells });
+      }
+      var pvRows = [];
+      for (var lv2 = 0; lv2 < nLev; lv2++) {
+        var pc = [];
+        for (var f2 = 0; f2 < Math.min(nFr, 40); f2++) pc.push({});
+        pvRows.push({ cells: pc });
+      }
+      var defs = [['name', 'Nombre'], ['scale', 'Escala de anotación'], ['fronts', 'Frentes'], ['levels', 'Niveles'], ['depth', 'Fondo de tarima (in)']];
+      rv = {
+        name: c.name, kind: r.kind, views: r.views, statusLabel: this.statusLabel(st), chipCls: 'chip chip-' + st,
+        isNew: r.isNew, notNew: !r.isNew, isObsoleto: st === 'obsoleto',
+        updateLabel: r.isNew ? 'Insertar en el dibujo' : 'Actualizar',
+        updateDisabled: st === 'limpio', discardDisabled: !(r.draft || r.isNew),
+        editorNote: 'Aquí va el contenido del editor actual de ' + r.kind + ', tal cual; se simplificará después.',
+        fields: defs.map(function (d) { return { label: d[1], value: c[d[0]], onChange: function (e) { self.edit(id, d[0], e.target.value); } }; }),
+        rows: rows, hasMore: nFr > shownFr, moreText: '… y ' + (nFr - shownFr) + ' frentes más (desplazar)', pvRows: pvRows,
+        onUpdate: function () { self.updateOne(id); },
+        onDiscard: function () { self.discard(id); },
+        onCheck: function () { self.check(id); },
+        onSelect: function () { self.setState({ selected: id, log: self.pushLog(s.log, 'Comando: (RackCad) Seleccionar ' + r.base.name) }); },
+        onCenter: function () { self.setState({ selected: id, log: self.pushLog(s.log, 'Comando: (RackCad) Centrar ' + r.base.name) }); },
+        onClassic: function () { self.setState({ toast: 'Abriría la ventana clásica (RACKEDITAR), que sí bloquea AutoCAD mientras está abierta. Sigue disponible como alternativa.' }); }
+      };
+    }
+
+    var library = [
+      { name: 'Push Back 4 niveles (estándar)', kind: 'Push Back', tpl: { name: 'Push Back 4 niveles', scale: '1', fronts: '20', levels: '4', depth: '48' } },
+      { name: 'Selectivo 3 niveles, fondo 42 in', kind: 'Selectivo', tpl: { name: 'Selectivo 3 niveles', scale: '1', fronts: '14', levels: '3', depth: '42' } },
+      { name: 'Dinámico 6 fondos', kind: 'Dinámico', tpl: { name: 'Dinámico 6 fondos', scale: '1', fronts: '6', levels: '4', depth: '60' } }
+    ].map(function (l) { return { name: l.name, kind: l.kind, onOpen: function () { self.newSystem(l.kind, Object.assign({}, l.tpl)); } }; });
+
+    var kindDescs = { 'Selectivo': 'Racks selectivos y doble profundidad', 'Push Back': 'Push Back de uno o dos sentidos', 'Dinámico': 'Racks dinámicos (flujo por gravedad)', 'Cantilever': 'Cantilever de uno o dos lados', 'Cabecera': 'Cabeceras y marcos', 'Cama': 'Camas de rodamiento' };
+    var kinds = kindsOrder.map(function (k) { return { label: k, desc: kindDescs[k], onClick: function () { self.newSystem(k); } }; });
+
+    var varsView = s.vars.map(function (v, i) {
+      return { name: v.name, expr: v.draft !== null ? v.draft : v.base, value: v.draft !== null ? 'se calcula al actualizar' : v.value, used: v.used, onChange: function (e) { self.setVar(i, e.target.value); } };
+    });
+
+    var listView = s.order.map(function (id) {
+      var r = s.racks[id], st = self.status(r);
+      return { name: self.cur(r).name, kind: r.kind, views: r.views, statusLabel: self.statusLabel(st), chipCls: 'chip chip-' + st, onOpen: function () { self.openRack(id); } };
+    });
+
+    var bom = [
+      { c: 'Cabecera 432 in · fondo 54 in', q: '146' },
+      { c: 'Larguero IN/OUT de 6 in', q: '288' },
+      { c: 'Cama push back', q: '288' },
+      { c: 'Separador de cabecera', q: '1168' }
+    ];
+
+    var pendingView = ids.map(function (id) { var r = s.racks[id]; return { name: self.cur(r).name, change: self.changeText(r) }; });
+    if (nVars) pendingView.push({ name: 'Variables', change: nVars + ' cambio(s), afectan a los racks que las usan' });
+
+    var res = s.result || {};
+    var cfgFields = [['blocks', 'Biblioteca de bloques'], ['designs', 'Carpeta de diseños'], ['catalogs', 'Carpeta de catálogos']].map(function (d) {
+      return { label: d[1], value: s.cfg[d[0]], onChange: function (e) { var cfg = Object.assign({}, s.cfg); cfg[d[0]] = e.target.value; self.setState({ cfg: cfg }); } };
+    });
+
+    var selR = s.selected ? s.racks[s.selected] : null;
+    var showSelBox = !!(selR && !s.follow && s.active !== s.selected);
+    var simId = (s.selected && s.racks[s.selected] && !s.racks[s.selected].isNew) ? s.selected : 'pb2';
+
+    return {
+      rackCount: s.order.filter(function (id) { return !s.racks[id].isNew; }).length,
+      pendingCount: pendingCount, allDisabled: pendingCount === 0,
+      pendingText: pendingCount ? pendingCount + ' con cambios sin escribir' : 'Todo escrito',
+      sections: sections, navGroups: navGroups, kindOptions: kindOptions, drawing: drawing,
+      q: s.q, kindF: s.kindF, onlyChanged: s.onlyChanged, follow: s.follow,
+      shownText: 'Mostrando ' + shown + ' de ' + total, noResults: shown === 0,
+      setQ: function (e) { self.setState({ q: e.target.value }); },
+      setKind: function (e) { self.setState({ kindF: e.target.value }); },
+      toggleChanged: function () { self.setState({ onlyChanged: !s.onlyChanged }); },
+      toggleFollow: function () { self.setState({ follow: !s.follow }); },
+      log: s.log, toast: s.toast, hasToast: !!s.toast,
+      simTarget: s.racks[simId].base.name,
+      simulate: function () { self.simulate(); },
+      zoom: function () { self.setState({ log: self.pushLog(s.log, 'Comando: ZOOM (la vista cambia; RackCad sigue abierto)') }); },
+      undo: function () { self.setState({ log: self.pushLog(s.log, 'Comando: U (en el prototipo no deshace; en AutoCAD deshace el último Actualizar completo)') }); },
+      openAll: function () { self.setState({ dialog: 'all', result: null }); },
+      confirmAll: function () { self.confirmAll(); },
+      closeDialog: function () { self.setState({ dialog: null, result: null }); },
+      isRack: isRack, rv: rv,
+      isInicio: s.active === 'inicio', isVariables: s.active === 'variables', isBom: s.active === 'bom', isBiblioteca: s.active === 'biblioteca', isConfig: s.active === 'config',
+      kinds: kinds, library: library, varsView: varsView, varsClean: nVars === 0,
+      discardVars: function () { self.setState({ vars: s.vars.map(function (v) { return Object.assign({}, v, { draft: null }); }) }); },
+      listView: listView, bom: bom,
+      exportXlsx: function () { self.setState({ toast: 'BOM exportado a Excel en la carpeta de salidas.' }); },
+      exportCsv: function () { self.setState({ toast: 'BOM exportado a CSV en la carpeta de salidas.' }); },
+      saveDisabled: !isRack,
+      saveToLib: function () { self.setState({ toast: 'Diseño guardado en la biblioteca (sin tocar el dibujo).' }); },
+      cfgFields: cfgFields, cfgAuto: s.cfg.auto, cfgUnits: s.cfg.units,
+      toggleAuto: function () { self.setState({ cfg: Object.assign({}, s.cfg, { auto: !s.cfg.auto }) }); },
+      toggleUnits: function () { self.setState({ cfg: Object.assign({}, s.cfg, { units: !s.cfg.units }) }); },
+      showSelBox: showSelBox, selName: selR ? selR.base.name : '',
+      openSelected: function () { if (s.selected) self.openRack(s.selected); },
+      dialogOpen: !!s.dialog, isAllDialog: s.dialog === 'all', isResultDialog: s.dialog === 'result',
+      dlgTitle: s.dialog === 'all' ? 'Actualizar todo' : (res.title || ''),
+      pendingView: pendingView,
+      resultText: res.text || '', resultConflict: !!res.conflict, resultGo: !!res.goId,
+      resultReread: function () { if (res.rackId) self.reread(res.rackId); },
+      resultKeep: function () { if (res.rackId) self.keepMine(res.rackId); },
+      resultGoRack: function () { var g = res.goId; self.setState({ dialog: null, result: null }); if (g) self.openRack(g); }
+    };
+  }
+}
+</script>
+</body>
+</html>

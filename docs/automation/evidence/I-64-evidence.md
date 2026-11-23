@@ -9075,3 +9075,63 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 **Las comprobaciones, antes de escribir nada:** la numeración (F4B-E61 y la 291 existen; F4B-E62 y la 292 no); el árbol limpio y la rama remota en el Candidato; la línea `BOUNDED_RESULT`, con el token `EMITIBLE;` y los sha256 del paquete, la guía y el guion; ningún destino que ya exista, tampoco el contrato; el cambio de `I-64.yml`, calculado sobre HEAD; ninguna ruta de más de 156 caracteres.
 
 **Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.
+
+## 293. A-14 / replaneación hacia la ventana RackCad sin bloqueo, versionada en rama lateral (PROPOSED / NOT ACTIVE)
+
+**Solo en la rama lateral `architecture/workspace-persistente-rackcad-a14`.** Sale del HEAD de la rama de I-64, `fa59bd82` (F4B-E62, CI de push `45159049770` en success), por la decisión Q-C1. La rama de I-64 no se mueve mientras el Smoke-PB de F4B sigue abierto; la rama lateral se une a ella después del cierre de F4B.
+
+**A-14:** `docs/initiatives/I-64-A-14.md` (sha256 `8b5e8dc441a47200ab65794d274d0924ad89478b37fdd50976ef6a4f62104e50`), el texto de la v2.3 (sha256 `edf20bd23d508e76a3ebdbabeb17c862dc842ec7c47d975012952ec032304f13`) sin cambios de fondo. Los ajustes al versionar:
+- el título, sin «(borrador v2.3)»;
+- «propuesta del borrador» pasa a «propuesta de la sesión», en la cabecera y en §9;
+- las decisiones Q-C1 y Q-C2 se anotan con su fuente, en la cabecera, §2, §10, §12 y §13;
+- §10, paso 1, recoge la cadena completa hasta la v2.3;
+- §12 y §13 apuntan a la carpeta de custodia y a esta sección.
+
+**La cadena de revisión** (un revisor independiente de solo lectura, en sesión separada; no es el Architect):
+- **v1:** la revisión adversarial da APTO TRAS CORRECCIONES. Hallazgos: 0/11/14 del v1, más 2/0/2 por la segunda ronda del Owner (29).
+- **v2:** aplica los 29, sin rechazar ninguno. Su comprobación acotada da EMITIBLE TRAS CORRECCIONES: 28 resueltos y 1 parcial (R2-02); nuevos, 0/5/14.
+- **v2.1:** aplica 20 filas. Su comprobación da EMITIBLE TRAS CORRECCIONES: 19 resueltos y 1 parcial (N-01); nuevos, 0/1/5.
+- **v2.2:** aplica 7 filas. Su comprobación da **EMITIBLE A ARCHITECT**: 7 resueltos; nuevos, 0/0/4.
+- **v2.3:** aplica los 4 menores, sin rechazar ninguno, más el detalle del punto 10. Es el texto versionado.
+
+**Las decisiones del Owner (2026-11-23),** literales en `A-14/coordinator/owner-a14-decisions.md`:
+- primera ronda: aprueba los cambios de §3 de la replaneación; la ventana recuerda su tamaño y su posición; RACKCAD abre la ventana; la lista de retiro, después;
+- RACKPANEL se queda por ahora;
+- segunda ronda: Q-03, Q-09, Q-07 y Q-08;
+- tercera ronda: Q-02 y Q-10.
+
+**Las decisiones del Coordinator** (el Owner como Coordinator, cuarta ronda del mismo registro):
+- **Q-C1:** «Rama lateral, como A-12/A-13 (Recomendado)»: esta rama, la enmienda en `docs/initiatives/I-64-A-14.md` y las fuentes en la evidencia de I-64;
+- **Q-C2:** «gpt-6-luna, el acreditado (Recomendado)»: la revisión formal del Architect usa la celda gpt-6-luna / high / read-only, con el binario `4F91AE86…` y la configuración Snapshot L (F4B-E57), sin sondas nuevas.
+
+**Qué se custodia, en `docs/automation/evidence/I-64-pilot/A-14/`,** con su manifiesto `sha256.txt` (sha256 custodiado, bytes, líneas, CR, NUL, coincidencias, admitidos y, si se redactó, el sha256 original):
+- `coordinator/owner-a14-decisions.md`: el registro literal de las cuatro rondas;
+- `replaneacion-i64.html`: la replaneación «Replaneación de I-64»;
+- `prototipo/`: el prototipo «RackCad tipo navegador» v3 (`Main.dc.html`, redactado, y `canvas.json`);
+- como historia, las versiones v1, v2, v2.1, v2.2 y v2.3 (la v2.3, la versionada, también aquí);
+- `review/`: la revisión del v1, las comprobaciones de la v2, la v2.1 y la v2.2, y las disposiciones de la v2, la v2.1, la v2.2 y la v2.3;
+- `encargos/`: los encargos de la redacción, de la revisión del v1, de la comprobación de la v2, las instrucciones de la v2 y de la v2.1 y el de este versionado;
+- `a14-drafting-notes.md`: las notas de redacción.
+
+**La redacción:**
+- en los encargos, las rutas locales pasan a sus marcadores: `<worktree-de-I-64>`, `<carpeta-de-trabajo-de-A-14>`, `<herramientas-de-la-sesion>`, `<checkout-principal>` y `<worktree-de-A-14>`;
+- en el prototipo, las tres rutas de disco de ejemplo de Configuración pasan a `<datos-locales-del-usuario>` (sha256 original `0d0ee1198ae441e0b1eb3324965fea96cd1c389e4ed8797a59d43205ad67a097`; redactado `4386ef631c162c01365b9ac67d73e113d512de9fab808e67786e40b01d96342e`);
+- cada archivo se comprueba con los patrones locales de privacidad, que no se custodian. Tras la redacción no queda ninguna coincidencia. Lo admitido son menciones genéricas, no datos: los ejemplos de forma de ruta de la regla de privacidad del encargo de versionado, el correo del co-autor del commit, una mención de la carpeta temporal de la sesión en una regla y la ruta relativa del prototipo en la carpeta de trabajo;
+- nada queda fuera de la custodia: todo se pudo redactar.
+
+**Las comprobaciones, antes de escribir nada:**
+- la rama lateral no existía, ni en local ni en `origin`, y la de I-64 estaba en `fa59bd82` en local y en remoto;
+- el worktree de la rama lateral es nuevo y de ruta corta;
+- ningún destino existía;
+- la numeración: la 292 es la última sección.
+
+**Siguiente:**
+- la CI del commit exacto;
+- la orden del Coordinator de **una** revisión formal del Architect sobre ese commit, con la celda de Q-C2, STOP si la elegibilidad cambió, y Q-C3 (materialidad y autoridad);
+- si da AGREED, Coordinator AGREED y la firma del Owner (§11); si pide cambios, la corrección es A-15 y A-14 no se edita.
+
+**Límites:**
+- solo documentación; sin cambios en `src/` ni en `tests/`;
+- la rama de I-64 y su worktree, sin tocar;
+- sin AutoCAD;
+- sin lanzar al Architect.
