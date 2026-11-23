@@ -1,0 +1,58 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261123T070642Z-446d",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Handoff",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "fail",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "fail",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "fail",
+    "Tests": "fail",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Handoff",
+    "Identity",
+    "Remote",
+    "Scope",
+    "Ci",
+    "Tests"
+  ],
+  "PreviousSameAsReal": false,
+  "LaterSameAsReal": false,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Identity": "git rev-parse HEAD=0eac7911a025a59628b446db8b768035175f96de and git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad=0eac7911a025a59628b446db8b768035175f96de; handoff CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. BaseSha is an ancestor of RedSha; RedSha..CurrentSha cannot resolve because CurrentSha is not a commit."
+  },
+  "OutputSha256": "43E65747A1925771E9C70F078846A0CA76A5A152C4118BF179F27A88C490329F",
+  "ManualFreeText1610": []
+}

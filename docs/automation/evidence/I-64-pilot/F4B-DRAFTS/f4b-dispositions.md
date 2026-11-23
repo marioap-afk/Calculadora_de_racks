@@ -2399,3 +2399,81 @@ El resultado que lleva el contrato es `EMITIBLE; B 0 / I 0 / M 5; sin importante
 - **La cadena:** primera delegación; `attempts` 1 de 3.
 - **La planificación:** con las colecciones opacas puestas por la sesión (F4B-E21).
 - **La verificación:** con las comprobaciones deterministas de F4B-E15.
+
+## F4B-E61. Cierre de F4B-PBT4-EDIT-ALL-RELOAD (PB-T4e), sin reparación del RED, con la decisión del Owner sobre nc1 y sus decisiones sobre PB-T5
+
+**Paquete de cierre:** `F4B-PBT4-EDIT-ALL-RELOAD/task-close-package.md`.
+
+**La cadena:**
+- **La emisión** (F4B-E60): X `2e790aa9` y BASE `7da361eb`, con el paquete de PB-T4 v5.6 y la 15.ª tanda del Owner. El contrato es `F4B-PBT4-EDIT-ALL-RELOAD/coordinator/gate-contract.json` (sha256 `279a638c53b211352d14db137f42af73411d7a838e264dcc95930039ff696351`).
+  - **La lista, vacía:** ninguna prueba existente se edita, se salta, se reactiva, se borra ni se sustituye (K = 0, D = 0 y E = 0).
+  - **Sin esqueleto:** el RED solo añade las dos clases nuevas de las CT, con el texto literal de la pieza `pbt4e-red-v56.txt`, y el GREEN solo toca `src/`, con el de `pbt4e-green-v56.txt`. Los dos salen de los generadores custodiados, `red_pbt4e_v56.py` y `green_pbt4e_v56.py`.
+  - **La forma literal:** la cadena de primera delegación lee del contrato el RED y el GREEN literales y la lista vacía (INV-PBT4E-02 y 07), y para limpia en lo que depende de la versión hasta su seco sobre el contrato emitido. Las formas de PB-T4b, PB-T4c y PB-T4d siguen intactas en sus ramas.
+- **La planificación** `R20261123T045429Z-48a1` se aceptó al primer lanzamiento, con la cesión de 04:54:50Z a 04:56:38Z: inyección PASS 8/8 (F4B-E21), A1-A8 8/8 y 13 criterios. nc4 es `R20261123T045726Z-77d7`: solo A3 en fail, y el oráculo relativo se cumple.
+- **El Worker** `R20261123T045827Z-6c9e` (claude-sonnet-5-5/high) dio IMPLEMENTATION_COMPLETE, `Disposition` NONE, sin reparación del RED y sin desviaciones. Es el intento 1 de 3.
+  - **El RED `265f9e31`** (2 rutas nuevas, solo de `tests/`: 2 A, 662 líneas) son las dos clases de las CT, cada una el texto literal de la pieza del RED, que escribe la herramienta del paquete `apply_red_pbt4e_v56.py`, byte a byte su `NewFileSha`:
+    - `tests/RackCad.Tests/PushBackEditAllReloadTests.cs`: CT-PBT4E-01, 02 y 04;
+    - `tests/RackCad.UI.Tests/PushBackEditAllReloadFieldTests.cs`: CT-PBT4E-03.
+
+    `src/` es el de BaseSha, y ningún archivo existente de `tests/` cambia.
+  - **El GREEN `0eac7911`** (las 4 rutas de `src/` del alcance, todas M, con 34 líneas añadidas y 7 quitadas) es el texto literal de la pieza del GREEN, que escribe `apply_green_pbt4e_v56.py`, igual a `GreenFiles`. No toca `tests/`.
+
+**CI** (los totales exactos de cada rama, F4B-E46):
+- **RED `45119881969`:** tests y ui-tests en failure; build-ui en success; build-plugin omitido. Core 19 421 = 19 015 + 3 Failed + 403 Skipped; UI 2 465 = 2 416 + 1 + 48. Solo caen las cuatro CT, por aserción: CT-PBT4E-01, 02 y 04 en Core y CT-PBT4E-03 en UI.
+- **GREEN `45123886125`:** 4/4, con el Plugin. Core 19 421 = 19 018 + 0 + 403; UI 2 465 = 2 417 + 0 + 48.
+
+**El relevo del trabajo:** válido. Comprueba:
+- el RED literal (las 2 pruebas nuevas del alcance, sin esqueleto, 0 copias y 0 `Skip`) y el GREEN literal;
+- la lista vacía: ninguna prueba existente se toca, y lo saltado es la línea base (en Core, con las 7 filas de D-1 y CT-PBT3A-12);
+- los dos filtros con `ExpectRed`, enteros en Failed en el RED, por la pila bajo `tests/`, y ninguna prueba que falle fuera de ellos;
+- los totales exactos;
+- cero `warning CS` en 15 registros de build.
+
+**Revisiones:**
+- **La directa:** conforme.
+- **La independiente** (`391adf87…`, con su encargo): **ACEPTABLE CON MENORES, B 0 / I 0 / M 1.** La entrega es el texto literal de las dos piezas, byte a byte, dentro de las 6 rutas; el diseño de D-PBT4-22 y de D-S17 a D-S19 está en el código tal cual; las 4 CT fijan sus 25 líneas del §5.7; no encontró ningún defecto del código entregado.
+  - **M-01 (= OWNER-01), informativo, sin decisión:** la recarga ocurre dentro de `TryEditAll`, y el modal se abre justo después, en la misma llamada. El campo solo se repinta al volver `TryEditAll`, al cerrarse el editor. Así que, por el código, con la ventana de «Editar todo» abierta la paleta, deshabilitada, sigue mostrando «Limpio (posiblemente obsoleto)» y el valor de antes del cambio de fuera, mientras la ventana enseña el valor recargado. Al cerrar queda bien (CT-PBT4E-03). Es la misma falta de repintado que PB-T4c ya tiene, y no es un texto ni un estado nuevo. **Se suma a lo que el Smoke-PB de PB-T5 tiene que mirar o anotar** (los pasos 3 y 8 de la guía, §5.5 del paquete), en el estado (`next_action` y `NEXT_ACTION` de `I-64.yml`) y en `docs/ideas-futuras.md`.
+  - **Una observación que no cuenta como hallazgo,** anterior a PB-T4e y fuera de su alcance (C10): los resúmenes del puerto y de `BeginEdit` dicen que solo «Editar» lee el dibujo, inexacto desde PB-T4c. Va a `docs/ideas-futuras.md`.
+
+**La verificación** `R20261123T070111Z-b46b`: **EXECUTION_VERIFIED / NONE, 14/14,** sin hallazgos ni paradas, con `VerifiedSha` `0eac7911` y la cesión de 07:01:53Z a 07:06:12Z.
+- `rr_check` da PASS: no hubo reparación del RED.
+- El relevo es válido.
+- **Un hecho que se declara:** el primer `verify_pre` de la sesión dio 2 participantes falsos, porque la línea de órdenes de la propia sesión llevaba la ruta del worktree (la lección de I-61). Se repitió desde el scratchpad y dio 0 participantes y 0 no atribuibles, antes de lanzar. La verificación no se lanzó sobre la medida falsa.
+
+**Controles:**
+- **nc1** `R20261123T070642Z-446d`: CONTROL NOT PASSED, con la cascada del SHA falso (`deadbeef…` en la entrega): EXECUTION_BLOCKED / STOP, FailureClass Handoff, con S-04. Difieren de la verificación real Handoff, Identity, Remote, Scope, Ci y Tests.
+  - Su sustituto de PD-F4B-01 (`R20261123T072321Z-9cda`, de `F4B-PBT4-EDIT-ALL-RELOAD-nc1-substitute/1/`; ScriptSha256 `41440edc…`, `--task PBT4`) dio FAIL en una sola propiedad, `e2_OtherFailCitesFakeSha`. Las evidencias de Ci y de Tests dan la misma causa con el nombre del campo («not the handoff CurrentSha» y «CurrentSha is not a commit»), sin escribir el valor del SHA falso. Ninguna atribuye el fallo a otra causa (`e3_NoAlienCause` en true). En PB-T4a falló la misma propiedad, con Tests.
+  - Es la **séptima variación de nc1 en F4B**, tras PB-TC, PB-TC2, PB-T2a, PB-T2b, PB-T4a y PB-T4b.
+  - El Owner eligió «Aceptarlo solo esta vez (Recomendado)» (`F4B-DRAFTS/coordinator/owner-pbt4e-nc1-decision.md`, con la pregunta y la respuesta literales), así que **nc1 = SATISFIED_BY_OWNER_DISPOSITION**, solo para la corrida `446d`. El sustituto no cambia y no se amplía ninguna firma; si la variación vuelve a aparecer, vuelve al Owner. La corrida ordinaria y la del sustituto se custodian tal cual.
+- **nc2** `R20261123T071150Z-beaa`: CONTROL NOT PASSED: EXECUTION_BLOCKED / STOP, FailureClass Contract, con Contract y Scope en fail y S-04, P-03 y PBT4E-C01. La evidencia de Scope nombra la ruta quitada, `src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs`. Es la firma de PD-F4-01 en el modo F4B-E21.
+  - La v3 de su sustituto (`nc2_exact_whitelist_substitute_f4b_v3.py`, `E68B6E59…`, F4B-E58, `--task PBT4`) corrió en `R20261123T072425Z-00b5`, de `F4B-PBT4-EDIT-ALL-RELOAD-nc2-substitute/1/`, y da `PBT4-NC2-EXACT-WHITELIST-F4B-01 F4B-E21 PASS`: **nc2 queda SATISFIED_UNDER_PBT4_EXACT_WHITELIST_SUBSTITUTE_F4B.**
+  - Lo autoriza el contrato (PBT4E-C11). No es una variación nueva.
+- **nc3** `R20261123T071718Z-ba7f`: **CONTROL PASS** ordinario: FreeText, con EXECUTION_REWORK_REQUIRED / REWORK.
+
+Los tres controles quedan satisfechos: nc1 por la decisión del Owner, nc2 por la v3 de su sustituto y nc3 por su corrida ordinaria. Los tres, con 0 participantes y 0 no atribuibles persistentes.
+
+**Las decisiones del Owner sobre PB-T5,** tomadas en la misma sesión y en el mismo diálogo que la de nc1 (`owner-pbt5-decisions.md` de la sesión, sha256 `2d63b10d2c7ab15ef6e573df0ee69e895ea678946937a6f09b89101611f12a45`): la emisión condicional («Sí, con condiciones»), la adaptación con revisión de la evidencia, la definición de intento con las reglas de Smoke-2, la dispensa de la UI completa, las inyecciones como en Smoke-2, los casos construidos y rotulados, y el recuento del estilo de cotas antes en otros. Su registro **no** se custodia en este cierre: va con la emisión de PB-T5.
+
+**El registro declarado de PB-T4e** (`F4B-DRAFTS/superseding-characterization.md`, «## PB-T4e»): este cierre completa su tabla de ejecución y la pasa a EJECUTADA. Cambian cinco líneas, con el texto y la fuente en `F4B-DRAFTS/pbt4/superseding-pbt4e-close-fill.md`.
+
+**Los deslices,** declarados:
+- **de la sesión:** un `python -I -c ""` vacío, añadido por error al final de una orden, que no ejecutó nada; y la primera preparación de la verificación, con la ruta del worktree en su línea de órdenes y 2 participantes falsos (arriba), repetida desde el scratchpad antes de lanzar;
+- **del revisor independiente:** una vez `python -c`, solo de lectura, para listar las claves del JSON del contrato, frente a la regla de su encargo. Él mismo lo declara, y no escribió nada ni cambia ningún resultado;
+- **del Worker:** la herramienta de shell pasó a segundo plano sus órdenes largas; en tres llamadas lanzó `gh run watch` con `&` o con `Start-Process` y lo esperó en la misma llamada, y paró enseguida una espera hecha con `ping`. Los procesos de salida y de entrada dan 0 participantes y 0 no atribuibles persistentes, y nada de lo que fija el contrato cambia.
+
+**Resultado:** **F4B-PBT4-EDIT-ALL-RELOAD = CLOSED / PASS WITH LIMITATIONS** sobre `0eac7911`, con attempts 1 de 3.
+- **La recarga de «Editar todo»** (D-PBT4-22): antes de abrir la ventana, un borrador Clean marcado como posiblemente obsoleto se recarga desde el dibujo, sin aviso, con la misma recarga que «Editar» (`TryReloadPilotEdit`).
+  - Va en el anfitrión, en `EditAllOfPilot`, dentro de la marca de lectura de `TryEditAll` (D-S17), tras las tres comprobaciones de la vista y antes de `ShowModal`, solo sobre un borrador que el gesto no acaba de empezar y con `NeedsLazyReload` (D-S19).
+  - Si la recarga no recarga, la ventana no se abre y el campo muestra lo mismo que «Editar»: el diagnóstico, la pista y «No se recargó: el borrador se conserva tal como estaba.» (`EditAllStatus.NotBegun` reutilizado, D-S18, con la constante `NotReloadedText`).
+  - Como mucho una lectura del dibujo por gesto, y ninguna durante `ShowModal`.
+- **Ningún otro cambio visible:** ni «Editar», ni el botón, ni la ventana, ni RACKEDITAR, ni el Plugin; ningún texto ni estado nuevo, ningún miembro nuevo del puerto ni valor nuevo de `EditAllStatus`; cero escrituras en el DWG. Un borrador Dirty, Conflict, «Sin decidir», Error o con texto pendiente responde como antes.
+- **La lista vacía:** ninguna prueba existente cambia; entran solo las dos clases de las CT.
+
+**Las limitaciones:**
+- Sin AutoCAD: el gesto real, con el modal real y la lectura real del DWG, lo comprueba el Smoke-PB de PB-T5, con los pasos de §5.5.
+- Con la ventana de «Editar todo» abierta, la paleta no se repinta hasta cerrarla (M-01, OWNER-01): es informativo, y la guía del Smoke-PB lo anota.
+- La cobertura de INV-PBT4E-06 la da la precondición 6, que PASA sobre el mismo texto literal. La revisión no la midió otra vez.
+- La revisión comparó los Skipped de UI con la base solo por su recuento (48), no por sus nombres: no tenía la TRX de UI de la CI base.
+- nc1, satisfecho por disposición del Owner, solo esta vez: es su séptima variación en F4B, y el sustituto sigue siendo candidato a revisarse, sin cambio ahora.
+
+**Siguiente:** PB-T5: la CI exacta, el Smoke-PB con la firma del Owner y el gate-close de F4B. Las decisiones del Owner sobre PB-T5 están tomadas (arriba); lo siguiente es la v2.3 de su paquete, su comprobación acotada y la emisión condicional. Este cierre no custodia nada de PB-T5, que tendrá su propia emisión.

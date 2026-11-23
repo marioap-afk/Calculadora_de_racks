@@ -1,0 +1,80 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT4-EDIT-ALL-RELOAD",
+  "RunId": "R20261123T070642Z-446d",
+  "DelegationRunId": "R20261123T045429Z-48a1",
+  "WorkRunId": "R20261123T045827Z-6c9e",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true, LaunchedPid=null; Cession.StartUtc=2026-11-23T04:58:34Z."
+    },
+    "Handoff": {
+      "Result": "fail",
+      "Evidence": "worker-handoff.json has CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef; git cat-file -e deadbeef...^{commit} fails. WorkCompleted and relay-record-work.json instead identify 0eac7911a025a59628b446db8b768035175f96de. The handoff bytes match the recorded output hash, so the contradiction is in the delivered record."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor 2e790aa9 7da361eb exits 0. AuthorityRevision..BaseSha has four docs/ paths; none are EXTERNAL or UNIT_CHANGE. The unlisted paths are not classified as either. merge-base(MainSha, AuthorityRevision)=812baf87; each EXTERNAL path has an empty diff from that merge-base. Input revision-diff.txt SHA-256 matches 2ba25c8f."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Compared delegation.json with gate-contract.json: AllowedWriteScope 6/6, ForbiddenWriteScope 352/352, Invariants 14/14, StopConditions 34/34, Authorities 55/55, RequiredTests 90/90; A3-A5 match."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "git rev-parse HEAD=0eac7911a025a59628b446db8b768035175f96de and git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad=0eac7911a025a59628b446db8b768035175f96de; handoff CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. BaseSha is an ancestor of RedSha; RedSha..CurrentSha cannot resolve because CurrentSha is not a commit."
+    },
+    "Remote": {
+      "Result": "fail",
+      "Evidence": "relay-record-work.json RemoteFacts: LsRemoteSha and CurrentRun.HeadSha are 0eac7911a025a59628b446db8b768035175f96de, not handoff CurrentSha deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. OriginMainSha matches MainSha 812baf879612320653094a8aaf46aca0bac81383."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "The required git diff --name-only BaseSha CurrentSha and RedSha CurrentSha commands fail with 'bad object deadbeefdeadbeefdeadbeefdeadbeefdeadbeef'. The actual BaseSha..HEAD diff has 6 paths, all in the 6-entry exact AllowedWriteScope; BaseSha..RedSha has only the two expected added test paths. The claimed CurrentSha scope cannot be verified."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain is empty. git check-ignore -v for the input package reports .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts records RED push 45119881969 at RedSha with Core and UI tests failure, UI build success, Plugin build skipped. Current push 45123886125 is success with all four required jobs, but its HeadSha is 0eac7911a025a59628b446db8b768035175f96de, not the handoff CurrentSha."
+    },
+    "Tests": {
+      "Result": "fail",
+      "RedPart": "fail",
+      "Evidence": "required-tests.txt SHA-256 is 5a215a3f9e515c4f406f5abf7cf13a2d415ea0547a43f184503d6bb47ea8990d; all 90 rows match the contract. TRX totals match expected counts: RED Core 19421=19015+3+403, GREEN Core 19421=19018+0+403, RED UI 2465=2416+1+48, GREEN UI 2465=2417+0+48. All 71 Core and 19 UI filters meet their RED/GREEN expectations on the recorded commits; RED failures are the four CT assertions. RED blobs match both Sha256LF values. GREEN blobs at actual HEAD match all four expected Sha256LF values. However, CurrentSha is not a commit, so the GREEN TRX and RedSha..CurrentSha no-RT diff cannot be attributed to the claimed SHA; git diff fails on that range. RT from ChainBaseSha..RedSha is the two added test files."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%H%n%B BaseSha..HEAD shows commits 265f9e31 and 0eac7911; both contain the declared Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>. This matches the effective model in relay-record-work.json."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 with high effort. Relay records the subagent launch alias sonnet, effective model claude-sonnet-5-5, and effective effort high."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Read all seven free-text fields, including each string in array fields; scanned full text case-insensitively against every term from AUTOMATION_PLAN 16.10. No matches."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes report 0 permission denials and 1 tool error with none pending."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Handoff",
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "Findings": [
+    "The handoff CurrentSha is a nonexistent commit and conflicts with WorkCompleted, the local HEAD, the branch remote-tracking ref, and the recorded CI HeadSha.",
+    "The exact claimed-SHA diffs and test attribution cannot be verified."
+  ],
+  "RecommendedNextAction": "Return the contradictory handoff identity for resolution before another verification."
+}

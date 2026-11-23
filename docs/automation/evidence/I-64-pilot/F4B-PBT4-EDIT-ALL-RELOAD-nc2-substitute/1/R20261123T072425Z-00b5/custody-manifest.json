@@ -1,0 +1,38 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Unit": "F4B-PBT4-EDIT-ALL-RELOAD-nc2-substitute/1/R20261123T072425Z-00b5",
+  "SourceRoot": "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD-nc2-substitute/1/R20261123T072425Z-00b5",
+  "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
+  "Counts": {
+    "CUSTODIED": 2,
+    "EXCLUDED": 1
+  },
+  "Files": [
+    {
+      "Path": "nc2_exact_whitelist_substitute_f4b_v3.py",
+      "Bytes": 41770,
+      "Sha256": "e68b6e5993b522df83e7cd4cd2b136ddf503e237fd560b1a97067f24664328c6",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a F4B-DRAFTS/nc2-substitute-f4b-v3/nc2_exact_whitelist_substitute_f4b_v3.py, ya custodiado"
+    },
+    {
+      "Path": "run.txt",
+      "Bytes": 4173,
+      "Sha256": "ceee77e85dd661f4e86a52b7b0940e4ed004a4e7f5ca966929f30adb44c43618",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "6482e20110c4e7bf3b4ca4b6dd60429336f925a832d8bd9d8eb468679a3bccbd",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)"
+    },
+    {
+      "Path": "substitute-result.json",
+      "Bytes": 17509,
+      "Sha256": "079d8f10c0a2bf6c914408ee46cfc5e07fdc729f6e277bea8e413d205072fec2",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "c6f004dd46dca501ec52d325a2206ba7cd723d26b24e77eb6d7f951a74567647",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>"
+      ]
+    }
+  ]
+}

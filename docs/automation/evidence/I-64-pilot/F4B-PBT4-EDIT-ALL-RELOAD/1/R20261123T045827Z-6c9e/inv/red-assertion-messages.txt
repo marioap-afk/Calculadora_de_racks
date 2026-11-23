@@ -1,0 +1,28 @@
+CT_PBT4E_02_AReloadThatDoesNot
+Assert.Equal() Failure: Strings differ
+                              ↓ (pos 19)
+Expected: "no-admitida estado=NotBegun inicio=NotAdm"···
+Actual:   "no-admitida estado=Closed inicio=Unavaila"···
+                              ↑ (pos 19)
+---
+CT_PBT4E_04_FromTheChangeOutsi
+Assert.Equal() Failure: Strings differ
+                                  ↓ (pos 93)
+Expected: ···"plicadas=1 lecturas=1 nombre-del-lanzamie"···
+Actual:   ···"plicadas=1 lecturas=0 nombre-del-lanzamie"···
+                                  ↑ (pos 93)
+---
+CT_PBT4E_01_EditAllReloadsACle
+Assert.Equal() Failure: Strings differ
+                                  ↓ (pos 51)
+Expected: ···"ierto=True lecturas=1 lecturas-antes-de-a"···
+Actual:   ···"ierto=True lecturas=0 lecturas-antes-de-a"···
+                                  ↑ (pos 51)
+---
+CT_PBT4E_03_TheFieldShowsARelo
+Assert.Equal() Failure: Strings differ
+                                  ↓ (pos 104)
+Expected: ···"RACKEDITAR.] aviso=[No se recargó: el bor"···
+Actual:   ···"RACKEDITAR.] aviso=[] estado=[Limpio (pos"···
+                                  ↑ (pos 104)
+---

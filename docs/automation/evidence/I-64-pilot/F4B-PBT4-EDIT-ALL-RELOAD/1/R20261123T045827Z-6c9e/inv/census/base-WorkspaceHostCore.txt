@@ -1,0 +1,136 @@
+::class WorkspaceHostCore
+WorkspaceHostCore::field/property PilotFieldAdapter
+WorkspaceHostCore::const PilotReadInProgressReason
+WorkspaceHostCore::const NotThisDocumentReason
+WorkspaceHostCore::const NoDraftReason
+WorkspaceHostCore::const NotCheckableReason
+WorkspaceHostCore::const FullReadMissingReason
+WorkspaceHostCore::const NotKeepableReason
+WorkspaceHostCore::const EditAllNoEditorReason
+WorkspaceHostCore::const EditAllPendingTextReason
+WorkspaceHostCore::const EditAllBusyDraftReason
+WorkspaceHostCore::const EditAllStateReason
+WorkspaceHostCore::const NoDocumentNativeId
+WorkspaceHostCore::field/property _bridge
+WorkspaceHostCore::field/property _probe
+WorkspaceHostCore::field/property _reader
+WorkspaceHostCore::field/property _instrumentation
+WorkspaceHostCore::field/property _logFault
+WorkspaceHostCore::field/property _echo
+WorkspaceHostCore::field/property _faulted
+WorkspaceHostCore::field/property _pickFirstOff
+WorkspaceHostCore::field/property _drafts
+WorkspaceHostCore::field/property _closePolicy
+WorkspaceHostCore::field/property _knownClean
+WorkspaceHostCore::field/property _lossNotices
+WorkspaceHostCore::field/property _closeNotices
+WorkspaceHostCore::field/property _pilotReadInProgress
+WorkspaceHostCore::field/property _editIntentReader
+WorkspaceHostCore::field/property _updateHost
+WorkspaceHostCore::field/property _fullEditHost
+WorkspaceHostCore::field/property _tickets
+WorkspaceHostCore::method ?(SessionId Session, string RackId)
+WorkspaceHostCore::field/property _lastUpdateWitness
+WorkspaceHostCore::field/property _started
+WorkspaceHostCore::field/property _panelVisible
+WorkspaceHostCore::field/property _modalRackCadActive
+WorkspaceHostCore::method WorkspaceHostCore( IWorkspaceBridgeLink bridge, IWorkspaceHostProbe probe, IWorkspaceSelectionReader reader, WorkspaceInstrumentation instrumentation, Action<string, Exception>? logFault = null, NavigationEcho? echo = null)
+WorkspaceHostCore::field/property IsStarted
+WorkspaceHostCore::field/property PanelVisible
+WorkspaceHostCore::field/property InstrumentationEnabled
+WorkspaceHostCore::method SetInstrumentationEnabled(bool enabled)
+WorkspaceHostCore::method OpenPanel()
+WorkspaceHostCore::method ShowPanel()
+WorkspaceHostCore::method HidePanel()
+WorkspaceHostCore::method RefreshPanel()
+WorkspaceHostCore::method SetModalRackCadActive(bool active)
+WorkspaceHostCore::method OnDrained(DrainOutcome outcome)
+WorkspaceHostCore::method GetSnapshot()
+WorkspaceHostCore::method Authorize(WorkspaceRequest request)
+WorkspaceHostCore::method GetSelectionContext(WorkspaceRequest request)
+WorkspaceHostCore::method GetMeasurementReport()
+WorkspaceHostCore::field/property OpenDrafts
+WorkspaceHostCore::field/property ClosePolicy
+WorkspaceHostCore::method SetEditIntentReader(IWorkspaceEditIntentReader reader)
+WorkspaceHostCore::method SetPilotUpdateHost(IPushBackPilotUpdateHost host)
+WorkspaceHostCore::method SetFullEditHost(IWorkspaceFullEditHost host)
+WorkspaceHostCore::method TryBeginPilotEdit(EditIntentRequest request)
+WorkspaceHostCore::method TryCheckPilotEdit(EditIntentRequest request)
+WorkspaceHostCore::method TryReloadPilotEdit(EditIntentRequest request)
+WorkspaceHostCore::method TryConfirmPilotBase(EditIntentRequest request)
+WorkspaceHostCore::method TryKeepPilotEdit(EditIntentRequest request)
+WorkspaceHostCore::method TryDiscardAndReloadPilotEdit(EditIntentRequest request)
+WorkspaceHostCore::method DiscardPilotEdits(SessionId session)
+WorkspaceHostCore::method NotePilotEdit(SessionId session)
+WorkspaceHostCore::method TryUpdatePilot(EditIntentRequest request, IPushBackPilotUpdatePort port)
+WorkspaceHostCore::method StatusOfOutcomeKind(DraftApplyOutcomeKind kind)
+WorkspaceHostCore::method AnswerOfAClosedThatWasNotAccepted(DraftApplyOutcome<PushBackFullDraftState> outcome, DraftApplyOutcomeKind kind)
+WorkspaceHostCore::method UpdateGate(SessionId session, out string reason, out long documentNativeId)
+WorkspaceHostCore::method TryBeginEdit(EditIntentRequest request)
+WorkspaceHostCore::method TryCheckNow(EditIntentRequest request)
+WorkspaceHostCore::method TryReload(EditIntentRequest request)
+WorkspaceHostCore::method TryConfirmBase(EditIntentRequest request)
+WorkspaceHostCore::method TryKeepMine(EditIntentRequest request)
+WorkspaceHostCore::method TryDiscardAndReload(EditIntentRequest request)
+WorkspaceHostCore::method TryEditAll(EditIntentRequest request)
+WorkspaceHostCore::method EditAllOfPilot(EditIntentRequest request)
+WorkspaceHostCore::method GetField(WorkspaceRequest origin, string rackId)
+WorkspaceHostCore::method SetPendingText(WorkspaceRequest origin, string rackId, string text)
+WorkspaceHostCore::method CommitField(WorkspaceRequest origin, string rackId)
+WorkspaceHostCore::method CrossBoundary(WorkspaceRequest origin, string rackId, PilotBoundaryKind kind)
+WorkspaceHostCore::method DiscardRack(WorkspaceRequest origin, string rackId)
+WorkspaceHostCore::method DiscardDocument(WorkspaceRequest origin)
+WorkspaceHostCore::method GetRacksAtRisk(WorkspaceRequest origin)
+WorkspaceHostCore::method TakeLossNotices()
+WorkspaceHostCore::method TakeCloseNotices()
+WorkspaceHostCore::method RequestUpdate(EditIntentRequest request)
+WorkspaceHostCore::method TakeUpdateProgress(WorkspaceRequest origin, string rackId)
+WorkspaceHostCore::method CurrentTicket(SessionId session, long witness)
+WorkspaceHostCore::method ExpireStaleUpdate(SessionId session, string? requestRack = null)
+WorkspaceHostCore::method UpdateInFlightForRequest(EditIntentRequest request)
+WorkspaceHostCore::method UpdateInFlightFor(SessionId session, string? rackId)
+WorkspaceHostCore::method IsPilotDraftApplying(SessionId session, string rackId)
+WorkspaceHostCore::method IsAnyPilotDraftApplying(SessionId session)
+WorkspaceHostCore::method ForgetUpdatesOf(SessionId session)
+WorkspaceHostCore::class UpdateTicket
+WorkspaceHostCore.UpdateTicket::method UpdateTicket(string rackId, long witness, int foreignCommandStarts)
+WorkspaceHostCore.UpdateTicket::field/property RackId
+WorkspaceHostCore.UpdateTicket::field/property Witness
+WorkspaceHostCore.UpdateTicket::field/property ForeignCommandStarts
+WorkspaceHostCore.UpdateTicket::field/property Started
+WorkspaceHostCore.UpdateTicket::field/property InExecute
+WorkspaceHostCore.UpdateTicket::field/property Finished
+WorkspaceHostCore::class PilotUpdateRun
+WorkspaceHostCore.PilotUpdateRun::field/property _core
+WorkspaceHostCore.PilotUpdateRun::field/property _request
+WorkspaceHostCore.PilotUpdateRun::field/property _witness
+WorkspaceHostCore.PilotUpdateRun::field/property _openFailure
+WorkspaceHostCore.PilotUpdateRun::method PilotUpdateRun(WorkspaceHostCore core, EditIntentRequest request, long witness)
+WorkspaceHostCore.PilotUpdateRun::method Admit(out string reason)
+WorkspaceHostCore.PilotUpdateRun::method Begin()
+WorkspaceHostCore.PilotUpdateRun::method Execute(IPushBackPilotUpdatePort port)
+WorkspaceHostCore.PilotUpdateRun::method NotRun(PushBackPilotHostFailure kind, string cause)
+WorkspaceHostCore.PilotUpdateRun::method Completed()
+WorkspaceHostCore::method FindPilotDraft(SessionId session, string rackId)
+WorkspaceHostCore::method SessionStillAtRisk(SessionId session)
+WorkspaceHostCore::method ViewOfPilotDraft(DraftSession<PushBackFullDraftState> draft)
+WorkspaceHostCore::method StateOfDraft(DraftStatus status)
+WorkspaceHostCore::method AdviseClose(SessionId session)
+WorkspaceHostCore::method QueueCloseNotice(SessionId session, IReadOnlyList<string> rackIds, bool uncertain)
+WorkspaceHostCore::method DropCloseNotice(SessionId session)
+WorkspaceHostCore::method SessionDestroyed(SessionId session, bool closeSequenceIntact)
+WorkspaceHostCore::field/property LossNotices
+WorkspaceHostCore::method DescribeLoss(DraftLossNotice notice)
+WorkspaceHostCore::method ReasonOf(DraftLossNotice notice, string rackId)
+WorkspaceHostCore::method MarkPilotDraftsPossiblyStale(SessionId session)
+WorkspaceHostCore::method HasWitnessWithoutKey(EditIntentRequest request)
+WorkspaceHostCore::enum EditGate
+WorkspaceHostCore.EditGate::enum-member Open
+WorkspaceHostCore.EditGate::enum-member Unavailable
+WorkspaceHostCore.EditGate::enum-member Waiting
+WorkspaceHostCore.EditGate::enum-member Rejected
+WorkspaceHostCore::method PassGate(SessionId session, out string reason)
+WorkspaceHostCore::method DescribeDifferences(IReadOnlyList<DraftDifference> differences)
+WorkspaceHostCore::method Report(string context, Exception exception)
+WorkspaceHostCore::method ConditionsFor(SessionId session)
+WorkspaceHostCore::method Contain(SessionId session, string context, Exception exception)

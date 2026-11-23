@@ -1,0 +1,2 @@
+FullyQualifiedName~RackCad.Tests.PushBackEditAllReloadTests | MinSelected 3 | tests/RackCad.Tests/RackCad.Tests.csproj
+FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllReloadFieldTests | MinSelected 1 | tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj

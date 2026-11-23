@@ -1,0 +1,19 @@
+{
+  "Regla": "Los equivalentes de la lista (INV-PBT4E-02: byte a byte, su sha256 EquivalentSha de la precondicion 6 docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4e-precondition6.json), medidos por la sesion con pbt4e_lib.equiv_sha_check sobre git show RedSha:<ruta> (el blob, con CRLF normalizado a LF y sin BOM): Ok true y Mal vacio; Sha256 es el medido de cada uno y EquivalentSha el de la precondicion 6. Filtro: el del RequiredTests de su clase exacta (D-S8), con su ExpectRed. Un equivalente que falla donde el paquete no lo espera es PBT4E-C07, no PBT4E-C16. GreenLiteral: el GREEN literal del paquete (INV-PBT4E-02, pbt4e-green-v56.txt): para cada ruta, git show CurrentSha:<ruta>, con CRLF normalizado a LF, tiene ese sha256 (el del GreenFiles de la precondicion 6), y el GREEN no toca otra ruta de src/.",
+  "BaseSha": "7da361ebe8919bf31e2874c42dc946b98c62635a",
+  "RedSha": "265f9e31cb33ce312c04d2d7959c999aee763b3c",
+  "RedRepairSha": null,
+  "Ok": true,
+  "Mal": {},
+  "Equivalentes": {},
+  "GreenLiteral": {
+    "Pieza": "pbt4e-green-v56.txt",
+    "Sha256LF": {
+      "src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs": "49b5245c112e3d4f0b3b95114f9ff0444469b316a3ef912947cf3b696e0c6ebd",
+      "src/RackCad.Application/Workspace/WorkspaceEditIntent.cs": "bbc6882283833b02bab79c9bb70c082f3ac14b2a88650722bf8d72be0e13b5e2",
+      "src/RackCad.Application/Workspace/WorkspaceHostCore.cs": "6eb9bf7ab81666b33c1280c832257624937c95a042e46f53dcc2c371baac4d7d",
+      "src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs": "c4b5c6990c5623e53be607fdbb461db95103b957c96627e1d63300dabe3d643b"
+    }
+  },
+  "TablaDeRR3": "leida con la lectura del generador"
+}

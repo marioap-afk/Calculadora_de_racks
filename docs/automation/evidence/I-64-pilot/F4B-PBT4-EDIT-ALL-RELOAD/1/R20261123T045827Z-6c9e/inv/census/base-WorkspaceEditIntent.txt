@@ -1,0 +1,220 @@
+::enum EditIntentReadStatus
+EditIntentReadStatus::enum-member Read
+EditIntentReadStatus::enum-member NoActiveDocument
+EditIntentReadStatus::enum-member Busy
+EditIntentReadStatus::enum-member Rejected
+EditIntentReadStatus::enum-member Failed
+::struct EditIntentReadResult
+EditIntentReadResult::method EditIntentReadResult(EditIntentReadStatus status, string? reason, PushBackPilotIntentResult? pilotRead, PushBackFullIntentResult? fullRead, RackCatalog? catalog)
+EditIntentReadResult::field/property Status
+EditIntentReadResult::field/property Reason
+EditIntentReadResult::field/property PilotRead
+EditIntentReadResult::field/property FullRead
+EditIntentReadResult::field/property Catalog
+EditIntentReadResult::method FromPilot(PushBackPilotIntentResult pilotRead)
+EditIntentReadResult::method FromReads(PushBackPilotIntentResult pilotRead, PushBackFullIntentResult fullRead, RackCatalog catalog)
+EditIntentReadResult::method NoActiveDocument(string reason)
+EditIntentReadResult::method Busy(string reason)
+EditIntentReadResult::method Rejected(string reason)
+EditIntentReadResult::method Failed(string reason)
+::enum EditWitnessStatus
+EditWitnessStatus::enum-member NotEvaluated
+EditWitnessStatus::enum-member NotSupplied
+EditWitnessStatus::enum-member Unchanged
+EditWitnessStatus::enum-member Changed
+::enum EditIntentStatus
+EditIntentStatus::enum-member Unavailable
+EditIntentStatus::enum-member Waiting
+EditIntentStatus::enum-member Rejected
+EditIntentStatus::enum-member AlreadyOpen
+EditIntentStatus::enum-member NotAdmitted
+EditIntentStatus::enum-member Admitted
+EditIntentStatus::enum-member Failed
+EditIntentStatus::enum-member NotFound
+EditIntentStatus::enum-member NotNeeded
+EditIntentStatus::enum-member Reloaded
+EditIntentStatus::enum-member Kept
+EditIntentStatus::enum-member Presented
+::struct EditIntentOutcome
+EditIntentOutcome::method EditIntentOutcome( EditIntentStatus status, EditWitnessStatus witness, string? reason, string? diagnostic, string? detail, string? classicEditorHint)
+EditIntentOutcome::method EditIntentOutcome(EditIntentStatus status, EditWitnessStatus witness, IReadOnlyList<string> presentationLines, EditIntentWitness keepWitness)
+EditIntentOutcome::field/property _presentationLines
+EditIntentOutcome::field/property Status
+EditIntentOutcome::field/property Witness
+EditIntentOutcome::field/property Reason
+EditIntentOutcome::field/property Diagnostic
+EditIntentOutcome::field/property Detail
+EditIntentOutcome::field/property ClassicEditorHint
+EditIntentOutcome::field/property PresentationLines
+EditIntentOutcome::field/property KeepWitness
+EditIntentOutcome::field/property IsAdmitted
+EditIntentOutcome::method Unavailable(string reason)
+EditIntentOutcome::method Waiting(string reason)
+EditIntentOutcome::method Rejected(string reason, EditWitnessStatus witness = EditWitnessStatus.NotEvaluated)
+EditIntentOutcome::method AlreadyOpen()
+EditIntentOutcome::method NotAdmitted(string diagnostic, string? detail, string? classicEditorHint, EditWitnessStatus witness)
+EditIntentOutcome::method Admitted(EditWitnessStatus witness)
+EditIntentOutcome::method Failed(string reason)
+EditIntentOutcome::method NotFound(string reason)
+EditIntentOutcome::method NotNeeded(string reason)
+EditIntentOutcome::method Reloaded(EditWitnessStatus witness)
+EditIntentOutcome::method Kept(EditWitnessStatus witness)
+EditIntentOutcome::method Presented(IReadOnlyList<string> lines, EditIntentWitness keepWitness, EditWitnessStatus witness)
+EditIntentOutcome::method Without(EditIntentStatus status, string? reason)
+::enum EditAllStatus
+EditAllStatus::enum-member NotAvailable
+EditAllStatus::enum-member Waiting
+EditAllStatus::enum-member Rejected
+EditAllStatus::enum-member NotBegun
+EditAllStatus::enum-member Refused
+EditAllStatus::enum-member Closed
+EditAllStatus::enum-member Failed
+::struct EditAllOutcome
+EditAllOutcome::method EditAllOutcome(EditAllStatus status, string? reason, EditIntentOutcome begin, int applied)
+EditAllOutcome::field/property Status
+EditAllOutcome::field/property Reason
+EditAllOutcome::field/property Begin
+EditAllOutcome::field/property Applied
+EditAllOutcome::method NotAvailable(string? reason)
+EditAllOutcome::method Waiting(string reason)
+EditAllOutcome::method Rejected(string reason)
+EditAllOutcome::method NotBegun(EditIntentOutcome begin)
+EditAllOutcome::method Refused(string reason)
+EditAllOutcome::method Closed(int applied)
+EditAllOutcome::method Failed(string reason)
+::enum EditCheckStatus
+EditCheckStatus::enum-member Unavailable
+EditCheckStatus::enum-member Waiting
+EditCheckStatus::enum-member Rejected
+EditCheckStatus::enum-member NotFound
+EditCheckStatus::enum-member NotApplicable
+EditCheckStatus::enum-member Conflict
+EditCheckStatus::enum-member Recovered
+EditCheckStatus::enum-member Failed
+::struct EditCheckOutcome
+EditCheckOutcome::field/property _differences
+EditCheckOutcome::method EditCheckOutcome( EditCheckStatus status, string? reason, IReadOnlyList<string> differences, string? admissionDiagnostic, string? classicEditorHint)
+EditCheckOutcome::field/property Status
+EditCheckOutcome::field/property Reason
+EditCheckOutcome::field/property Differences
+EditCheckOutcome::field/property AdmissionDiagnostic
+EditCheckOutcome::field/property ClassicEditorHint
+EditCheckOutcome::method Unavailable(string reason)
+EditCheckOutcome::method Waiting(string reason)
+EditCheckOutcome::method Rejected(string reason)
+EditCheckOutcome::method NotFound(string reason)
+EditCheckOutcome::method NotApplicable(string reason)
+EditCheckOutcome::method Conflict(IReadOnlyList<string> differences, string? admissionDiagnostic = null, string? classicEditorHint = null)
+EditCheckOutcome::method Recovered(string? admissionDiagnostic = null, string? classicEditorHint = null)
+EditCheckOutcome::method Failed(string reason)
+EditCheckOutcome::method Without(EditCheckStatus status, string? reason)
+::enum EditConfirmStatus
+EditConfirmStatus::enum-member Unavailable
+EditConfirmStatus::enum-member Waiting
+EditConfirmStatus::enum-member Rejected
+EditConfirmStatus::enum-member NotFound
+EditConfirmStatus::enum-member NotApplicable
+EditConfirmStatus::enum-member Confirmed
+EditConfirmStatus::enum-member Conflict
+EditConfirmStatus::enum-member Failed
+::struct EditConfirmOutcome
+EditConfirmOutcome::field/property _differences
+EditConfirmOutcome::method EditConfirmOutcome( EditConfirmStatus status, string? reason, IReadOnlyList<string> differences, string? admissionDiagnostic, string? classicEditorHint)
+EditConfirmOutcome::field/property Status
+EditConfirmOutcome::field/property Reason
+EditConfirmOutcome::field/property Differences
+EditConfirmOutcome::field/property AdmissionDiagnostic
+EditConfirmOutcome::field/property ClassicEditorHint
+EditConfirmOutcome::method Unavailable(string reason)
+EditConfirmOutcome::method Waiting(string reason)
+EditConfirmOutcome::method Rejected(string reason)
+EditConfirmOutcome::method NotFound(string reason)
+EditConfirmOutcome::method NotApplicable(string reason)
+EditConfirmOutcome::method Confirmed(string? admissionDiagnostic = null, string? classicEditorHint = null)
+EditConfirmOutcome::method Conflict(IReadOnlyList<string> differences, string? admissionDiagnostic = null, string? classicEditorHint = null)
+EditConfirmOutcome::method Failed(string reason)
+EditConfirmOutcome::method Without(EditConfirmStatus status, string? reason)
+::enum EditUpdateStatus
+EditUpdateStatus::enum-member Unavailable
+EditUpdateStatus::enum-member Rejected
+EditUpdateStatus::enum-member NoDraft
+EditUpdateStatus::enum-member NothingToApply
+EditUpdateStatus::enum-member PendingText
+EditUpdateStatus::enum-member NotApplicable
+EditUpdateStatus::enum-member AnotherUpdateInProgress
+EditUpdateStatus::enum-member Refused
+EditUpdateStatus::enum-member NotAppliedConflict
+EditUpdateStatus::enum-member NotAppliedAdmission
+EditUpdateStatus::enum-member NotAppliedPreflight
+EditUpdateStatus::enum-member NotAppliedFailure
+EditUpdateStatus::enum-member CommitThrew
+EditUpdateStatus::enum-member Applied
+EditUpdateStatus::enum-member AppliedWithWarnings
+EditUpdateStatus::enum-member AppliedPostRereadFailed
+EditUpdateStatus::enum-member ClosedDetached
+EditUpdateStatus::enum-member ClosedInError
+EditUpdateStatus::enum-member Failed
+::struct EditUpdateOutcome
+EditUpdateOutcome::field/property _differences
+EditUpdateOutcome::field/property _warnings
+EditUpdateOutcome::method EditUpdateOutcome( EditUpdateStatus status, string? reason, IReadOnlyList<string> differences, IReadOnlyList<string> warnings, EditUpdateStatus classification = EditUpdateStatus.Unavailable, string? cause = null)
+EditUpdateOutcome::field/property Status
+EditUpdateOutcome::field/property Classification
+EditUpdateOutcome::field/property Cause
+EditUpdateOutcome::field/property Reason
+EditUpdateOutcome::field/property Differences
+EditUpdateOutcome::field/property Warnings
+EditUpdateOutcome::method Unavailable(string reason)
+EditUpdateOutcome::method Rejected(string reason)
+EditUpdateOutcome::method NoDraft(string reason)
+EditUpdateOutcome::method NothingToApply(string reason)
+EditUpdateOutcome::method PendingText(string reason)
+EditUpdateOutcome::method NotApplicable(string reason)
+EditUpdateOutcome::method AnotherUpdateInProgress()
+EditUpdateOutcome::method Refused(string reason)
+EditUpdateOutcome::method ClosedDetached()
+EditUpdateOutcome::method ClosedInError( string? reason, EditUpdateStatus classification, string? cause, IReadOnlyList<string> differences, IReadOnlyList<string> warnings)
+EditUpdateOutcome::method Failed(string reason)
+EditUpdateOutcome::method Closed( EditUpdateStatus status, string? reason, IReadOnlyList<string> differences, IReadOnlyList<string> warnings)
+EditUpdateOutcome::method Without(EditUpdateStatus status, string? reason)
+::enum EditUpdateStartStatus
+EditUpdateStartStatus::enum-member Unavailable
+EditUpdateStartStatus::enum-member Accepted
+EditUpdateStartStatus::enum-member Waiting
+EditUpdateStartStatus::enum-member Rejected
+EditUpdateStartStatus::enum-member Busy
+EditUpdateStartStatus::enum-member Failed
+::struct EditUpdateStart
+EditUpdateStart::method EditUpdateStart(EditUpdateStartStatus status, string? reason)
+EditUpdateStart::field/property Status
+EditUpdateStart::field/property Reason
+EditUpdateStart::method Unavailable(string reason)
+EditUpdateStart::method Accepted()
+EditUpdateStart::method Waiting(string reason)
+EditUpdateStart::method Rejected(string reason)
+EditUpdateStart::method Busy(string reason)
+EditUpdateStart::method Failed(string reason)
+::struct EditUpdateProgress
+EditUpdateProgress::method EditUpdateProgress(bool inFlight, EditUpdateOutcome outcome)
+EditUpdateProgress::field/property InFlight
+EditUpdateProgress::field/property Outcome
+::enum EditDiscardStatus
+EditDiscardStatus::enum-member Rejected
+EditDiscardStatus::enum-member Discarded
+EditDiscardStatus::enum-member Failed
+EditDiscardStatus::enum-member Busy
+::struct EditDiscardOutcome
+EditDiscardOutcome::field/property _removedRackIds
+EditDiscardOutcome::field/property _pendingTextRackIds
+EditDiscardOutcome::method EditDiscardOutcome(EditDiscardStatus status, string? reason, IReadOnlyList<string> removed, IReadOnlyList<string> pendingText)
+EditDiscardOutcome::field/property Status
+EditDiscardOutcome::field/property Reason
+EditDiscardOutcome::field/property RemovedRackIds
+EditDiscardOutcome::field/property PendingTextRackIds
+EditDiscardOutcome::method Rejected(string reason)
+EditDiscardOutcome::method Discarded(IReadOnlyList<string> removedRackIds, IReadOnlyList<string> pendingTextRackIds)
+EditDiscardOutcome::method Failed(string reason)
+EditDiscardOutcome::method Busy(string reason)
+::class WorkspaceEditIntent
+WorkspaceEditIntent::method ChooseOriginDefinition(NavigationTargetSet set, long? chosenReference)
+WorkspaceEditIntent::method WitnessStatusOf(PushBackPilotPreviewWitnessStatus status)

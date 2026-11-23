@@ -1,0 +1,108 @@
+::interface IWorkspacePilotEditPort
+IWorkspacePilotEditPort::method TryBeginEdit(EditIntentRequest request)
+IWorkspacePilotEditPort::method TryCheckNow(EditIntentRequest request)
+IWorkspacePilotEditPort::method TryReload(EditIntentRequest request)
+IWorkspacePilotEditPort::method TryConfirmBase(EditIntentRequest request)
+IWorkspacePilotEditPort::method TryKeepMine(EditIntentRequest request)
+IWorkspacePilotEditPort::method TryDiscardAndReload(EditIntentRequest request)
+IWorkspacePilotEditPort::method GetField(WorkspaceRequest origin, string rackId)
+IWorkspacePilotEditPort::method SetPendingText(WorkspaceRequest origin, string rackId, string text)
+IWorkspacePilotEditPort::method CommitField(WorkspaceRequest origin, string rackId)
+IWorkspacePilotEditPort::method CrossBoundary(WorkspaceRequest origin, string rackId, PilotBoundaryKind kind)
+IWorkspacePilotEditPort::method DiscardRack(WorkspaceRequest origin, string rackId)
+IWorkspacePilotEditPort::method DiscardDocument(WorkspaceRequest origin)
+IWorkspacePilotEditPort::method GetRacksAtRisk(WorkspaceRequest origin)
+IWorkspacePilotEditPort::method TakeLossNotices()
+IWorkspacePilotEditPort::method TakeCloseNotices()
+IWorkspacePilotEditPort::method RequestUpdate(EditIntentRequest request)
+IWorkspacePilotEditPort::method TakeUpdateProgress(WorkspaceRequest origin, string rackId)
+IWorkspacePilotEditPort::method TryEditAll(EditIntentRequest request)
+::enum PilotFieldState
+PilotFieldState::enum-member NotOpen
+PilotFieldState::enum-member Clean
+PilotFieldState::enum-member Dirty
+PilotFieldState::enum-member Conflict
+PilotFieldState::enum-member Applying
+PilotFieldState::enum-member Unknown
+PilotFieldState::enum-member Error
+PilotFieldState::enum-member Undecidable
+::enum PilotFieldStatus
+PilotFieldStatus::enum-member Rejected
+PilotFieldStatus::enum-member Applied
+PilotFieldStatus::enum-member NotEditable
+PilotFieldStatus::enum-member Busy
+PilotFieldStatus::enum-member Invalid
+::enum PilotBoundaryDecision
+PilotBoundaryDecision::enum-member Proceeded
+PilotBoundaryDecision::enum-member Aborted
+PilotBoundaryDecision::enum-member Kept
+PilotBoundaryDecision::enum-member Busy
+::enum PilotBoundaryKind
+PilotBoundaryKind::enum-member TabChange
+PilotBoundaryKind::enum-member RackChange
+PilotBoundaryKind::enum-member DocumentChange
+PilotBoundaryKind::enum-member PanelHide
+PilotBoundaryKind::enum-member Dematerialize
+PilotBoundaryKind::enum-member DocumentClose
+PilotBoundaryKind::enum-member Update
+::enum PilotUnknownOrigin
+PilotUnknownOrigin::enum-member None
+PilotUnknownOrigin::enum-member CommitThrew
+PilotUnknownOrigin::enum-member PostReread
+::struct PilotFieldView
+PilotFieldView::method PilotFieldView( bool exists, PilotFieldState state, bool isPossiblyStale, bool isProtected, bool canEdit, string? committedText, string? committedTextReason, string? pendingText, string? pendingMessage, string? errorReason = null, PilotUnknownOrigin unknownOrigin = PilotUnknownOrigin.None, string? conflictText = null, string? lastCause = null)
+PilotFieldView::field/property Exists
+PilotFieldView::field/property State
+PilotFieldView::field/property IsPossiblyStale
+PilotFieldView::field/property IsProtected
+PilotFieldView::field/property CanEdit
+PilotFieldView::field/property CommittedText
+PilotFieldView::field/property CommittedTextReason
+PilotFieldView::field/property PendingText
+PilotFieldView::field/property PendingMessage
+PilotFieldView::field/property ErrorReason
+PilotFieldView::field/property UnknownOrigin
+PilotFieldView::field/property ConflictText
+PilotFieldView::field/property LastCause
+::struct PilotFieldResult
+PilotFieldResult::method PilotFieldResult(PilotFieldStatus status, PilotFieldView view, string? reason, string? message)
+PilotFieldResult::field/property Status
+PilotFieldResult::field/property View
+PilotFieldResult::field/property Reason
+PilotFieldResult::field/property Message
+PilotFieldResult::method Applied(PilotFieldView view)
+PilotFieldResult::method Rejected(string reason)
+PilotFieldResult::method NotEditable(string reason, PilotFieldView view)
+PilotFieldResult::method Busy(string reason)
+PilotFieldResult::method Invalid(PilotFieldView view, string? message)
+::struct PilotBoundaryResult
+PilotBoundaryResult::field/property _invalidFields
+PilotBoundaryResult::method PilotBoundaryResult( PilotBoundaryKind kind, PilotBoundaryDecision decision, bool stateChanged, IReadOnlyList<PilotFieldProblem> invalidFields, string? reason)
+PilotBoundaryResult::field/property Kind
+PilotBoundaryResult::field/property Decision
+PilotBoundaryResult::field/property StateChanged
+PilotBoundaryResult::field/property InvalidFields
+PilotBoundaryResult::field/property Reason
+::struct PilotRiskView
+PilotRiskView::field/property _known
+PilotRiskView::field/property _rackIds
+PilotRiskView::field/property _uncertainRackIds
+PilotRiskView::method PilotRiskView(IReadOnlyList<string> rackIds, IReadOnlyList<string> uncertainRackIds)
+PilotRiskView::field/property IsKnown
+PilotRiskView::field/property RackIds
+PilotRiskView::field/property UncertainRackIds
+::struct PilotLossView
+PilotLossView::field/property _lostRackIds
+PilotLossView::field/property _uncertainRackIds
+PilotLossView::field/property _uncertainReasons
+PilotLossView::method PilotLossView( SessionId session, IReadOnlyList<string> lostRackIds, IReadOnlyList<string> uncertainRackIds, IReadOnlyDictionary<string, string> uncertainReasons)
+PilotLossView::field/property Session
+PilotLossView::field/property LostRackIds
+PilotLossView::field/property UncertainRackIds
+PilotLossView::field/property UncertainReasons
+::struct PilotCloseView
+PilotCloseView::field/property _rackIds
+PilotCloseView::method PilotCloseView(SessionId session, IReadOnlyList<string> rackIds, bool isUncertain)
+PilotCloseView::field/property Session
+PilotCloseView::field/property RackIds
+PilotCloseView::field/property IsUncertain

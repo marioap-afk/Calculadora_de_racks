@@ -1,0 +1,2 @@
+tests/RackCad.Tests/PushBackEditAllReloadTests.cs
+tests/RackCad.UI.Tests/PushBackEditAllReloadFieldTests.cs

@@ -9018,3 +9018,37 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - **`attempts`:** 1 de 3.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 291. PB-T4e: la cadena, la decisión del Owner sobre nc1, la revisión con un menor informativo para el Smoke-PB y el cierre (F4B-E61)
+
+**Qué se custodia:**
+- **Las unidades de la delegación,** en `F4B-PBT4-EDIT-ALL-RELOAD/1/`, cada una con su manifiesto:
+  - la planificación `48a1`, con nc4 `77d7`;
+  - el Worker `6c9e`;
+  - la verificación `b46b`;
+  - los controles nc1 `446d`, nc2 `beaa` y nc3 `ba7f`;
+  - el sustituto de nc1 `9cda`, en `F4B-PBT4-EDIT-ALL-RELOAD-nc1-substitute/1/`, en FAIL, tal cual;
+  - la v3 del sustituto de nc2 `00b5`, en `F4B-PBT4-EDIT-ALL-RELOAD-nc2-substitute/1/`.
+- **La decisión del Owner sobre nc1, con su texto literal:** `owner-pbt4e-nc1-decision.md`, «Aceptarlo solo esta vez».
+- **Las revisiones:** la directa, la independiente y su encargo.
+- **El registro declarado de PB-T4e,** completado, con sus cinco sustituciones.
+- **El paquete de cierre.**
+- **La nota de `docs/ideas-futuras.md`.**
+- **El estado,** con OWNER-01 de la revisión entre lo que el Smoke-PB de PB-T5 tiene que mirar o anotar, y las decisiones del Owner sobre PB-T5, tomadas. Su registro no va en este cierre: se custodia con la emisión de PB-T5.
+
+**La delegación:**
+- **RED y GREEN:** el RED `265f9e31` y el GREEN `0eac7911`, sin reparación del RED.
+- **CI:** las corridas `45119881969` (el RED) y `45123886125` (el GREEN).
+  - La del RED: tests y ui-tests en failure, solo por las cuatro CT; build-ui en success; build-plugin omitido.
+  - La del GREEN da 4/4: Core 19 421 = 19 018 + 0 + 403 y UI 2 465 = 2 417 + 0 + 48, los totales exactos de su rama.
+- **Revisión independiente:** ACEPTABLE CON MENORES, 0/0/1. Su M-01 (OWNER-01) es informativo y no pide decisión: con la ventana de «Editar todo» abierta, la paleta sigue mostrando el estado y el valor de antes hasta cerrarla. Va a la guía del Smoke-PB.
+- **Verificación:** 14/14, con `rr_check` PASS. Su primera preparación contó 2 participantes falsos, por la ruta del worktree en la línea de órdenes de la sesión; repetida desde el scratchpad, 0/0, antes de lanzar.
+- **Controles:**
+  - nc1, CONTROL NOT PASSED con la cascada del SHA falso; su sustituto (F4B-E40) da FAIL solo en `e2_OtherFailCitesFakeSha`, la séptima variación de nc1 en F4B; satisfecho por la decisión del Owner, solo esta vez;
+  - nc2, por la v3 de su sustituto (F4B-E58), `00b5`, en PASS;
+  - nc3, CONTROL PASS ordinario.
+
+**Límites:**
+- solo documentación;
+- sin AutoCAD;
+- los eventos, las transcripciones, las TRX y los registros de build, solo por SHA-256.

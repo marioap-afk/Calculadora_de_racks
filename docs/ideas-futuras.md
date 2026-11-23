@@ -2155,3 +2155,28 @@ Son los menores de la revisión independiente del código de PB-T3c, intento 1. 
 - **Una autoprueba de una guarda de ausencia no discrimina mientras lo ausente todavía existe** (PBT4D-IR-M02). Las dos autopruebas de archivo de CT-PBT4D-01 inyectan un archivo retirado: en el RED ese archivo aún existe, así que la inyección no cambia nada y solo discriminan en el GREEN. **La mejora,** en una próxima retirada: que el paquete diga en qué rama discrimina cada autoprueba, o que la autoprueba de archivo inyecte la ausencia.
 - **Una prueba lenta frente al detector de cuelgue** puede tumbar la CI de un commit que solo lleva documentos: le pasó a la emisión de PB-T4d (`45043090710`). La cota de D-S14 lo resolvió: la prueba pasó de minutos a menos de 10 s en la CI.
 - **Un sustituto que enumera los subconjuntos del alcance no escala** con el tamaño del contrato. La v2 del sustituto de nc2 enumeraba los 2^n subconjuntos del AllowedWriteScope en su propiedad 10: con las 21 rutas de PB-T4c terminó, y con las 37 de PB-T4d acabó en MemoryError, sin veredicto. La v3 (F4B-E58) calcula la misma proposición en su forma cerrada. **La mejora:** que la revisión de un sustituto mida también su coste frente al alcance más grande previsto, PB-T5 incluida.
+
+## I-64 F4B PB-T4e — la paleta durante «Editar todo», los resúmenes del puerto, riesgos para el Smoke-PB y lecciones de la forma literal (2026-11-23, registrados sin corregir)
+
+**Para el Smoke-PB de PB-T5 (D-PB-09):**
+- **PBT4E-IR-OWNER-01** (= M-01 de la revisión independiente del código; informativo, sin decisión del Owner): los pasos 3 y 8 de la guía (§5.5 del paquete de PB-T4) no dicen qué se ve en la paleta mientras la ventana de «Editar todo» está abierta.
+  - **Por el código** (en `0eac7911`; la revisión no lo ejecutó): la recarga ocurre dentro de `TryEditAll` y el modal se abre justo después, en la misma llamada síncrona. El campo solo se repinta (`Render()`, `WorkspacePilotFieldViewModel.cs:489`) cuando `TryEditAll` vuelve, al cerrarse el editor; entrar en el modal solo pone la marca, sin refrescar el panel.
+  - **Lo que se verá:** con la ventana abierta, la paleta, deshabilitada, sigue mostrando «Limpio (posiblemente obsoleto)» y el valor de antes del cambio de fuera, mientras la ventana enseña el valor recargado. Al cerrar, el campo queda bien (CT-PBT4E-03, `recargado-y-cerrado`).
+  - Es la misma falta de repintado que PB-T4c ya tiene mientras el editor entrega cambios al borrador, y no es un texto ni un estado nuevo.
+  - **La mejora:** que la guía lo diga en esos dos pasos, para que no se lea como un fallo de la recarga. Si en AutoCAD se viera otra cosa, sería una observación del Smoke, no un defecto de PB-T4e.
+- **El paso 5, sin verificar:** borrar fuera todas las vistas del rack y pulsar «Editar todo» supone que la pestaña del rack y su borrador Clean marcado siguen en el panel después del borrado. CT-PBT4E-02 lo modela con el lector (`OriginMissing`), sin cambiar la superficie. Si en AutoCAD el navegador cambiara la pestaña activa al borrar las vistas, el paso no se podría hacer tal cual, pero no sería un fallo del código.
+- **Lo que ya estaba:**
+  - R-T4-39 (F4B-E60), que se le cuenta al Owner como información junto al paso 6: con un borrador Dirty y un cambio de fuera que reescriba el sobre de origen, «Actualizar» puede dar `NotAppliedPreflight` y no «Conservar mi borrador»;
+  - PBT4D-IR-OWNER-02, los tres caminos de `BuildCore`, de PB-T4d;
+  - lo de PB-T3c, PB-T4a, PB-T4b y PB-T4c, en sus notas de arriba.
+
+**Los resúmenes del puerto y de `BeginEdit`** (una observación de la revisión, que no cuenta como hallazgo; anterior a PB-T4e y fuera de su alcance, C10):
+- `IWorkspacePilotEditPort.cs:19` dice que solo las seis operaciones de la intención de edición leen el dibujo, y el de `BeginEdit` (`WorkspacePilotFieldViewModel.cs:375`), que es la única entrada que lo lee. Los dos son inexactos desde PB-T4c: «Editar todo» lee al empezar, y desde PB-T4e también al recargar.
+- La primera frase la fija `WorkspacePilotEditGuardTests.cs:1083`, y D-PBT4-22, punto 3, decidió conservarla. El comentario nuevo de `TryEditAll` (`IWorkspacePilotEditPort.cs:117-124`) sí lo dice bien.
+- **La mejora:** una tarea de documentación que corrija los dos resúmenes y la frase que fija la guarda, si el Owner la quiere.
+
+**El sustituto de nc1, la séptima variación** (decisión del Owner «Aceptarlo solo esta vez», sin cambiar el sustituto): su propiedad `e2_OtherFailCitesFakeSha` falló porque las evidencias de Ci y de Tests citan el SHA falso por el nombre del campo («not the handoff CurrentSha», «CurrentSha is not a commit») y no por su valor, como ya pasó con Tests en PB-T4a. Sigue siendo candidato a revisarse (F4B-E53), sin cambio ahora; si la variación vuelve a aparecer, vuelve al Owner.
+
+**Dos lecciones de PB-T4e:**
+- **Una lista vacía es una forma del alcance propia.** El RED solo añade las clases de las CT, sin esqueleto, y el GREEN es el texto literal de `src/`. La cadena la lee del contrato (INV-PBT4E-02 y 07), deja intactas las formas de PB-T4b, PB-T4c y PB-T4d, y para limpia en lo que depende de la versión hasta su seco sobre el contrato emitido.
+- **El participante falso de la propia sesión** (la lección de I-61) volvió a salir en la preparación de la verificación: la línea de órdenes de la sesión llevaba la ruta del worktree, y la medida de los procesos contó 2 participantes. Repetida desde el scratchpad, dio 0/0, antes de lanzar. **La mejora:** que la preparación avise cuando la línea de órdenes de quien la llama nombra el worktree, o lanzarla siempre desde el scratchpad.

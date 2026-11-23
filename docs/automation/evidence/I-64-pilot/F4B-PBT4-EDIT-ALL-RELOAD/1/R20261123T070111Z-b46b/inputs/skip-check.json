@@ -1,0 +1,6 @@
+{
+  "Regla": "La lista cerrada de PB-T4e, vacia (INV-PBT4E-07, literal: Las redes: section 5 en verde. Ninguna prueba existente se edita, se salta, se reactiva ni se borra: la lista cerrada de PB-T4e esta vacia (K = 0). git diff BaseSha..CurrentSha -- tests/ solo anade los dos archivos nuevos.): sin autoridad de la lista; el AllowedWriteScope no trae ninguna prueba existente, ninguna gana Skip y git diff BaseSha RedSha -- tests solo anade las pruebas nuevas (red-literal.json). PorArchivo, vacio.",
+  "BaseSha": "7da361ebe8919bf31e2874c42dc946b98c62635a",
+  "RedSha": "265f9e31cb33ce312c04d2d7959c999aee763b3c",
+  "PorArchivo": {}
+}
