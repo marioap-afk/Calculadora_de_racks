@@ -570,4 +570,91 @@ cantidad manual total por rack y unidad; datos geometricos se piden solo si se e
 | 29 routing | Proposal §8 |
 | 30 autorizacion NO | §3, contrato y Proposal |
 
+## 17. Relevo a Claude: recepcion, delta y linea base (2026-11-23)
+
+Sesion responsable: Claude (implementador, D-09), app de escritorio en la workstation del Owner.
+Encargo: relevo, preflight, lectura/delta y documentos propios. Sin producto, pruebas ni
+catalogos modificados. Sin ejecucion delegada (AUTOMATION_PLAN §16 no invocado). No acredita
+GATE PASS, Candidato, `EXECUTION_VERIFIED` ni Owner Validation.
+
+### 17.1 Recepcion del worktree (MEASURED)
+
+- `git fetch origin` a las 2026-11-23T23:24Z: `origin/main` = `812baf879612320653094a8aaf46aca0bac81383`;
+  `origin/feature/selectivo-catalogo-componentes` = `fd456e8b82cb4d78c8b1cb145e62f89f1b1ad124`
+  (confirmados con `git ls-remote`).
+- La ruta Linux del Coordinator no existe en esta maquina. `git worktree list --porcelain` del
+  clon del Owner (`D:\Documentos\Codex\Calculadora de racks`) no tenia worktree ni rama local de
+  I-69. Se preparo el checkout local de la rama ya reclamada, sin rama ni reclamo nuevos:
+  `git worktree add --track -b feature/selectivo-catalogo-componentes
+  C:\Users\alejandra-mendoza\.codex\worktrees\feature-selectivo-catalogo-componentes
+  origin/feature/selectivo-catalogo-componentes` (ubicacion y nombre segun WORKFLOW §3).
+- Estado de entrada: rama `feature/selectivo-catalogo-componentes`, upstream `origin/...`,
+  divergencia 0/0, `git status` limpio, HEAD `fd456e8b`.
+- `main` no avanzo desde el reclamo: `merge-base(origin/main, rama)` = `812baf87`. WORKFLOW §4
+  paso 2 no exige rebase.
+- Exclusividad: ningun otro worktree local tiene esta rama; el checkout principal del Owner
+  (`main` @ `95690c28`, atrasado a proposito) esta limpio y no se toco. El worktree Linux del
+  Coordinator no es observable desde aqui; D-09 registra que el Coordinator termino sus
+  operaciones. Desde la recepcion hasta la entrega, esta sesion es la unica escritora.
+- Configuracion de la sesion (regla interina del Owner, I-61): `get_session("self")` =
+  `claude-opus-5-5` / `xhigh`. Requerido para coordinacion larga segun `model-catalog.md`
+  (verificado 2026-09-30, STALE desde 2026-12-29): Long-horizon → `xhigh`, nivel Frontera.
+  Estado: MATCH.
+- Texto de entrada: el prompt pegado en el chat no es byte-identico al versionado
+  (`docs/automation/prompts/I-69-claude-initial.md`, blob `88f0fe14`): agrega acentos y formato
+  Markdown. Comparado por secciones, mandato, limites y autorizaciones coinciden.
+
+### 17.2 Delta de base (MEASURED)
+
+- `git diff --stat e350f8d7 fd456e8b`: solo `decisions/I-69.md` (D-09), el prompt inicial y el
+  contrato §8. `git diff --name-only origin/main HEAD` fuera de `docs/`: vacio. El arbol de
+  producto es el mismo del Discovery; DC-01..06 no tienen delta de producto que revisar.
+- DC-07 refrescado: las cinco ramas activas siguen en las puntas de §2.
+
+### 17.3 Hallazgos del delta
+
+| ID | Clase | Hecho | Consecuencia |
+|---|---|---|---|
+| I69-H01 | MEASURED | `ShippedCatalogIntegrityTests` fija `BeamProfiles.Count == 4` y 7 filas de `secciones.csv` (precedente I-18a: 3 → 4 en la misma prueba) | Toda alta del Owner deja Core en rojo hasta actualizar el golden: trabajo de software S-01 |
+| I69-H02 | RECONSTRUCTED | `CatalogValidator` comprueba duplicados, FK de mensula, layout y filas de bloque, pero no exige mappings de bloque por larguero o seguridad | Una alta sin `blocks.csv` pasa el validador y cae en la politica §11; la completitud se prueba en T2/T7, sin endurecer el validador (M-04) |
+| I69-H03 | MEASURED | `ShippedCatalog_ValidatorReportsOnlyTheKnownBaseline` exige exactamente 1 error (`DUPLICATE_ID` `TROQUEL_TOPE`) y 2 avisos (`TARIMA_GENERICA`) | Cualquier problema nuevo en los datos hace fallar Core: sirve de compuerta de datos; se corrige en los datos, no en el golden |
+| I69-H04 | RECONSTRUCTED + MEASURED | `RackSelectiveWindow` fija `DefaultBeamId` = primer `CatalogOption` ordenado por `Label` con `CurrentCultureIgnoreCase`. Orden de los cuatro textos actuales medido con `StringComparer` es-MX y en-US en .NET 11 (PowerShell, no el ensamblado): calibre 14, ajuste infinito, troquel redondo, in n out | Default actual inferido: `LARGUERO_ESCALON_CAL14_3_REMACHES`. Un texto que ordene antes lo cambia para celdas nuevas y legacy con `BeamId` null (Q-04b). Se mide en UI real en T1 |
+| I69-H05 | RECONSTRUCTED | Un `type` de seguridad que no es BOTA/LATERAL/TOPE/DESVIADOR/GUIA/DEFENSA/PARRILLA genera una fila de cantidad por registro; `GroupTitle` traduce `TRASERA` a "Guardas traseras" y muestra crudo cualquier otro `type`; `AddSafetyComponents` usa la cantidad manual; ningun builder F/L/P lo dibuja | B existe sin codigo en Selectivo; el titulo de una familia nueva distinta de `TRASERA` requiere S-04 |
+| I69-H06 | RECONSTRUCTED | `CellBeamBox` y `RackLargueroWindow` listan todos los `BeamProfiles`; Dinamico y PushBack listan solo `CompatibleInOutBeams` (`TROQUEL_CAMA`) y `CompatibleIntermediateBeams` (mates LATERAL izquierdo/derecho), ambos con bloque LATERAL. `CatalogBlockParameters` da a un larguero nuevo el rol Beam (FRONTAL `LONGITUD`+`PERALTE`, LATERAL `PERALTE`, PLANTA `LONGITUD`+`PERALTE`); solo `LARGUERO_IN_OUT_C6` tiene la excepcion in/out | La exposicion de un larguero nuevo en Dinamico/PushBack la deciden los datos de conexion del Owner; el manifiesto pide esos parametros a sus bloques |
+| I69-H07 | RECONSTRUCTED | Dialogo Selectivo: todas las familias salvo GUIA/DEFENSA. PushBack: el dialogo excluye GUIA/PARRILLA/TOPE/DEFENSA y `PushBackSafetyAuthority` GUIA/PARRILLA/TOPE; su BOM sale de `SystemBomBuilder`, que solo cuenta instancias dibujadas de BOTA/LATERAL/DEFENSA/DESVIADOR/GUIA, sin cantidad manual. Dinamico: allowlist BOTA/LATERAL/DESVIADOR/DEFENSA/GUIA | `TRASERA` o un `type` nuevo se ofrece y persiste en PushBack pero no llega a su BOM (INFERENCE, sin ejecutar). No aparece en Dinamico. Base de Q-03 |
+| I69-H08 | MEASURED | `secciones`/`seguridad`: UTF-8 sin BOM; `blocks`/`connection-layout`: ASCII; `mensulas`: ISO-8859. Indice LF, disco CRLF (`core.autocrlf`), sin `-text`. El SHA-256 del inventario del Discovery es el del contenido LF del blob; en esta maquina el disco difiere (p. ej. `secciones.csv` blob `01be2765`, disco `8e5f2e9c…`) | La identidad portable de un dato recibido es el blob Git y el SHA-256 de su contenido LF; el SHA en disco solo sirve para bundle/instalacion en esta maquina |
+| I69-H09 | MEASURED | I-64 (`workspace-persistente-rackcad` y `-a14`) cambia `SelectiveEditorOpenTests` solo en el censo de comandos (38 → 40). Añade pruebas UI de PushBack con catalogo real cuya huella de BOM es `Category|ProfileId|Length|Quantity`, sin descripcion. Modifica `RackPushBackSystemWindow.xaml.cs` sin tocar `SafetyElementsForDialog` | I-69 no necesita editar `SelectiveEditorOpenTests`. Un renombre no mueve esas huellas (INFERENCE, no ejecutado en la rama I-64). S-05 tocaria un archivo caliente de I-64: coordinar antes |
+
+Busqueda de goldens de etiquetas: ninguna prueba Core/UI fija los `displayName` actuales de los
+cuatro largueros ni de las seguridades (grep de los textos en `tests/`). Las pruebas BOM Excel
+de I-68 usan arboles sinteticos o comprobaciones estructurales. Limite: busqueda textual, no
+ejecucion con datos nuevos.
+
+### 17.4 Linea base local (MEASURED)
+
+Entorno: Windows 11 Pro 10.0.26300, cultura es-MX, SDK `8.0.423` de usuario
+(`%LOCALAPPDATA%\Microsoft\dotnet`, coincide con `global.json`), AutoCAD 2025 instalado
+(`acad.exe` presente), `acad` no en ejecucion durante las corridas. Todas sobre HEAD
+`fd456e8b`, arbol limpio antes y despues (`git status --porcelain` vacio). TRX fuera del
+worktree (scratchpad de la sesion), no versionados.
+
+| Corrida | Resultado | Duracion medida |
+|---|---|---|
+| Core Full `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj` | 15538 total, 15538 superadas, 0 fallidas, 0 no ejecutadas; exit 0; TRX SHA-256 `32b82f89…53f84b` | 4 min 3 s de ejecucion; 423.5 s con build |
+| UI Full `dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | 1654 total, 1637 superadas, 0 fallidas, 17 resultados `NotExecuted` (los Skip declarados de la suite; contador `notExecuted` = 0); exit 0; TRX SHA-256 `bb5238f4…b59d7e` | 6 min 31 s de ejecucion; 416.6 s con build |
+| Build Debug `src/RackCad.UI/RackCad.UI.csproj` | 0 errores, 0 advertencias | 18.4 s junto con el siguiente |
+| Build Debug `src/RackCad.Plugin/RackCad.Plugin.csproj` con `AutoCADInstallDir` de AutoCAD 2025 | 0 errores; `RackCad.Plugin.dll` SHA-256 `66d86e4e…4d2af3`, `InformationalVersion` `1.0.0+fd456e8b…` | — |
+
+El DLL del Plugin es de la base, no de un Candidato: no se entrega ni sirve para OV.
+
+Esta linea base caracteriza la base actual. No es evidencia de producto I-69, no cierra gate y
+no sustituye el CI propio de ningun commit. El CI de los commits de este relevo no se hereda del
+Discovery; se registra aparte cuando se lea.
+
+### 17.5 Entrega
+
+Documentos tocados: `docs/initiatives/I-69-proposal-v2.md` (nuevo) y esta seccion. Sin cambios
+en producto, pruebas, catalogos, HANDOFF, ROADMAP, FOUNDATIONS ni iniciativas ajenas.
+Siguiente paso: decision del Coordinator sobre el paquete y respuestas Owner Q-01..Q-04.
+
 IMPLEMENTATION AUTHORIZATION = NO
