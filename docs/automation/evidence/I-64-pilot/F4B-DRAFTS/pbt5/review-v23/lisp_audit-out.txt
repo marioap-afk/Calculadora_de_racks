@@ -1,0 +1,23 @@
+linea 531: len=13 trozos16=1 profundidad=0 cadena_abierta=False OK
+linea 532: len=253 trozos16=16 profundidad=0 cadena_abierta=False OK
+linea 533: len=111 trozos16=7 profundidad=0 cadena_abierta=False OK
+linea 534: len=647 trozos16=41 profundidad=0 cadena_abierta=False OK
+linea 535: len=289 trozos16=19 profundidad=0 cadena_abierta=False OK
+linea 536: len=168 trozos16=11 profundidad=0 cadena_abierta=False OK
+linea 537: len=166 trozos16=11 profundidad=0 cadena_abierta=False OK
+linea 538: len=456 trozos16=29 profundidad=0 cadena_abierta=False OK
+linea 539: len=383 trozos16=24 profundidad=0 cadena_abierta=False OK
+linea 540: len=935 trozos16=59 profundidad=0 cadena_abierta=False OK
+linea 546: len=78 trozos16=5 profundidad=0 cadena_abierta=False OK
+linea 577: len=95 trozos16=6 profundidad=0 cadena_abierta=False OK
+linea 591: len=87 trozos16=6 profundidad=0 cadena_abierta=False OK
+linea 834: len=45 trozos16=3 profundidad=0 cadena_abierta=False OK
+linea 835: len=20 trozos16=2 profundidad=0 cadena_abierta=False OK
+linea 836: len=79 trozos16=5 profundidad=0 cadena_abierta=False OK
+linea 837: len=19 trozos16=2 profundidad=0 cadena_abierta=False OK
+linea 845: len=97 trozos16=7 profundidad=0 cadena_abierta=False OK
+linea 846: len=62 trozos16=4 profundidad=0 cadena_abierta=False OK
+linea 854: len=67 trozos16=5 profundidad=0 cadena_abierta=False OK
+linea 862: len=66 trozos16=5 profundidad=0 cadena_abierta=False OK
+linea 863: len=59 trozos16=4 profundidad=0 cadena_abierta=False OK
+lineas LISP: 22; mal: 0

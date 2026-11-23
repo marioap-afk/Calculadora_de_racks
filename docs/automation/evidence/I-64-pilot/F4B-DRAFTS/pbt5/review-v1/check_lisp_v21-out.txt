@@ -1,0 +1,14 @@
+bloques lisp en el pre-run: 3
+(vl-load-com) len=  13 parentesis=0 cadena_abierta=False IGUAL a [BM] escrituras=-
+rcj        len= 253 parentesis=0 cadena_abierta=False IGUAL a [BM] escrituras=-
+rcn        len= 111 parentesis=0 cadena_abierta=False IGUAL a [BM] escrituras=-
+rcref      len= 647 parentesis=0 cadena_abierta=False IGUAL a [BM] escrituras=-
+rcdef      len= 289 parentesis=0 cadena_abierta=False IGUAL a [BM] escrituras=-
+rcblk      len= 168 parentesis=0 cadena_abierta=False nueva escrituras=-
+rcdyn      len= 166 parentesis=0 cadena_abierta=False nueva escrituras=-
+rcnest     len= 456 parentesis=0 cadena_abierta=False nueva escrituras=-
+c:RCDUMP   len= 306 parentesis=0 cadena_abierta=False DISTINTA de [BM] escrituras=-
+c:RCDUMP [BM]: (defun c:RCDUMP (/ tg f) (setq tg (getstring "\nEtiqueta: ") f (open (strcat "<carpeta-de-copias-de-PB-T0>/inv/" (vl-filename-base (getvar "DWGNAME")) "-" tg ".txt") "w")) (write-line (strcat "CLAYER\t" (getvar "CLAYER")) f) (rcref f) (rcdef f) (close f) (princ "\nRCDUMP ok") (princ))
+c:RCDUMP v2  : (defun c:RCDUMP (/ tg f) (setq tg (getstring "\nEtiqueta: ") f (open (strcat "<carpeta-del-Smoke-PB-con-/>/inv/" (vl-filename-base (getvar "DWGNAME")) "-" tg ".txt") "w")) (write-line (strcat "CLAYER\t" (getvar "CLAYER")) f) (rcref f) (rcdef f) (rcblk f) (rcnest f) (close f) (princ "\nRCDUMP ok") (princ))
+otro bloque: len=113 parentesis=0 ::    (vla-activate (vla-open (vla-get-documents (vlax-get-acad-object)) "<carpeta-del-Smoke-PB-con-/>/r1/cMM.dwg"))
+otro bloque: len=90 parentesis=0 ::    (vla-close (vla-item (vla-get-documents (vlax-get-acad-object)) "cNN.dwg") :vlax-false)

@@ -1,0 +1,8 @@
+a1ccaa4f5471202877591c21684dd9cc5a7ba4ca181d4bc94877bd3e59fb4ac3  I-64-f4b-pbt5-package-v2.2.md  bytes=78792 lines=744 cr=0 nul=0 hits=0 admitidos=6
+c446f8048f63ebd9b9cc0b0156838c02aacc984e33e4214cf905542f15a1525e  owner-questions-v2.2.md  bytes=17185 lines=217 cr=0 nul=0 hits=0 admitidos=0
+99fe181817ba39de9fd924ddb3fef0b84c34f78176bbfaf048c0d654d69a3173  pre-run-tonight-v2.2.md  bytes=46601 lines=711 cr=0 nul=0 hits=0 admitidos=24
+    LISP: OK
+2b9358cca9b5fb34ae1b160b15ae86b24c3de126588c6412964c66b74ae17e6b  handoff-pbt5-v2.2.md  bytes=4187 lines=46 cr=0 nul=0 hits=0 admitidos=4
+791b56715c4b8590bb21f8354563f684a961af2142920fcf4e53aeac3002b351  _tools/control_patterns.py  bytes=1267 lines=35 cr=0 nul=0 hits=0 admitidos=0
+1d623f5d7d2608db7c4adc7a108ca5c730fda807d11f5155d09c3674e69868f1  _tools/make_v22.py  bytes=11507 lines=114 cr=0 nul=0 hits=0 admitidos=6
+3100edc76ef2cbd0443ab156083fb2ecc797987814f14f16dd4569c2e299e3b2  _tools/check_pbt5.py  bytes=3545 lines=108 cr=0 nul=0 hits=0 admitidos=0

@@ -1,0 +1,44 @@
+== bloque 1 (linea 124): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[<worktree>] comprueba_marcadores=True
+== bloque 2 (linea 148): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[<worktree>] comprueba_marcadores=True
+== bloque 3 (linea 164): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[] comprueba_marcadores=False
+== bloque 4 (linea 183): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[] comprueba_marcadores=False
+== bloque 5 (linea 207): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[<carpeta-de-registros-de-RackCad>] comprueba_marcadores=True
+== bloque 6 (linea 241): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[<dotnet-del-usuario>,<worktree>] comprueba_marcadores=True
+== bloque 7 (linea 260): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[<dotnet-del-usuario>,<worktree>] comprueba_marcadores=True
+== bloque 8 (linea 311): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[<dotnet-del-usuario>,<worktree>] comprueba_marcadores=True
+== bloque 9 (linea 345): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[<worktree>] comprueba_marcadores=True
+== bloque 10 (linea 372): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[<checkout-principal>,<original-D1>,<worktree>] comprueba_marcadores=True
+   efecto: New-Item -ItemType Directory -Path $rootFull | Out-Null
+   efecto: New-Item -ItemType Directory -Path $dir | Out-Null
+   efecto: Copy-Item -LiteralPath $o -Destination $dst
+   efecto: Copy-Item -LiteralPath $o -Destination $dst
+   efecto: [pscustomobject]@{ original_sha256 = $h0; respaldo = 'D1-respaldo.dwg'; copias = $m } | ConvertTo-Json -Depth 3 | Out-File -LiteralPath $manifest -Encoding utf8 -NoClobber
+== bloque 11 (linea 481): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[] comprueba_marcadores=False
+== bloque 12 (linea 495): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[<acad.exe>,<dir-del-acceso-directo>] comprueba_marcadores=True
+   efecto: $p = [System.Diagnostics.Process]::Start($psi)
+   efecto: ConvertTo-Json | Out-File -LiteralPath $rec -Encoding utf8 -NoClobber
+== bloque 13 (linea 525): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[] comprueba_marcadores=False
+== bloque 14 (linea 559): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[] comprueba_marcadores=False
+== bloque 15 (linea 657): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[<anterior>,<siguiente>] comprueba_marcadores=False
+== bloque 16 (linea 715): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[] comprueba_marcadores=False
+   efecto: [void]$q.CloseMainWindow()
+   efecto: if (-not $q.WaitForExit(60000)) { throw "STOP: la instancia no salio en 60 s; no se usa Stop-Process" }
+== bloque 17 (linea 757): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[<lista-local-de-la-seleccion>,<original-D1>,<worktree>] comprueba_marcadores=True
+== bloque 18 (linea 838): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[<carpeta-de-registros-de-RackCad>,<settings-de-P-05>] comprueba_marcadores=True
+== bloque 19 (linea 914): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[<acad.exe>,<dir-del-acceso-directo>,<n>] comprueba_marcadores=True
+   efecto: $p = [System.Diagnostics.Process]::Start($psi)
+   efecto: ConvertTo-Json | Out-File -LiteralPath $rec -Encoding utf8 -NoClobber
+== bloque 20 (linea 972): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[] comprueba_marcadores=False
+== bloque 21 (linea 1064): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[<lista-local-de-la-seleccion>] comprueba_marcadores=True
+   efecto: New-Item -ItemType Directory -Path $est | Out-Null
+   efecto: Copy-Item -LiteralPath $t.Src -Destination $b
+   efecto: Copy-Item -LiteralPath $t.Src -Destination $c
+   efecto: ConvertTo-Json -InputObject ([pscustomobject]@{ lista_sha256 = $listSha; copias = @($rows) }) -Depth 4 | Out-File -LiteralPath (Join-Path $est 'estilo.json') -Encoding utf8 -NoClobber
+== bloque 22 (linea 1135): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[<checkout-principal>,<python-del-usuario>] comprueba_marcadores=True
+   efecto: if (-not (Test-Path -LiteralPath $tools)) { New-Item -ItemType Directory -Path $tools | Out-Null }
+   efecto: & git -C $main show $rev > $dk; if ($LASTEXITCODE -ne 0) { throw "STOP: git show" }
+== bloque 23 (linea 1171): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[<eNN-con-estilo>,<lista-local-de-la-seleccion>] comprueba_marcadores=True
+   efecto: New-Item -ItemType Directory -Path $sp | Out-Null
+   efecto: Copy-Item -LiteralPath $src -Destination $dst
+   efecto: ConvertTo-Json -InputObject ([pscustomobject]@{ lista_sha256 = $listSha; copias = @($rows) }) -Depth 4 | Out-File -LiteralPath (Join-Path $sp 's-copias.json') -Encoding utf8 -NoClobber
+bloques: 23

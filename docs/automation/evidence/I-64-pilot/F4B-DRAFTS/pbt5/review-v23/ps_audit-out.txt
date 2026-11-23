@@ -1,0 +1,38 @@
+== bloque 1 (linea 97): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[<worktree>] comprueba_marcadores=True
+== bloque 2 (linea 121): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[<worktree>] comprueba_marcadores=True
+== bloque 3 (linea 137): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[] comprueba_marcadores=False
+== bloque 4 (linea 156): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[] comprueba_marcadores=False
+== bloque 5 (linea 180): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[<carpeta-de-registros-de-RackCad>] comprueba_marcadores=True
+== bloque 6 (linea 211): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[<dotnet-del-usuario>,<worktree>] comprueba_marcadores=True
+== bloque 7 (linea 230): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[<dotnet-del-usuario>,<worktree>] comprueba_marcadores=True
+== bloque 8 (linea 281): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[<dotnet-del-usuario>,<worktree>] comprueba_marcadores=True
+== bloque 9 (linea 317): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[<checkout-principal>,<original-D1>,<worktree>] comprueba_marcadores=True
+   efecto: New-Item -ItemType Directory -Path $rootFull | Out-Null
+   efecto: New-Item -ItemType Directory -Path $dir | Out-Null
+   efecto: Copy-Item -LiteralPath $o -Destination $dst
+   efecto: Copy-Item -LiteralPath $o -Destination $dst
+   efecto: [pscustomobject]@{ original_sha256 = $h0; respaldo = 'D1-respaldo.dwg'; copias = $m } | ConvertTo-Json -Depth 3 | Out-File -LiteralPath $manifest -Encoding utf8 -NoClobber
+== bloque 10 (linea 424): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[] comprueba_marcadores=False
+== bloque 11 (linea 438): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[<acad.exe>,<dir-del-acceso-directo>] comprueba_marcadores=True
+   efecto: $p = [System.Diagnostics.Process]::Start($psi)
+   efecto: ConvertTo-Json | Out-File -LiteralPath $rec -Encoding utf8 -NoClobber
+== bloque 12 (linea 467): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[] comprueba_marcadores=False
+== bloque 13 (linea 501): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[] comprueba_marcadores=False
+== bloque 14 (linea 597): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[] comprueba_marcadores=False
+== bloque 15 (linea 638): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[] comprueba_marcadores=False
+   efecto: [void]$q.CloseMainWindow()
+   efecto: if (-not $q.WaitForExit(60000)) { throw "STOP: la instancia no salio en 60 s; no se usa Stop-Process" }
+== bloque 16 (linea 680): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[<original-D1>,<worktree>] comprueba_marcadores=True
+== bloque 17 (linea 750): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[<acad.exe>,<dir-del-acceso-directo>,<n>] comprueba_marcadores=True
+   efecto: $p = [System.Diagnostics.Process]::Start($psi)
+   efecto: ConvertTo-Json | Out-File -LiteralPath $rec -Encoding utf8 -NoClobber
+== bloque 18 (linea 805): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[] comprueba_marcadores=False
+== bloque 19 (linea 880): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[<lista-local-de-la-seleccion>] comprueba_marcadores=True
+   efecto: New-Item -ItemType Directory -Path $est | Out-Null
+   efecto: Copy-Item -LiteralPath $o -Destination $b
+   efecto: Copy-Item -LiteralPath $o -Destination $c
+   efecto: $rows | ConvertTo-Json | Out-File -LiteralPath (Join-Path $est 'estilo.json') -Encoding utf8 -NoClobber
+== bloque 20 (linea 924): errores=0 strict=True exit0_ultima=True exit0_veces=1 libres=[] marcadores=[<checkout-principal>,<python-del-usuario>] comprueba_marcadores=True
+   efecto: if (-not (Test-Path -LiteralPath $tools)) { New-Item -ItemType Directory -Path $tools | Out-Null }
+   efecto: & git -C $main show $rev > $dk; if ($LASTEXITCODE -ne 0) { throw "STOP: git show" }
+bloques: 20

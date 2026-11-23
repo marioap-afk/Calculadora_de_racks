@@ -1,0 +1,22 @@
+claves: AllowedWriteScope, Authorities, AuthorityRevision, CorrectionsAuthorized, EligibleCells, ExpectedEvidence, ForbiddenWriteScope, Gate, Invariants, IssuedBy, IssuedUtc, MainSha, Objective, RequiredTests, RoutingEnforcement, Schema, StopConditions, TaskId, Unit
+RequiredTests: 90 (tipo list)
+UI   7 {"Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullDraftWindowParityTests", "MinSelected": 1, "ExpectRed": false}
+UI  14 {"Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.UI.Tests.Workspace", "MinSelected": 503, "ExpectRed": false}
+UI  19 {"Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWindowOnStateTests", "MinSelected": 2, "ExpectRed": false}
+UI  20 {"Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization", "MinSelected": 55, "ExpectRed": false}
+UI  22 {"Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization", "MinSelected": 16, "ExpectRed": false}
+UI  24 {"Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackStateNet", "MinSelected": 14, "ExpectRed": false}
+UI  25 {"Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection", "MinSelected": 12, "ExpectRed": false}
+UI  26 {"Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.UI.Tests.Cantilever", "MinSelected": 67, "ExpectRed": false}
+UI  34 {"Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceModeTests", "MinSelected": 3, "ExpectRed": false}
+UI  35 {"Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests", "MinSelected": 3, "ExpectRed": false}
+UI  36 {"Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceCarryoverTests", "MinSelected": 3, "ExpectRed": false}
+UI  41 {"Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullPanelFieldTests", "MinSelected": 3, "ExpectRed": false}
+UI  42 {"Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.UI.Tests.NumericFieldValidationTests", "MinSelected": 13, "ExpectRed": false}
+UI  43 {"Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.UI.Tests.NumericFieldTests", "MinSelected": 10, "ExpectRed": false}
+UI  70 {"Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationGreenTests", "MinSelected": 30, "ExpectRed": false}
+UI  71 {"Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationViewGreenTests", "MinSelected": 6, "ExpectRed": false}
+UI  79 {"Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllWindowTests", "MinSelected": 4, "ExpectRed": false}
+UI  82 {"Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllApplyCloseTests", "MinSelected": 1, "ExpectRed": false}
+UI  89 {"Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllReloadFieldTests", "MinSelected": 1, "ExpectRed": true}
+filtros de UI: 19

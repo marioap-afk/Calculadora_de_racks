@@ -9052,3 +9052,26 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - solo documentación;
 - sin AutoCAD;
 - los eventos, las transcripciones, las TRX y los registros de build, solo por SHA-256.
+
+## 292. PB-T5: paquete v2.4, las decisiones del Owner, el contrato en forma B, la guía del Smoke-PB y la emisión (F4B-E62)
+
+**Qué se custodia:**
+- **el paquete de PB-T5** v2.4 (sha256 `6bb02ca2af29c42fb71c5cd629dc2cdc98958d83c822e98e722540bef7d049b7`; redactado `9519e00935a8687f82a7986a29fc1d6827e96f4846c3b7b5f81d995f0d535667`), en `docs/initiatives/I-64-f4b-pbt5-package.md`;
+- **las decisiones del Owner,** literales, en `F4B-DRAFTS/coordinator/owner-pbt5-decisions.md`;
+- **el contrato,** el §6 del paquete, en `F4B-PBT5-SMOKE-PB-GATE-CLOSE/coordinator/contract.md`;
+- **la guía del Smoke-PB contratado,** `F4B-DRAFTS/pbt5/smoke-run-v2.md` (sha256 `11bcaf105e6c74b9f28c4695fae614814cafced259620dc6b2b7ecb6c3d60d59`; redactada `0bf30b4851705605d5ed967e4932648b7ac1b497382df16cdfbcaef6d13565b3`);
+- **en `F4B-DRAFTS/pbt5/`, como historia:** las versiones del paquete v1, v2, v2.1, v2.2, v2.3, v2.4 (la v2.4, la emitida, también aquí); las preguntas al Owner v1, v2, v2.1, v2.2; las guías del Smoke-PB `smoke-run-v1.md`, `smoke-run-v2.md` (la contratada es `smoke-run-v2.md`); las guías de la corrida previa, que no se hizo, v2, v2.1, v2.2, v2.3, v2.4; las revisiones y comprobaciones acotadas (`review-v1/`, `review-v23/`); los traspasos v1, v2, v2.1, v2.2, v2.3, v3, v4; las herramientas (`_tools/`), sin las `*.local.txt`, que llevan los patrones de privacidad y no se custodian.
+
+**La redacción:** la carpeta de trabajo del Smoke-PB pasa a sus marcadores (`<raiz-de-trabajo>`, `<carpeta-del-Smoke-PB>` y `<carpeta-de-respaldo>`), y cada archivo se comprueba con los patrones locales de privacidad. La lista local de la selección de Smoke-2 vive fuera de la carpeta que se custodia y no se custodia.
+
+**Fuera de la custodia, solo por su sha256** (casan un patrón tras la redacción):
+- `sha256-v3.txt`, solo por su sha256 `300361e7a4f7e443ac9f7a071add69d1e8b4e6bbb34dd290da3d87aec66f4e93`;
+- `_tools/make_smoke_run_v1.py`, solo por su sha256 `1d9ae47c6610014610b4ec7c5dd3561b1523a6160ecc445ce5c048ad58383174`;
+- `review-v1/check_lisp_v2.py`, solo por su sha256 `dcde8d0adbcbc557674f6102a21fcebbd4a8195013e3e3c53ca4690579bc1747`;
+- `review-v1/independent-review-pbt5-v1.md`, solo por su sha256 `e780e3e6a5b1429316ac473cbfff399e6d32ce97200b5a7f4d5e0c90d4e986ea`;
+
+**La base:** el cierre de PB-T4e, F4B-E61 (`ebd304a3`), con la CI de push `45147867500`, 4/4.
+
+**Las comprobaciones, antes de escribir nada:** la numeración (F4B-E61 y la 291 existen; F4B-E62 y la 292 no); el árbol limpio y la rama remota en el Candidato; la línea `BOUNDED_RESULT`, con el token `EMITIBLE;` y los sha256 del paquete, la guía y el guion; ningún destino que ya exista, tampoco el contrato; el cambio de `I-64.yml`, calculado sobre HEAD; ninguna ruta de más de 156 caracteres.
+
+**Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.

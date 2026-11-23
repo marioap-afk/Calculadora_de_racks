@@ -1,0 +1,39 @@
+paquete sha256 b8b84c409b1a09c7e3694071bb6b780652258455a5f025ed505ba37648ea1db9
+== Literales en src/ de 7da361eb (git grep -F)
+  1  Lado B declarado sin ningún frente activo: así no se guardará. Para conservarlo, elige «Lado B» y desmarca «En blanco» en al menos un frente.  | 7da361eb:src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs:77:            "Lado B declarado sin ningún frente activo: así no se guardará. Para conservarlo, elige «Lado B» y desmarca «En blanco» en al 
+  1  Editor cerrado sin cambios en el borrador.  | 7da361eb:src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs:110:        private const string EditAllNothingAppliedText = "Editor cerrado sin cambios en el borrador.";
+  1  Actualizado: el cambio se aplicó al dibujo.  | 7da361eb:src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs:81:        private const string UpdateAppliedText = "Actualizado: el cambio se aplicó al dibujo.";
+  0  No editable aquí: el origen ya no está en el dibujo  | -
+  1  No se recargó: el borrador se conserva tal como estaba.  | 7da361eb:src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs:410:                        if (stale) _noticeText = "No se recargó: el borrador se conserva tal como estaba.";
+  1  No se aplicó: el dibujo cambió fuera del panel  | 7da361eb:src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs:83:        private const string UpdateConflictPrefix = "No se aplicó: el dibujo cambió fuera del panel. Diferencias: ";
+  1  RackCad: panel Workspace mostrado.  | 7da361eb:src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs:30:                    "\nRackCad: panel Workspace mostrado.");
+  2  Vistas: se borrará  | 7da361eb:src/RackCad.Application/Systems/PushBack/Draft/PushBackKeepMinePresentation.cs:55:            if (erased == 1) lines.Add("Vistas: se borrará 1 lateral obsoleto.");
+  1  Cambiado fuera:   | 7da361eb:src/RackCad.Application/Systems/PushBack/Draft/PushBackKeepMinePresentation.cs:49:            AddGroups(lines, "Cambiado fuera: ", classification.ChangedExternally);
+  1  Cambiado por ti:   | 7da361eb:src/RackCad.Application/Systems/PushBack/Draft/PushBackKeepMinePresentation.cs:50:            AddGroups(lines, "Cambiado por ti: ", classification.ChangedByUser);
+  1  Cambiado en los dos:   | 7da361eb:src/RackCad.Application/Systems/PushBack/Draft/PushBackKeepMinePresentation.cs:51:            AddGroups(lines, "Cambiado en los dos: ", classification.Overlapping);
+  1  Cambios estructurales:   | 7da361eb:src/RackCad.Application/Systems/PushBack/Draft/PushBackKeepMinePresentation.cs:52:            AddGroups(lines, "Cambios estructurales: ", classification.Structural);
+  1  No se abrió el editor:   | 7da361eb:src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs:108:        private const string EditAllNotOpenedPrefix = "No se abrió el editor: ";
+  1  Ningún sobre editable de la relectura coincide con el origen del borrador.  | 7da361eb:src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs:318:        public const string NoOriginReason = "Ningún sobre editable de la relectura coincide con el origen del borrador.";
+  1  (posiblemente obsoleto)  | 7da361eb:src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs:1237:            if (view.IsPossiblyStale) state = state + " (posiblemente obsoleto)";
+  1  Listo para editar  | 7da361eb:src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs:1231:            if (_readyNote && _editable && view.State == PilotFieldState.Clean && view.PendingText == null) state = "Listo para editar";
+  3  Aplicar al borrador  | 7da361eb:src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs:3369:        /// «Aplicar al borrador» (WORKSPACE), extraido de <see cref="RequestDraw"/> sin cambiar su orden, sus textos ni su efecto:
+  2  Conservar mi borrador  | 7da361eb:src/RackCad.UI/Workspace/WorkspacePanelView.xaml:254:                            <Button x:Name="BrowserFieldKeepMineButton" Content="Conservar mi borrador" Margin="0,2,6,0" Padding="10,3"
+  5  Restaurar estándar  | 7da361eb:src/RackCad.Application/Systems/PushBack/PushBackEditorDesignAssembler.cs:200:            // I-35: the accepted module edit. "Restaurar estándar" is a forced rebuild, and an individual restore also
+  1  Rack de dos sentidos (lado B)  | 7da361eb:src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml:127:                    <CheckBox x:Name="SideBPresentCheck" Content="Rack de dos sentidos (lado B)" Margin="0,0,0,4"
+  1  fuera del piloto (F5)  | 7da361eb:src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentReader.cs:47:        public const string OutOfPilotDiagnostic = NotEditable + "fuera del piloto (F5)";
+  6  Insertar varias  | 7da361eb:src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml:1390:                    <Button x:Name="InsertBatchButton" Content="Insertar varias…"
+  7  Guardar en biblioteca  | 7da361eb:src/RackCad.UI/Systems/Cantilever/RackCantileverWindow.xaml:315:                <Button x:Name="SaveLibraryButton" Content="Guardar en biblioteca" Style="{StaticResource SecondaryButtonStyle}"
+ 17  Editar todo  | 7da361eb:src/RackCad.Application/Workspace/IWorkspaceFullEditHost.cs:5:    /// I-64 F4B PB-T4c (D-PBT4-15) — the host of the full editor of "Editar todo": it shows the editor modally over the launch that the host
+  1  Comprobar ahora  | 7da361eb:src/RackCad.UI/Workspace/WorkspacePanelView.xaml:239:                            <Button x:Name="BrowserFieldCheckButton" Content="Comprobar ahora" Margin="0,2,6,0" Padding="10,3"
+== Pasos SPB y columna Observa
+S+O  SPB-08  linea 219
+S+O  SPB-18  linea 239
+S+O  SPB-23  linea 244
+S+O  SPB-25  linea 253
+S+O  SPB-36  linea 271
+S+O  SPB-39  linea 281
+pasos 52; unicos 52; S 46; S+O 6
+faltan  ; sobran 
+precondiciones P-01,P-02,P-03,P-04,P-05,P-06,P-07,P-08
+paradas PBT5-C01,PBT5-C02,PBT5-C03,PBT5-C04,PBT5-C05,PBT5-C06,PBT5-C07,PBT5-C08,PBT5-C09,PBT5-C10,PBT5-C11,PBT5-C12,PBT5-C13,PBT5-C14
+lineas con [T4e]: 10,66,90,119,134,596,636,656

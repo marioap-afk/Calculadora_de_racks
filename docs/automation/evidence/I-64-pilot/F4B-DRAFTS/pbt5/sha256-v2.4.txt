@@ -1,0 +1,11 @@
+c08f8a728e92edae8e6ad64827be09ca668de70ba4211907215b76a4d5b8be9d  pre-run-tonight-v2.4.md  bytes=54299 lines=835 cr=0 nul=0 hits=0 admitidos=25
+    LISP: OK
+dd2df5b32b79a98ccf2f347d5cd57aa3bc0a78d29fe1d53ffe738375f0026c16  pre-run-tonight-v2.3-to-v2.4.diff  bytes=2876 lines=48 cr=0 nul=0 hits=0 admitidos=0
+933b6d51aa2d628ba0727facc8c963ea12d7a1eab7c7ca03ee6361a80443db39  handoff-pbt5-v2.3.md  bytes=4322 lines=41 cr=0 nul=0 hits=0 admitidos=1
+a1ccaa4f5471202877591c21684dd9cc5a7ba4ca181d4bc94877bd3e59fb4ac3  I-64-f4b-pbt5-package-v2.2.md  bytes=78792 lines=744 cr=0 nul=0 hits=0 admitidos=6
+c446f8048f63ebd9b9cc0b0156838c02aacc984e33e4214cf905542f15a1525e  owner-questions-v2.2.md  bytes=17185 lines=217 cr=0 nul=0 hits=0 admitidos=0
+791b56715c4b8590bb21f8354563f684a961af2142920fcf4e53aeac3002b351  _tools/control_patterns.py  bytes=1267 lines=35 cr=0 nul=0 hits=0 admitidos=0
+c9ad67b1af3fc737ac1be31487b98ace3b0370dd35391371dfbd8b0a4cc05278  _tools/make_v24.py  bytes=5987 lines=117 cr=0 nul=0 hits=0 admitidos=0
+53ccf3dfbb1acc6852103916c818d7e6c6934236336d8002ed7cd79a697f4aa3  _tools/add_exit0_v23.py  bytes=2089 lines=45 cr=0 nul=0 hits=0 admitidos=0
+0486c902333a64938f482453e331cc8ae927843f8cd837e949f983c4145c046d  _tools/ps_parse_v24.ps1  bytes=2298 lines=28 cr=0 nul=0 hits=0 admitidos=0
+5c4b014f33accad1dabc081645b091ca477fd92bb42f7f4dcf94bd8360cdc167  _tools/check_pbt5.py  bytes=3648 lines=111 cr=0 nul=0 hits=0 admitidos=0

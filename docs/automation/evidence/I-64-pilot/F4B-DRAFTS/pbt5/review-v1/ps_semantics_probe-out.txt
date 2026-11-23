@@ -1,0 +1,10 @@
+PSVersion 7.7.0
+PSNativeCommandUseErrorActionPreference: False
+Tipo de StartTimeUtc tras ConvertFrom-Json: System.DateTime
+Cadena original:  2026-11-23T06:44:11.5689100Z
+Valor leido:      11/23/2026 06:44:11
+Comparacion de los bloques (-ne): True
+git fuera de repo: sin excepcion; LASTEXITCODE=128; top=''
+New-Item crea intermedias: True
+New-Item sobre existente: error (para)
+Carpeta de prueba borrada: True

@@ -1,0 +1,14 @@
+Bloque 1: errores_de_sintaxis=0 strict=True stop=True sin_asignar=[] :: Set-StrictMode -Version Latest | $ErrorActionPreference = 'Stop' | $wt = '<worktree>'; $cand = '<Candidato>'; 
+Bloque 2: errores_de_sintaxis=0 strict=True stop=True sin_asignar=[] :: Set-StrictMode -Version Latest | $ErrorActionPreference = 'Stop' | $wt = '<worktree>'; $run = '<run>'
+Bloque 3: errores_de_sintaxis=0 strict=True stop=True sin_asignar=[] :: Set-StrictMode -Version Latest | $ErrorActionPreference = 'Stop' | Get-Process acad, accoreconsole -ErrorActio
+Bloque 4: errores_de_sintaxis=0 strict=True stop=True sin_asignar=[] :: Set-StrictMode -Version Latest | $ErrorActionPreference = 'Stop' | $root = 'HKCU:\Software\Autodesk\AutoCAD'
+Bloque 5: errores_de_sintaxis=0 strict=True stop=True sin_asignar=[] :: Set-StrictMode -Version Latest | $ErrorActionPreference = 'Stop' | $logs = '<carpeta-de-registros-de-RackCad>'
+Bloque 6: errores_de_sintaxis=0 strict=True stop=True sin_asignar=[] :: Set-StrictMode -Version Latest | $ErrorActionPreference = 'Stop' | $wt = '<worktree>'; $dotnet = '<dotnet-del-
+Bloque 7: errores_de_sintaxis=0 strict=True stop=True sin_asignar=[] :: Set-StrictMode -Version Latest | $ErrorActionPreference = 'Stop' | # Los valores de esta corrida
+Bloque 8: errores_de_sintaxis=0 strict=True stop=True sin_asignar=[] :: Set-StrictMode -Version Latest | $ErrorActionPreference = 'Stop' | $work = '<carpeta-del-Smoke-PB>'; $acad = '<acad.exe
+Bloque 9: errores_de_sintaxis=0 strict=True stop=True sin_asignar=[] :: Set-StrictMode -Version Latest | $ErrorActionPreference = 'Stop' | $work = '<carpeta-del-Smoke-PB>'
+Bloque 10: errores_de_sintaxis=0 strict=True stop=True sin_asignar=[] :: Set-StrictMode -Version Latest | $ErrorActionPreference = 'Stop' | $work = '<carpeta-del-Smoke-PB>'
+Bloque 11: errores_de_sintaxis=0 strict=True stop=True sin_asignar=[] ::    Set-StrictMode -Version Latest |    $ErrorActionPreference = 'Stop' |    $work = '<carpeta-del-Smoke-PB>'; $prev = '
+Bloque 12: errores_de_sintaxis=0 strict=True stop=True sin_asignar=[] :: Set-StrictMode -Version Latest | $ErrorActionPreference = 'Stop' | $work = '<carpeta-del-Smoke-PB>'
+Bloque 13: errores_de_sintaxis=0 strict=True stop=True sin_asignar=[] :: Set-StrictMode -Version Latest | $ErrorActionPreference = 'Stop' | $root = '<raiz-de-trabajo>'; $o = '<original-D1>'; $w
+Bloques: 13

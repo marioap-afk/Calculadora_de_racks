@@ -2477,3 +2477,34 @@ Los tres controles quedan satisfechos: nc1 por la decisión del Owner, nc2 por l
 - nc1, satisfecho por disposición del Owner, solo esta vez: es su séptima variación en F4B, y el sustituto sigue siendo candidato a revisarse, sin cambio ahora.
 
 **Siguiente:** PB-T5: la CI exacta, el Smoke-PB con la firma del Owner y el gate-close de F4B. Las decisiones del Owner sobre PB-T5 están tomadas (arriba); lo siguiente es la v2.3 de su paquete, su comprobación acotada y la emisión condicional. Este cierre no custodia nada de PB-T5, que tendrá su propia emisión.
+
+## F4B-E62. Emisión de F4B-PBT5-SMOKE-PB-GATE-CLOSE (PB-T5), con el paquete v2.4 y las decisiones del Owner
+
+**Fecha:** 2026-11-23.
+
+**Autoridad de emisión:** la decisión del Owner Q-PBT5-7, «Sí, con condiciones (Recomendado)» (`F4B-DRAFTS/coordinator/owner-pbt5-decisions.md`, sha256 `2d63b10d2c7ab15ef6e573df0ee69e895ea678946937a6f09b89101611f12a45`). Sus tres condiciones se cumplen, después de resolver los hallazgos y recomprobar:
+- **la recomprobación acotada** del paquete v2.4, de la guía `smoke-run-v2.md` y del guion de la emisión: `BOUNDED_RESULT: EMITIBLE; B 0 / I 0 / M 2; recomprobacion 1 (v2.4, solo el diff): I-01 a I-04 resueltos, I-03 e I-04 por el lado estrecho, sin decision nueva del Owner; M-01 a M-15 resueltos o aceptados; nuevos M-R1 y M-R2, menores; revisado paquete 6bb02ca2, guia 11bcaf10, guion 940d6dda; CI 45147867500 4/4 success`;
+- **ninguna decisión material nueva:** los dos importantes de alcance de la comprobación acotada de la v2.3 (I-03, la franja de 12:00 a 13:00 UTC, e I-04, la adenda de PBT5-C16) se corrigieron por el lado estrecho, que no la necesita;
+- **la CI exacta del Candidato** `ebd304a3` en verde: la corrida de push `45147867500`, con sus cuatro trabajos en `success`.
+
+Vuelve al Owner por una decisión nueva, una prueba que falle o un intento 3.
+
+**Las decisiones del Owner,** literales en su registro: Q-PBT5-7 «Sí, con condiciones»; Q-PBT5-8 «Adaptación con revisión», que confirma la regla de reejecutar la CI; Q-PBT5-9 «Definición y reglas»; Q-PBT5-1 «Extender la dispensa»; Q-PBT5-10 «Hacerlas como en Smoke-2»; Q-PBT5-4 «Construirlos y rotularlos»; Q-PBT5-2 «Contar antes en otros». Q-PBT5-5 no se preguntó: la frontera va en su lectura estrecha, que no la necesita.
+
+**Qué es PB-T5:** la CI exacta, el Smoke-PB (D-PB-09) y el gate-close de F4B. No cambia `src/`, `tests/` ni `assets/`.
+
+**El contrato,** en la forma B: `F4B-PBT5-SMOKE-PB-GATE-CLOSE/coordinator/contract.md` (el §6 del paquete v2.4, sha256 `bf4a0765440e6b4d327ee9e8035958ed6af24f10bf4cd6d1965a51f0e5a2e50b`).
+- Sin `gate-contract.json`, sin Controller, sin nc1 a nc4 y sin D2.
+- Antes de la firma, una revisión independiente de solo lectura de la evidencia. Una discrepancia solo deja corregir transcripciones; si cambia un resultado o exige AutoCAD, vuelve al Owner (PBT5-C16).
+- Los invariantes INV-PBT5-01 a 17 y las paradas PBT5-C01 a C17, enteras.
+- La definición de intento y las tres reglas de Smoke-2. Solo la adenda que pida el Owner no cuenta.
+
+**El Candidato:** `ebd304a3773495fa9071de6611936c4c01a7b06c`, la punta del cierre de PB-T4e (F4B-E61). El producto es el GREEN `0eac7911`. El DLL se compila en el Candidato, antes de este commit documental, y no se vuelve a compilar. Tras este commit, el Candidato es antepasado de HEAD, sin cambios en `src/`, `tests/` ni `assets/` (PBT5-C01).
+
+**El Smoke-PB:** 65 pasos y 9 precondiciones, con la guía `F4B-DRAFTS/pbt5/smoke-run-v2.md`. Lleva los A/B y los cuatro contextos construidos rotulados CONSTRUCTED REPRESENTATIVE TEST CASES, las tres inyecciones con un AutoCAD por inyección y el recuento del estilo de cotas antes de SPB-07. **La frontera:** la sesión lo opera sola solo si la emisión y P-01 a P-08 están hechas antes de las 12:00 UTC; si no, espera al Owner. A las 13:00 UTC para en el siguiente límite de paso y espera al Owner.
+
+**OWNER-01 de PB-T4e** (informativo; F4B-E61) sigue anotado en SPB-31 y SPB-36: con la ventana de «Editar todo» abierta, la paleta sigue mostrando «Limpio (posiblemente obsoleto)» y el valor de antes hasta cerrarla.
+
+**`attempts`:** 1 de 3.
+
+**Siguiente:** el Smoke-PB contratado; después, su custodia, la revisión independiente de la evidencia, la disposición y la firma del Owner y el gate-close de F4B.
