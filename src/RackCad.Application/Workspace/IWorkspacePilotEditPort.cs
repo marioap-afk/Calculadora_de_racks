@@ -116,9 +116,11 @@ namespace RackCad.Application.Workspace
 
         /// <summary>
         /// I-64 F4B PB-T4c (D-PBT4-13): "Editar todo" for one rack. Without work for the rack it begins it through the edit intention, so its
-        /// one read is the one of the intention; then it opens the full editor over the work and keeps the mark of the reads until the editor
-        /// closes, so while it is open every operation of the panel answers Busy or Waiting (K = 1). The editor only hands its edits to the
-        /// work: nothing here writes the drawing. A port that does not offer it answers NotAvailable.
+        /// one read is the one of the intention; over a clean work marked as possibly stale it first reloads it with the lazy reload of
+        /// "Editar", whose one read is the one of the reload, and a reload that does not reload the work does not open the editor (I-64 F4B
+        /// PB-T4e, D-PBT4-22); then it opens the full editor over the work and keeps the mark of the reads until the editor closes, so while it
+        /// is open every operation of the panel answers Busy or Waiting (K = 1). The editor only hands its edits to the work: nothing here
+        /// writes the drawing. A port that does not offer it answers NotAvailable.
         /// </summary>
         EditAllOutcome TryEditAll(EditIntentRequest request) => EditAllOutcome.NotAvailable(null);
     }

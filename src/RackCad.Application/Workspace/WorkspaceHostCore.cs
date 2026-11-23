@@ -1192,18 +1192,31 @@ namespace RackCad.Application.Workspace
 
                 // Without work for the rack the edit intention begins it, with its one read, its admission and its diagnostic.
                 var draft = FindPilotDraft(request.Session, request.RackId);
+                var begunHere = false;
                 if (draft == null)
                 {
                     var begun = TryBeginPilotEdit(request);
                     if (begun.Status != EditIntentStatus.Admitted) return EditAllOutcome.NotBegun(begun);
                     draft = FindPilotDraft(request.Session, request.RackId);
                     if (draft == null) return EditAllOutcome.Failed(EditAllBusyDraftReason);
+                    begunHere = true;
                 }
 
                 var view = ViewOfPilotDraft(draft);
                 if (view.State == PilotFieldState.Applying || !draft.IsRegistered) return EditAllOutcome.Waiting(EditAllBusyDraftReason);
                 if (!view.CanEdit) return EditAllOutcome.Refused(EditAllStateReason);
                 if (draft.HasPendingText) return EditAllOutcome.Refused(EditAllPendingTextReason);
+
+                // I-64 F4B PB-T4e (D-PBT4-22, D-S19): over a work that this gesture did not begin, clean and marked as possibly stale, the
+                // lazy reload of "Editar" runs here, the same method with its one read, after the checks of the view (so a work that is
+                // applying, undecidable, unknown, in error or with pending text answers as before, without evaluating the mark) and before
+                // the editor opens; a reload that does not reload the work does not open the editor and carries its outcome. Either way the
+                // gesture reads the drawing at most once, and never while the editor is open.
+                if (!begunHere && draft.NeedsLazyReload)
+                {
+                    var reload = TryReloadPilotEdit(request);
+                    if (reload.Status != EditIntentStatus.Reloaded) return EditAllOutcome.NotBegun(reload);
+                }
 
                 // The port keeps the origin of the work, and every edit that it hands to the work ends the "known clean" mark of the session.
                 var applied = 0;

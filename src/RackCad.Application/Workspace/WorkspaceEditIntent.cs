@@ -273,7 +273,10 @@ namespace RackCad.Application.Workspace
         /// <summary>The request is not of the active document: nothing was read or opened.</summary>
         Rejected,
 
-        /// <summary>There was no work and the edit intention did not begin it: the outcome carries the one of the intention.</summary>
+        /// <summary>
+        /// There was no work and the edit intention did not begin it, or (I-64 F4B PB-T4e, D-PBT4-22) the work was clean and marked as possibly
+        /// stale and the lazy reload did not reload it: the outcome carries the one of the intention or of the reload, and nothing was opened.
+        /// </summary>
         NotBegun,
 
         /// <summary>The work is in a state that the editor does not open (unknown, in error or undecidable), or it still has pending text.</summary>
@@ -305,7 +308,10 @@ namespace RackCad.Application.Workspace
         /// <summary>Why the editor did not open; null for Closed and NotBegun.</summary>
         public string? Reason { get; }
 
-        /// <summary>The outcome of the edit intention that did not begin the work (NotBegun); the default value otherwise.</summary>
+        /// <summary>
+        /// The outcome of the edit intention that did not begin the work, or of the lazy reload that did not reload it (NotBegun); the default
+        /// value otherwise.
+        /// </summary>
         public EditIntentOutcome Begin { get; }
 
         /// <summary>How many times the editor handed its edits to the work (Closed); 0 otherwise.</summary>

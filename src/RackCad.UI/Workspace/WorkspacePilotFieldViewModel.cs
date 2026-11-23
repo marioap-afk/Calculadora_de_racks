@@ -67,6 +67,7 @@ namespace RackCad.UI.Workspace
         private const string NoValueText = "sin valor";
         private const string ReloadAppliedText = "¿Recargar el borrador desde el dibujo? El cambio ya se aplicó y el borrador vuelve a leerse del dibujo.";
         private const string ReloadedText = "Borrador recargado desde el dibujo.";
+        private const string NotReloadedText = "No se recargó: el borrador se conserva tal como estaba.";
         private const string KeptText = "Borrador conservado sobre la versión actual del dibujo.";
         private const string NotAppliedChoiceText = "No se aplicó la elección: el borrador se conserva tal como estaba.";
         private const string NothingDoneSuffix = " No se hizo nada.";
@@ -407,7 +408,7 @@ namespace RackCad.UI.Workspace
                     case EditIntentStatus.NotAdmitted:
                         _diagnostic = outcome.Diagnostic ?? string.Empty;
                         _hint = outcome.ClassicEditorHint ?? string.Empty;
-                        if (stale) _noticeText = "No se recargó: el borrador se conserva tal como estaba.";
+                        if (stale) _noticeText = NotReloadedText;
                         break;
                     default:
                         _noticeText = Describe(outcome.Status, outcome.Reason);
@@ -427,7 +428,8 @@ namespace RackCad.UI.Workspace
         /// I-64 F4B PB-T4c (D-PBT4-12): "Editar todo". The pending text is committed first, the same two-phase step as a blocking boundary: an
         /// invalid text does not open the editor and shows its message, and a field that is busy or refused does not open it either. Then the
         /// port is asked to open the full editor over the work of the rack, with no reference and no witness: the port begins the work if there
-        /// is none and holds the panel while the editor is open. When it closes, the field and the strip are shown again from the port.
+        /// is none, reloads first a clean work that may be stale (I-64 F4B PB-T4e) and holds the panel while the editor is open. When it closes,
+        /// the field and the strip are shown again from the port; a reload that did not reload the work is shown as "Editar" shows it.
         /// </summary>
         public void EditAll()
         {
@@ -474,6 +476,10 @@ namespace RackCad.UI.Workspace
                 {
                     _diagnostic = outcome.Begin.Diagnostic ?? string.Empty;
                     _hint = outcome.Begin.ClassicEditorHint ?? string.Empty;
+
+                    // I-64 F4B PB-T4e (D-PBT4-22): over a work that already existed the port does not begin it, so this is the reload of a
+                    // clean work that may be stale, and the field shows what "Editar" shows for a reload that is not admitted.
+                    if (view.Exists) _noticeText = NotReloadedText;
                 }
                 else
                 {
