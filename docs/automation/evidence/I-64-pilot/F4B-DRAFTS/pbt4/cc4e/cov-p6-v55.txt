@@ -1,0 +1,38 @@
+# la cobertura de PB-T4e: todo src/ que se queda, linea a linea y rama por rama (Core completa + filtros de UI), base frente al GREEN
+# pieza pbt4e-green-v55.txt; BASE_CORE base-core-cov.coverage.json; BASE_UI base-ui-cov.coverage.json, base-ui-cov-r-1.coverage.json, base-ui-cov-r-2.coverage.json, base-uif01.coverage.json, base-uif02.coverage.json, base-uif03.coverage.json, base-uif04.coverage.json, base-uif05.coverage.json, base-uif06.coverage.json, base-uif07.coverage.json, base-uif08.coverage.json, base-uif09.coverage.json, base-uif10.coverage.json, base-uif11.coverage.json, base-uif12.coverage.json, base-uif13.coverage.json, base-uif14.coverage.json, base-uif15.coverage.json, base-uif16.coverage.json, base-uif17.coverage.json, base-uif18.coverage.json, base-uif19.coverage.json; GREEN_CORE core-green-cov.coverage.json; GREEN_UI ui-green-cov.coverage.json, ui-green-cov-r-1.coverage.json, ui-green-cov-r-2.coverage.json, green-ui01.coverage.json, green-ui02.coverage.json, green-ui03.coverage.json, green-ui04.coverage.json, green-ui05.coverage.json, green-ui06.coverage.json, green-ui07.coverage.json, green-ui08.coverage.json, green-ui09.coverage.json, green-ui10.coverage.json, green-ui11.coverage.json, green-ui12.coverage.json, green-ui13.coverage.json, green-ui14.coverage.json, green-ui15.coverage.json, green-ui16.coverage.json, green-ui17.coverage.json, green-ui18.coverage.json, green-ui19.coverage.json
+archivos de src/ instrumentados 773; lineas ejecutadas en la base que se quedan 69844 (ramas cubiertas 28820); sin pareja en el GREEN 0; texto cambiado 1; lineas nuevas con codigo 6; lineas sin ejecutar en el GREEN 0; lineas con ramas perdidas 0
+cobertura PASA
+bajan (informativo) 0: PERDIDA 0, VARIA 0, ESTABLE 0
+
+## lineas que se quedan, ejecutadas en la base y no en el GREEN
+
+## ramas cubiertas en la base y no en el GREEN (punto, path)
+
+## lineas de la base sin pareja en el GREEN que se ejecutaban
+
+## solo para informar: lo que Core sola pierde y cubre la UI de los filtros (0)
+
+## vigiladas: los cuerpos que el GREEN cambia o reutiliza
+  WorkspaceHostCore.cs EditAllOfPilot: lineas 1179-1223 de la base; ejecutadas en la base 30, siguen ejecutadas en el GREEN 30; ramas cubiertas base 21, GREEN 21
+  WorkspaceHostCore.cs TryReloadPilotEdit: lineas 498-576 de la base; ejecutadas en la base 43, siguen ejecutadas en el GREEN 43; ramas cubiertas base 24, GREEN 27
+  WorkspacePilotFieldViewModel.cs EditAll: lineas 432-490 de la base; ejecutadas en la base 34, siguen ejecutadas en el GREEN 34; ramas cubiertas base 18, GREEN 22
+  WorkspacePilotFieldViewModel.cs BeginEdit: lineas 376-424 de la base; ejecutadas en la base 33, siguen ejecutadas en el GREEN 33; ramas cubiertas base 25, GREEN 25
+
+## texto cambiado por el GREEN
+  src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs:410 -> 411 hits 44 -> 52 ramas base 2/2 green 2/2 bien  if (stale) _noticeText = "No se recargó: el borrador se conserva tal como estaba.";
+
+## lineas nuevas del GREEN con codigo
+  src/RackCad.Application/Workspace/WorkspaceHostCore.cs:1204 hits 2 (Core 2) ramas 0/0 bien  }
+  src/RackCad.Application/Workspace/WorkspaceHostCore.cs:1205 hits 20 (Core 20) ramas 2/2 bien  else if (draft.NeedsLazyReload)
+  src/RackCad.Application/Workspace/WorkspaceHostCore.cs:1206 hits 5 (Core 5) ramas 0/0 bien  {
+  src/RackCad.Application/Workspace/WorkspaceHostCore.cs:1207 hits 5 (Core 5) ramas 0/0 bien  var reload = TryReloadPilotEdit(request);
+  src/RackCad.Application/Workspace/WorkspaceHostCore.cs:1208 hits 8 (Core 8) ramas 2/2 bien  if (reload.Status != EditIntentStatus.Reloaded) return EditAllOutcome.NotBegun(reload);
+  src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs:482 hits 12 (Core 0) ramas 2/2 bien  if (view.Exists) _noticeText = NotReloadedText;
+
+## Bajan (informativo; D-S16: no cambia el PASA ni el CAE)
+
+Toda linea o rama de src/ que se queda y que cubren mas corridas en la base que en el GREEN (Core y cada corrida de UI: base 22 de UI, GREEN 22 de UI), por componente emparejado: Core, las corridas de todos los filtros juntos y cada filtro con el mismo filtro. Cada entrada nombra la corrida, no la prueba (coverlet no da la prueba).
+
+### PERDIDA y VARIA, una a una
+
+### ESTABLE, por archivo y por recuento

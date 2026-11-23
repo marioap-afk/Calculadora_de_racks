@@ -1,0 +1,14 @@
+Serie de pruebas para <copia>\tests\RackCad.UI.Tests\bin\Debug\net8.0-windows\RackCad.UI.Tests.dll (.NETCoreApp,Version=v8.0)
+Versión 17.11.1 (x64) de VSTest
+
+Iniciando la ejecución de pruebas, espere...
+1 archivos de prueba en total coincidieron con el patrón especificado.
+[xUnit.net 00:00:07.43]     RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests.CT_PBT2B_06_ClosingAsksOnlyForWhatWasNotApplied [SKIP]
+  Omitidas RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests.CT_PBT2B_06_ClosingAsksOnlyForWhatWasNotApplied [1 ms]
+Archivo de resultados: <copia>\_trx\green-ui10\green-ui10.trx
+
+Correctas! - Con error:     0, Superado:     3, Omitido:     1, Total:     4, Duración: 5 s - RackCad.UI.Tests.dll (net8.0)
+
+Datos adjuntos:
+  <copia>\_trx\green-ui10\5329419c-ede8-4bc6-b7bf-bc6221c83af3\coverage.json
+  <copia>\_trx\green-ui10\5329419c-ede8-4bc6-b7bf-bc6221c83af3\coverage.cobertura.xml

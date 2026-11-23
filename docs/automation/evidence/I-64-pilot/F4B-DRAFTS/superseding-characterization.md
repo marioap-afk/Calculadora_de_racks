@@ -635,3 +635,31 @@ I-64 F4B PB-T3b: sustituida por <E-n> de PushBackPilotUpdateEquivalenceGuardTest
 | **GREEN** | `7db6fd0c4e4a27ec05d56cce0daaf0883940a4e2` (CI `45057868915` 4/4; Core 19 418 = 19 015 Passed + 0 Failed + 403 Skipped; UI 2 464 = 2 416 + 0 + 48). Solo `src/RackCad.Application/Systems/PushBack/Pilot/`: 4 archivos cambian y 2 se borran (`PushBackPilotStateComparer.cs` y `PushBackPilotFieldAdapter.cs`), con el texto literal de la pieza `pbt4d-green-v54.txt` (`green` de `green_pbt4d_v53.py`), iguales a `GreenFiles` y `GreenDeleted` de la precondición 6. Salen exactamente las 57 declaraciones de C13, y `allowErase` ya no aparece en `src/`; ninguna prueba de `tests/` cambia tras el RED. La prueba lenta acotada: 9,2 s en esta CI |
 | **Las sustitutas y los equivalentes, en el RED y en el GREEN** | Los 5 archivos nuevos son el texto de la pieza, sin cambio después del RED; las tres clases que no son CT, byte a byte su `NewFileSha`. En el RED pasan las tres, con `ExpectRed` false: `PushBackRetirePilotRunTests` 31 (las 29 sustitutas de WPUR; la n.º 42 es una `Theory` de 3), `PushBackRetirePilotFullCopyGuardTests` 1 y `PushBackRetirePilotPlanGuardTests` 2. De las CT, cae por aserción `PushBackRetirePilotGuardTests` (CT-PBT4D-01, 1 Failed, `ExpectRed` true) y pasa `PushBackRetirePilotCensusGuardTests` (CT-PBT4D-02, 1). En el GREEN pasan las 36. En el RED, 12 de las 14 autopruebas de CT-PBT4D-01 discriminan: las dos de archivo no, porque el archivo que inyectan aún existe (M-02; límite del diseño, ratificado por el Owner en F4B-E59); en el GREEN discriminan las 14. Las 3 de la lista con `Skip` quedan NotExecuted con su motivo en las dos ramas, todas en Core (`PushBackEditAllFullCopyGuardTests` 1 y `WorkspacePilotPrepareGuardTests` 2); los Skipped de Core, 403, son esas 3 y los de la línea base que se quedan, y en UI los 48 de la línea base. Ninguna prueba falla fuera de CT-PBT4D-01 (C02, C07 y C16) |
 | **Estado** | EJECUTADA |
+
+## PB-T4e — la recarga de «Editar todo»: la lista vacía
+
+**Estado: EMITIDA** (2026-11-23, emisión de PB-T4e, F4B-E60, sobre el cierre de PB-T4d `160e019d`). Lo escribe la sesión principal; el Worker no escribe en este archivo. La ejecución se completa al cerrar.
+
+**Autoridad:**
+- **[OD], el bloque sobre T1B:** «create a declared superseding characterization/change record. Do not silently weaken the old guard».
+- **La decisión del Owner sobre PB-T4e,** la 15.ª tanda, en `docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt4e-list-decisions.md`: «Solo la recarga», «No abrir y avisar», «Antes de PB-T5» y «Sí, con condiciones». Su origen, en la misma carpeta: `owner-pbt4c-code-decisions.md`, pregunta 2 («Aceptarlo y corregir luego»), y `owner-pbt4d-list-decisions.md`, pregunta 2 («Tarea propia después»).
+- **Las decisiones de la sesión:** D-S17 (la recarga en el anfitrión), D-S18 (`EditAllStatus.NotBegun` reutilizado) y D-S19 (la recarga detrás de las tres comprobaciones de la vista, tras CA-T4e M-01), en `F4B-DRAFTS/pbt4/session-pbt4e-design-decisions.md`.
+- **El contrato:** `docs/initiatives/I-64-f4b-pbt4-gate-contract-package.md` (v5.6), D-PBT4-22, §4.5, §5.7 y §6.5, y `docs/automation/evidence/I-64-pilot/F4B-PBT4-EDIT-ALL-RELOAD/coordinator/gate-contract.json`.
+
+**La lista: vacía.** Ninguna prueba existente se sustituye: K = 0, D = 0 y E = 0. Ninguna prueba existente se edita, se salta, se reactiva ni se borra, y ninguna se sustituye por un equivalente. El RED solo añade las dos clases nuevas de las CT, con el texto literal de la pieza `pbt4e-red-v56.txt`, y no toca ningún archivo existente de `tests/`. Lo midió la precondición 6, con la suite completa de Core y los 19 filtros de UI del contrato sobre el RED exacto y el GREEN literal (§4.5).
+
+**Los archivos nuevos, literales** (en la pieza del RED; `NewFileSha` del texto con `\n`):
+
+| Archivo | `NewFileSha` | Qué es |
+|---|---|---|
+| `tests/RackCad.Tests/PushBackEditAllReloadTests.cs` | `9e849864709a964a864902c6f44e5d92014d962cc56c374cebfc7dfe42c6b017` | CT-PBT4E-01, 02 y 04; **`ExpectRed` true** |
+| `tests/RackCad.UI.Tests/PushBackEditAllReloadFieldTests.cs` | `a29d7a362cd5de49bd787eb76e7c847dc30b46ef1314e94ae5f67041b6a4595d` | CT-PBT4E-03; **`ExpectRed` true** |
+
+### Ejecución de PB-T4e (se completa al cerrar)
+
+| | |
+|---|---|
+| **RED** | (al cerrar) |
+| **GREEN** | (al cerrar) |
+| **Las pruebas existentes, en el RED y en el GREEN** | (al cerrar) |
+| **Estado** | EMITIDA |

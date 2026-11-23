@@ -1,0 +1,2 @@
+filas 18 {'NotExecuted': 2, 'Passed': 16}; omitidas por origen {'otro': 2}
+no pasan: 0

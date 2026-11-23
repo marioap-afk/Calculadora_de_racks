@@ -1,0 +1,83 @@
+precondicion 6 de PB-T4e (v5.6), copia principal; copia /d/r78; salida r78-p6; revision 160e019d773ba9095e2d5858cd593a954b8eec67
+procesos al empezar: 0 (18:31:54)
+  pieza d052f73d726817f4240f3b5edfd89a0ec8aeb7b9cc17dbce684aa8e4f433c9e1 pbt4e-red-v56.txt
+  pieza 8c38e532bf991a111e7f82193ad3a812993a64a1c2e43084a46278ad72dc54a5 red_pbt4e_v56.py
+  pieza 59a0fcb3e316b1fbde880fca87629bc2144b233859eccdf9ddb86c244d2a0ae5 apply_red_pbt4e_v56.py
+  pieza a745c2737a7e0fe908489a1bf17ed86569577ed3dbf54ecd3661c488faf88158 pbt4e-green-v56.txt
+  pieza b3aba680d45ce6aebb3dbac549e228de9b832a76d870fd719ea0801302c10e73 green_pbt4e_v56.py
+  pieza 492aaab155fe64cc96b317441c1bd18b2bfc47f92c44bd1dac24f131bc8378a7 apply_green_pbt4e_v56.py
+  pieza 2699eaa16c8bb76e8bc49c4e13789bd5a17fb403cc789d975c4d4fd31aa7cace p6_pbt4e_v56.sh
+  pieza a41ceff37fc16baa51681bda6c77b9558ba9c3e865c0bf3089ca5c24161c05fb check_trx_v55.py
+  pieza 98a962da6ae75f01dfccac13582ed76dcbeee3f2b341be226779a190f616e5e1 cov_v55.runsettings
+sha256sum: /tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4ecc/compile/ui_filters_pbt4e_v56.txt: No such file or directory
+  pieza  ui_filters_pbt4e_v56.txt
+  pieza 9674eb343b1f40428815346920bcd3bf356526c506844e4a611dce7e147e9c96 ui_union_v55.txt
+  pieza d6c357090574373fbd0c16439714d99812aa50e0145571a2f474126aa841dab9 ui_union18_v56.txt
+  pieza 48e093c372ba5f98899327986020727ee164b901d87348e523787a97072edf74 classes_v55.py
+copia exportada: 15796 archivos
+nuevo 9e849864709a964a864902c6f44e5d92014d962cc56c374cebfc7dfe42c6b017 tests/RackCad.Tests/PushBackEditAllReloadTests.cs
+nuevo a29d7a362cd5de49bd787eb76e7c847dc30b46ef1314e94ae5f67041b6a4595d tests/RackCad.UI.Tests/PushBackEditAllReloadFieldTests.cs
+RED de PB-T4e escrito: 2 archivos nuevos de tests/; ningun archivo existente tocado; src/ sin tocar
+r-core rc=0 errores=0 avisos-CS=0
+r-ui rc=0 errores=0 avisos-CS=0
+core core-red rc=1 segundos=406 trx=a549130d8b496a85 :: filas 19421 {'Failed': 3, 'NotExecuted': 403, 'Passed': 19015}; omitidas por origen {'PB-T4b': 390, 'PB-T4c': 3, 'otro': 10}
+  Failed RackCad.Tests.PushBackEditAllReloadTests.RackCad.Tests.PushBackEditAllReloadTests.CT_PBT4E_01_EditAllReloadsACleanDraftMarkedAsPossiblyStaleBeforeTheEditorOpensAndLeavesEveryOtherDraftAsToday | at RackCad.Tests.PushBackEditAllReloadTests.Finish(List`1
+  Failed RackCad.Tests.PushBackEditAllReloadTests.RackCad.Tests.PushBackEditAllReloadTests.CT_PBT4E_02_AReloadThatDoesNotReloadTheDraftDoesNotOpenTheEditorAndCarriesWhatTheReloadOfEditarAnswers | at RackCad.Tests.PushBackEditAllReloadTests.Finish(List`1 log, I
+  Failed RackCad.Tests.PushBackEditAllReloadTests.RackCad.Tests.PushBackEditAllReloadTests.CT_PBT4E_04_FromTheChangeOutsideAndItsMarkThroughEditAllToTheUpdateWithoutAutoCadTheUpdateAppliesWithoutAConflict | at RackCad.Tests.PushBackEditAllReloadTests.Finish(Li
+no pasan: 3
+p6_pbt4e_v56.sh: line 78: /tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4ecc/compile/ui_filters_pbt4e_v56.txt: No such file or directory
+green 49b5245c112e3d4f0b3b95114f9ff0444469b316a3ef912947cf3b696e0c6ebd src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs
+green bbc6882283833b02bab79c9bb70c082f3ac14b2a88650722bf8d72be0e13b5e2 src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+green 6eb9bf7ab81666b33c1280c832257624937c95a042e46f53dcc2c371baac4d7d src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+green c4b5c6990c5623e53be607fdbb461db95103b957c96627e1d63300dabe3d643b src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+GREEN de PB-T4e escrito: 4 archivos de src/ cambiados; tests/ sin tocar
+g-core rc=0 errores=0 avisos-CS=0
+g-ui rc=0 errores=0 avisos-CS=0
+g-plugin rc=0 errores=0 avisos-CS=0
+core core-green rc=0 segundos=459 trx=fcf465626ccfa39a :: filas 19421 {'NotExecuted': 403, 'Passed': 19018}; omitidas por origen {'PB-T4b': 390, 'PB-T4c': 3, 'otro': 10}
+no pasan: 0
+p6_pbt4e_v56.sh: line 78: /tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4ecc/compile/ui_filters_pbt4e_v56.txt: No such file or directory
+core core-green-cov rc=0 segundos=535 trx=b4e5e2ca1be2a550 :: filas 19421 {'NotExecuted': 403, 'Passed': 19018}; omitidas por origen {'PB-T4b': 390, 'PB-T4c': 3, 'otro': 10}
+no pasan: 0
+  cobertura json=e32281528555b4d9 cobertura=e56c9589ab080089
+ui ui-green-cov rc=0 segundos=215 :: filas 900 {'NotExecuted': 30, 'Passed': 870}; omitidas por origen {'PB-T4b': 27, 'PB-T4c': 1, 'otro': 2}
+  cobertura json=5c7d416c609d4dd5 cobertura=b12f2083e4fc953c
+ui ui-green-cov-r-1 rc=0 segundos=199 :: filas 900 {'NotExecuted': 30, 'Passed': 870}; omitidas por origen {'PB-T4b': 27, 'PB-T4c': 1, 'otro': 2}
+  cobertura json=2e17a9c00c27d8ea cobertura=fd2e570739ad1ab1
+ui ui-green-cov-r-2 rc=0 segundos=194 :: filas 900 {'NotExecuted': 30, 'Passed': 870}; omitidas por origen {'PB-T4b': 27, 'PB-T4c': 1, 'otro': 2}
+  cobertura json=034ad77bcbee0fa3 cobertura=c7ba7cfa54fe8dbe
+core core-green-cov-sin rc=0 segundos=453 trx=df154191737e0c8f :: filas 19418 {'NotExecuted': 403, 'Passed': 19015}; omitidas por origen {'PB-T4b': 390, 'PB-T4c': 3, 'otro': 10}
+no pasan: 0
+  cobertura json=d96543483ed42e19 cobertura=9c94cf3b2c5b6602
+ui ui-green-cov18 rc=0 segundos=206 :: filas 899 {'NotExecuted': 30, 'Passed': 869}; omitidas por origen {'PB-T4b': 27, 'PB-T4c': 1, 'otro': 2}
+  cobertura json=fc56a809b1cf2993 cobertura=de8ecd34b40517f9
+ui ui-green-cov18-r-1 rc=0 segundos=196 :: filas 899 {'NotExecuted': 30, 'Passed': 869}; omitidas por origen {'PB-T4b': 27, 'PB-T4c': 1, 'otro': 2}
+  cobertura json=00f73fba9cc14fac cobertura=b4b4bd35bac84488
+ui ui-green-cov18-r-2 rc=0 segundos=197 :: filas 899 {'NotExecuted': 30, 'Passed': 869}; omitidas por origen {'PB-T4b': 27, 'PB-T4c': 1, 'otro': 2}
+  cobertura json=00f73fba9cc14fac cobertura=f3df1353425d72a6
+Traceback (most recent call last):
+  File "<scratchpad>\hs65\pbt4ecc\compile\classes_v55.py", line 21, in <module>
+    root = ET.parse(trx).getroot()
+           ~~~~~~~~^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 1223, in parse
+    tree.parse(source, parser)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 566, in parse
+    source = open(source, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4ecc/compile/r78-p6/red-ui*.trx'
+Traceback (most recent call last):
+  File "<scratchpad>\hs65\pbt4ecc\compile\classes_v55.py", line 21, in <module>
+    root = ET.parse(trx).getroot()
+           ~~~~~~~~^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 1223, in parse
+    tree.parse(source, parser)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 566, in parse
+    source = open(source, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4ecc/compile/r78-p6/green-ui*.trx'
+sha256sum: /tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4ecc/compile/r78-p6/clases-red.txt: No such file or directory
+sha256sum: /tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4ecc/compile/r78-p6/clases-green.txt: No such file or directory
+clases red= green=
+build-server shutdown rc=0
+procesos al acabar: 0 (19:29:09)
+MAINCO []

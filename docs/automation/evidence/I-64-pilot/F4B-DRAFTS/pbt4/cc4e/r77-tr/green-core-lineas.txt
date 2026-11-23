@@ -1,0 +1,25 @@
+== Passed RackCad.Tests.PushBackEditAllReloadTests.CT_PBT4E_01_EditAllReloadsACleanDraftMarkedAsPossiblyStaleBeforeTheEditorOpensAndLeavesEveryOtherDraftAsToday
+== Passed RackCad.Tests.PushBackEditAllReloadTests.CT_PBT4E_02_AReloadThatDoesNotReloadTheDraftDoesNotOpenTheEditorAndCarriesWhatTheReloadOfEditarAnswers
+== Passed RackCad.Tests.PushBackEditAllReloadTests.CT_PBT4E_04_FromTheChangeOutsideAndItsMarkThroughEditAllToTheUpdateWithoutAutoCadTheUpdateAppliesWithoutAConflict
+== Failed RackCad.Tests.SondaPushBackEditAllReloadTests.CT_PBT4E_01_EditAllReloadsACleanDraftMarkedAsPossiblyStaleBeforeTheEditorOpensAndLeavesEveryOtherDraftAsToday
+stack: at RackCad.Tests.SondaPushBackEditAllReloadTests.Finish(List`1 log, IEnumerable`1 expected) in <copia>\tests\RackCad.Tests\SondaPushBackEditAllReloadTests.cs:line 50
+  marcado-limpio estado=Closed abierto=True lecturas=1 lecturas-antes-de-abrir=1 lecturas-dentro=0 nombre-del-lanzamiento=[Otro nombre] obsoleto=False borrador=Clean mismo-borrador=True
+  sin-marca estado=Closed abierto=True lecturas=0 nombre-nuevo=False obsoleto=False
+  marcado-sucio estado=Closed abierto=True lecturas=0 nombre-nuevo=False obsoleto=True borrador=Dirty
+  marcado-conflicto estado=Closed abierto=True lecturas=0 obsoleto=True borrador=Conflict
+  marcado-sin-decidir alta=Created estado=Refused motivo=[El borrador no admite el editor completo en su estado actual.] abierto=False lecturas=0 fallos=[] obsoleto=True
+  marcado-sin-anfitrion estado=NotAvailable abierto=False lecturas=0 obsoleto=True
+  marcado-otra-sesion estado=Rejected abierto=False lecturas=0 obsoleto=True
+== Failed RackCad.Tests.SondaPushBackEditAllReloadTests.CT_PBT4E_02_AReloadThatDoesNotReloadTheDraftDoesNotOpenTheEditorAndCarriesWhatTheReloadOfEditarAnswers
+stack: at RackCad.Tests.SondaPushBackEditAllReloadTests.Finish(List`1 log, IEnumerable`1 expected) in <copia>\tests\RackCad.Tests\SondaPushBackEditAllReloadTests.cs:line 50
+  no-admitida estado=NotBegun inicio=NotAdmitted diagnostico=[No editable aquí: el origen ya no está en el dibujo] pista=True abierto=False lecturas=1 obsoleto=True borrador=Clean
+  ocupado estado=NotBegun inicio=Waiting motivo=[Hay un comando en curso.] abierto=False lecturas=1 obsoleto=True
+  excepcion estado=NotBegun inicio=Failed motivo=[boom] abierto=False obsoleto=True fallos=[WorkspaceHostCore.TryReloadPilotEdit]
+  igual-que-editar no-admitida=True ocupado=True excepcion=True
+== Failed RackCad.Tests.SondaPushBackEditAllReloadTests.CT_PBT4E_04_FromTheChangeOutsideAndItsMarkThroughEditAllToTheUpdateWithoutAutoCadTheUpdateAppliesWithoutAConflict
+stack: at RackCad.Tests.SondaPushBackEditAllReloadTests.Finish(List`1 log, IEnumerable`1 expected) in <copia>\tests\RackCad.Tests\SondaPushBackEditAllReloadTests.cs:line 50
+  marca obsoleto=True borrador=Clean lecturas=0
+  editar-todo estado=Closed aplicadas=1 lecturas=1 nombre-del-lanzamiento=[Otro nombre] borrador=Dirty obsoleto=False
+  actualizar estado=Applied begin-mutation=1 seal=1 borrador=Clean
+  borrado EraseUnit:B2
+  escrito vistas=2 nombre-del-dibujo=True

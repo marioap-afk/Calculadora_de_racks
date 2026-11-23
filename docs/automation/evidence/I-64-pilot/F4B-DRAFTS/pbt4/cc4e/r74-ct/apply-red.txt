@@ -1,0 +1,3 @@
+nuevo 47594d48273cf04746f7d2b0c6456f7614c12b7124168553e156f31d50c1c81a tests/RackCad.Tests/PushBackEditAllReloadTests.cs
+nuevo a29d7a362cd5de49bd787eb76e7c847dc30b46ef1314e94ae5f67041b6a4595d tests/RackCad.UI.Tests/PushBackEditAllReloadFieldTests.cs
+RED de PB-T4e escrito: 2 archivos nuevos de tests/; ningun archivo existente tocado; src/ sin tocar

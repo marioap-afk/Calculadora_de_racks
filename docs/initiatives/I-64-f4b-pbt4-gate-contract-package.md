@@ -1,6 +1,73 @@
 > **Redacción para el repo público:** las rutas locales se sustituyen por marcadores (`<checkout-principal>`, `<carpeta-del-paquete>`). El resto no cambia.
 
-# I-64 F4B — Paquete del contrato de PB-T4 («Editar todo» en el panel del Workspace), v5.4
+# I-64 F4B — Paquete del contrato de PB-T4 («Editar todo» en el panel del Workspace), v5.6
+
+**Estado:** v5.6, **sin emitir**. Corrige la v5.5 de **PB-T4e** (`F4B-PBT4-EDIT-ALL-RELOAD`, la recarga de «Editar todo») tras su comprobación acotada (CA-T4e, `independent-review-pbt4e-check.md`, sha256 `27636ed55ddafe11000b80c1f79789fd020f6e1807de7484b33b8f882125ef72`: EMITIBLE, B 0 / I 0 / M 5), sobre la misma base, el **cierre de PB-T4d** (`160e019d`, F4B-E59). La precondición 6 se repitió entera en copias exportadas nuevas (`/d/r76` en adelante; `pbt4ecc/compile/`). PB-T4a a PB-T4d no cambian.
+
+**Las decisiones que la fijan, además de las de la v5.5:** ninguna nueva del Owner. **La sesión** (`session-pbt4e-design-decisions.md`, sha256 `b21f2af4bab5321620bf8de3aceeb95585a0e2fe9e4cc2ae96f18e37c3e41e6d`): confirma D-S17 y D-S18 y el `TaskId`, y decide **D-S19** por M-01 (la opción (b) de CA-T4e): la recarga va detrás de las tres comprobaciones de la vista. El mismo registro corrige M-03 (la evaluación de R-T4-39); M-05 va al registro de la emisión.
+
+**Lo que cambia:** la cabecera (este registro, y la de la v5.5, que pasa a su sección sin cambio) y, medido por el diff de las secciones de la v5.5 y la v5.6 (`v56/make_v56-out.txt`; un solo armado, el último paso de `post_p6_v56.sh`, CA-T4e M-04), **§0, §1, la sección «PB-T4e» de §3, D-PBT4-22, §4.5, §5.7, §6.0, §6.5, §6.5.1, §6.5.2, §7, §8.5, §9 y §11; nuevas: el anexo V56-A**. **Lo que no cambia:** las 99 secciones de PB-T4a, PB-T4b, PB-T4c y PB-T4d (entre ellas §4.1 a §4.4, §5.0 a §5.3, §5.6, §6.1 a §6.4 con sus textos literales, D-PBT4-02 a D-PBT4-18 y D-PBT4-21, y los anexos V49-A, V51-A y V54-A), sin cambio desde la v5.4; y 10 más que la v5.5 tocó o trajo y la v5.6 no cambia: D-PBT4-01, D-PBT4-19, D-PBT4-20, §5.4, §5.5, §8.3 y §10, el registro v5.4 → v5.5 y la cabecera de la v5.4 (en la cabecera de la v5.5) y el archivo de CT-PBT4E-03 en el anexo V56-A (el mismo texto que en el V55-A): 109 secciones sin cambio frente a la v5.5, medido por el mismo diff.
+
+**Lo que sale de la v5.6 (PB-T4e):**
+- las dos piezas literales, `pbt4e-green-v56.txt` (sha256 `a745c2737a7e0fe908489a1bf17ed86569577ed3dbf54ecd3661c488faf88158`) y `pbt4e-red-v56.txt` (sha256 `d052f73d726817f4240f3b5edfd89a0ec8aeb7b9cc17dbce684aa8e4f433c9e1`), y sus módulos y aplicadores (`green_pbt4e_v56.py`, `apply_green_pbt4e_v56.py`, `red_pbt4e_v56.py` y `apply_red_pbt4e_v56.py`); las de la v5.5 quedan como historia;
+- su generador, `v56/make_pieces_pbt4e_v56.py`, con sus fuentes (`v56/frag/green-src.txt` y `v56/ct/`) y su registro (`v56/make_pieces_v56-out.txt`);
+- la precondición 6 (`pbt4ecc/compile/`): la línea nueva contra el GREEN de la v5.5 y el ensayo (`t76_trial_v56.sh` y `v56/probe/write_probe_v56.py`), la copia principal con la corrida opcional (`p6_pbt4e_v56.sh` y `ui_union18_v56.txt`), la base (`p6_basecov_v55.sh`, sin cambio), el control (`p6_control_v56.sh`), la cobertura con los dos límites declarados y `MODO=existentes` (`cov_p6_pbt4e_v56.py`), los `RequiredTests` (`required_pbt4e_v56.py`), el resumen (`p6_json_pbt4e_v56.py`, que escribe `pbt4e-precondition6.json`, `compile-check.md` y `values-v56.json`; los de la v5.5 quedan con el sufijo `-v55`) y el conductor de lo que sigue a la principal y a la base (`post_p6_v56.sh`, cuyo registro, `post-p6-v56-out.txt`, nombra la versión que se emite);
+- el texto literal de PBT4E-C11 (`v56/make_c11_v56.py`, desde PBT4D-C11 de la v5.4, con cada reemplazo comprobado); y `v56/make_v56.py`, que arma esta versión desde la v5.4 con los fragmentos de `v56/frag/` y toma la cabecera de la v5.5 de su archivo (`e597790f…ae83`).
+
+---
+
+## Registro de cambios v5.5 → v5.6
+
+| Id | Hallazgo | Qué cambia | Dónde |
+|---|---|---|---|
+| **V56-01** | **CA-T4e M-01** (menor): con un borrador «Sin decidir» y marcado, la rama de la v5.5 evaluaba `NeedsLazyReload` antes de la vista y `Status` llamaba al comparador sin protegerlo; `TryEditAll` pasaba de `Refused` sin `Report` a `Failed` con `Report`. Solo en el puerto, inalcanzable desde el panel | **D-S19, la opción (b):** la recarga va detrás de las tres comprobaciones de la vista y antes de `ShowModal`, solo sobre un borrador que el gesto no acaba de empezar (`begunHere`). Una línea nueva en CT-PBT4E-01, `marcado-sin-decidir`, que cae con el GREEN de la v5.5 y pasa con el de la v5.6, medido. Las otras 24 líneas no cambian | D-PBT4-22; §5.7; §6.0 (la tabla de RR-3: las 16 líneas de la clase de Core); §6.5.1 (INV-PBT4E-03 y 04, PBT4E-C13); §7 (R-T4-41); el anexo V56-A |
+| **V56-02** | **CA-T4e M-02** (menor): el método de la cobertura tiene dos límites sin declarar | Los dos límites, declarados en §4.5 y en la cabecera de `cov_p6_pbt4e_v56.py`; y **la corrida opcional:** la cobertura del GREEN sin las dos clases nuevas, comparada con la base, con su resultado | §4.5; §6.5.1 |
+| **V56-03** | **CA-T4e M-04** (menor): `post-p6` registraba una v5.5 (`a241bfbe`) y la revisada era otra (`e597790f`) | La v5.6 sale de un solo armado, el último paso de `post_p6_v56.sh`, cuyo registro nombra la versión que se emite. El traspaso (`v56/handoff-pbt4e-v56.md`) declara la segunda ejecución de `make_v55.py` y qué cambió en `head.md` y `ops-d.md` | La cabecera; §6.5.2 |
+| **V56-04** | **La precondición 6, entera otra vez** | En copias nuevas: `/d/r76` (la línea nueva contra el GREEN de la v5.5), `/d/r82` (el ensayo y la sonda), `/d/r83` (la principal, sola, con la corrida opcional), `/d/r79` (la base, sola) y `/d/r80` y `/d/r81` (el control). Las de la v5.5 (`/d/r71` a `/d/r75`), historia, y `/d/r77`, el primer ensayo de la v5.6: su GREEN (`8e3e8077…aafb`, sobrescrito) daba un `warning CS8604` en WHC, porque `begunHere = draft == null` no deja ver al análisis de nulos que `draft` ya no es nulo; el GREEN final lo evita con `if (draft == null)` y `begunHere = true` dentro; y `/d/r78`, la primera principal de la v5.6: su conductor leía una lista de filtros de UI que no existe (`ui_filters_pbt4e_v56.txt`, de un renombrado) y no corrió ninguno de los 19 filtros de UI, ni en el RED ni en el GREEN; el de `/d/r83` lee la de la v5.5 (`ui_filters_pbt4e_v55.txt`, la misma lista) y comprueba antes de empezar que tiene 19 líneas | §6.5.1; §9; §11 |
+| **V56-05** | **Las decisiones de la sesión, registradas** | D-S17 y D-S18 confirmadas, D-S19 nueva, con el registro de la sesión y CA-T4e entre las autoridades | §0; §1; D-PBT4-22; §8.5; §11 |
+| V56-06 | Las piezas y la versión | Las piezas con el sufijo `-v56`; el `Objective` cita la v5.6; el anexo V56-A sustituye al V55-A | §6.5; §6.5.2; el anexo V56-A |
+| **V56-07** | **El generador del contrato, sobre la v5.5:** el régimen tiene que salir literal del paquete, no de una derivación | **PBT4E-C11, entero y literal:** el texto de PBT4D-C11 con PBT4D → PBT4E y «PB-T4d» → «PB-T4e», la **versión 3** del sustituto de nc2 (F4B-E58: `nc2_exact_whitelist_substitute_f4b_v3.py`, `e68b6e59…28c6`; la propiedad 10 en forma cerrada; lo demás, como la v2), «an nc2 that the version 3 of the substitute does not give PASS» y la satisfacción del nc2 de PB-T4d entre lo que no se extiende; el nc1, igual (`v56/make_c11_v56.py`, que comprueba cada reemplazo). **P-01 con la Snapshot L,** literal (F4B-E57), solo en PB-T4e: §6.0 sigue con la K de PB-T4a a PB-T4d. **Las autoridades** de la v3 y de la L, en lugar de las de la v2 y la K. **`p6_json_pbt4e_v56.py`:** la expresión de la hora, con `[0-9]` y no `\d` junto a los dos puntos, para que la custodia no la tome por una ruta | §6.5; §6.5.1; §6.5.2 |
+
+---
+
+## La cabecera de la v5.5, sin cambio salvo lo que dice el registro v5.5 → v5.6
+
+**Estado:** v5.5, **sin emitir**. Añade **PB-T4e** (`F4B-PBT4-EDIT-ALL-RELOAD`, la recarga de «Editar todo»; el nombre de la subtarea es provisional y lo confirma la sesión al emitir) en forma literal, como la v5.2 a la v5.4 lo hicieron con PB-T4d, sobre el **cierre de PB-T4d** (`160e019d`, F4B-E59: CERRADA, intento 1 de 3, sin reparación del RED). La remedición se hizo por objetos git (`git show`, `grep`, `ls-tree`) y la precondición 6, en copias exportadas nuevas de `160e019d` (`/d/r71` en adelante; `pbt4ecc/compile/`). Todo lo de PB-T4a a PB-T4d sigue igual.
+
+**Las decisiones que la fijan:**
+- **el Owner, la 15.ª tanda,** `owner-pbt4e-list-decisions.md` (sha256 `d889d56babd3018d65b89d1f6c30405bdb2617d20eab27a96cf606c787a9c973`), cuatro respuestas literales: «Solo la recarga (Recomendado)», «No abrir y avisar (Recomendado)», «Antes de PB-T5 (Recomendado)» y «Sí, con condiciones (Recomendado)» (§8.5);
+- **el origen:** OWNER-02 de la revisión del código de PB-T4c, que el Owner aceptó con «Aceptarlo y corregir luego» (`owner-pbt4c-code-decisions.md`, pregunta 2), y la pregunta 2 de `owner-pbt4d-list-decisions.md`, «Tarea propia después»;
+- **la sesión, dos decisiones de diseño que el Owner le dejó** (`owner-pbt4e-list-decisions.md`, «Lo que queda decidido»), **escritas aquí como propuestas para la sesión**, que las confirma o las cambia al revisar: **D-S17**, la recarga en el anfitrión, y **D-S18**, `EditAllStatus.NotBegun` reutilizado (D-PBT4-22; §8.5).
+
+**Lo que cambia:** la cabecera (este registro, y la de la v5.4, que pasa a su sección sin cambio) y, medido por el diff de las secciones de la v5.4 y la v5.5 (`v55/make_v55-out.txt`, no escrito a mano: M-10 y M-14 de las versiones anteriores), **§0, §1, D-PBT4-01, D-PBT4-19, D-PBT4-20, §5.4, §5.5, §6.0, §7, §8.3, §8.5, §9, §10 y §11; nuevas: la sección «PB-T4e» de §3, D-PBT4-22, §4.5, §5.7, §6.5, §6.5.1, §6.5.2 y el anexo V55-A**. **Lo que no cambia:** PB-T4a, PB-T4b, PB-T4c y PB-T4d (entre ellas §4.1 a §4.4, §5.0 a §5.3, §5.6, §6.1 a §6.4 con sus textos literales, D-PBT4-02 a D-PBT4-18 y D-PBT4-21, y los anexos V49-A, V51-A y V54-A): 99 secciones sin cambio, medido por el mismo diff.
+
+**Lo que sale de la v5.5 (PB-T4e):**
+- las dos piezas literales, `pbt4e-green-v55.txt` (solo `src/`, sha256 `5d26dc483f83cfca1d005adfd60c25f6d2e5eac7cc545b9342182f96bdc95407`) y `pbt4e-red-v55.txt` (solo `tests/`, sha256 `647e185329ce18450eccda093d3071554759043bfc1c61e27e3f52f621da033b`), y sus módulos y aplicadores (`green_pbt4e_v55.py`, `apply_green_pbt4e_v55.py`, `red_pbt4e_v55.py` y `apply_red_pbt4e_v55.py`);
+- su generador, `v55/make_pieces_pbt4e_v55.py`, con sus fuentes (`v55/frag/green-src.txt` y las dos clases de `v55/ct/`) y su registro (`v55/make_pieces_v55-out.txt`);
+- la precondición 6 (`pbt4ecc/compile/`): el ensayo y la sonda (`t71_trial_v55.sh`, `v55/probe/write_probe_v55.py`, `trx_lines_v55.py`), la copia principal (`p6_pbt4e_v55.sh`), la base con cobertura (`p6_basecov_v55.sh`), el control de las CT (`p6_control_v55.sh`, `control_pieces_v55.py` y la sonda de «Actualizar», `v55/probe/SondaPushBackEditAllReloadUpdate.cs`), la cobertura (`cov_p6_pbt4e_v55.py`), los `RequiredTests` y los totales (`req_pbt4d_v55.py`, que escribe `required-pbt4d-emitted.tsv`, y `required_pbt4e_v55.py`), el resumen (`p6_json_pbt4e_v55.py`, que escribe `pbt4e-precondition6.json`, `compile-check.md` y `values-v55.json`) y el conductor de lo que sigue a la copia principal y a la base (`post_p6_v55.sh`, con su registro `post-p6-v55-out.txt`); los ayudantes copiados sin cambio de PB-T4c y PB-T4d (`check_trx_v55.py`, `classes_v55.py` y `cov_v55.runsettings`);
+- y `v55/make_v55.py`, que arma esta versión desde la v5.4 con los fragmentos de `v55/frag/`.
+
+---
+
+## Registro de cambios v5.4 → v5.5
+
+| Id | Hallazgo | Qué cambia | Dónde |
+|---|---|---|---|
+| **V55-01** | **La 15.ª tanda del Owner** (`owner-pbt4e-list-decisions.md`): «Solo la recarga», «No abrir y avisar», «Antes de PB-T5» y «Sí, con condiciones» | PB-T4e es una subtarea propia, la quinta, con su cadena y su intento 1 de 3, cerrada antes de PB-T5; se emite por la autorización condicional | §0; §1; D-PBT4-01; §8.5; §11 |
+| **V55-02** | **El diseño, D-PBT4-22:** «Editar todo» recarga un borrador Clean marcado como posiblemente obsoleto con la misma función que «Editar», antes de abrir; si la recarga no sale, no abre y el campo muestra lo mismo que «Editar» | El cuerpo de `EditAllOfPilot` (WHC), el aviso de `EditAll` con su constante, que usa también `BeginEdit` (FVM), y los comentarios de WEI y del puerto; nada más visible | §3 (la sección PB-T4e); D-PBT4-19; D-PBT4-20 |
+| **V55-03** | **Las dos decisiones de la sesión, propuestas** | D-S17 (la recarga en el anfitrión) y D-S18 (`NotBegun` reutilizado), con su evidencia `ruta:línea` y su efecto en las CT | D-PBT4-22; §8.5 |
+| **V55-04** | **La lista, vacía, medida** | K = 0, D = 0 y E = 0: la suite completa de Core y los 19 filtros de UI del contrato, sobre el RED exacto y el GREEN literal, no dan ninguna prueba existente que falle; ninguna se edita, se salta ni se sustituye | §4.5; §8.3 |
+| **V55-05** | **Las CT** | CT-PBT4E-01, 02 y 04 (Core) y CT-PBT4E-03 (UI), en dos clases nuevas, con sus 24 líneas medidas por la sonda sobre el GREEN literal; la CT-05 opcional de la propuesta no se escribe (redundante con CT-01; AGENTS.md, «Guardia de fuente y prueba de comportamiento») | §5.7; §6.0 (RR-3) |
+| **V55-06** | **Las piezas** | El GREEN (8 bloques EDIT en 4 archivos de `src/`) y el RED (2 bloques NEWFILE), sin esqueleto, con su generador y sus herramientas `apply_*`, que el Worker corre sin escribir código | §6.5.2; el anexo V55-A |
+| **V55-07** | **El contrato literal** | `Objective`, `AllowedWriteScope` (6), INV-PBT4E-01 a 14, PBT4E-C01 a C14, C16, C17 y C18, `ExpectedEvidence`, `RequiredTests` (90) y los totales exactos de cada rama (F4B-E46) | §6.5; §6.5.1 |
+| **V55-08** | **La precondición 6** | En copias nuevas: el ensayo y la sonda (`/d/r71`), la copia principal, sola (`/d/r72`), la base con cobertura (`/d/r73`) y el control de las CT (`/d/r74` y `/d/r75`) | §6.5.1; §9; §11 |
+| **V55-09** | **El Smoke-PB** | Suma la recarga de «Editar todo» (los pasos de la propuesta de lista, §4) a la lista de PB-T5 | §5.5; §10 |
+| **V55-10** | **Medido distinto de lo deducido:** en la base, la receta de punta a punta no acaba en el conflicto de «Actualizar», sino en `NotAppliedPreflight` | Se declara (R-T4-39) y se describe con la sonda de «Actualizar»; no cambia el diseño ni la lista | D-PBT4-22; §7 |
+| V55-11 | La CI del RED | `ui-tests` en failure en PB-T4e (CT-PBT4E-03) | §5.4; §6.0 |
+
+---
+
+## La cabecera de la v5.4, sin cambio salvo lo que dice el registro v5.4 → v5.5
 
 **Estado:** v5.4, **solo de texto**. Corrige la v5.3 de **PB-T4d** (`F4B-PBT4-RETIRE-PILOT`) tras la recomprobación 1 de CA-T4d (al final de `independent-review-pbt4d-check.md`, sha256 `76a10c8bde8a3c0532d0c7ffa1dda18d339882d22873fedcd0ecc2854b1b679f`: EMITIBLE, B 0 / I 0 / M 6, M-08 a M-13), sobre la misma base (`6c2820ba`). No se repite ninguna corrida de pruebas: los cambios del RED son solo de comentarios (el código sin comentarios es el de la v5.3) y los del GREEN, solo su cabecera; las piezas de la v5.4 se reaplicaron en una copia nueva (`/d/r70`), con 0 errores y 0 `warning CS`, y la cobertura se volvió a leer de los mismos JSON.
 
@@ -574,7 +641,7 @@ Los `Skip`, la partición y las comprobaciones son los de la v4.8.
 
 **Lo que pide el Owner** ([OD], fila de PB-T4): «Add "Editar todo" … Do not make PB-T4 invent state translation logic. It should consume the already proven full Push Back draft/state API.»
 
-**La base:** el cierre de PB-T3c, `7f0d9aa3`. **Cuatro subtareas secuenciales,** cada una con su 1/3. Los `TaskId` empiezan por `F4B-PBT4-` y tienen **como mucho 26 caracteres** (MAX_PATH solo acota por arriba; V41-11):
+**La base:** el cierre de PB-T3c, `7f0d9aa3`. **Cuatro subtareas secuenciales** y, desde la v5.5, **una quinta, PB-T4e** (la recarga de «Editar todo», sobre el cierre de PB-T4d, `160e019d`; la 15.ª tanda del Owner), cada una con su 1/3. Los `TaskId` empiezan por `F4B-PBT4-` y tienen **como mucho 26 caracteres** (MAX_PATH solo acota por arriba; V41-11):
 
 | Subtarea | TaskId | Qué | Sustituciones exactas (§8.3) | La emisión |
 |---|---|---|---|---|
@@ -582,8 +649,11 @@ Los `Skip`, la partición y las comprobaciones son los de la v4.8.
 | **PB-T4b** | `F4B-PBT4-FULL-DRAFT-PANEL` (25) | El borrador del panel pasa al completo; OB-03.2; la regla única de la escala, en Application; «Actualizar» por `ExecuteFull`; «Conservar mi borrador» con dos «Sí», la presentación «Por grupos» y `KeepOn` (D-S2); una sola materialización del modelo completo por lectura (D-S4). **El código del piloto queda sin uso, sin retirarlo** | **478** (428 de las 9 clases, «Saltar y duplicar», 356 copias y 72 a mano; 23 de la letra; 27 de la UI), la lista que el Owner tomó como la que vio, con las cinco de la tercera tanda y las dos de la quinta | Condicional, con esa lista, sobre el cierre de PB-T4a (`78a7cef3`) |
 | **PB-T4c** | `F4B-PBT4-EDIT-ALL-WINDOW` (24) | «Editar todo», con el abridor en dos piezas | **4** (PEG:155-163, CT-PBT1B-15, CT-PBT4B-20 y CT-PBT2B-06), la lista que el Owner tomó como la que vio tras sus dos decisiones de PB-T4c (`owner-pbt4c-list-3-decision.md` y `owner-pbt4c-list-4-decision.md`) | Condicional, con esa lista, sobre el cierre de PB-T4b (`6adff90d`) |
 | **PB-T4d** | `F4B-PBT4-RETIRE-PILOT` (21) | Retira el código del piloto que el panel ya no usa, con el alcance B y la rama muerta de `BuildCore`; el RED lleva todo lo de `tests/` (D-S11) | **271** filas con acción de `pbt4d-retire-list-271.tsv` (borrar, reescribir, sustituir y acotar con registro), con las 29 sustitutas de WPUR y los ayudantes sin uso borrados (§4.4; v5.3) | Condicional (`owner-pbt4d-list-decisions.md`, pregunta 4), con esa lista, sobre el cierre de PB-T4c (`6c2820ba`) |
+| **PB-T4e** | `F4B-PBT4-EDIT-ALL-RELOAD` (24; provisional, lo confirma la sesión) | «Editar todo» recarga, antes de abrir la ventana, un borrador Clean marcado como posiblemente obsoleto con la recarga de «Editar» (`TryReloadPilotEdit`); si la recarga no sale, no abre y el campo muestra lo mismo que «Editar» (D-PBT4-22). Sin esqueleto: el RED solo añade las dos clases de las CT | **0** (la lista vacía: ninguna prueba existente se edita, se salta ni se sustituye; medido, §4.5) | Condicional (`owner-pbt4e-list-decisions.md`, pregunta 4), con la lista vacía, sobre el cierre de PB-T4d (`160e019d`) |
 
 **Las decisiones del Owner,** tomadas (§8.2): Q1 «Retirarlo», Q2 «Por grupos», Q3 «Saltar y duplicar» y Q4 «Sí, con condiciones» (`owner-pbt4-decisions.md`); después, «Retirar tras PB-T4c» y «Sí, esa lista» (`owner-pbt4b-retire-list-decisions.md`); y, en la tercera tanda, «Añadirlas a la lista» (`owner-pbt4b-breaks-decision.md`). Después, «Cerrar y optimizar en PB-T4b» (`owner-pbt4a-cost-decision.md`) ; en la quinta tanda, «Añadirlas a la lista» (`owner-pbt4b-list-477-decision.md`), y en la sexta, «Añadirla a la lista» (`owner-pbt4b-list-478-decision.md`); y en la séptima, sobre el coste de la lectura de PB-T4b, «Darlo por cumplido» (`owner-pbt4b-cost-decision.md`). Sobre PB-T4c, dos veces «Añadirla a la lista» (`owner-pbt4c-list-3-decision.md` y `owner-pbt4c-list-4-decision.md`). La sesión decidió D-S1 a D-S3, D-S5 y D-S6 (`session-pbt4b-design-decisions.md`), D-S4 (D-PBT4-21; §8.5) y, para PB-T4c, D-S7 a D-S10 (`session-pbt4c-design-decisions.md`).
+
+**Sobre PB-T4e** (desde la v5.5): la 15.ª tanda del Owner (`owner-pbt4e-list-decisions.md`): «Solo la recarga», «No abrir y avisar», «Antes de PB-T5» y «Sí, con condiciones» (§8.5). La sesión decidió dónde va la recarga y que se reutiliza `NotBegun` (D-S17 y D-S18, confirmadas) y, tras la comprobación acotada CA-T4e (M-01), que la recarga va detrás de las comprobaciones de la vista (D-S19): `session-pbt4e-design-decisions.md`, D-PBT4-22.
 
 **PB-T4a es la primera que se emite.** Su parte del paquete está completa y sin remisiones: el diseño (D-PBT4-02 y 03, con el texto literal del GREEN y `ReadAt`, B-08), las roturas medidas con el recorrido por marcas de sus guardas y la ampliación de CA-T4a (§4.1), la lista cerrada CT-PBT4A-01 a 08 con sus totales (§5.1), lo común (§6.0) y el contrato propuesto con lo que necesita su generador (§6.1).
 
@@ -614,6 +684,10 @@ Las de la v1 (§1), sin cambio. Además, la revisión de la v1 y las instruccion
 | **Las decisiones de diseño de la sesión para PB-T4d** (`session-pbt4d-design-decisions.md`, 2026-11-22) | D-S11 a D-S15 y, tras CA-T4d, D-S16 (§8.5) |
 | **La comprobación acotada de la v5.2** (`independent-review-pbt4d-check.md`, 2026-11-22) | EMITIBLE TRAS CORRECCIONES, B 0 / I 2 / M 7: la v5.3 corrige los nueve (registro v5.2 → v5.3) |
 | **Las dos decisiones del Owner tras CA-T4d** (`owner-pbt4d-cat4d-decisions.md`, 2026-11-22, la 14.ª) | «Sustituirlas» (la 48 y la 49) y «Sustituirlos siempre» (la regla de los huecos de la cobertura ampliada) (§8.5) |
+| **La decisión del Owner sobre la recarga en PB-T4c** (`owner-pbt4c-code-decisions.md`, 2026-11-21, pregunta 2) | «Aceptarlo y corregir luego»: OWNER-02 de la revisión del código de PB-T4c, el origen de PB-T4e (D-PBT4-22) |
+| **Las decisiones del Owner sobre la lista de PB-T4e** (`owner-pbt4e-list-decisions.md`, 2026-11-22, la 15.ª tanda) | «Solo la recarga», «No abrir y avisar», «Antes de PB-T5» y «Sí, con condiciones» (§8.5) |
+| **Las decisiones de diseño de la sesión para PB-T4e** (`session-pbt4e-design-decisions.md`, 2026-11-22, sha256 `b21f2af4bab5321620bf8de3aceeb95585a0e2fe9e4cc2ae96f18e37c3e41e6d`) | D-S17 (la recarga en el anfitrión) y D-S18 (`EditAllStatus.NotBegun` reutilizado), confirmadas, y D-S19 (la recarga detrás de las comprobaciones de la vista, tras CA-T4e, M-01) (§8.5) |
+| **La comprobación acotada de la v5.5** (`independent-review-pbt4e-check.md`, 2026-11-22, sha256 `27636ed55ddafe11000b80c1f79789fd020f6e1807de7484b33b8f882125ef72`) | EMITIBLE, B 0 / I 0 / M 5: la v5.6 resuelve M-01 (D-S19), M-02 (los límites de la cobertura y la corrida opcional) y M-04 (un solo armado); M-03 lo corrige el registro de la sesión y M-05 va al registro de la emisión |
 | **El arrastre A-T2b-OWNER-01** (F4B-E38; `owner-pbt2b-close-decisions.md:36`) | «Cerrar» en WORKSPACE con una sola pregunta (D-PBT4-17) |
 | **Las decisiones de diseño de la sesión** (`session-pbt4b-design-decisions.md`, 2026-11-20) y las §17 y §18 de `independent-review-v1.md` | D-S1 a D-S3, D-S5 y D-S6, y D-S4 (§8.5, D-PBT4-21); la verificación de las cinco roturas y la revisión de la v4.4 |
 
@@ -664,6 +738,8 @@ Medidos en `7dfc7c21` (v1 a v3) y vueltos a medir en `7f0d9aa3`, el cierre de PB
 - PB-T4d retira el código del piloto cuando ya no corre ninguna prueba que lo use (D-PBT4-10).
 
 **Los TaskId** empiezan por `F4B-PBT4-` y tienen como mucho 26 caracteres (23, 25, 24 y, el propuesto de PB-T4d, 21), para los sustitutos de nc1 y nc2 (§6.0; V41-11).
+
+**Desde la v5.5, una quinta: PB-T4e** (V55-01), la recarga de «Editar todo», sobre el cierre de PB-T4d (`160e019d`), con su 1/3. El Owner la quiso como tarea propia (`owner-pbt4d-list-decisions.md`, pregunta 2, «Tarea propia después») y antes de PB-T5 (`owner-pbt4e-list-decisions.md`, pregunta 3, «Antes de PB-T5»): una cadena pequeña que no mezcla un cambio visible con el cierre de F4B, y el Smoke-PB ya mira el comportamiento corregido. Su `TaskId`, provisional, es `F4B-PBT4-EDIT-ALL-RELOAD` (24).
 
 ### PB-T4a
 
@@ -1340,6 +1416,63 @@ Ninguno nombra `RackPushBackCommands`, `RackMenuCommands`, `EditorModules`, `Rac
 
 **La prueba** (CT-PBT4C-09) lee `PendingWork()` sin cerrar la ventana y cubre lo que se puede alcanzar (D-S10): `ambas`, `solo-sin-aplicar`, `ninguna` y `clasico-modulo`. **Escenifica la cabecera con `HeaderConfiguratorDialog` (W:1488) y `ConfigureModuleHeaderButton`** (D-S7): `ConfigureModuleHeader` llama a la costura en lugar de `ShowHeaderConfigurator` (W:1901-1903), así que no se construye el configurador. La v4.9 nombraba `HeaderConfiguratorPresenter` (W:2373), que recibe un `RackFrameConfiguratorWindow` real ya construido, y C05 lo prohíbe. W solo cambia `PendingWork()` y su constante; `W.xaml` no cambia.
 
+### PB-T4e
+
+**Desde la v5.5, entera y literal** (V55-01 a V55-03; desde la v5.6, el sitio de la recarga, D-S19, V56-01): medida por objetos git en el cierre de PB-T4d (`160e019d`, F4B-E59) y compilando y ejecutando en copias exportadas de esa revisión (`/d/r82` en adelante; §6.5.1). Las citas de líneas son de `160e019d`: WHC, FVM, WEI, DS y NH no cambian entre el GREEN de PB-T4c (`7cc1076e`) y `160e019d`, y `src/` y `tests/` de `160e019d` son los del GREEN de PB-T4d (`7db6fd0c`; `git diff --stat` vacío). El texto del GREEN y del RED es el de las piezas `pbt4e-green-v56.txt` y `pbt4e-red-v56.txt` (§6.5.2), copiadas en el anexo V56-A.
+
+#### D-PBT4-22. La recarga de «Editar todo», la de «Editar» (OWNER-02 de PB-T4c; la 15.ª tanda del Owner)
+
+**El origen:** OWNER-02 de la revisión del código de PB-T4c (`F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/independent-review.md`, :240-246), que el Owner aceptó con «Aceptarlo y corregir luego» (`owner-pbt4c-code-decisions.md`, pregunta 2), y la pregunta 2 de `owner-pbt4d-list-decisions.md`, «Tarea propia después». **El alcance,** la 15.ª tanda (`owner-pbt4e-list-decisions.md`): «Solo la recarga», «No abrir y avisar», «Antes de PB-T5» y «Sí, con condiciones».
+
+**Lo de hoy,** medido en `160e019d` (la propuesta de lista, `pbt4e/list-proposal.md`, §1, con lo deducido marcado):
+- **«Editar»** (`BeginEdit`, FVM:376-424) calcula `stale = view.Exists && view.State == Clean && view.IsPossiblyStale` (FVM:386) y entonces llama a `_port.TryReload` (FVM:388). El puerto pone la marca de lectura (WHC:1103-1115) y llama a `TryReloadPilotEdit` (WHC:498-576): sin `NeedsLazyReload` responde `NotNeeded` sin leer (WHC:527); si no, hace una lectura (WHC:530) y `DiscardAndReload` (WHC:553). Con `NotAdmitted`, el campo muestra el diagnóstico, la pista y «No se recargó: el borrador se conserva tal como estaba.» (FVM:407-411); con los demás, `Describe` (FVM:413).
+- **«Editar todo»** (`EditAll`, FVM:432-490) llama directamente a `_port.TryEditAll` (FVM:463), y `EditAllOfPilot` (WHC:1179-1223) no mira la marca: abre sobre la base vieja.
+- **Medido en el RED de la precondición 6** (`/d/r82`, con `src/` de la base): un borrador Clean marcado abre sin leer, con el nombre de antes del cambio de fuera (`marcado-limpio estado=Closed abierto=True lecturas=0 … nombre-del-lanzamiento=[PB-01] obsoleto=True`); y, de punta a punta, «Actualizar» no aplica: `actualizar estado=NotAppliedPreflight clasificacion=NotAppliedPreflight causa=[] motivo=[Ningún sobre editable de la relectura coincide con el origen del borrador.] diferencias=[] borrador=Dirty obsoleto=True llamadas=[Begin,ReadForPrepare,Dispose:scope]` (la sonda de «Actualizar» sobre la base, `/d/r80`; con la recarga, `actualizar estado=Applied clasificacion=Applied causa=[] motivo=[] diferencias=[] borrador=Clean obsoleto=False llamadas=[Begin,ReadForPrepare,PrepareUnits,BeginMutation,Reread,WriteUnit:A1,WriteUnit:C3,EraseUnit:B2,Seal,Dispose:mutation,Post,Dispose:scope]`, `/d/r81`) (V55-10; R-T4-39).
+
+**La decisión** (el GREEN literal, anexo V56-A; el sitio, desde la v5.6, D-S19):
+1. **El anfitrión** (WHC, `EditAllOfPilot`): **después de las tres comprobaciones de la vista** (`Applying` o no registrado, `!view.CanEdit` y el texto pendiente; WHC:1203-1206) y antes de `ShowModal`, sobre un borrador que **este gesto no acaba de empezar** (`begunHere` falso) y con `draft.NeedsLazyReload` (DS:306: registrado, marcado y Clean), llama a **`TryReloadPilotEdit(request)`**, la misma función que «Editar», no una copia:
+   - va después de la compuerta, de la actualización en vuelo y del anfitrión del editor (WHC:1185-1191) y de las comprobaciones de la vista, y antes de `ShowModal` (WHC:1209-1215). **Nada evalúa `NeedsLazyReload` antes de esas tres comprobaciones** (D-S19): un borrador «Sin decidir», Unknown, Error, Applying o con texto pendiente responde exactamente como hoy, sin evaluar la marca ni leer. Lo pide CA-T4e (M-01): en la v5.5 la rama iba antes, y con un borrador «Sin decidir» y marcado `Status` llamaba al comparador sin protegerlo (DS:298), de modo que `TryEditAll` daba `Failed` con un `Report` en lugar del `Refused` de hoy (`ViewOfPilotDraft` lo protege, WHC:1860-1867);
+   - **con `Reloaded`, sigue y abre** sobre el borrador recargado: `DiscardAndReload` conserva el objeto (`WorkspaceLifecycleHostFull.cs:428`), lo deja registrado, Clean y sin texto pendiente, y `PushBackFullDraftLaunch.For` toma su estado nuevo;
+   - **con cualquier otro resultado, no abre** y devuelve `EditAllOutcome.NotBegun(<el resultado de la recarga>)` (D-S18). Con un borrador marcado y la compuerta ya pasada, los que se alcanzan son `NotAdmitted`, `Waiting`, `Rejected` y `Failed`;
+   - **como mucho una lectura por gesto, por la estructura:** la de empezar (`begunHere`) o la de recargar (`!begunHere && …`), nunca las dos, y ninguna durante `ShowModal`, porque la recarga va dentro de la marca que envuelve `TryEditAll` (WHC:1163-1175) y antes del modal;
+   - la llamada se guarda en una variable (`var reload = TryReloadPilotEdit(request);`), no es `return TryReloadPilotEdit(request);`: la autoprueba de `WorkspacePilotEditGuardTests.cs:574` busca la primera aparición de ese literal, que sigue siendo la de `TryReload`.
+2. **El campo** (FVM, `EditAll`): con `NotBegun` y `NotAdmitted` pone el diagnóstico y la pista, como hoy (FVM:473-477), y, **si el borrador ya existía** (`view.Exists`, FVM:441: sobre un borrador que existe el anfitrión nunca lo empieza, así que el `NotBegun` es el de la recarga), el aviso de «Editar», «No se recargó: el borrador se conserva tal como estaba.». El texto pasa a la constante `NotReloadedText`, que usa también `BeginEdit` (FVM:410), sin cambiar lo que muestra. **Los demás resultados ya salen como en «Editar»:** `EditAllNoticeOf` da `Describe(Begin.Status, Begin.Reason)` (FVM:1343), lo mismo que «Editar» da para el mismo resultado (FVM:413).
+3. **Los comentarios** que la recarga deja inexactos, solo comentarios: el de `NotBegun` y el de `Begin` en WEI (WEI:276 y :308), el de `TryEditAll` en el puerto (`IWorkspacePilotEditPort.cs:118-121`) y el resumen de `EditAll` en FVM (FVM:427-431). El del puerto conserva las dos frases que fija `WorkspacePilotEditGuardTests.cs:1083-1084` y no lleva las dos que prohíbe (:1085-1086).
+
+**Lo que no hace** (pregunta 1, «Solo la recarga»; PBT4E-C03 y C10):
+- **ningún aviso cuando recarga:** «Editar» tampoco avisa (la opción 2 de la pregunta 1 no se hace);
+- **no compara antes de abrir un borrador Dirty marcado** (la opción 3): Dirty, Conflict y un borrador sin la marca siguen como hoy (`NeedsLazyReload` es falso para ellos, sin llamar al comparador en Conflict, que tiene estado explícito), y **«Sin decidir», Unknown, Error, Applying y con texto pendiente responden en las comprobaciones de la vista, antes de mirar la marca, exactamente como hoy** (D-S19; CT-PBT4E-01, `marcado-sin-decidir`: `Refused`, sin fallos registrados y sin lecturas);
+- no cambia «Editar», el botón (`ShowEditAllButton`), la ventana, RACKEDITAR, el camino clásico ni el Plugin;
+- ningún miembro nuevo del puerto, ningún valor nuevo de `EditAllStatus` ni de `PilotBoundaryKind`, ningún texto nuevo;
+- **no escribe en el DWG:** `DiscardAndReload` solo cambia la memoria del borrador, y «Actualizar» sigue siendo la única escritura.
+
+**Si la recarga falla** (pregunta 2, «No abrir y avisar»): la ventana no se abre, y el campo muestra lo mismo que «Editar»: con `NotAdmitted`, el motivo, la pista de RACKEDITAR y «No se recargó: el borrador se conserva tal como estaba.»; con los demás, «En espera: …», «Rechazado: …» o «Fallo: …». El borrador queda Clean y marcado: una lectura no admitida no lo toca (DS:427-428).
+
+**El caso del borde** (deducido, sin pérdida): un borrador Dirty solo por un texto pendiente igual al valor confirmado queda Clean tras el `CommitField` del gesto (FVM:442-461); si estaba marcado, «Editar todo» lo recarga, porque el anfitrión mira el borrador después de confirmar. «Editar» no lo recargaría: mira la vista de antes (FVM:386).
+
+**Las tres decisiones de diseño de la sesión** (el Owner le dejó el sitio de la recarga y el valor de `EditAllStatus`: `owner-pbt4e-list-decisions.md`, «Lo que queda decidido»), **confirmadas y registradas** en `session-pbt4e-design-decisions.md` (sha256 `b21f2af4bab5321620bf8de3aceeb95585a0e2fe9e4cc2ae96f18e37c3e41e6d`): D-S17 y D-S18, tal como la v5.5 las propuso, y D-S19, que ajusta el sitio de D-S17 tras CA-T4e (M-01).
+
+**D-S17 (confirmada; el sitio exacto, D-S19): la recarga va en el anfitrión** (la opción A de la propuesta de lista), no en el panel (la B).
+- **La regla en un solo sitio:** «Clean y marcado» ya vive en Application, `DraftSession.NeedsLazyReload` (DS:306), y `TryReloadPilotEdit` la aplica (WHC:527). En el anfitrión, «Editar todo» la consume tal cual; en el panel sería una tercera copia de la regla, junto a la de «Editar» (FVM:386), frente a la regla 2 de `AGENTS.md`.
+- **El puerto protege a cualquier llamador** de `TryEditAll` (`IWorkspacePilotEditPort.cs:123`), no solo a FVM:463.
+- **La marca de lectura:** la recarga queda dentro del envoltorio de `TryEditAll` (WHC:1163-1175); con B, entre `TryReload` y `TryEditAll` se soltaría la marca.
+- **El caso del borde:** A recarga el borrador que el `CommitField` deja Clean; B miraría la vista de antes.
+- **El coste:** WHC cambia un cuerpo existente, y FVM igual necesita su aviso (el punto 2 de arriba), así que A toca dos archivos de producto y B uno.
+- **El efecto en las CT:** con A, las CT de comportamiento van en Core sobre el anfitrión real (CT-PBT4E-01, 02 y 04), y la de UI fija que el campo solo pide `TryEditAll` (`llamadas=[GetField,TryEditAll,GetField]`, CT-PBT4E-03). Con B, el anfitrión no cambiaría: CT-01, 02 y 04 pasarían en el RED (C04), tendrían que ir a UI sobre un doble del puerto, y CT-03 fijaría `llamadas=[GetField,TryReload,TryEditAll,GetField]`; además, la guarda `WorkspacePilotSurfaceGuardTests` (`T3B1GestureMembers`, :56-61, y `ReadViolations`, :82-97) se mediría con `TryReload` en `EditAll`.
+
+**D-S18 (confirmada): se reutiliza `EditAllStatus.NotBegun`,** sin valor nuevo.
+- **El valor ya lleva lo que hace falta:** `EditAllOutcome.Begin` es un `EditIntentOutcome` (WEI:308-309), y el campo ya presenta `NotBegun` como «Editar» presenta el resultado de su intención: con `NotAdmitted`, el diagnóstico y la pista (FVM:473-477); con los demás, `Describe` (FVM:1343, la misma de FVM:413). Solo falta el aviso de la recarga no admitida, que el campo distingue por `view.Exists` (FVM:441).
+- **Ninguna prueba enumera `EditAllStatus`** ni nombra sus valores en `tests/` de `160e019d` (por `git grep`): solo la línea `cola estado=NotBegun` de CT-PBT4C-03 (`PushBackEditAllTests.cs:245`), que no cambia.
+- **Un valor nuevo** (`NotReloaded`, con su fábrica) serían dos declaraciones más en WEI y un caso más en `EditAllNoticeOf` y en `EditAll`. Sobre todo, **CT-PBT4E-03 necesitaría la fábrica nueva para escribir la respuesta de su doble:** el RED no compilaría sin un esqueleto en `src/` (WEI con el valor), y PB-T4e dejaría de ser un RED solo de `tests/`.
+- **El coste de reutilizarlo:** cambian el comentario de `NotBegun` y el de `Begin` (WEI:276 y :308), y el campo infiere la recarga de `view.Exists`, lo que dice el comentario del GREEN.
+- **El efecto en las CT:** CT-02 fija `estado=NotBegun inicio=<el de la recarga>` y CT-03 responde `EditAllOutcome.NotBegun(...)`.
+
+**D-S19 (tras CA-T4e, M-01): la recarga va detrás de las comprobaciones de la vista,** la opción (b) de CA-T4e.
+- **El hecho:** `NeedsLazyReload` llama a `Status`, y `Status` al comparador sin protegerlo (DS:298-306). En la v5.5 la rama se evaluaba antes de la vista, y con un borrador «Sin decidir» y marcado (`OpenUndecidable`, `WorkspacePilotEditHostFull.cs:115-123`) `TryEditAll` pasaba de `Refused` sin `Report` a `Failed` con `Report("WorkspaceHostCore.TryEditAll")`. No se veía en el panel (el botón exige `CanEdit`, FVM:236-237), pero contradecía «como hoy».
+- **La decisión:** la rama pasa detrás de las tres comprobaciones de la vista y antes de `ShowModal`, solo sobre un borrador que el gesto no acaba de empezar y con `NeedsLazyReload`. «Como mucho una lectura por gesto» sigue garantizado por la estructura.
+- **Lo medido** (§6.5.1): la línea nueva de CT-PBT4E-01, `marcado-sin-decidir`, **cae con el GREEN de la v5.5** (`/d/r76`: `marcado-sin-decidir alta=Created estado=Failed motivo=[the comparer threw] abierto=False lecturas=0 fallos=[WorkspaceHostCore.TryEditAll] obsoleto=True`) **y pasa con el de la v5.6** (`/d/r82`, y la precondición 6). En el RED, con `src/` de la base, ya da lo de hoy (`marcado-sin-decidir alta=Created estado=Refused motivo=[El borrador no admite el editor completo en su estado actual.] abierto=False lecturas=0 fallos=[] obsoleto=True`): la línea no hace caer CT-01 por sí sola en el RED; CT-01 cae por `marcado-limpio`. Las otras 24 líneas no cambian.
+- **No vuelve al Owner:** no cambia nada visible ni la lista, y el sitio de la recarga es la decisión que dejó a la sesión.
+
 ### Común
 
 
@@ -1373,6 +1506,7 @@ Ninguno nombra `RackPushBackCommands`, `RackMenuCommands`, `EditorModules`, `Rac
 - No añade botones ni campos fuera de «Editar todo», el texto de la presentación y la pregunta de «Cerrar».
 - No cachea las pasadas.
 - **No cambia el comportamiento de ninguna caja numérica:** `NumericFieldValidation` delega en la misma lógica (D-PBT4-06).
+- **PB-T4e no añade ningún texto, botón ni estado visible:** la recarga es la de «Editar», sin aviso, y su fallo se muestra con los textos de «Editar» (D-PBT4-22).
 
 #### D-PBT4-20. Los arrastres y las limitaciones
 
@@ -1386,6 +1520,7 @@ Ninguno nombra `RackPushBackCommands`, `RackMenuCommands`, `EditorModules`, `Rac
 | A-T3-9 | Fuera: registro en DISP y entrada en `ideas-futuras.md` (M-07) | CT-PBT3A-01 y CT-PBT2B-02 ya fijan la igualdad; tocar `Recompute` arriesga T1B |
 | A-T3-10 | Las constantes se quedan en `PushBackPilotMaterializer` (el lector las usa) | D-PBT4-10 |
 | A-T3-11 y A2-1 | PB-T4c | D-PBT4-13 |
+| OWNER-02 de la revisión del código de PB-T4c: la recarga de «Editar todo» (`owner-pbt4c-code-decisions.md`, pregunta 2; `owner-pbt4d-list-decisions.md`, pregunta 2) | PB-T4e | D-PBT4-22 |
 | A2-2, A2-3 y A2-9 | PB-T4c | D-PBT4-12 a 16 |
 | A2-6 (la regla) | PB-T4b | D-PBT4-06 |
 | A2-11 | CT-PBT4C-10, sin AutoCAD; lo físico, el Smoke-PB | §5.5 |
@@ -1608,6 +1743,37 @@ Las otras pruebas de las mismas guardas que nombran lo retirado solo por su ayud
 **Lo que la medida no ve,** declarado: la cobertura de datos (que un corpus pase entero por un camino que ya está cubierto línea a línea; por eso M-01 se resolvió por lectura, no por la medida); el Plugin, que no carga ninguna prueba; y la UI fuera de los filtros, que no cambia (el RED solo quita pruebas de UI dentro de ellos y el GREEN no toca la UI); la CI completa de UI lo cubre (C06/C16).
 
 **Si cualquier otra prueba falla,** fuera de la lista, es PBT4D-C16 y vuelve al Owner (`owner-pbt4d-list-decisions.md`, pregunta 4).
+
+
+### 4.5 PB-T4e (V55-04)
+
+**Medido en el cierre de PB-T4d** (`160e019d`): por objetos git y compilando y ejecutando en copias exportadas, con la suite completa de Core y los 19 filtros de UI del contrato, cada uno en su proceso, sobre el RED exacto y sobre el GREEN literal (la precondición 6, §6.5.1).
+
+**La lista: vacía (K = 0).** Ninguna prueba existente se edita, se salta, se reactiva, se borra ni se sustituye; el RED solo añade las dos clases de las CT. **Medido:** en el RED, la suite completa de Core da 19421 = 19015 + 3 + 403 y solo caen las tres CT de Core de PB-T4e; en el GREEN, 19421 = 19018 + 0 + 403; los 19 filtros de UI, en el RED solo cae CT-PBT4E-03 y en el GREEN, 0 `Failed`. **K = 0, D = 0 y E = 0:** ningún `Skip`, ninguna prueba que falle fuera de la lista y ningún equivalente.
+
+**Por qué ninguna prueba existente cambia** (la propuesta de lista, §3.1, medido aquí): ninguna de las nueve clases de PB-T4c prepara un borrador marcado (CT-PBT4C-03 «clean» empieza el borrador sin drenaje, `PushBackEditAllTests.cs:160-167`; las vistas del doble de UI llevan la marca en `false`, `PushBackEditAllWindowTests.cs:162-163`), y sin la marca `EditAllOfPilot` no lee: la línea `clean estado=Closed abierto=True lecturas=0` de CT-PBT4C-03 y `k1-cerrado … lecturas-dentro=0` de CT-PBT4C-05 siguen iguales.
+
+**Las que leen el texto que cambia y siguen en verde** (medidas con la suite completa):
+
+| Guarda | Por qué sigue en verde |
+|---|---|
+| CT-PBT4C-07 (`PushBackOpenerClassicPathGuardTests.cs:44-47`), que lee `TryEditAll`, `EditAllOfPilot` y `EditAll` | El texto nuevo no nombra ninguno de sus ocho nombres |
+| `TheMarkOfReadInProgressWrapsEachOfTheSixReads…` y su autoprueba (`WorkspacePilotEditGuardTests.cs:541-589`) | El envoltorio de `TryEditAll` no cambia; la recarga va en el cuerpo privado y sin el literal `return TryReloadPilotEdit(request);`, así que la autoprueba de :574 sigue mutando la de `TryReload` |
+| `TheReloadTranslatesTheOutcomesOfTheDraft…` y su copia (`WorkspaceLifecycleGuardTests.cs:666-681`; `WorkspaceLifecycleGuardFull.cs:44-80`) | El cuerpo de `TryReloadPilotEdit` no cambia: se reutiliza |
+| `TheCommentOfThePortSaysThatSixOperationsReadTheDrawing` (`WorkspacePilotEditGuardTests.cs:1078-1087`) | El comentario nuevo del puerto conserva las dos frases y no lleva las prohibidas |
+| `OnlyTheGestureMethodsOfTheFieldNameTheThreeReads…` (`WorkspacePilotSurfaceGuardTests.cs:82-120`) | `EditAll` no nombra `TryReload` (D-S17) |
+| `TheThreeFilesOfTheHostAndTheThreeViewModelsUseNoReflection…` (`WorkspaceHostHardeningGuardTests.cs:779-783`) | El texto nuevo no añade ningún mecanismo ni reflexión |
+| Las de la recarga del anfitrión y de «Editar» (`WorkspaceLifecycleHostFull.cs:411-470`; `WorkspacePilotFieldViewModelTests.cs:611-680`) | Son el oráculo de lo que PB-T4e reutiliza, y no cambian |
+
+**La cobertura de todo `src/` que se queda** (la regla permanente del Owner, `owner-pbt4d-cat4d-decisions.md`, pregunta 2): la precondición 6 compara la de toda la suite de Core y la de la UI de los 19 filtros (la unión de tres corridas de todos juntos y de una de cada filtro en su proceso, D-S16), en la base sin cambios y en el GREEN, línea a línea y rama por rama, con coverlet en JSON sobre Domain, Application y UI (`cov_p6_pbt4e_v56.py`). **Lo medido:** archivos de src/ instrumentados 773; lineas ejecutadas en la base que se quedan 69844 (ramas cubiertas 28820); sin pareja en el GREEN 0; texto cambiado 1; lineas nuevas con codigo 8; lineas sin ejecutar en el GREEN 0; lineas con ramas perdidas 0; **PASA**; bajan (informativo) 2: PERDIDA 0, VARIA 2, ESTABLE 0. **Ningún camino que se queda pierde su única prueba: ninguna sustituta.**
+
+**Los dos límites del método, declarados** (CA-T4e, M-02; también en la cabecera de `cov_p6_pbt4e_v56.py`):
+1. **El GREEN de la corrida principal incluye las CT nuevas,** así que «no baja nada» no muestra por sí solo que las pruebas existentes conservan sus caminos. Lo cubre **la corrida opcional** de abajo, y el análisis: ninguna prueba existente de «Editar todo» marca un borrador (§4.5, arriba).
+2. **difflib empareja por texto,** y una línea repetida (una llave `}`) puede quedar emparejada con otra igual de más abajo; la de verdad cuenta entonces como «nueva». Solo la tapa si las dos se ejecutan; por eso los cuerpos que el GREEN cambia se vigilan aparte (sus líneas ejecutadas y sus ramas cubiertas en la base y en el GREEN) y las líneas nuevas se listan una a una.
+
+**La corrida opcional** (CA-T4e, M-02): la cobertura del GREEN **sin las dos clases nuevas** (Core con `FullyQualifiedName!~PushBackEditAllReload`, 19418 = 19015 + 0 + 403, el total de la base; la unión de los 18 filtros heredados, tres veces, 899 = 869 + 0 + 30 cada vez, y cada uno de ellos en su proceso), comparada con la base, con `cov_p6_pbt4e_v56.py` en `MODO=existentes` (las líneas nuevas, solo para informar): archivos de src/ instrumentados 773; lineas ejecutadas en la base que se quedan 69844 (ramas cubiertas 28820); sin pareja en el GREEN 0; texto cambiado 1; lineas nuevas con codigo 8; lineas sin ejecutar en el GREEN 0; lineas con ramas perdidas 0; **PASA**; bajan (informativo) 2: PERDIDA 0, VARIA 2, ESTABLE 0 (`cov-p6-existentes-v56.txt`). **Las pruebas existentes conservan todos sus caminos.**
+
+**Si cualquier otra prueba falla,** es PBT4E-C16 y vuelve al Owner (`owner-pbt4e-list-decisions.md`, pregunta 4).
 
 
 ## 5. La red de pruebas
@@ -1866,7 +2032,7 @@ Las otras pruebas de las mismas guardas que nombran lo retirado solo por su ayud
 
 ### 5.4 La CI del RED
 
-`tests` en failure, `build-ui` en success y `build-plugin` omitido. `ui-tests`: en failure en PB-T4b y PB-T4c; en success en PB-T4a, que no añade pruebas de UI, y en PB-T4d, que no añade ninguna CT de UI y cuyas bajas de UI no caen.
+`tests` en failure, `build-ui` en success y `build-plugin` omitido. `ui-tests`: en failure en PB-T4b y PB-T4c; en success en PB-T4a, que no añade pruebas de UI, y en PB-T4d, que no añade ninguna CT de UI y cuyas bajas de UI no caen; **en failure en PB-T4e** (desde la v5.5), por CT-PBT4E-03.
 
 ### 5.5 Lo que queda para el Smoke-PB (PB-T5, D-PB-09; I-10; M-27)
 
@@ -1891,6 +2057,16 @@ Más los riesgos del borrado real de PB-T3c (F4B-E48, `f4b-dispositions.md:1609`
 - OWNER-3: los bloques dinámicos.
 
 Se observan con «Editar todo» → «Actualizar» sobre racks reales, y junto a la línea «Vistas: se borrará…» de la presentación. Los racks A/B fabricados se rotulan «CONSTRUCTED REPRESENTATIVE TEST CASES».
+
+**Desde la v5.5, la recarga de «Editar todo» (PB-T4e, D-PBT4-22; V55-09).** El Owner quiso PB-T4e antes de PB-T5 para que el Smoke-PB mire el comportamiento corregido (`owner-pbt4e-list-decisions.md`, pregunta 3). Sustituye a la observación del comportamiento que PB-T4c aceptó (OWNER-02). Sobre una copia de trabajo de un dibujo con un rack Push Back real (OB-09.2); los pasos son los de la propuesta de lista (`pbt4e/list-proposal.md`, §4), y la guía los fija:
+1. **El borrador Clean:** fijar la pestaña del rack y pulsar «Editar»: «Listo para editar»; no cambiar nada.
+2. **El cambio de fuera:** con el panel visible, cambiar el rack fuera del panel (por ejemplo, con RACKEDITAR, un valor que la ventana completa enseña) y aceptar: el campo dice «Limpio (posiblemente obsoleto)» y la caja queda en solo lectura. Captura.
+3. **«Editar todo»:** la ventana abre con el valor nuevo del paso 2, sin aviso; al cerrarla sin cambios, «Editor cerrado sin cambios en el borrador.», el estado «Limpio» sin «(posiblemente obsoleto)» y la caja editable. Sin PB-T4e abría con el valor viejo.
+4. **Con edición:** repetir 1 y 2; «Editar todo», cambiar algo, «Aplicar al borrador» y cerrar («Modificado»); «Actualizar» se aplica sin «No se aplicó: el dibujo cambió fuera del panel» ni «Conservar mi borrador», y el dibujo conserva el cambio del paso 2 y el del editor.
+5. **El fallo:** con un borrador Clean, borrar fuera todas las vistas del rack, y «Editar todo»: no abre, y el campo muestra «No editable aquí: el origen ya no está en el dibujo», la pista de RACKEDITAR y «No se recargó: el borrador se conserva tal como estaba.». Deshacer para restaurar el dibujo.
+6. **Dirty, sin cambio:** un borrador con un cambio propio, un cambio de fuera y «Editar todo»: abre sobre la base de antes, como hoy y como «Editar»; después, «Actualizar» da lo de hoy.
+7. **Cero escrituras:** «Editar todo» y cerrar sin «Actualizar» no cambian el dibujo (por ejemplo, `DBMOD` y la lista de Deshacer; la guía fija cómo mirarlo).
+8. **El modal y el coste:** con la ventana abierta, la paleta deshabilitada (K = 1); al cerrar, el panel responde; y el tiempo entre el clic y la ventana con la marca y sin ella, en un dibujo grande.
 
 ### 5.6 PB-T4d: la lista cerrada CT-PBT4D-01 y 02 (entera; V52-04; V53-01)
 
@@ -1919,6 +2095,54 @@ Se observan con «Editar todo» → «Actualizar» sobre racks reales, y junto a
 
 Las tres pasan en las dos ramas: el RED ya lleva los textos de `tests/` que miden, y `PrepareFull`, `PushBackFullPrepareInput`, su fábrica, `ExecuteFull` y `PushBackPilotSystemRebuild` no cambian en el GREEN.
 
+### 5.7 PB-T4e: la lista cerrada CT-PBT4E-01 a 04 (entera; V55-05)
+
+**Las reglas de §5.0,** enteras: un `[Fact]` por CT, que acaba en un `Assert.Equal` de las líneas unidas por `\n`; ninguna `[Theory]` nueva; la regla «EXCEPCION» (cada paso va por `Paso`, así que una CT cae por aserción, nunca por una excepción escapada); las de UI; los ayudantes existentes sin editarlos (`FullReadRig`, `FullEditIntentFakeReader`, `FullEditIntentKit`, `FullPrepareKit`, `IntentKit`, `FullWriteKit` y `PilotEraseScopeDouble`, en Core). **Los dobles** (el de `IWorkspaceFullEditHost`, que pone el modal con `SetModalRackCadActive`, guarda el lanzamiento y cuenta las lecturas al abrir y durante el modal; y el del puerto de la UI, que registra las llamadas y responde lo que la receta le da) **van dentro de su clase,** como clases anidadas privadas, copiados de las clases de PB-T4c sin referenciarlas. **Las CT de Core van en `tests/RackCad.Tests/`, con `namespace RackCad.Tests`; la de UI, en `tests/RackCad.UI.Tests/`, con `namespace RackCad.UI.Tests` y en `EditorDiscardPromptCollection`.** Ninguna lleva `#nullable enable` ni un `?` de tipo de referencia (§5.0). **Los nombres de las clases** (`PushBackEditAllReloadTests` y `PushBackEditAllReloadFieldTests`) no empiezan por `Workspace` ni por el prefijo de un filtro heredado, y ningún filtro heredado de clase exacta los selecciona (D-S8; medido, §6.5.1).
+
+**De dónde sale cada línea:** de la sonda sobre el GREEN literal (`/d/r82`; `pbt4ecc/compile/r82-tr/green-core-lineas.txt` y `green-ui-lineas.txt`), una copia temporal de cada clase con el prefijo `Sonda` cuyo `Finish` acaba en `Assert.Fail` con sus líneas (INV-PBT4E-10): **las 25, tal cual** (desde la v5.6, con `marcado-sin-decidir`, D-S19). Las mismas clases corren tal cual en la precondición 6 y pasan en el GREEN.
+
+| CT | Qué fija | Las líneas (literales del paquete) | Clase | `ExpectRed` |
+|---|---|---|---|---|
+| **01** | **La recarga antes de abrir** (D-PBT4-22, punto 1; pregunta 1): el borrador empezado con la lectura de siempre; el dibujo cambia fuera (el lector responde la misma lectura con otro nombre, `Otro nombre`); con la marca, `TryEditAll` recarga con una lectura, antes de abrir y ninguna dentro, abre sobre el borrador recargado (el mismo objeto) y lo deja Clean y sin la marca. **Los contrastes,** como hoy: sin la marca (no lee); Dirty marcado y Conflict marcado (no leen y abren); y, desde la v5.6 (D-S19), un borrador «Sin decidir» marcado (su comparador lanza: `PilotEditThrowingComparerFull`, como `OpenUndecidable`), que da `Refused` sin fallos registrados ni lecturas, porque la vista responde antes de mirar la marca; sin el anfitrión del editor (no lee: va antes de la recarga); otra sesión (la compuerta, antes de leer) | `marcado-limpio estado=Closed abierto=True lecturas=1 lecturas-antes-de-abrir=1 lecturas-dentro=0 nombre-del-lanzamiento=[Otro nombre] obsoleto=False borrador=Clean mismo-borrador=True`; `sin-marca estado=Closed abierto=True lecturas=0 nombre-nuevo=False obsoleto=False`; `marcado-sucio estado=Closed abierto=True lecturas=0 nombre-nuevo=False obsoleto=True borrador=Dirty`; `marcado-conflicto estado=Closed abierto=True lecturas=0 obsoleto=True borrador=Conflict`; `marcado-sin-decidir alta=Created estado=Refused motivo=[El borrador no admite el editor completo en su estado actual.] abierto=False lecturas=0 fallos=[] obsoleto=True`; `marcado-sin-anfitrion estado=NotAvailable abierto=False lecturas=0 obsoleto=True`; `marcado-otra-sesion estado=Rejected abierto=False lecturas=0 obsoleto=True` | `PushBackEditAllReloadTests` | true |
+| **02** | **Si la recarga no sale, no abre** (D-PBT4-22; pregunta 2), y lleva lo que da la recarga de «Editar»: el origen que ya no está (`FullEditIntentKit.OriginMissing`), el lector `Busy` y el lector que lanza (contenido como `Failed`, con su informe a nombre de `TryReloadPilotEdit`); y, para cada uno, el resultado de `TryEditAll` igual al de `TryReload` sobre un borrador gemelo | `no-admitida estado=NotBegun inicio=NotAdmitted diagnostico=[No editable aquí: el origen ya no está en el dibujo] pista=True abierto=False lecturas=1 obsoleto=True borrador=Clean`; `ocupado estado=NotBegun inicio=Waiting motivo=[Hay un comando en curso.] abierto=False lecturas=1 obsoleto=True`; `excepcion estado=NotBegun inicio=Failed motivo=[boom] abierto=False obsoleto=True fallos=[WorkspaceHostCore.TryReloadPilotEdit]`; `igual-que-editar no-admitida=True ocupado=True excepcion=True` | `PushBackEditAllReloadTests` | true |
+| **03** | **El campo, como «Editar»** (D-PBT4-22, punto 2): la FVM real sobre un doble del puerto, con una vista Clean marcada: para la recarga no admitida, en espera y con fallo, «Editar todo» (que responde `NotBegun` con ese resultado) y «Editar» (cuya recarga responde lo mismo) muestran lo mismo; el campo solo pide `TryEditAll`; tras una recarga que sale y el editor cerrado, la caja vuelve a ser editable; y sin borrador, un comienzo no admitido sale como hoy, sin el aviso de la recarga | `no-recargado editar-todo diagnostico=[No editable aquí: cambió el rack.] pista=[Usa RACKEDITAR.] aviso=[No se recargó: el borrador se conserva tal como estaba.] estado=[Limpio (posiblemente obsoleto)] editable=False llamadas=[GetField,TryEditAll,GetField]`; `no-recargado editar diagnostico=[No editable aquí: cambió el rack.] pista=[Usa RACKEDITAR.] aviso=[No se recargó: el borrador se conserva tal como estaba.] estado=[Limpio (posiblemente obsoleto)] editable=False llamadas=[GetField,TryReload,GetField]`; `ocupado editar-todo diagnostico=[] pista=[] aviso=[En espera: Hay un comando en curso.] estado=[Limpio (posiblemente obsoleto)] editable=False llamadas=[GetField,TryEditAll,GetField]`; `ocupado editar diagnostico=[] pista=[] aviso=[En espera: Hay un comando en curso.] estado=[Limpio (posiblemente obsoleto)] editable=False llamadas=[GetField,TryReload,GetField]`; `fallo editar-todo diagnostico=[] pista=[] aviso=[Fallo: boom] estado=[Limpio (posiblemente obsoleto)] editable=False llamadas=[GetField,TryEditAll,GetField]`; `fallo editar diagnostico=[] pista=[] aviso=[Fallo: boom] estado=[Limpio (posiblemente obsoleto)] editable=False llamadas=[GetField,TryReload,GetField]`; `igual-que-editar no-recargado=True ocupado=True fallo=True`; `recargado-y-cerrado diagnostico=[] pista=[] aviso=[Editor cerrado sin cambios en el borrador.] estado=[Limpio] editable=True llamadas=[GetField,TryEditAll,GetField]`; `sin-borrador-no-admitido diagnostico=[No editable aquí: cambió el rack.] pista=[Usa RACKEDITAR.] aviso=[]` | `PushBackEditAllReloadFieldTests` (UI) | true |
+| **04** | **De punta a punta sin AutoCAD,** el beneficio (A2-11; F4B-E30): el dibujo cambia fuera y la pista del puente marca el borrador en el drenaje real; «Editar todo» con un gesto compuesto (un frente menos y la escala 2.5), una vez; y «Actualizar» con `PilotEraseScopeDouble` sobre el dibujo de ahora (como CT-PBT4C-10): se aplica, borra el lateral obsoleto y escribe las vistas con el nombre del dibujo | `marca obsoleto=True borrador=Clean lecturas=0`; `editar-todo estado=Closed aplicadas=1 lecturas=1 nombre-del-lanzamiento=[Otro nombre] borrador=Dirty obsoleto=False`; `actualizar estado=Applied begin-mutation=1 seal=1 borrador=Clean`; `borrado EraseUnit:B2`; `escrito vistas=2 nombre-del-dibujo=True` | `PushBackEditAllReloadTests` | true |
+
+**Las clases:** Core, `ExpectRed` true: **`PushBackEditAllReloadTests`** (CT-01, 02 y 04: 3); UI, `ExpectRed` true: **`PushBackEditAllReloadFieldTests`** (CT-03: 1). **3 CT de Core y 1 de UI: 4.** No hay equivalentes, `Skip` ni clases nuevas que no sean CT.
+
+**La CT-05 opcional de la propuesta** (una guarda de texto sobre `EditAllOfPilot`) **no se escribe:** lo que fijaría (una sola recarga, tras el anfitrión del editor y antes de `ShowModal`, sin `ReadIntent` nuevo) lo fija ya el comportamiento de CT-01 (`lecturas=1 lecturas-antes-de-abrir=1 lecturas-dentro=0` y `marcado-sin-anfitrion … lecturas=0`), y una guarda de fuente no sustituye una prueba de comportamiento (`AGENTS.md`, «Guardia de fuente y prueba de comportamiento»). CT-PBT4C-07 sigue leyendo el cuerpo de `EditAllOfPilot`.
+
+**CT -> la aserción que falla en el RED** (medido en `/d/r82`, con `src/` de la base; cada CT cae por su `Assert.Equal`, en su `Finish`, y ninguna por una excepción):
+
+| CT | Lo que da el RED (medido, la sonda) | Lo esperado (§5.7) |
+|---|---|---|
+| CT-PBT4E-01 | `marcado-limpio estado=Closed abierto=True lecturas=0 lecturas-antes-de-abrir=0 lecturas-dentro=0 nombre-del-lanzamiento=[PB-01] obsoleto=True borrador=Clean mismo-borrador=True` | `marcado-limpio estado=Closed abierto=True lecturas=1 lecturas-antes-de-abrir=1 lecturas-dentro=0 nombre-del-lanzamiento=[Otro nombre] obsoleto=False borrador=Clean mismo-borrador=True` |
+| CT-PBT4E-02 | `no-admitida estado=Closed inicio=Unavailable diagnostico=null pista=False abierto=True lecturas=0 obsoleto=True borrador=Clean` | `no-admitida estado=NotBegun inicio=NotAdmitted diagnostico=[No editable aquí: el origen ya no está en el dibujo] pista=True abierto=False lecturas=1 obsoleto=True borrador=Clean` |
+| CT-PBT4E-02 | `ocupado estado=Closed inicio=Unavailable motivo=null abierto=True lecturas=0 obsoleto=True` | `ocupado estado=NotBegun inicio=Waiting motivo=[Hay un comando en curso.] abierto=False lecturas=1 obsoleto=True` |
+| CT-PBT4E-02 | `excepcion estado=Closed inicio=Unavailable motivo=null abierto=True obsoleto=True fallos=[]` | `excepcion estado=NotBegun inicio=Failed motivo=[boom] abierto=False obsoleto=True fallos=[WorkspaceHostCore.TryReloadPilotEdit]` |
+| CT-PBT4E-02 | `igual-que-editar no-admitida=False ocupado=False excepcion=False` | `igual-que-editar no-admitida=True ocupado=True excepcion=True` |
+| CT-PBT4E-03 | `no-recargado editar-todo diagnostico=[No editable aquí: cambió el rack.] pista=[Usa RACKEDITAR.] aviso=[] estado=[Limpio (posiblemente obsoleto)] editable=False llamadas=[GetField,TryEditAll,GetField]` | `no-recargado editar-todo diagnostico=[No editable aquí: cambió el rack.] pista=[Usa RACKEDITAR.] aviso=[No se recargó: el borrador se conserva tal como estaba.] estado=[Limpio (posiblemente obsoleto)] editable=False llamadas=[GetField,TryEditAll,GetField]` |
+| CT-PBT4E-03 | `igual-que-editar no-recargado=False ocupado=True fallo=True` | `igual-que-editar no-recargado=True ocupado=True fallo=True` |
+| CT-PBT4E-04 | `editar-todo estado=Closed aplicadas=1 lecturas=0 nombre-del-lanzamiento=[PB-01] borrador=Dirty obsoleto=True` | `editar-todo estado=Closed aplicadas=1 lecturas=1 nombre-del-lanzamiento=[Otro nombre] borrador=Dirty obsoleto=False` |
+| CT-PBT4E-04 | `actualizar estado=NotAppliedPreflight begin-mutation=0 seal=0 borrador=Dirty` | `actualizar estado=Applied begin-mutation=1 seal=1 borrador=Clean` |
+| CT-PBT4E-04 | `borrado ` | `borrado EraseUnit:B2` |
+| CT-PBT4E-04 | `escrito vistas=0 nombre-del-dibujo=False` | `escrito vistas=2 nombre-del-dibujo=True` |
+
+**La línea nueva de D-S19, contra el GREEN de la v5.5** (`/d/r76`: el RED de la v5.6 con el GREEN de la v5.5, `pbt4e-green-v55.txt`): `marcado-sin-decidir alta=Created estado=Failed motivo=[the comparer threw] abierto=False lecturas=0 fallos=[WorkspaceHostCore.TryEditAll] obsoleto=True`, así que CT-01 cae; con el GREEN de la v5.6 (`/d/r82` y la precondición 6), `marcado-sin-decidir alta=Created estado=Refused motivo=[El borrador no admite el editor completo en su estado actual.] abierto=False lecturas=0 fallos=[] obsoleto=True`, y pasa. Las otras 24 líneas dan lo mismo con los dos GREEN.
+
+**Lo que fija cada `ExpectRed`:** en el RED, `src/` es el de la base, así que las cuatro caen por aserción; en el GREEN, pasan las cuatro. **El control** (§6.5.1, el paso 8): con solo la parte del anfitrión del GREEN, pasan las tres de Core y cae CT-03; con solo la del campo, al revés: cada CT mira su parte, y ningún oráculo es ciego.
+
+**Los totales de PB-T4e** (F4B-E46), **en cifras,** con la base del cierre de PB-T4d (F4B-E59, `160e019d`; la CI de su GREEN, `45057868915` sobre `7db6fd0c`: Core **19 418 = 19 015 + 0 + 403** y UI **2 464 = 2 416 + 0 + 48**):
+
+| Rama | Core | UI |
+|---|---|---|
+| **GREEN** | **19421 = 19018 + 0 + 403** (Passed + Failed + Skipped) | **2465 = 2417 + 0 + 48** |
+| **RED** | **19421 = 19015 + 3 + 403** | **2465 = 2416 + 1 + 48** |
+
+- Core: +3 CT (las tres en `Failed` en el RED); UI: +1 CT (en `Failed` en el RED). Nada se quita ni se salta: los `Skipped` no cambian.
+- **Core** se mide entero en la precondición 6 (la suite completa es la de la CI). **UI** es la línea base de la CI más la diferencia, por desenlace, entre la unión de los 19 filtros de la rama y la de la base (cada filtro en su proceso), porque en local nunca corre la suite completa de UI.
+- **K = 0, D = 0 y E = 0.**
+
 ## 6. Los contratos propuestos
 
 ### 6.0 Común (entero; V41-12)
@@ -1928,7 +2152,7 @@ Las tres pasan en las dos ramas: el RED ya lleva los textos de `tests/` que mide
 - `attempts`: cada subtarea empieza en 1 de 3 (OB-10.1); `RoutingEnforcement` `required`; `CorrectionsAuthorized` true;
 - evidencia en `docs/automation/evidence/I-64-pilot/<TaskId>/`.
 
-**Los `TaskId`:** con el prefijo **`F4B-PBT4-`** y **como mucho 26 caracteres** (V41-11; MAX_PATH solo acota por arriba): `F4B-PBT4-FULL-READ-PATH` (23), `F4B-PBT4-FULL-DRAFT-PANEL` (25) y `F4B-PBT4-EDIT-ALL-WINDOW` (24). El prefijo es el que liga `--task PBT4` en los sustitutos de nc1 y nc2 (`nc1_cascade_signal_substitute.py:205`; `nc2_exact_whitelist_substitute_f4b_v2.py:410`), así que se usan sin editarlos, con `--task PBT4` en las tres subtareas.
+**Los `TaskId`:** con el prefijo **`F4B-PBT4-`** y **como mucho 26 caracteres** (V41-11; MAX_PATH solo acota por arriba): `F4B-PBT4-FULL-READ-PATH` (23), `F4B-PBT4-FULL-DRAFT-PANEL` (25) y `F4B-PBT4-EDIT-ALL-WINDOW` (24). El prefijo es el que liga `--task PBT4` en los sustitutos de nc1 y nc2 (`nc1_cascade_signal_substitute.py:205`; `nc2_exact_whitelist_substitute_f4b_v2.py:410`), así que se usan sin editarlos, con `--task PBT4` en las tres subtareas. Lo mismo en PB-T4d, `F4B-PBT4-RETIRE-PILOT` (21), y en PB-T4e (desde la v5.5), `F4B-PBT4-EDIT-ALL-RELOAD` (24, provisional).
 
 **Las colecciones opacas** (F4B-E21): las ocho (`Authorities`, `Objective`, `AllowedWriteScope`, `ForbiddenWriteScope`, `Invariants`, `RequiredTests`, `ExpectedEvidence` y `StopConditions`) las pone la sesión byte a byte desde el contrato. El Controller hace la clase, el enrutamiento y los criterios de aceptación. Cada relevo lo declara. La comparación byte a byte, A1-A8 y nc4 van sobre la delegación final.
 
@@ -1945,6 +2169,7 @@ Si no, hay que añadir un literal al sustituto y volver a revisarlo (F4B-E43).
 - **PB-T4b:** WHC, WEI, FVM, PV, `src/RackCad.UI/Controls/NumericFieldValidation.cs` y RIA (D-S4, V45-02; el GREEN literal no toca `WorkspacePilotSupport.cs`, WCo ni NH). **Ningún archivo de `Pilot/`:** la retirada es de PB-T4d;
 - **PB-T4c:** WHC, `IWorkspacePilotEditPort.cs`, `WorkspacePilotSupport.cs`, WEI, FVM, `WorkspacePanelView.xaml` y `WorkspacePanelView.xaml.cs`, WCo y `RackPushBackSystemWindow.xaml.cs` (W; `W.xaml` no cambia);
 - **PB-T4d:** los seis archivos de `Pilot/` del alcance (§6.4): `PushBackPilotMaterializer.cs`, `PushBackPilotUpdatePlan.cs`, `PushBackPilotUpdateRun.cs` y `PushBackPilotDraftState.cs` (solo comentarios, D-S15), que cambian, y `PushBackPilotStateComparer.cs` y `PushBackPilotFieldAdapter.cs`, que se borran.
+- **PB-T4e:** `src/RackCad.Application/Workspace/WorkspaceHostCore.cs` (el cuerpo de `EditAllOfPilot`), `src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs` (la constante, la línea de `BeginEdit` que la usa, el resumen de `EditAll` y su aviso), y `src/RackCad.Application/Workspace/WorkspaceEditIntent.cs` y `src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs` (solo comentarios). Ningún archivo nuevo ni borrado en `src/`.
 
 **En una corrección** (F4B-E25, `F4B-DRAFTS/coordinator/owner-f4b-correction-unit-change-decision.md`), una ruta `UNIT_CHANGE` que aparezca en `git diff --name-only AuthorityRevision BaseSha` no incumple 16.3 si se cumplen las tres condiciones del Owner, que el Controller comprueba con git:
 1. todo commit de `AuthorityRevision..BaseSha` que la toca es un `RedSha` o un `CurrentSha` de una entrega de un Worker de la misma cadena (el mismo `TaskId`), según su `worker-handoff.json`;
@@ -1994,7 +2219,7 @@ El Worker no elige ninguna salida.
 
 **La reparación del RED** (F4B-E35, pregunta 4, la regla RR del Owner; como en [P3] §6.0): un error de escritura en una prueba nueva de la tarea, visto después del commit RED, se repara sin gastar intento (RR-7) si se cumple todo lo que sigue. La regla excepciona AUTOMATION_PLAN 16.8 («tests/ no se toca tras el RED») solo en estas condiciones:
 - **RR-1, cuándo:** después del commit RED y su push, y antes del commit GREEN; como mucho una reparación por intento. Un segundo error de escritura en el mismo intento es la parada de siempre (C07).
-- **RR-2, qué toca:** solo archivos de `tests/` que el commit RED de la tarea añadió; nunca una prueba existente, ni `src/` (tampoco el esqueleto inerte del RED), ni un fixture, ni nada fuera del `AllowedWriteScope`. **En PB-T4a,** `PushBackDraftWriteGuardTests.cs` no lo añadió el RED, sino que lo cambió (el `Skip`): una reparación no lo toca, y un error en el `Skip` o en su motivo literal es la parada de siempre. **En PB-T4b,** lo mismo para los 21 archivos con sus `Skip`; y una reparación tampoco toca el kit ni las 21 copias, cuyo texto es el del paquete. **En PB-T4d,** el RED cambia 26 archivos existentes de `tests/` (edita 23 y, desde la v5.3, borra 3) y añade cinco: una reparación solo toca las dos clases de las CT (`PushBackRetirePilotGuardTests.cs` y `PushBackRetirePilotCensusGuardTests.cs`), nunca los 26 existentes ni las tres clases nuevas que no son CT, cuyo texto es el del paquete.
+- **RR-2, qué toca:** solo archivos de `tests/` que el commit RED de la tarea añadió; nunca una prueba existente, ni `src/` (tampoco el esqueleto inerte del RED), ni un fixture, ni nada fuera del `AllowedWriteScope`. **En PB-T4a,** `PushBackDraftWriteGuardTests.cs` no lo añadió el RED, sino que lo cambió (el `Skip`): una reparación no lo toca, y un error en el `Skip` o en su motivo literal es la parada de siempre. **En PB-T4b,** lo mismo para los 21 archivos con sus `Skip`; y una reparación tampoco toca el kit ni las 21 copias, cuyo texto es el del paquete. **En PB-T4d,** el RED cambia 26 archivos existentes de `tests/` (edita 23 y, desde la v5.3, borra 3) y añade cinco: una reparación solo toca las dos clases de las CT (`PushBackRetirePilotGuardTests.cs` y `PushBackRetirePilotCensusGuardTests.cs`), nunca los 26 existentes ni las tres clases nuevas que no son CT, cuyo texto es el del paquete. **En PB-T4e,** el RED solo añade los dos archivos de las CT (`PushBackEditAllReloadTests.cs` y `PushBackEditAllReloadFieldTests.cs`) y no toca ningún archivo existente: una reparación solo toca esos dos.
 - **RR-3, sin cambiar lo esperado:** ninguna línea esperada, literal ni oráculo del paquete o del contrato cambia; la reparación corrige solo el cuándo y el cómo de una lectura o de un gesto que el paquete ya prescribe. Si para que la prueba pase hace falta cambiar una línea esperada, es C07.
 - **RR-4, el RED repetido entero:** sobre `RedRepairSha` se vuelve a pasar el criterio completo del RED del contrato (INV-PBT4x-02); el commit se empuja y su CI se registra como la del RED reparado.
 - **RR-5, declarado:** el commit se titula «RED repair» y nombra la tarea; la entrega declara `RedRepairSha`, la prueba y la línea corregidas, el error y por qué no cambia ninguna línea esperada, con el diff; `RedSha` sigue siendo el commit RED original.
@@ -2004,7 +2229,7 @@ El Worker no elige ninguna salida.
 **La verificación con una reparación del RED** (F4B-E35, RR-7):
 - **n.º 10 (`Tests`):** el RED se acredita con `RedSha` y con la CI del RED original, y sus TRX, con los filtros con `ExpectRed` entre los fallidos. La cláusula «`git diff --name-only RedSha CurrentSha` no toca `RT` ∪ `ChainRedFiles`» se comprueba desde `RedRepairSha`.
 - **n.º 11 (`Trailer`):** el trailer va también en el commit «RED repair».
-- **Lo que el Controller comprueba de RR** (si algo falla, es C18): RR-1, RR-2, RR-4, RR-5 y RR-6, como en PB-T3c. **Por subtarea, además,** el tramo `RedSha..RedRepairSha` no toca: en PB-T4a, ningún archivo de `src/` ni `PushBackDraftWriteGuardTests.cs`; en PB-T4b, ningún archivo de `src/`, ni los 21 archivos de los `Skip`, ni el kit, ni las copias; en PB-T4c, ningún archivo de `src/`, ni los cuatro equivalentes, ni los cuatro archivos de los `Skip` (PEG, `PushBackSharedReferenceGuardTests.cs`, `WorkspaceFullCopyGuardTests.cs` y `PushBackWorkspaceApplyCloseTests.cs`); en PB-T4d, ningún archivo de `src/`, ni los 26 archivos existentes de `tests/` que el RED edita, ni las tres clases nuevas que no son CT (`PushBackRetirePilotRunTests`, `PushBackRetirePilotFullCopyGuardTests` y `PushBackRetirePilotPlanGuardTests`). **Los equivalentes no admiten reparación** (RR-2): su texto es el del guion, con su `EquivalentSha` (§6.3.1), y no tienen fila en la tabla de abajo, que es la de las clases de las CT.
+- **Lo que el Controller comprueba de RR** (si algo falla, es C18): RR-1, RR-2, RR-4, RR-5 y RR-6, como en PB-T3c. **Por subtarea, además,** el tramo `RedSha..RedRepairSha` no toca: en PB-T4a, ningún archivo de `src/` ni `PushBackDraftWriteGuardTests.cs`; en PB-T4b, ningún archivo de `src/`, ni los 21 archivos de los `Skip`, ni el kit, ni las copias; en PB-T4c, ningún archivo de `src/`, ni los cuatro equivalentes, ni los cuatro archivos de los `Skip` (PEG, `PushBackSharedReferenceGuardTests.cs`, `WorkspaceFullCopyGuardTests.cs` y `PushBackWorkspaceApplyCloseTests.cs`); en PB-T4d, ningún archivo de `src/`, ni los 26 archivos existentes de `tests/` que el RED edita, ni las tres clases nuevas que no son CT (`PushBackRetirePilotRunTests`, `PushBackRetirePilotFullCopyGuardTests` y `PushBackRetirePilotPlanGuardTests`). **En PB-T4e,** ningún archivo de `src/` ni ningún archivo existente de `tests/`. **Los equivalentes no admiten reparación** (RR-2): su texto es el del guion, con su `EquivalentSha` (§6.3.1), y no tienen fila en la tabla de abajo, que es la de las clases de las CT.
 - **La ayuda mecánica de RR-3:** es parada C07 que un literal de la lista cerrada de la clase reparada (la tabla de abajo) cambie entre `RedSha` y `RedRepairSha`: una línea o un fragmento, si no aparece como subcadena exacta el mismo número de veces; un valor de gesto, si no aparece como token el mismo número de veces.
 - **Indicios para la revisión, no parada:** una cadena `<campo>=` añadida o quitada en `git diff -U0 RedSha RedRepairSha`, o un cambio en el primer argumento de un `Assert.Equal`.
 
@@ -2127,12 +2352,16 @@ El Worker no elige ninguna salida.
 | PB-T4c | `PushBackEditAllWindowTests` (UI; CT-02, 06, 09 y 14) | **Líneas:** las de esas CT en §5.3, literales **Valores:** `4.5` |
 | PB-T4d | `PushBackRetirePilotGuardTests` (CT-01) | **Líneas:** las 35 de CT-01 en §5.6, literales, y las expresiones e inyecciones de su tabla `Retired` |
 | PB-T4d | `PushBackRetirePilotCensusGuardTests` (CT-02) | **Líneas:** las 11 de CT-02 en §5.6, literales, y las expresiones e inyecciones de su tabla `RetiredUses` |
+| PB-T4e | `PushBackEditAllReloadTests` (CT-01, 02 y 04) | **Líneas:** las 16 de esas CT en §5.7, literales. **Valores:** `Otro nombre`, `2.5`, `boom` y `Hay un comando en curso.` |
+| PB-T4e | `PushBackEditAllReloadFieldTests` (UI; CT-03) | **Líneas:** las 9 de CT-03 en §5.7, literales. **Valores:** `No editable aquí: cambió el rack.`, `Usa RACKEDITAR.`, `Hay un comando en curso.` y `boom` |
 
 **Las filas de PB-T4c** (V50-06) son una por clase de las CT, con su clase y sus CT, en la forma de la de CT-19 de PB-T4b; las líneas de CT-08, entre ellas la conversión y la llamada del abridor, son de `PushBackEditAllGuardTests`.
 
 **Las filas de PB-T4d** (V52-07) son una por clase de las CT, como las de PB-T4c. Las tres clases nuevas que no son CT no tienen fila: no admiten reparación (RR-2).
 
-**La lectura de `Ci` en el RED:** Core falla a propósito en el RED, y `build-plugin` tiene `needs: [tests, build-ui]` (`.github/workflows/ci.yml`), así que sale **omitido**. `ExpectedEvidence` lo pide así: `tests` en `failure`, `build-ui` en `success`, `build-plugin` omitido y `ui-tests` en `success` (PB-T4a) o en `failure` (PB-T4b y PB-T4c; en PB-T4c, con las 4 CT de UI y el equivalente de CT-PBT2B-06), y en `success` en PB-T4d (sin CT de UI; sus bajas de UI no caen), sin cuelgue. **El total exacto de cada rama** (F4B-E46). En el GREEN, 4/4 en `success`.
+**Las filas de PB-T4e** (V55-05) son una por clase de las CT, como las de PB-T4c y PB-T4d.
+
+**La lectura de `Ci` en el RED:** Core falla a propósito en el RED, y `build-plugin` tiene `needs: [tests, build-ui]` (`.github/workflows/ci.yml`), así que sale **omitido**. `ExpectedEvidence` lo pide así: `tests` en `failure`, `build-ui` en `success`, `build-plugin` omitido y `ui-tests` en `success` (PB-T4a) o en `failure` (PB-T4b y PB-T4c; en PB-T4c, con las 4 CT de UI y el equivalente de CT-PBT2B-06), en `success` en PB-T4d (sin CT de UI; sus bajas de UI no caen) y en `failure` en PB-T4e (por CT-PBT4E-03), sin cuelgue. **El total exacto de cada rama** (F4B-E46). En el GREEN, 4/4 en `success`.
 
 **El `Trailer`:** el de `worker-handoff.json` es el trailer real de los commits RED, «RED repair» (si lo hay) y GREEN, nunca `null` si los commits lo llevan.
 
@@ -3109,6 +3338,237 @@ ExpectedEvidence:
 - **No son autoridades de PB-T4d:** las de las tandas, las listas, los equivalentes y la precondición 6 de PB-T4c, y sus `UNIT_CHANGE`.
 - **Se añaden:** `owner-pbt4d-list-decisions.md`, `owner-pbt4d-substitutes-decision.md`, `owner-pbt4d-run-coverage-decision.md`, `owner-pbt4d-deadcode-27-decisions.md`, `owner-pbt4d-cat4d-decisions.md` y `session-pbt4d-design-decisions.md` (D-S11 a D-S16); la comprobación acotada de la v5.2 (`independent-review-pbt4d-check.md`); esta versión del paquete (v5.4); la lista; las dos piezas; y la precondición 6 (`pbt4d-precondition6.json` y `compile-check.md`).
 
+### 6.5 PB-T4e — `F4B-PBT4-EDIT-ALL-RELOAD` (entero; V55-01 a V55-11)
+
+**Se emite por la autorización condicional de PB-T4e** (`owner-pbt4e-list-decisions.md`, pregunta 4: «Sí, con condiciones (Recomendado)»): si la comprobación acotada da 0 bloqueantes y 0 importantes sin resolver, si la remedición no cambia nada material y si la lista es la elegida, **aquí ninguna prueba existente sustituida** (K = 0). Vuelve al Owner por una decisión nueva, por una prueba que falle fuera de la lista, por un efecto sin medir o por un intento 3. **La base:** el cierre de PB-T4d (F4B-E59, `160e019d773ba9095e2d5858cd593a954b8eec67`). **El `TaskId`** es provisional (24 caracteres, con el prefijo `F4B-PBT4-`; §6.0): lo confirma la sesión al emitir.
+
+- **Objective** (ASCII): el de §6.5.1.
+- **`AllowedWriteScope`** (6), ruta a ruta, en este orden:
+  - **src/, existentes que cambian (UNIT_CHANGE, 4):** 1. `src/RackCad.Application/Workspace/WorkspaceHostCore.cs`, 2. `src/RackCad.Application/Workspace/WorkspaceEditIntent.cs` (solo comentarios), 3. `src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs` (solo comentarios), 4. `src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs`;
+  - **tests/, nuevos (2):** 5. `tests/RackCad.Tests/PushBackEditAllReloadTests.cs`, 6. `tests/RackCad.UI.Tests/PushBackEditAllReloadFieldTests.cs`;
+  - **ningún otro archivo de `src/`** (ni del Plugin, ni de la ventana, ni de `Draft/`) **ni ningún archivo existente de `tests/`**: el GREEN literal no los cambia y la lista está vacía.
+- **`UNIT_CHANGE`:** las 4 de `src/` (F4B-E25).
+- **`ForbiddenWriteScope`:** el método de [PKC-C] con el precedente de PB-T3c y de PB-T4a a PB-T4d en `tests/` (la lista explícita del contrato anterior, menos las rutas de `tests/` de este alcance, que son nuevas), más las clases de PB-T4d tras su cierre (sus cinco clases nuevas: las dos de las CT y las tres que no son CT). **El número lo da la regla del generador sobre el alcance final en `160e019d`** (`<medido por el generador>`).
+- **El RED** (un commit, con su push antes del GREEN): **solo `tests/`,** el texto literal de la pieza `pbt4e-red-v56.txt` (sha256 `d052f73d726817f4240f3b5edfd89a0ec8aeb7b9cc17dbce684aa8e4f433c9e1`): los dos archivos nuevos de las CT. **`src/` queda intacto: no hay esqueleto** (las CT usan el API de hoy: `TryEditAll`, `TryReload`, `MarkPossiblyStale`, `EditAllOutcome.NotBegun` y `EditAllOutcome.Closed`). **La herramienta:** `python -I apply_red_pbt4e_v56.py <dir-copia> --repo <checkout> --rev 160e019d` escribe exactamente eso, tras comprobar que los dos archivos no existen; el Worker puede usarla sobre su worktree o copiar sus salidas. Imprime el sha256 de cada archivo.
+- **El GREEN:** solo `src/`, el texto literal de `pbt4e-green-v56.txt` (sha256 `a745c2737a7e0fe908489a1bf17ed86569577ed3dbf54ecd3661c488faf88158`; `apply_green_pbt4e_v56.py` lo escribe en una copia): 4 archivos cambiados, 8 bloques EDIT. `tests/` no cambia después del RED (salvo una reparación del RED, solo en las dos clases de las CT).
+- **`RequiredTests`:** la tabla de §6.5.1 (90: 88 heredados y 2 nuevos).
+- **Invariantes:** INV-PBT4E-01 a 07 y 13 (§6.5.1) y los comunes 08 a 12 y 14.
+- **`StopConditions`:** las 17 estándar, con **P-01 en la Snapshot L** (F4B-E57: `owner-config-snapshot-l-decision.md`; la K de §6.0 era la de PB-T4a a PB-T4d), literal en §6.5.1, y PBT4E-C01 a C14, C16, C17 y C18 (§6.5.1): 34.
+- **`ExpectedEvidence`:** §6.5.1.
+- **La línea base:** el cierre de PB-T4d (F4B-E59, `160e019d`), con la CI de su GREEN (`45057868915` sobre `7db6fd0c`).
+
+#### 6.5.1 Los textos literales del contrato de PB-T4e
+
+Para la comparación del generador, en ASCII, campo a campo. Todo está medido en `160e019d`; lo que da el generador va como `<medido por el generador>`.
+
+```text
+TaskId: F4B-PBT4-EDIT-ALL-RELOAD
+
+Objective:
+Que Editar todo recargue desde el dibujo, antes de abrir la ventana modal, un borrador Clean marcado como posiblemente obsoleto, con la misma recarga que Editar (TryReloadPilotEdit, su unica lectura) y sin aviso, como decidio el Owner (owner-pbt4e-list-decisions.md, pregunta 1: Solo la recarga); si la recarga no recarga el borrador, la ventana no se abre y el campo muestra lo mismo que Editar: el motivo, la pista de RACKEDITAR y, para una recarga no admitida, No se recargo: el borrador se conserva tal como estaba. (pregunta 2: No abrir y avisar); un borrador Dirty, en conflicto o sin la marca sigue como hoy (D-PBT4-22). El GREEN solo toca src/, con el texto literal del paquete: el cuerpo de EditAllOfPilot en WorkspaceHostCore.cs; el aviso de EditAll en WorkspacePilotFieldViewModel.cs, con su constante, que usa tambien BeginEdit; y los comentarios de WorkspaceEditIntent.cs e IWorkspacePilotEditPort.cs. El RED solo anade las dos clases nuevas de las CT (CT-PBT4E-01 a 04), sin esqueleto; ninguna prueba existente se edita, se salta ni se borra (la lista vacia), segun el paquete del contrato de PB-T4 v5.6. Ningun otro cambio visible: ni Editar, ni el boton, ni la ventana, ni RACKEDITAR, ni el Plugin; ningun texto ni estado nuevo; cero escrituras en el DWG; no se ejecuta AutoCAD.
+
+Invariants:
+INV-PBT4E-01. Alcance: dentro de las 6 rutas. git diff BaseSha..CurrentSha -- src/RackCad.Domain src/RackCad.Plugin vacio; en src/RackCad.Application solo Workspace/WorkspaceHostCore.cs, Workspace/WorkspaceEditIntent.cs y Workspace/IWorkspacePilotEditPort.cs; en src/RackCad.UI solo Workspace/WorkspacePilotFieldViewModel.cs; en tests/ solo los 2 archivos nuevos, con el texto literal de la pieza del RED.
+INV-PBT4E-02. RED y GREEN: el RED es la pieza literal de tests/ (pbt4e-red-v56.txt, sha256 d052f73d726817f4240f3b5edfd89a0ec8aeb7b9cc17dbce684aa8e4f433c9e1), byte a byte, y src/ sin cambio (no hay esqueleto); el GREEN solo toca src/, con el texto literal del paquete (pbt4e-green-v56.txt, sha256 a745c2737a7e0fe908489a1bf17ed86569577ed3dbf54ecd3661c488faf88158). En el RED, los dos filtros con ExpectRed (PushBackEditAllReloadTests, 3 CT, y PushBackEditAllReloadFieldTests, 1 CT) dan Failed por asercion (la primera linea del StackTrace bajo tests/), con Failed == Selected; los heredados pasan. Con una reparacion del RED (F4B-E35, RR): RedSha..RedRepairSha solo toca las dos clases de las CT y ningun archivo de src/ ni ningun archivo existente de tests/; el criterio se repite entero sobre RedRepairSha; y RedRepairSha..CurrentSha es el GREEN de arriba.
+INV-PBT4E-03. La recarga: exactamente D-PBT4-22 con el texto literal del GREEN del paquete. En EditAllOfPilot, sobre un borrador que este gesto no acaba de empezar y con NeedsLazyReload, una llamada a TryReloadPilotEdit(request), la misma que usa Editar, despues de la compuerta, de la actualizacion en vuelo, del anfitrion del editor y de las tres comprobaciones de la vista (Applying o no registrado, CanEdit falso y el texto pendiente), y antes de ShowModal (D-S19); nada evalua NeedsLazyReload antes de esas tres comprobaciones, asi que un borrador Sin decidir, Unknown, Error, Applying o con texto pendiente responde como en BaseSha, sin leer y sin ningun fallo registrado; con Reloaded sigue y abre sobre el borrador recargado; con cualquier otro resultado devuelve EditAllOutcome.NotBegun con el resultado de la recarga y no abre. Como mucho una lectura del dibujo por gesto, por la estructura, y ninguna durante ShowModal; ningun miembro nuevo del puerto y ningun valor nuevo de EditAllStatus ni de PilotBoundaryKind (CT-PBT4E-01, 02 y 04).
+INV-PBT4E-04. Lo que se ve: el campo muestra un NotBegun de la recarga como Editar muestra el resultado de su recarga (CT-PBT4E-03): con NotAdmitted sobre un borrador que ya existia, el diagnostico, la pista y No se recargo: el borrador se conserva tal como estaba.; con los demas, el texto de Describe. Sin aviso cuando recarga. Dirty, Conflict, Sin decidir, Unknown, Error, Applying, con texto pendiente y un borrador sin la marca, como en BaseSha (D-S19); Editar, el boton, la ventana, RACKEDITAR y el Plugin no cambian.
+INV-PBT4E-05. Sin escrituras: la recarga solo lee el dibujo y cambia la memoria del borrador (DiscardAndReload); Actualizar sigue siendo la unica escritura, con su gesto.
+INV-PBT4E-06. La cobertura de todo el codigo de src/ que se queda (owner-pbt4d-cat4d-decisions.md, pregunta 2, la regla permanente del Owner): cada linea que la suite completa de Core o los 19 filtros de UI del contrato ejecutan en BaseSha se ejecuta en CurrentSha, y cada rama que cubren en BaseSha sigue cubierta en CurrentSha (medido en la precondicion 6, linea a linea y rama por rama, con coverlet en JSON sobre RackCad.Domain, RackCad.Application y RackCad.UI); una linea de texto cambiado o una linea nueva con codigo, ejecutada con todas sus ramas. Todo camino que se queda y pierda su unica prueba tiene una sustituta.
+INV-PBT4E-07. Las redes: section 5 en verde. Ninguna prueba existente se edita, se salta, se reactiva ni se borra: la lista cerrada de PB-T4e esta vacia (K = 0). git diff BaseSha..CurrentSha -- tests/ solo anade los dos archivos nuevos.
+INV-PBT4E-08. Las pruebas de UI: las reglas de section 5.0.
+INV-PBT4E-09. Determinismo: GUID fijo, cultura invariante, "R" y orden ordinal; ni hora ni aleatoriedad.
+INV-PBT4E-10. Las corridas locales: solo los filtros del contrato en UI; nunca la suite completa de UI en local; la de Core, si; sin copias de arboles; las corridas temporales terminan en Assert.Fail(string.Join("\n", lineas)), corren dentro de EditorDiscardPrompt.Substitute cuando abren ventanas, no entran en ningun commit y guardan TRX y log como artefactos.
+INV-PBT4E-11. La evidencia: rutas relativas comprobadas en worker-handoff.json; TreeSha real o null; el Trailer, el real; el Worker no escribe en docs/.
+INV-PBT4E-12. Las reglas de F4B; sin AutoCAD; la verificacion con las tres comprobaciones deterministas de F4B-E15.
+INV-PBT4E-13. Las declaraciones de src/: nuevas, exactamente la de la lista cerrada de PBT4E-C13 (una), por nombre y acotada a su archivo; ninguna quitada.
+INV-PBT4E-14. D2: fuera de las dos referencias de cada lado, ninguna copia comparte un objeto mutable con su original. Ninguna linea anadida muta un PushBackSystem ni un RackModuleReconciliationResult adoptado.
+
+StopConditions (estandar, la que cambia para PB-T4e; las otras 16, las de section 6.0):
+P-01: config.toml no longer matches the accepted Snapshot in force (today Snapshot L, docs/automation/evidence/I-64-pilot/F4-ENVIRONMENT/snapshot-L/snapshot-l.json)
+
+StopConditions (propias):
+PBT4E-C01: doing the task would require writing outside the AllowedWriteScope.
+PBT4E-C02: it would require editing, skipping, re-enabling or deleting an existing test or helper, or touching InternalsVisibleTo, the packages, a .csproj or Fixtures/I64. The closed list of PB-T4e is empty: no exception. Any existing test that fails returns to the Owner.
+PBT4E-C03: an observable change appears outside D-PBT4-22: a notice when the draft is reloaded, another text or another visible state, a change of Editar (BeginEdit), of the button, of the window, of RACKEDITAR, of the classic path, of the Plugin or of the write of the drawing, or the editor opening over a draft whose reload did not reload it. STOP and return to the Owner.
+PBT4E-C04: a method of a filter with ExpectRed passes on the RED, or fails by an exception and not by an assertion.
+PBT4E-C05: a CT would need AutoCAD, a real MessageBox, the real configurator, the BOM, "Guardar en biblioteca", "Insertar", real keyboard or focus, or writing to the profile or to disk.
+PBT4E-C06: the GREEN CI fails outside the new tests, reproducibly and not attributable to them.
+PBT4E-C07: a fact of section 2 or of D-PBT4-22 does not hold in a way that changes a CT or the design; or an expected line is not met in the GREEN; or a recipe does not exercise its path. The Worker does not adjust what is expected; except under F4B-E35 (the RED repair rule, RR): a writing error in a new CT of this task (one of its two classes), found after the RED push and before the GREEN, is repaired without this stop and without spending an attempt by one declared RED repair commit that touches only test files the RED added and changes only the when or the how of a reading or a gesture the package already prescribes, and no expected line, literal or oracle of the package or the contract, with the full RED criterion rerun on RedRepairSha; a second writing error in the same attempt, a repair that needs an expected line changed, or a literal line the package fixes for the repaired class that does not stay byte for byte in it, is this stop.
+PBT4E-C08: a planning output rejected ONLY by the literal byte-fidelity comparison of the collections before the Worker allows ONE replanning with a reinforced prompt, without consuming an attempt ([DP] question 2); a second planning fidelity rejection is STOP and returns to the Owner; any other planning rejection (A1-A8 or another cause) is STOP and returns to the Owner
+PBT4E-C09: a test would hang, leave a window, a modal or a dispatcher alive, write to the profile or depend on machine paths.
+PBT4E-C10: doing the task would require what the scope of PB-T4e excludes (owner-pbt4e-list-decisions.md): touching a file of src/ other than the four of the AllowedWriteScope, or a text of those four other than the literal GREEN; reloading or checking a draft that is Dirty, in conflict, unknown, in error or applying, or one without the mark (option 3 of question 1); a notice of the reload (option 2 of question 1); opening the editor over the old base when the reload fails (option 2 of question 2); a new member of the port or a new value of EditAllStatus or of PilotBoundaryKind; a copy of the reload instead of TryReloadPilotEdit; touching Editar, the button, the window, RACKEDITAR, the classic path or the Plugin; or touching tests/ other than with the literal RED piece.
+PBT4E-C11: a negative control (nc1, nc2 or nc3) does not give CONTROL PASS: its ordinary output is kept as is and there are only two exits without returning to the Owner ([DP] question 1, "Extender firmas exactas"): (1) nc2 with the EXACT signature of PD-F4-01 (source f4-dispositions.md:1103-1106: Scope in fail on the removed path; Contract in fail only by the exactness clause; EXECUTION_BLOCKED/STOP; applied literally at :1540: no check other than the real verification differs; the exactness clause includes Contract evidence citing the contrast of the narrowed AllowedWriteScope with the contract or with byte-fidelity-check.json, f4-dispositions.md:520, :562, and nothing else) -> substitute PBT4-NC2-EXACT-WHITELIST-F4B-01, the version 3 of PBTx-NC2-EXACT-WHITELIST-F4B-01 (F4B-E58: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/nc2-substitute-f4b-v3/nc2_exact_whitelist_substitute_f4b_v3.py, SHA-256 e68b6e5993b522df83e7cd4cd2b136ddf503e237fd560b1a97067f24664328c6; owner-pbt4d-nc2-decision.md, "Sustituto v3 y revision", reviewed APTO in docs/automation/evidence/I-64-pilot/F4B-DRAFTS/nc2-substitute-f4b-v3/review/independent-review-substitute-v3.md; it is the version 2 (F4B-E43: owner-pbt3a-nc2-decision.md, "Aceptar y ampliar el sustituto") with its property 10 in its closed form, a path is in the AllowedWriteScope of the contract and not in its ForbiddenWriteScope, and everything else as the version 2), whose property 8 admits only the closed list of the exact literals of the evidence entry of the byte-by-byte comparison, one per package (PB-T2 and PB-T3), with its reviewed text unchanged and run with --task PBT4 in the F4B-E21 mode with the injection note and the raw output of this task's accepted planning, recorded as nc2 = SATISFIED_UNDER_PBT4_EXACT_WHITELIST_SUBSTITUTE_F4B; if inject_opaque.py changed since that run, the substitute is reviewed before it is reused; (2) nc1 with the signature PD-F4B-01, the false SHA cascade (F4B-E40: owner-pbt2c-nc1-decision.md, its conditions (a) to (f): the mutation only changes the CurrentSha of the handoff to a SHA that does not exist in the repository; EXECUTION_BLOCKED / STOP with S-04 among the stops; Handoff is the first check in fail; the failing checks are a subset of Handoff, Identity, Remote, Scope, Ci and Tests that always includes Handoff and Identity, and all the others pass as in the real verification; each failing evidence cites the false SHA and none attributes the failure to another cause; the Identity evidence also writes the real HEAD), of which the EXACT signature of PD-F4-04 (source owner-f4t3-authorization.md:255-265; as applied in F4, f4-dispositions.md:1657-1660) is a particular case -> substitute PBT3x-NC1-CASCADE-SIGNAL-01 (F4B-E40 and F4B-E43: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/nc1-cascade-substitute/nc1_cascade_signal_substitute.py, SHA-256 41440edc4a963bef890e4336dccb885837424008c027cdb172d2b926e0f49b40, reviewed APTO, with its declared limits), with its reviewed text unchanged and run with --task PBT4, recorded as nc1 = SATISFIED_UNDER_PBT4_NC1_CASCADE_SUBSTITUTE. Matching is decided never by check name: the control output is compared with the real verification check by check (the set of failing checks, the first failing check, Outcome and StopClass, and the evidence text); the only admitted differences are those listed for each signature in section 6.0 of the PB-T1 contract package ([PT1], docs/initiatives/I-64-f4b-pbt1-gate-contract-package.md) and, for PD-F4B-01, its conditions (a) to (f); the session records the comparison table in f4b-dispositions.md. Any other signature or variation (PD-F4-05, PD-F4-06, nc2 with Ci or Trailer also in fail, any nc1 that does not meet PD-F4B-01 - the one-off acceptances of nc1 in PB-TC (F4B-E08), in PB-TC2 attempt 1 (F4B-E12), in PB-T2a (F4B-E34), in PB-T2b (F4B-E38) and in PB-T2c (F4B-E40) do not extend -, an nc2 that the version 3 of the substitute does not give PASS - the disposition of the Owner on the nc2 of PB-T3a (F4B-E43) and the satisfaction of the nc2 of PB-T4d under the version 3 (F4B-E58, for F4B-PBT4-RETIRE-PILOT, attempt 1) do not extend -, a substitute that does not give PASS, any failure of nc3, or an evidence text that cannot be assigned to an admitted difference) returns to the Owner before any substitute or acceptance; no one-off acceptance extends to PB-T4e
+PBT4E-C12: a correction would be attempt 3 of 3: it returns to the Owner before it is issued (D-PB-10)
+PBT4E-C13: doing the task would require touching a file of src/ other than the four of the AllowedWriteScope; or adding a declaration of any visibility in src/ that is not in this closed list (1): the private constant NotReloadedText of WorkspacePilotFieldViewModel; or removing any declaration. Prescribed changes that are not declarations: in EditAllOfPilot, the local variable begunHere (false, and true once the begin branch has begun the draft), and the reload branch after the three checks of the view (if not begunHere and NeedsLazyReload) with the local variable reload and its two statements (D-S19); in WorkspacePilotFieldViewModel, the line of BeginEdit that uses the constant and the line of EditAll that sets the notice when the view existed; and the comments of the four files. The Worker stops before adding or removing anything else.
+PBT4E-C14: a design of the corpus changes its admission or its lock (the pilot reader, the full reader, AUTH-13 or the parked tail).
+PBT4E-C16: an existing test fails (the closed list of PB-T4e is empty), including one that reads the text or the types in a way only seen when it runs; or a line or a branch of src/ that stays (RackCad.Domain, RackCad.Application or RackCad.UI), executed or covered in BaseSha by the full Core suite or by the UI filters of the contract, is no longer executed or covered in CurrentSha. It returns to the Owner (owner-pbt4e-list-decisions.md, question 4; owner-pbt4d-cat4d-decisions.md, question 2: before the emission, every such path gets a substitute, and only a substitute that cannot be written, or more than 10 new substitutes, return to the Owner).
+PBT4E-C17: (F4B-E11, D2, IMPORTANT LIMIT) doing the task would need to MUTATE the resolved rack (PushBackSystem) or the module report (RackModuleReconciliationResult) inside the editing or draft lifetime, or to share by reference any other mutable object between a copy of the state and its original, or a measurement already finds such a mutation in the editing path: STOP and L-1 is reopened. The Owner text, literal: "This is NOT authorization for general shallow copying. It is exactly: two declared shared references. If later PB-T1/PB-T2/PB-T3 needs to mutate either: resolved rack; module report; inside the Workspace draft lifetime: STOP and reopen L-1. At that point the object must either: be cloned; be made immutable; or be replaced by a value snapshot appropriate to the draft model." The Worker chooses none of the three exits: the Owner does
+PBT4E-C18: a RED repair does not meet the F4B-E35 rule (RR-1 to RR-6): it is not after the RED push and before the GREEN, or it is the second one in the attempt; it touches a file the RED did not add, an existing test, src/, a fixture or anything outside the AllowedWriteScope; it changes an expected line, literal or oracle, or anything other than the when or the how of a reading or a gesture the package already prescribes (RR-3); the full RED criterion and its CI are not rerun on RedRepairSha; or it is not declared as RR-5 says. The rule does not apply and the repair counts as touching tests/ after the RED (AUTOMATION_PLAN 16.8): STOP.
+
+ExpectedEvidence:
+[0] antes del Worker: el contrato, la salida del Controller (output.json, con las ocho colecciones opacas vacias), la delegacion final con esas colecciones puestas por la sesion (delegation.json; F4B-E21), la comparacion byte a byte sobre la delegacion final, A1-A8 y nc4;
+[1] el commit RED y su push antes del GREEN; con una reparacion del RED (F4B-E35, RR-4), ademas, el commit "RED repair" y su push antes del GREEN, con su CI, registrada como la del RED reparado, y los TRX de cada filtro con ExpectRed sobre RedRepairSha;
+[2] la CI del RED como en section 6.0 (tests en failure, por CT-PBT4E-01, 02 y 04; ui-tests en failure, por CT-PBT4E-03; build-ui en success; build-plugin omitido; sin cuelgue); la del RED reparado, si lo hay, da lo mismo;
+[3] la tabla "CT -> la asercion que falla en el RED": las cuatro CT caen por su Assert.Equal (src/ sigue sin la recarga), con la linea que difiere de cada una (section 5.7);
+[4] el GREEN y su CI 4/4;
+[5] en local: el build Release con el Plugin sin avisos nuevos, los filtros sobre el RED, sobre RedRepairSha si hay reparacion, y sobre el GREEN, y tres corridas en verde de los filtros con ExpectRed sobre el GREEN;
+[6] la entrega con el mapa CT -> metodo, las rutas relativas comprobadas, el sha256 de cada uno de los dos archivos nuevos (iguales a NewFileSha) y de cada uno de los cuatro archivos de src/ en CurrentSha (iguales a los del GREEN de la pieza), y el Trailer real de los commits RED, "RED repair" (si lo hay) y GREEN; con una reparacion del RED, ademas, RedRepairSha, la prueba y la linea corregidas, el error y por que no cambia ninguna linea esperada, con el diff, y RedSha, que sigue siendo el commit RED original (F4B-E35, RR-5);
+[7] la verificacion con las tres comprobaciones de F4B-E15, y nc1 a nc3;
+[8] con una reparacion del RED, la verificacion la lee como parte de la entrega (F4B-E35, RR-7; section 6.0): n.o 10 (Tests): el RED se acredita con RedSha y con la CI del RED original, y sus TRX, con los filtros con ExpectRed entre los fallidos. La clausula "git diff --name-only RedSha CurrentSha no toca RT U ChainRedFiles" se comprueba desde RedRepairSha: git diff --name-only RedRepairSha CurrentSha. n.o 11 (Trailer): el trailer va tambien en el commit "RED repair". Lo que el Controller comprueba de RR (si algo falla, es C18): RR-1, un solo commit "RED repair", hijo directo de RedSha y anterior al GREEN; RR-2, git diff --name-only RedSha RedRepairSha dentro de las dos clases de las CT; RR-4, la CI de RedRepairSha, registrada como la del RED reparado, y los TRX de los filtros con ExpectRed sobre el; RR-5, la declaracion de la entrega, con el diff, y RedSha, el commit RED original; RR-6, con el tramo RedSha..RedRepairSha. En PB-T4e, ademas: RedSha..RedRepairSha no toca ningun archivo de src/ ni ningun archivo existente de tests/. La ayuda mecanica de RR-3: es parada C07, una violacion cierta de RR-3, que un literal de la lista cerrada de la clase reparada (section 6.0 del paquete, la tabla de RR-3) cambie entre RedSha y RedRepairSha: una linea o un fragmento, si no aparece como subcadena exacta el mismo numero de veces; un valor de gesto, si no aparece como token el mismo numero de veces. Indicios para la revision, no parada: una cadena <campo>= anadida o quitada en git diff -U0 RedSha RedRepairSha, o un cambio en el primer argumento de un Assert.Equal. Pueden dar falsos positivos, como una linea que solo se mueve de sitio, asi que van a Findings y a la revision, con la declaracion de RR-5.
+[9] la CI del RED con tests en failure, ui-tests en failure, build-ui en success y build-plugin omitido;
+[10] la del GREEN 4/4, con el Plugin compilado;
+[11] el censo de declaraciones de los cuatro archivos de src/ del alcance, en BaseSha y en CurrentSha, contadas una a una con su nombre (una sobrecarga es una declaracion mas; un tipo anidado tambien): una nueva, la de la lista cerrada de PBT4E-C13 (NotReloadedText); ninguna quitada;
+[12] el Trailer real;
+[13] la entrada "## PB-T4e" de superseding-characterization.md, escrita por la sesion en el commit de emision: la lista vacia (ninguna prueba existente sustituida; K = 0, D = 0 y E = 0), las dos clases nuevas con su NewFileSha, y las decisiones del Owner (owner-pbt4e-list-decisions.md; el origen, owner-pbt4c-code-decisions.md, pregunta 2, y owner-pbt4d-list-decisions.md, pregunta 2) y de la sesion (D-S17, D-S18 y D-S19); su tabla de ejecucion se completa al cerrar;
+[14] Linea base de la CI: la del cierre de PB-T4d (F4B-E59, 160e019d): run 45057868915 sobre su GREEN 7db6fd0c, Core 19 418 resultados, con 19 015 Passed y 403 Skipped, y UI 2 464, con 2 416 Passed y 48 Skipped. Previstos, con el total exacto de cada rama (F4B-E46): PB-T4e anade 3 CT de Core y 1 de UI, sin Skip, sin equivalentes y sin bajas. El GREEN: Core 19421 resultados, con 19018 Passed, 0 Failed y 403 Skipped; UI 2465 resultados, con 2417 Passed, 0 Failed y 48 Skipped. El RED: Core 19421 resultados, con 19015 Passed, 3 Failed y 403 Skipped (CT-PBT4E-01, 02 y 04); UI 2465 resultados, con 2416 Passed, 1 Failed y 48 Skipped (CT-PBT4E-03);
+[15] la comprobacion mecanica de las piezas: sobre RedSha, los dos archivos nuevos son los que da red_pbt4e_v56.red sobre BaseSha (apply_red_pbt4e_v56.py), y src/ y los archivos existentes de tests/ son los de BaseSha; sobre CurrentSha, src/ es el que da green_pbt4e_v56.green (apply_green_pbt4e_v56.py) y tests/ el de RedSha.
+```
+
+**Los `Skip` literales:** ninguno (la lista vacía).
+
+**Los archivos nuevos, literales** (su texto, en el anexo V56-A; `NewFileSha`, del texto con `\n`):
+
+- `tests/RackCad.Tests/PushBackEditAllReloadTests.cs`, `9e849864709a964a864902c6f44e5d92014d962cc56c374cebfc7dfe42c6b017`: CT-PBT4E-01, 02 y 04; **`ExpectRed` true**
+- `tests/RackCad.UI.Tests/PushBackEditAllReloadFieldTests.cs`, `a29d7a362cd5de49bd787eb76e7c847dc30b46ef1314e94ae5f67041b6a4595d`: CT-PBT4E-03; **`ExpectRed` true**
+
+**Los archivos de `src/` del GREEN** (sha256 del texto con `\n`, de `green_pbt4e_v56.py` sobre `160e019d`):
+
+- `src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs`: `49b5245c112e3d4f0b3b95114f9ff0444469b316a3ef912947cf3b696e0c6ebd` (base `b3a2622b490e2e787088680743662365bf9e4b0016cad7578703281b6b1c0863`)
+- `src/RackCad.Application/Workspace/WorkspaceEditIntent.cs`: `bbc6882283833b02bab79c9bb70c082f3ac14b2a88650722bf8d72be0e13b5e2` (base `b937f893360b39c5751b5b5da9fe3f976a76b256799fbf685a2dc4193f141e96`)
+- `src/RackCad.Application/Workspace/WorkspaceHostCore.cs`: `6eb9bf7ab81666b33c1280c832257624937c95a042e46f53dcc2c371baac4d7d` (base `3fcabacbc9a568cc2b777d4e8bd356b76f55273f674d0ab604177f36ffeb5fee`)
+- `src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs`: `c4b5c6990c5623e53be607fdbb461db95103b957c96627e1d63300dabe3d643b` (base `417c36cd68267ecec960e89c4908a237d8c9d89093ab93aecebd3f80a862f845`)
+
+**La precondición 6** (§11.6), que corre la sesión antes de emitir, sobre copias exportadas del cierre de PB-T4d, fuera de todo commit (`pbt4ecc/compile/`, que la emisión custodia; el resumen, `pbt4e-precondition6.json`, sha256 `daea59847a3629111073f0b7565d9144be90c880cf2ba61c98aae91373c9c169`, y su registro, `compile-check.md`, `549766ebfb0ab0e2d75d33e334faab1e5f66454902f31b87e7b8f97818bbd426`):
+1. `git archive` de `160e019d` a una carpeta nueva, fuera del worktree;
+2. `python -I apply_red_pbt4e_v56.py <copia> --repo <checkout> --rev 160e019d`: el RED literal de `tests/` (los dos archivos nuevos);
+3. la compilación de Core y de UI en Debug, sin ningún `warning CS`;
+4. **el RED exacto:** la suite completa de Core, donde **solo caen las tres CT de Core de PB-T4e, por aserción**, y **los 19 filtros de UI del contrato, cada uno en su proceso** (`ui_filters_pbt4e_v55.txt`), donde **solo cae CT-PBT4E-03, por aserción**. **La copia principal corre sola:** el conductor comprueba al empezar que no hay otro `dotnet` ni `testhost`;
+5. **sobre la misma copia, el GREEN literal** (`apply_green_pbt4e_v56.py`): la compilación de Core y de UI en Debug y del Plugin en Release con `-o`, sin ningún `warning CS`;
+6. **el GREEN:** la suite completa de Core, **0 `Failed`**, y los 19 filtros de UI, **0 `Failed`**, cada uno en su proceso, con la duración de la suite. **Una prueba que falle fuera de la lista** (aquí, cualquiera que exista) vuelve al Owner (PBT4E-C16);
+7. **la cobertura de todo `src/` que se queda, línea a línea y rama por rama** (la regla del Owner): la suite completa de Core y la UI de los 19 filtros (la unión de tres corridas de todos juntos, `ui_union_v55.txt`, y de una de cada filtro en su proceso; D-S16), con coverlet en JSON sobre Domain, Application y UI (`cov_v55.runsettings`), en el GREEN de la copia principal y en la base sin cambios, sola, en otra copia (`p6_basecov_v55.sh`); `cov_p6_pbt4e_v56.py` lleva cada línea de la base al GREEN (por texto en los cuatro archivos que el GREEN cambia) y exige que cada línea ejecutada siga ejecutada y cada rama cubierta siga cubierta; las de texto cambiado y las nuevas, ejecutadas con todas sus ramas; y lista lo que baja (D-S16). **Un camino que se queda sin su única prueba** recibe una sustituta (la regla del Owner); **vuelve al Owner** si una no se puede escribir o si salen más de 10; **La corrida opcional** (7b; CA-T4e, M-02): en la copia principal, la cobertura del GREEN sin las dos clases nuevas (Core con `FullyQualifiedName!~PushBackEditAllReload`; la unión de los 18 filtros heredados, `ui_union18_v56.txt`, tres veces, y cada uno de ellos en su proceso), comparada con la base en `MODO=existentes` (`cov-p6-existentes-v56.txt`); los dos límites del método, declarados en §4.5;
+8. **la sonda y el control de las CT:** la línea nueva de D-S19 contra el GREEN de la v5.5 (`/d/r76`: el RED de la v5.6 con `pbt4e-green-v55.txt`; `t76_trial_v56.sh`); la sonda (`/d/r82`, con el GREEN de la v5.6; `write_probe_v56.py`) da las 25 líneas de §5.7 sobre el GREEN y las del RED de la tabla «CT -> la aserción que falla en el RED»; el control (`p6_control_v56.sh`), en dos copias más: con solo los bloques del anfitrión del GREEN (`control-anfitrion.txt`), pasan las tres CT de Core y cae CT-03; con solo los del campo (`control-campo.txt`), caen las tres de Core y pasa CT-03; y la sonda de «Actualizar» (`SondaPushBackEditAllReloadUpdate.cs`), el detalle de la receta de CT-04 sin la recarga y con ella;
+9. los `RequiredTests` y los totales (`req_pbt4d_v55.py`, que lee los 88 del contrato emitido de PB-T4d por objetos git, y `required_pbt4e_v56.py`, con la base de Core y de UI en la copia de la base), y el contrato lleva por sha256 las dos piezas y los dos archivos nuevos (`NewFileSha`).
+
+**Lo medido** (V56-04): `/d/r76` para la línea nueva contra el GREEN de la v5.5, `/d/r82` para el ensayo y la sonda, `/d/r83` para los pasos 2 a 7 (el RED, el GREEN y la cobertura del GREEN; **sola**: 0 procesos al empezar, 0 procesos al acabar), `/d/r79` para la referencia de la cobertura y de los `MinSelected` (la base sin cambios, sola: la suite de Core, 19418 = 19015 + 0 + 403, y la unión de los 19 filtros, 899 = 869 + 0 + 30), y `/d/r80` y `/d/r81` para el control. Lo previsto, con cero `warning CS` (21 compilaciones, 0 errores y 0 `warning CS`):
+- **Core:** en el RED, 19421 = 19015 + 3 + 403, y solo caen las tres CT de Core de PB-T4e, por aserción; en el GREEN, 19421 = 19018 + 0 + 403;
+- **UI,** los 19 filtros del contrato: en el RED solo cae CT-PBT4E-03, por aserción; en el GREEN, 0 `Failed`;
+- **la duración de la suite de Core:** 322 s en el RED y 305 s en el GREEN (387 s con la cobertura);
+- **la cobertura:** archivos de src/ instrumentados 773; lineas ejecutadas en la base que se quedan 69844 (ramas cubiertas 28820); sin pareja en el GREEN 0; texto cambiado 1; lineas nuevas con codigo 8; lineas sin ejecutar en el GREEN 0; lineas con ramas perdidas 0; **PASA**; bajan (informativo) 2: PERDIDA 0, VARIA 2, ESTABLE 0;
+- **la cobertura opcional, sin las dos clases nuevas** (Core, 19418 = 19015 + 0 + 403; la unión de los 18 filtros heredados, 899 = 869 + 0 + 30, tres veces): archivos de src/ instrumentados 773; lineas ejecutadas en la base que se quedan 69844 (ramas cubiertas 28820); sin pareja en el GREEN 0; texto cambiado 1; lineas nuevas con codigo 8; lineas sin ejecutar en el GREEN 0; lineas con ramas perdidas 0; **PASA**; bajan (informativo) 2: PERDIDA 0, VARIA 2, ESTABLE 0;
+- **la línea nueva de D-S19:** con el GREEN de la v5.5, `marcado-sin-decidir alta=Created estado=Failed motivo=[the comparer threw] abierto=False lecturas=0 fallos=[WorkspaceHostCore.TryEditAll] obsoleto=True` (CT-01 cae); con el de la v5.6, `marcado-sin-decidir alta=Created estado=Refused motivo=[El borrador no admite el editor completo en su estado actual.] abierto=False lecturas=0 fallos=[] obsoleto=True` (pasa);
+- **el control:** con solo el campo (`/d/r80`), las tres CT de Core caen (Core 3 = 0 + 3 + 0) y CT-PBT4E-03 pasa (UI 1 = 1 + 0 + 0); con solo el anfitrión (`/d/r81`), las tres de Core pasan (Core 3 = 3 + 0 + 0) y CT-PBT4E-03 cae (UI 1 = 0 + 1 + 0);
+- **los totales de UI de la CI** (la línea base más la diferencia de los filtros): UI red: 2465 = 2416 + 1 + 48 y UI green: 2465 = 2417 + 0 + 48 (Passed + Failed + Skipped).
+
+**`RequiredTests`** (90: 88 heredados y 2 nuevos). Los heredados son los del contrato emitido de PB-T4d (`F4B-PBT4-RETIRE-PILOT`, `coordinator/gate-contract.json` en `160e019d`), con su número de allí, **todos con `ExpectRed` false** (CT-PBT4D-01 pasa desde el cierre de PB-T4d), y su `MinSelected` comprobado sobre la base, el RED y el GREEN literal (resultados no omitidos): **ninguno baja**, porque PB-T4e no quita nada. Los nuevos, por clase exacta (D-S8), con `ExpectRed` true. Ningún filtro heredado selecciona una clase nueva, y cada filtro nuevo solo selecciona la suya, en el RED y en el GREEN (`required_pbt4e_v56.py`).
+
+| n.º | Project | Filter | MinSelected | ExpectRed | Origen |
+|---|---|---|---|---|---|
+| 1 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackFullReadPathTests` | 4 | false | PB-T4d n.º 1 |
+| 2 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackFullReadGuardTests` | 1 | false | PB-T4d n.º 2 |
+| 3 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackViewEraseGuardTests` | 4 | false | PB-T4d n.º 3 |
+| 4 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackWritePathPluginGuardTests` | 1 | false | PB-T4d n.º 4 |
+| 5 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.WorkspacePilotUpdateGuardTests` | 83 | false | PB-T4d n.º 5 |
+| 6 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests` | 120 | false | PB-T4d n.º 6 |
+| 7 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackSharedReferenceGuardTests` | 1 | false | PB-T4d n.º 7 |
+| 8 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackFullDraftWindowParityTests` | 1 | false | PB-T4d n.º 8 |
+| 9 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackFullWrite` | 13 | false | PB-T4d n.º 9 |
+| 10 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackPilotUpdateEquivalenceGuardTests` | 6 | false | PB-T4d n.º 10 |
+| 11 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackWritePathGuardTests` | 1 | false | PB-T4d n.º 11 |
+| 12 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.Workspace` | 2539 | false | PB-T4d n.º 12 |
+| 13 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackFullDraft` | 10 | false | PB-T4d n.º 13 |
+| 14 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackDraftWriteGuardTests` | 2 | false | PB-T4d n.º 14 |
+| 15 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.Workspace` | 503 | false | PB-T4d n.º 15 |
+| 16 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackEditableState` | 13 | false | PB-T4d n.º 16 |
+| 17 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackEditorOutputGate` | 1 | false | PB-T4d n.º 17 |
+| 18 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackWindowSharedReferenceGuardTests` | 1 | false | PB-T4d n.º 18 |
+| 19 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackWindowOnStateSourceGuardTests` | 1 | false | PB-T4d n.º 19 |
+| 20 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackWindowOnStateTests` | 2 | false | PB-T4d n.º 20 |
+| 21 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization` | 55 | false | PB-T4d n.º 21 |
+| 22 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization` | 10 | false | PB-T4d n.º 22 |
+| 23 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization` | 16 | false | PB-T4d n.º 23 |
+| 24 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization` | 3 | false | PB-T4d n.º 24 |
+| 25 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackStateNet` | 14 | false | PB-T4d n.º 25 |
+| 26 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection` | 12 | false | PB-T4d n.º 26 |
+| 27 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.Cantilever` | 67 | false | PB-T4d n.º 27 |
+| 28 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.I58F1` | 10 | false | PB-T4d n.º 28 |
+| 29 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.CustomPropertiesEnvelopeGuardTests` | 9 | false | PB-T4d n.º 29 |
+| 30 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.NamespaceFolderGuardTests` | 7 | false | PB-T4d n.º 30 |
+| 31 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackDraftStatePortTests` | 3 | false | PB-T4d n.º 31 |
+| 32 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackDraftPortSharedReferenceGuardTests` | 1 | false | PB-T4d n.º 32 |
+| 33 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackWorkspaceModeSourceGuardTests` | 1 | false | PB-T4d n.º 33 |
+| 34 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackWorkspaceSharedReferenceGuardTests` | 1 | false | PB-T4d n.º 34 |
+| 35 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceModeTests` | 3 | false | PB-T4d n.º 35 |
+| 36 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests` | 3 | false | PB-T4d n.º 36 |
+| 37 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceCarryoverTests` | 3 | false | PB-T4d n.º 37 |
+| 38 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackFullPanelTests` | 11 | false | PB-T4d n.º 38 |
+| 39 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackFullPanelGuardTests` | 4 | false | PB-T4d n.º 39 |
+| 40 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackFullPanelCensusGuardTests` | 1 | false | PB-T4d n.º 40 |
+| 41 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackPanelDraftGuardTests` | 1 | false | PB-T4d n.º 41 |
+| 42 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackFullPanelFieldTests` | 3 | false | PB-T4d n.º 42 |
+| 43 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.NumericFieldValidationTests` | 13 | false | PB-T4d n.º 43 |
+| 44 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.NumericFieldTests` | 10 | false | PB-T4d n.º 44 |
+| 45 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceLifecycleHostRedTests` | 24 | false | PB-T4d n.º 45 |
+| 46 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceLifecycleHostGreenTests` | 69 | false | PB-T4d n.º 46 |
+| 47 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotPrepareRedTests` | 44 | false | PB-T4d n.º 47 |
+| 48 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotPrepareGreenTests` | 46 | false | PB-T4d n.º 48 |
+| 49 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceEditIntentHostRedTests` | 24 | false | PB-T4d n.º 49 |
+| 50 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceEditIntentHostGreenTests` | 57 | false | PB-T4d n.º 50 |
+| 51 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditHostRedTests` | 59 | false | PB-T4d n.º 51 |
+| 52 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditHostGreenTests` | 17 | false | PB-T4d n.º 52 |
+| 53 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceCommandAdvisorRedTests` | 6 | false | PB-T4d n.º 53 |
+| 54 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceCommandAdvisorGreenTests` | 70 | false | PB-T4d n.º 54 |
+| 55 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateRequestRedTests` | 53 | false | PB-T4d n.º 55 |
+| 56 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateRequestGreenTests` | 1 | false | PB-T4d n.º 56 |
+| 57 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateHostRedTests` | 29 | false | PB-T4d n.º 57 |
+| 58 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateHostGreenTests` | 18 | false | PB-T4d n.º 58 |
+| 59 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotReconciliationHostRedTests` | 23 | false | PB-T4d n.º 59 |
+| 60 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotReconciliationHostGreenTests` | 5 | false | PB-T4d n.º 60 |
+| 61 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceAssociativeBookkeepingRedTests` | 1 | false | PB-T4d n.º 61 |
+| 62 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceAssociativeBookkeepingGreenTests` | 21 | false | PB-T4d n.º 62 |
+| 63 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyPushBackWritePathGuardRedTests` | 1 | false | PB-T4d n.º 63 |
+| 64 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateIntegrationGuardRedTests` | 2 | false | PB-T4d n.º 64 |
+| 65 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceEditIntentGuardRedTests` | 13 | false | PB-T4d n.º 65 |
+| 66 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditGuardRedTests` | 6 | false | PB-T4d n.º 66 |
+| 67 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditGuardGreenTests` | 17 | false | PB-T4d n.º 67 |
+| 68 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotReconciliationGuardGreenTests` | 1 | false | PB-T4d n.º 68 |
+| 69 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceLifecycleGuardRedTests` | 2 | false | PB-T4d n.º 69 |
+| 70 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateGuardRedTests` | 1 | false | PB-T4d n.º 70 |
+| 71 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationGreenTests` | 30 | false | PB-T4d n.º 71 |
+| 72 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationViewGreenTests` | 6 | false | PB-T4d n.º 72 |
+| 73 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyPushBackFullReadPathRedTests` | 1 | false | PB-T4d n.º 73 |
+| 74 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyPushBackFullReadGuardRedTests` | 1 | false | PB-T4d n.º 74 |
+| 75 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceHostHardeningGuardRedTests` | 1 | false | PB-T4d n.º 75 |
+| 76 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackEditAllTests` | 6 | false | PB-T4d n.º 76 |
+| 77 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackEditAllGuardTests` | 3 | false | PB-T4d n.º 77 |
+| 78 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackOpenerClassicPathGuardTests` | 1 | false | PB-T4d n.º 78 |
+| 79 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackDraftLaunchGuardTests` | 1 | false | PB-T4d n.º 79 |
+| 80 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllWindowTests` | 4 | false | PB-T4d n.º 80 |
+| 81 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackEditAllPortEquivalenceGuardTests` | 1 | false | PB-T4d n.º 81 |
+| 82 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackEditAllNameWritersGuardTests` | 1 | false | PB-T4d n.º 82 |
+| 83 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllApplyCloseTests` | 1 | false | PB-T4d n.º 83 |
+| 84 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackRetirePilotGuardTests` | 1 | false | PB-T4d n.º 84 |
+| 85 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackRetirePilotCensusGuardTests` | 1 | false | PB-T4d n.º 85 |
+| 86 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackRetirePilotFullCopyGuardTests` | 1 | false | PB-T4d n.º 86 |
+| 87 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackRetirePilotPlanGuardTests` | 2 | false | PB-T4d n.º 87 |
+| 88 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackRetirePilotRunTests` | 31 | false | PB-T4d n.º 88 |
+| 89 | `tests/RackCad.Tests/RackCad.Tests.csproj` | `FullyQualifiedName~RackCad.Tests.PushBackEditAllReloadTests` | 3 | true | nuevo: CT-PBT4E-01, 02 y 04 |
+| 90 | `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` | `FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllReloadFieldTests` | 1 | true | nuevo: CT-PBT4E-03 |
+
+#### 6.5.2 Lo que necesita el generador de PB-T4e
+
+| Pieza | Dónde | Lo que es |
+|---|---|---|
+| **La pieza del RED** | `pbt4/pbt4e-red-v56.txt` | sha256 `d052f73d726817f4240f3b5edfd89a0ec8aeb7b9cc17dbce684aa8e4f433c9e1`. Bloques NEWFILE, con `\n`; la aplican `red_pbt4e_v56.py` (`8c38e532bf991a111e7f82193ad3a812993a64a1c2e43084a46278ad72dc54a5`) y `apply_red_pbt4e_v56.py` (`59a0fcb3e316b1fbde880fca87629bc2144b233859eccdf9ddb86c244d2a0ae5`), que rechazan cualquier otro bloque. La genera `v56/make_pieces_pbt4e_v56.py` (`8a00c0d286d1fee5e627e05bc1864e350ecaaa76930764949287d2ef7432678f`) desde las dos clases de `v56/ct/` |
+| **La pieza del GREEN** | `pbt4/pbt4e-green-v56.txt` | sha256 `a745c2737a7e0fe908489a1bf17ed86569577ed3dbf54ecd3661c488faf88158`. Bloques EDIT; la aplican `green_pbt4e_v56.py` (`b3aba680d45ce6aebb3dbac549e228de9b832a76d870fd719ea0801302c10e73`) y `apply_green_pbt4e_v56.py` (`492aaab155fe64cc96b317441c1bd18b2bfc47f92c44bd1dac24f131bc8378a7`). La genera el mismo guion desde `v56/frag/green-src.txt`, y comprueba que cada OLD está una vez en el texto de `160e019d` que se va editando |
+| **La lista** | — | Vacía: el contrato no lleva archivo de lista. La lista elegida por el Owner es «ninguna prueba existente sustituida» (`owner-pbt4e-list-decisions.md`, pregunta 4) |
+| **Los archivos nuevos** | en la pieza del RED (NEWFILE) | `NewFileSha` de cada uno (arriba) |
+| **La precondición 6** | `pbt4ecc/compile/pbt4e-precondition6.json` | Schema `rackcad-pbt4e-precondition6/v1`; metadatos `Schema`, `Package`, `Task`; y, en este orden, `Revision`, `Pieces`, `List` (vacía), `RedFiles`, `GreenFiles`, `Builds`, `CsWarnings`, `Alone`, `Red`, `Green`, `GreenWithCoverage`, `GreenUiCoverage`, `SuiteDurationSeconds`, `BaseCoverage`, `Coverage`, `Probe`, `NewLineDS19` (desde la v5.6: la línea nueva de D-S19 con el GREEN de la v5.5 y con el de la v5.6), `CoverageExisting` (desde la v5.6: la corrida opcional), `Control`, `RequiredTests`, `Totals` y `Outcome`. El generador lee `RedFiles`, `GreenFiles`, `RequiredTests` y `Totals`; `Probe`, `NewLineDS19`, `CoverageExisting` y `Control` son informativos |
+
+**Las autoridades de PB-T4e** (la n.º y la ruta son las del contrato de PB-T4d emitido):
+- **Siguen, sin cambio:** las de PB-T4d que no son de su subtarea.
+- **No son autoridades de PB-T4e:** la versión 2 del sustituto de nc2 (`nc2-substitute-f4b-v2/`, F4B-E43), a la que sustituye la 3 (F4B-E58), y la Snapshot K, a la que sustituye la L (F4B-E57); las de las tandas 10 a 14, la lista, los equivalentes, las sustitutas y la precondición 6 de PB-T4d, y sus `UNIT_CHANGE`.
+- **Se añaden:** la versión 3 del sustituto de nc2 (`docs/automation/evidence/I-64-pilot/F4B-DRAFTS/nc2-substitute-f4b-v3/nc2_exact_whitelist_substitute_f4b_v3.py`, SHA-256 `e68b6e5993b522df83e7cd4cd2b136ddf503e237fd560b1a97067f24664328c6`), su revisión APTO (`docs/automation/evidence/I-64-pilot/F4B-DRAFTS/nc2-substitute-f4b-v3/review/independent-review-substitute-v3.md`), la decisión del Owner (`docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt4d-nc2-decision.md`, «Sustituto v3 y revisión») y F4B-E58; la Snapshot L (`docs/automation/evidence/I-64-pilot/F4-ENVIRONMENT/snapshot-L/snapshot-l.json`, sha256 `69781991612268de4ad3f46bd3d0ccfdc2275b3a9bea1390d27a723118b75e8e`, con el `config.toml` `B71650A637551747F522BB1D2F4BA1BB9E25AAFF1A61CE1B7BC066197FFFEBB3` y 105 nombres), la decisión del Owner (`docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-config-snapshot-l-decision.md`) y F4B-E57; `owner-pbt4e-list-decisions.md` (la 15.ª tanda); `owner-pbt4c-code-decisions.md` (pregunta 2, el origen); las decisiones de la sesión D-S17, D-S18 y D-S19 (`session-pbt4e-design-decisions.md`, sha256 `b21f2af4bab5321620bf8de3aceeb95585a0e2fe9e4cc2ae96f18e37c3e41e6d`); la comprobación acotada de PB-T4e (CA-T4e, `independent-review-pbt4e-check.md`) y su recomprobación; esta versión del paquete (v5.6); las dos piezas; y la precondición 6 (`pbt4e-precondition6.json` y `compile-check.md`).
+
 ## 7. Riesgos y lecciones aplicadas
 
 Los de la v1 (R-T4-01 a 15) y la v4 (R-T4-16 a 21), con lo que hacen la v4.1 y la v4.2:
@@ -3130,6 +3590,9 @@ Los de la v1 (R-T4-01 a 15) y la v4 (R-T4-16 a 21), con lo que hacen la v4.1 y l
 | **R-T4-36, código muerto en `tests/`** (CA-T4d M-03; V53-05) | Una retirada deja ayudantes sin uso y clases sin pruebas: se miden con IDE0051/IDE0052 en una copia y por texto, en vueltas hasta que no sale ninguno, y se borran con registro |
 | **R-T4-37, la copia principal, sola** (CA-T4d M-07; V53-09) | Una corrida solapada no cambia los resultados, pero sí las duraciones: el conductor comprueba al empezar que no hay otro `dotnet` ni `testhost` |
 | **R-T4-38, el ruido de la cobertura de UI** (V53-02) | Un binding de WPF da golpes que dependen del despachador (`RackViewBatchDialogPresenter.cs:37-38`: la base da 1, 0 y 1 en tres corridas de la misma prueba, y en la unión de los filtros el GREEN da 0 tres veces y 1 tres veces con su filtro solo, `noise-batch/`): la UI de cada rama es la unión de tres corridas de la unión de los filtros y de cada filtro en su proceso, como los corre el contrato |
+| **R-T4-39, lo deducido de la base no es lo medido** (V55-10) | La propuesta de lista deducía que, hoy, editar con «Editar todo» sobre una base vieja acaba en el conflicto de «Actualizar» y en «Conservar mi borrador»; la receta de punta a punta de CT-PBT4E-04, con los dobles de CT-PBT4C-10 y sin la recarga, da otra cosa (`actualizar estado=NotAppliedPreflight clasificacion=NotAppliedPreflight causa=[] motivo=[Ningún sobre editable de la relectura coincide con el origen del borrador.] diferencias=[] borrador=Dirty obsoleto=True llamadas=[Begin,ReadForPrepare,Dispose:scope]` (la sonda de «Actualizar» sobre la base, `/d/r80`; con la recarga, `actualizar estado=Applied clasificacion=Applied causa=[] motivo=[] diferencias=[] borrador=Clean obsoleto=False llamadas=[Begin,ReadForPrepare,PrepareUnits,BeginMutation,Reread,WriteUnit:A1,WriteUnit:C3,EraseUnit:B2,Seal,Dispose:mutation,Post,Dispose:scope]`, `/d/r81`)). El motivo dice que la relectura no encuentra el origen del borrador por su texto (A-T3-8; deducido del motivo, no leído por dentro): el cambio de fuera de la receta reescribe también el sobre de origen. Con un cambio de fuera que no toque el sobre de origen, el camino puede ser el del conflicto: no se midió. No cambia PB-T4e (con la recarga, la misma receta se aplica), pero sí lo que la propuesta describía como lo de hoy. Se mide con una sonda antes de describir lo de hoy, y el Smoke-PB lo mira en AutoCAD (§5.5, paso 6) |
+| **R-T4-40, una prueba de texto que busca la primera aparición** (D-PBT4-22) | La autoprueba de `WorkspacePilotEditGuardTests.cs:574` muta la primera aparición de `return TryReloadPilotEdit(request);`: el texto nuevo de `EditAllOfPilot` no lleva ese literal (`var reload = TryReloadPilotEdit(request);`), y la suite completa lo confirma |
+| **R-T4-41, una condición que llama al comparador sin protegerlo** (CA-T4e, M-01; D-S19) | `NeedsLazyReload` llama a `Status`, y `Status` al comparador sin protegerlo (DS:298-306); con un borrador «Sin decidir» la excepción salía de una condición evaluada antes de la vista (que sí lo protege, WHC:1860-1867). **La lección:** una rama nueva que mira el estado del borrador va detrás de las comprobaciones de la vista, y cada estado que la vista ya distingue lleva su línea en una CT (`marcado-sin-decidir`), medida contra el GREEN anterior |
 | R-T4-16, la doble lectura del piloto | Se mide en la precondición 6. En PB-T4a, la relectura en el origen repite las dos lecturas puras sobre el mismo escaneo, en `Draft/`, sin acceso nuevo al dibujo. En PB-T4b, D-S4 deja una sola materialización del modelo completo por lectura (D-PBT4-21), y la precondición 6 mide el coste con la sonda de `read-cost` |
 | R-T4-17, el coste de `IsDirty` | Sin cambio |
 | R-T4-19, la duración de la suite de Core | Se mide en la precondición 6 de PB-T4b; si pasa de 15 min, vuelve a la sesión |
@@ -3180,6 +3643,7 @@ Las de la v1 (§8.1): [OD] con D-PB-01 y D-PB-05; F4B-E28 Q3; F4B-E38; F4B-E29 (
 | PB-T4b | **Total** | **unas 465**; en la segunda vuelta, **470**; en la tercera, **475**; en la quinta, 477; en la sexta, **478** | **478** | **Aprobada como la que vio** (segunda vuelta, pregunta 2, y tercera, quinta y sexta tandas); `pbt4b-substitution-list-478.tsv`, sha256 `8b0fcd0ca775ce3a5e46ef2059f4b06e7ec7319883daf3cb37b1fe91290e9e8b` (las de 477, `5975c5b6…a651`, 475, `654c3b7b…0707c`, y 470, `44393b19…63e4`, quedan como historia) |
 | PB-T4c | PEG:155-163, CT-PBT1B-15 y CT-PBT4B-20 (C-5, Core), y CT-PBT2B-06 (C-3, UI) | 2; tras la remedición, 3 y 4 | **4** | **Aprobada como la que vio** (`owner-pbt4c-list-3-decision.md` y `owner-pbt4c-list-4-decision.md`); `pbt4c-substitution-list-4.tsv`, sha256 `9bd4c17a0eda837c92a7a0b7b3562d4ab17f1608baf3ffa8efaf560d8b1f82de` (la de 3, `d83e0a817144fa99f95ed4bfd151b822a4fc1035c10f736f77e8f8e6350186c1`, queda como historia) |
 | PB-T4d | La lista del alcance B fila a fila (C-7, originales, apoyo, compilación, ejecución, M-04, la lenta, SUS-01, M-03 y los ayudantes editados), con las 29 sustitutas de WPUR, la rama muerta de `BuildCore` y, desde la v5.3, sus declaraciones y su tramo editado | El esbozo: 138 + 55 + 29; B medida: 235 bajas | **271** con acción (284 filas) | **La elegida** (`owner-pbt4d-list-decisions.md`, pregunta 1, con `owner-pbt4d-substitutes-decision.md`, `owner-pbt4d-run-coverage-decision.md`, `owner-pbt4d-deadcode-27-decisions.md` y `owner-pbt4d-cat4d-decisions.md`); `pbt4d-retire-list-271.tsv`, sha256 `05a4d3d1905529c5bc4d53e0684d27d97eaa96502098eebeb9d16bfd931c75ac` (la de la v5.2, `pbt4d-retire-list-229.tsv`, `1943468ba9a9f342b74bb8ea2c57e1b664c7751b52344e7a712ea7bc2e151fad`, y el esbozo, `pbt4d-retire-list-138.tsv`, `d5467dc162e2cda8c539a829cc8f3a7c46260a119f70e840b34e6f78dde0387c`, quedan como historia) |
+| PB-T4e | Ninguna: ninguna prueba existente se edita, se salta ni se sustituye | 0 (la propuesta de lista: «La lista de sustituciones sale vacía (K = 0)», a confirmar al ejecutar) | **0**, medido con la suite completa de Core y los 19 filtros de UI (§4.5) | **La elegida** (`owner-pbt4e-list-decisions.md`, pregunta 4: «la lista es la elegida (aquí, ninguna prueba existente sustituida)»); sin archivo de lista |
 
 **Las cifras que corrige la v4.2** (M-32): de las 67 pruebas que dejan de compilar al retirar, `WorkspacePilotUpdateRunTests` da **42** y `PushBackFullWritePrepareTests`, **6**; en C-7, por texto y por compilación, son **48** (de las 49 de la clase) y **9** (de 9). Las demás de compilación: `WorkspaceDraftPilotOwnershipTests` 8, `WorkspaceDraftPilotStateTests` 7, `PushBackDeclaredCorrectionPilotParityTests` 2, `PushBackFullWriteRunTests` 1 y `WorkspaceDraftPilotMaterializationTests` 1.
 
@@ -3225,12 +3689,14 @@ Lo de la v3 (§8.3): el orden de las subtareas, los nombres, las CT y las guarda
 | **12.ª** (2026-11-22) | `owner-pbt4d-run-coverage-decision.md` | «Corrida»: «Sustituir las 21 (Recomendado)» | Las 21 de WPUR, equivalentes sobre `ExecuteFull` en `PushBackRetirePilotRunTests`; la precondición 6 mide otra vez la cobertura |
 | **13.ª** (2026-11-22) | `owner-pbt4d-deadcode-27-decisions.md` | «Rama muerta»: «Quitarla en PB-T4d (Recomendado)». «27 en vez de 21»: «Sí, 27 (Recomendado)» | El GREEN quita `allowErase` y lo que solo existe con él; las sustitutas pasan a 27 (y la 06, 07, 16, 19, 29 y 42) y se borran 21; la cobertura, rama por rama |
 | **14.ª** (2026-11-22) | `owner-pbt4d-cat4d-decisions.md` | «48 y 49»: «Sustituirlas (Recomendado)». «Huecos nuevos»: «Sustituirlos siempre (Recomendado)» | La 48 y la 49 de WPUR pasan a sustitutas sobre el modelo completo (29); la cobertura de la precondición 6 mira todo `src/` que se queda; todo camino que se queda y pierde su única prueba recibe una sustituta sin volver al Owner, salvo que una no se pueda escribir o salgan más de 10 nuevas sobre las 29; lo que cubra la UI se mide con sus filtros |
+| **15.ª** (2026-11-22) | `owner-pbt4e-list-decisions.md` | Pregunta 1, «Alcance»: «Solo la recarga (Recomendado)». Pregunta 2, «Si falla»: «No abrir y avisar (Recomendado)». Pregunta 3, «Orden»: «Antes de PB-T5 (Recomendado)». Pregunta 4, «Emisión»: «Sí, con condiciones (Recomendado)». «La recarga con un aviso», «Recarga y comprobar cambios», «Abrir sobre la base de antes», «Fundirla con PB-T5», «Después de F4B» y «Vuelve antes de emitir» no se hacen | **PB-T4e** (D-PBT4-22): antes de abrir la ventana de «Editar todo», un borrador Clean marcado como posiblemente obsoleto se recarga desde el dibujo, sin aviso, igual que con «Editar»; Dirty o sin la marca, como hoy; si la recarga falla, no abre y el campo muestra lo mismo que «Editar»; una tarea propia, con su cadena y su intento 1 de 3, cerrada antes de PB-T5; la emisión condicional, con la lista vacía (lo que fija para PB-T4e) |
 
 **Las decisiones de la sesión,** que no son del Owner:
 - **D-S7 a D-S10** (`session-pbt4c-design-decisions.md`, 2026-11-21; para PB-T4c): **D-S7**, la costura de CT-09 es `HeaderConfiguratorDialog`; **D-S8**, los filtros nuevos, por clase exacta; **D-S9**, `IWorkspaceFullEditHost` (y `SetFullEditHost`, `_fullEditHost`), por `WorkspaceModelBoundaryTests:101`; **D-S10**, CT-09 cubre lo que se puede alcanzar (en WORKSPACE, un módulo escenificado deja siempre cambios sin aplicar). Ninguna cambia la lista ni el comportamiento visible decidido por el Owner;
 - **D-S11 a D-S15** (`session-pbt4d-design-decisions.md`, 2026-11-22; para PB-T4d): **D-S11**, el RED lleva todo lo de `tests/`, sin esqueleto, y dos CT (CT-PBT4D-01 con `ExpectRed` true y CT-PBT4D-02 con false); **D-S12**, las tres que caen al ejecutar, con `Skip` y equivalente, prefijo `PushBackRetirePilot` y filtros por clase exacta; **D-S13**, los vacíos de M-04, en su sitio; **D-S14**, la prueba lenta, cada 97.º toque y el último; **D-S15**, los cuatro `cref` y el comentario, y `PushBackPilotDraftState.cs` en `UNIT_CHANGE`.
 - **Tras CA-T4d** (la sesión, en su orden para la v5.3; no son decisiones del Owner): M-01, el corpus de CT-PBT3B-06 (iii) pasa al modelo completo en su sitio, con la regla del Owner; M-02, la rama de `MirrorSelection`, medida con la cobertura de los filtros de UI; M-03, los ayudantes sin uso y las clases sin pruebas, borrados con registro; M-04, la lista fila a fila con sus declaraciones y su tramo editado; M-05, los comentarios del GREEN que describían el piloto como presente, y «cuatro condiciones»; M-06, el número de la clase de las sustitutas; M-07, la copia principal sola y con los 18 filtros del contrato.
 - **D-S16** (`session-pbt4d-design-decisions.md`, 2026-11-22; para PB-T4d, tras CA-T4d): la cobertura de la UI de cada lado es la unión de tres corridas de todos los filtros juntos y de una de cada filtro en su proceso (un binding de WPF da golpes que dependen de lo que corrió antes; R-T4-38), y el informe lista lo que baja (informativo); **con su nota tras la recomprobación 1 de CA-T4d** (M-11): cada entrada nombra la corrida, no la prueba, y ESTABLE solo por la UI exige también un filtro en su proceso.
+- **D-S17, D-S18 y D-S19** (para PB-T4e; `session-pbt4e-design-decisions.md`, 2026-11-22, sha256 `b21f2af4bab5321620bf8de3aceeb95585a0e2fe9e4cc2ae96f18e37c3e41e6d`; el Owner dejó a la sesión el sitio de la recarga y el valor de `EditAllStatus` en `owner-pbt4e-list-decisions.md`, «Lo que queda decidido»): **D-S17**, la recarga va en el anfitrión (la opción A de la propuesta de lista), con `TryReloadPilotEdit`; **D-S18**, se reutiliza `EditAllStatus.NotBegun`, sin valor nuevo, y el campo distingue la recarga por `view.Exists`; las dos, propuestas en la v5.5 y confirmadas tal cual; y **D-S19** (tras CA-T4e, M-01), la recarga va detrás de las tres comprobaciones de la vista, solo sobre un borrador que el gesto no acaba de empezar, para que un borrador «Sin decidir» o con texto pendiente responda como hoy sin evaluar la marca (la v5.6). Ninguna cambia la lista ni el comportamiento visible decidido por el Owner. El registro corrige también la etiqueta de la evaluación de R-T4-39 y nombra sus otras dos premisas (CA-T4e, M-03).
 - **Una errata, declarada** (CA-T4d M-06): la pregunta 2 de `owner-pbt4d-deadcode-27-decisions.md` dice «se borran 22 en vez de 27»; eran **21** pruebas (48 − 27): con `StatusAfter`, 22 filas de WPUR salían del archivo, pero `StatusAfter` va copiado en la clase nueva. La v5.2 la aplicó como 21 sin declararla. En la v5.3, con la 48 y la 49 sustituidas, se borran 19 y una se queda en WPUR.
 - **D-S1 a D-S3, D-S5 y D-S6** (`session-pbt4b-design-decisions.md`, 2026-11-20): **D-S1**, las siete copias mecánicas que no pueden pasar en el GREEN, y las que encuentre la precondición 6, pasan a equivalentes escritos a mano, con su registro y su texto literal, y la lista no cambia por eso; **en la v4.6**, la sesión aplica D-S1 a ocho más, que no compilaban sobre el modelo completo (V46-02), y decide que el guion añada la directiva de `Draft/` (MU, V46-01) y admita ediciones de ayudante en las copias de C-0, sin volver al Owner; **D-S5** (tras la v4.6; V47-01 y V47-02), las cuatro `Theory` que mezclan resultados en el RED (WLHT, PEG y las dos de WPP) se parten por filas en dos equivalentes escritos a mano, con el mismo cuerpo y las mismas aserciones (las dos de `MemberData`, con dos miembros de datos nuevos en la copia), y la regla de la partición se amplía solo para eso, con el mecanismo de D-S1 y sin volver al Owner, porque la lista, las aserciones, las filas y los totales no cambian (358/70 en C-0); **D-S6** (tras la v4.7; V48-01), las copias en el espacio de nombres raíz de su ensamblado, con el prefijo `FullPanelCopy` en sus clases, para que `NamespaceFolderGuardTests` siga en verde sin tocarla ni tocar ningún filtro heredado (el precedente de D-S2); y **D-S1 en la v4.8** (V48-02), las dos copias de WPP que fijaban que el piloto nunca borra una vista pasan a equivalentes que afirman lo que ya fijan D-PB-04, D-PBT3-09 (e) y D-PBT4-07 (356/72 en C-0); **D-S2**, «Conservar» con dos «Sí», rechazada la variante en la que el núcleo conserva sin testigo; **D-S3**, el alias, el testigo desde `Draft/` y `FullPrepareKit`. El Owner fue informado de D-S1 y D-S2 antes de la tercera tanda, con el texto exacto que copia `owner-pbt4b-breaks-decision.md`;
 - **D-S4** (en desarrollo de la 4.ª tanda; D-PBT4-21): la lectura completa del `Primary`, diferida en RIA (`System.Lazy`), y `Full` como `_full?.Value`; `AtOrigin`, NH y `ReadAt` sin cambio; RIA en el alcance como `UNIT_CHANGE`; CT-PBT4B-21; y la sonda del coste en la precondición 6, con una materialización en los cuatro casos.
@@ -3247,19 +3713,20 @@ Se declaran en la emisión de PB-T4b (F4B-E52), que custodia los siete registros
 - **El léxico de C# de las mediciones** (`lists_core.py`) se corrigió en la v4.2 para las cadenas verbatim que empiezan por una comilla escapada (`@"""…`), que tomaba por cadenas crudas: tres archivos de las listas las tienen (EIG, RG y `WorkspacePilotUpdateGuardTests`). **Las listas y sus sha256 no cambian** (comprobado: `pbt4-substitution-lists.tsv` sigue en `f24c2dbc…`).
 - **Medidos en la copia exportada, para PB-T4c** (V50-12; V51-06): K = 4, D = 0 y E = 4 (`/d/r5j`), el coste de `IsDirty` (`/d/r5k`), las líneas de las sondas y el ensayo de las CT de texto (`/d/r5i`), y el control del ensayo sobre la v5.0 (`/d/r5l`); los de la v5.0 (`/d/r5f`, `/d/r5g` y `/d/r5h`), como historia. **Lo que el ensayo no cubre:** las CT de comportamiento salvo por las sondas (§6.3.1). **Lo que el paseo de guardas no ve:** la reflexión sobre tipos y el comportamiento de la UI; lo ve la suite completa de Core y los filtros de UI.
 - **Medidos en copias exportadas, para PB-T4d** (V52-06; V53-10): la necesidad de cada baja (`/d/r6h`), la cobertura (`/d/r6j`, `/d/r6k`), los ensayos (`/d/r6l`, `/d/r6n`, `/d/r6v` y `/d/r6x`) y la precondición 6 de la v5.3 (`/d/r6w`, `/d/r6y` y `/d/r6z`); las demás, historia. **Lo que la cobertura no ve:** la cobertura de datos, el Plugin y la UI fuera de los filtros (§4.4).
+- **Medidos en copias exportadas, para PB-T4e** (la v5.6, V56-04; los de la v5.5, `/d/r71` a `/d/r75`, `/d/r77`, el primer ensayo de la v5.6, con un `warning CS8604`, y `/d/r78`, la primera principal de la v5.6, sin los 19 filtros de UI, historia): la línea nueva de D-S19 contra el GREEN de la v5.5 (`/d/r76`), el ensayo y la sonda de las CT (`/d/r82`), la precondición 6 (`/d/r83`, la copia principal, sola, y `/d/r79`, la base con cobertura) y el control de las CT (`/d/r80` y `/d/r81`). **Lo que no se ve sin AutoCAD:** el modal real, la paleta deshabilitada, el foco y el coste percibido de la lectura más antes de abrir (§5.5); y lo deducido de D-PBT4-22 (el caso del borde) no se ejecutó.
 - **Quedaban para la copia exportada:** K, D y E de PB-T4c; en PB-T4b, la partición de las copias en el RED (R_C y R_UI), el RED exacto entero, que las copias pasen en el GREEN, las lecturas de las guardas que solo se ven al ejecutar (el recorrido por diferencia, §4.2, no las ve), las líneas «presentar» de CT-PBT4B-06, el coste de la lectura con D-S4, el coste de `IsDirty` y la duración de la suite de Core.
 - **El miembro del informe de reconciliación** para la condición 7 se nombra como el que lee CT-PBT1B-16. La línea base va por `SetWorkingBaseline`.
 
 ## 10. Lo que queda para PB-T5
 
-- El Smoke-PB, con la lista de §5.5.
+- El Smoke-PB, con la lista de §5.5 (desde la v5.5, con la recarga de «Editar todo» de PB-T4e, que se cierra antes: `owner-pbt4e-list-decisions.md`, pregunta 3).
 - La CI exacta del Candidato.
 - El gate-close de F4B.
 
 ## 11. Las precondiciones de emisión
 
 1. **PB-T3c CERRADA:** cumplida (`7f0d9aa3`, F4B-E48).
-2. **Las respuestas del Owner:** cumplidas (`owner-pbt4-decisions.md`, `owner-pbt4b-retire-list-decisions.md` y, para PB-T4b, `owner-pbt4b-breaks-decision.md`, `owner-pbt4a-cost-decision.md`, `owner-pbt4b-list-477-decision.md`, `owner-pbt4b-list-478-decision.md` y `owner-pbt4b-cost-decision.md`; y, para PB-T4c, `owner-pbt4c-list-3-decision.md` y `owner-pbt4c-list-4-decision.md`), con su número F4B-E al custodiarlas; y las decisiones de la sesión, `session-pbt4b-design-decisions.md` (D-S1 a D-S3, D-S5 y D-S6) y D-S4 (§8.5), declaradas en F4B-E52. **Para PB-T4d:** `owner-pbt4d-list-decisions.md`, `owner-pbt4d-substitutes-decision.md`, `owner-pbt4d-run-coverage-decision.md`, `owner-pbt4d-deadcode-27-decisions.md` y `owner-pbt4d-cat4d-decisions.md`, y `session-pbt4d-design-decisions.md` (D-S11 a D-S15), con su número F4B-E al custodiarlas.
+2. **Las respuestas del Owner:** cumplidas (`owner-pbt4-decisions.md`, `owner-pbt4b-retire-list-decisions.md` y, para PB-T4b, `owner-pbt4b-breaks-decision.md`, `owner-pbt4a-cost-decision.md`, `owner-pbt4b-list-477-decision.md`, `owner-pbt4b-list-478-decision.md` y `owner-pbt4b-cost-decision.md`; y, para PB-T4c, `owner-pbt4c-list-3-decision.md` y `owner-pbt4c-list-4-decision.md`), con su número F4B-E al custodiarlas; y las decisiones de la sesión, `session-pbt4b-design-decisions.md` (D-S1 a D-S3, D-S5 y D-S6) y D-S4 (§8.5), declaradas en F4B-E52. **Para PB-T4d:** `owner-pbt4d-list-decisions.md`, `owner-pbt4d-substitutes-decision.md`, `owner-pbt4d-run-coverage-decision.md`, `owner-pbt4d-deadcode-27-decisions.md` y `owner-pbt4d-cat4d-decisions.md`, y `session-pbt4d-design-decisions.md` (D-S11 a D-S15), con su número F4B-E al custodiarlas. **Para PB-T4e:** `owner-pbt4e-list-decisions.md` (la 15.ª tanda) y las decisiones de la sesión D-S17, D-S18 y D-S19 (`session-pbt4e-design-decisions.md`, sha256 `b21f2af4bab5321620bf8de3aceeb95585a0e2fe9e4cc2ae96f18e37c3e41e6d`), con su número F4B-E al custodiarlas.
 3. **La comprobación acotada** de cada subtarea: 0 bloqueantes y 0 importantes sin resolver (pregunta 4).
 4. **Las celdas, la Snapshot y el binario,** vigentes.
 5. **La remedición sobre el cierre de la subtarea anterior** no cambia nada material (pregunta 4).
@@ -3274,13 +3741,16 @@ Se declaran en la emisión de PB-T4b (F4B-E52), que custodia los siete registros
    - **PB-T4b** (V45-04, V46-07, V47-05, V48-06 y V49-06; los ocho pasos de §6.2.1, con los guiones de la v4.9, y el paso 7, el de la v4.8 (V49-06); la corrida, en `pbt4bcc/compile/compile-check.md`), sobre copias exportadas del cierre de PB-T4a (`78a7cef3`): `apply_red_pbt4b_v49.py` en modo de medida y `partition_pbt4b_v48.py red` (con la regla de INV-PBT4B-02 y el reparto por filas de D-S5): la partición, su sha256 y R_C y R_UI; **el RED exacto** con la partición, sin las CT: la suite completa de Core y los filtros de UI, **Core 19 587 = (19 129 − R_C) + R_C + 458** y **UI 2 478 = (2 430 − R_UI) + R_UI + 48**; **el GREEN literal** (`apply_green_pbt4b_v45.py`): **Core 19 587 = 19 129 + 0 + 458** y **UI 2 478 = 2 430 + 0 + 48** (con las CT, 19 605 = 19 147 + 0 + 458 y 2 481 = 2 433 + 0 + 48), cero `warning CS` y `partition_pbt4b_v48.py green`: todas las copias pasan; **las dos sondas** sobre la copia del GREEN, en clases temporales fuera de todo commit: las líneas «presentar» de CT-06 (`pbt4b-ct06-presentar-probe.cs`) y **el coste de la lectura** (`pbt4b-read-cost-probe.cs`: una materialización en los cuatro casos, y lo esperado de §6.2.1); `check_skips_pbt4b_v48.py`; el coste de `IsDirty` y la duración de la suite. **Una copia que no pase** pasa a equivalente escrito a mano (D-S1), **una `Theory` que mezcle** se parte por filas (D-S5) y la emisión necesita una versión del paquete con su texto; **una prueba que falle fuera de la lista de 478** vuelve al Owner; **un coste que no cumpla lo esperado** vuelve a la sesión, que lo lleva al Owner (el de la v4.8 lo dio por cumplido el Owner, `owner-pbt4b-cost-decision.md`);
    - **PB-T4c** (los nueve pasos de §6.3.1; `pbt4ccc/compile/compile-check.md`), sobre copias exportadas del cierre de PB-T4b (`6adff90d`): `apply_red_pbt4c_v51.py`, la compilación sin ningún `warning CS`, `check_skips_pbt4c_v50.py` y los filtros; **el RED exacto,** sin las CT: **Core 19 608 = 19 147 + 0 + 461** y los 18 filtros de UI, donde solo cae el equivalente de CT-PBT2B-06, por aserción; **el GREEN literal:** **Core 19 608 = 19 147 + 0 + 461** y los 18 filtros, 0 `Failed`; las sondas de las líneas de las CT y el coste de `IsDirty`; **el ensayo de las CT de texto** (PASA en las dos ramas, y su control sobre la v5.0 ve I-01) **y el censo de C13** (PASA); **K = 4, D = 0 y E = 4**, y la duración de la suite. Medido en la v5.1 (`pbt4c-precondition6.json`, `29179a12ef8623f4c276f943a725ece6f3ffd84464f16705e1feda757efbce1a`). **Una prueba que falle fuera de la lista de 4** vuelve al Owner.
    - **PB-T4d** (los nueve pasos de §6.4.1; `pbt4dcc/compile/compile-check.md`), sobre copias exportadas del cierre de PB-T4c (`6c2820ba`): el RED literal y el GREEN literal, sin ningún `warning CS`; **Core:** en el RED, 19418 = 19014 + 1 + 403, y solo cae CT-PBT4D-01, por aserción; en el GREEN, 19418 = 19015 + 0 + 403; los 18 filtros de UI del contrato, 0 `Failed`; la copia principal, sola; **la cobertura ampliada de todo `src/` que se queda, PASA**; el ensayo de las CT y su control, y el censo de C13 (PASA). Medido en la v5.3 (`pbt4d-precondition6.json`, `52e03e061cd62c79597f51b8eaf144a27d68b3bf5db876406a804be2fa978989`). **Una prueba que falle fuera de la lista** vuelve al Owner.
-7. **La lista que se emite es la aprobada, o una parte:** PB-T4a, 1; **PB-T4b, las 478 de `pbt4b-substitution-list-478.tsv`** (sha256 `8b0fcd0ca775ce3a5e46ef2059f4b06e7ec7319883daf3cb37b1fe91290e9e8b`), que el generador comprueba; **PB-T4c, las 4 de `pbt4c-substitution-list-4.tsv`** (sha256 `9bd4c17a0eda837c92a7a0b7b3562d4ab17f1608baf3ffa8efaf560d8b1f82de`). **PB-T4d, las 271 filas con acción de `pbt4d-retire-list-271.tsv`** (sha256 `05a4d3d1905529c5bc4d53e0684d27d97eaa96502098eebeb9d16bfd931c75ac`), la elegida (`owner-pbt4d-list-decisions.md`, pregunta 1, con las sustitutas y la rama muerta de sus decisiones siguientes), que el generador comprueba; se emite por su autorización condicional (pregunta 4).
+   - **PB-T4e** (los nueve pasos de §6.5.1; `pbt4ecc/compile/compile-check.md`), sobre copias exportadas del cierre de PB-T4d (`160e019d`): el RED literal y el GREEN literal, sin ningún `warning CS`; **Core:** en el RED, 19421 = 19015 + 3 + 403, y solo caen las tres CT de Core de PB-T4e, por aserción; en el GREEN, 19421 = 19018 + 0 + 403; los 19 filtros de UI del contrato, cada uno en su proceso: en el RED solo cae CT-PBT4E-03 y en el GREEN, 0 `Failed`; la copia principal, sola; **la cobertura de todo `src/` que se queda, PASA**; la sonda y el control de las CT. Medido en la v5.6 (`pbt4e-precondition6.json`, `daea59847a3629111073f0b7565d9144be90c880cf2ba61c98aae91373c9c169`). **Una prueba existente que falle** vuelve al Owner (la lista está vacía).
+7. **La lista que se emite es la aprobada, o una parte:** PB-T4a, 1; **PB-T4b, las 478 de `pbt4b-substitution-list-478.tsv`** (sha256 `8b0fcd0ca775ce3a5e46ef2059f4b06e7ec7319883daf3cb37b1fe91290e9e8b`), que el generador comprueba; **PB-T4c, las 4 de `pbt4c-substitution-list-4.tsv`** (sha256 `9bd4c17a0eda837c92a7a0b7b3562d4ab17f1608baf3ffa8efaf560d8b1f82de`). **PB-T4d, las 271 filas con acción de `pbt4d-retire-list-271.tsv`** (sha256 `05a4d3d1905529c5bc4d53e0684d27d97eaa96502098eebeb9d16bfd931c75ac`), la elegida (`owner-pbt4d-list-decisions.md`, pregunta 1, con las sustitutas y la rama muerta de sus decisiones siguientes), que el generador comprueba; se emite por su autorización condicional (pregunta 4). **PB-T4e, la lista vacía:** ninguna prueba existente sustituida (`owner-pbt4e-list-decisions.md`, pregunta 4), que el generador comprueba (ningún `Skip`, ningún equivalente y ningún archivo existente de `tests/` en el alcance); se emite por su autorización condicional.
 8. **La custodia,** en el commit de emisión de PB-T4a:
    - este paquete (como `docs/initiatives/I-64-f4b-pbt4-gate-contract-package.md`), las versiones v1 a v4.1, el registro de mediciones, la revisión y su encargo, las instrucciones de cada versión, los guiones y sus salidas, las listas (`pbt4-substitution-lists.md` y `.tsv`, `pbt4b-substitution-list.tsv`, `pbt4d-retire-list.tsv`, `pbt4-copy-map.tsv` y `pbt4-retire-compile.tsv`), el recorrido de las guardas (`pbt4a-guard-walk.tsv`, `pbt4a-guard-walk-out.txt` y `pbt4a-guard-walk-flagged.txt`) y los fragmentos de `v41/` y `v42/`;
    - los dos registros del Owner (`F4B-DRAFTS/coordinator/owner-pbt4-decisions.md` y `owner-pbt4b-retire-list-decisions.md`);
    - la entrada «## PB-T4a» de `superseding-characterization.md`.
 9. **Para PB-T4b y PB-T4c:** la anterior CERRADA y su remedición (**PB-T4a, CERRADA: F4B-E51, `78a7cef3`**). **En el commit de emisión de PB-T4b,** además: esta versión (v4.9), la v4.8, la v4.7, la v4.6, la v4.5 y la v4.4, sus fragmentos de `v44/`, `v45/`, `v46/`, `v47/`, `v48/` y `v49/`, las listas (`pbt4b-substitution-list-478.tsv`, `pbt4b-substitution-list-477.tsv`, `pbt4b-substitution-list-475.tsv` y `pbt4d-retire-list-138.tsv`), los mapas de la copia v2 a v5, el kit de la v4.5, los guiones de la v4.4 a la v4.9 y sus salidas, la partición y las 21 copias generadas con ella (por sha256), `pbt4b-equivalents-review-v45.txt`, `pbt4b-equivalents-review-v46.txt`, `pbt4b-equivalents-review-v47.txt`, `pbt4b-equivalents-review-v48.txt` y `pbt4b-equivalents-review-v49.txt`, el análisis de la v4.7 (`v47/analysis-outside-477.md`), la regla de la tercera corrida del coste (`v48/session-cost-rerun-rule.md`), la corrida de la precondición 6 (`pbt4bcc/compile/`: `compile-check.md`, `pbt4b-precondition6.json`, sus guiones, sus registros y el sha256 de sus TRX y binarios), las dos sondas y sus TRX con su sha256, los registros del Owner de la tercera, la quinta, la sexta y la séptima tandas (`owner-pbt4b-breaks-decision.md`, `owner-pbt4b-list-477-decision.md`, `owner-pbt4b-list-478-decision.md` y, la séptima, `owner-pbt4b-cost-decision.md`; `owner-pbt4a-cost-decision.md` ya está en el cierre de PB-T4a), la decisión de la sesión y la entrada «## PB-T4b» de `superseding-characterization.md`. **En el commit de emisión de PB-T4c,** además: esta versión (v5.1) y la v5.0, los fragmentos y los guiones de `v50/` y de `v51/`, las listas (`pbt4c-substitution-list-4.tsv` y la de 3), las piezas y los guiones de §6.3.2 y sus salidas, las sondas, la remedición (`v50/remeasure_pbt4c_v50.py` y su salida), el paseo de guardas, la corrida de la precondición 6 (`pbt4ccc/compile/`: `compile-check.md`, `pbt4c-precondition6.json`, sus guiones, sus registros y el sha256 de sus TRX y binarios, las de la v5.1 en `r5i-en/`, `r5j-rg/`, `r5k-id/` y `r5l-cc/`, y como historia las de la v5.0, la vuelta parada y la medida de D-S9 de `v50/variant-rename/`), el ensayo de las CT de texto y el censo de C13 con sus salidas, los registros del Owner de la octava y la novena tandas, `session-pbt4c-design-decisions.md` y la entrada «## PB-T4c» de `superseding-characterization.md`. **Para PB-T4d:** el cierre de PB-T4c (CERRADA: F4B-E55, `6c2820ba`), su lista vuelta a medir y las respuestas del Owner (cumplidas); **en el commit de emisión de PB-T4d,** además: esta versión (v5.4), los fragmentos y los guiones de `v52/` (con `v52/sub/`, el alto del relevo), de `v53/` y de `v54/`, la comprobación acotada de la v5.2 (`independent-review-pbt4d-check.md`), la lista (`pbt4d-retire-list-271.tsv`; la de la v5.2, `pbt4d-retire-list-229.tsv`, como historia), las dos piezas y sus módulos y aplicadores, la remedición, las medidas de la necesidad y de la cobertura, la corrida de la precondición 6 (`pbt4dcc/compile/`, en `F4B-DRAFTS/pbt4/cc4d/`: `compile-check.md`, `pbt4d-precondition6.json`, sus guiones, sus registros y el sha256 de sus TRX y de sus coberturas, y como historia las copias anteriores), los cinco registros del Owner de las tandas 10.ª a 14.ª, `session-pbt4d-design-decisions.md` (D-S11 a D-S16) y la entrada «## PB-T4d» de `superseding-characterization.md`.
 
+
+10. **Para PB-T4e** (desde la v5.5): **PB-T4d CERRADA** (F4B-E59, `160e019d`) y su remedición, que aquí es la lectura por objetos git de D-PBT4-22 y la precondición 6 sobre `160e019d`. **En el commit de emisión de PB-T4e,** además: esta versión (v5.6) y la v5.5, las piezas de las dos y sus herramientas y sus generadores (`v55/` y `v56/`), la precondición 6 (`pbt4ecc/compile/`: `compile-check.md`, `pbt4e-precondition6.json`, sus guiones, sus registros y el sha256 de sus TRX), el registro del Owner de la 15.ª tanda (`owner-pbt4e-list-decisions.md`), la propuesta de lista (`pbt4e/list-proposal.md`), el registro de la sesión con D-S17 a D-S19 (`session-pbt4e-design-decisions.md`), la comprobación acotada CA-T4e (`independent-review-pbt4e-check.md`) y su recomprobación sobre el diff de la v5.6, el resumen y el registro de la precondición 6 de la v5.5 (`pbt4e-precondition6-v55.json` y `compile-check-v55.md`, historia), y la entrada «## PB-T4e» de `superseding-characterization.md`, con la lista vacía.
 
 ## Anexo V49-A. El texto literal de lo escrito a mano de la v4.8 y la v4.9, y de las cuatro `Theory` partidas por filas
 
@@ -7789,6 +8259,822 @@ public class PushBackRetirePilotPlanGuardTests
         // Any exception is an Invalid with its reason, never an exception to the caller.
         Assert.Matches(@"catch\s*\(\s*Exception\s+ex\s*\)\s*\{\s*return\s+PushBackPilotPrepareResult\.WithInvalid\s*\(", prepare);
         Assert.DoesNotMatch(new Regex(@"\bthrow\b"), prepare);
+    }
+}
+```
+
+## Anexo V56-A. El texto literal de PB-T4e: el GREEN y los dos archivos nuevos del RED (v5.6)
+
+La pieza del RED (`pbt4e-red-v56.txt`, sha256 `d052f73d726817f4240f3b5edfd89a0ec8aeb7b9cc17dbce684aa8e4f433c9e1`) son sus tres lineas de cabecera y un bloque NEWFILE por cada archivo de abajo, con su texto tal cual.
+
+### La pieza del GREEN, `pbt4e-green-v56.txt` (sha256 `a745c2737a7e0fe908489a1bf17ed86569577ed3dbf54ecd3661c488faf88158`)
+
+```text
+@@@@ # PB-T4e (I-64 F4B), paquete v5.6: el GREEN literal de src/ (la recarga de Editar todo, D-PBT4-22; desde la v5.6, tras las comprobaciones de la vista, D-S19).
+@@@@ # Bloques EDIT <ruta> / OLD / NEW / END (el OLD esta exactamente una vez en el texto que se va editando; un NEW sin lineas es el texto vacio). Cuatro archivos existentes
+@@@@ # cambian (UNIT_CHANGE): WorkspaceHostCore.cs (el cuerpo de EditAllOfPilot), WorkspacePilotFieldViewModel.cs (la constante del aviso,
+@@@@ # la linea de BeginEdit que la usa, el resumen de EditAll y el aviso de EditAll), WorkspaceEditIntent.cs e IWorkspacePilotEditPort.cs (solo
+@@@@ # comentarios). Ningun archivo nuevo ni borrado; tests/ no se toca.
+@@@@ # Saltos de linea \n; lo aplica green_pbt4e_v56.py (apply_green_pbt4e_v56.py) sobre 160e019d.
+
+@@@@ EDIT src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs
+@@@@ OLD
+        /// I-64 F4B PB-T4c (D-PBT4-13): "Editar todo" for one rack. Without work for the rack it begins it through the edit intention, so its
+        /// one read is the one of the intention; then it opens the full editor over the work and keeps the mark of the reads until the editor
+        /// closes, so while it is open every operation of the panel answers Busy or Waiting (K = 1). The editor only hands its edits to the
+        /// work: nothing here writes the drawing. A port that does not offer it answers NotAvailable.
+@@@@ NEW
+        /// I-64 F4B PB-T4c (D-PBT4-13): "Editar todo" for one rack. Without work for the rack it begins it through the edit intention, so its
+        /// one read is the one of the intention; over a clean work marked as possibly stale it first reloads it with the lazy reload of
+        /// "Editar", whose one read is the one of the reload, and a reload that does not reload the work does not open the editor (I-64 F4B
+        /// PB-T4e, D-PBT4-22); then it opens the full editor over the work and keeps the mark of the reads until the editor closes, so while it
+        /// is open every operation of the panel answers Busy or Waiting (K = 1). The editor only hands its edits to the work: nothing here
+        /// writes the drawing. A port that does not offer it answers NotAvailable.
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+@@@@ OLD
+        /// <summary>There was no work and the edit intention did not begin it: the outcome carries the one of the intention.</summary>
+        NotBegun,
+@@@@ NEW
+        /// <summary>
+        /// There was no work and the edit intention did not begin it, or (I-64 F4B PB-T4e, D-PBT4-22) the work was clean and marked as possibly
+        /// stale and the lazy reload did not reload it: the outcome carries the one of the intention or of the reload, and nothing was opened.
+        /// </summary>
+        NotBegun,
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+@@@@ OLD
+        /// <summary>The outcome of the edit intention that did not begin the work (NotBegun); the default value otherwise.</summary>
+        public EditIntentOutcome Begin { get; }
+@@@@ NEW
+        /// <summary>
+        /// The outcome of the edit intention that did not begin the work, or of the lazy reload that did not reload it (NotBegun); the default
+        /// value otherwise.
+        /// </summary>
+        public EditIntentOutcome Begin { get; }
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+@@@@ OLD
+                // Without work for the rack the edit intention begins it, with its one read, its admission and its diagnostic.
+                var draft = FindPilotDraft(request.Session, request.RackId);
+                if (draft == null)
+                {
+                    var begun = TryBeginPilotEdit(request);
+                    if (begun.Status != EditIntentStatus.Admitted) return EditAllOutcome.NotBegun(begun);
+                    draft = FindPilotDraft(request.Session, request.RackId);
+                    if (draft == null) return EditAllOutcome.Failed(EditAllBusyDraftReason);
+                }
+
+                var view = ViewOfPilotDraft(draft);
+                if (view.State == PilotFieldState.Applying || !draft.IsRegistered) return EditAllOutcome.Waiting(EditAllBusyDraftReason);
+                if (!view.CanEdit) return EditAllOutcome.Refused(EditAllStateReason);
+                if (draft.HasPendingText) return EditAllOutcome.Refused(EditAllPendingTextReason);
+@@@@ NEW
+                // Without work for the rack the edit intention begins it, with its one read, its admission and its diagnostic.
+                var draft = FindPilotDraft(request.Session, request.RackId);
+                var begunHere = false;
+                if (draft == null)
+                {
+                    var begun = TryBeginPilotEdit(request);
+                    if (begun.Status != EditIntentStatus.Admitted) return EditAllOutcome.NotBegun(begun);
+                    draft = FindPilotDraft(request.Session, request.RackId);
+                    if (draft == null) return EditAllOutcome.Failed(EditAllBusyDraftReason);
+                    begunHere = true;
+                }
+
+                var view = ViewOfPilotDraft(draft);
+                if (view.State == PilotFieldState.Applying || !draft.IsRegistered) return EditAllOutcome.Waiting(EditAllBusyDraftReason);
+                if (!view.CanEdit) return EditAllOutcome.Refused(EditAllStateReason);
+                if (draft.HasPendingText) return EditAllOutcome.Refused(EditAllPendingTextReason);
+
+                // I-64 F4B PB-T4e (D-PBT4-22, D-S19): over a work that this gesture did not begin, clean and marked as possibly stale, the
+                // lazy reload of "Editar" runs here, the same method with its one read, after the checks of the view (so a work that is
+                // applying, undecidable, unknown, in error or with pending text answers as before, without evaluating the mark) and before
+                // the editor opens; a reload that does not reload the work does not open the editor and carries its outcome. Either way the
+                // gesture reads the drawing at most once, and never while the editor is open.
+                if (!begunHere && draft.NeedsLazyReload)
+                {
+                    var reload = TryReloadPilotEdit(request);
+                    if (reload.Status != EditIntentStatus.Reloaded) return EditAllOutcome.NotBegun(reload);
+                }
+@@@@ END
+
+@@@@ EDIT src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+@@@@ OLD
+        private const string ReloadedText = "Borrador recargado desde el dibujo.";
+@@@@ NEW
+        private const string ReloadedText = "Borrador recargado desde el dibujo.";
+        private const string NotReloadedText = "No se recargó: el borrador se conserva tal como estaba.";
+@@@@ END
+
+@@@@ EDIT src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+@@@@ OLD
+                        if (stale) _noticeText = "No se recargó: el borrador se conserva tal como estaba.";
+@@@@ NEW
+                        if (stale) _noticeText = NotReloadedText;
+@@@@ END
+
+@@@@ EDIT src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+@@@@ OLD
+        /// port is asked to open the full editor over the work of the rack, with no reference and no witness: the port begins the work if there
+        /// is none and holds the panel while the editor is open. When it closes, the field and the strip are shown again from the port.
+@@@@ NEW
+        /// port is asked to open the full editor over the work of the rack, with no reference and no witness: the port begins the work if there
+        /// is none, reloads first a clean work that may be stale (I-64 F4B PB-T4e) and holds the panel while the editor is open. When it closes,
+        /// the field and the strip are shown again from the port; a reload that did not reload the work is shown as "Editar" shows it.
+@@@@ END
+
+@@@@ EDIT src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+@@@@ OLD
+                if (outcome.Status == EditAllStatus.NotBegun && outcome.Begin.Status == EditIntentStatus.NotAdmitted)
+                {
+                    _diagnostic = outcome.Begin.Diagnostic ?? string.Empty;
+                    _hint = outcome.Begin.ClassicEditorHint ?? string.Empty;
+                }
+@@@@ NEW
+                if (outcome.Status == EditAllStatus.NotBegun && outcome.Begin.Status == EditIntentStatus.NotAdmitted)
+                {
+                    _diagnostic = outcome.Begin.Diagnostic ?? string.Empty;
+                    _hint = outcome.Begin.ClassicEditorHint ?? string.Empty;
+
+                    // I-64 F4B PB-T4e (D-PBT4-22): over a work that already existed the port does not begin it, so this is the reload of a
+                    // clean work that may be stale, and the field shows what "Editar" shows for a reload that is not admitted.
+                    if (view.Exists) _noticeText = NotReloadedText;
+                }
+@@@@ END
+```
+
+### `tests/RackCad.Tests/PushBackEditAllReloadTests.cs` (`NewFileSha` `9e849864709a964a864902c6f44e5d92014d962cc56c374cebfc7dfe42c6b017`)
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using RackCad.Application.Persistence;
+using RackCad.Application.Systems.PushBack;
+using RackCad.Application.Systems.PushBack.Draft;
+using RackCad.Application.Systems.PushBack.Pilot;
+using RackCad.Application.Workspace;
+using RackCad.Application.Workspace.Drafts;
+using Xunit;
+
+namespace RackCad.Tests
+{
+    /// <summary>
+    /// I-64 F4B PB-T4e (D-PBT4-22) — the reload of «Editar todo» through the edit port of the host (CT-PBT4E-01, 02 and 04). Before the editor
+    /// opens, a clean draft marked as possibly stale is reloaded from the drawing with the lazy reload of «Editar» (the same method of the host,
+    /// with its one read); a reload that does not reload it does not open the editor and carries its outcome; a dirty draft, a draft in
+    /// conflict or a draft without the mark opens as today, and an undecidable one is refused as today (D-S19). Every recipe drives the host core of the workspace over a simulated bridge and the
+    /// reader of the kit, with the real pure cores; the host of the full editor is a double of the class that shows nothing: it puts the modal of
+    /// the panel (as the Plugin does), records the launch and the reads already made when it opens, and runs what the recipe gives it. Nothing
+    /// opens AutoCAD, a window or a file. Every call goes through <see cref="Paso{T}"/> (the «EXCEPCION» rule), so a behavior that is missing
+    /// fails by ASSERTION on the lines, never by an escaped exception. Culture: invariant.
+    /// </summary>
+    public sealed class PushBackEditAllReloadTests
+    {
+        private const string RackA = FullEditIntentKit.RackA;
+
+        /// <summary>The name that the drawing carries after the change outside the panel: a field that the full editor shows.</summary>
+        private const string OtherName = "Otro nombre";
+
+        // ---------------------------------------------------------------------------------------------- helpers
+
+        /// <summary>The «EXCEPCION» rule: a step that throws becomes a line, and the expected lines never contain one.</summary>
+        private static T Paso<T>(List<string> log, Func<T> step)
+        {
+            try
+            {
+                return step();
+            }
+            catch (Exception error)
+            {
+                log.Add("EXCEPCION " + error.GetType().Name + ": " + error.Message);
+                return default(T);
+            }
+        }
+
+        private static void Paso(List<string> log, Action step) => Paso<int>(log, () => { step(); return 0; });
+
+        private static void Finish(List<string> log, IEnumerable<string> expected)
+            => Assert.Equal(string.Join("\n", expected), string.Join("\n", log));
+
+        private static string R(string reason) => reason == null ? "null" : "[" + reason + "]";
+
+        private static string StatusOf(DraftSession<PushBackFullDraftState> draft) => draft == null ? "null" : draft.Status.ToString();
+
+        /// <summary>The host of the full editor of the recipes: it puts the modal of the panel, records what it opens and runs the recipe.</summary>
+        private sealed class EditorDouble : IWorkspaceFullEditHost
+        {
+            private readonly WorkspaceHostCore _core;
+            private readonly Func<int> _reads;
+
+            public EditorDouble(WorkspaceHostCore core, Func<int> reads)
+            {
+                _core = core;
+                _reads = reads;
+            }
+
+            public Action<PushBackDraftEditorLaunch> Inside { get; set; }
+
+            public int Shown { get; private set; }
+
+            /// <summary>The launch of the last opening, or null.</summary>
+            public PushBackDraftEditorLaunch Launch { get; private set; }
+
+            /// <summary>The reads of the drawing already made when the editor opens, and the ones made while it is open.</summary>
+            public int ReadsBefore { get; private set; }
+
+            public int ReadsInside { get; private set; }
+
+            public void ShowModal<TLaunch>(TLaunch launch) where TLaunch : class
+            {
+                Shown++;
+                Launch = launch as PushBackDraftEditorLaunch;
+                ReadsBefore = _reads();
+                _core.SetModalRackCadActive(true);
+                try
+                {
+                    if (Inside != null) Inside(Launch);
+                }
+                finally
+                {
+                    _core.SetModalRackCadActive(false);
+                    ReadsInside = _reads() - ReadsBefore;
+                }
+            }
+        }
+
+        /// <summary>The host over a simulated bridge, the reader of the kit and, when asked, the double of the host of the editor.</summary>
+        private sealed class Setup
+        {
+            public Setup(bool withEditor = true)
+            {
+                Reader = new FullEditIntentFakeReader();
+                Rig = new FullReadRig(Reader);
+                Editor = new EditorDouble(Rig.Core, () => Reader.Calls.Count);
+                if (withEditor) Rig.Core.SetFullEditHost(Editor);
+            }
+
+            public FullEditIntentFakeReader Reader { get; }
+
+            public FullReadRig Rig { get; }
+
+            public EditorDouble Editor { get; }
+
+            public IWorkspacePilotEditPort Port => Rig.Core;
+
+            /// <summary>The draft begun from the usual read; then the drawing changes outside (the reader answers the renamed read), and the
+            /// reads are counted from here.</summary>
+            public DraftSession<PushBackFullDraftState> BeginThenChangeOutside()
+            {
+                var draft = Rig.Begin();
+                Reader.Answer = Renamed;
+                Reader.Calls.Clear();
+                return draft;
+            }
+        }
+
+        /// <summary>The admitted read of the same two views of the rack after a change outside the panel: another name.</summary>
+        private static EditIntentReadResult Renamed(string rackId)
+            => FullEditIntentKit.ReadOf(
+                IntentKit.Scan(
+                    rackId,
+                    "A1",
+                    IntentKit.Member("A1", IntentKit.Variant("pb-01-base", rackId, name: OtherName)),
+                    IntentKit.Member("B2", IntentKit.Variant("pb-01-base", rackId, view: "lateral", section: 3, name: OtherName))));
+
+        /// <summary>The usual three views of a rack (the frontal view, the origin; a lateral one; the plan view), with a name when given.</summary>
+        private static PushBackPilotIntentScan ThreeViews(int lateralPost, string name)
+            => IntentKit.Scan(
+                FullPrepareKit.Rack,
+                "A1",
+                IntentKit.Member("A1", FullPrepareKit.Frontal(name: name)),
+                IntentKit.Member("B2", FullPrepareKit.Lateral(lateralPost, name: name)),
+                IntentKit.Member("C3", FullPrepareKit.Planta(name: name)));
+
+        /// <summary>«- frente»: the rack loses its last front, and its lateral of the post 3 becomes obsolete.</summary>
+        private static void LessOneFront(PushBackEditableState state) => state.Editor.SetSlotCount(state.Editor.SlotCount - 1);
+
+        private static string NameOf(PushBackDraftEditorLaunch launch) => launch == null ? "null" : "[" + launch.State.Name + "]";
+
+        /// <summary>The outcome of «Editar todo» as the lines of CT-02 read it, and its comparison with the reload of «Editar».</summary>
+        private static bool SameAsTheReload(EditIntentOutcome begin, EditIntentOutcome reload)
+            => begin.Status == reload.Status
+               && string.Equals(begin.Reason, reload.Reason, StringComparison.Ordinal)
+               && string.Equals(begin.Diagnostic, reload.Diagnostic, StringComparison.Ordinal)
+               && string.Equals(begin.Detail, reload.Detail, StringComparison.Ordinal)
+               && string.Equals(begin.ClassicEditorHint, reload.ClassicEditorHint, StringComparison.Ordinal);
+
+        // ------------------------------------------------------------------------------------------------- CT-01
+
+        [Fact]
+        public void CT_PBT4E_01_EditAllReloadsACleanDraftMarkedAsPossiblyStaleBeforeTheEditorOpensAndLeavesEveryOtherDraftAsToday()
+        {
+            var log = new List<string>();
+
+            // The case of the task: a clean draft marked as possibly stale is reloaded, with one read, before the editor opens over it.
+            Paso(log, () =>
+            {
+                var s = new Setup();
+                var draft = s.BeginThenChangeOutside();
+                draft.MarkPossiblyStale();
+                var outcome = s.Port.TryEditAll(s.Rig.Request());
+                log.Add("marcado-limpio estado=" + outcome.Status + " abierto=" + (s.Editor.Shown > 0) + " lecturas=" + s.Reader.Calls.Count
+                    + " lecturas-antes-de-abrir=" + s.Editor.ReadsBefore + " lecturas-dentro=" + s.Editor.ReadsInside
+                    + " nombre-del-lanzamiento=" + NameOf(s.Editor.Launch) + " obsoleto=" + draft.IsPossiblyStale + " borrador=" + StatusOf(draft)
+                    + " mismo-borrador=" + ReferenceEquals(draft, s.Rig.Draft()));
+            });
+
+            // Without the mark: nothing is read and the editor opens over the draft as it is, as today.
+            Paso(log, () =>
+            {
+                var s = new Setup();
+                var draft = s.BeginThenChangeOutside();
+                var outcome = s.Port.TryEditAll(s.Rig.Request());
+                log.Add("sin-marca estado=" + outcome.Status + " abierto=" + (s.Editor.Shown > 0) + " lecturas=" + s.Reader.Calls.Count
+                    + " nombre-nuevo=" + (s.Editor.Launch != null && s.Editor.Launch.State.Name == OtherName) + " obsoleto=" + draft.IsPossiblyStale);
+            });
+
+            // A dirty draft with the mark: the reload of «Editar» does not apply to it, so nothing is read and the editor opens as today.
+            Paso(log, () =>
+            {
+                var s = new Setup();
+                var draft = s.BeginThenChangeOutside();
+                FullPrepareKit.SetScale(draft, 2.5);
+                draft.MarkPossiblyStale();
+                var outcome = s.Port.TryEditAll(s.Rig.Request());
+                log.Add("marcado-sucio estado=" + outcome.Status + " abierto=" + (s.Editor.Shown > 0) + " lecturas=" + s.Reader.Calls.Count
+                    + " nombre-nuevo=" + (s.Editor.Launch != null && s.Editor.Launch.State.Name == OtherName) + " obsoleto=" + draft.IsPossiblyStale
+                    + " borrador=" + StatusOf(draft));
+            });
+
+            // A draft in conflict with the mark: the same, it opens as today without reading.
+            Paso(log, () =>
+            {
+                var s = new Setup();
+                var draft = s.BeginThenChangeOutside();
+                Assert.True(draft.TryBeginApply().IsStarted);
+                draft.CompleteApply(DraftApplyOutcome<PushBackFullDraftState>.NotAppliedConflict(new[] { new DraftDifference("A1", DraftDifferenceKind.EnvelopeText) }));
+                draft.MarkPossiblyStale();
+                var outcome = s.Port.TryEditAll(s.Rig.Request());
+                log.Add("marcado-conflicto estado=" + outcome.Status + " abierto=" + (s.Editor.Shown > 0) + " lecturas=" + s.Reader.Calls.Count
+                    + " obsoleto=" + draft.IsPossiblyStale + " borrador=" + StatusOf(draft));
+            });
+
+            // An undecidable draft with the mark (its comparer throws, so it cannot tell whether it is dirty; D-S19): the checks of the view
+            // answer first, as today, so the mark is never evaluated, nothing is read and nothing is reported as a failure.
+            Paso(log, () =>
+            {
+                var s = new Setup();
+                var begun = s.Rig.Core.OpenDrafts.Begin(
+                    s.Rig.Session, RackA, FullEditIntentKit.Admitted(RackA).FullRead.Read, new PilotEditThrowingComparerFull(), PushBackFullDraftStateComparer.Copy);
+                var draft = begun.Draft;
+                draft.MarkPossiblyStale();
+                s.Reader.Calls.Clear();
+                var outcome = s.Port.TryEditAll(s.Rig.Request());
+                log.Add("marcado-sin-decidir alta=" + begun.Status + " estado=" + outcome.Status + " motivo=" + R(outcome.Reason) + " abierto=" + (s.Editor.Shown > 0)
+                    + " lecturas=" + s.Reader.Calls.Count + " fallos=[" + string.Join(",", s.Rig.Host.Faults.Select(fault => fault.Context)) + "] obsoleto=" + draft.IsPossiblyStale);
+            });
+
+            // Without the host of the editor, nothing is reloaded: the answer of today comes before the reload.
+            Paso(log, () =>
+            {
+                var s = new Setup(withEditor: false);
+                var draft = s.BeginThenChangeOutside();
+                draft.MarkPossiblyStale();
+                var outcome = s.Port.TryEditAll(s.Rig.Request());
+                log.Add("marcado-sin-anfitrion estado=" + outcome.Status + " abierto=" + (s.Editor.Shown > 0) + " lecturas=" + s.Reader.Calls.Count
+                    + " obsoleto=" + draft.IsPossiblyStale);
+            });
+
+            // A request of another session is rejected by the gate before anything is read.
+            Paso(log, () =>
+            {
+                var s = new Setup();
+                var draft = s.BeginThenChangeOutside();
+                draft.MarkPossiblyStale();
+                var outcome = s.Port.TryEditAll(new EditIntentRequest(new SessionId(777), RackA, null, null));
+                log.Add("marcado-otra-sesion estado=" + outcome.Status + " abierto=" + (s.Editor.Shown > 0) + " lecturas=" + s.Reader.Calls.Count
+                    + " obsoleto=" + draft.IsPossiblyStale);
+            });
+
+            Finish(
+                log,
+                new[]
+                {
+                    "marcado-limpio estado=Closed abierto=True lecturas=1 lecturas-antes-de-abrir=1 lecturas-dentro=0 nombre-del-lanzamiento=[Otro nombre] obsoleto=False borrador=Clean mismo-borrador=True",
+                    "sin-marca estado=Closed abierto=True lecturas=0 nombre-nuevo=False obsoleto=False",
+                    "marcado-sucio estado=Closed abierto=True lecturas=0 nombre-nuevo=False obsoleto=True borrador=Dirty",
+                    "marcado-conflicto estado=Closed abierto=True lecturas=0 obsoleto=True borrador=Conflict",
+                    "marcado-sin-decidir alta=Created estado=Refused motivo=[El borrador no admite el editor completo en su estado actual.] abierto=False lecturas=0 fallos=[] obsoleto=True",
+                    "marcado-sin-anfitrion estado=NotAvailable abierto=False lecturas=0 obsoleto=True",
+                    "marcado-otra-sesion estado=Rejected abierto=False lecturas=0 obsoleto=True",
+                });
+        }
+
+        // ------------------------------------------------------------------------------------------------- CT-02
+
+        [Fact]
+        public void CT_PBT4E_02_AReloadThatDoesNotReloadTheDraftDoesNotOpenTheEditorAndCarriesWhatTheReloadOfEditarAnswers()
+        {
+            var log = new List<string>();
+            var same = new List<string>();
+
+            // The drawing changed outside and its read is not admitted any more (the origin is not in it).
+            Paso(log, () =>
+            {
+                var s = new Setup();
+                var draft = s.BeginThenChangeOutside();
+                s.Reader.Answer = FullEditIntentKit.OriginMissing;
+                draft.MarkPossiblyStale();
+                var outcome = s.Port.TryEditAll(s.Rig.Request());
+                log.Add("no-admitida estado=" + outcome.Status + " inicio=" + outcome.Begin.Status + " diagnostico=" + R(outcome.Begin.Diagnostic)
+                    + " pista=" + !string.IsNullOrEmpty(outcome.Begin.ClassicEditorHint) + " abierto=" + (s.Editor.Shown > 0)
+                    + " lecturas=" + s.Reader.Calls.Count + " obsoleto=" + draft.IsPossiblyStale + " borrador=" + StatusOf(draft));
+
+                var twin = new Setup();
+                var other = twin.BeginThenChangeOutside();
+                twin.Reader.Answer = FullEditIntentKit.OriginMissing;
+                other.MarkPossiblyStale();
+                same.Add("no-admitida=" + SameAsTheReload(outcome.Begin, twin.Port.TryReload(twin.Rig.Request())));
+            });
+
+            // A command in progress: the reader answers Busy and the reload waits.
+            Paso(log, () =>
+            {
+                var s = new Setup();
+                var draft = s.BeginThenChangeOutside();
+                s.Reader.Answer = _ => EditIntentReadResult.Busy("Hay un comando en curso.");
+                draft.MarkPossiblyStale();
+                var outcome = s.Port.TryEditAll(s.Rig.Request());
+                log.Add("ocupado estado=" + outcome.Status + " inicio=" + outcome.Begin.Status + " motivo=" + R(outcome.Begin.Reason)
+                    + " abierto=" + (s.Editor.Shown > 0) + " lecturas=" + s.Reader.Calls.Count + " obsoleto=" + draft.IsPossiblyStale);
+
+                var twin = new Setup();
+                var other = twin.BeginThenChangeOutside();
+                twin.Reader.Answer = _ => EditIntentReadResult.Busy("Hay un comando en curso.");
+                other.MarkPossiblyStale();
+                same.Add("ocupado=" + SameAsTheReload(outcome.Begin, twin.Port.TryReload(twin.Rig.Request())));
+            });
+
+            // The reader throws: the reload contains it as Failed, reports it with its own name and the session is not degraded.
+            Paso(log, () =>
+            {
+                var s = new Setup();
+                var draft = s.BeginThenChangeOutside();
+                s.Reader.Throw = new InvalidOperationException("boom");
+                draft.MarkPossiblyStale();
+                var outcome = s.Port.TryEditAll(s.Rig.Request());
+                log.Add("excepcion estado=" + outcome.Status + " inicio=" + outcome.Begin.Status + " motivo=" + R(outcome.Begin.Reason)
+                    + " abierto=" + (s.Editor.Shown > 0) + " obsoleto=" + draft.IsPossiblyStale
+                    + " fallos=[" + string.Join(",", s.Rig.Host.Faults.Select(fault => fault.Context)) + "]");
+
+                var twin = new Setup();
+                var other = twin.BeginThenChangeOutside();
+                twin.Reader.Throw = new InvalidOperationException("boom");
+                other.MarkPossiblyStale();
+                same.Add("excepcion=" + SameAsTheReload(outcome.Begin, twin.Port.TryReload(twin.Rig.Request())));
+            });
+
+            log.Add("igual-que-editar " + string.Join(" ", same));
+
+            Finish(
+                log,
+                new[]
+                {
+                    "no-admitida estado=NotBegun inicio=NotAdmitted diagnostico=[No editable aquí: el origen ya no está en el dibujo] pista=True abierto=False lecturas=1 obsoleto=True borrador=Clean",
+                    "ocupado estado=NotBegun inicio=Waiting motivo=[Hay un comando en curso.] abierto=False lecturas=1 obsoleto=True",
+                    "excepcion estado=NotBegun inicio=Failed motivo=[boom] abierto=False obsoleto=True fallos=[WorkspaceHostCore.TryReloadPilotEdit]",
+                    "igual-que-editar no-admitida=True ocupado=True excepcion=True",
+                });
+        }
+
+        // ------------------------------------------------------------------------------------------------- CT-04
+
+        [Fact]
+        public void CT_PBT4E_04_FromTheChangeOutsideAndItsMarkThroughEditAllToTheUpdateWithoutAutoCadTheUpdateAppliesWithoutAConflict()
+        {
+            var log = new List<string>();
+
+            Paso(log, () =>
+            {
+                var before = ThreeViews(3, null);
+                var after = ThreeViews(3, OtherName);
+                var s = new Setup();
+                s.Reader.Answer = rack => FullEditIntentKit.ReadOf(before);
+                var draft = s.Rig.Begin();
+
+                // The change outside the panel: the drawing is the renamed one, and the hint of the bridge marks the draft at the next drain.
+                s.Reader.Answer = rack => FullEditIntentKit.ReadOf(after);
+                s.Rig.Host.Bridge.Core.OnSourceEvent(s.Rig.Session, BridgeSource.ObjectModified);
+                s.Rig.Host.Idle();
+                s.Reader.Calls.Clear();
+                log.Add("marca obsoleto=" + draft.IsPossiblyStale + " borrador=" + StatusOf(draft) + " lecturas=" + s.Reader.Calls.Count);
+
+                // «Editar todo», with one gesture of the editor: one front less and another scale, handed to the draft once.
+                s.Editor.Inside = launch =>
+                {
+                    var edited = PushBackEditableStateComparer.Copy(launch.State);
+                    LessOneFront(edited);
+                    edited.AnnotationScale = 2.5;
+                    launch.Port.ApplyToDraft(edited);
+                };
+                var outcome = s.Port.TryEditAll(s.Rig.Request());
+                log.Add("editar-todo estado=" + outcome.Status + " aplicadas=" + outcome.Applied + " lecturas=" + s.Reader.Calls.Count
+                    + " nombre-del-lanzamiento=" + NameOf(s.Editor.Launch) + " borrador=" + StatusOf(draft) + " obsoleto=" + draft.IsPossiblyStale);
+
+                // «Actualizar» over the drawing as it is now: the base of the draft is the one of the drawing, so nothing conflicts.
+                var port = new PilotEraseScopeDouble(FullWriteKit.ItemsOf(after));
+                var update = s.Rig.Core.TryUpdatePilot(s.Rig.Request(), port);
+                log.Add("actualizar estado=" + update.Status + " begin-mutation=" + port.Calls.Count(call => call == "BeginMutation")
+                    + " seal=" + port.Calls.Count(call => call == "Seal") + " borrador=" + StatusOf(draft));
+                log.Add("borrado " + string.Join(",", port.Calls.Where(call => call.StartsWith("EraseUnit:", StringComparison.Ordinal))));
+                var store = new RackEmbedStore();
+                log.Add("escrito vistas=" + port.Written.Count + " nombre-del-dibujo=" + (port.Written.Count > 0
+                    && port.Written.All(written => store.Deserialize(written.Text).Name == OtherName)));
+            });
+
+            Finish(
+                log,
+                new[]
+                {
+                    "marca obsoleto=True borrador=Clean lecturas=0",
+                    "editar-todo estado=Closed aplicadas=1 lecturas=1 nombre-del-lanzamiento=[Otro nombre] borrador=Dirty obsoleto=False",
+                    "actualizar estado=Applied begin-mutation=1 seal=1 borrador=Clean",
+                    "borrado EraseUnit:B2",
+                    "escrito vistas=2 nombre-del-dibujo=True",
+                });
+        }
+    }
+}
+```
+
+### `tests/RackCad.UI.Tests/PushBackEditAllReloadFieldTests.cs` (`NewFileSha` `a29d7a362cd5de49bd787eb76e7c847dc30b46ef1314e94ae5f67041b6a4595d`)
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using RackCad.Application.Workspace;
+using RackCad.UI.Workspace;
+using Xunit;
+
+namespace RackCad.UI.Tests
+{
+    /// <summary>
+    /// I-64 F4B PB-T4e (D-PBT4-22) — what the field of the panel shows when «Editar todo» meets a clean draft that may be stale
+    /// (CT-PBT4E-03). The reload runs in the host, so the field only asks the port for «Editar todo», as today; when the port answers that the
+    /// work that already existed was not reloaded, the field shows what «Editar» shows for the same answer of its reload: the reason, the hint
+    /// of RACKEDITAR and, for a reload that is not admitted, «No se recargó: el borrador se conserva tal como estaba.». The field is the REAL
+    /// view-model over a double of the edit port that lives in this class: it records every call and answers what the recipe gives it. Nothing
+    /// reads or writes the drawing, nothing opens a window or a dialog and nothing touches the profile. Every call goes through <c>Paso</c> (the
+    /// «EXCEPCION» rule), so a behavior that is missing fails by ASSERTION on the lines.
+    /// </summary>
+    [Collection(EditorDiscardPromptCollection.Name)]
+    public sealed class PushBackEditAllReloadFieldTests
+    {
+        private static readonly SessionId Session = new SessionId(7);
+
+        private const string Rack = "R-1";
+
+        private const string Diagnostic = "No editable aquí: cambió el rack.";
+
+        private const string Hint = "Usa RACKEDITAR.";
+
+        // ---------------------------------------------------------------------------------------------- helpers
+
+        /// <summary>The «EXCEPCION» rule: a step that throws becomes a line, and the expected lines never contain one.</summary>
+        private static void Paso(List<string> log, Action step)
+        {
+            try
+            {
+                step();
+            }
+            catch (Exception error)
+            {
+                log.Add("EXCEPCION " + error.GetType().Name + ": " + error.Message);
+            }
+        }
+
+        private static void Finish(List<string> log, IEnumerable<string> expected)
+            => Assert.Equal(string.Join("\n", expected), string.Join("\n", log));
+
+        /// <summary>The edit port of the recipes: it records every operation by name and answers the view, «Editar todo» and the reload of
+        /// «Editar» that it is given.</summary>
+        private sealed class PortDouble : IWorkspacePilotEditPort
+        {
+            public List<string> Calls { get; } = new List<string>();
+
+            public PilotFieldView View { get; set; }
+
+            public Func<EditAllOutcome> Answer { get; set; }
+
+            public EditIntentOutcome Reload { get; set; }
+
+            public EditAllOutcome TryEditAll(EditIntentRequest request)
+            {
+                Calls.Add("TryEditAll");
+                return Answer == null ? EditAllOutcome.Closed(0) : Answer();
+            }
+
+            public PilotFieldView GetField(WorkspaceRequest origin, string rackId)
+            {
+                Calls.Add("GetField");
+                return View;
+            }
+
+            public PilotFieldResult CommitField(WorkspaceRequest origin, string rackId)
+            {
+                Calls.Add("CommitField");
+                return default(PilotFieldResult);
+            }
+
+            public EditIntentOutcome TryBeginEdit(EditIntentRequest request)
+            {
+                Calls.Add("TryBeginEdit");
+                return default(EditIntentOutcome);
+            }
+
+            public EditCheckOutcome TryCheckNow(EditIntentRequest request)
+            {
+                Calls.Add("TryCheckNow");
+                return default(EditCheckOutcome);
+            }
+
+            public EditIntentOutcome TryReload(EditIntentRequest request)
+            {
+                Calls.Add("TryReload");
+                return Reload;
+            }
+
+            public EditConfirmOutcome TryConfirmBase(EditIntentRequest request)
+            {
+                Calls.Add("TryConfirmBase");
+                return default(EditConfirmOutcome);
+            }
+
+            public EditIntentOutcome TryKeepMine(EditIntentRequest request)
+            {
+                Calls.Add("TryKeepMine");
+                return default(EditIntentOutcome);
+            }
+
+            public EditIntentOutcome TryDiscardAndReload(EditIntentRequest request)
+            {
+                Calls.Add("TryDiscardAndReload");
+                return default(EditIntentOutcome);
+            }
+
+            public PilotFieldResult SetPendingText(WorkspaceRequest origin, string rackId, string text)
+            {
+                Calls.Add("SetPendingText");
+                return default(PilotFieldResult);
+            }
+
+            public PilotBoundaryResult CrossBoundary(WorkspaceRequest origin, string rackId, PilotBoundaryKind kind)
+            {
+                Calls.Add("CrossBoundary");
+                return default(PilotBoundaryResult);
+            }
+
+            public EditDiscardOutcome DiscardRack(WorkspaceRequest origin, string rackId)
+            {
+                Calls.Add("DiscardRack");
+                return default(EditDiscardOutcome);
+            }
+
+            public EditDiscardOutcome DiscardDocument(WorkspaceRequest origin)
+            {
+                Calls.Add("DiscardDocument");
+                return default(EditDiscardOutcome);
+            }
+
+            public PilotRiskView GetRacksAtRisk(WorkspaceRequest origin)
+            {
+                Calls.Add("GetRacksAtRisk");
+                return default(PilotRiskView);
+            }
+
+            public IReadOnlyList<PilotLossView> TakeLossNotices()
+            {
+                Calls.Add("TakeLossNotices");
+                return new List<PilotLossView>();
+            }
+
+            public IReadOnlyList<PilotCloseView> TakeCloseNotices()
+            {
+                Calls.Add("TakeCloseNotices");
+                return new List<PilotCloseView>();
+            }
+
+            public EditUpdateStart RequestUpdate(EditIntentRequest request)
+            {
+                Calls.Add("RequestUpdate");
+                return default(EditUpdateStart);
+            }
+
+            public EditUpdateProgress TakeUpdateProgress(WorkspaceRequest origin, string rackId)
+            {
+                Calls.Add("TakeUpdateProgress");
+                return default(EditUpdateProgress);
+            }
+        }
+
+        /// <summary>A clean draft that exists and the editor opens, with committed text 1:50, marked as possibly stale when asked.</summary>
+        private static PilotFieldView CleanView(bool stale)
+            => new PilotFieldView(true, PilotFieldState.Clean, stale, false, true, "1:50", null, null, null);
+
+        /// <summary>The field over the double, on the surface of the rack of the session, with the calls of the first paint forgotten.</summary>
+        private static (WorkspacePilotFieldViewModel Field, PortDouble Port) FieldOver(PilotFieldView view)
+        {
+            var port = new PortDouble { View = view };
+            var field = new WorkspacePilotFieldViewModel(port, () => { });
+            field.Show(Session, Rack, false);
+            port.Calls.Clear();
+            return (field, port);
+        }
+
+        /// <summary>What the field shows after the gesture: the reason, the hint, the notice, the state, the box and the calls of the gesture.</summary>
+        private static string Shown(WorkspacePilotFieldViewModel field, PortDouble port)
+            => "diagnostico=[" + field.NotEditableText + "] pista=[" + field.ClassicEditorHintText + "] aviso=[" + field.NoticeText + "] estado=["
+               + field.StateText + "] editable=" + field.IsEditable + " llamadas=[" + string.Join(",", port.Calls) + "]";
+
+        /// <summary>What the field shows, without the calls: the part that «Editar todo» and «Editar» must show alike.</summary>
+        private static string Seen(WorkspacePilotFieldViewModel field)
+            => field.NotEditableText + "|" + field.ClassicEditorHintText + "|" + field.NoticeText + "|" + field.StateText + "|" + field.IsEditable;
+
+        /// <summary>«Editar todo» over a clean draft marked as possibly stale whose reload answered <paramref name="reload"/>, and «Editar» over
+        /// the same draft with the same answer of its reload: the line of each, and whether the field shows the same.</summary>
+        private static bool BothGestures(List<string> log, string label, EditIntentOutcome reload)
+        {
+            var (all, allPort) = FieldOver(CleanView(stale: true));
+            allPort.Answer = () => EditAllOutcome.NotBegun(reload);
+            all.EditAll();
+            log.Add(label + " editar-todo " + Shown(all, allPort));
+
+            var (one, onePort) = FieldOver(CleanView(stale: true));
+            onePort.Reload = reload;
+            one.BeginEdit();
+            log.Add(label + " editar " + Shown(one, onePort));
+            return Seen(all) == Seen(one);
+        }
+
+        // ------------------------------------------------------------------------------------------------- CT-03
+
+        [Fact]
+        public void CT_PBT4E_03_TheFieldShowsAReloadOfEditAllThatDidNotReloadAsEditarShowsItAndOnlyAsksThePortForEditAll()
+        {
+            var log = new List<string>();
+            var same = new List<string>();
+
+            Paso(log, () => same.Add("no-recargado=" + BothGestures(log, "no-recargado",
+                EditIntentOutcome.NotAdmitted(Diagnostic, null, Hint, EditWitnessStatus.NotSupplied))));
+            Paso(log, () => same.Add("ocupado=" + BothGestures(log, "ocupado", EditIntentOutcome.Waiting("Hay un comando en curso."))));
+            Paso(log, () => same.Add("fallo=" + BothGestures(log, "fallo", EditIntentOutcome.Failed("boom"))));
+            log.Add("igual-que-editar " + string.Join(" ", same));
+
+            // The reload of the host reloaded the draft and the editor closed over it: the field asks the port for nothing else and the box is
+            // editable again, without the mark.
+            Paso(log, () =>
+            {
+                var (field, port) = FieldOver(CleanView(stale: true));
+                port.Answer = () =>
+                {
+                    port.View = CleanView(stale: false);
+                    return EditAllOutcome.Closed(0);
+                };
+                field.EditAll();
+                log.Add("recargado-y-cerrado " + Shown(field, port));
+            });
+
+            // Without a draft, a begin that is not admitted is shown as today: the reason and the hint, without the notice of the reload.
+            Paso(log, () =>
+            {
+                var (field, port) = FieldOver(default(PilotFieldView));
+                port.Answer = () => EditAllOutcome.NotBegun(EditIntentOutcome.NotAdmitted(Diagnostic, null, Hint, EditWitnessStatus.NotSupplied));
+                field.EditAll();
+                log.Add("sin-borrador-no-admitido diagnostico=[" + field.NotEditableText + "] pista=[" + field.ClassicEditorHintText + "] aviso=["
+                    + field.NoticeText + "]");
+            });
+
+            Finish(
+                log,
+                new[]
+                {
+                    "no-recargado editar-todo diagnostico=[No editable aquí: cambió el rack.] pista=[Usa RACKEDITAR.] aviso=[No se recargó: el borrador se conserva tal como estaba.] estado=[Limpio (posiblemente obsoleto)] editable=False llamadas=[GetField,TryEditAll,GetField]",
+                    "no-recargado editar diagnostico=[No editable aquí: cambió el rack.] pista=[Usa RACKEDITAR.] aviso=[No se recargó: el borrador se conserva tal como estaba.] estado=[Limpio (posiblemente obsoleto)] editable=False llamadas=[GetField,TryReload,GetField]",
+                    "ocupado editar-todo diagnostico=[] pista=[] aviso=[En espera: Hay un comando en curso.] estado=[Limpio (posiblemente obsoleto)] editable=False llamadas=[GetField,TryEditAll,GetField]",
+                    "ocupado editar diagnostico=[] pista=[] aviso=[En espera: Hay un comando en curso.] estado=[Limpio (posiblemente obsoleto)] editable=False llamadas=[GetField,TryReload,GetField]",
+                    "fallo editar-todo diagnostico=[] pista=[] aviso=[Fallo: boom] estado=[Limpio (posiblemente obsoleto)] editable=False llamadas=[GetField,TryEditAll,GetField]",
+                    "fallo editar diagnostico=[] pista=[] aviso=[Fallo: boom] estado=[Limpio (posiblemente obsoleto)] editable=False llamadas=[GetField,TryReload,GetField]",
+                    "igual-que-editar no-recargado=True ocupado=True fallo=True",
+                    "recargado-y-cerrado diagnostico=[] pista=[] aviso=[Editor cerrado sin cambios en el borrador.] estado=[Limpio] editable=True llamadas=[GetField,TryEditAll,GetField]",
+                    "sin-borrador-no-admitido diagnostico=[No editable aquí: cambió el rack.] pista=[Usa RACKEDITAR.] aviso=[]",
+                });
+        }
     }
 }
 ```

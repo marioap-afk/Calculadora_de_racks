@@ -1,0 +1,22 @@
+control de las CT de PB-T4e (v5.5), modo anfitrion; copia /d/r75; salida r75-ct; revision 160e019d773ba9095e2d5858cd593a954b8eec67
+control-anfitrion.txt: 4 bloques
+control-campo.txt: 4 bloques
+  pieza 647e185329ce18450eccda093d3071554759043bfc1c61e27e3f52f621da033b pbt4e-red-v55.txt
+  pieza 50b1919438ed52a4da5ee6ce60bebacb104087bd24c74b9ff7ccea0c900e9b96 apply_red_pbt4e_v55.py
+  pieza 5d26dc483f83cfca1d005adfd60c25f6d2e5eac7cc545b9342182f96bdc95407 pbt4e-green-v55.txt
+  pieza 832afa9e4eafb298b92a47794b37b38d99dd1b1e23a9eb2679d79ee509be65c0 apply_green_pbt4e_v55.py
+  pieza e79b53c23827580dbec192ab5952ac918fa6db2cafa66c3f8c9833ae8ba6d794 p6_control_v55.sh
+  pieza f04357914519770b7024a52a5d21200bf3c1846ed72f5c6ca94208490cb225b3 control_pieces_v55.py
+  pieza dcdb6ffba07b984a7e172803420e9e58562c5bfe22fef8aa5db853e4091474e4 control-anfitrion.txt
+  pieza de6072d09bdf2be9ce661433c9d93f8c545dc5b24b0c07b3c5a9a64401cfa9ec SondaPushBackEditAllReloadUpdate.cs
+  pieza 2a67c9432f551593414e446624404103d354de75aa6b7d83c80970ce7ef89072 trx_lines_v55.py
+r-core rc=0 errores=0 avisos-CS=0
+sonda-base rc=1 :: == Failed RackCad.Tests.SondaPushBackEditAllReloadUpdateTests.TheUpdateAfterEditAllOverADraftThatTheDrawingChangedOutside;
+GREEN de PB-T4e escrito: 3 archivos de src/ cambiados; tests/ sin tocar
+c-core rc=0 errores=0 avisos-CS=0
+c-ui rc=0 errores=0 avisos-CS=0
+control-core rc=0 :: == Passed RackCad.Tests.PushBackEditAllReloadTests CT-01;== Passed RackCad.Tests.PushBackEditAllReloadTests CT-02;== Passed RackCad.Tests.PushBackEditAllReloadTests CT-04;
+control-ui rc=1 :: == Failed RackCad.UI.Tests.PushBackEditAllReloadFieldTests CT-03;
+sonda-control rc=1 :: == Failed RackCad.Tests.SondaPushBackEditAllReloadUpdateTests.TheUpdateAfterEditAllOverADraftThatTheDrawingChangedOutside;
+build-server shutdown rc=0
+MAINCO []

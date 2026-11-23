@@ -1,0 +1,21 @@
+== Failed RackCad.Tests.PushBackEditAllReloadTests.CT_PBT4E_01_EditAllReloadsACleanDraftMarkedAsPossiblyStaleBeforeTheEditorOpensAndLeavesEveryOtherDraftAsToday
+stack: at RackCad.Tests.PushBackEditAllReloadTests.Finish(List`1 log, IEnumerable`1 expected) in <copia>\tests\RackCad.Tests\PushBackEditAllReloadTests.cs:line 50
+  msg: Assert.Equal() Failure: Strings differ
+  msg:                                   ↓ (pos 51)
+  msg: Expected: ···"ierto=True lecturas=1 lecturas-antes-de-a"···
+  msg: Actual:   ···"ierto=True lecturas=0 lecturas-antes-de-a"···
+  msg:                                   ↑ (pos 51)
+== Failed RackCad.Tests.PushBackEditAllReloadTests.CT_PBT4E_02_AReloadThatDoesNotReloadTheDraftDoesNotOpenTheEditorAndCarriesWhatTheReloadOfEditarAnswers
+stack: at RackCad.Tests.PushBackEditAllReloadTests.Finish(List`1 log, IEnumerable`1 expected) in <copia>\tests\RackCad.Tests\PushBackEditAllReloadTests.cs:line 50
+  msg: Assert.Equal() Failure: Strings differ
+  msg:                               ↓ (pos 19)
+  msg: Expected: "no-admitida estado=NotBegun inicio=NotAdm"···
+  msg: Actual:   "no-admitida estado=Closed inicio=Unavaila"···
+  msg:                               ↑ (pos 19)
+== Failed RackCad.Tests.PushBackEditAllReloadTests.CT_PBT4E_04_FromTheChangeOutsideAndItsMarkThroughEditAllToTheUpdateWithoutAutoCadTheUpdateAppliesWithoutAConflict
+stack: at RackCad.Tests.PushBackEditAllReloadTests.Finish(List`1 log, IEnumerable`1 expected) in <copia>\tests\RackCad.Tests\PushBackEditAllReloadTests.cs:line 50
+  msg: Assert.Equal() Failure: Strings differ
+  msg:                                   ↓ (pos 93)
+  msg: Expected: ···"plicadas=1 lecturas=1 nombre-del-lanzamie"···
+  msg: Actual:   ···"plicadas=1 lecturas=0 nombre-del-lanzamie"···
+  msg:                                   ↑ (pos 93)

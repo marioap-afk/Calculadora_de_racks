@@ -1,0 +1,59 @@
+precondicion 6 de PB-T4e (v5.5), la base con cobertura; copia /d/r79; salida r79-bc; revision 160e019d773ba9095e2d5858cd593a954b8eec67
+procesos al empezar: 0 (19:29:12)
+  pieza 8bd40dd27cf025f5a7d50a837b71d59be6a07cbf4d67538b7196bdb4297522fd p6_basecov_v55.sh
+  pieza a41ceff37fc16baa51681bda6c77b9558ba9c3e865c0bf3089ca5c24161c05fb check_trx_v55.py
+  pieza 98a962da6ae75f01dfccac13582ed76dcbeee3f2b341be226779a190f616e5e1 cov_v55.runsettings
+  pieza d769e5e34f3fef68a8d6bf39d8e4fe2d9721474673d0000649a8a9ffb3ab69b0 ui_filters_pbt4e_v55.txt
+  pieza 9674eb343b1f40428815346920bcd3bf356526c506844e4a611dce7e147e9c96 ui_union_v55.txt
+copia exportada: 15796 archivos
+b-core rc=0 errores=0 avisos-CS=0
+b-ui rc=0 errores=0 avisos-CS=0
+base-core-cov rc=0 segundos=436 :: filas 19418 {'NotExecuted': 403, 'Passed': 19015}; omitidas por origen {'PB-T4b': 390, 'PB-T4c': 3, 'otro': 10}
+  cobertura json=77ea460b8f4be10e
+base-ui-cov rc=0 segundos=209 :: filas 899 {'NotExecuted': 30, 'Passed': 869}; omitidas por origen {'PB-T4b': 27, 'PB-T4c': 1, 'otro': 2}
+  cobertura json=80abb6393a16ae12
+base-ui-cov-r-1 rc=0 segundos=192 :: filas 899 {'NotExecuted': 30, 'Passed': 869}; omitidas por origen {'PB-T4b': 27, 'PB-T4c': 1, 'otro': 2}
+  cobertura json=4734b3435934ec1a
+base-ui-cov-r-2 rc=0 segundos=190 :: filas 899 {'NotExecuted': 30, 'Passed': 869}; omitidas por origen {'PB-T4b': 27, 'PB-T4c': 1, 'otro': 2}
+  cobertura json=28498e1705ff11b6
+base-uif01 rc=0 segundos=24 :: filas 1 {'Passed': 1}; omitidas por origen {}
+  cobertura json=a2f4f2fe841e144b
+base-uif02 rc=0 segundos=23 :: filas 653 {'NotExecuted': 27, 'Passed': 626}; omitidas por origen {'PB-T4b': 27}
+  cobertura json=1062c2eb0ce118b0
+base-uif03 rc=0 segundos=52 :: filas 2 {'Passed': 2}; omitidas por origen {}
+  cobertura json=9335585fa867da2e
+base-uif04 rc=0 segundos=29 :: filas 55 {'Passed': 55}; omitidas por origen {}
+  cobertura json=1e87b4e748e10c1a
+base-uif05 rc=0 segundos=34 :: filas 18 {'NotExecuted': 2, 'Passed': 16}; omitidas por origen {'otro': 2}
+  cobertura json=53074b167228cda5
+base-uif06 rc=0 segundos=54 :: filas 14 {'Passed': 14}; omitidas por origen {}
+  cobertura json=1aff60ee2fefdbc5
+base-uif07 rc=0 segundos=31 :: filas 12 {'Passed': 12}; omitidas por origen {}
+  cobertura json=39bb1b5fa6c73dce
+base-uif08 rc=0 segundos=22 :: filas 67 {'Passed': 67}; omitidas por origen {}
+  cobertura json=b990d5bc133dca55
+base-uif09 rc=0 segundos=30 :: filas 3 {'Passed': 3}; omitidas por origen {}
+  cobertura json=eaf392f513b5ae3c
+base-uif10 rc=0 segundos=27 :: filas 4 {'NotExecuted': 1, 'Passed': 3}; omitidas por origen {'PB-T4c': 1}
+  cobertura json=2561606bce486351
+base-uif11 rc=0 segundos=47 :: filas 3 {'Passed': 3}; omitidas por origen {}
+  cobertura json=313c4c00f7b72cb0
+base-uif12 rc=0 segundos=19 :: filas 3 {'Passed': 3}; omitidas por origen {}
+  cobertura json=8f30085908a8c64e
+base-uif13 rc=0 segundos=18 :: filas 13 {'Passed': 13}; omitidas por origen {}
+  cobertura json=69bed43087440ff4
+base-uif14 rc=0 segundos=17 :: filas 10 {'Passed': 10}; omitidas por origen {}
+  cobertura json=26fac375a3529d7c
+base-uif15 rc=0 segundos=18 :: filas 30 {'Passed': 30}; omitidas por origen {}
+  cobertura json=d2b1028b76dbc1c1
+base-uif16 rc=0 segundos=18 :: filas 6 {'Passed': 6}; omitidas por origen {}
+  cobertura json=baaf03e57d2919a4
+base-uif17 rc=0 segundos=20 :: filas 4 {'Passed': 4}; omitidas por origen {}
+  cobertura json=101f1109de575778
+base-uif18 rc=0 segundos=20 :: filas 1 {'Passed': 1}; omitidas por origen {}
+  cobertura json=6c4db5b10165f8b5
+base-uif19 rc=0 segundos=18 :: filas 0 {}; omitidas por origen {}
+  cobertura json=ddfb735bfa3701d0
+build-server shutdown rc=0
+procesos al acabar: 0 (19:58:17)
+MAINCO []

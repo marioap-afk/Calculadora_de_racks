@@ -1,0 +1,12 @@
+== Passed RackCad.UI.Tests.PushBackEditAllReloadFieldTests.CT_PBT4E_03_TheFieldShowsAReloadOfEditAllThatDidNotReloadAsEditarShowsItAndOnlyAsksThePortForEditAll
+== Failed RackCad.UI.Tests.SondaPushBackEditAllReloadFieldTests.CT_PBT4E_03_TheFieldShowsAReloadOfEditAllThatDidNotReloadAsEditarShowsItAndOnlyAsksThePortForEditAll
+stack: at RackCad.UI.Tests.SondaPushBackEditAllReloadFieldTests.Finish(List`1 log, IEnumerable`1 expected) in <copia>\tests\RackCad.UI.Tests\SondaPushBackEditAllReloadFieldTests.cs:line 46
+  no-recargado editar-todo diagnostico=[No editable aquí: cambió el rack.] pista=[Usa RACKEDITAR.] aviso=[No se recargó: el borrador se conserva tal como estaba.] estado=[Limpio (posiblemente obsoleto)] editable=False llamadas=[GetField,TryEditAll,GetField]
+  no-recargado editar diagnostico=[No editable aquí: cambió el rack.] pista=[Usa RACKEDITAR.] aviso=[No se recargó: el borrador se conserva tal como estaba.] estado=[Limpio (posiblemente obsoleto)] editable=False llamadas=[GetField,TryReload,GetField]
+  ocupado editar-todo diagnostico=[] pista=[] aviso=[En espera: Hay un comando en curso.] estado=[Limpio (posiblemente obsoleto)] editable=False llamadas=[GetField,TryEditAll,GetField]
+  ocupado editar diagnostico=[] pista=[] aviso=[En espera: Hay un comando en curso.] estado=[Limpio (posiblemente obsoleto)] editable=False llamadas=[GetField,TryReload,GetField]
+  fallo editar-todo diagnostico=[] pista=[] aviso=[Fallo: boom] estado=[Limpio (posiblemente obsoleto)] editable=False llamadas=[GetField,TryEditAll,GetField]
+  fallo editar diagnostico=[] pista=[] aviso=[Fallo: boom] estado=[Limpio (posiblemente obsoleto)] editable=False llamadas=[GetField,TryReload,GetField]
+  igual-que-editar no-recargado=True ocupado=True fallo=True
+  recargado-y-cerrado diagnostico=[] pista=[] aviso=[Editor cerrado sin cambios en el borrador.] estado=[Limpio] editable=True llamadas=[GetField,TryEditAll,GetField]
+  sin-borrador-no-admitido diagnostico=[No editable aquí: cambió el rack.] pista=[Usa RACKEDITAR.] aviso=[]

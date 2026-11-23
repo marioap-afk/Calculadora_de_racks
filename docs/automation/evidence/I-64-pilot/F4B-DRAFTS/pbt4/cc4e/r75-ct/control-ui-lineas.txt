@@ -1,0 +1,7 @@
+== Failed RackCad.UI.Tests.PushBackEditAllReloadFieldTests.CT_PBT4E_03_TheFieldShowsAReloadOfEditAllThatDidNotReloadAsEditarShowsItAndOnlyAsksThePortForEditAll
+stack: at RackCad.UI.Tests.PushBackEditAllReloadFieldTests.Finish(List`1 log, IEnumerable`1 expected) in <copia>\tests\RackCad.UI.Tests\PushBackEditAllReloadFieldTests.cs:line 46
+  msg: Assert.Equal() Failure: Strings differ
+  msg:                                   ↓ (pos 104)
+  msg: Expected: ···"RACKEDITAR.] aviso=[No se recargó: el bor"···
+  msg: Actual:   ···"RACKEDITAR.] aviso=[] estado=[Limpio (pos"···
+  msg:                                   ↑ (pos 104)

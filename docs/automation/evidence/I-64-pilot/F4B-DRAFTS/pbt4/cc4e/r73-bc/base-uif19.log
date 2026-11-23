@@ -1,0 +1,12 @@
+Serie de pruebas para <copia>\tests\RackCad.UI.Tests\bin\Debug\net8.0-windows\RackCad.UI.Tests.dll (.NETCoreApp,Version=v8.0)
+Versión 17.11.1 (x64) de VSTest
+
+Iniciando la ejecución de pruebas, espere...
+1 archivos de prueba en total coincidieron con el patrón especificado.
+Ninguna prueba coincide con el filtro de casos de prueba proporcionado "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllReloadFieldTests" en <copia>\tests\RackCad.UI.Tests\bin\Debug\net8.0-windows\RackCad.UI.Tests.dll
+Archivo de resultados: <copia>\_trx\base-uif19\base-uif19.trx
+
+
+Datos adjuntos:
+  <copia>\_trx\base-uif19\b875610d-e8be-4272-8b1b-e0b0916b5096\coverage.json
+  <copia>\_trx\base-uif19\b875610d-e8be-4272-8b1b-e0b0916b5096\coverage.cobertura.xml

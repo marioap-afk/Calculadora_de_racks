@@ -1,0 +1,4 @@
+== Failed RackCad.Tests.SondaPushBackEditAllReloadUpdateTests.TheUpdateAfterEditAllOverADraftThatTheDrawingChangedOutside
+stack: at RackCad.Tests.SondaPushBackEditAllReloadUpdateTests.TheUpdateAfterEditAllOverADraftThatTheDrawingChangedOutside() in <copia>\tests\RackCad.Tests\SondaPushBackEditAllReloadUpdate.cs:line 86
+  editar-todo Closed borrador=Dirty obsoleto=False
+  actualizar estado=Applied clasificacion=Applied causa=[] motivo=[] diferencias=[] borrador=Clean obsoleto=False llamadas=[Begin,ReadForPrepare,PrepareUnits,BeginMutation,Reread,WriteUnit:A1,WriteUnit:C3,EraseUnit:B2,Seal,Dispose:mutation,Post,Dispose:scope]
