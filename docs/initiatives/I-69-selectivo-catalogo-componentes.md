@@ -107,3 +107,17 @@ Smoke acotado: listado, renombres, seleccion/reapertura, las dos seguridades y s
 acordado. Matriz T1..T15 en Proposal V1 §5; oraculos finales pendientes de O-01..06. Evidencia:
 [I-69-evidence.md](../automation/evidence/I-69-evidence.md).
 Integracion manual; tag esperado integration/I-69. Sin Candidato ni autorizacion de merge.
+
+## 8. Reparto Owner / Claude y relevo inicial
+
+Decision Owner posterior a Proposal V1: [D-09](../automation/decisions/I-69.md).
+El Owner completa los datos Excel/CSV, incluidos largueros y etiquetas; Claude
+recibe la implementacion de software y pruebas que se acuerden. O-01/O-02 no
+bloquean la recepcion del worktree ni la preparacion tecnica, aunque los datos
+reales deban integrarse y validarse antes de entregar producto.
+
+Se conserva la misma iniciativa/rama/worktree; una sola sesion opera en el
+worktree a la vez, tambien al recibir ediciones del Owner.
+[Prompt inicial para Claude](../automation/prompts/I-69-claude-initial.md).
+El primer encargo permite relevo, preflight, delta y documentos propios.
+Producto sigue NO autorizado; seguridad/Freeze aun requieren decisiones concretas.
