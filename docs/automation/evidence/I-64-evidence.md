@@ -9135,3 +9135,63 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 - la rama de I-64 y su worktree, sin tocar;
 - sin AutoCAD;
 - sin lanzar al Architect.
+
+## 294. A-14: sonda neutra (Snapshot M) y revisión formal del Architect, en la rama lateral (AGREED)
+
+**Solo en la rama lateral `architecture/workspace-persistente-rackcad-a14`.** El objeto revisado es su commit `ab0170b7` (sección 293, CI exacta `45263171189` en success, 4/4). La rama de I-64 sigue en `fa59bd82` y no se toca.
+
+**La Snapshot M:**
+- **El hecho:** la app de Codex reescribió `config.toml` al arrancar tras el reinicio del 2026-11-23, a las 19:21:15Z. Su SHA-256 pasó de `B71650A6…` (Snapshot L) a `3E9BC35B0E72641A81241EC3E32BF45010B8CC3CC93FDD4E3C5E8188E6D19FFC`.
+- **Lo que no cambió:** los 105 nombres, en el mismo orden (`3ECF8E07…`), los 69 valores del inventario seguro, la versión de la app y el binario acreditado (`4F91AE86…`).
+- **El valor tapado que cambió:** el GUID del nombre de canalización `codex-computer-use-<GUID>` de `mcp_servers.node_repl.env.SKY_CUA_NATIVE_PIPE_DIRECTORY`. Es un identificador opaco y su valor no se registra.
+  - La app genera ese GUID en cada arranque. La instancia del 2026-11-22 (la de la L) y la del 2026-11-23 registran GUID distintos.
+  - **La prueba:** si se pone en el `config.toml` actual el GUID de la instancia de la L, se reproduce byte a byte el SHA-256 de la L. Es el único cambio del archivo (`opaque_reconstruct_l.py` y `opaque-proof-m.txt`, en `tools/`).
+- **La decisión del Owner:** «Sonda neutra, luego M (Recomendado)», en la quinta ronda del registro de A-14. La pregunta y la respuesta, literales, están en `F4-ENVIRONMENT/snapshot-M/owner-config-snapshot-m-decision.md`.
+- **La sonda neutra** `F4-ENVIRONMENT/probe-R20261123T211742Z-282c` da **PASS**:
+  - corrió desde el worktree lateral, el directorio de la revisión, que no figura en `[projects]` de `config.toml`;
+  - binario `4F91AE86…`, gpt-6-luna / high efectivos, solo lectura, política `never` y CLI 0.167.0-alpha.3.2;
+  - frente a la sonda `2c14` de la L, el contexto efectivo solo difiere en `root_turn_id`; que el directorio no figure en `[projects]` no cambia el contexto efectivo;
+  - el repositorio y `config.toml` no cambiaron durante la sonda.
+- **Su registro:** `F4-ENVIRONMENT/snapshot-M/snapshot-m.json`, con la forma del de la L.
+- **Sus herramientas:** están en `snapshot-M/tools/`, con su manifiesto. Se derivan de las de la L con reemplazos exactos (`_gen_snapM.py`). Hay dos diferencias de fondo:
+  - la carpeta de la corrida va a la carpeta de la sesión, fuera del repositorio;
+  - los participantes se miden contra el worktree lateral.
+
+  14 van como texto, redactadas. 2 van solo por SHA-256: `record_snapshot_m.py`, que lleva sus propios patrones de privacidad, como `record_snapshot_l.py`, y `opaque-logs-m.txt`, que lleva identificadores de instancia de la app.
+- **El alcance:** el registro no cambia la cadena de F4B. `cfg_check_f4.py` y la rama de I-64 no se tocan.
+
+**La orden del Coordinator** se ajustó a la M con un reemplazo exacto de sus cuatro menciones de la L: el bloque `config:`, E-2 y las dos líneas de INVALID_OUTPUT. Deja constancia en su propio texto. Su cabecera de preparación y sus campos `[COORDINATOR]` quedan como se prepararon. Se custodia literal en la carpeta de la revisión (SHA-256 `C37B9E78…`).
+
+**La revisión formal del Architect** está en `A-14-review/R20261123T212253Z-ab02`. Es una sola invocación, sin reintento, de 21:23:19Z a 21:26:14Z.
+- **La celda:** gpt-6-luna / high, solo lectura y política `never`, pedidos y efectivos. CLI 0.167.0-alpha.3.2, con el mismo binario antes y después. `config.toml` es la Snapshot M a la salida y a la entrada.
+- **El estado:**
+  - la rama lateral está en `ab0170b7`, en local, en remoto y en el seguimiento, con el árbol limpio y el checkout principal limpio;
+  - no hay participantes ni procesos sin atribuir.
+- **La salida:**
+  - valida contra el esquema y es coherente;
+  - los blobs del sujeto casan con `ab0170b7`;
+  - el SHA-256 de la orden que devuelve casa con el de la orden custodiada;
+  - no tiene bytes no ASCII.
+- **La auditoría de órdenes:** 24 órdenes, todas de lectura. No hay escrituras Git, y el único candidato a escritura es un cálculo de SHA-256.
+- **El veredicto, literal:** **AGREED**, con REQUIRED 0 y OPTIONAL 0, y sin limitaciones.
+  - M-01 a M-08 = YES.
+  - Q01 a Q13 = YES, todas conformes.
+  - Q14 = NO: no hace falta una decisión nueva del Owner.
+  - Q15 = NO: no queda ninguna ruta abierta.
+- **Lo declarado en el registro:**
+  - **La carpeta de la corrida** fue la de la sesión: el encargo prohibía escribir en el worktree lateral hasta el fin de la revisión. Por eso:
+    - no hubo `git fetch`;
+    - la ruta de la orden que nombra el prompt no existe en el worktree. Ninguna orden del revisor la pidió.
+  - **El prompt** conserva el texto de Q-C2 («config Snapshot L»).
+  - **AutoCAD:** había un `acad.exe` del Owner, abierto antes de la sonda. Ni la sesión ni la revisión lo usaron.
+
+**La custodia** se preparó primero en la carpeta de la sesión, redactada, con un manifiesto por unidad:
+- **La revisión:** 14 archivos van como texto. Solo por SHA-256 van los eventos, la salida de error, el código de salida, la evaluación mecánica, `git-exit.json` (idéntico a `git-entry.json`) y el registro de sesión de Codex.
+- **La sonda:** 13 archivos van como texto. Solo por SHA-256 van los eventos y los tres archivos idénticos a otros ya custodiados.
+
+**Siguiente:** STOP en `COORDINATOR_A14_ARCHITECT_REVIEW_REQUIRED`, como manda la orden. No se pide la firma del Owner ni se activa A-14.
+
+**Límites:**
+- solo documentación y evidencia; sin cambios en `src/` ni en `tests/`;
+- la rama de I-64, su worktree y `main`, sin tocar;
+- sin usar AutoCAD.

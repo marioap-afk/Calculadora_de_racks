@@ -1,0 +1,337 @@
+{
+  "Schema": "rackcad-i64-config-snapshot/v1",
+  "Snapshot": "M",
+  "AcceptedUtc": "2026-11-23T21:20:14Z",
+  "Authority": "decision del Owner (2026-11-23, quinta ronda de A-14), respuesta literal: Sonda neutra, luego M (Recomendado); F4-ENVIRONMENT/snapshot-M/owner-config-snapshot-m-decision.md",
+  "ConfigSha256": "3E9BC35B0E72641A81241EC3E32BF45010B8CC3CC93FDD4E3C5E8188E6D19FFC",
+  "ReplacesSnapshot": {
+    "L": "B71650A637551747F522BB1D2F4BA1BB9E25AAFF1A61CE1B7BC066197FFFEBB3"
+  },
+  "OrderedNamesSha256": "3ECF8E072CC52AE60A6E6D508DB54DCBFFFAFB04EAF9B52905A2CEAB0E0812E3",
+  "NameCount": 105,
+  "FlatValueCount": 69,
+  "KeysAddedVsL": [],
+  "KeysRemovedVsL": [],
+  "ChangedValuesVsL": [],
+  "ComparedWith": "inventario seguro de la Snapshot L (el unico valor redactado es mcp_servers.node_repl.env.SKY_CUA_NATIVE_PIPE_DIRECTORY)",
+  "AppVersionTransition": "ninguna: BROWSER_USE_CODEX_APP_VERSION 26.1117.41037 en la L y en la M; la app de Codex reescribio config.toml al arrancar tras el reinicio del 2026-11-23 (escrito 19:21:15Z)",
+  "RedactedValueChangedVsL": {
+    "Key": "mcp_servers.node_repl.env.SKY_CUA_NATIVE_PIPE_DIRECTORY",
+    "What": "el GUID del nombre de canalizacion codex-computer-use-<GUID> (identificador opaco; su valor no se registra), que la app de Codex genera en cada arranque: lo registran la instancia de la app del 2026-11-22 (09:25Z, la de la L) y la del 2026-11-23 (19:20Z, la de la M), con GUID distintos",
+    "Proof": "poner en el config.toml actual el GUID que registro la instancia de la L reproduce byte a byte el SHA-256 de la Snapshot L; es el unico cambio del archivo (opaque_reconstruct_l.py, en tools/)",
+    "OtherBytesChanged": false
+  },
+  "ProbeWorkingDirectory": "el worktree lateral de A-14 (rama architecture/workspace-persistente-rackcad-a14), que no figura en [projects] de config.toml; la carpeta de la corrida y este registro, fuera del repositorio",
+  "SafeSemanticInventory": [
+    {
+      "Key": "model",
+      "Value": "gpt-5.6-sol"
+    },
+    {
+      "Key": "model_reasoning_effort",
+      "Value": "medium"
+    },
+    {
+      "Key": "service_tier",
+      "Value": "priority"
+    },
+    {
+      "Key": "notify",
+      "Value": [
+        "<app-install>\\app\\resources\\cua_node\\bin\\node_modules\\@oai\\sky\\bin\\windows\\codex-computer-use.exe",
+        "turn-ended"
+      ]
+    },
+    {
+      "Key": "windows.sandbox",
+      "Value": "unelevated"
+    },
+    {
+      "Key": "desktop.keepRemoteControlAwakeWhilePluggedIn",
+      "Value": true
+    },
+    {
+      "Key": "desktop.reviewDelivery",
+      "Value": "inline"
+    },
+    {
+      "Key": "desktop.conversationDetailMode",
+      "Value": "STEPS_PROSE"
+    },
+    {
+      "Key": "desktop.ambient-suggestions-enabled",
+      "Value": true
+    },
+    {
+      "Key": "desktop.migratedFollowUpQueueToSteer",
+      "Value": true
+    },
+    {
+      "Key": "desktop.open-in-target-preferences.global",
+      "Value": "vscode"
+    },
+    {
+      "Key": "desktop.open-in-target-preferences.perPath.<project-path>",
+      "Value": "vscode"
+    },
+    {
+      "Key": "desktop.open-in-target-preferences.perPath.<project-path>",
+      "Value": "vscode"
+    },
+    {
+      "Key": "marketplaces.openai-bundled.source_type",
+      "Value": "local"
+    },
+    {
+      "Key": "marketplaces.openai-bundled.source",
+      "Value": "\\\\?\\<USERPROFILE>\\.codex\\.tmp\\bundled-marketplaces\\openai-bundled"
+    },
+    {
+      "Key": "marketplaces.openai-primary-runtime.source_type",
+      "Value": "local"
+    },
+    {
+      "Key": "marketplaces.openai-primary-runtime.source",
+      "Value": "\\\\?\\<USERPROFILE>\\.cache\\codex-runtimes\\codex-primary-runtime\\plugins\\openai-primary-runtime"
+    },
+    {
+      "Key": "plugins.documents@openai-primary-runtime.enabled",
+      "Value": true
+    },
+    {
+      "Key": "plugins.spreadsheets@openai-primary-runtime.enabled",
+      "Value": true
+    },
+    {
+      "Key": "plugins.presentations@openai-primary-runtime.enabled",
+      "Value": true
+    },
+    {
+      "Key": "plugins.outlook-email@openai-curated.enabled",
+      "Value": true
+    },
+    {
+      "Key": "plugins.github@openai-curated.enabled",
+      "Value": true
+    },
+    {
+      "Key": "plugins.pdf@openai-primary-runtime.enabled",
+      "Value": true
+    },
+    {
+      "Key": "plugins.template-creator@openai-primary-runtime.enabled",
+      "Value": true
+    },
+    {
+      "Key": "plugins.visualize@openai-bundled.enabled",
+      "Value": true
+    },
+    {
+      "Key": "plugins.chrome@openai-bundled.enabled",
+      "Value": true
+    },
+    {
+      "Key": "plugins.browser@openai-bundled.enabled",
+      "Value": true
+    },
+    {
+      "Key": "plugins.outlook-calendar@openai-curated.enabled",
+      "Value": true
+    },
+    {
+      "Key": "plugins.teams@openai-curated.enabled",
+      "Value": true
+    },
+    {
+      "Key": "plugins.codex-app-tools@openai-bundled.enabled",
+      "Value": true
+    },
+    {
+      "Key": "plugins.unified-computer-use@openai-bundled.enabled",
+      "Value": true
+    },
+    {
+      "Key": "plugins.computer-use@openai-bundled.enabled",
+      "Value": true
+    },
+    {
+      "Key": "features.js_repl",
+      "Value": false
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Value": "trusted"
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Value": "trusted"
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Value": "trusted"
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Value": "trusted"
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Value": "trusted"
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Value": "trusted"
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Value": "trusted"
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Value": "trusted"
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Value": "trusted"
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Value": "trusted"
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Value": "trusted"
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Value": "trusted"
+    },
+    {
+      "Key": "mcp_servers.node_repl.args",
+      "Value": []
+    },
+    {
+      "Key": "mcp_servers.node_repl.command",
+      "Value": "<app-install>\\app\\resources\\cua_node\\bin\\node_repl.exe"
+    },
+    {
+      "Key": "mcp_servers.node_repl.env_vars",
+      "Value": [
+        "BROWSER_USE_ACCESS_EXECUTOR_ID",
+        "BROWSER_USE_ACCESS_PIPE_PATH",
+        "BROWSER_USE_ACCESS_VERIFYING_IDENTITY",
+        "CODEX_WINDOWS_REGISTERED_CORE"
+      ]
+    },
+    {
+      "Key": "mcp_servers.node_repl.startup_timeout_sec",
+      "Value": 120
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS",
+      "Value": "1000"
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.NODE_REPL_NODE_MODULE_DIRS",
+      "Value": "<app-install>\\app\\resources\\cua_node\\bin\\node_modules"
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.NODE_REPL_NODE_PATH",
+      "Value": "<app-install>\\app\\resources\\cua_node\\bin\\node.exe"
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.NODE_REPL_TRUSTED_CODE_PATHS",
+      "Value": "<USERPROFILE>\\.codex;<app-install>\\app\\resources\\cua_node\\bin\\node_modules"
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.CODEX_HOME",
+      "Value": "<USERPROFILE>\\.codex"
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.BROWSER_USE_AVAILABLE_BACKENDS",
+      "Value": "chrome,iab,mcpapps"
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.BROWSER_USE_TINYSKY_ENABLED",
+      "Value": "1"
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER",
+      "Value": ""
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME",
+      "Value": ""
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.BROWSER_USE_CODEX_APP_BUILD_FLAVOR",
+      "Value": "prod"
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.BROWSER_USE_CODEX_APP_VERSION",
+      "Value": "26.1117.41037"
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.NODE_REPL_TRUSTED_SERVICES",
+      "Value": "{\"browser\":\"<USERPROFILE>/.codex/plugins/cache/openai-bundled/browser/26.1117.41037/scripts/browser-service.mjs\",\"sky\":\"@oai/sky/service\"}"
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.SKY_CUA_NATIVE_PIPE",
+      "Value": "1"
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.SKY_CUA_NATIVE_PIPE_DIRECTORY",
+      "Value": "<REDACTED: opaque id>"
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.CODEX_CLI_PATH",
+      "Value": "<app-install>\\app\\resources\\codex.exe"
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.NODE_REPL_UNTRUSTED_ENV_ALLOWLIST",
+      "Value": "CODEX_WINDOWS_REGISTERED_CORE"
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.NODE_REPL_LAZY_TRUSTED_WORKER",
+      "Value": "0"
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE",
+      "Value": ""
+    },
+    {
+      "Key": "shell_environment_policy.set.NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S",
+      "Value": "8e172ec9f458f2e636fc69a1b8c68c217f6bb8d10c41f70a05a0878b73863701"
+    },
+    {
+      "Key": "tui.screen_reader_detection_done",
+      "Value": true
+    }
+  ],
+  "NeutralProbe": {
+    "RunId": "R20261123T211742Z-282c",
+    "Pass": true,
+    "Effective": [
+      "gpt-6-luna",
+      "high"
+    ],
+    "Sandbox": {
+      "type": "read-only"
+    },
+    "ApprovalPolicy": "never",
+    "CliVersion": "0.167.0-alpha.3.2",
+    "TurnContextDifferencesVsSnapshotLProbe2c14": [
+      "root_turn_id"
+    ],
+    "SessionMetaKeysDiffer": [],
+    "LimitPatternContexts": {},
+    "RepositoryUnchanged": true,
+    "ConfigUnchangedDuringProbe": true,
+    "AccreditedBinarySha256": "4F91AE86895FF124760D70ED1630E2354CA874765C9BB61AE524B600327EFC17",
+    "OutputSha256": "C187D6EF600B00A1B8D2AC9AED2039F63B5286ACF7AFFFBFA899DC4D98122A06",
+    "EventsSha256": "F6508A36852B29A2EF2037B482CA1D5A259C5C992D138BFAD62C8AFF36C2F3EC",
+    "EffectiveSourceSha256": "A80BAE406EF6B326E8045E0B3F5EFB3BDA60D1D8E1B0EAEEF37D132106D24A03",
+    "Note": "comparacion del contexto efectivo con la sonda neutra 2c14 de la Snapshot L (mismo binario, mismo prompt y esquema, 2026-11-22, desde el worktree de I-64); cwd y workspace_roots no se comparan, como en la L"
+  },
+  "Decision": "Snapshot M aceptada si y solo si NeutralProbe.Pass es true, por la decision del Owner (quinta ronda de A-14: esta configuracion queda como Snapshot M y se lanza la revision del Architect); este registro no cambia la cadena de F4B"
+}
