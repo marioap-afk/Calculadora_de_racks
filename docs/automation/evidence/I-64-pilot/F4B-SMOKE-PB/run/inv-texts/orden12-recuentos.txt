@@ -1,0 +1,33 @@
+== c01-pre.txt
+  sobres por SchemaVersion: {'1.0': 17}  ilegibles: 0
+  racks (Id): 10  con Name distintos: 0
+  NEST: 2
+     ['A$Ceb3b79ff', '0', '0', 'PB G - planta', '2F0F38']
+     ['*U6088', '1', '0', 'Cabecera 1 - planta', '32846A']
+== e01-estilo.txt
+  sobres por SchemaVersion: {'1.0': 22}  ilegibles: 0
+  racks (Id): 13  con Name distintos: 0
+  NEST: 4
+     ['A$Ceb3b79ff', '0', '0', 'PB G - planta', '2F0F38']
+     ['*U5642', '1', '0', 'Cabecera 1 - planta', '328910']
+     ['*U5706', '1', '0', 'Cabecera 1 - planta', '361F53']
+     ['*U7045', '1', '0', 'Cabecera 1 - planta', '37864A']
+== e02-estilo.txt
+  sobres por SchemaVersion: {'1.0': 18}  ilegibles: 0
+  racks (Id): 11  con Name distintos: 0
+  NEST: 3
+     ['A$Ceb3b79ff', '0', '0', 'PB G - planta', '2F0F38']
+     ['*U5789', '1', '0', 'Cabecera 1 - planta', '328910']
+     ['*U5806', '1', '0', 'Cabecera 1 - planta', '32A2AB']
+== e03-estilo.txt
+  sobres por SchemaVersion: {}  ilegibles: 0
+  racks (Id): 0  con Name distintos: 0
+  NEST: 0
+== e04-estilo.txt
+  sobres por SchemaVersion: {'1.0': 21}  ilegibles: 0
+  racks (Id): 8  con Name distintos: 0
+  NEST: 0
+== e05-estilo.txt
+  sobres por SchemaVersion: {'1.0': 27}  ilegibles: 0
+  racks (Id): 16  con Name distintos: 0
+  NEST: 0

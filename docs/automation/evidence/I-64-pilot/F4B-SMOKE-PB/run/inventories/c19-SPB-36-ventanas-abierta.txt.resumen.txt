@@ -1,0 +1,5 @@
+inventario: c19-SPB-36-ventanas-abierta.txt
+sha256: 2405209da2cc13d368368e24880fdce5ee83565bfa641dc3ab88b20f9fb3a8c5
+bytes: 316
+
+(no es un inventario RCDUMP: solo su SHA-256)

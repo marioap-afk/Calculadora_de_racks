@@ -1,0 +1,24 @@
+Autodesk AutoCAD 2025 - [c15.dwg] | id=NameBox | name= | value=PB E | readOnly=False | enabled=True | rect=40,129,479,32
+Autodesk AutoCAD 2025 - [c15.dwg] | id=AnnotationScaleBox | name= | value=2 | readOnly=False | enabled=True | rect=40,363,234,23
+Autodesk AutoCAD 2025 - [c15.dwg] | id=FrontCountBox | name= | value=72 | readOnly=False | enabled=True | rect=40,523,234,22
+Autodesk AutoCAD 2025 - [c15.dwg] | id=ToleranceBox | name= | value=4 | readOnly=False | enabled=True | rect=40,579,234,23
+Autodesk AutoCAD 2025 - [c15.dwg] | id=BeamDepthBox | name= | value=6 | readOnly=False | enabled=True | rect=40,635,234,23
+Autodesk AutoCAD 2025 - [c15.dwg] | id=PalletsDeepBox | name= | value=6 | readOnly=False | enabled=True | rect=286,523,233,22
+Autodesk AutoCAD 2025 - [c15.dwg] | id=PostPeralteBox | name= | value=5 | readOnly=False | enabled=True | rect=286,579,233,23
+Autodesk AutoCAD 2025 - [c15.dwg] | id=FrontBox | name= | value=40 | readOnly=False | enabled=False | rect=40,938,234,23
+Autodesk AutoCAD 2025 - [c15.dwg] | id=PalletHeightBox | name= | value=74.803 | readOnly=False | enabled=False | rect=40,994,234,23
+Autodesk AutoCAD 2025 - [c15.dwg] | id=DepthBox | name= | value=48 | readOnly=False | enabled=True | rect=286,938,233,23
+Autodesk AutoCAD 2025 - [c15.dwg] | id=WeightBox | name= | value=1000 | readOnly=False | enabled=False | rect=286,994,233,23
+Autodesk AutoCAD 2025 - [c15.dwg] | id=PositionsBox | name= | value=1 | readOnly=False | enabled=True | rect=54,1213,220,23
+Autodesk AutoCAD 2025 - [c15.dwg] | id=FondosBox | name= | value=6 | readOnly=False | enabled=True | rect=54,1269,220,23
+Autodesk AutoCAD 2025 - [c15.dwg] | id=FirstLevelHeightBox | name= | value=4 | readOnly=False | enabled=False | rect=54,1325,220,23
+Autodesk AutoCAD 2025 - [c15.dwg] | id=LevelsBox | name= | value=4 | readOnly=False | enabled=False | rect=286,1213,220,23
+Autodesk AutoCAD 2025 - [c15.dwg] | id=DepthStartBox | name= | value=1 | readOnly=False | enabled=True | rect=286,1269,220,23
+Autodesk AutoCAD 2025 - [c15.dwg] | id=CellPalletFrontBox | name= | value=40 | readOnly=False | enabled=False | rect=54,1525,220,22
+Autodesk AutoCAD 2025 - [c15.dwg] | id=CellPalletWeightBox | name= | value=1000 | readOnly=False | enabled=False | rect=54,1581,220,22
+Autodesk AutoCAD 2025 - [c15.dwg] | id=CellClearBox | name= | value=6 | readOnly=False | enabled=False | rect=54,1637,220,23
+Autodesk AutoCAD 2025 - [c15.dwg] | id=CellPalletHeightBox | name= | value=74.803 | readOnly=False | enabled=False | rect=286,1525,220,22
+Autodesk AutoCAD 2025 - [c15.dwg] | id=CellBeamLengthOverrideBox | name= | value= | readOnly=False | enabled=False | rect=286,1581,220,22
+Autodesk AutoCAD 2025 - [c15.dwg] | id=CellFondoOverrideBox | name= | value= | readOnly=False | enabled=False | rect=54,2134,220,22
+Autodesk AutoCAD 2025 - [c15.dwg] | id=BrowserFieldBox | name=Escala de anotación | value=1 | readOnly=True | enabled=True | rect=117,261,213,22
+Autodesk AutoCAD 2025 - [c15.dwg] | id=local:AutoCompleteEdit_1 | name= | value= | readOnly=False | enabled=True | rect=69,958,1424,19

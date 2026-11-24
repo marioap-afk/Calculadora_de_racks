@@ -1,0 +1,5 @@
+inventario: c19-SPB-36-tiempo-sin-marca-2.txt
+sha256: 91fe21b922eb6c2bd146217c1676a12433430b3869a21a94ecb622800d9d24d6
+bytes: 82
+
+(no es un inventario RCDUMP: solo su SHA-256)

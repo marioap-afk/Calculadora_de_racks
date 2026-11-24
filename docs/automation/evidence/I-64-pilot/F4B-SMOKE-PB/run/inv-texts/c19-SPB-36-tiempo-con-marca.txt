@@ -1,0 +1,4 @@
+inicio_utc=01:15:12.314
+clic_ms=14773
+ventana_ms=19373
+clic_a_ventana_ms=4601

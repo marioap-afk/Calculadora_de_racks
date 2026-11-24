@@ -1,0 +1,5 @@
+c11-SPB-21-ventana-cerrada.jpg	11D0C917	solo escritorio y barra de tareas de Windows: la ventana ya cerrada no deja area del paso que recortar
+c41-SPB-50-close-pregunta-guardar.jpg	CCBC4AC3	pregunta de guardar de AutoCAD con la ruta completa del archivo (unidad y carpetas); la guia la excluye y el registro ya anota el boton pulsado
+c42-SPB-59-quit-pregunta-guardar.jpg	28EBEC19	la cruda lleva la pregunta de guardar de AutoCAD con la ruta del archivo; el registro dice que no se custodia y anota el boton pulsado (decision de la sesion: no se custodia tampoco el recorte del panel)
+c43-SPB-60-quit-pregunta-guardar.jpg	A9895AB4	la cruda lleva la pregunta de guardar de AutoCAD con la ruta del archivo; el registro dice que no se custodia y anota el boton pulsado (decision de la sesion: no se custodia tampoco el recorte del panel)
+c44-SPB-61-quit-pregunta-guardar.jpg	0F2A1A86	la cruda lleva la pregunta de guardar de AutoCAD con la ruta del archivo; el registro dice que no se custodia y anota el boton pulsado (decision de la sesion: no se custodia tampoco el recorte del panel)

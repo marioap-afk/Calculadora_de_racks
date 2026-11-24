@@ -1,0 +1,5 @@
+inventario: c15-SPB-31-uia-ventana-abierta.txt
+sha256: e4f9eab3154d1edb836f8e8d39c033cdac3021461accff53a8f4af055d33e2c7
+bytes: 3102
+
+(no es un inventario RCDUMP: solo su SHA-256)

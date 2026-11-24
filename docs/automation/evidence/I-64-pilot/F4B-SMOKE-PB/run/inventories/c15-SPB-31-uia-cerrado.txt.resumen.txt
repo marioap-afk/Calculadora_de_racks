@@ -1,0 +1,5 @@
+inventario: c15-SPB-31-uia-cerrado.txt
+sha256: 3cf82b76f4402b237dabcf9301b392fe0100a6e914728f5959940235398208c6
+bytes: 283
+
+(no es un inventario RCDUMP: solo su SHA-256)

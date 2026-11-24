@@ -1,0 +1,5 @@
+inventario: c01-rcdyn.txt
+sha256: 8cbd634b5ff77ed27c48043b17f45c0fa9f0e5d57d56c8f515648555abfe7570
+bytes: 314705
+
+DYN 5795; RACK 17; rcdyn distinto de IsDynamicBlock: 1

@@ -1,0 +1,2 @@
+Autodesk AutoCAD 2025 - [c18.dwg] | id=BrowserFieldBox | name=Escala de anotación | value=1 | readOnly=False | enabled=True | rect=117,90,213,22
+Autodesk AutoCAD 2025 - [c18.dwg] | id=local:AutoCompleteEdit_1 | name= | value= | readOnly=False | enabled=True | rect=69,958,1424,19

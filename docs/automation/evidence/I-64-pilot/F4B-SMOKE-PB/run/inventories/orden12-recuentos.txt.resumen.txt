@@ -1,0 +1,5 @@
+inventario: orden12-recuentos.txt
+sha256: f0e584d5c44a97146b8fe6320ffae7466d8923e8fb5628759226f19d610fbb11
+bytes: 1279
+
+(no es un inventario RCDUMP: solo su SHA-256)

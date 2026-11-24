@@ -1,0 +1,5 @@
+inventario: c18-SPB-34-uia.txt
+sha256: e5d4f26c355a38761f9df140d5c8ab1721f5400a305347cbe6326c4300e02f00
+bytes: 282
+
+(no es un inventario RCDUMP: solo su SHA-256)
