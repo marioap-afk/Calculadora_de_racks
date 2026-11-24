@@ -23,12 +23,27 @@ namespace RackCad.Plugin.VentanaRackCad
                     return RackCadClassicResult.Without(RackCadClassicStatus.Busy, "Hay un comando en curso.");
 
                 document.SendStringToExecute(RackCadClassicCommands.TextOf(action), true, false, false);
+                ReturnFocusToDrawing(document);
                 return RackCadClassicResult.Started();
             }
             catch (System.Exception ex)
             {
                 RackLog.Exception("RackCadClassicCommandPort.Run", ex);
                 return RackCadClassicResult.Without(RackCadClassicStatus.Failed, ex.Message);
+            }
+        }
+
+        // The palette keeps the focus (KeepFocus); the command and its prompts or jig belong to the drawing, so the focus goes back to it,
+        // with the public window API of the document. A failure is contained: the command was already handed to AutoCAD.
+        internal static void ReturnFocusToDrawing(Autodesk.AutoCAD.ApplicationServices.Document document)
+        {
+            try
+            {
+                document?.Window.Focus();
+            }
+            catch (System.Exception ex)
+            {
+                RackLog.Exception("RackCadClassicCommandPort.ReturnFocusToDrawing", ex);
             }
         }
     }

@@ -32,10 +32,35 @@ namespace RackCad.UI.VentanaRackCad
             // The list of the side column is the way to move between racks: the strip of tabs of the panel and its label are not shown here.
             PanelView.BrowserTabStrip.Visibility = Visibility.Collapsed;
             PanelView.RootLabelText.Visibility = Visibility.Collapsed;
+            // Its text of "no tab" would repeat the one of the window (NoRackText).
+            PanelView.BrowserEmptyText.Visibility = Visibility.Collapsed;
             RackPageHost.Content = PanelView;
 
             _viewModel.PropertyChanged += OnViewModelPropertyChanged;
+            SizeChanged += OnSizeChanged;
             ApplySideCollapsed();
+        }
+
+        /// <summary>Below this width the two columns do not fit: the side column is hidden on its own until the window is wider again.</summary>
+        internal const double NarrowWidth = 520;
+
+        private bool _autoCollapsed;
+
+        // A narrow palette (docked, for example) hides the side column by itself, and gives it back when it is wide again, unless the user
+        // chose by hand meanwhile.
+        private void OnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (!e.WidthChanged) return;
+            if (e.NewSize.Width < NarrowWidth && !_viewModel.SideCollapsed)
+            {
+                _autoCollapsed = true;
+                _viewModel.SideCollapsed = true;
+            }
+            else if (e.NewSize.Width >= NarrowWidth && _autoCollapsed && _viewModel.SideCollapsed)
+            {
+                _autoCollapsed = false;
+                _viewModel.SideCollapsed = false;
+            }
         }
 
         public RackCadWindowViewModel ViewModel => _viewModel;
@@ -66,8 +91,17 @@ namespace RackCad.UI.VentanaRackCad
             }
         }
 
-        private void OnSideToggleClick(object sender, RoutedEventArgs e) =>
-            Contained(() => _viewModel.SideCollapsed = !_viewModel.SideCollapsed);
+        private void OnSideToggleClick(object sender, RoutedEventArgs e) => Contained(() =>
+        {
+            _autoCollapsed = false;
+            _viewModel.SideCollapsed = !_viewModel.SideCollapsed;
+        });
+
+        private void OnRackItemCloseClick(object sender, RoutedEventArgs e) => Contained(() =>
+        {
+            if ((sender as FrameworkElement)?.DataContext is RackListItem item) _viewModel.RackList.Close(item.RackId);
+            e.Handled = true;
+        });
 
         private void OnSectionClick(object sender, RoutedEventArgs e) => Contained(() =>
         {

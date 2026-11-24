@@ -493,7 +493,7 @@ public class WorkspaceBrowserSummaryTests
             new[] { typeof(Func<SessionId, IReadOnlyList<BrowserRackFact>>), typeof(Func<SessionId, bool>) },
             constructor.GetParameters().Select(p => p.ParameterType).ToArray());
         Assert.Equal(
-            new[] { "CachedRackCount", "EndSession", "IsCached", "IsListCached", "IsSessionEnded", "OnDrained", "Read", "ReadList" },
+            new[] { "CachedRackCount", "EndSession", "HasListBeenRead", "IsCached", "IsListCached", "IsSessionEnded", "OnDrained", "Read", "ReadList" },
             typeof(BrowserRackSummaries).GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)
                 .Where(m => !m.IsSpecialName).Select(m => m.Name).OrderBy(n => n, StringComparer.Ordinal).ToArray());
     }

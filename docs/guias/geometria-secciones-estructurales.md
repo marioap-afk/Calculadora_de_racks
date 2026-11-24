@@ -252,7 +252,7 @@ figuras hay que ordenar los puntos.
 RACKSECCION
 ```
 
-…o, desde la interfaz, **`RACKCAD` → «Generar perfil estructural»**. Son **la misma cosa**: las dos
+…o, desde la interfaz, **`RACKCAD` → «Nuevo» → «Perfil estructural»** (o `RACKMENU` → «Generar perfil estructural»). Son **la misma cosa**: las dos
 puertas llaman al mismo caso de uso (`StructuralSectionCommandFlow`), no a dos implementaciones que
 coinciden. El botón del menú no es un generador aparte; sólo hace visible el que ya existe.
 

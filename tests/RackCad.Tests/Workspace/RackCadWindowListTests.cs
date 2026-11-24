@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using RackCad.Application.VentanaRackCad;
 using RackCad.Application.Workspace;
@@ -216,6 +217,78 @@ public class RackCadWindowListTests
         public bool IsSessionAlive(SessionId session) => true;
     }
 
+    [Fact]
+    public void TheListRemembersThatItWasReadAcrossAnInvalidationButNotAcrossTheEndOfTheSession()
+    {
+        var rig = new Rig();
+        Assert.False(rig.Summaries.HasListBeenRead(S1));
+
+        rig.Summaries.ReadList(S1);
+        rig.Summaries.OnDrained(Drain(S1, true, DrainOperation.InvalidateNavigationCaches));
+
+        Assert.False(rig.Summaries.IsListCached(S1));
+        Assert.True(rig.Summaries.HasListBeenRead(S1));
+
+        rig.Summaries.EndSession(S1);
+        Assert.False(rig.Summaries.HasListBeenRead(S1));
+    }
+
+    [Fact]
+    public void TheHostReadsTheListInTheOrderOfTheSummaryAndAfterTheFirstReadOnlyWhenTheUserAsks()
+    {
+        var host = WorkspaceHostSource.Code("src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs");
+        var body = WorkspaceHostSource.BodyOf(host, @"public\s+BrowserRackList\s+ReadRackList\s*\(");
+
+        var order = new[]
+        {
+            "MdiActiveDocument",
+            "CommandInProgress",
+            "HasListBeenRead(origin.Origin)) return BrowserRackList.Outdated()",
+            "_drainNoticeOpen",
+            "_authorize(origin",
+            "_summaries.ReadList(origin.Origin, refresh: userRequested)",
+        };
+        var at = -1;
+        foreach (var step in order)
+        {
+            var next = body.IndexOf(step, at + 1, StringComparison.Ordinal);
+            Assert.True(next > at, "out of order or missing: " + step);
+            at = next;
+        }
+
+        // The palette never locks the document for the list outside the facts reader of the host.
+        Assert.DoesNotContain("LockDocument", body, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void TheFoldersOfTheWindowKeepTheirLayers()
+    {
+        foreach (var path in Directory.GetFiles(Path.Combine(Root(), "src", "RackCad.UI", "VentanaRackCad"), "*.cs"))
+        {
+            var code = WorkspaceHostSource.CodeOnly(File.ReadAllText(path));
+            Assert.DoesNotMatch(new System.Text.RegularExpressions.Regex(@"\bAutodesk\.|RackCad\.Plugin\b|LockDocument|SendStringToExecute"), code);
+        }
+
+        foreach (var path in Directory.GetFiles(Path.Combine(Root(), "src", "RackCad.Application", "VentanaRackCad"), "*.cs"))
+        {
+            var code = WorkspaceHostSource.CodeOnly(File.ReadAllText(path));
+            Assert.DoesNotMatch(new System.Text.RegularExpressions.Regex(@"\bAutodesk\.|System\.Windows|RackCad\.UI\b|RackCad\.Plugin\b"), code);
+        }
+
+        // The door of the Plugin hands commands to AutoCAD and never locks the document or opens a transaction from the palette.
+        foreach (var path in Directory.GetFiles(Path.Combine(Root(), "src", "RackCad.Plugin", "VentanaRackCad"), "*.cs"))
+        {
+            var code = WorkspaceHostSource.CodeOnly(File.ReadAllText(path));
+            Assert.DoesNotMatch(new System.Text.RegularExpressions.Regex(@"LockDocument|StartTransaction|StartOpenCloseTransaction"), code);
+        }
+    }
+
+    private static string Root()
+    {
+        var dir = new DirectoryInfo(AppContext.BaseDirectory);
+        while (dir != null && !File.Exists(Path.Combine(dir.FullName, "RackCad.sln"))) dir = dir.Parent;
+        return dir?.FullName ?? throw new InvalidOperationException("RackCad.sln not found");
+    }
     // ------------------------------------------------------------------ opening a rack of the list
 
     [Fact]

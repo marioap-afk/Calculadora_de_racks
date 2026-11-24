@@ -30,5 +30,14 @@ namespace RackCad.Application.Workspace
         /// <summary>What a port that does not offer the list answers: nothing was read and nothing will be.</summary>
         public static BrowserRackList NotOffered { get; } =
             Without(BrowserSummaryStatus.Rejected, "This port does not offer the list of racks of the drawing.");
+
+        /// <summary>
+        /// The drawing changed since the list was read and the host does not read it again on its own (every read of the palette locks the
+        /// document, O-18): the window keeps the list it has and says that it may be outdated until the user reads it again.
+        /// </summary>
+        public bool IsOutdated { get; init; }
+
+        public static BrowserRackList Outdated() =>
+            Without(BrowserSummaryStatus.Busy, "The drawing changed since the list was read; it is read again when the user asks.") with { IsOutdated = true };
     }
 }

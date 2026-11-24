@@ -69,7 +69,7 @@ integración, su SHA-256. Un DLL sin trazabilidad no valida la rama.
 1. Abre AutoCAD 2025 con un dibujo de prueba recuperable.
 2. Ejecuta `NETLOAD`.
 3. Selecciona el DLL exacto del worktree.
-4. Ejecuta `RACKCAD` y confirma que el menú abre sin excepciones.
+4. Ejecuta `RACKCAD` y confirma que la ventana RackCad abre sin excepciones (el menú clásico es `RACKMENU`).
 5. Verifica en el menú la ruta de `blocks-library.dwg`; no inventes bloques faltantes ni sustituyas
    nombres catalogados.
 
@@ -81,7 +81,7 @@ no una regla geométrica defectuosa.
 
 | Comando | Comprobación principal |
 |---|---|
-| `RACKCAD` | Menú principal, bibliotecas y acceso a los editores. |
+| `RACKCAD` | Ventana RackCad (no bloquea AutoCAD): secciones, lista de racks del dibujo y acceso a los editores. El menú clásico es `RACKMENU`. |
 | `RACKCABECERA` / `QUICKCABECERA` | Cabecera estándar, edición y colocación. |
 | `RACKSISTEMADINAMICO` | Sistema dinámico y sus vistas ligadas. |
 | `QUICKCAMA` | Cama de rodamiento dinámica o pushback. |

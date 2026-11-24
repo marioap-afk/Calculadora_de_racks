@@ -9,7 +9,8 @@ using RackCad.UI.Workspace;
 namespace RackCad.UI.VentanaRackCad
 {
     /// <summary>One rack of the side column as the window shows it: a plain value with no event, no delegate and no visual element.</summary>
-    public sealed record RackListItem(string RackId, string Name, string StatusText, string StatusKind, bool IsActive, bool IsSelected);
+    /// <param name="HasTab">The rack is open in the browser (it has a tab, which the window does not show): it can be closed from the list.</param>
+    public sealed record RackListItem(string RackId, string Name, string StatusText, string StatusKind, bool IsActive, bool IsSelected, bool HasTab = false);
 
     /// <summary>One group of the side column: the racks of one system, with "shown of total" for that system.</summary>
     public sealed record RackListGroup(string KindLabel, string CountText, IReadOnlyList<RackListItem> Items);
@@ -202,6 +203,20 @@ namespace RackCad.UI.VentanaRackCad
             RackOpened?.Invoke();
         }
 
+        /// <summary>
+        /// «Cerrar» of a rack that is open in the browser: the rules of closing a tab (a protected draft asks inline first, in the page of the
+        /// rack, to Discard or Cancel). The window shows the page of the rack so the question is seen.
+        /// </summary>
+        public void Close(string rackId)
+        {
+            if (string.IsNullOrWhiteSpace(rackId)) return;
+            var tab = _browser.Tabs.FirstOrDefault(t => string.Equals(t.RackId, rackId, StringComparison.OrdinalIgnoreCase));
+            if (tab == null) return;
+            _browser.CloseTab(tab.RackId);
+            Rebuild();
+            RackOpened?.Invoke();
+        }
+
         /// <summary>"Abrir" of the rack selected in AutoCAD while the selection is not followed.</summary>
         public void OpenSelected()
         {
@@ -235,6 +250,7 @@ namespace RackCad.UI.VentanaRackCad
             if (!_canRead || _block != WorkspaceActionBlock.None)
             {
                 if (_listSession == null) SetStatus("La lista se leerá cuando el dibujo esté libre.");
+                else if (userRequested) SetStatus("El dibujo no se puede leer ahora (hay un comando en curso); vuelve a intentarlo al terminar.");
                 return;
             }
 
@@ -257,7 +273,9 @@ namespace RackCad.UI.VentanaRackCad
                     SetStatus(_racks.Count == 0 ? "Este dibujo no tiene racks de RackCad." : string.Empty);
                     break;
                 case BrowserSummaryStatus.Busy:
-                    if (_listSession == null) SetStatus("Leyendo la lista del dibujo…");
+                    if (list.IsOutdated && _listSession != null)
+                        SetStatus("La lista puede no estar al día: pulsa «Volver a leer la lista».");
+                    else if (_listSession == null) SetStatus(list.IsOutdated ? "Pulsa «Volver a leer la lista»." : "Leyendo la lista del dibujo…");
                     break;
                 case BrowserSummaryStatus.Failed:
                     SetStatus("No se pudo leer la lista: " + (string.IsNullOrWhiteSpace(list.Reason) ? "sin detalle." : list.Reason));
@@ -310,8 +328,9 @@ namespace RackCad.UI.VentanaRackCad
                         name,
                         state.Text,
                         state.Kind,
-                        string.Equals(rack.RackId, active, StringComparison.Ordinal),
-                        string.Equals(rack.RackId, selected, StringComparison.Ordinal)));
+                        string.Equals(rack.RackId, active, StringComparison.OrdinalIgnoreCase),
+                        string.Equals(rack.RackId, selected, StringComparison.OrdinalIgnoreCase),
+                        _browser.Tabs.Any(tab => string.Equals(tab.RackId, rack.RackId, StringComparison.OrdinalIgnoreCase))));
                 }
 
                 shown += items.Count;
@@ -407,7 +426,10 @@ namespace RackCad.UI.VentanaRackCad
             var stale = view.IsPossiblyStale ? " (posiblemente obsoleto)" : string.Empty;
             switch (view.State)
             {
-                case PilotFieldState.Clean: return ("Limpio" + stale, view.IsPossiblyStale ? "Obsoleto" : "Limpio", view.IsProtected);
+                case PilotFieldState.Clean:
+                    // A clean draft that would still be lost (protected) is a change not written yet, and it looks like one.
+                    if (view.IsProtected) return ("Borrador sin escribir" + stale, view.IsPossiblyStale ? "Obsoleto" : "Modificado", true);
+                    return ("Limpio" + stale, view.IsPossiblyStale ? "Obsoleto" : "Limpio", false);
                 case PilotFieldState.Dirty: return ("Modificado" + stale, view.IsPossiblyStale ? "Obsoleto" : "Modificado", true);
                 case PilotFieldState.Conflict: return ("Conflicto", "Obsoleto", true);
                 case PilotFieldState.Applying: return ("Aplicando", "Modificado", true);
@@ -446,7 +468,9 @@ namespace RackCad.UI.VentanaRackCad
                         continue;
                     }
 
-                    var byChar = char.ToUpperInvariant(x[i]).CompareTo(char.ToUpperInvariant(y[j]));
+                    // Letters compare ignoring case and accents, as the search does («Dinámico» next to «Dinamico»).
+                    var byChar = CultureInfo.InvariantCulture.CompareInfo.Compare(
+                        x, i, 1, y, j, 1, CompareOptions.IgnoreCase | CompareOptions.IgnoreNonSpace);
                     if (byChar != 0) return byChar;
                     i++;
                     j++;

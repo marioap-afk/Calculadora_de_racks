@@ -358,14 +358,14 @@ namespace RackCad.UI.VentanaRackCad
         {
             switch (action)
             {
-                case RackCadClassicAction.Variables: return "Se abrió Variables en AutoCAD.";
-                case RackCadClassicAction.RackList: return "Se abrió la lista de racks del dibujo en AutoCAD.";
-                case RackCadClassicAction.TotalBom: return "Se abrió el BOM total del dibujo en AutoCAD.";
-                case RackCadClassicAction.DesignLibrary: return "Se abrió la biblioteca de diseños en AutoCAD.";
-                case RackCadClassicAction.ClassicMenu: return "Se abrió el menú clásico de RackCad en AutoCAD.";
-                case RackCadClassicAction.Help: return "Se abrió la ayuda de RackCad en AutoCAD.";
-                case RackCadClassicAction.StructuralSection: return "Se abrió el generador de perfiles estructurales en AutoCAD.";
-                default: return "Se abrió el editor en AutoCAD. Al terminar, el rack nuevo aparece en la lista.";
+                case RackCadClassicAction.Variables: return "Se pidió a AutoCAD abrir Variables.";
+                case RackCadClassicAction.RackList: return "Se pidió a AutoCAD abrir la lista de racks del dibujo.";
+                case RackCadClassicAction.TotalBom: return "Se pidió a AutoCAD abrir el BOM total del dibujo.";
+                case RackCadClassicAction.DesignLibrary: return "Se pidió a AutoCAD abrir la biblioteca de diseños.";
+                case RackCadClassicAction.ClassicMenu: return "Se pidió a AutoCAD abrir el menú clásico de RackCad.";
+                case RackCadClassicAction.Help: return "Se pidió a AutoCAD abrir la ayuda de RackCad.";
+                case RackCadClassicAction.StructuralSection: return "Se pidió a AutoCAD abrir el generador de perfiles estructurales.";
+                default: return "Se pidió a AutoCAD abrir el editor. Al insertar el rack, pulsa «Volver a leer la lista» para verlo en ella.";
             }
         }
 

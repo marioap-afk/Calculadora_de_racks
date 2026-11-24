@@ -92,8 +92,8 @@ namespace RackCad.Plugin
                 var styles = RackCommandSupport.ReadDimensionStyleNames(document);
                 var host = new global::RackCad.UI.VentanaRackCad.RackModalHostWindow(
                     owner => global::RackCad.UI.VentanaRackCad.RackCadClassicFlows.OpenForNew(owner, kind, styles));
-                AcApplication.ShowModalWindow(host);
-                if (host.Failure != null) throw host.Failure;
+                AcApplication.ShowModalWindow(host.Window);
+                host.ThrowIfFailed();
 
                 DispatchInsertion(document, host.Result as RackInsertionRequest);
             }
@@ -117,8 +117,8 @@ namespace RackCad.Plugin
                 var styles = RackCommandSupport.ReadDimensionStyleNames(document);
                 var host = new global::RackCad.UI.VentanaRackCad.RackModalHostWindow(
                     owner => global::RackCad.UI.VentanaRackCad.RackCadClassicFlows.OpenFromLibrary(owner, styles));
-                AcApplication.ShowModalWindow(host);
-                if (host.Failure != null) throw host.Failure;
+                AcApplication.ShowModalWindow(host.Window);
+                host.ThrowIfFailed();
 
                 DispatchInsertion(document, host.Result as RackInsertionRequest);
             }

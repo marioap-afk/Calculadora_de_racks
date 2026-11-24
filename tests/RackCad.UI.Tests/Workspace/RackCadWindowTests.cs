@@ -372,7 +372,7 @@ namespace RackCad.UI.Tests
             Assert.Equal(new[] { RackCadClassicAction.NewPushBack }, rig.Classic.Runs);
             Assert.True(rig.Window.HasActionMessage);
             Assert.False(rig.Window.ActionFailed);
-            Assert.StartsWith("Se abrió el editor en AutoCAD.", rig.Window.ActionMessage);
+            Assert.StartsWith("Se pidió a AutoCAD abrir el editor.", rig.Window.ActionMessage);
 
             rig.Window.DismissMessage();
             Assert.False(rig.Window.HasActionMessage);
@@ -450,6 +450,144 @@ namespace RackCad.UI.Tests
             Assert.Equal("Mostrar la lista", rig.Window.SideToggleText);
         }
 
+        // ------------------------------------------------------------------ review of 16aebbee: pending text, closing, the outdated list
+
+        [Fact]
+        public void OpeningAnotherRackWithPendingTextCrossesTheBlockingBoundaryAndAnAbortKeepsTheRack()
+        {
+            var rig = new Rig();
+            rig.Window.OpenRack("PB-2");
+            rig.Pilot.Set(Session, "PB-2", WorkspacePilotEditPortDouble.View(PilotFieldState.Dirty, pending: "1:2", isProtected: true));
+            rig.Pilot.BoundaryResponder = (_, rack, kind) =>
+                new PilotBoundaryResult(kind, PilotBoundaryDecision.Aborted, false, new[] { new PilotFieldProblem("scale", "La escala no es válida.") }, null);
+
+            rig.Window.OpenRack("SEL-1");
+
+            Assert.Equal("PB-2", rig.Panel.Browser.ActiveRackId);
+            Assert.Contains(rig.Pilot.Calls, c => c.RackId == "PB-2" && c.Kind == PilotBoundaryKind.TabChange);
+
+            rig.Pilot.BoundaryResponder = (_, rack, kind) => new PilotBoundaryResult(kind, PilotBoundaryDecision.Proceeded, false, System.Array.Empty<PilotFieldProblem>(), null);
+            rig.Window.OpenRack("SEL-1");
+            Assert.Equal("SEL-1", rig.Panel.Browser.ActiveRackId);
+        }
+
+        [Fact]
+        public void WithoutFollowingTheSelectionPendingTextStillHoldsTheActiveRackWithoutANoticeOfTheChoice()
+        {
+            var rig = new Rig();
+            rig.Window.OpenRack("PB-2");
+            rig.Pilot.Set(Session, "PB-2", WorkspacePilotEditPortDouble.View(PilotFieldState.Dirty, pending: "1:2", isProtected: true));
+            rig.List.FollowSelection = false;
+
+            rig.Select("SEL-1");
+
+            Assert.Equal("PB-2", rig.Panel.Browser.ActiveRackId);
+            Assert.True(rig.List.HasSelectionBox);
+        }
+
+        [Fact]
+        public void AnOpenRackCanBeClosedFromTheListAndARackWithoutATabCannot()
+        {
+            var rig = new Rig();
+            rig.Window.OpenRack("PB-2");
+            var item = rig.List.Groups.SelectMany(g => g.Items).Single(i => i.RackId == "PB-2");
+            Assert.True(item.HasTab);
+            Assert.False(rig.List.Groups.SelectMany(g => g.Items).Single(i => i.RackId == "SEL-1").HasTab);
+
+            rig.List.Close("PB-2");
+
+            Assert.Null(rig.Panel.Browser.ActiveRackId);
+            Assert.False(rig.List.Groups.SelectMany(g => g.Items).Single(i => i.RackId == "PB-2").HasTab);
+        }
+
+        [Fact]
+        public void AnOutdatedListIsKeptAndSaysSoUntilItIsReadAgain()
+        {
+            var rig = new Rig();
+            rig.Summary.ListResponder = (_, user) => user ? BrowserRackList.Ready(rig.Racks) : BrowserRackList.Outdated();
+
+            rig.Window.Refresh();
+            Assert.Equal(6, rig.List.RackCount);
+            Assert.Equal("La lista puede no estar al día: pulsa «Volver a leer la lista».", rig.List.StatusText);
+
+            rig.List.Reload();
+            Assert.Equal(string.Empty, rig.List.StatusText);
+        }
+
+        [Fact]
+        public void ReadingAgainWhileACommandRunsSaysWhyNothingHappened()
+        {
+            var rig = new Rig();
+            // The session of the list (7), with a command in progress.
+            rig.Host.Snapshot = new WorkspaceHostSnapshot(WorkspaceHostStatus.Ready, Session, true,
+                new WorkspaceActionAvailability(false, false, WorkspaceActionBlock.CommandActive), SelectionContext.None, false, false);
+            rig.Window.Refresh();
+
+            rig.List.Reload();
+
+            Assert.StartsWith("El dibujo no se puede leer ahora", rig.List.StatusText);
+        }
+
+        [Fact]
+        public void AProtectedCleanDraftIsAChangeNotWrittenAndLooksLikeOne()
+        {
+            var rig = new Rig();
+            rig.Pilot.Set(Session, "PB-10", WorkspacePilotEditPortDouble.View(PilotFieldState.Clean, isProtected: true));
+            rig.List.RefreshStates();
+
+            var item = rig.List.Groups.SelectMany(g => g.Items).Single(i => i.RackId == "PB-10");
+            Assert.Equal(("Borrador sin escribir", "Modificado"), (item.StatusText, item.StatusKind));
+            Assert.Equal(1, rig.List.ChangedCount);
+        }
+
+        [Fact]
+        public void TheModalHostRunsTheWorkWithItsWindowAsOwnerAndCloses()
+        {
+            StaTestRunner.Run(() =>
+            {
+                Window? seen = null;
+                var childShown = false;
+                var host = new RackModalHostWindow(owner =>
+                {
+                    seen = owner;
+                    var child = new Window { Owner = owner, Width = 50, Height = 50, ShowInTaskbar = false };
+                    child.Loaded += (_, _) => { childShown = true; child.Close(); };
+                    child.ShowDialog();
+                    return 42;
+                });
+
+                host.Window.ShowDialog();
+
+                Assert.Same(host.Window, seen);
+                Assert.True(childShown);
+                Assert.Equal(42, host.Result);
+                Assert.Null(host.Failure);
+                Assert.False(host.Window.IsVisible);
+                Assert.NotNull(host.Window.Content);
+            });
+        }
+
+        [Fact]
+        public void AFailingWorkOfTheModalHostClosesItAndIsRethrown()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var host = new RackModalHostWindow(_ => throw new InvalidOperationException("boom"));
+
+                host.Window.ShowDialog();
+
+                Assert.IsType<InvalidOperationException>(host.Failure);
+                var thrown = Assert.Throws<InvalidOperationException>(() => host.ThrowIfFailed());
+                Assert.Equal("boom", thrown.Message);
+                Assert.Null(host.Result);
+            });
+        }
+
+        [Fact]
+        public void TheModalHostIsNotANewWindowType()
+        {
+            Assert.False(typeof(Window).IsAssignableFrom(typeof(RackModalHostWindow)));
+        }
         // ------------------------------------------------------------------ the view
 
         private static IEnumerable<T> Descendants<T>(DependencyObject root)
@@ -506,7 +644,8 @@ namespace RackCad.UI.Tests
                 Assert.Equal(Visibility.Visible, view.NuevoPage.Visibility);
                 Assert.Equal(Visibility.Collapsed, view.RackPage.Visibility);
 
-                var rack = Descendants<Button>(view.RackGroupList).Single(b => b.DataContext is RackListItem i && i.RackId == "DIN-1");
+                var rack = Descendants<Button>(view.RackGroupList).Single(b => b.DataContext is RackListItem i && i.RackId == "DIN-1"
+                    && System.Windows.Automation.AutomationProperties.GetName(b) != "Cerrar el rack abierto");
                 Click(rack);
                 Lay(view);
                 Assert.Equal("DIN-1", rig.Panel.Browser.ActiveRackId);

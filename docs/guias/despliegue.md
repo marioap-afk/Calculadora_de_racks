@@ -79,7 +79,7 @@ dotnet build src\RackCad.Plugin\RackCad.Plugin.csproj -c Release -p:AutoCADInsta
 2. Abrir AutoCAD.
 3. Comando `NETLOAD` → seleccionar `RackCad.Plugin.dll`.
    - La primera vez AutoCAD puede preguntar si confía en el ensamblado: **Cargar / Load**.
-4. Ejecutar `RACKCAD` para abrir el menú.
+4. Ejecutar `RACKCAD` para abrir la ventana RackCad (el menú clásico es `RACKMENU`).
 
 `NETLOAD` es **por sesión**: hay que repetirlo cada vez que se abre AutoCAD (salvo carga
 automática, abajo).
@@ -205,7 +205,7 @@ Son **dos** cosas. El catálogo sí forma parte del bundle; la biblioteca DWG es
    ruta elegida por el usuario y, como fallback, un archivo con ese nombre junto a los catálogos. Contiene las
    definiciones de bloque que se clonan al dibujo cuando faltan.
 
-**Apuntar a una ubicación compartida (opcional):** desde el menú `RACKCAD` se puede ver y
+**Apuntar a una ubicación compartida (opcional):** desde la ventana `RACKCAD` → «Configuración» (o el menú clásico `RACKMENU`) se puede ver y
 elegir la ruta de la librería de bloques. La ruta elegida se guarda por usuario en:
 
 ```
@@ -268,7 +268,8 @@ comando completo o cambia el atajo en `RackFrameCommands.Aliases.cs`.
 
 | Comando | Atajo | Qué hace |
 |---------|-------|----------|
-| `RACKCAD` | `RK` | Menú principal (elige el tipo de rack a diseñar). |
+| `RACKCAD` | `RK` | Ventana RackCad (no bloquea AutoCAD): secciones y lista de racks del dibujo. |
+| `RACKMENU` | — | Menú clásico (elige el tipo de rack a diseñar), mientras las secciones de la ventana se migran. |
 | `RACKAYUDA` | `RA` | Ventana con **todos los comandos y sus atajos** dentro de AutoCAD (esta tabla, viva). |
 | `RACKCABECERA` | `RCB` | Configurador de cabecera (editor). |
 | `QUICKCABECERA` | `QCB` | Cabecera por línea de comandos (pide poste/fondo/alto). |
@@ -306,4 +307,4 @@ Para crear expresiones y distinguir una referencia directa de una fórmula, cons
 2. Copiar la carpeta de salida completa (DLLs + `catalogs\` con el `.dwg`).
 3. `NETLOAD` → `RackCad.Plugin.dll` (o dejarlo en la Startup Suite).
 4. Ejecutar `RACKCAD`.
-5. *(Opcional)* Apuntar a una librería/catálogo central desde el menú `RACKCAD`.
+5. *(Opcional)* Apuntar a una librería/catálogo central desde la ventana `RACKCAD` → «Configuración» o desde `RACKMENU`.

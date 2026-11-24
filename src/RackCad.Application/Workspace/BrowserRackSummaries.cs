@@ -16,8 +16,13 @@ namespace RackCad.Application.Workspace
     /// <summary>
     /// Pure projector and memory of the lazy rack summary (I-64 F3-T2, INV-38). It is NOT a second navigation authority and does
     /// not derive targets: from the facts of a session it projects name, Kind and views of one rack, and remembers only the
-    /// summary of the racks that were asked for, keyed by (session, rack). There is no global inventory: facts are read only when
-    /// no summary is remembered for that key, and nothing of the scan is kept. A session that ended is never resurrected.
+    /// summary of the racks that were asked for, keyed by (session, rack). The summaries keep no global inventory: facts are read only
+    /// when no summary is remembered for that key, and nothing of the scan is kept for them. A session that ended is never resurrected.
+    /// <para>
+    /// Since I-64 A-14 (phase 2) it also projects and remembers the LIST of the racks of a session for the side column of the RackCad
+    /// window, with the same projection, until a drain invalidates the navigation caches of that session. That list is the one global
+    /// inventory of the panel, and it is kept on purpose: the window lists every rack of the drawing (C-02).
+    /// </para>
     /// </summary>
     public sealed class BrowserRackSummaries
     {
@@ -25,6 +30,7 @@ namespace RackCad.Application.Workspace
         private readonly Func<SessionId, bool> _isSessionAlive;
         private readonly Dictionary<RackKey, BrowserRackSummary> _cache = new(RackKeyIgnoreCase.Instance);
         private readonly Dictionary<SessionId, BrowserRackList> _lists = new();
+        private readonly HashSet<SessionId> _listRead = new();
         private readonly HashSet<SessionId> _known = new();
         private readonly HashSet<SessionId> _ended = new();
 
@@ -82,6 +88,9 @@ namespace RackCad.Application.Workspace
         /// <summary>Whether the list of racks of the session is remembered.</summary>
         public bool IsListCached(SessionId session) => _lists.ContainsKey(session);
 
+        /// <summary>Whether the list of the session was ever read (even if a drain invalidated it since); false for an ended session.</summary>
+        public bool HasListBeenRead(SessionId session) => _listRead.Contains(session);
+
         /// <summary>
         /// The list of the racks of the session (I-64 A-14, phase 2), with the same session rules as <see cref="Read"/>. It is remembered
         /// per session until a drain invalidates the navigation caches of that session; <paramref name="refresh"/> (an explicit "read
@@ -103,6 +112,7 @@ namespace RackCad.Application.Workspace
 
             var list = BrowserRackList.Ready(ProjectAll(_readFacts(session)));
             _lists[session] = list;
+            _listRead.Add(session);
             return list;
         }
 
@@ -170,6 +180,7 @@ namespace RackCad.Application.Workspace
         private void End(SessionId session)
         {
             InvalidateSession(session);
+            _listRead.Remove(session);
             _known.Remove(session);
             _ended.Add(session);
         }

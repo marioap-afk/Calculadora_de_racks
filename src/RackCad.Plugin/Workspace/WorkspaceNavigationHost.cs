@@ -139,8 +139,14 @@ namespace RackCad.Plugin.Workspace
                     return BrowserRackList.Without(BrowserSummaryStatus.Rejected, "There is no active document.");
                 if (!string.IsNullOrEmpty(document.CommandInProgress) || !document.Editor.IsQuiescent)
                     return BrowserRackList.Without(BrowserSummaryStatus.Busy, "A command is in progress.");
-                if (!userRequested && !_drainNoticeOpen && !_summaries.IsListCached(origin.Origin))
-                    return BrowserRackList.Without(BrowserSummaryStatus.Busy, "The drawing is not read inside a notice of AutoCAD; it is asked again at the next drain.");
+                if (!userRequested && !_summaries.IsListCached(origin.Origin))
+                {
+                    // Every read of the palette locks the document and leaves an empty step in the list of Deshacer (O-18): after its first
+                    // read the list is read again only when the user asks, and meanwhile it is said to be possibly outdated.
+                    if (_summaries.HasListBeenRead(origin.Origin)) return BrowserRackList.Outdated();
+                    if (!_drainNoticeOpen)
+                        return BrowserRackList.Without(BrowserSummaryStatus.Busy, "The drawing is not read inside a notice of AutoCAD; it is asked again at the next drain.");
+                }
 
                 var decision = _authorize(origin, document.UnmanagedObject.ToInt64());
                 if (decision != RequestDecision.Accepted)

@@ -205,6 +205,11 @@
                                                             </Style>
                                                         </Button.Style>
                                                         <DockPanel>
+                                                            <Button DockPanel.Dock="Right" Content="Cerrar" Padding="6,0" Margin="6,0,0,0" FontSize="11"
+                                                                    Style="{StaticResource SecondaryButtonStyle}" ToolTip="Cerrar el rack abierto (si tiene un borrador, pregunta antes)"
+                                                                    AutomationProperties.Name="Cerrar el rack abierto"
+                                                                    Visibility="{Binding HasTab, Converter={StaticResource FlagToVisibility}}"
+                                                                    Click="OnRackItemCloseClick" />
                                                             <Ellipse Width="8" Height="8" Margin="0,0,8,0" VerticalAlignment="Center" DockPanel.Dock="Left">
                                                                 <Ellipse.Style>
                                                                     <Style TargetType="Ellipse">
