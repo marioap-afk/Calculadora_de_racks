@@ -85,7 +85,7 @@ namespace RackCad.UI.Tests
 
             public SettingsDouble Settings { get; } = new();
 
-            public List<BrowserRackListEntry> Racks { get; set; }
+            public List<BrowserRackListEntry> Racks { get; set; } = new();
 
             public WorkspacePanelViewModel Panel { get; }
 
