@@ -167,5 +167,50 @@ namespace RackCad.Plugin.VentanaRackCad
                 door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false, "No se pudo insertar: " + ex.Message));
             }
         }
+
+        /// <summary>
+        /// A new Dinámico made in the window (step 4 of Dinámico): the insertion of a new rack, by the same dispatch as the classic editor
+        /// opened from «Nuevo» (RACKNUEVO), with the identity the window gave it and the automatic name of I-60 when it has none. The answer
+        /// counts the views of that identity that were placed, and gives the name the drawing holds.
+        /// </summary>
+        [CommandMethod("RACKDINAMICONUEVO")]
+        public void InsertNewRack()
+        {
+            var door = RackCadRackDoorPort.Current;
+            var document = AcApplication.DocumentManager.MdiActiveDocument;
+            if (document == null) return;
+
+            var pending = RackCadRackDoorPort.TakePendingNew();
+            if (pending == null)
+            {
+                document.Editor.WriteMessage("\nRACKDINAMICONUEVO la usa la ventana RackCad: no hay ningún rack nuevo pendiente de insertar.");
+                return;
+            }
+
+            try
+            {
+                if (pending.Document != RackCadRackDoorPort.KeyOf(document))
+                {
+                    door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false, OtherDrawingText));
+                    return;
+                }
+
+                if (RackCommandSupport.FindRackBlocks(document, pending.RackId).Count > 0)
+                {
+                    door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false, "Ya hay un rack con esa identidad en el dibujo: no se insertó nada."));
+                    return;
+                }
+
+                RackMenuCommands.DispatchInsertion(document,
+                    RackCad.UI.Systems.Dynamic.DynamicDraftOutcome.NewRackRequest(pending.RackId, pending.Name, pending.Design, pending.System, pending.Views));
+                var placed = RackCommandSupport.FindRackBlocks(document, pending.RackId);
+                door?.AnswerWrite(RackDoorRules.AnswerForNewRack(pending.RequestId, pending.RackId, placed.Count, placed.Count > 0 ? placed[0].Embed?.Name : null));
+            }
+            catch (System.Exception ex)
+            {
+                RackCommandSupport.Report(ex);
+                door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false, "No se pudo insertar el rack nuevo: " + ex.Message));
+            }
+        }
     }
 }

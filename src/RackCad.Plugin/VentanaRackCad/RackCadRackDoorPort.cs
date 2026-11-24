@@ -22,6 +22,7 @@ namespace RackCad.Plugin.VentanaRackCad
         internal const string ReadCommand = "RACKDINAMICOABRIR";
         internal const string WriteCommand = "RACKDINAMICOAPLICAR";
         internal const string InsertCommand = "RACKDINAMICOINSERTAR";
+        internal const string NewCommand = "RACKDINAMICONUEVO";
 
         /// <summary>A read that waits for its command: the number, the rack and the drawing it is for.</summary>
         internal sealed record PendingRead(long RequestId, string RackId, long Document);
@@ -36,6 +37,7 @@ namespace RackCad.Plugin.VentanaRackCad
         private static PendingRead _pendingRead;
         private static PendingWrite _pendingWrite;
         private static PendingWrite _pendingInsert;
+        private static PendingWrite _pendingNew;
 
         public RackCadRackDoorPort()
         {
@@ -59,6 +61,17 @@ namespace RackCad.Plugin.VentanaRackCad
             if (write == null || string.IsNullOrWhiteSpace(write.RackId) || write.Design == null || write.System == null)
                 return RackCadClassicResult.Without(RackCadClassicStatus.Failed, "No hay un borrador válido que escribir.");
 
+            // A new Dinámico of the window: its own command, which inserts the rack with the views chosen.
+            if (write.NewRack)
+            {
+                if (!write.Inserts) return RackCadClassicResult.Without(RackCadClassicStatus.Failed, "Elige al menos una vista para insertar el rack.");
+                return Send(
+                    NewCommand + " ",
+                    document => _pendingNew = new PendingWrite(write.RequestId, write.RackId.Trim(), write.Name, write.Design, write.System, KeyOf(document),
+                        new List<RackViewAddress>(write.InsertViews)),
+                    () => _pendingNew = null);
+            }
+
             // «Insertar vista…»: its own command, which writes the draft in the views that exist and then inserts the new ones.
             if (write.Inserts)
             {
@@ -80,6 +93,7 @@ namespace RackCad.Plugin.VentanaRackCad
             if (_pendingRead != null && _pendingRead.RequestId == requestId) _pendingRead = null;
             if (_pendingWrite != null && _pendingWrite.RequestId == requestId) _pendingWrite = null;
             if (_pendingInsert != null && _pendingInsert.RequestId == requestId) _pendingInsert = null;
+            if (_pendingNew != null && _pendingNew.RequestId == requestId) _pendingNew = null;
         }
 
         /// <summary>The read that waits, taken once by its command; null when there is none.</summary>
@@ -103,6 +117,14 @@ namespace RackCad.Plugin.VentanaRackCad
         {
             var pending = _pendingInsert;
             _pendingInsert = null;
+            return pending;
+        }
+
+        /// <summary>The new rack that waits for its insertion, taken once by its command; null when there is none.</summary>
+        internal static PendingWrite TakePendingNew()
+        {
+            var pending = _pendingNew;
+            _pendingNew = null;
             return pending;
         }
 

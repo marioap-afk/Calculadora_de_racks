@@ -312,10 +312,23 @@
                     </DockPanel>
 
                     <!-- Nuevo: the systems, each one opens its current editor. -->
+                    <!-- Nuevo with a new Dinámico being made here (step 4): its editor, until «Insertar en el dibujo…» places it. -->
+                    <ContentControl x:Name="NewRackHost" Focusable="False"
+                                    Visibility="{Binding ShowNewDynamicEditor, Converter={StaticResource FlagToVisibility}}" />
+
                     <ScrollViewer x:Name="NuevoPage" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
-                                  Visibility="{Binding IsNuevoPage, Converter={StaticResource FlagToVisibility}}">
+                                  Visibility="{Binding ShowNuevoCards, Converter={StaticResource FlagToVisibility}}">
                         <StackPanel Margin="14,10">
                             <TextBlock Text="Nuevo" Style="{StaticResource PageTitle}" />
+                            <!-- Step 4 of Dinámico: a new Dinámico edited here, without blocking AutoCAD. -->
+                            <Button x:Name="NewDynamicHereButton" HorizontalAlignment="Left" Margin="0,0,0,10" Padding="12,6"
+                                    Style="{StaticResource PrimaryButtonStyle}" IsEnabled="{Binding CanStartNewDynamic}"
+                                    AutomationProperties.Name="Nuevo Dinámico en esta ventana" Click="OnNewDynamicHereClick">
+                                <StackPanel>
+                                    <TextBlock Text="Dinámico en esta ventana" FontWeight="SemiBold" />
+                                    <TextBlock Text="El editor nuevo, sin bloquear AutoCAD. Se inserta con «Insertar en el dibujo…»." TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Button>
                             <TextBlock Style="{StaticResource PageText}"
                                        Text="Elige el sistema: se abre su editor en AutoCAD y, al insertarlo, el rack aparece en la lista." />
                             <ItemsControl x:Name="NewSystemList" ItemsSource="{Binding NewSystems}" AutomationProperties.Name="Sistemas">

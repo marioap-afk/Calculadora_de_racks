@@ -13,10 +13,11 @@ namespace RackCad.Application.VentanaRackCad
     /// the request was made, so nothing the user does afterwards reaches what AutoCAD writes; the name is already trimmed, as the classic
     /// editor sends it. With <paramref name="InsertViews"/> («Insertar vista…», step 4 of Dinámico; decision 10 of the prototype) AutoCAD
     /// first writes the draft in the views that exist and then inserts those views as linked copies of the rack (the same identity);
-    /// without them it only updates.
+    /// without them it only updates. With <paramref name="NewRack"/> (a new Dinámico made in the window, step 4) the rack is not in the
+    /// drawing yet: AutoCAD inserts it with those views, with the identity the window gave it and the automatic name of I-60.
     /// </summary>
     public sealed record RackDoorWrite(long RequestId, SessionId Session, string RackId, string Name, DynamicRackDesign Design, DynamicRackSystem System,
-        IReadOnlyList<RackViewAddress> InsertViews = null)
+        IReadOnlyList<RackViewAddress> InsertViews = null, bool NewRack = false)
     {
         /// <summary>The write also inserts views.</summary>
         public bool Inserts => InsertViews != null && InsertViews.Count > 0;
@@ -103,6 +104,23 @@ namespace RackCad.Application.VentanaRackCad
                 ? " e insertó " + Count(inserted, "vista nueva", "vistas nuevas") + "."
                 : ", pero no insertó ninguna vista nueva: se canceló la colocación o no se pudo preparar. Revisa la línea de órdenes de AutoCAD.";
             return new RackDesignWritten(requestId, rackId, true, text);
+        }
+
+        /// <summary>
+        /// The answer of RACKDINAMICONUEVO (a new Dinámico of the window): written when at least one view of the new rack was placed, with the
+        /// name the drawing gave it; otherwise the draft stays in the window, not written.
+        /// </summary>
+        public static RackDesignWritten AnswerForNewRack(long requestId, string rackId, int placed, string name)
+        {
+            if (placed > 0)
+            {
+                var named = string.IsNullOrWhiteSpace(name) ? "el rack nuevo" : "el rack nuevo «" + name.Trim() + "»";
+                return new RackDesignWritten(requestId, rackId, true,
+                    "AutoCAD insertó " + named + " con " + Count(placed, "vista", "vistas") + ". Para seguir editándolo aquí, vuelve a leer la lista y ábrelo.");
+            }
+
+            return new RackDesignWritten(requestId, rackId, false,
+                "AutoCAD no insertó el rack nuevo: se canceló la colocación o no se pudo preparar. El borrador sigue en la ventana; revisa la línea de órdenes de AutoCAD.");
         }
 
         private static string Count(int count, string one, string many) =>

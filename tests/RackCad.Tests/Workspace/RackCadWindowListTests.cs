@@ -383,6 +383,27 @@ public class RackCadWindowListTests
         var port = WorkspaceHostSource.CodeOnly(File.ReadAllText(Path.Combine(Root(), "src", "RackCad.Plugin", "VentanaRackCad", "RackCadRackDoorPort.cs")));
         Assert.Contains("if (write.Inserts)", port, StringComparison.Ordinal);
         Assert.Contains("InsertCommand = \"RACKDINAMICOINSERTAR\"", port, StringComparison.Ordinal);
+
+        // A new Dinámico of the window goes first to its own command, and never without views.
+        Assert.True(port.IndexOf("if (write.NewRack)", StringComparison.Ordinal) < port.IndexOf("if (write.Inserts)", StringComparison.Ordinal));
+        Assert.Contains("NewCommand = \"RACKDINAMICONUEVO\"", port, StringComparison.Ordinal);
+        Assert.Contains("if (!write.Inserts) return RackCadClassicResult.Without(", port, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ANewRackIsWrittenWhenAViewWasPlacedAndTheCommandUsesTheDispatchOfNuevo()
+    {
+        var placed = RackDoorRules.AnswerForNewRack(5, "id-1", placed: 2, name: " Dinámico 3 ");
+        Assert.Equal((5L, "id-1", true), (placed.RequestId, placed.RackId, placed.Written));
+        Assert.Equal("AutoCAD insertó el rack nuevo «Dinámico 3» con 2 vistas. Para seguir editándolo aquí, vuelve a leer la lista y ábrelo.", placed.Message);
+
+        var cancelled = RackDoorRules.AnswerForNewRack(6, "id-1", placed: 0, name: null);
+        Assert.False(cancelled.Written);
+        Assert.StartsWith("AutoCAD no insertó el rack nuevo", cancelled.Message);
+
+        var commands = WorkspaceHostSource.CodeOnly(File.ReadAllText(Path.Combine(Root(), "src", "RackCad.Plugin", "VentanaRackCad", "RackCadRackDoorCommands.cs")));
+        Assert.Contains("RackMenuCommands.DispatchInsertion(document,", commands, StringComparison.Ordinal);
+        Assert.Contains("RackDoorRules.AnswerForNewRack(", commands, StringComparison.Ordinal);
     }
 
     // A plain WPF Window made in code: `new Window`, a target-typed new() into a Window (a field, a local or a property) and a Window made

@@ -82,7 +82,7 @@
                             Style="{StaticResource PrimaryButtonStyle}" IsEnabled="{Binding CanUpdate}"
                             AutomationProperties.Name="Actualizar el dibujo con el borrador" Click="OnUpdateClick" />
                     <!-- Step 4 (decision 10 of the prototype): AutoCAD first writes the draft in the views that exist, then inserts the new ones. -->
-                    <Button x:Name="InsertViewButton" Content="Insertar vista…" Margin="0,12,8,4" Padding="12,4" VerticalAlignment="Top"
+                    <Button x:Name="InsertViewButton" Content="{Binding InsertViewLabel}" Margin="0,12,8,4" Padding="12,4" VerticalAlignment="Top"
                             Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanInsertView}"
                             ToolTip="Escribe el borrador en las vistas del dibujo y después inserta las vistas que elijas, enlazadas al rack."
                             AutomationProperties.Name="Insertar vistas del rack" Click="OnInsertViewClick" />

@@ -70,8 +70,8 @@ namespace RackCad.Tests
         /// Lo que I-64 A-14 (linea D, Dinamico) anade, EXACTAMENTE: la puerta de la ventana a un rack, que lee su diseno sin marca de Deshacer
         /// y escribe su borrador, sin alias, en <c>src/RackCad.Plugin/VentanaRackCad/RackCadRackDoorCommands.cs</c>.
         /// </summary>
-        /// La segunda entrega de Dinámico (paso 4, decisión 10 del prototipo) añade «Insertar vista…»: RACKDINAMICOINSERTAR, en el mismo archivo.
-        internal static readonly string[] A14DynamicDoorCommands = { "RACKDINAMICOABRIR", "RACKDINAMICOAPLICAR", "RACKDINAMICOINSERTAR" };
+        /// La segunda entrega de Dinámico (paso 4) añade «Insertar vista…» (RACKDINAMICOINSERTAR, decisión 10 del prototipo) y el Dinámico nuevo de la ventana (RACKDINAMICONUEVO), en el mismo archivo.
+        internal static readonly string[] A14DynamicDoorCommands = { "RACKDINAMICOABRIR", "RACKDINAMICOAPLICAR", "RACKDINAMICOINSERTAR", "RACKDINAMICONUEVO" };
 
         /// <summary>El censo vigente: apertura, G7, G15, I-65, el panel de F1 y el descarte de F4-T3C2, cada nombre una vez.</summary>
         internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).Concat(I65Commands).Concat(F1PanelCommands).Concat(F4PanelDiscardCommands).Concat(A14WindowCommands).Concat(A14DynamicDoorCommands).ToArray();

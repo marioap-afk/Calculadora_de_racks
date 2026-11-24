@@ -596,6 +596,121 @@ namespace RackCad.UI.Tests
             Assert.False(rig.Door.Writes.Last().Inserts);
         }
 
+        // Step 4: a new Dinámico made in the window and inserted with «Insertar en el dibujo…».
+        [Fact]
+        public void ANewDynamicIsMadeHereAndInsertedWithTheViewsChosenAsANewRack()
+        {
+            var rig = new Rig(new ModalPortDouble());
+            Assert.True(rig.Window.CanStartNewDynamic);
+            rig.Window.StartNewDynamic();
+
+            var editor = rig.Window.NewDynamicEditor!;
+            Assert.NotNull(editor);
+            Assert.True(editor.IsNewRack);
+            Assert.True(Guid.TryParse(editor.RackId, out _));
+            Assert.True(rig.Window.IsNuevoPage);
+            Assert.True(rig.Window.ShowNewDynamicEditor);
+            Assert.False(rig.Window.ShowNuevoCards);
+            Assert.Null(rig.Window.ActiveDynamicEditor);
+            Assert.Equal("Insertar en el dibujo…", editor.InsertViewLabel);
+            Assert.False(editor.CanUpdate);
+            Assert.Equal("Un rack nuevo se escribe en el dibujo con «Insertar en el dibujo…».", editor.UpdateBlockedText);
+            Assert.True(editor.CanInsertView, editor.InsertViewBlockedText);
+
+            // Asked again, the window shows the same new rack.
+            rig.Window.StartNewDynamic();
+            Assert.Same(editor, rig.Window.NewDynamicEditor);
+
+            // A change is work not written: the drawing does not close (D-08), and the notice names it.
+            Write(editor, v => v.Essentials, "weight", "1200");
+            Assert.Equal("un Dinámico nuevo", rig.Window.UnwrittenDynamicWorkOf(Session));
+
+            // With changes it is still not «Actualizar»: there is nothing in the drawing to update.
+            Assert.True(editor.IsDirty);
+            Assert.False(editor.CanUpdate);
+            editor.RequestWrite();
+            Assert.Empty(rig.Door.Writes);
+            Assert.Equal(editor.UpdateBlockedText, editor.Message);
+
+            var planta = RackCad.Application.Systems.Shared.RackViewAddress.Whole(RackCad.Application.Systems.Shared.DimensionViewKind.Planta);
+            editor.ViewChooser = _ => new[] { planta };
+            editor.InsertView();
+            var write = Assert.Single(rig.Door.Writes);
+            Assert.True(write.NewRack);
+            Assert.Equal(new[] { planta }, write.InsertViews!.ToArray());
+            Assert.Equal(editor.RackId, write.RackId);
+            Assert.True(string.IsNullOrEmpty(write.Name), write.Name); // no name: the drawing gives the automatic one of I-60
+            Assert.Contains("1200", Json(write.Design));
+
+            rig.Door.AnswerLastWrite(true, "AutoCAD insertó el rack nuevo «Dinámico 1» con 1 vista. Para seguir editándolo aquí, vuelve a leer la lista y ábrelo.");
+            Assert.False(editor.IsNewRack);
+            Assert.False(editor.IsDirty);
+            Assert.Equal("Insertar vista…", editor.InsertViewLabel);
+            Assert.Null(rig.Window.NewDynamicEditor);
+            Assert.True(rig.Window.ShowNuevoCards);
+            Assert.Contains(editor, rig.Window.DynamicEditors);
+            Assert.StartsWith("AutoCAD insertó el rack nuevo «Dinámico 1»", rig.Window.ActionMessage);
+            Assert.Null(rig.Window.UnwrittenDynamicWorkOf(Session));
+
+            // It is a rack of the drawing now: «Actualizar» writes it, as an update.
+            Write(editor, v => v.Essentials, "weight", "1300");
+            editor.RequestWrite();
+            Assert.False(rig.Door.Writes.Last().NewRack);
+            Assert.False(rig.Door.Writes.Last().Inserts);
+
+            rig.Window.StartNewDynamic();
+            Assert.NotSame(editor, rig.Window.NewDynamicEditor);
+        }
+
+        [Fact]
+        public void ANewDynamicThatWasNotPlacedStaysNewInTheWindow()
+        {
+            var rig = new Rig(new ModalPortDouble());
+            rig.Window.StartNewDynamic();
+            var editor = rig.Window.NewDynamicEditor!;
+            editor.ViewChooser = _ => new[] { RackCad.Application.Systems.Shared.RackViewAddress.Post(0) };
+            editor.InsertView();
+
+            rig.Door.AnswerLastWrite(false, "AutoCAD no insertó el rack nuevo: se canceló la colocación o no se pudo preparar.");
+            Assert.True(editor.IsNewRack);
+            Assert.Same(editor, rig.Window.NewDynamicEditor);
+            Assert.Equal("AutoCAD no insertó el rack nuevo: se canceló la colocación o no se pudo preparar.", editor.Message);
+            Assert.True(editor.CanInsertView);
+        }
+
+        [Fact]
+        public void WithoutTheDoorTheWindowDoesNotMakeANewDynamic()
+        {
+            var rig = new Rig();
+            var window = new RackCadWindowViewModel(rig.Panel, null, null, null, UiSupport.LoadCatalogSafe);
+            window.Refresh();
+            Assert.False(window.CanStartNewDynamic);
+            window.StartNewDynamic();
+            Assert.Null(window.NewDynamicEditor);
+            Assert.Equal("Aquí no se puede crear un rack en el dibujo.", window.ActionMessage);
+        }
+
+        [Fact]
+        public void TheNuevoPageHostsTheEditorOfTheNewDynamic()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var rig = new Rig(new ModalPortDouble());
+                var view = new RackCadWindowView(rig.Window);
+                rig.Window.ShowPage(RackCadWindowPage.Nuevo);
+                Lay(view);
+                Assert.Equal(System.Windows.Visibility.Visible, view.NuevoPage.Visibility);
+                Assert.Equal(System.Windows.Visibility.Collapsed, view.NewRackHost.Visibility);
+
+                Click(view.NewDynamicHereButton);
+                Lay(view);
+                Assert.IsType<DynamicEditorView>(view.NewRackHost.Content);
+                Assert.Equal(System.Windows.Visibility.Visible, view.NewRackHost.Visibility);
+                Assert.Equal(System.Windows.Visibility.Collapsed, view.NuevoPage.Visibility);
+                Assert.Same(rig.Window.NewDynamicEditor, ((DynamicEditorView)view.NewRackHost.Content).DataContext);
+            });
+        }
+
         [Fact]
         public void WithoutTheModalPortOfTheHostTheWindowDoesNotInsertViews()
         {

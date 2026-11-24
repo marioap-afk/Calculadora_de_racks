@@ -245,7 +245,7 @@ El Owner pidió seguir con Dinámico antes de Cantilever. Las piezas pendientes 
 1. el aviso antes de cerrar (D-08, hecho);
 2. el largo IN/OUT por frente y la chincheta de la lista (hecho, con las observaciones del smoke);
 3. los cambios de cálculo (la altura por poste, la cama editable; hecho);
-4. la seguridad, «Insertar vista…» y un Dinámico nuevo desde la ventana.
+4. la seguridad, «Insertar vista…» y un Dinámico nuevo desde la ventana (hecho).
 
 **Lo hecho en el paso 2:**
 - **El largo IN/OUT es del frente** (decisión 3: «Sí, es por frente»).
@@ -307,19 +307,36 @@ El Owner pidió seguir con Dinámico antes de Cantilever. Las piezas pendientes 
     - la respuesta dice cuántas vistas nuevas se colocaron, o que no se colocó ninguna (la colocación se canceló o no se pudo preparar);
     - si no se redibujó ninguna vista existente, el borrador sigue sin escribir, aunque se haya insertado alguna.
   - «Actualizar» sigue siendo solo actualizar.
+- **Un Dinámico nuevo desde la ventana.**
+  - En «Nuevo» hay un botón «Dinámico en esta ventana», encima de las tarjetas de siempre, que siguen abriendo el editor clásico (RACKNUEVO).
+  - Abre en la propia página «Nuevo» el editor de la ventana con los valores por defecto del clásico.
+  - La identidad del rack se da al crearlo. «Actualizar» no se ofrece hasta que el rack está en el dibujo, y lo dice.
+  - El botón de la cabecera se llama «Insertar en el dibujo…» y elige las vistas con el mismo diálogo.
+  - La orden nueva `RACKDINAMICONUEVO` inserta el rack con el mismo despacho que el editor clásico abierto desde «Nuevo», con el nombre automático de I-60.
+  - La respuesta cuenta las vistas colocadas con esa identidad y da el nombre que quedó en el dibujo.
+  - Al insertarlo, el mismo editor pasa a ser el del rack del dibujo: «Actualizar» e «Insertar vista…».
+  - Si la colocación se cancela, el borrador sigue nuevo en la ventana.
+  - Un Dinámico nuevo con cambios es trabajo sin escribir: el dibujo no se cierra (D-08), y el aviso lo nombra «un Dinámico nuevo».
+- **D-10 (decisión de la sesión).** Tras insertar el rack nuevo, la ventana no vuelve a leer la lista ni lo abre sola: la respuesta llega dentro de la orden de AutoCAD, y la lectura de la lista desde la paleta bloquea el documento (O-18). El aviso pide «vuelve a leer la lista y ábrelo». Al abrirlo aparece el mismo editor.
 - **Las pruebas:**
   - `DynamicSafetyTabTests` (9): las marcas de la matriz contra el BOM, la casilla del inspector, «En todas» y «En ninguna» con un frente en blanco, la tabla por poste contra el BOM, el diálogo contra el del clásico, el puerto, el bloqueo mientras AutoCAD escribe y el orden de las pestañas.
   - En `RackCadDynamicEditorTests`:
     - la ventana solo ofrece el diálogo de seguridad con el puerto del host;
     - «Insertar vista…» envía el borrador con las vistas elegidas;
     - su respuesta es la de una escritura;
-    - sin el puerto no se ofrece.
-  - En `RackCadWindowListTests`, la regla de la respuesta de la inserción y la elección de la orden en el puerto.
-  - Los censos de órdenes pasan de 45 a 46.
+    - sin el puerto no se ofrece;
+    - el Dinámico nuevo se hace e inserta como rack nuevo y luego es un rack del dibujo;
+    - si no se colocó, sigue nuevo;
+    - sin la puerta no se ofrece;
+    - la página «Nuevo» aloja su editor.
+  - En `RackCadWindowListTests`, las reglas de la respuesta de la inserción y del rack nuevo, y la elección de la orden en el puerto.
+  - Los censos de órdenes pasan de 45 a 47.
   - Comprobaciones en rojo:
     - siete piezas rotas a propósito: las celdas con guía, quitar la guía, el eje de la tabla por poste, el diálogo sin guía, el resultado del diálogo ignorado, las vistas de la inserción perdidas y la marca de la matriz;
     - cada una hace fallar su prueba;
-    - un control sin cambio de comportamiento pasa.
+    - un control sin cambio de comportamiento pasa;
+    - del Dinámico nuevo, tres más: la marca de rack nuevo perdida en la escritura, el rack insertado que no deja de ser nuevo y «Actualizar» ofrecido a un rack nuevo;
+    - la última sobrevivió a la primera versión de la prueba, que solo lo comprobaba sin cambios; la prueba se reforzó con un borrador modificado y ahora la detecta.
 
 **Smoke exploratorio de la sesión (2026-11-24, por orden del Owner, sobre `78fd5cb1`):**
 - pasan todos los pasos, también M-15 (la lectura no deja nada en Deshacer), I-04, I-05 con el ratón real, I-09, M-11, el «U» de «Actualizar» y D-07, que entonces era solo un aviso de pérdida;

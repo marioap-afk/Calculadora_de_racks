@@ -259,6 +259,72 @@ namespace RackCad.UI.VentanaRackCad
 
         public bool HasDynamicEditor => ActiveDynamicEditor != null;
 
+        /// <summary>The new Dinámico of the drawing of the window (step 4), made here and not inserted yet; null when there is none.</summary>
+        public DynamicEditorViewModel NewDynamicEditor =>
+            Panel.PresentedSession.HasValue
+                ? _dynamicDrafts.Values.FirstOrDefault(e => e.Session == Panel.PresentedSession.Value && e.Editor.IsNewRack)?.Editor
+                : null;
+
+        public bool HasNewDynamicEditor => NewDynamicEditor != null;
+
+        /// <summary>«Nuevo» shows its systems, or the new Dinámico being made.</summary>
+        public bool ShowNuevoCards => IsNuevoPage && !HasNewDynamicEditor;
+
+        public bool ShowNewDynamicEditor => IsNuevoPage && HasNewDynamicEditor;
+
+        /// <summary>A new Dinámico can be made here: the window has the door to the drawing and a drawing.</summary>
+        public bool CanStartNewDynamic => _door != null && Panel.PresentedSession.HasValue;
+
+        /// <summary>
+        /// «Dinámico en esta ventana» of «Nuevo» (step 4): a new Dinámico with the defaults of the classic editor, edited here; «Insertar en
+        /// el dibujo…» places it. Its identity is given now, so once inserted the same editor is the one of the rack in the list.
+        /// </summary>
+        public void StartNewDynamic()
+        {
+            Contained(() =>
+            {
+                if (_door == null)
+                {
+                    Say("Aquí no se puede crear un rack en el dibujo.", failed: true);
+                    return;
+                }
+
+                if (!Panel.PresentedSession.HasValue)
+                {
+                    Say("No hay un dibujo en la ventana.", failed: true);
+                    return;
+                }
+
+                if (NewDynamicEditor == null)
+                {
+                    var session = Panel.PresentedSession.Value;
+                    var rackId = Guid.NewGuid().ToString();
+                    var editor = new DynamicEditorViewModel(DynamicDraftEditor.CreateNew(_catalog()), rackId, UpdateDynamic, isNewRack: true);
+                    Wire(editor);
+                    _dynamicDrafts[(session, rackId)] = new DynamicDraftEntry(session, editor);
+                }
+
+                ShowPage(RackCadWindowPage.Nuevo);
+                Say(string.Empty, failed: false);
+                RaiseDynamic();
+            });
+        }
+
+        // What every Dinámico editor of the window gets: the dialogs over AutoCAD (with the modal port), the writes and the close.
+        private void Wire(DynamicEditorViewModel editor)
+        {
+            if (_modal != null)
+            {
+                editor.SafetyEditor = current => RackCadModalDialogs.EditDynamicSafety(current, _modal);
+                editor.ViewChooser = options => RackCadModalDialogs.ChooseViews(options, _modal);
+            }
+
+            editor.InsertViewsAction = InsertDynamicViews;
+            editor.InsertNewAction = InsertNewDynamic;
+            editor.PropertyChanged += OnDynamicEditorChanged;
+            editor.CloseRequested += CloseDynamicEditor;
+        }
+
         /// <summary>Every Dinámico editor that the window keeps open, of any drawing.</summary>
         public IReadOnlyList<DynamicEditorViewModel> DynamicEditors => _dynamicDrafts.Values.Select(e => e.Editor).ToList();
 
@@ -404,15 +470,7 @@ namespace RackCad.UI.VentanaRackCad
                 var draft = new DynamicDraftEditor(_catalog());
                 draft.LoadFrom(project.DynamicDesign, read.Name);
                 var editor = new DynamicEditorViewModel(draft, request.RackId, UpdateDynamic);
-                if (_modal != null)
-                {
-                    editor.SafetyEditor = current => RackCadModalDialogs.EditDynamicSafety(current, _modal);
-                    editor.ViewChooser = options => RackCadModalDialogs.ChooseViews(options, _modal);
-                }
-
-                editor.InsertViewsAction = InsertDynamicViews;
-                editor.PropertyChanged += OnDynamicEditorChanged;
-                editor.CloseRequested += CloseDynamicEditor;
+                Wire(editor);
                 _dynamicDrafts[key] = new DynamicDraftEntry(request.Session, editor);
                 _showPanel = false;
                 Say(string.Empty, failed: false);
@@ -430,6 +488,13 @@ namespace RackCad.UI.VentanaRackCad
         // «Actualizar» of the Dinámico editor: COPIES of the draft go to AutoCAD, which redraws the rack with the drawing half of RACKEDITAR.
         // The editor cannot be edited until the answer arrives or the window stops waiting, so what is written is what the user saw.
         private void UpdateDynamic(DynamicEditorViewModel editor) => WriteDynamic(editor, null);
+
+        // «Insertar en el dibujo…» of a new Dinámico (step 4): the same write, as the insertion of a new rack with those views.
+        private void InsertNewDynamic(DynamicEditorViewModel editor, IReadOnlyList<RackViewAddress> views)
+        {
+            if (views == null || views.Count == 0 || !editor.IsNewRack) return;
+            WriteDynamic(editor, views);
+        }
 
         // «Insertar vista…» of the Dinámico editor (step 4; decision 10 of the prototype): the same write, with the views to insert after it.
         private void InsertDynamicViews(DynamicEditorViewModel editor, IReadOnlyList<RackViewAddress> views)
@@ -471,7 +536,7 @@ namespace RackCad.UI.VentanaRackCad
             try
             {
                 result = _door.RequestDynamicUpdate(new RackDoorWrite(id, entry.Session, editor.RackId, snapshot.Name, snapshot.Design, snapshot.System,
-                        insertViews == null ? null : new List<RackViewAddress>(insertViews)))
+                        insertViews == null ? null : new List<RackViewAddress>(insertViews), NewRack: editor.IsNewRack))
                     ?? RackCadClassicResult.Without(RackCadClassicStatus.Failed, "sin respuesta.");
             }
             catch (Exception ex)
@@ -508,6 +573,14 @@ namespace RackCad.UI.VentanaRackCad
                     editor.EndWriting();
                     if (written.Written) editor.MarkWritten(written.Message, request.SentJson, request.SentName);
                     else editor.Say(written.Message, error: true);
+
+                    // A new Dinámico that AutoCAD placed is a rack of the drawing now: «Nuevo» shows its systems again and says where it is.
+                    if (written.Written && editor.IsNewRack)
+                    {
+                        editor.MarkInserted();
+                        Say(written.Message, failed: false);
+                        RaiseDynamic();
+                    }
                 }
 
                 RackList.RefreshStates();
@@ -540,7 +613,8 @@ namespace RackCad.UI.VentanaRackCad
         {
             var names = _dynamicDrafts
                 .Where(p => p.Key.Session == session && (p.Value.Editor.IsDirty || p.Value.Editor.IsWriting))
-                .Select(p => string.IsNullOrWhiteSpace(p.Value.Editor.Name) ? p.Value.Editor.RackId : p.Value.Editor.Name.Trim())
+                .Select(p => !string.IsNullOrWhiteSpace(p.Value.Editor.Name) ? p.Value.Editor.Name.Trim()
+                    : p.Value.Editor.IsNewRack ? "un Dinámico nuevo" : p.Value.Editor.RackId)
                 .OrderBy(n => n, StringComparer.CurrentCultureIgnoreCase)
                 .ToList();
             return names.Count == 0 ? null : string.Join(", ", names);
@@ -659,7 +733,17 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(ShowDynamicOffer));
             OnPropertyChanged(nameof(ShowPanel));
             OnPropertyChanged(nameof(PanelToggleText));
+            RaiseNewDynamic();
             RackList.RefreshStates();
+        }
+
+        private void RaiseNewDynamic()
+        {
+            OnPropertyChanged(nameof(NewDynamicEditor));
+            OnPropertyChanged(nameof(HasNewDynamicEditor));
+            OnPropertyChanged(nameof(ShowNuevoCards));
+            OnPropertyChanged(nameof(ShowNewDynamicEditor));
+            OnPropertyChanged(nameof(CanStartNewDynamic));
         }
 
         private static string RefusalText(RackCadClassicResult result)
@@ -720,6 +804,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(Page));
             OnPropertyChanged(nameof(IsRackPage));
             OnPropertyChanged(nameof(IsNuevoPage));
+            RaiseNewDynamic();
             OnPropertyChanged(nameof(IsVariablesPage));
             OnPropertyChanged(nameof(IsBomPage));
             OnPropertyChanged(nameof(IsBibliotecaPage));

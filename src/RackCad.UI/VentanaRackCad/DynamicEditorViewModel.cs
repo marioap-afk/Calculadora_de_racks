@@ -273,16 +273,21 @@ namespace RackCad.UI.VentanaRackCad
         private string _safetySummary = string.Empty;
         private Func<DynamicDraftEditor, IReadOnlyList<RackCad.Domain.Systems.Selective.SelectiveSafetySelection>> _safetyEditor;
         private Action<DynamicEditorViewModel, IReadOnlyList<RackViewAddress>> _insertViews;
+        private Action<DynamicEditorViewModel, IReadOnlyList<RackViewAddress>> _insertNew;
+        private bool _isNewRack;
         private Func<IReadOnlyList<RackViewBatchOption>, IReadOnlyList<RackViewAddress>> _viewChooser;
 
         /// <param name="editor">The draft of the rack, as it was read (its design is the baseline of «Modificado» and of «Descartar»).</param>
         /// <param name="rackId">The identity of the rack in the drawing; null for a new rack.</param>
         /// <param name="update">What «Actualizar» does with this editor (the host writes the drawing); null when it is not offered.</param>
-        public DynamicEditorViewModel(DynamicDraftEditor editor, string rackId, Action<DynamicEditorViewModel> update = null)
+        /// <param name="isNewRack">A new rack made in the window (step 4): its identity is given, but it is not in the drawing until
+        /// «Insertar en el dibujo…» places it; until then «Actualizar» is not offered.</param>
+        public DynamicEditorViewModel(DynamicDraftEditor editor, string rackId, Action<DynamicEditorViewModel> update = null, bool isNewRack = false)
         {
             _editor = editor ?? throw new ArgumentNullException(nameof(editor));
             RackId = rackId;
             _update = update;
+            _isNewRack = isNewRack;
             _anchorFront = editor.Matrix.SelectedFrontIndex;
             _anchorLevel = editor.Matrix.SelectedLevelIndex;
             TakeBaseline();
@@ -342,12 +347,16 @@ namespace RackCad.UI.VentanaRackCad
 
         public bool MessageIsError => _messageIsError;
 
-        public bool CanUpdate => _update != null && _dirty && CanEdit && _editor.Design != null && string.IsNullOrEmpty(_editor.LastError);
+        public bool CanUpdate => _update != null && !_isNewRack && _dirty && CanEdit && _editor.Design != null && string.IsNullOrEmpty(_editor.LastError);
+
+        /// <summary>A new rack of the window that is not in the drawing yet («Insertar en el dibujo…» places it).</summary>
+        public bool IsNewRack => _isNewRack;
 
         public string UpdateBlockedText
         {
             get
             {
+                if (_isNewRack) return "Un rack nuevo se escribe en el dibujo con «Insertar en el dibujo…».";
                 if (_update == null) return "Aquí no se puede escribir el dibujo.";
                 if (_writing) return WritingText;
                 if (!_dirty) return "Sin cambios que escribir.";
@@ -765,6 +774,16 @@ namespace RackCad.UI.VentanaRackCad
             set { _viewChooser = value; RaiseState(); }
         }
 
+        /// <summary>What «Insertar en el dibujo…» of a new rack does with the views chosen: the window inserts the rack with them.</summary>
+        public Action<DynamicEditorViewModel, IReadOnlyList<RackViewAddress>> InsertNewAction
+        {
+            get => _insertNew;
+            set { _insertNew = value; RaiseState(); }
+        }
+
+        /// <summary>«Insertar vista…» for a rack of the drawing; «Insertar en el dibujo…» for a new one.</summary>
+        public string InsertViewLabel => _isNewRack ? "Insertar en el dibujo…" : "Insertar vista…";
+
         public bool CanInsertView => string.IsNullOrEmpty(InsertViewBlockedText);
 
         /// <summary>Why «Insertar vista…» cannot run now; empty when it can.</summary>
@@ -772,7 +791,9 @@ namespace RackCad.UI.VentanaRackCad
         {
             get
             {
-                if (_insertViews == null || _viewChooser == null || string.IsNullOrWhiteSpace(RackId)) return "Aquí no se pueden insertar vistas del rack.";
+                var action = _isNewRack ? _insertNew : _insertViews;
+                if (action == null || _viewChooser == null || string.IsNullOrWhiteSpace(RackId))
+                    return _isNewRack ? "Aquí no se puede insertar el rack nuevo." : "Aquí no se pueden insertar vistas del rack.";
                 if (_writing) return WritingText;
                 if (_editor.Design == null) return "No hay un borrador válido que escribir.";
                 if (!string.IsNullOrEmpty(_editor.LastError)) return _editor.LastError;
@@ -794,7 +815,17 @@ namespace RackCad.UI.VentanaRackCad
 
             var views = _viewChooser(RackCadModalDialogs.DynamicViewOptions(_editor.System, _editor.Catalog));
             if (views == null || views.Count == 0) return;
-            _insertViews(this, views);
+            (_isNewRack ? _insertNew : _insertViews)(this, views);
+        }
+
+        /// <summary>AutoCAD placed the new rack: from now on it is a rack of the drawing, written with «Actualizar» and «Insertar vista…».</summary>
+        public void MarkInserted()
+        {
+            if (!_isNewRack) return;
+            _isNewRack = false;
+            OnPropertyChanged(nameof(IsNewRack));
+            OnPropertyChanged(nameof(InsertViewLabel));
+            RaiseState();
         }
 
         /// <summary>«Cerrar el editor»: closes it at once when the draft has nothing to lose, and asks first when it has changes.</summary>

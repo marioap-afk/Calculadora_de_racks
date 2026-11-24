@@ -57,6 +57,20 @@ namespace RackCad.UI.Systems.Dynamic
 
         private RackInsertionRequest insertion;
 
+        /// <summary>
+        /// A new Dinámico of the RackCad window as the request of a new rack, the one the classic editor hands to the dispatch of «Nuevo»:
+        /// its identity (given by the window), its name (empty for the automatic name of I-60) and the views to insert, in this order.
+        /// </summary>
+        public static RackInsertionRequest NewRackRequest(string rackId, string rackName, DynamicRackDesign design, DynamicRackSystem system,
+            IReadOnlyList<RackViewAddress> views)
+        {
+            if (views == null || views.Count == 0) return null;
+            var first = RackViewCodec.Encode(RackSystemKind.PalletFlow, views[0]);
+            var request = new DynamicInsertionRequest(system, design, rackId, rackName, first.View, first.Section, null);
+            request.SetViews(views);
+            return request;
+        }
+
         public DynamicRackDesign DesignToInsert { get; }
 
         public DynamicRackSystem SystemToInsert { get; }

@@ -79,7 +79,29 @@ namespace RackCad.UI.VentanaRackCad
                 || e.PropertyName == nameof(RackCadWindowViewModel.ShowPanel)
                 || e.PropertyName == nameof(RackCadWindowViewModel.DynamicEditors))
                 ShowRackContent();
+            if (e.PropertyName == nameof(RackCadWindowViewModel.NewDynamicEditor)) ShowNewContent();
         }
+
+        // «Nuevo» hosts the editor of the new Dinámico being made here; the view is the one the page of the rack shows once it is inserted.
+        private void ShowNewContent()
+        {
+            var editor = _viewModel.NewDynamicEditor;
+            if (editor == null)
+            {
+                NewRackHost.Content = null;
+                return;
+            }
+
+            if (!_dynamicViews.TryGetValue(editor, out var view))
+            {
+                view = new DynamicEditorView(editor);
+                _dynamicViews[editor] = view;
+            }
+
+            if (!ReferenceEquals(NewRackHost.Content, view)) NewRackHost.Content = view;
+        }
+
+        private void OnNewDynamicHereClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.StartNewDynamic());
 
         // The page of the rack shows the Dinámico editor of the window when it is open (and the user did not ask for the panel), and the
         // workspace panel otherwise. The views of editors the window no longer keeps (closed, or of a closed drawing) are forgotten.
