@@ -48,7 +48,8 @@ namespace RackCad.Application.VentanaRackCad
     {
         /// <summary>
         /// The answer of RACKDINAMICOAPLICAR from what the drawing half of RACKEDITAR did (I-08 of the third review): «written» only when
-        /// at least one view was redrawn. Otherwise the draft stays not written, and the answer says whether the drawing still changed.
+        /// at least one view was redrawn. Otherwise the draft stays not written, and the answer says whether views were erased. Declared
+        /// (M-28 of the fourth review): a write where one view is redrawn and another fails counts as written, as it does for RACKEDITAR.
         /// </summary>
         public static RackDesignWritten AnswerForApply(long requestId, string rackId, int redrawn, int erased)
         {
@@ -56,18 +57,18 @@ namespace RackCad.Application.VentanaRackCad
             {
                 var text = "AutoCAD redibujó " + Count(redrawn, "vista", "vistas") + " del rack con el borrador";
                 if (erased > 0) text += " y borró " + Count(erased, "vista que ya no existe", "vistas que ya no existen");
-                return new RackDesignWritten(requestId, rackId, true, text + "; la línea de órdenes dice cuáles.");
+                return new RackDesignWritten(requestId, rackId, true, text + "; la línea de órdenes da el recuento por tipo de vista.");
             }
 
             if (erased > 0)
             {
                 return new RackDesignWritten(requestId, rackId, false,
                     "AutoCAD no redibujó ninguna vista del rack, pero borró " + Count(erased, "vista que ya no existe", "vistas que ya no existen")
-                    + ": revisa el dibujo. El borrador sigue sin escribir.");
+                    + ": revisa el dibujo y la línea de órdenes. El borrador sigue sin escribir.");
             }
 
             return new RackDesignWritten(requestId, rackId, false,
-                "AutoCAD no redibujó ninguna vista del rack: el dibujo no cambió (la línea de órdenes dice por qué). El borrador sigue sin escribir.");
+                "AutoCAD no redibujó ninguna vista del rack, así que el borrador sigue sin escribir. Revisa la línea de órdenes de AutoCAD.");
         }
 
         private static string Count(int count, string one, string many) =>

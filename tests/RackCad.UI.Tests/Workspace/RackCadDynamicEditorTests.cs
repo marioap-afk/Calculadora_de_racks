@@ -620,6 +620,7 @@ namespace RackCad.UI.Tests
             Assert.Equal(1, updates);
         }
 
+        [Fact]
         public void AReadWaitingForADrawingThatWasClosedIsDroppedAndTheDoorIsTold()
         {
             // M-23 of the third review: without any draft, the waiting read of a closed drawing no longer blocks «Editar aquí».
