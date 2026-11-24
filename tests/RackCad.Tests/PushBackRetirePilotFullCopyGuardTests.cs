@@ -49,8 +49,12 @@ namespace RackCad.Tests
              "f52072b53b819edd270e05ec38c987a54aa6772fbe09c18aee71afb4f4067b80", 1),
             ("tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs",
              "0279187354a9bbacc1f0c487b6741d6286a7ab3db7a5fb47aba175ec1cdfde50", 60),
+            // I-64 A-14, line D: re-pinned (was 4044c8678c60a0e05cef7eb6fa8d6b8161651f4dbf17f8b1ced04498b3975997). The Owner authorized
+            // changing the rule of the close on 2026-11-24 («te autorizo cambiar la regla de cierre»), and that rule is written in this
+            // file: its guard of the controller now expects the close advisor of the RackCad window wrapped over the relay. Only that test
+            // changed; its Skip count stays 2.
             ("tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs",
-             "4044c8678c60a0e05cef7eb6fa8d6b8161651f4dbf17f8b1ced04498b3975997", 2),
+             "bb87c2d8e750967ebbcc652ebdd6e63da983f0c849a5d62a764d9ecb51ec7fa8", 2),
             ("tests/RackCad.Tests/Workspace/WorkspaceLifecycleHostTests.cs",
              "1808ac7a22c33938b575063e3b7a049450f187b493c5b09b4464ddc37acfc5f0", 69),
             ("tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs",

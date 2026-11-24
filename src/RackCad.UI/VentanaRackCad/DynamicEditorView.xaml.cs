@@ -25,6 +25,42 @@ namespace RackCad.UI.VentanaRackCad
 
         public DynamicEditorViewModel ViewModel => _viewModel;
 
+        /// <summary>Below this width of the Matriz tab the inspector does not fit beside the matrix and goes below it.</summary>
+        internal const double InspectorBesideWidth = 700;
+
+        /// <summary>Whether the inspector is below the matrix (a narrow window).</summary>
+        internal bool InspectorBelow { get; private set; }
+
+        private void OnMatrixTabSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (!e.WidthChanged) return;
+            PlaceInspector(e.NewSize.Width < InspectorBesideWidth);
+        }
+
+        private void PlaceInspector(bool below)
+        {
+            if (InspectorBelow == below) return;
+            InspectorBelow = below;
+            if (below)
+            {
+                Grid.SetRow(InspectorPanel, 1);
+                Grid.SetColumn(InspectorPanel, 0);
+                Grid.SetColumnSpan(InspectorPanel, 2);
+                InspectorPanel.Width = double.NaN;
+                InspectorPanel.Margin = new Thickness(0, 10, 0, 0);
+                InspectorRow.Height = new GridLength(1, GridUnitType.Star);
+            }
+            else
+            {
+                Grid.SetRow(InspectorPanel, 0);
+                Grid.SetColumn(InspectorPanel, 1);
+                Grid.SetColumnSpan(InspectorPanel, 1);
+                InspectorPanel.Width = 420;
+                InspectorPanel.Margin = new Thickness(10, 0, 0, 0);
+                InspectorRow.Height = new GridLength(0);
+            }
+        }
+
         private void OnFieldKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key != Key.Enter) return;

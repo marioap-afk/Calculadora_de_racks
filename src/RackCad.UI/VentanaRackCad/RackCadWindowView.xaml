@@ -91,6 +91,10 @@
                 <Button x:Name="SideToggleButton" DockPanel.Dock="Right" Padding="10,3" Margin="8,0,0,0"
                         Style="{StaticResource SecondaryButtonStyle}" Content="{Binding SideToggleText}"
                         AutomationProperties.Name="Ocultar o mostrar la lista" Click="OnSideToggleClick" />
+                <CheckBox x:Name="SidePinCheck" DockPanel.Dock="Right" Margin="8,0,0,0" VerticalAlignment="Center"
+                          Content="Fijar la lista" IsChecked="{Binding SidePinned, Mode=TwoWay}"
+                          AutomationProperties.Name="Fijar la lista"
+                          ToolTip="Fijada, la lista se queda. Sin fijar, se oculta sola al abrir un rack o una sección." />
                 <WrapPanel VerticalAlignment="Center">
                     <TextBlock Text="RackCad" FontSize="15" FontWeight="Bold" Margin="0,0,10,0"
                                Foreground="{DynamicResource ShellTextPrimaryBrush}" />

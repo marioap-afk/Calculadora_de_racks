@@ -327,17 +327,22 @@ public class WorkspaceLifecycleGuardTests
         var constructor = Src.BodyOf(code, @"private\s+WorkspaceController\s*\(\s*\)");
 
         // I-64 F4-T3C2 (D-T3C2-08, INV-F4T3C2-07): the single advisor installed is the wrapper over the host, in this order and with
-        // expressions that tolerate spaces and line breaks. This proves "no second independent lifecycle authority": the host first, the
-        // edit port before the wrapper (which receives it and throws with null), the wrapper built over THAT host, and installed.
+        // expressions that tolerate spaces and line breaks: the host first, the edit port before the wrapper (which receives it and
+        // throws with null), the wrapper built over THAT host.
+        // I-64 A-14, line D (the Owner authorized changing the rule of the close, 2026-11-24, for decision 11 of the prototype of
+        // Dinámico): the advisor installed is now the close advisor of the RackCad window built over THAT relay, so the drafts of the
+        // window also hold the close. It is still ONE installed advisor, and the host still decides for its own drafts.
         Assert.Equal(1, Src.Count(code, @"\.SetLifecycleAdvisor\s*\("));
         Assert.Equal(1, Src.Count(code, @"\bnew\s+WorkspaceHostCore\s*\("));
         Assert.Equal(1, Src.Count(code, @"\bnew\s+WorkspaceCloseAdvisorRelay\s*\("));
+        Assert.Equal(1, Src.Count(code, @"\bnew\s+(?:[\w.]+\.)?RackCadWindowCloseAdvisor\s*\("));
         AssertMatchesInOrder(
             constructor,
             @"_host\s*=\s*new\s+WorkspaceHostCore\s*\(",
             @"_pilotEdit\s*=\s*new\s+PilotEditAdapter\s*\(",
             @"_closeAdvisor\s*=\s*new\s+WorkspaceCloseAdvisorRelay\s*\(\s*_host\s*,",
-            @"_bridge\.SetLifecycleAdvisor\s*\(\s*_closeAdvisor\s*\)\s*;");
+            @"_windowCloseAdvisor\s*=\s*new\s+(?:[\w.]+\.)?RackCadWindowCloseAdvisor\s*\(\s*_closeAdvisor\s*,",
+            @"_bridge\.SetLifecycleAdvisor\s*\(\s*_windowCloseAdvisor\s*\)\s*;");
         Assert.Equal(3, Src.Count(code, @"\+="));
         Assert.Equal(0, Src.Count(code, @"-="));
         Assert.DoesNotContain(".Start(", constructor);

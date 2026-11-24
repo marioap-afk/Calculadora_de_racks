@@ -178,7 +178,8 @@ Este documento es el registro de lo construido. Sirve para la planeación poster
 | D-04 | Tres diferencias declaradas con el clásico (I-03): (1) el borrador conserva la precisión completa de un valor, y el clásico lo redondea a dos decimales cuando relee sus casillas (1200 mm de fondo: 47.2441 contra 47.24); (2) el estilo de cota se conserva tal como se leyó, y el clásico descarta un estilo que el dibujo no tiene (en ambos casos el dibujo acota con su estilo actual y los tamaños de RackCad); (3) un poste que no está en el catálogo da paso al poste por defecto, como en el clásico, pero el editor lo dice, y un poste del catálogo escrito con otras mayúsculas es ese poste | El borrador nunca cambia un valor que el usuario no tocó. Las tres tienen prueba |
 | D-05 | El sistema publicado se recompone siempre sobre una copia: el sistema es la resolución del último diseño válido. «Actualizar» envía el diseño copiado por su JSON y el sistema resuelto otra vez desde esa copia | Nada de lo que se edite después alcanza lo que escribe AutoCAD (B-02). Un recálculo que falla deja el último sistema válido (M-14), y la vuelta atrás borra su error, así que un valor rechazado no apaga «Actualizar» (I-09) |
 | D-06 | Los elementos del editor (campos, celdas y cabeceras de la matriz) viven lo que el editor y se refrescan en su sitio | Confirmar un campo ya no destruye la casilla con el foco ni el botón bajo el ratón (I-05) |
-| D-07 | **El cierre del dibujo no espera al borrador Dinámico.** Si el dibujo se cierra con cambios sin escribir, la ventana olvida el borrador y avisa de que esos cambios se perdieron. Los borradores de dibujos cerrados se podan siempre | Vetar el cierre exige una segunda autoridad de cierre: suscribirse a `BeginDocumentClose` fuera del puente (prohibido por INV-F1-T2-02) o envolver al consejero del host (F4-T3C2 fija una sola autoridad). **Es una decisión para la planeación:** llevar los borradores de la ventana al host, o admitir un segundo consejero |
+| D-07 | **Sustituida por D-08** (2026-11-24). Decía que el cierre del dibujo no esperaba al borrador Dinámico, porque hacía falta una segunda autoridad de cierre | El Owner autorizó cambiar la regla de cierre |
+| D-08 | **Un dibujo con un Dinámico sin escribir no se cierra** (decisión 11 del prototipo: «Que avise antes de cerrar»). El consejero de cierre instalado es ahora el de la ventana (`RackCadWindowCloseAdvisor`), que envuelve al de siempre (el relevo sobre el host): el host decide por sus borradores, como antes, y la ventana veta si tiene cambios sin escribir o escribiéndose, con un aviso en la línea de órdenes que nombra los racks. Un fallo es veto, como en el relevo. Al salir de AutoCAD vale lo mismo, dibujo por dibujo | El Owner lo autorizó el 2026-11-24: «te autorizo cambiar la regla de cierre». Esa regla está escrita en `WorkspaceLifecycleGuardTests`, un original de la lista cerrada de PB-T4b: su guarda del controlador y la base de ese archivo en las tres guardas de la lista (`PushBackRetirePilotFullCopyGuardTests`, `PushBackEditAllFullCopyGuardTests`, `WorkspaceFullCopyGuardTests`) se fijan de nuevo, con nota. Los paquetes de PB-T4 en `evidence` no se tocan |
 
 **Fuera de esta entrega:**
 - la vista previa;
@@ -210,7 +211,7 @@ Este documento es el registro de lo construido. Sirve para la planeación poster
 - **I-03:** D-04.
 - **I-04:** salir de un campo sin cambiarlo no hace nada, y «Modificado» se mide contra el dibujo.
 - **I-05:** D-06.
-- **I-06:** «Cerrar el editor», la poda y el aviso de pérdida. El veto queda como decisión, D-07.
+- **I-06:** «Cerrar el editor», la poda y el aviso de pérdida. El veto queda como decisión, D-07. Después, el veto se hizo (D-08).
 - **M-09 a M-14, M-17 y M-18:** corregidos, con prueba donde aplica.
 - **M-10:** el nombre va recortado.
 - **M-11:** los peraltes del catálogo.
@@ -237,3 +238,31 @@ Este documento es el registro de lo construido. Sirve para la planeación poster
 - **M-30:** el comentario de la guarda de `Window` volvió junto a su patrón. Que la guarda de I-08 solo compruebe el texto queda así: la orden es código de AutoCAD sin pruebas aquí.
 
 **Sin AutoCAD:** la lectura, la escritura, el editor en la paleta y que `RACKDINAMICOABRIR` no deje nada en Deshacer esperan el smoke del Owner.
+
+## Dinámico, segunda entrega (2026-11-24, en curso)
+
+El Owner pidió seguir con Dinámico antes de Cantilever. Las piezas pendientes de sus decisiones del prototipo van en este orden:
+1. el aviso antes de cerrar (D-08, hecho);
+2. el largo IN/OUT por frente y la chincheta de la lista (hecho, con las observaciones del smoke);
+3. los cambios de cálculo (la altura por poste, la cama editable);
+4. la seguridad, «Insertar vista…» y un Dinámico nuevo desde la ventana.
+
+**Lo hecho en el paso 2:**
+- **El largo IN/OUT es del frente** (decisión 3: «Sí, es por frente»).
+  - El campo pasa del inspector de la celda a «Frentes de la selección» y escribe todos los niveles de los frentes activos.
+  - El dibujo lo sigue guardando por nivel, como el clásico, así que un frente con niveles distintos dice «Varía».
+  - Un «Varía» vacío no hace nada (I-04): para volver un frente entero a «calculado» se escribe un valor y luego se borra.
+- **La chincheta** («Fijar la lista», en la cabecera): fijada, la lista se queda; sin fijar, se oculta sola al mostrar un rack o una sección, y «Mostrar la lista» la devuelve.
+- **Lo que se corrigió del smoke:**
+  - O-1: la cabecera sigue cada lectura de la lista;
+  - O-2: una selección nueva del rack ya activo lleva a su página, dentro del mismo dibujo;
+  - O-3: por debajo de 700 px el inspector va debajo de la matriz.
+- **Sin cambio:** O-4 (los monitores) depende de AutoCAD y de V-09 (la paleta no recuerda su posición).
+
+**Smoke exploratorio de la sesión (2026-11-24, por orden del Owner, sobre `78fd5cb1`):**
+- pasan todos los pasos, también M-15 (la lectura no deja nada en Deshacer), I-04, I-05 con el ratón real, I-09, M-11, el «U» de «Actualizar» y D-07, que entonces era solo un aviso de pérdida;
+- observaciones:
+  - la cabecera no se refresca al «Volver a leer la lista»;
+  - seleccionar el rack ya activo no salta a su página;
+  - el inspector queda cortado al ancho inicial;
+  - con varios monitores, la paleta y las modales clásicas abren en el principal.

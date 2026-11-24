@@ -32,6 +32,7 @@ namespace RackCad.Plugin.Workspace
         private readonly WorkspaceNoticeDepth _noticeDepth = new WorkspaceNoticeDepth();
         private readonly IWorkspacePilotEditPort _pilotEdit;
         private readonly WorkspaceCloseAdvisorRelay _closeAdvisor;
+        private readonly RackCad.Application.VentanaRackCad.RackCadWindowCloseAdvisor _windowCloseAdvisor;
         private WorkspaceNavigationHost _navigation;
         private WorkspacePanelModalScope _modalScope;
 
@@ -61,7 +62,14 @@ namespace RackCad.Plugin.Workspace
                 id => _bridge.ActiveSession == id,
                 WorkspacePanelCommand.WriteToCommandLine,
                 LogFault);
-            _bridge.SetLifecycleAdvisor(_closeAdvisor);
+            // I-64 A-14, line D (the Owner authorized the change of the rule of the close, 2026-11-24): the advisor installed wraps the
+            // relay, so the drafts of the editors of the RackCad window also hold the close of their drawing. The host still decides
+            // for its own drafts, with its own notice.
+            _windowCloseAdvisor = new RackCad.Application.VentanaRackCad.RackCadWindowCloseAdvisor(
+                _closeAdvisor,
+                WorkspacePanelCommand.WriteToCommandLine,
+                LogFault);
+            _bridge.SetLifecycleAdvisor(_windowCloseAdvisor);
             _bridge.Drained += OnDrained;
             _bridge.ActiveSessionChanged += OnActiveSessionChanged;
             _bridge.CommandStateChanged += OnCommandStateChanged;
@@ -85,6 +93,9 @@ namespace RackCad.Plugin.Workspace
 
         /// <summary>The read-only port the panel talks to.</summary>
         public IWorkspaceHostPort Port => _port;
+
+        /// <summary>The close advisor of the RackCad window (I-64 A-14, line D): the host of the palette tells it what the window has not written.</summary>
+        internal RackCad.Application.VentanaRackCad.RackCadWindowCloseAdvisor WindowCloseAdvisor => _windowCloseAdvisor;
 
         /// <summary>
         /// The navigation port of the panel (I-64 D-07, F2-T2A). It is created on the first access, never when the controller

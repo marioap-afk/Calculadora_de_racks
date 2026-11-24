@@ -450,6 +450,55 @@ namespace RackCad.UI.Tests
             Assert.Equal("Mostrar la lista", rig.Window.SideToggleText);
         }
 
+        [Fact]
+        public void ANotPinnedListHidesItselfWhenARackOrASectionIsShownAndAPinnedOneStays()
+        {
+            // The Owner on the prototype: an arrow to hide the list and a pin «para que se oculte sola o se quede bloqueada».
+            var rig = new Rig();
+            Assert.True(rig.Window.SidePinned);
+
+            rig.Window.ShowPage(RackCadWindowPage.Nuevo);
+            rig.Window.OpenRack("PB-2");
+            Assert.False(rig.Window.SideCollapsed);
+
+            rig.Window.SidePinned = false;
+            rig.Window.ShowPage(RackCadWindowPage.Bom);
+            Assert.True(rig.Window.SideCollapsed);
+
+            rig.Window.SideCollapsed = false;
+            rig.Window.OpenRack("SEL-1");
+            Assert.True(rig.Window.SideCollapsed);
+            Assert.Equal(RackCadWindowPage.Rack, rig.Window.Page);
+        }
+
+        [Fact]
+        public void TheHeaderFollowsEveryReadingOfTheList()
+        {
+            // O-1 of the smoke: after «Volver a leer la lista» the header kept the count of before.
+            var rig = new Rig();
+            Assert.StartsWith("6 racks", rig.Window.HeaderText);
+
+            rig.Racks.Add(Entry("SEL-2", "Selectivo sur", "selective"));
+            rig.List.Reload();
+
+            Assert.StartsWith("7 racks", rig.Window.HeaderText);
+        }
+
+        [Fact]
+        public void ANewSelectionOfTheActiveRackShowsItsPage()
+        {
+            // O-2 of the smoke: selecting in the drawing the rack that is already active did not leave another section.
+            var rig = new Rig();
+            rig.Select("PB-2");
+            Assert.Equal("PB-2", rig.Panel.Browser.ActiveRackId);
+            rig.Select(null);
+
+            rig.Window.ShowPage(RackCadWindowPage.Bom);
+            rig.Select("PB-2");
+
+            Assert.Equal(RackCadWindowPage.Rack, rig.Window.Page);
+        }
+
         // ------------------------------------------------------------------ review of 16aebbee: pending text, closing, the outdated list
 
         [Fact]

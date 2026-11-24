@@ -174,11 +174,16 @@
 
             <!-- Matriz: the matrix front × level (one datum per cell: the pallet, width × height) and the inspector of the selection. -->
             <TabItem x:Name="MatrixTab" Header="Matriz">
-                <Grid Margin="8">
+                <!-- Wide, the inspector goes beside the matrix; narrow, below it (O-3 of the smoke): see OnMatrixTabSizeChanged. -->
+                <Grid x:Name="MatrixTabGrid" Margin="8" SizeChanged="OnMatrixTabSizeChanged">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" MinWidth="240" />
-                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" MinWidth="200" />
+                        <ColumnDefinition x:Name="InspectorColumn" Width="Auto" />
                     </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition x:Name="InspectorRow" Height="0" />
+                    </Grid.RowDefinitions>
                     <DockPanel Grid.Column="0" LastChildFill="True">
                         <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,0,0,6" Foreground="{DynamicResource ShellTextSecondaryBrush}"
                                    Text="Cada celda muestra la tarima: ancho × alto (in). Clic: una celda · Mayús+clic: rango · Ctrl+clic: añadir o quitar. F1…, N1… y «Todo» seleccionan la columna, la fila o todo." />
@@ -253,7 +258,7 @@
                     </DockPanel>
 
                     <!-- The inspector of the selection: what is written goes to every selected cell (or front). -->
-                    <Border Grid.Column="1" Width="420" Margin="10,0,0,0" Padding="10" BorderThickness="1" CornerRadius="6"
+                    <Border x:Name="InspectorPanel" Grid.Column="1" Width="420" Margin="10,0,0,0" Padding="10" BorderThickness="1" CornerRadius="6"
                             BorderBrush="{DynamicResource ShellBorderBrush}" Background="{DynamicResource ShellSurfaceBrush}">
                         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                             <StackPanel>

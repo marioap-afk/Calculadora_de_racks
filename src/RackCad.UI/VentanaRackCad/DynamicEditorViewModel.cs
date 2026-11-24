@@ -890,7 +890,6 @@ namespace RackCad.UI.VentanaRackCad
                 CellNumber("cHeight", "Alto de tarima", "in", cells, c => c.PalletHeight, (c, v) => c.PalletHeight = v, v => v > 0.0),
                 CellNumber("cWeight", "Peso de tarima", "kg", cells, c => c.PalletWeight, (c, v) => c.PalletWeight = v, v => v >= 0.0),
                 CellNumber("cClear", "Claro libre", "in", cells, c => c.ClearHeight, (c, v) => c.ClearHeight = v, v => v >= 0.0),
-                CellOptional("cLength", "Largo manual IN/OUT (vacío = calculado)", "in", cells, c => c.BeamLengthOverride, (c, v) => c.BeamLengthOverride = v),
                 CellPeralte("cInOut", "Peralte IN/OUT", cells, c => c.InOutBeamCatalogId, DynamicRackDefaults.DefaultBeamDepth, c => c.InOutBeamDepth, (c, v) => c.InOutBeamDepth = v),
                 CellPeralte("cInter", "Peralte intermedio", cells, c => c.IntermediateBeamCatalogId, DynamicRackDefaults.DefaultIntermediateBeamDepth, c => c.IntermediateBeamDepth, (c, v) => c.IntermediateBeamDepth = v),
             };
@@ -908,7 +907,21 @@ namespace RackCad.UI.VentanaRackCad
                 FrontInt("fDeep", "Posiciones de fondo", fronts, f => f.PalletsDeep, (f, v) => f.PalletsDeep = v, 2),
                 FrontInt("fStart", "Inicio en fondo (1 = salida)", fronts, f => f.DepthStartPosition, (f, v) => f.DepthStartPosition = v, 1),
                 FrontNumber("fFirst", "Inicio del 1er larguero", "in", active, f => f.FirstLevelHeight, (f, v) => f.FirstLevelHeight = v, v => v >= 0.0),
+                FrontLength("fLength", "Largo manual IN/OUT (vacío = calculado)", active),
             };
+        }
+
+        // «Largo manual IN/OUT» is a value of the FRONT (decision 3 of the Owner on the prototype: «Sí, es por frente»): it writes every
+        // level of the fronts written. The drawing keeps it per level, as the classic editor does, so a front whose levels differ (an
+        // edit of the classic editor) says «Varía» until a value is written for the whole front.
+        private DynamicFieldItem FrontLength(string key, string label, IReadOnlyList<DynamicEditorFront> fronts)
+        {
+            var cells = fronts.SelectMany(front =>
+            {
+                front.EnsureCellCount(front.LoadLevels);
+                return front.Cells.Take(front.LoadLevels);
+            }).ToList();
+            return CellOptional(key, label, "in", cells, c => c.BeamLengthOverride, (c, v) => c.BeamLengthOverride = v);
         }
 
         private int IndexOf(DynamicEditorFront front)

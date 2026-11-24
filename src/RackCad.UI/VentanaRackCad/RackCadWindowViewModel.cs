@@ -94,6 +94,9 @@ namespace RackCad.UI.VentanaRackCad
         private string _actionMessage = string.Empty;
         private bool _actionFailed;
         private bool _sideCollapsed;
+        private bool _sidePinned = true;
+        private SessionId? _lastSelectionSession;
+        private string _lastSelectionRack;
         private string _lastActiveRack;
         private IReadOnlyList<RackCadWindowSection> _sections;
 
@@ -125,6 +128,13 @@ namespace RackCad.UI.VentanaRackCad
 
             RackList = new RackListViewModel(panel.BrowserSummaryPort, panel.PilotEditPort, panel.Browser, DynamicStateOf);
             RackList.RackOpened += () => ShowPage(RackCadWindowPage.Rack);
+            // The header counts the racks of the list: it follows every reading of it, also «Volver a leer la lista» (O-1 of the smoke).
+            RackList.PropertyChanged += (_, e) =>
+            {
+                if (e.PropertyName == nameof(RackListViewModel.RackCount) || e.PropertyName == nameof(RackListViewModel.ChangedCount)
+                    || e.PropertyName == nameof(RackListViewModel.StatusText))
+                    OnPropertyChanged(nameof(HeaderText));
+            };
             panel.Browser.PropertyChanged += OnBrowserChanged;
             NewSystems = new[]
             {
@@ -204,6 +214,22 @@ namespace RackCad.UI.VentanaRackCad
         }
 
         public string SideToggleText => _sideCollapsed ? "Mostrar la lista" : "Ocultar la lista";
+
+        /// <summary>
+        /// «Fijar la lista» (the Owner on the prototype: an arrow to hide the list and a pin «para que se oculte sola o se quede
+        /// bloqueada»). Pinned, the list stays; not pinned, it hides itself every time a rack or a section is shown, and «Mostrar la lista»
+        /// brings it back until the next one.
+        /// </summary>
+        public bool SidePinned
+        {
+            get => _sidePinned;
+            set
+            {
+                if (_sidePinned == value) return;
+                _sidePinned = value;
+                OnPropertyChanged(nameof(SidePinned));
+            }
+        }
 
         /// <summary>The text of the page of the rack when no rack is open.</summary>
         public string NoRackText => Panel.Browser.ActiveRackId == null
@@ -483,10 +509,24 @@ namespace RackCad.UI.VentanaRackCad
             });
         }
 
+        /// <summary>
+        /// What the window still has to write in the drawing of a session: the names of its Dinámico racks with changes not written (or
+        /// being written), or null. The close advisor of the window asks it, and a drawing with such work does not close (decision 11 of the
+        /// Owner on the prototype: «Que avise antes de cerrar»; D-08). It only reads the memory of the window.
+        /// </summary>
+        public string UnwrittenDynamicWorkOf(SessionId session)
+        {
+            var names = _dynamicDrafts
+                .Where(p => p.Key.Session == session && (p.Value.Editor.IsDirty || p.Value.Editor.IsWriting))
+                .Select(p => string.IsNullOrWhiteSpace(p.Value.Editor.Name) ? p.Value.Editor.RackId : p.Value.Editor.Name.Trim())
+                .OrderBy(n => n, StringComparer.CurrentCultureIgnoreCase)
+                .ToList();
+            return names.Count == 0 ? null : string.Join(", ", names);
+        }
+
         // The drafts of a drawing that was closed have nowhere to be written: they are forgotten (with their request, if one waited), and
-        // work that was lost is said. Whether a drawing may close is decided only by the host of the panel (F4-T3C2: one lifecycle
-        // authority), which does not know the drafts of the window: protecting them on close is decision D-07, for the planning.
-        // IsSessionAlive answers from memory; it never reads the drawing.
+        // work that was lost is said. A drawing with work not written in the window does not close (D-08), so this only happens when
+        // AutoCAD closes it anyway (a failure, or the process ending). IsSessionAlive answers from memory; it never reads the drawing.
         private void PruneDeadSessions()
         {
             var port = Panel.BrowserSummaryPort;
@@ -536,6 +576,22 @@ namespace RackCad.UI.VentanaRackCad
             }
 
             RaiseWaiting();
+        }
+
+        // A new selection in the drawing of the rack that is already active shows its page too (O-2 of the smoke): a change of the active
+        // rack already does it (OnBrowserChanged). Only a new selection in the same drawing counts, so moving between drawings does not.
+        private void FollowSelectionOfTheActiveRack()
+        {
+            var session = Panel.PresentedSession;
+            var selected = Panel.Browser.SelectionRackId;
+            var isNew = session == _lastSelectionSession && selected != null
+                        && !string.Equals(selected, _lastSelectionRack, StringComparison.OrdinalIgnoreCase);
+            _lastSelectionSession = session;
+            _lastSelectionRack = selected;
+
+            if (isNew && Panel.Browser.FollowSelection
+                && string.Equals(selected, Panel.Browser.ActiveRackId, StringComparison.OrdinalIgnoreCase))
+                ShowPage(RackCadWindowPage.Rack);
         }
 
         private static bool IsAlive(IWorkspaceBrowserSummaryPort port, SessionId session)
@@ -634,6 +690,7 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>Shows a section, or the page of the rack.</summary>
         public void ShowPage(RackCadWindowPage page)
         {
+            if (!_sidePinned) SideCollapsed = true;
             if (_page == page) return;
             _page = page;
             if (page == RackCadWindowPage.Configuracion) RaiseSettings();
@@ -735,6 +792,7 @@ namespace RackCad.UI.VentanaRackCad
             }
 
             Contained(PruneDeadSessions);
+            Contained(FollowSelectionOfTheActiveRack);
             OnPropertyChanged(nameof(HeaderText));
             OnPropertyChanged(nameof(NoRackText));
             OnPropertyChanged(nameof(IsDynamicRack));

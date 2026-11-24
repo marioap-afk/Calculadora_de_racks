@@ -119,6 +119,34 @@ namespace RackCad.UI.Tests
         }
 
         [Fact]
+        public void TheManualInOutLengthIsAValueOfTheFrontAndWritesEveryLevelOfIt()
+        {
+            // Decision 3 of the Owner on the prototype: «Sí, es por frente».
+            var vm = Editor();
+            Assert.DoesNotContain(vm.CellFields, f => f.Key == "cLength");
+
+            vm.SelectFront(0);
+            Write(vm, v => v.FrontFields, "fLength", "100");
+
+            Assert.True(vm.IsDirty, vm.Message);
+            Assert.All(vm.Draft.Matrix.Fronts[0].Cells.Take(3), cell => Assert.Equal(100.0, cell.BeamLengthOverride));
+            Assert.All(vm.Draft.Matrix.Fronts[1].Cells.Take(2), cell => Assert.Null(cell.BeamLengthOverride));
+
+            // One level of the front changed another way (as the classic editor can): the front says «Varía» until it is written whole.
+            vm.Draft.Matrix.Fronts[0].Cells[1].BeamLengthOverride = 90.0;
+            vm.SelectFront(1);
+            vm.SelectFront(0);
+            Assert.Equal(("", "Varía"), (Field(vm.FrontFields, "fLength").Text, Field(vm.FrontFields, "fLength").Hint));
+
+            // An empty «Varía» left as it is changes nothing (I-04); a value written and then cleared puts the whole front back to «calculado».
+            Write(vm, v => v.FrontFields, "fLength", "");
+            Assert.Equal(90.0, vm.Draft.Matrix.Fronts[0].Cells[1].BeamLengthOverride);
+            Write(vm, v => v.FrontFields, "fLength", "100");
+            Write(vm, v => v.FrontFields, "fLength", "");
+            Assert.All(vm.Draft.Matrix.Fronts[0].Cells.Take(3), cell => Assert.Null(cell.BeamLengthOverride));
+        }
+
+        [Fact]
         public void TwoShiftClicksInARowExtendFromTheAnchorNotFromTheLastClick()
         {
             // M-13 of the second review: the anchor is the last plain click, not the primary cell that every Mayús+clic moves.
@@ -876,6 +904,25 @@ namespace RackCad.UI.Tests
         }
 
         [Fact]
+        public void TheWindowSaysWhichRacksOfADrawingHaveWorkNotWrittenSoTheDrawingDoesNotClose()
+        {
+            // D-08 (decision 11 of the Owner on the prototype): what the close advisor of the window asks.
+            var rig = new Rig();
+            var editor = rig.OpenEditor();
+            Assert.Null(rig.Window.UnwrittenDynamicWorkOf(Session));
+
+            Write(editor, v => v.Essentials, "weight", "1200");
+            Assert.Equal("DIN 1", rig.Window.UnwrittenDynamicWorkOf(Session));
+            Assert.Null(rig.Window.UnwrittenDynamicWorkOf(new SessionId(8)));
+
+            editor.RequestWrite();
+            Assert.Equal("DIN 1", rig.Window.UnwrittenDynamicWorkOf(Session));
+
+            rig.Door.AnswerLastWrite(true, "Escrito.");
+            Assert.Null(rig.Window.UnwrittenDynamicWorkOf(Session));
+        }
+
+        [Fact]
         public void TheDraftsOfAClosedDrawingAreForgottenAndLostWorkIsSaid()
         {
             // I-06 of the second review, its part without a veto (D-07): the drafts of a drawing that no longer lives are forgotten.
@@ -948,6 +995,28 @@ namespace RackCad.UI.Tests
                 Click(editorView.CloseEditorButton);
                 Assert.Same(view.PanelView, view.RackPageHost.Content);
                 Assert.Equal(0, view.DynamicViewCount);
+            });
+        }
+
+        [Fact]
+        public void ANarrowEditorPutsTheInspectorBelowTheMatrixAndAWideOneBesideIt()
+        {
+            // O-3 of the smoke: at the starting width of the palette the inspector was cut on the right.
+            StaTestRunner.Run(() =>
+            {
+                var view = new DynamicEditorView(Editor());
+
+                view.Measure(new System.Windows.Size(600, 800));
+                view.Arrange(new System.Windows.Rect(0, 0, 600, 800));
+                view.UpdateLayout();
+                Assert.True(view.InspectorBelow);
+                Assert.Equal(1, System.Windows.Controls.Grid.GetRow(view.InspectorPanel));
+
+                view.Measure(new System.Windows.Size(1200, 800));
+                view.Arrange(new System.Windows.Rect(0, 0, 1200, 800));
+                view.UpdateLayout();
+                Assert.False(view.InspectorBelow);
+                Assert.Equal(1, System.Windows.Controls.Grid.GetColumn(view.InspectorPanel));
             });
         }
 
