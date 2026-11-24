@@ -49,7 +49,7 @@ namespace RackCad.Plugin.Workspace
         {
             _controller = WorkspaceController.GetOrCreate();
             _viewModel = new WorkspacePanelViewModel(_controller.Port, _controller.SetInstrumentationEnabled, _controller.Navigation, _controller.BrowserSummary, _controller.PilotEdit);
-            _window = new RackCadWindowViewModel(_viewModel, new RackCadClassicCommandPort());
+            _window = new RackCadWindowViewModel(_viewModel, new RackCadClassicCommandPort(), null, new RackCadRackDoorPort());
             _root = new RackCadWindowView(_window);
 
             _palette = new PaletteSet("RackCad");

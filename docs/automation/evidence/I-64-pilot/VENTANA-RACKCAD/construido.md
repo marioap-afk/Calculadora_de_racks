@@ -132,3 +132,42 @@ Este documento es el registro de lo construido. Sirve para la planeación poster
   - en local se reproduce con las pruebas del editor clásico de Dinámico delante (falló 3 de 4 veces);
   - la corrección publica el trabajo con prioridad Normal, siempre después de que vuelve `Loaded`; con ella, la misma combinación pasó 3 de 3 veces;
   - que la ventana dueña se comporta igual dentro de AutoCAD queda para el smoke.
+
+## Dinámico en la ventana (línea D, primera entrega)
+
+**Rama:** `architecture/workspace-persistente-rackcad-dinamico`, encima de la de la ventana.
+
+**Lo que hace:**
+- Un rack Dinámico de la lista muestra «Editar aquí». La ventana pide a AutoCAD que lea su diseño con `RACKDINAMICOABRIR`, una orden sin marca de Deshacer y sin historial, así que no deja nada en Deshacer, y abre el editor nuevo en el centro.
+- **El editor sigue la «versión despejada» aprobada,** con las pestañas Rack, Matriz (la de inicio) y Avanzado:
+  - **Rack:** «Lo esencial» de todo el rack, con «Varía» cuando hay valores distintos; «Calculado», y «Poste y anotaciones» plegado.
+  - **Matriz:** frente × nivel, con un solo dato por celda (la tarima, ancho × alto). Clic, Ctrl+clic, Mayús+clic, F1…, N1… y «Todo». El inspector de la selección lleva la tarima y los largueros de las celdas y los datos de sus frentes, y permite dejar un frente en blanco o activarlo.
+  - **Avanzado:** altura manual, separadores, poste derivado y los módulos con rótulos en español (M1…, Cabecera o Separador, Sí o No).
+- **Una sola forma de confirmar:** lo escrito va al borrador al salir del campo o con Enter. **Un solo alcance:** la selección. Un valor que no se puede recalcular se rechaza en su campo y el borrador queda como estaba.
+- **«Restaurar layout…»** pide confirmación y dice qué se pierde.
+- **El borrador sobrevive al cambio de rack,** y la lista lo marca: «Modificado (editor de la ventana)».
+- **«Actualizar»** entrega el borrador a `RACKDINAMICOAPLICAR`, que redibuja el rack con la mitad de dibujo de RACKEDITAR (`ApplyDynamicEdit`, extraída de `EditDynamic` sin cambiar su cuerpo). Solo actualiza, sin vista nueva, y es una orden: un «U» la deshace.
+
+**Las decisiones:**
+
+| Id | Decisión | Por qué |
+|---|---|---|
+| D-01 | El borrador (`DynamicDraftEditor`, en Application) es la misma recomposición que el editor clásico. Las pruebas de equivalencia lo comprueban byte a byte, en un rack nuevo, en uno cargado y en uno editado | El editor nuevo escribe lo que escribiría el clásico. Las reglas nuevas del Owner (la altura por poste, la cama editable, el largo IN/OUT por frente) son cambios de cálculo declarados y van en una entrega aparte, con sus pruebas |
+| D-02 | La lectura y la escritura son órdenes de AutoCAD, no lecturas de la paleta | No bloquean el documento desde la paleta (O-18) y corren en el documento activo, así que no se puede leer el rack de otro dibujo |
+| D-03 | `RACKEDITAR` sigue con el editor clásico, que también es «Abrir en editor clásico» | Hasta que el Owner valide el editor nuevo en AutoCAD |
+
+**Fuera de esta entrega:**
+- la vista previa;
+- la seguridad y los extremos;
+- el editor de cabeceras (va a otra iniciativa);
+- «Insertar vista…»;
+- la detección de un cambio del dibujo mientras se edita (el conflicto);
+- un Dinámico nuevo desde la ventana, que sigue saliendo por «Nuevo» (RACKNUEVO), con el editor clásico;
+- las tres reglas nuevas de cálculo.
+
+**Las pruebas:**
+- `DynamicDraftEditorEquivalenceTests` (4);
+- `RackCadDynamicEditorTests` (17): el editor, la puerta (con un doble) y las vistas.
+- El censo de comandos pasa a 45, con RACKDINAMICOABRIR y RACKDINAMICOAPLICAR.
+
+**Sin AutoCAD:** la lectura, la escritura y el editor en la paleta esperan el smoke del Owner.

@@ -2,6 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
+using RackCad.Application.Catalogs;
+using RackCad.Application.Persistence;
+using RackCad.Domain.Systems.Dynamic;
 using RackCad.Application.VentanaRackCad;
 using RackCad.Application.Workspace;
 using RackCad.UI.Workspace;
@@ -48,6 +52,29 @@ namespace RackCad.UI.VentanaRackCad
 
         private readonly IRackCadClassicCommandPort _classic;
         private readonly IRackCadSettingsAccess _settings;
+        private readonly IRackCadRackDoorPort _door;
+        private readonly Func<RackCatalog> _catalog;
+
+        // The drafts of the Dinámico racks opened in the window, by session and rack: they survive a change of rack (I-64 A-14, line D).
+        private readonly Dictionary<(SessionId Session, string RackId), DynamicDraftEntry> _dynamicDrafts = new();
+        private string _pendingRead;
+        private bool _showPanel;
+
+        private sealed class DynamicDraftEntry
+        {
+            public DynamicDraftEntry(DynamicEditorViewModel editor, string originalJson, string originalName)
+            {
+                Editor = editor;
+                OriginalJson = originalJson;
+                OriginalName = originalName;
+            }
+
+            public DynamicEditorViewModel Editor { get; }
+
+            public string OriginalJson { get; set; }
+
+            public string OriginalName { get; set; }
+        }
 
         private RackCadWindowPage _page = RackCadWindowPage.Rack;
         private string _actionMessage = string.Empty;
@@ -62,15 +89,27 @@ namespace RackCad.UI.VentanaRackCad
         /// </param>
         /// <param name="classic">The port of the classic flows; optional: without it the doors say that they are not available.</param>
         /// <param name="settings">The settings of RackCad for "Configuración"; optional: the settings of the machine by default.</param>
+        /// <param name="door">The door to one rack (read its design, write its draft) for the editors of the window; optional.</param>
+        /// <param name="catalog">The catalog for the editors of the window; optional: the catalog of the plugin by default.</param>
         public RackCadWindowViewModel(
             WorkspacePanelViewModel panel,
             IRackCadClassicCommandPort classic = null,
-            IRackCadSettingsAccess settings = null)
+            IRackCadSettingsAccess settings = null,
+            IRackCadRackDoorPort door = null,
+            Func<RackCatalog> catalog = null)
         {
             Panel = panel ?? throw new ArgumentNullException(nameof(panel));
             _classic = classic;
             _settings = settings ?? new RackCadSettingsAccess();
-            RackList = new RackListViewModel(panel.BrowserSummaryPort, panel.PilotEditPort, panel.Browser);
+            _door = door;
+            _catalog = catalog ?? UiSupport.LoadCatalogSafe;
+            if (_door != null)
+            {
+                _door.DesignRead += OnDesignRead;
+                _door.DesignWritten += OnDesignWritten;
+            }
+
+            RackList = new RackListViewModel(panel.BrowserSummaryPort, panel.PilotEditPort, panel.Browser, DynamicStateOf);
             RackList.RackOpened += () => ShowPage(RackCadWindowPage.Rack);
             panel.Browser.PropertyChanged += OnBrowserChanged;
             NewSystems = new[]
@@ -156,6 +195,189 @@ namespace RackCad.UI.VentanaRackCad
         public string NoRackText => Panel.Browser.ActiveRackId == null
             ? "Elige un rack en la lista o selecciónalo en el dibujo de AutoCAD."
             : string.Empty;
+
+        // ------------------------------------------------------------------ the Dinámico of the window (I-64 A-14, line D)
+
+        /// <summary>Whether the active rack is a Dinámico (Pallet Flow), by the Kind of the list of the drawing.</summary>
+        public bool IsDynamicRack => string.Equals(RackList.KindOf(Panel.Browser.ActiveRackId), "dynamic", StringComparison.OrdinalIgnoreCase);
+
+        /// <summary>The editor of the active Dinámico rack in the window, when it was opened here; null otherwise.</summary>
+        public DynamicEditorViewModel ActiveDynamicEditor =>
+            Panel.PresentedSession.HasValue && Panel.Browser.ActiveRackId != null
+            && _dynamicDrafts.TryGetValue((Panel.PresentedSession.Value, Panel.Browser.ActiveRackId), out var entry)
+                ? entry.Editor
+                : null;
+
+        public bool HasDynamicEditor => ActiveDynamicEditor != null;
+
+        /// <summary>The offer to edit the active Dinámico here: a Dinámico rack with no editor open yet, and a door to read it.</summary>
+        public bool ShowDynamicOffer => IsDynamicRack && ActiveDynamicEditor == null && _door != null;
+
+        /// <summary>While a Dinámico editor is shown, the user may look at the panel of the rack (state and navigation) instead.</summary>
+        public bool ShowPanel
+        {
+            get => _showPanel || ActiveDynamicEditor == null;
+            set
+            {
+                if (_showPanel == value) return;
+                _showPanel = value;
+                OnPropertyChanged(nameof(ShowPanel));
+                OnPropertyChanged(nameof(PanelToggleText));
+            }
+        }
+
+        public string PanelToggleText => _showPanel ? "Volver al editor" : "Ver el estado y la navegación del rack";
+
+        /// <summary>«Editar aquí»: asks AutoCAD to read the design of the active rack; the editor opens when the answer arrives.</summary>
+        public void EditDynamicHere()
+        {
+            var rack = Panel.Browser.ActiveRackId;
+            if (_door == null || rack == null) return;
+
+            RackCadClassicResult result;
+            try
+            {
+                result = _door.RequestDesign(rack) ?? RackCadClassicResult.Without(RackCadClassicStatus.Failed, "sin respuesta.");
+            }
+            catch (Exception ex)
+            {
+                result = RackCadClassicResult.Without(RackCadClassicStatus.Failed, ex.Message);
+            }
+
+            if (result.IsStarted)
+            {
+                _pendingRead = rack;
+                Say("Leyendo el rack en AutoCAD…", failed: false);
+            }
+            else
+            {
+                Say(RefusalText(result), failed: true);
+            }
+        }
+
+        // The answer of AutoCAD to «Editar aquí»: the editor opens over the design read, for the rack that was asked and is still active.
+        private void OnDesignRead(RackDesignRead read)
+        {
+            Contained(() =>
+            {
+                if (read == null || !string.Equals(read.RackId, _pendingRead, StringComparison.OrdinalIgnoreCase)) return;
+                _pendingRead = null;
+                if (!read.Found)
+                {
+                    Say("No se pudo abrir el rack: " + (read.Reason ?? "sin detalle."), failed: true);
+                    return;
+                }
+
+                var project = new RackProjectStore().Deserialize(read.DesignJson);
+                if (project?.DynamicDesign == null)
+                {
+                    Say("El rack no es un Dinámico que este editor pueda abrir; usa RACKEDITAR.", failed: true);
+                    return;
+                }
+
+                if (!Panel.PresentedSession.HasValue) return;
+                var editor = new DynamicDraftEditor(_catalog());
+                editor.LoadFrom(project.DynamicDesign, read.Name);
+                var view = new DynamicEditorViewModel(editor, read.RackId, UpdateDynamic);
+                view.PropertyChanged += (_, e) =>
+                {
+                    if (e.PropertyName == nameof(DynamicEditorViewModel.IsDirty)) { RackList.RefreshStates(); OnPropertyChanged(nameof(HeaderText)); }
+                };
+                _dynamicDrafts[(Panel.PresentedSession.Value, read.RackId)] = new DynamicDraftEntry(view, read.DesignJson, read.Name);
+                _showPanel = false;
+                Say(string.Empty, failed: false);
+                RaiseDynamic();
+            });
+        }
+
+        /// <summary>What «Descartar» of the Dinámico editor goes back to: the design that was read (or last written).</summary>
+        public DynamicRackDesign OriginalDesignOf(DynamicEditorViewModel editor)
+        {
+            var entry = _dynamicDrafts.Values.FirstOrDefault(e => ReferenceEquals(e.Editor, editor));
+            return entry == null ? null : new RackProjectStore().Deserialize(entry.OriginalJson)?.DynamicDesign;
+        }
+
+        public string OriginalNameOf(DynamicEditorViewModel editor) =>
+            _dynamicDrafts.Values.FirstOrDefault(e => ReferenceEquals(e.Editor, editor))?.OriginalName;
+
+        // «Actualizar» of the Dinámico editor: the draft goes to AutoCAD, which redraws the rack with the drawing half of RACKEDITAR.
+        private void UpdateDynamic(DynamicEditorViewModel editor)
+        {
+            if (_door == null)
+            {
+                editor.Say("Aquí no se puede escribir el dibujo.", error: true);
+                return;
+            }
+
+            RackCadClassicResult result;
+            try
+            {
+                result = _door.RequestDynamicUpdate(editor.RackId, editor.Name, editor.Draft.Design, editor.Draft.System)
+                    ?? RackCadClassicResult.Without(RackCadClassicStatus.Failed, "sin respuesta.");
+            }
+            catch (Exception ex)
+            {
+                result = RackCadClassicResult.Without(RackCadClassicStatus.Failed, ex.Message);
+            }
+
+            if (result.IsStarted) editor.Say("Escribiendo el rack en el dibujo…", error: false);
+            else editor.Say(RefusalText(result), error: true);
+        }
+
+        // The answer of AutoCAD to «Actualizar»: the draft is the drawing now, and «Descartar» goes back to it.
+        private void OnDesignWritten(RackDesignWritten written)
+        {
+            Contained(() =>
+            {
+                if (written == null) return;
+                foreach (var pair in _dynamicDrafts)
+                {
+                    if (!string.Equals(pair.Key.RackId, written.RackId, StringComparison.OrdinalIgnoreCase)) continue;
+                    var editor = pair.Value.Editor;
+                    if (written.Written)
+                    {
+                        pair.Value.OriginalJson = new RackProjectStore().Serialize(RackProject.ForDynamic(editor.Draft.Design));
+                        pair.Value.OriginalName = editor.Name;
+                        editor.MarkWritten(written.Message);
+                    }
+                    else
+                    {
+                        editor.Say(written.Message, error: true);
+                    }
+                }
+
+                RackList.RefreshStates();
+                OnPropertyChanged(nameof(HeaderText));
+            });
+        }
+
+        // The state of a Dinámico rack in the list, while its draft is open in the window.
+        private (string Text, string Kind, bool Changed)? DynamicStateOf(SessionId session, string rackId)
+        {
+            if (!_dynamicDrafts.TryGetValue((session, rackId), out var entry)) return null;
+            return entry.Editor.IsDirty ? ("Modificado (editor de la ventana)", "Modificado", true) : ("Abierto en la ventana", "Limpio", false);
+        }
+
+        private void RaiseDynamic()
+        {
+            OnPropertyChanged(nameof(IsDynamicRack));
+            OnPropertyChanged(nameof(ActiveDynamicEditor));
+            OnPropertyChanged(nameof(HasDynamicEditor));
+            OnPropertyChanged(nameof(ShowDynamicOffer));
+            OnPropertyChanged(nameof(ShowPanel));
+            OnPropertyChanged(nameof(PanelToggleText));
+            RackList.RefreshStates();
+        }
+
+        private static string RefusalText(RackCadClassicResult result)
+        {
+            switch (result.Status)
+            {
+                case RackCadClassicStatus.Busy: return "Hay un comando en curso en AutoCAD: termínalo o cancélalo (Esc) y vuelve a intentarlo.";
+                case RackCadClassicStatus.NoDocument: return "Abre o crea un dibujo para usar esta acción.";
+                default: return "No se pudo: " + (string.IsNullOrWhiteSpace(result.Reason) ? "sin detalle." : result.Reason);
+            }
+        }
 
         // "Configuración"
         public string BlockLibraryPath => SafeRead(() => _settings.BlockLibraryPath, string.Empty);
@@ -299,6 +521,8 @@ namespace RackCad.UI.VentanaRackCad
 
             OnPropertyChanged(nameof(HeaderText));
             OnPropertyChanged(nameof(NoRackText));
+            OnPropertyChanged(nameof(IsDynamicRack));
+            OnPropertyChanged(nameof(ShowDynamicOffer));
         }
 
         // The browser changed (a tab, the field, the active rack): the marks of the list follow, and a new active rack shows its page.
@@ -309,9 +533,15 @@ namespace RackCad.UI.VentanaRackCad
                 if (e.PropertyName == nameof(WorkspaceBrowserViewModel.ActiveRackId) || string.IsNullOrEmpty(e.PropertyName))
                 {
                     var active = Panel.Browser.ActiveRackId;
-                    if (active != null && !string.Equals(active, _lastActiveRack, StringComparison.Ordinal)) ShowPage(RackCadWindowPage.Rack);
+                    var changed = !string.Equals(active, _lastActiveRack, StringComparison.Ordinal);
+                    if (active != null && changed) ShowPage(RackCadWindowPage.Rack);
                     _lastActiveRack = active;
                     OnPropertyChanged(nameof(NoRackText));
+                    if (changed)
+                    {
+                        _showPanel = false;
+                        RaiseDynamic();
+                    }
                 }
 
                 if (e.PropertyName == nameof(WorkspaceBrowserViewModel.ActiveRackId)

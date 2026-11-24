@@ -68,12 +68,23 @@ namespace RackCad.UI.VentanaRackCad
         /// <param name="port">The summary port that also offers the list; null leaves the list empty.</param>
         /// <param name="pilotEdit">The edit port, for the state of the draft of each rack; optional.</param>
         /// <param name="browser">The browser of the panel: opening a rack goes through it.</param>
-        public RackListViewModel(IWorkspaceBrowserSummaryPort port, IWorkspacePilotEditPort pilotEdit, WorkspaceBrowserViewModel browser)
+        /// <param name="windowState">
+        /// The state of a rack whose draft lives in an editor of the window (I-64 A-14, line D: Dinámico), which wins over the edit port; null
+        /// when the window has no draft of that rack.
+        /// </param>
+        public RackListViewModel(
+            IWorkspaceBrowserSummaryPort port,
+            IWorkspacePilotEditPort pilotEdit,
+            WorkspaceBrowserViewModel browser,
+            Func<SessionId, string, (string Text, string Kind, bool Changed)?> windowState = null)
         {
             _port = port;
             _pilotEdit = pilotEdit;
             _browser = browser ?? throw new ArgumentNullException(nameof(browser));
+            _windowState = windowState;
         }
+
+        private readonly Func<SessionId, string, (string Text, string Kind, bool Changed)?> _windowState;
 
         /// <summary>Raised after the user opened a rack of the list, so the window shows the page of the rack.</summary>
         public event Action RackOpened;
@@ -238,6 +249,13 @@ namespace RackCad.UI.VentanaRackCad
         {
             var entry = _racks.FirstOrDefault(r => string.Equals(r.RackId, rackId, StringComparison.OrdinalIgnoreCase));
             return entry == null ? rackId : DisplayName(entry);
+        }
+
+        /// <summary>The Kind of the envelope of a rack of the list (for example «dynamic»); null when the list does not have it.</summary>
+        public string KindOf(string rackId)
+        {
+            if (string.IsNullOrWhiteSpace(rackId)) return null;
+            return _racks.FirstOrDefault(r => string.Equals(r.RackId, rackId, StringComparison.OrdinalIgnoreCase))?.Kind;
         }
 
         // ------------------------------------------------------------------ internals
@@ -445,6 +463,12 @@ namespace RackCad.UI.VentanaRackCad
         // The state of the draft of the rack, from the memory of the edit port. "Changed" is a draft whose work would be lost.
         private (string Text, string Kind, bool Changed) StateOf(string rackId)
         {
+            if (_windowState != null && _session.HasValue)
+            {
+                var own = _windowState(_session.Value, rackId);
+                if (own.HasValue) return own.Value;
+            }
+
             if (_pilotEdit == null || !_session.HasValue) return ("Sin borrador", "Limpio", false);
 
             PilotFieldView view;

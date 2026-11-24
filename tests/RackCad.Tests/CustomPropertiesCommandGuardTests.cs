@@ -66,8 +66,14 @@ namespace RackCad.Tests
         /// </summary>
         internal static readonly string[] A14WindowCommands = { "RACKBIBLIOTECA", "RACKMENU", "RACKNUEVO" };
 
+        /// <summary>
+        /// Lo que I-64 A-14 (linea D, Dinamico) anade, EXACTAMENTE: la puerta de la ventana a un rack, que lee su diseno sin marca de Deshacer
+        /// y escribe su borrador, sin alias, en <c>src/RackCad.Plugin/VentanaRackCad/RackCadRackDoorPort.cs</c>.
+        /// </summary>
+        internal static readonly string[] A14DynamicDoorCommands = { "RACKDINAMICOABRIR", "RACKDINAMICOAPLICAR" };
+
         /// <summary>El censo vigente: apertura, G7, G15, I-65, el panel de F1 y el descarte de F4-T3C2, cada nombre una vez.</summary>
-        internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).Concat(I65Commands).Concat(F1PanelCommands).Concat(F4PanelDiscardCommands).Concat(A14WindowCommands).ToArray();
+        internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).Concat(I65Commands).Concat(F1PanelCommands).Concat(F4PanelDiscardCommands).Concat(A14WindowCommands).Concat(A14DynamicDoorCommands).ToArray();
 
         // ================================================================ censo
 

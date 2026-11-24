@@ -34,7 +34,7 @@ namespace RackCad.UI.Systems.Dynamic
     /// header configurator window), draws a richer side view, lets each module be selected/edited,
     /// and opens the existing header configurator to edit a header module's configuration.
     /// </summary>
-    public partial class RackDynamicSystemWindow : Window
+    public partial class RackDynamicSystemWindow : Window, IDynamicEditOutcome
     {
         private const string KindHeader = "Cabecera";
         private const string KindSeparator = "Separador";
@@ -124,6 +124,10 @@ namespace RackCad.UI.Systems.Dynamic
             ok = Recompose();
             return design;
         }
+
+        /// <summary>Test seam (I-64 A-14, line D): the matrix of the window, so an equivalence test can make the same edit in the
+        /// editor of the RackCad window and here. Not used in production.</summary>
+        internal DynamicFrontMatrix MatrixForTest => matrix;
 
         /// <summary>The shared editor session (I-15): the catalog, the rack identity (GUID + name) and the insert/update
         /// contract. Its coalescing gate is unused here (the dynamic editor recomputes synchronously via Recompose); the

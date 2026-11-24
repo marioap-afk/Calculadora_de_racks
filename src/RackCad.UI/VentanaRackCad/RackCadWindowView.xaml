@@ -276,6 +276,21 @@
                                Visibility="{Binding IsRackPage, Converter={StaticResource FlagToVisibility}}">
                         <TextBlock x:Name="NoRackText" DockPanel.Dock="Top" Margin="12,10,12,0" Text="{Binding NoRackText}"
                                    Style="{StaticResource OptionalText}" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                        <!-- I-64 A-14, line D: a Dinámico rack can be edited here, in the editor of the window, without blocking AutoCAD. -->
+                        <Border x:Name="DynamicOfferPanel" DockPanel.Dock="Top" Style="{StaticResource Banner}" Margin="10,8,10,0"
+                                Visibility="{Binding ShowDynamicOffer, Converter={StaticResource FlagToVisibility}}">
+                            <DockPanel>
+                                <Button x:Name="EditDynamicHereButton" DockPanel.Dock="Right" Content="Editar aquí" Padding="12,4" Margin="8,0,0,0"
+                                        Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.Name="Editar el Dinámico en la ventana"
+                                        Click="OnEditDynamicHereClick" />
+                                <TextBlock TextWrapping="Wrap" VerticalAlignment="Center" Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                                           Text="Este rack es Dinámico. Puedes editarlo aquí, con el editor nuevo, sin bloquear AutoCAD. RACKEDITAR sigue siendo el editor clásico." />
+                            </DockPanel>
+                        </Border>
+                        <Button x:Name="PanelToggleButton" DockPanel.Dock="Top" HorizontalAlignment="Left" Margin="10,6,10,0" Padding="10,3"
+                                Style="{StaticResource SecondaryButtonStyle}" Content="{Binding PanelToggleText}"
+                                Visibility="{Binding HasDynamicEditor, Converter={StaticResource FlagToVisibility}}"
+                                Click="OnPanelToggleClick" />
                         <ContentControl x:Name="RackPageHost" Focusable="False" />
                     </DockPanel>
 

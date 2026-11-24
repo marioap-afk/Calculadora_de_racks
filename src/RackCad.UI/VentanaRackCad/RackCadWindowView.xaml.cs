@@ -68,10 +68,39 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>The workspace panel shown as the page of the rack.</summary>
         public WorkspacePanelView PanelView { get; }
 
+        // One view per Dinámico editor of the window, kept while its draft lives, so moving between racks keeps what was on screen.
+        private readonly System.Collections.Generic.Dictionary<DynamicEditorViewModel, DynamicEditorView> _dynamicViews = new();
+
         private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(RackCadWindowViewModel.SideCollapsed)) ApplySideCollapsed();
+            if (e.PropertyName == nameof(RackCadWindowViewModel.ActiveDynamicEditor) || e.PropertyName == nameof(RackCadWindowViewModel.ShowPanel))
+                ShowRackContent();
         }
+
+        // The page of the rack shows the Dinámico editor of the window when it is open (and the user did not ask for the panel), and the
+        // workspace panel otherwise.
+        private void ShowRackContent()
+        {
+            var editor = _viewModel.ActiveDynamicEditor;
+            if (editor == null || _viewModel.ShowPanel)
+            {
+                if (!ReferenceEquals(RackPageHost.Content, PanelView)) RackPageHost.Content = PanelView;
+                return;
+            }
+
+            if (!_dynamicViews.TryGetValue(editor, out var view))
+            {
+                view = new DynamicEditorView(editor, () => _viewModel.OriginalDesignOf(editor), () => _viewModel.OriginalNameOf(editor));
+                _dynamicViews[editor] = view;
+            }
+
+            if (!ReferenceEquals(RackPageHost.Content, view)) RackPageHost.Content = view;
+        }
+
+        private void OnEditDynamicHereClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.EditDynamicHere());
+
+        private void OnPanelToggleClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.ShowPanel = !_viewModel.ShowPanel);
 
         // Hiding the side column keeps its width, so showing it again gives it back as the user left it.
         private void ApplySideCollapsed()

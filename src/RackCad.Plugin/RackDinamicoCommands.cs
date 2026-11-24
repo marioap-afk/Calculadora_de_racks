@@ -177,6 +177,17 @@ namespace RackCad.Plugin
                 return;
             }
 
+            ApplyDynamicEdit(document, blockId, embed, project, window);
+        }
+
+        /// <summary>
+        /// The drawing half of RACKEDITAR on a dynamic system (I-64 A-14, line D): everything EditDynamic did after its window closed, with
+        /// the result of the editor as arguments instead of the window, unchanged. RACKEDITAR passes what its window produced; the RackCad
+        /// window passes its draft (update only), so a rack is redrawn the same way whatever editor produced the design.
+        /// </summary>
+        internal static void ApplyDynamicEdit(Document document, ObjectId blockId, RackEmbedDocument embed, RackProject project, IDynamicEditOutcome window)
+        {
+            var editor = document.Editor;
             var design = window.DesignToInsert;
             var system = window.SystemToInsert;
             var id = string.IsNullOrWhiteSpace(embed.Id) ? window.RackId : embed.Id;
