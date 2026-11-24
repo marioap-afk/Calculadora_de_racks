@@ -289,12 +289,40 @@ public class RackCadWindowListTests
     [Fact]
     public void OnlyTheModalHostCreatesAPlainWindowAndOnlyTheDoorOfTheWindowHandsCommandsToAutoCad()
     {
-        var plainWindow = new System.Text.RegularExpressions.Regex(@"\bnew\s+(System\.Windows\.)?Window\s*[({]");
+        var plainWindow = PlainWindowPattern();
         var sendsCommands = new System.Text.RegularExpressions.Regex(@"\bSendStringToExecute\b");
 
         Assert.Equal(new[] { "src/RackCad.UI/VentanaRackCad/RackModalHostWindow.cs" }, SourcesMatching(plainWindow));
         Assert.Equal(new[] { "src/RackCad.Plugin/VentanaRackCad/RackCadClassicCommandPort.cs" }, SourcesMatching(sendsCommands));
     }
+
+    [Theory]
+    [InlineData("var w = new Window { Title = \"x\" };")]
+    [InlineData("var w = new System.Windows.Window();")]
+    [InlineData("Window w = new() { Title = \"x\" };")]
+    [InlineData("private readonly Window _owner = new();")]
+    [InlineData("public Window Owner { get; } = new();")]
+    [InlineData("var w = (Window)Activator.CreateInstance(typeof(Window));")]
+    public void TheGuardOfThePlainWindowSeesEveryWayOfMakingOne(string code)
+    {
+        Assert.Matches(PlainWindowPattern(), code);
+    }
+
+    [Theory]
+    [InlineData("public sealed class RackDialog : Window { }")]
+    [InlineData("var owner = Window.GetWindow(this);")]
+    [InlineData("var list = new List<Window>();")]
+    public void TheGuardOfThePlainWindowDoesNotSeeWhatIsNotOne(string code)
+    {
+        Assert.DoesNotMatch(PlainWindowPattern(), code);
+    }
+
+    // A plain WPF Window made in code: `new Window`, a target-typed new() into a Window (a field, a local or a property) and a Window made
+    // by reflection (M-20 of the third review).
+    private static System.Text.RegularExpressions.Regex PlainWindowPattern() => new(
+        @"\bnew\s+(System\.Windows\.)?Window\s*[({]"
+        + @"|\b(System\.Windows\.)?Window\??\s+\w+\s*(\{\s*get;[^}]*\}\s*)?=\s*new\s*[({]"
+        + @"|typeof\s*\(\s*(System\.Windows\.)?Window\s*\)");
 
     private static string[] SourcesMatching(System.Text.RegularExpressions.Regex pattern)
     {

@@ -126,9 +126,13 @@ Este documento es el registro de lo construido. Sirve para la planeación poster
   - **M-07:** decidido en V-14;
   - **M-08:** este documento.
 - **M-02 de la segunda revisión, sin cambio:** la lista dice «puede no estar al día» después de cualquier orden, incluso un `ZOOM`, porque todo `CommandEnded` cuenta como cambio. Es el coste de V-10. Afinarlo exige saber qué órdenes cambian el dibujo, y eso toca el modelo de sesión de F1 a F4B.
-- **El CI de `ff0da9b1` falló** en la prueba de la ventana dueña, por el temporizador de M-01 y no por un cuelgue:
-  - en la corrida completa, las pruebas anteriores dejan el despachador ocupado, y el trabajo publicado con prioridad Background no llegaba a correr;
-  - la instrumentación mostró la ventana cargada y pintada, pero el trabajo sin empezar;
-  - en local se reproduce con las pruebas del editor clásico de Dinámico delante (falló 3 de 4 veces);
-  - la corrección publica el trabajo con prioridad Normal, siempre después de que vuelve `Loaded`; con ella, la misma combinación pasó 3 de 3 veces;
+- **El CI de `ff0da9b1` falló** en la prueba de la ventana dueña, por el temporizador de M-01 y no por un cuelgue. Lo que pasaba, según la traza de la tercera revisión (M-21):
+  - todas las pruebas de UI corren en un solo hilo STA, al que `StaTestRunner` entrega cada prueba con la prioridad más alta;
+  - las colecciones de xUnit corren en paralelo, así que el bucle modal de `ShowDialog` de esta prueba ejecutaba **dentro de sí** las pruebas de otras clases (las del editor clásico de Dinámico) durante más de 20 s;
+  - con prioridad Background, el temporizador de seguridad (también en Background, encolado antes) corría primero y cerraba la ventana. Mi primer diagnóstico («layout o render de otras superficies») no era el correcto;
+  - **`96b9e727`** publica el trabajo con prioridad Normal, que es correcta también en AutoCAD, pero la prueba solo pasaba porque Normal adelantaba al temporizador: tardaba de 18 a 37 s;
+  - **la corrección de fondo** es que las pruebas de la ventana dueña corran solas, en una colección sin paralelismo (`RackModalHostWindowTests`), con el temporizador en prioridad Normal;
   - que la ventana dueña se comporta igual dentro de AutoCAD queda para el smoke.
+- **Tercera revisión (`ff0da9b1` y `96b9e727`): APTO,** con un M cada uno:
+  - **M-20:** la guarda de la `Window` corriente ve ahora también `new()` con tipo destino y `typeof(Window)`, y tiene pruebas de su patrón;
+  - **M-21:** la colección sin paralelismo y este diagnóstico. Con la misma combinación que fallaba en el CI, las dos pruebas de la ventana dueña tardan ahora menos de 1 s, frente a los 18 a 37 s de antes, en dos corridas.
