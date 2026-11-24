@@ -453,7 +453,11 @@ public class WorkspaceBrowserSummaryTests
     {
         var methods = typeof(IWorkspaceBrowserSummaryPort).GetMethods().OrderBy(m => m.Name, StringComparer.Ordinal).ToArray();
 
-        Assert.Equal(new[] { "IsSessionAlive", "ReadSummary" }, methods.Select(m => m.Name).ToArray());
+        // I-64 A-14 (phase 2): the list of the drawing of the RackCad window is the third read-only operation, with the same request.
+        Assert.Equal(new[] { "IsSessionAlive", "ReadRackList", "ReadSummary" }, methods.Select(m => m.Name).ToArray());
+        var list = methods.Single(m => m.Name == "ReadRackList");
+        Assert.Equal(typeof(BrowserRackList), list.ReturnType);
+        Assert.Equal(new[] { typeof(WorkspaceRequest), typeof(bool) }, list.GetParameters().Select(p => p.ParameterType).ToArray());
         var read = methods.Single(m => m.Name == "ReadSummary");
         Assert.Equal(typeof(BrowserRackSummary), read.ReturnType);
         // INV-F3T2-21: the request says whether an explicit action of the user asked for it.
@@ -489,7 +493,7 @@ public class WorkspaceBrowserSummaryTests
             new[] { typeof(Func<SessionId, IReadOnlyList<BrowserRackFact>>), typeof(Func<SessionId, bool>) },
             constructor.GetParameters().Select(p => p.ParameterType).ToArray());
         Assert.Equal(
-            new[] { "CachedRackCount", "EndSession", "IsCached", "IsSessionEnded", "OnDrained", "Read" },
+            new[] { "CachedRackCount", "EndSession", "IsCached", "IsListCached", "IsSessionEnded", "OnDrained", "Read", "ReadList" },
             typeof(BrowserRackSummaries).GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)
                 .Where(m => !m.IsSpecialName).Select(m => m.Name).OrderBy(n => n, StringComparer.Ordinal).ToArray());
     }

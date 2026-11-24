@@ -12,18 +12,37 @@ using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 namespace RackCad.Plugin
 {
     /// <summary>
-    /// The RackCad menu (RACKCAD) and round-trip editor (RACKEDITAR) commands, plus their aliases. Each rack type's
-    /// commands live in its own RackXCommands class; the menu and RACKEDITAR dispatch into those classes' internal
-    /// static draw/edit entry points, and the cross-type helpers live in <see cref="RackCommandSupport"/>.
+    /// The RackCad entry points (RACKCAD, the classic menu RACKMENU, RACKNUEVO and RACKBIBLIOTECA) and the round-trip editor
+    /// (RACKEDITAR), plus their aliases. Each rack type's commands live in its own RackXCommands class; the menu, RACKNUEVO,
+    /// RACKBIBLIOTECA and RACKEDITAR dispatch into those classes' internal static draw/edit entry points, and the cross-type helpers
+    /// live in <see cref="RackCommandSupport"/>.
+    ///
+    /// I-64 A-14 (phase 1): RACKCAD and RK open the RackCad window, which does not block AutoCAD. The classic menu stays reachable from
+    /// the window as RACKMENU while the sections migrate; RACKNUEVO and RACKBIBLIOTECA are the doors of the window to the editor of a new
+    /// system and to the design library, and they run the very same flows and the very same dispatch as the menu.
     /// </summary>
     public sealed class RackMenuCommands
     {
-        [CommandMethod("RK")]  public void AliasRackCad() => RackCad();                    // menú principal
+        [CommandMethod("RK")]  public void AliasRackCad() => RackCad();                    // ventana RackCad
         [CommandMethod("RED")] public void AliasRackEditar() => RackEditar();              // RACKEDITAR
 
-        /// <summary>Main entry point: opens the menu where the user picks what to design.</summary>
+        /// <summary>Main entry point: opens the RackCad window (I-64 A-14), the same palette RACKPANEL shows.</summary>
         [CommandMethod("RACKCAD")]
         public void RackCad()
+        {
+            try
+            {
+                Workspace.WorkspacePanelCommand.ShowRackCadWindow();
+            }
+            catch (System.Exception ex)
+            {
+                RackCommandSupport.Report(ex);
+            }
+        }
+
+        /// <summary>The classic menu, where the user picks what to design. The RackCad window offers it while the sections migrate.</summary>
+        [CommandMethod("RACKMENU")]
+        public void RackMenu()
         {
             try
             {
@@ -43,18 +62,91 @@ namespace RackCad.Plugin
                     return;
                 }
 
+                DispatchInsertion(document, menu.InsertionRequest);
+            }
+            catch (System.Exception ex)
+            {
+                RackCommandSupport.Report(ex);
+            }
+        }
+
+        /// <summary>
+        /// RACKNUEVO (I-64 A-14): the editor of a new system, named by its keyword, with the very path of the button of the menu: the same
+        /// module of the registry and the same dispatch. The RackCad window types it with the keyword; it can be typed by hand as well.
+        /// </summary>
+        [CommandMethod("RACKNUEVO")]
+        public void RackNuevo()
+        {
+            try
+            {
+                var document = AcApplication.DocumentManager.MdiActiveDocument;
+                if (document == null) return;
+
+                var options = new Autodesk.AutoCAD.EditorInput.PromptKeywordOptions("\nSistema nuevo");
+                foreach (var keyword in global::RackCad.Application.VentanaRackCad.RackCadClassicCommands.NewKeywords) options.Keywords.Add(keyword);
+                options.AppendKeywordsToMessage = true;
+                var answer = document.Editor.GetKeywords(options);
+                if (answer.Status != Autodesk.AutoCAD.EditorInput.PromptStatus.OK) return;
+                if (!global::RackCad.Application.VentanaRackCad.RackCadClassicCommands.TryKindOfKeyword(answer.StringResult, out var kind)) return;
+
+                var styles = RackCommandSupport.ReadDimensionStyleNames(document);
+                var host = new global::RackCad.UI.VentanaRackCad.RackModalHostWindow(
+                    owner => global::RackCad.UI.VentanaRackCad.RackCadClassicFlows.OpenForNew(owner, kind, styles));
+                AcApplication.ShowModalWindow(host);
+                if (host.Failure != null) throw host.Failure;
+
+                DispatchInsertion(document, host.Result as RackInsertionRequest);
+            }
+            catch (System.Exception ex)
+            {
+                RackCommandSupport.Report(ex);
+            }
+        }
+
+        /// <summary>
+        /// RACKBIBLIOTECA (I-64 A-14): the design library of the menu and, when the user picks a design, its editor, with the same dispatch.
+        /// </summary>
+        [CommandMethod("RACKBIBLIOTECA")]
+        public void RackBiblioteca()
+        {
+            try
+            {
+                var document = AcApplication.DocumentManager.MdiActiveDocument;
+                if (document == null) return;
+
+                var styles = RackCommandSupport.ReadDimensionStyleNames(document);
+                var host = new global::RackCad.UI.VentanaRackCad.RackModalHostWindow(
+                    owner => global::RackCad.UI.VentanaRackCad.RackCadClassicFlows.OpenFromLibrary(owner, styles));
+                AcApplication.ShowModalWindow(host);
+                if (host.Failure != null) throw host.Failure;
+
+                DispatchInsertion(document, host.Result as RackInsertionRequest);
+            }
+            catch (System.Exception ex)
+            {
+                RackCommandSupport.Report(ex);
+            }
+        }
+
+        /// <summary>
+        /// Draws the one typed payload of an editor of the menu (I-15), after every modal window closed so the placement jig has the
+        /// editor free. The menu, RACKNUEVO and RACKBIBLIOTECA share it: a new rack is drawn the same way whatever door opened its editor.
+        /// A null request (a cancelled editor) draws nothing and writes nothing.
+        /// </summary>
+        internal static void DispatchInsertion(Autodesk.AutoCAD.ApplicationServices.Document document, RackInsertionRequest request)
+        {
+            if (request == null) return;
+
+            {
                 // I-05: an insertion is about to happen (any non-null request). Warn once if the drawing is not in
                 // inches, before dispatching to the per-system draw calls (before the first DWG modification).
-                // The structural-section path above is NOT covered here on purpose: its own flow warns at the
+                // The structural-section path of the menu is NOT covered here on purpose: its own flow warns at the
                 // right moment — after the inspector confirms — and warning twice would be noise.
-                if (menu.InsertionRequest != null)
-                {
-                    RackUnitsGuard.WarnIfNotInches(document);
-                }
+                RackUnitsGuard.WarnIfNotInches(document);
 
                 // The menu now carries ONE typed payload (I-15); dispatch it by kind to the SAME per-system draw calls
                 // with the SAME arguments as before (behavior-identical). A cancelled menu leaves InsertionRequest null.
-                switch (menu.InsertionRequest)
+                switch (request)
                 {
                     case HeaderInsertionRequest header:
                         // I-60 A-1: ONE name for the new cabecera (template rule), before the factory serializes the configuration; every
@@ -142,10 +234,6 @@ namespace RackCad.Plugin
                                     RackProductSourceKind.NewRack, pushBack.Kind, pushBack.RackId, pushBack.Views));
                         break;
                 }
-            }
-            catch (System.Exception ex)
-            {
-                RackCommandSupport.Report(ex);
             }
         }
 

@@ -27,13 +27,19 @@ namespace RackCad.Plugin.Workspace
                 WorkspaceController.GetOrCreate().OpenPanel();
                 WorkspacePaletteHost.GetOrCreate().Show();
                 AcApplication.DocumentManager.MdiActiveDocument?.Editor.WriteMessage(
-                    "\nRackCad: panel Workspace mostrado.");
+                    "\nRackCad: ventana abierta (no bloquea AutoCAD).");
             }
             catch (System.Exception ex)
             {
                 RackCommandSupport.Report(ex);
             }
         }
+
+        /// <summary>
+        /// Shows the RackCad window (I-64 A-14) from RACKCAD and RK: exactly what RACKPANEL does, so the single controller and the single
+        /// palette are reached in one place. Repeating it creates nothing new. It reads and writes nothing of the drawing.
+        /// </summary>
+        internal static void ShowRackCadWindow() => new WorkspacePanelCommand().RackPanel();
 
         [CommandMethod("RACKPANELDESCARTAR")]
         public void RackPanelDiscard()

@@ -24,6 +24,7 @@ namespace RackCad.Application.Workspace
         private readonly Func<SessionId, IReadOnlyList<BrowserRackFact>> _readFacts;
         private readonly Func<SessionId, bool> _isSessionAlive;
         private readonly Dictionary<RackKey, BrowserRackSummary> _cache = new(RackKeyIgnoreCase.Instance);
+        private readonly Dictionary<SessionId, BrowserRackList> _lists = new();
         private readonly HashSet<SessionId> _known = new();
         private readonly HashSet<SessionId> _ended = new();
 
@@ -78,6 +79,64 @@ namespace RackCad.Application.Workspace
             return summary;
         }
 
+        /// <summary>Whether the list of racks of the session is remembered.</summary>
+        public bool IsListCached(SessionId session) => _lists.ContainsKey(session);
+
+        /// <summary>
+        /// The list of the racks of the session (I-64 A-14, phase 2), with the same session rules as <see cref="Read"/>. It is remembered
+        /// per session until a drain invalidates the navigation caches of that session; <paramref name="refresh"/> (an explicit "read
+        /// again" of the user) forgets it first and reads the facts once more. A read that fails remembers nothing.
+        /// </summary>
+        public BrowserRackList ReadList(SessionId session, bool refresh = false)
+        {
+            PurgeDeadSessions();
+            if (_ended.Contains(session)) return GoneList();
+            if (!_isSessionAlive(session))
+            {
+                End(session);
+                return GoneList();
+            }
+
+            _known.Add(session);
+            if (refresh) _lists.Remove(session);
+            if (_lists.TryGetValue(session, out var cached)) return cached;
+
+            var list = BrowserRackList.Ready(ProjectAll(_readFacts(session)));
+            _lists[session] = list;
+            return list;
+        }
+
+        /// <summary>
+        /// Every rack of the facts, one entry per rack id (compared ignoring case) in the order of its first interpretable fact, with the
+        /// same projection as the summary of one rack: the first non-blank name and Kind and the distinct views in canonical order.
+        /// </summary>
+        public static IReadOnlyList<BrowserRackListEntry> ProjectAll(IReadOnlyList<BrowserRackFact> facts)
+        {
+            var order = new List<string>();
+            var byRack = new Dictionary<string, Accumulator>(StringComparer.OrdinalIgnoreCase);
+            foreach (var fact in facts ?? Array.Empty<BrowserRackFact>())
+            {
+                if (!fact.IsInterpretable || string.IsNullOrWhiteSpace(fact.EnvelopeId)) continue;
+                if (!byRack.TryGetValue(fact.EnvelopeId!, out var accumulator))
+                {
+                    accumulator = new Accumulator();
+                    byRack[fact.EnvelopeId!] = accumulator;
+                    order.Add(fact.EnvelopeId!);
+                }
+
+                accumulator.Add(fact);
+            }
+
+            var entries = new List<BrowserRackListEntry>(order.Count);
+            foreach (var rackId in order)
+            {
+                var accumulator = byRack[rackId];
+                entries.Add(new BrowserRackListEntry(rackId, accumulator.Name, accumulator.Kind, accumulator.SortedViews()));
+            }
+
+            return entries;
+        }
+
         /// <summary>
         /// A drain of the session: purges the sessions that no longer live and, under the same condition as the navigation authority
         /// (the drain ran and invalidated the navigation caches), drops the remembered summaries of that session.
@@ -121,20 +180,22 @@ namespace RackCad.Application.Workspace
             foreach (var key in _cache.Keys)
                 if (key.Session == session) doomed.Add(key);
             foreach (var key in doomed) _cache.Remove(key);
+            _lists.Remove(session);
         }
 
         private static BrowserRackSummary Gone() =>
             BrowserRackSummary.Without(BrowserSummaryStatus.Rejected, "The document of the request is gone.");
 
+        private static BrowserRackList GoneList() =>
+            BrowserRackList.Without(BrowserSummaryStatus.Rejected, "The document of the request is gone.");
+
         // The first non-blank name and Kind among the interpretable facts of the rack, in reading order; the distinct views, each
         // normalized by the view codec and ordered Frontal, Lateral, Planta and then the rest; no interpretable fact of that rack
-        // means it is not in the drawing. The rack id is compared ignoring case.
+        // means it is not in the drawing. The rack id is compared ignoring case. The list of the drawing uses the same accumulator.
         private static BrowserRackSummary Project(IReadOnlyList<BrowserRackFact> facts, string rackId)
         {
-            string? name = null;
-            string? kind = null;
+            var accumulator = new Accumulator();
             var found = false;
-            var views = new List<string>();
 
             foreach (var fact in facts)
             {
@@ -142,17 +203,38 @@ namespace RackCad.Application.Workspace
                 if (!string.Equals(fact.EnvelopeId, rackId, StringComparison.OrdinalIgnoreCase)) continue;
 
                 found = true;
-                if (name == null && !string.IsNullOrWhiteSpace(fact.Name)) name = fact.Name;
-                if (kind == null && !string.IsNullOrWhiteSpace(fact.Kind)) kind = fact.Kind;
-                var view = ViewOf(fact);
-                if (view != null && !ContainsIgnoreCase(views, view)) views.Add(view);
+                accumulator.Add(fact);
             }
 
             if (!found)
                 return BrowserRackSummary.Without(BrowserSummaryStatus.NotFound, "The rack is not in the drawing of the session.");
 
-            views.Sort(CompareViews);
-            return BrowserRackSummary.Ready(name, kind, views.ToArray());
+            return BrowserRackSummary.Ready(accumulator.Name, accumulator.Kind, accumulator.SortedViews());
+        }
+
+        // What the projection keeps of the facts of one rack, in reading order: the first non-blank name and Kind and the distinct views.
+        private sealed class Accumulator
+        {
+            private readonly List<string> _views = new();
+
+            public string? Name { get; private set; }
+
+            public string? Kind { get; private set; }
+
+            public void Add(BrowserRackFact fact)
+            {
+                if (Name == null && !string.IsNullOrWhiteSpace(fact.Name)) Name = fact.Name;
+                if (Kind == null && !string.IsNullOrWhiteSpace(fact.Kind)) Kind = fact.Kind;
+                var view = ViewOf(fact);
+                if (view != null && !ContainsIgnoreCase(_views, view)) _views.Add(view);
+            }
+
+            public string[] SortedViews()
+            {
+                var views = new List<string>(_views);
+                views.Sort(CompareViews);
+                return views.ToArray();
+            }
         }
 
         // The view the rack really has: the canonical view of the codec when the persisted syntax has an address (a Cama persists no

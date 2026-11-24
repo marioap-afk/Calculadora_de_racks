@@ -60,8 +60,14 @@ namespace RackCad.Tests
         /// </summary>
         internal static readonly string[] F4PanelDiscardCommands = { "RACKPANELDESCARTAR" };
 
+        /// <summary>
+        /// Lo que I-64 A-14 (fase 1, la ventana RackCad) anade, EXACTAMENTE: el menu clasico, que deja RACKCAD a la ventana, y las dos puertas
+        /// de la ventana al editor de un sistema nuevo y a la biblioteca de disenos, sin alias, en <c>src/RackCad.Plugin/RackMenuCommands.cs</c>.
+        /// </summary>
+        internal static readonly string[] A14WindowCommands = { "RACKBIBLIOTECA", "RACKMENU", "RACKNUEVO" };
+
         /// <summary>El censo vigente: apertura, G7, G15, I-65, el panel de F1 y el descarte de F4-T3C2, cada nombre una vez.</summary>
-        internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).Concat(I65Commands).Concat(F1PanelCommands).Concat(F4PanelDiscardCommands).ToArray();
+        internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).Concat(I65Commands).Concat(F1PanelCommands).Concat(F4PanelDiscardCommands).Concat(A14WindowCommands).ToArray();
 
         // ================================================================ censo
 

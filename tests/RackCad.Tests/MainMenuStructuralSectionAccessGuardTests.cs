@@ -235,7 +235,8 @@ namespace RackCad.Tests
             var menu = CodeOnly(Menu);
             var action = menu.IndexOf("if (menu.RequestedAction == MainMenuAction.GenerateStructuralSection)",
                 StringComparison.Ordinal);
-            var rackSwitch = menu.IndexOf("switch (menu.InsertionRequest)", StringComparison.Ordinal);
+            // I-64 A-14: the rack switch of the menu lives in DispatchInsertion, called after this branch.
+            var rackSwitch = menu.IndexOf("DispatchInsertion(document, menu.InsertionRequest)", StringComparison.Ordinal);
 
             Assert.True(action > 0, "Falta el despacho de la accion tipada.");
             Assert.True(rackSwitch > 0);

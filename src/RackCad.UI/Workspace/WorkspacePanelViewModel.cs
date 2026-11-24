@@ -70,6 +70,8 @@ namespace RackCad.UI.Workspace
         {
             _port = port ?? throw new ArgumentNullException(nameof(port));
             _setInstrumentationEnabled = setInstrumentationEnabled ?? throw new ArgumentNullException(nameof(setInstrumentationEnabled));
+            BrowserSummaryPort = browserSummary;
+            PilotEditPort = pilotEdit;
             Navigation = new WorkspaceNavigationViewModel(navigation, Refresh);
             Browser = new WorkspaceBrowserViewModel(browserSummary, RepresentNavigation, pilotEdit);
             try
@@ -144,6 +146,21 @@ namespace RackCad.UI.Workspace
 
         /// <summary>The browser of racks: the tab strip and its one live surface (I-64 F3-T2). Inert without a summary port.</summary>
         public WorkspaceBrowserViewModel Browser { get; }
+
+        /// <summary>The summary port the panel was built with; the RackCad window reads the list of the drawing through it (I-64 A-14).</summary>
+        internal IWorkspaceBrowserSummaryPort BrowserSummaryPort { get; }
+
+        /// <summary>The edit port the panel was built with; the RackCad window reads the state of each rack of the list through it.</summary>
+        internal IWorkspacePilotEditPort PilotEditPort { get; }
+
+        /// <summary>The session of the last presented snapshot (the RackCad window reads it for the list of the drawing); null without one.</summary>
+        public SessionId? PresentedSession => _state == WorkspacePanelState.Error ? null : _presentedSession;
+
+        /// <summary>Whether the drawing could be read in the last presented snapshot.</summary>
+        public bool PresentedCanRead => _state != WorkspacePanelState.Error && _presentedCanRead;
+
+        /// <summary>What blocked the actions in the last presented snapshot.</summary>
+        public WorkspaceActionBlock PresentedBlock => _state == WorkspacePanelState.Error ? WorkspaceActionBlock.Degraded : _presentedBlock;
 
         // ------------------------------------------------------------------ the only entries that ask the port
 

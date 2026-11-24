@@ -1,20 +1,23 @@
 using Autodesk.AutoCAD.Windows;
 using RackCad.Application.Diagnostics;
 using RackCad.Application.Workspace;
+using RackCad.Plugin.VentanaRackCad;
+using RackCad.UI.VentanaRackCad;
 using RackCad.UI.Workspace;
 
 namespace RackCad.Plugin.Workspace
 {
     /// <summary>
     /// The visual host of the workspace panel (I-64 F1-T3B, D-01, D-02): the one palette of the process. It is created
-    /// lazily, the first time RACKPANEL shows the panel, and it lives until AutoCAD ends: nothing is created when the plugin
-    /// loads and nothing is released on terminate.
+    /// lazily, the first time RACKCAD, RK or RACKPANEL shows the window, and it lives until AutoCAD ends: nothing is created when
+    /// the plugin loads and nothing is released on terminate.
     ///
     /// The palette is built with only its title (no tool identifier, so it has no persisted identity) and with no
     /// load or save handlers: the host persists nothing. It is placed once, when the process creates it: a size, a floating
     /// rectangle on screen and an initial dock to the right (F1-T3B-HOST-UI-C1); showing it again never moves it. Closing the palette hides it; the host mirrors that to the
-    /// controller. Exactly one root control of the UI project is added, labelled "Workspace"; its view-model is fed only by
-    /// the read-only port of the controller and by the neutral delegate of the instrumentation switch.
+    /// controller. Exactly one root control of the UI project is added: since I-64 A-14 it is the RackCad window, which shows the
+    /// workspace panel as the page of the rack; its view-models are fed only by the ports of the controller, by the neutral delegate
+    /// of the instrumentation switch and by the door to the classic commands.
     ///
     /// The refresh is driven by events and never by time: the host pulls the state (through the view-model) only when the
     /// controller announces a change. It runs no timer, no dispatcher work, no thread, reads nothing of the drawing and
@@ -27,10 +30,11 @@ namespace RackCad.Plugin.Workspace
             new WorkspaceLazyInstance<WorkspacePaletteHost>(() => new WorkspacePaletteHost());
 
         // The first placement of the palette (F1-T3B-HOST-UI-C1), in device-independent units: a size and a minimum size, and a
-        // floating rectangle that fits any primary screen of at least 1024 x 768.
-        private const double InitialWidth = 320;
-        private const double InitialHeight = 560;
-        private const int MinimumWidth = 240;
+        // floating rectangle that fits any primary screen of at least 1024 x 768. Since I-64 A-14 the window has two columns (the side
+        // column and the center), so it starts wider; the side column can be hidden when the palette is narrow.
+        private const double InitialWidth = 600;
+        private const double InitialHeight = 600;
+        private const int MinimumWidth = 300;
         private const int MinimumHeight = 320;
         private const double FloatingLeft = 80;
         private const double FloatingTop = 80;
@@ -38,19 +42,21 @@ namespace RackCad.Plugin.Workspace
         private readonly WorkspaceController _controller;
         private readonly PaletteSet _palette;
         private readonly WorkspacePanelViewModel _viewModel;
-        private readonly WorkspacePanelView _root;
+        private readonly RackCadWindowViewModel _window;
+        private readonly RackCadWindowView _root;
 
         private WorkspacePaletteHost()
         {
             _controller = WorkspaceController.GetOrCreate();
             _viewModel = new WorkspacePanelViewModel(_controller.Port, _controller.SetInstrumentationEnabled, _controller.Navigation, _controller.BrowserSummary, _controller.PilotEdit);
-            _root = new WorkspacePanelView(_viewModel);
+            _window = new RackCadWindowViewModel(_viewModel, new RackCadClassicCommandPort());
+            _root = new RackCadWindowView(_window);
 
             _palette = new PaletteSet("RackCad");
             _palette.Style = PaletteSetStyles.ShowPropertiesMenu | PaletteSetStyles.ShowAutoHideButton | PaletteSetStyles.ShowCloseButton;
             _palette.DockEnabled = DockSides.Left | DockSides.Right;
             _palette.KeepFocus = true;
-            _palette.AddVisual("Workspace", _root);
+            _palette.AddVisual("RackCad", _root);
 
             // Once per process, before the palette is ever shown: Show() never repeats it.
             ApplyInitialPlacement();
@@ -122,7 +128,7 @@ namespace RackCad.Plugin.Workspace
         {
             try
             {
-                if (_controller.PanelVisible) _viewModel.Refresh();
+                if (_controller.PanelVisible) _window.Refresh();
             }
             catch (System.Exception ex)
             {

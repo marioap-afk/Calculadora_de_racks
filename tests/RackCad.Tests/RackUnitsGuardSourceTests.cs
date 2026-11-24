@@ -167,9 +167,10 @@ namespace RackCad.Tests
         public void Menu_Warns_BeforeDispatchingTheInsertion()
         {
             var src = ReadPluginSource("RackMenuCommands.cs");
-            var menu = IndexFrom(src, "void RackCad()", 0, "RackMenuCommands must define RackCad().");
+            // I-64 A-14: the dispatch of the menu, RACKNUEVO and RACKBIBLIOTECA is DispatchInsertion.
+            var menu = IndexFrom(src, "static void DispatchInsertion(", 0, "RackMenuCommands must define DispatchInsertion().");
             var guard = IndexFrom(src, GuardCall, menu, "the menu must call the units guard.");
-            var dispatch = IndexFrom(src, "switch (menu.InsertionRequest)", menu, "the menu dispatches by InsertionRequest.");
+            var dispatch = IndexFrom(src, "switch (request)", menu, "the menu dispatches by InsertionRequest.");
             Assert.True(guard < dispatch, "the menu must warn BEFORE dispatching the insertion (before the first DWG modification).");
         }
     }

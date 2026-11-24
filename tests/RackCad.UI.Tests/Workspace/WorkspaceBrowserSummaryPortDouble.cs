@@ -68,5 +68,20 @@ namespace RackCad.UI.Tests
             if (ThrowOnAlive != null) throw ThrowOnAlive;
             return !Dead.Contains(session);
         }
+
+        /// <summary>I-64 A-14 (phase 2): every request of the list of the drawing, with whether the user asked for it.</summary>
+        public List<(WorkspaceRequest Origin, bool UserRequested)> ListCalls { get; } = new();
+
+        /// <summary>What the list answers; without it the double does not offer the list, as a port of before.</summary>
+        public Func<WorkspaceRequest, bool, BrowserRackList>? ListResponder { get; set; }
+
+        public Exception? ThrowOnList { get; set; }
+
+        public BrowserRackList ReadRackList(WorkspaceRequest origin, bool userRequested)
+        {
+            ListCalls.Add((origin, userRequested));
+            if (ThrowOnList != null) throw ThrowOnList;
+            return ListResponder != null ? ListResponder(origin, userRequested) : BrowserRackList.NotOffered;
+        }
     }
 }

@@ -161,8 +161,10 @@ public class WorkspaceBrowserHostGuardTests
         Assert.Matches(@"public\s+void\s+OpenDrainNotice\s*\(\s*\)\s*=>\s*_drainNoticeOpen\s*=\s*true\s*;", host);
         Assert.Matches(@"public\s+void\s+CloseDrainNotice\s*\(\s*\)\s*=>\s*_drainNoticeOpen\s*=\s*false\s*;", host);
         Assert.Equal(2, Src.Count(host, @"\b_drainNoticeOpen\s*="));
-        // Besides the declaration, the one place that reads it is the answer of the summary.
-        Assert.Equal(2, Src.Count(host, @"\b_drainNoticeOpen\b(?!\s*=)"));
+        // Besides the declaration, the places that read it are the answer of the summary and, since I-64 A-14 (phase 2), the answer of the
+        // list of the drawing, with the same rule.
+        Assert.Equal(3, Src.Count(host, @"\b_drainNoticeOpen\b(?!\s*=)"));
+        Assert.Equal(1, Src.Count(Src.BodyOf(host, @"public\s+BrowserRackList\s+ReadRackList\s*\("), @"\b_drainNoticeOpen\b"));
         Assert.Equal(1, Src.Count(Src.BodyOf(host, @"private\s+BrowserRackSummary\s+ReadSummaryOnActiveDocument\s*\("), @"\b_drainNoticeOpen\b"));
         Assert.Equal(1, Src.Count(host, @"\bpublic\s+void\s+OpenDrainNotice\b"));
         Assert.Equal(1, Src.Count(host, @"\bpublic\s+void\s+CloseDrainNotice\b"));

@@ -176,8 +176,11 @@ public class WorkspacePaletteHostSourceGuardTests
         var code = Host();
 
         Assert.Equal(1, Src.Count(code, @"\bAddVisual\s*\("));
-        Assert.Matches(@"_palette\.AddVisual\s*\(\s*""Workspace""\s*,\s*_root\s*\)", code);
-        Assert.Equal(1, Src.Count(code, @"\bnew\s+WorkspacePanelView\s*\("));
+        // I-64 A-14: the one root control is the RackCad window, labelled RackCad; it shows the workspace panel as the page of the rack.
+        Assert.Matches(@"_palette\.AddVisual\s*\(\s*""RackCad""\s*,\s*_root\s*\)", code);
+        Assert.Equal(1, Src.Count(code, @"\bnew\s+RackCadWindowView\s*\("));
+        Assert.Equal(1, Src.Count(code, @"\bnew\s+RackCadWindowViewModel\s*\("));
+        Assert.Equal(0, Src.Count(code, @"\bnew\s+WorkspacePanelView\s*\("));
         Assert.Equal(1, Src.Count(code, @"\bnew\s+WorkspacePanelViewModel\s*\("));
         Assert.DoesNotMatch(new Regex(@"\.Add\s*\(\s*""|AddVisualBrowser|new\s+System\.Windows\.Window\b|\bnew\s+Window\b"), code);
     }
@@ -214,7 +217,8 @@ public class WorkspacePaletteHostSourceGuardTests
         var code = Host();
         var handler = Src.BodyOf(code, @"private\s+void\s+OnControllerStateChanged\s*\(\s*\)");
 
-        Assert.Matches(@"_viewModel\.Refresh\s*\(\s*\)", handler);
+        // I-64 A-14: the window pulls the snapshot of the panel and then presents the list of the drawing.
+        Assert.Matches(@"_window\.Refresh\s*\(\s*\)", handler);
         Assert.Contains("PanelVisible", handler);
         Assert.DoesNotMatch(new Regex(@"GetSnapshot|GetMeasurementReport|Authorize|GetSelectionContext"), code);
     }
@@ -794,7 +798,7 @@ public class WorkspacePaletteHostSourceGuardTests
             constructor);
         Assert.Matches(@"_palette\.DockEnabled\s*=\s*DockSides\.Left\s*\|\s*DockSides\.Right\s*;", constructor);
         Assert.Matches(@"_palette\.KeepFocus\s*=\s*true\s*;", constructor);
-        Assert.Matches(@"_palette\.AddVisual\s*\(\s*""Workspace""\s*,\s*_root\s*\)\s*;", constructor);
+        Assert.Matches(@"_palette\.AddVisual\s*\(\s*""RackCad""\s*,\s*_root\s*\)\s*;", constructor);
         Assert.Equal(1, Src.Count(code, @"\.Style\s*=(?!=)"));
         Assert.Equal(1, Src.Count(code, @"\.DockEnabled\s*=(?!=)"));
         Assert.Equal(1, Src.Count(code, @"\.KeepFocus\s*=(?!=)"));

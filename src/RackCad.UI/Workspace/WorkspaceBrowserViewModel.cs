@@ -123,6 +123,7 @@ namespace RackCad.UI.Workspace
         private IReadOnlyList<WorkspaceBrowserNoticeItem> _notices = Array.Empty<WorkspaceBrowserNoticeItem>();
         private long _lossSerial;
         private readonly Dictionary<SessionId, SelectionContext> _lastContexts = new();
+        private bool _followSelection = true;
 
         /// <param name="port">The read-only summary port; null leaves the browser inert.</param>
         /// <param name="tabChanged">Called after a manual change of tabs, so the panel presents the navigation again with its last snapshot.</param>
@@ -227,6 +228,7 @@ namespace RackCad.UI.Workspace
             _session = session;
             _current = session.HasValue ? _registry.GetOrCreate(session.Value) : null;
             var retention = ApplySelection(context);
+            OnPropertyChanged(nameof(SelectionRackId));
 
             Rebuild(retryPending: true, userRequested: false, sessionChanged: priorPresented != _session);
             PostPresentationNotice(retention);
@@ -247,6 +249,39 @@ namespace RackCad.UI.Workspace
 
         /// <summary>Pins the preview tab so the automatic synchronization never replaces it. Memory only.</summary>
         public void PinTab(string rackId) => Interact(session => session.Pin(rackId));
+
+        /// <summary>
+        /// Opens the rack that the user picked in the list of the drawing of the RackCad window (I-64 A-14, phase 2): it becomes the active
+        /// rack, with a tab of its own if it had none. Memory only, like a change of tab: with pending text in the live rack the change
+        /// crosses the blocking boundary first, and if it does not proceed nothing changes.
+        /// </summary>
+        public void OpenRack(string rackId)
+        {
+            if (string.IsNullOrWhiteSpace(rackId)) return;
+            if (!AllowOpen(rackId)) return;
+            Interact(session => session.Open(rackId));
+        }
+
+        /// <summary>
+        /// Whether a new selection of one rack in AutoCAD makes it the active rack ("Seguir la selección de AutoCAD", I-64 A-14, phase 2).
+        /// When it is off the selection is still consumed, but the active rack stays and the selected one waits behind it.
+        /// </summary>
+        public bool FollowSelection
+        {
+            get => _followSelection;
+            set
+            {
+                if (_followSelection == value) return;
+                _followSelection = value;
+                OnPropertyChanged(nameof(FollowSelection));
+            }
+        }
+
+        /// <summary>The rack of the last one-rack selection of the presented session; null when the selection is not one rack.</summary>
+        public string SelectionRackId =>
+            _current != null && _lastContexts.TryGetValue(_current.Id, out var context) && !string.IsNullOrWhiteSpace(context.RackId)
+                ? context.RackId
+                : null;
 
         /// <summary>
         /// Closes the tab. Without the edit port it closes without asking anything, as it always did. With it (I-64 F4-T3B2, D-08) a tab
@@ -677,10 +712,13 @@ namespace RackCad.UI.Workspace
             var active = _current.ActiveRackId;
             // Assigned before the chain: KeepsActive is only reached when the chain gets to it, and the notice reads the flag afterwards.
             var couldNotCheck = false;
-            var keepActive = isNew && !string.IsNullOrWhiteSpace(rack) && KeepsActive(id, active, out couldNotCheck);
+            var heldByText = isNew && !string.IsNullOrWhiteSpace(rack) && KeepsActive(id, active, out couldNotCheck);
+            // "Seguir la selección" off (I-64 A-14, phase 2): the selection waits behind the active rack. Only pending text says a notice.
+            var heldByChoice = isNew && !string.IsNullOrWhiteSpace(rack) && !_followSelection && active != null;
+            var keepActive = heldByText || heldByChoice;
             var change = _current.ApplySelectionContext(context, keepActive);
 
-            if (!keepActive || string.Equals(active, rack, StringComparison.Ordinal)) return null;
+            if (!heldByText || string.Equals(active, rack, StringComparison.Ordinal)) return null;
             if (change == BrowserChange.Created || change == BrowserChange.Replaced)
             {
                 return couldNotCheck
@@ -838,6 +876,33 @@ namespace RackCad.UI.Workspace
             var live = _current.ActiveRackId;
             if (live == null || string.Equals(destination, live, StringComparison.Ordinal)) return true;
             if (!_current.Tabs.Any(t => string.Equals(t.RackId, destination, StringComparison.Ordinal))) return true;
+
+            try
+            {
+                var origin = new WorkspaceRequest(_session.Value);
+                if (_pilotEdit.GetField(origin, live).PendingText == null) return true;
+
+                var crossed = _pilotEdit.CrossBoundary(origin, live, PilotBoundaryKind.TabChange);
+                if (crossed.Decision == PilotBoundaryDecision.Proceeded || crossed.Decision == PilotBoundaryDecision.Kept) return true;
+
+                Field.ShowNotice(AbortText(crossed));
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Field.Fail(ex);
+                return false;
+            }
+        }
+
+        // The blocking boundary of opening a rack from the list (I-64 A-14, phase 2): like a change of tab, but the destination may have no tab
+        // yet, so only "another rack than the live one" matters. Without pending text in the live rack it always proceeds.
+        private bool AllowOpen(string destination)
+        {
+            if (_pilotEdit == null || _current == null || !_session.HasValue) return true;
+
+            var live = _current.ActiveRackId;
+            if (live == null || string.Equals(destination, live, StringComparison.Ordinal)) return true;
 
             try
             {

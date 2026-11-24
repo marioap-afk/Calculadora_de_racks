@@ -27,7 +27,7 @@ namespace RackCad.UI
     {
         public static readonly IReadOnlyList<RackCommandInfo> Commands = new[]
         {
-            new RackCommandInfo("Diseñar", "RACKCAD", "RK", "Menú principal — elige el tipo de rack a diseñar."),
+            new RackCommandInfo("Diseñar", "RACKCAD", "RK", "Ventana RackCad (no bloquea AutoCAD): Nuevo, Variables, BOM, biblioteca, configuración y la lista de los racks del dibujo. El menú clásico sigue en RACKMENU."),
             new RackCommandInfo("Diseñar", "RACKSELECTIVO", "RS", "Editor de rack selectivo (matriz frentes × niveles)."),
             new RackCommandInfo("Diseñar", "RACKCABECERA", "RCB", "Configurador de cabecera (marco: postes + placas + celosía)."),
             new RackCommandInfo("Diseñar", "QUICKCABECERA", "QCB", "Cabecera por línea de comandos (pide poste/fondo/alto)."),

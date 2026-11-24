@@ -60,5 +60,12 @@ namespace RackCad.Application.Workspace
 
         /// <summary>Whether the session still lives; the browser destroys the tabs of a session that does not.</summary>
         bool IsSessionAlive(SessionId session);
+
+        /// <summary>
+        /// The list of the racks of the drawing of the session (I-64 A-14, phase 2), from the same facts and with the same rules as the
+        /// summary: a presentation is answered only while the host drains and an explicit action of the user does not depend on that and
+        /// reads again. It writes nothing. A port that does not offer it answers <see cref="BrowserRackList.NotOffered"/>.
+        /// </summary>
+        BrowserRackList ReadRackList(WorkspaceRequest origin, bool userRequested) => BrowserRackList.NotOffered;
     }
 }

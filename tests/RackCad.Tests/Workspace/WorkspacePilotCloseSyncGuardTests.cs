@@ -400,6 +400,10 @@ public class WorkspacePilotCloseSyncGuardTests
         "public void Present(SessionId? session, SelectionContext context, bool canReadDrawing, WorkspaceActionBlock block, string blockText)",
         "public void ActivateTab(string rackId)",
         "public void PinTab(string rackId)",
+        // I-64 A-14 (phase 2): the list of the drawing of the RackCad window opens a rack and switches off the following of the selection.
+        "public void OpenRack(string rackId)",
+        "public bool FollowSelection",
+        "public string SelectionRackId",
         "public void CloseTab(string rackId)",
         "public void DiscardField()",
         "public void RequestDocumentDiscard()",
@@ -439,14 +443,14 @@ public class WorkspacePilotCloseSyncGuardTests
     {
         var shape = ExtractPublicShape(code);
 
-        Assert.Equal(33, PublicShape.Length);
-        Assert.Equal(33, PublicShape.Distinct().Count());
-        Assert.Equal(33, shape.Count);
+        Assert.Equal(36, PublicShape.Length);
+        Assert.Equal(36, PublicShape.Distinct().Count());
+        Assert.Equal(36, shape.Count);
         Assert.True(new HashSet<string>(shape, StringComparer.Ordinal).SetEquals(PublicShape), string.Join(" | ", shape.Except(PublicShape).Concat(PublicShape.Except(shape))));
     }
 
     [Fact]
-    public void ThePublicShapeOfTheBrowserViewModelIsExactlyTheOneOf33Signatures()
+    public void ThePublicShapeOfTheBrowserViewModelIsExactlyTheOneOf36Signatures()
     {
         CheckPublicShape(Browser());
     }

@@ -193,7 +193,8 @@ namespace RackCad.Tests
 
         private static string Case(string label)
         {
-            var menu = Body(Code("src/RackCad.Plugin/RackMenuCommands.cs"), "public void RackCad(");
+            // I-64 A-14: RACKCAD opens the RackCad window; the dispatch of the menu (and of RACKNUEVO and RACKBIBLIOTECA) is DispatchInsertion.
+            var menu = Body(Code("src/RackCad.Plugin/RackMenuCommands.cs"), "internal static void DispatchInsertion(");
             var at = menu.IndexOf(label, StringComparison.Ordinal);
             Assert.True(at >= 0, "case not found: " + label);
             // Up to the next case label (a case may contain an early «break;», e.g. the Cantilever geometry gate).

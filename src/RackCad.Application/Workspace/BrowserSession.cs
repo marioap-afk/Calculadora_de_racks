@@ -131,6 +131,42 @@ namespace RackCad.Application.Workspace
             return change;
         }
 
+        /// <summary>
+        /// Opens a rack that the user picked in the list of the drawing of the RackCad window (I-64 A-14, phase 2). A rack that already
+        /// has a tab becomes the active one; a rack without one gets a preview that replaces the current preview (or is added) and
+        /// becomes active, exactly as the synchronization with a one-rack selection does. The remembered context does not change, so
+        /// the next real change of the selection still applies. Null or blank: nothing.
+        /// </summary>
+        public BrowserChange Open(string? rackId)
+        {
+            if (IsDestroyed || string.IsNullOrWhiteSpace(rackId)) return BrowserChange.None;
+
+            var index = IndexOf(rackId);
+            if (index >= 0)
+            {
+                if (string.Equals(_activeRackId, _tabs[index].RackId, StringComparison.Ordinal)) return BrowserChange.None;
+                _activeRackId = _tabs[index].RackId;
+                return BrowserChange.Activated;
+            }
+
+            var fresh = new BrowserTabRecord(rackId!, null, null, true, BrowserTabStatus.NotLoaded);
+            var preview = PreviewIndex();
+            BrowserChange change;
+            if (preview >= 0)
+            {
+                _tabs[preview] = fresh;
+                change = BrowserChange.Replaced;
+            }
+            else
+            {
+                _tabs.Add(fresh);
+                change = BrowserChange.Created;
+            }
+
+            _activeRackId = rackId;
+            return change;
+        }
+
         /// <summary>Activates an existing tab. Modes, order and the remembered context do not change. Unknown, null or blank: nothing.</summary>
         public BrowserChange Activate(string? rackId)
         {

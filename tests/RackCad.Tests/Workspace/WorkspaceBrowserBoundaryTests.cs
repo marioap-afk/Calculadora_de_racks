@@ -184,7 +184,8 @@ public class WorkspaceBrowserBoundaryTests
         Assert.Equal(
             new[]
             {
-                "Method Activate", "Method ApplySelectionContext", "Method ApplySummary", "Method Close", "Method Pin",
+                // I-64 A-14 (phase 2): Open is the rack picked in the list of the drawing of the RackCad window.
+                "Method Activate", "Method ApplySelectionContext", "Method ApplySummary", "Method Close", "Method Open", "Method Pin",
                 "Property ActiveRackId", "Property Id", "Property IsDestroyed", "Property LiveSurfaceRackId", "Property Tabs",
                 "Field MaxLiveSurfaces",
             }.OrderBy(n => n, StringComparer.Ordinal).ToArray(),

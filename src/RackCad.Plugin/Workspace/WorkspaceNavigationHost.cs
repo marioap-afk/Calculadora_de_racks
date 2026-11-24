@@ -124,6 +124,37 @@ namespace RackCad.Plugin.Workspace
             return _summaries.Read(origin.Origin, rackId);
         }
 
+        /// <summary>
+        /// The list of the racks of the drawing for the side column of the RackCad window (I-64 A-14, phase 2). Same order and same
+        /// rules as <see cref="ReadSummary"/>: the active document, no command in progress, a read that nobody asked for only during
+        /// the notice of a drain, the session authorized for that document; an explicit read of the user reads the facts again. It
+        /// writes nothing, gives no focus back and contains every failure as a value.
+        /// </summary>
+        public BrowserRackList ReadRackList(WorkspaceRequest origin, bool userRequested)
+        {
+            try
+            {
+                var document = AcApplication.DocumentManager.MdiActiveDocument;
+                if (document == null)
+                    return BrowserRackList.Without(BrowserSummaryStatus.Rejected, "There is no active document.");
+                if (!string.IsNullOrEmpty(document.CommandInProgress) || !document.Editor.IsQuiescent)
+                    return BrowserRackList.Without(BrowserSummaryStatus.Busy, "A command is in progress.");
+                if (!userRequested && !_drainNoticeOpen && !_summaries.IsListCached(origin.Origin))
+                    return BrowserRackList.Without(BrowserSummaryStatus.Busy, "The drawing is not read inside a notice of AutoCAD; it is asked again at the next drain.");
+
+                var decision = _authorize(origin, document.UnmanagedObject.ToInt64());
+                if (decision != RequestDecision.Accepted)
+                    return BrowserRackList.Without(BrowserSummaryStatus.Rejected, "The request does not belong to the active document.");
+
+                return _summaries.ReadList(origin.Origin, refresh: userRequested);
+            }
+            catch (System.Exception ex)
+            {
+                LogFault("WorkspaceNavigationHost.ReadRackList", ex);
+                return BrowserRackList.Without(BrowserSummaryStatus.Failed, ex.Message);
+            }
+        }
+
         public Task<WorkspaceNavigationResult> ExecuteAsync(
             WorkspaceRequest origin,
             string rackId,

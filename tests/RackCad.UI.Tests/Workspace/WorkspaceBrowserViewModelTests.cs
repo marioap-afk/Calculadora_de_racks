@@ -797,7 +797,9 @@ namespace RackCad.UI.Tests
             browser.PinTab("R-1");
             Present(browser, A, SelectionContext.One("R-2"));
             var methods = typeof(IWorkspaceBrowserSummaryPort).GetMethods().Select(m => m.Name).OrderBy(n => n, StringComparer.Ordinal).ToArray();
-            Assert.Equal(new[] { "IsSessionAlive", "ReadSummary" }, methods);
+            // I-64 A-14 (phase 2): the third read-only operation is the list of the drawing, which only the list of the RackCad window asks for.
+            Assert.Equal(new[] { "IsSessionAlive", "ReadRackList", "ReadSummary" }, methods);
+            Assert.Empty(port.ListCalls);
             changes = 0;
 
             browser.ActivateTab("R-1");
