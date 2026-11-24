@@ -316,6 +316,13 @@ namespace RackCad.Application.VentanaRackCad
         }
 
         /// <summary>
+        /// The editor put the inputs back as they were at the last valid recomposition (the rollback of a change that could not be
+        /// recomposed): its system and design are the current ones again, so the error of the refused change no longer applies (I-09 of the
+        /// third review). It recomposes nothing, so a design opened and not touched stays as it was read.
+        /// </summary>
+        public void InputsRestoredToLastValid() => LastError = null;
+
+        /// <summary>
         /// Copies of the design and of the system of the last valid recomposition, for «Actualizar» (I-64 A-14, line D): the design goes
         /// through its persisted JSON (what the drawing stores) and the system is resolved again from that copy, exactly as the published
         /// one was resolved from the design. Nothing the editor does afterwards reaches the copies. Null before the first valid

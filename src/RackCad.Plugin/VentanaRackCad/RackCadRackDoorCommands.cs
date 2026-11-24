@@ -99,11 +99,11 @@ namespace RackCad.Plugin.VentanaRackCad
                     return;
                 }
 
-                RackDinamicoCommands.ApplyDynamicEdit(
+                // «Written» only when a view was redrawn: the drawing half can stop before any geometry, or redraw nothing (I-08).
+                var (redrawn, erased) = RackDinamicoCommands.ApplyDynamicEdit(
                     document, blockId, embed, project,
                     new RackCad.UI.Systems.Dynamic.DynamicDraftOutcome(pending.RackId, pending.Name, pending.Design, pending.System));
-                door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, true,
-                    "AutoCAD aplicó el borrador con la ruta de RACKEDITAR; la línea de órdenes dice qué vistas se redibujaron."));
+                door?.AnswerWrite(RackDoorRules.AnswerForApply(pending.RequestId, pending.RackId, redrawn, erased));
             }
             catch (System.Exception ex)
             {

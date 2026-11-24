@@ -325,6 +325,33 @@ public class RackCadWindowListTests
 
     // A plain WPF Window made in code: `new Window`, a target-typed new() into a Window (a field, a local or a property) and a Window made
     // by reflection (M-20 of the third review).
+    // ------------------------------------------------------------------ the rules of the door to a rack (I-64 A-14, line D)
+
+    [Fact]
+    public void AWriteIsWrittenOnlyWhenAViewWasRedrawn()
+    {
+        // I-08 of the third review: the drawing half of RACKEDITAR can stop before any geometry, or redraw nothing.
+        var written = RackDoorRules.AnswerForApply(5, "DIN-1", redrawn: 2, erased: 1);
+        Assert.Equal((5L, "DIN-1", true), (written.RequestId, written.RackId, written.Written));
+        Assert.Equal("AutoCAD redibujó 2 vistas del rack con el borrador y borró 1 vista que ya no existe; la línea de órdenes dice cuáles.", written.Message);
+
+        var nothing = RackDoorRules.AnswerForApply(6, "DIN-1", redrawn: 0, erased: 0);
+        Assert.False(nothing.Written);
+        Assert.Equal("AutoCAD no redibujó ninguna vista del rack: el dibujo no cambió (la línea de órdenes dice por qué). El borrador sigue sin escribir.", nothing.Message);
+
+        var erasedOnly = RackDoorRules.AnswerForApply(7, "DIN-1", redrawn: 0, erased: 2);
+        Assert.False(erasedOnly.Written);
+        Assert.Contains("borró 2 vistas que ya no existen", erasedOnly.Message);
+    }
+
+    [Fact]
+    public void TheCommandOfTheWriteAnswersWithTheRule()
+    {
+        var commands = WorkspaceHostSource.CodeOnly(File.ReadAllText(Path.Combine(Root(), "src", "RackCad.Plugin", "VentanaRackCad", "RackCadRackDoorCommands.cs")));
+        Assert.Contains("RackDoorRules.AnswerForApply(", commands, StringComparison.Ordinal);
+        Assert.DoesNotMatch(new System.Text.RegularExpressions.Regex(@"new\s+RackDesignWritten\s*\([^;]*,\s*true\s*,"), commands);
+    }
+
     private static System.Text.RegularExpressions.Regex PlainWindowPattern() => new(
         @"\bnew\s+(System\.Windows\.)?Window\s*[({]"
         + @"|\b(System\.Windows\.)?Window\??\s+\w+\s*(\{\s*get;[^}]*\}\s*)?=\s*new\s*[({]"

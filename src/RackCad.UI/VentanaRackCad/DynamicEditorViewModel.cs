@@ -525,7 +525,12 @@ namespace RackCad.UI.VentanaRackCad
             {
                 Say(string.IsNullOrWhiteSpace(_editor.LastRebuildReport) ? "Layout restaurado." : _editor.LastRebuildReport, error: false);
             }
-            else Say(_editor.LastError, error: true);
+            else
+            {
+                // Nothing changed: the last valid recomposition stays, and so does what can be written (I-09).
+                Say(_editor.LastError, error: true);
+                _editor.InputsRestoredToLastValid();
+            }
 
             Rebuild();
             UpdateDirty();
@@ -687,6 +692,8 @@ namespace RackCad.UI.VentanaRackCad
                 _editor.Matrix.Restore(snapshot);
                 RestoreSelection(selection);
                 RestoreScalars(state);
+                // The draft is back to its last valid recomposition: the refused value does not block «Actualizar» (I-09).
+                _editor.InputsRestoredToLastValid();
                 Say(reason, error: true);
                 Rebuild();
                 return reason;

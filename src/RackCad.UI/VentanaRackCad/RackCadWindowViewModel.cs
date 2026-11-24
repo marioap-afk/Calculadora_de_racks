@@ -277,27 +277,26 @@ namespace RackCad.UI.VentanaRackCad
                 return;
             }
 
+            // The request waits BEFORE it is handed over: AutoCAD may run the command, and answer, during the call (M-22).
             var id = ++_lastRequestId;
+            _inFlight = new DoorRequest(id, false, session.Value, rack, null, null);
+            Say("Leyendo el rack en AutoCAD…", failed: false);
+            RaiseWaiting();
+
             RackCadClassicResult result;
             try
             {
-                result = _door.RequestDesign(new RackDoorRequest(id, rack)) ?? RackCadClassicResult.Without(RackCadClassicStatus.Failed, "sin respuesta.");
+                result = _door.RequestDesign(new RackDoorRequest(id, session.Value, rack)) ?? RackCadClassicResult.Without(RackCadClassicStatus.Failed, "sin respuesta.");
             }
             catch (Exception ex)
             {
                 result = RackCadClassicResult.Without(RackCadClassicStatus.Failed, ex.Message);
             }
 
-            if (result.IsStarted)
-            {
-                _inFlight = new DoorRequest(id, false, session.Value, rack, null, null);
-                Say("Leyendo el rack en AutoCAD…", failed: false);
-                RaiseWaiting();
-            }
-            else
-            {
-                Say(RefusalText(result), failed: true);
-            }
+            if (result.IsStarted) return;
+            if (_inFlight != null && _inFlight.Id == id) _inFlight = null;
+            RaiseWaiting();
+            Say(RefusalText(result), failed: true);
         }
 
         /// <summary>
@@ -415,11 +414,16 @@ namespace RackCad.UI.VentanaRackCad
                 return;
             }
 
+            // The request waits, and the editor is locked, BEFORE it is handed over: AutoCAD may run the command during the call (M-22).
             var id = ++_lastRequestId;
+            _inFlight = new DoorRequest(id, true, entry.Session, editor.RackId, snapshot.DesignJson, snapshot.Name);
+            editor.BeginWriting();
+            RaiseWaiting();
+
             RackCadClassicResult result;
             try
             {
-                result = _door.RequestDynamicUpdate(new RackDoorWrite(id, editor.RackId, snapshot.Name, snapshot.Design, snapshot.System))
+                result = _door.RequestDynamicUpdate(new RackDoorWrite(id, entry.Session, editor.RackId, snapshot.Name, snapshot.Design, snapshot.System))
                     ?? RackCadClassicResult.Without(RackCadClassicStatus.Failed, "sin respuesta.");
             }
             catch (Exception ex)
@@ -427,20 +431,20 @@ namespace RackCad.UI.VentanaRackCad
                 result = RackCadClassicResult.Without(RackCadClassicStatus.Failed, ex.Message);
             }
 
-            if (result.IsStarted)
+            if (result.IsStarted) return;
+            if (_inFlight != null && _inFlight.Id == id)
             {
-                _inFlight = new DoorRequest(id, true, entry.Session, editor.RackId, snapshot.DesignJson, snapshot.Name);
-                editor.BeginWriting();
-                RaiseWaiting();
+                _inFlight = null;
+                editor.EndWriting();
             }
-            else
-            {
-                editor.Say(RefusalText(result), error: true);
-            }
+
+            RaiseWaiting();
+            editor.Say(RefusalText(result), error: true);
         }
 
-        // The answer of AutoCAD to «Actualizar»: only the answer to the request that waits. What was SENT is the drawing now, and
-        // «Descartar» goes back to it; the draft of another session with the same rack is not touched.
+        // The answer of AutoCAD to «Actualizar»: only the answer to the request that waits. When AutoCAD redrew the rack, what was SENT is
+        // the drawing now and «Descartar» goes back to it; when it redrew nothing, the draft stays not written (I-08). The draft of another
+        // session with the same rack is not touched.
         private void OnDesignWritten(RackDesignWritten written)
         {
             Contained(() =>
@@ -486,7 +490,17 @@ namespace RackCad.UI.VentanaRackCad
         private void PruneDeadSessions()
         {
             var port = Panel.BrowserSummaryPort;
-            if (port == null || _dynamicDrafts.Count == 0) return;
+            if (port == null) return;
+
+            // A request that waits for a drawing that was closed will never be answered: it is dropped, and the door told (M-23).
+            if (_inFlight != null && !IsAlive(port, _inFlight.Session))
+            {
+                var orphan = _inFlight;
+                AbandonInFlight();
+                if (!orphan.IsWrite) Say("Se cerró el dibujo del rack que se estaba leyendo: no se abrió nada.", failed: true);
+            }
+
+            if (_dynamicDrafts.Count == 0) return;
 
             var dead = _dynamicDrafts.Where(p => !IsAlive(port, p.Key.Session)).ToList();
             if (dead.Count == 0) return;
@@ -496,7 +510,7 @@ namespace RackCad.UI.VentanaRackCad
             {
                 var editor = pair.Value.Editor;
                 if (editor.IsDirty || editor.IsWriting) lost.Add(string.IsNullOrWhiteSpace(editor.Name) ? editor.RackId : editor.Name.Trim());
-                if (_inFlight != null && _inFlight.Session == pair.Key.Session) _inFlight = null;
+                if (_inFlight != null && _inFlight.Session == pair.Key.Session) AbandonInFlight();
                 Forget(pair.Key, pair.Value);
             }
 
@@ -504,6 +518,24 @@ namespace RackCad.UI.VentanaRackCad
                 Say("Se cerró el dibujo de " + string.Join(", ", lost) + " con cambios sin escribir en la ventana: esos cambios se perdieron.", failed: true);
             RaiseWaiting();
             RaiseDynamic();
+        }
+
+        // Forgets the request that waits and tells the door, so its command does nothing if it ever runs.
+        private void AbandonInFlight()
+        {
+            var request = _inFlight;
+            if (request == null) return;
+            _inFlight = null;
+            try
+            {
+                _door?.Abandon(request.Id);
+            }
+            catch (Exception)
+            {
+                // The door could not be told: the command still checks the drawing the request was kept for.
+            }
+
+            RaiseWaiting();
         }
 
         private static bool IsAlive(IWorkspaceBrowserSummaryPort port, SessionId session)

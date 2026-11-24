@@ -422,15 +422,22 @@ namespace RackCad.UI.Tests
 
             public event Action<RackDesignWritten>? DesignWritten;
 
+            /// <summary>What AutoCAD does DURING the call, as if it ran the command at once (M-22 of the third review).</summary>
+            public Action<RackDoorRequest>? DuringRead { get; set; }
+
+            public Action<RackDoorWrite>? DuringWrite { get; set; }
+
             public RackCadClassicResult RequestDesign(RackDoorRequest request)
             {
                 Reads.Add(request);
+                if (Answer.IsStarted) DuringRead?.Invoke(request);
                 return Answer;
             }
 
             public RackCadClassicResult RequestDynamicUpdate(RackDoorWrite write)
             {
                 Writes.Add(write);
+                if (Answer.IsStarted) DuringWrite?.Invoke(write);
                 return Answer;
             }
 
@@ -555,6 +562,100 @@ namespace RackCad.UI.Tests
             rig.Window.ShowPanel = true;
             Assert.True(rig.Window.ShowPanel);
             Assert.Equal("Volver al editor", rig.Window.PanelToggleText);
+        }
+
+        [Fact]
+        public void EachRequestCarriesTheSessionItIsFor()
+        {
+            var rig = new Rig();
+            var editor = rig.OpenEditor();
+            Assert.Equal(Session, rig.Door.Reads.Single().Session);
+
+            Write(editor, v => v.Essentials, "weight", "1200");
+            editor.RequestWrite();
+            Assert.Equal(Session, rig.Door.Writes.Single().Session);
+        }
+
+        [Fact]
+        public void AnAnswerThatArrivesDuringTheCallIsTheAnswerOfTheRequest()
+        {
+            // M-22 of the third review: the request waits before it is handed over.
+            var rig = new Rig();
+            var json = FullJson();
+            rig.Door.DuringRead = request => rig.Door.Read(new RackDesignRead(request.RequestId, request.RackId, true, "dynamic", "DIN 1", json, null));
+            rig.Door.DuringWrite = write => rig.Door.Written(new RackDesignWritten(write.RequestId, write.RackId, true, "Escrito al momento."));
+
+            rig.Window.OpenRack("DIN-1");
+            rig.Window.EditDynamicHere();
+
+            var editor = Assert.IsType<DynamicEditorViewModel>(rig.Window.ActiveDynamicEditor);
+            Assert.False(rig.Window.IsWaitingForAutoCad);
+
+            Write(editor, v => v.Essentials, "weight", "1200");
+            editor.RequestWrite();
+
+            Assert.False(rig.Window.IsWaitingForAutoCad);
+            Assert.False(editor.IsWriting);
+            Assert.False(editor.IsDirty);
+            Assert.Equal("Escrito al momento.", editor.Message);
+        }
+
+        [Fact]
+        public void AValueRefusedByTheRecompositionDoesNotTurnOffUpdate()
+        {
+            // I-09 of the third review: the sequence of the probe S12.
+            var updates = 0;
+            var vm = Editor(_ => updates++);
+            Write(vm, v => v.Essentials, "weight", "1200");
+            Assert.True(vm.CanUpdate);
+
+            vm.SelectAll();
+            Write(vm, v => v.FrontFields, "fStart", "2");
+            Assert.Equal("Al menos un frente debe comenzar en la posición de fondo 1.", Field(vm.FrontFields, "fStart").Error);
+
+            Assert.True(vm.IsDirty);
+            Assert.True(vm.CanUpdate, vm.UpdateBlockedText);
+            Assert.Equal(string.Empty, vm.UpdateBlockedText);
+            vm.RequestWrite();
+            Assert.Equal(1, updates);
+        }
+
+        public void AReadWaitingForADrawingThatWasClosedIsDroppedAndTheDoorIsTold()
+        {
+            // M-23 of the third review: without any draft, the waiting read of a closed drawing no longer blocks «Editar aquí».
+            var rig = new Rig();
+            rig.Window.OpenRack("DIN-1");
+            rig.Window.EditDynamicHere();
+            var request = rig.Door.Reads.Single();
+
+            rig.Summary.Dead.Add(Session);
+            rig.Present(8);
+
+            Assert.False(rig.Window.IsWaitingForAutoCad);
+            Assert.Equal(new[] { request.RequestId }, rig.Door.Abandoned);
+            Assert.Equal("Se cerró el dibujo del rack que se estaba leyendo: no se abrió nada.", rig.Window.ActionMessage);
+
+            rig.Window.OpenRack("DIN-1");
+            rig.Window.EditDynamicHere();
+            Assert.Equal(2, rig.Door.Reads.Count);
+        }
+
+        [Fact]
+        public void AWriteWaitingForADrawingThatWasClosedIsAbandonedWithItsDraft()
+        {
+            var rig = new Rig();
+            var editor = rig.OpenEditor();
+            Write(editor, v => v.Essentials, "weight", "1200");
+            editor.RequestWrite();
+            var write = rig.Door.Writes.Single();
+
+            rig.Summary.Dead.Add(Session);
+            rig.Present(8);
+
+            Assert.False(rig.Window.IsWaitingForAutoCad);
+            Assert.Equal(new[] { write.RequestId }, rig.Door.Abandoned);
+            Assert.Empty(rig.Window.DynamicEditors);
+            Assert.StartsWith("Se cerró el dibujo de DIN 1 con cambios sin escribir", rig.Window.ActionMessage);
         }
 
         [Fact]
