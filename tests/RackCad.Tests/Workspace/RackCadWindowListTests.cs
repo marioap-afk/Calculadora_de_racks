@@ -347,7 +347,42 @@ public class RackCadWindowListTests
     {
         var commands = WorkspaceHostSource.CodeOnly(File.ReadAllText(Path.Combine(Root(), "src", "RackCad.Plugin", "VentanaRackCad", "RackCadRackDoorCommands.cs")));
         Assert.Contains("RackDoorRules.AnswerForApply(", commands, StringComparison.Ordinal);
+        Assert.Contains("RackDoorRules.AnswerForInsert(", commands, StringComparison.Ordinal);
         Assert.DoesNotMatch(new System.Text.RegularExpressions.Regex(@"new\s+RackDesignWritten\s*\([^;]*,\s*true\s*,"), commands);
+    }
+
+    // Step 4 of Dinámico, «Insertar vista…» (decision 10 of the prototype: the draft is first written in the views that exist).
+    [Fact]
+    public void AnInsertIsWrittenWhenTheViewsThatExistWereRedrawnAndSaysWhatItInserted()
+    {
+        var both = RackDoorRules.AnswerForInsert(5, "DIN-1", redrawn: 2, erased: 0, inserted: 1);
+        Assert.Equal((5L, "DIN-1", true), (both.RequestId, both.RackId, both.Written));
+        Assert.Equal("AutoCAD redibujó 2 vistas del rack con el borrador e insertó 1 vista nueva.", both.Message);
+
+        var cancelled = RackDoorRules.AnswerForInsert(6, "DIN-1", redrawn: 1, erased: 1, inserted: 0);
+        Assert.True(cancelled.Written);
+        Assert.Equal("AutoCAD redibujó 1 vista del rack con el borrador, borró 1 vista que ya no existe, pero no insertó ninguna vista nueva: "
+                     + "se canceló la colocación o no se pudo preparar. Revisa la línea de órdenes de AutoCAD.", cancelled.Message);
+
+        var nothing = RackDoorRules.AnswerForInsert(7, "DIN-1", redrawn: 0, erased: 0, inserted: 0);
+        Assert.Equal(RackDoorRules.AnswerForApply(7, "DIN-1", 0, 0), nothing);
+
+        var insertedOnly = RackDoorRules.AnswerForInsert(8, "DIN-1", redrawn: 0, erased: 0, inserted: 2);
+        Assert.False(insertedOnly.Written);
+        Assert.StartsWith("AutoCAD insertó 2 vistas nuevas, pero no redibujó las vistas que ya había", insertedOnly.Message);
+    }
+
+    [Fact]
+    public void AWriteWithViewsIsAnInsertAndAWriteWithoutThemOnlyUpdates()
+    {
+        var update = new RackDoorWrite(1, default, "DIN-1", "DIN 1", null, null);
+        Assert.False(update.Inserts);
+        Assert.False((update with { InsertViews = Array.Empty<RackCad.Application.Systems.Shared.RackViewAddress>() }).Inserts);
+        Assert.True((update with { InsertViews = new[] { RackCad.Application.Systems.Shared.RackViewAddress.Post(0) } }).Inserts);
+
+        var port = WorkspaceHostSource.CodeOnly(File.ReadAllText(Path.Combine(Root(), "src", "RackCad.Plugin", "VentanaRackCad", "RackCadRackDoorPort.cs")));
+        Assert.Contains("if (write.Inserts)", port, StringComparison.Ordinal);
+        Assert.Contains("InsertCommand = \"RACKDINAMICOINSERTAR\"", port, StringComparison.Ordinal);
     }
 
     // A plain WPF Window made in code: `new Window`, a target-typed new() into a Window (a field, a local or a property) and a Window made

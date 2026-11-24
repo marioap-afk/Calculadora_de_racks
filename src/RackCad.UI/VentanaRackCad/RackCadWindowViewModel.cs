@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
+using RackCad.Application.Systems.Shared;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Application.VentanaRackCad;
 using RackCad.Application.Workspace;
@@ -54,6 +55,7 @@ namespace RackCad.UI.VentanaRackCad
         private readonly IRackCadSettingsAccess _settings;
         private readonly IRackCadRackDoorPort _door;
         private readonly Func<RackCatalog> _catalog;
+        private readonly IRackCadModalPort _modal;
 
         // The drafts of the Dinámico racks opened in the window, by session and rack (the id of a rack compares without case, as the list
         // does): they survive a change of rack (I-64 A-14, line D).
@@ -108,18 +110,21 @@ namespace RackCad.UI.VentanaRackCad
         /// <param name="settings">The settings of RackCad for "Configuración"; optional: the settings of the machine by default.</param>
         /// <param name="door">The door to one rack (read its design, write its draft) for the editors of the window; optional.</param>
         /// <param name="catalog">The catalog for the editors of the window; optional: the catalog of the plugin by default.</param>
+        /// <param name="modal">Shows the classic dialogs the editors reuse as modals of AutoCAD; optional: without it they are not offered.</param>
         public RackCadWindowViewModel(
             WorkspacePanelViewModel panel,
             IRackCadClassicCommandPort classic = null,
             IRackCadSettingsAccess settings = null,
             IRackCadRackDoorPort door = null,
-            Func<RackCatalog> catalog = null)
+            Func<RackCatalog> catalog = null,
+            IRackCadModalPort modal = null)
         {
             Panel = panel ?? throw new ArgumentNullException(nameof(panel));
             _classic = classic;
             _settings = settings ?? new RackCadSettingsAccess();
             _door = door;
             _catalog = catalog ?? UiSupport.LoadCatalogSafe;
+            _modal = modal;
             if (_door != null)
             {
                 _door.DesignRead += OnDesignRead;
@@ -399,6 +404,13 @@ namespace RackCad.UI.VentanaRackCad
                 var draft = new DynamicDraftEditor(_catalog());
                 draft.LoadFrom(project.DynamicDesign, read.Name);
                 var editor = new DynamicEditorViewModel(draft, request.RackId, UpdateDynamic);
+                if (_modal != null)
+                {
+                    editor.SafetyEditor = current => RackCadModalDialogs.EditDynamicSafety(current, _modal);
+                    editor.ViewChooser = options => RackCadModalDialogs.ChooseViews(options, _modal);
+                }
+
+                editor.InsertViewsAction = InsertDynamicViews;
                 editor.PropertyChanged += OnDynamicEditorChanged;
                 editor.CloseRequested += CloseDynamicEditor;
                 _dynamicDrafts[key] = new DynamicDraftEntry(request.Session, editor);
@@ -417,7 +429,16 @@ namespace RackCad.UI.VentanaRackCad
 
         // «Actualizar» of the Dinámico editor: COPIES of the draft go to AutoCAD, which redraws the rack with the drawing half of RACKEDITAR.
         // The editor cannot be edited until the answer arrives or the window stops waiting, so what is written is what the user saw.
-        private void UpdateDynamic(DynamicEditorViewModel editor)
+        private void UpdateDynamic(DynamicEditorViewModel editor) => WriteDynamic(editor, null);
+
+        // «Insertar vista…» of the Dinámico editor (step 4; decision 10 of the prototype): the same write, with the views to insert after it.
+        private void InsertDynamicViews(DynamicEditorViewModel editor, IReadOnlyList<RackViewAddress> views)
+        {
+            if (views == null || views.Count == 0) return;
+            WriteDynamic(editor, views);
+        }
+
+        private void WriteDynamic(DynamicEditorViewModel editor, IReadOnlyList<RackViewAddress> insertViews)
         {
             if (_door == null)
             {
@@ -449,7 +470,8 @@ namespace RackCad.UI.VentanaRackCad
             RackCadClassicResult result;
             try
             {
-                result = _door.RequestDynamicUpdate(new RackDoorWrite(id, entry.Session, editor.RackId, snapshot.Name, snapshot.Design, snapshot.System))
+                result = _door.RequestDynamicUpdate(new RackDoorWrite(id, entry.Session, editor.RackId, snapshot.Name, snapshot.Design, snapshot.System,
+                        insertViews == null ? null : new List<RackViewAddress>(insertViews)))
                     ?? RackCadClassicResult.Without(RackCadClassicStatus.Failed, "sin respuesta.");
             }
             catch (Exception ex)

@@ -1,4 +1,7 @@
+using System.Collections.Generic;
+using RackCad.Application.Systems.Shared;
 using RackCad.Domain.Systems.Dynamic;
+using RackCad.Domain.Systems.Shared;
 using RackCad.UI.Editor;
 
 namespace RackCad.UI.Systems.Dynamic
@@ -24,7 +27,10 @@ namespace RackCad.UI.Systems.Dynamic
         RackInsertionRequest InsertionRequest { get; }
     }
 
-    /// <summary>The draft of the RackCad window as an outcome: update only, with the identity of the rack in the drawing.</summary>
+    /// <summary>
+    /// The draft of the RackCad window as an outcome, with the identity of the rack in the drawing: update only, or («Insertar vista…»,
+    /// step 4 of Dinámico) an update that then inserts views of the rack, as «Insertar» of the classic editor on a rack of the drawing.
+    /// </summary>
     public sealed class DynamicDraftOutcome : IDynamicEditOutcome
     {
         public DynamicDraftOutcome(string rackId, string rackName, DynamicRackDesign design, DynamicRackSystem system)
@@ -35,6 +41,22 @@ namespace RackCad.UI.Systems.Dynamic
             SystemToInsert = system;
         }
 
+        /// <summary>The draft written in the views that exist and then these views inserted, in this order, as linked copies.</summary>
+        public static DynamicDraftOutcome Inserting(string rackId, string rackName, DynamicRackDesign design, DynamicRackSystem system,
+            IReadOnlyList<RackViewAddress> views)
+        {
+            var outcome = new DynamicDraftOutcome(rackId, rackName, design, system);
+            if (views == null || views.Count == 0) return outcome;
+
+            var first = RackViewCodec.Encode(RackSystemKind.PalletFlow, views[0]);
+            var request = new DynamicInsertionRequest(system, design, rackId, rackName, first.View, first.Section, null);
+            request.SetViews(views);
+            outcome.insertion = request;
+            return outcome;
+        }
+
+        private RackInsertionRequest insertion;
+
         public DynamicRackDesign DesignToInsert { get; }
 
         public DynamicRackSystem SystemToInsert { get; }
@@ -43,8 +65,8 @@ namespace RackCad.UI.Systems.Dynamic
 
         public string RackName { get; }
 
-        public bool UpdateOnly => true;
+        public bool UpdateOnly => insertion == null;
 
-        public RackInsertionRequest InsertionRequest => null;
+        public RackInsertionRequest InsertionRequest => insertion;
     }
 }

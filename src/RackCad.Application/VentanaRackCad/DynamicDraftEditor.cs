@@ -4,6 +4,7 @@ using System.Linq;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
 using RackCad.Application.Systems.Dynamic;
+using RackCad.Application.Systems.Selective;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.Selective;
 using RackCad.Domain.Systems.Shared;
@@ -114,6 +115,85 @@ namespace RackCad.Application.VentanaRackCad
 
         /// <summary>The total positions of fondo of the rack, as resolved by the last valid recomposition.</summary>
         public int PalletsDeep => _palletsDeepTotal;
+
+        // ------------------------------------------------------------------ safety (step 4 of Dinámico in the RackCad window)
+
+        /// <summary>The entrance guide of the draft: the selection of the guide family in its safety; null when the rack has none.</summary>
+        public SelectiveSafetySelection GuideSelection =>
+            SelectiveSafetyFamilies.SelectedOfType(SafetySelections, Catalog?.SafetyElements, SelectiveSafetyDefaults.GuiaType);
+
+        /// <summary>
+        /// The cells (front, level; zero-based) that carry an entrance guide in the last valid system, as every view and the BOM place them
+        /// (<see cref="DynamicEntranceGuidePlan"/>). Empty when the rack has no guide or before the first valid recomposition.
+        /// </summary>
+        public IReadOnlyCollection<(int Front, int Level)> GuideCells
+        {
+            get
+            {
+                var selection = System == null || Catalog == null
+                    ? null
+                    : SelectiveSafetyFamilies.SelectedOfType(System.SafetySelections, Catalog.SafetyElements, SelectiveSafetyDefaults.GuiaType);
+                return selection == null
+                    ? Array.Empty<(int, int)>()
+                    : DynamicEntranceGuidePlan.Build(System, selection).Select(p => (p.FrontIndex, p.LevelIndex)).Distinct().ToList();
+            }
+        }
+
+        /// <summary>
+        /// Puts the entrance guide in the cells, or takes it out of them (zero-based front and level): what the classic dialog writes in its
+        /// grid of the guide. False, with nothing changed, when the rack has no guide. The caller recomposes.
+        /// </summary>
+        public bool SetGuide(IEnumerable<(int Front, int Level)> cells, bool on)
+        {
+            var guide = GuideSelection;
+            if (guide == null) return false;
+
+            var off = guide.GuiaEntradaOffCells;
+            foreach (var (front, level) in cells ?? Enumerable.Empty<(int, int)>())
+            {
+                var existing = off.Where(cell => cell != null && cell.Frente == front && cell.Level == level).ToList();
+                if (on)
+                {
+                    foreach (var cell in existing) off.Remove(cell);
+                }
+                else if (existing.Count == 0)
+                {
+                    off.Add(new SelectiveGridCell { Frente = front, Level = level });
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>Copies of the safety of the draft (what the classic dialog edits, and what a refused recomposition gives back).</summary>
+        public IReadOnlyList<SelectiveSafetySelection> CopySafety() => SafetySelections.Where(s => s != null).Select(s => s.DeepCopy()).ToList();
+
+        /// <summary>The safety of the draft becomes copies of these selections, as the classic editor takes the result of its dialog.</summary>
+        public void ReplaceSafety(IEnumerable<SelectiveSafetySelection> selections)
+        {
+            var copies = (selections ?? Enumerable.Empty<SelectiveSafetySelection>()).Where(s => s != null).Select(s => s.DeepCopy()).ToList();
+            SafetySelections.Clear();
+            SafetySelections.AddRange(copies);
+        }
+
+        /// <summary>The posts of the safety dialog, as the classic editor counts them: N fronts, N + 1 posts, at least two.</summary>
+        public int SafetyPostCount => Math.Max(2, (System?.Fronts.Count ?? Matrix.Count) + 1);
+
+        /// <summary>The effective levels of each front for the grids front × level of the safety dialog (a blank front gives zero).</summary>
+        public IReadOnlyList<int> SafetyLevelsPerFront()
+        {
+            var levels = System?.Fronts.Count > 0
+                ? DynamicFrontActivation.EffectiveLevelsPerFront(System).ToList()
+                : Matrix.EffectiveLevelCounts().ToList();
+            if (levels.Count == 0) levels.Add(Math.Max(1, System?.LoadBeamLevels.Count ?? 1));
+            return levels;
+        }
+
+        /// <summary>The effective levels of each post, only for the deflector grid of the safety dialog (the highest adjacent front).</summary>
+        public IReadOnlyList<int> DeflectorLevelsPerPost() => DynamicFrontActivation.EffectiveLevelsPerPost(SafetyLevelsPerFront());
+
+        /// <summary>The safety of the last valid system, post by post, as the BOM counts it.</summary>
+        public IReadOnlyList<DynamicPostSafetyRow> PostSafety() => DynamicPostSafetySummary.Build(System, Catalog);
 
         /// <summary>Why the last recomposition did not run; null when it ran.</summary>
         public string LastError { get; private set; }

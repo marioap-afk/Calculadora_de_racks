@@ -111,5 +111,61 @@ namespace RackCad.Plugin.VentanaRackCad
                 door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false, "No se pudo escribir: " + ex.Message));
             }
         }
+
+        /// <summary>
+        /// «Insertar vista…» of the window (step 4 of Dinámico; decision 10 of the prototype: the draft is first written in the views that
+        /// exist): the drawing half of RACKEDITAR with an insertion, as «Insertar» of the classic editor does on a rack of the drawing. It
+        /// redraws every view of the rack with the draft, then places the new views as linked copies (the same identity) with the jig. The
+        /// answer counts the views of the rack before and after, so «inserted» means placed.
+        /// </summary>
+        [CommandMethod("RACKDINAMICOINSERTAR")]
+        public void InsertViews()
+        {
+            var door = RackCadRackDoorPort.Current;
+            var document = AcApplication.DocumentManager.MdiActiveDocument;
+            if (document == null) return;
+
+            var pending = RackCadRackDoorPort.TakePendingInsert();
+            if (pending == null)
+            {
+                document.Editor.WriteMessage("\nRACKDINAMICOINSERTAR la usa la ventana RackCad: no hay ninguna vista pendiente de insertar.");
+                return;
+            }
+
+            try
+            {
+                if (pending.Document != RackCadRackDoorPort.KeyOf(document))
+                {
+                    door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false, OtherDrawingText));
+                    return;
+                }
+
+                var blocks = RackCommandSupport.FindRackBlocks(document, pending.RackId);
+                if (blocks.Count == 0)
+                {
+                    door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false, "El rack ya no está en el dibujo: no se escribió nada."));
+                    return;
+                }
+
+                var (blockId, embed) = blocks[0];
+                var project = new RackProjectStore().Deserialize(embed.Design);
+                if (project?.DynamicDesign == null)
+                {
+                    door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false, "El rack del dibujo no es un Dinámico legible: no se escribió nada."));
+                    return;
+                }
+
+                var (redrawn, erased) = RackDinamicoCommands.ApplyDynamicEdit(
+                    document, blockId, embed, project,
+                    RackCad.UI.Systems.Dynamic.DynamicDraftOutcome.Inserting(pending.RackId, pending.Name, pending.Design, pending.System, pending.Views));
+                var inserted = System.Math.Max(0, RackCommandSupport.FindRackBlocks(document, pending.RackId).Count - (blocks.Count - erased));
+                door?.AnswerWrite(RackDoorRules.AnswerForInsert(pending.RequestId, pending.RackId, redrawn, erased, inserted));
+            }
+            catch (System.Exception ex)
+            {
+                RackCommandSupport.Report(ex);
+                door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false, "No se pudo insertar: " + ex.Message));
+            }
+        }
     }
 }

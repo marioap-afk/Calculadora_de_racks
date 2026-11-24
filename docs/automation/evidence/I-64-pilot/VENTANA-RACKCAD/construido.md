@@ -277,6 +277,49 @@ El Owner pidió seguir con Dinámico antes de Cantilever. Las piezas pendientes 
 - **El BOM** separa las líneas de «Cama» por la cama del frente, por ejemplo « · rodillo 2.5" · paso 4" · freno cada 6 rodillos». Una cama como antes conserva su línea.
 - **El editor clásico** no muestra estos valores, pero los conserva al abrir y escribir un rack que los tiene (prueba).
 - **Sin cambio:** el ancho de la cama sigue a la tarima.
+- **Core Full de `c6676989`** dio 2 fallos: los dos censos de campos del estado no clasificaban los cuatro campos nuevos del frente, y el comparador del estado editable de Push Back, que comparte la clase del frente, no los comparaba. Se corrigió en `db0edb48`: Core Full 19073/0/403 y Release limpio.
+
+**Lo hecho en el paso 4** (decisiones 6 y 10 del prototipo):
+- **La pestaña «Extremos y seguridad»**, entre «Matriz» y «Avanzado» (decisión 6: «Seguridad por poste en sección propia; guía de entrada marcada en la matriz»).
+  - **La guía de entrada:**
+    - las celdas con guía llevan una «G» en la matriz, y el lector de pantalla lo dice;
+    - las marcas salen del mismo plan que usan todas las vistas y el BOM: dos piezas por celda;
+    - se pone o se quita con «En todas las celdas» y «En ninguna», o celda a celda con la casilla «Guía de entrada» del inspector, que dice «Varía» (indeterminada) cuando la selección mezcla;
+    - un frente en blanco conserva sus celdas dormidas, como en el clásico.
+  - **«Seguridad por poste»:** una tabla de solo lectura con lo que el dibujo coloca en cada poste: botas, protector lateral, desviadores en salida y en entrada, defensas y guías.
+    - Se lee de las mismas proyecciones que el BOM: la planta para botas, protectores y defensas, y los dos cortes frontales para desviadores y guías.
+    - Una prueba fija que la suma de la tabla es la del BOM, familia por familia.
+  - **«Editar seguridad…»** abre el diálogo de seguridad del editor clásico, con sus mismos argumentos, sobre copias de la seguridad del borrador. Con «Aceptar», el borrador toma el resultado y se recalcula; con «Cancelar», no cambia nada.
+    - El diálogo se muestra como modal de AutoCAD, por un puerto del host (`RackCadModalPort`, con `ShowModalWindow`), igual que los editores clásicos.
+    - Sin ese puerto, la ventana no lo ofrece y dice por qué.
+- **D-09 (decisión de la sesión, para revisar en la planeación).** La tabla del prototipo era editable: un selector por poste para botas, protector, desviadores y defensas. Aquí es de solo lectura, y se edita en el diálogo clásico.
+  - **Motivo:** el propio prototipo dejaba [PENDIENTE] el reparto por defecto en cada poste y la longitud de las defensas.
+  - **Motivo:** el modelo de seguridad tiene reglas de precedencia por poste y por lado (I-42) que el diálogo ya aplica y prueba.
+  - **Motivo:** el vocabulario de lados del diálogo («Izquierda es la salida y derecha la entrada») no es el del prototipo («salida y entrada»).
+  - Llevar la edición a la tabla es una iniciativa propia, con las respuestas del Owner a esos tres puntos.
+- **«Insertar vista…»**, en la cabecera del editor (decisión 10: «primero escribe el borrador en las vistas existentes»).
+  - Elige las vistas con el diálogo de «Insertar varias…» del clásico: frontal de salida, frontal de entrada, un lateral por cada poste con corte, y planta.
+  - La orden nueva `RACKDINAMICOINSERTAR` hace la mitad de dibujo de RACKEDITAR con inserción, como «Insertar» del clásico sobre un rack del dibujo:
+    1. redibuja todas las vistas del rack con el borrador;
+    2. coloca las nuevas con el jig, como copias enlazadas (la misma identidad).
+  - La respuesta cuenta las vistas del rack antes y después:
+    - «escrito» quiere decir que se redibujaron las vistas existentes;
+    - la respuesta dice cuántas vistas nuevas se colocaron, o que no se colocó ninguna (la colocación se canceló o no se pudo preparar);
+    - si no se redibujó ninguna vista existente, el borrador sigue sin escribir, aunque se haya insertado alguna.
+  - «Actualizar» sigue siendo solo actualizar.
+- **Las pruebas:**
+  - `DynamicSafetyTabTests` (9): las marcas de la matriz contra el BOM, la casilla del inspector, «En todas» y «En ninguna» con un frente en blanco, la tabla por poste contra el BOM, el diálogo contra el del clásico, el puerto, el bloqueo mientras AutoCAD escribe y el orden de las pestañas.
+  - En `RackCadDynamicEditorTests`:
+    - la ventana solo ofrece el diálogo de seguridad con el puerto del host;
+    - «Insertar vista…» envía el borrador con las vistas elegidas;
+    - su respuesta es la de una escritura;
+    - sin el puerto no se ofrece.
+  - En `RackCadWindowListTests`, la regla de la respuesta de la inserción y la elección de la orden en el puerto.
+  - Los censos de órdenes pasan de 45 a 46.
+  - Comprobaciones en rojo:
+    - siete piezas rotas a propósito: las celdas con guía, quitar la guía, el eje de la tabla por poste, el diálogo sin guía, el resultado del diálogo ignorado, las vistas de la inserción perdidas y la marca de la matriz;
+    - cada una hace fallar su prueba;
+    - un control sin cambio de comportamiento pasa.
 
 **Smoke exploratorio de la sesión (2026-11-24, por orden del Owner, sobre `78fd5cb1`):**
 - pasan todos los pasos, también M-15 (la lectura no deja nada en Deshacer), I-04, I-05 con el ratón real, I-09, M-11, el «U» de «Actualizar» y D-07, que entonces era solo un aviso de pérdida;

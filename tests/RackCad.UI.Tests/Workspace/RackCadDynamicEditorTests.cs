@@ -491,7 +491,7 @@ namespace RackCad.UI.Tests
 
         private sealed class Rig
         {
-            public Rig()
+            public Rig(IRackCadModalPort? modal = null)
             {
                 Host = new WorkspacePortDouble { Snapshot = WorkspacePanelFixtures.Ready(session: 7) };
                 Summary = new WorkspaceBrowserSummaryPortDouble
@@ -503,7 +503,7 @@ namespace RackCad.UI.Tests
                     }),
                 };
                 Panel = new WorkspacePanelViewModel(Host, _ => { }, new WorkspaceNavigationPortDouble(), Summary, new WorkspacePilotEditPortDouble());
-                Window = new RackCadWindowViewModel(Panel, null, null, Door, UiSupport.LoadCatalogSafe);
+                Window = new RackCadWindowViewModel(Panel, null, null, Door, UiSupport.LoadCatalogSafe, modal);
                 Window.Refresh();
             }
 
@@ -543,6 +543,66 @@ namespace RackCad.UI.Tests
             draft.LoadFrom(Structure(), "DIN 1");
             Assert.True(draft.Recompose(), draft.LastError);
             return Json(draft.Design);
+        }
+
+        // Step 4: «Editar seguridad…» shows the classic dialog as a modal of AutoCAD, so the window offers it only with the port of the host.
+        private sealed class ModalPortDouble : IRackCadModalPort
+        {
+            public bool? ShowModal(System.Windows.Window dialog) => false;
+        }
+
+        [Fact]
+        public void TheEditorsOfTheWindowOfferTheSafetyDialogOnlyWithTheModalPortOfTheHost()
+        {
+            Assert.False(new Rig().OpenEditor().CanEditSafety);
+            Assert.True(new Rig(new ModalPortDouble()).OpenEditor().CanEditSafety);
+        }
+
+        // Step 4, «Insertar vista…» (decision 10 of the prototype: «primero escribe el borrador en las vistas existentes»).
+        [Fact]
+        public void InsertViewWritesTheDraftWithTheViewsChosenAndItsAnswerIsTheOneOfAWrite()
+        {
+            var rig = new Rig(new ModalPortDouble());
+            var editor = rig.OpenEditor();
+            Assert.True(editor.CanInsertView, editor.InsertViewBlockedText);
+
+            // Cancelled (the real dialog of «Insertar varias…», refused by the port): nothing goes to AutoCAD.
+            StaTestRunner.Run(() => editor.InsertView());
+            Assert.Empty(rig.Door.Writes);
+
+            IReadOnlyList<RackCad.UI.Views.RackViewBatchOption>? offered = null;
+            var planta = RackCad.Application.Systems.Shared.RackViewAddress.Whole(RackCad.Application.Systems.Shared.DimensionViewKind.Planta);
+            editor.ViewChooser = options => { offered = options; return new[] { planta }; };
+            Write(editor, v => v.Essentials, "weight", "1200");
+            editor.InsertView();
+
+            Assert.Equal(new[] { "Frontal · salida", "Frontal · entrada", "Lateral · poste 1", "Lateral · poste 2", "Lateral · poste 3", "Planta" },
+                offered!.Select(o => o.Label).ToArray());
+            var write = Assert.Single(rig.Door.Writes);
+            Assert.True(write.Inserts);
+            Assert.Equal(new[] { planta }, write.InsertViews!.ToArray());
+            Assert.Contains("1200", Json(write.Design));
+            Assert.True(editor.IsWriting);
+            Assert.False(editor.CanInsertView);
+
+            rig.Door.AnswerLastWrite(true, "AutoCAD redibujó 1 vista del rack con el borrador e insertó 1 vista nueva.");
+            Assert.False(editor.IsWriting);
+            Assert.False(editor.IsDirty);
+            Assert.Equal("AutoCAD redibujó 1 vista del rack con el borrador e insertó 1 vista nueva.", editor.Message);
+
+            // «Actualizar» is still an update only.
+            Write(editor, v => v.Essentials, "weight", "1300");
+            editor.RequestWrite();
+            Assert.False(rig.Door.Writes.Last().Inserts);
+        }
+
+        [Fact]
+        public void WithoutTheModalPortOfTheHostTheWindowDoesNotInsertViews()
+        {
+            var editor = new Rig().OpenEditor();
+            Assert.False(editor.CanInsertView);
+            editor.InsertView();
+            Assert.Equal("Aquí no se pueden insertar vistas del rack.", editor.Message);
         }
 
         [Fact]

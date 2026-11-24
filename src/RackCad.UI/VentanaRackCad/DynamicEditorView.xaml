@@ -6,7 +6,7 @@
              FontSize="12"
              Background="{DynamicResource WindowBackgroundBrush}">
     <!-- The editor of ONE Dinámico rack in the RackCad window (I-64 A-14, line D): the «versión despejada» the Owner approved, with the tabs
-         Rack, Matriz and Avanzado. What is written in a field goes to the draft when the field is left or with Enter; the scope is the
+         Rack, Matriz, Extremos y seguridad and Avanzado. What is written in a field goes to the draft when the field is left or with Enter; the scope is the
          selection of the matrix. Nothing here writes the drawing: «Actualizar» hands the draft to the host. -->
     <UserControl.Resources>
         <ResourceDictionary>
@@ -81,6 +81,11 @@
                     <Button x:Name="UpdateButton" Content="Actualizar" Margin="0,12,8,4" Padding="14,4" VerticalAlignment="Top"
                             Style="{StaticResource PrimaryButtonStyle}" IsEnabled="{Binding CanUpdate}"
                             AutomationProperties.Name="Actualizar el dibujo con el borrador" Click="OnUpdateClick" />
+                    <!-- Step 4 (decision 10 of the prototype): AutoCAD first writes the draft in the views that exist, then inserts the new ones. -->
+                    <Button x:Name="InsertViewButton" Content="Insertar vista…" Margin="0,12,8,4" Padding="12,4" VerticalAlignment="Top"
+                            Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanInsertView}"
+                            ToolTip="Escribe el borrador en las vistas del dibujo y después inserta las vistas que elijas, enlazadas al rack."
+                            AutomationProperties.Name="Insertar vistas del rack" Click="OnInsertViewClick" />
                     <Button x:Name="DiscardButton" Content="Descartar" Margin="0,12,8,4" Padding="12,4" VerticalAlignment="Top"
                             Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanDiscard}"
                             AutomationProperties.Name="Descartar el borrador" Click="OnDiscardClick" />
@@ -223,9 +228,11 @@
                                                     </ItemsControl.ItemsPanel>
                                                     <ItemsControl.ItemTemplate>
                                                         <DataTemplate>
+                                                            <!-- A «G» in the corner: the cell carries an entrance guide (decision 6 of the prototype). -->
                                                             <Button Width="70" Height="32" Margin="0,0,2,2" Padding="2" Click="OnCellClick"
-                                                                    IsEnabled="{Binding Exists}" Content="{Binding Text}"
-                                                                    AutomationProperties.Name="{Binding Text}">
+                                                                    IsEnabled="{Binding Exists}"
+                                                                    AutomationProperties.Name="{Binding Text}"
+                                                                    AutomationProperties.HelpText="{Binding AccessibleText}">
                                                                 <Button.Style>
                                                                     <Style TargetType="Button" BasedOn="{StaticResource SecondaryButtonStyle}">
                                                                         <Setter Property="BorderThickness" Value="1" />
@@ -245,6 +252,12 @@
                                                                         </Style.Triggers>
                                                                     </Style>
                                                                 </Button.Style>
+                                                                <Grid Width="62">
+                                                                    <TextBlock Text="{Binding Text}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                                    <TextBlock Text="G" FontSize="9" FontWeight="SemiBold" HorizontalAlignment="Right" VerticalAlignment="Top"
+                                                                               Margin="0,-3,-2,0" Foreground="{DynamicResource ShellSelectionPrimaryBrush}" ToolTip="Guía de entrada"
+                                                                               Visibility="{Binding HasGuide, Converter={StaticResource FlagToVisibility}}" />
+                                                                </Grid>
                                                             </Button>
                                                         </DataTemplate>
                                                     </ItemsControl.ItemTemplate>
@@ -269,6 +282,9 @@
                                            Foreground="{DynamicResource ShellTextPrimaryBrush}" />
                                 <ItemsControl x:Name="CellFieldList" ItemsSource="{Binding CellFields}" ItemTemplate="{StaticResource FieldTemplate}"
                                               ItemsPanel="{StaticResource WrapItems}" />
+                                <CheckBox x:Name="SelectionGuideBox" Content="Guía de entrada" Margin="0,0,0,8" IsThreeState="False"
+                                          IsChecked="{Binding SelectionGuide, Mode=TwoWay}" IsEnabled="{Binding CanEditGuide}"
+                                          AutomationProperties.Name="Guía de entrada en las celdas de la selección" />
                                 <TextBlock Text="Frentes de la selección" FontWeight="SemiBold" Margin="0,6,0,4"
                                            Foreground="{DynamicResource ShellTextPrimaryBrush}" />
                                 <ItemsControl x:Name="FrontFieldList" ItemsSource="{Binding FrontFields}" ItemTemplate="{StaticResource FieldTemplate}"
@@ -283,6 +299,50 @@
                         </ScrollViewer>
                     </Border>
                 </Grid>
+            </TabItem>
+
+            <!-- Extremos y seguridad (step 4; decision 6 of the prototype): the guide of the entrance and the safety post by post. -->
+            <TabItem x:Name="SafetyTab" Header="Extremos y seguridad">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                    <StackPanel Margin="10">
+                        <TextBlock Text="Extremos" Style="{StaticResource GroupTitle}" Margin="0,0,0,2" />
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,6" Foreground="{DynamicResource ShellTextSecondaryBrush}"
+                                   Text="Salida = extremo bajo · entrada = extremo alto. La guía de entrada va por frente y nivel, solo en la entrada." />
+                        <TextBlock x:Name="GuideSummaryText" Text="{Binding GuideSummary}" TextWrapping="Wrap" Margin="0,0,0,6"
+                                   Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                        <WrapPanel Margin="0,0,0,4">
+                            <Button x:Name="GuideEverywhereButton" Content="En todas las celdas" Margin="0,0,6,0" Padding="10,3"
+                                    Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanEditGuide}" Click="OnGuideEverywhereClick" />
+                            <Button x:Name="GuideNowhereButton" Content="En ninguna" Padding="10,3"
+                                    Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanEditGuide}" Click="OnGuideNowhereClick" />
+                        </WrapPanel>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,6" Foreground="{DynamicResource ShellTextSecondaryBrush}"
+                                   Text="Para elegir celdas, selecciónalas en «Matriz» y usa «Guía de entrada» del inspector. Las celdas con guía llevan una G." />
+
+                        <TextBlock Text="Seguridad por poste" Style="{StaticResource GroupTitle}" />
+                        <TextBlock x:Name="SafetySummaryText" Text="{Binding SafetySummary}" Style="{StaticResource OptionalText}" Margin="0,0,0,6"
+                                   Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                        <DataGrid x:Name="PostSafetyGrid" ItemsSource="{Binding PostSafety}" AutoGenerateColumns="False" IsReadOnly="True"
+                                  HeadersVisibility="Column" MaxHeight="320" CanUserAddRows="False" HorizontalAlignment="Left"
+                                  AutomationProperties.Name="Seguridad por poste">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Poste" Binding="{Binding Post}" />
+                                <DataGridTextColumn Header="Botas" Binding="{Binding Boots}" />
+                                <DataGridTextColumn Header="Protector lateral" Binding="{Binding SideGuards}" />
+                                <DataGridTextColumn Header="Desviadores" Binding="{Binding Deflectors}" />
+                                <DataGridTextColumn Header="Defensas" Binding="{Binding Defenses}" />
+                                <DataGridTextColumn Header="Guías de entrada" Binding="{Binding Guides}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <TextBlock TextWrapping="Wrap" Margin="0,6,0,6" Foreground="{DynamicResource ShellTextSecondaryBrush}"
+                                   Text="La tabla dice lo que el dibujo coloca en cada poste, contado como en el BOM." />
+                        <TextBlock x:Name="SafetyEditText" Text="{Binding SafetyEditText}" TextWrapping="Wrap" Margin="0,0,0,6"
+                                   Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                        <Button x:Name="EditSafetyButton" Content="Editar seguridad…" HorizontalAlignment="Left" Padding="12,4"
+                                Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanEditSafety}"
+                                AutomationProperties.Name="Editar la seguridad en el diálogo del editor clásico" Click="OnEditSafetyClick" />
+                    </StackPanel>
+                </ScrollViewer>
             </TabItem>
 
             <!-- Avanzado: the height, the separators, the derived post and the module sequence with Spanish labels. -->
@@ -310,7 +370,7 @@
                             </DataGrid.Columns>
                         </DataGrid>
                         <TextBlock TextWrapping="Wrap" Margin="0,8,0,0" Foreground="{DynamicResource ShellTextSecondaryBrush}"
-                                   Text="Las cabeceras personalizadas se conservan. Para editar una cabecera o la seguridad, usa «Abrir en editor clásico» mientras se migran." />
+                                   Text="Las cabeceras personalizadas se conservan. Para editar una cabecera, usa «Abrir en editor clásico» mientras se migra." />
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>

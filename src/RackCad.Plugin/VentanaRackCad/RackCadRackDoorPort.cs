@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using RackCad.Application.Diagnostics;
+using RackCad.Application.Systems.Shared;
 using RackCad.Application.VentanaRackCad;
 using RackCad.Domain.Systems.Dynamic;
 using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
@@ -19,18 +21,21 @@ namespace RackCad.Plugin.VentanaRackCad
     {
         internal const string ReadCommand = "RACKDINAMICOABRIR";
         internal const string WriteCommand = "RACKDINAMICOAPLICAR";
+        internal const string InsertCommand = "RACKDINAMICOINSERTAR";
 
         /// <summary>A read that waits for its command: the number, the rack and the drawing it is for.</summary>
         internal sealed record PendingRead(long RequestId, string RackId, long Document);
 
         /// <summary>A write that waits for its command: the number, the copies of the draft and the drawing it is for.</summary>
-        internal sealed record PendingWrite(long RequestId, string RackId, string Name, DynamicRackDesign Design, DynamicRackSystem System, long Document);
+        internal sealed record PendingWrite(long RequestId, string RackId, string Name, DynamicRackDesign Design, DynamicRackSystem System, long Document,
+            IReadOnlyList<RackViewAddress> Views = null);
 
         /// <summary>The door of the palette of the process; the commands answer through it.</summary>
         internal static RackCadRackDoorPort Current { get; private set; }
 
         private static PendingRead _pendingRead;
         private static PendingWrite _pendingWrite;
+        private static PendingWrite _pendingInsert;
 
         public RackCadRackDoorPort()
         {
@@ -54,6 +59,16 @@ namespace RackCad.Plugin.VentanaRackCad
             if (write == null || string.IsNullOrWhiteSpace(write.RackId) || write.Design == null || write.System == null)
                 return RackCadClassicResult.Without(RackCadClassicStatus.Failed, "No hay un borrador válido que escribir.");
 
+            // «Insertar vista…»: its own command, which writes the draft in the views that exist and then inserts the new ones.
+            if (write.Inserts)
+            {
+                return Send(
+                    InsertCommand + " ",
+                    document => _pendingInsert = new PendingWrite(write.RequestId, write.RackId.Trim(), write.Name, write.Design, write.System, KeyOf(document),
+                        new List<RackViewAddress>(write.InsertViews)),
+                    () => _pendingInsert = null);
+            }
+
             return Send(
                 WriteCommand + " ",
                 document => _pendingWrite = new PendingWrite(write.RequestId, write.RackId.Trim(), write.Name, write.Design, write.System, KeyOf(document)),
@@ -64,6 +79,7 @@ namespace RackCad.Plugin.VentanaRackCad
         {
             if (_pendingRead != null && _pendingRead.RequestId == requestId) _pendingRead = null;
             if (_pendingWrite != null && _pendingWrite.RequestId == requestId) _pendingWrite = null;
+            if (_pendingInsert != null && _pendingInsert.RequestId == requestId) _pendingInsert = null;
         }
 
         /// <summary>The read that waits, taken once by its command; null when there is none.</summary>
@@ -79,6 +95,14 @@ namespace RackCad.Plugin.VentanaRackCad
         {
             var pending = _pendingWrite;
             _pendingWrite = null;
+            return pending;
+        }
+
+        /// <summary>The write with views to insert that waits, taken once by its command; null when there is none.</summary>
+        internal static PendingWrite TakePendingInsert()
+        {
+            var pending = _pendingInsert;
+            _pendingInsert = null;
             return pending;
         }
 

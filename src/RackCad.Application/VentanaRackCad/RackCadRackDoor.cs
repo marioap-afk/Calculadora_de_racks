@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using RackCad.Application.Systems.Shared;
 using RackCad.Application.Workspace;
 using RackCad.Domain.Systems.Dynamic;
 
@@ -9,9 +11,16 @@ namespace RackCad.Application.VentanaRackCad
     /// <summary>
     /// The window asks AutoCAD to redraw ONE rack of the drawing of the session with a draft. The design and the system are COPIES taken when
     /// the request was made, so nothing the user does afterwards reaches what AutoCAD writes; the name is already trimmed, as the classic
-    /// editor sends it.
+    /// editor sends it. With <paramref name="InsertViews"/> («Insertar vista…», step 4 of Dinámico; decision 10 of the prototype) AutoCAD
+    /// first writes the draft in the views that exist and then inserts those views as linked copies of the rack (the same identity);
+    /// without them it only updates.
     /// </summary>
-    public sealed record RackDoorWrite(long RequestId, SessionId Session, string RackId, string Name, DynamicRackDesign Design, DynamicRackSystem System);
+    public sealed record RackDoorWrite(long RequestId, SessionId Session, string RackId, string Name, DynamicRackDesign Design, DynamicRackSystem System,
+        IReadOnlyList<RackViewAddress> InsertViews = null)
+    {
+        /// <summary>The write also inserts views.</summary>
+        public bool Inserts => InsertViews != null && InsertViews.Count > 0;
+    }
 
     /// <summary>What AutoCAD read of ONE rack for the RackCad window, for the request of that number: its persisted design, or why there is none.</summary>
     public sealed record RackDesignRead(long RequestId, string RackId, bool Found, string Kind, string Name, string DesignJson, string Reason);
@@ -69,6 +78,31 @@ namespace RackCad.Application.VentanaRackCad
 
             return new RackDesignWritten(requestId, rackId, false,
                 "AutoCAD no redibujó ninguna vista del rack, así que el borrador sigue sin escribir. Revisa la línea de órdenes de AutoCAD.");
+        }
+
+        /// <summary>
+        /// The answer of RACKDINAMICOINSERTAR («Insertar vista…»): the draft is written when the views that exist were redrawn with it, as
+        /// for RACKDINAMICOAPLICAR; then the answer says how many new views were inserted (none when the placement was cancelled). When no
+        /// view was redrawn the draft stays not written, even if a view was inserted, so «Actualizar» can still write it in all of them.
+        /// </summary>
+        public static RackDesignWritten AnswerForInsert(long requestId, string rackId, int redrawn, int erased, int inserted)
+        {
+            var applied = AnswerForApply(requestId, rackId, redrawn, erased);
+            if (!applied.Written)
+            {
+                return inserted > 0
+                    ? new RackDesignWritten(requestId, rackId, false,
+                        "AutoCAD insertó " + Count(inserted, "vista nueva", "vistas nuevas") + ", pero no redibujó las vistas que ya había, así que el "
+                        + "borrador sigue sin escribir: usa «Actualizar» y revisa la línea de órdenes de AutoCAD.")
+                    : applied;
+            }
+
+            var text = "AutoCAD redibujó " + Count(redrawn, "vista", "vistas") + " del rack con el borrador";
+            if (erased > 0) text += ", borró " + Count(erased, "vista que ya no existe", "vistas que ya no existen");
+            text += inserted > 0
+                ? " e insertó " + Count(inserted, "vista nueva", "vistas nuevas") + "."
+                : ", pero no insertó ninguna vista nueva: se canceló la colocación o no se pudo preparar. Revisa la línea de órdenes de AutoCAD.";
+            return new RackDesignWritten(requestId, rackId, true, text);
         }
 
         private static string Count(int count, string one, string many) =>

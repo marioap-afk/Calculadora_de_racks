@@ -94,6 +94,14 @@ namespace RackCad.UI.VentanaRackCad
 
         private void OnSelectAllClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.SelectAll());
 
+        private void OnInsertViewClick(object sender, RoutedEventArgs e) => Contained(_viewModel.InsertView);
+
+        private void OnGuideEverywhereClick(object sender, RoutedEventArgs e) => Contained(_viewModel.GuideEverywhere);
+
+        private void OnGuideNowhereClick(object sender, RoutedEventArgs e) => Contained(_viewModel.GuideNowhere);
+
+        private void OnEditSafetyClick(object sender, RoutedEventArgs e) => Contained(_viewModel.EditSafety);
+
         private void OnBlankFrontClick(object sender, RoutedEventArgs e) =>
             Contained(() => _viewModel.SetFrontBlank(_viewModel.Draft.Matrix.SelectedFrontIndex, true));
 

@@ -4,9 +4,11 @@ using System.Globalization;
 using System.Linq;
 using RackCad.Application.Persistence;
 using RackCad.Application.Systems.Dynamic;
+using RackCad.Application.Systems.Shared;
 using RackCad.Application.VentanaRackCad;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.Shared;
+using RackCad.UI.Views;
 
 namespace RackCad.UI.VentanaRackCad
 {
@@ -113,6 +115,8 @@ namespace RackCad.UI.VentanaRackCad
         private bool _isSelected;
         private bool _isPrimary;
         private bool _isBlankFront;
+        private bool _hasGuide;
+        private string _accessibleText = string.Empty;
 
         public DynamicCellItem(int frontIndex, int levelIndex)
         {
@@ -134,14 +138,52 @@ namespace RackCad.UI.VentanaRackCad
 
         public bool IsBlankFront { get => _isBlankFront; private set => SetProperty(ref _isBlankFront, value); }
 
-        internal void Set(string text, bool exists, bool isSelected, bool isPrimary, bool isBlankFront)
+        /// <summary>The cell carries an entrance guide in the drawing (decision 6 of the prototype: «guía de entrada marcada en la matriz»).</summary>
+        public bool HasGuide { get => _hasGuide; private set => SetProperty(ref _hasGuide, value); }
+
+        /// <summary>What a screen reader says of the cell: its datum and its guide.</summary>
+        public string AccessibleText { get => _accessibleText; private set => SetProperty(ref _accessibleText, value); }
+
+        internal void Set(string text, bool exists, bool isSelected, bool isPrimary, bool isBlankFront, bool hasGuide = false)
         {
             Text = text;
             Exists = exists;
             IsSelected = isSelected;
             IsPrimary = isPrimary;
             IsBlankFront = isBlankFront;
+            HasGuide = hasGuide;
+            AccessibleText = "F" + (FrontIndex + 1) + " · N" + (LevelIndex + 1) + ": " + text + (hasGuide ? ", con guía de entrada" : string.Empty);
         }
+    }
+
+    /// <summary>One post of «Seguridad por poste»: what the drawing places there, family by family, as the BOM counts it.</summary>
+    public sealed class DynamicPostSafetyItem
+    {
+        internal DynamicPostSafetyItem(DynamicPostSafetyRow row)
+        {
+            Post = "P" + (row.PostIndex + 1);
+            Boots = Count(row.Boots);
+            SideGuards = Count(row.SideGuards);
+            Deflectors = row.DeflectorsAtExit + row.DeflectorsAtEntrance == 0
+                ? "—"
+                : "salida " + row.DeflectorsAtExit.ToString(CultureInfo.InvariantCulture) + " · entrada " + row.DeflectorsAtEntrance.ToString(CultureInfo.InvariantCulture);
+            Defenses = Count(row.Defenses);
+            Guides = Count(row.EntranceGuides);
+        }
+
+        public string Post { get; }
+
+        public string Boots { get; }
+
+        public string SideGuards { get; }
+
+        public string Deflectors { get; }
+
+        public string Defenses { get; }
+
+        public string Guides { get; }
+
+        private static string Count(int value) => value == 0 ? "—" : value.ToString(CultureInfo.InvariantCulture);
     }
 
     /// <summary>One row of the matrix: «N3» … «N1», top to bottom.</summary>
@@ -227,6 +269,11 @@ namespace RackCad.UI.VentanaRackCad
         private IReadOnlyList<DynamicMatrixRow> _rows = Array.Empty<DynamicMatrixRow>();
         private IReadOnlyList<DynamicColumnHead> _columns = Array.Empty<DynamicColumnHead>();
         private IReadOnlyList<DynamicModuleItem> _modules = Array.Empty<DynamicModuleItem>();
+        private IReadOnlyList<DynamicPostSafetyItem> _postSafety = Array.Empty<DynamicPostSafetyItem>();
+        private string _safetySummary = string.Empty;
+        private Func<DynamicDraftEditor, IReadOnlyList<RackCad.Domain.Systems.Selective.SelectiveSafetySelection>> _safetyEditor;
+        private Action<DynamicEditorViewModel, IReadOnlyList<RackViewAddress>> _insertViews;
+        private Func<IReadOnlyList<RackViewBatchOption>, IReadOnlyList<RackViewAddress>> _viewChooser;
 
         /// <param name="editor">The draft of the rack, as it was read (its design is the baseline of «Modificado» and of «Descartar»).</param>
         /// <param name="rackId">The identity of the rack in the drawing; null for a new rack.</param>
@@ -271,7 +318,7 @@ namespace RackCad.UI.VentanaRackCad
             }
         }
 
-        /// <summary>0 = Rack, 1 = Matriz (the first tab, as the Owner decided), 2 = Avanzado.</summary>
+        /// <summary>0 = Rack, 1 = Matriz (the first tab, as the Owner decided), 2 = Extremos y seguridad, 3 = Avanzado.</summary>
         public int SelectedTab
         {
             get => _selectedTab;
@@ -347,6 +394,141 @@ namespace RackCad.UI.VentanaRackCad
         }
 
         public IReadOnlyList<DynamicModuleItem> Modules => _modules;
+
+        // ------------------------------------------------------------------ «Extremos y seguridad» (step 4; decision 6 of the prototype)
+
+        /// <summary>
+        /// What «Editar seguridad…» opens: the safety dialog of the classic editor over copies of the safety of the draft (its result, or
+        /// null when it was cancelled). The window sets it when it can show a modal over AutoCAD; without it the button is not offered.
+        /// </summary>
+        public Func<DynamicDraftEditor, IReadOnlyList<RackCad.Domain.Systems.Selective.SelectiveSafetySelection>> SafetyEditor
+        {
+            get => _safetyEditor;
+            set
+            {
+                _safetyEditor = value;
+                OnPropertyChanged(nameof(CanEditSafety));
+                OnPropertyChanged(nameof(SafetyEditText));
+            }
+        }
+
+        public bool CanEditSafety => CanEdit && _safetyEditor != null;
+
+        public string SafetyEditText => _safetyEditor == null
+            ? "El diálogo de seguridad no está disponible aquí: usa «Abrir en editor clásico»."
+            : "Las botas, los protectores laterales, los desviadores, las defensas y la guía se eligen en el diálogo de seguridad del editor clásico.";
+
+        /// <summary>«Seguridad por poste»: what the drawing places at each post, family by family, as the BOM counts it.</summary>
+        public IReadOnlyList<DynamicPostSafetyItem> PostSafety => _postSafety;
+
+        public string SafetySummary => _safetySummary;
+
+        /// <summary>The rack has an entrance guide that the window can put in or take out of cells.</summary>
+        public bool CanEditGuide => CanEdit && _editor.GuideSelection != null;
+
+        /// <summary>Where the entrance guide is: in all the active cells, in some, in none; or that the rack has no guide.</summary>
+        public string GuideSummary
+        {
+            get
+            {
+                if (_editor.GuideSelection == null)
+                    return "Este rack no lleva guía de entrada. Para añadirla, usa «Editar seguridad…».";
+                var cells = ActiveCells().ToList();
+                if (cells.Count == 0) return "Guía de entrada: el rack no tiene celdas activas.";
+                var guides = new HashSet<(int, int)>(_editor.GuideCells);
+                var on = cells.Count(guides.Contains);
+                if (on == cells.Count) return "Guía de entrada: en todas las celdas (" + on.ToString(CultureInfo.InvariantCulture) + ").";
+                if (on == 0) return "Guía de entrada: en ninguna celda.";
+                return "Guía de entrada: en " + on.ToString(CultureInfo.InvariantCulture) + " de " + cells.Count.ToString(CultureInfo.InvariantCulture) + " celdas.";
+            }
+        }
+
+        /// <summary>
+        /// «Guía de entrada» of the inspector: true when every active cell of the selection has it, false when none has it, null when they
+        /// differ. Writing it puts the guide in, or takes it out of, the active cells of the selection.
+        /// </summary>
+        public bool? SelectionGuide
+        {
+            get
+            {
+                var cells = SelectedActiveCells().ToList();
+                if (cells.Count == 0) return false;
+                var guides = new HashSet<(int, int)>(_editor.GuideCells);
+                var on = cells.Count(guides.Contains);
+                return on == cells.Count ? true : on == 0 ? false : (bool?)null;
+            }
+            set
+            {
+                if (!value.HasValue || value == SelectionGuide) { OnPropertyChanged(nameof(SelectionGuide)); return; }
+                if (!CanEditGuide) { Say(_editor.GuideSelection == null ? GuideSummary : WritingText, error: true); OnPropertyChanged(nameof(SelectionGuide)); return; }
+                var cells = SelectedActiveCells().ToList();
+                Apply(() => _editor.SetGuide(cells, value.Value), null);
+            }
+        }
+
+        /// <summary>«En todas las celdas»: the entrance guide in every active cell.</summary>
+        public void GuideEverywhere() => SetGuideOnActiveCells(true);
+
+        /// <summary>«En ninguna»: the entrance guide out of every active cell.</summary>
+        public void GuideNowhere() => SetGuideOnActiveCells(false);
+
+        /// <summary>«Editar seguridad…»: the classic dialog; its result replaces the safety of the draft, which is recomposed.</summary>
+        public void EditSafety()
+        {
+            if (!CanEditSafety)
+            {
+                Say(_safetyEditor == null ? SafetyEditText : WritingText, error: true);
+                return;
+            }
+
+            var result = _safetyEditor(_editor);
+            if (result == null) return;
+            Apply(() => _editor.ReplaceSafety(result), null);
+        }
+
+        private void SetGuideOnActiveCells(bool on)
+        {
+            if (!CanEditGuide)
+            {
+                Say(_editor.GuideSelection == null ? GuideSummary : WritingText, error: true);
+                return;
+            }
+
+            var cells = ActiveCells().ToList();
+            Apply(() => _editor.SetGuide(cells, on), null);
+        }
+
+        // The cells that exist in the active fronts (a front in blank keeps its cells dormant: they are not edited, as in the classic).
+        private IEnumerable<(int Front, int Level)> ActiveCells()
+        {
+            var matrix = _editor.Matrix;
+            for (var f = 0; f < matrix.Count; f++)
+            {
+                if (!matrix.IsActive(f)) continue;
+                for (var l = 0; l < matrix.Fronts[f].LoadLevels; l++) yield return (f, l);
+            }
+        }
+
+        private IEnumerable<(int Front, int Level)> SelectedActiveCells()
+            => _editor.Matrix.SelectedCells()
+                .Where(c => _editor.Matrix.IsActive(c.FrontIndex) && c.LevelIndex < _editor.Matrix.Fronts[c.FrontIndex].LoadLevels)
+                .Select(c => (c.FrontIndex, c.LevelIndex));
+
+        private void RebuildSafety()
+        {
+            var rows = _editor.PostSafety();
+            _postSafety = rows.Select(row => new DynamicPostSafetyItem(row)).ToList();
+            int Posts(Func<DynamicPostSafetyRow, int> count) => rows.Count(row => count(row) > 0);
+            _safetySummary = rows.Count == 0
+                ? string.Empty
+                : "Botas en " + Posts(r => r.Boots) + " · protectores laterales en " + Posts(r => r.SideGuards)
+                  + " · desviadores en " + Posts(r => r.DeflectorsAtExit + r.DeflectorsAtEntrance) + " · defensas en " + Posts(r => r.Defenses)
+                  + " · guías en " + Posts(r => r.EntranceGuides) + ", de " + rows.Count.ToString(CultureInfo.InvariantCulture)
+                  + (rows.Count == 1 ? " poste." : " postes.");
+            OnPropertyChanged(nameof(PostSafety));
+            OnPropertyChanged(nameof(SafetySummary));
+            OnPropertyChanged(nameof(GuideSummary));
+        }
 
         public string InspectorTitle
         {
@@ -567,6 +749,54 @@ namespace RackCad.UI.VentanaRackCad
             _update(this);
         }
 
+        // ------------------------------------------------------------------ «Insertar vista…» (step 4; decision 10 of the prototype)
+
+        /// <summary>What «Insertar vista…» does with the views chosen: the window first writes the draft in the views that exist, then inserts them.</summary>
+        public Action<DynamicEditorViewModel, IReadOnlyList<RackViewAddress>> InsertViewsAction
+        {
+            get => _insertViews;
+            set { _insertViews = value; RaiseState(); }
+        }
+
+        /// <summary>How the views are chosen: the dialog of «Insertar varias…» of the classic editor, over AutoCAD; null when cancelled.</summary>
+        public Func<IReadOnlyList<RackViewBatchOption>, IReadOnlyList<RackViewAddress>> ViewChooser
+        {
+            get => _viewChooser;
+            set { _viewChooser = value; RaiseState(); }
+        }
+
+        public bool CanInsertView => string.IsNullOrEmpty(InsertViewBlockedText);
+
+        /// <summary>Why «Insertar vista…» cannot run now; empty when it can.</summary>
+        public string InsertViewBlockedText
+        {
+            get
+            {
+                if (_insertViews == null || _viewChooser == null || string.IsNullOrWhiteSpace(RackId)) return "Aquí no se pueden insertar vistas del rack.";
+                if (_writing) return WritingText;
+                if (_editor.Design == null) return "No hay un borrador válido que escribir.";
+                if (!string.IsNullOrEmpty(_editor.LastError)) return _editor.LastError;
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// «Insertar vista…»: the views to insert, chosen as in «Insertar varias…» of the classic editor; AutoCAD first writes the draft in
+        /// the views that exist (also with no change: they are redrawn as they are) and then places the new ones, linked to the rack.
+        /// </summary>
+        public void InsertView()
+        {
+            if (!CanInsertView)
+            {
+                Say(InsertViewBlockedText, error: true);
+                return;
+            }
+
+            var views = _viewChooser(RackCadModalDialogs.DynamicViewOptions(_editor.System, _editor.Catalog));
+            if (views == null || views.Count == 0) return;
+            _insertViews(this, views);
+        }
+
         /// <summary>«Cerrar el editor»: closes it at once when the draft has nothing to lose, and asks first when it has changes.</summary>
         public void RequestClose()
         {
@@ -704,6 +934,7 @@ namespace RackCad.UI.VentanaRackCad
             var snapshot = _editor.Matrix.Snapshot();
             var selection = CaptureSelection();
             var state = CaptureScalars();
+            var safety = _editor.CopySafety();
             change();
             if (!_editor.Recompose())
             {
@@ -711,6 +942,7 @@ namespace RackCad.UI.VentanaRackCad
                 _editor.Matrix.Restore(snapshot);
                 RestoreSelection(selection);
                 RestoreScalars(state);
+                _editor.ReplaceSafety(safety);
                 // The draft is back to its last valid recomposition: the refused value does not block «Actualizar» (I-09).
                 _editor.InputsRestoredToLastValid();
                 Say(reason, error: true);
@@ -781,6 +1013,10 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(StatusText));
             OnPropertyChanged(nameof(CanUpdate));
             OnPropertyChanged(nameof(UpdateBlockedText));
+            OnPropertyChanged(nameof(CanEditGuide));
+            OnPropertyChanged(nameof(CanEditSafety));
+            OnPropertyChanged(nameof(CanInsertView));
+            OnPropertyChanged(nameof(InsertViewBlockedText));
         }
 
         // The lists keep their items: a recomposition refreshes them in place, so the focus, the box being written and the button under
@@ -799,6 +1035,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(NumberLevels));
             OnPropertyChanged(nameof(DrawRackName));
             OnPropertyChanged(nameof(DerivedPostReinforced));
+            RebuildSafety();
             RebuildSelection();
             RaiseState();
         }
@@ -832,6 +1069,7 @@ namespace RackCad.UI.VentanaRackCad
             }
 
             foreach (var column in _columns) column.IsBlank = !matrix.IsActive(column.FrontIndex);
+            var guides = new HashSet<(int, int)>(_editor.GuideCells);
             foreach (var row in _rows)
             {
                 foreach (var item in row.Cells)
@@ -852,10 +1090,13 @@ namespace RackCad.UI.VentanaRackCad
                         exists,
                         exists && matrix.IsSelected(item.FrontIndex, item.LevelIndex),
                         exists && matrix.SelectedFrontIndex == item.FrontIndex && matrix.SelectedLevelIndex == item.LevelIndex,
-                        !active);
+                        !active,
+                        exists && active && guides.Contains((item.FrontIndex, item.LevelIndex)));
                 }
             }
 
+            OnPropertyChanged(nameof(SelectionGuide));
+            OnPropertyChanged(nameof(GuideSummary));
             Merge(ref _cellFields, BuildCellFields(), nameof(CellFields));
             Merge(ref _frontFields, BuildFrontFields(), nameof(FrontFields));
             Merge(ref _bedFields, BuildBedFields(), nameof(BedFields));
