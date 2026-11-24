@@ -483,6 +483,45 @@ namespace RackCad.UI.Tests
 
             Assert.Equal("PB-2", rig.Panel.Browser.ActiveRackId);
             Assert.True(rig.List.HasSelectionBox);
+            // The notice is the one of the pending text (as with the selection followed), never one about the choice of not following.
+            Assert.Equal("La selección de SEL-1 no cambió el rack activo, que conserva su texto pendiente.", rig.Panel.Browser.NoticeText);
+        }
+
+        [Fact]
+        public void WithoutFollowingTheSelectionAndWithoutPendingTextTheSelectionWaitsWithNoNotice()
+        {
+            var rig = new Rig();
+            rig.Window.OpenRack("PB-2");
+            rig.List.FollowSelection = false;
+
+            rig.Select("SEL-1");
+
+            Assert.Equal("PB-2", rig.Panel.Browser.ActiveRackId);
+            Assert.True(rig.List.HasSelectionBox);
+            Assert.Equal(string.Empty, rig.Panel.Browser.NoticeText ?? string.Empty);
+        }
+
+        [Fact]
+        public void OpeningAnotherRackGoesOnWhenThePendingTextIsKeptAndStaysWhenThePortThrows()
+        {
+            // M-04 of the second review: the two answers of the boundary that the first tests did not cover.
+            var rig = new Rig();
+            rig.Window.OpenRack("PB-2");
+            rig.Pilot.Set(Session, "PB-2", WorkspacePilotEditPortDouble.View(PilotFieldState.Dirty, pending: "1:2", isProtected: true));
+            rig.Pilot.BoundaryResponder = (_, _, kind) =>
+                new PilotBoundaryResult(kind, PilotBoundaryDecision.Kept, false, System.Array.Empty<PilotFieldProblem>(), null);
+
+            rig.Window.OpenRack("SEL-1");
+            Assert.Equal("SEL-1", rig.Panel.Browser.ActiveRackId);
+
+            rig.Window.OpenRack("PB-2");
+            rig.Pilot.BoundaryResponder = null;
+            rig.Pilot.Throws[WorkspacePilotEditPortDouble.BoundaryOp] = new InvalidOperationException("eLockViolation");
+
+            rig.Window.OpenRack("SEL-1");
+
+            Assert.Equal("PB-2", rig.Panel.Browser.ActiveRackId);
+            Assert.Equal("Error: eLockViolation", rig.Panel.Browser.Field.StateText);
         }
 
         [Fact]
@@ -501,6 +540,29 @@ namespace RackCad.UI.Tests
         }
 
         [Fact]
+        public void ClosingFromTheListARackWithWorkNotWrittenAsksFirstAndCancelKeepsIt()
+        {
+            // M-03 of the second review: «Cerrar» of the list follows the rules of closing a tab, so a protected draft asks Discard or
+            // Cancel in the page of the rack, which the window shows.
+            var rig = new Rig();
+            rig.Window.OpenRack("PB-2");
+            rig.Pilot.Set(Session, "PB-2", WorkspacePilotEditPortDouble.View(PilotFieldState.Dirty, isProtected: true));
+            rig.Window.ShowPage(RackCadWindowPage.Nuevo);
+
+            rig.List.Close("PB-2");
+
+            Assert.True(rig.Panel.Browser.HasConfirmation);
+            Assert.Equal(RackCadWindowPage.Rack, rig.Window.Page);
+            Assert.True(rig.List.Groups.SelectMany(g => g.Items).Single(i => i.RackId == "PB-2").HasTab);
+
+            rig.Panel.Browser.CancelDiscard();
+
+            Assert.False(rig.Panel.Browser.HasConfirmation);
+            Assert.Equal("PB-2", rig.Panel.Browser.ActiveRackId);
+            Assert.True(rig.List.Groups.SelectMany(g => g.Items).Single(i => i.RackId == "PB-2").HasTab);
+        }
+
+        [Fact]
         public void AnOutdatedListIsKeptAndSaysSoUntilItIsReadAgain()
         {
             var rig = new Rig();
@@ -508,6 +570,38 @@ namespace RackCad.UI.Tests
 
             rig.Window.Refresh();
             Assert.Equal(6, rig.List.RackCount);
+            Assert.Equal("La lista puede no estar al día: pulsa «Volver a leer la lista».", rig.List.StatusText);
+
+            rig.List.Reload();
+            Assert.Equal(string.Empty, rig.List.StatusText);
+        }
+
+        [Fact]
+        public void ComingBackToADrawingShowsTheListReadThereSaidAsPossiblyNotUpToDate()
+        {
+            // The sequence of the review (P12): drawing 7 read, a command ends there, drawing 8 read, back to 7. The host reads a drawing
+            // on its own only once, so its answer for 7 is now "outdated"; the column must still show the 6 racks of 7, not an empty list.
+            var rig = new Rig();
+            var other = new List<BrowserRackListEntry> { Entry("SEL-9", "Otro dibujo", "selective") };
+            var outdated = new HashSet<long>();
+            rig.Summary.ListResponder = (origin, user) =>
+            {
+                if (!user && outdated.Contains(origin.Origin.Value)) return BrowserRackList.Outdated();
+                outdated.Add(origin.Origin.Value);
+                return BrowserRackList.Ready(origin.Origin.Value == 8 ? other : rig.Racks);
+            };
+            rig.List.Reload();
+            Assert.Equal(6, rig.List.RackCount);
+
+            rig.Host.Snapshot = WorkspacePanelFixtures.Ready(session: 8);
+            rig.Window.Refresh();
+            Assert.Equal(new[] { "Otro dibujo" }, Names(rig.List));
+            Assert.Equal(string.Empty, rig.List.StatusText);
+
+            rig.Host.Snapshot = WorkspacePanelFixtures.Ready(session: 7);
+            rig.Window.Refresh();
+            Assert.Equal(6, rig.List.RackCount);
+            Assert.DoesNotContain("Otro dibujo", Names(rig.List));
             Assert.Equal("La lista puede no estar al día: pulsa «Volver a leer la lista».", rig.List.StatusText);
 
             rig.List.Reload();
@@ -556,7 +650,7 @@ namespace RackCad.UI.Tests
                     return 42;
                 });
 
-                host.Window.ShowDialog();
+                ShowWithSafetyTimer(host.Window);
 
                 Assert.Same(host.Window, seen);
                 Assert.True(childShown);
@@ -574,7 +668,7 @@ namespace RackCad.UI.Tests
             {
                 var host = new RackModalHostWindow(_ => throw new InvalidOperationException("boom"));
 
-                host.Window.ShowDialog();
+                ShowWithSafetyTimer(host.Window);
 
                 Assert.IsType<InvalidOperationException>(host.Failure);
                 var thrown = Assert.Throws<InvalidOperationException>(() => host.ThrowIfFailed());
@@ -587,6 +681,31 @@ namespace RackCad.UI.Tests
         public void TheModalHostIsNotANewWindowType()
         {
             Assert.False(typeof(Window).IsAssignableFrom(typeof(RackModalHostWindow)));
+        }
+
+        // A host that never runs its work would leave ShowDialog open for ever: the timer closes the window and the test fails instead of
+        // hanging the job of UI (M-01 of the second review).
+        private static void ShowWithSafetyTimer(Window window)
+        {
+            var timedOut = false;
+            var timer = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromSeconds(15) };
+            timer.Tick += (_, _) =>
+            {
+                timer.Stop();
+                timedOut = true;
+                window.Close();
+            };
+            timer.Start();
+            try
+            {
+                window.ShowDialog();
+            }
+            finally
+            {
+                timer.Stop();
+            }
+
+            Assert.False(timedOut, "the modal host did not run its work and close by itself.");
         }
         // ------------------------------------------------------------------ the view
 

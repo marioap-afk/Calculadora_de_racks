@@ -178,6 +178,15 @@ namespace RackCad.UI.VentanaRackCad
             {
                 _listSession = null;
                 _racks = Array.Empty<BrowserRackListEntry>();
+
+                // Coming back to a drawing shows the list read there before, said as possibly not up to date: the host reads a drawing
+                // on its own only once (V-10), so without this memory the column would be empty until the user reads it again.
+                if (session.HasValue && TryRecall(session.Value, out var remembered))
+                {
+                    _racks = remembered;
+                    _listSession = session;
+                    SetStatus(OutdatedText);
+                }
             }
 
             Load(userRequested: false);
@@ -270,11 +279,12 @@ namespace RackCad.UI.VentanaRackCad
                 case BrowserSummaryStatus.Ready:
                     _racks = list.Racks ?? Array.Empty<BrowserRackListEntry>();
                     _listSession = _session;
+                    Remember(_session.Value, _racks);
                     SetStatus(_racks.Count == 0 ? "Este dibujo no tiene racks de RackCad." : string.Empty);
                     break;
                 case BrowserSummaryStatus.Busy:
                     if (list.IsOutdated && _listSession != null)
-                        SetStatus("La lista puede no estar al día: pulsa «Volver a leer la lista».");
+                        SetStatus(OutdatedText);
                     else if (_listSession == null) SetStatus(list.IsOutdated ? "Pulsa «Volver a leer la lista»." : "Leyendo la lista del dibujo…");
                     break;
                 case BrowserSummaryStatus.Failed:
@@ -284,6 +294,32 @@ namespace RackCad.UI.VentanaRackCad
                     if (_listSession == null) SetStatus("La lista de racks no está disponible.");
                     break;
             }
+        }
+
+        private const string OutdatedText = "La lista puede no estar al día: pulsa «Volver a leer la lista».";
+
+        // The last list read of each drawing, newest first; only a few drawings are remembered, the oldest are forgotten first.
+        private const int RememberedSessions = 8;
+        private readonly List<(SessionId Session, IReadOnlyList<BrowserRackListEntry> Racks)> _remembered = new();
+
+        private void Remember(SessionId session, IReadOnlyList<BrowserRackListEntry> racks)
+        {
+            _remembered.RemoveAll(r => r.Session == session);
+            _remembered.Insert(0, (session, racks));
+            if (_remembered.Count > RememberedSessions) _remembered.RemoveRange(RememberedSessions, _remembered.Count - RememberedSessions);
+        }
+
+        private bool TryRecall(SessionId session, out IReadOnlyList<BrowserRackListEntry> racks)
+        {
+            foreach (var remembered in _remembered)
+            {
+                if (remembered.Session != session) continue;
+                racks = remembered.Racks;
+                return true;
+            }
+
+            racks = Array.Empty<BrowserRackListEntry>();
+            return false;
         }
 
         private void SetStatus(string text)

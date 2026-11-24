@@ -1209,7 +1209,7 @@ namespace RackCad.UI.Tests
             Assert.True(rig.Tab("R-2")?.IsPreview);
             Assert.Equal("1:75", rig.Pilot.Current(A, "R-1").PendingText);
             Assert.Equal("1:75", rig.Field.Text);
-            Assert.Equal("La selección abrió R-2 en segundo plano; la pestaña activa conserva su texto pendiente.", rig.Browser.NoticeText);
+            Assert.Equal("La selección abrió R-2 sin mostrarlo; el rack activo conserva su texto pendiente.", rig.Browser.NoticeText);
             Assert.Empty(rig.Pilot.Of(WorkspacePilotEditPortDouble.BoundaryOp));
         }
 
@@ -1227,7 +1227,7 @@ namespace RackCad.UI.Tests
             Assert.False(rig.IsOpen("R-9"));
             Assert.True(rig.IsOpen("R-8"));
             Assert.Equal(2, rig.Browser.Tabs.Count);
-            Assert.Equal("La selección abrió R-8 en segundo plano; la pestaña activa conserva su texto pendiente.", rig.Browser.NoticeText);
+            Assert.Equal("La selección abrió R-8 sin mostrarlo; el rack activo conserva su texto pendiente.", rig.Browser.NoticeText);
         }
 
         [Fact]
@@ -1241,7 +1241,7 @@ namespace RackCad.UI.Tests
             rig.Present(A, SelectionContext.One("R-2"));
 
             Assert.Equal("R-1", rig.Browser.ActiveRackId);
-            Assert.Equal("La selección de R-2 no cambió la pestaña activa, que conserva su texto pendiente.", rig.Browser.NoticeText);
+            Assert.Equal("La selección de R-2 no cambió el rack activo, que conserva su texto pendiente.", rig.Browser.NoticeText);
 
             // The same context again is consumed: nothing opens and it does not warn again.
             rig.Browser.CancelDiscard();
@@ -1252,7 +1252,7 @@ namespace RackCad.UI.Tests
             rig.Present(A, SelectionContext.None);
             rig.Present(A, SelectionContext.One("R-2"));
             Assert.Equal("R-1", rig.Browser.ActiveRackId);
-            Assert.Contains("no cambió la pestaña activa", rig.Browser.NoticeText);
+            Assert.Contains("no cambió el rack activo", rig.Browser.NoticeText);
         }
 
         [Fact]
@@ -1595,7 +1595,7 @@ namespace RackCad.UI.Tests
             Assert.Equal("R-1", rig.Browser.ActiveRackId);
             Assert.True(rig.IsOpen("R-2"));
             Assert.Equal(
-                "La selección abrió R-2 en segundo plano; no se pudo comprobar si la pestaña activa tiene texto pendiente, así que se conserva.",
+                "La selección abrió R-2 sin mostrarlo; no se pudo comprobar si el rack activo tiene texto pendiente, así que se conserva.",
                 rig.Browser.NoticeText);
         }
 
@@ -1610,7 +1610,7 @@ namespace RackCad.UI.Tests
             rig.Present(A, SelectionContext.One("R-2"));
 
             Assert.Equal("R-1", rig.Browser.ActiveRackId);
-            Assert.Equal("La selección de R-2 no cambió la pestaña activa: no se pudo comprobar si tiene texto pendiente.", rig.Browser.NoticeText);
+            Assert.Equal("La selección de R-2 no cambió el rack activo: no se pudo comprobar si tiene texto pendiente.", rig.Browser.NoticeText);
         }
 
         [Fact]

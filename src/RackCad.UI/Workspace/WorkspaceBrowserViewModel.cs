@@ -722,13 +722,13 @@ namespace RackCad.UI.Workspace
             if (change == BrowserChange.Created || change == BrowserChange.Replaced)
             {
                 return couldNotCheck
-                    ? "La selección abrió " + rack + " en segundo plano; no se pudo comprobar si la pestaña activa tiene texto pendiente, así que se conserva."
-                    : "La selección abrió " + rack + " en segundo plano; la pestaña activa conserva su texto pendiente.";
+                    ? "La selección abrió " + rack + " sin mostrarlo; no se pudo comprobar si el rack activo tiene texto pendiente, así que se conserva."
+                    : "La selección abrió " + rack + " sin mostrarlo; el rack activo conserva su texto pendiente.";
             }
 
             return couldNotCheck
-                ? "La selección de " + rack + " no cambió la pestaña activa: no se pudo comprobar si tiene texto pendiente."
-                : "La selección de " + rack + " no cambió la pestaña activa, que conserva su texto pendiente.";
+                ? "La selección de " + rack + " no cambió el rack activo: no se pudo comprobar si tiene texto pendiente."
+                : "La selección de " + rack + " no cambió el rack activo, que conserva su texto pendiente.";
         }
 
         // Only pending text holds the active tab; so does a port that cannot say (couldNotCheck tells that case apart). A tab that is only dirty does not.
@@ -929,7 +929,7 @@ namespace RackCad.UI.Workspace
                 reason = string.Join(" ", crossed.InvalidFields.Select(f => string.IsNullOrWhiteSpace(f.Message) ? f.FieldKey : f.Message));
             else
                 reason = string.IsNullOrWhiteSpace(crossed.Reason) ? "sin detalle." : crossed.Reason;
-            return "No se cambió de pestaña: " + reason;
+            return "No se cambió de rack: " + reason;
         }
 
         // The boundaries the panel observes when a presentation changed the live surface (D-T3B1-06). A change of the presented session

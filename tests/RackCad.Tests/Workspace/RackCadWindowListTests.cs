@@ -283,6 +283,30 @@ public class RackCadWindowListTests
         }
     }
 
+    // I-02 and M-05 of the second review. The modal host of the window is a plain WPF Window configured in code, not a new window type, so
+    // the census of ADR-0029 does not see it (decision V-13): no other code may create a plain Window, or a real window could leave the
+    // census the same way. And the palette hands commands to AutoCAD only through the doors of the window, which give the focus back.
+    [Fact]
+    public void OnlyTheModalHostCreatesAPlainWindowAndOnlyTheDoorOfTheWindowHandsCommandsToAutoCad()
+    {
+        var plainWindow = new System.Text.RegularExpressions.Regex(@"\bnew\s+(System\.Windows\.)?Window\s*[({]");
+        var sendsCommands = new System.Text.RegularExpressions.Regex(@"\bSendStringToExecute\b");
+
+        Assert.Equal(new[] { "src/RackCad.UI/VentanaRackCad/RackModalHostWindow.cs" }, SourcesMatching(plainWindow));
+        Assert.Equal(new[] { "src/RackCad.Plugin/VentanaRackCad/RackCadClassicCommandPort.cs" }, SourcesMatching(sendsCommands));
+    }
+
+    private static string[] SourcesMatching(System.Text.RegularExpressions.Regex pattern)
+    {
+        var root = Root();
+        return Directory.GetFiles(Path.Combine(root, "src"), "*.cs", SearchOption.AllDirectories)
+            .Where(path => !path.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar).Any(s => s == "bin" || s == "obj"))
+            .Where(path => pattern.IsMatch(WorkspaceHostSource.CodeOnly(File.ReadAllText(path))))
+            .Select(path => Path.GetRelativePath(root, path).Replace('\\', '/'))
+            .OrderBy(path => path, StringComparer.Ordinal)
+            .ToArray();
+    }
+
     private static string Root()
     {
         var dir = new DirectoryInfo(AppContext.BaseDirectory);
