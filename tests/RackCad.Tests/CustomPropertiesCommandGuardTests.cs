@@ -68,7 +68,7 @@ namespace RackCad.Tests
 
         /// <summary>
         /// Lo que I-64 A-14 (linea D, Dinamico) anade, EXACTAMENTE: la puerta de la ventana a un rack, que lee su diseno sin marca de Deshacer
-        /// y escribe su borrador, sin alias, en <c>src/RackCad.Plugin/VentanaRackCad/RackCadRackDoorPort.cs</c>.
+        /// y escribe su borrador, sin alias, en <c>src/RackCad.Plugin/VentanaRackCad/RackCadRackDoorCommands.cs</c>.
         /// </summary>
         internal static readonly string[] A14DynamicDoorCommands = { "RACKDINAMICOABRIR", "RACKDINAMICOAPLICAR" };
 

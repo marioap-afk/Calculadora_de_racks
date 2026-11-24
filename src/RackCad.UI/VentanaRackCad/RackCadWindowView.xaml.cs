@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using RackCad.Application.VentanaRackCad;
@@ -74,31 +75,41 @@ namespace RackCad.UI.VentanaRackCad
         private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(RackCadWindowViewModel.SideCollapsed)) ApplySideCollapsed();
-            if (e.PropertyName == nameof(RackCadWindowViewModel.ActiveDynamicEditor) || e.PropertyName == nameof(RackCadWindowViewModel.ShowPanel))
+            if (e.PropertyName == nameof(RackCadWindowViewModel.ActiveDynamicEditor)
+                || e.PropertyName == nameof(RackCadWindowViewModel.ShowPanel)
+                || e.PropertyName == nameof(RackCadWindowViewModel.DynamicEditors))
                 ShowRackContent();
         }
 
         // The page of the rack shows the Dinámico editor of the window when it is open (and the user did not ask for the panel), and the
-        // workspace panel otherwise.
+        // workspace panel otherwise. The views of editors the window no longer keeps (closed, or of a closed drawing) are forgotten.
         private void ShowRackContent()
         {
-            var editor = _viewModel.ActiveDynamicEditor;
-            if (editor == null || _viewModel.ShowPanel)
+            var live = _viewModel.DynamicEditors;
+            foreach (var gone in _dynamicViews.Keys.Where(editor => !live.Contains(editor)).ToList()) _dynamicViews.Remove(gone);
+
+            var active = _viewModel.ActiveDynamicEditor;
+            if (active == null || _viewModel.ShowPanel)
             {
                 if (!ReferenceEquals(RackPageHost.Content, PanelView)) RackPageHost.Content = PanelView;
                 return;
             }
 
-            if (!_dynamicViews.TryGetValue(editor, out var view))
+            if (!_dynamicViews.TryGetValue(active, out var view))
             {
-                view = new DynamicEditorView(editor, () => _viewModel.OriginalDesignOf(editor), () => _viewModel.OriginalNameOf(editor));
-                _dynamicViews[editor] = view;
+                view = new DynamicEditorView(active);
+                _dynamicViews[active] = view;
             }
 
             if (!ReferenceEquals(RackPageHost.Content, view)) RackPageHost.Content = view;
         }
 
+        /// <summary>How many editor views the page keeps (one per editor that the window keeps).</summary>
+        internal int DynamicViewCount => _dynamicViews.Count;
+
         private void OnEditDynamicHereClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.EditDynamicHere());
+
+        private void OnStopWaitingClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.StopWaiting());
 
         private void OnPanelToggleClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.ShowPanel = !_viewModel.ShowPanel);
 

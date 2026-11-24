@@ -2,29 +2,23 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using RackCad.Domain.Systems.Dynamic;
 
 namespace RackCad.UI.VentanaRackCad
 {
     /// <summary>
     /// The view of the Dinámico editor of the RackCad window (I-64 A-14, line D). It only passes the gestures of the user to the view-model:
     /// a field is committed with Enter or when it loses the focus, a click on the matrix selects with the modifiers of the keyboard, and
-    /// «Restaurar layout» asks inline first. Every failure is contained and said in the message of the editor.
+    /// «Restaurar layout» and «Cerrar el editor» with changes ask inline first. The lists of the view-model keep their items, so a commit
+    /// never replaces the box that has the focus or the button under the mouse. Every failure is contained and said in the message of the
+    /// editor.
     /// </summary>
     public partial class DynamicEditorView : UserControl
     {
         private readonly DynamicEditorViewModel _viewModel;
-        private readonly Func<DynamicRackDesign> _original;
-        private readonly Func<string> _originalName;
 
-        /// <param name="viewModel">The editor of the rack.</param>
-        /// <param name="original">What «Descartar» goes back to: the design read from the drawing (null for a new rack).</param>
-        /// <param name="originalName">The name read from the drawing.</param>
-        public DynamicEditorView(DynamicEditorViewModel viewModel, Func<DynamicRackDesign> original = null, Func<string> originalName = null)
+        public DynamicEditorView(DynamicEditorViewModel viewModel)
         {
             _viewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
-            _original = original;
-            _originalName = originalName;
             InitializeComponent();
             DataContext = viewModel;
         }
@@ -77,8 +71,7 @@ namespace RackCad.UI.VentanaRackCad
             _viewModel.RequestWrite();
         });
 
-        private void OnDiscardClick(object sender, RoutedEventArgs e) =>
-            Contained(() => _viewModel.Discard(_original?.Invoke(), _originalName?.Invoke()));
+        private void OnDiscardClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Discard());
 
         private void OnRestoreClick(object sender, RoutedEventArgs e) => RestoreConfirmPanel.Visibility = Visibility.Visible;
 
@@ -89,6 +82,16 @@ namespace RackCad.UI.VentanaRackCad
         });
 
         private void OnRestoreNoClick(object sender, RoutedEventArgs e) => RestoreConfirmPanel.Visibility = Visibility.Collapsed;
+
+        private void OnCloseEditorClick(object sender, RoutedEventArgs e) => Contained(() =>
+        {
+            NameBox.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
+            _viewModel.RequestClose();
+        });
+
+        private void OnCloseYesClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.ConfirmClose());
+
+        private void OnCloseNoClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.CancelClose());
 
         private void Contained(Action action)
         {

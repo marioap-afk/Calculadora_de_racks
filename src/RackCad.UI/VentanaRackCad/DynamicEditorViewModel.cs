@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using RackCad.Application.Catalogs;
+using RackCad.Application.Persistence;
 using RackCad.Application.Systems.Dynamic;
 using RackCad.Application.VentanaRackCad;
 using RackCad.Domain.Systems.Dynamic;
@@ -10,22 +10,30 @@ using RackCad.Domain.Systems.Shared;
 
 namespace RackCad.UI.VentanaRackCad
 {
-    /// <summary>One editable value of the Dinámico editor: its label, unit and text, the hint when the selection has several values, and its error.</summary>
+    /// <summary>
+    /// One editable value of the Dinámico editor: its label, unit and text, the hint when the selection has several values, and its error.
+    /// The item lives as long as the editor: a recomposition refreshes it in place, so the box that has the focus is never replaced.
+    /// </summary>
     public sealed class DynamicFieldItem : ObservableObject
     {
-        private readonly Func<string, string> _commit;
+        private Func<string, string> _commit;
         private string _text;
+        private string _shownText;
+        private string _hint;
         private string _error = string.Empty;
+        private bool _isReadOnly;
         private bool _committing;
 
-        public DynamicFieldItem(string key, string label, string unit, string text, string hint, Func<string, string> commit)
+        public DynamicFieldItem(string key, string label, string unit, string text, string hint, Func<string, string> commit, bool isReadOnly = false)
         {
             Key = key;
             Label = label;
             Unit = unit ?? string.Empty;
             _text = text ?? string.Empty;
-            Hint = hint ?? string.Empty;
+            _shownText = _text;
+            _hint = hint ?? string.Empty;
             _commit = commit;
+            _isReadOnly = isReadOnly;
         }
 
         public string Key { get; }
@@ -35,7 +43,11 @@ namespace RackCad.UI.VentanaRackCad
         public string Unit { get; }
 
         /// <summary>«Varía» when the values of the selection differ and the box is empty; empty otherwise.</summary>
-        public string Hint { get; }
+        public string Hint
+        {
+            get => _hint;
+            private set => SetProperty(ref _hint, value ?? string.Empty);
+        }
 
         public string Text
         {
@@ -49,10 +61,26 @@ namespace RackCad.UI.VentanaRackCad
             private set => SetProperty(ref _error, value ?? string.Empty);
         }
 
-        /// <summary>The gesture of the field (Enter or leaving it): the text goes to the draft, or the field says why not.</summary>
+        /// <summary>The field cannot be written now: AutoCAD is writing the rack, or the selection has nothing that this field edits.</summary>
+        public bool IsReadOnly
+        {
+            get => _isReadOnly;
+            private set => SetProperty(ref _isReadOnly, value);
+        }
+
+        /// <summary>
+        /// The gesture of the field (Enter or leaving it): the text goes to the draft, or the field says why not. Leaving a field whose text
+        /// is the one it showed changes nothing (also an empty «Varía»): only a value that the user wrote reaches the draft.
+        /// </summary>
         public void Commit()
         {
-            if (_committing || _commit == null) return;
+            if (_committing || _commit == null || _isReadOnly) return;
+            if (string.Equals(_text.Trim(), _shownText.Trim(), StringComparison.Ordinal))
+            {
+                Error = string.Empty;
+                return;
+            }
+
             _committing = true;
             try
             {
@@ -63,16 +91,93 @@ namespace RackCad.UI.VentanaRackCad
                 _committing = false;
             }
         }
+
+        // A recomposition refreshed the field: what it shows, what it writes, and whether it can be written. The error is cleared; the
+        // commit that is running sets its own once it returns.
+        internal void Refresh(DynamicFieldItem next)
+        {
+            _commit = next._commit;
+            _shownText = next._text;
+            Hint = next._hint;
+            IsReadOnly = next._isReadOnly;
+            Text = next._text;
+            Error = string.Empty;
+        }
     }
 
-    /// <summary>One cell of the matrix: front × level, with one datum (the pallet, width × height) and its marks.</summary>
-    public sealed record DynamicCellItem(int FrontIndex, int LevelIndex, string Text, bool Exists, bool IsSelected, bool IsPrimary, bool IsBlankFront);
+    /// <summary>One cell of the matrix: front × level, with one datum (the pallet, width × height) and its marks; refreshed in place.</summary>
+    public sealed class DynamicCellItem : ObservableObject
+    {
+        private string _text = string.Empty;
+        private bool _exists;
+        private bool _isSelected;
+        private bool _isPrimary;
+        private bool _isBlankFront;
+
+        public DynamicCellItem(int frontIndex, int levelIndex)
+        {
+            FrontIndex = frontIndex;
+            LevelIndex = levelIndex;
+        }
+
+        public int FrontIndex { get; }
+
+        public int LevelIndex { get; }
+
+        public string Text { get => _text; private set => SetProperty(ref _text, value); }
+
+        public bool Exists { get => _exists; private set => SetProperty(ref _exists, value); }
+
+        public bool IsSelected { get => _isSelected; private set => SetProperty(ref _isSelected, value); }
+
+        public bool IsPrimary { get => _isPrimary; private set => SetProperty(ref _isPrimary, value); }
+
+        public bool IsBlankFront { get => _isBlankFront; private set => SetProperty(ref _isBlankFront, value); }
+
+        internal void Set(string text, bool exists, bool isSelected, bool isPrimary, bool isBlankFront)
+        {
+            Text = text;
+            Exists = exists;
+            IsSelected = isSelected;
+            IsPrimary = isPrimary;
+            IsBlankFront = isBlankFront;
+        }
+    }
 
     /// <summary>One row of the matrix: «N3» … «N1», top to bottom.</summary>
-    public sealed record DynamicMatrixRow(int LevelIndex, string Label, IReadOnlyList<DynamicCellItem> Cells);
+    public sealed class DynamicMatrixRow
+    {
+        public DynamicMatrixRow(int levelIndex, string label, IReadOnlyList<DynamicCellItem> cells)
+        {
+            LevelIndex = levelIndex;
+            Label = label;
+            Cells = cells;
+        }
 
-    /// <summary>One column head of the matrix: «F1» …, with its blank mark.</summary>
-    public sealed record DynamicColumnHead(int FrontIndex, string Title, bool IsBlank);
+        public int LevelIndex { get; }
+
+        public string Label { get; }
+
+        public IReadOnlyList<DynamicCellItem> Cells { get; }
+    }
+
+    /// <summary>One column head of the matrix: «F1» …, with its blank mark; refreshed in place.</summary>
+    public sealed class DynamicColumnHead : ObservableObject
+    {
+        private bool _isBlank;
+
+        public DynamicColumnHead(int frontIndex, string title)
+        {
+            FrontIndex = frontIndex;
+            Title = title;
+        }
+
+        public int FrontIndex { get; }
+
+        public string Title { get; }
+
+        public bool IsBlank { get => _isBlank; internal set => SetProperty(ref _isBlank, value); }
+    }
 
     /// <summary>One computed value of the rack.</summary>
     public sealed record DynamicCalcItem(string Label, string Value);
@@ -85,21 +190,32 @@ namespace RackCad.UI.VentanaRackCad
     /// the tabs Rack, Matriz and Avanzado, over the same recomposition as the classic editor (<see cref="DynamicDraftEditor"/>).
     ///
     /// One way to confirm: what the user writes in a field goes to the draft when the field is left (or with Enter) and the rack is
-    /// recomposed; there are no «apply» buttons. One scope: the selection of the matrix (a click, Ctrl+click, Mayús+click, a column, a row or
-    /// «Todo»). A value that cannot be recomposed is refused in its field and the draft stays as it was. The rack-wide fields of «Lo
-    /// esencial» write every cell or front of the rack and say «Varía» when they differ. Nothing here writes the drawing: «Actualizar» hands
-    /// the design to the host.
+    /// recomposed; leaving a field without changing its text changes nothing. One scope: the selection of the matrix (a click, Ctrl+click,
+    /// Mayús+click from the anchor, a column, a row or «Todo»). A value that cannot be recomposed is refused in its field and the draft,
+    /// its matrix and its selection stay as they were. The rack-wide fields of «Lo esencial» write every active cell or front of the rack
+    /// and say «Varía» when they differ; a front in blank keeps its levels and cells untouched until it is active again, as in the
+    /// classic editor. The draft is «Modificado» only while it differs from what was last read from the drawing or written to it.
+    /// Nothing here writes the drawing: «Actualizar» hands the editor to the host, and while AutoCAD writes nothing can be edited.
     /// </summary>
     public sealed class DynamicEditorViewModel : ObservableObject
     {
         private const string Varies = "Varía";
+        private const string WritingText = "AutoCAD está escribiendo el rack: espera a que termine o pulsa «Dejar de esperar».";
+
+        private static readonly RackProjectStore Store = new();
 
         private readonly DynamicDraftEditor _editor;
         private readonly Action<DynamicEditorViewModel> _update;
         private int _selectedTab = 1;
         private bool _dirty;
+        private bool _writing;
+        private bool _confirmingClose;
+        private string _baselineJson;
+        private string _baselineName = string.Empty;
         private string _message = string.Empty;
         private bool _messageIsError;
+        private int _anchorFront;
+        private int _anchorLevel;
 
         private IReadOnlyList<DynamicFieldItem> _essentials = Array.Empty<DynamicFieldItem>();
         private IReadOnlyList<DynamicFieldItem> _postFields = Array.Empty<DynamicFieldItem>();
@@ -111,7 +227,7 @@ namespace RackCad.UI.VentanaRackCad
         private IReadOnlyList<DynamicColumnHead> _columns = Array.Empty<DynamicColumnHead>();
         private IReadOnlyList<DynamicModuleItem> _modules = Array.Empty<DynamicModuleItem>();
 
-        /// <param name="editor">The draft of the rack.</param>
+        /// <param name="editor">The draft of the rack, as it was read (its design is the baseline of «Modificado» and of «Descartar»).</param>
         /// <param name="rackId">The identity of the rack in the drawing; null for a new rack.</param>
         /// <param name="update">What «Actualizar» does with this editor (the host writes the drawing); null when it is not offered.</param>
         public DynamicEditorViewModel(DynamicDraftEditor editor, string rackId, Action<DynamicEditorViewModel> update = null)
@@ -119,8 +235,15 @@ namespace RackCad.UI.VentanaRackCad
             _editor = editor ?? throw new ArgumentNullException(nameof(editor));
             RackId = rackId;
             _update = update;
+            _anchorFront = editor.Matrix.SelectedFrontIndex;
+            _anchorLevel = editor.Matrix.SelectedLevelIndex;
+            TakeBaseline();
             Rebuild();
+            if (!string.IsNullOrWhiteSpace(editor.LoadNotice)) Say(editor.LoadNotice, error: false);
         }
+
+        /// <summary>«Cerrar el editor» was confirmed (or the draft had nothing to lose): the host forgets this editor.</summary>
+        public event Action<DynamicEditorViewModel> CloseRequested;
 
         // ------------------------------------------------------------------ what the editor shows
 
@@ -135,10 +258,15 @@ namespace RackCad.UI.VentanaRackCad
             {
                 var next = value ?? string.Empty;
                 if (string.Equals(_editor.Name ?? string.Empty, next, StringComparison.Ordinal)) return;
+                if (!CanEdit)
+                {
+                    OnPropertyChanged(nameof(Name));
+                    return;
+                }
+
                 _editor.Name = next;
-                if (_editor.System != null) _editor.System.Name = next.Trim();
-                MarkDirty();
                 OnPropertyChanged(nameof(Name));
+                UpdateDirty();
             }
         }
 
@@ -151,24 +279,37 @@ namespace RackCad.UI.VentanaRackCad
 
         public bool IsDirty => _dirty;
 
-        public string StatusText => _dirty ? "Modificado" : "Limpio";
+        /// <summary>AutoCAD is writing this draft: nothing can be edited until it answers or the window stops waiting.</summary>
+        public bool IsWriting => _writing;
+
+        public bool CanEdit => !_writing;
+
+        public bool IsNameReadOnly => !CanEdit;
+
+        public bool CanDiscard => _dirty && CanEdit;
+
+        public string StatusText => _writing ? "Escribiendo" : _dirty ? "Modificado" : "Limpio";
 
         public string Message => _message;
 
         public bool MessageIsError => _messageIsError;
 
-        public bool CanUpdate => _update != null && _dirty && _editor.Design != null && string.IsNullOrEmpty(_editor.LastError);
+        public bool CanUpdate => _update != null && _dirty && CanEdit && _editor.Design != null && string.IsNullOrEmpty(_editor.LastError);
 
         public string UpdateBlockedText
         {
             get
             {
                 if (_update == null) return "Aquí no se puede escribir el dibujo.";
+                if (_writing) return WritingText;
                 if (!_dirty) return "Sin cambios que escribir.";
                 if (!string.IsNullOrEmpty(_editor.LastError)) return _editor.LastError;
                 return string.Empty;
             }
         }
+
+        /// <summary>«Cerrar el editor» of a draft with changes asks first, inline: discard them and close, or cancel.</summary>
+        public bool IsConfirmingClose => _confirmingClose;
 
         public IReadOnlyList<DynamicFieldItem> Essentials => _essentials;
 
@@ -200,22 +341,36 @@ namespace RackCad.UI.VentanaRackCad
             }
         }
 
+        /// <summary>Why part of the selection is not edited: the fronts in blank that it touches; empty otherwise.</summary>
+        public string InspectorNote
+        {
+            get
+            {
+                var blank = _editor.Matrix.SelectedFrontIndices.Distinct().Where(f => !_editor.Matrix.IsActive(f)).OrderBy(f => f).ToList();
+                if (blank.Count == 0) return string.Empty;
+                var names = string.Join(", ", blank.Select(f => "F" + (f + 1)));
+                return blank.Count == 1
+                    ? names + " está en blanco: sus niveles y sus celdas no se editan. Actívalo para volver a editarlo."
+                    : names + " están en blanco: sus niveles y sus celdas no se editan. Actívalos para volver a editarlos.";
+            }
+        }
+
         public bool NumberFronts
         {
             get => _editor.Annotations.NumberFronts;
-            set => SetAnnotation(() => _editor.Annotations.NumberFronts = value);
+            set { if (_editor.Annotations.NumberFronts != value) SetAnnotation(() => _editor.Annotations.NumberFronts = value); }
         }
 
         public bool NumberLevels
         {
             get => _editor.Annotations.NumberLevels;
-            set => SetAnnotation(() => _editor.Annotations.NumberLevels = value);
+            set { if (_editor.Annotations.NumberLevels != value) SetAnnotation(() => _editor.Annotations.NumberLevels = value); }
         }
 
         public bool DrawRackName
         {
             get => _editor.Annotations.DrawRackName;
-            set => SetAnnotation(() => _editor.Annotations.DrawRackName = value);
+            set { if (_editor.Annotations.DrawRackName != value) SetAnnotation(() => _editor.Annotations.DrawRackName = value); }
         }
 
         public bool DerivedPostReinforced
@@ -230,7 +385,7 @@ namespace RackCad.UI.VentanaRackCad
 
         // ------------------------------------------------------------------ the selection of the matrix (the one scope)
 
-        /// <summary>A click on a cell: one cell; with Ctrl, add or remove it; with Mayús, the rectangle from the primary cell.</summary>
+        /// <summary>A click on a cell: one cell; with Ctrl, add or remove it; with Mayús, the rectangle from the anchor (the last plain click).</summary>
         public void ClickCell(int frontIndex, int levelIndex, bool control, bool shift)
         {
             var matrix = _editor.Matrix;
@@ -238,18 +393,20 @@ namespace RackCad.UI.VentanaRackCad
 
             if (shift)
             {
-                var fromFront = matrix.SelectedFrontIndex;
-                var fromLevel = matrix.SelectedLevelIndex;
+                var fromFront = _anchorFront >= 0 && _anchorFront < matrix.Count ? _anchorFront : matrix.SelectedFrontIndex;
+                var fromLevel = _anchorFront >= 0 && _anchorFront < matrix.Count ? _anchorLevel : matrix.SelectedLevelIndex;
                 matrix.ToggleCell(fromFront, fromLevel, extendSelection: false);
                 for (var f = Math.Min(fromFront, frontIndex); f <= Math.Max(fromFront, frontIndex); f++)
                     for (var l = Math.Min(fromLevel, levelIndex); l <= Math.Max(fromLevel, levelIndex); l++)
                         Add(f, l);
-                // The clicked cell becomes the primary one, still selected.
+                // The clicked cell becomes the primary one, still selected; the anchor stays where it was.
                 if (Exists(frontIndex, levelIndex) && matrix.IsSelected(frontIndex, levelIndex)) { matrix.ToggleCell(frontIndex, levelIndex, true); matrix.ToggleCell(frontIndex, levelIndex, true); }
             }
             else
             {
                 matrix.ToggleCell(frontIndex, levelIndex, control);
+                _anchorFront = frontIndex;
+                _anchorLevel = levelIndex;
             }
 
             matrix.NormalizeSelection();
@@ -264,6 +421,7 @@ namespace RackCad.UI.VentanaRackCad
             matrix.ToggleCell(frontIndex, 0, extendSelection: false);
             for (var l = 1; l < matrix.Fronts[frontIndex].LoadLevels; l++) Add(frontIndex, l);
             matrix.NormalizeSelection();
+            SetAnchor(frontIndex, 0);
             RebuildSelection();
         }
 
@@ -271,15 +429,16 @@ namespace RackCad.UI.VentanaRackCad
         public void SelectLevel(int levelIndex)
         {
             var matrix = _editor.Matrix;
-            var first = true;
+            var first = -1;
             for (var f = 0; f < matrix.Count; f++)
             {
                 if (!Exists(f, levelIndex)) continue;
-                if (first) { matrix.ToggleCell(f, levelIndex, extendSelection: false); first = false; }
+                if (first < 0) { matrix.ToggleCell(f, levelIndex, extendSelection: false); first = f; }
                 else Add(f, levelIndex);
             }
 
             matrix.NormalizeSelection();
+            if (first >= 0) SetAnchor(first, levelIndex);
             RebuildSelection();
         }
 
@@ -292,6 +451,7 @@ namespace RackCad.UI.VentanaRackCad
                 for (var l = 0; l < matrix.Fronts[f].LoadLevels; l++)
                     Add(f, l);
             matrix.NormalizeSelection();
+            SetAnchor(0, 0);
             RebuildSelection();
         }
 
@@ -307,6 +467,14 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>«En blanco» of a front: it keeps its structure and carries nothing. The last active front cannot be blank.</summary>
         public void SetFrontBlank(int frontIndex, bool blank)
         {
+            if (!CanEdit)
+            {
+                Say(WritingText, error: true);
+                return;
+            }
+
+            if (_editor.Matrix.IsActive(frontIndex) == !blank) return;
+
             string refusal = null;
             Apply(() =>
             {
@@ -315,32 +483,52 @@ namespace RackCad.UI.VentanaRackCad
             if (refusal != null) Say(refusal, error: true);
         }
 
-        /// <summary>«Descartar»: the draft goes back to what was loaded (or to a new rack).</summary>
-        public void Discard(DynamicRackDesign original, string name)
+        /// <summary>«Descartar»: the draft goes back to what was last read from the drawing or written to it in this editor.</summary>
+        public void Discard()
         {
-            if (original != null) _editor.LoadFrom(original, name);
-            else
+            if (!CanEdit)
             {
-                var fresh = DynamicDraftEditor.CreateNew(_editor.Catalog);
-                _editor.LoadFrom(fresh.Design, name);
+                Say(WritingText, error: true);
+                return;
             }
 
-            _dirty = false;
-            Say("Borrador descartado: se muestra lo que hay en el dibujo.", error: false);
+            DynamicRackDesign baseline;
+            try
+            {
+                baseline = _baselineJson == null ? null : Store.Deserialize(_baselineJson)?.DynamicDesign;
+            }
+            catch (Exception ex)
+            {
+                Say("No se pudo volver a lo leído del dibujo: " + ex.Message + " El borrador sigue como está.", error: true);
+                return;
+            }
+
+            if (baseline != null) _editor.LoadFrom(baseline, _baselineName);
+            TakeBaseline();
+            _confirmingClose = false;
+            Say(RackId == null
+                ? "Borrador descartado."
+                : "Borrador descartado: se muestra lo último que se leyó del dibujo o se escribió en él desde este editor.", error: false);
             Rebuild();
         }
 
         /// <summary>«Restaurar layout»: rebuilds the module sequence from scratch; the window asks first, because custom cabeceras are lost.</summary>
         public void RestoreStandard()
         {
+            if (!CanEdit)
+            {
+                Say(WritingText, error: true);
+                return;
+            }
+
             if (_editor.Recompose(restoreStandard: true))
             {
-                MarkDirty();
                 Say(string.IsNullOrWhiteSpace(_editor.LastRebuildReport) ? "Layout restaurado." : _editor.LastRebuildReport, error: false);
             }
             else Say(_editor.LastError, error: true);
 
             Rebuild();
+            UpdateDirty();
         }
 
         /// <summary>«Actualizar»: hands this editor to the host, which writes the drawing. Nothing happens when there is nothing to write.</summary>
@@ -355,11 +543,63 @@ namespace RackCad.UI.VentanaRackCad
             _update(this);
         }
 
-        /// <summary>The host wrote the draft: it is the drawing now.</summary>
-        public void MarkWritten(string message)
+        /// <summary>«Cerrar el editor»: closes it at once when the draft has nothing to lose, and asks first when it has changes.</summary>
+        public void RequestClose()
         {
-            _dirty = false;
+            if (!CanEdit)
+            {
+                Say(WritingText, error: true);
+                return;
+            }
+
+            if (_dirty)
+            {
+                SetConfirmingClose(true);
+                return;
+            }
+
+            CloseRequested?.Invoke(this);
+        }
+
+        /// <summary>«Descartar y cerrar» of the inline question.</summary>
+        public void ConfirmClose()
+        {
+            if (!_confirmingClose || !CanEdit) return;
+            SetConfirmingClose(false);
+            CloseRequested?.Invoke(this);
+        }
+
+        /// <summary>«Cancelar» of the inline question: the editor and its draft stay.</summary>
+        public void CancelClose() => SetConfirmingClose(false);
+
+        /// <summary>The host handed this draft to AutoCAD: nothing can be edited until it answers or the window stops waiting.</summary>
+        public void BeginWriting()
+        {
+            if (_writing) return;
+            _writing = true;
+            SetConfirmingClose(false);
+            Say("Escribiendo el rack en el dibujo…", error: false);
+            Rebuild();
+        }
+
+        /// <summary>The answer arrived, or the window stopped waiting: the editor can be edited again.</summary>
+        public void EndWriting()
+        {
+            if (!_writing) return;
+            _writing = false;
+            Rebuild();
+        }
+
+        /// <summary>
+        /// The host wrote what was sent: that design and that name are the drawing now, and «Descartar» goes back to them. The draft stays
+        /// «Modificado» only if it differs from what was written.
+        /// </summary>
+        public void MarkWritten(string message, string writtenJson, string writtenName)
+        {
+            _baselineJson = writtenJson;
+            _baselineName = (writtenName ?? string.Empty).Trim();
             Say(message, error: false);
+            UpdateDirty();
             RaiseState();
         }
 
@@ -373,6 +613,19 @@ namespace RackCad.UI.VentanaRackCad
         }
 
         // ------------------------------------------------------------------ internals
+
+        private void SetAnchor(int frontIndex, int levelIndex)
+        {
+            _anchorFront = frontIndex;
+            _anchorLevel = levelIndex;
+        }
+
+        private void SetConfirmingClose(bool value)
+        {
+            if (_confirmingClose == value) return;
+            _confirmingClose = value;
+            OnPropertyChanged(nameof(IsConfirmingClose));
+        }
 
         private bool Exists(int frontIndex, int levelIndex)
         {
@@ -391,30 +644,80 @@ namespace RackCad.UI.VentanaRackCad
             Apply(change, null);
         }
 
-        // Every change of the draft: a snapshot of the matrix, the change, the recomposition; a change that cannot be recomposed is undone
-        // and its reason goes back to the field.
+        private string DesignJson() => _editor.Design == null ? null : Store.Serialize(RackProject.ForDynamic(_editor.Design));
+
+        private void TakeBaseline()
+        {
+            _baselineJson = DesignJson();
+            _baselineName = (_editor.Name ?? string.Empty).Trim();
+            _dirty = false;
+            RaiseState();
+        }
+
+        // «Modificado» is a difference with what the drawing has (as last read or written), never a gesture: leaving a field, a value
+        // refused, or a recomposition that gives the same design leave the draft clean.
+        private void UpdateDirty()
+        {
+            var dirty = !string.Equals(DesignJson(), _baselineJson, StringComparison.Ordinal)
+                        || !string.Equals((_editor.Name ?? string.Empty).Trim(), _baselineName, StringComparison.Ordinal);
+            if (dirty == _dirty) return;
+            _dirty = dirty;
+            if (!dirty) SetConfirmingClose(false);
+            RaiseState();
+        }
+
+        // Every change of the draft: a snapshot of the matrix, of its selection and of the scalars, the change, the recomposition; a change
+        // that cannot be recomposed is undone (the matrix, the selection and the values) and its reason goes back to the field.
         private string Apply(Action change, string fieldError)
         {
             if (fieldError != null) return fieldError;
+            if (!CanEdit)
+            {
+                Say(WritingText, error: true);
+                return WritingText;
+            }
 
             var snapshot = _editor.Matrix.Snapshot();
+            var selection = CaptureSelection();
             var state = CaptureScalars();
             change();
             if (!_editor.Recompose())
             {
                 var reason = _editor.LastError;
                 _editor.Matrix.Restore(snapshot);
+                RestoreSelection(selection);
                 RestoreScalars(state);
-                _editor.Recompose();
                 Say(reason, error: true);
                 Rebuild();
                 return reason;
             }
 
-            MarkDirty();
             Say(string.IsNullOrWhiteSpace(_editor.LastRebuildReport) ? string.Empty : _editor.LastRebuildReport, error: false);
             Rebuild();
+            UpdateDirty();
             return null;
+        }
+
+        private (List<(int Front, int Level)> Cells, int Front, int Level) CaptureSelection()
+        {
+            var matrix = _editor.Matrix;
+            return (matrix.SelectedCells().Select(c => (c.FrontIndex, c.LevelIndex)).ToList(), matrix.SelectedFrontIndex, matrix.SelectedLevelIndex);
+        }
+
+        private void RestoreSelection((List<(int Front, int Level)> Cells, int Front, int Level) selection)
+        {
+            var matrix = _editor.Matrix;
+            if (matrix.Count == 0) return;
+
+            var order = selection.Cells.Where(c => (c.Front != selection.Front || c.Level != selection.Level) && Exists(c.Front, c.Level)).ToList();
+            if (Exists(selection.Front, selection.Level)) order.Add((selection.Front, selection.Level));
+            if (order.Count > 0)
+            {
+                matrix.ToggleCell(order[0].Front, order[0].Level, extendSelection: false);
+                foreach (var cell in order.Skip(1)) matrix.ToggleCell(cell.Front, cell.Level, extendSelection: true);
+            }
+
+            matrix.NormalizeSelection();
         }
 
         private (double Depth, double Peralte, string Post, double? Manual, int? SepCount, double? SepSpacing, bool Reinforced, double? Reinforcement, bool NumF, bool NumL, bool RackName, double Scale, DimensionDetail Dims) CaptureScalars()
@@ -442,31 +745,27 @@ namespace RackCad.UI.VentanaRackCad
             _editor.Annotations.Dimensions = s.Dims;
         }
 
-        private void MarkDirty()
-        {
-            if (_dirty) return;
-            _dirty = true;
-            RaiseState();
-        }
-
         private void RaiseState()
         {
             OnPropertyChanged(nameof(IsDirty));
+            OnPropertyChanged(nameof(IsWriting));
+            OnPropertyChanged(nameof(CanEdit));
+            OnPropertyChanged(nameof(IsNameReadOnly));
+            OnPropertyChanged(nameof(CanDiscard));
             OnPropertyChanged(nameof(StatusText));
             OnPropertyChanged(nameof(CanUpdate));
             OnPropertyChanged(nameof(UpdateBlockedText));
         }
 
+        // The lists keep their items: a recomposition refreshes them in place, so the focus, the box being written and the button under
+        // the mouse survive it (I-05 of the second review). Only a list whose fields change is replaced.
         private void Rebuild()
         {
-            _essentials = BuildEssentials();
-            _postFields = BuildPostFields();
-            _advancedFields = BuildAdvancedFields();
+            Merge(ref _essentials, BuildEssentials(), nameof(Essentials));
+            Merge(ref _postFields, BuildPostFields(), nameof(PostFields));
+            Merge(ref _advancedFields, BuildAdvancedFields(), nameof(AdvancedFields));
             _calculated = BuildCalculated();
             _modules = BuildModules();
-            OnPropertyChanged(nameof(Essentials));
-            OnPropertyChanged(nameof(PostFields));
-            OnPropertyChanged(nameof(AdvancedFields));
             OnPropertyChanged(nameof(Calculated));
             OnPropertyChanged(nameof(Modules));
             OnPropertyChanged(nameof(Name));
@@ -478,65 +777,83 @@ namespace RackCad.UI.VentanaRackCad
             RaiseState();
         }
 
+        private void Merge(ref IReadOnlyList<DynamicFieldItem> current, IReadOnlyList<DynamicFieldItem> next, string propertyName)
+        {
+            if (current.Count == next.Count && current.Select(f => f.Key).SequenceEqual(next.Select(f => f.Key), StringComparer.Ordinal))
+            {
+                for (var i = 0; i < current.Count; i++) current[i].Refresh(next[i]);
+                return;
+            }
+
+            current = next;
+            OnPropertyChanged(propertyName);
+        }
+
         private void RebuildSelection()
         {
             var matrix = _editor.Matrix;
             var maxLevels = Math.Max(1, matrix.Count == 0 ? 1 : matrix.Fronts.Max(f => f.LoadLevels));
-            var columns = new List<DynamicColumnHead>();
-            for (var f = 0; f < matrix.Count; f++) columns.Add(new DynamicColumnHead(f, "F" + (f + 1), !matrix.IsActive(f)));
 
-            var rows = new List<DynamicMatrixRow>();
-            for (var l = maxLevels - 1; l >= 0; l--)
+            // The shape (fronts × levels) changed: new rows and columns. Otherwise the same items are refreshed in place.
+            if (_columns.Count != matrix.Count || _rows.Count != maxLevels)
             {
-                var cells = new List<DynamicCellItem>();
-                for (var f = 0; f < matrix.Count; f++)
+                _columns = Enumerable.Range(0, matrix.Count).Select(f => new DynamicColumnHead(f, "F" + (f + 1))).ToList();
+                _rows = Enumerable.Range(0, maxLevels).Reverse()
+                    .Select(l => new DynamicMatrixRow(l, "N" + (l + 1), Enumerable.Range(0, matrix.Count).Select(f => new DynamicCellItem(f, l)).ToList()))
+                    .ToList();
+                OnPropertyChanged(nameof(Columns));
+                OnPropertyChanged(nameof(Rows));
+            }
+
+            foreach (var column in _columns) column.IsBlank = !matrix.IsActive(column.FrontIndex);
+            foreach (var row in _rows)
+            {
+                foreach (var item in row.Cells)
                 {
-                    var front = matrix.Fronts[f];
-                    var exists = l < front.LoadLevels;
+                    var front = matrix.Fronts[item.FrontIndex];
+                    var exists = item.LevelIndex < front.LoadLevels;
+                    var active = matrix.IsActive(item.FrontIndex);
                     var text = "—";
-                    if (exists && matrix.IsActive(f))
+                    if (exists && active)
                     {
                         front.EnsureCellCount(front.LoadLevels);
-                        var cell = front.Cells[l];
+                        var cell = front.Cells[item.LevelIndex];
                         text = Num(cell.PalletFront) + "×" + Num(cell.PalletHeight);
                     }
 
-                    cells.Add(new DynamicCellItem(
-                        f, l, text, exists, exists && matrix.IsSelected(f, l),
-                        exists && matrix.SelectedFrontIndex == f && matrix.SelectedLevelIndex == l,
-                        !matrix.IsActive(f)));
+                    item.Set(
+                        text,
+                        exists,
+                        exists && matrix.IsSelected(item.FrontIndex, item.LevelIndex),
+                        exists && matrix.SelectedFrontIndex == item.FrontIndex && matrix.SelectedLevelIndex == item.LevelIndex,
+                        !active);
                 }
-
-                rows.Add(new DynamicMatrixRow(l, "N" + (l + 1), cells));
             }
 
-            _columns = columns;
-            _rows = rows;
-            _cellFields = BuildCellFields();
-            _frontFields = BuildFrontFields();
-            OnPropertyChanged(nameof(Columns));
-            OnPropertyChanged(nameof(Rows));
-            OnPropertyChanged(nameof(CellFields));
-            OnPropertyChanged(nameof(FrontFields));
+            Merge(ref _cellFields, BuildCellFields(), nameof(CellFields));
+            Merge(ref _frontFields, BuildFrontFields(), nameof(FrontFields));
             OnPropertyChanged(nameof(InspectorTitle));
+            OnPropertyChanged(nameof(InspectorNote));
         }
 
-        // «Lo esencial»: rack-wide values. A cell value writes every existing cell of the rack, a front value every front.
+        // «Lo esencial»: rack-wide values. A cell value writes every cell of the active fronts; the levels and the first beam of a front in
+        // blank are not edited (its structure, positions and depths, still is), as in the classic editor.
         private IReadOnlyList<DynamicFieldItem> BuildEssentials()
         {
             var cells = AllCells().ToList();
             var fronts = _editor.Matrix.Fronts.ToList();
+            var active = ActiveFronts().ToList();
             return new[]
             {
                 Number("depth", "Profundidad de tarima", "in", new[] { _editor.PalletDepth }, v => v > 0.0, "Fondo inválido.", v => _editor.PalletDepth = v),
                 CellNumber("front", "Ancho de tarima", "in", cells, c => c.PalletFront, (c, v) => c.PalletFront = v, v => v > 0.0),
                 CellNumber("height", "Alto de tarima", "in", cells, c => c.PalletHeight, (c, v) => c.PalletHeight = v, v => v > 0.0),
                 CellNumber("weight", "Peso de tarima", "kg", cells, c => c.PalletWeight, (c, v) => c.PalletWeight = v, v => v >= 0.0),
-                new DynamicFieldItem("fronts", "Frentes", string.Empty, _editor.Matrix.Count.ToString(CultureInfo.InvariantCulture), string.Empty, SetFrontCount),
+                new DynamicFieldItem("fronts", "Frentes", string.Empty, _editor.Matrix.Count.ToString(CultureInfo.InvariantCulture), string.Empty, SetFrontCount, !CanEdit),
                 FrontInt("positions", "Carriles por frente", fronts, f => f.PalletCount, (f, v) => f.PalletCount = v, 1),
-                FrontInt("levels", "Niveles", fronts, f => f.LoadLevels, (f, v) => { f.LoadLevels = v; f.EnsureCellCount(v); }, 1),
+                FrontInt("levels", "Niveles", active, f => f.LoadLevels, (f, v) => { f.LoadLevels = v; f.EnsureCellCount(v); }, 1),
                 FrontInt("deep", "Posiciones de fondo", fronts, f => f.PalletsDeep, (f, v) => f.PalletsDeep = v, 2),
-                FrontNumber("first", "Inicio del 1er larguero", "in", fronts, f => f.FirstLevelHeight, (f, v) => f.FirstLevelHeight = v, v => v >= 0.0),
+                FrontNumber("first", "Inicio del 1er larguero", "in", active, f => f.FirstLevelHeight, (f, v) => f.FirstLevelHeight = v, v => v >= 0.0),
                 CellNumber("clear", "Claro libre", "in", cells, c => c.ClearHeight, (c, v) => c.ClearHeight = v, v => v >= 0.0),
             };
         }
@@ -555,7 +872,8 @@ namespace RackCad.UI.VentanaRackCad
             OptionalNumber("reinforcement", "Longitud del refuerzo del poste derivado (vacío = altura completa)", "in", _editor.DerivedPostReinforcementHeight, "Altura de refuerzo del poste derivado inválida (deja vacío para altura completa).", v => _editor.DerivedPostReinforcementHeight = v),
         };
 
-        // The inspector: the cell values of the selected cells.
+        // The inspector: the cell values of the selected cells of the active fronts. The peraltes are the ones of the catalog for the beam
+        // of each cell, as the lists of the classic editor offer them.
         private IReadOnlyList<DynamicFieldItem> BuildCellFields()
         {
             var cells = SelectedCells().ToList();
@@ -566,23 +884,31 @@ namespace RackCad.UI.VentanaRackCad
                 CellNumber("cWeight", "Peso de tarima", "kg", cells, c => c.PalletWeight, (c, v) => c.PalletWeight = v, v => v >= 0.0),
                 CellNumber("cClear", "Claro libre", "in", cells, c => c.ClearHeight, (c, v) => c.ClearHeight = v, v => v >= 0.0),
                 CellOptional("cLength", "Largo manual IN/OUT (vacío = calculado)", "in", cells, c => c.BeamLengthOverride, (c, v) => c.BeamLengthOverride = v),
-                CellNumber("cInOut", "Peralte IN/OUT", "in", cells, c => c.InOutBeamDepth, (c, v) => c.InOutBeamDepth = v, v => v > 0.0),
-                CellNumber("cInter", "Peralte intermedio", "in", cells, c => c.IntermediateBeamDepth, (c, v) => c.IntermediateBeamDepth = v, v => v > 0.0),
+                CellPeralte("cInOut", "Peralte IN/OUT", cells, c => c.InOutBeamCatalogId, DynamicRackDefaults.DefaultBeamDepth, c => c.InOutBeamDepth, (c, v) => c.InOutBeamDepth = v),
+                CellPeralte("cInter", "Peralte intermedio", cells, c => c.IntermediateBeamCatalogId, DynamicRackDefaults.DefaultIntermediateBeamDepth, c => c.IntermediateBeamDepth, (c, v) => c.IntermediateBeamDepth = v),
             };
         }
 
-        // The inspector: the front values of the fronts that the selection touches.
+        // The inspector: the front values of the fronts that the selection touches; the levels and the first beam only of the active ones.
         private IReadOnlyList<DynamicFieldItem> BuildFrontFields()
         {
             var fronts = SelectedFronts().ToList();
+            var active = fronts.Where(f => _editor.Matrix.IsActive(IndexOf(f))).ToList();
             return new[]
             {
                 FrontInt("fPositions", "Carriles", fronts, f => f.PalletCount, (f, v) => f.PalletCount = v, 1),
-                FrontInt("fLevels", "Niveles", fronts, f => f.LoadLevels, (f, v) => { f.LoadLevels = v; f.EnsureCellCount(v); }, 1),
+                FrontInt("fLevels", "Niveles", active, f => f.LoadLevels, (f, v) => { f.LoadLevels = v; f.EnsureCellCount(v); }, 1),
                 FrontInt("fDeep", "Posiciones de fondo", fronts, f => f.PalletsDeep, (f, v) => f.PalletsDeep = v, 2),
                 FrontInt("fStart", "Inicio en fondo (1 = salida)", fronts, f => f.DepthStartPosition, (f, v) => f.DepthStartPosition = v, 1),
-                FrontNumber("fFirst", "Inicio del 1er larguero", "in", fronts, f => f.FirstLevelHeight, (f, v) => f.FirstLevelHeight = v, v => v >= 0.0),
+                FrontNumber("fFirst", "Inicio del 1er larguero", "in", active, f => f.FirstLevelHeight, (f, v) => f.FirstLevelHeight = v, v => v >= 0.0),
             };
+        }
+
+        private int IndexOf(DynamicEditorFront front)
+        {
+            var fronts = _editor.Matrix.Fronts;
+            for (var i = 0; i < fronts.Count; i++) if (ReferenceEquals(fronts[i], front)) return i;
+            return -1;
         }
 
         private IReadOnlyList<DynamicCalcItem> BuildCalculated()
@@ -621,9 +947,16 @@ namespace RackCad.UI.VentanaRackCad
             return items;
         }
 
+        private IEnumerable<DynamicEditorFront> ActiveFronts()
+        {
+            var matrix = _editor.Matrix;
+            for (var f = 0; f < matrix.Count; f++) if (matrix.IsActive(f)) yield return matrix.Fronts[f];
+        }
+
+        // The cells of the active fronts: the cells of a front in blank keep the configuration it will have again when it is active.
         private IEnumerable<DynamicEditorCell> AllCells()
         {
-            foreach (var front in _editor.Matrix.Fronts)
+            foreach (var front in ActiveFronts())
             {
                 front.EnsureCellCount(front.LoadLevels);
                 for (var l = 0; l < front.LoadLevels; l++) yield return front.Cells[l];
@@ -634,6 +967,7 @@ namespace RackCad.UI.VentanaRackCad
         {
             foreach (var address in _editor.Matrix.SelectedCells())
             {
+                if (!_editor.Matrix.IsActive(address.FrontIndex)) continue;
                 var front = _editor.Matrix.Fronts[address.FrontIndex];
                 front.EnsureCellCount(front.LoadLevels);
                 if (address.LevelIndex < front.Cells.Count) yield return front.Cells[address.LevelIndex];
@@ -650,7 +984,7 @@ namespace RackCad.UI.VentanaRackCad
             {
                 if (!UiSupport.TryNum(text, out var value) || !valid(value)) return invalid;
                 return Apply(() => set(value), null);
-            });
+            }, !CanEdit);
         }
 
         private DynamicFieldItem OptionalNumber(string key, string label, string unit, double? current, string invalid, Action<double?> set) =>
@@ -659,7 +993,7 @@ namespace RackCad.UI.VentanaRackCad
                 if (string.IsNullOrWhiteSpace(text)) return Apply(() => set(null), null);
                 if (!UiSupport.TryNum(text, out var value) || value <= 0.0) return invalid;
                 return Apply(() => set(value), null);
-            });
+            }, !CanEdit);
 
         private DynamicFieldItem OptionalInt(string key, string label, int? current, string invalid, Action<int?> set) =>
             new(key, label, string.Empty, current.HasValue ? current.Value.ToString(CultureInfo.InvariantCulture) : string.Empty, string.Empty, text =>
@@ -667,7 +1001,7 @@ namespace RackCad.UI.VentanaRackCad
                 if (string.IsNullOrWhiteSpace(text)) return Apply(() => set(null), null);
                 if (!UiSupport.TryInt(text, out var value) || value < 1) return invalid;
                 return Apply(() => set(value), null);
-            });
+            }, !CanEdit);
 
         private DynamicFieldItem CellNumber(string key, string label, string unit, IReadOnlyList<DynamicEditorCell> cells, Func<DynamicEditorCell, double> get, Action<DynamicEditorCell, double> set, Func<double, bool> valid)
         {
@@ -676,7 +1010,7 @@ namespace RackCad.UI.VentanaRackCad
             {
                 if (!UiSupport.TryNum(text, out var value) || !valid(value)) return "Revisa los valores de tarima, claro y largueros de cada celda.";
                 return Apply(() => { foreach (var cell in cells) set(cell, value); }, null);
-            });
+            }, !CanEdit || cells.Count == 0);
         }
 
         private DynamicFieldItem CellOptional(string key, string label, string unit, IReadOnlyList<DynamicEditorCell> cells, Func<DynamicEditorCell, double?> get, Action<DynamicEditorCell, double?> set)
@@ -689,7 +1023,27 @@ namespace RackCad.UI.VentanaRackCad
                 if (string.IsNullOrWhiteSpace(text)) return Apply(() => { foreach (var cell in cells) set(cell, null); }, null);
                 if (!UiSupport.TryNum(text, out var value) || value <= 0.0) return "Revisa los valores de tarima, claro y largueros de cada celda.";
                 return Apply(() => { foreach (var cell in cells) set(cell, value); }, null);
-            });
+            }, !CanEdit || cells.Count == 0);
+        }
+
+        // A peralte of a beam: only one that the catalog offers for the beam of every cell written (M-11 of the second review), as the list
+        // of the classic editor. A value that the catalog does not offer is refused in its field, with the values it offers.
+        private DynamicFieldItem CellPeralte(string key, string label, IReadOnlyList<DynamicEditorCell> cells, Func<DynamicEditorCell, string> beamOf, double fallback, Func<DynamicEditorCell, double> get, Action<DynamicEditorCell, double> set)
+        {
+            var values = cells.Select(get).ToList();
+            return new DynamicFieldItem(key, label, "in", Same(values), Hint(values.Cast<object>()), text =>
+            {
+                if (!UiSupport.TryNum(text, out var value) || value <= 0.0) return "Revisa los valores de tarima, claro y largueros de cada celda.";
+                foreach (var cell in cells)
+                {
+                    var allowed = DynamicRackLevelGeometry.AllowedPeraltes(_editor.Catalog, beamOf(cell));
+                    if (allowed.Count == 0) allowed = new[] { fallback };
+                    if (!allowed.Any(a => Math.Abs(a - value) < 1e-6))
+                        return "El peralte debe ser uno del catálogo: " + string.Join(", ", allowed.Select(Num)) + ".";
+                }
+
+                return Apply(() => { foreach (var cell in cells) set(cell, value); }, null);
+            }, !CanEdit || cells.Count == 0);
         }
 
         private DynamicFieldItem FrontInt(string key, string label, IReadOnlyList<DynamicEditorFront> fronts, Func<DynamicEditorFront, int> get, Action<DynamicEditorFront, int> set, int minimum)
@@ -702,7 +1056,7 @@ namespace RackCad.UI.VentanaRackCad
                 if (!UiSupport.TryInt(text, out var value) || value < minimum)
                     return "Debe ser un entero mayor o igual que " + minimum.ToString(CultureInfo.InvariantCulture) + ".";
                 return Apply(() => { foreach (var front in fronts) set(front, value); _editor.Matrix.NormalizeSelection(); }, null);
-            });
+            }, !CanEdit || fronts.Count == 0);
         }
 
         private DynamicFieldItem FrontNumber(string key, string label, string unit, IReadOnlyList<DynamicEditorFront> fronts, Func<DynamicEditorFront, double> get, Action<DynamicEditorFront, double> set, Func<double, bool> valid)
@@ -712,7 +1066,7 @@ namespace RackCad.UI.VentanaRackCad
             {
                 if (!UiSupport.TryNum(text, out var value) || !valid(value)) return "El inicio del primer larguero debe ser mayor o igual que cero.";
                 return Apply(() => { foreach (var front in fronts) set(front, value); }, null);
-            });
+            }, !CanEdit || fronts.Count == 0);
         }
 
         private static string Same(IReadOnlyList<double> values) =>

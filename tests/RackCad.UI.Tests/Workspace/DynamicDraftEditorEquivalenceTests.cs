@@ -10,9 +10,11 @@ using Xunit;
 namespace RackCad.UI.Tests
 {
     /// <summary>
-    /// I-64 A-14, line D (Dinámico): the draft of the RackCad window recomposes EXACTLY like the classic editor. For the same inputs
-    /// the persisted design is the same, byte for byte, for a new rack and for a design opened from the drawing, with and without
-    /// edits. It is the one guarantee that the new editor writes what the classic one would.
+    /// I-64 A-14, line D (Dinámico): the draft of the RackCad window recomposes like the classic editor. For the same inputs with at most
+    /// two decimals, the persisted design is the same, byte for byte, for a new rack and for a design opened from the drawing, with and
+    /// without edits. The differences are declared and fixed here too (I-03 of the second review): the draft keeps the full precision of a
+    /// value where the classic editor rounds it to two decimals through its boxes, it keeps the dimension style as read, and a post that the
+    /// catalog does not have gives way to the default post, as in the classic editor, but said.
     /// </summary>
     public class DynamicDraftEditorEquivalenceTests
     {
@@ -135,6 +137,123 @@ namespace RackCad.UI.Tests
                 }
                 finally { window.Close(); }
             });
+        }
+
+        [Fact]
+        public void ARecompositionThatFailsKeepsTheLastValidSystemAndNeverMutatesThePublishedOne()
+        {
+            // M-14 of the second review: the recomposition works on a copy of the system.
+            var draft = new DynamicDraftEditor(UiSupport.LoadCatalogSafe());
+            draft.LoadFrom(Structure(), "DIN 1");
+            Assert.True(draft.Recompose(), draft.LastError);
+            var system = draft.System;
+            var separators = system.SeparatorCountOverride;
+
+            draft.SeparatorCountOverride = 3;
+            draft.Matrix.Fronts[0].PalletsDeep = 1;
+            Assert.False(draft.Recompose());
+
+            Assert.Same(system, draft.System);
+            Assert.Equal(separators, draft.System.SeparatorCountOverride);
+
+            draft.Matrix.Fronts[0].PalletsDeep = 6;
+            Assert.True(draft.Recompose(), draft.LastError);
+            Assert.NotSame(system, draft.System);
+            Assert.Equal(separators, system.SeparatorCountOverride);
+            Assert.Equal(3, draft.System.SeparatorCountOverride);
+        }
+
+        [Fact]
+        public void TheSnapshotForAutoCadIsACopyThatLaterEditsDoNotReach()
+        {
+            // B-02 of the second review: the design goes through its JSON and the system is resolved again from that copy.
+            var draft = new DynamicDraftEditor(UiSupport.LoadCatalogSafe());
+            draft.LoadFrom(Structure(), " DIN 1 ");
+            Assert.True(draft.Recompose(), draft.LastError);
+
+            var snapshot = draft.SnapshotForWrite();
+
+            Assert.NotSame(draft.Design, snapshot.Design);
+            Assert.NotSame(draft.System, snapshot.System);
+            Assert.Equal(Json(draft.Design), snapshot.DesignJson);
+            Assert.Equal(snapshot.DesignJson, Json(snapshot.Design));
+            Assert.Equal("DIN 1", snapshot.Name);
+            Assert.Equal("DIN 1", snapshot.System.Name);
+            Assert.Equal(draft.System.Modules.Count, snapshot.System.Modules.Count);
+            Assert.Equal(draft.System.Fronts.Count, snapshot.System.Fronts.Count);
+            Assert.Equal(draft.System.PostPeralte, snapshot.System.PostPeralte);
+            Assert.Equal(draft.System.SeparatorCountOverride, snapshot.System.SeparatorCountOverride);
+
+            draft.SeparatorCountOverride = 3;
+            foreach (var cell in draft.Matrix.Fronts[0].Cells) cell.PalletWeight = 1300.0;
+            Assert.True(draft.Recompose(), draft.LastError);
+
+            Assert.Null(snapshot.System.SeparatorCountOverride);
+            Assert.Null(snapshot.Design.SeparatorCountOverride);
+            Assert.All(snapshot.Design.Fronts[0].Levels, level => Assert.Equal(1000.0, level.PalletWeight));
+        }
+
+        [Fact]
+        public void TheDraftKeepsTheFullPrecisionWhereTheClassicEditorRoundsToTwoDecimals()
+        {
+            // Declared difference (I-03): 1200 mm of fondo are 47.2441 in; the classic editor writes 47.24 after its boxes are read again.
+            StaTestRunner.Run(() =>
+            {
+                var window = new RackDynamicSystemWindow();
+                try
+                {
+                    var metric = Structure();
+                    metric.Pallet = new PalletSpecification(42.0, 47.2441, 60.0, 1000.555, "kg");
+                    window.LoadExisting(metric, "DIN-1", "DIN 1");
+                    var classic = window.BuildDesignForTest(out var ok);
+                    Assert.True(ok);
+
+                    var draft = new DynamicDraftEditor(window.Session.Catalog);
+                    var same = Structure();
+                    same.Pallet = new PalletSpecification(42.0, 47.2441, 60.0, 1000.555, "kg");
+                    draft.LoadFrom(same, "DIN 1");
+                    Assert.True(draft.Recompose(), draft.LastError);
+
+                    Assert.Equal(47.24, classic.Pallet.Depth, 6);
+                    Assert.Equal(47.2441, draft.Design.Pallet.Depth, 6);
+                }
+                finally { window.Close(); }
+            });
+        }
+
+        [Fact]
+        public void APostThatTheCatalogDoesNotHaveGivesWayToTheDefaultPostAndAKnownPostInAnotherSpellingIsThatPost()
+        {
+            var catalog = UiSupport.LoadCatalogSafe();
+            var known = catalog.PostProfiles.First().Id;
+
+            var unknown = Structure();
+            unknown.HeaderPostCatalogId = "POSTE_X";
+            var draft = new DynamicDraftEditor(catalog);
+            draft.LoadFrom(unknown, "DIN 1");
+            Assert.Equal(catalog.Defaults?.Post, draft.PostCatalogId);
+            Assert.Equal("El poste «POSTE_X» no está en el catálogo: se usa «" + catalog.Defaults?.Post + "», como en el editor clásico.", draft.LoadNotice);
+            Assert.True(draft.Recompose(), draft.LastError);
+            Assert.Equal(catalog.Defaults?.Post, draft.Design.HeaderPostCatalogId);
+
+            var spelled = Structure();
+            spelled.HeaderPostCatalogId = known.ToLowerInvariant() == known ? known.ToUpperInvariant() : known.ToLowerInvariant();
+            draft.LoadFrom(spelled, "DIN 1");
+            Assert.Equal(known, draft.PostCatalogId);
+            Assert.Null(draft.LoadNotice);
+        }
+
+        [Fact]
+        public void TheDimensionStyleIsKeptAsRead()
+        {
+            // Declared difference (I-03): the window does not know the styles of the drawing; the drawing dimensions with its current
+            // style when the named one is not there, as it does for the classic editor's null.
+            var design = Structure();
+            design.DimensionStyle = "ESTILO_QUE_NO_EXISTE";
+            var draft = new DynamicDraftEditor(UiSupport.LoadCatalogSafe());
+            draft.LoadFrom(design, "DIN 1");
+            Assert.True(draft.Recompose(), draft.LastError);
+            Assert.Equal("ESTILO_QUE_NO_EXISTE", draft.Design.DimensionStyle);
         }
     }
 }

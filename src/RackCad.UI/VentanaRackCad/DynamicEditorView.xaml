@@ -36,6 +36,7 @@
                         <TextBlock DockPanel.Dock="Right" Text="{Binding Unit}" Margin="6,0,0,0" VerticalAlignment="Center"
                                    Foreground="{DynamicResource ShellTextSecondaryBrush}" />
                         <TextBox Padding="4,3" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 IsReadOnly="{Binding IsReadOnly}"
                                  AutomationProperties.Name="{Binding Label}"
                                  KeyDown="OnFieldKeyDown" LostFocus="OnFieldLostFocus" />
                     </DockPanel>
@@ -60,6 +61,7 @@
                     <StackPanel Margin="0,0,12,4">
                         <TextBlock Text="Nombre del rack" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
                         <TextBox x:Name="NameBox" Width="220" Padding="4,3" AutomationProperties.Name="Nombre del rack"
+                                 IsReadOnly="{Binding IsNameReadOnly}"
                                  Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
                     </StackPanel>
                     <Border Margin="0,14,12,4" Padding="8,2" CornerRadius="8" BorderThickness="1" VerticalAlignment="Top">
@@ -80,12 +82,30 @@
                             Style="{StaticResource PrimaryButtonStyle}" IsEnabled="{Binding CanUpdate}"
                             AutomationProperties.Name="Actualizar el dibujo con el borrador" Click="OnUpdateClick" />
                     <Button x:Name="DiscardButton" Content="Descartar" Margin="0,12,8,4" Padding="12,4" VerticalAlignment="Top"
-                            Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding IsDirty}"
+                            Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanDiscard}"
                             AutomationProperties.Name="Descartar el borrador" Click="OnDiscardClick" />
                     <Button x:Name="RestoreButton" Content="Restaurar layout…" Margin="0,12,8,4" Padding="12,4" VerticalAlignment="Top"
-                            Style="{StaticResource SecondaryButtonStyle}"
+                            Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanEdit}"
                             AutomationProperties.Name="Restaurar el layout estándar" Click="OnRestoreClick" />
+                    <Button x:Name="CloseEditorButton" Content="Cerrar el editor" Margin="0,12,8,4" Padding="12,4" VerticalAlignment="Top"
+                            Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanEdit}"
+                            AutomationProperties.Name="Cerrar el editor de este rack" Click="OnCloseEditorClick" />
                 </WrapPanel>
+                <!-- «Cerrar el editor» with changes: the inline question, with what is lost. -->
+                <Border x:Name="CloseConfirmPanel" Margin="0,6,0,0" Padding="8" BorderThickness="1"
+                        BorderBrush="{DynamicResource ShellStatusWarningBrush}"
+                        Visibility="{Binding IsConfirmingClose, Converter={StaticResource FlagToVisibility}}">
+                    <StackPanel>
+                        <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                                   Text="El borrador tiene cambios que no están en el dibujo. Si cierras el editor, se pierden. ¿Descartarlos y cerrar?" />
+                        <WrapPanel Margin="0,6,0,0">
+                            <Button x:Name="CloseYesButton" Content="Descartar y cerrar" Margin="0,0,6,0" Padding="10,3"
+                                    Style="{StaticResource SecondaryButtonStyle}" Click="OnCloseYesClick" />
+                            <Button x:Name="CloseNoButton" Content="Cancelar" Padding="10,3"
+                                    Style="{StaticResource SecondaryButtonStyle}" Click="OnCloseNoClick" />
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
                 <TextBlock x:Name="UpdateBlockedText" Text="{Binding UpdateBlockedText}" Style="{StaticResource OptionalText}"
                            Foreground="{DynamicResource ShellTextSecondaryBrush}" />
                 <TextBlock x:Name="MessageText" Text="{Binding Message}" Margin="0,4,0,0">
@@ -143,9 +163,9 @@
                             <StackPanel Margin="0,8,0,0">
                                 <ItemsControl ItemsSource="{Binding PostFields}" ItemTemplate="{StaticResource FieldTemplate}"
                                               ItemsPanel="{StaticResource WrapItems}" />
-                                <CheckBox Content="Numerar frentes" Margin="0,2" IsChecked="{Binding NumberFronts, Mode=TwoWay}" />
-                                <CheckBox Content="Numerar niveles" Margin="0,2" IsChecked="{Binding NumberLevels, Mode=TwoWay}" />
-                                <CheckBox Content="Colocar nombre de rack" Margin="0,2" IsChecked="{Binding DrawRackName, Mode=TwoWay}" />
+                                <CheckBox Content="Numerar frentes" Margin="0,2" IsChecked="{Binding NumberFronts, Mode=TwoWay}" IsEnabled="{Binding CanEdit}" />
+                                <CheckBox Content="Numerar niveles" Margin="0,2" IsChecked="{Binding NumberLevels, Mode=TwoWay}" IsEnabled="{Binding CanEdit}" />
+                                <CheckBox Content="Colocar nombre de rack" Margin="0,2" IsChecked="{Binding DrawRackName, Mode=TwoWay}" IsEnabled="{Binding CanEdit}" />
                             </StackPanel>
                         </Expander>
                     </StackPanel>
@@ -238,6 +258,8 @@
                         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                             <StackPanel>
                                 <TextBlock x:Name="InspectorTitle" Text="{Binding InspectorTitle}" Style="{StaticResource GroupTitle}" Margin="0,0,0,6" />
+                                <TextBlock x:Name="InspectorNote" Text="{Binding InspectorNote}" Style="{StaticResource OptionalText}" Margin="0,0,0,6"
+                                           Foreground="{DynamicResource ShellStatusWarningBrush}" />
                                 <TextBlock Text="Tarima y largueros de la selección" FontWeight="SemiBold" Margin="0,0,0,4"
                                            Foreground="{DynamicResource ShellTextPrimaryBrush}" />
                                 <ItemsControl x:Name="CellFieldList" ItemsSource="{Binding CellFields}" ItemTemplate="{StaticResource FieldTemplate}"
@@ -248,9 +270,9 @@
                                               ItemsPanel="{StaticResource WrapItems}" />
                                 <WrapPanel Margin="0,4,0,0">
                                     <Button x:Name="BlankFrontButton" Content="Dejar el frente en blanco" Margin="0,0,6,0" Padding="10,3"
-                                            Style="{StaticResource SecondaryButtonStyle}" Click="OnBlankFrontClick" />
+                                            Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanEdit}" Click="OnBlankFrontClick" />
                                     <Button x:Name="ActivateFrontButton" Content="Activar el frente" Padding="10,3"
-                                            Style="{StaticResource SecondaryButtonStyle}" Click="OnActivateFrontClick" />
+                                            Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanEdit}" Click="OnActivateFrontClick" />
                                 </WrapPanel>
                             </StackPanel>
                         </ScrollViewer>
@@ -264,7 +286,7 @@
                     <StackPanel Margin="10">
                         <ItemsControl x:Name="AdvancedFieldList" ItemsSource="{Binding AdvancedFields}" ItemTemplate="{StaticResource FieldTemplate}"
                                       ItemsPanel="{StaticResource WrapItems}" />
-                        <CheckBox Content="Reforzar el poste derivado" Margin="0,2,0,8" IsChecked="{Binding DerivedPostReinforced, Mode=TwoWay}" />
+                        <CheckBox Content="Reforzar el poste derivado" Margin="0,2,0,8" IsChecked="{Binding DerivedPostReinforced, Mode=TwoWay}" IsEnabled="{Binding CanEdit}" />
                         <TextBlock Text="Módulos" Style="{StaticResource GroupTitle}" />
                         <DataGrid x:Name="ModulesGrid" ItemsSource="{Binding Modules}" AutoGenerateColumns="False" IsReadOnly="True"
                                   HeadersVisibility="Column" MaxHeight="320" CanUserAddRows="False" AutomationProperties.Name="Módulos">

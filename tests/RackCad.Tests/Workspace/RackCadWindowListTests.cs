@@ -275,11 +275,15 @@ public class RackCadWindowListTests
             Assert.DoesNotMatch(new System.Text.RegularExpressions.Regex(@"\bAutodesk\.|System\.Windows|RackCad\.UI\b|RackCad\.Plugin\b"), code);
         }
 
-        // The door of the Plugin hands commands to AutoCAD and never locks the document or opens a transaction from the palette.
+        // The doors of the Plugin hand commands to AutoCAD and never lock the document or open a transaction from the palette. The commands
+        // of the door to a rack (RackCadRackDoorCommands) read the drawing in their own command context, through RackCommandSupport; the
+        // files the palette calls (the ports) do not reach those helpers either, which lock and open transactions (M-05 of the second review).
         foreach (var path in Directory.GetFiles(Path.Combine(Root(), "src", "RackCad.Plugin", "VentanaRackCad"), "*.cs"))
         {
             var code = WorkspaceHostSource.CodeOnly(File.ReadAllText(path));
             Assert.DoesNotMatch(new System.Text.RegularExpressions.Regex(@"LockDocument|StartTransaction|StartOpenCloseTransaction"), code);
+            if (!path.EndsWith("RackCadRackDoorCommands.cs", StringComparison.Ordinal))
+                Assert.DoesNotMatch(new System.Text.RegularExpressions.Regex(@"\bRackCommandSupport\.|\bApplyDynamicEdit\b|\[CommandMethod"), code);
         }
     }
 
@@ -293,7 +297,9 @@ public class RackCadWindowListTests
         var sendsCommands = new System.Text.RegularExpressions.Regex(@"\bSendStringToExecute\b");
 
         Assert.Equal(new[] { "src/RackCad.UI/VentanaRackCad/RackModalHostWindow.cs" }, SourcesMatching(plainWindow));
-        Assert.Equal(new[] { "src/RackCad.Plugin/VentanaRackCad/RackCadClassicCommandPort.cs" }, SourcesMatching(sendsCommands));
+        Assert.Equal(
+            new[] { "src/RackCad.Plugin/VentanaRackCad/RackCadClassicCommandPort.cs", "src/RackCad.Plugin/VentanaRackCad/RackCadRackDoorPort.cs" },
+            SourcesMatching(sendsCommands));
     }
 
     private static string[] SourcesMatching(System.Text.RegularExpressions.Regex pattern)

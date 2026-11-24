@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Catalogs;
+using RackCad.Application.Persistence;
 using RackCad.Application.Systems.Dynamic;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.Selective;
@@ -9,6 +10,9 @@ using RackCad.Domain.Systems.Shared;
 
 namespace RackCad.Application.VentanaRackCad
 {
+    /// <summary>What «Actualizar» hands to AutoCAD: copies of the design (and its JSON) and of the system, and the trimmed name.</summary>
+    public sealed record DynamicDraftSnapshot(string DesignJson, string Name, DynamicRackDesign Design, DynamicRackSystem System);
+
     /// <summary>
     /// The draft of ONE Dinámico (Pallet Flow) rack in the RackCad window (I-64 A-14, line D, Dinámico): the editable state and its
     /// recomposition, with no WPF and no AutoCAD. It is the same recomposition as the classic editor (<c>RackDynamicSystemWindow</c>):
@@ -17,9 +21,12 @@ namespace RackCad.Application.VentanaRackCad
     /// assembly of the persisted design (<see cref="DynamicEditorDesignAssembler"/>). It composes those Application pieces; it adds no
     /// geometry of its own.
     ///
-    /// What the classic editor reads from its boxes is a property here, set by the editor of the window. A recomposition that cannot run
-    /// says why in <see cref="LastError"/> and keeps the last valid system and design, exactly as the classic editor keeps its last
-    /// valid preview. Nothing here writes the drawing.
+    /// What the classic editor reads from its boxes is a property here, set by the editor of the window. Two differences are declared
+    /// (I-03 of the second review): a value keeps its full precision, where the classic editor rounds every value to two decimals when its
+    /// boxes are read again, and the dimension style is kept as read, where the classic editor drops a style that the drawing does not have
+    /// (the drawing then dimensions with its current style and the sizes of RackCad in both cases). A recomposition that cannot run says why in <see cref="LastError"/>
+    /// and keeps the last valid system and design, exactly as the classic editor keeps its last valid preview. Nothing here writes the
+    /// drawing.
     /// </summary>
     public sealed class DynamicDraftEditor
     {
@@ -161,8 +168,21 @@ namespace RackCad.Application.VentanaRackCad
                     .AssociatedFrameConfiguration.LeftPost.PostCatalogId;
             }
 
-            if (!string.IsNullOrWhiteSpace(postId)) PostCatalogId = postId;
+            // The post as the classic editor chooses it: one of the catalog. A known post in another spelling is that post; a post that the
+            // catalog does not have gives way to the default post of the catalog, and the editor says so (the classic one does it silently).
+            PostCatalogId = Catalog.Defaults?.Post;
+            LoadNotice = null;
+            if (!string.IsNullOrWhiteSpace(postId))
+            {
+                var posts = Catalog.PostProfiles ?? Array.Empty<ProfileCatalogEntry>();
+                var known = posts.FirstOrDefault(p => string.Equals(p?.Id, postId.Trim(), StringComparison.OrdinalIgnoreCase));
+                if (known != null || posts.Count == 0) PostCatalogId = known?.Id ?? postId;
+                else LoadNotice = "El poste «" + postId + "» no está en el catálogo: se usa «" + PostCatalogId + "», como en el editor clásico.";
+            }
         }
+
+        /// <summary>What the last load had to change to open the design (a post that the catalog does not have); null when nothing.</summary>
+        public string LoadNotice { get; private set; }
 
         /// <summary>
         /// Recomposes the rack from the current state, with the rules of the classic editor: the inputs are validated with its messages,
@@ -223,7 +243,9 @@ namespace RackCad.Application.VentanaRackCad
                 var derived = DynamicHeaderHeightCalculator.Calculate(pallet.Height, levels, firstLevel, beamDepth, totalDepth);
                 var headerHeight = ManualHeaderHeight ?? derived.HeaderHeight;
 
-                var system = System;
+                // The recomposition works on a copy of the last valid system (the system IS the resolution of the last valid design), so
+                // the system already published, or handed to AutoCAD, is never mutated, and a recomposition that fails leaves it whole.
+                var system = WorkingCopy();
                 var mustRebuild = restoreStandard || DynamicEditorDesignAssembler.MustRebuild(system, pallet, depthLayout);
                 string report = null;
                 if (mustRebuild)
@@ -287,10 +309,40 @@ namespace RackCad.Application.VentanaRackCad
             }
             catch (Exception ex)
             {
-                System = null;
+                // The last valid system and design stay: the recomposition worked on a copy.
                 LastError = "No se pudo generar el sistema: " + ex.Message;
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Copies of the design and of the system of the last valid recomposition, for «Actualizar» (I-64 A-14, line D): the design goes
+        /// through its persisted JSON (what the drawing stores) and the system is resolved again from that copy, exactly as the published
+        /// one was resolved from the design. Nothing the editor does afterwards reaches the copies. Null before the first valid
+        /// recomposition. The name is trimmed, as the classic editor sends it.
+        /// </summary>
+        public DynamicDraftSnapshot SnapshotForWrite()
+        {
+            if (Design == null) return null;
+
+            var store = new RackProjectStore();
+            var json = store.Serialize(RackProject.ForDynamic(Design));
+            var design = store.Deserialize(json)?.DynamicDesign;
+            if (design == null) return null;
+
+            var name = Name?.Trim();
+            var system = _resolver.Resolve(design).System;
+            system.Name = name;
+            return new DynamicDraftSnapshot(json, name, design, system);
+        }
+
+        // A fresh copy of the last valid system: the resolution of the last valid design, with the name; null before the first one.
+        private DynamicRackSystem WorkingCopy()
+        {
+            if (System == null || Design == null) return System;
+            var copy = _resolver.Resolve(Design).System;
+            copy.Name = System.Name;
+            return copy;
         }
 
         // ------------------------------------------------------------------ the checks of the classic editor, with its messages

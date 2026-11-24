@@ -270,6 +270,19 @@
                     </DockPanel>
                 </Border>
 
+                <!-- I-64 A-14, line D: a request of the door waits for AutoCAD; the user can stop waiting. -->
+                <Border x:Name="WaitingPanel" DockPanel.Dock="Top" Margin="10,8,10,0" Padding="10,6" BorderThickness="1" CornerRadius="6"
+                        Background="{DynamicResource ShellSurfaceBrush}" BorderBrush="{DynamicResource ShellStatusWarningBrush}"
+                        Visibility="{Binding IsWaitingForAutoCad, Converter={StaticResource FlagToVisibility}}">
+                    <DockPanel>
+                        <Button x:Name="StopWaitingButton" DockPanel.Dock="Right" Content="Dejar de esperar" Padding="8,2" Margin="8,0,0,0"
+                                VerticalAlignment="Top" Style="{StaticResource SecondaryButtonStyle}"
+                                AutomationProperties.Name="Dejar de esperar a AutoCAD" Click="OnStopWaitingClick" />
+                        <TextBlock x:Name="WaitingText" Text="{Binding WaitingText}" TextWrapping="Wrap"
+                                   Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                    </DockPanel>
+                </Border>
+
                 <Grid>
                     <!-- The page of the rack: the workspace panel, placed here by the code-behind. -->
                     <DockPanel x:Name="RackPage" LastChildFill="True"

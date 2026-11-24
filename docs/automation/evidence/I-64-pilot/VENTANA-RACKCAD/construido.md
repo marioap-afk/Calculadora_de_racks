@@ -138,36 +138,75 @@ Este documento es el registro de lo construido. Sirve para la planeación poster
 **Rama:** `architecture/workspace-persistente-rackcad-dinamico`, encima de la de la ventana.
 
 **Lo que hace:**
-- Un rack Dinámico de la lista muestra «Editar aquí». La ventana pide a AutoCAD que lea su diseño con `RACKDINAMICOABRIR`, una orden sin marca de Deshacer y sin historial, así que no deja nada en Deshacer, y abre el editor nuevo en el centro.
+- Un rack Dinámico de la lista muestra «Editar aquí». La ventana pide a AutoCAD que lea su diseño con `RACKDINAMICOABRIR`, una orden sin marca de Deshacer y sin historial, y abre el editor nuevo en el centro. Que no deje nada en Deshacer está por comprobar en AutoCAD (M-15).
 - **El editor sigue la «versión despejada» aprobada,** con las pestañas Rack, Matriz (la de inicio) y Avanzado:
   - **Rack:** «Lo esencial» de todo el rack, con «Varía» cuando hay valores distintos; «Calculado», y «Poste y anotaciones» plegado.
-  - **Matriz:** frente × nivel, con un solo dato por celda (la tarima, ancho × alto). Clic, Ctrl+clic, Mayús+clic, F1…, N1… y «Todo». El inspector de la selección lleva la tarima y los largueros de las celdas y los datos de sus frentes, y permite dejar un frente en blanco o activarlo.
+  - **Matriz:** frente × nivel, con un solo dato por celda (la tarima, ancho × alto). Clic, Ctrl+clic, Mayús+clic desde el ancla, F1…, N1… y «Todo». El inspector de la selección lleva la tarima y los largueros de las celdas y los datos de sus frentes, y permite dejar un frente en blanco o activarlo.
   - **Avanzado:** altura manual, separadores, poste derivado y los módulos con rótulos en español (M1…, Cabecera o Separador, Sí o No).
-- **Una sola forma de confirmar:** lo escrito va al borrador al salir del campo o con Enter. **Un solo alcance:** la selección. Un valor que no se puede recalcular se rechaza en su campo y el borrador queda como estaba.
-- **«Restaurar layout…»** pide confirmación y dice qué se pierde.
-- **El borrador sobrevive al cambio de rack,** y la lista lo marca: «Modificado (editor de la ventana)».
-- **«Actualizar»** entrega el borrador a `RACKDINAMICOAPLICAR`, que redibuja el rack con la mitad de dibujo de RACKEDITAR (`ApplyDynamicEdit`, extraída de `EditDynamic` sin cambiar su cuerpo). Solo actualiza, sin vista nueva, y es una orden: un «U» la deshace.
+- **Una sola forma de confirmar:** lo escrito va al borrador al salir del campo o con Enter. Salir de un campo sin cambiar su texto no cambia nada. **Un solo alcance:** la selección. Un valor que no se puede recalcular se rechaza en su campo, y el borrador, la matriz y la selección quedan como estaban.
+- **«Modificado»** significa que el borrador difiere de lo último que se leyó del dibujo o se escribió en él. No depende de los gestos.
+- **Un frente en blanco** conserva sus niveles y celdas, como en el editor clásico (I-33). «Lo esencial» no los toca, y el inspector los muestra en solo lectura con el motivo.
+- **Los peraltes de larguero** solo admiten los valores del catálogo para el larguero de cada celda, como las listas del clásico.
+- **«Restaurar layout…»** pide confirmación y dice qué se pierde. **«Cerrar el editor»** pregunta antes si hay cambios.
+- **El borrador sobrevive al cambio de rack,** y la lista lo marca: «Modificado (editor de la ventana)», o «Escribiendo en el dibujo».
+- **«Actualizar»** entrega a `RACKDINAMICOAPLICAR` una copia del borrador, que redibuja el rack con la mitad de dibujo de RACKEDITAR (`ApplyDynamicEdit`, extraída de `EditDynamic` sin cambiar su cuerpo). Solo actualiza, sin vista nueva, y es una orden: un «U» la deshace.
+
+**La puerta (corregida tras la segunda revisión):**
+- Cada petición lleva un número. La respuesta vale solo para esa petición, y se aplica a la sesión y al rack que había **al pedirla**.
+- Solo una petición espera a la vez. Mientras AutoCAD escribe, el editor no se puede editar.
+- «Dejar de esperar» olvida la petición: si su orden llega a correr después, no hace nada.
+- La petición se guarda con el dibujo activo. Si la orden corre en otro dibujo, no hace nada y lo dice.
+- `RACKDINAMICOABRIR` ya no pregunta el rack en la línea de órdenes: toma la petición guardada. Escrita a mano, sin petición, solo avisa.
+- Al entregar la orden, el foco vuelve al dibujo.
+- El nombre se envía recortado, como lo hace el clásico.
 
 **Las decisiones:**
 
 | Id | Decisión | Por qué |
 |---|---|---|
-| D-01 | El borrador (`DynamicDraftEditor`, en Application) es la misma recomposición que el editor clásico. Las pruebas de equivalencia lo comprueban byte a byte, en un rack nuevo, en uno cargado y en uno editado | El editor nuevo escribe lo que escribiría el clásico. Las reglas nuevas del Owner (la altura por poste, la cama editable, el largo IN/OUT por frente) son cambios de cálculo declarados y van en una entrega aparte, con sus pruebas |
+| D-01 | El borrador (`DynamicDraftEditor`, en Application) es la misma recomposición que el editor clásico. Con valores de hasta dos decimales, el diseño que guarda es idéntico byte a byte, en un rack nuevo, en uno cargado y en uno editado. Las diferencias están en D-04 | El editor nuevo escribe lo que escribiría el clásico. Las reglas nuevas del Owner (la altura por poste, la cama editable, el largo IN/OUT por frente) son cambios de cálculo declarados y van en una entrega aparte, con sus pruebas |
 | D-02 | La lectura y la escritura son órdenes de AutoCAD, no lecturas de la paleta | No bloquean el documento desde la paleta (O-18) y corren en el documento activo, así que no se puede leer el rack de otro dibujo |
 | D-03 | `RACKEDITAR` sigue con el editor clásico, que también es «Abrir en editor clásico» | Hasta que el Owner valide el editor nuevo en AutoCAD |
+| D-04 | Tres diferencias declaradas con el clásico (I-03): (1) el borrador conserva la precisión completa de un valor, y el clásico lo redondea a dos decimales cuando relee sus casillas (1200 mm de fondo: 47.2441 contra 47.24); (2) el estilo de cota se conserva tal como se leyó, y el clásico descarta un estilo que el dibujo no tiene (en ambos casos el dibujo acota con su estilo actual y los tamaños de RackCad); (3) un poste que no está en el catálogo da paso al poste por defecto, como en el clásico, pero el editor lo dice, y un poste del catálogo escrito con otras mayúsculas es ese poste | El borrador nunca cambia un valor que el usuario no tocó. Las tres tienen prueba |
+| D-05 | El sistema publicado se recompone siempre sobre una copia: el sistema es la resolución del último diseño válido. «Actualizar» envía el diseño copiado por su JSON y el sistema resuelto otra vez desde esa copia | Nada de lo que se edite después alcanza lo que escribe AutoCAD (B-02), y un recálculo que falla deja el último sistema válido (M-14) |
+| D-06 | Los elementos del editor (campos, celdas y cabeceras de la matriz) viven lo que el editor y se refrescan en su sitio | Confirmar un campo ya no destruye la casilla con el foco ni el botón bajo el ratón (I-05) |
+| D-07 | **El cierre del dibujo no espera al borrador Dinámico.** Si el dibujo se cierra con cambios sin escribir, la ventana olvida el borrador y avisa de que esos cambios se perdieron. Los borradores de dibujos cerrados se podan siempre | Vetar el cierre exige una segunda autoridad de cierre: suscribirse a `BeginDocumentClose` fuera del puente (prohibido por INV-F1-T2-02) o envolver al consejero del host (F4-T3C2 fija una sola autoridad). **Es una decisión para la planeación:** llevar los borradores de la ventana al host, o admitir un segundo consejero |
 
 **Fuera de esta entrega:**
 - la vista previa;
 - la seguridad y los extremos;
 - el editor de cabeceras (va a otra iniciativa);
 - «Insertar vista…»;
-- la detección de un cambio del dibujo mientras se edita (el conflicto);
+- la detección de un cambio del dibujo mientras se edita (el conflicto). Tras un «U» de `RACKDINAMICOAPLICAR`, o un RACKEDITAR del mismo rack, el editor sigue «Limpio» con lo que escribió; «Descartar» dice «lo último que se leyó o se escribió», no «lo que hay en el dibujo» (M-16);
 - un Dinámico nuevo desde la ventana, que sigue saliendo por «Nuevo» (RACKNUEVO), con el editor clásico;
 - las tres reglas nuevas de cálculo.
 
 **Las pruebas:**
-- `DynamicDraftEditorEquivalenceTests` (4);
-- `RackCadDynamicEditorTests` (17): el editor, la puerta (con un doble) y las vistas.
-- El censo de comandos pasa a 45, con RACKDINAMICOABRIR y RACKDINAMICOAPLICAR.
+- `DynamicDraftEditorEquivalenceTests` (9): la equivalencia con el clásico, las tres diferencias declaradas (D-04), la copia para AutoCAD y el recálculo fallido.
+- `RackCadDynamicEditorTests` (33):
+  - el editor: confirmar sin cambios, «Varía» vacío, la vuelta atrás de un recálculo que falla (con la matriz y la selección), el frente en blanco, los peraltes del catálogo, el ancla de Mayús, los elementos conservados, «Descartar» y «Cerrar el editor»;
+  - la puerta, con un doble: los números de petición, «Dejar de esperar», la respuesta tardía, la sesión al pedir, la escritura con copias y el editor bloqueado, dos dibujos con el mismo rack, AutoCAD ocupado y la poda de un dibujo cerrado;
+  - las vistas: el editor en la página del rack, el aviso de espera y su botón, y los botones de celda que sobreviven a una confirmación.
+- **Comprobación en rojo:**
+  - con la instantánea apuntando al diseño y al sistema vivos, fallaron sus dos pruebas;
+  - sin la regla de «sin cambios» en el campo, falló la suya;
+  - los dos archivos se restauraron.
+- El censo de comandos pasa a 45, con RACKDINAMICOABRIR y RACKDINAMICOAPLICAR, que ahora viven en `RackCadRackDoorCommands.cs`.
+- **Las guardas:**
+  - solo las dos puertas de la ventana entregan órdenes a AutoCAD;
+  - los archivos que llama la paleta no usan los ayudantes que bloquean el documento; solo los usan las órdenes de la puerta (M-05).
 
-**Sin AutoCAD:** la lectura, la escritura y el editor en la paleta esperan el smoke del Owner.
+**La revisión independiente de `345c4c41`:** APTO TRAS CORRECCIONES, con 2 B, 5 I y 11 M.
+- **B-01:** `Update()` pasó a `RequestWrite()`.
+- **B-02 e I-07:** la puerta corregida (arriba) y D-05.
+- **I-03:** D-04.
+- **I-04:** salir de un campo sin cambiarlo no hace nada, y «Modificado» se mide contra el dibujo.
+- **I-05:** D-06.
+- **I-06:** «Cerrar el editor», la poda y el aviso de pérdida. El veto queda como decisión, D-07.
+- **M-09 a M-14, M-17 y M-18:** corregidos, con prueba donde aplica.
+- **M-10:** el nombre va recortado.
+- **M-11:** los peraltes del catálogo.
+- **M-15 y M-16:** declarados. M-15 es un paso del smoke; M-16 está en «Fuera de esta entrega».
+- **M-19:** este documento.
+
+**Sin AutoCAD:** la lectura, la escritura, el editor en la paleta y que `RACKDINAMICOABRIR` no deje nada en Deshacer esperan el smoke del Owner.

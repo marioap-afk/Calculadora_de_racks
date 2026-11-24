@@ -55,25 +55,39 @@ namespace RackCad.UI.VentanaRackCad
         private readonly IRackCadRackDoorPort _door;
         private readonly Func<RackCatalog> _catalog;
 
-        // The drafts of the Dinámico racks opened in the window, by session and rack: they survive a change of rack (I-64 A-14, line D).
-        private readonly Dictionary<(SessionId Session, string RackId), DynamicDraftEntry> _dynamicDrafts = new();
-        private string _pendingRead;
+        // The drafts of the Dinámico racks opened in the window, by session and rack (the id of a rack compares without case, as the list
+        // does): they survive a change of rack (I-64 A-14, line D).
+        private readonly Dictionary<(SessionId Session, string RackId), DynamicDraftEntry> _dynamicDrafts = new(DraftKeyComparer.Instance);
+        private DoorRequest _inFlight;
+        private long _lastRequestId;
         private bool _showPanel;
 
         private sealed class DynamicDraftEntry
         {
-            public DynamicDraftEntry(DynamicEditorViewModel editor, string originalJson, string originalName)
+            public DynamicDraftEntry(SessionId session, DynamicEditorViewModel editor)
             {
+                Session = session;
                 Editor = editor;
-                OriginalJson = originalJson;
-                OriginalName = originalName;
             }
 
+            public SessionId Session { get; }
+
             public DynamicEditorViewModel Editor { get; }
+        }
 
-            public string OriginalJson { get; set; }
+        // The one request of the door that waits for AutoCAD: its number, the session and the rack it was made for (at the time it was
+        // made, not when the answer arrives) and, for a write, what was sent.
+        private sealed record DoorRequest(long Id, bool IsWrite, SessionId Session, string RackId, string SentJson, string SentName);
 
-            public string OriginalName { get; set; }
+        private sealed class DraftKeyComparer : IEqualityComparer<(SessionId Session, string RackId)>
+        {
+            public static readonly DraftKeyComparer Instance = new();
+
+            public bool Equals((SessionId Session, string RackId) x, (SessionId Session, string RackId) y) =>
+                x.Session == y.Session && string.Equals(x.RackId, y.RackId, StringComparison.OrdinalIgnoreCase);
+
+            public int GetHashCode((SessionId Session, string RackId) key) =>
+                HashCode.Combine(key.Session, StringComparer.OrdinalIgnoreCase.GetHashCode(key.RackId ?? string.Empty));
         }
 
         private RackCadWindowPage _page = RackCadWindowPage.Rack;
@@ -198,8 +212,12 @@ namespace RackCad.UI.VentanaRackCad
 
         // ------------------------------------------------------------------ the Dinámico of the window (I-64 A-14, line D)
 
+        private const string DoorBusyText =
+            "AutoCAD todavía no respondió a la petición anterior de la ventana: espera a que termine o pulsa «Dejar de esperar».";
+
         /// <summary>Whether the active rack is a Dinámico (Pallet Flow), by the Kind of the list of the drawing.</summary>
-        public bool IsDynamicRack => string.Equals(RackList.KindOf(Panel.Browser.ActiveRackId), "dynamic", StringComparison.OrdinalIgnoreCase);
+        public bool IsDynamicRack =>
+            string.Equals(RackList.KindOf(Panel.Browser.ActiveRackId), RackEmbedDocument.KindDynamic, StringComparison.OrdinalIgnoreCase);
 
         /// <summary>The editor of the active Dinámico rack in the window, when it was opened here; null otherwise.</summary>
         public DynamicEditorViewModel ActiveDynamicEditor =>
@@ -210,8 +228,24 @@ namespace RackCad.UI.VentanaRackCad
 
         public bool HasDynamicEditor => ActiveDynamicEditor != null;
 
+        /// <summary>Every Dinámico editor that the window keeps open, of any drawing.</summary>
+        public IReadOnlyList<DynamicEditorViewModel> DynamicEditors => _dynamicDrafts.Values.Select(e => e.Editor).ToList();
+
         /// <summary>The offer to edit the active Dinámico here: a Dinámico rack with no editor open yet, and a door to read it.</summary>
         public bool ShowDynamicOffer => IsDynamicRack && ActiveDynamicEditor == null && _door != null;
+
+        /// <summary>A request of the door waits for AutoCAD (a read or a write); the window offers «Dejar de esperar».</summary>
+        public bool IsWaitingForAutoCad => _inFlight != null;
+
+        public string WaitingText
+        {
+            get
+            {
+                if (_inFlight == null) return string.Empty;
+                var what = _inFlight.IsWrite ? "Esperando a que AutoCAD escriba el rack." : "Esperando a que AutoCAD lea el rack.";
+                return what + " Si no responde (por ejemplo, porque había texto a medio escribir en la línea de órdenes), pulsa «Dejar de esperar».";
+            }
+        }
 
         /// <summary>While a Dinámico editor is shown, the user may look at the panel of the rack (state and navigation) instead.</summary>
         public bool ShowPanel
@@ -228,16 +262,26 @@ namespace RackCad.UI.VentanaRackCad
 
         public string PanelToggleText => _showPanel ? "Volver al editor" : "Ver el estado y la navegación del rack";
 
-        /// <summary>«Editar aquí»: asks AutoCAD to read the design of the active rack; the editor opens when the answer arrives.</summary>
+        /// <summary>
+        /// «Editar aquí»: asks AutoCAD to read the design of the active rack; the editor opens when the answer to THIS request arrives, for
+        /// the session and the rack of the request. Only one request of the door waits at a time.
+        /// </summary>
         public void EditDynamicHere()
         {
             var rack = Panel.Browser.ActiveRackId;
-            if (_door == null || rack == null) return;
+            var session = Panel.PresentedSession;
+            if (_door == null || rack == null || !session.HasValue) return;
+            if (_inFlight != null)
+            {
+                Say(DoorBusyText, failed: true);
+                return;
+            }
 
+            var id = ++_lastRequestId;
             RackCadClassicResult result;
             try
             {
-                result = _door.RequestDesign(rack) ?? RackCadClassicResult.Without(RackCadClassicStatus.Failed, "sin respuesta.");
+                result = _door.RequestDesign(new RackDoorRequest(id, rack)) ?? RackCadClassicResult.Without(RackCadClassicStatus.Failed, "sin respuesta.");
             }
             catch (Exception ex)
             {
@@ -246,8 +290,9 @@ namespace RackCad.UI.VentanaRackCad
 
             if (result.IsStarted)
             {
-                _pendingRead = rack;
+                _inFlight = new DoorRequest(id, false, session.Value, rack, null, null);
                 Say("Leyendo el rack en AutoCAD…", failed: false);
+                RaiseWaiting();
             }
             else
             {
@@ -255,16 +300,57 @@ namespace RackCad.UI.VentanaRackCad
             }
         }
 
-        // The answer of AutoCAD to «Editar aquí»: the editor opens over the design read, for the rack that was asked and is still active.
+        /// <summary>
+        /// «Dejar de esperar»: the window forgets the request that waits for AutoCAD and tells the door, so its command does nothing if it
+        /// runs later. An editor that was writing can be edited again, with its draft still not written.
+        /// </summary>
+        public void StopWaiting()
+        {
+            var request = _inFlight;
+            if (request == null) return;
+            _inFlight = null;
+            try
+            {
+                _door?.Abandon(request.Id);
+            }
+            catch (Exception ex)
+            {
+                Say("No se pudo avisar a AutoCAD: " + ex.Message, failed: true);
+            }
+
+            if (request.IsWrite && _dynamicDrafts.TryGetValue((request.Session, request.RackId), out var entry))
+            {
+                entry.Editor.EndWriting();
+                entry.Editor.Say("Se dejó de esperar a AutoCAD: si la orden llega a correr, no escribirá nada. El borrador sigue sin escribir.", error: false);
+            }
+            else if (!request.IsWrite)
+            {
+                Say("Se dejó de esperar la lectura: si la orden llega a correr, no abrirá nada.", failed: false);
+            }
+
+            RaiseWaiting();
+            RaiseDynamic();
+        }
+
+        // The answer of AutoCAD to «Editar aquí»: only the answer to the request that waits; the editor opens for its session and rack.
         private void OnDesignRead(RackDesignRead read)
         {
             Contained(() =>
             {
-                if (read == null || !string.Equals(read.RackId, _pendingRead, StringComparison.OrdinalIgnoreCase)) return;
-                _pendingRead = null;
+                var request = _inFlight;
+                if (read == null || request == null || request.IsWrite || read.RequestId != request.Id) return;
+                _inFlight = null;
+                RaiseWaiting();
+
                 if (!read.Found)
                 {
                     Say("No se pudo abrir el rack: " + (read.Reason ?? "sin detalle."), failed: true);
+                    return;
+                }
+
+                if (!string.Equals(read.RackId, request.RackId, StringComparison.OrdinalIgnoreCase))
+                {
+                    Say("AutoCAD leyó otro rack que el pedido: no se abrió nada.", failed: true);
                     return;
                 }
 
@@ -275,32 +361,37 @@ namespace RackCad.UI.VentanaRackCad
                     return;
                 }
 
-                if (!Panel.PresentedSession.HasValue) return;
-                var editor = new DynamicDraftEditor(_catalog());
-                editor.LoadFrom(project.DynamicDesign, read.Name);
-                var view = new DynamicEditorViewModel(editor, read.RackId, UpdateDynamic);
-                view.PropertyChanged += (_, e) =>
+                var key = (request.Session, request.RackId);
+                if (_dynamicDrafts.TryGetValue(key, out var existing) && (existing.Editor.IsDirty || existing.Editor.IsWriting))
                 {
-                    if (e.PropertyName == nameof(DynamicEditorViewModel.IsDirty)) { RackList.RefreshStates(); OnPropertyChanged(nameof(HeaderText)); }
-                };
-                _dynamicDrafts[(Panel.PresentedSession.Value, read.RackId)] = new DynamicDraftEntry(view, read.DesignJson, read.Name);
+                    Say("Este rack ya tiene un borrador con cambios en la ventana: no se reemplazó.", failed: false);
+                    RaiseDynamic();
+                    return;
+                }
+
+                if (existing != null) Forget(key, existing);
+
+                var draft = new DynamicDraftEditor(_catalog());
+                draft.LoadFrom(project.DynamicDesign, read.Name);
+                var editor = new DynamicEditorViewModel(draft, request.RackId, UpdateDynamic);
+                editor.PropertyChanged += OnDynamicEditorChanged;
+                editor.CloseRequested += CloseDynamicEditor;
+                _dynamicDrafts[key] = new DynamicDraftEntry(request.Session, editor);
                 _showPanel = false;
                 Say(string.Empty, failed: false);
                 RaiseDynamic();
             });
         }
 
-        /// <summary>What «Descartar» of the Dinámico editor goes back to: the design that was read (or last written).</summary>
-        public DynamicRackDesign OriginalDesignOf(DynamicEditorViewModel editor)
+        private void OnDynamicEditorChanged(object sender, PropertyChangedEventArgs e)
         {
-            var entry = _dynamicDrafts.Values.FirstOrDefault(e => ReferenceEquals(e.Editor, editor));
-            return entry == null ? null : new RackProjectStore().Deserialize(entry.OriginalJson)?.DynamicDesign;
+            if (e.PropertyName != nameof(DynamicEditorViewModel.IsDirty) && e.PropertyName != nameof(DynamicEditorViewModel.IsWriting)) return;
+            RackList.RefreshStates();
+            OnPropertyChanged(nameof(HeaderText));
         }
 
-        public string OriginalNameOf(DynamicEditorViewModel editor) =>
-            _dynamicDrafts.Values.FirstOrDefault(e => ReferenceEquals(e.Editor, editor))?.OriginalName;
-
-        // «Actualizar» of the Dinámico editor: the draft goes to AutoCAD, which redraws the rack with the drawing half of RACKEDITAR.
+        // «Actualizar» of the Dinámico editor: COPIES of the draft go to AutoCAD, which redraws the rack with the drawing half of RACKEDITAR.
+        // The editor cannot be edited until the answer arrives or the window stops waiting, so what is written is what the user saw.
         private void UpdateDynamic(DynamicEditorViewModel editor)
         {
             if (_door == null)
@@ -309,10 +400,26 @@ namespace RackCad.UI.VentanaRackCad
                 return;
             }
 
+            var entry = _dynamicDrafts.Values.FirstOrDefault(e => ReferenceEquals(e.Editor, editor));
+            if (entry == null) return;
+            if (_inFlight != null)
+            {
+                editor.Say(DoorBusyText, error: true);
+                return;
+            }
+
+            var snapshot = editor.Draft.SnapshotForWrite();
+            if (snapshot == null)
+            {
+                editor.Say("No hay un borrador válido que escribir.", error: true);
+                return;
+            }
+
+            var id = ++_lastRequestId;
             RackCadClassicResult result;
             try
             {
-                result = _door.RequestDynamicUpdate(editor.RackId, editor.Name, editor.Draft.Design, editor.Draft.System)
+                result = _door.RequestDynamicUpdate(new RackDoorWrite(id, editor.RackId, snapshot.Name, snapshot.Design, snapshot.System))
                     ?? RackCadClassicResult.Without(RackCadClassicStatus.Failed, "sin respuesta.");
             }
             catch (Exception ex)
@@ -320,30 +427,35 @@ namespace RackCad.UI.VentanaRackCad
                 result = RackCadClassicResult.Without(RackCadClassicStatus.Failed, ex.Message);
             }
 
-            if (result.IsStarted) editor.Say("Escribiendo el rack en el dibujo…", error: false);
-            else editor.Say(RefusalText(result), error: true);
+            if (result.IsStarted)
+            {
+                _inFlight = new DoorRequest(id, true, entry.Session, editor.RackId, snapshot.DesignJson, snapshot.Name);
+                editor.BeginWriting();
+                RaiseWaiting();
+            }
+            else
+            {
+                editor.Say(RefusalText(result), error: true);
+            }
         }
 
-        // The answer of AutoCAD to «Actualizar»: the draft is the drawing now, and «Descartar» goes back to it.
+        // The answer of AutoCAD to «Actualizar»: only the answer to the request that waits. What was SENT is the drawing now, and
+        // «Descartar» goes back to it; the draft of another session with the same rack is not touched.
         private void OnDesignWritten(RackDesignWritten written)
         {
             Contained(() =>
             {
-                if (written == null) return;
-                foreach (var pair in _dynamicDrafts)
+                var request = _inFlight;
+                if (written == null || request == null || !request.IsWrite || written.RequestId != request.Id) return;
+                _inFlight = null;
+                RaiseWaiting();
+
+                if (_dynamicDrafts.TryGetValue((request.Session, request.RackId), out var entry))
                 {
-                    if (!string.Equals(pair.Key.RackId, written.RackId, StringComparison.OrdinalIgnoreCase)) continue;
-                    var editor = pair.Value.Editor;
-                    if (written.Written)
-                    {
-                        pair.Value.OriginalJson = new RackProjectStore().Serialize(RackProject.ForDynamic(editor.Draft.Design));
-                        pair.Value.OriginalName = editor.Name;
-                        editor.MarkWritten(written.Message);
-                    }
-                    else
-                    {
-                        editor.Say(written.Message, error: true);
-                    }
+                    var editor = entry.Editor;
+                    editor.EndWriting();
+                    if (written.Written) editor.MarkWritten(written.Message, request.SentJson, request.SentName);
+                    else editor.Say(written.Message, error: true);
                 }
 
                 RackList.RefreshStates();
@@ -351,11 +463,81 @@ namespace RackCad.UI.VentanaRackCad
             });
         }
 
+        // «Cerrar el editor» (confirmed by the editor when it had changes): the window forgets the draft and shows the panel of the rack.
+        private void CloseDynamicEditor(DynamicEditorViewModel editor)
+        {
+            Contained(() =>
+            {
+                foreach (var pair in _dynamicDrafts.Where(p => ReferenceEquals(p.Value.Editor, editor)).ToList())
+                {
+                    if (pair.Value.Editor.IsWriting) return;
+                    Forget(pair.Key, pair.Value);
+                }
+
+                RaiseDynamic();
+                OnPropertyChanged(nameof(HeaderText));
+            });
+        }
+
+        // The drafts of a drawing that was closed have nowhere to be written: they are forgotten (with their request, if one waited), and
+        // work that was lost is said. Whether a drawing may close is decided only by the host of the panel (F4-T3C2: one lifecycle
+        // authority), which does not know the drafts of the window: protecting them on close is decision D-07, for the planning.
+        // IsSessionAlive answers from memory; it never reads the drawing.
+        private void PruneDeadSessions()
+        {
+            var port = Panel.BrowserSummaryPort;
+            if (port == null || _dynamicDrafts.Count == 0) return;
+
+            var dead = _dynamicDrafts.Where(p => !IsAlive(port, p.Key.Session)).ToList();
+            if (dead.Count == 0) return;
+
+            var lost = new List<string>();
+            foreach (var pair in dead)
+            {
+                var editor = pair.Value.Editor;
+                if (editor.IsDirty || editor.IsWriting) lost.Add(string.IsNullOrWhiteSpace(editor.Name) ? editor.RackId : editor.Name.Trim());
+                if (_inFlight != null && _inFlight.Session == pair.Key.Session) _inFlight = null;
+                Forget(pair.Key, pair.Value);
+            }
+
+            if (lost.Count > 0)
+                Say("Se cerró el dibujo de " + string.Join(", ", lost) + " con cambios sin escribir en la ventana: esos cambios se perdieron.", failed: true);
+            RaiseWaiting();
+            RaiseDynamic();
+        }
+
+        private static bool IsAlive(IWorkspaceBrowserSummaryPort port, SessionId session)
+        {
+            try
+            {
+                return port.IsSessionAlive(session);
+            }
+            catch (Exception)
+            {
+                // Unknown is not dead: the draft stays.
+                return true;
+            }
+        }
+
+        private void Forget((SessionId Session, string RackId) key, DynamicDraftEntry entry)
+        {
+            entry.Editor.PropertyChanged -= OnDynamicEditorChanged;
+            entry.Editor.CloseRequested -= CloseDynamicEditor;
+            _dynamicDrafts.Remove(key);
+        }
+
         // The state of a Dinámico rack in the list, while its draft is open in the window.
         private (string Text, string Kind, bool Changed)? DynamicStateOf(SessionId session, string rackId)
         {
             if (!_dynamicDrafts.TryGetValue((session, rackId), out var entry)) return null;
+            if (entry.Editor.IsWriting) return ("Escribiendo en el dibujo", "Modificado", true);
             return entry.Editor.IsDirty ? ("Modificado (editor de la ventana)", "Modificado", true) : ("Abierto en la ventana", "Limpio", false);
+        }
+
+        private void RaiseWaiting()
+        {
+            OnPropertyChanged(nameof(IsWaitingForAutoCad));
+            OnPropertyChanged(nameof(WaitingText));
         }
 
         private void RaiseDynamic()
@@ -363,6 +545,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(IsDynamicRack));
             OnPropertyChanged(nameof(ActiveDynamicEditor));
             OnPropertyChanged(nameof(HasDynamicEditor));
+            OnPropertyChanged(nameof(DynamicEditors));
             OnPropertyChanged(nameof(ShowDynamicOffer));
             OnPropertyChanged(nameof(ShowPanel));
             OnPropertyChanged(nameof(PanelToggleText));
@@ -519,6 +702,7 @@ namespace RackCad.UI.VentanaRackCad
                 ShowError(ex);
             }
 
+            Contained(PruneDeadSessions);
             OnPropertyChanged(nameof(HeaderText));
             OnPropertyChanged(nameof(NoRackText));
             OnPropertyChanged(nameof(IsDynamicRack));
