@@ -74,7 +74,7 @@ namespace RackCad.UI.VentanaRackCad
         {
             // The name is bound on leaving its box: a click on «Actualizar» right after typing it must not lose it.
             NameBox.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
-            _viewModel.Update();
+            _viewModel.RequestWrite();
         });
 
         private void OnDiscardClick(object sender, RoutedEventArgs e) =>

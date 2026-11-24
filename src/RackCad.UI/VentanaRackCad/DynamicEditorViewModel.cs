@@ -344,7 +344,7 @@ namespace RackCad.UI.VentanaRackCad
         }
 
         /// <summary>«Actualizar»: hands this editor to the host, which writes the drawing. Nothing happens when there is nothing to write.</summary>
-        public void Update()
+        public void RequestWrite()
         {
             if (!CanUpdate)
             {

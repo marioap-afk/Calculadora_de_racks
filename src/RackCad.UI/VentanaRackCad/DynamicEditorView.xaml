@@ -128,7 +128,7 @@
                         <ItemsControl x:Name="EssentialsList" ItemsSource="{Binding Essentials}" ItemTemplate="{StaticResource FieldTemplate}"
                                       ItemsPanel="{StaticResource WrapItems}" />
                         <TextBlock Text="Calculado" Style="{StaticResource GroupTitle}" />
-                        <ItemsControl x:Name="CalculatedList" ItemsSource="{Binding Calculated}">
+                        <ItemsControl x:Name="CalculatedList" ItemsSource="{Binding Calculated}" MaxWidth="420" HorizontalAlignment="Left">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <DockPanel Margin="0,1">

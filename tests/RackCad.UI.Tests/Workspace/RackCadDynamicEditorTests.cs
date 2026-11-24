@@ -189,12 +189,12 @@ namespace RackCad.UI.Tests
             var updates = 0;
             var vm = Editor(_ => updates++);
 
-            vm.Update();
+            vm.RequestWrite();
             Assert.Equal(0, updates);
             Assert.Equal("Sin cambios que escribir.", vm.Message);
 
             Write(vm, v => v.Essentials, "weight", "1200");
-            vm.Update();
+            vm.RequestWrite();
             Assert.Equal(1, updates);
 
             vm.Discard(Structure(), "DIN 1");
@@ -364,7 +364,7 @@ namespace RackCad.UI.Tests
             var editor = rig.Window.ActiveDynamicEditor!;
             Write(editor, v => v.Essentials, "weight", "1200");
 
-            editor.Update();
+            editor.RequestWrite();
 
             var write = Assert.Single(rig.Door.Writes);
             Assert.Equal("DIN-1", write.RackId);
@@ -390,7 +390,7 @@ namespace RackCad.UI.Tests
             rig.Door.Read(new RackDesignRead("DIN-1", true, "dynamic", "DIN 1", FullJson(), null));
             var editor = rig.Window.ActiveDynamicEditor!;
             Write(editor, v => v.Essentials, "weight", "1200");
-            editor.Update();
+            editor.RequestWrite();
 
             rig.Door.Written(new RackDesignWritten("DIN-1", false, "El rack ya no está en el dibujo: no se escribió nada."));
 
