@@ -56,8 +56,8 @@ namespace RackCad.UI.VentanaRackCad
         }
 
         // Loaded comes inside the modal loop of ShowDialog; the work is posted so it runs once the window is shown and owns its children,
-        // after the Loaded handler returns. At Normal priority: at Background a busy dispatcher (layout or rendering of other surfaces) can
-        // keep it waiting indefinitely, as a test run showed.
+        // after the Loaded handler returns. At Normal priority, the default of BeginInvoke: at Background, any work of the thread at a higher
+        // priority runs first, so the editor could wait behind it (a test run showed it).
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             Window.Loaded -= OnLoaded;
