@@ -375,6 +375,9 @@ namespace RackCad.Tests
             Add(Class.E, "DynamicEditorFront.Index", "DynamicEditorFront.IsActive", "DynamicEditorFront.PalletCount", "DynamicEditorFront.LoadLevels",
                 "DynamicEditorFront.PalletsDeep", "DynamicEditorFront.DepthStartPosition", "DynamicEditorFront.FirstLevelHeight",
                 "DynamicEditorFront.Bfr", "DynamicEditorFront.BeamLength", "DynamicEditorFront.Cells");
+            // Step 3 of Dinámico in the RackCad window: the bed and the slope of a front (the Push Back state shares the front class).
+            Add(Class.E, "DynamicEditorFront.RollerId", "DynamicEditorFront.RollerPitch", "DynamicEditorFront.BrakeEveryRollers",
+                "DynamicEditorFront.SlopePerFoot");
             Add(Class.E, "DynamicEditorCell.PalletFront", "DynamicEditorCell.PalletHeight", "DynamicEditorCell.PalletWeight", "DynamicEditorCell.ClearHeight",
                 "DynamicEditorCell.InOutBeamCatalogId", "DynamicEditorCell.InOutBeamDepth", "DynamicEditorCell.BeamLengthOverride",
                 "DynamicEditorCell.IntermediateBeamCatalogId", "DynamicEditorCell.IntermediateBeamDepth");

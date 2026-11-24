@@ -342,6 +342,11 @@ namespace RackCad.Application.Systems.PushBack
                     || !left.FirstLevelHeight.Equals(right.FirstLevelHeight)
                     || !left.Bfr.Equals(right.Bfr)
                     || !left.BeamLength.Equals(right.BeamLength)
+                    // Step 3 of Dinámico in the RackCad window: the bed and the slope of the front (the class is shared with Push Back).
+                    || !string.Equals(left.RollerId, right.RollerId, StringComparison.Ordinal)
+                    || !Nullable.Equals(left.RollerPitch, right.RollerPitch)
+                    || !Nullable.Equals(left.BrakeEveryRollers, right.BrakeEveryRollers)
+                    || !Nullable.Equals(left.SlopePerFoot, right.SlopePerFoot)
                     || !CellsEqual(left.Cells, right.Cells))
                 {
                     return false;

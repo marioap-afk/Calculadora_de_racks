@@ -263,6 +263,11 @@ internal static class PilotCensus
         ["DynamicEditorFront.Bfr"] = E,
         ["DynamicEditorFront.BeamLength"] = E,
         ["DynamicEditorFront.Cells"] = E,
+        // Step 3 of Dinámico in the RackCad window: the bed and the slope of the front are edited like its other values.
+        ["DynamicEditorFront.RollerId"] = E,
+        ["DynamicEditorFront.RollerPitch"] = E,
+        ["DynamicEditorFront.BrakeEveryRollers"] = E,
+        ["DynamicEditorFront.SlopePerFoot"] = E,
 
         ["DynamicEditorCell.PalletFront"] = E,
         ["DynamicEditorCell.PalletHeight"] = E,
