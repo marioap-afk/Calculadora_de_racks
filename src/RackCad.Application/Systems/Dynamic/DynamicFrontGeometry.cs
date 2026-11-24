@@ -81,7 +81,11 @@ namespace RackCad.Application.Systems.Dynamic
                         : 1,
                     Bfr = Bfr(palletFront),
                     BeamLength = beamLength,
-                    BeamLengthOverride = design.BeamLengthOverride
+                    BeamLengthOverride = design.BeamLengthOverride,
+                    RollerId = design.RollerId,
+                    RollerPitch = design.RollerPitch,
+                    BrakeEveryRollers = design.BrakeEveryRollers,
+                    SlopePerFoot = design.SlopePerFoot
                 };
 
                 // I-42: los TRAMOS viajan verbatim. Sin ellos el frente ocupa su rango continuo de siempre, que es

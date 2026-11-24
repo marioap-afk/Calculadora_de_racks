@@ -203,6 +203,10 @@ namespace RackCad.Application.Systems.Shared
                 && a.BeamLengthOverride == b.BeamLengthOverride
                 && a.FirstLevelHeight == b.FirstLevelHeight
                 && a.Bfr == b.Bfr
+                && a.RollerId == b.RollerId
+                && a.RollerPitch == b.RollerPitch
+                && a.BrakeEveryRollers == b.BrakeEveryRollers
+                && a.SlopePerFoot == b.SlopePerFoot
                 && Sequence(a.IntermediateBeamDepths, b.IntermediateBeamDepths, (x, y) => x == y)
                 && Sequence(a.Levels, b.Levels, Same)
                 ;

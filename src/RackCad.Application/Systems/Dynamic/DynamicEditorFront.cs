@@ -27,6 +27,13 @@ namespace RackCad.Application.Systems.Dynamic
         public double FirstLevelHeight { get; set; } = DynamicRackDefaults.DefaultFirstLevelHeight;
         public double Bfr { get; set; }
         public double BeamLength { get; set; }
+
+        /// <summary>The bed and the slope of the front (step 3 of Dinámico); null = as before.</summary>
+        public string RollerId { get; set; }
+        public double? RollerPitch { get; set; }
+        public int? BrakeEveryRollers { get; set; }
+        public double? SlopePerFoot { get; set; }
+
         public List<DynamicEditorCell> Cells { get; } = new List<DynamicEditorCell>();
 
         /// <summary>Copy the editable structural front values from an edit buffer (was the window's ApplyFrontValues).</summary>
@@ -61,7 +68,11 @@ namespace RackCad.Application.Systems.Dynamic
                 DepthStartPosition = DepthStartPosition,
                 FirstLevelHeight = FirstLevelHeight,
                 Bfr = Bfr,
-                BeamLength = BeamLength
+                BeamLength = BeamLength,
+                RollerId = RollerId,
+                RollerPitch = RollerPitch,
+                BrakeEveryRollers = BrakeEveryRollers,
+                SlopePerFoot = SlopePerFoot
             };
             foreach (var cell in Cells)
             {

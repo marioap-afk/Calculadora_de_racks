@@ -244,7 +244,7 @@ Este documento es el registro de lo construido. Sirve para la planeación poster
 El Owner pidió seguir con Dinámico antes de Cantilever. Las piezas pendientes de sus decisiones del prototipo van en este orden:
 1. el aviso antes de cerrar (D-08, hecho);
 2. el largo IN/OUT por frente y la chincheta de la lista (hecho, con las observaciones del smoke);
-3. los cambios de cálculo (la altura por poste, la cama editable);
+3. los cambios de cálculo (la altura por poste, la cama editable; hecho);
 4. la seguridad, «Insertar vista…» y un Dinámico nuevo desde la ventana.
 
 **Lo hecho en el paso 2:**
@@ -258,6 +258,25 @@ El Owner pidió seguir con Dinámico antes de Cantilever. Las piezas pendientes 
   - O-2: una selección nueva del rack ya activo lleva a su página, dentro del mismo dibujo;
   - O-3: por debajo de 700 px el inspector va debajo de la matriz.
 - **Sin cambio:** O-4 (los monitores) depende de AutoCAD y de V-09 (la paleta no recuerda su posición).
+
+**Lo hecho en el paso 3** (respuestas del Owner: el paso actual se mantiene, la cama va por frente, la pendiente es la subida por pie de cada frente y el ancho de la cama sigue a la tarima):
+- **La altura por poste.** El dibujo y el BOM ya daban a cada poste la altura del frente más alto que toca. Ahora el editor también la muestra en «Calculado»:
+  - la altura de cabecera (la más alta);
+  - la altura por poste (P1 · P2 …);
+  - la subida de la cama de cada frente.
+
+  Una prueba fija que el dibujo y el BOM usan las dos alturas de un rack con frentes de 5 y 4 niveles, y que la altura manual de cabecera manda en todos los postes.
+- **La cama por frente**, en «Avanzado» → «Cama y pendiente». Escribe los frentes activos de la selección de «Matriz»:
+  - el rodillo: 1.9 o 2.5 in del catálogo; vacío = 1.9;
+  - el paso: vacío = el del rodillo (2 in con 1.9, 3 in con 2.5). Un paso menor que el rodillo se rechaza, y no se cambia a un rodillo mayor que el paso escrito;
+  - un freno cada N rodillos: vacío = por el fondo de tarima, como siempre;
+  - la pendiente en in por pie: vacío = 7/16.
+
+  Dos frentes con camas distintas dicen «Varía».
+- **El dibujo** guarda los cuatro valores en el frente solo cuando tienen valor. Un rack sin cambios de cama se escribe igual que antes (prueba).
+- **El BOM** separa las líneas de «Cama» por la cama del frente, por ejemplo « · rodillo 2.5" · paso 4" · freno cada 6 rodillos». Una cama como antes conserva su línea.
+- **El editor clásico** no muestra estos valores, pero los conserva al abrir y escribir un rack que los tiene (prueba).
+- **Sin cambio:** el ancho de la cama sigue a la tarima.
 
 **Smoke exploratorio de la sesión (2026-11-24, por orden del Owner, sobre `78fd5cb1`):**
 - pasan todos los pasos, también M-15 (la lectura no deja nada en Deshacer), I-04, I-05 con el ratón real, I-09, M-11, el «U» de «Actualizar» y D-07, que entonces era solo un aviso de pérdida;

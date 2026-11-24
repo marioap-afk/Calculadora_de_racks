@@ -64,6 +64,9 @@ namespace RackCad.Application.Systems.FlowBed
 
             instances.Add(Roller(catalog, rollerId, originX + firstRoller, lineY));
             var lastRoller = firstRoller;
+            // A brake every N rollers when the bed says so (step 3 of Dinámico); otherwise by the depth of the pallet, as always.
+            var brakeEvery = config.BrakeEveryRollers.HasValue && config.BrakeEveryRollers.Value > 0 ? config.BrakeEveryRollers.Value : 0;
+            var rollersSinceBrake = 1;
 
             var dynamic = config.BedType == FlowBedType.Dynamic && config.PalletDepth > 0.0;
             var palletGap = config.PalletDepth + FlowBedDefaults.BrakeClearanceOverPallet;
@@ -73,7 +76,10 @@ namespace RackCad.Application.Systems.FlowBed
             {
                 // Time for a brake once a brake placed 5 troqueles after the last roller would reach the target
                 // (>= pallet depth + 1" from the tope / previous brake), snapped onto the roller grid.
-                if (dynamic && lastRoller + FlowBedDefaults.BrakeAfterLastRoller >= brakeTarget)
+                var brakeDue = brakeEvery > 0
+                    ? rollersSinceBrake >= brakeEvery
+                    : lastRoller + FlowBedDefaults.BrakeAfterLastRoller >= brakeTarget;
+                if (dynamic && brakeDue)
                 {
                     var brakeOffset = lastRoller + FlowBedDefaults.BrakeAfterLastRoller;
                     var nextRoller = brakeOffset + FlowBedDefaults.RollerAfterBrake;
@@ -88,6 +94,7 @@ namespace RackCad.Application.Systems.FlowBed
                     instances.Add(Piece(catalog, HeaderBlockRole.Brake, FlowBedDefaults.BrakeId, new Point2D(originX + brakeOffset, lineY)));
                     instances.Add(Roller(catalog, rollerId, originX + nextRoller, lineY));
                     lastRoller = nextRoller;
+                    rollersSinceBrake = 1;
                     brakeTarget = brakeOffset + palletGap;
                     continue;
                 }
@@ -100,6 +107,7 @@ namespace RackCad.Application.Systems.FlowBed
 
                 instances.Add(Roller(catalog, rollerId, originX + next, lineY));
                 lastRoller = next;
+                rollersSinceBrake++;
             }
 
             return instances;

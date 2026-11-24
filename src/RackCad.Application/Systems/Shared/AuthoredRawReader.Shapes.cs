@@ -328,6 +328,10 @@ namespace RackCad.Application.Systems.Shared
                     case "BFR": Nullable(value, p, (v, p) => Number(v, p)); break;
                     case "INTERMEDIATEBEAMDEPTHS": Array(value, p, (v, p) => Number(v, p)); break;
                     case "LEVELS": Array(value, p, (v, p) => DynamicRackLevelDocument(v, p)); break;
+                    case "ROLLERID": String(value, p); break;
+                    case "ROLLERPITCH": Nullable(value, p, (v, p) => Number(v, p)); break;
+                    case "BRAKEEVERYROLLERS": Nullable(value, p, (v, p) => Integer(v, p)); break;
+                    case "SLOPEPERFOOT": Nullable(value, p, (v, p) => Number(v, p)); break;
                     default: throw Invalid(p, "unknown member");
                 }
             }

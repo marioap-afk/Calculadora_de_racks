@@ -222,6 +222,7 @@ namespace RackCad.UI.VentanaRackCad
         private IReadOnlyList<DynamicFieldItem> _cellFields = Array.Empty<DynamicFieldItem>();
         private IReadOnlyList<DynamicFieldItem> _frontFields = Array.Empty<DynamicFieldItem>();
         private IReadOnlyList<DynamicFieldItem> _advancedFields = Array.Empty<DynamicFieldItem>();
+        private IReadOnlyList<DynamicFieldItem> _bedFields = Array.Empty<DynamicFieldItem>();
         private IReadOnlyList<DynamicCalcItem> _calculated = Array.Empty<DynamicCalcItem>();
         private IReadOnlyList<DynamicMatrixRow> _rows = Array.Empty<DynamicMatrixRow>();
         private IReadOnlyList<DynamicColumnHead> _columns = Array.Empty<DynamicColumnHead>();
@@ -326,6 +327,24 @@ namespace RackCad.UI.VentanaRackCad
         public IReadOnlyList<DynamicFieldItem> FrontFields => _frontFields;
 
         public IReadOnlyList<DynamicFieldItem> AdvancedFields => _advancedFields;
+
+        /// <summary>
+        /// «Cama y pendiente» (step 3 of Dinámico; the Owner: «Debe de ser todo modificable», by front, in «Avanzado»): the roller, its
+        /// pitch, a brake every N rollers and the slope of the active fronts of the selection. Empty values keep the bed as it always was.
+        /// </summary>
+        public IReadOnlyList<DynamicFieldItem> BedFields => _bedFields;
+
+        /// <summary>Which fronts «Cama y pendiente» writes: the active fronts of the selection of the matrix.</summary>
+        public string BedScopeText
+        {
+            get
+            {
+                var fronts = SelectedFronts().Where(f => _editor.Matrix.IsActive(IndexOf(f))).Select(f => "F" + (IndexOf(f) + 1)).ToList();
+                return fronts.Count == 0
+                    ? "La selección no tiene frentes activos: elige una celda de un frente activo en «Matriz»."
+                    : "Frentes de la selección: " + string.Join(", ", fronts) + ". Para elegir otros, selecciónalos en «Matriz».";
+            }
+        }
 
         public IReadOnlyList<DynamicModuleItem> Modules => _modules;
 
@@ -839,6 +858,8 @@ namespace RackCad.UI.VentanaRackCad
 
             Merge(ref _cellFields, BuildCellFields(), nameof(CellFields));
             Merge(ref _frontFields, BuildFrontFields(), nameof(FrontFields));
+            Merge(ref _bedFields, BuildBedFields(), nameof(BedFields));
+            OnPropertyChanged(nameof(BedScopeText));
             OnPropertyChanged(nameof(InspectorTitle));
             OnPropertyChanged(nameof(InspectorNote));
         }
@@ -924,6 +945,91 @@ namespace RackCad.UI.VentanaRackCad
             return CellOptional(key, label, "in", cells, c => c.BeamLengthOverride, (c, v) => c.BeamLengthOverride = v);
         }
 
+        // «Cama y pendiente» of the active fronts of the selection. The width of the bed is not here: it follows the pallet (the Owner).
+        private IReadOnlyList<DynamicFieldItem> BuildBedFields()
+        {
+            var fronts = SelectedFronts().Where(f => _editor.Matrix.IsActive(IndexOf(f))).ToList();
+            return new[]
+            {
+                FrontValue("bRoller", "Rodillo (diámetro; vacío = 1.9)", "in", fronts, f => RollerText(f.RollerId), text =>
+                {
+                    if (string.IsNullOrWhiteSpace(text)) return (null, f => f.RollerId = null);
+                    if (!UiSupport.TryNum(text, out var diameter)) return (RollerChoices(), null);
+                    var roller = Rollers().FirstOrDefault(r => Math.Abs(r.Diameter - diameter) < 0.01);
+                    if (roller == null) return (RollerChoices(), null);
+                    // The default roller is written as nothing, so a bed as before stays as it was in the drawing and in the BOM.
+                    var id = string.Equals(roller.Id, RackCad.Domain.Systems.FlowBed.FlowBedDefaults.RollerId, StringComparison.OrdinalIgnoreCase) ? null : roller.Id;
+                    foreach (var front in fronts)
+                        if (front.RollerPitch.HasValue && front.RollerPitch.Value < MinimumPitch(id))
+                            return ("El paso de F" + (IndexOf(front) + 1) + " (" + Num(front.RollerPitch.Value) + " in) es menor que este rodillo: cambia antes el paso.", null);
+                    return (null, f => f.RollerId = id);
+                }),
+                FrontValue("bPitch", "Paso de rodillos (vacío = según el rodillo)", "in", fronts, f => f.RollerPitch.HasValue ? Num(f.RollerPitch.Value) : string.Empty, text =>
+                {
+                    if (string.IsNullOrWhiteSpace(text)) return (null, f => f.RollerPitch = null);
+                    if (!UiSupport.TryNum(text, out var pitch) || pitch <= 0.0) return ("El paso debe ser un número mayor que cero.", null);
+                    foreach (var front in fronts)
+                    {
+                        var minimum = MinimumPitch(front.RollerId);
+                        if (pitch < minimum)
+                            return ("El paso no puede ser menor que el rodillo de F" + (IndexOf(front) + 1) + ": mínimo " + Num(minimum) + " in.", null);
+                    }
+
+                    return (null, f => f.RollerPitch = pitch);
+                }),
+                FrontValue("bBrakes", "Freno cada N rodillos (vacío = según el fondo de tarima)", string.Empty, fronts,
+                    f => f.BrakeEveryRollers.HasValue ? f.BrakeEveryRollers.Value.ToString(CultureInfo.InvariantCulture) : string.Empty, text =>
+                {
+                    if (string.IsNullOrWhiteSpace(text)) return (null, f => f.BrakeEveryRollers = null);
+                    if (!UiSupport.TryInt(text, out var every) || every < 1) return ("Debe ser un entero mayor o igual que 1.", null);
+                    return (null, f => f.BrakeEveryRollers = every);
+                }),
+                FrontValue("bSlope", "Pendiente (in por pie; vacío = 7/16)", "in/pie", fronts, f => f.SlopePerFoot.HasValue ? Num(f.SlopePerFoot.Value) : string.Empty, text =>
+                {
+                    if (string.IsNullOrWhiteSpace(text)) return (null, f => f.SlopePerFoot = null);
+                    if (!UiSupport.TryNum(text, out var perFoot) || perFoot < 0.0) return ("La pendiente debe ser un número mayor o igual que cero.", null);
+                    return (null, f => f.SlopePerFoot = perFoot);
+                }),
+            };
+        }
+
+        // One value of the fronts written: «Varía» when they differ; the parser says why a text is refused or how to write it.
+        private DynamicFieldItem FrontValue(string key, string label, string unit, IReadOnlyList<DynamicEditorFront> fronts, Func<DynamicEditorFront, string> show,
+            Func<string, (string Error, Action<DynamicEditorFront> Set)> parse)
+        {
+            var values = fronts.Select(show).ToList();
+            var same = values.Distinct(StringComparer.Ordinal).Count() <= 1;
+            var text0 = same && values.Count > 0 ? values[0] ?? string.Empty : string.Empty;
+            return new DynamicFieldItem(key, label, unit, text0, same ? string.Empty : Varies, text =>
+            {
+                var (error, set) = parse(text);
+                if (error != null) return error;
+                return Apply(() => { foreach (var front in fronts) set(front); }, null);
+            }, !CanEdit || fronts.Count == 0);
+        }
+
+        private IEnumerable<RackCad.Application.Catalogs.FlowBedComponentCatalogEntry> Rollers() =>
+            (_editor.Catalog.FlowBedProfiles ?? Array.Empty<RackCad.Application.Catalogs.FlowBedComponentCatalogEntry>())
+            .Where(p => p != null && p.Diameter > 0.0 && string.Equals(p.Role, "RODILLO", StringComparison.OrdinalIgnoreCase))
+            .OrderBy(p => p.Diameter);
+
+        private string RollerChoices() => "El rodillo debe ser uno del catálogo: " + string.Join(" o ", Rollers().Select(r => Num(r.Diameter))) + " in.";
+
+        private string RollerText(string rollerId)
+        {
+            if (string.IsNullOrWhiteSpace(rollerId)) return string.Empty;
+            var roller = Rollers().FirstOrDefault(r => string.Equals(r.Id, rollerId, StringComparison.OrdinalIgnoreCase));
+            return roller == null ? rollerId : Num(roller.Diameter);
+        }
+
+        // The smallest pitch a roller allows: its diameter rounded up to the inch, as the recipe of the bed does by default.
+        private double MinimumPitch(string rollerId)
+        {
+            var id = string.IsNullOrWhiteSpace(rollerId) ? RackCad.Domain.Systems.FlowBed.FlowBedDefaults.RollerId : rollerId;
+            var diameter = Rollers().FirstOrDefault(r => string.Equals(r.Id, id, StringComparison.OrdinalIgnoreCase))?.Diameter ?? 0.0;
+            return Math.Max(1.0, Math.Ceiling(diameter));
+        }
+
         private int IndexOf(DynamicEditorFront front)
         {
             var fronts = _editor.Matrix.Fronts;
@@ -934,11 +1040,16 @@ namespace RackCad.UI.VentanaRackCad
         private IReadOnlyList<DynamicCalcItem> BuildCalculated()
         {
             var system = _editor.System;
-            var derived = _editor.DerivedHeight;
+            // The heights by post and the rise by front are the ones of the resolved system (rule 1 of the Owner), not one nominal value
+            // for the whole rack: «Pendiente» showed the nominal slope after a recomposition and the real one of the highest front after a
+            // load (the map of the code of step 3).
+            var posts = _editor.PostHeights;
+            var rises = _editor.FrontRises;
             var items = new List<DynamicCalcItem>
             {
-                new("Altura de cabecera", Num(_editor.HeaderHeight) + " in" + (_editor.ManualHeaderHeight.HasValue ? " (manual)" : string.Empty)),
-                new("Pendiente", derived == null ? "—" : Num(derived.Slope) + " in"),
+                new("Altura de cabecera", Num(_editor.HeaderHeight) + " in" + (_editor.ManualHeaderHeight.HasValue ? " (manual)" : " (la más alta)")),
+                new("Altura por poste", posts.Count == 0 ? "—" : string.Join(" · ", posts.Select((h, i) => "P" + (i + 1) + " " + Num(h))) + " in"),
+                new("Subida de la cama", rises.Count == 0 ? "—" : string.Join(" · ", rises.Select((r, i) => "F" + (i + 1) + " " + Num(r))) + " in"),
                 new("Posiciones de fondo del rack", _editor.PalletsDeep.ToString(CultureInfo.InvariantCulture)),
                 new("Niveles máximos", _editor.Matrix.MaxLoadLevels().ToString(CultureInfo.InvariantCulture)),
                 new("Módulos", system == null ? "—" : system.Modules.Count.ToString(CultureInfo.InvariantCulture)),

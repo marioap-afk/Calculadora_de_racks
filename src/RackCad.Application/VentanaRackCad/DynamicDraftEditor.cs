@@ -98,6 +98,20 @@ namespace RackCad.Application.VentanaRackCad
         /// <summary>What the levels give, also when the height is fixed by hand; null before the first valid recomposition.</summary>
         public DynamicHeaderHeightResult DerivedHeight { get; private set; }
 
+        /// <summary>
+        /// The height of the cabeceras at each transverse post (N fronts, N + 1 posts) of the last valid system: each post takes the highest
+        /// of the fronts it touches (rule 1 of the Owner on the prototype: with 5 levels in F1 and 4 in F2 the posts are for 5, 5 and 4),
+        /// unless a manual height makes them all equal. Empty before the first valid recomposition.
+        /// </summary>
+        public IReadOnlyList<double> PostHeights => System == null
+            ? Array.Empty<double>()
+            : Enumerable.Range(0, System.Fronts.Count + 1).Select(post => DynamicFrontGeometry.PostHeight(System, post)).ToList();
+
+        /// <summary>The real rise of the bed of each front (entrance minus exit of its first level, on the grid of the troqueles).</summary>
+        public IReadOnlyList<double> FrontRises => System == null
+            ? Array.Empty<double>()
+            : System.Fronts.Select(front => DynamicHeaderHeightCalculator.CalculateResolved(front).Slope).ToList();
+
         /// <summary>The total positions of fondo of the rack, as resolved by the last valid recomposition.</summary>
         public int PalletsDeep => _palletsDeepTotal;
 

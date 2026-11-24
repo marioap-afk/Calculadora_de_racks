@@ -75,6 +75,9 @@ namespace RackCad.Application.Systems.Shared
             Require(!f.LoadLevels.HasValue || f.LoadLevels > 0, "Dynamic.Front.LoadLevels");
             Require(!f.PalletsDeep.HasValue || f.PalletsDeep >= 2, "Dynamic.Front.PalletsDeep");
             Require(!f.DepthStartPosition.HasValue || f.DepthStartPosition > 0, "Dynamic.Front.DepthStartPosition");
+            Require(!f.RollerPitch.HasValue || f.RollerPitch > 0, "Dynamic.Front.RollerPitch");
+            Require(!f.BrakeEveryRollers.HasValue || f.BrakeEveryRollers > 0, "Dynamic.Front.BrakeEveryRollers");
+            Require(!f.SlopePerFoot.HasValue || f.SlopePerFoot >= 0, "Dynamic.Front.SlopePerFoot");
             f.IsActive ??= true;
             f.LoadLevels ??= Math.Max(1, levels);
             f.PalletsDeep ??= Math.Max(2, deep);

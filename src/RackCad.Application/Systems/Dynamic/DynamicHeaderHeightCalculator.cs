@@ -143,6 +143,12 @@ namespace RackCad.Application.Systems.Dynamic
         public static double CalculateSlope(double totalDepth)
             => (Math.Max(0.0, totalDepth) / CommercialFoot) * (SlopeRise / SlopeRun);
 
+        /// <summary>The slope of a front whose rise per foot was written (step 3 of Dinámico); null = 7/16 in per foot, as before.</summary>
+        public static double CalculateSlope(double totalDepth, double? risePerFoot)
+            => risePerFoot.HasValue && risePerFoot.Value >= 0.0
+                ? (Math.Max(0.0, totalDepth) / CommercialFoot) * risePerFoot.Value
+                : CalculateSlope(totalDepth);
+
         /// <summary>Rounds a height up to the next whole commercial foot (e.g. 145" → 156", 144" → 144").</summary>
         public static double RoundUpToCommercialFoot(double height)
         {

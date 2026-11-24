@@ -397,6 +397,10 @@ namespace RackCad.Application.Systems.Dynamic
                 fronts[index].PalletsDeep = Math.Max(2, resolved[index].PalletsDeep);
                 fronts[index].DepthStartPosition = Math.Max(1, resolved[index].DepthStartPosition);
                 fronts[index].FirstLevelHeight = resolved[index].FirstLevelHeight;
+                fronts[index].RollerId = resolved[index].RollerId;
+                fronts[index].RollerPitch = resolved[index].RollerPitch;
+                fronts[index].BrakeEveryRollers = resolved[index].BrakeEveryRollers;
+                fronts[index].SlopePerFoot = resolved[index].SlopePerFoot;
                 fronts[index].Cells.Clear();
                 foreach (var level in resolved[index].Levels)
                 {
@@ -425,7 +429,11 @@ namespace RackCad.Application.Systems.Dynamic
                     DepthStartPosition = Math.Max(1, front.DepthStartPosition),
                     FirstLevelHeight = front.FirstLevelHeight,
                     Bfr = front.Bfr,
-                    BeamLength = front.BeamLength
+                    BeamLength = front.BeamLength,
+                    RollerId = front.RollerId,
+                    RollerPitch = front.RollerPitch,
+                    BrakeEveryRollers = front.BrakeEveryRollers,
+                    SlopePerFoot = front.SlopePerFoot
                 };
                 foreach (var level in front.Levels)
                 {
@@ -459,7 +467,11 @@ namespace RackCad.Application.Systems.Dynamic
                     LoadLevels = row.LoadLevels,
                     PalletsDeep = row.PalletsDeep,
                     DepthStartPosition = row.DepthStartPosition,
-                    FirstLevelHeight = row.FirstLevelHeight
+                    FirstLevelHeight = row.FirstLevelHeight,
+                    RollerId = row.RollerId,
+                    RollerPitch = row.RollerPitch,
+                    BrakeEveryRollers = row.BrakeEveryRollers,
+                    SlopePerFoot = row.SlopePerFoot
                 };
                 // A blank front still writes its cells: that is what keeps its configuration DORMANT so reactivating
                 // it restores the rack it had, instead of rebuilding it from defaults (I-33).

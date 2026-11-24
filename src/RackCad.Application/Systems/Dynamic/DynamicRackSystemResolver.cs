@@ -104,7 +104,7 @@ namespace RackCad.Application.Systems.Dynamic
                 var levels = DynamicLoadBeamGeometry.ResolveLevels(
                     front.Levels.ToList(),
                     front.FirstLevelHeight,
-                    DynamicHeaderHeightCalculator.CalculateSlope(frontDepth),
+                    DynamicHeaderHeightCalculator.CalculateSlope(frontDepth, front.SlopePerFoot),
                     troquelGridBase,
                     SelectiveRackDefaults.TroquelPaso,
                     datum);

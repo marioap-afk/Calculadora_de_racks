@@ -1,6 +1,7 @@
 #nullable enable
 using System.Linq;
 using RackCad.Application.Persistence;
+using RackCad.Application.Systems.Dynamic;
 using RackCad.Application.VentanaRackCad;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.Shared;
@@ -241,6 +242,44 @@ namespace RackCad.UI.Tests
             draft.LoadFrom(spelled, "DIN 1");
             Assert.Equal(known, draft.PostCatalogId);
             Assert.Null(draft.LoadNotice);
+        }
+
+        [Fact]
+        public void EachPostTakesTheHighestOfTheFrontsItTouchesInTheGeometryAndInTheBom()
+        {
+            // Rule 1 of the Owner on the prototype: «si en el primer frente hay 5 niveles y en el segundo 4, los dos primeros postes son
+            // para 5 niveles y el tercero para 4, a menos que manualmente se ajusten las alturas para todos igual».
+            var catalog = UiSupport.LoadCatalogSafe();
+            var design = new DynamicRackDesign
+            {
+                Pallet = new PalletSpecification(42.0, 48.0, 60.0, 1000.0, "kg"),
+                PalletsDeep = 6,
+                LoadLevels = 5,
+                FirstLevelHeight = 6.0,
+                BeamDepth = 4.0,
+            };
+            design.Fronts.Add(new DynamicRackFrontDesign { PalletCount = 1, LoadLevels = 5, PalletsDeep = 6, DepthStartPosition = 1 });
+            design.Fronts.Add(new DynamicRackFrontDesign { PalletCount = 1, LoadLevels = 4, PalletsDeep = 6, DepthStartPosition = 1 });
+            var draft = new DynamicDraftEditor(catalog);
+            draft.LoadFrom(design, "DIN 5-4");
+            Assert.True(draft.Recompose(), draft.LastError);
+
+            var posts = draft.PostHeights;
+            Assert.Equal(3, posts.Count);
+            Assert.Equal(posts[0], posts[1]);
+            Assert.True(posts[1] > posts[2], string.Join(", ", posts));
+            Assert.Equal(posts[0], draft.HeaderHeight);
+
+            var headers = SystemBomBuilder.Build(draft.System, catalog).Components
+                .Where(c => c.Category == RackCad.Application.Bom.BomBuilder.Cabecera)
+                .Select(c => c.Length)
+                .ToList();
+            Assert.Contains(posts[0], headers);
+            Assert.Contains(posts[2], headers);
+
+            draft.ManualHeaderHeight = 300.0;
+            Assert.True(draft.Recompose(), draft.LastError);
+            Assert.All(draft.PostHeights, height => Assert.Equal(300.0, height));
         }
 
         [Fact]

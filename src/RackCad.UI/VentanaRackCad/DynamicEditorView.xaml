@@ -292,6 +292,12 @@
                         <ItemsControl x:Name="AdvancedFieldList" ItemsSource="{Binding AdvancedFields}" ItemTemplate="{StaticResource FieldTemplate}"
                                       ItemsPanel="{StaticResource WrapItems}" />
                         <CheckBox Content="Reforzar el poste derivado" Margin="0,2,0,8" IsChecked="{Binding DerivedPostReinforced, Mode=TwoWay}" IsEnabled="{Binding CanEdit}" />
+                        <!-- Step 3 of Dinámico: the bed and the slope, by front (the fronts of the selection of «Matriz»). -->
+                        <TextBlock Text="Cama y pendiente" Style="{StaticResource GroupTitle}" />
+                        <TextBlock x:Name="BedScopeText" Text="{Binding BedScopeText}" TextWrapping="Wrap" Margin="0,0,0,6"
+                                   Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                        <ItemsControl x:Name="BedFieldList" ItemsSource="{Binding BedFields}" ItemTemplate="{StaticResource FieldTemplate}"
+                                      ItemsPanel="{StaticResource WrapItems}" />
                         <TextBlock Text="Módulos" Style="{StaticResource GroupTitle}" />
                         <DataGrid x:Name="ModulesGrid" ItemsSource="{Binding Modules}" AutoGenerateColumns="False" IsReadOnly="True"
                                   HeadersVisibility="Column" MaxHeight="320" CanUserAddRows="False" AutomationProperties.Name="Módulos">

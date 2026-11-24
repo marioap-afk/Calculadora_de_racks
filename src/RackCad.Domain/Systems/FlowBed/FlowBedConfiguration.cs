@@ -20,5 +20,8 @@ namespace RackCad.Domain.Systems.FlowBed
 
         /// <summary>Custom roller pitch (in); null/&lt;=0 = the minimum allowed by the roller diameter.</summary>
         public double? RollerPitchOverride { get; set; }
+
+        /// <summary>A brake every N rollers (dynamic beds); null/&lt;=0 = a brake about every pallet depth + 1", as before.</summary>
+        public int? BrakeEveryRollers { get; set; }
     }
 }
