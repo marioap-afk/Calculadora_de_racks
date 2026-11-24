@@ -13,7 +13,7 @@ namespace RackCad.UI.VentanaRackCad
     /// shows the same way, so AutoCAD stays disabled while the editor is open, exactly as with the menu.
     ///
     /// It is a plain WPF <see cref="System.Windows.Window"/> configured here, not a new window type (the census of windows of ADR-0029 has no
-    /// archetype for it). When the window is loaded and its modal loop runs, the work runs with the window as its owner, at background
+    /// archetype for it). When the window is loaded and its modal loop runs, the work runs with the window as its owner, posted at normal
     /// priority, keeps its result or its failure, and closes the window. The window has an empty content, transparent, 1 × 1, centered.
     /// </summary>
     public sealed class RackModalHostWindow
@@ -55,11 +55,13 @@ namespace RackCad.UI.VentanaRackCad
             if (Failure != null) ExceptionDispatchInfo.Capture(Failure).Throw();
         }
 
-        // Loaded comes inside the modal loop of ShowDialog; the work is posted so it runs once the window is shown and owns its children.
+        // Loaded comes inside the modal loop of ShowDialog; the work is posted so it runs once the window is shown and owns its children,
+        // after the Loaded handler returns. At Normal priority: at Background a busy dispatcher (layout or rendering of other surfaces) can
+        // keep it waiting indefinitely, as a test run showed.
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             Window.Loaded -= OnLoaded;
-            Window.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(Run));
+            Window.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(Run));
         }
 
         private void Run()

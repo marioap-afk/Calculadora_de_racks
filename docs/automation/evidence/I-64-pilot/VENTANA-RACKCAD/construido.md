@@ -126,3 +126,9 @@ Este documento es el registro de lo construido. Sirve para la planeación poster
   - **M-07:** decidido en V-14;
   - **M-08:** este documento.
 - **M-02 de la segunda revisión, sin cambio:** la lista dice «puede no estar al día» después de cualquier orden, incluso un `ZOOM`, porque todo `CommandEnded` cuenta como cambio. Es el coste de V-10. Afinarlo exige saber qué órdenes cambian el dibujo, y eso toca el modelo de sesión de F1 a F4B.
+- **El CI de `ff0da9b1` falló** en la prueba de la ventana dueña, por el temporizador de M-01 y no por un cuelgue:
+  - en la corrida completa, las pruebas anteriores dejan el despachador ocupado, y el trabajo publicado con prioridad Background no llegaba a correr;
+  - la instrumentación mostró la ventana cargada y pintada, pero el trabajo sin empezar;
+  - en local se reproduce con las pruebas del editor clásico de Dinámico delante (falló 3 de 4 veces);
+  - la corrección publica el trabajo con prioridad Normal, siempre después de que vuelve `Loaded`; con ella, la misma combinación pasó 3 de 3 veces;
+  - que la ventana dueña se comporta igual dentro de AutoCAD queda para el smoke.
