@@ -74,7 +74,9 @@ namespace RackCad.Tests
             Assert.Single(catalog.TrussProfiles);
             // I-18a (PB-0): the Owner appended LARGUERO_ESCALON_TROQUEL_REDONDO (rol LARGUERO) for Push Back,
             // taking the beam profiles from 3 to 4. Append-only; no existing row changed.
-            Assert.Equal(4, catalog.BeamProfiles.Count);
+            // I-69: the Owner added four largueros (escalón invertido cal 14, escalón con ángulo, escalón invertido
+            // con ángulo, tubo 1.9), taking the beam profiles from 4 to 8. Append-only; no existing row changed.
+            Assert.Equal(8, catalog.BeamProfiles.Count);
             Assert.Single(catalog.SpacerProfiles);
         }
 
@@ -84,7 +86,8 @@ namespace RackCad.Tests
             var rows = JsonRackCatalogProvider.FromBaseDirectory().LoadSeccionRows();
 
             // I-18a (PB-0): +1 row for LARGUERO_ESCALON_TROQUEL_REDONDO (Push Back high-end beam).
-            Assert.Equal(7, rows.Count);
+            // I-69: +4 larguero rows from the Owner.
+            Assert.Equal(11, rows.Count);
             Assert.All(rows, row => Assert.True(SeccionRoles.IsRecognized(row.Rol), "rol no reconocido: " + row.Rol));
         }
 
