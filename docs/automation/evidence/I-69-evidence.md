@@ -801,4 +801,27 @@ Merge `--no-ff` de esta rama a main por plomeria (sin checkout de main), CI de m
 despues del merge. Sin limpieza ni tag: I-69 sigue abierta. Pendiente del Coordinator: registrar
 D-10 y decidir el registro durable de esta ronda parcial.
 
+## 19. Integracion parcial en main (2026-11-24, MEASURED)
+
+Ronda parcial por orden del Owner ([D-10](../decisions/I-69.md)). No cierra I-69 ni crea tag
+`integration/I-69`; el registro durable de esta ronda queda para el Coordinator.
+
+| Dato | Valor |
+|---|---|
+| Producto (equivale a Candidato, sin READY) | `ffe0b74e663534b2b6be4649885fcee092f7efcd` |
+| Cierre documental previo al merge | `d42ff52d03e6a354a5c75ed2de958bbcf73c4ef6`; `git diff --name-only ffe0b74e..d42ff52d` solo `docs/` |
+| CI de rama | `ffe0b74e`: corrida `45537908475`; `d42ff52d`: corrida `45538495553`; ambas `event=push`, 4 jobs `success` |
+| Base | `origin/main` = `812baf879612320653094a8aaf46aca0bac81383` antes y justo antes del push; sin ruta R |
+| Metodo | plomeria: `merge-tree --write-tree` (arbol `70220f45`, igual al de `d42ff52d`), `commit-tree -p 812baf87 -p d42ff52d`, `push <MERGE>:refs/heads/main` fast-forward sin force; checkout principal del Owner intacto |
+| `MERGE_SHA` | `5454f479e68262de5e63c9babc45c55a491145ad` ("Merge I-69 (parcial): cuatro largueros nuevos en el catalogo Selectivo") |
+| CI posterior al merge | corrida `45538970611`, `event=push`, `ref=refs/heads/main`, `head_sha=5454f479…`, 4 jobs `success`; artefacto `rackcad-coverage-cobertura` id `14988776559` |
+| Cobertura diferida del producto | corrida `45539590788`, `event=workflow_dispatch`, `candidate_sha=ffe0b74e…`; checkout y `measured-sha.txt` = `ffe0b74e663534b2b6be4649885fcee092f7efcd`; artefacto `rackcad-coverage-cobertura` id `14988971503` |
+| Limpieza | no aplica: rama, upstream y worktree siguen vivos |
+
+Desviaciones autorizadas por el Owner (D-10): sin Freeze, READY-01..09 ni conformidad; la prueba del
+Owner fue sobre el DLL de `4a128a7c` con los mismos datos, no Owner Validation sobre el SHA exacto.
+
+Despues del merge, esta rama queda un commit por delante de main (este registro). Siguiente:
+Q-01..Q-03 del Owner, renombres y C-01..C-03 del Coordinator.
+
 IMPLEMENTATION AUTHORIZATION = NO
