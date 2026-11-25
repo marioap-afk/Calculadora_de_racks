@@ -396,6 +396,7 @@ public class RackCadWindowListTests
         var placed = RackDoorRules.AnswerForNewRack(5, "id-1", placed: 2, name: " Dinámico 3 ");
         Assert.Equal((5L, "id-1", true), (placed.RequestId, placed.RackId, placed.Written));
         Assert.Equal("AutoCAD insertó el rack nuevo «Dinámico 3» con 2 vistas. Para seguir editándolo aquí, vuelve a leer la lista y ábrelo.", placed.Message);
+        Assert.Equal("Dinámico 3", placed.Name);
 
         var cancelled = RackDoorRules.AnswerForNewRack(6, "id-1", placed: 0, name: null);
         Assert.False(cancelled.Written);

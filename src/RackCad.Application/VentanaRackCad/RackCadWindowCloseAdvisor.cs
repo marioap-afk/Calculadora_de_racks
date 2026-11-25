@@ -66,7 +66,7 @@ namespace RackCad.Application.VentanaRackCad
             if (string.IsNullOrWhiteSpace(work)) return decision;
 
             Write("RackCad: el dibujo no se cerró: la ventana RackCad tiene cambios sin escribir en " + work
-                  + ". Escríbelos con «Actualizar» o descártalos en su editor, y vuelve a cerrar.");
+                  + ". Escríbelos con «Actualizar» (un Dinámico nuevo, con «Insertar en el dibujo…») o descártalos en su editor, y vuelve a cerrar.");
             return CloseDecision.Veto;
         }
 

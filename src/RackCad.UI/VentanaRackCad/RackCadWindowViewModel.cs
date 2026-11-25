@@ -79,7 +79,7 @@ namespace RackCad.UI.VentanaRackCad
 
         // The one request of the door that waits for AutoCAD: its number, the session and the rack it was made for (at the time it was
         // made, not when the answer arrives) and, for a write, what was sent.
-        private sealed record DoorRequest(long Id, bool IsWrite, SessionId Session, string RackId, string SentJson, string SentName);
+        private sealed record DoorRequest(long Id, bool IsWrite, SessionId Session, string RackId, string SentJson, string SentName, bool Started = false);
 
         private sealed class DraftKeyComparer : IEqualityComparer<(SessionId Session, string RackId)>
         {
@@ -129,6 +129,7 @@ namespace RackCad.UI.VentanaRackCad
             {
                 _door.DesignRead += OnDesignRead;
                 _door.DesignWritten += OnDesignWritten;
+                _door.RequestStarted += OnRequestStarted;
             }
 
             RackList = new RackListViewModel(panel.BrowserSummaryPort, panel.PilotEditPort, panel.Browser, DynamicStateOf);
@@ -254,6 +255,7 @@ namespace RackCad.UI.VentanaRackCad
         public DynamicEditorViewModel ActiveDynamicEditor =>
             Panel.PresentedSession.HasValue && Panel.Browser.ActiveRackId != null
             && _dynamicDrafts.TryGetValue((Panel.PresentedSession.Value, Panel.Browser.ActiveRackId), out var entry)
+            && !entry.Editor.IsNewRack
                 ? entry.Editor
                 : null;
 
@@ -334,11 +336,18 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>A request of the door waits for AutoCAD (a read or a write); the window offers «Dejar de esperar».</summary>
         public bool IsWaitingForAutoCad => _inFlight != null;
 
+        /// <summary>«Dejar de esperar» is offered until the command takes the request; then its answer will come (I-02 of the fifth review).</summary>
+        public bool CanStopWaiting => _inFlight != null && !_inFlight.Started;
+
+        private const string WriteTakenText =
+            "AutoCAD ya está escribiendo el rack (por ejemplo, espera a que coloques las vistas). Termina o cancela la orden en AutoCAD: la ventana recibirá su respuesta.";
+
         public string WaitingText
         {
             get
             {
                 if (_inFlight == null) return string.Empty;
+                if (_inFlight.Started) return WriteTakenText;
                 var what = _inFlight.IsWrite ? "Esperando a que AutoCAD escriba el rack." : "Esperando a que AutoCAD lea el rack.";
                 return what + " Si no responde (por ejemplo, porque había texto a medio escribir en la línea de órdenes), pulsa «Dejar de esperar».";
             }
@@ -404,6 +413,12 @@ namespace RackCad.UI.VentanaRackCad
         {
             var request = _inFlight;
             if (request == null) return;
+            if (request.Started)
+            {
+                Say(WriteTakenText, failed: true);
+                return;
+            }
+
             _inFlight = null;
             try
             {
@@ -513,6 +528,14 @@ namespace RackCad.UI.VentanaRackCad
 
             var entry = _dynamicDrafts.Values.FirstOrDefault(e => ReferenceEquals(e.Editor, editor));
             if (entry == null) return;
+
+            // The door writes in the drawing that is active in AutoCAD: a draft of another drawing waits for its drawing (I-03 of the fifth review).
+            if (!Panel.PresentedSession.HasValue || entry.Session != Panel.PresentedSession.Value)
+            {
+                editor.Say("Este borrador es de otro dibujo: vuelve a ese dibujo para escribirlo.", error: true);
+                return;
+            }
+
             if (_inFlight != null)
             {
                 editor.Say(DoorBusyText, error: true);
@@ -577,7 +600,7 @@ namespace RackCad.UI.VentanaRackCad
                     // A new Dinámico that AutoCAD placed is a rack of the drawing now: «Nuevo» shows its systems again and says where it is.
                     if (written.Written && editor.IsNewRack)
                     {
-                        editor.MarkInserted();
+                        editor.MarkInserted(written.Name);
                         Say(written.Message, failed: false);
                         RaiseDynamic();
                     }
@@ -645,7 +668,8 @@ namespace RackCad.UI.VentanaRackCad
             foreach (var pair in dead)
             {
                 var editor = pair.Value.Editor;
-                if (editor.IsDirty || editor.IsWriting) lost.Add(string.IsNullOrWhiteSpace(editor.Name) ? editor.RackId : editor.Name.Trim());
+                if (editor.IsDirty || editor.IsWriting)
+                    lost.Add(!string.IsNullOrWhiteSpace(editor.Name) ? editor.Name.Trim() : editor.IsNewRack ? "un Dinámico nuevo" : editor.RackId);
                 if (_inFlight != null && _inFlight.Session == pair.Key.Session) AbandonInFlight();
                 Forget(pair.Key, pair.Value);
             }
@@ -722,6 +746,18 @@ namespace RackCad.UI.VentanaRackCad
         {
             OnPropertyChanged(nameof(IsWaitingForAutoCad));
             OnPropertyChanged(nameof(WaitingText));
+            OnPropertyChanged(nameof(CanStopWaiting));
+        }
+
+        // The command of the write that waits took its request: the window waits for its answer.
+        private void OnRequestStarted(long requestId)
+        {
+            Contained(() =>
+            {
+                if (_inFlight == null || !_inFlight.IsWrite || _inFlight.Id != requestId) return;
+                _inFlight = _inFlight with { Started = true };
+                RaiseWaiting();
+            });
         }
 
         private void RaiseDynamic()
@@ -904,6 +940,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(NoRackText));
             OnPropertyChanged(nameof(IsDynamicRack));
             OnPropertyChanged(nameof(ShowDynamicOffer));
+            RaiseNewDynamic();
         }
 
         // The browser changed (a tab, the field, the active rack): the marks of the list follow, and a new active rack shows its page.

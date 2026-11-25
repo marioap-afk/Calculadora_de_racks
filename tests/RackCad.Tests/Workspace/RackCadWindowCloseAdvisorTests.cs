@@ -74,7 +74,7 @@ public class RackCadWindowCloseAdvisorTests
 
         Assert.Equal(CloseDecision.Veto, rig.Advisor.AdviseClose(S1));
         Assert.Equal(
-            "RackCad: el dibujo no se cerró: la ventana RackCad tiene cambios sin escribir en DIN 1, DIN 2. Escríbelos con «Actualizar» o descártalos en su editor, y vuelve a cerrar.",
+            "RackCad: el dibujo no se cerró: la ventana RackCad tiene cambios sin escribir en DIN 1, DIN 2. Escríbelos con «Actualizar» (un Dinámico nuevo, con «Insertar en el dibujo…») o descártalos en su editor, y vuelve a cerrar.",
             Assert.Single(rig.Lines));
 
         // The host is still asked, so its own notice is written when it vetoes too.

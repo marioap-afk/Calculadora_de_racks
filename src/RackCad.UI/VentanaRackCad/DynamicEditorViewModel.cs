@@ -716,7 +716,7 @@ namespace RackCad.UI.VentanaRackCad
             if (baseline != null) _editor.LoadFrom(baseline, _baselineName);
             TakeBaseline();
             _confirmingClose = false;
-            Say(RackId == null
+            Say(RackId == null || _isNewRack
                 ? "Borrador descartado."
                 : "Borrador descartado: se muestra lo último que se leyó del dibujo o se escribió en él desde este editor.", error: false);
             Rebuild();
@@ -818,11 +818,22 @@ namespace RackCad.UI.VentanaRackCad
             (_isNewRack ? _insertNew : _insertViews)(this, views);
         }
 
-        /// <summary>AutoCAD placed the new rack: from now on it is a rack of the drawing, written with «Actualizar» and «Insertar vista…».</summary>
-        public void MarkInserted()
+        /// <summary>
+        /// AutoCAD placed the new rack: from now on it is a rack of the drawing, written with «Actualizar» and «Insertar vista…». The name the
+        /// drawing gave it (the automatic one of I-60) becomes its name and the name of «Limpio».
+        /// </summary>
+        public void MarkInserted(string name = null)
         {
             if (!_isNewRack) return;
             _isNewRack = false;
+            if (!string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(_editor.Name))
+            {
+                _editor.Name = name.Trim();
+                _baselineName = _editor.Name;
+                OnPropertyChanged(nameof(Name));
+                UpdateDirty();
+            }
+
             OnPropertyChanged(nameof(IsNewRack));
             OnPropertyChanged(nameof(InsertViewLabel));
             RaiseState();
@@ -1240,6 +1251,8 @@ namespace RackCad.UI.VentanaRackCad
                 {
                     if (string.IsNullOrWhiteSpace(text)) return (null, f => f.RollerPitch = null);
                     if (!UiSupport.TryNum(text, out var pitch) || pitch <= 0.0) return ("El paso debe ser un número mayor que cero.", null);
+                    if (Math.Abs(pitch - Math.Round(pitch)) > 1e-9)
+                        return ("Los rodillos se cuelgan en los troqueles: el paso debe ser un número entero de pulgadas.", null);
                     foreach (var front in fronts)
                     {
                         var minimum = MinimumPitch(front.RollerId);
@@ -1247,7 +1260,8 @@ namespace RackCad.UI.VentanaRackCad
                             return ("El paso no puede ser menor que el rodillo de F" + (IndexOf(front) + 1) + ": mínimo " + Num(minimum) + " in.", null);
                     }
 
-                    return (null, f => f.RollerPitch = pitch);
+                    // The pitch of the roller is the default: it is written as nothing, so the bed and its line of the BOM stay as before.
+                    return (null, f => f.RollerPitch = Math.Abs(pitch - MinimumPitch(f.RollerId)) < 1e-9 ? (double?)null : pitch);
                 }),
                 FrontValue("bBrakes", "Freno cada N rodillos (vacío = según el fondo de tarima)", string.Empty, fronts,
                     f => f.BrakeEveryRollers.HasValue ? f.BrakeEveryRollers.Value.ToString(CultureInfo.InvariantCulture) : string.Empty, text =>

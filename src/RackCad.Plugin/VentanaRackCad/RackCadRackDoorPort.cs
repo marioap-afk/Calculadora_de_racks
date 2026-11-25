@@ -48,6 +48,8 @@ namespace RackCad.Plugin.VentanaRackCad
 
         public event Action<RackDesignWritten> DesignWritten;
 
+        public event Action<long> RequestStarted;
+
         public RackCadClassicResult RequestDesign(RackDoorRequest request)
         {
             if (request == null || string.IsNullOrWhiteSpace(request.RackId))
@@ -134,6 +136,8 @@ namespace RackCad.Plugin.VentanaRackCad
         internal void AnswerRead(RackDesignRead read) => Raise(() => DesignRead?.Invoke(read));
 
         internal void AnswerWrite(RackDesignWritten written) => Raise(() => DesignWritten?.Invoke(written));
+
+        internal void Started(long requestId) => Raise(() => RequestStarted?.Invoke(requestId));
 
         // The request is kept before its command is handed over (AutoCAD may run it at once) and dropped if handing it over fails.
         private static RackCadClassicResult Send(string text, Action<AcDocument> keep, Action drop)

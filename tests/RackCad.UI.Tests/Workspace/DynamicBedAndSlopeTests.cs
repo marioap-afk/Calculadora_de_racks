@@ -145,6 +145,37 @@ namespace RackCad.UI.Tests
             Assert.Contains(beds, d => !d.Contains("rodillo"));
         }
 
+        // I-01 of the fifth review: at a post shared by two fronts with the same depth, the cut drew the bed of one front only.
+        [Fact]
+        public void ThePostOfTwoFrontsWithDifferentBedsDrawsBothBedsAndABedAsBeforeDrawsOne()
+        {
+            var design = new DynamicRackDesign
+            {
+                Pallet = new PalletSpecification(42.0, 48.0, 60.0, 1000.0, "kg"),
+                PalletsDeep = 6,
+                LoadLevels = 3,
+                FirstLevelHeight = 6.0,
+                BeamDepth = 4.0,
+            };
+            design.Fronts.Add(new DynamicRackFrontDesign { PalletCount = 2, LoadLevels = 3, PalletsDeep = 6, DepthStartPosition = 1 });
+            design.Fronts.Add(new DynamicRackFrontDesign { PalletCount = 1, LoadLevels = 3, PalletsDeep = 6, DepthStartPosition = 1 });
+            var draft = new DynamicDraftEditor(UiSupport.LoadCatalogSafe());
+            draft.LoadFrom(design, "DIN 1");
+            Assert.True(draft.Recompose(), draft.LastError);
+
+            int Rails(int post) => new DynamicSystemLateralBuilder().Build(draft.System, draft.Catalog, post).Flatten().Instances
+                .Count(i => i.Role == HeaderBlockRole.Rail);
+            var shared = Rails(1);
+            var alone = Rails(0);
+            Assert.True(shared > 0);
+            Assert.Equal(alone, shared); // the same bed on both sides of the post: drawn once, as always
+
+            draft.Matrix.Fronts[1].SlopePerFoot = 0.75;
+            Assert.True(draft.Recompose(), draft.LastError);
+            Assert.Equal(2 * shared, Rails(1));
+            Assert.Equal(alone, Rails(0));
+        }
+
         [Fact]
         public void TheClassicEditorKeepsTheBedAndTheSlopeOfAFront()
         {
@@ -217,13 +248,18 @@ namespace RackCad.UI.Tests
             var before = Json(vm.Draft.Design);
 
             Assert.Equal("El rodillo debe ser uno del catálogo: 1.9 o 2.5 in.", Commit(vm, "bRoller", "3"));
-            Assert.Equal("El paso no puede ser menor que el rodillo de F1: mínimo 2 in.", Commit(vm, "bPitch", "1.5"));
+            Assert.Equal("El paso no puede ser menor que el rodillo de F1: mínimo 2 in.", Commit(vm, "bPitch", "1"));
             Assert.Equal("Debe ser un entero mayor o igual que 1.", Commit(vm, "bBrakes", "0"));
             Assert.Equal("La pendiente debe ser un número mayor o igual que cero.", Commit(vm, "bSlope", "-1"));
 
+            // M-06 of the fifth review: the rollers hang on the troqueles (a pitch of whole inches), and the pitch of the roller is the
+            // default, written as nothing, so the bed and its line of the BOM stay as before.
+            Assert.Equal("Los rodillos se cuelgan en los troqueles: el paso debe ser un número entero de pulgadas.", Commit(vm, "bPitch", "2.5"));
             Assert.Equal(string.Empty, Commit(vm, "bPitch", "2"));
-            Assert.StartsWith("El paso de F1 (2 in) es menor que este rodillo", Commit(vm, "bRoller", "2.5"));
-            Assert.False(vm.Draft.Matrix.Fronts[0].RollerId == Roller25);
+            Assert.Null(vm.Draft.Matrix.Fronts[0].RollerPitch);
+            Assert.Equal(before, Json(vm.Draft.Design));
+            Assert.Equal(string.Empty, Commit(vm, "bRoller", "2.5"));
+            Assert.Equal(Roller25, vm.Draft.Matrix.Fronts[0].RollerId);
             Assert.NotEqual(before, Json(vm.Draft.Design));
         }
 

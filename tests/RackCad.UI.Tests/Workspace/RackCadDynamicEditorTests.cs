@@ -450,6 +450,11 @@ namespace RackCad.UI.Tests
 
             public event Action<RackDesignWritten>? DesignWritten;
 
+            public event Action<long>? RequestStarted;
+
+            /// <summary>The command of the last write took its request (it may wait for the user in AutoCAD).</summary>
+            public void StartLastWrite() => RequestStarted?.Invoke(Writes.Last().RequestId);
+
             /// <summary>What AutoCAD does DURING the call, as if it ran the command at once (M-22 of the third review).</summary>
             public Action<RackDoorRequest>? DuringRead { get; set; }
 
@@ -642,9 +647,11 @@ namespace RackCad.UI.Tests
             Assert.True(string.IsNullOrEmpty(write.Name), write.Name); // no name: the drawing gives the automatic one of I-60
             Assert.Contains("1200", Json(write.Design));
 
-            rig.Door.AnswerLastWrite(true, "AutoCAD insertó el rack nuevo «Dinámico 1» con 1 vista. Para seguir editándolo aquí, vuelve a leer la lista y ábrelo.");
+            rig.Door.Written(new RackDesignWritten(write.RequestId, write.RackId, true,
+                "AutoCAD insertó el rack nuevo «Dinámico 1» con 1 vista. Para seguir editándolo aquí, vuelve a leer la lista y ábrelo.", "Dinámico 1"));
             Assert.False(editor.IsNewRack);
             Assert.False(editor.IsDirty);
+            Assert.Equal("Dinámico 1", editor.Name); // the automatic name the drawing gave it (M-04 of the fifth review)
             Assert.Equal("Insertar vista…", editor.InsertViewLabel);
             Assert.Null(rig.Window.NewDynamicEditor);
             Assert.True(rig.Window.ShowNuevoCards);
@@ -660,6 +667,65 @@ namespace RackCad.UI.Tests
 
             rig.Window.StartNewDynamic();
             Assert.NotSame(editor, rig.Window.NewDynamicEditor);
+        }
+
+        // I-02 of the fifth review: once the command took the write (it may wait for the user placing views), the window cannot stop
+        // waiting, so what the command writes is what the window records.
+        [Fact]
+        public void OnceTheCommandTookTheWriteTheWindowWaitsForItsAnswer()
+        {
+            var rig = new Rig(new ModalPortDouble());
+            rig.Window.StartNewDynamic();
+            var editor = rig.Window.NewDynamicEditor!;
+            editor.ViewChooser = _ => new[] { RackCad.Application.Systems.Shared.RackViewAddress.Post(0) };
+            editor.InsertView();
+            Assert.True(rig.Window.CanStopWaiting);
+
+            rig.Door.StartLastWrite();
+            Assert.False(rig.Window.CanStopWaiting);
+            Assert.StartsWith("AutoCAD ya está escribiendo el rack", rig.Window.WaitingText);
+            rig.Window.StopWaiting();
+            Assert.True(rig.Window.IsWaitingForAutoCad);
+            Assert.Empty(rig.Door.Abandoned);
+            Assert.True(editor.IsWriting);
+
+            rig.Door.AnswerLastWrite(true, "AutoCAD insertó el rack nuevo con 1 vista.");
+            Assert.False(rig.Window.IsWaitingForAutoCad);
+            Assert.False(editor.IsNewRack);
+
+            // A request whose command has not taken it can still be abandoned, as before.
+            Write(editor, v => v.Essentials, "weight", "1300");
+            editor.RequestWrite();
+            Assert.True(rig.Window.CanStopWaiting);
+            rig.Window.StopWaiting();
+            Assert.False(rig.Window.IsWaitingForAutoCad);
+            Assert.Single(rig.Door.Abandoned);
+        }
+
+        // I-03 of the fifth review: «Nuevo» follows the drawing, and a new rack of one drawing is never written in another.
+        [Fact]
+        public void TheNewDynamicBelongsToItsDrawing()
+        {
+            var rig = new Rig(new ModalPortDouble());
+            rig.Window.StartNewDynamic();
+            var editor = rig.Window.NewDynamicEditor!;
+            var raised = new List<string?>();
+            rig.Window.PropertyChanged += (_, e) => raised.Add(e.PropertyName);
+
+            rig.Present(8);
+            Assert.Contains(nameof(RackCadWindowViewModel.NewDynamicEditor), raised);
+            Assert.Null(rig.Window.NewDynamicEditor);
+            Assert.True(rig.Window.ShowNuevoCards);
+
+            editor.ViewChooser = _ => new[] { RackCad.Application.Systems.Shared.RackViewAddress.Post(0) };
+            editor.InsertView();
+            Assert.Empty(rig.Door.Writes);
+            Assert.Equal("Este borrador es de otro dibujo: vuelve a ese dibujo para escribirlo.", editor.Message);
+
+            rig.Present(7);
+            Assert.Same(editor, rig.Window.NewDynamicEditor);
+            editor.InsertView();
+            Assert.Single(rig.Door.Writes);
         }
 
         [Fact]

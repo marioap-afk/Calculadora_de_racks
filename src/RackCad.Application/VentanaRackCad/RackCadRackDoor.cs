@@ -26,8 +26,11 @@ namespace RackCad.Application.VentanaRackCad
     /// <summary>What AutoCAD read of ONE rack for the RackCad window, for the request of that number: its persisted design, or why there is none.</summary>
     public sealed record RackDesignRead(long RequestId, string RackId, bool Found, string Kind, string Name, string DesignJson, string Reason);
 
-    /// <summary>What AutoCAD answered when it wrote the draft of a rack, for the request of that number: whether it wrote it and what it said.</summary>
-    public sealed record RackDesignWritten(long RequestId, string RackId, bool Written, string Message);
+    /// <summary>
+    /// What AutoCAD answered when it wrote the draft of a rack, for the request of that number: whether it wrote it and what it said; for a
+    /// new rack, the name the drawing gave it (the automatic one of I-60 when it had none).
+    /// </summary>
+    public sealed record RackDesignWritten(long RequestId, string RackId, bool Written, string Message, string Name = null);
 
     /// <summary>
     /// The door of the RackCad window to ONE rack of the drawing (I-64 A-14, line D): reading its design to edit it in the window, and
@@ -42,7 +45,10 @@ namespace RackCad.Application.VentanaRackCad
         /// <summary>Asks AutoCAD to read the design of the rack; the answer arrives with <see cref="DesignRead"/>.</summary>
         RackCadClassicResult RequestDesign(RackDoorRequest request);
 
-        /// <summary>Asks AutoCAD to redraw the rack with the draft (update only: no new view); the answer arrives with <see cref="DesignWritten"/>.</summary>
+        /// <summary>
+        /// Asks AutoCAD to write the draft: an update, an update that then inserts views («Insertar vista…»), or the insertion of a new
+        /// rack (see <see cref="RackDoorWrite"/>); the answer arrives with <see cref="DesignWritten"/>.
+        /// </summary>
         RackCadClassicResult RequestDynamicUpdate(RackDoorWrite write);
 
         /// <summary>The window stopped waiting for the request: if its command has not run yet, it will do nothing when it runs.</summary>
@@ -51,6 +57,12 @@ namespace RackCad.Application.VentanaRackCad
         event System.Action<RackDesignRead> DesignRead;
 
         event System.Action<RackDesignWritten> DesignWritten;
+
+        /// <summary>
+        /// The command of a write took its request (I-02 of the fifth review): its answer will come, also when AutoCAD waits for the user
+        /// first (placing views). From then on the window keeps waiting: abandoning it would no longer stop what the command writes.
+        /// </summary>
+        event System.Action<long> RequestStarted;
     }
 
     /// <summary>The rules of the door that need no AutoCAD, so they are tested where AutoCAD is not.</summary>
@@ -116,7 +128,8 @@ namespace RackCad.Application.VentanaRackCad
             {
                 var named = string.IsNullOrWhiteSpace(name) ? "el rack nuevo" : "el rack nuevo «" + name.Trim() + "»";
                 return new RackDesignWritten(requestId, rackId, true,
-                    "AutoCAD insertó " + named + " con " + Count(placed, "vista", "vistas") + ". Para seguir editándolo aquí, vuelve a leer la lista y ábrelo.");
+                    "AutoCAD insertó " + named + " con " + Count(placed, "vista", "vistas") + ". Para seguir editándolo aquí, vuelve a leer la lista y ábrelo.",
+                    string.IsNullOrWhiteSpace(name) ? null : name.Trim());
             }
 
             return new RackDesignWritten(requestId, rackId, false,

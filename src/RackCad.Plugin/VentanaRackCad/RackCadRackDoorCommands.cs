@@ -76,6 +76,8 @@ namespace RackCad.Plugin.VentanaRackCad
                 return;
             }
 
+            door?.Started(pending.RequestId);
+
             try
             {
                 if (pending.Document != RackCadRackDoorPort.KeyOf(document))
@@ -132,6 +134,8 @@ namespace RackCad.Plugin.VentanaRackCad
                 return;
             }
 
+            door?.Started(pending.RequestId);
+
             try
             {
                 if (pending.Document != RackCadRackDoorPort.KeyOf(document))
@@ -186,6 +190,8 @@ namespace RackCad.Plugin.VentanaRackCad
                 document.Editor.WriteMessage("\nRACKDINAMICONUEVO la usa la ventana RackCad: no hay ningún rack nuevo pendiente de insertar.");
                 return;
             }
+
+            door?.Started(pending.RequestId);
 
             try
             {

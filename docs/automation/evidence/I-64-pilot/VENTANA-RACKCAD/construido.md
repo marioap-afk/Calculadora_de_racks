@@ -345,3 +345,30 @@ El Owner pidió seguir con Dinámico antes de Cantilever. Las piezas pendientes 
   - seleccionar el rack ya activo no salta a su página;
   - el inspector queda cortado al ancho inicial;
   - con varios monitores, la paleta y las modales clásicas abren en el principal.
+
+**La revisión independiente de la segunda entrega** (quinta revisión, `78fd5cb1..7f6a5970`, de solo lectura): APTO TRAS CORRECCIONES. Las tres importantes se corrigieron:
+- **I-01:** en el corte lateral de un poste compartido, dos frentes con el mismo fondo y camas o pendientes distintas dibujaban una sola cama, pero el BOM contaba las dos. La clave de las camas del corte incluye ahora la cama y la pendiente del frente. Un rack como antes agrupa igual (prueba).
+- **I-02:** «Dejar de esperar» mientras se colocaban vistas abandonaba una orden que ya corría.
+  - Con «Insertar vista…», la ventana quedaba «Modificado» contra el dibujo, y un «Descartar» podía escribir después la base vieja.
+  - Con un rack nuevo, el editor quedaba atascado.
+  - Corrección: cada orden de escritura avisa a la ventana de que tomó la petición, y desde ahí «Dejar de esperar» se desactiva y explica que hay que terminar o cancelar en AutoCAD; la respuesta siempre llega. Una petición que la orden aún no tomó se puede abandonar como antes (prueba).
+  - Además, el editor de un rack nuevo nunca es el de la página de un rack, así que su vista no se aloja en dos sitios.
+- **I-03:** la página «Nuevo» no seguía el cambio de dibujo, y el rack nuevo de un dibujo podía insertarse en otro.
+  - Corrección: la ventana refresca «Nuevo» al cambiar de dibujo, y un borrador de otro dibujo no se escribe en el activo: lo dice (prueba).
+
+Los menores:
+- **Corregidos:**
+  - M-01: un frente nuevo hereda la cama y la pendiente de su plantilla.
+  - M-02: el `Snapshot` del resolvedor copia los cuatro campos. Las copias de Push Back no los copian; Push Back no los usa.
+  - M-03: los textos de cierre, de «Descartar» y de pérdida valen para un rack nuevo.
+  - M-04: el rack nuevo toma el nombre que le dio el dibujo (I-60).
+  - M-06: el paso debe ser un número entero de pulgadas (los rodillos cuelgan de los troqueles), y el paso del rodillo se guarda vacío, así que la cama y su línea del BOM no cambian. Por eso, con los rodillos de hoy, el rechazo de un rodillo mayor que el paso ya no se alcanza; se conserva como guarda.
+  - M-08: el comentario de la puerta.
+- **Declarados, sin cambio:**
+  - M-05: una inserción que redibuja pero no coloca ninguna vista se muestra como mensaje normal, no como error.
+  - M-07: faltan pruebas del reparto por poste en planta (hoy se compara el total) y de la vuelta atrás de la seguridad. Sí se añadió la del corte de I-01.
+  - M-08: el diálogo de vistas se abre aunque la puerta esté ocupada con otro editor; la escritura se rechaza después, con su aviso.
+  - M-04, relacionado: el editor del rack insertado se reutiliza al abrir el rack sin volver a leerlo. Es la misma limitación de M-16 (sin detección de cambios del dibujo).
+- Comprobaciones en rojo de las correcciones:
+  - cinco piezas rotas a propósito: la clave del corte sin la cama, el aviso de la orden ignorado, un borrador de otro dibujo escrito, «Nuevo» sin refrescar al cambiar de dibujo y el nombre del rack nuevo sin tomar;
+  - cada una hace fallar su prueba.

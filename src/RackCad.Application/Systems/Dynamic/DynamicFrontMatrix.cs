@@ -120,7 +120,12 @@ namespace RackCad.Application.Systems.Dynamic
                     LoadLevels = template?.LoadLevels ?? DynamicRackDefaults.DefaultLoadLevels,
                     PalletsDeep = template?.PalletsDeep ?? DynamicRackDefaults.DefaultPalletsDeep,
                     DepthStartPosition = template?.DepthStartPosition ?? 1,
-                    FirstLevelHeight = template?.FirstLevelHeight ?? DynamicRackDefaults.DefaultFirstLevelHeight
+                    FirstLevelHeight = template?.FirstLevelHeight ?? DynamicRackDefaults.DefaultFirstLevelHeight,
+                    // Step 3 of Dinámico: the bed and the slope of the template too (M-01 of the fifth review).
+                    RollerId = template?.RollerId,
+                    RollerPitch = template?.RollerPitch,
+                    BrakeEveryRollers = template?.BrakeEveryRollers,
+                    SlopePerFoot = template?.SlopePerFoot
                 };
                 foreach (var cell in template?.Cells ?? Enumerable.Empty<DynamicEditorCell>())
                 {
