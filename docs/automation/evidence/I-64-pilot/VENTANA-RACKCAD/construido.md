@@ -372,3 +372,19 @@ Los menores:
 - Comprobaciones en rojo de las correcciones:
   - cinco piezas rotas a propósito: la clave del corte sin la cama, el aviso de la orden ignorado, un borrador de otro dibujo escrito, «Nuevo» sin refrescar al cambiar de dibujo y el nombre del rack nuevo sin tomar;
   - cada una hace fallar su prueba.
+
+**Smoke exploratorio de la segunda entrega** (2026-11-24, hecho por la sesión por orden del Owner, sobre `e69c8fb7`, en una copia de trabajo):
+- Pasan todos los pasos:
+  - la cama y la pendiente: el rechazo del paso, la subida de 24 in, «Actualizar» y la línea de «Cama» del BOM con el rodillo 2.5;
+  - la guía: «En ninguna», por celda desde el inspector y su «G»;
+  - la tabla por poste;
+  - «Editar seguridad…» como modal de AutoCAD;
+  - «Insertar vista…» con la planta enlazada («Vistas: lateral, planta»), con «Dejar de esperar» desactivado durante la colocación (I-02);
+  - el Dinámico nuevo insertado como «Dinámico 1» y reabierto con el mismo editor y el nombre del dibujo (M-04);
+  - el veto al cerrar con un cambio sin escribir, con su aviso en la línea de órdenes (D-08), y «Actualizar» sobre el rack insertado.
+- Observaciones:
+  - O-5, por investigar: con la paleta acoplada, tres clics de ratón en «Editar aquí» no hicieron nada, y UI Automation sí pulsó el botón. No se sabe si es de la herramienta de control de pantalla o del producto.
+  - O-6: en «Calculado», un valor largo se pega a su etiqueta.
+  - O-7: la «G» es pequeña y tenue en la celda seleccionada.
+  - O-8: al pasar a «Modificado», el contenido sube unos 12 px.
+- No se probó el «U» de una inserción.
