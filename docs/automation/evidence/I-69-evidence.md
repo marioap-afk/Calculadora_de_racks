@@ -657,4 +657,148 @@ Documentos tocados: `docs/initiatives/I-69-proposal-v2.md` (nuevo) y esta seccio
 en producto, pruebas, catalogos, HANDOFF, ROADMAP, FOUNDATIONS ni iniciativas ajenas.
 Siguiente paso: decision del Coordinator sobre el paquete y respuestas Owner Q-01..Q-04.
 
+## 18. Primer lote de datos del Owner: cuatro largueros (2026-11-24)
+
+Sesion responsable: Claude (implementador, D-09). Instruccion directa del Owner en el chat:
+agrego cuatro largueros y pidio verificarlos y agregarlos a RackCad. Se hizo bajo esa instruccion,
+antes de que el Coordinator decidiera C-01 (protocolo de recepcion) y sin Freeze. Alcance real:
+datos de catalogo + golden S-01. Sin codigo de producto. No acredita GATE PASS, Candidato ni Owner
+Validation. El Coordinator debe registrar esta entrada fuera de orden.
+
+### 18.1 Recepcion (MEASURED)
+
+- Entrada: HEAD `4a128a7c`, upstream 0/0, `origin/main` `812baf87` (sin avance, sin rebase).
+- Cambios del Owner en el worktree, sin commit: `blocks.csv` +12 filas (FRONTAL/LATERAL/PLANTA de
+  cada larguero) y `connection-layout.csv` +8 filas (`INICIO_PERFIL` FRONTAL y PLANTA). Sin filas
+  en `secciones.csv`: RackCad no reconocia ninguna de las cuatro piezas.
+- Validador sobre esa entrada: 8 `INVALID_LAYOUT_PIECE_REF` (error) y 12 `UNRESOLVED_BLOCK_PIECE`
+  (aviso); `ShippedCatalog_ValidatorReportsOnlyTheKnownBaseline` y
+  `ShippedCatalog_HasNoDanglingReferencesOrMissingViews` en rojo.
+
+### 18.2 Verificacion contra la biblioteca DWG (MEASURED)
+
+Biblioteca configurada en `%APPDATA%\RackCad\settings.json`: `D:\Base_de_datos_AutoCAD_V.0.dwg`
+(AC1032, 513085 bytes, mtime 2026-11-24 20:08 -06:00, SHA-256 `8a0f8ef5…2f4826`). Leida en una
+copia de solo lectura con `accoreconsole.exe` de AutoCAD 2025 y scripts AutoLISP de consulta
+(`tblnext`, `entget`, diccionario `ACAD_ENHANCEDBLOCK`); el archivo original no se abrio ni se
+modifico.
+
+| Comprobacion | Resultado |
+|---|---|
+| Los 12 `blockName` nuevos existen en la biblioteca | Si; ningun `blockName` de `blocks.csv` falta |
+| Parametros dinamicos de los 3 escalones | Igual que `LARGUERO_ESCALON_CAL14_3_REMACHES`: FRONTAL `LONGITUD`+`PERALTE`+punto `INICIO_PERFIL`; LATERAL `PERALTE`; PLANTA `LONGITUD`+punto |
+| Parametros del tubo | FRONTAL `LONGITUD`+punto; LATERAL ninguno; PLANTA `LONGITUD`+punto. Sin `PERALTE`: `ApplyDynamicParameters` ignora un nombre ausente; el manifiesto lo reportaria como aviso `MANIFEST_MISSING_PARAMETER` |
+| Punto `INICIO_PERFIL` del bloque vs `connection-layout.csv` | Los 3 escalones: (1, 4.9375) FRONTAL y (0.125, 1) PLANTA, igual que el CSV y que el cal 14 |
+| Extension vertical del perfil | Los 3 escalones: Y 1.9375..4.9375 en FRONTAL y LATERAL (igual que el cal 14). Tubo: FRONTAL Y 1.28966674..3.18966674; LATERAL circulo centro (1.328125, 2.0) r 0.95 => Y 1.05..2.95; PLANTA X 0.51875..2.41875 |
+| Mensula anidada | Los 5 bloques (cal 14 + 4 nuevos) insertan `MENSULA_3_REMACHES_CAL_10_*` en las mismas posiciones: FRONTAL (1, -1.0625) y espejo en 13; LATERAL (-0.28125, -1.0625); PLANTA (3.0625, 1) y (3.0625, 13) a 270° |
+
+Consumo en codigo (RECONSTRUCTED): Selectivo lee `INICIO_PERFIL` solo en FRONTAL
+(`SelectiveRackDefaults.View`). X = vuelo de la mensula (espaciado de postes, BOM); Y = superficie
+donde se apoya la tarima. La fila PLANTA no la consume Selectivo; Dinamico lee `INICIO_PERFIL`
+solo del larguero in/out. El editor rechaza una celda sin peralte
+(`RackSelectiveWindow.xaml.cs:2811`, "Selecciona un peralte de larguero."), y el peralte entra en
+la separacion entre niveles (`SelectiveGeometryResolver.Separation`).
+
+### 18.3 Decisiones del Owner (chat, 2026-11-24)
+
+- Los tres escalones: mismos peraltes (3;3.5;4;4.5;5;5.5;6) y mensula `MENSULA_3_REMACHES_CAL_10`
+  que el escalon calibre 14.
+- Tubo: primero "no lleva peralte"; al saber que el editor lo exige, eligio peralte unico 1.9.
+  Mensula `MENSULA_3_REMACHES_CAL_10`.
+- Nombres visibles: los propuestos por Claude.
+- `secciones.csv`: la escribe Claude.
+- Punto del tubo: "En ese larguero no va tarima, pero corrigelo tu; realmente lo unico que importa
+  es que la mensula se coloca igual que los demas escalones; ese larguero tubo es para colgar
+  ropa."
+
+### 18.4 Cambios
+
+| Archivo | Autor del dato | Cambio |
+|---|---|---|
+| `assets/catalogs/blocks.csv` | Owner | +12 filas, sin cambio de Claude |
+| `assets/catalogs/connection-layout.csv` | Owner; 2 valores corregidos por Claude con autorizacion | +8 filas; tubo FRONTAL `localY` 4.9375 -> 3.1897 (borde superior medido) y PLANTA `localX` 0.125 -> 0.51875 (borde medido). FRONTAL `localX` = 1 sin cambio: la mensula queda igual |
+| `assets/catalogs/secciones.csv` | Claude, por dictado del Owner | +4 filas `LARGUERO` al final; `family` Larguero; espesor, calibre y demas columnas vacias (no dictadas) |
+| `tests/RackCad.Tests/ShippedCatalogIntegrityTests.cs` | Claude (S-01) | golden 4 -> 8 largueros y 7 -> 11 filas |
+
+Formato conservado: `secciones` UTF-8 sin BOM, `blocks`/`connection-layout` ASCII, CRLF en disco.
+Identidad del contenido (blob Git): `secciones.csv` `efdbc1c6`, `blocks.csv` `156667e5`,
+`connection-layout.csv` `7d252000`.
+
+Default del dropdown (INFERENCE, orden por `Label`): "Larguero escalon calibre 14…" sigue primero
+frente a "…con angulo…", "…invertido…" y "…tubo…"; `DefaultBeamId` no cambia.
+
+### 18.5 Pendientes del Owner (no bloquean el uso)
+
+- Tubo: su perfil en LATERAL (arriba en 2.95) no coincide con FRONTAL (arriba en 3.18966674); 0.2397
+  de diferencia en el DWG. No mueve la mensula.
+- Tubo: el punto `INICIO_PERFIL` dentro del DWG sigue en (1, 4.9375) / (0.125, 1); es solo grip
+  visual, RackCad usa el CSV.
+- Espesor/calibre de los cuatro: vacios, como en tres de los cuatro largueros previos.
+- Prueba visual en AutoCAD (Selectivo con cada larguero nuevo): no ejecutada; la hace el Owner (18.7).
+
+### 18.6 Validacion local (MEASURED)
+
+Sobre HEAD `4a128a7c` mas los cuatro archivos de 18.4 sin commit: caracteriza el arbol de trabajo,
+no es evidencia por SHA exacto. La del commit sera su propio CI.
+
+| Corrida | Resultado | Duracion |
+|---|---|---|
+| Catalogo dirigido (`ShippedCatalogIntegrityTests`, `CatalogManifestGuardTests`, `CatalogValidator*`, `CatalogBlockParameters*`) | 38/38; el validador vuelve a la linea base conocida | 0.2 s |
+| Core Full | 15538 total, 15538 superadas, 0 fallidas; TRX SHA-256 `57bfece2…68b462a8` | 1 min 42 s |
+| UI Full | 1654 total, 1637 superadas, 0 fallidas, 17 Skip declarados; TRX SHA-256 `f7275fe5…80d6aa4` | 4 min 41 s |
+| Build Debug Plugin (AutoCAD 2025, `acad` cerrado) | 0 errores; 2 avisos MSB3277 (conflicto de versiones de referencias AutoCAD/`System.Drawing`, del entorno); `RackCad.Plugin.dll` SHA-256 `4fead4aa…81eb7b2`, `InformationalVersion` `1.0.0+4a128a7c…`; `catalogs/` junto al DLL identico byte a byte a los CSV del worktree | — |
+
+El DLL no es Candidato: lleva la version de `4a128a7c` y datos sin commit. Sirve solo para que el
+Owner pruebe los cuatro largueros en AutoCAD.
+
+### 18.7 Sonda sin AutoCAD (MEASURED)
+
+El acceso de control de pantalla a AutoCAD se solicito y volvio `user_denied` (el Owner no estaba
+en la workstation); no se opero AutoCAD. En su lugar, una prueba xUnit temporal (no versionada,
+borrada al terminar) recorrio los productores reales con el catalogo del arbol: resolver Selectivo,
+builders FRONTAL/LATERAL/PLANTA y `SelectiveBomBuilder`. Diseno: un frente, cinco niveles con
+cal 14, invertido cal 14, con angulo, invertido con angulo (peralte 4) y tubo (peralte 1.9), mas
+un diseno de referencia con los cinco niveles en cal 14. Reporte en el scratchpad de la sesion,
+SHA-256 `1b43cd9c…46e97e`.
+
+| Comprobacion | Resultado |
+|---|---|
+| Catalogo | Los cuatro cargan con su nombre, peraltes y `MENSULA_3_REMACHES_CAL_10` |
+| Orden del dropdown (mismo comparador que `UiSupport.ToOptions`, cultura es-MX) | Primero "Larguero escalon calibre 14…": `DefaultBeamId` no cambia |
+| Postes y claro | Mixto y referencia: postes en X 0 y 99.5, `BeamLength` 96 |
+| FRONTAL | Los cinco largueros insertados en X 0.75 (igual que la referencia), cada uno con su bloque propio; el tubo recibe `PERALTE`=1.9, que su bloque ignora |
+| LATERAL | Cada larguero con su bloque propio en X 0 y X 42 (espejado), en las dos cabeceras |
+| PLANTA | Dibuja el larguero del primer nivel, como antes |
+| Niveles | Y 4.6053, 62.6053, 120.6053, 178.6053, 234.6053; el del tubo queda 2" mas abajo que con cal 14 por su peralte 1.9 |
+| BOM | Cada larguero nuevo es un componente "Larguero" con su nombre y peralte ("… · P4", tubo "… · P1.9"), largo 96, x2, con 2 mensulas `MENSULA_3_REMACHES_CAL_10` |
+
+Limite: verifica lo que RackCad manda a AutoCAD, no el dibujo en pantalla. Despues el Owner
+concedio el acceso a AutoCAD para esta sesion y decidio hacer el mismo la prueba visual.
+
+### 18.8 Prueba del Owner e integracion parcial
+
+- Owner, 2026-11-24, por control remoto de la workstation: NETLOAD del DLL Debug del worktree
+  (SHA-256 `4fead4aa…81eb7b2`, `InformationalVersion` `1.0.0+4a128a7c…`, datos sin commit) y
+  prueba en AutoCAD 2025. Veredicto dictado: "Listo, funciona bien". Sin resultados por escenario.
+  Claude solo envio capturas a pedido; no opero AutoCAD.
+- Commit de producto `ffe0b74e663534b2b6be4649885fcee092f7efcd`: los tres CSV con los blobs de
+  18.4 y el golden. Mismo contenido que la prueba del Owner; SHA distinto del DLL probado.
+- Orden del Owner: integrar a main ya, sin dar I-69 por terminada ([D-10](../decisions/I-69.md)).
+- CI de `ffe0b74e`: ver 18.9.
+
+### 18.9 CI del commit de producto (MEASURED)
+
+Corrida `45537908475`: `event=push`, `ref` `feature/selectivo-catalogo-componentes`,
+`head_sha=ffe0b74e663534b2b6be4649885fcee092f7efcd`, conclusion `success`; jobs `Tests (Domain +
+Application)`, `UI Tests (WPF controls, net8.0-windows)`, `Build UI (WPF, valida API de
+Application)` y `Build Plugin without AutoCAD` en `success`. Precondicion del merge (WORKFLOW
+§4.5 paso 2) cumplida sobre el SHA exacto.
+
+### 18.10 Siguiente
+
+Merge `--no-ff` de esta rama a main por plomeria (sin checkout de main), CI de main sobre el
+`MERGE_SHA` con cobertura y cobertura diferida de `ffe0b74e`; esos hechos se registran en la rama
+despues del merge. Sin limpieza ni tag: I-69 sigue abierta. Pendiente del Coordinator: registrar
+D-10 y decidir el registro durable de esta ronda parcial.
+
 IMPLEMENTATION AUTHORIZATION = NO
