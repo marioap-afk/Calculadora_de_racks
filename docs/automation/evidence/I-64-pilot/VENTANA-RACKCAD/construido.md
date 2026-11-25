@@ -394,3 +394,13 @@ Los menores:
   - O-8: la línea «Sin cambios que escribir.» se oculta sin colapsar, así que el editor no se mueve al pasar a «Modificado».
 - Cada corrección tiene su prueba de vista con WPF real, y cada prueba falla si se revierte su corrección.
 - O-5 sigue por investigar.
+- **O-5 investigada (no se reproduce):** en un AutoCAD nuevo con `ae811e2d`, siete intentos con el ratón abrieron el editor:
+  - con la paleta flotante;
+  - acoplada;
+  - acoplada y ensanchada;
+  - tras abrir el rack desde la lista;
+  - tras una ventana de selección cancelada;
+  - tras arrastres desde el borde de la paleta y desde la fila de «Seguir la selección»;
+  - con la secuencia exacta del smoke, desde AutoCAD recién arrancado.
+
+  Lo más probable es que, en aquella sesión, los clics de la herramienta de control de pantalla los consumiera la activación de la paleta acoplada. Se cierra como no reproducible; si el Owner la ve con su ratón, se reabre con el estado de la paleta y lo que se hizo antes. En la misma sesión se vieron en AutoCAD la insignia «G» nueva (O-7) y el editor sin saltos al pasar a «Modificado» (O-8).
