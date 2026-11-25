@@ -1,7 +1,12 @@
+using System;
 using System.Collections.Generic;
+using RackCad.Application.Persistence;
+using RackCad.Application.ProjectVariables;
+using RackCad.Application.Systems.Selective;
 using RackCad.Application.Systems.Shared;
 using RackCad.Application.Workspace;
 using RackCad.Domain.Systems.Dynamic;
+using RackCad.Domain.Systems.Selective;
 
 namespace RackCad.Application.VentanaRackCad
 {
@@ -63,6 +68,83 @@ namespace RackCad.Application.VentanaRackCad
         /// first (placing views). From then on the window keeps waiting: abandoning it would no longer stop what the command writes.
         /// </summary>
         event System.Action<long> RequestStarted;
+    }
+
+    /// <summary>
+    /// The window asks AutoCAD to redraw ONE Selectivo of the drawing of the session with its draft (I-64 A-14, line D, Selectivo E1-A): only
+    /// an update, as «Actualizar» of RACKEDITAR. The design and the system are COPIES taken when the request was made and the name is
+    /// already trimmed; <paramref name="LinkedPropertyFinalStates"/> is the final state of every linked property (a linked holgura as it was
+    /// read), which AutoCAD reconciles onto the authored document of the drawing so a binding nobody touched is kept.
+    /// </summary>
+    public sealed record SelectiveDoorWrite(
+        long RequestId,
+        SessionId Session,
+        string RackId,
+        string Name,
+        SelectivePalletDesign Design,
+        SelectiveRackSystem System,
+        IReadOnlyDictionary<PropertyId, LinkedPropertyEditState> LinkedPropertyFinalStates);
+
+    /// <summary>
+    /// What AutoCAD read of ONE Selectivo for the RackCad window, for the request of that number: what RACKEDITAR decides before its
+    /// window exists. When it opens: the EFFECTIVE design (the value in force of every linked property) as the JSON of its document, the
+    /// committed state of every linked property (its literal is the authored one, frozen behind a binding) and, for display only, the
+    /// names of the variables that govern them. When it does not: why (a broken reference, a register that cannot be read, another kind),
+    /// exactly as RACKEDITAR refuses to open.
+    /// </summary>
+    public sealed record SelectiveDesignRead(
+        long RequestId,
+        string RackId,
+        bool Opens,
+        string Kind,
+        string Name,
+        string EffectiveDesignJson,
+        IReadOnlyDictionary<PropertyId, LinkedPropertyEditState> LinkedPropertyStates,
+        IReadOnlyDictionary<PropertyId, string> LinkedVariableNames,
+        string Reason)
+    {
+        /// <summary>A read that does not open the editor, with its reason.</summary>
+        public static SelectiveDesignRead Refused(long requestId, string rackId, string kind, string name, string reason)
+            => new SelectiveDesignRead(requestId, rackId, false, kind, name, null, null, null, reason);
+
+        /// <summary>True when a project variable or a formula governs that property (read only in the window, decision 12).</summary>
+        public bool IsLinked(PropertyId property)
+            => LinkedPropertyStates != null && LinkedPropertyStates.TryGetValue(property, out var state) && state != null
+               && state.Source.Kind != LinkedPropertySourceKind.Literal;
+
+        /// <summary>The effective design to load in the draft (a fresh object); null when the read does not open or the JSON is not one.</summary>
+        public SelectivePalletDesign EffectiveDesign()
+        {
+            if (!Opens || string.IsNullOrWhiteSpace(EffectiveDesignJson)) return null;
+            try
+            {
+                return new SelectivePalletDesignStore().Deserialize(EffectiveDesignJson)?.ToDomain();
+            }
+            catch (InvalidOperationException)
+            {
+                return null;
+            }
+        }
+    }
+
+    /// <summary>What RACKSELECTIVOAPLICAR decided before drawing: the authored document of the drawing now, or why nothing is written.</summary>
+    public sealed record SelectiveApplyPlan(bool CanWrite, SelectivePalletDesignDocument Saved, string Reason);
+
+    /// <summary>
+    /// The door of the RackCad window to ONE Selectivo of the drawing (I-64 A-14, line D, Selectivo E1-A), with the same numbering, the same
+    /// other-drawing check, the same «Dejar de esperar» (<see cref="IRackCadRackDoorPort.Abandon"/>) and the same
+    /// <see cref="IRackCadRackDoorPort.RequestStarted"/> as the door of Dinámico it extends. The write answers with
+    /// <see cref="IRackCadRackDoorPort.DesignWritten"/>.
+    /// </summary>
+    public interface IRackCadSelectiveDoorPort : IRackCadRackDoorPort
+    {
+        /// <summary>Asks AutoCAD to read the Selectivo (RACKSELECTIVOABRIR); the answer arrives with <see cref="SelectiveRead"/>.</summary>
+        RackCadClassicResult RequestSelectiveDesign(RackDoorRequest request);
+
+        /// <summary>Asks AutoCAD to redraw the Selectivo with the draft (RACKSELECTIVOAPLICAR); the answer arrives with <see cref="IRackCadRackDoorPort.DesignWritten"/>.</summary>
+        RackCadClassicResult RequestSelectiveUpdate(SelectiveDoorWrite write);
+
+        event System.Action<SelectiveDesignRead> SelectiveRead;
     }
 
     /// <summary>The rules of the door that need no AutoCAD, so they are tested where AutoCAD is not.</summary>
@@ -135,6 +217,121 @@ namespace RackCad.Application.VentanaRackCad
             return new RackDesignWritten(requestId, rackId, false,
                 "AutoCAD no insertó el rack nuevo: se canceló la colocación o no se pudo preparar. El borrador sigue en la ventana; revisa la línea de órdenes de AutoCAD.");
         }
+
+        /// <summary>
+        /// The answer of RACKSELECTIVOABRIR (Selectivo E1-A): what RACKEDITAR decides before its window exists, from the kind and the
+        /// inner design of the rack and the register of project variables of the drawing. It opens exactly when RACKEDITAR opens: the
+        /// document must be read, <see cref="SelectiveEditorOpen.Resolve"/> must open it (a broken reference, a kind from the future or a
+        /// register that cannot be used block it, with no fallback to the frozen literal) and the options of the linked holgura must be
+        /// usable. The name is the one of the inner document, as the classic editor shows it.
+        /// </summary>
+        public static SelectiveDesignRead AnswerForSelectiveOpen(long requestId, string rackId, string kind, string designJson, ProjectVariablesReadResult registry)
+        {
+            if (!string.Equals(kind, RackEmbedDocument.KindSelective, StringComparison.Ordinal))
+                return SelectiveDesignRead.Refused(requestId, rackId, kind, null, "El rack no es un Selectivo: este editor no lo abre.");
+
+            SelectivePalletDesignDocument saved;
+            try
+            {
+                saved = new SelectivePalletDesignStore().Deserialize(designJson);
+            }
+            catch (Exception ex)
+            {
+                return SelectiveDesignRead.Refused(requestId, rackId, kind, null, "No se pudieron leer los datos del rack. " + ex.Message);
+            }
+
+            if (saved == null) return SelectiveDesignRead.Refused(requestId, rackId, kind, null, "No se pudieron leer los datos del rack.");
+
+            var open = SelectiveEditorOpen.Resolve(saved, registry);
+            if (!open.IsOpen) return SelectiveDesignRead.Refused(requestId, rackId, kind, saved.Name, open.Error);
+
+            var options = LinkedPropertyOptions.ForProperty(ProjectPropertyIds.SelectiveVerticalClearance, registry);
+            if (!options.IsUsable) return SelectiveDesignRead.Refused(requestId, rackId, kind, saved.Name, options.Error);
+
+            // The names are for display only, read from the same accredited register that resolved the values.
+            var names = new Dictionary<PropertyId, string>();
+            var accreditation = UsableProjectVariablesRegistry.Accredit(registry);
+            if (accreditation.IsUsable)
+            {
+                foreach (var pair in open.LinkedPropertyStates)
+                {
+                    if (pair.Value != null && pair.Value.IsReference && accreditation.Registry.TryGetTarget(pair.Value.Source.VariableId, out var target))
+                        names[pair.Key] = target.Name;
+                }
+            }
+
+            var json = new SelectivePalletDesignStore().Serialize(SelectivePalletDesignDocument.From(open.Design, saved.Id, saved.Name));
+            return new SelectiveDesignRead(requestId, rackId, true, kind, saved.Name, json, open.LinkedPropertyStates, names, null);
+        }
+
+        /// <summary>
+        /// What RACKSELECTIVOAPLICAR decides before the drawing half of RACKEDITAR runs (Selectivo E1-A), from the rack and the register
+        /// read AGAIN at write time. The classic editor is modal, so what it opened is what it writes on; the window is not, so the drawing
+        /// may have changed in between. Nothing is written when: the rack is not a readable Selectivo; it would not open now (the same
+        /// rule as the read); the binding of a holgura is not the one the window opened with (written through the window, the opened state
+        /// would silently undo it); the reconciliation of the classic path would fail; or the variable that governs a linked holgura has
+        /// another value now (the draft was drawn with the old one, and the drawing would not match its own document).
+        /// </summary>
+        public static SelectiveApplyPlan PlanSelectiveApply(string kind, string designJson, ProjectVariablesReadResult registry, SelectiveDoorWrite write)
+        {
+            const string NotReadable = "El rack del dibujo no es un Selectivo legible: no se escribió nada.";
+            if (write?.Design == null) return new SelectiveApplyPlan(false, null, "No hay un borrador válido que escribir.");
+            if (!string.Equals(kind, RackEmbedDocument.KindSelective, StringComparison.Ordinal)) return new SelectiveApplyPlan(false, null, NotReadable);
+
+            SelectivePalletDesignDocument saved;
+            try
+            {
+                saved = new SelectivePalletDesignStore().Deserialize(designJson);
+            }
+            catch (Exception)
+            {
+                return new SelectiveApplyPlan(false, null, NotReadable);
+            }
+
+            if (saved == null) return new SelectiveApplyPlan(false, null, NotReadable);
+
+            var open = SelectiveEditorOpen.Resolve(saved, registry);
+            if (!open.IsOpen) return new SelectiveApplyPlan(false, null, open.Error + " No se escribió nada.");
+
+            var finals = write.LinkedPropertyFinalStates ?? new Dictionary<PropertyId, LinkedPropertyEditState>();
+            var properties = new HashSet<PropertyId>(open.LinkedPropertyStates.Keys);
+            properties.UnionWith(finals.Keys);
+            foreach (var property in properties)
+            {
+                open.LinkedPropertyStates.TryGetValue(property, out var now);
+                finals.TryGetValue(property, out var final);
+                var linked = (now != null && now.Source.Kind != LinkedPropertySourceKind.Literal)
+                             || (final != null && final.Source.Kind != LinkedPropertySourceKind.Literal);
+                if (linked && !Equals(now, final))
+                {
+                    return new SelectiveApplyPlan(false, null,
+                        "El vínculo de " + LinkedLabel(property) + " cambió en el dibujo desde que se abrió el rack aquí: no se escribió nada. "
+                        + "Vuelve a abrir el rack para escribir con el vínculo actual.");
+                }
+            }
+
+            var reconciled = LinkedPropertyReconciler.Reconcile(saved, write.Design, finals, registry, write.RackId, write.Name);
+            if (!reconciled.IsSuccess) return new SelectiveApplyPlan(false, null, reconciled.Error + " No se escribió nada.");
+
+            foreach (var pair in finals)
+            {
+                if (pair.Value == null || pair.Value.Source.Kind == LinkedPropertySourceKind.Literal) continue;
+                if (!SelectiveLinkedProperties.All.TryGetDescriptor(pair.Key, out var descriptor)) continue;
+                if (descriptor.ReadEffective(reconciled.Effective) != descriptor.ReadEffective(write.Design))
+                {
+                    return new SelectiveApplyPlan(false, null,
+                        "El valor de lo que gobierna " + LinkedLabel(pair.Key) + " cambió desde que se abrió el rack aquí: no se escribió nada. "
+                        + "Vuelve a abrir el rack para escribir con su valor actual.");
+                }
+            }
+
+            return new SelectiveApplyPlan(true, saved, null);
+        }
+
+        private static string LinkedLabel(PropertyId property)
+            => property == ProjectPropertyIds.SelectiveVerticalClearance ? "la holgura vertical"
+                : property == ProjectPropertyIds.SelectivePalletTolerance ? "la tolerancia horizontal"
+                : "la propiedad «" + property + "»";
 
         private static string Count(int count, string one, string many) =>
             count.ToString(System.Globalization.CultureInfo.InvariantCulture) + " " + (count == 1 ? one : many);

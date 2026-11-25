@@ -11,7 +11,8 @@ namespace RackCad.Plugin.VentanaRackCad
     /// the door (<see cref="RackCadRackDoorPort"/>) and answers with its number. Without a request, or for a request of another drawing,
     /// it writes nothing. RACKDINAMICOABRIR only reads (no undo marker, no history); RACKDINAMICOAPLICAR writes the copies of the draft with
     /// the drawing half of RACKEDITAR, so one «U» undoes the whole update. They run in their own command context, where the read of the
-    /// drawing and its transaction belong.
+    /// drawing and its transaction belong. The Selectivo has its own pair (Selectivo E1-A), RACKSELECTIVOABRIR and RACKSELECTIVOAPLICAR,
+    /// with the same rules; both read the register of project variables, as RACKEDITAR does before its window exists.
     /// </summary>
     public sealed class RackCadRackDoorCommands
     {
@@ -216,6 +217,117 @@ namespace RackCad.Plugin.VentanaRackCad
             {
                 RackCommandSupport.Report(ex);
                 door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false, "No se pudo insertar el rack nuevo: " + ex.Message));
+            }
+        }
+
+        /// <summary>
+        /// The read of a Selectivo for the window (Selectivo E1-A): what RACKEDITAR reads and decides before its window exists — the inner
+        /// design of the rack, the register of project variables and <c>SelectiveEditorOpen.Resolve</c> — with no undo marker and no
+        /// history. A broken variable reference blocks the opening exactly as it blocks RACKEDITAR.
+        /// </summary>
+        [CommandMethod("RACKSELECTIVOABRIR", CommandFlags.NoUndoMarker | CommandFlags.NoHistory)]
+        public void ReadSelectiveDesign()
+        {
+            var door = RackCadRackDoorPort.Current;
+            var document = AcApplication.DocumentManager.MdiActiveDocument;
+            if (document == null) return;
+
+            var pending = RackCadRackDoorPort.TakePendingSelectiveRead();
+            if (pending == null)
+            {
+                document.Editor.WriteMessage("\nRACKSELECTIVOABRIR la usa la ventana RackCad: no hay ninguna lectura pendiente.");
+                return;
+            }
+
+            try
+            {
+                if (pending.Document != RackCadRackDoorPort.KeyOf(document))
+                {
+                    door?.AnswerSelectiveRead(SelectiveDesignRead.Refused(pending.RequestId, pending.RackId, null, null, OtherDrawingText));
+                    return;
+                }
+
+                var blocks = RackCommandSupport.FindRackBlocks(document, pending.RackId);
+                if (blocks.Count == 0)
+                {
+                    door?.AnswerSelectiveRead(SelectiveDesignRead.Refused(pending.RequestId, pending.RackId, null, null, "El rack no está en el dibujo."));
+                    return;
+                }
+
+                var embed = blocks[0].Embed;
+                if (embed == null || string.IsNullOrEmpty(embed.Design))
+                {
+                    door?.AnswerSelectiveRead(SelectiveDesignRead.Refused(pending.RequestId, pending.RackId, embed?.Kind, embed?.Name, "El rack no tiene datos editables."));
+                    return;
+                }
+
+                var registry = RackSelectivoCommands.ReadProjectVariables(document, out _);
+                door?.AnswerSelectiveRead(RackDoorRules.AnswerForSelectiveOpen(pending.RequestId, pending.RackId, embed.Kind, embed.Design, registry));
+            }
+            catch (System.Exception ex)
+            {
+                RackLog.Exception("RackCadRackDoorCommands.ReadSelectiveDesign", ex);
+                door?.AnswerSelectiveRead(SelectiveDesignRead.Refused(pending.RequestId, pending.RackId, null, null, ex.Message));
+            }
+        }
+
+        /// <summary>
+        /// «Actualizar» of a Selectivo of the window (Selectivo E1-A): the rack and the register are read AGAIN, the write is planned with
+        /// the opened linked states (<see cref="RackDoorRules.PlanSelectiveApply"/>), and the «Actualizar» drawing half of RACKEDITAR
+        /// (<see cref="RackSelectivoCommands.ApplySelectiveEdit"/>) reconciles and redraws every view of the rack. One «U» undoes it.
+        /// </summary>
+        [CommandMethod("RACKSELECTIVOAPLICAR")]
+        public void WriteSelectiveDesign()
+        {
+            var door = RackCadRackDoorPort.Current;
+            var document = AcApplication.DocumentManager.MdiActiveDocument;
+            if (document == null) return;
+
+            var pending = RackCadRackDoorPort.TakePendingSelectiveWrite();
+            if (pending == null)
+            {
+                document.Editor.WriteMessage("\nRACKSELECTIVOAPLICAR la usa la ventana RackCad: no hay ningún borrador pendiente de escribir.");
+                return;
+            }
+
+            door?.Started(pending.RequestId);
+
+            try
+            {
+                if (pending.Document != RackCadRackDoorPort.KeyOf(document))
+                {
+                    door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false, OtherDrawingText));
+                    return;
+                }
+
+                var blocks = RackCommandSupport.FindRackBlocks(document, pending.RackId);
+                if (blocks.Count == 0)
+                {
+                    door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false, "El rack ya no está en el dibujo: no se escribió nada."));
+                    return;
+                }
+
+                var (blockId, embed) = blocks[0];
+                var write = pending.Write;
+                var registry = RackSelectivoCommands.ReadProjectVariables(document, out _);
+                var plan = RackDoorRules.PlanSelectiveApply(embed?.Kind, embed?.Design, registry, write);
+                if (!plan.CanWrite)
+                {
+                    door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false, plan.Reason));
+                    return;
+                }
+
+                // «Written» only when a view was redrawn: the reconciliation can refuse before any geometry, or nothing be redrawn (I-08).
+                var (redrawn, erased) = RackSelectivoCommands.ApplySelectiveEdit(
+                    document, blockId, embed, plan.Saved, registry,
+                    new RackCad.UI.Systems.Selective.SelectiveDraftOutcome(write.RackId, write.Name, write.Design, write.System,
+                        write.LinkedPropertyFinalStates));
+                door?.AnswerWrite(RackDoorRules.AnswerForApply(pending.RequestId, pending.RackId, redrawn, erased));
+            }
+            catch (System.Exception ex)
+            {
+                RackCommandSupport.Report(ex);
+                door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false, "No se pudo escribir: " + ex.Message));
             }
         }
     }

@@ -73,8 +73,15 @@ namespace RackCad.Tests
         /// La segunda entrega de Dinámico (paso 4) añade «Insertar vista…» (RACKDINAMICOINSERTAR, decisión 10 del prototipo) y el Dinámico nuevo de la ventana (RACKDINAMICONUEVO), en el mismo archivo.
         internal static readonly string[] A14DynamicDoorCommands = { "RACKDINAMICOABRIR", "RACKDINAMICOAPLICAR", "RACKDINAMICOINSERTAR", "RACKDINAMICONUEVO" };
 
+        /// <summary>
+        /// Lo que I-64 A-14 (linea D, Selectivo E1-A) anade, EXACTAMENTE: la puerta de la ventana a un Selectivo, que lee su diseno efectivo
+        /// sin marca de Deshacer y escribe su borrador con la mitad de dibujo de «Actualizar», sin alias, en
+        /// <c>src/RackCad.Plugin/VentanaRackCad/RackCadRackDoorCommands.cs</c>. La base se fija de nuevo con estos dos nombres.
+        /// </summary>
+        internal static readonly string[] A14SelectiveDoorCommands = { "RACKSELECTIVOABRIR", "RACKSELECTIVOAPLICAR" };
+
         /// <summary>El censo vigente: apertura, G7, G15, I-65, el panel de F1 y el descarte de F4-T3C2, cada nombre una vez.</summary>
-        internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).Concat(I65Commands).Concat(F1PanelCommands).Concat(F4PanelDiscardCommands).Concat(A14WindowCommands).Concat(A14DynamicDoorCommands).ToArray();
+        internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).Concat(I65Commands).Concat(F1PanelCommands).Concat(F4PanelDiscardCommands).Concat(A14WindowCommands).Concat(A14DynamicDoorCommands).Concat(A14SelectiveDoorCommands).ToArray();
 
         // ================================================================ censo
 

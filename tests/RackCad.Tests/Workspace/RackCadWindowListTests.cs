@@ -278,12 +278,14 @@ public class RackCadWindowListTests
         // The doors of the Plugin hand commands to AutoCAD and never lock the document or open a transaction from the palette. The commands
         // of the door to a rack (RackCadRackDoorCommands) read the drawing in their own command context, through RackCommandSupport; the
         // files the palette calls (the ports) do not reach those helpers either, which lock and open transactions (M-05 of the second review).
+        // Selectivo E1-A re-fixes the list with the drawing half of «Actualizar» of a Selectivo and the read of the register of project
+        // variables (which locks the document): only the commands of the door reach them.
         foreach (var path in Directory.GetFiles(Path.Combine(Root(), "src", "RackCad.Plugin", "VentanaRackCad"), "*.cs"))
         {
             var code = WorkspaceHostSource.CodeOnly(File.ReadAllText(path));
             Assert.DoesNotMatch(new System.Text.RegularExpressions.Regex(@"LockDocument|StartTransaction|StartOpenCloseTransaction"), code);
             if (!path.EndsWith("RackCadRackDoorCommands.cs", StringComparison.Ordinal))
-                Assert.DoesNotMatch(new System.Text.RegularExpressions.Regex(@"\bRackCommandSupport\.|\bApplyDynamicEdit\b|\[CommandMethod"), code);
+                Assert.DoesNotMatch(new System.Text.RegularExpressions.Regex(@"\bRackCommandSupport\.|\bApplyDynamicEdit\b|\bApplySelectiveEdit\b|\bReadProjectVariables\b|\[CommandMethod"), code);
         }
     }
 

@@ -37,7 +37,7 @@ namespace RackCad.UI.Systems.Selective
     /// the floor-referenced level Ys and the post height (tallest bay governs); <see cref="SelectiveFrontalBuilder"/>
     /// lays out the blocks. Click a cell to edit it, then apply the values to the cell / row / column / all.
     /// </summary>
-    public partial class RackSelectiveWindow : Window
+    public partial class RackSelectiveWindow : Window, ISelectiveEditOutcome
     {
         private static readonly Brush PostBrush = UiSupport.FrozenBrush(Color.FromRgb(0x3D, 0xC9, 0x86));
         private static readonly Brush PostFill = UiSupport.FrozenBrush(Color.FromArgb(0x30, 0x3D, 0xC9, 0x86));

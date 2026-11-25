@@ -24,7 +24,11 @@ namespace RackCad.Tests
         public void SelectiveSerializesAuthoredOnceAndWrapsEverySiblingFromThatJson()
         {
             var source = I55ProductCharacterizationTestSupport.Code("src", "RackCad.Plugin", "RackSelectivoCommands.cs");
-            var edit = I55ProductCharacterizationTestSupport.Body(source, "internal static void EditSelective(");
+            // I-64 A-14 (linea D, Selectivo E1-A) movio la mitad de dibujo de «Actualizar» de EditSelective a ApplySelectiveEdit, que
+            // RACKEDITAR llama sin cambio de comportamiento y que tambien usa la puerta de la ventana: la caracterizacion lee ahora ese cuerpo.
+            Assert.Contains("ApplySelectiveEdit(document, blockId, embed, saved, registry, window);",
+                I55ProductCharacterizationTestSupport.Body(source, "internal static void EditSelective("));
+            var edit = I55ProductCharacterizationTestSupport.Body(source, "internal static (int Redrawn, int Erased) ApplySelectiveEdit(");
             Assert.Contains("var updateDesignJson = new SelectivePalletDesignStore().Serialize(reconciled.Authored)", edit);
             Assert.True(I55ProductCharacterizationTestSupport.Count(edit, "WrapSelectivePayload(updateDesignJson") >= 3);
             Assert.Equal(1, I55ProductCharacterizationTestSupport.Count(edit, "SelectivePalletDesignStore().Serialize"));

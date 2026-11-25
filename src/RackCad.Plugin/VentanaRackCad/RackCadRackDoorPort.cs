@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using RackCad.Application.Diagnostics;
+using RackCad.Application.ProjectVariables;
 using RackCad.Application.Systems.Shared;
 using RackCad.Application.VentanaRackCad;
 using RackCad.Domain.Systems.Dynamic;
@@ -16,13 +17,16 @@ namespace RackCad.Plugin.VentanaRackCad
     /// takes the request when it runs (<see cref="RackCadRackDoorCommands"/>) and answers through the events of the port with the number of
     /// the request. A newer request replaces an older one that never ran, and a request the window abandoned is dropped, so a late
     /// command does nothing. This file holds no AutoCAD transaction and no lock; the commands do their work in their own command context.
+    /// The Selectivo has its own two commands (Selectivo E1-A), with the same rules.
     /// </summary>
-    public sealed class RackCadRackDoorPort : IRackCadRackDoorPort
+    public sealed class RackCadRackDoorPort : IRackCadSelectiveDoorPort
     {
         internal const string ReadCommand = "RACKDINAMICOABRIR";
         internal const string WriteCommand = "RACKDINAMICOAPLICAR";
         internal const string InsertCommand = "RACKDINAMICOINSERTAR";
         internal const string NewCommand = "RACKDINAMICONUEVO";
+        internal const string SelectiveReadCommand = "RACKSELECTIVOABRIR";
+        internal const string SelectiveWriteCommand = "RACKSELECTIVOAPLICAR";
 
         /// <summary>A read that waits for its command: the number, the rack and the drawing it is for.</summary>
         internal sealed record PendingRead(long RequestId, string RackId, long Document);
@@ -31,6 +35,14 @@ namespace RackCad.Plugin.VentanaRackCad
         internal sealed record PendingWrite(long RequestId, string RackId, string Name, DynamicRackDesign Design, DynamicRackSystem System, long Document,
             IReadOnlyList<RackViewAddress> Views = null);
 
+        /// <summary>A write of a Selectivo that waits for its command: the request (copies of the draft and its final linked states) and the drawing.</summary>
+        internal sealed record PendingSelectiveWrite(SelectiveDoorWrite Write, long Document)
+        {
+            public long RequestId => Write.RequestId;
+
+            public string RackId => Write.RackId;
+        }
+
         /// <summary>The door of the palette of the process; the commands answer through it.</summary>
         internal static RackCadRackDoorPort Current { get; private set; }
 
@@ -38,6 +50,8 @@ namespace RackCad.Plugin.VentanaRackCad
         private static PendingWrite _pendingWrite;
         private static PendingWrite _pendingInsert;
         private static PendingWrite _pendingNew;
+        private static PendingRead _pendingSelectiveRead;
+        private static PendingSelectiveWrite _pendingSelectiveWrite;
 
         public RackCadRackDoorPort()
         {
@@ -49,6 +63,36 @@ namespace RackCad.Plugin.VentanaRackCad
         public event Action<RackDesignWritten> DesignWritten;
 
         public event Action<long> RequestStarted;
+
+        public event Action<SelectiveDesignRead> SelectiveRead;
+
+        public RackCadClassicResult RequestSelectiveDesign(RackDoorRequest request)
+        {
+            if (request == null || string.IsNullOrWhiteSpace(request.RackId))
+                return RackCadClassicResult.Without(RackCadClassicStatus.Failed, "El rack no tiene una identidad válida.");
+
+            return Send(SelectiveReadCommand + " ",
+                document => _pendingSelectiveRead = new PendingRead(request.RequestId, request.RackId.Trim(), KeyOf(document)),
+                () => _pendingSelectiveRead = null);
+        }
+
+        public RackCadClassicResult RequestSelectiveUpdate(SelectiveDoorWrite write)
+        {
+            if (write == null || string.IsNullOrWhiteSpace(write.RackId) || write.Design == null || write.System == null)
+                return RackCadClassicResult.Without(RackCadClassicStatus.Failed, "No hay un borrador válido que escribir.");
+
+            return Send(
+                SelectiveWriteCommand + " ",
+                document => _pendingSelectiveWrite = new PendingSelectiveWrite(
+                    write with
+                    {
+                        RackId = write.RackId.Trim(),
+                        LinkedPropertyFinalStates = new Dictionary<PropertyId, LinkedPropertyEditState>(
+                            write.LinkedPropertyFinalStates ?? new Dictionary<PropertyId, LinkedPropertyEditState>()),
+                    },
+                    KeyOf(document)),
+                () => _pendingSelectiveWrite = null);
+        }
 
         public RackCadClassicResult RequestDesign(RackDoorRequest request)
         {
@@ -96,6 +140,24 @@ namespace RackCad.Plugin.VentanaRackCad
             if (_pendingWrite != null && _pendingWrite.RequestId == requestId) _pendingWrite = null;
             if (_pendingInsert != null && _pendingInsert.RequestId == requestId) _pendingInsert = null;
             if (_pendingNew != null && _pendingNew.RequestId == requestId) _pendingNew = null;
+            if (_pendingSelectiveRead != null && _pendingSelectiveRead.RequestId == requestId) _pendingSelectiveRead = null;
+            if (_pendingSelectiveWrite != null && _pendingSelectiveWrite.RequestId == requestId) _pendingSelectiveWrite = null;
+        }
+
+        /// <summary>The read of a Selectivo that waits, taken once by its command; null when there is none.</summary>
+        internal static PendingRead TakePendingSelectiveRead()
+        {
+            var pending = _pendingSelectiveRead;
+            _pendingSelectiveRead = null;
+            return pending;
+        }
+
+        /// <summary>The write of a Selectivo that waits, taken once by its command; null when there is none.</summary>
+        internal static PendingSelectiveWrite TakePendingSelectiveWrite()
+        {
+            var pending = _pendingSelectiveWrite;
+            _pendingSelectiveWrite = null;
+            return pending;
         }
 
         /// <summary>The read that waits, taken once by its command; null when there is none.</summary>
@@ -134,6 +196,8 @@ namespace RackCad.Plugin.VentanaRackCad
         internal static long KeyOf(AcDocument document) => document == null ? 0L : document.UnmanagedObject.ToInt64();
 
         internal void AnswerRead(RackDesignRead read) => Raise(() => DesignRead?.Invoke(read));
+
+        internal void AnswerSelectiveRead(SelectiveDesignRead read) => Raise(() => SelectiveRead?.Invoke(read));
 
         internal void AnswerWrite(RackDesignWritten written) => Raise(() => DesignWritten?.Invoke(written));
 

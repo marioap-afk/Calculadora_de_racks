@@ -126,8 +126,6 @@ namespace RackCad.Plugin
             var system = window.SystemToInsert;
             var name = string.IsNullOrWhiteSpace(window.RackName) ? embed.Name : window.RackName;
             system.Name = name; // the "Colocar nombre de rack" annotation draws this
-            // Base name for syncing the block-definition names across views (null = keep each view's descriptive default).
-            var baseName = string.IsNullOrWhiteSpace(name) ? null : name.Trim();
 
             if (!window.UpdateOnly)
             {
@@ -208,6 +206,37 @@ namespace RackCad.Plugin
                 return;
             }
 
+            // «Actualizar»: the drawing half shared with the RackCad window (I-64 A-14, line D, Selectivo E1-A). RACKEDITAR ignores its count.
+            ApplySelectiveEdit(document, blockId, embed, saved, registry, window);
+        }
+
+        /// <summary>
+        /// The «Actualizar» drawing half of RACKEDITAR on a Selectivo (I-64 A-14, line D, Selectivo E1-A): everything EditSelective did
+        /// after its window closed asking to update, with the result of the editor as arguments instead of the window, unchanged. RACKEDITAR
+        /// passes what its window produced, with the authored document and the register it read before opening; the RackCad window passes
+        /// its draft, with the document and the register read again by its command. It redraws in place every view of the rack with the same
+        /// GUID (the frontal of each fondo, the lateral cut of each post, the planta), erases the views a shrink left behind (only when one
+        /// view survives) and regenerates once. It answers how many views it redrew and how many it erased (zero and zero when the
+        /// reconciliation refused before touching any geometry); RACKEDITAR ignores the answer, the window uses it so «written» means
+        /// written (I-08 of Dinámico). The branch that inserted a new view after the update is not here: RACKEDITAR inserts through its own
+        /// path above and never reached it.
+        /// </summary>
+        internal static (int Redrawn, int Erased) ApplySelectiveEdit(
+            Document document,
+            ObjectId blockId,
+            RackEmbedDocument embed,
+            SelectivePalletDesignDocument saved,
+            ProjectVariablesReadResult registry,
+            ISelectiveEditOutcome window)
+        {
+            var editor = document.Editor;
+            var design = window.DesignToInsert;
+            var system = window.SystemToInsert;
+            var name = string.IsNullOrWhiteSpace(window.RackName) ? embed.Name : window.RackName;
+            system.Name = name; // the "Colocar nombre de rack" annotation draws this
+            // Base name for syncing the block-definition names across views (null = keep each view's descriptive default).
+            var baseName = string.IsNullOrWhiteSpace(name) ? null : name.Trim();
+
             // Actualizar retains the exact empty-only identity predicate it had before G9b.
             var id = string.IsNullOrEmpty(embed.Id) ? window.RackId : embed.Id;
 
@@ -236,7 +265,7 @@ namespace RackCad.Plugin
             if (!reconciled.IsSuccess)
             {
                 editor.WriteMessage("\nRackCad: " + reconciled.Error);
-                return;
+                return (0, 0);
             }
 
             var updateDesignJson = new SelectivePalletDesignStore().Serialize(reconciled.Authored);
@@ -352,22 +381,8 @@ namespace RackCad.Plugin
                 document.Editor.Regen(); // ONE regeneration refreshes every redefined (and drops every erased) view-block
             }
 
-            // "Insertar": after refreshing the existing views above, place a NEW linked view-block (same GUID) of the
-            // requested view via the normal insertion path (jig). DrawSelectiveView writes its own outcome. "Actualizar"
-            // (UpdateOnly) inserts nothing — the refresh above is the whole action.
-            if (!window.UpdateOnly)
-            {
-                // I-48 G4C.1: la vista NUEVA porta el MISMO authored reconciliado que las que ya existian, no
-                // uno reconstruido desde el diseno efectivo. Un diseno de dominio no puede llevar vinculos, asi
-                // que reconstruirlo dejaba la vista nueva sin vinculo y con el valor de la variable escrito como
-                // literal del rack -- es decir, divergencia authored entre hermanas del mismo rack, que es el
-                // estado que ninguna operacion puede resolver eligiendo una vista.
-                //
-                // A NEW view inserted during an edit inherits the initiating (picked) envelope's metadata (I-11).
-                DrawSelectiveViewFromAuthored(window.InsertView, system, updateDesignJson, id, name, embed);
-                return;
-            }
-
+            // "Actualizar" inserts nothing: the refresh above is the whole action. (The branch that placed a NEW view here after the
+            // refresh was unreachable from RACKEDITAR, whose "Insertar" returns through its own path, and left with the extraction.)
             editor.WriteMessage(updatedFrontal + updatedLateral + updatedPlanta + erasedPhantoms > 0
                 ? "\nRackCad: sistema actualizado; sus vistas se redibujaron (frontal x"
                     + updatedFrontal.ToString(CultureInfo.InvariantCulture) + ", lateral x"
@@ -375,15 +390,17 @@ namespace RackCad.Plugin
                     + updatedPlanta.ToString(CultureInfo.InvariantCulture) + ")."
                     + (erasedPhantoms > 0 ? " Vistas obsoletas retiradas: x" + erasedPhantoms.ToString(CultureInfo.InvariantCulture) + "." : string.Empty)
                 : "\nRackCad: no se pudo actualizar el rack.");
+            return (updatedFrontal + updatedLateral + updatedPlanta, erasedPhantoms);
         }
 
         /// <summary>
         /// The drawing's project-variable register AND its sweep, read in ONE short transaction (I-47 G7/G8).
         /// It is a READ and it happens before the editor exists, so it owns its transaction rather than
         /// borrowing one. The sweep travels with it because a binding gesture has to reason over the rack's
-        /// views, and reading it twice could read two different drawings.
+        /// views, and reading it twice could read two different drawings. The commands of the RackCad window to a Selectivo
+        /// (RACKSELECTIVOABRIR, RACKSELECTIVOAPLICAR) read the register through it too, in their own command context.
         /// </summary>
-        private static ProjectVariablesReadResult ReadProjectVariables(
+        internal static ProjectVariablesReadResult ReadProjectVariables(
             Document document, out System.Collections.Generic.IReadOnlyList<ProjectVariableScanEntry> entries)
         {
             var swept = new System.Collections.Generic.List<ProjectVariableScanEntry>();

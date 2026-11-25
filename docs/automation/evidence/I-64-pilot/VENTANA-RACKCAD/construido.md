@@ -404,3 +404,65 @@ Los menores:
   - con la secuencia exacta del smoke, desde AutoCAD recién arrancado.
 
   Lo más probable es que, en aquella sesión, los clics de la herramienta de control de pantalla los consumiera la activación de la paleta acoplada. Se cierra como no reproducible; si el Owner la ve con su ratón, se reabre con el estado de la paleta y lo que se hizo antes. En la misma sesión se vieron en AutoCAD la insignia «G» nueva (O-7) y el editor sin saltos al pasar a «Modificado» (O-8).
+
+## Selectivo en la ventana (línea D), E1-A
+
+**Rama:** `architecture/workspace-persistente-rackcad-selectivo`, desde `dc82a43c` (la punta de Dinámico). E1-A son los datos y la puerta, sin pantalla: la pantalla es E1-B.
+
+**Lo que se construyó:**
+- **El borrador** (`SelectiveDraftEditor`, en Application): un Selectivo sin WPF ni AutoCAD.
+  - Es la misma recomposición que el editor clásico: el estado de I-20 (una matriz por fondo), las entradas que el clásico lee de sus cajas, el armado de `BuildDesign` del estado y el resolvedor de geometría. No añade geometría.
+  - Escribe con las mismas operaciones del estado que usa el clásico (I-43): las celdas por el resolvedor de destinos, los frentes y los fondos por sus `Apply…ToTargets`.
+  - **Un solo alcance** (decisión 2): «Todos los fondos», donde empieza, o «Fondo n». Lo que se lee sobre el alcance dice «Varía» si los fondos difieren, y cuenta lo que un fondo no tiene: un frente que solo existe en un fondo se escribe ahí y el otro se indica.
+  - **Por celda:** la tarima (frente × alto), las tarimas por nivel, el larguero y su peralte (solo los del catálogo para ese larguero, como la lista del clásico), y el largo y el claro manuales.
+  - **Por frente:** los niveles (un número exacto), el larguero a piso y su elevación, la altura manual (`HeightOverride`, decisión 9) y los tramos de medio frente, con las comprobaciones del diálogo clásico.
+  - **Por fondo y del rack:** el número de fondos, los frentes, la profundidad de tarima y de cabecera, las separaciones, el poste y su peralte, las anotaciones (con «Mostrar tarimas») y las cotas.
+  - **Por poste:** el peralte propio, con la regla de la caja clásica: vacío o igual al del rack es «toma el del rack». Las cabeceras personalizadas se conservan y se leen; se editan en el editor clásico.
+  - **Las holguras** (decisión 12): la ventana no ofrece «=Variable». Una holgura vinculada abre con su valor efectivo y es de solo lectura (`IsLinked`, con el motivo y el nombre de la variable). Al escribir, su estado final es el que se leyó, así que el vínculo y el literal congelado se conservan, como en el clásico cuando no se toca. `LinkedPropertyEditor` y lo de I-47/I-48 no se tocan.
+  - `Recompose()` con `LastError` conserva el último diseño y sistema válidos. Son copias por el JSON del documento, nunca objetos del estado. `RestoreLastValid()` devuelve las entradas al último válido y borra el error (I-09). `SnapshotForWrite()` da copias y los estados finales de las holguras.
+- **La puerta** (`RackCadRackDoor.cs`, aditiva):
+  - `IRackCadSelectiveDoorPort` extiende la puerta de Dinámico con las mismas reglas: numeración, otro dibujo, «Dejar de esperar» y `RequestStarted`. La de Dinámico, sus dobles y sus pruebas no cambian.
+  - `SelectiveDesignRead` lleva el diseño efectivo (JSON), los estados de las holguras, los nombres de las variables (solo para mostrarlos), el tipo, el nombre y, si no abre, el motivo.
+  - `SelectiveDoorWrite` lleva las copias del borrador y los estados finales.
+  - Las reglas, puras y con prueba en Core: `RackDoorRules.AnswerForSelectiveOpen` y `PlanSelectiveApply`.
+- **Las órdenes** (`RackCadRackDoorCommands.cs`):
+  - `RACKSELECTIVOABRIR`, sin marca de Deshacer ni historial, lee lo que lee RACKEDITAR antes de abrir: el diseño, el registro de variables y `SelectiveEditorOpen.Resolve`. Una referencia rota bloquea la apertura igual que en RACKEDITAR.
+  - `RACKSELECTIVOAPLICAR` relee el rack y el registro, planea la escritura y redibuja con la mitad de dibujo de «Actualizar». Contesta con `RackDoorRules.AnswerForApply`. Un «U» la deshace.
+- **La mitad de dibujo:** `ApplySelectiveEdit`, extraída de `EditSelective` con el mismo cuerpo. RACKEDITAR la usa igual e ignora lo que devuelve (cuántas vistas redibujó y cuántas borró). La recibe un `ISelectiveEditOutcome` (UI): la ventana clásica lo es, y la puerta pasa un `SelectiveDraftOutcome`.
+
+**Las decisiones:**
+
+| Id | Decisión | Por qué |
+|---|---|---|
+| S-01 | El borrador es la misma recomposición que el clásico: con valores de hasta tres decimales, el diseño que guarda es idéntico byte a byte (rack nuevo, abierto, editado, dos fondos, medio frente, cabeceras personalizadas, peraltes por poste, holgura vinculada). Las diferencias están en S-02 | El editor nuevo escribe lo que escribiría el clásico |
+| S-02 | Dos diferencias declaradas, cada una con prueba: (1) el borrador conserva la precisión completa, y el clásico redondea a tres decimales el peralte de poste y las separaciones al releer sus cajas (3.14159 contra 3.142); (2) un poste que no está en el catálogo da paso al primero de la lista, como en el clásico, pero el borrador lo dice. Un poste del catálogo escrito con otras mayúsculas es ese poste; con el catálogo de hoy, de un solo poste, el clásico termina en el mismo | El borrador no cambia un valor que nadie tocó |
+| S-03 | Al abrir, el borrador recompone, porque la carga del clásico termina en un recálculo. Un rack abierto y escrito sin tocar se escribe como lo escribiría el clásico, con sus normalizaciones de carga. Es distinto de Dinámico, que escribe lo que leyó (D-01) | El mismo resultado que el clásico, y un «Modificado» que vuelve a «Limpio» si se deshace un cambio |
+| S-04 | La escritura relee el rack y el registro y no escribe si el vínculo de una holgura cambió desde la apertura, si la variable que la gobierna tiene otro valor o si el rack ya no abriría. Cualquier otro cambio del dibujo mientras se edita sigue sin detectarse (M-16 de Dinámico) | El clásico es modal y la ventana no: sin esto, escribir el estado abierto desharía en silencio un vínculo nuevo, o dibujaría con el valor viejo de la variable |
+| S-05 | La rama de `EditSelective` que insertaba una vista nueva después de «Actualizar» no pasó a `ApplySelectiveEdit`: RACKEDITAR inserta por su propio camino y nunca la alcanzaba (inventario, dolor 17) | La mitad extraída es solo «Actualizar» |
+| S-06 | El nombre con el que abre el borrador es el del documento interno, como lo muestra el clásico. Vacío, la escritura usa el del sobre, como RACKEDITAR | Es lo que hace el clásico |
+
+**Las pruebas:**
+- `SelectiveDraftEditorEquivalenceTests` (UI, 14): la equivalencia con el clásico en los casos de S-01, el frente que solo tiene un fondo, el rechazo de una holgura vinculada, las dos diferencias de S-02, la instantánea como copia, el recálculo fallido con la vuelta al último válido y los peraltes del catálogo.
+- `SelectiveRackDoorTests` (Core, 12):
+  - la lectura: abre como RACKEDITAR, la holgura vinculada con su valor, su literal y su nombre, la referencia rota bloquea, otro tipo no abre;
+  - la escritura: se planea con los estados abiertos y conserva el vínculo, y se niega si cambió el vínculo, el valor de la variable o el rack ya no abre;
+  - el cableado de las órdenes, de la puerta y de la mitad extraída, sobre la fuente.
+- **Los censos:**
+  - las órdenes pasan de 47 a 49 (`SelectiveEditorOpenTests`), y `CustomPropertiesCommandGuardTests` añade `A14SelectiveDoorCommands`;
+  - la guarda de capas de `RackCadWindowListTests` añade `ApplySelectiveEdit` y `ReadProjectVariables`: solo las órdenes de la puerta los usan;
+  - la caracterización de I-55 lee ahora el cuerpo de `ApplySelectiveEdit`. Cada base fijada de nuevo lleva su nota.
+- **Comprobación en rojo:**
+  - el diseño publicado sin copia: falló la prueba de las cabeceras personalizadas (una profundidad nueva lo alcanzaba sin recalcular);
+  - los estados finales sin el valor nuevo de una holgura del rack: falló la de las ediciones;
+  - las separaciones cargadas con el valor por defecto: fallaron dos;
+  - la escritura sin comparar el vínculo, y sin comparar el valor de la variable: falló cada una de las suyas en Core;
+  - los archivos se restauraron.
+- **Core Full:** 19088 correctas, 0 con error, 403 omitidas (la base de `dc82a43c`, 19076, más las 12 nuevas).
+
+**Lo que queda abierto:**
+- La pantalla es E1-B: el editor de la ventana, «Editar aquí» para Selectivo y el consejero de cierre (D-08) con sus borradores.
+- **Sin AutoCAD:**
+  - que `RACKSELECTIVOABRIR` no deje nada en Deshacer espera el smoke, como M-15. A diferencia de la de Dinámico, lee el registro con la lectura de RACKEDITAR, que bloquea el documento y abre una transacción dentro de la orden;
+  - esa lectura recorre todos los sobres del dibujo, como RACKEDITAR, en cada apertura y en cada escritura.
+- `RACKEDITAR` sigue con el editor clásico.
+- Para la entrega 2: la seguridad (se conserva), «Insertar vista…», un Selectivo nuevo y «Restaurar layout…».
