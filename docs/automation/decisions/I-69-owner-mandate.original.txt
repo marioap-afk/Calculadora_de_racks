@@ -1,0 +1,595 @@
+Coordina exclusivamente una nueva iniciativa de RackCad:
+
+# <NEXT_FREE_INITIATIVE_ID> — Selectivo Component Catalog Expansion
+## Ampliación de largueros + elementos de seguridad
+
+Workflow:
+V2
+
+Initial Archetype:
+EXTENSION
+
+Priority:
+HIGH / SMALL PRODUCT IMPROVEMENT
+
+Archetype escalation rule:
+Si Discovery demuestra que las descripciones visibles actúan como identidad persistida, que existe acoplamiento significativo entre catálogo/UI/persistencia/BOM, o que se requiere nueva foundation/schema/migración, STOP antes del Freeze y evalúa reclasificar a FOUNDATION EVOLUTION.
+
+======================================================================
+GOAL
+======================================================================
+
+Ampliar las opciones configurables del sistema Selectivo en dos áreas:
+
+1. Catálogo/lista de tipos de larguero disponibles por celda/nivel.
+
+2. Lista de elementos de seguridad.
+
+Nuevos elementos de seguridad requeridos:
+
+- Guarda trasera
+- Entrepaño caída de agua
+
+También se requiere:
+
+- agregar nuevos tipos de larguero;
+- cambiar algunas descripciones visibles de largueros existentes.
+
+La lista final de nuevos largueros/descripciones será definida después de confirmar
+cómo funciona actualmente el catálogo.
+
+======================================================================
+CRITICAL FIRST QUESTION
+======================================================================
+
+Antes de cambiar nombres o agregar opciones, determinar exactamente:
+
+¿DE DÓNDE PROVIENE HOY EL CATÁLOGO DE LARGUEROS?
+
+Posibilidades a caracterizar:
+
+A.
+Excel/catalog file
+→ runtime catalog
+→ IDs/records
+→ DisplayName
+
+B.
+strings/constants/enums hardcoded
+
+C.
+hybrid:
+stable ID/code
++
+description from catalog
+
+D.
+another actual implementation.
+
+No asumir ninguna.
+
+======================================================================
+CURRENT UI TARGET
+======================================================================
+
+La lista a ampliar es el dropdown de largueros por celda/nivel del editor Selectivo.
+
+Current examples observed:
+
+- Larguero escalón calibre 14 con ménsula 3 remaches
+- Larguero escalón de ajuste infinito
+- Larguero escalón troquel redondo
+- Larguero in n out de canal de 6"
+
+Confirmar los nombres exactos contra código/catalog actual.
+
+No usar esta lista como autoridad si difiere del repo vigente.
+
+======================================================================
+DISCOVERY REQUIRED — LARGUEROS
+======================================================================
+
+Localizar el flujo completo:
+
+catalog/source
+→ filtering
+→ option model
+→ dropdown
+→ selected value
+→ persisted state
+→ geometry
+→ BOM
+→ save/reopen/edit
+
+Identificar explícitamente:
+
+1. fuente de catálogo;
+2. archivo Excel/catalog si existe;
+3. loader/parser;
+4. IDs/códigos estables;
+5. descripción/display name;
+6. cómo se filtran los largueros válidos;
+7. qué se persiste;
+8. qué usa geometría;
+9. qué usa BOM;
+10. compatibilidad con archivos existentes.
+
+======================================================================
+IDENTITY VS DISPLAY NAME
+======================================================================
+
+Esta decisión es material.
+
+Determinar si actualmente:
+
+Option identity
+=
+description string
+
+o si existe:
+
+StableId / PieceId / Code
++
+DisplayName / Description
+
+Preferencia arquitectónica:
+
+Stable identity
+!=
+display description
+
+pero NO refactorizar si no es necesario para el cambio solicitado.
+
+Si las descripciones actuales son identidad persistida:
+
+- no renombrar strings a ciegas;
+- caracterizar payload legacy;
+- definir compatibilidad;
+- decidir si se requiere alias/mapping/migration.
+
+Si existe ID estable separado:
+
+- cambiar DisplayName sin alterar identidad.
+
+======================================================================
+CATALOG EXCEL / EXTERNAL SOURCE
+======================================================================
+
+Si existe un Excel/catálogo de piezas:
+
+determinar si es:
+
+- autoridad runtime;
+- build-time input;
+- documentación;
+- fuente copiada manualmente;
+- catálogo distribuido con RackCad.
+
+Confirmar:
+
+- ubicación;
+- schema;
+- columnas relevantes;
+- PieceId/Code;
+- Description;
+- Type/Category;
+- dimensiones/perfil;
+- cualquier bandera usada para filtrar largueros.
+
+No modificar el Excel hasta entender si forma parte del runtime/distribution.
+
+Si el catálogo es distribuido:
+validar Autoloader/bundle inclusion.
+
+======================================================================
+NEW BEAM OPTIONS
+======================================================================
+
+La iniciativa debe preparar el mecanismo para:
+
+- agregar nuevas opciones de larguero;
+- cambiar descripciones visibles existentes.
+
+NO inventar aún las nuevas piezas.
+
+Primero entrega al Coordinator/Owner una tabla real como:
+
+| Stable ID / Code | Current Description | Source | Persisted As | Geometry Consumer | BOM Consumer |
+
+Luego el Owner podrá proporcionar:
+
+- nuevos códigos/piezas;
+- descripciones finales;
+- renombres requeridos.
+
+Si los registros nuevos ya existen en catálogo pero están filtrados:
+identificar el filtro.
+
+Si no existen:
+indicar exactamente qué datos hacen falta para agregar cada pieza.
+
+======================================================================
+ELEMENTOS DE SEGURIDAD
+======================================================================
+
+Agregar a Selectivo:
+
+- Guarda trasera
+- Entrepaño caída de agua
+
+Discovery debe identificar cómo están modelados actualmente los elementos de seguridad:
+
+- enum;
+- catalog records;
+- flags;
+- collection;
+- string;
+- custom option model;
+- other.
+
+Caracterizar para cada elemento existente:
+
+UI
+→ persistence
+→ geometry
+→ BOM
+
+Los dos nuevos elementos deben seguir el patrón vigente.
+
+======================================================================
+BEHAVIOR OF NEW SAFETY ITEMS
+======================================================================
+
+No asumir que "agregar a la lista" implica automáticamente nueva geometría.
+
+Discovery debe determinar si cada nuevo elemento requiere:
+
+A. UI + persistence only;
+B. UI + persistence + BOM;
+C. UI + persistence + geometry + BOM.
+
+Si no existe definición suficiente para geometría/BOM de:
+
+Guarda trasera
+Entrepaño caída de agua
+
+STOP antes de inventar dimensiones o cantidades.
+
+Solicitar al Owner solo los datos faltantes concretos.
+
+No fabricar componentes físicos.
+
+======================================================================
+BOM
+======================================================================
+
+Revisar cómo se convierten actualmente:
+
+- beam selections;
+- safety components;
+
+en partidas BOM.
+
+No crear nombres BOM basados en display strings si existe identidad/catalog authority.
+
+Confirmar:
+
+- quantity;
+- copies;
+- level/cell attribution;
+- description source;
+- part/profile code;
+- consolidation behavior.
+
+No introducir cambios al dominio BOM fuera de lo necesario.
+
+I-68/XlsxWriter no debe modificarse por esta iniciativa.
+
+======================================================================
+GEOMETRY
+======================================================================
+
+Para largueros:
+
+verificar si elegir un tipo distinto cambia:
+
+- peralte;
+- ancho;
+- offset;
+- connection geometry;
+- block/piece selection;
+- dimensions.
+
+No asumir que todas las nuevas opciones son solo un nombre distinto.
+
+Si el catálogo contiene propiedades geométricas:
+reutilizar la autoridad vigente.
+
+Si alguna nueva pieza requiere una geometría no soportada:
+reportar como scope expansion antes de implementar.
+
+======================================================================
+PERSISTENCE / LEGACY
+======================================================================
+
+Required characterization:
+
+- create;
+- edit;
+- save;
+- reopen;
+- edit again.
+
+Cambios de descripción no deben romper diseños existentes.
+
+Freeze debe definir:
+
+- persisted identity;
+- legacy aliases if required;
+- fallback for missing/deleted catalog entry;
+- behavior when description changes.
+
+Fail closed where current architecture requires it.
+
+======================================================================
+UI
+======================================================================
+
+Mantener el comportamiento actual del dropdown por celda/nivel.
+
+No rediseñar el editor Selectivo.
+
+No implementar:
+
+- búsqueda avanzada;
+- grouped dropdown;
+- favoritos;
+- new Workspace UX;
+- per-side beam selection.
+
+La mejora actual es únicamente ampliar el catálogo/opciones existentes.
+
+======================================================================
+OUT OF SCOPE
+======================================================================
+
+NO:
+
+- larguero distinto por lado de la misma cabecera;
+- duplicación temporal de Selectivo;
+- redesign de niveles;
+- live-edit;
+- new Workspace architecture;
+- ID23 calculated BOM;
+- BOM consolidation redesign;
+- RAM integration;
+- new expression semantics;
+- general catalog refactor unless required for identity safety.
+
+======================================================================
+PROPOSED DELIVERY SHAPE
+======================================================================
+
+Preferir el mínimo cambio acorde a la arquitectura existente.
+
+Possible outcomes:
+
+CASE A — catalog-driven
+- add/update catalog records;
+- update filter/category if necessary;
+- regression tests.
+
+CASE B — stable IDs + hardcoded display
+- add IDs/options;
+- update display mapping;
+- regression tests.
+
+CASE C — description-as-identity
+- STOP;
+- Freeze compatibility strategy;
+- then implement safest minimal mapping/migration.
+
+Do not overengineer CASE A/B into a new catalog platform.
+
+======================================================================
+TEST MATRIX
+======================================================================
+
+At minimum:
+
+T1 — current beam options remain selectable.
+
+T2 — each new beam option appears exactly once.
+
+T3 — changed descriptions display correctly.
+
+T4 — existing saved rack using an old/current beam reopens correctly.
+
+T5 — select new beam → save → reopen → same identity.
+
+T6 — edit rack preserves selected beam.
+
+T7 — geometry uses correct properties for new option where applicable.
+
+T8 — BOM identifies new beam correctly.
+
+T9 — existing BOM behavior unchanged for old options.
+
+T10 — Guarda trasera appears.
+
+T11 — Entrepaño caída de agua appears.
+
+T12 — safety selections persist across save/reopen.
+
+T13 — safety BOM/geometry according to frozen contract.
+
+T14 — missing catalog entry fails according to existing policy.
+
+T15 — bundle/distribution includes modified catalog if runtime catalog changes.
+
+======================================================================
+OWNER VALIDATION
+======================================================================
+
+Plan a small Owner smoke.
+
+Owner should verify:
+
+1. dropdown contains expected beam list;
+2. renamed descriptions are correct;
+3. new beam options can be selected;
+4. reopening preserves selection;
+5. Guarda trasera appears;
+6. Entrepaño caída de agua appears;
+7. BOM/geometry behavior is correct according to the agreed scope.
+
+Do not expand into broad Selectivo validation.
+
+======================================================================
+I-61 EXECUTION
+======================================================================
+
+Use current integrated protocol.
+
+Recommended routing:
+
+catalog/code characterization
+→ Balanced
+
+persistence identity review
+→ Balanced/Deep if ambiguous
+
+catalog/UI additions
+→ Efficient/Balanced
+
+BOM/geometry regression
+→ Balanced
+
+final conformance
+→ independent review as required by current Workflow.
+
+Coordinator retains Gate PASS.
+
+======================================================================
+FUNCTIONAL GATES
+======================================================================
+
+Keep initiative small.
+
+Suggested:
+
+F0 — Discovery / identity characterization / Freeze
+
+F1 — Beam Catalog Expansion
+     new options
+     description updates
+     persistence compatibility
+
+F2 — Safety Elements
+     Guarda trasera
+     Entrepaño caída de agua
+
+F3 — BOM / geometry / save-reopen regression
+
+F4 — Owner Validation / closure
+
+READY — Final Candidate
+
+Consolidate gates if implementation is trivial after Discovery.
+
+======================================================================
+SUCCESS CRITERIA
+======================================================================
+
+1. source of beam options is documented.
+
+2. identity vs DisplayName is explicit.
+
+3. description changes do not break saved designs.
+
+4. new beam options appear in the existing Selectivo dropdown.
+
+5. new options persist correctly.
+
+6. BOM/geometry use the correct stable identity/data.
+
+7. Guarda trasera is available.
+
+8. Entrepaño caída de agua is available.
+
+9. safety items persist and behave according to Freeze.
+
+10. no unrelated Selectivo redesign enters scope.
+
+11. bundle/distribution remains correct if external catalog changes.
+
+======================================================================
+FIRST RESPONSE REQUIRED
+======================================================================
+
+Before production implementation return:
+
+1. real preflight;
+2. current origin/main;
+3. next free Initiative-Id;
+4. branch/worktree claim;
+5. active hotspot conflicts;
+6. Workflow/I-61 status;
+
+7. exact source of beam dropdown options;
+
+8. exact Excel/catalog source if any;
+
+9. catalog schema relevant to beams;
+
+10. current beam option model/type;
+
+11. stable ID/code if one exists;
+
+12. current DisplayName/Description authority;
+
+13. persisted representation;
+
+14. geometry consumer path;
+
+15. BOM consumer path;
+
+16. current filtering rule for beam options;
+
+17. current full beam-option inventory;
+
+18. compatibility risk of renaming descriptions;
+
+19. exact model of safety elements;
+
+20. persistence of safety elements;
+
+21. geometry/BOM behavior of existing safety elements;
+
+22. what information is still required from Owner for:
+    - new beam entries;
+    - beam description changes;
+    - Guarda trasera;
+    - Entrepaño caída de agua;
+
+23. minimum implementation path;
+
+24. whether EXTENSION remains correct archetype;
+
+25. Consumes / Extends / Introduces;
+
+26. proposed Freeze;
+
+27. regression matrix;
+
+28. Owner Validation plan;
+
+29. initial routing plan;
+
+30. explicit status:
+
+IMPLEMENTATION AUTHORIZATION = NO
+
+until the current catalog/identity/persistence path is characterized.
+
+Do not rename persisted description strings blindly.
