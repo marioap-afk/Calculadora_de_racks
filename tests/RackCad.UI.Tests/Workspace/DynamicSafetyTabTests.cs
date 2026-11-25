@@ -296,6 +296,91 @@ namespace RackCad.UI.Tests
             }
         }
 
+        // ------------------------------------------------------------------ O-6, O-7 and O-8 of the smoke of the second delivery
+
+        private static DynamicEditorView LaidOut(DynamicEditorViewModel vm)
+        {
+            var view = new DynamicEditorView(vm);
+            Lay(view);
+            return view;
+        }
+
+        private static void Lay(System.Windows.FrameworkElement view)
+        {
+            view.Measure(new System.Windows.Size(1200, 900));
+            view.Arrange(new System.Windows.Rect(0, 0, 1200, 900));
+            view.UpdateLayout();
+        }
+
+        private static IEnumerable<T> Descendants<T>(System.Windows.DependencyObject root) where T : System.Windows.DependencyObject
+        {
+            for (var i = 0; i < System.Windows.Media.VisualTreeHelper.GetChildrenCount(root); i++)
+            {
+                var child = System.Windows.Media.VisualTreeHelper.GetChild(root, i);
+                if (child is T match) yield return match;
+                foreach (var nested in Descendants<T>(child)) yield return nested;
+            }
+        }
+
+        private static System.Windows.Rect BoundsIn(System.Windows.FrameworkElement element, System.Windows.Media.Visual root)
+            => element.TransformToAncestor(root).TransformBounds(new System.Windows.Rect(0, 0, element.ActualWidth, element.ActualHeight));
+
+        [Fact]
+        public void TheEditorDoesNotMoveWhenItBecomesModified()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var vm = Editor();
+                var view = LaidOut(vm);
+                var before = BoundsIn(view.Tabs, view).Top;
+                Assert.Equal("Sin cambios que escribir.", view.UpdateBlockedText.Text);
+
+                vm.GuideNowhere();
+                Lay(view);
+                Assert.True(vm.IsDirty);
+                Assert.Equal(string.Empty, view.UpdateBlockedText.Text);
+                Assert.Equal(System.Windows.Visibility.Hidden, view.UpdateBlockedText.Visibility);
+                Assert.Equal(before, BoundsIn(view.Tabs, view).Top, 3);
+            });
+        }
+
+        [Fact]
+        public void ACalculatedValueKeepsAGapFromItsLabel()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var vm = Editor();
+                vm.SelectedTab = 0; // «Calculado» is in the tab Rack, which the tab control lays out only when it is shown
+                var view = LaidOut(vm);
+                var texts = Descendants<System.Windows.Controls.TextBlock>(view.CalculatedList).ToList();
+                var label = texts.First(t => t.Text == "Altura de cabecera");
+                var value = texts.First(t => t.Text.EndsWith("(la más alta)", StringComparison.Ordinal));
+                Assert.True(BoundsIn(value, view).Left - BoundsIn(label, view).Right >= 8.0,
+                    BoundsIn(label, view) + " / " + BoundsIn(value, view));
+            });
+        }
+
+        [Fact]
+        public void TheMarkOfTheGuideIsABadgeInItsOwnColor()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var vm = Editor();
+                var view = LaidOut(vm);
+                var badges = Descendants<System.Windows.Controls.Border>(view.MatrixRows).Where(b => b.Name == "GuideBadge").ToList();
+                Assert.Equal(5, badges.Count(b => b.Visibility == System.Windows.Visibility.Visible)); // F1 with 3 levels, F2 with 2
+                var mark = Assert.IsType<System.Windows.Controls.TextBlock>(badges[0].Child);
+                Assert.Equal("G", mark.Text);
+                Assert.True(mark.FontSize >= 10.0);
+                Assert.Equal(System.Windows.FontWeights.Bold, mark.FontWeight);
+                Assert.Equal(view.TryFindResource("ShellStatusSuccessBrush"), mark.Foreground);
+
+                vm.GuideNowhere();
+                Lay(view);
+                Assert.All(badges, b => Assert.Equal(System.Windows.Visibility.Collapsed, b.Visibility));
+            });
+        }
+
         [Fact]
         public void TheTabOfTheSafetyGoesBetweenTheMatrixAndAvanzado()
         {

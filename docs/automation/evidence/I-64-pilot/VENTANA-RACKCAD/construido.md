@@ -388,3 +388,9 @@ Los menores:
   - O-7: la «G» es pequeña y tenue en la celda seleccionada.
   - O-8: al pasar a «Modificado», el contenido sube unos 12 px.
 - No se probó el «U» de una inserción.
+- **O-6 a O-8 corregidas** (orden del Owner), todo en la vista del editor:
+  - O-6: el valor de «Calculado» deja 16 px a su etiqueta, la etiqueta larga parte línea y la lista crece a 520 px;
+  - O-7: la «G» es una insignia con borde en el color de «correcto», en negrita y de 10 pt, distinta del color de la selección;
+  - O-8: la línea «Sin cambios que escribir.» se oculta sin colapsar, así que el editor no se mueve al pasar a «Modificado».
+- Cada corrección tiene su prueba de vista con WPF real, y cada prueba falla si se revierte su corrección.
+- O-5 sigue por investigar.

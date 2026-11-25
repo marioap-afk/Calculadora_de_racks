@@ -22,6 +22,15 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+            <!-- O-8 of the smoke: an empty line keeps its height (hidden, not collapsed), so the content below does not move. -->
+            <Style x:Key="ReservedText" TargetType="TextBlock">
+                <Setter Property="TextWrapping" Value="Wrap" />
+                <Style.Triggers>
+                    <Trigger Property="Text" Value="">
+                        <Setter Property="Visibility" Value="Hidden" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
             <Style x:Key="GroupTitle" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="14" />
                 <Setter Property="FontWeight" Value="SemiBold" />
@@ -111,7 +120,7 @@
                         </WrapPanel>
                     </StackPanel>
                 </Border>
-                <TextBlock x:Name="UpdateBlockedText" Text="{Binding UpdateBlockedText}" Style="{StaticResource OptionalText}"
+                <TextBlock x:Name="UpdateBlockedText" Text="{Binding UpdateBlockedText}" Style="{StaticResource ReservedText}"
                            Foreground="{DynamicResource ShellTextSecondaryBrush}" />
                 <TextBlock x:Name="MessageText" Text="{Binding Message}" Margin="0,4,0,0">
                     <TextBlock.Style>
@@ -153,13 +162,14 @@
                         <ItemsControl x:Name="EssentialsList" ItemsSource="{Binding Essentials}" ItemTemplate="{StaticResource FieldTemplate}"
                                       ItemsPanel="{StaticResource WrapItems}" />
                         <TextBlock Text="Calculado" Style="{StaticResource GroupTitle}" />
-                        <ItemsControl x:Name="CalculatedList" ItemsSource="{Binding Calculated}" MaxWidth="420" HorizontalAlignment="Left">
+                        <ItemsControl x:Name="CalculatedList" ItemsSource="{Binding Calculated}" MaxWidth="520" HorizontalAlignment="Left">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
+                                    <!-- O-6 of the smoke: the value keeps a gap from its label, and a long label wraps. -->
                                     <DockPanel Margin="0,1">
-                                        <TextBlock Text="{Binding Value}" DockPanel.Dock="Right" FontWeight="SemiBold"
+                                        <TextBlock x:Name="CalculatedValue" Text="{Binding Value}" DockPanel.Dock="Right" FontWeight="SemiBold" Margin="16,0,0,0"
                                                    Foreground="{DynamicResource ShellTextPrimaryBrush}" />
-                                        <TextBlock Text="{Binding Label}" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                        <TextBlock x:Name="CalculatedLabel" Text="{Binding Label}" TextWrapping="Wrap" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
                                     </DockPanel>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
@@ -254,9 +264,13 @@
                                                                 </Button.Style>
                                                                 <Grid Width="62">
                                                                     <TextBlock Text="{Binding Text}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                                                    <TextBlock Text="G" FontSize="9" FontWeight="SemiBold" HorizontalAlignment="Right" VerticalAlignment="Top"
-                                                                               Margin="0,-3,-2,0" Foreground="{DynamicResource ShellSelectionPrimaryBrush}" ToolTip="Guía de entrada"
-                                                                               Visibility="{Binding HasGuide, Converter={StaticResource FlagToVisibility}}" />
+                                                                    <!-- O-7 of the smoke: an outlined badge in the color of «ok», not the color of the selection. -->
+                                                                    <Border x:Name="GuideBadge" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-3,-3,0"
+                                                                            Padding="2,0" CornerRadius="3" BorderThickness="1" ToolTip="Guía de entrada"
+                                                                            BorderBrush="{DynamicResource ShellStatusSuccessBrush}" Background="{DynamicResource ShellSurfaceBrush}"
+                                                                            Visibility="{Binding HasGuide, Converter={StaticResource FlagToVisibility}}">
+                                                                        <TextBlock Text="G" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource ShellStatusSuccessBrush}" />
+                                                                    </Border>
                                                                 </Grid>
                                                             </Button>
                                                         </DataTemplate>
