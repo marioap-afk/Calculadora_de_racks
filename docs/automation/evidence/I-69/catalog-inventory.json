@@ -1,0 +1,575 @@
+{
+  "source_sha": "812baf879612320653094a8aaf46aca0bac81383",
+  "observed_utc": "2026-11-23T21:51:22.433354+00:00",
+  "evidence_kind": "MEASURED_DATA_AUDIT_ONLY",
+  "runtime_tests": "NOT_RUN: dotnet unavailable; no AutoCAD or external block library",
+  "catalog_files": [
+    {
+      "path": "assets/catalogs/secciones.csv",
+      "sha256": "94baea1be03a65ad4c74c90e6038251eafde7fd205b0d7cde79a91a7191449a5",
+      "encoding_read": "utf-8-sig"
+    },
+    {
+      "path": "assets/catalogs/seguridad.csv",
+      "sha256": "f438600d3e59075dfb62333b46bb88e6f8ae843bdc3f2aae3328921b5d737059",
+      "encoding_read": "utf-8-sig"
+    },
+    {
+      "path": "assets/catalogs/mensulas.csv",
+      "sha256": "2d908fab4b1f1cd13fcb176b605b254f409705764555a044f57eb78f4f449b1b",
+      "encoding_read": "latin1"
+    },
+    {
+      "path": "assets/catalogs/blocks.csv",
+      "sha256": "5ef806529b2dab33b057101dd344f2f250919ae7eda121bb88ae7c836f7318fb",
+      "encoding_read": "utf-8-sig"
+    },
+    {
+      "path": "assets/catalogs/connection-layout.csv",
+      "sha256": "5c63da5b64c63e3d3bc6687d53f481cf49a20957a61e3d0c4674bd46fbfa3d37",
+      "encoding_read": "utf-8-sig"
+    }
+  ],
+  "beam_count": 4,
+  "duplicate_beam_ids": [],
+  "beam_options_in_source_order": [
+    {
+      "id": "LARGUERO_ESCALON_CAL14_3_REMACHES",
+      "displayName": "Larguero escalón calibre 14 con ménsula 3 remaches",
+      "description": "",
+      "family": "Larguero",
+      "peraltes": "3;3.5;4;4.5;5;5.5;6",
+      "mensula": "MENSULA_3_REMACHES_CAL_10",
+      "width": "",
+      "depth": "",
+      "thickness": "0.0747",
+      "units": "in",
+      "gauge": "14",
+      "weightPerMeter": "",
+      "partNumber": "",
+      "mensula_resolves": true,
+      "blocks": [
+        {
+          "pieceId": "LARGUERO_ESCALON_CAL14_3_REMACHES",
+          "view": "FRONTAL",
+          "blockName": "LARGUERO_ESCALON_CAL14_3_REMACHES_FRONTAL",
+          "layer": "",
+          "scale": "1",
+          "rotation": "0"
+        },
+        {
+          "pieceId": "LARGUERO_ESCALON_CAL14_3_REMACHES",
+          "view": "LATERAL",
+          "blockName": "LARGUERO_ESCALON_CAL14_3_REMACHES_LATERAL",
+          "layer": "",
+          "scale": "1",
+          "rotation": "0"
+        },
+        {
+          "pieceId": "LARGUERO_ESCALON_CAL14_3_REMACHES",
+          "view": "PLANTA",
+          "blockName": "LARGUERO_ESCALON_CAL14_3_REMACHES_PLANTA",
+          "layer": "",
+          "scale": "1",
+          "rotation": "0"
+        }
+      ],
+      "connections": [
+        {
+          "pieceId": "LARGUERO_ESCALON_CAL14_3_REMACHES",
+          "connectionPointId": "INICIO_PERFIL",
+          "view": "FRONTAL",
+          "localX": "1",
+          "localXPorParam": "0",
+          "paramX": "",
+          "localY": "4.9375",
+          "localYPorParam": "0",
+          "paramY": ""
+        },
+        {
+          "pieceId": "LARGUERO_ESCALON_CAL14_3_REMACHES",
+          "connectionPointId": "INICIO_PERFIL",
+          "view": "PLANTA",
+          "localX": "0.125",
+          "localXPorParam": "0",
+          "paramX": "",
+          "localY": "1",
+          "localYPorParam": "0",
+          "paramY": ""
+        }
+      ]
+    },
+    {
+      "id": "LARGUERO_IN_OUT_C6",
+      "displayName": "Larguero in n out de canal de 6\"",
+      "description": "",
+      "family": "Larguero",
+      "peraltes": "6",
+      "mensula": "MENSULA_TROQUEL_REDONDO_CAL_10",
+      "width": "",
+      "depth": "",
+      "thickness": "",
+      "units": "",
+      "gauge": "",
+      "weightPerMeter": "",
+      "partNumber": "",
+      "mensula_resolves": true,
+      "blocks": [
+        {
+          "pieceId": "LARGUERO_IN_OUT_C6",
+          "view": "FRONTAL",
+          "blockName": "LARGUERO_IN_OUT_C6_FRONTAL",
+          "layer": "",
+          "scale": "1",
+          "rotation": "0"
+        },
+        {
+          "pieceId": "LARGUERO_IN_OUT_C6",
+          "view": "LATERAL",
+          "blockName": "LARGUERO_IN_OUT_C6_LATERAL",
+          "layer": "",
+          "scale": "1",
+          "rotation": "0"
+        },
+        {
+          "pieceId": "LARGUERO_IN_OUT_C6",
+          "view": "PLANTA",
+          "blockName": "LARGUERO_IN_OUT_C6_PLANTA",
+          "layer": "",
+          "scale": "1",
+          "rotation": "0"
+        }
+      ],
+      "connections": [
+        {
+          "pieceId": "LARGUERO_IN_OUT_C6",
+          "connectionPointId": "INICIO_PERFIL",
+          "view": "PLANTA",
+          "localX": "-0.15",
+          "localXPorParam": "0",
+          "paramX": "",
+          "localY": "0.98",
+          "localYPorParam": "0",
+          "paramY": ""
+        },
+        {
+          "pieceId": "LARGUERO_IN_OUT_C6",
+          "connectionPointId": "INICIO_PERFIL",
+          "view": "FRONTAL",
+          "localX": "0.997",
+          "localXPorParam": "0",
+          "paramX": "",
+          "localY": "5",
+          "localYPorParam": "0",
+          "paramY": ""
+        },
+        {
+          "pieceId": "LARGUERO_IN_OUT_C6",
+          "connectionPointId": "TROQUEL_CAMA",
+          "view": "LATERAL",
+          "localX": "3.7544",
+          "localXPorParam": "0",
+          "paramX": "",
+          "localY": "1.8783",
+          "localYPorParam": "0",
+          "paramY": ""
+        }
+      ]
+    },
+    {
+      "id": "LARGUERO_ESCALON_INFINITO",
+      "displayName": "Larguero escalón de ajuste infinito",
+      "description": "",
+      "family": "Larguero",
+      "peraltes": "3;3.5;4;4.5;5;5.5;6",
+      "mensula": "MENSULA_AJUSTE_INFINITO_CAL_10",
+      "width": "",
+      "depth": "",
+      "thickness": "",
+      "units": "",
+      "gauge": "",
+      "weightPerMeter": "",
+      "partNumber": "",
+      "mensula_resolves": true,
+      "blocks": [
+        {
+          "pieceId": "LARGUERO_ESCALON_INFINITO",
+          "view": "FRONTAL",
+          "blockName": "LARGUERO_ESCALON_INFINITO_FRONTAL",
+          "layer": "",
+          "scale": "1",
+          "rotation": "0"
+        },
+        {
+          "pieceId": "LARGUERO_ESCALON_INFINITO",
+          "view": "LATERAL",
+          "blockName": "LARGUERO_ESCALON_INFINITO_LATERAL",
+          "layer": "",
+          "scale": "1",
+          "rotation": "0"
+        },
+        {
+          "pieceId": "LARGUERO_ESCALON_INFINITO",
+          "view": "PLANTA",
+          "blockName": "LARGUERO_ESCALON_INFINITO_PLANTA",
+          "layer": "",
+          "scale": "1",
+          "rotation": "0"
+        }
+      ],
+      "connections": [
+        {
+          "pieceId": "LARGUERO_ESCALON_INFINITO",
+          "connectionPointId": "INICIO_PERFIL",
+          "view": "PLANTA",
+          "localX": "0.1187",
+          "localXPorParam": "0",
+          "paramX": "",
+          "localY": "1.0514",
+          "localYPorParam": "0",
+          "paramY": ""
+        },
+        {
+          "pieceId": "LARGUERO_ESCALON_INFINITO",
+          "connectionPointId": "INICIO_PERFIL",
+          "view": "FRONTAL",
+          "localX": "1.0514",
+          "localXPorParam": "0",
+          "paramX": "",
+          "localY": "6.3437",
+          "localYPorParam": "0",
+          "paramY": ""
+        },
+        {
+          "pieceId": "LARGUERO_ESCALON_INFINITO",
+          "connectionPointId": "INICIO_IZQUIERDO",
+          "view": "LATERAL",
+          "localX": "0.2214",
+          "localXPorParam": "0",
+          "paramX": "",
+          "localY": "6.1972",
+          "localYPorParam": "0",
+          "paramY": ""
+        },
+        {
+          "pieceId": "LARGUERO_ESCALON_INFINITO",
+          "connectionPointId": "INICIO_DERECHO",
+          "view": "LATERAL",
+          "localX": "1.5095",
+          "localXPorParam": "0",
+          "paramX": "",
+          "localY": "6.1972",
+          "localYPorParam": "0",
+          "paramY": ""
+        }
+      ]
+    },
+    {
+      "id": "LARGUERO_ESCALON_TROQUEL_REDONDO",
+      "displayName": "Larguero escalon troquel redondo",
+      "description": "",
+      "family": "Larguero",
+      "peraltes": "3;3.5;4;4.5;5;5.5;6",
+      "mensula": "MENSULA_TROQUEL_REDONDO_CAL_10",
+      "width": "",
+      "depth": "",
+      "thickness": "",
+      "units": "",
+      "gauge": "",
+      "weightPerMeter": "",
+      "partNumber": "",
+      "mensula_resolves": true,
+      "blocks": [
+        {
+          "pieceId": "LARGUERO_ESCALON_TROQUEL_REDONDO",
+          "view": "PLANTA",
+          "blockName": "LARGUERO_ESCALON_TROQUEL_REDONDO_PLANTA",
+          "layer": "",
+          "scale": "1",
+          "rotation": "0"
+        },
+        {
+          "pieceId": "LARGUERO_ESCALON_TROQUEL_REDONDO",
+          "view": "FRONTAL",
+          "blockName": "LARGUERO_ESCALON_TROQUEL_REDONDO_FRONTAL",
+          "layer": "",
+          "scale": "1",
+          "rotation": "0"
+        },
+        {
+          "pieceId": "LARGUERO_ESCALON_TROQUEL_REDONDO",
+          "view": "LATERAL",
+          "blockName": "LARGUERO_ESCALON_TROQUEL_REDONDO_LATERAL",
+          "layer": "",
+          "scale": "1",
+          "rotation": "0"
+        }
+      ],
+      "connections": [
+        {
+          "pieceId": "LARGUERO_ESCALON_TROQUEL_REDONDO",
+          "connectionPointId": "INICIO_PERFIL",
+          "view": "PLANTA",
+          "localX": "0.0375",
+          "localXPorParam": "0",
+          "paramX": "",
+          "localY": "0.98",
+          "localYPorParam": "0",
+          "paramY": ""
+        },
+        {
+          "pieceId": "LARGUERO_ESCALON_TROQUEL_REDONDO",
+          "connectionPointId": "INICIO_PERFIL",
+          "view": "FRONTAL",
+          "localX": "0.997",
+          "localXPorParam": "0",
+          "paramX": "",
+          "localY": "6.8125",
+          "localYPorParam": "0",
+          "paramY": ""
+        },
+        {
+          "pieceId": "LARGUERO_ESCALON_TROQUEL_REDONDO",
+          "connectionPointId": "INICIO_IZQUIERDO",
+          "view": "LATERAL",
+          "localX": "0.1549",
+          "localXPorParam": "0",
+          "paramX": "",
+          "localY": "6.8125",
+          "localYPorParam": "0",
+          "paramY": ""
+        },
+        {
+          "pieceId": "LARGUERO_ESCALON_TROQUEL_REDONDO",
+          "connectionPointId": "INICIO_DERECHO",
+          "view": "LATERAL",
+          "localX": "1.447",
+          "localXPorParam": "0",
+          "paramX": "",
+          "localY": "6.8125",
+          "localYPorParam": "0",
+          "paramY": ""
+        }
+      ]
+    }
+  ],
+  "safety_count": 18,
+  "safety_entries": [
+    {
+      "id": "PROTECTOR_BOTA_H_3_16_18",
+      "displayName": "Protector bota tipo H",
+      "type": "BOTA",
+      "units": "in",
+      "weightEach": "0",
+      "material": "Acero",
+      "partNumber": "",
+      "unitCost": "0",
+      "currency": "MXN",
+      "costUnit": "pieza"
+    },
+    {
+      "id": "PROTECTOR_BOTA_C_4",
+      "displayName": "Protector bota tipo C4",
+      "type": "BOTA",
+      "units": "in",
+      "weightEach": "0",
+      "material": "Acero",
+      "partNumber": "",
+      "unitCost": "0",
+      "currency": "MXN",
+      "costUnit": "pieza"
+    },
+    {
+      "id": "PROTECTOR_BOTA_C_6",
+      "displayName": "Protector bota tipo C6",
+      "type": "BOTA",
+      "units": "in",
+      "weightEach": "0",
+      "material": "Acero",
+      "partNumber": "",
+      "unitCost": "0",
+      "currency": "MXN",
+      "costUnit": "pieza"
+    },
+    {
+      "id": "PROTECTOR_LATERAL_BOTA_H_3_16_18",
+      "displayName": "Protector lateral bota tipo H",
+      "type": "LATERAL",
+      "units": "in",
+      "weightEach": "0",
+      "material": "Acero",
+      "partNumber": "",
+      "unitCost": "0",
+      "currency": "MXN",
+      "costUnit": "pieza"
+    },
+    {
+      "id": "PROTECTOR_LATERAL_BOTA_C_4",
+      "displayName": "Protector lateral bota tipo C4",
+      "type": "LATERAL",
+      "units": "in",
+      "weightEach": "0",
+      "material": "Acero",
+      "partNumber": "",
+      "unitCost": "0",
+      "currency": "MXN",
+      "costUnit": "pieza"
+    },
+    {
+      "id": "PROTECTOR_LATERAL_BOTA_C_6",
+      "displayName": "Protector lateral bota tipo C6",
+      "type": "LATERAL",
+      "units": "in",
+      "weightEach": "0",
+      "material": "Acero",
+      "partNumber": "",
+      "unitCost": "0",
+      "currency": "MXN",
+      "costUnit": "pieza"
+    },
+    {
+      "id": "LARGUERO_ESCALON_TOPE_DE_3",
+      "displayName": "Larguero tope de 3",
+      "type": "TOPE",
+      "units": "in",
+      "weightEach": "0",
+      "material": "Acero",
+      "partNumber": "",
+      "unitCost": "0",
+      "currency": "MXN",
+      "costUnit": "pieza"
+    },
+    {
+      "id": "POSTE_3_1_5_8_TOPE",
+      "displayName": "Poste tope de 3 x 1 5/8",
+      "type": "TOPE",
+      "units": "in",
+      "weightEach": "0",
+      "material": "Acero",
+      "partNumber": "",
+      "unitCost": "0",
+      "currency": "MXN",
+      "costUnit": "pieza"
+    },
+    {
+      "id": "PARRILLA_GENERICA",
+      "displayName": "Parrilla",
+      "type": "PARRILLA",
+      "units": "in",
+      "weightEach": "0",
+      "material": "Acero",
+      "partNumber": "",
+      "unitCost": "0",
+      "currency": "MXN",
+      "costUnit": "pieza"
+    },
+    {
+      "id": "DESVIADOR_A_3",
+      "displayName": "Desviador A para poste de 3\"",
+      "type": "DESVIADOR",
+      "units": "in",
+      "weightEach": "0",
+      "material": "Acero",
+      "partNumber": "",
+      "unitCost": "0",
+      "currency": "MXN",
+      "costUnit": "pieza"
+    },
+    {
+      "id": "DESVIADOR_A_4",
+      "displayName": "Desviador A para poste de 4\"",
+      "type": "DESVIADOR",
+      "units": "in",
+      "weightEach": "0",
+      "material": "Acero",
+      "partNumber": "",
+      "unitCost": "0",
+      "currency": "MXN",
+      "costUnit": "pieza"
+    },
+    {
+      "id": "DESVIADOR_L_3",
+      "displayName": "Desviador L para poste de 3\"",
+      "type": "DESVIADOR",
+      "units": "in",
+      "weightEach": "0",
+      "material": "Acero",
+      "partNumber": "",
+      "unitCost": "0",
+      "currency": "MXN",
+      "costUnit": "pieza"
+    },
+    {
+      "id": "DESVIADOR_L_3_5",
+      "displayName": "Desviador L para poste de 3.5\"",
+      "type": "DESVIADOR",
+      "units": "in",
+      "weightEach": "0",
+      "material": "Acero",
+      "partNumber": "",
+      "unitCost": "0",
+      "currency": "MXN",
+      "costUnit": "pieza"
+    },
+    {
+      "id": "DESVIADOR_L_4",
+      "displayName": "Desviador L para poste de 4\"",
+      "type": "DESVIADOR",
+      "units": "in",
+      "weightEach": "0",
+      "material": "Acero",
+      "partNumber": "",
+      "unitCost": "0",
+      "currency": "MXN",
+      "costUnit": "pieza"
+    },
+    {
+      "id": "DESVIADOR_L_4_5",
+      "displayName": "Desviador L para poste de 4.5\"",
+      "type": "DESVIADOR",
+      "units": "in",
+      "weightEach": "0",
+      "material": "Acero",
+      "partNumber": "",
+      "unitCost": "0",
+      "currency": "MXN",
+      "costUnit": "pieza"
+    },
+    {
+      "id": "DESVIADOR_L_5",
+      "displayName": "Desviador L para poste de 5\"",
+      "type": "DESVIADOR",
+      "units": "in",
+      "weightEach": "0",
+      "material": "Acero",
+      "partNumber": "",
+      "unitCost": "0",
+      "currency": "MXN",
+      "costUnit": "pieza"
+    },
+    {
+      "id": "GUIA_ENTRADA",
+      "displayName": "Guía de entrada",
+      "type": "GUIA",
+      "units": "in",
+      "weightEach": "0",
+      "material": "Acero",
+      "partNumber": "",
+      "unitCost": "0",
+      "currency": "MXN",
+      "costUnit": "pieza"
+    },
+    {
+      "id": "DEFENSA_MONTACARGAS",
+      "displayName": "Defensa de montacargas",
+      "type": "DEFENSA",
+      "units": "in",
+      "weightEach": "0",
+      "material": "Acero",
+      "partNumber": "",
+      "unitCost": "0",
+      "currency": "MXN",
+      "costUnit": "pieza"
+    }
+  ]
+}

@@ -12,6 +12,12 @@ RackCad es un plugin de AutoCAD 2025 (.NET 8, C#/WPF) para diseñar y dibujar ra
 con BOM. El trunk único es `main`; Domain y Application son puros, UI usa WPF sin AutoCAD y Plugin
 es el único adaptador de la API de AutoCAD.
 
+**I-69 — Selectivo Component Catalog Expansion — INTEGRACIÓN PARCIAL** el **2026-11-24** (`feature/selectivo-catalogo-componentes`, Workflow V2), por orden del
+Owner y sin cerrar la iniciativa. Entran a `main` cuatro largueros del catálogo Selectivo: escalón invertido calibre 14, escalón con ángulo, escalón invertido con
+ángulo y tubo 1.9" (peralte único 1.9), todos con ménsula 3 remaches calibre 10 colocada igual que en el escalón calibre 14. Solo datos de catálogo y su golden, sin
+código de producto. El Owner omitió Freeze, READY y conformidad ([D-10](automation/decisions/I-69.md)); la rama sigue viva para Guarda trasera, Entrepaño caída de
+agua y renombres. [Evidencia](automation/evidence/I-69-evidence.md) §18.
+
 **I-68 — BOM Excel Native Analysis (ID72) — INTEGRADA** el **2026-11-09** (`feature/bom-excel-analisis-nativo`, Workflow V2, FOUNDATION
 EVOLUTION por M-04 y M-06). La exportación Excel de `RACKBOMTOTAL` se analiza sin trabajo manual: `Por rack` es la tabla nativa `RackCadBOM` con `Cantidad total`
 (Cantidad × Copias, una sola vez, como valor numérico) y la hoja nueva `Resumen` es una tabla dinámica nativa enlazada a ella: filtros Rack y Nivel, filas Descripcion →
@@ -1532,6 +1538,9 @@ parámetro sin default**: los tres heredados siguen siendo entradas obligatorias
 
 ## 2. Última validación real
 
+**I-69 (2026-11-24) — prueba del Owner, no Owner Validation sobre SHA exacto.** El Owner probó los cuatro largueros en AutoCAD 2025 con el DLL Debug del worktree
+(`4a128a7c` más los datos sin commit, mismos blobs que `ffe0b74e`) y dictó «funciona bien». Core Full, UI Full y builds en la [evidencia](automation/evidence/I-69-evidence.md) §18.
+
 **I-68 (2026-11-09) — OWNER VALIDATION PASS.** Candidato `68d9fb9a`: el Owner declaró el resultado global PASS en Excel real, sin resultados por escenario
 dictados. Core Full, UI Full, builds Debug, CI exacta y humo en Excel real en la [evidencia](automation/evidence/I-68-evidence.md) §9.
 
@@ -2099,6 +2108,12 @@ veredicto.
   catálogos sigue decorativa. `RACKDUPLICAR` no avisa por diseño (clona geometría ya dibujada a la misma escala).
 
 ## 4. Siguiente acción
+
+### I-69 sigue abierta tras su integración parcial (2026-11-24)
+
+Los cuatro largueros ya están en `main`. Pendiente en `feature/selectivo-catalogo-componentes`: Guarda trasera y Entrepaño caída de agua (Q-01..Q-03 del Owner),
+renombres, decisiones C-01..C-03 del Coordinator y el registro durable de esta ronda parcial. En la biblioteca DWG del Owner, la vista lateral del tubo 1.9 queda
+0.24" más baja que la frontal; no afecta la ménsula.
 
 ### Sin trabajo activo de I-68 (integrada el 2026-11-09)
 
