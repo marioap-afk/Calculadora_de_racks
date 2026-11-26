@@ -104,7 +104,7 @@ namespace RackCad.UI.VentanaRackCad
         // The one request of the door that waits for AutoCAD, for the two systems (Selectivo E1-B): its number, the session and the rack it
         // was made for (at the time it was made, not when the answer arrives), for a write what was sent, and whether it is a Selectivo.
         private sealed record DoorRequest(long Id, bool IsWrite, SessionId Session, string RackId, string SentJson, string SentName, bool Started = false,
-            bool IsSelective = false);
+            bool IsSelective = false, bool IsBom = false); // T4 bom: IsBom, the read of the page «BOM y lista de racks»
 
         private sealed class DraftKeyComparer : IEqualityComparer<(SessionId Session, string RackId)>
         {
@@ -182,6 +182,7 @@ namespace RackCad.UI.VentanaRackCad
                 new RackCadNewSystemCard(RackCadClassicAction.NewLarguero, "Larguero", "Larguero (perfil y ménsulas); vista y BOM."),
                 new RackCadNewSystemCard(RackCadClassicAction.StructuralSection, "Perfil estructural", "Perfiles W, HSS, C y L del catálogo AISC."),
             };
+            WireBom(); // T4 bom
             RebuildSections();
             Present();
         }
@@ -378,7 +379,8 @@ namespace RackCad.UI.VentanaRackCad
             {
                 if (_inFlight == null) return string.Empty;
                 if (_inFlight.Started) return WriteTakenText;
-                var what = _inFlight.IsWrite ? "Esperando a que AutoCAD escriba el rack." : "Esperando a que AutoCAD lea el rack.";
+                var what = _inFlight.IsBom ? "Esperando a que AutoCAD lea el dibujo para el BOM." // T4 bom
+                    : _inFlight.IsWrite ? "Esperando a que AutoCAD escriba el rack." : "Esperando a que AutoCAD lea el rack.";
                 return what + " Si no responde (por ejemplo, porque había texto a medio escribir en la línea de órdenes), pulsa «Dejar de esperar».";
             }
         }
@@ -700,6 +702,10 @@ namespace RackCad.UI.VentanaRackCad
                 selective.Editor.EndWriting();
                 selective.Editor.Say(StoppedWrite, error: false);
             }
+            else if (request.IsBom)
+            {
+                BomStopped(); // T4 bom: the page says it
+            }
             else if (!request.IsWrite)
             {
                 Say("Se dejó de esperar la lectura: si la orden llega a correr, no abrirá nada.", failed: false);
@@ -949,7 +955,8 @@ namespace RackCad.UI.VentanaRackCad
             {
                 var orphan = _inFlight;
                 AbandonInFlight();
-                if (!orphan.IsWrite) Say("Se cerró el dibujo del rack que se estaba leyendo: no se abrió nada.", failed: true);
+                if (orphan.IsBom) BomStopped(); // T4 bom
+                else if (!orphan.IsWrite) Say("Se cerró el dibujo del rack que se estaba leyendo: no se abrió nada.", failed: true);
             }
 
             ForgetDimensionStylesOfDeadSessions(session => IsAlive(port, session));
@@ -1177,6 +1184,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(IsBomPage));
             OnPropertyChanged(nameof(IsBibliotecaPage));
             OnPropertyChanged(nameof(IsConfiguracionPage));
+            if (page == RackCadWindowPage.Bom) Contained(BomPageShown); // T4 bom: the first time for a drawing, it reads it
         }
 
         /// <summary>Opens a rack of the list: the browser makes it active and the center shows its page.</summary>
@@ -1268,6 +1276,7 @@ namespace RackCad.UI.VentanaRackCad
 
             Contained(PruneDeadSessions);
             Contained(FollowSelectionOfTheActiveRack);
+            Contained(PresentBom); // T4 bom
             OnPropertyChanged(nameof(HeaderText));
             OnPropertyChanged(nameof(NoRackText));
             OnPropertyChanged(nameof(IsDynamicRack));
@@ -1286,7 +1295,7 @@ namespace RackCad.UI.VentanaRackCad
                 {
                     var active = Panel.Browser.ActiveRackId;
                     var changed = !string.Equals(active, _lastActiveRack, StringComparison.Ordinal);
-                    if (active != null && changed) ShowPage(RackCadWindowPage.Rack);
+                    if (active != null && changed && !_bomKeepsPage) ShowPage(RackCadWindowPage.Rack); // T4 bom: «Ver en el dibujo» stays on the BOM
                     _lastActiveRack = active;
                     OnPropertyChanged(nameof(NoRackText));
                     if (changed)

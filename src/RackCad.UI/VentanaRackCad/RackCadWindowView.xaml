@@ -315,6 +315,11 @@
                                            Text="Este rack es Selectivo. Puedes editarlo aquí, con el editor nuevo, sin bloquear AutoCAD. RACKEDITAR sigue siendo el editor clásico." />
                             </DockPanel>
                         </Border>
+                        <!-- T4 bom (BM-10): «Ver su BOM» opens «BOM y lista de racks» with this rack chosen; the editors of the window have no BOM. -->
+                        <Button x:Name="ShowBomOfRackButton" DockPanel.Dock="Top" HorizontalAlignment="Left" Margin="10,6,10,0" Padding="10,3"
+                                Style="{StaticResource SecondaryButtonStyle}" Content="Ver su BOM" AutomationProperties.Name="Ver el BOM de este rack"
+                                ToolTip="Abre «BOM y lista de racks» con este rack elegido."
+                                Visibility="{Binding CanShowBomOfRack, Converter={StaticResource FlagToVisibility}}" Click="OnShowBomOfRackClick" />
                         <Button x:Name="PanelToggleButton" DockPanel.Dock="Top" HorizontalAlignment="Left" Margin="10,6,10,0" Padding="10,3"
                                 Style="{StaticResource SecondaryButtonStyle}" Content="{Binding PanelToggleText}"
                                 Visibility="{Binding HasRackEditor, Converter={StaticResource FlagToVisibility}}"
@@ -402,25 +407,10 @@
                         </StackPanel>
                     </ScrollViewer>
 
-                    <!-- BOM y lista de racks -->
-                    <ScrollViewer x:Name="BomPage" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
-                                  Visibility="{Binding IsBomPage, Converter={StaticResource FlagToVisibility}}">
-                        <StackPanel Margin="14,10">
-                            <TextBlock Text="BOM y lista de racks" Style="{StaticResource PageTitle}" />
-                            <TextBlock Style="{StaticResource PageText}"
-                                       Text="El BOM se calcula con lo que está escrito en el dibujo: los cambios sin escribir de los borradores no cuentan." />
-                            <Border Style="{StaticResource Banner}">
-                                <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource ShellTextPrimaryBrush}"
-                                           Text="Paso intermedio: se abren las ventanas actuales de la lista y del BOM total, con su exportación." />
-                            </Border>
-                            <WrapPanel>
-                                <Button Content="Abrir la lista de racks" Margin="0,0,8,8" Padding="12,4"
-                                        Style="{StaticResource PrimaryButtonStyle}" Tag="RackList" Click="OnClassicActionClick" />
-                                <Button Content="Abrir el BOM total" Margin="0,0,8,8" Padding="12,4"
-                                        Style="{StaticResource SecondaryButtonStyle}" Tag="TotalBom" Click="OnClassicActionClick" />
-                            </WrapPanel>
-                        </StackPanel>
-                    </ScrollViewer>
+                    <!-- T4 bom: BOM y lista de racks, the page of the window (RackBomPageView, placed here by the code-behind); the classic windows
+                         of the list and of the BOM total are no longer opened from here (RACKLISTA and RACKBOMTOTAL open this page too, BM-11). -->
+                    <ContentControl x:Name="BomPage" Focusable="False"
+                                    Visibility="{Binding IsBomPage, Converter={StaticResource FlagToVisibility}}" />
 
                     <!-- Biblioteca de diseños -->
                     <ScrollViewer x:Name="BibliotecaPage" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"

@@ -1481,3 +1481,176 @@ Orden del Owner: «También realiza tú la prueba de la entrega 2, si existen er
 - Tras restaurar un borrador que vuelve a ser el dibujo, el aviso nombra «Descartar» con el botón desactivado.
 
 **No probado:** el «U» de una inserción y cancelar la colocación; el teclado en el panel de «Restaurar»; una cabecera personalizada fuera de su regla escrita por RACKSELECTIVOINSERTAR o RACKSELECTIVONUEVO.
+
+## Cuarta tanda, bom: «BOM y lista de racks» en la ventana (BM-01 a BM-11)
+
+**Rama:** local `architecture/workspace-persistente-rackcad-t4-bom` (worktree `D:\w4bom`), sobre `ac3fd1b0`. Sin commit, sin push, sin AutoCAD.
+Prototipo `protos\bom` (BM-01 a BM-11); el Owner aceptó las once propuestas sin nota, y SD-02 mete en la ventana el BOM del borrador del
+clásico de Selectivo. Las tres ventanas modales (RACKLISTA, RACKBOMTOTAL y el BOM de un rack) pasan a ser UNA página de la ventana, sin modal y
+sin bloquear AutoCAD. No se borró código clásico.
+
+**Lo que se construyó:**
+- **La página** (`RackBomPageView` y `RackBomPageViewModel`, en `src/RackCad.UI/VentanaRackCad/`), con los textos del prototipo:
+  - **la cabecera:** «BOM y lista de racks», el estado («Sin leer», «Leyendo el dibujo», «Al día», «Puede no estar al día», «Sin total», «No se
+    pudo leer»), «Leído a las HH:MM» (y «corrió una orden a las HH:MM»), «Calcular de nuevo», «Exportar Excel» y «Exportar CSV» del dibujo
+    completo;
+  - **los avisos en línea:** la lectura en curso con su número y «Dejar de esperar»; lo que impide el total, rack por rack con su motivo y
+    «Abrir» (BM-05); los racks que quedan fuera del total, nombrados arriba de él (dolor 3); «Puede no estar al día» con «Calcular de nuevo»;
+    la pregunta al exportar un BOM desactualizado («Calcular y exportar», «Exportar el de las HH:MM», «Cancelar»); el archivo guardado, con
+    «Abrir», «Mostrar en la carpeta», «Guardar como…» y «Cerrar aviso»; y los racks con cambios sin escribir en los editores de la ventana,
+    con «Ver su BOM» (BM-02);
+  - **las cifras:** racks en el total («de N en el dibujo»), copias, componentes y piezas × copias;
+  - **«Racks del dibujo»:** la tabla (rack y vistas con su punto de estado y su etiqueta «Bloqueado», «Fuera del total» o «Con cambios»,
+    sistema, copias, componentes —«pieza suelta» en una cama o una cabecera sola—, piezas de una copia y «En el dibujo»), en el orden de la
+    columna lateral y ordenable por cuatro encabezados, y el inspector con el BOM del rack elegido: «Abrir», «Ver en el dibujo», «Siguiente
+    copia» (con más de una copia), «Escrito en el dibujo» / «Borrador del editor», la nota de bloqueado o fuera del total, el resumen («n
+    componentes y m piezas por copia · × k copias = … piezas en el dibujo»), el árbol de componentes que se despliegan varios a la vez, con
+    «c/u» y «Por copia» en cada pieza (dolores 7 y 9), «Desplegar todo» / «Plegar todo», las piezas de un rack plano y sus dos «Exportar»;
+  - **«BOM total»:** las partidas del dibujo con su columna «Racks», la marca «varias descripciones» y, desplegada, la nota del hallazgo de
+    I-68, «Sale de: …» (rack por rack, con sus copias) y las piezas con su longitud (dolor 8); el filtro por componente, «Desplegar todo» /
+    «Plegar todo», el pie «Total del dibujo» y la nota de las tres hojas del Excel.
+- **La lectura** es `RACKBOMLEER` (`src/RackCad.Plugin/RackInventarioCommands.Ventana.cs`), una orden con `NoUndoMarker | NoHistory` que
+  toma la petición que espera en la puerta, comprueba el dibujo de la petición, lee UNA vez la tabla de bloques (con el conteo de
+  referencias) y el registro de variables, y entrega los hechos a la regla pura `RackBomReadingRules.Compose`
+  (`src/RackCad.Application/VentanaRackCad/RackBomPage.cs`) con el manejador de cada tipo (su `BomLabel`, `OutputBlockedReason` y `BuildBom`).
+  La regla es la de RACKBOMTOTAL (I-42, I-47 G13): la autoridad sobre todas las vistas, la puerta de un rack bloqueado antes de construir
+  nada, el vínculo roto que aborta el total y el diseño ilegible que queda fuera con su motivo. Añade lo de la página: el BOM de cada rack que
+  sí se puede cotizar aunque no haya total (BM-05), solo los racks con copias (BM-06), las palabras de la columna lateral (BM-07) y la ruta y
+  el nombre del dibujo para los archivos. En la línea de órdenes deja un resumen de una línea («RackCad: BOM leído para la ventana RackCad: 6
+  racks.»).
+- **La puerta:** `IRackCadBomPort : IRackCadRackDoorPort` (en `RackBomPage.cs`), implementada por `RackCadRackDoorPort` en su parcial
+  `RackCadRackDoorPort.Bom.cs` con el mismo `Send` que la puerta a un rack (documento activo, sin orden en curso, la petición guardada antes de
+  entregarla, el foco de vuelta al dibujo) y su propio hueco, que «Dejar de esperar» (`Abandon`) suelta. En la ventana la lectura es una
+  petición más de la puerta: la única en vuelo para toda la ventana (`DoorRequest.IsBom`), numerada, con «Dejar de esperar», la respuesta solo
+  para su número y su dibujo, la respuesta durante la llamada (M-22) y la poda de un dibujo cerrado.
+- **Cuándo se lee (BM-01):** la primera vez que la página se ve para un dibujo, sola; después, solo con «Calcular de nuevo». Si AutoCAD está
+  ocupado, la lectura queda pendiente y la página la pide en la siguiente presentación con el dibujo libre, si sigue a la vista. Tras
+  cualquier orden que no sea la propia lectura, «Puede no estar al día». Cada dibujo guarda su última lectura; al volver a él, se muestra como
+  «puede no estar al día» (como V-16 de la lista).
+- **El BOM del borrador (BM-02, SD-02):** un rack con cambios sin escribir en un editor de la ventana (Selectivo o Dinámico) se ve «Escrito en
+  el dibujo» o «Borrador del editor». El del borrador se calcula en la ventana, sin leer el dibujo, con el BOM del manejador sobre copias:
+  Selectivo, `SelectiveBomBuilder.Build` sobre `SelectiveDraftEditor.ResolveCopy()` (el BOM impone sobre lo que lee, I-1 de la revisión de
+  la entrega 2); Dinámico, `SystemBomBuilder.Build` sobre el sistema de `SnapshotForWrite()`. Verlo no cambia el borrador (prueba). Se exporta
+  lo que se ve, con «(borrador)» en el nombre, y sin la pregunta de BOM desactualizado (no es del dibujo).
+- **Los archivos (BM-03, BM-04):** «Exportar» guarda sin diálogo junto al dibujo: «<dibujo> - BOM.xlsx/.csv» y «<dibujo> - <rack> - BOM[
+  (borrador)].xlsx/.csv» (`RackBomFiles`), con los exportadores de I-68 sin cambios salvo el CSV del dibujo, que gana «Cantidad_total»
+  (cambio declarado del formato, BM-04). El aviso en línea sustituye al `MessageBox`; «Guardar como…» abre el diálogo del sistema y escribe allí
+  el mismo archivo. `IRackBomFiles` (con `RackBomFileShell`, el disco y el shell de Windows) deja probar todo sin tocar el disco.
+- **El total (BM-08):** `ConsolidatedBomBuilder.Provenance` dice, alineado con `GrandTotal`, de qué racks sale cada partida (cantidad de una
+  copia y copias) y qué descripciones junta, con la MISMA clave de la unión (extraída a `KeyOf`, sin cambiar el total). La suma no cambia.
+- **La tabla y los filtros (BM-09):** la tabla sigue el buscador (sin mayúsculas ni acentos), el sistema y «Solo con cambios sin escribir»
+  de la columna lateral; el total, las cifras y el Excel del dibujo son siempre el dibujo completo.
+- **«Ver su BOM» (BM-10):** un botón en la página del rack (visible con un rack activo) abre la página con ese rack elegido. Los editores de
+  la ventana siguen sin BOM (decisión 7 de Dinámico); los ocho botones de los editores clásicos no cambian.
+- **RACKLISTA, RL, RACKBOMTOTAL y RB (BM-11)** abren la ventana en esta página, en su pestaña («Racks del dibujo» o «BOM total»), y la
+  página lee el dibujo en cuanto la orden termina. La página ya no ofrece los botones «Abrir la lista de racks» / «Abrir el BOM total».
+
+**Supuestos y decisiones de la sesión** (prefijo BM-S; cada uno aislado en un sitio):
+
+| Id | Supuesto o decisión | Dónde se cambia |
+|---|---|---|
+| BM-S1 | **«Puede no estar al día» = corrió una orden.** La ventana no sabe si el dibujo cambió: la página lo infiere de la presentación del host (`CommandActive` o `ModalActive`) después de su lectura, sin contar su propia RACKBOMLEER hasta ver el dibujo en reposo otra vez. También cuenta un «Actualizar» de un editor (escribe el dibujo) y una lectura de un editor (no lo cambia). **Hueco declarado:** con la paleta oculta el host no presenta nada, así que una orden de entonces no se ve | `RackBomPageViewModel.Present` |
+| BM-S2 | **Lectura sola desde una notificación del host.** La primera lectura de un dibujo, o la que pidió RACKLISTA / RACKBOMTOTAL, se entrega a AutoCAD en la primera presentación con el dibujo libre (bloqueo `None` y lectura posible) si la página está a la vista; las demás puertas solo envían órdenes por un clic. Para el smoke: que el `SendStringToExecute` desde `EnteringQuiescentState` corre sin rebote | `RackBomPageViewModel.Present` (`Wanted`) |
+| BM-S3 | RACKLISTA y RACKBOMTOTAL ya no abren sus ventanas: sus cuerpos clásicos siguen, sin registrar, como `RackListaClassic` y `RackBomTotalClassic` (sus guardas de fuente pasan igual). Volver a la ventana clásica antes del smoke es devolver dos atributos | `RackInventarioCommands.cs`, `RackInventarioCommands.BomTotal.cs` |
+| BM-S4 | Lo que en RACKBOMTOTAL abortaba TODO el listado y no es un rack bloqueado ni un vínculo roto (un tipo sin manejador, una definición colocada que no se puede clasificar) impide aquí el total como ellos (sin total ni exportación del dibujo, con su línea en el aviso), pero la tabla sigue con el BOM de los demás (BM-05 generalizada). Un registro de variables que existe y no se puede leer deja la página sin lectura | `RackBomReadingRules.Compose` |
+| BM-S5 | **Pregunta 3:** «junto al dibujo», sin carpeta de salida en «Configuración». Un dibujo nunca guardado va a Documentos, y el aviso lo dice. Un archivo con el mismo nombre se reemplaza sin preguntar (es la exportación anterior del mismo BOM); si no se puede escribir (por ejemplo, abierto en Excel), el aviso lo dice y ofrece «Guardar como…» | `RackBomPageViewModel.DoExport`, `RackBomFileShell.FallbackFolder` |
+| BM-S6 | `Cantidad_total` del CSV del dibujo: en una fila de rack, «Cantidad» × copias; en «TOTAL DEL DIBUJO», ya multiplicada, igual a «Cantidad». El CSV se escribe como lo escribía el clásico (UTF-8 sin marca) | `ConsolidatedBomCsvExporter.Row`, `RackBomPageViewModel.Text` |
+| BM-S7 | «Con cambios» y «Borrador del editor» son de los editores de la ventana con cambios sin escribir (no un rack nuevo, que no está en el dibujo). El punto de estado de un rack sin editor de la ventana es el de la columna lateral (el piloto de Push Back incluido), pero el piloto no tiene BOM de borrador | `RackCadWindowViewModel.Bom.cs` (`HasUnwrittenDraft`, `DraftBomOf`, `StateOf`) |
+| BM-S8 | «Ver en el dibujo» y «Siguiente copia» hacen activo el rack (como un clic en la lista, que lo marca) y usan la navegación de su página («Ver»; la siguiente copia cuando ya se conoce el número de copias), sin salir de la página del BOM. Si el rack abierto tiene texto sin aplicar y el navegador no cambia de rack, la página lo dice y no navega | `ViewBomRackAsync`, una condición en `OnBrowserChanged` |
+| BM-S9 | Durante la lectura del BOM se ven dos «Dejar de esperar» con la misma acción: el del panel de espera de la ventana y el del aviso de la página (nombres de automatización distintos) | `RackBomPageView.xaml` |
+| BM-S10 | Las ayudas de RACKAYUDA de RACKLISTA y RACKBOMTOTAL no cambian (siguen siendo ciertas en lo que dicen); es de la parte `ut` o de F9 | — |
+| BM-S11 | Por debajo de 760 px de ancho, el inspector va debajo de la tabla (como O-3 de Dinámico) | `RackBomPageView.xaml.cs` |
+
+**Ediciones a archivos compartidos** (pequeñas y marcadas `T4 bom`):
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowViewModel.cs`: `DoorRequest` gana `IsBom`; una línea en el constructor (`WireBom()`); el texto de
+  espera de una lectura del BOM en `WaitingText`; una rama en `StopWaiting` (`BomStopped()`); una en la poda de una petición huérfana; una
+  línea al final de `ShowPage` (`BomPageShown`); una en `Present` (`PresentBom`); y `!_bomKeepsPage` en `OnBrowserChanged`.
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowView.xaml`: dos bloques `<!-- T4 bom -->`: la página «BOM y lista de racks» pasa a ser un
+  `ContentControl` (`BomPage`) en lugar del paso intermedio, y el botón «Ver su BOM» en la página del rack, antes de `PanelToggleButton`.
+  `RackCadWindowView.xaml.cs`: una línea en el constructor (`BomPage.Content = new RackBomPageView(...)`) y el manejador del botón.
+- `src/RackCad.UI/VentanaRackCad/RackListViewModel.cs`: `KindOrder` y `NaturalNameComparer` pasan de `private` a `internal` (la página
+  ordena como la lista y una prueba fija que las palabras son las mismas).
+- `src/RackCad.Plugin/VentanaRackCad/RackCadRackDoorPort.cs`: `partial` y una línea en `Abandon` (`AbandonBomRead`).
+- `src/RackCad.Plugin/RackInventarioCommands.cs` y `RackInventarioCommands.BomTotal.cs`: sus atributos `[CommandMethod]` (y los alias)
+  se mudan a `RackInventarioCommands.Ventana.cs`; los cuerpos clásicos no cambian (BM-S3).
+- `src/RackCad.Application/Bom/ConsolidatedBom.cs`: la clave de la unión se extrae a `KeyOf` (el mismo texto, con el separador U+0001), y
+  se añaden `Provenance` y sus dos registros. `ConsolidatedBomCsvExporter.cs`: la columna `Cantidad_total` (BM-04).
+- Archivos nuevos: `RackBomPage.cs` (Application), `RackCadRackDoorPort.Bom.cs` y `RackInventarioCommands.Ventana.cs` (Plugin),
+  `RackBomPageViewModel.cs`, `RackBomPageView.xaml(.cs)`, `RackBomFiles.cs` y `RackCadWindowViewModel.Bom.cs` (UI), y las dos clases de
+  prueba.
+
+**Censos y guardas que cambian, con su nota:**
+- `CustomPropertiesCommandGuardTests`: `A14BomCommands = { "RACKBOMLEER" }` entra en la base; RACKLISTA, RL, RACKBOMTOTAL y RB siguen en el
+  censo de apertura (cambian de archivo, no de nombre).
+- `SelectiveEditorOpenTests.GUARDA_EL_CENSO_DE_COMANDOS_NO_CAMBIA`: de 51 a 52.
+- `BomExcelCharacterizationTests.I17_ConsolidatedCsv_SinCambios`: el CSV esperado gana `Cantidad_total` (BM-04).
+- `RackCadWindowTests.ACardOfNuevoAndAButtonOfAPageRunTheirClassicAction`: el botón de una página que corre su acción clásica pasa a ser
+  RACKAYUDA de «Nuevo», porque «BOM y lista de racks» ya no tiene botones clásicos.
+- Las guardas de capas y de `SendStringToExecute` de `RackCadWindowListTests` pasan sin cambios: el parcial de la puerta usa `Send`, y la
+  orden de lectura vive fuera de `Plugin/VentanaRackCad` (que no admite `LockDocument` ni `StartTransaction`).
+
+**Las pruebas:**
+- Core, `tests/RackCad.Tests/Workspace/RackBomReadingTests.cs` (nuevo, 17 casos): la lectura de cuatro sistemas con sus copias,
+  vistas y palabras, y el rack sin copias fuera; el registro leído una vez y el mismo para todos; el registro ilegible; el rack bloqueado (la
+  puerta antes del BOM, sin total, los demás con BOM); el vínculo roto; el tipo sin manejador; la definición colocada sin clasificar y la no
+  colocada; el Selectivo con vistas distintas fuera del total; el diseño ilegible y el manejador que lanza; el dibujo sin racks; las palabras
+  y el orden; la procedencia del total (con descripciones unidas, sin cambiar la suma); los nombres de los archivos y la carpeta; el CSV con
+  `Cantidad_total`; y, sobre la fuente, RACKBOMLEER (sin marca de Deshacer, una lectura del registro y de la tabla, la regla, el orden de la
+  petición, sin escribir), RACKLISTA y RACKBOMTOTAL hacia la página con los cuerpos clásicos sin registrar, y la puerta (`Send` y `Abandon`).
+- UI, `tests/RackCad.UI.Tests/Workspace/RackCadBomPageTests.cs` (nuevo, 27 casos): la primera lectura sola, su número, una sola
+  petición para la ventana; solo la respuesta de su número; la respuesta durante la llamada; «Dejar de esperar» y la respuesta tardía; AutoCAD
+  ocupado y la lectura pendiente; «Puede no estar al día» tras una orden y no tras la propia lectura; las lecturas por dibujo, la vuelta a un
+  dibujo y el dibujo cerrado; el rack bloqueado con «Abrir»; el que queda fuera; la lectura fallida; el orden de la columna y los
+  encabezados; el filtro de la columna; las filas; el inspector con varios componentes desplegados, «c/u» y «Por copia»; el borrador con sus
+  dos fuentes, su exportación y que verlo no cambia el borrador; el total con su procedencia y su filtro; exportar junto al dibujo con
+  «Abrir», «Mostrar en la carpeta» y «Guardar como…»; el dibujo sin guardar y el fallo de escritura; la pregunta del BOM desactualizado;
+  RACKLISTA y RACKBOMTOTAL; «Ver su BOM»; «Ver en el dibujo» y «Siguiente copia» sin salir de la página; sin la puerta del BOM; las palabras
+  iguales en la columna y la página; y con WPF real (STA), sin errores de enlace: la página y sus botones (lectura, fila elegida, borrador,
+  un componente desplegado por su `IToggleProvider`, la exportación y su aviso, las pestañas, el encabezado que ordena, nombres de
+  automatización únicos), el inspector debajo de la tabla en estrecho, y la ventana que aloja la página y ofrece «Ver su BOM».
+
+**Comprobación en rojo:** dieciocho piezas rotas a propósito, una a una, con su clase de pruebas tras cada una (script y salida en el
+scratchpad de la sesión, `hs65\t4\bom\red.py`, `red-out.txt` y `red-out-2.txt`); cada una falló, y cada archivo volvió byte a byte a su copia
+(SHA-256 comprobado por el script):
+1. el total se hace aunque haya racks que lo impiden: fallan 4 (bloqueado, vínculo roto, tipo sin manejador, definición sin clasificar);
+2. la puerta de I-42 se pregunta después de construir el BOM: fallan 3;
+3. el registro no llega al manejador: falla la del registro leído una vez;
+4. se listan los racks sin copias: falla la de la lectura;
+5. la procedencia sin las copias de cada rack: falla la de la procedencia;
+6. `Cantidad_total` sin multiplicar por las copias: fallan la nueva y la caracterización I17;
+7. RACKBOMLEER con marca de Deshacer: falla la guarda de fuente;
+8. «Dejar de esperar» que no suelta la lectura del BOM en la puerta: falla la guarda de la puerta;
+9. la propia lectura cuenta como un cambio del dibujo: falla la de «Puede no estar al día»;
+10. se acepta la respuesta de otro número: falla la de la respuesta;
+11. la tabla no sigue la columna lateral: falla la del filtro;
+12. el inspector ignora el borrador del editor: falla la del borrador;
+13. exportar con el BOM desactualizado no pregunta: falla la de la pregunta;
+14. «Ver en el dibujo» se va a la página del rack: falla la de la navegación;
+15. la página no lee sola la primera vez: fallan 24 (casi todas parten de esa lectura);
+16. el borrador se exporta sin «(borrador)»: falla la del borrador;
+17. el inspector no baja en estrecho: falla la de la vista estrecha;
+18. una lista nueva de filas pierde el rack elegido en la tabla: falla la de la vista.
+
+La 18 es un fallo real que encontró la prueba de vista antes de corregirlo: con `SelectedValue` ligado en los dos sentidos, cada lista nueva
+de filas (un filtro, un orden, cada presentación del host) borraba el rack elegido. Ahora la vista sincroniza la selección (`SyncSelection`)
+y solo un clic del usuario elige.
+
+**Los números** (solución recompilada en Debug con `--no-incremental`, sobre las fuentes finales):
+- **UI completa:** 2783 correctas, 0 con error, 48 omitidas (2831): la base de `ac3fd1b0` (2756 / 0 / 48) más las 27 nuevas.
+- **Core Full:** 19164 correctas, 0 con error, 403 omitidas (19567): la base (19147 / 0 / 403) más las 17 nuevas.
+- **Build Debug de la solución (Plugin incluido):** 0 errores. Las advertencias son las MSB3277 de las referencias de AutoCAD y las de los
+  analizadores de xunit, que ya estaban; ninguna sale de los archivos de esta parte.
+
+**Lo que queda abierto:**
+- **El smoke del Owner en AutoCAD:** RACKBOMLEER sin paso en Deshacer (lee la tabla de bloques y el registro en una transacción, como
+  RACKSELECTIVOABRIR, cuyo smoke también espera); la lectura sola al abrir la página y tras RACKLISTA / RACKBOMTOTAL (BM-S2); «Puede no estar
+  al día» tras un MOVE y no tras la lectura (BM-S1); los archivos junto al dibujo, «Abrir» con Excel, «Mostrar en la carpeta» y «Guardar
+  como…» desde la paleta; «Ver en el dibujo» y «Siguiente copia»; un dibujo de unos 70 racks (tiempo de la lectura y de la tabla).
+- **Para el Owner:** BM-S1 (qué cuenta como cambio), BM-S4 (el total impedido por un tipo sin manejador), BM-S5 (reemplazar sin preguntar, y
+  Documentos para un dibujo sin guardar) y BM-S6.
+- **No entra en esta tanda:** el BOM de varios racks elegidos (pregunta 9: «no en esta entrega»); los hallazgos de I-68 sobre la clave del
+  total, el total físico y el Excel de un rack sin tabla (son reglas del BOM, no de la pantalla: la página solo los dice); el teclado en la
+  tabla y en el árbol más allá del de WPF; la lista desplegable del filtro por componente tiene el riesgo O-D de dos monitores.
+- **Para integrar:** `RackCadWindowViewModel.cs` (siete líneas marcadas), `RackCadWindowView.xaml` (dos bloques), `RackListViewModel.cs`
+  (dos palabras) y `RackCadRackDoorPort.cs` (dos líneas) los tocan también otras partes; la parte `ut` cambia la ayuda y la parte `va` la
+  página «Variables», que la prueba de `RackCadWindowTests` ya no usa.

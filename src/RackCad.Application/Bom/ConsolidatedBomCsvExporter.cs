@@ -4,7 +4,9 @@ using System.Text;
 namespace RackCad.Application.Bom
 {
     /// <summary>Renders a <see cref="ConsolidatedBom"/> as RFC-4180 CSV: a per-rack breakdown (componentes + piezas)
-    /// followed by the drawing-wide grand total (piece level). InvariantCulture numbers, CRLF line endings.</summary>
+    /// followed by the drawing-wide grand total (piece level). InvariantCulture numbers, CRLF line endings.
+    /// T4 bom (BM-04, a declared change of the format): the last column, «Cantidad_total», says what the Excel of the drawing says: in a
+    /// row of a rack it is «Cantidad» (of ONE copy) × its copies, and in a row of «TOTAL DEL DIBUJO», already multiplied, it is «Cantidad».</summary>
     public static class ConsolidatedBomCsvExporter
     {
         private const string NewLine = "\r\n";
@@ -12,7 +14,7 @@ namespace RackCad.Application.Bom
         public static string ToCsv(ConsolidatedBom consolidated)
         {
             var builder = new StringBuilder();
-            builder.Append("Rack,Tipo,Copias,Nivel,Categoria,Perfil,Descripcion,Longitud_in,Cantidad").Append(NewLine);
+            builder.Append("Rack,Tipo,Copias,Nivel,Categoria,Perfil,Descripcion,Longitud_in,Cantidad,Cantidad_total").Append(NewLine);
 
             if (consolidated == null)
             {
@@ -70,7 +72,8 @@ namespace RackCad.Application.Bom
                 .Append(Escape(profileId)).Append(',')
                 .Append(Escape(description)).Append(',')
                 .Append(length.ToString("0.##", CultureInfo.InvariantCulture)).Append(',')
-                .Append(quantity.ToString(CultureInfo.InvariantCulture))
+                .Append(quantity.ToString(CultureInfo.InvariantCulture)).Append(',')
+                .Append(((long)quantity * (copies > 0 ? copies : 1)).ToString(CultureInfo.InvariantCulture))
                 .Append(NewLine);
         }
 

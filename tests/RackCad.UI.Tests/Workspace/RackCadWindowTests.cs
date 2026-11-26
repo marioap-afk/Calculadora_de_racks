@@ -761,14 +761,13 @@ namespace RackCad.UI.Tests
                 var card = Descendants<Button>(view.NewSystemList).Single(b => b.DataContext is RackCadNewSystemCard c && c.Action == RackCadClassicAction.NewCantilever);
                 Click(card);
 
-                rig.Window.ShowPage(RackCadWindowPage.Bom);
-                Lay(view);
-                var bom = Descendants<Button>(view.BomPage).Single(b => (b.Tag as string) == "TotalBom");
-                Click(bom);
+                // T4 bom: «BOM y lista de racks» is a page of the window now (BM-11), so the button of a page is RACKAYUDA of «Nuevo».
+                var help = Descendants<Button>(view.NuevoPage).Single(b => (b.Tag as string) == "Help");
+                Click(help);
 
                 Click(view.ClassicMenuButton);
 
-                Assert.Equal(new[] { RackCadClassicAction.NewCantilever, RackCadClassicAction.TotalBom, RackCadClassicAction.ClassicMenu }, rig.Classic.Runs);
+                Assert.Equal(new[] { RackCadClassicAction.NewCantilever, RackCadClassicAction.Help, RackCadClassicAction.ClassicMenu }, rig.Classic.Runs);
             });
         }
 
