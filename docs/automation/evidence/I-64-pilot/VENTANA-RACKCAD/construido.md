@@ -1648,3 +1648,44 @@ siguen en los editores clásicos.
 - **DG-04, la otra entrega:** marcar cada vista exacta que ya está en el dibujo (de qué fondo, de qué poste) necesita leerla del dibujo.
 - Push Back, Cantilever y Cabecera usarán el panel cuando migren sus editores (punto de entrada arriba).
 - Las preguntas IN-02, IN-03 e IN-04, y la diferencia IN-11.
+
+### Correcciones de la revisión (sobre `b515bafe`)
+
+Sin commit, sin push, sin AutoCAD. La revisión independiente de `b515bafe` dio nueve puntos; están todos corregidos y probados.
+
+| Punto | Qué se hizo | Prueba |
+|---|---|---|
+| 1 [MEDIO] | Mientras AutoCAD escribe, el panel se oculta pero no se pierde (`_suspendedInsertPanel` en `SelectiveEditorViewModel.Ins.cs` y `DynamicEditorViewModel.Ins.cs`). La ventana llama `WriteHandedOver()` cuando la petición quedó `IsStarted` y cuando llega su respuesta, también durante la llamada (M-22): desde ahí no vuelve. Si la puerta la rechaza (Busy, NoDocument, Failed), `EndWriting` lo devuelve con lo elegido (IN-07). «Cancelar» lo descarta. Un «Dejar de esperar» de una escritura que ya empezó no lo devuelve | `RackViewInsertPanelTests.AWriteTheDoorRefusesBringsThePanelBackWithWhatWasChosenAndAWriteHandedOverDoesNot` (Selectivo y Dinámico; rechazada, empezada con respuesta «no escrito», «Dejar de esperar» y respuesta durante la llamada) |
+| 2 [MEDIO, regresión] | «Aplicar tramos» también se ofrece cuando los fondos de la vista no tienen los mismos tramos en el frente (`SegmentsDifferAcrossFondos`), aunque las filas, leídas del primer fondo, no estén pendientes. `_segmentsPending` y «Modificado» no cambian | `SelectiveHalfFrontInsTests.AplicarTramosEqualsTheFondosWhoseTramosOfTheFrontDiffer` (F2 [30, resto] en el fondo 1 y entero en el 2, con «Todos los fondos») |
+| 3 [BAJO] | `SelectiveSegmentFit` distingue «sin sistema o sin el frente» (no conocido, no se comprueba) de «el frente existe con ancho ≤ 0» (conocido, no cabe: «No cabe: el frente no tiene ancho (≈ 0 in), así que no se puede partir en tramos.»), y `SetSegments` lo rechaza. La tira pide un frente con ancho (`HasWidth`) | `SelectiveSegmentFitTests.AFrontThatExistsWithNoWidthIsKnownAndDoesNotFit` |
+| 4 | `RaiseSegmentsIns` vuelve a calcular el «(resto)»: una recomposición que cambia el ancho o los postes lo actualiza, con las filas escritas | `SelectiveHalfFrontInsTests.TheRestFollowsARecompositionThatChangesTheFront` (el ancho de tarima de todo el rack pasa a 48 in y F2 deja de medir 100 in) |
+| 5 | Los números del orden cuentan solo lo que se inserta: `RackViewInsertEntry.Position`, `PositionOf` entre las insertadas, `IndexOf` para la fila; una fila tachada no lleva número ni insignia | `RackViewInsertChoiceTests.ThePanelFollowsTheDraft…` y `RackViewInsertPanelTests.ThePanelFollowsTheDraft…` (la tachada sin número, «1: Planta») |
+| 6 | Cada lectura de la lista (`Groups` de `RackListViewModel`) refresca el estado de inserción de los editores, y con él «En el dibujo ya hay…» | `RackViewInsertPanelTests.AReadingOfTheListRefreshesWhatThePanelSaysTheDrawingHas` |
+| 7 | «Este borrador es de otro dibujo: vuelve a ese dibujo para escribirlo.» es un motivo de `InsertViewBlockedText` en Selectivo y en Dinámico, con un `Func` de la ventana (`OtherDrawingText`, como `OtherRequestText`). `Present()` refresca los paneles al cambiar de dibujo | `RackViewInsertPanelTests.ThePanelSaysWhenTheDraftIsOfAnotherDrawingAndFollowsTheChangeOfDrawing`. Las dos de «el rack nuevo pertenece a su dibujo» (`RackCadSelectiveInsertTests`, `RackCadDynamicEditorTests`) comprueban ahora el motivo en el panel, en lugar del mensaje que daba la escritura rechazada, con nota |
+| 8 | «Todos los postes» y «Ninguno» se crean solo en el grupo con cortes (un `ContentControl` con la plantilla `CutsButtons`), así que ningún botón oculto repite su nombre | En la prueba de vista del panel, todos los botones, también los ocultos, tienen nombres únicos, y «Marcar todos los postes» sale una vez |
+| 9 | Prueba de Core sobre la salida real de `SelectiveFrontalBuilder`: el poste intermedio aparece exactamente cuando `SelectiveSegmentFit` dice que cabe (30 in, y medio pulgar de resto), y el frente queda entero cuando no (medio poste de más, una pulgada menos que el frente) | `SelectiveSegmentFitTests.TheFrontalPlantsTheIntermediatePostExactlyWhenTheSplitFits` |
+
+**Ediciones a archivos compartidos, nuevas:**
+- `RackCadWindowViewModel.cs`: una línea en el manejador de `RackList.PropertyChanged` (punto 6), `WriteHandedOver()` en las dos ramas `IsStarted` y en las dos respuestas de `OnDesignWritten` (punto 1), y `Contained(RefreshInsertPanels)` al final de `Present()` (punto 7).
+- `SelectiveEditorViewModel.Insert.cs` y `DynamicEditorViewModel.cs`: dos líneas en `InsertViewBlockedText` (el otro dibujo).
+- Lo demás está en archivos de esta parte: `RackViewInsertChoice.cs`, `SelectiveSegmentFit.cs`, `RackViewInsertPanelViewModel.cs`, `RackViewInsertPanelView.xaml`, los dos `.Ins.cs` de los editores y `RackCadWindowViewModel.Ins.cs`.
+
+**Comprobación en rojo de los puntos 1 a 3** (script `hs65\t4\ins\red-rev.py` en el scratchpad de la sesión, salida en `red-rev-out.txt`):
+cuatro piezas rotas a propósito, una a una; tras cada una se compiló y se corrieron las clases afectadas, y cada una hizo fallar su
+prueba:
+1. (R1a) el panel que se pierde al escribir, como en `b515bafe`: falla la del punto 1;
+2. (R1b) la respuesta que llega durante la llamada sin dar la escritura por entregada (el panel volvía tras escribir): falla la del punto 1;
+3. (R2) «Aplicar tramos» solo con tramos pendientes, la regresión: falla la del punto 2;
+4. (R3) un frente sin ancho que se salta, «no conocido», y por tanto cabe: falla la del punto 3.
+
+Cada archivo se restauró desde sus bytes, con fecha nueva y el mismo SHA-256 (lo comprobó el script); después se recompiló la solución con
+`--no-incremental`.
+
+**Los números:**
+- **UI completa:** 2777 correctas, 0 con error, 48 omitidas (2825): las 2772 de `b515bafe` (contando la del temporizador de la ventana
+  dueña, que esta vez pasó) más las 5 nuevas (3 en `RackViewInsertPanelTests` y 2 en `SelectiveHalfFrontInsTests`); 38 min.
+- **Core, clases focales** (`RackViewInsertChoiceTests`, `SelectiveSegmentFitTests`, `RackCadWindowListTests`, `SelectiveDoorInsertionTests`):
+  87 de 87, con las 2 nuevas de `SelectiveSegmentFitTests`. Core Full no se volvió a correr (no lo pide el encargo de correcciones): por
+  cuenta, 19161 / 0 / 403.
+- **Build Debug de la solución (Plugin incluido), `--no-incremental`:** 0 errores; las advertencias son las de siempre.
+- La compilación y las pruebas se repitieron después del reinicio de la máquina, sobre los 16 archivos tal como quedaron en `D:\w4ins`.

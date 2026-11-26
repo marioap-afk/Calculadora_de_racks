@@ -58,6 +58,12 @@ namespace RackCad.UI.Tests
 
             public event Action<SelectiveDesignRead>? SelectiveRead;
 
+            /// <summary>What the door answers to a write (correction 1 of the review: Busy, NoDocument or Failed refuse it).</summary>
+            public RackCadClassicResult Answer { get; set; } = RackCadClassicResult.Started();
+
+            /// <summary>What AutoCAD does DURING the call of a write of a Selectivo, as if it ran the command at once (M-22).</summary>
+            public Action<SelectiveDoorWrite>? DuringSelectiveWrite { get; set; }
+
             public RackCadClassicResult RequestDesign(RackDoorRequest request)
             {
                 Reads.Add(request);
@@ -67,7 +73,7 @@ namespace RackCad.UI.Tests
             public RackCadClassicResult RequestDynamicUpdate(RackDoorWrite write)
             {
                 Writes.Add(write);
-                return RackCadClassicResult.Started();
+                return Answer;
             }
 
             public RackCadClassicResult RequestSelectiveDesign(RackDoorRequest request)
@@ -79,8 +85,11 @@ namespace RackCad.UI.Tests
             public RackCadClassicResult RequestSelectiveUpdate(SelectiveDoorWrite write)
             {
                 SelectiveWrites.Add(write);
-                return RackCadClassicResult.Started();
+                if (Answer.IsStarted) DuringSelectiveWrite?.Invoke(write);
+                return Answer;
             }
+
+            public void Written(RackDesignWritten written) => DesignWritten?.Invoke(written);
 
             public void Abandon(long requestId)
             {
@@ -155,6 +164,12 @@ namespace RackCad.UI.Tests
                 Door.AnswerLastSelectiveRead(design);
                 Assert.True(Window.ActiveSelectiveEditor != null, Window.ActionMessage);
                 return Window.ActiveSelectiveEditor!;
+            }
+
+            public void Present(long session)
+            {
+                Host.Snapshot = WorkspacePanelFixtures.Ready(session: session);
+                Window.Refresh();
             }
 
             public DynamicEditorViewModel OpenDynamic()
@@ -392,7 +407,13 @@ namespace RackCad.UI.Tests
             Assert.Equal(new[] { "Poste 1", "Poste 2" }, panel.Groups[1].Options.Select(o => o.Chip).ToArray());
             Assert.True(panel.Order[0].IsGone);
             Assert.Equal("Lateral · poste 3", panel.Order[0].Label);
-            Assert.Equal("1: Lateral · poste 3; Ya no existe en el borrador: no se insertará", panel.Order[0].AccessibleText);
+            // Correction 5 of the review: only what is inserted is numbered.
+            Assert.Equal("Lateral · poste 3; Ya no existe en el borrador: no se insertará", panel.Order[0].AccessibleText);
+            Assert.Equal(string.Empty, panel.Order[0].Number);
+            Assert.False(panel.Order[0].HasNumber);
+            Assert.Equal("1", panel.Order[1].Number);
+            Assert.Equal("1: Planta", panel.Order[1].AccessibleText);
+            Assert.Equal("1", panel.Groups[2].Options[0].Number); // the box of «Planta»
             Assert.True(panel.HasGone);
             Assert.Equal("Lo tachado ya no existe en el borrador (cambiaron los fondos o los frentes): no se insertará. Quítalo, o devuelve el borrador a como estaba.",
                 panel.GoneText);
@@ -446,6 +467,111 @@ namespace RackCad.UI.Tests
             editor.InsertView();
             Assert.False(editor.IsConfirmingClose);
             Assert.True(editor.IsInsertPanelOpen);
+        }
+
+        // ------------------------------------------------------------------ the corrections of the review
+
+        // Correction 1: a write the door refuses (Busy, NoDocument, Failed) never started, so the panel comes back with what was chosen
+        // (IN-07); a write handed over to AutoCAD (started, or answered during the call) takes the panel with it, whatever the answer.
+        [Fact]
+        public void AWriteTheDoorRefusesBringsThePanelBackWithWhatWasChosenAndAWriteHandedOverDoesNot()
+        {
+            var rig = new Rig();
+            var editor = rig.OpenSelective();
+            rig.Door.Answer = RackCadClassicResult.Without(RackCadClassicStatus.Busy, "ocupado");
+            var panel = editor.InsertWith(Planta, RackViewAddress.Post(1))!;
+            Assert.Single(rig.Door.SelectiveWrites);
+            Assert.False(editor.IsWriting);
+            Assert.True(editor.IsInsertPanelOpen);
+            Assert.Same(panel, editor.InsertPanel);
+            Assert.Equal(new[] { "Planta", "Lateral · poste 2" }, Labels(panel));
+            Assert.Equal("Hay un comando en curso en AutoCAD: termínalo o cancélalo (Esc) y vuelve a intentarlo.", editor.Message);
+            Assert.True(panel.CanInsert);
+
+            // Started: handed over. Its answer, even «not written», does not bring the panel back.
+            rig.Door.Answer = RackCadClassicResult.Started();
+            Assert.True(panel.Insert());
+            Assert.True(editor.IsWriting);
+            Assert.False(editor.IsInsertPanelOpen);
+            rig.Door.AnswerLastSelectiveWrite(false, "AutoCAD no redibujó ninguna vista del rack.");
+            Assert.False(editor.IsWriting);
+            Assert.False(editor.IsInsertPanelOpen);
+
+            // «Dejar de esperar» of a write that started does not bring it back either.
+            editor.InsertWith(Planta);
+            Assert.True(editor.IsWriting);
+            rig.Window.StopWaiting();
+            Assert.False(editor.IsWriting);
+            Assert.False(editor.IsInsertPanelOpen);
+
+            // AutoCAD answers during the call (M-22): handed over too.
+            rig.Door.DuringSelectiveWrite = write => rig.Door.Written(new RackDesignWritten(write.RequestId, write.RackId, true,
+                "AutoCAD redibujó 2 vistas del rack con el borrador e insertó 1 vista nueva."));
+            editor.InsertWith(Planta);
+            Assert.False(editor.IsWriting);
+            Assert.False(editor.IsInsertPanelOpen);
+            Assert.False(editor.IsDirty);
+
+            // The same in Dinámico.
+            var dynamic = rig.OpenDynamic();
+            rig.Door.Answer = RackCadClassicResult.Without(RackCadClassicStatus.Failed, "sin respuesta.");
+            var dynamicPanel = dynamic.InsertWith(RackViewAddress.FlowEnd(RackFlowEnd.Exit))!;
+            Assert.False(dynamic.IsWriting);
+            Assert.Same(dynamicPanel, dynamic.InsertPanel);
+            Assert.Equal(new[] { "Frontal · salida" }, Labels(dynamicPanel));
+            Assert.Equal("No se pudo: sin respuesta.", dynamic.Message);
+            rig.Door.Answer = RackCadClassicResult.Started();
+            dynamicPanel.Insert();
+            Assert.False(dynamic.IsInsertPanelOpen);
+        }
+
+        // Correction 6: a reading of the list with the panel open refreshes what the panel says the drawing has.
+        [Fact]
+        public void AReadingOfTheListRefreshesWhatThePanelSaysTheDrawingHas()
+        {
+            var rig = new Rig();
+            var editor = rig.OpenSelective();
+            editor.InsertView();
+            var panel = editor.InsertPanel!;
+            Assert.StartsWith("En el dibujo ya hay: frontal y lateral (", panel.ExistingText, StringComparison.Ordinal);
+
+            rig.Listed[0] = new BrowserRackListEntry("SEL-1", "Selectivo A", "selective", new[] { "frontal", "lateral", "planta" });
+            rig.Window.RackList.Reload();
+            Assert.StartsWith("En el dibujo ya hay: frontal, lateral y planta (", panel.ExistingText, StringComparison.Ordinal);
+        }
+
+        // Correction 7: a draft of another drawing is said next to «Insertar N vistas» (the write would refuse it), and the panel follows the
+        // change of drawing.
+        [Fact]
+        public void ThePanelSaysWhenTheDraftIsOfAnotherDrawingAndFollowsTheChangeOfDrawing()
+        {
+            var rig = new Rig();
+            var editor = rig.OpenSelective();
+            editor.InsertView();
+            var panel = editor.InsertPanel!;
+            panel.Toggle(Planta);
+            Assert.True(panel.CanInsert);
+
+            rig.Present(8);
+            Assert.Equal("Este borrador es de otro dibujo: vuelve a ese dibujo para escribirlo.", panel.Reason);
+            Assert.Equal(panel.Reason, editor.InsertViewBlockedText);
+            Assert.False(panel.CanInsert);
+            Assert.False(panel.Insert());
+            Assert.Empty(rig.Door.SelectiveWrites);
+
+            rig.Present(7);
+            Assert.Equal(string.Empty, panel.Reason);
+            Assert.True(panel.Insert());
+            Assert.Single(rig.Door.SelectiveWrites);
+
+            // Dinámico.
+            var fresh = new Rig();
+            var dynamic = fresh.OpenDynamic();
+            dynamic.InsertView();
+            fresh.Present(8);
+            Assert.Equal("Este borrador es de otro dibujo: vuelve a ese dibujo para escribirlo.", dynamic.InsertPanel!.Reason);
+            fresh.Present(7);
+            Assert.Equal(string.Empty, dynamic.InsertPanel.Reason);
         }
 
         // ------------------------------------------------------------------ the window no longer shows the classic dialog
@@ -581,6 +707,11 @@ namespace RackCad.UI.Tests
                 var buttons = Descendants<Button>(panelView).Where(Shown).ToList();
                 var names = buttons.Select(Name).ToList();
                 Assert.Equal(names.Count, names.Distinct().Count());
+                // Correction 8 of the review: not even a hidden button repeats a name; «Todos los postes» is made only for the laterals.
+                var everyName = Descendants<Button>(panelView).Select(Name).ToList();
+                Assert.Equal(everyName.Count, everyName.Distinct().Count());
+                Assert.Single(everyName, n => n == "Marcar todos los postes");
+                Assert.Single(everyName, n => n == "Quitar todos los postes del orden");
                 Assert.Contains("Subir Lateral · poste 2", names);
                 Assert.Contains("Quitar Planta del orden", names);
                 Assert.Contains("Marcar todos los postes", names);

@@ -20,10 +20,11 @@ namespace RackCad.Application.VentanaRackCad
     public sealed record RackViewInsertOption(string Label, RackViewAddress Address);
 
     /// <summary>
-    /// One row of «Orden de colocación»: the view, its label, and whether the draft can still draw it. A view that the draft lost while the
-    /// panel was open stays in the order, marked, and is not inserted (DG-08).
+    /// One row of «Orden de colocación»: the view, its label, whether the draft can still draw it, and its place among the views that are
+    /// inserted (from 1; 0 for a gone one). A view that the draft lost while the panel was open stays in the order, marked, has no number
+    /// and is not inserted (DG-08; correction 5 of the review: the numbers count only what is inserted).
     /// </summary>
-    public sealed record RackViewInsertEntry(RackViewAddress Address, string Label, bool IsGone);
+    public sealed record RackViewInsertEntry(RackViewAddress Address, string Label, bool IsGone, int Position);
 
     /// <summary>
     /// The choice of the panel «Insertar vista…» of the RackCad window (I-64 A-14, line D, fourth batch, part «ins»; prototype «dialogos»,
@@ -61,8 +62,21 @@ namespace RackCad.Application.VentanaRackCad
         public IReadOnlyList<RackViewInsertOption> Options => _options;
 
         /// <summary>«Orden de colocación»: the marked views, in the order AutoCAD will ask for their points.</summary>
-        public IReadOnlyList<RackViewInsertEntry> Order =>
-            _order.Select(address => new RackViewInsertEntry(address, LabelOf(address), !IsOffered(address))).ToList();
+        public IReadOnlyList<RackViewInsertEntry> Order
+        {
+            get
+            {
+                var entries = new List<RackViewInsertEntry>(_order.Count);
+                var position = 0;
+                foreach (var address in _order)
+                {
+                    var gone = !IsOffered(address);
+                    entries.Add(new RackViewInsertEntry(address, LabelOf(address), gone, gone ? 0 : ++position));
+                }
+
+                return entries;
+            }
+        }
 
         /// <summary>What «Insertar N vistas» sends: the marked views the draft can draw, in their order.</summary>
         public IReadOnlyList<RackViewAddress> ToInsert => _order.Where(IsOffered).ToList();
@@ -85,8 +99,18 @@ namespace RackCad.Application.VentanaRackCad
 
         public bool IsMarked(RackViewAddress address) => _order.Contains(address);
 
-        /// <summary>The place of the view in the order, from 1; 0 when it is not marked.</summary>
-        public int PositionOf(RackViewAddress address) => _order.IndexOf(address) + 1;
+        /// <summary>
+        /// The place of the view among the views that are inserted, from 1 (the number AutoCAD asks for its point in); 0 when it is not
+        /// marked or the draft lost it. A gone view before it does not count.
+        /// </summary>
+        public int PositionOf(RackViewAddress address)
+        {
+            if (!IsMarked(address) || !IsOffered(address)) return 0;
+            return _order.TakeWhile(a => !a.Equals(address)).Count(IsOffered) + 1;
+        }
+
+        /// <summary>The row of the view in «Orden de colocación» (gone rows included), from 0; −1 when it is not marked.</summary>
+        public int IndexOf(RackViewAddress address) => _order.IndexOf(address);
 
         /// <summary>A check box of «Vistas de este rack»: marks the view at the end of the order, or unmarks it.</summary>
         public bool Toggle(RackViewAddress address) => IsMarked(address) ? Unmark(address) : Mark(address);

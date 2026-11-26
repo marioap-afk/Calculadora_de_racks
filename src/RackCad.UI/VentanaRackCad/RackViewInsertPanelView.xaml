@@ -34,6 +34,16 @@
                 <Setter Property="Padding" Value="8,2" />
                 <Setter Property="Margin" Value="0,0,4,0" />
             </Style>
+            <!-- «Todos los postes» / «Ninguno»: made only for the group with lateral cuts, so no hidden button repeats their names
+                 (correction 8 of the review). Its DataContext is the group. -->
+            <DataTemplate x:Key="CutsButtons" DataType="{x:Type local:RackViewInsertGroupItem}">
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="{Binding MarkAllLabel}" Style="{StaticResource SmallButton}" IsEnabled="{Binding CanMarkAll}"
+                            AutomationProperties.Name="{Binding MarkAllName}" Click="OnMarkAllCutsClick" />
+                    <Button Content="Ninguno" Style="{StaticResource SmallButton}" IsEnabled="{Binding CanMarkNone}"
+                            AutomationProperties.Name="{Binding MarkNoneName}" Click="OnUnmarkAllCutsClick" />
+                </StackPanel>
+            </DataTemplate>
             <!-- «Subir» / «Bajar» of a row of the order: an arrow, its tooltip and its name; off at the ends. -->
             <Style x:Key="ArrowButton" TargetType="Button" BasedOn="{StaticResource SecondaryButtonStyle}">
                 <Setter Property="Padding" Value="6,2" />
@@ -72,12 +82,18 @@
                                     <WrapPanel Margin="0,1,0,3">
                                         <TextBlock Text="{Binding Help}" Style="{StaticResource OptionalText}" Margin="0,0,8,2" VerticalAlignment="Center"
                                                    Foreground="{DynamicResource ShellTextSecondaryBrush}" />
-                                        <Button Content="{Binding MarkAllLabel}" Style="{StaticResource SmallButton}" IsEnabled="{Binding CanMarkAll}"
-                                                AutomationProperties.Name="{Binding MarkAllName}" Click="OnMarkAllCutsClick"
-                                                Visibility="{Binding HasCuts, Converter={StaticResource FlagToVisibility}}" />
-                                        <Button Content="Ninguno" Style="{StaticResource SmallButton}" IsEnabled="{Binding CanMarkNone}"
-                                                AutomationProperties.Name="{Binding MarkNoneName}" Click="OnUnmarkAllCutsClick"
-                                                Visibility="{Binding HasCuts, Converter={StaticResource FlagToVisibility}}" />
+                                        <ContentControl Content="{Binding}" Focusable="False" IsTabStop="False">
+                                            <ContentControl.Style>
+                                                <Style TargetType="ContentControl">
+                                                    <Setter Property="ContentTemplate" Value="{x:Null}" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding HasCuts}" Value="True">
+                                                            <Setter Property="ContentTemplate" Value="{StaticResource CutsButtons}" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </ContentControl.Style>
+                                        </ContentControl>
                                     </WrapPanel>
                                     <ItemsControl ItemsSource="{Binding Options}">
                                         <ItemsControl.ItemsPanel>
@@ -149,7 +165,8 @@
                                     </Border.Style>
                                     <DockPanel LastChildFill="True">
                                         <Border DockPanel.Dock="Left" Width="22" Height="22" CornerRadius="11" Margin="0,0,8,0" VerticalAlignment="Center"
-                                                Background="{DynamicResource ShellWindowBackgroundBrush}">
+                                                Background="{DynamicResource ShellWindowBackgroundBrush}"
+                                                Visibility="{Binding HasNumber, Converter={StaticResource FlagToVisibility}}">
                                             <TextBlock Text="{Binding Number}" FontSize="11" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"
                                                        Foreground="{DynamicResource ShellTextPrimaryBrush}" />
                                         </Border>

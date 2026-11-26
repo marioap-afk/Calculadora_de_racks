@@ -176,6 +176,14 @@ public class RackViewInsertChoiceTests
         Assert.Equal(1, choice.InsertCount);
         Assert.False(choice.Mark(RackViewAddress.Post(3)));
 
+        // Correction 5 of the review: only what is inserted is numbered; the rows keep their place.
+        Assert.Equal(new[] { 0, 1 }, choice.Order.Select(e => e.Position).ToArray());
+        Assert.Equal(1, choice.PositionOf(Planta));
+        Assert.Equal(0, choice.PositionOf(RackViewAddress.Post(3)));
+        Assert.Equal(1, choice.IndexOf(Planta));
+        Assert.Equal(0, choice.IndexOf(RackViewAddress.Post(3)));
+        Assert.Equal(-1, choice.IndexOf(RackViewAddress.Fondo(0)));
+
         // Back as it was: the view is inserted again, in its place.
         choice.Follow(Selective(posts: 4));
         Assert.False(choice.HasGone);

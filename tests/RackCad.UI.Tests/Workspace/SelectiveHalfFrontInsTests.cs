@@ -8,6 +8,7 @@ using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Media;
 using RackCad.Application.VentanaRackCad;
+using RackCad.Domain.Systems.Selective;
 using RackCad.UI.VentanaRackCad;
 using Xunit;
 using static RackCad.UI.Tests.SelectiveWindowFixtures;
@@ -143,6 +144,51 @@ namespace RackCad.UI.Tests
             // One fondo: nothing to say.
             var one = F2();
             Assert.Equal(string.Empty, one.SegmentWhereText);
+        }
+
+        // ------------------------------------------------------------------ the corrections of the review
+
+        // Correction 2 (a regression of the first version): with «Todos los fondos», F2 split [30, resto] in fondo 1 and whole in fondo 2, the
+        // rows read from fondo 1 are not pending, but «Aplicar tramos» equals the fondos, as the note says.
+        [Fact]
+        public void AplicarTramosEqualsTheFondosWhoseTramosOfTheFrontDiffer()
+        {
+            var design = TwoFondos();
+            design.Bays[1].Segments.Add(new SelectiveSegment { Length = 30.0, Loaded = true });
+            design.Bays[1].Segments.Add(new SelectiveSegment { Length = 0.0, Loaded = false });
+            var editor = SelectiveEditor(design);
+            editor.SelectFront(1);
+            Assert.True(editor.Draft.Front(0, 1)!.IsSplit);
+            Assert.False(editor.Draft.Front(1, 1)!.IsSplit);
+            Assert.Equal("Los fondos de la vista no tienen los mismos tramos en F2: aplicar aquí los iguala.", editor.SegmentNote);
+            Assert.False(editor.HasPendingSegments);
+            Assert.True(editor.SegmentsDifferAcrossFondos);
+            Assert.True(editor.CanApplySegments);
+
+            editor.ApplySegments();
+            Assert.Equal(string.Empty, editor.SegmentError);
+            Assert.True(editor.Draft.Front(1, 1)!.IsSplit);
+            Assert.Equal(new[] { 30.0, 0.0 }, editor.Draft.Front(1, 1)!.Segments.Select(s => s.Length).ToArray());
+            Assert.False(editor.SegmentsDifferAcrossFondos);
+            Assert.False(editor.CanApplySegments);
+        }
+
+        // Correction 4: a recomposition that changes the front (here the width of the pallet of the whole rack) keeps the rows written and
+        // the «(resto)» follows it.
+        [Fact]
+        public void TheRestFollowsARecompositionThatChangesTheFront()
+        {
+            var editor = F2();
+            editor.StartSegments();
+            editor.SegmentRows[0].LengthText = "44";
+            Assert.Equal("(resto) ≈ 52.5 in", editor.SegmentRows[1].RestText);
+
+            Write(Field(editor.Essentials, "rWidth"), "48");
+            var fit = editor.SegmentFit;
+            Assert.NotEqual(100.0, fit.Width);
+            Assert.Equal("44", editor.SegmentRows[0].LengthText);
+            Assert.Equal("(resto) ≈ " + fit.Remainder.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture) + " in", editor.SegmentRows[1].RestText);
+            Assert.NotEqual("(resto) ≈ 52.5 in", editor.SegmentRows[1].RestText);
         }
 
         // ------------------------------------------------------------------ the view, with real WPF

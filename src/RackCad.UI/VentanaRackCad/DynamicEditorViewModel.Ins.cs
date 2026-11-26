@@ -18,8 +18,13 @@ namespace RackCad.UI.VentanaRackCad
     public sealed partial class DynamicEditorViewModel
     {
         private RackViewInsertPanelViewModel _insertPanel;
+
+        // Correction 1 of the review: while AutoCAD writes, the panel is hidden, not lost. If the door refuses the write (Busy, NoDocument,
+        // Failed), it comes back with what was chosen when the editor stops writing; once AutoCAD took the write (WriteHandedOver), it is gone.
+        private RackViewInsertPanelViewModel _suspendedInsertPanel;
         private Func<IReadOnlyList<string>> _existingViewKinds;
         private Func<string> _otherRequestText;
+        private Func<string> _otherDrawingText;
 
         /// <summary>The panel «Insertar vista…», while it is open; null when it is closed.</summary>
         public RackViewInsertPanelViewModel InsertPanel => _insertPanel;
@@ -60,6 +65,33 @@ namespace RackCad.UI.VentanaRackCad
 
         private string OtherRequestBlockedText => _otherRequestText?.Invoke() ?? string.Empty;
 
+        /// <summary>
+        /// Why the door cannot write this draft now because it is of another drawing than the one AutoCAD has active, or empty: the window
+        /// sets it, and the panel says it next to «Insertar N vistas» (correction 7 of the review), as the write would refuse it after.
+        /// </summary>
+        public Func<string> OtherDrawingText
+        {
+            get => _otherDrawingText;
+            set { _otherDrawingText = value; RaiseState(); }
+        }
+
+        private string OtherDrawingBlockedText => _otherDrawingText?.Invoke() ?? string.Empty;
+
+        /// <summary>
+        /// The window handed the write to AutoCAD (the request started, or AutoCAD answered it): the views chosen went with it, so the panel
+        /// hidden while writing does not come back (correction 1 of the review).
+        /// </summary>
+        public void WriteHandedOver() => _suspendedInsertPanel = null;
+
+        // AutoCAD writes this rack: the panel is hidden, and kept until the write is handed over or refused.
+        private void SuspendInsertPanel()
+        {
+            if (_insertPanel == null) return;
+            _suspendedInsertPanel = _insertPanel;
+            _insertPanel = null;
+            RaiseInsertPanel();
+        }
+
         /// <summary>The views «Insertar vista…» offers now: the two frontal cuts, a lateral by post that has one, the plan.</summary>
         public IReadOnlyList<RackViewInsertOption> InsertOptions() =>
             RackCadModalDialogs.DynamicViewOptions(_editor.System, _editor.Catalog).Select(o => new RackViewInsertOption(o.Label, o.Address)).ToList();
@@ -76,22 +108,32 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>«Cancelar» of the panel: it closes and nothing is inserted.</summary>
         public void CloseInsertPanel()
         {
+            _suspendedInsertPanel = null;
             if (_insertPanel == null) return;
             _insertPanel = null;
             RaiseInsertPanel();
         }
 
-        /// <summary>The window or the editor changed what the panel shows: the panel follows it; while AutoCAD writes this rack it closes.</summary>
+        /// <summary>
+        /// The window or the editor changed what the panel shows: the panel follows it. While AutoCAD writes this rack it is hidden; when the
+        /// editor stops writing and the write was not handed over (the door refused it), it comes back with what was chosen (correction 1).
+        /// </summary>
         public void RefreshInsertPanel()
         {
-            if (_insertPanel == null) return;
             if (_writing)
             {
-                CloseInsertPanel();
+                SuspendInsertPanel();
                 return;
             }
 
-            _insertPanel.Follow(InsertOptions(), InsertPanelContext());
+            if (_insertPanel == null && _suspendedInsertPanel != null)
+            {
+                _insertPanel = _suspendedInsertPanel;
+                _suspendedInsertPanel = null;
+                RaiseInsertPanel();
+            }
+
+            _insertPanel?.Follow(InsertOptions(), InsertPanelContext());
         }
 
         /// <summary>The window: the door changed (another request waits for AutoCAD, or not); the button and the open panel say it.</summary>
@@ -106,14 +148,13 @@ namespace RackCad.UI.VentanaRackCad
         {
             OnPropertyChanged(nameof(CanOpenInsertPanel));
             OnPropertyChanged(nameof(InsertPanelBlockedText));
-            if (_insertPanel == null) return;
             if (_writing)
             {
-                CloseInsertPanel();
+                SuspendInsertPanel();
                 return;
             }
 
-            _insertPanel.Update(InsertPanelContext());
+            _insertPanel?.Update(InsertPanelContext());
         }
 
         private void InsertChosenViews(IReadOnlyList<RackViewAddress> views)

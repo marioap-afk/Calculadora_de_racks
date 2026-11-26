@@ -94,6 +94,8 @@ namespace RackCad.UI.VentanaRackCad
                     return _isNewRack ? "Aquí no se puede insertar el rack nuevo." : "Aquí no se pueden insertar vistas del rack.";
                 if (_loadError != null) return LoadFailedText;
                 if (_writing) return WritingText;
+                var drawing = OtherDrawingBlockedText;
+                if (!string.IsNullOrEmpty(drawing)) return drawing;
                 var other = OtherRequestBlockedText;
                 if (!string.IsNullOrEmpty(other)) return other;
                 if (_segmentsPending) return PendingSegmentsText;

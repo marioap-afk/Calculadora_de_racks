@@ -151,7 +151,10 @@ namespace RackCad.UI.VentanaRackCad
 
         public RackViewAddress Address { get; }
 
+        /// <summary>Its place among the views that are inserted («2»); empty for a view the draft lost (correction 5 of the review).</summary>
         public string Number { get => _number; private set => SetProperty(ref _number, value); }
+
+        public bool HasNumber => !string.IsNullOrEmpty(_number);
 
         public string Label { get => _label; private set => SetProperty(ref _label, value); }
 
@@ -171,12 +174,13 @@ namespace RackCad.UI.VentanaRackCad
 
         public string RemoveName => "Quitar " + Label + " del orden";
 
-        /// <summary>The whole row for UI Automation: «2: Lateral · poste 3», and why it will not be inserted when the draft lost it.</summary>
-        public string AccessibleText => Number + ": " + Label + (IsGone ? "; " + GoneTag : string.Empty);
+        /// <summary>The whole row for UI Automation: «2: Lateral · poste 3», or, for a view the draft lost, «Lateral · poste 3; Ya no existe…».</summary>
+        public string AccessibleText => IsGone ? Label + "; " + GoneTag : Number + ": " + Label;
 
-        internal void Refresh(int index, int count, string label, bool isGone)
+        internal void Refresh(int index, int count, string label, bool isGone, int position)
         {
-            Number = (index + 1).ToString(CultureInfo.InvariantCulture);
+            Number = position > 0 ? position.ToString(CultureInfo.InvariantCulture) : string.Empty;
+            OnPropertyChanged(nameof(HasNumber));
             Label = label;
             IsGone = isGone;
             CanMoveUp = index > 0;
@@ -315,7 +319,7 @@ namespace RackCad.UI.VentanaRackCad
         public bool Remove(int index) => Changed(_choice.Remove(index));
 
         /// <summary>The row of the order of that view.</summary>
-        public int IndexOf(RackViewAddress address) => _choice.PositionOf(address) - 1;
+        public int IndexOf(RackViewAddress address) => _choice.IndexOf(address);
 
         /// <summary>«Todos los postes».</summary>
         public bool MarkAllCuts() => Changed(_choice.MarkAllCuts());
@@ -403,7 +407,7 @@ namespace RackCad.UI.VentanaRackCad
             var order = _choice.Order;
             Sync(Order, order.Select(e => e.Address).ToList(), o => o.Address, a => new RackViewInsertOrderItem(a));
             for (var i = 0; i < Order.Count; i++)
-                Order[i].Refresh(i, Order.Count, order[i].Label, order[i].IsGone);
+                Order[i].Refresh(i, Order.Count, order[i].Label, order[i].IsGone, order[i].Position);
         }
 
         private void RaiseTexts()

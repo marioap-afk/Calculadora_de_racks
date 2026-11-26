@@ -11,18 +11,24 @@ namespace RackCad.Application.VentanaRackCad
     /// <summary>
     /// Whether the tramos of a «medio frente» fit their front, in one fondo, as the resolver draws them (DG-10 of the prototype «dialogos»).
     /// <see cref="Width"/> is the larguero length of the whole front; <see cref="PostOverhead"/> what each intermediate post takes of it;
-    /// <see cref="Remainder"/> what is left for the last tramo, the calculated one (≤ 0 = it does not fit). <see cref="Width"/> 0 = not known
-    /// (no recomposition yet), and then nothing is checked, as the classic dialog does with 0.
+    /// <see cref="Remainder"/> what is left for the last tramo, the calculated one (≤ 0 = it does not fit). Not known (<see cref="IsKnown"/>
+    /// false) only when there is no system yet or no fondo of the scope has the front: then nothing is checked, as the classic dialog does
+    /// with 0. A front that exists with no width (≤ 0) IS known and does not fit: the resolver would draw it whole (correction 3 of the
+    /// review).
     /// </summary>
     public sealed record SelectiveSegmentFitResult(int Fondo, double Width, double PostOverhead, int IntermediatePosts, double Specified, double Remainder)
     {
-        public bool IsKnown => Width > 0.0;
+        /// <summary>A fondo of the scope has the front in the system (its width may still be 0).</summary>
+        public bool IsKnown => Fondo >= 0;
 
         /// <summary>What every intermediate post takes, together.</summary>
         public double PostsTotal => IntermediatePosts * PostOverhead;
 
-        /// <summary>The last tramo is longer than 0: the resolver draws the split, and does not fall back to the whole front.</summary>
-        public bool Fits => !IsKnown || IntermediatePosts < 1 || Remainder > 0.0;
+        /// <summary>The front has a width to be split (the strip and the «(resto)» can be drawn).</summary>
+        public bool HasWidth => IsKnown && Width > 0.0;
+
+        /// <summary>The last tramo is longer than 0 on a front with width: the resolver draws the split, and does not fall back to the whole front.</summary>
+        public bool Fits => !IsKnown || IntermediatePosts < 1 || (Width > 0.0 && Remainder > 0.0);
     }
 
     /// <summary>
@@ -63,12 +69,13 @@ namespace RackCad.Application.VentanaRackCad
             foreach (var fondo in fondos ?? Enumerable.Empty<int>())
             {
                 var bay = BayOf(system, fondo, front);
-                if (bay == null || !(bay.BeamLength > 0.0)) continue;
+                if (bay == null) continue;
                 var inicioX = InicioXOf(catalog, bay);
                 var overhead = 2.0 * (troquelX + inicioX);
-                var fit = new SelectiveSegmentFitResult(fondo, bay.BeamLength, overhead, posts, sum,
-                    Remainder(bay, troquelX, inicioX, overhead, lengths, count));
-                if (tightest == null || fit.Remainder < tightest.Remainder) tightest = fit;
+                // A front with no width (≤ 0) has nothing to split: it is the tightest of all (the resolver draws it whole).
+                var remainder = bay.BeamLength > 0.0 ? Remainder(bay, troquelX, inicioX, overhead, lengths, count) : Math.Min(0.0, bay.BeamLength);
+                var fit = new SelectiveSegmentFitResult(fondo, bay.BeamLength, overhead, posts, sum, remainder);
+                if (tightest == null || !fit.Fits && tightest.Fits || fit.Fits == tightest.Fits && fit.Remainder < tightest.Remainder) tightest = fit;
             }
 
             return tightest ?? new SelectiveSegmentFitResult(-1, 0.0, 0.0, posts, sum, 0.0);
@@ -82,6 +89,8 @@ namespace RackCad.Application.VentanaRackCad
         {
             if (fit == null || fit.Fits) return null;
             var where = severalFondos && fit.Fondo >= 0 ? " en el fondo " + (fit.Fondo + 1).ToString(CultureInfo.InvariantCulture) : string.Empty;
+            if (!(fit.Width > 0.0))
+                return "No cabe" + where + ": el frente no tiene ancho (≈ " + Num(Math.Max(0.0, fit.Width)) + " in), así que no se puede partir en tramos.";
             return "No cabe" + where + ": los tramos suman " + Num(fit.Specified) + " in y "
                    + (fit.IntermediatePosts == 1 ? "el poste intermedio ocupa" : "los " + fit.IntermediatePosts.ToString(CultureInfo.InvariantCulture) + " postes intermedios ocupan")
                    + " ≈ " + Num(fit.PostsTotal) + " in; el frente mide ≈ " + Num(fit.Width) + " in y no queda resto para el último tramo.";

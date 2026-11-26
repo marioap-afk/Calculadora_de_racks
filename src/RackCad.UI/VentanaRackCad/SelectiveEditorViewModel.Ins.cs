@@ -48,8 +48,13 @@ namespace RackCad.UI.VentanaRackCad
     public sealed partial class SelectiveEditorViewModel
     {
         private RackViewInsertPanelViewModel _insertPanel;
+
+        // Correction 1 of the review: while AutoCAD writes, the panel is hidden, not lost. If the door refuses the write (Busy, NoDocument,
+        // Failed), it comes back with what was chosen when the editor stops writing; once AutoCAD took the write (WriteHandedOver), it is gone.
+        private RackViewInsertPanelViewModel _suspendedInsertPanel;
         private Func<IReadOnlyList<string>> _existingViewKinds;
         private Func<string> _otherRequestText;
+        private Func<string> _otherDrawingText;
         private string _segmentHint = string.Empty;
 
         // ------------------------------------------------------------------ «Insertar vista…»: the panel (DG-01 to DG-08)
@@ -99,6 +104,33 @@ namespace RackCad.UI.VentanaRackCad
 
         private string OtherRequestBlockedText => _otherRequestText?.Invoke() ?? string.Empty;
 
+        /// <summary>
+        /// Why the door cannot write this draft now because it is of another drawing than the one AutoCAD has active, or empty: the window
+        /// sets it, and the panel says it next to «Insertar N vistas» (correction 7 of the review), as the write would refuse it after.
+        /// </summary>
+        public Func<string> OtherDrawingText
+        {
+            get => _otherDrawingText;
+            set { _otherDrawingText = value; RaiseState(); }
+        }
+
+        private string OtherDrawingBlockedText => _otherDrawingText?.Invoke() ?? string.Empty;
+
+        /// <summary>
+        /// The window handed the write to AutoCAD (the request started, or AutoCAD answered it): the views chosen went with it, so the panel
+        /// hidden while writing does not come back (correction 1 of the review).
+        /// </summary>
+        public void WriteHandedOver() => _suspendedInsertPanel = null;
+
+        // AutoCAD writes this rack: the panel is hidden, and kept until the write is handed over or refused.
+        private void SuspendInsertPanel()
+        {
+            if (_insertPanel == null) return;
+            _suspendedInsertPanel = _insertPanel;
+            _insertPanel = null;
+            RaiseInsertPanel();
+        }
+
         /// <summary>The views «Insertar vista…» offers now: one frontal per fondo, one lateral per post with a cut, the plan.</summary>
         public IReadOnlyList<RackViewInsertOption> InsertOptions() => SelectiveViewChoice.Options(_editor.System, _editor.Catalog);
 
@@ -116,6 +148,7 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>«Cancelar» of the panel: it closes and nothing is inserted.</summary>
         public void CloseInsertPanel()
         {
+            _suspendedInsertPanel = null;
             if (_insertPanel == null) return;
             _insertPanel = null;
             RaiseInsertPanel();
@@ -123,31 +156,37 @@ namespace RackCad.UI.VentanaRackCad
 
         /// <summary>
         /// The window or the editor changed something the panel shows (the draft, the state of the editor, the door): the panel follows it.
-        /// While AutoCAD writes this rack the panel closes (the write took its views).
+        /// While AutoCAD writes this rack the panel is hidden; when the editor stops writing and the write was not handed over (the door
+        /// refused it), the panel comes back with what was chosen (correction 1 of the review, IN-07).
         /// </summary>
         public void RefreshInsertPanel()
         {
-            if (_insertPanel == null) return;
             if (_writing)
             {
-                CloseInsertPanel();
+                SuspendInsertPanel();
                 return;
             }
 
-            _insertPanel.Follow(InsertOptions(), InsertPanelContext());
+            if (_insertPanel == null && _suspendedInsertPanel != null)
+            {
+                _insertPanel = _suspendedInsertPanel;
+                _suspendedInsertPanel = null;
+                RaiseInsertPanel();
+            }
+
+            _insertPanel?.Follow(InsertOptions(), InsertPanelContext());
         }
 
         // The state of the editor changed: the texts of the panel (why it cannot insert, whether there are changes), not its views.
         private void UpdateInsertPanel()
         {
-            if (_insertPanel == null) return;
             if (_writing)
             {
-                CloseInsertPanel();
+                SuspendInsertPanel();
                 return;
             }
 
-            _insertPanel.Update(InsertPanelContext());
+            _insertPanel?.Update(InsertPanelContext());
         }
 
         /// <summary>The window: the door changed (another request waits for AutoCAD, or not); the button and the open panel say it.</summary>
@@ -224,7 +263,16 @@ namespace RackCad.UI.VentanaRackCad
         /// «Aplicar tramos» (DG-09: the one explicit gesture): there are tramos written and not applied, at least two (one tramo is a whole
         /// front: «Sin medio frente»), and they fit the front with its intermediate posts (DG-10).
         /// </summary>
-        public bool CanApplySegments => CanChangeSegments && _segmentsPending && _segmentRows.Count >= 2 && string.IsNullOrEmpty(SegmentFitText);
+        public bool CanApplySegments => CanChangeSegments && (_segmentsPending || SegmentsDifferAcrossFondos) && _segmentRows.Count >= 2
+                                        && string.IsNullOrEmpty(SegmentFitText);
+
+        /// <summary>
+        /// The fondos of the view do not have the same tramos in the front of the inspector: «Aplicar tramos» equals them, even with no row
+        /// written (correction 2 of the review: the pending rows compare only with the first fondo).
+        /// </summary>
+        public bool SegmentsDifferAcrossFondos => SegmentFront is int front
+                                                  && _editor.ScopeFondos.Select(k => _editor.Front(k, front)).Where(f => f != null)
+                                                      .Select(f => SegmentsKey(f.Segments)).Distinct().Count() > 1;
 
         /// <summary>What the last gesture of the tramos did (the prototype: the seed, a tramo added, the rest that changes, dolores 15 and 16).</summary>
         public string SegmentHint => _segmentHint;
@@ -263,7 +311,7 @@ namespace RackCad.UI.VentanaRackCad
             get
             {
                 var fit = SegmentFit;
-                if (_segmentRows.Count < 2 || !fit.IsKnown) return Array.Empty<SelectiveSegmentStripItem>();
+                if (_segmentRows.Count < 2 || !fit.HasWidth) return Array.Empty<SelectiveSegmentStripItem>();
                 var items = new List<SelectiveSegmentStripItem>();
                 for (var i = 0; i < _segmentRows.Count; i++)
                 {
@@ -328,9 +376,11 @@ namespace RackCad.UI.VentanaRackCad
         // The strip, the fit and the notes follow every change of the rows, of the front and of the draft.
         private void RaiseSegmentsIns()
         {
+            UpdateRestText(); // correction 4 of the review: a recomposition changes the width and the posts, so the «(resto)» follows it
             OnPropertyChanged(nameof(SegmentFit));
             OnPropertyChanged(nameof(SegmentFitText));
             OnPropertyChanged(nameof(CanApplySegments));
+            OnPropertyChanged(nameof(SegmentsDifferAcrossFondos));
             OnPropertyChanged(nameof(SegmentWhereText));
             OnPropertyChanged(nameof(SegmentPostNote));
             OnPropertyChanged(nameof(SegmentStrip));

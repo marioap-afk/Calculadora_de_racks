@@ -1,3 +1,6 @@
+using System.Linq;
+using RackCad.Application.Workspace;
+
 namespace RackCad.UI.VentanaRackCad
 {
     /// <summary>
@@ -14,6 +17,7 @@ namespace RackCad.UI.VentanaRackCad
         {
             editor.ExistingViewKinds = () => RackList.ViewKindsOf(editor.RackId);
             editor.OtherRequestText = OtherRequestText;
+            editor.OtherDrawingText = () => OtherDrawingText(_dynamicDrafts.Values.FirstOrDefault(e => ReferenceEquals(e.Editor, editor))?.Session);
         }
 
         // The panel of a Selectivo editor.
@@ -21,7 +25,18 @@ namespace RackCad.UI.VentanaRackCad
         {
             editor.ExistingViewKinds = () => RackList.ViewKindsOf(editor.RackId);
             editor.OtherRequestText = OtherRequestText;
+            editor.OtherDrawingText = () => OtherDrawingText(_selectiveDrafts.Values.FirstOrDefault(e => ReferenceEquals(e.Editor, editor))?.Session);
         }
+
+        // The door writes in the drawing AutoCAD has active: a draft of another drawing is refused, with this text (correction 7 of the
+        // review: the panel says it before anything is asked). An editor the window does not keep yet (being wired) has nothing to say.
+        private string OtherDrawingText(SessionId? session)
+        {
+            if (!session.HasValue) return string.Empty;
+            return Panel.PresentedSession.HasValue && Panel.PresentedSession.Value == session.Value ? string.Empty : OtherDrawingWriteText;
+        }
+
+        internal const string OtherDrawingWriteText = "Este borrador es de otro dibujo: vuelve a ese dibujo para escribirlo.";
 
         // The one request of the door waits for AutoCAD: a write would be refused now (DoorBusyText). While AutoCAD writes the editor's own
         // rack, the editor says it first (WritingText) and its panel is closed.

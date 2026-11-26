@@ -169,6 +169,7 @@ namespace RackCad.UI.VentanaRackCad
                 if (e.PropertyName == nameof(RackListViewModel.RackCount) || e.PropertyName == nameof(RackListViewModel.ChangedCount)
                     || e.PropertyName == nameof(RackListViewModel.StatusText))
                     OnPropertyChanged(nameof(HeaderText));
+                if (e.PropertyName == nameof(RackListViewModel.Groups)) RefreshInsertPanels(); // T4 ins: «En el dibujo ya hay…» (correction 6)
             };
             panel.Browser.PropertyChanged += OnBrowserChanged;
             NewSystems = new[]
@@ -584,7 +585,11 @@ namespace RackCad.UI.VentanaRackCad
                 result = RackCadClassicResult.Without(RackCadClassicStatus.Failed, ex.Message);
             }
 
-            if (result.IsStarted) return;
+            if (result.IsStarted)
+            {
+                editor.WriteHandedOver(); // T4 ins: the panel of «Insertar vista…» does not come back (correction 1)
+                return;
+            }
             if (_inFlight != null && _inFlight.Id == id)
             {
                 _inFlight = null;
@@ -830,7 +835,11 @@ namespace RackCad.UI.VentanaRackCad
                 result = RackCadClassicResult.Without(RackCadClassicStatus.Failed, ex.Message);
             }
 
-            if (result.IsStarted) return;
+            if (result.IsStarted)
+            {
+                editor.WriteHandedOver(); // T4 ins: the panel of «Insertar vista…» does not come back (correction 1)
+                return;
+            }
             if (_inFlight != null && _inFlight.Id == id)
             {
                 _inFlight = null;
@@ -858,6 +867,7 @@ namespace RackCad.UI.VentanaRackCad
                 {
                     if (_selectiveDrafts.TryGetValue((request.Session, request.RackId), out var selective))
                     {
+                        selective.Editor.WriteHandedOver(); // T4 ins: AutoCAD ran the command (correction 1)
                         selective.Editor.EndWriting();
                         if (written.Written) selective.Editor.MarkWritten(written.Message, request.SentJson, request.SentName);
                         else selective.Editor.Say(written.Message, error: true);
@@ -869,6 +879,7 @@ namespace RackCad.UI.VentanaRackCad
                 else if (_dynamicDrafts.TryGetValue((request.Session, request.RackId), out var entry))
                 {
                     var editor = entry.Editor;
+                    editor.WriteHandedOver(); // T4 ins: AutoCAD ran the command (correction 1)
                     editor.EndWriting();
                     if (written.Written) editor.MarkWritten(written.Message, request.SentJson, request.SentName);
                     else editor.Say(written.Message, error: true);
@@ -1273,6 +1284,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(IsSelectiveRack));
             OnPropertyChanged(nameof(ShowSelectiveOffer));
             RaiseNewDynamic();
+            Contained(RefreshInsertPanels); // T4 ins: the drawing may have changed: «otro dibujo» next to «Insertar N vistas» (correction 7)
         }
 
         // The browser changed (a tab, the field, the active rack): the marks of the list follow, and a new active rack shows its page.

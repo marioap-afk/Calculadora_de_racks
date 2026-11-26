@@ -812,6 +812,8 @@ namespace RackCad.UI.VentanaRackCad
                 if (action == null || string.IsNullOrWhiteSpace(RackId))
                     return _isNewRack ? "Aquí no se puede insertar el rack nuevo." : "Aquí no se pueden insertar vistas del rack.";
                 if (_writing) return WritingText;
+                var drawing = OtherDrawingBlockedText;
+                if (!string.IsNullOrEmpty(drawing)) return drawing;
                 var other = OtherRequestBlockedText;
                 if (!string.IsNullOrEmpty(other)) return other;
                 if (_editor.Design == null) return "No hay un borrador válido que escribir.";

@@ -759,13 +759,16 @@ namespace RackCad.UI.Tests
             Assert.Null(rig.Window.NewDynamicEditor);
             Assert.True(rig.Window.ShowNuevoCards);
 
+            // T4 ins, correction 7 of the review: the panel says it next to «Insertar N vistas» and does not ask for the write.
             var panel = editor.InsertWith(RackCad.Application.Systems.Shared.RackViewAddress.Post(0))!;
             Assert.Empty(rig.Door.Writes);
-            Assert.Equal("Este borrador es de otro dibujo: vuelve a ese dibujo para escribirlo.", editor.Message);
-            Assert.True(editor.IsInsertPanelOpen); // refused by the window: the panel stays, with the views chosen
+            Assert.Equal("Este borrador es de otro dibujo: vuelve a ese dibujo para escribirlo.", panel.Reason);
+            Assert.False(panel.CanInsert);
+            Assert.True(editor.IsInsertPanelOpen); // the panel stays, with the views chosen
 
             rig.Present(7);
             Assert.Same(editor, rig.Window.NewDynamicEditor);
+            Assert.Equal(string.Empty, panel.Reason);
             panel.Insert();
             Assert.Single(rig.Door.Writes);
         }

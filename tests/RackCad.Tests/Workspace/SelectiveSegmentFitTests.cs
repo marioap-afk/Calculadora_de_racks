@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using RackCad.Application.Catalogs;
+using RackCad.Application.Drawing;
 using RackCad.Application.Systems.Selective;
 using RackCad.Application.VentanaRackCad;
 using RackCad.Domain.Systems.Selective;
@@ -125,6 +126,61 @@ public class SelectiveSegmentFitTests
         Assert.Null(SelectiveSegmentFit.RefusalOf(none, severalFondos: false));
         Assert.Equal(0.0, SelectiveSegmentFit.PostOverhead(null!, draft.Catalog, 0, 0));
         Assert.Equal(0.0, SelectiveSegmentFit.PostOverhead(draft.System!, draft.Catalog, 0, 99)); // a front the fondo does not have
+    }
+
+    // Correction 3 of the review: «no system» is not known (nothing is checked); a front that exists with no width is known, and a split
+    // of it does not fit (the resolver would draw it whole).
+    [Fact]
+    public void AFrontThatExistsWithNoWidthIsKnownAndDoesNotFit()
+    {
+        var draft = Draft();
+        Bay(draft, 0, 0).BeamLength = 0.0;
+        var fit = SelectiveSegmentFit.Of(draft.System, draft.Catalog, new[] { 0 }, 0, new[] { 10.0 }, 2);
+        Assert.True(fit.IsKnown);
+        Assert.False(fit.HasWidth);
+        Assert.False(fit.Fits);
+        var text = SelectiveSegmentFit.RefusalOf(fit, severalFondos: false);
+        Assert.Equal("No cabe: el frente no tiene ancho (≈ 0 in), así que no se puede partir en tramos.", text);
+
+        var edit = draft.SetSegments(0, new[] { new SelectiveSegment { Length = 10.0, Loaded = true }, new SelectiveSegment() });
+        Assert.True(edit.Refused);
+        Assert.Equal(text, edit.Error);
+        Assert.False(draft.Front(0, 0)!.IsSplit);
+
+        // One tramo (a whole front) is still no split, and fits.
+        Assert.True(SelectiveSegmentFit.Of(draft.System, draft.Catalog, new[] { 0 }, 0, Array.Empty<double>(), 1).Fits);
+    }
+
+    // Correction 9 of the review: the rule of the window against the real drawing. The frontal of the fondo plants the intermediate post
+    // exactly when SelectiveSegmentFit says the split fits, and draws the whole front when it does not.
+    [Fact]
+    public void TheFrontalPlantsTheIntermediatePostExactlyWhenTheSplitFits()
+    {
+        var draft = Draft();
+        var bay = Bay(draft, 0, 0);
+        var width = bay.BeamLength;
+        var post = SelectiveSegmentFit.PostOverhead(draft.System!, draft.Catalog, 0, 0);
+
+        int Posts(double length)
+        {
+            bay.Segments.Clear();
+            if (length > 0.0)
+            {
+                bay.Segments.Add(new SelectiveSegment { Length = length, Loaded = true });
+                bay.Segments.Add(new SelectiveSegment { Loaded = false });
+            }
+
+            return new SelectiveFrontalBuilder().Build(SelectiveDepthLayout.FondoSystemView(draft.System!, 0), draft.Catalog)
+                .Count(i => i.Role == HeaderBlockRole.Post);
+        }
+
+        var whole = Posts(0.0);
+        foreach (var (length, fits) in new[] { (30.0, true), (width - post - 0.5, true), (width - post / 2.0, false), (width - 1.0, false) })
+        {
+            var fit = SelectiveSegmentFit.Of(draft.System, draft.Catalog, new[] { 0 }, 0, new[] { length }, 2);
+            Assert.Equal(fits, fit.Fits);
+            Assert.Equal(fits ? whole + 1 : whole, Posts(length));
+        }
     }
 
     private static string Num(double value) => value.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture);
