@@ -231,7 +231,9 @@ namespace RackCad.Tests
         /// <summary>Los substrings de P-12 que romperian las guardas de conformidad de Project Variables (D-19.2).</summary>
         private static readonly string[] ForbiddenNameParts = { "PropertyValues", "rackProperty", "RackPropertyReference" };
 
-        private static readonly string[] Executors = { "ExecuteProject", "ExecuteRack", "ExecuteRackUnify" };
+        // La cuarta tanda de la ventana RackCad (va, VA-07) anade ExecuteRackDraft: el borrador entero de la pestana «Propiedades» de un
+        // editor, con la misma forma que ExecuteRack y su llamada unica a CustomPropertiesCommit.ForRackDraft.
+        private static readonly string[] Executors = { "ExecuteProject", "ExecuteRack", "ExecuteRackUnify", "ExecuteRackDraft" };
 
         private static readonly string[] Reads = { "ReadProject", "ReadRack" };
 
@@ -413,12 +415,12 @@ namespace RackCad.Tests
                     continue;
                 }
 
-                var application = name == "ExecuteRack" ? "ForRack" : "ForRackUnify";
-                var other = name == "ExecuteRack" ? "ForRackUnify" : "ForRack";
+                var application = name == "ExecuteRack" ? "ForRack" : name == "ExecuteRackUnify" ? "ForRackUnify" : "ForRackDraft";
+                var others = new[] { "ForRack", "ForRackUnify", "ForRackDraft" }.Where(candidate => candidate != application).ToList();
                 var commitCall = FirstIndex(executor.Body, @"\bCustomPropertiesCommit\s*\.\s*" + application + @"\s*\(");
 
                 if (Count(executor.Body, @"\bCustomPropertiesCommit\s*\.\s*" + application + @"\s*\(") != 1
-                    || Regex.IsMatch(all, @"\b" + other + @"\s*\("))
+                    || others.Any(other => Regex.IsMatch(all, @"\b" + other + @"\s*\(")))
                 {
                     violations.Add(name + " no llama exactamente una vez a CustomPropertiesCommit." + application);
                 }

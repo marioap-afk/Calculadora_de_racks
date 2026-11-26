@@ -926,6 +926,13 @@
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
+            <!-- T4 va: the tab «Propiedades» at the end of the editor (VA-07): the custom properties of the rack, written by «Actualizar». -->
+            <TabItem x:Name="RackPropertiesTabItem" Header="{Binding PropertiesTab.TabHeader}" AutomationProperties.Name="Propiedades">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <vtab:RackPropertiesTabView x:Name="RackPropertiesView" DataContext="{Binding PropertiesTab}"
+                                                xmlns:vtab="clr-namespace:RackCad.UI.VentanaRackCad" />
+                </ScrollViewer>
+            </TabItem>
         </TabControl>
     </DockPanel>
 </UserControl>

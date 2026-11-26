@@ -286,7 +286,9 @@ public class RackCadWindowListTests
         {
             var code = WorkspaceHostSource.CodeOnly(File.ReadAllText(path));
             Assert.DoesNotMatch(new System.Text.RegularExpressions.Regex(@"LockDocument|StartTransaction|StartOpenCloseTransaction"), code);
-            if (!path.EndsWith("RackCadRackDoorCommands.cs", StringComparison.Ordinal))
+            // Cuarta tanda (va): the commands of the page «Variables» (RackCadVariablesDoorCommands) are commands of the door too; they read
+            // the register through RackSelectivoCommands.ReadProjectVariables and report through RackCommandSupport, as the door to a rack.
+            if (!path.EndsWith("RackCadRackDoorCommands.cs", StringComparison.Ordinal) && !path.EndsWith("RackCadVariablesDoorCommands.cs", StringComparison.Ordinal))
                 Assert.DoesNotMatch(new System.Text.RegularExpressions.Regex(@"\bRackCommandSupport\.|\bApplyDynamicEdit\b|\bApplySelectiveEdit\b|\bInsertSelectiveViews\b|\bDispatchInsertion\b|\bReadProjectVariables\b|\[CommandMethod"), code);
         }
     }

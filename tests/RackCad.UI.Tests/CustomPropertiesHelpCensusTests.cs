@@ -129,7 +129,13 @@ namespace RackCad.UI.Tests
 
         private static string Pair((string Command, string Alias) entry) => entry.Command + "/" + entry.Alias;
 
-        private static IEnumerable<string> Baseline() => OpeningHelp.Append(G7Help).Append(G15Help).Select(Pair);
+        /// <summary>
+        /// La cuarta tanda de la ventana RackCad (va, VA-10 del Owner): RACKVARIABLES y su unico alias, RVA, que ya estaba registrado
+        /// (<c>src/RackCad.Plugin/RackVariablesCommands.cs</c>) y no salia en la ayuda.
+        /// </summary>
+        private static readonly (string Command, string Alias) A14VariablesHelp = ("RACKVARIABLES", "RVA");
+
+        private static IEnumerable<string> Baseline() => OpeningHelp.Append(G7Help).Append(G15Help).Append(A14VariablesHelp).Select(Pair);
 
         /// <summary>Vacia si la ayuda tiene exactamente los pares de apertura mas `RACKPROPIEDADES/RPR`, cada uno una vez.</summary>
         private static IReadOnlyList<string> HelpViolations(IEnumerable<(string Command, string Alias)> entries)

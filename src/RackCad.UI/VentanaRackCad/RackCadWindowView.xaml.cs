@@ -40,6 +40,7 @@ namespace RackCad.UI.VentanaRackCad
             _viewModel.PropertyChanged += OnViewModelPropertyChanged;
             SizeChanged += OnSizeChanged;
             ApplySideCollapsed();
+            ShowVariablesPage(); // T4 va (RackCadWindowView.Variables.cs)
         }
 
         /// <summary>Below this width the two columns do not fit: the side column is hidden on its own until the window is wider again.</summary>
@@ -86,6 +87,7 @@ namespace RackCad.UI.VentanaRackCad
                 ShowRackContent();
             if (e.PropertyName == nameof(RackCadWindowViewModel.NewDynamicEditor)) ShowNewContent();
             if (e.PropertyName == nameof(RackCadWindowViewModel.NewSelectiveEditor)) ShowNewSelectiveContent();
+            if (e.PropertyName == nameof(RackCadWindowViewModel.VariablesPage)) ShowVariablesPage(); // T4 va
         }
 
         // E2 P3: «Nuevo» hosts the editor of the new Selectivo being made here; the view is the one the page of the rack shows once it is

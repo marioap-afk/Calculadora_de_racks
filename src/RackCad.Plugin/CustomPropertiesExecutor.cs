@@ -291,6 +291,41 @@ namespace RackCad.Plugin
         }
 
         /// <summary>
+        /// The whole draft of the tab «Propiedades» of an editor of the RackCad window (I-64 A-14, cuarta tanda, va; VA-07, VA-08), on the
+        /// rack as it is NOW: the same shape as <see cref="ExecuteRack"/>, with the batch of Application (<see cref="CustomPropertiesCommit.ForRackDraft"/>).
+        /// </summary>
+        internal static CustomPropertiesCommitResult ExecuteRackDraft(
+            Document document,
+            RackCustomPropertiesSelection selection,
+            string fingerprint,
+            IReadOnlyList<CustomPropertyDraftEntry> entries,
+            string unifiedFrom)
+        {
+            if (document == null)
+            {
+                throw new ArgumentNullException(nameof(document));
+            }
+
+            var database = document.Database;
+
+            using (document.LockDocument())
+            using (var transaction = database.TransactionManager.StartTransaction())
+            {
+                var fresh = ScanProjection(transaction, database, out var definitions);
+                var result = CustomPropertiesCommit.ForRackDraft(fresh, selection, IsKnownKind, fingerprint, entries, unifiedFrom);
+
+                if (!result.IsPlanned)
+                {
+                    return result;
+                }
+
+                WritePlan(transaction, definitions, result.Plan);
+                transaction.Commit();
+                return result;
+            }
+        }
+
+        /// <summary>
         /// The scan and its flat projection, in the caller's transaction (D-09.1, D-22.2): every definition with a RackCad
         /// payload, unreadable ones included, with no filter by rack, placement or kind — membership is Application's.
         /// </summary>

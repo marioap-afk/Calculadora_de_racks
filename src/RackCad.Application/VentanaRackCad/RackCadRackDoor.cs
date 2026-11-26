@@ -23,20 +23,22 @@ namespace RackCad.Application.VentanaRackCad
     /// drawing yet: AutoCAD inserts it with those views, with the identity the window gave it and the automatic name of I-60.
     /// </summary>
     public sealed record RackDoorWrite(long RequestId, SessionId Session, string RackId, string Name, DynamicRackDesign Design, DynamicRackSystem System,
-        IReadOnlyList<RackViewAddress> InsertViews = null, bool NewRack = false)
+        IReadOnlyList<RackViewAddress> InsertViews = null, bool NewRack = false, RackPropertiesWrite Properties = null) // T4 va: Properties (VA-07)
     {
         /// <summary>The write also inserts views.</summary>
         public bool Inserts => InsertViews != null && InsertViews.Count > 0;
     }
 
     /// <summary>What AutoCAD read of ONE rack for the RackCad window, for the request of that number: its persisted design, or why there is none.</summary>
-    public sealed record RackDesignRead(long RequestId, string RackId, bool Found, string Kind, string Name, string DesignJson, string Reason);
+    public sealed record RackDesignRead(long RequestId, string RackId, bool Found, string Kind, string Name, string DesignJson, string Reason,
+        RackPropertiesRead Properties = null); // T4 va: the tab «Propiedades» (VA-07)
 
     /// <summary>
     /// What AutoCAD answered when it wrote the draft of a rack, for the request of that number: whether it wrote it and what it said; for a
     /// new rack, the name the drawing gave it (the automatic one of I-60 when it had none).
     /// </summary>
-    public sealed record RackDesignWritten(long RequestId, string RackId, bool Written, string Message, string Name = null);
+    public sealed record RackDesignWritten(long RequestId, string RackId, bool Written, string Message, string Name = null,
+        string PropertiesError = null, RackPropertiesRead Properties = null); // T4 va: the properties of the rack after the write (VA-07)
 
     /// <summary>
     /// The door of the RackCad window to ONE rack of the drawing (I-64 A-14, line D): reading its design to edit it in the window, and
@@ -86,7 +88,8 @@ namespace RackCad.Application.VentanaRackCad
         SelectiveRackSystem System,
         IReadOnlyDictionary<PropertyId, LinkedPropertyEditState> LinkedPropertyFinalStates,
         IReadOnlyList<RackViewAddress> InsertViews = null,
-        bool NewRack = false)
+        bool NewRack = false,
+        RackPropertiesWrite Properties = null) // T4 va: the tab «Propiedades» (VA-07)
     {
         /// <summary>
         /// Selectivo E2, part A: the write also inserts views (RACKSELECTIVOINSERTAR, «Insertar vista…»: first the draft in the views that
@@ -115,7 +118,8 @@ namespace RackCad.Application.VentanaRackCad
         IReadOnlyDictionary<PropertyId, LinkedPropertyEditState> LinkedPropertyStates,
         IReadOnlyDictionary<PropertyId, string> LinkedVariableNames,
         string Reason,
-        IReadOnlyList<string> DimensionStyles = null)
+        IReadOnlyList<string> DimensionStyles = null,
+        RackPropertiesRead Properties = null) // T4 va: the tab «Propiedades» (VA-07)
     {
         /// <summary>A read that does not open the editor, with its reason.</summary>
         public static SelectiveDesignRead Refused(long requestId, string rackId, string kind, string name, string reason)

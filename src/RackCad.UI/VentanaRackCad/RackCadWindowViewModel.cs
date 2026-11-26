@@ -104,7 +104,7 @@ namespace RackCad.UI.VentanaRackCad
         // The one request of the door that waits for AutoCAD, for the two systems (Selectivo E1-B): its number, the session and the rack it
         // was made for (at the time it was made, not when the answer arrives), for a write what was sent, and whether it is a Selectivo.
         private sealed record DoorRequest(long Id, bool IsWrite, SessionId Session, string RackId, string SentJson, string SentName, bool Started = false,
-            bool IsSelective = false);
+            bool IsSelective = false, bool IsVariables = false); // T4 va: IsVariables, the page «Variables»
 
         private sealed class DraftKeyComparer : IEqualityComparer<(SessionId Session, string RackId)>
         {
@@ -160,6 +160,7 @@ namespace RackCad.UI.VentanaRackCad
             }
 
             if (_selectiveDoor != null) _selectiveDoor.SelectiveRead += OnSelectiveRead;
+            InitializeVariables(); // T4 va: the door of the page «Variables» (RackCadWindowViewModel.Variables.cs)
 
             RackList = new RackListViewModel(panel.BrowserSummaryPort, panel.PilotEditPort, panel.Browser, DraftStateOf);
             RackList.RackOpened += () => ShowPage(RackCadWindowPage.Rack);
@@ -377,8 +378,9 @@ namespace RackCad.UI.VentanaRackCad
             get
             {
                 if (_inFlight == null) return string.Empty;
-                if (_inFlight.Started) return WriteTakenText;
-                var what = _inFlight.IsWrite ? "Esperando a que AutoCAD escriba el rack." : "Esperando a que AutoCAD lea el rack.";
+                if (_inFlight.Started) return _inFlight.IsVariables ? VariablesWriteTakenText : WriteTakenText; // T4 va
+                var what = _inFlight.IsVariables ? (_inFlight.IsWrite ? "Esperando a que AutoCAD escriba las variables." : "Esperando a que AutoCAD lea las variables.")
+                    : _inFlight.IsWrite ? "Esperando a que AutoCAD escriba el rack." : "Esperando a que AutoCAD lea el rack.";
                 return what + " Si no responde (por ejemplo, porque había texto a medio escribir en la línea de órdenes), pulsa «Dejar de esperar».";
             }
         }
@@ -509,6 +511,7 @@ namespace RackCad.UI.VentanaRackCad
                 draft.LoadFrom(design, read.LinkedPropertyStates, read.Name, read.LinkedVariableNames);
                 var editor = new SelectiveEditorViewModel(draft, request.RackId, UpdateSelective, read.LinkedPropertyStates, read.LinkedVariableNames,
                     read.DimensionStyles);
+                editor.LoadProperties(read.Properties); // T4 va: the tab «Propiedades» (VA-07)
                 WireSelective(editor); // E2 P3 and E2 seguridad: the same wiring as the new Selectivo of «Nuevo»
                 _selectiveDrafts[key] = new SelectiveDraftEntry(request.Session, editor, RackList.ListedNameOf(request.RackId));
                 _showPanel = false;
@@ -529,6 +532,7 @@ namespace RackCad.UI.VentanaRackCad
             if (e.PropertyName != nameof(SelectiveEditorViewModel.IsDirty) && e.PropertyName != nameof(SelectiveEditorViewModel.IsWriting)) return;
             RackList.RefreshStates();
             OnPropertyChanged(nameof(HeaderText));
+            RefreshVariablesConflicts(); // T4 va: VA-04
         }
 
         // «Actualizar» of the Selectivo editor: COPIES of the draft (SnapshotForWrite) with the final states of the linked properties go to
@@ -579,7 +583,8 @@ namespace RackCad.UI.VentanaRackCad
             {
                 result = _selectiveDoor.RequestSelectiveUpdate(new SelectiveDoorWrite(id, entry.Session, editor.RackId, snapshot.Name, snapshot.Design,
                              snapshot.System, snapshot.LinkedPropertyFinalStates,
-                             insertViews == null ? null : new List<RackViewAddress>(insertViews), NewRack: editor.IsNewRack))
+                             insertViews == null ? null : new List<RackViewAddress>(insertViews), NewRack: editor.IsNewRack,
+                             Properties: insertViews == null && !editor.IsNewRack ? editor.PropertiesWrite() : null)) // T4 va (VA-07)
                          ?? RackCadClassicResult.Without(RackCadClassicStatus.Failed, "sin respuesta.");
             }
             catch (Exception ex)
@@ -690,7 +695,8 @@ namespace RackCad.UI.VentanaRackCad
             }
 
             const string StoppedWrite = "Se dejó de esperar a AutoCAD: si la orden llega a correr, no escribirá nada. El borrador sigue sin escribir.";
-            if (request.IsWrite && !request.IsSelective && _dynamicDrafts.TryGetValue((request.Session, request.RackId), out var entry))
+            if (request.IsVariables) StopWaitingVariables(request); // T4 va
+            else if (request.IsWrite && !request.IsSelective && _dynamicDrafts.TryGetValue((request.Session, request.RackId), out var entry))
             {
                 entry.Editor.EndWriting();
                 entry.Editor.Say(StoppedWrite, error: false);
@@ -751,6 +757,7 @@ namespace RackCad.UI.VentanaRackCad
                 var draft = new DynamicDraftEditor(_catalog());
                 draft.LoadFrom(project.DynamicDesign, read.Name);
                 var editor = new DynamicEditorViewModel(draft, request.RackId, UpdateDynamic);
+                editor.LoadProperties(read.Properties); // T4 va: the tab «Propiedades» (VA-07)
                 Wire(editor);
                 _dynamicDrafts[key] = new DynamicDraftEntry(request.Session, editor);
                 _showPanel = false;
@@ -825,7 +832,8 @@ namespace RackCad.UI.VentanaRackCad
             try
             {
                 result = _door.RequestDynamicUpdate(new RackDoorWrite(id, entry.Session, editor.RackId, snapshot.Name, snapshot.Design, snapshot.System,
-                        insertViews == null ? null : new List<RackViewAddress>(insertViews), NewRack: editor.IsNewRack))
+                        insertViews == null ? null : new List<RackViewAddress>(insertViews), NewRack: editor.IsNewRack,
+                        Properties: insertViews == null && !editor.IsNewRack ? editor.PropertiesWrite() : null)) // T4 va (VA-07)
                     ?? RackCadClassicResult.Without(RackCadClassicStatus.Failed, "sin respuesta.");
             }
             catch (Exception ex)
@@ -864,6 +872,7 @@ namespace RackCad.UI.VentanaRackCad
                         selective.Editor.EndWriting();
                         if (written.Written) selective.Editor.MarkWritten(written.Message, request.SentJson, request.SentName);
                         else selective.Editor.Say(written.Message, error: true);
+                        selective.Editor.PropertiesWritten(written); // T4 va
 
                         // E2 P3: a new Selectivo that AutoCAD placed is a rack of the drawing now, as a new Dinámico.
                         if (written.Written && selective.Editor.IsNewRack) NewSelectiveInserted(selective.Editor, written);
@@ -875,6 +884,7 @@ namespace RackCad.UI.VentanaRackCad
                     editor.EndWriting();
                     if (written.Written) editor.MarkWritten(written.Message, request.SentJson, request.SentName);
                     else editor.Say(written.Message, error: true);
+                    editor.PropertiesWritten(written); // T4 va
 
                     // A new Dinámico that AutoCAD placed is a rack of the drawing now: «Nuevo» shows its systems again and says where it is.
                     if (written.Written && editor.IsNewRack)
@@ -918,6 +928,7 @@ namespace RackCad.UI.VentanaRackCad
                 .Concat(_selectiveDrafts
                     .Where(p => p.Key.Session == session && (p.Value.Editor.IsDirty || p.Value.Editor.IsWriting))
                     .Select(p => SelectiveNameOf(p.Value)))
+                .Concat(UnwrittenVariablesNames(session)) // T4 va: the page «Variables» with changes
                 .OrderBy(n => n, StringComparer.CurrentCultureIgnoreCase)
                 .ToList();
             return names.Count == 0 ? null : string.Join(", ", names);
@@ -953,6 +964,7 @@ namespace RackCad.UI.VentanaRackCad
             }
 
             ForgetDimensionStylesOfDeadSessions(session => IsAlive(port, session));
+            PruneVariables(port); // T4 va
             if (_dynamicDrafts.Count == 0 && _selectiveDrafts.Count == 0) return;
 
             var dead = _dynamicDrafts.Where(p => !IsAlive(port, p.Key.Session)).ToList();
@@ -1065,6 +1077,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(IsWaitingForAutoCad));
             OnPropertyChanged(nameof(WaitingText));
             OnPropertyChanged(nameof(CanStopWaiting));
+            RaiseVariablesWaiting(); // T4 va
         }
 
         // The command of the write that waits took its request: the window waits for its answer.
@@ -1076,7 +1089,8 @@ namespace RackCad.UI.VentanaRackCad
                 _inFlight = _inFlight with { Started = true };
 
                 // The editor no longer says to press «Dejar de esperar»: the Selectivo (S-28) and the Dinámico, of the drawing or new (M-11).
-                if (_inFlight.IsSelective && _selectiveDrafts.TryGetValue((_inFlight.Session, _inFlight.RackId), out var selective))
+                if (_inFlight.IsVariables) VariablesWriteTaken(_inFlight); // T4 va
+                else if (_inFlight.IsSelective && _selectiveDrafts.TryGetValue((_inFlight.Session, _inFlight.RackId), out var selective))
                     selective.Editor.WriteTaken();
                 else if (!_inFlight.IsSelective && _dynamicDrafts.TryGetValue((_inFlight.Session, _inFlight.RackId), out var dynamic))
                     dynamic.Editor.WriteTaken();
@@ -1168,6 +1182,7 @@ namespace RackCad.UI.VentanaRackCad
             if (_page == page) return;
             _page = page;
             if (page == RackCadWindowPage.Configuracion) RaiseSettings();
+            if (page == RackCadWindowPage.Variables) Contained(VariablesPageShown); // T4 va
             RebuildSections();
             OnPropertyChanged(nameof(Page));
             OnPropertyChanged(nameof(IsRackPage));
@@ -1267,6 +1282,7 @@ namespace RackCad.UI.VentanaRackCad
             }
 
             Contained(PruneDeadSessions);
+            Contained(PresentVariables); // T4 va
             Contained(FollowSelectionOfTheActiveRack);
             OnPropertyChanged(nameof(HeaderText));
             OnPropertyChanged(nameof(NoRackText));
