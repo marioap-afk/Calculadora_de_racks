@@ -352,6 +352,16 @@ namespace RackCad.Application.VentanaRackCad
         /// <summary>Whether that post of that fondo carries a custom cabecera (they are kept; they are edited in the classic editor).</summary>
         public bool HasCustomCabecera(int fondo, int post) => _state.CabeceraAt(fondo, post) != null;
 
+        /// <summary>E2-B «Restaurar layout…»: the custom cabecera of that post goes back to the standard one in the fondos of the scope
+        /// (the classic «Restablecer poste», without its peralte, which <see cref="SetPostPeralte"/> restores).</summary>
+        public SelectiveDraftEdit ResetCustomCabecera(int post)
+        {
+            if (post < 0 || post >= _state.PostPeraltes.Count) return SelectiveDraftEdit.Refuse("Ese poste no existe.");
+            AimAtScope();
+            var result = _state.ApplyCabeceraToTargets(post, null, configuration => configuration);
+            return new SelectiveDraftEdit(result.AppliedFondos.Count, result.OmittedFondos.Count, null);
+        }
+
         // ------------------------------------------------------------------ writes over the scope (the caller recomposes)
 
         /// <summary>«Número de fondos» of the rack: a new fondo copies fondo 0, the fondos beyond the count are dropped, as in the classic editor.</summary>
