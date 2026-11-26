@@ -15,12 +15,13 @@ namespace RackCad.UI.VentanaRackCad
     /// </summary>
     public sealed record RackCadDraftSeed
     {
-        private RackCadDraftSeed(RackSystemKind kind, RackProject project, string name, string origin)
+        private RackCadDraftSeed(RackSystemKind kind, RackProject project, string name, string origin, RackProject edit = null)
         {
             Kind = kind;
             Project = project;
             Name = string.IsNullOrWhiteSpace(name) ? null : name;
             Origin = string.IsNullOrWhiteSpace(origin) ? null : origin.Trim();
+            Edit = edit;
         }
 
         /// <summary>The system of the draft (the canonical kind of the library: SelectiveRack, PalletFlow, …).</summary>
@@ -35,13 +36,20 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>Where the design comes from, for the line of the editor when it opens (e.g. «del diseño «Nave A» de la biblioteca»).</summary>
         public string Origin { get; }
 
+        /// <summary>
+        /// «Duplicar» only: the design the draft takes as an EDIT over <see cref="Project"/>, which is then the base of «Modificado» and of
+        /// «Descartar» of the copy (the base of its original). Null for every other seed.
+        /// </summary>
+        internal RackProject Edit { get; }
+
         /// <summary>A new draft with the defaults of the classic editor of the system: «Selectivo en esta ventana», «Dinámico en esta ventana».</summary>
         public static RackCadDraftSeed Defaults(RackSystemKind kind) => new RackCadDraftSeed(kind, null, null, null);
 
         /// <summary>
-        /// A design of the library (or any loaded project) as a new draft. Its name is the one of the design, as the classic editor opened
-        /// from the library keeps it (empty = the automatic one of I-60 at insertion); <paramref name="name"/> replaces it when given.
-        /// <paramref name="origin"/> is said when the draft opens.
+        /// Any loaded project as a new draft. Its name is <paramref name="name"/> when given; otherwise the one its own document keeps (a
+        /// Selectivo keeps its name; a Dinámico keeps none, its document stores no name), and empty = the automatic one of I-60 at
+        /// insertion. <paramref name="origin"/> is said when the draft opens. For a design of the design library use
+        /// <see cref="FromLibrary"/>, which names it as the classic editor opened from the library does.
         /// </summary>
         public static RackCadDraftSeed FromProject(RackProject project, string origin = null, string name = null)
         {
@@ -49,8 +57,25 @@ namespace RackCad.UI.VentanaRackCad
             return new RackCadDraftSeed(project.Kind, project, name ?? NameOf(project), origin);
         }
 
-        // The copy of a draft («Duplicar»): its design, no name (two racks would get the same name), and where it comes from.
-        internal static RackCadDraftSeed CopyOf(RackProject project, string origin) => new RackCadDraftSeed(project.Kind, project, null, origin);
+        /// <summary>
+        /// A design of the design library as a new draft, with the name the classic editor opened from the library gives it
+        /// (<c>EditorModules.OpenFromLibrary</c>): a Selectivo keeps the name of its document (<c>RackSelectiveWindow.LoadForNew</c>;
+        /// empty = the automatic one of I-60); the other systems take the name of the entry of the library, <paramref name="entryName"/>
+        /// = <c>RackDesignLibraryEntry.Name</c> (<c>LoadDesignForNew(…, entry.Name, …)</c>; for a Dinámico it is the name of the file,
+        /// because its document keeps none). Utilidades («Abrir de la biblioteca») calls
+        /// <c>OpenAsNewDraft(RackCadDraftSeed.FromLibrary(project, entry.Name, "del diseño «" + entry.Name + "» de la biblioteca"))</c>.
+        /// </summary>
+        public static RackCadDraftSeed FromLibrary(RackProject project, string entryName, string origin = null)
+        {
+            if (project == null) throw new ArgumentNullException(nameof(project));
+            var name = project.Kind == RackSystemKind.SelectiveRack ? NameOf(project) : entryName?.Trim();
+            return new RackCadDraftSeed(project.Kind, project, name, origin);
+        }
+
+        // The copy of a draft («Duplicar», point 1 of the review): it opens over the BASE of its original and takes the copied design as an
+        // edit, so it is «Modificado» exactly when its original was; no name (two racks would get the same name), and where it comes from.
+        internal static RackCadDraftSeed CopyOf(RackProject baseProject, RackProject copied, string origin)
+            => new RackCadDraftSeed(copied.Kind, baseProject ?? copied, null, origin, baseProject == null ? null : copied);
 
         private static string NameOf(RackProject project)
         {
@@ -102,10 +127,13 @@ namespace RackCad.UI.VentanaRackCad
 
         /// <summary>
         /// The name of a draft in the veto of the close of its drawing and in the notice of a drawing that closed (D-08): «Borrador 2
-        /// (Selectivo nuevo)», or «Nave A (Selectivo nuevo)» when its rack has a name. Every draft with work is named, so two drafts never
-        /// read the same as «un Selectivo nuevo» did.
+        /// (Selectivo nuevo)», or «Nave A (Borrador 2, Selectivo nuevo)» when its rack has a name, so two drafts never read the same, not
+        /// even two with the same name (point 6 of the review), as two «un Selectivo nuevo» did.
         /// </summary>
-        public static string NoticeName(int number, string systemLabel, string name) => Title(number, name) + " (" + systemLabel + " nuevo)";
+        public static string NoticeName(int number, string systemLabel, string name)
+            => string.IsNullOrWhiteSpace(name)
+                ? Label(number) + " (" + systemLabel + " nuevo)"
+                : name.Trim() + " (" + Label(number) + ", " + systemLabel + " nuevo)";
 
         /// <summary>The system as the window says it, for the kinds of the library.</summary>
         public static string SystemLabel(RackSystemKind kind)

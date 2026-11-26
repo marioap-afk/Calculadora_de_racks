@@ -160,7 +160,7 @@ namespace RackCad.UI.Tests
             Assert.Equal("Borrador 4", RackCadDraftNaming.Title(4, "  "));
             Assert.Equal("Nave A", RackCadDraftNaming.Title(4, " Nave A "));
             Assert.Equal("Borrador 2 (Selectivo nuevo)", RackCadDraftNaming.NoticeName(2, "Selectivo", null));
-            Assert.Equal("Nave A (Dinámico nuevo)", RackCadDraftNaming.NoticeName(2, "Dinámico", "Nave A "));
+            Assert.Equal("Nave A (Borrador 2, Dinámico nuevo)", RackCadDraftNaming.NoticeName(2, "Dinámico", "Nave A ")); // point 6 of the review
 
             Assert.Equal("Selectivo", RackCadDraftNaming.SystemLabel(RackSystemKind.SelectiveRack));
             Assert.Equal("Dinámico", RackCadDraftNaming.SystemLabel(RackSystemKind.PalletFlow));
@@ -236,10 +236,12 @@ namespace RackCad.UI.Tests
 
             // Another page keeps the drafts; the item of a draft brings it back.
             rig.Window.ShowPage(RackCadWindowPage.Variables);
+            Assert.All(rig.Window.Drafts, d => Assert.False(d.IsActive)); // the column marks a draft only while «Nuevo» is shown (point 7)
             Assert.False(rig.Window.ShowNewSelectiveEditor);
             Assert.False(rig.Window.ShowDraftsBar);
             Assert.Equal(2, rig.Window.Drafts.Count);
             rig.Window.OpenDraft(rig.Window.Drafts[1]);
+            Assert.True(rig.Window.Drafts[1].IsActive);
             Assert.True(rig.Window.IsNuevoPage);
             Assert.Same(second, rig.Window.NewSelectiveEditor);
         }
@@ -367,15 +369,16 @@ namespace RackCad.UI.Tests
             Assert.True(copy.IsNewRack);
             Assert.Equal(Json(source.Draft.Design), Json(copy.Draft.Design));
             Assert.True(string.IsNullOrEmpty(copy.Name)); // two racks would get the same name
-            Assert.False(copy.IsDirty); // «Limpio» against what it copied, and «Descartar» goes back to it
+            Assert.True(copy.IsDirty); // point 1 of the review: the copy keeps the base of its original, so it is «Modificado» as it was
             Assert.Equal("Borrador 2: Selectivo nuevo en esta ventana, copia de Nave A. Todavía no está en el dibujo.", copy.Message);
 
             // The copy does not reach the source.
             Edit(copy, "80");
             Assert.NotEqual(Json(source.Draft.Design), Json(copy.Draft.Design));
             Assert.True(source.IsDirty);
-            copy.Discard();
-            Assert.Equal(Json(source.Draft.Design), Json(copy.Draft.Design));
+            copy.Discard(); // back to the base of its original: the defaults of a new Selectivo
+            Assert.Equal(Json(SelectiveDraftEditor.CreateNew(Catalog()).Design), Json(copy.Draft.Design));
+            Assert.False(copy.IsDirty);
 
             // A Dinámico too.
             var dynamic = rig.NewDynamic();
@@ -457,7 +460,11 @@ namespace RackCad.UI.Tests
             Assert.Equal(new[] { first.RackId, second.RackId }, rig.Window.Drafts.Select(d => d.RackId).ToArray());
             Assert.Same(first, rig.Window.NewSelectiveEditor);
             rig.Window.OpenDraft(itemOf8);
-            Assert.Equal("Ese borrador ya no está en la ventana.", rig.Window.ActionMessage);
+            Assert.Equal("Ese borrador es de otro dibujo: vuelve a ese dibujo para abrirlo.", rig.Window.ActionMessage); // point 5 of the review
+            Assert.Equal("Ese borrador es de otro dibujo: vuelve a ese dibujo para duplicarlo.", rig.Window.DuplicateDraft(itemOf8).Reason);
+            rig.Window.DiscardDraft(itemOf8);
+            Assert.Equal("Ese borrador es de otro dibujo: vuelve a ese dibujo para descartarlo.", rig.Window.ActionMessage);
+            Assert.Contains(elsewhere, rig.Window.SelectiveEditors);
             Assert.Same(first, rig.Window.NewSelectiveEditor);
             Assert.Contains(elsewhere, rig.Window.SelectiveEditors);
         }
@@ -472,7 +479,7 @@ namespace RackCad.UI.Tests
             named.Name = "Nave A";
             rig.NewSelective(); // «Borrador 4», with nothing changed: nothing to lose, it does not veto
 
-            Assert.Equal("Borrador 1 (Selectivo nuevo), Borrador 2 (Dinámico nuevo), Nave A (Selectivo nuevo)", rig.Window.UnwrittenWorkOf(Session));
+            Assert.Equal("Borrador 1 (Selectivo nuevo), Borrador 2 (Dinámico nuevo), Nave A (Borrador 3, Selectivo nuevo)", rig.Window.UnwrittenWorkOf(Session));
             Assert.Equal("Borrador 2 (Dinámico nuevo)", rig.Window.UnwrittenDynamicWorkOf(Session));
 
             var lines = new List<string>();
@@ -480,7 +487,7 @@ namespace RackCad.UI.Tests
             advisor.SetWindowWork(rig.Window.UnwrittenWorkOf);
             Assert.Equal(CloseDecision.Veto, advisor.AdviseClose(Session));
             Assert.Equal(
-                "RackCad: el dibujo no se cerró: la ventana RackCad tiene cambios sin escribir en Borrador 1 (Selectivo nuevo), Borrador 2 (Dinámico nuevo), Nave A (Selectivo nuevo). Escríbelos con «Actualizar» en su editor (un rack nuevo de la ventana, con «Insertar en el dibujo…») o descártalos, y vuelve a cerrar.",
+                "RackCad: el dibujo no se cerró: la ventana RackCad tiene cambios sin escribir en Borrador 1 (Selectivo nuevo), Borrador 2 (Dinámico nuevo), Nave A (Borrador 3, Selectivo nuevo). Escríbelos con «Actualizar» en su editor (un rack nuevo de la ventana, con «Insertar en el dibujo…») o descártalos, y vuelve a cerrar.",
                 Assert.Single(lines));
 
             rig.Summary.Dead.Add(Session);
@@ -489,7 +496,7 @@ namespace RackCad.UI.Tests
             Assert.Empty(rig.Window.SelectiveEditors);
             Assert.Empty(rig.Window.DynamicEditors);
             Assert.StartsWith("Se cerró el dibujo de ", rig.Window.ActionMessage);
-            foreach (var name in new[] { "Borrador 1 (Selectivo nuevo)", "Borrador 2 (Dinámico nuevo)", "Nave A (Selectivo nuevo)" })
+            foreach (var name in new[] { "Borrador 1 (Selectivo nuevo)", "Borrador 2 (Dinámico nuevo)", "Nave A (Borrador 3, Selectivo nuevo)" })
                 Assert.Contains(name, rig.Window.ActionMessage, StringComparison.Ordinal);
             Assert.DoesNotContain("Borrador 4", rig.Window.ActionMessage, StringComparison.Ordinal);
         }
@@ -594,7 +601,7 @@ namespace RackCad.UI.Tests
             Assert.True(bound.HasPropertyValues);
             var linked = rig.Window.OpenAsNewDraft(RackCadDraftSeed.FromProject(RackProject.ForSelectiveRack(bound), "de la biblioteca"));
             Assert.True(linked.Opened, linked.Reason);
-            Assert.EndsWith("Las holguras vinculadas a variables del diseño se abren con su valor: un rack nuevo de la ventana no lleva vínculos.",
+            Assert.EndsWith("Las holguras vinculadas a variables se abren con el valor literal guardado en el diseño, no con el de la variable: un rack nuevo de la ventana no lleva vínculos.",
                 rig.Window.NewSelectiveEditor!.Message);
         }
 
@@ -634,6 +641,168 @@ namespace RackCad.UI.Tests
             rig.Window.Refresh();
             Assert.False(rig.Window.OpenAsNewDraft(RackCadDraftSeed.Defaults(RackSystemKind.SelectiveRack)).Opened);
             Assert.Equal("No hay un dibujo en la ventana.", rig.Window.ActionMessage);
+        }
+
+        // ------------------------------------------------------------------ the review of the part (points 1, 2, 3, 5 and 8)
+
+        // Point 1: B1 with changes, «Duplicar» (B2), B1 discarded. B2 is the only copy of that work, so it is protected as any draft with
+        // changes: «Descartar el borrador» asks, «Cerrar el editor» asks, the close is vetoed and the prune names it.
+        [Fact]
+        public void TheCopyOfADraftWithChangesKeepsItsWorkProtectedWhenTheOriginalIsDiscarded()
+        {
+            var rig = new Rig();
+            var original = rig.NewSelective();
+            Edit(original);
+            rig.Window.DuplicateDraft(rig.Window.Drafts[0]);
+            var copy = rig.Window.NewSelectiveEditor!;
+            Assert.True(copy.IsDirty);
+            Assert.Equal((RackCadDraftItem.ModifiedKind, "Sin insertar, con cambios"), (rig.Window.Drafts[1].StatusKind, rig.Window.Drafts[1].StatusText));
+
+            rig.Window.DiscardDraft(rig.Window.Drafts[0]);
+            rig.Window.ConfirmDiscardDraft(rig.Window.Drafts[0]);
+            var item = Assert.Single(rig.Window.Drafts);
+            Assert.Same(copy, rig.Window.NewSelectiveEditor);
+
+            Assert.Equal("Borrador 2 (Selectivo nuevo)", rig.Window.UnwrittenWorkOf(Session));
+            rig.Window.DiscardDraft(item);
+            Assert.True(item.IsConfirmingDiscard);
+            rig.Window.CancelDiscardDraft(item);
+            copy.RequestClose();
+            Assert.True(copy.IsConfirmingClose);
+            copy.CancelClose();
+
+            rig.Summary.Dead.Add(Session);
+            rig.Window.Refresh();
+            Assert.Equal("Se cerró el dibujo de Borrador 2 (Selectivo nuevo) con cambios sin escribir en la ventana: esos cambios se perdieron.", rig.Window.ActionMessage);
+        }
+
+        // Point 1, the rest: a copy of a draft with nothing changed has nothing to lose; a copy of a design of the library goes back to it.
+        [Fact]
+        public void TheCopyOfADraftIsModifiedExactlyWhenItsOriginalWas()
+        {
+            var rig = new Rig();
+            rig.NewSelective();
+            var clean = rig.Window.DuplicateDraft(rig.Window.Drafts[0]);
+            Assert.True(clean.Opened, clean.Reason);
+            Assert.False(rig.Window.NewSelectiveEditor!.IsDirty);
+
+            var library = rig.Window.OpenAsNewDraft(RackCadDraftSeed.FromLibrary(
+                RackProject.ForSelectiveRack(SelectivePalletDesignDocument.From(TwoFondos(), null, "Nave lib")), "Nave lib"));
+            var fromLibrary = rig.Window.NewSelectiveEditor!;
+            Edit(fromLibrary);
+            rig.Window.DuplicateDraft(library.Draft!);
+            var libraryCopy = rig.Window.NewSelectiveEditor!;
+            Assert.True(libraryCopy.IsDirty);
+            Assert.True(string.IsNullOrEmpty(libraryCopy.Name));
+            libraryCopy.Discard(); // back to the base of its original: the design of the library
+            Assert.Equal(Json(new SelectivePalletDesignStore().Deserialize(fromLibrary.BaselineDesignJson)!.ToDomain()), Json(libraryCopy.Draft.Design));
+
+            // A Dinámico too.
+            var dynamic = rig.NewDynamic();
+            rig.Window.DuplicateDraft(rig.Window.ActiveDraft!);
+            Assert.False(rig.Window.NewDynamicEditor!.IsDirty);
+            Edit(dynamic);
+            rig.Window.OpenDraft(rig.Window.Drafts.Single(d => d.RackId == dynamic.RackId));
+            rig.Window.DuplicateDraft(rig.Window.ActiveDraft!);
+            var dynamicCopy = rig.Window.NewDynamicEditor!;
+            Assert.True(dynamicCopy.IsDirty);
+            Assert.Equal(DynamicJson(dynamic.Draft.Design), DynamicJson(dynamicCopy.Draft.Design));
+            dynamicCopy.Discard();
+            Assert.Equal(DynamicJson(RackCad.Application.VentanaRackCad.DynamicDraftEditor.CreateNew(Catalog()).Design), DynamicJson(dynamicCopy.Draft.Design));
+        }
+
+        // Point 2: what AutoCAD answers to a draft that is not on screen is said in the message of the window too, with its label.
+        [Fact]
+        public void TheAnswerToADraftThatIsNotOnScreenIsSaidInTheWindowWithItsLabel()
+        {
+            var rig = new Rig();
+            var first = rig.NewSelective();
+            first.ViewChooser = _ => new[] { Planta };
+            first.InsertView();
+            var write = rig.Door.SelectiveWrites.Last();
+            var second = rig.NewSelective(); // another draft is open now
+            Assert.NotSame(first, rig.Window.NewSelectiveEditor);
+
+            rig.Door.Written(SelectiveDoorInsertion.AnswerForNewRack(write.RequestId, write.RackId, 0, null!));
+            const string NotPlaced = "AutoCAD no insertó el rack nuevo: se canceló la colocación o no se pudo preparar. El borrador sigue en la ventana; revisa la línea de órdenes de AutoCAD.";
+            Assert.Equal(NotPlaced, first.Message);
+            Assert.Equal("Borrador 1: " + NotPlaced, rig.Window.ActionMessage);
+            Assert.True(rig.Window.ActionFailed);
+
+            // «Dejar de esperar» of a draft that is not on screen.
+            first.InsertView();
+            rig.Window.ShowPage(RackCadWindowPage.Bom);
+            rig.Window.StopWaiting();
+            Assert.Equal("Borrador 1: Se dejó de esperar a AutoCAD: si la orden llega a correr, no escribirá nada. El borrador sigue sin escribir.", rig.Window.ActionMessage);
+            Assert.False(rig.Window.ActionFailed);
+
+            // On screen, the editor says it and the window does not repeat it.
+            rig.Window.OpenDraft(rig.Window.Drafts[1]);
+            rig.Window.DismissMessage();
+            second.ViewChooser = _ => new[] { Planta };
+            second.InsertView();
+            var shown = rig.Door.SelectiveWrites.Last();
+            rig.Door.Written(SelectiveDoorInsertion.AnswerForNewRack(shown.RequestId, shown.RackId, 0, null!));
+            Assert.Equal(NotPlaced, second.Message);
+            Assert.Equal(string.Empty, rig.Window.ActionMessage);
+
+            // A Dinámico too.
+            var dynamic = rig.NewDynamic();
+            dynamic.ViewChooser = _ => new[] { RackViewAddress.Post(0) };
+            dynamic.InsertView();
+            var dynamicWrite = rig.Door.Writes.Last();
+            rig.Window.OpenDraft(rig.Window.Drafts[0]);
+            rig.Door.Written(RackDoorRules.AnswerForNewRack(dynamicWrite.RequestId, dynamicWrite.RackId, 0, null));
+            Assert.StartsWith("Borrador 3: ", rig.Window.ActionMessage);
+            Assert.EndsWith(dynamic.Message, rig.Window.ActionMessage);
+        }
+
+        // Point 3: a design of the library is named as the classic editor opened from the library names it.
+        [Fact]
+        public void ADesignOfTheLibraryTakesTheNameTheClassicEditorGivesIt()
+        {
+            var rig = new Rig();
+
+            // A Dinámico keeps no name in its document: it takes the name of the entry of the library (the file), as LoadDesignForNew.
+            var source = rig.NewDynamic();
+            var dynamicProject = RackProject.ForDynamic(source.Draft.SnapshotForWrite()!.Design);
+            Assert.True(rig.Window.OpenAsNewDraft(RackCadDraftSeed.FromProject(dynamicProject)).Opened);
+            Assert.True(string.IsNullOrEmpty(rig.Window.NewDynamicEditor!.Name)); // FromProject: the document keeps none
+            Assert.True(rig.Window.OpenAsNewDraft(RackCadDraftSeed.FromLibrary(dynamicProject, " Nave din ", "del diseño «Nave din» de la biblioteca")).Opened);
+            Assert.Equal("Nave din", rig.Window.NewDynamicEditor!.Name);
+            Assert.Equal("Borrador 3: Dinámico nuevo en esta ventana, del diseño «Nave din» de la biblioteca. Todavía no está en el dibujo.",
+                rig.Window.NewDynamicEditor.Message);
+
+            // A Selectivo keeps the name of its document, as LoadForNew; with none, the automatic one of I-60 (not the name of the file).
+            var named = RackProject.ForSelectiveRack(SelectivePalletDesignDocument.From(Structure(), null, "Nave lib"));
+            Assert.True(rig.Window.OpenAsNewDraft(RackCadDraftSeed.FromLibrary(named, "archivo")).Opened);
+            Assert.Equal("Nave lib", rig.Window.NewSelectiveEditor!.Name);
+            var unnamed = RackProject.ForSelectiveRack(SelectivePalletDesignDocument.From(Structure(), null, null));
+            Assert.True(rig.Window.OpenAsNewDraft(RackCadDraftSeed.FromLibrary(unnamed, "archivo")).Opened);
+            Assert.True(string.IsNullOrEmpty(rig.Window.NewSelectiveEditor!.Name));
+        }
+
+        // Point 8: «Duplicar» is contained as every action of the window.
+        [Fact]
+        public void DuplicarIsContained()
+        {
+            var rig = new Rig();
+            var editor = rig.NewSelective();
+            editor.ViewChooser = _ => new[] { Planta };
+            editor.InsertView(); // AutoCAD writes it: «Duplicar» refuses and says it
+            var thrown = false;
+            rig.Window.PropertyChanged += (_, e) =>
+            {
+                if (thrown || e.PropertyName != nameof(RackCadWindowViewModel.ActionMessage)) return;
+                thrown = true;
+                throw new InvalidOperationException("prueba");
+            };
+
+            var opening = rig.Window.DuplicateDraft(rig.Window.Drafts[0]);
+            Assert.True(thrown);
+            Assert.False(opening.Opened);
+            Assert.Equal("La ventana tuvo un fallo contenido: prueba", rig.Window.ActionMessage);
+            Assert.Single(rig.Window.Drafts);
         }
 
         // ------------------------------------------------------------------ the views, with real WPF

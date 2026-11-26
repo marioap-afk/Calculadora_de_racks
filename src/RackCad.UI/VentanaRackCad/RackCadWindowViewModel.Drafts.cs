@@ -210,11 +210,16 @@ namespace RackCad.UI.VentanaRackCad
 
                 // A new rack of the window carries literal holguras (decision 12; RACKSELECTIVONUEVO refuses a linked one, A2-01). The
                 // classic editor opened from the library loads the same literals (the overload without the register).
-                if (HasLinkedHolgura(document))
-                    linkedNote = "Las holguras vinculadas a variables del diseño se abren con su valor: un rack nuevo de la ventana no lleva vínculos.";
+                if (HasLinkedHolgura(document)) linkedNote = LinkedHolgurasText;
             }
 
             var editor = SelectiveEditorViewModel.ForNewRack(draft, rackId, UpdateSelective, DimensionStylesOf(session));
+            if (seed.Edit != null && !editor.TakeDesignAsEdit(seed.Edit.SelectiveRack?.ToDomain()))
+            {
+                failure = "No se pudo copiar el diseño: " + (string.IsNullOrWhiteSpace(draft.LastError) ? "sin detalle." : draft.LastError);
+                return null;
+            }
+
             WireSelective(editor);
             _selectiveDrafts[(session, rackId)] = new SelectiveDraftEntry(session, editor);
             if (seed.Project != null) editor.Say(OpenedText(label, seed, draft.LoadNotice, linkedNote), error: false);
@@ -243,11 +248,21 @@ namespace RackCad.UI.VentanaRackCad
             }
 
             var editor = new DynamicEditorViewModel(draft, rackId, UpdateDynamic, isNewRack: true);
+            if (seed.Edit != null && !editor.TakeDesignAsEdit(CopyOfDynamicDesign(seed.Edit.DynamicDesign)))
+            {
+                failure = "No se pudo copiar el diseño.";
+                return null;
+            }
+
             Wire(editor);
             _dynamicDrafts[(session, rackId)] = new DynamicDraftEntry(session, editor);
             if (seed.Project != null) editor.Say(OpenedText(label, seed, draft.LoadNotice, null), error: false);
             return editor;
         }
+
+        /// <summary>What a Selectivo of the library with holguras bound to variables says when it opens as a draft (point 4 of the review).</summary>
+        internal const string LinkedHolgurasText =
+            "Las holguras vinculadas a variables se abren con el valor literal guardado en el diseño, no con el de la variable: un rack nuevo de la ventana no lleva vínculos.";
 
         // Whether a holgura of the design carries a binding entry (presence, as the document answers it): the window never names the map
         // of the links itself (ProjectVariablesConformanceTests: nobody outside Application touches it).
@@ -283,7 +298,7 @@ namespace RackCad.UI.VentanaRackCad
                 var entry = LiveEntryOf(item);
                 if (entry == null)
                 {
-                    Say("Ese borrador ya no está en la ventana.", failed: true);
+                    Say(NotHereText(item, "abrirlo"), failed: true);
                     RaiseDynamic();
                     return;
                 }
@@ -295,18 +310,28 @@ namespace RackCad.UI.VentanaRackCad
 
         /// <summary>
         /// «Duplicar»: a new draft of the same system with a copy of the last valid design of this one, with no name (at insertion it takes
-        /// the automatic one of I-60, so two racks never share a name by accident) and its own identity. The copy is «Limpio» against what it
-        /// copied, and «Descartar» goes back to it. Written tramos not applied (S-21) are not part of the design and are not copied.
+        /// the automatic one of I-60, so two racks never share a name by accident) and its own identity. The copy keeps the BASE of
+        /// «Modificado» of its original (point 1 of the review): a copy of a draft with changes is «Modificado» too, so its work vetoes
+        /// the close, is named by the prune and asks before «Descartar el borrador» or «Cerrar el editor», whatever happens to its original;
+        /// its «Descartar» goes back to that base (the defaults, or the design of the library). Written tramos not applied (S-21) are not
+        /// part of the design and are not copied. Contained, as every action of the window.
         /// </summary>
         public RackCadDraftOpening DuplicateDraft(RackCadDraftItem item)
         {
+            RackCadDraftOpening opening = null;
+            Contained(() => opening = DuplicateCore(item));
+            return opening ?? RackCadDraftOpening.Refused(_actionMessage);
+        }
+
+        private RackCadDraftOpening DuplicateCore(RackCadDraftItem item)
+        {
             var entry = LiveEntryOf(item);
-            if (entry == null) return RefuseDraft("Ese borrador ya no está en la ventana.");
+            if (entry == null) return RefuseDraft(NotHereText(item, "duplicarlo"));
             if (StateOf(entry).Writing) return RefuseDraft("AutoCAD está escribiendo " + item.Label + ": espera a que termine para duplicarlo.");
 
-            var project = CopyOf(entry);
-            if (project == null) return RefuseDraft("No hay un diseño válido de " + item.Label + " que copiar.");
-            return OpenAsNewDraft(RackCadDraftSeed.CopyOf(project, "copia de " + item.Title));
+            var copy = CopyOf(entry);
+            if (copy.Copied == null) return RefuseDraft("No hay un diseño válido de " + item.Label + " que copiar.");
+            return OpenAsNewDraft(RackCadDraftSeed.CopyOf(copy.Base, copy.Copied, "copia de " + item.Title));
         }
 
         /// <summary>
@@ -318,7 +343,12 @@ namespace RackCad.UI.VentanaRackCad
             Contained(() =>
             {
                 var entry = LiveEntryOf(item);
-                if (entry == null) return;
+                if (entry == null)
+                {
+                    if (item != null) Say(NotHereText(item, "descartarlo"), failed: true);
+                    return;
+                }
+
                 var state = StateOf(entry);
                 if (state.Writing)
                 {
@@ -384,19 +414,24 @@ namespace RackCad.UI.VentanaRackCad
             }
         }
 
-        // The last valid design of a draft as a project (copies: SnapshotForWrite), for «Duplicar»; null when it has none.
-        private static RackProject CopyOf(DraftEntry entry)
+        // For «Duplicar»: the last valid design of a draft as a project (copies: SnapshotForWrite), and the base of its «Modificado» (what
+        // its «Descartar» goes back to), which the copy keeps (point 1 of the review). Copied is null when the draft has no valid design;
+        // Base is null when it has no base, and the copy then opens over itself.
+        private static (RackProject Base, RackProject Copied) CopyOf(DraftEntry entry)
         {
             switch (entry.Editor)
             {
                 case SelectiveEditorViewModel selective:
                     var selectiveCopy = selective.Draft.SnapshotForWrite();
-                    return selectiveCopy == null ? null : RackProject.ForSelectiveRack(SelectivePalletDesignDocument.From(selectiveCopy.Design, null, null));
+                    var selectiveBase = selective.BaselineDesignJson == null ? null : new SelectivePalletDesignStore().Deserialize(selective.BaselineDesignJson);
+                    return (selectiveBase == null ? null : RackProject.ForSelectiveRack(selectiveBase),
+                        selectiveCopy == null ? null : RackProject.ForSelectiveRack(SelectivePalletDesignDocument.From(selectiveCopy.Design, null, null)));
                 case DynamicEditorViewModel dynamic:
                     var dynamicCopy = dynamic.Draft.SnapshotForWrite();
-                    return dynamicCopy == null ? null : RackProject.ForDynamic(dynamicCopy.Design);
+                    var dynamicBase = dynamic.BaselineDesignJson == null ? null : new RackProjectStore().Deserialize(dynamic.BaselineDesignJson);
+                    return (dynamicBase?.DynamicDesign == null ? null : dynamicBase, dynamicCopy == null ? null : RackProject.ForDynamic(dynamicCopy.Design));
                 default:
-                    return null;
+                    return (null, null);
             }
         }
 
@@ -421,6 +456,26 @@ namespace RackCad.UI.VentanaRackCad
             if (item == null || !Panel.PresentedSession.HasValue) return null;
             var entry = _draftEntries.FirstOrDefault(e => ReferenceEquals(e.Item, item));
             return entry != null && entry.Session == Panel.PresentedSession.Value && IsLive(entry) ? entry : null;
+        }
+
+        // Why a gesture on an item does nothing (point 5 of the review): its draft is of another drawing, or it is gone.
+        private string NotHereText(RackCadDraftItem item, string what)
+        {
+            var entry = _draftEntries.FirstOrDefault(e => ReferenceEquals(e.Item, item));
+            return entry != null && IsLive(entry) && (!Panel.PresentedSession.HasValue || entry.Session != Panel.PresentedSession.Value)
+                ? "Ese borrador es de otro dibujo: vuelve a ese dibujo para " + what + "."
+                : "Ese borrador ya no está en la ventana.";
+        }
+
+        // Point 2 of the review: what AutoCAD (or «Dejar de esperar») answers to a draft that is not on screen (another draft open, another
+        // page, another drawing) is said in its editor and ALSO in the message of the window, with its label: «Borrador 1: …».
+        private void EchoHiddenDraft(object editor, string message, bool failed)
+        {
+            if (string.IsNullOrEmpty(message)) return;
+            var entry = _draftEntries.FirstOrDefault(e => ReferenceEquals(e.Editor, editor));
+            if (entry == null || !IsLive(entry)) return;
+            if (IsNuevoPage && ReferenceEquals(ActiveEntry, entry)) return;
+            Say(entry.Item.Label + ": " + message, failed);
         }
 
         private void SetActiveDraft(DraftEntry entry)
@@ -485,7 +540,7 @@ namespace RackCad.UI.VentanaRackCad
             foreach (var entry in _draftEntries)
             {
                 RefreshEntry(entry);
-                entry.Item.SetActive(ReferenceEquals(entry, active));
+                entry.Item.SetActive(IsNuevoPage && ReferenceEquals(entry, active)); // only while «Nuevo» is shown (point 7 of the review)
             }
 
             var list = Panel.PresentedSession.HasValue

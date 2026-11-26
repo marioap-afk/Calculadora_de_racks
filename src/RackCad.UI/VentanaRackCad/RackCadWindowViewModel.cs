@@ -670,11 +670,13 @@ namespace RackCad.UI.VentanaRackCad
             {
                 entry.Editor.EndWriting();
                 entry.Editor.Say(StoppedWrite, error: false);
+                EchoHiddenDraft(entry.Editor, StoppedWrite, failed: false); // T4 new: a draft not on screen says it in the window too
             }
             else if (request.IsWrite && request.IsSelective && _selectiveDrafts.TryGetValue((request.Session, request.RackId), out var selective))
             {
                 selective.Editor.EndWriting();
                 selective.Editor.Say(StoppedWrite, error: false);
+                EchoHiddenDraft(selective.Editor, StoppedWrite, failed: false); // T4 new: a draft not on screen says it in the window too
             }
             else if (!request.IsWrite)
             {
@@ -841,6 +843,7 @@ namespace RackCad.UI.VentanaRackCad
                         selective.Editor.EndWriting();
                         if (written.Written) selective.Editor.MarkWritten(written.Message, request.SentJson, request.SentName);
                         else selective.Editor.Say(written.Message, error: true);
+                        if (!written.Written) EchoHiddenDraft(selective.Editor, written.Message, failed: true); // T4 new: a draft not on screen
 
                         // E2 P3: a new Selectivo that AutoCAD placed is a rack of the drawing now, as a new Dinámico.
                         if (written.Written && selective.Editor.IsNewRack) NewSelectiveInserted(selective.Editor, written);
@@ -852,6 +855,7 @@ namespace RackCad.UI.VentanaRackCad
                     editor.EndWriting();
                     if (written.Written) editor.MarkWritten(written.Message, request.SentJson, request.SentName);
                     else editor.Say(written.Message, error: true);
+                    if (!written.Written) EchoHiddenDraft(editor, written.Message, failed: true); // T4 new: a draft not on screen
 
                     // A new Dinámico that AutoCAD placed is a rack of the drawing now: «Nuevo» shows its systems again and says where it is.
                     if (written.Written && editor.IsNewRack)

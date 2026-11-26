@@ -506,7 +506,7 @@ namespace RackCad.UI.Tests
             var editor = rig.StartNew();
             editor.Name = "  Nave A ";
             Assert.True(editor.IsDirty);
-            Assert.Equal("Nave A (Selectivo nuevo)", rig.Window.UnwrittenWorkOf(Session)); // T4 new: a draft says it is one
+            Assert.Equal("Nave A (Borrador 1, Selectivo nuevo)", rig.Window.UnwrittenWorkOf(Session)); // T4 new: a draft says it is one, with its label
 
             editor.ViewChooser = _ => new[] { Planta };
             editor.InsertView();
