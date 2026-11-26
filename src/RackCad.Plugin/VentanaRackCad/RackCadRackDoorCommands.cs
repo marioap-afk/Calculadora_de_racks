@@ -63,7 +63,8 @@ namespace RackCad.Plugin.VentanaRackCad
                     return;
                 }
 
-                door?.AnswerRead(new RackDesignRead(pending.RequestId, pending.RackId, true, embed.Kind, embed.Name, embed.Design, null));
+                door?.AnswerRead(new RackDesignRead(pending.RequestId, pending.RackId, true, embed.Kind, embed.Name, embed.Design, null,
+                    RackPropertiesDoorData.Read(document, blocks[0].BlockId))); // T4 va: the tab «Propiedades» (VA-07)
             }
             catch (System.Exception ex)
             {
@@ -123,7 +124,8 @@ namespace RackCad.Plugin.VentanaRackCad
                 var (redrawn, erased) = RackDinamicoCommands.ApplyDynamicEdit(
                     document, blockId, embed, project,
                     new RackCad.UI.Systems.Dynamic.DynamicDraftOutcome(pending.RackId, pending.Name, pending.Design, pending.System));
-                door?.AnswerWrite(RackDoorRules.AnswerForApply(pending.RequestId, pending.RackId, redrawn, erased));
+                door?.AnswerWrite(RackPropertiesDoorData.WithRackProperties(document, pending.RackId, pending.Properties,
+                    RackDoorRules.AnswerForApply(pending.RequestId, pending.RackId, redrawn, erased))); // T4 va: and its properties (VA-07)
             }
             catch (System.Exception ex)
             {
@@ -300,6 +302,7 @@ namespace RackCad.Plugin.VentanaRackCad
 
                 // The dimension styles of the drawing, as RACKEDITAR gives them to its list (S-27): only for a rack that opens.
                 if (answer.Opens) answer = answer with { DimensionStyles = RackCommandSupport.ReadDimensionStyleNames(document) };
+                if (answer.Opens) answer = answer with { Properties = RackPropertiesDoorData.Read(document, blocks[0].BlockId) }; // T4 va (VA-07)
                 door?.AnswerSelectiveRead(answer);
             }
             catch (System.Exception ex)
@@ -368,7 +371,8 @@ namespace RackCad.Plugin.VentanaRackCad
                     document, blockId, embed, plan.Saved, registry,
                     new RackCad.UI.Systems.Selective.SelectiveDraftOutcome(write.RackId, write.Name, write.Design, write.System,
                         write.LinkedPropertyFinalStates));
-                door?.AnswerWrite(RackDoorRules.AnswerForApply(pending.RequestId, pending.RackId, redrawn, erased));
+                door?.AnswerWrite(RackPropertiesDoorData.WithRackProperties(document, pending.RackId, write.Properties,
+                    RackDoorRules.AnswerForApply(pending.RequestId, pending.RackId, redrawn, erased))); // T4 va: and its properties (VA-07)
             }
             catch (System.Exception ex)
             {

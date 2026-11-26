@@ -189,6 +189,62 @@ namespace RackCad.Plugin
         }
 
         /// <summary>
+        /// The whole draft of the custom properties of the project of the page «Variables» of the RackCad window (I-64 A-14, cuarta tanda,
+        /// va; VA-06), with the shape of <see cref="ExecuteProject"/>: one transaction re-reads the entry and has the store accredit it,
+        /// requires a writable read and the one the page read, applies the draft (<see cref="CustomPropertiesBatch.Apply"/>), asks the write
+        /// guard, serializes and writes, and confirms once. Any refusal leaves without confirming.
+        /// </summary>
+        internal static CustomPropertiesProjectExecution ExecuteProjectDraft(
+            Document document, string fingerprint, IReadOnlyList<CustomPropertyDraftEntry> entries)
+        {
+            if (document == null)
+            {
+                throw new ArgumentNullException(nameof(document));
+            }
+
+            if (entries == null)
+            {
+                throw new ArgumentNullException(nameof(entries));
+            }
+
+            var database = document.Database;
+            var store = new CustomPropertiesStore();
+
+            using (document.LockDocument())
+            using (var transaction = database.TransactionManager.StartTransaction())
+            {
+                var fresh = store.Read(CustomPropertiesData.Read(transaction, database));
+
+                if (!fresh.CanWrite)
+                {
+                    return CustomPropertiesProjectExecution.NotWritten(fresh.Outcome, CustomPropertiesRejection.NotWritable, fresh.Error);
+                }
+
+                if (!string.Equals(CustomPropertiesBatch.Fingerprint(fresh), fingerprint, StringComparison.Ordinal))
+                {
+                    return CustomPropertiesProjectExecution.NotWritten(fresh.Outcome, CustomPropertiesRejection.NotWritable, CustomPropertiesBatch.ChangedSinceReadText);
+                }
+
+                var applied = CustomPropertiesBatch.Apply(fresh, entries);
+
+                if (!applied.Succeeded)
+                {
+                    return CustomPropertiesProjectExecution.NotWritten(fresh.Outcome, applied.Rejection, applied.Error);
+                }
+
+                if (!CustomPropertiesWriteGuard.CanOverwrite(fresh, out var draftRefusal))
+                {
+                    return CustomPropertiesProjectExecution.NotWritten(fresh.Outcome, CustomPropertiesRejection.NotWritable, draftRefusal);
+                }
+
+                CustomPropertiesData.Write(transaction, database, store.Serialize(applied.Document));
+                transaction.Commit();
+
+                return CustomPropertiesProjectExecution.Written(fresh.Outcome, applied.Document, default);
+            }
+        }
+
+        /// <summary>
         /// Reads the rack of a picked block definition: scan → flat projection → authority → workspace, in one read
         /// transaction.
         /// </summary>
@@ -278,6 +334,41 @@ namespace RackCad.Plugin
             {
                 var fresh = ScanProjection(transaction, database, out var definitions);
                 var result = CustomPropertiesCommit.ForRackUnify(fresh, selection, IsKnownKind, intent);
+
+                if (!result.IsPlanned)
+                {
+                    return result;
+                }
+
+                WritePlan(transaction, definitions, result.Plan);
+                transaction.Commit();
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// The whole draft of the tab «Propiedades» of an editor of the RackCad window (I-64 A-14, cuarta tanda, va; VA-07, VA-08), on the
+        /// rack as it is NOW: the same shape as <see cref="ExecuteRack"/>, with the batch of Application (<see cref="CustomPropertiesCommit.ForRackDraft"/>).
+        /// </summary>
+        internal static CustomPropertiesCommitResult ExecuteRackDraft(
+            Document document,
+            RackCustomPropertiesSelection selection,
+            string fingerprint,
+            IReadOnlyList<CustomPropertyDraftEntry> entries,
+            string unifiedFrom)
+        {
+            if (document == null)
+            {
+                throw new ArgumentNullException(nameof(document));
+            }
+
+            var database = document.Database;
+
+            using (document.LockDocument())
+            using (var transaction = database.TransactionManager.StartTransaction())
+            {
+                var fresh = ScanProjection(transaction, database, out var definitions);
+                var result = CustomPropertiesCommit.ForRackDraft(fresh, selection, IsKnownKind, fingerprint, entries, unifiedFrom);
 
                 if (!result.IsPlanned)
                 {

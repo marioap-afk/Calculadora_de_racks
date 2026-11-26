@@ -20,7 +20,7 @@ namespace RackCad.Plugin.VentanaRackCad
     /// The Selectivo has its own two commands (Selectivo E1-A), with the same rules, and the two of its second delivery: «Insertar vista…»
     /// (RACKSELECTIVOINSERTAR) and the new Selectivo of the window (RACKSELECTIVONUEVO), each in its own slot.
     /// </summary>
-    public sealed partial class RackCadRackDoorPort : IRackCadSelectiveDoorPort // T4 cb: partial (the door of a cabecera, RackCadRackDoorPort.Cabecera.cs)
+    public sealed partial class RackCadRackDoorPort : IRackCadSelectiveDoorPort // T4 cb, va: partial (RackCadRackDoorPort.Cabecera.cs, .Variables.cs)
     {
         internal const string ReadCommand = "RACKDINAMICOABRIR";
         internal const string WriteCommand = "RACKDINAMICOAPLICAR";
@@ -36,7 +36,7 @@ namespace RackCad.Plugin.VentanaRackCad
 
         /// <summary>A write that waits for its command: the number, the copies of the draft and the drawing it is for.</summary>
         internal sealed record PendingWrite(long RequestId, string RackId, string Name, DynamicRackDesign Design, DynamicRackSystem System, long Document,
-            IReadOnlyList<RackViewAddress> Views = null);
+            IReadOnlyList<RackViewAddress> Views = null, RackPropertiesWrite Properties = null); // T4 va: Properties (VA-07)
 
         /// <summary>A write of a Selectivo that waits for its command: the request (copies of the draft and its final linked states) and the drawing.</summary>
         internal sealed record PendingSelectiveWrite(SelectiveDoorWrite Write, long Document)
@@ -152,7 +152,8 @@ namespace RackCad.Plugin.VentanaRackCad
 
             return Send(
                 WriteCommand + " ",
-                document => _pendingWrite = new PendingWrite(write.RequestId, write.RackId.Trim(), write.Name, write.Design, write.System, KeyOf(document)),
+                document => _pendingWrite = new PendingWrite(write.RequestId, write.RackId.Trim(), write.Name, write.Design, write.System, KeyOf(document),
+                    Properties: write.Properties), // T4 va
                 () => _pendingWrite = null);
         }
 
@@ -167,6 +168,7 @@ namespace RackCad.Plugin.VentanaRackCad
             if (_pendingSelectiveInsert != null && _pendingSelectiveInsert.RequestId == requestId) _pendingSelectiveInsert = null;
             if (_pendingSelectiveNew != null && _pendingSelectiveNew.RequestId == requestId) _pendingSelectiveNew = null;
             AbandonCabecera(requestId); // T4 cb
+            AbandonVariables(requestId); // T4 va: the page «Variables» (RackCadRackDoorPort.Variables.cs)
         }
 
         /// <summary>The read of a Selectivo that waits, taken once by its command; null when there is none.</summary>

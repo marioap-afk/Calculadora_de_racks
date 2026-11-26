@@ -142,6 +142,7 @@ namespace RackCad.UI.Tests
 
         private static string Pair((string Command, string Alias) entry) => entry.Command + "/" + entry.Alias;
 
+        // Cuarta tanda: RACKVARIABLES/RVA lo añadieron ut (T4UtHelp) y va (VA-10); al integrar queda una sola vez, en T4UtHelp.
         private static IEnumerable<string> Baseline() => OpeningHelp.Append(G7Help).Append(G15Help).Concat(T4UtHelp).Select(Pair);
 
         /// <summary>Vacia si la ayuda tiene exactamente los pares de apertura mas `RACKPROPIEDADES/RPR`, cada uno una vez.</summary>

@@ -351,7 +351,7 @@ namespace RackCad.UI.VentanaRackCad
 
         public bool MessageIsError => _messageIsError;
 
-        public bool CanUpdate => _update != null && !_isNewRack && _dirty && CanEdit && _editor.Design != null && string.IsNullOrEmpty(_editor.LastError);
+        public bool CanUpdate => _update != null && !_isNewRack && _dirty && CanEdit && !PropertiesBlockUpdate && _editor.Design != null && string.IsNullOrEmpty(_editor.LastError);
 
         /// <summary>A new rack of the window that is not in the drawing yet («Insertar en el dibujo…» places it).</summary>
         public bool IsNewRack => _isNewRack;
@@ -365,6 +365,7 @@ namespace RackCad.UI.VentanaRackCad
                 if (_writing) return WritingText;
                 if (!_dirty) return "Sin cambios que escribir.";
                 if (!string.IsNullOrEmpty(_editor.LastError)) return _editor.LastError;
+                if (PropertiesBlockUpdate) return PropertiesTab.BlockedText; // T4 va (VA-07)
                 return string.Empty;
             }
         }
@@ -735,6 +736,7 @@ namespace RackCad.UI.VentanaRackCad
 
             if (baseline != null) _editor.LoadFrom(baseline, _baselineName);
             TakeBaseline();
+            _propertiesTab?.Reset(); // T4 va: «Descartar» drops the properties written in the tab too (VA-07)
             _confirmingClose = false;
             Say(RackId == null || _isNewRack
                 ? "Borrador descartado."
@@ -895,6 +897,7 @@ namespace RackCad.UI.VentanaRackCad
             _writing = true;
             _writeTaken = false;
             SetConfirmingClose(false);
+            _propertiesTab?.Lock(true); // T4 va
             Say("Escribiendo el rack en el dibujo…", error: false);
             Rebuild();
         }
@@ -920,6 +923,7 @@ namespace RackCad.UI.VentanaRackCad
             if (!_writing) return;
             _writing = false;
             _writeTaken = false;
+            _propertiesTab?.Lock(false); // T4 va
             Rebuild();
         }
 
@@ -992,7 +996,8 @@ namespace RackCad.UI.VentanaRackCad
         private void UpdateDirty()
         {
             var dirty = !string.Equals(DesignJson(), _baselineJson, StringComparison.Ordinal)
-                        || !string.Equals((_editor.Name ?? string.Empty).Trim(), _baselineName, StringComparison.Ordinal);
+                        || !string.Equals((_editor.Name ?? string.Empty).Trim(), _baselineName, StringComparison.Ordinal)
+                        || PropertiesDirty; // T4 va: the tab «Propiedades» (VA-07)
             if (dirty == _dirty) return;
             _dirty = dirty;
             if (!dirty) SetConfirmingClose(false);

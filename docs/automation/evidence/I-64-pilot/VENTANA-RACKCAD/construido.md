@@ -2392,3 +2392,127 @@ tiene su prueba; los cuatro primeros, además, su comprobación en rojo.
     pruebas de Core (cambian dos de `CabeceraDoorTests`) y Core Full no se volvió a correr: su número sigue siendo el de `a2544580`
     (19154 / 0 / 403).
   - **Build Debug de la solución (Plugin incluido):** 0 errores; las 2 advertencias son las MSB3277 de siempre.
+
+## Cuarta tanda, va: «Variables» y la pestaña «Propiedades» (2026-11-26)
+
+**Rama:** local `architecture/workspace-persistente-rackcad-t4-va`, desde `ac3fd1b0`. Prototipo `variables` (VA-01 a VA-10) con las respuestas del Owner del 2026-11-26: todas aceptadas, y **VA-07 con nota** («Hay que crear una pestaña en cada rack en donde se puedan escribir las propiedades»). Sin commit, sin push, sin AutoCAD.
+
+**Lo que se construyó:**
+- **La página «Variables» de la ventana** (`VariablesPageViewModel`, `VariablesPageView`, `RackCadWindowViewModel.Variables.cs`, `RackCadWindowView.Variables.cs`). Sustituye al paso intermedio cuando la puerta de la ventana la sirve (`IRackCadVariablesDoorPort`); sin esa puerta (los dobles de las pruebas de antes) la sección sigue con su paso intermedio.
+  - Una página por dibujo, como los borradores de rack. La primera vez que se muestra lee el dibujo con `RACKVARIABLESLEER` (sin marca de Deshacer ni historial): el registro y el barrido de racks que lee RACKVARIABLES (`ReadProjectVariables`) y las propiedades del proyecto. «Más…» › «Volver a leer del dibujo» la vuelve a leer, solo sin cambios.
+  - Cabecera Limpio / Modificado / Escribiendo, «N cambios sin escribir», «Actualizar», «Descartar» y «Más…» (Comprobar, Volver a leer, Abrir la ventana clásica (RACKVARIABLES)). El motivo de un «Actualizar» desactivado va debajo, a la vista.
+  - **Pestaña «Variables de proyecto»:** la lista (Nombre, Valor o fórmula, Valor con «(antes N)», Racks, Estado; dolores 7 y 8) y el inspector de la elegida: Nombre y Valor o fórmula (van al borrador al salir del campo o con Enter; salir sin cambiar no hace nada), el valor con su pista, «Racks que la usan» por nombre con «Abrir» (abre la página del rack), «Fórmulas que la usan», «Eliminar» / «Quitar» y «Desvincular todos y eliminar…» con el motivo debajo (dolores 9 y 17). «Nueva variable» añade una fila propia (dolor 3).
+  - **«Referencias rotas»** solo si hay alguna (dolor 11), por rack y por nombre, con lo que queda. «Reparar…» y «Desvincular todos y eliminar…» preguntan en línea con lo que cambia y van al borrador, sin casillas (VA-03, dolor 10); «No reparar» y «No eliminar» los quitan.
+  - **«Lo que escribirá «Actualizar»»:** cada cambio en una línea y los racks que se redibujan. **VA-04:** una tarjeta por cada rack con un borrador sin escribir en la ventana que usa una variable que cambia («Ir a …»), y «Actualizar» desactivado con «Antes, escribe o descarta el borrador de …». Se recalcula cuando cambia el borrador del rack.
+  - **Registro bloqueado:** el aviso con el motivo de Application; no se ofrece crear ni editar; reparar y las propiedades del proyecto siguen.
+  - **Pestaña «Propiedades del proyecto»** (VA-06), con el mismo «Actualizar»: nombre, valor de varias líneas (`AcceptsReturn`, dolor 16), estado y «Quitar», «Nueva propiedad» (hasta 50) y «Se quitarán al actualizar: …». La tabla es un control reutilizable (`CustomPropertiesTableView` sobre `ICustomPropertiesTable`), el mismo de la pestaña de un rack.
+  - Ningún identificador interno a la vista (VA-09): ni el GUID del rack o de la variable, ni la clave de la propiedad (sale «Holgura vertical», «Tolerancia horizontal»), ni «Length», ni el nombre del bloque. Los errores de las fórmulas en español, en su campo y con el nombre de la variable (dolor 6). VA-05: no se admiten nombres repetidos (las dos filas lo dicen).
+  - **Un solo «Actualizar», todo o nada** (VA-02): `RACKVARIABLESAPLICAR` relee el registro, el barrido y la colección del proyecto, exige que el registro y la colección sean los que leyó la página (`VariablesDoorRules.PlanWrite`), planea el borrador entero y lo escribe: el registro y todos los racks que cambian en **una** ejecución de `ProjectVariableMutationExecutor` (una transacción) y después la colección del proyecto (`CustomPropertiesExecutor.ExecuteProjectDraft`, en el borde físico; corrección 3). Es una sola orden: un «U». Escrito, la página olvida lo leído y vuelve a leer el dibujo; los editores de Selectivo **limpios** de los racks redibujados se cierran (mostraban lo de antes) y se dice. Sin escribir, el borrador sigue, con el motivo.
+  - La puerta es la de siempre: una sola petición en vuelo para la página y los editores (S-16), con su número, el dibujo de la petición, «Dejar de esperar», `RequestStarted` y la poda de un dibujo cerrado. **D-08:** una página con cambios (o escribiéndose) es trabajo sin escribir y el dibujo no se cierra; el veto la nombra «Variables».
+- **La pestaña «Propiedades» al final de los editores de Selectivo y de Dinámico** (VA-07, nota del Owner; `RackPropertiesTabViewModel`, `RackPropertiesTabView`, `SelectiveEditorViewModel.Properties.cs`, `DynamicEditorViewModel.Properties.cs`).
+  - `RACKSELECTIVOABRIR` y `RACKDINAMICOABRIR` leen además las propiedades del rack por el borde físico de siempre (`CustomPropertiesExecutor.ReadRack`, la autoridad de RACKPROPIEDADES) y la ventana se las da al editor.
+  - Son parte del borrador del editor: lo dejan «Modificado», «Descartar» las devuelve, «Cerrar el editor» pregunta, D-08 veta el cierre, y un valor no válido apaga «Actualizar» con «Propiedades: hay N valores no válidos.». Mientras AutoCAD escribe, la tabla no se edita.
+  - «Actualizar» (`RACKSELECTIVOAPLICAR`, `RACKDINAMICOAPLICAR`) redibuja el rack como siempre y, en la misma orden, escribe el borrador de la pestaña en todas sus vistas sobre una lectura nueva (`CustomPropertiesExecutor.ExecuteRackDraft`, con la forma de `ExecuteRack`, y `CustomPropertiesCommit.ForRackDraft` en Application). La respuesta lo dice y trae lo que el dibujo guarda ahora (con los ids que acuñaron las altas); la pestaña sigue desde ahí. Si no se pudieron escribir, el rack queda escrito, las propiedades siguen en el borrador y la respuesta dice por qué.
+  - **Vistas con propiedades distintas** (VA-08): «Contenido de cada vista», ninguna elegida al abrir; «Usar esta» solo en las que Application da por fuente segura; la casilla solo cuenta con una vista elegida; «Unificar en el borrador» pasa su contenido al borrador, que se puede retocar, y «Actualizar» lo escribe en todas.
+- **RACKAYUDA** documenta RACKVARIABLES (RVA), que no estaba (VA-10).
+
+**Application (cambios declarados):**
+- `ProjectVariablesBatch` (nuevo): el borrador entero de la página es **un** plan. Hasta ahora Application planeaba una operación cada vez; encadenar esos planes juzgaría cada estado intermedio, y un borrador válido en conjunto puede pasar por uno inválido (bajar A mientras se cambia la fórmula B = A − 5). El lote juzga **el estado final** con las reglas de cada operación y reutiliza sus piezas: la reparación es `RepairBrokenRack`; «Desvincular todos y eliminar» materializa el valor de **ahora**, como la operación única; los consumidores salen de `ProjectVariableConsumerDiscovery` y cada rack se resuelve contra el registro final con el mismo resolvedor. Con una sola operación, el lote planea lo mismo que el preflight único: hay pruebas de equivalencia de renombrar, cambiar valor, eliminar (con y sin un rack que la usa), desvincular y eliminar, y reparar. **Corregido en la revisión:** la primera versión no comprobaba en «Eliminar» los racks que usan la variable, así que no era equivalente al `Delete` único (corrección 1).
+- `RegistryMutationKind.Replace` (nuevo): el lote sustituye el registro entero, y `RegistryCommit.Prepare` solo lo escribe sobre el registro contra el que se planeó (misma forma persistida); si no, nada.
+- `ProjectVariableFormulaText` (nuevo): la «forma de claves» de una fórmula de la página (`{§clave§}`), para que siga a sus variables por identidad mientras se renombran; usa el léxico de las fórmulas, así que solo toca nombres. Los ids de las variables nuevas los acuña el lote, nunca la página.
+- `ProjectVariableDiagnosticText` (nuevo): los códigos de diagnóstico de una fórmula en español.
+- `CustomPropertiesBatch` (nuevo): un borrador de propiedades entero como un cambio, con las mutaciones de siempre en un orden que no juzga estados intermedios (bajas, renombres por un nombre temporal único, valores, altas), y sus problemas por fila y campo.
+- `CustomPropertiesCommit.Draft.cs` (nuevo, `CustomPropertiesCommit` pasa a `partial`): `ForRackDraft`, `PlanDraft` y `DraftFingerprint`.
+- `RackCadVariablesDoor.cs` y `RackCadRackProperties.cs` (nuevos, en `VentanaRackCad`): la puerta de la página y la pestaña de un rack, con sus reglas puras.
+
+**Las decisiones (supuestos para el Owner):**
+
+| Id | Decisión | Por qué |
+|---|---|---|
+| VA-S1 | Las órdenes de la página son `RACKVARIABLESLEER` (lee, sin Deshacer) y `RACKVARIABLESAPLICAR` (escribe); el prototipo las dejaba [PENDIENTE] | Siguen el patrón de las de la ventana (`RACKSELECTIVOABRIR` / `…APLICAR`) |
+| VA-S2 | VA-10 a medias: RACKVARIABLES y RACKPROPIEDADES **siguen abriendo las ventanas clásicas** por su orden, y la página ofrece la clásica en «Más…». No se reencaminan a la ventana | El encargo pide que el clásico siga funcionando por su orden; reencaminadas, la clásica se quedaría sin orden. Es un cambio pequeño cuando el clásico se retire (fin de I-64) |
+| VA-S3 | «Desvincular todos y eliminar» conserva el valor de la variable **de ahora** (antes del borrador) | Es «su valor de ahora» del prototipo y lo que hace la operación única |
+| VA-S4 | El lote no redibuja un rack cuya variable cambia de definición pero no de valor (6 → «=3 * 2»); la operación única sí lo redibujaba | El diseño efectivo es el mismo |
+| VA-S5 | Una variable que **ya** no tenía valor y que el borrador no toca no es un error del borrador | Es la regla de la operación única: no hacer fallar lo que tenía valor |
+| VA-S6 | Un nombre con llaves «{ }» se rechaza en la página | La fórmula nombra entre llaves: no se podría usar |
+| VA-S7 | Variables y propiedades del proyecto se comprueban las dos antes de escribir nada, pero se escriben en dos transacciones de la misma orden (un «U»). Si la segunda fallara después de la primera, la respuesta lo dice y la relectura muestra el dibujo | El ejecutor de variables es su propia transacción; unirlas exige tocarlo. Para la planeación |
+| VA-S8 | Tras escribir, la página vuelve a leer el dibujo (otra orden sin Deshacer) en lugar de calcular lo escrito | El dibujo es la autoridad, como en el bucle de RACKVARIABLES |
+| VA-S9 | Un rack nuevo de la ventana no tiene la pestaña editable: dice que sus propiedades siguen en RACKPROPIEDADES | El despacho de «Nuevo» no escribe propiedades; puede llegar con los borradores de la parte `new` |
+| VA-S10 | «Insertar vista…» no escribe las propiedades de la pestaña: siguen en el borrador hasta «Actualizar» | Solo «Actualizar» es la escritura completa del editor, como en el prototipo |
+| VA-S11 | Las propiedades se escriben **después** del redibujo, en la misma orden, y su comprobación compara las colecciones distintas del rack, no los handles: una vista lateral que el redibujo borra no cuenta como cambio | El redibujo conserva las propiedades de cada sobre (I-54) |
+| VA-S12 | El rótulo de una vista en «Contenido de cada vista» sale del sobre («Vista lateral · corte en el poste N» con la sección + 1, «Vista frontal · fondo N») | Sin AutoCAD no se comprobó la numeración de la sección |
+| VA-S13 | La columna no marca «Variables» con su estado y la cabecera no lo cuenta en «cambios sin escribir» | Las secciones son registros fijos de la ventana compartida; el veto de cierre sí lo cuenta |
+
+**Las ediciones a archivos compartidos** (pequeñas, marcadas `T4 va`):
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowViewModel.cs`: `DoorRequest.IsVariables`; el constructor llama a `InitializeVariables()`; `ShowPage` y `Present` avisan a la página; `UnwrittenWorkOf` añade «Variables»; `PruneDeadSessions` llama a `PruneVariables`; `StopWaiting`, `OnRequestStarted`, `RaiseWaiting` y `WaitingText` atienden la petición de la página; `OnSelectiveEditorChanged` refresca los conflictos (VA-04); `OnSelectiveRead`, `OnDesignRead`, `WriteSelective`, `WriteDynamic` y `OnDesignWritten` pasan las propiedades del rack.
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowView.xaml(.cs)`: `xmlns:local`; la sección «Variables» con `VariablesPageHost` y el paso intermedio, con su visibilidad; dos llamadas a `ShowVariablesPage()`.
+- `src/RackCad.UI/VentanaRackCad/SelectiveEditorViewModel.cs`: `RefreshDirty`, `CanUpdate`, `UpdateBlockedText`, `Discard`, `BeginWriting` y `EndWriting`, una línea cada uno.
+- `src/RackCad.UI/VentanaRackCad/DynamicEditorViewModel.cs`: `partial`; `UpdateDirty`, `CanUpdate`, `UpdateBlockedText`, `Discard`, `BeginWriting` y `EndWriting`, una línea cada uno.
+- `src/RackCad.UI/VentanaRackCad/SelectiveEditorView.xaml` y `DynamicEditorView.xaml`: la pestaña «Propiedades» al final, en un bloque.
+- `src/RackCad.UI/RackCommandReference.cs`: la entrada de RACKVARIABLES.
+- `src/RackCad.Application/VentanaRackCad/RackCadRackDoor.cs`: campos opcionales al final de `RackDoorWrite`, `RackDesignRead`, `RackDesignWritten`, `SelectiveDoorWrite` y `SelectiveDesignRead`.
+- `src/RackCad.Application/ProjectVariables/MutationPlan.cs` y `RegistryCommit.cs`: `Replace`. `src/RackCad.Application/CustomProperties/CustomPropertiesCommit.cs`: `partial`.
+- `src/RackCad.Plugin/VentanaRackCad/RackCadRackDoorPort.cs`: `partial`, `AbandonVariables` en `Abandon`, `PendingWrite.Properties`.
+- `src/RackCad.Plugin/VentanaRackCad/RackCadRackDoorCommands.cs`: la lectura de las propiedades en las dos aperturas y su escritura tras las dos «Actualizar».
+- `src/RackCad.Plugin/CustomPropertiesExecutor.cs` (el borde físico): `ExecuteRackDraft`, con la forma de `ExecuteRack`, y `ExecuteProjectDraft`, con la de `ExecuteProject` (corrección 3).
+
+**Censos y guardas que cambian, con su nota:**
+- `SelectiveEditorOpenTests.GUARDA_EL_CENSO_DE_COMANDOS_NO_CAMBIA`: de 51 a 53.
+- `CustomPropertiesCommandGuardTests`: `A14VariablesDoorCommands` en la base.
+- `RackCadWindowListTests.TheFoldersOfTheWindowKeepTheirLayers`: `RackCadVariablesDoorCommands.cs` es un archivo de órdenes de la puerta, como `RackCadRackDoorCommands.cs` (tampoco bloquea ni abre transacciones: lee con `ReadProjectVariables` y `CustomPropertiesExecutor`).
+- `CustomPropertiesEdgeGuardTests` (T-GRD-04): `ExecuteRackDraft` entra en la lista de ejecutores del borde, con su llamada única a `CustomPropertiesCommit.ForRackDraft` y sin las de los otros dos; tras la revisión, también `ExecuteProjectDraft`, y `PluginCallersOutsideTheEdge` vigila además `CustomPropertiesData.Write` y `CustomPropertiesWriteGuard`. El borde vuelve a ser un solo archivo: ningún otro archivo del Plugin nombra la autoridad, el commit, la escritura del proyecto ni su guarda (la primera versión tenía un segundo escritor del proyecto, `CustomPropertiesBatchWriter`, ya retirado).
+- `CustomPropertiesProjectTests` (T-PRJ-04): la guarda del ejecutor de Proyecto mira también `ExecuteProjectDraft`, con un paso más (comparar con lo leído) y cuatro mutaciones nuevas.
+- `CustomPropertiesHelpCensusTests` (UI): RACKVARIABLES/RVA en la ayuda.
+- `RackCadSelectiveEditorTests` (UI): el censo de pestañas termina en «Propiedades».
+
+**Las pruebas nuevas:**
+- Core, `ProjectVariablesBatchTests` (27): el borrador vacío; un renombre, un cambio de valor, «Desvincular todos y eliminar» y una reparación, cada uno igual al preflight único; el borrador válido en conjunto cuyo paso solo no lo es; dos variables nuevas que se usan por clave; el valor que no cambia no redibuja; los nombres repetidos; seis errores de definición en español, sin id; el ciclo; eliminar con una fórmula que la usa, y cambiarla en el mismo borrador; una fórmula que usa una eliminada; el commit de `Replace` sobre el registro planeado y sobre otro; la forma de claves; el borrador de propiedades (intercambio de nombres, alta, baja, problemas por fila); las reglas de la puerta (lo leído, lo cambiado, las propiedades del proyecto, nada que escribir) y la respuesta.
+- Core, `RackPropertiesRulesTests` (4): la lectura de un rack, la escritura en todas las vistas solo sobre lo leído, el borrador que rompe una regla y la unificación desde una fuente segura.
+- UI, `RackCadVariablesPageTests` (15): la página (valores, racks por nombre, motivo de «Eliminar»), el borrador y «Descartar», el error en su campo, la variable nueva que sigue a otra por identidad y los nombres repetidos, «Desvincular todos y eliminar» y «Reparar» en línea, las propiedades del proyecto, la ventana (una lectura, una petición, D-08, la orden que la tomó, la respuesta escrita y la relectura, la respuesta de otro número, el fallo, «Dejar de esperar»), VA-04 con un Selectivo modificado, el editor limpio que se cierra, la sección sin la puerta, y las vistas con WPF real (sin errores de enlace, la pregunta en línea, la tabla de propiedades, el inspector debajo en estrecho, la ventana que aloja la página).
+- UI, `RackCadRackPropertiesTabTests` (7): la pestaña en el borrador del editor y «Descartar», el valor no válido que apaga «Actualizar», la unificación tras elegir y confirmar, Dinámico con la misma pestaña, la ventana que da y envía las propiedades y las que no se escribieron, y la vista de los dos editores con WPF real.
+
+**Comprobación en rojo:** seis piezas rotas a propósito, una a una, con su clase de pruebas tras cada una; cada archivo se restauró de sus bytes con fecha nueva y se comprobó igual:
+1. el lote sin la regla «lo que tenía valor lo conserva»: falla la del borrador válido en conjunto (el paso solo ya no se rechaza);
+2. el commit de `Replace` sin comparar el registro planeado: falla la del commit sobre otro registro;
+3. la pestaña de un rack sin comparar lo que se leyó: falla la de la escritura solo sobre lo leído;
+4. la página sin conflictos (VA-04): falla la del Selectivo modificado;
+5. el consejero de cierre sin la página (D-08): falla la de la ventana;
+6. la pestaña fuera del «Modificado» del editor de Selectivo: fallan cinco de las siete de la pestaña.
+
+**Los números:**
+- **UI completa:** 2777 correctas, 1 con error, 48 omitidas (2826): la base, 2756, más las 22 nuevas (15 + 7) y las cambiadas. El error es `RackModalHostWindowTests.TheModalHostRunsTheWorkWithItsWindowAsOwnerAndCloses` por su temporizador de seguridad (M-21), con cinco suites de UI de otras partes corriendo a la vez en la máquina (50 min); sola, la clase pasa 3 de 3.
+- **Core Full:** 19176 correctas, 2 con error, 403 omitidas (19581): la base, 19147, más las 31 nuevas. Los dos errores eran míos y se corrigieron después: `LengthUnitsAuthorityGuardTests` (dos textos de ayuda escribían «[mm]» a mano; ahora salen de `LengthUnits.Authority`) y `WorkspacePilotReconciliationGuardTests` (la página tenía un `Update()`, nombre que la guarda reserva al campo del panel; ahora es `RequestWrite()`, como los editores). Esas dos guardas y las clases nuevas, otra vez: 81 de 81 (1 omitida); las focales de UI tras el cambio: 59 de 59. **Las dos suites completas no se repitieron** después de estos dos cambios de texto y de nombre (73 min la de Core con la máquina compartida): queda para la sesión.
+- **Build Debug del Plugin:** 0 errores (las 2 advertencias MSB3277 de siempre).
+
+**Lo que queda abierto:**
+- VA-10 completo: reencaminar RACKVARIABLES y RACKPROPIEDADES a la ventana (VA-S2), cuando el clásico se retire.
+- Una sola transacción para variables y propiedades del proyecto (VA-S7); las propiedades de un rack nuevo (VA-S9, con los borradores de la parte `new`); la marca de «Variables» en la columna (VA-S13).
+- **Sin AutoCAD (smoke):** que `RACKVARIABLESLEER` no deje nada en Deshacer; que `RACKVARIABLESAPLICAR` escriba el registro y los racks con un solo «U»; la pestaña «Propiedades» escrita tras el redibujo y su «U»; los rótulos de las vistas en la unificación (VA-S12); la página en la paleta (foco, anchos).
+
+### Correcciones de la revisión
+
+Revisión independiente de `89cd65f9` (commit de la sesión con esta parte). Para cada punto se escribió primero la prueba que reproduce el fallo, se vio en rojo sobre `89cd65f9` (14 de Core y 1 de UI fallaron; la de «Eliminar sin racks», que ya era equivalente, pasaba) y después la corrección. Pruebas nuevas: `ProjectVariablesBatchReviewTests` (Core, 9), una más en `RackCadVariablesPageTests` (UI), dos casos más en `TGrd04_LaGuardaDetectaOtroArchivoDelPluginQueDecide` y cuatro mutaciones más en `TPrj04_LaGuardaDetectaUnEjecutorDeProyectoQueSeSaleDelContrato`.
+
+| Punto | Qué pasaba | Qué se hizo |
+|---|---|---|
+| 1 [ALTO] | «Eliminar» del lote no miraba los racks que usan la variable. Si después de leer la página un rack se vinculaba a ella en RACKEDITAR (o un «U» deshacía un desvínculo), «Actualizar» escribía el registro sin la variable y dejaba una referencia rota | En las bajas «Eliminar», `ProjectVariableConsumerDiscovery.DiscoverConsumers` sobre el barrido de ahora, como `ProjectVariableMutationPreflight.Delete`: un barrido que falla es error, y un rack que la usa también, con su nombre y «usa «Desvincular todos y eliminar…»». Prueba de equivalencia con el `Delete` único con y sin rack |
+| 2 [MEDIO-BAJO] | VA-S7: si la segunda transacción (propiedades del proyecto) devolvía un error, la página decía «escritas» y vaciaba sus filas; si lanzaba, la orden respondía «No se pudo escribir» con el registro y los racks ya confirmados | `VariablesDoorWritten.PropertiesError`; la escritura de las propiedades tiene su propio `try` en `RACKVARIABLESAPLICAR`; la página dice el error (en rojo) y conserva el borrador de propiedades sobre la relectura |
+| 3 [MEDIO, guardas] | `CustomPropertiesBatchWriter` era un segundo escritor del proyecto fuera del borde | Retirado. La escritura es `CustomPropertiesExecutor.ExecuteProjectDraft`, con el contrato de `ExecuteProject` (relee, acredita, exige escribible, compara con lo leído, aplica el borrador, consulta la guarda, serializa, escribe y confirma una vez). Guardas: `Executors`, T-PRJ-04 y `PluginCallersOutsideTheEdge` (ver «Censos y guardas») |
+| 4 [BAJO] | Eliminar A y renombrar B como «A» (o crear una «A» nueva) con una fórmula que la usa daba «Hay más de una variable con ese nombre» | Las fórmulas se ligan contra el registro sin las variables que se eliminan: una variable eliminada deja libre su nombre. La fórmula que usa una eliminada se sigue rechazando antes, por su clave |
+| 5 [BAJO] | Reparar un rack y «Desvincular todos y eliminar» una variable que el mismo rack usa daba «no tiene un valor que conservar» | El valor de ahora se resuelve sobre el diseño ya reparado del rack cuando lo hay |
+| 6 [BAJO] | Una variable sin tocar con valor ≤ 0 (ya así en el dibujo) bloqueaba todo el borrador | VA-S5: sin redefinir y con el mismo resultado que ahora, no es un error del borrador |
+| 7 [LATENTE] | Con un registro no utilizable (PresentButUnreadable, IncompatibleMajor) el lote seguía planeando reparaciones, contra un registro vacío | El lote no planea nada, reparaciones incluidas (I-47, ADR-0034 §8). La página bloqueada solo ofrece reparar si muestra alguna referencia rota |
+
+**Comprobación en rojo de 1 a 3**, cada pieza rota a propósito y restaurada de sus bytes con fecha nueva:
+- R1, «Eliminar» sin mirar los racks: falla `DeletingAVariableThatARackUsesIsRefusedAsTheSingleDelete`;
+- R2a, la respuesta sin `PropertiesError`: falla `AWriteWhosePropertiesFailedSaysSoApartFromTheVariables`;
+- R2b, la página que no mira `PropertiesError`: falla `PropertiesOfTheProjectThatCouldNotBeWrittenStayInTheDraftAfterTheVariablesAreWritten` (UI);
+- R3, `PluginCallersOutsideTheEdge` sin la escritura del proyecto ni su guarda: fallan los dos casos nuevos de `TGrd04_LaGuardaDetectaOtroArchivoDelPluginQueDecide`.
+
+La prueba del `try` propio de la segunda transacción es de fuente (la orden es código de AutoCAD sin pruebas aquí) y falló sobre `89cd65f9`.
+
+**Los números tras las correcciones** (las dos suites completas, repetidas, sobre las fuentes restauradas):
+- **Core Full:** 19193 correctas, 0 con error, 403 omitidas (19596): la base, 19147, más las 31 de la parte y las 15 de la revisión (9 de `ProjectVariablesBatchReviewTests`, 2 casos de T-GRD-04 y 4 mutaciones de T-PRJ-04). Incluye `LengthUnitsAuthorityGuardTests` y `WorkspacePilotReconciliationGuardTests`, que fallaban en la primera Core Full y se corrigieron antes del commit `89cd65f9`.
+- **UI completa:** 2779 correctas, 0 con error, 48 omitidas (2827): la base, 2756, más las 22 de la parte y 1 de la revisión.
+- **Build Debug del Plugin:** 0 errores (las 2 advertencias MSB3277 de siempre).
+- Las dos suites corrieron a la vez, sobre las fuentes restauradas tras la comprobación en rojo, con otras partes usando la máquina (34 min la de Core, 30 la de UI).

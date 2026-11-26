@@ -705,7 +705,7 @@ namespace RackCad.UI.VentanaRackCad
         public bool MessageIsError => _messageIsError;
 
         // E2 P3: a new Selectivo of the window is written with «Insertar en el dibujo…», never with «Actualizar».
-        public bool CanUpdate => _update != null && !_isNewRack && _loadError == null && _dirty && !_writing && !_segmentsPending && _editor.Design != null
+        public bool CanUpdate => _update != null && !_isNewRack && _loadError == null && _dirty && !_writing && !_segmentsPending && !PropertiesBlockUpdate && _editor.Design != null
                                  && string.IsNullOrEmpty(_editor.LastError);
 
         public string UpdateBlockedText
@@ -719,6 +719,7 @@ namespace RackCad.UI.VentanaRackCad
                 if (_segmentsPending) return PendingSegmentsText;
                 if (!_dirty) return "Sin cambios que escribir.";
                 if (!string.IsNullOrEmpty(_editor.LastError)) return _editor.LastError;
+                if (PropertiesBlockUpdate) return PropertiesTab.BlockedText; // T4 va (VA-07)
                 return string.Empty;
             }
         }
@@ -1419,6 +1420,7 @@ namespace RackCad.UI.VentanaRackCad
             }
 
             TakeBaseline();
+            _propertiesTab?.Reset(); // T4 va: «Descartar» drops the properties written in the tab too (VA-07)
             _confirmingClose = false;
             Say(_isNewRack
                 ? "Borrador descartado."
@@ -1475,6 +1477,7 @@ namespace RackCad.UI.VentanaRackCad
             _writing = true;
             _writeTaken = false;
             SetConfirmingClose(false);
+            _propertiesTab?.Lock(true); // T4 va
             Say("Escribiendo el rack en el dibujo…", error: false);
             Rebuild();
         }
@@ -1496,6 +1499,7 @@ namespace RackCad.UI.VentanaRackCad
             if (!_writing) return;
             _writing = false;
             _writeTaken = false;
+            _propertiesTab?.Lock(false); // T4 va
             Rebuild();
         }
 
@@ -1579,7 +1583,7 @@ namespace RackCad.UI.VentanaRackCad
         private void RefreshDirty()
         {
             var pending = MeasurePendingSegments();
-            var dirty = _designDirty || pending || CabeceraPending; // T4 cb: a cabecera with changes not applied (D-08)
+            var dirty = _designDirty || pending || CabeceraPending || PropertiesDirty; // T4 cb: a cabecera with changes not applied (D-08); T4 va: the tab «Propiedades» (VA-07)
             if (dirty == _dirty && pending == _segmentsPending) return;
             _segmentsPending = pending;
             _dirty = dirty;

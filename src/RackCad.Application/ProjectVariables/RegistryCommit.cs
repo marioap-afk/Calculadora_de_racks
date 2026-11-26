@@ -158,6 +158,29 @@ namespace RackCad.Application.ProjectVariables
                 return RegistryCommitPreparation.Blocked(accreditation.Error);
             }
 
+            // VA-02 (cuarta tanda, va): a batch of the page «Variables» replaces the whole register, and only the one it was planned
+            // against. The re-read is accredited above; here it must BE that register, or nothing is written.
+            if (plan.RegistryMutation.Kind == RegistryMutationKind.Replace)
+            {
+                var expected = plan.RegistryMutation.ExpectedBase ?? ProjectVariablesDocument.CreateNew();
+                var current = accreditation.Document ?? ProjectVariablesDocument.CreateNew();
+                if (!string.Equals(ProjectVariableCloning.Canonical(current), ProjectVariableCloning.Canonical(expected), StringComparison.Ordinal))
+                {
+                    return RegistryCommitPreparation.Blocked(
+                        "El registro de variables cambió en el dibujo desde que se planeó el cambio: no se escribió nada.");
+                }
+
+                var replaced = plan.RegistryMutation.ApplyTo(current);
+                var replacedAccreditation = UsableProjectVariablesRegistry.Accredit(ProjectVariablesReadResult.Readable(replaced));
+                if (!replacedAccreditation.IsUsable)
+                {
+                    return RegistryCommitPreparation.Blocked(replacedAccreditation.Error);
+                }
+
+                return RegistryCommitPreparation.Completed(
+                    RegistryCommitOutcome.Ready, replaced, 1, plan.RackMutations.Count, 0);
+            }
+
             if (plan.RegistryMutation.Kind == RegistryMutationKind.ChangeValue &&
                 plan.RegistryMutation.ExpectedDefinition != null &&
                 (!accreditation.Registry.TryGetTarget(plan.RegistryMutation.VariableId, out var currentTarget) ||

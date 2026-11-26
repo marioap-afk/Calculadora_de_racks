@@ -44,8 +44,10 @@ namespace RackCad.UI
             new RackCommandInfo("Editar y copiar", "RACKEDITAR", "RED", "Reabrir el editor de un rack dibujado; al confirmar redibuja todas sus vistas y, si lo pides, inserta una o varias vistas nuevas ligadas al mismo rack."),
             new RackCommandInfo("Editar y copiar", "RACKDUPLICAR", "RD", "Copiar un rack como INDEPENDIENTE, estilo COPY: punto base → destinos (múltiple por defecto)."),
             new RackCommandInfo("Editar y copiar", "RACKPROPIEDADES", "RPR", "Propiedades personalizadas estables (nombre y valor) de un rack o del Proyecto; lo que no se puede escribir se ve en solo lectura con su motivo, y las vistas de un rack que difieren se pueden unificar."),
+            // Cuarta tanda (va), VA-10, y (ut), UT-11: RACKVARIABLES (alias RVA) no estaba en la ayuda; en la ventana RackCad es la sección
+            // «Variables». Las dos partes la añadieron: al integrarlas queda UNA entrada, con el texto de va.
+            new RackCommandInfo("Editar y copiar", "RACKVARIABLES", "RVA", "Variables de proyecto del dibujo (longitudes con nombre, valor o fórmula) y sus referencias rotas. En la ventana RackCad, la sección «Variables» las edita sin bloquear AutoCAD."),
             new RackCommandInfo("Editar y copiar", "RACKPROYECTAR", "RPY", "Proyectar racks ya dibujados a otra clase de vista (Frontal, Lateral o Planta) con orientación Proyectada (por defecto: la referencia gira entera para seguir a su vista origen) o Predeterminada: punto base → destino. Crea vistas enlazadas del mismo rack, no copias: el rack sigue siendo el mismo y el BOM no cambia (para copiar, RACKDUPLICAR)."),
-            new RackCommandInfo("Editar y copiar", "RACKVARIABLES", "RVA", "Administrar las variables del dibujo: crear, renombrar, usar un literal o una fórmula, cambiar la definición y reparar referencias rotas."),
 
             new RackCommandInfo("Almacén (layout)", "RACKLAYOUT", "RLY", "Replica un rack en una rejilla: filas × columnas + pasillos + numeración; back-to-back y verificar encaje."),
             new RackCommandInfo("Almacén (layout)", "RACKRELLENAR", "RR", "Auto-rellena el área con racks: contorno + columnas en la capa RACKCAD_SITIO; calcula la rejilla máxima que cabe."),
