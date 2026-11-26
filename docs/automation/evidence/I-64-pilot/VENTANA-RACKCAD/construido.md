@@ -571,7 +571,7 @@ Los menores:
 |---|---|---|
 | I-01 | CORREGIDO | «Larguero a piso en N1» con frentes que difieren: un clic lo pone en todos los frentes de la selección, nunca lo quita. El `false` que manda WPF desde una casilla indeterminada significa «todos». El rótulo dice «Larguero a piso en N1 (varía; marcar lo pone en todos)», como el draft (S-20). Es la única casilla del editor de Selectivo con «varía»: las demás (placa base, numeración, nombre, tarimas, cotas por vista, «con largueros» de cada tramo, «Ver detalle») son de todo el rack o de una fila y nunca están indeterminadas |
 | M-01 | DECLARADO | S-02 de E1-A recoge ahora las tres diferencias de los gestos del clásico: el redondeo a tres decimales al cambiar de celda, el peralte fuera del catálogo que pasa al primero de la lista y «Aplicar a» que copia las siete magnitudes |
-| M-02 | PENDIENTE: llega por la rama de Dinámico | Por orden del Owner, la regla de las vistas hermanas con diseños distintos se construye una vez, genérica para los dos sistemas, en la rama de Dinámico, y después se integra aquí y se aplica a RACKSELECTIVOABRIR y RACKSELECTIVOAPLICAR. Esta corrección no la toca: la puerta sigue leyendo y escribiendo sobre `blocks[0]` |
+| M-02 | CORREGIDO por la rama de Dinámico (S-25; ver «Selectivo: M-02 con la regla de Dinámico», más abajo) | Por orden del Owner, la regla de las vistas hermanas con diseños distintos se construye una vez, genérica para los dos sistemas, en la rama de Dinámico, y después se integra aquí y se aplica a RACKSELECTIVOABRIR y RACKSELECTIVOAPLICAR. Esta corrección no la toca: la puerta sigue leyendo y escribiendo sobre `blocks[0]` |
 | M-03 | CORREGIDO | `LoadFrom` comprueba los frentes antes de copiar el diseño, así que la rama «El diseño leído no tiene frentes: el editor conserva el rack que tenía» ocurre de verdad (S-29) |
 | M-04 | CORREGIDO | Los tramos escritos y sin aplicar son un cambio: el editor queda «Modificado», «Cerrar el editor» pregunta y D-08 veta el cierre del dibujo. «Actualizar» no escribe y dice «Aplica los tramos con «Aplicar tramos» o descártalos antes de escribir.». Otro frente u otros fondos de la vista los descartan con un aviso en la línea de mensajes, y «Descartar» también. Se añade «Descartar tramos» (S-21) |
 | M-05 | CORREGIDO | Con cotas heredadas (`DimensionViews` nulo), si las tres casillas vuelven a como las mostraba la política cargada, el valor vuelve al cargado exacto y el editor a «Limpio» (S-22) |
@@ -591,7 +591,7 @@ Los menores:
 | S-22 | Las cotas por vista vuelven al valor cargado exacto cuando las tres casillas vuelven a como las mostraba la política cargada: es «no tocadas» de `DimensionViewPolicy.FromEditor`. **Diferencia declarada con el clásico:** el clásico, en ese caso, guarda 7 (las tres vistas) en un rack heredado; el borrador conserva el nulo. El dibujo es el mismo, porque el nulo muestra las tres | Salir de un campo sin cambiarlo no cambia nada; un falso «Modificado» vetaba el cierre del dibujo |
 | S-23 | El larguero, su peralte y el claro se desactivan solo si **toda** la selección es N1 sin larguero en **ningún** fondo de la vista (en «Todos los fondos», basta un fondo con larguero a piso para ofrecerlos). Lo que guardan se conserva. La tarima y el largo manual del larguero siguen editables | El draft aprobado (`'Sin larguero (piso)'`, el claro con `'No en N1'`). Lo que no se dibuja no debe dejar el borrador «Modificado» |
 | S-24 | Los rechazos de S-04 terminan con «Cierra el editor (los cambios de la ventana se pierden) y vuelve a abrirlo con «Editar aquí».», y nombran todas las holguras que cambiaron, siempre en el mismo orden (la holgura vertical, la tolerancia horizontal): «Los vínculos de la holgura vertical y de la tolerancia horizontal cambiaron…», «Los valores de lo que gobierna la holgura vertical y la tolerancia horizontal cambiaron…» | «Descartar» vuelve a lo que se abrió y no relee el dibujo, así que «Vuelve a abrir el rack» no se podía hacer sin cerrar el editor |
-| S-25 | Reservada para M-02 (las vistas hermanas con diseños distintos): la regla llega por la rama de Dinámico y no está en esta corrección | Orden del Owner: una sola regla, genérica para los dos sistemas |
+| S-25 | M-02 (las vistas hermanas con diseños distintos): la regla `RackSiblingDesigns` llegó por la rama de Dinámico (`8fd26a14`) y se aplica a RACKSELECTIVOABRIR y RACKSELECTIVOAPLICAR (`5052a0ca`) | Orden del Owner: una sola regla, genérica para los dos sistemas |
 | S-26 | El nombre de un Selectivo en el veto de cierre y en la poda: el del borrador; si está vacío, el del sobre tal como lo tenía la lista de la ventana al abrir el editor (se guarda con el borrador, de solo lectura); el id solo si tampoco hay ese | El dibujo y la lista muestran el nombre del sobre; el GUID no le dice nada al usuario |
 | S-27 | «Estilo de cota» es una lista: «(Automático)» primero, los estilos del dibujo (recortados, sin repetir, sin vacíos), y luego el estilo con el que abrió el rack y el actual, si el dibujo no los tiene. Elegir «(Automático)» guarda el estilo vacío. Sin estilos leídos, la lista tiene «(Automático)» y el estilo cargado | Como el clásico (`SetDimensionStyles` y `SelectDimStyle`): un error al escribir ya no puede guardar un estilo que no existe |
 | S-28 | Cuando la orden toma la escritura (`RequestStarted`), la ventana avisa al editor de Selectivo (`WriteTaken`), que deja de decir «pulsa «Dejar de esperar»» y dice «AutoCAD ya tomó la escritura del rack: espera a que termine, o termina o cancela la orden en AutoCAD; la ventana recibirá su respuesta.». La escritura siguiente empieza otra vez sin tomar | Lo resolvió así la ventana para Dinámico tras I-02 de su quinta revisión (`CanStopWaiting` y su texto); el editor de Dinámico no se toca |
@@ -643,3 +643,77 @@ M-02 no tiene comprobación en rojo: no está en esta corrección. Cada archivo 
 - **M-02**, por la rama de Dinámico.
 - **El smoke del Owner en AutoCAD:** lo de E1-B, más la casilla «varía», los tramos pendientes, la lista de estilos con los del dibujo y el texto tras «Started».
 - S-11 sigue para la revisión; S-21 (el botón «Descartar tramos») y S-22 (el nulo conservado) son nuevas y conviene que las vea.
+
+## Dinámico, correcciones de la revisión de Selectivo (2026-11-25)
+
+La revisión de la entrega 1 de Selectivo (hallazgos I-01 y M-02) encontró dos fallos que Dinámico también tenía. Por orden del Owner («Corrige también Dinámico en su rama») se corrigieron aquí, sobre `dc82a43c` (commit `8fd26a14`). Fuera de estas dos correcciones Dinámico no cambia.
+
+**1. La casilla «Guía de entrada» con «varía» quitaba en vez de poner (I-01 en Dinámico).**
+- Con una selección mixta, la casilla del inspector está indeterminada. WPF, al hacer clic, la pasa a «sin marcar», no a «marcada», y la ventana quitaba la guía de todas las celdas de la selección.
+- Ahora, mientras la casilla dice «varía», un clic pone la guía en todas las celdas activas de la selección y nunca la quita. Una vez igualadas, la casilla funciona como cualquier otra.
+- Con la selección mixta, el rótulo es el del prototipo aprobado: «Guía de entrada (varía; marcar la pone en todas)».
+- Las otras cuatro casillas del editor («Numerar frentes», «Numerar niveles», «Colocar nombre de rack» y «Reforzar el poste derivado») son de todo el rack y no pueden quedar indeterminadas: no cambian.
+
+**2. La puerta leía y escribía sobre la primera vista (M-02 en Dinámico).**
+- RACKDINAMICOABRIR abría el diseño del primer bloque que da `FindRackBlocks`, y RACKDINAMICOAPLICAR y RACKDINAMICOINSERTAR escriben el borrador en todas las vistas. Si las vistas hermanas tenían diseños distintos, la ventana abría uno cualquiera y «Actualizar» lo escribía en todas.
+- **La regla nueva**, pura y genérica, está en `src/RackCad.Application/VentanaRackCad/RackSiblingDesigns.cs` (archivo propio, para no chocar con la rama de Selectivo):
+  - `RackSiblingDesigns.Compare(string rackId, IReadOnlyList<RackSiblingView> views)` → `RackSiblingDesignsVerdict(Outcome, Reason, Diagnostic)`, con `Coincide`;
+  - `RackSiblingView(SourceIdentity, Envelope)`: el bloque (su handle) y su sobre, con el diseño;
+  - los resultados son `Same`, `Divergent` y `Unverifiable`;
+  - usa el comparador que ya decide AUTHORED_DIVERGENT para cada tipo (`RackAuthoredComparatorPorts`): Selectivo con su autoridad, y Dinámico, Push Back, Cantilever y Cabecera con AUTH-13. No inventa otra igualdad.
+- **Las tres órdenes** la llaman justo después de `FindRackBlocks`, antes de leer `blocks[0]` y antes de escribir nada. Si las vistas no coinciden:
+  - RACKDINAMICOABRIR no abre el rack: «Las vistas de este rack no tienen el mismo diseño: ábrelo con RACKEDITAR desde la vista que quieras conservar; «Actualizar» las iguala.»;
+  - RACKDINAMICOAPLICAR y RACKDINAMICOINSERTAR no escriben nada, con el mismo motivo;
+  - RACKDINAMICONUEVO no la usa: el rack todavía no está en el dibujo.
+- **El texto es cierto (comprobado por lectura):** «Actualizar» de RACKEDITAR en Dinámico (`UpdateOnly`) redibuja en sitio todos los bloques que da `FindRackBlocks`, el mismo conjunto que compara la regla, con el diseño y el nombre del rack abierto desde la vista elegida. Hay dos salvedades: una vista lateral cuyo corte ya no existe se borra, y una vista que no se puede redibujar conserva su diseño.
+- **D-11 (decisión de la sesión).** Mientras la casilla dice «varía», cualquier escritura pone la guía, también el «sin marcar» que manda WPF; una escritura nula no hace nada. No se usa una casilla de tres estados.
+- **D-12 (decisión de la sesión).** La regla compara lo que compara el comparador del tipo, y nada más:
+  - en los cuatro tipos de AUTH-13 cuenta también el nombre del rack: la ventana muestra uno y lo escribe en todas las vistas;
+  - no cuentan la vista y el corte de cada bloque, sus propiedades personalizadas ni los valores por defecto heredados que el comparador documenta;
+  - en Selectivo, su autoridad compara solo el diseño;
+  - una sola vista coincide sin leerse, así que la puerta la abre como antes.
+- **D-13 (decisión de la sesión, para revisar en la planeación).** Si no se puede comprobar que coincidan, la puerta no abre ni escribe (cerrada ante la duda), con su propio texto: «No se pudo comprobar que las vistas de este rack tengan el mismo diseño: ábrelo con RACKEDITAR desde la vista que quieras conservar.»
+  - **Cuándo pasa:** una vista que el comparador no sabe leer (por ejemplo, un campo que no conoce en el diseño, como los que conserva una versión más nueva), vistas de tipos distintos, un tipo sin comparador demostrado (Cama) o una vista sin sobre.
+  - **Por qué otro texto:** el del encargo («no tienen el mismo diseño») no sería cierto, y aquí «Actualizar» no siempre lo arregla.
+  - **Riesgo:** un Dinámico de varias vistas con un campo desconocido en su diseño ya no se abre en la ventana. RACKEDITAR sí lo abre.
+
+**Las pruebas:**
+- UI, en `DynamicSafetyTabTests` (de 12 a 14):
+  - `WhenTheGuideVariesAWriteOfTheBoxPutsItInEveryCellOfTheSelection`, del modelo de la vista: con «varía», el «sin marcar» y el «marcar» ponen la guía en las cinco celdas, una escritura nula no cambia nada, el rótulo cambia y, ya igualadas, desmarcar la quita;
+  - `AClickOnTheIndeterminateGuideBoxPutsTheGuideInEveryCellOfTheSelection`, de vista con WPF real: la casilla indeterminada, con su rótulo, se alterna con `CheckBoxAutomationPeer` (`IToggleProvider.Toggle`). El primer clic pone la guía en todas las celdas y deja el rack «Limpio»; el segundo la quita de todas.
+- Core, `RackSiblingDesignsTests` (nuevo, 12 casos):
+  - un Dinámico con el mismo diseño en cuatro vistas distintas (dos laterales, frontal y planta): coinciden;
+  - con diseños distintos: no coinciden, en cualquier orden y aunque solo difiera una de tres vistas;
+  - el nombre cuenta;
+  - una sola vista, aunque no se pueda leer, y ninguna: coinciden;
+  - lo que el comparador ignora no las separa: dos valores por defecto heredados (la escala de anotación y la numeración de frentes, ausentes), la vista, el corte y las propiedades personalizadas;
+  - lo que no puede leer no es igualdad: un campo desconocido, tipos distintos, Cama y una vista sin sobre;
+  - Selectivo y Push Back, con sus comparadores;
+  - la guarda de fuente: las tres órdenes llaman a la regla una vez, después de `FindRackBlocks` y antes de `blocks[0]` y de `ApplyDynamicEdit`, y responden con su motivo y salen (tres casos); RACKDINAMICONUEVO no la llama, y las vistas son todos los bloques del rack, cada uno por su handle.
+- **Comprobación en rojo**, cada arreglo roto a propósito:
+  1. el modelo de la vista escribe lo que manda WPF, como antes: fallan las dos pruebas de UI nuevas, con las cinco celdas sin guía;
+  2. el rótulo fijo en la vista: falla la prueba de vista;
+  3. la regla dice siempre «coinciden»: fallan seis pruebas (las de divergencia y de lectura imposible, y la de la lista vacía, por cómo se rompió);
+  4. la regla abierta ante la duda (lo que no se puede comprobar, coincide): fallan dos;
+  5. RACKDINAMICOABRIR sin la regla, y RACKDINAMICOAPLICAR con la regla después de `blocks[0]`: fallan tres pruebas de la guarda.
+
+  Se restauraron por copia, con fecha nueva y el mismo hash que antes de romperlos, y se recompiló con `--no-incremental`.
+- **Los números**, sobre `dc82a43c` con estas correcciones:
+  - UI completa: 2545/0/48 (2593);
+  - Core Full: 19088/0/403 (base de `dc82a43c`: 19076/0/403; las 12 nuevas son las de `RackSiblingDesignsTests`);
+  - Plugin Debug: 0 errores.
+
+### Selectivo: M-02 con la regla de Dinámico
+
+- **Qué:** RACKSELECTIVOABRIR y RACKSELECTIVOAPLICAR (`src/RackCad.Plugin/VentanaRackCad/RackCadRackDoorCommands.cs`) llaman a
+  `RackSiblingDesigns.Compare(pending.RackId, Views(blocks))` justo después de `FindRackBlocks` y antes de `blocks[0]`; si las vistas no
+  coinciden, la lectura responde `SelectiveDesignRead.Refused(..., siblings.Reason)` y la escritura `RackDesignWritten(..., false, siblings.Reason)`,
+  sin escribir nada. Reutiliza el `Views(blocks)` de Dinámico. El texto del motivo es cierto para Selectivo: `ApplySelectiveEdit` (el
+  «Actualizar» de RACKEDITAR) redibuja en sitio todas las vistas con el mismo GUID con el diseño de la elegida; no se cambió.
+- **Prueba:** `RackSiblingDesignsTests.TheSelectiveCommandsOfTheDoorCompareTheViewsBeforeReadingOrWriting` (teoría, 2 casos) fija una sola
+  llamada por orden, después de `FindRackBlocks`, antes de `blocks[0]` y, en la escritura, antes de `ApplySelectiveEdit`, y la respuesta con
+  `siblings.Reason`; el recuento del archivo pasa de 3 a 5. La regla con dos diseños de Selectivo iguales y distintos ya estaba probada
+  (`TheRuleIsTheSameForSelectiveWithItsOwnComparator`). Focales (`RackSiblingDesignsTests`, `SelectiveRackDoorTests`,
+  `RackCadWindowListTests`, `CustomPropertiesCommandGuardTests`): 126/126. Build Debug del Plugin: 0 errores.
+- **Rojo:** sin la llamada en RACKSELECTIVOAPLICAR fallan 2 de 14 (`...SelectiveCommands...(RACKSELECTIVOAPLICAR)` y el recuento de 5);
+  restaurada con fecha nueva, 14/14 y recompilado.

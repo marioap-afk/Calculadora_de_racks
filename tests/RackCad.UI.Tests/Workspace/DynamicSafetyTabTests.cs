@@ -114,6 +114,86 @@ namespace RackCad.UI.Tests
             Assert.False(vm.IsDirty);
         }
 
+        // I-01 of the review of Selectivo, in Dinámico. The approved prototype: «Guía de entrada (varía; marcar la pone en todas)». WPF turns
+        // a click on an indeterminate box into false; the box must put the guide in every cell of the selection, never take it out.
+        private static DynamicEditorViewModel MixedSelection()
+        {
+            var vm = Editor();
+            vm.ClickCell(0, 0, control: false, shift: false);
+            vm.SelectionGuide = false;
+            vm.SelectAll();
+            Assert.Null(vm.SelectionGuide);
+            Assert.Equal(4, Cells(vm).Count(c => c.HasGuide));
+            return vm;
+        }
+
+        [Fact]
+        public void WhenTheGuideVariesAWriteOfTheBoxPutsItInEveryCellOfTheSelection()
+        {
+            var vm = MixedSelection();
+            Assert.Equal("Guía de entrada (varía; marcar la pone en todas)", vm.SelectionGuideLabel);
+
+            vm.SelectionGuide = false; // what WPF writes when the indeterminate box is clicked
+            Assert.All(Cells(vm), cell => Assert.True(cell.HasGuide));
+            Assert.Equal(true, vm.SelectionGuide);
+            Assert.Equal("Guía de entrada", vm.SelectionGuideLabel);
+            Assert.Equal("Guía de entrada: en todas las celdas (5).", vm.GuideSummary);
+            Assert.False(vm.IsDirty); // the rack is back as it was opened: the guide in every cell
+
+            // Marking it says the same; a null write changes nothing.
+            vm = MixedSelection();
+            vm.SelectionGuide = true;
+            Assert.All(Cells(vm), cell => Assert.True(cell.HasGuide));
+            vm = MixedSelection();
+            vm.SelectionGuide = null;
+            Assert.Null(vm.SelectionGuide);
+            Assert.Equal(4, Cells(vm).Count(c => c.HasGuide));
+
+            // Once they agree the box toggles as any box: unmarking takes it out of the selection.
+            vm = MixedSelection();
+            vm.SelectionGuide = false;
+            Assert.Equal(true, vm.SelectionGuide);
+            vm.SelectionGuide = false;
+            Assert.DoesNotContain(Cells(vm), cell => cell.HasGuide);
+            Assert.Equal(false, vm.SelectionGuide);
+        }
+
+        [Fact]
+        public void AClickOnTheIndeterminateGuideBoxPutsTheGuideInEveryCellOfTheSelection()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var vm = Editor();
+                var view = LaidOut(vm);
+                vm.ClickCell(0, 0, control: false, shift: false);
+                vm.SelectionGuide = false;
+                vm.SelectAll();
+                Lay(view);
+
+                var box = view.SelectionGuideBox;
+                Assert.Null(box.IsChecked);
+                Assert.False(box.IsThreeState);
+                Assert.True(box.IsEnabled);
+                Assert.Equal("Guía de entrada (varía; marcar la pone en todas)", box.Content);
+
+                var toggle = (System.Windows.Automation.Provider.IToggleProvider)new System.Windows.Automation.Peers.CheckBoxAutomationPeer(box)
+                    .GetPattern(System.Windows.Automation.Peers.PatternInterface.Toggle);
+                toggle.Toggle();
+                Lay(view);
+
+                Assert.All(Cells(vm), cell => Assert.True(cell.HasGuide, cell.AccessibleText));
+                Assert.Equal(true, box.IsChecked);
+                Assert.Equal("Guía de entrada", box.Content);
+                Assert.False(vm.IsDirty);
+
+                // A second click takes it out of the whole selection, as any box does.
+                toggle.Toggle();
+                Lay(view);
+                Assert.DoesNotContain(Cells(vm), cell => cell.HasGuide);
+                Assert.Equal(false, box.IsChecked);
+            });
+        }
+
         [Fact]
         public void InNoCellAndInEveryCellWriteTheActiveCellsAndLeaveABlankFrontDormant()
         {

@@ -454,7 +454,9 @@ namespace RackCad.UI.VentanaRackCad
 
         /// <summary>
         /// «Guía de entrada» of the inspector: true when every active cell of the selection has it, false when none has it, null when they
-        /// differ. Writing it puts the guide in, or takes it out of, the active cells of the selection.
+        /// differ. Writing it puts the guide in, or takes it out of, the active cells of the selection. When it says «varía» (null), any
+        /// write puts the guide in every active cell of the selection and never takes it out (I-01 of the review of Selectivo; the approved
+        /// prototype: «varía; marcar la pone en todas»): WPF turns a click on an indeterminate box into false, not into true.
         /// </summary>
         public bool? SelectionGuide
         {
@@ -468,12 +470,18 @@ namespace RackCad.UI.VentanaRackCad
             }
             set
             {
-                if (!value.HasValue || value == SelectionGuide) { OnPropertyChanged(nameof(SelectionGuide)); return; }
+                var shown = SelectionGuide;
+                if (!value.HasValue) { OnPropertyChanged(nameof(SelectionGuide)); return; }
+                var put = shown.HasValue ? value.Value : true;
+                if (put == shown) { OnPropertyChanged(nameof(SelectionGuide)); return; }
                 if (!CanEditGuide) { Say(_editor.GuideSelection == null ? GuideSummary : WritingText, error: true); OnPropertyChanged(nameof(SelectionGuide)); return; }
                 var cells = SelectedActiveCells().ToList();
-                Apply(() => _editor.SetGuide(cells, value.Value), null);
+                Apply(() => _editor.SetGuide(cells, put), null);
             }
         }
+
+        /// <summary>The label of «Guía de entrada»: with a mixed selection it says that marking it puts the guide in all the cells.</summary>
+        public string SelectionGuideLabel => SelectionGuide.HasValue ? "Guía de entrada" : "Guía de entrada (varía; marcar la pone en todas)";
 
         /// <summary>«En todas las celdas»: the entrance guide in every active cell.</summary>
         public void GuideEverywhere() => SetGuideOnActiveCells(true);
@@ -1138,6 +1146,7 @@ namespace RackCad.UI.VentanaRackCad
             }
 
             OnPropertyChanged(nameof(SelectionGuide));
+            OnPropertyChanged(nameof(SelectionGuideLabel));
             OnPropertyChanged(nameof(GuideSummary));
             Merge(ref _cellFields, BuildCellFields(), nameof(CellFields));
             Merge(ref _frontFields, BuildFrontFields(), nameof(FrontFields));
