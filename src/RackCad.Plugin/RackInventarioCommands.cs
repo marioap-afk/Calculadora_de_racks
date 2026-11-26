@@ -14,14 +14,13 @@ namespace RackCad.Plugin
     /// <summary>RACKLISTA / RACKBOMTOTAL: cross-type inventory of every rack in the drawing, with zoom-to on pick; plus their aliases.</summary>
     public sealed partial class RackInventarioCommands
     {
-        [CommandMethod("RL")]  public void AliasRackLista() => RackLista();                // RACKLISTA
-
         /// <summary>
         /// Tabulates every rack in the drawing (name, type, views present, placed copies) by scanning all block
         /// definitions for embed envelopes, and zooms to the chosen rack's first model-space reference.
+        /// T4 bom (BM-11): RACKLISTA and RL open the page «BOM y lista de racks» of the RackCad window instead
+        /// (<c>RackInventarioCommands.Ventana.cs</c>); this classic flow is kept, not registered, until its retirement (F9).
         /// </summary>
-        [CommandMethod("RACKLISTA")]
-        public void RackLista()
+        internal void RackListaClassic()
         {
             try
             {

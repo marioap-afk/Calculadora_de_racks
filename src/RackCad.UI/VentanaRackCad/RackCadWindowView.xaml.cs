@@ -36,6 +36,7 @@ namespace RackCad.UI.VentanaRackCad
             // Its text of "no tab" would repeat the one of the window (NoRackText).
             PanelView.BrowserEmptyText.Visibility = Visibility.Collapsed;
             RackPageHost.Content = PanelView;
+            BomPage.Content = new RackBomPageView(viewModel.Bom); // T4 bom: the page «BOM y lista de racks»
 
             _viewModel.PropertyChanged += OnViewModelPropertyChanged;
             SizeChanged += OnSizeChanged;
@@ -215,6 +216,8 @@ namespace RackCad.UI.VentanaRackCad
         private void OnStopWaitingClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.StopWaiting());
 
         private void OnPanelToggleClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.ShowPanel = !_viewModel.ShowPanel);
+
+        private void OnShowBomOfRackClick(object sender, RoutedEventArgs e) => Contained(_viewModel.ShowBomOfActiveRack); // T4 bom
 
         // Hiding the side column keeps its width, so showing it again gives it back as the user left it.
         private void ApplySideCollapsed()

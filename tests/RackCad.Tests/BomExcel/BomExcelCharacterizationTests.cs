@@ -45,20 +45,23 @@ namespace RackCad.Tests
             Assert.Equal("Componente||Cama · BFR 2\"|96|5", string.Join("|", new[] { row[0].Raw, row[2].Raw, row[3].Raw, row[4].Raw, row[5].Raw }));
         }
 
+        // T4 bom (BM-04, cambio declarado del formato, aceptado por el Owner): el CSV del dibujo gana la ultima columna «Cantidad_total»,
+        // para decir lo mismo que el Excel: en una fila de rack, «Cantidad» (de UNA copia) x copias; en «TOTAL DEL DIBUJO», ya multiplicada,
+        // es «Cantidad». Las columnas y los valores de antes no cambian.
         [Fact]
         public void I17_ConsolidatedCsv_SinCambios()
         {
             var expected = string.Join("\r\n",
-                "Rack,Tipo,Copias,Nivel,Categoria,Perfil,Descripcion,Longitud_in,Cantidad",
-                "A,Selectivo,2,Componente,Larguero,L,Larguero 96,96,3",
-                "A,Selectivo,2,Pieza,Perfil,L,Larguero 96,96,3",
-                "A,Selectivo,2,Pieza,Ménsula,M,Ménsula,0,6",
-                "B,Cama,1,Pieza,Rodillo,R,Rodillo,40.5,10",
-                "TOTAL DEL DIBUJO,,,Componente,Larguero,L,Larguero 96,96,6",
-                "TOTAL DEL DIBUJO,,,Pieza,Perfil,L,Larguero 96,96,6",
-                "TOTAL DEL DIBUJO,,,Pieza,Ménsula,M,Ménsula,0,12",
-                "TOTAL DEL DIBUJO,,,Componente,Cama,,B,0,1",
-                "TOTAL DEL DIBUJO,,,Pieza,Rodillo,R,Rodillo,40.5,10",
+                "Rack,Tipo,Copias,Nivel,Categoria,Perfil,Descripcion,Longitud_in,Cantidad,Cantidad_total",
+                "A,Selectivo,2,Componente,Larguero,L,Larguero 96,96,3,6",
+                "A,Selectivo,2,Pieza,Perfil,L,Larguero 96,96,3,6",
+                "A,Selectivo,2,Pieza,Ménsula,M,Ménsula,0,6,12",
+                "B,Cama,1,Pieza,Rodillo,R,Rodillo,40.5,10,10",
+                "TOTAL DEL DIBUJO,,,Componente,Larguero,L,Larguero 96,96,6,6",
+                "TOTAL DEL DIBUJO,,,Pieza,Perfil,L,Larguero 96,96,6,6",
+                "TOTAL DEL DIBUJO,,,Pieza,Ménsula,M,Ménsula,0,12,12",
+                "TOTAL DEL DIBUJO,,,Componente,Cama,,B,0,1,1",
+                "TOTAL DEL DIBUJO,,,Pieza,Rodillo,R,Rodillo,40.5,10,10",
                 string.Empty);
 
             Assert.Equal(expected, ConsolidatedBomCsvExporter.ToCsv(Sample()));

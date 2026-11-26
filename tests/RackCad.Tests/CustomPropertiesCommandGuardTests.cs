@@ -102,8 +102,15 @@ namespace RackCad.Tests
         /// </summary>
         internal static readonly string[] A14VariablesDoorCommands = { "RACKVARIABLESAPLICAR", "RACKVARIABLESLEER" };
 
+        /// <summary>
+        /// Lo que I-64 A-14 (linea D, cuarta tanda, parte «bom») anade, EXACTAMENTE: la lectura del BOM del dibujo para la pagina «BOM y lista
+        /// de racks», sin marca de Deshacer y sin alias, en <c>src/RackCad.Plugin/RackInventarioCommands.Ventana.cs</c>. RACKLISTA, RL,
+        /// RACKBOMTOTAL y RB siguen en el censo de apertura: cambian de archivo (abren la pagina, BM-11), no de nombre.
+        /// </summary>
+        internal static readonly string[] A14BomCommands = { "RACKBOMLEER" };
+
         /// <summary>El censo vigente: apertura, G7, G15, I-65, el panel de F1 y el descarte de F4-T3C2, cada nombre una vez.</summary>
-        internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).Concat(I65Commands).Concat(F1PanelCommands).Concat(F4PanelDiscardCommands).Concat(A14WindowCommands).Concat(A14DynamicDoorCommands).Concat(A14SelectiveDoorCommands).Concat(A14UtilityCommands).Concat(A14CabeceraDoorCommands).Concat(A14VariablesDoorCommands).ToArray();
+        internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).Concat(I65Commands).Concat(F1PanelCommands).Concat(F4PanelDiscardCommands).Concat(A14WindowCommands).Concat(A14DynamicDoorCommands).Concat(A14SelectiveDoorCommands).Concat(A14UtilityCommands).Concat(A14CabeceraDoorCommands).Concat(A14VariablesDoorCommands).Concat(A14BomCommands).ToArray();
 
         // ================================================================ censo
 

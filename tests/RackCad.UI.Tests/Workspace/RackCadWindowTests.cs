@@ -761,14 +761,18 @@ namespace RackCad.UI.Tests
                 var card = Descendants<Button>(view.NewSystemList).Single(b => b.DataContext is RackCadNewSystemCard c && c.Action == RackCadClassicAction.NewCantilever);
                 Click(card);
 
-                rig.Window.ShowPage(RackCadWindowPage.Bom);
+                // T4 integration: «BOM y lista de racks» is a page of the window now (bom, BM-11) and «Ver todas las órdenes» of «Nuevo»
+                // opens the page «Órdenes y atajos» of the window (ut, UT-09), so the button of a page that runs a classic action is the
+                // intermediate step of «Variables», which the window keeps while it has no door of the page (this rig has none).
+                Assert.True(rig.Window.ShowVariablesClassicStep);
+                rig.Window.ShowPage(RackCadWindowPage.Variables);
                 Lay(view);
-                var bom = Descendants<Button>(view.BomPage).Single(b => (b.Tag as string) == "TotalBom");
-                Click(bom);
+                var variables = Descendants<Button>(view.VariablesPage).Single(b => (b.Tag as string) == "Variables");
+                Click(variables);
 
                 Click(view.ClassicMenuButton);
 
-                Assert.Equal(new[] { RackCadClassicAction.NewCantilever, RackCadClassicAction.TotalBom, RackCadClassicAction.ClassicMenu }, rig.Classic.Runs);
+                Assert.Equal(new[] { RackCadClassicAction.NewCantilever, RackCadClassicAction.Variables, RackCadClassicAction.ClassicMenu }, rig.Classic.Runs);
             });
         }
 

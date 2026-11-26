@@ -32,7 +32,7 @@ namespace RackCad.UI.VentanaRackCad
     public sealed class RackListViewModel : ObservableObject
     {
         /// <summary>The order of the groups and the label of each Kind of the envelope; any other Kind goes last with its raw name.</summary>
-        private static readonly IReadOnlyList<(string Kind, string Label)> KindOrder = new[]
+        internal static readonly IReadOnlyList<(string Kind, string Label)> KindOrder = new[] // T4 bom: internal, the page of the BOM uses the same
         {
             ("selective", "Selectivo"),
             ("pushback", "Push Back"),
@@ -521,7 +521,7 @@ namespace RackCad.UI.VentanaRackCad
             string.IsNullOrWhiteSpace(rack.Name) ? "(sin nombre)" : rack.Name.Trim();
 
         // Compares names with their digit runs as numbers, ignoring case: "PB 2" < "PB 10".
-        private sealed class NaturalNameComparer : IComparer<string>
+        internal sealed class NaturalNameComparer : IComparer<string> // T4 bom: internal, the table of the BOM orders as the list
         {
             public static readonly NaturalNameComparer Instance = new();
 
