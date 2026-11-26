@@ -118,6 +118,7 @@
                     <ItemsControl x:Name="SectionList" ItemsSource="{Binding Sections}" AutomationProperties.Name="Secciones de RackCad">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
+                                <StackPanel>
                                 <Button Click="OnSectionClick" AutomationProperties.Name="{Binding Label}">
                                     <Button.Style>
                                         <Style TargetType="Button" BasedOn="{StaticResource SideItemButton}">
@@ -131,6 +132,59 @@
                                     </Button.Style>
                                     <TextBlock Text="{Binding Label}" TextWrapping="Wrap" />
                                 </Button>
+                                <!-- T4 new (SD-06): the drafts of «Nuevo» of the drawing, under «Nuevo», with their state (as the prototype of
+                                     Largueros puts its pages). A click opens the draft; «Nuevo» itself goes to its home. -->
+                                <ItemsControl ItemsSource="{Binding DataContext.Drafts, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                              Focusable="False" AutomationProperties.Name="Borradores de Nuevo">
+                                    <ItemsControl.Style>
+                                        <Style TargetType="ItemsControl">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Page}" Value="Nuevo">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ItemsControl.Style>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Button Click="OnDraftItemClick" Margin="14,1,0,1" Padding="8,3" ToolTip="{Binding StatusText}"
+                                                    AutomationProperties.Name="{Binding AccessibleName}">
+                                                <Button.Style>
+                                                    <Style TargetType="Button" BasedOn="{StaticResource SideItemButton}">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                                                <Setter Property="BorderBrush" Value="{DynamicResource ShellSelectionPrimaryBrush}" />
+                                                                <Setter Property="FontWeight" Value="SemiBold" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                                <DockPanel>
+                                                    <TextBlock DockPanel.Dock="Right" Text="{Binding Tag}" FontSize="11" Margin="6,0,0,0" VerticalAlignment="Center"
+                                                               FontWeight="Normal" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                                    <Ellipse Width="8" Height="8" Margin="0,0,8,0" VerticalAlignment="Center" DockPanel.Dock="Left">
+                                                        <Ellipse.Style>
+                                                            <Style TargetType="Ellipse">
+                                                                <Setter Property="Fill" Value="{DynamicResource ShellStatusInfoBrush}" />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding StatusKind}" Value="Modificado">
+                                                                        <Setter Property="Fill" Value="{DynamicResource ShellStatusWarningBrush}" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding StatusKind}" Value="Escribiendo">
+                                                                        <Setter Property="Fill" Value="{DynamicResource ShellStatusWarningBrush}" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Ellipse.Style>
+                                                    </Ellipse>
+                                                    <TextBlock Text="{Binding ColumnText}" TextTrimming="CharacterEllipsis" />
+                                                </DockPanel>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                </StackPanel>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -285,6 +339,116 @@
                         <TextBlock x:Name="WaitingText" Text="{Binding WaitingText}" TextWrapping="Wrap"
                                    Foreground="{DynamicResource ShellTextPrimaryBrush}" />
                     </DockPanel>
+                </Border>
+
+                <!-- T4 new (SD-06): the drafts of «Nuevo» of this drawing. On the home of «Nuevo», their list (open, copy or discard each
+                     one, a draft with changes asks first); with a draft open, its strip (back to the list, copy it, discard it). Its
+                     editor is the page below, in «Nuevo». -->
+                <Border x:Name="DraftsBar" DockPanel.Dock="Top" Margin="10,8,10,0" Padding="10,8" BorderThickness="1" CornerRadius="6"
+                        Background="{DynamicResource ShellSurfaceBrush}" BorderBrush="{DynamicResource ShellBorderBrush}"
+                        Visibility="{Binding ShowDraftsBar, Converter={StaticResource FlagToVisibility}}">
+                    <StackPanel>
+                        <StackPanel x:Name="DraftListPanel" Visibility="{Binding ShowDraftList, Converter={StaticResource FlagToVisibility}}">
+                            <TextBlock Text="Borradores sin insertar de este dibujo" FontWeight="SemiBold" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                            <TextBlock x:Name="DraftsIntroText" Text="{Binding DraftsIntroText}" Style="{StaticResource OptionalText}"
+                                       Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                            <ItemsControl x:Name="DraftList" Margin="0,6,0,0" ItemsSource="{Binding Drafts}" Focusable="False"
+                                          AutomationProperties.Name="Borradores sin insertar">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Margin="0,3">
+                                            <DockPanel>
+                                                <WrapPanel DockPanel.Dock="Right" VerticalAlignment="Center">
+                                                    <Button Content="Abrir" Padding="8,2" Margin="6,0,0,0" Style="{StaticResource SecondaryButtonStyle}"
+                                                            AutomationProperties.Name="{Binding OpenAccessibleName}" Click="OnDraftItemClick" />
+                                                    <Button Content="Duplicar" Padding="8,2" Margin="6,0,0,0" Style="{StaticResource SecondaryButtonStyle}"
+                                                            IsEnabled="{Binding CanDuplicate}" AutomationProperties.Name="{Binding DuplicateAccessibleName}"
+                                                            ToolTip="Un borrador nuevo con una copia de este diseño, sin nombre." Click="OnDuplicateDraftClick" />
+                                                    <Button Content="Descartar el borrador" Padding="8,2" Margin="6,0,0,0" Style="{StaticResource SecondaryButtonStyle}"
+                                                            IsEnabled="{Binding CanDiscard}" AutomationProperties.Name="{Binding DiscardAccessibleName}"
+                                                            Click="OnDiscardDraftClick" />
+                                                </WrapPanel>
+                                                <Ellipse Width="8" Height="8" Margin="0,0,8,0" VerticalAlignment="Center" DockPanel.Dock="Left">
+                                                    <Ellipse.Style>
+                                                        <Style TargetType="Ellipse">
+                                                            <Setter Property="Fill" Value="{DynamicResource ShellStatusInfoBrush}" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding StatusKind}" Value="Modificado">
+                                                                    <Setter Property="Fill" Value="{DynamicResource ShellStatusWarningBrush}" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding StatusKind}" Value="Escribiendo">
+                                                                    <Setter Property="Fill" Value="{DynamicResource ShellStatusWarningBrush}" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Ellipse.Style>
+                                                </Ellipse>
+                                                <StackPanel VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"
+                                                               Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                                    <TextBlock Text="{Binding DetailText}" TextWrapping="Wrap" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                                </StackPanel>
+                                            </DockPanel>
+                                            <Border Margin="16,4,0,0" Padding="8,6" BorderThickness="1" CornerRadius="4"
+                                                    BorderBrush="{DynamicResource ShellStatusWarningBrush}"
+                                                    Visibility="{Binding IsConfirmingDiscard, Converter={StaticResource FlagToVisibility}}">
+                                                <DockPanel>
+                                                    <WrapPanel DockPanel.Dock="Right" VerticalAlignment="Center">
+                                                        <Button Content="Descartar el borrador" Padding="8,2" Margin="6,0,0,0" Style="{StaticResource SecondaryButtonStyle}"
+                                                                Foreground="{DynamicResource ShellStatusErrorBrush}"
+                                                                AutomationProperties.Name="{Binding ConfirmDiscardAccessibleName}" Click="OnConfirmDiscardDraftClick" />
+                                                        <Button Content="Cancelar" Padding="8,2" Margin="6,0,0,0" Style="{StaticResource SecondaryButtonStyle}"
+                                                                AutomationProperties.Name="{Binding CancelDiscardAccessibleName}" Click="OnCancelDiscardDraftClick" />
+                                                    </WrapPanel>
+                                                    <TextBlock Text="{Binding DiscardQuestion}" TextWrapping="Wrap" VerticalAlignment="Center"
+                                                               Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                                </DockPanel>
+                                            </Border>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+
+                        <StackPanel x:Name="ActiveDraftStrip" Visibility="{Binding ShowActiveDraftStrip, Converter={StaticResource FlagToVisibility}}">
+                            <DockPanel DataContext="{Binding ActiveDraft}">
+                                <WrapPanel DockPanel.Dock="Right" VerticalAlignment="Center">
+                                    <Button x:Name="DraftsHomeButton" Content="Todos los borradores" Padding="8,2" Margin="6,0,0,0"
+                                            Style="{StaticResource SecondaryButtonStyle}" AutomationProperties.Name="Volver a la lista de borradores"
+                                            Click="OnDraftsHomeClick" />
+                                    <Button x:Name="DuplicateActiveDraftButton" Content="Duplicar" Padding="8,2" Margin="6,0,0,0"
+                                            Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanDuplicate}"
+                                            AutomationProperties.Name="Duplicar el borrador abierto"
+                                            ToolTip="Un borrador nuevo con una copia de este diseño, sin nombre." Click="OnDuplicateDraftClick" />
+                                    <Button x:Name="DiscardActiveDraftButton" Content="Descartar el borrador" Padding="8,2" Margin="6,0,0,0"
+                                            Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanDiscard}"
+                                            AutomationProperties.Name="Descartar el borrador abierto" Click="OnDiscardDraftClick" />
+                                </WrapPanel>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock x:Name="ActiveDraftTitle" Text="{Binding Title}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"
+                                               Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                    <TextBlock x:Name="ActiveDraftDetail" Text="{Binding DetailText}" TextWrapping="Wrap"
+                                               Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                </StackPanel>
+                            </DockPanel>
+                            <Border Margin="0,6,0,0" Padding="8,6" BorderThickness="1" CornerRadius="4" DataContext="{Binding ActiveDraft}"
+                                    BorderBrush="{DynamicResource ShellStatusWarningBrush}"
+                                    Visibility="{Binding IsConfirmingDiscard, Converter={StaticResource FlagToVisibility}, FallbackValue=Collapsed}">
+                                <DockPanel>
+                                    <WrapPanel DockPanel.Dock="Right" VerticalAlignment="Center">
+                                        <Button x:Name="ConfirmDiscardActiveDraftButton" Content="Descartar el borrador" Padding="8,2" Margin="6,0,0,0"
+                                                Style="{StaticResource SecondaryButtonStyle}" Foreground="{DynamicResource ShellStatusErrorBrush}"
+                                                AutomationProperties.Name="Confirmar: descartar el borrador abierto" Click="OnConfirmDiscardDraftClick" />
+                                        <Button x:Name="CancelDiscardActiveDraftButton" Content="Cancelar" Padding="8,2" Margin="6,0,0,0"
+                                                Style="{StaticResource SecondaryButtonStyle}"
+                                                AutomationProperties.Name="Cancelar el descarte del borrador abierto" Click="OnCancelDiscardDraftClick" />
+                                    </WrapPanel>
+                                    <TextBlock Text="{Binding DiscardQuestion}" TextWrapping="Wrap" VerticalAlignment="Center"
+                                               Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                </DockPanel>
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
                 </Border>
 
                 <Grid>

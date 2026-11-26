@@ -622,13 +622,18 @@ namespace RackCad.UI.Tests
             Assert.Equal("Un rack nuevo se escribe en el dibujo con «Insertar en el dibujo…».", editor.UpdateBlockedText);
             Assert.True(editor.CanInsertView, editor.InsertViewBlockedText);
 
-            // Asked again, the window shows the same new rack.
+            // T4 new (SD-06 of the Owner, cuarta tanda): asked again, the window starts ANOTHER draft («Borrador 2»); before, it showed
+            // the same new rack (P3-04). The drafts have their own tests (RackCadNewDraftsTests); here the second is discarded and the
+            // first opens again from its item, so the rest of this test is the one it was.
             rig.Window.StartNewDynamic();
+            Assert.NotSame(editor, rig.Window.NewDynamicEditor);
+            rig.Window.DiscardDraft(rig.Window.Drafts[1]);
+            rig.Window.OpenDraft(rig.Window.Drafts[0]);
             Assert.Same(editor, rig.Window.NewDynamicEditor);
 
-            // A change is work not written: the drawing does not close (D-08), and the notice names it.
+            // A change is work not written: the drawing does not close (D-08), and the notice names it (T4 new: by its draft).
             Write(editor, v => v.Essentials, "weight", "1200");
-            Assert.Equal("un Dinámico nuevo", rig.Window.UnwrittenDynamicWorkOf(Session));
+            Assert.Equal("Borrador 1 (Dinámico nuevo)", rig.Window.UnwrittenDynamicWorkOf(Session));
 
             // With changes it is still not «Actualizar»: there is nothing in the drawing to update.
             Assert.True(editor.IsDirty);
