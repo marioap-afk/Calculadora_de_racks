@@ -94,6 +94,18 @@ namespace RackCad.UI.VentanaRackCad
 
         private void OnSelectAllClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.SelectAll());
 
+        // A button of «Todos los fondos · Fondo 1 · Fondo n» over the matrix (the approved draft; no drop-down list, O-D of the smoke).
+        private void OnFondoViewClick(object sender, RoutedEventArgs e) => Contained(() =>
+        {
+            if ((sender as FrameworkElement)?.DataContext is SelectiveSegmentOption option) _viewModel.FondoScopeIndex = option.Value;
+        });
+
+        // A button of «Celda · Frente · Nivel · Todo» of the inspector (the approved draft).
+        private void OnScopeClick(object sender, RoutedEventArgs e) => Contained(() =>
+        {
+            if ((sender as FrameworkElement)?.DataContext is SelectiveSegmentOption option) _viewModel.SetScope((SelectiveEditScope)option.Value);
+        });
+
         private void OnStartSegmentsClick(object sender, RoutedEventArgs e) => Contained(_viewModel.StartSegments);
 
         private void OnAddSegmentClick(object sender, RoutedEventArgs e) => Contained(_viewModel.AddSegment);

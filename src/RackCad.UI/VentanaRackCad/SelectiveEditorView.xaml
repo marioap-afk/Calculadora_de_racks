@@ -8,8 +8,8 @@
              Background="{DynamicResource WindowBackgroundBrush}">
     <!-- The editor of ONE Selectivo rack in the RackCad window (I-64 A-14, line D, Selectivo E1-B), with the tabs Rack, Matriz and Avanzado
          and no preview (decision 11). The same styles, tokens and controls of the shell as the editor of Dinámico. What is written in a field
-         goes to the draft when the field is left or with Enter; the scope is the fondos of the view and the selection of the matrix. Nothing
-         here writes the drawing: «Actualizar» hands the draft to the host. -->
+         goes to the draft when the field is left or with Enter. «Rack» writes the whole rack (and the table «Fondos», each fondo); «Matriz»
+         writes the selection in the fondos of the view. Nothing here writes the drawing: «Actualizar» hands the draft to the host. -->
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -39,7 +39,32 @@
                 <Setter Property="Margin" Value="0,10,0,6" />
                 <Setter Property="Foreground" Value="{DynamicResource ShellTextPrimaryBrush}" />
             </Style>
-            <!-- One field of the draft: label, box with its unit, «Varía» (or why it is read only) and the error. -->
+            <Style x:Key="SubTitle" TargetType="TextBlock">
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="Margin" Value="0,6,0,4" />
+                <Setter Property="Foreground" Value="{DynamicResource ShellTextPrimaryBrush}" />
+            </Style>
+            <Style x:Key="ColumnHead" TargetType="TextBlock">
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="TextWrapping" Value="Wrap" />
+                <Setter Property="Margin" Value="0,0,8,4" />
+                <Setter Property="Foreground" Value="{DynamicResource ShellTextSecondaryBrush}" />
+            </Style>
+            <!-- A button of a segmented choice (the fondos of the view, the scope of the inspector): the chosen one is marked. -->
+            <Style x:Key="SegmentButton" TargetType="Button" BasedOn="{StaticResource SecondaryButtonStyle}">
+                <Setter Property="Margin" Value="0,0,4,4" />
+                <Setter Property="Padding" Value="10,3" />
+                <Setter Property="AutomationProperties.Name" Value="{Binding AccessibleText}" />
+                <Setter Property="AutomationProperties.ItemStatus" Value="{Binding ItemStatus}" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsOn}" Value="True">
+                        <Setter Property="BorderBrush" Value="{DynamicResource ShellSelectionPrimaryBrush}" />
+                        <Setter Property="BorderThickness" Value="2" />
+                        <Setter Property="FontWeight" Value="SemiBold" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+            <!-- One field of the draft: label, box with its unit, «Varía» (or why it is read only, or its automatic value) and the error. -->
             <DataTemplate DataType="{x:Type local:DynamicFieldItem}">
                 <StackPanel Width="190" Margin="0,0,12,10">
                     <TextBlock Text="{Binding Label}" TextWrapping="Wrap" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
@@ -49,11 +74,26 @@
                         <TextBox Padding="4,3" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                  IsReadOnly="{Binding IsReadOnly}"
                                  AutomationProperties.Name="{Binding Label}"
+                                 AutomationProperties.HelpText="{Binding Hint}"
                                  KeyDown="OnFieldKeyDown" LostFocus="OnFieldLostFocus" />
                     </DockPanel>
                     <TextBlock Text="{Binding Hint}" Style="{StaticResource OptionalText}" FontStyle="Italic"
                                Foreground="{DynamicResource ShellTextSecondaryBrush}" />
                     <TextBlock Text="{Binding Error}" Style="{StaticResource OptionalText}"
+                               Foreground="{DynamicResource ShellStatusErrorBrush}" />
+                </StackPanel>
+            </DataTemplate>
+            <!-- The same field in a cell of a table: only the box (its name says the row and the column), the hint and the error under it. -->
+            <DataTemplate x:Key="CompactField" DataType="{x:Type local:DynamicFieldItem}">
+                <StackPanel Margin="0,0,8,4">
+                    <TextBox Padding="4,3" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             IsReadOnly="{Binding IsReadOnly}"
+                             AutomationProperties.Name="{Binding Label}"
+                             AutomationProperties.HelpText="{Binding Hint}"
+                             KeyDown="OnFieldKeyDown" LostFocus="OnFieldLostFocus" />
+                    <TextBlock Text="{Binding Hint}" Style="{StaticResource OptionalText}" FontStyle="Italic" FontSize="11"
+                               Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                    <TextBlock Text="{Binding Error}" Style="{StaticResource OptionalText}" FontSize="11"
                                Foreground="{DynamicResource ShellStatusErrorBrush}" />
                 </StackPanel>
             </DataTemplate>
@@ -72,6 +112,9 @@
             </DataTemplate>
             <ItemsPanelTemplate x:Key="WrapItems">
                 <WrapPanel />
+            </ItemsPanelTemplate>
+            <ItemsPanelTemplate x:Key="RowItems">
+                <WrapPanel Orientation="Horizontal" />
             </ItemsPanelTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -145,56 +188,133 @@
         </Border>
 
         <TabControl x:Name="Tabs" SelectedIndex="{Binding SelectedTab, Mode=TwoWay}" Margin="8,6,8,8">
-            <!-- Rack: «Lo esencial» (the rack and the fondos of the view), the computed values, and the post and annotations folded. -->
+            <!-- Rack (the approved draft): «Lo esencial» in its three groups (the whole rack), the table «Fondos» (two or more fondos),
+                 «Calculado», and «Poste y anotaciones» folded. -->
             <TabItem x:Name="RackTab" Header="Rack">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <StackPanel Margin="10">
                         <TextBlock Text="Lo esencial" Style="{StaticResource GroupTitle}" Margin="0,0,0,2" />
-                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,8" Foreground="{DynamicResource ShellTextSecondaryBrush}"
-                                   Text="Escribe en todo el rack; los frentes y las profundidades, en los fondos de la vista. Fondo = cada línea en profundidad; profundidad = la medida. Para un frente, un nivel o una celda, usa «Matriz»." />
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8"
-                                    Visibility="{Binding HasFondos, Converter={StaticResource FlagToVisibility}}">
-                            <TextBlock Text="Fondos de la vista:" VerticalAlignment="Center" Margin="0,0,8,0"
-                                       Foreground="{DynamicResource ShellTextSecondaryBrush}" />
-                            <ComboBox x:Name="RackFondoScopeBox" MinWidth="160" ItemsSource="{Binding FondoOptions}"
-                                      SelectedIndex="{Binding FondoScopeIndex, Mode=TwoWay}"
-                                      AutomationProperties.Name="Fondos de la vista en la pestaña Rack" />
-                        </StackPanel>
-                        <ItemsControl x:Name="EssentialsList" ItemsSource="{Binding Essentials}" ItemsPanel="{StaticResource WrapItems}" />
-                        <StackPanel Visibility="{Binding HasFondos, Converter={StaticResource FlagToVisibility}}">
-                            <TextBlock Text="Separaciones entre fondos" FontWeight="SemiBold" Margin="0,2,0,4"
-                                       Foreground="{DynamicResource ShellTextPrimaryBrush}" />
-                            <ItemsControl x:Name="SeparatorList" ItemsSource="{Binding SeparatorFields}" ItemsPanel="{StaticResource WrapItems}" />
-                        </StackPanel>
-                        <TextBlock Text="Calculado" Style="{StaticResource GroupTitle}" />
-                        <ItemsControl x:Name="CalculatedList" ItemsSource="{Binding Calculated}" MaxWidth="520" HorizontalAlignment="Left">
+                        <TextBlock x:Name="EssentialsHelpText" Text="{Binding EssentialsHelp}" TextWrapping="Wrap" Margin="0,0,0,8"
+                                   Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                        <ItemsControl x:Name="EssentialsList" ItemsSource="{Binding EssentialGroups}" AutomationProperties.Name="Lo esencial">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <!-- O-6 of the smoke of Dinámico: the value keeps a gap from its label, and a long label wraps. -->
-                                    <DockPanel Margin="0,1">
-                                        <TextBlock x:Name="CalculatedValue" Text="{Binding Value}" DockPanel.Dock="Right" FontWeight="SemiBold" Margin="16,0,0,0"
-                                                   TextWrapping="Wrap" MaxWidth="300" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
-                                        <TextBlock x:Name="CalculatedLabel" Text="{Binding Label}" TextWrapping="Wrap" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
-                                    </DockPanel>
+                                    <StackPanel Margin="0,0,0,4">
+                                        <TextBlock Text="{Binding Title}" Style="{StaticResource SubTitle}" />
+                                        <ItemsControl ItemsSource="{Binding Fields}" ItemsPanel="{StaticResource WrapItems}"
+                                                      AutomationProperties.Name="{Binding Title}" />
+                                    </StackPanel>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
-                        <Expander x:Name="PostExpander" Header="Poste y anotaciones" Margin="0,12,0,0" IsExpanded="False">
+
+                        <!-- The table «Fondos» of the approved draft: what goes by fondo, each row written in its own fondo. -->
+                        <StackPanel x:Name="FondosSection" Visibility="{Binding HasFondos, Converter={StaticResource FlagToVisibility}}">
+                            <TextBlock Text="Fondos" Style="{StaticResource GroupTitle}" />
+                            <TextBlock TextWrapping="Wrap" Margin="0,0,0,6" Foreground="{DynamicResource ShellTextSecondaryBrush}"
+                                       Text="Fondo = cada línea en profundidad. Lo que va por fondo: sus frentes, sus profundidades y la separación al siguiente." />
+                            <Grid Margin="0,0,0,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="64" />
+                                    <ColumnDefinition Width="70" />
+                                    <ColumnDefinition Width="96" />
+                                    <ColumnDefinition Width="96" />
+                                    <ColumnDefinition Width="96" />
+                                    <ColumnDefinition Width="*" MinWidth="80" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Fondo" Style="{StaticResource ColumnHead}" />
+                                <TextBlock Grid.Column="1" Text="Frentes" Style="{StaticResource ColumnHead}" />
+                                <TextBlock Grid.Column="2" Text="Profundidad de tarima (in)" Style="{StaticResource ColumnHead}" />
+                                <TextBlock Grid.Column="3" Text="Profundidad de cabecera (in)" Style="{StaticResource ColumnHead}" />
+                                <TextBlock Grid.Column="4" Text="Separación al siguiente (in)" Style="{StaticResource ColumnHead}" />
+                                <TextBlock Grid.Column="5" Text="Estado" Style="{StaticResource ColumnHead}" />
+                            </Grid>
+                            <ItemsControl x:Name="FondoRowList" ItemsSource="{Binding FondoRows}" AutomationProperties.Name="Fondos">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,0,0,2">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="64" />
+                                                <ColumnDefinition Width="70" />
+                                                <ColumnDefinition Width="96" />
+                                                <ColumnDefinition Width="96" />
+                                                <ColumnDefinition Width="96" />
+                                                <ColumnDefinition Width="*" MinWidth="80" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="{Binding Title}" Margin="0,4,8,0" FontWeight="SemiBold"
+                                                       Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                            <ContentControl Grid.Column="1" Content="{Binding Fronts}" ContentTemplate="{StaticResource CompactField}" Focusable="False" />
+                                            <ContentControl Grid.Column="2" Content="{Binding Depth}" ContentTemplate="{StaticResource CompactField}" Focusable="False" />
+                                            <ContentControl Grid.Column="3" Content="{Binding Cabecera}" ContentTemplate="{StaticResource CompactField}" Focusable="False" />
+                                            <ContentControl Grid.Column="4" Content="{Binding Separator}" ContentTemplate="{StaticResource CompactField}" Focusable="False"
+                                                            Visibility="{Binding HasSeparator, Converter={StaticResource FlagToVisibility}}" />
+                                            <TextBlock Grid.Column="4" Text="Último" Margin="0,4,8,0" FontStyle="Italic"
+                                                       Foreground="{DynamicResource ShellTextSecondaryBrush}"
+                                                       Visibility="{Binding IsLast, Converter={StaticResource FlagToVisibility}}" />
+                                            <TextBlock Grid.Column="5" Text="{Binding State}" Margin="0,4,0,0" TextWrapping="Wrap">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Foreground" Value="{DynamicResource ShellTextSecondaryBrush}" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding HasProblem}" Value="True">
+                                                                <Setter Property="Foreground" Value="{DynamicResource ShellStatusErrorBrush}" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <TextBlock TextWrapping="Wrap" Margin="0,4,0,0" Foreground="{DynamicResource ShellTextSecondaryBrush}"
+                                       Text="Profundidad de cabecera vacía = la de la tarima − 6 in. El fondo con más frentes es el maestro: los postes de los demás se alinean con los suyos." />
+                        </StackPanel>
+
+                        <TextBlock Text="Calculado" Style="{StaticResource GroupTitle}" />
+                        <ItemsControl x:Name="CalculatedList" ItemsSource="{Binding Calculated}" MaxWidth="560" HorizontalAlignment="Left">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="0,1,0,4">
+                                        <!-- O-6 of the smoke of Dinámico: the value keeps a gap from its label, and a long label wraps. -->
+                                        <DockPanel>
+                                            <TextBlock x:Name="CalculatedValue" Text="{Binding Value}" DockPanel.Dock="Right" FontWeight="SemiBold" Margin="16,0,0,0"
+                                                       TextWrapping="Wrap" MaxWidth="300" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                            <TextBlock x:Name="CalculatedLabel" Text="{Binding Label}" TextWrapping="Wrap" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                        </DockPanel>
+                                        <TextBlock Text="{Binding Hint}" Style="{StaticResource OptionalText}" FontStyle="Italic" FontSize="11"
+                                                   Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <!-- «Poste y anotaciones» folded (the approved draft): the fields, the four boxes, «Mostrar tarimas» (decision 10), the dimensions by view. -->
+                        <Expander x:Name="PostExpander" Margin="0,12,0,0" IsExpanded="False" AutomationProperties.Name="Poste y anotaciones">
+                            <Expander.Header>
+                                <WrapPanel>
+                                    <TextBlock Text="Poste y anotaciones" FontWeight="SemiBold" Margin="0,0,10,0" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                    <TextBlock x:Name="AnnotationSummaryText" Text="{Binding AnnotationSummary}" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                </WrapPanel>
+                            </Expander.Header>
                             <StackPanel Margin="0,8,0,0">
+                                <ItemsControl x:Name="AnnotationList" ItemsSource="{Binding AnnotationFields}" ItemsPanel="{StaticResource WrapItems}" />
                                 <CheckBox x:Name="BasePlateCheck" Content="Dibujar placa base" Margin="0,2" IsChecked="{Binding DrawBasePlate, Mode=TwoWay}" IsEnabled="{Binding CanEdit}" />
                                 <CheckBox Content="Numerar frentes" Margin="0,2" IsChecked="{Binding NumberFronts, Mode=TwoWay}" IsEnabled="{Binding CanEdit}" />
                                 <CheckBox Content="Numerar niveles" Margin="0,2" IsChecked="{Binding NumberLevels, Mode=TwoWay}" IsEnabled="{Binding CanEdit}" />
                                 <CheckBox Content="Colocar nombre de rack" Margin="0,2" IsChecked="{Binding DrawRackName, Mode=TwoWay}" IsEnabled="{Binding CanEdit}" />
                                 <!-- Decision 10: an option of the drawing, with its note. -->
-                                <CheckBox x:Name="DrawPalletsCheck" Content="Mostrar tarimas" Margin="0,2,0,0" IsChecked="{Binding DrawPallets, Mode=TwoWay}" IsEnabled="{Binding CanEdit}" />
+                                <CheckBox x:Name="DrawPalletsCheck" Content="Mostrar tarimas" Margin="0,8,0,0" IsChecked="{Binding DrawPallets, Mode=TwoWay}" IsEnabled="{Binding CanEdit}" />
                                 <TextBlock Margin="20,0,0,8" TextWrapping="Wrap" Foreground="{DynamicResource ShellTextSecondaryBrush}"
-                                           Text="Solo en la frontal, como referencia visual; no entra en el BOM." />
-                                <ItemsControl x:Name="AnnotationList" ItemsSource="{Binding AnnotationFields}" ItemsPanel="{StaticResource WrapItems}" />
+                                           Text="Referencia visual en la vista frontal (bloque TARIMA_GENERICA). No entra en el BOM." />
                                 <TextBlock Text="Mostrar cotas en:" Margin="0,0,0,2" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
                                 <WrapPanel>
-                                    <CheckBox Content="Frontal" Margin="0,2,12,2" IsChecked="{Binding DimensionsFrontal, Mode=TwoWay}" IsEnabled="{Binding CanEdit}" />
-                                    <CheckBox Content="Lateral" Margin="0,2,12,2" IsChecked="{Binding DimensionsLateral, Mode=TwoWay}" IsEnabled="{Binding CanEdit}" />
-                                    <CheckBox Content="Planta" Margin="0,2,12,2" IsChecked="{Binding DimensionsPlanta, Mode=TwoWay}" IsEnabled="{Binding CanEdit}" />
+                                    <CheckBox Content="Frontal" Margin="0,2,12,2" IsChecked="{Binding DimensionsFrontal, Mode=TwoWay}" IsEnabled="{Binding CanEdit}"
+                                              AutomationProperties.Name="Mostrar cotas en la frontal" />
+                                    <CheckBox Content="Lateral" Margin="0,2,12,2" IsChecked="{Binding DimensionsLateral, Mode=TwoWay}" IsEnabled="{Binding CanEdit}"
+                                              AutomationProperties.Name="Mostrar cotas en la lateral" />
+                                    <CheckBox Content="Planta" Margin="0,2,12,2" IsChecked="{Binding DimensionsPlanta, Mode=TwoWay}" IsEnabled="{Binding CanEdit}"
+                                              AutomationProperties.Name="Mostrar cotas en la planta" />
                                 </WrapPanel>
                             </StackPanel>
                         </Expander>
@@ -215,22 +335,24 @@
                         <RowDefinition x:Name="InspectorRow" Height="0" />
                     </Grid.RowDefinitions>
                     <DockPanel Grid.Column="0" LastChildFill="True">
-                        <!-- Decision 2: «Todos los fondos / Fondo 1 / Fondo n»; what is seen is where it is written. -->
+                        <!-- Decision 2 and the approved draft: segmented buttons «Todos los fondos · Fondo 1 · Fondo n» (no drop-down list, O-D of
+                             the smoke); what is seen is where it is written. -->
                         <StackPanel DockPanel.Dock="Top" Margin="0,0,0,6"
                                     Visibility="{Binding HasFondos, Converter={StaticResource FlagToVisibility}}">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Fondos de la vista:" VerticalAlignment="Center" Margin="0,0,8,0"
-                                           Foreground="{DynamicResource ShellTextSecondaryBrush}" />
-                                <ComboBox x:Name="FondoScopeBox" MinWidth="160" ItemsSource="{Binding FondoOptions}"
-                                          SelectedIndex="{Binding FondoScopeIndex, Mode=TwoWay}"
-                                          AutomationProperties.Name="Fondos de la vista" />
-                            </StackPanel>
-                            <TextBlock x:Name="FondoScopeText" Text="{Binding FondoScopeText}" Style="{StaticResource OptionalText}" Margin="0,4,0,0"
+                            <ItemsControl x:Name="FondoViewList" ItemsSource="{Binding FondoViews}" ItemsPanel="{StaticResource RowItems}"
+                                          AutomationProperties.Name="Fondo que se ve y donde se escribe">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button Content="{Binding Label}" Style="{StaticResource SegmentButton}" Click="OnFondoViewClick" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <TextBlock x:Name="FondoScopeText" Text="{Binding FondoScopeText}" Style="{StaticResource OptionalText}" Margin="0,2,0,0"
                                        Foreground="{DynamicResource ShellTextSecondaryBrush}" />
                         </StackPanel>
                         <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,0,0,4" Foreground="{DynamicResource ShellTextSecondaryBrush}"
-                                   Text="Cada celda muestra la tarima: ancho × alto (in). Clic: una celda · Mayús+clic: rango · Ctrl+clic: añadir o quitar. F1…, N1… y «Todo» seleccionan la columna, la fila o todo. ½: medio frente. La raya inferior en N1: la tarima en el piso, sin larguero." />
-                        <CheckBox x:Name="ShowDetailCheck" DockPanel.Dock="Top" Margin="0,0,0,6" Content="Ver detalle en celdas (tarimas por nivel y peralte)"
+                                   Text="Cada celda muestra la tarima: ancho × alto (in). Clic: una celda · Mayús+clic: rango · Ctrl+clic: añadir o quitar. F1…, N1… y «Todo» seleccionan la columna, la fila o todo." />
+                        <CheckBox x:Name="ShowDetailCheck" DockPanel.Dock="Top" Margin="0,0,0,6" Content="Ver detalle en celdas"
                                   IsChecked="{Binding ShowDetail, Mode=TwoWay}" />
                         <ScrollViewer x:Name="MatrixScroll" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                             <StackPanel>
@@ -269,7 +391,7 @@
                                             <StackPanel Orientation="Horizontal">
                                                 <Button Width="48" Margin="0,0,2,2" Padding="2" Content="{Binding Label}"
                                                         Style="{StaticResource SecondaryButtonStyle}" Click="OnRowClick"
-                                                        AutomationProperties.Name="{Binding Label}" />
+                                                        AutomationProperties.Name="{Binding AccessibleText}" />
                                                 <ItemsControl ItemsSource="{Binding Cells}">
                                                     <ItemsControl.ItemsPanel>
                                                         <ItemsPanelTemplate>
@@ -278,10 +400,10 @@
                                                     </ItemsControl.ItemsPanel>
                                                     <ItemsControl.ItemTemplate>
                                                         <DataTemplate>
+                                                            <!-- The name for UI Automation carries the position («Frente 2 · Nivel 3: 42×60»): unique in the matrix. -->
                                                             <Button Width="70" MinHeight="32" Margin="0,0,2,2" Padding="2" Click="OnCellClick"
                                                                     IsEnabled="{Binding Exists}"
-                                                                    AutomationProperties.Name="{Binding Text}"
-                                                                    AutomationProperties.HelpText="{Binding AccessibleText}">
+                                                                    AutomationProperties.Name="{Binding AccessibleText}">
                                                                 <Button.Style>
                                                                     <Style TargetType="Button" BasedOn="{StaticResource SecondaryButtonStyle}">
                                                                         <Setter Property="BorderThickness" Value="1" />
@@ -308,6 +430,16 @@
                                                                                    Foreground="{DynamicResource ShellTextSecondaryBrush}"
                                                                                    Visibility="{Binding ShowDetail, Converter={StaticResource FlagToVisibility}}" />
                                                                     </StackPanel>
+                                                                    <!-- The marks of the legend: modified in the draft, distinct from the rest, a manual value. -->
+                                                                    <Ellipse x:Name="ModifiedMark" Width="7" Height="7" HorizontalAlignment="Left" VerticalAlignment="Top"
+                                                                             Fill="{DynamicResource ShellStatusWarningBrush}" ToolTip="Modificada en el borrador"
+                                                                             Visibility="{Binding IsModified, Converter={StaticResource FlagToVisibility}}" />
+                                                                    <Ellipse x:Name="DistinctMark" Width="7" Height="7" HorizontalAlignment="Left" VerticalAlignment="Top"
+                                                                             Fill="{DynamicResource ShellStatusInfoBrush}" ToolTip="Distinta del resto"
+                                                                             Visibility="{Binding IsDistinct, Converter={StaticResource FlagToVisibility}}" />
+                                                                    <TextBlock x:Name="ManualMark" Text="M" FontSize="9" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Top"
+                                                                               Foreground="{DynamicResource ShellTextSecondaryBrush}" ToolTip="Valor manual"
+                                                                               Visibility="{Binding IsManual, Converter={StaticResource FlagToVisibility}}" />
                                                                     <!-- Decision 4: the floor line of N1 with no «Larguero a piso» (the pallet on the floor). -->
                                                                     <Border x:Name="FloorLine" Height="3" VerticalAlignment="Bottom" Margin="-2,0,-2,-2"
                                                                             Background="{DynamicResource ShellTextSecondaryBrush}" ToolTip="En el piso, sin larguero"
@@ -321,6 +453,71 @@
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
+
+                                <!-- The legend of the approved draft (T and P are of the entrega 2; «Valor no válido» does not exist here: the window
+                                     refuses a value that is not valid before it reaches the draft). -->
+                                <WrapPanel x:Name="MatrixLegend" Margin="0,6,0,0" AutomationProperties.Name="Leyenda de la matriz">
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,14,4">
+                                        <Ellipse Width="7" Height="7" Margin="0,0,5,0" VerticalAlignment="Center" Fill="{DynamicResource ShellStatusWarningBrush}" />
+                                        <TextBlock Text="Modificada en el borrador" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,14,4">
+                                        <Ellipse Width="7" Height="7" Margin="0,0,5,0" VerticalAlignment="Center" Fill="{DynamicResource ShellStatusInfoBrush}" />
+                                        <TextBlock Text="Distinta del resto" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,14,4"
+                                                Visibility="{Binding HasFondos, Converter={StaticResource FlagToVisibility}}">
+                                        <TextBlock Text="varía" FontStyle="Italic" Margin="0,0,5,0" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                        <TextBlock Text="Los fondos no coinciden" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,14,4">
+                                        <TextBlock Text="M" FontSize="9" FontWeight="Bold" Margin="0,0,5,0" VerticalAlignment="Center" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                        <TextBlock Text="Valor manual" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,14,4">
+                                        <Border Width="14" Height="3" Margin="0,0,5,0" VerticalAlignment="Center" Background="{DynamicResource ShellTextSecondaryBrush}" />
+                                        <TextBlock Text="En el piso, sin larguero" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                    </StackPanel>
+                                    <TextBlock Text="½ en la columna: medio frente" Margin="0,0,14,4" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                </WrapPanel>
+
+                                <!-- «Altura por poste» (the approved draft): the posts of each fondo of the view. -->
+                                <TextBlock Text="Altura por poste" Style="{StaticResource SubTitle}" Margin="0,8,0,4" />
+                                <ItemsControl x:Name="PostHeightList" ItemsSource="{Binding PostHeights}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Margin="0,0,0,4">
+                                                <TextBlock Text="{Binding Title}" Foreground="{DynamicResource ShellTextSecondaryBrush}"
+                                                           Visibility="{Binding HasTitle, Converter={StaticResource FlagToVisibility}}" />
+                                                <ItemsControl ItemsSource="{Binding Chips}" ItemsPanel="{StaticResource RowItems}"
+                                                              AutomationProperties.Name="{Binding AccessibleText}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Border Margin="0,0,4,4" Padding="6,2" CornerRadius="4" BorderThickness="1" ToolTip="{Binding AccessibleText}">
+                                                                <Border.Style>
+                                                                    <Style TargetType="Border">
+                                                                        <Setter Property="BorderBrush" Value="{DynamicResource ShellBorderBrush}" />
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding IsManual}" Value="True">
+                                                                                <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusWarningBrush}" />
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </Border.Style>
+                                                                <TextBlock AutomationProperties.Name="{Binding AccessibleText}" Foreground="{DynamicResource ShellTextPrimaryBrush}">
+                                                                    <Run Text="{Binding Id, Mode=OneWay}" FontWeight="SemiBold" />
+                                                                    <Run Text="{Binding Value, Mode=OneWay}" />
+                                                                </TextBlock>
+                                                            </Border>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                <TextBlock TextWrapping="Wrap" Margin="0,0,0,4" MaxWidth="520" HorizontalAlignment="Left" Foreground="{DynamicResource ShellTextSecondaryBrush}"
+                                           Text="Cada poste toma la altura del frente más alto que toca, como ya hace hoy Selectivo; una «Altura manual de cabecera» manda en los dos postes de su frente, y una cabecera personalizada, en su poste." />
                             </StackPanel>
                         </ScrollViewer>
                     </DockPanel>
@@ -330,50 +527,96 @@
                             BorderBrush="{DynamicResource ShellBorderBrush}" Background="{DynamicResource ShellSurfaceBrush}">
                         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                             <StackPanel>
-                                <TextBlock x:Name="InspectorTitle" Text="{Binding InspectorTitle}" Style="{StaticResource GroupTitle}" Margin="0,0,0,6" />
+                                <TextBlock x:Name="InspectorTitle" Text="{Binding InspectorTitle}" Style="{StaticResource GroupTitle}" Margin="0,0,0,2" />
+                                <TextBlock x:Name="TargetText" Text="{Binding TargetText}" TextWrapping="Wrap" Margin="0,0,0,6"
+                                           Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                <!-- The scope of the edition (the approved draft): «Celda · Frente · Nivel · Todo». -->
+                                <ItemsControl x:Name="ScopeList" ItemsSource="{Binding ScopeOptions}" ItemsPanel="{StaticResource RowItems}" Margin="0,0,0,4"
+                                              IsEnabled="{Binding CanEdit}" AutomationProperties.Name="Alcance de la edición">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Button Content="{Binding Label}" Style="{StaticResource SegmentButton}" Click="OnScopeClick" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
                                 <TextBlock x:Name="InspectorNote" Text="{Binding InspectorNote}" Style="{StaticResource OptionalText}" Margin="0,0,0,6"
                                            Foreground="{DynamicResource ShellStatusWarningBrush}" />
-                                <TextBlock Text="Tarima y larguero de la selección" FontWeight="SemiBold" Margin="0,0,0,4"
-                                           Foreground="{DynamicResource ShellTextPrimaryBrush}" />
-                                <ItemsControl x:Name="CellFieldList" ItemsSource="{Binding CellFields}" ItemsPanel="{StaticResource WrapItems}" />
-                                <TextBlock Text="Frentes de la selección" FontWeight="SemiBold" Margin="0,6,0,4"
-                                           Foreground="{DynamicResource ShellTextPrimaryBrush}" />
-                                <!-- S-20: with fronts that differ the box is indeterminate and says «varía»; a click puts it in all of them (the draft). -->
+
+                                <TextBlock Text="Tarima" Style="{StaticResource SubTitle}" />
+                                <ItemsControl x:Name="CellFieldList" ItemsSource="{Binding PalletFields}" ItemsPanel="{StaticResource WrapItems}" />
+                                <WrapPanel>
+                                    <TextBlock Text="Larguero" Style="{StaticResource SubTitle}" Margin="0,6,10,4" />
+                                    <TextBlock x:Name="BeamSummaryText" Text="{Binding BeamSummary}" Margin="0,6,0,4" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                </WrapPanel>
+                                <ItemsControl x:Name="BeamFieldList" ItemsSource="{Binding BeamFields}" ItemsPanel="{StaticResource WrapItems}" />
+                                <WrapPanel>
+                                    <TextBlock Text="Manual" Style="{StaticResource SubTitle}" Margin="0,6,10,4" />
+                                    <TextBlock x:Name="ManualSummaryText" Text="{Binding ManualSummary}" Margin="0,6,0,4" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                </WrapPanel>
+                                <ItemsControl x:Name="ManualFieldList" ItemsSource="{Binding ManualFields}" ItemsPanel="{StaticResource WrapItems}" />
+
+                                <WrapPanel>
+                                    <TextBlock x:Name="FrontTitleText" Text="{Binding FrontTitle}" Style="{StaticResource SubTitle}" Margin="0,6,10,4" />
+                                    <TextBlock x:Name="FrontSummaryText" Text="{Binding FrontSummary}" Margin="0,6,0,4" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                </WrapPanel>
+                                <!-- S-20: with fronts that differ the box is indeterminate and says «varía»; a click puts it in all of them (the draft).
+                                     Its name for UI Automation is its visible text. -->
                                 <CheckBox x:Name="FloorBeamCheck" Content="{Binding SelectionFloorBeamLabel}" Margin="0,0,0,8" IsThreeState="False"
                                           IsChecked="{Binding SelectionFloorBeam, Mode=TwoWay}" IsEnabled="{Binding CanEdit}"
-                                          AutomationProperties.Name="Larguero a piso en los frentes de la selección" />
+                                          AutomationProperties.Name="{Binding SelectionFloorBeamLabel}" />
                                 <ItemsControl x:Name="FrontFieldList" ItemsSource="{Binding FrontFields}" ItemsPanel="{StaticResource WrapItems}" />
 
                                 <!-- Decision 7: the tramos of «medio frente» here, with no dialog; the column of the matrix carries «½». -->
-                                <TextBlock Text="Medio frente" FontWeight="SemiBold" Margin="0,6,0,4" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                <TextBlock Text="Medio frente" Style="{StaticResource SubTitle}" />
                                 <TextBlock x:Name="SegmentNoteText" Text="{Binding SegmentNote}" Style="{StaticResource OptionalText}" Margin="0,0,0,4"
                                            Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                <Grid Visibility="{Binding HasSegmentRows, Converter={StaticResource FlagToVisibility}}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="56" />
+                                        <ColumnDefinition Width="96" />
+                                        <ColumnDefinition Width="110" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="Tramo" Style="{StaticResource ColumnHead}" />
+                                    <TextBlock Grid.Column="1" Text="Longitud (in)" Style="{StaticResource ColumnHead}" />
+                                    <TextBlock Grid.Column="2" Text="Con largueros" Style="{StaticResource ColumnHead}" />
+                                    <TextBlock Grid.Column="3" Text="Acciones" Style="{StaticResource ColumnHead}" />
+                                </Grid>
                                 <ItemsControl x:Name="SegmentList" ItemsSource="{Binding SegmentRows}" IsEnabled="{Binding CanChangeSegments}"
                                               AutomationProperties.Name="Tramos del frente">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <StackPanel Orientation="Horizontal" Margin="0,2">
-                                                <TextBlock Text="{Binding Title}" Width="66" VerticalAlignment="Center"
+                                            <Grid Margin="0,2">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="56" />
+                                                    <ColumnDefinition Width="96" />
+                                                    <ColumnDefinition Width="110" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding Number}" VerticalAlignment="Center"
                                                            Foreground="{DynamicResource ShellTextPrimaryBrush}" />
-                                                <TextBox Width="80" Padding="4,3" Text="{Binding LengthText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                         AutomationProperties.Name="{Binding Title}"
+                                                <TextBox Grid.Column="1" Width="80" HorizontalAlignment="Left" Padding="4,3"
+                                                         Text="{Binding LengthText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                         AutomationProperties.Name="{Binding LengthName}"
                                                          Visibility="{Binding HasLength, Converter={StaticResource FlagToVisibility}}" />
-                                                <TextBlock Width="80" Text="(resto)" VerticalAlignment="Center" ToolTip="El último tramo se calcula: lo que sobra del frente."
+                                                <TextBlock Grid.Column="1" Text="{Binding RestText}" VerticalAlignment="Center" TextWrapping="Wrap"
+                                                           ToolTip="El último tramo se calcula: lo que sobra del frente."
                                                            Foreground="{DynamicResource ShellTextSecondaryBrush}"
                                                            Visibility="{Binding IsRest, Converter={StaticResource FlagToVisibility}}" />
-                                                <CheckBox Content="con largueros" Margin="10,0,0,0" VerticalAlignment="Center" IsChecked="{Binding Loaded, Mode=TwoWay}" />
-                                                <Button Content="Quitar" Margin="10,0,0,0" Padding="8,1" Style="{StaticResource SecondaryButtonStyle}"
-                                                        AutomationProperties.Name="Quitar este tramo" Click="OnRemoveSegmentClick" />
-                                            </StackPanel>
+                                                <CheckBox Grid.Column="2" VerticalAlignment="Center" IsChecked="{Binding Loaded, Mode=TwoWay}"
+                                                          AutomationProperties.Name="{Binding LoadedName}" />
+                                                <Button Grid.Column="3" Content="Quitar" HorizontalAlignment="Left" Padding="8,1" Style="{StaticResource SecondaryButtonStyle}"
+                                                        AutomationProperties.Name="{Binding RemoveName}" Click="OnRemoveSegmentClick" />
+                                            </Grid>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
                                 <TextBlock x:Name="SegmentErrorText" Text="{Binding SegmentError}" Style="{StaticResource OptionalText}" Margin="0,2,0,0"
                                            Foreground="{DynamicResource ShellStatusErrorBrush}" />
                                 <WrapPanel Margin="0,4,0,0">
-                                    <Button x:Name="StartSegmentsButton" Content="Partir en tramos" Margin="0,0,6,4" Padding="10,3"
+                                    <Button x:Name="StartSegmentsButton" Content="Partir el frente" Margin="0,0,6,4" Padding="10,3"
                                             Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanStartSegments}" Click="OnStartSegmentsClick" />
-                                    <Button x:Name="AddSegmentButton" Content="+ Agregar tramo" Margin="0,0,6,4" Padding="10,3"
+                                    <Button x:Name="AddSegmentButton" Content="Agregar tramo" Margin="0,0,6,4" Padding="10,3"
                                             Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanChangeSegments}" Click="OnAddSegmentClick" />
                                     <Button x:Name="ApplySegmentsButton" Content="Aplicar tramos" Margin="0,0,6,4" Padding="10,3"
                                             Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanChangeSegments}" Click="OnApplySegmentsClick" />
@@ -389,26 +632,51 @@
                 </Grid>
             </TabItem>
 
-            <!-- Avanzado: the own peralte of each post and its cabecera (seen, edited in the classic editor), and the fronts in tramos. -->
+            <!-- Avanzado: the table of the posts (own peralte, height by fondo, cabecera; the cabecera is seen here and edited in the classic
+                 editor), and the fronts in tramos. -->
             <TabItem x:Name="AdvancedTab" Header="Avanzado">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <StackPanel Margin="10">
-                        <TextBlock Text="Postes y cabeceras" Style="{StaticResource GroupTitle}" Margin="0,0,0,2" />
-                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,8" Foreground="{DynamicResource ShellTextSecondaryBrush}"
-                                   Text="Peralte propio vacío = el del rack («Rack» › «Lo esencial»); uno igual al del rack se guarda como «el del rack»." />
+                        <WrapPanel>
+                            <TextBlock Text="Postes y cabeceras" Style="{StaticResource GroupTitle}" Margin="0,0,10,2" />
+                            <TextBlock x:Name="PostsSummaryText" Text="{Binding PostsSummary}" VerticalAlignment="Center" Margin="0,0,0,2"
+                                       Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                        </WrapPanel>
+                        <Grid Margin="0,6,0,2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="48" />
+                                <ColumnDefinition Width="120" />
+                                <ColumnDefinition Width="150" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Poste" Style="{StaticResource ColumnHead}" />
+                            <TextBlock Grid.Column="1" Text="Peralte propio (in)" Style="{StaticResource ColumnHead}" />
+                            <TextBlock Grid.Column="2" x:Name="PostHeightHeaderText" Text="{Binding PostHeightHeader}" Style="{StaticResource ColumnHead}" />
+                            <TextBlock Grid.Column="3" Text="Cabecera" Style="{StaticResource ColumnHead}" />
+                        </Grid>
                         <ItemsControl x:Name="PostRowList" ItemsSource="{Binding PostRows}" AutomationProperties.Name="Postes">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <DockPanel Margin="0,0,0,2">
-                                        <TextBlock DockPanel.Dock="Left" Text="{Binding Post}" Width="36" Margin="0,18,0,0" FontWeight="SemiBold"
+                                    <Grid Margin="0,0,0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="48" />
+                                            <ColumnDefinition Width="120" />
+                                            <ColumnDefinition Width="150" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="{Binding Post}" Margin="0,4,0,0" FontWeight="SemiBold"
                                                    Foreground="{DynamicResource ShellTextPrimaryBrush}" />
-                                        <ContentPresenter DockPanel.Dock="Left" Content="{Binding Field}" />
-                                        <TextBlock Text="{Binding Cabecera}" TextWrapping="Wrap" Margin="0,18,0,0" VerticalAlignment="Top"
+                                        <ContentControl Grid.Column="1" Content="{Binding Field}" ContentTemplate="{StaticResource CompactField}" Focusable="False" />
+                                        <TextBlock Grid.Column="2" Text="{Binding Height}" Margin="0,4,8,0" TextWrapping="Wrap"
+                                                   Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                        <TextBlock Grid.Column="3" Text="{Binding Cabecera}" Margin="0,4,0,0" TextWrapping="Wrap"
                                                    Foreground="{DynamicResource ShellTextSecondaryBrush}" />
-                                    </DockPanel>
+                                    </Grid>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
+                        <TextBlock TextWrapping="Wrap" Margin="0,6,0,0" Foreground="{DynamicResource ShellTextSecondaryBrush}"
+                                   Text="Peralte propio vacío = el del rack («Rack» › «Poste y anotaciones»). Uno igual al del rack se guarda como «el del rack»." />
                         <TextBlock TextWrapping="Wrap" Margin="0,8,0,0" Foreground="{DynamicResource ShellTextSecondaryBrush}"
                                    Text="Las cabeceras personalizadas se conservan y se ven aquí. Para editar una cabecera, usa RACKEDITAR (el editor clásico) mientras se migra." />
                         <TextBlock Text="Medio frente" Style="{StaticResource GroupTitle}" />

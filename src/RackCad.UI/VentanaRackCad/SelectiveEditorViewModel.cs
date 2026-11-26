@@ -144,6 +144,9 @@ namespace RackCad.UI.VentanaRackCad
         private bool _isPrimary;
         private bool _isOnFloor;
         private bool _varies;
+        private bool _isModified;
+        private bool _isDistinct;
+        private bool _isManual;
         private string _accessibleText = string.Empty;
 
         public SelectiveCellItem(int frontIndex, int levelIndex)
@@ -175,9 +178,20 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>The fondos of the scope do not have the same pallet in this cell («varía»; decision 2).</summary>
         public bool Varies { get => _varies; private set => SetProperty(ref _varies, value); }
 
+        /// <summary>The cell differs from what was last read from the drawing or written to it (the legend: «Modificada en el borrador»).</summary>
+        public bool IsModified { get => _isModified; private set => SetProperty(ref _isModified, value); }
+
+        /// <summary>The cell is not like most cells of the view (the legend: «Distinta del resto»); a modified cell says modified instead.</summary>
+        public bool IsDistinct { get => _isDistinct; private set => SetProperty(ref _isDistinct, value); }
+
+        /// <summary>The cell has a manual larguero length or a manual clear (the legend: «M Valor manual»).</summary>
+        public bool IsManual { get => _isManual; private set => SetProperty(ref _isManual, value); }
+
+        /// <summary>What a screen reader says of the cell, and its name for UI Automation: its position first («Frente 2 · Nivel 3: 42×60»).</summary>
         public string AccessibleText { get => _accessibleText; private set => SetProperty(ref _accessibleText, value); }
 
-        internal void Set(string text, string detail, bool showDetail, bool exists, bool isSelected, bool isPrimary, bool isOnFloor, bool varies, string accessible)
+        internal void Set(string text, string detail, bool showDetail, bool exists, bool isSelected, bool isPrimary, bool isOnFloor, bool varies, string accessible,
+            bool isModified = false, bool isDistinct = false, bool isManual = false)
         {
             Text = text;
             Detail = detail;
@@ -187,6 +201,9 @@ namespace RackCad.UI.VentanaRackCad
             IsPrimary = isPrimary;
             IsOnFloor = isOnFloor;
             Varies = varies;
+            IsModified = isModified && exists;
+            IsDistinct = isDistinct && exists && !isModified;
+            IsManual = isManual && exists;
             AccessibleText = accessible;
         }
     }
@@ -205,8 +222,139 @@ namespace RackCad.UI.VentanaRackCad
 
         public string Label { get; }
 
+        /// <summary>The name of the head of the row for UI Automation (the approved draft): «Nivel 1, el piso: seleccionar la fila».</summary>
+        public string AccessibleText => "Nivel " + (LevelIndex + 1).ToString(CultureInfo.InvariantCulture) + (LevelIndex == 0 ? ", el piso" : string.Empty) + ": seleccionar la fila";
+
         public IReadOnlyList<SelectiveCellItem> Cells { get; }
     }
+
+    /// <summary>The scope of the inspector (the approved draft: «Celda · Frente · Nivel · Todo»).</summary>
+    public enum SelectiveEditScope
+    {
+        Cell,
+        Front,
+        Level,
+        All,
+    }
+
+    /// <summary>One button of a segmented choice of the editor (the fondos of the view, the scope of the inspector): its label and whether it is the chosen one.</summary>
+    public sealed class SelectiveSegmentOption : ObservableObject
+    {
+        private string _label;
+        private bool _isOn;
+
+        public SelectiveSegmentOption(int value, string label, string group)
+        {
+            Value = value;
+            _label = label ?? string.Empty;
+            Group = group ?? string.Empty;
+        }
+
+        /// <summary>What it chooses: the index of the option (0 = «Todos los fondos», n = «Fondo n»), or the <see cref="SelectiveEditScope"/>.</summary>
+        public int Value { get; }
+
+        public string Group { get; }
+
+        public string Label
+        {
+            get => _label;
+            private set
+            {
+                if (SetProperty(ref _label, value ?? string.Empty)) OnPropertyChanged(nameof(AccessibleText));
+            }
+        }
+
+        public bool IsOn
+        {
+            get => _isOn;
+            private set
+            {
+                if (SetProperty(ref _isOn, value)) OnPropertyChanged(nameof(ItemStatus));
+            }
+        }
+
+        /// <summary>The name for UI Automation: the group and the option («Fondos de la vista: Fondo 2»), unique in the editor.</summary>
+        public string AccessibleText => Group + ": " + Label;
+
+        /// <summary>«elegido» for the chosen option (what aria-pressed says in the draft).</summary>
+        public string ItemStatus => _isOn ? "elegido" : string.Empty;
+
+        internal void Set(string label, bool isOn)
+        {
+            Label = label;
+            IsOn = isOn;
+        }
+    }
+
+    /// <summary>A titled group of fields of the editor (the approved draft: «Estructura», «Tarima», «Larguero y holguras»).</summary>
+    public sealed record SelectiveFieldGroup(string Title, IReadOnlyList<object> Fields);
+
+    /// <summary>
+    /// One row of the table «Fondos» of the «Rack» tab (two or more fondos; the approved draft): what goes by fondo, its fronts, the depth
+    /// of its pallet and of its cabecera, and the separation to the next fondo (none for the last one), with its state. Its fields are
+    /// refreshed in place.
+    /// </summary>
+    public sealed class SelectiveFondoRow : ObservableObject
+    {
+        private string _state = "Correcto";
+        private bool _hasProblem;
+
+        public SelectiveFondoRow(int fondo, DynamicFieldItem fronts, DynamicFieldItem depth, DynamicFieldItem cabecera, DynamicFieldItem separator)
+        {
+            Fondo = fondo;
+            Fronts = fronts;
+            Depth = depth;
+            Cabecera = cabecera;
+            Separator = separator;
+            foreach (var field in Fields) field.PropertyChanged += OnFieldChanged;
+        }
+
+        public int Fondo { get; }
+
+        public string Title => "Fondo " + (Fondo + 1).ToString(CultureInfo.InvariantCulture);
+
+        public DynamicFieldItem Fronts { get; }
+
+        public DynamicFieldItem Depth { get; }
+
+        public DynamicFieldItem Cabecera { get; }
+
+        /// <summary>The separation to the next fondo; null for the last one («Último»).</summary>
+        public DynamicFieldItem Separator { get; }
+
+        public bool IsLast => Separator == null;
+
+        public bool HasSeparator => Separator != null;
+
+        /// <summary>«Correcto», or the problem of the last value refused in the row.</summary>
+        public string State { get => _state; private set => SetProperty(ref _state, value); }
+
+        public bool HasProblem { get => _hasProblem; private set => SetProperty(ref _hasProblem, value); }
+
+        internal IEnumerable<DynamicFieldItem> Fields => new[] { Fronts, Depth, Cabecera, Separator }.Where(f => f != null);
+
+        internal void Refresh(SelectiveFondoRow next)
+        {
+            Fronts.Refresh(next.Fronts);
+            Depth.Refresh(next.Depth);
+            Cabecera.Refresh(next.Cabecera);
+            Separator?.Refresh(next.Separator);
+        }
+
+        private void OnFieldChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName != nameof(DynamicFieldItem.Error)) return;
+            var errors = Fields.Select(f => f.Error).Where(t => !string.IsNullOrWhiteSpace(t)).ToList();
+            HasProblem = errors.Count > 0;
+            State = errors.Count == 0 ? "Correcto" : (errors.Count == 1 ? "1 problema: " : errors.Count + " problemas: ") + string.Join(" ", errors);
+        }
+    }
+
+    /// <summary>The height of one post under the matrix (the approved draft, «Altura por poste»): «P1 ≈ 144 in», marked when a manual height governs it.</summary>
+    public sealed record SelectivePostHeightChip(string Id, string Value, bool IsManual, string AccessibleText);
+
+    /// <summary>The heights of the posts of one fondo of the view.</summary>
+    public sealed record SelectivePostHeightBlock(string Title, bool HasTitle, string AccessibleText, IReadOnlyList<SelectivePostHeightChip> Chips);
 
     /// <summary>One column head of the matrix: «F1» …, with «½» for a front in tramos (decision 7) and the fondos that have it; refreshed in place.</summary>
     public sealed class SelectiveColumnHead : ObservableObject
@@ -238,20 +386,22 @@ namespace RackCad.UI.VentanaRackCad
         }
     }
 
-    /// <summary>One computed value of the rack (read only).</summary>
-    public sealed record SelectiveCalcItem(string Label, string Value);
+    /// <summary>One computed value of the rack (read only), with how it is computed (the approved draft).</summary>
+    public sealed record SelectiveCalcItem(string Label, string Value, string Hint = "");
 
-    /// <summary>One post of «Avanzado»: its own peralte (empty = the one of the rack) and its cabecera in each fondo; refreshed in place.</summary>
+    /// <summary>One post of «Avanzado»: its own peralte (empty = the one of the rack), its height and its cabecera in each fondo; refreshed in place.</summary>
     public sealed class SelectivePostRow : ObservableObject
     {
         private string _cabecera;
+        private string _height;
 
-        public SelectivePostRow(int postIndex, DynamicFieldItem field, string cabecera)
+        public SelectivePostRow(int postIndex, DynamicFieldItem field, string cabecera, string height = "")
         {
             PostIndex = postIndex;
             Post = "P" + (postIndex + 1).ToString(CultureInfo.InvariantCulture);
             Field = field;
             _cabecera = cabecera ?? string.Empty;
+            _height = height ?? string.Empty;
         }
 
         public int PostIndex { get; }
@@ -263,10 +413,14 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>«Calculada» or «Personalizada», by fondo: the custom cabeceras are kept and edited in the classic editor.</summary>
         public string Cabecera { get => _cabecera; private set => SetProperty(ref _cabecera, value ?? string.Empty); }
 
+        /// <summary>The height of the post, by fondo («≈ 144 in / ≈ 120 in»), as the drawing gives it (the column «Altura» of the draft).</summary>
+        public string Height { get => _height; private set => SetProperty(ref _height, value ?? string.Empty); }
+
         internal void Refresh(SelectivePostRow next)
         {
             Field.Refresh(next.Field);
             Cabecera = next._cabecera;
+            Height = next._height;
         }
     }
 
@@ -275,6 +429,7 @@ namespace RackCad.UI.VentanaRackCad
     {
         private string _lengthText;
         private bool _loaded;
+        private string _restText = "(resto)";
 
         public SelectiveSegmentRow(int index, bool isRest, string lengthText, bool loaded)
         {
@@ -286,7 +441,17 @@ namespace RackCad.UI.VentanaRackCad
 
         public int Index { get; }
 
-        public string Title => "Tramo " + (Index + 1).ToString(CultureInfo.InvariantCulture);
+        public string Title => "Tramo " + Number;
+
+        /// <summary>The number of the tramo, for the column «Tramo» of the table.</summary>
+        public string Number => (Index + 1).ToString(CultureInfo.InvariantCulture);
+
+        /// <summary>The names for UI Automation, unique in every row (the approved draft): «Tramo 2: longitud», «Tramo 2 con largueros», «Quitar el tramo 2».</summary>
+        public string LengthName => Title + ": longitud";
+
+        public string LoadedName => Title + " con largueros";
+
+        public string RemoveName => "Quitar el tramo " + Number;
 
         /// <summary>The last tramo is calculated: what is left of the front.</summary>
         public bool IsRest { get; }
@@ -294,6 +459,9 @@ namespace RackCad.UI.VentanaRackCad
         public bool HasLength => !IsRest;
 
         public string LengthText { get => _lengthText; set => SetProperty(ref _lengthText, value ?? string.Empty); }
+
+        /// <summary>«(resto) ≈ n in» of the last tramo: the width of the front less the tramos written above it.</summary>
+        public string RestText { get => _restText; internal set => SetProperty(ref _restText, value ?? "(resto)"); }
 
         /// <summary>«con largueros».</summary>
         public bool Loaded { get => _loaded; set => SetProperty(ref _loaded, value); }
@@ -343,6 +511,18 @@ namespace RackCad.UI.VentanaRackCad
         // S-27 (M-10): the first entry of the list of dimension styles, as in the classic editor (no named style).
         private const string AutomaticStyle = "(Automático)";
 
+        // The names of the groups of segmented buttons, for UI Automation.
+        private const string ScopeGroup = "Alcance de la edición";
+        private const string FondoViewGroup = "Fondos de la vista";
+
+        // The groups of «Lo esencial» of the approved draft, by the keys of their fields.
+        private static readonly (string Title, string[] Keys)[] EssentialLayout =
+        {
+            ("Estructura", new[] { "fronts", "rLevels", "fondos", "rCount" }),
+            ("Tarima", new[] { "rWidth", "rHeight", "depth", "cabecera" }),
+            ("Larguero y holguras", new[] { "rBeam", "rPeralte", "tolerance", "clearance" }),
+        };
+
         private static readonly SelectivePalletDesignStore Store = new SelectivePalletDesignStore();
         private static readonly PropertyId Tolerance = ProjectPropertyIds.SelectivePalletTolerance;
         private static readonly PropertyId Clearance = ProjectPropertyIds.SelectiveVerticalClearance;
@@ -381,16 +561,37 @@ namespace RackCad.UI.VentanaRackCad
         private bool _messageIsError;
 
         private IReadOnlyList<object> _essentials = Array.Empty<object>();
-        private IReadOnlyList<DynamicFieldItem> _separatorFields = Array.Empty<DynamicFieldItem>();
+        private IReadOnlyList<SelectiveFieldGroup> _essentialGroups = Array.Empty<SelectiveFieldGroup>();
+        private IReadOnlyList<SelectiveFondoRow> _fondoRows = Array.Empty<SelectiveFondoRow>();
         private IReadOnlyList<object> _annotationFields = Array.Empty<object>();
         private IReadOnlyList<object> _cellFields = Array.Empty<object>();
+        private IReadOnlyList<object> _palletFields = Array.Empty<object>();
+        private IReadOnlyList<object> _beamFields = Array.Empty<object>();
+        private IReadOnlyList<object> _manualFields = Array.Empty<object>();
         private IReadOnlyList<DynamicFieldItem> _frontFields = Array.Empty<DynamicFieldItem>();
         private IReadOnlyList<SelectivePostRow> _postRows = Array.Empty<SelectivePostRow>();
-        private IReadOnlyList<SelectiveCalcItem> _calculated = Array.Empty<SelectiveCalcItem>();
+        private IReadOnlyList<SelectiveCalcItem> _calculated;
+        private SelectiveRackSystem _calculatedFor;
+        private SelectiveAutomaticValues _automatic = new SelectiveAutomaticValues(Array.Empty<double>(), Array.Empty<double>());
+        private IReadOnlyList<SelectivePostHeightBlock> _postHeights = Array.Empty<SelectivePostHeightBlock>();
         private IReadOnlyList<string> _halfFronts = Array.Empty<string>();
         private IReadOnlyList<SelectiveColumnHead> _columns = Array.Empty<SelectiveColumnHead>();
         private IReadOnlyList<SelectiveMatrixRow> _rows = Array.Empty<SelectiveMatrixRow>();
         private IReadOnlyList<string> _fondoOptions = Array.Empty<string>();
+        private IReadOnlyList<SelectiveSegmentOption> _fondoViews = Array.Empty<SelectiveSegmentOption>();
+        private readonly IReadOnlyList<SelectiveSegmentOption> _scopes = new[]
+        {
+            new SelectiveSegmentOption((int)SelectiveEditScope.Cell, "Celda", ScopeGroup),
+            new SelectiveSegmentOption((int)SelectiveEditScope.Front, "Frente", ScopeGroup),
+            new SelectiveSegmentOption((int)SelectiveEditScope.Level, "Nivel", ScopeGroup),
+            new SelectiveSegmentOption((int)SelectiveEditScope.All, "Todo", ScopeGroup),
+        };
+
+        // The scope of the inspector (the approved draft): how the selection was made, and what its buttons choose.
+        private SelectiveEditScope _scope = SelectiveEditScope.Cell;
+
+        // What every cell held when the draft was last read from the drawing or written to it, for the mark «Modificada en el borrador».
+        private Dictionary<(int Fondo, int Front, int Level), string> _baselineCells = new Dictionary<(int, int, int), string>();
 
         // «Medio frente»: the tramos being written in the inspector, for one front in one scope, until «Aplicar tramos».
         private List<SelectiveSegmentRow> _segmentRows = new List<SelectiveSegmentRow>();
@@ -471,7 +672,11 @@ namespace RackCad.UI.VentanaRackCad
         public int SelectedTab
         {
             get => _selectedTab;
-            set => SetProperty(ref _selectedTab, value);
+            set
+            {
+                // «Calculado» reads the BOM: the view is told to read it again only while it is shown (the Rack tab), and when it is shown.
+                if (SetProperty(ref _selectedTab, value) && value == 0) OnPropertyChanged(nameof(Calculated));
+            }
         }
 
         public bool IsDirty => _dirty;
@@ -523,34 +728,146 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>«Cerrar el editor» of a draft with changes asks first, inline: discard them and close, or cancel.</summary>
         public bool IsConfirmingClose => _confirmingClose;
 
-        /// <summary>«Lo esencial» of the rack: the post and its peralte, the fronts and the depths of the fondos of the scope, the fondos and the holguras.</summary>
+        /// <summary>
+        /// «Lo esencial» of the rack, as the approved draft has it: the fronts, levels, fondos and pallets per level, the pallet (width,
+        /// height, depth; and the depth of the cabecera with one fondo), the larguero and its peralte and the holguras. Every field writes the
+        /// WHOLE rack, in every fondo, whatever the fondos of the view of «Matriz» are: the same write as «Todo» of the matrix with «Todos los
+        /// fondos». In the order of <see cref="EssentialGroups"/>.
+        /// </summary>
         public IReadOnlyList<object> Essentials => _essentials;
 
-        /// <summary>The separation of each gap between consecutive fondos (none with one fondo).</summary>
-        public IReadOnlyList<DynamicFieldItem> SeparatorFields => _separatorFields;
+        /// <summary>«Lo esencial» in the groups of the approved draft: «Estructura», «Tarima» and «Larguero y holguras» (the same field items).</summary>
+        public IReadOnlyList<SelectiveFieldGroup> EssentialGroups => _essentialGroups;
 
-        /// <summary>«Poste y anotaciones»: the annotation scale and the dimensions.</summary>
+        /// <summary>The line under «Lo esencial» (the approved draft).</summary>
+        public string EssentialsHelp => "Escribe en todo el rack" + (HasFondos ? ", en todos los fondos" : string.Empty)
+                                        + ". Para un frente, un nivel o una celda, usa «Matriz».";
+
+        /// <summary>The table «Fondos» (two or more fondos): what goes by fondo, each row written in its fondo only.</summary>
+        public IReadOnlyList<SelectiveFondoRow> FondoRows => _fondoRows;
+
+        /// <summary>The separation of each gap between consecutive fondos (none with one fondo): the column «Separación al siguiente» of <see cref="FondoRows"/>.</summary>
+        public IReadOnlyList<DynamicFieldItem> SeparatorFields => _fondoRows.Where(r => r.Separator != null).Select(r => r.Separator).ToList();
+
+        /// <summary>«Poste y anotaciones»: the post and its peralte, the annotation scale and the dimensions (the approved draft).</summary>
         public IReadOnlyList<object> AnnotationFields => _annotationFields;
 
-        public IReadOnlyList<SelectiveCalcItem> Calculated => _calculated;
+        /// <summary>The summary of the folded «Poste y anotaciones» (the approved draft): «Poste 3 in · cotas: Estándar · con tarimas».</summary>
+        public string AnnotationSummary => "Poste " + Num(_editor.PostPeralte) + " in · cotas: "
+                                           + (DimensionDetails.FirstOrDefault(d => d.Detail == _editor.Dimensions).Label ?? _editor.Dimensions.ToString())
+                                           + (_editor.DrawPallets ? " · con tarimas" : " · sin tarimas");
+
+        /// <summary>
+        /// «Calculado» (the approved draft): the larguero length, the height of the cabecera, the separation N2 → N3, the depth of the
+        /// cabecera, and the counts of cabeceras, largueros, pallet positions and separators. The counts of pieces are read from the BOM
+        /// (<see cref="SelectiveBomCounts"/>); they are computed when the list is read, once per recomposition.
+        /// </summary>
+        public IReadOnlyList<SelectiveCalcItem> Calculated
+        {
+            get
+            {
+                if (_calculated == null || !ReferenceEquals(_calculatedFor, _editor.System))
+                {
+                    _calculated = BuildCalculated();
+                    _calculatedFor = _editor.System;
+                }
+
+                return _calculated;
+            }
+        }
 
         public IReadOnlyList<SelectiveColumnHead> Columns => _columns;
 
         public IReadOnlyList<SelectiveMatrixRow> Rows => _rows;
 
-        /// <summary>The inspector: the pallet, the larguero and the manual values of the selected cells.</summary>
+        /// <summary>«Altura por poste» under the matrix (the approved draft): the posts of each fondo of the view with their height.</summary>
+        public IReadOnlyList<SelectivePostHeightBlock> PostHeights => _postHeights;
+
+        /// <summary>The inspector: the pallet, the larguero and the manual values of the selected cells (in the order of the three groups below).</summary>
         public IReadOnlyList<object> CellFields => _cellFields;
+
+        /// <summary>The group «Tarima» of the inspector: width, height and pallets per level.</summary>
+        public IReadOnlyList<object> PalletFields => _palletFields;
+
+        /// <summary>The group «Larguero» of the inspector: the larguero and its peralte.</summary>
+        public IReadOnlyList<object> BeamFields => _beamFields;
+
+        /// <summary>The group «Manual» of the inspector: the manual length of the larguero and the manual clear.</summary>
+        public IReadOnlyList<object> ManualFields => _manualFields;
+
+        /// <summary>The summary of «Larguero» (the approved draft): «Peralte 4 in», «Peralte varía» or «Sin larguero (piso)».</summary>
+        public string BeamSummary
+        {
+            get
+            {
+                if (_selection.Count > 0 && _selection.All(p => HasNoLarguero(p.FrontIndex, p.LevelIndex))) return NoBeamText;
+                var peralte = _editor.ReadCells(_selection, c => c.BeamPeralte);
+                return peralte.Varies ? "Peralte varía" : peralte.HasValue ? "Peralte " + Num(peralte.Value) + " in" : string.Empty;
+            }
+        }
+
+        /// <summary>The summary of «Manual» (the approved draft): «Automático» or «n celdas con valor manual».</summary>
+        public string ManualSummary
+        {
+            get
+            {
+                var manual = _editor.ScopeFondos
+                    .SelectMany(k => _selection.Select(p => _editor.Cell(k, p.FrontIndex, p.LevelIndex)))
+                    .Count(c => c != null && (c.BeamLength.HasValue || c.Clear.HasValue));
+                return manual == 0 ? "Automático" : Count(manual, "celda con valor manual", "celdas con valor manual");
+            }
+        }
 
         /// <summary>The inspector: the levels, the floor larguero and the manual height of the fronts of the selection.</summary>
         public IReadOnlyList<DynamicFieldItem> FrontFields => _frontFields;
 
-        /// <summary>«Avanzado»: the own peralte of each post and its cabecera.</summary>
+        /// <summary>The title of the section of the fronts (the approved draft): «Frente 2», «Frentes 1, 2», with the fondos when there are several.</summary>
+        public string FrontTitle
+        {
+            get
+            {
+                var fronts = SelectedFronts.Select(f => f + 1).ToList();
+                var fondos = _editor.ScopeFondos.Where(k => SelectedFronts.Any(f => f < _editor.FrontCount(k))).ToList();
+                return ListText(fronts, "Frente", "Frentes")
+                       + (HasFondos ? " · " + (fondos.Count == 1 ? "fondo " + (fondos[0] + 1) : "fondos " + JoinAnd(fondos.Select(k => k + 1))) : string.Empty);
+            }
+        }
+
+        /// <summary>The summary of the section of the fronts (the approved draft): «3 niveles · larguero a piso · medio frente».</summary>
+        public string FrontSummary
+        {
+            get
+            {
+                var levels = _editor.ReadFronts(SelectedFronts, f => f.LevelCount);
+                var floor = _editor.ReadFronts(SelectedFronts, f => f.FloorBeam);
+                var split = SegmentFront is int front && _editor.ScopeFondos.Select(k => _editor.Front(k, front)).Any(f => f?.IsSplit == true);
+                return (levels.Varies ? "niveles: varía" : levels.HasValue ? Count(levels.Value, "nivel", "niveles") : string.Empty)
+                       + (floor.HasValue && floor.Value ? " · larguero a piso" : string.Empty)
+                       + (split ? " · medio frente" : string.Empty);
+            }
+        }
+
+        /// <summary>«Avanzado»: the own peralte of each post, its height and its cabecera.</summary>
         public IReadOnlyList<SelectivePostRow> PostRows => _postRows;
+
+        /// <summary>The head of the column of the heights of «Postes y cabeceras» (the approved draft).</summary>
+        public string PostHeightHeader => HasFondos ? "Altura (por fondo)" : "Altura";
+
+        /// <summary>The summary of «Postes y cabeceras» (the approved draft): «3 postes · 1 peralte propio · 0 cabeceras personalizadas».</summary>
+        public string PostsSummary
+        {
+            get
+            {
+                var (cabeceras, peraltes) = Kept();
+                return Count(_editor.PostCount, "poste", "postes") + " · " + Count(peraltes, "peralte propio", "peraltes propios") + " · "
+                       + Count(cabeceras, "cabecera personalizada", "cabeceras personalizadas");
+            }
+        }
 
         /// <summary>«Avanzado»: the fronts in tramos.</summary>
         public IReadOnlyList<string> HalfFronts => _halfFronts;
 
-        public string HalfFrontsText => _halfFronts.Count == 0 ? "Ningún frente está partido en tramos." : string.Join(" · ", _halfFronts);
+        public string HalfFrontsText => _halfFronts.Count == 0 ? "Ningún frente está partido." : "Frentes partidos: " + string.Join(" · ", _halfFronts) + ".";
 
         /// <summary>«Ver detalle en celdas» (decision 1): each cell adds its pallets per level and its peralte.</summary>
         public bool ShowDetail
@@ -571,6 +888,9 @@ namespace RackCad.UI.VentanaRackCad
         public bool HasFondos => _editor.FondoCount > 1;
 
         public IReadOnlyList<string> FondoOptions => _fondoOptions;
+
+        /// <summary>The segmented buttons over the matrix (the approved draft): «Todos los fondos · Fondo 1 · Fondo n», the chosen one marked.</summary>
+        public IReadOnlyList<SelectiveSegmentOption> FondoViews => _fondoViews;
 
         /// <summary>0 = «Todos los fondos» (where the window starts), n = «Fondo n». It changes what is shown and written, not the draft.</summary>
         public int FondoScopeIndex
@@ -598,7 +918,7 @@ namespace RackCad.UI.VentanaRackCad
                 if (!HasFondos) return string.Empty;
                 return _editor.FondoScope is int fondo
                     ? "Lo que ves es donde escribes: solo en el fondo " + (fondo + 1).ToString(CultureInfo.InvariantCulture) + "."
-                    : "Lo que ves es donde escribes: cada celda escribe en el mismo frente y nivel de todos los fondos que lo tienen; «varía» si no coinciden.";
+                    : "Lo que ves es donde escribes: cada celda escribe en el mismo frente y nivel de todos los fondos que lo tienen.";
             }
         }
 
@@ -608,17 +928,97 @@ namespace RackCad.UI.VentanaRackCad
 
         public IReadOnlyList<int> SelectedFronts => _selection.Select(p => p.FrontIndex).Distinct().OrderBy(f => f).ToList();
 
+        public IReadOnlyList<int> SelectedLevels => _selection.Select(p => p.LevelIndex).Distinct().OrderBy(l => l).ToList();
+
         public SelectiveMatrixPosition PrimaryPosition => _primary;
 
+        /// <summary>The scope of the inspector: how the selection was made (a click, «F…», «N…», «Todo») or chosen with its buttons.</summary>
+        public SelectiveEditScope Scope => _scope;
+
+        /// <summary>The buttons «Celda · Frente · Nivel · Todo» of the inspector (the approved draft); «Celdas (n)» for several cells.</summary>
+        public IReadOnlyList<SelectiveSegmentOption> ScopeOptions => _scopes;
+
+        /// <summary>The title of the inspector (the approved draft): «Frente 1 · Nivel 1», «n celdas», «Frentes 1, 2», «Niveles 2, 3», «Todo el rack», «Todo el fondo 2».</summary>
         public string InspectorTitle
         {
             get
             {
-                if (_selection.Count == 1) return "Celda F" + (_selection[0].FrontIndex + 1) + " · N" + (_selection[0].LevelIndex + 1);
-                var fronts = SelectedFronts.Count;
-                return _selection.Count.ToString(CultureInfo.InvariantCulture) + " celdas en " + fronts.ToString(CultureInfo.InvariantCulture)
-                       + (fronts == 1 ? " frente" : " frentes");
+                switch (_scope)
+                {
+                    case SelectiveEditScope.All:
+                        return HasFondos && _editor.FondoScope is int fondo ? "Todo el fondo " + (fondo + 1).ToString(CultureInfo.InvariantCulture) : "Todo el rack";
+                    case SelectiveEditScope.Front:
+                        return ListText(SelectedFronts.Select(f => f + 1).ToList(), "Frente", "Frentes");
+                    case SelectiveEditScope.Level:
+                        return ListText(SelectedLevels.Select(l => l + 1).ToList(), "Nivel", "Niveles");
+                    default:
+                        return _selection.Count == 1
+                            ? "Frente " + (_selection[0].FrontIndex + 1).ToString(CultureInfo.InvariantCulture) + " · Nivel " + (_selection[0].LevelIndex + 1).ToString(CultureInfo.InvariantCulture)
+                            : Count(_selection.Count, "celda", "celdas");
+                }
             }
+        }
+
+        /// <summary>
+        /// «Destino: …» of the inspector (the approved draft): how many cells a write of the inspector reaches (each selected position in
+        /// every fondo of the view that has it), in which fondos, and in which fronts.
+        /// </summary>
+        public string TargetText
+        {
+            get
+            {
+                var targets = _editor.ScopeFondos.SelectMany(k => _selection.Where(p => p.LevelIndex < _editor.LevelCount(k, p.FrontIndex)).Select(p => k)).ToList();
+                var fondos = targets.Distinct().OrderBy(k => k).ToList();
+                return "Destino: " + Count(targets.Count, "celda", "celdas")
+                       + (HasFondos && fondos.Count > 0 ? " en " + FondoList(fondos) : string.Empty)
+                       + " · " + ListText(SelectedFronts.Select(f => f + 1).ToList(), "frente", "frentes") + ".";
+            }
+        }
+
+        /// <summary>
+        /// A button of the scope of the inspector: «Celda» keeps the main cell, «Frente» takes every cell of the fronts of the selection,
+        /// «Nivel» the levels of the selection in every front that has them, «Todo» every cell of the fondos of the view.
+        /// </summary>
+        public void SetScope(SelectiveEditScope scope)
+        {
+            switch (scope)
+            {
+                case SelectiveEditScope.Cell:
+                {
+                    var primary = _primary;
+                    _selection.Clear();
+                    Add(primary.FrontIndex, primary.LevelIndex);
+                    _primary = _anchor = primary;
+                    break;
+                }
+
+                case SelectiveEditScope.Front:
+                {
+                    var fronts = SelectedFronts;
+                    _selection.Clear();
+                    foreach (var f in fronts)
+                        for (var l = 0; l < _editor.ScopeLevelCount(f); l++) Add(f, l);
+                    break;
+                }
+
+                case SelectiveEditScope.Level:
+                {
+                    var levels = SelectedLevels;
+                    _selection.Clear();
+                    for (var f = 0; f < _editor.ScopeFrontCount; f++)
+                        foreach (var l in levels) Add(f, l);
+                    break;
+                }
+
+                default:
+                    _selection.Clear();
+                    foreach (var p in _editor.ScopePositions()) Add(p.FrontIndex, p.LevelIndex);
+                    break;
+            }
+
+            _scope = scope;
+            RebuildSelection();
+            SayDropped();
         }
 
         /// <summary>What the selection does not have in every fondo of the scope, and what N1 on the floor means; empty otherwise.</summary>
@@ -923,6 +1323,7 @@ namespace RackCad.UI.VentanaRackCad
                 _anchor = clicked;
             }
 
+            _scope = SelectiveEditScope.Cell;
             RebuildSelection();
             SayDropped();
         }
@@ -935,6 +1336,7 @@ namespace RackCad.UI.VentanaRackCad
             _selection.Clear();
             for (var l = 0; l < levels; l++) Add(frontIndex, l);
             _primary = _anchor = new SelectiveMatrixPosition(frontIndex, 0);
+            _scope = SelectiveEditScope.Front;
             RebuildSelection();
             SayDropped();
         }
@@ -947,6 +1349,7 @@ namespace RackCad.UI.VentanaRackCad
             _selection.Clear();
             foreach (var f in fronts) Add(f, levelIndex);
             _primary = _anchor = new SelectiveMatrixPosition(fronts[0], levelIndex);
+            _scope = SelectiveEditScope.Level;
             RebuildSelection();
             SayDropped();
         }
@@ -955,11 +1358,10 @@ namespace RackCad.UI.VentanaRackCad
         public void SelectAll()
         {
             _selection.Clear();
-            for (var f = 0; f < _editor.ScopeFrontCount; f++)
-                for (var l = 0; l < _editor.ScopeLevelCount(f); l++)
-                    Add(f, l);
+            foreach (var p in _editor.ScopePositions()) Add(p.FrontIndex, p.LevelIndex);
             if (_selection.Count == 0) return;
             _primary = _anchor = _selection[0];
+            _scope = SelectiveEditScope.All;
             RebuildSelection();
             SayDropped();
         }
@@ -1087,6 +1489,10 @@ namespace RackCad.UI.VentanaRackCad
             _baselineName = (writtenName ?? string.Empty).Trim();
             Say(message, error: false);
             UpdateDirty();
+
+            // What was written is what the draft holds (nothing can be edited while AutoCAD writes): the marks «Modificada» start from it.
+            if (!_designDirty) TakeBaselineCells();
+            RebuildSelection();
             RaiseState();
         }
 
@@ -1110,10 +1516,32 @@ namespace RackCad.UI.VentanaRackCad
             _baselineJson = DesignJson();
             _baselineName = (_editor.Name ?? string.Empty).Trim();
             _designDirty = false;
+            TakeBaselineCells();
             _segmentsPending = MeasurePendingSegments();
             _dirty = _segmentsPending;
             RaiseState();
         }
+
+        // What every cell of every fondo holds now (its pallet, larguero and manual values, and the «Larguero a piso» of its front).
+        private void TakeBaselineCells()
+        {
+            var cells = new Dictionary<(int Fondo, int Front, int Level), string>();
+            for (var k = 0; k < _editor.FondoCount; k++)
+                for (var f = 0; f < _editor.FrontCount(k); f++)
+                    for (var l = 0; l < _editor.LevelCount(k, f); l++)
+                        cells[(k, f, l)] = StateKey(k, f, l);
+            _baselineCells = cells;
+        }
+
+        // The content of a cell (as «Distinta del resto» compares it) and the floor larguero of its front (as «Modificada» compares it).
+        private static string CellKey(SelectiveEditorCell cell)
+            => cell == null
+                ? string.Empty
+                : string.Join("|", Num(cell.Frente), Num(cell.Alto), cell.PalletCount.ToString(CultureInfo.InvariantCulture), (cell.BeamId ?? string.Empty).Trim().ToUpperInvariant(),
+                    Num(cell.BeamPeralte), cell.BeamLength.HasValue ? Num(cell.BeamLength.Value) : "-", cell.Clear.HasValue ? Num(cell.Clear.Value) : "-");
+
+        private string StateKey(int fondo, int front, int level)
+            => CellKey(_editor.Cell(fondo, front, level)) + "|" + (_editor.Front(fondo, front)?.FloorBeam == true ? "piso" : "-");
 
         // «Modificado» is a difference of the design (its JSON) or of the name with what the drawing has (as last read or written), never a
         // gesture: leaving a field, a value refused, or a change undone leave the draft clean. Tramos written in the inspector and not applied
@@ -1285,15 +1713,27 @@ namespace RackCad.UI.VentanaRackCad
         // mouse survive it (I-05 of Dinámico). Only a list whose fields change is replaced.
         private void Rebuild()
         {
-            Merge(ref _essentials, BuildEssentials(), nameof(Essentials));
-            MergeFields(ref _separatorFields, BuildSeparatorFields(), nameof(SeparatorFields));
+            if (Merge(ref _essentials, BuildEssentials(), nameof(Essentials)))
+            {
+                _essentialGroups = EssentialLayout
+                    .Select(g => new SelectiveFieldGroup(g.Title, g.Keys.Select(key => _essentials.FirstOrDefault(f => KeyOf(f) == key)).Where(f => f != null).ToList()))
+                    .Where(g => g.Fields.Count > 0)
+                    .ToList();
+                OnPropertyChanged(nameof(EssentialGroups));
+            }
+
+            MergeFondoRows(BuildFondoRows());
             Merge(ref _annotationFields, BuildAnnotationFields(), nameof(AnnotationFields));
             MergePosts(BuildPostRows());
-            _calculated = BuildCalculated();
+            _calculated = null;
             _halfFronts = BuildHalfFronts();
-            OnPropertyChanged(nameof(Calculated));
+            if (_selectedTab == 0) OnPropertyChanged(nameof(Calculated));
             OnPropertyChanged(nameof(HalfFronts));
             OnPropertyChanged(nameof(HalfFrontsText));
+            OnPropertyChanged(nameof(EssentialsHelp));
+            OnPropertyChanged(nameof(AnnotationSummary));
+            OnPropertyChanged(nameof(PostHeightHeader));
+            OnPropertyChanged(nameof(PostsSummary));
 
             var options = _editor.FondoCount > 1
                 ? new[] { "Todos los fondos" }.Concat(Enumerable.Range(1, _editor.FondoCount).Select(k => "Fondo " + k.ToString(CultureInfo.InvariantCulture))).ToList()
@@ -1301,8 +1741,12 @@ namespace RackCad.UI.VentanaRackCad
             if (!options.SequenceEqual(_fondoOptions))
             {
                 _fondoOptions = options;
+                _fondoViews = options.Select((label, index) => new SelectiveSegmentOption(index, label, FondoViewGroup)).ToList();
                 OnPropertyChanged(nameof(FondoOptions));
+                OnPropertyChanged(nameof(FondoViews));
             }
+
+            foreach (var view in _fondoViews) view.Set(_fondoOptions[view.Value], view.Value == FondoScopeIndex);
 
             OnPropertyChanged(nameof(HasFondos));
             OnPropertyChanged(nameof(FondoScopeIndex));
@@ -1349,16 +1793,37 @@ namespace RackCad.UI.VentanaRackCad
                 column.Set("F" + (f + 1) + (half ? " ½" : string.Empty), partial, accessible);
             }
 
+            // What every cell of the view holds now, read once: its content, its state (with the floor larguero of its front) and whether it
+            // has a manual value. «Distinta del resto» (the approved draft): the content most cells of the view have; a cell with another one
+            // is distinct, when the view has more than one content.
+            var now = new Dictionary<(int Fondo, int Front, int Level), (string Content, string State, bool Manual)>();
+            foreach (var k in scope)
+            {
+                for (var f = 0; f < _editor.FrontCount(k); f++)
+                {
+                    var floor = _editor.Front(k, f)?.FloorBeam == true ? "piso" : "-";
+                    for (var l = 0; l < _editor.LevelCount(k, f); l++)
+                    {
+                        var cell = _editor.Cell(k, f, l);
+                        var content = CellKey(cell);
+                        now[(k, f, l)] = (content, content + "|" + floor, cell?.HasOverride == true);
+                    }
+                }
+            }
+
+            var contents = now.Values.GroupBy(v => v.Content, StringComparer.Ordinal).OrderByDescending(g => g.Count()).ToList();
+            var usual = contents.Count > 1 ? contents[0].Key : null;
+
             foreach (var row in _rows)
             {
                 foreach (var item in row.Cells)
                 {
                     var f = item.FrontIndex;
                     var l = item.LevelIndex;
+                    var position = "Frente " + (f + 1).ToString(CultureInfo.InvariantCulture) + " · Nivel " + (l + 1).ToString(CultureInfo.InvariantCulture);
                     if (!Exists(f, l))
                     {
-                        item.Set("—", string.Empty, false, false, false, false, false, false,
-                            "F" + (f + 1) + " · N" + (l + 1) + ": no existe en los fondos de la vista");
+                        item.Set("—", string.Empty, false, false, false, false, false, false, position + ": no existe en los fondos de la vista");
                         continue;
                     }
 
@@ -1373,20 +1838,57 @@ namespace RackCad.UI.VentanaRackCad
                     var detail = "×" + (count.Varies ? "?" : count.Value.ToString(CultureInfo.InvariantCulture))
                                  + (onFloor ? " · piso" : " · P" + (peralte.Varies ? "?" : Num(peralte.Value)));
                     var selected = _selection.Contains(at[0]);
-                    var accessible = "F" + (f + 1) + " · N" + (l + 1) + ": " + (varies ? "la tarima varía entre los fondos" : text)
-                                     + (onFloor ? ", en el piso, sin larguero" : string.Empty);
-                    item.Set(text, detail, _showDetail, true, selected, selected && _primary == at[0], onFloor, varies, accessible);
+                    var holders = scope.Where(k => now.ContainsKey((k, f, l))).Select(k => now[(k, f, l)]).ToList();
+                    var modified = scope.Any(k => now.TryGetValue((k, f, l), out var held)
+                                                  && (!_baselineCells.TryGetValue((k, f, l), out var was) || !string.Equals(was, held.State, StringComparison.Ordinal)));
+                    var distinct = usual != null && holders.Any(h => !string.Equals(h.Content, usual, StringComparison.Ordinal));
+                    var manual = holders.Any(h => h.Manual);
+                    var states = new List<string>();
+                    if (onFloor) states.Add("en el piso, sin larguero");
+                    if (modified) states.Add("modificada en el borrador");
+                    else if (distinct) states.Add("distinta del resto");
+                    if (manual) states.Add("con un valor manual");
+                    var accessible = position + ": " + (varies ? "la tarima varía entre los fondos" : text) + (states.Count > 0 ? "; " + string.Join(", ", states) : string.Empty);
+                    item.Set(text, detail, _showDetail, true, selected, selected && _primary == at[0], onFloor, varies, accessible, modified, distinct, manual);
                 }
             }
 
-            Merge(ref _cellFields, BuildCellFields(), nameof(CellFields));
+            // The automatic values beside the manual ones, resolved once for the selection (the cells and their fronts).
+            _automatic = _editor.AutomaticValues(_selection, SelectedFronts);
+            if (Merge(ref _cellFields, BuildCellFields(), nameof(CellFields)))
+            {
+                _palletFields = _cellFields.Where(f => new[] { "cFront", "cHeight", "cCount" }.Contains(KeyOf(f))).ToList();
+                _beamFields = _cellFields.Where(f => new[] { "cBeam", "cPeralte" }.Contains(KeyOf(f))).ToList();
+                _manualFields = _cellFields.Where(f => new[] { "cLength", "cClear" }.Contains(KeyOf(f))).ToList();
+                OnPropertyChanged(nameof(PalletFields));
+                OnPropertyChanged(nameof(BeamFields));
+                OnPropertyChanged(nameof(ManualFields));
+            }
+
             MergeFields(ref _frontFields, BuildFrontFields(), nameof(FrontFields));
+            _postHeights = BuildPostHeights();
+            foreach (var option in _scopes)
+            {
+                var label = option.Value == (int)SelectiveEditScope.Cell && _scope == SelectiveEditScope.Cell && _selection.Count > 1
+                    ? "Celdas (" + _selection.Count.ToString(CultureInfo.InvariantCulture) + ")"
+                    : option.Value == (int)SelectiveEditScope.Cell ? "Celda" : option.Label;
+                option.Set(label, option.Value == (int)_scope);
+            }
+
             RaiseFloorBeam();
+            OnPropertyChanged(nameof(PostHeights));
             OnPropertyChanged(nameof(SelectedPositions));
             OnPropertyChanged(nameof(SelectedFronts));
+            OnPropertyChanged(nameof(SelectedLevels));
             OnPropertyChanged(nameof(PrimaryPosition));
+            OnPropertyChanged(nameof(Scope));
             OnPropertyChanged(nameof(InspectorTitle));
+            OnPropertyChanged(nameof(TargetText));
             OnPropertyChanged(nameof(InspectorNote));
+            OnPropertyChanged(nameof(BeamSummary));
+            OnPropertyChanged(nameof(ManualSummary));
+            OnPropertyChanged(nameof(FrontTitle));
+            OnPropertyChanged(nameof(FrontSummary));
             RebuildSegments();
         }
 
@@ -1420,13 +1922,26 @@ namespace RackCad.UI.VentanaRackCad
             foreach (var row in _segmentRows) row.PropertyChanged -= OnSegmentRowChanged;
             _segmentRows = rows ?? new List<SelectiveSegmentRow>();
             foreach (var row in _segmentRows) row.PropertyChanged += OnSegmentRowChanged;
+            UpdateRestText();
         }
 
         private void OnSegmentRowChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+            if (e.PropertyName == nameof(SelectiveSegmentRow.RestText)) return;
+            UpdateRestText();
             RefreshDirty();
             OnPropertyChanged(nameof(HasPendingSegments));
             OnPropertyChanged(nameof(CanDiscardSegments));
+        }
+
+        // «(resto) ≈ n in» of the last tramo (the approved draft): the width of the front less the lengths written above it.
+        private void UpdateRestText()
+        {
+            var rest = _segmentRows.LastOrDefault(r => r.IsRest);
+            if (rest == null) return;
+            var width = SegmentFront is int front ? _editor.FrontWidth(front) : 0.0;
+            var written = _segmentRows.Where(r => !r.IsRest).Sum(r => UiSupport.TryNum(r.LengthText, out var value) && value > 0.0 ? value : 0.0);
+            rest.RestText = width > 0.0 ? "(resto) ≈ " + Num(Math.Max(0.0, width - written)) + " in" : "(resto)";
         }
 
         private void RaiseSegments()
@@ -1494,7 +2009,8 @@ namespace RackCad.UI.VentanaRackCad
 
         private static string KeyOf(object item) => item is DynamicFieldItem field ? field.Key : (item as SelectiveChoiceItem)?.Key;
 
-        private void Merge(ref IReadOnlyList<object> current, IReadOnlyList<object> next, string propertyName)
+        // True when the list was replaced (its fields changed), false when its items were refreshed in place.
+        private bool Merge(ref IReadOnlyList<object> current, IReadOnlyList<object> next, string propertyName)
         {
             var same = current.Count == next.Count;
             for (var i = 0; same && i < current.Count; i++)
@@ -1508,11 +2024,26 @@ namespace RackCad.UI.VentanaRackCad
                     else ((SelectiveChoiceItem)current[i]).Refresh((SelectiveChoiceItem)next[i]);
                 }
 
-                return;
+                return false;
             }
 
             current = next;
             OnPropertyChanged(propertyName);
+            return true;
+        }
+
+        // The rows of «Fondos» are refreshed in place while the fondos are the same; another count of fondos gives new rows.
+        private void MergeFondoRows(IReadOnlyList<SelectiveFondoRow> next)
+        {
+            if (_fondoRows.Count == next.Count)
+            {
+                for (var i = 0; i < next.Count; i++) _fondoRows[i].Refresh(next[i]);
+                return;
+            }
+
+            _fondoRows = next;
+            OnPropertyChanged(nameof(FondoRows));
+            OnPropertyChanged(nameof(SeparatorFields));
         }
 
         private void MergeFields(ref IReadOnlyList<DynamicFieldItem> current, IReadOnlyList<DynamicFieldItem> next, string propertyName)
@@ -1541,61 +2072,120 @@ namespace RackCad.UI.VentanaRackCad
 
         // ------------------------------------------------------------------ internals: the fields
 
-        // «Lo esencial» (the rack and the fondos of the scope). The holguras governed by a project variable or a formula are read only, with
+        // «Lo esencial» of the approved draft: the WHOLE rack, in every fondo, whatever the fondos of the view are (WholeRack: the same write
+        // as «Todo» of the matrix with «Todos los fondos»). The holguras governed by a project variable or a formula are read only, with
         // their effective value and the reason, and with no «=» (decision 12).
         private IReadOnlyList<object> BuildEssentials()
         {
-            var fronts = _editor.ReadFondos(f => f.FrontCount);
-            var depth = _editor.ReadFondos(f => f.PalletDepth);
-            var cabecera = _editor.ReadFondos(f => f.CabeceraDepthOverride);
-            return new object[]
+            var fondos = HasFondos;
+            var fronts = _editor.WithinScope(null, () => _editor.ReadFondos(f => f.FrontCount));
+            var depth = _editor.WithinScope(null, () => _editor.ReadFondos(f => f.PalletDepth));
+            var all = _editor.WithinScope(null, _editor.ScopePositions);
+            var allFronts = Enumerable.Range(0, _editor.WithinScope(null, () => _editor.ScopeFrontCount)).ToList();
+            var levels = _editor.WithinScope(null, () => _editor.ReadFronts(allFronts, f => f.LevelCount));
+            var width = _editor.WithinScope(null, () => _editor.ReadCells(all, c => c.Frente));
+            var height = _editor.WithinScope(null, () => _editor.ReadCells(all, c => c.Alto));
+            var count = _editor.WithinScope(null, () => _editor.ReadCells(all, c => c.PalletCount));
+            var beam = _editor.WithinScope(null, () => BeamChoice("rBeam", all, onFloor: false, InWholeRack));
+            var peralte = _editor.WithinScope(null, () => PeralteChoice("rPeralte", all, onFloor: false, "Los que admite el larguero.", InWholeRack));
+
+            var list = new List<object>
             {
-                new SelectiveChoiceItem("post", "Poste", _editor.PostChoices.Select(p => new SelectiveChoiceOption(p.Id.Trim(), Label(p.Label, p.Id))).ToList(),
-                    _editor.PostId?.Trim(), string.Empty, value => Apply(() =>
-                    {
-                        _editor.PostId = value;
-                        return Done;
-                    }), !CanEdit),
-                Number("peralte", "Peralte de poste", "in", _editor.PostPeralte, v => v > 0.0, "El peralte de poste debe ser un número mayor que cero.", v =>
+                WholeInt("fronts", "Frentes (bahías)", fronts, fondos ? "En todos los fondos." : "Columnas de la matriz.",
+                    "La cantidad de frentes debe ser un entero mayor o igual que 1.", v => _editor.SetFrontCount(v), "los frentes"),
+                WholeInt("rLevels", "Niveles", levels, "Cantidad; N1 es la tarima en el piso.",
+                    "El número de niveles debe ser un entero mayor o igual que 1.", v => _editor.SetLevelCount(allFronts, v)),
+                new DynamicFieldItem("fondos", "Fondos", string.Empty, _editor.FondoCount.ToString(CultureInfo.InvariantCulture), "1 = sencillo; de 2 a 4, doble profundidad.", text =>
                 {
-                    _editor.PostPeralte = v;
-                    return Done;
-                }),
-                ScopedInt("fronts", "Frentes", fronts, 1, "La cantidad de frentes debe ser un entero mayor o igual que 1.", v => _editor.SetFrontCount(v), "los frentes"),
-                ScopedNumber("depth", "Profundidad de tarima", "in", depth, v => v > 0.0, "La profundidad de tarima debe ser un número mayor que cero.", v => _editor.SetPalletDepth(v)),
-                ScopedOptional("cabecera", "Profundidad de cabecera (vacía = tarima − 6 in)", "in", cabecera,
-                    "La profundidad de cabecera debe ser un número mayor que cero, o vacía.", v => _editor.SetCabeceraDepth(v)),
-                new DynamicFieldItem("fondos", "Número de fondos", string.Empty, _editor.FondoCount.ToString(CultureInfo.InvariantCulture), string.Empty, text =>
-                {
-                    if (!UiSupport.TryInt(text, out var count) || count < 1 || count > SelectiveRackDefaults.MaxDepthCount)
+                    if (!UiSupport.TryInt(text, out var value) || value < 1 || value > SelectiveRackDefaults.MaxDepthCount)
                         return "El número de fondos debe ser un entero de 1 a " + SelectiveRackDefaults.MaxDepthCount.ToString(CultureInfo.InvariantCulture) + ".";
-                    return Apply(() => _editor.SetFondoCount(count), "los fondos");
+                    return Apply(() => _editor.SetFondoCount(value), "los fondos");
                 }, !CanEdit),
-                Holgura("tolerance", "Tolerancia horizontal", Tolerance, _editor.PalletTolerance, v => _editor.PalletTolerance = v),
-                Holgura("clearance", "Holgura vertical", Clearance, _editor.VerticalClearance, v => _editor.VerticalClearance = v),
+                WholeInt("rCount", "Tarimas por nivel", count, "Lado a lado en cada nivel.",
+                    "Las tarimas por nivel deben ser un entero mayor o igual que 1.", v => _editor.SetPalletCount(all, v)),
+                WholeNumber("rWidth", "Ancho", width, "Hoy «Frente tarima».", "El ancho de tarima debe ser un número mayor que cero.", v => _editor.SetPalletFront(all, v)),
+                WholeNumber("rHeight", "Alto", height, string.Empty, "El alto de tarima debe ser un número mayor que cero.", v => _editor.SetPalletHeight(all, v)),
+                WholeNumber("depth", "Profundidad", depth, "Hoy «Fondo de tarima».", "La profundidad de tarima debe ser un número mayor que cero.", v => _editor.SetPalletDepth(v)),
             };
+
+            // With one fondo there is no table «Fondos»: the depth of the cabecera stays here, so a rack of one fondo can still have its own.
+            if (!fondos)
+            {
+                var fondo = _editor.Fondo(0);
+                var own = fondo?.CabeceraDepthOverride;
+                list.Add(new DynamicFieldItem("cabecera", "Profundidad de cabecera", "in", own.HasValue ? Num(own.Value) : string.Empty,
+                    own.HasValue ? "Vacía = la de la tarima − 6 in." : "Auto: " + Num(fondo?.CabeceraDepth ?? 0.0) + " in (la de la tarima − 6 in).", text =>
+                    {
+                        if (string.IsNullOrWhiteSpace(text)) return Apply(() => _editor.SetCabeceraDepth(null));
+                        if (!UiSupport.TryNum(text, out var value) || value <= 0.0) return "La profundidad de cabecera debe ser un número mayor que cero, o vacía.";
+                        return Apply(() => _editor.SetCabeceraDepth(value));
+                    }, !CanEdit));
+            }
+
+            list.Add(beam);
+            list.Add(peralte);
+            list.Add(Holgura("tolerance", "Holgura horizontal", "A los lados de cada tarima.", Tolerance, _editor.PalletTolerance, v => _editor.PalletTolerance = v));
+            list.Add(Holgura("clearance", "Holgura vertical", "Sobre cada tarima.", Clearance, _editor.VerticalClearance, v => _editor.VerticalClearance = v));
+            return list;
         }
 
-        private IReadOnlyList<DynamicFieldItem> BuildSeparatorFields()
+        // The table «Fondos» (two or more fondos; the approved draft): each row writes in its own fondo only.
+        private IReadOnlyList<SelectiveFondoRow> BuildFondoRows()
         {
+            if (!HasFondos) return Array.Empty<SelectiveFondoRow>();
             var separators = _editor.Separators;
-            return Enumerable.Range(0, separators.Count).Select(gap => Number(
-                "sep" + gap.ToString(CultureInfo.InvariantCulture),
-                "Separación fondo " + (gap + 1) + "–" + (gap + 2),
-                "in",
-                separators[gap],
-                v => v > 0.0,
-                "La separación debe ser un número mayor que cero.",
-                v => _editor.SetSeparator(gap, v))).ToList();
+            var rows = new List<SelectiveFondoRow>();
+            for (var k = 0; k < _editor.FondoCount; k++)
+            {
+                var fondo = k;
+                var data = _editor.Fondo(fondo);
+                var name = "Fondo " + (fondo + 1).ToString(CultureInfo.InvariantCulture);
+                var fronts = new DynamicFieldItem("fondo" + fondo + "Fronts", name + ": frentes", string.Empty, data.FrontCount.ToString(CultureInfo.InvariantCulture), string.Empty, text =>
+                {
+                    if (!UiSupport.TryInt(text, out var value) || value < 1) return "La cantidad de frentes debe ser un entero mayor o igual que 1.";
+                    return Apply(() => _editor.WithinScope(fondo, () => _editor.SetFrontCount(value)), "los frentes");
+                }, !CanEdit);
+                var depth = new DynamicFieldItem("fondo" + fondo + "Depth", name + ": profundidad de tarima", "in", Num(data.PalletDepth), string.Empty, text =>
+                {
+                    if (!UiSupport.TryNum(text, out var value) || value <= 0.0) return "La profundidad de tarima debe ser un número mayor que cero.";
+                    return Apply(() => _editor.WithinScope(fondo, () => _editor.SetPalletDepth(value)));
+                }, !CanEdit);
+                var cabecera = new DynamicFieldItem("fondo" + fondo + "Cabecera", name + ": profundidad de cabecera", "in",
+                    data.CabeceraDepthOverride.HasValue ? Num(data.CabeceraDepthOverride.Value) : string.Empty,
+                    data.CabeceraDepthOverride.HasValue ? string.Empty : "Auto: " + Num(data.CabeceraDepth), text =>
+                    {
+                        if (string.IsNullOrWhiteSpace(text)) return Apply(() => _editor.WithinScope(fondo, () => _editor.SetCabeceraDepth(null)));
+                        if (!UiSupport.TryNum(text, out var value) || value <= 0.0) return "La profundidad de cabecera debe ser un número mayor que cero, o vacía.";
+                        return Apply(() => _editor.WithinScope(fondo, () => _editor.SetCabeceraDepth(value)));
+                    }, !CanEdit);
+                var separator = fondo < separators.Count
+                    ? Number("sep" + fondo.ToString(CultureInfo.InvariantCulture), name + ": separación al fondo siguiente", "in", separators[fondo], v => v > 0.0,
+                        "La separación debe ser un número mayor que cero.", v => _editor.SetSeparator(fondo, v))
+                    : null;
+                rows.Add(new SelectiveFondoRow(fondo, fronts, depth, cabecera, separator));
+            }
+
+            return rows;
         }
 
         private IReadOnlyList<object> BuildAnnotationFields() => new object[]
         {
-            Number("scale", "Escala de texto (1 = 6\")", string.Empty, _editor.AnnotationScale, v => v > 0.0, "La escala de texto debe ser mayor que cero.", v =>
+            new SelectiveChoiceItem("post", "Poste", _editor.PostChoices.Select(p => new SelectiveChoiceOption(p.Id.Trim(), Label(p.Label, p.Id))).ToList(),
+                _editor.PostId?.Trim(), string.Empty, value => Apply(() =>
+                {
+                    _editor.PostId = value;
+                    return Done;
+                }), !CanEdit),
+            Number("peralte", "Peralte del poste", "in", _editor.PostPeralte, v => v > 0.0, "El peralte de poste debe ser un número mayor que cero.", v =>
+            {
+                _editor.PostPeralte = v;
+                return Done;
+            }, "Va a todas las cabeceras. Un poste con peralte propio, en «Avanzado»."),
+            Number("scale", "Escala de texto", string.Empty, _editor.AnnotationScale, v => v > 0.0, "La escala de texto debe ser mayor que cero.", v =>
             {
                 _editor.AnnotationScale = v;
                 return Done;
-            }),
+            }, "1 = texto de 6 in. Un valor no válido se marca; ya no pasa a 1 sin avisar."),
             new SelectiveChoiceItem("dims", "Cotas", DimensionDetails.Select(d => new SelectiveChoiceOption(d.Detail.ToString(), d.Label)).ToList(),
                 _editor.Dimensions.ToString(), string.Empty, value =>
                 {
@@ -1608,7 +2198,8 @@ namespace RackCad.UI.VentanaRackCad
                 }, !CanEdit),
             // S-27 (M-10): the styles of the drawing, as the list of the classic editor: «(Automático)» first, and the style the rack was opened
             // with kept even when the drawing does not have it, so it is written back as it was read.
-            new SelectiveChoiceItem("dimStyle", "Estilo de cota", StyleOptions(), NamedStyle(_editor.DimensionStyle) ?? AutomaticStyle, string.Empty,
+            new SelectiveChoiceItem("dimStyle", "Estilo de cota", StyleOptions(), NamedStyle(_editor.DimensionStyle) ?? AutomaticStyle,
+                "O un estilo del dibujo: la ventana siempre los lee.",
                 value => Apply(() =>
                 {
                     _editor.DimensionStyle = value == AutomaticStyle ? null : value;
@@ -1640,7 +2231,50 @@ namespace RackCad.UI.VentanaRackCad
         private IReadOnlyList<object> BuildCellFields()
         {
             var cells = _selection.ToList();
+
+            // S-23 (M-07): the whole selection is N1 on the floor, with no larguero in any fondo of the view; the larguero, its peralte and the
+            // clear are not drawn there, so they are not offered, with the texts of the approved draft. What they hold is kept.
+            var onFloor = cells.Count > 0 && cells.All(p => HasNoLarguero(p.FrontIndex, p.LevelIndex));
+
+            // «Automático: …» (the approved draft): the length the larguero of those cells would have with their manual length emptied.
+            var automatic = _automatic.BeamLengths;
+            var length = _editor.ReadCells(cells, c => c.BeamLength);
+            var lengthHint = length.Varies
+                ? Varies
+                : (length.HasValue && length.Value.HasValue
+                      ? "Vacío = automático" + (automatic.Count == 1 ? " (" + Num(automatic[0]) + " in)" : string.Empty) + "."
+                      : "Automático" + (automatic.Count == 1 ? ": " + Num(automatic[0]) + " in" : string.Empty) + ".")
+                  + " El mayor del frente fija su ancho.";
+
+            return new object[]
+            {
+                CellNumber("cFront", "Ancho de tarima", "in", cells, c => c.Frente, (p, v) => _editor.SetPalletFront(p, v), "El ancho de tarima debe ser un número mayor que cero."),
+                CellNumber("cHeight", "Alto de tarima", "in", cells, c => c.Alto, (p, v) => _editor.SetPalletHeight(p, v), "El alto de tarima debe ser un número mayor que cero."),
+                CellInt("cCount", "Tarimas por nivel", cells),
+                BeamChoice("cBeam", cells, onFloor, write => write()),
+                PeralteChoice("cPeralte", cells, onFloor, string.Empty, write => write()),
+                CellOptional("cLength", "Largo de larguero", cells, c => c.BeamLength, (p, v) => _editor.SetBeamLengthOverride(p, v),
+                    "El largo del larguero debe ser un número mayor que cero, o vacío para automático.", hint: lengthHint),
+                CellOptional("cClear", "Claro debajo", cells, c => c.Clear, (p, v) => _editor.SetClearOverride(p, v),
+                    "El claro debe ser un número mayor que cero, o vacío para automático.", onFloor ? NotInN1Text : null,
+                    "Vacío = automático. Hasta el larguero de abajo (en N2, desde el piso); al troquel de 2 in."),
+            };
+        }
+
+        // The larguero of those cells, over the fondos of the scope; the write goes through «through» (the scope of the field).
+        private SelectiveChoiceItem BeamChoice(string key, IReadOnlyList<SelectiveMatrixPosition> cells, bool onFloor, Func<Func<SelectiveDraftEdit>, SelectiveDraftEdit> through)
+        {
             var beam = _editor.ReadCells(cells, c => c.BeamId?.Trim(), StringComparer.OrdinalIgnoreCase);
+            var beamOptions = _editor.BeamChoices.Select(b => new SelectiveChoiceOption(b.Id.Trim(), Label(b.Label, b.Id))).ToList();
+            var known = beam.HasValue ? beamOptions.FirstOrDefault(o => string.Equals(o.Value, beam.Value, StringComparison.OrdinalIgnoreCase))?.Value : null;
+            return new SelectiveChoiceItem(key, "Larguero", beamOptions, known, onFloor ? NoBeamText : beam.Varies ? Varies : string.Empty,
+                value => Apply(() => through(() => _editor.SetBeam(cells, value))), !CanEdit || beam.Count == 0 || onFloor);
+        }
+
+        // The peralte of the larguero of those cells: only those the catalog allows for the larguero of every cell, as the classic list.
+        private SelectiveChoiceItem PeralteChoice(string key, IReadOnlyList<SelectiveMatrixPosition> cells, bool onFloor, string hint,
+            Func<Func<SelectiveDraftEdit>, SelectiveDraftEdit> through)
+        {
             var beams = _editor.ScopeFondos
                 .SelectMany(k => cells.Select(p => _editor.Cell(k, p.FrontIndex, p.LevelIndex)))
                 .Where(c => c != null)
@@ -1656,33 +2290,22 @@ namespace RackCad.UI.VentanaRackCad
 
             var peralteOptions = (allowed ?? Enumerable.Empty<string>()).Select(p => new SelectiveChoiceOption(p, p + " in")).ToList();
             var peralte = _editor.ReadCells(cells, c => c.BeamPeralte);
-            var beamOptions = _editor.BeamChoices.Select(b => new SelectiveChoiceOption(b.Id.Trim(), Label(b.Label, b.Id))).ToList();
-            var known = beam.HasValue ? beamOptions.FirstOrDefault(o => string.Equals(o.Value, beam.Value, StringComparison.OrdinalIgnoreCase))?.Value : null;
+            return new SelectiveChoiceItem(key, "Peralte del larguero", peralteOptions, peralte.HasValue ? Num(peralte.Value) : null,
+                onFloor ? NoBeamText
+                    : peralte.Varies ? Varies : peralteOptions.Count == 0 ? "El catálogo no tiene un peralte común para estos largueros." : hint,
+                value =>
+                {
+                    if (!UiSupport.TryNum(value, out var chosen)) return "Elige un peralte del catálogo.";
+                    return Apply(() => through(() => _editor.SetBeamPeralte(cells, chosen)));
+                }, !CanEdit || peralte.Count == 0 || peralteOptions.Count == 0 || onFloor);
+        }
 
-            // S-23 (M-07): the whole selection is N1 on the floor, with no larguero in any fondo of the view; the larguero, its peralte and the
-            // clear are not drawn there, so they are not offered, with the texts of the approved draft. What they hold is kept.
-            var onFloor = cells.Count > 0 && cells.All(p => HasNoLarguero(p.FrontIndex, p.LevelIndex));
-
-            return new object[]
-            {
-                CellNumber("cFront", "Ancho de tarima", "in", cells, c => c.Frente, (p, v) => _editor.SetPalletFront(p, v), "El ancho de tarima debe ser un número mayor que cero."),
-                CellNumber("cHeight", "Alto de tarima", "in", cells, c => c.Alto, (p, v) => _editor.SetPalletHeight(p, v), "El alto de tarima debe ser un número mayor que cero."),
-                CellInt("cCount", "Tarimas por nivel", cells),
-                new SelectiveChoiceItem("cBeam", "Larguero", beamOptions, known, onFloor ? NoBeamText : beam.Varies ? Varies : string.Empty,
-                    value => Apply(() => _editor.SetBeam(cells, value)), !CanEdit || beam.Count == 0 || onFloor),
-                new SelectiveChoiceItem("cPeralte", "Peralte del larguero", peralteOptions, peralte.HasValue ? Num(peralte.Value) : null,
-                    onFloor ? NoBeamText
-                        : peralte.Varies ? Varies : peralteOptions.Count == 0 ? "El catálogo no tiene un peralte común para estos largueros." : string.Empty,
-                    value =>
-                    {
-                        if (!UiSupport.TryNum(value, out var chosen)) return "Elige un peralte del catálogo.";
-                        return Apply(() => _editor.SetBeamPeralte(cells, chosen));
-                    }, !CanEdit || peralte.Count == 0 || peralteOptions.Count == 0 || onFloor),
-                CellOptional("cLength", "Largo manual del larguero (vacío = automático)", cells, c => c.BeamLength, (p, v) => _editor.SetBeamLengthOverride(p, v),
-                    "El largo del larguero debe ser un número mayor que cero, o vacío para automático."),
-                CellOptional("cClear", "Claro manual debajo (vacío = automático)", cells, c => c.Clear, (p, v) => _editor.SetClearOverride(p, v),
-                    "El claro debe ser un número mayor que cero, o vacío para automático.", onFloor ? NotInN1Text : null),
-            };
+        // A write of the «Rack» tab: the whole rack, in every fondo, whatever the fondos of the view are (the same write as «Todo» of the
+        // matrix with «Todos los fondos»). Every cell or front that exists is written, so nothing is «omitted» to say.
+        private SelectiveDraftEdit InWholeRack(Func<SelectiveDraftEdit> write)
+        {
+            var edit = _editor.WithinScope(null, write) ?? Done;
+            return edit.Refused ? edit : edit with { Omitted = 0 };
         }
 
         // The inspector of the fronts that the selection touches, in the fondos of the scope.
@@ -1694,22 +2317,33 @@ namespace RackCad.UI.VentanaRackCad
             var rise = _editor.ReadFronts(fronts, f => f.FloorBeamRise);
             var height = _editor.ReadFronts(fronts, f => f.HeightOverride);
             var anyFloor = floor.Varies || (floor.HasValue && floor.Value);
+
+            // «Calculada: ≈ …» (the approved draft): the height those fronts would have with their manual height emptied.
+            var calculated = _automatic.Heights;
+            var heightHint = height.Varies
+                ? Varies
+                : (height.HasValue && height.Value.HasValue
+                      ? "Vacía = calculada" + (calculated.Count == 1 ? " (≈ " + Num(calculated[0]) + " in)" : string.Empty) + "."
+                      : "Calculada" + (calculated.Count == 1 ? ": ≈ " + Num(calculated[0]) + " in" : string.Empty) + ".")
+                  + " Manda en los dos postes del frente.";
             return new[]
             {
                 new DynamicFieldItem("fLevels", "Niveles", string.Empty, levels.HasValue ? levels.Value.ToString(CultureInfo.InvariantCulture) : string.Empty,
-                    levels.Varies ? Varies : string.Empty, text =>
+                    levels.Varies ? Varies : "Cantidad exacta; N1 es el piso.", text =>
                     {
                         if (!UiSupport.TryInt(text, out var count) || count < 1) return "El número de niveles debe ser un entero mayor o igual que 1.";
                         return Apply(() => _editor.SetLevelCount(fronts, count));
                     }, !CanEdit || levels.Count == 0),
                 new DynamicFieldItem("fRise", "Elevación del larguero a piso", "in", rise.HasValue ? Num(rise.Value) : string.Empty,
-                    rise.Varies ? Varies : anyFloor ? string.Empty : "Solo con «Larguero a piso».", text =>
+                    rise.Varies ? Varies
+                        : anyFloor ? "Sobre el primer troquel; un frente nuevo copia la del último."
+                        : "Solo con «Larguero a piso».", text =>
                     {
                         if (!UiSupport.TryNum(text, out var value) || value < 0.0) return "La elevación del larguero a piso debe ser un número mayor o igual que cero.";
                         return Apply(() => _editor.SetFloorBeamRise(fronts, value));
                     }, !CanEdit || rise.Count == 0 || !anyFloor),
-                new DynamicFieldItem("fHeight", "Altura manual (vacía = calculada)", "in", height.HasValue && height.Value.HasValue ? Num(height.Value.Value) : string.Empty,
-                    height.Varies ? Varies : string.Empty, text =>
+                new DynamicFieldItem("fHeight", "Altura manual de cabecera", "in", height.HasValue && height.Value.HasValue ? Num(height.Value.Value) : string.Empty,
+                    heightHint, text =>
                     {
                         if (string.IsNullOrWhiteSpace(text)) return Apply(() => _editor.SetHeightOverride(fronts, null));
                         if (!UiSupport.TryNum(text, out var value) || value <= 0.0) return "La altura manual debe ser un número mayor que cero, o vacía para calculada.";
@@ -1718,7 +2352,8 @@ namespace RackCad.UI.VentanaRackCad
             };
         }
 
-        // «Avanzado»: the own peralte of each post (empty = the one of the rack, the rule of the classic box) and its cabecera by fondo.
+        // «Avanzado»: the own peralte of each post (empty = the one of the rack, the rule of the classic box), its height and its cabecera by
+        // fondo (the table of the approved draft). The name of each box carries its post, so a reader of the screen tells them apart.
         private IReadOnlyList<SelectivePostRow> BuildPostRows()
         {
             var rows = new List<SelectivePostRow>();
@@ -1726,20 +2361,63 @@ namespace RackCad.UI.VentanaRackCad
             {
                 var post = p;
                 var own = _editor.PostPeralteOverride(post);
-                var field = new DynamicFieldItem("post" + post.ToString(CultureInfo.InvariantCulture), "Peralte propio", "in", own.HasValue ? Num(own.Value) : string.Empty,
-                    string.Empty, text =>
+                var name = "P" + (post + 1).ToString(CultureInfo.InvariantCulture);
+                var field = new DynamicFieldItem("post" + post.ToString(CultureInfo.InvariantCulture), name + ": peralte propio", "in", own.HasValue ? Num(own.Value) : string.Empty,
+                    own.HasValue ? string.Empty : "Del rack: " + Num(_editor.PostPeralte), text =>
                     {
                         if (string.IsNullOrWhiteSpace(text)) return Apply(() => _editor.SetPostPeralte(post, null));
                         if (!UiSupport.TryNum(text, out var value) || value <= 0.0) return "Peralte de poste inválido (deja vacío para usar el peralte del rack).";
                         return Apply(() => _editor.SetPostPeralte(post, value));
                     }, !CanEdit);
-                var cabeceras = Enumerable.Range(0, _editor.FondoCount)
-                    .Where(k => post <= _editor.FrontCount(k))
-                    .Select(k => (_editor.FondoCount > 1 ? "Fondo " + (k + 1) + ": " : string.Empty) + (_editor.HasCustomCabecera(k, post) ? "personalizada" : "calculada"));
-                rows.Add(new SelectivePostRow(post, field, "Cabecera " + string.Join(" · ", cabeceras)));
+                var reach = Enumerable.Range(0, _editor.FondoCount).Where(k => post <= _editor.FrontCount(k)).ToList();
+                var cabeceras = reach.Select(k => (_editor.FondoCount > 1 ? "Fondo " + (k + 1) + ": " : string.Empty) + (_editor.HasCustomCabecera(k, post) ? "personalizada" : "calculada"));
+                var heights = string.Join(" / ", reach.Select(k => PostHeight(k, post)).Where(h => h > 0.0).Select(h => "≈ " + Num(h) + " in"));
+                rows.Add(new SelectivePostRow(post, field, "Cabecera " + string.Join(" · ", cabeceras), heights));
             }
 
             return rows;
+        }
+
+        // The height of a post of a fondo in the last valid system, as the drawing gives it: its custom cabecera, or the tallest front it
+        // touches (SelectivePostGeometry, the rule of the drawing and of the BOM). 0 when there is no system or the fondo does not reach it.
+        private double PostHeight(int fondo, int post)
+        {
+            var system = _editor.System;
+            if (system == null) return 0.0;
+            var bays = SelectiveDepthLayout.BaysOfFondo(system, fondo);
+            if (bays == null || post < 0 || post > bays.Count) return 0.0;
+            var row = fondo == 0 ? system.PostCabeceras : fondo - 1 < system.ExtraFondoPostCabeceras.Count ? system.ExtraFondoPostCabeceras[fondo - 1] : null;
+            var custom = row != null && post < row.Count ? row[post] : null;
+            return custom != null && custom.Height > 0.0 ? custom.Height : SelectivePostGeometry.PostHeight(bays, post, SelectivePostGeometry.FallbackHeight(bays, system.Height));
+        }
+
+        // «Altura por poste» under the matrix (the approved draft): the posts of each fondo of the view, marked when a manual height of one of
+        // the two fronts it touches governs it.
+        private IReadOnlyList<SelectivePostHeightBlock> BuildPostHeights()
+        {
+            var blocks = new List<SelectivePostHeightBlock>();
+            if (_editor.System == null) return blocks;
+            foreach (var fondo in _editor.ScopeFondos)
+            {
+                var fronts = _editor.FrontCount(fondo);
+                var of = HasFondos ? " del fondo " + (fondo + 1).ToString(CultureInfo.InvariantCulture) : string.Empty;
+                var chips = new List<SelectivePostHeightChip>();
+                for (var post = 0; post <= fronts; post++)
+                {
+                    var height = PostHeight(fondo, post);
+                    var manual = new[] { post - 1, post }.Any(f => f >= 0 && f < fronts && _editor.Front(fondo, f)?.HeightOverride.HasValue == true);
+                    var custom = _editor.HasCustomCabecera(fondo, post);
+                    var id = "P" + (post + 1).ToString(CultureInfo.InvariantCulture);
+                    var value = "≈ " + Num(height) + " in";
+                    chips.Add(new SelectivePostHeightChip(id, value, manual,
+                        "Poste " + (post + 1).ToString(CultureInfo.InvariantCulture) + of + ": " + value
+                        + (manual ? ", con una altura manual" : string.Empty) + (custom ? ", cabecera personalizada" : string.Empty)));
+                }
+
+                blocks.Add(new SelectivePostHeightBlock("Fondo " + (fondo + 1).ToString(CultureInfo.InvariantCulture), HasFondos, "Altura de cada poste" + of, chips));
+            }
+
+            return blocks;
         }
 
         private IReadOnlyList<string> BuildHalfFronts()
@@ -1759,39 +2437,58 @@ namespace RackCad.UI.VentanaRackCad
             return list;
         }
 
-        // «Calculado»: what the last valid recomposition resolved, read only (the heights by post as the drawing gives them, with the custom
-        // cabeceras; the larguero of each front; the length between the axes of the end posts; the depths).
+        // «Calculado» (the approved draft), from the last valid recomposition, read only: the larguero length (one value or the range), the
+        // height of the cabecera, the separation N2 → N3, the depth of the cabecera of fondo 1, and the counts. Cabeceras, largueros and
+        // separators come from the BOM of the system (SelectiveBomCounts: no count is made again here); the pallet positions are the cells
+        // times their pallets per level, in every fondo.
         private IReadOnlyList<SelectiveCalcItem> BuildCalculated()
         {
             var system = _editor.System;
             if (system == null) return new[] { new SelectiveCalcItem("Calculado", "—") };
             var items = new List<SelectiveCalcItem>();
             var fondos = SelectiveDepthLayout.Count(system);
+            var several = fondos > 1;
             try
             {
-                items.Add(new SelectiveCalcItem("Altura de cabecera (la más alta)", Num(system.Height) + " in"));
+                var master = SelectiveDepthLayout.BaysOfFondo(system, SelectiveDepthLayout.MasterFondoIndex(system)) ?? new List<SelectiveBay>();
+                items.Add(new SelectiveCalcItem("Largo del larguero", Range(master.Select(b => b.BeamLength).Where(v => v > 0.0)),
+                    "Ancho × tarimas + holgura × (tarimas + 1). En cada frente manda el nivel más ancho."));
+                items.Add(new SelectiveCalcItem("Altura de cabecera", "≈ " + Num(system.Height) + " in", "La del frente más alto, al pie entero."));
+
+                // N2 → N3: the separation between the larguero of N2 and the one of N3 of every front that has them, in every fondo.
+                var separations = new List<double>();
                 for (var k = 0; k < fondos; k++)
                 {
                     var bays = SelectiveDepthLayout.BaysOfFondo(system, k) ?? new List<SelectiveBay>();
-                    var row = k == 0 ? system.PostCabeceras : k - 1 < system.ExtraFondoPostCabeceras.Count ? system.ExtraFondoPostCabeceras[k - 1] : null;
-                    var fallback = SelectivePostGeometry.FallbackHeight(bays, system.Height);
-                    var posts = Enumerable.Range(0, bays.Count + 1).Select(i =>
+                    for (var f = 0; f < bays.Count; f++)
                     {
-                        var custom = row != null && i < row.Count ? row[i] : null;
-                        var h = custom != null && custom.Height > 0.0 ? custom.Height : SelectivePostGeometry.PostHeight(bays, i, fallback);
-                        return "P" + (i + 1) + " " + Num(h);
-                    });
-                    items.Add(new SelectiveCalcItem("Altura por poste" + (fondos > 1 ? ", fondo " + (k + 1) : string.Empty), string.Join(" · ", posts) + " in"));
+                        var front = _editor.Front(k, f);
+                        if (front == null || front.LevelCount < 3) continue;
+                        var offset = front.FloorBeam ? 0 : 1; // with no «Larguero a piso», N1 has no larguero: the first one is N2
+                        var levels = bays[f].Levels;
+                        if (2 - offset < levels.Count) separations.Add(levels[2 - offset].Y - levels[1 - offset].Y);
+                    }
                 }
 
-                var master = SelectiveDepthLayout.BaysOfFondo(system, SelectiveDepthLayout.MasterFondoIndex(system)) ?? new List<SelectiveBay>();
-                items.Add(new SelectiveCalcItem("Largo del larguero por frente",
-                    master.Count == 0 ? "—" : string.Join(" · ", master.Select((b, i) => "F" + (i + 1) + " " + Num(b.BeamLength))) + " in"));
-                var grid = SelectiveDepthLayout.MasterGrid(system, _editor.Catalog).PostXs;
-                items.Add(new SelectiveCalcItem("Largo entre ejes de los postes extremos", grid.Count < 2 ? "—" : Num(grid[grid.Count - 1] - grid[0]) + " in"));
-                items.Add(new SelectiveCalcItem("Profundidad de cabecera",
-                    string.Join(" · ", Enumerable.Range(0, fondos).Select(k => (fondos > 1 ? "fondo " + (k + 1) + " " : string.Empty) + Num(SelectiveDepthLayout.CabeceraDepthOfFondo(system, k)))) + " in"));
-                if (fondos > 1) items.Add(new SelectiveCalcItem("Profundidad total del rack", Num(SelectiveDepthLayout.TotalFondoDepth(system)) + " in"));
+                items.Add(new SelectiveCalcItem("Separación N2 → N3", Range(separations), "Alto + holgura, al par, más el peralte; al troquel de 2 in."));
+                var own = _editor.Fondo(0)?.CabeceraDepthOverride;
+                items.Add(new SelectiveCalcItem("Profundidad de cabecera", Num(SelectiveDepthLayout.CabeceraDepthOfFondo(system, 0)) + " in",
+                    (own.HasValue ? "Manual" : "Tarima − 6 in") + (several ? ", en el fondo 1." : ".")));
+
+                var counts = SelectiveBomCounts.Of(system, _editor.Catalog);
+                var split = Enumerable.Range(0, _editor.FondoCount).Any(k => Enumerable.Range(0, _editor.FrontCount(k)).Any(f => _editor.Front(k, f)?.IsSplit == true));
+                items.Add(new SelectiveCalcItem("Cabeceras", counts.Cabeceras.ToString(CultureInfo.InvariantCulture),
+                    (several ? "En los " + fondos.ToString(CultureInfo.InvariantCulture) + " fondos" : "Una por poste") + (split ? ", más las de medio frente." : ".")));
+                items.Add(new SelectiveCalcItem("Largueros", counts.Largueros.ToString(CultureInfo.InvariantCulture), "Dos por nivel con larguero; N1 va en el piso."));
+                var positions = 0;
+                for (var k = 0; k < _editor.FondoCount; k++)
+                    for (var f = 0; f < _editor.FrontCount(k); f++)
+                        for (var l = 0; l < _editor.LevelCount(k, f); l++)
+                            positions += Math.Max(1, _editor.Cell(k, f, l)?.PalletCount ?? 1);
+                items.Add(new SelectiveCalcItem("Posiciones de tarima", positions.ToString(CultureInfo.InvariantCulture),
+                    "Celdas × tarimas por nivel" + (several ? ", en todos los fondos." : ".")));
+                if (several)
+                    items.Add(new SelectiveCalcItem("Separadores", counts.Separadores.ToString(CultureInfo.InvariantCulture), "Entre fondos: 2 o más por poste, uno más cada 100 in de altura."));
             }
             catch (Exception ex)
             {
@@ -1801,41 +2498,43 @@ namespace RackCad.UI.VentanaRackCad
             return items;
         }
 
-        private DynamicFieldItem Number(string key, string label, string unit, double current, Func<double, bool> valid, string invalid, Func<double, SelectiveDraftEdit> set) =>
-            new DynamicFieldItem(key, label, unit, Num(current), string.Empty, text =>
+        // One value, or the range «a–b», in inches; «—» for none.
+        private static string Range(IEnumerable<double> values)
+        {
+            var distinct = values.Select(v => Math.Round(v, 2)).Distinct().OrderBy(v => v).ToList();
+            if (distinct.Count == 0) return "—";
+            return (distinct.Count == 1 ? Num(distinct[0]) : Num(distinct[0]) + "–" + Num(distinct[distinct.Count - 1])) + " in";
+        }
+
+        private DynamicFieldItem Number(string key, string label, string unit, double current, Func<double, bool> valid, string invalid, Func<double, SelectiveDraftEdit> set,
+            string hint = "") =>
+            new DynamicFieldItem(key, label, unit, Num(current), hint, text =>
             {
                 if (!UiSupport.TryNum(text, out var value) || !valid(value)) return invalid;
                 return Apply(() => set(value));
             }, !CanEdit);
 
-        private DynamicFieldItem ScopedNumber(string key, string label, string unit, SelectiveScopedValue<double> current, Func<double, bool> valid, string invalid,
-            Func<double, SelectiveDraftEdit> set) =>
-            new DynamicFieldItem(key, label, unit, current.HasValue ? Num(current.Value) : string.Empty, current.Varies ? Varies : string.Empty, text =>
-            {
-                if (!UiSupport.TryNum(text, out var value) || !valid(value)) return invalid;
-                return Apply(() => set(value));
-            }, !CanEdit || current.Count == 0);
-
-        private DynamicFieldItem ScopedInt(string key, string label, SelectiveScopedValue<int> current, int minimum, string invalid, Func<int, SelectiveDraftEdit> set, string reduces) =>
+        // A whole number of the WHOLE rack («Rack» › «Lo esencial»): what every fondo has, «Varía» when they differ.
+        private DynamicFieldItem WholeInt(string key, string label, SelectiveScopedValue<int> current, string hint, string invalid, Func<int, SelectiveDraftEdit> set,
+            string reduces = null) =>
             new DynamicFieldItem(key, label, string.Empty, current.HasValue ? current.Value.ToString(CultureInfo.InvariantCulture) : string.Empty,
-                current.Varies ? Varies : string.Empty, text =>
+                current.Varies ? Varies : hint, text =>
                 {
-                    if (!UiSupport.TryInt(text, out var value) || value < minimum) return invalid;
-                    return Apply(() => set(value), reduces);
+                    if (!UiSupport.TryInt(text, out var value) || value < 1) return invalid;
+                    return Apply(() => InWholeRack(() => set(value)), reduces);
                 }, !CanEdit || current.Count == 0);
 
-        private DynamicFieldItem ScopedOptional(string key, string label, string unit, SelectiveScopedValue<double?> current, string invalid, Func<double?, SelectiveDraftEdit> set) =>
-            new DynamicFieldItem(key, label, unit, current.HasValue && current.Value.HasValue ? Num(current.Value.Value) : string.Empty,
-                current.Varies ? Varies : string.Empty, text =>
-                {
-                    if (string.IsNullOrWhiteSpace(text)) return Apply(() => set(null));
-                    if (!UiSupport.TryNum(text, out var value) || value <= 0.0) return invalid;
-                    return Apply(() => set(value));
-                }, !CanEdit || current.Count == 0);
+        // A measure of the WHOLE rack, in inches, greater than zero.
+        private DynamicFieldItem WholeNumber(string key, string label, SelectiveScopedValue<double> current, string hint, string invalid, Func<double, SelectiveDraftEdit> set) =>
+            new DynamicFieldItem(key, label, "in", current.HasValue ? Num(current.Value) : string.Empty, current.Varies ? Varies : hint, text =>
+            {
+                if (!UiSupport.TryNum(text, out var value) || !(value > 0.0)) return invalid;
+                return Apply(() => InWholeRack(() => set(value)));
+            }, !CanEdit || current.Count == 0);
 
         // A holgura: its value while it belongs to the rack; the effective value, read only, with the reason and the name of the variable while
         // a project variable or a formula governs it. No «=» anywhere (decision 12).
-        private DynamicFieldItem Holgura(string key, string label, PropertyId property, double current, Action<double> set)
+        private DynamicFieldItem Holgura(string key, string label, string hint, PropertyId property, double current, Action<double> set)
         {
             if (_editor.IsLinked(property))
                 return new DynamicFieldItem(key, label, "in", Num(current), _editor.LinkedReadOnlyReason(property), null, isReadOnly: true);
@@ -1844,7 +2543,7 @@ namespace RackCad.UI.VentanaRackCad
             {
                 set(v);
                 return Done;
-            });
+            }, hint);
         }
 
         private DynamicFieldItem CellNumber(string key, string label, string unit, IReadOnlyList<SelectiveMatrixPosition> cells, Func<SelectiveEditorCell, double> read,
@@ -1869,18 +2568,29 @@ namespace RackCad.UI.VentanaRackCad
                 }, !CanEdit || value.Count == 0);
         }
 
-        // A manual value of the cells; with <paramref name="locked"/>, read only with that hint (S-23).
+        // A manual value of the cells; with «locked», read only with that hint (S-23); «hint» says what an empty box means.
         private DynamicFieldItem CellOptional(string key, string label, IReadOnlyList<SelectiveMatrixPosition> cells, Func<SelectiveEditorCell, double?> read,
-            Func<IReadOnlyList<SelectiveMatrixPosition>, double?, SelectiveDraftEdit> write, string invalid, string locked = null)
+            Func<IReadOnlyList<SelectiveMatrixPosition>, double?, SelectiveDraftEdit> write, string invalid, string locked = null, string hint = null)
         {
             var value = _editor.ReadCells(cells, read);
             return new DynamicFieldItem(key, label, "in", value.HasValue && value.Value.HasValue ? Num(value.Value.Value) : string.Empty,
-                locked ?? (value.Varies ? Varies : string.Empty), text =>
+                locked ?? (value.Varies ? Varies : hint ?? string.Empty), text =>
                 {
                     if (string.IsNullOrWhiteSpace(text)) return Apply(() => write(cells, null));
                     if (!UiSupport.TryNum(text, out var number) || number <= 0.0) return invalid;
                     return Apply(() => write(cells, number));
                 }, !CanEdit || value.Count == 0 || locked != null);
+        }
+
+        // «Frente 1» / «Frentes 1, 2» (the approved draft).
+        private static string ListText(IReadOnlyList<int> numbers, string one, string many)
+            => (numbers.Count == 1 ? one : many) + " " + string.Join(", ", numbers.Select(n => n.ToString(CultureInfo.InvariantCulture)));
+
+        // «1 y 2», «1, 2 y 3».
+        private static string JoinAnd(IEnumerable<int> numbers)
+        {
+            var names = numbers.Select(n => n.ToString(CultureInfo.InvariantCulture)).ToList();
+            return names.Count <= 1 ? string.Join(string.Empty, names) : string.Join(", ", names.Take(names.Count - 1)) + " y " + names[names.Count - 1];
         }
 
         // ------------------------------------------------------------------ internals: the matrix

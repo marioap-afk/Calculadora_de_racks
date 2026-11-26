@@ -717,3 +717,142 @@ La revisión de la entrega 1 de Selectivo (hallazgos I-01 y M-02) encontró dos 
   `RackCadWindowListTests`, `CustomPropertiesCommandGuardTests`): 126/126. Build Debug del Plugin: 0 errores.
 - **Rojo:** sin la llamada en RACKSELECTIVOAPLICAR fallan 2 de 14 (`...SelectiveCommands...(RACKSELECTIVOAPLICAR)` y el recuento de 5);
   restaurada con fecha nueva, 14/14 y recompilado.
+
+## Selectivo en la ventana (línea D), pulido de la entrega 1 antes de la entrega 2 (tercera tanda, β)
+
+**Rama:** `architecture/workspace-persistente-rackcad-selectivo`, sobre `1f0bd3df`, sin commit. Orden del Owner: «Continúa» (tras el smoke de
+la entrega 1). Cinco encargos: la fidelidad con el draft aprobado (las 10 «A» de la revisión de fidelidad y las «B» que son solo texto), la
+accesibilidad, el posible fallo A de `SetSegments`, las pruebas que faltaban de prioridad A y las listas desplegables (O-D del smoke). Sin
+AutoCAD y sin tocar Dinámico (ni su vista ni `DynamicFieldItem`, que comparten los dos editores).
+
+**1. Fidelidad con el draft.** Donde el plan había reducido el draft, manda el draft.
+
+| Hallazgo | Estado | Qué se hizo |
+|---|---|---|
+| F-01 | CORREGIDO | «Lo esencial» son los tres grupos del draft: **Estructura** (Frentes (bahías), Niveles, Fondos, Tarimas por nivel), **Tarima** (Ancho, Alto, Profundidad) y **Larguero y holguras** (Larguero, Peralte del larguero, Holgura horizontal, Holgura vertical), con sus pistas. Cada campo escribe **todo el rack, en todos los fondos**, por el mismo camino que «Todo» de la matriz con «Todos los fondos» (SF-01) |
+| F-02 | CORREGIDO | Poste y Peralte del poste pasan a «Poste y anotaciones», primeros, con la pista del draft |
+| F-06 | CORREGIDO | Con dos o más fondos, la tabla **«Fondos»**: Fondo · Frentes · Profundidad de tarima · Profundidad de cabecera (vacía: «Auto: n») · Separación al siguiente («Último» en el último) · Estado, con el texto de cabecera y la nota del maestro del draft. Cada fila escribe solo en su fondo. Sale el selector «Fondos de la vista» de la pestaña Rack y la lista «Separaciones entre fondos» (SF-02, SF-03) |
+| F-09 | CORREGIDO | «Calculado» es el del draft: Largo del larguero (valor o rango), Altura de cabecera «≈ n in», Separación N2 → N3, Profundidad de cabecera (del fondo 1), Cabeceras, Largueros, Posiciones de tarima y, con doble fondo, Separadores; cada uno con su pista. Las cuentas de piezas salen del BOM (SF-04). Salen «Altura por poste» (va a Matriz), «Largo entre ejes» y «Profundidad total» |
+| F-15 | CORREGIDO | Bajo la matriz, **«Altura por poste»**: P1…Pn «≈ n in» por cada fondo de la vista, marcados si una altura manual manda (borde de aviso), con la nota del draft |
+| F-16 | CORREGIDO | Bajo la matriz, la **leyenda**, y las marcas en la celda: punto de aviso = «Modificada en el borrador», punto de información = «Distinta del resto», «M» = valor manual; «varía» (con doble fondo), la raya de piso y «½». Sin «Valor no válido» ni T/P (SF-05) |
+| F-20 | CORREGIDO | El inspector tiene el alcance **Celda · Frente · Nivel · Todo** («Celdas (n)» con varias) y la línea **«Destino: n celdas [en el fondo k / en los fondos 1 y 2] · frentes …»** (SF-06) |
+| F-23 | CORREGIDO | «Largo de larguero» y «Claro debajo», sin la explicación en el rótulo. Junto al largo, el valor automático: «Automático: 96 in.» vacío, «Vacío = automático (96 in).» con un valor manual, más la pista del draft; el claro, «Vacío = automático» y su pista (el draft no da número) (SF-07) |
+| F-24 | CORREGIDO | La sección del frente se titula como el draft («Frente 2», «Frentes 1, 2 · fondos 1 y 2») con su resumen («3 niveles · larguero a piso · medio frente»). «Altura manual de cabecera» con «Calculada: ≈ n in.» (o «Vacía = calculada (≈ n in).») y «Manda en los dos postes del frente.»; la elevación con «Sobre el primer troquel; un frente nuevo copia la del último.» (SF-08) |
+| F-27 | CORREGIDO | «Postes y cabeceras» es una tabla con encabezados Poste · Peralte propio (in) · **Altura** («Altura (por fondo)» con doble fondo: «≈ n in / ≈ m in») · Cabecera, y el resumen «n postes · n peraltes propios · n cabeceras personalizadas». La caja dice «Del rack: 3» cuando está vacía |
+
+Las «B» que son solo texto también: F-03 (Holgura horizontal / vertical con sus pistas), F-04 («Fondos» con su pista), F-05 (Profundidad en
+Tarima, «Hoy «Fondo de tarima».»), F-07 (el texto de «Lo esencial» del draft; el vocabulario queda en la cabecera de «Fondos»), F-08 (pistas
+de Niveles, Tarimas por nivel, Peralte), F-10 (pistas de «Calculado»), F-11 (orden de «Poste y anotaciones»: campos, casillas, «Mostrar
+tarimas», cotas), F-12 (resumen en el encabezado plegado: «Poste 3 in · cotas: Estándar · con tarimas»), F-13 (nota de «Mostrar tarimas» del
+draft), F-14 (rótulos limpios con la explicación como pista), F-18 («Ver detalle en celdas»), F-19 (sin «; «varía» si no coinciden»), F-21
+(títulos del inspector), F-22 (grupos Tarima · Larguero (con resumen) · Manual (con resumen)), F-25 (tabla de tramos con encabezados, «(resto)
+≈ n in», «Partir el frente», «Agregar tramo»), F-28 (la nota de Avanzado remite a «Poste y anotaciones») y F-30 («Ningún frente está
+partido.» / «Frentes partidos: … .»). F-17 (el selector de fondos) se hizo como el draft, botones segmentados, por O-D (punto 5). **Quedan:**
+F-26 (tope y parrilla en la nota de N1: entrega 2), F-29 (los botones desactivados «Editar cabecera…» / «Reutilizar cabecera…»: no es solo
+texto, y el texto de hoy, «usa RACKEDITAR», es el cierto mientras no exista el editor de cabeceras) y F-31 (la pregunta de cierre con
+«Actualizar y cerrar»: es comportamiento nuevo).
+
+**Las decisiones nuevas** (prefijo SF, para no chocar con las S-nn de las otras tandas):
+
+| Id | Decisión | Por qué |
+|---|---|---|
+| SF-01 | «Lo esencial» escribe por `SelectiveDraftEditor.WithinScope(null, …)`: la misma escritura del borrador que «Todo» de la matriz con «Todos los fondos» (las mismas `Set…` sobre todas las posiciones y frentes), sea cual sea la vista de la matriz, que se restaura después (también si la escritura falla). No dice «Parte de lo elegido no existe en todos los fondos»: es todo el rack. Lee igual, con «Varía» si los fondos o las celdas difieren | El draft: «Escribe en todo el rack, en todos los fondos» (`editCells(…, true)` sobre `allCells`); el encargo: «por el mismo camino que la matriz con «Todo»» |
+| SF-02 | Con **un** fondo, «Profundidad de cabecera» queda en el grupo Tarima («Auto: 42 in (la de la tarima − 6 in).»). **Diferencia declarada con el draft**, que solo la tiene en la tabla «Fondos» | Quitarla dejaba sin forma de dar a un rack de un fondo su propia profundidad de cabecera, que el clásico sí tiene |
+| SF-03 | El «Estado» de una fila de «Fondos»: «Correcto», o «1 problema: <motivo>» del último valor rechazado en la fila (en rojo) | El borrador nunca guarda un valor no válido (se rechaza en el campo): el único problema de una fila es el valor que se acaba de rechazar. El motivo a la vista, porque en una tabla no cabe debajo de la caja |
+| SF-04 | Las cuentas de «Calculado» salen del BOM: `SelectiveBomCounts.Of(system, catalog)` suma por categoría los componentes de `SelectiveBomBuilder.Build` (Cabecera, Larguero, Separador); no cuenta nada de nuevo. «Posiciones de tarima» = celdas × tarimas por nivel en todos los fondos (no es una pieza del BOM). Se calcula al leerse, una vez por recomposición, y la vista solo lo vuelve a leer con la pestaña Rack a la vista (el BOM de un rack de 60 × 6 × 2 cuesta ~70 ms). «≈» como el draft, aunque el valor es el del resolvedor | Encargo: «sin inventar conteos de BOM: … usa las reglas del BOM existentes» |
+| SF-05 | La leyenda no tiene «Valor no válido» (la ventana rechaza un valor no válido antes de que llegue al borrador: ninguna celda lo puede tener) ni T/P (entrega 2). «Modificada» compara cada celda (tarima, tarimas, larguero, peralte, largo y claro manuales) y el larguero a piso de su frente con lo último leído o escrito: la base se toma al abrir, al descartar y tras escribir; una celda nueva está modificada. «Distinta del resto» = otro contenido que el más común de la vista (como el draft); una modificada dice modificada | Lo que el draft muestra, sin marcas que no pueden ocurrir |
+| SF-06 | El alcance del inspector lo fijan los gestos de la matriz (clic = Celda; F… = Frente; N… = Nivel; «Todo» = Todo) y sus botones: «Celda» deja la principal; «Frente», todas las celdas de los frentes de la selección; «Nivel», los niveles de la selección en todos los frentes; «Todo», todo lo de los fondos de la vista. Títulos del draft («Frente 1 · Nivel 1», «n celdas», «Frentes 1, 2», «Niveles 2», «Todo el rack», «Todo el fondo 2»). «Destino» cuenta cada posición en cada fondo de la vista que la tiene | `setScope` y `targetText` del draft |
+| SF-07 | Los valores automáticos y calculados los da `SelectiveDraftEditor.AutomaticValues(celdas, frentes)`: el MISMO resolvedor sobre una copia del último diseño válido sin esos valores manuales (el largo de su frente, donde manda el nivel más ancho, también otro manual, y la altura del frente). Van en la pista del campo, no dentro de la caja: WPF no tiene «placeholder» y la plantilla del campo es la de Dinámico, que no se toca | Sin repetir reglas de geometría; «vacío = automático» dice lo que de verdad saldría al vaciarlo |
+| SF-08 | La pista de la elevación dice «un frente nuevo copia la del último» y no «nace con 4» (el draft) | En el borrador, como en el clásico, un frente nuevo copia la elevación del último; 4 solo sin origen (`SelectiveEditorState`) |
+| SF-09 | El selector «Todos los fondos · Fondo 1 · Fondo n» de la matriz son botones segmentados (como el draft), con nombre de automatización «Fondos de la vista: Fondo 2» y estado «elegido» | F-17 y O-D (punto 5): sin lista desplegable |
+
+**2. Accesibilidad** (`sprint\a11y.md`, sin tocar Dinámico): cada celda se llama por su posición, única en la matriz («Frente 2 · Nivel 3:
+42×60», más «; en el piso, sin larguero», «modificada en el borrador», «distinta del resto», «con un valor manual»; una que no existe, «Frente 2 ·
+Nivel 3: no existe en los fondos de la vista»); la cabecera de fila, «Nivel 1, el piso: seleccionar la fila»; los controles repetidos por fila
+llevan su fila: «Tramo 2: longitud», «Tramo 2 con largueros», «Quitar el tramo 2», «P3: peralte propio», «Fondo 2: profundidad de tarima» (y
+los demás de «Fondos»); los botones segmentados, «Alcance de la edición: Frente», «Fondos de la vista: Fondo 1»; la casilla de larguero a
+piso se llama como su rótulo («Larguero a piso en N1», o con «(varía; …)»); de paso, las tres casillas de cotas, «Mostrar cotas en la
+frontal», etc. Los campos dan su pista como `HelpText`. Lo demás de `a11y.md` (orden de tabulación, flechas, atajos, foco tras acciones,
+`LiveSetting`) queda como estaba, para otra vuelta.
+
+**3. El posible fallo A de `SetSegments`: no es un fallo.** Con «Todos los fondos», `FrontWidth` toma el ancho del primer fondo que tiene el
+frente, pero el resolvedor da a todos los fondos que tienen un frente el MISMO ancho (el del fondo maestro, o el más ancho si el maestro tiene
+una columna vacía ahí), y el diálogo clásico comprueba el ancho del frente en el fondo visible (`TramosFullWidth`). Prueba nueva contra el
+clásico real (`RackSelectiveWindow.TramosFullWidthForTest` en los dos fondos) con el fondo 1 más estrecho en F1: el mismo ancho en los dos
+fondos del clásico y en los tres alcances del borrador, y los mismos tramos rechazados o escritos en cada alcance. Sin sistema (antes de la
+primera recomposición) el ancho es 0 y no se comprueba, como el clásico con 0 (probado también).
+
+**4. Las pruebas que faltaban (prioridad A).** `SelectiveDraftEditorGapTests` (UI, nueva, 16), sobre el borrador: el tope de 4 fondos, las
+separaciones al crecer (la última) y al reducir (se conservan), el alcance que desaparece, el mismo número sin escritura; menos frentes y el
+frente nuevo que copia la elevación; los rechazos (≤ 0, NaN, infinito) de profundidad, cabecera, separación, ancho, largo y claro sin escribir
+nada, y la separación que no existe; la elevación 0 como valor; «vacío = automático» del largo, el claro, la altura y la cabecera, que
+devuelven el dibujo a la regla (y el JSON al del rack abierto); el automático con otro manual que manda; la coerción del peralte con un
+larguero que no lo admite y el id del catálogo; `SetBeamPeralte` todo o nada con largueros distintos; menos niveles; menos de dos tramos y sin
+sistema; el ancho compartido contra el clásico (punto 3); las escrituras con «Todos» sobre fondos de forma distinta y la que no alcanza nada
+(«no se escribió nada», no un éxito); `WithinScope`; `CopySafety`/`ReplaceSafety` (solo lo que dibuja o cuenta, copias, nulo = vacío); las
+normalizaciones de la carga (fondo sin bahías propias, profundidades 0, elevación 0 y negativa, frente vacío rellenado y avisado, nulo lanza);
+la tolerancia vinculada de solo lectura con su vínculo en los estados finales. `RackCadSelectiveWindowGapTests` (UI, nueva, 7), del modelo
+de la vista y la ventana: «Editar aquí» otra vez sobre un borrador con cambios o escribiéndose no lo reemplaza, y sobre uno limpio lo reemplaza
+y desengancha el viejo; «Descartar» con la base ilegible deja el borrador como está y lo dice; con una base que no recompone deja el editor de
+solo lectura; confirmar el cierre mientras AutoCAD escribe no cierra; «Actualizar» con la puerta ocupada o de un editor ya olvidado no escribe;
+cerrar la pestaña del rack desde la lista no pierde el borrador (y sigue vetando el cierre del dibujo); agregar y quitar tramos quita el de su
+fila, con «(resto) ≈ n in». No se añadieron las «B» (textos, `Count == 0` de las lecturas, errores de `Recompose` distintos del peralte 0).
+
+**5. O-D, las listas desplegables lejos del control.** Es de la ventana alojada, no de Selectivo: la paleta es un `PaletteSet` con `AddVisual`
+(WPF en un `HwndSource` hijo de la ventana de AutoCAD), y una lista desplegable o una ayuda emergente de WPF es un `Popup`, otra ventana de
+nivel superior que WPF coloca en coordenadas de pantalla convertidas con el PPP de su raíz. Con dos monitores de escala distinta, si la
+ventana hija de la paleta y la del `Popup` no tienen el mismo contexto de PPP (AutoCAD aloja la paleta con el suyo), la conversión usa la
+escala de un monitor para el otro y el `Popup` cae desplazado hacia el origen (a la izquierda), que es lo que se vio; que también le pase a la
+ayuda emergente apunta a lo mismo. **Arreglo local hecho:** el selector de fondos de la matriz ya no es una lista (SF-09, como el draft), y el
+de la pestaña Rack desaparece (SF-01). **No hecho:** un arreglo general (fijar el contexto de PPP del hilo al abrir el `Popup`, o recolocarlo
+en `Opened`) no se puede comprobar sin AutoCAD en dos monitores de escala distinta; quedan con lista Poste, Larguero, Peralte, Cotas y Estilo
+de cota. Para el smoke: ¿pasa con la paleta en el monitor principal (el de la escala del sistema)?, ¿y en el otro?
+
+**Rendimiento** (una muestra por caso, Release, sonda temporal ya borrada; la de E1 era de `sprint\perf.md`): con 60 × 6 × 2 (1440 celdas) un
+clic en la matriz pasa de ~9 a ~34 ms (14 ms son `AutomaticValues`: copia y resolución del diseño) y una edición de ~16 a ~60 ms, sin el BOM
+de «Calculado», que solo se calcula con la pestaña Rack a la vista (~70 ms más). Con 10 × 6 × 1: clic ~4 ms, edición ~5 ms, BOM ~3 ms. Por
+debajo de los 100 ms por gesto.
+
+**Las pruebas:**
+- Nuevas, UI: `RackCadSelectiveFidelityTests` (14: los grupos y textos de «Lo esencial», la escritura de todo el rack igual a «Todo» con
+  «Todos los fondos» con la vista en el fondo 2, la tabla «Fondos» y su estado, «Calculado» contra el BOM, que sigue a cada recomposición,
+  el alcance y «Destino», los grupos del inspector, los automáticos contra el resolvedor, «Altura por poste», las marcas de la leyenda, la tabla
+  de postes, los nombres únicos, y la vista con WPF real: botones de fondos y de alcance, leyenda, chips, nombres de celdas, de «Fondos», de
+  postes y de tramos por el `AutomationPeer`, sin errores de enlace), `SelectiveDraftEditorGapTests` (16) y `RackCadSelectiveWindowGapTests` (7).
+- Cambiadas: `RackCadSelectiveEditorTests` (los títulos del inspector del draft, «Fondo 2» escribe por la tabla «Fondos» y el inspector, «Lo
+  esencial» dice «Varía» con la vista en un fondo, el post y su peralte en «Poste y anotaciones», los rótulos de «Calculado», los botones de
+  fondos en la vista) y `RackCadSelectiveEditorReviewTests` (la pista del claro cuando no está bloqueado).
+
+**Comprobación en rojo:** doce piezas rotas a propósito, una a una, con las cuatro clases afectadas tras cada una
+(`RackCadSelectiveFidelityTests`, `SelectiveDraftEditorGapTests`, `RackCadSelectiveEditorTests`, `RackCadSelectiveWindowGapTests`: 59
+casos); en todas falla al menos una:
+1. «Lo esencial» escribe en los fondos de la vista (sin `WithinScope(null)`): falla la de la escritura de todo el rack;
+2. la fila de «Fondos» escribe la cabecera en todos los fondos: fallan la de la tabla y la de la pestaña Rack;
+3. «Frente» del alcance no toma el frente: falla la del alcance;
+4. el automático no vacía el largo manual: fallan tres (las dos del borrador y la del inspector);
+5. «Largueros» cuenta las cabeceras del BOM: falla la de «Calculado»;
+6. la altura manual marca un solo poste: falla la de «Altura por poste»;
+7. lo escrito no es la base de «Modificada»: falla la de las marcas;
+8. la celda se llama por su texto: falla la de la vista (nombres sin posición ni únicos);
+9. la casilla de larguero a piso con su nombre fijo de antes: falla la de la vista;
+10. «Quitar» repetido en cada tramo: fallan la de los nombres y la de la vista;
+11. los botones de fondos no eligen el fondo y 12. los botones de alcance no eligen el alcance: falla la de la vista.
+
+Cada archivo se restauró desde su copia, con fecha nueva y el mismo SHA-256 que antes de romperlo (comprobado por el script), se buscaron
+restos y se recompiló la solución con `--no-incremental` antes de las suites completas. Las pruebas de los huecos (punto 4) fijan
+comportamiento que ya existía; no tienen arreglo que romper, salvo `AutomaticValues` y `WithinScope`, que entran en 1 y 4.
+
+**Los números** (sobre las fuentes restauradas, con la solución recompilada en Debug con `--no-incremental`):
+- **UI completa:** 2654 correctas, 0 con error, 48 omitidas (2702): la base de `1f0bd3df`, 2617, más las 37 nuevas (14 + 16 + 7).
+- **Core Full:** 19105 correctas, 0 con error, 403 omitidas (19508): la base, sin pruebas nuevas en Core.
+- **Build Debug de la solución (Plugin incluido):** 0 errores (las advertencias MSB3277 de las referencias de AutoCAD y las de los
+  analizadores de xunit ya estaban).
+
+**Riesgos y preguntas:**
+- La rama `…-selectivo-e2-seguridad` (C2) y `…-selectivo-e2-insertar` (A2) tocan la misma vista y el mismo modelo: al integrarlas habrá
+  conflictos en `SelectiveEditorView.xaml` y `SelectiveEditorViewModel.cs` (sobre todo en el inspector y en las listas de `Rebuild`).
+- SF-02 (la profundidad de cabecera con un fondo, fuera del draft) y SF-04 («≈» sobre un valor exacto) son para que el Owner las vea.
+- «Distinta del resto» marca, con dos tarimas a partes iguales, la mitad de las celdas: es lo que hace el draft; si molesta en el smoke, se
+  quita la marca y se deja la leyenda.
+- O-D sigue abierto para las listas que quedan (punto 5).
+- El smoke del Owner en AutoCAD: lo de la entrega 1, más todo lo de esta sección.

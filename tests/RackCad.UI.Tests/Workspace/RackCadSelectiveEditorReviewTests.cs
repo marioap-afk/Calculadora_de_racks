@@ -343,7 +343,8 @@ namespace RackCad.UI.Tests
             vm.ClickCell(1, 0, control: false, shift: false);
             vm.ClickCell(1, 1, control: true, shift: false);
             Assert.True(Choice(vm.CellFields, "cBeam").IsEnabled);
-            Assert.Equal(string.Empty, Field(vm.CellFields, "cClear").Hint);
+            // Not locked: the hint of the approved draft, not «No en N1» (tanda 3, fidelity with the draft).
+            Assert.Equal("Vacío = automático. Hasta el larguero de abajo (en N2, desde el piso); al troquel de 2 in.", Field(vm.CellFields, "cClear").Hint);
 
             // «Larguero a piso» in F2: its N1 is offered again.
             vm.ClickCell(1, 0, control: false, shift: false);

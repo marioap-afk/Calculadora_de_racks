@@ -48,7 +48,7 @@ namespace RackCad.UI.Tests
             Assert.False(vm.Rows[2].Cells[0].IsOnFloor);
             Assert.True(vm.Rows[2].Cells[1].IsOnFloor);
             Assert.False(vm.Rows[1].Cells[1].IsOnFloor);
-            Assert.Equal("Celda F1 · N1", vm.InspectorTitle);
+            Assert.Equal("Frente 1 · Nivel 1", vm.InspectorTitle);
             Assert.True(vm.Rows[2].Cells[0].IsPrimary);
         }
 
@@ -74,7 +74,7 @@ namespace RackCad.UI.Tests
 
             vm.ClickCell(1, 1, control: false, shift: false);
             Assert.Equal(new[] { P(1, 1) }, vm.SelectedPositions);
-            Assert.Equal("Celda F2 · N2", vm.InspectorTitle);
+            Assert.Equal("Frente 2 · Nivel 2", vm.InspectorTitle);
 
             vm.ClickCell(0, 2, control: true, shift: false);
             Assert.Equal(new[] { P(0, 2), P(1, 1) }, vm.SelectedPositions);
@@ -89,7 +89,7 @@ namespace RackCad.UI.Tests
             vm.ClickCell(0, 2, control: false, shift: true);
             Assert.Equal(new[] { P(0, 0), P(0, 1), P(0, 2), P(1, 0), P(1, 1) }, vm.SelectedPositions);
             Assert.Equal(P(0, 2), vm.PrimaryPosition);
-            Assert.Equal("5 celdas en 2 frentes", vm.InspectorTitle);
+            Assert.Equal("5 celdas", vm.InspectorTitle);
             // A second Mayús+clic extends from the same anchor, not from the last click.
             vm.ClickCell(1, 1, control: false, shift: true);
             Assert.Equal(new[] { P(1, 0), P(1, 1) }, vm.SelectedPositions);
@@ -222,15 +222,22 @@ namespace RackCad.UI.Tests
             vm.SelectFront(1);
             Assert.Equal("Varía", Field(vm.FrontFields, "fLevels").Hint);
 
-            // «Fondo 2»: what is seen is fondo 2, and a write goes only there.
+            // «Fondo 2»: what is seen in the matrix is fondo 2, and a write of the inspector goes only there. «Rack» › «Lo esencial» is the
+            // whole rack (the approved draft), whatever the view is: it still says «Varía»; what goes by fondo is the table «Fondos».
             vm.FondoScopeIndex = 2;
-            Assert.Equal("40", Field(vm.Essentials, "depth").Text);
-            Assert.Equal("3", Field(vm.Essentials, "fronts").Text);
+            Assert.Equal("Varía", Field(vm.Essentials, "depth").Hint);
+            Assert.Equal("Varía", Field(vm.Essentials, "fronts").Hint);
             Assert.Equal("Lo que ves es donde escribes: solo en el fondo 2.", vm.FondoScopeText);
-            Write(Field(vm.Essentials, "depth"), "36");
+            Assert.Equal("40", vm.FondoRows[1].Depth.Text);
+            Assert.Equal("3", vm.FondoRows[1].Fronts.Text);
+            Write(vm.FondoRows[1].Depth, "36");
             Assert.Equal(36.0, vm.Draft.Fondo(1)!.PalletDepth);
             Assert.Equal(48.0, vm.Draft.Fondo(0)!.PalletDepth);
             Assert.True(vm.IsDirty);
+            vm.ClickCell(0, 0, control: false, shift: false);
+            Write(Field(vm.CellFields, "cHeight"), "66");
+            Assert.Equal(66.0, vm.Draft.Cell(1, 0, 0)!.Alto);
+            Assert.Equal(60.0, vm.Draft.Cell(0, 0, 0)!.Alto);
 
             // «Fondo 1» has two fronts: a selection of F3 is cleaned.
             vm.SelectFront(2);
@@ -358,13 +365,13 @@ namespace RackCad.UI.Tests
             var post = vm.Draft.PostId;
 
             // A post that the catalog does not have reaches the draft, which cannot recompose it.
-            Choice(vm.Essentials, "post").SelectedValue = "POSTE_QUE_NO_EXISTE";
+            Choice(vm.AnnotationFields, "post").SelectedValue = "POSTE_QUE_NO_EXISTE";
 
-            Assert.Equal("Selecciona un poste.", Choice(vm.Essentials, "post").Error);
+            Assert.Equal("Selecciona un poste.", Choice(vm.AnnotationFields, "post").Error);
             Assert.Equal("Selecciona un poste.", vm.Message);
             Assert.True(vm.MessageIsError);
             Assert.Equal(post, vm.Draft.PostId);
-            Assert.Equal(post, Choice(vm.Essentials, "post").SelectedValue);
+            Assert.Equal(post, Choice(vm.AnnotationFields, "post").SelectedValue);
             Assert.Null(vm.Draft.LastError);
             Assert.Equal(valid, Json(vm.Draft.Design));
             Assert.Equal(new[] { 1 }, vm.SelectedFronts);
@@ -481,12 +488,17 @@ namespace RackCad.UI.Tests
         {
             var vm = SelectiveEditor(TwoFondos());
 
+            // The separation and the depth of the cabecera go by fondo: the table «Fondos» (the approved draft).
             Write(Field(vm.SeparatorFields, "sep0"), "14");
             Assert.Equal(new[] { 14.0 }, vm.Draft.Separators);
-            Write(Field(vm.Essentials, "cabecera"), "38");
+            Assert.Same(vm.FondoRows[0].Separator, Field(vm.SeparatorFields, "sep0"));
+            Write(vm.FondoRows[0].Cabecera, "38");
             Assert.Equal(38.0, vm.Draft.Fondo(0)!.CabeceraDepthOverride);
+            Assert.Null(vm.Draft.Fondo(1)!.CabeceraDepthOverride);
+            Write(vm.FondoRows[1].Cabecera, "38");
             Assert.Equal(38.0, vm.Draft.Fondo(1)!.CabeceraDepthOverride);
-            Write(Field(vm.Essentials, "peralte"), "3.5");
+            // The post and its peralte are in «Poste y anotaciones» (the approved draft).
+            Write(Field(vm.AnnotationFields, "peralte"), "3.5");
             Assert.Equal(3.5, vm.Draft.PostPeralte);
 
             vm.DrawPallets = true;
@@ -501,16 +513,13 @@ namespace RackCad.UI.Tests
             Write(Field(vm.AnnotationFields, "scale"), "2");
             Assert.Equal(2.0, vm.Draft.AnnotationScale);
 
+            // «Calculado» as the approved draft has it (with two fondos, «Separadores» too).
             var labels = vm.Calculated.Select(c => c.Label).ToList();
-            Assert.Contains("Altura de cabecera (la más alta)", labels);
-            Assert.Contains("Altura por poste, fondo 1", labels);
-            Assert.Contains("Altura por poste, fondo 2", labels);
-            Assert.Contains("Largo del larguero por frente", labels);
-            Assert.Contains("Largo entre ejes de los postes extremos", labels);
-            Assert.Contains("Profundidad total del rack", labels);
-            Assert.Equal(vm.Draft.System!.Height.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture) + " in",
-                vm.Calculated.Single(c => c.Label == "Altura de cabecera (la más alta)").Value);
-            Assert.Equal(3, vm.Calculated.Single(c => c.Label == "Largo del larguero por frente").Value.Split('·').Length);
+            Assert.Equal(new[] { "Largo del larguero", "Altura de cabecera", "Separación N2 → N3", "Profundidad de cabecera", "Cabeceras", "Largueros",
+                "Posiciones de tarima", "Separadores" }, labels);
+            Assert.Equal("≈ " + vm.Draft.System!.Height.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture) + " in",
+                vm.Calculated.Single(c => c.Label == "Altura de cabecera").Value);
+            Assert.All(vm.Calculated, c => Assert.False(string.IsNullOrWhiteSpace(c.Hint)));
         }
 
         [Fact]
@@ -642,8 +651,10 @@ namespace RackCad.UI.Tests
                     Assert.Equal(9, cells.Count);
                     Assert.Contains(Descendants<TextBlock>(view.MatrixRows), t => t.Text == "40×60");
                     Assert.Contains(Descendants<Button>(view.ColumnHeads), b => (string)b.Content == "F3");
-                    Assert.Equal(3, view.FondoScopeBox.Items.Count);
-                    Assert.Equal(0, view.FondoScopeBox.SelectedIndex);
+                    // The approved draft: segmented buttons over the matrix, «Todos los fondos» chosen (no drop-down list, O-D of the smoke).
+                    var fondoViews = Descendants<Button>(view.FondoViewList).ToList();
+                    Assert.Equal(new[] { "Todos los fondos", "Fondo 1", "Fondo 2" }, fondoViews.Select(b => (string)b.Content).ToArray());
+                    Assert.Equal(new[] { "elegido", "", "" }, fondoViews.Select(System.Windows.Automation.AutomationProperties.GetItemStatus).ToArray());
 
                     // Every tab is laid out once, so every binding is evaluated.
                     view.Tabs.SelectedItem = view.RackTab;
@@ -685,7 +696,7 @@ namespace RackCad.UI.Tests
                 var cell = Descendants<Button>(view.MatrixRows).First(b => b.DataContext is SelectiveCellItem c && c.FrontIndex == 1 && c.LevelIndex == 1);
                 Click(cell);
                 Assert.Equal(new[] { P(1, 1) }, vm.SelectedPositions);
-                Assert.Equal("Celda F2 · N2", view.InspectorTitle.Text);
+                Assert.Equal("Frente 2 · Nivel 2", view.InspectorTitle.Text);
 
                 // A commit refreshes the cells in place: the same button is still in the tree (I-05 of Dinámico).
                 Write(Field(vm.CellFields, "cHeight"), "72");

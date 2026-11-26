@@ -90,6 +90,30 @@ namespace RackCad.Application.VentanaRackCad
     public sealed record SelectiveDraftFondo(int Fondo, int FrontCount, double PalletDepth, double? CabeceraDepthOverride, double CabeceraDepth);
 
     /// <summary>
+    /// The automatic values next to the manual ones (the approved draft: «Automático: …», «Calculada: ≈ …»): the distinct larguero lengths
+    /// and front heights the resolver gives with those manual values emptied (<see cref="SelectiveDraftEditor.AutomaticValues"/>).
+    /// </summary>
+    public sealed record SelectiveAutomaticValues(IReadOnlyList<double> BeamLengths, IReadOnlyList<double> Heights);
+
+    /// <summary>
+    /// The counts of «Calculado» of the window (the approved draft: «Cabeceras», «Largueros», «Separadores»), read from the BOM of the
+    /// system (<see cref="SelectiveBomBuilder.Build"/>) and never counted again here: the cabeceras (one per frame, the intermediate ones
+    /// of a half front included), the largueros (front and back of every beam) and the separators between fondos, as the BOM lists them.
+    /// </summary>
+    public sealed record SelectiveBomCounts(int Cabeceras, int Largueros, int Separadores)
+    {
+        /// <summary>The counts of the BOM of that system; zeros for no system.</summary>
+        public static SelectiveBomCounts Of(SelectiveRackSystem system, RackCatalog catalog)
+        {
+            if (system == null) return new SelectiveBomCounts(0, 0, 0);
+            var components = SelectiveBomBuilder.Build(system, catalog).Components;
+            int Sum(string category) => components.Where(c => string.Equals(c.Category, category, StringComparison.Ordinal)).Sum(c => c.Quantity);
+            return new SelectiveBomCounts(Sum(RackCad.Application.Bom.BomBuilder.Cabecera), Sum(RackCad.Application.Systems.Larguero.LargueroBomBuilder.Larguero),
+                Sum(SelectiveBomBuilder.Separador));
+        }
+    }
+
+    /// <summary>
     /// The draft of ONE Selectivo rack in the RackCad window (I-64 A-14, line D, Selectivo E1-A), with no WPF and no AutoCAD. It is the SAME
     /// recomposition as the classic editor (<c>RackSelectiveWindow</c>): the editor state of I-20 (<see cref="SelectiveEditorState"/>,
     /// one matrix per fondo), the <see cref="SelectiveDesignInputs"/> the classic editor reads from its boxes, the assembly of
@@ -280,6 +304,105 @@ namespace RackCad.Application.VentanaRackCad
             FondoScope = fondo is int f && f >= 0 && f < FondoCount ? f : (int?)null;
             AimAtScope();
         }
+
+        /// <summary>
+        /// Runs <paramref name="body"/> (a read or a write of the draft) with that scope, whatever the scope of the view is, and puts the
+        /// scope of the view back afterwards, also when the body throws. The «Rack» tab of the window writes the whole rack through it (null,
+        /// every fondo: the same write as «Todo» of the matrix with «Todos los fondos»), and the table «Fondos» one fondo. A fondo the rack
+        /// no longer has (the body changed the count) leaves the view on all the fondos, as <see cref="SetFondoScope"/> does.
+        /// </summary>
+        public T WithinScope<T>(int? fondo, Func<T> body)
+        {
+            if (body == null) throw new ArgumentNullException(nameof(body));
+            var view = FondoScope;
+            SetFondoScope(fondo);
+            try
+            {
+                return body();
+            }
+            finally
+            {
+                SetFondoScope(view);
+            }
+        }
+
+        /// <summary>Every position (front, level) that some fondo of the scope has: what «Todo» of the matrix selects.</summary>
+        public IReadOnlyList<SelectiveMatrixPosition> ScopePositions()
+        {
+            var positions = new List<SelectiveMatrixPosition>();
+            for (var front = 0; front < ScopeFrontCount; front++)
+                for (var level = 0; level < ScopeLevelCount(front); level++)
+                    positions.Add(new SelectiveMatrixPosition(front, level));
+            return positions;
+        }
+
+        /// <summary>
+        /// What the drawing would have if the manual values of those cells and fronts were emptied («vacío = automático», «vacía =
+        /// calculada»), over the fondos of the scope: the larguero length of the front of each cell (the widest level of the front governs,
+        /// a manual length of another cell included) and the height of each front. It is the SAME resolver over a copy of the last valid
+        /// design with those manual values removed, so no rule of the geometry is repeated here. Distinct values, ascending, with three
+        /// decimals; empty before the first valid recomposition.
+        /// </summary>
+        public SelectiveAutomaticValues AutomaticValues(IEnumerable<SelectiveMatrixPosition> cells, IEnumerable<int> fronts)
+        {
+            var empty = new SelectiveAutomaticValues(Array.Empty<double>(), Array.Empty<double>());
+            if (Design == null) return empty;
+            var design = Copy(Design);
+            if (design == null) return empty;
+
+            var askedCells = (cells ?? Enumerable.Empty<SelectiveMatrixPosition>()).Distinct().ToList();
+            var askedFronts = (fronts ?? Enumerable.Empty<int>()).Distinct().ToList();
+            foreach (var fondo in ScopeFondos)
+            {
+                var bays = DesignBays(design, fondo);
+                if (bays == null) continue;
+                foreach (var p in askedCells)
+                {
+                    if (p.FrontIndex < 0 || p.FrontIndex >= bays.Count) continue;
+                    var levels = bays[p.FrontIndex].Levels;
+                    if (p.LevelIndex >= 0 && p.LevelIndex < levels.Count) levels[p.LevelIndex].BeamLengthOverride = null;
+                }
+
+                foreach (var front in askedFronts)
+                {
+                    if (front >= 0 && front < bays.Count) bays[front].HeightOverride = null;
+                }
+            }
+
+            var system = _resolver.Resolve(design, Catalog);
+            var lengths = new List<double>();
+            var heights = new List<double>();
+            foreach (var fondo in ScopeFondos)
+            {
+                var resolved = SelectiveDepthLayout.BaysOfFondo(system, fondo);
+                if (resolved == null) continue;
+                foreach (var p in askedCells)
+                {
+                    if (p.FrontIndex >= 0 && p.FrontIndex < resolved.Count && p.LevelIndex >= 0 && p.LevelIndex < LevelCount(fondo, p.FrontIndex))
+                        lengths.Add(resolved[p.FrontIndex].BeamLength);
+                }
+
+                foreach (var front in askedFronts)
+                {
+                    if (front >= 0 && front < resolved.Count) heights.Add(resolved[front].Height);
+                }
+            }
+
+            return new SelectiveAutomaticValues(Distinct(lengths), Distinct(heights));
+        }
+
+        // The design bays of a fondo, as the resolver reads them (a fondo with no own bays uses those of fondo 0).
+        private static IList<SelectiveBayDesign> DesignBays(SelectivePalletDesign design, int fondo)
+        {
+            if (fondo <= 0) return design.Bays;
+            var index = fondo - 1;
+            return index < design.ExtraFondoBays.Count && design.ExtraFondoBays[index] != null && design.ExtraFondoBays[index].Count > 0
+                ? design.ExtraFondoBays[index]
+                : design.Bays;
+        }
+
+        private static IReadOnlyList<double> Distinct(IEnumerable<double> values)
+            => values.Select(v => Math.Round(v, 3)).Distinct().OrderBy(v => v).ToList();
 
         public int FrontCount(int fondo) => Slot(fondo)?.Bays.Count ?? 0;
 
