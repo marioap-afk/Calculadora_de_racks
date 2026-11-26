@@ -7,7 +7,7 @@ namespace RackCad.Application.VentanaRackCad
     /// The close of a drawing also asks the RackCad window (I-64 A-14, line D; decision 11 of the Owner on the prototype of Dinámico, «Que
     /// avise antes de cerrar», and his authorization of 2026-11-24 to change the rule of the close: «te autorizo cambiar la regla de
     /// cierre»). Until then one advisor decided the close (F4-T3C2): the relay over the host core, which only knows the drafts of the panel.
-    /// The drafts of the editors of the window (Dinámico) live in the window, so this advisor wraps that one: the host decides as before,
+    /// The drafts of the editors of the window (Dinámico and, since Selectivo E1-B, Selectivo) live in the window, so this advisor wraps that one: the host decides as before,
     /// with its own notice, and a drawing whose window still has work not written does not close either, with this notice on the command
     /// line. The destruction of a session is the host's alone.
     ///
@@ -65,8 +65,9 @@ namespace RackCad.Application.VentanaRackCad
 
             if (string.IsNullOrWhiteSpace(work)) return decision;
 
+            // The text names no system (Selectivo E1-B): it holds for every editor of the window, Dinámico and Selectivo.
             Write("RackCad: el dibujo no se cerró: la ventana RackCad tiene cambios sin escribir en " + work
-                  + ". Escríbelos con «Actualizar» (un Dinámico nuevo, con «Insertar en el dibujo…») o descártalos en su editor, y vuelve a cerrar.");
+                  + ". Escríbelos con «Actualizar» en su editor (un rack nuevo de la ventana, con «Insertar en el dibujo…») o descártalos, y vuelve a cerrar.");
             return CloseDecision.Veto;
         }
 

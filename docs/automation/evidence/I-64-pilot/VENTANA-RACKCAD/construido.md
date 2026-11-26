@@ -466,3 +466,97 @@ Los menores:
   - esa lectura recorre todos los sobres del dibujo, como RACKEDITAR, en cada apertura y en cada escritura.
 - `RACKEDITAR` sigue con el editor clásico.
 - Para la entrega 2: la seguridad (se conserva), «Insertar vista…», un Selectivo nuevo y «Restaurar layout…».
+
+## Selectivo en la ventana (línea D), E1-B
+
+**Rama:** `architecture/workspace-persistente-rackcad-selectivo`, sobre E1-A (`8830a6b9`). E1-B es la pantalla: el editor de Selectivo en la ventana, «Editar aquí» para Selectivo y el consejero de cierre con sus borradores. Sin AutoCAD: la pantalla espera el smoke del Owner.
+
+**Lo que se construyó:**
+- **El editor** (`SelectiveEditorViewModel` y `SelectiveEditorView`, en `src/RackCad.UI/VentanaRackCad/`), paralelo al de Dinámico, con sus mismos estilos, tokens y controles del shell:
+  - **La cabecera:** el nombre del rack, el estado Limpio / Modificado / Escribiendo, «Actualizar», «Descartar» y «Cerrar el editor», con su pregunta en línea si hay cambios. «Modificado» compara el JSON del diseño del borrador con el último leído o escrito, y el nombre recortado: deshacer un cambio vuelve a «Limpio». El aviso de la carga (`LoadNotice`) se dice al abrir.
+  - **Las pestañas** Rack, Matriz (la inicial) y Avanzado. Sin vista previa (decisión 11).
+  - **La forma de confirmar** es la de Dinámico: un campo va al borrador al salir de él o con Enter, y salir sin cambiar su texto no hace nada (un «Varía» vacío tampoco). Un valor que el borrador rechaza se queda en su campo con el motivo y no escribe nada. Un cambio que no se puede recomponer vuelve al último válido (`RestoreLastValid`, I-09 de Dinámico), con la selección como estaba, y no apaga «Actualizar».
+  - **Matriz** frente × nivel sobre los fondos de la vista:
+    - la celda muestra la tarima, ancho × alto (decisión 1), y «varía» en cursiva si los fondos no coinciden; «Ver detalle en celdas» añade las tarimas por nivel y el peralte;
+    - el selector «Todos los fondos / Fondo 1 / Fondo n» (decisión 2) llama a `SetFondoScope`; empieza en «Todos» y con un fondo no aparece;
+    - la raya de piso en N1 (decisión 4, ver S-11) y «½» en la cabecera de la columna de un frente en tramos (decisión 7);
+    - la selección (clic, Ctrl, Mayús desde el ancla, F1…, N1… y «Todo») la lleva el modelo de la vista; el borrador recibe posiciones (`SelectiveMatrixPosition`) y frentes explícitos.
+  - **El inspector,** a la derecha de la matriz (debajo, por debajo de 700 px, como Dinámico):
+    - de las celdas: ancho y alto de tarima, tarimas por nivel, larguero y peralte (listas del catálogo; el peralte, solo los que admite el larguero: `BeamPeraltes`), largo manual del larguero y claro manual;
+    - de los frentes: «Larguero a piso en N1» y su elevación, los niveles, la altura manual (vacía = calculada, decisión 9) y los tramos de medio frente (S-10);
+    - cada escritura dice en la línea de mensajes su `Notice` (lo que no existe en un fondo de la vista, y que se escribió solo donde existe), y el inspector dice antes qué frentes de la selección solo existen en algún fondo.
+  - **Vocabulario** (decisión 3): «Fondo» es la línea; «Profundidad» es la medida.
+  - **Rack:**
+    - «Lo esencial»: poste, peralte de poste, frentes, profundidad de tarima y de cabecera (en los fondos de la vista), número de fondos, separaciones entre fondos, tolerancia horizontal y holgura vertical;
+    - una holgura vinculada (`IsLinked`) muestra su valor efectivo de solo lectura, con el nombre de la variable y el motivo (`LinkedReadOnlyReason`), sin «=Variable» ni control de vínculo (decisión 12). `LinkedPropertyEditor` no se toca: solo no aparece en esta vista;
+    - «Calculado», de solo lectura (S-14);
+    - «Poste y anotaciones», plegado: placa base, numerar frentes y niveles, nombre del rack, «Mostrar tarimas» con su nota (decisión 10), escala de texto, cotas (detalle, «Mostrar cotas en» frontal, lateral y planta, y estilo).
+  - **Avanzado:** el peralte propio de cada poste (`SetPostPeralte`; vacío o igual al del rack = el del rack), la cabecera de cada poste por fondo («calculada» o «personalizada», `HasCustomCabecera`; se edita en el clásico) y los frentes en tramos.
+  - **La pérdida que era silenciosa** (S-09).
+- **La ventana** (`RackCadWindowViewModel`, `RackCadWindowView`, `RackListViewModel`):
+  - los borradores de Selectivo van por (sesión, rack), como los de Dinámico; sobreviven al cambio de rack, la lista los marca igual y se podan con las sesiones muertas, diciendo lo que se perdió;
+  - «Editar aquí» se ofrece para un Selectivo cuando la puerta es `IRackCadSelectiveDoorPort`; con una puerta de solo Dinámico no hay oferta;
+  - la lectura (`RequestSelectiveDesign`) llega por `SelectiveRead` y abre el editor sobre el diseño efectivo, con los estados de las holguras y los nombres de las variables;
+  - «Actualizar»: `SnapshotForWrite()` → `SelectiveDoorWrite` con la sesión y los estados finales → `RequestSelectiveUpdate`; la respuesta llega por `DesignWritten`. Escrito: el borrador vuelve a «Limpio» sobre lo escrito y «Descartar» vuelve ahí; fallo: sigue «Modificado» con el motivo;
+  - una sola petición en vuelo para los dos sistemas (S-16), con «Dejar de esperar», la numeración, las respuestas tardías o de otro número ignoradas, la petición que la orden ya tomó, el borrador de otro dibujo que no se escribe en el activo y el estado «Escribiendo»: todo como Dinámico;
+  - la página del rack aloja la vista del editor de Selectivo y la conserva mientras vive su borrador; «Ver el estado y la navegación del rack» vale para los dos editores.
+- **El consejero de cierre** (D-08): `UnwrittenWorkOf(session)` cuenta los borradores modificados o escribiéndose de Dinámico y de Selectivo, y es lo que pregunta el consejero (`WorkspacePaletteHost`). Su texto ya no nombra un sistema (S-15).
+
+**Las decisiones:**
+
+| Id | Decisión | Por qué |
+|---|---|---|
+| S-07 | El editor de Selectivo usa los mismos campos que el de Dinámico (`DynamicFieldItem`, sin cambios) y su forma de confirmar. Lo propio es poco: una lista del catálogo (`SelectiveChoiceItem`: poste, larguero, peralte y detalle de cotas) y la selección en el modelo de la vista | Una sola forma de confirmar en las dos pantallas. El larguero y el peralte solo pueden ser del catálogo, como las listas del clásico, y escribir el id de un larguero no es razonable |
+| S-08 | Un rack que el borrador no recompone al abrirlo (`LoadFrom` = false) se abre de solo lectura, con el motivo: «Actualizar» desactivado, ningún campo editable, y «Cerrar el editor» sin pregunta. Se edita con RACKEDITAR | No hay un diseño válido contra el que medir «Modificado», al que volver (`RestoreLastValid` lo necesita) ni que escribir |
+| S-09 | Si reducir frentes o fondos quita cabeceras personalizadas o peraltes propios de postes que desaparecen, la línea de mensajes lo dice después de escribir: cuántos, que volver a subirlos no los recupera y que «Descartar» vuelve a lo último leído o escrito. El borrador hace lo mismo que el clásico; el aviso es de la ventana | El clásico los borra sin decir nada (inventario) |
+| S-10 | Los tramos de medio frente (decisión 7) se escriben con «Aplicar tramos»: las filas del inspector son un borrador hasta aplicarlas, con la semilla y los gestos del diálogo clásico («Partir en tramos»: un tramo con largueros, con su longitud por escribir, y el resto; «+ Agregar tramo»; «Quitar»). «Sin medio frente» se aplica en el acto. Las comprobaciones son las de `SetSegments`. Es la única excepción a la forma única de confirmar | Una partición a medio escribir no es válida (el borrador la rechaza), así que no se puede escribir fila a fila. Es el «Aceptar» del diálogo, sin el diálogo |
+| S-11 | La raya de piso (decisión 4) marca N1 de un frente **sin** «Larguero a piso», la tarima en el piso, como el draft aprobado (su leyenda: «En el piso, sin larguero»). Un frente con larguero a piso no la lleva. El encargo de E1-B decía «cuando el frente tiene larguero a piso»: se siguió el draft aprobado. **Para revisar**; la otra lectura es un cambio de una línea (`IsOnFloor`) | Manda el draft aprobado por el Owner con la propuesta de la decisión 4 |
+| S-12 | El alcance de fondos vive en el borrador y se elige en «Matriz» y en «Rack», con el mismo selector, porque «Lo esencial» escribe los frentes y las profundidades en los fondos de la vista. Cambiarlo no cambia el borrador ni lo deja «Modificado» | Decisión 2: lo que ves es donde escribes, también en «Rack» |
+| S-13 | Una celda que ningún fondo de la vista tiene no se puede elegir («—», botón desactivado). Una columna que solo tienen algunos fondos va en cursiva y su nombre accesible dice cuáles. Al cambiar el alcance, la selección se queda con lo que existe | Decisión 2: «un frente que solo existe en un fondo lo indica» |
+| S-14 | «Calculado» lee lo que resolvió la última recomposición válida, sin cálculo propio: la altura de cabecera más alta; la altura de cada poste por fondo (con la de su cabecera personalizada, como la frontal); el largo del larguero de cada frente (el fondo maestro); el largo entre ejes de los postes extremos (la rejilla maestra); la profundidad de cabecera por fondo y, con más de un fondo, la total. Los conteos del draft (cabeceras, largueros, posiciones) no están | Esos conteos saldrían de reglas que la ventana no tiene: son las del BOM |
+| S-15 | El texto del consejero de cierre ya no nombra un sistema: «Escríbelos con «Actualizar» en su editor (un rack nuevo de la ventana, con «Insertar en el dibujo…») o descártalos». La prueba de Core que fija el texto (`RackCadWindowCloseAdvisorTests`) cambia, con nota. `UnwrittenDynamicWorkOf` se conserva con su comportamiento, y sus pruebas no cambian | El texto anterior decía «un Dinámico nuevo» y valía solo para Dinámico; el nuevo vale para los dos |
+| S-16 | La petición en vuelo lleva si es de Selectivo: la respuesta de una puerta no vale para la petición del otro sistema aunque el número coincida | Una sola petición para los dos sistemas, como pide el encargo, sin que una lectura de Dinámico abra un Selectivo ni al revés |
+| S-17 | El peralte del larguero ofrece los peraltes que admiten todos los largueros de la selección (la intersección; con un solo larguero, los suyos). Sin peralte común, la lista queda vacía y lo dice | Cualquier valor de la lista se puede escribir en todas las celdas elegidas |
+| S-18 | Los valores se muestran con hasta tres decimales, como las cajas del clásico. El borrador conserva la precisión completa (S-02), y mirar un campo sin cambiarlo no lo redondea | El borrador no cambia un valor que nadie tocó |
+| S-19 | «Extremos y seguridad», «Insertar vista…», un Selectivo nuevo y «Restaurar layout…» no están, ni como botones desactivados. La seguridad del borrador se conserva intacta: el editor no la toca | Son la entrega 2 |
+
+**Las pruebas** (en `tests/RackCad.UI.Tests/Workspace/`):
+- `RackCadSelectiveEditorTests` (22):
+  - el editor: abre en «Matriz», «Limpio», con la tarima por celda, la raya de piso y el nivel más alto arriba; el detalle de las celdas; la selección;
+  - el estado: «Modificado» que vuelve a «Limpio» al deshacer, el nombre con espacios, «Escribiendo» sin poder editar, lo escrito como base de «Descartar», «Cerrar el editor»;
+  - el alcance: «Varía», la columna de un solo fondo, escribir en «Fondo 2», la selección limpia al cambiar de alcance;
+  - escrituras por celda y por frente con su aviso; el valor rechazado en su campo; los peraltes del catálogo;
+  - la holgura vinculada de solo lectura, con su variable y sin «=»;
+  - el cambio que no se recompone, con la vuelta al último válido y «Actualizar» encendido;
+  - `LoadFrom` fallido: solo lectura y «Actualizar» desactivado; el aviso de la carga;
+  - el aviso de pérdida al reducir frentes y fondos, y su ausencia sin nada personalizado;
+  - «Rack», los peraltes propios por poste y los tramos de medio frente;
+  - las vistas, en STA: se construye, sus tres pestañas, sin errores de enlace (un oyente de las trazas de WPF), la matriz se pinta, sin `LinkedPropertyEditor`; los botones de la matriz, la raya de piso y el inspector debajo en estrecho.
+- `RackCadSelectiveWindowTests` (17), con una puerta doble que implementa `IRackCadSelectiveDoorPort`:
+  - la oferta solo con esa puerta; «Editar aquí» → lectura → editor; la respuesta de otro número, o de la puerta de Dinámico, ignorada; la respuesta durante la llamada; el rechazo con su motivo;
+  - una sola petición para los dos sistemas, «Dejar de esperar» y la respuesta tardía; AutoCAD ocupado;
+  - la escritura con copias y estados finales, el editor bloqueado, «Limpio» al escribir; la escritura fallida sigue «Modificado»; «Dejar de esperar» de una escritura; la orden que ya tomó la petición; el borrador de otro dibujo;
+  - el borrador sobrevive al cambio de rack; cerrar el editor; el consejero cuenta los borradores de Selectivo con los de Dinámico; los borradores de un dibujo cerrado;
+  - Dinámico sigue igual con la puerta doble;
+  - la vista de la ventana: aloja el editor de Selectivo, el panel en su lugar y la vista olvidada al cerrar.
+- **Censos y guardas:** ninguno falló por lo nuevo. El editor es un `UserControl`, no una ventana, así que `WindowCensusGuardTests` no lo cuenta; la guarda de capas de `RackCadWindowListTests` pasa (los archivos nuevos no usan AutoCAD, el Plugin ni el bloqueo del documento). La única prueba que ya existía y cambia es la del texto del consejero de cierre en Core (`RackCadWindowCloseAdvisorTests`, S-15), con su nota. Las pruebas de Dinámico no cambian.
+- **Comprobación en rojo:** siete piezas rotas a propósito, una a una, con la prueba de las dos clases nuevas tras cada una:
+  1. «Modificado» que no vuelve a «Limpio» (sin comparar con la base): fallan la del estado, la de «Escribiendo», la de la escritura correcta, la de la orden que tomó la petición y la del consejero;
+  2. la respuesta de otro número aceptada: falla la de «Editar aquí»;
+  3. la holgura vinculada editable: fallan la de la holgura y la de la vista (busca la caja de solo lectura);
+  4. el consejero sin los borradores de Selectivo: falla la suya;
+  5. un enlace roto en la vista (`InspectorTitel`): el oyente de las trazas de WPF lo recoge y falla la prueba de «sin errores de enlace»; falla también la de los botones;
+  6. la pérdida sin aviso: fallan las de frentes y fondos;
+  7. sin la vuelta al último válido: falla la del cambio que no se recompone.
+
+  Cada archivo se restauró de su copia y se comprobó que no quedan restos. La copia restaurada conservaba su fecha antigua, así que la compilación siguiente no la recompiló y la primera pasada completa de UI corrió con la última rotura: se tocaron las fechas, se recompiló y se repitió (abajo).
+- **Core Full:** 19088 correctas, 0 con error, 403 omitidas: la base de E1-A, sin pruebas nuevas en Core (solo cambia el texto de una).
+- **UI completa:** 2596 correctas, 0 con error, 48 omitidas (2644), con las 39 nuevas, sobre las fuentes restauradas. Las de la ventana, Dinámico y la equivalencia de Selectivo, juntas: 166 de 166.
+- **Build Debug del Plugin:** 0 errores (las 2 advertencias MSB3277 de las referencias de AutoCAD ya estaban).
+
+**Lo que queda abierto:**
+- **El smoke del Owner en AutoCAD:** «Editar aquí» de un Selectivo, «Actualizar» y su «U», el veto al cerrar con un Selectivo sin escribir, el editor en la paleta (foco real, ratón, anchos), y que `RACKSELECTIVOABRIR` no deje nada en Deshacer (E1-A).
+- S-11 para la revisión: el sentido de la raya de piso.
+- Sigue sin detectarse un cambio del dibujo mientras se edita, salvo lo de S-04 (M-16 de Dinámico).
+- `RACKEDITAR` sigue con el editor clásico.
+- **La entrega 2:** «Extremos y seguridad» (decisiones 5, 6 y 13), «Insertar vista…», un Selectivo nuevo en la ventana y «Restaurar layout…» (decisión 8).

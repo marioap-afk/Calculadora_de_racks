@@ -54,12 +54,16 @@ namespace RackCad.UI.VentanaRackCad
         private readonly IRackCadClassicCommandPort _classic;
         private readonly IRackCadSettingsAccess _settings;
         private readonly IRackCadRackDoorPort _door;
+        private readonly IRackCadSelectiveDoorPort _selectiveDoor;
         private readonly Func<RackCatalog> _catalog;
         private readonly IRackCadModalPort _modal;
 
         // The drafts of the Dinámico racks opened in the window, by session and rack (the id of a rack compares without case, as the list
         // does): they survive a change of rack (I-64 A-14, line D).
         private readonly Dictionary<(SessionId Session, string RackId), DynamicDraftEntry> _dynamicDrafts = new(DraftKeyComparer.Instance);
+
+        // The drafts of the Selectivo racks opened in the window (Selectivo E1-B), with the same key and the same life.
+        private readonly Dictionary<(SessionId Session, string RackId), SelectiveDraftEntry> _selectiveDrafts = new(DraftKeyComparer.Instance);
         private DoorRequest _inFlight;
         private long _lastRequestId;
         private bool _showPanel;
@@ -77,9 +81,23 @@ namespace RackCad.UI.VentanaRackCad
             public DynamicEditorViewModel Editor { get; }
         }
 
-        // The one request of the door that waits for AutoCAD: its number, the session and the rack it was made for (at the time it was
-        // made, not when the answer arrives) and, for a write, what was sent.
-        private sealed record DoorRequest(long Id, bool IsWrite, SessionId Session, string RackId, string SentJson, string SentName, bool Started = false);
+        private sealed class SelectiveDraftEntry
+        {
+            public SelectiveDraftEntry(SessionId session, SelectiveEditorViewModel editor)
+            {
+                Session = session;
+                Editor = editor;
+            }
+
+            public SessionId Session { get; }
+
+            public SelectiveEditorViewModel Editor { get; }
+        }
+
+        // The one request of the door that waits for AutoCAD, for the two systems (Selectivo E1-B): its number, the session and the rack it
+        // was made for (at the time it was made, not when the answer arrives), for a write what was sent, and whether it is a Selectivo.
+        private sealed record DoorRequest(long Id, bool IsWrite, SessionId Session, string RackId, string SentJson, string SentName, bool Started = false,
+            bool IsSelective = false);
 
         private sealed class DraftKeyComparer : IEqualityComparer<(SessionId Session, string RackId)>
         {
@@ -123,6 +141,8 @@ namespace RackCad.UI.VentanaRackCad
             _classic = classic;
             _settings = settings ?? new RackCadSettingsAccess();
             _door = door;
+            // A Selectivo is edited here only through a door that can read and write it (Selectivo E1-B); without it there is no offer.
+            _selectiveDoor = door as IRackCadSelectiveDoorPort;
             _catalog = catalog ?? UiSupport.LoadCatalogSafe;
             _modal = modal;
             if (_door != null)
@@ -132,7 +152,9 @@ namespace RackCad.UI.VentanaRackCad
                 _door.RequestStarted += OnRequestStarted;
             }
 
-            RackList = new RackListViewModel(panel.BrowserSummaryPort, panel.PilotEditPort, panel.Browser, DynamicStateOf);
+            if (_selectiveDoor != null) _selectiveDoor.SelectiveRead += OnSelectiveRead;
+
+            RackList = new RackListViewModel(panel.BrowserSummaryPort, panel.PilotEditPort, panel.Browser, DraftStateOf);
             RackList.RackOpened += () => ShowPage(RackCadWindowPage.Rack);
             // The header counts the racks of the list: it follows every reading of it, also «Volver a leer la lista» (O-1 of the smoke).
             RackList.PropertyChanged += (_, e) =>
@@ -353,10 +375,10 @@ namespace RackCad.UI.VentanaRackCad
             }
         }
 
-        /// <summary>While a Dinámico editor is shown, the user may look at the panel of the rack (state and navigation) instead.</summary>
+        /// <summary>While an editor of the window is shown (Dinámico or Selectivo), the user may look at the panel of the rack (state and navigation) instead.</summary>
         public bool ShowPanel
         {
-            get => _showPanel || ActiveDynamicEditor == null;
+            get => _showPanel || (ActiveDynamicEditor == null && ActiveSelectiveEditor == null);
             set
             {
                 if (_showPanel == value) return;
@@ -367,6 +389,218 @@ namespace RackCad.UI.VentanaRackCad
         }
 
         public string PanelToggleText => _showPanel ? "Volver al editor" : "Ver el estado y la navegación del rack";
+
+        /// <summary>The active rack has an editor of the window (Dinámico or Selectivo): the page offers to look at the panel instead.</summary>
+        public bool HasRackEditor => HasDynamicEditor || HasSelectiveEditor;
+
+        // ------------------------------------------------------------------ the Selectivo of the window (Selectivo E1-B)
+
+        /// <summary>Whether the active rack is a Selectivo, by the Kind of the list of the drawing.</summary>
+        public bool IsSelectiveRack =>
+            string.Equals(RackList.KindOf(Panel.Browser.ActiveRackId), RackEmbedDocument.KindSelective, StringComparison.OrdinalIgnoreCase);
+
+        /// <summary>The editor of the active Selectivo in the window, when it was opened here; null otherwise.</summary>
+        public SelectiveEditorViewModel ActiveSelectiveEditor =>
+            Panel.PresentedSession.HasValue && Panel.Browser.ActiveRackId != null
+            && _selectiveDrafts.TryGetValue((Panel.PresentedSession.Value, Panel.Browser.ActiveRackId), out var entry)
+                ? entry.Editor
+                : null;
+
+        public bool HasSelectiveEditor => ActiveSelectiveEditor != null;
+
+        /// <summary>Every Selectivo editor that the window keeps open, of any drawing.</summary>
+        public IReadOnlyList<SelectiveEditorViewModel> SelectiveEditors => _selectiveDrafts.Values.Select(e => e.Editor).ToList();
+
+        /// <summary>The offer to edit the active Selectivo here: a Selectivo with no editor open yet, and a door that reads and writes a Selectivo.</summary>
+        public bool ShowSelectiveOffer => IsSelectiveRack && ActiveSelectiveEditor == null && _selectiveDoor != null;
+
+        /// <summary>
+        /// «Editar aquí» of a Selectivo: asks AutoCAD to read it (RACKSELECTIVOABRIR, what RACKEDITAR reads before it opens); the editor opens
+        /// when the answer to THIS request arrives, for the session and the rack of the request. The one request of the door is shared with
+        /// Dinámico: only one waits at a time.
+        /// </summary>
+        public void EditSelectiveHere()
+        {
+            var rack = Panel.Browser.ActiveRackId;
+            var session = Panel.PresentedSession;
+            if (_selectiveDoor == null || rack == null || !session.HasValue) return;
+            if (_inFlight != null)
+            {
+                Say(DoorBusyText, failed: true);
+                return;
+            }
+
+            // The request waits BEFORE it is handed over: AutoCAD may run the command, and answer, during the call (M-22).
+            var id = ++_lastRequestId;
+            _inFlight = new DoorRequest(id, false, session.Value, rack, null, null, IsSelective: true);
+            Say("Leyendo el rack en AutoCAD…", failed: false);
+            RaiseWaiting();
+
+            RackCadClassicResult result;
+            try
+            {
+                result = _selectiveDoor.RequestSelectiveDesign(new RackDoorRequest(id, session.Value, rack))
+                         ?? RackCadClassicResult.Without(RackCadClassicStatus.Failed, "sin respuesta.");
+            }
+            catch (Exception ex)
+            {
+                result = RackCadClassicResult.Without(RackCadClassicStatus.Failed, ex.Message);
+            }
+
+            if (result.IsStarted) return;
+            if (_inFlight != null && _inFlight.Id == id) _inFlight = null;
+            RaiseWaiting();
+            Say(RefusalText(result), failed: true);
+        }
+
+        // The answer of AutoCAD to «Editar aquí» of a Selectivo: only the answer to the Selectivo read that waits; the editor opens for its
+        // session and rack, over the effective design, with the states of the linked properties and the names of their variables.
+        private void OnSelectiveRead(SelectiveDesignRead read)
+        {
+            Contained(() =>
+            {
+                var request = _inFlight;
+                if (read == null || request == null || request.IsWrite || !request.IsSelective || read.RequestId != request.Id) return;
+                _inFlight = null;
+                RaiseWaiting();
+
+                if (!read.Opens)
+                {
+                    Say("No se pudo abrir el rack: " + (read.Reason ?? "sin detalle."), failed: true);
+                    return;
+                }
+
+                if (!string.Equals(read.RackId, request.RackId, StringComparison.OrdinalIgnoreCase))
+                {
+                    Say("AutoCAD leyó otro rack que el pedido: no se abrió nada.", failed: true);
+                    return;
+                }
+
+                var design = read.EffectiveDesign();
+                if (design == null)
+                {
+                    Say("El rack no es un Selectivo que este editor pueda abrir; usa RACKEDITAR.", failed: true);
+                    return;
+                }
+
+                var key = (request.Session, request.RackId);
+                if (_selectiveDrafts.TryGetValue(key, out var existing) && (existing.Editor.IsDirty || existing.Editor.IsWriting))
+                {
+                    Say("Este rack ya tiene un borrador con cambios en la ventana: no se reemplazó.", failed: false);
+                    RaiseDynamic();
+                    return;
+                }
+
+                if (existing != null) ForgetSelective(key, existing);
+
+                // A load that cannot be recomposed still opens the editor, read only, with the reason (S-08).
+                var draft = new SelectiveDraftEditor(_catalog());
+                draft.LoadFrom(design, read.LinkedPropertyStates, read.Name, read.LinkedVariableNames);
+                var editor = new SelectiveEditorViewModel(draft, request.RackId, UpdateSelective, read.LinkedPropertyStates, read.LinkedVariableNames);
+                editor.PropertyChanged += OnSelectiveEditorChanged;
+                editor.CloseRequested += CloseSelectiveEditor;
+                _selectiveDrafts[key] = new SelectiveDraftEntry(request.Session, editor);
+                _showPanel = false;
+                Say(string.Empty, failed: false);
+                RaiseDynamic();
+            });
+        }
+
+        private void OnSelectiveEditorChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName != nameof(SelectiveEditorViewModel.IsDirty) && e.PropertyName != nameof(SelectiveEditorViewModel.IsWriting)) return;
+            RackList.RefreshStates();
+            OnPropertyChanged(nameof(HeaderText));
+        }
+
+        // «Actualizar» of the Selectivo editor: COPIES of the draft (SnapshotForWrite) with the final states of the linked properties go to
+        // AutoCAD, which redraws the rack with the drawing half of «Actualizar» of RACKEDITAR. The editor cannot be edited until the answer
+        // arrives or the window stops waiting, so what is written is what the user saw.
+        private void UpdateSelective(SelectiveEditorViewModel editor)
+        {
+            if (_selectiveDoor == null)
+            {
+                editor.Say("Aquí no se puede escribir el dibujo.", error: true);
+                return;
+            }
+
+            var entry = _selectiveDrafts.Values.FirstOrDefault(e => ReferenceEquals(e.Editor, editor));
+            if (entry == null) return;
+
+            // The door writes in the drawing that is active in AutoCAD: a draft of another drawing waits for its drawing.
+            if (!Panel.PresentedSession.HasValue || entry.Session != Panel.PresentedSession.Value)
+            {
+                editor.Say("Este borrador es de otro dibujo: vuelve a ese dibujo para escribirlo.", error: true);
+                return;
+            }
+
+            if (_inFlight != null)
+            {
+                editor.Say(DoorBusyText, error: true);
+                return;
+            }
+
+            var snapshot = editor.Draft.SnapshotForWrite();
+            if (snapshot == null)
+            {
+                editor.Say("No hay un borrador válido que escribir.", error: true);
+                return;
+            }
+
+            // The request waits, and the editor is locked, BEFORE it is handed over: AutoCAD may run the command during the call (M-22).
+            var id = ++_lastRequestId;
+            _inFlight = new DoorRequest(id, true, entry.Session, editor.RackId, snapshot.DesignJson, snapshot.Name, IsSelective: true);
+            editor.BeginWriting();
+            RaiseWaiting();
+
+            RackCadClassicResult result;
+            try
+            {
+                result = _selectiveDoor.RequestSelectiveUpdate(new SelectiveDoorWrite(id, entry.Session, editor.RackId, snapshot.Name, snapshot.Design,
+                             snapshot.System, snapshot.LinkedPropertyFinalStates))
+                         ?? RackCadClassicResult.Without(RackCadClassicStatus.Failed, "sin respuesta.");
+            }
+            catch (Exception ex)
+            {
+                result = RackCadClassicResult.Without(RackCadClassicStatus.Failed, ex.Message);
+            }
+
+            if (result.IsStarted) return;
+            if (_inFlight != null && _inFlight.Id == id)
+            {
+                _inFlight = null;
+                editor.EndWriting();
+            }
+
+            RaiseWaiting();
+            editor.Say(RefusalText(result), error: true);
+        }
+
+        // «Cerrar el editor» of a Selectivo (confirmed by the editor when it had changes): the window forgets the draft and shows the panel.
+        private void CloseSelectiveEditor(SelectiveEditorViewModel editor)
+        {
+            Contained(() =>
+            {
+                foreach (var pair in _selectiveDrafts.Where(p => ReferenceEquals(p.Value.Editor, editor)).ToList())
+                {
+                    if (pair.Value.Editor.IsWriting) return;
+                    ForgetSelective(pair.Key, pair.Value);
+                }
+
+                RaiseDynamic();
+                OnPropertyChanged(nameof(HeaderText));
+            });
+        }
+
+        private void ForgetSelective((SessionId Session, string RackId) key, SelectiveDraftEntry entry)
+        {
+            entry.Editor.PropertyChanged -= OnSelectiveEditorChanged;
+            entry.Editor.CloseRequested -= CloseSelectiveEditor;
+            _selectiveDrafts.Remove(key);
+        }
+
+        private static string SelectiveNameOf(SelectiveEditorViewModel editor) =>
+            !string.IsNullOrWhiteSpace(editor.Name) ? editor.Name.Trim() : editor.RackId;
 
         /// <summary>
         /// «Editar aquí»: asks AutoCAD to read the design of the active rack; the editor opens when the answer to THIS request arrives, for
@@ -429,10 +663,16 @@ namespace RackCad.UI.VentanaRackCad
                 Say("No se pudo avisar a AutoCAD: " + ex.Message, failed: true);
             }
 
-            if (request.IsWrite && _dynamicDrafts.TryGetValue((request.Session, request.RackId), out var entry))
+            const string StoppedWrite = "Se dejó de esperar a AutoCAD: si la orden llega a correr, no escribirá nada. El borrador sigue sin escribir.";
+            if (request.IsWrite && !request.IsSelective && _dynamicDrafts.TryGetValue((request.Session, request.RackId), out var entry))
             {
                 entry.Editor.EndWriting();
-                entry.Editor.Say("Se dejó de esperar a AutoCAD: si la orden llega a correr, no escribirá nada. El borrador sigue sin escribir.", error: false);
+                entry.Editor.Say(StoppedWrite, error: false);
+            }
+            else if (request.IsWrite && request.IsSelective && _selectiveDrafts.TryGetValue((request.Session, request.RackId), out var selective))
+            {
+                selective.Editor.EndWriting();
+                selective.Editor.Say(StoppedWrite, error: false);
             }
             else if (!request.IsWrite)
             {
@@ -449,7 +689,7 @@ namespace RackCad.UI.VentanaRackCad
             Contained(() =>
             {
                 var request = _inFlight;
-                if (read == null || request == null || request.IsWrite || read.RequestId != request.Id) return;
+                if (read == null || request == null || request.IsWrite || request.IsSelective || read.RequestId != request.Id) return;
                 _inFlight = null;
                 RaiseWaiting();
 
@@ -590,7 +830,17 @@ namespace RackCad.UI.VentanaRackCad
                 _inFlight = null;
                 RaiseWaiting();
 
-                if (_dynamicDrafts.TryGetValue((request.Session, request.RackId), out var entry))
+                // The write of a Selectivo (Selectivo E1-B): the same answer for the draft of its session and rack.
+                if (request.IsSelective)
+                {
+                    if (_selectiveDrafts.TryGetValue((request.Session, request.RackId), out var selective))
+                    {
+                        selective.Editor.EndWriting();
+                        if (written.Written) selective.Editor.MarkWritten(written.Message, request.SentJson, request.SentName);
+                        else selective.Editor.Say(written.Message, error: true);
+                    }
+                }
+                else if (_dynamicDrafts.TryGetValue((request.Session, request.RackId), out var entry))
                 {
                     var editor = entry.Editor;
                     editor.EndWriting();
@@ -628,20 +878,34 @@ namespace RackCad.UI.VentanaRackCad
         }
 
         /// <summary>
-        /// What the window still has to write in the drawing of a session: the names of its Dinámico racks with changes not written (or
-        /// being written), or null. The close advisor of the window asks it, and a drawing with such work does not close (decision 11 of the
-        /// Owner on the prototype: «Que avise antes de cerrar»; D-08). It only reads the memory of the window.
+        /// What the window still has to write in the drawing of a session: the names of its racks, Dinámico and Selectivo, with changes not
+        /// written (or being written), or null. The close advisor of the window asks it, and a drawing with such work does not close
+        /// (decision 11 of the Owner on the prototype of Dinámico: «Que avise antes de cerrar»; D-08, with the Selectivo since E1-B). It only
+        /// reads the memory of the window.
         /// </summary>
-        public string UnwrittenDynamicWorkOf(SessionId session)
+        public string UnwrittenWorkOf(SessionId session)
         {
-            var names = _dynamicDrafts
-                .Where(p => p.Key.Session == session && (p.Value.Editor.IsDirty || p.Value.Editor.IsWriting))
-                .Select(p => !string.IsNullOrWhiteSpace(p.Value.Editor.Name) ? p.Value.Editor.Name.Trim()
-                    : p.Value.Editor.IsNewRack ? "un Dinámico nuevo" : p.Value.Editor.RackId)
+            var names = UnwrittenDynamicNames(session)
+                .Concat(_selectiveDrafts
+                    .Where(p => p.Key.Session == session && (p.Value.Editor.IsDirty || p.Value.Editor.IsWriting))
+                    .Select(p => SelectiveNameOf(p.Value.Editor)))
                 .OrderBy(n => n, StringComparer.CurrentCultureIgnoreCase)
                 .ToList();
             return names.Count == 0 ? null : string.Join(", ", names);
         }
+
+        /// <summary>The Dinámico part of <see cref="UnwrittenWorkOf"/>: the names of the Dinámico racks of the session with work not written, or null.</summary>
+        public string UnwrittenDynamicWorkOf(SessionId session)
+        {
+            var names = UnwrittenDynamicNames(session).OrderBy(n => n, StringComparer.CurrentCultureIgnoreCase).ToList();
+            return names.Count == 0 ? null : string.Join(", ", names);
+        }
+
+        private IEnumerable<string> UnwrittenDynamicNames(SessionId session)
+            => _dynamicDrafts
+                .Where(p => p.Key.Session == session && (p.Value.Editor.IsDirty || p.Value.Editor.IsWriting))
+                .Select(p => !string.IsNullOrWhiteSpace(p.Value.Editor.Name) ? p.Value.Editor.Name.Trim()
+                    : p.Value.Editor.IsNewRack ? "un Dinámico nuevo" : p.Value.Editor.RackId);
 
         // The drafts of a drawing that was closed have nowhere to be written: they are forgotten (with their request, if one waited), and
         // work that was lost is said. A drawing with work not written in the window does not close (D-08), so this only happens when
@@ -659,10 +923,11 @@ namespace RackCad.UI.VentanaRackCad
                 if (!orphan.IsWrite) Say("Se cerró el dibujo del rack que se estaba leyendo: no se abrió nada.", failed: true);
             }
 
-            if (_dynamicDrafts.Count == 0) return;
+            if (_dynamicDrafts.Count == 0 && _selectiveDrafts.Count == 0) return;
 
             var dead = _dynamicDrafts.Where(p => !IsAlive(port, p.Key.Session)).ToList();
-            if (dead.Count == 0) return;
+            var deadSelective = _selectiveDrafts.Where(p => !IsAlive(port, p.Key.Session)).ToList();
+            if (dead.Count == 0 && deadSelective.Count == 0) return;
 
             var lost = new List<string>();
             foreach (var pair in dead)
@@ -672,6 +937,14 @@ namespace RackCad.UI.VentanaRackCad
                     lost.Add(!string.IsNullOrWhiteSpace(editor.Name) ? editor.Name.Trim() : editor.IsNewRack ? "un Dinámico nuevo" : editor.RackId);
                 if (_inFlight != null && _inFlight.Session == pair.Key.Session) AbandonInFlight();
                 Forget(pair.Key, pair.Value);
+            }
+
+            foreach (var pair in deadSelective)
+            {
+                var editor = pair.Value.Editor;
+                if (editor.IsDirty || editor.IsWriting) lost.Add(SelectiveNameOf(editor));
+                if (_inFlight != null && _inFlight.Session == pair.Key.Session) AbandonInFlight();
+                ForgetSelective(pair.Key, pair.Value);
             }
 
             if (lost.Count > 0)
@@ -734,12 +1007,27 @@ namespace RackCad.UI.VentanaRackCad
             _dynamicDrafts.Remove(key);
         }
 
-        // The state of a Dinámico rack in the list, while its draft is open in the window.
-        private (string Text, string Kind, bool Changed)? DynamicStateOf(SessionId session, string rackId)
+        // The state of a rack in the list while its draft is open in the window: a Dinámico, or a Selectivo (E1-B), with the same marks.
+        private (string Text, string Kind, bool Changed)? DraftStateOf(SessionId session, string rackId)
         {
-            if (!_dynamicDrafts.TryGetValue((session, rackId), out var entry)) return null;
-            if (entry.Editor.IsWriting) return ("Escribiendo en el dibujo", "Modificado", true);
-            return entry.Editor.IsDirty ? ("Modificado (editor de la ventana)", "Modificado", true) : ("Abierto en la ventana", "Limpio", false);
+            bool writing, dirty;
+            if (_dynamicDrafts.TryGetValue((session, rackId), out var entry))
+            {
+                writing = entry.Editor.IsWriting;
+                dirty = entry.Editor.IsDirty;
+            }
+            else if (_selectiveDrafts.TryGetValue((session, rackId), out var selective))
+            {
+                writing = selective.Editor.IsWriting;
+                dirty = selective.Editor.IsDirty;
+            }
+            else
+            {
+                return null;
+            }
+
+            if (writing) return ("Escribiendo en el dibujo", "Modificado", true);
+            return dirty ? ("Modificado (editor de la ventana)", "Modificado", true) : ("Abierto en la ventana", "Limpio", false);
         }
 
         private void RaiseWaiting()
@@ -760,6 +1048,7 @@ namespace RackCad.UI.VentanaRackCad
             });
         }
 
+        // The editors of the window changed (Dinámico or Selectivo): what the page of the rack shows follows.
         private void RaiseDynamic()
         {
             OnPropertyChanged(nameof(IsDynamicRack));
@@ -767,6 +1056,12 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(HasDynamicEditor));
             OnPropertyChanged(nameof(DynamicEditors));
             OnPropertyChanged(nameof(ShowDynamicOffer));
+            OnPropertyChanged(nameof(IsSelectiveRack));
+            OnPropertyChanged(nameof(ActiveSelectiveEditor));
+            OnPropertyChanged(nameof(HasSelectiveEditor));
+            OnPropertyChanged(nameof(SelectiveEditors));
+            OnPropertyChanged(nameof(ShowSelectiveOffer));
+            OnPropertyChanged(nameof(HasRackEditor));
             OnPropertyChanged(nameof(ShowPanel));
             OnPropertyChanged(nameof(PanelToggleText));
             RaiseNewDynamic();
@@ -940,6 +1235,8 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(NoRackText));
             OnPropertyChanged(nameof(IsDynamicRack));
             OnPropertyChanged(nameof(ShowDynamicOffer));
+            OnPropertyChanged(nameof(IsSelectiveRack));
+            OnPropertyChanged(nameof(ShowSelectiveOffer));
             RaiseNewDynamic();
         }
 

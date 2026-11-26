@@ -72,12 +72,17 @@ namespace RackCad.UI.VentanaRackCad
         // One view per Dinámico editor of the window, kept while its draft lives, so moving between racks keeps what was on screen.
         private readonly System.Collections.Generic.Dictionary<DynamicEditorViewModel, DynamicEditorView> _dynamicViews = new();
 
+        // The same for the Selectivo editors (Selectivo E1-B).
+        private readonly System.Collections.Generic.Dictionary<SelectiveEditorViewModel, SelectiveEditorView> _selectiveViews = new();
+
         private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(RackCadWindowViewModel.SideCollapsed)) ApplySideCollapsed();
             if (e.PropertyName == nameof(RackCadWindowViewModel.ActiveDynamicEditor)
                 || e.PropertyName == nameof(RackCadWindowViewModel.ShowPanel)
-                || e.PropertyName == nameof(RackCadWindowViewModel.DynamicEditors))
+                || e.PropertyName == nameof(RackCadWindowViewModel.DynamicEditors)
+                || e.PropertyName == nameof(RackCadWindowViewModel.ActiveSelectiveEditor)
+                || e.PropertyName == nameof(RackCadWindowViewModel.SelectiveEditors))
                 ShowRackContent();
             if (e.PropertyName == nameof(RackCadWindowViewModel.NewDynamicEditor)) ShowNewContent();
         }
@@ -103,17 +108,33 @@ namespace RackCad.UI.VentanaRackCad
 
         private void OnNewDynamicHereClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.StartNewDynamic());
 
-        // The page of the rack shows the Dinámico editor of the window when it is open (and the user did not ask for the panel), and the
-        // workspace panel otherwise. The views of editors the window no longer keeps (closed, or of a closed drawing) are forgotten.
+        // The page of the rack shows the editor of the window of the active rack when it is open (a Dinámico or a Selectivo, and the user
+        // did not ask for the panel), and the workspace panel otherwise. The views of editors the window no longer keeps (closed, or of a
+        // closed drawing) are forgotten.
         private void ShowRackContent()
         {
             var live = _viewModel.DynamicEditors;
             foreach (var gone in _dynamicViews.Keys.Where(editor => !live.Contains(editor)).ToList()) _dynamicViews.Remove(gone);
+            var liveSelective = _viewModel.SelectiveEditors;
+            foreach (var gone in _selectiveViews.Keys.Where(editor => !liveSelective.Contains(editor)).ToList()) _selectiveViews.Remove(gone);
 
             var active = _viewModel.ActiveDynamicEditor;
-            if (active == null || _viewModel.ShowPanel)
+            var activeSelective = active == null ? _viewModel.ActiveSelectiveEditor : null;
+            if ((active == null && activeSelective == null) || _viewModel.ShowPanel)
             {
                 if (!ReferenceEquals(RackPageHost.Content, PanelView)) RackPageHost.Content = PanelView;
+                return;
+            }
+
+            if (activeSelective != null)
+            {
+                if (!_selectiveViews.TryGetValue(activeSelective, out var selectiveView))
+                {
+                    selectiveView = new SelectiveEditorView(activeSelective);
+                    _selectiveViews[activeSelective] = selectiveView;
+                }
+
+                if (!ReferenceEquals(RackPageHost.Content, selectiveView)) RackPageHost.Content = selectiveView;
                 return;
             }
 
@@ -129,7 +150,12 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>How many editor views the page keeps (one per editor that the window keeps).</summary>
         internal int DynamicViewCount => _dynamicViews.Count;
 
+        /// <summary>How many Selectivo editor views the page keeps (one per Selectivo editor that the window keeps).</summary>
+        internal int SelectiveViewCount => _selectiveViews.Count;
+
         private void OnEditDynamicHereClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.EditDynamicHere());
+
+        private void OnEditSelectiveHereClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.EditSelectiveHere());
 
         private void OnStopWaitingClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.StopWaiting());
 

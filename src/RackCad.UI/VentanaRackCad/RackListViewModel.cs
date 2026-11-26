@@ -69,8 +69,8 @@ namespace RackCad.UI.VentanaRackCad
         /// <param name="pilotEdit">The edit port, for the state of the draft of each rack; optional.</param>
         /// <param name="browser">The browser of the panel: opening a rack goes through it.</param>
         /// <param name="windowState">
-        /// The state of a rack whose draft lives in an editor of the window (I-64 A-14, line D: Dinámico), which wins over the edit port; null
-        /// when the window has no draft of that rack.
+        /// The state of a rack whose draft lives in an editor of the window (I-64 A-14, line D: Dinámico and, since Selectivo E1-B,
+        /// Selectivo), which wins over the edit port; null when the window has no draft of that rack.
         /// </param>
         public RackListViewModel(
             IWorkspaceBrowserSummaryPort port,
