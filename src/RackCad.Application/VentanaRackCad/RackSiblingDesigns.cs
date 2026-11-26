@@ -53,8 +53,11 @@ namespace RackCad.Application.VentanaRackCad
         private const string CompletenessEvidence = "RackSiblingDesigns: every view the caller found by the identity of the rack";
 
         /// <summary>
-        /// Compares the designs of <paramref name="views"/>, every view the caller found for <paramref name="rackId"/>. The kind is the one
-        /// the envelopes declare; views of different kinds never coincide. It never throws.
+        /// Compares the designs of <paramref name="views"/>, every view the caller found for <paramref name="rackId"/>. The identity is
+        /// matched as the caller finds the views (FindRackBlocks), without case: a view whose envelope holds the identity in other case is
+        /// the same rack (I-02 of the review of the fix). The caller hands the views it reads and writes, which leave out the definitions
+        /// an xref brings, as the membership of production does (ReadOnly, outside MutableMembers; I-01 of that review). The kind is the
+        /// one the envelopes declare; views of different kinds never coincide. It never throws.
         /// </summary>
         public static RackSiblingDesignsVerdict Compare(string rackId, IReadOnlyList<RackSiblingView> views)
         {
@@ -110,9 +113,28 @@ namespace RackCad.Application.VentanaRackCad
             var siblings = views
                 .Select(view => view?.Envelope == null
                     ? new RackAuthoredSibling(view?.SourceIdentity, string.Empty, null, null)
-                    : new RackAuthoredSibling(view.SourceIdentity, view.Envelope.Kind ?? string.Empty, store.Serialize(view.Envelope), view.Envelope.Design))
+                    : Sibling(store, view.SourceIdentity, AsTheRack(store, view.Envelope, rackId)))
                 .ToList();
             return new RackAuthoredInput(rackId, siblings, true, CompletenessEvidence);
+        }
+
+        private static RackAuthoredSibling Sibling(RackEmbedStore store, string identity, RackEmbedDocument envelope)
+            => new RackAuthoredSibling(identity, envelope.Kind ?? string.Empty, store.Serialize(envelope), envelope.Design);
+
+        // I-02 of the review of the fix: the caller finds the views of the rack as FindRackBlocks does, matching the identity without case
+        // (the list of the window groups them the same way), while the AUTH-13 comparator reads the identity of each envelope with case.
+        // A view whose identity is the rack's in other case is shown to the comparator with the identity asked for, in a copy (the
+        // envelope of the drawing is not changed), so only the design and the name decide. An identity of another rack stays as it is,
+        // and the comparator does not take it as this rack.
+        private static RackEmbedDocument AsTheRack(RackEmbedStore store, RackEmbedDocument envelope, string rackId)
+        {
+            if (string.Equals(envelope.Id, rackId, StringComparison.Ordinal)
+                || !string.Equals(envelope.Id, rackId, StringComparison.OrdinalIgnoreCase))
+                return envelope;
+
+            var copy = store.Deserialize(store.Serialize(envelope));
+            copy.Id = rackId;
+            return copy;
         }
 
         private static (RackAuthoredComparisonOutcome, string) From<TAuthored>(RackAuthoredComparisonResult<TAuthored> result)

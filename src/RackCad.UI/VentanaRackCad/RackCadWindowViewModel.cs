@@ -1055,9 +1055,11 @@ namespace RackCad.UI.VentanaRackCad
                 if (_inFlight == null || !_inFlight.IsWrite || _inFlight.Id != requestId) return;
                 _inFlight = _inFlight with { Started = true };
 
-                // The editor of the Selectivo no longer says to press «Dejar de esperar» (S-28); the editor of Dinámico is not touched.
+                // The editor no longer says to press «Dejar de esperar»: the Selectivo (S-28) and the Dinámico, of the drawing or new (M-11).
                 if (_inFlight.IsSelective && _selectiveDrafts.TryGetValue((_inFlight.Session, _inFlight.RackId), out var selective))
                     selective.Editor.WriteTaken();
+                else if (!_inFlight.IsSelective && _dynamicDrafts.TryGetValue((_inFlight.Session, _inFlight.RackId), out var dynamic))
+                    dynamic.Editor.WriteTaken();
                 RaiseWaiting();
             });
         }

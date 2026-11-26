@@ -702,6 +702,50 @@ namespace RackCad.UI.Tests
             Assert.Single(rig.Door.Abandoned);
         }
 
+        // M-11 of Dinámico (as S-28 of the Selectivo): once the command took the write the window no longer offers «Dejar de esperar», so
+        // the editor no longer says to press it. The next write starts again not taken.
+        [Fact]
+        public void OnceTheCommandTookTheWriteTheEditorNoLongerSaysToStopWaiting()
+        {
+            const string Taken = "AutoCAD ya tomó la escritura del rack: espera a que termine, o termina o cancela la orden en AutoCAD; la ventana recibirá su respuesta.";
+            var rig = new Rig(new ModalPortDouble());
+            var editor = rig.OpenEditor();
+            editor.ViewChooser = _ => new[] { RackCad.Application.Systems.Shared.RackViewAddress.Whole(RackCad.Application.Systems.Shared.DimensionViewKind.Planta) };
+
+            Write(editor, v => v.Essentials, "weight", "1200");
+            editor.InsertView();
+            Assert.True(editor.IsWriting);
+            Assert.Equal("AutoCAD está escribiendo el rack: espera a que termine o pulsa «Dejar de esperar».", editor.WritingText);
+            Assert.Equal(editor.WritingText, editor.UpdateBlockedText);
+            Assert.True(rig.Window.CanStopWaiting);
+
+            rig.Door.StartLastWrite();
+            Assert.False(rig.Window.CanStopWaiting);
+            Assert.Equal(Taken, editor.WritingText);
+            Assert.Equal(Taken, editor.UpdateBlockedText);
+            Assert.Equal(Taken, editor.InsertViewBlockedText);
+            editor.SetFrontBlank(1, true); // an edit while AutoCAD writes says why it cannot
+            Assert.Equal(Taken, editor.Message);
+
+            // The answer arrives: the next write is not taken until its command takes it.
+            rig.Door.AnswerLastWrite(true, "AutoCAD redibujó 2 vistas del rack con el borrador e insertó 1 vista nueva.");
+            Assert.False(editor.IsWriting);
+            Write(editor, v => v.Essentials, "weight", "1300");
+            editor.RequestWrite();
+            Assert.True(editor.IsWriting);
+            Assert.Contains("pulsa «Dejar de esperar»", editor.WritingText, StringComparison.Ordinal);
+
+            // The same for a new Dinámico of the window.
+            rig.Window.StopWaiting();
+            rig.Window.StartNewDynamic();
+            var created = rig.Window.NewDynamicEditor!;
+            created.ViewChooser = _ => new[] { RackCad.Application.Systems.Shared.RackViewAddress.Post(0) };
+            created.InsertView();
+            rig.Door.StartLastWrite();
+            Assert.Equal(Taken, created.WritingText);
+            Assert.Equal(Taken, created.InsertViewBlockedText);
+        }
+
         // I-03 of the fifth review: «Nuevo» follows the drawing, and a new rack of one drawing is never written in another.
         [Fact]
         public void TheNewDynamicBelongsToItsDrawing()

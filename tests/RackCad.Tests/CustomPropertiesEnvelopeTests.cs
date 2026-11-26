@@ -705,7 +705,11 @@ namespace RackCad.Tests
         {
             var calls = EnvelopeSourceGuards.ComposeCallsOutsideComposer(EnvelopeSourceGuards.ProductionSources());
 
-            Assert.Equal(11, calls.Count); // las nueve de antes, la composicion del nombre logico de I-55 G16 y el PREPARE puro de I-64 F4-T4A1
+            // las nueve de antes, la composicion del nombre logico de I-55 G16, el PREPARE puro de I-64 F4-T4A1 y la fuente editada de la vista
+            // nueva de I-64 A-14 (B-1)
+            Assert.Equal(12, calls.Count);
+            Assert.Single(calls, call => call.Path == "src/RackCad.Application/Views/Preparation/RackInsertedViewSource.cs"
+                                         && call.Member == "Edited" && call.FirstArgument == "source");
             Assert.DoesNotContain(calls, call => call.FirstArgument == "null");
             Assert.Equal(6, calls.Count(call => call.Member.StartsWith("Build", StringComparison.Ordinal) || call.Member == "WrapSelectivePayload"));
             Assert.Single(calls, call => call.Path == "src/RackCad.Application/Views/Preparation/RackViewEnvelopeComposition.cs"

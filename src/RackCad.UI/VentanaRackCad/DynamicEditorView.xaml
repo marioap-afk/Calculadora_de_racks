@@ -296,9 +296,10 @@
                                            Foreground="{DynamicResource ShellTextPrimaryBrush}" />
                                 <ItemsControl x:Name="CellFieldList" ItemsSource="{Binding CellFields}" ItemTemplate="{StaticResource FieldTemplate}"
                                               ItemsPanel="{StaticResource WrapItems}" />
-                                <!-- With a mixed selection the box is indeterminate and says so; a click puts the guide in every cell (I-01). -->
+                                <!-- With a mixed selection the box is indeterminate and says so; a click puts the guide in every cell (I-01).
+                                     Without an active cell in the selection it is disabled: there is nothing to write (M-01). -->
                                 <CheckBox x:Name="SelectionGuideBox" Content="{Binding SelectionGuideLabel}" Margin="0,0,0,8" IsThreeState="False"
-                                          IsChecked="{Binding SelectionGuide, Mode=TwoWay}" IsEnabled="{Binding CanEditGuide}"
+                                          IsChecked="{Binding SelectionGuide, Mode=TwoWay}" IsEnabled="{Binding CanEditSelectionGuide}"
                                           AutomationProperties.Name="Guía de entrada en las celdas de la selección" />
                                 <TextBlock Text="Frentes de la selección" FontWeight="SemiBold" Margin="0,6,0,4"
                                            Foreground="{DynamicResource ShellTextPrimaryBrush}" />

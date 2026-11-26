@@ -190,11 +190,17 @@ namespace RackCad.Tests
         /// I-64 F4-T4A1 anade UNA, con el precedente de I-55 G16: <c>PushBackPilotUpdatePlan.ComposeMemberEnvelope</c>, del PREPARE puro del
         /// piloto Push Back. Es un rack existente que compone con su sobre real (el RELEIDO de esa vista, parametro <c>source</c>), segun D-21;
         /// no pasa <c>null</c>, no usa el sobre del borrador y solo produce texto: no escribe el dibujo.
+        /// I-64 A-14 (linea D, B-1) anade UNA, con los mismos precedentes: <c>RackInsertedViewSource.Edited</c>, la fuente de la que la cola
+        /// ID18 prepara una vista NUEVA de un rack existente cuando la misma edicion redibuja antes las vistas que ya estan. Compone con el
+        /// sobre real de la vista elegida (parametro <c>source</c>, conserva vista, corte, <c>CustomProperties</c> y datos de extension) y
+        /// le pone la identidad, el nombre y el diseno que esa edicion escribe en las existentes. Un rack nuevo no tiene fuente: devuelve
+        /// <c>null</c> sin componer. Es una copia en memoria; no escribe el dibujo.
         /// </summary>
         internal static readonly IReadOnlyList<ComposeCall> ExpectedComposeCensus = new[]
         {
             new ComposeCall("src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs", "ComposeMemberEnvelope", "source"),
             new ComposeCall("src/RackCad.Application/Views/Placement/RackProjectionEnvelopeName.cs", "WithLogicalName", "source"),
+            new ComposeCall("src/RackCad.Application/Views/Preparation/RackInsertedViewSource.cs", "Edited", "source"),
             new ComposeCall("src/RackCad.Application/Views/Preparation/RackViewEnvelopeComposition.cs", "Compose", "source"),
             new ComposeCall("src/RackCad.Plugin/ProjectVariableMutationExecutor.cs", "Execute", "view.Embed"),
             new ComposeCall("src/RackCad.Plugin/RackCabeceraCommands.cs", "BuildCabeceraPayload", "source"),

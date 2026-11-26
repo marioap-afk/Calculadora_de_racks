@@ -65,9 +65,12 @@ namespace RackCad.Plugin.Views
                 Cached(RackResolvePorts.Dynamic<DynamicRackDesign, DynamicRackSystem>(_ => system)), port,
                 (resolved, address) => DynamicViewFrameAdapter.Resolve(resolved, catalog, address),
                 (resolved, address) => DynamicName(resolved, address, rackName, baseName));
+            var serialized = Project(RackProject.ForDynamic(design), innerSource);
+            // B-1: a new view of a rack of the drawing carries the identity, the name and the design that this edit writes in the views that
+            // exist (RACKEDITAR «Insertar», «Insertar vista…» of the window), not those of the picked view as the drawing held it.
             return new RackViewBatchProductSession<DynamicRackDesign, DynamicRackSystem, HeaderRunPlan>(
                 RackSystemKind.PalletFlow, facts, preparer, RackAuthoredComparatorPorts.Dynamic(), comparison,
-                source, design, rackId, rackName, Project(RackProject.ForDynamic(design), innerSource),
+                RackInsertedViewSource.Edited(source, rackId, rackName, serialized), design, rackId, rackName, serialized,
                 product => RackViewPlacement.PlaceDynamic(document, product, regen: false));
         }
 
