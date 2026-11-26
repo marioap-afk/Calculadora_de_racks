@@ -38,6 +38,15 @@ namespace RackCad.Application.CustomProperties
     /// </summary>
     public static class CustomPropertiesBatch
     {
+        /// <summary>Why a draft is not written over a collection that changed since it was read.</summary>
+        public const string ChangedSinceReadText = "las propiedades del proyecto cambiaron en el dibujo desde que se leyeron.";
+
+        /// <summary>What a page read of a collection, to compare with what the write reads again: its outcome and its persisted shape.</summary>
+        public static string Fingerprint(CustomPropertiesReadResult read)
+            => read == null
+                ? "none"
+                : read.Outcome + ":" + (read.Document == null ? string.Empty : new CustomPropertiesStore().Serialize(read.Document));
+
         /// <summary>The collection the draft leaves over <paramref name="current"/>, or the first refusal of its mutations.</summary>
         public static CustomPropertiesMutationResult Apply(CustomPropertiesReadResult current, IReadOnlyList<CustomPropertyDraftEntry> desired)
         {

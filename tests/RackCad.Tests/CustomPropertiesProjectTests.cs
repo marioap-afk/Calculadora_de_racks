@@ -233,6 +233,11 @@ namespace RackCad.Tests
             { "regenera", "return CustomPropertiesProjectExecution.Written(", "document.Editor.Regen(); return CustomPropertiesProjectExecution.Written(" },
             { "toca Project Variables", "var store = new CustomPropertiesStore();", "var store = new CustomPropertiesStore(); ProjectVariablesRegistry.Read(null, null);" },
             { "abre una segunda transaccion", "var store = new CustomPropertiesStore();", "var store = new CustomPropertiesStore(); using (var otra = database.TransactionManager.StartTransaction()) { }" },
+            // Cuarta tanda (va), correction 3 of the review: the whole draft of the project of the page «Variables».
+            { "el borrador escribe sin comparar con lo leido", "if (!string.Equals(CustomPropertiesBatch.Fingerprint(fresh), fingerprint, StringComparison.Ordinal))", "if (false)" },
+            { "el borrador no consulta la guarda", "if (!CustomPropertiesWriteGuard.CanOverwrite(fresh, out var draftRefusal))", "if (false)" },
+            { "el borrador escribe otra cosa que lo serializado", "CustomPropertiesData.Write(transaction, database, store.Serialize(applied.Document));", "CustomPropertiesData.Write(transaction, database, fresh.Error); store.Serialize(applied.Document);" },
+            { "el borrador aplica por intent", "var applied = CustomPropertiesBatch.Apply(fresh, entries);", "var applied = CustomPropertiesMutations.Apply(fresh, null);" },
         };
 
         [Theory]

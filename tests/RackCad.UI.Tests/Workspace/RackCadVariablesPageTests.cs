@@ -394,6 +394,36 @@ namespace RackCad.UI.Tests
         }
 
         [Fact]
+        public void PropertiesOfTheProjectThatCouldNotBeWrittenStayInTheDraftAfterTheVariablesAreWritten()
+        {
+            // Correction 2 of the review (VA-S7): the variables are written and the second transaction, of the properties, fails.
+            var rig = new Rig();
+            var page = rig.ShowAndRead();
+            Define(page, "12");
+            page.AddProperty();
+            page.Properties[0].Name = "Revisión";
+            page.Properties[0].Value = "B";
+            page.CommitProperties();
+            page.RequestWrite();
+            var write = rig.Door.VariablesWrites.Single();
+
+            rig.Door.AnswerVariablesWrite(VariablesDoorRules.AnswerForWrite(write.RequestId, true, new[] { RackId }, 1, false,
+                "las propiedades del proyecto cambiaron en el dibujo desde que se leyeron."));
+            Assert.True(page.MessageIsError);
+            Assert.Contains("las propiedades del proyecto cambiaron en el dibujo desde que se leyeron.", page.Message);
+
+            // The page reads the drawing again: the variables are the written ones, the properties stay in the draft.
+            var reread = rig.Door.VariablesReads.Last();
+            rig.Door.AnswerVariablesRead(ReadOf(reread.RequestId, value: 12.0));
+            Assert.True(page.IsLoaded);
+            Assert.Equal("12 in", page.Rows[0].ValueText);
+            var row = Assert.Single(page.Properties);
+            Assert.Equal(("Revisión", "B"), (row.Name, row.Value));
+            Assert.True(page.IsDirty);
+            Assert.Equal(new[] { "Propiedades del proyecto: 1 nueva. No redibuja ningún rack." }, page.Changes);
+        }
+
+        [Fact]
         public void StoppingTheWaitOfTheWriteKeepsTheDraftAndTellsTheDoor()
         {
             var rig = new Rig();

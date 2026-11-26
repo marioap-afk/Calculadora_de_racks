@@ -76,6 +76,9 @@ namespace RackCad.Tests
         [Theory]
         [InlineData("src/RackCad.Plugin/RackOtroCommands.cs", "class X { object M() => RackCustomPropertiesAuthority.Evaluate(null, null, null); }")]
         [InlineData("src/RackCad.Plugin/RackOtroCommands.cs", "class X { object M() => CustomPropertiesCommit.ForRack(null, null, null, null, null); }")]
+        // Cuarta tanda (va), correction 3 of the review: the project collection is written only by the edge, as the rack ones.
+        [InlineData("src/RackCad.Plugin/RackOtroCommands.cs", "class X { void M() => CustomPropertiesData.Write(null, null, null); }")]
+        [InlineData("src/RackCad.Plugin/RackOtroCommands.cs", "class X { bool M() => CustomPropertiesWriteGuard.CanOverwrite(null, out _); }")]
         public void TGrd04_LaGuardaDetectaOtroArchivoDelPluginQueDecide(string path, string violation)
         {
             var sources = CustomPropertiesEdgeSources.ProductionSources()
@@ -233,7 +236,9 @@ namespace RackCad.Tests
 
         // La cuarta tanda de la ventana RackCad (va, VA-07) anade ExecuteRackDraft: el borrador entero de la pestana «Propiedades» de un
         // editor, con la misma forma que ExecuteRack y su llamada unica a CustomPropertiesCommit.ForRackDraft.
-        private static readonly string[] Executors = { "ExecuteProject", "ExecuteRack", "ExecuteRackUnify", "ExecuteRackDraft" };
+        // Correction 3 of the review of the cuarta tanda (va): ExecuteProjectDraft, the whole draft of the project of the page «Variables»,
+        // is an executor of the edge with the contract of ExecuteProject.
+        private static readonly string[] Executors = { "ExecuteProject", "ExecuteProjectDraft", "ExecuteRack", "ExecuteRackUnify", "ExecuteRackDraft" };
 
         private static readonly string[] Reads = { "ReadProject", "ReadRack" };
 
@@ -395,7 +400,8 @@ namespace RackCad.Tests
                     violations.Add(name + " delega en otra transaccion o confirmacion");
                 }
 
-                var write = name == "ExecuteProject"
+                var isProject = name.StartsWith("ExecuteProject", StringComparison.Ordinal);
+                var write = isProject
                     ? FirstIndex(executor.Body, @"\bCustomPropertiesData\s*\.\s*Write\s*\(")
                     : FirstIndex(executor.Body, @"\bWritePlan\s*\(");
                 var commit = FirstIndex(executor.Body, @"\bCommit\s*\(");
@@ -405,7 +411,7 @@ namespace RackCad.Tests
                     violations.Add(name + " no confirma despues de escribir");
                 }
 
-                if (name == "ExecuteProject")
+                if (isProject)
                 {
                     if (Regex.IsMatch(all, @"\b(?:ScanEnvelopes|RackBlockData|CustomPropertiesCommit|WritePlan)\b"))
                     {
@@ -511,7 +517,8 @@ namespace RackCad.Tests
         internal static IReadOnlyList<string> PluginCallersOutsideTheEdge(IEnumerable<Source> sources)
             => sources
                 .Where(source => source.Path.StartsWith("src/RackCad.Plugin/", StringComparison.Ordinal) && source.Path != ExecutorPath)
-                .SelectMany(source => Regex.Matches(source.Code, @"\b(?:RackCustomPropertiesAuthority|CustomPropertiesCommit)\b")
+                // Correction 3 of the review of the cuarta tanda (va): writing the project collection, or asking its write guard, is the edge too.
+                .SelectMany(source => Regex.Matches(source.Code, @"\b(?:RackCustomPropertiesAuthority|CustomPropertiesCommit|CustomPropertiesWriteGuard)\b|\bCustomPropertiesData\s*\.\s*Write\b")
                     .Select(match => source.Path + " nombra " + match.Value))
                 .ToList();
 
@@ -676,12 +683,22 @@ namespace RackCad.Tests
         /// </summary>
         internal static IReadOnlyList<string> ProjectExecutorViolations(string code)
         {
+            // Cuarta tanda (va), correction 3 of the review: ExecuteProjectDraft writes the whole draft of the page «Variables» with the same
+            // contract, and compares the entry with the one the page read before applying the draft.
             var violations = new List<string>();
-            var executor = PluginSourceCode.Members(code).Where(member => member.Name == "ExecuteProject").ToList();
+            violations.AddRange(ProjectExecutorViolations(code, "ExecuteProject", @"\bCustomPropertiesMutations\s*\.\s*Apply\s*\(", false));
+            violations.AddRange(ProjectExecutorViolations(code, "ExecuteProjectDraft", @"\bCustomPropertiesBatch\s*\.\s*Apply\s*\(", true));
+            return violations;
+        }
+
+        private static IReadOnlyList<string> ProjectExecutorViolations(string code, string name, string applyPattern, bool comparesWithTheRead)
+        {
+            var violations = new List<string>();
+            var executor = PluginSourceCode.Members(code).Where(member => member.Name == name).ToList();
 
             if (executor.Count != 1)
             {
-                violations.Add("no hay exactamente un ExecuteProject");
+                violations.Add("no hay exactamente un " + name);
                 return violations;
             }
 
@@ -689,16 +706,24 @@ namespace RackCad.Tests
 
             // Lo serializado puede ser el argumento de la escritura, que se evalua antes de escribir: la escritura cuenta
             // donde termina su sentencia.
-            var steps = new[]
+            var steps = new List<(string, string, bool)>
             {
                 ("acreditar la relectura en el store", @"\.\s*Read\s*\(\s*CustomPropertiesData\s*\.\s*Read\s*\(", false),
                 ("exigir una lectura escribible", @"\.\s*CanWrite\b", false),
-                ("aplicar el intent", @"\bCustomPropertiesMutations\s*\.\s*Apply\s*\(", false),
+            };
+            if (comparesWithTheRead) steps.Add(("comparar con lo leido", @"\bCustomPropertiesBatch\s*\.\s*Fingerprint\s*\(", false));
+            steps.AddRange(new[]
+            {
+                ("aplicar el intent", applyPattern, false),
                 ("consultar la guarda", @"\bCustomPropertiesWriteGuard\s*\.\s*CanOverwrite\s*\(", false),
                 ("serializar", @"\.\s*Serialize\s*\(", false),
                 ("escribir", @"\bCustomPropertiesData\s*\.\s*Write\s*\([^;]*;", true),
                 ("confirmar", @"\bCommit\s*\(", false),
-            };
+            });
+            if (Regex.IsMatch(body, comparesWithTheRead ? @"\bCustomPropertiesMutations\b" : @"\bCustomPropertiesBatch\b"))
+            {
+                violations.Add(name + " aplica con el ejecutor del otro");
+            }
 
             var previous = -1;
 
@@ -708,7 +733,7 @@ namespace RackCad.Tests
 
                 if (matches.Count != 1)
                 {
-                    violations.Add("ExecuteProject no tiene exactamente un paso: " + step);
+                    violations.Add(name + " no tiene exactamente un paso: " + step);
                     continue;
                 }
 
@@ -716,7 +741,7 @@ namespace RackCad.Tests
 
                 if (index < previous)
                 {
-                    violations.Add("ExecuteProject hace fuera de orden: " + step);
+                    violations.Add(name + " hace fuera de orden: " + step);
                 }
 
                 previous = Math.Max(previous, index);
@@ -724,24 +749,24 @@ namespace RackCad.Tests
 
             if (!Regex.IsMatch(body, @"\bnew\s+CustomPropertiesStore\s*\("))
             {
-                violations.Add("ExecuteProject no acredita con el store de Application");
+                violations.Add(name + " no acredita con el store de Application");
             }
 
             var writes = PluginSourceCode.Calls(body, "Write");
 
             if (writes.Count != 1 || writes[0].Arguments.Count != 3 || !Regex.IsMatch(writes[0].Arguments[2], @"\bSerialize\s*\("))
             {
-                violations.Add("ExecuteProject no escribe exactamente lo que serializa");
+                violations.Add(name + " no escribe exactamente lo que serializa");
             }
 
             if (Count(body, @"\bLockDocument\s*\(") != 1 || Count(body, @"\bStartTransaction\s*\(") != 1)
             {
-                violations.Add("ExecuteProject no trabaja en una sola transaccion");
+                violations.Add(name + " no trabaja en una sola transaccion");
             }
 
             if (Regex.IsMatch(body, @"\b(?:Regen|ApplyRegen|ScanEnvelopes|RackBlockData|InDocumentTransaction)\b|ProjectVariable"))
             {
-                violations.Add("ExecuteProject hace algo mas que escribir la coleccion de Proyecto");
+                violations.Add(name + " hace algo mas que escribir la coleccion de Proyecto");
             }
 
             return violations;

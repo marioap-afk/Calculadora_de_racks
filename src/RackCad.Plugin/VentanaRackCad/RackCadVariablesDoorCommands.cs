@@ -107,9 +107,22 @@ namespace RackCad.Plugin.VentanaRackCad
                     views = execution.ViewsRedrawn;
                 }
 
+                // The second transaction (VA-S7), with its own try: the register and the racks may be confirmed already, and a failure
+                // here is said apart from them, never as «No se pudo escribir» (correction 2 of the review).
                 string propertiesError = null;
                 if (plan.ProjectProperties != null)
-                    propertiesError = CustomPropertiesBatchWriter.WriteProject(document, write.PropertiesFingerprint, write.ProjectProperties);
+                {
+                    try
+                    {
+                        var projectWrite = CustomPropertiesExecutor.ExecuteProjectDraft(document, write.PropertiesFingerprint, write.ProjectProperties);
+                        if (!projectWrite.IsWritten) propertiesError = string.IsNullOrWhiteSpace(projectWrite.Error) ? "no se pudieron escribir." : projectWrite.Error;
+                    }
+                    catch (System.Exception ex)
+                    {
+                        RackLog.Exception("RackCadVariablesDoorCommands.WriteVariables (propiedades del proyecto)", ex);
+                        propertiesError = ex.Message;
+                    }
+                }
 
                 var answer = VariablesDoorRules.AnswerForWrite(pending.RequestId, variablesWritten,
                     variablesWritten ? plan.RedrawnRackIds : new List<string>(), views, plan.ProjectProperties != null && propertiesError == null,

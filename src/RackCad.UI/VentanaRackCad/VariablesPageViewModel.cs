@@ -245,6 +245,10 @@ namespace RackCad.UI.VentanaRackCad
         private ProjectVariablesBatchResult _analysis;
         private IReadOnlyList<CustomPropertyDraftProblem> _propertyProblems = Array.Empty<CustomPropertyDraftProblem>();
         private IReadOnlyList<CustomPropertyDraftEntry> _baseProperties = Array.Empty<CustomPropertyDraftEntry>();
+
+        // The draft of the properties of the project that a write could not write while it wrote the variables (VA-S7): the next read
+        // keeps it, over the collection it reads (correction 2 of the review).
+        private IReadOnlyList<CustomPropertyDraftEntry> _keptProperties;
         private VariableRowItem _selected;
         private string _inspectorName = string.Empty;
         private string _inspectorDefinition = string.Empty;
@@ -322,7 +326,8 @@ namespace RackCad.UI.VentanaRackCad
         public string BlockedText => !IsBlocked ? string.Empty
             : "El registro de variables de este dibujo no se puede administrar con esta versión de RackCad. Detalle: "
               + (string.IsNullOrWhiteSpace(_workspace.Error) ? "sin detalle." : _workspace.Error.Trim())
-              + " No se ofrece crear ni editar variables, porque escribir encima borraría lo que guarda. Reparar una referencia rota sigue disponible.";
+              + " No se ofrece crear ni editar variables, porque escribir encima borraría lo que guarda."
+              + (Broken.Count > 0 ? " Reparar una referencia rota sigue disponible." : string.Empty);
 
         public int SelectedTab
         {
@@ -652,7 +657,9 @@ namespace RackCad.UI.VentanaRackCad
                 ? Array.Empty<CustomPropertyDraftEntry>()
                 : CustomPropertiesBatch.DraftOf(read.ProjectProperties.Document);
             Properties.Clear();
-            foreach (var entry in _baseProperties) Properties.Add(new CustomPropertyRowItem(entry.Id, entry.Id, entry.Name, entry.Value));
+            foreach (var entry in _keptProperties ?? _baseProperties)
+                Properties.Add(new CustomPropertyRowItem(entry.Id ?? "nueva-" + (++_nextKey).ToString(CultureInfo.InvariantCulture), entry.Id, entry.Name, entry.Value));
+            _keptProperties = null;
 
             _askingRepair = null;
             _askingUnlinkKey = null;
@@ -696,7 +703,9 @@ namespace RackCad.UI.VentanaRackCad
             if (written != null && written.Written)
             {
                 var names = (written.RedrawnRackIds ?? Array.Empty<string>()).Select(NameOfRack).ToList();
-                var count = _changes.Count;
+                var propertiesFailed = !string.IsNullOrWhiteSpace(written.PropertiesError);
+                var count = _changes.Count - (propertiesFailed && PropertiesChanged ? 1 : 0);
+                if (propertiesFailed && PropertiesChanged) _keptProperties = Properties.Select(p => p.ToDraft()).ToList();
                 _read = null;
                 _workspace = null;
                 _analysis = null;
@@ -706,9 +715,12 @@ namespace RackCad.UI.VentanaRackCad
                 _changes = Array.Empty<string>();
                 _conflicts = Array.Empty<VariablesConflictItem>();
                 Select(null);
-                Say("Variables escritas en el dibujo: " + Count(count, "cambio", "cambios")
-                    + (names.Count == 0 ? "; no se redibujó ningún rack" : (names.Count == 1 ? "; se redibujó " : "; se redibujaron ") + ProjectVariablesBatch.List(names))
-                    + ". Un «U» en AutoCAD lo deshace todo.", false);
+                var said = "Variables escritas en el dibujo: " + Count(count, "cambio", "cambios")
+                           + (names.Count == 0 ? "; no se redibujó ningún rack" : (names.Count == 1 ? "; se redibujó " : "; se redibujaron ") + ProjectVariablesBatch.List(names))
+                           + ". Un «U» en AutoCAD lo deshace todo.";
+                Say(propertiesFailed
+                    ? said + " Pero las propiedades del proyecto no se escribieron: " + written.PropertiesError.Trim() + " Siguen en el borrador."
+                    : said, propertiesFailed);
             }
             else
             {

@@ -156,13 +156,16 @@ namespace RackCad.Application.ProjectVariables
             var baseAccreditation = UsableProjectVariablesRegistry.Accredit(registry);
             if (!baseAccreditation.IsUsable)
             {
-                // A register this build cannot administer: only repairs, which do not touch it, may still be planned.
-                if (rows.Any(row => row.IsNew || row.Removal != ProjectVariableDraftRemoval.None || row.DefinitionText != null))
+                // A register this build cannot administer (PresentButUnreadable, IncompatibleMajor, an ambiguous identity): nothing is
+                // planned, repairs included. A repair resolves the rack against the register, and an unreadable one is not an empty one
+                // (I-47, ADR-0034 §8; correction 7 of the review of the cuarta tanda).
+                if (rows.Any(row => row.IsNew || row.Removal != ProjectVariableDraftRemoval.None || row.DefinitionText != null) || repairs.Count > 0)
                 {
                     errors.Add(new ProjectVariableDraftError(null, ProjectVariableDraftField.None,
                         "El registro de variables de este dibujo no se puede administrar: " + (baseAccreditation.Error ?? "no se pudo leer.")));
-                    return Done();
                 }
+
+                return Done();
             }
 
             var baseDocument = registry?.Document ?? ProjectVariablesDocument.CreateNew();
@@ -267,7 +270,13 @@ namespace RackCad.Application.ProjectVariables
             }
 
             var redefined = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            var namesForBinding = Accredited(document);
+
+            // A removed variable gives up its name: another one may take it, or a new one, in the same draft (correction 4 of the
+            // review). A formula that uses a removed variable is refused below by its key, before it is bound.
+            var bindingDocument = document;
+            foreach (var row in all.Where(r => !r.IsNew && r.Removal != ProjectVariableDraftRemoval.None))
+                bindingDocument = RegistryMutation.Remove(idOf[row.Key]).ApplyTo(bindingDocument);
+            var namesForBinding = Accredited(bindingDocument);
             foreach (var row in live)
             {
                 if (!row.IsNew && row.DefinitionText == null) continue;
@@ -320,6 +329,22 @@ namespace RackCad.Application.ProjectVariables
                     errors.Add(new ProjectVariableDraftError(row.Key, ProjectVariableDraftField.Removal,
                         "La usa la fórmula de " + List(users.Select(k => "«" + Display(finalName, k) + "»")) + ": cámbiala antes de eliminar esta variable."));
                 }
+                else if (row.Removal == ProjectVariableDraftRemoval.Delete)
+                {
+                    // On the sweep of NOW (the command plans again on a fresh read): a rack linked after the page read it, or a «U» that
+                    // undid an unlink, would be left with a broken reference (correction 1 of the review).
+                    var discovery = ProjectVariableConsumerDiscovery.DiscoverConsumers(entries, idOf[row.Key]);
+                    if (!discovery.IsSuccess)
+                    {
+                        errors.Add(new ProjectVariableDraftError(row.Key, ProjectVariableDraftField.Removal, discovery.Error));
+                    }
+                    else if (discovery.Consumers.Count > 0)
+                    {
+                        var names = discovery.Consumers.Select(c => RackLabel(c.Authored?.Name)).Distinct().ToList();
+                        errors.Add(new ProjectVariableDraftError(row.Key, ProjectVariableDraftField.Removal,
+                            (names.Count == 1 ? "La usa " : "La usan ") + List(names) + ", así que no se puede eliminar sin más: usa «Desvincular todos y eliminar…», que conserva su valor."));
+                    }
+                }
 
                 document = RegistryMutation.Remove(idOf[row.Key]).ApplyTo(document);
             }
@@ -342,6 +367,11 @@ namespace RackCad.Application.ProjectVariables
 
                 var hadValue = !row.IsNew && baseValues.TryGetValue(row.Key, out var before) && before.HasValue;
                 if (!row.IsNew && !redefined.Contains(row.Key) && !hadValue) continue; // it had no value and the draft does not touch it
+
+                // VA-S5: not redefined and with the same result as now (also a value that is not greater than zero): it is how the drawing
+                // is, not something the draft did (correction 6 of the review).
+                if (!row.IsNew && !redefined.Contains(row.Key) && baseEvaluation != null
+                    && RegistryResultComparer.Equals(baseEvaluation.Result(SymbolId.ProjectVariable(id.Value)), result)) continue;
                 if (result.Succeeded && result.Value > 0.0 && !double.IsInfinity(result.Value)) continue;
 
                 var why = result.Succeeded
@@ -396,8 +426,10 @@ namespace RackCad.Application.ProjectVariables
                         continue;
                     }
 
-                    // The value of NOW, against the register as it is, as the single unlink-all-and-delete.
-                    var current = Resolver.ResolveAgainst(consumer.Authored, baseUsable);
+                    // The value of NOW, against the register as it is, as the single unlink-all-and-delete. A rack this draft also repairs is
+                    // read as repaired: its broken references would leave it without a value to keep (correction 5 of the review).
+                    var source = authored.TryGetValue(consumer.RackId, out var repaired) ? repaired : consumer.Authored;
+                    var current = Resolver.ResolveAgainst(source, baseUsable);
                     if (!current.IsSuccess)
                     {
                         errors.Add(new ProjectVariableDraftError(consumer.RackId, ProjectVariableDraftField.Rack,

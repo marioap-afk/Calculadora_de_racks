@@ -43,7 +43,8 @@ namespace RackCad.Application.VentanaRackCad
         IReadOnlyList<CustomPropertyDraftEntry> ProjectProperties);
 
     /// <summary>The answer of RACKVARIABLESAPLICAR: whether it wrote, what to tell, and the racks it redrew.</summary>
-    public sealed record VariablesDoorWritten(long RequestId, bool Written, string Message, IReadOnlyList<string> RedrawnRackIds = null, int ViewsRedrawn = 0);
+    public sealed record VariablesDoorWritten(long RequestId, bool Written, string Message, IReadOnlyList<string> RedrawnRackIds = null, int ViewsRedrawn = 0,
+        string PropertiesError = null);
 
     /// <summary>
     /// The door of the page «Variables» to the drawing (cuarta tanda, va). The same rules as the door of a rack: a number per request,
@@ -84,10 +85,7 @@ namespace RackCad.Application.VentanaRackCad
             => registry == null ? "none" : registry.Outcome + ":" + (ProjectVariableCloning.Canonical(registry.Document) ?? string.Empty);
 
         /// <summary>The same, for the custom properties of the project.</summary>
-        public static string PropertiesFingerprint(CustomPropertiesReadResult properties)
-            => properties == null
-                ? "none"
-                : properties.Outcome + ":" + (properties.Document == null ? string.Empty : new CustomPropertiesStore().Serialize(properties.Document));
+        public static string PropertiesFingerprint(CustomPropertiesReadResult properties) => CustomPropertiesBatch.Fingerprint(properties);
 
         /// <summary>
         /// Plans «Actualizar» of the page on the read of NOW: the register and the project collection must be the ones the page read, the
@@ -129,7 +127,7 @@ namespace RackCad.Application.VentanaRackCad
             {
                 return new VariablesDoorWritten(requestId, variablesWritten, variablesWritten
                     ? "AutoCAD escribió las variables, pero no las propiedades del proyecto: " + propertiesError + " Las propiedades siguen sin escribir."
-                    : "No se escribió nada: " + propertiesError, variablesWritten ? racks : Array.Empty<string>(), viewsRedrawn);
+                    : "No se escribió nada: " + propertiesError, variablesWritten ? racks : Array.Empty<string>(), viewsRedrawn, propertiesError);
             }
 
             return new VariablesDoorWritten(requestId, variablesWritten || propertiesWritten,
