@@ -1283,24 +1283,6 @@ namespace RackCad.UI.VentanaRackCad
             RebuildSegments(announceDrop: false);
         }
 
-        // ------------------------------------------------------------------ E2-B «Restaurar layout…» (decision 8)
-
-        /// <summary>The boxes of «Restaurar layout…», all checked by default; an unchecked box keeps that personalisation.</summary>
-        public SelectiveLayoutRestoreOptions RestoreOptions { get; set; } = SelectiveLayoutRestoreOptions.All;
-
-        /// <summary>«Restaurar»: the checked personalisations of the fondos of the scope go back to automatic, and the notice says what it restored.</summary>
-        public string RestoreLayout()
-        {
-            SelectiveLayoutRestoreResult result = null;
-            var error = Apply(() =>
-            {
-                result = SelectiveLayoutRestore.Apply(_editor, RestoreOptions ?? SelectiveLayoutRestoreOptions.All);
-                return Done;
-            });
-            if (error == null && result != null) Say(result.Notice, error: false);
-            return error;
-        }
-
         // ------------------------------------------------------------------ the selection of the matrix (the scope of the cells)
 
         /// <summary>A click on a cell: one cell; with Ctrl, add or remove it; with Mayús, the rectangle from the anchor (the last plain click).</summary>
@@ -1615,6 +1597,7 @@ namespace RackCad.UI.VentanaRackCad
         private void SetConfirmingClose(bool value)
         {
             if (_confirmingClose == value) return;
+            if (value) CloseRestore(); // E2 Restaurar: the question of closing closes the panel of «Restaurar layout…» (the approved draft)
             _confirmingClose = value;
             OnPropertyChanged(nameof(IsConfirmingClose));
         }
@@ -1784,6 +1767,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(DimensionsLateral));
             OnPropertyChanged(nameof(DimensionsPlanta));
             RebuildSelection();
+            RefreshRestore(); // E2 Restaurar: the open panel of «Restaurar layout…» follows the draft
             RaiseState();
         }
 
