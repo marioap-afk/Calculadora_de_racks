@@ -330,5 +330,91 @@ namespace RackCad.Plugin.VentanaRackCad
                 door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false, "No se pudo escribir: " + ex.Message));
             }
         }
+
+        /// <summary>
+        /// «Insertar vista…» of a Selectivo of the window (Selectivo E2, part A): the rack and the register are read AGAIN and the write is
+        /// planned as for RACKSELECTIVOAPLICAR (<see cref="RackDoorRules.PlanSelectiveApply"/>); then the «Insertar» drawing half of
+        /// RACKEDITAR (<see cref="RackSelectivoCommands.InsertSelectiveViews"/>, the branch <c>!UpdateOnly</c> of EditSelective) writes the
+        /// draft in the views that exist and places the chosen ones the rack can draw (<see cref="SelectiveDoorInsertion.DrawableViews"/>).
+        /// Declared: the counts come from the views of the identity before and after (inserted = placed; erased = what is missing after).
+        /// </summary>
+        [CommandMethod("RACKSELECTIVOINSERTAR")]
+        public void InsertSelectiveViews()
+        {
+            var door = RackCadRackDoorPort.Current;
+            var document = AcApplication.DocumentManager.MdiActiveDocument;
+            if (document == null) return;
+
+            var pending = RackCadRackDoorPort.TakePendingSelectiveInsert();
+            if (pending == null)
+            {
+                document.Editor.WriteMessage("\nRACKSELECTIVOINSERTAR la usa la ventana RackCad: no hay ninguna vista pendiente de insertar.");
+                return;
+            }
+
+            door?.Started(pending.RequestId);
+
+            try
+            {
+                if (pending.Document != RackCadRackDoorPort.KeyOf(document))
+                {
+                    door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false, OtherDrawingText));
+                    return;
+                }
+
+                var blocks = RackCommandSupport.FindRackBlocks(document, pending.RackId);
+                if (blocks.Count == 0)
+                {
+                    door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false, "El rack ya no está en el dibujo: no se escribió nada."));
+                    return;
+                }
+
+                var (blockId, embed) = blocks[0];
+                var write = pending.Write;
+                var refusal = SelectiveDoorInsertion.RefusalOf(write);
+                if (refusal != null)
+                {
+                    door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false, refusal));
+                    return;
+                }
+
+                var registry = RackSelectivoCommands.ReadProjectVariables(document, out _);
+                var plan = RackDoorRules.PlanSelectiveApply(embed?.Kind, embed?.Design, registry, write);
+                if (!plan.CanWrite)
+                {
+                    door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false, plan.Reason));
+                    return;
+                }
+
+                var views = SelectiveDoorInsertion.DrawableViews(write.InsertViews, write.System, RackCad.Plugin.Drawing.LateralHeaderDrawService.LoadCatalog());
+                if (views.Count == 0)
+                {
+                    door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false,
+                        "Ninguna de las vistas elegidas se puede dibujar con el borrador: no se escribió nada."));
+                    return;
+                }
+
+                RackUnitsGuard.WarnIfNotInches(document);
+                var placed = RackSelectivoCommands.InsertSelectiveViews(
+                    document, blockId, embed, plan.Saved, registry,
+                    new RackCad.UI.Systems.Selective.SelectiveDraftOutcome(write.RackId, write.Name, write.Design, write.System,
+                        write.LinkedPropertyFinalStates),
+                    views);
+                if (placed < 0)
+                {
+                    door?.AnswerWrite(SelectiveDoorInsertion.AnswerForInsert(pending.RequestId, pending.RackId, 0, 0, 0));
+                    return;
+                }
+
+                var after = RackCommandSupport.FindRackBlocks(document, pending.RackId).Count;
+                var erased = System.Math.Max(0, blocks.Count + placed - after);
+                door?.AnswerWrite(SelectiveDoorInsertion.AnswerForInsert(pending.RequestId, pending.RackId, blocks.Count - erased, erased, placed));
+            }
+            catch (System.Exception ex)
+            {
+                RackCommandSupport.Report(ex);
+                door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false, "No se pudo insertar: " + ex.Message));
+            }
+        }
     }
 }

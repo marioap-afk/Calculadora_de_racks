@@ -83,7 +83,16 @@ namespace RackCad.Application.VentanaRackCad
         string Name,
         SelectivePalletDesign Design,
         SelectiveRackSystem System,
-        IReadOnlyDictionary<PropertyId, LinkedPropertyEditState> LinkedPropertyFinalStates);
+        IReadOnlyDictionary<PropertyId, LinkedPropertyEditState> LinkedPropertyFinalStates,
+        IReadOnlyList<RackViewAddress> InsertViews = null,
+        bool NewRack = false)
+    {
+        /// <summary>
+        /// Selectivo E2, part A: the write also inserts views (RACKSELECTIVOINSERTAR, «Insertar vista…»: first the draft in the views that
+        /// exist, then the new ones as linked copies), or, with <see cref="NewRack"/>, inserts a new Selectivo with them (RACKSELECTIVONUEVO).
+        /// </summary>
+        public bool Inserts => InsertViews != null && InsertViews.Count > 0;
+    }
 
     /// <summary>
     /// What AutoCAD read of ONE Selectivo for the RackCad window, for the request of that number: what RACKEDITAR decides before its

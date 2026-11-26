@@ -78,7 +78,8 @@ namespace RackCad.Tests
         /// sin marca de Deshacer y escribe su borrador con la mitad de dibujo de «Actualizar», sin alias, en
         /// <c>src/RackCad.Plugin/VentanaRackCad/RackCadRackDoorCommands.cs</c>. La base se fija de nuevo con estos dos nombres.
         /// </summary>
-        internal static readonly string[] A14SelectiveDoorCommands = { "RACKSELECTIVOABRIR", "RACKSELECTIVOAPLICAR" };
+        /// La entrega 2 de Selectivo (parte A) anade «Insertar vista…» de un Selectivo (RACKSELECTIVOINSERTAR), en el mismo archivo y sin alias.
+        internal static readonly string[] A14SelectiveDoorCommands = { "RACKSELECTIVOABRIR", "RACKSELECTIVOAPLICAR", "RACKSELECTIVOINSERTAR" };
 
         /// <summary>El censo vigente: apertura, G7, G15, I-65, el panel de F1 y el descarte de F4-T3C2, cada nombre una vez.</summary>
         internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).Concat(I65Commands).Concat(F1PanelCommands).Concat(F4PanelDiscardCommands).Concat(A14WindowCommands).Concat(A14DynamicDoorCommands).Concat(A14SelectiveDoorCommands).ToArray();

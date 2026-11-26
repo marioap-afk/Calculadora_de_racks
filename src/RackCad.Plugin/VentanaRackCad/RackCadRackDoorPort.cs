@@ -27,6 +27,7 @@ namespace RackCad.Plugin.VentanaRackCad
         internal const string NewCommand = "RACKDINAMICONUEVO";
         internal const string SelectiveReadCommand = "RACKSELECTIVOABRIR";
         internal const string SelectiveWriteCommand = "RACKSELECTIVOAPLICAR";
+        internal const string SelectiveInsertCommand = "RACKSELECTIVOINSERTAR";
 
         /// <summary>A read that waits for its command: the number, the rack and the drawing it is for.</summary>
         internal sealed record PendingRead(long RequestId, string RackId, long Document);
@@ -52,6 +53,7 @@ namespace RackCad.Plugin.VentanaRackCad
         private static PendingWrite _pendingNew;
         private static PendingRead _pendingSelectiveRead;
         private static PendingSelectiveWrite _pendingSelectiveWrite;
+        private static PendingSelectiveWrite _pendingSelectiveInsert;
 
         public RackCadRackDoorPort()
         {
@@ -81,17 +83,22 @@ namespace RackCad.Plugin.VentanaRackCad
             if (write == null || string.IsNullOrWhiteSpace(write.RackId) || write.Design == null || write.System == null)
                 return RackCadClassicResult.Without(RackCadClassicStatus.Failed, "No hay un borrador válido que escribir.");
 
+            // Selectivo E2, part A: the new Selectivo of the window is not wired yet (RACKSELECTIVONUEVO); «Insertar vista…» has its own command.
+            if (write.NewRack) return RackCadClassicResult.Without(RackCadClassicStatus.Failed, "El Selectivo nuevo de la ventana todavía no se puede insertar.");
+            var insert = write.Inserts;
+
             return Send(
-                SelectiveWriteCommand + " ",
-                document => _pendingSelectiveWrite = new PendingSelectiveWrite(
+                (insert ? SelectiveInsertCommand : SelectiveWriteCommand) + " ",
+                document => SetSelectivePending(insert, new PendingSelectiveWrite(
                     write with
                     {
                         RackId = write.RackId.Trim(),
                         LinkedPropertyFinalStates = new Dictionary<PropertyId, LinkedPropertyEditState>(
                             write.LinkedPropertyFinalStates ?? new Dictionary<PropertyId, LinkedPropertyEditState>()),
+                        InsertViews = insert ? new List<RackViewAddress>(write.InsertViews) : null,
                     },
-                    KeyOf(document)),
-                () => _pendingSelectiveWrite = null);
+                    KeyOf(document))),
+                () => SetSelectivePending(insert, null));
         }
 
         public RackCadClassicResult RequestDesign(RackDoorRequest request)
@@ -142,6 +149,7 @@ namespace RackCad.Plugin.VentanaRackCad
             if (_pendingNew != null && _pendingNew.RequestId == requestId) _pendingNew = null;
             if (_pendingSelectiveRead != null && _pendingSelectiveRead.RequestId == requestId) _pendingSelectiveRead = null;
             if (_pendingSelectiveWrite != null && _pendingSelectiveWrite.RequestId == requestId) _pendingSelectiveWrite = null;
+            if (_pendingSelectiveInsert != null && _pendingSelectiveInsert.RequestId == requestId) _pendingSelectiveInsert = null;
         }
 
         /// <summary>The read of a Selectivo that waits, taken once by its command; null when there is none.</summary>
@@ -158,6 +166,20 @@ namespace RackCad.Plugin.VentanaRackCad
             var pending = _pendingSelectiveWrite;
             _pendingSelectiveWrite = null;
             return pending;
+        }
+
+        /// <summary>The «Insertar vista…» of a Selectivo that waits (RACKSELECTIVOINSERTAR), taken once by its command; null when there is none.</summary>
+        internal static PendingSelectiveWrite TakePendingSelectiveInsert()
+        {
+            var pending = _pendingSelectiveInsert;
+            _pendingSelectiveInsert = null;
+            return pending;
+        }
+
+        private static void SetSelectivePending(bool insert, PendingSelectiveWrite pending)
+        {
+            if (insert) _pendingSelectiveInsert = pending;
+            else _pendingSelectiveWrite = pending;
         }
 
         /// <summary>The read that waits, taken once by its command; null when there is none.</summary>
