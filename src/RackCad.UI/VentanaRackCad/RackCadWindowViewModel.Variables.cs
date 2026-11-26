@@ -74,7 +74,12 @@ namespace RackCad.UI.VentanaRackCad
             if (IsVariablesPage) VariablesPageShown();
         }
 
-        private void ReadVariables(VariablesPageViewModel page)
+        // afterOwnWrite (smoke T4, F-2): the read that follows «Actualizar» is asked inside the answer of RACKVARIABLESAPLICAR, while that
+        // command still runs in AutoCAD, and the door refuses it as Busy. That refusal is not the user's problem: the page keeps the message
+        // of the write, stays not loaded, and reads the drawing when the window presents it again once the command ended.
+        private void ReadVariables(VariablesPageViewModel page) => ReadVariables(page, afterOwnWrite: false);
+
+        private void ReadVariables(VariablesPageViewModel page, bool afterOwnWrite)
         {
             Contained(() =>
             {
@@ -111,7 +116,7 @@ namespace RackCad.UI.VentanaRackCad
                 if (result.IsStarted) return;
                 if (_inFlight != null && _inFlight.Id == id) _inFlight = null;
                 RaiseWaiting();
-                page.EndReading(RefusalText(result));
+                page.EndReading(afterOwnWrite && result.Status == RackCadClassicStatus.Busy ? null : RefusalText(result));
             });
         }
 
@@ -208,7 +213,7 @@ namespace RackCad.UI.VentanaRackCad
 
                 RackList.RefreshStates();
                 OnPropertyChanged(nameof(HeaderText));
-                ReadVariables(page);
+                ReadVariables(page, afterOwnWrite: true);
             });
         }
 

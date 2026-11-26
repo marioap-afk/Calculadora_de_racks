@@ -374,6 +374,45 @@ namespace RackCad.UI.Tests
             Assert.True(page.IsReading);
         }
 
+        // Smoke T4 in AutoCAD (F-2): the read that follows «Actualizar» is asked inside the answer of RACKVARIABLESAPLICAR, while the command
+        // still runs, and the real door refuses it as Busy. The page kept a red «Hay un comando en curso…» over a write that went well.
+        [Fact]
+        public void TheReadAfterTheOwnWriteRefusedAsBusyKeepsTheMessageOfTheWriteAndReadsWhenTheWindowPresentsAgain()
+        {
+            var rig = new Rig();
+            var page = rig.ShowAndRead();
+            Define(page, "12");
+            page.RequestWrite();
+            var write = rig.Door.VariablesWrites.Single();
+            rig.Door.Start(write.RequestId);
+
+            rig.Door.Answer = RackCadClassicResult.Without(RackCadClassicStatus.Busy, "Hay un comando en curso.");
+            rig.Door.AnswerVariablesWrite(new VariablesDoorWritten(write.RequestId, true, "ok", new[] { RackId }, 1));
+            Assert.Equal(2, rig.Door.VariablesReads.Count);
+            Assert.False(page.MessageIsError, page.Message);
+            Assert.Equal("Variables escritas en el dibujo: 1 cambio; se redibujó Selectivo A. Un «U» en AutoCAD lo deshace todo.", page.Message);
+            Assert.True(page.IsNotLoaded);
+            Assert.False(page.IsReading);
+            Assert.False(rig.Window.IsWaitingForAutoCad);
+
+            // The command ended: the window presents the drawing again and the page reads it.
+            rig.Door.Answer = RackCadClassicResult.Started();
+            rig.Window.Refresh();
+            Assert.Equal(3, rig.Door.VariablesReads.Count);
+            rig.Door.AnswerVariablesRead(ReadOf(rig.Door.VariablesReads.Last().RequestId, value: 12.0));
+            Assert.True(page.IsLoaded);
+            Assert.Equal("12 in", page.Rows[0].ValueText);
+            Assert.False(page.MessageIsError, page.Message);
+
+            // A refusal of a read the user asks for does say it, and the next read the user asks for clears it.
+            rig.Door.Answer = RackCadClassicResult.Without(RackCadClassicStatus.Busy, "Hay un comando en curso.");
+            page.RequestRead();
+            Assert.True(page.MessageIsError);
+            rig.Door.Answer = RackCadClassicResult.Started();
+            page.RequestRead();
+            Assert.False(page.MessageIsError, page.Message);
+        }
+
         [Fact]
         public void AnAnswerOfAnotherNumberIsIgnoredAndAFailedWriteKeepsTheDraft()
         {
@@ -553,6 +592,13 @@ namespace RackCad.UI.Tests
                         view.Tabs.Items.Cast<TabItem>().Select(t => System.Windows.Automation.AutomationProperties.GetName(t)).ToArray());
                     var rowButton = Descendants<Button>(view.VariableRows).Single();
                     Assert.Equal("Variable 1: Holgura estándar", System.Windows.Automation.AutomationProperties.GetName(rowButton));
+                    // Smoke T4 (F-3, seen in AutoCAD): the row fills the table and its name starts under «Nombre», not centred.
+                    var rowName = Descendants<TextBlock>(rowButton).First(t => t.Text == "Holgura estándar");
+                    var heading = Descendants<TextBlock>(view).First(t => t.Text == "Nombre");
+                    var rowX = rowName.TranslatePoint(new Point(0, 0), view).X;
+                    var headingX = heading.TranslatePoint(new Point(0, 0), view).X;
+                    Assert.True(Math.Abs(rowX - headingX) < 12, "nombre de la fila en x=" + rowX + ", encabezado en x=" + headingX);
+                    Assert.True(rowButton.ActualWidth > view.VariableRows.ActualWidth - 4, "ancho de la fila " + rowButton.ActualWidth + " de " + view.VariableRows.ActualWidth);
                     Assert.False(view.DeleteButton.IsEnabled);
                     Assert.Equal(Visibility.Visible, view.UnlinkButton.Visibility);
 

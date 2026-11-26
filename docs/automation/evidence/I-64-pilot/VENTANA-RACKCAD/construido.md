@@ -3214,3 +3214,60 @@ El primer CI de `b0d367e7` dio 5 pruebas de Core en rojo (UI y la compilación, 
 reglas del sistema. En Windows, donde corre RackCad, daban lo correcto. La corrección es `WindowsFileNames` (Application): las reglas de Windows
 escritas una vez y usadas en los dos sitios. `WindowsFileNamesTests` fija las reglas en cualquier sistema y, en Windows, comprueba que dan lo
 mismo que `Path`.
+
+## Cuarta tanda: smoke en AutoCAD (sesión, 2026-11-26, 15:48 a 16:08)
+
+- **Orden del Owner:** «Prueba en AutoCAD primero» (respuesta a «¿Qué sigue ahora?»). AutoCAD estaba cerrado.
+- **DLL:** Debug de esta rama en `57c91b49` (CI verde, run 45899305011), compilado con `--no-incremental` y el árbol limpio.
+  - SHA-256 (prefijo): Plugin `516842683D703054`, UI `BFAD218D671C5894`, Application `30F63E970537ADDE`, Domain `41429E7B9AA72673`.
+  - Cargado con NETLOAD «Load Once»; FILEDIA se puso a 0 solo para la ruta y se devolvió a 1.
+- **Dibujo:** una copia de trabajo de `smoke-sel-prep.dwg` (huella `2FA0BC027C615D53`). No se guardó: al salir con `_QUIT` → «No», la copia
+  y el original siguen con la misma huella.
+- **Dejado como estaba:**
+  - la paleta, a su tamaño;
+  - la configuración del usuario, sin tocar (la casilla de arranque no se cambió);
+  - el diseño de prueba que se guardó en la carpeta de diseños por defecto, borrado al terminar.
+- **Queda en la carpeta del smoke:** el Excel del BOM exportado, junto a la copia.
+
+### Resultados (OBSERVADO)
+
+| Paso | Parte | Resultado | Observación |
+|---|---|---|---|
+| N-1 | new | PASA | «Selectivo en esta ventana» y luego «Dinámico en esta ventana» crean «Borrador 1 · Selectivo» y «Borrador 2 · Dinámico» bajo «Nuevo», con su estado. La cabecera dice «5 racks · todo escrito · 2 borradores sin insertar». La barra tiene «Todos los borradores», «Duplicar» y «Descartar el borrador». |
+| N-2 | new | PASA | Insertar el Dinámico (dos vistas) → «AutoCAD insertó el rack nuevo «Dinámico 1» con 2 vistas»; sale de la lista de borradores. |
+| N-3 | new | PASA | Con un borrador «Modificado», CLOSE → «No» a guardar → el dibujo no se cierra: «…tiene cambios sin escribir en SEL-SMOKE T4 borrar (Borrador 2, Selectivo nuevo)…». El borrador sin cambios no se nombra (ND-05). |
+| I-1 | ins | PASA, con F-1 | SEL-A › «Insertar vista…»: el panel se abre en la paleta, sin nada marcado. Marcadas Planta (1) y Lateral · poste 3 (2) → «Insertar 2 vistas» → «redibujó 2 vistas del rack con el borrador e insertó 2 vistas nuevas». Leído por COM: el bloque «SEL-A - planta» se creó antes que «SEL-A - lateral 3» (el orden elegido). «En el dibujo ya hay: frontal y lateral» (DG-04). |
+| **F-1** | ins | **FALLO → CORREGIDO** | Junto a «Frontal» y «Planta» (grupos sin cortes laterales) el panel mostraba el texto `RackCad.UI.VentanaRackCad.RackViewInsertGroupItem`, en Selectivo y en Dinámico. Un `ContentControl` sin plantilla mostraba el nombre del tipo del grupo (corrección 8 de la revisión). Ahora queda plegado y vacío salvo en el grupo con cortes. |
+| S-1 | seg | PASA | SEL-A › «Extremos y seguridad»: variante «Protector bota tipo H» en el inspector (6 botas en 3 postes) y P2 a «Izquierda» desde la tabla («Propia · 1 pieza», total 5). Vocabulario de Selectivo: «Izquierda = la cara del fondo 1…». Sin «≈» en las alturas (SD-14). |
+| S-2 | seg | PASA | Dinámico nuevo con dos vistas (lleva `DesviadorCellsByPost`). En la tabla, el desviador de P2 se apaga sin tocar el de P1 (el último poste ya tiene el suyo). «Editar aquí» lo abre desde el dibujo (AUTH-13 lee la marca), «Actualizar» redibuja las 2 vistas e «Insertar vista…» (Planta) pasa la comparación de hermanas y la coloca. |
+| S-3 | seg | PASA | RACKEDITAR de ese Dinámico › «Elementos de seguridad (5)…» › Defensas «Configurada…»: la rejilla tiene «Auto» por extremo (T4S-14). Se canceló sin escribir. |
+| C-1 | cb | PASA | SEL-A › Avanzado › P2 «Editar cabecera…». Con la cabecera calculada sin cambios, «Copiar a otros postes…» no se ofrece, y dice por qué. «Claro» de P1 de 44 a 48 → «lo de arriba se movió con él. La altura del poste es 244 in» → «Aplicar al borrador» → P2 «Personalizada, 244 in» → «Actualizar». Al volver a abrir desde el dibujo: P2 244 in. |
+| C-2 | cb | PASA | Cabecera suelta (creada con QUICKCABECERA) › «Editar aquí» (RACKCABECERAABRIR): «Claro» 46 → «Actualizar» → «cabecera actualizada; sus vistas (lateral/planta) se redibujaron». «U» → RACKCABECERAAPLICAR. Aislado: LINE, «Editar aquí», «U» → LINE (la apertura no deja paso en Deshacer). |
+| B-1 | bom | PASA | «BOM y lista de racks» con un clic: lee («BOM leído para la ventana RackCad: 6 racks; 1 queda fuera del total»). LINE antes, y luego «U» deshace LINE (RACKBOMLEER sin paso en Deshacer). Tras el «U», la página dice «Puede no estar al día · corrió una orden» (BM-S1). |
+| B-2 | bom | PASA | RL abre la página con la lectura hecha dentro de su orden («Al día»). «Exportar Excel» deja «<dibujo> - BOM.xlsx» junto al dibujo, con «Abrir», «Mostrar en la carpeta» y «Guardar como…». |
+| V-1 | va | PASA, con F-2 y F-3 | «Variables»: HV de 6 a 8 → «Lo que escribirá «Actualizar»» → «Actualizar» → «AutoCAD escribió el borrador de «Variables» y redibujó 1 rack (4 vistas)». Un solo «U» deshace RACKVARIABLESAPLICAR, y la página releída dice HV 6. RACKVARIABLESLEER sin paso en Deshacer: tras releer, «U» va a RACKSELECTIVOINSERTAR. |
+| **F-2** | va | **FALLO → CORREGIDO** | Tras un «Actualizar» correcto, la página mostraba en rojo «Hay un comando en curso en AutoCAD…». La relectura se pide dentro de la respuesta de RACKVARIABLESAPLICAR, con la orden aún en curso, y la puerta la rechaza como Busy. El rojo seguía después de una relectura correcta. Ahora ese Busy no se dice (la página lee al volver a presentarse, cuando la orden terminó) y «Volver a leer del dibujo» limpia un motivo anterior. |
+| **F-3** | va | **FALLO → CORREGIDO** | La fila de la tabla de variables salía centrada y sus columnas no coincidían con los encabezados. La plantilla de `SecondaryButtonStyle` centra su contenido. La fila lleva ahora una plantilla que lo estira. |
+| V-2 | va | PASA | SEL-A › «Propiedades» › «Nueva propiedad» «Zona = Prueba T4» → «Actualizar» → «…redibujó 4 vistas del rack… También escribió sus propiedades.» Al volver a abrir desde el dibujo, la propiedad está. |
+| U-1 | ut | PASA | «Más» › «Guardar en biblioteca…» → página con la línea del nombre → guardado → «Abrir como nuevo en esta ventana» → «Borrador 2: Selectivo nuevo en esta ventana, del diseño «…» de la biblioteca» (por `OpenAsNewDraft`, integración ut + new); P2 conserva su cabecera de 244. «Recientes de la biblioteca» en «Nuevo» lo lista. |
+| U-2 | ut | PASA | «Ayuda» › «Órdenes y atajos» (20 órdenes, «Ejecutar»). «Configuración»: carpetas, «Abrir RackCad al iniciar AutoCAD» apagada y «Acerca de RackCad» con «1.0.0 (57c91b49)». |
+| U-3 | ut | NO PROBADO | La casilla de arranque necesita el bundle instalado; aquí el plugin entra por NETLOAD. |
+| I-2 | ins | NO PROBADO | El motivo en el panel con una petición en vuelo o en solo lectura (está en pruebas de la UI). |
+
+### Observaciones
+
+- **O-1 (anterior a la cuarta tanda; para planear):** «Volver a leer la lista» deja un paso vacío en Deshacer. El «U» siguiente no hace nada visible ni nombra orden alguna (aislado: LINE, «Volver a leer la lista», «U» sin nombre, «U» → LINE).
+  - La lectura de la lista es de `WorkspaceNavigationHost` / la lista del navegador (anterior a esta tanda).
+  - No se tocó.
+- **O-2:** en un editor de unos 950 px de ancho, «Más» pasa a una segunda línea de la barra. Es cosmético.
+- **O-3:** SEL-C queda «Fuera del total» del BOM: sus vistas tienen diseños divergentes, preparados así en el dibujo del smoke. Es lo esperado.
+- **O-4:** al teclear el nombre de un diseño, un clic triple en el campo solo seleccionó «A» de «SEL-A». El diseño se guardó como «SEL-SMOKE T4 borrar»: un error del operador, no del producto.
+
+### Las correcciones del smoke, con sus números
+
+- **Archivos:** `RackViewInsertPanelView.xaml` (F-1), `RackCadWindowViewModel.Variables.cs` y `VariablesPageViewModel.cs` (F-2), `VariablesPageView.xaml` (F-3).
+- **Pruebas:**
+  - `RackViewInsertPanelTests`: ningún texto del panel muestra el nombre de un tipo;
+  - `RackCadVariablesPageTests`: la relectura tras escribir, rechazada como Busy (nueva), y la fila alineada con los encabezados.
+- **Comprobación en rojo:** con cada corrección deshecha, su prueba falla (las cuatro piezas). Restauradas con la misma huella.
+- **UI completa:** 2961 / 0 / 48 (2960 + 1). Core no cambia: solo cambió la UI.

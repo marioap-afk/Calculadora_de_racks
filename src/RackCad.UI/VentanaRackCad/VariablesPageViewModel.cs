@@ -770,6 +770,7 @@ namespace RackCad.UI.VentanaRackCad
         public void RequestRead()
         {
             if (!CanRead) return;
+            Say(string.Empty, false); // smoke T4 (F-2): a reason of an earlier refusal does not outlive a new read the user asked for
             ReadRequested?.Invoke(this);
         }
 

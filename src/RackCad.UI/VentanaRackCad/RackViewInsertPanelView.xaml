@@ -82,13 +82,20 @@
                                     <WrapPanel Margin="0,1,0,3">
                                         <TextBlock Text="{Binding Help}" Style="{StaticResource OptionalText}" Margin="0,0,8,2" VerticalAlignment="Center"
                                                    Foreground="{DynamicResource ShellTextSecondaryBrush}" />
-                                        <ContentControl Content="{Binding}" Focusable="False" IsTabStop="False">
+                                        <!-- Smoke T4 (F-1): without its template the ContentControl showed the name of the type of the group
+                                             («RackCad.UI.VentanaRackCad.RackViewInsertGroupItem») next to «Frontal» and «Planta»; it is collapsed
+                                             and empty unless the group has lateral cuts. -->
+                                        <ContentControl Focusable="False" IsTabStop="False">
                                             <ContentControl.Style>
                                                 <Style TargetType="ContentControl">
+                                                    <Setter Property="Content" Value="{x:Null}" />
                                                     <Setter Property="ContentTemplate" Value="{x:Null}" />
+                                                    <Setter Property="Visibility" Value="Collapsed" />
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding HasCuts}" Value="True">
+                                                            <Setter Property="Content" Value="{Binding}" />
                                                             <Setter Property="ContentTemplate" Value="{StaticResource CutsButtons}" />
+                                                            <Setter Property="Visibility" Value="Visible" />
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>

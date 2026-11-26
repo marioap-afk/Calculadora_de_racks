@@ -712,6 +712,10 @@ namespace RackCad.UI.Tests
                 Assert.Equal(everyName.Count, everyName.Distinct().Count());
                 Assert.Single(everyName, n => n == "Marcar todos los postes");
                 Assert.Single(everyName, n => n == "Quitar todos los postes del orden");
+                // Smoke T4 (F-1, seen in AutoCAD): no text of the panel shows the name of a type («RackCad.UI.VentanaRackCad.Rack…») next
+                // to «Frontal» or «Planta», the groups without lateral cuts.
+                var texts = Descendants<TextBlock>(panelView).Select(t => t.Text ?? string.Empty).ToList();
+                Assert.DoesNotContain(texts, t => t.Contains("RackCad.", StringComparison.Ordinal));
                 Assert.Contains("Subir Lateral · poste 2", names);
                 Assert.Contains("Quitar Planta del orden", names);
                 Assert.Contains("Marcar todos los postes", names);
