@@ -1,0 +1,99 @@
+<UserControl x:Class="RackCad.UI.VentanaRackCad.RackCadSettingsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             AutomationProperties.Name="Configuración"
+             FontFamily="Segoe UI"
+             FontSize="12">
+    <!-- The page «Configuración» of the RackCad window (I-64 A-14, line D, fourth batch, part «ut»; prototype «utilidades»): the block library
+         (as before), the folder of the design library (UT-02), «Abrir RackCad al iniciar AutoCAD» (UT-01) and «Acerca de RackCad» (UT-12).
+         Settings of this user in this machine: nothing here goes in the drawing. Only «Examinar…» and «Cambiar…» open a window, the
+         selector of Windows. -->
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/RackCad.UI;component/VentanaRackCad/RackCadUtilityStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="14,10">
+            <TextBlock Text="Configuración" Style="{StaticResource UtPageTitle}" />
+            <TextBlock x:Name="SettingsIntroText" Text="{Binding SettingsIntro}" Style="{StaticResource UtText}" />
+
+            <TextBlock Text="Biblioteca de bloques (.dwg)" Style="{StaticResource UtBlockTitle}" />
+            <TextBlock Style="{StaticResource UtText}" Text="De aquí se importan los bloques que falten en el dibujo activo." />
+            <TextBox x:Name="BlockLibraryPathBox" IsReadOnly="True" TextWrapping="Wrap" Padding="4,3"
+                     AutomationProperties.Name="Ruta de la biblioteca de bloques" Text="{Binding ConfigBlockLibraryPath, Mode=OneWay}" />
+            <TextBlock x:Name="BlockLibraryStatusText" Text="{Binding ConfigBlockLibraryStatus}">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock" BasedOn="{StaticResource UtOptional}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ConfigBlockLibraryMissing}" Value="True">
+                                <Setter Property="Foreground" Value="{DynamicResource ShellStatusWarningBrush}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+            <WrapPanel Margin="0,4,0,0">
+                <Button x:Name="BrowseBlockLibraryButton" Content="Examinar…" Margin="0,0,8,0" Padding="12,4"
+                        Style="{StaticResource SecondaryButtonStyle}" AutomationProperties.Name="Examinar la biblioteca de bloques"
+                        Click="OnBrowseBlockLibraryClick" />
+                <Button x:Name="ResetBlockLibraryButton" Content="Restablecer" Padding="12,4" Style="{StaticResource SecondaryButtonStyle}"
+                        IsEnabled="{Binding CanResetBlockLibrary}" AutomationProperties.Name="Restablecer la biblioteca de bloques"
+                        ToolTip="Vuelve a la ruta predeterminada (junto a los catálogos)." Click="OnResetBlockLibraryClick" />
+            </WrapPanel>
+
+            <Separator Margin="0,14,0,0" />
+            <TextBlock Text="Carpeta de la biblioteca de diseños" Style="{StaticResource UtBlockTitle}" />
+            <TextBlock Style="{StaticResource UtText}"
+                       Text="Donde se guardan y se leen los diseños de «Biblioteca de diseños». Puede ser, por ejemplo, una carpeta compartida del equipo." />
+            <TextBox x:Name="DesignLibraryPathBox" IsReadOnly="True" TextWrapping="Wrap" Padding="4,3"
+                     AutomationProperties.Name="Carpeta de la biblioteca de diseños" Text="{Binding ConfigDesignLibraryPath, Mode=OneWay}" />
+            <TextBlock x:Name="DesignLibraryStatusText" Text="{Binding DesignLibraryStatus}" Style="{StaticResource UtOptional}" />
+            <WrapPanel Margin="0,4,0,0">
+                <Button x:Name="ChangeDesignLibraryButton" Content="Cambiar…" Margin="0,0,8,0" Padding="12,4"
+                        Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanChangeDesignLibrary}"
+                        AutomationProperties.Name="Cambiar la carpeta de la biblioteca de diseños" Click="OnChangeDesignLibraryClick" />
+                <Button x:Name="ResetDesignLibraryButton" Content="Restablecer" Padding="12,4" Style="{StaticResource SecondaryButtonStyle}"
+                        IsEnabled="{Binding CanResetDesignLibrary}" AutomationProperties.Name="Restablecer la carpeta de la biblioteca de diseños"
+                        ToolTip="Vuelve a la carpeta predeterminada." Click="OnResetDesignLibraryClick" />
+            </WrapPanel>
+
+            <Separator Margin="0,14,0,0" />
+            <TextBlock Text="Al iniciar AutoCAD" Style="{StaticResource UtBlockTitle}" />
+            <CheckBox x:Name="OpenOnStartupCheck" IsChecked="{Binding OpenOnStartup, Mode=TwoWay}" IsEnabled="{Binding HasUtilitySettings}"
+                      AutomationProperties.Name="Abrir RackCad al iniciar AutoCAD">
+                <TextBlock Text="Abrir RackCad al iniciar AutoCAD" TextWrapping="Wrap" />
+            </CheckBox>
+            <TextBlock x:Name="OpenOnStartupHintText" Text="{Binding OpenOnStartupHint}" Style="{StaticResource UtOptional}" />
+
+            <Separator Margin="0,14,0,0" />
+            <TextBlock Text="Acerca de RackCad" Style="{StaticResource UtBlockTitle}" />
+            <Grid Margin="0,2,0,4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="130" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Text="Versión" VerticalAlignment="Center" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                <TextBox Grid.Row="0" Grid.Column="1" x:Name="AboutVersionBox" IsReadOnly="True" BorderThickness="0" Background="Transparent"
+                         AutomationProperties.Name="Versión de RackCad" Text="{Binding AboutVersion, Mode=OneWay}" Margin="0,2" />
+                <TextBlock Grid.Row="1" Text="Catálogos" VerticalAlignment="Center" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                <TextBox Grid.Row="1" Grid.Column="1" x:Name="AboutCatalogsBox" IsReadOnly="True" BorderThickness="0" Background="Transparent"
+                         TextWrapping="Wrap" FontFamily="Consolas" AutomationProperties.Name="Carpeta de los catálogos"
+                         Text="{Binding AboutCatalogsFolder, Mode=OneWay}" Margin="0,2" />
+                <TextBlock Grid.Row="2" Text="Registro de errores" VerticalAlignment="Center" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                <TextBox Grid.Row="2" Grid.Column="1" x:Name="AboutLogsBox" IsReadOnly="True" BorderThickness="0" Background="Transparent"
+                         TextWrapping="Wrap" FontFamily="Consolas" AutomationProperties.Name="Carpeta del registro de errores"
+                         Text="{Binding AboutLogsFolder, Mode=OneWay}" Margin="0,2" />
+            </Grid>
+            <TextBlock Style="{StaticResource UtText}" Text="Solo lectura, para soporte: se puede seleccionar y copiar." />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

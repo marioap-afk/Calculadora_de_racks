@@ -120,6 +120,24 @@
                     <Button x:Name="CloseEditorButton" Content="Cerrar el editor" Margin="0,12,8,4" Padding="12,4" VerticalAlignment="Top"
                             Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanEdit}"
                             AutomationProperties.Name="Cerrar el editor de este rack" Click="OnCloseEditorClick" />
+                    <!-- T4 ut: «Más» (prototype «utilidades», UT-04): its entries open under the button, inline (no popup, O-D of the smoke);
+                         «Guardar en biblioteca…» takes the user to «Biblioteca de diseños» with a line for the name. -->
+                    <StackPanel x:Name="MoreBlock" Margin="0,12,8,4" VerticalAlignment="Top">
+                        <Button x:Name="MoreButton" Content="Más" Padding="12,4" HorizontalAlignment="Left" Style="{StaticResource SecondaryButtonStyle}"
+                                AutomationProperties.Name="Más acciones del rack" AutomationProperties.ItemStatus="{Binding MoreItemStatus}"
+                                Click="OnMoreClick" />
+                        <Border x:Name="MorePanel" Margin="0,4,0,0" Padding="6" BorderThickness="1" CornerRadius="4" MaxWidth="280"
+                                BorderBrush="{DynamicResource ShellBorderBrush}" Background="{DynamicResource ShellSurfaceBrush}"
+                                Visibility="{Binding IsMoreOpen, Converter={StaticResource FlagToVisibility}}">
+                            <StackPanel>
+                                <Button x:Name="SaveToLibraryButton" Content="Guardar en biblioteca…" HorizontalContentAlignment="Left" Padding="10,3"
+                                        Style="{StaticResource SecondaryButtonStyle}" AutomationProperties.Name="Guardar el rack en la biblioteca de diseños"
+                                        Click="OnSaveToLibraryClick" />
+                                <TextBlock x:Name="SaveToLibraryBlockedText" Text="{Binding SaveToLibraryBlockedText}" Style="{StaticResource OptionalText}"
+                                           Margin="0,4,0,0" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
                 </WrapPanel>
                 <!-- «Cerrar el editor» with changes: the inline question, with what is lost. -->
                 <Border x:Name="CloseConfirmPanel" Margin="0,6,0,0" Padding="8" BorderThickness="1"

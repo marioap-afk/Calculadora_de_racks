@@ -25,6 +25,13 @@ namespace RackCad.Application.Settings
         /// </para>
         /// </summary>
         public string SelectiveTargetFondos { get; set; }
+
+        /// <summary>
+        /// «Abrir RackCad al iniciar AutoCAD» (I-64 A-14, fourth batch, part «ut», UT-01; Q-08 of the Owner, decided with the design of
+        /// «Configuración»): when true, the plugin opens the RackCad window with the first drawing of the session. Off by default; a file
+        /// without the field (every one written before) reads false.
+        /// </summary>
+        public bool OpenRackCadOnStartup { get; set; }
     }
 
     /// <summary>

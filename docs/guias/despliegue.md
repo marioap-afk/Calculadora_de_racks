@@ -206,7 +206,9 @@ Son **dos** cosas. El catálogo sí forma parte del bundle; la biblioteca DWG es
    definiciones de bloque que se clonan al dibujo cuando faltan.
 
 **Apuntar a una ubicación compartida (opcional):** desde la ventana `RACKCAD` → «Configuración» (o el menú clásico `RACKMENU`) se puede ver y
-elegir la ruta de la librería de bloques. La ruta elegida se guarda por usuario en:
+elegir la ruta de la librería de bloques. En «Configuración» también se cambia la carpeta de la biblioteca de diseños (por ejemplo, una
+carpeta compartida del equipo), se enciende «Abrir RackCad al iniciar AutoCAD» (apagada por defecto) y se ven la versión y las carpetas de
+los catálogos y del registro de errores («Acerca de RackCad»). Todo se guarda por usuario en:
 
 ```
 %AppData%\RackCad\settings.json
@@ -264,18 +266,21 @@ y hash). `deploy\build-bundle.ps1` encadena `dotnet publish` + verificación.
 
 Cada comando tiene un **alias corto** (columna "Atajo") que viaja con el plugin — no hay que editar
 `acad.pgp`. Si un atajo choca con un alias que ya tengas en tu `acad.pgp`, el del PGP gana; usa el
-comando completo o cambia el atajo en `RackFrameCommands.Aliases.cs`.
+comando completo. La ventana `RACKCAD` tiene esta misma lista en «Ayuda» › «Órdenes y atajos», con buscador,
+«Ejecutar» y la sección de la ventana que hace lo mismo (`RackCommandReference`, la fuente única de las dos).
 
 | Comando | Atajo | Qué hace |
 |---------|-------|----------|
 | `RACKCAD` | `RK` | Ventana RackCad (no bloquea AutoCAD): secciones y lista de racks del dibujo. |
 | `RACKMENU` | — | Menú clásico (elige el tipo de rack a diseñar), mientras las secciones de la ventana se migran. |
-| `RACKAYUDA` | `RA` | Ventana con **todos los comandos y sus atajos** dentro de AutoCAD (esta tabla, viva). |
+| `RACKAYUDA` | `RA` | Diálogo con **todos los comandos y sus atajos** dentro de AutoCAD (esta tabla, viva); en la ventana, «Ayuda» › «Órdenes y atajos». |
 | `RACKCABECERA` | `RCB` | Configurador de cabecera (editor). |
 | `QUICKCABECERA` | `QCB` | Cabecera por línea de comandos (pide poste/fondo/alto). |
 | `RACKSISTEMADINAMICO` | `RSD` | Sistema dinámico (pallet flow). |
 | `QUICKCAMA` | `QCM` | Cama de rodamiento. |
 | `RACKSELECTIVO` | `RS` | Editor de rack selectivo (matriz frentes × niveles). |
+| `RACKPUSHBACK` | `RPB` | Sistema Push Back. LIFO: carga y descarga por el mismo extremo (bajo); vistas lateral, frontal y planta. |
+| `RACKSECCION` | — | Perfil estructural: consulta perfiles W, HSS, C y L del catálogo AISC, visualiza su geometría e insértala en el dibujo. |
 | `RACKEDITAR` | `RED` | Seleccionar un rack ya dibujado y reabrir su editor; al confirmar redibuja todas sus vistas. |
 | `RACKVARIABLES` | `RVA` | Administrar las variables del dibujo: crear, renombrar, usar un literal o una fórmula, cambiar la definición y reparar referencias rotas. |
 | `RACKDUPLICAR` | `RD` | Copiar **uno o varios racks** como **independientes** (GUID nuevo por rack; editar la copia no afecta al original), **al estilo COPY**: selección múltiple → punto base → puntos de destino con liga elástica, **copia múltiple por defecto** (Enter/Esc termina; `Unica` cambia a una sola). Solo se copian las **vistas físicamente seleccionadas**: una vista no arrastra a sus hermanas. En cada destino el grupo **conserva su disposición relativa** (también con UCS girado); cada rack copiado es independiente, y sus vistas comparten un GUID nuevo y un nombre ("… - copia N"). Las referencias **enlazadas** entre sí siguen enlazadas dentro de la copia. Lo que no es un rack, o está fuera del espacio modelo, se ignora con aviso; un rack que no se puede copiar detiene el comando antes del punto base, sin dibujar nada, y cada destino se coloca entero o no se coloca. |

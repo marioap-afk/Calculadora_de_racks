@@ -29,7 +29,7 @@ namespace RackCad.UI.VentanaRackCad
     }
 
     /// <summary>The settings of the machine, through the same stores the classic menu uses. Every read loads the settings again.</summary>
-    public sealed class RackCadSettingsAccess : IRackCadSettingsAccess
+    public sealed partial class RackCadSettingsAccess : IRackCadSettingsAccess
     {
         public string BlockLibraryPath => BlockLibraryLocator.ResolvePath() ?? string.Empty;
 

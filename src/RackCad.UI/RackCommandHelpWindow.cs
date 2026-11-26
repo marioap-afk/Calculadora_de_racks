@@ -38,9 +38,10 @@ namespace RackCad.UI
 
             var intro = new TextBlock
             {
+                // I-64 A-14, part «ut» (UT-11): without «o cámbialo en la configuración», a setting that does not exist.
                 Text = "Escribe el comando completo o su atajo en la línea de comandos de AutoCAD. Los atajos viajan con el "
                      + "plugin (no hay que editar acad.pgp). Si un atajo ya lo usa tu acad.pgp, el del PGP gana: usa el "
-                     + "comando completo o cámbialo en la configuración.",
+                     + "comando completo.",
                 TextWrapping = TextWrapping.Wrap, FontSize = 11.5, Margin = new Thickness(0, 0, 0, 12)
             };
             DockPanel.SetDock(intro, Dock.Top);
@@ -101,7 +102,7 @@ namespace RackCad.UI
                     };
                     Grid.SetRow(chip, row);
                     Grid.SetColumn(chip, 1);
-                    grid.Children.Add(chip);
+                    if (!string.IsNullOrWhiteSpace(command.Alias)) grid.Children.Add(chip); // part «ut»: RACKMENU and RACKSECCION have no alias
 
                     var summary = new TextBlock
                     {

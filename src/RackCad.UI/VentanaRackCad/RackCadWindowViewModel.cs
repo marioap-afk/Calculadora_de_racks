@@ -22,6 +22,9 @@ namespace RackCad.UI.VentanaRackCad
         Bom,
         Biblioteca,
         Configuracion,
+
+        /// <summary>«Órdenes y atajos», behind «Ayuda» of the header (T4 ut, UT-09): a page of the window, not a section of the column.</summary>
+        Ayuda,
     }
 
     /// <summary>One section of the side column as the window shows it: a plain value.</summary>
@@ -324,6 +327,7 @@ namespace RackCad.UI.VentanaRackCad
             WireInsertPanel(editor); // T4 ins: «Insertar vista…» is the panel of the editor, not the classic dialog (DG-01)
             editor.InsertViewsAction = InsertDynamicViews;
             editor.InsertNewAction = InsertNewDynamic;
+            editor.SaveToLibraryAction = StartSaveToLibrary; // T4 ut: «Más» › «Guardar en biblioteca…»
             editor.PropertyChanged += OnDynamicEditorChanged;
             editor.CloseRequested += CloseDynamicEditor;
         }
@@ -595,6 +599,7 @@ namespace RackCad.UI.VentanaRackCad
             entry.Editor.PropertyChanged -= OnSelectiveEditorChanged;
             entry.Editor.CloseRequested -= CloseSelectiveEditor;
             _selectiveDrafts.Remove(key);
+            ForgetUtilitiesOf(entry.Editor); // T4 ut
         }
 
         // The name of a Selectivo in the notices: the one of its draft; with none, the one of the list when it opened (S-26); its id last.
@@ -1028,6 +1033,7 @@ namespace RackCad.UI.VentanaRackCad
             entry.Editor.PropertyChanged -= OnDynamicEditorChanged;
             entry.Editor.CloseRequested -= CloseDynamicEditor;
             _dynamicDrafts.Remove(key);
+            ForgetUtilitiesOf(entry.Editor); // T4 ut
         }
 
         // The state of a rack in the list while its draft is open in the window: a Dinámico, or a Selectivo (E1-B), with the same marks.
@@ -1173,6 +1179,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(IsBomPage));
             OnPropertyChanged(nameof(IsBibliotecaPage));
             OnPropertyChanged(nameof(IsConfiguracionPage));
+            OnUtilityPageShown(page); // T4 ut: «Órdenes y atajos», the folder of the library, the settings
         }
 
         /// <summary>Opens a rack of the list: the browser makes it active and the center shows its page.</summary>
@@ -1272,6 +1279,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(ShowSelectiveOffer));
             RaiseNewDynamic();
             Contained(RefreshInsertPanels); // T4 ins: the drawing may have changed: «otro dibujo» next to «Insertar N vistas» (correction 7)
+            _library?.RaiseOffers(); // T4 ut: «Abrir» follows the drawing presented (review, point 8)
         }
 
         // The browser changed (a tab, the field, the active rack): the marks of the list follow, and a new active rack shows its page.
@@ -1322,6 +1330,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(BlockLibraryStatus));
             OnPropertyChanged(nameof(BlockLibraryMissing));
             OnPropertyChanged(nameof(DesignLibraryPath));
+            RefreshUtilitySettings(); // T4 ut: the settings of the utilities, read here only (review, point 4)
         }
 
         private void Say(string text, bool failed)

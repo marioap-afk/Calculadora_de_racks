@@ -82,8 +82,15 @@ namespace RackCad.Tests
         /// La tercera tanda (A2) anade el Selectivo nuevo de la ventana (RACKSELECTIVONUEVO), en el mismo archivo y sin alias.
         internal static readonly string[] A14SelectiveDoorCommands = { "RACKSELECTIVOABRIR", "RACKSELECTIVOAPLICAR", "RACKSELECTIVOINSERTAR", "RACKSELECTIVONUEVO" };
 
+        /// <summary>
+        /// Lo que la cuarta tanda de I-64 A-14 (parte «ut», UT-03) anade, EXACTAMENTE: la puerta de la ventana a un diseno de su biblioteca en su
+        /// editor clasico (RACKBIBLIOTECAABRIR), que toma la peticion numerada que guardo la ventana, sin alias, en
+        /// <c>src/RackCad.Plugin/RackBibliotecaCommands.cs</c>. La base se fija de nuevo con este nombre.
+        /// </summary>
+        internal static readonly string[] A14UtilityCommands = { "RACKBIBLIOTECAABRIR" };
+
         /// <summary>El censo vigente: apertura, G7, G15, I-65, el panel de F1 y el descarte de F4-T3C2, cada nombre una vez.</summary>
-        internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).Concat(I65Commands).Concat(F1PanelCommands).Concat(F4PanelDiscardCommands).Concat(A14WindowCommands).Concat(A14DynamicDoorCommands).Concat(A14SelectiveDoorCommands).ToArray();
+        internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).Concat(I65Commands).Concat(F1PanelCommands).Concat(F4PanelDiscardCommands).Concat(A14WindowCommands).Concat(A14DynamicDoorCommands).Concat(A14SelectiveDoorCommands).Concat(A14UtilityCommands).ToArray();
 
         // ================================================================ censo
 

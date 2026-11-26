@@ -68,6 +68,7 @@ namespace RackCad.UI.VentanaRackCad
             WireInsertPanel(editor); // T4 ins
             editor.InsertViewsAction = InsertSelectiveViews;
             editor.InsertNewAction = InsertNewSelective;
+            editor.SaveToLibraryAction = StartSaveToLibrary; // T4 ut: «Más» › «Guardar en biblioteca…»
             editor.PropertyChanged += OnSelectiveEditorChanged;
             editor.CloseRequested += CloseSelectiveEditor;
             WireSelectiveSafety(editor); // E2 seguridad: «Editar seguridad…» for every Selectivo editor, of the drawing or new
