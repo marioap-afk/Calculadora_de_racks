@@ -47,6 +47,86 @@ namespace RackCad.Application.VentanaRackCad
         public SelectiveDraftEdit ToDraftEdit() => Refused ? SelectiveDraftEdit.Refuse(Error) : new SelectiveDraftEdit(Written, 0, null);
     }
 
+    /// <summary>T or P of one cell of the matrix over the fondos of the scope: none (no variant, or no larguero there), off, on, or it varies.</summary>
+    public enum SelectiveSafetyMark
+    {
+        None,
+        Off,
+        On,
+        Varies,
+    }
+
+    /// <summary>
+    /// T and P of the cells of the matrix, read once for a refresh of the matrix of the window: the variants, their off cells and the bays of
+    /// every fondo of the resolved system, with the translation of <see cref="SelectiveSafetyView.GridLevel"/> (the «Larguero a piso» of each
+    /// fondo). It gives the marks of «Matriz» over the fondos of the scope and the state of one cell of one fondo («Modificada en el borrador»).
+    /// </summary>
+    public sealed class SelectiveSafetyMarks
+    {
+        internal static readonly SelectiveSafetyMarks Empty = new SelectiveSafetyMarks(Array.Empty<IList<SelectiveBay>>(), Array.Empty<int>(), null, null);
+
+        private readonly IReadOnlyList<IList<SelectiveBay>> _bays;
+        private readonly IReadOnlyList<int> _scope;
+        private readonly HashSet<(int Frente, int Level)> _topeOff;
+        private readonly HashSet<(int Frente, int Level)> _parrillaOff;
+
+        internal SelectiveSafetyMarks(IReadOnlyList<IList<SelectiveBay>> bays, IReadOnlyList<int> scope, HashSet<(int, int)> topeOff, HashSet<(int, int)> parrillaOff)
+        {
+            _bays = bays;
+            _scope = scope;
+            _topeOff = topeOff;
+            _parrillaOff = parrillaOff;
+        }
+
+        /// <summary>T at a cell of the matrix over the fondos of the scope.</summary>
+        public SelectiveSafetyMark Tope(int front, int matrixLevel) => Mark(_topeOff, front, matrixLevel);
+
+        /// <summary>P at a cell of the matrix over the fondos of the scope.</summary>
+        public SelectiveSafetyMark Parrilla(int front, int matrixLevel) => Mark(_parrillaOff, front, matrixLevel);
+
+        /// <summary>T and P at that cell of that fondo, as a key: what «Modificada en el borrador» compares.</summary>
+        public string StateOf(int fondo, int front, int matrixLevel)
+        {
+            var grid = Grid(fondo, front, matrixLevel);
+            return "|T" + Flag(_topeOff, front, grid) + "P" + Flag(_parrillaOff, front, grid);
+        }
+
+        private static string Flag(HashSet<(int, int)> off, int front, int? grid)
+            => off == null || !grid.HasValue ? "-" : off.Contains((front, grid.Value)) ? "0" : "1";
+
+        private SelectiveSafetyMark Mark(HashSet<(int, int)> off, int front, int matrixLevel)
+        {
+            if (off == null) return SelectiveSafetyMark.None;
+            var on = false;
+            var offSeen = false;
+            foreach (var fondo in _scope)
+            {
+                if (Grid(fondo, front, matrixLevel) is not int grid) continue;
+                if (off.Contains((front, grid))) offSeen = true;
+                else on = true;
+            }
+
+            return on && offSeen ? SelectiveSafetyMark.Varies : on ? SelectiveSafetyMark.On : offSeen ? SelectiveSafetyMark.Off : SelectiveSafetyMark.None;
+        }
+
+        private int? Grid(int fondo, int front, int matrixLevel)
+        {
+            if (fondo < 0 || fondo >= _bays.Count) return null;
+            var bays = _bays[fondo];
+            return bays != null && front >= 0 && front < bays.Count ? SelectiveSafetyView.GridLevelOf(bays[front], matrixLevel) : null;
+        }
+    }
+
+    /// <summary>
+    /// What the BOM counts of the safety of the last valid recomposition, on a system resolved from a copy of it
+    /// (<see cref="SelectiveDraftEditor.ResolveCopy"/>): the table by post, and the topes and the parrillas of the cards of «Extremos y
+    /// seguridad» (the categories <see cref="SelectiveBomBuilder.Tope"/> and <see cref="SelectiveBomBuilder.Parrilla"/>).
+    /// </summary>
+    public sealed record SelectiveSafetyCounts(IReadOnlyList<SelectivePostSafetyRow> Posts, int Topes, int Parrillas)
+    {
+        public static readonly SelectiveSafetyCounts None = new SelectiveSafetyCounts(Array.Empty<SelectivePostSafetyRow>(), 0, 0);
+    }
+
     /// <summary>
     /// «Extremos y seguridad» of a Selectivo in the RackCad window (I-64 A-14, line D, entrega 2; decisions 4, 5, 6 and 13 of the Owner),
     /// read from and written to the safety of the draft (<see cref="SelectiveDraftEditor.CopySafety"/> / <see cref="SelectiveDraftEditor.ReplaceSafety"/>).
@@ -92,12 +172,27 @@ namespace RackCad.Application.VentanaRackCad
         /// «Larguero a piso», one less when its first pallet rests on the floor (whose N1 is then no cell: null). Read on the resolved
         /// system, as the BOM reads it; null when that fondo does not have the front or the level.
         /// </summary>
-        public static int? GridLevel(SelectiveDraftEditor editor, int fondo, int front, int matrixLevel)
+        public static int? GridLevel(SelectiveDraftEditor editor, int fondo, int front, int matrixLevel) => GridLevelOf(Bay(editor, fondo, front), matrixLevel);
+
+        // The translation of one bay: its larguero at that level of the matrix (null for no larguero there).
+        internal static int? GridLevelOf(SelectiveBay bay, int matrixLevel)
         {
-            var bay = Bay(editor, fondo, front);
             if (bay == null || matrixLevel < 0) return null;
             var level = OnFloor(bay) ? matrixLevel - 1 : matrixLevel;
             return level >= 0 && level < bay.Levels.Count ? level : (int?)null;
+        }
+
+        /// <summary>T and P of the cells of the matrix, read once (the marks of «Matriz»); empty before a valid recomposition.</summary>
+        public static SelectiveSafetyMarks Marks(SelectiveDraftEditor editor)
+        {
+            if (editor?.System == null) return SelectiveSafetyMarks.Empty;
+            var safety = editor.CopySafety();
+            var tope = SelectiveSafetyFamilies.SelectedOfType(safety, editor.Catalog?.SafetyElements, SelectiveSafetyDefaults.TopeType);
+            var parrilla = SelectiveSafetyFamilies.SelectedOfType(safety, editor.Catalog?.SafetyElements, SelectiveSafetyDefaults.ParrillaType);
+            var bays = Enumerable.Range(0, SelectiveDepthLayout.Count(editor.System)).Select(fondo => SelectiveDepthLayout.BaysOfFondo(editor.System, fondo)).ToList();
+            return new SelectiveSafetyMarks(bays, Fondos(editor),
+                tope == null ? null : SelectiveSafetyGrid.OffCellKeys(tope.TopeOffCells),
+                parrilla == null ? null : SelectiveSafetyGrid.OffCellKeys(parrilla.ParrillaOffCells));
         }
 
         /// <summary>True when the cell of the matrix carries a larguero in some fondo of the scope.</summary>
@@ -192,9 +287,26 @@ namespace RackCad.Application.VentanaRackCad
 
         // ------------------------------------------------------------------ the table by post
 
-        /// <summary>The table by post of the last valid recomposition, counted as the BOM counts it.</summary>
+        /// <summary>
+        /// The table by post of the last valid recomposition, counted as the BOM counts it, on a system of its own: the planta and the cuts it
+        /// reads impose the depth of its fondo on the custom cabeceras (ARQ-43-10), and the system of the draft shares them with its design.
+        /// </summary>
         public static IReadOnlyList<SelectivePostSafetyRow> PostRows(SelectiveDraftEditor editor)
-            => editor?.System == null ? Array.Empty<SelectivePostSafetyRow>() : SelectivePostSafetySummary.Build(editor.System, editor.Catalog);
+        {
+            var system = editor?.System == null ? null : editor.ResolveCopy();
+            return system == null ? Array.Empty<SelectivePostSafetyRow>() : SelectivePostSafetySummary.Build(system, editor.Catalog);
+        }
+
+        /// <summary>The table by post and the pieces of topes and parrillas of the BOM, counted together on one system of their own.</summary>
+        public static SelectiveSafetyCounts Count(SelectiveDraftEditor editor)
+        {
+            var system = editor?.System == null ? null : editor.ResolveCopy();
+            if (system == null) return SelectiveSafetyCounts.None;
+            var posts = SelectivePostSafetySummary.Build(system, editor.Catalog);
+            var components = SelectiveBomBuilder.Build(system, editor.Catalog).Components;
+            int Sum(string category) => components.Where(c => string.Equals(c.Category, category, StringComparison.Ordinal)).Sum(c => c.Quantity);
+            return new SelectiveSafetyCounts(posts, Sum(SelectiveBomBuilder.Tope), Sum(SelectiveBomBuilder.Parrilla));
+        }
 
         /// <summary>The side of the bota at a post: «Izquierda», «Derecha», both (provisional text), or empty when that post has none.</summary>
         public static string BootSide(SelectivePostSafetyRow row)

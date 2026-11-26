@@ -401,7 +401,7 @@
                                                     <ItemsControl.ItemTemplate>
                                                         <DataTemplate>
                                                             <!-- The name for UI Automation carries the position («Frente 2 · Nivel 3: 42×60»): unique in the matrix. -->
-                                                            <Button Width="70" MinHeight="32" Margin="0,0,2,2" Padding="2" Click="OnCellClick"
+                                                            <Button Width="70" MinHeight="40" Margin="0,0,2,2" Padding="2" Click="OnCellClick"
                                                                     IsEnabled="{Binding Exists}"
                                                                     AutomationProperties.Name="{Binding AccessibleText}">
                                                                 <Button.Style>
@@ -423,7 +423,7 @@
                                                                         </Style.Triggers>
                                                                     </Style>
                                                                 </Button.Style>
-                                                                <Grid Width="62">
+                                                                <Grid Width="62" MinHeight="32"> <!-- E2 seguridad: the full height of the cell, so the marks sit in its corners -->
                                                                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                                                         <TextBlock Text="{Binding Text}" HorizontalAlignment="Center" />
                                                                         <TextBlock Text="{Binding Detail}" HorizontalAlignment="Center" FontSize="10"
@@ -440,6 +440,41 @@
                                                                     <TextBlock x:Name="ManualMark" Text="M" FontSize="9" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Top"
                                                                                Foreground="{DynamicResource ShellTextSecondaryBrush}" ToolTip="Valor manual"
                                                                                Visibility="{Binding IsManual, Converter={StaticResource FlagToVisibility}}" />
+                                                                    <!-- E2 seguridad (decisions 4 and 5): «P» (parrilla) bottom left and «T» (tope) bottom right, as the approved
+                                                                         draft; for the whole rack, in italics when the fondos of the view disagree. The
+                                                                         cell is 40 high, as in the draft, so the marks do not crowd the pallet. -->
+                                                                    <Border x:Name="ParrillaBadge" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="-2,0,0,-1"
+                                                                            Padding="1,0" CornerRadius="3" BorderThickness="1" ToolTip="{Binding ParrillaTip}"
+                                                                            BorderBrush="{DynamicResource ShellStatusWarningBrush}" Background="{DynamicResource ShellSurfaceBrush}"
+                                                                            Visibility="{Binding ShowsParrilla, Converter={StaticResource FlagToVisibility}}">
+                                                                        <TextBlock Text="P" FontSize="9" FontWeight="Bold" Foreground="{DynamicResource ShellStatusWarningBrush}">
+                                                                            <TextBlock.Style>
+                                                                                <Style TargetType="TextBlock">
+                                                                                    <Style.Triggers>
+                                                                                        <DataTrigger Binding="{Binding ParrillaVaries}" Value="True">
+                                                                                            <Setter Property="FontStyle" Value="Italic" />
+                                                                                        </DataTrigger>
+                                                                                    </Style.Triggers>
+                                                                                </Style>
+                                                                            </TextBlock.Style>
+                                                                        </TextBlock>
+                                                                    </Border>
+                                                                    <Border x:Name="TopeBadge" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,-2,-1"
+                                                                            Padding="1,0" CornerRadius="3" BorderThickness="1" ToolTip="{Binding TopeTip}"
+                                                                            BorderBrush="{DynamicResource ShellStatusSuccessBrush}" Background="{DynamicResource ShellSurfaceBrush}"
+                                                                            Visibility="{Binding ShowsTope, Converter={StaticResource FlagToVisibility}}">
+                                                                        <TextBlock Text="T" FontSize="9" FontWeight="Bold" Foreground="{DynamicResource ShellStatusSuccessBrush}">
+                                                                            <TextBlock.Style>
+                                                                                <Style TargetType="TextBlock">
+                                                                                    <Style.Triggers>
+                                                                                        <DataTrigger Binding="{Binding TopeVaries}" Value="True">
+                                                                                            <Setter Property="FontStyle" Value="Italic" />
+                                                                                        </DataTrigger>
+                                                                                    </Style.Triggers>
+                                                                                </Style>
+                                                                            </TextBlock.Style>
+                                                                        </TextBlock>
+                                                                    </Border>
                                                                     <!-- Decision 4: the floor line of N1 with no «Larguero a piso» (the pallet on the floor). -->
                                                                     <Border x:Name="FloorLine" Height="3" VerticalAlignment="Bottom" Margin="-2,0,-2,-2"
                                                                             Background="{DynamicResource ShellTextSecondaryBrush}" ToolTip="En el piso, sin larguero"
@@ -454,8 +489,8 @@
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
 
-                                <!-- The legend of the approved draft (T and P are of the entrega 2; «Valor no válido» does not exist here: the window
-                                     refuses a value that is not valid before it reaches the draft). -->
+                                <!-- The legend of the approved draft («Valor no válido» does not exist here: the window refuses a value that is not
+                                     valid before it reaches the draft). -->
                                 <WrapPanel x:Name="MatrixLegend" Margin="0,6,0,0" AutomationProperties.Name="Leyenda de la matriz">
                                     <StackPanel Orientation="Horizontal" Margin="0,0,14,4">
                                         <Ellipse Width="7" Height="7" Margin="0,0,5,0" VerticalAlignment="Center" Fill="{DynamicResource ShellStatusWarningBrush}" />
@@ -473,6 +508,21 @@
                                     <StackPanel Orientation="Horizontal" Margin="0,0,14,4">
                                         <TextBlock Text="M" FontSize="9" FontWeight="Bold" Margin="0,0,5,0" VerticalAlignment="Center" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
                                         <TextBlock Text="Valor manual" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                    </StackPanel>
+                                    <!-- E2 seguridad: T and P of the cells. -->
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,14,4">
+                                        <Border Margin="0,0,5,0" Padding="2,0" CornerRadius="3" BorderThickness="1" VerticalAlignment="Center"
+                                                BorderBrush="{DynamicResource ShellStatusSuccessBrush}" Background="{DynamicResource ShellSurfaceBrush}">
+                                            <TextBlock Text="T" FontSize="9" FontWeight="Bold" Foreground="{DynamicResource ShellStatusSuccessBrush}" />
+                                        </Border>
+                                        <TextBlock Text="Tope" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,14,4">
+                                        <Border Margin="0,0,5,0" Padding="2,0" CornerRadius="3" BorderThickness="1" VerticalAlignment="Center"
+                                                BorderBrush="{DynamicResource ShellStatusWarningBrush}" Background="{DynamicResource ShellSurfaceBrush}">
+                                            <TextBlock Text="P" FontSize="9" FontWeight="Bold" Foreground="{DynamicResource ShellStatusWarningBrush}" />
+                                        </Border>
+                                        <TextBlock Text="Parrilla" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal" Margin="0,0,14,4">
                                         <Border Width="14" Height="3" Margin="0,0,5,0" VerticalAlignment="Center" Background="{DynamicResource ShellTextSecondaryBrush}" />
@@ -544,6 +594,20 @@
 
                                 <TextBlock Text="Tarima" Style="{StaticResource SubTitle}" />
                                 <ItemsControl x:Name="CellFieldList" ItemsSource="{Binding PalletFields}" ItemsPanel="{StaticResource WrapItems}" />
+                                <!-- E2 seguridad: «Seguridad de la celda» (decisions 4 and 5), T and P of the selection for the whole rack. S-20 / D-11:
+                                     with cells that differ the box is indeterminate and says «varía»; a click puts it in all of them. Its name for UI
+                                     Automation is its visible text. -->
+                                <TextBlock Text="Seguridad de la celda" Style="{StaticResource SubTitle}" />
+                                <WrapPanel>
+                                    <CheckBox x:Name="TopeCheck" Content="{Binding SelectionTopeLabel}" Margin="0,0,16,4" IsThreeState="False"
+                                              IsChecked="{Binding SelectionTopeCheck, Mode=TwoWay}" IsEnabled="{Binding CanEditSelectionTope}"
+                                              AutomationProperties.Name="{Binding SelectionTopeLabel}" />
+                                    <CheckBox x:Name="ParrillaCheck" Content="{Binding SelectionParrillaLabel}" Margin="0,0,16,4" IsThreeState="False"
+                                              IsChecked="{Binding SelectionParrillaCheck, Mode=TwoWay}" IsEnabled="{Binding CanEditSelectionParrilla}"
+                                              AutomationProperties.Name="{Binding SelectionParrillaLabel}" />
+                                </WrapPanel>
+                                <TextBlock x:Name="SafetyNoteText" Text="{Binding SafetyNote}" Style="{StaticResource OptionalText}" Margin="0,0,0,4"
+                                           FontStyle="Italic" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
                                 <WrapPanel>
                                     <TextBlock Text="Larguero" Style="{StaticResource SubTitle}" Margin="0,6,10,4" />
                                     <TextBlock x:Name="BeamSummaryText" Text="{Binding BeamSummary}" Margin="0,6,0,4" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
@@ -630,6 +694,115 @@
                         </ScrollViewer>
                     </Border>
                 </Grid>
+            </TabItem>
+
+            <!-- E2 seguridad: «Extremos y seguridad» (decisions 4, 5, 6 and 13), between Matriz and Avanzado as in Dinámico: the cards of the
+                 topes and the parrillas (the cells are chosen in «Matriz»), «Extremos y fondos», «Seguridad por poste» counted as the BOM, and
+                 «Editar seguridad…», the classic dialog over AutoCAD (D-09). What reads the BOM is counted only while this tab is shown. -->
+            <TabItem x:Name="SafetyTab" Header="Extremos y seguridad">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                    <StackPanel Margin="10">
+                        <TextBlock Text="En las celdas: frente × nivel" Style="{StaticResource GroupTitle}" Margin="0,0,0,2" />
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,8" Foreground="{DynamicResource ShellTextSecondaryBrush}"
+                                   Text="Para elegir celdas, márcalas en «Matriz»: inspector › «Seguridad de la celda»." />
+                        <ItemsControl x:Name="FamilyCardList" ItemsSource="{Binding FamilyCards}" ItemsPanel="{StaticResource WrapItems}"
+                                      AutomationProperties.Name="Topes y parrillas en las celdas">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Width="340" Margin="0,0,12,10" Padding="12,10" BorderThickness="1" CornerRadius="8"
+                                            BorderBrush="{DynamicResource ShellBorderBrush}" Background="{DynamicResource ShellSurfaceBrush}"
+                                            AutomationProperties.Name="{Binding Title}">
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                                <Border Margin="0,0,8,0" Padding="3,0" CornerRadius="3" BorderThickness="1" VerticalAlignment="Center">
+                                                    <Border.Style>
+                                                        <Style TargetType="Border">
+                                                            <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusWarningBrush}" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding IsTope}" Value="True">
+                                                                    <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusSuccessBrush}" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                    <TextBlock Text="{Binding Letter}" FontSize="10" FontWeight="Bold">
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="TextBlock">
+                                                                <Setter Property="Foreground" Value="{DynamicResource ShellStatusWarningBrush}" />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding IsTope}" Value="True">
+                                                                        <Setter Property="Foreground" Value="{DynamicResource ShellStatusSuccessBrush}" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
+                                                </Border>
+                                                <TextBlock Text="{Binding Title}" FontWeight="SemiBold" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                            </StackPanel>
+                                            <TextBlock Text="{Binding Summary}" TextWrapping="Wrap" Margin="0,0,0,4" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                            <TextBlock Text="{Binding Config}" Style="{StaticResource OptionalText}" Margin="0,0,0,6"
+                                                       Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                            <WrapPanel>
+                                                <Button Content="En todas las celdas" Margin="0,0,6,0" Padding="10,3" Style="{StaticResource SecondaryButtonStyle}"
+                                                        IsEnabled="{Binding CanAll}" AutomationProperties.Name="{Binding AllName}" Click="OnFamilyAllClick" />
+                                                <Button Content="En ninguna" Padding="10,3" Style="{StaticResource SecondaryButtonStyle}"
+                                                        IsEnabled="{Binding CanNone}" AutomationProperties.Name="{Binding NoneName}" Click="OnFamilyNoneClick" />
+                                            </WrapPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <TextBlock Text="Extremos y fondos" Style="{StaticResource GroupTitle}" />
+                        <ItemsControl x:Name="EndLineList" ItemsSource="{Binding EndLines}" AutomationProperties.Name="Extremos y fondos">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <BulletDecorator Margin="0,0,0,4">
+                                        <BulletDecorator.Bullet>
+                                            <TextBlock Text="•" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                        </BulletDecorator.Bullet>
+                                        <TextBlock Text="{Binding}" TextWrapping="Wrap" MaxWidth="640" HorizontalAlignment="Left" Margin="6,0,0,0"
+                                                   Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                    </BulletDecorator>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <TextBlock Text="Seguridad por poste" Style="{StaticResource GroupTitle}" />
+                        <TextBlock x:Name="SafetySummaryText" Text="{Binding SafetySummary}" Style="{StaticResource OptionalText}" Margin="0,0,0,6"
+                                   Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                        <!-- The columns of the approved draft; its last row is «Total» (the foot of the table of the draft), in bold. -->
+                        <DataGrid x:Name="PostSafetyGrid" ItemsSource="{Binding PostSafetyTable}" AutoGenerateColumns="False" IsReadOnly="True"
+                                  HeadersVisibility="Column" MaxHeight="360" CanUserAddRows="False" CanUserSortColumns="False" HorizontalAlignment="Left"
+                                  AutomationProperties.Name="Seguridad por poste">
+                            <DataGrid.RowStyle>
+                                <Style TargetType="DataGridRow">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsTotal}" Value="True">
+                                            <Setter Property="FontWeight" Value="SemiBold" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.RowStyle>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Poste" Binding="{Binding Post}" />
+                                <DataGridTextColumn Header="Botas" Binding="{Binding Boots}" />
+                                <DataGridTextColumn Header="Protector lateral" Binding="{Binding SideGuards}" />
+                                <DataGridTextColumn Header="Desviadores (niveles)" Binding="{Binding Deflectors}" />
+                                <DataGridTextColumn Header="Separadores entre fondos" Binding="{Binding Separators}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <TextBlock TextWrapping="Wrap" Margin="0,6,0,6" MaxWidth="640" HorizontalAlignment="Left" Foreground="{DynamicResource ShellTextSecondaryBrush}"
+                                   Text="De solo lectura y contada como el BOM. «Editar seguridad…» abre el diálogo «Elementos de seguridad» del editor clásico, como modal de AutoCAD, sobre una copia de la seguridad del borrador: «Aceptar» la pasa al borrador y «Cancelar» no cambia nada." />
+                        <TextBlock x:Name="SafetyEditText" Text="{Binding SafetyEditText}" TextWrapping="Wrap" Margin="0,0,0,6" MaxWidth="640" HorizontalAlignment="Left"
+                                   Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                        <Button x:Name="EditSafetyButton" Content="Editar seguridad…" HorizontalAlignment="Left" Padding="12,4"
+                                Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanEditSafety}"
+                                AutomationProperties.Name="Editar la seguridad en el diálogo del editor clásico" Click="OnEditSafetyClick" />
+                    </StackPanel>
+                </ScrollViewer>
             </TabItem>
 
             <!-- Avanzado: the table of the posts (own peralte, height by fondo, cabecera; the cabecera is seen here and edited in the classic

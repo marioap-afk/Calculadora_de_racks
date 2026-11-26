@@ -407,6 +407,18 @@ namespace RackCad.Application.VentanaRackCad
         }
 
         /// <summary>
+        /// A system resolved from a COPY of the last valid design, as <see cref="BomCounts"/> counts on (E2, «Extremos y seguridad»): for the
+        /// readers that impose on what they read, the BOM and the plans of the safety (the depth of its fondo on every custom cabecera,
+        /// ARQ-43-10). <see cref="System"/> shares its cabeceras with <see cref="Design"/>, so reading them there would change the design that
+        /// is written. Null before the first valid recomposition.
+        /// </summary>
+        public SelectiveRackSystem ResolveCopy()
+        {
+            var design = Copy(Design);
+            return design == null ? null : _resolver.Resolve(design, Catalog);
+        }
+
+        /// <summary>
         /// The fondo whose fronts give their width to the same fronts of every fondo: the one with the most fronts, the first on a tie
         /// (<see cref="SelectiveDepthLayout.MasterFondoIndex"/>, the master of the resolver). A manual larguero length of a cell of another
         /// fondo is kept and written, but the drawing does not use it (M-02 of the review of the polish). The resolver only lets another fondo

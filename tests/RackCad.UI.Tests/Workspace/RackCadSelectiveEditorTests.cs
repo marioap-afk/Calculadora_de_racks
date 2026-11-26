@@ -643,7 +643,9 @@ namespace RackCad.UI.Tests
                     var view = new SelectiveEditorView(vm);
                     Lay(view);
 
-                    Assert.Equal(new object[] { "Rack", "Matriz", "Avanzado" }, view.Tabs.Items.Cast<TabItem>().Select(t => t.Header).ToArray());
+                    // Census (E2 seguridad): «Extremos y seguridad» goes between Matriz and Avanzado, as in Dinámico; its bindings are checked by
+                    // SelectiveSafetyTabTests.
+                    Assert.Equal(new object[] { "Rack", "Matriz", "Extremos y seguridad", "Avanzado" }, view.Tabs.Items.Cast<TabItem>().Select(t => t.Header).ToArray());
                     Assert.Same(view.MatrixTab, view.Tabs.SelectedItem);
 
                     // The matrix: three fronts by three levels of fondo 2, with the cell buttons.

@@ -121,6 +121,19 @@ namespace RackCad.UI.VentanaRackCad
             if ((sender as FrameworkElement)?.DataContext is SelectiveSegmentRow row) _viewModel.RemoveSegment(row.Index);
         });
 
+        // E2 seguridad: «En todas las celdas» / «En ninguna» of a card of «Extremos y seguridad», and «Editar seguridad…» (D-09).
+        private void OnFamilyAllClick(object sender, RoutedEventArgs e) => Contained(() =>
+        {
+            if ((sender as FrameworkElement)?.DataContext is SelectiveSafetyFamilyCard card) _viewModel.SetFamilyEverywhere(card.Type, true);
+        });
+
+        private void OnFamilyNoneClick(object sender, RoutedEventArgs e) => Contained(() =>
+        {
+            if ((sender as FrameworkElement)?.DataContext is SelectiveSafetyFamilyCard card) _viewModel.SetFamilyEverywhere(card.Type, false);
+        });
+
+        private void OnEditSafetyClick(object sender, RoutedEventArgs e) => Contained(_viewModel.EditSafety);
+
         private void OnUpdateClick(object sender, RoutedEventArgs e) => Contained(() =>
         {
             // The name is bound on leaving its box: a click on «Actualizar» right after typing it must not lose it.

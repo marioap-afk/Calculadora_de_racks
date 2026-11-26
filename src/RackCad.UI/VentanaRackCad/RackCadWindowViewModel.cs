@@ -508,11 +508,19 @@ namespace RackCad.UI.VentanaRackCad
                     read.DimensionStyles);
                 editor.PropertyChanged += OnSelectiveEditorChanged;
                 editor.CloseRequested += CloseSelectiveEditor;
+                WireSelectiveSafety(editor); // E2 seguridad
                 _selectiveDrafts[key] = new SelectiveDraftEntry(request.Session, editor, RackList.ListedNameOf(request.RackId));
                 _showPanel = false;
                 Say(string.Empty, failed: false);
                 RaiseDynamic();
             });
+        }
+
+        // E2 seguridad (D-09): «Editar seguridad…» of a Selectivo editor shows the classic dialog over AutoCAD, so it is offered only with the
+        // modal port of the host. Every Selectivo editor of the window gets it (at integration, from the one method that wires them).
+        private void WireSelectiveSafety(SelectiveEditorViewModel editor)
+        {
+            if (_modal != null) editor.SafetyEditor = current => RackCadSelectiveSafetyDialog.Edit(current, _modal);
         }
 
         private void OnSelectiveEditorChanged(object sender, PropertyChangedEventArgs e)
