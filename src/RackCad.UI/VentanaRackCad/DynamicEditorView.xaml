@@ -1,6 +1,7 @@
 <UserControl x:Class="RackCad.UI.VentanaRackCad.DynamicEditorView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:RackCad.UI.VentanaRackCad"
              AutomationProperties.Name="Editor de Dinámico"
              FontFamily="Segoe UI"
              FontSize="12"
@@ -91,10 +92,25 @@
                             Style="{StaticResource PrimaryButtonStyle}" IsEnabled="{Binding CanUpdate}"
                             AutomationProperties.Name="Actualizar el dibujo con el borrador" Click="OnUpdateClick" />
                     <!-- Step 4 (decision 10 of the prototype): AutoCAD first writes the draft in the views that exist, then inserts the new ones. -->
+                    <!-- T4 ins (DG-01, DG-05): it opens the panel under the head, also when the views cannot be inserted now; it is off only
+                         while AutoCAD writes. -->
                     <Button x:Name="InsertViewButton" Content="{Binding InsertViewLabel}" Margin="0,12,8,4" Padding="12,4" VerticalAlignment="Top"
-                            Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanInsertView}"
+                            IsEnabled="{Binding CanOpenInsertPanel}"
                             ToolTip="Escribe el borrador en las vistas del dibujo y después inserta las vistas que elijas, enlazadas al rack."
-                            AutomationProperties.Name="Insertar vistas del rack" Click="OnInsertViewClick" />
+                            AutomationProperties.ItemStatus="{Binding InsertPanelStatus}"
+                            AutomationProperties.Name="Insertar vistas del rack" Click="OnInsertViewClick">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource SecondaryButtonStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsInsertPanelOpen}" Value="True">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusInfoBrush}" />
+                                        <Setter Property="BorderThickness" Value="2" />
+                                        <Setter Property="FontWeight" Value="SemiBold" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
                     <Button x:Name="DiscardButton" Content="Descartar" Margin="0,12,8,4" Padding="12,4" VerticalAlignment="Top"
                             Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanDiscard}"
                             AutomationProperties.Name="Descartar el borrador" Click="OnDiscardClick" />
@@ -148,6 +164,11 @@
                         </WrapPanel>
                     </StackPanel>
                 </Border>
+                <!-- T4 ins: the panel «Insertar vista…» (DG-01 to DG-08), the same view as the Selectivo (DG-07); it scrolls on its own. -->
+                <ScrollViewer x:Name="InsertPanelScroll" MaxHeight="380" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                              Visibility="{Binding IsInsertPanelOpen, Converter={StaticResource FlagToVisibility}}">
+                    <local:RackViewInsertPanelView x:Name="InsertPanelView" DataContext="{Binding InsertPanel}" Inserting="OnInsertPanelInserting" />
+                </ScrollViewer>
             </StackPanel>
         </Border>
 

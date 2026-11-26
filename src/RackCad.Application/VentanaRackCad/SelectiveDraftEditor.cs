@@ -712,6 +712,12 @@ namespace RackCad.Application.VentanaRackCad
                     return SelectiveDraftEdit.Refuse(string.Format(CultureInfo.InvariantCulture,
                         "Los tramos ({0:0.#} in) no pueden igualar ni superar el frente completo ({1:0.#} in).", specified, full));
                 }
+
+                // T4 ins (DG-10): the intermediate posts take their part of the front too; a split the resolver would draw as the whole front,
+                // with no notice, is not applied (the classic dialog accepted it).
+                var fit = SelectiveSegmentFit.Of(System, Catalog, ScopeFondos, front, working.Take(working.Count - 1).Select(s => s.Length).ToList(), working.Count);
+                var refusal = SelectiveSegmentFit.RefusalOf(fit, FondoCount > 1);
+                if (refusal != null) return SelectiveDraftEdit.Refuse(refusal);
             }
 
             AimAtScope();

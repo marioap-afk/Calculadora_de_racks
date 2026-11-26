@@ -149,11 +149,25 @@
                             Style="{StaticResource PrimaryButtonStyle}" IsEnabled="{Binding CanUpdate}"
                             AutomationProperties.Name="Actualizar el dibujo con el borrador" Click="OnUpdateClick" />
                     <!-- E2 P3: «Insertar vista…» (as Dinámico, decision 10 of the prototype): AutoCAD first writes the draft in the views that
-                         exist, then inserts the new ones; for a new Selectivo the same button is «Insertar en el dibujo…». -->
+                         exist, then inserts the new ones; for a new Selectivo the same button is «Insertar en el dibujo…». T4 ins (DG-01, DG-05):
+                         it opens the panel under the head, also when the views cannot be inserted now; it is off only while AutoCAD writes. -->
                     <Button x:Name="InsertViewButton" Content="{Binding InsertViewLabel}" Margin="0,12,8,4" Padding="12,4" VerticalAlignment="Top"
-                            Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanInsertView}"
+                            IsEnabled="{Binding CanOpenInsertPanel}"
                             ToolTip="{Binding InsertViewToolTip}"
-                            AutomationProperties.Name="{Binding InsertViewAccessibleText}" Click="OnInsertViewClick" />
+                            AutomationProperties.ItemStatus="{Binding InsertPanelStatus}"
+                            AutomationProperties.Name="{Binding InsertViewAccessibleText}" Click="OnInsertViewClick">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource SecondaryButtonStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsInsertPanelOpen}" Value="True">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusInfoBrush}" />
+                                        <Setter Property="BorderThickness" Value="2" />
+                                        <Setter Property="FontWeight" Value="SemiBold" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
                     <Button x:Name="DiscardButton" Content="Descartar" Margin="0,12,8,4" Padding="12,4" VerticalAlignment="Top"
                             Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanDiscard}"
                             AutomationProperties.Name="Descartar el borrador" Click="OnDiscardClick" />
@@ -250,6 +264,12 @@
                         </WrapPanel>
                     </StackPanel>
                 </Border>
+                <!-- T4 ins: the panel «Insertar vista…» (DG-01 to DG-08), the same view for every editor of the window (DG-07); it scrolls on
+                     its own, so the tabs stay usable while it is open. -->
+                <ScrollViewer x:Name="InsertPanelScroll" MaxHeight="380" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                              Visibility="{Binding IsInsertPanelOpen, Converter={StaticResource FlagToVisibility}}">
+                    <local:RackViewInsertPanelView x:Name="InsertPanelView" DataContext="{Binding InsertPanel}" Inserting="OnInsertPanelInserting" />
+                </ScrollViewer>
             </StackPanel>
         </Border>
 
@@ -697,9 +717,97 @@
                                 <ItemsControl x:Name="FrontFieldList" ItemsSource="{Binding FrontFields}" ItemsPanel="{StaticResource WrapItems}" />
 
                                 <!-- Decision 7: the tramos of «medio frente» here, with no dialog; the column of the matrix carries «½». -->
-                                <TextBlock Text="Medio frente" Style="{StaticResource SubTitle}" />
+                                <!-- T4 ins (DG-09 to DG-11): «Tramos sin aplicar» by the title, where the tramos are written, the strip of the tramos
+                                     (read only: blue with largueros, striped without, grey the intermediate posts; red border when it does not fit),
+                                     the «(resto)» that discounts the posts, and «Aplicar tramos» off while the split does not fit. -->
+                                <WrapPanel>
+                                    <TextBlock Text="Medio frente" Style="{StaticResource SubTitle}" Margin="0,6,8,4" />
+                                    <Border x:Name="PendingSegmentsTag" Margin="0,6,0,4" Padding="8,1" CornerRadius="8" VerticalAlignment="Center"
+                                            BorderThickness="1" BorderBrush="{DynamicResource ShellStatusWarningBrush}"
+                                            Visibility="{Binding HasPendingSegments, Converter={StaticResource FlagToVisibility}}">
+                                        <TextBlock Text="Tramos sin aplicar" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource ShellStatusWarningBrush}" />
+                                    </Border>
+                                </WrapPanel>
                                 <TextBlock x:Name="SegmentNoteText" Text="{Binding SegmentNote}" Style="{StaticResource OptionalText}" Margin="0,0,0,4"
                                            Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                <TextBlock x:Name="SegmentWhereText" Text="{Binding SegmentWhereText}" Style="{StaticResource OptionalText}" Margin="0,0,0,4"
+                                           FontStyle="Italic" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                <StackPanel x:Name="SegmentStripBlock" Margin="0,2,0,6" Visibility="{Binding HasSegmentStrip, Converter={StaticResource FlagToVisibility}}">
+                                    <Border x:Name="SegmentStripBorder" Height="40" BorderThickness="5,0,5,2">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="BorderBrush" Value="{DynamicResource ShellTextSecondaryBrush}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding SegmentStripDoesNotFit}" Value="True">
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusErrorBrush}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <ItemsControl x:Name="SegmentStrip" ItemsSource="{Binding SegmentStrip}" Focusable="False"
+                                                      AutomationProperties.Name="{Binding SegmentStripText}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <local:SegmentStripPanel />
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemContainerStyle>
+                                                <Style TargetType="ContentPresenter">
+                                                    <Setter Property="local:SegmentStripPanel.Weight" Value="{Binding Weight}" />
+                                                </Style>
+                                            </ItemsControl.ItemContainerStyle>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate DataType="{x:Type local:SelectiveSegmentStripItem}">
+                                                    <Grid>
+                                                        <!-- A tramo with largueros: the shell surface with a top bar in the colour of information. -->
+                                                        <Border BorderThickness="0,4,0,0" BorderBrush="{DynamicResource ShellStatusInfoBrush}"
+                                                                Background="{DynamicResource ShellWindowBackgroundBrush}"
+                                                                Visibility="{Binding IsLoaded, Converter={StaticResource FlagToVisibility}}" />
+                                                        <!-- A tramo with no largueros: striped with the border token. -->
+                                                        <Border Visibility="{Binding IsEmpty, Converter={StaticResource FlagToVisibility}}">
+                                                            <Border.Background>
+                                                                <DrawingBrush TileMode="Tile" Viewport="0,0,8,8" ViewportUnits="Absolute">
+                                                                    <DrawingBrush.Drawing>
+                                                                        <DrawingGroup>
+                                                                            <GeometryDrawing Brush="{DynamicResource ShellSurfaceBrush}">
+                                                                                <GeometryDrawing.Geometry>
+                                                                                    <RectangleGeometry Rect="0,0,8,8" />
+                                                                                </GeometryDrawing.Geometry>
+                                                                            </GeometryDrawing>
+                                                                            <GeometryDrawing>
+                                                                                <GeometryDrawing.Pen>
+                                                                                    <Pen Brush="{DynamicResource ShellBorderBrush}" Thickness="2" />
+                                                                                </GeometryDrawing.Pen>
+                                                                                <GeometryDrawing.Geometry>
+                                                                                    <LineGeometry StartPoint="0,8" EndPoint="8,0" />
+                                                                                </GeometryDrawing.Geometry>
+                                                                            </GeometryDrawing>
+                                                                        </DrawingGroup>
+                                                                    </DrawingBrush.Drawing>
+                                                                </DrawingBrush>
+                                                            </Border.Background>
+                                                        </Border>
+                                                        <!-- An intermediate post. -->
+                                                        <Border Width="6" Background="{DynamicResource ShellTextSecondaryBrush}"
+                                                                Visibility="{Binding IsPost, Converter={StaticResource FlagToVisibility}}" />
+                                                        <TextBlock Text="{Binding Text}" FontSize="11" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                                   TextTrimming="CharacterEllipsis" Margin="2,0" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </Border>
+                                    <WrapPanel Margin="0,3,0,0">
+                                        <Border Width="16" Height="10" Margin="0,0,4,0" BorderThickness="0,3,0,0" VerticalAlignment="Center"
+                                                BorderBrush="{DynamicResource ShellStatusInfoBrush}" Background="{DynamicResource ShellWindowBackgroundBrush}" />
+                                        <TextBlock Text="Con largueros" Margin="0,0,12,0" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                        <Border Width="16" Height="10" Margin="0,0,4,0" BorderThickness="1" VerticalAlignment="Center"
+                                                BorderBrush="{DynamicResource ShellBorderBrush}" Background="{DynamicResource ShellSurfaceBrush}" />
+                                        <TextBlock Text="Sin largueros" Margin="0,0,12,0" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                        <Border Width="4" Height="12" Margin="0,0,4,0" VerticalAlignment="Center" Background="{DynamicResource ShellTextSecondaryBrush}" />
+                                        <TextBlock Text="Poste intermedio" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                    </WrapPanel>
+                                </StackPanel>
                                 <Grid Visibility="{Binding HasSegmentRows, Converter={StaticResource FlagToVisibility}}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="56" />
@@ -743,13 +851,20 @@
                                 </ItemsControl>
                                 <TextBlock x:Name="SegmentErrorText" Text="{Binding SegmentError}" Style="{StaticResource OptionalText}" Margin="0,2,0,0"
                                            Foreground="{DynamicResource ShellStatusErrorBrush}" />
+                                <!-- T4 ins: the split that does not fit (DG-10), what the last gesture did, and what each intermediate post takes. -->
+                                <TextBlock x:Name="SegmentFitText" Text="{Binding SegmentFitText}" Style="{StaticResource OptionalText}" Margin="0,2,0,0"
+                                           Foreground="{DynamicResource ShellStatusErrorBrush}" AutomationProperties.LiveSetting="Polite" />
+                                <TextBlock x:Name="SegmentHintText" Text="{Binding SegmentHint}" Style="{StaticResource OptionalText}" Margin="0,2,0,0"
+                                           Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                <TextBlock x:Name="SegmentPostNoteText" Text="{Binding SegmentPostNote}" Style="{StaticResource OptionalText}" Margin="0,2,0,0"
+                                           FontStyle="Italic" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
                                 <WrapPanel Margin="0,4,0,0">
                                     <Button x:Name="StartSegmentsButton" Content="Partir el frente" Margin="0,0,6,4" Padding="10,3"
                                             Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanStartSegments}" Click="OnStartSegmentsClick" />
                                     <Button x:Name="AddSegmentButton" Content="Agregar tramo" Margin="0,0,6,4" Padding="10,3"
                                             Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanChangeSegments}" Click="OnAddSegmentClick" />
                                     <Button x:Name="ApplySegmentsButton" Content="Aplicar tramos" Margin="0,0,6,4" Padding="10,3"
-                                            Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanChangeSegments}" Click="OnApplySegmentsClick" />
+                                            Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanApplySegments}" Click="OnApplySegmentsClick" />
                                     <!-- S-21: the tramos written and not applied go back to those of the front in the draft. -->
                                     <Button x:Name="DiscardSegmentsButton" Content="Descartar tramos" Margin="0,0,6,4" Padding="10,3"
                                             Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanDiscardSegments}" Click="OnDiscardSegmentsClick" />

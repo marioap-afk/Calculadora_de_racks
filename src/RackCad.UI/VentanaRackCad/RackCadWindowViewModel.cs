@@ -345,12 +345,9 @@ namespace RackCad.UI.VentanaRackCad
         // What every Dinámico editor of the window gets: the dialogs over AutoCAD (with the modal port), the writes and the close.
         private void Wire(DynamicEditorViewModel editor)
         {
-            if (_modal != null)
-            {
-                editor.SafetyEditor = current => RackCadModalDialogs.EditDynamicSafety(current, _modal);
-                editor.ViewChooser = options => RackCadModalDialogs.ChooseViews(options, _modal);
-            }
+            if (_modal != null) editor.SafetyEditor = current => RackCadModalDialogs.EditDynamicSafety(current, _modal);
 
+            WireInsertPanel(editor); // T4 ins: «Insertar vista…» is the panel of the editor, not the classic dialog (DG-01)
             editor.InsertViewsAction = InsertDynamicViews;
             editor.InsertNewAction = InsertNewDynamic;
             editor.PropertyChanged += OnDynamicEditorChanged;
@@ -1065,6 +1062,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(IsWaitingForAutoCad));
             OnPropertyChanged(nameof(WaitingText));
             OnPropertyChanged(nameof(CanStopWaiting));
+            RefreshInsertPanels(); // T4 ins: an open panel says whether the door can take its write (DG-05)
         }
 
         // The command of the write that waits took its request: the window waits for its answer.

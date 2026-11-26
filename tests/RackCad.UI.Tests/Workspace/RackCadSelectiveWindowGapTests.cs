@@ -290,7 +290,10 @@ namespace RackCad.UI.Tests
             editor.SegmentRows[2].LengthText = "25";
             Assert.Equal(4, editor.SegmentRows.Count);
             Assert.True(editor.SegmentRows[3].IsRest);
-            Assert.Equal("(resto) ≈ 25 in", editor.SegmentRows[3].RestText);
+            // T4 ins (DG-10): the «(resto)» discounts what each intermediate post takes (3.5 in with the catalog: 2 · (troquel + ménsula)).
+            var post = SelectiveSegmentFit.PostOverhead(editor.Draft.System!, editor.Draft.Catalog, 0, 1);
+            Assert.Equal(3.5, post, 6);
+            Assert.Equal("(resto) ≈ 14.5 in", editor.SegmentRows[3].RestText); // 100 − 75 − 3 · 3.5
 
             Assert.Equal(new[] { true, false, true, true }, editor.SegmentRows.Select(r => r.Loaded).ToArray());
 
@@ -298,7 +301,7 @@ namespace RackCad.UI.Tests
             editor.RemoveSegment(1);
             Assert.Equal(new[] { "20", "25", string.Empty }, editor.SegmentRows.Select(r => r.LengthText).ToArray());
             Assert.Equal(new[] { true, true, true }, editor.SegmentRows.Select(r => r.Loaded).ToArray());
-            Assert.Equal("(resto) ≈ 55 in", editor.SegmentRows[2].RestText);
+            Assert.Equal("(resto) ≈ 48 in", editor.SegmentRows[2].RestText); // 100 − 45 − 2 · 3.5
             editor.RemoveSegment(9); // a row that does not exist: nothing
             Assert.Equal(3, editor.SegmentRows.Count);
 

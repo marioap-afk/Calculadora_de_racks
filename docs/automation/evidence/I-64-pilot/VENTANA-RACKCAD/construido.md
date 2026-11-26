@@ -1481,3 +1481,170 @@ Orden del Owner: «También realiza tú la prueba de la entrega 2, si existen er
 - Tras restaurar un borrador que vuelve a ser el dibujo, el aviso nombra «Descartar» con el botón desactivado.
 
 **No probado:** el «U» de una inserción y cancelar la colocación; el teclado en el panel de «Restaurar»; una cabecera personalizada fuera de su regla escrita por RACKSELECTIVOINSERTAR o RACKSELECTIVONUEVO.
+
+## Cuarta tanda, ins: «Insertar vista…» como panel y los tramos de medio frente (2026-11-26)
+
+**Rama:** local `architecture/workspace-persistente-rackcad-t4-ins`, sobre `ac3fd1b0`, worktree `D:\w4ins`. Sin commit, sin push, sin
+AutoCAD. Prototipo `dialogos` (DG-01 a DG-11); el Owner aceptó las once propuestas sin nota (`owner-decisions-2026-11-26.md`). No se
+borró código clásico: el diálogo «Insertar varias vistas» (`RackViewBatchDialog`) y «Tramos del frente n» (`SelectiveSegmentsWindow`)
+siguen en los editores clásicos.
+
+**1. «Insertar vista…» es un panel en la página del editor (DG-01 a DG-08), en Selectivo y en Dinámico.**
+- **DG-01.** El botón «Insertar vista…» (o «Insertar en el dibujo…» de un rack nuevo) ya no abre el diálogo clásico como modal de
+  AutoCAD (era el supuesto provisional P3-01): abre un panel bajo la cabecera del editor. No es modal: AutoCAD, la ventana y el editor
+  siguen libres. El botón queda marcado mientras el panel está abierto (borde de información, estado de UI Automation «panel abierto»).
+  «Insertar N vistas» hace la misma escritura de antes (RACKSELECTIVOINSERTAR / RACKSELECTIVONUEVO / RACKDINAMICOINSERTAR /
+  RACKDINAMICONUEVO, con la escritura previa del borrador de la decisión 10); «Cancelar» cierra sin escribir. El Plugin no cambia.
+- **El panel:** «Insertar vistas de {rack}» (o «Insertar el Selectivo / Dinámico nuevo en el dibujo»), la frase de entrada, a la izquierda
+  «Vistas de este rack» en los grupos **Frontal · Lateral · Planta** (una casilla por vista con su nombre corto, «Fondo 1», «Salida»,
+  «Poste 3», y su número de orden cuando está marcada), «Todos los postes» / «Ninguno» en los laterales; a la derecha «Orden de
+  colocación», con «Subir», «Bajar» (apagados en los extremos) y «Quitar» por fila; abajo «Insertar N vistas», «Cancelar», el motivo y
+  las dos notas del prototipo. Por debajo de 560 px de ancho el orden va debajo de las vistas.
+- **DG-02.** El orden es el de marcado. Un rack del dibujo abre sin nada marcado; un rack nuevo, con la primera vista de cada grupo
+  («Frontal · fondo 1», «Lateral · poste 1», «Planta» en Selectivo). Cada apertura empieza de nuevo; pedido otra vez con el panel abierto,
+  se queda como está.
+- **DG-03.** Cada vista es una casilla: una vez por pasada.
+- **DG-04.** «En el dibujo ya hay: frontal y lateral (según la última lectura de la lista)…»: los tipos de la lista de la ventana, nunca
+  de qué fondo o de qué poste (eso es otra entrega).
+- **DG-05.** El panel se abre también cuando no se puede insertar, y el motivo va junto a «Insertar N vistas»: rack de solo lectura
+  (S-08), tramos sin aplicar (S-21), otra petición de la ventana esperando a AutoCAD (dolor 9), sin borrador válido o con error. El botón
+  de la cabecera solo se apaga mientras AutoCAD escribe ese rack (y sin la acción de la ventana). Mientras escribe, el panel se cierra.
+- **DG-06.** Sin nombre previsto: «Rack nuevo: se inserta con una identidad nueva y, si no le pones nombre, toma el automático (I-60).»
+- **DG-07.** Un solo panel para todos los sistemas (ver «Punto de entrada», abajo). Filtra con la misma política de exposición que el
+  diálogo clásico (`RackViewExposure`, `Batch`): la Cama no tiene vistas.
+- **DG-08.** El panel sigue al borrador: en cada recomposición vuelve a pedir las vistas que el borrador puede dibujar. Una vista marcada
+  que ya no existe queda en el orden, tachada, con «Ya no existe en el borrador: no se insertará», y «Insertar N vistas» no la cuenta ni la
+  envía (antes se quitaba sin aviso, A2-02; el filtro del Plugin sigue como defensa).
+
+**2. Los tramos de medio frente (DG-09 a DG-11).**
+- **DG-09.** Ya lo hacía S-10: un gesto explícito, «Aplicar tramos». Ahora se apaga si no hay tramos sin aplicar, si hay menos de dos
+  (dolor 16: un tramo es un frente completo, para eso está «Sin medio frente») o si el reparto no cabe. Junto al título, la etiqueta
+  «Tramos sin aplicar».
+- **DG-10.** El dato que el prototipo dejaba [PENDIENTE] existe y el resolvedor ya lo usa (`SelectiveMedioFrente`): cada poste
+  intermedio ocupa `2·(troquelX + inicioX)`, el troquel del larguero del poste (sigue a su peralte) y el arranque de la ménsula del
+  larguero (INICIO_PERFIL X); **3.5 in con el catálogo de hoy**. `SelectiveSegmentFit` (Application, nuevo) lo lee con las mismas llamadas
+  que el BOM y el dibujo, y decide si cabe con `SelectiveMedioFrente.Resolve`, sin regla propia. El «(resto)» lo descuenta; si no queda
+  resto, una línea roja lo dice en vivo («No cabe: los tramos suman 98 in y el poste intermedio ocupa ≈ 3.5 in; el frente mide ≈ 100 in y
+  no queda resto para el último tramo.»), «Aplicar tramos» se apaga, y `SelectiveDraftEditor.SetSegments` lo rechaza con el mismo texto.
+  Con «Todos los fondos» manda el fondo más justo, y el texto lo nombra si el rack tiene más de un fondo. La nota bajo la tabla dice cuánto
+  ocupa cada poste.
+- **DG-11.** Sobre la tabla, la tira de tramos, de solo lectura: azul (token de información) con largueros, rayada (token de borde) sin
+  largueros, gris (texto secundario) cada poste intermedio, con 6 px fijos; cada tramo con su parte del frente (`SegmentStripPanel`, un
+  panel proporcional nuevo) y su longitud; borde rojo si no cabe; leyenda «Con largueros · Sin largueros · Poste intermedio»; nombre de UI
+  Automation «F2: tramo 1 de 44 in, con largueros; poste intermedio; tramo 2 (resto) de ≈ 52.5 in, sin largueros.».
+- **Del prototipo, de paso:** dónde se escribe con dos fondos o más («Se escribe en F2 de los fondos 1 y 2: los fondos de la vista que lo
+  tienen.», dolor 12), y lo que dice cada gesto: la semilla, «El tramo 2 deja de ser el resto: escribe su longitud.», «El tramo 1 pasa a
+  ser el resto: su longitud (20 in) ya no cuenta.» (dolor 15), «Con un solo tramo…» y «Sin tramos…».
+
+**Punto de entrada para los editores que migren (DG-07: Push Back, Cantilever, Cabecera).**
+- `RackViewInsertChoice` (`src/RackCad.Application/VentanaRackCad/RackViewInsertChoice.cs`, puro): las vistas, los grupos en su orden, el
+  orden de colocación, «Todos los postes / Ninguno», la semilla y `Follow`. Normaliza solo los órdenes de hoy (los laterales de Push Back al
+  revés, la planta de Cantilever antes de las estaciones; prueba).
+- `RackViewInsertPanelViewModel` + `RackViewInsertPanelView` (`src/RackCad.UI/VentanaRackCad/`). Un editor:
+  1. crea el panel con su `RackSystemKind`, sus vistas como `RackViewInsertOption(Label, Address)`, un `RackViewInsertPanelContext`
+     (nombre, rack nuevo, nombre del sistema, cambios, motivo de bloqueo, tipos ya en el dibujo, ayuda de los tres grupos) y las acciones de
+     insertar y de cerrar;
+  2. llama `Follow(vistas, contexto)` en cada recomposición y `Update(contexto)` en cada cambio de estado; lo cierra al escribir;
+  3. aloja `RackViewInsertPanelView` con `DataContext="{Binding InsertPanel}"` (y su evento `Inserting` para llevar antes el nombre).
+- Selectivo y Dinámico lo hacen en sus parciales `SelectiveEditorViewModel.Ins.cs` y `DynamicEditorViewModel.Ins.cs`; la ventana les da
+  los tipos de la lista y la petición en vuelo (`RackCadWindowViewModel.Ins.cs`).
+
+**Decisiones y supuestos para el Owner** (prefijo IN, aislados):
+
+| Id | Decisión | Dónde se cambia |
+|---|---|---|
+| IN-01 | El panel va bajo la cabecera, en un `ScrollViewer` de 380 px de alto como máximo, para que las pestañas sigan usables con el panel abierto (en el prototipo la página entera se desplaza) | `InsertPanelScroll` en las dos vistas |
+| IN-02 | **Supuesto** (DG-02 para Dinámico): un Dinámico nuevo empieza con la primera vista de cada grupo («Frontal · salida», el primer lateral con corte, «Planta»), la regla del draft de Selectivo generalizada | `RackViewInsertChoice.SeedFirstOfEachGroup` |
+| IN-03 | **Supuesto** (DG-04): los tipos salen de la última lectura de la lista (V-10, D-10), y el texto lo dice; tras insertar, la lista no se relee sola y el texto puede quedar viejo hasta «Volver a leer la lista». Sin el rack en la lista: «La lista del dibujo no dice qué vistas tiene ya este rack…» | `RackListViewModel.ViewKindsOf`, `RackViewInsertPanelViewModel.ExistingText` |
+| IN-04 | El motivo «otra petición» es el texto de siempre de la puerta ocupada (`DoorBusyText`), sin nombrar el rack que se escribe (el prototipo decía «AutoCAD está escribiendo {rack}») | `RackCadWindowViewModel.Ins.cs`, `OtherRequestText` |
+| IN-05 | Sin el puerto modal del host, «Insertar vista…» ahora sí se ofrece: el panel no es un modal de AutoCAD. Dos pruebas fijaban lo contrario y cambian, con nota | — |
+| IN-06 | Textos: «ordénalas en «Orden de colocación»» y «márcalas en «Vistas de este rack»» en lugar de «a la derecha / a la izquierda», porque en estrecho el orden va debajo | `RackViewInsertPanelViewModel.Lead`, `EmptyText` |
+| IN-07 | Una escritura que la ventana rechaza (borrador de otro dibujo) deja el panel abierto con lo elegido; se cierra cuando AutoCAD empieza a escribir | `RefreshInsertPanel` |
+| IN-08 | Abrir el panel cierra la pregunta de «Cerrar el editor» (prototipo). El panel y «Restaurar layout…» pueden estar abiertos a la vez | `OpenInsertPanel` |
+| IN-09 | La página de un rack de Push Back, Cantilever, Cabecera o Cama del prototipo, que anunciaba qué vistas tendrá el panel cuando migre su editor, no se construyó: es narración del prototipo. El panel reutilizable sí está | — |
+| IN-10 | DG-10 con «Todos los fondos»: el fondo más justo decide; el texto nombra el fondo si el rack tiene más de uno. Una longitud sin escribir cuenta 0 en el resto en vivo, como el diálogo clásico | `SelectiveSegmentFit.Of` |
+| IN-11 | **Diferencia declarada con el clásico:** «Tramos del frente n» acepta un reparto que no cabe por los postes (y se dibuja como frente completo sin aviso, dolor 13); la ventana lo rechaza. El clásico no se tocó | `SelectiveDraftEditor.SetSegments` |
+| IN-12 | La tira da a un tramo sin longitud un 2.5 % del ancho y «¿?», para que se vea | `SelectiveEditorViewModel.SegmentStrip` |
+
+**Ediciones a archivos compartidos** (pequeñas y marcadas `T4 ins`):
+- `src/RackCad.Application/VentanaRackCad/SelectiveDraftEditor.cs`: cinco líneas en `SetSegments` (la comprobación de DG-10, tras la del
+  diálogo clásico).
+- `src/RackCad.UI/VentanaRackCad/SelectiveEditorViewModel.cs`: una línea en `RaiseState` (`RaiseStateIns()`) y otra en `Rebuild`
+  (`RefreshInsertPanel()`); en la región «Medio frente», una línea por gesto (`SegmentGesture`, `SegmentRemovedGesture`, `_segmentHint`),
+  `RaiseSegmentsIns()` en `RaiseSegments` y en `OnSegmentRowChanged`, `UpdateRestText` que llama a `RestTextOf()`, y una línea en
+  `SegmentNote` (un solo tramo).
+- `src/RackCad.UI/VentanaRackCad/SelectiveEditorViewModel.Insert.cs`: sale `ViewChooser`; `InsertView()` abre el panel;
+  `InsertViewBlockedText` ya no pide el elegidor y añade la otra petición.
+- `src/RackCad.UI/VentanaRackCad/DynamicEditorViewModel.cs`: la clase pasa a `partial`; sale `ViewChooser`; `InsertView()` abre el panel;
+  `InsertViewBlockedText` igual que Selectivo; una línea en `RaiseState` y otra en `Rebuild`.
+- `src/RackCad.UI/VentanaRackCad/SelectiveEditorView.xaml(.cs)` y `DynamicEditorView.xaml(.cs)`: el botón «Insertar vista…» (se enciende
+  con `CanOpenInsertPanel` y se marca con el panel abierto), el anfitrión del panel tras el último panel en línea de la cabecera (un
+  bloque `<!-- T4 ins -->`), y el manejador `OnInsertPanelInserting`; en Dinámico, además, `xmlns:local` en la raíz. En la vista de
+  Selectivo, el bloque «Medio frente» del inspector (etiqueta, dónde, tira, línea roja, nota, gesto y «Aplicar tramos» con
+  `CanApplySegments`).
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowViewModel.cs`: en `Wire` (Dinámico) sale la línea del `ViewChooser` y entra
+  `WireInsertPanel(editor)`; una línea en `RaiseWaiting` (`RefreshInsertPanels()`).
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowViewModel.Selective.cs`: en `WireSelective`, `WireInsertPanel(editor)` en lugar del
+  `ViewChooser`.
+- `src/RackCad.UI/VentanaRackCad/RackListViewModel.cs`: `ViewKindsOf(rackId)`, nuevo.
+- `src/RackCad.UI/VentanaRackCad/RackCadModalDialogs.cs`: sale `ChooseViews` (la ventana ya no muestra el diálogo).
+- `src/RackCad.UI/VentanaRackCad/SelectiveViewChoice.cs`: sale `Choose`; `Options` da `RackViewInsertOption`.
+- Archivos nuevos: `RackViewInsertChoice.cs` y `SelectiveSegmentFit.cs` (Application); `RackViewInsertPanelViewModel.cs`,
+  `RackViewInsertPanelView.xaml(.cs)`, `SelectiveEditorViewModel.Ins.cs`, `DynamicEditorViewModel.Ins.cs`, `RackCadWindowViewModel.Ins.cs`
+  y `SegmentStripPanel.cs` (UI).
+- **Censos y guardas:** ninguno falló. El panel es un `UserControl` (fuera del censo de ventanas de ADR-0029) y las guardas de capas de
+  `RackCadWindowListTests` pasan sin cambios.
+
+**Las pruebas:**
+- Nuevas en Core: `RackViewInsertChoiceTests` (7: los grupos y su orden en los cinco sistemas, la exposición y la Cama, el orden de
+  marcado y los gestos imposibles, «Todos los postes / Ninguno», la semilla, el panel que sigue al borrador, los nombres cortos) y
+  `SelectiveSegmentFitTests` (5: lo que ocupa un poste es el hueco que deja el resolvedor, el resto es su último tramo, un reparto que el
+  clásico aceptaba y el resolvedor dibuja como frente completo se rechaza, varios postes y el fondo, longitudes sin escribir y sin sistema).
+- Nuevas en UI: `RackViewInsertPanelTests` (11: un rack del dibujo y uno nuevo, números y gestos, el motivo de DG-05 con tramos y con otra
+  petición que llega y se va, solo lectura y sin acción, el panel que sigue al borrador, Dinámico y su rack nuevo, la pregunta de cierre, la
+  guarda de que ningún archivo de la ventana muestra el diálogo clásico, y dos de vista con WPF real: casillas por `IToggleProvider`, nombres
+  únicos, «Bajar», el motivo, «Insertar 2 vistas», y el panel en estrecho y en el editor de Dinámico) y `SelectiveHalfFrontInsTests` (5: el
+  resto y la tira, el reparto que no cabe, los gestos, dónde con dos fondos, y la vista con WPF real: la tira proporcional, el poste de 6 px,
+  el borde de error y «Aplicar tramos»). `InsertPanelTestSupport` hace con el panel lo que el elegidor de los dobles hacía con el diálogo.
+- Cambiadas, con nota en el código:
+  - `RackCadSelectiveInsertTests` y `RackCadDynamicEditorTests`: eligen las vistas con el panel; la prueba del diálogo de Selectivo pasa a
+    ser la del panel que lo sustituye; las de «sin el puerto modal no se ofrece» se invierten (IN-05); las de tramos sin aplicar comprueban
+    el motivo en el panel.
+  - `SelectiveDraftEditorGapTests` y `RackCadSelectiveWindowGapTests`: el resto descuenta los postes (25 → 14.5 in y 55 → 48 in), y «una
+    pulgada menos que el frente» ya no cabe (DG-10).
+- **Comprobación en rojo:** quince piezas rotas a propósito, una a una, con script (`hs65\t4\ins\red.py` y `red8b.py` en el scratchpad
+  de la sesión; salida en `red-out.txt` y `red-out-8b.txt`). Tras cada una se compiló y se corrieron las clases afectadas (en Core,
+  `RackViewInsertChoiceTests` y `SelectiveSegmentFitTests`; en UI, las dos nuevas, `RackCadSelectiveInsertTests`,
+  `RackCadDynamicEditorTests` y las dos de los huecos):
+  1. las vistas en el orden del sistema, sin los grupos: falla la de los grupos;
+  2. sin el filtro de exposición: falla la de la exposición y la Cama;
+  3. una vista perdida sale del orden (lo de A2-02): fallan la de Core y la de UI de DG-08;
+  4. el rack nuevo sin la semilla: fallan la del Selectivo nuevo y la del Dinámico nuevo;
+  5. el motivo sin la otra petición en vuelo, y 6. la ventana que no refresca los paneles al cambiar la puerta: falla la de DG-05;
+  7. la ventana sin los tipos de la lista: falla la de DG-04;
+  8. el panel que no se cierra al escribir, quitado solo en `RefreshInsertPanel`: **sobrevivió**, porque `RaiseState` también lo cierra;
+     quitado en los dos caminos (8b): fallan cuatro;
+  9. `SetSegments` sin la comprobación de los postes: fallan una de Core y dos de UI;
+  10. el resto sin descontar los postes: fallan cuatro de Core y seis de UI;
+  11. «Aplicar tramos» sin mirar si cabe: fallan dos;
+  12. la tira con los tramos iguales: falla la de la vista;
+  13. quitar el último tramo sin decir qué longitud deja de contar: falla la de los gestos;
+  14. un archivo de la ventana que vuelve a nombrar `RackViewBatchDialog`: falla la guarda.
+
+  Cada archivo se restauró desde sus bytes, con fecha nueva y el mismo SHA-256 (lo comprobó el script), se buscaron restos y se recompiló
+  la solución con `--no-incremental` antes de las suites completas.
+- **Los números** (fuentes finales, solución en Debug recompilada con `--no-incremental`):
+  - **UI completa:** 2771 correctas, 1 con error, 48 omitidas (2820): la base de `ac3fd1b0` (2756 / 0 / 48, 2804) más las 16 nuevas. La
+    que falló es `RackModalHostWindowTests.TheModalHostRunsTheWorkWithItsWindowAsOwnerAndCloses`, por su temporizador de seguridad de 15 s
+    (tardó 19 s: las siete partes corrían sus suites a la vez; la suite duró 58 min). Sola, sus 3 pruebas pasan en 0.9 s. No toca nada de
+    esta parte.
+  - **Core Full:** 19159 correctas, 0 con error, 403 omitidas (19562): la base (19147 / 0 / 403) más las 12 nuevas.
+  - **Build Debug de la solución (Plugin incluido):** 0 errores; las advertencias son las MSB3277 de las referencias de AutoCAD y las de los
+    analizadores de xunit, que ya estaban; ninguna sale de los archivos de esta parte.
+
+**Lo que queda abierto:**
+- **El smoke en AutoCAD:** el panel en la paleta real (ancho, desplazamiento, foco y teclado), la colocación de varias vistas en el orden
+  elegido, el rack nuevo con su nombre automático, y la tira con un medio frente aplicado y dibujado.
+- **DG-04, la otra entrega:** marcar cada vista exacta que ya está en el dibujo (de qué fondo, de qué poste) necesita leerla del dibujo.
+- Push Back, Cantilever y Cabecera usarán el panel cuando migren sus editores (punto de entrada arriba).
+- Las preguntas IN-02, IN-03 e IN-04, y la diferencia IN-11.

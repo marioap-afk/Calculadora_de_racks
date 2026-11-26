@@ -69,7 +69,8 @@ namespace RackCad.UI.VentanaRackCad
 
         /// <summary>
         /// The views «Insertar vista…» offers for a Dinámico, as «Insertar varias…» of the classic editor lists them: the two frontal cuts,
-        /// a lateral cut by post that has one, and the plan.
+        /// a lateral cut by post that has one, and the plan. T4 ins (DG-01): they are chosen in the panel of the editor
+        /// (<see cref="RackViewInsertPanelViewModel"/>); the window no longer shows the classic dialog «Insertar varias vistas».
         /// </summary>
         public static IReadOnlyList<RackViewBatchOption> DynamicViewOptions(DynamicRackSystem system, RackCatalog catalog)
         {
@@ -83,15 +84,6 @@ namespace RackCad.UI.VentanaRackCad
             foreach (var cut in new DynamicSystemLateralBuilder().Cortes(system, catalog))
                 options.Insert(options.Count - 1, new RackViewBatchOption("Lateral · poste " + (cut.PostIndex + 1), RackViewAddress.Post(cut.PostIndex)));
             return options;
-        }
-
-        /// <summary>«Insertar vista…»: the dialog of «Insertar varias…» over AutoCAD; the views chosen in their order, or null when cancelled.</summary>
-        public static IReadOnlyList<RackViewAddress> ChooseViews(IReadOnlyList<RackViewBatchOption> options, IRackCadModalPort modal)
-        {
-            if (modal == null) return null;
-            var presenter = new RackViewBatchDialogPresenter(RackSystemKind.PalletFlow, options);
-            var dialog = new RackViewBatchDialog(presenter);
-            return modal.ShowModal(dialog) == true ? presenter.Result : null;
         }
 
         /// <summary>«Editar seguridad…»: the dialog over AutoCAD; its result, or null when it was cancelled.</summary>
