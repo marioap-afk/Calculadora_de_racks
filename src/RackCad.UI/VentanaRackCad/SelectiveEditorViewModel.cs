@@ -1184,6 +1184,7 @@ namespace RackCad.UI.VentanaRackCad
                 var segments = _editor.ScopeFondos.Select(k => _editor.Front(k, front)).Where(f => f != null).Select(f => SegmentsKey(f.Segments)).Distinct().ToList();
                 if (segments.Count > 1) return "Los fondos de la vista no tienen los mismos tramos en F" + (front + 1) + ": aplicar aquí los iguala.";
                 if (_segmentRows.Count == 0) return "F" + (front + 1) + " es un frente de un solo tramo" + widthText + ".";
+                if (_segmentRows.Count == 1) return "Con un solo tramo, F" + (front + 1) + " es un frente completo: agrega otro tramo o usa «Sin medio frente»."; // T4 ins
                 return "F" + (front + 1) + widthText + " en " + _segmentRows.Count.ToString(CultureInfo.InvariantCulture)
                        + " tramos. El último se calcula: lo que sobra del frente. Se escribe con «Aplicar tramos».";
             }
@@ -1199,6 +1200,7 @@ namespace RackCad.UI.VentanaRackCad
                 new SelectiveSegmentRow(1, true, string.Empty, false),
             });
             _segmentError = string.Empty;
+            SegmentGesture("Dos tramos, como la semilla del diálogo clásico: escribe la longitud del tramo 1 y pulsa «Aplicar tramos»."); // T4 ins
             RefreshDirty();
             RaiseSegments();
         }
@@ -1210,6 +1212,7 @@ namespace RackCad.UI.VentanaRackCad
             var rows = PendingSegments();
             rows.Add(new SelectiveSegment { Length = 0.0, Loaded = true });
             ReplaceSegmentRows(RowsOf(rows));
+            SegmentGesture("El tramo " + (rows.Count - 1).ToString(CultureInfo.InvariantCulture) + " deja de ser el resto: escribe su longitud."); // T4 ins
             RefreshDirty();
             RaiseSegments();
         }
@@ -1218,9 +1221,12 @@ namespace RackCad.UI.VentanaRackCad
         public void RemoveSegment(int index)
         {
             if (!CanChangeSegments || index < 0 || index >= _segmentRows.Count) return;
+            var countBefore = _segmentRows.Count; // T4 ins: what the gesture says (dolor 15)
+            var previousLength = index > 0 ? _segmentRows[index - 1].LengthText : null;
             var rows = PendingSegments();
             rows.RemoveAt(index);
             ReplaceSegmentRows(RowsOf(rows));
+            SegmentRemovedGesture(index, countBefore, previousLength);
             RefreshDirty();
             RaiseSegments();
         }
@@ -1232,6 +1238,7 @@ namespace RackCad.UI.VentanaRackCad
             var (front, scope) = _segmentKey.Value;
             ReplaceSegmentRows(RowsOf(StoredSegments(front, scope)));
             _segmentError = string.Empty;
+            SegmentGesture(string.Empty); // T4 ins
             RefreshDirty();
             RaiseSegments();
             Say("Se descartaron los tramos sin aplicar de F" + (front + 1).ToString(CultureInfo.InvariantCulture) + ".", error: false);
@@ -1266,6 +1273,7 @@ namespace RackCad.UI.VentanaRackCad
             // Applied: the rows are the tramos of the front now, read again from the draft (nothing was dropped).
             _segmentKey = null;
             SetSegmentError(string.Empty);
+            SegmentGesture(string.Empty); // T4 ins
             RebuildSegments(announceDrop: false);
         }
 
@@ -1284,6 +1292,7 @@ namespace RackCad.UI.VentanaRackCad
             // A whole front now, which the user asked for: rows written and not applied go with it, with no notice of a drop.
             _segmentKey = null;
             SetSegmentError(string.Empty);
+            SegmentGesture(string.Empty); // T4 ins
             RebuildSegments(announceDrop: false);
         }
 
@@ -1723,6 +1732,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(CanInsertView));
             OnPropertyChanged(nameof(InsertViewBlockedText));
             RaiseSafetyState(); // E2 seguridad
+            RaiseStateIns(); // T4 ins: the button and the panel «Insertar vista…», «Aplicar tramos»
         }
 
         // ------------------------------------------------------------------ internals: the lists, refreshed in place
@@ -1780,6 +1790,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(DimensionsPlanta));
             RebuildSelection();
             RefreshRestore(); // E2 Restaurar: the open panel of «Restaurar layout…» follows the draft
+            RefreshInsertPanel(); // T4 ins: the open panel of «Insertar vista…» follows the draft (DG-08)
             RaiseState();
         }
 
@@ -1938,6 +1949,7 @@ namespace RackCad.UI.VentanaRackCad
                 _segmentKey = key;
                 ReplaceSegmentRows(front.HasValue ? RowsOf(StoredSegments(front.Value, _editor.FondoScope)) : new List<SelectiveSegmentRow>());
                 _segmentError = string.Empty;
+                _segmentHint = string.Empty; // T4 ins
                 RefreshDirty();
             }
 
@@ -1960,16 +1972,17 @@ namespace RackCad.UI.VentanaRackCad
             RefreshDirty();
             OnPropertyChanged(nameof(HasPendingSegments));
             OnPropertyChanged(nameof(CanDiscardSegments));
+            SegmentGesture(string.Empty); // T4 ins: a length or «con largueros» written; the strip and the fit follow
+            RaiseSegmentsIns();
         }
 
-        // «(resto) ≈ n in» of the last tramo (the approved draft): the width of the front less the lengths written above it.
+        // «(resto) ≈ n in» of the last tramo (the approved draft): the width of the front less the lengths written above it; T4 ins (DG-10):
+        // and less what the intermediate posts take, as the resolver draws it (RestTextOf).
         private void UpdateRestText()
         {
             var rest = _segmentRows.LastOrDefault(r => r.IsRest);
             if (rest == null) return;
-            var width = SegmentFront is int front ? _editor.FrontWidth(front) : 0.0;
-            var written = _segmentRows.Where(r => !r.IsRest).Sum(r => UiSupport.TryNum(r.LengthText, out var value) && value > 0.0 ? value : 0.0);
-            rest.RestText = width > 0.0 ? "(resto) ≈ " + Num(Math.Max(0.0, width - written)) + " in" : "(resto)";
+            rest.RestText = RestTextOf();
         }
 
         private void RaiseSegments()
@@ -1984,6 +1997,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(CanDiscardSegments));
             OnPropertyChanged(nameof(SegmentNote));
             OnPropertyChanged(nameof(SegmentError));
+            RaiseSegmentsIns(); // T4 ins
         }
 
         private void SetSegmentError(string text)

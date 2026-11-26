@@ -61,11 +61,11 @@ namespace RackCad.UI.VentanaRackCad
         /// </summary>
         public void StartNewSelective() => OpenAsNewDraft(RackCadDraftSeed.Defaults(RackCad.Domain.Systems.Shared.RackSystemKind.SelectiveRack));
 
-        // What every Selectivo editor of the window gets: «Insertar vista…» (the dialog of «Insertar varias…» with the modal port of the
-        // host, the writes) and the close. Without the modal port the views cannot be chosen, so «Insertar vista…» is not offered.
+        // What every Selectivo editor of the window gets: «Insertar vista…» (T4 ins: the panel of the editor, DG-01; the writes) and the
+        // close. The panel is not a modal of AutoCAD, so it needs no modal port.
         private void WireSelective(SelectiveEditorViewModel editor)
         {
-            if (_modal != null) editor.ViewChooser = options => SelectiveViewChoice.Choose(options, _modal);
+            WireInsertPanel(editor); // T4 ins
             editor.InsertViewsAction = InsertSelectiveViews;
             editor.InsertNewAction = InsertNewSelective;
             editor.PropertyChanged += OnSelectiveEditorChanged;

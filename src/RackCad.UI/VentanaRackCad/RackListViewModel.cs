@@ -259,6 +259,16 @@ namespace RackCad.UI.VentanaRackCad
             return string.IsNullOrWhiteSpace(name) ? null : name.Trim();
         }
 
+        /// <summary>
+        /// T4 ins (DG-04): the kinds of view the drawing has for a rack of the list («frontal», «lateral», «planta»), as the last reading of
+        /// the list gave them; null when the list does not have the rack.
+        /// </summary>
+        public IReadOnlyList<string> ViewKindsOf(string rackId)
+        {
+            if (string.IsNullOrWhiteSpace(rackId)) return null;
+            return _racks.FirstOrDefault(r => string.Equals(r.RackId, rackId, StringComparison.OrdinalIgnoreCase))?.Views;
+        }
+
         /// <summary>The Kind of the envelope of a rack of the list (for example «dynamic»); null when the list does not have it.</summary>
         public string KindOf(string rackId)
         {

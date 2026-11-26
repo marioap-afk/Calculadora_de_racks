@@ -25,7 +25,9 @@ namespace RackCad.UI.Tests
     /// <summary>
     /// I-64 A-14, line D, Selectivo E2, part P3: «Insertar vista…» of the Selectivo editor of the RackCad window and «Selectivo en esta
     /// ventana» of «Nuevo», over the double door (<see cref="IRackCadSelectiveDoorPort"/>), as the second delivery of Dinámico did them
-    /// (step 4, D-10; <c>RackCadDynamicEditorTests</c>): the views of «Insertar varias…» of the classic Selectivo editor, the write with the
+    /// (step 4, D-10; <c>RackCadDynamicEditorTests</c>). T4 ins (DG-01): the views are chosen in the panel of the editor, not in the classic
+    /// dialog; the tests choose them with <see cref="InsertPanelTestSupport.InsertWith(SelectiveEditorViewModel, RackViewAddress[])"/>, and the
+    /// panel itself is tested in <c>RackViewInsertPanelTests</c>. The views of «Insertar varias…» of the classic Selectivo editor, the write with the
     /// views (RACKSELECTIVOINSERTAR), its answer as a write, the new Selectivo inserted as a new rack (RACKSELECTIVONUEVO) that then is a
     /// rack of the drawing with the automatic name of I-60, the one request in flight, the drawing of the new rack, the close and the prune
     /// that name «un Selectivo nuevo», and the views with real WPF.
@@ -194,14 +196,12 @@ namespace RackCad.UI.Tests
         {
             var rig = new Rig();
             var editor = rig.OpenEditor();
-            IReadOnlyList<RackViewBatchOption>? offered = null;
-            editor.ViewChooser = options =>
-            {
-                offered = options;
-                return null; // cancelled
-            };
 
+            // T4 ins: the views are the ones of the panel; closed with «Cancelar», nothing is written.
             editor.InsertView();
+            IReadOnlyList<RackViewInsertOption>? offered = editor.InsertPanel!.Choice.Options;
+            editor.InsertPanel.Close();
+            Assert.False(editor.IsInsertPanelOpen);
             Assert.Empty(rig.Door.SelectiveWrites);
             Assert.Equal(new[] { "Frontal · fondo 1", "Lateral · poste 1", "Lateral · poste 2", "Lateral · poste 3", "Planta" },
                 offered!.Select(o => o.Label).ToArray());
@@ -210,12 +210,9 @@ namespace RackCad.UI.Tests
 
             // The classic order (InsertBatch_Click): a frontal per fondo, a lateral per post with a cut, the plan.
             var two = new Rig().OpenEditor(TwoFondos());
-            two.ViewChooser = options =>
-            {
-                offered = options;
-                return Array.Empty<RackViewAddress>(); // nothing chosen
-            };
             two.InsertView();
+            offered = two.InsertPanel!.Choice.Options;
+            Assert.False(two.InsertPanel.Insert()); // nothing chosen: nothing is inserted
             var expected = SelectiveDoorInsertion.ViewOptions(two.Draft.System, two.Draft.Catalog);
             Assert.Equal(expected.Select(o => o.Label).ToArray(), offered!.Select(o => o.Label).ToArray());
             Assert.Equal(new[] { "Frontal · fondo 1", "Frontal · fondo 2" }, offered!.Take(2).Select(o => o.Label).ToArray());
@@ -224,34 +221,29 @@ namespace RackCad.UI.Tests
             Assert.Equal("Planta", offered!.Last().Label);
         }
 
+        // T4 ins (DG-01, replaces the provisional P3-01): the window no longer shows the classic dialog «Insertar varias vistas» as a modal of
+        // AutoCAD; the panel offers the views of the system of a Selectivo (its exposure keeps the frontal of every fondo) and writes them in
+        // the order the user left them.
         [Fact]
-        public void TheDialogIsTheOneOfInsertarVariasOfASelectivoAndKeepsTheFrontalOfEveryFondo()
+        public void ThePanelReplacesTheDialogOfInsertarVariasAndKeepsTheFrontalOfEveryFondo()
         {
-            StaTestRunner.Run(() =>
-            {
-                var editor = new Rig().OpenEditor(TwoFondos());
-                var options = SelectiveViewChoice.Options(editor.Draft.System, editor.Draft.Catalog);
-                var modal = new ModalPortDouble();
+            var rig = new Rig();
+            var editor = rig.OpenEditor(TwoFondos());
+            var options = SelectiveViewChoice.Options(editor.Draft.System, editor.Draft.Catalog);
 
-                // Cancelled: nothing is chosen.
-                Assert.Null(SelectiveViewChoice.Choose(options, modal));
-                var presenter = Assert.IsType<RackViewBatchDialogPresenter>(Assert.IsType<RackViewBatchDialog>(Assert.Single(modal.Shown)).DataContext);
-                Assert.Equal(RackSystemKind.SelectiveRack, presenter.Kind);
-                Assert.Equal(options.Select(o => o.Label).ToArray(), presenter.Available.Select(o => o.Label).ToArray());
+            editor.InsertView();
+            Assert.Empty(rig.Modal!.Shown);
+            var panel = editor.InsertPanel!;
+            Assert.Equal(RackSystemKind.SelectiveRack, panel.Choice.System);
+            Assert.Equal(options.Select(o => o.Label).ToArray(), panel.Choice.Options.Select(o => o.Label).ToArray());
 
-                // Accepted: the views chosen, in the order the user left them.
-                modal.Answer = dialog =>
-                {
-                    var shown = (RackViewBatchDialogPresenter)dialog.DataContext;
-                    shown.Add(shown.Available.Last());
-                    shown.Add(shown.Available[1]);
-                    return true;
-                };
-                Assert.Equal(new[] { Planta, RackViewAddress.Fondo(1) }, SelectiveViewChoice.Choose(options, modal)!.ToArray());
-
-                // Without the port of the host the dialog is not shown.
-                Assert.Null(SelectiveViewChoice.Choose(options, null!));
-            });
+            // Chosen: the views, in the order the user left them.
+            panel.Toggle(RackViewAddress.Fondo(1));
+            panel.Toggle(Planta);
+            panel.MoveUp(1);
+            panel.Insert();
+            Assert.Equal(new[] { Planta, RackViewAddress.Fondo(1) }, Assert.Single(rig.Door.SelectiveWrites).InsertViews!.ToArray());
+            Assert.Empty(rig.Modal.Shown);
         }
 
         // ------------------------------------------------------------------ «Insertar vista…» of a Selectivo of the drawing
@@ -264,16 +256,17 @@ namespace RackCad.UI.Tests
             Assert.Equal("Insertar vista…", editor.InsertViewLabel);
             Assert.True(editor.CanInsertView, editor.InsertViewBlockedText);
 
-            // Cancelled (the real dialog of «Insertar varias…», refused by the port): nothing goes to AutoCAD.
-            StaTestRunner.Run(() => editor.InsertView());
-            Assert.Single(rig.Modal!.Shown);
+            // Cancelled (T4 ins: «Cancelar» of the panel; no dialog over AutoCAD): nothing goes to AutoCAD.
+            editor.InsertView();
+            Assert.True(editor.IsInsertPanelOpen);
+            editor.InsertPanel!.Close();
+            Assert.Empty(rig.Modal!.Shown);
             Assert.Empty(rig.Door.SelectiveWrites);
 
-            editor.ViewChooser = _ => new[] { Planta, RackViewAddress.Post(1) };
             var read = Json(editor.Draft.Design);
             Edit(editor);
             Assert.True(editor.IsDirty);
-            editor.InsertView();
+            editor.InsertWith(Planta, RackViewAddress.Post(1));
 
             var write = Assert.Single(rig.Door.SelectiveWrites);
             Assert.True(write.Inserts);
@@ -289,6 +282,8 @@ namespace RackCad.UI.Tests
             Assert.True(editor.IsWriting);
             Assert.False(editor.CanInsertView);
             Assert.Equal(editor.WritingText, editor.InsertViewBlockedText);
+            Assert.False(editor.IsInsertPanelOpen); // the write took its views
+            Assert.False(editor.CanOpenInsertPanel);
 
             // The answer of RACKSELECTIVOINSERTAR is the one of a write: what was sent is the drawing now («Limpio»).
             var answer = SelectiveDoorInsertion.AnswerForInsert(write.RequestId, write.RackId, 2, 0, 2);
@@ -312,12 +307,11 @@ namespace RackCad.UI.Tests
         {
             var rig = new Rig();
             var editor = rig.OpenEditor();
-            editor.ViewChooser = _ => new[] { RackViewAddress.Fondo(0) };
 
             // Unlike «Actualizar», no change does not block it: the views that exist are redrawn as they are.
             Assert.False(editor.CanUpdate);
             Assert.True(editor.CanInsertView, editor.InsertViewBlockedText);
-            editor.InsertView();
+            editor.InsertWith(RackViewAddress.Fondo(0));
             var first = Assert.Single(rig.Door.SelectiveWrites);
             Assert.True(first.Inserts);
 
@@ -329,7 +323,7 @@ namespace RackCad.UI.Tests
 
             // Nothing redrawn: the draft stays not written, and the reason is an error.
             Edit(editor);
-            editor.InsertView();
+            editor.InsertWith(RackViewAddress.Fondo(0));
             var second = rig.Door.SelectiveWrites.Last();
             rig.Door.Written(SelectiveDoorInsertion.AnswerForInsert(second.RequestId, second.RackId, 0, 0, 1));
             Assert.True(editor.IsDirty);
@@ -341,36 +335,44 @@ namespace RackCad.UI.Tests
         [Fact]
         public void TheTextsThatBlockInsertView()
         {
-            // Without the modal port of the host the views cannot be chosen: «Insertar vista…» is not offered.
+            // T4 ins: the panel is no modal of AutoCAD, so without the modal port of the host «Insertar vista…» is offered too (before, the
+            // classic dialog needed the port and the button was off).
             var noPort = new Rig(modal: false).OpenEditor();
-            Assert.False(noPort.CanInsertView);
-            noPort.InsertView();
-            Assert.Equal("Aquí no se pueden insertar vistas del rack.", noPort.Message);
-            Assert.True(noPort.MessageIsError);
+            Assert.True(noPort.CanOpenInsertPanel, noPort.InsertPanelBlockedText);
+            Assert.True(noPort.CanInsertView, noPort.InsertViewBlockedText);
 
-            // An editor with no action of the window (out of the window) is not offered either.
+            // An editor with no action of the window (out of the window) is not offered.
             var loose = SelectiveEditor();
-            loose.ViewChooser = _ => new[] { Planta };
             Assert.Equal("Aquí no se pueden insertar vistas del rack.", loose.InsertViewBlockedText);
+            Assert.False(loose.CanOpenInsertPanel);
+            loose.InsertView();
+            Assert.False(loose.IsInsertPanelOpen);
+            Assert.Equal("Aquí no se pueden insertar vistas del rack.", loose.Message);
+            Assert.True(loose.MessageIsError);
 
             var rig = new Rig();
             var editor = rig.OpenEditor();
-            editor.ViewChooser = _ => new[] { Planta };
 
-            // Tramos written in the inspector and not applied: the write would not carry them (S-21), as for «Actualizar».
+            // Tramos written in the inspector and not applied: the write would not carry them (S-21), as for «Actualizar». T4 ins (DG-05): the
+            // panel opens anyway, says why next to «Insertar N vistas», and does not insert.
             editor.SelectFront(0);
             editor.StartSegments();
             editor.AddSegment();
             Assert.True(editor.HasPendingSegments);
             Assert.Equal("Aplica los tramos con «Aplicar tramos» o descártalos antes de escribir.", editor.InsertViewBlockedText);
-            editor.InsertView();
+            var panel = editor.InsertWith(Planta)!;
+            Assert.NotNull(panel);
             Assert.Empty(rig.Door.SelectiveWrites);
-            Assert.Equal(editor.InsertViewBlockedText, editor.Message);
+            Assert.Equal(editor.InsertViewBlockedText, panel.Reason);
+            Assert.False(panel.CanInsert);
             editor.DiscardSegments();
             Assert.True(editor.CanInsertView, editor.InsertViewBlockedText);
+            Assert.True(panel.CanInsert);
+            Assert.Equal(string.Empty, panel.Reason);
 
             // While AutoCAD writes: the text of the write, and once the command took it, the one that no longer says «Dejar de esperar».
-            editor.InsertView();
+            panel.Insert();
+            Assert.False(editor.CanOpenInsertPanel);
             Assert.Equal("AutoCAD está escribiendo el rack: espera a que termine o pulsa «Dejar de esperar».", editor.InsertViewBlockedText);
             rig.Door.StartLastWrite();
             Assert.False(rig.Window.CanStopWaiting);
@@ -385,9 +387,10 @@ namespace RackCad.UI.Tests
             var editor = rig.OpenEditor();
             var raised = new List<string?>();
             editor.PropertyChanged += (_, e) => raised.Add(e.PropertyName);
-            editor.ViewChooser = _ => new[] { Planta };
-            editor.InsertView();
+            editor.InsertWith(Planta);
             Assert.Contains(nameof(SelectiveEditorViewModel.CanInsertView), raised);
+            Assert.Contains(nameof(SelectiveEditorViewModel.CanOpenInsertPanel), raised);
+            Assert.Contains(nameof(SelectiveEditorViewModel.IsInsertPanelOpen), raised);
             Assert.Contains(nameof(SelectiveEditorViewModel.InsertViewBlockedText), raised);
         }
 
@@ -443,8 +446,7 @@ namespace RackCad.UI.Tests
             Assert.Empty(rig.Door.SelectiveWrites);
             Assert.Equal(editor.UpdateBlockedText, editor.Message);
 
-            editor.ViewChooser = _ => new[] { RackViewAddress.Fondo(0), Planta };
-            editor.InsertView();
+            editor.InsertWith(RackViewAddress.Fondo(0), Planta);
             var write = Assert.Single(rig.Door.SelectiveWrites);
             Assert.True(write.NewRack);
             Assert.True(write.Inserts);
@@ -488,8 +490,7 @@ namespace RackCad.UI.Tests
             Assert.False(rig.Door.SelectiveWrites.Last().NewRack);
             Assert.False(rig.Door.SelectiveWrites.Last().Inserts);
             rig.Door.AnswerLastSelectiveWrite(true, "AutoCAD redibujó 2 vistas del rack con el borrador; la línea de órdenes da el recuento por tipo de vista.");
-            editor.ViewChooser = _ => new[] { RackViewAddress.Post(0) };
-            editor.InsertView();
+            editor.InsertWith(RackViewAddress.Post(0));
             Assert.False(rig.Door.SelectiveWrites.Last().NewRack);
             Assert.True(rig.Door.SelectiveWrites.Last().Inserts);
             rig.Door.AnswerLastSelectiveWrite(true, "AutoCAD redibujó 2 vistas del rack con el borrador e insertó 1 vista nueva.");
@@ -508,8 +509,7 @@ namespace RackCad.UI.Tests
             Assert.True(editor.IsDirty);
             Assert.Equal("Nave A (Borrador 1, Selectivo nuevo)", rig.Window.UnwrittenWorkOf(Session)); // T4 new: a draft says it is one, with its label
 
-            editor.ViewChooser = _ => new[] { Planta };
-            editor.InsertView();
+            editor.InsertWith(Planta);
             var write = Assert.Single(rig.Door.SelectiveWrites);
             Assert.Equal("Nave A", write.Name); // trimmed, as the classic editor sends it
 
@@ -525,8 +525,7 @@ namespace RackCad.UI.Tests
         {
             var rig = new Rig();
             var editor = rig.StartNew();
-            editor.ViewChooser = _ => new[] { RackViewAddress.Post(0) };
-            editor.InsertView();
+            editor.InsertWith(RackViewAddress.Post(0));
             var write = rig.Door.SelectiveWrites.Last();
 
             rig.Door.Written(SelectiveDoorInsertion.AnswerForNewRack(write.RequestId, write.RackId, 0, null!));
@@ -549,8 +548,7 @@ namespace RackCad.UI.Tests
         {
             var rig = new Rig();
             var editor = rig.StartNew();
-            editor.ViewChooser = _ => new[] { RackViewAddress.Post(0) };
-            editor.InsertView();
+            editor.InsertWith(RackViewAddress.Post(0));
             Assert.True(rig.Window.CanStopWaiting);
 
             rig.Door.StartLastWrite();
@@ -593,14 +591,17 @@ namespace RackCad.UI.Tests
             Assert.True(rig.Window.ShowNuevoCards);
             Assert.False(rig.Window.ShowNewSelectiveEditor);
 
-            editor.ViewChooser = _ => new[] { RackViewAddress.Post(0) };
-            editor.InsertView();
+            // T4 ins, correction 7 of the review: the panel says it next to «Insertar N vistas» and does not ask for the write.
+            var panel = editor.InsertWith(RackViewAddress.Post(0))!;
             Assert.Empty(rig.Door.SelectiveWrites);
-            Assert.Equal("Este borrador es de otro dibujo: vuelve a ese dibujo para escribirlo.", editor.Message);
+            Assert.Equal("Este borrador es de otro dibujo: vuelve a ese dibujo para escribirlo.", panel.Reason);
+            Assert.False(panel.CanInsert);
+            Assert.True(editor.IsInsertPanelOpen); // the panel stays, with the views chosen
 
             rig.Present(7);
             Assert.Same(editor, rig.Window.NewSelectiveEditor);
-            editor.InsertView();
+            Assert.Equal(string.Empty, panel.Reason);
+            panel.Insert();
             Assert.Single(rig.Door.SelectiveWrites);
         }
 
@@ -798,20 +799,26 @@ namespace RackCad.UI.Tests
                 var names = head.Children.OfType<Button>().Select(Name).ToList();
                 Assert.Equal(names.Count, names.Distinct().Count());
 
-                // A click chooses the views and the window writes them; the button is off while AutoCAD writes.
-                editor.ViewChooser = _ => new[] { Planta };
+                // T4 ins: a click opens the panel; «Insertar 1 vista» writes; the button is off while AutoCAD writes.
                 Click(view.InsertViewButton);
+                Lay(view);
+                Assert.Equal(Visibility.Visible, view.InsertPanelScroll.Visibility);
+                Assert.Empty(rig.Door.SelectiveWrites);
+                editor.InsertPanel!.Toggle(Planta);
+                Lay(view);
+                Click(view.InsertPanelView.InsertPanelGoButton);
                 Assert.True(Assert.Single(rig.Door.SelectiveWrites).Inserts);
                 Lay(view);
                 Assert.False(view.InsertViewButton.IsEnabled);
+                Assert.Equal(Visibility.Collapsed, view.InsertPanelScroll.Visibility);
                 rig.Door.AnswerLastSelectiveWrite(true, "AutoCAD redibujó 1 vista del rack con el borrador e insertó 1 vista nueva.");
                 Lay(view);
                 Assert.True(view.InsertViewButton.IsEnabled);
 
-                // Without the modal port: shown, off.
+                // Without the modal port: shown and on (the panel is no modal of AutoCAD).
                 var noPort = new SelectiveEditorView(new Rig(modal: false).OpenEditor());
                 Lay(noPort);
-                Assert.False(noPort.InsertViewButton.IsEnabled);
+                Assert.True(noPort.InsertViewButton.IsEnabled);
             }));
         }
 
@@ -833,10 +840,12 @@ namespace RackCad.UI.Tests
                 Assert.Equal("Un rack nuevo se escribe en el dibujo con «Insertar en el dibujo…».", view.UpdateBlockedText.Text);
                 Assert.Equal(SelectiveEditorViewModel.NewRackOpenedText, view.MessageText.Text);
 
-                // The name typed and not left yet goes to the draft before the views are chosen.
-                view.NameBox.Text = "Nave B";
-                editor.ViewChooser = _ => new[] { Planta };
+                // The name typed and not left yet goes to the draft before the views are inserted (T4 ins: with «Insertar N vistas»).
                 Click(view.InsertViewButton);
+                editor.InsertPanel!.Mark(Planta);
+                Lay(view);
+                view.NameBox.Text = "Nave B";
+                Click(view.InsertPanelView.InsertPanelGoButton);
                 var write = Assert.Single(rig.Door.SelectiveWrites);
                 Assert.True(write.NewRack);
                 Assert.Equal("Nave B", write.Name);
@@ -880,8 +889,10 @@ namespace RackCad.UI.Tests
 
                 // Inserted: «Nuevo» shows its systems again, and the same view is the one of the rack once it is opened from the list.
                 var editor = rig.Window.NewSelectiveEditor!;
-                editor.ViewChooser = _ => new[] { Planta };
                 Click(hosted.InsertViewButton);
+                editor.InsertPanel!.Mark(Planta);
+                Lay(view);
+                Click(hosted.InsertPanelView.InsertPanelGoButton);
                 var write = rig.Door.SelectiveWrites.Last();
                 rig.Door.Written(SelectiveDoorInsertion.AnswerForNewRack(write.RequestId, write.RackId, 1, "Selectivo 1"));
                 Lay(view);
@@ -916,8 +927,8 @@ namespace RackCad.UI.Tests
             Assert.Equal((42.0, 34.0), (editor.Draft.Design!.ExtraFondoPostCabeceras[0][0]!.Depth, SelectiveDepthLayout.CabeceraDepthOfFondo(editor.Draft.System!, 1)));
 
             // Opened and cancelled: nothing changes, and the name written and written back is «Limpio».
-            editor.ViewChooser = _ => null!;
             editor.InsertView();
+            editor.InsertPanel!.Close();
             Assert.Empty(rig.Door.SelectiveWrites);
             Assert.Equal(opened, Json(editor.Draft.Design));
             var name = editor.Name;
@@ -926,8 +937,7 @@ namespace RackCad.UI.Tests
             Assert.False(editor.IsDirty, editor.StatusText);
 
             // Accepted: what is sent is the design the user saw.
-            editor.ViewChooser = _ => new[] { Planta, RackViewAddress.Post(0) };
-            editor.InsertView();
+            editor.InsertWith(Planta, RackViewAddress.Post(0));
             var write = Assert.Single(rig.Door.SelectiveWrites);
             Assert.Equal(opened, Json(write.Design));
             Assert.Equal(42.0, write.Design.ExtraFondoPostCabeceras[0][0]!.Depth);
@@ -967,8 +977,7 @@ namespace RackCad.UI.Tests
             // Chosen, it is written with the new rack.
             Choice(created.AnnotationFields, "dimStyle").SelectedValue = "ESTILO_RACKCAD";
             Assert.Equal("ESTILO_RACKCAD", created.Draft.Design!.DimensionStyle);
-            created.ViewChooser = _ => new[] { Planta };
-            created.InsertView();
+            created.InsertWith(Planta);
             Assert.Equal("ESTILO_RACKCAD", rig.Door.SelectiveWrites.Last().Design.DimensionStyle);
 
             // Another drawing has not been read: its new Selectivo offers only «(Automático)».

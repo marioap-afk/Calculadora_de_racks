@@ -392,7 +392,18 @@ namespace RackCad.UI.Tests
                         Assert.True(refused.Refused, "ámbito " + scope);
                     }
 
-                    var written = draft.SetSegments(0, new[] { new SelectiveSegment { Length = full - 1.0, Loaded = true }, new SelectiveSegment() });
+                    // T4 ins (DG-10): the intermediate post takes its part of the front too, so «one inch short of the front» no longer fits in
+                    // any scope (the resolver would draw the whole front, with no notice); a tramo that leaves room for the post is written.
+                    var post = SelectiveSegmentFit.PostOverhead(draft.System!, draft.Catalog, 0, 0);
+                    Assert.True(post > 1.0, "poste intermedio " + post);
+                    foreach (var scope in new[] { (int?)null, 0, 1 })
+                    {
+                        var refused = draft.WithinScope(scope, () => draft.SetSegments(0, new[] { new SelectiveSegment { Length = full - 1.0, Loaded = true }, new SelectiveSegment() }));
+                        Assert.True(refused.Refused, "ámbito " + scope);
+                        Assert.StartsWith("No cabe", refused.Error);
+                    }
+
+                    var written = draft.SetSegments(0, new[] { new SelectiveSegment { Length = full - 1.0 - post, Loaded = true }, new SelectiveSegment() });
                     Assert.Equal(2, written.Written);
                     Assert.True(draft.Front(0, 0)!.IsSplit);
                     Assert.True(draft.Front(1, 0)!.IsSplit);

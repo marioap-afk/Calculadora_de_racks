@@ -571,18 +571,20 @@ namespace RackCad.UI.Tests
             var editor = rig.OpenEditor();
             Assert.True(editor.CanInsertView, editor.InsertViewBlockedText);
 
-            // Cancelled (the real dialog of «Insertar varias…», refused by the port): nothing goes to AutoCAD.
-            StaTestRunner.Run(() => editor.InsertView());
+            // Cancelled (T4 ins: «Cancelar» of the panel, DG-01; no dialog over AutoCAD): nothing goes to AutoCAD.
+            editor.InsertView();
+            Assert.True(editor.IsInsertPanelOpen);
+            var offered = editor.InsertPanel!.Choice.Options;
+            editor.InsertPanel.Close();
+            Assert.False(editor.IsInsertPanelOpen);
             Assert.Empty(rig.Door.Writes);
 
-            IReadOnlyList<RackCad.UI.Views.RackViewBatchOption>? offered = null;
             var planta = RackCad.Application.Systems.Shared.RackViewAddress.Whole(RackCad.Application.Systems.Shared.DimensionViewKind.Planta);
-            editor.ViewChooser = options => { offered = options; return new[] { planta }; };
             Write(editor, v => v.Essentials, "weight", "1200");
-            editor.InsertView();
+            editor.InsertWith(planta);
 
             Assert.Equal(new[] { "Frontal · salida", "Frontal · entrada", "Lateral · poste 1", "Lateral · poste 2", "Lateral · poste 3", "Planta" },
-                offered!.Select(o => o.Label).ToArray());
+                offered.Select(o => o.Label).ToArray());
             var write = Assert.Single(rig.Door.Writes);
             Assert.True(write.Inserts);
             Assert.Equal(new[] { planta }, write.InsertViews!.ToArray());
@@ -643,8 +645,7 @@ namespace RackCad.UI.Tests
             Assert.Equal(editor.UpdateBlockedText, editor.Message);
 
             var planta = RackCad.Application.Systems.Shared.RackViewAddress.Whole(RackCad.Application.Systems.Shared.DimensionViewKind.Planta);
-            editor.ViewChooser = _ => new[] { planta };
-            editor.InsertView();
+            editor.InsertWith(planta);
             var write = Assert.Single(rig.Door.Writes);
             Assert.True(write.NewRack);
             Assert.Equal(new[] { planta }, write.InsertViews!.ToArray());
@@ -682,8 +683,7 @@ namespace RackCad.UI.Tests
             var rig = new Rig(new ModalPortDouble());
             rig.Window.StartNewDynamic();
             var editor = rig.Window.NewDynamicEditor!;
-            editor.ViewChooser = _ => new[] { RackCad.Application.Systems.Shared.RackViewAddress.Post(0) };
-            editor.InsertView();
+            editor.InsertWith(RackCad.Application.Systems.Shared.RackViewAddress.Post(0));
             Assert.True(rig.Window.CanStopWaiting);
 
             rig.Door.StartLastWrite();
@@ -715,10 +715,9 @@ namespace RackCad.UI.Tests
             const string Taken = "AutoCAD ya tomó la escritura del rack: espera a que termine, o termina o cancela la orden en AutoCAD; la ventana recibirá su respuesta.";
             var rig = new Rig(new ModalPortDouble());
             var editor = rig.OpenEditor();
-            editor.ViewChooser = _ => new[] { RackCad.Application.Systems.Shared.RackViewAddress.Whole(RackCad.Application.Systems.Shared.DimensionViewKind.Planta) };
 
             Write(editor, v => v.Essentials, "weight", "1200");
-            editor.InsertView();
+            editor.InsertWith(RackCad.Application.Systems.Shared.RackViewAddress.Whole(RackCad.Application.Systems.Shared.DimensionViewKind.Planta));
             Assert.True(editor.IsWriting);
             Assert.Equal("AutoCAD está escribiendo el rack: espera a que termine o pulsa «Dejar de esperar».", editor.WritingText);
             Assert.Equal(editor.WritingText, editor.UpdateBlockedText);
@@ -744,8 +743,7 @@ namespace RackCad.UI.Tests
             rig.Window.StopWaiting();
             rig.Window.StartNewDynamic();
             var created = rig.Window.NewDynamicEditor!;
-            created.ViewChooser = _ => new[] { RackCad.Application.Systems.Shared.RackViewAddress.Post(0) };
-            created.InsertView();
+            created.InsertWith(RackCad.Application.Systems.Shared.RackViewAddress.Post(0));
             rig.Door.StartLastWrite();
             Assert.Equal(Taken, created.WritingText);
             Assert.Equal(Taken, created.InsertViewBlockedText);
@@ -766,14 +764,17 @@ namespace RackCad.UI.Tests
             Assert.Null(rig.Window.NewDynamicEditor);
             Assert.True(rig.Window.ShowNuevoCards);
 
-            editor.ViewChooser = _ => new[] { RackCad.Application.Systems.Shared.RackViewAddress.Post(0) };
-            editor.InsertView();
+            // T4 ins, correction 7 of the review: the panel says it next to «Insertar N vistas» and does not ask for the write.
+            var panel = editor.InsertWith(RackCad.Application.Systems.Shared.RackViewAddress.Post(0))!;
             Assert.Empty(rig.Door.Writes);
-            Assert.Equal("Este borrador es de otro dibujo: vuelve a ese dibujo para escribirlo.", editor.Message);
+            Assert.Equal("Este borrador es de otro dibujo: vuelve a ese dibujo para escribirlo.", panel.Reason);
+            Assert.False(panel.CanInsert);
+            Assert.True(editor.IsInsertPanelOpen); // the panel stays, with the views chosen
 
             rig.Present(7);
             Assert.Same(editor, rig.Window.NewDynamicEditor);
-            editor.InsertView();
+            Assert.Equal(string.Empty, panel.Reason);
+            panel.Insert();
             Assert.Single(rig.Door.Writes);
         }
 
@@ -783,8 +784,7 @@ namespace RackCad.UI.Tests
             var rig = new Rig(new ModalPortDouble());
             rig.Window.StartNewDynamic();
             var editor = rig.Window.NewDynamicEditor!;
-            editor.ViewChooser = _ => new[] { RackCad.Application.Systems.Shared.RackViewAddress.Post(0) };
-            editor.InsertView();
+            editor.InsertWith(RackCad.Application.Systems.Shared.RackViewAddress.Post(0));
 
             rig.Door.AnswerLastWrite(false, "AutoCAD no insertó el rack nuevo: se canceló la colocación o no se pudo preparar.");
             Assert.True(editor.IsNewRack);
@@ -826,13 +826,23 @@ namespace RackCad.UI.Tests
             });
         }
 
+        // T4 ins (DG-01): the panel of «Insertar vista…» is no modal of AutoCAD, so the window inserts views also without the modal port of the
+        // host (before, the classic dialog needed it and the button was off). An editor with no action of the window still does not.
         [Fact]
-        public void WithoutTheModalPortOfTheHostTheWindowDoesNotInsertViews()
+        public void WithoutTheModalPortOfTheHostTheWindowInsertsViewsWithThePanel()
         {
-            var editor = new Rig().OpenEditor();
-            Assert.False(editor.CanInsertView);
-            editor.InsertView();
-            Assert.Equal("Aquí no se pueden insertar vistas del rack.", editor.Message);
+            var rig = new Rig();
+            var editor = rig.OpenEditor();
+            Assert.True(editor.CanOpenInsertPanel, editor.InsertPanelBlockedText);
+            Assert.True(editor.CanInsertView, editor.InsertViewBlockedText);
+            editor.InsertWith(RackCad.Application.Systems.Shared.RackViewAddress.Post(0));
+            Assert.True(Assert.Single(rig.Door.Writes).Inserts);
+
+            var loose = new DynamicEditorViewModel(DynamicDraftEditor.CreateNew(UiSupport.LoadCatalogSafe()), "DIN-9");
+            Assert.False(loose.CanOpenInsertPanel);
+            loose.InsertView();
+            Assert.False(loose.IsInsertPanelOpen);
+            Assert.Equal("Aquí no se pueden insertar vistas del rack.", loose.Message);
         }
 
         [Fact]

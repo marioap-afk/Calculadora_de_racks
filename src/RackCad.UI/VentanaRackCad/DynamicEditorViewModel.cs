@@ -280,7 +280,6 @@ namespace RackCad.UI.VentanaRackCad
         private Action<DynamicEditorViewModel, IReadOnlyList<RackViewAddress>> _insertViews;
         private Action<DynamicEditorViewModel, IReadOnlyList<RackViewAddress>> _insertNew;
         private bool _isNewRack;
-        private Func<IReadOnlyList<RackViewBatchOption>, IReadOnlyList<RackViewAddress>> _viewChooser;
 
         /// <param name="editor">The draft of the rack, as it was read (its design is the baseline of «Modificado» and of «Descartar»).</param>
         /// <param name="rackId">The identity of the rack in the drawing; null for a new rack.</param>
@@ -788,13 +787,6 @@ namespace RackCad.UI.VentanaRackCad
             set { _insertViews = value; RaiseState(); }
         }
 
-        /// <summary>How the views are chosen: the dialog of «Insertar varias…» of the classic editor, over AutoCAD; null when cancelled.</summary>
-        public Func<IReadOnlyList<RackViewBatchOption>, IReadOnlyList<RackViewAddress>> ViewChooser
-        {
-            get => _viewChooser;
-            set { _viewChooser = value; RaiseState(); }
-        }
-
         /// <summary>What «Insertar en el dibujo…» of a new rack does with the views chosen: the window inserts the rack with them.</summary>
         public Action<DynamicEditorViewModel, IReadOnlyList<RackViewAddress>> InsertNewAction
         {
@@ -805,17 +797,25 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>«Insertar vista…» for a rack of the drawing; «Insertar en el dibujo…» for a new one.</summary>
         public string InsertViewLabel => _isNewRack ? "Insertar en el dibujo…" : "Insertar vista…";
 
+        /// <summary>The views can be inserted now (T4 ins: the panel enables «Insertar N vistas» with this and at least one view marked).</summary>
         public bool CanInsertView => string.IsNullOrEmpty(InsertViewBlockedText);
 
-        /// <summary>Why «Insertar vista…» cannot run now; empty when it can.</summary>
+        /// <summary>
+        /// Why the views cannot be inserted now; empty when they can. T4 ins (DG-05): the panel opens anyway and says it next to «Insertar N
+        /// vistas», with another request of the window that waits for AutoCAD (dolor 9).
+        /// </summary>
         public string InsertViewBlockedText
         {
             get
             {
                 var action = _isNewRack ? _insertNew : _insertViews;
-                if (action == null || _viewChooser == null || string.IsNullOrWhiteSpace(RackId))
+                if (action == null || string.IsNullOrWhiteSpace(RackId))
                     return _isNewRack ? "Aquí no se puede insertar el rack nuevo." : "Aquí no se pueden insertar vistas del rack.";
                 if (_writing) return WritingText;
+                var drawing = OtherDrawingBlockedText;
+                if (!string.IsNullOrEmpty(drawing)) return drawing;
+                var other = OtherRequestBlockedText;
+                if (!string.IsNullOrEmpty(other)) return other;
                 if (_editor.Design == null) return "No hay un borrador válido que escribir.";
                 if (!string.IsNullOrEmpty(_editor.LastError)) return _editor.LastError;
                 return string.Empty;
@@ -823,20 +823,19 @@ namespace RackCad.UI.VentanaRackCad
         }
 
         /// <summary>
-        /// «Insertar vista…»: the views to insert, chosen as in «Insertar varias…» of the classic editor; AutoCAD first writes the draft in
-        /// the views that exist (also with no change: they are redrawn as they are) and then places the new ones, linked to the rack.
+        /// «Insertar vista…»: the views to insert, chosen in the panel of the editor (T4 ins, DG-01: <see cref="InsertPanel"/>) as in «Insertar
+        /// varias…» of the classic editor; AutoCAD first writes the draft in the views that exist (also with no change: they are redrawn as
+        /// they are) and then places the new ones, linked to the rack. The button only opens the panel; «Insertar N vistas» writes.
         /// </summary>
         public void InsertView()
         {
-            if (!CanInsertView)
+            if (!CanOpenInsertPanel)
             {
-                Say(InsertViewBlockedText, error: true);
+                Say(InsertPanelBlockedText, error: true);
                 return;
             }
 
-            var views = _viewChooser(RackCadModalDialogs.DynamicViewOptions(_editor.System, _editor.Catalog));
-            if (views == null || views.Count == 0) return;
-            (_isNewRack ? _insertNew : _insertViews)(this, views);
+            OpenInsertPanel();
         }
 
         /// <summary>
@@ -1098,6 +1097,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(CanEditSafety));
             OnPropertyChanged(nameof(CanInsertView));
             OnPropertyChanged(nameof(InsertViewBlockedText));
+            RaiseStateIns(); // T4 ins: the button and the panel «Insertar vista…»
         }
 
         // The lists keep their items: a recomposition refreshes them in place, so the focus, the box being written and the button under
@@ -1118,6 +1118,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(DerivedPostReinforced));
             RebuildSafety();
             RebuildSelection();
+            RefreshInsertPanel(); // T4 ins: the open panel of «Insertar vista…» follows the draft (DG-08)
             RaiseState();
         }
 

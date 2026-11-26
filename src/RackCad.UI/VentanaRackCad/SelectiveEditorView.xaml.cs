@@ -154,6 +154,9 @@ namespace RackCad.UI.VentanaRackCad
             _viewModel.InsertView();
         });
 
+        // T4 ins: «Insertar N vistas» of the panel writes; the name just typed goes to the draft before, as with «Actualizar».
+        private void OnInsertPanelInserting(object sender, EventArgs e) => Contained(() => NameBox.GetBindingExpression(TextBox.TextProperty)?.UpdateSource());
+
         private void OnDiscardClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Discard());
 
         private void OnCloseEditorClick(object sender, RoutedEventArgs e) => Contained(() =>
