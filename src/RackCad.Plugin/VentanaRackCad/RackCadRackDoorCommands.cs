@@ -47,6 +47,14 @@ namespace RackCad.Plugin.VentanaRackCad
                     return;
                 }
 
+                // M-02 of the review of Selectivo: the window opens the design of one view, so the views must carry the same one.
+                var siblings = RackSiblingDesigns.Compare(pending.RackId, Views(blocks));
+                if (!siblings.Coincide)
+                {
+                    door?.AnswerRead(new RackDesignRead(pending.RequestId, pending.RackId, false, null, null, null, siblings.Reason));
+                    return;
+                }
+
                 var embed = blocks[0].Embed;
                 if (embed == null || string.IsNullOrEmpty(embed.Design))
                 {
@@ -91,6 +99,14 @@ namespace RackCad.Plugin.VentanaRackCad
                 if (blocks.Count == 0)
                 {
                     door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false, "El rack ya no está en el dibujo: no se escribió nada."));
+                    return;
+                }
+
+                // M-02 of the review of Selectivo: the draft is written in every view, so they must carry the same design.
+                var siblings = RackSiblingDesigns.Compare(pending.RackId, Views(blocks));
+                if (!siblings.Coincide)
+                {
+                    door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false, siblings.Reason));
                     return;
                 }
 
@@ -149,6 +165,14 @@ namespace RackCad.Plugin.VentanaRackCad
                 if (blocks.Count == 0)
                 {
                     door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false, "El rack ya no está en el dibujo: no se escribió nada."));
+                    return;
+                }
+
+                // M-02 of the review of Selectivo: the draft is first written in every view, so they must carry the same design.
+                var siblings = RackSiblingDesigns.Compare(pending.RackId, Views(blocks));
+                if (!siblings.Coincide)
+                {
+                    door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false, siblings.Reason));
                     return;
                 }
 
@@ -329,6 +353,15 @@ namespace RackCad.Plugin.VentanaRackCad
                 RackCommandSupport.Report(ex);
                 door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false, "No se pudo escribir: " + ex.Message));
             }
+        }
+
+        // The views of the rack for RackSiblingDesigns: each block definition by its handle, with its envelope.
+        private static System.Collections.Generic.List<RackSiblingView> Views(
+            System.Collections.Generic.List<(Autodesk.AutoCAD.DatabaseServices.ObjectId BlockId, RackEmbedDocument Embed)> blocks)
+        {
+            var views = new System.Collections.Generic.List<RackSiblingView>(blocks.Count);
+            foreach (var (blockId, embed) in blocks) views.Add(new RackSiblingView(blockId.Handle.ToString(), embed));
+            return views;
         }
     }
 }
