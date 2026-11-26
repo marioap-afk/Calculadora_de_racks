@@ -1458,3 +1458,26 @@ Las dos de M-5 ya pasan en la base, porque guardan lo que funciona. La de fuente
 **Lo que queda abierto.**
 - **Sin AutoCAD:** que RACKSELECTIVOINSERTAR y RACKSELECTIVONUEVO escriban en el dibujo el JSON enviado con una personalizada fuera de su regla queda para el smoke; aquí se comprobó el diseño que reciben.
 - El «Lista de materiales» y el «Insertar varias…» del clásico siguen imponiendo sobre su estado (ARQ-43-10, para la planeación).
+
+## Selectivo en la ventana (línea D), smoke de la entrega 2 en AutoCAD (2026-11-26)
+
+Orden del Owner: «También realiza tú la prueba de la entrega 2, si existen errores corrígelos». La hizo la sesión, por control de pantalla, sobre `56e057f4` (Debug recompilado con el árbol limpio; huellas comprobadas antes de empezar) y una copia de trabajo del dibujo de preparación, que nunca se guardó (su huella al terminar es la del principio). FILEDIA volvió a 1.
+
+**Lo que pasó** (OBSERVADO):
+- **«Extremos y seguridad»:** la pestaña con sus tarjetas, «Extremos y fondos» y «Seguridad por poste»; «Editar seguridad…» abre el diálogo clásico como modal de AutoCAD sobre copias del borrador; bota «Ambas» → 6 botas, «Izquierda y Derecha» en P1..P3; tope configurado → «En 7 de 7 celdas con larguero · 14 piezas.»; la casilla «Tope (T)» de una celda quita su T; «Por poste…» con P2 «Izquierda» → la tabla lo dice y el total baja a 5. «Actualizar» escribe la seguridad en las dos vistas (leído por COM: el mismo diseño, con `TopeOffCells` de la celda quitada) y las botas se ven en el dibujo.
+- **«Restaurar layout…»:** sin nada manual, su aviso; con un largo manual, el panel con las seis casillas, «Ver lo que se pierde», «Restaurar lo marcado» desactivado sin casillas con valores; restaurado solo en el borrador vuelve a «Limpio», y con el valor ya escrito queda «Modificado», sin M y con la selección; «Descartar» lo devuelve.
+- **«Insertar vista…»** con el borrador modificado: el diálogo del clásico, AutoCAD redibuja primero las vistas que había y luego coloca la nueva; las tres vistas de SEL-A llevan el mismo diseño (COM).
+- **Un Selectivo nuevo:** «Insertar en el dibujo…» con dos vistas, nombre automático «Selectivo 1», el aviso de la ventana y las dos vistas con el mismo Id y diseño (COM). Con otro nuevo «Modificado», `CLOSE` → «No» a guardar → el dibujo no se cierra y el veto nombra «un Selectivo nuevo».
+- **B-1 de Dinámico:** DIN 1 con el peso cambiado → «Insertar vista…» → la vista nueva y la que había llevan el mismo diseño, con el peso nuevo (COM).
+
+**El fallo que se corrigió:**
+- **SP-01** (diálogo clásico, también en `main`, visible desde «Editar seguridad…»): el editor por poste decía «"(por defecto)" usa la selección general (Derecha).» con la general en «Ambas». `SafetyPerPostWindow` leía `labels[(int)defaultSide - 1]`, y las etiquetas empiezan por «Ninguno»: Ambas salía «Derecha», Derecha «Izquierda» e Izquierda «Ninguno». Solo era el texto: los valores por poste ya se leían y escribían bien. Ahora lee `labels[(int)defaultSide]`.
+- **Pruebas:** `SafetyPerPostIntroTests` (UI, 7, archivo nuevo): el texto con las etiquetas de lado y con las de ubicación (Entrada/Salida, Posterior, Ambas), y «= no lleva.» sin general. En rojo sobre `56e057f4` sin el cambio: fallan las 6 con general.
+
+**Observaciones, sin cambio:**
+- El tope elegido sin «Configurar…» no se guarda, y la rejilla del tope ofrece un «Larg. 4» en un frente que no tiene larguero a piso: son del clásico (la ventana le pasa los mismos argumentos que `RackSelectiveWindow.Safety_Click`).
+- «Largo de larguero (n)» cuenta valores por nivel, también el de un nivel en el piso.
+- Con un Selectivo nuevo «Modificado», la cabecera de la ventana dice «todo escrito» (cuenta los racks del dibujo); el veto sí lo cuenta. Es la cabecera compartida con Dinámico.
+- Tras restaurar un borrador que vuelve a ser el dibujo, el aviso nombra «Descartar» con el botón desactivado.
+
+**No probado:** el «U» de una inserción y cancelar la colocación; el teclado en el panel de «Restaurar»; una cabecera personalizada fuera de su regla escrita por RACKSELECTIVOINSERTAR o RACKSELECTIVONUEVO.

@@ -1084,9 +1084,11 @@ namespace RackCad.UI
             var root = new DockPanel { Margin = new Thickness(14) };
 
             // A bota has a general side, so "(por defecto)" means "use it"; a lateral has none, so it means "no lleva".
+            // The labels start with «Ninguno», so they are indexed by the side itself (smoke of the entrega 2 of I-64: with
+            // «- 1» a general «Ambas» was named «Derecha», «Derecha» «Izquierda» and «Izquierda» «Ninguno»).
             var perDefault = defaultSide == SafetySide.None
                 ? "\"(por defecto)\" = no lleva."
-                : "\"(por defecto)\" usa la selección general (" + labels[(int)defaultSide - 1] + ").";
+                : "\"(por defecto)\" usa la selección general (" + labels[(int)defaultSide] + ").";
             var intro = new TextBlock
             {
                 Text = (string.IsNullOrWhiteSpace(elementLabel) ? "Lado por poste" : elementLabel) + " — lado por poste. " + perDefault,
