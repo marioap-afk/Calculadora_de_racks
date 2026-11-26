@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
 using RackCad.Application.ProjectVariables;
@@ -99,7 +100,9 @@ namespace RackCad.UI.Tests
             Assert.Equal((1, 1, 1, 1, 1, 1, false), (result.BeamLengths, result.Clears, result.HalfFronts, result.ManualHeights, result.PostPeraltes, result.CustomCabeceras, result.PostPeraltesSkipped));
             Assert.All(Present(draft), Assert.False);
             Assert.Equal(Json(plain.Design), Json(draft.Design));
-            Assert.Equal("Restaurado: 1 largo de larguero, 1 claro, 1 medio frente, 1 altura manual, 1 peralte propio, 1 cabecera personalizada.", result.Notice);
+            // The notice of the screen (spec-restaurar §6); it replaced the provisional «Restaurado: …» of the model part.
+            Assert.Equal("Layout restaurado en el borrador: 6 valores manuales quitados (1 largo de larguero, 1 claro, 1 medio frente, 1 altura manual, "
+                         + "1 peralte propio, 1 cabecera personalizada). «Descartar» vuelve a lo último que se leyó o se escribió.", result.Notice);
         }
 
         /// <summary>
@@ -167,7 +170,54 @@ namespace RackCad.UI.Tests
             Assert.Null(vm.RestoreLayout());
 
             Assert.True(vm.IsDirty);
-            Assert.Equal("Restaurado: 1 largo de larguero, 1 claro, 1 medio frente, 1 altura manual, 1 peralte propio.", vm.Message);
+            Assert.Equal("Layout restaurado en el borrador: 5 valores manuales quitados (1 largo de larguero, 1 claro, 1 medio frente, 1 altura manual, "
+                         + "1 peralte propio). «Descartar» vuelve a lo último que se leyó o se escribió. Se conservan: 1 cabecera personalizada.", vm.Message);
+        }
+
+        /// <summary>
+        /// «Ver lo que se pierde»: one line per value with the texts of the approved draft (<c>lossList</c>) and in its order (front by front:
+        /// half front, manual height, then each level; the own peraltes; the custom cabeceras), and each box has as many lines as it counts.
+        /// </summary>
+        [Fact]
+        public void TheLinesOfWhatIsLostAreThoseOfTheDraftOnePerValueAsManyAsEachBoxCounts()
+        {
+            var catalog = UiSupport.LoadCatalogSafe();
+            var draft = Open(catalog, personalised: true);
+            var losses = SelectiveLayoutRestore.Losses(draft);
+
+            Assert.Equal(new[]
+            {
+                "Medio frente en F1 (2 tramos)",
+                "Largo manual de larguero en F1 · N1 (100 in)",
+                "Altura manual de cabecera en F2 (200 in)",
+                "Claro manual en F2 · N2 (80 in)",
+                "Peralte propio en P1 (5 in)",
+                "Cabecera personalizada en P2",
+            }, losses.Select(l => l.Text).ToArray());
+            var preview = SelectiveLayoutRestore.Preview(draft, SelectiveLayoutRestoreOptions.All);
+            foreach (var box in Enum.GetValues<SelectiveLayoutRestoreBox>())
+            {
+                Assert.Equal(preview.Count(box), losses.Count(l => l.Box == box));
+                Assert.True(SelectiveLayoutRestoreOptions.All.Includes(box));
+                Assert.False(SelectiveLayoutRestoreOptions.None.Includes(box));
+            }
+
+            Assert.Empty(SelectiveLayoutRestore.Losses(Open(catalog, personalised: false)));
+        }
+
+        /// <summary>The notice (spec §6): the total, singular with one value, the categories with something in the order of the list, and what the unchecked boxes keep.</summary>
+        [Fact]
+        public void TheNoticeSaysHowManyValuesWereRemovedWhichAndWhatTheUncheckedBoxesKeep()
+        {
+            var catalog = UiSupport.LoadCatalogSafe();
+            var result = SelectiveLayoutRestore.Apply(Open(catalog, personalised: true), SelectiveLayoutRestoreOptions.All with { Clear = false, CustomCabeceras = false });
+            Assert.Equal("Layout restaurado en el borrador: 4 valores manuales quitados (1 largo de larguero, 1 medio frente, 1 altura manual, 1 peralte propio). "
+                         + "«Descartar» vuelve a lo último que se leyó o se escribió. Se conservan: 1 claro, 1 cabecera personalizada.", result.Notice);
+            Assert.Equal((0, 1, 0, 0, 0, 1), (result.Kept.BeamLengths, result.Kept.Clears, result.Kept.HalfFronts, result.Kept.ManualHeights, result.Kept.PostPeraltes, result.Kept.CustomCabeceras));
+
+            var one = SelectiveLayoutRestore.Apply(Open(catalog, personalised: true), Only(1, true));
+            Assert.Equal("Layout restaurado en el borrador: 1 valor manual quitado (1 claro). «Descartar» vuelve a lo último que se leyó o se escribió. "
+                         + "Se conservan: 1 largo de larguero, 1 medio frente, 1 altura manual, 1 peralte propio, 1 cabecera personalizada.", one.Notice);
         }
 
         [Fact]

@@ -1154,3 +1154,84 @@ Cada archivo se restauró desde sus bytes originales con fecha nueva y se compro
 - **Para integrar:** cuando llegue M-02 (`…-selectivo-m02`), `RACKSELECTIVOINSERTAR` necesita la comparación de las vistas hermanas, como `RACKSELECTIVOAPLICAR`, porque escribe el borrador en todas las vistas antes de insertar.
 - **Declarado de la parte A:** en `RACKSELECTIVOINSERTAR`, «redibujadas» son las vistas que había menos las borradas, no las que redibujó la mitad de dibujo, que no lo devuelve. Si no hacía falta redibujar (el borrador ya es el dibujo), la respuesta dice igual que las redibujó; el borrador queda «Limpio», que es cierto.
 - **Sin AutoCAD:** `RACKSELECTIVONUEVO` y `RACKSELECTIVOINSERTAR` esperan el smoke: la colocación con el jig, el nombre automático, que un «U» deshaga la inserción y la cancelación de la colocación.
+
+## Selectivo en la ventana (línea D), entrega 2, «Restaurar layout…», pantalla (P2)
+
+**Rama:** local `architecture/workspace-persistente-rackcad-selectivo-e2-restaurar`, avanzada a `938823b2` (la rama de Selectivo con la operación `SelectiveLayoutRestore` y `RestoreOptions`/`RestoreLayout()` ya integrados, `ffbcc485`). Sin commit, sin push, sin AutoCAD. Spec: `sprint/spec-restaurar.md`; decisión 8 del Owner.
+
+**Lo que se construyó:**
+- **El botón** «Restaurar layout…» en la cabecera del editor, entre «Descartar» y «Cerrar el editor», como Dinámico (`SecondaryButtonStyle`, nombre de automatización «Restaurar el layout estándar», habilitado con `CanEdit`). Sin menú «Más» (E1 no lo tiene).
+- **El panel en línea** (`RestorePanel`) bajo el mensaje del editor, donde Dinámico pone su confirmación, con los textos de la spec §4:
+  - «¿Restaurar el layout?» y «Vuelve a la geometría que sale de las tarimas en {todos los fondos | el rack}. Marca lo que quieres restaurar:»;
+  - las seis casillas de la decisión 8 con su recuento, «Largo de larguero (3)»; con nada que quitar, «Largo de larguero (ninguno)», deshabilitada y marcada (no cuenta);
+  - **todas marcadas al abrir**, también al reabrir (no recuerdan la elección; spec §4);
+  - «Ver lo que se pierde», plegado al abrir: una línea por valor, solo de las casillas marcadas, con los textos y el orden de `lossList` del draft;
+  - «Va al borrador: el dibujo no cambia hasta «Actualizar».»;
+  - «Restaurar lo marcado» (estilo de peligro: el secundario con el token de error, porque el shell no tiene botón de peligro), deshabilitado si ninguna casilla marcada tiene algo; «Cancelar» (nombre de automatización «Cancelar la restauración del layout», para no repetir el «Cancelar» de la pregunta de cierre).
+- **Sin nada manual** el panel no se abre y el editor dice «No hay nada manual que quitar: el layout ya es el que sale de las tarimas.» (draft `:1561`).
+- **El aviso** (spec §6), en el mensaje del editor: «Layout restaurado en el borrador: 7 valores manuales quitados (2 largos de larguero, 1 claro, …). «Descartar» vuelve a lo último que se leyó o se escribió.», en singular con un valor, y «Se conservan: 1 cabecera personalizada.» si quedaron casillas desmarcadas con valores. El borrador pasa a «Modificado», las celdas pierden la «M» y la selección se conserva.
+- **El panel y la pregunta de cierre se cierran entre sí** (draft `:1562`). Mientras AutoCAD escribe, el panel se cierra y no se abre. Abierto, sigue al borrador: cada recomposición recuenta casillas y líneas y conserva lo que el usuario marcó; si ya no queda nada que quitar, se cierra.
+- **La frontera de `CommitPendingEditors`** (spec §5): antes de abrir y de restaurar, la vista confirma el texto del campo con el foco (y el nombre). Si un campo tiene un valor escrito y rechazado (su error a la vista), no se restaura y el editor lo nombra: «No se puede restaurar el layout: «Alto de tarima» tiene un valor que no se aplicó (…). Corrígelo o vuelve a escribir el que tenía.» (texto provisional), porque la recomposición devolvería a la caja el valor del borrador sin aviso.
+- **Application** (`SelectiveLayoutRestore.cs`, archivo de esta parte):
+  - `SelectiveLayoutRestoreBox` (las seis casillas) y `Options.Includes`;
+  - `Losses(editor)`, las líneas de «Ver lo que se pierde»;
+  - `Result.Count(box)`, `Result.Breakdown` y `Result.Kept` (lo que conservan las casillas desmarcadas);
+  - `Result.Notice` pasa al texto exacto de la spec §6. Reemplaza el provisional «Restaurado: …» de la parte del modelo: dos asertos de `SelectiveLayoutRestoreTests` se actualizaron a ese texto.
+- **El modelo de la vista** en su archivo parcial, `SelectiveEditorViewModel.Restore.cs`: `SelectiveRestoreBoxItem`, `IsRestoreOpen`, `RestoreBoxes`, `RestoreIntro`, `RestoreLosses`, `IsRestoreLossesExpanded`, `RestorePeralteNote`, `CanConfirmRestore`, `OpenRestore`/`ConfirmRestore`/`CancelRestore`. `RestoreOptions` y `RestoreLayout()` se mudaron ahí desde `SelectiveEditorViewModel.cs`, con la misma firma.
+
+**Supuestos provisionales** (preguntas abiertas al Owner, aislados):
+
+| Id | Supuesto | Dónde se cambia |
+|---|---|---|
+| R-01 | **Alcance = todo el rack** (como el draft aprobado), no el selector de fondos: con «Fondo 2» en la matriz restaura igual todos los fondos, y los peraltes propios se restauran siempre. La operación trabaja sobre el alcance del borrador, así que se llama con `WithinScope(null, …)` (como hizo el pulido) | Un solo valor: `SelectiveEditorViewModel.RestoreFollowsFondoView` (`false`). Con `true` sigue el selector: «el fondo n» en el texto, y la casilla de peraltes propios desmarcada y deshabilitada con «Los peraltes propios son de todo el rack: elige «Todos los fondos» para restaurarlos.» (regla I-43). Las dos ramas tienen prueba |
+| R-02 | Las casillas no recuerdan la elección: cada apertura vuelve a todo marcado | `OpenRestore` (`everyBoxChecked: true`) |
+| R-03 | «Se conservan:» dice las categorías desmarcadas con su recuento («1 claro, 1 cabecera personalizada»), con el mismo formato del desglose | `SelectiveLayoutRestoreResult.Notice` |
+| R-04 | El texto del valor rechazado que detiene la restauración (la spec no lo da) | `PendingFieldError` |
+
+**Diferencias con el clásico y con Dinámico** (spec §8): el clásico no tiene orden global (se restaura pieza a pieza); la ventana sí, con casillas. Peralte propio y cabecera personalizada son casillas separadas (en el clásico «Restablecer poste» las une); con las dos marcadas el resultado es el del clásico, comparado byte a byte por `EveryBoxCheckedIsWhatTheClassicEditorBuildsForThePlainRack`. Va al borrador, con confirmación y aviso con recuento. Dinámico es todo o nada; Selectivo, por casillas. **Nota:** la operación recompone al final y `Apply` del modelo de la vista recompone otra vez (dos recomposiciones por clic, no una por escritura).
+
+**Ediciones a archivos compartidos** (pequeñas y marcadas `E2 Restaurar`):
+- `src/RackCad.UI/VentanaRackCad/SelectiveEditorView.xaml`: el botón en la cabecera (entre «Descartar» y «Cerrar el editor») y el panel tras `MessageText`. Son dos bloques, porque el botón va en la fila de botones y el panel debajo.
+- `src/RackCad.UI/VentanaRackCad/SelectiveEditorView.xaml.cs`: tres manejadores y `CommitFocusedText`, antes de `OnCloseYesClick`.
+- `src/RackCad.UI/VentanaRackCad/SelectiveEditorViewModel.cs`:
+  - sale el bloque «E2-B «Restaurar layout…»» (mudado al parcial);
+  - una línea en `SetConfirmingClose` (`if (value) CloseRestore();`);
+  - una línea en `Rebuild`, tras `RebuildSelection()` (`RefreshRestore();`).
+- `RackCadWindowViewModel.cs` y `RackCadWindowView.xaml(.cs)`: sin cambios.
+
+**Las pruebas:**
+- UI, `tests/RackCad.UI.Tests/Workspace/SelectiveRestorePanelTests.cs` (nuevo, 15; 12 del modelo de la vista y 3 de vista con WPF real en STA):
+  - el panel abre con todo marcado, recuentos, texto y líneas en orden;
+  - casilla «(ninguno)» deshabilitada y marcada, y «Restaurar lo marcado» deshabilitado sin nada que quitar;
+  - nada manual: no abre y avisa;
+  - desmarcar quita sus líneas y la restauración la conserva, con el aviso exacto, «Modificado», sin «M» y con la selección; todo marcado = el rack sin personalizaciones;
+  - singular y «Descartar»;
+  - cada apertura vuelve a todo marcado y plegado, y «Cancelar» no toca nada;
+  - el panel sigue al borrador;
+  - pregunta de cierre ↔ panel;
+  - escribiendo;
+  - el valor rechazado;
+  - todo el rack con «Fondo 2» en la vista (R-01) y la rama del selector;
+  - la vista: botón, panel, casillas ligadas, líneas, nombres de automatización únicos, «Restaurar lo marcado», «Descartar», «Cancelar», sin errores de enlace; botón deshabilitado sin `CanEdit` (escribiendo y rack que no recompone); aviso sin abrir.
+- UI, `SelectiveLayoutRestoreTests` (de 10 a 12): las líneas de `Losses` (textos y orden del draft, tantas como cuenta cada casilla) y el aviso con «Se conservan» y en singular; dos asertos al texto de §6.
+- **Comprobación en rojo:** diez piezas rotas a propósito, una a una, con las dos clases tras cada una (script y salida en el scratchpad de la sesión, `hs65\selectivo\p2-restaurar\`): cada una falló:
+  1. el alcance del selector de fondos en lugar de todo el rack: falla la de R-01 («Fondo 2» en la vista);
+  2. sin refrescar el panel en `Rebuild`: fallan la del panel que sigue al borrador, la de «escribiendo» y la de vista con escritura;
+  3. la pregunta de cierre sin cerrar el panel: falla la de la pregunta ↔ panel;
+  4. una apertura que no vuelve a marcar todo: falla la de cada apertura;
+  5. sin la frontera del valor rechazado: falla la del valor rechazado;
+  6. las líneas sin filtrar por casilla: fallan cinco (las del modelo de la vista y las dos de vista);
+  7. una casilla «(ninguno)» habilitada: fallan tres;
+  8. el aviso sin «Se conservan»: fallan tres (dos de `SelectiveLayoutRestoreTests` y una del panel);
+  9. el panel que se abre sin nada manual: fallan la del modelo de la vista y la de vista;
+  10. el panel de la vista ligado a otra bandera: falla la de vista.
+
+  El script verifica que cada archivo vuelve byte a byte a su copia (y le da fecha nueva); los SHA-256 de los cuatro archivos tocados coinciden con los de antes de la comprobación. Las suites de abajo corrieron después.
+- **UI completa:** 2705 correctas, 0 con error, 48 omitidas (2753): la base de `938823b2` más las 17 nuevas (15 del panel y 2 de `SelectiveLayoutRestoreTests`); 27 de 27 en las dos clases focales.
+- **Core Full:** 19144 correctas, 0 con error, 403 omitidas (19547). Esta parte no añade pruebas de Core, así que es el número de la base `938823b2`; las guardas de fuente de Core pasan con el archivo parcial nuevo.
+- **Build Debug del Plugin:** 0 errores (las 2 advertencias MSB3277 de las referencias de AutoCAD ya estaban).
+
+**Lo que queda abierto:**
+- Las preguntas al Owner: R-01 (alcance, spec §10) y R-02 (recordar la elección).
+- Smoke en AutoCAD: el panel con el tamaño real de la ventana y el foco del teclado (Tab por las casillas, Enter en «Restaurar lo marcado»).
+- **Para integrar:** las tres partes añaden su sección al final de este archivo (conflicto trivial de documentación). En la cabecera de `SelectiveEditorView.xaml`, P3 añade «Insertar vista…» junto a «Actualizar» (como Dinámico) y esta parte entre «Descartar» y «Cerrar el editor»: no se tocan.

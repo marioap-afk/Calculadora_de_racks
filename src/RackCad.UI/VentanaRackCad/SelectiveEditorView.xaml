@@ -151,6 +151,10 @@
                     <Button x:Name="DiscardButton" Content="Descartar" Margin="0,12,8,4" Padding="12,4" VerticalAlignment="Top"
                             Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanDiscard}"
                             AutomationProperties.Name="Descartar el borrador" Click="OnDiscardClick" />
+                    <!-- E2 Restaurar: «Restaurar layout…» (decision 8), as in Dinámico; its panel is under the message. -->
+                    <Button x:Name="RestoreButton" Content="Restaurar layout…" Margin="0,12,8,4" Padding="12,4" VerticalAlignment="Top"
+                            Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanEdit}"
+                            AutomationProperties.Name="Restaurar el layout estándar" Click="OnRestoreClick" />
                     <Button x:Name="CloseEditorButton" Content="Cerrar el editor" Margin="0,12,8,4" Padding="12,4" VerticalAlignment="Top"
                             Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanClose}"
                             AutomationProperties.Name="Cerrar el editor de este rack" Click="OnCloseEditorClick" />
@@ -184,6 +188,62 @@
                         </Style>
                     </TextBlock.Style>
                 </TextBlock>
+                <!-- E2 Restaurar: the panel of «Restaurar layout…» (decision 8, sprint\spec-restaurar.md §4), inline as the confirmation of
+                     Dinámico and the question of closing: the six boxes, every one checked when it opens, what each removes, «Ver lo que se
+                     pierde» folded, and «Restaurar lo marcado» / «Cancelar». -->
+                <Border x:Name="RestorePanel" Margin="0,6,0,0" Padding="8" BorderThickness="1"
+                        BorderBrush="{DynamicResource ShellStatusWarningBrush}" AutomationProperties.Name="Restaurar el layout"
+                        Visibility="{Binding IsRestoreOpen, Converter={StaticResource FlagToVisibility}}">
+                    <StackPanel>
+                        <TextBlock x:Name="RestoreTitleText" Text="¿Restaurar el layout?" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                        <TextBlock x:Name="RestoreIntroText" Text="{Binding RestoreIntro}" TextWrapping="Wrap" Margin="0,4,0,4"
+                                   Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                        <ItemsControl x:Name="RestoreBoxList" ItemsSource="{Binding RestoreBoxes}" AutomationProperties.Name="Lo que se restaura">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type local:SelectiveRestoreBoxItem}">
+                                    <CheckBox Content="{Binding Label}" Margin="0,2" IsChecked="{Binding IsChecked, Mode=TwoWay}"
+                                              IsEnabled="{Binding IsEnabled}" AutomationProperties.Name="{Binding Label}" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <TextBlock x:Name="RestorePeralteNoteText" Text="{Binding RestorePeralteNote}" Style="{StaticResource OptionalText}"
+                                   FontStyle="Italic" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                        <Expander x:Name="RestoreLossExpander" Header="Ver lo que se pierde" Margin="0,4,0,0"
+                                  IsExpanded="{Binding IsRestoreLossesExpanded, Mode=TwoWay}"
+                                  Visibility="{Binding HasRestoreLosses, Converter={StaticResource FlagToVisibility}}">
+                            <ItemsControl x:Name="RestoreLossList" ItemsSource="{Binding RestoreLosses}" Margin="18,4,0,0"
+                                          AutomationProperties.Name="Lo que se pierde">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <DockPanel Margin="0,1">
+                                            <TextBlock DockPanel.Dock="Left" Text="•" Margin="0,0,6,0" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                            <TextBlock Text="{Binding Mode=OneWay}" TextWrapping="Wrap" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                        </DockPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Expander>
+                        <TextBlock Text="Va al borrador: el dibujo no cambia hasta «Actualizar»." TextWrapping="Wrap" Margin="0,6,0,0"
+                                   Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                        <WrapPanel Margin="0,6,0,0">
+                            <Button x:Name="RestoreConfirmButton" Content="Restaurar lo marcado" Margin="0,0,6,0" Padding="10,3"
+                                    IsEnabled="{Binding CanConfirmRestore}" AutomationProperties.Name="Restaurar lo marcado"
+                                    Click="OnRestoreConfirmClick">
+                                <!-- The style of danger of the approved draft («Restaurar y perder estos cambios»): the shell has no danger
+                                     button, so the secondary one with the error token. -->
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource SecondaryButtonStyle}">
+                                        <Setter Property="Foreground" Value="{DynamicResource ShellStatusErrorBrush}" />
+                                        <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusErrorBrush}" />
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                            <Button x:Name="RestoreCancelButton" Content="Cancelar" Padding="10,3" Style="{StaticResource SecondaryButtonStyle}"
+                                    AutomationProperties.Name="Cancelar la restauración del layout" Click="OnRestoreCancelClick" />
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
             </StackPanel>
         </Border>
 

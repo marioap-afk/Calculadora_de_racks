@@ -136,6 +136,28 @@ namespace RackCad.UI.VentanaRackCad
             _viewModel.RequestClose();
         });
 
+        // E2 Restaurar: «Restaurar layout…» opens its panel and «Restaurar lo marcado» restores; what was being written goes to the draft first
+        // (the frontier CommitPendingEditors of the classic editor), so a value refused stops it and the view-model names it.
+        private void OnRestoreClick(object sender, RoutedEventArgs e) => Contained(() =>
+        {
+            CommitFocusedText();
+            _viewModel.OpenRestore();
+        });
+
+        private void OnRestoreConfirmClick(object sender, RoutedEventArgs e) => Contained(() =>
+        {
+            CommitFocusedText();
+            _viewModel.ConfirmRestore();
+        });
+
+        private void OnRestoreCancelClick(object sender, RoutedEventArgs e) => Contained(_viewModel.CancelRestore);
+
+        private void CommitFocusedText()
+        {
+            NameBox.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
+            if (Keyboard.FocusedElement is TextBox { DataContext: DynamicFieldItem field }) field.Commit();
+        }
+
         private void OnCloseYesClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.ConfirmClose());
 
         private void OnCloseNoClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.CancelClose());
