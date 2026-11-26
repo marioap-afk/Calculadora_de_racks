@@ -760,7 +760,8 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>
         /// «Calculado» (the approved draft): the larguero length, the height of the cabecera, the separation N2 → N3, the depth of the
         /// cabecera, and the counts of cabeceras, largueros, pallet positions and separators. The counts of pieces are read from the BOM
-        /// (<see cref="SelectiveBomCounts"/>); they are computed when the list is read, once per recomposition.
+        /// (<see cref="SelectiveDraftEditor.BomCounts"/>, on a copy: reading them changes nothing of the draft); they are computed when the list
+        /// is read, once per recomposition, and the view is told to read it only while the Rack tab is shown.
         /// </summary>
         public IReadOnlyList<SelectiveCalcItem> Calculated
         {
@@ -770,11 +771,15 @@ namespace RackCad.UI.VentanaRackCad
                 {
                     _calculated = BuildCalculated();
                     _calculatedFor = _editor.System;
+                    CalculatedBuilds++;
                 }
 
                 return _calculated;
             }
         }
+
+        /// <summary>Test seam (M-03 of the review of the polish): how many times «Calculado» was counted (each one reads the BOM).</summary>
+        internal int CalculatedBuilds { get; private set; }
 
         public IReadOnlyList<SelectiveColumnHead> Columns => _columns;
 
@@ -1794,9 +1799,11 @@ namespace RackCad.UI.VentanaRackCad
             }
 
             // What every cell of the view holds now, read once: its content, its state (with the floor larguero of its front) and whether it
-            // has a manual value. «Distinta del resto» (the approved draft): the content most cells of the view have; a cell with another one
-            // is distinct, when the view has more than one content.
-            var now = new Dictionary<(int Fondo, int Front, int Level), (string Content, string State, bool Manual)>();
+            // has a manual value the drawing uses. «Distinta del resto» (the approved draft): the content most cells of the view have; a cell
+            // with another one is distinct, when the view has more than one content. M-02 of the review of the polish: a manual larguero length
+            // in a fondo that is not the width master is kept, but the resolver does not use it, so it is no «M» (it says so, unused).
+            var master = _editor.WidthMasterFondo;
+            var now = new Dictionary<(int Fondo, int Front, int Level), (string Content, string State, bool Manual, bool Unused)>();
             foreach (var k in scope)
             {
                 for (var f = 0; f < _editor.FrontCount(k); f++)
@@ -1806,7 +1813,8 @@ namespace RackCad.UI.VentanaRackCad
                     {
                         var cell = _editor.Cell(k, f, l);
                         var content = CellKey(cell);
-                        now[(k, f, l)] = (content, content + "|" + floor, cell?.HasOverride == true);
+                        var length = cell?.BeamLength.HasValue == true;
+                        now[(k, f, l)] = (content, content + "|" + floor, cell?.Clear.HasValue == true || (length && k == master), length && k != master);
                     }
                 }
             }
@@ -1848,6 +1856,7 @@ namespace RackCad.UI.VentanaRackCad
                     if (modified) states.Add("modificada en el borrador");
                     else if (distinct) states.Add("distinta del resto");
                     if (manual) states.Add("con un valor manual");
+                    if (holders.Any(h => h.Unused)) states.Add("con un largo manual que no cambia el dibujo");
                     var accessible = position + ": " + (varies ? "la tarima varía entre los fondos" : text) + (states.Count > 0 ? "; " + string.Join(", ", states) : string.Empty);
                     item.Set(text, detail, _showDetail, true, selected, selected && _primary == at[0], onFloor, varies, accessible, modified, distinct, manual);
                 }
@@ -2244,7 +2253,7 @@ namespace RackCad.UI.VentanaRackCad
                 : (length.HasValue && length.Value.HasValue
                       ? "Vacío = automático" + (automatic.Count == 1 ? " (" + Num(automatic[0]) + " in)" : string.Empty) + "."
                       : "Automático" + (automatic.Count == 1 ? ": " + Num(automatic[0]) + " in" : string.Empty) + ".")
-                  + " El mayor del frente fija su ancho.";
+                  + WidthRule(cells, length.HasValue && length.Value.HasValue);
 
             return new object[]
             {
@@ -2259,6 +2268,21 @@ namespace RackCad.UI.VentanaRackCad
                     "El claro debe ser un número mayor que cero, o vacío para automático.", onFloor ? NotInN1Text : null,
                     "Vacío = automático. Hasta el larguero de abajo (en N2, desde el piso); al troquel de 2 in."),
             };
+        }
+
+        // Who fixes the width of the fronts of those cells (M-02 of the review of the polish): the widest level of the front in the width master
+        // (SelectiveDraftEditor.WidthMasterFondo, the fondo with the most fronts). In another fondo the master governs: a manual length there is
+        // kept and written, but it does not change the drawing, and the hint says so instead of «El mayor del frente fija su ancho».
+        private string WidthRule(IReadOnlyList<SelectiveMatrixPosition> cells, bool manual)
+        {
+            var master = _editor.WidthMasterFondo;
+            var reached = _editor.ScopeFondos.Where(k => cells.Any(p => p.LevelIndex >= 0 && p.LevelIndex < _editor.LevelCount(k, p.FrontIndex))).ToList();
+            var others = reached.Where(k => k != master).ToList();
+            if (others.Count == 0) return " El mayor del frente fija su ancho.";
+            var masterName = "fondo " + (master + 1).ToString(CultureInfo.InvariantCulture) + " (el maestro, el de más frentes)";
+            if (!reached.Contains(master))
+                return " En " + FondoList(others) + " manda el ancho del " + masterName + (manual ? ": este largo no cambia el dibujo." : ".");
+            return " Manda el mayor del frente en el " + masterName + (manual ? "; en " + FondoList(others) + " el largo manual no cambia el dibujo." : ".");
         }
 
         // The larguero of those cells, over the fondos of the scope; the write goes through «through» (the scope of the field).
@@ -2439,7 +2463,7 @@ namespace RackCad.UI.VentanaRackCad
 
         // «Calculado» (the approved draft), from the last valid recomposition, read only: the larguero length (one value or the range), the
         // height of the cabecera, the separation N2 → N3, the depth of the cabecera of fondo 1, and the counts. Cabeceras, largueros and
-        // separators come from the BOM of the system (SelectiveBomCounts: no count is made again here); the pallet positions are the cells
+        // separators come from the BOM (SelectiveDraftEditor.BomCounts: no count is made again here); the pallet positions are the cells
         // times their pallets per level, in every fondo.
         private IReadOnlyList<SelectiveCalcItem> BuildCalculated()
         {
@@ -2475,7 +2499,9 @@ namespace RackCad.UI.VentanaRackCad
                 items.Add(new SelectiveCalcItem("Profundidad de cabecera", Num(SelectiveDepthLayout.CabeceraDepthOfFondo(system, 0)) + " in",
                     (own.HasValue ? "Manual" : "Tarima − 6 in") + (several ? ", en el fondo 1." : ".")));
 
-                var counts = SelectiveBomCounts.Of(system, _editor.Catalog);
+                // On a system of its own (I-01 of the review of the polish): the BOM imposes the depth of its fondo on the custom cabeceras it
+                // reads, and the system of the draft shares them with its last valid design.
+                var counts = _editor.BomCounts();
                 var split = Enumerable.Range(0, _editor.FondoCount).Any(k => Enumerable.Range(0, _editor.FrontCount(k)).Any(f => _editor.Front(k, f)?.IsSplit == true));
                 items.Add(new SelectiveCalcItem("Cabeceras", counts.Cabeceras.ToString(CultureInfo.InvariantCulture),
                     (several ? "En los " + fondos.ToString(CultureInfo.InvariantCulture) + " fondos" : "Una por poste") + (split ? ", más las de medio frente." : ".")));

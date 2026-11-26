@@ -99,6 +99,8 @@ namespace RackCad.Application.VentanaRackCad
     /// The counts of «Calculado» of the window (the approved draft: «Cabeceras», «Largueros», «Separadores»), read from the BOM of the
     /// system (<see cref="SelectiveBomBuilder.Build"/>) and never counted again here: the cabeceras (one per frame, the intermediate ones
     /// of a half front included), the largueros (front and back of every beam) and the separators between fondos, as the BOM lists them.
+    /// The BOM imposes the depth of its fondo on the custom cabeceras of the system it reads: the window counts through
+    /// <see cref="SelectiveDraftEditor.BomCounts"/>, on a system of its own.
     /// </summary>
     public sealed record SelectiveBomCounts(int Cabeceras, int Largueros, int Separadores)
     {
@@ -390,6 +392,28 @@ namespace RackCad.Application.VentanaRackCad
 
             return new SelectiveAutomaticValues(Distinct(lengths), Distinct(heights));
         }
+
+        /// <summary>
+        /// The counts of «Calculado» (<see cref="SelectiveBomCounts"/>) of the last valid design, counted on a system resolved from a COPY of
+        /// it, as <see cref="AutomaticValues"/> does. The BOM imposes the depth of its fondo on every custom cabecera it reads, in place
+        /// (<see cref="SelectiveCabeceraAuthority.EffectiveCustomAt"/>; ARQ-43-10, deferred), and <see cref="System"/> shares those cabeceras
+        /// with <see cref="Design"/>: counted on <see cref="System"/>, reading «Calculado» would change the last valid design and the JSON
+        /// that is written (I-01 of the review of the polish of the entrega 1). Zeros before the first valid recomposition.
+        /// </summary>
+        public SelectiveBomCounts BomCounts()
+        {
+            var design = Copy(Design);
+            return design == null ? new SelectiveBomCounts(0, 0, 0) : SelectiveBomCounts.Of(_resolver.Resolve(design, Catalog), Catalog);
+        }
+
+        /// <summary>
+        /// The fondo whose fronts give their width to the same fronts of every fondo: the one with the most fronts, the first on a tie
+        /// (<see cref="SelectiveDepthLayout.MasterFondoIndex"/>, the master of the resolver). A manual larguero length of a cell of another
+        /// fondo is kept and written, but the drawing does not use it (M-02 of the review of the polish). The resolver only lets another fondo
+        /// govern a front where the master has an empty column, which the draft never has (every front keeps at least one level, and a load
+        /// pads an empty one). 0 before the first valid recomposition.
+        /// </summary>
+        public int WidthMasterFondo => System == null ? 0 : SelectiveDepthLayout.MasterFondoIndex(System);
 
         // The design bays of a fondo, as the resolver reads them (a fondo with no own bays uses those of fondo 0).
         private static IList<SelectiveBayDesign> DesignBays(SelectivePalletDesign design, int fondo)

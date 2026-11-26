@@ -12,6 +12,7 @@ using RackCad.Application.Systems.Larguero;
 using RackCad.Application.Systems.Selective;
 using RackCad.Application.VentanaRackCad;
 using RackCad.Domain.Systems.Selective;
+using RackCad.Domain.Systems.Shared;
 using RackCad.UI.VentanaRackCad;
 using Xunit;
 using static RackCad.UI.Tests.SelectiveWindowFixtures;
@@ -129,6 +130,19 @@ namespace RackCad.UI.Tests
             Write(vm.FondoRows[1].Depth, "40");
             Assert.Equal("Correcto", vm.FondoRows[1].State);
 
+            // The depth of the pallet of a row, with a new value (M-03 of the review of the polish): only in its fondo, with the view of the
+            // matrix on the other one, which does not move; the automatic depth of its cabecera follows it.
+            vm.FondoScopeIndex = 2;
+            Write(vm.FondoRows[0].Depth, "50");
+            Assert.Equal((50.0, 40.0), (vm.Draft.Fondo(0)!.PalletDepth, vm.Draft.Fondo(1)!.PalletDepth));
+            Write(vm.FondoRows[1].Depth, "44");
+            Assert.Equal((50.0, 44.0), (vm.Draft.Fondo(0)!.PalletDepth, vm.Draft.Fondo(1)!.PalletDepth));
+            Assert.Equal(("50", "44"), (vm.FondoRows[0].Depth.Text, vm.FondoRows[1].Depth.Text));
+            Assert.Equal(("Auto: 44", "Auto: 38"), (vm.FondoRows[0].Cabecera.Hint, vm.FondoRows[1].Cabecera.Hint));
+            Assert.Equal(2, vm.FondoScopeIndex);
+            Assert.Equal(("Correcto", "Correcto"), (vm.FondoRows[0].State, vm.FondoRows[1].State));
+            vm.FondoScopeIndex = 0;
+
             // One fondo: no table.
             Write(Field(vm.Essentials, "fondos"), "1");
             Assert.Empty(vm.FondoRows);
@@ -152,25 +166,157 @@ namespace RackCad.UI.Tests
             Assert.Equal(N(system.Bays[0].Levels[2].Y - system.Bays[0].Levels[1].Y) + " in", Value("Separación N2 → N3"));
             Assert.Equal("42 in", Value("Profundidad de cabecera"));
 
-            // The counts are those of the BOM, never counted again: 3 cabeceras, 8 largueros (F1: 3 levels with larguero, F2: 1; two each).
-            var bom = SelectiveBomBuilder.Build(system, vm.Draft.Catalog).Components;
-            int Sum(string category) => bom.Where(c => c.Category == category).Sum(c => c.Quantity);
-            Assert.Equal(Sum(BomBuilder.Cabecera).ToString(CultureInfo.InvariantCulture), Value("Cabeceras"));
-            Assert.Equal(Sum(LargueroBomBuilder.Larguero).ToString(CultureInfo.InvariantCulture), Value("Largueros"));
+            // The counts are those of a BOM made apart, on what «Actualizar» writes (never the system the window counts on): 3 cabeceras, 8
+            // largueros (F1: 3 levels with larguero, F2: 1; two each).
+            var bom = BomOfTheWrittenDesign(vm);
+            Assert.Equal((bom.Cabeceras, bom.Largueros), (3, 8));
             Assert.Equal(("3", "8"), (Value("Cabeceras"), Value("Largueros")));
             Assert.Equal("10", Value("Posiciones de tarima")); // 5 cells × 2 pallets
             Assert.DoesNotContain(vm.Calculated, c => c.Label == "Separadores"); // one fondo
             Assert.Equal("Una por poste.", vm.Calculated.Single(c => c.Label == "Cabeceras").Hint);
 
-            // Two fondos: the separators of the BOM too.
-            var two = SelectiveEditor(TwoFondos());
-            var twoBom = SelectiveBomBuilder.Build(two.Draft.System!, two.Draft.Catalog).Components;
-            var separadores = twoBom.Where(c => c.Category == SelectiveBomBuilder.Separador).Sum(c => c.Quantity);
-            Assert.True(separadores > 0);
-            Assert.Equal(separadores.ToString(CultureInfo.InvariantCulture), two.Calculated.Single(c => c.Label == "Separadores").Value);
-            Assert.Equal(new SelectiveBomCounts(twoBom.Where(c => c.Category == BomBuilder.Cabecera).Sum(c => c.Quantity),
-                twoBom.Where(c => c.Category == LargueroBomBuilder.Larguero).Sum(c => c.Quantity), separadores), SelectiveBomCounts.Of(two.Draft.System!, two.Draft.Catalog));
-            Assert.Equal("Tarima − 6 in, en el fondo 1.", two.Calculated.Single(c => c.Label == "Profundidad de cabecera").Hint);
+            // Two fondos, a custom cabecera out of the rule of its fondo, a half front and a bota: the counts of that BOM, the separators too.
+            var half = SelectiveEditor(TwoFondos());
+            half.SelectFront(1);
+            half.StartSegments();
+            half.SegmentRows[0].LengthText = "40";
+            half.ApplySegments();
+            Assert.Equal(string.Empty, half.SegmentError);
+            var racks = new List<(string Name, SelectiveEditorViewModel Vm, SelectiveBomCounts Expected)>
+            {
+                ("dos fondos", SelectiveEditor(TwoFondos()), new SelectiveBomCounts(7, 22, 6)),
+                ("personalizada fuera de su regla", SelectiveEditor(TwoFondosWithACustomCabeceraOutOfItsRule()), new SelectiveBomCounts(7, 22, 6)),
+                ("medio frente", half, new SelectiveBomCounts(9, 22, 6)),
+            };
+            var bota = half.Draft.Catalog.SafetyElements?.FirstOrDefault(s => SelectiveSafetyDefaults.IsType(s.Type, SelectiveSafetyDefaults.BotaType));
+            Assert.NotNull(bota);
+            var safe = SelectiveEditor(TwoFondos());
+            safe.Draft.ReplaceSafety(new[] { new SelectiveSafetySelection { ElementId = bota!.Id, Side = SafetySide.Both } });
+            Assert.True(safe.Draft.Recompose(), safe.Draft.LastError);
+            racks.Add(("bota", safe, new SelectiveBomCounts(7, 22, 6)));
+            foreach (var (name, rack, expected) in racks)
+            {
+                var counts = BomOfTheWrittenDesign(rack);
+                Assert.True(expected == counts, name + ": " + counts);
+                var shown = new SelectiveBomCounts(int.Parse(rack.Calculated.Single(c => c.Label == "Cabeceras").Value, CultureInfo.InvariantCulture),
+                    int.Parse(rack.Calculated.Single(c => c.Label == "Largueros").Value, CultureInfo.InvariantCulture),
+                    int.Parse(rack.Calculated.Single(c => c.Label == "Separadores").Value, CultureInfo.InvariantCulture));
+                Assert.True(counts == shown, name + ": la ventana dice " + shown);
+            }
+
+            Assert.Equal("Tarima − 6 in, en el fondo 1.", racks[0].Vm.Calculated.Single(c => c.Label == "Profundidad de cabecera").Hint);
+        }
+
+        // The BOM of what «Actualizar» would write, made apart: the JSON of the draft, read and resolved again by a resolver of its own, and its
+        // components summed by category here (M-03 of the review of the polish: never the system the window counts on, nor SelectiveBomCounts).
+        private static SelectiveBomCounts BomOfTheWrittenDesign(SelectiveEditorViewModel vm)
+        {
+            var catalog = vm.Draft.Catalog;
+            var design = Store.Deserialize(vm.Draft.SnapshotForWrite()!.DesignJson)!.ToDomain();
+            var components = SelectiveBomBuilder.Build(new SelectiveGeometryResolver().Resolve(design, catalog), catalog).Components;
+            int Sum(string category) => components.Where(c => c.Category == category).Sum(c => c.Quantity);
+            return new SelectiveBomCounts(Sum(BomBuilder.Cabecera), Sum(LargueroBomBuilder.Larguero), Sum(SelectiveBomBuilder.Separador));
+        }
+
+        [Fact]
+        public void ReadingCalculatedChangesNothingOfTheDraftAndOnTheRackTabAChangeUndoneIsCleanAgain()
+        {
+            // I-01 of the review of the polish: P1 of fondo 2 keeps a custom cabecera of 42 in, its rule is 34; the BOM of «Calculado» imposes
+            // the rule on what it reads. Counted on a copy, reading it changes neither the last valid design nor what is written.
+            StaTestRunner.Run(() =>
+            {
+                var vm = SelectiveEditor(TwoFondosWithACustomCabeceraOutOfItsRule());
+                var opened = Json(vm.Draft.Design);
+                var view = new SelectiveEditorView(vm);
+                Lay(view);
+                view.Tabs.SelectedItem = view.RackTab;
+                Lay(view);
+                Assert.Equal(0, vm.SelectedTab);
+                Assert.Contains(Descendants<TextBlock>(view.CalculatedList), t => t.Text == "Cabeceras"); // the view read «Calculado»
+                Assert.Equal(opened, Json(vm.Draft.Design));
+                Assert.Equal(42.0, vm.Draft.Design!.ExtraFondoPostCabeceras[0][0]!.Depth);
+                Assert.Equal(opened, vm.Draft.SnapshotForWrite()!.DesignJson); // what is written does not depend on the tab looked at
+
+                // A change undone on the Rack tab is «Limpio» again, and so is «Mostrar tarimas» ticked and unticked.
+                Write(Field(vm.Essentials, "tolerance"), "5");
+                Lay(view);
+                Assert.True(vm.IsDirty);
+                Write(Field(vm.Essentials, "tolerance"), "4");
+                Lay(view);
+                Assert.False(vm.IsDirty, vm.StatusText);
+                vm.DrawPallets = true;
+                Lay(view);
+                vm.DrawPallets = false;
+                Lay(view);
+                Assert.False(vm.IsDirty, vm.StatusText);
+                Assert.Equal(opened, Json(vm.Draft.Design));
+                Assert.Equal(42.0, vm.Draft.Design!.ExtraFondoPostCabeceras[0][0]!.Depth);
+            });
+        }
+
+        [Fact]
+        public void CalculatedIsOnlyCountedWhileTheRackTabIsShownAndItShowsWhatTheDraftIsNow()
+        {
+            // SF-04 (M-03 of the review of the polish): «Calculado» reads the BOM, so the view is told to read it only while the Rack tab is
+            // shown, and when it is shown; on Matriz and Avanzado an edit counts nothing.
+            StaTestRunner.Run(() =>
+            {
+                var vm = SelectiveEditor(TwoFondos());
+                var announced = 0;
+                vm.PropertyChanged += (_, e) =>
+                {
+                    if (e.PropertyName == nameof(SelectiveEditorViewModel.Calculated)) announced++;
+                };
+                var view = new SelectiveEditorView(vm);
+                Lay(view);
+                string Shown(string label)
+                {
+                    var labels = Descendants<TextBlock>(view.CalculatedList).Where(t => t.Name == "CalculatedLabel").ToList();
+                    var values = Descendants<TextBlock>(view.CalculatedList).Where(t => t.Name == "CalculatedValue").ToList();
+                    var i = labels.FindIndex(t => t.Text == label);
+                    return i < 0 ? "(no está)" : values[i].Text;
+                }
+
+                string Largueros() => BomOfTheWrittenDesign(vm).Largueros.ToString(CultureInfo.InvariantCulture);
+
+                // Matriz: an edit neither announces «Calculado» nor counts it.
+                var built = vm.CalculatedBuilds;
+                vm.SelectFront(0);
+                Write(Field(vm.FrontFields, "fLevels"), "4");
+                Lay(view);
+                Assert.Equal((0, built), (announced, vm.CalculatedBuilds));
+
+                // Rack: shown, it is announced and counted once, for what the draft is now.
+                view.Tabs.SelectedItem = view.RackTab;
+                Lay(view);
+                Assert.Equal((1, built + 1), (announced, vm.CalculatedBuilds));
+                Assert.Equal(Largueros(), Shown("Largueros"));
+                // An edit on Rack counts it again, once, and the view shows the new value.
+                var before = Shown("Largueros");
+                Write(Field(vm.Essentials, "rLevels"), "5");
+                Lay(view);
+                Assert.Equal((2, built + 2), (announced, vm.CalculatedBuilds));
+                Assert.Equal(Largueros(), Shown("Largueros"));
+                Assert.NotEqual(before, Shown("Largueros"));
+
+                // Matriz and Avanzado: edits count nothing; back on Rack, the value of now.
+                foreach (var other in new TabItem[] { view.MatrixTab, view.AdvancedTab })
+                {
+                    view.Tabs.SelectedItem = other;
+                    Lay(view);
+                    var (announcedBefore, builtBefore, shownBefore) = (announced, vm.CalculatedBuilds, Shown("Largueros"));
+                    vm.SelectFront(1);
+                    Write(Field(vm.FrontFields, "fLevels"), other == view.MatrixTab ? "3" : "4");
+                    Lay(view);
+                    Assert.Equal((announcedBefore, builtBefore), (announced, vm.CalculatedBuilds));
+
+                    view.Tabs.SelectedItem = view.RackTab;
+                    Lay(view);
+                    Assert.Equal((announcedBefore + 1, builtBefore + 1), (announced, vm.CalculatedBuilds));
+                    Assert.Equal(Largueros(), Shown("Largueros"));
+                    Assert.NotEqual(shownBefore, Shown("Largueros"));
+                }
+            });
         }
 
         [Fact]
@@ -292,6 +438,53 @@ namespace RackCad.UI.Tests
             Write(Field(vm.FrontFields, "fHeight"), "200");
             Assert.Equal(200.0, vm.Draft.System!.Bays[0].Height);
             Assert.Equal("Vacía = calculada (≈ " + N(height) + " in). Manda en los dos postes del frente.", Field(vm.FrontFields, "fHeight").Hint);
+        }
+
+        [Fact]
+        public void AManualLengthInAFondoThatIsNotTheWidthMasterIsNoManualMarkAndItsHintSaysTheDrawingDoesNotUseIt()
+        {
+            // M-02 of the review of the polish: the width of every front is that of the fondo with the most fronts (the resolver's master).
+            var vm = SelectiveEditor(TwoFondos()); // fondo 2 has 3 fronts: it is the master
+            SelectiveCellItem Cell(int front, int level) => vm.Rows.SelectMany(r => r.Cells).Single(c => c.FrontIndex == front && c.LevelIndex == level);
+            string Hint() => Field(vm.CellFields, "cLength").Hint;
+            double Width(int fondo) => vm.Draft.System!.FondoBays[fondo][0].BeamLength;
+            Assert.Equal(1, vm.Draft.WidthMasterFondo);
+            var width = Width(0);
+            const string Rule = " En el fondo 1 manda el ancho del fondo 2 (el maestro, el de más frentes)";
+
+            // In fondo 1, a manual length of F1·N2 is kept, but the resolver does not use it: no «M», and the hint says so.
+            vm.FondoScopeIndex = 1;
+            vm.ClickCell(0, 1, control: false, shift: false);
+            Assert.Equal("Automático: " + N(width) + " in." + Rule + ".", Hint());
+            Write(Field(vm.CellFields, "cLength"), "150");
+            Assert.Equal(150.0, vm.Draft.Cell(0, 0, 1)!.BeamLength);
+            Assert.Equal((width, width), (Width(0), Width(1)));
+            Assert.False(Cell(0, 1).IsManual);
+            Assert.EndsWith("; modificada en el borrador, con un largo manual que no cambia el dibujo", Cell(0, 1).AccessibleText);
+            Assert.Equal("Vacío = automático (" + N(width) + " in)." + Rule + ": este largo no cambia el dibujo.", Hint());
+            // A manual clear there is used (each fondo stacks its own levels): «M».
+            Write(Field(vm.CellFields, "cClear"), "70");
+            Assert.True(Cell(0, 1).IsManual);
+
+            // In the master, the same length is used: «M», and the widest level of the front fixes the width of both fondos.
+            vm.FondoScopeIndex = 2;
+            vm.ClickCell(0, 1, control: false, shift: false);
+            Assert.Equal("Automático: " + N(width) + " in. El mayor del frente fija su ancho.", Hint());
+            Write(Field(vm.CellFields, "cLength"), "150");
+            Assert.Equal((150.0, 150.0), (Width(0), Width(1)));
+            Assert.True(Cell(0, 1).IsManual);
+            Assert.Equal("Vacío = automático (" + N(width) + " in). El mayor del frente fija su ancho.", Hint());
+
+            // With all the fondos: the hint says which fondo governs, and that the manual length of fondo 1 does not change the drawing.
+            vm.FondoScopeIndex = 0;
+            vm.ClickCell(0, 1, control: false, shift: false);
+            Assert.True(Cell(0, 1).IsManual);
+            Assert.Contains("con un largo manual que no cambia el dibujo", Cell(0, 1).AccessibleText);
+            Assert.Equal("Vacío = automático (" + N(width) + " in). Manda el mayor del frente en el fondo 2 (el maestro, el de más frentes); "
+                         + "en el fondo 1 el largo manual no cambia el dibujo.", Hint());
+            // F3 only exists in the master: the rule of the widest level.
+            vm.ClickCell(2, 0, control: false, shift: false);
+            Assert.EndsWith(" El mayor del frente fija su ancho.", Hint());
         }
 
         // ------------------------------------------------------------------ under the matrix: «Altura por poste» and the legend

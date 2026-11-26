@@ -808,7 +808,8 @@ de la pestaña Rack desaparece (SF-01). **No hecho:** un arreglo general (fijar 
 en `Opened`) no se puede comprobar sin AutoCAD en dos monitores de escala distinta; quedan con lista Poste, Larguero, Peralte, Cotas y Estilo
 de cota. Para el smoke: ¿pasa con la paleta en el monitor principal (el de la escala del sistema)?, ¿y en el otro?
 
-**Rendimiento** (una muestra por caso, Release, sonda temporal ya borrada; la de E1 era de `sprint\perf.md`): con 60 × 6 × 2 (1440 celdas) un
+**Rendimiento** (una muestra por caso, Release, sonda temporal ya borrada; la de E1 era de `sprint\perf.md`): con 60 × 6 × 2 (720 celdas: 60
+frentes × 6 niveles × 2 fondos; antes decía «1440 celdas», M-04 de la revisión del pulido) un
 clic en la matriz pasa de ~9 a ~34 ms (14 ms son `AutomaticValues`: copia y resolución del diseño) y una edición de ~16 a ~60 ms, sin el BOM
 de «Calculado», que solo se calcula con la pestaña Rack a la vista (~70 ms más). Con 10 × 6 × 1: clic ~4 ms, edición ~5 ms, BOM ~3 ms. Por
 debajo de los 100 ms por gesto.
@@ -856,3 +857,52 @@ comportamiento que ya existía; no tienen arreglo que romper, salvo `AutomaticVa
   quita la marca y se deja la leyenda.
 - O-D sigue abierto para las listas que quedan (punto 5).
 - El smoke del Owner en AutoCAD: lo de la entrega 1, más todo lo de esta sección.
+
+### Correcciones de la revisión del pulido (`review-polish.md` sobre `6f6c9161`)
+
+**Rama:** la misma, sobre `6f6c9161`, sin commit. Sin AutoCAD y sin tocar Dinámico. Veredicto de la revisión: APTO TRAS CORRECCIONES
+(0 B, 1 I, 4 M).
+
+| Hallazgo | Estado | Qué se hizo |
+|---|---|---|
+| I-01 | CORREGIDO | «Calculado» cuenta con `SelectiveDraftEditor.BomCounts()`: el BOM de un sistema resuelto de una **copia** del último diseño válido, como `AutomaticValues`, y no de `System`, que comparte con `Design` los objetos de las cabeceras personalizadas. El BOM sigue imponiendo en el sitio la profundidad del fondo sobre lo que lee (`EffectiveCustomAt`, ARQ-43-10, diferido y sin tocar), pero ya sobre objetos propios. Leer «Calculado» no cambia `Design` ni el JSON de «Actualizar»; con la pestaña Rack a la vista, un cambio deshecho vuelve a «Limpio», y lo que se escribe no depende de la pestaña que se miró. Coste: una copia y una resolución más por lectura, solo con la pestaña Rack (unos 3 ms en Debug a 60 × 6 × 2, según P7 de la revisión) |
+| M-02 | CORREGIDO | `SelectiveDraftEditor.WidthMasterFondo` es `SelectiveDepthLayout.MasterFondoIndex(System)`, la regla del resolvedor: el fondo con más frentes, el primero si empatan. La excepción del resolvedor, la columna vacía en el maestro, no se da en el borrador: todo frente tiene al menos un nivel y la carga rellena uno vacío. La «M» de la celda cuenta el claro manual, y el largo manual solo en el fondo maestro. Un largo manual de otro fondo no lleva «M», y el nombre accesible añade «con un largo manual que no cambia el dibujo». La pista del largo dice qué fondo manda (ver los textos debajo de la tabla). El resumen «Manual» («n celdas con valor manual») sigue contando lo que el borrador guarda |
+| M-03 | CORREGIDO | La comparación de «Calculado» con el BOM ya no es tautológica: se compara contra un BOM hecho aparte. Ese BOM sale del JSON de `SnapshotForWrite()`, leído otra vez, resuelto con un resolvedor propio y sumado por categoría en la prueba. Cubre cuatro racks: dos fondos (7/22/6), la personalizada fuera de su regla (7/22/6), medio frente (9/22/6) y bota (7/22/6), además del de un fondo (3/8). Prueba nueva de que «Calculado» solo se anuncia y se cuenta con la pestaña Rack visible, con la vista WPF real y el contador `CalculatedBuilds`. La tabla «Fondos» escribe una profundidad de tarima nueva en cada fila (50 y 44), solo en su fondo, con la vista en el otro |
+| M-04 | CORREGIDO | «60 × 6 × 2» son 720 celdas, no 1440 (corregido arriba, en «Rendimiento») |
+| M-01 | SE QUEDA | «Frente», «Nivel» y «Todo» no se vuelven a expandir tras un cambio de forma o de vista. El draft aprobado hace lo mismo: guarda una selección explícita y `setFview` conserva el alcance (`Main.dc.html:1360-1391`). «Destino» dice la verdad: cuenta lo que de verdad se escribe. Para el smoke: en los tres casos de P4 de la revisión, el título y el botón marcado pueden engañar |
+
+**Textos de la pista del largo (M-02).**
+- En un fondo que no es el maestro: «En el fondo 1 manda el ancho del fondo 2 (el maestro, el de más frentes)». Con un largo manual sigue «: este largo no cambia el dibujo.».
+- Con «Todos los fondos»: «Manda el mayor del frente en el fondo 2 (el maestro, el de más frentes)». Con un largo manual sigue «; en el fondo 1 el largo manual no cambia el dibujo.».
+- En el maestro, o con un solo fondo: la pista de antes, «El mayor del frente fija su ancho.».
+
+**El «Lista de materiales» del clásico tiene la misma mutación (anotada, NO arreglada).**
+- **Por lectura:** `ShowBom_Click` (`src/RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml.cs`) llama a `SelectiveBomBuilder.Build(lastSystem, catalog)`. `lastSystem` comparte con el estado del clásico (`SelectiveEditorState.ExtraFondoPostCabeceras`) los objetos de las cabeceras personalizadas, porque `BuildDesign` copia las listas y no las cabeceras, y el resolvedor tampoco las copia.
+- **OBSERVADO** con una sonda temporal, ya borrada, que hizo esa misma llamada sin el diálogo modal sobre el rack de I-01: la personalizada del fondo 2 pasa de 42 a 34 en el estado del clásico (es el mismo objeto), y el diseño siguiente del clásico ya la lleva en 34. Eso afecta a Actualizar, Insertar y Guardar en biblioteca.
+- La geometría y las cuentas no cambian, porque todo lector impone la regla. Lo que cambia es el JSON que se escribe después de abrir el BOM. Es ARQ-43-10, o un `Copy` antes del BOM del clásico: para la planeación.
+
+**Pruebas.**
+- **Nuevas, cuatro:**
+  - `SelectiveDraftEditorGapTests.TheCountsOfTheBomAreThoseOfTheWrittenDesignAndCountingThemChangesNoDesign`;
+  - `RackCadSelectiveFidelityTests.ReadingCalculatedChangesNothingOfTheDraftAndOnTheRackTabAChangeUndoneIsCleanAgain`, con la vista WPF real en Rack: «Holgura horizontal» 4 → 5 → 4 y «Mostrar tarimas» sí → no dejan «Limpio», y el JSON y la profundidad 42 no cambian;
+  - `RackCadSelectiveFidelityTests.CalculatedIsOnlyCountedWhileTheRackTabIsShownAndItShowsWhatTheDraftIsNow`;
+  - `RackCadSelectiveFidelityTests.AManualLengthInAFondoThatIsNotTheWidthMasterIsNoManualMarkAndItsHintSaysTheDrawingDoesNotUseIt`.
+- **Cambiadas:** `TheCalculatedValuesAreThoseOfTheDraftAndTheCountsAreTheBom` y `TheTableOfTheFondosWritesEachFondoAndSaysItsState`.
+- **Fixture nuevo:** `SelectiveWindowFixtures.TwoFondosWithACustomCabeceraOutOfItsRule`, el rack de `FewerFondosThatDropACustomCabeceraSayItToo`.
+- **Seam nuevo, solo para pruebas:** `SelectiveEditorViewModel.CalculatedBuilds`, interno.
+
+**Comprobación en rojo.** Siete piezas rotas, una a una, con script. Tras cada una se compiló y se corrieron cinco clases (`RackCadSelectiveFidelityTests`, `SelectiveDraftEditorGapTests`, `RackCadSelectiveEditorTests`, `RackCadSelectiveWindowGapTests` y `RackCadSelectiveEditorReviewTests`: 78 casos, 78 en verde antes de romper). En todas falla al menos una:
+1. «Calculado» cuenta sobre el sistema del borrador: falla la de la pestaña Rack;
+2. `BomCounts` cuenta sobre `System`: fallan la del borrador y la de la pestaña Rack;
+3. la «M» con cualquier largo manual: falla la de M-02;
+4. la pista dice siempre «El mayor del frente fija su ancho.»: falla la de M-02;
+5. sin el `if (_selectedTab == 0)` de `Rebuild`: falla la nueva de M-03;
+6. sin el aviso de `SelectedTab` al mostrar Rack: falla la nueva de M-03;
+7. la fila de «Fondos» escribe la profundidad en todos los fondos: fallan la de la tabla y `TheScopeOfTheFondosShowsWhereItWritesAndWhatDiffersSaysVaries`.
+
+Cada archivo se restauró desde su copia, con fecha nueva y el mismo SHA-256 que antes de romperlo (lo comprobó el script). Después se recompiló la solución con `--no-incremental`.
+
+**Los números** (sobre las fuentes restauradas, solución recompilada en Debug con `--no-incremental`):
+- **UI completa:** 2658 correctas, 0 con error, 48 omitidas (2706). Es la base de `6f6c9161` (2654) más las 4 nuevas.
+- **Core Full:** 19105 correctas, 0 con error, 403 omitidas (19508). Es la base, sin pruebas nuevas en Core.
+- **Build Debug de la solución (Plugin incluido):** 0 errores. Las advertencias MSB3277 de las referencias de AutoCAD y las de los analizadores de xunit ya estaban; ninguna sale de los archivos tocados.

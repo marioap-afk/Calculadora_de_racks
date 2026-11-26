@@ -70,6 +70,18 @@ namespace RackCad.UI.Tests
             return design;
         }
 
+        /// <summary>
+        /// <see cref="TwoFondos"/> with a custom cabecera on P1 of fondo 2 that keeps the depth it was made with (42 in), not the rule of its
+        /// fondo (40 − 6 = 34 in), as an older document can carry it: the rack of <c>FewerFondosThatDropACustomCabeceraSayItToo</c>. The BOM
+        /// imposes the rule on it in place when it reads it (I-01 of the review of the polish of the entrega 1).
+        /// </summary>
+        public static SelectivePalletDesign TwoFondosWithACustomCabeceraOutOfItsRule()
+        {
+            var design = TwoFondos();
+            design.ExtraFondoPostCabeceras.Add(new List<RackFrameConfiguration> { Custom(96.0) });
+            return design;
+        }
+
         public static ProjectVariablesReadResult Register(double value)
         {
             var document = ProjectVariablesDocument.CreateNew();

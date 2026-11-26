@@ -201,6 +201,36 @@ namespace RackCad.UI.Tests
             Assert.Equal(before, Json(draft.Design));
         }
 
+        [Fact]
+        public void TheCountsOfTheBomAreThoseOfTheWrittenDesignAndCountingThemChangesNoDesign()
+        {
+            // I-01 of the review of the polish: the BOM imposes the depth of its fondo on a custom cabecera it reads, in place (ARQ-43-10), and
+            // the system of the draft shares the custom cabeceras with its last valid design. Here P1 of fondo 2 keeps 42 in, its rule is 34.
+            var draft = Open(TwoFondosWithACustomCabeceraOutOfItsRule());
+            var custom = draft.Design!.ExtraFondoPostCabeceras[0][0]!;
+            Assert.Equal((42.0, 34.0), (custom.Depth, SelectiveDepthLayout.CabeceraDepthOfFondo(draft.System!, 1)));
+            var json = Json(draft.Design);
+            var written = draft.SnapshotForWrite()!.DesignJson;
+            var members = custom.Members.Count;
+
+            var counts = draft.BomCounts();
+
+            // Counting changes nothing: not the last valid design, not what «Actualizar» writes, not the derived members.
+            Assert.Equal(json, Json(draft.Design));
+            Assert.Equal(written, draft.SnapshotForWrite()!.DesignJson);
+            Assert.Equal((42.0, members), (custom.Depth, custom.Members.Count));
+            Assert.Equal(counts, draft.BomCounts());
+
+            // The counts are those of a BOM made apart, on the design that is written, read and resolved again.
+            var catalog = draft.Catalog;
+            var system = new SelectiveGeometryResolver().Resolve(Store.Deserialize(written)!.ToDomain(), catalog);
+            Assert.Equal(SelectiveBomCounts.Of(system, catalog), counts);
+            Assert.Equal(new SelectiveBomCounts(7, 22, 6), counts);
+
+            // Nothing before the first valid recomposition.
+            Assert.Equal(new SelectiveBomCounts(0, 0, 0), new SelectiveDraftEditor(catalog).BomCounts());
+        }
+
         // ------------------------------------------------------------------ the largueros: coercion and atomicity
 
         [Fact]
