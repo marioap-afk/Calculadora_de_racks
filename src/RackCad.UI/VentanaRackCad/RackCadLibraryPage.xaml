@@ -1,0 +1,211 @@
+<UserControl x:Class="RackCad.UI.VentanaRackCad.RackCadLibraryPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             AutomationProperties.Name="Biblioteca de diseños"
+             FontFamily="Segoe UI"
+             FontSize="12">
+    <!-- The page «Biblioteca de diseños» of the RackCad window (I-64 A-14, line D, fourth batch, part «ut»; prototype «utilidades», UT-02 to
+         UT-07). Its data context is the view-model of the window; the page is its «Library». It reads and writes only files of the folder of
+         the library: «Abrir» is the window's (a new rack here, or the classic editor through its door). Nothing is modal here. -->
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/RackCad.UI;component/VentanaRackCad/RackCadUtilityStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="14,10">
+            <DockPanel>
+                <Button x:Name="LibraryRereadButton" DockPanel.Dock="Right" Content="Volver a leer la carpeta" Padding="10,3" Margin="8,0,0,0"
+                        VerticalAlignment="Top" Style="{StaticResource SecondaryButtonStyle}"
+                        AutomationProperties.Name="Volver a leer la carpeta de la biblioteca" Click="OnRereadClick" />
+                <StackPanel>
+                    <TextBlock Text="Biblioteca de diseños" Style="{StaticResource UtPageTitle}" />
+                    <TextBlock Style="{StaticResource UtText}"
+                               Text="Diseños guardados (.rackcad.json) de los siete sistemas: Selectivo, Push Back, Dinámico, Cantilever, Cabecera, Cama y Larguero. Abrir uno crea un rack nuevo: nunca reemplaza a un rack del dibujo." />
+                </StackPanel>
+            </DockPanel>
+
+            <WrapPanel Margin="0,0,0,8">
+                <TextBlock Text="Carpeta: " VerticalAlignment="Center" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                <TextBlock x:Name="LibraryFolderText" Text="{Binding Library.Folder}" FontWeight="SemiBold" TextWrapping="Wrap" VerticalAlignment="Center"
+                           Foreground="{DynamicResource ShellTextPrimaryBrush}" Margin="0,0,8,0" />
+                <Button x:Name="LibraryChangeFolderButton" Content="Cambiarla en Configuración" Style="{StaticResource UtLinkButton}"
+                        AutomationProperties.Name="Cambiar la carpeta de la biblioteca en Configuración" Click="OnChangeFolderClick" />
+            </WrapPanel>
+
+            <!-- UT-04: «Guardar en biblioteca…» of an editor of the window, as a line of this page, without the dialog of Windows. -->
+            <Border x:Name="LibrarySavePanel" Style="{StaticResource UtBanner}" BorderBrush="{DynamicResource ShellStatusInfoBrush}"
+                    AutomationProperties.Name="Guardar en la biblioteca"
+                    Visibility="{Binding Library.HasSave, Converter={StaticResource UtFlagToVisibility}}">
+                <StackPanel>
+                    <TextBlock x:Name="LibrarySaveTitleText" Text="{Binding Library.SaveTitle}" Style="{StaticResource UtBlockTitle}" Margin="0,0,0,6" />
+                    <WrapPanel>
+                        <StackPanel Margin="0,0,10,4">
+                            <TextBlock Text="Nombre" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                            <DockPanel Margin="0,2,0,0">
+                                <TextBlock DockPanel.Dock="Right" Text=".rackcad.json" Margin="4,0,0,0" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                <TextBox x:Name="LibrarySaveNameBox" Width="240" Padding="4,3" AutomationProperties.Name="Nombre del diseño"
+                                         Text="{Binding Library.SaveName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </DockPanel>
+                        </StackPanel>
+                        <Button x:Name="LibrarySaveButton" Content="Guardar" Margin="0,16,8,4" Padding="14,4" VerticalAlignment="Top"
+                                Style="{StaticResource PrimaryButtonStyle}" IsEnabled="{Binding Library.CanSave}"
+                                AutomationProperties.Name="Guardar el diseño en la biblioteca" Click="OnSaveClick" />
+                        <Button x:Name="LibrarySaveCancelButton" Content="Cancelar" Margin="0,16,8,4" Padding="12,4" VerticalAlignment="Top"
+                                Style="{StaticResource SecondaryButtonStyle}" AutomationProperties.Name="Cancelar el guardado en la biblioteca"
+                                Click="OnSaveCancelClick" />
+                    </WrapPanel>
+                    <TextBlock x:Name="LibrarySaveErrorText" Text="{Binding Library.SaveNameError}" Style="{StaticResource UtError}" />
+                    <TextBlock x:Name="LibrarySaveHintText" Text="{Binding Library.SaveHint}" Style="{StaticResource UtOptional}" FontStyle="Italic" />
+                    <Border x:Name="LibrarySaveConflictPanel" Style="{StaticResource UtWarning}" Margin="0,6,0,0"
+                            AutomationProperties.Name="El diseño ya existe"
+                            Visibility="{Binding Library.HasSaveConflict, Converter={StaticResource UtFlagToVisibility}}">
+                        <StackPanel>
+                            <TextBlock x:Name="LibrarySaveConflictTitleText" Text="{Binding Library.SaveConflictTitle}" FontWeight="SemiBold"
+                                       Style="{StaticResource UtPlain}" />
+                            <TextBlock x:Name="LibrarySaveConflictText" Text="{Binding Library.SaveConflictText}" Style="{StaticResource UtPlain}" Margin="0,2,0,6" />
+                            <WrapPanel>
+                                <Button x:Name="LibraryReplaceButton" Content="Reemplazar" Margin="0,0,8,0" Padding="12,4"
+                                        Style="{StaticResource UtDangerButton}" AutomationProperties.Name="Reemplazar el diseño de la carpeta"
+                                        Click="OnReplaceClick" />
+                                <Button x:Name="LibraryRenameButton" Content="Cambiar el nombre" Padding="12,4" Style="{StaticResource SecondaryButtonStyle}"
+                                        AutomationProperties.Name="Cambiar el nombre del diseño" Click="OnRenameClick" />
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!-- UT-06: the files that could not be read are said, not skipped in silence. -->
+            <Border x:Name="LibraryUnreadablePanel" Style="{StaticResource UtWarning}"
+                    Visibility="{Binding Library.HasUnreadable, Converter={StaticResource UtFlagToVisibility}}">
+                <StackPanel>
+                    <TextBlock x:Name="LibraryUnreadableTitleText" Text="{Binding Library.UnreadableTitle}" FontWeight="SemiBold" Style="{StaticResource UtPlain}" />
+                    <TextBlock x:Name="LibraryUnreadableText" Text="{Binding Library.UnreadableText}" Style="{StaticResource UtPlain}" />
+                </StackPanel>
+            </Border>
+            <Border x:Name="LibraryReadErrorPanel" Style="{StaticResource UtWarning}"
+                    Visibility="{Binding Library.HasReadError, Converter={StaticResource UtFlagToVisibility}}">
+                <TextBlock Text="{Binding Library.ReadError}" Style="{StaticResource UtPlain}" />
+            </Border>
+            <!-- A folder that does not exist is not an empty folder. -->
+            <Border x:Name="LibraryNoFolderPanel" Style="{StaticResource UtBanner}"
+                    Visibility="{Binding Library.FolderMissing, Converter={StaticResource UtFlagToVisibility}}">
+                <TextBlock x:Name="LibraryNoFolderText" Text="{Binding Library.FolderMissingText}" Style="{StaticResource UtPlain}" />
+            </Border>
+            <Border x:Name="LibraryEmptyPanel" Style="{StaticResource UtBanner}"
+                    Visibility="{Binding Library.FolderEmpty, Converter={StaticResource UtFlagToVisibility}}">
+                <TextBlock Style="{StaticResource UtPlain}"
+                           Text="La carpeta está vacía. Para guardar un rack: ábrelo y usa «Más» › «Guardar en biblioteca…»." />
+            </Border>
+
+            <StackPanel x:Name="LibraryListPanel" Visibility="{Binding Library.HasAny, Converter={StaticResource UtFlagToVisibility}}">
+                <WrapPanel Margin="0,0,0,6">
+                    <TextBox x:Name="LibrarySearchBox" Width="220" Padding="4,3" Margin="0,0,10,4" VerticalAlignment="Center"
+                             AutomationProperties.Name="Buscar diseño por nombre" ToolTip="Buscar diseño por nombre"
+                             Text="{Binding Library.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Text="Sistema" VerticalAlignment="Center" Margin="0,0,6,4" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                    <ComboBox x:Name="LibraryKindFilter" MinWidth="170" Margin="0,0,10,4" AutomationProperties.Name="Filtrar los diseños por sistema"
+                              ItemsSource="{Binding Library.KindOptions}" DisplayMemberPath="Label" SelectedValuePath="Key"
+                              SelectedValue="{Binding Library.SelectedKind, Mode=TwoWay}" />
+                    <TextBlock x:Name="LibraryShownText" Text="{Binding Library.ShownText}" VerticalAlignment="Center" Margin="0,0,0,4"
+                               Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                </WrapPanel>
+
+                <!-- Wide, the inspector goes beside the list; narrow, below it (as the inspectors of the editors): see OnLayoutSizeChanged. -->
+                <Grid x:Name="LibraryLayout" SizeChanged="OnLayoutSizeChanged">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition x:Name="InspectorColumn" Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition x:Name="InspectorRow" Height="0" />
+                    </Grid.RowDefinitions>
+
+                    <Border x:Name="LibraryTable" Grid.Column="0" BorderThickness="1" CornerRadius="6" Padding="6"
+                            BorderBrush="{DynamicResource ShellBorderBrush}" Background="{DynamicResource ShellSurfaceBrush}">
+                        <StackPanel>
+                            <Grid Margin="7,0,7,4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="112" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Nombre" FontWeight="SemiBold" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                <TextBlock Grid.Column="1" Text="Sistema" FontWeight="SemiBold" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                <TextBlock Grid.Column="2" Text="Modificado" FontWeight="SemiBold" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                            </Grid>
+                            <ItemsControl x:Name="LibraryRowList" ItemsSource="{Binding Library.Rows}" AutomationProperties.Name="Diseños de la biblioteca">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button Style="{StaticResource UtRowButton}" Click="OnRowClick"
+                                                AutomationProperties.Name="{Binding AccessibleText}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="100" />
+                                                    <ColumnDefinition Width="112" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding Name}" TextTrimming="CharacterEllipsis" Margin="0,0,8,0" />
+                                                <TextBlock Grid.Column="1" Text="{Binding KindLabel}" TextTrimming="CharacterEllipsis" Margin="0,0,8,0" />
+                                                <TextBlock Grid.Column="2" Text="{Binding ModifiedText}" FontFamily="Consolas" />
+                                            </Grid>
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <TextBlock x:Name="LibraryNoMatchText" Text="Ningún diseño coincide con el filtro." Margin="7,4"
+                                       Foreground="{DynamicResource ShellTextSecondaryBrush}"
+                                       Visibility="{Binding Library.NoMatch, Converter={StaticResource UtFlagToVisibility}}" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- The inspector of the chosen design: what «Abrir» does with it. -->
+                    <Border x:Name="LibraryInspector" Grid.Column="1" Width="300" Margin="10,0,0,0" Style="{StaticResource UtBanner}"
+                            AutomationProperties.Name="Diseño elegido">
+                        <StackPanel>
+                            <StackPanel Visibility="{Binding Library.HasSelection, Converter={StaticResource UtFlagToVisibility}}">
+                                <TextBlock x:Name="LibrarySelectionNameText" Text="{Binding Library.Selected.Name}" Style="{StaticResource UtBlockTitle}" Margin="0,0,0,6" />
+                                <Grid Margin="0,0,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="90" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Grid.Row="0" Text="Sistema" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                    <TextBlock Grid.Row="0" Grid.Column="1" x:Name="LibrarySelectionKindText" Text="{Binding Library.Selected.KindLabel}" Style="{StaticResource UtPlain}" />
+                                    <TextBlock Grid.Row="1" Text="Modificado" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Library.Selected.ModifiedText}" Style="{StaticResource UtPlain}" />
+                                    <TextBlock Grid.Row="2" Text="Archivo" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                    <TextBlock Grid.Row="2" Grid.Column="1" x:Name="LibrarySelectionFileText" Text="{Binding Library.Selected.FileName}" Style="{StaticResource UtMono}" />
+                                </Grid>
+                                <Button x:Name="LibraryOpenHereButton" Content="Abrir como nuevo en esta ventana" HorizontalAlignment="Left" Padding="12,4"
+                                        Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.Name="Abrir el diseño como rack nuevo en esta ventana"
+                                        Visibility="{Binding Library.SelectionOpensHere, Converter={StaticResource UtFlagToVisibility}}" Click="OnOpenClick" />
+                                <Button x:Name="LibraryOpenClassicButton" Content="Abrir en el editor clásico…" HorizontalAlignment="Left" Padding="12,4"
+                                        Style="{StaticResource SecondaryButtonStyle}" AutomationProperties.Name="Abrir el diseño en su editor clásico"
+                                        Visibility="{Binding Library.SelectionOpensClassic, Converter={StaticResource UtFlagToVisibility}}" Click="OnOpenClick" />
+                                <TextBlock x:Name="LibrarySelectionNoteText" Text="{Binding Library.SelectionNote}" Style="{StaticResource UtOptional}" Margin="0,8,0,0" />
+                                <TextBlock x:Name="LibrarySelectionNameNoteText" Text="{Binding Library.SelectionNameNote}" Style="{StaticResource UtOptional}" FontStyle="Italic" />
+                            </StackPanel>
+                            <TextBlock Text="Elige un diseño de la lista." Style="{StaticResource UtPlain}"
+                                       Visibility="{Binding Library.NoSelection, Converter={StaticResource UtFlagToVisibility}}" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </StackPanel>
+
+            <TextBlock Margin="0,10,0,0" Style="{StaticResource UtText}"
+                       Text="Para guardar un rack: ábrelo en la ventana y usa «Más» › «Guardar en biblioteca…» (Selectivo y Dinámico). Los demás sistemas guardan desde su editor clásico, como hoy." />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

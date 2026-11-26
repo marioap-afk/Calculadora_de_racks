@@ -1481,3 +1481,222 @@ Orden del Owner: «También realiza tú la prueba de la entrega 2, si existen er
 - Tras restaurar un borrador que vuelve a ser el dibujo, el aviso nombra «Descartar» con el botón desactivado.
 
 **No probado:** el «U» de una inserción y cancelar la colocación; el teclado en el panel de «Restaurar»; una cabecera personalizada fuera de su regla escrita por RACKSELECTIVOINSERTAR o RACKSELECTIVONUEVO.
+
+## Cuarta tanda, ut: Configuración, Biblioteca de diseños y Ayuda en la ventana (2026-11-26)
+
+**Rama:** local `architecture/workspace-persistente-rackcad-t4-ut`, en `ac3fd1b0`, worktree `D:\w4ut`. Sin commit, sin push y sin AutoCAD.
+Prototipo «utilidades», UT-01 a UT-12: el Owner aceptó las doce propuestas sin nota (`owner-decisions-2026-11-26.md`). Como el editor
+clásico desaparece al final de I-64 (SD-02), aquí entran dos de las seis capacidades del clásico de Selectivo, «Guardar en biblioteca» y
+«Abrir de la biblioteca», para Selectivo y Dinámico. El código clásico no se borró: RACKMENU, RACKBIBLIOTECA y RACKAYUDA siguen igual.
+
+**Lo que se construyó:**
+- **«Biblioteca de diseños» es una página de la ventana** (`RackCadLibraryPage` y `RackCadLibraryViewModel`), sin ventana aparte. Ya no
+  ofrece el botón que abría la biblioteca clásica (RACKBIBLIOTECA).
+  - Lee la carpeta al mostrarse, con «Volver a leer la carpeta» y después de guardar; la primera vez que se muestra «Nuevo», también.
+  - La lista: Nombre, Sistema y Modificado, de la más reciente a la más antigua. Tiene un buscador por nombre o archivo, sin distinguir
+    mayúsculas ni acentos, el filtro «Sistema» con su cuenta por sistema y «Mostrando n de m».
+  - **UT-07:** los nombres de los sistemas son los de la columna («Dinámico», «Cama»…). La biblioteca clásica no cambia.
+  - **UT-06:** los archivos que no se pueden leer salen en un aviso, con cuántos son y su nombre. `RackDesignLibrary.Read` es la misma
+    lectura que `List`; `List` devuelve sus `Entries` y sigue igual.
+  - Una carpeta que no existe dice «La carpeta todavía no existe: se crea al guardar el primer diseño.». Si es una carpeta elegida, añade
+    cómo volver a la de siempre. Una carpeta vacía dice cómo guardar.
+  - El inspector del diseño elegido da el sistema, la fecha y el archivo, qué hace «Abrir» y de dónde sale el nombre. A partir de 620 px va
+    al lado de la lista y, por debajo, debajo de ella.
+  - «Cambiarla en Configuración» lleva a «Configuración».
+- **«Abrir» (UT-03).** Un diseño nunca reemplaza un rack del dibujo.
+  - Selectivo y Dinámico se abren como rack nuevo en «Nuevo»: la identidad es nueva y el nombre es el del diseño. El editor dice ««X» se abrió
+    como Selectivo nuevo en esta ventana, con una identidad nueva. Todavía no está en el dibujo.». El dibujo no cambia hasta «Insertar en el
+    dibujo…», que es la puerta de siempre (RACKSELECTIVONUEVO o RACKDINAMICONUEVO).
+  - La llamada está en **un solo método**, `RackCadWindowViewModel.OpenDesignAsNewRack(RackProject, string)`, sobre el mecanismo de hoy: un
+    rack nuevo a la vez (P3-04). Si ya hay uno, no abre nada y dice «En «Nuevo» ya hay un rack nuevo sin insertar: insértalo en el dibujo o
+    cierra su editor antes de abrir un diseño de la biblioteca.». **Al integrar la parte `new`, la sesión cambia solo esta llamada al punto
+    de entrada de los borradores.**
+  - Push Back, Cantilever, Cabecera, Cama y Larguero, y también Selectivo y Dinámico si la ventana no tiene su puerta, abren su editor
+    clásico aparte, ya con el diseño, sin la lista clásica. Para eso hay una orden nueva, `RACKBIBLIOTECAABRIR`, en su propio archivo:
+    - la ventana guarda una petición numerada con el archivo y el dibujo activo **antes** de entregar la orden, y la puerta la suelta si la
+      entrega falla;
+    - la orden la toma una sola vez. Si se escribe a mano sin petición, si la petición es de otro dibujo o si el archivo ya no existe, solo
+      lo dice;
+    - abre el editor con la misma ventana dueña invisible y el mismo módulo del registro que RACKBIBLIOTECA (`RackCadLibraryFlows`,
+      `RackDesignLibrary.EntryOf`) y dibuja con `DispatchInsertion`.
+- **«Guardar en biblioteca…» (UT-04).** Los editores de Selectivo y de Dinámico tienen ahora **«Más»** en la cabecera. Sus entradas se abren
+  debajo del botón, en la misma página (sin Popup, por O-D), y la primera es «Guardar en biblioteca…».
+  - Lleva a la página de la biblioteca con una línea: el nombre (el del rack), el archivo que resulta y lo que se guarda: «Se guarda lo que
+    ves en el editor, borrador incluido (este rack tiene cambios sin escribir). No toca el dibujo.».
+  - Un nombre vacío no se guarda. Los caracteres que Windows no admite pasan a «_», y la línea lo dice.
+  - Si el archivo ya existe, la línea dice qué es («Es un diseño de Cama guardado el …», o que es un archivo que la biblioteca no pudo leer)
+    y ofrece «Reemplazar» o «Cambiar el nombre».
+  - Se guarda el último borrador válido. Selectivo se guarda como el clásico, con `SelectiveLibraryExport.FromEffective`: solo literales,
+    sin vínculos. Dinámico se guarda con su diseño y su sistema, como «Guardar proyecto» del clásico.
+  - Un valor escrito y rechazado detiene el guardado y se nombra, como «Restaurar layout…». También lo detienen unos tramos sin aplicar
+    (Selectivo) y un borrador sin recomponer.
+  - Si el editor se cierra, su línea de guardado desaparece.
+  - Un borrador abierto desde la biblioteca conserva, al volver a guardarse, los campos del archivo que este build no conoce (I-11).
+- **«Órdenes y atajos» (UT-09 a UT-11)** es una página de la ventana (`RackCadHelpPage` y `RackCadHelpViewModel`), detrás del botón
+  «Ayuda» de la cabecera. No es una sexta sección: `RackCadWindowPage.Ayuda` no está en la columna.
+  - Tiene la lista de RACKAYUDA (`RackCommandReference`, la misma fuente), un buscador por orden, atajo o texto (sin acentos) y la cuenta.
+  - Cada orden lleva su atajo, o «sin atajo», y «En la ventana», que es un enlace cuando hay una sección que hace lo mismo.
+  - «Ejecutar» va por la puerta de la ventana, solo sin comando en curso, y el foco vuelve al dibujo. Solo ejecuta las órdenes de
+    `RackCadHelpCommands.Runnable`, que son las de la lista menos RACKCAD. Una prueba comprueba que las dos listas no se separen.
+  - **UT-11:** la ayuda gana RACKMENU, RACKPUSHBACK (RPB), RACKSECCION y RACKVARIABLES (RVA). RACKCAD dice lo que hace hoy, y el párrafo ya
+    no dice «o cámbialo en la configuración». El diálogo clásico RACKAYUDA muestra lo mismo y no pinta la pastilla de un atajo vacío.
+- **«Configuración» (UT-01, UT-02 y UT-12)** es una página propia (`RackCadSettingsPage`). Dice «Ajustes de este usuario en este equipo
+  (<ruta>)» y tiene:
+  - la biblioteca de bloques, como antes; su «Restablecer» solo se ofrece con una ruta elegida;
+  - **la carpeta de diseños,** con «Cambiar…» (el selector de carpetas de Windows, `OpenFolderDialog`), «Restablecer» y su estado:
+    elegida o predeterminada, y si todavía no existe;
+  - **«Abrir RackCad al iniciar AutoCAD»,** una casilla apagada por defecto (`UserSettings.OpenRackCadOnStartup`);
+  - **«Acerca de RackCad»:** la versión (la informativa, con el SHA corto), la carpeta de catálogos y la del registro de errores, en cajas
+    de solo lectura que se pueden copiar.
+- **La lectura al arrancar (UT-01).** `PluginInitializer.Initialize` llama a `RackCadStartup.Arm()`.
+  - Con la casilla apagada no se crea nada, como antes.
+  - Con la casilla encendida, un temporizador del despachador del hilo principal espera hasta 2 minutos a que haya un dibujo y entonces
+    ejecuta lo mismo que RACKCAD (`new RackMenuCommands().RackCad()`), una sola vez.
+- **«Nuevo»** (`RackCadNuevoExtras`) muestra al final:
+  - los tres diseños más recientes, con «Ver», que lleva a la biblioteca con el diseño elegido;
+  - «Dónde quedó el menú clásico (RACKMENU)», plegado, elemento por elemento (11);
+  - «Ver todas las órdenes», que abre la página de la ventana en lugar del diálogo de RACKAYUDA.
+- **UT-05:** no se borran ni se renombran diseños; eso se hace en la carpeta. **UT-08:** «Diseñar drive-in» ya no estaba en la ventana.
+- `docs/guias/despliegue.md`, sección 6:
+  - añade RACKPUSHBACK y RACKSECCION;
+  - ya no remite a `RackFrameCommands.Aliases.cs`, que no existe;
+  - dice dónde están la carpeta de diseños, la casilla y «Acerca de» en «Configuración».
+
+**Ediciones a archivos compartidos** (lo nuevo va en archivos propios):
+- `RackCadWindowViewModel.cs`:
+  - el valor `Ayuda` en `RackCadWindowPage`;
+  - `editor.SaveToLibraryAction = StartSaveToLibrary` en `Wire`;
+  - `ForgetUtilitiesOf(entry.Editor)` en `ForgetSelective` y en `Forget`;
+  - `OnUtilityPageShown(page)` al final de `ShowPage`;
+  - `RaiseUtilitySettings()` al final de `RaiseSettings`.
+
+  Una línea cada uno, marcada «T4 ut».
+- `RackCadWindowViewModel.Selective.cs`: una línea en `WireSelective` (`SaveToLibraryAction`).
+- `RackCadWindowView.xaml`: tres bloques marcados `<!-- T4 ut -->`:
+  - el botón «Ayuda» de la cabecera;
+  - el final de «Nuevo», que sustituye la frase y el botón «Ver todas las órdenes (RACKAYUDA)»;
+  - las tres páginas, que sustituyen las de «Biblioteca de diseños» y «Configuración», contiguas, al final de la rejilla.
+- `RackCadWindowView.xaml.cs`: salen `OnBrowseBlockLibraryClick` y `OnResetBlockLibraryClick`, que se mudaron con la página.
+- `SelectiveEditorView.xaml` y `DynamicEditorView.xaml`: un bloque `<!-- T4 ut -->` («Más») después de «Cerrar el editor».
+- `DynamicEditorViewModel.cs` y `RackCadSettingsAccess.cs`: la clase pasa a `partial`.
+- `RackDesignLibrary.cs`: `List` pasa por `Read`, y se añade `EntryOf`.
+- `UserSettings.cs`: la propiedad `OpenRackCadOnStartup`.
+- `RackCommandReference.cs` y `RackCommandHelpWindow.cs`: las entradas y los textos de UT-11.
+- `RackCadClassicCommandPort.cs` (Plugin): implementa `IRackCadUtilityCommandPort`, con la petición pendiente y su `Send`, en un bloque
+  «T4 ut» al final.
+- `PluginInitializer.cs`: la llamada a `Arm()`.
+- Archivos nuevos:
+  - Application: `RackCadUtilities.cs` y `RackDesignLibraryListing.cs`;
+  - UI: los tres modelos de vista y las cuatro vistas de arriba, `RackCadUtilityStyles.xaml`, `RackCadUtilitySettings.cs`,
+    `RackCadLibraryFlows.cs`, `RackCadWindowViewModel.Utilities.cs`, `RackCadWindowView.Utilities.cs` y los parciales `.Library.cs` de los
+    dos editores y de sus vistas;
+  - Plugin: `RackBibliotecaCommands.cs` y `VentanaRackCad/RackCadStartup.cs`.
+
+**Decisiones y supuestos de la sesión** (prefijo UT-S, para el Owner):
+
+| Id | Decisión o supuesto | Por qué |
+|---|---|---|
+| UT-S01 | «Más» abre sus entradas debajo del botón, dentro de la cabecera, no como menú emergente | Un Popup de WPF cae desplazado con dos monitores de escala distinta (O-D). Las otras partes de la tanda pueden añadir sus entradas en el mismo panel |
+| UT-S02 | El nombre que se escribe al guardar es el del archivo y el del diseño: en Selectivo va en el documento, y la biblioteca lista ese nombre. El rack del dibujo no cambia | El prototipo lista el diseño con el nombre escrito. Con el nombre del rack dentro y otro archivo, «Cambiar el nombre» dejaría dos diseños con el mismo nombre |
+| UT-S03 | «Cambiar el nombre» propone el primer «nombre (n)» libre, desde 2, no siempre « (2)» | « (2)» podía chocar otra vez |
+| UT-S04 | RACKRAMPAQUETE sigue fuera de la ayuda | La pregunta 11 dejaba su resumen [PENDIENTE]. Añadirlo es una línea de `RackCommandReference`, más el par en el censo |
+| UT-S05 | La página no muestra las marcas «Propuesta» y «Texto corregido» del prototipo | Eran marcas de la pregunta; el Owner ya la aceptó |
+| UT-S06 | «Acerca de» no dice que la ventana recuerda su tamaño y su posición, y la pista de la casilla no dice «donde la dejaste» | No está construido (V-09, C-10) |
+| UT-S07 | La lectura al arrancar usa un temporizador del despachador (cada 500 ms, hasta 2 minutos) y ningún evento de AutoCAD | `WorkspaceBridgeSourceGuardTests` exige que el puente del Workspace sea el único suscriptor de los eventos de AutoCAD (`Idle` incluido). Se prueba en AutoCAD en su propio smoke |
+| UT-S08 | `RACKBIBLIOTECAABRIR` es una orden nueva, en su propio archivo, y no una variante de RACKBIBLIOTECA | Es la forma de las puertas `RACK…ABRIR`: toma una petición numerada y, escrita a mano, solo avisa. Mueve el censo de órdenes de 51 a 52 |
+| UT-S09 | «Guardar en biblioteca…» necesita el editor abierto. Un rack de la lista sin editor no lo ofrece | Se guarda «lo que ves en el editor». Sin editor habría que leer el dibujo |
+| UT-S10 | Un diseño abierto desde la ventana conserva sus campos desconocidos (I-11) al volver a guardarse, pero **no al insertarse**: RACKSELECTIVONUEVO y RACKDINAMICONUEVO no llevan el proyecto de origen. Es una diferencia declarada con el clásico | Llevarlo exige cambiar la escritura de la puerta, que es de otra entrega |
+| UT-S11 | En un rack nuevo abierto desde la biblioteca, «Descartar» vuelve al diseño de la biblioteca. Los avisos de «Restaurar» y de S-09 siguen diciendo «vuelve a los valores por defecto» (`NewRackDiscardText`) | Es inexacto. Se corrige con la parte `new`, que redefine el borrador nuevo |
+| UT-S12 | «En la ventana» de RACKEDITAR dice «Página del rack: «Editar aquí» (Selectivo y Dinámico)» | El prototipo decía «Abrir en editor clásico», un botón que la ventana no tiene |
+| UT-S13 | Cada orden de la ayuda es un bloque de dos o tres líneas, no una tabla de cinco columnas | La paleta acoplada no tiene ancho para cinco columnas |
+| UT-S14 | Sin la puerta de Selectivo o de Dinámico, un diseño de ese sistema va a su editor clásico | Es la regla de UT-03 para los sistemas que aún no se editan en la ventana |
+| UT-S15 | La ventana no muestra `SelectiveTargetFondos` | Es del editor clásico, no del usuario (inventario §2), y el prototipo no lo mostraba |
+
+**Censos y guardas cambiados,** cada uno con su nota:
+- `CustomPropertiesHelpCensusTests` (UI): los cuatro pares de UT-11 (`T4UtHelp`). Un atajo vacío es una orden sin atajo, y la barrida del
+  Plugin ya no lo busca. Hay dos mutaciones nuevas.
+- `CustomPropertiesCommandGuardTests` (Core): `A14UtilityCommands = { "RACKBIBLIOTECAABRIR" }` en la base.
+- `SelectiveEditorOpenTests` (Core): el censo bruto de órdenes pasa de 51 a 52.
+- `WorkspaceBridgeSourceGuardTests` no se tocó: el primer arranque, con `Application.Idle`, lo rompía, y se rehízo con el temporizador
+  (UT-S07).
+
+**Las pruebas:**
+- `RackCadUtilitiesTests` (UI, nueva, 34). Usa una carpeta temporal por prueba y no lee ni escribe los ajustes de la máquina.
+  - La biblioteca:
+    - la lectura, con los nombres de la ventana y el archivo roto;
+    - la carpeta que no existe frente a la vacía;
+    - el buscador sin acentos y el filtro con sus cuentas;
+    - el inspector.
+  - «Abrir»:
+    - un Selectivo y un Dinámico como rack nuevo, que se insertan después por su puerta;
+    - el rechazo con un rack nuevo ya en «Nuevo»;
+    - Cama y Larguero por la puerta numerada, y AutoCAD ocupado;
+    - sin la puerta de Selectivo o sin la de las utilidades.
+  - «Guardar»:
+    - el borrador incluido y solo literales;
+    - el nombre vacío y los caracteres de Windows;
+    - «Reemplazar» y «Cambiar el nombre», también sobre un archivo ilegible;
+    - «Cancelar», y el editor cerrado;
+    - el valor rechazado;
+    - un Dinámico nuevo;
+    - un editor sin ventana no lo ofrece.
+  - La ayuda:
+    - la página fuera de la columna;
+    - la lista y sus «En la ventana»;
+    - las órdenes ejecutables contra la lista;
+    - la búsqueda;
+    - «Ejecutar», el ocupado y «En la ventana».
+  - «Configuración»: la carpeta, la casilla, «Acerca de», sin las utilidades y el acceso real.
+  - «Nuevo»: los recientes y el mapa del menú.
+  - Las vistas con WPF real, en STA y sin errores de enlace:
+    - la cabecera y la ayuda por clics;
+    - la biblioteca: lista, elección, abrir, el guardado desde «Más» del editor y el inspector debajo en estrecho;
+    - el conflicto;
+    - «Configuración»;
+    - «Nuevo»;
+    - «Más» de Dinámico.
+- `RackCadUtilitiesCoreTests` (Core, nueva, 33):
+  - la lectura, la carpeta y `EntryOf`;
+  - el nombre del archivo;
+  - las órdenes que ejecuta la ayuda, y que todas están registradas en el Plugin;
+  - las reglas de la puerta y de la orden;
+  - la casilla, que está apagada por defecto, también en un `settings.json` viejo;
+  - por la fuente: el orden de la puerta (guarda la petición, entrega la orden, la suelta si falla, devuelve el foco), el de
+    RACKBIBLIOTECAABRIR, `Initialize` y el arranque (sin eventos de AutoCAD).
+- **Comprobación en rojo:** trece piezas rotas a propósito, una a una, con script (`hs65\t4\ut\red\` del scratchpad de la sesión). Cada una se compiló y pasó por sus pruebas focales, y en todas falla al menos una. Cada archivo se restauró con sus bytes (SHA-256 comprobado):
+  1. UT-06, los archivos ilegibles se saltan en silencio: fallan 1 de Core y 2 de UI;
+  2. UT-07, la biblioteca vuelve a decir «Sistema dinámico»: fallan 3;
+  3. UT-03, un segundo rack nuevo no se rechaza: falla 1;
+  4. UT-03, ningún diseño se abre en la ventana: fallan 4;
+  5. UT-04, se guarda sin mirar si el archivo existe: fallan 3;
+  6. UT-04, el nombre escrito no es el del diseño: fallan 2;
+  7. UT-04, el valor rechazado no detiene el guardado: falla 1;
+  8. UT-04, el editor cerrado no se lleva su línea: falla 1;
+  9. UT-10, «Ejecutar» acepta RACKCAD: fallan 4;
+  10. UT-11, RACKMENU sale de la ayuda: fallan 4, con el censo de la ayuda;
+  11. la puerta guarda la petición después de entregar la orden: falla 1 (Core, por la fuente);
+  12. UT-01, el arranque no mira la casilla: falla 1 (Core);
+  13. en la vista, «Más» no abre su panel: falla 1.
+
+  Después se recompiló la solución con `--no-incremental` antes de las suites completas.
+
+**Los números:**
+- **UI completa:** 2791 correctas, 1 con error y 48 omitidas (2840). Es la base de `ac3fd1b0`, 2756/0/48, más las 36 nuevas (34 de
+  `RackCadUtilitiesTests` y las 2 mutaciones nuevas del censo de la ayuda). La que falla es
+  `RackModalHostWindowTests.TheModalHostRunsTheWorkWithItsWindowAsOwnerAndCloses`, por su temporizador de seguridad de 21 s, con las siete
+  partes compilando y probando a la vez (la UI tardó 53 min). Sola pasa: 3/3 en 1 s. Es el caso de M-21; esta parte no toca la ventana dueña.
+- **Core Full:** 19180 correctas, 0 con error y 403 omitidas (19583). Es la base, 19147/0/403, más las 33 de `RackCadUtilitiesCoreTests`; los censos cambiados no añaden casos.
+- **Build Debug de la solución (Plugin incluido),** con `--no-incremental`: 0 errores. Las únicas advertencias son las MSB3277 de las
+  referencias de AutoCAD, que ya estaban.
+
+**Lo que queda abierto:**
+- **El smoke propio de UT-01 en AutoCAD:** la casilla encendida abre la ventana con el primer dibujo, una sola vez, también cuando AutoCAD
+  arranca sin dibujo y se abre uno después.
+- **En AutoCAD:**
+  - RACKBIBLIOTECAABRIR con un Push Back y con una Cabecera;
+  - el selector de carpetas de Windows dentro de la paleta (la ventana activa es la dueña, como «Examinar…», M-02);
+  - «Más» en la paleta acoplada;
+  - un diseño de la biblioteca insertado con «Insertar en el dibujo…».
+- La integración con `new` (`OpenDesignAsNewRack`), con `ins` y `cb` (sus entradas de «Más» van en el mismo panel) y con `va` y `bom`
+  (sus páginas vecinas en `RackCadWindowView.xaml`).
+- UT-S10 y UT-S11.

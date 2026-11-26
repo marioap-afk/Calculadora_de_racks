@@ -242,34 +242,7 @@ namespace RackCad.UI.VentanaRackCad
 
         private void OnDismissMessageClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.DismissMessage());
 
-        private void OnBrowseBlockLibraryClick(object sender, RoutedEventArgs e) => Contained(() =>
-        {
-            var dialog = new Microsoft.Win32.OpenFileDialog
-            {
-                Title = "Selecciona la biblioteca de bloques",
-                Filter = "Dibujo de AutoCAD (*.dwg)|*.dwg|Todos (*.*)|*.*",
-                CheckFileExists = true,
-            };
-
-            var current = _viewModel.BlockLibraryPath;
-            try
-            {
-                var directory = string.IsNullOrWhiteSpace(current) ? null : Path.GetDirectoryName(current);
-                if (!string.IsNullOrEmpty(directory) && Directory.Exists(directory)) dialog.InitialDirectory = directory;
-                if (!string.IsNullOrWhiteSpace(current) && File.Exists(current)) dialog.FileName = Path.GetFileName(current);
-            }
-            catch (Exception)
-            {
-                // An invalid current path only means the dialog opens at its default folder.
-            }
-
-            // Inside the palette of AutoCAD the control has no WPF window: the dialog then takes the active window as its owner.
-            var owner = Window.GetWindow(this);
-            var chosen = owner != null ? dialog.ShowDialog(owner) : dialog.ShowDialog();
-            if (chosen == true) _viewModel.SetBlockLibraryPath(dialog.FileName);
-        });
-
-        private void OnResetBlockLibraryClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.ResetBlockLibraryPath());
+        // T4 ut: «Examinar…» and «Restablecer» of the block library moved with «Configuración» to RackCadSettingsPage.
 
         private void Contained(Action interaction)
         {

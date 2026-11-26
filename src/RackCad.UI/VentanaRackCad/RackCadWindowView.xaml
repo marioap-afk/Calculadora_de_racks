@@ -88,6 +88,21 @@
         <Border Grid.Row="0" Padding="12,8" BorderThickness="0,0,0,1"
                 Background="{DynamicResource ShellSurfaceBrush}" BorderBrush="{DynamicResource ShellBorderBrush}">
             <DockPanel LastChildFill="True">
+                <!-- T4 ut (UT-09): «Ayuda» opens «Órdenes y atajos», a page of the window, without a sixth section in the column. -->
+                <Button x:Name="HelpButton" DockPanel.Dock="Right" Content="Ayuda" Padding="10,3" Margin="8,0,0,0"
+                        AutomationProperties.Name="Ayuda: órdenes y atajos" ToolTip="Órdenes y atajos de RackCad, sin bloquear AutoCAD."
+                        Click="OnHelpClick">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource SecondaryButtonStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsAyudaPage}" Value="True">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource ShellSelectionPrimaryBrush}" />
+                                    <Setter Property="FontWeight" Value="SemiBold" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
                 <Button x:Name="SideToggleButton" DockPanel.Dock="Right" Padding="10,3" Margin="8,0,0,0"
                         Style="{StaticResource SecondaryButtonStyle}" Content="{Binding SideToggleText}"
                         AutomationProperties.Name="Ocultar o mostrar la lista" Click="OnSideToggleClick" />
@@ -379,10 +394,8 @@
                                 <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource ShellTextPrimaryBrush}"
                                            Text="Paso intermedio: mientras se migran los editores, «Nuevo» abre la ventana actual de ese sistema. La meta es editarlo aquí, sin bloquear AutoCAD." />
                             </Border>
-                            <TextBlock Style="{StaticResource PageText}"
-                                       Text="Siguen como órdenes de AutoCAD: RACKEDITAR (editor clásico), RACKPROYECTAR, RACKDUPLICAR, RACKLAYOUT y las demás de RACKAYUDA." />
-                            <Button Content="Ver todas las órdenes (RACKAYUDA)" HorizontalAlignment="Left" Padding="10,3"
-                                    Style="{StaticResource SecondaryButtonStyle}" Tag="Help" Click="OnClassicActionClick" />
+                            <!-- T4 ut: the recent designs of the library, where the classic menu went and «Ver todas las órdenes» (in the window). -->
+                            <vr:RackCadNuevoExtras xmlns:vr="clr-namespace:RackCad.UI.VentanaRackCad" x:Name="NuevoExtras" />
                         </StackPanel>
                     </ScrollViewer>
 
@@ -422,57 +435,13 @@
                         </StackPanel>
                     </ScrollViewer>
 
-                    <!-- Biblioteca de diseños -->
-                    <ScrollViewer x:Name="BibliotecaPage" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
-                                  Visibility="{Binding IsBibliotecaPage, Converter={StaticResource FlagToVisibility}}">
-                        <StackPanel Margin="14,10">
-                            <TextBlock Text="Biblioteca de diseños" Style="{StaticResource PageTitle}" />
-                            <TextBlock Style="{StaticResource PageText}"
-                                       Text="Reabre cualquier diseño guardado (cabecera, dinámico, Push Back, Cantilever, selectivo, cama o larguero) como un rack nuevo." />
-                            <Border Style="{StaticResource Banner}">
-                                <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource ShellTextPrimaryBrush}"
-                                           Text="Paso intermedio: se abre la biblioteca actual y, al elegir un diseño, su editor." />
-                            </Border>
-                            <Button Content="Abrir la biblioteca de diseños" HorizontalAlignment="Left" Padding="12,4"
-                                    Style="{StaticResource PrimaryButtonStyle}" Tag="DesignLibrary" Click="OnClassicActionClick" />
-                            <TextBlock Margin="0,12,0,0" Style="{StaticResource PageText}" Text="{Binding DesignLibraryPath, StringFormat=Carpeta: {0}}" />
-                        </StackPanel>
-                    </ScrollViewer>
-
-                    <!-- Configuración -->
-                    <ScrollViewer x:Name="ConfiguracionPage" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
-                                  Visibility="{Binding IsConfiguracionPage, Converter={StaticResource FlagToVisibility}}">
-                        <StackPanel Margin="14,10">
-                            <TextBlock Text="Configuración" Style="{StaticResource PageTitle}" />
-                            <TextBlock Text="Biblioteca de bloques (.dwg)" FontWeight="SemiBold" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
-                            <TextBlock Style="{StaticResource PageText}" Text="De aquí se importan los bloques que falten en el dibujo activo." />
-                            <TextBox x:Name="BlockLibraryPathBox" IsReadOnly="True" TextWrapping="Wrap" Padding="4,3"
-                                     AutomationProperties.Name="Ruta de la biblioteca de bloques" Text="{Binding BlockLibraryPath, Mode=OneWay}" />
-                            <TextBlock x:Name="BlockLibraryStatusText" Text="{Binding BlockLibraryStatus}">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock" BasedOn="{StaticResource OptionalText}">
-                                        <Setter Property="Foreground" Value="{DynamicResource ShellTextSecondaryBrush}" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding BlockLibraryMissing}" Value="True">
-                                                <Setter Property="Foreground" Value="{DynamicResource ShellStatusWarningBrush}" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                            <WrapPanel Margin="0,6,0,0">
-                                <Button x:Name="BrowseBlockLibraryButton" Content="Examinar…" Margin="0,0,8,0" Padding="12,4"
-                                        Style="{StaticResource SecondaryButtonStyle}" Click="OnBrowseBlockLibraryClick" />
-                                <Button x:Name="ResetBlockLibraryButton" Content="Restablecer" Padding="12,4"
-                                        Style="{StaticResource SecondaryButtonStyle}"
-                                        ToolTip="Vuelve a la ruta predeterminada (junto a los catálogos)." Click="OnResetBlockLibraryClick" />
-                            </WrapPanel>
-                            <TextBlock Margin="0,14,0,0" Text="Carpeta de la biblioteca de diseños" FontWeight="SemiBold"
-                                       Foreground="{DynamicResource ShellTextPrimaryBrush}" />
-                            <TextBox IsReadOnly="True" TextWrapping="Wrap" Padding="4,3" Margin="0,4,0,0"
-                                     AutomationProperties.Name="Carpeta de la biblioteca de diseños" Text="{Binding DesignLibraryPath, Mode=OneWay}" />
-                        </StackPanel>
-                    </ScrollViewer>
+                    <!-- T4 ut: «Biblioteca de diseños», «Configuración» and «Órdenes y atajos» (prototype «utilidades»), each a page of its own file. -->
+                    <vr:RackCadLibraryPage xmlns:vr="clr-namespace:RackCad.UI.VentanaRackCad" x:Name="BibliotecaPage"
+                                           Visibility="{Binding IsBibliotecaPage, Converter={StaticResource FlagToVisibility}}" />
+                    <vr:RackCadSettingsPage xmlns:vr="clr-namespace:RackCad.UI.VentanaRackCad" x:Name="ConfiguracionPage"
+                                            Visibility="{Binding IsConfiguracionPage, Converter={StaticResource FlagToVisibility}}" />
+                    <vr:RackCadHelpPage xmlns:vr="clr-namespace:RackCad.UI.VentanaRackCad" x:Name="AyudaPage"
+                                        Visibility="{Binding IsAyudaPage, Converter={StaticResource FlagToVisibility}}" />
                 </Grid>
             </DockPanel>
         </Grid>
