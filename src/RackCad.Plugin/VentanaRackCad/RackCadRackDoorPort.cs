@@ -20,7 +20,7 @@ namespace RackCad.Plugin.VentanaRackCad
     /// The Selectivo has its own two commands (Selectivo E1-A), with the same rules, and the two of its second delivery: «Insertar vista…»
     /// (RACKSELECTIVOINSERTAR) and the new Selectivo of the window (RACKSELECTIVONUEVO), each in its own slot.
     /// </summary>
-    public sealed class RackCadRackDoorPort : IRackCadSelectiveDoorPort
+    public sealed partial class RackCadRackDoorPort : IRackCadSelectiveDoorPort // T4 cb: partial (the door of a cabecera, RackCadRackDoorPort.Cabecera.cs)
     {
         internal const string ReadCommand = "RACKDINAMICOABRIR";
         internal const string WriteCommand = "RACKDINAMICOAPLICAR";
@@ -166,6 +166,7 @@ namespace RackCad.Plugin.VentanaRackCad
             if (_pendingSelectiveWrite != null && _pendingSelectiveWrite.RequestId == requestId) _pendingSelectiveWrite = null;
             if (_pendingSelectiveInsert != null && _pendingSelectiveInsert.RequestId == requestId) _pendingSelectiveInsert = null;
             if (_pendingSelectiveNew != null && _pendingSelectiveNew.RequestId == requestId) _pendingSelectiveNew = null;
+            AbandonCabecera(requestId); // T4 cb
         }
 
         /// <summary>The read of a Selectivo that waits, taken once by its command; null when there is none.</summary>

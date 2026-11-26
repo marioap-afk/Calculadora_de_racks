@@ -390,7 +390,7 @@ namespace RackCad.UI.VentanaRackCad
     public sealed record SelectiveCalcItem(string Label, string Value, string Hint = "");
 
     /// <summary>One post of «Avanzado»: its own peralte (empty = the one of the rack), its height and its cabecera in each fondo; refreshed in place.</summary>
-    public sealed class SelectivePostRow : ObservableObject
+    public sealed partial class SelectivePostRow : ObservableObject // T4 cb: partial (its cabeceras, SelectiveEditorViewModel.Cabecera.cs)
     {
         private string _cabecera;
         private string _height;
@@ -1579,7 +1579,7 @@ namespace RackCad.UI.VentanaRackCad
         private void RefreshDirty()
         {
             var pending = MeasurePendingSegments();
-            var dirty = _designDirty || pending;
+            var dirty = _designDirty || pending || CabeceraPending; // T4 cb: a cabecera with changes not applied (D-08)
             if (dirty == _dirty && pending == _segmentsPending) return;
             _segmentsPending = pending;
             _dirty = dirty;
@@ -1753,6 +1753,7 @@ namespace RackCad.UI.VentanaRackCad
             MergeFondoRows(BuildFondoRows());
             Merge(ref _annotationFields, BuildAnnotationFields(), nameof(AnnotationFields));
             MergePosts(BuildPostRows());
+            RefreshCabeceraCells(); // T4 cb: «Editar cabecera…» / «Volver a la calculada» of each post and fondo
             _calculated = null;
             _halfFronts = BuildHalfFronts();
             if (_selectedTab == 0) OnPropertyChanged(nameof(Calculated));

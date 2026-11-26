@@ -82,7 +82,9 @@ namespace RackCad.UI.VentanaRackCad
                 || e.PropertyName == nameof(RackCadWindowViewModel.ShowPanel)
                 || e.PropertyName == nameof(RackCadWindowViewModel.DynamicEditors)
                 || e.PropertyName == nameof(RackCadWindowViewModel.ActiveSelectiveEditor)
-                || e.PropertyName == nameof(RackCadWindowViewModel.SelectiveEditors))
+                || e.PropertyName == nameof(RackCadWindowViewModel.SelectiveEditors)
+                || e.PropertyName == nameof(RackCadWindowViewModel.ActiveCabeceraEditor) // T4 cb
+                || e.PropertyName == nameof(RackCadWindowViewModel.CabeceraEditors))
                 ShowRackContent();
             if (e.PropertyName == nameof(RackCadWindowViewModel.NewDynamicEditor)) ShowNewContent();
             if (e.PropertyName == nameof(RackCadWindowViewModel.NewSelectiveEditor)) ShowNewSelectiveContent();
@@ -168,6 +170,7 @@ namespace RackCad.UI.VentanaRackCad
             var liveSelective = _viewModel.SelectiveEditors;
             foreach (var gone in _selectiveViews.Keys.Where(editor => !liveSelective.Contains(editor)).ToList()) _selectiveViews.Remove(gone);
 
+            if (ShowCabeceraContent()) return; // T4 cb: the editor of a cabecera of its own
             var active = _viewModel.ActiveDynamicEditor;
             var activeSelective = active == null ? _viewModel.ActiveSelectiveEditor : null;
             if ((active == null && activeSelective == null) || _viewModel.ShowPanel)
