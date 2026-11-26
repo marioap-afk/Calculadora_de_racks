@@ -320,7 +320,7 @@ namespace RackCad.UI.VentanaRackCad
     /// Nothing here writes the drawing: «Actualizar» hands the editor to the host, and while AutoCAD writes nothing can be edited.
     /// </para>
     /// </summary>
-    public sealed class SelectiveEditorViewModel : ObservableObject
+    public sealed partial class SelectiveEditorViewModel : ObservableObject
     {
         private const string Varies = "Varía";
         private const string WritingText = "AutoCAD está escribiendo el rack: espera a que termine o pulsa «Dejar de esperar».";
