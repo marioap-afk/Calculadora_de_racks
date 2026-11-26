@@ -544,7 +544,12 @@ namespace RackCad.UI.Tests
             vm.StartSegments();
             Assert.Equal(2, vm.SegmentRows.Count);
             Assert.True(vm.SegmentRows[1].IsRest);
-            Assert.False(vm.IsDirty); // the tramos are written with «Aplicar tramos»
+            // The tramos are written with «Aplicar tramos»; until then they are a change that «Actualizar» does not write (S-21, M-04 of the
+            // review of the entrega 1: before, the editor stayed «Limpio» here).
+            Assert.False(vm.Draft.Front(0, 0)!.IsSplit);
+            Assert.True(vm.HasPendingSegments);
+            Assert.True(vm.IsDirty);
+            Assert.False(vm.CanUpdate);
 
             vm.ApplySegments();
             Assert.Equal("El tramo 1 necesita una longitud mayor que 0 (el último se calcula solo).", vm.SegmentError);
@@ -560,6 +565,8 @@ namespace RackCad.UI.Tests
             Assert.Equal("F1 ½", vm.Columns[0].Title); // decision 7
             Assert.Contains("F1: 2 tramos", vm.HalfFrontsText);
             Assert.True(vm.IsDirty);
+            Assert.False(vm.HasPendingSegments);
+            Assert.True(vm.CanUpdate);
 
             // Several fronts: the inspector asks for one.
             vm.SelectAll();

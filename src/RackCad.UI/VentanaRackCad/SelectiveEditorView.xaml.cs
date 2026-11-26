@@ -102,6 +102,8 @@ namespace RackCad.UI.VentanaRackCad
 
         private void OnClearSegmentsClick(object sender, RoutedEventArgs e) => Contained(_viewModel.ClearSegments);
 
+        private void OnDiscardSegmentsClick(object sender, RoutedEventArgs e) => Contained(_viewModel.DiscardSegments);
+
         private void OnRemoveSegmentClick(object sender, RoutedEventArgs e) => Contained(() =>
         {
             if ((sender as FrameworkElement)?.DataContext is SelectiveSegmentRow row) _viewModel.RemoveSegment(row.Index);

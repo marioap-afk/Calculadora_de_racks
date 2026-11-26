@@ -112,12 +112,13 @@ namespace RackCad.UI.Tests
         }
 
         /// <summary>The editor of the window over that rack, opened as the window opens it.</summary>
-        public static SelectiveEditorViewModel SelectiveEditor(SelectivePalletDesign? design = null, Action<SelectiveEditorViewModel>? update = null, bool bound = false)
+        public static SelectiveEditorViewModel SelectiveEditor(SelectivePalletDesign? design = null, Action<SelectiveEditorViewModel>? update = null, bool bound = false,
+            IReadOnlyList<string>? dimensionStyles = null)
         {
             var read = Read(1, RackId, design, bound);
             var draft = new SelectiveDraftEditor(UiSupport.LoadCatalogSafe());
             Assert.True(draft.LoadFrom(read.EffectiveDesign()!, read.LinkedPropertyStates, read.Name, read.LinkedVariableNames), draft.LastError);
-            return new SelectiveEditorViewModel(draft, RackId, update ?? (_ => { }), read.LinkedPropertyStates, read.LinkedVariableNames);
+            return new SelectiveEditorViewModel(draft, RackId, update ?? (_ => { }), read.LinkedPropertyStates, read.LinkedVariableNames, dimensionStyles);
         }
 
         /// <summary>A custom cabecera of the post of the rack, as the configurator gives it.</summary>

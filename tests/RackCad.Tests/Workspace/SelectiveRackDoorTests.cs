@@ -186,7 +186,9 @@ public class SelectiveRackDoorTests
 
         Assert.False(plan.CanWrite);
         Assert.Null(plan.Saved);
-        Assert.StartsWith("El vínculo de la holgura vertical cambió en el dibujo desde que se abrió el rack aquí: no se escribió nada.", plan.Reason);
+        // S-24 (M-06 of the review of the entrega 1): the text says what the window can do; «Descartar» goes back to what it opened.
+        Assert.Equal("El vínculo de la holgura vertical cambió en el dibujo desde que se abrió el rack aquí: no se escribió nada. "
+                     + "Cierra el editor (los cambios de la ventana se pierden) y vuelve a abrirlo con «Editar aquí».", plan.Reason);
 
         // And the other way round: opened bound, unlinked in the drawing since.
         var bound = RackDoorRules.AnswerForSelectiveOpen(5, RackId, RackEmbedDocument.KindSelective, Authored(bound: true), Register(10.0));
@@ -202,7 +204,47 @@ public class SelectiveRackDoorTests
         var plan = RackDoorRules.PlanSelectiveApply(RackEmbedDocument.KindSelective, json, Register(12.0), WriteOf(read));
 
         Assert.False(plan.CanWrite);
-        Assert.StartsWith("El valor de lo que gobierna la holgura vertical cambió desde que se abrió el rack aquí: no se escribió nada.", plan.Reason);
+        Assert.Equal("El valor de lo que gobierna la holgura vertical cambió desde que se abrió el rack aquí: no se escribió nada. "
+                     + "Cierra el editor (los cambios de la ventana se pierden) y vuelve a abrirlo con «Editar aquí».", plan.Reason);
+    }
+
+    // S-24 (M-11 of the review of the entrega 1): when both holguras changed, the refusal names both, in a fixed order.
+    [Fact]
+    public void ARefusalNamesBothHolgurasWhenBothChanged()
+    {
+        const string Reopen = " Cierra el editor (los cambios de la ventana se pierden) y vuelve a abrirlo con «Editar aquí».";
+
+        // Opened with both holguras of the rack; meanwhile the drawing bound both.
+        var read = RackDoorRules.AnswerForSelectiveOpen(5, RackId, RackEmbedDocument.KindSelective, Authored(bound: false), Register(10.0));
+        var rebound = RackDoorRules.PlanSelectiveApply(RackEmbedDocument.KindSelective, AuthoredBoth(), Register(10.0), WriteOf(read));
+        Assert.False(rebound.CanWrite);
+        Assert.Equal("Los vínculos de la holgura vertical y de la tolerancia horizontal cambiaron en el dibujo desde que se abrió el rack aquí: "
+                     + "no se escribió nada." + Reopen, rebound.Reason);
+
+        // Opened with both bound to the variable; the variable has another value now.
+        var both = RackDoorRules.AnswerForSelectiveOpen(5, RackId, RackEmbedDocument.KindSelective, AuthoredBoth(), Register(10.0));
+        Assert.True(both.Opens, both.Reason);
+        Assert.True(both.IsLinked(Clearance) && both.IsLinked(Tolerance));
+        var revalued = RackDoorRules.PlanSelectiveApply(RackEmbedDocument.KindSelective, AuthoredBoth(), Register(12.0), WriteOf(both));
+        Assert.False(revalued.CanWrite);
+        Assert.Equal("Los valores de lo que gobierna la holgura vertical y la tolerancia horizontal cambiaron desde que se abrió el rack aquí: "
+                     + "no se escribió nada." + Reopen, revalued.Reason);
+
+        // The same register: it writes.
+        Assert.True(RackDoorRules.PlanSelectiveApply(RackEmbedDocument.KindSelective, AuthoredBoth(), Register(10.0), WriteOf(both)).CanWrite);
+    }
+
+    // Both holguras governed by the project variable.
+    private static string AuthoredBoth()
+    {
+        var document = SelectivePalletDesignDocument.From(Design(6.0), RackId, "Selectivo A");
+        document.PropertyValues = new Dictionary<string, SelectivePropertyValueDocument>
+        {
+            [ProjectPropertyIds.SelectiveVerticalClearanceToken] = SelectivePropertyValueDocument.ToProjectVariable(VarId),
+            [ProjectPropertyIds.SelectivePalletToleranceToken] = SelectivePropertyValueDocument.ToProjectVariable(VarId),
+        };
+        document.SchemaVersion = SelectivePalletDesignDocument.PromotedSchemaVersion;
+        return new SelectivePalletDesignStore().Serialize(document);
     }
 
     [Fact]
@@ -237,6 +279,21 @@ public class SelectiveRackDoorTests
         Assert.Contains("RackCadRackDoorPort.TakePendingSelectiveRead()", read, StringComparison.Ordinal);
         Assert.Contains("pending.Document != RackCadRackDoorPort.KeyOf(document)", read, StringComparison.Ordinal);
         Assert.True(At(read, "RackSelectivoCommands.ReadProjectVariables(document, out _)") < At(read, "RackDoorRules.AnswerForSelectiveOpen("));
+
+        // S-27 (M-10 of the review of the entrega 1): a rack that opens carries the dimension styles of the drawing, read as RACKEDITAR reads them.
+        Assert.Contains("if (answer.Opens) answer = answer with { DimensionStyles = RackCommandSupport.ReadDimensionStyleNames(document) };", read, StringComparison.Ordinal);
+        Assert.True(At(read, "RackDoorRules.AnswerForSelectiveOpen(") < At(read, "RackCommandSupport.ReadDimensionStyleNames(document)"));
+        Assert.True(At(read, "RackCommandSupport.ReadDimensionStyleNames(document)") < At(read, "door?.AnswerSelectiveRead(answer);"));
+    }
+
+    [Fact]
+    public void AReadCarriesTheDimensionStylesOnlyWhenTheCommandAddsThem()
+    {
+        // The new field is the last one and optional: the callers that do not send it keep working.
+        var read = RackDoorRules.AnswerForSelectiveOpen(5, RackId, RackEmbedDocument.KindSelective, Authored(bound: false), ProjectVariablesReadResult.Absent());
+        Assert.Null(read.DimensionStyles);
+        Assert.Null(SelectiveDesignRead.Refused(5, RackId, null, null, "x").DimensionStyles);
+        Assert.Equal(new[] { "ISO-25" }, (read with { DimensionStyles = new[] { "ISO-25" } }).DimensionStyles);
     }
 
     [Fact]

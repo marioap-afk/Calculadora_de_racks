@@ -202,13 +202,24 @@ namespace RackCad.Application.VentanaRackCad
         /// <summary>The dimension style; blank (or «(Automático)») is the automatic one.</summary>
         public string DimensionStyle { get; set; }
 
-        /// <summary>The views chosen by the user: the policy of the classic editor, keeping the unknown bits of the loaded one.</summary>
+        /// <summary>
+        /// The views chosen by the user: the policy of the classic editor, keeping the unknown bits of the loaded one. Boxes that are back to
+        /// what the loaded policy shows are «not touched» (<see cref="DimensionViewPolicy.FromEditor"/>), so the value is the loaded one,
+        /// exactly: a legacy rack (no policy) unticked and ticked again stays with no policy (S-22, M-05 of the review of the entrega 1).
+        /// </summary>
         public void SetDimensionViews(bool frontal, bool lateral, bool planta)
-            => DimensionViews = DimensionViewPolicy.FromEditor(_loadedDimensionViews, true, frontal, lateral, planta);
+        {
+            var touched = frontal != Shows(_loadedDimensionViews, DimensionViewKind.Frontal)
+                          || lateral != Shows(_loadedDimensionViews, DimensionViewKind.Lateral)
+                          || planta != Shows(_loadedDimensionViews, DimensionViewKind.Planta);
+            DimensionViews = DimensionViewPolicy.FromEditor(_loadedDimensionViews, touched, frontal, lateral, planta);
+        }
 
         /// <summary>Whether that type of view draws dimensions with the current policy (the rule of ADR-0035, as the classic boxes show it).</summary>
-        public bool ShowsDimensions(DimensionViewKind kind)
-            => DimensionViewPolicy.EffectiveDetail(DimensionDetail.Minimal, DimensionViews, kind) != DimensionDetail.None;
+        public bool ShowsDimensions(DimensionViewKind kind) => Shows(DimensionViews, kind);
+
+        private static bool Shows(DimensionViewVisibility? views, DimensionViewKind kind)
+            => DimensionViewPolicy.EffectiveDetail(DimensionDetail.Minimal, views, kind) != DimensionDetail.None;
 
         /// <summary>The posts of the catalog, in the order of the classic list.</summary>
         public IReadOnlyList<ProfileCatalogEntry> PostChoices => Choices(Catalog.PostProfiles);
@@ -749,14 +760,16 @@ namespace RackCad.Application.VentanaRackCad
         // The classic LoadDesign, on a private copy (the load coerces the depth of the custom cabeceras of fondo 0 and the state keeps them).
         private void LoadState(SelectivePalletDesign source)
         {
-            var design = Copy(source);
-            var notices = new List<string>();
-            if (design == null || design.Bays.Count == 0)
+            // The fronts are checked BEFORE the copy: the copy goes through the store, which refuses a design with no fronts (S-29, M-03 of
+            // the review of the entrega 1). The classic editor keeps what it had in that case; so does the draft, and it says so.
+            if (source == null || source.Bays.Count == 0)
             {
-                // The classic editor keeps what it had in that case; so does the draft, and it says so.
                 LoadNotice = "El diseño leído no tiene frentes: el editor conserva el rack que tenía.";
                 return;
             }
+
+            var design = Copy(source);
+            var notices = new List<string>();
 
             PostId = ChoosePost(design.PostId, out var postNotice);
             if (postNotice != null) notices.Add(postNotice);

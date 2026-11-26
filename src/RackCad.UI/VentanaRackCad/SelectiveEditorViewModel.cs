@@ -323,7 +323,25 @@ namespace RackCad.UI.VentanaRackCad
     public sealed class SelectiveEditorViewModel : ObservableObject
     {
         private const string Varies = "Varía";
-        private const string WritingText = "AutoCAD está escribiendo el rack: espera a que termine o pulsa «Dejar de esperar».";
+        private const string WaitingWriteText = "AutoCAD está escribiendo el rack: espera a que termine o pulsa «Dejar de esperar».";
+
+        // S-28 (M-11 of the review of the entrega 1): once the command took the write, «Dejar de esperar» is no longer offered (I-02 of the
+        // fifth review of Dinámico), and its answer will come.
+        private const string TakenWriteText = "AutoCAD ya tomó la escritura del rack: espera a que termine, o termina o cancela la orden en AutoCAD; la ventana recibirá su respuesta.";
+
+        // S-21 (M-04): tramos written in the inspector and not applied are a change that «Actualizar» does not write.
+        private const string PendingSegmentsText = "Aplica los tramos con «Aplicar tramos» o descártalos antes de escribir.";
+
+        // S-20 (I-01), the label of the approved draft when the fronts of the selection differ.
+        private const string FloorBeamText = "Larguero a piso en N1";
+        private const string FloorBeamVariesText = "Larguero a piso en N1 (varía; marcar lo pone en todos)";
+
+        // S-23 (M-07), the hints of the approved draft for N1 on the floor.
+        private const string NoBeamText = "Sin larguero (piso)";
+        private const string NotInN1Text = "No en N1";
+
+        // S-27 (M-10): the first entry of the list of dimension styles, as in the classic editor (no named style).
+        private const string AutomaticStyle = "(Automático)";
 
         private static readonly SelectivePalletDesignStore Store = new SelectivePalletDesignStore();
         private static readonly PropertyId Tolerance = ProjectPropertyIds.SelectivePalletTolerance;
@@ -346,9 +364,14 @@ namespace RackCad.UI.VentanaRackCad
         private SelectiveMatrixPosition _primary;
         private SelectiveMatrixPosition _anchor;
 
+        private readonly IReadOnlyList<string> _drawingStyles;
+        private readonly string _loadedStyle;
+
         private int _selectedTab = 1;
         private bool _dirty;
+        private bool _designDirty;
         private bool _writing;
+        private bool _writeTaken;
         private bool _confirmingClose;
         private bool _showDetail;
         private string _loadError;
@@ -374,23 +397,36 @@ namespace RackCad.UI.VentanaRackCad
         private (int Front, int? Scope)? _segmentKey;
         private string _segmentError = string.Empty;
 
+        // S-21 (M-04): whether the rows of the inspector differ from the tramos the draft holds for their front, as last measured (before the
+        // change in progress), and what to say when a change of front or of fondos dropped them.
+        private bool _segmentsPending;
+        private string _droppedSegments;
+
         /// <param name="editor">The draft of the rack, as it was read (its design is the baseline of «Modificado» and of «Descartar»).</param>
         /// <param name="rackId">The identity of the rack in the drawing.</param>
         /// <param name="update">What «Actualizar» does with this editor (the host writes the drawing); null when it is not offered.</param>
         /// <param name="linkedStates">The states of the linked properties the rack was opened with: «Descartar» loads the draft again with them.</param>
         /// <param name="linkedVariableNames">The names of the variables that govern them, for display only.</param>
+        /// <param name="dimensionStyles">The dimension styles of the drawing, for the list of «Estilo de cota» (S-27); null = none read.</param>
         public SelectiveEditorViewModel(
             SelectiveDraftEditor editor,
             string rackId,
             Action<SelectiveEditorViewModel> update = null,
             IReadOnlyDictionary<PropertyId, LinkedPropertyEditState> linkedStates = null,
-            IReadOnlyDictionary<PropertyId, string> linkedVariableNames = null)
+            IReadOnlyDictionary<PropertyId, string> linkedVariableNames = null,
+            IReadOnlyList<string> dimensionStyles = null)
         {
             _editor = editor ?? throw new ArgumentNullException(nameof(editor));
             RackId = rackId;
             _update = update;
             _openedStates = linkedStates == null ? null : new Dictionary<PropertyId, LinkedPropertyEditState>(linkedStates);
             _variableNames = linkedVariableNames == null ? null : new Dictionary<PropertyId, string>(linkedVariableNames);
+            _drawingStyles = (dimensionStyles ?? Array.Empty<string>())
+                .Where(name => !string.IsNullOrWhiteSpace(name))
+                .Select(name => name.Trim())
+                .Distinct(StringComparer.Ordinal)
+                .ToList();
+            _loadedStyle = NamedStyle(editor.DimensionStyle);
 
             // A rack that the draft could not recompose when it was opened has no valid design to compare, to roll back to or to write:
             // it is shown read only, with the reason (S-08).
@@ -461,7 +497,8 @@ namespace RackCad.UI.VentanaRackCad
 
         public bool MessageIsError => _messageIsError;
 
-        public bool CanUpdate => _update != null && _loadError == null && _dirty && !_writing && _editor.Design != null && string.IsNullOrEmpty(_editor.LastError);
+        public bool CanUpdate => _update != null && _loadError == null && _dirty && !_writing && !_segmentsPending && _editor.Design != null
+                                 && string.IsNullOrEmpty(_editor.LastError);
 
         public string UpdateBlockedText
         {
@@ -470,6 +507,7 @@ namespace RackCad.UI.VentanaRackCad
                 if (_update == null) return "Aquí no se puede escribir el dibujo.";
                 if (_loadError != null) return LoadFailedText;
                 if (_writing) return WritingText;
+                if (_segmentsPending) return PendingSegmentsText;
                 if (!_dirty) return "Sin cambios que escribir.";
                 if (!string.IsNullOrEmpty(_editor.LastError)) return _editor.LastError;
                 return string.Empty;
@@ -478,6 +516,9 @@ namespace RackCad.UI.VentanaRackCad
 
         private string LoadFailedText =>
             "No se pudo recomponer el rack al abrirlo: " + _loadError + " Aquí queda de solo lectura; edítalo con RACKEDITAR (el editor clásico).";
+
+        /// <summary>What the editor says while AutoCAD writes it: «Dejar de esperar» only while the command has not taken the write (S-28).</summary>
+        public string WritingText => _writeTaken ? TakenWriteText : WaitingWriteText;
 
         /// <summary>«Cerrar el editor» of a draft with changes asks first, inline: discard them and close, or cancel.</summary>
         public bool IsConfirmingClose => _confirmingClose;
@@ -545,6 +586,7 @@ namespace RackCad.UI.VentanaRackCad
                 Rebuild();
                 OnPropertyChanged(nameof(FondoScopeIndex));
                 OnPropertyChanged(nameof(FondoScopeText));
+                SayDropped();
             }
         }
 
@@ -606,7 +648,9 @@ namespace RackCad.UI.VentanaRackCad
 
         /// <summary>
         /// «Larguero a piso» of the fronts of the selection: true when all have it, false when none, null when they differ. Writing it puts
-        /// it in, or takes it out of, those fronts in the fondos of the scope.
+        /// it in, or takes it out of, those fronts in the fondos of the scope. When the fronts differ («varía»), a click puts it in every
+        /// one of them, as the approved draft says («marcar lo pone en todos»), never takes it out: WPF turns an indeterminate box into
+        /// false, and that false means «all» here (S-20, I-01 of the review of the entrega 1).
         /// </summary>
         public bool? SelectionFloorBeam
         {
@@ -617,17 +661,28 @@ namespace RackCad.UI.VentanaRackCad
             }
             set
             {
-                if (!value.HasValue || value == SelectionFloorBeam)
+                var shown = SelectionFloorBeam;
+                var next = shown.HasValue ? value : value.HasValue ? true : (bool?)null;
+                if (!next.HasValue || next == shown)
                 {
-                    OnPropertyChanged(nameof(SelectionFloorBeam));
+                    RaiseFloorBeam();
                     return;
                 }
 
                 var fronts = SelectedFronts;
-                var error = Apply(() => _editor.SetFloorBeam(fronts, value.Value));
+                var error = Apply(() => _editor.SetFloorBeam(fronts, next.Value));
                 if (error != null) Say(error, error: true);
-                OnPropertyChanged(nameof(SelectionFloorBeam));
+                RaiseFloorBeam();
             }
+        }
+
+        /// <summary>The label of the box: it says «varía» when the fronts of the selection differ, with what a click does (the approved draft).</summary>
+        public string SelectionFloorBeamLabel => SelectionFloorBeam.HasValue ? FloorBeamText : FloorBeamVariesText;
+
+        private void RaiseFloorBeam()
+        {
+            OnPropertyChanged(nameof(SelectionFloorBeam));
+            OnPropertyChanged(nameof(SelectionFloorBeamLabel));
         }
 
         // ------------------------------------------------------------------ «Poste y anotaciones»
@@ -697,6 +752,16 @@ namespace RackCad.UI.VentanaRackCad
 
         public bool CanChangeSegments => CanEditSegments && _segmentRows.Count > 0;
 
+        /// <summary>
+        /// The tramos of the inspector differ from those of their front in the draft: written and not applied. They are a change (the editor
+        /// is «Modificado», «Cerrar el editor» asks and the drawing does not close), and «Actualizar» does not write until they are applied or
+        /// discarded (S-21, M-04 of the review of the entrega 1).
+        /// </summary>
+        public bool HasPendingSegments => _segmentsPending;
+
+        /// <summary>«Descartar tramos»: the rows go back to the tramos the front has in the draft.</summary>
+        public bool CanDiscardSegments => CanEdit && _segmentsPending;
+
         public string SegmentError => _segmentError;
 
         public string SegmentNote
@@ -719,12 +784,13 @@ namespace RackCad.UI.VentanaRackCad
         public void StartSegments()
         {
             if (!CanStartSegments) return;
-            _segmentRows = new List<SelectiveSegmentRow>
+            ReplaceSegmentRows(new List<SelectiveSegmentRow>
             {
                 new SelectiveSegmentRow(0, false, string.Empty, true),
                 new SelectiveSegmentRow(1, true, string.Empty, false),
-            };
+            });
             _segmentError = string.Empty;
+            RefreshDirty();
             RaiseSegments();
         }
 
@@ -734,7 +800,8 @@ namespace RackCad.UI.VentanaRackCad
             if (!CanChangeSegments) return;
             var rows = PendingSegments();
             rows.Add(new SelectiveSegment { Length = 0.0, Loaded = true });
-            _segmentRows = RowsOf(rows);
+            ReplaceSegmentRows(RowsOf(rows));
+            RefreshDirty();
             RaiseSegments();
         }
 
@@ -744,8 +811,21 @@ namespace RackCad.UI.VentanaRackCad
             if (!CanChangeSegments || index < 0 || index >= _segmentRows.Count) return;
             var rows = PendingSegments();
             rows.RemoveAt(index);
-            _segmentRows = RowsOf(rows);
+            ReplaceSegmentRows(RowsOf(rows));
+            RefreshDirty();
             RaiseSegments();
+        }
+
+        /// <summary>«Descartar tramos»: the tramos written and not applied go back to those the front has in the draft (S-21).</summary>
+        public void DiscardSegments()
+        {
+            if (!CanDiscardSegments || !_segmentKey.HasValue) return;
+            var (front, scope) = _segmentKey.Value;
+            ReplaceSegmentRows(RowsOf(StoredSegments(front, scope)));
+            _segmentError = string.Empty;
+            RefreshDirty();
+            RaiseSegments();
+            Say("Se descartaron los tramos sin aplicar de F" + (front + 1).ToString(CultureInfo.InvariantCulture) + ".", error: false);
         }
 
         /// <summary>«Aplicar tramos»: the tramos of the inspector go to the front in the fondos of the scope, with the checks of the classic dialog.</summary>
@@ -774,9 +854,10 @@ namespace RackCad.UI.VentanaRackCad
                 return;
             }
 
+            // Applied: the rows are the tramos of the front now, read again from the draft (nothing was dropped).
             _segmentKey = null;
             SetSegmentError(string.Empty);
-            RebuildSegments();
+            RebuildSegments(announceDrop: false);
         }
 
         /// <summary>«Sin medio frente»: the front goes back to one tramo in the fondos of the scope.</summary>
@@ -791,9 +872,10 @@ namespace RackCad.UI.VentanaRackCad
                 return;
             }
 
+            // A whole front now, which the user asked for: rows written and not applied go with it, with no notice of a drop.
             _segmentKey = null;
             SetSegmentError(string.Empty);
-            RebuildSegments();
+            RebuildSegments(announceDrop: false);
         }
 
         // ------------------------------------------------------------------ the selection of the matrix (the scope of the cells)
@@ -842,6 +924,7 @@ namespace RackCad.UI.VentanaRackCad
             }
 
             RebuildSelection();
+            SayDropped();
         }
 
         /// <summary>«F1»…: every cell of that front in the fondos of the scope.</summary>
@@ -853,6 +936,7 @@ namespace RackCad.UI.VentanaRackCad
             for (var l = 0; l < levels; l++) Add(frontIndex, l);
             _primary = _anchor = new SelectiveMatrixPosition(frontIndex, 0);
             RebuildSelection();
+            SayDropped();
         }
 
         /// <summary>«N1»…: that level in every front that has it.</summary>
@@ -864,6 +948,7 @@ namespace RackCad.UI.VentanaRackCad
             foreach (var f in fronts) Add(f, levelIndex);
             _primary = _anchor = new SelectiveMatrixPosition(fronts[0], levelIndex);
             RebuildSelection();
+            SayDropped();
         }
 
         /// <summary>«Todo»: every cell of the fondos of the scope.</summary>
@@ -876,6 +961,7 @@ namespace RackCad.UI.VentanaRackCad
             if (_selection.Count == 0) return;
             _primary = _anchor = _selection[0];
             RebuildSelection();
+            SayDropped();
         }
 
         // ------------------------------------------------------------------ the gestures of the rack
@@ -900,6 +986,10 @@ namespace RackCad.UI.VentanaRackCad
                 return;
             }
 
+            // «Descartar» also discards the tramos written and not applied (S-21): the rows are read again from the draft, with no notice of a drop.
+            _segmentKey = null;
+            _segmentsPending = false;
+            _droppedSegments = null;
             if (baseline != null && !_editor.LoadFrom(baseline, _openedStates, _baselineName, _variableNames))
             {
                 _loadError = string.IsNullOrWhiteSpace(_editor.LastError) ? "sin detalle." : _editor.LastError;
@@ -910,7 +1000,6 @@ namespace RackCad.UI.VentanaRackCad
 
             TakeBaseline();
             _confirmingClose = false;
-            _segmentKey = null;
             Say("Borrador descartado: se muestra lo último que se leyó del dibujo o se escribió en él desde este editor.", error: false);
             Rebuild();
             OnPropertyChanged(nameof(IsConfirmingClose));
@@ -962,9 +1051,21 @@ namespace RackCad.UI.VentanaRackCad
         {
             if (_writing) return;
             _writing = true;
+            _writeTaken = false;
             SetConfirmingClose(false);
             Say("Escribiendo el rack en el dibujo…", error: false);
             Rebuild();
+        }
+
+        /// <summary>
+        /// The command of AutoCAD took the write (<c>RequestStarted</c>): its answer will come, and the window no longer offers «Dejar de
+        /// esperar», so the editor no longer says to press it (S-28).
+        /// </summary>
+        public void WriteTaken()
+        {
+            if (!_writing || _writeTaken) return;
+            _writeTaken = true;
+            RaiseState();
         }
 
         /// <summary>The answer arrived, or the window stopped waiting: the editor can be edited again.</summary>
@@ -972,6 +1073,7 @@ namespace RackCad.UI.VentanaRackCad
         {
             if (!_writing) return;
             _writing = false;
+            _writeTaken = false;
             Rebuild();
         }
 
@@ -1007,20 +1109,56 @@ namespace RackCad.UI.VentanaRackCad
         {
             _baselineJson = DesignJson();
             _baselineName = (_editor.Name ?? string.Empty).Trim();
-            _dirty = false;
+            _designDirty = false;
+            _segmentsPending = MeasurePendingSegments();
+            _dirty = _segmentsPending;
             RaiseState();
         }
 
         // «Modificado» is a difference of the design (its JSON) or of the name with what the drawing has (as last read or written), never a
-        // gesture: leaving a field, a value refused, or a change undone leave the draft clean.
+        // gesture: leaving a field, a value refused, or a change undone leave the draft clean. Tramos written in the inspector and not applied
+        // are a change too (S-21), so the editor asks before closing and the drawing does not close.
         private void UpdateDirty()
         {
-            var dirty = !string.Equals(DesignJson(), _baselineJson, StringComparison.Ordinal)
-                        || !string.Equals((_editor.Name ?? string.Empty).Trim(), _baselineName, StringComparison.Ordinal);
-            if (dirty == _dirty) return;
+            _designDirty = !string.Equals(DesignJson(), _baselineJson, StringComparison.Ordinal)
+                           || !string.Equals((_editor.Name ?? string.Empty).Trim(), _baselineName, StringComparison.Ordinal);
+            RefreshDirty();
+        }
+
+        // The state again with the design measured last and the tramos of the inspector measured now (each keystroke in a tramo comes here,
+        // with no serialization of the design).
+        private void RefreshDirty()
+        {
+            var pending = MeasurePendingSegments();
+            var dirty = _designDirty || pending;
+            if (dirty == _dirty && pending == _segmentsPending) return;
+            _segmentsPending = pending;
             _dirty = dirty;
             if (!dirty) SetConfirmingClose(false);
             RaiseState();
+        }
+
+        // The rows of the inspector against the tramos their front has in the draft, in the first fondo of their scope that has it, compared
+        // as the inspector shows them (up to three decimals), so a row nobody touched is never pending.
+        private bool MeasurePendingSegments()
+        {
+            if (!_segmentKey.HasValue) return false;
+            var (front, scope) = _segmentKey.Value;
+            return !string.Equals(RowsKey(_segmentRows), RowsKey(RowsOf(StoredSegments(front, scope))), StringComparison.Ordinal);
+        }
+
+        // A gesture that changed the front or the fondos of the inspector says what it dropped (S-21).
+        private void SayDropped()
+        {
+            var dropped = TakeDropped();
+            if (dropped != null) Say(dropped, error: false);
+        }
+
+        private string TakeDropped()
+        {
+            var dropped = _droppedSegments;
+            _droppedSegments = null;
+            return dropped;
         }
 
         private void SetConfirmingClose(bool value)
@@ -1054,9 +1192,9 @@ namespace RackCad.UI.VentanaRackCad
                 _selection.AddRange(selection.Cells);
                 _primary = selection.Primary;
                 _anchor = selection.Anchor;
-                Say(reason, error: true);
                 Rebuild();
                 UpdateDirty();
+                Say(string.Join(" ", new[] { reason, TakeDropped() }.Where(t => !string.IsNullOrWhiteSpace(t))), error: true);
                 return reason;
             }
 
@@ -1068,9 +1206,12 @@ namespace RackCad.UI.VentanaRackCad
                 if (lost != null) notices.Add(lost);
             }
 
-            Say(string.Join(" ", notices), error: false);
+            // What the change dropped from the tramos of the inspector (fewer fronts or fondos move the selection) is said with it (S-21).
             Rebuild();
             UpdateDirty();
+            var dropped = TakeDropped();
+            if (dropped != null) notices.Add(dropped);
+            Say(string.Join(" ", notices), error: false);
             return null;
         }
 
@@ -1130,9 +1271,12 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(StatusText));
             OnPropertyChanged(nameof(CanUpdate));
             OnPropertyChanged(nameof(UpdateBlockedText));
+            OnPropertyChanged(nameof(WritingText));
             OnPropertyChanged(nameof(CanEditSegments));
             OnPropertyChanged(nameof(CanStartSegments));
             OnPropertyChanged(nameof(CanChangeSegments));
+            OnPropertyChanged(nameof(HasPendingSegments));
+            OnPropertyChanged(nameof(CanDiscardSegments));
         }
 
         // ------------------------------------------------------------------ internals: the lists, refreshed in place
@@ -1237,7 +1381,7 @@ namespace RackCad.UI.VentanaRackCad
 
             Merge(ref _cellFields, BuildCellFields(), nameof(CellFields));
             MergeFields(ref _frontFields, BuildFrontFields(), nameof(FrontFields));
-            OnPropertyChanged(nameof(SelectionFloorBeam));
+            RaiseFloorBeam();
             OnPropertyChanged(nameof(SelectedPositions));
             OnPropertyChanged(nameof(SelectedFronts));
             OnPropertyChanged(nameof(PrimaryPosition));
@@ -1247,19 +1391,42 @@ namespace RackCad.UI.VentanaRackCad
         }
 
         // The tramos of the inspector follow the front and the scope; while they are being written (not applied yet) a recomposition of
-        // another value keeps them.
-        private void RebuildSegments()
+        // another value keeps them. Another front, or other fondos of the view, read them again from the draft: tramos written and not
+        // applied are dropped, and the gesture says so in the line of messages (S-21).
+        private void RebuildSegments(bool announceDrop = true)
         {
             var front = SegmentFront;
             var key = front.HasValue ? (front.Value, _editor.FondoScope) : ((int, int?)?)null;
             if (key != _segmentKey)
             {
+                if (announceDrop && _segmentsPending && _segmentKey.HasValue)
+                {
+                    _droppedSegments = "Los tramos sin aplicar de F" + (_segmentKey.Value.Front + 1).ToString(CultureInfo.InvariantCulture)
+                                       + " se descartaron: se eligió otro frente u otros fondos de la vista.";
+                }
+
                 _segmentKey = key;
-                _segmentRows = front.HasValue ? RowsOf(StoredSegments(front.Value)) : new List<SelectiveSegmentRow>();
+                ReplaceSegmentRows(front.HasValue ? RowsOf(StoredSegments(front.Value, _editor.FondoScope)) : new List<SelectiveSegmentRow>());
                 _segmentError = string.Empty;
+                RefreshDirty();
             }
 
             RaiseSegments();
+        }
+
+        // The rows of the inspector are replaced as a whole; a keystroke in one of them measures again whether they are pending.
+        private void ReplaceSegmentRows(List<SelectiveSegmentRow> rows)
+        {
+            foreach (var row in _segmentRows) row.PropertyChanged -= OnSegmentRowChanged;
+            _segmentRows = rows ?? new List<SelectiveSegmentRow>();
+            foreach (var row in _segmentRows) row.PropertyChanged += OnSegmentRowChanged;
+        }
+
+        private void OnSegmentRowChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            RefreshDirty();
+            OnPropertyChanged(nameof(HasPendingSegments));
+            OnPropertyChanged(nameof(CanDiscardSegments));
         }
 
         private void RaiseSegments()
@@ -1270,6 +1437,8 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(CanEditSegments));
             OnPropertyChanged(nameof(CanStartSegments));
             OnPropertyChanged(nameof(CanChangeSegments));
+            OnPropertyChanged(nameof(HasPendingSegments));
+            OnPropertyChanged(nameof(CanDiscardSegments));
             OnPropertyChanged(nameof(SegmentNote));
             OnPropertyChanged(nameof(SegmentError));
         }
@@ -1280,9 +1449,21 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(SegmentError));
         }
 
-        // The tramos of the front in the first fondo of the scope that has it (when the fondos differ, the note says so).
-        private IReadOnlyList<SelectiveSegment> StoredSegments(int front)
-            => _editor.ScopeFondos.Select(k => _editor.Front(k, front)).FirstOrDefault(f => f != null)?.Segments ?? Array.Empty<SelectiveSegment>();
+        // The tramos of the front in the first fondo of that scope that has it (when the fondos differ, the note says so).
+        private IReadOnlyList<SelectiveSegment> StoredSegments(int front, int? scope)
+            => (scope is int fondo ? new[] { fondo } : Enumerable.Range(0, _editor.FondoCount))
+                   .Select(k => _editor.Front(k, front)).FirstOrDefault(f => f != null)?.Segments
+               ?? (IReadOnlyList<SelectiveSegment>)Array.Empty<SelectiveSegment>();
+
+        // The rows as the inspector shows them: a length with up to three decimals (or the text as written, when it is not one), and
+        // whether the tramo carries largueros.
+        private static string RowsKey(IEnumerable<SelectiveSegmentRow> rows)
+            => string.Join(";", rows.Select(row =>
+            {
+                var text = (row.LengthText ?? string.Empty).Trim();
+                var length = row.IsRest ? "resto" : UiSupport.TryNum(text, out var value) && value > 0.0 ? Num(value) : text;
+                return length + (row.Loaded ? "+" : "-");
+            }));
 
         private List<SelectiveSegment> PendingSegments()
         {
@@ -1425,12 +1606,34 @@ namespace RackCad.UI.VentanaRackCad
                         return Done;
                     });
                 }, !CanEdit),
-            new DynamicFieldItem("dimStyle", "Estilo de cota (vacío = automático)", string.Empty, _editor.DimensionStyle?.Trim() ?? string.Empty, string.Empty, text => Apply(() =>
-            {
-                _editor.DimensionStyle = string.IsNullOrWhiteSpace(text) ? null : text.Trim();
-                return Done;
-            }), !CanEdit),
+            // S-27 (M-10): the styles of the drawing, as the list of the classic editor: «(Automático)» first, and the style the rack was opened
+            // with kept even when the drawing does not have it, so it is written back as it was read.
+            new SelectiveChoiceItem("dimStyle", "Estilo de cota", StyleOptions(), NamedStyle(_editor.DimensionStyle) ?? AutomaticStyle, string.Empty,
+                value => Apply(() =>
+                {
+                    _editor.DimensionStyle = value == AutomaticStyle ? null : value;
+                    return Done;
+                }), !CanEdit),
         };
+
+        // «(Automático)», the styles of the drawing, then the style the rack opened with and the current one, when the drawing lacks them.
+        private IReadOnlyList<SelectiveChoiceOption> StyleOptions()
+        {
+            var names = new List<string> { AutomaticStyle };
+            foreach (var name in _drawingStyles.Concat(new[] { _loadedStyle, NamedStyle(_editor.DimensionStyle) }))
+            {
+                if (!string.IsNullOrEmpty(name) && !names.Contains(name, StringComparer.Ordinal)) names.Add(name);
+            }
+
+            return names.Select(name => new SelectiveChoiceOption(name, name)).ToList();
+        }
+
+        // A style with a name, trimmed; null for the automatic one (blank or «(Automático)»), as the draft writes it.
+        private static string NamedStyle(string style)
+        {
+            var trimmed = style?.Trim();
+            return string.IsNullOrEmpty(trimmed) || trimmed == AutomaticStyle ? null : trimmed;
+        }
 
         // The inspector of the cells: the pallet, the larguero and its peralte (only those the catalog allows for the larguero of every cell,
         // as the list of the classic editor), and the manual values.
@@ -1456,24 +1659,29 @@ namespace RackCad.UI.VentanaRackCad
             var beamOptions = _editor.BeamChoices.Select(b => new SelectiveChoiceOption(b.Id.Trim(), Label(b.Label, b.Id))).ToList();
             var known = beam.HasValue ? beamOptions.FirstOrDefault(o => string.Equals(o.Value, beam.Value, StringComparison.OrdinalIgnoreCase))?.Value : null;
 
+            // S-23 (M-07): the whole selection is N1 on the floor, with no larguero in any fondo of the view; the larguero, its peralte and the
+            // clear are not drawn there, so they are not offered, with the texts of the approved draft. What they hold is kept.
+            var onFloor = cells.Count > 0 && cells.All(p => HasNoLarguero(p.FrontIndex, p.LevelIndex));
+
             return new object[]
             {
                 CellNumber("cFront", "Ancho de tarima", "in", cells, c => c.Frente, (p, v) => _editor.SetPalletFront(p, v), "El ancho de tarima debe ser un número mayor que cero."),
                 CellNumber("cHeight", "Alto de tarima", "in", cells, c => c.Alto, (p, v) => _editor.SetPalletHeight(p, v), "El alto de tarima debe ser un número mayor que cero."),
                 CellInt("cCount", "Tarimas por nivel", cells),
-                new SelectiveChoiceItem("cBeam", "Larguero", beamOptions, known, beam.Varies ? Varies : string.Empty,
-                    value => Apply(() => _editor.SetBeam(cells, value)), !CanEdit || beam.Count == 0),
+                new SelectiveChoiceItem("cBeam", "Larguero", beamOptions, known, onFloor ? NoBeamText : beam.Varies ? Varies : string.Empty,
+                    value => Apply(() => _editor.SetBeam(cells, value)), !CanEdit || beam.Count == 0 || onFloor),
                 new SelectiveChoiceItem("cPeralte", "Peralte del larguero", peralteOptions, peralte.HasValue ? Num(peralte.Value) : null,
-                    peralte.Varies ? Varies : peralteOptions.Count == 0 ? "El catálogo no tiene un peralte común para estos largueros." : string.Empty,
+                    onFloor ? NoBeamText
+                        : peralte.Varies ? Varies : peralteOptions.Count == 0 ? "El catálogo no tiene un peralte común para estos largueros." : string.Empty,
                     value =>
                     {
                         if (!UiSupport.TryNum(value, out var chosen)) return "Elige un peralte del catálogo.";
                         return Apply(() => _editor.SetBeamPeralte(cells, chosen));
-                    }, !CanEdit || peralte.Count == 0 || peralteOptions.Count == 0),
+                    }, !CanEdit || peralte.Count == 0 || peralteOptions.Count == 0 || onFloor),
                 CellOptional("cLength", "Largo manual del larguero (vacío = automático)", cells, c => c.BeamLength, (p, v) => _editor.SetBeamLengthOverride(p, v),
                     "El largo del larguero debe ser un número mayor que cero, o vacío para automático."),
                 CellOptional("cClear", "Claro manual debajo (vacío = automático)", cells, c => c.Clear, (p, v) => _editor.SetClearOverride(p, v),
-                    "El claro debe ser un número mayor que cero, o vacío para automático."),
+                    "El claro debe ser un número mayor que cero, o vacío para automático.", onFloor ? NotInN1Text : null),
             };
         }
 
@@ -1661,17 +1869,18 @@ namespace RackCad.UI.VentanaRackCad
                 }, !CanEdit || value.Count == 0);
         }
 
+        // A manual value of the cells; with <paramref name="locked"/>, read only with that hint (S-23).
         private DynamicFieldItem CellOptional(string key, string label, IReadOnlyList<SelectiveMatrixPosition> cells, Func<SelectiveEditorCell, double?> read,
-            Func<IReadOnlyList<SelectiveMatrixPosition>, double?, SelectiveDraftEdit> write, string invalid)
+            Func<IReadOnlyList<SelectiveMatrixPosition>, double?, SelectiveDraftEdit> write, string invalid, string locked = null)
         {
             var value = _editor.ReadCells(cells, read);
             return new DynamicFieldItem(key, label, "in", value.HasValue && value.Value.HasValue ? Num(value.Value.Value) : string.Empty,
-                value.Varies ? Varies : string.Empty, text =>
+                locked ?? (value.Varies ? Varies : string.Empty), text =>
                 {
                     if (string.IsNullOrWhiteSpace(text)) return Apply(() => write(cells, null));
                     if (!UiSupport.TryNum(text, out var number) || number <= 0.0) return invalid;
                     return Apply(() => write(cells, number));
-                }, !CanEdit || value.Count == 0);
+                }, !CanEdit || value.Count == 0 || locked != null);
         }
 
         // ------------------------------------------------------------------ internals: the matrix
@@ -1682,6 +1891,14 @@ namespace RackCad.UI.VentanaRackCad
         // N1 of a front that some fondo of the scope has with no «Larguero a piso»: its pallet is on the floor, with no larguero.
         private bool IsOnFloor(int frontIndex, int levelIndex)
             => levelIndex == 0 && _editor.ScopeFondos.Select(k => _editor.Front(k, frontIndex)).Any(f => f != null && f.LevelCount > 0 && !f.FloorBeam);
+
+        // N1 of a front that no fondo of the scope has with «Larguero a piso»: there is no larguero in that cell in any fondo of the view (S-23).
+        private bool HasNoLarguero(int frontIndex, int levelIndex)
+        {
+            if (levelIndex != 0) return false;
+            var fronts = _editor.ScopeFondos.Select(k => _editor.Front(k, frontIndex)).Where(f => f != null && f.LevelCount > 0).ToList();
+            return fronts.Count > 0 && fronts.All(f => !f.FloorBeam);
+        }
 
         private void Add(int frontIndex, int levelIndex)
         {

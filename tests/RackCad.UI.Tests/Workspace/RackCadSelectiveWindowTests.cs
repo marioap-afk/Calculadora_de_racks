@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Persistence;
+using RackCad.Application.ProjectVariables;
 using RackCad.Application.Systems.Dynamic;
 using RackCad.Application.VentanaRackCad;
 using RackCad.Application.Workspace;
@@ -553,6 +554,87 @@ namespace RackCad.UI.Tests
             Assert.Empty(rig.Door.SelectiveWrites);
             rig.Door.Written(new RackDesignWritten(write.RequestId, "DIN-1", true, "Escrito."));
             Assert.False(editor.IsDirty);
+        }
+
+        // ------------------------------------------------------------------ the corrections of the review of the entrega 1
+
+        [Fact]
+        public void PendingTramosAloneVetoTheCloseOfTheDrawing()
+        {
+            // M-04 (S-21): tramos written and not applied are work not written.
+            var rig = new Rig();
+            var editor = rig.OpenEditor();
+            Assert.Null(rig.Window.UnwrittenWorkOf(Session));
+
+            editor.SelectFront(1);
+            editor.StartSegments();
+            Assert.Equal("Selectivo A", rig.Window.UnwrittenWorkOf(Session));
+            Assert.Equal(("Modificado (editor de la ventana)", "Modificado"), (rig.Item("SEL-1").StatusText, rig.Item("SEL-1").StatusKind));
+
+            editor.DiscardSegments();
+            Assert.Null(rig.Window.UnwrittenWorkOf(Session));
+        }
+
+        [Fact]
+        public void ASelectivoWithNoInnerNameIsNamedAsTheListNamesItInTheVetoAndWhenItsDrawingCloses()
+        {
+            // M-09 (S-26): the inner document has no name; the envelope (the list) does. Never the id of the rack.
+            var rig = new Rig();
+            rig.Window.OpenRack("SEL-1");
+            rig.Window.EditSelectiveHere();
+            var request = rig.Door.SelectiveReads.Last();
+            var unnamed = RackDoorRules.AnswerForSelectiveOpen(request.RequestId, "SEL-1", RackEmbedDocument.KindSelective,
+                Store.Serialize(SelectivePalletDesignDocument.From(Structure(), "SEL-1", null)), ProjectVariablesReadResult.Absent());
+            Assert.True(unnamed.Opens, unnamed.Reason);
+            rig.Door.ReadSelective(unnamed);
+            var editor = rig.Window.ActiveSelectiveEditor!;
+            Assert.Equal(string.Empty, editor.Name);
+
+            Edit(editor);
+            Assert.Equal("Selectivo A", rig.Window.UnwrittenWorkOf(Session));
+
+            // A name written in the editor is the name.
+            editor.Name = "Selectivo nuevo";
+            Assert.Equal("Selectivo nuevo", rig.Window.UnwrittenWorkOf(Session));
+            editor.Name = string.Empty;
+
+            rig.Summary.Dead.Add(Session);
+            rig.Present(8);
+            Assert.Equal("Se cerró el dibujo de Selectivo A con cambios sin escribir en la ventana: esos cambios se perdieron.", rig.Window.ActionMessage);
+        }
+
+        [Fact]
+        public void TheStylesOfTheDrawingThatTheReadCarriesAreTheListOfTheDimensionStyle()
+        {
+            // M-10 (S-27): RACKSELECTIVOABRIR sends the dimension styles of the drawing with the read.
+            var rig = new Rig();
+            rig.Window.OpenRack("SEL-1");
+            rig.Window.EditSelectiveHere();
+            var request = rig.Door.SelectiveReads.Last();
+            rig.Door.ReadSelective(Read(request.RequestId, "SEL-1") with { DimensionStyles = new[] { "Standard", "ISO-25" } });
+
+            var style = Choice(rig.Window.ActiveSelectiveEditor!.AnnotationFields, "dimStyle");
+            Assert.Equal(new[] { "(Automático)", "Standard", "ISO-25" }, style.Options.Select(o => o.Value).ToArray());
+        }
+
+        [Fact]
+        public void OnceTheCommandTookTheWriteTheEditorSaysToWaitForItsAnswer()
+        {
+            // M-11 (S-28): the window no longer offers «Dejar de esperar», and the editor no longer says to press it.
+            var rig = new Rig();
+            var editor = rig.OpenEditor();
+            Edit(editor);
+            editor.RequestWrite();
+            Assert.Contains("Dejar de esperar", editor.UpdateBlockedText);
+
+            rig.Door.Start(rig.Door.SelectiveWrites.Last().RequestId);
+            Assert.False(rig.Window.CanStopWaiting);
+            Assert.DoesNotContain("Dejar de esperar", editor.UpdateBlockedText);
+            Assert.StartsWith("AutoCAD ya tomó la escritura del rack", editor.UpdateBlockedText);
+
+            rig.Door.AnswerLastSelectiveWrite(true, "Escrito.");
+            Assert.False(editor.IsWriting);
+            Assert.Equal("Sin cambios que escribir.", editor.UpdateBlockedText);
         }
 
         // ------------------------------------------------------------------ the view of the window

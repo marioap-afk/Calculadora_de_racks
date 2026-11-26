@@ -435,7 +435,7 @@ Los menores:
 | Id | Decisión | Por qué |
 |---|---|---|
 | S-01 | El borrador es la misma recomposición que el clásico: con valores de hasta tres decimales, el diseño que guarda es idéntico byte a byte (rack nuevo, abierto, editado, dos fondos, medio frente, cabeceras personalizadas, peraltes por poste, holgura vinculada). Las diferencias están en S-02 | El editor nuevo escribe lo que escribiría el clásico |
-| S-02 | Dos diferencias declaradas, cada una con prueba: (1) el borrador conserva la precisión completa, y el clásico redondea a tres decimales el peralte de poste y las separaciones al releer sus cajas (3.14159 contra 3.142); (2) un poste que no está en el catálogo da paso al primero de la lista, como en el clásico, pero el borrador lo dice. Un poste del catálogo escrito con otras mayúsculas es ese poste; con el catálogo de hoy, de un solo poste, el clásico termina en el mismo | El borrador no cambia un valor que nadie tocó |
+| S-02 | Dos diferencias declaradas, cada una con prueba: (1) el borrador conserva la precisión completa, y el clásico redondea a tres decimales el peralte de poste y las separaciones al releer sus cajas (3.14159 contra 3.142); (2) un poste que no está en el catálogo da paso al primero de la lista, como en el clásico, pero el borrador lo dice. Un poste del catálogo escrito con otras mayúsculas es ese poste; con el catálogo de hoy, de un solo poste, el clásico termina en el mismo. **Y las diferencias de los gestos del clásico** (M-01 de la revisión de la entrega 1; declaradas, sin prueba del clásico): en el clásico basta con hacer clic en otra celda para que la caja de la celda se relea y se copie en ella si «difiere» (`TryCommitEditedCell`), así que (3) un frente, un alto, un largo o un claro manual con más de tres decimales queda redondeado a tres (47.2441 pasa a 47.244); (4) un peralte de larguero que el catálogo no admite para ese larguero pasa al primero de su lista, porque el combo eligió el índice 0 (`RefreshPeralteCombo`); y (5) su «Aplicar a» copia las siete magnitudes de la celda en cada destino (`CopyFrom`), donde la ventana solo escribe el campo editado. El borrador no hace ninguna de las tres. La equivalencia de S-01 vale para las mismas ediciones sin navegar la matriz del clásico | El borrador no cambia un valor que nadie tocó |
 | S-03 | Al abrir, el borrador recompone, porque la carga del clásico termina en un recálculo. Un rack abierto y escrito sin tocar se escribe como lo escribiría el clásico, con sus normalizaciones de carga. Es distinto de Dinámico, que escribe lo que leyó (D-01) | El mismo resultado que el clásico, y un «Modificado» que vuelve a «Limpio» si se deshace un cambio |
 | S-04 | La escritura relee el rack y el registro y no escribe si el vínculo de una holgura cambió desde la apertura, si la variable que la gobierna tiene otro valor o si el rack ya no abriría. Cualquier otro cambio del dibujo mientras se edita sigue sin detectarse (M-16 de Dinámico) | El clásico es modal y la ventana no: sin esto, escribir el estado abierto desharía en silencio un vínculo nuevo, o dibujaría con el valor viejo de la variable |
 | S-05 | La rama de `EditSelective` que insertaba una vista nueva después de «Actualizar» no pasó a `ApplySelectiveEdit`: RACKEDITAR inserta por su propio camino y nunca la alcanzaba (inventario, dolor 17) | La mitad extraída es solo «Actualizar» |
@@ -560,3 +560,86 @@ Los menores:
 - Sigue sin detectarse un cambio del dibujo mientras se edita, salvo lo de S-04 (M-16 de Dinámico).
 - `RACKEDITAR` sigue con el editor clásico.
 - **La entrega 2:** «Extremos y seguridad» (decisiones 5, 6 y 13), «Insertar vista…», un Selectivo nuevo en la ventana y «Restaurar layout…» (decisión 8).
+
+## Selectivo en la ventana (línea D), correcciones de la revisión de la entrega 1
+
+**Rama:** `architecture/workspace-persistente-rackcad-selectivo`, sobre E1-B (`dc23b820`). Corrige los hallazgos de la revisión independiente de `8830a6b9` (E1-A, APTO) y `dc23b820` (E1-B, APTO TRAS CORRECCIONES): I-01 y M-01 a M-11. Sin AutoCAD y sin tocar Dinámico: su comportamiento y sus pruebas no cambian.
+
+**Cómo quedó cada hallazgo:**
+
+| Hallazgo | Estado | Qué se hizo |
+|---|---|---|
+| I-01 | CORREGIDO | «Larguero a piso en N1» con frentes que difieren: un clic lo pone en todos los frentes de la selección, nunca lo quita. El `false` que manda WPF desde una casilla indeterminada significa «todos». El rótulo dice «Larguero a piso en N1 (varía; marcar lo pone en todos)», como el draft (S-20). Es la única casilla del editor de Selectivo con «varía»: las demás (placa base, numeración, nombre, tarimas, cotas por vista, «con largueros» de cada tramo, «Ver detalle») son de todo el rack o de una fila y nunca están indeterminadas |
+| M-01 | DECLARADO | S-02 de E1-A recoge ahora las tres diferencias de los gestos del clásico: el redondeo a tres decimales al cambiar de celda, el peralte fuera del catálogo que pasa al primero de la lista y «Aplicar a» que copia las siete magnitudes |
+| M-02 | PENDIENTE: llega por la rama de Dinámico | Por orden del Owner, la regla de las vistas hermanas con diseños distintos se construye una vez, genérica para los dos sistemas, en la rama de Dinámico, y después se integra aquí y se aplica a RACKSELECTIVOABRIR y RACKSELECTIVOAPLICAR. Esta corrección no la toca: la puerta sigue leyendo y escribiendo sobre `blocks[0]` |
+| M-03 | CORREGIDO | `LoadFrom` comprueba los frentes antes de copiar el diseño, así que la rama «El diseño leído no tiene frentes: el editor conserva el rack que tenía» ocurre de verdad (S-29) |
+| M-04 | CORREGIDO | Los tramos escritos y sin aplicar son un cambio: el editor queda «Modificado», «Cerrar el editor» pregunta y D-08 veta el cierre del dibujo. «Actualizar» no escribe y dice «Aplica los tramos con «Aplicar tramos» o descártalos antes de escribir.». Otro frente u otros fondos de la vista los descartan con un aviso en la línea de mensajes, y «Descartar» también. Se añade «Descartar tramos» (S-21) |
+| M-05 | CORREGIDO | Con cotas heredadas (`DimensionViews` nulo), si las tres casillas vuelven a como las mostraba la política cargada, el valor vuelve al cargado exacto y el editor a «Limpio» (S-22) |
+| M-06 | CORREGIDO | Los rechazos de S-04 dicen lo que se puede hacer: «Cierra el editor (los cambios de la ventana se pierden) y vuelve a abrirlo con «Editar aquí».» (S-24) |
+| M-07 | CORREGIDO | Con toda la selección en N1 en el piso, sin larguero a piso en ningún fondo de la vista, el larguero, su peralte y el claro quedan desactivados, con «Sin larguero (piso)» y «No en N1» (S-23) |
+| M-08 | CORREGIDO | Una guarda de fuente en Core fija `SetWindowWork(_window.UnwrittenWorkOf)` en `WorkspacePaletteHost.cs` |
+| M-09 | CORREGIDO | Un Selectivo sin nombre interno sale en el veto de cierre y en la poda con el nombre del sobre, el de la lista de la ventana, nunca con su GUID (S-26) |
+| M-10 | CORREGIDO | «Estilo de cota» es una lista: «(Automático)», los estilos del dibujo (RACKSELECTIVOABRIR los lee con `ReadDimensionStyleNames`, como RACKEDITAR, y los manda en `SelectiveDesignRead.DimensionStyles`, campo nuevo al final y opcional) y el estilo cargado aunque falte en el dibujo, como el clásico (S-27) |
+| M-11 | CORREGIDO | «Escribiendo…» deja de ofrecer «Dejar de esperar» cuando la orden ya tomó la petición (S-28), y el rechazo de S-04 nombra las dos holguras si cambiaron las dos (S-24) |
+
+**Las decisiones nuevas:**
+
+| Id | Decisión | Por qué |
+|---|---|---|
+| S-20 | «Larguero a piso en N1» con los frentes de la selección distintos: la casilla queda indeterminada, su rótulo dice «(varía; marcar lo pone en todos)» y un clic lo pone en todos (el `false` de WPF desde la casilla indeterminada se lee como «todos»). Desde «todos», el clic siguiente lo quita de todos | El draft aprobado: «marcar lo pone en todos» (`toggleFloor`: si no están todos, los pone) |
+| S-21 | Los tramos del inspector que difieren de los del frente en el borrador (comparados como se muestran, con hasta tres decimales, así que una fila sin tocar nunca está pendiente) son un cambio. «Actualizar» se niega con su texto, y su botón queda desactivado con ese motivo. Otro frente o un cambio de «Fondos de la vista» los descarta y lo dice: «Los tramos sin aplicar de F2 se descartaron: se eligió otro frente u otros fondos de la vista.». Otra celda del mismo frente los conserva. «Descartar» del editor los descarta sin aviso propio. «Sin medio frente» y «Aplicar tramos» los resuelven. Se añade el botón «Descartar tramos» (vuelve a los del borrador), para que «descártalos» tenga un gesto directo | El clásico era modal y preguntaba por la celda sin aplicar antes de dibujar; la ventana no lo es, y lo pendiente no puede desaparecer en silencio ni dejar un «Limpio» falso. El botón no estaba en el encargo: sin él, la única forma de descartar sin perder lo demás era cambiar de frente |
+| S-22 | Las cotas por vista vuelven al valor cargado exacto cuando las tres casillas vuelven a como las mostraba la política cargada: es «no tocadas» de `DimensionViewPolicy.FromEditor`. **Diferencia declarada con el clásico:** el clásico, en ese caso, guarda 7 (las tres vistas) en un rack heredado; el borrador conserva el nulo. El dibujo es el mismo, porque el nulo muestra las tres | Salir de un campo sin cambiarlo no cambia nada; un falso «Modificado» vetaba el cierre del dibujo |
+| S-23 | El larguero, su peralte y el claro se desactivan solo si **toda** la selección es N1 sin larguero en **ningún** fondo de la vista (en «Todos los fondos», basta un fondo con larguero a piso para ofrecerlos). Lo que guardan se conserva. La tarima y el largo manual del larguero siguen editables | El draft aprobado (`'Sin larguero (piso)'`, el claro con `'No en N1'`). Lo que no se dibuja no debe dejar el borrador «Modificado» |
+| S-24 | Los rechazos de S-04 terminan con «Cierra el editor (los cambios de la ventana se pierden) y vuelve a abrirlo con «Editar aquí».», y nombran todas las holguras que cambiaron, siempre en el mismo orden (la holgura vertical, la tolerancia horizontal): «Los vínculos de la holgura vertical y de la tolerancia horizontal cambiaron…», «Los valores de lo que gobierna la holgura vertical y la tolerancia horizontal cambiaron…» | «Descartar» vuelve a lo que se abrió y no relee el dibujo, así que «Vuelve a abrir el rack» no se podía hacer sin cerrar el editor |
+| S-25 | Reservada para M-02 (las vistas hermanas con diseños distintos): la regla llega por la rama de Dinámico y no está en esta corrección | Orden del Owner: una sola regla, genérica para los dos sistemas |
+| S-26 | El nombre de un Selectivo en el veto de cierre y en la poda: el del borrador; si está vacío, el del sobre tal como lo tenía la lista de la ventana al abrir el editor (se guarda con el borrador, de solo lectura); el id solo si tampoco hay ese | El dibujo y la lista muestran el nombre del sobre; el GUID no le dice nada al usuario |
+| S-27 | «Estilo de cota» es una lista: «(Automático)» primero, los estilos del dibujo (recortados, sin repetir, sin vacíos), y luego el estilo con el que abrió el rack y el actual, si el dibujo no los tiene. Elegir «(Automático)» guarda el estilo vacío. Sin estilos leídos, la lista tiene «(Automático)» y el estilo cargado | Como el clásico (`SetDimensionStyles` y `SelectDimStyle`): un error al escribir ya no puede guardar un estilo que no existe |
+| S-28 | Cuando la orden toma la escritura (`RequestStarted`), la ventana avisa al editor de Selectivo (`WriteTaken`), que deja de decir «pulsa «Dejar de esperar»» y dice «AutoCAD ya tomó la escritura del rack: espera a que termine, o termina o cancela la orden en AutoCAD; la ventana recibirá su respuesta.». La escritura siguiente empieza otra vez sin tomar | Lo resolvió así la ventana para Dinámico tras I-02 de su quinta revisión (`CanStopWaiting` y su texto); el editor de Dinámico no se toca |
+| S-29 | `LoadFrom` con un diseño sin frentes: se comprueba antes de copiarlo (la copia pasa por el almacén, que lo rechaza), así que el borrador conserva el rack que tenía, recompuesto, y lo dice en `LoadNotice`. Por la puerta sigue siendo inalcanzable: `AnswerForSelectiveOpen` lo rechaza antes | Lo que hace el clásico (`LoadDesign` vuelve sin cambiar nada), y lo que el comentario ya prometía |
+
+**Las pruebas** (las sondas P1, P2, P3, P8 y P9 de la revisión pasaron a ser pruebas):
+- `RackCadSelectiveEditorReviewTests` (UI, nueva, 15):
+  - I-01: el modelo de la vista (indeterminada, «todos», desde «todos» quita, `null` no cambia nada) y la vista con WPF real: `CheckBoxAutomationPeer` → `IToggleProvider.Toggle` con selección mixta pone el larguero a piso en F1 y F2, la casilla queda marcada y el rótulo cambia; el segundo clic lo quita de los dos (P8);
+  - M-04: P9 (tramos pendientes, otro cambio, «Actualizar» no escribe y lo dice, «Cerrar el editor» pregunta, aplicados se escriben); solo tramos pendientes, y deshacerlos es «Limpio»; otro frente y otros fondos los descartan con su aviso, otra celda del mismo frente no; «Descartar tramos» y «Descartar»; los tramos de un frente partido sin tocar no están pendientes (30 y 30.0 son el mismo); la vista ofrece «Descartar tramos» solo con tramos pendientes y «Actualizar» muestra el motivo;
+  - M-05: P2, y una política presente con un bit desconocido que vuelve exacta;
+  - M-07: F2·N1 en el piso desactiva el larguero, el peralte y el claro con sus textos, y escribir ahí no cambia nada; F1·N1 con larguero a piso y una selección mixta los ofrecen; en dos fondos, un fondo con larguero a piso basta;
+  - M-10: la lista con los estilos del dibujo, el cargado conservado, «(Automático)» y la vuelta a «Limpio»;
+  - M-11: el texto antes y después de `WriteTaken`, y la escritura siguiente;
+  - M-03: P3, un diseño sin frentes no lanza y conserva el rack que había;
+  - P1: «Descartar» y la vuelta al último válido no cambian el diseño en siete formas de rack, y ningún frente queda con tramos pendientes al abrir.
+- `RackCadSelectiveWindowTests` (UI, +4): los tramos pendientes solos vetan el cierre (D-08) y la lista marca «Modificado»; el Selectivo sin nombre interno sale con el nombre de la lista en el veto y en la poda; la lectura con estilos llena la lista; tras `RequestStarted` el editor ya no ofrece «Dejar de esperar».
+- `RackCadSelectiveEditorTests` (UI): la prueba de los tramos cambia en una línea, con su nota (tras «Partir en tramos» el editor queda «Modificado», S-21) y comprueba además «Actualizar».
+- `SelectiveRackDoorTests` (Core, +2, y dos con el texto entero): los textos de S-24; las dos holguras a la vez (vínculo y valor); el campo nuevo de la lectura es opcional; el cableado de RACKSELECTIVOABRIR lee los estilos solo para un rack que abre, después de la regla y antes de responder.
+- `RackCadWindowCloseAdvisorTests` (Core, +1): la guarda de M-08 (una sola instalación, con `UnwrittenWorkOf`, y sin `UnwrittenDynamicWorkOf`).
+- Las pruebas de Dinámico no cambian.
+
+**Comprobación en rojo:** doce piezas rotas a propósito, una a una, con las clases afectadas tras cada una (en UI, `RackCadSelectiveEditorReviewTests`, `RackCadSelectiveEditorTests` y `RackCadSelectiveWindowTests`, 58 casos; en Core, `SelectiveRackDoorTests` y `RackCadWindowCloseAdvisorTests`, 21):
+1. **I-01**, el setter que escribe el `false` de WPF tal cual: fallan las dos de I-01, la del modelo de la vista y la de la vista con `IToggleProvider.Toggle`;
+2. **M-04**, los tramos pendientes fuera de «Modificado»: fallan P9, la de solo tramos pendientes, la del veto en la ventana y la de los tramos que ya existía;
+3. **M-04**, sin aviso al cambiar de frente: falla la del aviso;
+4. **M-05**, las casillas de cotas siempre «tocadas»: falla P2;
+5. **M-07**, N1 en el piso editable: fallan las dos de M-07;
+6. **M-10**, la lista sin los estilos del dibujo: fallan la del editor y la de la ventana;
+7. **M-11**, el editor sin aviso de que la orden tomó la escritura: falla la de la ventana;
+8. **M-09**, el veto con el GUID: falla la suya;
+9. **M-03**, la copia antes de comprobar: falla P3, con la excepción de antes;
+10. **M-06**, el texto viejo («Vuelve a abrir el rack…»): fallan las tres de Core que lo fijan;
+11. **M-11**, solo la primera holgura: falla la de las dos holguras;
+12. **M-08**, `SetWindowWork(_window.UnwrittenDynamicWorkOf)`: falla la guarda de fuente en Core.
+
+M-02 no tiene comprobación en rojo: no está en esta corrección. Cada archivo se restauró desde sus bytes originales con fecha nueva (la lección de E1-B), se comparó byte a byte con la copia y se buscaron restos; después se recompiló todo con `--no-incremental` antes de las suites completas.
+
+**Los números** (sobre las fuentes restauradas y recompiladas con `--no-incremental`):
+- **UI completa:** 2615 correctas, 0 con error, 48 omitidas (2663): la base de E1-B, 2596, más las 19 nuevas. Las focales de Selectivo, la ventana y Dinámico, juntas: 163 de 163.
+- **Core Full:** 19091 correctas, 0 con error, 403 omitidas (19494): la base, 19088, más las 3 nuevas.
+- **Build Debug del Plugin:** 0 errores (las 2 advertencias MSB3277 de las referencias de AutoCAD ya estaban).
+
+**Lo que vi en Dinámico, sin tocarlo** (para su rama):
+- **I-01:** la casilla «Guía de entrada» (`DynamicEditorView.xaml`, `SelectionGuide`) tiene el mismo patrón: `IsThreeState="False"` sobre un `bool?` que devuelve `null` con celdas mixtas, y un setter que escribe el `false` que manda WPF, así que un clic con la selección mixta quita la guía de todas las celdas. Tampoco dice «varía».
+- **M-02:** RACKDINAMICOABRIR, RACKDINAMICOAPLICAR y RACKDINAMICOINSERTAR leen y escriben sobre `blocks[0]`; es la regla que llega por su rama.
+- **M-11:** el editor de Dinámico sigue diciendo «pulsa «Dejar de esperar»» aunque la orden ya tomó la petición; la ventana sí lo resuelve (`CanStopWaiting` y `WaitingText`).
+
+**Lo que queda abierto:**
+- **M-02**, por la rama de Dinámico.
+- **El smoke del Owner en AutoCAD:** lo de E1-B, más la casilla «varía», los tramos pendientes, la lista de estilos con los del dibujo y el texto tras «Started».
+- S-11 sigue para la revisión; S-21 (el botón «Descartar tramos») y S-22 (el nulo conservado) son nuevas y conviene que las vea.

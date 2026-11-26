@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using RackCad.Application.Persistence;
 using RackCad.Application.ProjectVariables;
 using RackCad.Application.Systems.Selective;
@@ -90,7 +91,9 @@ namespace RackCad.Application.VentanaRackCad
     /// window exists. When it opens: the EFFECTIVE design (the value in force of every linked property) as the JSON of its document, the
     /// committed state of every linked property (its literal is the authored one, frozen behind a binding) and, for display only, the
     /// names of the variables that govern them. When it does not: why (a broken reference, a register that cannot be read, another kind),
-    /// exactly as RACKEDITAR refuses to open.
+    /// exactly as RACKEDITAR refuses to open. <paramref name="DimensionStyles"/> are the dimension
+    /// styles of the drawing, as RACKEDITAR gives them to its list (S-27, M-10 of the review of the entrega 1); null when they were not
+    /// read, so the callers that do not send them keep working.
     /// </summary>
     public sealed record SelectiveDesignRead(
         long RequestId,
@@ -101,7 +104,8 @@ namespace RackCad.Application.VentanaRackCad
         string EffectiveDesignJson,
         IReadOnlyDictionary<PropertyId, LinkedPropertyEditState> LinkedPropertyStates,
         IReadOnlyDictionary<PropertyId, string> LinkedVariableNames,
-        string Reason)
+        string Reason,
+        IReadOnlyList<string> DimensionStyles = null)
     {
         /// <summary>A read that does not open the editor, with its reason.</summary>
         public static SelectiveDesignRead Refused(long requestId, string rackId, string kind, string name, string reason)
@@ -218,6 +222,10 @@ namespace RackCad.Application.VentanaRackCad
                 "AutoCAD no insertó el rack nuevo: se canceló la colocación o no se pudo preparar. El borrador sigue en la ventana; revisa la línea de órdenes de AutoCAD.");
         }
 
+        // What the window can do after a refusal of S-04: «Descartar» goes back to what it opened, so only a new opening reads the drawing again
+        // (S-24, M-06 of the review of the entrega 1).
+        private const string ReopenText = " Cierra el editor (los cambios de la ventana se pierden) y vuelve a abrirlo con «Editar aquí».";
+
         /// <summary>
         /// The answer of RACKSELECTIVOABRIR (Selectivo E1-A): what RACKEDITAR decides before its window exists, from the kind and the
         /// inner design of the rack and the register of project variables of the drawing. It opens exactly when RACKEDITAR opens: the
@@ -270,7 +278,8 @@ namespace RackCad.Application.VentanaRackCad
         /// may have changed in between. Nothing is written when: the rack is not a readable Selectivo; it would not open now (the same
         /// rule as the read); the binding of a holgura is not the one the window opened with (written through the window, the opened state
         /// would silently undo it); the reconciliation of the classic path would fail; or the variable that governs a linked holgura has
-        /// another value now (the draft was drawn with the old one, and the drawing would not match its own document).
+        /// another value now (the draft was drawn with the old one, and the drawing would not match its own document). A refusal of a
+        /// holgura names every holgura that changed, and says what the window can do: close the editor and open the rack again (S-24).
         /// </summary>
         public static SelectiveApplyPlan PlanSelectiveApply(string kind, string designJson, ProjectVariablesReadResult registry, SelectiveDoorWrite write)
         {
@@ -296,37 +305,50 @@ namespace RackCad.Application.VentanaRackCad
             var finals = write.LinkedPropertyFinalStates ?? new Dictionary<PropertyId, LinkedPropertyEditState>();
             var properties = new HashSet<PropertyId>(open.LinkedPropertyStates.Keys);
             properties.UnionWith(finals.Keys);
+            var rebound = new List<PropertyId>();
             foreach (var property in properties)
             {
                 open.LinkedPropertyStates.TryGetValue(property, out var now);
                 finals.TryGetValue(property, out var final);
                 var linked = (now != null && now.Source.Kind != LinkedPropertySourceKind.Literal)
                              || (final != null && final.Source.Kind != LinkedPropertySourceKind.Literal);
-                if (linked && !Equals(now, final))
-                {
-                    return new SelectiveApplyPlan(false, null,
-                        "El vínculo de " + LinkedLabel(property) + " cambió en el dibujo desde que se abrió el rack aquí: no se escribió nada. "
-                        + "Vuelve a abrir el rack para escribir con el vínculo actual.");
-                }
+                if (linked && !Equals(now, final)) rebound.Add(property);
+            }
+
+            if (rebound.Count > 0)
+            {
+                return new SelectiveApplyPlan(false, null,
+                    (rebound.Count == 1 ? "El vínculo de " + LinkedLabels(rebound, " y de ") + " cambió" : "Los vínculos de " + LinkedLabels(rebound, " y de ") + " cambiaron")
+                    + " en el dibujo desde que se abrió el rack aquí: no se escribió nada." + ReopenText);
             }
 
             var reconciled = LinkedPropertyReconciler.Reconcile(saved, write.Design, finals, registry, write.RackId, write.Name);
             if (!reconciled.IsSuccess) return new SelectiveApplyPlan(false, null, reconciled.Error + " No se escribió nada.");
 
+            var revalued = new List<PropertyId>();
             foreach (var pair in finals)
             {
                 if (pair.Value == null || pair.Value.Source.Kind == LinkedPropertySourceKind.Literal) continue;
                 if (!SelectiveLinkedProperties.All.TryGetDescriptor(pair.Key, out var descriptor)) continue;
-                if (descriptor.ReadEffective(reconciled.Effective) != descriptor.ReadEffective(write.Design))
-                {
-                    return new SelectiveApplyPlan(false, null,
-                        "El valor de lo que gobierna " + LinkedLabel(pair.Key) + " cambió desde que se abrió el rack aquí: no se escribió nada. "
-                        + "Vuelve a abrir el rack para escribir con su valor actual.");
-                }
+                if (descriptor.ReadEffective(reconciled.Effective) != descriptor.ReadEffective(write.Design)) revalued.Add(pair.Key);
+            }
+
+            if (revalued.Count > 0)
+            {
+                return new SelectiveApplyPlan(false, null,
+                    (revalued.Count == 1 ? "El valor de lo que gobierna " + LinkedLabels(revalued, " y ") + " cambió" : "Los valores de lo que gobierna " + LinkedLabels(revalued, " y ") + " cambiaron")
+                    + " desde que se abrió el rack aquí: no se escribió nada." + ReopenText);
             }
 
             return new SelectiveApplyPlan(true, saved, null);
         }
+
+        // The holguras named in a refusal, always in the same order: the vertical clearance, the horizontal tolerance, then any other.
+        private static string LinkedLabels(IEnumerable<PropertyId> properties, string separator)
+            => string.Join(separator, properties
+                .OrderBy(p => p == ProjectPropertyIds.SelectiveVerticalClearance ? 0 : p == ProjectPropertyIds.SelectivePalletTolerance ? 1 : 2)
+                .ThenBy(p => p.ToString(), StringComparer.Ordinal)
+                .Select(LinkedLabel));
 
         private static string LinkedLabel(PropertyId property)
             => property == ProjectPropertyIds.SelectiveVerticalClearance ? "la holgura vertical"

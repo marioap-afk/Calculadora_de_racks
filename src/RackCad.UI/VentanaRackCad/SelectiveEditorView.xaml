@@ -338,7 +338,8 @@
                                 <ItemsControl x:Name="CellFieldList" ItemsSource="{Binding CellFields}" ItemsPanel="{StaticResource WrapItems}" />
                                 <TextBlock Text="Frentes de la selección" FontWeight="SemiBold" Margin="0,6,0,4"
                                            Foreground="{DynamicResource ShellTextPrimaryBrush}" />
-                                <CheckBox x:Name="FloorBeamCheck" Content="Larguero a piso en N1" Margin="0,0,0,8" IsThreeState="False"
+                                <!-- S-20: with fronts that differ the box is indeterminate and says «varía»; a click puts it in all of them (the draft). -->
+                                <CheckBox x:Name="FloorBeamCheck" Content="{Binding SelectionFloorBeamLabel}" Margin="0,0,0,8" IsThreeState="False"
                                           IsChecked="{Binding SelectionFloorBeam, Mode=TwoWay}" IsEnabled="{Binding CanEdit}"
                                           AutomationProperties.Name="Larguero a piso en los frentes de la selección" />
                                 <ItemsControl x:Name="FrontFieldList" ItemsSource="{Binding FrontFields}" ItemsPanel="{StaticResource WrapItems}" />
@@ -376,6 +377,9 @@
                                             Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanChangeSegments}" Click="OnAddSegmentClick" />
                                     <Button x:Name="ApplySegmentsButton" Content="Aplicar tramos" Margin="0,0,6,4" Padding="10,3"
                                             Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanChangeSegments}" Click="OnApplySegmentsClick" />
+                                    <!-- S-21: the tramos written and not applied go back to those of the front in the draft. -->
+                                    <Button x:Name="DiscardSegmentsButton" Content="Descartar tramos" Margin="0,0,6,4" Padding="10,3"
+                                            Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanDiscardSegments}" Click="OnDiscardSegmentsClick" />
                                     <Button x:Name="ClearSegmentsButton" Content="Sin medio frente" Margin="0,0,6,4" Padding="10,3"
                                             Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanEditSegments}" Click="OnClearSegmentsClick" />
                                 </WrapPanel>

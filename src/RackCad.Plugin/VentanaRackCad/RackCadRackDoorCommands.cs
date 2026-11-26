@@ -223,7 +223,8 @@ namespace RackCad.Plugin.VentanaRackCad
         /// <summary>
         /// The read of a Selectivo for the window (Selectivo E1-A): what RACKEDITAR reads and decides before its window exists — the inner
         /// design of the rack, the register of project variables and <c>SelectiveEditorOpen.Resolve</c> — with no undo marker and no
-        /// history. A broken variable reference blocks the opening exactly as it blocks RACKEDITAR.
+        /// history. A broken variable reference blocks the opening exactly as it blocks RACKEDITAR. A rack that opens carries the dimension
+        /// styles of the drawing, which RACKEDITAR also reads before it opens (S-27).
         /// </summary>
         [CommandMethod("RACKSELECTIVOABRIR", CommandFlags.NoUndoMarker | CommandFlags.NoHistory)]
         public void ReadSelectiveDesign()
@@ -262,7 +263,11 @@ namespace RackCad.Plugin.VentanaRackCad
                 }
 
                 var registry = RackSelectivoCommands.ReadProjectVariables(document, out _);
-                door?.AnswerSelectiveRead(RackDoorRules.AnswerForSelectiveOpen(pending.RequestId, pending.RackId, embed.Kind, embed.Design, registry));
+                var answer = RackDoorRules.AnswerForSelectiveOpen(pending.RequestId, pending.RackId, embed.Kind, embed.Design, registry);
+
+                // The dimension styles of the drawing, as RACKEDITAR gives them to its list (S-27): only for a rack that opens.
+                if (answer.Opens) answer = answer with { DimensionStyles = RackCommandSupport.ReadDimensionStyleNames(document) };
+                door?.AnswerSelectiveRead(answer);
             }
             catch (System.Exception ex)
             {

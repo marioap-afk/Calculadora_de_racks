@@ -119,6 +119,20 @@ public class RackCadWindowCloseAdvisorTests
         Assert.Empty(rig.Lines);
     }
 
+    // M-08 of the review of the entrega 1 of Selectivo: the host of the palette installs the work of the WHOLE window (Dinámico and
+    // Selectivo, since Selectivo E1-B). UnwrittenDynamicWorkOf is kept with its behavior, so going back to it would leave every test of the
+    // window green while a Selectivo not written stops vetoing the close; this guard fixes the line on the source (the Plugin cannot be
+    // loaded here).
+    [Fact]
+    public void ThePaletteHostInstallsTheWorkOfTheWholeWindowInTheAdvisor()
+    {
+        var host = WorkspaceHostSource.Code("src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs");
+
+        Assert.Equal(1, WorkspaceHostSource.Count(host, System.Text.RegularExpressions.Regex.Escape("_controller.WindowCloseAdvisor.SetWindowWork(_window.UnwrittenWorkOf);")));
+        Assert.Equal(1, WorkspaceHostSource.Count(host, @"\.SetWindowWork\("));
+        Assert.DoesNotContain("UnwrittenDynamicWorkOf", host, StringComparison.Ordinal);
+    }
+
     [Fact]
     public void TheAdvisorNeedsTheHostAndTheCommandLine()
     {

@@ -83,15 +83,22 @@ namespace RackCad.UI.VentanaRackCad
 
         private sealed class SelectiveDraftEntry
         {
-            public SelectiveDraftEntry(SessionId session, SelectiveEditorViewModel editor)
+            public SelectiveDraftEntry(SessionId session, SelectiveEditorViewModel editor, string listedName = null)
             {
                 Session = session;
                 Editor = editor;
+                ListedName = string.IsNullOrWhiteSpace(listedName) ? null : listedName.Trim();
             }
 
             public SessionId Session { get; }
 
             public SelectiveEditorViewModel Editor { get; }
+
+            /// <summary>
+            /// The name of the envelope, as the list of the window showed it when the editor opened: read only, the name that the veto of
+            /// the close and the notice of a closed drawing say when the inner document has none (S-26, M-09 of the review of the entrega 1).
+            /// </summary>
+            public string ListedName { get; }
         }
 
         // The one request of the door that waits for AutoCAD, for the two systems (Selectivo E1-B): its number, the session and the rack it
@@ -493,13 +500,15 @@ namespace RackCad.UI.VentanaRackCad
 
                 if (existing != null) ForgetSelective(key, existing);
 
-                // A load that cannot be recomposed still opens the editor, read only, with the reason (S-08).
+                // A load that cannot be recomposed still opens the editor, read only, with the reason (S-08). The list of «Estilo de cota»
+                // has the styles of the drawing (S-27), and the name of the list is kept for the notices when the rack has no inner name (S-26).
                 var draft = new SelectiveDraftEditor(_catalog());
                 draft.LoadFrom(design, read.LinkedPropertyStates, read.Name, read.LinkedVariableNames);
-                var editor = new SelectiveEditorViewModel(draft, request.RackId, UpdateSelective, read.LinkedPropertyStates, read.LinkedVariableNames);
+                var editor = new SelectiveEditorViewModel(draft, request.RackId, UpdateSelective, read.LinkedPropertyStates, read.LinkedVariableNames,
+                    read.DimensionStyles);
                 editor.PropertyChanged += OnSelectiveEditorChanged;
                 editor.CloseRequested += CloseSelectiveEditor;
-                _selectiveDrafts[key] = new SelectiveDraftEntry(request.Session, editor);
+                _selectiveDrafts[key] = new SelectiveDraftEntry(request.Session, editor, RackList.ListedNameOf(request.RackId));
                 _showPanel = false;
                 Say(string.Empty, failed: false);
                 RaiseDynamic();
@@ -599,8 +608,9 @@ namespace RackCad.UI.VentanaRackCad
             _selectiveDrafts.Remove(key);
         }
 
-        private static string SelectiveNameOf(SelectiveEditorViewModel editor) =>
-            !string.IsNullOrWhiteSpace(editor.Name) ? editor.Name.Trim() : editor.RackId;
+        // The name of a Selectivo in the notices: the one of its draft; with none, the one of the list when it opened (S-26); its id last.
+        private static string SelectiveNameOf(SelectiveDraftEntry entry) =>
+            !string.IsNullOrWhiteSpace(entry.Editor.Name) ? entry.Editor.Name.Trim() : entry.ListedName ?? entry.Editor.RackId;
 
         /// <summary>
         /// «Editar aquí»: asks AutoCAD to read the design of the active rack; the editor opens when the answer to THIS request arrives, for
@@ -888,7 +898,7 @@ namespace RackCad.UI.VentanaRackCad
             var names = UnwrittenDynamicNames(session)
                 .Concat(_selectiveDrafts
                     .Where(p => p.Key.Session == session && (p.Value.Editor.IsDirty || p.Value.Editor.IsWriting))
-                    .Select(p => SelectiveNameOf(p.Value.Editor)))
+                    .Select(p => SelectiveNameOf(p.Value)))
                 .OrderBy(n => n, StringComparer.CurrentCultureIgnoreCase)
                 .ToList();
             return names.Count == 0 ? null : string.Join(", ", names);
@@ -942,7 +952,7 @@ namespace RackCad.UI.VentanaRackCad
             foreach (var pair in deadSelective)
             {
                 var editor = pair.Value.Editor;
-                if (editor.IsDirty || editor.IsWriting) lost.Add(SelectiveNameOf(editor));
+                if (editor.IsDirty || editor.IsWriting) lost.Add(SelectiveNameOf(pair.Value));
                 if (_inFlight != null && _inFlight.Session == pair.Key.Session) AbandonInFlight();
                 ForgetSelective(pair.Key, pair.Value);
             }
@@ -1044,6 +1054,10 @@ namespace RackCad.UI.VentanaRackCad
             {
                 if (_inFlight == null || !_inFlight.IsWrite || _inFlight.Id != requestId) return;
                 _inFlight = _inFlight with { Started = true };
+
+                // The editor of the Selectivo no longer says to press «Dejar de esperar» (S-28); the editor of Dinámico is not touched.
+                if (_inFlight.IsSelective && _selectiveDrafts.TryGetValue((_inFlight.Session, _inFlight.RackId), out var selective))
+                    selective.Editor.WriteTaken();
                 RaiseWaiting();
             });
         }

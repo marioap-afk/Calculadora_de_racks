@@ -251,6 +251,14 @@ namespace RackCad.UI.VentanaRackCad
             return entry == null ? rackId : DisplayName(entry);
         }
 
+        /// <summary>The name of the envelope of a rack of the list, trimmed; null when the list does not have the rack or it has no name.</summary>
+        public string ListedNameOf(string rackId)
+        {
+            if (string.IsNullOrWhiteSpace(rackId)) return null;
+            var name = _racks.FirstOrDefault(r => string.Equals(r.RackId, rackId, StringComparison.OrdinalIgnoreCase))?.Name;
+            return string.IsNullOrWhiteSpace(name) ? null : name.Trim();
+        }
+
         /// <summary>The Kind of the envelope of a rack of the list (for example «dynamic»); null when the list does not have it.</summary>
         public string KindOf(string rackId)
         {
