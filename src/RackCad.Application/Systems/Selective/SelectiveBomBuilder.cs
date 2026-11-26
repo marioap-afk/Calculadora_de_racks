@@ -83,6 +83,20 @@ namespace RackCad.Application.Systems.Selective
             }
         }
 
+        /// <summary>
+        /// The PLANTA the BOM counts the botas and the protectores laterales from (decorations off). The table by post of the RackCad
+        /// window (<see cref="SelectivePostSafetySummary"/>) reads the same instances, so its columns add up to these lines.
+        /// </summary>
+        internal static IReadOnlyList<HeaderBlockInstance> CountingPlanta(SelectiveRackSystem system, RackCatalog catalog)
+            => BuildForCounting(system, s => new SelectivePlantaBuilder().Build(s, catalog));
+
+        /// <summary>
+        /// The LATERAL cortes the BOM counts the separadores from (one corte per post of the master run, with its vertical stack). Shared
+        /// with <see cref="SelectivePostSafetySummary"/> for the same reason as <see cref="CountingPlanta"/>.
+        /// </summary>
+        internal static IReadOnlyList<SelectiveCorte> CountingCortes(SelectiveRackSystem system, RackCatalog catalog)
+            => new SelectiveLateralBuilder().Cortes(system, catalog);
+
         // ---- Safety accessories: one component per element (the bota itself IS the component), counted from the drawing ----
 
         private static void AddSafetyComponents(List<BomComponent> components, SelectiveRackSystem system, RackCatalog catalog)
@@ -97,7 +111,7 @@ namespace RackCad.Application.Systems.Selective
             // carries that placement. An element that draws nothing yet (no block/rule) falls back to its manual quantity.
             var drawn = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
             var drawnLongitud = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
-            foreach (var instance in BuildForCounting(system, s => new SelectivePlantaBuilder().Build(s, catalog)))
+            foreach (var instance in CountingPlanta(system, catalog))
             {
                 if (instance.Role != HeaderBlockRole.Safety || string.IsNullOrWhiteSpace(instance.PieceId))
                 {
@@ -216,7 +230,7 @@ namespace RackCad.Application.Systems.Selective
             // line per frente). Group by LONGITUD (the fondo gap): different gaps are different cut lengths.
             var byLength = new Dictionary<double, int>();
             var order = new List<double>();
-            foreach (var corte in new SelectiveLateralBuilder().Cortes(system, catalog))
+            foreach (var corte in CountingCortes(system, catalog))
             {
                 foreach (var instance in corte.Largueros)
                 {

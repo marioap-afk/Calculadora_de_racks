@@ -1243,6 +1243,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(PrimaryPosition));
             OnPropertyChanged(nameof(InspectorTitle));
             OnPropertyChanged(nameof(InspectorNote));
+            OnSafetyChanged(); // «Extremos y seguridad» (entrega 2): T/P of the selection and the table by post
             RebuildSegments();
         }
 
