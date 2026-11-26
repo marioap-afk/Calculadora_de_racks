@@ -272,8 +272,7 @@ namespace RackCad.UI.Tests
             Assert.Equal("Borrador 1 (Nave A), Selectivo, Sin insertar, con cambios", item.AccessibleName);
             Assert.Contains(nameof(RackCadDraftItem.Title), raised);
 
-            editor.ViewChooser = _ => new[] { Planta };
-            editor.InsertView();
+            editor.InsertWith(Planta); // T4 ins: the panel of «Insertar vista…»
             Assert.True(editor.IsWriting);
             Assert.Equal((RackCadDraftItem.WritingKind, "Escribiendo", "Escribiendo en el dibujo"), (item.StatusKind, item.Tag, item.StatusText));
             Assert.False(item.CanDiscard);
@@ -335,8 +334,7 @@ namespace RackCad.UI.Tests
             var rig = new Rig();
             var editor = rig.NewSelective();
             Edit(editor);
-            editor.ViewChooser = _ => new[] { Planta };
-            editor.InsertView();
+            editor.InsertWith(Planta); // T4 ins: the panel of «Insertar vista…»
             var item = rig.Window.Drafts[0];
 
             rig.Window.DiscardDraft(item);
@@ -402,8 +400,7 @@ namespace RackCad.UI.Tests
             var second = rig.NewSelective();
             Edit(second, "80");
 
-            second.ViewChooser = _ => new[] { Planta };
-            second.InsertView();
+            second.InsertWith(Planta); // T4 ins: the panel of «Insertar vista…»
             var write = Assert.Single(rig.Door.SelectiveWrites);
             Assert.True(write.NewRack);
             Assert.Equal(second.RackId, write.RackId);
@@ -423,8 +420,7 @@ namespace RackCad.UI.Tests
 
             // The other draft is inserted on its own, with its own automatic name.
             rig.Window.OpenDraft(rig.Window.Drafts[0]);
-            first.ViewChooser = _ => new[] { Planta };
-            first.InsertView();
+            first.InsertWith(Planta); // T4 ins: the panel of «Insertar vista…»
             var other = rig.Door.SelectiveWrites.Last();
             Assert.Equal(first.RackId, other.RackId);
             rig.Door.Written(SelectiveDoorInsertion.AnswerForNewRack(other.RequestId, other.RackId, 1, "Selectivo 2"));
@@ -450,10 +446,9 @@ namespace RackCad.UI.Tests
             var itemOf8 = rig.Window.Drafts[0];
 
             // «Nuevo sigue al dibujo»: a draft of the other drawing waits for it.
-            first.ViewChooser = _ => new[] { Planta };
-            first.InsertView();
+            first.InsertWith(Planta); // T4 ins: the panel of «Insertar vista…»
             Assert.Empty(rig.Door.SelectiveWrites);
-            Assert.Equal("Este borrador es de otro dibujo: vuelve a ese dibujo para escribirlo.", first.Message);
+            Assert.Equal("Este borrador es de otro dibujo: vuelve a ese dibujo para escribirlo.", first.InsertViewBlockedText); // T4 ins (correction 7): the reason is next to the button
 
             // Back in the first drawing: its drafts, and the one it had open.
             rig.Present(7);
@@ -565,8 +560,7 @@ namespace RackCad.UI.Tests
             Assert.Equal(before, Store.Serialize(document));
 
             // Inserted, it keeps the name of the design.
-            editor.ViewChooser = _ => new[] { RackViewAddress.Fondo(0) };
-            editor.InsertView();
+            editor.InsertWith(RackViewAddress.Fondo(0)); // T4 ins: the panel of «Insertar vista…»
             var write = Assert.Single(rig.Door.SelectiveWrites);
             Assert.Equal("Nave lib", write.Name);
             Assert.True(SelectiveDoorInsertion.PlanNewRack(write, identityInDrawing: false, Catalog()).CanInsert);
@@ -717,8 +711,7 @@ namespace RackCad.UI.Tests
         {
             var rig = new Rig();
             var first = rig.NewSelective();
-            first.ViewChooser = _ => new[] { Planta };
-            first.InsertView();
+            first.InsertWith(Planta); // T4 ins: the panel of «Insertar vista…»
             var write = rig.Door.SelectiveWrites.Last();
             var second = rig.NewSelective(); // another draft is open now
             Assert.NotSame(first, rig.Window.NewSelectiveEditor);
@@ -730,7 +723,7 @@ namespace RackCad.UI.Tests
             Assert.True(rig.Window.ActionFailed);
 
             // «Dejar de esperar» of a draft that is not on screen.
-            first.InsertView();
+            first.InsertWith(Planta); // T4 ins: the panel of «Insertar vista…»
             rig.Window.ShowPage(RackCadWindowPage.Bom);
             rig.Window.StopWaiting();
             Assert.Equal("Borrador 1: Se dejó de esperar a AutoCAD: si la orden llega a correr, no escribirá nada. El borrador sigue sin escribir.", rig.Window.ActionMessage);
@@ -739,8 +732,7 @@ namespace RackCad.UI.Tests
             // On screen, the editor says it and the window does not repeat it.
             rig.Window.OpenDraft(rig.Window.Drafts[1]);
             rig.Window.DismissMessage();
-            second.ViewChooser = _ => new[] { Planta };
-            second.InsertView();
+            second.InsertWith(Planta); // T4 ins: the panel of «Insertar vista…»
             var shown = rig.Door.SelectiveWrites.Last();
             rig.Door.Written(SelectiveDoorInsertion.AnswerForNewRack(shown.RequestId, shown.RackId, 0, null!));
             Assert.Equal(NotPlaced, second.Message);
@@ -748,8 +740,7 @@ namespace RackCad.UI.Tests
 
             // A Dinámico too.
             var dynamic = rig.NewDynamic();
-            dynamic.ViewChooser = _ => new[] { RackViewAddress.Post(0) };
-            dynamic.InsertView();
+            dynamic.InsertWith(RackViewAddress.Post(0)); // T4 ins: the panel of «Insertar vista…»
             var dynamicWrite = rig.Door.Writes.Last();
             rig.Window.OpenDraft(rig.Window.Drafts[0]);
             rig.Door.Written(RackDoorRules.AnswerForNewRack(dynamicWrite.RequestId, dynamicWrite.RackId, 0, null));
@@ -788,8 +779,7 @@ namespace RackCad.UI.Tests
         {
             var rig = new Rig();
             var editor = rig.NewSelective();
-            editor.ViewChooser = _ => new[] { Planta };
-            editor.InsertView(); // AutoCAD writes it: «Duplicar» refuses and says it
+            editor.InsertWith(Planta); // AutoCAD writes it: «Duplicar» refuses and says it // T4 ins: the panel of «Insertar vista…»
             var thrown = false;
             rig.Window.PropertyChanged += (_, e) =>
             {
