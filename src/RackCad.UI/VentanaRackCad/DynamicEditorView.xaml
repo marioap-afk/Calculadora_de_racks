@@ -1,6 +1,7 @@
 <UserControl x:Class="RackCad.UI.VentanaRackCad.DynamicEditorView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:RackCad.UI.VentanaRackCad"
              AutomationProperties.Name="Editor de Dinámico"
              FontFamily="Segoe UI"
              FontSize="12"
@@ -317,48 +318,70 @@
                 </Grid>
             </TabItem>
 
-            <!-- Extremos y seguridad (step 4; decision 6 of the prototype): the guide of the entrance and the safety post by post. -->
+            <!-- T4 seg (I-64, cuarta tanda; the prototype «seguridad», SG-01 to SG-07): «Extremos y seguridad» without the classic dialog. The
+                 card of the guide of the entrance (its cells are chosen in «Matriz»; its head shows its family), «Seguridad por poste» EDITABLE
+                 (RackCadSafetyTableView, with the defenses: an empty length is the automatic one) and «Extremos»; beside them, or below when the
+                 tab is narrow, «Variante y medidas» (RackCadSafetyInspectorView). The sides are «Salida / Entrada» (SG-02). «Editar seguridad…»
+                 is not offered any more; the classic dialog stays in RACKEDITAR. -->
             <TabItem x:Name="SafetyTab" Header="Extremos y seguridad">
-                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                    <StackPanel Margin="10">
-                        <TextBlock Text="Extremos" Style="{StaticResource GroupTitle}" Margin="0,0,0,2" />
-                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,6" Foreground="{DynamicResource ShellTextSecondaryBrush}"
-                                   Text="Salida = extremo bajo · entrada = extremo alto. La guía de entrada va por frente y nivel, solo en la entrada." />
-                        <TextBlock x:Name="GuideSummaryText" Text="{Binding GuideSummary}" TextWrapping="Wrap" Margin="0,0,0,6"
-                                   Foreground="{DynamicResource ShellTextPrimaryBrush}" />
-                        <WrapPanel Margin="0,0,0,4">
-                            <Button x:Name="GuideEverywhereButton" Content="En todas las celdas" Margin="0,0,6,0" Padding="10,3"
-                                    Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanEditGuide}" Click="OnGuideEverywhereClick" />
-                            <Button x:Name="GuideNowhereButton" Content="En ninguna" Padding="10,3"
-                                    Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanEditGuide}" Click="OnGuideNowhereClick" />
-                        </WrapPanel>
-                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,6" Foreground="{DynamicResource ShellTextSecondaryBrush}"
-                                   Text="Para elegir celdas, selecciónalas en «Matriz» y usa «Guía de entrada» del inspector. Las celdas con guía llevan una G." />
+                <Grid x:Name="SafetyLayout">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="0" />
+                    </Grid.RowDefinitions>
+                    <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                        <StackPanel Margin="10">
+                            <TextBlock Text="En las celdas: frente × nivel" Style="{StaticResource GroupTitle}" Margin="0,0,0,2" />
+                            <TextBlock TextWrapping="Wrap" Margin="0,0,0,6" Foreground="{DynamicResource ShellTextSecondaryBrush}"
+                                       Text="Para elegir celdas, selecciónalas en «Matriz» y usa «Guía de entrada» del inspector. Las celdas con guía llevan una G." />
+                            <Border Width="340" HorizontalAlignment="Left" Margin="0,0,0,10" Padding="12,10" BorderThickness="1" CornerRadius="8"
+                                    BorderBrush="{DynamicResource ShellBorderBrush}" Background="{DynamicResource ShellSurfaceBrush}"
+                                    AutomationProperties.Name="Guía de entrada">
+                                <StackPanel>
+                                    <Button x:Name="GuidePickButton" HorizontalAlignment="Left" Margin="0,0,0,6" Padding="4,2" Style="{StaticResource SecondaryButtonStyle}"
+                                            AutomationProperties.Name="Guía de entrada: ver su variante y sus medidas" Click="OnGuidePickClick">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Border Margin="0,0,8,0" Padding="3,0" CornerRadius="3" BorderThickness="1" VerticalAlignment="Center"
+                                                    BorderBrush="{DynamicResource ShellStatusSuccessBrush}">
+                                                <TextBlock Text="G" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource ShellStatusSuccessBrush}" />
+                                            </Border>
+                                            <TextBlock Text="Guía de entrada" FontWeight="SemiBold" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                        </StackPanel>
+                                    </Button>
+                                    <TextBlock x:Name="GuideSummaryText" Text="{Binding GuideSummary}" TextWrapping="Wrap" Margin="0,0,0,6"
+                                               Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                    <WrapPanel>
+                                        <Button x:Name="GuideEverywhereButton" Content="En todas las celdas" Margin="0,0,6,0" Padding="10,3"
+                                                Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanEditGuide}"
+                                                AutomationProperties.Name="Guía de entrada en todas las celdas" Click="OnGuideEverywhereClick" />
+                                        <Button x:Name="GuideNowhereButton" Content="En ninguna" Padding="10,3"
+                                                Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanEditGuide}"
+                                                AutomationProperties.Name="Guía de entrada en ninguna celda" Click="OnGuideNowhereClick" />
+                                    </WrapPanel>
+                                </StackPanel>
+                            </Border>
 
-                        <TextBlock Text="Seguridad por poste" Style="{StaticResource GroupTitle}" />
-                        <TextBlock x:Name="SafetySummaryText" Text="{Binding SafetySummary}" Style="{StaticResource OptionalText}" Margin="0,0,0,6"
-                                   Foreground="{DynamicResource ShellTextSecondaryBrush}" />
-                        <DataGrid x:Name="PostSafetyGrid" ItemsSource="{Binding PostSafety}" AutoGenerateColumns="False" IsReadOnly="True"
-                                  HeadersVisibility="Column" MaxHeight="320" CanUserAddRows="False" HorizontalAlignment="Left"
-                                  AutomationProperties.Name="Seguridad por poste">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="Poste" Binding="{Binding Post}" />
-                                <DataGridTextColumn Header="Botas" Binding="{Binding Boots}" />
-                                <DataGridTextColumn Header="Protector lateral" Binding="{Binding SideGuards}" />
-                                <DataGridTextColumn Header="Desviadores" Binding="{Binding Deflectors}" />
-                                <DataGridTextColumn Header="Defensas" Binding="{Binding Defenses}" />
-                                <DataGridTextColumn Header="Guías de entrada" Binding="{Binding Guides}" />
-                            </DataGrid.Columns>
-                        </DataGrid>
-                        <TextBlock TextWrapping="Wrap" Margin="0,6,0,6" Foreground="{DynamicResource ShellTextSecondaryBrush}"
-                                   Text="La tabla dice lo que el dibujo coloca en cada poste, contado como en el BOM." />
-                        <TextBlock x:Name="SafetyEditText" Text="{Binding SafetyEditText}" TextWrapping="Wrap" Margin="0,0,0,6"
-                                   Foreground="{DynamicResource ShellTextSecondaryBrush}" />
-                        <Button x:Name="EditSafetyButton" Content="Editar seguridad…" HorizontalAlignment="Left" Padding="12,4"
-                                Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanEditSafety}"
-                                AutomationProperties.Name="Editar la seguridad en el diálogo del editor clásico" Click="OnEditSafetyClick" />
-                    </StackPanel>
-                </ScrollViewer>
+                            <TextBlock Text="Seguridad por poste" Style="{StaticResource GroupTitle}" />
+                            <TextBlock x:Name="SafetySummaryText" Text="{Binding SafetySummary}" Style="{StaticResource OptionalText}" Margin="0,0,0,6"
+                                       Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                            <local:RackCadSafetyTableView x:Name="SafetyTable" DataContext="{Binding SafetyPanel}" />
+
+                            <TextBlock Text="Extremos" Style="{StaticResource GroupTitle}" />
+                            <TextBlock TextWrapping="Wrap" Margin="0,0,0,4" Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                                       Text="Salida = extremo bajo · entrada = extremo alto." />
+                            <TextBlock TextWrapping="Wrap" Margin="0,0,0,4" Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                                       Text="La guía de entrada va por frente y nivel, solo en la entrada. Desviadores y defensas van en los extremos que diga su lado." />
+                            <TextBlock TextWrapping="Wrap" Margin="0,0,0,4" Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                                       Text="La pendiente y la cama de rodillos siguen en «Avanzado»." />
+                        </StackPanel>
+                    </ScrollViewer>
+                    <local:RackCadSafetyInspectorView x:Name="SafetyInspector" Grid.Column="1" Width="380" Margin="0,10,10,10"
+                                                      DataContext="{Binding SafetyPanel.Inspector}" />
+                </Grid>
             </TabItem>
 
             <!-- Avanzado: the height, the separators, the derived post and the module sequence with Spanish labels. -->

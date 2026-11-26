@@ -95,6 +95,12 @@ namespace RackCad.UI
         private readonly bool defensaLowEndOnly;
         private readonly bool useDynamicSafetyDefaults;
 
+        /// <summary>
+        /// I-64, cuarta tanda (decision of the Owner, 2026-11-26): a desviador chosen here for the first time reads its cells by post
+        /// (<see cref="SelectiveDesviadorConfig.CellsByPost"/>). Only the Dinámico passes true; an existing desviador keeps its own marker.
+        /// </summary>
+        private readonly bool newDesviadorByPost;
+
         private sealed class Row
         {
             public string Id;
@@ -127,6 +133,7 @@ namespace RackCad.UI
             public SafetySide DesviadorSide = SafetySide.Both;
             public double DesviadorLongitud = SelectiveSafetyDefaults.DesviadorLongitud;
             public double DesviadorPrimerNivelAltura = SelectiveSafetyDefaults.DesviadorPrimerNivelAltura;
+            public bool DesviadorCellsByPost;            // I-64, cuarta tanda: kept as read (an era marker), never dropped by «Aceptar»
             public List<SelectiveGridCell> DesviadorOffCells = new List<SelectiveGridCell>();
             public IReadOnlyList<int> DesviadorLevelCounts = new List<int>();
             public Button DesviadorButton;
@@ -166,8 +173,9 @@ namespace RackCad.UI
         /// is the historical behaviour of the Selectivo and of the Dinámico; Push Back passes false explicitly
         /// (PB-003: its safety lives only at the low end, so naming a face the user cannot choose is pure noise).
         /// </param>
-        public SelectiveSafetyWindow(IReadOnlyList<SafetyElementCatalogEntry> elements, IEnumerable<SelectiveSafetySelection> current, int postCount, IReadOnlyList<int> levelsPerFrente = null, int fondoCount = 1, IReadOnlyList<SelectiveParrillaPlan.Cell> parrillaPlan = null, RackCatalog catalog = null, SelectiveRackSystem resolvedSystem = null, bool fallbackLevelsArePerPost = false, string introduction = null, bool includeDefensa = false, bool includeGuia = false, bool useDynamicSafetyDefaults = false, UIElement extraSection = null, IReadOnlyList<int> desviadorLevelsPerPost = null, bool defensaLowEndOnly = false, bool allowBlankFrontColumns = false, bool showDesviadorSide = true, bool bootFamilyInSections = false, bool bootUsesPlacementNames = false)
+        public SelectiveSafetyWindow(IReadOnlyList<SafetyElementCatalogEntry> elements, IEnumerable<SelectiveSafetySelection> current, int postCount, IReadOnlyList<int> levelsPerFrente = null, int fondoCount = 1, IReadOnlyList<SelectiveParrillaPlan.Cell> parrillaPlan = null, RackCatalog catalog = null, SelectiveRackSystem resolvedSystem = null, bool fallbackLevelsArePerPost = false, string introduction = null, bool includeDefensa = false, bool includeGuia = false, bool useDynamicSafetyDefaults = false, UIElement extraSection = null, IReadOnlyList<int> desviadorLevelsPerPost = null, bool defensaLowEndOnly = false, bool allowBlankFrontColumns = false, bool showDesviadorSide = true, bool bootFamilyInSections = false, bool bootUsesPlacementNames = false, bool newDesviadorByPost = false)
         {
+            this.newDesviadorByPost = newDesviadorByPost;
             this.allowBlankFrontColumns = allowBlankFrontColumns;
             this.showDesviadorSide = showDesviadorSide;
             this.bootFamilyInSections = bootFamilyInSections;
@@ -377,10 +385,15 @@ namespace RackCad.UI
                                 : SafetySide.Both;
                             row.DesviadorLongitud = existing.DesviadorLongitud;
                             row.DesviadorPrimerNivelAltura = existing.DesviadorPrimerNivelAltura;
+                            row.DesviadorCellsByPost = existing.Desviador.CellsByPost;
                             row.DesviadorOffCells = existing.DesviadorOffCells?.Where(c => c != null)
                                 .Select(c => new SelectiveGridCell { Frente = c.Frente, Level = c.Level }).ToList()
                                 ?? new List<SelectiveGridCell>();
                             row.DesviadorLevelCounts = SelectiveDesviadorPlan.Build(resolvedSystem, catalog, existing).LevelCounts;
+                        }
+                        else
+                        {
+                            row.DesviadorCellsByPost = newDesviadorByPost; // I-64, cuarta tanda: a new desviador of a Dinámico, by post
                         }
 
                         var button = new Button
@@ -878,6 +891,7 @@ namespace RackCad.UI
                             DesviadorLongitud = row.DesviadorLongitud,
                             DesviadorPrimerNivelAltura = row.DesviadorPrimerNivelAltura
                         };
+                        selection.Desviador.CellsByPost = row.DesviadorCellsByPost;
                         foreach (var cell in row.DesviadorOffCells)
                         {
                             if (cell != null) selection.DesviadorOffCells.Add(new SelectiveGridCell { Frente = cell.Frente, Level = cell.Level });

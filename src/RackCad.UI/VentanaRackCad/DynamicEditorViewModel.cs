@@ -239,7 +239,7 @@ namespace RackCad.UI.VentanaRackCad
     /// classic editor. The draft is «Modificado» only while it differs from what was last read from the drawing or written to it.
     /// Nothing here writes the drawing: «Actualizar» hands the editor to the host, and while AutoCAD writes nothing can be edited.
     /// </summary>
-    public sealed class DynamicEditorViewModel : ObservableObject
+    public sealed partial class DynamicEditorViewModel : ObservableObject // T4 seg: partial (DynamicEditorViewModel.Seg.cs)
     {
         private const string Varies = "Varía";
         private const string WaitingWriteText = "AutoCAD está escribiendo el rack: espera a que termine o pulsa «Dejar de esperar».";
@@ -446,7 +446,7 @@ namespace RackCad.UI.VentanaRackCad
             get
             {
                 if (_editor.GuideSelection == null)
-                    return "Este rack no lleva guía de entrada. Para añadirla, usa «Editar seguridad…».";
+                    return "Este rack no lleva guía de entrada. Para añadirla, elige su variante en «Variante y medidas»."; // T4 seg, SG-01
                 var cells = ActiveCells().ToList();
                 if (cells.Count == 0) return "Guía de entrada: el rack no tiene celdas activas.";
                 var guides = new HashSet<(int, int)>(_editor.GuideCells);
@@ -558,6 +558,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(PostSafety));
             OnPropertyChanged(nameof(SafetySummary));
             OnPropertyChanged(nameof(GuideSummary));
+            RebuildSafetyPanel(rows); // T4 seg: the editable table and the inspector (DynamicEditorViewModel.Seg.cs)
         }
 
         public string InspectorTitle
@@ -1098,6 +1099,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(CanEditSafety));
             OnPropertyChanged(nameof(CanInsertView));
             OnPropertyChanged(nameof(InsertViewBlockedText));
+            RefreshSafetyPanel(); // T4 seg: what can be edited, in the table and the inspector
         }
 
         // The lists keep their items: a recomposition refreshes them in place, so the focus, the box being written and the button under

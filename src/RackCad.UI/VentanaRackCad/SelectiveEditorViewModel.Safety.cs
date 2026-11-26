@@ -92,6 +92,7 @@ namespace RackCad.UI.VentanaRackCad
     {
         private string _summary = string.Empty;
         private string _config = string.Empty;
+        private string _variantName = string.Empty;
         private bool _canAll;
         private bool _canNone;
 
@@ -136,12 +137,19 @@ namespace RackCad.UI.VentanaRackCad
 
         public string NoneName => Title + " en ninguna celda";
 
-        internal void Set(string summary, string config, bool canAll, bool canNone)
+        /// <summary>T4 seg: the name of the head of the card, a button that shows its family in «Variante y medidas».</summary>
+        public string PickName => Title + ": ver su variante y sus medidas";
+
+        /// <summary>T4 seg: the variant chosen, as the head of the card of the prototype says it («Sin variante» when none).</summary>
+        public string VariantName { get => _variantName; private set => SetProperty(ref _variantName, value ?? string.Empty); }
+
+        internal void Set(string summary, string config, bool canAll, bool canNone, string variantName = "Sin variante")
         {
             Summary = summary ?? string.Empty;
             Config = config ?? string.Empty;
             CanAll = canAll;
             CanNone = canNone;
+            VariantName = variantName;
         }
     }
 
@@ -193,8 +201,9 @@ namespace RackCad.UI.VentanaRackCad
 
     /// <summary>
     /// «Extremos y seguridad» of the Selectivo editor (entrega 2): T/P on the selected cells, for the whole rack (the section «Seguridad de la
-    /// celda» of the inspector and the marks of the matrix), the cards of the two families, «Extremos y fondos», the table by post, and
-    /// «Editar seguridad…» through the modal port (D-09).
+    /// celda» of the inspector and the marks of the matrix), the cards of the two families, «Extremos y fondos» and the table by post. T4 seg:
+    /// the table is edited and the variant and the measures are in «Variante y medidas» (SelectiveEditorViewModel.Seg.cs); the window no longer
+    /// sets <see cref="SafetyEditor"/>, the bridge to the classic dialog of D-09, which stays here unused until the classic editor goes.
     /// </summary>
     public sealed partial class SelectiveEditorViewModel
     {
@@ -525,20 +534,16 @@ namespace RackCad.UI.VentanaRackCad
                 var pieces = card.IsTope ? _safetyCounts.Topes : _safetyCounts.Parrillas;
                 var summary = "En " + N(on) + " de " + N(total) + " celdas con larguero · " + Plural(pieces, "pieza", "piezas")
                               + (!card.IsTope && HasFondos ? ", en todos los fondos." : ".");
-                card.Set(summary, card.IsTope ? TopeConfig(selection) : ParrillaConfig(selection), CanEdit && on < total, CanEdit && on > 0);
+                var variant = SelectiveSafetyFamilies.VariantsOfType(_editor.Catalog?.SafetyElements, card.Type)
+                    .FirstOrDefault(v => string.Equals(v.Id, selection.ElementId, StringComparison.OrdinalIgnoreCase))?.Label ?? selection.ElementId;
+                card.Set(summary, card.IsTope ? TopeConfig(selection) : ParrillaConfig(selection), CanEdit && on < total, CanEdit && on > 0, variant);
             }
         }
 
-        // The configuration of the tope card (the approved draft): «Saque 3 in · uno central, compartido entre fondos · en la frontal: no.»
-        private string TopeConfig(SelectiveSafetySelection selection)
-        {
-            string where;
-            if (!HasFondos) where = "en los postes posteriores";
-            else if (selection.TopeFondo >= 0 && selection.TopeFondo < _editor.FondoCount)
-                where = "en el fondo " + N(selection.TopeFondo + 1) + (selection.TopeShared ? ", compartido entre fondos" : ", uno por fondo");
-            else where = selection.TopeShared ? "uno central, compartido entre fondos" : "uno por fondo del par central";
-            return "Saque " + Num(SelectiveTopePlacement.Saque(selection)) + " in · " + where + " · en la frontal: " + (selection.TopeFrontal ? "sí" : "no") + ".";
-        }
+        // The configuration of the tope card (the approved draft): «Saque 3 in · uno central, compartido entre fondos · en la frontal: no.» T4 seg:
+        // the one line of the prototype (famCfg), shared with the inspector; with one fondo it says the side, which places a tope at the near
+        // face, the far one or both (SelectiveSafetyPlacement.TopeSpots), where it said «en los postes posteriores» whatever the side was.
+        private string TopeConfig(SelectiveSafetySelection selection) => RackCadSafetyPanelViewModel.TopeConfig(selection, _editor.FondoCount);
 
         // The configuration of the parrilla card (the approved draft): «Se dibujan en la frontal y la lateral · una por tarima, con su ancho · cantidad automática.»
         private static string ParrillaConfig(SelectiveSafetySelection selection)
@@ -611,6 +616,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(SafetySummary));
             OnPropertyChanged(nameof(EndLines));
             OnPropertyChanged(nameof(FamilyCards));
+            RefreshSafetyPanel(); // T4 seg: the editable table and the inspector (SelectiveEditorViewModel.Seg.cs)
         }
 
         // What can be edited changed (AutoCAD writes, or stopped writing): the buttons and boxes of the safety follow.
@@ -621,6 +627,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(CanEditSelectionTope));
             OnPropertyChanged(nameof(CanEditSelectionParrilla));
             if (_selectedTab == SafetyTabIndex && _familyCards != null) RefreshFamilyCards();
+            if (_selectedTab == SafetyTabIndex) RefreshSafetyPanel(); // T4 seg: what can be edited, in the table and the inspector
         }
 
         private void OnSafetyChanged()

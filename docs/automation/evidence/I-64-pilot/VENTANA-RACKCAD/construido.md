@@ -1481,3 +1481,281 @@ Orden del Owner: «También realiza tú la prueba de la entrega 2, si existen er
 - Tras restaurar un borrador que vuelve a ser el dibujo, el aviso nombra «Descartar» con el botón desactivado.
 
 **No probado:** el «U» de una inserción y cancelar la colocación; el teclado en el panel de «Restaurar»; una cabecera personalizada fuera de su regla escrita por RACKSELECTIVOINSERTAR o RACKSELECTIVONUEVO.
+
+## Cuarta tanda, seg: la seguridad sin diálogo, en Selectivo y Dinámico (2026-11-26)
+
+**Rama:** local `architecture/workspace-persistente-rackcad-t4-seg`, desde `ac3fd1b0`. Worktree `D:\w4seg`. Sin commit, sin push y sin AutoCAD. Prototipo `seguridad` (SG-01 a SG-09) con las respuestas del Owner del 2026-11-26: todas aceptadas salvo SG-02, que lleva nota; y SD-14 («Quitarlo»).
+
+**Lo que se construyó:**
+- **SG-01. La seguridad se edita en «Extremos y seguridad», sin diálogo,** en los dos sistemas:
+  - **«Seguridad por poste» se edita** (`RackCadSafetyTableView`, una sola vista para los dos sistemas):
+    - la bota de cada poste: «General (…)», «Ninguna» y los tres lados; un poste con la suya lleva «Propia»;
+    - el protector lateral de cada poste;
+    - los niveles del desviador, N1…Nk, como botones;
+    - los separadores entre fondos (Selectivo, de solo lectura);
+    - en Dinámico, las defensas de salida y de entrada (casilla y longitud) y las guías;
+    - la fila «Total», contada como el BOM, y el título de cada columna de familia, que muestra esa familia en el inspector.
+  - **«Variante y medidas»** (`RackCadSafetyInspectorView`, también compartido) lleva, de la familia elegida:
+    - la variante del catálogo;
+    - las medidas que estaban en las seis rejillas del diálogo;
+    - lo que coloca, contado como el BOM;
+    - sus notas y sus botones.
+
+    Va a la derecha de la pestaña; por debajo de 900 px, debajo, como el inspector de «Matriz».
+  - La cabecera de las tarjetas T y P (Selectivo) y G (Dinámico) muestra su familia en el inspector.
+  - **«Editar seguridad…» sale de la ventana** en los dos sistemas: sustituye a D-09. La ventana ya no asigna `SafetyEditor`, ni siquiera con el puerto modal. El puerto sigue para «Insertar vista…». El diálogo clásico sigue en RACKEDITAR y en «Abrir en editor clásico» de Dinámico.
+  - **La forma de confirmar es la del editor:** una lista, un nivel o una casilla van al borrador en el momento; una medida, al salir del campo o con Enter. Un valor que no vale se queda en su campo con el motivo y no escribe nada. El editor pasa a «Modificado», «Descartar» lo recupera y «Actualizar» lo dibuja (RACKSELECTIVOAPLICAR / RACKDINAMICOAPLICAR, sin cambios).
+- **Elegir la variante basta** (dolor 3). La familia entra con los valores del diálogo clásico aceptado sin tocar nada (`RackCadSafetyEdit.Fresh`):
+  - la bota, en los dos lados de cada poste;
+  - el protector lateral de Selectivo, en P1 («Izquierda») y en el último poste («Derecha»), la siembra `OrillaDefaults`; el de Dinámico, con la regla de los extremos;
+  - el desviador, en las dos caras, de 18 in y con el primer nivel a 18 in, en todos los niveles;
+  - el tope, uno central compartido, con saque de 3 in y sin frontal;
+  - la parrilla, en la frontal y en la lateral, una por tarima;
+  - la guía, en todas las celdas;
+  - la defensa, automática en cada poste.
+- **SG-02, con la nota del Owner:** cada sistema conserva sus palabras. Ver «Lo que encontré», debajo.
+- **SG-03. Defensas de Dinámico:**
+  - una longitud vacía es la automática: 12 in en orilla y 36 in en intermedio, que se recalcula al añadir o quitar frentes;
+  - una escrita es propia y se queda aunque coincida con la automática. Se guarda con `ExitAuto`/`EntranceAuto` de PB-010, como Push Back;
+  - la casilla quita o pone la defensa de ese extremo;
+  - «Todas automáticas» vacía los registros;
+  - **es un cambio de cálculo declarado:** el diálogo clásico de Dinámico, sin columna «Auto», no guardaba una fila igual a su automática.
+- **SG-04. El protector lateral de Dinámico:**
+  - la tabla muestra «Regla de los extremos»;
+  - cambiar un poste escribe antes los dos extremos de la regla (solo cambia el poste tocado) y lo avisa: «El protector lateral va ahora por poste…»;
+  - «Volver a la regla de los extremos» la recupera;
+  - un poste puesto en «No lleva» queda escrito, así que vaciar todos los postes no devuelve la regla sin decirlo (T4S-03).
+- **SG-05. El desviador por poste y nivel, en la tabla,** con la numeración de «Matriz». El lado, la longitud y el primer nivel van en el inspector. En Selectivo, la nota del claro sale del plan del desviador (`ClearanceIssues`, la del diálogo clásico), no del [PENDIENTE] del prototipo. «En todos los niveles» y «En ninguno» solo tocan las celdas que la tabla muestra: una celda dormida de un frente en blanco se queda como estaba.
+- **SG-06. «Sin variante» pregunta antes, en línea, qué se pierde:**
+  - la variante, su configuración, los postes con la suya y las celdas o los niveles apagados;
+  - «Quitar …» la quita, con un aviso, y «Descartar» la recupera; «Conservar» no cambia nada;
+  - mientras pregunta, la lista sigue mostrando la variante.
+- **SG-07. Lado del tope:**
+  - con dos fondos o más y «Uno central, compartido entre fondos», el lado se desactiva y dice por qué;
+  - «Ninguno (no se dibuja)» solo aparece si el rack leído lo tiene;
+  - con un fondo no hay «Cuántos» ni «Fondo».
+- **SG-08. Los postes intermedios de medio frente** tienen fila propia, «F1 · intermedio 1», con sus niveles de desviador y sin bota ni protector. La fila sale del plan del desviador, no del resumen. El resumen solo lista los postes con alguna pieza, y la fila no puede desaparecer al apagar todos sus niveles: entonces no se podría volver a encender desde la tabla.
+- **SG-09.** Push Back queda fuera, con su diálogo y sus secciones por lado (I-42).
+- **SD-14. Sin «≈» en las alturas de cabecera y de poste del editor de Selectivo:**
+  - «Calculado» › «Altura de cabecera»;
+  - las fichas de «Altura por poste» de «Matriz»;
+  - la altura por fondo de «Avanzado»;
+  - la pista «Calculada: … in» de la altura manual del frente.
+
+  El «≈» del ancho de un frente y del «(resto)» de los tramos se queda: no son alturas.
+
+**Lo que encontré en el código (SG-02; no se unificó nada):**
+- **Selectivo:**
+  - la bota usa «Ninguno / Izquierda / Derecha / Ambas», las `SideLabels`, porque `bootUsesPlacementNames` es falso (I-43, R2-10);
+  - el desviador, «Izquierdo / Derecho / Ambas», en masculino;
+  - el tope, «Izquierda = el extremo bajo, Derecha = el alto»;
+  - la ventana ya decía «Izquierda», «Derecha» e «Izquierda y Derecha» (C2-08).
+
+  En la ventana: «Izquierda / Derecha / Izquierda y Derecha». El protector lateral añade «Ambos (frente-puente)», y el desviador con varios fondos, «Izquierda (cara del fondo 1)» y «Derecha (cara del fondo n)», como el prototipo.
+- **Dinámico:**
+  - la introducción de su diálogo dice «Izquierda es la salida y derecha la entrada» (`RackCadModalDialogs.DynamicSafetyIntroduction`);
+  - la bota ofrece «Entrada/Salida / Posterior»: `bootUsesPlacementNames: true`, heredado de I-42 «sin decisión registrada para este sistema»;
+  - el desviador dice «Izquierdo / Derecho»; la defensa, «Salida / Entrada»;
+  - la ventana ya decía «salida · entrada» y «Salida = extremo bajo · entrada = extremo alto».
+
+  Por el código, en los tres casos **Izquierda / Entrada-Salida = el extremo bajo = la salida**, y **Derecha / Posterior = el extremo alto = la entrada**:
+  - la bota, por `BootFacesAt`: la cara cercana es la del extremo bajo;
+  - el desviador y el protector lateral, por `SelectiveSafetyEnds.CopiesForPost`: «Left» va al extremo bajo.
+
+  En la ventana: «Salida / Entrada / Salida y entrada» en las cinco familias, con los mismos ordinales. El dato no cambia.
+- **Push Back:** «Entrada/Salida / Posterior» en su diálogo, sin tocar (SG-09).
+- Las palabras viven en un solo sitio, `RackCadSafetyWords` (en `RackCadSafetyPanel.cs`).
+
+**Corrección del desviador de Dinámico, decisión del Owner 2026-11-26** («Sí, corrígelo en Dinámico»). Es un **cambio de cálculo declarado**.
+- **El hallazgo:** en Dinámico, el desviador del último poste leía la columna del penúltimo.
+  - `SelectiveDesviadorPlan.CellKey` daba `Math.Min(poste, frentes − 1)` sin `DesviadorCellsAreByPost`: la lectura histórica, que PB-002 corrigió solo para Push Back (`ideas-futuras.md` la tenía pendiente de esta decisión).
+  - La rejilla del diálogo clásico de Dinámico tiene una columna por poste desde I-33. La columna del último poste no gobernaba nada, y la del penúltimo gobernaba los dos.
+- **El mecanismo es el de PB-002:** la misma regla `CellKey`, por poste. La lee el lateral, los dos frontales, la planta y el BOM, y ahora también la cumple el Dinámico que lleva la marca `SelectiveDesviadorConfig.CellsByPost`.
+- **La política de lo existente es un supuesto (T4S-13).**
+  - PB-002 no dejó una política para los dibujos existentes. Su bandera es derivada y la autoridad de Push Back la impone siempre, sin migrar nada (`docs/initiatives/I-32-correcciones-push-back.md`, `decisions/I-32.md`).
+  - Por eso se eligió la que no cambia el dibujo de un rack existente hasta que alguien edita su desviador, y la marca se **persiste**: es el discriminante de dos épocas, como `BotaSidesDeclared` de I-42.
+  - En el documento se llama `DesviadorCellsByPost`. Se escribe solo cuando es verdadera, así que un documento anterior, uno de Selectivo y uno de Push Back no cambian ni un byte. El comparador de AUTH-13 (`AuthoredTypedValues`, `AuthoredCanonical`) la compara, y su ausencia vale falso.
+- **Quién lleva la marca:**
+  - un Dinámico **nuevo**, el de la ventana y el clásico de RACKNUEVO (`DynamicSafetyDefaults.BuildForDynamic`; Push Back sigue con `Build`);
+  - un desviador que se elige por primera vez, en la ventana (`RackCadSafetyEdit.Fresh`) o en el diálogo clásico de Dinámico (`newDesviadorByPost`);
+  - un desviador existente **en cuanto se edita en la ventana**: un nivel, «En todos los niveles» / «En ninguno», el lado, la longitud o el primer nivel.
+- **Cómo pasa un rack existente** (`RackCadSafetyEdit.DesviadorToPosts`):
+  - el último poste toma las celdas de la columna que leía, y las suyas, que nadie leía, se van;
+  - así el dibujo queda igual (probado con las piezas de cada poste) y después se aplica la edición;
+  - desde ahí cada poste gobierna el suyo.
+- **El diálogo clásico conserva la marca al aceptar** (`SelectiveSafetyWindow`, un campo más en su fila). Sin eso, RACKEDITAR desharía la corrección al reescribir la selección. Un rack existente que se acepta allí sigue con la lectura histórica, como antes.
+- **La tabla de la ventana ya no liga el último poste al penúltimo, y su aviso desaparece.**
+  - Cada celda muestra lo que el dibujo lee en su poste.
+  - Un clic escribe ese poste: en un rack existente, primero lo pasa a la lectura por poste.
+  - Salen el «· niveles de P2» y la nota del inspector.
+- **Archivos:**
+  - Domain `SelectiveSafetyConfig.cs` (`CellsByPost` y su `DeepCopy`);
+  - Application:
+    - `SelectiveDesviadorPlan.cs` (`CellKey`);
+    - `Persistence/SafetySelectionDocuments.cs` y `Persistence/SelectivePalletDesignDocument.cs` (el campo `DesviadorCellsByPost`);
+    - `Systems/Shared/AuthoredTypedValues.cs` y `AuthoredCanonical.cs`;
+    - `Systems/Dynamic/DynamicSafetyDefaults.cs` (`BuildForDynamic`);
+    - `VentanaRackCad/DynamicDraftEditor.cs` (una línea), `RackCadSafetyEdit.cs` y `RackCadSafetyRows.cs` (`DeflectorWriteKey`, sin `DeflectorSharedWith`);
+  - UI:
+    - `SelectiveSafetyWindow.cs` (conserva la marca; el parámetro `newDesviadorByPost`);
+    - `Systems/Dynamic/RackDynamicSystemWindow.xaml.cs` (dos líneas: `BuildForDynamic` y `newDesviadorByPost: true`);
+    - `VentanaRackCad/RackCadModalDialogs.cs` (una línea);
+    - `RackCadSafetyPanel.cs`;
+  - `docs/ideas-futuras.md`: el punto pendiente queda decidido y corregido.
+
+**Las decisiones** (prefijo T4S):
+
+| Id | Decisión | Por qué |
+|---|---|---|
+| T4S-01 | Las ediciones trabajan sobre una copia de la seguridad del borrador y cambian la selección EN SU SITIO: sus otros campos se quedan. Escriben los mismos datos que el «Aceptar» del clásico: la bota, su lado y su colocación (`Side`/`PostSides` y `Bota.Placement`/`Bota.Posts`, los mismos ordinales); el protector, por poste; el desviador y las rejillas, sus celdas apagadas. Una prueba lo fija: el diálogo clásico abierto sobre lo que escribió la ventana y aceptado sin tocar da el mismo diseño, byte a byte | El clásico sigue en RACKEDITAR y no debe cambiar un rack que la ventana dejó |
+| T4S-02 | **Supuesto.** La general de la bota de un rack leído sin colocación general (un documento anterior a I-42) cambia solo el lado. Sin colocación, el dibujo lee el lado, así que el resultado es el mismo y volver al lado leído deja el borrador «Limpio». El clásico guardaría además la colocación (**diferencia declarada**). Una familia nueva sí la lleva, como el clásico | «Modificado» es una diferencia con el dibujo, nunca un gesto |
+| T4S-03 | **Supuesto.** En Dinámico, «No lleva» de un poste del protector se guarda escrito, así que vaciar todos los postes no vuelve a la regla de los extremos; para eso está su botón. En Selectivo, sin lado general, «No lleva» es la ausencia del poste, el «(por defecto)» del editor por poste | Una regla que vuelve sola sin decirlo pondría protectores que nadie eligió |
+| T4S-04 | **Supuesto.** Parrilla: una cantidad que no cabe en alguna celda con parrilla se rechaza en su campo, como el «Aceptar» del clásico pero sin MessageBox. Un ancho con el que no cabe ninguna en ninguna celda también se rechaza, porque la familia no dibujaría nada. Si no cabe en algunas, se avisa en el inspector («No cabe ninguna parrilla en …»), como el pie del clásico. Las celdas se nombran por su larguero («F1 · larguero 1»): el mismo larguero es N1 en un frente con larguero a piso y N2 en uno sin él | El prototipo rechazaba los dos en su modelo de un solo claro. El clásico solo rechaza la cantidad |
+| T4S-05 | Un valor que no vale se rechaza en su campo y no llega al borrador, como en el resto del editor. No hay «valor no válido» en el borrador, ni marca en la pestaña, ni «Actualizar» apagado por él, que es como lo mostraba el prototipo | Patrón vigente de los editores de la ventana: el borrador nunca guarda un valor que no vale |
+| T4S-06 | **El puente al diálogo clásico se queda en el código, sin uso en la ventana:** `SafetyEditor`, `CanEditSafety`, `SafetyEditText` y `EditSafety` de los dos modelos de vista, `RackCadSelectiveSafetyDialog`, y `RackCadModalDialogs.BuildDynamicSafetyDialog` y `EditDynamicSafety`. Sus pruebas siguen. Se borra con el clásico, al final de I-64 | Encargo: no borrar código clásico en esta tanda. Una prueba de la ventana fija que no se asigna |
+| T4S-07 | La línea de la tarjeta de topes es la del prototipo (`famCfg`), compartida con el inspector. Con un fondo dice el lado («Saque 3 in · Izquierda y Derecha · en la frontal: no.»). Antes decía «en los postes posteriores», fuera cual fuera el lado, y con «Ambas» hay tope en la cara cercana y en la lejana (`SelectiveSafetyPlacement.TopeSpots`). Con un fondo elegido: «en el fondo 2, uno central, compartido entre fondos» | Dolor 14: textos que no dicen lo que hay |
+| T4S-08 | El inspector va al lado de la pestaña desde 900 px de ancho (el de «Matriz», desde 700). Se coloca solo en la rejilla que lo contiene (`RackCadSafetyInspectorView.Place`), así que las vistas de los sistemas no ganan código | La tabla de Dinámico mide unos 1000 px; se desplaza en horizontal |
+| T4S-09 | Selectivo: la tabla y el inspector leen lo que la pestaña ya contaba (`SelectiveSafetyView.Count`, una vez por recomposición y solo con la pestaña a la vista, P1-04). Sobre el mismo sistema propio salen también las filas, el plan de la parrilla y el claro del desviador (`SelectiveSafetyCounts`, tres campos nuevos). Dinámico: las filas salen del resumen que ya cuenta cada recomposición | Sin un recuento más del BOM |
+| T4S-10 | «En ninguna» de la guía y «En ninguno» del desviador dejan la variante y sus medidas, como C2-07: no se dibuja ni se cuenta nada | Volver a ponerlas no exige elegir otra vez la variante |
+| T4S-11 | El protector lateral de Selectivo puesto en «No lleva» en todos sus postes conserva la variante: «Elegido, en ningún poste: no se dibuja.». El «Aceptar» del clásico la descartaría (**diferencia declarada**, como C2-07) | El mismo dibujo y el mismo BOM; «Solo en los extremos» la recupera |
+| T4S-13 | **Supuesto.** La corrección del desviador de Dinámico no cambia el dibujo de un rack existente hasta que su desviador se edita en la ventana: la marca persistida y el paso que conserva el dibujo, arriba. La otra lectura, la de PB-002 aplicada tal cual (todo Dinámico por poste desde ya), movería el desviador del último poste en los racks cuyas celdas lo tocan | Lo que pidió el Coordinator si PB-002 no dejó política: PB-002 solo dice que su bandera es derivada y no persiste |
+| T4S-12 | Las medidas del inspector muestran lo que usa el dibujo: la longitud y el primer nivel del desviador, validados por su plan, y el saque efectivo del tope. Un valor antiguo que no vale se ve con el que lo sustituye, y salir del campo sin tocarlo no escribe nada. La variante se muestra por su id del catálogo, también cuando el documento la escribió con otras mayúsculas | Como «Extremos y fondos» de E2, que ya leía las medidas validadas |
+
+**Ediciones a archivos compartidos** (pequeñas y marcadas «T4 seg»):
+- `src/RackCad.UI/VentanaRackCad/SelectiveEditorViewModel.cs` (SD-14): cuatro textos de altura sin «≈» y sus comentarios.
+- `src/RackCad.UI/VentanaRackCad/SelectiveEditorViewModel.Safety.cs` (el parcial de E2 seguridad):
+  - `TopeConfig` llama a la línea compartida (T4S-07);
+  - la tarjeta gana `PickName` y `VariantName`, y `Set` un parámetro opcional;
+  - una línea en `RaiseSafetyTab` y otra en `RaiseSafetyState` refrescan el panel;
+  - el comentario de la clase.
+- `src/RackCad.UI/VentanaRackCad/DynamicEditorViewModel.cs`:
+  - `partial` en la declaración;
+  - una línea en `RebuildSafety` (`RebuildSafetyPanel(rows)`) y otra en `RaiseState` (`RefreshSafetyPanel()`);
+  - el texto de `GuideSummary` sin guía: «Para añadirla, elige su variante en «Variante y medidas».».
+- `src/RackCad.UI/VentanaRackCad/SelectiveEditorView.xaml`: el contenido de la pestaña `SafetyTab`, en UN bloque marcado `<!-- T4 seg … -->`:
+  - la rejilla con el inspector;
+  - las tarjetas, con su cabecera como botón;
+  - «Seguridad por poste» con la tabla nueva;
+  - «Extremos y fondos» al final, como el prototipo.
+
+  Se quitan la `DataGrid` de solo lectura, su nota y «Editar seguridad…».
+- `src/RackCad.UI/VentanaRackCad/SelectiveEditorView.xaml.cs`: `OnFamilyPickClick` nuevo; se quita `OnEditSafetyClick`.
+- `src/RackCad.UI/VentanaRackCad/DynamicEditorView.xaml`:
+  - `xmlns:local` en la cabecera;
+  - el contenido de `SafetyTab`, en UN bloque marcado `<!-- T4 seg … -->`: la tarjeta de la guía con su cabecera, la tabla nueva, «Extremos» al final y el inspector. Se quitan la `DataGrid`, su texto y «Editar seguridad…».
+- `src/RackCad.UI/VentanaRackCad/DynamicEditorView.xaml.cs`: `OnGuidePickClick` en lugar de `OnEditSafetyClick`.
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowViewModel.cs`:
+  - `Wire` ya no asigna `SafetyEditor` de Dinámico;
+  - se quita el método `WireSelectiveSafety`.
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowViewModel.Selective.cs`: `WireSelective` ya no lo llama (una línea, con su comentario).
+- `src/RackCad.Application/VentanaRackCad/SelectiveSafetyView.cs`:
+  - tres campos `init` en `SelectiveSafetyCounts` (`Rows`, `ParrillaPlan`, `DesviadorClearance`), que llena `Count`;
+  - el texto «Elige primero la variante de … en «Extremos y seguridad».», donde decía «en «Editar seguridad…»», y el comentario de la clase.
+- **Archivos nuevos:**
+  - Application: `RackCadSafetyEdit.cs` (las ediciones, puras) y `RackCadSafetyRows.cs` (las filas de la tabla de cada sistema);
+  - UI: `RackCadSafetyPanel.cs` (el modelo de la vista compartido, el inspector y las palabras), `RackCadSafetyPanelItems.cs`, `RackCadSafetyTableView.xaml(.cs)`, `RackCadSafetyInspectorView.xaml(.cs)`, `SelectiveEditorViewModel.Seg.cs` y `DynamicEditorViewModel.Seg.cs`;
+  - pruebas: `tests/RackCad.UI.Tests/Workspace/RackCadSafetyPanelTests.cs`.
+- **Pruebas existentes que cambian, cada una con su nota:**
+  - `SelectiveSafetyTabTests`:
+    - la ventana ya no ofrece el diálogo, ni con el puerto;
+    - el Selectivo nuevo edita su seguridad en la ventana;
+    - la vista de la pestaña: la tabla nueva, las cabeceras de las tarjetas y sin «Editar seguridad…»;
+    - la línea de la tarjeta de topes (T4S-07);
+  - `SelectiveSafetyViewTests`: el texto de «Elige primero…»;
+  - `RackCadDynamicEditorTests`: la ventana ya no ofrece el diálogo de Dinámico;
+  - `RackCadSelectiveEditorTests` y `RackCadSelectiveFidelityTests`: SD-14;
+  - Core, por la corrección del desviador. Core Full falló en el censo del estado del piloto: «fields without a class: SelectiveDesviadorConfig.CellsByPost».
+    - `WorkspaceDraftPilotStateTests` y los dos censos de Push Back (`PushBackEditableStateCopyTests` y `PushBackFullDraftLoadTests`) clasifican `SelectiveDesviadorConfig.CellsByPost` como editable, como sus hermanos. Push Back lo copia y lo compara por estructura, sin otro cambio.
+    - `I58F1DomainOracle` lo compara y lo muta, como `BootSidesDeclared`.
+
+**Las pruebas:**
+- `RackCadSafetyPanelTests` (UI, nueva, 24):
+  - **Selectivo:**
+    - los valores por defecto de cada familia, con la tabla igual al BOM, y «Descartar»;
+    - la equivalencia con el «Aceptar» del clásico (T4S-01), en WPF real;
+    - la bota de un poste y la general;
+    - el protector lateral en ningún poste, «Ambos» y «Solo en los extremos»;
+    - los niveles del desviador y el poste intermedio con todo apagado (SG-08), «En ninguno» y «En todos los niveles»;
+    - los valores rechazados en su campo (longitud, primer nivel, saque, cantidad y ancho de parrilla) sin escribir nada;
+    - «Sin variante» con su pregunta, «Conservar», «Quitar» y «Descartar» (SG-06);
+    - el lado del tope (SG-07);
+    - todo bloqueado mientras AutoCAD escribe;
+    - un cambio hecho en otra pestaña llega a la tabla al mostrarla (P1-04);
+    - sus palabras;
+  - **Dinámico:**
+    - sus palabras y la tabla igual al BOM, familia por familia;
+    - la regla de los extremos del protector (SG-04);
+    - las defensas (SG-03), con un frente más: la propia de 12 in se queda y la automática pasa a 36;
+    - la corrección del desviador:
+      - un Dinámico nuevo lleva la marca y su último poste gobierna el suyo;
+      - un rack existente sin la marca se lee como antes (la columna del último poste no la lee nadie; la del penúltimo gobierna los dos);
+      - el paso a la lectura por poste conserva el dibujo, poste por poste, y la marca va al documento y vuelve;
+      - en la tabla, un clic en P3 cambia solo P3 y después uno en P2 solo P2;
+      - el diálogo clásico conserva la marca, y un rack existente sigue sin ella;
+      - un desviador elegido en la ventana la lleva;
+    - la guía en el inspector;
+  - **por la puerta (doble):** «Actualizar» entrega a RACKSELECTIVOAPLICAR y a RACKDINAMICOAPLICAR la copia del borrador con la seguridad editada en la ventana (la bota propia, la defensa propia con su marca); mientras AutoCAD escribe, la tabla y el inspector no escriben nada, y la copia enviada no cambia;
+  - **las vistas en WPF real (STA):**
+    - las dos pestañas, sin errores de enlace con todas las familias en el inspector;
+    - nombres de UI Automation presentes y únicos;
+    - el clic en un nivel, la lista de la bota de un poste, la cabecera de una tarjeta y la casilla de una defensa por su `IToggleProvider`;
+    - el inspector debajo a 600 px y al lado a 1500.
+- **Comprobación en rojo:** catorce piezas rotas a propósito, una a una, con `RackCadSafetyPanelTests` tras cada una: nueve del panel y cinco de la corrección del desviador.
+  - Los scripts son `S\hs65\t4\seg\tools\red.py`, `red2.py`, `red3.py` y `red4.py`.
+  - Las salidas son `S\hs65\t4\seg\red-out.txt`, `red-out-2.txt`, `red-out-3.txt` y `red-out-4.txt`.
+  1. La defensa escrita igual a la automática vuelve a ser automática (la heurística del clásico): falla la de las defensas.
+  2. El protector lateral de Dinámico sale de la regla sin escribir los extremos: falla la de la regla.
+  3. Los postes intermedios salen solo del resumen: falla la del poste intermedio con todo apagado.
+  4. «Sin variante» quita la familia sin preguntar: falla la de la pregunta.
+  5. La pestaña de Selectivo no refresca la tabla al mostrarse:
+     - en la primera pasada **sobrevivió**: la otra llamada (`RaiseSafetyState`) refrescaba la tabla en cada cambio hecho con la pestaña a la vista;
+     - se añadió la prueba de un cambio hecho en otra pestaña, y con ella falla.
+  6. La bota de un poste se escribe solo en la matriz histórica, sin su colocación: falla la equivalencia con el clásico.
+  7. Dinámico con las palabras de Selectivo (la rotura intercambia las dos): fallan cinco, las dos de palabras y tres de Selectivo.
+  8. El inspector nunca baja en estrecho: falla la de la vista de Selectivo.
+  9. Dinámico pasa la seguridad al borrador sin recomponer: fallan cinco, entre ellas la de la puerta, porque lo enviado no la llevaba.
+  - **La corrección del desviador:**
+    - **A.** La regla de la celda ignora la marca, y el Dinámico vuelve a la lectura histórica. Fallan dos pruebas:
+      - la del Dinámico nuevo, cuyo último poste gobierna el suyo;
+      - la de la tabla, que ya no liga los postes.
+
+      La del rack existente sigue verde, como debe.
+      - En `red3.py` el texto no se encontró, porque `SelectiveDesviadorPlan.cs` usa CRLF; la pieza se repitió con `red4.py`.
+    - **B.** El paso a la lectura por poste solo pone la marca y no da al último poste la columna que leía. Falla la del paso, porque el dibujo cambia.
+    - **C.** El diálogo clásico no conserva la marca al aceptar. Falla la del diálogo.
+    - **D.** La marca no va al documento. Falla la del paso, en la vuelta por el documento.
+    - **E.** Un Dinámico nuevo no lleva la marca. Fallan dos pruebas:
+      - la del Dinámico nuevo;
+      - la del diálogo clásico (un Dinámico de RACKNUEVO).
+
+  Cada archivo se restauró desde sus bytes, con fecha nueva, y su huella se comparó con la de antes: son idénticas.
+- **Los números:** las pasadas finales, con la corrección del desviador y los censos:
+  - **UI completa:** 2780 correctas, 0 con error y 48 omitidas, de 2828. Es la base (2756/0/48) más las 24 de `RackCadSafetyPanelTests`.
+  - **Core Full:** 19147 correctas, 0 con error y 403 omitidas, de 19550: igual que la base.
+  - **Plugin Debug:** 0 errores. Hay 2 advertencias, las MSB3277 de las referencias de AutoCAD, que ya existían.
+  - **Lo que pasó por el camino:**
+    - Una pasada anterior de la UI completa se anuló a los 49 min, con «Proceso de host de pruebas bloqueado». Fue antes de la corrección y con la máquina cargada por las demás partes.
+    - En esa pasada falló el temporizador de `RackModalHostWindowTests` («the modal host did not run its work and close by itself»).
+    - La final, con `--blame`, terminó entera y en verde en 26 min.
+    - La primera Core Full de la corrección se cortó a propósito, tras el fallo del censo del piloto. Se clasificó el campo nuevo y se volvió a pasar entera.
+
+**Lo que queda abierto:**
+- **El smoke del Owner en AutoCAD:**
+  - la pestaña en la paleta: anchos, el inspector abajo en 600 px y el teclado en la tabla;
+  - «Actualizar» con la seguridad editada en la ventana, en los dos sistemas;
+  - que RACKEDITAR abra lo escrito y su diálogo lo acepte igual (T4S-01 está probado sin AutoCAD).
+- **Para el Owner:** T4S-02, T4S-03, T4S-04, T4S-11 y T4S-13 (la política de los racks existentes en la corrección del desviador de Dinámico).
+- **Push Back (SG-09):** adopta este diseño en su propio prototipo.
+- **El puente al diálogo clásico (T4S-06)** se borra con el clásico.
+- **Para integrar:**
+  - la parte `ins` también toca `DynamicEditorView.xaml` (puede añadir el mismo `xmlns:local`) y el cableado de los editores en `RackCadWindowViewModel`;
+  - `cb` y `va` tocan `SelectiveEditorViewModel.cs`; las ediciones de esta parte son las de SD-14, cuatro líneas;
+  - si alguna añade `partial` a `DynamicEditorViewModel`, es la misma palabra;
+  - la corrección del desviador toca archivos que comparten los tres sistemas:
+    - Domain `SelectiveSafetyConfig`;
+    - `SelectiveDesviadorPlan`;
+    - los documentos de seguridad;
+    - los comparadores de AUTH-13;
+    - el diálogo clásico `SelectiveSafetyWindow`.
+
+    Son ediciones pequeñas, y sus comentarios dicen «I-64, cuarta tanda» y la decisión del Owner.

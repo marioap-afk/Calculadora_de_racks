@@ -100,7 +100,9 @@ namespace RackCad.UI.VentanaRackCad
 
         private void OnGuideNowhereClick(object sender, RoutedEventArgs e) => Contained(_viewModel.GuideNowhere);
 
-        private void OnEditSafetyClick(object sender, RoutedEventArgs e) => Contained(_viewModel.EditSafety);
+        // T4 seg: the head of the card of the guide shows its family in «Variante y medidas»; «Editar seguridad…» is not offered any more (SG-01).
+        private void OnGuidePickClick(object sender, RoutedEventArgs e)
+            => Contained(() => _viewModel.PickSafetyFamily(RackCad.Domain.Systems.Selective.SelectiveSafetyDefaults.GuiaType));
 
         private void OnBlankFrontClick(object sender, RoutedEventArgs e) =>
             Contained(() => _viewModel.SetFrontBlank(_viewModel.Draft.Matrix.SelectedFrontIndex, true));

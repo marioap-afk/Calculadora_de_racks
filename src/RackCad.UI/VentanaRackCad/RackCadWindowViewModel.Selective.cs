@@ -112,7 +112,7 @@ namespace RackCad.UI.VentanaRackCad
             editor.InsertNewAction = InsertNewSelective;
             editor.PropertyChanged += OnSelectiveEditorChanged;
             editor.CloseRequested += CloseSelectiveEditor;
-            WireSelectiveSafety(editor); // E2 seguridad: «Editar seguridad…» for every Selectivo editor, of the drawing or new
+            // T4 seg (SG-01): no «Editar seguridad…» any more; the safety is edited in «Extremos y seguridad» (D-09 replaced).
         }
 
         // «Insertar vista…» of the Selectivo editor: the write of «Actualizar», with the views to insert after it (RACKSELECTIVOINSERTAR).

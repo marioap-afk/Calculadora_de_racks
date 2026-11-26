@@ -195,7 +195,9 @@ namespace RackCad.UI.Tests
             var parrillas = Bom(vm, SelectiveBomBuilder.Parrilla);
             Assert.True(topes > 0 && parrillas > 0);
             Assert.Equal("En 4 de 4 celdas con larguero · " + topes + " piezas.", tope.Summary);
-            Assert.Equal("Saque 3 in · en los postes posteriores · en la frontal: no.", tope.Config);
+            // T4 seg: the one line of the prototype; with one fondo it says the side, which places a tope at the near face, the far one or
+            // both (it said «en los postes posteriores» whatever the side was).
+            Assert.Equal("Saque 3 in · Izquierda y Derecha · en la frontal: no.", tope.Config);
             Assert.Equal("En 4 de 4 celdas con larguero · " + parrillas + " piezas.", parrilla.Summary);
             Assert.Equal("Se dibujan en la frontal y la lateral · una por tarima, con su ancho · cantidad automática.", parrilla.Config);
             Assert.False(tope.CanAll);
@@ -477,39 +479,34 @@ namespace RackCad.UI.Tests
             }
         }
 
+        // T4 seg (SG-01, which replaces D-09): the window no longer offers the classic dialog, not even with the modal port of the host; the
+        // safety is edited in «Extremos y seguridad» (RackCadSafetyPanelTests). The classic dialog stays in RACKEDITAR.
         [Fact]
-        public void The_window_offers_the_safety_dialog_only_with_the_modal_port_of_the_host()
+        public void The_window_no_longer_offers_the_classic_safety_dialog_even_with_the_modal_port_of_the_host()
         {
             Assert.False(new WindowRig(null).OpenEditor().CanEditSafety);
-            StaTestRunner.Run(() =>
-            {
-                var port = new ModalDouble { Accept = true };
-                var editor = new WindowRig(port).OpenEditor();
-                Assert.True(editor.CanEditSafety);
-                editor.EditSafety();
-                var shown = Assert.IsType<SelectiveSafetyWindow>(Assert.Single(port.Shown));
-                shown.Close();
-                Assert.False(editor.MessageIsError, editor.Message);
-            });
+            var port = new ModalDouble { Accept = true };
+            var editor = new WindowRig(port).OpenEditor();
+            Assert.Null(editor.SafetyEditor);
+            Assert.False(editor.CanEditSafety);
+            Assert.Empty(port.Shown);
+            Assert.NotNull(editor.SafetyPanel);
         }
 
         [Fact]
-        public void A_new_Selectivo_of_Nuevo_has_the_safety_dialog_through_the_modal_port_of_the_host()
+        public void A_new_Selectivo_of_Nuevo_edits_its_safety_in_the_window_and_not_in_the_classic_dialog()
         {
-            // M-5 of the review of the entrega 2: the wiring is in WireSelective, shared with the racks of the drawing; a new Selectivo gets
-            // it too, and accepted, the result is the safety of its draft.
-            Assert.False(new WindowRig(null).StartNew().CanEditSafety);
-            StaTestRunner.Run(() =>
-            {
-                var port = new ModalDouble { Accept = true };
-                var editor = new WindowRig(port).StartNew();
-                Assert.True(editor.IsNewRack);
-                Assert.True(editor.CanEditSafety, editor.SafetyEditText);
-                editor.EditSafety();
-                var shown = Assert.IsType<SelectiveSafetyWindow>(Assert.Single(port.Shown));
-                shown.Close();
-                Assert.False(editor.MessageIsError, editor.Message);
-            });
+            // M-5 of the review of the entrega 2 checked that a new Selectivo got the dialog; T4 seg: it gets the panel instead, as every
+            // Selectivo editor of the window.
+            var port = new ModalDouble { Accept = true };
+            var editor = new WindowRig(port).StartNew();
+            Assert.True(editor.IsNewRack);
+            Assert.Null(editor.SafetyEditor);
+            editor.SelectedTab = SelectiveEditorViewModel.SafetyTabIndex;
+            editor.PickSafetyFamily(SelectiveSafetyDefaults.BotaType);
+            editor.SafetyPanel.Inspector.Variant.SelectedValue = SelectiveSafetyFamilies.VariantsOfType(Catalog.SafetyElements, SelectiveSafetyDefaults.BotaType).First().Id;
+            Assert.NotNull(SelectiveSafetyView.Selected(editor.Draft, SelectiveSafetyDefaults.BotaType));
+            Assert.Empty(port.Shown);
         }
 
         [Fact]
@@ -669,6 +666,9 @@ namespace RackCad.UI.Tests
         {
             StaTestRunner.Run(() =>
             {
+                // T4 seg: what other tests left to lay out on the shared STA thread is laid out first, so its binding errors are not counted
+                // here (the first full pass of the cuarta tanda caught one, under the load of seven parts at once).
+                new Border().UpdateLayout();
                 var errors = new BindingErrors();
                 PresentationTraceSources.Refresh();
                 var source = PresentationTraceSources.DataBindingSource;
@@ -678,7 +678,6 @@ namespace RackCad.UI.Tests
                 try
                 {
                     var vm = SelectiveEditor(With(TwoFondos(), SelectiveSafetyDefaults.BotaType, SelectiveSafetyDefaults.TopeType));
-                    vm.SafetyEditor = draft => null;
                     var view = new SelectiveEditorView(vm);
                     Lay(view);
                     view.Tabs.SelectedItem = view.SafetyTab;
@@ -692,31 +691,33 @@ namespace RackCad.UI.Tests
                     Assert.Contains(vm.SafetySummary, texts);
                     Assert.All(vm.EndLines, line => Assert.Contains(line, texts));
 
-                    // The columns of the approved draft, the posts and the «Total».
-                    Assert.Equal(new object[] { "Poste", "Botas", "Protector lateral", "Desviadores (niveles)", "Separadores entre fondos" },
-                        view.PostSafetyGrid.Columns.Select(c => c.Header).ToArray());
-                    Assert.Equal(vm.PostSafety.Count + 1, view.PostSafetyGrid.Items.Count);
-                    var total = (SelectivePostSafetyItem)view.PostSafetyGrid.Items[view.PostSafetyGrid.Items.Count - 1];
-                    Assert.Equal("Total", total.Post);
-                    var totalRow = (DataGridRow)view.PostSafetyGrid.ItemContainerGenerator.ContainerFromItem(total);
-                    Assert.Equal(FontWeights.SemiBold, totalRow.FontWeight);
+                    // T4 seg: the table of the approved draft is the editable one (RackCadSafetyTableView): its posts and its «Total»; the
+                    // titles of the columns of the families are buttons (RackCadSafetyPanelTests checks it in detail).
+                    Assert.Same(vm.SafetyPanel, view.SafetyTable.DataContext);
+                    Assert.Equal(vm.PostSafety.Select(r => r.Post).Concat(new[] { "Total" }), vm.SafetyPanel.Table.Select(r => r.Post));
+                    Assert.Contains("Separadores entre fondos", Descendants<TextBlock>(view.SafetyTable).Select(t => t.Text));
+                    Assert.Same(vm.SafetyPanel.Inspector, view.SafetyInspector.DataContext);
 
-                    // The two cards, each with its two buttons, whose names for UI Automation carry the family (unique in the tab).
-                    var buttons = Descendants<Button>(view.FamilyCardList).ToList();
+                    // The two cards, each with its head (it shows the family) and its two buttons, whose names for UI Automation carry the
+                    // family (unique in the tab).
+                    var buttons = Descendants<Button>(view.FamilyCardList).Where(b => b.Content is string).ToList();
                     Assert.Equal(new[] { "En todas las celdas", "En ninguna", "En todas las celdas", "En ninguna" }, buttons.Select(b => (string)b.Content));
                     var names = buttons.Select(System.Windows.Automation.AutomationProperties.GetName).ToList();
                     Assert.Equal(new[] { "Topes en todas las celdas", "Topes en ninguna celda", "Parrillas en todas las celdas", "Parrillas en ninguna celda" }, names);
                     Assert.Equal(new[] { false, true, false, false }, buttons.Select(b => b.IsEnabled));
+                    var heads = Descendants<Button>(view.FamilyCardList).Where(b => b.Content is not string).ToList();
+                    Assert.Equal(new[] { "Topes: ver su variante y sus medidas", "Parrillas: ver su variante y sus medidas" },
+                        heads.Select(System.Windows.Automation.AutomationProperties.GetName));
 
-                    Assert.True(view.EditSafetyButton.IsEnabled);
-                    Assert.Equal("Editar la seguridad en el diálogo del editor clásico", System.Windows.Automation.AutomationProperties.GetName(view.EditSafetyButton));
+                    // SG-01: no «Editar seguridad…» in the tab.
+                    Assert.DoesNotContain(Descendants<Button>(view.SafetyTab.Content as DependencyObject ?? view), b => b.Content as string == "Editar seguridad…");
 
                     // «En ninguna» of the topes, by its button: the card and the matrix follow.
                     Click(buttons[1]);
                     Lay(view);
                     Assert.StartsWith("En 0 de ", Card(vm, "T").Summary);
                     Assert.Equal(new[] { true, false, false, false }, buttons.Select(b => b.IsEnabled));
-                    Assert.Same(buttons[0], Descendants<Button>(view.FamilyCardList).First()); // refreshed in place
+                    Assert.Same(buttons[0], Descendants<Button>(view.FamilyCardList).First(b => b.Content is string)); // refreshed in place
 
                     // The inspector of «Matriz», laid out too.
                     view.Tabs.SelectedItem = view.MatrixTab;

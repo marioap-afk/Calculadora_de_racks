@@ -125,6 +125,15 @@ namespace RackCad.Application.VentanaRackCad
     public sealed record SelectiveSafetyCounts(IReadOnlyList<SelectivePostSafetyRow> Posts, int Topes, int Parrillas)
     {
         public static readonly SelectiveSafetyCounts None = new SelectiveSafetyCounts(Array.Empty<SelectivePostSafetyRow>(), 0, 0);
+
+        /// <summary>T4 seg: the rows of the editable table (every post of the desviador plan too), counted on the same system.</summary>
+        public IReadOnlyList<RackCadSafetyRow> Rows { get; init; } = Array.Empty<RackCadSafetyRow>();
+
+        /// <summary>T4 seg: the parrilla plan of that system (what the inspector checks a width or a count against).</summary>
+        public IReadOnlyList<SelectiveParrillaPlan.Cell> ParrillaPlan { get; init; } = Array.Empty<SelectiveParrillaPlan.Cell>();
+
+        /// <summary>T4 seg: the narrowest clearance between two levels on of the desviador that is under its length; null when none.</summary>
+        public SelectiveDesviadorPlan.ClearanceIssue DesviadorClearance { get; init; }
     }
 
     /// <summary>
@@ -142,7 +151,7 @@ namespace RackCad.Application.VentanaRackCad
     /// </para>
     /// <para>
     /// <b>The table by post</b> is <see cref="SelectivePostSafetySummary"/> over the last valid recomposition (what «Actualizar» writes).
-    /// Variant and measures stay in «Editar seguridad…» (the classic dialog).
+    /// T4 seg: the variant and the measures are edited in «Variante y medidas» of the window (<see cref="RackCadSafetyEdit"/>), the table too.
     /// </para>
     /// </summary>
     public static class SelectiveSafetyView
@@ -306,7 +315,13 @@ namespace RackCad.Application.VentanaRackCad
             var posts = SelectivePostSafetySummary.Build(system, editor.Catalog);
             var components = SelectiveBomBuilder.Build(system, editor.Catalog).Components;
             int Sum(string category) => components.Where(c => string.Equals(c.Category, category, StringComparison.Ordinal)).Sum(c => c.Quantity);
-            return new SelectiveSafetyCounts(posts, Sum(SelectiveBomBuilder.Tope), Sum(SelectiveBomBuilder.Parrilla));
+            return new SelectiveSafetyCounts(posts, Sum(SelectiveBomBuilder.Tope), Sum(SelectiveBomBuilder.Parrilla))
+            {
+                // T4 seg: the editable table and what its inspector checks, on the same system as the BOM.
+                Rows = SelectiveSafetyRows.Build(system, editor.Catalog, posts),
+                ParrillaPlan = SelectiveParrillaPlan.Cells(system, editor.Catalog),
+                DesviadorClearance = SelectiveDesviadorPlan.Build(system, editor.Catalog).ClearanceIssues.OrderBy(i => i.Clear).FirstOrDefault(),
+            };
         }
 
         /// <summary>The side of the bota at a post: «Izquierda», «Derecha», both (provisional text), or empty when that post has none.</summary>
@@ -335,7 +350,8 @@ namespace RackCad.Application.VentanaRackCad
 
         private const string NoSystem = "El rack todavía no tiene una composición válida.";
 
-        private static string ChooseFirst(string type) => "Elige primero la variante de " + Family(type) + " en «Editar seguridad…».";
+        // T4 seg (SG-01): the variant is chosen in the inspector of «Extremos y seguridad», no longer in the classic dialog.
+        private static string ChooseFirst(string type) => "Elige primero la variante de " + Family(type) + " en «Extremos y seguridad».";
 
         private static string Family(string type) => IsTope(type) ? "tope" : "parrilla";
 

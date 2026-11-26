@@ -524,6 +524,7 @@ internal static class I58F1DomainOracle
         Assert.NotNull(a);
         Assert.Equal(e.Longitud, a.Longitud);
         Assert.Equal(e.PrimerNivelAltura, a.PrimerNivelAltura);
+        Assert.Equal(e.CellsByPost, a.CellsByPost); // I-64, cuarta tanda
         Items(e.OffCells, a.OffCells, Values);
     }
     public static void Separate(SelectiveDesviadorConfig e, SelectiveDesviadorConfig a)
@@ -539,6 +540,7 @@ internal static class I58F1DomainOracle
         if(a is null)return;
         a.Longitud=a.Longitud + 123;
         a.PrimerNivelAltura=a.PrimerNivelAltura + 123;
+        a.CellsByPost=!a.CellsByPost; // I-64, cuarta tanda
         foreach(var item in a.OffCells)Mutate(item);
         a.OffCells.Clear();
     }

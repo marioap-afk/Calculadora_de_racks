@@ -503,6 +503,8 @@ namespace RackCad.Tests
                 "DerivedAisleEntry.Authored", "SafetyFacePiece.IsNone", "SafetyFacePiece.ElementId", "SafetyPostSide.PostIndex", "SafetyPostSide.Side",
                 "SelectiveTopeConfig.Shared", "SelectiveTopeConfig.Fondo", "SelectiveTopeConfig.Saque", "SelectiveTopeConfig.Frontal",
                 "SelectiveTopeConfig.OffCells", "SelectiveDesviadorConfig.Longitud", "SelectiveDesviadorConfig.PrimerNivelAltura",
+                // I-64, cuarta tanda (decision of the Owner, 2026-11-26): the marker of a desviador read by post (Push Back reads by post anyway, PB-002).
+                "SelectiveDesviadorConfig.CellsByPost",
                 "SelectiveDesviadorConfig.OffCells", "SelectiveDefensaConfig.Posts", "SafetyPostDefense.PostIndex", "SafetyPostDefense.ExitLength",
                 "SafetyPostDefense.EntranceLength", "SafetyPostDefense.ExitAuto", "SafetyPostDefense.EntranceAuto", "SelectiveGuiaConfig.OffCells",
                 "SelectiveParrillaConfig.Frontal", "SelectiveParrillaConfig.Lateral", "SelectiveParrillaConfig.Frente",
