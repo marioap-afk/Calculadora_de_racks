@@ -75,7 +75,8 @@ namespace RackCad.Application.VentanaRackCad
 
             if (project?.Header == null) return CabeceraDesignRead.Refused(requestId, rackId, kind, name, "Datos de cabecera inválidos.");
             var header = project.Header;
-            if (string.IsNullOrWhiteSpace(header.Name) && !string.IsNullOrWhiteSpace(name)) header.Name = name.Trim();
+            // Correction 7 of the review, the rule of the classic editor (EditCabecera): the inner name is not touched (AUTH-15 admits it
+            // blank); the name shown is the inner one, or the one of the envelope when the inner one is blank.
             return new CabeceraDesignRead(requestId, rackId, true, kind, string.IsNullOrWhiteSpace(header.Name) ? name : header.Name,
                 new RackFrameProjectStore().Serialize(header), null);
         }

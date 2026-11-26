@@ -494,12 +494,15 @@ namespace RackCad.UI.VentanaRackCad
             RaiseState();
         }
 
-        /// <summary>The answer of a write (standalone): written = «Limpio» on what was written; else it stays «Modificado».</summary>
-        public void MarkWritten(bool written, string message)
+        /// <summary>
+        /// The answer of a write (standalone): written = «Limpio» on what was SENT (<paramref name="sentJson"/>, correction 7 of the review);
+        /// else it stays «Modificado».
+        /// </summary>
+        public void MarkWritten(bool written, string message, string sentJson = null)
         {
             _writing = false;
             _writeTaken = false;
-            if (written) _editor.MarkWritten();
+            if (written) _editor.MarkWritten(sentJson);
             Say(message, !written);
             Rebuild();
         }
@@ -508,7 +511,16 @@ namespace RackCad.UI.VentanaRackCad
 
         public bool CanApply => IsEmbedded && !_writing && IsDirty;
 
-        public bool CanCopy => IsEmbedded && !_writing && (_host?.CopyTargets?.Count ?? 0) > 0;
+        /// <summary>
+        /// «Copiar a otros postes…» copies a cabecera that is custom or that has changes here (correction 2 of the review): a calculated one with
+        /// no change is not a source, as «Reutilizar» of the classic editor refuses a standard origin (SourceUnusable).
+        /// </summary>
+        public bool CanCopy => IsEmbedded && !_writing && (_host?.CopyTargets?.Count ?? 0) > 0 && (IsDirty || _wasCustom);
+
+        /// <summary>Why «Copiar a otros postes…» is not offered now; empty when it is.</summary>
+        public string CopyBlockedText => !IsEmbedded || _writing || CanCopy ? string.Empty
+            : (_host?.CopyTargets?.Count ?? 0) == 0 ? "No hay otros postes a los que copiar la cabecera."
+            : "Una cabecera calculada y sin cambios no se copia: cámbiala aquí primero (en el clásico, «Reutilizar» tampoco toma un origen estándar).";
 
         public bool IsConfirmingBack
         {
@@ -661,6 +673,12 @@ namespace RackCad.UI.VentanaRackCad
         private void CopyToHost(bool force)
         {
             if (_host == null || _writing) return;
+            if (!CanCopy)
+            {
+                Say(CopyBlockedText, true);
+                return;
+            }
+
             var chosen = _copyTargets.Where(t => t.IsChecked).Select(t => t.Target).ToList();
             if (chosen.Count == 0) return;
             CabeceraHostAnswer answer;
@@ -764,7 +782,10 @@ namespace RackCad.UI.VentanaRackCad
             var changes = _editor.Changes();
             foreach (var box in _restoreBoxes) box.SetCount(changes.Count(c => c.Category == box.Category));
             var marked = _restoreBoxes.Where(b => b.IsChecked && b.IsEnabled).Select(b => b.Category).ToList();
-            _restoreLosses = changes.Where(c => marked.Contains(c.Category)).Select(c => c.Line).ToList();
+
+            // Correction 4 of the review: also what the restoration replaces beyond the changes of the boxes (panels whose tramo goes,
+            // notes, faces).
+            _restoreLosses = _editor.RestoreLosses(marked).Select(c => c.Line).ToList();
             OnPropertyChanged(nameof(RestoreLosses));
             OnPropertyChanged(nameof(HasRestoreLosses));
             OnPropertyChanged(nameof(CanConfirmRestore));
@@ -877,10 +898,11 @@ namespace RackCad.UI.VentanaRackCad
             }
         }
 
-        public bool CanAddPanel => CanEdit && TryNumber(_addClear, out var clear) && clear > 0.0;
+        public bool CanAddPanel => CanEdit && TryNumber(_addClear, out var clear) && clear >= CabeceraDraftEditor.MinimumClear;
 
-        public string AddPanelNote => "La altura del poste pasa a " + (TryNumber(_addClear, out var clear) && clear > 0.0
-            ? CabeceraDraftEditor.Inches(_editor.TopElevation + clear + RackFrameConfigurationFactory.PostTopRemate) : "—") + ".";
+        public string AddPanelNote => TryNumber(_addClear, out var clear) && clear >= CabeceraDraftEditor.MinimumClear
+            ? "La altura del poste pasa a " + CabeceraDraftEditor.Inches(_editor.TopElevation + clear + RackFrameConfigurationFactory.PostTopRemate) + "."
+            : "El claro del panel nuevo debe ser de al menos " + CabeceraDraftEditor.Inches(CabeceraDraftEditor.MinimumClear) + " (el mínimo de un panel).";
 
         public string InspectorTitle
         {
@@ -940,7 +962,7 @@ namespace RackCad.UI.VentanaRackCad
 
         public IReadOnlyList<object> HorizontalFields => _horizontalFields;
 
-        public bool CanSplit => CanEdit && SelectedPanels.Count == 1 && SelectedHorizontals.Count == 0 && PanelClear(SelectedPanels[0]) >= 4.0;
+        public bool CanSplit => CanEdit && SelectedPanels.Count == 1 && SelectedHorizontals.Count == 0 && PanelClear(SelectedPanels[0]) >= 2.0 * CabeceraDraftEditor.MinimumClear;
 
         public bool CanCombine => CanEdit && SelectedPanels.Count == 1 && SelectedHorizontals.Count == 0 && SelectedPanels[0] < _editor.PanelCount - 1 && _editor.HorizontalCount > 2;
 
@@ -1117,7 +1139,7 @@ namespace RackCad.UI.VentanaRackCad
             {
                 nameof(Name), nameof(IsNameReadOnly), nameof(Title), nameof(IsWriting), nameof(CanEdit), nameof(IsDirty), nameof(IsCustom), nameof(StatusText),
                 nameof(DiffText), nameof(SubLine), nameof(CanUpdate), nameof(UpdateBlockedText), nameof(CanDiscard), nameof(CanRestore), nameof(CanClose),
-                nameof(CanApply), nameof(CanCopy), nameof(HeightNote), nameof(Calculated), nameof(Changes), nameof(HasChanges), nameof(ChangesSummary),
+                nameof(CanApply), nameof(CanCopy), nameof(CopyBlockedText), nameof(HeightNote), nameof(Calculated), nameof(Changes), nameof(HasChanges), nameof(ChangesSummary),
                 nameof(NoChangesText), nameof(Notices), nameof(NoNoticesText), nameof(ElevationSummary), nameof(BaseText), nameof(AllPanelsSelected),
                 nameof(AllHorizontalsSelected), nameof(EverythingSelected), nameof(SelectedPanels), nameof(SelectedHorizontals), nameof(CanAddPanel),
                 nameof(AddPanelNote), nameof(InspectorTitle), nameof(TargetText), nameof(HasPanelSelection), nameof(HasHorizontalSelection),
@@ -1137,7 +1159,7 @@ namespace RackCad.UI.VentanaRackCad
             var templates = _editor.Templates.Select(t => new SelectiveChoiceOption(t.Id, TemplateLabel(t))).ToList();
             var template = new SelectiveChoiceItem("tpl", "Plantilla", templates, _editor.TemplateId,
                 "Da perfiles, arreglo y placa; conserva el alto y la profundidad.", value => Regenerate(() => _editor.SetTemplate(value),
-                    "Cambiar a la plantilla «" + TemplateLabel(_editor.Templates.FirstOrDefault(t => t.Id == value)) + "»"), readOnly);
+                    "Cambiar a la plantilla «" + TemplateLabel(_editor.Templates.FirstOrDefault(t => t.Id == value)) + "»", _editor.RegenerationLossesForTemplate(value)), readOnly);
             var posts = Options(_editor.Catalog.PostProfiles, _editor.Side(PostSide.Left)?.PostCatalogId);
             var post = new SelectiveChoiceItem("post", "Poste", posts, _editor.Side(PostSide.Left)?.PostCatalogId,
                 "Los dos postes; el refuerzo, en «Postes y placas».", value => Apply(() => _editor.SetPostProfile(value)), readOnly);
@@ -1146,7 +1168,7 @@ namespace RackCad.UI.VentanaRackCad
                 text =>
                 {
                     if (!TryNumber(text, out var value) || !(value > 0.0)) return "El alto debe ser un número mayor que cero.";
-                    return Regenerate(() => _editor.SetHeight(value), "Cambiar el alto a " + CabeceraDraftEditor.Inches(value));
+                    return Regenerate(() => _editor.SetHeight(value), "Cambiar el alto a " + CabeceraDraftEditor.Inches(value), _editor.RegenerationLossesForHeight(value));
                 }, readOnly);
             var depthLocked = context.LockedDepth.HasValue;
             var depth = new DynamicFieldItem("depth", "Profundidad", "in", CabeceraDraftEditor.Num(_editor.Configuration.Depth),
@@ -1277,7 +1299,8 @@ namespace RackCad.UI.VentanaRackCad
                 clears.Count == 1 ? "La distancia entre sus dos horizontales; cambiarlo mueve lo de arriba y la altura del poste." : Varies + "; escribir aquí lo iguala.",
                 text =>
                 {
-                    if (!TryNumber(text, out var value) || !(value > 0.0)) return "El claro debe ser un número mayor que cero.";
+                    // Correction 5 of the review: the draft refuses a clear under the minimum of a panel, with its reason in the field.
+                    if (!TryNumber(text, out var value)) return "El claro debe ser un número de al menos " + CabeceraDraftEditor.Inches(CabeceraDraftEditor.MinimumClear) + ".";
                     return Apply(() => _editor.SetPanelClear(SelectedPanels, value));
                 }, readOnly);
             return new object[] { arrangement, direction, profile, clear };
@@ -1453,10 +1476,9 @@ namespace RackCad.UI.VentanaRackCad
         }
 
         // CB-02: the template and the height regenerate; with own changes the window asks inline first and lists what is lost.
-        private string Regenerate(Func<CabeceraEdit> regenerate, string what)
+        private string Regenerate(Func<CabeceraEdit> regenerate, string what, IReadOnlyList<CabeceraChange> losses)
         {
             if (!CanEdit) return _writeTaken ? TakenWriteText : WaitingWriteText;
-            var losses = _editor.RegenerationLosses();
             if (losses.Count == 0)
             {
                 var result = regenerate();

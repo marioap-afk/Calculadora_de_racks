@@ -135,7 +135,9 @@ namespace RackCad.UI.VentanaRackCad
                 return;
             }
 
-            var seed = _editor.CabeceraSeed(fondo, post);
+            // Correction 6 of the review: the seed and the standard of the editor come from the same templates.
+            var templates = CabeceraTemplates.Load();
+            var seed = _editor.CabeceraSeed(fondo, post, templates);
             if (seed == null)
             {
                 Say("Ese poste no existe en ese fondo.", error: true);
@@ -145,7 +147,7 @@ namespace RackCad.UI.VentanaRackCad
             CabeceraDraftEditor draft;
             try
             {
-                draft = new CabeceraDraftEditor(seed, _editor.Catalog, CabeceraTemplates.Load(), _editor.CabeceraContext(fondo, post, Name));
+                draft = new CabeceraDraftEditor(seed, _editor.Catalog, templates, _editor.CabeceraContext(fondo, post, Name));
             }
             catch (Exception ex) when (ex is InvalidOperationException || ex is ArgumentException)
             {

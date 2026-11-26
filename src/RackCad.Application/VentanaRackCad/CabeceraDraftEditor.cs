@@ -85,6 +85,13 @@ namespace RackCad.Application.VentanaRackCad
     public sealed class CabeceraDraftEditor
     {
         private const double Tolerance = 0.01;
+
+        /// <summary>
+        /// The smallest clear of a panel the editor writes (correction 5 of the review): the minimum of «Dividir en dos» — each half has at
+        /// least this — and of «Claro», «Agregar panel arriba», «Elevación», «Desplazar» and «Duplicar arriba». A frame the template
+        /// generated with a shorter closing panel is kept as it is; only a write is refused.
+        /// </summary>
+        public const double MinimumClear = 4.0;
         private const string TemplatePrefix = "TEMPLATE-";
 
         private static readonly RackFrameProjectStore Store = new RackFrameProjectStore();
@@ -169,10 +176,13 @@ namespace RackCad.Application.VentanaRackCad
             _generatedHeight = _openedGeneratedHeight;
         }
 
-        /// <summary>What was written becomes what «Descartar» goes back to (a written standalone cabecera).</summary>
-        public void MarkWritten()
+        /// <summary>
+        /// What was written becomes what «Descartar» goes back to (a written standalone cabecera): the JSON that was SENT to AutoCAD
+        /// (<paramref name="writtenJson"/>), which is what the drawing has now; without it, the working frame.
+        /// </summary>
+        public void MarkWritten(string writtenJson = null)
         {
-            _openedJson = Serialize(_config);
+            _openedJson = string.IsNullOrWhiteSpace(writtenJson) ? Serialize(_config) : writtenJson;
             _openedTemplateId = _templateId;
             _openedGeneratedHeight = _generatedHeight;
         }
@@ -282,8 +292,84 @@ namespace RackCad.Application.VentanaRackCad
             return CabeceraEdit.Done();
         }
 
-        /// <summary>What a regeneration with that template and height loses: the changes of now (empty = nothing is lost).</summary>
-        public IReadOnlyList<CabeceraChange> RegenerationLosses() => Changes();
+        /// <summary>
+        /// What «Plantilla» with <paramref name="templateId"/> would lose (empty = nothing is lost): the changes of now, the «Notas» of the
+        /// horizontals whose elevation does not stay (the others are kept), and a «Cara de montaje» that is not the front one (correction 3
+        /// of the review: the regeneration puts every piece on the front face, and the window does not offer the face, CB-13).
+        /// </summary>
+        public IReadOnlyList<CabeceraChange> RegenerationLossesForTemplate(string templateId)
+        {
+            var template = FindTemplate(templateId);
+            if (template == null || string.Equals(template.Id, _templateId, StringComparison.OrdinalIgnoreCase)) return Array.Empty<CabeceraChange>();
+            return RegenerationLosses(template.Id, Height > 0.0 ? Height : template.DefaultHeight);
+        }
+
+        /// <summary>What «Alto» <paramref name="height"/> would lose, with the same rules as <see cref="RegenerationLossesForTemplate"/>.</summary>
+        public IReadOnlyList<CabeceraChange> RegenerationLossesForHeight(double height)
+        {
+            if (!(height > 0.0) || Math.Abs(height - Height) < Tolerance) return Array.Empty<CabeceraChange>();
+            return RegenerationLosses(_templateId, height);
+        }
+
+        private IReadOnlyList<CabeceraChange> RegenerationLosses(string templateId, double height)
+        {
+            var list = Changes().ToList();
+            list.AddRange(ReplacementLosses(Build(templateId, height), horizontals: true, panels: true));
+            return list;
+        }
+
+        // What replacing the horizontals (and their panels) and the panels with those of «next» loses beyond the changes respecto al
+        // estándar: the notes of a horizontal whose elevation does not stay in «next» (one that stays keeps its notes), a face of mounting
+        // that is not the front one (the template is always on the front face), and, when only the horizontals are replaced, the values of a
+        // panel whose interval does not stay (it takes the values of the template). Correcciones 3 y 4 de la revisión.
+        private IEnumerable<CabeceraChange> ReplacementLosses(RackFrameConfiguration next, bool horizontals, bool panels)
+        {
+            var hs = _config.Horizontals;
+            for (var i = 0; horizontals && i < hs.Count; i++)
+            {
+                var h = hs[i];
+                var stays = next != null && next.Horizontals.Any(o => Near(o.Elevation, h.Elevation));
+                if (!string.IsNullOrWhiteSpace(h.Notes) && !stays)
+                    yield return new CabeceraChange(CabeceraChangeCategory.Horizontals, "H" + (i + 1), "nota «" + h.Notes.Trim() + "» (su elevación no queda)");
+                if (h.MountingFace != FrameSide.Front)
+                    yield return new CabeceraChange(CabeceraChangeCategory.Horizontals, "H" + (i + 1), FaceLabel(h.MountingFace) + " → cara frontal");
+            }
+
+            for (var i = 0; i < _config.BracingPanels.Count; i++)
+            {
+                var p = _config.BracingPanels[i];
+                var intervalStays = next != null && StandardPanelAt(next, p.StartElevation, p.EndElevation) != null;
+                var replaced = panels || (horizontals && !intervalStays);
+                if (!replaced) continue;
+                if (!panels && next != null)
+                {
+                    // The panel of the template that holds the start of its tramo takes its place; with its same values nothing is lost.
+                    var successor = next.BracingPanels.FirstOrDefault(o => o.StartElevation <= p.StartElevation + Tolerance && p.StartElevation < o.EndElevation - Tolerance);
+                    if (successor == null || !SamePanel(p, successor))
+                        yield return new CabeceraChange(CabeceraChangeCategory.Panels, "P" + (i + 1),
+                            "su tramo de " + Num(p.StartElevation) + " a " + Inches(p.EndElevation) + " no queda; pierde " + Lower(ArrangementLabel(p.Arrangement))
+                            + " y toma los valores de la plantilla");
+                }
+
+                if (p.MountingFace != FrameSide.Front)
+                    yield return new CabeceraChange(CabeceraChangeCategory.Panels, "P" + (i + 1), FaceLabel(p.MountingFace) + " → cara frontal");
+            }
+        }
+
+        private static string ClearText => "El claro debe ser de al menos " + Inches(MinimumClear) + " (el mínimo de un panel).";
+
+        private static string FaceLabel(FrameSide face)
+            => face == FrameSide.Back ? "cara posterior" : face == FrameSide.Both ? "ambas caras" : "cara frontal";
+
+        // The notes of the horizontals that keep their elevation in the frame that replaces them (correction 3 of the review).
+        private static void KeepNotes(IEnumerable<FrameHorizontal> before, RackFrameConfiguration next)
+        {
+            foreach (var old in before.Where(h => !string.IsNullOrWhiteSpace(h.Notes)))
+            {
+                var same = next.Horizontals.FirstOrDefault(h => Near(h.Elevation, old.Elevation) && string.IsNullOrWhiteSpace(h.Notes));
+                if (same != null) same.Notes = old.Notes;
+            }
+        }
 
         /// <summary>
         /// The template (CB-02): regenerates the frame from it with the height of now, the post and the depth; the name and the peralte stay.
@@ -379,7 +465,7 @@ namespace RackCad.Application.VentanaRackCad
         /// </summary>
         public CabeceraEdit SetPanelClear(IEnumerable<int> panels, double clear)
         {
-            if (!(clear > 0.0) || double.IsNaN(clear) || double.IsInfinity(clear)) return CabeceraEdit.Refuse("El claro debe ser un número mayor que cero.");
+            if (double.IsNaN(clear) || double.IsInfinity(clear) || clear < MinimumClear) return CabeceraEdit.Refuse(ClearText);
             var chosen = Valid(panels, _config.BracingPanels.Count);
             if (chosen.Count == 0) return CabeceraEdit.Refuse("Elige uno o más paneles.");
             var ordered = Ordered(_config);
@@ -405,7 +491,8 @@ namespace RackCad.Application.VentanaRackCad
             var ordered = Ordered(_config);
             var lower = ordered[index];
             var upper = ordered[index + 1];
-            if (upper.Elevation - lower.Elevation < 4.0) return CabeceraEdit.Refuse("El panel es demasiado bajo para dividirlo.");
+            if (upper.Elevation - lower.Elevation < 2.0 * MinimumClear)
+                return CabeceraEdit.Refuse("El panel es demasiado bajo para dividirlo: cada mitad debe tener al menos " + Inches(MinimumClear) + ".");
             var middle = Round((lower.Elevation + upper.Elevation) / 2.0);
             var panel = _config.BracingPanels[index];
             var added = NewHorizontal(middle, lower.ProfileId);
@@ -447,7 +534,7 @@ namespace RackCad.Application.VentanaRackCad
         /// <summary>«Agregar panel arriba» with its clear (CB-12; 44 in by default): a horizontal over the top one and a standard panel under it.</summary>
         public CabeceraEdit AddPanelOnTop(double clear)
         {
-            if (!(clear > 0.0) || double.IsNaN(clear) || double.IsInfinity(clear)) return CabeceraEdit.Refuse("El claro del panel nuevo debe ser un número mayor que cero.");
+            if (double.IsNaN(clear) || double.IsInfinity(clear) || clear < MinimumClear) return CabeceraEdit.Refuse("El claro del panel nuevo debe ser de al menos " + Inches(MinimumClear) + " (el mínimo de un panel).");
             var top = Ordered(_config).LastOrDefault();
             var elevation = Round((top?.Elevation ?? 0.0) + clear);
             _config.Horizontals.Add(NewHorizontal(elevation, top?.ProfileId ?? DefaultHorizontalProfile()));
@@ -463,8 +550,9 @@ namespace RackCad.Application.VentanaRackCad
             if (index < 0 || index >= _config.Horizontals.Count) return CabeceraEdit.Refuse("Elige una sola horizontal.");
             if (!(elevation >= 0.0) || double.IsNaN(elevation) || double.IsInfinity(elevation)) return CabeceraEdit.Refuse("La elevación debe ser un número de 0 o más.");
             var own = _config.Horizontals[index];
-            if (_config.Horizontals.Any(h => !ReferenceEquals(h, own) && Math.Abs(h.Elevation - elevation) <= Tolerance))
-                return CabeceraEdit.Refuse("Ya hay una horizontal en " + Inches(elevation) + " (o muy cerca): no se movió, para no dejar un panel sin altura.");
+            var near = _config.Horizontals.FirstOrDefault(h => !ReferenceEquals(h, own) && Math.Abs(h.Elevation - elevation) < MinimumClear - 1e-9);
+            if (near != null)
+                return CabeceraEdit.Refuse("Quedaría a menos de " + Inches(MinimumClear) + " de " + near.Id + " (a " + Inches(near.Elevation) + "): no se movió, para no dejar un panel sin altura.");
             own.Elevation = Round(elevation);
             Normalize(_config, null);
             return CabeceraEdit.Done();
@@ -478,11 +566,16 @@ namespace RackCad.Application.VentanaRackCad
             if (chosen.Count == 0) return CabeceraEdit.Refuse("Elige una o más horizontales.");
             var moved = chosen.Select(h => Round(Math.Max(0.0, h.Elevation + delta))).ToList();
             var others = _config.Horizontals.Except(chosen).Select(h => h.Elevation).ToList();
-            var all = others.Concat(moved).OrderBy(e => e).ToList();
-            for (var i = 1; i < all.Count; i++)
+
+            // The moved ones keep their distances among them (two of them could only meet at 0); against the others, the minimum clear.
+            var sorted = moved.OrderBy(e => e).ToList();
+            for (var i = 1; i < sorted.Count; i++)
             {
-                if (Math.Abs(all[i] - all[i - 1]) <= Tolerance) return CabeceraEdit.Refuse("Dos horizontales quedarían a la misma elevación: no se movió nada.");
+                if (Math.Abs(sorted[i] - sorted[i - 1]) <= Tolerance) return CabeceraEdit.Refuse("Dos horizontales quedarían a la misma elevación: no se movió nada.");
             }
+
+            if (moved.Any(m => others.Any(o => Math.Abs(m - o) < MinimumClear - 1e-9)))
+                return CabeceraEdit.Refuse("Una horizontal quedaría a menos de " + Inches(MinimumClear) + " de otra: no se movió nada.");
 
             for (var i = 0; i < chosen.Count; i++) chosen[i].Elevation = moved[i];
             Normalize(_config, null);
@@ -507,8 +600,8 @@ namespace RackCad.Application.VentanaRackCad
             var source = _config.Horizontals[index];
             var clear = _config.PanelClear > 0.0 ? _config.PanelClear : 44.0;
             var elevation = Round(source.Elevation + clear);
-            if (_config.Horizontals.Any(h => Math.Abs(h.Elevation - elevation) <= Tolerance))
-                return CabeceraEdit.Refuse("Ya hay una horizontal a " + Inches(elevation) + ": no se duplicó.");
+            if (_config.Horizontals.Any(h => Math.Abs(h.Elevation - elevation) < MinimumClear - 1e-9))
+                return CabeceraEdit.Refuse("Ya hay una horizontal a menos de " + Inches(MinimumClear) + " de " + Inches(elevation) + ": no se duplicó.");
             var ordered = Ordered(_config);
             var below = ordered.LastOrDefault(h => h.Elevation < elevation);
             var inherited = below == null ? null : _config.BracingPanels.FirstOrDefault(p => p.LowerHorizontalId == below.Id);
@@ -608,9 +701,21 @@ namespace RackCad.Application.VentanaRackCad
 
         // ------------------------------------------------------------------ «Restaurar estándar…»
 
-        /// <summary>The changes of the categories marked, the lines of «Ver lo que se pierde».</summary>
+        /// <summary>
+        /// The lines of «Ver lo que se pierde»: the changes of the categories marked and, beyond them (correction 4 of the review), what the
+        /// restoration replaces without being a change of those categories: with «Horizontales», the panels whose tramo does not stay (when
+        /// «Paneles» is not marked, they take the values of the template), the notes of the horizontals whose elevation does not stay, and a
+        /// face that is not the front one.
+        /// </summary>
         public IReadOnlyList<CabeceraChange> RestoreLosses(IReadOnlyCollection<CabeceraChangeCategory> categories)
-            => Changes().Where(c => categories != null && categories.Contains(c.Category)).ToList();
+        {
+            if (categories == null || categories.Count == 0) return Array.Empty<CabeceraChange>();
+            var list = Changes().Where(c => categories.Contains(c.Category)).ToList();
+            var horizontals = categories.Contains(CabeceraChangeCategory.Horizontals);
+            var panels = categories.Contains(CabeceraChangeCategory.Panels);
+            if (horizontals || panels) list.AddRange(ReplacementLosses(Standard(), horizontals, panels));
+            return list;
+        }
 
         /// <summary>
         /// «Restaurar estándar…» (CB-05) of the categories marked: back to the template with the height it was generated with, the post and the
@@ -626,8 +731,10 @@ namespace RackCad.Application.VentanaRackCad
             {
                 var keepPanels = !categories.Contains(CabeceraChangeCategory.Panels);
                 var oldPanels = _config.BracingPanels.Select(CopyPanel).ToList();
+                var oldHorizontals = _config.Horizontals.Select(CopyHorizontal).ToList();
                 _config.Horizontals.Clear();
                 foreach (var h in standard.Horizontals) _config.Horizontals.Add(CopyHorizontal(h));
+                KeepNotes(oldHorizontals, _config); // correction 3: the notes stay where their elevation stays
                 Normalize(_config, null);
                 for (var i = 0; i < _config.BracingPanels.Count; i++)
                 {
@@ -727,6 +834,7 @@ namespace RackCad.Application.VentanaRackCad
             if (built == null) return CabeceraEdit.Refuse("No se pudo generar la cabecera con esa plantilla, ese alto y esa profundidad.");
             built.Name = _config.Name;
             built.PostPeralte = _config.PostPeralte;
+            KeepNotes(_config.Horizontals, built); // correction 3 of the review: the notes stay where their elevation stays
             _config = built;
             Normalize(_config, null);
             _templateId = TemplateIdOf(_config) ?? templateId;

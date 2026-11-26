@@ -111,9 +111,10 @@ namespace RackCad.Plugin.VentanaRackCad
                     return;
                 }
 
-                var name = string.IsNullOrWhiteSpace(pending.Write.Name) ? embed.Name : pending.Write.Name.Trim();
+                // The rule of the classic editor (EditCabecera, correction 7 of the review): the blocks take the inner name, or the one of
+                // the envelope when the inner one is blank; the inner name is not touched (AUTH-15 admits it blank).
                 var cabecera = pending.Write.Cabecera;
-                if (string.IsNullOrWhiteSpace(cabecera.Name)) cabecera.Name = name;
+                var name = string.IsNullOrWhiteSpace(cabecera.Name) ? embed.Name : cabecera.Name;
                 var (redrawn, erased) = RackCabeceraCommands.ApplyCabeceraUpdate(document, plan.Project, cabecera, pending.RackId, name);
                 door?.AnswerWrite(RackDoorRules.AnswerForApply(pending.RequestId, pending.RackId, redrawn, erased));
             }

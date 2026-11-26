@@ -1675,3 +1675,55 @@ en la leyenda. El dato no se borra y vive en:
 - «Editar cabecera…» → «Aplicar al borrador» → «Actualizar» de un Selectivo, y la personalizada en el dibujo;
 - el veto de cierre con una cabecera sin aplicar;
 - el editor de cabeceras en la paleta (anchos, foco y ratón en el alzado).
+
+### Correcciones de la revisión
+
+Sobre `a2544580` (el commit de esta parte), sin commit ni push y sin AutoCAD. Son los siete puntos de la revisión independiente. Cada uno
+tiene su prueba; los cuatro primeros, además, su comprobación en rojo.
+
+| # | Hallazgo | Qué se hizo |
+|---|---|---|
+| 1 | CONFIRMADO: «Copiar a otros postes…» al mismo poste en otro fondo devolvía a 0 el peralte propio recién editado (la copia llevaba el peralte viejo del poste y su EDIT lo escribía después del origen) | Un destino con el mismo poste que el editado toma el peralte editado (`SelectiveDraftEditor.WriteCabecera`); los demás destinos siguen tomando el de su poste |
+| 2 | «Copiar a otros postes…» convertía una cabecera calculada y sin cambios en personalizada, en el origen y en todos los destinos | Se copia solo con cambios o desde una personalizada (`CanCopy`: `IsDirty \|\| _wasCustom`), como «Reutilizar» del clásico, que rechaza un origen estándar (SourceUnusable). El motivo va junto al botón (`CopyBlockedText`) |
+| 3 | «Alto» y «Plantilla» regeneraban sin preguntar y perdían las «Notas» de las horizontales y la cara de montaje | Las notas se conservan en las horizontales cuya elevación queda (también al restaurar las horizontales). Una nota cuya elevación no queda y una cara distinta de la frontal cuentan como pérdidas, así que regenerar pregunta y las lista (`RegenerationLossesForTemplate` y `RegenerationLossesForHeight`) |
+| 4 | «Restaurar estándar…» con solo «Horizontales» perdía valores de paneles que «Ver lo que se pierde» no listaba | `RestoreLosses` lista los paneles cuyo tramo no queda («P1: su tramo de 4 a 54 in no queda; pierde celosía en X y toma los valores de la plantilla»), salvo si el panel de la plantilla que ocupa su inicio tiene sus mismos valores. Lista también las notas que se pierden y las caras que vuelven a la frontal |
+| 5 | «Claro» y «Agregar panel arriba» aceptaban cualquier valor mayor que 0 | El claro mínimo de un panel es `CabeceraDraftEditor.MinimumClear` (4 in), con su motivo en el campo y bajo «Agregar panel arriba». «Elevación», «Desplazar» y «Duplicar arriba» no dejan una horizontal a menos de 4 in de otra. «Dividir en dos» exige mitades de 4 in como mínimo (supuesto CB4-12) |
+| 6 | La semilla de un poste calculado salía de la plantilla interna y el estándar del editor de `header-templates.json` más las propias | `CabeceraSeed(fondo, poste, plantillas)` siembra con las plantillas del propio editor (la «STD-3P» de esa lista); el editor de Selectivo carga la lista una vez y la pasa a la semilla y al editor |
+| 7 | El nombre no seguía la regla del clásico | Se copia la regla de `EditCabecera`: el nombre interior no se toca (AUTH-15 lo admite en blanco). La lectura ya no pone el nombre del sobre dentro de la cabecera, la ventana envía el nombre interior tal cual y la orden nombra los bloques con el interior o, si está vacío, con el del sobre. La base de «Limpio» es el JSON que se envió (`MarkWritten(…, sentJson)`) |
+
+**Decisión nueva:**
+
+| Id | Decisión | Por qué |
+|---|---|---|
+| CB4-12 | El claro mínimo de un panel es 4 in, el de «Dividir en dos», y ahora cada mitad de un panel dividido debe tener al menos 4 in (antes bastaba con que el panel tuviera 4 in, y las mitades podían quedar de 2 in). Un marco que la plantilla generó con un panel de cierre más corto se conserva: solo se rechaza una escritura | Corrección 5: un solo mínimo para todos los gestos |
+
+**Pruebas:**
+- `tests/RackCad.UI.Tests/Workspace/CabeceraEditorReviewTests.cs` (nuevo, 8): la copia al mismo poste en otro fondo (1); la calculada sin
+  cambios que no se copia y la personalizada que sí (2); las notas que se conservan y la que se pregunta al regenerar, y la cara como
+  pérdida de regenerar y de restaurar (3); los paneles que lista «Restaurar» con solo «Horizontales» y las notas conservadas al restaurar
+  (4); el claro mínimo en el borrador, en el campo y bajo «Agregar panel arriba», con «Elevación», «Desplazar» y «Dividir» (5); la semilla
+  y el estándar de las mismas plantillas (6).
+- `RackCadCabeceraWindowTests` (+1, 7): una cabecera con el nombre interior en blanco lo conserva en la lectura y en la escritura, el
+  veto de cierre la nombra con el nombre de la lista y, escrita, queda «Limpio» sobre lo enviado.
+- `CabeceraDoorTests` (Core, 7, con dos cambiadas): la lectura no toca el nombre interior, y la orden nombra los bloques con la regla
+  de `EditCabecera` sin escribir el nombre de la cabecera.
+- Cambiadas: en `CabeceraEditorTests`, las pérdidas de regenerar pasan a `RegenerationLossesForHeight`, y la prueba de los destinos de la
+  copia hace antes un cambio (2).
+- **Comprobación en rojo:** nueve piezas rotas a propósito, una a una, con script (`hs65\t4\cb\red2.py` en el scratchpad de la sesión;
+  cada archivo vuelve a sus bytes con el mismo SHA-256). En todas falla al menos una prueba:
+  - R1, la copia al mismo poste en otro fondo con el peralte viejo: falla 1;
+  - R2, copiar una calculada sin cambios: falla 1;
+  - R3, regenerar sin contar notas ni caras: fallan 2;
+  - R3b, regenerar sin conservar las notas: falla 1;
+  - R4, restaurar las horizontales sin listar los paneles: fallan 2;
+  - R5, el claro sin mínimo: falla 1;
+  - R6, la semilla con la plantilla interna: falla 1;
+  - R7a, la lectura que pone el nombre del sobre dentro (Core): falla 1;
+  - R7b, la ventana que envía el nombre de la lista: falla 1.
+- **Los números** (fuentes finales, solución en Debug):
+  - **UI completa:** 2793 correctas, 0 con error, 48 omitidas (2841): las 2784 del commit `a2544580` más las 9 nuevas.
+  - **Core, focales** (`CabeceraDoorTests`, `RackCadWindowListTests`, `WorkspaceIdleSchedulingGuardTests`, `WorkspacePilotReconciliationGuardTests`,
+    `SelectiveEditorOpenTests`, `CustomPropertiesCommandGuardTests`): 289 correctas, 0 con error, 1 omitida. Las correcciones no añaden
+    pruebas de Core (cambian dos de `CabeceraDoorTests`) y Core Full no se volvió a correr: su número sigue siendo el de `a2544580`
+    (19154 / 0 / 403).
+  - **Build Debug de la solución (Plugin incluido):** 0 errores; las 2 advertencias son las MSB3277 de siempre.

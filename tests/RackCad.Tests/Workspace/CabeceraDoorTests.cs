@@ -35,7 +35,7 @@ public class CabeceraDoorTests
     // ------------------------------------------------------------------ the rules
 
     [Fact]
-    public void ACabeceraOpensWithItsHeaderAndTheNameOfTheEnvelopeWhenItHasNone()
+    public void ACabeceraOpensWithItsHeaderAsItIsAndShowsTheNameOfTheEnvelopeWhenItHasNone()
     {
         var read = CabeceraDoorRules.AnswerForOpen(3, "CAB-1", RackEmbedDocument.KindCabecera, "Cabecera 4", Envelope(Header()));
 
@@ -44,7 +44,8 @@ public class CabeceraDoorTests
         Assert.Equal("Cabecera 4", read.Name);
         var header = read.Header();
         Assert.NotNull(header);
-        Assert.Equal("Cabecera 4", header!.Name);
+        // Correction 7 of the review (the rule of the classic editor): the inner name is not touched; AUTH-15 admits it blank.
+        Assert.True(string.IsNullOrEmpty(header!.Name));
         Assert.Equal(new[] { 4.0, 48.0, 92.0, 110.0, 128.0 }, header.Horizontals.Select(h => h.Elevation).ToArray());
         Assert.NotSame(header, read.Header()); // every read is a new object
 
@@ -115,6 +116,12 @@ public class CabeceraDoorTests
 
         // «Written» is only what the rule of the door says (I-08 of Dinámico): never a true by hand.
         Assert.DoesNotMatch(new Regex(@"new\s+RackDesignWritten\s*\([^;]*,\s*true\s*,"), write);
+
+        // Correction 7 of the review: the name of the blocks is the rule of EditCabecera (the inner one, else the one of the envelope), and
+        // the inner name of the cabecera that is written is not touched.
+        Assert.Contains("var name = string.IsNullOrWhiteSpace(cabecera.Name) ? embed.Name : cabecera.Name;", write, StringComparison.Ordinal);
+        Assert.Contains("var name = string.IsNullOrWhiteSpace(config?.Name) ? embed.Name : config.Name;", Method(WorkspaceHostSource.Code(Classic), "internal static void EditCabecera("), StringComparison.Ordinal);
+        Assert.DoesNotMatch(new Regex(@"cabecera\.Name\s*=[^=]"), write);
     }
 
     [Fact]

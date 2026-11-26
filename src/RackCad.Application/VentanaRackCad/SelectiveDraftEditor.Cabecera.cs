@@ -39,8 +39,13 @@ namespace RackCad.Application.VentanaRackCad
         /// The cabecera «Editar cabecera…» opens on the post <paramref name="post"/> of the fondo <paramref name="fondo"/> (the seed of the
         /// classic «Personalizar»): a copy of its custom cabecera, or the standard one resolved with the height of that post in that fondo
         /// and the cabecera depth of that fondo; its peralte, the own one of the post or the one of the rack. Null when the post is not there.
+        /// <para>
+        /// <paramref name="templates"/> are the templates of the editor that will open it (correction 6 of the review): the standard one
+        /// («STD-3P») is taken from them, so the seed and the standard «Cambios respecto al estándar» compares with come from the same
+        /// definition. Without them, the built-in one.
+        /// </para>
         /// </summary>
-        public RackFrameConfiguration CabeceraSeed(int fondo, int post)
+        public RackFrameConfiguration CabeceraSeed(int fondo, int post, IReadOnlyList<RackFrameTemplate> templates = null)
         {
             if (fondo < 0 || fondo >= FondoCount || post < 0 || post > FrontCount(fondo)) return null;
             Commit();
@@ -53,7 +58,9 @@ namespace RackCad.Application.VentanaRackCad
             }
             else
             {
-                var template = RackFrameTemplateCatalog.FindStandardOrDefault();
+                var template = templates?.FirstOrDefault(t => t != null && string.Equals(t.Id, RackFrameTemplateCatalog.StandardTemplateId, StringComparison.OrdinalIgnoreCase))
+                               ?? templates?.FirstOrDefault(t => t != null)
+                               ?? RackFrameTemplateCatalog.FindStandardOrDefault();
                 var height = CabeceraHeightAt(fondo, post);
                 seed = new RackFrameConfigurationFactory(Catalog).Build(template, PostId, height > 0.0 ? height : template.DefaultHeight, depth);
             }
@@ -159,8 +166,10 @@ namespace RackCad.Application.VentanaRackCad
                 if (target.FondoIndex == fondo && target.PostIndex == post) continue;
                 var copy = new RackFrameProjectStore().DeepCopy(cabecera);
 
-                // Each copy takes the peralte of ITS post: with it, the EDIT writes back the peralte that post already has.
-                copy.PostPeralte = SelectivePostGeometry.PostPeralteAt(System, target.PostIndex);
+                // Each copy takes the peralte of ITS post: with it, the EDIT writes back the peralte that post already has. The same post in
+                // another fondo takes the peralte just edited (correction 1 of the review): the own peralte is of the post in every fondo, and
+                // the EDIT of the source writes it first, so the copy must not write the old one back.
+                copy.PostPeralte = target.PostIndex == post ? cabecera.PostPeralte : SelectivePostGeometry.PostPeralteAt(System, target.PostIndex);
                 destinations.Add((target, copy));
             }
 

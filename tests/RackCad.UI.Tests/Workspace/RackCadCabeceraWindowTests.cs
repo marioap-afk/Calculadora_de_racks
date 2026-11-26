@@ -310,6 +310,35 @@ namespace RackCad.UI.Tests
         }
 
         [Fact]
+        public void ABlankInnerNameIsNotTouchedAndTheBaseOfCleanIsWhatWasSent()
+        {
+            // Correction 7 of the review: the rule of the classic editor. The inner name stays blank (AUTH-15 admits it); the blocks take the
+            // name of the envelope in the command; the editor and the veto of the close say the name of the list.
+            var rig = new Rig();
+            rig.Window.OpenRack("CAB-1");
+            rig.Window.EditCabeceraHere();
+            var request = rig.Door.CabeceraReads.Last();
+            rig.Door.ReadCabecera(CabeceraDoorRules.AnswerForOpen(request.RequestId, "CAB-1", RackEmbedDocument.KindCabecera, "Cabecera 1", Envelope(null!)));
+            var editor = rig.Window.ActiveCabeceraEditor!;
+
+            Assert.Equal(string.Empty, editor.Name);
+            Assert.True(string.IsNullOrEmpty(editor.Editor.Configuration.Name));
+            Assert.False(editor.IsDirty);
+            Change(editor);
+            Assert.Contains("Cabecera 1", rig.Window.UnwrittenWorkOf(Session));
+
+            editor.RequestWrite();
+            var write = rig.Door.CabeceraWrites.Last();
+            Assert.True(string.IsNullOrEmpty(write.Name));
+            Assert.True(string.IsNullOrEmpty(write.Cabecera.Name));
+
+            rig.Door.AnswerLastWrite(true, "AutoCAD redibujó 2 vistas del rack con el borrador.");
+            Assert.False(editor.IsDirty);
+            Assert.Equal("Limpio", editor.StatusText);
+            Assert.Equal(new RackFrameProjectStore().Serialize(write.Cabecera), editor.Editor.Json);
+        }
+
+        [Fact]
         public void ThePageOfTheRackHostsTheEditorOfTheCabecera()
         {
             StaTestRunner.Run(() =>

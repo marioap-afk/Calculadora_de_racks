@@ -182,9 +182,12 @@ namespace RackCad.UI.VentanaRackCad
             }
 
             var copy = editor.Editor.Snapshot();
-            var name = string.IsNullOrWhiteSpace(copy.Name) ? entry.ListedName : copy.Name.Trim();
+            // Correction 7 of the review: the inner name goes as it is (blank too); the command names the blocks as RACKEDITAR does, with
+            // the name of the envelope when the inner one is blank. What is sent is the base of «Limpio» once it is written.
+            var name = copy.Name;
+            var sent = new RackCad.Application.Persistence.RackFrameProjectStore().Serialize(copy);
             var id = ++_lastRequestId;
-            _inFlight = new DoorRequest(id, true, entry.Session, editor.RackId, editor.Editor.Json, name, IsCabecera: true);
+            _inFlight = new DoorRequest(id, true, entry.Session, editor.RackId, sent, name, IsCabecera: true);
             editor.SetWriting(true);
             RaiseWaiting();
 
@@ -208,7 +211,7 @@ namespace RackCad.UI.VentanaRackCad
         // The answer to the write of a cabecera: written = «Limpio» on what was sent; else it stays «Modificado» with the reason.
         private void CabeceraWritten(DoorRequest request, RackDesignWritten written)
         {
-            if (_cabeceraDrafts.TryGetValue((request.Session, request.RackId), out var entry)) entry.Editor.MarkWritten(written.Written, written.Message);
+            if (_cabeceraDrafts.TryGetValue((request.Session, request.RackId), out var entry)) entry.Editor.MarkWritten(written.Written, written.Message, request.SentJson);
         }
 
         // «Dejar de esperar» of a write of a cabecera: the editor can be edited again, with its draft still not written.

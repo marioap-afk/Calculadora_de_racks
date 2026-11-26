@@ -103,9 +103,9 @@ namespace RackCad.UI.Tests
         public void TheHeightAndTheTemplateRegenerateAndSayFirstWhatIsLost()
         {
             var draft = Draft();
-            Assert.Empty(draft.RegenerationLosses());
+            Assert.Empty(draft.RegenerationLossesForHeight(180.0));
             Assert.True(draft.SetPanelArrangement(new[] { 0 }, BracingPattern.DoubleDiagonal).Applied);
-            Assert.Equal(new[] { "P1: diagonal simple → diagonal doble" }, draft.RegenerationLosses().Select(c => c.Line).ToArray());
+            Assert.Equal(new[] { "P1: diagonal simple → diagonal doble" }, draft.RegenerationLossesForHeight(180.0).Select(c => c.Line).ToArray());
 
             Assert.True(draft.SetHeight(180.0).Applied);
 
@@ -354,6 +354,13 @@ namespace RackCad.UI.Tests
             Assert.True(Field(cab.Essentials, "depth").IsReadOnly);
             Assert.Equal(vm.Draft.CabeceraHeightAt(1, 0), cab.Editor.Height);
             Assert.Empty(cab.CopyTargets); // the targets are built when the copy opens
+
+            // A calculated cabecera with no change is not a source (correction 2 of the review); with a change it is.
+            Assert.False(cab.CanCopy);
+            Assert.StartsWith("Una cabecera calculada y sin cambios no se copia", cab.CopyBlockedText, StringComparison.Ordinal);
+            Choice(cab.PanelFields, "pArr").SelectedValue = BracingPattern.XBracing.ToString();
+            Assert.True(cab.CanCopy);
+            Assert.Equal(string.Empty, cab.CopyBlockedText);
             cab.OpenCopy();
             Assert.Equal(6, cab.CopyTargets.Count); // P1..P3 of fondo 1 and P2..P4 of fondo 2
         }

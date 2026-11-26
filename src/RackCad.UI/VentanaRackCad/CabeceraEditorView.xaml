@@ -155,6 +155,9 @@
                     <Button x:Name="EmbeddedRestoreButton" Content="Restaurar estándar…" Style="{StaticResource HeadButton}" IsEnabled="{Binding CanRestore}"
                             AutomationProperties.Name="Restaurar el estándar de la cabecera del poste" Click="OnRestoreClick" />
                 </WrapPanel>
+                <!-- Correction 2 of the review: why «Copiar a otros postes…» is not offered (a calculated cabecera with no change). -->
+                <TextBlock x:Name="CopyBlockedText" Text="{Binding CopyBlockedText}" Style="{StaticResource OptionalText}"
+                           Foreground="{DynamicResource ShellTextSecondaryBrush}" />
                 <TextBlock x:Name="DiffText" Text="{Binding DiffText}" Style="{StaticResource OptionalText}" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
                 <TextBlock x:Name="SubLineText" Text="{Binding SubLine}" Style="{StaticResource OptionalText}" Margin="0,2,0,0" FontStyle="Italic"
                            Foreground="{DynamicResource ShellTextSecondaryBrush}" />
