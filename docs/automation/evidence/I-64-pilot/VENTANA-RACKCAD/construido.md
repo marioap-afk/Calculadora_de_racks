@@ -407,7 +407,7 @@ Los menores:
 
 ## Dinámico, correcciones de la revisión de Selectivo (2026-11-25)
 
-La revisión de la entrega 1 de Selectivo (hallazgos I-01 y M-02) encontró dos fallos que Dinámico también tenía. Por orden del Owner («Corrige también Dinámico en su rama») se corrigieron aquí, sobre `dc82a43c`, sin commit. Fuera de estas dos correcciones Dinámico no cambia.
+La revisión de la entrega 1 de Selectivo (hallazgos I-01 y M-02) encontró dos fallos que Dinámico también tenía. Por orden del Owner («Corrige también Dinámico en su rama») se corrigieron aquí, sobre `dc82a43c` (commit `8fd26a14`). Fuera de estas dos correcciones Dinámico no cambia.
 
 **1. La casilla «Guía de entrada» con «varía» quitaba en vez de poner (I-01 en Dinámico).**
 - Con una selección mixta, la casilla del inspector está indeterminada. WPF, al hacer clic, la pasa a «sin marcar», no a «marcada», y la ventana quitaba la guía de todas las celdas de la selección.
@@ -463,3 +463,110 @@ La revisión de la entrega 1 de Selectivo (hallazgos I-01 y M-02) encontró dos 
   - UI completa: 2545/0/48 (2593);
   - Core Full: 19088/0/403 (base de `dc82a43c`: 19076/0/403; las 12 nuevas son las de `RackSiblingDesignsTests`);
   - Plugin Debug: 0 errores.
+
+## Dinámico: B-1 y los hallazgos de la revisión de su corrección (2026-11-25, noche)
+
+Tercera tanda, encargo α, sobre `8fd26a14`, sin commit. Corrige el fallo B-1 del smoke de la entrega 1 de Selectivo y los hallazgos de la revisión independiente de `8fd26a14` (I-01, I-02 y M-01), más M-11 de Dinámico. Sin AutoCAD.
+
+**1. B-1: «Insertar vista…» dejaba la vista nueva con el diseño anterior (bloqueante).**
+- **Lo que se vio en el smoke:**
+  - DIN 1 tenía la lateral y la planta con pesos de 1100.
+  - Se cambió el peso de N1 a 1200 sin «Actualizar» y se pidió «Insertar vista…» → «Frontal - salida».
+  - La ventana dijo «AutoCAD redibujó 2 vistas del rack con el borrador e insertó 1 vista nueva.».
+  - La lateral y la planta quedaron con 1200; la frontal nueva, con 1100.
+- **La causa exacta (OBSERVADO, leído en el código):**
+  - Con inserción, `ApplyDynamicEdit` redibuja las vistas que existen con el borrador (`BuildDynamicPayload(design, id, name, …)`) y prepara la vista nueva con la cola ID18 (`RackViewBatchProducts.Dynamic(…, embed, project, authorized.AuthoredInput)`).
+  - Como el rack ya existe, la cola usa `RackProductPreparer.PrepareExisting`. Este compone el sobre de la vista nueva con la identidad, el nombre y el diseño de su FUENTE (`RackProductPrepare.cs`: `source.Id, source.Name, source.Design`). La geometría, en cambio, sí sale del sistema del borrador: el puerto de resolución devuelve siempre el sistema editado.
+  - `RackViewBatchProducts.Dynamic` le pasaba como fuente la vista elegida tal como estaba en el dibujo (`embed`). El diseño serializado del borrador, que ya calculaba, solo se usaba para un rack nuevo.
+  - Por eso la vista nueva tenía la geometría del borrador, pero en su sobre el diseño y el nombre de antes. La regla de M-02 lo detectaba después, pero no lo evitaba.
+- **La corrección:**
+  - Una regla nueva y pura, `RackInsertedViewSource.Edited(source, rackId, rackName, serializedDesign)`, en `src/RackCad.Application/Views/Preparation/RackInsertedViewSource.cs`.
+    - Devuelve el sobre elegido (con su vista, su corte, sus propiedades personalizadas y sus datos de extensión, I-11) con la identidad, el nombre y el diseño que la edición escribe en las vistas existentes.
+    - Un rack nuevo no tiene fuente: `null` sigue siendo `null`.
+  - `RackViewBatchProducts.Dynamic` se la pasa a la cola, con el mismo diseño serializado que ya usaba para un rack nuevo.
+  - Es una llamada nueva a `RackEmbedComposer.Compose`, así que entra en el censo T-GRD-02 con su clasificación: compone con el sobre real (`source`) y no pasa `null`.
+- **RACKEDITAR tenía el mismo fallo, y el arreglo también lo cubre.** «Insertar» del editor clásico de Dinámico, con cambios en la ventana, pasa por la misma mitad (`EditDynamic` → `ApplyDynamicEdit`). **Por tanto, `main` también tiene el fallo.**
+- **Selectivo está bien (OBSERVADO por lectura; no se ejecutó en AutoCAD).**
+  - La rama `!UpdateOnly` de `RackSelectivoCommands.EditSelective` reconcilia primero (`LinkedPropertyReconciler.Reconcile`).
+  - Prepara la vista nueva con `SelectiveInsertPort.TryPrepare`, que compone su fuente con el diseño reconciliado (`curedSource = ComposeEnvelope(source, rackId, rackName, …, authoredJson)`).
+  - Redibuja las hermanas con ese mismo `authoredJson`.
+  - Nota: con «Insertar», las líneas de `DrawSelectiveViewFromAuthored` del final de `EditSelective` nunca se ejecutan, porque esa rama ya ha vuelto antes. No es un fallo.
+- **Push Back, Cantilever y Cabecera tienen el mismo fallo (OBSERVADO; no se tocó).**
+  - Su «Insertar» de RACKEDITAR redibuja las vistas existentes con el diseño de la ventana (`BuildPushBackPayload`, `BuildCantileverPayload` y `BuildCabeceraPayload`, con `design` o `config`).
+  - Pero a su cola le pasa `embed` como fuente (`RackViewBatchProducts.PushBack`, `.Cantilever` y `.Header`).
+  - También está en `main`. El arreglo sería la misma línea en cada fábrica, con su prueba. Lo decide el Owner.
+
+**2. `RackSiblingDesigns`: I-01 e I-02 de la revisión.**
+- **I-01: las definiciones de un xref no deben contar. Ya no contaban (OBSERVADO).**
+  - `FindRackBlocks` lee con `RackBlockFinder.ScanEnvelopes`, que se salta toda definición con `IsFromExternalReference`.
+  - Ese es el mismo dato que `RackSiblingScan` entrega a la membresía como `IsXrefDependent`. La membresía lo clasifica como `ReadOnly`, fuera de `MutableMembers`.
+  - Las dos comparan además el Id sin distinguir mayúsculas y dejan fuera los sobres ilegibles. El conjunto de la puerta es, por tanto, el mismo que el de producción.
+  - La revisión no había leído `ScanEnvelopes`. No hubo que cambiar el código. Una prueba fija la equivalencia: la membresía con una definición de xref y tres guardas de fuente (`FindRackBlocks`, `ScanEnvelopes` y `TraverseCore`).
+  - **Pregunta abierta (INFERIDO, sin AutoCAD):** las definiciones de un rack que está DENTRO de un xref suelen aparecer en el dibujo anfitrión como símbolos dependientes («xref|bloque», `IsDependent`), no como `IsFromExternalReference`.
+    - Si conservan su Xrecord, la producción (RACKEDITAR) y la puerta las cuentan a la vez como vistas del rack.
+    - En `main` pasa lo mismo, y aquí no se cambió: cambiarlo solo en la puerta volvería a separar los dos conjuntos.
+- **I-02: el Id se compara sin distinguir mayúsculas, como en `FindRackBlocks` (CORREGIDO).**
+  - El comparador de AUTH-13 lee el Id de cada sobre distinguiendo mayúsculas (`AuthoredRawReader`). Ahora, una vista con el Id del rack en otras mayúsculas se le presenta con el Id pedido, en una copia en memoria: el sobre del dibujo no cambia.
+  - Un Id de otro rack sigue sin coincidir. Selectivo no compara Ids, así que no cambia.
+  - **D-14 (decisión de la sesión):** si las hermanas tienen Ids que solo difieren en mayúsculas:
+    - la puerta abre el rack, y «Actualizar» las iguala (escribe el Id de la primera en todas);
+    - «Insertar vista…» lo sigue rechazando por la regla de producción: `TryAuthorize` compara con el Id exacto de la vista elegida, y la cola falla con «no se preparo la cola ID18; no se modifico ningun bloque»;
+    - es la opción cerrada ante la duda, y un «Actualizar» lo resuelve.
+
+**3. M-01: la casilla «Guía de entrada» con la selección vacía (CORREGIDO).**
+- Una selección sin celdas activas ya no puede escribir. Por ejemplo, la de un frente en blanco, que es donde queda la selección al ponerlo en blanco.
+  - La casilla se desactiva: `IsEnabled` pasa a `CanEditSelectionGuide`, que exige al menos una celda activa en la selección.
+  - El setter tampoco escribe: no recompone, no cambia el mensaje y no deja el borrador «Modificado».
+- Antes, un clic llamaba a `SetGuide([], true)`, que devolvía `true` sin cambiar nada, y el borrador se recomponía. Como «Modificado» se calcula por diferencia, en la práctica no aparecía un falso «Modificado», pero sí se escribía y se cambiaba el mensaje.
+
+**4. M-11 de Dinámico (CORREGIDO, como S-28 de Selectivo).**
+- Cuando la orden toma la escritura (`RequestStarted`), la ventana avisa (`WriteTaken`) al editor de Dinámico de ese rack, o al del Dinámico nuevo.
+- Desde ese momento el editor ya no dice «pulsa «Dejar de esperar»», sino el texto de S-28: «AutoCAD ya tomó la escritura del rack: espera a que termine, o termina o cancela la orden en AutoCAD; la ventana recibirá su respuesta.».
+- Ese texto vale para el motivo de «Actualizar», para el de «Insertar vista…» y para cualquier intento de editar mientras se escribe.
+- La escritura siguiente vuelve a empezar sin tomar.
+- **Al integrar con la rama de Selectivo:** en esa rama, el mismo `OnRequestStarted` de `RackCadWindowViewModel` avisa además al editor de Selectivo. Las dos líneas van juntas.
+
+**5.** La sección «Dinámico, correcciones de la revisión de Selectivo» ya no dice «sin commit»: dice «(commit `8fd26a14`)», como en la rama de Selectivo.
+
+**Las pruebas:**
+- Core, `RackInsertedViewDesignTests` (nuevo, 4 casos):
+  - **B-1 sin AutoCAD.** La cola ID18 prepara la vista nueva de un rack del dibujo (lateral y planta con 1100) con un borrador de 1200. Se compone como `RackViewBatchProducts.Dynamic`, con el comparador AUTH-13 y el preparador reales. La vista nueva lleva el diseño editado, igual al de las vistas redibujadas (1200), y `RackSiblingDesigns` dice que las tres coinciden.
+  - **Lo que fue B-1.** Con la vista elegida tal como estaba, la vista nueva sale con 1100 y las hermanas no coinciden.
+  - **La regla.** Da también el nombre y la identidad de la edición, conserva lo que lleva el sobre elegido y no cambia el sobre del dibujo; con `null` devuelve `null`.
+  - **La guarda de fuente.**
+    - `RackViewBatchProducts.Dynamic` pasa `RackInsertedViewSource.Edited(source, rackId, rackName, serialized)` con el mismo `serialized`.
+    - `ApplyDynamicEdit` le pasa el mismo `design, id, name` con el que redibuja (los tres `BuildDynamicPayload`).
+    - `EditDynamic` (RACKEDITAR) pasa por `ApplyDynamicEdit`.
+- Core, `RackSiblingDesignsTests` (+2):
+  - I-02: el rack pedido en otras mayúsculas, hermanas con mayúsculas distintas, el diseño y el nombre siguen decidiendo, otro Id no es este rack, el sobre no cambia, y lo mismo en Push Back;
+  - I-01: la equivalencia de los dos conjuntos.
+- Core, los dos censos de `RackEmbedComposer.Compose` cuentan la composición nueva con su clasificación: T-GRD-02 en `CustomPropertiesEnvelopeGuardTests` y T-ENV-12 en `CustomPropertiesEnvelopeTests` (pasa de 11 a 12 llamadas). La primera Core Full se paró en T-ENV-12, que no estaba en las clases focales; se corrigió y se repitió la suite completa.
+- UI, `DynamicSafetyTabTests` (+2), M-01:
+  - en el modelo de la vista, con un frente en blanco en el dibujo y su celda elegida: la casilla no se ofrece; escribirla no cambia nada (solo se refresca la casilla, sin mensaje y sin «Modificado», y el diseño y las celdas sin guía quedan iguales); de vuelta en una celda activa, escribe;
+  - en la vista con WPF real: desactivada en la celda del frente en blanco, activa en una celda activa.
+- UI, `RackCadDynamicEditorTests` (+1), M-11:
+  - el texto antes y después de que la orden tome la escritura, en el motivo de «Actualizar», en el de «Insertar vista…» y al intentar editar;
+  - la escritura siguiente;
+  - el Dinámico nuevo.
+
+**Comprobación en rojo:** ocho piezas rotas a propósito, una a una. Tras cada una se recompiló y se ejecutaron las clases afectadas: en Core, `RackInsertedViewDesignTests`, `RackSiblingDesignsTests` y `CustomPropertiesEnvelopeGuardTests` (40 casos); en UI, `DynamicSafetyTabTests`, `RackCadDynamicEditorTests` y `RackCadWindowTests` (108).
+1. **B-1, la regla**, devolviendo la vista elegida tal como estaba (el comportamiento de antes): fallan la de B-1 y la de la regla.
+2. **B-1, el Plugin**, con `RackViewBatchProducts.Dynamic` pasando `source` sin la regla: falla la guarda de la composición.
+3. **I-02**, el Id comparado distinguiendo mayúsculas: falla la de I-02.
+4. **I-01**, `ScanEnvelopes` sin saltarse las definiciones de xref: falla la de la equivalencia.
+5. **M-01, el modelo de la vista**, sin la guarda de la selección vacía: falla la del modelo de la vista.
+6. **M-01, la vista**, con la casilla activada por `CanEditGuide`, como antes: falla la de WPF real.
+7. **M-11, la ventana**, sin avisar al editor de que la orden tomó la escritura: falla la de M-11.
+8. **M-11, el editor**, diciendo siempre «Dejar de esperar»: falla la de M-11.
+
+Cada archivo se restauró desde sus bytes originales con fecha nueva y se comprobó su SHA-256 contra el de antes de romperlo (los siete coinciden). Después se recompiló todo con `--no-incremental` antes de las suites completas.
+
+**Los números**, sobre `8fd26a14` con estas correcciones, recompilado con `--no-incremental`:
+- UI completa: 2548/0/48 (2596), que son las 2545 de la base más las 3 nuevas;
+- Core Full: 19094/0/403 (19497), que son las 19088 de la base más las 6 nuevas;
+- Plugin Debug: 0 errores (las 2 advertencias MSB3277 de las referencias de AutoCAD ya estaban).
+
+**Lo que queda abierto:**
+- El smoke en AutoCAD de B-1, por «Insertar vista…» y por RACKEDITAR «Insertar» con cambios. Hay que leer por COM que la vista nueva lleva el peso del borrador y que la ventana vuelve a abrir el rack.
+- El mismo fallo en Push Back, Cantilever y Cabecera, que también está en `main`.
+- La pregunta de los símbolos dependientes de un xref (I-01).

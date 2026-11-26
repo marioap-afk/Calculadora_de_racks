@@ -242,7 +242,11 @@ namespace RackCad.UI.VentanaRackCad
     public sealed class DynamicEditorViewModel : ObservableObject
     {
         private const string Varies = "Varía";
-        private const string WritingText = "AutoCAD está escribiendo el rack: espera a que termine o pulsa «Dejar de esperar».";
+        private const string WaitingWriteText = "AutoCAD está escribiendo el rack: espera a que termine o pulsa «Dejar de esperar».";
+
+        // M-11: once the command took the write the window no longer offers «Dejar de esperar» (I-02 of the fifth review), so the editor
+        // no longer says to press it; the same text as S-28 of the Selectivo.
+        private const string TakenWriteText = "AutoCAD ya tomó la escritura del rack: espera a que termine, o termina o cancela la orden en AutoCAD; la ventana recibirá su respuesta.";
 
         private static readonly RackProjectStore Store = new();
 
@@ -251,6 +255,7 @@ namespace RackCad.UI.VentanaRackCad
         private int _selectedTab = 1;
         private bool _dirty;
         private bool _writing;
+        private bool _writeTaken;
         private bool _confirmingClose;
         private string _baselineJson;
         private string _baselineName = string.Empty;
@@ -472,6 +477,8 @@ namespace RackCad.UI.VentanaRackCad
             {
                 var shown = SelectionGuide;
                 if (!value.HasValue) { OnPropertyChanged(nameof(SelectionGuide)); return; }
+                // M-01 of the review of the fix: with no active cell in the selection there is nothing to write (the box is disabled too).
+                if (!SelectedActiveCells().Any()) { OnPropertyChanged(nameof(SelectionGuide)); return; }
                 var put = shown.HasValue ? value.Value : true;
                 if (put == shown) { OnPropertyChanged(nameof(SelectionGuide)); return; }
                 if (!CanEditGuide) { Say(_editor.GuideSelection == null ? GuideSummary : WritingText, error: true); OnPropertyChanged(nameof(SelectionGuide)); return; }
@@ -479,6 +486,12 @@ namespace RackCad.UI.VentanaRackCad
                 Apply(() => _editor.SetGuide(cells, put), null);
             }
         }
+
+        /// <summary>
+        /// «Guía de entrada» of the inspector can be written: the rack has a guide, nothing is being written, and the selection has an
+        /// active cell (a selection only in a blank front has none: the box is disabled, M-01 of the review of the fix).
+        /// </summary>
+        public bool CanEditSelectionGuide => CanEditGuide && SelectedActiveCells().Any();
 
         /// <summary>The label of «Guía de entrada»: with a mixed selection it says that marking it puts the guide in all the cells.</summary>
         public string SelectionGuideLabel => SelectionGuide.HasValue ? "Guía de entrada" : "Guía de entrada (varía; marcar la pone en todas)";
@@ -881,9 +894,25 @@ namespace RackCad.UI.VentanaRackCad
         {
             if (_writing) return;
             _writing = true;
+            _writeTaken = false;
             SetConfirmingClose(false);
             Say("Escribiendo el rack en el dibujo…", error: false);
             Rebuild();
+        }
+
+        /// <summary>What the editor says while AutoCAD writes it: «Dejar de esperar» only while the command has not taken the write (M-11).</summary>
+        public string WritingText => _writeTaken ? TakenWriteText : WaitingWriteText;
+
+        /// <summary>
+        /// The command of AutoCAD took the write (<c>RequestStarted</c>): its answer will come, and the window no longer offers «Dejar de
+        /// esperar», so the editor no longer says to press it (M-11, as S-28 of the Selectivo).
+        /// </summary>
+        public void WriteTaken()
+        {
+            if (!_writing || _writeTaken) return;
+            _writeTaken = true;
+            OnPropertyChanged(nameof(WritingText));
+            RaiseState();
         }
 
         /// <summary>The answer arrived, or the window stopped waiting: the editor can be edited again.</summary>
@@ -891,6 +920,7 @@ namespace RackCad.UI.VentanaRackCad
         {
             if (!_writing) return;
             _writing = false;
+            _writeTaken = false;
             Rebuild();
         }
 
@@ -1064,6 +1094,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(CanUpdate));
             OnPropertyChanged(nameof(UpdateBlockedText));
             OnPropertyChanged(nameof(CanEditGuide));
+            OnPropertyChanged(nameof(CanEditSelectionGuide));
             OnPropertyChanged(nameof(CanEditSafety));
             OnPropertyChanged(nameof(CanInsertView));
             OnPropertyChanged(nameof(InsertViewBlockedText));
@@ -1147,6 +1178,7 @@ namespace RackCad.UI.VentanaRackCad
 
             OnPropertyChanged(nameof(SelectionGuide));
             OnPropertyChanged(nameof(SelectionGuideLabel));
+            OnPropertyChanged(nameof(CanEditSelectionGuide));
             OnPropertyChanged(nameof(GuideSummary));
             Merge(ref _cellFields, BuildCellFields(), nameof(CellFields));
             Merge(ref _frontFields, BuildFrontFields(), nameof(FrontFields));

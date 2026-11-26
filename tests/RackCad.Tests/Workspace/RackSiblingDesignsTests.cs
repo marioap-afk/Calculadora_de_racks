@@ -9,6 +9,7 @@ using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
 using RackCad.Application.Systems.Dynamic;
 using RackCad.Application.VentanaRackCad;
+using RackCad.Application.Views.Redraw;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.Shared;
 using Xunit;
@@ -54,9 +55,9 @@ public class RackSiblingDesignsTests
 
     // One view as the drawing holds it: the envelope composed as a redraw composes it, written and read back as the block finder reads it.
     private static RackSiblingView View(string handle, string kind, string design, string name = "DIN 1",
-        string view = RackEmbedDocument.ViewLateral, int section = 0, string? customProperties = null)
+        string view = RackEmbedDocument.ViewLateral, int section = 0, string? customProperties = null, string? id = null)
     {
-        var envelope = RackEmbedComposer.Compose(null, kind, RackId, name, view, section, design);
+        var envelope = RackEmbedComposer.Compose(null, kind, id ?? RackId, name, view, section, design);
         if (customProperties != null) envelope.CustomProperties = JsonDocument.Parse(customProperties).RootElement.Clone();
         var store = new RackEmbedStore();
         return new RackSiblingView(handle, store.Deserialize(store.Serialize(envelope)));
@@ -211,6 +212,77 @@ public class RackSiblingDesignsTests
         Assert.Equal(RackSiblingDesignsOutcome.Divergent, Compare(
             View("4C1", RackEmbedDocument.KindPushBack, design, name: "PB 1"),
             View("4C2", RackEmbedDocument.KindPushBack, design, name: "PB 2", section: 1)).Outcome);
+    }
+
+    // I-02 of the review of the fix: the door finds the views of the rack as FindRackBlocks finds them, by the identity without case (the list
+    // of the window groups them the same way), and the AUTH-13 comparator reads each identity with case. The same rack in other case is the
+    // same rack: only the design and the name decide.
+    [Fact]
+    public void TheIdentityOfTheRackIsMatchedWithoutCaseAsTheDoorFindsItsViews()
+    {
+        var design = DynamicJson();
+        var upper = RackId.ToUpperInvariant();
+        Assert.NotEqual(RackId, upper);
+
+        // The rack asked for in other case than its views, and views that differ in case among themselves.
+        Assert.Equal(RackSiblingDesignsOutcome.Same, RackSiblingDesigns.Compare(upper, new[]
+        {
+            View("2A1", RackEmbedDocument.KindDynamic, design),
+            View("2A2", RackEmbedDocument.KindDynamic, design, view: RackEmbedDocument.ViewPlanta, section: -1),
+        }).Outcome);
+        var mixed = View("2A2", RackEmbedDocument.KindDynamic, design, section: 1, id: upper);
+        Assert.Equal(RackSiblingDesignsOutcome.Same, Compare(View("2A1", RackEmbedDocument.KindDynamic, design), mixed).Outcome);
+        Assert.Equal(upper, mixed.Envelope.Id); // the envelope of the drawing is not changed
+
+        // The design and the name still decide.
+        Assert.Equal(RackSiblingDesignsOutcome.Divergent, Compare(
+            View("2A1", RackEmbedDocument.KindDynamic, design),
+            View("2A2", RackEmbedDocument.KindDynamic, DynamicJson(d => d.Fronts[0].PalletCount = 3), section: 1, id: upper)).Outcome);
+        Assert.Equal(RackSiblingDesignsOutcome.Divergent, Compare(
+            View("2A1", RackEmbedDocument.KindDynamic, design),
+            View("2A2", RackEmbedDocument.KindDynamic, design, name: "DIN 2", section: 1, id: upper)).Outcome);
+
+        // Another identity is another rack, whatever its case: not this rack's view.
+        Assert.Equal(RackSiblingDesignsOutcome.Unverifiable, Compare(
+            View("2A1", RackEmbedDocument.KindDynamic, design),
+            View("2A2", RackEmbedDocument.KindDynamic, design, section: 1, id: "7D2F0A3E-9B2D-4E57-8A41-2F7D3C9B5E10")).Outcome);
+
+        // The same for Push Back, the other kind of AUTH-13 the window may meet.
+        var pushBack = ComputedParametersSummaryKit.PushBackJson();
+        Assert.Equal(RackSiblingDesignsOutcome.Same, Compare(
+            View("4C1", RackEmbedDocument.KindPushBack, pushBack, name: "PB 1"),
+            View("4C2", RackEmbedDocument.KindPushBack, pushBack, name: "PB 1", section: 1, id: upper)).Outcome);
+    }
+
+    // I-01 of the review of the fix: the definitions an xref brings must not count, as the membership of production leaves them out (ReadOnly,
+    // outside MutableMembers, the set AUTHORED_DIVERGENT compares). The door hands the views of FindRackBlocks, whose scan already skips them
+    // by the same fact the scan of the membership classifies (BlockTableRecord.IsFromExternalReference), and matches the identity without
+    // case as the membership does: the two sets are the same.
+    [Fact]
+    public void TheViewsOfTheDoorLeaveOutTheDefinitionsOfAnXrefAsTheMembershipOfProductionDoes()
+    {
+        var facts = new[]
+        {
+            new RackSiblingScanFact("2A1", RackEmbedDocument.ViewLateral, false, false, true, RackId, RackId, 1, 0, false),
+            new RackSiblingScanFact("2A2", RackEmbedDocument.ViewLateral, false, true, true, RackId, RackId, 1, 0, false),
+            new RackSiblingScanFact("2A3", RackEmbedDocument.ViewPlanta, false, false, true, RackId.ToUpperInvariant(), RackId.ToUpperInvariant(), 1, 0, false),
+        };
+        var membership = RackSiblingMembership.Classify(facts, RackId, null, false);
+        Assert.Equal(RackSiblingMembershipKind.ReadOnly, membership.Members.Single(m => m.Fact.DefinitionKey == "2A2").Kind);
+        Assert.Equal(new[] { "2A1", "2A3" }, membership.MutableMembers.Select(m => m.Fact.DefinitionKey).ToArray());
+
+        var support = WorkspaceHostSource.Code("src/RackCad.Plugin/RackCommandSupport.cs");
+        var find = WorkspaceHostSource.BodyOf(support, @"public\s+static\s+[\w.<>(),\s]+\s+FindRackBlocks\s*\(\s*Document\s+document,\s*string\s+rackId\s*\)");
+        Assert.Contains("RackBlockFinder.ScanEnvelopes(transaction, document.Database, includeReferenceCount: false)", find, StringComparison.Ordinal);
+        Assert.Matches(@"string\.Equals\(envelope\.Embed\.Id,\s*rackId,\s*System\.StringComparison\.OrdinalIgnoreCase\)", find);
+
+        var finder = WorkspaceHostSource.BodyOf(WorkspaceHostSource.Code("src/RackCad.Plugin/RackBlockFinder.cs"),
+            @"public\s+static\s+List<RackEnvelopeScan>\s+ScanEnvelopes\s*\(");
+        Assert.Matches(@"if\s*\(\s*record\.IsLayout\s*\|\|\s*record\.IsAnonymous\s*\|\|\s*record\.IsFromExternalReference\s*\)\s*\{\s*continue;\s*\}", finder);
+
+        var traverse = WorkspaceHostSource.BodyOf(WorkspaceHostSource.Code("src/RackCad.Plugin/Views/RackSiblingScan.cs"),
+            @"internal\s+static\s+RackSiblingDrawingScan\s+TraverseCore\s*\(");
+        Assert.Matches(@"new\s+RackSiblingScanFact\(\s*key,\s*envelope\?\.View,\s*definitionId\s*==\s*selectedDefinition,\s*definition\.IsFromExternalReference,", traverse);
     }
 
     // ------------------------------------------------------------------ the guard of the door

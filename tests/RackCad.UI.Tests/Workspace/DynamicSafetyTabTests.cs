@@ -194,6 +194,74 @@ namespace RackCad.UI.Tests
             });
         }
 
+        // M-01 of the review of the fix of Dinámico: a selection with no active cell (here, a cell of a front that is blank in the drawing)
+        // has nothing to put the guide in. The box is disabled, and a write of it changes nothing: no recomposition, no message, no
+        // «Modificado».
+        [Fact]
+        public void WithNoActiveCellInTheSelectionTheGuideBoxWritesNothing()
+        {
+            var structure = Structure();
+            structure.Fronts[1].IsActive = false;
+            var draft = new DynamicDraftEditor(UiSupport.LoadCatalogSafe());
+            draft.LoadFrom(structure, "DIN 1");
+            Assert.True(draft.Recompose(), draft.LastError);
+            var opened = new DynamicDraftEditor(UiSupport.LoadCatalogSafe());
+            opened.LoadFrom(new RackProjectStore().Deserialize(Json(draft.Design))!.DynamicDesign, "DIN 1");
+            var vm = new DynamicEditorViewModel(opened, "DIN-1", _ => { });
+            Assert.False(vm.IsDirty);
+            var baseline = Json(vm.Draft.Design);
+            var offCells = vm.Draft.GuideSelection!.GuiaEntradaOffCells.Select(c => (c.Frente, c.Level)).OrderBy(c => c).ToArray();
+
+            // A cell with the guide: the box can be written.
+            Assert.True(vm.CanEditSelectionGuide);
+            vm.ClickCell(1, 0, control: false, shift: false);
+            Assert.True(vm.CanEditGuide);
+            Assert.False(vm.CanEditSelectionGuide);
+            Assert.Equal(false, vm.SelectionGuide);
+
+            vm.EditSafety(); // a message the write would replace
+            var message = vm.Message;
+            Assert.False(string.IsNullOrEmpty(message));
+            var raised = new List<string?>();
+            vm.PropertyChanged += (_, e) => raised.Add(e.PropertyName);
+
+            vm.SelectionGuide = true;
+            vm.SelectionGuide = false;
+
+            Assert.All(raised, name => Assert.Equal(nameof(DynamicEditorViewModel.SelectionGuide), name));
+            Assert.Equal(message, vm.Message);
+            Assert.False(vm.IsDirty);
+            Assert.Equal(baseline, Json(vm.Draft.Design));
+            Assert.Equal(offCells, vm.Draft.GuideSelection!.GuiaEntradaOffCells.Select(c => (c.Frente, c.Level)).OrderBy(c => c).ToArray());
+
+            // Back on an active cell, the box writes as before.
+            vm.ClickCell(0, 0, control: false, shift: false);
+            Assert.True(vm.CanEditSelectionGuide);
+            vm.SelectionGuide = false;
+            Assert.True(vm.IsDirty);
+        }
+
+        [Fact]
+        public void TheGuideBoxIsDisabledWithNoActiveCellInTheSelection()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var vm = Editor();
+                vm.SetFrontBlank(1, true);
+                vm.ClickCell(0, 0, control: false, shift: false);
+                var view = LaidOut(vm);
+                Assert.True(view.SelectionGuideBox.IsEnabled);
+
+                vm.ClickCell(1, 0, control: false, shift: false);
+                Lay(view);
+                Assert.False(view.SelectionGuideBox.IsEnabled);
+
+                vm.ClickCell(0, 1, control: false, shift: false);
+                Lay(view);
+                Assert.True(view.SelectionGuideBox.IsEnabled);
+            });
+        }
+
         [Fact]
         public void InNoCellAndInEveryCellWriteTheActiveCellsAndLeaveABlankFrontDormant()
         {
