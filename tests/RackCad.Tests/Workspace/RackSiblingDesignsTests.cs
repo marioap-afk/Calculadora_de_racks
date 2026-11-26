@@ -312,11 +312,13 @@ public class RackSiblingDesignsTests
                        + answer + @"\(new\s+\w+\(pending\.RequestId,\s*pending\.RackId,\s*false,[^;]*siblings\.Reason\)\);\s*return;\s*\}", body);
     }
 
-    // RACKSELECTIVOABRIR and RACKSELECTIVOAPLICAR follow the same rule: they compare the views once, after FindRackBlocks and before
-    // they read blocks[0] or hand it to ApplySelectiveEdit, and refuse with the reason of the rule.
+    // RACKSELECTIVOABRIR, RACKSELECTIVOAPLICAR and RACKSELECTIVOINSERTAR (entrega 2, added when E2 was integrated with this rule) follow
+    // the same rule: they compare the views once, after FindRackBlocks and before they read blocks[0] or hand it to the drawing half,
+    // and refuse with the reason of the rule.
     [Theory]
     [InlineData("RACKSELECTIVOABRIR", @"AnswerSelectiveRead\(SelectiveDesignRead\.Refused\(pending\.RequestId,\s*pending\.RackId,\s*null,\s*null,\s*siblings\.Reason\)\)", false)]
     [InlineData("RACKSELECTIVOAPLICAR", @"AnswerWrite\(new\s+RackDesignWritten\(pending\.RequestId,\s*pending\.RackId,\s*false,\s*siblings\.Reason\)\)", true)]
+    [InlineData("RACKSELECTIVOINSERTAR", @"AnswerWrite\(new\s+RackDesignWritten\(pending\.RequestId,\s*pending\.RackId,\s*false,\s*siblings\.Reason\)\)", false)]
     public void TheSelectiveCommandsOfTheDoorCompareTheViewsBeforeReadingOrWriting(string command, string answer, bool writes)
     {
         var body = CommandBody(command);
@@ -343,7 +345,8 @@ public class RackSiblingDesignsTests
         var code = WorkspaceHostSource.Code("src/RackCad.Plugin/VentanaRackCad/RackCadRackDoorCommands.cs");
         var views = WorkspaceHostSource.BodyOf(code, @"private\s+static\s+[\w.<>]+\s+Views\s*\(");
         Assert.Matches(@"foreach\s*\(\s*var\s*\(\s*blockId\s*,\s*embed\s*\)\s+in\s+blocks\s*\)\s*views\.Add\(new\s+RackSiblingView\(blockId\.Handle\.ToString\(\),\s*embed\)\);", views);
-        Assert.Equal(5, WorkspaceHostSource.Count(code, @"RackSiblingDesigns\.Compare\("));
+        // 6 since E2 was integrated: RACKSELECTIVOINSERTAR writes the draft in every view before it inserts, so it compares them too.
+        Assert.Equal(6, WorkspaceHostSource.Count(code, @"RackSiblingDesigns\.Compare\("));
     }
 
     private static string CommandBody(string command)
