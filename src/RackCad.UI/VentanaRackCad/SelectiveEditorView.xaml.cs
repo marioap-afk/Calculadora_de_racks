@@ -128,6 +128,13 @@ namespace RackCad.UI.VentanaRackCad
             _viewModel.RequestWrite();
         });
 
+        // E2 P3: as «Actualizar», the name just typed goes to the draft first (a new Selectivo is inserted with it).
+        private void OnInsertViewClick(object sender, RoutedEventArgs e) => Contained(() =>
+        {
+            NameBox.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
+            _viewModel.InsertView();
+        });
+
         private void OnDiscardClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Discard());
 
         private void OnCloseEditorClick(object sender, RoutedEventArgs e) => Contained(() =>

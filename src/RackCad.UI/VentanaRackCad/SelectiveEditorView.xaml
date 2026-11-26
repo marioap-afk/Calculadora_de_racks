@@ -148,6 +148,12 @@
                     <Button x:Name="UpdateButton" Content="Actualizar" Margin="0,12,8,4" Padding="14,4" VerticalAlignment="Top"
                             Style="{StaticResource PrimaryButtonStyle}" IsEnabled="{Binding CanUpdate}"
                             AutomationProperties.Name="Actualizar el dibujo con el borrador" Click="OnUpdateClick" />
+                    <!-- E2 P3: «Insertar vista…» (as Dinámico, decision 10 of the prototype): AutoCAD first writes the draft in the views that
+                         exist, then inserts the new ones; for a new Selectivo the same button is «Insertar en el dibujo…». -->
+                    <Button x:Name="InsertViewButton" Content="{Binding InsertViewLabel}" Margin="0,12,8,4" Padding="12,4" VerticalAlignment="Top"
+                            Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanInsertView}"
+                            ToolTip="{Binding InsertViewToolTip}"
+                            AutomationProperties.Name="{Binding InsertViewAccessibleText}" Click="OnInsertViewClick" />
                     <Button x:Name="DiscardButton" Content="Descartar" Margin="0,12,8,4" Padding="12,4" VerticalAlignment="Top"
                             Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanDiscard}"
                             AutomationProperties.Name="Descartar el borrador" Click="OnDiscardClick" />

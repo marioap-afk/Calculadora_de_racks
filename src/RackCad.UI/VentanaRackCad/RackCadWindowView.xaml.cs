@@ -85,7 +85,30 @@ namespace RackCad.UI.VentanaRackCad
                 || e.PropertyName == nameof(RackCadWindowViewModel.SelectiveEditors))
                 ShowRackContent();
             if (e.PropertyName == nameof(RackCadWindowViewModel.NewDynamicEditor)) ShowNewContent();
+            if (e.PropertyName == nameof(RackCadWindowViewModel.NewSelectiveEditor)) ShowNewSelectiveContent();
         }
+
+        // E2 P3: «Nuevo» hosts the editor of the new Selectivo being made here; the view is the one the page of the rack shows once it is
+        // inserted (kept with the views of the Selectivo editors).
+        private void ShowNewSelectiveContent()
+        {
+            var editor = _viewModel.NewSelectiveEditor;
+            if (editor == null)
+            {
+                NewSelectiveRackHost.Content = null;
+                return;
+            }
+
+            if (!_selectiveViews.TryGetValue(editor, out var view))
+            {
+                view = new SelectiveEditorView(editor);
+                _selectiveViews[editor] = view;
+            }
+
+            if (!ReferenceEquals(NewSelectiveRackHost.Content, view)) NewSelectiveRackHost.Content = view;
+        }
+
+        private void OnNewSelectiveHereClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.StartNewSelective());
 
         // «Nuevo» hosts the editor of the new Dinámico being made here; the view is the one the page of the rack shows once it is inserted.
         private void ShowNewContent()
