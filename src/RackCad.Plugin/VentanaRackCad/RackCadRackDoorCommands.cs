@@ -12,7 +12,8 @@ namespace RackCad.Plugin.VentanaRackCad
     /// it writes nothing. RACKDINAMICOABRIR only reads (no undo marker, no history); RACKDINAMICOAPLICAR writes the copies of the draft with
     /// the drawing half of RACKEDITAR, so one «U» undoes the whole update. They run in their own command context, where the read of the
     /// drawing and its transaction belong. The Selectivo has its own pair (Selectivo E1-A), RACKSELECTIVOABRIR and RACKSELECTIVOAPLICAR,
-    /// with the same rules; both read the register of project variables, as RACKEDITAR does before its window exists.
+    /// with the same rules; both read the register of project variables, as RACKEDITAR does before its window exists. Its second delivery
+    /// adds RACKSELECTIVOINSERTAR («Insertar vista…») and RACKSELECTIVONUEVO (a new Selectivo of the window), as Dinámico has them.
     /// </summary>
     public sealed class RackCadRackDoorCommands
     {
@@ -414,6 +415,60 @@ namespace RackCad.Plugin.VentanaRackCad
             {
                 RackCommandSupport.Report(ex);
                 door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false, "No se pudo insertar: " + ex.Message));
+            }
+        }
+
+        /// <summary>
+        /// A new Selectivo made in the window (Selectivo E2, as RACKDINAMICONUEVO for Dinámico): the insertion of a new rack, by the same
+        /// dispatch as the classic editor opened from «Nuevo» (RACKNUEVO, <see cref="RackMenuCommands.DispatchInsertion"/>), with the
+        /// identity the window gave it and the automatic name of I-60 when it has none. What it inserts is decided first by the pure rule
+        /// (<see cref="SelectiveDoorInsertion.PlanNewRack"/>): the views the draft can draw, never over a rack of the drawing with the same
+        /// identity. The answer counts the views of that identity that were placed, and gives the name the drawing holds.
+        /// </summary>
+        [CommandMethod("RACKSELECTIVONUEVO")]
+        public void InsertNewSelective()
+        {
+            var door = RackCadRackDoorPort.Current;
+            var document = AcApplication.DocumentManager.MdiActiveDocument;
+            if (document == null) return;
+
+            var pending = RackCadRackDoorPort.TakePendingSelectiveNew();
+            if (pending == null)
+            {
+                document.Editor.WriteMessage("\nRACKSELECTIVONUEVO la usa la ventana RackCad: no hay ningún rack nuevo pendiente de insertar.");
+                return;
+            }
+
+            door?.Started(pending.RequestId);
+
+            try
+            {
+                if (pending.Document != RackCadRackDoorPort.KeyOf(document))
+                {
+                    door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false, OtherDrawingText));
+                    return;
+                }
+
+                var write = pending.Write;
+                var plan = SelectiveDoorInsertion.PlanNewRack(
+                    write,
+                    RackCommandSupport.FindRackBlocks(document, pending.RackId).Count > 0,
+                    RackCad.Plugin.Drawing.LateralHeaderDrawService.LoadCatalog());
+                if (!plan.CanInsert)
+                {
+                    door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false, plan.Reason));
+                    return;
+                }
+
+                RackMenuCommands.DispatchInsertion(document,
+                    RackCad.UI.Systems.Selective.SelectiveDraftOutcome.NewRackRequest(write.RackId, write.Name, write.Design, write.System, plan.Views));
+                var placed = RackCommandSupport.FindRackBlocks(document, pending.RackId);
+                door?.AnswerWrite(SelectiveDoorInsertion.AnswerForNewRack(pending.RequestId, pending.RackId, placed.Count, placed.Count > 0 ? placed[0].Embed?.Name : null));
+            }
+            catch (System.Exception ex)
+            {
+                RackCommandSupport.Report(ex);
+                door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false, "No se pudo insertar el rack nuevo: " + ex.Message));
             }
         }
     }

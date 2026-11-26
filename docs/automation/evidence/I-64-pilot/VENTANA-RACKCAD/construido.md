@@ -560,3 +560,83 @@ Los menores:
 - Sigue sin detectarse un cambio del dibujo mientras se edita, salvo lo de S-04 (M-16 de Dinámico).
 - `RACKEDITAR` sigue con el editor clásico.
 - **La entrega 2:** «Extremos y seguridad» (decisiones 5, 6 y 13), «Insertar vista…», un Selectivo nuevo en la ventana y «Restaurar layout…» (decisión 8).
+
+## Selectivo en la ventana (línea D), entrega 2: «Insertar vista…» y un Selectivo nuevo, del lado de AutoCAD
+
+**Rama:** `architecture/workspace-persistente-rackcad-selectivo-e2-insertar` (local), desde `dc23b820`. La parte A del sprint (`31d3f1bf`) hizo `RACKSELECTIVOINSERTAR`; la tercera tanda (A2, sin commit) hizo `RACKSELECTIVONUEVO` y revisó la extracción de la parte A. Sin pantalla y sin AutoCAD.
+
+**Lo que se construyó:**
+- **Parte A (`31d3f1bf`), revisada en A2:**
+  - `SelectiveDoorWrite` lleva `InsertViews` y `NewRack`, como `RackDoorWrite` de Dinámico.
+  - `SelectiveDoorInsertion` (Application, archivo nuevo): las vistas que ofrece «Insertar vista…» en el orden de «Insertar varias…» del clásico (una frontal por fondo, un lateral por poste con corte, la planta), las elegidas que el rack puede dibujar (`DrawableViews`), las respuestas (las de Dinámico) y `RefusalOf`.
+  - `RACKSELECTIVOINSERTAR` relee el rack y el registro, planea como `RACKSELECTIVOAPLICAR` (`PlanSelectiveApply`), deja las vistas que se pueden dibujar y corre la mitad «Insertar» de RACKEDITAR.
+  - **La extracción `InsertSelectiveViews`** (la rama `!UpdateOnly` de `EditSelective`): comparada línea a línea con `dc23b820`, sin sangría, el cuerpo es el mismo. Cambian tres cosas:
+    1. repite al principio las cuatro líneas de `EditSelective` que leen el diseño, el sistema y el nombre (`DesignToInsert` y `SystemToInsert` dan los mismos objetos, así que `system.Name = name` pone el mismo valor otra vez);
+    2. las vistas llegan como argumento, y RACKEDITAR pasa `window.InsertionRequest.Views`, lo mismo que leía la rama;
+    3. cada `return;` antes de colocar es `return -1;` (cinco), y el final devuelve las vistas colocadas.
+  - RACKEDITAR ignora lo que devuelve y sale con `return;` como antes; el aviso de unidades (I-05) sigue antes, en `EditSelective`. **RACKEDITAR no cambia.**
+- **A2, el Selectivo nuevo de la ventana** (como `RACKDINAMICONUEVO`):
+  - **La puerta** (`RackCadRackDoorPort`): un rack nuevo (`NewRack`) va primero a su orden, `RACKSELECTIVONUEVO`, en su propio hueco (`_pendingSelectiveNew`, `TakePendingSelectiveNew`), que «Dejar de esperar» (`Abandon`) suelta. Se quitó el rechazo de la parte A («El Selectivo nuevo de la ventana todavía no se puede insertar.»). Sin vistas o sin identidad, la puerta no da la orden y dice el motivo de la regla (`RefusalOf`). La copia de la petición (identidad recortada, estados finales y vistas propias) es una sola función para las tres órdenes de escritura.
+  - **La regla pura** `SelectiveDoorInsertion.PlanNewRack` (Application) decide antes del despacho. No inserta nada si:
+    - no hay borrador (diseño y sistema), o la petición no es de un rack nuevo;
+    - no hay vistas o identidad (`RefusalOf`);
+    - ya hay en el dibujo un rack con esa identidad, con el texto de Dinámico (A2-03);
+    - una holgura está vinculada a una variable (A2-01);
+    - ninguna vista elegida se puede dibujar (A2-02).
+
+    Si no, da las vistas a insertar en su orden y sin repetir.
+  - **La orden** `RACKSELECTIVONUEVO` (`RackCadRackDoorCommands.cs`): toma la petición, avisa que la tomó (`Started`), comprueba el dibujo, planea con la regla y pasa por `RackMenuCommands.DispatchInsertion`, el despacho del clásico abierto desde «Nuevo» (RACKNUEVO), con el nombre automático de I-60 si el borrador no tiene nombre. La respuesta (`AnswerForNewRack`, la de Dinámico) cuenta las vistas de esa identidad que quedaron en el dibujo y da el nombre del sobre.
+  - **La petición** `SelectiveDraftOutcome.NewRackRequest` (UI, en `ISelectiveEditOutcome.cs`): la `SelectiveInsertionRequest` que arma el clásico en «Insertar varias…» de un rack nuevo, con la identidad de la ventana, su nombre y las vistas en su orden.
+  - **Los censos**, cada uno con su nota:
+    - las órdenes pasan de 50 a 51 (`SelectiveEditorOpenTests`);
+    - `A14SelectiveDoorCommands` añade `RACKSELECTIVONUEVO` (`CustomPropertiesCommandGuardTests`);
+    - la guarda de capas de `RackCadWindowListTests` añade `InsertSelectiveViews` y `DispatchInsertion` (A2-05).
+
+**Las decisiones:**
+
+| Id | Decisión | Por qué |
+|---|---|---|
+| A2-01 | `RACKSELECTIVONUEVO` no inserta un rack nuevo con una holgura vinculada a una variable, y lo dice | El despacho de «Nuevo» escribe el documento solo con el diseño (`SelectivePalletDesignDocument.From`), como el clásico abierto desde RACKNUEVO, que no ofrece vínculos: el vínculo se perdería sin aviso. Hoy la ventana no lo produce (decisión 12: un borrador nuevo lleva holguras literales); es una defensa |
+| A2-02 | Las vistas a insertar son las elegidas que el borrador puede dibujar, con los mismos hechos que usa el despacho (`SelectiveViewAvailabilityFacts` con el catálogo del Plugin). Una vista que ya no se puede dibujar se deja fuera sin aviso, como en `RACKSELECTIVOINSERTAR` de la parte A; si no queda ninguna, no se inserta nada | El despacho no prepara una vista que no puede dibujar, y la respuesta ya dice cuántas vistas se colocaron |
+| A2-03 | Antes de insertar, la orden comprueba que no hay en el dibujo un rack con la identidad que dio la ventana, con el mismo texto que `RACKDINAMICONUEVO` | El rack nuevo sería otra vista de un rack que ya existe |
+| A2-04 | La orden no avisa de las unidades: lo hace el despacho de «Nuevo» (I-05), una sola vez | Avisar dos veces sería ruido (el mismo motivo que da `DispatchInsertion`) |
+| A2-05 | La guarda de capas añade `InsertSelectiveViews` y `DispatchInsertion`: solo las órdenes de la puerta los llaman, nunca los archivos de la paleta | Colocan vistas con el jig y bloquean el documento (punto 3 del censo de E2) |
+| A2-06 | `RACKSELECTIVONUEVO` no compara las vistas hermanas (M-02) | Un rack nuevo no tiene |
+
+**Las pruebas:**
+- `SelectiveDoorInsertionTests` (Core; 12 de la parte A más 8 nuevas):
+  - `PlanNewRack`: las vistas que se pueden dibujar, en orden y sin repetir; cada rechazo con su texto; la identidad que ya está en el dibujo, con el texto de `RACKDINAMICONUEVO` (se busca en la fuente); la holgura vinculada rechazada y las literales aceptadas;
+  - el cableado, sobre la fuente:
+    - `RACKSELECTIVONUEVO` en su orden (petición, `Started`, otro dibujo, regla, despacho con las vistas del plan, respuesta), sin aviso de unidades propio;
+    - `RACKSELECTIVOINSERTAR` en su orden (la parte A no tenía prueba de cableado);
+    - RACKEDITAR inserta por la mitad extraída y sale: los pasos de la antigua rama, en su orden, y sus cinco `return -1;`;
+    - la puerta manda el rack nuevo a su orden antes que «Insertar vista…», con la regla, y suelta su hueco.
+- `SelectiveNewRackRequestTests` (UI, 4, archivo nuevo): la petición del Selectivo nuevo es la del clásico abierto desde «Nuevo» (la misma clase, vistas, vista antigua, identidad, nombre, diseño y sistema), con la primera vista frontal, lateral o planta; guarda su copia de las vistas; sin vistas no hay petición.
+- **Comprobación en rojo:** diez piezas rotas a propósito, una a una, con su prueba tras cada una; cada una falló:
+  1. sin comprobar la identidad del dibujo;
+  2. sin rechazar la holgura vinculada;
+  3. las vistas elegidas sin filtrar (fallan dos);
+  4. «Dejar de esperar» sin soltar el hueco del rack nuevo;
+  5. el rechazo de la parte A conservado en la puerta;
+  6. la orden con las vistas de la petición en lugar de las del plan;
+  7. un archivo de la paleta que llama a `DispatchInsertion` (la guarda de capas);
+  8. la orden sin registrar (fallan los dos censos y la prueba del cableado);
+  9. RACKEDITAR sin `return;` tras la inserción (seguiría a «Actualizar»);
+  10. la petición de UI sin sus vistas (fallan las cuatro).
+
+  Cada archivo se restauró de su copia con fecha nueva, para que la compilación siguiente lo recompile, y se comprobó que no quedan restos.
+- **Focales:**
+  - Core: `SelectiveDoorInsertionTests`, `SelectiveRackDoorTests`, `RackCadWindowListTests`, `CustomPropertiesCommandGuardTests`, `SelectiveEditorOpenTests`, `LinkedPropertyViewPayloadTests`, `LegacyViewPayloadCompositionCharacterizationTests`, `RackUnitsGuardSourceTests` e `I60BatchCreationNamingTests`: 222 de 222 (214 en `31d3f1bf`);
+  - UI: `SelectiveNewRackRequestTests`, `RackInsertionRequestTests`, `EditorViewBatchRequestTests`, `RackEditorSessionTests`, `RackCadSelectiveEditorTests`, `SelectiveDraftEditorEquivalenceTests` y las guardas: 127 de 127, sobre las fuentes restauradas.
+- **Un fallo de la parte A que encontró Core Full:** `SelectiveDoorInsertionTests.cs` declaraba el namespace `RackCad.Tests.Workspace`, y la guarda de I-23 (`NamespaceFolderGuardTests.TestProjects_KeepExactlyOneAssemblyRootNamespace`) exige `RackCad.Tests`. La primera pasada de Core Full dio 19107 correctas, 1 con error (esa guarda) y 403 omitidas, y ese fallo es el rojo. Con el namespace `RackCad.Tests`, la guarda pasa.
+- **Core Full:** 19108 correctas, 0 con error, 403 omitidas (19511). Es la base de E1, 19088, más las 12 de la parte A y las 8 de A2.
+- **Build Debug del Plugin:** 0 errores, sobre las fuentes restauradas (las 2 advertencias MSB3277 de las referencias de AutoCAD ya estaban).
+
+**Lo que queda abierto:**
+- **La pantalla,** según `sprint/spec-insertar-nuevo.md`:
+  - «Insertar vista…» en el editor de Selectivo, con `SelectiveDoorInsertion.ViewOptions` en el diálogo del clásico (`RackSystemKind.SelectiveRack`);
+  - «Selectivo en esta ventana» en «Nuevo» (`SelectiveDraftEditor.CreateNew`) y `MarkInserted`;
+  - el cierre que nombra «un Selectivo nuevo» y D-10.
+- **Para integrar:** cuando llegue M-02 (`…-selectivo-m02`), `RACKSELECTIVOINSERTAR` necesita la comparación de las vistas hermanas, como `RACKSELECTIVOAPLICAR`, porque escribe el borrador en todas las vistas antes de insertar.
+- **Declarado de la parte A:** en `RACKSELECTIVOINSERTAR`, «redibujadas» son las vistas que había menos las borradas, no las que redibujó la mitad de dibujo, que no lo devuelve. Si no hacía falta redibujar (el borrador ya es el dibujo), la respuesta dice igual que las redibujó; el borrador queda «Limpio», que es cierto.
+- **Sin AutoCAD:** `RACKSELECTIVONUEVO` y `RACKSELECTIVOINSERTAR` esperan el smoke: la colocación con el jig, el nombre automático, que un «U» deshaga la inserción y la cancelación de la colocación.

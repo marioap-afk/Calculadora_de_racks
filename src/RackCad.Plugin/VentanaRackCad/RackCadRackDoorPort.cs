@@ -17,7 +17,8 @@ namespace RackCad.Plugin.VentanaRackCad
     /// takes the request when it runs (<see cref="RackCadRackDoorCommands"/>) and answers through the events of the port with the number of
     /// the request. A newer request replaces an older one that never ran, and a request the window abandoned is dropped, so a late
     /// command does nothing. This file holds no AutoCAD transaction and no lock; the commands do their work in their own command context.
-    /// The Selectivo has its own two commands (Selectivo E1-A), with the same rules.
+    /// The Selectivo has its own two commands (Selectivo E1-A), with the same rules, and the two of its second delivery: «Insertar vista…»
+    /// (RACKSELECTIVOINSERTAR) and the new Selectivo of the window (RACKSELECTIVONUEVO), each in its own slot.
     /// </summary>
     public sealed class RackCadRackDoorPort : IRackCadSelectiveDoorPort
     {
@@ -28,6 +29,7 @@ namespace RackCad.Plugin.VentanaRackCad
         internal const string SelectiveReadCommand = "RACKSELECTIVOABRIR";
         internal const string SelectiveWriteCommand = "RACKSELECTIVOAPLICAR";
         internal const string SelectiveInsertCommand = "RACKSELECTIVOINSERTAR";
+        internal const string SelectiveNewCommand = "RACKSELECTIVONUEVO";
 
         /// <summary>A read that waits for its command: the number, the rack and the drawing it is for.</summary>
         internal sealed record PendingRead(long RequestId, string RackId, long Document);
@@ -54,6 +56,7 @@ namespace RackCad.Plugin.VentanaRackCad
         private static PendingRead _pendingSelectiveRead;
         private static PendingSelectiveWrite _pendingSelectiveWrite;
         private static PendingSelectiveWrite _pendingSelectiveInsert;
+        private static PendingSelectiveWrite _pendingSelectiveNew;
 
         public RackCadRackDoorPort()
         {
@@ -83,23 +86,35 @@ namespace RackCad.Plugin.VentanaRackCad
             if (write == null || string.IsNullOrWhiteSpace(write.RackId) || write.Design == null || write.System == null)
                 return RackCadClassicResult.Without(RackCadClassicStatus.Failed, "No hay un borrador válido que escribir.");
 
-            // Selectivo E2, part A: the new Selectivo of the window is not wired yet (RACKSELECTIVONUEVO); «Insertar vista…» has its own command.
-            if (write.NewRack) return RackCadClassicResult.Without(RackCadClassicStatus.Failed, "El Selectivo nuevo de la ventana todavía no se puede insertar.");
-            var insert = write.Inserts;
+            // Selectivo E2: a new Selectivo of the window goes first to its own command, which inserts it with the views chosen, never
+            // without views or identity (the rule of the door); «Insertar vista…» has its own command too.
+            if (write.NewRack)
+            {
+                var refusal = SelectiveDoorInsertion.RefusalOf(write);
+                if (refusal != null) return RackCadClassicResult.Without(RackCadClassicStatus.Failed, refusal);
+                return Send(
+                    SelectiveNewCommand + " ",
+                    document => _pendingSelectiveNew = PendingCopy(write, document),
+                    () => _pendingSelectiveNew = null);
+            }
 
+            var insert = write.Inserts;
             return Send(
                 (insert ? SelectiveInsertCommand : SelectiveWriteCommand) + " ",
-                document => SetSelectivePending(insert, new PendingSelectiveWrite(
-                    write with
-                    {
-                        RackId = write.RackId.Trim(),
-                        LinkedPropertyFinalStates = new Dictionary<PropertyId, LinkedPropertyEditState>(
-                            write.LinkedPropertyFinalStates ?? new Dictionary<PropertyId, LinkedPropertyEditState>()),
-                        InsertViews = insert ? new List<RackViewAddress>(write.InsertViews) : null,
-                    },
-                    KeyOf(document))),
+                document => SetSelectivePending(insert, PendingCopy(write, document)),
                 () => SetSelectivePending(insert, null));
         }
+
+        // The request as it waits: the identity trimmed, and its own copies of the final linked states and of the views to insert.
+        private static PendingSelectiveWrite PendingCopy(SelectiveDoorWrite write, AcDocument document) => new PendingSelectiveWrite(
+            write with
+            {
+                RackId = write.RackId.Trim(),
+                LinkedPropertyFinalStates = new Dictionary<PropertyId, LinkedPropertyEditState>(
+                    write.LinkedPropertyFinalStates ?? new Dictionary<PropertyId, LinkedPropertyEditState>()),
+                InsertViews = write.Inserts ? new List<RackViewAddress>(write.InsertViews) : null,
+            },
+            KeyOf(document));
 
         public RackCadClassicResult RequestDesign(RackDoorRequest request)
         {
@@ -150,6 +165,7 @@ namespace RackCad.Plugin.VentanaRackCad
             if (_pendingSelectiveRead != null && _pendingSelectiveRead.RequestId == requestId) _pendingSelectiveRead = null;
             if (_pendingSelectiveWrite != null && _pendingSelectiveWrite.RequestId == requestId) _pendingSelectiveWrite = null;
             if (_pendingSelectiveInsert != null && _pendingSelectiveInsert.RequestId == requestId) _pendingSelectiveInsert = null;
+            if (_pendingSelectiveNew != null && _pendingSelectiveNew.RequestId == requestId) _pendingSelectiveNew = null;
         }
 
         /// <summary>The read of a Selectivo that waits, taken once by its command; null when there is none.</summary>
@@ -173,6 +189,14 @@ namespace RackCad.Plugin.VentanaRackCad
         {
             var pending = _pendingSelectiveInsert;
             _pendingSelectiveInsert = null;
+            return pending;
+        }
+
+        /// <summary>The new Selectivo of the window that waits for its insertion (RACKSELECTIVONUEVO), taken once by its command; null when there is none.</summary>
+        internal static PendingSelectiveWrite TakePendingSelectiveNew()
+        {
+            var pending = _pendingSelectiveNew;
+            _pendingSelectiveNew = null;
             return pending;
         }
 

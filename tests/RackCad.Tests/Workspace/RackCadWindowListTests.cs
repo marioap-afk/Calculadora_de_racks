@@ -279,13 +279,15 @@ public class RackCadWindowListTests
         // of the door to a rack (RackCadRackDoorCommands) read the drawing in their own command context, through RackCommandSupport; the
         // files the palette calls (the ports) do not reach those helpers either, which lock and open transactions (M-05 of the second review).
         // Selectivo E1-A re-fixes the list with the drawing half of «Actualizar» of a Selectivo and the read of the register of project
-        // variables (which locks the document): only the commands of the door reach them.
+        // variables (which locks the document): only the commands of the door reach them. Selectivo E2 re-fixes it with the «Insertar»
+        // drawing half of a Selectivo (InsertSelectiveViews) and the dispatch of «Nuevo» (DispatchInsertion), which RACKSELECTIVOINSERTAR,
+        // RACKDINAMICONUEVO and RACKSELECTIVONUEVO use: they place views with the jig and lock the document, so only the commands reach them.
         foreach (var path in Directory.GetFiles(Path.Combine(Root(), "src", "RackCad.Plugin", "VentanaRackCad"), "*.cs"))
         {
             var code = WorkspaceHostSource.CodeOnly(File.ReadAllText(path));
             Assert.DoesNotMatch(new System.Text.RegularExpressions.Regex(@"LockDocument|StartTransaction|StartOpenCloseTransaction"), code);
             if (!path.EndsWith("RackCadRackDoorCommands.cs", StringComparison.Ordinal))
-                Assert.DoesNotMatch(new System.Text.RegularExpressions.Regex(@"\bRackCommandSupport\.|\bApplyDynamicEdit\b|\bApplySelectiveEdit\b|\bReadProjectVariables\b|\[CommandMethod"), code);
+                Assert.DoesNotMatch(new System.Text.RegularExpressions.Regex(@"\bRackCommandSupport\.|\bApplyDynamicEdit\b|\bApplySelectiveEdit\b|\bInsertSelectiveViews\b|\bDispatchInsertion\b|\bReadProjectVariables\b|\[CommandMethod"), code);
         }
     }
 

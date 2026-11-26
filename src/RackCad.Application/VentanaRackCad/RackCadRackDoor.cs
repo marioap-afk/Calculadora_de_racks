@@ -89,7 +89,8 @@ namespace RackCad.Application.VentanaRackCad
     {
         /// <summary>
         /// Selectivo E2, part A: the write also inserts views (RACKSELECTIVOINSERTAR, «Insertar vista…»: first the draft in the views that
-        /// exist, then the new ones as linked copies), or, with <see cref="NewRack"/>, inserts a new Selectivo with them (RACKSELECTIVONUEVO).
+        /// exist, then the new ones as linked copies), or, with <see cref="NewRack"/>, inserts a new Selectivo with them (RACKSELECTIVONUEVO:
+        /// the rack is not in the drawing yet; it takes the identity the window gave it and, with a blank name, the automatic one of I-60).
         /// </summary>
         public bool Inserts => InsertViews != null && InsertViews.Count > 0;
     }
@@ -150,7 +151,11 @@ namespace RackCad.Application.VentanaRackCad
         /// <summary>Asks AutoCAD to read the Selectivo (RACKSELECTIVOABRIR); the answer arrives with <see cref="SelectiveRead"/>.</summary>
         RackCadClassicResult RequestSelectiveDesign(RackDoorRequest request);
 
-        /// <summary>Asks AutoCAD to redraw the Selectivo with the draft (RACKSELECTIVOAPLICAR); the answer arrives with <see cref="IRackCadRackDoorPort.DesignWritten"/>.</summary>
+        /// <summary>
+        /// Asks AutoCAD to redraw the Selectivo with the draft (RACKSELECTIVOAPLICAR), to redraw it and then insert views
+        /// (RACKSELECTIVOINSERTAR) or to insert a new Selectivo (RACKSELECTIVONUEVO), as <see cref="SelectiveDoorWrite"/> says; the answer
+        /// arrives with <see cref="IRackCadRackDoorPort.DesignWritten"/>.
+        /// </summary>
         RackCadClassicResult RequestSelectiveUpdate(SelectiveDoorWrite write);
 
         event System.Action<SelectiveDesignRead> SelectiveRead;
