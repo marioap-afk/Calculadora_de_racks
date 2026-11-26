@@ -96,8 +96,37 @@ namespace RackCad.Application.VentanaRackCad
         public static string? BaseOf(string? name)
         {
             if (string.IsNullOrWhiteSpace(name)) return null;
-            return string.Join("_", name.Trim().Split(System.IO.Path.GetInvalidFileNameChars()));
+            var cleaned = string.Join("_", name.Trim().Split(System.IO.Path.GetInvalidFileNameChars()));
+
+            // A name that Windows reserves for a device (CON, PRN, AUX, NUL, COM1-9, LPT1-9), with or without an extension and with no regard
+            // to case, cannot be a file: its stem takes «_» (review of part «ut», point 7).
+            return IsReservedStem(StemOf(cleaned)) ? StemOf(cleaned) + "_" + cleaned.Substring(StemOf(cleaned).Length) : cleaned;
         }
+
+        /// <summary>True when the name, as a file, is one that Windows reserves for a device (the file then takes «_»).</summary>
+        public static bool IsReserved(string? name)
+        {
+            if (string.IsNullOrWhiteSpace(name)) return false;
+            var cleaned = string.Join("_", name.Trim().Split(System.IO.Path.GetInvalidFileNameChars()));
+            return IsReservedStem(StemOf(cleaned));
+        }
+
+        private static readonly string[] ReservedDevices =
+        {
+            "CON", "PRN", "AUX", "NUL",
+            "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
+            "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9",
+        };
+
+        // What Windows compares with the devices: the name up to its first dot.
+        private static string StemOf(string cleaned)
+        {
+            var dot = cleaned.IndexOf('.');
+            return dot < 0 ? cleaned : cleaned.Substring(0, dot);
+        }
+
+        private static bool IsReservedStem(string stem) =>
+            ReservedDevices.Contains(stem.TrimEnd(' '), StringComparer.OrdinalIgnoreCase);
 
         /// <summary>The file name (with the extension) of a design saved with that name; null for an empty name.</summary>
         public static string? FileOf(string? name)

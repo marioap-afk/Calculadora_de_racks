@@ -27,13 +27,15 @@ namespace RackCad.UI.VentanaRackCad
     /// </summary>
     public sealed class RackCadLibrarySaveSource
     {
-        public RackCadLibrarySaveSource(object editor, string rackName, string kindLabel, Func<string> changesNote, Func<string, (RackProject Project, string Error)> build)
+        public RackCadLibrarySaveSource(object editor, string rackName, string kindLabel, Func<string> changesNote, Func<string, (RackProject Project, string Error)> build,
+            Func<string> refusal = null)
         {
             Editor = editor ?? throw new ArgumentNullException(nameof(editor));
             RackName = (rackName ?? string.Empty).Trim();
             KindLabel = kindLabel ?? string.Empty;
             ChangesNote = changesNote ?? (() => string.Empty);
             Build = build ?? throw new ArgumentNullException(nameof(build));
+            Refusal = refusal ?? (() => null);
         }
 
         public object Editor { get; }
@@ -46,6 +48,12 @@ namespace RackCad.UI.VentanaRackCad
         public Func<string> ChangesNote { get; }
 
         public Func<string, (RackProject Project, string Error)> Build { get; }
+
+        /// <summary>
+        /// Why the editor cannot be saved NOW (a value written and refused, tramos not applied, no valid draft); null when it can. «Guardar»
+        /// and «Reemplazar» ask it again, because the user may go back to the editor between «Más» and «Guardar» (review of part «ut», point 1).
+        /// </summary>
+        public Func<string> Refusal { get; }
     }
 
     /// <summary>
@@ -82,6 +90,7 @@ namespace RackCad.UI.VentanaRackCad
 
         private RackDesignLibraryListing _listing;
         private string _readError;
+        private string _readFolder;
         private string _search = string.Empty;
         private string _kind = AllKinds;
         private string _selectedPath;
@@ -111,7 +120,8 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>Whether the page read the folder at least once (the recent designs of «Nuevo» read it the first time).</summary>
         public bool HasRead => _listing != null || _readError != null;
 
-        public string Folder => SafeFolder();
+        /// <summary>The folder of the last reading: shown without reading the settings again (review of part «ut», point 4).</summary>
+        public string Folder => _listing?.Folder ?? _readFolder ?? string.Empty;
 
         /// <summary>Every design read, from the most recent.</summary>
         public IReadOnlyList<RackDesignLibraryEntry> Entries => _listing?.Entries ?? Array.Empty<RackDesignLibraryEntry>();
@@ -149,6 +159,7 @@ namespace RackCad.UI.VentanaRackCad
         public void Read()
         {
             var folder = SafeFolder();
+            _readFolder = folder;
             try
             {
                 _listing = RackDesignLibrary.Read(folder);
@@ -158,6 +169,13 @@ namespace RackCad.UI.VentanaRackCad
             {
                 _listing = null;
                 _readError = "No se pudo leer la carpeta: " + ex.Message;
+            }
+
+            // A conflict holds only while its file is in the folder read: another folder, or a file removed, has none (point 5).
+            if (_saveConflict)
+            {
+                var path = SavePath();
+                _saveConflict = path != null && SafeExists(path);
             }
 
             if (_selectedPath != null && !Entries.Any(e => SamePath(e.Path, _selectedPath))) _selectedPath = null;
@@ -230,6 +248,23 @@ namespace RackCad.UI.VentanaRackCad
         public IReadOnlyList<RackCadLibraryRow> Recent => Entries.Take(3).Select(RowOf).ToList();
 
         public bool HasRecent => Entries.Count > 0;
+
+        /// <summary>
+        /// What «Recientes de la biblioteca» of «Nuevo» says when it shows none: the library was not read yet, could not be read, has no
+        /// folder, holds only files it could not read, or is empty (review of part «ut», point 8). Empty when there are recent designs.
+        /// </summary>
+        public string RecentEmptyText
+        {
+            get
+            {
+                if (HasRecent) return string.Empty;
+                if (!HasRead) return "Abre «Biblioteca de diseños» para ver los diseños recientes.";
+                if (HasReadError) return "No se pudo leer la carpeta de la biblioteca.";
+                if (FolderMissing) return "La carpeta de la biblioteca todavía no existe.";
+                if (HasUnreadable) return "Ningún archivo de la carpeta de la biblioteca se pudo leer.";
+                return "La biblioteca está vacía.";
+            }
+        }
 
         /// <summary>The name of the system of a design in the window (UT-07): the one of the column, not «Sistema dinámico» nor «Cama de rodamiento».</summary>
         public static string LabelOf(RackSystemKind kind)
@@ -343,7 +378,9 @@ namespace RackCad.UI.VentanaRackCad
             get
             {
                 if (_save == null || SaveNameMissing) return string.Empty;
-                var cleaned = RackCadLibraryFileName.IsCleaned(_saveName) ? " (los caracteres que Windows no admite pasan a «_»)" : string.Empty;
+                var cleaned = RackCadLibraryFileName.IsReserved(_saveName)
+                    ? " («" + _saveName.Trim() + "» es un nombre que Windows reserva: el archivo lleva «_»)"
+                    : RackCadLibraryFileName.IsCleaned(_saveName) ? " (los caracteres que Windows no admite pasan a «_»)" : string.Empty;
                 return "Archivo: " + SaveFile + cleaned + ". Se guarda lo que ves en el editor, borrador incluido" + (_save.ChangesNote() ?? string.Empty)
                        + ". No toca el dibujo.";
             }
@@ -434,6 +471,15 @@ namespace RackCad.UI.VentanaRackCad
                 return;
             }
 
+            // The editor is asked again now, also for «Reemplazar»: what it shows may have changed since «Más» (point 1). The line stays,
+            // so the user corrects the editor and presses «Guardar» again.
+            var refusal = SafeRefusal(source);
+            if (!string.IsNullOrEmpty(refusal))
+            {
+                _say(refusal, true);
+                return;
+            }
+
             var folder = SafeFolder();
             var path = SavePath();
             if (string.IsNullOrWhiteSpace(folder) || path == null)
@@ -515,6 +561,38 @@ namespace RackCad.UI.VentanaRackCad
         private static bool NameIsTheFile(RackSystemKind kind) =>
             kind == RackSystemKind.PalletFlow || kind == RackSystemKind.Cama || kind == RackSystemKind.PushBack || kind == RackSystemKind.Cantilever;
 
+        private static string SafeRefusal(RackCadLibrarySaveSource source)
+        {
+            try
+            {
+                return source.Refusal();
+            }
+            catch (Exception ex)
+            {
+                return "No se pudo comprobar el editor: " + ex.Message;
+            }
+        }
+
+        private static bool SafeExists(string path)
+        {
+            try
+            {
+                return File.Exists(path);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>The window says that the drawing it presents changed: what «Abrir» does may change with it (point 8).</summary>
+        public void RaiseOffers()
+        {
+            OnPropertyChanged(nameof(SelectionOpensHere));
+            OnPropertyChanged(nameof(SelectionOpensClassic));
+            OnPropertyChanged(nameof(SelectionNote));
+        }
+
         private static bool SamePath(string a, string b) => a != null && b != null && string.Equals(a, b, StringComparison.OrdinalIgnoreCase);
 
         private string SafeFolder()
@@ -557,6 +635,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(KindOptions));
             OnPropertyChanged(nameof(Recent));
             OnPropertyChanged(nameof(HasRecent));
+            OnPropertyChanged(nameof(RecentEmptyText));
             RaiseRows();
             RaiseSave();
         }

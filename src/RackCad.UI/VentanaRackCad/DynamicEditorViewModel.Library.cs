@@ -58,24 +58,31 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>«Guardar en biblioteca…»: a value written and refused in a field stops it and is named; otherwise the window shows the line of the save.</summary>
         public void SaveToLibrary()
         {
-            var refused = new[] { _essentials, _postFields, _cellFields, _frontFields, _advancedFields, _bedFields }
-                .SelectMany(fields => fields)
-                .FirstOrDefault(field => field != null && !string.IsNullOrWhiteSpace(field.Error));
-            if (refused != null)
+            var refusal = SaveRefusal();
+            if (refusal != null)
             {
-                Say("No se puede guardar en la biblioteca: «" + refused.Label + "» tiene un valor que no se aplicó (" + refused.Error.Trim().TrimEnd('.')
-                    + "). Corrígelo o vuelve a escribir el que tenía.", error: true);
-                return;
-            }
-
-            if (!CanSaveToLibrary)
-            {
-                Say(SaveToLibraryBlockedText, error: true);
+                Say(refusal, error: true);
                 return;
             }
 
             IsMoreOpen = false;
             _saveToLibrary(this);
+        }
+
+        /// <summary>
+        /// Why the draft cannot be saved now, or null: a value written and refused in a field, then <see cref="SaveToLibraryBlockedText"/>.
+        /// «Más» asks it, and the line of the library asks it again at «Guardar» and «Reemplazar» (review of part «ut», point 1).
+        /// </summary>
+        public string SaveRefusal()
+        {
+            var refused = new[] { _essentials, _postFields, _cellFields, _frontFields, _advancedFields, _bedFields }
+                .SelectMany(fields => fields)
+                .FirstOrDefault(field => field != null && !string.IsNullOrWhiteSpace(field.Error));
+            if (refused != null)
+                return "No se puede guardar en la biblioteca: «" + refused.Label + "» tiene un valor que no se aplicó (" + refused.Error.Trim().TrimEnd('.')
+                       + "). Corrígelo o vuelve a escribir el que tenía.";
+            var blocked = SaveToLibraryBlockedText;
+            return string.IsNullOrEmpty(blocked) ? null : blocked;
         }
 
         private void RaiseMore()

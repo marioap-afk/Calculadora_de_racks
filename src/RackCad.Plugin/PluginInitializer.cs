@@ -12,6 +12,7 @@ namespace RackCad.Plugin
 
         public void Terminate()
         {
+            VentanaRackCad.RackCadStartup.Disarm(); // part «ut»: the wait of the box stops with the plugin
         }
     }
 }

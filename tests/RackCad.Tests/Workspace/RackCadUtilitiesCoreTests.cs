@@ -114,6 +114,41 @@ public class RackCadUtilitiesCoreTests
         Assert.Equal(cleaned, RackCadLibraryFileName.IsCleaned(name));
     }
 
+    // Review of part «ut», point 7: the names Windows reserves for a device, with no regard to case and with or without an extension.
+    [Theory]
+    [InlineData("CON", "CON_")]
+    [InlineData("con", "con_")]
+    [InlineData("Nul", "Nul_")]
+    [InlineData("PRN", "PRN_")]
+    [InlineData("aux", "aux_")]
+    [InlineData("COM1", "COM1_")]
+    [InlineData("com9", "com9_")]
+    [InlineData("LPT1", "LPT1_")]
+    [InlineData("lpt9", "lpt9_")]
+    [InlineData("CON.txt", "CON_.txt")]
+    [InlineData("nul.rack", "nul_.rack")]
+    [InlineData("  CON  ", "CON_")]
+    public void ANameThatWindowsReservesTakesAnUnderscore(string name, string expected)
+    {
+        Assert.True(RackCadLibraryFileName.IsReserved(name));
+        Assert.Equal(expected, RackCadLibraryFileName.BaseOf(name));
+        Assert.Equal(expected + RackProjectStore.FileExtension, RackCadLibraryFileName.FileOf(name));
+        Assert.True(RackCadLibraryFileName.IsCleaned(name));
+    }
+
+    [Theory]
+    [InlineData("CONSOLA")]
+    [InlineData("COM10")]
+    [InlineData("COM0")]
+    [InlineData("LPT")]
+    [InlineData("Nave CON")]
+    [InlineData("A.CON")]
+    public void ANameThatOnlyLooksReservedKeepsItsFile(string name)
+    {
+        Assert.False(RackCadLibraryFileName.IsReserved(name));
+        Assert.Equal(name, RackCadLibraryFileName.BaseOf(name));
+    }
+
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -303,12 +338,36 @@ public class RackCadUtilitiesCoreTests
         Assert.True(rule >= 0 && timer > rule && start > timer, "the timer only after the rule says it opens");
         Assert.Equal(1, WorkspaceHostSource.Count(startup, @"Tick\s*\+="));
 
+        // Review of part «ut», points 2 and 3: it waits for the first drawing with no limit of time, every 2 s, and opens only at rest (the
+        // guard of Send of the doors: no command in progress and a quiescent editor), then stops.
         var tick = WorkspaceHostSource.BodyOf(startup, @"private\s+static\s+void\s+OnTick\s*\(");
-        var waits = tick.IndexOf("MdiActiveDocument == null && ++_ticks < MaxTicks) return", StringComparison.Ordinal);
-        var stops = tick.IndexOf("Stop();", StringComparison.Ordinal);
-        var opens = tick.IndexOf("new RackMenuCommands().RackCad()", StringComparison.Ordinal);
-        Assert.True(waits >= 0 && stops > waits && opens > stops, "waits for a drawing, stops, then runs what RACKCAD runs");
+        var order = new[]
+        {
+            "if (document == null) return;",
+            "if (!string.IsNullOrEmpty(document.CommandInProgress) || !document.Editor.IsQuiescent) return;",
+            "Stop();",
+            "new RackMenuCommands().RackCad()",
+        };
+        var at = -1;
+        foreach (var step in order)
+        {
+            var next = tick.IndexOf(step, at + 1, StringComparison.Ordinal);
+            Assert.True(next > at, "out of order or missing: " + step);
+            at = next;
+        }
+
+        Assert.DoesNotMatch(new Regex(@"MaxTicks|_ticks"), startup);
+        Assert.Matches(new Regex(@"Interval\s*=\s*TimeSpan\.FromSeconds\(2\)"), startup);
         Assert.DoesNotMatch(new Regex(@"\.Idle\s*[-+]=|DocumentManager\.\w+\s*[-+]="), startup);
         Assert.DoesNotMatch(new Regex(@"LockDocument|StartTransaction|SendStringToExecute"), startup);
+
+        // Point 6: the plugin that unloads stops the wait.
+        var terminate = WorkspaceHostSource.BodyOf(initializer, @"public\s+void\s+Terminate\s*\(");
+        Assert.Equal("publicvoidTerminate(){VentanaRackCad.RackCadStartup.Disarm();}", Regex.Replace(terminate, @"\s+", string.Empty));
+        var stop = WorkspaceHostSource.BodyOf(startup, @"private\s+static\s+void\s+Stop\s*\(");
+        Assert.Contains("_timer = null;", stop, StringComparison.Ordinal);
+        Assert.Contains("timer.Stop();", stop, StringComparison.Ordinal);
+        Assert.Contains("timer.Tick -= OnTick;", stop, StringComparison.Ordinal);
+        Assert.Contains("Stop();", WorkspaceHostSource.BodyOf(startup, @"internal\s+static\s+void\s+Disarm\s*\("), StringComparison.Ordinal);
     }
 }

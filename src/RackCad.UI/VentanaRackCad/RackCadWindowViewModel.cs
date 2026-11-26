@@ -1282,6 +1282,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(IsSelectiveRack));
             OnPropertyChanged(nameof(ShowSelectiveOffer));
             RaiseNewDynamic();
+            _library?.RaiseOffers(); // T4 ut: «Abrir» follows the drawing presented (review, point 8)
         }
 
         // The browser changed (a tab, the field, the active rack): the marks of the list follow, and a new active rack shows its page.
@@ -1332,7 +1333,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(BlockLibraryStatus));
             OnPropertyChanged(nameof(BlockLibraryMissing));
             OnPropertyChanged(nameof(DesignLibraryPath));
-            RaiseUtilitySettings(); // T4 ut
+            RefreshUtilitySettings(); // T4 ut: the settings of the utilities, read here only (review, point 4)
         }
 
         private void Say(string text, bool failed)

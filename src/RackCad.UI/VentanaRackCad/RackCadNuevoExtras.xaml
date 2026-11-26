@@ -37,17 +37,9 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-        <TextBlock x:Name="NoRecentText" Text="La biblioteca está vacía.">
-            <TextBlock.Style>
-                <Style TargetType="TextBlock" BasedOn="{StaticResource UtText}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Library.HasRecent}" Value="True">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </TextBlock.Style>
-        </TextBlock>
+        <!-- Review of part «ut», point 8: not read yet, not readable, no folder, only unreadable files or empty; nothing with recent designs. -->
+        <TextBlock x:Name="NoRecentText" Text="{Binding Library.RecentEmptyText}" Style="{StaticResource UtOptional}" />
+
 
         <Expander x:Name="ClassicMenuMapExpander" Margin="0,10,0,0" AutomationProperties.Name="Dónde quedó el menú clásico (RACKMENU)">
             <Expander.Header>

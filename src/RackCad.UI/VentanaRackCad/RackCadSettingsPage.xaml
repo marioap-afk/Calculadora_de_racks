@@ -24,12 +24,12 @@
             <TextBlock Text="Biblioteca de bloques (.dwg)" Style="{StaticResource UtBlockTitle}" />
             <TextBlock Style="{StaticResource UtText}" Text="De aquí se importan los bloques que falten en el dibujo activo." />
             <TextBox x:Name="BlockLibraryPathBox" IsReadOnly="True" TextWrapping="Wrap" Padding="4,3"
-                     AutomationProperties.Name="Ruta de la biblioteca de bloques" Text="{Binding BlockLibraryPath, Mode=OneWay}" />
-            <TextBlock x:Name="BlockLibraryStatusText" Text="{Binding BlockLibraryStatus}">
+                     AutomationProperties.Name="Ruta de la biblioteca de bloques" Text="{Binding ConfigBlockLibraryPath, Mode=OneWay}" />
+            <TextBlock x:Name="BlockLibraryStatusText" Text="{Binding ConfigBlockLibraryStatus}">
                 <TextBlock.Style>
                     <Style TargetType="TextBlock" BasedOn="{StaticResource UtOptional}">
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding BlockLibraryMissing}" Value="True">
+                            <DataTrigger Binding="{Binding ConfigBlockLibraryMissing}" Value="True">
                                 <Setter Property="Foreground" Value="{DynamicResource ShellStatusWarningBrush}" />
                             </DataTrigger>
                         </Style.Triggers>
@@ -50,7 +50,7 @@
             <TextBlock Style="{StaticResource UtText}"
                        Text="Donde se guardan y se leen los diseños de «Biblioteca de diseños». Puede ser, por ejemplo, una carpeta compartida del equipo." />
             <TextBox x:Name="DesignLibraryPathBox" IsReadOnly="True" TextWrapping="Wrap" Padding="4,3"
-                     AutomationProperties.Name="Carpeta de la biblioteca de diseños" Text="{Binding DesignLibraryPath, Mode=OneWay}" />
+                     AutomationProperties.Name="Carpeta de la biblioteca de diseños" Text="{Binding ConfigDesignLibraryPath, Mode=OneWay}" />
             <TextBlock x:Name="DesignLibraryStatusText" Text="{Binding DesignLibraryStatus}" Style="{StaticResource UtOptional}" />
             <WrapPanel Margin="0,4,0,0">
                 <Button x:Name="ChangeDesignLibraryButton" Content="Cambiar…" Margin="0,0,8,0" Padding="12,4"

@@ -1700,3 +1700,69 @@ clásico desaparece al final de I-64 (SD-02), aquí entran dos de las seis capac
 - La integración con `new` (`OpenDesignAsNewRack`), con `ins` y `cb` (sus entradas de «Más» van en el mismo panel) y con `va` y `bom`
   (sus páginas vecinas en `RackCadWindowView.xaml`).
 - UT-S10 y UT-S11.
+
+### Cuarta tanda, ut: correcciones de la revisión independiente (sobre `11d60d88`)
+
+**Rama:** la misma, sobre el commit `11d60d88` de la sesión, sin commit, sin push y sin AutoCAD. Un reinicio de la computadora cortó el
+trabajo a mitad: se retomó desde el árbol que quedó (5 archivos) y se terminó.
+
+| Punto | Estado | Qué se hizo |
+|---|---|---|
+| 1 (medio) | CORREGIDO | `RackCadLibrarySaveSource` lleva `Refusal`, un `Func<string>`. Cada editor da el suyo, `SaveRefusal()`: un valor escrito y rechazado (`PendingFieldError` en Selectivo; en Dinámico, el primer campo con error) y después `SaveToLibraryBlockedText`, es decir, tramos sin aplicar, el rack de solo lectura, el borrador sin recomponer o su error. «Más» lo usa, y `Commit` lo vuelve a preguntar antes de construir el diseño, después de comprobar que el editor sigue abierto y antes de mirar el conflicto, también en «Reemplazar». Si se niega, no se escribe nada, la línea se queda y el mensaje dice la causa; corregido el editor, la misma línea guarda |
+| 2 (medio-bajo) | CORREGIDO | `RackCadStartup.OnTick` vuelve sin hacer nada si no hay dibujo, o si no hay reposo (`CommandInProgress`, o `!Editor.IsQuiescent`, la guarda de `Send` de las puertas), y lo intenta en el tick siguiente |
+| 3 (bajo-medio) | CORREGIDO | Sondea cada 2 s, sin límite, hasta el primer dibujo en reposo. Se detiene al abrir la ventana o con `Disarm`. Sale `MaxTicks`. UT-S07 queda al día (abajo) |
+| 4 (bajo-medio) | CORREGIDO, CON UN PENDIENTE | Lo que «Configuración» y «Biblioteca» muestran de los ajustes y del disco va en una caché (`UtilityConfig`): la carpeta de diseños, si está elegida, si existe (`Directory.Exists`), la casilla, la ruta de los ajustes, «Acerca de» y la biblioteca de bloques (ruta, estado, si falta, si está elegida). **Solo se lee** al mostrar «Configuración» (por `RaiseSettings`, que ahora llama a `RefreshUtilitySettings`) o «Biblioteca», y después de «Cambiar…», de «Restablecer» o de la biblioteca de bloques. Al cargar la ventana, al refrescar o al pasar por otra página no se lee nada (prueba con un doble que cuenta las lecturas). La página de Configuración enlaza las copias de la caché (`ConfigBlockLibraryPath`, `ConfigBlockLibraryStatus`, `ConfigBlockLibraryMissing`, `ConfigDesignLibraryPath`), y no las lecturas vivas. La biblioteca muestra la carpeta de su última lectura. La casilla solo vuelve a leer su valor. **Pendiente (UT-S16):** cuando el usuario abre una de esas dos páginas, la lectura (ajustes, existencia de la carpeta y lista de la carpeta) sigue en el hilo de la interfaz. Sacarla exige una lectura asíncrona con el despachador de la paleta y sus pruebas; no es barato |
+| 5 | CORREGIDO | En `Read()`, un conflicto solo sigue si su archivo está en la carpeta leída (`_saveConflict &= File.Exists(SavePath())`): cambiar de carpeta, o que se borre el archivo, lo quita |
+| 6 | CORREGIDO | `RackCadStartup.Disarm()` detiene y suelta el temporizador; `PluginInitializer.Terminate` la llama |
+| 7 | CORREGIDO | `RackCadLibraryFileName`: CON, PRN, AUX, NUL, COM1-9 y LPT1-9 (sin distinguir mayúsculas, con o sin extensión: lo que hay antes del primer punto) llevan «_» (`CON_`, `con_.txt`). La línea lo dice: «(«con» es un nombre que Windows reserva: el archivo lleva «_»)». El documento conserva el nombre escrito |
+| 8 | CORREGIDO | (a) La ventana avisa a la biblioteca en cada presentación (`Present` llama a `_library?.RaiseOffers()`), así que «Abrir como nuevo…» y «Abrir en el editor clásico…» siguen al dibujo presentado. (b) «Recientes de la biblioteca» dice por qué no hay ninguno (`RecentEmptyText`): no se leyó todavía, no se pudo leer la carpeta, la carpeta no existe, ningún archivo se pudo leer, o está vacía |
+
+**Supuestos al día:**
+- **UT-S07 (sustituye al de arriba):** la lectura al arrancar usa un temporizador del despachador cada 2 s, sin límite, y ningún evento de
+  AutoCAD. Abre la ventana una vez, con el primer dibujo en reposo, y se detiene al abrirla o cuando se descarga el plugin.
+- **UT-S16 (nuevo):** la lectura del disco al abrir «Configuración» o «Biblioteca» sigue en el hilo de la interfaz (punto 4).
+- **UT-S17 (nuevo):** «Nuevo» ya no lee la carpeta la primera vez que se muestra. Los recientes salen de la última lectura de «Biblioteca» en
+  esta ventana; antes dicen «Abre «Biblioteca de diseños» para ver los diseños recientes.». Es la consecuencia del punto 4.
+
+**Ediciones a archivos compartidos en esta vuelta:**
+- `RackCadWindowViewModel.cs`, dos líneas «T4 ut»: `RaiseSettings` llama ahora a `RefreshUtilitySettings()` (antes, a `RaiseUtilitySettings()`),
+  y `Present` llama a `_library?.RaiseOffers()`.
+- `PluginInitializer.cs`: `Terminate` llama a `RackCadStartup.Disarm()`.
+- Lo demás son archivos de la parte:
+  - `RackCadUtilities.cs`, `RackCadLibraryViewModel.cs` y `RackCadWindowViewModel.Utilities.cs`;
+  - `SelectiveEditorViewModel.Library.cs` y `DynamicEditorViewModel.Library.cs`;
+  - `RackCadSettingsPage.xaml`, `RackCadNuevoExtras.xaml` y `RackCadStartup.cs`.
+
+**Las pruebas:**
+- `RackCadUtilitiesTests` (UI), de 34 a 43. Las nuevas:
+  - el valor rechazado después de «Más», con «Guardar» y con «Reemplazar»;
+  - los tramos sin aplicar;
+  - el campo rechazado en Dinámico;
+  - nada se lee hasta mostrar «Configuración» o «Biblioteca», con la vista WPF real y el doble que cuenta las lecturas;
+  - el conflicto, que no sobrevive a otra carpeta ni al archivo borrado;
+  - el nombre reservado;
+  - «Abrir», que sigue al dibujo presentado;
+  - el texto de los recientes en sus cinco casos.
+
+  Cambian dos, con su nota: el estado de la carpeta después de guardar se ve al volver a mostrar «Configuración», y los recientes de «Nuevo»
+  (modelo y vista) aparecen después de leer la biblioteca. El doble de los ajustes cuenta ahora sus lecturas.
+- `RackCadUtilitiesCoreTests` (Core), de 33 a 51:
+  - los doce nombres reservados y los seis que solo lo parecen (`CONSOLA`, `COM10`, `COM0`, `LPT`, «Nave CON», `A.CON`);
+  - la guarda de fuente del arranque, de nuevo: el orden dibujo → reposo → `Stop()` → RACKCAD, 2 s, sin `MaxTicks` ni `_ticks`, y
+    `Terminate` → `Disarm` → `Stop` (que suelta el temporizador).
+- **Comprobación en rojo** de los puntos 1, 2 y 3. Cada archivo se restauró con sus bytes (SHA-256 comprobado), y después se recompiló la
+  solución con `--no-incremental`. Cada pieza rota hace fallar sus pruebas:
+  1. sin volver a preguntar al editor en `Commit`: fallan 4 de UI (las del valor rechazado con «Guardar» y con «Reemplazar», la de los
+     tramos y la de Dinámico);
+  2. sin la guarda de reposo en `OnTick`: falla la guarda de fuente del arranque (Core);
+  3. otra vez cada 500 ms, y otra vez con `MaxTicks`: en cada caso falla la misma guarda de fuente.
+
+**Los números:**
+- **UI completa:** 2801 correctas, 0 con error y 48 omitidas (2849): las 2840 de la vuelta anterior más las 9 nuevas. Esta vez también pasó
+  la de la ventana dueña.
+- **Core, las clases focales** (`RackCadUtilitiesCoreTests` con 51, las guardas del Plugin, de la paleta y del puente, `RackCadWindowListTests`
+  y los dos censos de órdenes), sobre la solución recompilada: 322/322. La misma selección dio 326/326 antes de la comprobación en rojo, con
+  las mismas fuentes y sin fallos en ninguna de las dos; la diferencia está en cuántos casos de teoría descubre xUnit. Core Full no se corrió:
+  el encargo pide las focales.
+- **Build Debug de la solución (Plugin incluido),** con `--no-incremental`: 0 errores. Las únicas advertencias son las MSB3277 de las
+  referencias de AutoCAD, que ya estaban.

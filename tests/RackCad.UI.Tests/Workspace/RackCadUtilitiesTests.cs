@@ -122,46 +122,84 @@ namespace RackCad.UI.Tests
             }
         }
 
-        /// <summary>The settings, in memory, with the utilities; the folder of the designs is a temporary folder of the test.</summary>
+        /// <summary>
+        /// The settings, in memory, with the utilities; the folder of the designs is a temporary folder of the test. Every read counts
+        /// (<see cref="Reads"/>): the window reads them only when «Configuración» or «Biblioteca» is shown (review of part «ut», point 4).
+        /// </summary>
         private sealed class SettingsDouble : IRackCadSettingsAccess, IRackCadUtilitySettings
         {
+            private string _blockLibraryPath = "C:\\bloques.dwg";
+            private bool _blockLibraryOverridden;
+            private bool _blockLibraryExists = true;
+            private bool _openOnStartup;
+
             public SettingsDouble(string defaultFolder) => DefaultFolder = defaultFolder;
+
+            /// <summary>How many times a setting was read (any member of the two interfaces that reads).</summary>
+            public int Reads { get; set; }
 
             public string DefaultFolder { get; }
 
             public string? CustomFolder { get; set; }
 
-            public string BlockLibraryPath { get; set; } = "C:\\bloques.dwg";
+            public string BlockLibraryPath
+            {
+                get { Reads++; return _blockLibraryPath; }
+                set => _blockLibraryPath = value;
+            }
 
-            public bool BlockLibraryOverridden { get; set; }
+            public bool BlockLibraryOverridden
+            {
+                get { Reads++; return _blockLibraryOverridden; }
+                set => _blockLibraryOverridden = value;
+            }
 
-            public bool BlockLibraryExists { get; set; } = true;
+            public bool BlockLibraryExists
+            {
+                get { Reads++; return _blockLibraryExists; }
+                set => _blockLibraryExists = value;
+            }
 
-            public string DesignLibraryPath => CustomFolder ?? DefaultFolder;
+            public string DesignLibraryPath
+            {
+                get { Reads++; return CustomFolder ?? DefaultFolder; }
+            }
 
-            public bool DesignLibraryOverridden => CustomFolder != null;
+            public bool DesignLibraryOverridden
+            {
+                get { Reads++; return CustomFolder != null; }
+            }
 
             public void SetBlockLibraryPath(string? path)
             {
-                BlockLibraryPath = path ?? "C:\\predeterminada.dwg";
-                BlockLibraryOverridden = path != null;
+                _blockLibraryPath = path ?? "C:\\predeterminada.dwg";
+                _blockLibraryOverridden = path != null;
             }
 
             public void SetDesignLibraryPath(string? path) => CustomFolder = path;
 
-            public bool OpenOnStartup { get; private set; }
+            public bool OpenOnStartup
+            {
+                get { Reads++; return _openOnStartup; }
+            }
 
             public int StartupWrites { get; private set; }
 
             public void SetOpenOnStartup(bool open)
             {
-                OpenOnStartup = open;
+                _openOnStartup = open;
                 StartupWrites++;
             }
 
-            public string SettingsFilePath => "C:\\Usuario\\AppData\\Roaming\\RackCad\\settings.json";
+            public string SettingsFilePath
+            {
+                get { Reads++; return "C:\\Usuario\\AppData\\Roaming\\RackCad\\settings.json"; }
+            }
 
-            public RackCadAboutInfo About => new("1.0.0 (abc12345)", "C:\\RackCad.bundle\\Contents\\catalogs", "C:\\Usuario\\AppData\\Roaming\\RackCad\\logs");
+            public RackCadAboutInfo About
+            {
+                get { Reads++; return new("1.0.0 (abc12345)", "C:\\RackCad.bundle\\Contents\\catalogs", "C:\\Usuario\\AppData\\Roaming\\RackCad\\logs"); }
+            }
         }
 
         private sealed class Rig : IDisposable
@@ -843,6 +881,8 @@ namespace RackCad.UI.Tests
             editor.SaveToLibrary();
             rig.Library.Save();
             Assert.True(System.IO.File.Exists(Path.Combine(shared, "Selectivo A" + RackProjectStore.FileExtension)));
+            // The state of the folder is the one read when the page was shown (point 4 of the review): shown again, it exists.
+            rig.Window.ShowPage(RackCadWindowPage.Configuracion);
             Assert.Equal("Carpeta elegida (guardada).", rig.Window.DesignLibraryStatus);
 
             rig.Window.ResetDesignLibraryPath();
@@ -915,8 +955,15 @@ namespace RackCad.UI.Tests
         {
             using var rig = new Rig();
             Fill(rig);
+            // «Nuevo» reads nothing (point 4 of the review): before the library was shown it says how to see the recent designs.
             rig.Window.ShowPage(RackCadWindowPage.Nuevo);
+            Assert.False(rig.Library.HasRead);
+            Assert.Empty(rig.Library.Recent);
+            Assert.Equal("Abre «Biblioteca de diseños» para ver los diseños recientes.", rig.Library.RecentEmptyText);
 
+            rig.Window.ShowPage(RackCadWindowPage.Biblioteca);
+            rig.Window.ShowPage(RackCadWindowPage.Nuevo);
+            Assert.Equal(string.Empty, rig.Library.RecentEmptyText);
             Assert.Equal(new[] { "Selectivo 3 niveles", "Dinamico 6 fondos", "Cama 48 in" }, rig.Library.Recent.Select(r => r.Name).ToArray());
             Assert.Equal(11, rig.Window.ClassicMenuMap.Count);
             Assert.Equal(("Abrir de la biblioteca de diseños", "Sección «Biblioteca de diseños», sin ventana aparte"),
@@ -927,6 +974,211 @@ namespace RackCad.UI.Tests
             Assert.True(rig.Window.IsBibliotecaPage);
             Assert.Equal(string.Empty, rig.Library.SearchText);
             Assert.Equal("Dinamico 6 fondos", rig.Library.Selected!.Name);
+        }
+
+        // ------------------------------------------------------------------ the corrections of the review of part «ut»
+
+        // Point 1: the editor is asked again at «Guardar», because the user may go back to it between «Más» and «Guardar».
+        [Fact]
+        public void GuardarAsksTheSelectivoEditorAgainForAValueRefusedAfterMasAndTheLineStays()
+        {
+            using var rig = new Rig();
+            var editor = rig.OpenSelectiveEditor();
+            editor.SaveToLibrary();
+            Assert.True(rig.Library.HasSave);
+
+            Write(Field(editor.CellFields, "cHeight"), "-5");
+            rig.Library.Save();
+
+            Assert.False(System.IO.File.Exists(rig.File("Selectivo A")));
+            Assert.True(rig.Library.HasSave);
+            Assert.True(rig.Window.ActionFailed);
+            Assert.StartsWith("No se puede guardar en la biblioteca: «", rig.Window.ActionMessage);
+            Assert.EndsWith("Corrígelo o vuelve a escribir el que tenía.", rig.Window.ActionMessage);
+
+            // Corrected in the editor, the same line saves.
+            Write(Field(editor.CellFields, "cHeight"), "72");
+            rig.Library.Save();
+            Assert.True(System.IO.File.Exists(rig.File("Selectivo A")));
+        }
+
+        [Fact]
+        public void ReemplazarAsksTheEditorAgainToo()
+        {
+            using var rig = new Rig();
+            SaveCama(rig.File("Selectivo A"), T0);
+            var editor = rig.OpenSelectiveEditor();
+            editor.SaveToLibrary();
+            rig.Library.Save();
+            Assert.True(rig.Library.HasSaveConflict);
+
+            Write(Field(editor.CellFields, "cHeight"), "-5");
+            rig.Library.Replace();
+
+            Assert.Equal(RackSystemKind.Cama, Projects.Load(rig.File("Selectivo A")).Kind);
+            Assert.True(rig.Library.HasSave);
+            Assert.StartsWith("No se puede guardar en la biblioteca: «", rig.Window.ActionMessage);
+        }
+
+        [Fact]
+        public void TramosWrittenAfterMasAndNotAppliedStopGuardar()
+        {
+            using var rig = new Rig();
+            var editor = rig.OpenSelectiveEditor();
+            editor.SaveToLibrary();
+            Assert.True(editor.CanStartSegments);
+
+            editor.StartSegments();
+            rig.Library.Save();
+
+            Assert.False(System.IO.File.Exists(rig.File("Selectivo A")));
+            Assert.Equal("Aplica los tramos con «Aplicar tramos» o descártalos antes de guardar en la biblioteca.", rig.Window.ActionMessage);
+            Assert.True(rig.Library.HasSave);
+        }
+
+        [Fact]
+        public void GuardarAsksTheDinamicoEditorAgainToo()
+        {
+            using var rig = new Rig();
+            rig.Window.StartNewDynamic();
+            var editor = rig.Window.NewDynamicEditor!;
+            editor.Name = "Din C";
+            editor.SaveToLibrary();
+
+            var height = Field(editor.CellFields, "cHeight");
+            height.Text = "alto";
+            height.Commit();
+            Assert.False(string.IsNullOrEmpty(height.Error));
+            rig.Library.Save();
+
+            Assert.False(System.IO.File.Exists(rig.File("Din C")));
+            Assert.StartsWith("No se puede guardar en la biblioteca: «", rig.Window.ActionMessage);
+            Assert.True(rig.Library.HasSave);
+        }
+
+        // Point 4: nothing of the settings nor of the disk is read when the window loads, refreshes or shows another page.
+        [Fact]
+        public void TheWindowReadsNoSettingUntilConfiguracionOrBibliotecaIsShownAndAgainOnlyWhenOneIsShownAgain()
+        {
+            StaTestRunner.Run(() => WithBindingErrors(() =>
+            {
+                using var rig = new Rig();
+                var view = new RackCadWindowView(rig.Window);
+                Lay(view);
+                rig.Window.Refresh();
+                rig.Window.ShowPage(RackCadWindowPage.Nuevo);
+                rig.Window.ShowHelp();
+                Lay(view);
+
+                Assert.Equal(0, rig.Settings.Reads);
+                Assert.False(rig.Window.HasReadUtilitySettings);
+                Assert.False(rig.Library.HasRead);
+                Assert.Equal(string.Empty, rig.Window.DesignLibraryStatus);
+
+                rig.Window.ShowPage(RackCadWindowPage.Configuracion);
+                Lay(view);
+                var once = rig.Settings.Reads;
+                Assert.True(once > 0);
+                Assert.True(rig.Window.HasReadUtilitySettings);
+                Assert.Equal("Carpeta predeterminada.", view.ConfiguracionPage.DesignLibraryStatusText.Text);
+                Assert.Equal(rig.Folder, view.ConfiguracionPage.DesignLibraryPathBox.Text);
+
+                // A refresh and the bindings read the cache: no setting is read again.
+                rig.Window.Refresh();
+                Lay(view);
+                Assert.Equal(once, rig.Settings.Reads);
+
+                // Shown again, the settings are read again (a folder created meanwhile is seen).
+                rig.Window.ShowPage(RackCadWindowPage.Nuevo);
+                rig.Window.ShowPage(RackCadWindowPage.Biblioteca);
+                Assert.True(rig.Settings.Reads > once);
+            }));
+        }
+
+        // Point 5: a conflict holds only while its file is in the folder read.
+        [Fact]
+        public void AConflictDoesNotOutliveItsFileWhenTheFolderChangesOrTheFileGoes()
+        {
+            using var rig = new Rig();
+            SaveCama(rig.File("Selectivo A"), T0);
+            var editor = rig.OpenSelectiveEditor();
+            editor.SaveToLibrary();
+            rig.Library.Save();
+            Assert.True(rig.Library.HasSaveConflict);
+
+            var other = Path.Combine(rig.Root, "Otra");
+            rig.Window.SetDesignLibraryPath(other);
+            Assert.False(rig.Library.HasSaveConflict);
+            Assert.True(rig.Library.CanSave);
+            rig.Library.Save();
+            Assert.True(System.IO.File.Exists(Path.Combine(other, "Selectivo A" + RackProjectStore.FileExtension)));
+
+            // The same in one folder: the file of the conflict removed outside, «Volver a leer la carpeta» drops the conflict.
+            editor.SaveToLibrary();
+            rig.Library.Save();
+            Assert.True(rig.Library.HasSaveConflict);
+            System.IO.File.Delete(Path.Combine(other, "Selectivo A" + RackProjectStore.FileExtension));
+            rig.Library.Reread();
+            Assert.False(rig.Library.HasSaveConflict);
+        }
+
+        // Point 7: a name that Windows reserves for a device takes «_» in its file, and the line says why.
+        [Fact]
+        public void ANameThatWindowsReservesIsSavedWithAnUnderscoreAndTheLineSaysWhy()
+        {
+            using var rig = new Rig();
+            var editor = rig.OpenSelectiveEditor();
+            editor.SaveToLibrary();
+
+            rig.Library.SaveName = "con";
+            Assert.Equal("con_.rackcad.json", rig.Library.SaveFile);
+            Assert.StartsWith("Archivo: con_.rackcad.json («con» es un nombre que Windows reserva: el archivo lleva «_»).", rig.Library.SaveHint);
+            rig.Library.Save();
+
+            var saved = Projects.Load(Path.Combine(rig.Folder, "con_.rackcad.json"));
+            Assert.Equal("con", saved.SelectiveRack.Name);
+        }
+
+        // Point 8: «Abrir» follows the drawing presented, and «Nuevo» does not call a library it could not read «vacía».
+        [Fact]
+        public void WhatOpenDoesFollowsTheDrawingPresented()
+        {
+            using var rig = new Rig();
+            Fill(rig);
+            rig.Window.ShowPage(RackCadWindowPage.Biblioteca);
+            Select(rig, "Selectivo 3 niveles");
+            Assert.True(rig.Library.SelectionOpensHere);
+            var raised = new List<string?>();
+            rig.Library.PropertyChanged += (_, e) => raised.Add(e.PropertyName);
+
+            rig.Host.Snapshot = WorkspacePanelFixtures.NoDocument();
+            rig.Window.Refresh();
+
+            Assert.Contains(nameof(RackCadLibraryViewModel.SelectionOpensHere), raised);
+            Assert.Contains(nameof(RackCadLibraryViewModel.SelectionOpensClassic), raised);
+            Assert.False(rig.Library.SelectionOpensHere);
+            Assert.True(rig.Library.SelectionOpensClassic);
+        }
+
+        [Fact]
+        public void TheRecentDesignsOfNuevoSayWhyThereAreNone()
+        {
+            using var rig = new Rig();
+            Assert.Equal("Abre «Biblioteca de diseños» para ver los diseños recientes.", rig.Library.RecentEmptyText);
+
+            rig.Window.ShowPage(RackCadWindowPage.Biblioteca);
+            Assert.Equal("La biblioteca está vacía.", rig.Library.RecentEmptyText);
+
+            System.IO.File.WriteAllText(rig.File("rota"), "{ no");
+            rig.Library.Reread();
+            Assert.Equal("Ningún archivo de la carpeta de la biblioteca se pudo leer.", rig.Library.RecentEmptyText);
+
+            rig.Window.SetDesignLibraryPath(Path.Combine(rig.Root, "no existe"));
+            Assert.Equal("La carpeta de la biblioteca todavía no existe.", rig.Library.RecentEmptyText);
+
+            SaveCama(Path.Combine(rig.Folder, "Cama 1" + RackProjectStore.FileExtension));
+            rig.Window.ResetDesignLibraryPath();
+            Assert.Equal(string.Empty, rig.Library.RecentEmptyText);
         }
 
         // ------------------------------------------------------------------ the views, with real WPF
@@ -1136,7 +1388,16 @@ namespace RackCad.UI.Tests
                 rig.Window.ShowPage(RackCadWindowPage.Nuevo);
                 Lay(view);
 
+                // Not read yet: the line says how to see them (point 8), and there is no recent design.
                 var extras = view.NuevoExtras;
+                Assert.Empty(Descendants<Button>(extras.RecentDesignList));
+                Assert.Equal(Visibility.Visible, extras.NoRecentText.Visibility);
+                Assert.Equal("Abre «Biblioteca de diseños» para ver los diseños recientes.", extras.NoRecentText.Text);
+
+                rig.Window.ShowPage(RackCadWindowPage.Biblioteca);
+                rig.Window.ShowPage(RackCadWindowPage.Nuevo);
+                Lay(view);
+                Assert.Equal(Visibility.Collapsed, extras.NoRecentText.Visibility);
                 Assert.Equal(3, Descendants<Button>(extras.RecentDesignList).Count());
                 Assert.Equal("Ver «Selectivo 3 niveles» en la biblioteca", Name(Descendants<Button>(extras.RecentDesignList).First()));
                 Assert.False(extras.ClassicMenuMapExpander.IsExpanded);

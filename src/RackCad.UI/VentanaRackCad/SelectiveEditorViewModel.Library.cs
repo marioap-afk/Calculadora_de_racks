@@ -62,21 +62,27 @@ namespace RackCad.UI.VentanaRackCad
         /// </summary>
         public void SaveToLibrary()
         {
-            var pending = PendingFieldError("No se puede guardar en la biblioteca");
-            if (pending != null)
+            var refusal = SaveRefusal();
+            if (refusal != null)
             {
-                Say(pending, error: true);
-                return;
-            }
-
-            if (!CanSaveToLibrary)
-            {
-                Say(SaveToLibraryBlockedText, error: true);
+                Say(refusal, error: true);
                 return;
             }
 
             IsMoreOpen = false;
             _saveToLibrary(this);
+        }
+
+        /// <summary>
+        /// Why the draft cannot be saved now, or null: a value written and refused in a field, then <see cref="SaveToLibraryBlockedText"/>.
+        /// «Más» asks it, and the line of the library asks it again at «Guardar» and «Reemplazar» (review of part «ut», point 1).
+        /// </summary>
+        public string SaveRefusal()
+        {
+            var pending = PendingFieldError("No se puede guardar en la biblioteca");
+            if (pending != null) return pending;
+            var blocked = SaveToLibraryBlockedText;
+            return string.IsNullOrEmpty(blocked) ? null : blocked;
         }
 
         private void RaiseMore()

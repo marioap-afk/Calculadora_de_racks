@@ -45,8 +45,8 @@ namespace RackCad.UI.VentanaRackCad
 
         /// <summary>The page «Biblioteca de diseños».</summary>
         public RackCadLibraryViewModel Library => _library ??= new RackCadLibraryViewModel(
-            () => DesignLibraryPath,
-            () => SafeRead(() => UtilitySettings?.DesignLibraryOverridden ?? false, false),
+            () => (_config ?? RefreshUtilitySettings()).DesignFolder, // only a reading of the library asks it, never a binding
+            () => Config.DesignOverridden,
             OpensHere,
             OpenLibraryDesign,
             IsEditorAlive,
@@ -55,13 +55,15 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>The page «Órdenes y atajos».</summary>
         public RackCadHelpViewModel Help => _help ??= new RackCadHelpViewModel(RunHelpCommand, ShowPage);
 
-        // ShowPage tells the utilities which page is shown: the library reads its folder when its page is shown, and the first time «Nuevo»
-        // is shown (its recent designs); «Configuración» reads the settings again.
+        // ShowPage tells the utilities which page is shown. Only «Biblioteca» and «Configuración» read the disk, and only when they are shown
+        // (review of part «ut», point 4): «Biblioteca» reads the settings again and then its folder; «Configuración» reads the settings again
+        // through RaiseSettings, which ShowPage calls for it. «Nuevo» shows the recent designs of the last reading and reads nothing.
         private void OnUtilityPageShown(RackCadWindowPage page)
         {
             OnPropertyChanged(nameof(IsAyudaPage));
-            if (page == RackCadWindowPage.Biblioteca || (page == RackCadWindowPage.Nuevo && !Library.HasRead)) Library.Read();
-            if (page == RackCadWindowPage.Configuracion) RaiseUtilitySettings();
+            if (page != RackCadWindowPage.Biblioteca) return;
+            RefreshUtilitySettings();
+            Library.Read();
         }
 
         // ------------------------------------------------------------------ «Nuevo»: the recent designs and the classic menu
@@ -233,15 +235,16 @@ namespace RackCad.UI.VentanaRackCad
         // «Más» › «Guardar en biblioteca…» of a Selectivo editor: the page of the library with the line of the save.
         private void StartSaveToLibrary(SelectiveEditorViewModel editor)
         {
+            // The refusal of the editor is asked again at «Guardar» and «Reemplazar» (review of part «ut», point 1).
             Contained(() => BeginLibrarySave(new RackCadLibrarySaveSource(editor, editor.Name, "Selectivo",
-                () => ChangesNote(editor.IsNewRack, editor.IsDirty), name => BuildSelectiveProject(editor, name))));
+                () => ChangesNote(editor.IsNewRack, editor.IsDirty), name => BuildSelectiveProject(editor, name), editor.SaveRefusal)));
         }
 
         // The same for a Dinámico editor.
         private void StartSaveToLibrary(DynamicEditorViewModel editor)
         {
             Contained(() => BeginLibrarySave(new RackCadLibrarySaveSource(editor, editor.Name, "Dinámico",
-                () => ChangesNote(editor.IsNewRack, editor.IsDirty), name => BuildDynamicProject(editor, name))));
+                () => ChangesNote(editor.IsNewRack, editor.IsDirty), name => BuildDynamicProject(editor, name), editor.SaveRefusal)));
         }
 
         private void BeginLibrarySave(RackCadLibrarySaveSource source)
@@ -249,7 +252,12 @@ namespace RackCad.UI.VentanaRackCad
             var wasShown = _page == RackCadWindowPage.Biblioteca;
             Library.BeginSave(source);
             ShowPage(RackCadWindowPage.Biblioteca);
-            if (wasShown) Library.Read();
+            if (wasShown)
+            {
+                RefreshUtilitySettings();
+                Library.Read();
+            }
+
             Say(string.Empty, failed: false);
         }
 
@@ -308,36 +316,71 @@ namespace RackCad.UI.VentanaRackCad
 
         // ------------------------------------------------------------------ «Configuración» (UT-01, UT-02, UT-12)
 
+        // What «Configuración» and «Biblioteca» show of the settings and of the disk, read ONCE when one of them is shown, and again after
+        // «Cambiar…», «Restablecer» or the box (review of part «ut», point 4). Nothing of it is read when the window loads or refreshes: a
+        // folder on a disconnected network share would freeze AutoCAD until the timeout of SMB, also at the start with the box on.
+        private sealed record UtilityConfig(string DesignFolder, bool DesignOverridden, bool DesignExists, bool OpenOnStartup, string SettingsPath,
+            RackCadAboutInfo About, string BlockPath, string BlockStatus, bool BlockMissing, bool BlockOverridden)
+        {
+            public static readonly UtilityConfig Empty = new(string.Empty, false, false, false, null, null, string.Empty, string.Empty, false, false);
+        }
+
+        private UtilityConfig _config;
+
+        private UtilityConfig Config => _config ?? UtilityConfig.Empty;
+
+        /// <summary>Whether the window read the settings of the utilities (only «Configuración» and «Biblioteca» read them): a seam for tests.</summary>
+        internal bool HasReadUtilitySettings => _config != null;
+
+        // Reads the settings and the existence of the folder of the designs once, and tells the view. RaiseSettings calls it (ShowPage of
+        // «Configuración», the block library), and so do «Biblioteca» and the changes of the folder.
+        private UtilityConfig RefreshUtilitySettings()
+        {
+            var utility = UtilitySettings;
+            var folder = DesignLibraryPath;
+            _config = new UtilityConfig(
+                folder,
+                SafeRead(() => utility?.DesignLibraryOverridden ?? false, false),
+                !string.IsNullOrWhiteSpace(folder) && SafeRead(() => Directory.Exists(folder), false),
+                SafeRead(() => utility?.OpenOnStartup ?? false, false),
+                SafeRead(() => utility?.SettingsFilePath, null),
+                SafeRead(() => utility?.About, null),
+                BlockLibraryPath,
+                BlockLibraryStatus,
+                BlockLibraryMissing,
+                SafeRead(() => _settings.BlockLibraryOverridden, false));
+            RaiseUtilitySettings();
+            return _config;
+        }
+
         /// <summary>The controls of the utilities are offered only with a settings access that has them.</summary>
         public bool HasUtilitySettings => UtilitySettings != null;
 
-        public string SettingsIntro
-        {
-            get
-            {
-                var path = SafeRead(() => UtilitySettings?.SettingsFilePath, null);
-                return "Ajustes de este usuario en este equipo" + (string.IsNullOrWhiteSpace(path) ? string.Empty : " (" + path + ")")
-                       + ". No van en el dibujo y se guardan al cambiarlos.";
-            }
-        }
+        public string SettingsIntro =>
+            "Ajustes de este usuario en este equipo" + (string.IsNullOrWhiteSpace(Config.SettingsPath) ? string.Empty : " (" + Config.SettingsPath + ")")
+            + ". No van en el dibujo y se guardan al cambiarlos.";
+
+        /// <summary>The block library as «Configuración» last read it (the page binds these, not the live reads).</summary>
+        public string ConfigBlockLibraryPath => Config.BlockPath;
+
+        public string ConfigBlockLibraryStatus => Config.BlockStatus;
+
+        public bool ConfigBlockLibraryMissing => Config.BlockMissing;
 
         /// <summary>«Restablecer» of the block library is offered only for a path chosen by the user (the prototype).</summary>
-        public bool CanResetBlockLibrary => SafeRead(() => _settings.BlockLibraryOverridden, false);
+        public bool CanResetBlockLibrary => Config.BlockOverridden;
 
-        public bool DesignLibraryOverridden => SafeRead(() => UtilitySettings?.DesignLibraryOverridden ?? false, false);
+        /// <summary>The folder of the designs as «Configuración» or «Biblioteca» last read it.</summary>
+        public string ConfigDesignLibraryPath => Config.DesignFolder;
 
-        public bool DesignLibraryExists
-        {
-            get
-            {
-                var path = DesignLibraryPath;
-                return !string.IsNullOrWhiteSpace(path) && SafeRead(() => Directory.Exists(path), false);
-            }
-        }
+        public bool DesignLibraryOverridden => Config.DesignOverridden;
 
-        public string DesignLibraryStatus =>
-            (DesignLibraryOverridden ? "Carpeta elegida (guardada)." : "Carpeta predeterminada.")
-            + (DesignLibraryExists ? string.Empty : " Todavía no existe: se crea al guardar el primer diseño.");
+        public bool DesignLibraryExists => Config.DesignExists;
+
+        public string DesignLibraryStatus => _config == null
+            ? string.Empty
+            : (DesignLibraryOverridden ? "Carpeta elegida (guardada)." : "Carpeta predeterminada.")
+              + (DesignLibraryExists ? string.Empty : " Todavía no existe: se crea al guardar el primer diseño.");
 
         public bool CanChangeDesignLibrary => HasUtilitySettings;
 
@@ -351,8 +394,8 @@ namespace RackCad.UI.VentanaRackCad
                 var settings = UtilitySettings;
                 if (settings == null || string.IsNullOrWhiteSpace(path)) return;
                 settings.SetDesignLibraryPath(path);
+                RaiseSettings(); // the settings again (RefreshUtilitySettings), then the library reads the new folder
                 Library.Read();
-                RaiseSettings();
                 Say("Carpeta de diseños guardada: mira «Biblioteca de diseños».", failed: false);
             });
         }
@@ -365,8 +408,8 @@ namespace RackCad.UI.VentanaRackCad
                 var settings = UtilitySettings;
                 if (settings == null) return;
                 settings.SetDesignLibraryPath(null);
-                Library.Read();
                 RaiseSettings();
+                Library.Read();
                 Say("Carpeta de diseños restablecida a la predeterminada.", failed: false);
             });
         }
@@ -374,7 +417,7 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>«Abrir RackCad al iniciar AutoCAD» (UT-01): off by default, it applies from the next start.</summary>
         public bool OpenOnStartup
         {
-            get => SafeRead(() => UtilitySettings?.OpenOnStartup ?? false, false);
+            get => Config.OpenOnStartup;
             set
             {
                 Contained(() =>
@@ -382,6 +425,8 @@ namespace RackCad.UI.VentanaRackCad
                     var settings = UtilitySettings;
                     if (settings == null || settings.OpenOnStartup == value) return;
                     settings.SetOpenOnStartup(value);
+                    // Only the box is read back: what the settings kept, without the folder or the disk again.
+                    _config = Config with { OpenOnStartup = SafeRead(() => settings.OpenOnStartup, value) };
                 });
                 OnPropertyChanged(nameof(OpenOnStartup));
                 OnPropertyChanged(nameof(OpenOnStartupHint));
@@ -392,17 +437,21 @@ namespace RackCad.UI.VentanaRackCad
             ? "Encendida: al iniciar AutoCAD, RackCad abre la ventana con el primer dibujo. Se aplica desde el próximo arranque."
             : "Apagada (por defecto): la ventana se abre con RACKCAD o RK.";
 
-        public string AboutVersion => SafeRead(() => UtilitySettings?.About?.Version, null) ?? string.Empty;
+        public string AboutVersion => Config.About?.Version ?? string.Empty;
 
-        public string AboutCatalogsFolder => SafeRead(() => UtilitySettings?.About?.CatalogsFolder, null) ?? string.Empty;
+        public string AboutCatalogsFolder => Config.About?.CatalogsFolder ?? string.Empty;
 
-        public string AboutLogsFolder => SafeRead(() => UtilitySettings?.About?.LogsFolder, null) ?? string.Empty;
+        public string AboutLogsFolder => Config.About?.LogsFolder ?? string.Empty;
 
         private void RaiseUtilitySettings()
         {
             OnPropertyChanged(nameof(HasUtilitySettings));
             OnPropertyChanged(nameof(SettingsIntro));
+            OnPropertyChanged(nameof(ConfigBlockLibraryPath));
+            OnPropertyChanged(nameof(ConfigBlockLibraryStatus));
+            OnPropertyChanged(nameof(ConfigBlockLibraryMissing));
             OnPropertyChanged(nameof(CanResetBlockLibrary));
+            OnPropertyChanged(nameof(ConfigDesignLibraryPath));
             OnPropertyChanged(nameof(DesignLibraryOverridden));
             OnPropertyChanged(nameof(DesignLibraryExists));
             OnPropertyChanged(nameof(DesignLibraryStatus));
