@@ -315,6 +315,17 @@
                                            Text="Este rack es Selectivo. Puedes editarlo aquí, con el editor nuevo, sin bloquear AutoCAD. RACKEDITAR sigue siendo el editor clásico." />
                             </DockPanel>
                         </Border>
+                        <!-- T4 cb: a cabecera of its own («Cabecera N» of the list) can be edited here, with its door and the same rules. -->
+                        <Border x:Name="CabeceraOfferPanel" DockPanel.Dock="Top" Style="{StaticResource Banner}" Margin="10,8,10,0"
+                                Visibility="{Binding ShowCabeceraOffer, Converter={StaticResource FlagToVisibility}}">
+                            <DockPanel>
+                                <Button x:Name="EditCabeceraHereButton" DockPanel.Dock="Right" Content="Editar aquí" Padding="12,4" Margin="8,0,0,0"
+                                        Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.Name="Editar la cabecera en la ventana"
+                                        Click="OnEditCabeceraHereClick" />
+                                <TextBlock TextWrapping="Wrap" VerticalAlignment="Center" Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                                           Text="Este rack es una cabecera. Puedes editarla aquí, con el editor de cabeceras nuevo, sin bloquear AutoCAD. RACKEDITAR sigue siendo el configurador clásico." />
+                            </DockPanel>
+                        </Border>
                         <Button x:Name="PanelToggleButton" DockPanel.Dock="Top" HorizontalAlignment="Left" Margin="10,6,10,0" Padding="10,3"
                                 Style="{StaticResource SecondaryButtonStyle}" Content="{Binding PanelToggleText}"
                                 Visibility="{Binding HasRackEditor, Converter={StaticResource FlagToVisibility}}"

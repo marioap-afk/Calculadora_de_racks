@@ -286,8 +286,10 @@ public class RackCadWindowListTests
         {
             var code = WorkspaceHostSource.CodeOnly(File.ReadAllText(path));
             Assert.DoesNotMatch(new System.Text.RegularExpressions.Regex(@"LockDocument|StartTransaction|StartOpenCloseTransaction"), code);
-            if (!path.EndsWith("RackCadRackDoorCommands.cs", StringComparison.Ordinal))
-                Assert.DoesNotMatch(new System.Text.RegularExpressions.Regex(@"\bRackCommandSupport\.|\bApplyDynamicEdit\b|\bApplySelectiveEdit\b|\bInsertSelectiveViews\b|\bDispatchInsertion\b|\bReadProjectVariables\b|\[CommandMethod"), code);
+            // I-64, cuarta tanda, parte cb: the commands of the door of a cabecera (RackCadCabeceraDoorCommands) read and write the drawing
+            // in their own command context too, as those of the door to a rack; the port of the cabecera does not reach those helpers.
+            if (!path.EndsWith("RackCadRackDoorCommands.cs", StringComparison.Ordinal) && !path.EndsWith("RackCadCabeceraDoorCommands.cs", StringComparison.Ordinal))
+                Assert.DoesNotMatch(new System.Text.RegularExpressions.Regex(@"\bRackCommandSupport\.|\bApplyDynamicEdit\b|\bApplySelectiveEdit\b|\bApplyCabeceraUpdate\b|\bInsertSelectiveViews\b|\bDispatchInsertion\b|\bReadProjectVariables\b|\[CommandMethod"), code);
         }
     }
 

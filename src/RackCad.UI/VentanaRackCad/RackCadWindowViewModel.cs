@@ -104,7 +104,7 @@ namespace RackCad.UI.VentanaRackCad
         // The one request of the door that waits for AutoCAD, for the two systems (Selectivo E1-B): its number, the session and the rack it
         // was made for (at the time it was made, not when the answer arrives), for a write what was sent, and whether it is a Selectivo.
         private sealed record DoorRequest(long Id, bool IsWrite, SessionId Session, string RackId, string SentJson, string SentName, bool Started = false,
-            bool IsSelective = false);
+            bool IsSelective = false, bool IsCabecera = false); // T4 cb: IsCabecera, a request of a cabecera of its own
 
         private sealed class DraftKeyComparer : IEqualityComparer<(SessionId Session, string RackId)>
         {
@@ -160,6 +160,7 @@ namespace RackCad.UI.VentanaRackCad
             }
 
             if (_selectiveDoor != null) _selectiveDoor.SelectiveRead += OnSelectiveRead;
+            WireCabeceraDoor(door); // T4 cb: the door of a cabecera of its own
 
             RackList = new RackListViewModel(panel.BrowserSummaryPort, panel.PilotEditPort, panel.Browser, DraftStateOf);
             RackList.RackOpened += () => ShowPage(RackCadWindowPage.Rack);
@@ -386,7 +387,7 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>While an editor of the window is shown (Dinámico or Selectivo), the user may look at the panel of the rack (state and navigation) instead.</summary>
         public bool ShowPanel
         {
-            get => _showPanel || (ActiveDynamicEditor == null && ActiveSelectiveEditor == null);
+            get => _showPanel || (ActiveDynamicEditor == null && ActiveSelectiveEditor == null && ActiveCabeceraEditor == null); // T4 cb
             set
             {
                 if (_showPanel == value) return;
@@ -399,7 +400,7 @@ namespace RackCad.UI.VentanaRackCad
         public string PanelToggleText => _showPanel ? "Volver al editor" : "Ver el estado y la navegación del rack";
 
         /// <summary>The active rack has an editor of the window (Dinámico or Selectivo): the page offers to look at the panel instead.</summary>
-        public bool HasRackEditor => HasDynamicEditor || HasSelectiveEditor;
+        public bool HasRackEditor => HasDynamicEditor || HasSelectiveEditor || HasCabeceraEditor; // T4 cb
 
         // ------------------------------------------------------------------ the Selectivo of the window (Selectivo E1-B)
 
@@ -690,7 +691,8 @@ namespace RackCad.UI.VentanaRackCad
             }
 
             const string StoppedWrite = "Se dejó de esperar a AutoCAD: si la orden llega a correr, no escribirá nada. El borrador sigue sin escribir.";
-            if (request.IsWrite && !request.IsSelective && _dynamicDrafts.TryGetValue((request.Session, request.RackId), out var entry))
+            if (request.IsWrite && request.IsCabecera) StopCabeceraWrite(request, StoppedWrite); // T4 cb
+            else if (request.IsWrite && !request.IsSelective && _dynamicDrafts.TryGetValue((request.Session, request.RackId), out var entry))
             {
                 entry.Editor.EndWriting();
                 entry.Editor.Say(StoppedWrite, error: false);
@@ -715,7 +717,7 @@ namespace RackCad.UI.VentanaRackCad
             Contained(() =>
             {
                 var request = _inFlight;
-                if (read == null || request == null || request.IsWrite || request.IsSelective || read.RequestId != request.Id) return;
+                if (read == null || request == null || request.IsWrite || request.IsSelective || request.IsCabecera || read.RequestId != request.Id) return; // T4 cb
                 _inFlight = null;
                 RaiseWaiting();
 
@@ -856,8 +858,9 @@ namespace RackCad.UI.VentanaRackCad
                 _inFlight = null;
                 RaiseWaiting();
 
-                // The write of a Selectivo (Selectivo E1-B): the same answer for the draft of its session and rack.
-                if (request.IsSelective)
+                // The write of a Selectivo (Selectivo E1-B): the same answer for the draft of its session and rack. T4 cb: and of a cabecera.
+                if (request.IsCabecera) CabeceraWritten(request, written);
+                else if (request.IsSelective)
                 {
                     if (_selectiveDrafts.TryGetValue((request.Session, request.RackId), out var selective))
                     {
@@ -915,6 +918,7 @@ namespace RackCad.UI.VentanaRackCad
         public string UnwrittenWorkOf(SessionId session)
         {
             var names = UnwrittenDynamicNames(session)
+                .Concat(UnwrittenCabeceraNames(session)) // T4 cb
                 .Concat(_selectiveDrafts
                     .Where(p => p.Key.Session == session && (p.Value.Editor.IsDirty || p.Value.Editor.IsWriting))
                     .Select(p => SelectiveNameOf(p.Value)))
@@ -953,6 +957,7 @@ namespace RackCad.UI.VentanaRackCad
             }
 
             ForgetDimensionStylesOfDeadSessions(session => IsAlive(port, session));
+            PruneCabeceraDrafts(port); // T4 cb
             if (_dynamicDrafts.Count == 0 && _selectiveDrafts.Count == 0) return;
 
             var dead = _dynamicDrafts.Where(p => !IsAlive(port, p.Key.Session)).ToList();
@@ -1051,7 +1056,7 @@ namespace RackCad.UI.VentanaRackCad
                 writing = selective.Editor.IsWriting;
                 dirty = selective.Editor.IsDirty;
             }
-            else
+            else if (!CabeceraDraftState(session, rackId, out writing, out dirty)) // T4 cb
             {
                 return null;
             }
@@ -1078,6 +1083,7 @@ namespace RackCad.UI.VentanaRackCad
                 // The editor no longer says to press «Dejar de esperar»: the Selectivo (S-28) and the Dinámico, of the drawing or new (M-11).
                 if (_inFlight.IsSelective && _selectiveDrafts.TryGetValue((_inFlight.Session, _inFlight.RackId), out var selective))
                     selective.Editor.WriteTaken();
+                else if (_inFlight.IsCabecera) CabeceraWriteTaken(_inFlight); // T4 cb
                 else if (!_inFlight.IsSelective && _dynamicDrafts.TryGetValue((_inFlight.Session, _inFlight.RackId), out var dynamic))
                     dynamic.Editor.WriteTaken();
                 RaiseWaiting();
@@ -1097,6 +1103,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(HasSelectiveEditor));
             OnPropertyChanged(nameof(SelectiveEditors));
             OnPropertyChanged(nameof(ShowSelectiveOffer));
+            RaiseCabecera(); // T4 cb
             OnPropertyChanged(nameof(HasRackEditor));
             OnPropertyChanged(nameof(ShowPanel));
             OnPropertyChanged(nameof(PanelToggleText));

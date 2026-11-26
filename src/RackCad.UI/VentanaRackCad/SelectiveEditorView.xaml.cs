@@ -21,6 +21,7 @@ namespace RackCad.UI.VentanaRackCad
             _viewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
             InitializeComponent();
             DataContext = viewModel;
+            WireCabecera(); // T4 cb: the editor of cabeceras takes the place of this one while it is open
         }
 
         public SelectiveEditorViewModel ViewModel => _viewModel;

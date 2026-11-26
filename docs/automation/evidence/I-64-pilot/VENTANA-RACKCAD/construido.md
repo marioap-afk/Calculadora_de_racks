@@ -1481,3 +1481,197 @@ Orden del Owner: «También realiza tú la prueba de la entrega 2, si existen er
 - Tras restaurar un borrador que vuelve a ser el dibujo, el aviso nombra «Descartar» con el botón desactivado.
 
 **No probado:** el «U» de una inserción y cancelar la colocación; el teclado en el panel de «Restaurar»; una cabecera personalizada fuera de su regla escrita por RACKSELECTIVOINSERTAR o RACKSELECTIVONUEVO.
+
+## Cuarta tanda, cb: el editor de cabeceras en la ventana
+
+**Rama:** local `architecture/workspace-persistente-rackcad-t4-cb`, en `ac3fd1b0` (worktree `D:\w4cb`), sin commit ni push. Sin AutoCAD.
+Prototipo `cabecera` (CB-01 a CB-13) y respuestas del Owner del 2026-11-26 (todas aceptadas; CB-04 y CB-13 con nota).
+
+**Lo que se construyó:**
+- **El editor de cabeceras** (CB-01 a CB-13), un solo editor con dos entradas, sin ventanas modales:
+  - `CabeceraDraftEditor` (Application, `VentanaRackCad/CabeceraDraftEditor.cs`): el borrador puro sobre una copia de la
+    `RackFrameConfiguration`. Lo mantiene normalizado con las reglas del configurador clásico (H1…Hn por elevación, un panel entre cada dos
+    horizontales, altura = última horizontal + 4 in de remate), con una diferencia: un panel pertenece a su horizontal de abajo (el
+    prototipo), así que mover o agregar horizontales no le cambia los valores a otro panel.
+  - `CabeceraEditorViewModel` y `CabeceraEditorView` (UI, `VentanaRackCad/`): las pestañas **Cabecera, Alzado (la inicial), Postes y
+    placas y Avanzado**, con los campos de Selectivo y Dinámico (`DynamicFieldItem`, `SelectiveChoiceItem`, la misma forma de confirmar).
+- **Cabecera** (CB-02, CB-03, CB-06): «Lo esencial» (Plantilla, Poste, Alto, Profundidad, Peralte del poste). Plantilla y Alto
+  regeneran; con cambios propios preguntan en línea «¿Regenerar desde la plantilla?» con la lista de lo que se pierde. Poste,
+  profundidad y peralte se escriben sin regenerar. «Calculado» (altura del poste, paneles con y sin celosía, horizontales y dobles,
+  profundidad, lo que da la plantilla), «Cambios respecto al estándar» por pieza y en español, y «Comprobación» con todos los avisos.
+- **Alzado** (CB-04, CB-12): el marco de lado, a escala, es el selector: clic, Mayús+clic (rango del mismo tipo), Ctrl+clic, y
+  «Paneles / Horizontales / Todo». Inspector del panel: Arreglo, Dirección, Perfil de la diagonal, **Claro** (nota del Owner), las
+  conexiones filtradas por su papel, «Dividir en dos», «Combinar con el de arriba», «Volver al estándar». Inspector de la horizontal:
+  Elevación (una) o Desplazar (varias), Perfil, Cantidad, Notas, «Duplicar arriba», «Eliminar». «Agregar panel arriba» con «Claro del
+  panel nuevo» (44 in por defecto).
+- **Postes y placas** (CB-07): «Igual en los dos postes» encendido si son iguales; apagado, dos columnas. Al encenderlo con postes
+  distintos, el derecho toma lo del izquierdo (lo dice).
+- **Avanzado**: los tres valores de celosía en troqueles, y «Del modelo, sin control» de solo lectura (paso, claro estándar, remate,
+  diagonal doble, horizontal doble).
+- **«Restaurar estándar…»** (CB-05) en línea, con las casillas Horizontales, Paneles, Postes y refuerzos, Placas y Celosía, su recuento,
+  «Ver lo que se pierde» y «Restaurar lo marcado». Vuelve a la plantilla con el alto con que se generó, el poste y la profundidad de
+  ahora. «Descartar» vuelve a lo abierto.
+- **Dentro de Selectivo** (CB-01 B, CB-08, CB-09, CB-10): las tres capacidades del clásico de Selectivo que faltaban.
+  - En «Avanzado» › «Postes y cabeceras», cada poste lleva su cabecera por fondo («Calculada» o «Personalizada») con **«Editar
+    cabecera…»** y, si es personalizada, **«Volver a la calculada»** (hoy «Restablecer poste»).
+  - «Editar cabecera…» abre el editor de cabeceras en el lugar del editor de Selectivo, sobre una copia (la semilla de «Personalizar»
+    del clásico). La profundidad es la del fondo, bloqueada y con su origen; el peralte es el propio del poste (vacío = el del rack).
+  - La cabecera de la ventana es «‹ Selectivo A › Cabecera de P2 · Fondo 1», con «Aplicar al borrador», «Copiar a otros postes…»,
+    «Descartar cambios» y «Restaurar estándar…». Nada aquí escribe en AutoCAD.
+  - **«Aplicar al borrador»** pasa por el protocolo del clásico (I-53: `SelectiveHeaderBatchPlanner` y `ApplyHeaderBatch`), que da a
+    cada copia la profundidad de su fondo y el peralte de su poste y revisa la altura. Por debajo del nivel de carga pregunta en línea
+    («Cabecera demasiado baja» › «Aplicar igual»); si solo difiere del alto resuelto, lo dice al aplicar.
+  - **«Copiar a otros postes…»**: casillas por poste y fondo, «Todos» y «Ninguno», «Aplicar aquí y copiar a n destinos». Todo se
+    prepara antes de escribir nada: si un destino no vale, no se copia nada.
+  - **«‹ Selectivo A»** con cambios sin aplicar pregunta «¿Volver sin aplicar?» (Aplicar y volver / Volver sin aplicar / Seguir editando).
+  - Una cabecera con cambios sin aplicar es trabajo sin escribir del rack: el Selectivo queda «Modificado» y el dibujo no se cierra (D-08).
+- **La cabecera suelta** (CB-01 A): «Editar aquí» de un rack «Cabecera N» de la lista, con su puerta numerada.
+  - `RACKCABECERAABRIR` (sin marca de Deshacer ni historial) y `RACKCABECERAAPLICAR` (`RackCadCabeceraDoorCommands.cs`), con las reglas
+    de las otras puertas: número de petición, otro dibujo, «Dejar de esperar», `RequestStarted`, la comparación de las vistas hermanas
+    (M-02), y la respuesta de la escritura con `RackDoorRules.AnswerForApply`.
+  - Las reglas puras: `CabeceraDoorRules.AnswerForOpen` y `PlanApply` (Application, `CabeceraDoor.cs`), con `IRackCadCabeceraDoorPort`,
+    `CabeceraDoorWrite` y `CabeceraDesignRead`.
+  - La mitad de dibujo `RackCabeceraCommands.ApplyCabeceraUpdate` (archivo parcial nuevo): redibuja en sitio la lateral y la planta con
+    el mismo GUID, como «Actualizar» de RACKEDITAR.
+  - En la ventana: la oferta «Editar aquí», el editor en la página del rack, «Actualizar» con una copia, el editor bloqueado mientras
+    AutoCAD escribe, «Limpio» solo si se redibujó alguna vista, el borrador de otro dibujo que no se escribe, la poda de un dibujo
+    cerrado, la marca de la lista y el veto de cierre (D-08).
+
+**CB-04, el claro del panel (nota del Owner: «falta una opción para cambiar el claro del panel»).** Investigado en el dominio:
+- **El claro de un panel no es un dato.** Es la distancia entre sus dos horizontales: `BracingPanel.ClearHeight => EndElevation −
+  StartElevation`, y esas elevaciones se copian de las horizontales en cada normalización.
+- **`RackFrameConfiguration.PanelClear` (44 in) sí existe y se guarda** (`RackFrameProjectDocument.PanelClear`), pero no se puede
+  cambiar: `RackFrameConfigurationFactory.Build` crea una configuración nueva y genera siempre con su valor por defecto, y solo «Agregar
+  horizontal» y «Duplicar» del clásico lo leen.
+- **Lo construido:** el campo «Claro» del inspector del panel. Escribirlo mueve la horizontal de arriba del panel y todo lo que hay
+  encima en la diferencia, desde el panel más bajo elegido, así que los demás paneles conservan su claro y el poste crece o baja (el
+  remate sigue en la última horizontal). Con varios paneles, los iguala.
+- **Propuesta, sin construir (supuesto CB4-02):** si el Owner quiere un claro estándar propio por cabecera, que el factory reciba
+  `PanelClear` (hoy fijo en 44) y que «Lo esencial» lo ofrezca como un dato más que regenera. Es un cambio de cálculo; se declara aquí.
+
+**CB-13, la cara de montaje (nota del Owner: «no sirve para nada»).** La ventana no la ofrece: ni en el panel, ni en la horizontal, ni
+en la leyenda. El dato no se borra y vive en:
+- `BracingPanel.MountingFace` y `FrameHorizontal.MountingFace` (`src/RackCad.Domain/RackFrames/`), tipo `FrameSide` (Front, Back, Both);
+- `RackFrameProjectDocument` (se guarda), `AuthoredTypedValues` (compara diseños), `RackFrameConfigurationFactory` (siempre Front);
+- `BracingPanelMemberBuilder.GetPhysicalFaces`: **«Both» genera las diagonales dos veces** (una por cara), así que en un dibujo que ya la
+  tenga, el modelo físico y lo que cuente el BOM de miembros las duplican. La ventana conserva el valor guardado; «Restaurar estándar…» y
+  «Volver al estándar» lo devuelven a Front, porque copian el panel de la plantilla.
+- y en el configurador clásico (`BracingSegmentEditorRow`, `HorizontalEditorRow`, `RackFrameConfiguratorViewModel`, su vista previa).
+
+**Las decisiones (prefijo CB4, para no chocar con las de las otras partes):**
+
+| Id | Decisión | Por qué |
+|---|---|---|
+| CB4-01 | Un panel pertenece a su horizontal de abajo (el prototipo, `rebuildPs`), no al par de horizontales del clásico. Dividir da a las dos mitades los valores del panel; combinar conserva los del de abajo; un panel agregado arriba es estándar (diagonal simple) | Con la regla del clásico, un panel modificado deja de contar como tal tras otro cambio de horizontales (inventario, dolor 7) |
+| CB4-02 | El claro del panel se escribe moviendo lo de arriba (ver arriba). El claro estándar (`PanelClear`) queda de solo lectura en «Avanzado» | El dominio no tiene el claro como dato; el estándar no lo usa el factory |
+| CB4-03 | La plantilla de una cabecera abierta se toma de `StandardBaselineId` («TEMPLATE-id»); si no está en el catálogo, la estándar. El alto con que se generó, que el modelo no guarda, es el alto al abrir; «Alto» y «Plantilla» lo cambian | Es lo único que el dibujo guarda de la plantilla |
+| CB4-04 | Dentro de Selectivo, el peralte vacío es el del rack, y el campo muestra vacío cuando la cabecera tiene el del rack. La copia guarda el peralte efectivo, como el clásico, y el protocolo decide qué escribe en «Peralte propio» del poste (cero si es el del rack) | El clásico siembra con el peralte efectivo del poste; así abrir y aplicar sin tocar no cambia el poste |
+| CB4-05 | «Aplicar al borrador» es el EDIT del protocolo de I-53 sobre ese poste y ese fondo solamente (el alcance de la tabla, no el selector de fondos). La copia a otros postes es el mismo EDIT en cada destino, con el peralte del poste destino: así no cambia el peralte propio de ningún destino, como DISTRIBUTE del clásico, y todo se prepara antes de escribir | La casilla del prototipo es un par poste × fondo; DISTRIBUTE cruza todos los postes con todos los fondos |
+| CB4-06 | «Volver a la calculada» quita la personalizada de ese poste en ese fondo y no toca el peralte propio del poste | El peralte propio es de todo el rack y se escribe en su columna. En el clásico, «Restablecer poste» con todos los fondos también lo borraba |
+| CB4-07 | Mientras el editor de una cabecera está abierto, toma el lugar del editor de Selectivo (la vista del editor cambia su contenido) y el de Selectivo conserva su estado debajo | El prototipo: «‹ Selectivo 2 › Cabecera de P2 · Fondo 1» |
+| CB4-08 | Una cabecera con cambios sin aplicar deja el Selectivo «Modificado» (una línea en `RefreshDirty`) | D-08: si no, cerrar el dibujo perdería esos cambios sin aviso |
+| CB4-09 | `ApplyCabeceraUpdate` es una COPIA de la rama `UpdateOnly` de `EditCabecera`, no una extracción, para no cambiar RACKEDITAR en esta tanda. Una guarda de fuente en Core comprueba que las dos hacen los mismos pasos en el mismo orden | Las mitades de Dinámico y Selectivo se extrajeron con el mismo cuerpo; aquí extraer exigía reordenar `EditCabecera`, que mezcla la actualización con la inserción |
+| CB4-10 | Los textos de la cabecera se dan en español y con acentos (la ventana escribe sus propios avisos en «Comprobación»; de `FrameModelValidator` solo toma los de ids que el catálogo no conoce) | Inventario, dolor 6 |
+| CB4-11 | «Estado físico» de la horizontal no se ofrece (CB-12); «Notas» sí | Pregunta 12 aceptada |
+
+**Supuestos para el Owner** (aislados):
+- CB4-03 (la plantilla y el alto de una cabecera abierta): `CabeceraDraftEditor.TemplateIdOf` y el constructor.
+- CB4-05 (el alcance de «Aplicar al borrador» y de la copia): `SelectiveDraftEditor.WriteCabecera`.
+- CB4-06 (el peralte en «Volver a la calculada»): `SelectiveDraftEditor.ResetCabeceraAt`.
+- Los textos de los avisos y de las preguntas en línea, del prototipo donde los hay; los demás, provisionales.
+
+**Lo que falta (no se construyó en esta tanda):**
+- **Dinámico** › «Módulos» › «Editar cabecera…» y «Copiar a otros módulos…» (CB-01 B, CB-08: profundidad = longitud del módulo y peralte
+  del rack, los dos bloqueados; `CabeceraDraftContext` ya admite el peralte bloqueado). Dinámico tiene su propio protocolo de lotes
+  (`DynamicHeaderBatchState`) y su nota sigue diciendo que la cabecera se edita en RACKEDITAR.
+- **«Guardar como plantilla…»** (CB-11) y el cambio de cálculo «la plantilla propia repite la forma»: el formato de plantilla
+  (`RackFrameTemplate`) no guarda los paneles uno por uno, así que repetir la forma exige ampliarlo. Hoy la lista de plantillas ya
+  incluye las propias de `%APPDATA%\RackCad\user-templates.json`, marcadas «(propia)», y usarlas regenera como hoy.
+- **«Insertar vista…» de la cabecera suelta**: espera el panel reutilizable de la parte `ins` (DG-07). «Nuevo › Cabecera en esta
+  ventana» espera los borradores de la parte `new` (fuera de esta tanda por el encargo).
+- La marca de error en la pestaña («punto rojo»): un valor no válido no llega al borrador y se queda en su campo con el motivo, pero la
+  pestaña no se marca.
+- El editor de cabeceras clásico sigue en RACKEDITAR, en «Nuevo» (tarjeta «Cabecera»), en Push Back y en Dinámico.
+
+**Ediciones a archivos compartidos** (pequeñas y marcadas `T4 cb`):
+- `src/RackCad.Application/VentanaRackCad/SelectiveDraftEditor.cs`: la clase pasa a `partial` (una palabra).
+- `src/RackCad.UI/VentanaRackCad/SelectiveEditorViewModel.cs`: `SelectivePostRow` pasa a `partial`; una línea en `Rebuild`
+  (`RefreshCabeceraCells();`) y una en `RefreshDirty` (`|| CabeceraPending`).
+- `src/RackCad.UI/VentanaRackCad/SelectiveEditorView.xaml`: un bloque (`T4 cb (begin)` … `(end)`) en «Avanzado» › «Postes y cabeceras»:
+  la celda «Cabecera» de cada poste (ahora con su cabecera por fondo y los dos botones) y la nota de debajo, que ya no dice «usa
+  RACKEDITAR».
+- `src/RackCad.UI/VentanaRackCad/SelectiveEditorView.xaml.cs`: una línea en el constructor (`WireCabecera();`).
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowViewModel.cs`: una línea en el constructor (`WireCabeceraDoor(door);`); `IsCabecera` en
+  `DoorRequest`; `ShowPanel` y `HasRackEditor` cuentan el editor de cabeceras; una rama en `StopWaiting`, `OnDesignWritten`,
+  `OnRequestStarted` y `DraftStateOf`; una condición en `OnDesignRead`; una línea en `UnwrittenWorkOf`, `PruneDeadSessions` y
+  `RaiseDynamic`.
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowView.xaml`: un bloque, la oferta `CabeceraOfferPanel` con «Editar aquí», tras la de Selectivo.
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowView.xaml.cs`: dos nombres en `OnViewModelPropertyChanged` y una línea en `ShowRackContent`.
+- `src/RackCad.Plugin/VentanaRackCad/RackCadRackDoorPort.cs`: la clase pasa a `partial` y una línea en `Abandon`.
+- `src/RackCad.Plugin/RackCabeceraCommands.cs`: la clase pasa a `partial` (una palabra); `EditCabecera` no cambia.
+- Archivos nuevos: `CabeceraDraftEditor.cs`, `CabeceraDoor.cs`, `SelectiveDraftEditor.Cabecera.cs` (Application);
+  `CabeceraEditorViewModel.cs`, `CabeceraEditorView.xaml(.cs)`, `SelectiveEditorViewModel.Cabecera.cs`, `SelectiveEditorView.Cabecera.cs`,
+  `RackCadWindowViewModel.Cabecera.cs`, `RackCadWindowView.Cabecera.cs` (UI); `RackCadCabeceraDoorCommands.cs`,
+  `RackCadRackDoorPort.Cabecera.cs`, `RackCabeceraCommands.Door.cs` (Plugin); y las pruebas.
+
+**Censos y guardas que cambiaron por esta parte** (cada uno con su nota en la prueba):
+- `SelectiveEditorOpenTests.GUARDA_EL_CENSO_DE_COMANDOS_NO_CAMBIA`: de 51 a 53 (RACKCABECERAABRIR, RACKCABECERAAPLICAR).
+- `CustomPropertiesCommandGuardTests`: `A14CabeceraDoorCommands` entra en la base.
+- `RackCadWindowListTests.TheFoldersOfTheWindowKeepTheirLayers`: las órdenes de la puerta de la cabecera
+  (`RackCadCabeceraDoorCommands.cs`) leen y escriben el dibujo en su contexto de orden, como las de la puerta a un rack; y
+  `ApplyCabeceraUpdate` entra en la lista de lo que ningún otro archivo de la puerta puede llamar.
+- Dos guardas globales de nombres fallaron con la primera versión y se corrigió el código, no la guarda:
+  `WorkspaceIdleSchedulingGuardTests` (G10: `.SetPost(` una sola vez en `src`) y `WorkspacePilotReconciliationGuardTests` (`Update()`
+  solo en el campo del piloto). `CabeceraDraftEditor.SetPost` pasó a `SetPostProfile` y el `Update()` del editor de cabeceras a
+  `RequestWrite()`, como hizo Dinámico (B-01 de su primera revisión).
+
+**Las pruebas:**
+- `tests/RackCad.UI.Tests/Workspace/CabeceraEditorTests.cs` (nuevo, 21):
+  - el borrador: la cabecera estándar normalizada y sin cambios; el claro del panel (CB-04) con uno y dos paneles; los cambios contra
+    la plantilla y «Restaurar estándar» por casillas; el alto y la plantilla que regeneran y dicen antes lo que se pierde; dividir,
+    combinar, agregar arriba, mover, desplazar, duplicar y eliminar, con sus rechazos; «Descartar» y lo escrito como base; la
+    profundidad y el peralte dentro de un rack; «Igual en los dos postes»; «Comprobación» en español con la altura frente al rack;
+  - el modelo de la vista: abre en «Alzado» con las filas de arriba abajo y el primer panel elegido, clic, Mayús y Ctrl; sin cara de
+    montaje y con «Claro» (CB-13, CB-04); la pregunta de regenerar y su cancelación; el panel de «Restaurar estándar…»; la cabecera
+    suelta («Actualizar» solo con cambios, bloqueada mientras escribe, «Limpio» al escribir, «Cerrar el editor» con su pregunta);
+  - dentro de Selectivo: la cabecera de cada poste y fondo con su profundidad; «Aplicar al borrador» deja el rack «Modificado» y
+    «Volver a la calculada» lo limpia; la pregunta de la altura bajo el nivel de carga; la copia a otros postes con la profundidad de su
+    fondo y el peralte de su poste; «‹ Selectivo» con cambios pregunta;
+  - con WPF real (STA) y sin errores de enlace: las cuatro pestañas, las filas del alzado con sus nombres, el clic en una fila, los
+    nombres únicos de los botones; y el editor de la cabecera que toma el lugar del de Selectivo y lo devuelve.
+- `tests/RackCad.UI.Tests/Workspace/RackCadCabeceraWindowTests.cs` (nuevo, 7), con una puerta doble que implementa
+  `IRackCadCabeceraDoorPort`: la oferta solo con esa puerta y la respuesta solo de su petición; la regla de la puerta; «Actualizar» con
+  una copia, el editor bloqueado, la orden que tomó la petición, la respuesta no escrita y la escrita, el veto de cierre (D-08); «Dejar
+  de esperar» y la respuesta tardía; el borrador de otro dibujo y la poda; «Cerrar el editor» y la marca de la lista; y la página del
+  rack que aloja la vista (STA).
+- `tests/RackCad.Tests/Workspace/CabeceraDoorTests.cs` (Core, nuevo, 7): las reglas (`AnswerForOpen`, `PlanApply`) y el cableado sobre la
+  fuente (las dos órdenes en su orden, la comparación de hermanas antes de `blocks[0]`, «escrito» solo por la regla, la mitad de dibujo
+  con los mismos pasos que la rama `UpdateOnly` de `EditCabecera`, y los huecos de la puerta con su `Abandon`).
+- **Comprobación en rojo:** doce piezas rotas a propósito, una a una, con script (`hs65\t4\cb\red.py` en el scratchpad de la sesión;
+  cada archivo vuelve a sus bytes con el mismo SHA-256, lo comprueba el script). En todas falla al menos una prueba:
+  1. el claro mueve solo la horizontal de arriba: fallan 2;
+  2. el panel ofrece la cara de montaje: falla 1;
+  3. la cabecera sin aplicar no cuenta en «Modificado» (D-08): falla 1;
+  4. la altura severa no pregunta: falla 1;
+  5. la copia no toma el peralte de su poste: falla 1;
+  6. «Restaurar» ignora la casilla Paneles: fallan 2;
+  7. el alto regenera sin preguntar: falla 1;
+  8. la respuesta de la escritura no llega a la cabecera: falla 1;
+  9. el consejero de cierre no cuenta las cabeceras: falla 1;
+  10. la página del rack no aloja la cabecera: falla 1;
+  11. la puerta abre cualquier tipo (Core): falla 1;
+  12. la mitad de dibujo sin el nombre de la planta (Core): falla 1.
+
+**Los números** (fuentes finales, solución en Debug, después de la comprobación en rojo):
+- **UI completa:** 2784 correctas, 0 con error, 48 omitidas (2832): la base de `ac3fd1b0` (2756 / 0 / 48) más las 28 nuevas.
+- **Core Full:** 19154 correctas, 0 con error, 403 omitidas (19557): la base (19147 / 0 / 403) más las 7 de `CabeceraDoorTests`.
+- **Build Debug de la solución (Plugin incluido):** 0 errores; las 2 advertencias son las MSB3277 de las referencias de AutoCAD, que ya estaban.
+- Focales de la ventana, Selectivo y Dinámico (`Cabecera*`, `RackCadSelective*`, `SelectiveSafetyTab*`, `SelectiveRestorePanel*`,
+  `RackCadWindowTests`, `RackCadDynamicEditorTests`): 295 de 295.
+
+**Lo que queda abierto para el smoke del Owner en AutoCAD:**
+- que `RACKCABECERAABRIR` no deje nada en Deshacer;
+- `RACKCABECERAAPLICAR` con lateral y planta, y su «U»;
+- «Editar cabecera…» → «Aplicar al borrador» → «Actualizar» de un Selectivo, y la personalizada en el dibujo;
+- el veto de cierre con una cabecera sin aplicar;
+- el editor de cabeceras en la paleta (anchos, foco y ratón en el alzado).

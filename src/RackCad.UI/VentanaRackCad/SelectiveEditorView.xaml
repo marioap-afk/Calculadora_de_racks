@@ -908,16 +908,33 @@
                                         <ContentControl Grid.Column="1" Content="{Binding Field}" ContentTemplate="{StaticResource CompactField}" Focusable="False" />
                                         <TextBlock Grid.Column="2" Text="{Binding Height}" Margin="0,4,8,0" TextWrapping="Wrap"
                                                    Foreground="{DynamicResource ShellTextPrimaryBrush}" />
-                                        <TextBlock Grid.Column="3" Text="{Binding Cabecera}" Margin="0,4,0,0" TextWrapping="Wrap"
-                                                   Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                        <!-- T4 cb (begin): the cabecera of the post in each fondo, «Editar cabecera…» (the editor of cabeceras inside this one)
+                                             and «Volver a la calculada» (today «Restablecer poste»), CB-01 and CB-10; the note below says it. -->
+                                        <ItemsControl Grid.Column="3" ItemsSource="{Binding Cabeceras}" Focusable="False">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate DataType="{x:Type local:SelectiveCabeceraCell}">
+                                                    <WrapPanel Margin="0,0,0,2">
+                                                        <TextBlock Text="{Binding FondoLabel}" Style="{StaticResource OptionalText}" Width="56" Margin="0,4,6,0"
+                                                                   Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                                        <TextBlock Text="{Binding Status}" Width="90" Margin="0,4,6,0" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                                        <Button Content="Editar cabecera…" Margin="0,0,6,0" Padding="8,2" Style="{StaticResource SecondaryButtonStyle}"
+                                                                IsEnabled="{Binding CanEdit}" AutomationProperties.Name="{Binding EditName}" Click="OnEditCabeceraClick" />
+                                                        <Button Content="Volver a la calculada" Padding="8,2" Style="{StaticResource SecondaryButtonStyle}"
+                                                                IsEnabled="{Binding CanEdit}" AutomationProperties.Name="{Binding CalculatedName}"
+                                                                Visibility="{Binding IsCustom, Converter={StaticResource FlagToVisibility}}" Click="OnCabeceraToCalculatedClick" />
+                                                    </WrapPanel>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
                                     </Grid>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                         <TextBlock TextWrapping="Wrap" Margin="0,6,0,0" Foreground="{DynamicResource ShellTextSecondaryBrush}"
                                    Text="Peralte propio vacío = el del rack («Rack» › «Poste y anotaciones»). Uno igual al del rack se guarda como «el del rack»." />
-                        <TextBlock TextWrapping="Wrap" Margin="0,8,0,0" Foreground="{DynamicResource ShellTextSecondaryBrush}"
-                                   Text="Las cabeceras personalizadas se conservan y se ven aquí. Para editar una cabecera, usa RACKEDITAR (el editor clásico) mientras se migra." />
+                        <TextBlock x:Name="CabeceraNoteText" TextWrapping="Wrap" Margin="0,8,0,0" Foreground="{DynamicResource ShellTextSecondaryBrush}"
+                                   Text="«Editar cabecera…» abre aquí mismo el editor de cabeceras, sobre una copia: «Aplicar al borrador» la pasa a este rack y el dibujo cambia con «Actualizar». «Copiar a otros postes…» está dentro de ese editor; «Volver a la calculada» quita la personalizada." />
+                        <!-- T4 cb (end) -->
                         <TextBlock Text="Medio frente" Style="{StaticResource GroupTitle}" />
                         <TextBlock x:Name="HalfFrontsText" Text="{Binding HalfFrontsText}" TextWrapping="Wrap"
                                    Foreground="{DynamicResource ShellTextPrimaryBrush}" />

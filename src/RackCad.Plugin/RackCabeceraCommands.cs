@@ -22,7 +22,7 @@ using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 namespace RackCad.Plugin
 {
     /// <summary>Cabecera (lateral header) commands + their draw/edit/payload helpers, plus their short aliases.</summary>
-    public sealed class RackCabeceraCommands
+    public sealed partial class RackCabeceraCommands // T4 cb: partial (the drawing half of the door, RackCabeceraCommands.Door.cs)
     {
         [CommandMethod("RCB")] public void AliasRackCabecera() => RackCabecera();          // RACKCABECERA
         [CommandMethod("QCB")] public void AliasQuickCabecera() => QuickCabecera();        // QUICKCABECERA

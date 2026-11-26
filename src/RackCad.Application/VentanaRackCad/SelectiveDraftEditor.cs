@@ -145,7 +145,7 @@ namespace RackCad.Application.VentanaRackCad
     /// reader of the system changes the design (I-1 of the review of the entrega 2). Nothing here writes the drawing.
     /// </para>
     /// </summary>
-    public sealed class SelectiveDraftEditor
+    public sealed partial class SelectiveDraftEditor
     {
         private const string AutomaticDimensionStyle = "(Automático)";
 
