@@ -1,10 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RackCad.Application.Catalogs;
+using RackCad.Application.Persistence;
 using RackCad.Application.ProjectVariables;
+using RackCad.Application.RackFrames;
 using RackCad.Application.Systems.Selective;
 using RackCad.Application.Systems.Shared;
 using RackCad.Application.VentanaRackCad;
+using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems.Selective;
 using RackCad.Domain.Systems.Shared;
 using Xunit;
@@ -204,6 +208,77 @@ namespace RackCad.Tests
             Assert.True(SelectiveDoorInsertion.PlanNewRack(NewWrite(system, views,
                 new Dictionary<PropertyId, LinkedPropertyEditState> { [Clearance] = LinkedPropertyEditState.Literal(6.0), [ProjectPropertyIds.SelectivePalletTolerance] = null }),
                 false, catalog).CanInsert);
+        }
+
+        // ------------------------------------------------------------------ what is written is what was sent (M-1 of the review of E2)
+
+        private const string Post = "POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA";
+        private const string Beam = "LARGUERO_ESCALON_CAL14_3_REMACHES";
+
+        private static SelectiveBayDesign Bay(int levels, bool floor = false)
+        {
+            var bay = new SelectiveBayDesign { FloorBeam = floor, FloorBeamRiseOverride = 4.0 };
+            for (var level = 0; level < levels; level++)
+                bay.Levels.Add(new SelectiveCell { Pallet = new Tarima { Frente = 42.0, Alto = 60.0 }, PalletCount = 2, BeamId = Beam, BeamPeralte = 4.0 });
+            return bay;
+        }
+
+        // Two fondos (48 and 40 in deep) with a custom cabecera on P1 of fondo 2 that keeps the depth it was made with (42 in), not the rule
+        // of its fondo (40 − 6 = 34 in), as an older document can carry it; recomposed by the draft of the window and copied as the window
+        // sends it (SnapshotForWrite).
+        private static SelectiveDraftSnapshot DraftWithACustomCabeceraOutOfItsRule(RackCatalog catalog)
+        {
+            var design = new SelectivePalletDesign
+            {
+                PostId = Post, PostPeralte = 3.0, PalletTolerance = 4.0, VerticalClearance = 6.0, FloorBeamRise = 4.0, PalletDepth = 48.0, DepthCount = 2,
+            };
+            design.Bays.Add(Bay(3, floor: true));
+            design.Bays.Add(Bay(2));
+            design.ExtraFondoBays.Add(new List<SelectiveBayDesign> { Bay(3, floor: true), Bay(3), Bay(3) });
+            design.ExtraFondoDepths.Add(40.0);
+            design.SeparatorLengths.Add(10.0);
+            design.CabeceraFondoOverrides.Add(0.0);
+            design.CabeceraFondoOverrides.Add(0.0);
+            foreach (var peralte in new[] { 0.0, 0.0, 0.0, 0.0 }) design.PostPeraltes.Add(peralte);
+            design.ExtraFondoPostCabeceras.Add(new List<RackFrameConfiguration>
+            {
+                new RackFrameConfigurationFactory(catalog).Build(RackFrameTemplateCatalog.FindStandardOrDefault(), Post, 96.0, 42.0),
+            });
+
+            var draft = new SelectiveDraftEditor(catalog);
+            Assert.True(draft.LoadFrom(design, null, "Selectivo A"), draft.LastError);
+            var snapshot = draft.SnapshotForWrite();
+            Assert.NotNull(snapshot);
+            Assert.Equal((42.0, 34.0), (snapshot!.Design.ExtraFondoPostCabeceras[0][0]!.Depth, SelectiveDepthLayout.CabeceraDepthOfFondo(snapshot.System, 1)));
+            return snapshot;
+        }
+
+        private static string Serialized(SelectivePalletDesign design)
+            => new SelectivePalletDesignStore().Serialize(SelectivePalletDesignDocument.From(design, null, null));
+
+        [Fact]
+        public void RackSelectivoInsertarAndNuevo_WriteTheDesignTheWindowSent_WhateverTheirPlanReadsOfTheSystem()
+        {
+            // M-1 of the review of the entrega 2: RACKSELECTIVOINSERTAR (DrawableViews) and RACKSELECTIVONUEVO (PlanNewRack) read the cuts of
+            // the system of the write before they reconcile its design; the cuts impose the depth of its fondo on every custom cabecera
+            // (ARQ-43-10). The system of the write is resolved from a copy of its own, so the design they write is the one that was sent, the
+            // JSON the window keeps as «Limpio».
+            var catalog = Catalog;
+            var views = new[] { RackViewAddress.Post(0), RackViewAddress.Fondo(1), RackViewAddress.Whole(DimensionViewKind.Planta) };
+
+            var sent = DraftWithACustomCabeceraOutOfItsRule(catalog);
+            var insert = new SelectiveDoorWrite(3, default, "rack-1", sent.Name, sent.Design, sent.System, sent.LinkedPropertyFinalStates, views);
+            Assert.Equal(views, SelectiveDoorInsertion.DrawableViews(insert.InsertViews, insert.System, catalog).ToArray());
+            Assert.Equal(sent.DesignJson, Serialized(insert.Design));
+            Assert.Equal(42.0, insert.Design.ExtraFondoPostCabeceras[0][0]!.Depth);
+
+            var created = DraftWithACustomCabeceraOutOfItsRule(catalog);
+            var nuevo = new SelectiveDoorWrite(9, default, "nuevo-1", created.Name, created.Design, created.System, created.LinkedPropertyFinalStates, views, NewRack: true);
+            var plan = SelectiveDoorInsertion.PlanNewRack(nuevo, identityInDrawing: false, catalog);
+            Assert.True(plan.CanInsert, plan.Reason);
+            Assert.Equal(views, plan.Views.ToArray());
+            Assert.Equal(created.DesignJson, Serialized(nuevo.Design));
+            Assert.Equal(42.0, nuevo.Design.ExtraFondoPostCabeceras[0][0]!.Depth);
         }
 
         // ------------------------------------------------------------------ the wiring, on the source (the Plugin needs AutoCAD)

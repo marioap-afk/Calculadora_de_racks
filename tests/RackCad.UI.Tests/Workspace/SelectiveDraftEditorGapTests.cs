@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using RackCad.Application.Persistence;
 using RackCad.Application.ProjectVariables;
 using RackCad.Application.Systems.Selective;
+using RackCad.Application.Systems.Shared;
 using RackCad.Application.VentanaRackCad;
 using RackCad.Domain.Systems.Selective;
 using RackCad.Domain.Systems.Shared;
@@ -229,6 +230,55 @@ namespace RackCad.UI.Tests
 
             // Nothing before the first valid recomposition.
             Assert.Equal(new SelectiveBomCounts(0, 0, 0), new SelectiveDraftEditor(catalog).BomCounts());
+        }
+
+        [Fact]
+        public void NoReaderOfTheSystemOfTheDraftOrOfItsWriteChangesTheirDesign()
+        {
+            // I-1 of the review of the entrega 2, at its origin: the third path that changed the design by reading the system («Insertar
+            // vista…», after «Calculado» and the safety tab). The readers of the drawing impose the depth of its fondo on every custom
+            // cabecera they read, in place (ARQ-43-10, deferred); the system of the draft and the one of its write are resolved from copies
+            // of their own, so whatever reads them, the design and the JSON that is written stay. Here P1 of fondo 2 keeps 42 in, its rule is 34.
+            var draft = Open(TwoFondosWithACustomCabeceraOutOfItsRule());
+            var catalog = draft.Catalog;
+            Assert.Equal((42.0, 34.0), (draft.Design!.ExtraFondoPostCabeceras[0][0]!.Depth, SelectiveDepthLayout.CabeceraDepthOfFondo(draft.System!, 1)));
+            var json = Json(draft.Design);
+            var write = draft.SnapshotForWrite()!;
+            Assert.Equal(json, write.DesignJson);
+
+            void Walk(SelectiveRackSystem system)
+            {
+                _ = SelectiveBomBuilder.Build(system, catalog);
+                var cuts = new SelectiveLateralBuilder().Cortes(system, catalog);
+                Assert.NotEmpty(cuts);
+                _ = new SelectivePlantaBuilder().BuildPlan(system, catalog);
+                _ = new SelectivePlantaBuilder().Build(system, catalog);
+                _ = SelectiveDoorInsertion.ViewOptions(system, catalog);
+                _ = SelectiveDoorInsertion.DrawableViews(cuts.Select(c => RackViewAddress.Post(c.PostIndex)).ToList(), system, catalog);
+                _ = SelectivePostSafetySummary.Build(system, catalog);
+                _ = SelectiveParrillaPlan.Cells(system, catalog);
+            }
+
+            Walk(draft.System!);
+            Walk(write.System);
+
+            Assert.Equal(json, Json(draft.Design));
+            Assert.Equal(json, Json(write.Design));
+            Assert.Equal(json, draft.SnapshotForWrite()!.DesignJson);
+            Assert.Equal(42.0, draft.Design!.ExtraFondoPostCabeceras[0][0]!.Depth);
+
+            // Structurally: no custom cabecera of a system is an object of its design.
+            foreach (var (design, system) in new[] { (draft.Design!, draft.System!), (write.Design, write.System) })
+            {
+                for (var k = 0; k < SelectiveDepthLayout.Count(system); k++)
+                {
+                    for (var post = 0; post <= SelectiveDepthLayout.BaysOfFondo(system, k).Count; post++)
+                    {
+                        var stored = SelectiveCabeceraAuthority.CustomAt(design, k, post);
+                        if (stored != null) Assert.NotSame(stored, SelectiveCabeceraAuthority.CustomAt(system, k, post));
+                    }
+                }
+            }
         }
 
         // ------------------------------------------------------------------ the largueros: coercion and atomicity

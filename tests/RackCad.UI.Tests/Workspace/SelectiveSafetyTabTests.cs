@@ -493,6 +493,57 @@ namespace RackCad.UI.Tests
             });
         }
 
+        [Fact]
+        public void A_new_Selectivo_of_Nuevo_has_the_safety_dialog_through_the_modal_port_of_the_host()
+        {
+            // M-5 of the review of the entrega 2: the wiring is in WireSelective, shared with the racks of the drawing; a new Selectivo gets
+            // it too, and accepted, the result is the safety of its draft.
+            Assert.False(new WindowRig(null).StartNew().CanEditSafety);
+            StaTestRunner.Run(() =>
+            {
+                var port = new ModalDouble { Accept = true };
+                var editor = new WindowRig(port).StartNew();
+                Assert.True(editor.IsNewRack);
+                Assert.True(editor.CanEditSafety, editor.SafetyEditText);
+                editor.EditSafety();
+                var shown = Assert.IsType<SelectiveSafetyWindow>(Assert.Single(port.Shown));
+                shown.Close();
+                Assert.False(editor.MessageIsError, editor.Message);
+            });
+        }
+
+        [Fact]
+        public void Edit_safety_does_not_open_with_a_value_written_and_refused_in_a_field_as_the_classic_editor()
+        {
+            // M-2 of the review of the entrega 2: the classic «Elementos de seguridad…» starts with CommitPendingEditors; a value refused
+            // stops it and the editor names the field, which keeps what was written.
+            var vm = Editor(SelectiveSafetyDefaults.TopeType);
+            var opened = 0;
+            vm.SafetyEditor = draft =>
+            {
+                opened++;
+                return draft.CopySafety();
+            };
+            var height = Field(vm.CellFields, "cHeight");
+            Write(height, "abc");
+            Assert.False(string.IsNullOrEmpty(height.Error));
+
+            vm.EditSafety();
+
+            Assert.Equal(0, opened);
+            Assert.Equal("No se puede abrir «Editar seguridad…»: «Alto de tarima» tiene un valor que no se aplicó (El alto de tarima debe ser un número "
+                         + "mayor que cero). Corrígelo o vuelve a escribir el que tenía.", vm.Message);
+            Assert.True(vm.MessageIsError);
+            Assert.Equal("abc", Field(vm.CellFields, "cHeight").Text);
+            Assert.False(string.IsNullOrEmpty(Field(vm.CellFields, "cHeight").Error));
+
+            // Corrected, it opens.
+            Write(Field(vm.CellFields, "cHeight"), "60");
+            vm.EditSafety();
+            Assert.Equal(1, opened);
+            Assert.False(vm.MessageIsError, vm.Message);
+        }
+
         /// <summary>The window over a door of Selectivo (only what «Editar aquí» needs) and, optionally, the modal port of the host.</summary>
         private sealed class WindowRig
         {
@@ -519,6 +570,14 @@ namespace RackCad.UI.Tests
                 _door.Answer(Read(request.RequestId, request.RackId, With(Structure(), SelectiveSafetyDefaults.TopeType)));
                 Assert.True(_window.ActiveSelectiveEditor != null, _window.ActionMessage);
                 return _window.ActiveSelectiveEditor!;
+            }
+
+            /// <summary>«Selectivo en esta ventana» of «Nuevo».</summary>
+            public SelectiveEditorViewModel StartNew()
+            {
+                _window.StartNewSelective();
+                Assert.True(_window.NewSelectiveEditor != null, _window.ActionMessage);
+                return _window.NewSelectiveEditor!;
             }
         }
 

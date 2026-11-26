@@ -1668,8 +1668,9 @@ namespace RackCad.UI.VentanaRackCad
         }
 
         // S-09: reducing the fronts or the fondos drops the custom cabeceras and the own peraltes of the posts that disappear, as the
-        // classic editor does, which says nothing; the window says it after the write.
-        private static string LossText((int Cabeceras, int Peraltes) before, (int Cabeceras, int Peraltes) after, string what)
+        // classic editor does, which says nothing; the window says it after the write. What «Descartar» does is said as for «Restaurar»: a
+        // new Selectivo goes back to the defaults (M-4 of the review of the entrega 2).
+        private string LossText((int Cabeceras, int Peraltes) before, (int Cabeceras, int Peraltes) after, string what)
         {
             var cabeceras = Math.Max(0, before.Cabeceras - after.Cabeceras);
             var peraltes = Math.Max(0, before.Peraltes - after.Peraltes);
@@ -1678,7 +1679,8 @@ namespace RackCad.UI.VentanaRackCad
             if (cabeceras > 0) parts.Add(Count(cabeceras, "cabecera personalizada", "cabeceras personalizadas"));
             if (peraltes > 0) parts.Add(Count(peraltes, "peralte propio", "peraltes propios"));
             return "Al reducir " + what + " se quitaron " + string.Join(" y ", parts) + " de los postes que ya no existen, como en el editor clásico. "
-                   + "Volver a subirlos no los recupera; «Descartar» vuelve a lo último que se leyó o se escribió.";
+                   + "Volver a subirlos no los recupera; "
+                   + (_isNewRack ? SelectiveLayoutRestoreResult.NewRackDiscardText : SelectiveLayoutRestoreResult.DiscardText);
         }
 
         private void SetFlag(Action change, string propertyName)
@@ -2517,7 +2519,7 @@ namespace RackCad.UI.VentanaRackCad
                     (own.HasValue ? "Manual" : "Tarima − 6 in") + (several ? ", en el fondo 1." : ".")));
 
                 // On a system of its own (I-01 of the review of the polish): the BOM imposes the depth of its fondo on the custom cabeceras it
-                // reads, and the system of the draft shares them with its last valid design.
+                // reads; the system of the draft no longer shares them with its design (I-1 of the review of the entrega 2), and stays as it is.
                 var counts = _editor.BomCounts();
                 var split = Enumerable.Range(0, _editor.FondoCount).Any(k => Enumerable.Range(0, _editor.FrontCount(k)).Any(f => _editor.Front(k, f)?.IsSplit == true));
                 items.Add(new SelectiveCalcItem("Cabeceras", counts.Cabeceras.ToString(CultureInfo.InvariantCulture),

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Systems.Shared;
 using RackCad.Application.VentanaRackCad;
+using RackCad.Application.Workspace;
 
 namespace RackCad.UI.VentanaRackCad
 {
@@ -21,6 +22,27 @@ namespace RackCad.UI.VentanaRackCad
         // shown until that rack is inserted or its editor closed. The window says so if it is asked anyway.
         internal const string SecondNewRackText =
             "En «Nuevo» ya hay un rack nuevo sin insertar: insértalo en el dibujo o cierra su editor antes de empezar otro.";
+
+        // M-3 of the review of the entrega 2: the dimension styles of each drawing, as the last Selectivo read from it gave them (S-27). The
+        // classic editor opened from RACKNUEVO reads them from the drawing; a new Selectivo of the window takes these, because reading the
+        // drawing for it would wait on AutoCAD. A drawing with no Selectivo read yet has none, and the list offers «(Automático)» only.
+        private readonly Dictionary<SessionId, IReadOnlyList<string>> _dimensionStylesOfDrawing = new();
+
+        // What a Selectivo read from that drawing said of its styles; a read that did not read them (null) keeps what the window had.
+        private void RememberDimensionStyles(SessionId session, IReadOnlyList<string> styles)
+        {
+            if (styles != null) _dimensionStylesOfDrawing[session] = styles.ToList();
+        }
+
+        private IReadOnlyList<string> DimensionStylesOf(SessionId session)
+            => _dimensionStylesOfDrawing.TryGetValue(session, out var styles) ? styles : null;
+
+        // The styles of a drawing that was closed are forgotten with it.
+        private void ForgetDimensionStylesOfDeadSessions(Func<SessionId, bool> isAlive)
+        {
+            foreach (var session in _dimensionStylesOfDrawing.Keys.Where(session => !isAlive(session)).ToList())
+                _dimensionStylesOfDrawing.Remove(session);
+        }
 
         /// <summary>The new Selectivo of the drawing of the window, made here and not inserted yet; null when there is none.</summary>
         public SelectiveEditorViewModel NewSelectiveEditor =>
@@ -69,7 +91,8 @@ namespace RackCad.UI.VentanaRackCad
 
                     var session = Panel.PresentedSession.Value;
                     var rackId = Guid.NewGuid().ToString();
-                    var editor = SelectiveEditorViewModel.ForNewRack(SelectiveDraftEditor.CreateNew(_catalog()), rackId, UpdateSelective);
+                    var editor = SelectiveEditorViewModel.ForNewRack(SelectiveDraftEditor.CreateNew(_catalog()), rackId, UpdateSelective,
+                        DimensionStylesOf(session));
                     WireSelective(editor);
                     _selectiveDrafts[(session, rackId)] = new SelectiveDraftEntry(session, editor);
                 }

@@ -132,7 +132,13 @@ namespace RackCad.UI.VentanaRackCad
             if ((sender as FrameworkElement)?.DataContext is SelectiveSafetyFamilyCard card) _viewModel.SetFamilyEverywhere(card.Type, false);
         });
 
-        private void OnEditSafetyClick(object sender, RoutedEventArgs e) => Contained(_viewModel.EditSafety);
+        // M-2 of the review of the entrega 2: as «Restaurar layout…», what was being written goes to the draft first (the frontier
+        // CommitPendingEditors of the classic Safety_Click), so a value refused stops the dialog and the view-model names it.
+        private void OnEditSafetyClick(object sender, RoutedEventArgs e) => Contained(() =>
+        {
+            CommitFocusedText();
+            _viewModel.EditSafety();
+        });
 
         private void OnUpdateClick(object sender, RoutedEventArgs e) => Contained(() =>
         {

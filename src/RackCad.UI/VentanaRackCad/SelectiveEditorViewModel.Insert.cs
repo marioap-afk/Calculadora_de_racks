@@ -29,10 +29,13 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>
         /// The editor of a new Selectivo made in the window: <paramref name="rackId"/> is the identity the window gave it, and it is not in
         /// the drawing until «Insertar en el dibujo…» places it. <paramref name="update"/> is what «Actualizar» does once it is.
+        /// <paramref name="dimensionStyles"/> are the styles of its drawing the window knows (M-3 of the review of the entrega 2: those of the
+        /// last Selectivo read from it); null = none, and «Estilo de cota» offers «(Automático)» only.
         /// </summary>
-        public static SelectiveEditorViewModel ForNewRack(SelectiveDraftEditor editor, string rackId, Action<SelectiveEditorViewModel> update = null)
+        public static SelectiveEditorViewModel ForNewRack(SelectiveDraftEditor editor, string rackId, Action<SelectiveEditorViewModel> update = null,
+            IReadOnlyList<string> dimensionStyles = null)
         {
-            var created = new SelectiveEditorViewModel(editor, rackId, update) { _isNewRack = true };
+            var created = new SelectiveEditorViewModel(editor, rackId, update, dimensionStyles: dimensionStyles) { _isNewRack = true };
             if (!created.IsLoadFailed) created.Say(NewRackOpenedText, error: false);
             created.RaiseNewRack();
             return created;
@@ -121,6 +124,8 @@ namespace RackCad.UI.VentanaRackCad
                 return;
             }
 
+            // The options read the cuts of the system, which impose on its custom cabeceras (ARQ-43-10); the system of the draft shares no
+            // object with its design, so choosing (or cancelling) changes nothing of what is written (I-1 of the review of the entrega 2).
             var views = _viewChooser(SelectiveViewChoice.Options(_editor.System, _editor.Catalog));
             if (views == null || views.Count == 0) return;
             (_isNewRack ? _insertNew : _insertViews)(this, views);

@@ -14,7 +14,8 @@ using RackCad.Domain.Systems.Shared;
 namespace RackCad.Application.VentanaRackCad
 {
     /// <summary>
-    /// What «Actualizar» hands to AutoCAD for a Selectivo: copies of the design (and its JSON) and of the system, the trimmed name and the
+    /// What «Actualizar» hands to AutoCAD for a Selectivo: copies of the design (and its JSON) and of the system, which share no object (a
+    /// reader of the system, such as the cuts, never changes the design that is written), the trimmed name and the
     /// final state of every linked property, which the drawing half of RACKEDITAR reconciles onto the authored document so a binding the
     /// user did not touch is kept exactly as it was read.
     /// </summary>
@@ -140,7 +141,8 @@ namespace RackCad.Application.VentanaRackCad
     /// </para>
     /// <para>
     /// A recomposition that cannot run says why in <see cref="LastError"/> and keeps the last valid design and system; they are never the
-    /// objects the state holds, so nothing edited afterwards reaches them. Nothing here writes the drawing.
+    /// objects the state holds, so nothing edited afterwards reaches them, and the system never shares an object with the design, so no
+    /// reader of the system changes the design (I-1 of the review of the entrega 2). Nothing here writes the drawing.
     /// </para>
     /// </summary>
     public sealed class SelectiveDraftEditor
@@ -394,23 +396,20 @@ namespace RackCad.Application.VentanaRackCad
         }
 
         /// <summary>
-        /// The counts of «Calculado» (<see cref="SelectiveBomCounts"/>) of the last valid design, counted on a system resolved from a COPY of
-        /// it, as <see cref="AutomaticValues"/> does. The BOM imposes the depth of its fondo on every custom cabecera it reads, in place
-        /// (<see cref="SelectiveCabeceraAuthority.EffectiveCustomAt"/>; ARQ-43-10, deferred), and <see cref="System"/> shares those cabeceras
-        /// with <see cref="Design"/>: counted on <see cref="System"/>, reading «Calculado» would change the last valid design and the JSON
-        /// that is written (I-01 of the review of the polish of the entrega 1). Zeros before the first valid recomposition.
+        /// The counts of «Calculado» (<see cref="SelectiveBomCounts"/>) of the last valid design, counted on a system of their own
+        /// (<see cref="ResolveCopy"/>). The BOM imposes the depth of its fondo on every custom cabecera it reads, in place
+        /// (<see cref="SelectiveCabeceraAuthority.EffectiveCustomAt"/>; ARQ-43-10, deferred). Since I-1 of the review of the entrega 2 that can
+        /// no longer reach <see cref="Design"/> (the system is resolved from a copy of its own); counting apart also leaves
+        /// <see cref="System"/> as the resolver gave it (I-01 of the review of the polish of the entrega 1). Zeros before the first valid
+        /// recomposition.
         /// </summary>
-        public SelectiveBomCounts BomCounts()
-        {
-            var design = Copy(Design);
-            return design == null ? new SelectiveBomCounts(0, 0, 0) : SelectiveBomCounts.Of(_resolver.Resolve(design, Catalog), Catalog);
-        }
+        public SelectiveBomCounts BomCounts() => SelectiveBomCounts.Of(ResolveCopy(), Catalog);
 
         /// <summary>
-        /// A system resolved from a COPY of the last valid design, as <see cref="BomCounts"/> counts on (E2, «Extremos y seguridad»): for the
-        /// readers that impose on what they read, the BOM and the plans of the safety (the depth of its fondo on every custom cabecera,
-        /// ARQ-43-10). <see cref="System"/> shares its cabeceras with <see cref="Design"/>, so reading them there would change the design that
-        /// is written. Null before the first valid recomposition.
+        /// A system resolved from a COPY of the last valid design, for a reader that keeps it or imposes on what it reads: the BOM and the
+        /// plans of the safety (the depth of its fondo on every custom cabecera, ARQ-43-10) and the classic dialog «Elementos de seguridad»,
+        /// which keeps the system it is given. Neither <see cref="Design"/> (whose system never shares an object with it, I-1 of the review of
+        /// the entrega 2) nor <see cref="System"/> is touched by what they do. Null before the first valid recomposition.
         /// </summary>
         public SelectiveRackSystem ResolveCopy()
         {
@@ -768,7 +767,11 @@ namespace RackCad.Application.VentanaRackCad
         /// <summary>The last valid design (a copy the state does not hold); null before the first valid recomposition.</summary>
         public SelectivePalletDesign Design { get; private set; }
 
-        /// <summary>The system resolved from <see cref="Design"/>; null before the first valid recomposition.</summary>
+        /// <summary>
+        /// The system resolved from a copy of <see cref="Design"/> of its own: it shares no object with the design (nor with the state), so
+        /// no reader of it can change the design that is written, whatever it imposes on what it reads (I-1 of the review of the entrega 2).
+        /// Null before the first valid recomposition.
+        /// </summary>
         public SelectiveRackSystem System { get; private set; }
 
         /// <summary>Why the last recomposition did not run; null when it ran.</summary>
@@ -869,9 +872,12 @@ namespace RackCad.Application.VentanaRackCad
                 }
 
                 // The published design is a copy through its document, never the objects of the state (the custom cabeceras are shared
-                // with the state, and a later depth change imposes itself on them).
+                // with the state, and a later depth change imposes itself on them). The system is resolved from ANOTHER copy: the resolver
+                // hands the custom cabeceras of the design to the system as they are, and the readers of the drawing (the BOM, the cuts,
+                // the planta) impose the depth of its fondo on them in place (ARQ-43-10), so a system sharing them with the design would
+                // let any reader of System change the design that is written (I-1 of the review of the entrega 2).
                 var design = Copy(built);
-                var system = _resolver.Resolve(design, Catalog);
+                var system = _resolver.Resolve(Copy(design), Catalog);
                 if (system.Height <= 0.0)
                 {
                     LastError = "No se pudo derivar la geometría (revisa tarima/niveles).";
@@ -906,9 +912,11 @@ namespace RackCad.Application.VentanaRackCad
         }
 
         /// <summary>
-        /// Copies for «Actualizar»: the design through its JSON, the system resolved again from that copy, the trimmed name and the final
-        /// states of the linked properties for that design. Nothing the editor does afterwards reaches them. Null before the first valid
-        /// recomposition.
+        /// Copies for «Actualizar»: the design through its JSON, the system resolved again from ANOTHER copy of that JSON, the trimmed name
+        /// and the final states of the linked properties for that design. Nothing the editor does afterwards reaches them, and the design
+        /// and the system share no object: RACKSELECTIVOINSERTAR and RACKSELECTIVONUEVO read the cuts of the system before they reconcile
+        /// the design, and the cuts impose the depth of its fondo on the custom cabeceras they read (M-1 of the review of the entrega 2), so
+        /// what AutoCAD writes is <see cref="SelectiveDraftSnapshot.DesignJson"/>. Null before the first valid recomposition.
         /// </summary>
         public SelectiveDraftSnapshot SnapshotForWrite()
         {
@@ -916,10 +924,11 @@ namespace RackCad.Application.VentanaRackCad
 
             var json = _store.Serialize(SelectivePalletDesignDocument.From(Design, null, null));
             var design = _store.Deserialize(json)?.ToDomain();
-            if (design == null) return null;
+            var source = _store.Deserialize(json)?.ToDomain();
+            if (design == null || source == null) return null;
 
             var name = Name?.Trim();
-            var system = _resolver.Resolve(design, Catalog);
+            var system = _resolver.Resolve(source, Catalog);
             system.Name = name;
             return new SelectiveDraftSnapshot(json, name, design, system, FinalStatesFor(design));
         }

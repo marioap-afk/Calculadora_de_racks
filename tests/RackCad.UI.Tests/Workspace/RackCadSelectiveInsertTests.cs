@@ -8,6 +8,7 @@ using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Data;
 using RackCad.Application.Catalogs;
+using RackCad.Application.Systems.Selective;
 using RackCad.Application.Systems.Shared;
 using RackCad.Application.VentanaRackCad;
 using RackCad.Application.Workspace;
@@ -84,10 +85,10 @@ namespace RackCad.UI.Tests
 
             public void StartLastWrite() => RequestStarted?.Invoke(SelectiveWrites.Last().RequestId);
 
-            public void AnswerLastSelectiveRead(SelectivePalletDesign? design = null)
+            public void AnswerLastSelectiveRead(SelectivePalletDesign? design = null, IReadOnlyList<string>? dimensionStyles = null)
             {
                 var request = SelectiveReads.Last();
-                SelectiveRead?.Invoke(Read(request.RequestId, request.RackId, design));
+                SelectiveRead?.Invoke(Read(request.RequestId, request.RackId, design) with { DimensionStyles = dimensionStyles });
             }
 
             public void AnswerLastSelectiveWrite(bool written, string message, string? name = null)
@@ -165,11 +166,11 @@ namespace RackCad.UI.Tests
                 Window.Refresh();
             }
 
-            public SelectiveEditorViewModel OpenEditor(SelectivePalletDesign? design = null)
+            public SelectiveEditorViewModel OpenEditor(SelectivePalletDesign? design = null, IReadOnlyList<string>? dimensionStyles = null)
             {
                 Window.OpenRack("SEL-1");
                 Window.EditSelectiveHere();
-                Door.AnswerLastSelectiveRead(design);
+                Door.AnswerLastSelectiveRead(design, dimensionStyles);
                 Assert.True(Window.ActiveSelectiveEditor != null, Window.ActionMessage);
                 return Window.ActiveSelectiveEditor!;
             }
@@ -885,6 +886,81 @@ namespace RackCad.UI.Tests
                 Lay(none);
                 Assert.False(none.NewSelectiveHereButton.IsEnabled);
             }));
+        }
+
+        // ------------------------------------------------------------------ the review of the entrega 2
+
+        [Fact]
+        public void InsertarVistaOverACustomCabeceraOutOfItsRuleChangesNothingOfTheDraftAndAChangeUndoneIsCleanAgain()
+        {
+            // I-1 of the review of the entrega 2: the options of «Insertar vista…» read the cuts of the system of the draft, which impose the
+            // depth of its fondo on every custom cabecera (ARQ-43-10). P1 of fondo 2 keeps 42 in, its rule is 34: opening and cancelling the
+            // dialog, inserting, and a change undone afterwards leave the draft as it was, «Limpio», and what is sent keeps 42.
+            var rig = new Rig();
+            var editor = rig.OpenEditor(TwoFondosWithACustomCabeceraOutOfItsRule());
+            var opened = Json(editor.Draft.Design);
+            Assert.Equal((42.0, 34.0), (editor.Draft.Design!.ExtraFondoPostCabeceras[0][0]!.Depth, SelectiveDepthLayout.CabeceraDepthOfFondo(editor.Draft.System!, 1)));
+
+            // Opened and cancelled: nothing changes, and the name written and written back is «Limpio».
+            editor.ViewChooser = _ => null!;
+            editor.InsertView();
+            Assert.Empty(rig.Door.SelectiveWrites);
+            Assert.Equal(opened, Json(editor.Draft.Design));
+            var name = editor.Name;
+            editor.Name = name + " x";
+            editor.Name = name;
+            Assert.False(editor.IsDirty, editor.StatusText);
+
+            // Accepted: what is sent is the design the user saw.
+            editor.ViewChooser = _ => new[] { Planta, RackViewAddress.Post(0) };
+            editor.InsertView();
+            var write = Assert.Single(rig.Door.SelectiveWrites);
+            Assert.Equal(opened, Json(write.Design));
+            Assert.Equal(42.0, write.Design.ExtraFondoPostCabeceras[0][0]!.Depth);
+            rig.Door.Written(SelectiveDoorInsertion.AnswerForInsert(write.RequestId, write.RackId, 2, 0, 2));
+            Assert.False(editor.IsDirty, editor.StatusText);
+            Assert.Equal(opened, Json(editor.Draft.Design));
+
+            // A change undone is «Limpio» again: the drawing does not veto the close (D-08) for changes that do not exist.
+            var height = Field(editor.CellFields, "cHeight").Text;
+            Edit(editor, "72");
+            Assert.True(editor.IsDirty);
+            Edit(editor, height);
+            Assert.False(editor.IsDirty, editor.StatusText);
+            Assert.Equal("Limpio", editor.StatusText);
+            Assert.Null(rig.Window.UnwrittenWorkOf(Session));
+            Assert.Equal(opened, editor.Draft.SnapshotForWrite()!.DesignJson);
+        }
+
+        [Fact]
+        public void ANewSelectivoOffersTheDimensionStylesOfTheLastReadOfItsDrawing()
+        {
+            // M-3 of the review of the entrega 2: the classic editor opened from RACKNUEVO gets the dimension styles of the drawing; the window
+            // does not read the drawing for a new rack (that would wait on AutoCAD), so it offers those of the last Selectivo read from the
+            // SAME drawing. With none read yet, only «(Automático)» (a declared difference).
+            IReadOnlyList<string> Styles(SelectiveEditorViewModel vm) => Choice(vm.AnnotationFields, "dimStyle").Options.Select(o => o.Value).ToList();
+
+            var first = new Rig();
+            Assert.Equal(new[] { "(Automático)" }, Styles(first.StartNew()));
+
+            var rig = new Rig();
+            rig.OpenEditor(dimensionStyles: new[] { "ESTILO_RACKCAD", "Standard" });
+            var created = rig.StartNew();
+            Assert.Equal(new[] { "(Automático)", "ESTILO_RACKCAD", "Standard" }, Styles(created));
+            Assert.Equal("(Automático)", Choice(created.AnnotationFields, "dimStyle").SelectedValue);
+            Assert.False(created.IsDirty);
+
+            // Chosen, it is written with the new rack.
+            Choice(created.AnnotationFields, "dimStyle").SelectedValue = "ESTILO_RACKCAD";
+            Assert.Equal("ESTILO_RACKCAD", created.Draft.Design!.DimensionStyle);
+            created.ViewChooser = _ => new[] { Planta };
+            created.InsertView();
+            Assert.Equal("ESTILO_RACKCAD", rig.Door.SelectiveWrites.Last().Design.DimensionStyle);
+
+            // Another drawing has not been read: its new Selectivo offers only «(Automático)».
+            rig.Door.AnswerLastSelectiveWrite(true, "AutoCAD insertó el rack nuevo con 1 vista.", "Selectivo 1");
+            rig.Present(8);
+            Assert.Equal(new[] { "(Automático)" }, Styles(rig.StartNew()));
         }
     }
 }

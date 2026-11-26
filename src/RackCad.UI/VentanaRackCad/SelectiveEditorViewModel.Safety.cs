@@ -407,12 +407,24 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>«En todas las celdas» (true) / «En ninguna» (false) of the parrilla card.</summary>
         public string SetParrillaEverywhere(bool on) => SetSafetyCells(() => SelectiveSafetyView.WriteAll(_editor, SelectiveSafetyDefaults.ParrillaType, on));
 
-        /// <summary>«Editar seguridad…»: the classic dialog; its result replaces the safety of the draft, which is recomposed.</summary>
+        /// <summary>
+        /// «Editar seguridad…»: the classic dialog; its result replaces the safety of the draft, which is recomposed. A value written and
+        /// refused in a field stops it first and the editor names the field, as the classic editor does (its <c>Safety_Click</c> starts with
+        /// <c>CommitPendingEditors</c>): the recomposition of the result would put the value of the draft back in that box (M-2 of the review
+        /// of the entrega 2).
+        /// </summary>
         public void EditSafety()
         {
             if (!CanEditSafety)
             {
                 Say(_safetyEditor == null ? NoDialogText : BlockedEditText, error: true);
+                return;
+            }
+
+            var pending = PendingFieldError("No se puede abrir «Editar seguridad…»");
+            if (pending != null)
+            {
+                Say(pending, error: true);
                 return;
             }
 

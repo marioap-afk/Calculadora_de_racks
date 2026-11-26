@@ -485,6 +485,7 @@ namespace RackCad.UI.VentanaRackCad
                     return;
                 }
 
+                RememberDimensionStyles(request.Session, read.DimensionStyles); // M-3: for a new Selectivo of the same drawing
                 var design = read.EffectiveDesign();
                 if (design == null)
                 {
@@ -951,6 +952,7 @@ namespace RackCad.UI.VentanaRackCad
                 if (!orphan.IsWrite) Say("Se cerró el dibujo del rack que se estaba leyendo: no se abrió nada.", failed: true);
             }
 
+            ForgetDimensionStylesOfDeadSessions(session => IsAlive(port, session));
             if (_dynamicDrafts.Count == 0 && _selectiveDrafts.Count == 0) return;
 
             var dead = _dynamicDrafts.Where(p => !IsAlive(port, p.Key.Session)).ToList();

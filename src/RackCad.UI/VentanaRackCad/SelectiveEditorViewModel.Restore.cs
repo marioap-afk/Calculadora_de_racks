@@ -67,7 +67,8 @@ namespace RackCad.UI.VentanaRackCad
     /// «Restaurar layout…» of the Selectivo editor (entrega 2, P2; decision 8 of the Owner; spec <c>sprint\spec-restaurar.md</c>): the button
     /// of the head opens a panel inline under it, as the confirmation of Dinámico and the question of closing, with the six boxes, every one
     /// checked when it opens, how many values each one removes, «Ver lo que se pierde» and «Restaurar lo marcado» / «Cancelar». It goes to
-    /// the draft (the drawing changes with «Actualizar»), and «Descartar» goes back to what was last read or written.
+    /// the draft (the drawing changes with «Actualizar»), and «Descartar» goes back to what was last read or written (a new Selectivo of
+    /// «Nuevo», to the defaults).
     /// </summary>
     public sealed partial class SelectiveEditorViewModel
     {
@@ -229,7 +230,8 @@ namespace RackCad.UI.VentanaRackCad
                 result = _editor.WithinScope(RestoreScope, () => SelectiveLayoutRestore.Apply(_editor, options));
                 return Done;
             });
-            if (error == null && result != null) Say(result.Notice, error: false);
+            // A new Selectivo of «Nuevo» was never read nor written: its «Descartar» goes back to the defaults (M-4 of the review of E2).
+            if (error == null && result != null) Say(result.NoticeFor(_isNewRack), error: false);
             return error;
         }
 
@@ -308,8 +310,9 @@ namespace RackCad.UI.VentanaRackCad
         }
 
         // A field that holds a value written and refused (its error is shown under it): a recomposition would put the value of the draft back
-        // in the box, so «Restaurar» stops and names it (spec §5: the frontier of CommitPendingEditors of the classic editor).
-        private string PendingFieldError()
+        // in the box, so «Restaurar» stops and names it (spec §5: the frontier of CommitPendingEditors of the classic editor). «Editar
+        // seguridad…» stops the same way, with its own lead (M-2 of the review of the entrega 2).
+        private string PendingFieldError(string refused = "No se puede restaurar el layout")
         {
             var fields = _essentials
                 .Concat(_fondoRows.SelectMany(row => row.Fields))
@@ -331,7 +334,7 @@ namespace RackCad.UI.VentanaRackCad
                     _ => (null, null),
                 };
                 if (!string.IsNullOrWhiteSpace(error))
-                    return "No se puede restaurar el layout: «" + label + "» tiene un valor que no se aplicó (" + error.Trim().TrimEnd('.') + "). "
+                    return refused + ": «" + label + "» tiene un valor que no se aplicó (" + error.Trim().TrimEnd('.') + "). "
                            + "Corrígelo o vuelve a escribir el que tenía.";
             }
 

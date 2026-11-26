@@ -198,6 +198,42 @@ namespace RackCad.UI.Tests
         }
 
         [Fact]
+        public void ForANewSelectivoTheNoticeSaysThatDiscardGoesBackToTheDefaults()
+        {
+            // M-4 of the review of the entrega 2: a new Selectivo of «Nuevo» was never read nor written, and its «Descartar» goes back to the
+            // defaults of the classic editor (P3-05), so the notices say that, not «lo último que se leyó o se escribió».
+            const string NewTail = "«Descartar» vuelve a los valores por defecto.";
+            var vm = SelectiveEditorViewModel.ForNewRack(SelectiveDraftEditor.CreateNew(UiSupport.LoadCatalogSafe()), "nuevo-1");
+            var defaults = Json(vm.Draft.Design);
+            Write(Field(vm.FrontFields, "fHeight"), "200");
+            Assert.Equal(200.0, vm.Draft.Front(0, 0)!.HeightOverride);
+
+            vm.OpenRestore();
+            Assert.True(vm.IsRestoreOpen, vm.Message);
+            vm.ConfirmRestore();
+            Assert.Equal("Layout restaurado en el borrador: 1 valor manual quitado (1 altura manual). " + NewTail, vm.Message);
+            Assert.DoesNotContain(Tail, vm.Message);
+
+            vm.Discard();
+            Assert.Equal(defaults, Json(vm.Draft.Design));
+            Assert.Equal("Borrador descartado.", vm.Message);
+
+            // The same for what reducing the fronts drops (S-09): an own peralte of a post that no longer exists.
+            Write(vm.PostRows[2].Field, "4.5");
+            Assert.Equal(4.5, vm.Draft.PostPeralteOverride(2));
+            Write(Field(vm.Essentials, "fronts"), "1");
+            Assert.Equal("Al reducir los frentes se quitaron 1 peralte propio de los postes que ya no existen, como en el editor clásico. "
+                         + "Volver a subirlos no los recupera; " + NewTail, vm.Message);
+
+            // Inserted, it is a rack of the drawing: «Descartar» goes back to what was written again.
+            vm.MarkInserted("Selectivo 1");
+            Write(Field(vm.FrontFields, "fHeight"), "200");
+            vm.OpenRestore();
+            vm.ConfirmRestore();
+            Assert.EndsWith(Tail, vm.Message);
+        }
+
+        [Fact]
         public void EveryOpeningStartsWithEveryBoxCheckedAndWhatIsLostFoldedAndCancelChangesNothing()
         {
             var vm = SelectiveEditor(Personalised());

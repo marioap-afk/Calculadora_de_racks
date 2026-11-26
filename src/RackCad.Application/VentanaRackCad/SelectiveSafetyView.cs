@@ -289,7 +289,8 @@ namespace RackCad.Application.VentanaRackCad
 
         /// <summary>
         /// The table by post of the last valid recomposition, counted as the BOM counts it, on a system of its own: the planta and the cuts it
-        /// reads impose the depth of its fondo on the custom cabeceras (ARQ-43-10), and the system of the draft shares them with its design.
+        /// reads impose the depth of its fondo on the custom cabeceras (ARQ-43-10), so the system of the draft stays as the resolver gave it
+        /// (its design is out of reach anyway: I-1 of the review of the entrega 2).
         /// </summary>
         public static IReadOnlyList<SelectivePostSafetyRow> PostRows(SelectiveDraftEditor editor)
         {

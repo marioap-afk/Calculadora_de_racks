@@ -97,30 +97,39 @@ namespace RackCad.Application.VentanaRackCad
             }
         }
 
+        /// <summary>What «Descartar» does for a rack of the drawing: it goes back to what was last read or written.</summary>
+        public const string DiscardText = "«Descartar» vuelve a lo último que se leyó o se escribió.";
+
+        /// <summary>What «Descartar» does for a new Selectivo of «Nuevo», never read nor written: it goes back to the defaults (P3-05).</summary>
+        public const string NewRackDiscardText = "«Descartar» vuelve a los valores por defecto.";
+
         /// <summary>
         /// The notice for the user (spec of the screen, §6): how many manual values were removed and which, what the unchecked boxes keep,
-        /// and the own peraltes kept because the scope is not the whole rack.
+        /// and the own peraltes kept because the scope is not the whole rack. For a rack of the drawing (<see cref="NoticeFor"/>).
         /// </summary>
-        public string Notice
-        {
-            get
-            {
-                string text;
-                if (Total == 0)
-                {
-                    text = "No había nada que restaurar.";
-                }
-                else
-                {
-                    text = "Layout restaurado en el borrador: " + Plural(Total, "valor manual quitado", "valores manuales quitados")
-                           + " (" + Breakdown + "). «Descartar» vuelve a lo último que se leyó o se escribió.";
-                    if (Kept != null && Kept.Total > 0) text += " Se conservan: " + Kept.Breakdown + ".";
-                }
+        public string Notice => NoticeFor(newRack: false);
 
-                if (PostPeraltesSkipped)
-                    text += " Los peraltes propios son de todo el rack: se restauran solo con «Todos los fondos».";
-                return text;
+        /// <summary>
+        /// The notice, with what «Descartar» does for that rack: a rack of the drawing goes back to what was last read or written, a new
+        /// Selectivo to the defaults (M-4 of the review of the entrega 2).
+        /// </summary>
+        public string NoticeFor(bool newRack)
+        {
+            string text;
+            if (Total == 0)
+            {
+                text = "No había nada que restaurar.";
             }
+            else
+            {
+                text = "Layout restaurado en el borrador: " + Plural(Total, "valor manual quitado", "valores manuales quitados")
+                       + " (" + Breakdown + "). " + (newRack ? NewRackDiscardText : DiscardText);
+                if (Kept != null && Kept.Total > 0) text += " Se conservan: " + Kept.Breakdown + ".";
+            }
+
+            if (PostPeraltesSkipped)
+                text += " Los peraltes propios son de todo el rack: se restauran solo con «Todos los fondos».";
+            return text;
         }
 
         private static void Add(List<string> parts, int count, string one, string many)

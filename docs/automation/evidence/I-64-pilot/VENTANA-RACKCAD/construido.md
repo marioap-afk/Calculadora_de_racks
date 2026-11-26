@@ -1408,3 +1408,53 @@ Cada archivo se restauró desde sus bytes originales con fecha nueva y se compro
 - **Sin AutoCAD:** «Editar seguridad…» por `RackCadModalPort` (el modal real sobre AutoCAD) y la pestaña en la paleta esperan el smoke.
 - **Preguntas al Owner:** las de C2 (C2-02, C2-08, C2-04) y P1-03, P1-05 y P1-07.
 - **Para integrar con P2 y P3:** los tres trabajan en `SelectiveEditorView.xaml`, `SelectiveEditorViewModel.cs` y `RackCadWindowViewModel.cs`; las ediciones de P1 están listadas arriba. Si P3 añade miembros a `IRackCadSelectiveDoorPort`, la puerta doble de `SelectiveSafetyTabTests` necesita los suyos.
+
+### Entrega 2: correcciones de la revisión independiente (`review-e2.md` sobre `6c62f61c`)
+
+**Rama:** `architecture/workspace-persistente-rackcad-selectivo` (worktree `D:\w64s`), sobre `6c62f61c`, sin commit ni push. Sin AutoCAD. Dinámico no se tocó. Veredicto de la revisión: APTO TRAS CORRECCIONES (0 B, 1 I, 4 M y pruebas que faltaban).
+
+| Hallazgo | Estado | Qué se hizo |
+|---|---|---|
+| I-1 | CORREGIDO EN EL ORIGEN | Era la tercera vez del mismo defecto: un lector del sistema del borrador cambiaba las cabeceras personalizadas del diseño. Antes fueron «Calculado» y la pestaña de seguridad; ahora, las opciones de «Insertar vista…». `SelectiveDraftEditor.Recompose` resuelve ahora `System` sobre una copia propia del diseño (`Copy(design)`). `SnapshotForWrite` resuelve el sistema de la escritura sobre otra deserialización de su JSON. Así, `System` y `Design` (y los del snapshot) no comparten ningún objeto, y ningún lector de `System` puede cambiar el diseño que se escribe. Los lectores siguen imponiendo la profundidad del fondo en su sitio (`EffectiveCustomAt`, ARQ-43-10, diferido y sin tocar), pero ya solo sobre el sistema. «Insertar vista…» sigue armando sus opciones sobre `editor.System`. `ResolveCopy()` se queda: da un sistema propio a quien impone o lo guarda (el BOM, los planes de la seguridad y el diálogo clásico), y así `System` sigue como lo dio el resolvedor; las pruebas de P1-01 lo comprueban. `BomCounts()` queda en una línea: `SelectiveBomCounts.Of(ResolveCopy(), Catalog)`. **La equivalencia con el clásico no cambia:** `SelectiveDraftEditorEquivalenceTests` sigue en verde sin tocarla, porque compara el JSON de `Design`, que se construye igual que antes. Coste: una copia más por recomposición y una deserialización más por escritura |
+| M-1 | CORREGIDO (por I-1) | RACKSELECTIVOINSERTAR (`DrawableViews`) y RACKSELECTIVONUEVO (`PlanNewRack`) siguen leyendo los cortes de `write.System` antes de reconciliar. Ese sistema ya no comparte las cabeceras con `write.Design`, así que lo que se reconcilia y se escribe es el `DesignJson` enviado, el que la ventana guarda como «Limpio». El Plugin no cambia |
+| M-2 | CORREGIDO | `EditSafety` pasa por `PendingFieldError` antes de abrir el diálogo, como `Safety_Click` del clásico con `CommitPendingEditors`. La línea de mensajes dice: «No se puede abrir «Editar seguridad…»: «Alto de tarima» tiene un valor que no se aplicó (El alto de tarima debe ser un número mayor que cero). Corrígelo o vuelve a escribir el que tenía.» El campo conserva lo escrito y su error. La vista confirma antes el campo con el foco (`CommitFocusedText`), como «Restaurar layout…». `PendingFieldError` recibe ahora el principio del texto; el de «Restaurar» no cambia |
+| M-3 | CORREGIDO EN PARTE, CON DIFERENCIA DECLARADA | La ventana guarda, por dibujo (sesión), los estilos de cota de la última lectura de un Selectivo de ese dibujo (`SelectiveDesignRead.DimensionStyles`). Un Selectivo nuevo de «Nuevo» los recibe (`ForNewRack(…, dimensionStyles)`), sin leer el dibujo y sin esperar a AutoCAD. La poda olvida los de un dibujo cerrado. Ver la diferencia declarada debajo |
+| M-4 | CORREGIDO | En un Selectivo nuevo, el aviso de «Restaurar» termina en ««Descartar» vuelve a los valores por defecto.». Lo da `SelectiveLayoutRestoreResult.NoticeFor(newRack)`, con las dos colas en constantes (`DiscardText`, `NewRackDiscardText`). Lo mismo en el aviso de S-09 al reducir frentes o fondos, que tenía la misma cola. Una vez insertado el rack, vuelve el texto de un rack del dibujo |
+| M-5 | PRUEBAS NUEVAS | «Editar seguridad…» en un Selectivo nuevo, cableado en `WireSelective`. La guarda de B-1 en Selectivo, de comportamiento y de fuente (ver «Pruebas») |
+
+**Diferencias declaradas nuevas.**
+- **M-3: estilos de cota de un Selectivo nuevo.** Si la ventana todavía no leyó ningún Selectivo de ese dibujo, «Estilo de cota» ofrece solo «(Automático)». El clásico abierto desde RACKNUEVO sí recibe los del dibujo. Además, la lista es la de esa última lectura: un estilo creado después en el dibujo no aparece hasta la siguiente lectura («Editar aquí» de un Selectivo del mismo dibujo). Leer el dibujo para el rack nuevo obligaría a pedírselo a AutoCAD y esperar su respuesta (otra orden de la puerta), y la ventana no bloquea AutoCAD.
+- **M-1: profundidad escrita, frente al clásico.** El caso es una cabecera personalizada fuera de su regla en el fondo 2 o siguientes, como la que trae un documento antiguo. «Insertar vista…» de la ventana escribe la profundidad guardada (42), igual que RACKSELECTIVOAPLICAR. Según la revisión (INFERIDO, no medido aquí), el «Insertar varias…» del clásico (RACKEDITAR) escribe la impuesta (34), porque arma sus cortes sobre un sistema que comparte las cabeceras con su diseño. La geometría y el BOM son los mismos, porque todo lector impone la regla. El clásico no se tocó (ARQ-43-10).
+
+**Pruebas.**
+- **Nuevas en UI (6):**
+  - `SelectiveDraftEditorGapTests.NoReaderOfTheSystemOfTheDraftOrOfItsWriteChangesTheirDesign`: la genérica. Recorre `System` y el sistema de la escritura con el BOM, los cortes, la planta (`BuildPlan` y `Build`), las opciones y las vistas dibujables de «Insertar vista…», la tabla por poste y el plan de parrillas. `Design` serializado y el JSON que se escribe no cambian, y ninguna personalizada de un sistema es un objeto de su diseño;
+  - `RackCadSelectiveInsertTests.InsertarVistaOverACustomCabeceraOutOfItsRuleChangesNothingOfTheDraftAndAChangeUndoneIsCleanAgain`: el escenario de la revisión (S1, S2 y S6) por la ventana y su puerta doble, sobre `TwoFondosWithACustomCabeceraOutOfItsRule` (42 contra la regla de 34). «Insertar vista…» abierto y cancelado no cambia nada, y el nombre de ida y vuelta queda «Limpio». Lo enviado lleva 42. Tras la respuesta, una edición deshecha vuelve a «Limpio», sin trabajo sin escribir que vete el cierre (D-08);
+  - `RackCadSelectiveInsertTests.ANewSelectivoOffersTheDimensionStylesOfTheLastReadOfItsDrawing` (M-3);
+  - `SelectiveSafetyTabTests.Edit_safety_does_not_open_with_a_value_written_and_refused_in_a_field_as_the_classic_editor` (M-2, S9);
+  - `SelectiveSafetyTabTests.A_new_Selectivo_of_Nuevo_has_the_safety_dialog_through_the_modal_port_of_the_host` (M-5, S7);
+  - `SelectiveRestorePanelTests.ForANewSelectivoTheNoticeSaysThatDiscardGoesBackToTheDefaults` (M-4, con «Restaurar», «Descartar», S-09 y el rack ya insertado).
+- **Nuevas en Core (3):**
+  - `SelectiveDoorInsertionTests.RackSelectivoInsertarAndNuevo_WriteTheDesignTheWindowSent_WhateverTheirPlanReadsOfTheSystem` (M-1, S8). La escritura se arma desde `SnapshotForWrite` como la arma la ventana; después de `DrawableViews` y de `PlanNewRack`, el diseño serializado es el `DesignJson` enviado (42);
+  - `SelectiveInsertedViewDesignTests` (archivo nuevo, M-5, B-1 en Selectivo), dos pruebas:
+    - de comportamiento: la vista nueva preparada como `TryPrepare` lleva el borrador (alto 72, no el 60 del dibujo) y queda hermana (`Same`) de la existente redibujada como `PrepareMember`; con la vista tal como la tenía el dibujo, que era B-1, divergirían;
+    - de fuente: `TryPrepare` y `PrepareMember` componen con el mismo `authoredJson`, que `InsertSelectiveViews` saca de `window.DesignToInsert` reconciliado, y RACKSELECTIVOINSERTAR le pasa `write.Design`.
+- **Dobles de prueba ampliados:** en `RackCadSelectiveInsertTests`, `SelectiveDoorDouble.AnswerLastSelectiveRead` y `Rig.OpenEditor` aceptan estilos de cota; en `SelectiveSafetyTabTests`, `WindowRig` tiene `StartNew()`.
+
+**Comprobación en rojo.** Se hizo sobre `6c62f61c` sin ningún cambio de producto, con las pruebas nuevas ya escritas:
+- I-1: fallan las dos (lo enviado lleva 34, no 42);
+- M-1: falla (lo escrito lleva 34 y lo enviado 42);
+- M-2: falla (el diálogo se abre: 1 vez en lugar de 0);
+- M-4: falla (la cola sigue siendo «lo último que se leyó o se escribió»);
+- M-3 también falla (solo «(Automático)»).
+
+Las dos de M-5 ya pasan en la base, porque guardan lo que funciona. La de fuente de B-1 se comprobó rompiendo `PrepareMember` a propósito, para que compusiera con `envelope.Design`: falla. El archivo se restauró con `git checkout` y no quedó ninguna diferencia.
+
+**Los números** (fuentes finales, Debug):
+- **UI completa:** 2749 correctas, 0 con error, 48 omitidas (2797). Es la base de `6c62f61c` (2743 / 0 / 48) más las 6 nuevas. `SelectiveDraftEditorEquivalenceTests`: 14 de 14, sin cambios.
+- **Core Full:** 19147 correctas, 0 con error, 403 omitidas (19550). Es la base (19144 / 0 / 403) más las 3 nuevas.
+- **Build Debug del Plugin:** 0 errores. Las 2 advertencias son las MSB3277 de las referencias de AutoCAD, que ya estaban.
+
+**Lo que queda abierto.**
+- **Sin AutoCAD:** que RACKSELECTIVOINSERTAR y RACKSELECTIVONUEVO escriban en el dibujo el JSON enviado con una personalizada fuera de su regla queda para el smoke; aquí se comprobó el diseño que reciben.
+- El «Lista de materiales» y el «Insertar varias…» del clásico siguen imponiendo sobre su estado (ARQ-43-10, para la planeación).
