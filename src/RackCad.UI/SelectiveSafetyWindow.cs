@@ -707,7 +707,10 @@ namespace RackCad.UI
         {
             var dialog = new SafetyDefensaGridWindow(
                 SelectedElementLabel(row), postCount, row.DefensaPosts,
-                lowEndOnly: defensaLowEndOnly, autoPerEnd: defensaLowEndOnly) { Owner = this };
+                // I-64, cuarta tanda (review of «seg»): the «Auto» column of each end in every system (PB-010). This dialog only offers the
+                // defense to the Dinámico, whose window keeps an own length although it equals the automatic one (SG-03); without the column,
+                // «Aceptar» stored both ends as overrides and dropped the row equal to its automatic, so the own 12 in became 36 in later.
+                lowEndOnly: defensaLowEndOnly, autoPerEnd: true) { Owner = this };
             var accepted = DefensaDialog != null ? DefensaDialog(dialog) : dialog.ShowDialog();
             if (accepted != true)
             {

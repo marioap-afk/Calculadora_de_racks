@@ -1576,7 +1576,10 @@ Orden del Owner: «También realiza tú la prueba de la entrega 2, si existen er
   - Por eso se eligió la que no cambia el dibujo de un rack existente hasta que alguien edita su desviador, y la marca se **persiste**: es el discriminante de dos épocas, como `BotaSidesDeclared` de I-42.
   - En el documento se llama `DesviadorCellsByPost`. Se escribe solo cuando es verdadera, así que un documento anterior, uno de Selectivo y uno de Push Back no cambian ni un byte. El comparador de AUTH-13 (`AuthoredTypedValues`, `AuthoredCanonical`) la compara, y su ausencia vale falso.
 - **Quién lleva la marca:**
-  - un Dinámico **nuevo**, el de la ventana y el clásico de RACKNUEVO (`DynamicSafetyDefaults.BuildForDynamic`; Push Back sigue con `Build`);
+  - un Dinámico **creado de cero**: el borrador nuevo de la ventana y el RACKNUEVO clásico (`DynamicSafetyDefaults.BuildForDynamic`; Push Back sigue con `Build`);
+    - un diseño de la biblioteca guardado antes de esta corrección es un diseño existente (T4S-13);
+    - se abre y se inserta sin la marca, porque `LoadFrom` y la carga del clásico toman la seguridad guardada;
+    - conserva su lectura hasta que se edita su desviador;
   - un desviador que se elige por primera vez, en la ventana (`RackCadSafetyEdit.Fresh`) o en el diálogo clásico de Dinámico (`newDesviadorByPost`);
   - un desviador existente **en cuanto se edita en la ventana**: un nivel, «En todos los niveles» / «En ninguno», el lado, la longitud o el primer nivel.
 - **Cómo pasa un rack existente** (`RackCadSafetyEdit.DesviadorToPosts`):
@@ -1619,6 +1622,7 @@ Orden del Owner: «También realiza tú la prueba de la entrega 2, si existen er
 | T4S-10 | «En ninguna» de la guía y «En ninguno» del desviador dejan la variante y sus medidas, como C2-07: no se dibuja ni se cuenta nada | Volver a ponerlas no exige elegir otra vez la variante |
 | T4S-11 | El protector lateral de Selectivo puesto en «No lleva» en todos sus postes conserva la variante: «Elegido, en ningún poste: no se dibuja.». El «Aceptar» del clásico la descartaría (**diferencia declarada**, como C2-07) | El mismo dibujo y el mismo BOM; «Solo en los extremos» la recupera |
 | T4S-13 | **Supuesto.** La corrección del desviador de Dinámico no cambia el dibujo de un rack existente hasta que su desviador se edita en la ventana: la marca persistida y el paso que conserva el dibujo, arriba. La otra lectura, la de PB-002 aplicada tal cual (todo Dinámico por poste desde ya), movería el desviador del último poste en los racks cuyas celdas lo tocan | Lo que pidió el Coordinator si PB-002 no dejó política: PB-002 solo dice que su bandera es derivada y no persiste |
+| T4S-14 | **Cambio declarado del diálogo clásico** (revisión de «seg»). La rejilla de defensas de Dinámico en RACKEDITAR muestra la columna «Auto» por extremo, como la de Push Back (PB-010), y su texto añade «Marca «Auto»…». Un extremo automático no guarda longitud; uno propio se guarda aunque coincida con la automática. Una fila que el usuario no toca vuelve como entró, también la de un rack guardado antes (sin procedencia, abre con «Auto» desmarcado) | Sin la columna, «Aceptar» sin tocar nada deshacía SG-03: guardaba los dos extremos como propios y descartaba la fila igual a su automática |
 | T4S-12 | Las medidas del inspector muestran lo que usa el dibujo: la longitud y el primer nivel del desviador, validados por su plan, y el saque efectivo del tope. Un valor antiguo que no vale se ve con el que lo sustituye, y salir del campo sin tocarlo no escribe nada. La variante se muestra por su id del catálogo, también cuando el documento la escribió con otras mayúsculas | Como «Extremos y fondos» de E2, que ya leía las medidas validadas |
 
 **Ediciones a archivos compartidos** (pequeñas y marcadas «T4 seg»):
@@ -1744,7 +1748,7 @@ Orden del Owner: «También realiza tú la prueba de la entrega 2, si existen er
   - la pestaña en la paleta: anchos, el inspector abajo en 600 px y el teclado en la tabla;
   - «Actualizar» con la seguridad editada en la ventana, en los dos sistemas;
   - que RACKEDITAR abra lo escrito y su diálogo lo acepte igual (T4S-01 está probado sin AutoCAD).
-- **Para el Owner:** T4S-02, T4S-03, T4S-04, T4S-11 y T4S-13 (la política de los racks existentes en la corrección del desviador de Dinámico).
+- **Para el Owner:** T4S-02, T4S-03, T4S-04, T4S-11, T4S-13 (la política de los racks existentes en la corrección del desviador de Dinámico) y T4S-14 (la columna «Auto» en la rejilla clásica de defensas de Dinámico).
 - **Push Back (SG-09):** adopta este diseño en su propio prototipo.
 - **El puente al diálogo clásico (T4S-06)** se borra con el clásico.
 - **Para integrar:**
@@ -1759,3 +1763,52 @@ Orden del Owner: «También realiza tú la prueba de la entrega 2, si existen er
     - el diálogo clásico `SelectiveSafetyWindow`.
 
     Son ediciones pequeñas, y sus comentarios dicen «I-64, cuarta tanda» y la decisión del Owner.
+
+**Correcciones de la revisión** (revisión independiente de «seg», 2026-11-26, sobre `7223d558`)
+1. **[GRAVE] AUTH-13 no leía la marca del desviador.**
+   - **La causa:** el lector crudo (`AuthoredRawReader.Shapes.cs`, `SafetySelectionDocument`) lee la seguridad con una lista cerrada de miembros y tomaba `DesviadorCellsByPost` como «unknown member».
+   - **El efecto:** todo Dinámico con la marca, los nuevos y los editados en la ventana, era ilegible para el comparador.
+     - Con dos vistas o más, RACKDINAMICOABRIR, APLICAR e INSERTAR lo rechazaban («No se pudo comprobar que las vistas…»).
+     - Con una vista, fallaba la inserción de vistas.
+   - **El arreglo:** `case "DESVIADORCELLSBYPOST"`, un booleano anulable.
+   - **Otras listas cerradas:**
+     - el lector crudo es la única lista cerrada de los miembros de la seguridad; los demás «unknown member» del código son de su envoltura;
+     - los comparadores de AUTH-13 (`AuthoredTypedValues`, `AuthoredCanonical`) ya comparaban el campo, y los censos del estado y el oráculo `I58F1DomainOracle` ya lo tenían desde la corrección;
+     - el clasificador de cambios de Push Back cubre `$.Structure.SafetySelections` entero;
+     - AUTH-15 no lee la seguridad.
+   - **Pruebas:**
+     - `AuthoredRawReaderSafetyCensusTests` (Core, nueva, 3 pruebas):
+       - **el censo:** cada miembro que escriben `SafetySelectionDocument`, `PostSideDocument`, `GridCellDocument`, `PostDefenseDocument` y `BootPostDocument` se saca por reflexión y se da al lector, uno a uno, en el fixture rico de I-58 F1, en Dinámico y en Push Back; ninguno sale «unknown member»;
+       - **su control:** un miembro que no escribe nadie sí sale «unknown member» en cada sitio;
+       - **los valores de la marca:** ausente y falso son la lectura histórica y se leen igual; verdadero es otro diseño; un `1` es ilegible.
+     - `RackSiblingDesignsTests`: dos vistas de un Dinámico nuevo (`DynamicDraftEditor.CreateNew`, con la marca) coinciden («Same»). El puerto `RackAuthoredComparatorPorts.Dynamic()` las lee («Single»), con una vista y con dos, y devuelve la marca.
+     - `RackInsertedViewDesignTests`: un Dinámico existente sin la marca, cuyo desviador se edita en la ventana, la gana. Sus vistas redibujadas coinciden, y la cola de ID18 le inserta una vista nueva que también la lleva.
+     - Las pruebas que ya existían siguen construyendo con `DynamicSafetyDefaults.Build`, sin la marca: son los racks existentes, que no cambian.
+2. **[MEDIO] El diálogo clásico deshacía SG-03.**
+   - **La causa:** `SelectiveSafetyWindow` abría la rejilla de defensas con `autoPerEnd: defensaLowEndOnly`, que es falso en Dinámico.
+     - «Aceptar» sin tocar nada guardaba los dos extremos como propios, sin procedencia, y descartaba la fila igual a su automática.
+     - Así, la salida propia de 12 in de P3 escrita en la ventana pasaba a automática y, con un frente más, a 36 in (PB-010).
+   - **El arreglo:** `autoPerEnd: true`. El diálogo solo ofrece la defensa a Dinámico, porque Push Back edita la suya en su ventana, así que el cambio es de Dinámico. Queda declarado como T4S-14.
+   - **Prueba** (UI, `RackCadSafetyPanelTests`):
+     - P3 lleva una salida propia de 12 in escrita en la ventana, y P2 una fila del clásico anterior;
+     - RACKEDITAR › Defensas › «Aceptar» sin tocar devuelve los dos registros iguales;
+     - con un frente más, P3 sigue con 12 in.
+3. **Diseños de la biblioteca guardados antes de la corrección:** son diseños existentes (T4S-13). Está aclarado en «Quién lleva la marca»: los que nacen con la marca son los creados de cero.
+
+**Comprobación en rojo de las correcciones** (`S\hs65\t4\seg\tools\red5.py`, salida `S\hs65\t4\seg\red-out-5.txt`):
+- **R1. El lector crudo vuelve a no conocer `DesviadorCellsByPost`.** Fallan las cuatro pruebas que dependen de leer la marca:
+  - el censo;
+  - la de los valores de la marca;
+  - las dos vistas de un Dinámico nuevo;
+  - la del rack existente editado en la ventana.
+
+  El control del censo sigue verde.
+- **R2. La rejilla clásica de defensas de Dinámico, otra vez sin «Auto».** Falla la del diálogo clásico.
+- Los dos archivos se restauraron desde sus bytes, y su huella es idéntica a la de antes.
+
+**Los números de las correcciones:** las pasadas finales, con las dos correcciones.
+- **UI completa:** 2781 correctas, 0 con error y 48 omitidas, de 2829. Es una prueba más que en la entrega, la del diálogo clásico.
+- **Core Full:** 19152 correctas, 0 con error y 403 omitidas, de 19555. Son cinco más: las 3 del censo, la de las vistas de un Dinámico nuevo y la del rack existente editado.
+- **Plugin Debug:** 0 errores, con las 2 advertencias MSB3277 que ya existían.
+- La UI y Core se compilaron desde cero (`--no-incremental`), y el Plugin después.
+- La UI completa corrió con `--blame` y terminó entera.

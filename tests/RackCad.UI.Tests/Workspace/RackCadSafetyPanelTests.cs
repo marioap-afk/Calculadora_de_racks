@@ -746,6 +746,62 @@ namespace RackCad.UI.Tests
             });
         }
 
+        // Review of «seg» (2026-11-26), M-2: the classic dialog of a Dinámico opened its defense grid without the «Auto» column (it was the
+        // flag of Push Back), so «Aceptar» without touching anything stored both ends as overrides and dropped the row equal to its
+        // automatic: the own 12 in of P3 written in the window became automatic and, with one more front, 36 in (PB-010). The grid now
+        // keeps the provenance of each end, and a row the user did not touch comes back as it went in.
+        [Fact]
+        public void Dinamico_the_classic_defense_grid_accepted_unchanged_keeps_the_own_length_written_in_the_window_and_every_other_row()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var vm = DynamicEditor();
+                Write(Row(vm.SafetyPanel, "P3").DefenseExit.Length, "12");
+                // A row of the historic classic dialog (no provenance): its own lengths, the entrance off.
+                var copy = vm.Draft.CopySafety().ToList();
+                SelectiveSafetyFamilies.SelectedOfType(copy, vm.Draft.Catalog.SafetyElements, Defensa)!.DefensaPosts.Add(
+                    new SafetyPostDefense { PostIndex = 1, ExitLength = 20.0, EntranceLength = 0.0 });
+                vm.Draft.ReplaceSafety(copy);
+
+                var dialog = RackCadModalDialogs.BuildDynamicSafetyDialog(vm.Draft);
+                SafetyDefensaGridWindow? grid = null;
+                dialog.DefensaDialog = window =>
+                {
+                    grid = window;
+                    window.BuildResultForTest();
+                    return window.Accepted;
+                };
+                try
+                {
+                    // The grid takes the dialog as its owner, which WPF only allows once the dialog has been shown.
+                    dialog.WindowStartupLocation = WindowStartupLocation.Manual;
+                    dialog.Left = -10000; dialog.Top = -10000; dialog.ShowInTaskbar = false; dialog.ShowActivated = false;
+                    dialog.Show();
+                    Click(dialog.DefensaButtonForTest!);
+                    Assert.NotNull(grid);
+                    Assert.Equal((true, true), (grid!.ExitAutoForTest(0)!.IsChecked == true, grid.EntranceAutoForTest(0)!.IsChecked == true));
+                    Assert.Equal((false, true), (grid.ExitAutoForTest(2)!.IsChecked == true, grid.EntranceAutoForTest(2)!.IsChecked == true));
+                    Assert.Equal((false, false), (grid.ExitAutoForTest(1)!.IsChecked == true, grid.EntranceAutoForTest(1)!.IsChecked == true));
+                    dialog.BuildResultForTest();
+                }
+                finally
+                {
+                    grid?.Close();
+                    dialog.Close();
+                }
+
+                var defensa = SelectiveSafetyFamilies.SelectedOfType(dialog.Result, vm.Draft.Catalog.SafetyElements, Defensa)!;
+                Assert.Equal(
+                    new[] { "1: 20/0 auto False/False", "2: 12/0 auto False/True" },
+                    defensa.DefensaPosts.OrderBy(p => p.PostIndex)
+                        .Select(p => p.PostIndex + ": " + p.ExitLength + "/" + p.EntranceLength + " auto " + p.ExitAuto + "/" + p.EntranceAuto));
+
+                // A third front: P3 becomes an intermediate post and keeps its own 12 in at the exit; its automatic entrance is 36 in.
+                var setting = DynamicForkliftDefensePlan.ForSelection(defensa, 2, 4);
+                Assert.Equal((12.0, 36.0), (setting.ExitLength, setting.EntranceLength));
+            });
+        }
+
         [Fact]
         public void Dinamico_a_desviador_chosen_in_the_window_is_read_by_post()
         {

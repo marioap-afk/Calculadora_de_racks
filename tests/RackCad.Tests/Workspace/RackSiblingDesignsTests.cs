@@ -349,6 +349,44 @@ public class RackSiblingDesignsTests
         Assert.Equal(6, WorkspaceHostSource.Count(code, @"RackSiblingDesigns\.Compare\("));
     }
 
+    // I-64, cuarta tanda (review of «seg», 2026-11-26): a NEW Dinámico reads its desviador by post (DynamicSafetyDefaults.BuildForDynamic),
+    // so its design carries DesviadorCellsByPost. The raw reader of AUTH-13 did not know the member, so every view was unreadable: with two
+    // views or more RACKDINAMICOABRIR, APLICAR and INSERTAR refused the rack («No se pudo comprobar que las vistas…»), and with one the
+    // insertion of views failed. The views of the tests above are built with DynamicSafetyDefaults.Build, without the marker.
+    [Fact]
+    public void TheViewsOfANewDinamicoWhoseDesviadorIsReadByPostCoincideAndTheComparatorReadsThem()
+    {
+        var draft = DynamicDraftEditor.CreateNew(Catalog);
+        Assert.NotNull(draft.Design);
+        var design = new RackProjectStore().Serialize(RackProject.ForDynamic(draft.Design));
+        Assert.True(DesviadorOf(new RackProjectStore().Deserialize(design)!.DynamicDesign).Desviador.CellsByPost);
+
+        var views = new[]
+        {
+            View("2A1", RackEmbedDocument.KindDynamic, design),
+            View("2A2", RackEmbedDocument.KindDynamic, design, view: RackEmbedDocument.ViewPlanta, section: -1),
+        };
+        var verdict = Compare(views);
+        Assert.True(verdict.Outcome == RackSiblingDesignsOutcome.Same, verdict.Diagnostic);
+
+        // The AUTH-13 port that the door, «Insertar vista…» and the insertion of views use, over one view and over two.
+        var store = new RackEmbedStore();
+        foreach (var count in new[] { 1, 2 })
+        {
+            var input = new RackCad.Application.Systems.Shared.RackAuthoredInput(RackId,
+                views.Take(count).Select(v => new RackCad.Application.Systems.Shared.RackAuthoredSibling(
+                    v.SourceIdentity, v.Envelope.Kind, store.Serialize(v.Envelope), v.Envelope.Design)).ToList(),
+                true, "RackSiblingDesignsTests");
+            var result = RackCad.Application.Systems.Shared.RackAuthoredComparatorPorts.Dynamic().Compare(input);
+            Assert.True(result.Outcome == RackCad.Application.Systems.Shared.RackAuthoredComparisonOutcome.Single, count + ": " + result.Diagnostic);
+            Assert.True(DesviadorOf(result.Authored).Desviador.CellsByPost);
+        }
+    }
+
+    private static RackCad.Domain.Systems.Selective.SelectiveSafetySelection DesviadorOf(DynamicRackDesign design)
+        => RackCad.Application.Systems.Selective.SelectiveSafetyFamilies.SelectedOfType(design.SafetySelections, Catalog.SafetyElements,
+            RackCad.Domain.Systems.Selective.SelectiveSafetyDefaults.DesviadorType)!;
+
     private static string CommandBody(string command)
     {
         var code = WorkspaceHostSource.Code("src/RackCad.Plugin/VentanaRackCad/RackCadRackDoorCommands.cs");
