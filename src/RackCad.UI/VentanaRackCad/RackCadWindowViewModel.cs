@@ -40,7 +40,7 @@ namespace RackCad.UI.VentanaRackCad
     /// ("cada sección abre su ventana actual"): the window never writes the drawing by itself. Every entry is contained: a failure is said in
     /// <see cref="ActionMessage"/> and the window keeps working.
     /// </summary>
-    public sealed class RackCadWindowViewModel : ObservableObject
+    public sealed partial class RackCadWindowViewModel : ObservableObject
     {
         private static readonly IReadOnlyList<(RackCadWindowPage Page, string Label)> SectionOrder = new[]
         {
@@ -299,7 +299,7 @@ namespace RackCad.UI.VentanaRackCad
         public bool HasNewDynamicEditor => NewDynamicEditor != null;
 
         /// <summary>«Nuevo» shows its systems, or the new Dinámico being made.</summary>
-        public bool ShowNuevoCards => IsNuevoPage && !HasNewDynamicEditor;
+        public bool ShowNuevoCards => IsNuevoPage && !HasNewDynamicEditor && !HasNewSelectiveEditor;
 
         public bool ShowNewDynamicEditor => IsNuevoPage && HasNewDynamicEditor;
 
@@ -326,6 +326,7 @@ namespace RackCad.UI.VentanaRackCad
                     return;
                 }
 
+                if (NewDynamicEditor == null && RefuseSecondNewRack()) return; // E2 P3: «Nuevo» holds one new rack of the drawing
                 if (NewDynamicEditor == null)
                 {
                     var session = Panel.PresentedSession.Value;
@@ -410,6 +411,7 @@ namespace RackCad.UI.VentanaRackCad
         public SelectiveEditorViewModel ActiveSelectiveEditor =>
             Panel.PresentedSession.HasValue && Panel.Browser.ActiveRackId != null
             && _selectiveDrafts.TryGetValue((Panel.PresentedSession.Value, Panel.Browser.ActiveRackId), out var entry)
+            && !entry.Editor.IsNewRack
                 ? entry.Editor
                 : null;
 
@@ -506,8 +508,7 @@ namespace RackCad.UI.VentanaRackCad
                 draft.LoadFrom(design, read.LinkedPropertyStates, read.Name, read.LinkedVariableNames);
                 var editor = new SelectiveEditorViewModel(draft, request.RackId, UpdateSelective, read.LinkedPropertyStates, read.LinkedVariableNames,
                     read.DimensionStyles);
-                editor.PropertyChanged += OnSelectiveEditorChanged;
-                editor.CloseRequested += CloseSelectiveEditor;
+                WireSelective(editor); // E2 P3: the same wiring as the new Selectivo of «Nuevo»
                 _selectiveDrafts[key] = new SelectiveDraftEntry(request.Session, editor, RackList.ListedNameOf(request.RackId));
                 _showPanel = false;
                 Say(string.Empty, failed: false);
@@ -524,8 +525,11 @@ namespace RackCad.UI.VentanaRackCad
 
         // «Actualizar» of the Selectivo editor: COPIES of the draft (SnapshotForWrite) with the final states of the linked properties go to
         // AutoCAD, which redraws the rack with the drawing half of «Actualizar» of RACKEDITAR. The editor cannot be edited until the answer
-        // arrives or the window stops waiting, so what is written is what the user saw.
-        private void UpdateSelective(SelectiveEditorViewModel editor)
+        // arrives or the window stops waiting, so what is written is what the user saw. E2 P3: «Insertar vista…» and «Insertar en el
+        // dibujo…» are the same write, with the views to insert (WriteSelective).
+        private void UpdateSelective(SelectiveEditorViewModel editor) => WriteSelective(editor, null);
+
+        private void WriteSelective(SelectiveEditorViewModel editor, IReadOnlyList<RackViewAddress> insertViews)
         {
             if (_selectiveDoor == null)
             {
@@ -566,7 +570,8 @@ namespace RackCad.UI.VentanaRackCad
             try
             {
                 result = _selectiveDoor.RequestSelectiveUpdate(new SelectiveDoorWrite(id, entry.Session, editor.RackId, snapshot.Name, snapshot.Design,
-                             snapshot.System, snapshot.LinkedPropertyFinalStates))
+                             snapshot.System, snapshot.LinkedPropertyFinalStates,
+                             insertViews == null ? null : new List<RackViewAddress>(insertViews), NewRack: editor.IsNewRack))
                          ?? RackCadClassicResult.Without(RackCadClassicStatus.Failed, "sin respuesta.");
             }
             catch (Exception ex)
@@ -609,8 +614,11 @@ namespace RackCad.UI.VentanaRackCad
         }
 
         // The name of a Selectivo in the notices: the one of its draft; with none, the one of the list when it opened (S-26); its id last.
+        // E2 P3: a new Selectivo of the window with no name is «un Selectivo nuevo», as «un Dinámico nuevo».
         private static string SelectiveNameOf(SelectiveDraftEntry entry) =>
-            !string.IsNullOrWhiteSpace(entry.Editor.Name) ? entry.Editor.Name.Trim() : entry.ListedName ?? entry.Editor.RackId;
+            !string.IsNullOrWhiteSpace(entry.Editor.Name) ? entry.Editor.Name.Trim()
+            : entry.Editor.IsNewRack ? NewSelectiveName
+            : entry.ListedName ?? entry.Editor.RackId;
 
         /// <summary>
         /// «Editar aquí»: asks AutoCAD to read the design of the active rack; the editor opens when the answer to THIS request arrives, for
@@ -848,6 +856,9 @@ namespace RackCad.UI.VentanaRackCad
                         selective.Editor.EndWriting();
                         if (written.Written) selective.Editor.MarkWritten(written.Message, request.SentJson, request.SentName);
                         else selective.Editor.Say(written.Message, error: true);
+
+                        // E2 P3: a new Selectivo that AutoCAD placed is a rack of the drawing now, as a new Dinámico.
+                        if (written.Written && selective.Editor.IsNewRack) NewSelectiveInserted(selective.Editor, written);
                     }
                 }
                 else if (_dynamicDrafts.TryGetValue((request.Session, request.RackId), out var entry))
@@ -1091,6 +1102,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(ShowNuevoCards));
             OnPropertyChanged(nameof(ShowNewDynamicEditor));
             OnPropertyChanged(nameof(CanStartNewDynamic));
+            RaiseNewSelective(); // E2 P3
         }
 
         private static string RefusalText(RackCadClassicResult result)

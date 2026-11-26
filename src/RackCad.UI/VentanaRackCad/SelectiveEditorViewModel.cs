@@ -702,13 +702,15 @@ namespace RackCad.UI.VentanaRackCad
 
         public bool MessageIsError => _messageIsError;
 
-        public bool CanUpdate => _update != null && _loadError == null && _dirty && !_writing && !_segmentsPending && _editor.Design != null
+        // E2 P3: a new Selectivo of the window is written with «Insertar en el dibujo…», never with «Actualizar».
+        public bool CanUpdate => _update != null && !_isNewRack && _loadError == null && _dirty && !_writing && !_segmentsPending && _editor.Design != null
                                  && string.IsNullOrEmpty(_editor.LastError);
 
         public string UpdateBlockedText
         {
             get
             {
+                if (_isNewRack) return NewRackUpdateText;
                 if (_update == null) return "Aquí no se puede escribir el dibujo.";
                 if (_loadError != null) return LoadFailedText;
                 if (_writing) return WritingText;
@@ -1407,7 +1409,9 @@ namespace RackCad.UI.VentanaRackCad
 
             TakeBaseline();
             _confirmingClose = false;
-            Say("Borrador descartado: se muestra lo último que se leyó del dibujo o se escribió en él desde este editor.", error: false);
+            Say(_isNewRack
+                ? "Borrador descartado."
+                : "Borrador descartado: se muestra lo último que se leyó del dibujo o se escribió en él desde este editor.", error: false);
             Rebuild();
             OnPropertyChanged(nameof(IsConfirmingClose));
         }
@@ -1711,6 +1715,8 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(CanChangeSegments));
             OnPropertyChanged(nameof(HasPendingSegments));
             OnPropertyChanged(nameof(CanDiscardSegments));
+            OnPropertyChanged(nameof(CanInsertView));
+            OnPropertyChanged(nameof(InsertViewBlockedText));
         }
 
         // ------------------------------------------------------------------ internals: the lists, refreshed in place

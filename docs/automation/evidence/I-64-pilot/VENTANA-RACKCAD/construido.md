@@ -1235,3 +1235,101 @@ Cada archivo se restauró desde sus bytes originales con fecha nueva y se compro
 - Las preguntas al Owner: R-01 (alcance, spec §10) y R-02 (recordar la elección).
 - Smoke en AutoCAD: el panel con el tamaño real de la ventana y el foco del teclado (Tab por las casillas, Enter en «Restaurar lo marcado»).
 - **Para integrar:** las tres partes añaden su sección al final de este archivo (conflicto trivial de documentación). En la cabecera de `SelectiveEditorView.xaml`, P3 añade «Insertar vista…» junto a «Actualizar» (como Dinámico) y esta parte entre «Descartar» y «Cerrar el editor»: no se tocan.
+
+### Entrega 2, P3, pantalla: «Insertar vista…» y «Selectivo en esta ventana»
+
+**Rama:** local `architecture/workspace-persistente-rackcad-selectivo-e2-insertar`, avanzada a `938823b2` (todo lo que no es pantalla de la entrega 2 ya integrado). Worktree `D:\w64e2insertar`. Sin commit, sin AutoCAD. P1 (seguridad) y P2 (restaurar) se construyeron a la vez en otros worktrees.
+
+**Lo que se construyó** (como la segunda entrega de Dinámico, paso 4 y D-10):
+- **«Insertar vista…»** en la cabecera del editor de Selectivo, entre «Actualizar» y «Descartar» (el orden del draft).
+  - Elige las vistas con el diálogo de «Insertar varias…» del clásico, como modal de AutoCAD por el puerto del host (`IRackCadModalPort`). Las opciones son `SelectiveDoorInsertion.ViewOptions`: una frontal por fondo, un lateral por cada poste con corte y la planta, en el orden del clásico.
+  - El diálogo va con `RackSystemKind.SelectiveRack` (`SelectiveViewChoice`, archivo nuevo). Con el sistema de Dinámico (`RackCadModalDialogs.ChooseViews`) el diálogo quitaba las frontales por fondo: ese sistema no las expone.
+  - Envía `RequestSelectiveUpdate` con `InsertViews` (RACKSELECTIVOINSERTAR). La respuesta es la de una escritura (`MarkWritten`): escrito ⇒ «Limpio» contra el dibujo; si no redibujó nada, el borrador sigue sin escribir y el aviso es un error.
+  - Sin cambios no se desactiva: redibuja las vistas que hay tal cual. «Actualizar» sigue siendo solo actualizar.
+  - Se desactiva, con su texto, por las reglas de Dinámico (sin puerto o sin acción de la ventana, escribiendo, sin borrador válido, con error) y por las dos de «Actualizar» de Selectivo: un rack de solo lectura (S-08) y tramos sin aplicar (S-21).
+  - El clic lleva antes a la casilla el nombre recién escrito, como «Actualizar».
+  - El nombre de automatización y la ayuda siguen al rótulo: «Insertar vistas del rack» / «Insertar el rack nuevo en el dibujo». La ayuda de un rack nuevo es la nota del draft sin el nombre: «Inserta el rack nuevo en el dibujo, con una identidad nueva, con las vistas que elijas.» (la de Dinámico es fija).
+- **«Selectivo en esta ventana»** en «Nuevo», encima del botón de Dinámico y de las tarjetas de siempre (el orden del draft). AutomationName «Nuevo Selectivo en esta ventana».
+  - Crea el borrador con `SelectiveDraftEditor.CreateNew` (los valores por defecto del clásico) y la identidad del rack (un GUID) al crearlo. Su editor se aloja en la página «Nuevo» (`NewSelectiveRackHost`). Pedido otra vez, muestra el mismo.
+  - El editor dice al abrir el texto del draft: «Selectivo nuevo en esta ventana, con los valores por defecto del editor clásico. Todavía no está en el dibujo.»
+  - «Actualizar» no se ofrece hasta que está en el dibujo: «Un rack nuevo se escribe en el dibujo con «Insertar en el dibujo…».». El botón de la cabecera se llama «Insertar en el dibujo…» y envía la escritura con `NewRack` (RACKSELECTIVONUEVO). Lo que envía pasa `SelectiveDoorInsertion.PlanNewRack` (prueba).
+  - Colocado (`AnswerForNewRack`): `MarkInserted` con el nombre que dio el dibujo (el automático de I-60, solo si el borrador no tenía nombre, M-04). El mismo editor es desde ahí el del rack: «Actualizar» e «Insertar vista…». «Nuevo» vuelve a mostrar sus sistemas y la ventana dice el aviso de la orden.
+  - **D-10:** la ventana no relee la lista ni abre el rack sola; el aviso pide releer. Releída la lista y abierto el rack, aparece el mismo editor (prueba).
+  - Cancelada la colocación: sigue nuevo, con el aviso de error.
+  - **I-03:** «Nuevo» sigue al dibujo, y un Selectivo nuevo de otro dibujo no se escribe en el activo (lo dice).
+  - **D-08:** con cambios veta el cierre, y el aviso lo nombra «un Selectivo nuevo» (el texto del consejero ya era genérico: «un rack nuevo de la ventana»). La poda de un dibujo cerrado dice «Se cerró el dibujo de un Selectivo nuevo…».
+  - «Descartar» de un rack nuevo dice «Borrador descartado.» y vuelve a los valores por defecto (M-03 de Dinámico).
+
+**Ediciones a archivos compartidos** (pequeñas y localizadas; lo nuevo va en archivos propios):
+- `src/RackCad.UI/VentanaRackCad/SelectiveEditorViewModel.cs`: `!_isNewRack` en `CanUpdate`; la primera línea de `UpdateBlockedText`; el texto de «Descartar» de un rack nuevo; `CanInsertView` e `InsertViewBlockedText` en `RaiseState`.
+- `src/RackCad.UI/VentanaRackCad/SelectiveEditorView.xaml`: un bloque `<!-- E2 P3 -->`, el botón `InsertViewButton`. `SelectiveEditorView.xaml.cs`: su manejador `OnInsertViewClick`.
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowViewModel.cs`:
+  - la clase pasa a `partial`;
+  - `ShowNuevoCards` mira también el Selectivo nuevo;
+  - `ActiveSelectiveEditor` excluye un rack nuevo (como Dinámico);
+  - en `OnSelectiveRead`, las dos suscripciones pasan a `WireSelective(editor)`;
+  - `UpdateSelective` pasa a `WriteSelective(editor, insertViews)` con `InsertViews` y `NewRack`;
+  - el rack nuevo colocado en `OnDesignWritten`;
+  - «un Selectivo nuevo» en `SelectiveNameOf`;
+  - `RaiseNewSelective()` en `RaiseNewDynamic`;
+  - una línea en `StartNewDynamic`: no empieza un Dinámico nuevo si hay un Selectivo nuevo.
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowView.xaml`: el anfitrión `NewSelectiveRackHost` y el botón `NewSelectiveHereButton`, dos bloques `<!-- E2 P3 -->` a tres líneas uno del otro. `RackCadWindowView.xaml.cs`: una línea en `OnViewModelPropertyChanged`, `ShowNewSelectiveContent` y `OnNewSelectiveHereClick`.
+- Archivos nuevos: `SelectiveEditorViewModel.Insert.cs`, `RackCadWindowViewModel.Selective.cs` y `SelectiveViewChoice.cs` (UI), y `tests/RackCad.UI.Tests/Workspace/RackCadSelectiveInsertTests.cs`.
+- **Para integrar con P1:** `WireSelective` es el cableado de todo editor de Selectivo de la ventana (el abierto con «Editar aquí» y el nuevo). La asignación de `SafetyEditor` de P1 debe ir allí, para que también la tenga el Selectivo nuevo.
+
+**Las decisiones:**
+
+| Id | Decisión | Por qué |
+|---|---|---|
+| P3-01 | **Supuesto provisional:** las vistas se eligen con el diálogo clásico de «Insertar varias…», como Dinámico, y no con el panel del draft (583-605). Aislado en `SelectiveViewChoice`: el editor solo conoce `ViewChooser`. **Diferencia declarada** con el draft | Encargo; ya probado en AutoCAD con Dinámico; deja elegir varios laterales y el orden |
+| P3-02 | El texto de «Nuevo» es el del draft sin «{nextName}»: «… si no le pones nombre, toma el automático (I-60).» | El siguiente nombre (`RackNewRackName`) solo se lee en el Plugin bloqueando el documento, y la lista de la ventana puede estar vieja (O-18): un nombre previsto podría ser falso. La spec lo pedía así si no había API |
+| P3-03 | «Insertar vista…» también se bloquea con un rack de solo lectura (S-08) y con tramos sin aplicar (S-21), con los textos de «Actualizar» | La escritura llevaría el borrador sin esos tramos y diría «Limpio» |
+| P3-04 | «Nuevo» aloja UN rack nuevo del dibujo a la vez, de cualquiera de los dos sistemas. Si se pide el otro, muestra el que hay y dice: «En «Nuevo» ya hay un rack nuevo sin insertar: insértalo en el dibujo o cierra su editor antes de empezar otro.» (**texto provisional**) | El editor del rack nuevo reemplaza la página, así que desde la pantalla no se llega (los botones no se ven). Es una defensa, para que los dos anfitriones nunca se vean a la vez |
+| P3-05 | **Como Dinámico, no como el draft:** «Descartar» de un Selectivo nuevo vuelve a los valores por defecto y no cierra el editor (el draft lo borraba: «Se descartó el Selectivo nuevo: no estaba en el dibujo.»). La pregunta de «Cerrar el editor» es la genérica, sin el botón «Insertar en el dibujo…» del draft | «Todo como Dinámico» (M-03) |
+| P3-06 | Las opciones con un fondo dicen «Frontal · fondo 1», como el clásico (el draft dice «Frontal») | Son las del clásico |
+| P3-07 | La frase «Debajo siguen las tarjetas de siempre, que abren el editor clásico con RACKNUEVO.» del draft no se añadió: queda la de Dinámico («Elige el sistema: …») | Cambio mínimo de la página compartida; dicen lo mismo |
+| P3-08 | Declarado, como Dinámico (M-08): el diálogo de vistas se abre aunque la puerta espere otra petición; la escritura se rechaza después con su aviso | La regla de una petición en vuelo es de la ventana |
+
+**Las pruebas** (`tests/RackCad.UI.Tests/Workspace/RackCadSelectiveInsertTests.cs`, nuevo, 18):
+- las opciones del clásico con uno y dos fondos (etiquetas y direcciones);
+- el diálogo con el sistema de Selectivo: guarda las frontales por fondo, el orden elegido y la cancelación;
+- «Insertar vista…» envía copias del borrador con las vistas; su respuesta es la de una escritura, y deja «Limpio»;
+- sin cambios se ofrece; si no redibujó, sigue sin escribir;
+- los textos que la bloquean (sin puerto, fuera de la ventana, tramos sin aplicar, escribiendo, tomada) y su aviso de estado;
+- el Selectivo nuevo: se hace, se inserta como rack nuevo (lo acepta `PlanNewRack`), toma el nombre del dibujo y se reabre con el mismo editor;
+- con nombre propio lo conserva; si no se colocó, sigue nuevo;
+- la orden tomada; el dibujo del rack nuevo (I-03); sin la puerta de Selectivo o sin dibujo no se ofrece;
+- un rack nuevo a la vez; «Descartar» y «Cerrar el editor»;
+- el consejero de cierre (el texto entero) y la poda nombran «un Selectivo nuevo»;
+- con WPF real (STA) y sin errores de enlace:
+  - la cabecera: el botón entre «Actualizar» y «Descartar», su rótulo y su nombre, el clic y el estado;
+  - el editor de un rack nuevo: el rótulo, «Actualizar» apagado y su texto, y el nombre recién escrito que va con el clic;
+  - la página «Nuevo»: el botón, su texto y su orden, el editor alojado, «Nuevo» tras insertar y la misma vista en la página del rack.
+- **Comprobación en rojo:** dieciséis piezas rotas a propósito, una a una, con la clase de pruebas tras cada una; cada una hizo fallar al menos una prueba (de 1 a 5). Script y salida en el scratchpad de la sesión, `hs65\selectivo\p3-red\`. Las piezas:
+  1. el diálogo con el sistema de Dinámico;
+  2. la escritura sin las vistas;
+  3. la escritura sin la marca de rack nuevo;
+  4. el rack colocado que sigue nuevo;
+  5. «Actualizar» ofrecido a un rack nuevo;
+  6. el cierre sin «un Selectivo nuevo»;
+  7. las tarjetas de «Nuevo» con un Selectivo nuevo;
+  8. «Nuevo» sin refrescar al cambiar de dibujo;
+  9. los tramos sin aplicar que no bloquean;
+  10. el nombre del dibujo que reemplaza el del borrador;
+  11. el clic sin el nombre recién escrito;
+  12. el estado de «Insertar vista…» sin avisar;
+  13. el rótulo que no vuelve a «Insertar vista…»;
+  14. el texto de «Descartar» de un rack nuevo;
+  15. dos racks nuevos en «Nuevo»;
+  16. la ventana que no le da el diálogo al editor.
+
+  La 2 y la 3 se repitieron con un patrón que no tocara la escritura de Dinámico, que tiene la misma línea. Cada archivo se restauró de su copia con fecha nueva y se comprobó igual byte a byte.
+- **Focales:** `RackCadSelectiveInsertTests` 18/18; con las clases de la ventana de Selectivo y de Dinámico, `RackCadWindowTests`, `SelectiveDraftEditor*`, `SelectiveSafetyViewTests`, `SelectiveLayoutRestoreTests`, `SelectiveNewRackRequestTests`, `DynamicSafetyTabTests` y `RackModalHostWindowTests`, 269/269.
+- **UI completa:** 2706 correctas, 0 con error, 48 omitidas (2754). Es la base de `938823b2`, 2688 correctas (2736), más las 18 nuevas: la base sale por diferencia y no se corrió aparte.
+- **Core Full:** 19144 correctas, 0 con error, 403 omitidas (19547). P3 no toca Core: es la cifra de `938823b2`.
+- **Build Debug del Plugin:** 0 errores (las 2 advertencias MSB3277 de las referencias de AutoCAD ya estaban).
+
+**Lo que queda abierto:**
+- **Preguntas al Owner:** P3-01 (panel del draft o diálogo clásico), P3-02 (mostrar el nombre previsto) y el texto de P3-04.
+- **Sin AutoCAD:** el smoke de la pantalla, con la colocación, el nombre automático y el «U» de una inserción, que tampoco se probó con Dinámico.
+- **Integración** con P1 (`WireSelective`) y P2 (los dos botones de la cabecera quedan juntos en el mismo `WrapPanel`).

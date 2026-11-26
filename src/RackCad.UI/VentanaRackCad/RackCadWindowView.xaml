@@ -326,11 +326,24 @@
                     <!-- Nuevo with a new Dinámico being made here (step 4): its editor, until «Insertar en el dibujo…» places it. -->
                     <ContentControl x:Name="NewRackHost" Focusable="False"
                                     Visibility="{Binding ShowNewDynamicEditor, Converter={StaticResource FlagToVisibility}}" />
+                    <!-- E2 P3: Nuevo with a new Selectivo being made here, as the new Dinámico: its editor, until «Insertar en el dibujo…». -->
+                    <ContentControl x:Name="NewSelectiveRackHost" Focusable="False"
+                                    Visibility="{Binding ShowNewSelectiveEditor, Converter={StaticResource FlagToVisibility}}" />
 
                     <ScrollViewer x:Name="NuevoPage" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
                                   Visibility="{Binding ShowNuevoCards, Converter={StaticResource FlagToVisibility}}">
                         <StackPanel Margin="14,10">
                             <TextBlock Text="Nuevo" Style="{StaticResource PageTitle}" />
+                            <!-- E2 P3: a new Selectivo edited here, without blocking AutoCAD (the text of the approved draft, with no predicted name). -->
+                            <Button x:Name="NewSelectiveHereButton" HorizontalAlignment="Left" Margin="0,0,0,8" Padding="12,6" MaxWidth="560"
+                                    Style="{StaticResource PrimaryButtonStyle}" IsEnabled="{Binding CanStartNewSelective}"
+                                    AutomationProperties.Name="Nuevo Selectivo en esta ventana" Click="OnNewSelectiveHereClick">
+                                <StackPanel>
+                                    <TextBlock Text="Selectivo en esta ventana" FontWeight="SemiBold" />
+                                    <TextBlock x:Name="NewSelectiveHereText" TextWrapping="Wrap"
+                                               Text="Abre aquí, en «Nuevo», el editor de la ventana con los valores por defecto del editor clásico. Se coloca con «Insertar en el dibujo…» y, si no le pones nombre, toma el automático (I-60)." />
+                                </StackPanel>
+                            </Button>
                             <!-- Step 4 of Dinámico: a new Dinámico edited here, without blocking AutoCAD. -->
                             <Button x:Name="NewDynamicHereButton" HorizontalAlignment="Left" Margin="0,0,0,10" Padding="12,6"
                                     Style="{StaticResource PrimaryButtonStyle}" IsEnabled="{Binding CanStartNewDynamic}"
