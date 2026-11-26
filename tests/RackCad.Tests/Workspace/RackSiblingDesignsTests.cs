@@ -240,6 +240,29 @@ public class RackSiblingDesignsTests
                        + answer + @"\(new\s+\w+\(pending\.RequestId,\s*pending\.RackId,\s*false,[^;]*siblings\.Reason\)\);\s*return;\s*\}", body);
     }
 
+    // RACKSELECTIVOABRIR and RACKSELECTIVOAPLICAR follow the same rule: they compare the views once, after FindRackBlocks and before
+    // they read blocks[0] or hand it to ApplySelectiveEdit, and refuse with the reason of the rule.
+    [Theory]
+    [InlineData("RACKSELECTIVOABRIR", @"AnswerSelectiveRead\(SelectiveDesignRead\.Refused\(pending\.RequestId,\s*pending\.RackId,\s*null,\s*null,\s*siblings\.Reason\)\)", false)]
+    [InlineData("RACKSELECTIVOAPLICAR", @"AnswerWrite\(new\s+RackDesignWritten\(pending\.RequestId,\s*pending\.RackId,\s*false,\s*siblings\.Reason\)\)", true)]
+    public void TheSelectiveCommandsOfTheDoorCompareTheViewsBeforeReadingOrWriting(string command, string answer, bool writes)
+    {
+        var body = CommandBody(command);
+
+        var find = body.IndexOf("RackCommandSupport.FindRackBlocks(document, pending.RackId)", StringComparison.Ordinal);
+        var compare = body.IndexOf("RackSiblingDesigns.Compare(pending.RackId, Views(blocks))", StringComparison.Ordinal);
+        var firstRead = body.IndexOf("blocks[0]", StringComparison.Ordinal);
+        Assert.True(find >= 0, command);
+        Assert.True(compare > find, command);
+        Assert.True(firstRead > compare, command);
+        Assert.Equal(1, WorkspaceHostSource.Count(body, @"RackSiblingDesigns\.Compare\("));
+        if (writes)
+            Assert.True(body.IndexOf("RackSelectivoCommands.ApplySelectiveEdit(", StringComparison.Ordinal) > compare, command);
+
+        Assert.Matches(@"var\s+siblings\s*=\s*RackSiblingDesigns\.Compare\(pending\.RackId,\s*Views\(blocks\)\);\s*if\s*\(\s*!siblings\.Coincide\s*\)\s*\{\s*door\?\."
+                       + answer + @";\s*return;\s*\}", body);
+    }
+
     [Fact]
     public void TheNewRackHasNoViewsToCompareAndTheViewsAreEveryBlockOfTheRack()
     {
@@ -248,7 +271,7 @@ public class RackSiblingDesignsTests
         var code = WorkspaceHostSource.Code("src/RackCad.Plugin/VentanaRackCad/RackCadRackDoorCommands.cs");
         var views = WorkspaceHostSource.BodyOf(code, @"private\s+static\s+[\w.<>]+\s+Views\s*\(");
         Assert.Matches(@"foreach\s*\(\s*var\s*\(\s*blockId\s*,\s*embed\s*\)\s+in\s+blocks\s*\)\s*views\.Add\(new\s+RackSiblingView\(blockId\.Handle\.ToString\(\),\s*embed\)\);", views);
-        Assert.Equal(3, WorkspaceHostSource.Count(code, @"RackSiblingDesigns\.Compare\("));
+        Assert.Equal(5, WorkspaceHostSource.Count(code, @"RackSiblingDesigns\.Compare\("));
     }
 
     private static string CommandBody(string command)

@@ -278,6 +278,14 @@ namespace RackCad.Plugin.VentanaRackCad
                     return;
                 }
 
+                // M-02 of the review of Selectivo: the window opens the design of one view, so the views must carry the same one.
+                var siblings = RackSiblingDesigns.Compare(pending.RackId, Views(blocks));
+                if (!siblings.Coincide)
+                {
+                    door?.AnswerSelectiveRead(SelectiveDesignRead.Refused(pending.RequestId, pending.RackId, null, null, siblings.Reason));
+                    return;
+                }
+
                 var embed = blocks[0].Embed;
                 if (embed == null || string.IsNullOrEmpty(embed.Design))
                 {
@@ -328,6 +336,14 @@ namespace RackCad.Plugin.VentanaRackCad
                 if (blocks.Count == 0)
                 {
                     door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false, "El rack ya no está en el dibujo: no se escribió nada."));
+                    return;
+                }
+
+                // M-02: «Actualizar» writes the draft in every view, so the views must carry the same design as the one that was opened.
+                var siblings = RackSiblingDesigns.Compare(pending.RackId, Views(blocks));
+                if (!siblings.Coincide)
+                {
+                    door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false, siblings.Reason));
                     return;
                 }
 

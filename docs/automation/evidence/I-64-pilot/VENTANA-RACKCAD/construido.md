@@ -619,3 +619,18 @@ La revisión de la entrega 1 de Selectivo (hallazgos I-01 y M-02) encontró dos 
   - UI completa: 2545/0/48 (2593);
   - Core Full: 19088/0/403 (base de `dc82a43c`: 19076/0/403; las 12 nuevas son las de `RackSiblingDesignsTests`);
   - Plugin Debug: 0 errores.
+
+### Selectivo: M-02 con la regla de Dinámico
+
+- **Qué:** RACKSELECTIVOABRIR y RACKSELECTIVOAPLICAR (`src/RackCad.Plugin/VentanaRackCad/RackCadRackDoorCommands.cs`) llaman a
+  `RackSiblingDesigns.Compare(pending.RackId, Views(blocks))` justo después de `FindRackBlocks` y antes de `blocks[0]`; si las vistas no
+  coinciden, la lectura responde `SelectiveDesignRead.Refused(..., siblings.Reason)` y la escritura `RackDesignWritten(..., false, siblings.Reason)`,
+  sin escribir nada. Reutiliza el `Views(blocks)` de Dinámico. El texto del motivo es cierto para Selectivo: `ApplySelectiveEdit` (el
+  «Actualizar» de RACKEDITAR) redibuja en sitio todas las vistas con el mismo GUID con el diseño de la elegida; no se cambió.
+- **Prueba:** `RackSiblingDesignsTests.TheSelectiveCommandsOfTheDoorCompareTheViewsBeforeReadingOrWriting` (teoría, 2 casos) fija una sola
+  llamada por orden, después de `FindRackBlocks`, antes de `blocks[0]` y, en la escritura, antes de `ApplySelectiveEdit`, y la respuesta con
+  `siblings.Reason`; el recuento del archivo pasa de 3 a 5. La regla con dos diseños de Selectivo iguales y distintos ya estaba probada
+  (`TheRuleIsTheSameForSelectiveWithItsOwnComparator`). Focales (`RackSiblingDesignsTests`, `SelectiveRackDoorTests`,
+  `RackCadWindowListTests`, `CustomPropertiesCommandGuardTests`): 126/126. Build Debug del Plugin: 0 errores.
+- **Rojo:** sin la llamada en RACKSELECTIVOAPLICAR fallan 2 de 14 (`...SelectiveCommands...(RACKSELECTIVOAPLICAR)` y el recuento de 5);
+  restaurada con fecha nueva, 14/14 y recompilado.
