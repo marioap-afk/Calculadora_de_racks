@@ -378,7 +378,7 @@ namespace RackCad.UI.VentanaRackCad
             get
             {
                 if (_inFlight == null) return string.Empty;
-                if (_inFlight.Started) return WriteTakenText;
+                if (_inFlight.Started) return _inFlight.IsBom ? BomTakenText : WriteTakenText; // T4 bom
                 var what = _inFlight.IsBom ? "Esperando a que AutoCAD lea el dibujo para el BOM." // T4 bom
                     : _inFlight.IsWrite ? "Esperando a que AutoCAD escriba el rack." : "Esperando a que AutoCAD lea el rack.";
                 return what + " Si no responde (por ejemplo, porque había texto a medio escribir en la línea de órdenes), pulsa «Dejar de esperar».";
@@ -677,7 +677,7 @@ namespace RackCad.UI.VentanaRackCad
             if (request == null) return;
             if (request.Started)
             {
-                Say(WriteTakenText, failed: true);
+                Say(request.IsBom ? BomTakenText : WriteTakenText, failed: true); // T4 bom
                 return;
             }
 
@@ -1079,8 +1079,9 @@ namespace RackCad.UI.VentanaRackCad
         {
             Contained(() =>
             {
-                if (_inFlight == null || !_inFlight.IsWrite || _inFlight.Id != requestId) return;
+                if (_inFlight == null || (!_inFlight.IsWrite && !_inFlight.IsBom) || _inFlight.Id != requestId) return; // T4 bom: also the read of the BOM
                 _inFlight = _inFlight with { Started = true };
+                if (_inFlight.IsBom) BomTaken(requestId); // T4 bom
 
                 // The editor no longer says to press «Dejar de esperar»: the Selectivo (S-28) and the Dinámico, of the drawing or new (M-11).
                 if (_inFlight.IsSelective && _selectiveDrafts.TryGetValue((_inFlight.Session, _inFlight.RackId), out var selective))

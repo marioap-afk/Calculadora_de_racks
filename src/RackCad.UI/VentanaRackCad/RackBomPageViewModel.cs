@@ -255,8 +255,15 @@ namespace RackCad.UI.VentanaRackCad
             public DateTime ReadAt;
             public bool Stale;
             public DateTime StaleAt;
-            public bool StaleBecauseReturn;
-            public bool Wanted;
+            public StaleCause Cause;
+        }
+
+        // Why the reading may be out of date: a command ran after it, the user came back to the drawing, or a read was not completed.
+        private enum StaleCause
+        {
+            Command,
+            Return,
+            Stopped,
         }
 
         // An export the page holds: of the drawing (no rack) or of one rack, of the drawing or of the draft of its editor.
@@ -321,7 +328,7 @@ namespace RackCad.UI.VentanaRackCad
                 var state = Current;
                 if (state?.Reading == null) return string.Empty;
                 var text = "Leído a las " + RackBomClock.Time(state.ReadAt);
-                if (state.Stale && !state.StaleBecauseReturn) text += " · corrió una orden a las " + RackBomClock.Time(state.StaleAt);
+                if (state.Stale && state.Cause == StaleCause.Command) text += " · corrió una orden a las " + RackBomClock.Time(state.StaleAt);
                 return text;
             }
         }
@@ -337,6 +344,11 @@ namespace RackCad.UI.VentanaRackCad
         }
 
         public bool CanRecalculate => _host.HasBomDoor && _session.HasValue && !IsReading;
+
+        /// <summary>«Calcular» for a drawing never read here, «Calcular de nuevo» once it has a reading.</summary>
+        public string RecalculateLabel => Reading == null ? "Calcular" : "Calcular de nuevo";
+
+        public string RecalculateAutomationName => Reading == null ? "Calcular el BOM del dibujo" : "Calcular de nuevo el BOM del dibujo";
 
         /// <summary>«Calcular de nuevo» is the main action when the BOM may be out of date, has no total or was never read.</summary>
         public bool RecalculateIsPrimary => CanRecalculate && (Reading == null || !Reading.IsRead || Reading.Refusals.Count > 0 || Current.Stale);
@@ -368,9 +380,7 @@ namespace RackCad.UI.VentanaRackCad
             {
                 if (!ShowUnread) return string.Empty;
                 if (!_host.HasBomDoor) return "Aquí no se puede leer el dibujo.";
-                return Current != null && Current.Wanted
-                    ? "AutoCAD está ocupado: el BOM se leerá en cuanto termine la orden en curso."
-                    : "El dibujo todavía no se leyó para el BOM. Pulsa «Calcular de nuevo».";
+                return "El dibujo todavía no se leyó para el BOM. Pulsa «Calcular»: AutoCAD lo lee sin bloquearse.";
             }
         }
 
@@ -416,10 +426,16 @@ namespace RackCad.UI.VentanaRackCad
                 if (!ShowStale) return string.Empty;
                 var state = Current;
                 var at = RackBomClock.Time(state.ReadAt);
-                return state.StaleBecauseReturn
-                    ? "Volviste a este dibujo: el BOM es de las " + at + " y desde entonces el dibujo pudo cambiar. Se vuelve a leer solo cuando lo pides, para no bloquear AutoCAD."
-                    : "El BOM es de las " + at + " y a las " + RackBomClock.Time(state.StaleAt)
-                      + " corrió una orden en el dibujo. Se vuelve a leer solo cuando lo pides, para no bloquear AutoCAD con cada orden.";
+                switch (state.Cause)
+                {
+                    case StaleCause.Return:
+                        return "Volviste a este dibujo: el BOM es de las " + at + " y desde entonces el dibujo pudo cambiar. Se vuelve a leer solo cuando lo pides, para no bloquear AutoCAD.";
+                    case StaleCause.Stopped:
+                        return "El BOM es de las " + at + " y una lectura posterior no se completó: el dibujo pudo cambiar entretanto. Se vuelve a leer solo cuando lo pides.";
+                    default:
+                        return "El BOM es de las " + at + " y a las " + RackBomClock.Time(state.StaleAt)
+                               + " corrió una orden en el dibujo. Se vuelve a leer solo cuando lo pides, para no bloquear AutoCAD con cada orden.";
+                }
             }
         }
 
@@ -663,7 +679,7 @@ namespace RackCad.UI.VentanaRackCad
                 var rack = SelectedRack;
                 if (rack == null || _inspected == null) return string.Empty;
                 return "Solo este rack" + (ShowsDraft ? ", del borrador" : string.Empty) + ": Excel de una hoja, como hoy (D-2 de I-68). El archivo va junto al dibujo con su nombre: «"
-                       + RackBomFiles.RackFileName(Reading?.DrawingName, rack.Name, ShowsDraft, RackBomFiles.Excel) + "».";
+                       + RackBomFiles.RackFileName(Reading?.DrawingName, rack, Reading?.Racks, ShowsDraft, RackBomFiles.Excel) + "».";
             }
         }
 
@@ -737,6 +753,7 @@ namespace RackCad.UI.VentanaRackCad
         {
             _ask = null;
             _exported = null;
+            _afterRead = null; // a plain «Calcular» never exports (correction 2 of the review)
             TryRead(userAsked: true);
             RaiseAll();
         }
@@ -780,9 +797,11 @@ namespace RackCad.UI.VentanaRackCad
         public void AskRecalculateAndExport()
         {
             if (_ask == null) return;
-            var after = _ask;
+            // The export waits BEFORE the read is handed over: AutoCAD may answer during the call (M-22), and then the reading exports at once.
+            // A read that is not handed over leaves nothing armed (correction 2 of the review).
+            _afterRead = _ask;
             _ask = null;
-            if (TryRead(userAsked: true)) _afterRead = after;
+            if (!TryRead(userAsked: true)) _afterRead = null;
             RaiseAll();
         }
 
@@ -880,9 +899,9 @@ namespace RackCad.UI.VentanaRackCad
 
         /// <summary>
         /// The window presented a snapshot: the page follows its drawing, says the BOM may be out of date after a command that is not its own
-        /// read (BM-01), forgets the drawings that were closed and, when a read is wanted and AutoCAD is free, asks it.
+        /// read (BM-01) and forgets the drawings that were closed. It never sends a read: only a gesture of the user does (correction 4).
         /// </summary>
-        internal void Present(SessionId? session, WorkspaceActionBlock block, bool canRead, bool shown, bool bomInFlight, bool doorBusy, Func<SessionId, bool> isAlive)
+        internal void Present(SessionId? session, WorkspaceActionBlock block, bool bomInFlight, Func<SessionId, bool> isAlive)
         {
             if (isAlive != null)
             {
@@ -897,29 +916,22 @@ namespace RackCad.UI.VentanaRackCad
                 _afterRead = null;
                 _exported = null;
                 Say(string.Empty, false);
-                if (previous.HasValue && Current?.Reading != null && !Current.Stale)
-                {
-                    Current.Stale = true;
-                    Current.StaleAt = Now;
-                    Current.StaleBecauseReturn = true;
-                }
+                if (previous.HasValue && Current?.Reading != null && !Current.Stale) MarkStale(Current, StaleCause.Return);
 
-                // The page shown for a drawing it never read: as the first time it is shown, it reads it (BM-01).
-                if (shown && session.HasValue && Current?.Reading == null && !IsReading) StateOfCurrent().Wanted = true;
+                // A drawing never read stays «Sin leer» with «Calcular»: changing drawing is no gesture, so nothing is sent (correction 4).
                 RebuildData();
             }
 
-            // Any command that ran in the drawing after the reading (a write of the window too) may have changed it; the read of the page
-            // itself does not count: from handing it over until the drawing is at rest again after its answer.
+            // Any command that ran in the drawing after the reading (a write of the window too) may have changed it. The read itself does not
+            // count, and only it: RACKBOMLEER from the moment it says it took the request (Started) — or RACKLISTA / RACKBOMTOTAL, which read
+            // inside themselves — until the drawing is at rest again after its answer (correction 1 of the review).
             var commandRuns = block == WorkspaceActionBlock.CommandActive || block == WorkspaceActionBlock.ModalActive;
             if (commandRuns)
             {
                 var state = Current;
                 if (!_ownCommandPending && state?.Reading != null && !state.Stale)
                 {
-                    state.Stale = true;
-                    state.StaleAt = Now;
-                    state.StaleBecauseReturn = false;
+                    MarkStale(state, StaleCause.Command);
                     RaiseAll();
                 }
             }
@@ -927,12 +939,19 @@ namespace RackCad.UI.VentanaRackCad
             {
                 _ownCommandPending = false;
             }
-
-            if (shown && Current != null && Current.Wanted && !doorBusy && block == WorkspaceActionBlock.None && canRead)
-                TryRead(userAsked: false);
         }
 
-        /// <summary>The page was shown: the first time for a drawing, the drawing is read on its own (BM-01).</summary>
+        private void MarkStale(DrawingState state, StaleCause cause)
+        {
+            state.Stale = true;
+            state.StaleAt = Now;
+            state.Cause = cause;
+        }
+
+        /// <summary>
+        /// The page was shown by a gesture of the user (a section, «Ver su BOM»): the first time for a drawing, the drawing is read (BM-01).
+        /// RACKLISTA and RACKBOMTOTAL deliver their reading before showing it, so they send nothing.
+        /// </summary>
         internal void Shown()
         {
             RebuildData(); // the BOM of a draft follows what was edited meanwhile in its editor
@@ -940,12 +959,10 @@ namespace RackCad.UI.VentanaRackCad
             RaiseAll();
         }
 
-        /// <summary>RACKLISTA or RACKBOMTOTAL ran (BM-11): their tab, and a new read as soon as AutoCAD is free.</summary>
+        /// <summary>RACKLISTA or RACKBOMTOTAL ran (BM-11): their tab (their reading is delivered by the window).</summary>
         internal void Asked(RackBomTab tab)
         {
             SetTab(tab);
-            var state = StateOfCurrent();
-            if (state != null) state.Wanted = true;
             RaiseAll();
         }
 
@@ -962,26 +979,42 @@ namespace RackCad.UI.VentanaRackCad
         internal void ReadingStarted(long requestId, SessionId session)
         {
             _reading = (requestId, session);
-            _ownCommandPending = true;
-            if (_drawings.TryGetValue(session, out var state)) state.Wanted = false;
             RaiseAll();
         }
 
-        /// <summary>The request was not handed over, or the window stopped waiting: nothing changes, the export that waited is dropped.</summary>
-        internal void ReadingStopped(bool abandoned)
+        /// <summary>RACKBOMLEER took the request (Started): from now until the drawing is at rest after its answer, a command is the read itself.</summary>
+        internal void ReadingTaken(long requestId)
+        {
+            if (_reading.HasValue && _reading.Value.Id == requestId) _ownCommandPending = true;
+        }
+
+        /// <summary>
+        /// The request was not handed over, the window stopped waiting, or its answer was not for this drawing: the export that waited is
+        /// dropped, nothing counts as the read any more, and the reading the drawing had may be out of date (correction 1 of the review).
+        /// </summary>
+        internal void ReadingStopped(bool abandoned, string message = null)
         {
             var request = _reading;
             _reading = null;
             _afterRead = null;
-            if (abandoned && request.HasValue)
+            _ownCommandPending = false;
+            if (request.HasValue && _drawings.TryGetValue(request.Value.Session, out var state) && state.Reading != null && !state.Stale)
+                MarkStale(state, StaleCause.Stopped);
+            if (message != null) Say(message, true);
+            else if (abandoned && request.HasValue)
                 Say("Se dejó de esperar la lectura n.º " + request.Value.Id.ToString(CultureInfo.InvariantCulture) + " del BOM: si la orden llega a correr, no cambiará nada.", false);
-            RaiseAll();
+            RebuildData();
         }
 
-        /// <summary>The answer of AutoCAD to the read of that session.</summary>
-        internal void Deliver(SessionId session, RackBomReading reading)
+        /// <summary>
+        /// The answer of AutoCAD to the read of that session, or (<paramref name="readByRunningCommand"/>) the reading RACKLISTA or RACKBOMTOTAL
+        /// made inside themselves: that command still runs, and until the drawing is at rest it is the read, not a change.
+        /// </summary>
+        internal void Deliver(SessionId session, RackBomReading reading, bool readByRunningCommand = false)
         {
-            _reading = null;
+            if (reading == null) return;
+            if (readByRunningCommand) _ownCommandPending = true;
+            else _reading = null;
             if (!_drawings.TryGetValue(session, out var state))
             {
                 state = new DrawingState();
@@ -991,10 +1024,9 @@ namespace RackCad.UI.VentanaRackCad
             state.Reading = reading;
             state.ReadAt = Now;
             state.Stale = false;
-            state.StaleBecauseReturn = false;
-            state.Wanted = false;
-            var after = _afterRead;
-            _afterRead = null;
+            state.Cause = StaleCause.Command;
+            var after = readByRunningCommand ? null : _afterRead;
+            if (!readByRunningCommand) _afterRead = null;
             if (session != _session)
             {
                 RaiseAll();
@@ -1049,7 +1081,8 @@ namespace RackCad.UI.VentanaRackCad
             return state;
         }
 
-        // Hands the read over; Busy (AutoCAD or another request of the window) leaves it wanted, to be asked when AutoCAD is free.
+        // Hands the read over, after a gesture of the user; Busy (AutoCAD or another request of the window) is said, and nothing is asked again
+        // on its own.
         private bool TryRead(bool userAsked)
         {
             var state = StateOfCurrent();
@@ -1079,8 +1112,9 @@ namespace RackCad.UI.VentanaRackCad
             switch (result.Status)
             {
                 case RackCadClassicStatus.Busy:
-                    state.Wanted = true;
-                    if (userAsked) Say("AutoCAD está ocupado: el BOM se leerá en cuanto termine (" + (result.Reason ?? "hay un comando en curso") + ").", false);
+                    // Nothing is asked again on its own (correction 4): the user asks again when AutoCAD is free.
+                    Say("AutoCAD está ocupado (" + (string.IsNullOrWhiteSpace(result.Reason) ? "hay un comando en curso" : result.Reason.Trim().TrimEnd('.'))
+                        + "): termina o cancela la orden en curso y pulsa «" + RecalculateLabel + "».", false);
                     break;
                 case RackCadClassicStatus.NoDocument:
                     Say("Abre o crea un dibujo para leer su BOM.", true);
@@ -1134,7 +1168,7 @@ namespace RackCad.UI.VentanaRackCad
                     return;
                 }
 
-                fileName = RackBomFiles.RackFileName(reading.DrawingName, rack.Name, export.Draft, extension);
+                fileName = RackBomFiles.RackFileName(reading.DrawingName, rack, reading.Racks, export.Draft, extension);
                 content = export.Excel ? BomXlsxExporter.ToXlsx(bom) : Text(BomCsvExporter.ToCsv(bom));
                 detail = (export.Excel ? "Una hoja «Lista de materiales», como hoy (D-2 de I-68)" : "Componentes y piezas, con la cantidad de una copia del rack")
                          + (export.Draft ? ", del borrador del editor (no está escrito en el dibujo)." : ". Del BOM de las " + at + ".");
@@ -1142,8 +1176,26 @@ namespace RackCad.UI.VentanaRackCad
 
             var folder = RackBomFiles.FolderOf(reading.DrawingPath);
             var where = folder == null ? "En Documentos, porque el dibujo no está guardado todavía. " : "Junto al dibujo. ";
+            var shared = folder == null;
             if (folder == null) folder = SafeFallback();
             var path = System.IO.Path.Combine(folder ?? string.Empty, fileName);
+
+            // Next to a saved drawing, a file of the same name is the earlier export of the same BOM and is replaced. In the documents of the
+            // user (a drawing never saved: every one is «Drawing1»), it may be someone else's: it is never replaced (correction 3, BM-S5).
+            if (shared)
+            {
+                var baseName = fileName;
+                var number = 1;
+                while (SafeExists(path) && number < 1000)
+                {
+                    number++;
+                    fileName = RackBomFiles.WithNumber(baseName, number);
+                    path = System.IO.Path.Combine(folder ?? string.Empty, fileName);
+                }
+
+                if (number > 1) where += "Ya había un archivo con ese nombre: este se guardó como «" + fileName + "». ";
+            }
+
             try
             {
                 Files.Write(path, content);
@@ -1157,6 +1209,18 @@ namespace RackCad.UI.VentanaRackCad
             }
 
             RaiseAll();
+        }
+
+        private bool SafeExists(string path)
+        {
+            try
+            {
+                return Files.Exists(path);
+            }
+            catch (Exception)
+            {
+                return true; // unknown is taken: never replace what may be there
+            }
         }
 
         private string SafeFallback()
@@ -1527,6 +1591,7 @@ namespace RackCad.UI.VentanaRackCad
             foreach (var name in new[]
             {
                 nameof(ChipText), nameof(ChipKind), nameof(ReadText), nameof(SubText), nameof(CanRecalculate), nameof(RecalculateIsPrimary),
+                nameof(RecalculateLabel), nameof(RecalculateAutomationName),
                 nameof(CanExportDrawing), nameof(ExportDrawingIsPrimary), nameof(ExportDrawingTip), nameof(ShowReading), nameof(ReadingText),
                 nameof(ShowUnread), nameof(UnreadText), nameof(HasFailure), nameof(FailureText), nameof(HasRefusals), nameof(RefusalHead),
                 nameof(Refusals), nameof(HasSkipped), nameof(SkippedHead), nameof(Skipped), nameof(ShowStale), nameof(StaleText), nameof(HasAsk),

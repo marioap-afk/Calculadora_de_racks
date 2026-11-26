@@ -14,8 +14,14 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>Where the files go when the drawing was never saved (it has no folder): the documents of the user.</summary>
         string FallbackFolder { get; }
 
-        /// <summary>Writes the file, replacing one with the same name; a failure throws (the page says it).</summary>
+        /// <summary>
+        /// Writes the file, replacing one with the same name, atomically: an interrupted write never leaves half a file in place of the one
+        /// that was there (correction 3 of the review). A failure throws (the page says it).
+        /// </summary>
         void Write(string path, byte[] content);
+
+        /// <summary>A file with that path is there (the page does not replace one in the documents of the user).</summary>
+        bool Exists(string path);
 
         /// <summary>Opens the file with its application (Excel, for a .xlsx).</summary>
         void Open(string path);
@@ -32,7 +38,35 @@ namespace RackCad.UI.VentanaRackCad
     {
         public string FallbackFolder => Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-        public void Write(string path, byte[] content) => File.WriteAllBytes(path, content ?? Array.Empty<byte>());
+        // The pattern of AtomicFile (I-03), which is internal to Application and writes text: the bytes go to a temporary file in the SAME
+        // folder (the same volume, so the swap is atomic), then File.Replace over an existing file or File.Move into a new one. The folder is
+        // not created; a real error of the disk still throws, and the temporary file is removed.
+        public void Write(string path, byte[] content)
+        {
+            var folder = Path.GetDirectoryName(path);
+            var temp = Path.Combine(string.IsNullOrEmpty(folder) ? "." : folder, Path.GetFileName(path) + ".tmp-" + Guid.NewGuid().ToString("N"));
+            try
+            {
+                File.WriteAllBytes(temp, content ?? Array.Empty<byte>());
+                if (File.Exists(path)) File.Replace(temp, path, null);
+                else File.Move(temp, path);
+            }
+            catch
+            {
+                try
+                {
+                    if (File.Exists(temp)) File.Delete(temp);
+                }
+                catch (Exception)
+                {
+                    // The temporary file could not be removed: the original error is the one that matters.
+                }
+
+                throw;
+            }
+        }
+
+        public bool Exists(string path) => File.Exists(path);
 
         public void Open(string path) => Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
 

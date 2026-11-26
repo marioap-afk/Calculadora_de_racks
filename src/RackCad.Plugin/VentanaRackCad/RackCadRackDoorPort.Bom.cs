@@ -8,8 +8,11 @@ namespace RackCad.Plugin.VentanaRackCad
     /// of AutoCAD with no undo marker (RACKBOMLEER, in <c>RackInventarioCommands.Ventana.cs</c>), handed over with the same rules as the door
     /// to a rack (<see cref="Send"/>: an active document, no command in progress, the request kept before it is handed over and the focus
     /// back to the drawing). The command takes the request once and answers with its number; a request the window abandoned
-    /// (<see cref="Abandon"/>) is dropped, so a late command does nothing. RACKLISTA and RACKBOMTOTAL ask the window to show the page
-    /// (<see cref="AskBomPage"/>). This file holds no AutoCAD transaction and no lock.
+    /// (<see cref="Abandon"/>) is dropped, so a late command does nothing. The door keeps the drawing of the request (its native key), and
+    /// the command reads nothing in another one; the window checks, when the answer arrives, that the drawing active then is the one of the
+    /// session of its request (correction 5 of the review), because this door cannot reach the sessions of the host (M-24). RACKLISTA and
+    /// RACKBOMTOTAL read the drawing in their own command and hand the reading to the page (<see cref="AskBomPage"/>). This file holds no
+    /// AutoCAD transaction and no lock.
     /// </summary>
     public sealed partial class RackCadRackDoorPort : IRackCadBomPort
     {
@@ -20,7 +23,7 @@ namespace RackCad.Plugin.VentanaRackCad
 
         public event Action<RackBomReading> BomRead;
 
-        public event Action<RackBomTab> BomPageAsked;
+        public event Action<RackBomTab, RackBomReading> BomPageAsked;
 
         public RackCadClassicResult RequestBomRead(RackBomRequest request)
         {
@@ -48,7 +51,7 @@ namespace RackCad.Plugin.VentanaRackCad
 
         internal void AnswerBomRead(RackBomReading reading) => Raise(() => BomRead?.Invoke(reading));
 
-        /// <summary>RACKLISTA or RACKBOMTOTAL ran: the window shows «BOM y lista de racks», on that tab, and reads the drawing when it is free.</summary>
-        internal void AskBomPage(RackBomTab tab) => Raise(() => BomPageAsked?.Invoke(tab));
+        /// <summary>RACKLISTA or RACKBOMTOTAL read the drawing in their own command: the window shows «BOM y lista de racks», on that tab, with it.</summary>
+        internal void AskBomPage(RackBomTab tab, RackBomReading reading) => Raise(() => BomPageAsked?.Invoke(tab, reading));
     }
 }

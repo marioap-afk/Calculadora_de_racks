@@ -52,13 +52,19 @@ namespace RackCad.Tests
 
             public Dictionary<string, string> Blocked { get; } = new();
 
+            public HashSet<string> BlockedThrows { get; } = new();
+
             public Dictionary<string, Func<ProjectVariablesDocument, BomBuildResult>> Results { get; } = new();
 
             public List<ProjectVariablesDocument> RegistersSeen { get; } = new();
 
             public List<string> Built { get; } = new();
 
-            public string BlockedReason(RackEmbedDocument embed) => Blocked.TryGetValue(embed.Id, out var reason) ? reason : null;
+            public string BlockedReason(RackEmbedDocument embed)
+            {
+                if (BlockedThrows.Contains(embed.Id)) throw new InvalidOperationException("diagnóstico roto");
+                return Blocked.TryGetValue(embed.Id, out var reason) ? reason : null;
+            }
 
             public BomBuildResult Build(RackEmbedDocument embed, ProjectVariablesDocument variables)
             {
@@ -222,6 +228,68 @@ namespace RackCad.Tests
             Assert.True(reading.Racks[1].IsQuoted);
         }
 
+        // Correction 6 of the review: a handler that cannot be resolved because something failed (the catalog that does not load, for example)
+        // is no unknown kind: the reading fails with its reason, and no rack is said to be of a type RackCad does not know.
+        [Fact]
+        public void AHandlerThatCannotBeResolvedIsAFailedReadingNotAnUnknownKind()
+        {
+            var reading = Compose(new[]
+            {
+                Fact("A1", Embed("D-1", "dynamic", "Dinámico 1"), 1),
+            }, _ => throw new InvalidOperationException("No se encontró el catálogo."));
+
+            Assert.False(reading.IsRead);
+            Assert.Equal("No se pudo preparar el BOM de los racks «dynamic». No se encontró el catálogo.", reading.Failure);
+            Assert.Empty(reading.Racks);
+            Assert.Null(reading.Total);
+        }
+
+        // Correction 7 of the review: a gate of I-42 that throws does not let the rack go out as «out of the total» with a total that looks
+        // complete: the rack is blocked and the total is not made, as RACKBOMTOTAL aborted.
+        [Fact]
+        public void AGateThatThrowsBlocksTheRackAndTheTotal()
+        {
+            var kind = new Kind("Dinámico");
+            kind.BlockedThrows.Add("D-1");
+            var reading = Compose(new[]
+            {
+                Fact("A1", Embed("D-1", "dynamic", "Dinámico 1"), 1),
+                Fact("B1", Embed("D-2", "dynamic", "Dinámico 2"), 1),
+            }, Kinds(("dynamic", kind)));
+
+            Assert.Equal(RackBomRackState.Blocked, reading.Racks[0].State);
+            Assert.True(reading.Racks[0].BlocksTheTotal);
+            Assert.Equal("no se pudo comprobar si se puede cotizar (falló su diagnóstico). diagnóstico roto", reading.Racks[0].Reason);
+            Assert.Equal("D-1", Assert.Single(reading.Refusals).RackId);
+            Assert.Empty(reading.Skipped);
+            Assert.Null(reading.Total);
+            Assert.DoesNotContain("D-1", kind.Built);
+            Assert.True(reading.Racks[1].IsQuoted);
+        }
+
+        // Point 8 of the review: the name of a rack is the first name that is not empty among its views (as the side column says it,
+        // RackListBuilder), not the name of the view the BOM is computed from.
+        [Fact]
+        public void TheNameOfARackIsTheFirstNameNotEmptyAmongItsViews()
+        {
+            var reading = Compose(new[]
+            {
+                Fact("A1", Embed("D-1", "dynamic", " ", RackEmbedDocument.ViewLateral), 1),
+                Fact("A2", Embed("D-1", "dynamic", "Dinámico norte", RackEmbedDocument.ViewPlanta), 1),
+            }, Kinds(("dynamic", new Kind("Dinámico"))));
+
+            Assert.Equal("Dinámico norte", Assert.Single(reading.Racks).Name);
+            Assert.Equal(new[] { "Dinámico norte" }, reading.Total.Racks.Select(r => r.Name));
+
+            // With no name in any view, «(sin nombre)», as the side column; two racks with no name stay two (grouped by identity, G16).
+            var unnamed = Compose(new[]
+            {
+                Fact("B1", Embed("D-2", "dynamic", null), 1),
+                Fact("C1", Embed("D-3", "dynamic", " "), 1),
+            }, Kinds(("dynamic", new Kind("Dinámico"))));
+            Assert.Equal(new[] { ("D-2", "(sin nombre)"), ("D-3", "(sin nombre)") }, unnamed.Racks.Select(r => (r.RackId, r.Name)));
+        }
+
         // I-47 G13: a placed definition that cannot be classified aborts the total (no RackId is invented); one that is not placed is ignored.
         [Fact]
         public void APlacedDefinitionThatCannotBeClassifiedAbortsTheTotalAndOneNotPlacedDoesNot()
@@ -352,6 +420,20 @@ namespace RackCad.Tests
             Assert.Null(RackBomFiles.FolderOf(null));
             Assert.Equal("Planta ejemplo", RackBomFiles.NameOf(@"C:\Proyectos\Planta ejemplo.dwg"));
             Assert.Equal("Drawing1", RackBomFiles.NameOf("Drawing1.dwg"));
+
+            // Correction 3 of the review: two racks whose names give one file get the start of their identity; a file is numbered.
+            RackBomRack Named(string id, string name) => new(id, name, "pushback", "Push Back", "lateral", 1, RackBomRackState.Quoted, null, null);
+            var a = Named("a1b2c3d4-e5f6-0000-0000-000000000001", "PB/1");
+            var b = Named("{FFEE0011-2233-4455-6677-8899AABBCCDD}", "PB:1");
+            var c = Named("C-1", "Cama 1");
+            var racks = new[] { a, b, c };
+            Assert.Equal("Planta - PB_1 (a1b2c3d4) - BOM.xlsx", RackBomFiles.RackFileName("Planta", a, racks, false, RackBomFiles.Excel));
+            Assert.Equal("Planta - PB_1 (FFEE0011) - BOM (borrador).csv", RackBomFiles.RackFileName("Planta", b, racks, true, RackBomFiles.Csv));
+            Assert.Equal("Planta - Cama 1 - BOM.xlsx", RackBomFiles.RackFileName("Planta", c, racks, false, RackBomFiles.Excel));
+            Assert.Equal("Planta - PB_1 - BOM.xlsx", RackBomFiles.RackFileName("Planta", a, new[] { a, c }, false, RackBomFiles.Excel));
+            Assert.Equal("Planta - Rack - BOM.xlsx", RackBomFiles.RackFileName("Planta", null, null, false, RackBomFiles.Excel));
+            Assert.Equal("Drawing1 - BOM (2).xlsx", RackBomFiles.WithNumber("Drawing1 - BOM.xlsx", 2));
+            Assert.Equal("Drawing1 - Cama 1 - BOM (borrador) (3).csv", RackBomFiles.WithNumber("Drawing1 - Cama 1 - BOM (borrador).csv", 3));
         }
 
         // ------------------------------------------------------------------ BM-04: «Cantidad_total» in the CSV of the drawing
@@ -395,7 +477,8 @@ namespace RackCad.Tests
         {
             var code = Code("src", "RackCad.Plugin", "RackInventarioCommands.Ventana.cs");
 
-            Assert.Contains("[CommandMethod(\"RACKBOMLEER\", CommandFlags.NoUndoMarker | CommandFlags.NoHistory)]", code);
+            Assert.Contains("private const CommandFlags ReadFlags = CommandFlags.NoUndoMarker | CommandFlags.UsePickSet | CommandFlags.Redraw;", code);
+            Assert.Contains("[CommandMethod(\"RACKBOMLEER\", ReadFlags | CommandFlags.NoHistory)]", code);
             Assert.Equal(1, Count(code, "ProjectVariablesRegistry.Read("));          // ONE read of the register per reading
             Assert.Equal(1, Count(code, "RackBlockFinder.ScanEnvelopes("));          // ONE pass over the block table
             Assert.Contains("includeReferenceCount: true", code);
@@ -406,7 +489,11 @@ namespace RackCad.Tests
 
             // The request: taken once, for the drawing it was made for, and answered with its number.
             var body = code.Substring(code.IndexOf("public void RackBomLeer()", StringComparison.Ordinal));
-            var steps = new[] { "RackCadRackDoorPort.TakePendingBomRead()", "pending.Document != RackCadRackDoorPort.KeyOf(document)", "ReadBomOfDrawing(document, pending.RequestId", "door?.AnswerBomRead(reading)" };
+            var steps = new[]
+            {
+                "RackCadRackDoorPort.TakePendingBomRead()", "door?.Started(pending.RequestId);", "pending.Document != RackCadRackDoorPort.KeyOf(document)",
+                "ReadBomOfDrawing(document, pending.RequestId", "door?.AnswerBomRead(reading)",
+            };
             var at = -1;
             foreach (var step in steps)
             {
@@ -415,23 +502,38 @@ namespace RackCad.Tests
                 at = next;
             }
 
+            // Correction 6 of the review: the catalog is loaded ONCE, before the rules, and a catalog that does not load is a reading that failed.
+            var read = code.Substring(code.IndexOf("internal static RackBomReading ReadBomOfDrawing(", StringComparison.Ordinal));
+            Assert.Equal(1, Count(code, "LateralHeaderDrawService.LoadCatalog()"));
+            Assert.True(read.IndexOf("LateralHeaderDrawService.LoadCatalog()", StringComparison.Ordinal) < read.IndexOf("RackBomReadingRules.Compose(", StringComparison.Ordinal));
+            Assert.Contains("return RackBomReading.Failed(requestId, path, name, \"No hay BOM: no se pudo cargar el catálogo de RackCad. \" + ex.Message);", read);
+            Assert.Contains("new HandlerKind(handler, catalog)", read);
+
             // RACKBOMLEER writes nothing: no write of the drawing, no upgrade of what it reads.
             Assert.DoesNotContain("OpenMode.ForWrite", code);
             Assert.DoesNotContain("UpgradeOpen", code);
         }
 
-        // BM-11: RACKLISTA, RL, RACKBOMTOTAL and RB open the page of the window; the classic flows stay, not registered.
+        // BM-11 and correction 4 of the review: RACKLISTA, RL, RACKBOMTOTAL and RB open the page of the window and read the drawing INSIDE
+        // their own command (the read of RACKBOMLEER, no undo marker, the selection kept): they send no second command. The classic flows stay,
+        // not registered.
         [Fact]
         public void TheListAndTheBomTotalOpenThePageOfTheWindowAndTheClassicFlowsStayUnregistered()
         {
             var window = Code("src", "RackCad.Plugin", "RackInventarioCommands.Ventana.cs");
-            Assert.Matches(@"\[CommandMethod\(""RACKLISTA""\)\]\s*public void RackLista\(\) => OpenBomPage\(RackBomTab\.Racks\);", window);
-            Assert.Matches(@"\[CommandMethod\(""RACKBOMTOTAL""\)\]\s*public void RackBomTotal\(\) => OpenBomPage\(RackBomTab\.Total\);", window);
-            Assert.Contains("[CommandMethod(\"RL\")]  public void AliasRackLista() => RackLista();", window);
-            Assert.Contains("[CommandMethod(\"RB\")]  public void AliasRackBomTotal() => RackBomTotal();", window);
+            Assert.Matches(@"\[CommandMethod\(""RACKLISTA"", ReadFlags\)\]\s*public void RackLista\(\) => OpenBomPage\(RackBomTab\.Racks\);", window);
+            Assert.Matches(@"\[CommandMethod\(""RACKBOMTOTAL"", ReadFlags\)\]\s*public void RackBomTotal\(\) => OpenBomPage\(RackBomTab\.Total\);", window);
+            Assert.Contains("[CommandMethod(\"RL\", ReadFlags)]  public void AliasRackLista() => RackLista();", window);
+            Assert.Contains("[CommandMethod(\"RB\", ReadFlags)]  public void AliasRackBomTotal() => RackBomTotal();", window);
             var open = window.Substring(window.IndexOf("private static void OpenBomPage(", StringComparison.Ordinal));
-            Assert.True(open.IndexOf("Workspace.WorkspacePanelCommand.ShowRackCadWindow();", StringComparison.Ordinal)
-                        < open.IndexOf("door.AskBomPage(tab);", StringComparison.Ordinal));
+            open = open.Substring(0, open.IndexOf("internal static RackBomReading ReadBomOfDrawing(", StringComparison.Ordinal));
+            var show = open.IndexOf("Workspace.WorkspacePanelCommand.ShowRackCadWindow();", StringComparison.Ordinal);
+            var read = open.IndexOf("reading = ReadBomOfDrawing(document, 0, path, name);", StringComparison.Ordinal);
+            var ask = open.IndexOf("door.AskBomPage(tab, reading);", StringComparison.Ordinal);
+            Assert.True(show >= 0 && show < read && read < ask, "OpenBomPage: show the window, read inside the command, hand the reading over");
+            Assert.DoesNotContain("RequestBomRead", open);
+            Assert.DoesNotContain("Send(", open);
+            Assert.DoesNotContain("SendStringToExecute", window);
 
             var lista = Code("src", "RackCad.Plugin", "RackInventarioCommands.cs");
             var total = Code("src", "RackCad.Plugin", "RackInventarioCommands.BomTotal.cs");
@@ -449,6 +551,7 @@ namespace RackCad.Tests
             Assert.Contains("return Send(RackBomReadingRules.CommandName + \" \",", bom);
             Assert.DoesNotContain("SendStringToExecute", bom);
             Assert.Equal("RACKBOMLEER", RackBomReadingRules.CommandName);
+            Assert.Contains("internal void AskBomPage(RackBomTab tab, RackBomReading reading) => Raise(() => BomPageAsked?.Invoke(tab, reading));", bom);
 
             var port = Code("src", "RackCad.Plugin", "VentanaRackCad", "RackCadRackDoorPort.cs");
             var abandon = port.Substring(port.IndexOf("public void Abandon(long requestId)", StringComparison.Ordinal));

@@ -66,32 +66,40 @@ namespace RackCad.UI.VentanaRackCad
             };
         }
 
-        // The window presented a snapshot (from Present): the page follows the drawing and the commands, and asks a wanted read when free.
+        // The window presented a snapshot (from Present): the page follows the drawing and the commands; it sends nothing on its own.
         private void PresentBom()
         {
             var port = Panel.BrowserSummaryPort;
             Bom.Present(
                 Panel.PresentedSession,
                 Panel.PresentedBlock,
-                Panel.PresentedCanRead,
-                IsBomPage,
                 _inFlight != null && _inFlight.IsBom,
-                _inFlight != null,
                 session => port == null || IsAlive(port, session));
         }
 
-        // The page was shown (from ShowPage): the first time for a drawing, it is read on its own.
+        // The page was shown (from ShowPage, a gesture of the user): the first time for a drawing, it is read.
         private void BomPageShown() => Bom.Shown();
 
-        // RACKLISTA or RACKBOMTOTAL ran (BM-11): the page, on their tab, with a read as soon as AutoCAD is free.
-        private void OnBomPageAsked(RackBomTab tab)
+        // RACKLISTA or RACKBOMTOTAL read the drawing inside themselves (correction 4 of the review): the reading is for the drawing active
+        // NOW, the one where the command runs, so the window pulls the state of the host first and gives the reading to that session. The page
+        // is shown after it has its reading, so showing it sends nothing.
+        private void OnBomPageAsked(RackBomTab tab, RackBomReading reading)
         {
             Contained(() =>
             {
+                Refresh();
+                var session = Panel.PresentedSession;
+                if (session.HasValue && reading != null) Bom.Deliver(session.Value, reading, readByRunningCommand: true);
                 Bom.Asked(tab);
                 ShowPage(RackCadWindowPage.Bom);
             });
         }
+
+        // RACKBOMLEER took the request (Started): what runs now is the read (correction 1 of the review).
+        private void BomTaken(long requestId) => Bom.ReadingTaken(requestId);
+
+        // The text of the wait once RACKBOMLEER took the request: its answer comes inside the same command.
+        private const string BomTakenText = "AutoCAD está leyendo el dibujo para el BOM: la respuesta llega al terminar la lectura.";
 
         // The answer of AutoCAD to the read of the BOM: only the answer to the request that waits, for the session of the request.
         private void OnBomRead(RackBomReading reading)
@@ -102,6 +110,18 @@ namespace RackCad.UI.VentanaRackCad
                 if (reading == null || request == null || !request.IsBom || reading.RequestId != request.Id) return;
                 _inFlight = null;
                 RaiseWaiting();
+
+                // Correction 5 of the review: the door keeps the drawing of the request and RACKBOMLEER reads nothing in another one, but the
+                // door cannot see the sessions of the host (M-24). The answer arrives inside the command, in the drawing that is active: the
+                // window pulls the state of the host and keeps the reading only when that drawing is the session of the request.
+                Refresh();
+                if (Panel.PresentedSession != request.Session)
+                {
+                    Bom.ReadingStopped(abandoned: false,
+                        "La lectura n.º " + request.Id.ToString(CultureInfo.InvariantCulture) + " no es del dibujo para el que se pidió (el dibujo activo cambió): no se usó. Pulsa «Calcular» en el dibujo que quieras.");
+                    return;
+                }
+
                 Bom.Deliver(request.Session, reading);
             });
         }

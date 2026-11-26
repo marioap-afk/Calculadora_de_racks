@@ -1509,9 +1509,10 @@ sin bloquear AutoCAD. No se borró código clásico.
   - **«BOM total»:** las partidas del dibujo con su columna «Racks», la marca «varias descripciones» y, desplegada, la nota del hallazgo de
     I-68, «Sale de: …» (rack por rack, con sus copias) y las piezas con su longitud (dolor 8); el filtro por componente, «Desplegar todo» /
     «Plegar todo», el pie «Total del dibujo» y la nota de las tres hojas del Excel.
-- **La lectura** es `RACKBOMLEER` (`src/RackCad.Plugin/RackInventarioCommands.Ventana.cs`), una orden con `NoUndoMarker | NoHistory` que
-  toma la petición que espera en la puerta, comprueba el dibujo de la petición, lee UNA vez la tabla de bloques (con el conteo de
-  referencias) y el registro de variables, y entrega los hechos a la regla pura `RackBomReadingRules.Compose`
+- **La lectura** es `RACKBOMLEER` (`src/RackCad.Plugin/RackInventarioCommands.Ventana.cs`), una orden con `NoUndoMarker | UsePickSet |
+  Redraw | NoHistory` que toma la petición que espera en la puerta, dice que la tomó (`Started`), comprueba el dibujo de la petición, lee UNA
+  vez la tabla de bloques (con el conteo de referencias) y el registro de variables, carga el catálogo una vez (si falla, la lectura falla
+  con su motivo) y entrega los hechos a la regla pura `RackBomReadingRules.Compose`
   (`src/RackCad.Application/VentanaRackCad/RackBomPage.cs`) con el manejador de cada tipo (su `BomLabel`, `OutputBlockedReason` y `BuildBom`).
   La regla es la de RACKBOMTOTAL (I-42, I-47 G13): la autoridad sobre todas las vistas, la puerta de un rack bloqueado antes de construir
   nada, el vínculo roto que aborta el total y el diseño ilegible que queda fuera con su motivo. Añade lo de la página: el BOM de cada rack que
@@ -1523,17 +1524,19 @@ sin bloquear AutoCAD. No se borró código clásico.
   entregarla, el foco de vuelta al dibujo) y su propio hueco, que «Dejar de esperar» (`Abandon`) suelta. En la ventana la lectura es una
   petición más de la puerta: la única en vuelo para toda la ventana (`DoorRequest.IsBom`), numerada, con «Dejar de esperar», la respuesta solo
   para su número y su dibujo, la respuesta durante la llamada (M-22) y la poda de un dibujo cerrado.
-- **Cuándo se lee (BM-01):** la primera vez que la página se ve para un dibujo, sola; después, solo con «Calcular de nuevo». Si AutoCAD está
-  ocupado, la lectura queda pendiente y la página la pide en la siguiente presentación con el dibujo libre, si sigue a la vista. Tras
-  cualquier orden que no sea la propia lectura, «Puede no estar al día». Cada dibujo guarda su última lectura; al volver a él, se muestra como
-  «puede no estar al día» (como V-16 de la lista).
+- **Cuándo se lee (BM-01, BM-S2):** solo tras un gesto del usuario: la primera vez que la página se abre con un clic para un dibujo, y
+  después con «Calcular» (sin lectura) o «Calcular de nuevo». Cambiar de dibujo con la página a la vista no envía nada: un dibujo nunca leído
+  dice «Sin leer» y ofrece «Calcular». Si AutoCAD está ocupado, la página lo dice y no vuelve a pedir sola. Tras cualquier orden que no sea la
+  propia lectura, «Puede no estar al día»; una lectura que se deja de esperar, que no se entrega o cuya respuesta llega con otro dibujo activo
+  deja la anterior como «puede no estar al día». Cada dibujo guarda su última lectura; al volver a él, se muestra como «puede no estar al
+  día» (como V-16 de la lista).
 - **El BOM del borrador (BM-02, SD-02):** un rack con cambios sin escribir en un editor de la ventana (Selectivo o Dinámico) se ve «Escrito en
   el dibujo» o «Borrador del editor». El del borrador se calcula en la ventana, sin leer el dibujo, con el BOM del manejador sobre copias:
   Selectivo, `SelectiveBomBuilder.Build` sobre `SelectiveDraftEditor.ResolveCopy()` (el BOM impone sobre lo que lee, I-1 de la revisión de
   la entrega 2); Dinámico, `SystemBomBuilder.Build` sobre el sistema de `SnapshotForWrite()`. Verlo no cambia el borrador (prueba). Se exporta
   lo que se ve, con «(borrador)» en el nombre, y sin la pregunta de BOM desactualizado (no es del dibujo).
 - **Los archivos (BM-03, BM-04):** «Exportar» guarda sin diálogo junto al dibujo: «<dibujo> - BOM.xlsx/.csv» y «<dibujo> - <rack> - BOM[
-  (borrador)].xlsx/.csv» (`RackBomFiles`), con los exportadores de I-68 sin cambios salvo el CSV del dibujo, que gana «Cantidad_total»
+  (borrador)].xlsx/.csv» (`RackBomFiles`; en Documentos sin reemplazar nada y con escritura atómica, BM-S5), con los exportadores de I-68 sin cambios salvo el CSV del dibujo, que gana «Cantidad_total»
   (cambio declarado del formato, BM-04). El aviso en línea sustituye al `MessageBox`; «Guardar como…» abre el diálogo del sistema y escribe allí
   el mismo archivo. `IRackBomFiles` (con `RackBomFileShell`, el disco y el shell de Windows) deja probar todo sin tocar el disco.
 - **El total (BM-08):** `ConsolidatedBomBuilder.Provenance` dice, alineado con `GrandTotal`, de qué racks sale cada partida (cantidad de una
@@ -1542,18 +1545,19 @@ sin bloquear AutoCAD. No se borró código clásico.
   de la columna lateral; el total, las cifras y el Excel del dibujo son siempre el dibujo completo.
 - **«Ver su BOM» (BM-10):** un botón en la página del rack (visible con un rack activo) abre la página con ese rack elegido. Los editores de
   la ventana siguen sin BOM (decisión 7 de Dinámico); los ocho botones de los editores clásicos no cambian.
-- **RACKLISTA, RL, RACKBOMTOTAL y RB (BM-11)** abren la ventana en esta página, en su pestaña («Racks del dibujo» o «BOM total»), y la
-  página lee el dibujo en cuanto la orden termina. La página ya no ofrece los botones «Abrir la lista de racks» / «Abrir el BOM total».
+- **RACKLISTA, RL, RACKBOMTOTAL y RB (BM-11)** abren la ventana en esta página, en su pestaña («Racks del dibujo» o «BOM total»), y leen
+  el dibujo DENTRO de su propia orden (la misma lectura que RACKBOMLEER, sin marca de Deshacer): la página recibe esa lectura para el dibujo
+  activo y no se envía una segunda orden. La página ya no ofrece los botones «Abrir la lista de racks» / «Abrir el BOM total».
 
 **Supuestos y decisiones de la sesión** (prefijo BM-S; cada uno aislado en un sitio):
 
 | Id | Supuesto o decisión | Dónde se cambia |
 |---|---|---|
-| BM-S1 | **«Puede no estar al día» = corrió una orden.** La ventana no sabe si el dibujo cambió: la página lo infiere de la presentación del host (`CommandActive` o `ModalActive`) después de su lectura, sin contar su propia RACKBOMLEER hasta ver el dibujo en reposo otra vez. También cuenta un «Actualizar» de un editor (escribe el dibujo) y una lectura de un editor (no lo cambia). **Hueco declarado:** con la paleta oculta el host no presenta nada, así que una orden de entonces no se ve | `RackBomPageViewModel.Present` |
-| BM-S2 | **Lectura sola desde una notificación del host.** La primera lectura de un dibujo, o la que pidió RACKLISTA / RACKBOMTOTAL, se entrega a AutoCAD en la primera presentación con el dibujo libre (bloqueo `None` y lectura posible) si la página está a la vista; las demás puertas solo envían órdenes por un clic. Para el smoke: que el `SendStringToExecute` desde `EnteringQuiescentState` corre sin rebote | `RackBomPageViewModel.Present` (`Wanted`) |
+| BM-S1 | **«Puede no estar al día» = corrió una orden.** La ventana no sabe si el dibujo cambió: la página lo infiere de la presentación del host (`CommandActive` o `ModalActive`) después de su lectura, sin contar su propia lectura: RACKBOMLEER desde que dice que tomó la petición (`Started`) —o RACKLISTA / RACKBOMTOTAL, que leen dentro de sí— hasta ver el dibujo en reposo otra vez. Una lectura que se deja de esperar, que no se entrega o cuya respuesta es de otro dibujo deja la anterior como «puede no estar al día» (corrección 1 de la revisión). También cuenta un «Actualizar» de un editor (escribe el dibujo) y una lectura de un editor (no lo cambia). **Hueco declarado:** con la paleta oculta el host no presenta nada, así que una orden de entonces no se ve | `RackBomPageViewModel.Present` |
+| BM-S2 | **Ninguna orden sale de la ventana sin un gesto del usuario** (corrección 4 de la revisión; antes la página enviaba sola la lectura pendiente al ver el dibujo libre). La página envía RACKBOMLEER solo tras un clic: al abrirla con un clic para un dibujo nunca leído, con «Calcular» / «Calcular de nuevo» y con «Calcular y exportar». RACKLISTA, RL, RACKBOMTOTAL y RB leen el dibujo dentro de su propia orden (la misma función que RACKBOMLEER) y entregan la lectura a la página sin enviar otra orden. Las cinco órdenes llevan `NoUndoMarker \| UsePickSet \| Redraw` (RACKBOMLEER, además, `NoHistory`). Cambiar de dibujo con la página a la vista no envía nada («Sin leer», «Calcular»); AutoCAD ocupado se dice y no se reintenta solo. Para el smoke: que la selección previa y el foco se conservan (`UsePickSet`, `Redraw`; sin AutoCAD no se pudo comprobar) | `RackBomPageViewModel.Shown` y `Present`; `ReadFlags` y `OpenBomPage` en `RackInventarioCommands.Ventana.cs` |
 | BM-S3 | RACKLISTA y RACKBOMTOTAL ya no abren sus ventanas: sus cuerpos clásicos siguen, sin registrar, como `RackListaClassic` y `RackBomTotalClassic` (sus guardas de fuente pasan igual). Volver a la ventana clásica antes del smoke es devolver dos atributos | `RackInventarioCommands.cs`, `RackInventarioCommands.BomTotal.cs` |
 | BM-S4 | Lo que en RACKBOMTOTAL abortaba TODO el listado y no es un rack bloqueado ni un vínculo roto (un tipo sin manejador, una definición colocada que no se puede clasificar) impide aquí el total como ellos (sin total ni exportación del dibujo, con su línea en el aviso), pero la tabla sigue con el BOM de los demás (BM-05 generalizada). Un registro de variables que existe y no se puede leer deja la página sin lectura | `RackBomReadingRules.Compose` |
-| BM-S5 | **Pregunta 3:** «junto al dibujo», sin carpeta de salida en «Configuración». Un dibujo nunca guardado va a Documentos, y el aviso lo dice. Un archivo con el mismo nombre se reemplaza sin preguntar (es la exportación anterior del mismo BOM); si no se puede escribir (por ejemplo, abierto en Excel), el aviso lo dice y ofrece «Guardar como…» | `RackBomPageViewModel.DoExport`, `RackBomFileShell.FallbackFolder` |
+| BM-S5 | **Pregunta 3:** «junto al dibujo», sin carpeta de salida en «Configuración». Junto a un dibujo guardado, un archivo con el mismo nombre se reemplaza sin preguntar (es la exportación anterior del mismo BOM). Un dibujo nunca guardado va a Documentos, y el aviso lo dice; allí un archivo con ese nombre puede ser de otro «Drawing1», así que **nunca se reemplaza**: el nuevo se numera («Drawing1 - BOM (2).xlsx») y el aviso lo dice; si no se puede saber si existe, se toma como existente. Dos racks cuyo nombre da el mismo archivo (el mismo nombre, o «PB/1» y «PB:1» tras limpiar) llevan los ocho primeros caracteres de su identidad («Planta - PB_1 (a1b2c3d4) - BOM.xlsx»). La escritura es **atómica**: un temporal en la misma carpeta y `File.Replace` (o `File.Move` si no había archivo), el patrón de `AtomicFile`, que es interno de Application y escribe texto. Si no se puede escribir (por ejemplo, abierto en Excel), el aviso lo dice y ofrece «Guardar como…» (corrección 3 de la revisión) | `RackBomPageViewModel.DoExport`, `RackBomFiles.RackFileName` y `WithNumber`, `RackBomFileShell.Write` y `FallbackFolder` |
 | BM-S6 | `Cantidad_total` del CSV del dibujo: en una fila de rack, «Cantidad» × copias; en «TOTAL DEL DIBUJO», ya multiplicada, igual a «Cantidad». El CSV se escribe como lo escribía el clásico (UTF-8 sin marca) | `ConsolidatedBomCsvExporter.Row`, `RackBomPageViewModel.Text` |
 | BM-S7 | «Con cambios» y «Borrador del editor» son de los editores de la ventana con cambios sin escribir (no un rack nuevo, que no está en el dibujo). El punto de estado de un rack sin editor de la ventana es el de la columna lateral (el piloto de Push Back incluido), pero el piloto no tiene BOM de borrador | `RackCadWindowViewModel.Bom.cs` (`HasUnwrittenDraft`, `DraftBomOf`, `StateOf`) |
 | BM-S8 | «Ver en el dibujo» y «Siguiente copia» hacen activo el rack (como un clic en la lista, que lo marca) y usan la navegación de su página («Ver»; la siguiente copia cuando ya se conoce el número de copias), sin salir de la página del BOM. Si el rack abierto tiene texto sin aplicar y el navegador no cambia de rack, la página lo dice y no navega | `ViewBomRackAsync`, una condición en `OnBrowserChanged` |
@@ -1643,7 +1647,8 @@ y solo un clic del usuario elige.
 
 **Lo que queda abierto:**
 - **El smoke del Owner en AutoCAD:** RACKBOMLEER sin paso en Deshacer (lee la tabla de bloques y el registro en una transacción, como
-  RACKSELECTIVOABRIR, cuyo smoke también espera); la lectura sola al abrir la página y tras RACKLISTA / RACKBOMTOTAL (BM-S2); «Puede no estar
+  RACKSELECTIVOABRIR, cuyo smoke también espera); la lectura al abrir la página con un clic y dentro de RACKLISTA / RACKBOMTOTAL, con la
+  selección previa y el foco conservados (BM-S2); «Puede no estar
   al día» tras un MOVE y no tras la lectura (BM-S1); los archivos junto al dibujo, «Abrir» con Excel, «Mostrar en la carpeta» y «Guardar
   como…» desde la paleta; «Ver en el dibujo» y «Siguiente copia»; un dibujo de unos 70 racks (tiempo de la lectura y de la tabla).
 - **Para el Owner:** BM-S1 (qué cuenta como cambio), BM-S4 (el total impedido por un tipo sin manejador), BM-S5 (reemplazar sin preguntar, y
@@ -1654,3 +1659,103 @@ y solo un clic del usuario elige.
 - **Para integrar:** `RackCadWindowViewModel.cs` (siete líneas marcadas), `RackCadWindowView.xaml` (dos bloques), `RackListViewModel.cs`
   (dos palabras) y `RackCadRackDoorPort.cs` (dos líneas) los tocan también otras partes; la parte `ut` cambia la ayuda y la parte `va` la
   página «Variables», que la prueba de `RackCadWindowTests` ya no usa.
+
+### Cuarta tanda, bom: correcciones de la revisión (sobre `5d8c28fc`)
+
+En `D:\w4bom`, sobre el commit `5d8c28fc` de la parte (lo hizo el coordinador tras el reinicio). Sin commit, sin push, sin AutoCAD. Los
+puntos 1 a 3 llevan primero su prueba focal, que reproduce el fallo con la corrección deshecha; después, la corrección y la comprobación en
+rojo.
+
+1. **[MEDIO] Un BOM viejo se veía «Al día» y se exportaba sin preguntar.** Causa: la marca de «la orden que corre es la propia lectura»
+   (`_ownCommandPending`) se ponía al entregar la petición y no la soltaban ni «Dejar de esperar» ni una lectura no entregada, así que una
+   orden del usuario después no marcaba nada. Ahora la propia lectura cuenta solo desde que RACKBOMLEER dice que tomó la petición
+   (`door?.Started(pending.RequestId)`, el mismo aviso que ya usan las escrituras: `OnRequestStarted` admite la lectura del BOM y llama a
+   `BomTaken`) hasta el reposo tras su respuesta. `ReadingStopped` suelta la marca y, por prudencia, deja la lectura que tenía el dibujo como
+   «puede no estar al día» («una lectura posterior no se completó»). Con la petición tomada, la espera dice «AutoCAD está leyendo el dibujo
+   para el BOM: la respuesta llega al terminar la lectura.» y no ofrece «Dejar de esperar», como una escritura tomada. Pruebas:
+   `ACommandAfterTheReadingSaysItMayBeOutOfDateAndOnlyTheReadThatStartedIsNotOne` (reescrita: una orden vista entre la entrega y `Started` sí
+   marca) y `AReadThatIsAbandonedOrNotHandedOverLeavesTheReadingPossiblyOutOfDateAndExportAsks` (nueva).
+2. **[MEDIO] Una exportación quedaba armada y salía después.** Causa: con la respuesta dentro de la llamada (M-22), `_afterRead` se asignaba
+   después de `Deliver`, que ya había pasado, y la exportación salía con la siguiente lectura. Ahora «Calcular y exportar» la arma ANTES de
+   entregar la lectura y la desarma si no se entregó; «Calcular» la desarma siempre (nunca exporta). Prueba:
+   `AnExportThatWaitsForTheReadIsMadeOnceAndNeverGoesOffLater` (nueva: la respuesta en la llamada exporta una vez, nada sale después, y una
+   lectura no entregada no deja nada armado).
+3. **[MEDIO] Se podía perder un archivo del usuario.** En Documentos (dibujo nunca guardado) nunca se reemplaza un archivo: el nuevo se
+   numera, « (2)», « (3)»…, y el aviso lo dice (`RackBomFiles.WithNumber`; `IRackBomFiles` gana `Exists`). Dos racks cuyo nombre da el mismo
+   archivo llevan los ocho primeros caracteres de su identidad (`RackBomFiles.RackFileName` con los racks de la lectura). La escritura es
+   atómica (`RackBomFileShell.Write`: temporal en la misma carpeta y `File.Replace` o `File.Move`; `AtomicFile` es `internal` de Application y
+   escribe texto, así que se reproduce su patrón). BM-S5 actualizado. Pruebas: `AFileOfTheUserIsNeverReplacedInTheDocumentsAndTwoRacksWithOneNameGetTwoFiles`
+   y `TheFilesOfTheMachineAreWrittenAtomically` (nuevas; la segunda escribe en una carpeta temporal real y, como una escritura interrumpida
+   no se puede provocar en una prueba, fija el patrón en la fuente), y los nombres en `TheFilesGoNextToTheDrawingWithTheirAutomaticNames`.
+   `ADrawingNeverSavedExportsToTheDocumentsAndAFailureOffersSaveAs` cambia: el segundo archivo es «Drawing1 - BOM (2).xlsx».
+4. **[MEDIO-BAJO] Lectura sin clic.** Se quitó la lectura «pendiente» (`Wanted`) y su envío al presentar el dibujo libre. RACKLISTA, RL,
+   RACKBOMTOTAL y RB leen el dibujo dentro de su propia orden (`ReadBomOfDrawing(document, 0, …)`, la misma función que RACKBOMLEER) y la
+   entregan con `AskBomPage(tab, reading)`; la ventana trae el estado del host y la da a la sesión activa (`Deliver(…, readByRunningCommand:
+   true)`: el resto de esa orden es la lectura, no un cambio) antes de mostrar la página, que así no envía nada. Cambiar de dibujo con la
+   página a la vista no envía nada («Sin leer» y «Calcular»; el botón dice «Calcular» sin lectura y «Calcular de nuevo» con ella). Las cinco
+   órdenes llevan `ReadFlags = NoUndoMarker | UsePickSet | Redraw` (RACKBOMLEER, además, `NoHistory`). BM-S2 actualizado. Pruebas:
+   `ABusyAutoCadIsSaidAndNothingIsSentLaterWithoutAClick`, `TheReadingsAreKeptPerDrawingAndComingBackToOneSaysItMayBeOutOfDate` y
+   `RackListaAndRackBomTotalHandTheirReadingToThePageOnTheirTabWithNoSecondCommand` (reescritas) y las guardas de fuente de la orden
+   (`TheListAndTheBomTotalOpenThePageOfTheWindowAndTheClassicFlowsStayUnregistered`: leer dentro, sin `RequestBomRead` ni `Send`).
+5. **[BAJO] La sesión de la petición no se comprobaba.** La puerta no ve las sesiones del host (M-24), así que la comprobación está en la
+   ventana: al llegar la respuesta (dentro de RACKBOMLEER, en el dibujo activo) trae el estado del host y solo la usa si el dibujo activo es
+   el de la petición; si no, la descarta con su aviso («La lectura n.º N no es del dibujo para el que se pidió…»). Prueba:
+   `AnAnswerThatArrivesWithAnotherDrawingActiveIsNotUsed`.
+6. **[BAJO] Un catálogo que falla salía como tipo desconocido.** `ReadBomOfDrawing` carga el catálogo una vez, antes de `Compose`; si falla
+   o no hay, la lectura falla con su motivo («No hay BOM: no se pudo cargar el catálogo de RackCad.»). Y `Compose`, si resolver el manejador
+   lanza, devuelve una lectura fallida, no «tipo desconocido». Pruebas: `AHandlerThatCannotBeResolvedIsAFailedReadingNotAnUnknownKind` y la
+   guarda de fuente de RACKBOMLEER (el catálogo antes de la regla).
+7. **[BAJO] Si `OutputBlockedReason` lanzaba, el rack salía y el total se hacía.** Ahora el rack queda «Bloqueado» («no se pudo comprobar si
+   se puede cotizar (falló su diagnóstico).») e impide el total, como abortaba el clásico (regla de I-42). Prueba:
+   `AGateThatThrowsBlocksTheRackAndTheTotal`.
+8. **El nombre del rack (cambio declarado):** es el primer nombre no vacío entre sus vistas (`RackListBuilder`, como la columna lateral);
+   RACKBOMTOTAL usaba el nombre del sobre de la vista representativa. Prueba: `TheNameOfARackIsTheFirstNameNotEmptyAmongItsViews`.
+9. **Las guardas `GUARDA_RACKBOMTOTAL_*`** de `SelectiveBomAuthorityTests` vigilan ahora el camino vivo: la orden
+   (`RackInventarioCommands.Ventana.cs`) y las reglas (`RackBomPage.cs`): «la orden no resuelve variables» (en los dos archivos), el registro
+   leído una vez, la autoridad antes de cotizar, el vínculo roto (`RackBomRackState.BrokenLink`), el sobre indescifrable
+   (`includeReferenceCount: true`) y la identidad no inventada. Siguen, sin cambios, las guardas que leen el cuerpo clásico sin registrar
+   (`RackInventarioCommands.BomTotal.cs`): `PushBackBomCommandGuardTests`, `KindHandlerGuardSourceTests`, `G16UnnamedRackTests`,
+   `I60RackNameWiringGuardTests`, `PushBackRoundTripSourceGuardTests` y `WorkspaceNavigationHostTests`; sus propiedades en el camino vivo las
+   fijan las pruebas puras de `RackBomReadingTests` (la puerta de I-42 antes del BOM y sin total, el tipo sin manejador, la agrupación por
+   identidad y «(sin nombre)»). Reapuntarlas o retirarlas es de F9, cuando se retire el cuerpo clásico.
+
+**Archivos de la corrección:** `src/RackCad.Application/VentanaRackCad/RackBomPage.cs`, `src/RackCad.Plugin/RackInventarioCommands.Ventana.cs`,
+`src/RackCad.Plugin/VentanaRackCad/RackCadRackDoorPort.Bom.cs`, `src/RackCad.UI/VentanaRackCad/RackBomPageViewModel.cs`,
+`RackBomPageView.xaml`, `RackBomFiles.cs`, `RackCadWindowViewModel.Bom.cs` y `RackCadWindowViewModel.cs` (compartido: tres líneas marcadas
+`T4 bom` en `OnRequestStarted`, `WaitingText` y `StopWaiting`), y las pruebas `tests/RackCad.Tests/Workspace/RackBomReadingTests.cs`,
+`tests/RackCad.Tests/SelectiveBomAuthorityTests.cs` y `tests/RackCad.UI.Tests/Workspace/RackCadBomPageTests.cs`.
+
+**Comprobación en rojo de las correcciones** (script y salida en el scratchpad de la sesión, `hs65\t4\bom\red2.py` y `red2-out.txt`; cada
+archivo volvió byte a byte a su copia, SHA-256 comprobado por el script):
+1. punto 1 entero (la propia lectura cuenta desde la entrega, y `ReadingStopped` no suelta la marca ni marca nada, como en `5d8c28fc`):
+   fallan 2, `ACommandAfterTheReading…OnlyTheReadThatStartedIsNotOne` y `AReadThatIsAbandonedOrNotHandedOver…`;
+2. solo la cuenta desde la entrega (no desde `Started`): falla la primera;
+3. solo una lectura detenida que no marca «puede no estar al día»: falla la segunda;
+4. punto 2 (la exportación se arma después de entregar la lectura y «Calcular» no la desarma, como en `5d8c28fc`): falla
+   `AnExportThatWaitsForTheReadIsMadeOnceAndNeverGoesOffLater`;
+5. punto 3, en Documentos se reemplaza el archivo que estaba: fallan 2 (`AFileOfTheUserIsNeverReplaced…` y `ADrawingNeverSaved…`);
+6. punto 3, dos racks con el mismo nombre dan el mismo archivo: fallan la de la página y la de los nombres en Core;
+7. punto 3, el archivo se escribe directamente, sin temporal: falla `TheFilesOfTheMachineAreWrittenAtomically` (por la fuente);
+8. punto 4, cambiar de dibujo con la página a la vista envía una lectura: fallan 8;
+9. punto 4, la lectura de RACKLISTA / RACKBOMTOTAL no llega a la página: falla la de RACKLISTA y RACKBOMTOTAL;
+10. punto 4, RACKLISTA / RACKBOMTOTAL piden una segunda orden: falla la guarda de fuente de la orden;
+11. punto 5, la respuesta se usa aunque el dibujo activo sea otro: falla `AnAnswerThatArrivesWithAnotherDrawingActiveIsNotUsed`;
+12. punto 6, un fallo al resolver el manejador se dice como tipo desconocido: falla `AHandlerThatCannotBeResolved…`;
+13. punto 7, un diagnóstico que lanza deja el rack fuera y hace el total: falla `AGateThatThrowsBlocksTheRackAndTheTotal`;
+14. punto 9, la orden viva sin el conteo de referencias directas: fallan 2, la guarda de fuente de RACKBOMLEER y
+    `GUARDA_EL_SOBRE_INDESCIFRABLE_DISTINGUE_COLOCADO_DE_NO_COLOCADO`;
+15. punto 9, las reglas vivas no distinguen el vínculo roto: falla la prueba pura del vínculo roto (`GUARDA_UN_VINCULO_ROTO_ABORTA_EL_TOTAL`
+    no cae con esta pieza, porque `RackBomRackState.BrokenLink` sigue en otras líneas de las reglas: la guarda de fuente es la red débil y la
+    prueba pura la fuerte);
+16. y dos de la primera tanda, reescritas sobre el código nuevo: RACKBOMLEER con marca de Deshacer (falla la guarda de fuente) y el borrador
+    exportado sin «(borrador)» (falla la del borrador).
+
+**Los números tras las correcciones:**
+- **UI completa** (se tocó la vista): 2788 correctas, 0 con error, 48 omitidas (2836): las 2783 de la primera entrega más las 5 nuevas
+  (`RackCadBomPageTests` pasa de 27 a 32 casos).
+- **Core, las clases focales** (14: `RackBomReadingTests`, que pasa de 17 a 20 casos, `SelectiveBomAuthorityTests`, los censos
+  `CustomPropertiesCommandGuardTests` y `SelectiveEditorOpenTests`, `BomExcelCharacterizationTests` y las guardas que leen la orden, la puerta
+  o el cuerpo clásico: `RackCadWindowListTests`, `WorkspaceBridgeSourceGuardTests`, `WorkspaceHostSourceGuardTests`,
+  `WorkspaceNavigationHostTests`, `PushBackBomCommandGuardTests`, `PushBackRoundTripSourceGuardTests`, `KindHandlerGuardSourceTests`,
+  `G16UnnamedRackTests` e `I60RackNameWiringGuardTests`): 433 correctas, 0 con error. Core Full no se volvió a correr.
+- **Plugin en Debug:** 0 errores; 2 advertencias, las MSB3277 de las referencias de AutoCAD que ya estaban.

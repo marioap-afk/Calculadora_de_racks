@@ -94,7 +94,8 @@ namespace RackCad.Application.VentanaRackCad
     /// The door of the RackCad window to the BOM of the drawing (T4 bom, BM-01 and BM-11): the read is a command of AutoCAD with no undo
     /// marker (RACKBOMLEER), with its number and «Dejar de esperar» (<see cref="IRackCadRackDoorPort.Abandon"/>), and the same rules as the
     /// door to a rack: only without a command in progress, in the drawing of the request, the focus back to the drawing. RACKLISTA and
-    /// RACKBOMTOTAL ask the window to show the page and read (<see cref="BomPageAsked"/>), instead of opening their classic windows.
+    /// RACKBOMTOTAL read the drawing inside their own command and hand the reading to the page (<see cref="BomPageAsked"/>), instead of
+    /// opening their classic windows (correction 4 of the review: no command leaves the window without a gesture of the user).
     /// </summary>
     public interface IRackCadBomPort : IRackCadRackDoorPort
     {
@@ -104,10 +105,10 @@ namespace RackCad.Application.VentanaRackCad
         event Action<RackBomReading> BomRead;
 
         /// <summary>
-        /// RACKLISTA (its tab «Racks del dibujo») or RACKBOMTOTAL (its tab «BOM total») ran: the window shows «BOM y lista de racks» and reads
-        /// the drawing as soon as it is free.
+        /// RACKLISTA (its tab «Racks del dibujo») or RACKBOMTOTAL (its tab «BOM total») ran and read the drawing inside its own command: the
+        /// window shows «BOM y lista de racks» with that reading, for the drawing that is active now (the one where the command ran).
         /// </summary>
-        event Action<RackBomTab> BomPageAsked;
+        event Action<RackBomTab, RackBomReading> BomPageAsked;
     }
 
     /// <summary>The two tabs of the page «BOM y lista de racks».</summary>
@@ -240,14 +241,16 @@ namespace RackCad.Application.VentanaRackCad
                 RackBomRack Rack(RackBomRackState state, string reason, BillOfMaterials bom) =>
                     new(rackId, name, kind, KindLabelOf(kind), views0, copies[rackId], state, reason, bom);
 
-                IRackBomKind handler = null;
+                // A handler that cannot be resolved because something failed (the catalog, for example) is no unknown kind: nothing can be
+                // read then (correction 6 of the review).
+                IRackBomKind handler;
                 try
                 {
                     handler = kindOf?.Invoke(kind);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    handler = null;
+                    return RackBomReading.Failed(requestId, drawingPath, drawingName, "No se pudo preparar el BOM de los racks «" + (kind ?? string.Empty) + "»." + Detail(ex.Message));
                 }
 
                 if (handler == null)
@@ -273,7 +276,10 @@ namespace RackCad.Application.VentanaRackCad
                 }
                 catch (Exception ex)
                 {
-                    racks.Add(Rack(RackBomRackState.Unreadable, "su diseño no se pudo interpretar y queda fuera del total." + Detail(ex.Message), null));
+                    // The gate of I-42 could not say whether the rack can be quoted: it is not quoted, and the total is not made, as the
+                    // classic aborted (correction 7 of the review). A rack whose gate fails can never leave a total that looks complete.
+                    racks.Add(Rack(RackBomRackState.Blocked,
+                        "no se pudo comprobar si se puede cotizar (falló su diagnóstico)." + Detail(ex.Message), null));
                     continue;
                 }
 
@@ -372,6 +378,39 @@ namespace RackCad.Application.VentanaRackCad
         /// <summary>The name of the file of the BOM of one rack, of the drawing or of the draft of its editor.</summary>
         public static string RackFileName(string drawingName, string rackName, bool draft, string extension) =>
             Clean(drawingName, "Dibujo") + " - " + Clean(rackName, "Rack") + " - BOM" + (draft ? " (borrador)" : string.Empty) + extension;
+
+        /// <summary>
+        /// The name of the file of the BOM of one rack, unique among the racks of the reading (correction 3 of the review): two racks whose
+        /// names give the same file name — the same name, or names that the cleaning makes equal («PB/1» and «PB:1») — get the start of their
+        /// identity, so the file of one never replaces the file of the other.
+        /// </summary>
+        public static string RackFileName(string drawingName, RackBomRack rack, IReadOnlyList<RackBomRack> racks, bool draft, string extension)
+        {
+            var part = Clean(rack?.Name, "Rack");
+            var same = (racks ?? Array.Empty<RackBomRack>())
+                .Count(r => r != null && string.Equals(Clean(r.Name, "Rack"), part, StringComparison.OrdinalIgnoreCase));
+            if (same > 1) part += " (" + ShortId(rack?.RackId) + ")";
+            return Clean(drawingName, "Dibujo") + " - " + part + " - BOM" + (draft ? " (borrador)" : string.Empty) + extension;
+        }
+
+        /// <summary>
+        /// «Drawing1 - BOM.xlsx» → «Drawing1 - BOM (2).xlsx»: the name of a file that must not replace another one that is already there (a
+        /// drawing never saved exports to the documents of the user, where an earlier file of the same name may be someone else's).
+        /// </summary>
+        public static string WithNumber(string fileName, int number)
+        {
+            var name = fileName ?? string.Empty;
+            var extension = Path.GetExtension(name);
+            var stem = name.Substring(0, name.Length - extension.Length);
+            return stem + " (" + number.ToString(CultureInfo.InvariantCulture) + ")" + extension;
+        }
+
+        private static string ShortId(string rackId)
+        {
+            var id = new string(Clean(rackId, "rack").Where(char.IsLetterOrDigit).ToArray());
+            if (id.Length == 0) id = "rack";
+            return id.Length > 8 ? id.Substring(0, 8) : id;
+        }
 
         /// <summary>The folder of the drawing: where the files go; null for a drawing that was never saved (no folder).</summary>
         public static string FolderOf(string drawingPath)

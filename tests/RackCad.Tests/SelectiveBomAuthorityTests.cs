@@ -353,7 +353,13 @@ namespace RackCad.Tests
             => File.ReadAllText(Path.Combine(
                 new[] { RepoRoot().FullName, "src", "RackCad.Plugin" }.Concat(relative).ToArray()));
 
-        private static string BomTotal() => Plugin("RackInventarioCommands.BomTotal.cs");
+        // T4 bom (corrección 9 de la revisión): RACKBOMTOTAL y RACKLISTA abren la página «BOM y lista de racks»; el camino VIVO del BOM del
+        // dibujo es la lectura de la ventana: la orden (RACKBOMLEER, y RACKLISTA / RACKBOMTOTAL leyendo dentro de sí) y las reglas puras.
+        // Las guardas GUARDA_RACKBOMTOTAL_* se reapuntan a ese camino; el cuerpo clásico, sin registrar, ya no es lo que cotiza.
+        private static string LiveCommand() => Plugin("RackInventarioCommands.Ventana.cs");
+
+        private static string LiveRules()
+            => File.ReadAllText(Path.Combine(RepoRoot().FullName, "src", "RackCad.Application", "VentanaRackCad", "RackBomPage.cs"));
 
         private static string SelectiveHandler() => Plugin("KindHandlers", "SelectiveKindHandler.cs");
 
@@ -410,10 +416,12 @@ namespace RackCad.Tests
         [Fact]
         public void GUARDA_RACKBOMTOTAL_NO_RESUELVE_VARIABLES()
         {
-            var source = BomTotal();
-
-            Assert.DoesNotContain("SelectiveEffectiveDesignResolver", source);
-            Assert.DoesNotContain("ToProjectVariables", source);
+            // La orden y las reglas no convierten un vínculo en un número: lo hace el handler, una vez.
+            foreach (var source in new[] { LiveCommand(), LiveRules() })
+            {
+                Assert.DoesNotContain("SelectiveEffectiveDesignResolver", source);
+                Assert.DoesNotContain("ToProjectVariables", source);
+            }
         }
 
         // ---------------------------------------------------------------- un snapshot por comando
@@ -421,7 +429,9 @@ namespace RackCad.Tests
         [Fact]
         public void GUARDA_EL_REGISTRO_SE_LEE_UNA_SOLA_VEZ_POR_COMANDO()
         {
-            Assert.Equal(1, Count(BomTotal(), "ProjectVariablesRegistry.Read"));
+            // Una sola lectura, en la función que comparten RACKBOMLEER, RACKLISTA y RACKBOMTOTAL; las reglas reciben ese registro.
+            Assert.Equal(1, Count(LiveCommand(), "ProjectVariablesRegistry.Read"));
+            Assert.DoesNotContain("ProjectVariablesRegistry", LiveRules());
         }
 
         [Fact]
@@ -440,31 +450,33 @@ namespace RackCad.Tests
         [Fact]
         public void GUARDA_RACKBOMTOTAL_PIDE_LA_AUTORIDAD_ANTES_DE_COTIZAR()
         {
-            Assert.Contains("BomAuthoredAuthority.Resolve", BomTotal());
+            Assert.Contains("BomAuthoredAuthority.Resolve", LiveRules());
         }
 
         [Fact]
         public void GUARDA_UN_VINCULO_ROTO_ABORTA_EL_TOTAL()
         {
-            var source = BomTotal();
+            var source = LiveRules();
 
             Assert.Contains("BomBuildOutcome.BrokenProjectVariableReference", source);
+            Assert.Contains("RackBomRackState.BrokenLink", source);
         }
 
         [Fact]
         public void GUARDA_EL_SOBRE_INDESCIFRABLE_DISTINGUE_COLOCADO_DE_NO_COLOCADO()
         {
-            var source = BomTotal();
+            var source = LiveRules();
 
             Assert.Contains("OuterEnvelopeInterpretable", source);
             Assert.Contains("DirectReferenceCount", source);
+            Assert.Contains("includeReferenceCount: true", LiveCommand());
         }
 
         /// <summary>Un sobre sin identidad no se asocia a nada: nombrar la definición es todo lo que se puede hacer.</summary>
         [Fact]
         public void GUARDA_NO_SE_INVENTA_IDENTIDAD_PARA_UN_SOBRE_INDESCIFRABLE()
         {
-            Assert.Contains("DefinitionId", BomTotal());
+            Assert.Contains("DefinitionId", LiveRules());
         }
 
         // ---------------------------------------------------------------- RACKLISTA fuera de alcance

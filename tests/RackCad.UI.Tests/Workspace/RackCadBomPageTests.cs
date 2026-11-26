@@ -52,13 +52,13 @@ namespace RackCad.UI.Tests
 
             public event Action<RackDesignWritten>? DesignWritten;
 
-            public event Action<long>? RequestStarted { add { } remove { } }
+            public event Action<long>? RequestStarted;
 
             public event Action<SelectiveDesignRead>? SelectiveRead;
 
             public event Action<RackBomReading>? BomRead;
 
-            public event Action<RackBomTab>? BomPageAsked;
+            public event Action<RackBomTab, RackBomReading>? BomPageAsked;
 
             public RackCadClassicResult RequestDesign(RackDoorRequest request) => RackCadClassicResult.Started();
 
@@ -85,7 +85,11 @@ namespace RackCad.UI.Tests
 
             public void AnswerLastBomRead(RackBomReading reading) => Read(reading with { RequestId = BomReads.Last().RequestId });
 
-            public void Ask(RackBomTab tab) => BomPageAsked?.Invoke(tab);
+            // RACKLISTA or RACKBOMTOTAL: they read the drawing inside themselves and hand the reading over.
+            public void Ask(RackBomTab tab, RackBomReading reading) => BomPageAsked?.Invoke(tab, reading);
+
+            // RACKBOMLEER took the last read (Started), as the command does before it reads.
+            public void StartLastBomRead() => RequestStarted?.Invoke(BomReads.Last().RequestId);
 
             public void AnswerLastSelectiveRead() => SelectiveRead?.Invoke(SelectiveWindowFixtures.Read(SelectiveReads.Last().RequestId, SelectiveReads.Last().RackId));
 
@@ -107,7 +111,12 @@ namespace RackCad.UI.Tests
 
             public Exception? WriteFault { get; set; }
 
+            /// <summary>Files that are there before the page writes anything.</summary>
+            public HashSet<string> Existing { get; } = new(StringComparer.OrdinalIgnoreCase);
+
             public string FallbackFolder => @"C:\Usuarios\Documentos";
+
+            public bool Exists(string path) => Existing.Contains(path) || Written.ContainsKey(path);
 
             public void Write(string path, byte[] content)
             {
@@ -174,11 +183,12 @@ namespace RackCad.UI.Tests
                 Window.Refresh();
             }
 
-            // The page shown, the answer of AutoCAD to its first read, and the drawing at rest again once RACKBOMLEER ended.
+            // The page shown (a click), RACKBOMLEER taking the request and answering, and the drawing at rest again once it ended.
             public RackBomReading Open(RackBomReading? reading = null)
             {
                 Window.ShowPage(RackCadWindowPage.Bom);
                 var answer = reading ?? Drawing();
+                Door.StartLastBomRead();
                 Door.AnswerLastBomRead(answer);
                 Present();
                 return answer;
@@ -308,7 +318,11 @@ namespace RackCad.UI.Tests
         public void AnAnswerDuringTheCallIsTheAnswerOfTheRequest()
         {
             var rig = new Rig();
-            rig.Door.DuringBomRead = request => rig.Door.Read(Drawing() with { RequestId = request.RequestId });
+            rig.Door.DuringBomRead = request =>
+            {
+                rig.Door.StartLastBomRead();
+                rig.Door.Read(Drawing() with { RequestId = request.RequestId });
+            };
             rig.Window.ShowPage(RackCadWindowPage.Bom);
             Assert.False(rig.Window.IsWaitingForAutoCad);
             Assert.Equal("Al día", rig.Bom.ChipText);
@@ -334,44 +348,47 @@ namespace RackCad.UI.Tests
             Assert.Equal("Sin leer", rig.Bom.ChipText);
         }
 
-        // BM-01 and BM-11: busy AutoCAD (a command in progress, as RACKBOMTOTAL itself) leaves the read wanted, asked when the drawing is free.
+        // Correction 4 of the review: no command leaves the window without a gesture of the user. A click while AutoCAD is busy says so; a
+        // presentation of the host later sends nothing on its own; the next click reads.
         [Fact]
-        public void ABusyAutoCadLeavesTheReadWantedAndThePageAsksItWhenTheDrawingIsFree()
+        public void ABusyAutoCadIsSaidAndNothingIsSentLaterWithoutAClick()
         {
             var rig = new Rig();
             rig.Door.BomAnswer = RackCadClassicResult.Without(RackCadClassicStatus.Busy, "Hay un comando en curso.");
             rig.Window.ShowPage(RackCadWindowPage.Bom);
             Assert.Single(rig.Door.BomReads);
             Assert.False(rig.Window.IsWaitingForAutoCad);
-            Assert.Equal("AutoCAD está ocupado: el BOM se leerá en cuanto termine la orden en curso.", rig.Bom.UnreadText);
+            Assert.Equal("AutoCAD está ocupado (Hay un comando en curso): termina o cancela la orden en curso y pulsa «Calcular».", rig.Bom.Message);
+            Assert.Equal("El dibujo todavía no se leyó para el BOM. Pulsa «Calcular»: AutoCAD lo lee sin bloquearse.", rig.Bom.UnreadText);
+            Assert.Equal("Calcular", rig.Bom.RecalculateLabel);
 
             rig.Door.BomAnswer = RackCadClassicResult.Started();
             rig.Present(block: WorkspaceActionBlock.CommandActive);
-            Assert.Single(rig.Door.BomReads);
             rig.Present();
+            rig.Present();
+            Assert.Single(rig.Door.BomReads); // nothing on its own
+
+            rig.Bom.Recalculate();
             Assert.Equal(2, rig.Door.BomReads.Count);
             Assert.True(rig.Window.IsWaitingForAutoCad);
-
-            // Off the page, a wanted read is not asked on its own.
-            var other = new Rig();
-            other.Door.BomAnswer = RackCadClassicResult.Without(RackCadClassicStatus.Busy, "x");
-            other.Window.ShowPage(RackCadWindowPage.Bom);
-            other.Window.ShowPage(RackCadWindowPage.Nuevo);
-            other.Door.BomAnswer = RackCadClassicResult.Started();
-            other.Present();
-            Assert.Single(other.Door.BomReads);
         }
 
-        // BM-01: after any command that is not the read of the page, the BOM may be out of date; it is read again only when asked.
+        // BM-01 and correction 1 of the review: after any command that is not the read of the page, the BOM may be out of date. The read is
+        // its own command only from the moment RACKBOMLEER says it took the request (Started) until the drawing is at rest after its answer.
         [Fact]
-        public void ACommandAfterTheReadingSaysItMayBeOutOfDateAndTheReadItselfDoesNot()
+        public void ACommandAfterTheReadingSaysItMayBeOutOfDateAndOnlyTheReadThatStartedIsNotOne()
         {
             var rig = new Rig();
             rig.Window.ShowPage(RackCadWindowPage.Bom);
-            rig.Present(block: WorkspaceActionBlock.CommandActive); // RACKBOMLEER runs
+            rig.Present(block: WorkspaceActionBlock.CommandActive); // RACKBOMLEER begins
+            rig.Door.StartLastBomRead();
+            Assert.False(rig.Window.CanStopWaiting); // the command took it: its answer comes
+            Assert.Equal("AutoCAD está leyendo el dibujo para el BOM: la respuesta llega al terminar la lectura.", rig.Window.WaitingText);
+            rig.Present(block: WorkspaceActionBlock.CommandActive);
             rig.Door.AnswerLastBomRead(Drawing());
             rig.Present(block: WorkspaceActionBlock.CommandActive); // still RACKBOMLEER, after it answered
             Assert.Equal("Al día", rig.Bom.ChipText);
+            Assert.Equal("Calcular de nuevo", rig.Bom.RecalculateLabel);
             rig.Present();
             Assert.Equal("Al día", rig.Bom.ChipText);
             Assert.False(rig.Bom.ShowStale);
@@ -391,9 +408,48 @@ namespace RackCad.UI.Tests
             rig.Bom.Recalculate();
             Assert.Equal(2, rig.Door.BomReads.Count);
             rig.Now = At.AddMinutes(12);
+            rig.Door.StartLastBomRead();
             rig.Door.AnswerLastBomRead(Drawing());
             Assert.Equal("Al día", rig.Bom.ChipText);
             Assert.Equal("Leído a las 10:54", rig.Bom.ReadText);
+
+            // A command seen after a read was handed over but before RACKBOMLEER took it is no read of the page: the reading the drawing has
+            // may be out of date (if the read never runs, it stays so).
+            rig.Present();
+            rig.Bom.Recalculate();
+            rig.Present(block: WorkspaceActionBlock.CommandActive);
+            Assert.Equal("Leído a las 10:54 · corrió una orden a las 10:54", rig.Bom.ReadText);
+            rig.Bom.StopWaiting();
+            Assert.True(rig.Bom.ShowStale);
+            Assert.StartsWith("El BOM es de las 10:54 y a las 10:54 corrió una orden en el dibujo.", rig.Bom.StaleText);
+        }
+
+        // Correction 1 of the review (the BOM that came out «Al día» and was exported with no question): a read that is abandoned, or that is
+        // not handed over, leaves nothing counted as the read, and the reading the drawing had is said to be possibly out of date.
+        [Fact]
+        public void AReadThatIsAbandonedOrNotHandedOverLeavesTheReadingPossiblyOutOfDateAndExportAsks()
+        {
+            var rig = new Rig();
+            rig.Open();
+            rig.Bom.Recalculate();
+            rig.Bom.StopWaiting();
+            Assert.Equal("Puede no estar al día", rig.Bom.ChipText);
+            Assert.StartsWith("El BOM es de las 10:42 y una lectura posterior no se completó", rig.Bom.StaleText);
+            rig.Present(block: WorkspaceActionBlock.CommandActive); // a MOVE: nothing counts as the read any more
+            rig.Present();
+            Assert.True(rig.Bom.ShowStale);
+            rig.Bom.ExportDrawing(excel: true);
+            Assert.True(rig.Bom.HasAsk);
+            Assert.Empty(rig.Files.Written);
+
+            // The read not handed over (AutoCAD busy).
+            var busy = new Rig();
+            busy.Open();
+            busy.Door.BomAnswer = RackCadClassicResult.Without(RackCadClassicStatus.Busy, "Hay un comando en curso.");
+            busy.Bom.Recalculate();
+            Assert.True(busy.Bom.ShowStale);
+            busy.Bom.ExportDrawing(excel: false);
+            Assert.True(busy.Bom.HasAsk);
         }
 
         [Fact]
@@ -402,12 +458,15 @@ namespace RackCad.UI.Tests
             var rig = new Rig();
             rig.Open();
 
-            // The page shown for another drawing, for the first time: it reads that one.
+            // The page shown for another drawing, never read: correction 4, changing drawing is no gesture, so nothing is sent.
             rig.Present(8);
             Assert.True(rig.Window.IsBomPage);
-            Assert.Equal(new SessionId(8), rig.Door.BomReads.Last().Session);
-            Assert.Equal("Leyendo el dibujo", rig.Bom.ChipText);
+            Assert.Single(rig.Door.BomReads);
+            Assert.Equal("Sin leer", rig.Bom.ChipText);
+            Assert.Equal("Calcular", rig.Bom.RecalculateLabel);
             Assert.Empty(rig.Bom.Rows);
+            rig.Bom.Recalculate();
+            Assert.Equal(new SessionId(8), rig.Door.BomReads.Last().Session);
             rig.Door.AnswerLastBomRead(Reading(@"C:\P\Otra.dwg", Rack("DIN-1", "Dinámico 1", "dynamic", 1, Dinamico())));
             Assert.Single(rig.Bom.Rows);
 
@@ -424,9 +483,32 @@ namespace RackCad.UI.Tests
             Assert.False(rig.Window.IsWaitingForAutoCad);
             Assert.Contains(rig.Door.BomReads.Last().RequestId, rig.Door.Abandoned);
             rig.Summary.Dead.Clear();
+            var reads = rig.Door.BomReads.Count;
             rig.Present(7);
             Assert.Empty(rig.Bom.Rows);
-            Assert.Equal("Leyendo el dibujo", rig.Bom.ChipText); // read again, as a drawing never read
+            Assert.Equal("Sin leer", rig.Bom.ChipText);
+            Assert.Equal(reads, rig.Door.BomReads.Count);
+        }
+
+        // Correction 5 of the review: the answer is kept only for the drawing of the session of its request. The window pulls the state of
+        // the host when it arrives (inside RACKBOMLEER, in the drawing that is active).
+        [Fact]
+        public void AnAnswerThatArrivesWithAnotherDrawingActiveIsNotUsed()
+        {
+            var rig = new Rig();
+            rig.Window.ShowPage(RackCadWindowPage.Bom);
+            var id = rig.Door.BomReads.Last().RequestId;
+            rig.Host.Snapshot = WorkspacePanelFixtures.Ready(session: 8); // the active drawing changed, and the window was not told yet
+            rig.Door.StartLastBomRead();
+            rig.Door.AnswerLastBomRead(Drawing());
+
+            Assert.False(rig.Window.IsWaitingForAutoCad);
+            Assert.Equal("La lectura n.º " + id + " no es del dibujo para el que se pidió (el dibujo activo cambió): no se usó. Pulsa «Calcular» en el dibujo que quieras.",
+                rig.Bom.Message);
+            Assert.Empty(rig.Bom.Rows);
+            rig.Present(7);
+            Assert.Equal("Sin leer", rig.Bom.ChipText);
+            Assert.Empty(rig.Bom.Rows);
         }
 
         // ------------------------------------------------------------------ BM-05: what prevents the total, and what stays out
@@ -750,10 +832,11 @@ namespace RackCad.UI.Tests
             Assert.True(rig.Files.Written.ContainsKey(@"C:\Usuarios\Documentos\Drawing1 - BOM.xlsx"));
             Assert.StartsWith("En Documentos, porque el dibujo no está guardado todavía.", rig.Bom.ExportedDetail);
 
+            // The second file does not replace the first one in the documents (correction 3): its name is numbered.
             rig.Files.WriteFault = new System.IO.IOException("El archivo está en uso.");
             rig.Bom.ExportDrawing(excel: true);
             Assert.True(rig.Bom.ExportedFailed);
-            Assert.Equal("No se pudo guardar «Drawing1 - BOM.xlsx»", rig.Bom.ExportedTitle);
+            Assert.Equal("No se pudo guardar «Drawing1 - BOM (2).xlsx»", rig.Bom.ExportedTitle);
             Assert.Contains("El archivo está en uso.", rig.Bom.ExportedDetail);
             Assert.Contains("«Guardar como…»", rig.Bom.ExportedDetail);
             Assert.False(rig.Bom.CanOpenExported);
@@ -804,29 +887,154 @@ namespace RackCad.UI.Tests
             Assert.Equal("No se exportó: la lectura nueva no tiene total del dibujo (lo dice el aviso).", rig.Bom.Message);
         }
 
-        // ------------------------------------------------------------------ BM-10, BM-11 and the navigation
-
+        // Correction 2 of the review: «Calcular y exportar» arms its export BEFORE the read is handed over, so an answer during the call
+        // exports at once; nothing stays armed to go off later, also when the read is not handed over, and «Calcular» alone never exports.
         [Fact]
-        public void RackListaAndRackBomTotalOpenThePageOnTheirTabAndReadAgain()
+        public void AnExportThatWaitsForTheReadIsMadeOnceAndNeverGoesOffLater()
         {
             var rig = new Rig();
+            rig.Open();
+            rig.Present(block: WorkspaceActionBlock.CommandActive);
+            rig.Present();
+            rig.Bom.ExportDrawing(excel: true);
+            Assert.True(rig.Bom.HasAsk);
+            rig.Door.DuringBomRead = request =>
+            {
+                rig.Door.StartLastBomRead();
+                rig.Door.Read(Drawing() with { RequestId = request.RequestId });
+            };
+            rig.Bom.AskRecalculateAndExport();
+            Assert.Single(rig.Files.Written); // exported with the answer of the call
+
+            rig.Files.Written.Clear();
+            rig.Door.DuringBomRead = null;
+            rig.Present();
+            rig.Bom.Recalculate();
+            rig.Door.StartLastBomRead();
+            rig.Door.AnswerLastBomRead(Drawing());
+            Assert.Empty(rig.Files.Written); // nothing armed went off
+
+            // A read that is not handed over arms nothing either.
+            rig.Present(block: WorkspaceActionBlock.CommandActive);
+            rig.Present();
+            rig.Bom.ExportDrawing(excel: false);
             rig.Door.BomAnswer = RackCadClassicResult.Without(RackCadClassicStatus.Busy, "Hay un comando en curso.");
-            rig.Door.Ask(RackBomTab.Total); // RACKBOMTOTAL, while it runs
+            rig.Bom.AskRecalculateAndExport();
+            Assert.Empty(rig.Files.Written);
+            rig.Door.BomAnswer = RackCadClassicResult.Started();
+            rig.Bom.Recalculate();
+            rig.Door.AnswerLastBomRead(Drawing());
+            Assert.Empty(rig.Files.Written);
+        }
+
+        // Correction 3 of the review: a file of the user is never lost. In the documents (a drawing never saved: every one is «Drawing1»)
+        // an existing file is not replaced; two racks whose names give the same file get the start of their identity.
+        [Fact]
+        public void AFileOfTheUserIsNeverReplacedInTheDocumentsAndTwoRacksWithOneNameGetTwoFiles()
+        {
+            var rig = new Rig();
+            rig.Open(Drawing(path: null));
+            rig.Files.Existing.Add(@"C:\Usuarios\Documentos\Drawing1 - BOM.xlsx");
+            rig.Bom.ExportDrawing(excel: true);
+            Assert.True(rig.Files.Written.ContainsKey(@"C:\Usuarios\Documentos\Drawing1 - BOM (2).xlsx"));
+            Assert.Equal("Se guardó «Drawing1 - BOM (2).xlsx»", rig.Bom.ExportedTitle);
+            Assert.Contains("Ya había un archivo con ese nombre: este se guardó como «Drawing1 - BOM (2).xlsx».", rig.Bom.ExportedDetail);
+            rig.Bom.ExportDrawing(excel: true);
+            Assert.True(rig.Files.Written.ContainsKey(@"C:\Usuarios\Documentos\Drawing1 - BOM (3).xlsx"));
+
+            // Next to a saved drawing, the file of the same name is the earlier export of the same BOM: it is replaced.
+            var saved = new Rig();
+            saved.Open();
+            saved.Files.Existing.Add(@"C:\Proyectos\Planta ejemplo - BOM.xlsx");
+            saved.Bom.ExportDrawing(excel: true);
+            Assert.True(saved.Files.Written.ContainsKey(@"C:\Proyectos\Planta ejemplo - BOM.xlsx"));
+
+            // Two racks named «PB/1» and «PB:1» clean to the same file name: each gets the start of its identity.
+            var twins = new Rig();
+            twins.Open(Reading(@"C:\Proyectos\Planta ejemplo.dwg",
+                Rack("a1b2c3d4-0000-0000-0000-000000000001", "PB/1", "pushback", 1, PushBack()),
+                Rack("ffee0011-0000-0000-0000-000000000002", "PB:1", "pushback", 1, PushBack())));
+            twins.Bom.Select("a1b2c3d4-0000-0000-0000-000000000001");
+            twins.Bom.ExportRack(excel: true);
+            twins.Bom.Select("ffee0011-0000-0000-0000-000000000002");
+            twins.Bom.ExportRack(excel: true);
+            Assert.Equal(new[] { @"C:\Proyectos\Planta ejemplo - PB_1 (a1b2c3d4) - BOM.xlsx", @"C:\Proyectos\Planta ejemplo - PB_1 (ffee0011) - BOM.xlsx" },
+                twins.Files.Written.Keys.OrderBy(k => k, StringComparer.Ordinal));
+            Assert.Contains("«Planta ejemplo - PB_1 (ffee0011) - BOM.xlsx»", twins.Bom.ExportRackHint);
+        }
+
+        // Correction 3 of the review: the files of the machine are written atomically, as AtomicFile does (a temporary file in the same
+        // folder, then Replace or Move): a file replaced has the new bytes, and no temporary file is left.
+        [Fact]
+        public void TheFilesOfTheMachineAreWrittenAtomically()
+        {
+            var folder = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "rackcad-bom-" + Guid.NewGuid().ToString("N"));
+            System.IO.Directory.CreateDirectory(folder);
+            try
+            {
+                var files = new RackBomFileShell();
+                var path = System.IO.Path.Combine(folder, "Planta - BOM.xlsx");
+                Assert.False(files.Exists(path));
+                files.Write(path, new byte[] { 1, 2, 3 });
+                Assert.True(files.Exists(path));
+                files.Write(path, new byte[] { 4, 5 });
+                Assert.Equal(new byte[] { 4, 5 }, System.IO.File.ReadAllBytes(path));
+                Assert.Equal(new[] { path }, System.IO.Directory.GetFiles(folder));
+                Assert.ThrowsAny<Exception>(() => files.Write(System.IO.Path.Combine(folder, "no-existe", "x.xlsx"), new byte[] { 1 }));
+                Assert.Equal(new[] { path }, System.IO.Directory.GetFiles(folder));
+            }
+            finally
+            {
+                System.IO.Directory.Delete(folder, true);
+            }
+
+            // What the disk cannot show in a test (an interrupted write), the source says: a temporary file in the same folder, swapped in.
+            var dir = new System.IO.DirectoryInfo(AppContext.BaseDirectory);
+            while (dir != null && !System.IO.File.Exists(System.IO.Path.Combine(dir.FullName, "RackCad.sln"))) dir = dir.Parent;
+            Assert.True(dir != null, "repo root (RackCad.sln) not found");
+            var code = System.IO.File.ReadAllText(System.IO.Path.Combine(dir!.FullName, "src", "RackCad.UI", "VentanaRackCad", "RackBomFiles.cs"));
+            var write = code.Substring(code.IndexOf("public void Write(string path, byte[] content)", StringComparison.Ordinal));
+            write = write.Substring(0, write.IndexOf("public bool Exists(string path)", StringComparison.Ordinal));
+            Assert.Contains("Path.Combine(string.IsNullOrEmpty(folder) ? \".\" : folder, Path.GetFileName(path) + \".tmp-\" + Guid.NewGuid().ToString(\"N\"))", write);
+            Assert.Contains("File.WriteAllBytes(temp, ", write);
+            Assert.Contains("if (File.Exists(path)) File.Replace(temp, path, null);", write);
+            Assert.Contains("else File.Move(temp, path);", write);
+            Assert.DoesNotContain("File.WriteAllBytes(path", write);
+        }
+
+        // ------------------------------------------------------------------ BM-10, BM-11 and the navigation
+
+        // BM-11 and correction 4 of the review: RACKLISTA and RACKBOMTOTAL read the drawing inside their own command and hand the reading to
+        // the page, for the drawing active now; the window sends no second command, and the rest of their own command is no change.
+        [Fact]
+        public void RackListaAndRackBomTotalHandTheirReadingToThePageOnTheirTabWithNoSecondCommand()
+        {
+            var rig = new Rig();
+            rig.Host.Snapshot = new WorkspaceHostSnapshot(WorkspaceHostStatus.Ready, Session, true,
+                new WorkspaceActionAvailability(false, false, WorkspaceActionBlock.CommandActive), SelectionContext.None, false, false);
+            rig.Door.Ask(RackBomTab.Total, Drawing()); // RACKBOMTOTAL, while it runs
             Assert.True(rig.Window.IsBomPage);
             Assert.True(rig.Bom.IsTotalTab);
-            Assert.Single(rig.Door.BomReads);
-            rig.Door.BomAnswer = RackCadClassicResult.Started();
-            rig.Present(); // RACKBOMTOTAL ended: the drawing is free
-            Assert.Equal(2, rig.Door.BomReads.Count);
-            rig.Door.AnswerLastBomRead(Drawing());
+            Assert.Empty(rig.Door.BomReads);
+            Assert.Equal("Al día", rig.Bom.ChipText);
+            Assert.Equal(4, rig.Bom.Rows.Count);
+            rig.Present(block: WorkspaceActionBlock.CommandActive); // the rest of RACKBOMTOTAL
+            Assert.Equal("Al día", rig.Bom.ChipText);
+            rig.Present();
+            Assert.Empty(rig.Door.BomReads);
 
-            // RACKLISTA with a reading already there reads again (the command asks for it now).
+            // RACKLISTA later, with another reading: its tab and its reading.
             rig.Window.ShowPage(RackCadWindowPage.Nuevo);
-            rig.Door.Ask(RackBomTab.Racks);
+            rig.Door.Ask(RackBomTab.Racks, Reading(@"C:\Proyectos\Planta ejemplo.dwg", Rack("PB-1", "Push Back 1", "pushback", 2, PushBack())));
             Assert.True(rig.Window.IsBomPage);
             Assert.True(rig.Bom.IsRacksTab);
-            rig.Present();
-            Assert.Equal(3, rig.Door.BomReads.Count);
+            Assert.Equal(new[] { "PB-1" }, rig.Bom.Rows.Select(r => r.RackId));
+            Assert.Empty(rig.Door.BomReads);
+
+            // A command that failed to read still opens the page, and says why.
+            rig.Door.Ask(RackBomTab.Total, RackBomReading.Failed(0, null, "Drawing1", "No hay BOM: no se pudo cargar el catálogo de RackCad."));
+            Assert.True(rig.Bom.HasFailure);
+            Assert.Empty(rig.Door.BomReads);
         }
 
         [Fact]

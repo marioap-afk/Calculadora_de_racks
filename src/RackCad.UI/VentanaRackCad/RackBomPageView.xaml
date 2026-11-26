@@ -145,8 +145,8 @@
             <!-- The head: the title, the state of the reading and the actions of the whole drawing. -->
             <DockPanel LastChildFill="True">
                 <WrapPanel DockPanel.Dock="Right" VerticalAlignment="Top">
-                    <Button x:Name="RecalculateButton" Content="Calcular de nuevo" Margin="8,0,0,6" Padding="12,4"
-                            IsEnabled="{Binding CanRecalculate}" AutomationProperties.Name="Calcular de nuevo el BOM del dibujo"
+                    <Button x:Name="RecalculateButton" Content="{Binding RecalculateLabel}" Margin="8,0,0,6" Padding="12,4"
+                            IsEnabled="{Binding CanRecalculate}" AutomationProperties.Name="{Binding RecalculateAutomationName}"
                             ToolTip="AutoCAD lee el dibujo con RACKBOMLEER, una orden sin marca de Deshacer." Click="OnRecalculateClick">
                         <Button.Style>
                             <Style TargetType="Button" BasedOn="{StaticResource SecondaryButtonStyle}">
