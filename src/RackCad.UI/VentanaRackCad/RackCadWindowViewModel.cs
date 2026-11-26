@@ -213,7 +213,9 @@ namespace RackCad.UI.VentanaRackCad
         public bool IsConfiguracionPage => _page == RackCadWindowPage.Configuracion;
 
         /// <summary>The line of the header: the racks of the drawing and the ones with changes that are not written yet.</summary>
-        public string HeaderText
+        public string HeaderText => WithDrafts(RacksHeaderText); // T4 new: and the drafts of «Nuevo» of the drawing
+
+        private string RacksHeaderText
         {
             get
             {
@@ -290,16 +292,16 @@ namespace RackCad.UI.VentanaRackCad
 
         public bool HasDynamicEditor => ActiveDynamicEditor != null;
 
-        /// <summary>The new Dinámico of the drawing of the window (step 4), made here and not inserted yet; null when there is none.</summary>
-        public DynamicEditorViewModel NewDynamicEditor =>
-            Panel.PresentedSession.HasValue
-                ? _dynamicDrafts.Values.FirstOrDefault(e => e.Session == Panel.PresentedSession.Value && e.Editor.IsNewRack)?.Editor
-                : null;
+        /// <summary>
+        /// The new Dinámico that «Nuevo» shows (step 4): the editor of the active draft of the drawing of the window when it is a Dinámico
+        /// (T4 new: a drawing holds several drafts); null otherwise.
+        /// </summary>
+        public DynamicEditorViewModel NewDynamicEditor => ActiveDraftEditor as DynamicEditorViewModel;
 
         public bool HasNewDynamicEditor => NewDynamicEditor != null;
 
-        /// <summary>«Nuevo» shows its systems, or the new Dinámico being made.</summary>
-        public bool ShowNuevoCards => IsNuevoPage && !HasNewDynamicEditor && !HasNewSelectiveEditor;
+        /// <summary>«Nuevo» shows its systems (and the list of drafts), or the editor of the draft that is open.</summary>
+        public bool ShowNuevoCards => IsNuevoPage && ActiveDraftEditor == null;
 
         public bool ShowNewDynamicEditor => IsNuevoPage && HasNewDynamicEditor;
 
@@ -308,39 +310,10 @@ namespace RackCad.UI.VentanaRackCad
 
         /// <summary>
         /// «Dinámico en esta ventana» of «Nuevo» (step 4): a new Dinámico with the defaults of the classic editor, edited here; «Insertar en
-        /// el dibujo…» places it. Its identity is given now, so once inserted the same editor is the one of the rack in the list.
+        /// el dibujo…» places it. Its identity is given now, so once inserted the same editor is the one of the rack in the list. T4 new:
+        /// every click is a new draft («Borrador N»), through the one entry point of the drafts.
         /// </summary>
-        public void StartNewDynamic()
-        {
-            Contained(() =>
-            {
-                if (_door == null)
-                {
-                    Say("Aquí no se puede crear un rack en el dibujo.", failed: true);
-                    return;
-                }
-
-                if (!Panel.PresentedSession.HasValue)
-                {
-                    Say("No hay un dibujo en la ventana.", failed: true);
-                    return;
-                }
-
-                if (NewDynamicEditor == null && RefuseSecondNewRack()) return; // E2 P3: «Nuevo» holds one new rack of the drawing
-                if (NewDynamicEditor == null)
-                {
-                    var session = Panel.PresentedSession.Value;
-                    var rackId = Guid.NewGuid().ToString();
-                    var editor = new DynamicEditorViewModel(DynamicDraftEditor.CreateNew(_catalog()), rackId, UpdateDynamic, isNewRack: true);
-                    Wire(editor);
-                    _dynamicDrafts[(session, rackId)] = new DynamicDraftEntry(session, editor);
-                }
-
-                ShowPage(RackCadWindowPage.Nuevo);
-                Say(string.Empty, failed: false);
-                RaiseDynamic();
-            });
-        }
+        public void StartNewDynamic() => OpenAsNewDraft(RackCadDraftSeed.Defaults(RackCad.Domain.Systems.Shared.RackSystemKind.PalletFlow));
 
         // What every Dinámico editor of the window gets: the dialogs over AutoCAD (with the modal port), the writes and the close.
         private void Wire(DynamicEditorViewModel editor)
@@ -526,6 +499,7 @@ namespace RackCad.UI.VentanaRackCad
 
         private void OnSelectiveEditorChanged(object sender, PropertyChangedEventArgs e)
         {
+            RefreshDraftOf(sender, e.PropertyName); // T4 new: the item of a draft follows its name and its state
             if (e.PropertyName != nameof(SelectiveEditorViewModel.IsDirty) && e.PropertyName != nameof(SelectiveEditorViewModel.IsWriting)) return;
             RackList.RefreshStates();
             OnPropertyChanged(nameof(HeaderText));
@@ -623,8 +597,10 @@ namespace RackCad.UI.VentanaRackCad
 
         // The name of a Selectivo in the notices: the one of its draft; with none, the one of the list when it opened (S-26); its id last.
         // E2 P3: a new Selectivo of the window with no name is «un Selectivo nuevo», as «un Dinámico nuevo».
-        private static string SelectiveNameOf(SelectiveDraftEntry entry) =>
-            !string.IsNullOrWhiteSpace(entry.Editor.Name) ? entry.Editor.Name.Trim()
+        // T4 new: a draft of «Nuevo» by its own name, «Borrador N (Selectivo nuevo)» (RackCadDraftNaming.NoticeName).
+        private string SelectiveNameOf(SelectiveDraftEntry entry) =>
+            DraftNoticeName(entry.Editor) is string draft ? draft
+            : !string.IsNullOrWhiteSpace(entry.Editor.Name) ? entry.Editor.Name.Trim()
             : entry.Editor.IsNewRack ? NewSelectiveName
             : entry.ListedName ?? entry.Editor.RackId;
 
@@ -694,11 +670,13 @@ namespace RackCad.UI.VentanaRackCad
             {
                 entry.Editor.EndWriting();
                 entry.Editor.Say(StoppedWrite, error: false);
+                EchoHiddenDraft(entry.Editor, StoppedWrite, failed: false); // T4 new: a draft not on screen says it in the window too
             }
             else if (request.IsWrite && request.IsSelective && _selectiveDrafts.TryGetValue((request.Session, request.RackId), out var selective))
             {
                 selective.Editor.EndWriting();
                 selective.Editor.Say(StoppedWrite, error: false);
+                EchoHiddenDraft(selective.Editor, StoppedWrite, failed: false); // T4 new: a draft not on screen says it in the window too
             }
             else if (!request.IsWrite)
             {
@@ -761,6 +739,7 @@ namespace RackCad.UI.VentanaRackCad
 
         private void OnDynamicEditorChanged(object sender, PropertyChangedEventArgs e)
         {
+            RefreshDraftOf(sender, e.PropertyName); // T4 new: the item of a draft follows its name and its state
             if (e.PropertyName != nameof(DynamicEditorViewModel.IsDirty) && e.PropertyName != nameof(DynamicEditorViewModel.IsWriting)) return;
             RackList.RefreshStates();
             OnPropertyChanged(nameof(HeaderText));
@@ -864,6 +843,7 @@ namespace RackCad.UI.VentanaRackCad
                         selective.Editor.EndWriting();
                         if (written.Written) selective.Editor.MarkWritten(written.Message, request.SentJson, request.SentName);
                         else selective.Editor.Say(written.Message, error: true);
+                        if (!written.Written) EchoHiddenDraft(selective.Editor, written.Message, failed: true); // T4 new: a draft not on screen
 
                         // E2 P3: a new Selectivo that AutoCAD placed is a rack of the drawing now, as a new Dinámico.
                         if (written.Written && selective.Editor.IsNewRack) NewSelectiveInserted(selective.Editor, written);
@@ -875,6 +855,7 @@ namespace RackCad.UI.VentanaRackCad
                     editor.EndWriting();
                     if (written.Written) editor.MarkWritten(written.Message, request.SentJson, request.SentName);
                     else editor.Say(written.Message, error: true);
+                    if (!written.Written) EchoHiddenDraft(editor, written.Message, failed: true); // T4 new: a draft not on screen
 
                     // A new Dinámico that AutoCAD placed is a rack of the drawing now: «Nuevo» shows its systems again and says where it is.
                     if (written.Written && editor.IsNewRack)
@@ -933,8 +914,13 @@ namespace RackCad.UI.VentanaRackCad
         private IEnumerable<string> UnwrittenDynamicNames(SessionId session)
             => _dynamicDrafts
                 .Where(p => p.Key.Session == session && (p.Value.Editor.IsDirty || p.Value.Editor.IsWriting))
-                .Select(p => !string.IsNullOrWhiteSpace(p.Value.Editor.Name) ? p.Value.Editor.Name.Trim()
-                    : p.Value.Editor.IsNewRack ? "un Dinámico nuevo" : p.Value.Editor.RackId);
+                .Select(p => DynamicNameOf(p.Value.Editor));
+
+        // The name of a Dinámico in the notices; T4 new: a draft of «Nuevo» by its own name, «Borrador N (Dinámico nuevo)».
+        private string DynamicNameOf(DynamicEditorViewModel editor) =>
+            DraftNoticeName(editor) is string draft ? draft
+            : !string.IsNullOrWhiteSpace(editor.Name) ? editor.Name.Trim()
+            : editor.IsNewRack ? "un Dinámico nuevo" : editor.RackId;
 
         // The drafts of a drawing that was closed have nowhere to be written: they are forgotten (with their request, if one waited), and
         // work that was lost is said. A drawing with work not written in the window does not close (D-08), so this only happens when
@@ -963,8 +949,7 @@ namespace RackCad.UI.VentanaRackCad
             foreach (var pair in dead)
             {
                 var editor = pair.Value.Editor;
-                if (editor.IsDirty || editor.IsWriting)
-                    lost.Add(!string.IsNullOrWhiteSpace(editor.Name) ? editor.Name.Trim() : editor.IsNewRack ? "un Dinámico nuevo" : editor.RackId);
+                if (editor.IsDirty || editor.IsWriting) lost.Add(DynamicNameOf(editor)); // T4 new: the same name as the veto
                 if (_inFlight != null && _inFlight.Session == pair.Key.Session) AbandonInFlight();
                 Forget(pair.Key, pair.Value);
             }
@@ -1106,6 +1091,7 @@ namespace RackCad.UI.VentanaRackCad
 
         private void RaiseNewDynamic()
         {
+            RaiseDrafts(); // T4 new: the drafts of «Nuevo» first, so what follows reads them up to date
             OnPropertyChanged(nameof(NewDynamicEditor));
             OnPropertyChanged(nameof(HasNewDynamicEditor));
             OnPropertyChanged(nameof(ShowNuevoCards));
@@ -1165,6 +1151,7 @@ namespace RackCad.UI.VentanaRackCad
         public void ShowPage(RackCadWindowPage page)
         {
             if (!_sidePinned) SideCollapsed = true;
+            if (page == RackCadWindowPage.Nuevo) ShowDraftsHome(); // T4 new: «Nuevo» is its home; a draft opens from its item
             if (_page == page) return;
             _page = page;
             if (page == RackCadWindowPage.Configuracion) RaiseSettings();

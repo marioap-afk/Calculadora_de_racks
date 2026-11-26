@@ -239,7 +239,7 @@ namespace RackCad.UI.VentanaRackCad
     /// classic editor. The draft is «Modificado» only while it differs from what was last read from the drawing or written to it.
     /// Nothing here writes the drawing: «Actualizar» hands the editor to the host, and while AutoCAD writes nothing can be edited.
     /// </summary>
-    public sealed class DynamicEditorViewModel : ObservableObject
+    public sealed partial class DynamicEditorViewModel : ObservableObject
     {
         private const string Varies = "Varía";
         private const string WaitingWriteText = "AutoCAD está escribiendo el rack: espera a que termine o pulsa «Dejar de esperar».";

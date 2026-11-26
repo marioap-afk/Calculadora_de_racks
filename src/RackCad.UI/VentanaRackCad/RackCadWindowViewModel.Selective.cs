@@ -18,11 +18,6 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>The name of a new Selectivo of the window with no name, in the veto of the close and in the notice of a closed drawing.</summary>
         internal const string NewSelectiveName = "un Selectivo nuevo";
 
-        // «Nuevo» holds ONE new rack of the drawing at a time, of either system: its editor replaces the page, so the other button is not
-        // shown until that rack is inserted or its editor closed. The window says so if it is asked anyway.
-        internal const string SecondNewRackText =
-            "En «Nuevo» ya hay un rack nuevo sin insertar: insértalo en el dibujo o cierra su editor antes de empezar otro.";
-
         // M-3 of the review of the entrega 2: the dimension styles of each drawing, as the last Selectivo read from it gave them (S-27). The
         // classic editor opened from RACKNUEVO reads them from the drawing; a new Selectivo of the window takes these, because reading the
         // drawing for it would wait on AutoCAD. A drawing with no Selectivo read yet has none, and the list offers «(Automático)» only.
@@ -44,16 +39,16 @@ namespace RackCad.UI.VentanaRackCad
                 _dimensionStylesOfDrawing.Remove(session);
         }
 
-        /// <summary>The new Selectivo of the drawing of the window, made here and not inserted yet; null when there is none.</summary>
-        public SelectiveEditorViewModel NewSelectiveEditor =>
-            Panel.PresentedSession.HasValue
-                ? _selectiveDrafts.Values.FirstOrDefault(e => e.Session == Panel.PresentedSession.Value && e.Editor.IsNewRack)?.Editor
-                : null;
+        /// <summary>
+        /// The new Selectivo that «Nuevo» shows: the editor of the active draft of the drawing of the window when it is a Selectivo (T4 new:
+        /// a drawing holds several drafts, and «Nuevo» shows one at a time); null otherwise.
+        /// </summary>
+        public SelectiveEditorViewModel NewSelectiveEditor => ActiveDraftEditor as SelectiveEditorViewModel;
 
         public bool HasNewSelectiveEditor => NewSelectiveEditor != null;
 
-        /// <summary>«Nuevo» shows the new Selectivo being made (a new Dinámico, if there were one too, would be shown first).</summary>
-        public bool ShowNewSelectiveEditor => IsNuevoPage && HasNewSelectiveEditor && !HasNewDynamicEditor;
+        /// <summary>«Nuevo» shows the new Selectivo being made.</summary>
+        public bool ShowNewSelectiveEditor => IsNuevoPage && HasNewSelectiveEditor;
 
         /// <summary>A new Selectivo can be made here: the window has the door that writes a Selectivo, and a drawing.</summary>
         public bool CanStartNewSelective => _selectiveDoor != null && Panel.PresentedSession.HasValue;
@@ -61,47 +56,10 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>
         /// «Selectivo en esta ventana» of «Nuevo»: a new Selectivo with the defaults of the classic editor
         /// (<see cref="SelectiveDraftEditor.CreateNew"/>), edited here; «Insertar en el dibujo…» places it. Its identity is given now, so once
-        /// inserted the same editor is the one of the rack in the list. Asked again, the window shows the same new Selectivo.
+        /// inserted the same editor is the one of the rack in the list. T4 new: every click is a new draft («Borrador N»), through the one
+        /// entry point of the drafts (<see cref="OpenAsNewDraft"/>), which builds it as before (<c>ForNewRack</c>, the styles of M-3).
         /// </summary>
-        public void StartNewSelective()
-        {
-            Contained(() =>
-            {
-                if (_selectiveDoor == null)
-                {
-                    Say("Aquí no se puede crear un rack en el dibujo.", failed: true);
-                    return;
-                }
-
-                if (!Panel.PresentedSession.HasValue)
-                {
-                    Say("No hay un dibujo en la ventana.", failed: true);
-                    return;
-                }
-
-                if (NewSelectiveEditor == null)
-                {
-                    if (NewDynamicEditor != null)
-                    {
-                        ShowPage(RackCadWindowPage.Nuevo);
-                        Say(SecondNewRackText, failed: true);
-                        RaiseDynamic();
-                        return;
-                    }
-
-                    var session = Panel.PresentedSession.Value;
-                    var rackId = Guid.NewGuid().ToString();
-                    var editor = SelectiveEditorViewModel.ForNewRack(SelectiveDraftEditor.CreateNew(_catalog()), rackId, UpdateSelective,
-                        DimensionStylesOf(session));
-                    WireSelective(editor);
-                    _selectiveDrafts[(session, rackId)] = new SelectiveDraftEntry(session, editor);
-                }
-
-                ShowPage(RackCadWindowPage.Nuevo);
-                Say(string.Empty, failed: false);
-                RaiseDynamic();
-            });
-        }
+        public void StartNewSelective() => OpenAsNewDraft(RackCadDraftSeed.Defaults(RackCad.Domain.Systems.Shared.RackSystemKind.SelectiveRack));
 
         // What every Selectivo editor of the window gets: «Insertar vista…» (the dialog of «Insertar varias…» with the modal port of the
         // host, the writes) and the close. Without the modal port the views cannot be chosen, so «Insertar vista…» is not offered.
@@ -136,16 +94,6 @@ namespace RackCad.UI.VentanaRackCad
             editor.MarkInserted(written.Name);
             Say(written.Message, failed: false);
             RaiseDynamic();
-        }
-
-        // «Dinámico en esta ventana» while a new Selectivo of the drawing is not inserted: the window shows it instead.
-        private bool RefuseSecondNewRack()
-        {
-            if (NewSelectiveEditor == null) return false;
-            ShowPage(RackCadWindowPage.Nuevo);
-            Say(SecondNewRackText, failed: true);
-            RaiseDynamic();
-            return true;
         }
 
         private void RaiseNewSelective()

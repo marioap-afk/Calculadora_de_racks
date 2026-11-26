@@ -1481,3 +1481,175 @@ Orden del Owner: «También realiza tú la prueba de la entrega 2, si existen er
 - Tras restaurar un borrador que vuelve a ser el dibujo, el aviso nombra «Descartar» con el botón desactivado.
 
 **No probado:** el «U» de una inserción y cancelar la colocación; el teclado en el panel de «Restaurar»; una cabecera personalizada fuera de su regla escrita por RACKSELECTIVOINSERTAR o RACKSELECTIVONUEVO.
+
+## Cuarta tanda, new: «Nuevo» con borradores (SD-06)
+
+**Rama:** local `architecture/workspace-persistente-rackcad-t4-new`, sobre `ac3fd1b0` (worktree `D:\w4new`). Sin commit, sin push, sin AutoCAD. Sin prototipo propio: parte de lo construido para «Nuevo» (P3 de Selectivo y paso 4 de Dinámico) y de la ventana principal del prototipo (`proto-rackcad\project\Main.dc.html`: «aparece en la lista … como «Nuevo, sin insertar», con su editor»), con la columna del prototipo de Largueros (las páginas abiertas salen debajo de «Nuevo», con su estado).
+
+**La orden del Owner** (SD-06, sobre P3-04): «En lugar de nuevo, podríamos manejar borradores, tipo, borrador 1, borrador 2 etc, para poder tener varios nuevos, mejora la propuesta».
+
+**Lo que se construyó:**
+- **Varios borradores a la vez.** Cada «Selectivo en esta ventana» y cada «Dinámico en esta ventana» empieza un borrador nuevo: «Borrador 1», «Borrador 2»…, numerados por dibujo, de cualquiera de los dos sistemas con editor en la ventana. P3-04 (un solo rack nuevo y el rechazo del segundo) se quitó: `SecondNewRackText` y `RefuseSecondNewRack` ya no existen.
+- **Un borrador ES un rack nuevo de la ventana**, como lo hicieron P3 y el paso 4 de Dinámico (ND-01): su editor vive en los diccionarios de los editores con `IsNewRack`. Por eso no cambian la puerta, la petición única en vuelo, «Insertar en el dibujo…» (RACKSELECTIVONUEVO, RACKDINAMICONUEVO), «Dejar de esperar», D-10 ni la poda de un dibujo cerrado. Lo nuevo es un registro al lado (`RackCadWindowViewModel.Drafts.cs`): el número, cuál se muestra y el elemento de cada uno.
+- **En la columna, debajo de «Nuevo»**, los borradores del dibujo, cada uno con su punto y su etiqueta de estado («Sin insertar», «Modificado», «Escribiendo»), su título (el nombre del rack, o «Borrador N») y el sistema. Un clic lo abre. «Nuevo» lleva a su inicio, como en el prototipo de Largueros (ND-06).
+- **La barra de borradores, sobre la página «Nuevo»** (un solo bloque):
+  - en el inicio de «Nuevo», la lista «Borradores sin insertar de este dibujo», con «Abrir», «Duplicar» y «Descartar el borrador» por fila; un borrador con cambios pregunta en línea antes de descartarse;
+  - con un borrador abierto, su tira: título y estado, «Todos los borradores», «Duplicar» y «Descartar el borrador», que también pregunta;
+  - debajo, como antes, el editor del borrador abierto (o las tarjetas, en el inicio).
+- **«Nuevo» muestra un borrador a la vez.** `NewSelectiveEditor` y `NewDynamicEditor` son ahora el editor del borrador abierto del dibujo, según su sistema; los anfitriones de la vista no cambian. El borrador abierto se recuerda por dibujo: al volver a un dibujo se ve el que tenía abierto.
+- **Cada borrador se inserta por separado** con «Insertar en el dibujo…». «Borrador N» es una etiqueta de la ventana y nunca se envía como nombre: sin nombre, el dibujo le da el automático de I-60 (prueba). Insertado, sale de la lista y «Nuevo» vuelve a su inicio; el resto de los borradores sigue igual.
+- **«Nuevo sigue al dibujo»:** la columna y la lista solo muestran los borradores del dibujo de la ventana; un borrador de otro dibujo no se escribe en el activo (la regla de siempre) y «Abrir» de un elemento de otro dibujo se rechaza.
+- **El consejero de cierre los nombra a todos (D-08):** cada borrador con trabajo sale por su nombre, «Borrador 1 (Selectivo nuevo)», o «Nave A (Borrador 1, Selectivo nuevo)» si su rack tiene nombre (`RackCadDraftNaming.NoticeName`; la etiqueta, desde la revisión, punto 6). Ya no salen dos «un Selectivo nuevo» iguales. La poda de un dibujo cerrado dice lo mismo.
+- **Mejoras de la propuesta, construidas** (baratas y coherentes):
+  - **renombrar:** el nombre del rack, en la casilla de su editor; la columna y la lista lo siguen, y la etiqueta «Borrador N» no cambia (ND-03);
+  - **«Duplicar»:** un borrador nuevo con una copia del último diseño válido, sin nombre, con su propia identidad y con la base de «Modificado» de su original (ND-07);
+  - **el límite:** 8 borradores por dibujo, con su texto (ND-04);
+  - **la cabecera** cuenta los borradores: «12 racks · todo escrito · 2 borradores sin insertar». Era una observación del smoke de la entrega 2: con un rack nuevo «Modificado» la cabecera decía «todo escrito».
+- **El punto de entrada único:** `RackCadWindowViewModel.OpenAsNewDraft(RackCadDraftSeed seed)`, que devuelve `RackCadDraftOpening` (`Opened`, `Reason`, `Draft`). Lo usan «… en esta ventana» (`RackCadDraftSeed.Defaults(kind)`) y «Duplicar».
+  - **Utilidades** («Abrir de la biblioteca»): `OpenAsNewDraft(RackCadDraftSeed.FromLibrary(project, entry.Name, "del diseño «" + entry.Name + "» de la biblioteca"))`, sobre el `RackProject` que carga la biblioteca y su `RackDesignLibraryEntry`. Da el nombre como el clásico abierto desde la biblioteca: un Selectivo, el de su documento; los demás sistemas, `entry.Name` (corrección 3 de la revisión). `FromProject(project, origin, name)` queda para cualquier otro proyecto, con el nombre que da quien llama.
+  - **Cabecera** («Nuevo › Cabecera en esta ventana»): añade su caso en `DraftDoorOf`, `CreateDraftEditor`, `IsLive`, `StateOf`, `CopyOf` y `ForgetDraftEditor` (los seis métodos por sistema, en el mismo archivo, documentado en la clase). Los números, la columna, la lista, el límite y los avisos la siguen solos. `RackCadDraftNaming.SystemLabel(RackSystemKind.Selective)` ya dice «Cabecera».
+  - **Rechazos** (dicho en el mensaje de la ventana y devuelto en `Reason`): sin semilla; un sistema sin editor en la ventana («Push Back todavía no tiene editor en la ventana: se abre con su editor clásico.»); sin la puerta que escribe ese sistema; sin dibujo; el límite; y un diseño que no se puede abrir.
+
+**Ediciones a archivos compartidos** (pequeñas y marcadas `T4 new`; lo nuevo va en archivos propios):
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowViewModel.cs`:
+  - `HeaderText` pasa a `WithDrafts(RacksHeaderText)`; el cuerpo de antes es `RacksHeaderText`, sin cambios;
+  - `NewDynamicEditor` es el editor del borrador abierto, y `ShowNuevoCards` es «sin borrador abierto»;
+  - `StartNewDynamic()` llama al punto de entrada (una línea);
+  - en `OnSelectiveEditorChanged` y `OnDynamicEditorChanged`, una línea al principio (`RefreshDraftOf`);
+  - `SelectiveNameOf` (ahora de instancia) y el nuevo `DynamicNameOf` nombran un borrador por `DraftNoticeName`. `UnwrittenDynamicNames` y la poda de Dinámico usan `DynamicNameOf`, que sustituye a la expresión repetida;
+  - en `ShowPage`, una línea: «Nuevo» vuelve a su inicio;
+  - en `RaiseNewDynamic`, una línea al principio: `RaiseDrafts()`.
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowViewModel.Selective.cs`: `NewSelectiveEditor` es el editor del borrador abierto; `ShowNewSelectiveEditor` ya no mira el Dinámico; `StartNewSelective()` llama al punto de entrada (una línea); salen `SecondNewRackText` y `RefuseSecondNewRack`.
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowView.xaml`, dos sitios marcados `<!-- T4 new (SD-06) -->`:
+  1. en la plantilla de las secciones de la columna, la sección queda en un `StackPanel` con, debajo, la lista de borradores, visible solo en «Nuevo». El botón de la sección no se tocó ni se sangró de nuevo;
+  2. la barra `DraftsBar`, acoplada arriba en el centro, tras el aviso de espera.
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowView.xaml.cs`: un bloque de seis manejadores tras `OnNewSelectiveHereClick`.
+- **Archivos nuevos:**
+  - `src/RackCad.UI/VentanaRackCad/RackCadDrafts.cs`: `RackCadDraftSeed`, `RackCadDraftOpening`, `RackCadDraftNaming` (las reglas puras) y `RackCadDraftItem`;
+  - `src/RackCad.UI/VentanaRackCad/RackCadWindowViewModel.Drafts.cs`;
+  - `tests/RackCad.UI.Tests/Workspace/RackCadNewDraftsTests.cs`.
+- **No se tocaron** los editores (`SelectiveEditorViewModel*`, `DynamicEditorViewModel`, sus vistas), Application, el Plugin ni las guardas.
+
+**Las decisiones** (para el Owner las marcadas como supuesto; cada una en un solo sitio):
+
+| Id | Decisión | Dónde se cambia |
+|---|---|---|
+| ND-01 | Un borrador es el rack nuevo de la ventana de P3 y del paso 4, con todas sus reglas; el registro de borradores va al lado y no las toca | `RackCadWindowViewModel.Drafts.cs` |
+| ND-02 | **Supuesto.** El número de un borrador nuevo es el más bajo que no usa ningún borrador vivo de su dibujo («Borrador 1» y «Borrador 3» dan «Borrador 2»; sin borradores se vuelve a «Borrador 1»). La alternativa es numerar siempre hacia arriba | `RackCadDraftNaming.NextNumber` |
+| ND-03 | **Supuesto.** «Borrador N» es la etiqueta de la ventana y no cambia; el nombre del rack es el de su editor (renombrar = escribir el nombre), y la ventana lo muestra cuando lo tiene. Nunca se envía «Borrador N» como nombre | `RackCadDraftNaming.Title`, `RackCadDraftItem.Refresh` |
+| ND-04 | **Supuesto.** Hasta 8 borradores por dibujo; el noveno se rechaza con «Ya hay 8 borradores sin insertar en este dibujo: inserta o descarta alguno antes de empezar otro.» y se muestra la lista | `RackCadDraftNaming.MaxPerDrawing` |
+| ND-05 | **Supuesto (como P3).** Un borrador sin cambios frente a su base no veta el cierre del dibujo, y la poda no lo nombra. Su base son los valores por defecto, el diseño de la biblioteca o, en una copia, la base de su original (ND-07), así que no tiene nada que perder. La copia de un borrador con cambios no está «sin cambios» | `UnwrittenWorkOf` (sin cambio de regla) |
+| ND-06 | «Nuevo» en la columna lleva a su inicio, y un borrador se abre desde su elemento, como en el prototipo de Largueros. La sección «Nuevo» sigue marcada mientras un borrador suyo está abierto (no se reconstruyen las secciones, para no destruir el botón del clic) | `ShowPage`, `ShowDraftsHome` |
+| ND-07 | «Duplicar» copia el último diseño válido (los tramos escritos y sin aplicar no son diseño), sin nombre (dos racks no comparten nombre por accidente) y con identidad propia. **Corregido en la revisión (punto 1):** la copia conserva la base de «Modificado» de su original. La copia de un borrador con cambios nace «Modificado», así que su trabajo veta el cierre, la poda lo nombra, y «Descartar el borrador» y «Cerrar el editor» preguntan, pase lo que pase con el original. Su «Descartar» vuelve a esa base (los valores por defecto o el diseño de la biblioteca), no a la copia | `DuplicateDraft`, `RackCadDraftSeed.CopyOf`, `TakeDesignAsEdit` |
+| ND-08 | «Descartar el borrador» de la lista o de la tira es lo mismo que «Cerrar el editor» de un borrador (el mismo método): con cambios pregunta en línea, y mientras AutoCAD lo escribe no se puede | `DiscardDraft`, `ForgetDraftEditor` |
+| ND-09 | Un diseño de la biblioteca toma el nombre que le da el clásico abierto desde la biblioteca (`FromLibrary`). Las holguras vinculadas a variables se abren con el valor literal guardado en el diseño, no con el de la variable, como en el clásico abierto desde la biblioteca (la carga sin el registro), y el editor lo dice (decisión 12, A2-01). Un diseño que no se recompone se rechaza, en lugar de abrir un borrador de solo lectura | `CreateDraftEditor`, `RackCadDraftSeed.FromProject` |
+| ND-10 | La barra de borradores va acoplada arriba del centro, como los avisos de la ventana: en el inicio de «Nuevo» queda sobre el título «Nuevo» | `RackCadWindowView.xaml`, `DraftsBar` |
+
+**Propuestas para el Owner, no construidas** («mejora la propuesta»; no son baratas o necesitan una decisión):
+- **Borradores que sobreviven** al cierre del dibujo o de AutoCAD (guardados en el dibujo o en un archivo). Hoy viven en la memoria de la ventana, como los borradores de los racks.
+- **«Insertar todos»:** cada borrador necesita su colocación con el jig, así que hoy se insertan uno a uno.
+- **«Duplicar como borrador» un rack del dibujo** (un RACKDUPLICAR dentro de la ventana): cabe con `OpenAsNewDraft` y la instantánea de su editor, pero un Selectivo del dibujo puede tener holguras vinculadas, que se perderían (ND-09).
+- **El texto del «Descartar» del editor de un borrador:** dice «Borrador descartado.» y deja el borrador (vuelve a como se abrió), mientras que «Descartar el borrador» lo quita. Propuesta: «Cambios descartados: el borrador vuelve a como se abrió.». No se cambió para no tocar los editores, que editan otras partes.
+- **El nombre previsto** en la lista («se insertará como Selectivo 3»): sigue sin poderse saber sin leer el dibujo (P3-02).
+- **«Guardar en la biblioteca» de un borrador** lo construye Utilidades; puede tomar el borrador abierto (`ActiveDraft`).
+
+**Las pruebas:**
+- `tests/RackCad.UI.Tests/Workspace/RackCadNewDraftsTests.cs` (nuevo, 16):
+  - las reglas de los números y de los nombres;
+  - varios borradores numerados, cuál se muestra y la cabecera;
+  - el inicio de «Nuevo» y abrir desde el elemento;
+  - el elemento sigue al nombre y al estado (y es el mismo objeto);
+  - descartar, con y sin cambios, y el número que se libera;
+  - un borrador que AutoCAD escribe no se descarta ni se copia;
+  - «Duplicar» en Selectivo y en Dinámico;
+  - insertar uno deja los demás, con el nombre automático;
+  - los borradores son de su dibujo;
+  - el veto y la poda nombran a todos los que tienen trabajo;
+  - el límite de 8;
+  - el punto de entrada con un Selectivo y un Dinámico de la biblioteca (nombre, origen, copia, holguras vinculadas) y sus rechazos;
+  - con WPF real (STA) y sin errores de enlace: la columna (orden, nombres de automatización, estado, el clic y «Nuevo») y la barra (lista, tira, «Duplicar», «Todos los borradores», la pregunta en línea con «Cancelar» y «Confirmar», y sin barra en otra página).
+- **Pruebas que cambian por SD-06, cada una con su nota en el código:**
+  - `RackCadDynamicEditorTests.ANewDynamicIsMadeHereAndInsertedWithTheViewsChosenAsANewRack`: pedido otra vez, ya no muestra el mismo rack (P3-04) sino otro borrador, que la prueba descarta; el aviso dice «Borrador 1 (Dinámico nuevo)»;
+  - `RackCadSelectiveInsertTests.ANewSelectivoIsMadeHereAndInsertedWithTheViewsChosenAsANewRack`: lo mismo, con «Borrador 1 (Selectivo nuevo)»;
+  - `RackCadSelectiveInsertTests.ANamedNewSelectivoKeepsItsNameAndIsWrittenWithIt`: «Nave A (Selectivo nuevo)», y desde la revisión «Nave A (Borrador 1, Selectivo nuevo)»;
+  - `RackCadSelectiveInsertTests.NuevoHoldsOneNewRackOfTheDrawingAtATime` fijaba P3-04. Pasa a `NuevoHoldsDraftsOfBothSystemsAndShowsTheOneThatIsOpen`;
+  - `RackCadSelectiveInsertTests.TheCloseOfTheDrawingNamesTheNewSelectivoAndItsPruneSaysWhatWasLost`: el texto entero del veto y de la poda, con «Borrador 1 (Selectivo nuevo)».
+- **Censos y guardas:** ninguno se cambió. Los archivos nuevos no usan AutoCAD, el Plugin ni el bloqueo del documento (guarda de capas), y ninguna clase nueva es una ventana.
+  - **Lo que encontró la primera Core Full:** 19146 / 1 / 403. La guarda `ProjectVariablesConformanceTests.NADIE_FUERA_DE_APPLICATION_TOCA_EL_MAPA_DE_VINCULOS` prohíbe nombrar el mapa de vínculos fuera de Application, y vio el token en `document.HasPropertyValues`, en `RackCadWindowViewModel.Drafts.cs`.
+  - **La corrección:** se cambió por `HasBindingEntry` de las dos holguras (`HasLinkedHolgura`), que es la pregunta del documento, sin tocar la guarda. Ese fallo es su rojo.
+  - **Después:** las clases de las guardas (`ProjectVariablesConformanceTests`, `RackCadWindowListTests`, `RackCadWindowCloseAdvisorTests`) dan 69 de 69, y las focales de UI 87 de 87.
+- **Comprobación en rojo:** doce piezas rotas a propósito, una a una, sobre el código final. Tras cada una se compiló y corrieron `RackCadNewDraftsTests`, `RackCadSelectiveInsertTests` y `RackCadDynamicEditorTests` (87 casos). Cada pieza hizo fallar al menos una prueba, por su motivo:
+  1. el número sin reutilizar el más bajo libre: 3;
+  2. `NewSelectiveEditor` como el primer Selectivo nuevo y no el abierto (la regla de P3): 9;
+  3. descartar con cambios sin preguntar: 2;
+  4. el veto que nombra «un Selectivo nuevo», como antes: 5;
+  5. «Duplicar» que copia el nombre: 1;
+  6. sin límite por dibujo: 1;
+  7. la lista con los borradores de otro dibujo: 2;
+  8. el elemento que no sigue al editor: 3;
+  9. «Nuevo» que no vuelve a su inicio: 4;
+  10. un enlace roto en la columna (el oyente de las trazas de WPF): 3;
+  11. la cabecera que no cuenta los borradores: 2;
+  12. un borrador insertado que no sale de la lista: 3.
+
+  El script vuelve a escribir cada archivo con sus bytes originales y fecha nueva, y comprueba su SHA-256: los doce, idénticos. Después se recompiló con `--no-incremental`. Script y salida en el scratchpad de la sesión: `hs65\t4\new\red.py` y `red-summary.txt`.
+- **Los números**, sobre las fuentes finales recompiladas con `--no-incremental`:
+  - **UI completa:** 2772 correctas, 0 con error, 48 omitidas (2820). Es la base `ac3fd1b0` (2756 / 0 / 48) más las 16 nuevas; las pruebas que cambian no añaden casos (una cambia de nombre). Se corrió dos veces, antes y después de la corrección de la guarda, con el mismo resultado.
+  - **Core Full:** 19147 correctas, 0 con error, 403 omitidas (19550), sobre las fuentes finales: la base `ac3fd1b0`, porque esta parte no añade pruebas de Core. La corrida anterior a la corrección de la guarda dio 19146 / 1 / 403 (arriba).
+  - **Build Debug del Plugin:** 0 errores (las advertencias MSB3277 de las referencias de AutoCAD ya estaban).
+
+**Lo que queda abierto:**
+- **Sin AutoCAD:** la columna y la barra en la paleta real (anchos, foco, ratón), y dos borradores insertados seguidos con sus nombres automáticos.
+- **Las preguntas al Owner:** ND-02, ND-03, ND-04 y ND-05, y las propuestas de arriba.
+- **Para integrar:**
+  - Utilidades cambia su método aislado por `OpenAsNewDraft(RackCadDraftSeed.FromLibrary(project, entry.Name, "del diseño «" + entry.Name + "» de la biblioteca"))`;
+  - Cabecera añade su caso en los seis métodos por sistema;
+  - las partes que tocan `RackCadWindowViewModel.cs` y `RackCadWindowView.xaml` tienen arriba la lista de estas ediciones.
+
+### Cuarta tanda, new: correcciones de la revisión
+
+Sobre `c93f65f3` (el commit de la sesión con la parte), en `D:\w4new`. Sin commit, sin push, sin AutoCAD.
+
+| Punto | Qué se hizo |
+|---|---|
+| 1, MEDIO: pérdida sin aviso | Una copia de «Duplicar» nacía «Limpio» frente a sí misma. Con B1 modificado → «Duplicar» (B2) → B1 descartado, B2 era el único ejemplar y se perdía sin aviso. Ahora la copia **conserva la base de «Modificado» de su original**: se abre sobre esa base (`RackCadDraftSeed.CopyOf(base, copia, origen)`, con la base que da el editor, `BaselineDesignJson`) y toma el diseño copiado como una edición (`TakeDesignAsEdit`). Así está «Modificado» exactamente cuando lo estaba su original, y lo protege todo lo que ya protege un borrador con cambios: el veto del cierre (`UnwrittenWorkOf`), la poda, la pregunta de «Descartar el borrador» y también la de «Cerrar el editor» del propio editor, que una marca en `DraftEntry` no habría alcanzado. Su «Descartar» vuelve a esa base: los valores por defecto, o el diseño de la biblioteca. Se eligió esto sobre la marca porque cierra los cuatro caminos sin tocar las reglas de los editores. ND-05 y ND-07, ajustados |
+| 2, BAJO-MEDIO: un aviso que nadie ve | La respuesta de AutoCAD a un borrador que no está a la vista (otro borrador abierto, otra página u otro dibujo) se decía solo en su editor oculto. Ahora se repite también en el mensaje de la ventana, con su etiqueta: «Borrador 1: AutoCAD no insertó el rack nuevo…» (`EchoHiddenDraft`). Pasa con la inserción no colocada de Selectivo y de Dinámico, y con «Dejar de esperar». El borrador a la vista no repite el aviso |
+| 3: nombre de un Dinámico de la biblioteca | `RackCadDraftSeed.FromLibrary(project, entryName, origin)` nombra el borrador como lo hace el clásico abierto desde la biblioteca (`EditorModules.OpenFromLibrary`). Un Selectivo toma el nombre de su documento (`LoadForNew`; vacío, el automático de I-60, no el del archivo). Los demás sistemas toman `entry.Name` (`LoadDesignForNew(…, entry.Name, …)`); en un Dinámico es el nombre del archivo, porque su documento no guarda nombre. `FromProject(project, origin, name)` sigue para cualquier proyecto, con el nombre que da quien llama. Lo dice el contrato de las dos fábricas. **La llamada de Utilidades:** `OpenAsNewDraft(RackCadDraftSeed.FromLibrary(project, entry.Name, "del diseño «" + entry.Name + "» de la biblioteca"))` |
+| 4: texto de las holguras | «Las holguras vinculadas a variables se abren con el valor literal guardado en el diseño, no con el de la variable: un rack nuevo de la ventana no lleva vínculos.» (`LinkedHolgurasText`) |
+| 5: otro dibujo | «Abrir», «Duplicar» y «Descartar el borrador» sobre un borrador de otro dibujo dicen «Ese borrador es de otro dibujo: vuelve a ese dibujo para abrirlo.» (y «… para duplicarlo.», «… para descartarlo.»). «Ese borrador ya no está en la ventana.» queda para el que ya no existe (`NotHereText`) |
+| 6: nombres repetidos | Un borrador con nombre sale en el veto y en la poda con su etiqueta: «Nave A (Borrador 1, Selectivo nuevo)». Dos borradores con el mismo nombre ya no se leen igual |
+| 7: resaltado | El elemento de la columna está marcado como abierto solo mientras se ve «Nuevo» (`SetActive(IsNuevoPage && …)`) |
+| 8: excepciones | `DuplicateDraft` está contenido, como las demás acciones públicas: un fallo se dice en el mensaje de la ventana («La ventana tuvo un fallo contenido: …») y devuelve un rechazo |
+
+**Ediciones de esta corrección:**
+- **A archivos compartidos:**
+  - `DynamicEditorViewModel.cs`: una palabra, `partial`;
+  - `RackCadWindowViewModel.cs`: cuatro líneas `EchoHiddenDraft`, dos en `StopWaiting` y dos en `OnDesignWritten`.
+- **En los archivos propios:** `RackCadDrafts.cs`, `RackCadWindowViewModel.Drafts.cs` y las pruebas.
+- **Archivos nuevos:** `SelectiveEditorViewModel.Drafts.cs` y `DynamicEditorViewModel.Drafts.cs`, los parciales con `BaselineDesignJson` y `TakeDesignAsEdit`.
+- **La vista no cambia.**
+
+**Las pruebas:**
+- `RackCadNewDraftsTests`, de 16 a 21 pruebas. Las cinco nuevas:
+  - el escenario del punto 1, con la pregunta de descartar, la de «Cerrar el editor», el veto y la poda;
+  - la copia de un borrador limpio, de uno de la biblioteca y de un Dinámico;
+  - el aviso del punto 2 en Selectivo y en Dinámico, con «Dejar de esperar» y sin repetirlo a la vista;
+  - el nombre de la biblioteca (punto 3);
+  - «Duplicar» contenido (punto 8).
+- **Asertos cambiados:**
+  - en `RackCadNewDraftsTests`: «Duplicar» (la copia nace «Modificado» y su «Descartar» va a los valores por defecto), los nombres con etiqueta, el texto de las holguras, otro dibujo y el resaltado fuera de «Nuevo»;
+  - en `RackCadSelectiveInsertTests.ANamedNewSelectivoKeepsItsNameAndIsWrittenWithIt`: «Nave A (Borrador 1, Selectivo nuevo)».
+- **Comprobación en rojo de los puntos 1 y 2:** seis piezas rotas a propósito, una a una, sobre el código final, con las tres clases focales tras cada una (92 casos):
+  - R1a: la copia nace sobre su propio diseño, como antes; fallan 3 (las dos del punto 1 y la de «Duplicar»);
+  - R1b: la copia de un Dinámico sin la base de su original; falla 1;
+  - R2a, R2b y R2c: sin el eco de la respuesta de un Selectivo oculto, de «Dejar de esperar» y de un Dinámico oculto; falla 1 cada una;
+  - R2d: el eco también para el borrador a la vista; falla 1.
+
+  El script guarda ahora, antes de cada rotura, una copia del original fuera del worktree. Cada archivo se restauró con el mismo SHA-256. Script y salida: `hs65\t4\new\red2.py` y `red2-summary.txt`, en el scratchpad de la sesión.
+- **Un reinicio de la máquina** cortó la primera corrida de esta comprobación y dejó R2c en el código (`if (false) EchoHiddenDraft(editor, …)`). Se encontró en `git diff`, se restauró y se revisaron las otras cinco roturas antes de seguir. Después: las focales y las guardas, y otra vez la comprobación en rojo completa.
+- **Los números:** sobre las fuentes finales, recompiladas con `--no-incremental`:
+  - `RackCadNewDraftsTests`: 21 de 21;
+  - las tres focales: 92 de 92;
+  - con la ventana, Selectivo, Dinámico, sus pestañas de seguridad y «Restaurar»: 215 de 215;
+  - las guardas de Core que leen las fuentes de la UI (`ProjectVariablesConformanceTests`, `RackCadWindowListTests`, `RackCadWindowCloseAdvisorTests` y `WorkspacePaletteHostSourceGuardTests`): 114 de 114;
+  - la vista no cambió, así que no se corrió la UI completa. Con las 5 nuevas, la UI completa debería dar 2777 / 0 / 48, sin medir.

@@ -422,13 +422,18 @@ namespace RackCad.UI.Tests
             // The defaults of the classic editor (SelectiveDraftEditor.CreateNew).
             Assert.Equal(Json(SelectiveDraftEditor.CreateNew(Catalog()).Design), Json(editor.Draft.Design));
 
-            // Asked again, the window shows the same new rack.
+            // T4 new (SD-06 of the Owner, cuarta tanda): asked again, the window starts ANOTHER draft («Borrador 2»); before, it showed
+            // the same new rack (P3-04). The drafts have their own tests (RackCadNewDraftsTests); here the second is discarded and the
+            // first opens again from its item, so the rest of this test is the one it was.
             rig.Window.StartNewSelective();
+            Assert.NotSame(editor, rig.Window.NewSelectiveEditor);
+            rig.Window.DiscardDraft(rig.Window.Drafts[1]);
+            rig.Window.OpenDraft(rig.Window.Drafts[0]);
             Assert.Same(editor, rig.Window.NewSelectiveEditor);
 
-            // A change is work not written: the drawing does not close (D-08), and the notice names it.
+            // A change is work not written: the drawing does not close (D-08), and the notice names it (T4 new: by its draft).
             Edit(editor);
-            Assert.Equal("un Selectivo nuevo", rig.Window.UnwrittenWorkOf(Session));
+            Assert.Equal("Borrador 1 (Selectivo nuevo)", rig.Window.UnwrittenWorkOf(Session));
             Assert.Null(rig.Window.UnwrittenDynamicWorkOf(Session));
 
             // With changes it is still not «Actualizar»: there is nothing in the drawing to update.
@@ -501,7 +506,7 @@ namespace RackCad.UI.Tests
             var editor = rig.StartNew();
             editor.Name = "  Nave A ";
             Assert.True(editor.IsDirty);
-            Assert.Equal("Nave A", rig.Window.UnwrittenWorkOf(Session));
+            Assert.Equal("Nave A (Borrador 1, Selectivo nuevo)", rig.Window.UnwrittenWorkOf(Session)); // T4 new: a draft says it is one, with its label
 
             editor.ViewChooser = _ => new[] { Planta };
             editor.InsertView();
@@ -625,27 +630,35 @@ namespace RackCad.UI.Tests
             Assert.Equal("No hay un dibujo en la ventana.", rig.Window.ActionMessage);
         }
 
+        // T4 new (SD-06 of the Owner, cuarta tanda): this test fixed P3-04, «Nuevo» holds ONE new rack of the drawing and refuses the
+        // second. The Owner asked for drafts instead: «Nuevo» holds a draft of each system at once and shows the one that is open (the
+        // rest of the rules of the drafts are in RackCadNewDraftsTests).
         [Fact]
-        public void NuevoHoldsOneNewRackOfTheDrawingAtATime()
+        public void NuevoHoldsDraftsOfBothSystemsAndShowsTheOneThatIsOpen()
         {
             var rig = new Rig();
             rig.Window.StartNewDynamic();
             var dynamic = rig.Window.NewDynamicEditor!;
             rig.Window.StartNewSelective();
-            Assert.Null(rig.Window.NewSelectiveEditor);
-            Assert.Same(dynamic, rig.Window.NewDynamicEditor);
-            Assert.Equal(RackCadWindowViewModel.SecondNewRackText, rig.Window.ActionMessage);
+            var selective = rig.Window.NewSelectiveEditor!;
+            Assert.NotNull(selective);
+            Assert.Null(rig.Window.NewDynamicEditor);
+            Assert.True(rig.Window.ShowNewSelectiveEditor);
+            Assert.False(rig.Window.ShowNewDynamicEditor);
+            Assert.False(rig.Window.ActionFailed);
             Assert.True(rig.Window.IsNuevoPage);
+
+            rig.Window.OpenDraft(rig.Window.Drafts[0]);
+            Assert.Same(dynamic, rig.Window.NewDynamicEditor);
+            Assert.Null(rig.Window.NewSelectiveEditor);
+            Assert.True(rig.Window.ShowNewDynamicEditor);
+            Assert.False(rig.Window.ShowNewSelectiveEditor);
+            Assert.False(rig.Window.ShowNuevoCards);
 
             dynamic.RequestClose();
             Assert.Null(rig.Window.NewDynamicEditor);
-            var selective = rig.StartNew();
-            rig.Window.StartNewDynamic();
-            Assert.Null(rig.Window.NewDynamicEditor);
-            Assert.Same(selective, rig.Window.NewSelectiveEditor);
-            Assert.Equal(RackCadWindowViewModel.SecondNewRackText, rig.Window.ActionMessage);
-            Assert.True(rig.Window.ShowNewSelectiveEditor);
-            Assert.False(rig.Window.ShowNuevoCards);
+            Assert.True(rig.Window.ShowNuevoCards);
+            Assert.Same(selective, Assert.Single(rig.Window.SelectiveEditors));
         }
 
         [Fact]
@@ -685,14 +698,15 @@ namespace RackCad.UI.Tests
             advisor.SetWindowWork(rig.Window.UnwrittenWorkOf);
             Assert.Equal(CloseDecision.Veto, advisor.AdviseClose(Session));
             Assert.Equal(
-                "RackCad: el dibujo no se cerró: la ventana RackCad tiene cambios sin escribir en un Selectivo nuevo. Escríbelos con «Actualizar» en su editor (un rack nuevo de la ventana, con «Insertar en el dibujo…») o descártalos, y vuelve a cerrar.",
+                // T4 new: the draft is named by its own name («Borrador 1 (Selectivo nuevo)»), no longer «un Selectivo nuevo».
+                "RackCad: el dibujo no se cerró: la ventana RackCad tiene cambios sin escribir en Borrador 1 (Selectivo nuevo). Escríbelos con «Actualizar» en su editor (un rack nuevo de la ventana, con «Insertar en el dibujo…») o descártalos, y vuelve a cerrar.",
                 Assert.Single(lines));
 
             rig.Summary.Dead.Add(Session);
             rig.Window.Refresh();
             Assert.Null(rig.Window.NewSelectiveEditor);
             Assert.DoesNotContain(editor, rig.Window.SelectiveEditors);
-            Assert.Equal("Se cerró el dibujo de un Selectivo nuevo con cambios sin escribir en la ventana: esos cambios se perdieron.", rig.Window.ActionMessage);
+            Assert.Equal("Se cerró el dibujo de Borrador 1 (Selectivo nuevo) con cambios sin escribir en la ventana: esos cambios se perdieron.", rig.Window.ActionMessage);
             Assert.True(rig.Window.ActionFailed);
         }
 

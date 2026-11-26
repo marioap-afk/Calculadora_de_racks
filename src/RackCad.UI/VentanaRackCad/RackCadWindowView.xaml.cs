@@ -110,6 +110,33 @@ namespace RackCad.UI.VentanaRackCad
 
         private void OnNewSelectiveHereClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.StartNewSelective());
 
+        // T4 new (SD-06): the drafts of «Nuevo». Their buttons carry the draft as their data (the column, the list, the strip).
+        private static RackCadDraftItem DraftOf(object sender) => (sender as FrameworkElement)?.DataContext as RackCadDraftItem;
+
+        private void OnDraftItemClick(object sender, RoutedEventArgs e) => Contained(() =>
+        {
+            if (DraftOf(sender) is RackCadDraftItem item) _viewModel.OpenDraft(item);
+        });
+
+        private void OnDuplicateDraftClick(object sender, RoutedEventArgs e) => Contained(() =>
+        {
+            if (DraftOf(sender) is RackCadDraftItem item) _viewModel.DuplicateDraft(item);
+        });
+
+        private void OnDiscardDraftClick(object sender, RoutedEventArgs e) => Contained(() =>
+        {
+            if (DraftOf(sender) is RackCadDraftItem item) _viewModel.DiscardDraft(item);
+        });
+
+        private void OnConfirmDiscardDraftClick(object sender, RoutedEventArgs e) => Contained(() =>
+        {
+            if (DraftOf(sender) is RackCadDraftItem item) _viewModel.ConfirmDiscardDraft(item);
+        });
+
+        private void OnCancelDiscardDraftClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.CancelDiscardDraft(DraftOf(sender)));
+
+        private void OnDraftsHomeClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.ShowPage(RackCadWindowPage.Nuevo));
+
         // «Nuevo» hosts the editor of the new Dinámico being made here; the view is the one the page of the rack shows once it is inserted.
         private void ShowNewContent()
         {
