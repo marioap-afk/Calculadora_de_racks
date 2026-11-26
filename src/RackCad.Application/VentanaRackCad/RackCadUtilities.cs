@@ -67,7 +67,7 @@ namespace RackCad.Application.VentanaRackCad
         public static string? RefusalOf(RackCadLibraryDesignRequest? request)
         {
             if (request == null || request.RequestId <= 0) return "La petición no es válida.";
-            if (string.IsNullOrWhiteSpace(request.Path) || !System.IO.Path.IsPathRooted(request.Path)
+            if (string.IsNullOrWhiteSpace(request.Path) || !WindowsFileNames.IsRooted(request.Path)
                 || !request.Path.EndsWith(RackProjectStore.FileExtension, StringComparison.OrdinalIgnoreCase))
                 return "El diseño no es un archivo de la biblioteca (" + RackProjectStore.FileExtension + ").";
             return null;
@@ -96,7 +96,7 @@ namespace RackCad.Application.VentanaRackCad
         public static string? BaseOf(string? name)
         {
             if (string.IsNullOrWhiteSpace(name)) return null;
-            var cleaned = string.Join("_", name.Trim().Split(System.IO.Path.GetInvalidFileNameChars()));
+            var cleaned = WindowsFileNames.Clean(name.Trim());
 
             // A name that Windows reserves for a device (CON, PRN, AUX, NUL, COM1-9, LPT1-9), with or without an extension and with no regard
             // to case, cannot be a file: its stem takes «_» (review of part «ut», point 7).
@@ -107,7 +107,7 @@ namespace RackCad.Application.VentanaRackCad
         public static bool IsReserved(string? name)
         {
             if (string.IsNullOrWhiteSpace(name)) return false;
-            var cleaned = string.Join("_", name.Trim().Split(System.IO.Path.GetInvalidFileNameChars()));
+            var cleaned = WindowsFileNames.Clean(name.Trim());
             return IsReservedStem(StemOf(cleaned));
         }
 
@@ -153,7 +153,7 @@ namespace RackCad.Application.VentanaRackCad
             {
                 var candidate = trimmed + " (" + n + ")";
                 var file = FileOf(candidate);
-                if (file != null && !exists(System.IO.Path.Combine(folder ?? string.Empty, file))) return candidate;
+                if (file != null && !exists(WindowsFileNames.Combine(folder, file))) return candidate;
             }
 
             return trimmed + " (" + DateTime.Now.ToString("yyyyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture) + ")";

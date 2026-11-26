@@ -418,8 +418,8 @@ namespace RackCad.Application.VentanaRackCad
             if (string.IsNullOrWhiteSpace(drawingPath)) return null;
             try
             {
-                if (!Path.IsPathRooted(drawingPath)) return null;
-                var folder = Path.GetDirectoryName(drawingPath);
+                if (!WindowsFileNames.IsRooted(drawingPath)) return null;
+                var folder = WindowsFileNames.DirectoryOf(drawingPath);
                 return string.IsNullOrWhiteSpace(folder) ? null : folder;
             }
             catch (ArgumentException)
@@ -434,7 +434,7 @@ namespace RackCad.Application.VentanaRackCad
             if (string.IsNullOrWhiteSpace(drawingPathOrName)) return null;
             try
             {
-                var name = Path.GetFileNameWithoutExtension(drawingPathOrName.Trim());
+                var name = WindowsFileNames.FileNameWithoutExtensionOf(drawingPathOrName.Trim());
                 return string.IsNullOrWhiteSpace(name) ? null : name;
             }
             catch (ArgumentException)
@@ -447,9 +447,7 @@ namespace RackCad.Application.VentanaRackCad
         {
             var text = (part ?? string.Empty).Trim();
             if (text.Length == 0) return fallback;
-            var invalid = Path.GetInvalidFileNameChars();
-            var chars = text.Select(c => invalid.Contains(c) ? '_' : c).ToArray();
-            var cleaned = new string(chars).Trim().TrimEnd('.');
+            var cleaned = WindowsFileNames.Clean(text).Trim().TrimEnd('.'); // the rules of Windows on any system (CI runs Core on Linux)
             return cleaned.Length == 0 ? fallback : cleaned;
         }
     }
