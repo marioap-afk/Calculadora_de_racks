@@ -136,6 +136,7 @@ namespace RackCad.Application.Systems.Shared
             s.DesviadorPrimerNivelAltura ??= SelectiveSafetyDefaults.DesviadorPrimerNivelAltura;
             s.ParrillaFrontal ??= true; s.ParrillaLateral ??= true;
             s.ParrillaFrente ??= 0; s.ParrillaCantidad ??= 0; s.BotaSidesDeclared ??= false;
+            s.DesviadorCellsByPost ??= false; // I-64, cuarta tanda: absent = the historic reading of the desviador
             foreach (var d in Items(s.DefensaPosts))
             {
                 Require(d != null && d.PostIndex >= 0, "Safety.DefensaPosts");

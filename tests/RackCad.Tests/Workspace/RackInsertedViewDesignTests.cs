@@ -134,6 +134,49 @@ public class RackInsertedViewDesignTests
         Assert.Equal(RackSiblingDesignsOutcome.Same, RackSiblingDesigns.Compare(RackId, siblings).Outcome);
     }
 
+    // I-64, cuarta tanda (review of «seg», 2026-11-26): an EXISTING Dinámico (its desviador read the historic way, without the marker) whose
+    // desviador is edited in the window passes to the reading by post and gains DesviadorCellsByPost (T4S-13). Its views, redrawn with it,
+    // must open again and take a new view: the raw reader of AUTH-13 did not know the member, so the comparator found them unreadable and
+    // the queue refused the new view. The draft of the other tests is built with DynamicSafetyDefaults.Build, without the marker.
+    [Fact]
+    public void AnExistingDinamicoWhoseDesviadorIsEditedInTheWindowGainsTheMarkerAndItsViewsOpenAndTakeANewViewAgain()
+    {
+        var drawn = Draft(1100.0);
+        Assert.False(Marked(drawn.DesignJson));
+        var lateral = View(drawn.DesignJson, RackEmbedDocument.ViewLateral, 0);
+        var planta = View(drawn.DesignJson, RackEmbedDocument.ViewPlanta, -1);
+
+        // The window: the first level of the desviador of P1 off, as a click on its button in «Seguridad por poste» does.
+        var editor = new DynamicDraftEditor(Catalog);
+        editor.LoadFrom(new RackProjectStore().Deserialize(lateral.Design)!.DynamicDesign, Name);
+        var safety = editor.CopySafety().ToList();
+        var desviador = RackCadSafetyEdit.Selected(safety, Catalog, RackCad.Domain.Systems.Selective.SelectiveSafetyDefaults.DesviadorType);
+        Assert.True(RackCadSafetyEdit.DesviadorToPosts(desviador, editor.SafetyPostCount));
+        RackCadSafetyEdit.SetDesviador(desviador, 0, 0, false);
+        editor.ReplaceSafety(safety);
+        Assert.True(editor.Recompose(), editor.LastError);
+        var edit = editor.SnapshotForWrite();
+        Assert.NotNull(edit);
+        Assert.True(Marked(edit!.DesignJson));
+
+        // Opened again (the door): the views redrawn with the edit coincide.
+        var redrawn = new[] { Redrawn(lateral, edit.Design), Redrawn(planta, edit.Design) };
+        Assert.All(redrawn, view => Assert.True(Marked(view.Design)));
+        var verdict = RackSiblingDesigns.Compare(RackId, redrawn.Select((view, i) => new RackSiblingView("2A" + (i + 1), view)).ToList());
+        Assert.True(verdict.Outcome == RackSiblingDesignsOutcome.Same, verdict.Diagnostic);
+
+        // Inserted again: a new view of the rack as the drawing holds it now, its views with the marker, gated by the AUTH-13 comparator.
+        var result = Prepare(RackInsertedViewSource.Edited(redrawn[0], RackId, Name, redrawn[0].Design),
+            Before(("2A1", redrawn[0]), ("2A2", redrawn[1])), edit.System, RackViewAddress.FlowEnd(RackFlowEnd.Exit));
+        Assert.True(result.IsSuccess, result.CauseCode + ": " + result.Diagnostic);
+        Assert.True(Marked(result.Product.Envelope.Design));
+        var all = redrawn.Append(result.Product.Envelope).Select((view, i) => new RackSiblingView("2A" + (i + 1), view)).ToList();
+        Assert.Equal(RackSiblingDesignsOutcome.Same, RackSiblingDesigns.Compare(RackId, all).Outcome);
+    }
+
+    private static bool Marked(string design)
+        => new RackProjectStore().Deserialize(design)!.DynamicDesign.SafetySelections.Any(selection => selection.Desviador.CellsByPost);
+
     [Fact]
     public void WhatB1WasThePickedViewAsTheDrawingHeldItGivesTheNewViewTheDesignBeforeTheEdit()
     {

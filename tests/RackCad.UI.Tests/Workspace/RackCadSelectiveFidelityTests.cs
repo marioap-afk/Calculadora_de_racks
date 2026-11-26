@@ -161,7 +161,7 @@ namespace RackCad.UI.Tests
 
             // F1: 40 × 2 + 4 × 3 = 92; F2: 44 × 2 + 4 × 3 = 100 (the resolver).
             Assert.Equal("92–100 in", Value("Largo del larguero"));
-            Assert.Equal("≈ " + N(system.Height) + " in", Value("Altura de cabecera"));
+            Assert.Equal(N(system.Height) + " in", Value("Altura de cabecera")); // T4 seg, SD-14: no «≈»
             // F1 has «Larguero a piso»: N2 → N3 is levels[2] − levels[1]; F2 has two levels: nothing to add.
             Assert.Equal(N(system.Bays[0].Levels[2].Y - system.Bays[0].Levels[1].Y) + " in", Value("Separación N2 → N3"));
             Assert.Equal("42 in", Value("Profundidad de cabecera"));
@@ -424,7 +424,8 @@ namespace RackCad.UI.Tests
             var height = system.Bays[0].Height;
 
             Assert.Equal("Automático: " + N(width) + " in. El mayor del frente fija su ancho.", Field(vm.CellFields, "cLength").Hint);
-            Assert.Equal("Calculada: ≈ " + N(height) + " in. Manda en los dos postes del frente.", Field(vm.FrontFields, "fHeight").Hint);
+            Assert.Equal("Calculada: " + N(height) + " in. Manda en los dos postes del frente.", // T4 seg, SD-14
+                Field(vm.FrontFields, "fHeight").Hint);
 
             // Two fronts of different widths: no single number.
             vm.SelectLevel(1);
@@ -437,7 +438,8 @@ namespace RackCad.UI.Tests
             Assert.Equal("Vacío = automático (" + N(width) + " in). El mayor del frente fija su ancho.", Field(vm.CellFields, "cLength").Hint);
             Write(Field(vm.FrontFields, "fHeight"), "200");
             Assert.Equal(200.0, vm.Draft.System!.Bays[0].Height);
-            Assert.Equal("Vacía = calculada (≈ " + N(height) + " in). Manda en los dos postes del frente.", Field(vm.FrontFields, "fHeight").Hint);
+            Assert.Equal("Vacía = calculada (" + N(height) + " in). Manda en los dos postes del frente.", // T4 seg, SD-14
+                Field(vm.FrontFields, "fHeight").Hint);
         }
 
         [Fact]
@@ -500,7 +502,7 @@ namespace RackCad.UI.Tests
             for (var post = 0; post < 3; post++)
             {
                 var h = SelectivePostGeometry.PostHeight(system.Bays, post, SelectivePostGeometry.FallbackHeight(system.Bays, system.Height));
-                Assert.Equal("≈ " + N(h) + " in", block.Chips[post].Value);
+                Assert.Equal(N(h) + " in", block.Chips[post].Value); // T4 seg, SD-14
             }
 
             Assert.Equal("Poste 1: " + block.Chips[0].Value, block.Chips[0].AccessibleText);
@@ -510,7 +512,7 @@ namespace RackCad.UI.Tests
             vm.SelectFront(1);
             Write(Field(vm.FrontFields, "fHeight"), "300");
             Assert.Equal(new[] { false, true, true }, vm.PostHeights[0].Chips.Select(c => c.IsManual).ToArray());
-            Assert.Equal("≈ 300 in", vm.PostHeights[0].Chips[2].Value);
+            Assert.Equal("300 in", vm.PostHeights[0].Chips[2].Value); // T4 seg, SD-14
             Assert.EndsWith(", con una altura manual", vm.PostHeights[0].Chips[2].AccessibleText);
 
             // Two fondos: one block per fondo of the view.

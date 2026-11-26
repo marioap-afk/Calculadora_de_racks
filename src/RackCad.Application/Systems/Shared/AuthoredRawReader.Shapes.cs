@@ -242,6 +242,8 @@ namespace RackCad.Application.Systems.Shared
                     case "BOTABPIECEID": String(value, p); break;
                     case "AUTHOREDSIDE": Nullable(value, p, (v, p) => Integer(v, p)); break;
                     case "DERIVEDAISLES": Array(value, p, (v, p) => PostSideDocument(v, p)); break;
+                    // I-64, cuarta tanda (decision of the Owner, 2026-11-26): the desviador of a Dinámico read by post. Written only when true.
+                    case "DESVIADORCELLSBYPOST": Nullable(value, p, (v, p) => Boolean(v, p)); break;
                     default: throw Invalid(p, "unknown member");
                 }
             }

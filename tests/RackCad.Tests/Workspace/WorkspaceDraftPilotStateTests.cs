@@ -357,6 +357,8 @@ internal static class PilotCensus
         ["SelectiveDesviadorConfig.Longitud"] = E,
         ["SelectiveDesviadorConfig.PrimerNivelAltura"] = E,
         ["SelectiveDesviadorConfig.OffCells"] = E,
+        // I-64, cuarta tanda (decision of the Owner, 2026-11-26): the desviador of a Dinámico read by post, edited with the rest.
+        ["SelectiveDesviadorConfig.CellsByPost"] = E,
         ["SelectiveDefensaConfig.Posts"] = E,
         ["SafetyPostDefense.PostIndex"] = E,
         ["SafetyPostDefense.ExitLength"] = E,

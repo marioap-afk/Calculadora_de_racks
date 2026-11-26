@@ -324,7 +324,8 @@ namespace RackCad.UI.VentanaRackCad
         // What every Dinámico editor of the window gets: the dialogs over AutoCAD (with the modal port), the writes and the close.
         private void Wire(DynamicEditorViewModel editor)
         {
-            if (_modal != null) editor.SafetyEditor = current => RackCadModalDialogs.EditDynamicSafety(current, _modal);
+            // T4 seg (SG-01): the safety is edited in «Extremos y seguridad»; the window no longer offers the classic dialog over AutoCAD.
+            // T4 ins (DG-01): «Insertar vista…» is the panel of the editor (WireInsertPanel below), not the classic dialog either.
 
             WireInsertPanel(editor); // T4 ins: «Insertar vista…» is the panel of the editor, not the classic dialog (DG-01)
             editor.InsertViewsAction = InsertDynamicViews;
@@ -494,13 +495,6 @@ namespace RackCad.UI.VentanaRackCad
                 Say(string.Empty, failed: false);
                 RaiseDynamic();
             });
-        }
-
-        // E2 seguridad (D-09): «Editar seguridad…» of a Selectivo editor shows the classic dialog over AutoCAD, so it is offered only with the
-        // modal port of the host. Every Selectivo editor of the window gets it (at integration, from the one method that wires them).
-        private void WireSelectiveSafety(SelectiveEditorViewModel editor)
-        {
-            if (_modal != null) editor.SafetyEditor = current => RackCadSelectiveSafetyDialog.Edit(current, _modal);
         }
 
         private void OnSelectiveEditorChanged(object sender, PropertyChangedEventArgs e)

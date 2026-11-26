@@ -45,7 +45,7 @@ namespace RackCad.Application.VentanaRackCad
             _assembler = new DynamicEditorDesignAssembler(catalog, _builder, _resolver);
             PostCatalogId = catalog.Defaults?.Post;
             PostPeralte = DefaultPostPeralte(catalog, PostCatalogId);
-            SafetySelections.AddRange(DynamicSafetyDefaults.Build(catalog).Select(selection => selection.DeepCopy()));
+            SafetySelections.AddRange(DynamicSafetyDefaults.BuildForDynamic(catalog).Select(selection => selection.DeepCopy())); // T4 seg: desviador by post
             HeaderHeight = catalog.Defaults?.DefaultHeaderHeight ?? 0.0;
         }
 

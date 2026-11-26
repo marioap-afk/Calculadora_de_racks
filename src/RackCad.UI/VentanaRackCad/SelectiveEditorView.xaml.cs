@@ -122,7 +122,13 @@ namespace RackCad.UI.VentanaRackCad
             if ((sender as FrameworkElement)?.DataContext is SelectiveSegmentRow row) _viewModel.RemoveSegment(row.Index);
         });
 
-        // E2 seguridad: «En todas las celdas» / «En ninguna» of a card of «Extremos y seguridad», and «Editar seguridad…» (D-09).
+        // E2 seguridad: «En todas las celdas» / «En ninguna» of a card of «Extremos y seguridad». T4 seg: the head of a card shows its family
+        // in «Variante y medidas», and «Editar seguridad…» is not offered any more (SG-01; the classic dialog stays in RACKEDITAR).
+        private void OnFamilyPickClick(object sender, RoutedEventArgs e) => Contained(() =>
+        {
+            if ((sender as FrameworkElement)?.DataContext is SelectiveSafetyFamilyCard card) _viewModel.PickSafetyFamily(card.Type);
+        });
+
         private void OnFamilyAllClick(object sender, RoutedEventArgs e) => Contained(() =>
         {
             if ((sender as FrameworkElement)?.DataContext is SelectiveSafetyFamilyCard card) _viewModel.SetFamilyEverywhere(card.Type, true);
@@ -131,14 +137,6 @@ namespace RackCad.UI.VentanaRackCad
         private void OnFamilyNoneClick(object sender, RoutedEventArgs e) => Contained(() =>
         {
             if ((sender as FrameworkElement)?.DataContext is SelectiveSafetyFamilyCard card) _viewModel.SetFamilyEverywhere(card.Type, false);
-        });
-
-        // M-2 of the review of the entrega 2: as «Restaurar layout…», what was being written goes to the draft first (the frontier
-        // CommitPendingEditors of the classic Safety_Click), so a value refused stops the dialog and the view-model names it.
-        private void OnEditSafetyClick(object sender, RoutedEventArgs e) => Contained(() =>
-        {
-            CommitFocusedText();
-            _viewModel.EditSafety();
         });
 
         private void OnUpdateClick(object sender, RoutedEventArgs e) => Contained(() =>

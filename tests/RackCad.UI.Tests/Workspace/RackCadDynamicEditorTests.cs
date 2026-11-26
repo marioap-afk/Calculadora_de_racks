@@ -556,11 +556,17 @@ namespace RackCad.UI.Tests
             public bool? ShowModal(System.Windows.Window dialog) => false;
         }
 
+        // T4 seg (SG-01, which replaces D-09): the window no longer offers the classic safety dialog, not even with the modal port of the host
+        // (which «Insertar vista…» still uses); the safety is edited in «Extremos y seguridad».
         [Fact]
-        public void TheEditorsOfTheWindowOfferTheSafetyDialogOnlyWithTheModalPortOfTheHost()
+        public void TheEditorsOfTheWindowNoLongerOfferTheClassicSafetyDialogEvenWithTheModalPortOfTheHost()
         {
             Assert.False(new Rig().OpenEditor().CanEditSafety);
-            Assert.True(new Rig(new ModalPortDouble()).OpenEditor().CanEditSafety);
+            var editor = new Rig(new ModalPortDouble()).OpenEditor();
+            Assert.Null(editor.SafetyEditor);
+            Assert.False(editor.CanEditSafety);
+            Assert.NotNull(editor.SafetyPanel);
+            Assert.True(editor.CanInsertView, editor.InsertViewBlockedText);
         }
 
         // Step 4, «Insertar vista…» (decision 10 of the prototype: «primero escribe el borrador en las vistas existentes»).

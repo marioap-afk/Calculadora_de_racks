@@ -55,11 +55,21 @@ namespace RackCad.Domain.Systems.Selective
         /// <summary>Disabled (post, load-level) cells; <see cref="SelectiveGridCell.Frente"/> holds the post-column index.</summary>
         public IList<SelectiveGridCell> OffCells { get; } = new List<SelectiveGridCell>();
 
+        /// <summary>
+        /// I-64, cuarta tanda (decision of the Owner of 2026-11-26, «Sí, corrígelo en Dinámico»): the off cells of THIS desviador are
+        /// read by POST, the reading PB-002 gave Push Back (<c>SelectiveSafetySelection.DesviadorCellsAreByPost</c>), so the last post of
+        /// a Dinámico governs its own desviador. PERSISTED, unlike that derived flag: it is the discriminant between two eras, as
+        /// <c>BootSidesDeclared</c> is for the botas. False — every document written before — keeps the historic reading of the Dinámico
+        /// (the last post reads the column of the post before it), so an existing rack draws what it drew until its desviador is edited;
+        /// a new Dinámico, and one whose desviador is edited in the RackCad window, carry true.
+        /// </summary>
+        public bool CellsByPost { get; set; }
+
         public bool At(int post, int level) => !SelectiveSafetyCells.Contains(OffCells, post, level);
 
         public SelectiveDesviadorConfig DeepCopy()
         {
-            var copy = new SelectiveDesviadorConfig { Longitud = Longitud, PrimerNivelAltura = PrimerNivelAltura };
+            var copy = new SelectiveDesviadorConfig { Longitud = Longitud, PrimerNivelAltura = PrimerNivelAltura, CellsByPost = CellsByPost };
             SelectiveSafetyCells.Copy(OffCells, copy.OffCells);
             return copy;
         }

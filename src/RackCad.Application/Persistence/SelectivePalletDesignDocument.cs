@@ -597,6 +597,14 @@ namespace RackCad.Application.Persistence
         /// </summary>
         public List<PostSideDocument> DerivedAisles { get; set; }
 
+        /// <summary>
+        /// I-64, cuarta tanda (decision of the Owner, 2026-11-26) — DESVIADOR: its off cells are read by POST, so the last post of a
+        /// Dinámico governs its own desviador. Written only when true: absent = every older document, which keeps the historic reading
+        /// (the last post reads the column of the post before it) and draws what it drew. The era discriminant, as <see cref="BotaSidesDeclared"/>.
+        /// </summary>
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+        public bool? DesviadorCellsByPost { get; set; }
+
         /// <summary>Shared explicit mapping used by every rack system that composes the safety subsystem. The wire
         /// format is a FLAT record (unchanged, and shared with the dynamic path); each family flattens its own DTO
         /// (I-22, E7 — <see cref="TopeSelectionDocument"/> and siblings) into these flat properties and reads it back

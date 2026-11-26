@@ -219,7 +219,7 @@ namespace RackCad.UI.Tests
 
             var refused = SelectiveSafetyView.WriteTope(editor, new[] { P(0, 0) }, on: false);
             Assert.True(refused.Refused);
-            Assert.Contains("Editar seguridad", refused.Error);
+            Assert.Contains("en «Extremos y seguridad»", refused.Error); // T4 seg, SG-01: the variant is chosen in the window, no longer in «Editar seguridad…»
             var onFloor = SelectiveSafetyView.WriteParrilla(editor, new[] { P(1, 0) }, on: false); // only a cell without larguero
             Assert.True(onFloor.Refused);
             Assert.Contains("en el piso", onFloor.Error);

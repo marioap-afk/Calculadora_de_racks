@@ -513,7 +513,11 @@ Selectivo ni el Dinámico:
   `Math.Min(postIndex, Fronts.Count - 1)`, que colapsa el último poste sobre el último frente: apagar la
   celda del penúltimo poste suprime también la del último. La capacidad
   `SelectiveSafetySelection.DesviadorCellsAreByPost` es el interruptor; activarla para el Dinámico
-  cambiaría su comportamiento y necesita decisión del Owner.
+  cambiaría su comportamiento y necesita decisión del Owner. **Decidido el 2026-11-26** («Sí, corrígelo en
+  Dinámico») y **corregido en la cuarta tanda de I-64, parte seg**: la marca persistida
+  `SelectiveDesviadorConfig.CellsByPost` lleva el Dinámico a la misma regla de `CellKey`; un rack nuevo la
+  trae, y uno existente se lee como antes hasta que su desviador se edita en la ventana (ver `construido.md`
+  de la ventana RackCad, «Corrección del desviador de Dinámico»).
 - ~~**El mismo defecto de contrato que PB-002 corrigió en Push Back sigue en el Dinámico**~~ **CORREGIDO por
   I-33**: `RackDynamicSystemWindow` entregaba al diálogo compartido una lista POR FRENTE marcada como por
   POSTE, así que el último poste caía a 1 nivel. Ahora entrega las dos listas por separado —por frente para

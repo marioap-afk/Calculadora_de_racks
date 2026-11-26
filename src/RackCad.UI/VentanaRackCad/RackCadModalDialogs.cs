@@ -65,7 +65,8 @@ namespace RackCad.UI.VentanaRackCad
                 bootUsesPlacementNames: true,
                 desviadorLevelsPerPost: draft.DeflectorLevelsPerPost(),
                 allowBlankFrontColumns: true,
-                showDesviadorSide: true);
+                showDesviadorSide: true,
+                newDesviadorByPost: true); // T4 seg: as the classic Dinámico (the bridge stays unused in the window, T4S-06)
 
         /// <summary>
         /// The views «Insertar vista…» offers for a Dinámico, as «Insertar varias…» of the classic editor lists them: the two frontal cuts,

@@ -148,6 +148,7 @@ namespace RackCad.Application.Systems.Shared
                 && a.DesviadorLongitud == b.DesviadorLongitud
                 && a.DesviadorPrimerNivelAltura == b.DesviadorPrimerNivelAltura
                 && Sequence(a.DesviadorOffCells, b.DesviadorOffCells, Same)
+                && a.DesviadorCellsByPost == b.DesviadorCellsByPost
                 && Sequence(a.DefensaPosts, b.DefensaPosts, Same)
                 && Sequence(a.GuiaEntradaOffCells, b.GuiaEntradaOffCells, Same)
                 && a.ParrillaFrontal == b.ParrillaFrontal

@@ -158,7 +158,8 @@ namespace RackCad.UI.Systems.Dynamic
             builder = new DynamicRackSystemBuilder(catalog);
             resolver = new DynamicRackSystemResolver(catalog);
             assembler = new DynamicEditorDesignAssembler(catalog, builder, resolver);
-            safetySelections.AddRange(DynamicSafetyDefaults.Build(catalog).Select(selection => selection.DeepCopy()));
+            // I-64, cuarta tanda (decision of the Owner, 2026-11-26): a new Dinámico reads its desviador by post.
+            safetySelections.AddRange(DynamicSafetyDefaults.BuildForDynamic(catalog).Select(selection => selection.DeepCopy()));
             defaultPostCatalogId = catalog.Defaults.Post;
             defaultHeaderHeight = catalog.Defaults.DefaultHeaderHeight;
             computedHeaderHeight = defaultHeaderHeight;
@@ -676,6 +677,8 @@ namespace RackCad.UI.Systems.Dynamic
                 bootUsesPlacementNames: true,
                 // Por POSTE y SOLO para el desviador; la forma de la rejilla no decide nada más.
                 desviadorLevelsPerPost: DesviadorLevelsPerPost(),
+                // I-64, cuarta tanda (decision of the Owner, 2026-11-26): a desviador chosen here for the first time is read by post.
+                newDesviadorByPost: true,
                 allowBlankFrontColumns: true,
                 // El Dinámico SÍ elige cara de pasillo: el selector queda visible (default explícito por claridad).
                 showDesviadorSide: true) { Owner = this };

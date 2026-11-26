@@ -517,7 +517,7 @@ namespace RackCad.UI.Tests
             var labels = vm.Calculated.Select(c => c.Label).ToList();
             Assert.Equal(new[] { "Largo del larguero", "Altura de cabecera", "Separación N2 → N3", "Profundidad de cabecera", "Cabeceras", "Largueros",
                 "Posiciones de tarima", "Separadores" }, labels);
-            Assert.Equal("≈ " + vm.Draft.System!.Height.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture) + " in",
+            Assert.Equal(vm.Draft.System!.Height.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture) + " in", // T4 seg, SD-14: no «≈»
                 vm.Calculated.Single(c => c.Label == "Altura de cabecera").Value);
             Assert.All(vm.Calculated, c => Assert.False(string.IsNullOrWhiteSpace(c.Hint)));
         }

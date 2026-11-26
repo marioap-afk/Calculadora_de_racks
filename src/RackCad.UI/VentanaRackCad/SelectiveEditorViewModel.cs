@@ -350,7 +350,7 @@ namespace RackCad.UI.VentanaRackCad
         }
     }
 
-    /// <summary>The height of one post under the matrix (the approved draft, «Altura por poste»): «P1 ≈ 144 in», marked when a manual height governs it.</summary>
+    /// <summary>The height of one post under the matrix (the approved draft, «Altura por poste»): «P1 144 in», marked when a manual height governs it.</summary>
     public sealed record SelectivePostHeightChip(string Id, string Value, bool IsManual, string AccessibleText);
 
     /// <summary>The heights of the posts of one fondo of the view.</summary>
@@ -413,7 +413,7 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>«Calculada» or «Personalizada», by fondo: the custom cabeceras are kept and edited in the classic editor.</summary>
         public string Cabecera { get => _cabecera; private set => SetProperty(ref _cabecera, value ?? string.Empty); }
 
-        /// <summary>The height of the post, by fondo («≈ 144 in / ≈ 120 in»), as the drawing gives it (the column «Altura» of the draft).</summary>
+        /// <summary>The height of the post, by fondo («144 in / 120 in»), as the drawing gives it (the column «Altura» of the draft).</summary>
         public string Height { get => _height; private set => SetProperty(ref _height, value ?? string.Empty); }
 
         internal void Refresh(SelectivePostRow next)
@@ -2380,13 +2380,14 @@ namespace RackCad.UI.VentanaRackCad
             var height = _editor.ReadFronts(fronts, f => f.HeightOverride);
             var anyFloor = floor.Varies || (floor.HasValue && floor.Value);
 
-            // «Calculada: ≈ …» (the approved draft): the height those fronts would have with their manual height emptied.
+            // «Calculada: …» (the approved draft): the height those fronts would have with their manual height emptied. T4 seg, SD-14 of the
+            // Owner («Quitarlo»): no «≈», the value is the one of the resolver.
             var calculated = _automatic.Heights;
             var heightHint = height.Varies
                 ? Varies
                 : (height.HasValue && height.Value.HasValue
-                      ? "Vacía = calculada" + (calculated.Count == 1 ? " (≈ " + Num(calculated[0]) + " in)" : string.Empty) + "."
-                      : "Calculada" + (calculated.Count == 1 ? ": ≈ " + Num(calculated[0]) + " in" : string.Empty) + ".")
+                      ? "Vacía = calculada" + (calculated.Count == 1 ? " (" + Num(calculated[0]) + " in)" : string.Empty) + "."
+                      : "Calculada" + (calculated.Count == 1 ? ": " + Num(calculated[0]) + " in" : string.Empty) + ".")
                   + " Manda en los dos postes del frente.";
             return new[]
             {
@@ -2433,7 +2434,7 @@ namespace RackCad.UI.VentanaRackCad
                     }, !CanEdit);
                 var reach = Enumerable.Range(0, _editor.FondoCount).Where(k => post <= _editor.FrontCount(k)).ToList();
                 var cabeceras = reach.Select(k => (_editor.FondoCount > 1 ? "Fondo " + (k + 1) + ": " : string.Empty) + (_editor.HasCustomCabecera(k, post) ? "personalizada" : "calculada"));
-                var heights = string.Join(" / ", reach.Select(k => PostHeight(k, post)).Where(h => h > 0.0).Select(h => "≈ " + Num(h) + " in"));
+                var heights = string.Join(" / ", reach.Select(k => PostHeight(k, post)).Where(h => h > 0.0).Select(h => Num(h) + " in")); // T4 seg, SD-14: exact, no «≈»
                 rows.Add(new SelectivePostRow(post, field, "Cabecera " + string.Join(" · ", cabeceras), heights));
             }
 
@@ -2470,7 +2471,7 @@ namespace RackCad.UI.VentanaRackCad
                     var manual = new[] { post - 1, post }.Any(f => f >= 0 && f < fronts && _editor.Front(fondo, f)?.HeightOverride.HasValue == true);
                     var custom = _editor.HasCustomCabecera(fondo, post);
                     var id = "P" + (post + 1).ToString(CultureInfo.InvariantCulture);
-                    var value = "≈ " + Num(height) + " in";
+                    var value = Num(height) + " in"; // T4 seg, SD-14: exact, no «≈»
                     chips.Add(new SelectivePostHeightChip(id, value, manual,
                         "Poste " + (post + 1).ToString(CultureInfo.InvariantCulture) + of + ": " + value
                         + (manual ? ", con una altura manual" : string.Empty) + (custom ? ", cabecera personalizada" : string.Empty)));
@@ -2515,7 +2516,7 @@ namespace RackCad.UI.VentanaRackCad
                 var master = SelectiveDepthLayout.BaysOfFondo(system, SelectiveDepthLayout.MasterFondoIndex(system)) ?? new List<SelectiveBay>();
                 items.Add(new SelectiveCalcItem("Largo del larguero", Range(master.Select(b => b.BeamLength).Where(v => v > 0.0)),
                     "Ancho × tarimas + holgura × (tarimas + 1). En cada frente manda el nivel más ancho."));
-                items.Add(new SelectiveCalcItem("Altura de cabecera", "≈ " + Num(system.Height) + " in", "La del frente más alto, al pie entero."));
+                items.Add(new SelectiveCalcItem("Altura de cabecera", Num(system.Height) + " in", /* T4 seg, SD-14 */ "La del frente más alto, al pie entero."));
 
                 // N2 → N3: the separation between the larguero of N2 and the one of N3 of every front that has them, in every fondo.
                 var separations = new List<double>();
