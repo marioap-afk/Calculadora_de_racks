@@ -132,9 +132,9 @@ namespace RackCad.UI.VentanaRackCad
     /// <summary>
     /// One cell of the matrix of the Selectivo editor: front × level over the fondos of the scope, with one datum (the pallet, width ×
     /// height; decision 1 of the Owner on Selectivo), «varía» when the fondos differ, and the floor line of a level on the floor with no
-    /// larguero (decision 4). Refreshed in place.
+    /// larguero (decision 4), and T / P of the entrega 2 (in <c>SelectiveEditorViewModel.Safety.cs</c>). Refreshed in place.
     /// </summary>
-    public sealed class SelectiveCellItem : ObservableObject
+    public sealed partial class SelectiveCellItem : ObservableObject
     {
         private string _text = string.Empty;
         private string _detail = string.Empty;
@@ -668,14 +668,16 @@ namespace RackCad.UI.VentanaRackCad
             }
         }
 
-        /// <summary>0 = Rack, 1 = Matriz (the first tab, as the Owner decided for Dinámico), 2 = Avanzado.</summary>
+        /// <summary>0 = Rack, 1 = Matriz (the first tab, as the Owner decided for Dinámico), 2 = Extremos y seguridad, 3 = Avanzado.</summary>
         public int SelectedTab
         {
             get => _selectedTab;
             set
             {
                 // «Calculado» reads the BOM: the view is told to read it again only while it is shown (the Rack tab), and when it is shown.
-                if (SetProperty(ref _selectedTab, value) && value == 0) OnPropertyChanged(nameof(Calculated));
+                if (!SetProperty(ref _selectedTab, value)) return;
+                if (value == 0) OnPropertyChanged(nameof(Calculated));
+                if (value == SafetyTabIndex) OnSafetyTabShown(); // E2 seguridad: the same rule for what that tab reads from the BOM
             }
         }
 
@@ -1535,10 +1537,11 @@ namespace RackCad.UI.VentanaRackCad
         private void TakeBaselineCells()
         {
             var cells = new Dictionary<(int Fondo, int Front, int Level), string>();
+            var marks = SafetyMarks(); // E2 seguridad: T and P of the cell are part of its state («Modificada», the approved draft)
             for (var k = 0; k < _editor.FondoCount; k++)
                 for (var f = 0; f < _editor.FrontCount(k); f++)
                     for (var l = 0; l < _editor.LevelCount(k, f); l++)
-                        cells[(k, f, l)] = StateKey(k, f, l);
+                        cells[(k, f, l)] = StateKey(k, f, l) + marks.StateOf(k, f, l);
             _baselineCells = cells;
         }
 
@@ -1717,6 +1720,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(CanDiscardSegments));
             OnPropertyChanged(nameof(CanInsertView));
             OnPropertyChanged(nameof(InsertViewBlockedText));
+            RaiseSafetyState(); // E2 seguridad
         }
 
         // ------------------------------------------------------------------ internals: the lists, refreshed in place
@@ -1811,6 +1815,7 @@ namespace RackCad.UI.VentanaRackCad
             // with another one is distinct, when the view has more than one content. M-02 of the review of the polish: a manual larguero length
             // in a fondo that is not the width master is kept, but the resolver does not use it, so it is no «M» (it says so, unused).
             var master = _editor.WidthMasterFondo;
+            var marks = SafetyMarks(); // E2 seguridad: T and P, read once for the matrix
             var now = new Dictionary<(int Fondo, int Front, int Level), (string Content, string State, bool Manual, bool Unused)>();
             foreach (var k in scope)
             {
@@ -1822,7 +1827,7 @@ namespace RackCad.UI.VentanaRackCad
                         var cell = _editor.Cell(k, f, l);
                         var content = CellKey(cell);
                         var length = cell?.BeamLength.HasValue == true;
-                        now[(k, f, l)] = (content, content + "|" + floor, cell?.Clear.HasValue == true || (length && k == master), length && k != master);
+                        now[(k, f, l)] = (content, content + "|" + floor + marks.StateOf(k, f, l), cell?.Clear.HasValue == true || (length && k == master), length && k != master);
                     }
                 }
             }
@@ -1837,6 +1842,8 @@ namespace RackCad.UI.VentanaRackCad
                     var f = item.FrontIndex;
                     var l = item.LevelIndex;
                     var position = "Frente " + (f + 1).ToString(CultureInfo.InvariantCulture) + " · Nivel " + (l + 1).ToString(CultureInfo.InvariantCulture);
+                    var (tope, parrilla) = (marks.Tope(f, l), marks.Parrilla(f, l));
+                    item.SetSafety(tope, parrilla);
                     if (!Exists(f, l))
                     {
                         item.Set("—", string.Empty, false, false, false, false, false, false, position + ": no existe en los fondos de la vista");
@@ -1865,6 +1872,7 @@ namespace RackCad.UI.VentanaRackCad
                     else if (distinct) states.Add("distinta del resto");
                     if (manual) states.Add("con un valor manual");
                     if (holders.Any(h => h.Unused)) states.Add("con un largo manual que no cambia el dibujo");
+                    states.AddRange(SafetyStates(tope, parrilla));
                     var accessible = position + ": " + (varies ? "la tarima varía entre los fondos" : text) + (states.Count > 0 ? "; " + string.Join(", ", states) : string.Empty);
                     item.Set(text, detail, _showDetail, true, selected, selected && _primary == at[0], onFloor, varies, accessible, modified, distinct, manual);
                 }
