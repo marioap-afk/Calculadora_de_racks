@@ -3209,7 +3209,7 @@ scratchpad de la sesión, en `hs65/t4/<parte>/`.
 ### CI de la integración en Linux: reglas de Windows para los nombres de archivo
 
 El primer CI de `b0d367e7` dio 5 pruebas de Core en rojo (UI y la compilación, en verde). En el runner de Linux,
-`Path.GetInvalidFileNameChars` admite «:», «*» o «\», y una ruta como «C:\L.rackcad.json» no está enraizada. El código de ut
+`Path.GetInvalidFileNameChars` admite «:», «*» o «\», y una ruta como «C:\L\a.rackcad.json» no está enraizada. El código de ut
 (nombre de archivo de un diseño, petición de RACKBIBLIOTECAABRIR, «Cambiar el nombre») y el de bom (nombres de los archivos del BOM) tomaba esas
 reglas del sistema. En Windows, donde corre RackCad, daban lo correcto. La corrección es `WindowsFileNames` (Application): las reglas de Windows
 escritas una vez y usadas en los dos sitios. `WindowsFileNamesTests` fija las reglas en cualquier sistema y, en Windows, comprueba que dan lo
