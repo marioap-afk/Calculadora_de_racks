@@ -7710,3 +7710,117 @@ integrada.
   - Core, 26: 22 en `RackJigPromptTests` (ahora 32), 3 en `CantileverStationCorrectionTests` y 1 en `CantileverArmTests`.
   - Sobre 3144 / 19505 de `331f9f18`, la UI completa debería dar 3172 y Core Full 19531, sin contar lo que traigan otras partes.
 - **Archivos:** sin caracteres de control y con CRLF (los tres que la herramienta escribió en LF, devueltos con `unix2dos`).
+
+## Sexta tanda: decisiones del Owner (2026-11-27)
+
+**Órdenes en el chat (literales):**
+- «Arregla los defectos, aún no hay que borrar el editor clásico, probablemente mejor lo dejaremos por ahora a menos que elimine
+  dificultades de escalabilidad en un futuro, hay que arreglar lo de pushback y hazme las preguntas requeridas».
+- «También hay que continuar con el actualizar todo, basicamente dejsr terminada I-64».
+
+**Consecuencias:**
+- **El editor clásico se QUEDA.** Esto deja sin efecto la parte de SD-02 que decía «el clásico se elimina al final de I-64». Sus
+  defectos se corrigen en el propio clásico.
+- **Nada va a `main` como hotfix:** los arreglos llegan con I-64.
+
+**Respuestas (AskUserQuestion), resumidas; la opción elegida va entre comillas:**
+
+| Tema | Respuesta |
+|---|---|
+| El editor de la ventana tras un «U» (O-5, M-16) | «Avisar y ofrecer releer» (parte st) |
+| Los diálogos clásicos de seguridad que descartaban sin avisar | «Guardarla como la ventana» (parte seg) |
+| Hotfix en `main` | «No, que lleguen con I-64» |
+| F4B (Push Back completo con la ventana MODAL) | «Cerrarla como reemplazada» por Push Back en la ventana; se avisa antes de liberar su material |
+| RLY y RR | «La página «Almacén»» (parte rl) |
+| RACKVARIABLES y RACKPROPIEDADES | «La ventana, ya» (parte rl) |
+| La paleta recuerda su tamaño; cambiar las guardas de F1-T3B | «Sí, cambiarlas» (parte rl) |
+| Validación para llevar I-64 a `main` | «Prueba guiada al final»: guía en el chat, DLL del SHA final |
+| «Propiedades» en un borrador nuevo (VA-S9) | «Sí, y se escriben al insertarlo» (parte pr); el dibujo sin propiedades: «Insertar y avisar»; «Duplicar» las copia |
+| Mejoras de borradores | Solo el texto de «Descartar» (parte ui) |
+| «Puede no estar al día» tras cualquier orden | «Afinarlo»: solo órdenes que cambian el dibujo, en los editores, el BOM, «Almacén» y la lista (parte st) |
+| «Variables» y los editores limpios que redibuja | «Sí, marcarlo», en lugar de cerrarlos (parte st) |
+| La paleta oculta | «Sí, al volver a mostrarla» (parte st) |
+| El aviso «de la cabecera» en las demás órdenes | «Todas», en la ventana y en el clásico (parte ui) |
+| La parrilla con todo apagado en el clásico | «Sí, como la ventana»; el clásico gana «Quitar», porque no tenía cómo quitarla (parte seg) |
+| El contador «Elementos de seguridad (n)…» | «Solo lo que dibuja» (parte seg) |
+| «Actualizar» con vistas que no se redibujan | «Sí, que diga qué falló» (parte b1) |
+| Medio frente que deja de caber en el editor CLÁSICO | «Dejarlo así»; avisar al abrir un dibujo que ya lo trae: «Sí» (parte bom) |
+| Selectivo conserva los campos desconocidos de la biblioteca; «Duplicar» hereda el archivo | «Dejarlo así»; «No, la copia es nueva» (parte lib) |
+| «Actualizar todo» | «Aceptar las anidadas»; las propiedades que fallan: «Falla todo el conjunto»; «Incluir Variables»; «Basta «vuelve a leerlo»» (parte at) |
+| **Largueros** | **«Hay que dejarlo Wip, entra en otra iniciativa»**: la parte lg (`e05c21cf`) NO se integra y queda en su rama local para esa iniciativa; la página sigue como el borrador WIP de la quinta tanda |
+
+**Aprobados tal como están:**
+- T4S-13 (el desviador de Dinámico en racks existentes) y T4S-14 (la columna «Auto» del clásico de Dinámico);
+- CB-13, solo ocultar la cara de montaje; CB4-02, basta el claro por panel;
+- RCT sigue en el clásico (CT5-08); «Abrir en editor clásico» no se añade en todos (UT-S12);
+- BM-S4 y BM-S5;
+- la ventana más estricta que el clásico (PB-S09, CT5-03 e IN-11);
+- PB-S10 y PB-S17, puntos 1-4 y 6;
+- S-11 (la raya de piso) y Q5 (la pestaña «Rack» completa);
+- **los ~230 supuestos menores ya registrados en este documento:** «Apruebo todos».
+
+## Sexta tanda: integración en la rama de Selectivo (sesión, 2026-11-27)
+
+Diez partes, cada una con su revisión independiente y sus correcciones. Cada merge es `--no-ff`. lg no se integra (ver arriba).
+
+| Orden | Parte | Qué | Punta de la parte | Merge |
+|---|---|---|---|---|
+| 1 | b1 | B-1 en Push Back (clásico y ventana) y en Cabecera; I-02 (la cola no coloca si falta un redibujo); el frontal B | `5ff8c008` | `8a8dc159` |
+| 2 | pb | PB-S17: el «Auto» de la defensa y los niveles del desviador en el clásico de Push Back | `c79d3869` | `ac01e9bd` |
+| 3 | lib | Los campos desconocidos de la biblioteca llegan al dibujo (Dinámico, Push Back, Cantilever) | `bb385dc4` | `4c522ba0` |
+| 4 | pr | «Propiedades» en los borradores nuevos, escritas al insertar | `7e16f992` | `6a3ea124` |
+| 5 | bom | El clásico de Selectivo ya no cambia las cabeceras personalizadas; medio frente que no cabe | `c6ddb281` | `c7a51269` |
+| 6 | rl | RLY/RR abren «Almacén»; RACKVARIABLES y RACKPROPIEDADES abren la ventana; la paleta recuerda | `29341e2b` | `41bc3859` |
+| 7 | seg | El «Aceptar» clásico de seguridad guarda como la ventana | `5de0b0cd` | `2a2f58dc` |
+| 8 | st | El editor tras una orden ajena y el aviso afinado | `347555ef` | `c03aba1f` |
+| 9 | at | «Actualizar todo» | `3cb0072b` | `9655bed3` |
+| 10 | ui | La lista dice por qué; detalles del smoke; los avisos de inserción | `bab26f84` | `bbfbb5a5` |
+
+**Lo que se resolvió al juntar:**
+- **lib y pr**, en la puerta y en los tres envíos de la ventana: se conservan las dos cosas. La condición de pr (`insertViews == null ||
+  editor.IsNewRack`) y `SourceDesignJson` de lib.
+- **rl y pr**, en `RackPropertiesTabViewModel`: se conserva el texto de pr (`NotReadText`, «vuelve a leerlo del dibujo»), que ya no remite a
+  RACKPROPIEDADES y lo fija `RackCadNewDraftPropertiesTests`. Los demás remedios de rl (T6rl-S15) siguen.
+- **seg y bom**, en `RackSelectiveWindow`: el aviso de bom al abrir y el recuento de seg, uno tras otro, después de la recomposición.
+- **seg y pb**, el seam `DesviadorDialog`: seg adoptó exactamente el de pb, y queda uno solo.
+- **st, pr y Cantilever**, en «Insertar vista…»: las dos condiciones de bloqueo, una tras otra.
+- **at y st**, en «Variables»: la función compartida de at (`VariablesWrittenFor`) con el marcado de st.
+  - `UpdateAllStaleProbe` se conecta a `IsDrawingChanged` de st.
+  - RACKACTUALIZARTODO responde dentro de su orden, así que st la da por propia y no marca los editores.
+- **El censo de archivos de `PushBackEditAllNameWritersGuardTests`:** 19 + 1 (rl) + 2 (at) = 22.
+- **ui y st**, en la lista: una relectura pedida por el usuario y rechazada dice por qué (ui). Una presentación solo dice «puede no estar
+  al día» si el dibujo cambió desde la lectura (st).
+- **ui y bom**, en «Restaurar layout…»: el aviso de ui (si «Descartar» está activo, y si es una copia) y el consejo de bom cuando se
+  rompería un medio frente.
+- **La puerta de prueba de st** implementa los eventos nuevos de los atajos de rl (`e965912a`).
+- **Dos pruebas** que no contemplaban la señal afinada de st (en el commit de cierre de la integración):
+  - `AReadOfTheUserThatTheHostDoesNotDoSaysWhyAndKeepsTheList` (ui) ahora simula que el dibujo cambió (`DrawingChangeCount = 1`), como las
+    pruebas de la lista que st actualizó;
+  - `RlyOpensRejillaWithTheSelectedRackAsTheSeedReadInsideItsCommandAndSendsNothing` (rl): el resto de RLY solo lee
+    (`changesTheDrawing: false`). Lo había anticipado la revisión de rl.
+
+### Números sobre la integración
+
+- **Solución en Debug, Plugin incluido:** 0 errores.
+- **Core Full:** 19638 / 0 / 403.
+- **UI completa:** 3367 / 2 / 48, con los dos fallos de arriba.
+  - Tras ajustar esas dos pruebas, sus clases pasan enteras (`RackCadWindowTests` y `RackCadWarehousePageTests`: 80 / 0).
+  - La UI queda en 3369 / 0 / 48. El CI la corre entera.
+- Con el AutoCAD del Owner abierto, la UI completa tardó 30 min, y la Core Full 10.
+
+### Pendiente
+
+- El smoke de la sexta tanda en AutoCAD, por la sesión, con lo que cada parte dejó para él:
+  - el escenario B y el frontal B (b1);
+  - las propiedades al insertar y al cancelar (pr);
+  - el aviso al abrir (bom);
+  - la paleta que recuerda y la regla de pantalla (rl);
+  - la señal afinada: ZOOM, PAN, QSAVE, presentaciones y matrices (st);
+  - «Actualizar todo», con un solo «U», cero escrituras si uno falla, un bloque importado en segundo lugar, el renombrado, las
+    definiciones huérfanas y el tiempo con muchos racks (at);
+  - los avisos de inserción (ui).
+- La prueba guiada del Owner sobre el SHA final, y el cierre formal de I-64:
+  - la A-14 al día;
+  - F4B cerrada como reemplazada;
+  - ADR, HANDOFF y ROADMAP;
+  - el merge a `main`.

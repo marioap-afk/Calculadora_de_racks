@@ -909,7 +909,8 @@ namespace RackCad.UI.Tests
             Assert.Empty(rig.Door.Reads); // no RACKALMACENLEER: the read was the shortcut's own
             Assert.False(rig.Window.IsWaitingForAutoCad);
 
-            rig.Present(block: WorkspaceActionBlock.CommandActive); // the rest of RLY
+            // T6 integration (rl + st): the rest of RLY only reads, so it does not change the drawing and leaves no mark (st, «Afinarlo»).
+            rig.Present(block: WorkspaceActionBlock.CommandActive, changesTheDrawing: false); // the rest of RLY
             Assert.Equal("Lectura al día", rig.Page.ChipText);
             rig.Present();
             rig.Select("PB-1"); // AL-S15: the selection keeps «Almacén»

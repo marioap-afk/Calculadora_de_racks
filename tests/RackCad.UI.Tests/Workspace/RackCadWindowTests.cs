@@ -680,6 +680,8 @@ namespace RackCad.UI.Tests
             // The list was read (Ready) and then went possibly out of date, the text of the smoke of the fifth batch.
             var rig = new Rig();
             rig.Summary.ListResponder = (_, user) => user ? BrowserRackList.Ready(rig.Racks) : BrowserRackList.Outdated();
+            // T6 integration (ui + st): the list says «puede no estar al día» only when the drawing changed since its read (st, A3).
+            rig.Host.Snapshot = WorkspacePanelFixtures.Ready(session: 7) with { DrawingChangeCount = 1 };
             rig.Window.Refresh();
             const string outdated = "La lista puede no estar al día: pulsa «Volver a leer la lista».";
             Assert.Equal(outdated, rig.List.StatusText);
