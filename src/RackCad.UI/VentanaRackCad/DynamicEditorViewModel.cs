@@ -821,6 +821,7 @@ namespace RackCad.UI.VentanaRackCad
                 if (!string.IsNullOrEmpty(other)) return other;
                 if (_editor.Design == null) return "No hay un borrador válido que escribir.";
                 if (!string.IsNullOrEmpty(_editor.LastError)) return _editor.LastError;
+                if (_isNewRack && PropertiesBlockUpdate) return PropertiesTab.BlockedText; // T6 pr: «Insertar en el dibujo…» writes them (VA-S9)
                 return string.Empty;
             }
         }

@@ -59,6 +59,7 @@ namespace RackCad.UI.VentanaRackCad
                 if (_draft.Design == null) return "No hay un borrador válido que escribir.";
                 if (!string.IsNullOrEmpty(_draft.LastError)) return _draft.LastError;
                 if (_draft.IsOutputBlocked) return "No se puede dibujar: " + _draft.OutputStatus;
+                if (_isNewRack && PropertiesBlockUpdate) return PropertiesTab.BlockedText; // T6 pr: «Insertar en el dibujo…» writes them (VA-S9)
                 return string.Empty;
             }
         }

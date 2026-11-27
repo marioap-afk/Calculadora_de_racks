@@ -333,7 +333,7 @@ namespace RackCad.UI.VentanaRackCad
             {
                 result = _cantileverDoor.RequestCantileverUpdate(new CantileverDoorWrite(id, entry.Session, editor.RackId, snapshot.Name, snapshot.Design,
                              snapshot.Line, snapshot.DesignJson, insertViews == null ? null : new List<RackViewAddress>(insertViews), editor.IsNewRack,
-                             insertViews == null && !editor.IsNewRack ? editor.PropertiesWrite() : null,
+                             insertViews == null || editor.IsNewRack ? editor.PropertiesWrite() : null, // T6 pr: and a new line's (VA-S9)
                              SourceDesignJson: editor.IsNewRack ? LibrarySourceDesignOf(editor) : null)) // T6 lib (UT-S10)
                          ?? RackCadClassicResult.Without(RackCadClassicStatus.Failed, "sin respuesta.");
             }

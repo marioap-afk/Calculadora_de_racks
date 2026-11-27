@@ -71,8 +71,11 @@ namespace RackCad.UI.VentanaRackCad
         public bool IsNotDivergent => !IsDivergent && IsEditable;
 
         public string ReadOnlyText => _read == null
-            ? "Las propiedades de este rack no se leyeron con el editor: siguen en RACKPROPIEDADES."
+            ? NotReadText // T6 pr, review: no longer «siguen en RACKPROPIEDADES», which opens this window once the part rl reroutes it
             : !IsEditable && !IsDivergent ? _read.Reason ?? string.Empty : string.Empty;
+
+        /// <summary>What the tab says when the editor has no read of the properties (T6 pr, review: valid whatever RACKPROPIEDADES opens).</summary>
+        internal const string NotReadText = "Las propiedades no se leyeron con el editor: para editarlas aquí, vuelve a leerlo del dibujo.";
 
         public bool IsReadOnly => !IsEditable && !IsDivergent;
 
@@ -90,7 +93,16 @@ namespace RackCad.UI.VentanaRackCad
         public string PropertiesTitle => "Propiedades personalizadas";
 
         public string PropertiesNote => _read == null ? string.Empty
+            : _read.NewRack ? NewRackNote // T6 pr (VA-S9)
+            : _read.Writable && !string.IsNullOrWhiteSpace(_read.Reason) ? _read.Reason // T6 pr, review M-1: rows kept without a read
             : "Nombre y valor de texto guardados en " + ViewsText(_read.ViewCount) + " del rack. Van al borrador del rack y se escriben con su «Actualizar», junto con el resto del editor.";
+
+        /// <summary>T6 pr: what the tab of a draft of «Nuevo» says (VA-S9, Owner: «Sí, y se escriben al insertarlo»); it names no system (M-2).</summary>
+        internal const string NewRackNote =
+            "Nombre y valor de texto. Van al borrador y se escriben al insertarlo con «Insertar en el dibujo…», en todas sus vistas y en la misma orden.";
+
+        /// <summary>T6 pr: the tab of a rack of «Nuevo», not in the drawing yet; «Insertar en el dibujo…» writes its draft.</summary>
+        public bool IsNewRack => _read != null && _read.NewRack;
 
         public string PropertiesHelp =>
             "Hasta 50 propiedades. El nombre es obligatorio, de hasta 80 caracteres y sin repetir otro. El valor puede quedar vacío, admite varias líneas y llega a 1000 caracteres.";
@@ -182,6 +194,46 @@ namespace RackCad.UI.VentanaRackCad
         internal void Written(RackPropertiesRead after)
         {
             if (after != null) Load(after);
+        }
+
+        /// <summary>
+        /// T6 pr: the answer of AutoCAD to a write of the editor, for the tab. Of a rack of the drawing, as before: written, the tab goes on
+        /// from what the drawing holds now (<see cref="Written"/>); not written, the draft stays. Of a rack of «Nuevo» that AutoCAD placed
+        /// (VA-S9), the tab becomes the one of the rack of the drawing: with its properties written, what the drawing holds now (without a
+        /// read, none, never a base it did not read: they are in the drawing already); not written, the rows of the draft stay as new rows
+        /// over what the rack holds, to write with «Actualizar», when the rack can hold them; and, when the drawing could not be read again
+        /// (review M-1), over no base at all (<see cref="RackPropertiesRules.NotReadAfterInsertion"/>): «Modificado», and «Actualizar» writes
+        /// them only where there is no property yet.
+        /// </summary>
+        internal void Answered(RackDesignWritten written)
+        {
+            if (written == null || !written.Written) return;
+            if (!IsNewRack)
+            {
+                if (written.PropertiesError == null) Written(written.Properties);
+                return;
+            }
+
+            if (written.PropertiesError == null)
+            {
+                Load(written.Properties);
+                return;
+            }
+
+            var rows = Properties.Select(p => (p.Name, p.Value)).ToList();
+            Load(written.Properties ?? RackPropertiesRules.NotReadAfterInsertion()); // review M-1: kept also when the drawing could not be read again
+            if (!IsEditable || rows.Count == 0) return;
+            foreach (var (name, value) in rows) Properties.Add(new CustomPropertyRowItem("nueva-" + (++_nextKey).ToString(CultureInfo.InvariantCulture), null, name, value));
+            Recompute();
+        }
+
+        /// <summary>T6 pr: «Duplicar» of a draft of «Nuevo»: the copy takes the rows of its original as new rows of its own draft.</summary>
+        internal void CopyRowsOf(RackPropertiesTabViewModel original)
+        {
+            if (original == null || ReferenceEquals(original, this) || !IsNewRack || !IsEditable || _locked || original.Properties.Count == 0) return;
+            foreach (var row in original.Properties)
+                Properties.Add(new CustomPropertyRowItem("nueva-" + (++_nextKey).ToString(CultureInfo.InvariantCulture), null, row.Name, row.Value));
+            Recompute();
         }
 
         internal void Lock(bool locked)
@@ -278,7 +330,7 @@ namespace RackCad.UI.VentanaRackCad
                          nameof(HasRead), nameof(IsEditable), nameof(IsDivergent), nameof(IsNotDivergent), nameof(ReadOnlyText), nameof(IsReadOnly),
                          nameof(IsDirty), nameof(HasProblems), nameof(BlockedText), nameof(TabHeader), nameof(PropertiesNote), nameof(PropertiesRemovedText),
                          nameof(PropertiesCount), nameof(CanEditProperties), nameof(CanAddProperty), nameof(HasNoProperties), nameof(UnifiedText),
-                         nameof(Confirmed),
+                         nameof(Confirmed), nameof(IsNewRack), // T6 pr
                      })
                 OnPropertyChanged(name);
             RaiseUnify();

@@ -494,7 +494,7 @@ namespace RackCad.UI.VentanaRackCad
                     return "Corrige " + (marked == 1 ? "el valor marcado" : "los " + marked.ToString(CultureInfo.InvariantCulture) + " valores marcados")
                            + (_isNewRack ? " para insertarla." : " para actualizar.");
                 if (!_isNewRack && !_dirty) return "Sin cambios que escribir.";
-                if (!_isNewRack && PropertiesBlockUpdate) return PropertiesTab.BlockedText;
+                if (PropertiesBlockUpdate) return PropertiesTab.BlockedText; // T6 pr: also «Insertar en el dibujo…», which writes them (VA-S9)
                 return string.Empty;
             }
         }
@@ -782,7 +782,7 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>The answer of a write: when the properties were written, the tab goes on from what the drawing holds now.</summary>
         public void PropertiesWritten(RackDesignWritten written)
         {
-            if (written != null && written.Written && written.PropertiesError == null) _propertiesTab?.Written(written.Properties);
+            _propertiesTab?.Answered(written); // T6 pr: also the answer of «Insertar en el dibujo…» of a new cama (VA-S9)
         }
 
         private void OnPropertiesTabChanged()

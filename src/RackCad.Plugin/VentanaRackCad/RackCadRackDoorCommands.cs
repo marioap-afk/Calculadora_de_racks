@@ -239,7 +239,8 @@ namespace RackCad.Plugin.VentanaRackCad
                     RackCad.UI.Systems.Dynamic.DynamicDraftOutcome.NewRackRequest(pending.RackId, pending.Name, pending.Design, pending.System, pending.Views,
                         pending.SourceDesignJson)); // T6 lib (UT-S10): a design of the library carries its project, as the classic editor
                 var placed = RackCommandSupport.FindRackBlocks(document, pending.RackId);
-                door?.AnswerWrite(RackDoorRules.AnswerForNewRack(pending.RequestId, pending.RackId, placed.Count, placed.Count > 0 ? placed[0].Embed?.Name : null));
+                door?.AnswerWrite(RackPropertiesDoorData.WithNewRackProperties(document, pending.RackId, pending.Properties,
+                    RackDoorRules.AnswerForNewRack(pending.RequestId, pending.RackId, placed.Count, placed.Count > 0 ? placed[0].Embed?.Name : null))); // T6 pr: and its properties (VA-S9)
             }
             catch (System.Exception ex)
             {
@@ -530,7 +531,8 @@ namespace RackCad.Plugin.VentanaRackCad
                 RackMenuCommands.DispatchInsertion(document,
                     RackCad.UI.Systems.Selective.SelectiveDraftOutcome.NewRackRequest(write.RackId, write.Name, write.Design, write.System, plan.Views));
                 var placed = RackCommandSupport.FindRackBlocks(document, pending.RackId);
-                door?.AnswerWrite(SelectiveDoorInsertion.AnswerForNewRack(pending.RequestId, pending.RackId, placed.Count, placed.Count > 0 ? placed[0].Embed?.Name : null));
+                door?.AnswerWrite(RackPropertiesDoorData.WithNewRackProperties(document, pending.RackId, write.Properties,
+                    SelectiveDoorInsertion.AnswerForNewRack(pending.RequestId, pending.RackId, placed.Count, placed.Count > 0 ? placed[0].Embed?.Name : null))); // T6 pr: and its properties (VA-S9)
             }
             catch (System.Exception ex)
             {

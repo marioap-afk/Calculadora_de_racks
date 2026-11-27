@@ -131,6 +131,7 @@ namespace RackCad.UI.VentanaRackCad
             var rackId = Guid.NewGuid().ToString();
             var editor = CreateDraftEditor(seed, session, rackId, RackCadDraftNaming.Label(number), out var failure);
             if (editor == null) return RefuseDraft(failure);
+            LoadNewRackProperties(editor); // T6 pr: the tab «Propiedades» of a new rack, written at its insertion (VA-S9)
 
             var entry = new DraftEntry(session, editor, new RackCadDraftItem(number, seed.Kind, rackId));
             _draftEntries.Add(entry);
@@ -341,7 +342,7 @@ namespace RackCad.UI.VentanaRackCad
 
             var copy = CopyOf(entry);
             if (copy.Copied == null) return RefuseDraft("No hay un diseño válido de " + item.Label + " que copiar.");
-            return OpenAsNewDraft(RackCadDraftSeed.CopyOf(copy.Base, copy.Copied, "copia de " + item.Title));
+            return WithPropertiesOf(entry.Editor, OpenAsNewDraft(RackCadDraftSeed.CopyOf(copy.Base, copy.Copied, "copia de " + item.Title))); // T6 pr
         }
 
         /// <summary>

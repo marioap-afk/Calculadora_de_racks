@@ -5613,3 +5613,192 @@ solución se recompiló con `--no-incremental` antes de las suites completas.
   pasa de 3 a 5.
 - **Build Debug de la solución (Plugin incluido),** con `--no-incremental`: 0 errores. Las únicas advertencias son las MSB3277 de las
   referencias de AutoCAD y las de los analizadores de xUnit, que ya estaban.
+
+## Sexta tanda, pr: «Propiedades» en los borradores nuevos (VA-S9)
+
+**Rama:** local `architecture/workspace-persistente-rackcad-t6-pr`, sobre `f02f519b` (worktree `D:\w6pr`). Sin commit, sin push, sin AutoCAD.
+
+**La respuesta del Owner** (2026-11-27, sobre VA-S9): «Sí, y se escriben al insertarlo». La pestaña es la de VA-07 (nota del Owner: «Hay que crear
+una pestaña en cada rack en donde se puedan escribir las propiedades»).
+
+**Lo que había** (VA-S9, en «Cuarta tanda, va»):
+- un borrador de «Nuevo» mostraba la pestaña «Propiedades» de solo lectura, con «Las propiedades de este rack no se leyeron con el editor: siguen
+  en RACKPROPIEDADES.»: la ventana nunca le daba una lectura (`RackPropertiesTabViewModel` sin `Load`);
+- las cinco escrituras de la ventana enviaban `Properties: null` para un rack nuevo (`!editor.IsNewRack`; en la cama, `IsNewRack ? null : …`);
+- la petición nueva de Dinámico que espera en la puerta (`_pendingNew`) no guardaba propiedades, y ninguna orden NUEVO las escribía. No era un
+  defecto visible en la base, porque nada las enviaba: era una pieza que la función nueva necesitaba (M-3 de la revisión).
+
+**Lo que se construyó:**
+- **La pestaña de un rack nuevo** (`RackPropertiesRules.ForNewRack()`, Application): escribible, vacía, sin huella (no se leyó nada) y marcada
+  `NewRack` (campo opcional nuevo, al final de `RackPropertiesRead`).
+  - La carga el único punto de entrada de los borradores (`OpenDraftCore` → `LoadNewRackProperties`): cualquier borrador de «Nuevo», con los
+    valores por defecto, de la biblioteca o una copia.
+  - Los cinco sistemas con borrador de «Nuevo»: Selectivo, Dinámico, Push Back, Cantilever y cama.
+  - **Cabecera:** no tiene borrador de «Nuevo» (no hay orden NUEVO de cabecera; «Nuevo › Cabecera en esta ventana» sigue sin construir,
+    `RackCadWindowViewModel.Cabecera.cs`) ni pestaña «Propiedades» en su editor: no hay nada que cambiar.
+- **Es parte del borrador**, como en un rack del dibujo: lo deja «Modificado» («Sin insertar, con cambios» en la lista de «Nuevo»), «Descartar»
+  la vacía, «Cerrar el editor» y «Descartar el borrador» preguntan, D-08 veta el cierre y la poda lo nombra. Mientras AutoCAD inserta, la tabla no
+  se edita. La nota de la tabla dice cuándo se escribe (T6pr-S1).
+- **Una propiedad no válida apaga «Insertar en el dibujo…»** con el motivo de la pestaña («Propiedades: hay 1 valor no válido.») en los cinco
+  editores: `InsertViewBlockedText` de Selectivo, Dinámico, Push Back y Cantilever, y `PrimaryBlockedText` de la cama, que antes la excluía para
+  una cama nueva. Sin esto, la inserción habría seguido y la pestaña no habría enviado nada (`BuildWrite` no envía un borrador con problemas).
+- **La petición NUEVO lleva la pestaña:** las cinco escrituras de la ventana envían `PropertiesWrite()` también para un rack nuevo. «Insertar
+  vista…» de un rack del dibujo sigue sin enviarla (VA-S10, sin cambio). La puerta de Dinámico la guarda ahora en la petición que espera
+  (antes no hacía falta: nada la enviaba).
+- **La orden NUEVO la escribe tras la inserción, en la misma orden** (un «U», como las APLICAR con VA-07):
+  `RackPropertiesDoorData.WithNewRackProperties` (Plugin), en las cinco órdenes (RACKSELECTIVONUEVO, RACKDINAMICONUEVO, RACKCAMANUEVO,
+  RACKCANTILEVERNUEVO y RACKPUSHBACKNUEVO), solo cuando AutoCAD colocó el rack:
+  1. lee el rack recién insertado por el borde de siempre (`CustomPropertiesExecutor.ReadRack`, la autoridad de RACKPROPIEDADES);
+  2. Application decide sobre qué se escribe (`RackPropertiesRules.NewRackFingerprint`): una colección escribible y SIN propiedades; si no, el
+     motivo (T6pr-S3);
+  3. escribe con `CustomPropertiesExecutor.ExecuteRackDraft`, el borde de VA-07, sin cambios: relee, compara la huella y planea en Application;
+  4. escriba o no, vuelve a leer el rack, y la respuesta es la regla de Application (`RackPropertiesRules.AnswerForNewRack`), que lleva lo que
+     el dibujo guarda ahora (T6pr-S8).
+- **La respuesta en la ventana** (`RackPropertiesTabViewModel.Answered`; en cada editor, `PropertiesWritten` pasa a llamarla, una línea). Para un
+  rack del dibujo hace lo de antes. Para un rack nuevo que AutoCAD colocó, la pestaña pasa a ser la del rack del dibujo:
+  - escritas: lo que el dibujo guarda ahora, con los ids que acuñaron las altas, limpia; desde ahí, «Actualizar» las escribe como en cualquier
+    rack;
+  - sin nada que escribir: también toma la lectura del rack, así que se pueden escribir después con «Actualizar»;
+  - no escritas, con el rack ya insertado: el aviso dice el motivo y, si el rack las admite, «Siguen en su pestaña «Propiedades»: escríbelas con
+    «Actualizar».»; las filas quedan como nuevas sobre lo que el rack guarda y el editor, «Modificado» (T6pr-S4);
+  - una respuesta sin lectura: «Las propiedades no se leyeron con el editor: para editarlas aquí, vuelve a leerlo del dibujo.», nunca una base
+    que no leyó (texto de las correcciones de la revisión, abajo; antes remitía a RACKPROPIEDADES).
+- **«Duplicar»** copia las filas de la pestaña como filas nuevas de la copia (`WithPropertiesOf`, `CopyRowsOf`; T6pr-S7).
+
+**Las decisiones (supuestos para el Owner):**
+
+| Id | Decisión | Por qué |
+|---|---|---|
+| T6pr-S1 | La nota de la tabla de un borrador: «Nombre y valor de texto. Van al borrador y se escriben al insertarlo con «Insertar en el dibujo…», en todas sus vistas y en la misma orden.» (desde la revisión, M-2, sin «del rack nuevo»: vale para una cama y una línea) | Es la nota de VA-07 para un rack que aún no está en el dibujo |
+| T6pr-S2 | Se escriben **después** de la inserción, en la misma orden (un «U» deshace el rack y sus propiedades). Si no se pueden escribir, el rack queda insertado y la respuesta lo dice | Es la regla de «Actualizar» con VA-07 (VA-S11): las propiedades no deshacen la escritura del rack |
+| T6pr-S3 | Solo se escriben sobre el rack recién insertado mientras no tiene ninguna propiedad y su colección es escribible. Si el dibujo las tiene en solo lectura (por ejemplo, con un bloque de RackCad que esta versión no interpreta: la regla de RACKPROPIEDADES), no se escriben y se dice por qué | Nunca se escribe encima de lo que el editor no vio |
+| T6pr-S4 | Sin escribir con el rack insertado: las filas siguen en su pestaña, como nuevas, y el editor queda «Modificado» para escribirlas con «Actualizar». Si el rack no las admite (solo lectura), la pestaña muestra su motivo y las filas no se conservan; el aviso dice que no se escribieron. **Ampliado en la revisión (M-1):** si además la orden no pudo volver a leer el rack, las filas también se conservan, sin base («No se pudieron volver a leer del dibujo tras la inserción y estas filas no se escribieron. «Actualizar» las escribe solo si en el dibujo sigue sin haber propiedades.»): el editor sigue «Modificado», D-08 veta el cierre, el aviso dice que siguen en la pestaña, y su «Actualizar» las escribe solo donde aún no hay ninguna propiedad. **Owner (2026-11-27): «Insertar y avisar», como está** | Lo mismo que «Actualizar» cuando no las escribe, sobre el rack que ya existe |
+| T6pr-S5 | Un borrador con solo propiedades es «Modificado»: veta el cierre (D-08), la poda lo nombra y «Descartar el borrador» pregunta | Son trabajo sin escribir, como el resto del borrador (ND-05 no cambia: sin cambios no veta) |
+| T6pr-S6 | Una propiedad no válida apaga «Insertar en el dibujo…» con el motivo de la pestaña | Si no, el rack se insertaría sin sus propiedades |
+| T6pr-S7 | «Duplicar» copia las filas como filas nuevas de la copia. **Owner (2026-11-27): «Sí, copiarlas», como está** | La copia es el borrador entero; las propiedades no son del diseño, así que se copian aparte |
+| T6pr-S8 | Tras insertar, la orden vuelve a leer siempre las propiedades del rack, también sin nada que escribir | La pestaña del rack insertado se queda con su lectura y «Actualizar» puede escribirla; antes quedaba sin leer hasta reabrirlo |
+| T6pr-S9 | Sin cambio, para que se sepa: «Guardar en biblioteca…» de un borrador no guarda sus propiedades | Viven en el sobre del rack, no en el diseño |
+
+**Application (cambios declarados):** `RackCadRackProperties.cs`: `RackPropertiesRead.NewRack` (opcional, al final), `ForNewRack`,
+`NewRackFingerprint`, `AnswerForNewRack` y los textos `NewRackWrittenText` y `NewRackKeptText`.
+
+**Las ediciones a archivos compartidos** (pequeñas, marcadas `T6 pr`):
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowViewModel.cs`: la condición de `Properties:` en `WriteSelective` y `WriteDynamic`.
+- `RackCadWindowViewModel.Cama.cs`, `.Cantilever.cs` y `.PushBack.cs`: la misma condición, una línea cada uno.
+- `RackCadWindowViewModel.Drafts.cs`: una línea en `OpenDraftCore` (`LoadNewRackProperties`) y la de `DuplicateCore` (`WithPropertiesOf`).
+- Los editores: `PropertiesWritten` → `Answered` (Selectivo, Dinámico, cama, Cantilever y Push Back); `OnPropertiesTabChanged` levanta el
+  estado de la inserción para un rack nuevo (Selectivo, Dinámico y Push Back; la cama y el Cantilever ya lo levantaban); una línea en el
+  motivo de la inserción de cada uno (en la cama, la condición).
+- `RackPropertiesTabViewModel.cs`: `IsNewRack`, la nota, `Answered` y `CopyRowsOf`.
+- Plugin: `RackPropertiesDoorData.cs` (`WithNewRackProperties`), las cinco órdenes NUEVO (la respuesta pasa por él) y `RackCadRackDoorPort.cs`
+  (la petición nueva de Dinámico guarda la pestaña).
+- **Archivo nuevo:** `src/RackCad.UI/VentanaRackCad/RackCadWindowViewModel.NewRackProperties.cs`.
+- **No cambian:** el borde (`CustomPropertiesExecutor`), sus guardas, los censos de órdenes (no hay órdenes nuevas), RACKPROPIEDADES ni el
+  editor clásico.
+
+**Las pruebas nuevas:**
+- Core, `NewRackPropertiesTests` (11): la pestaña de un rack nuevo; el borrador escrito en todas las vistas del rack recién insertado, con los ids
+  de Application, y que la escritura de la pestaña, sin huella, nunca pasa el plan de «Actualizar»; los rechazos (el rack ya tiene propiedades,
+  vistas distintas, un bloque que no se interpreta, nada leído); la respuesta (sin nada que escribir, escritas, no escritas con y sin conservar,
+  no colocado); y, sobre la fuente, que las cinco órdenes NUEVO responden por `WithNewRackProperties` con las propiedades de su petición tras la
+  inserción (teoría de 5), que la guarda ve una orden que las olvida, y que la puerta guarda las de un Dinámico nuevo y las escribe por el borde
+  en el orden: leer, decidir en Application, escribir, volver a leer, responder.
+- UI, `RackCadNewDraftPropertiesTests` (27), con un doble de la puerta de los cinco sistemas; cinco teorías de los cinco sistemas:
+  - la pestaña editable, con su nota, en el borrador («Modificado», D-08, «Descartar») y la propiedad no válida que apaga «Insertar en el
+    dibujo…» sin enviar nada;
+  - «Insertar en el dibujo…» envía las filas sin huella, la pestaña queda bloqueada mientras AutoCAD escribe, y con la respuesta queda la del rack
+    del dibujo, limpia, y «Actualizar» escribe sobre esa lectura;
+  - las no escritas siguen en la pestaña, «Modificado», y «Actualizar» las envía con la huella de la lectura;
+  - sin propiedades no envía nada y la pestaña toma la lectura del rack; sin lectura en la respuesta, no toma ninguna base;
+  - «Duplicar» copia las filas, que son de la copia;
+  - y dos hechos: un rack que no las admite (solo lectura) y la vista de los cinco editores con WPF real (STA), sin errores de enlace.
+
+**Comprobación en rojo:** diez piezas rotas a propósito, una a una, sobre el código final, con sus pruebas focales tras cada una.
+Antes de cada rotura se guardó una copia del original fuera del worktree; después, el archivo se restauró de esa copia con su SHA-256
+comprobado (las 17 restauraciones, iguales), y `git diff` quedó sin restos. Script y salida en el scratchpad de la sesión:
+`hs65\t6\pr\red.py`, `red-summary-1.txt` y `red-summary.txt`.
+
+1. R1, la ventana no carga la pestaña de un rack nuevo: fallan 22 de las 27 de la UI (pasan las 5 de «sin propiedades», que no la
+   necesitan).
+2. R2, las cinco escrituras de la ventana sin la pestaña de un rack nuevo: 5, una por sistema.
+3. R3, la pestaña sin conservar las filas no escritas: 5.
+4. R4, los cinco motivos de la inserción sin la pestaña: 5.
+5. R5, la regla de Application escribe sobre un rack nuevo que ya tiene propiedades: 1.
+6. R6, RACKPUSHBACKNUEVO sin `WithNewRackProperties` (fuente): 2, su caso de la teoría y la comprobación de la propia guarda.
+7. R7, la puerta pierde la pestaña de un Dinámico nuevo (fuente): 1.
+8. R8, «Duplicar» sin copiar las filas: 5.
+9. R9, la pestaña de un rack insertado sin lectura sigue como nueva: 5.
+10. R10, los datos de la puerta sin volver a leer el rack tras insertarlo (fuente): 1.
+
+La primera corrida de R6, R7 y R10 usó el binario de Core compilado con R5 (el script no recompila para una rotura de fuente): cada una tuvo
+un fallo de más, el de R5. Se repitieron tras recompilar Core restaurado, con los números de arriba.
+
+**Los números:**
+- **UI completa:** 3136 correctas, 1 con error, 48 omitidas (3185). Es la base `f02f519b` (3110 / 0 / 48) más las 27 nuevas.
+  - El error es `RackModalHostWindowTests.TheModalHostRunsTheWorkWithItsWindowAsOwnerAndCloses`, por su temporizador de seguridad (M-21),
+    con otras suites de otras partes corriendo a la vez en la máquina (39 min). Sola, la clase pasa 3 de 3.
+- **Core Full:** 19494 correctas, 0 con error, 403 omitidas (19897). Es la base (19483 / 0 / 403) más las 11 nuevas.
+- **Focales**, antes de la comprobación en rojo (las dos suites completas, que las incluyen, se corrieron después, sobre las fuentes
+  restauradas y recompiladas):
+  - UI, `RackCadNewDraftPropertiesTests` y `RackCadRackPropertiesTabTests`: 34 de 34;
+  - Core, las clases nuevas y las guardas del borde y de las puertas (`NewRackPropertiesTests`, `RackPropertiesRulesTests`,
+    `CustomPropertiesEdgeGuardTests`, `CamaDoorTests`, `SelectiveDoorInsertionTests`, `CantileverDraftEditorTests` y
+    `RackCadWindowListTests`): 186 de 186.
+- **Build Debug de la solución (Plugin incluido):** 0 errores; las advertencias MSB3277 de siempre.
+
+**Lo que queda para el smoke en AutoCAD:**
+- un Selectivo de «Nuevo» con dos propiedades, insertado con dos vistas: las dos vistas las tienen (RACKPROPIEDADES las muestra), la pestaña queda
+  «Limpio» con ellas, y un solo «U» quita el rack y sus propiedades;
+- lo mismo con un Dinámico, una cama, un Cantilever y un Push Back;
+- con el jig cancelado: nada escrito, el borrador sigue con sus propiedades;
+- tras insertarlo, cambiar una propiedad y «Actualizar»: se escribe sobre lo que se leyó;
+- (M-5 de la revisión) unas propiedades que no se escribieron al insertar no salen como error en la ventana: el aviso es el de la inserción,
+  con «Pero sus propiedades no se escribieron: …», igual que en «Actualizar» (VA-S11). Mirar que se lea bien.
+
+### Correcciones de la revisión (sobre `b447675e`)
+
+Sobre `b447675e` (el commit de la sesión con esta parte), en `D:\w6pr`. Sin commit, sin push, sin AutoCAD.
+
+**Respuestas del Owner (2026-11-27):** T6pr-S4, «Insertar y avisar», como está; T6pr-S7, «Sí, copiarlas», como está. Las dos están en la tabla
+de supuestos.
+
+| Punto | Qué pasaba | Qué se hizo |
+|---|---|---|
+| 1 (importante) | La inserción cancelada (el jig, nada colocado) con filas en la pestaña no tenía prueba | Teoría de los cinco sistemas (`ACancelledInsertionKeepsTheRowsInTheDraftAndTheNextOneSendsThemAgain`): la orden responde «no insertó» (`RackDoorRules.AnswerForNewRack(id, rack, 0, null)`; en la cama, `CamaDoorRules.AnswerForNewCama`). La pestaña sigue `IsNewRack`, editable y con su fila. El borrador sigue «Sin insertar, con cambios» y `UnwrittenWorkOf` lo nombra. Un segundo «Insertar en el dibujo…» reenvía la fila, sin huella. El código ya lo hacía (`Answered` no toca nada sin escritura): la prueba lo fija, y su rotura está abajo (R11) |
+| 2, M-1 | Si la orden no podía volver a leer el rack tras no escribir las propiedades (`after == null`), la pestaña quedaba sin lectura, sus filas se perdían y el editor quedaba «Limpio» | Las filas se conservan sobre una pestaña sin base (`RackPropertiesRules.NotReadAfterInsertion()`: escribible, sin huella, con su nota). El editor sigue «Modificado», D-08 veta el cierre y el aviso añade «Siguen en su pestaña «Propiedades»: escríbelas con «Actualizar».». Su «Actualizar» envía las filas sin huella, y la puerta (`RackPropertiesDoorData.WithRackProperties`, la de VA-07) solo escribe sin huella sobre una colección sin ninguna propiedad: la misma regla de la inserción (`NewRackFingerprint`). Con huella, como antes. T6pr-S4, ampliado |
+| 3, M-2 | Los rechazos decían «el rack nuevo» también para una cama y una línea Cantilever | Textos neutros: «no se pudieron leer del dibujo.», «el dibujo no admite que se escriban.», «en el dibujo ya hay propiedades que el editor no leyó, y no se escriben encima.» y, en la puerta, «no se encontró en el dibujo tras la inserción.». La nota de la tabla de un borrador tampoco dice ya «del rack nuevo» (T6pr-S1) |
+| 4, M-3 | El informe y esta sección presentaban la petición nueva de Dinámico, que no guardaba las propiedades, como un defecto | Precisado arriba: no era un defecto visible en la base, porque nada las enviaba; era una pieza que la función nueva necesitaba |
+| 5, M-5 | — | Anotado para el smoke: unas propiedades no escritas tras insertar no salen como error, igual que en «Actualizar» (VA-S11) |
+| 6 | «…siguen en RACKPROPIEDADES» remitiría a la propia ventana cuando la parte rl haga que RACKPROPIEDADES la abra | «Las propiedades no se leyeron con el editor: para editarlas aquí, vuelve a leerlo del dibujo.» (`RackPropertiesTabViewModel.NotReadText`), que vale con las dos |
+
+**Ediciones de esta corrección:**
+- `RackCadRackProperties.cs` (Application): `NotReadAfterInsertion()` y su texto; los rechazos neutros; la respuesta dice «Siguen…» también sin
+  relectura.
+- `RackPropertiesTabViewModel.cs`: `NotReadText`, la nota neutra, la nota de una pestaña sin base, y `Answered`, que sin relectura conserva las
+  filas sobre `NotReadAfterInsertion()`.
+- `RackPropertiesDoorData.cs` (Plugin): en `WithRackProperties`, una escritura sin huella usa `NewRackFingerprint`; con huella, nada cambia. Y
+  el texto neutro de `WithNewRackProperties`.
+- Las pruebas: `RackCadNewDraftPropertiesTests` (dos teorías de cinco, el texto nuevo de la pestaña sin lectura) y `NewRackPropertiesTests`
+  (los textos neutros con una cama y una línea, la respuesta sin relectura, la pestaña sin base y, sobre la fuente, que «Actualizar» decide
+  con la regla de Application antes del borde).
+
+**Comprobación en rojo:** cinco piezas más, rotas una a una con el mismo script, que ahora recompila tras restaurar una pieza compilada, así
+que una rotura solo de fuente corre sobre binarios restaurados. Las cinco restauraciones salieron con el mismo SHA-256 y `git diff` quedó sin
+restos. Salida: `hs65\t6\pr\red-summary-3.txt`.
+
+1. R11, `Answered` vacía la pestaña cuando no se insertó nada: fallan 5, la teoría del punto 1.
+2. R12, sin relectura la pestaña pierde las filas (UI): 5, la teoría de M-1.
+3. R13, la respuesta sin relectura no dice que siguen (Application): 1.
+4. R14, «Actualizar» sin la regla para una escritura sin huella (fuente de la puerta): 1.
+5. R15, un rechazo vuelve a decir «el rack nuevo»: 1.
+
+**Los números**, sobre las fuentes finales restauradas y recompiladas:
+- **Focales:**
+  - UI, `RackCadNewDraftPropertiesTests` y `RackCadRackPropertiesTabTests`: 44 de 44 (las 34 de antes y las 10 nuevas);
+  - Core, las mismas siete clases de antes: 187 de 187 (una prueba nueva).
+- **UI completa:** 3146 correctas, 1 con error, 48 omitidas (3195): las 3185 de antes más las 10 nuevas. El error es otra vez
+  `RackModalHostWindowTests.TheModalHostRunsTheWorkWithItsWindowAsOwnerAndCloses`, por su temporizador (M-21), con la máquina cargada (53 min).
+- **`FullyQualifiedName~RackModalHostWindowTests` sola** (M-21): 3 de 3, antes y después de la UI completa. La salida queda en el scratchpad de
+  la sesión: `hs65\t6\pr\modalhost-sola.txt` y `modalhost-sola-2.txt`.
+- **Core Full:** 19495 correctas, 0 con error, 403 omitidas (19898): las 19897 de antes más la nueva.
+- **Build Debug de la solución (Plugin incluido):** 0 errores; las advertencias MSB3277 de siempre.
