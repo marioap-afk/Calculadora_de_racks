@@ -12,7 +12,8 @@ namespace RackCad.Tests
             string file, string kind, string descriptor, string inner, string firstWrite)
         {
             var source = I55ProductCharacterizationTestSupport.Code("src", "RackCad.Plugin", file);
-            var body = I55ProductCharacterizationTestSupport.Body(source, file.Contains("PushBack") ? "internal static void EditPushBack(" : "internal static void EditCantilever(");
+            // I-64, quinta tanda (ct): the preflight of Cantilever moved, unchanged, with the drawing half of EditCantilever to ApplyCantileverEdit.
+            var body = I55ProductCharacterizationTestSupport.Body(source, file.Contains("PushBack") ? "internal static void EditPushBack(" : "internal static (int Redrawn, int Erased) ApplyCantileverEdit(");
             Assert.Contains(kind, body);
             Assert.Contains("viewBlock.Embed.Id", body);
             Assert.Contains(descriptor, body);

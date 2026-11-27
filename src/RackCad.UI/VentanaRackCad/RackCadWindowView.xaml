@@ -506,6 +506,17 @@
                                            Text="Este rack es una cabecera. Puedes editarla aquí, con el editor de cabeceras nuevo, sin bloquear AutoCAD. RACKEDITAR sigue siendo el configurador clásico." />
                             </DockPanel>
                         </Border>
+                        <!-- T5 ct (1 of 3): a Cantilever line can be edited here, with its door and the same rules (dolor 19). -->
+                        <Border x:Name="CantileverOfferPanel" DockPanel.Dock="Top" Style="{StaticResource Banner}" Margin="10,8,10,0"
+                                Visibility="{Binding ShowCantileverOffer, Converter={StaticResource FlagToVisibility}}">
+                            <DockPanel>
+                                <Button x:Name="EditCantileverHereButton" DockPanel.Dock="Right" Content="Editar aquí" Padding="12,4" Margin="8,0,0,0"
+                                        Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.Name="Editar la línea Cantilever en la ventana"
+                                        Click="OnEditCantileverHereClick" />
+                                <TextBlock TextWrapping="Wrap" VerticalAlignment="Center" Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                                           Text="Este rack es Cantilever. Puedes editarlo aquí, con el editor nuevo, sin bloquear AutoCAD. RACKEDITAR sigue siendo el editor clásico." />
+                            </DockPanel>
+                        </Border>
                         <!-- T4 bom (BM-10): «Ver su BOM» opens «BOM y lista de racks» with this rack chosen; the editors of the window have no BOM. -->
                         <Button x:Name="ShowBomOfRackButton" DockPanel.Dock="Top" HorizontalAlignment="Left" Margin="10,6,10,0" Padding="10,3"
                                 Style="{StaticResource SecondaryButtonStyle}" Content="Ver su BOM" AutomationProperties.Name="Ver el BOM de este rack"
@@ -525,6 +536,9 @@
                     <!-- E2 P3: Nuevo with a new Selectivo being made here, as the new Dinámico: its editor, until «Insertar en el dibujo…». -->
                     <ContentControl x:Name="NewSelectiveRackHost" Focusable="False"
                                     Visibility="{Binding ShowNewSelectiveEditor, Converter={StaticResource FlagToVisibility}}" />
+                    <!-- T5 ct (2 of 3): Nuevo with a new Cantilever line being made here (a draft), until «Insertar en el dibujo…». -->
+                    <ContentControl x:Name="NewCantileverRackHost" Focusable="False"
+                                    Visibility="{Binding ShowNewCantileverEditor, Converter={StaticResource FlagToVisibility}}" />
 
                     <ScrollViewer x:Name="NuevoPage" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
                                   Visibility="{Binding ShowNuevoCards, Converter={StaticResource FlagToVisibility}}">
@@ -547,6 +561,16 @@
                                 <StackPanel>
                                     <TextBlock Text="Dinámico en esta ventana" FontWeight="SemiBold" />
                                     <TextBlock Text="El editor nuevo, sin bloquear AutoCAD. Se inserta con «Insertar en el dibujo…»." TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Button>
+                            <!-- T5 ct (3 of 3): a new Cantilever line edited here, with the defaults of the classic editor (it resolves once «Lo esencial» is filled). -->
+                            <Button x:Name="NewCantileverHereButton" HorizontalAlignment="Left" Margin="0,0,0,10" Padding="12,6" MaxWidth="560"
+                                    Style="{StaticResource PrimaryButtonStyle}" IsEnabled="{Binding CanStartNewCantilever}"
+                                    AutomationProperties.Name="Nueva línea Cantilever en esta ventana" Click="OnNewCantileverHereClick">
+                                <StackPanel>
+                                    <TextBlock Text="Cantilever en esta ventana" FontWeight="SemiBold" />
+                                    <TextBlock TextWrapping="Wrap"
+                                               Text="La línea nueva lleva los valores por defecto del editor clásico y no se resuelve hasta elegir columna, base, brazo y sus largos (la lista «Para que la línea se resuelva» lleva a cada campo). Se inserta con «Insertar en el dibujo…» y, sin nombre, toma el automático (I-60)." />
                                 </StackPanel>
                             </Button>
                             <TextBlock Style="{StaticResource PageText}"

@@ -162,6 +162,9 @@ namespace RackCad.UI.VentanaRackCad
                 case RackSystemKind.PalletFlow:
                     hasDoor = _door != null;
                     return true;
+                case RackSystemKind.Cantilever: // T5 ct
+                    hasDoor = _cantileverDoor != null;
+                    return true;
                 default:
                     hasDoor = false;
                     return false;
@@ -176,6 +179,7 @@ namespace RackCad.UI.VentanaRackCad
             {
                 case RackSystemKind.SelectiveRack: return CreateSelectiveDraft(seed, session, rackId, label, out failure);
                 case RackSystemKind.PalletFlow: return CreateDynamicDraft(seed, session, rackId, label, out failure);
+                case RackSystemKind.Cantilever: return CreateCantileverDraft(seed, session, rackId, label, out failure); // T5 ct
                 default:
                     failure = RackCadDraftNaming.NoEditorText(seed.Kind);
                     return null;
@@ -399,6 +403,7 @@ namespace RackCad.UI.VentanaRackCad
                     return selective.IsNewRack && _selectiveDrafts.TryGetValue((entry.Session, entry.RackId), out var s) && ReferenceEquals(s.Editor, selective);
                 case DynamicEditorViewModel dynamic:
                     return dynamic.IsNewRack && _dynamicDrafts.TryGetValue((entry.Session, entry.RackId), out var d) && ReferenceEquals(d.Editor, dynamic);
+                case CantileverEditorViewModel cantilever: return IsLiveCantilever(entry.Session, entry.RackId, cantilever); // T5 ct
                 default:
                     return false;
             }
@@ -410,6 +415,7 @@ namespace RackCad.UI.VentanaRackCad
             {
                 case SelectiveEditorViewModel selective: return (selective.Name, selective.IsDirty, selective.IsWriting);
                 case DynamicEditorViewModel dynamic: return (dynamic.Name, dynamic.IsDirty, dynamic.IsWriting);
+                case CantileverEditorViewModel cantilever: return (cantilever.Name, cantilever.IsDirty, cantilever.IsWriting); // T5 ct
                 default: return (null, false, false);
             }
         }
@@ -430,6 +436,7 @@ namespace RackCad.UI.VentanaRackCad
                     var dynamicCopy = dynamic.Draft.SnapshotForWrite();
                     var dynamicBase = dynamic.BaselineDesignJson == null ? null : new RackProjectStore().Deserialize(dynamic.BaselineDesignJson);
                     return (dynamicBase?.DynamicDesign == null ? null : dynamicBase, dynamicCopy == null ? null : RackProject.ForDynamic(dynamicCopy.Design));
+                case CantileverEditorViewModel cantilever: return CopyOfCantilever(cantilever); // T5 ct
                 default:
                     return (null, null);
             }
@@ -445,6 +452,9 @@ namespace RackCad.UI.VentanaRackCad
                     break;
                 case DynamicEditorViewModel dynamic:
                     CloseDynamicEditor(dynamic);
+                    break;
+                case CantileverEditorViewModel cantilever: // T5 ct
+                    CloseCantileverEditor(cantilever);
                     break;
             }
         }

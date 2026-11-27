@@ -116,6 +116,7 @@ namespace RackCad.Tests
         [InlineData("src/RackCad.Plugin/RackDinamicoCommands.cs", "EditDynamic(")]
         [InlineData("src/RackCad.Plugin/RackPushBackCommands.cs", "EditPushBack(")]
         [InlineData("src/RackCad.Plugin/RackCantileverCommands.cs", "EditCantilever(")]
+        [InlineData("src/RackCad.Plugin/RackCantileverCommands.cs", "(int Redrawn, int Erased) ApplyCantileverEdit(")] // I-64 T5 ct: the drawing half of EditCantilever
         [InlineData("src/RackCad.Plugin/RackCabeceraCommands.cs", "EditCabecera(")]
         [InlineData("src/RackCad.Plugin/RackCamaCommands.cs", "EditCama(")]
         public void I60_N6_NoEditPathNamesALegacyRack(string file, string edit)

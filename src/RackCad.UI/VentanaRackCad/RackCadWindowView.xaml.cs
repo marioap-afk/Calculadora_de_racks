@@ -86,10 +86,12 @@ namespace RackCad.UI.VentanaRackCad
                 || e.PropertyName == nameof(RackCadWindowViewModel.ActiveSelectiveEditor)
                 || e.PropertyName == nameof(RackCadWindowViewModel.SelectiveEditors)
                 || e.PropertyName == nameof(RackCadWindowViewModel.ActiveCabeceraEditor) // T4 cb
-                || e.PropertyName == nameof(RackCadWindowViewModel.CabeceraEditors))
+                || e.PropertyName == nameof(RackCadWindowViewModel.CabeceraEditors)
+                || e.PropertyName == nameof(RackCadWindowViewModel.ActiveCantileverEditor) || e.PropertyName == nameof(RackCadWindowViewModel.CantileverEditors)) // T5 ct
                 ShowRackContent();
             if (e.PropertyName == nameof(RackCadWindowViewModel.NewDynamicEditor)) ShowNewContent();
             if (e.PropertyName == nameof(RackCadWindowViewModel.NewSelectiveEditor)) ShowNewSelectiveContent();
+            if (e.PropertyName == nameof(RackCadWindowViewModel.NewCantileverEditor)) ShowNewCantileverContent(); // T5 ct
             if (e.PropertyName == nameof(RackCadWindowViewModel.VariablesPage)) ShowVariablesPage(); // T4 va
         }
 
@@ -174,6 +176,7 @@ namespace RackCad.UI.VentanaRackCad
             foreach (var gone in _selectiveViews.Keys.Where(editor => !liveSelective.Contains(editor)).ToList()) _selectiveViews.Remove(gone);
 
             if (ShowCabeceraContent()) return; // T4 cb: the editor of a cabecera of its own
+            if (ShowCantileverContent()) return; // T5 ct: the editor of a Cantilever line
             var active = _viewModel.ActiveDynamicEditor;
             var activeSelective = active == null ? _viewModel.ActiveSelectiveEditor : null;
             if ((active == null && activeSelective == null) || _viewModel.ShowPanel)

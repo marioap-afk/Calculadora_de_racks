@@ -100,7 +100,8 @@ namespace RackCad.UI.VentanaRackCad
         // A design of Selectivo or Dinámico opens here when the window can make a new rack of that system; the others (and those two
         // without their door) open in their classic editor.
         private bool OpensHere(RackSystemKind kind) =>
-            (kind == RackSystemKind.SelectiveRack && CanStartNewSelective) || (kind == RackSystemKind.PalletFlow && CanStartNewDynamic);
+            (kind == RackSystemKind.SelectiveRack && CanStartNewSelective) || (kind == RackSystemKind.PalletFlow && CanStartNewDynamic)
+            || (kind == RackSystemKind.Cantilever && CanStartNewCantilever); // T5 ct
 
         private void OpenLibraryDesign(RackCadLibraryRow row)
         {
@@ -144,7 +145,8 @@ namespace RackCad.UI.VentanaRackCad
             var opening = OpenAsNewDraft(RackCadDraftSeed.FromLibrary(project, name, LibraryOrigin(name)));
             if (opening == null || !opening.Opened) return false;
 
-            object editor = project.Kind == RackSystemKind.SelectiveRack ? NewSelectiveEditor : NewDynamicEditor;
+            object editor = project.Kind == RackSystemKind.SelectiveRack ? NewSelectiveEditor
+                : project.Kind == RackSystemKind.Cantilever ? NewCantileverEditor : NewDynamicEditor; // T5 ct
             if (editor != null) _librarySources[editor] = project;
             return true;
         }
@@ -241,7 +243,8 @@ namespace RackCad.UI.VentanaRackCad
         }
 
         private bool IsEditorAlive(object editor) =>
-            _selectiveDrafts.Values.Any(e => ReferenceEquals(e.Editor, editor)) || _dynamicDrafts.Values.Any(e => ReferenceEquals(e.Editor, editor));
+            _selectiveDrafts.Values.Any(e => ReferenceEquals(e.Editor, editor)) || _dynamicDrafts.Values.Any(e => ReferenceEquals(e.Editor, editor))
+            || IsCantileverEditorAlive(editor); // T5 ct
 
         // ------------------------------------------------------------------ «Ejecutar» of the help (UT-10)
 

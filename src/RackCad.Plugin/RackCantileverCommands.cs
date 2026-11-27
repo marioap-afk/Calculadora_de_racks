@@ -227,6 +227,23 @@ namespace RackCad.Plugin
                 return;
             }
 
+            ApplyCantileverEdit(document, blockId, embed, project, window); // T5 ct: the drawing half, extracted with its body unchanged
+        }
+
+        /// <summary>
+        /// T5 ct (I-64, fifth batch): the drawing half of RACKEDITAR on a Cantilever line, everything <see cref="EditCantilever"/> did after its
+        /// window closed, with the result of the editor as an argument instead of the window, unchanged (as <c>ApplyDynamicEdit</c> for
+        /// Dinámico). RACKEDITAR passes its window; the RackCad window passes its draft (<see cref="CantileverDraftOutcome"/>): an update
+        /// (RACKCANTILEVERAPLICAR) or an update that then inserts views (RACKCANTILEVERINSERTAR). It answers how many views it redrew and how
+        /// many stale laterals it erased (zero and zero when it stopped before touching any geometry); RACKEDITAR ignores the answer, the window
+        /// uses it so «written» means written (I-08). Declared, as Dinámico (M-28): each view is redrawn in its own transaction and one that
+        /// fails does not stop the others (dolor 12); the whole command is one «U».
+        /// </summary>
+        internal static (int Redrawn, int Erased) ApplyCantileverEdit(
+            Document document, ObjectId blockId, RackEmbedDocument embed, RackProject project, ICantileverEditOutcome window)
+        {
+            var editor = document.Editor;
+
             // Use ONLY what the window/session produced; do NOT re-resolve a line the window already gave us.
             var design = window.DesignToInsert;
             var line = window.LineToInsert;
@@ -234,7 +251,7 @@ namespace RackCad.Plugin
             if (design == null || line == null)
             {
                 editor.WriteMessage("\nRackCad: la ventana Cantilever no entrego una linea valida; no se modifico nada.");
-                return;
+                return (0, 0);
             }
 
             // Identity: keep the picked envelope's GUID; the window GUID is only a fallback. NEVER mint one on edit.
@@ -245,7 +262,7 @@ namespace RackCad.Plugin
 
             if (!window.UpdateOnly)
             {
-                if (!RackUnsupportedSiblingInsert.TryAuthorize(document, blockId, embed, id, out authorized)) return;
+                if (!RackUnsupportedSiblingInsert.TryAuthorize(document, blockId, embed, id, out authorized)) return (0, 0);
             }
 
             var blocks = !window.UpdateOnly
@@ -266,7 +283,7 @@ namespace RackCad.Plugin
                     || !string.Equals(viewBlock.Embed.Id, id, StringComparison.OrdinalIgnoreCase))
                 {
                     editor.WriteMessage("\nRackCad: una vista ligada de esta linea no es Cantilever o pertenece a otro sistema (posible corrupcion). No se modifico ningun bloque.");
-                    return;
+                    return (0, 0);
                 }
             }
 
@@ -277,7 +294,7 @@ namespace RackCad.Plugin
             if (preflight.Aborted)
             {
                 editor.WriteMessage("\nRackCad: " + preflight.ErrorMessage);
-                return;
+                return (0, 0);
             }
 
             foreach (var viewBlock in blocks)
@@ -285,13 +302,13 @@ namespace RackCad.Plugin
                 if (!IsValidCantileverDescriptor(viewBlock.Embed))
                 {
                     editor.WriteMessage("\nRackCad: una vista ligada de esta linea tiene un descriptor de vista invalido (posible corrupcion). No se modifico ningun bloque.");
-                    return;
+                    return (0, 0);
                 }
             }
 
             if (!TryGeometryFactory(editor, out var factory))
             {
-                return;
+                return (0, 0);
             }
 
             // I-05: a NEW linked view is inserted only in the "!UpdateOnly" branch; warn once BEFORE any block is
@@ -314,7 +331,7 @@ namespace RackCad.Plugin
                 if (!batchProducts.PrepareAll(batchRequest, out var batchDiagnostic))
                 {
                     editor.WriteMessage("\nRackCad: no se preparo la cola ID18; no se modifico ningun bloque. " + batchDiagnostic);
-                    return;
+                    return (0, 0);
                 }
             }
 
@@ -405,7 +422,7 @@ namespace RackCad.Plugin
             {
                 RackViewBatchExecution.Run(document, batchProducts, batchRequest,
                     _ => RackCad.Application.Views.Batch.RackViewBatchRedrawResult.Applied());
-                return;
+                return (Redrawn(updated), erasedPhantoms); // T5 ct: what it did, for the window
             }
 
             editor.WriteMessage(changedInPlace
@@ -416,7 +433,12 @@ namespace RackCad.Plugin
                   + "; laterales obsoletas eliminadas x"
                   + erasedPhantoms.ToString(CultureInfo.InvariantCulture) + ")."
                 : "\nRackCad: no se pudo actualizar la linea Cantilever.");
+            return (Redrawn(updated), erasedPhantoms); // T5 ct: what it did, for the window
         }
+
+        // T5 ct: the views redrawn in place, of the three kinds.
+        private static int Redrawn(Dictionary<CantileverViewKind, int> updated) =>
+            updated[CantileverViewKind.Frontal] + updated[CantileverViewKind.Lateral] + updated[CantileverViewKind.Planta];
 
 
         /// <summary>
