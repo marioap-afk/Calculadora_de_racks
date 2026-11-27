@@ -151,7 +151,8 @@ namespace RackCad.Plugin
                 var xrecord = new Xrecord();
                 xrecord.Data = buffer;
 
-                dictionary.UpgradeOpen();
+                // T6 at (review of c4985a2e, I-2): inside «Actualizar todo» the NOD may be open for write already (the register of variables).
+                if (!dictionary.IsWriteEnabled) dictionary.UpgradeOpen();
                 dictionary.SetAt(DictKey, xrecord);
                 transaction.AddNewlyCreatedDBObject(xrecord, true);
             }

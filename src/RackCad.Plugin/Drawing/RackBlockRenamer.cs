@@ -45,7 +45,8 @@ namespace RackCad.Plugin.Drawing
                         return; // taken by another block — skip rather than uniquify (keep names predictable)
                     }
 
-                    def.UpgradeOpen();
+                    // T6 at (review of c4985a2e, I-2): inside «Actualizar todo» the definition may be open for write already (its redraw).
+                    if (!def.IsWriteEnabled) def.UpgradeOpen();
                     def.Name = target;
                     tr.Commit();
                 }

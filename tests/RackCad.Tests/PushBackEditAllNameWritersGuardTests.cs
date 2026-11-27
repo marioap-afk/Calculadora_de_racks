@@ -164,10 +164,13 @@ namespace RackCad.Tests
             // and its drawing half (RackPushBackWindowDrawing.cs). None of them writes a Name: the seven assignments and the order do not change.
             // T6 rl: 20 with RackCadWindowShortcuts.cs, which runs the read of «Editar aquí» of a Push Back (RACKPUSHBACKABRIR) inside
             // RACKPROPIEDADES; it writes no Name either.
+            // T6 at (I-64, sexta tanda): +2 with «Actualizar todo» (RackCadUpdateAllCommands.cs, which calls the same drawing half and
+            // PushBackDoorRules.Named as RACKPUSHBACKAPLICAR, and RackCadRackDoorPort.UpdateAll.cs, which keeps the copy of the write). Neither
+            // writes a Name: the seven assignments and the order do not change. Integrated: 19 + 1 (rl) + 2 (at) = 22.
             Assert.Equal(
                 new[]
                 {
-                    "archivos=20", // T5 pb; T6 rl
+                    "archivos=22", // T5 pb; T6 rl; T6 at
                     "asignaciones=7",
                     "RackMenuCommands.cs: header.Configuration.Name = Systems.Shared.RackNewRackName.Resolve( document, global::RackCad.Domain.Systems.Shared.RackSystemKind.Selective, header.Configuration.Name);",
                     "RackMenuCommands.cs: dynamic.System.Name = dynamicName;",

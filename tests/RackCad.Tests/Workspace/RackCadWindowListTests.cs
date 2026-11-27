@@ -298,7 +298,10 @@ public class RackCadWindowListTests
                 && !path.EndsWith("RackCadVariablesDoorCommands.cs", StringComparison.Ordinal)
                 && !path.EndsWith("RackCadCamaDoorCommands.cs", StringComparison.Ordinal) // T5 cm: the commands of the door of a cama, as those of the cabecera
                 && !path.EndsWith("RackCadCantileverDoorCommands.cs", StringComparison.Ordinal) // T5 ct
-                && !path.EndsWith("RackCadPushBackDoorCommands.cs", StringComparison.Ordinal)) // T5 pb
+                && !path.EndsWith("RackCadPushBackDoorCommands.cs", StringComparison.Ordinal) // T5 pb
+                // T6 at: the command of «Actualizar todo» (RackCadUpdateAllCommands) is a command of the door too: it reaches the same
+                // checks and drawing halves as the APLICAR commands; its one outer transaction lives in Systems/Shared/RackUpdateAllTransaction.cs.
+                && !path.EndsWith("RackCadUpdateAllCommands.cs", StringComparison.Ordinal))
                 Assert.DoesNotMatch(new System.Text.RegularExpressions.Regex(@"\bRackCommandSupport\.|\bApplyDynamicEdit\b|\bApplySelectiveEdit\b|\bApplyCabeceraUpdate\b|\bApplyCamaUpdate\b|\bApplyCantileverEdit\b|\bInsertSelectiveViews\b|\bDispatchInsertion\b|\bReadProjectVariables\b|\bRackPushBackWindowDrawing\b|\[CommandMethod"), code); // T5 cm: ApplyCamaUpdate
         }
     }

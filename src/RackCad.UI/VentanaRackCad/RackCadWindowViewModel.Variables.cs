@@ -192,13 +192,22 @@ namespace RackCad.UI.VentanaRackCad
                 if (!_variablesPages.TryGetValue(request.Session, out var page)) return;
                 page.EndWriting(written);
                 if (!written.Written) return;
+                VariablesWrittenFor(request.Session, written); // T6 at: shared with «Actualizar todo»
+            });
+        }
 
-                // T6 st (review of 5114345e, A1; the Owner: «Sí, marcarlo»): the clean editors of the racks it redrew are marked «El dibujo
-                // cambió», with «Volver a leer del dibujo», instead of being closed.
+        // What follows a write of the page (its own «Actualizar», or «Actualizar todo», T6 at): the clean editors of the racks it redrew are
+        // marked «El dibujo cambió», with «Volver a leer del dibujo» (T6 st, review of 5114345e, A1; the Owner: «Sí, marcarlo»; they were
+        // closed), and the page reads the drawing again (a read asked inside the answer of the write: the door may say Busy, smoke T4 F-2).
+        private void VariablesWrittenFor(SessionId session, VariablesDoorWritten written)
+        {
+            Contained(() =>
+            {
+                if (written == null || !written.Written || !_variablesPages.TryGetValue(session, out var page)) return;
                 var marked = new List<string>();
                 foreach (var rack in written.RedrawnRackIds ?? Array.Empty<string>())
                 {
-                    if (MarkRedrawnByVariables(request.Session, rack) && _selectiveDrafts.TryGetValue((request.Session, rack), out var entry))
+                    if (MarkRedrawnByVariables(session, rack) && _selectiveDrafts.TryGetValue((session, rack), out var entry))
                         marked.Add(SelectiveNameOf(entry));
                 }
 
