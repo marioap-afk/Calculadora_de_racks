@@ -267,11 +267,12 @@ namespace RackCad.Plugin.Drawing
             private Point3d position;
 
             /// <summary>A null <paramref name="prompt"/> keeps the historic cabecera wording, so every caller that
-            /// existed before I-37D reads exactly what it always read.</summary>
+            /// existed before I-37D reads exactly what it always read. T6 ui (O-3): unless the command opened a scope that
+            /// names what it inserts (<see cref="RackJigPrompt.Scope"/>); outside one the text is the same.</summary>
             public HeaderInsertionJig(BlockReference reference, string prompt = null)
                 : base(reference)
             {
-                this.prompt = string.IsNullOrWhiteSpace(prompt) ? "\nPunto de insercion de la cabecera: " : prompt;
+                this.prompt = RackJigPrompt.Resolve(prompt);
             }
 
             protected override SamplerStatus Sampler(JigPrompts prompts)

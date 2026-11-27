@@ -336,9 +336,9 @@ namespace RackCad.Application.Systems.Cantilever
                     {
                         diagnostics.Add(CantileverDiagnostic.Blocking(
                             CantileverDiagnostics.StationLevelDoesNotFit,
-                            "El nivel " + (levelIndex + 1) + " en el lado " + side +
-                            " necesitaria un troquel en z = " + Format(target) +
-                            " in, fuera del dominio de la reticula. Reduce el claro o cambia el brazo."));
+                            "El nivel " + (levelIndex + 1) + " en el lado " + CantileverDiagnosticText.Side(side) + // T6 ui (O-4 b)
+                            " necesitaría un troquel en z = " + Format(target) +
+                            " in, fuera del dominio de la retícula. Reduce el claro o cambia el brazo."));
                         return null;
                     }
 
@@ -377,7 +377,7 @@ namespace RackCad.Application.Systems.Cantilever
                 {
                     diagnostics.Add(CantileverDiagnostic.Blocking(
                         CantileverDiagnostics.StationLevelDoesNotFit,
-                        "El nivel " + (levelIndex + 1) + " en el lado " + cell.Side + " deja un claro de " +
+                        "El nivel " + (levelIndex + 1) + " en el lado " + CantileverDiagnosticText.Side(cell.Side) + " deja un claro de " + // T6 ui
                         Format(clear) + " in y se pidieron " + Format(design.RequestedClearHeight) + " in."));
                     return null;
                 }
@@ -387,7 +387,7 @@ namespace RackCad.Application.Systems.Cantilever
                     diagnostics.Add(CantileverDiagnostic.Blocking(
                         CantileverDiagnostics.StationLevelDoesNotFit,
                         "Las placas de los niveles " + levelIndex + " y " + (levelIndex + 1) + " en el lado " +
-                        cell.Side + " se traslapan."));
+                        CantileverDiagnosticText.Side(cell.Side) + " se traslapan.")); // T6 ui (O-4 b)
                     return null;
                 }
 
@@ -395,8 +395,8 @@ namespace RackCad.Application.Systems.Cantilever
                 {
                     diagnostics.Add(CantileverDiagnostic.Blocking(
                         CantileverDiagnostics.StationLevelDoesNotFit,
-                        "Los niveles " + levelIndex + " y " + (levelIndex + 1) + " en el lado " + cell.Side +
-                        " compartirian troqueles."));
+                        "Los niveles " + levelIndex + " y " + (levelIndex + 1) + " en el lado " + CantileverDiagnosticText.Side(cell.Side) + // T6 ui
+                        " compartirían troqueles."));
                     return null;
                 }
             }
@@ -454,7 +454,7 @@ namespace RackCad.Application.Systems.Cantilever
                     {
                         diagnostics.Add(CantileverDiagnostic.Blocking(
                             diagnostic.Code,
-                            "Nivel " + (levelIndex + 1) + ", lado " + side + ": " + diagnostic.Message));
+                            "Nivel " + (levelIndex + 1) + ", lado " + CantileverDiagnosticText.Side(side) + ": " + diagnostic.Message)); // T6 ui (O-4 b)
                     }
 
                     continue;

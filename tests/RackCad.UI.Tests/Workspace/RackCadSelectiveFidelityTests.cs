@@ -527,6 +527,29 @@ namespace RackCad.UI.Tests
             Assert.Equal("Fondo 2", Assert.Single(two.PostHeights).Title);
         }
 
+        // T6 ui (point 6; construido.md, risks of the polish of the entrega 1): with two tarimas in equal parts, «Distinta del resto» marked
+        // half of the cells. The «usual» content was the first of the most common ones, also when another one was as common, so one half was
+        // «distinct» from a rest that was the other half. A cell is distinct only from a content that most cells of the view have.
+        [Theory]
+        [InlineData(2)] // two tarimas, half and half
+        [InlineData(3)] // three tarimas, a third each: none is had by most cells
+        public void WithoutAContentThatMostCellsHaveNoCellIsDistinctFromTheRest(int tarimas)
+        {
+            var design = Structure();
+            design.Bays.Clear();
+            var sizes = new[] { (40.0, 60.0), (44.0, 55.0), (48.0, 50.0) };
+            for (var t = 0; t < tarimas; t++) design.Bays.Add(Bay(2, frente: sizes[t].Item1, alto: sizes[t].Item2));
+            design.PostPeraltes.Clear();
+            for (var post = 0; post <= tarimas; post++) design.PostPeraltes.Add(0.0);
+            var vm = SelectiveEditor(design);
+
+            var cells = vm.Rows.SelectMany(r => r.Cells).ToList();
+            Assert.Equal(2 * tarimas, cells.Count);
+            Assert.DoesNotContain(cells, c => c.IsModified);
+            Assert.DoesNotContain(cells, c => c.IsDistinct);
+            Assert.DoesNotContain(cells, c => c.AccessibleText.Contains("distinta del resto", StringComparison.Ordinal));
+        }
+
         [Fact]
         public void TheCellsCarryTheMarksOfTheLegendModifiedDistinctAndManual()
         {

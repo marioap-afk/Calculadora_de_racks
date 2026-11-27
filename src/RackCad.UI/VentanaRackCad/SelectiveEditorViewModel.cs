@@ -1427,7 +1427,7 @@ namespace RackCad.UI.VentanaRackCad
             _propertiesTab?.Reset(); // T4 va: «Descartar» drops the properties written in the tab too (VA-07)
             _confirmingClose = false;
             Say(_isNewRack
-                ? "Borrador descartado."
+                ? RackCadDraftNaming.DiscardedText // T6 ui (point 10)
                 : "Borrador descartado: se muestra lo último que se leyó del dibujo o se escribió en él desde este editor.", error: false);
             Rebuild();
             OnPropertyChanged(nameof(IsConfirmingClose));
@@ -1660,15 +1660,17 @@ namespace RackCad.UI.VentanaRackCad
 
             var notices = new List<string>();
             if (!string.IsNullOrWhiteSpace(edit.Notice)) notices.Add(edit.Notice);
-            if (reduces != null)
-            {
-                var lost = LossText(keptBefore, Kept(), reduces);
-                if (lost != null) notices.Add(lost);
-            }
+            var keptAfter = reduces == null ? default : Kept();
 
             // What the change dropped from the tramos of the inspector (fewer fronts or fondos move the selection) is said with it (S-21).
             Rebuild();
             UpdateDirty();
+            if (reduces != null)
+            {
+                var lost = LossText(keptBefore, keptAfter, reduces); // T6 ui (point 8): after UpdateDirty, so it knows whether «Descartar» is on
+                if (lost != null) notices.Add(lost);
+            }
+
             var dropped = TakeDropped();
             if (dropped != null) notices.Add(dropped);
             Say(string.Join(" ", notices), error: false);
@@ -1688,7 +1690,7 @@ namespace RackCad.UI.VentanaRackCad
 
         // S-09: reducing the fronts or the fondos drops the custom cabeceras and the own peraltes of the posts that disappear, as the
         // classic editor does, which says nothing; the window says it after the write. What «Descartar» does is said as for «Restaurar»: a
-        // new Selectivo goes back to the defaults (M-4 of the review of the entrega 2).
+        // new Selectivo goes back to how it opened (M-4 of the review of the entrega 2; T6 ui, UT-S11).
         private string LossText((int Cabeceras, int Peraltes) before, (int Cabeceras, int Peraltes) after, string what)
         {
             var cabeceras = Math.Max(0, before.Cabeceras - after.Cabeceras);
@@ -1697,9 +1699,11 @@ namespace RackCad.UI.VentanaRackCad
             var parts = new List<string>();
             if (cabeceras > 0) parts.Add(Count(cabeceras, "cabecera personalizada", "cabeceras personalizadas"));
             if (peraltes > 0) parts.Add(Count(peraltes, "peralte propio", "peraltes propios"));
+            // T6 ui (point 8): «Descartar» is named only while it is on (the draft may be again what the drawing has).
             return "Al reducir " + what + " se quitaron " + string.Join(" y ", parts) + " de los postes que ya no existen, como en el editor clásico. "
-                   + "Volver a subirlos no los recupera; "
-                   + (_isNewRack ? SelectiveLayoutRestoreResult.NewRackDiscardText : SelectiveLayoutRestoreResult.DiscardText);
+                   + (CanDiscard
+                       ? "Volver a subirlos no los recupera; " + (_isNewRack ? SelectiveLayoutRestoreResult.NewRackDiscardText : SelectiveLayoutRestoreResult.DiscardText)
+                       : "Volver a subirlos no los recupera.");
         }
 
         private void SetFlag(Action change, string propertyName)
@@ -1858,7 +1862,9 @@ namespace RackCad.UI.VentanaRackCad
             }
 
             var contents = now.Values.GroupBy(v => v.Content, StringComparer.Ordinal).OrderByDescending(g => g.Count()).ToList();
-            var usual = contents.Count > 1 ? contents[0].Key : null;
+            // T6 ui (point 6): «the content most cells have» is one that MORE THAN HALF of the cells have. Without it (two tarimas half and
+            // half, three in thirds) the first of the most common contents was taken, and the other half of the cells was «distinct».
+            var usual = contents.Count > 1 && contents[0].Count() * 2 > now.Count ? contents[0].Key : null;
 
             foreach (var row in _rows)
             {

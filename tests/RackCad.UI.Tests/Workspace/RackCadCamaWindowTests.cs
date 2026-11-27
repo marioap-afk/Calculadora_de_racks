@@ -417,6 +417,21 @@ namespace RackCad.UI.Tests
         // ------------------------------------------------------------------ a new cama of «Nuevo»
 
         [Fact]
+        public void DiscardingADraftOfNuevoSaysThatItGoesBackToHowItOpened() // T6 ui, point 10 (decided by the Owner on 2026-11-27)
+        {
+            using var rig = new Rig();
+            rig.Window.StartNewCama();
+            var editor = Assert.IsType<CamaEditorViewModel>(rig.Window.NewCamaEditor);
+            Write(editor.LaneField, "110");
+            Assert.True(editor.IsDirty);
+
+            editor.Discard();
+
+            Assert.False(editor.IsDirty);
+            Assert.Equal("Cambios descartados: el borrador vuelve a como se abrió.", editor.Message);
+        }
+
+        [Fact]
         public void CamaEnEstaVentanaIsADraftOfNuevoThatIsInsertedWithItsOwnCommandAndThenIsACamaOfTheDrawing()
         {
             using var rig = new Rig();

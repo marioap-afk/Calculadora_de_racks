@@ -2,6 +2,7 @@ using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.Diagnostics;
 using RackCad.Application.Persistence;
 using RackCad.Application.VentanaRackCad;
+using RackCad.Application.Views.Placement; // T6 ui (O-3): RackJigPrompt
 using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace RackCad.Plugin.VentanaRackCad
@@ -111,8 +112,12 @@ namespace RackCad.Plugin.VentanaRackCad
                 }
 
                 var write = pending.Write;
-                RackMenuCommands.DispatchInsertion(document,
-                    RackCad.UI.VentanaRackCad.PushBackDoorInsertion.NewRackRequest(write.RackId, write.Name, write.Design, write.System, write.InsertViews));
+                using (RackJigPrompt.Scope(RackJigPrompt.PushBackView)) // T6 ui (O-3): the jig names the view of the Push Back, not a cabecera
+                {
+                    RackMenuCommands.DispatchInsertion(document,
+                        RackCad.UI.VentanaRackCad.PushBackDoorInsertion.NewRackRequest(write.RackId, write.Name, write.Design, write.System, write.InsertViews));
+                }
+
                 var placed = RackCommandSupport.FindRackBlocks(document, pending.RackId);
                 door?.AnswerWrite(RackDoorRules.AnswerForNewRack(pending.RequestId, pending.RackId, placed.Count, placed.Count > 0 ? placed[0].Embed?.Name : null));
             }

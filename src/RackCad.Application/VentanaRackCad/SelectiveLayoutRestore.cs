@@ -100,8 +100,12 @@ namespace RackCad.Application.VentanaRackCad
         /// <summary>What «Descartar» does for a rack of the drawing: it goes back to what was last read or written.</summary>
         public const string DiscardText = "«Descartar» vuelve a lo último que se leyó o se escribió.";
 
-        /// <summary>What «Descartar» does for a new Selectivo of «Nuevo», never read nor written: it goes back to the defaults (P3-05).</summary>
-        public const string NewRackDiscardText = "«Descartar» vuelve a los valores por defecto.";
+        /// <summary>
+        /// What «Descartar» does for a new Selectivo of «Nuevo», never read nor written: it goes back to how the draft opened (P3-05). T6 ui
+        /// (UT-S11, with the words of point 10 of the Owner): it said «vuelve a los valores por defecto», also for a draft opened from the
+        /// library, which goes back to its design, and for a copy, which goes back to the base of its original.
+        /// </summary>
+        public const string NewRackDiscardText = "«Descartar» vuelve a como se abrió el borrador.";
 
         /// <summary>
         /// The notice for the user (spec of the screen, §6): how many manual values were removed and which, what the unchecked boxes keep,
@@ -111,9 +115,10 @@ namespace RackCad.Application.VentanaRackCad
 
         /// <summary>
         /// The notice, with what «Descartar» does for that rack: a rack of the drawing goes back to what was last read or written, a new
-        /// Selectivo to the defaults (M-4 of the review of the entrega 2).
+        /// Selectivo to how it opened (M-4 of the review of the entrega 2; T6 ui, UT-S11). T6 ui (point 8): <paramref name="canDiscard"/>
+        /// false (the restore left the draft as the drawing has it, so «Descartar» is off) says nothing of «Descartar».
         /// </summary>
-        public string NoticeFor(bool newRack)
+        public string NoticeFor(bool newRack, bool canDiscard = true)
         {
             string text;
             if (Total == 0)
@@ -123,7 +128,7 @@ namespace RackCad.Application.VentanaRackCad
             else
             {
                 text = "Layout restaurado en el borrador: " + Plural(Total, "valor manual quitado", "valores manuales quitados")
-                       + " (" + Breakdown + "). " + (newRack ? NewRackDiscardText : DiscardText);
+                       + " (" + Breakdown + ")." + (canDiscard ? " " + (newRack ? NewRackDiscardText : DiscardText) : string.Empty);
                 if (Kept != null && Kept.Total > 0) text += " Se conservan: " + Kept.Breakdown + ".";
             }
 

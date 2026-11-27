@@ -670,7 +670,7 @@ namespace RackCad.UI.Tests
             Edit(editor);
             editor.Discard();
             Assert.False(editor.IsDirty);
-            Assert.Equal("Borrador descartado.", editor.Message);
+            Assert.Equal("Cambios descartados: el borrador vuelve a como se abrió.", editor.Message); // T6 ui (point 10 of the Owner)
             Assert.Equal(Json(SelectiveDraftEditor.CreateNew(Catalog()).Design), Json(editor.Draft.Design));
             Assert.True(editor.IsNewRack);
 

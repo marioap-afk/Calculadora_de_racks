@@ -606,10 +606,10 @@ namespace RackCad.Tests
 
             Assert.True(blocked.IsBlocked);
             Assert.Null(blocked.MountingPlate);
-            Assert.Contains(
-                "VerticalPunchCount",
-                blocked.Diagnostics.Single(d => d.Code == CantileverDiagnostics.ArmPlateTooShortForBody).Message,
-                StringComparison.Ordinal);
+            // T6 ui (O-4 b): it asks for more rows by the name of the field of the window, not of the property.
+            var message = blocked.Diagnostics.Single(d => d.Code == CantileverDiagnostics.ArmPlateTooShortForBody).Message;
+            Assert.Contains("Aumenta «Troqueles verticales»: más troqueles", message, StringComparison.Ordinal);
+            Assert.DoesNotContain("VerticalPunchCount", message, StringComparison.Ordinal);
         }
 
         [Fact]

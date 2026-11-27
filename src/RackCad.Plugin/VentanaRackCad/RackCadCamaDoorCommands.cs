@@ -2,6 +2,7 @@ using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.Diagnostics;
 using RackCad.Application.Persistence;
 using RackCad.Application.VentanaRackCad;
+using RackCad.Application.Views.Placement; // T6 ui (O-3): RackJigPrompt
 using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace RackCad.Plugin.VentanaRackCad
@@ -166,8 +167,12 @@ namespace RackCad.Plugin.VentanaRackCad
 
                 // The document of a design of the library carries its unknown fields to the new cama (I-11); null for the defaults.
                 var source = new FlowBedConfigurationStore().DeserializeDocument(pending.Write.SourceDesignJson);
-                RackMenuCommands.DispatchInsertion(document,
-                    new RackCad.UI.Editor.FlowBedInsertionRequest(pending.Write.Bed, pending.RackId, pending.Write.Name, source));
+                using (RackJigPrompt.Scope(RackJigPrompt.NewCama)) // T6 ui (O-3): the jig asks for the point of the cama, not of a cabecera
+                {
+                    RackMenuCommands.DispatchInsertion(document,
+                        new RackCad.UI.Editor.FlowBedInsertionRequest(pending.Write.Bed, pending.RackId, pending.Write.Name, source));
+                }
+
                 var placed = RackCommandSupport.FindRackBlocks(document, pending.RackId);
                 door?.AnswerWrite(CamaDoorRules.AnswerForNewCama(pending.RequestId, pending.RackId, placed.Count, placed.Count > 0 ? placed[0].Embed?.Name : null));
             }

@@ -109,7 +109,8 @@ namespace RackCad.UI.VentanaRackCad
 
         public string DiffText => _writing
             ? "AutoCAD está escribiendo…"
-            : _isNewRack ? (_dirty ? "Con cambios desde los valores por defecto." : "Valores por defecto del editor clásico.")
+            // T6 ui (point 5, UT-S11): a new line can come from the library or be a copy, not only from the defaults of the classic editor.
+            : _isNewRack ? (_dirty ? "Con cambios desde que se abrió." : "Sin cambios desde que se abrió.")
             : _dirty ? (SegmentsPending ? "Cambios sin escribir · secuencia sin aplicar." : "Cambios sin escribir.") : "Sin cambios que escribir.";
 
         /// <summary>«Cantilever · sencilla, lado +Y · 3 estaciones · 3 niveles»: what the line is, under the name.</summary>
@@ -259,7 +260,7 @@ namespace RackCad.UI.VentanaRackCad
             _propertiesTab?.Reset();
             ResetSegmentRows();
             CloseLayoutQuestions();
-            Say(_isNewRack ? "Cambios descartados: la línea nueva vuelve a como se abrió." : "Borrador descartado: el editor vuelve a lo último que se leyó o se escribió.", error: false);
+            Say(_isNewRack ? RackCadDraftNaming.DiscardedText /* T6 ui (point 10) */ : "Borrador descartado: el editor vuelve a lo último que se leyó o se escribió.", error: false);
             Rebuild();
         }
 

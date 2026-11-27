@@ -145,6 +145,9 @@
                     </Border>
                     <TextBlock x:Name="DiffText" Text="{Binding DiffText}" Margin="0,16,12,4" VerticalAlignment="Top"
                                Style="{StaticResource OptionalText}" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                    <!-- T6 ui (point 9): the buttons are ONE group, beside the name while they fit, or together on the next line (at about
+                         950 px «Más» went alone to a second line). -->
+                    <WrapPanel x:Name="HeadButtons">
                     <Button x:Name="PrimaryButton" Content="{Binding PrimaryLabel}" Margin="0,12,8,4" Padding="14,4" VerticalAlignment="Top"
                             Style="{StaticResource PrimaryButtonStyle}" IsEnabled="{Binding CanPrimary}"
                             AutomationProperties.Name="{Binding PrimaryAutomationName}" Click="OnPrimaryClick" />
@@ -174,6 +177,7 @@
                             </StackPanel>
                         </Border>
                     </StackPanel>
+                    </WrapPanel>
                 </WrapPanel>
                 <TextBlock x:Name="SubLineText" Text="{Binding SubLine}" TextWrapping="Wrap" Margin="0,2,0,0" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
                 <!-- «Cerrar el editor» with changes: the inline question, with what is lost. -->

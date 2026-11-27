@@ -201,7 +201,7 @@ namespace RackCad.Application.Systems.Cantilever
                     {
                         diagnostics.Add(CantileverDiagnostic.Blocking(
                             CantileverDiagnostics.StationArmBlocked,
-                            "El brazo del nivel " + (plan.LevelIndex + 1) + " en el lado " + cell.Side +
+                            "El brazo del nivel " + (plan.LevelIndex + 1) + " en el lado " + CantileverDiagnosticText.Side(cell.Side) + // T6 ui (O-4 b)
                             " no resuelve."));
                         diagnostics.AddRange(arm.Diagnostics.Where(d => d.IsBlocking));
                         return CantileverStationAssembly.Blocked(faceMode, singleSide, diagnostics);
@@ -276,9 +276,9 @@ namespace RackCad.Application.Systems.Cantilever
                     {
                         diagnostics.Add(CantileverDiagnostic.Blocking(
                             CantileverDiagnostics.CombinationNotEligible,
-                            "La combinacion seccion '" + section.SectionId.Value + "' con arreglo '" +
-                            body.Arrangement + "' no esta registrada para el nivel " + (level + 1) +
-                            " en el lado " + side + "."));
+                            "La combinación sección '" + section.SectionId.Value + "' con arreglo '" +
+                            body.Arrangement + "' no está registrada para el nivel " + (level + 1) +
+                            " en el lado " + CantileverDiagnosticText.Side(side) + ".")); // T6 ui (O-4 b)
                         return null;
                     }
 
@@ -569,8 +569,8 @@ namespace RackCad.Application.Systems.Cantilever
             CantileverDiagnostic.Blocking(
                 CantileverDiagnostics.StationFinalPassDiffersFromLayout,
                 "El pase final difiere del layout en el nivel " + (level.LevelIndex + 1) + ", lado " +
-                side + ": " + detail + ". La estacion no se construye con un resultado que no coincide " +
-                "con el que dimensiono la columna.");
+                CantileverDiagnosticText.Side(side) + ": " + detail + ". La estación no se construye con un resultado que no coincide " + // T6 ui
+                "con el que dimensionó la columna.");
 
         private static string Format(double value) =>
             value.ToString("0.####", CultureInfo.InvariantCulture);

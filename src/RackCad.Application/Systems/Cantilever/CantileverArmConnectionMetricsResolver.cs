@@ -205,14 +205,14 @@ namespace RackCad.Application.Systems.Cantilever
             {
                 diagnostics.Add(CantileverDiagnostic.Blocking(
                     CantileverDiagnostics.ArmArrangementNotSupported,
-                    "El arreglo de cuerpo '" + arrangement + "' no tiene regla de colocacion."));
+                    "El arreglo de cuerpo '" + arrangement + "' no tiene regla de colocación."));
             }
 
             if (!CantileverArmFrameResolver.IsSupported(orientation))
             {
                 diagnostics.Add(CantileverDiagnostic.Blocking(
                     CantileverDiagnostics.OrientationNotSupported,
-                    "La orientacion de cuerpo '" + orientation + "' no tiene regla de marco."));
+                    "La orientación de cuerpo '" + orientation + "' no tiene regla de marco."));
             }
 
             // ---- the grid itself --------------------------------------------------------------------------
@@ -220,7 +220,7 @@ namespace RackCad.Application.Systems.Cantilever
             {
                 diagnostics.Add(CantileverDiagnostic.Blocking(
                     CantileverDiagnostics.StationGridNotIncreasing,
-                    "La reticula de troqueles no crece: su pitch debe ser finito y positivo, y se recibio " +
+                    "La retícula de troqueles no crece: su paso debe ser finito y positivo, y se recibió " +
                     Format(grid.Pitch) + "."));
             }
 
@@ -229,15 +229,15 @@ namespace RackCad.Application.Systems.Cantilever
             {
                 diagnostics.Add(CantileverDiagnostic.Blocking(
                     CantileverDiagnostics.ArmVerticalCountTooSmall,
-                    "Un brazo necesita al menos dos filas de troqueles; se pidieron " + verticalPunchCount +
-                    ". No se ajusta al minimo: una fila sola es una bisagra, no una conexion."));
+                    "Un brazo necesita al menos dos filas de troqueles («Troqueles verticales»); se pidieron " + verticalPunchCount +
+                    ". No se ajusta al mínimo: una fila sola es una bisagra, no una conexión."));
             }
 
             if (lowerPunchIndex < 0)
             {
                 diagnostics.Add(CantileverDiagnostic.Blocking(
                     CantileverDiagnostics.ArmPunchIndexOutOfRange,
-                    "El indice del troquel inferior es base cero y no puede ser negativo; se recibio " +
+                    "El índice del troquel inferior es base cero y no puede ser negativo; se recibió " +
                     lowerPunchIndex + "."));
             }
 
@@ -251,7 +251,7 @@ namespace RackCad.Application.Systems.Cantilever
                 diagnostics.Add(CantileverDiagnostic.Blocking(
                     CantileverDiagnostics.StationPunchIndexDomainOverflow,
                     "El rango de troqueles " + lowerPunchIndex + ".." + upper +
-                    " queda fuera del dominio de la reticula (indice maximo " +
+                    " queda fuera del dominio de la retícula (índice máximo " +
                     CantileverColumnRegularPunchGrid.MaxDefinedIndex + ")."));
 
                 // And ALSO the code I-37B promises for an index no column can hold. The two say different
@@ -269,8 +269,8 @@ namespace RackCad.Application.Systems.Cantilever
             {
                 diagnostics.Add(CantileverDiagnostic.Blocking(
                     CantileverDiagnostics.RequiredParameterMissing,
-                    "El diseno debe declarar el margen vertical de la placa de conexion: no existe un valor " +
-                    "por omision aprobado."));
+                    "El diseño debe declarar el margen vertical de la placa de montaje («Margen vertical»): no existe un valor " +
+                    "por omisión aprobado."));
             }
             else
             {
@@ -280,7 +280,7 @@ namespace RackCad.Application.Systems.Cantilever
                 {
                     diagnostics.Add(CantileverDiagnostic.Blocking(
                         CantileverDiagnostics.ParameterNotPositive,
-                        "El margen vertical de la placa de conexion no puede ser negativo; se recibio " +
+                        "El margen vertical de la placa de montaje no puede ser negativo; se recibió " +
                         Format(offset) + "."));
                 }
                 else if (offset + FitTolerance < diameter / 2.0)
@@ -289,7 +289,7 @@ namespace RackCad.Application.Systems.Cantilever
                     // same code as I-37A and I-37B.
                     diagnostics.Add(CantileverDiagnostic.Blocking(
                         CantileverDiagnostics.EdgeOffsetBelowRadius,
-                        "El margen vertical de la placa de conexion (" + Format(offset) +
+                        "El margen vertical de la placa de montaje (" + Format(offset) +
                         " in) es menor que el radio del troquel (" + Format(diameter / 2.0) +
                         " in): el agujero no cabe."));
                 }
@@ -302,8 +302,8 @@ namespace RackCad.Application.Systems.Cantilever
             {
                 diagnostics.Add(CantileverDiagnostic.Blocking(
                     CantileverDiagnostics.ArmSlopeInvalid,
-                    "La pendiente debe ser un numero finito no negativo; se recibio " +
-                    Format(slopeRisePer12) + ". Cero es valido; bajar no."));
+                    "La pendiente debe ser un número finito no negativo; se recibió " +
+                    Format(slopeRisePer12) + ". Cero es válido; bajar no."));
             }
             else if (CantileverArmFrameResolver.IsSupported(side) &&
                      !CantileverArmFrameResolver.IsRepresentableSlope(side, slopeRisePer12))
@@ -311,7 +311,7 @@ namespace RackCad.Application.Systems.Cantilever
                 diagnostics.Add(CantileverDiagnostic.Blocking(
                     CantileverDiagnostics.ArmSlopeFrameUndefined,
                     "La pendiente " + Format(slopeRisePer12) +
-                    " deja el brazo practicamente vertical: la proyeccion de +Z sobre su plano transversal se " +
+                    " deja el brazo prácticamente vertical: la proyección de +Z sobre su plano transversal se " +
                     "anula y el marco no queda definido."));
             }
 
@@ -319,7 +319,7 @@ namespace RackCad.Application.Systems.Cantilever
             {
                 diagnostics.Add(CantileverDiagnostic.Blocking(
                     CantileverDiagnostics.ParameterNotPositive,
-                    "El peralte combinado del cuerpo debe ser un numero positivo; se recibio " +
+                    "El peralte combinado del cuerpo debe ser un número positivo; se recibió " +
                     Format(combinedSectionHeight) + "."));
             }
 
@@ -334,8 +334,8 @@ namespace RackCad.Application.Systems.Cantilever
             {
                 diagnostics.Add(CantileverDiagnostic.Blocking(
                     CantileverDiagnostics.StationPunchIndexDomainOverflow,
-                    "Las elevaciones de los indices " + lowerPunchIndex + ".." + upper +
-                    " no estan definidas en la reticula."));
+                    "Las elevaciones de los índices " + lowerPunchIndex + ".." + upper +
+                    " no están definidas en la retícula."));
                 return CantileverArmConnectionMetrics.Blocked(side, diagnostics);
             }
 
@@ -350,10 +350,11 @@ namespace RackCad.Application.Systems.Cantilever
             {
                 diagnostics.Add(CantileverDiagnostic.Blocking(
                     CantileverDiagnostics.ArmPlateTooShortForBody,
-                    "La placa de conexion llega a z = " + Format(metrics.PlateTopZ) +
+                    // T6 ui (O-4 b): the names of the window, with their accents (it said «Aumenta VerticalPunchCount: mas troqueles»).
+                    "La placa de montaje llega a z = " + Format(metrics.PlateTopZ) +
                     " in y el cuerpo alcanza z = " + Format(metrics.BodyTopZ) +
-                    " in en el plano de conexion. Aumenta VerticalPunchCount: mas troqueles extienden la placa " +
-                    "hacia arriba. La placa NO se estira sin mas agujeros."));
+                    " in en el plano de conexión. Aumenta «Troqueles verticales»: más troqueles extienden la placa " +
+                    "hacia arriba. La placa NO se estira sin más agujeros."));
 
                 return CantileverArmConnectionMetrics.Blocked(side, diagnostics);
             }

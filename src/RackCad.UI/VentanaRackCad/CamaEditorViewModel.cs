@@ -529,7 +529,7 @@ namespace RackCad.UI.VentanaRackCad
             _propertiesTab?.Reset();
             SetRestoreOpen(false);
             SetConfirmingClose(false);
-            Say(_isNewRack ? "Borrador descartado." : "Borrador descartado: se muestra lo último que se leyó del dibujo o se escribió en él desde este editor.", error: false);
+            Say(_isNewRack ? RackCadDraftNaming.DiscardedText /* T6 ui (point 10) */ : "Borrador descartado: se muestra lo último que se leyó del dibujo o se escribió en él desde este editor.", error: false);
             OnPropertyChanged(nameof(Name));
             Rebuild();
             UpdateDirty();

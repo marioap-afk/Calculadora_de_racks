@@ -99,7 +99,7 @@ namespace RackCad.UI.VentanaRackCad
             _allPostsShown = null;
             AllPostsError = string.Empty;
             RaiseAllPosts();
-            Say(result.NoticeFor(_isNewRack), error: false);
+            Say(result.NoticeFor(_isNewRack, CanDiscard), error: false); // T6 ui (point 8): «Descartar» only while it is on
         }
 
         // «Lo esencial» › «Peralte de poste»: the peralte of the rack, the same write as the box of «Poste y anotaciones» had (the own peraltes

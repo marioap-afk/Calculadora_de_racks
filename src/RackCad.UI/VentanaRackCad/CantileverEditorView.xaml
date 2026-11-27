@@ -218,6 +218,9 @@
                         </Border.Style>
                         <TextBlock x:Name="StatusText" Text="{Binding StatusText}" FontWeight="SemiBold" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
                     </Border>
+                    <!-- T6 ui (point 9): the buttons are ONE group, beside the name while they fit, or together on the next line (at about
+                         950 px «Más» went alone to a second line). -->
+                    <WrapPanel x:Name="HeadButtons">
                     <Button x:Name="UpdateButton" Content="Actualizar" Margin="0,12,8,4" Padding="14,4" VerticalAlignment="Top"
                             Style="{StaticResource PrimaryButtonStyle}" IsEnabled="{Binding CanUpdate}"
                             Visibility="{Binding ShowInsertView, Converter={StaticResource FlagToVisibility}}"
@@ -256,6 +259,7 @@
                             </StackPanel>
                         </Border>
                     </StackPanel>
+                    </WrapPanel>
                 </WrapPanel>
                 <TextBlock x:Name="SubLineText" Text="{Binding SubLine}" Style="{StaticResource Muted}" />
                 <TextBlock x:Name="DiffText" Text="{Binding DiffText}" Style="{StaticResource Muted}" />

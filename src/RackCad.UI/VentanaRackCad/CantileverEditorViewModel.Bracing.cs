@@ -365,7 +365,9 @@ namespace RackCad.UI.VentanaRackCad
 
             if (keys.Contains(CantileverDraftEditor.RestoreAdvanced)) ResetSegmentRows();
             _restoreOpen = false;
-            Say("Layout restaurado en el borrador: " + CantileverDraftEditor.Count(keys.Count, "casilla", "casillas") + ". «Descartar» lo deshace.", error: false);
+            // T6 ui (point 8): a restore that leaves the line as the drawing has it does not name «Descartar», which is then off.
+            Say("Layout restaurado en el borrador: " + CantileverDraftEditor.Count(keys.Count, "casilla", "casillas") + "."
+                + (CanDiscard ? " «Descartar» lo deshace." : string.Empty), error: false);
             Rebuild();
             RaiseRestore();
         }

@@ -2,6 +2,7 @@ using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.Diagnostics;
 using RackCad.Application.Persistence;
 using RackCad.Application.VentanaRackCad;
+using RackCad.Application.Views.Placement; // T6 ui (O-3): RackJigPrompt
 using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace RackCad.Plugin.VentanaRackCad
@@ -462,11 +463,16 @@ namespace RackCad.Plugin.VentanaRackCad
                 }
 
                 RackUnitsGuard.WarnIfNotInches(document);
-                var placed = RackSelectivoCommands.InsertSelectiveViews(
-                    document, blockId, embed, plan.Saved, registry,
-                    new RackCad.UI.Systems.Selective.SelectiveDraftOutcome(write.RackId, write.Name, write.Design, write.System,
-                        write.LinkedPropertyFinalStates),
-                    views);
+                int placed;
+                using (RackJigPrompt.Scope(RackJigPrompt.SelectiveView)) // T6 ui (O-3): the jig names the view of the Selectivo, not a cabecera
+                {
+                    placed = RackSelectivoCommands.InsertSelectiveViews(
+                        document, blockId, embed, plan.Saved, registry,
+                        new RackCad.UI.Systems.Selective.SelectiveDraftOutcome(write.RackId, write.Name, write.Design, write.System,
+                            write.LinkedPropertyFinalStates),
+                        views);
+                }
+
                 if (placed < 0)
                 {
                     door?.AnswerWrite(SelectiveDoorInsertion.AnswerForInsert(pending.RequestId, pending.RackId, 0, 0, 0));

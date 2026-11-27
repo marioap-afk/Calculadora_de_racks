@@ -164,9 +164,30 @@
                     <TextBlock Text="La medida del perfil, sin las ménsulas." Style="{StaticResource UtOptional}" />
 
                     <TextBlock Text="Ménsula" Style="{StaticResource LgFieldLabel}" />
-                    <ComboBox x:Name="LargueroMensulaBox" AutomationProperties.Name="Ménsula del larguero"
-                              ItemsSource="{Binding MensulaOptions}" DisplayMemberPath="Label" SelectedValuePath="Key"
-                              SelectedValue="{Binding SelectedMensula, Mode=TwoWay}" />
+                    <!-- T6 ui (O-2): an empty list of the theme is a grey box with no text, like a disabled one. While no ménsula is chosen
+                         (and the catalog has some), the box says «Elige la ménsula» in the colour of the text; the clicks go through to the list. -->
+                    <Grid>
+                        <ComboBox x:Name="LargueroMensulaBox" AutomationProperties.Name="Ménsula del larguero"
+                                  ItemsSource="{Binding MensulaOptions}" DisplayMemberPath="Label" SelectedValuePath="Key"
+                                  SelectedValue="{Binding SelectedMensula, Mode=TwoWay}" />
+                        <TextBlock x:Name="LargueroMensulaPrompt" Text="Elige la ménsula" IsHitTestVisible="False" Margin="7,0,24,0"
+                                   VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource ShellTextPrimaryBrush}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding SelectedItem, ElementName=LargueroMensulaBox}" Value="{x:Null}" />
+                                                <Condition Binding="{Binding HasItems, ElementName=LargueroMensulaBox}" Value="True" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
                     <TextBlock x:Name="LargueroMensulaHint" Text="{Binding MensulaHint}" Style="{StaticResource UtOptional}" />
 
                     <TextBlock Text="Resumen" Style="{StaticResource UtBlockTitle}" />

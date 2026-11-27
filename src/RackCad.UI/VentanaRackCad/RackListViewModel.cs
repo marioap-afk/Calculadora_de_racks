@@ -297,7 +297,7 @@ namespace RackCad.UI.VentanaRackCad
             if (!_canRead || _block != WorkspaceActionBlock.None)
             {
                 if (_listSession == null) SetStatus("La lista se leerá cuando el dibujo esté libre.");
-                else if (userRequested) SetStatus("El dibujo no se puede leer ahora (hay un comando en curso); vuelve a intentarlo al terminar.");
+                else if (userRequested) SetStatus(CommandRunningText);
                 return;
             }
 
@@ -321,7 +321,10 @@ namespace RackCad.UI.VentanaRackCad
                     SetStatus(_racks.Count == 0 ? "Este dibujo no tiene racks de RackCad." : string.Empty);
                     break;
                 case BrowserSummaryStatus.Busy:
-                    if (list.IsOutdated && _listSession != null)
+                    // T6 ui: the read the user asked for that the host did not do says why (the host answers Busy to it only while a
+                    // command runs); a presentation keeps the text it had.
+                    if (userRequested) SetStatus(CommandRunningText);
+                    else if (list.IsOutdated && _listSession != null)
                         SetStatus(OutdatedText);
                     else if (_listSession == null) SetStatus(list.IsOutdated ? "Pulsa «Volver a leer la lista»." : "Leyendo la lista del dibujo…");
                     break;
@@ -329,12 +332,24 @@ namespace RackCad.UI.VentanaRackCad
                     SetStatus("No se pudo leer la lista: " + (string.IsNullOrWhiteSpace(list.Reason) ? "sin detalle." : list.Reason));
                     break;
                 default:
-                    if (_listSession == null) SetStatus("La lista de racks no está disponible.");
+                    // T6 ui: likewise for a rejection (the request is not of the active drawing, or there is none) and for a port that
+                    // does not offer the list.
+                    if (userRequested && list.Status == BrowserSummaryStatus.Rejected)
+                        SetStatus(list == BrowserRackList.NotOffered ? NotAvailableText : NotActiveDrawingText);
+                    else if (_listSession == null) SetStatus(NotAvailableText);
                     break;
             }
         }
 
         private const string OutdatedText = "La lista puede no estar al día: pulsa «Volver a leer la lista».";
+
+        private const string CommandRunningText = "El dibujo no se puede leer ahora (hay un comando en curso); vuelve a intentarlo al terminar.";
+
+        private const string NotAvailableText = "La lista de racks no está disponible.";
+
+        private const string NotActiveDrawingText =
+            "La lista no se volvió a leer: el dibujo de la ventana no es el dibujo activo de AutoCAD (cambió o se cerró). "
+            + "Vuelve a intentarlo con el dibujo a la vista.";
 
         // The last list read of each drawing, newest first; only a few drawings are remembered, the oldest are forgotten first.
         private const int RememberedSessions = 8;
