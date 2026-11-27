@@ -338,7 +338,7 @@ namespace RackCad.UI.Tests
         {
             var rig = new Rig();
 
-            Assert.Equal(new[] { "Nuevo", "Variables", "BOM y lista de racks", "Biblioteca de diseños", "Configuración" }, rig.Window.Sections.Select(s => s.Label).ToArray());
+            Assert.Equal(new[] { "Nuevo", "Variables", "BOM y lista de racks", "Almacén", "Biblioteca de diseños", "Configuración" }, rig.Window.Sections.Select(s => s.Label).ToArray()); // T5 al: «Almacén», between the BOM and the library
             Assert.DoesNotContain(rig.Window.Sections, s => s.IsActive);
 
             rig.Window.ShowPage(RackCadWindowPage.Configuracion);

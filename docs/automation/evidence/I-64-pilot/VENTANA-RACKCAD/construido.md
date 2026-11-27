@@ -3271,3 +3271,213 @@ mismo que `Path`.
   - `RackCadVariablesPageTests`: la relectura tras escribir, rechazada como Busy (nueva), y la fila alineada con los encabezados.
 - **Comprobación en rojo:** con cada corrección deshecha, su prueba falla (las cuatro piezas). Restauradas con la misma huella.
 - **UI completa:** 2961 / 0 / 48 (2960 + 1). Core no cambia: solo cambió la UI.
+
+## Quinta tanda, al: «Almacén» (layout de almacén) en la ventana
+
+**Rama:** local `architecture/workspace-persistente-rackcad-t5-al`, sobre `041e1799` (worktree `D:\w5al`). Sin commit, sin push, sin AutoCAD.
+Prototipo `protos\almacen` (preguntas 1 a 11); el Owner aceptó las once sin nota. No se borró código clásico: RACKLAYOUT, RLY,
+RACKRELLENAR y RR siguen abriendo sus diálogos (pregunta 10) y su cuerpo no cambió.
+
+**Lo que se construyó:**
+- **La sección «Almacén»** de la columna, entre «BOM y lista de racks» y «Biblioteca de diseños» (pregunta 1), con la página
+  `WarehousePageView` / `WarehousePageViewModel`, sin modal y sin bloquear AutoCAD:
+  - **la cabecera:** «Almacén», el estado de la lectura («Sin leer», «Leyendo el dibujo», «Lectura al día», «Puede no estar al día»,
+    «No se pudo leer», «Escribiendo»), «Colocar N racks» (primario, con su motivo cuando está apagado), «Volver a leer» y «Restablecer
+    valores»;
+  - **los avisos en línea:** «Escribiendo en el dibujo» con lo que coloca y «Dejar de esperar» hasta que la orden toma la petición;
+    «La rejilla no cabe en el edificio» con «Colocar de todos modos» y «Seguir ajustando»; «El dibujo cambió desde la lectura» con
+    «Volver a leer ahora»; y el mensaje de la página con «Cerrar aviso»;
+  - **las dos pestañas** «Rejilla» (hoy RACKLAYOUT) y «Rellenar un área» (hoy RACKRELLENAR), cada una marcada «(con problemas)» si
+    algo suyo no vale, con su nota;
+  - **«Rack semilla»:** la lista de los racks del dibujo con planta (según la última lectura de la lista), con «· con cambios sin
+    escribir» si tienen un borrador en la ventana; los que no tienen planta se nombran («Sin planta, no se ofrecen: …»); la huella
+    leída y cuántas plantas tiene el rack; los avisos de borrador sin escribir (pregunta 4), de varias plantas (preguntas 3 y 7) y de la
+    planta dentro del área (dolor 13);
+  - **«Rejilla»:** filas y columnas, con su error en el campo y el de la rejilla (más de un rack, como mucho 1000);
+  - **«Sitio»:** la capa, de una lista con las capas del dibujo (pregunta 8); el contorno leído o el motivo y el arreglo (dolor 10);
+    el texto de las 16 cuerdas (dolor 11); holgura a muros y a columnas;
+  - **«Pasillos»** para las dos pestañas (pregunta 11), «Filas espalda con espalda» con el hueco debajo, que solo se edita con ella
+    (dolor 7), y «La fila pareja no se espejea…» (dolor 6); en «Rellenar un área», «Probar también la orientación girada 90°», apagada
+    con espalda con espalda y con su motivo;
+  - **«Copias»:** «Enlazadas / Independientes» en «Rejilla» con lo que es cada una y el nombre de las independientes (dolor 14);
+    «Siempre enlazadas» en «Rellenar un área»;
+  - **«Verificar encaje (opcional)»**, plegable, con los dos lados del edificio en el vocabulario de un solo par de ejes (dolor 9) y lo
+    que mira (solo bordes);
+  - **«Resultado»:** cuatro cifras por pestaña (racks nuevos, la rejilla, lo que ocupa y el encaje; o caben, orientación, rejilla
+    probada y descartadas) y los problemas (se salen del edificio, la fila sola, nada cabe, las columnas, los huecos de la numeración,
+    más de 5000 racks);
+  - **«Esquema»** (pregunta 2): una casilla por rack, no a escala, con las etiquetas, la semilla, lo nuevo, lo que se sale, lo que
+    queda fuera del contorno y lo que cae sobre una columna, su leyenda, los pasillos como huecos y su nombre de UI Automation; hasta 30
+    filas × 24 columnas, y si no, lo dice.
+- **El cálculo es el de hoy** (pregunta 9): `WarehouseLayoutRules` (Application, puro) llama a `WarehouseGridPlanner.Plan` desde el
+  origen de la semilla y a `WarehouseFitChecker` sobre un edificio con su esquina en la de la semilla, como `ConfirmFits` de RACKLAYOUT,
+  y a `WarehouseAutoFill.Fill` sobre `WarehouseSite.FromBoundary`, como RACKRELLENAR. La validación es la de los dos diálogos clásicos
+  (`LocalizedNumberParser`, la coma decimal incluida), dicha campo por campo. El tope de 5000 del relleno, que hoy sale como error de
+  AutoCAD, se dice en la página (dolor 12). Las pruebas de Core comparan la página con las llamadas de las órdenes clásicas.
+- **La puerta** (`IRackCadWarehousePort`, en `WarehouseLayoutDoor.cs`; `RackCadRackDoorPort.Warehouse.cs` en el Plugin, con el mismo
+  `Send` y su `Abandon`), con dos órdenes en `RackLayoutCommands.Ventana.cs`:
+  - **`RACKALMACENLEER`** (`NoUndoMarker | UsePickSet | Redraw | NoHistory`): toma la petición, dice que la tomó (`Started`), comprueba
+    el dibujo y lee la planta de la semilla (la seleccionada en AutoCAD; si no hay, la que la página leyó antes; si no, la única),
+    medida con `SeedOf` —la medida de RACKLAYOUT, extraída de `ReadPlantaSeed` sin cambiar su cuerpo—, cuántas plantas tiene, el sitio
+    de la capa con `ReadSiteFromLayer` de RACKRELLENAR y las capas del dibujo;
+  - **`RACKALMACENCOLOCAR`**: vuelve a leer la planta de la petición (por su handle) y, para rellenar, el sitio; si la marca
+    (`Fingerprint`) no es la de la lectura de la página, no coloca nada y entrega la lectura nueva (pregunta 5); si no, planea con las
+    mismas reglas sobre lo que leyó ahora (`PlanPlace`), avisa de las unidades (I-05) y coloca con las mitades de las órdenes clásicas
+    (`PlaceGrid` / `PlaceFill`: una transacción y una regeneración, el patrón de rendimiento de siempre). Es una orden: un «U» lo
+    deshace todo. Su respuesta trae la lectura hecha después de colocar, en la misma orden (F-2: no se pide una lectura dentro de la
+    respuesta de una escritura).
+- **En la ventana:** una petición más de la puerta, la única en vuelo para toda la ventana (`DoorRequest.IsWarehouse`), numerada, con
+  «Dejar de esperar» hasta que la orden la toma, la respuesta solo para su número y su dibujo (si llega con otro dibujo activo, no se
+  usa y se dice), la respuesta durante la llamada (M-22) y la poda de un dibujo cerrado. La petición no lleva rack, para que las ramas
+  de los editores (que buscan su borrador por el rack) nunca la tomen por suya.
+- **Solo tras un gesto del usuario** se lee: la primera vez que se abre la sección con un clic para un dibujo, «Llevar al almacén…»,
+  otra semilla u otra capa elegida, «Volver a leer» y «Restablecer valores» cuando cambia la capa. Cambiar de dibujo no envía nada.
+  Cada dibujo guarda su semilla y su última lectura; tras cualquier orden que no sea la propia (la lectura, o la colocación desde que la
+  orden la toma hasta el reposo), «Puede no estar al día» (como BM-S1). «Colocar» no se bloquea por eso: vuelve a leer antes de escribir.
+- **Los valores se recuerdan por usuario** (pregunta 6) en `settings.json` (`UserSettings.WarehouseLayout`, `IRackCadWarehouseSettings`),
+  nunca en el dibujo; «Restablecer valores» vuelve a los de las ventanas clásicas. «Almacén» no tiene nada sin escribir: no veta cerrar el
+  dibujo (D-08).
+- **«Llevar al almacén…»** en la página de cada rack (pregunta 1): abre «Almacén» con ese rack como semilla, en «Rejilla», y lo lee; sin
+  planta, el botón se apaga y dice por qué.
+- **«Nuevo»:** la frase de las órdenes que siguen en AutoCAD ya no nombra RACKLAYOUT y dice que el layout está en «Almacén».
+- **No aplica a «Almacén»** (no es un sistema de rack): borradores de «Nuevo», panel de vistas, pestaña «Propiedades», «Guardar en
+  biblioteca…», seguridad y BOM del borrador. Las copias que coloca cuentan en el BOM total como hoy (enlazadas, como copias; independientes,
+  como racks propios).
+
+**Cambios declarados fuera de la ventana:**
+- `WarehouseAutoFillResult.Omitted` (Application, aditivo): las celdas candidatas descartadas, con su motivo. Es el veredicto que el bucle
+  ya calculaba y tiraba; las celdas que se quedan, los recuentos y la orientación no cambian (prueba).
+- `RackLayoutCommands.SeedOf` (Plugin): la medida de la semilla, extraída de `ReadPlantaSeed` con el mismo cuerpo; RACKLAYOUT y
+  RACKRELLENAR la usan como antes.
+
+**Supuestos y decisiones** (prefijo AL-S, cada uno en un sitio):
+
+| Id | Supuesto o decisión | Dónde se cambia |
+|---|---|---|
+| AL-S1 | Las órdenes son `RACKALMACENLEER` (lee, sin Deshacer) y `RACKALMACENCOLOCAR` (escribe); el prototipo las dejaba [PENDIENTE] | `WarehouseLayoutRules.ReadCommand`, `PlaceCommand` |
+| AL-S2 | **Pregunta 3:** la semilla es la planta seleccionada en AutoCAD; sin selección, la que la página leyó antes (su handle); si no, la única. Con varias y ninguna elegida, o con varias seleccionadas, la lectura no tiene semilla y dice qué hacer | `ReadSeedFacts` en `RackLayoutCommands.Ventana.cs` |
+| AL-S3 | **Pregunta 5, la marca:** en «Rejilla», la planta (handle de la referencia y de su definición, origen, huella, desfase, giro, escala, el hash de su diseño, si su tipo se conoce y si tiene datos embebidos); en «Rellenar un área», además el sitio (contorno, obstáculos e ignorados). No cuenta cuántas plantas hay | `WarehouseLayoutRules.Fingerprint` |
+| AL-S4 | La lista de capas es la de las capas propias del dibujo (sin las dependientes de un xref), por nombre, con la elegida aunque no exista | `ReadLayerNames`, `WarehousePageViewModel.BuildLayers` |
+| AL-S5 | Los valores se guardan en cada cambio (tal como se escriben, también uno no válido) y se cargan la primera vez que se muestra la página | `WarehousePageViewModel.SetValues`, `LoadValues` |
+| AL-S6 | Las semillas salen de la lista de la columna (sus vistas, como IN-03): un rack con planta insertada después no se ofrece hasta «Volver a leer la lista» | `RacksOfTheList` |
+| AL-S7 | «Puede no estar al día» = corrió una orden que no es la propia, como BM-S1 (también volver a un dibujo) | `WarehousePageViewModel.Present` |
+| AL-S8 | La lectura lee siempre la planta, el sitio de la capa elegida y las capas, también en «Rejilla» | `ReadWarehouse` |
+| AL-S9 | El tipo sin manejador bloquea «Rejilla» (como RACKLAYOUT) y no «Rellenar un área» (RACKRELLENAR no lo comprueba, dolor 12): el cálculo de hoy | `WarehouseLayoutRules.Assess` |
+| AL-S10 | El aviso de unidades (I-05) sale en la línea de órdenes al colocar, como en las órdenes clásicas; la página no lo dice (solo `RackUnitsGuard` lee INSUNITS) | `RACKALMACENCOLOCAR` |
+| AL-S11 | Mientras AutoCAD coloca, la página tiene su propio «Dejar de esperar», además del de la ventana (como BM-S9) | `WarehousePageView.xaml` |
+| AL-S12 | El esquema usa los tokens de siempre: la semilla rellena en azul, lo nuevo con borde azul, lo que se sale con borde rojo discontinuo, lo de fuera del contorno con borde gris discontinuo y lo de una columna en amarillo | `CellShape`, `CellText` |
+| AL-S13 | Por debajo de 760 px de ancho, el resultado va debajo de los valores | `WarehousePageView.xaml.cs` |
+| AL-S14 | Pregunta 10: RLY y RR abren los diálogos clásicos hasta la validación del Owner en AutoCAD; después, abrir «Almacén» con el rack designado es un cambio pequeño (como VA-S2) | — |
+| AL-S15 | Con «Almacén» a la vista, un rack seleccionado en AutoCAD no lleva la ventana a su página (seleccionar la planta semilla es parte de la página, pregunta 3); la columna sigue la selección. En las demás páginas, como antes | `WarehouseKeepsPage`, dos condiciones en `RackCadWindowViewModel.cs` |
+
+**Ediciones a archivos compartidos** (pequeñas y marcadas `T5 al`):
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowViewModel.cs`: `RackCadWindowPage.Almacen`; la entrada de `SectionOrder`; `DoorRequest.IsWarehouse`;
+  una línea en el constructor (`WireWarehouse()`); `WaitingText` (dos líneas); `StopWaiting` (el texto con la petición tomada y una rama);
+  una rama en la poda de una petición huérfana; una línea al final de `ShowPage` (`WarehousePageShown(page)`) y otra en `Present`
+  (`PresentWarehouse`); y `!WarehouseKeepsPage` en `OnBrowserChanged` y en `FollowSelectionOfTheActiveRack` (AL-S15).
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowView.xaml`: dos bloques `<!-- T5 al -->`: «Llevar al almacén…» en la página del rack, tras
+  «Ver su BOM», y el `ContentControl` `WarehousePage`, tras el del BOM. `RackCadWindowView.xaml.cs`: una línea en el constructor y el
+  manejador del botón.
+- `src/RackCad.UI/VentanaRackCad/RackListViewModel.cs`: `Entries` (interno, una línea).
+- `src/RackCad.UI/VentanaRackCad/RackCadNuevoExtras.xaml`: la frase de las órdenes clásicas.
+- `src/RackCad.Plugin/VentanaRackCad/RackCadRackDoorPort.cs`: una línea en `Abandon` (`AbandonWarehouse`).
+- `src/RackCad.Plugin/RackLayoutCommands.cs`: `SeedOf`, extraída de `ReadPlantaSeed` (ver arriba).
+- `src/RackCad.Application/Layout/WarehouseAutoFill.cs`: `Omitted` (ver arriba).
+- `src/RackCad.Application/Settings/UserSettings.cs`: la propiedad `WarehouseLayout`.
+- Archivos nuevos: `WarehouseLayoutDoor.cs`, `WarehouseLayoutRules.cs` (Application, `VentanaRackCad`), `WarehouseLayoutPreferences.cs`
+  (Application, `Settings`); `RackLayoutCommands.Ventana.cs`, `RackCadRackDoorPort.Warehouse.cs` (Plugin); `WarehousePageViewModel.cs`,
+  `WarehousePageView.xaml(.cs)`, `RackCadWindowViewModel.Warehouse.cs`, `WarehouseLayoutSettings.cs` (UI); y las dos clases de prueba.
+
+**Censos y guardas que cambian, con su nota:**
+- `SelectiveEditorOpenTests.GUARDA_EL_CENSO_DE_COMANDOS_NO_CAMBIA`: de 57 a 59.
+- `CustomPropertiesCommandGuardTests`: `A14WarehouseCommands = { "RACKALMACENCOLOCAR", "RACKALMACENLEER" }` en la base.
+- `RackUnitsGuardSourceTests.EachInsertionPath_CallsTheGuard_OncePerOperation_NoAliasDoubleWarn`: `RackLayoutCommands.Ventana.cs`, una llamada.
+- El orden de las secciones: `RackCadWindowTests.TheSectionsAreTheOnesOfThePrototype…`, `RackCadUtilitiesTests.AyudaIsAPageOfTheWindow…` y
+  `RackCadNewDraftsTests` (la columna con los borradores) ganan «Almacén».
+- Las guardas de capas y de `SendStringToExecute` de `RackCadWindowListTests` pasan sin cambios: el parcial de la puerta usa `Send` y las
+  órdenes viven fuera de `Plugin/VentanaRackCad`.
+
+**Las pruebas:**
+- Core, `tests/RackCad.Tests/Workspace/WarehouseLayoutPageTests.cs` (nuevo, 17 casos):
+  - los valores por defecto son los de los dos diálogos; el error de cada campo, el hueco solo con su casilla, la coma decimal, el edificio
+    con los dos lados o ninguno, la rejilla de más de un rack y como mucho 1000;
+  - la rejilla es `WarehouseGridPlanner.Plan` desde el origen de la semilla (celdas, etiquetas, totales y la fila sola de espalda con
+    espalda); el encaje da los mismos racks fuera que `WarehouseFitChecker.Check` con el sitio de `ConfirmFits`;
+  - el tipo sin manejador bloquea la rejilla y no el relleno; las independientes sin datos embebidos se rechazan;
+  - el relleno es `WarehouseAutoFill.Fill` con los mismos argumentos (celdas y recuento), y el esquema tiene todas las candidatas (las
+    guardadas, las de fuera y las de una columna); las celdas descartadas no cambian lo que el relleno guarda (la nave en L de
+    `WarehouseAutoFillTests`); más de 5000 racks, nada que quepa, una capa sin contorno y una capa sin leer; la semilla dentro del área;
+  - la marca sigue a la planta (origen, giro, diseño, otra planta) y, para rellenar, al sitio; «Colocar» coloca lo que mostró el esquema
+    y nada cuando el dibujo cambió (con el texto); la rejilla que no cabe solo con «Colocar de todos modos»; los valores no válidos nunca;
+  - los textos de la línea de órdenes (los de RACKLAYOUT y RACKRELLENAR) y de la página;
+  - sobre la fuente: RACKALMACENLEER sin marca de Deshacer, con la selección, el orden de la petición, la medida de RACKLAYOUT
+    (`SeedOf`, también en `ReadPlantaSeed`), el sitio de RACKRELLENAR y sin escribir nada él mismo; RACKALMACENCOLOCAR con marca de
+    Deshacer, en este orden: tomar, `Started`, el dibujo, la relectura de esa planta, `PlanPlace`, la respuesta sin colocar, el aviso de
+    unidades, `PlaceGrid` / `PlaceFill` y la lectura de después; la puerta con `Send` y `AbandonWarehouse`.
+- UI, `tests/RackCad.UI.Tests/Workspace/RackCadWarehousePageTests.cs` (nuevo, 19 casos), con una puerta doble que implementa
+  `IRackCadWarehousePort`:
+  - la sección en su sitio y su primer clic, que lee una vez (y nada más: otra página, otro dibujo, la vuelta);
+  - las semillas con planta y los que no la tienen; otra semilla y otra capa se leen; «Volver a leer» conserva la planta leída;
+  - el borrador con cambios y las varias plantas, que avisan y no bloquean; varias sin elegir, que bloquean con su motivo;
+  - el resultado y el esquema que siguen a cada valor; los errores en su campo, la marca de la pestaña, el tope del esquema; el hueco y
+    la orientación girada con espalda con espalda; el relleno con sus cifras, su leyenda y la semilla dentro;
+  - «Colocar»: una petición con la marca de la lectura y los valores, el editor bloqueado, «Dejar de esperar» hasta `Started`, la orden
+    propia que no marca nada, la respuesta con la lectura nueva, sin segunda orden y con los valores guardados;
+  - el dibujo que cambió (la lectura nueva entra en la página); la rejilla que no cabe y su pregunta en línea;
+  - una petición para toda la ventana; la respuesta de otro número y la de otro dibujo, que no se usan; «Dejar de esperar» de la lectura
+    y de la colocación, y la colocación ya tomada, que no se suelta; la entrega fallida y el dibujo cerrado;
+  - «Puede no estar al día» tras una orden ajena y no tras la propia; los valores recordados y «Restablecer valores», que vuelve a leer
+    si cambia la capa; el dibujo que se cierra sin veto; la ventana sin la puerta de la página;
+  - «Llevar al almacén…» (sin planta, apagado con su motivo; con planta, lee); una selección en AutoCAD con «Almacén» a la vista (AL-S15);
+  - con WPF real (STA) y sin errores de enlace: la página y sus controles (el valor escrito, el esquema con sus nombres, el error, el rack
+    elegido que se conserva al rehacer las listas, la elección como gesto, el relleno y su capa, «Colocar» y su aviso, «Dejar de esperar»,
+    «Cerrar aviso», las copias, nombres únicos y «Restablecer»); la pregunta del encaje y el aviso «El dibujo cambió…»; el resultado debajo
+    en estrecho; y la ventana que aloja la página, la sección en la columna y «Llevar al almacén…» en la página del rack, sin nombres de
+    tipo en la página (F-1).
+
+**Comprobación en rojo:** dieciocho piezas rotas a propósito (diecisiete y la U2b), una a una, con script (`hs65\t5\al\red.py` en el scratchpad de la sesión,
+salida en `red-out.txt`). Antes de cada rotura el script guarda una copia del archivo FUERA del worktree; después compila, corre la clase de
+la pieza y devuelve el archivo a sus bytes, con el mismo SHA-256 (lo comprueba). Tras la última se buscaron restos en `git diff`: ninguno.
+1. (C1) la rejilla sin el origen de la semilla: fallan 3;
+2. (C3) «Colocar» sin comparar la marca: falla 1;
+3. (C4) la marca sin el giro: falla 1;
+4. (C5) el relleno sin las celdas de fuera del contorno: fallan 2;
+5. (C6) una rejilla que no cabe se coloca sin «Colocar de todos modos»: falla 1;
+6. (C7) RACKALMACENLEER con marca de Deshacer: falla 1;
+7. (C8) RACKALMACENCOLOCAR sin el aviso de unidades: fallan 2 (la de la fuente y `RackUnitsGuardSourceTests`);
+8. (U1) la página lee sola al presentarse un dibujo: fallan 8;
+9. (U2) la respuesta de la lectura sin contar como orden propia: **sobrevivió**, porque `Taken` ya la cuenta (la orden siempre dice
+   `Started` antes de responder); quitadas las dos (U2b): falla `AReadingMayBeOutOfDateAfterACommandThatIsNotItsOwn`;
+10. (U3) una orden después de la lectura no la marca: fallan 2;
+11. (U4) la ventana acepta la respuesta de otro número: falla 1;
+12. (U5) «Dejar de esperar» no avisa a la página: fallan 3;
+13. (U6) «Colocar» no pregunta con la rejilla fuera del edificio: fallan 2;
+14. (U7) los valores no se recuerdan: fallan 2;
+15. (U8) la vista no repone el rack elegido: falla 1, la de la vista;
+16. (U9) la sección fuera de la columna: fallan 2;
+17. (U10) «Llevar al almacén…» sin leer: falla 1.
+
+**Los números** (solución en Debug recompilada con `--no-incremental` sobre las fuentes finales, tras la comprobación en rojo):
+- **UI completa:** 2980 correctas, 0 con error, 48 omitidas (3028): la base de `041e1799` (2961 / 0 / 48) más las 19 nuevas; 32 min, con
+  otras partes usando la máquina.
+- **Core Full:** 19310 correctas, 0 con error, 403 omitidas (19713): la base (19292 / 0 / 403) más las 17 nuevas y el caso nuevo de
+  `RackUnitsGuardSourceTests`; 34 min.
+- **Build Debug de la solución (Plugin incluido):** 0 errores. Las advertencias son las MSB3277 de las referencias de AutoCAD y las de los
+  analizadores de xunit, que ya estaban; ninguna sale de los archivos de esta parte.
+
+**Lo que queda abierto:**
+- **El smoke en AutoCAD:**
+  - que RACKALMACENLEER no deje paso en Deshacer y conserve la selección previa y el foco (`UsePickSet`, `Redraw`);
+  - la semilla por la selección, con varias plantas;
+  - un solo «U» tras RACKALMACENCOLOCAR, con una rejilla enlazada, una independiente y un relleno;
+  - «No se colocó nada» tras mover la planta entre la lectura y «Colocar»;
+  - el tiempo con un layout grande;
+  - la página en la paleta (anchos, foco, el esquema).
+- **Pregunta 10 completa:** RLY y RR abren «Almacén» con el rack designado cuando el Owner valide la página (AL-S14).
+- El aviso de unidades en la página (AL-S10).
+- Una lectura pedida mientras otra está en vuelo (otra semilla u otra capa durante la lectura) no se encola: la página dice «Sin leer» y
+  pide «Volver a leer».
+- **Para el Owner:** AL-S1 a AL-S15.
+- **Para integrar:** `RackCadWindowViewModel.cs` (once líneas marcadas), `RackCadWindowView.xaml` (dos bloques), `RackListViewModel.cs` (una
+  línea), `RackCadRackDoorPort.cs` (una línea) y los tres censos de órdenes los tocan también las otras partes de la tanda (pb, ct, cm):
+  el censo de `SelectiveEditorOpenTests` suma sus órdenes a las 59 de esta parte.

@@ -98,6 +98,8 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>Every rack of the drawing that was read, before any filter.</summary>
         public int RackCount => _racks.Count;
 
+        internal IReadOnlyList<BrowserRackListEntry> Entries => _racks; // T5 al: the seeds of «Almacén» (every rack, before the filters)
+
         /// <summary>The racks with changes that are not written yet (a protected draft).</summary>
         public int ChangedCount => _changedCount;
 

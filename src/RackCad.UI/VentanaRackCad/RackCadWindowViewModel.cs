@@ -25,6 +25,8 @@ namespace RackCad.UI.VentanaRackCad
 
         /// <summary>«Órdenes y atajos», behind «Ayuda» of the header (T4 ut, UT-09): a page of the window, not a section of the column.</summary>
         Ayuda,
+
+        Almacen, // T5 al: «Almacén» (prototype «almacen», question 1)
     }
 
     /// <summary>One section of the side column as the window shows it: a plain value.</summary>
@@ -50,6 +52,7 @@ namespace RackCad.UI.VentanaRackCad
             (RackCadWindowPage.Nuevo, "Nuevo"),
             (RackCadWindowPage.Variables, "Variables"),
             (RackCadWindowPage.Bom, "BOM y lista de racks"),
+            (RackCadWindowPage.Almacen, "Almacén"), // T5 al (question 1: between «BOM y lista de racks» and «Biblioteca de diseños»)
             (RackCadWindowPage.Biblioteca, "Biblioteca de diseños"),
             (RackCadWindowPage.Configuracion, "Configuración"),
         };
@@ -107,7 +110,8 @@ namespace RackCad.UI.VentanaRackCad
         // The one request of the door that waits for AutoCAD, for the two systems (Selectivo E1-B): its number, the session and the rack it
         // was made for (at the time it was made, not when the answer arrives), for a write what was sent, and whether it is a Selectivo.
         private sealed record DoorRequest(long Id, bool IsWrite, SessionId Session, string RackId, string SentJson, string SentName, bool Started = false,
-            bool IsSelective = false, bool IsCabecera = false, bool IsVariables = false, bool IsBom = false); // T4 cb: IsCabecera, a cabecera of its own; T4 va: IsVariables, the page «Variables»; T4 bom: IsBom, the read of the page «BOM y lista de racks»
+            bool IsSelective = false, bool IsCabecera = false, bool IsVariables = false, bool IsBom = false,
+            bool IsWarehouse = false); // T5 al: IsWarehouse, the page «Almacén». T4 cb: IsCabecera, a cabecera of its own; T4 va: IsVariables, the page «Variables»; T4 bom: IsBom, the read of the page «BOM y lista de racks»
 
         private sealed class DraftKeyComparer : IEqualityComparer<(SessionId Session, string RackId)>
         {
@@ -189,6 +193,7 @@ namespace RackCad.UI.VentanaRackCad
                 new RackCadNewSystemCard(RackCadClassicAction.StructuralSection, "Perfil estructural", "Perfiles W, HSS, C y L del catálogo AISC."),
             };
             WireBom(); // T4 bom
+            WireWarehouse(); // T5 al: the page «Almacén» (RackCadWindowViewModel.Warehouse.cs)
             RebuildSections();
             Present();
         }
@@ -356,8 +361,9 @@ namespace RackCad.UI.VentanaRackCad
             get
             {
                 if (_inFlight == null) return string.Empty;
-                if (_inFlight.Started) return _inFlight.IsVariables ? VariablesWriteTakenText : _inFlight.IsBom ? BomTakenText : WriteTakenText; // T4 va, bom
+                if (_inFlight.Started) return _inFlight.IsVariables ? VariablesWriteTakenText : _inFlight.IsBom ? BomTakenText : _inFlight.IsWarehouse ? WarehouseTakenText : WriteTakenText; // T4 va, bom; T5 al
                 var what = _inFlight.IsVariables ? (_inFlight.IsWrite ? "Esperando a que AutoCAD escriba las variables." : "Esperando a que AutoCAD lea las variables.")
+                    : _inFlight.IsWarehouse ? (_inFlight.IsWrite ? "Esperando a que AutoCAD coloque el layout." : "Esperando a que AutoCAD lea la planta y el sitio.") // T5 al
                     : _inFlight.IsBom ? "Esperando a que AutoCAD lea el dibujo para el BOM." // T4 bom
                     : _inFlight.IsWrite ? "Esperando a que AutoCAD escriba el rack." : "Esperando a que AutoCAD lea el rack.";
                 return what + " Si no responde (por ejemplo, porque había texto a medio escribir en la línea de órdenes), pulsa «Dejar de esperar».";
@@ -660,7 +666,7 @@ namespace RackCad.UI.VentanaRackCad
             if (request == null) return;
             if (request.Started)
             {
-                Say(request.IsBom ? BomTakenText : WriteTakenText, failed: true); // T4 bom
+                Say(request.IsBom ? BomTakenText : request.IsWarehouse ? WarehouseTakenText : WriteTakenText, failed: true); // T4 bom; T5 al
                 return;
             }
 
@@ -693,6 +699,7 @@ namespace RackCad.UI.VentanaRackCad
             {
                 BomStopped(); // T4 bom: the page says it
             }
+            else if (request.IsWarehouse) WarehouseStopped(request); // T5 al: the page «Almacén» says it
             else if (!request.IsWrite)
             {
                 Say("Se dejó de esperar la lectura: si la orden llega a correr, no abrirá nada.", failed: false);
@@ -964,6 +971,7 @@ namespace RackCad.UI.VentanaRackCad
                 var orphan = _inFlight;
                 AbandonInFlight();
                 if (orphan.IsBom) BomStopped(); // T4 bom
+                else if (orphan.IsWarehouse) WarehouseStopped(orphan); // T5 al
                 else if (!orphan.IsWrite) Say("Se cerró el dibujo del rack que se estaba leyendo: no se abrió nada.", failed: true);
             }
 
@@ -1029,7 +1037,7 @@ namespace RackCad.UI.VentanaRackCad
             _lastSelectionRack = selected;
 
             if (isNew && Panel.Browser.FollowSelection
-                && string.Equals(selected, Panel.Browser.ActiveRackId, StringComparison.OrdinalIgnoreCase))
+                && string.Equals(selected, Panel.Browser.ActiveRackId, StringComparison.OrdinalIgnoreCase) && !WarehouseKeepsPage) // T5 al (AL-S15)
                 ShowPage(RackCadWindowPage.Rack);
         }
 
@@ -1205,6 +1213,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(IsConfiguracionPage));
             OnUtilityPageShown(page); // T4 ut: «Órdenes y atajos», the folder of the library, the settings
             if (page == RackCadWindowPage.Bom) Contained(BomPageShown); // T4 bom: the first time for a drawing, it reads it
+            WarehousePageShown(page); // T5 al: «Almacén», the first time for a drawing, reads the planta of its seed
         }
 
         /// <summary>Opens a rack of the list: the browser makes it active and the center shows its page.</summary>
@@ -1298,6 +1307,7 @@ namespace RackCad.UI.VentanaRackCad
             Contained(PresentVariables); // T4 va
             Contained(FollowSelectionOfTheActiveRack);
             Contained(PresentBom); // T4 bom
+            Contained(PresentWarehouse); // T5 al
             OnPropertyChanged(nameof(HeaderText));
             OnPropertyChanged(nameof(NoRackText));
             OnPropertyChanged(nameof(IsDynamicRack));
@@ -1318,7 +1328,7 @@ namespace RackCad.UI.VentanaRackCad
                 {
                     var active = Panel.Browser.ActiveRackId;
                     var changed = !string.Equals(active, _lastActiveRack, StringComparison.Ordinal);
-                    if (active != null && changed && !_bomKeepsPage) ShowPage(RackCadWindowPage.Rack); // T4 bom: «Ver en el dibujo» stays on the BOM
+                    if (active != null && changed && !_bomKeepsPage && !WarehouseKeepsPage) ShowPage(RackCadWindowPage.Rack); // T4 bom: «Ver en el dibujo» stays on the BOM; T5 al: «Almacén» too (AL-S15)
                     _lastActiveRack = active;
                     OnPropertyChanged(nameof(NoRackText));
                     if (changed)

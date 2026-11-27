@@ -10,9 +10,11 @@ namespace RackCad.Application.Layout
         public WarehouseAutoFillResult(
             RackOrientation orientation, IReadOnlyList<WarehouseCell> cells,
             double footprintX, double footprintY,
-            int omittedOutside, int omittedByObstacle, int rowsTried, int colsTried)
+            int omittedOutside, int omittedByObstacle, int rowsTried, int colsTried,
+            IReadOnlyList<WarehouseOmittedCell> omitted = null) // T5 al: the omitted cells, for the scheme of the window (additive)
         {
             Orientation = orientation;
+            Omitted = omitted ?? Array.Empty<WarehouseOmittedCell>();
             Cells = cells;
             FootprintX = footprintX;
             FootprintY = footprintY;
@@ -39,6 +41,27 @@ namespace RackCad.Application.Layout
 
         public int RowsTried { get; }
         public int ColsTried { get; }
+
+        /// <summary>
+        /// T5 al (I-64, «Almacén» in the RackCad window): the candidate cells that were DROPPED, each with why, in the order of the candidate
+        /// grid. It is what the loop below already decides for every cell (kept + omitted = rows tried × columns tried); nothing here changes
+        /// which cells are kept, it only stops discarding the verdict of the others, so the window can draw them in its scheme.
+        /// </summary>
+        public IReadOnlyList<WarehouseOmittedCell> Omitted { get; }
+    }
+
+    /// <summary>T5 al: one candidate cell of a fill that was dropped, and why (outside the envelope or on an obstacle). Pure data.</summary>
+    public readonly struct WarehouseOmittedCell
+    {
+        public WarehouseOmittedCell(WarehouseCell cell, FitViolationKind reason)
+        {
+            Cell = cell;
+            Reason = reason;
+        }
+
+        public WarehouseCell Cell { get; }
+
+        public FitViolationKind Reason { get; }
     }
 
     /// <summary>
@@ -115,6 +138,7 @@ namespace RackCad.Application.Layout
                 anchorX, anchorY, pairing, backGap, orientation);
 
             var kept = new List<WarehouseCell>();
+            var omitted = new List<WarehouseOmittedCell>(); // T5 al
             var outside = 0;
             var blocked = 0;
             foreach (var cell in plan.Cells)
@@ -127,14 +151,16 @@ namespace RackCad.Application.Layout
                 else if (verdict == FitViolationKind.OutOfBounds)
                 {
                     outside++;
+                    omitted.Add(new WarehouseOmittedCell(cell, verdict.Value)); // T5 al
                 }
                 else
                 {
                     blocked++;
+                    omitted.Add(new WarehouseOmittedCell(cell, verdict.Value)); // T5 al
                 }
             }
 
-            return new WarehouseAutoFillResult(orientation, kept, footprintX, footprintY, outside, blocked, rows, cols);
+            return new WarehouseAutoFillResult(orientation, kept, footprintX, footprintY, outside, blocked, rows, cols, omitted);
         }
 
         /// <summary>How many rows/columns fit a span, using the SAME spacing rule as the planner (RowOffset).</summary>

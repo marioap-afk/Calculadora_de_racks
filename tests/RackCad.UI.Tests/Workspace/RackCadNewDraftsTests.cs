@@ -886,7 +886,7 @@ namespace RackCad.UI.Tests
                     "Nuevo",
                     "Borrador 1, Selectivo, Sin insertar, con cambios",
                     "Borrador 2, Dinámico, Sin insertar",
-                    "Variables", "BOM y lista de racks", "Biblioteca de diseños", "Configuración",
+                    "Variables", "BOM y lista de racks", "Almacén", "Biblioteca de diseños", "Configuración", // T5 al: «Almacén» (question 1 of «almacen»)
                 }, order.ToArray());
                 var texts = Descendants<TextBlock>(view.SectionList).Where(Shown).Select(t => t.Text).ToList();
                 Assert.Contains("Borrador 1 · Selectivo", texts);

@@ -109,8 +109,15 @@ namespace RackCad.Tests
         /// </summary>
         internal static readonly string[] A14BomCommands = { "RACKBOMLEER" };
 
+        /// <summary>
+        /// T5 al (I-64, quinta tanda, «Almacén»): la puerta de la pagina «Almacén» de la ventana, que lee la planta y el sitio sin marca de
+        /// Deshacer y coloca la rejilla o el relleno en una orden, sin alias, en <c>src/RackCad.Plugin/RackLayoutCommands.Ventana.cs</c>.
+        /// RACKLAYOUT, RLY, RACKRELLENAR y RR siguen con sus ventanas clasicas (pregunta 10 del prototipo).
+        /// </summary>
+        internal static readonly string[] A14WarehouseCommands = { "RACKALMACENCOLOCAR", "RACKALMACENLEER" };
+
         /// <summary>El censo vigente: apertura, G7, G15, I-65, el panel de F1 y el descarte de F4-T3C2, cada nombre una vez.</summary>
-        internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).Concat(I65Commands).Concat(F1PanelCommands).Concat(F4PanelDiscardCommands).Concat(A14WindowCommands).Concat(A14DynamicDoorCommands).Concat(A14SelectiveDoorCommands).Concat(A14UtilityCommands).Concat(A14CabeceraDoorCommands).Concat(A14VariablesDoorCommands).Concat(A14BomCommands).ToArray();
+        internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).Concat(I65Commands).Concat(F1PanelCommands).Concat(F4PanelDiscardCommands).Concat(A14WindowCommands).Concat(A14DynamicDoorCommands).Concat(A14SelectiveDoorCommands).Concat(A14UtilityCommands).Concat(A14CabeceraDoorCommands).Concat(A14VariablesDoorCommands).Concat(A14BomCommands).Concat(A14WarehouseCommands).ToArray(); // T5 al: A14WarehouseCommands
 
         // ================================================================ censo
 

@@ -511,6 +511,15 @@
                                 Style="{StaticResource SecondaryButtonStyle}" Content="Ver su BOM" AutomationProperties.Name="Ver el BOM de este rack"
                                 ToolTip="Abre «BOM y lista de racks» con este rack elegido."
                                 Visibility="{Binding CanShowBomOfRack, Converter={StaticResource FlagToVisibility}}" Click="OnShowBomOfRackClick" />
+                        <!-- T5 al (question 1 of «almacen»): «Llevar al almacén…» opens «Almacén» with this rack as the seed; without a planta it says why. -->
+                        <StackPanel x:Name="TakeToWarehousePanel" DockPanel.Dock="Top" Margin="10,6,10,0"
+                                    Visibility="{Binding ShowTakeToWarehouse, Converter={StaticResource FlagToVisibility}}">
+                            <Button x:Name="TakeToWarehouseButton" HorizontalAlignment="Left" Padding="10,3" Style="{StaticResource SecondaryButtonStyle}"
+                                    Content="Llevar al almacén…" AutomationProperties.Name="Llevar este rack al almacén" IsEnabled="{Binding CanTakeToWarehouse}"
+                                    ToolTip="Abre «Almacén» con este rack como semilla y lee su planta." Click="OnTakeToWarehouseClick" />
+                            <TextBlock x:Name="TakeToWarehouseReason" Text="{Binding TakeToWarehouseReason}" Style="{StaticResource OptionalText}"
+                                       Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                        </StackPanel>
                         <Button x:Name="PanelToggleButton" DockPanel.Dock="Top" HorizontalAlignment="Left" Margin="10,6,10,0" Padding="10,3"
                                 Style="{StaticResource SecondaryButtonStyle}" Content="{Binding PanelToggleText}"
                                 Visibility="{Binding HasRackEditor, Converter={StaticResource FlagToVisibility}}"
@@ -615,6 +624,10 @@
                          of the list and of the BOM total are no longer opened from here (RACKLISTA and RACKBOMTOTAL open this page too, BM-11). -->
                     <ContentControl x:Name="BomPage" Focusable="False"
                                     Visibility="{Binding IsBomPage, Converter={StaticResource FlagToVisibility}}" />
+
+                    <!-- T5 al: «Almacén», the page of the window (WarehousePageView, placed here by the code-behind; prototype «almacen»). -->
+                    <ContentControl x:Name="WarehousePage" Focusable="False"
+                                    Visibility="{Binding IsAlmacenPage, Converter={StaticResource FlagToVisibility}}" />
 
                     <!-- T4 ut: «Biblioteca de diseños», «Configuración» and «Órdenes y atajos» (prototype «utilidades»), each a page of its own file. -->
                     <vr:RackCadLibraryPage xmlns:vr="clr-namespace:RackCad.UI.VentanaRackCad" x:Name="BibliotecaPage"

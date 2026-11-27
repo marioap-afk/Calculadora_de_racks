@@ -32,6 +32,9 @@ namespace RackCad.Application.Settings
         /// without the field (every one written before) reads false.
         /// </summary>
         public bool OpenRackCadOnStartup { get; set; }
+
+        /// <summary>T5 al: the last values of the page «Almacén» of the RackCad window (question 6); null = never saved.</summary>
+        public WarehouseLayoutPreferences WarehouseLayout { get; set; } // T5 al
     }
 
     /// <summary>

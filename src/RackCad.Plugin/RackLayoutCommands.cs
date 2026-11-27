@@ -186,17 +186,7 @@ namespace RackCad.Plugin
                         return false;
                     }
 
-                    var extents = reference.GeometricExtents; // throws on degenerate geometry → caught below
-                    seed.DefinitionId = reference.BlockTableRecord;
-                    seed.Payload = RackBlockData.Read(transaction, seed.DefinitionId);
-                    seed.OriginX = reference.Position.X;
-                    seed.OriginY = reference.Position.Y;
-                    seed.FootprintX = extents.MaxPoint.X - extents.MinPoint.X;
-                    seed.FootprintY = extents.MaxPoint.Y - extents.MinPoint.Y;
-                    seed.OffsetX = extents.MinPoint.X - reference.Position.X;
-                    seed.OffsetY = extents.MinPoint.Y - reference.Position.Y;
-                    seed.Rotation = reference.Rotation;
-                    seed.Scale = reference.ScaleFactors;
+                    seed = SeedOf(transaction, reference); // T5 al: the measure, extracted with the same body (the window measures the same way)
 
                     transaction.Commit();
                 }
@@ -208,6 +198,27 @@ namespace RackCad.Plugin
             }
 
             return seed.FootprintX > 0.0 && seed.FootprintY > 0.0;
+        }
+
+        /// <summary>
+        /// T5 al: the measure of a planta reference as the seed of a layout (extracted from <see cref="ReadPlantaSeed"/> without changing its
+        /// body; RACKALMACENLEER and RACKALMACENCOLOCAR of the window use it too). Its footprint is the bounding box of the reference.
+        /// </summary>
+        private static PlantaSeed SeedOf(Transaction transaction, BlockReference reference)
+        {
+            var seed = default(PlantaSeed);
+            var extents = reference.GeometricExtents; // throws on degenerate geometry → caught below
+            seed.DefinitionId = reference.BlockTableRecord;
+            seed.Payload = RackBlockData.Read(transaction, seed.DefinitionId);
+            seed.OriginX = reference.Position.X;
+            seed.OriginY = reference.Position.Y;
+            seed.FootprintX = extents.MaxPoint.X - extents.MinPoint.X;
+            seed.FootprintY = extents.MaxPoint.Y - extents.MinPoint.Y;
+            seed.OffsetX = extents.MinPoint.X - reference.Position.X;
+            seed.OffsetY = extents.MinPoint.Y - reference.Position.Y;
+            seed.Rotation = reference.Rotation;
+            seed.Scale = reference.ScaleFactors;
+            return seed;
         }
 
         private static int PlaceGrid(Document document, WarehouseGridPlan plan, PlantaSeed seed, RackEmbedDocument embed, bool independent)
