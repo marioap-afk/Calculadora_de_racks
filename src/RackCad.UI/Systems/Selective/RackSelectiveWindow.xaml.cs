@@ -1007,7 +1007,13 @@ namespace RackCad.UI.Systems.Selective
             var fullWidth = TramosFullWidth(bay);
 
             // The dialog opens ONCE, seeded from the VISIBLE frente. Cancelling changes nothing anywhere (I-39).
-            var dialog = new SelectiveSegmentsWindow(bay + 1, baySegments[bay], fullWidth) { Owner = this };
+            // T6 bom (dolor 13, DG-10): the dialog checks the tramos as the resolver draws them, intermediate posts included, in the fondos
+            // it writes (the «Fondos destino»; the tightest of the ones that have the front), as the RackCad window does.
+            var system = lastSystem;
+            var targetFondos = state.TargetFondos.Fondos.ToList();
+            var dialog = new SelectiveSegmentsWindow(bay + 1, baySegments[bay], fullWidth,
+                (specified, count) => global::RackCad.Application.VentanaRackCad.SelectiveSegmentFit.Of(system, catalog, targetFondos, bay, specified, count),
+                Math.Max(1, fondoMatrices.Count) > 1) { Owner = this };
             if (dialog.ShowDialog() != true) return;
 
             using (DeferRecompute())
@@ -2886,8 +2892,34 @@ namespace RackCad.UI.Systems.Selective
                 return null;
             }
 
+            OwnCustomCabeceras(system); // T6 bom (ARQ-43-10)
             return system;
         }
+
+        /// <summary>
+        /// T6 bom (ARQ-43-10 in the classic editor): the resolver hands the custom cabeceras of the design to the system as they are, and they
+        /// are the objects of the state of this editor (<see cref="SelectiveEditorState.BuildDesign"/> copies the lists, not the cabeceras).
+        /// The readers of the drawing (the BOM, the cuts of «Insertar varias…», the planta, and the drawing in AutoCAD) impose the depth of
+        /// its fondo on every custom cabecera they read, in place (<see cref="SelectiveCabeceraAuthority.EffectiveCustomAt"/>, deferred on
+        /// purpose), so reading the system changed what this editor writes. The system gets its own copy of each one, with the single
+        /// canonical clone (<see cref="CloneCabecera"/>, I-17): the readers impose on the copy, the geometry and the counts are the same, and
+        /// the design keeps what it stores, as the RackCad window does (<c>SelectiveDraftEditor.Recompose</c>).
+        /// </summary>
+        private static void OwnCustomCabeceras(SelectiveRackSystem system)
+        {
+            for (var i = 0; i < system.PostCabeceras.Count; i++) system.PostCabeceras[i] = OwnCopy(system.PostCabeceras[i]);
+            foreach (var row in system.ExtraFondoPostCabeceras)
+            {
+                for (var i = 0; row != null && i < row.Count; i++) row[i] = OwnCopy(row[i]);
+            }
+        }
+
+        // The canonical clone refuses a cabecera that is not a usable frame (alto, fondo y postes); one like that is copied through its document,
+        // which is what a save and a load would give it.
+        private static RackFrameConfiguration OwnCopy(RackFrameConfiguration custom)
+            => custom == null ? null
+                : RackDesignValidation.IsUsableHeader(custom) ? CloneCabecera(custom)
+                : RackFrameProjectDocument.FromConfiguration(custom).ToConfiguration();
 
         /// <summary>Empty frentes (columns) that the current load had to pad with a default cell (the matrix can't edit
         /// zero-level columns yet); &gt; 0 makes <see cref="LoadDesign"/> warn instead of silently converting them.</summary>

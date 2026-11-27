@@ -4956,3 +4956,217 @@ tercero (`773f0a6e`), integradas en un segundo merge de la rama pb.
 
 - La validación del Owner de los supuestos de la quinta tanda y de O-5.
 - La limpieza de los worktrees y las ramas locales de la quinta tanda, con aviso al Owner.
+
+## Sexta tanda, bom: el BOM clásico de Selectivo y los medios frentes que no caben (2026-11-27)
+
+**Rama:** `architecture/workspace-persistente-rackcad-t6-bom`, sobre `f02f519b`, sin commit ni push. Sin AutoCAD.
+
+El editor clásico se queda: sus defectos se corrigen en el propio clásico. Hay cuatro hallazgos, en dos familias:
+
+| Defecto | Dónde | Estado |
+|---|---|---|
+| ARQ-43-10 en el clásico: «Lista de materiales» e «Insertar varias…» cambian la cabecera personalizada guardada | `RackSelectiveWindow` | CORREGIDO en el clásico, no en `EffectiveCustomAt` |
+| Dolor 13 / IN-11: el diálogo «Tramos del frente n» acepta un medio frente que no cabe con su poste intermedio | `SelectiveSegmentsWindow` | REAL y CORREGIDO |
+| PP-S10: en la ventana, otras ediciones (el peralte de un poste, el larguero, la tarima, la holgura…) dejan sin sitio un medio frente que cabía | `SelectiveEditorViewModel.Apply` | CORREGIDO, para todas las escrituras |
+| Las mismas ediciones en el clásico | `RackSelectiveWindow` | NO corregido: pregunta para el Owner (P-1) |
+
+### 1. ARQ-43-10 en el editor clásico
+
+**Causa.**
+- `SelectiveCabeceraAuthority.EffectiveCustomAt` (`SelectiveCabeceraAuthority.cs:78-88`) impone en el sitio la profundidad del fondo sobre
+  la receta guardada de una cabecera personalizada. La usan:
+  - el BOM (`SelectiveBomBuilder.cs:456`);
+  - los cortes (`SelectiveLateralBuilder.cs:101` y `:130`);
+  - la planta (`SelectivePlantaBuilder.cs:123`).
+- El resolvedor pasa al sistema las cabeceras del diseño tal cual (`SelectiveGeometryResolver.cs:190` y `:203`).
+  - En el clásico, esas cabeceras son los objetos de su estado: `SelectiveEditorState.BuildDesign` copia las listas, no las cabeceras
+    (`SelectiveEditorState.cs:1369-1383`).
+- En `RackSelectiveWindow`, dos gestos leían ese sistema:
+  - `ShowBom_Click` (`:2471`) cuenta sobre `lastSystem`;
+  - `InsertBatch_Click` (`:2554`) arma sus opciones con `Cortes(system)`.
+
+  Los dos cambiaban el estado y, con él, lo que el clásico escribe después: «Actualizar», «Insertar…» y «Guardar en biblioteca».
+- **Escenario (OBSERVADO en la base, con la prueba nueva):** dos fondos, y en P1 del fondo 2 una personalizada de 42 in, cuando la regla de
+  ese fondo da 34 (`TwoFondosWithACustomCabeceraOutOfItsRule`).
+  - Tras «Lista de materiales», el diseño del clásico lleva 34.
+  - Con «Insertar varias…» abierto y cancelado, también.
+  - Si se acepta «Insertar varias…», se envía `"Depth":34` (INFERIDO: los cortes se leen antes de armar la petición, sobre los mismos
+    objetos; la prueba ya falla en el paso anterior).
+
+**Decisión: el arreglo va en el clásico, no en `EffectiveCustomAt`.**
+- ARQ-43-10 (`docs/ideas-futuras.md:740`) dice que lo correcto es:
+  - imponer la profundidad una sola vez, en la frontera de escritura;
+  - dejar el lector puro;
+  - y hacer obligatoria la copia profunda en esa frontera.
+
+  Es un rediseño con superficie propia, no un cambio de una línea.
+- I-43 lo difirió a propósito, y lo fija una guarda: `SelectiveCabeceraViewPurityTests.EffectiveCustomAt_StillImposesTheFondoDepthInPlace_BecauseArq4310IsDeferred`
+  (`:261`). Su comentario dice: «si alguien purifica EffectiveCustomAt, esto avisa».
+- El comentario del método promete además conservar la identidad para quien la compare (`SelectiveCabeceraAuthority.cs:71-76`).
+- Cambiar el método contradice un contrato decidido y debilita una guarda. Por eso se hizo como en la ventana: el sistema trabaja sobre
+  copias propias.
+
+**Arreglo.** Todos los sistemas del clásico pasan por `BuildSystem` (`:2882`): `lastSystem`, «Insertar varias…», «Elementos de
+seguridad…», «Actualizar» e «Insertar…». Ahí el sistema recibe una copia propia de cada cabecera personalizada (`OwnCustomCabeceras`,
+`:2908`).
+- La copia usa el clon canónico (`CloneCabecera` = `RackFrameProjectStore.DeepCopy`, I-17).
+- Una cabecera que no es un marco usable se copia por su documento, que es lo que le daría guardarla y abrirla.
+- Los lectores siguen imponiendo la regla, ahora sobre la copia: la geometría y las cuentas no cambian.
+- `EffectiveCustomAt` no se tocó, y su guarda sigue en verde.
+
+**Supuesto T6bom-S1, para el Owner.**
+- El caso: una personalizada fuera de su regla en el fondo 2 o siguientes, como la trae un documento antiguo.
+  - **Ahora**, el clásico escribe en todos sus caminos la profundidad guardada (42), como RACKSELECTIVOAPLICAR y la ventana.
+  - **Antes** escribía la impuesta (34) en tres casos: después de «Lista de materiales», con «Insertar varias…» y en un rack nuevo con
+    cortes. Este último porque `RackViewBatchProducts.SelectiveNew` lee los cortes antes de serializar (`RackViewBatchProducts.cs:32-35`).
+- El dibujo y el BOM son los mismos, porque todo lector impone la regla.
+- Con esto desaparece la diferencia M-1 declarada en la entrega 2 («Insertar varias…» del clásico escribía 34).
+
+**Pruebas** (UI, WPF real en STA, con el clásico mostrado fuera de pantalla), en `SelectiveClassicCustomCabeceraReadTests`:
+- `TheBomOfTheClassicCountsLikeTheWrittenDesignAndChangesNoCustomCabeceraOfIt`:
+  - hace clic de verdad en «Lista de materiales»; el diálogo se lee y se cierra desde su propio bucle modal;
+  - el diseño sigue con 42 y su JSON no cambia;
+  - los componentes que muestra el diálogo son los del BOM del JSON escrito, leído y resuelto otra vez.
+- `InsertarVariasOfTheClassicChangesNothingCancelledAndSendsTheDesignTheUserSaw`:
+  - «Insertar varias…» cancelado no cambia nada;
+  - aceptado con todas las vistas, envía el JSON de antes (42);
+  - ninguna personalizada de `SystemToInsert` es un objeto de `DesignToInsert`;
+  - el sistema sigue dando 34 como cabecera efectiva.
+
+**Comprobación en rojo.**
+- Sin la llamada a `OwnCustomCabeceras` fallan las dos: «Expected 42, Actual 34», y `"Depth":34` en el JSON.
+- El archivo se restauró de la copia guardada fuera del worktree, y su SHA-256 coincide.
+
+### 2. El medio frente que no cabe: dolor 13 y PP-S10 son el mismo defecto por dos puertas
+
+**El defecto (OBSERVADO en el dominio).**
+- Si al último tramo no le queda sitio, `SelectiveMedioFrente.Resolve` devuelve null y el frente se dibuja entero, sin aviso
+  (`SelectiveMedioFrente.cs:71-74`).
+  - Pasa igual en el frontal, la planta, el BOM, las parrillas, los topes y los desviadores.
+- Cada poste intermedio ocupa `2·(troquelX + inicioX)`: 3.5 in con el catálogo de hoy, y 3.603 in con el larguero «escalón infinito».
+- Lo fijan dos pruebas de Core que ya había:
+  - `SelectiveSegmentFitTests.ASplitTheClassicDialogAcceptedAndTheResolverDrawsAsTheWholeFrontIsRefused` (`:74`);
+  - `TheFrontalPlantsTheIntermediatePostExactlyWhenTheSplitFits` (`:157`), sobre la salida real del frontal.
+- El punto 13 del inventario es **real**.
+
+**Las dos puertas.**
+- **Dolor 13 / IN-11: la entrada de los tramos en el clásico.**
+  - El diálogo solo rechazaba una suma que igualara o superara el frente (`SelectiveSegmentsWindow.cs:276`, en la base).
+  - Su propio comentario llamaba «aproximado» al resto en vivo (`:237`).
+  - La ventana ya rechazaba ese reparto (DG-10, que el Owner aceptó el 2026-11-26).
+- **PP-S10: cualquier otra escritura de la ventana.** Un reparto que cabía deja de caber si crece lo que ocupa el poste o si el frente se
+  estrecha. Lo pueden provocar:
+  - el peralte propio del poste izquierdo del frente (el troquel se corre con él);
+  - el larguero de sus celdas (el arranque de la ménsula);
+  - el ancho de la tarima, las tarimas por nivel, la holgura horizontal o un largo manual;
+  - el poste, y los fondos o frentes que cambian el ancho.
+
+  T5 pp solo lo comprobaba para el peralte del rack.
+
+**Arreglo de la puerta 1 (el clásico).**
+- `SelectiveSegmentsWindow` recibe, como dato opcional, cómo encajan los tramos (`SelectiveSegmentFit.Of`).
+- `EditTramos` (`:1000`) se lo da sobre `lastSystem` y sobre los «Fondos destino», que es donde escribe; decide el más justo.
+- El resto en vivo descuenta los postes intermedios.
+- Al «Aceptar», un reparto que no cabe se rechaza con el mismo texto que la ventana.
+- Las comprobaciones de antes se quedan, y sin ese dato el diálogo hace lo de siempre. Por eso no cambian sus pruebas de caracterización.
+
+**Arreglo de la puerta 2 (la ventana).** Es una guarda para todas las escrituras, en el único camino de escritura del editor:
+`SelectiveEditorViewModel.Apply`, dos líneas marcadas `T6 bom`. Está en un archivo nuevo, `SelectiveDraftEditor.Splits.cs`.
+- `GuardSplits()`, antes de la escritura, anota los medios frentes que caben, con sus tramos, y la última recomposición válida.
+- `KeepTheSplits(guard)`, después de recomponer: si uno que cabía ya no cabe con los mismos tramos, devuelve la recomposición de antes y
+  da el motivo.
+- `Apply` lo trata como una escritura que no se puede recomponer: `RestoreLastValid`, la selección como estaba y el motivo en el campo.
+- **No cuentan como motivo:**
+  - un reparto que ya no cabía antes, como un dibujo antiguo que se dibuja entero (la regla PP-S8);
+  - unos tramos nuevos, porque `SetSegments` los comprueba al escribirlos (DG-10);
+  - un frente que desaparece con sus tramos;
+  - «Sin medio frente».
+- Las dos escrituras de T5 pp conservan su texto propio, porque rechazan antes.
+
+**Supuestos para el Owner.**
+
+| Id | Decisión | Por qué |
+|---|---|---|
+| T6bom-S2 | El diálogo clásico «Tramos del frente n» rechaza un reparto que no cabe con sus postes intermedios, con el texto de la ventana. Por ejemplo, en un frente de 96 in: «No cabe: los tramos suman 94.25 in y el poste intermedio ocupa ≈ 3.5 in; el frente mide ≈ 96 in y no queda resto para el último tramo.» Si el rack tiene varios fondos, añade «en el fondo n». La línea en vivo descuenta el poste: con 91.5 in dice «Último tramo (calculado) ≈ 1 in del frente de 96 in; el poste intermedio ocupa ≈ 3.5 in.». Antes decía «≈ 4.5 in» | Es DG-10, la regla que el Owner aceptó para la ventana. El clásico la tenía como diferencia declarada (IN-11) |
+| T6bom-S3 | En la ventana, una edición que deje sin sitio un medio frente que cabía se rechaza entera, con este texto en el campo: «No se aplicó el cambio: el medio frente de F2 dejaría de caber. No cabe: … Ajusta antes sus tramos en «Matriz» (inspector del frente).». Si son varios, los nombra todos y explica el primero: «… los medios frentes de F1 y F2 dejarían de caber. En F1: No cabe: …» | Es PP-S10. Vale también para «Restaurar layout…»: si quitar los peraltes propios deja un medio frente sin sitio, no se restaura nada |
+
+**Pruebas.**
+- **UI, `SelectiveClassicMedioFrenteFitTests`:** `TheClassicDialogRefusesASplitTheDrawingWouldIgnoreAndAcceptsOneThatFits`.
+  - Hace clic de verdad en «Medio frente…» de F1 del clásico.
+  - Con medio poste de más:
+    - la línea en vivo y «Aceptar» dicen el texto de `RefusalOf`;
+    - el diálogo sigue abierto y no se escribe nada.
+  - Con una pulgada de resto, lo acepta y lo escribe, y la línea en vivo descuenta el poste.
+- **UI, `SelectiveSplitGuardWindowTests`.** Escribe por los campos reales de la ventana, sobre F2 partido con 0.6 in de resto:
+  - el peralte propio de P2 a 4 in, en su fila, se rechaza sin dejar nada; 3.5 in sí se aplica;
+  - «Ancho de tarima» de F2 de 44 a 43 y «Holgura horizontal» de 4 a 3 se rechazan; 45 sí se aplica;
+  - lo que no es motivo: un reparto que ya no cabía, «Sin medio frente» y «Frentes» de 2 a 1.
+- **Core, `SelectiveSplitGuardTests` (4):**
+  - el peralte propio: vuelve la recomposición de antes, con los mismos objetos `Design` y `System`, y `RestoreLastValid` deja el JSON
+    de antes;
+  - el larguero «escalón infinito», con 0.05 in de resto: el texto dice «≈ 3.603 in»;
+  - la holgura, con dos frentes partidos, que da el texto en plural;
+  - los casos que no son motivo.
+
+**Comprobación en rojo.** Las copias de los originales se guardaron fuera del worktree y se restauraron. Se comprobaron con SHA-256 y en
+`git diff` no quedan restos.
+- **Puerta 1:** con el diálogo de la base y sin el dato en `EditTramos`, falla la prueba del clásico: el diálogo acepta el reparto y se
+  cierra.
+- **Puerta 2:** sin las dos líneas de `Apply` y con `KeepTheSplits` neutralizado, fallan:
+  - 2 de las 3 pruebas de UI, las que rechazan;
+  - 3 de las 4 de Core.
+
+  Las que comprueban lo que no es motivo pasan en los dos casos, como deben.
+
+**Dinámico:** no tiene medio frente. Sus `DepthSegments` son los tramos de profundidad de I-42, que el editor no edita, así que no se
+tocó.
+
+### 3. Preguntas para el Owner
+
+- **P-1 (el clásico y PP-S10).** En el editor clásico de Selectivo, cambiar el peralte de un poste, el larguero, la tarima o la holgura
+  puede dejar sin sitio un medio frente que cabía. Entonces se dibuja entero, sin aviso.
+  - El clásico no tiene, por escritura, la vuelta a la última recomposición válida de la ventana: recalcula a cada gesto sobre su estado.
+  - ¿Lo dejamos así, avisamos en la línea de estado («El medio frente de F2 ya no cabe: se dibuja como frente completo.») o rechazamos
+    cada edición como la ventana?
+  - Escenario: un rack de un fondo con F2 partido y 0.6 in de resto; se cambia el peralte propio de P2 de 3 a 4 in.
+- **P-2 (los dibujos antiguos).** Un rack que ya trae un medio frente que no cabe se abre y se dibuja entero en los dos editores, sin aviso
+  al abrir. La ventana solo lo dice en rojo si se elige ese frente en el inspector. ¿Avisamos al abrirlo?
+- **P-3.** La validación de T6bom-S1 a T6bom-S3.
+
+### Archivos
+
+- **Producto:**
+  - `src/RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml.cs`: `BuildSystem`, `OwnCustomCabeceras` y `OwnCopy`, y la llamada al
+    diálogo en `EditTramos` (marcado `T6 bom`);
+  - `src/RackCad.UI/Systems/Selective/SelectiveSegmentsWindow.cs`: el dato opcional `fit`, la línea en vivo y la comprobación al
+    «Aceptar»;
+  - `src/RackCad.UI/VentanaRackCad/SelectiveEditorViewModel.cs`: dos líneas en `Apply` (marcadas `T6 bom`);
+  - `src/RackCad.Application/VentanaRackCad/SelectiveDraftEditor.Splits.cs`, nuevo.
+- **Pruebas nuevas:**
+  - `tests/RackCad.UI.Tests/SelectiveClassicCustomCabeceraReadTests.cs` (2, con su clase de apoyo `SelectiveClassicShown`);
+  - `tests/RackCad.UI.Tests/SelectiveClassicMedioFrenteFitTests.cs` (1);
+  - `tests/RackCad.UI.Tests/Workspace/SelectiveSplitGuardWindowTests.cs` (3);
+  - `tests/RackCad.Tests/Workspace/SelectiveSplitGuardTests.cs` (4).
+- **No se tocaron** `EffectiveCustomAt`, el Plugin, los censos ni las guardas.
+
+### Números
+
+Fuentes finales, Debug, con las fuentes restauradas tras las comprobaciones en rojo.
+
+- **Focales:**
+  - UI, `~Selective|~PostPeralte|~RackCadSelective`: 521 de 521;
+  - Core, `~SelectiveSplitGuardTests|~SelectivePeralteForAllPostsTests|~SelectiveSegmentFitTests`: 21 de 21.
+- **UI completa:** 3116 correctas, 0 con error, 48 omitidas (3164). Es la base (3110 / 0 / 48) más las 6 nuevas.
+- **Core Full:** 19487 correctas, 0 con error, 403 omitidas (19890). Es la base (19483 / 0 / 403) más las 4 nuevas. Se corrió en dos
+  partes, que suman toda la suite:
+  - todo salvo `WorkspacePilotUpdateIntegrationGuardTests`: 19367 / 0 / 399 (19766), en 22 min;
+  - esa clase sola: 120 / 0 / 4 (124), en 33 min.
+- **Por qué en dos partes:** con las cuatro partes de la tanda usando la máquina, la suite entera pareció colgarse dos veces en esa clase,
+  sin CPU. No estaba colgada, solo era lentísima:
+  - cada caso de la clase vuelve a leer los ~1100 archivos de `src`;
+  - leerlos costaba entonces 25-37 s (medido);
+  - así, cada caso tardaba de 50 a 80 s.
+
+  Antes de cortarlas, las dos corridas completas llevaban 19346 y 19327 correctas, con 0 errores.
+- **Build Debug:** la solución (Plugin incluido) compila con 0 errores. Las advertencias son las de antes: las MSB3277 de las referencias
+  de AutoCAD y las de los analizadores de xUnit.

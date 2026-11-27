@@ -1641,10 +1641,13 @@ namespace RackCad.UI.VentanaRackCad
 
             var keptBefore = reduces == null ? default : Kept();
             var selection = (Cells: _selection.ToList(), Primary: _primary, Anchor: _anchor);
+            var splits = _editor.GuardSplits(); // T6 bom (PP-S10)
             var edit = change() ?? Done;
             if (edit.Refused) return edit.Error;
 
-            if (!_editor.Recompose())
+            // T6 bom (PP-S10): a «medio frente» that fitted and that this change leaves with no room goes back like a change that cannot be
+            // recomposed (the resolver would draw the whole front with no notice); the reason goes to the field.
+            if (!_editor.Recompose() || !_editor.KeepTheSplits(splits))
             {
                 var reason = _editor.LastError;
                 _editor.RestoreLastValid();
