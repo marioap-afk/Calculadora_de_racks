@@ -21,7 +21,7 @@ namespace RackCad.UI.Tests
     /// and the selection untouched, the fronts in blank left alone, and the round trip of «Editar aquí» and «Actualizar» through the door:
     /// numbered requests, copies of the draft, the editor locked while AutoCAD writes, and each answer for its own session and rack.
     /// </summary>
-    public class RackCadDynamicEditorTests
+    public partial class RackCadDynamicEditorTests // T6 lib: partial (RackCadDynamicEditorTests.Lib.cs: UT-S10 and T6lib-S3)
     {
         private static readonly SessionId Session = new(7);
 

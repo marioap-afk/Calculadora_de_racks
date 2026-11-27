@@ -13,7 +13,9 @@ namespace RackCad.Application.VentanaRackCad
     /// (RACKPUSHBACKAPLICAR, «Actualizar»), to redraw it and then insert views (RACKPUSHBACKINSERTAR, «Insertar vista…»), or to insert a new
     /// Push Back of the window (RACKPUSHBACKNUEVO, «Insertar en el dibujo…»). The design and the system are COPIES taken when the request
     /// was made and the name is already trimmed; with <paramref name="Properties"/> «Actualizar» also writes the tab «Propiedades» (VA-07).
-    /// T6 lib: <paramref name="SourceDesignJson"/> is the design of the library a new Push Back was opened from (<see cref="RackLibrarySourceDesign"/>).
+    /// T6 lib: <paramref name="SourceDesignJson"/> is the design of the library a new Push Back was opened from, as the JSON of its
+    /// <see cref="RackProject"/> (<see cref="RackLibrarySourceDesign"/>); in <see cref="CamaDoorWrite"/> the same member carries a
+    /// <see cref="FlowBedDocument"/>.
     /// </summary>
     public sealed record PushBackDoorWrite(long RequestId, SessionId Session, string RackId, string Name, PushBackDesign Design, PushBackSystem System,
         IReadOnlyList<RackViewAddress> InsertViews = null, bool NewRack = false, RackPropertiesWrite Properties = null,

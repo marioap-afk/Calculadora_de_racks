@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using RackCad.Application.Persistence;
 using RackCad.Application.Systems.Cantilever;
 using RackCad.Application.Systems.Shared;
+using RackCad.Application.VentanaRackCad;
 using RackCad.Domain.Systems.Cantilever;
 using RackCad.Domain.Systems.Shared;
 using RackCad.UI.Editor;
@@ -67,10 +69,10 @@ namespace RackCad.UI.Systems.Cantilever
             IReadOnlyList<RackViewAddress> views, string sourceDesignJson = null)
             => views == null || views.Count == 0 ? null
                 : Request(rackId, rackName, design, line, views,
-                    RackCad.Application.VentanaRackCad.RackLibrarySourceDesign.Read(sourceDesignJson, RackSystemKind.Cantilever));
+                    RackLibrarySourceDesign.Read(sourceDesignJson, RackSystemKind.Cantilever));
 
         private static CantileverInsertionRequest Request(string rackId, string rackName, CantileverLineDesign design, CantileverLineAssembly line,
-            IReadOnlyList<RackViewAddress> views, RackCad.Application.Persistence.RackProject sourceProject = null)
+            IReadOnlyList<RackViewAddress> views, RackProject sourceProject = null)
         {
             var first = RackViewCodec.Encode(RackSystemKind.Cantilever, views[0]);
             var request = new CantileverInsertionRequest(line, design, rackId, rackName, first.View, first.Section, sourceProject);

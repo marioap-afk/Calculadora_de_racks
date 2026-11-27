@@ -41,6 +41,10 @@ namespace RackCad.UI.Tests
             return root.ToJsonString(new JsonSerializerOptions { WriteIndented = true });
         }
 
+        /// <summary>A design of the library as the store loads that file: <paramref name="project"/> written by a newer build (<see cref="Inject"/>).</summary>
+        public static RackProject Library(RackProject project, string payload)
+            => new RackProjectStore().Deserialize(Inject(new RackProjectStore().Serialize(project), payload));
+
         /// <summary>The inner design of a new view of the rack (<c>RackViewBatchProducts.Project</c>): the project with the metadata of its source.</summary>
         public static string InnerDesign(RackProject project, RackProject? source)
             => new RackProjectStore().Serialize(project.WithSourceMetadataFrom(source));

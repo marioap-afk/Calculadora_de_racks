@@ -4959,8 +4959,9 @@ tercero (`773f0a6e`), integradas en un segundo merge de la rama pb.
 
 ## Sexta tanda, lib: los campos desconocidos al insertar desde la biblioteca (UT-S10, CM-S13)
 
-**Rama:** local `architecture/workspace-persistente-rackcad-t6-lib`, sobre `f02f519b` (worktree `D:\w6lib`). Sin commit, sin push, sin
-AutoCAD. No se tocó el formato del larguero (parte lg) ni código clásico.
+**Rama:** local `architecture/workspace-persistente-rackcad-t6-lib`, sobre `f02f519b` (worktree `D:\w6lib`). La sesión hizo el commit de
+esta parte: `39addd8f`. Las correcciones de su revisión (abajo) van sobre él, sin commit. Sin push y sin AutoCAD. No se tocó el formato del
+larguero (parte lg) ni código clásico.
 
 **El defecto.** Un Dinámico, un Push Back o una línea Cantilever abiertos de la biblioteca en la ventana («Abrir» de «Biblioteca de
 diseños», `OpenDesignAsNewRack`) e insertados con «Insertar en el dibujo…» llegaban al dibujo sin los campos JSON que esta versión no
@@ -4985,7 +4986,7 @@ conoce y con la versión de esquema de esta versión. El clásico abierto desde 
 | Push Back | el proyecto | la raíz y la carga `PushBack` (sus campos y su versión) | nada | lo mismo que el clásico |
 | Cantilever | el proyecto | la raíz y la carga `Cantilever` | nada | lo mismo que el clásico |
 | Cama | su `FlowBedDocument` | la carga `FlowBed`; la raíz no tiene dónde ir | lo mismo (CM-S13) | sin cambio |
-| Selectivo | su `SelectivePalletDesignDocument`, no el proyecto | nada | nada | sin cambio (pregunta 1) |
+| Selectivo | su `SelectivePalletDesignDocument`, no el proyecto | nada | nada | sin cambio (Owner: «Dejarlo así») |
 | Cabecera | el proyecto | la raíz, si el archivo la trae | no se abre en la ventana: va a su clásico por RACKBIBLIOTECAABRIR | sin cambio |
 
 - **Selectivo, por qué no es un defecto de la ventana.** La ventana hace lo mismo que el clásico, y I-11 no lo promete:
@@ -5039,8 +5040,8 @@ conoce y con la versión de esquema de esta versión. El clásico abierto desde 
 | Id | Decisión o supuesto | Dónde se cambia |
 |---|---|---|
 | T6lib-S1 | Cambia lo que se guarda en el dibujo, no lo que se ve. Un Dinámico, un Push Back o una línea Cantilever de la biblioteca, insertados desde la ventana, conservan los campos desconocidos y la versión de su archivo, como en el clásico (B5). UT-S10 queda resuelto para esos tres | `RackLibrarySourceDesign`, `LibrarySourceDesignOf` |
-| T6lib-S2 | El Selectivo no cambia: ni el clásico ni la ventana llevan algo del archivo al dibujo (arriba). Pregunta 1 | — |
-| T6lib-S3 | Solo el borrador que abrió «Abrir» de la biblioteca lleva su archivo. Su copia con «Duplicar» no lo lleva, ni al insertarse ni al «Guardar en biblioteca…». Es así en todos los sistemas, también en la cama (CM-S13). Pregunta 2 | `_librarySources`, `DuplicateCore` |
+| T6lib-S2 | El Selectivo no cambia: ni el clásico ni la ventana llevan algo del archivo al dibujo (arriba). **Decidido por el Owner (2026-11-27): «Dejarlo así»** | — |
+| T6lib-S3 | Solo el borrador que abrió «Abrir» de la biblioteca lleva su archivo. Su copia con «Duplicar» no lo lleva, ni al insertarse ni al «Guardar en biblioteca…». Es así en todos los sistemas, también en la cama (CM-S13). **Decidido por el Owner (2026-11-27): «No, la copia es nueva»**; lo fijan pruebas desde las correcciones de la revisión | `_librarySources`, `DuplicateCore` |
 | T6lib-S4 | El origen viaja como copia en JSON, igual que en la cama, y no como el objeto: lo que espera en la puerta es de la puerta (M-22). El Plugin lo lee de nuevo con el almacén | `RackLibrarySourceDesign.Read` |
 
 **Las pruebas:**
@@ -5089,9 +5090,58 @@ conoce y con la versión de esquema de esta versión. El clásico abierto desde 
 - «Abrir» en la ventana e «Insertar en el dibujo…»;
 - leer el `Design` del bloque nuevo: conserva la raíz y, en Push Back y Cantilever, la carga, como B5 de I-11.
 
-**Preguntas para el Owner:**
+**Preguntas para el Owner, ya respondidas (2026-11-27):**
 1. **Selectivo:** ¿un Selectivo de la biblioteca debe llevar al dibujo los campos desconocidos de su diseño (`SelectivePalletDesignDocument`,
    que los conserva desde I-47)? Sería una promesa nueva, más allá de I-11, en el clásico y en la ventana. La raíz del archivo no tiene
    dónde ir en el bloque.
+   - **Respuesta del Owner: «Dejarlo así».** El Selectivo no cambia (T6lib-S2).
 2. **«Duplicar»:** ¿la copia de un borrador abierto de la biblioteca debe heredar su archivo de origen (al insertarse y al «Guardar en
    biblioteca…»), en todos los sistemas, también en la cama?
+   - **Respuesta del Owner: «No, la copia es nueva».** Queda como está (T6lib-S3), y las pruebas de abajo lo fijan.
+
+### Sexta tanda, lib: correcciones de la revisión (sobre `39addd8f`)
+
+**Sobre** el commit `39addd8f` de la sesión, en `D:\w6lib`. Sin commit, sin push y sin AutoCAD. La revisión independiente no encontró nada
+bloqueante ni importante; estos son sus puntos menores.
+
+| Punto | Estado | Qué se hizo |
+|---|---|---|
+| 1 | CORREGIDO | `RackLibrarySourceDesign.Read` deja una advertencia en el log de I-03 (`RackLog.Warning`, contexto `RackLibrarySourceDesign.LogContext`) cuando recibe un JSON y no lo usa: no se vuelve a leer, lo escribió un MAJOR más nuevo o es un proyecto de otro sistema. El aviso dice el sistema y el porqué. El rack se inserta igual, sin los campos de su archivo, como antes. Sin JSON (un rack que no viene de la biblioteca) no se dice nada. Se eligió el log y no una nota en la respuesta del Plugin: la lectura ocurre en medio de la orden de inserción, que no escribe en la línea de órdenes, igual que el aviso de catálogo vacío de `RackCatalogLoader` (I-03) |
+| 2 | CORREGIDO | Las guardas del Plugin ya no son una regex sobre el texto. `CallsOf` toma los argumentos de cada llamada, cortados en sus comas de primer nivel, sobre el código sin comentarios. `Passes` acepta el valor en cualquier posición, por posición o con nombre (la parte pr añadirá `Properties:` a `PendingWrite` y a las tres órdenes NUEVO). No acepta una llamada ni un argumento comentados, ni el valor dentro de otra llamada. Una prueba de la guarda lo fija con código sintético. Guarda nueva: las colas de Push Back (`RequestPushBackUpdate`, `SetPushBackPending`) y de Cantilever (`Copy`, `RequestCantileverUpdate`) guardan la escritura entera de la ventana (una copia con `with` que no da otro valor a `SourceDesignJson`), y las órdenes NUEVO la toman de `pending.Write` |
+| 3 | CORREGIDO | Una prueba por sistema de «Abrir → Duplicar → insertar la copia»: la copia manda `SourceDesignJson == null` (T6lib-S3) y el original lo sigue mandando (Dinámico, Push Back, Cantilever y cama). «Actualizar» tras insertar: una prueba nueva en Dinámico, y en Cantilever, dentro de la prueba de la biblioteca (Push Back ya la tenía) |
+| 4 | CORREGIDO | El XML doc de `SourceDesignJson` en las tres escrituras dice que aquí lleva el JSON de un `RackProject` y en `CamaDoorWrite` un `FlowBedDocument`. Los tres outcomes usan `using RackCad.Application.VentanaRackCad;` y no el nombre completo. El script del rojo lee los totales en español («Pruebas totales», «Correcto», «Incorrecto»). La sección dice ahora que el commit es `39addd8f` |
+
+**Las pruebas, sumadas:**
+- UI: 5 nuevas.
+  - `RackCadDynamicEditorTests.Lib.cs` (nuevo, la clase pasa a `partial`): el «Actualizar» de un Dinámico de la biblioteca ya insertado, y su copia;
+  - `RackCadPushBackEditorTests.Lib.cs`: la copia de un Push Back;
+  - `RackCadCantileverWindowTests.Lib.cs`: la copia de una línea, y el «Actualizar» dentro de la prueba que ya había;
+  - `RackCadCamaWindowTests.Lib.cs` (nuevo, la clase pasa a `partial`): la copia de una cama.
+- Core, `RackLibrarySourceDesignTests`: pasa de 3 a 5 pruebas y entra en la colección `RackLog`, que se ejecuta en serie porque el log es
+  del proceso.
+  - la advertencia del log (lo que se dice y lo que no);
+  - la prueba de la guarda con código sintético;
+  - la guarda de las órdenes, sin depender del orden de los argumentos;
+  - la guarda de las colas.
+
+**Comprobación en rojo de las correcciones:** once piezas rotas una a una, con un script (`hs65\t6\lib\red2\` del scratchpad de la sesión).
+Se hizo como en el rojo anterior: copia fuera del worktree, restauración con SHA-256 comprobado y hora nueva. En cada caso falla al menos
+una prueba:
+1. C1 (punto 1): `Read` no escribe la advertencia. Falla 1 de Core (la del log).
+2. C2 y C3 (punto 2): el `with` de la cola de Push Back o de Cantilever da `SourceDesignJson = null`. Falla 1 de Core (la de las colas).
+3. C4 (punto 2): el argumento de RACKPUSHBACKNUEVO, dentro de un comentario `/* */`. Falla 1 de Core (la de las órdenes).
+4. C5 (punto 2): la llamada buena de RACKDINAMICONUEVO solo en un comentario `//`. Falla 1 de Core.
+5. C6 y C7: la cola del Dinámico nuevo, o RACKCANTILEVERNUEVO, sin el JSON. Falla 1 de Core.
+6. C8 (punto 3): la copia de «Duplicar» hereda el diseño de la biblioteca. Fallan las 4 pruebas de la copia: Dinámico, Push Back,
+   Cantilever y cama.
+7. C9, C10 y C11 (punto 3): «Actualizar» de un rack del dibujo manda el diseño. Falla la prueba de su sistema.
+
+Después: ningún resto en `git diff` y ningún carácter de control. Todos los archivos cambiados terminan sus líneas en CRLF, sin BOM. La
+solución se recompiló con `--no-incremental` antes de las suites completas.
+
+**Los números de las correcciones** (suites completas con `--no-build`, sobre la solución recompilada con `--no-incremental`):
+- **UI completa:** 3120 correctas, 0 con error y 48 omitidas (3168). Es `39addd8f`, 3115/0/48, más las 5 nuevas.
+- **Core Full:** 19488 correctas, 0 con error y 403 omitidas (19891). Es `39addd8f`, 19486/0/403, más 2: `RackLibrarySourceDesignTests`
+  pasa de 3 a 5.
+- **Build Debug de la solución (Plugin incluido),** con `--no-incremental`: 0 errores. Las únicas advertencias son las MSB3277 de las
+  referencias de AutoCAD y las de los analizadores de xUnit, que ya estaban.

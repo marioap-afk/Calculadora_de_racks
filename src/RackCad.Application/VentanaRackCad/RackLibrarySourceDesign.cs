@@ -1,3 +1,4 @@
+using RackCad.Application.Diagnostics;
 using RackCad.Application.Persistence;
 using RackCad.Domain.Systems.Shared;
 
@@ -21,9 +22,30 @@ namespace RackCad.Application.VentanaRackCad
         /// <summary>
         /// The project the command inserts with, as the classic editor hands it to the dispatch of «Nuevo» (the <c>SourceProject</c> of the
         /// request): the one read back from <paramref name="json"/> when it is a project of <paramref name="kind"/> this build reads; null
-        /// otherwise, and the new rack is then written with no metadata of a source, as before.
+        /// otherwise, and the new rack is then written with no metadata of a source, as before. No JSON is no design of the library, and says
+        /// nothing. A JSON that is not used (it does not read back, a newer build wrote it, or it is a project of another system) leaves a
+        /// warning in the log of I-03 (<see cref="RackLog"/>) and the rack is still inserted: the command runs in the middle of the insertion
+        /// and writes nothing on the command line, as the warning of an empty catalog (review of 39addd8f, point 1).
         /// </summary>
         public static RackProject Read(string json, RackSystemKind kind)
-            => new RackProjectStore().TryDeserialize(json, out var project, out _) && project.Kind == kind ? project : null;
+        {
+            if (string.IsNullOrWhiteSpace(json)) return null;
+            if (new RackProjectStore().TryDeserialize(json, out var project, out var incompatibleMajor))
+            {
+                if (project.Kind == kind) return project;
+                Warn(kind, "es un proyecto de otro sistema (" + project.Kind + ")");
+                return null;
+            }
+
+            Warn(kind, incompatibleMajor ? "lo escribió una versión más nueva" : "no se pudo leer");
+            return null;
+        }
+
+        /// <summary>The context of the warning in the log of I-03.</summary>
+        public const string LogContext = "Biblioteca de diseños: inserción de un rack nuevo de la ventana";
+
+        private static void Warn(RackSystemKind kind, string why)
+            => RackLog.Warning(LogContext, "El diseño de la biblioteca del rack nuevo (" + kind + ") " + why
+                + ": se inserta sin los campos de su archivo que esta versión no conoce (I-11).");
     }
 }

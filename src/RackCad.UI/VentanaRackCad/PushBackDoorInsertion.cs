@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using RackCad.Application.Systems.Shared;
+using RackCad.Application.VentanaRackCad;
 using RackCad.Domain.Systems.PushBack;
 using RackCad.Domain.Systems.Shared;
 using RackCad.UI.Editor;
@@ -21,7 +22,7 @@ namespace RackCad.UI.VentanaRackCad
             if (views == null || views.Count == 0) return null;
             var first = RackViewCodec.Encode(RackSystemKind.PushBack, views[0]);
             var request = new PushBackInsertionRequest(system, design, rackId, rackName, first.View, first.Section,
-                RackCad.Application.VentanaRackCad.RackLibrarySourceDesign.Read(sourceDesignJson, RackSystemKind.PushBack));
+                RackLibrarySourceDesign.Read(sourceDesignJson, RackSystemKind.PushBack));
             request.SetViews(views);
             return request;
         }

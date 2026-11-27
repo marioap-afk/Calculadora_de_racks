@@ -15,7 +15,8 @@ namespace RackCad.Application.VentanaRackCad
     /// exist, then the new ones as linked copies), a new line of the window (<paramref name="NewRack"/>, RACKCANTILEVERNUEVO: inserted with
     /// those views, the identity the window gave it and, with no name, the automatic one of I-60) and the properties of the tab
     /// «Propiedades» (written by «Actualizar» only, VA-S10). Only an update when there are no views. T6 lib: <paramref name="SourceDesignJson"/>
-    /// is the design of the library a new line was opened from (<see cref="RackLibrarySourceDesign"/>).
+    /// is the design of the library a new line was opened from, as the JSON of its <see cref="RackProject"/> (<see cref="RackLibrarySourceDesign"/>);
+    /// in <see cref="CamaDoorWrite"/> the same member carries a <see cref="FlowBedDocument"/>.
     /// </summary>
     public sealed record CantileverDoorWrite(long RequestId, SessionId Session, string RackId, string Name, CantileverLineDesign Design,
         CantileverLineAssembly Line, string DesignJson, IReadOnlyList<RackViewAddress> InsertViews = null, bool NewRack = false,
