@@ -42,6 +42,16 @@ namespace RackCad.UI
         private const string RearAutoTooltip =
             "Automático en este extremo significa apagado: Push Back no lleva defensa atrás salvo que fijes una longitud.";
 
+        /// <summary>
+        /// Lo que la rejilla escribe al aceptar. En el modo de dos extremos (sin cara) es la lista entera: sustituye a la anterior, y un
+        /// poste sin registro es automatico en los dos extremos.
+        /// <para>
+        /// T6 pb (revision de 2f1e9e4e, M4) — en el modo de UNA cara no es una lista para sustituir: trae todos los registros de entrada
+        /// con esta cara decidida y la otra tal cual, incluidas las filas que quedaron automaticas en las DOS caras (ver
+        /// <see cref="BuildFaceResult"/>). Hay que FUNDIRLO por la cara (<c>PushBackDefenseSides.Merge</c>), que escribe la decision de cada
+        /// poste y retira despues esas filas; sustituir con el dejaria registros automaticos en las dos caras en el documento.
+        /// </para>
+        /// </summary>
         public IReadOnlyList<SafetyPostDefense> Result { get; private set; } = new List<SafetyPostDefense>();
 
         /// <param name="lowEndOnly">

@@ -747,6 +747,13 @@ namespace RackCad.UI
             }
         }
 
+        /// <summary>
+        /// T6 pb (revision de 2f1e9e4e, M5) — seam de prueba de la rejilla del DESVIADOR, como <see cref="DefensaDialog"/> y
+        /// <see cref="TopeDialog"/>: recibe la rejilla REAL, construida con los argumentos que ve el usuario, y devuelve su resultado (el
+        /// de <c>BuildResult</c>, el mismo que arma su «Aceptar») o null para cancelar. Sin el, se muestra la rejilla como siempre.
+        /// </summary>
+        internal Func<SafetyDesviadorGridWindow, SafetyDesviadorGridWindow.DesviadorResult> DesviadorDialog;
+
         private void EditDesviador(Row row)
         {
             var dialog = new SafetyDesviadorGridWindow(
@@ -764,12 +771,12 @@ namespace RackCad.UI
                 desviadorLevelsPerPost != null || fallbackLevelsArePerPost,
                 showSide: ShowDesviadorSide,
                 allowBlankColumns: allowBlankFrontColumns) { Owner = this };
-            if (dialog.ShowDialog() != true)
+            var result = DesviadorDialog != null ? DesviadorDialog(dialog) : (dialog.ShowDialog() == true ? dialog.Result : null); // T6 pb
+            if (result == null)
             {
                 return;
             }
 
-            var result = dialog.Result;
             row.DesviadorConfigured = true;
             row.DesviadorSide = result.Side;
             row.DesviadorLongitud = result.Longitud;

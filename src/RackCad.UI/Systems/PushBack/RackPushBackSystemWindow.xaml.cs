@@ -2881,7 +2881,10 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
-            var merged = PushBackDefenseSides.Copy(selection.DefensaPosts);
+            // T6 pb (revision de 2f1e9e4e, M1): la fusion parte de una lista VACIA, como la ventana (PushBackSafetyEdit.WriteDefense). Las
+            // dos secciones ya traen todos los registros del rack, cada una con su cara; partir de los de la seleccion conservaria la cara
+            // de un poste que una seccion devolvio a «Auto» (el defecto del punto 5) en cuanto el «Aceptar» del dialogo conservara DEFENSA.
+            var merged = new List<SafetyPostDefense>();
             if (sideA != null)
             {
                 merged = PushBackDefenseSides.Merge(merged, sideA.Posts, PushBackSide.A);
