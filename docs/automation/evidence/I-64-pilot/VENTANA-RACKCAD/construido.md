@@ -3271,3 +3271,111 @@ mismo que `Path`.
   - `RackCadVariablesPageTests`: la relectura tras escribir, rechazada como Busy (nueva), y la fila alineada con los encabezados.
 - **Comprobación en rojo:** con cada corrección deshecha, su prueba falla (las cuatro piezas). Restauradas con la misma huella.
 - **UI completa:** 2961 / 0 / 48 (2960 + 1). Core no cambia: solo cambió la UI.
+
+## Quinta tanda, pp: el peralte de poste para todos los postes, en Selectivo y Dinámico (2026-11-26)
+
+**Rama:** local `architecture/workspace-persistente-rackcad-t5-pp`, desde `041e1799`. Sin prototipo: es un arreglo que pidió el Owner el
+2026-11-26, literal: «en el selectivo no hay forma de colocar un peralte de poste en todos los postes, tienes que ir uno por uno, no sé si
+sea el mismo caso en el dinámico, hay que arreglar eso». Sin commit, sin push, sin AutoCAD.
+
+**Lo que había:**
+- **Selectivo:** el peralte del rack («Peralte del poste») vivía dentro de «Rack» › «Poste y anotaciones», que arranca plegado, y solo
+  llegaba a los postes sin peralte propio. En «Avanzado» › «Postes y cabeceras» solo había «Peralte propio» poste por poste: quitar los
+  propios era una casilla cada vez (o «Restaurar layout…» › «Peraltes propios», que además ofrece quitar el resto del layout).
+- **Dinámico:** un solo «Peralte de poste» para todo el rack, en el mismo expansor plegado.
+
+**Lo que se construyó:**
+- **Selectivo, «Avanzado» › «Postes y cabeceras» › «Todos los postes»:** una fila sobre la tabla con un campo de peralte (lleno con el del
+  rack) y «Aplicar a todos».
+  - «Aplicar a todos» (o Enter en el campo) pone ese valor como el peralte del rack y quita todos los peraltes propios, **en el
+    borrador**. Salir del campo no escribe nada.
+  - El mensaje dice cuántos propios quitó y cuáles: «Peralte de 4 in en todos los postes del borrador: se quitaron 2 peraltes propios
+    (P1: 5 in, P3: 6 in). «Descartar» vuelve a lo último que se leyó o se escribió.» (en un rack nuevo: «… a los valores por defecto»).
+  - Con el mismo valor y ningún propio: «Todos los postes ya tienen 3 in y ninguno tiene peralte propio: el borrador no cambió.», y el
+    rack sigue «Limpio».
+  - Debajo, lo que hará: «Pone este peralte como el del rack y quita los 2 peraltes propios: P1 (5 in), P3 (6 in).».
+  - Un valor que no es un número mayor que cero se rechaza en la fila y no escribe nada. Mientras AutoCAD escribe, la fila no se usa.
+  - Es una escritura de **todo el rack**, sea cual sea el fondo que muestra la matriz: el peralte propio es del poste en todos los fondos.
+- **Selectivo, «Rack» › «Lo esencial» › «Poste»:** un cuarto grupo con «Peralte del poste», visible sin abrir el expansor.
+  - Su texto: «Para todos los postes. Un peralte propio, poste por poste, en «Avanzado».», o, si hay propios, «Para todos los postes salvo los
+    de peralte propio: P1, P3. «Aplicar a todos», en «Avanzado», los quita.».
+  - Escribe lo mismo que escribía el campo del expansor: el peralte del rack, sin tocar los propios. El campo **se movió**, no se duplicó
+    (PP-S1).
+- **Dinámico, «Rack» › «Lo esencial»:** «Peralte de poste» al final, visible sin abrir el expansor, con el texto «Para todos los postes,
+  también los de las cabeceras personalizadas.». Escribe lo mismo que antes.
+  - **No hay otro lugar donde el peralte vaya poste por poste o módulo por módulo** (PP-S6): el constructor pone el peralte del rack en
+    todas las cabeceras, también las personalizadas (`DynamicRackSystemBuilder.ApplyPostPeralte`), y el editor clásico de una cabecera no
+    puede dar a un módulo otro distinto (lo sella con el global, §7.12.6 de `RackDynamicSystemWindow`). Por eso Dinámico no lleva
+    «Aplicar a todos».
+- **Lo que escribe el dibujo sigue siendo «Actualizar»** (o «Insertar en el dibujo…» de un rack nuevo): ninguna orden nueva, ninguna
+  petición a la puerta hasta ese gesto.
+
+**Application:**
+- `SelectiveDraftEditor.AllPosts.cs` (nuevo, parcial de `SelectiveDraftEditor`): `SetPeralteForAllPosts(peralte)` (el peralte del rack y
+  ningún propio; el que llama recompone, como en toda escritura del borrador), `OwnPostPeraltes()` y el resultado
+  `SelectivePeralteForAllPosts` con lo que quitó y su aviso (`NoticeFor(newRack)`). No cambia ningún cálculo: el dibujo ya leía el peralte
+  de cada poste del sistema resuelto (`SelectivePostGeometry.PostPeralteAt`), propio o del rack.
+
+**Las decisiones (supuestos para el Owner):**
+
+| Id | Decisión | Por qué |
+|---|---|---|
+| PP-S1 | El peralte del rack **se mueve** de «Poste y anotaciones» a «Lo esencial» (Selectivo: un cuarto grupo «Poste», tras los tres del draft aprobado; Dinámico: al final). No queda una segunda caja en el expansor. El resumen del expansor plegado sigue diciendo «Poste 3 in · cotas: …» | Dos cajas del mismo valor confunden; el expansor conserva el poste (el perfil), la escala y las cotas |
+| PP-S2 | El campo de «Lo esencial» escribe como antes: solo el peralte del rack, los propios se quedan. Su texto dice qué postes tienen uno propio y que «Aplicar a todos» los quita | El encargo pone la acción que quita los propios en «Avanzado»; un campo que los borrara al salir de él sería una pérdida sin aviso |
+| PP-S3 | «Todos los postes» es una fila encima de la tabla, no una fila de la rejilla; su campo empieza con el peralte del rack y lo sigue mientras el usuario no escriba otro. Salir del campo no escribe; Enter y el botón sí | La columna «Peralte propio» no es la del rack. Como la acción quita valores, la confirma un gesto explícito |
+| PP-S4 | «Aplicar a todos» no toca las cabeceras personalizadas: siguen personalizadas. El dibujo toma el peralte de cada poste del sistema, como ya lo hacía el campo del rack | Es lo mismo que hacen el campo del rack y «Restaurar layout…» › «Peraltes propios» |
+| PP-S5 | El mensaje termina como el de «Restaurar layout…»: lo que hace «Descartar» para ese rack | Es la otra acción que quita valores manuales en lote |
+| PP-S6 | Dinámico no lleva «Aplicar a todos»: no tiene peraltes por poste ni por módulo que quitar | Ver arriba: el peralte de poste de Dinámico es uno para todo el rack |
+
+**Las ediciones a archivos existentes** (marcadas `T5 pp`; ninguna en los archivos compartidos de la lista del encargo:
+`RackCadWindowViewModel.cs`, `RackCadWindowView.xaml(.cs)`, `RackCadWindowViewModel.Drafts.cs`, `RackCadRackDoorPort.cs`,
+`RackMenuCommands`, censos ni guardas):
+- `src/RackCad.UI/VentanaRackCad/SelectiveEditorViewModel.cs`: el grupo «Poste» en `EssentialLayout`; `BuildEssentials` añade
+  `RackPeralteEssential()`; `BuildAnnotationFields` ya no tiene el peralte; `RaiseState` llama a `RaiseAllPosts()`; tres comentarios.
+- `src/RackCad.UI/VentanaRackCad/SelectiveEditorView.xaml`: la fila «Todos los postes» en «Avanzado», en un bloque, y la nota de la tabla
+  («Peralte propio vacío = el del rack («Rack» › «Lo esencial» › «Poste», o «Todos los postes» arriba)»).
+- `src/RackCad.UI/VentanaRackCad/DynamicEditorViewModel.cs`: `BuildEssentials` añade `PostPeralteEssential()`; `BuildPostFields` ya no
+  tiene el peralte.
+
+**Archivos nuevos:** `SelectiveDraftEditor.AllPosts.cs` (Application), `SelectiveEditorViewModel.AllPosts.cs`,
+`SelectiveEditorView.AllPosts.cs` y `DynamicEditorViewModel.AllPosts.cs` (UI).
+
+**Pruebas que cambian, con su nota:**
+- `RackCadSelectiveFidelityTests.TheEssentialsAreTheThreeGroupsOfTheDraftAndThePostIsInPostAndAnnotations` pasa a
+  `TheEssentialsAreTheGroupsOfTheDraftWithThePeralteOfThePostAndThePostIsInPostAndAnnotations`: cuatro grupos («Poste» con «Peralte del
+  poste») y el expansor sin `peralte` (PP-S1).
+- `RackCadSelectiveEditorTests.TheRackTabWritesTheEssentialsTheAnnotationsAndShowsTheCalculatedValues`: el peralte se escribe en
+  `Essentials`, no en `AnnotationFields`.
+
+**Las pruebas nuevas:**
+- Core, `SelectivePeralteForAllPostsTests` (7): el peralte del rack y ningún propio, con el sistema recompuesto (cada poste lo tiene); el
+  mismo peralte que quita los propios; nada que cambiar; los cuatro valores no válidos (0, negativo, NaN, infinito); todo el rack con la
+  vista en el fondo 2; los textos del aviso.
+- UI, `PostPeralteForAllPostsTests` (14): «Aplicar a todos» en el borrador (mensaje, tabla, resumen, «Lo esencial», «Modificado», nada a
+  AutoCAD hasta «Actualizar», que entrega el diseño con el peralte, y «Descartar»); todo el rack con la vista en un fondo y el aviso de un
+  rack nuevo; nada que cambiar y «Limpio»; los valores rechazados en la fila; la fila mientras AutoCAD escribe; la fila que sigue al
+  peralte del rack; «Lo esencial» › «Poste» y sus textos; Dinámico en «Lo esencial» y en todas las cabeceras; y tres vistas con WPF real,
+  sin errores de enlace: la fila de «Avanzado» (nombres únicos, salir del campo no escribe, el error, el botón, Enter, escribiendo) y
+  «Lo esencial» de Selectivo y de Dinámico con «Poste y anotaciones» plegado.
+
+**Comprobación en rojo:** cinco piezas rotas a propósito, en cuatro corridas, con copia de los originales fuera del worktree; restauradas
+de esa copia y comprobadas con su SHA-256; `git diff` sin restos («RED», `if (false)`):
+1. R1, `SetPeralteForAllPosts` sin quitar los propios: fallan 3 de Core y 4 de UI;
+2. R2 (Selectivo: «Lo esencial» sin el peralte) junto con R5: fallan 7, entre ellas la de fidelidad y la del editor que cambian;
+3. R5 sola (la fila sin refrescarse con el borrador): fallan la de la fila que sigue al rack y la de la vista de «Avanzado»;
+4. R3 (Dinámico con el peralte otra vez en el expansor) junto con R4 (el botón «Aplicar a todos» sin su manejador): fallan las dos de
+   Dinámico (R3) y la de la vista de «Avanzado» (R4), cada una por su pieza.
+
+**Los números:**
+- **UI completa:** 2975 correctas, 0 con error, 48 omitidas (3023): la base, 2961, más las 14 nuevas (39 min, con otras partes usando la
+  máquina).
+- **Core Full:** 19299 correctas, 0 con error, 403 omitidas (19702): la base, 19292, más las 7 nuevas (28 min).
+- **Build Debug de la solución (Plugin incluido):** 0 errores.
+- Las dos suites corrieron sobre las fuentes restauradas tras la comprobación en rojo.
+
+**Lo que queda abierto:**
+- **Smoke en AutoCAD:** un Selectivo con peraltes propios › «Avanzado» › «Aplicar a todos» › «Actualizar»: la frontal y la planta con el
+  mismo peralte en todos los postes, y un solo «U» que lo deshace (es el «Actualizar» de siempre); la fila en la paleta a ~950 px (O-2).
+  Dinámico: el campo en «Lo esencial» y «Actualizar».
+- **La validación del Owner** de PP-S1 a PP-S6.
+- Push Back tiene su propio «Peralte poste» en su editor clásico; queda para la parte `pb`, que lleva ese editor a la ventana.

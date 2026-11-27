@@ -33,15 +33,18 @@ namespace RackCad.UI.Tests
         // ------------------------------------------------------------------ «Rack» › «Lo esencial»
 
         [Fact]
-        public void TheEssentialsAreTheThreeGroupsOfTheDraftAndThePostIsInPostAndAnnotations()
+        public void TheEssentialsAreTheGroupsOfTheDraftWithThePeralteOfThePostAndThePostIsInPostAndAnnotations()
         {
             var vm = SelectiveEditor();
 
-            Assert.Equal(new[] { "Estructura", "Tarima", "Larguero y holguras" }, vm.EssentialGroups.Select(g => g.Title).ToArray());
+            // T5 pp (the request of the Owner, 2026-11-26): the three groups of the draft and «Poste», the peralte of every post seen without
+            // unfolding «Poste y anotaciones».
+            Assert.Equal(new[] { "Estructura", "Tarima", "Larguero y holguras", "Poste" }, vm.EssentialGroups.Select(g => g.Title).ToArray());
             string Labels(int group) => string.Join("|", vm.EssentialGroups[group].Fields.Select(f => f is DynamicFieldItem d ? d.Label : ((SelectiveChoiceItem)f).Label));
             Assert.Equal("Frentes (bahías)|Niveles|Fondos|Tarimas por nivel", Labels(0));
             Assert.Equal("Ancho|Alto|Profundidad|Profundidad de cabecera", Labels(1)); // one fondo: the depth of the cabecera stays here
             Assert.Equal("Larguero|Peralte del larguero|Holgura horizontal|Holgura vertical", Labels(2));
+            Assert.Equal("Peralte del poste", Labels(3)); // T5 pp
             Assert.Equal("Escribe en todo el rack. Para un frente, un nivel o una celda, usa «Matriz».", vm.EssentialsHelp);
             Assert.Equal("1 = sencillo; de 2 a 4, doble profundidad.", Field(vm.Essentials, "fondos").Hint);
             Assert.Equal("A los lados de cada tarima.", Field(vm.Essentials, "tolerance").Hint);
@@ -52,7 +55,7 @@ namespace RackCad.UI.Tests
             Assert.Equal("Varía", Field(vm.Essentials, "rWidth").Hint);
             Assert.Equal("2", Field(vm.Essentials, "rCount").Text);
 
-            Assert.Equal(new[] { "post", "peralte", "scale", "dims", "dimStyle" },
+            Assert.Equal(new[] { "post", "scale", "dims", "dimStyle" }, // T5 pp: the peralte is in «Lo esencial» › «Poste»
                 vm.AnnotationFields.Select(f => f is DynamicFieldItem d ? d.Key : ((SelectiveChoiceItem)f).Key).ToArray());
             Assert.Equal("Poste 3 in · cotas: Ninguna · sin tarimas", vm.AnnotationSummary);
             vm.DrawPallets = true;

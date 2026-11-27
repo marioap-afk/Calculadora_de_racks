@@ -1215,12 +1215,13 @@ namespace RackCad.UI.VentanaRackCad
                 FrontInt("deep", "Posiciones de fondo", fronts, f => f.PalletsDeep, (f, v) => f.PalletsDeep = v, 2),
                 FrontNumber("first", "Inicio del 1er larguero", "in", active, f => f.FirstLevelHeight, (f, v) => f.FirstLevelHeight = v, v => v >= 0.0),
                 CellNumber("clear", "Claro libre", "in", cells, c => c.ClearHeight, (c, v) => c.ClearHeight = v, v => v >= 0.0),
+                PostPeralteEssential(), // T5 pp: «Peralte de poste», para todos los postes, seen without unfolding «Poste y anotaciones»
             };
         }
 
         private IReadOnlyList<DynamicFieldItem> BuildPostFields() => new[]
         {
-            Number("peralte", "Peralte de poste", "in", new[] { _editor.PostPeralte }, v => v > 0.0, "El peralte de poste debe ser un número mayor que cero.", v => _editor.PostPeralte = v),
+            // T5 pp: «Peralte de poste» is in «Lo esencial» now (PostPeralteEssential).
             Number("scale", "Escala de texto (1 = 6\")", string.Empty, new[] { _editor.Annotations.AnnotationScale }, v => v > 0.0, "La escala de texto debe ser mayor que cero.", v => _editor.Annotations.AnnotationScale = v),
         };
 
