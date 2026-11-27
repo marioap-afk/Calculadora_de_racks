@@ -127,9 +127,19 @@ namespace RackCad.Plugin.Drawing
             {
                 // Best-effort: a locked/invalid library must not abort the drawing; missing blocks are reported as before.
                 RackLog.Exception("Importar bloques de la biblioteca DWG", ex);
+                System.Threading.Interlocked.Increment(ref _importFailures); // T6 at: «Actualizar todo» refuses a set where an import failed
                 return 0;
             }
         }
+
+        private static int _importFailures;
+
+        /// <summary>
+        /// T6 at (I-64, sexta tanda): how many imports failed with an exception since the plugin loaded. Nothing here changes how an import
+        /// behaves; «Actualizar todo» compares the count before and after each draft, so an import that fails inside its one transaction
+        /// (where the per-rack «Actualizar» never imports) is a failure of the set, not a piece silently left out.
+        /// </summary>
+        internal static int ImportFailures => System.Threading.Volatile.Read(ref _importFailures);
 
         private sealed class ImportAdapter : ILibraryBlockImporter
         {

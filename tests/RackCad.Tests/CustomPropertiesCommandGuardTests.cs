@@ -138,8 +138,15 @@ namespace RackCad.Tests
         /// </summary>
         internal static readonly string[] A14PushBackDoorCommands = { "RACKPUSHBACKABRIR", "RACKPUSHBACKAPLICAR", "RACKPUSHBACKINSERTAR", "RACKPUSHBACKNUEVO" };
 
+        /// <summary>
+        /// Lo que la sexta tanda de la ventana RackCad (parte «at», T6 at) anade, EXACTAMENTE: «Actualizar todo», que escribe todos los borradores
+        /// con cambios del dibujo en una orden y una transaccion (un «U»), sin alias, en
+        /// <c>src/RackCad.Plugin/VentanaRackCad/RackCadUpdateAllCommands.cs</c>. La base se fija de nuevo con este nombre.
+        /// </summary>
+        internal static readonly string[] A14UpdateAllCommands = { "RACKACTUALIZARTODO" };
+
         /// <summary>El censo vigente: apertura, G7, G15, I-65, el panel de F1 y el descarte de F4-T3C2, cada nombre una vez.</summary>
-        internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).Concat(I65Commands).Concat(F1PanelCommands).Concat(F4PanelDiscardCommands).Concat(A14WindowCommands).Concat(A14DynamicDoorCommands).Concat(A14SelectiveDoorCommands).Concat(A14UtilityCommands).Concat(A14CabeceraDoorCommands).Concat(A14VariablesDoorCommands).Concat(A14BomCommands).Concat(A14WarehouseCommands).Concat(A14CamaDoorCommands).Concat(A14CantileverDoorCommands).Concat(A14PushBackDoorCommands).ToArray(); // T5 al: A14WarehouseCommands; T5 cm: A14CamaDoorCommands; T5 ct: A14CantileverDoorCommands; T5 pb: A14PushBackDoorCommands
+        internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).Concat(I65Commands).Concat(F1PanelCommands).Concat(F4PanelDiscardCommands).Concat(A14WindowCommands).Concat(A14DynamicDoorCommands).Concat(A14SelectiveDoorCommands).Concat(A14UtilityCommands).Concat(A14CabeceraDoorCommands).Concat(A14VariablesDoorCommands).Concat(A14BomCommands).Concat(A14WarehouseCommands).Concat(A14CamaDoorCommands).Concat(A14CantileverDoorCommands).Concat(A14PushBackDoorCommands).Concat(A14UpdateAllCommands).ToArray(); // T5 al: A14WarehouseCommands; T5 cm: A14CamaDoorCommands; T5 ct: A14CantileverDoorCommands; T5 pb: A14PushBackDoorCommands; T6 at: A14UpdateAllCommands
 
         // ================================================================ censo
 

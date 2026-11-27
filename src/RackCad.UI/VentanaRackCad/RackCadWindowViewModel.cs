@@ -174,6 +174,7 @@ namespace RackCad.UI.VentanaRackCad
             WireCantileverDoor(door); // T5 ct: the door of a Cantilever line (RackCadWindowViewModel.Cantilever.cs)
             WirePushBackDoor(door); // T5 pb: the door of a Push Back
             InitializeVariables(); // T4 va: the door of the page «Variables» (RackCadWindowViewModel.Variables.cs)
+            WireUpdateAllDoor(door); // T6 at: «Actualizar todo» (RackCadWindowViewModel.UpdateAll.cs)
 
             RackList = new RackListViewModel(panel.BrowserSummaryPort, panel.PilotEditPort, panel.Browser, DraftStateOf);
             RackList.RackOpened += () => ShowPage(RackCadWindowPage.Rack);
@@ -366,6 +367,7 @@ namespace RackCad.UI.VentanaRackCad
             get
             {
                 if (_inFlight == null) return string.Empty;
+                if (IsUpdateAllRequest(_inFlight)) return UpdateAllWaitingText; // T6 at
                 if (_inFlight.Started) return _inFlight.IsVariables ? VariablesWriteTakenText : _inFlight.IsBom ? BomTakenText : _inFlight.IsWarehouse ? WarehouseTakenText : WriteTakenText; // T4 va, bom; T5 al
                 var what = _inFlight.IsVariables ? (_inFlight.IsWrite ? "Esperando a que AutoCAD escriba las variables." : "Esperando a que AutoCAD lea las variables.")
                     : _inFlight.IsWarehouse ? (_inFlight.IsWrite ? "Esperando a que AutoCAD coloque el layout." : "Esperando a que AutoCAD lea la planta y el sitio.") // T5 al
@@ -686,7 +688,8 @@ namespace RackCad.UI.VentanaRackCad
             }
 
             const string StoppedWrite = "Se dejó de esperar a AutoCAD: si la orden llega a correr, no escribirá nada. El borrador sigue sin escribir.";
-            if (request.IsWrite && request.IsCabecera) StopCabeceraWrite(request, StoppedWrite); // T4 cb
+            if (IsUpdateAllRequest(request)) StopUpdateAll(request, StoppedWrite); // T6 at: every draft of «Actualizar todo»
+            else if (request.IsWrite && request.IsCabecera) StopCabeceraWrite(request, StoppedWrite); // T4 cb
             else if (request.IsWrite && request.IsCama) StopCamaWrite(request, StoppedWrite); // T5 cm
             else if (request.IsWrite && request.IsCantilever) StopCantileverWrite(request, StoppedWrite); // T5 ct
             else if (request.IsVariables) StopWaitingVariables(request); // T4 va
@@ -1109,6 +1112,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(CanStopWaiting));
             RefreshInsertPanels(); // T4 ins: an open panel says whether the door can take its write (DG-05)
             RaiseVariablesWaiting(); // T4 va
+            RaiseUpdateAll(); // T6 at: «Actualizar todo» follows the one request of the door
         }
 
         // The command of the write that waits took its request: the window waits for its answer.

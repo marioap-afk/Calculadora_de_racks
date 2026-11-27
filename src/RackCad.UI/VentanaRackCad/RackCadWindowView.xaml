@@ -89,6 +89,13 @@
         <Border Grid.Row="0" Padding="12,8" BorderThickness="0,0,0,1"
                 Background="{DynamicResource ShellSurfaceBrush}" BorderBrush="{DynamicResource ShellBorderBrush}">
             <DockPanel LastChildFill="True">
+                <!-- T6 at: «Actualizar todo (N)», outside the racks: every draft with changes of this drawing, in one operation (one «U»). -->
+                <Button x:Name="UpdateAllButton" DockPanel.Dock="Right" Padding="10,3" Margin="8,0,0,0"
+                        Style="{StaticResource PrimaryButtonStyle}" Content="{Binding UpdateAllLabel}" IsEnabled="{Binding CanUpdateAll}"
+                        Visibility="{Binding ShowUpdateAll, Converter={StaticResource FlagToVisibility}}"
+                        ToolTip="{Binding UpdateAllToolTip}" ToolTipService.ShowOnDisabled="True"
+                        AutomationProperties.Name="Actualizar todo: escribir en el dibujo todos los borradores con cambios"
+                        Click="OnUpdateAllClick" />
                 <!-- T4 ut (UT-09): «Ayuda» opens «Órdenes y atajos», a page of the window, without a sixth section in the column. -->
                 <Button x:Name="HelpButton" DockPanel.Dock="Right" Content="Ayuda" Padding="10,3" Margin="8,0,0,0"
                         AutomationProperties.Name="Ayuda: órdenes y atajos" ToolTip="Órdenes y atajos de RackCad, sin bloquear AutoCAD."
@@ -355,6 +362,69 @@
                         <TextBlock x:Name="WaitingText" Text="{Binding WaitingText}" TextWrapping="Wrap"
                                    Foreground="{DynamicResource ShellTextPrimaryBrush}" />
                     </DockPanel>
+                </Border>
+
+                <!-- T6 at: «Actualizar todo»: the question when a draft may be out of date, what prevents it, and the list when it ends
+                     (every draft with how it ended and why, or «No aplicado: falló otro rack del conjunto»). -->
+                <Border x:Name="UpdateAllPanel" DockPanel.Dock="Top" Margin="10,8,10,0" Padding="10,6" BorderThickness="1" CornerRadius="6"
+                        Background="{DynamicResource ShellSurfaceBrush}"
+                        Visibility="{Binding ShowUpdateAllPanel, Converter={StaticResource FlagToVisibility}}">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusSuccessBrush}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding UpdateAllResultFailed}" Value="True">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusWarningBrush}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding HasUpdateAllBlockers}" Value="True">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusWarningBrush}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsConfirmingUpdateAll}" Value="True">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusWarningBrush}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <StackPanel>
+                        <StackPanel x:Name="UpdateAllQuestion" Visibility="{Binding IsConfirmingUpdateAll, Converter={StaticResource FlagToVisibility}}">
+                            <TextBlock x:Name="UpdateAllQuestionText" Text="{Binding UpdateAllConfirmText}" TextWrapping="Wrap"
+                                       Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                            <WrapPanel Margin="0,6,0,0">
+                                <Button x:Name="ConfirmUpdateAllButton" Content="Escribir todo de todos modos" Padding="10,3" Margin="0,0,8,0"
+                                        Style="{StaticResource PrimaryButtonStyle}"
+                                        AutomationProperties.Name="Confirmar: escribir todos los borradores de todos modos" Click="OnConfirmUpdateAllClick" />
+                                <Button x:Name="CancelUpdateAllButton" Content="Cancelar" Padding="10,3"
+                                        Style="{StaticResource SecondaryButtonStyle}"
+                                        AutomationProperties.Name="Cancelar «Actualizar todo»" Click="OnCancelUpdateAllClick" />
+                            </WrapPanel>
+                        </StackPanel>
+                        <TextBlock x:Name="UpdateAllBlockersText" Text="{Binding UpdateAllBlockersText}" TextWrapping="Wrap"
+                                   Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                                   Visibility="{Binding HasUpdateAllBlockers, Converter={StaticResource FlagToVisibility}}" />
+                        <DockPanel x:Name="UpdateAllResultPanel" Visibility="{Binding HasUpdateAllResults, Converter={StaticResource FlagToVisibility}}">
+                            <Button DockPanel.Dock="Right" Content="Entendido" Padding="8,2" Margin="8,0,0,0" VerticalAlignment="Top"
+                                    Style="{StaticResource SecondaryButtonStyle}" AutomationProperties.Name="Quitar la lista de «Actualizar todo»"
+                                    Click="OnDismissUpdateAllClick" />
+                            <StackPanel>
+                                <TextBlock x:Name="UpdateAllResultText" Text="{Binding UpdateAllResultText}" TextWrapping="Wrap" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                <ItemsControl x:Name="UpdateAllResultList" ItemsSource="{Binding UpdateAllResults}" Focusable="False" Margin="0,4,0,0"
+                                              AutomationProperties.Name="Lo que hizo «Actualizar todo»">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock TextWrapping="Wrap" Margin="0,2,0,0" AutomationProperties.Name="{Binding AccessibleName, Mode=OneWay}"
+                                                       Foreground="{DynamicResource ShellTextPrimaryBrush}">
+                                                <Run Text="{Binding Name, Mode=OneWay}" FontWeight="SemiBold" />
+                                                <Run Text="{Binding SystemLabel, Mode=OneWay, StringFormat='({0})'}" />
+                                                <Run Text="{Binding OutcomeText, Mode=OneWay, StringFormat='· {0}'}" />
+                                                <Run Text="{Binding Cause, Mode=OneWay}" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </DockPanel>
+                    </StackPanel>
                 </Border>
 
                 <!-- T4 new (SD-06): the drafts of «Nuevo» of this drawing. On the home of «Nuevo», their list (open, copy or discard each

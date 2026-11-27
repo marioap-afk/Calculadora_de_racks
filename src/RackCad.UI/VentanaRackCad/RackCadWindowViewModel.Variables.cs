@@ -192,11 +192,21 @@ namespace RackCad.UI.VentanaRackCad
                 if (!_variablesPages.TryGetValue(request.Session, out var page)) return;
                 page.EndWriting(written);
                 if (!written.Written) return;
+                VariablesWrittenFor(request.Session, written); // T6 at: shared with «Actualizar todo»
+            });
+        }
 
+        // What follows a write of the page (its own «Actualizar», or «Actualizar todo», T6 at): the clean editors of the racks it redrew are
+        // closed and the page reads the drawing again (a read asked inside the answer of the write: the door may say Busy, smoke T4 F-2).
+        private void VariablesWrittenFor(SessionId session, VariablesDoorWritten written)
+        {
+            Contained(() =>
+            {
+                if (written == null || !written.Written || !_variablesPages.TryGetValue(session, out var page)) return;
                 var closed = new List<string>();
                 foreach (var rack in written.RedrawnRackIds ?? Array.Empty<string>())
                 {
-                    var key = (request.Session, rack);
+                    var key = (session, rack);
                     if (_selectiveDrafts.TryGetValue(key, out var entry) && !entry.Editor.IsDirty && !entry.Editor.IsWriting)
                     {
                         closed.Add(SelectiveNameOf(entry));
