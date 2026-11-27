@@ -364,7 +364,72 @@ namespace RackCad.UI.Tests
             Assert.Equal(string.Empty, editor.PalletField.Error);
             Assert.Null(editor.SaveRefusal());
             editor.TypeField.SelectedValue = "Dynamic";
-            Assert.Equal(CamaDraftRules.PalletDepthText, editor.PalletField.Error); // back on Dinámica, the field shows it again
+            Assert.Equal(string.Empty, editor.PalletField.Error); // point 6 of the review: forgotten when the cama became Pushback
+            Assert.Equal("48", editor.PalletField.Text);
+        }
+
+        [Fact]
+        public void PushbackDinamicaPushbackWithNothingWrittenIsLimpioAgain()
+        {
+            // Point 2 of the review: the 48 in of question 8 go back to the pallet the Pushback had when nobody wrote another one.
+            var bed = Defaults();
+            bed.BedType = FlowBedType.Pushback;
+            bed.PalletDepth = 0.0;
+            var (editor, _) = Drawn(bed, "Cama 2");
+
+            editor.TypeField.SelectedValue = "Dynamic";
+            Assert.Equal("Modificado", editor.StatusText);
+            editor.TypeField.SelectedValue = "Pushback";
+            Assert.Equal("Limpio", editor.StatusText);
+            Assert.False(editor.CanDiscard);
+            Assert.Equal(string.Empty, editor.PalletField.Text);
+
+            // With a pallet written in between, it is a change.
+            editor.TypeField.SelectedValue = "Dynamic";
+            Write(editor.PalletField, "60");
+            editor.TypeField.SelectedValue = "Pushback";
+            Assert.Equal("Modificado", editor.StatusText);
+            Assert.Equal(60.0, editor.Draft.PalletDepth);
+        }
+
+        [Fact]
+        public void DescartarIsOfferedWithOnlyAValueRefusedAndTakesItAway()
+        {
+            // Point 3 of the review: a value refused in its field, with nothing changed in the draft, can be discarded.
+            var (editor, _) = Drawn();
+            Assert.False(editor.CanDiscard);
+            Write(editor.LaneField, "0");
+            Assert.Equal("Limpio", editor.StatusText);
+            Assert.True(editor.CanDiscard);
+
+            editor.Discard();
+            Assert.False(editor.HasMarks);
+            Assert.Equal("96", editor.LaneField.Text);
+            Assert.False(editor.CanDiscard);
+        }
+
+        [Fact]
+        public void AnOldRefusalOfThePalletDoesNotComeBackAfterAWriteInPushback()
+        {
+            // Point 6 of the review: a value refused in the pallet of a Dinámica, then Pushback and a write: back to Dinámica, nothing is marked.
+            var (editor, updates) = Drawn();
+            Write(editor.PalletField, "0");
+            Write(editor.BrakesField, "0");
+            editor.TypeField.SelectedValue = "Pushback";
+            Assert.False(editor.HasMarks);
+            editor.RequestWrite();
+            Assert.Single(updates);
+            var sent = new FlowBedConfigurationStore().Serialize(editor.Draft.Snapshot());
+            editor.BeginWriting();
+            editor.EndWriting();
+            editor.MarkWritten("AutoCAD redibujó la cama con el borrador: todas sus copias en el dibujo reflejan el cambio.", sent, "Cama 1");
+            Assert.Equal("Limpio", editor.StatusText);
+
+            editor.TypeField.SelectedValue = "Dynamic";
+            Assert.False(editor.HasMarks);
+            Assert.Equal((string.Empty, string.Empty), (editor.PalletField.Error, editor.BrakesField.Error));
+            Assert.Equal("48", editor.PalletField.Text);
+            Assert.True(editor.CanPrimary);
         }
     }
 }

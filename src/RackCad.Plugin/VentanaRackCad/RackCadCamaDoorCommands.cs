@@ -58,8 +58,9 @@ namespace RackCad.Plugin.VentanaRackCad
                 }
 
                 var embed = blocks[0].Embed;
-                door?.AnswerCamaRead(CamaDoorRules.AnswerForOpen(pending.RequestId, pending.RackId, embed?.Kind, embed?.Name, embed?.Design,
-                    RackPropertiesDoorData.Read(document, blocks[0].BlockId))); // VA-07: the tab «Propiedades»
+                // The view of the envelope decodes as EditCama decodes it (RackCommandSupport.DecodeView), then the design (point 5 of the review).
+                door?.AnswerCamaRead(CamaDoorRules.AnswerForOpen(pending.RequestId, pending.RackId, embed?.Kind, embed?.Name, embed?.View, embed?.Section ?? -1,
+                    embed?.Design, RackPropertiesDoorData.Read(document, blocks[0].BlockId))); // VA-07: the tab «Propiedades»
             }
             catch (System.Exception ex)
             {
@@ -108,7 +109,7 @@ namespace RackCad.Plugin.VentanaRackCad
                 }
 
                 var (blockId, embed) = blocks[0];
-                var plan = CamaDoorRules.PlanApply(embed?.Kind, embed?.Design, pending.Write);
+                var plan = CamaDoorRules.PlanApply(embed?.Kind, embed?.View, embed?.Section ?? -1, embed?.Design, pending.Write);
                 if (!plan.CanWrite)
                 {
                     door?.AnswerWrite(new RackDesignWritten(pending.RequestId, pending.RackId, false, plan.Reason));

@@ -57,11 +57,26 @@ namespace RackCad.Application.VentanaRackCad
     /// <summary>The pure rules of the door of the cama, with their tests in Core; the commands only call them.</summary>
     public static class CamaDoorRules
     {
-        /// <summary>The answer of RACKCAMAABRIR for the envelope of the view of the cama, as RACKEDITAR decides it before its window (EditCama).</summary>
-        public static CamaDesignRead AnswerForOpen(long requestId, string rackId, string kind, string name, string designJson, RackPropertiesRead properties = null)
+        /// <summary>The refusal of a view whose descriptor does not decode, the text of EditCama («RackCad: descriptor de vista de cama invalido.»).</summary>
+        public const string InvalidViewText = "Descriptor de vista de cama inválido.";
+
+        /// <summary>
+        /// The answer of RACKCAMAABRIR for the envelope of the view of the cama, as RACKEDITAR decides it before its window (EditCama): the
+        /// kind, then the descriptor of the view (point 5 of the review: <c>RackViewCodec.Decode(kind, view, section).HasAddress</c>, the
+        /// decode of EditCama), then the design.
+        /// </summary>
+        public static CamaDesignRead AnswerForOpen(long requestId, string rackId, string kind, string name, string view, int section, string designJson,
+            RackPropertiesRead properties = null)
+            => AnswerForOpen(requestId, rackId, kind, name, RackViewCodec.Decode(kind, view, section), designJson, properties);
+
+        // The same rule over the view as decoded (a seam for the tests: with the kind of a cama the codec of today always gives it an address,
+        // coerced when the descriptor is not the canonical one, «CamaDescriptorIgnored»).
+        internal static CamaDesignRead AnswerForOpen(long requestId, string rackId, string kind, string name, DecodedRackView decoded, string designJson,
+            RackPropertiesRead properties)
         {
             if (!string.Equals(kind, RackEmbedDocument.KindCama, StringComparison.Ordinal))
                 return CamaDesignRead.Refused(requestId, rackId, kind, name, "El rack no es una cama de rodamiento: este editor no la abre.");
+            if (!decoded.HasAddress) return CamaDesignRead.Refused(requestId, rackId, kind, name, InvalidViewText);
 
             var document = new FlowBedConfigurationStore().DeserializeDocument(designJson);
             var bed = document?.ToDomain();
@@ -71,12 +86,19 @@ namespace RackCad.Application.VentanaRackCad
             return new CamaDesignRead(requestId, rackId, true, kind, name, designJson, null, properties);
         }
 
-        /// <summary>The plan of RACKCAMAAPLICAR: the rack must still be a readable cama, and the window must send a usable one.</summary>
-        public static CamaApplyPlan PlanApply(string kind, string designJson, CamaDoorWrite write)
+        /// <summary>
+        /// The plan of RACKCAMAAPLICAR: the rack must still be a readable cama with a view that decodes (point 5 of the review, as EditCama),
+        /// and the window must send a usable one.
+        /// </summary>
+        public static CamaApplyPlan PlanApply(string kind, string view, int section, string designJson, CamaDoorWrite write)
+            => PlanApply(kind, RackViewCodec.Decode(kind, view, section), designJson, write);
+
+        internal static CamaApplyPlan PlanApply(string kind, DecodedRackView decoded, string designJson, CamaDoorWrite write)
         {
             const string NotReadable = "El rack del dibujo no es una cama legible: no se escribió nada.";
             if (write?.Bed == null || !RackDesignValidation.IsUsableFlowBed(write.Bed)) return new CamaApplyPlan(false, null, "No hay una cama válida que escribir.");
             if (!string.Equals(kind, RackEmbedDocument.KindCama, StringComparison.Ordinal)) return new CamaApplyPlan(false, null, NotReadable);
+            if (!decoded.HasAddress) return new CamaApplyPlan(false, null, InvalidViewText + " No se escribió nada.");
             var source = new FlowBedConfigurationStore().DeserializeDocument(designJson);
             var bed = source?.ToDomain();
             return bed == null || !RackDesignValidation.IsUsableFlowBed(bed) ? new CamaApplyPlan(false, null, NotReadable) : new CamaApplyPlan(true, source, null);

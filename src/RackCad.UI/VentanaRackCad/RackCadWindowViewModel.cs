@@ -998,8 +998,7 @@ namespace RackCad.UI.VentanaRackCad
                 ForgetSelective(pair.Key, pair.Value);
             }
 
-            if (lost.Count > 0)
-                Say("Se cerró el dibujo de " + string.Join(", ", lost) + " con cambios sin escribir en la ventana: esos cambios se perdieron.", failed: true);
+            lost.ForEach(LostOnPrune); // T5 cm: said once, with what the other prunes lost (RackCadWindowViewModel.Prune.cs)
             RaiseWaiting();
             RaiseDynamic();
         }
@@ -1302,7 +1301,7 @@ namespace RackCad.UI.VentanaRackCad
                 ShowError(ex);
             }
 
-            Contained(PruneDeadSessions);
+            Contained(PruneDeadSessionsAndSayLost); // T5 cm: the prunes, then ONE line with what they lost
             Contained(PresentVariables); // T4 va
             Contained(FollowSelectionOfTheActiveRack);
             Contained(PresentBom); // T4 bom

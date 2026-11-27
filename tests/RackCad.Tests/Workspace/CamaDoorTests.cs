@@ -40,7 +40,7 @@ public class CamaDoorTests
     public void ACamaOpensWithItsBedAndTheNameOfTheEnvelopeAndKeepsItsUnknownFields()
     {
         var json = Design(Bed(120.0, 4.0)).TrimEnd('}') + ",\"Futuro\":7}";
-        var read = CamaDoorRules.AnswerForOpen(3, "CAMA-1", RackEmbedDocument.KindCama, "Cama 1", json);
+        var read = CamaDoorRules.AnswerForOpen(3, "CAMA-1", RackEmbedDocument.KindCama, "Cama 1", null, -1, json);
 
         Assert.True(read.Opens, read.Reason);
         Assert.Equal((3L, "CAMA-1", "Cama 1"), (read.RequestId, read.RackId, read.Name));
@@ -53,13 +53,13 @@ public class CamaDoorTests
     [Fact]
     public void WhatIsNotAReadableCamaDoesNotOpenAndSaysWhy()
     {
-        var other = CamaDoorRules.AnswerForOpen(1, "X", RackEmbedDocument.KindDynamic, "D", Design(Bed()));
+        var other = CamaDoorRules.AnswerForOpen(1, "X", RackEmbedDocument.KindDynamic, "D", null, -1, Design(Bed()));
         Assert.False(other.Opens);
         Assert.Equal("El rack no es una cama de rodamiento: este editor no la abre.", other.Reason);
         Assert.Null(other.Bed());
 
-        Assert.Equal("Datos de cama inválidos.", CamaDoorRules.AnswerForOpen(1, "X", RackEmbedDocument.KindCama, "C", "no es json").Reason);
-        Assert.Equal("Datos de cama inválidos.", CamaDoorRules.AnswerForOpen(1, "X", RackEmbedDocument.KindCama, "C", Design(Bed(0.0))).Reason);
+        Assert.Equal("Datos de cama inválidos.", CamaDoorRules.AnswerForOpen(1, "X", RackEmbedDocument.KindCama, "C", null, -1, "no es json").Reason);
+        Assert.Equal("Datos de cama inválidos.", CamaDoorRules.AnswerForOpen(1, "X", RackEmbedDocument.KindCama, "C", null, -1, Design(Bed(0.0))).Reason);
     }
 
     [Fact]
@@ -67,14 +67,14 @@ public class CamaDoorTests
     {
         var write = new CamaDoorWrite(2, new SessionId(7), "CAMA-1", "Cama 1", Bed(110.0));
 
-        var plan = CamaDoorRules.PlanApply(RackEmbedDocument.KindCama, Design(Bed()), write);
+        var plan = CamaDoorRules.PlanApply(RackEmbedDocument.KindCama, null, -1, Design(Bed()), write);
         Assert.True(plan.CanWrite, plan.Reason);
         Assert.Equal(96.0, plan.Source!.LaneDepth); // the document of the drawing, for its unknown fields
 
-        Assert.Equal("No hay una cama válida que escribir.", CamaDoorRules.PlanApply(RackEmbedDocument.KindCama, Design(Bed()), null).Reason);
-        Assert.Equal("No hay una cama válida que escribir.", CamaDoorRules.PlanApply(RackEmbedDocument.KindCama, Design(Bed()), write with { Bed = Bed(0.0) }).Reason);
-        Assert.Equal("El rack del dibujo no es una cama legible: no se escribió nada.", CamaDoorRules.PlanApply(RackEmbedDocument.KindCabecera, Design(Bed()), write).Reason);
-        Assert.False(CamaDoorRules.PlanApply(RackEmbedDocument.KindCama, "{", write).CanWrite);
+        Assert.Equal("No hay una cama válida que escribir.", CamaDoorRules.PlanApply(RackEmbedDocument.KindCama, null, -1, Design(Bed()), null).Reason);
+        Assert.Equal("No hay una cama válida que escribir.", CamaDoorRules.PlanApply(RackEmbedDocument.KindCama, null, -1, Design(Bed()), write with { Bed = Bed(0.0) }).Reason);
+        Assert.Equal("El rack del dibujo no es una cama legible: no se escribió nada.", CamaDoorRules.PlanApply(RackEmbedDocument.KindCabecera, null, -1, Design(Bed()), write).Reason);
+        Assert.False(CamaDoorRules.PlanApply(RackEmbedDocument.KindCama, null, -1, "{", write).CanWrite);
     }
 
     [Fact]
@@ -101,6 +101,33 @@ public class CamaDoorTests
         Assert.Null(CamaDoorRules.RefusalForNewCama(write, 0));
         Assert.Equal("Ya hay un rack con esa identidad en el dibujo (1): no se insertó nada.", CamaDoorRules.RefusalForNewCama(write, 1));
         Assert.Equal("No hay una cama válida que insertar.", CamaDoorRules.RefusalForNewCama(write with { Bed = Bed(0.0) }, 0));
+    }
+
+    [Fact]
+    public void AViewThatDoesNotDecodeIsRefusedAsEditCamaRefusesItAndTheDescriptorsOfACamaDecode()
+    {
+        // Point 5 of the review: the guard of EditCama (RackCommandSupport.DecodeView(embed).HasAddress), in the read and in the plan.
+        var noAddress = new RackCad.Application.Systems.Shared.DecodedRackView(
+            new RackCad.Application.Systems.Shared.RackViewSyntax(RackEmbedDocument.KindCama, "x", 7), default, default, false,
+            RackCad.Application.Systems.Shared.RackViewSyntaxDisposition.Invalid, null);
+        var read = CamaDoorRules.AnswerForOpen(1, "CAMA-1", RackEmbedDocument.KindCama, "Cama 1", noAddress, Design(Bed()), null);
+        Assert.False(read.Opens);
+        Assert.Equal("Descriptor de vista de cama inválido.", read.Reason);
+        var plan = CamaDoorRules.PlanApply(RackEmbedDocument.KindCama, noAddress, Design(Bed()), new CamaDoorWrite(2, new SessionId(7), "CAMA-1", "Cama 1", Bed()));
+        Assert.False(plan.CanWrite);
+        Assert.Equal("Descriptor de vista de cama inválido. No se escribió nada.", plan.Reason);
+
+        // The public rules decode the view as EditCama does: the canonical one, «lateral», and a descriptor the classic tolerates (coerced).
+        foreach (var (view, section) in new[] { ((string?)null, -1), ("lateral", -1), ("frontal", 3) })
+        {
+            Assert.True(CamaDoorRules.AnswerForOpen(1, "CAMA-1", RackEmbedDocument.KindCama, "Cama 1", view, section, Design(Bed())).Opens);
+            Assert.True(CamaDoorRules.PlanApply(RackEmbedDocument.KindCama, view, section, Design(Bed()), new CamaDoorWrite(2, new SessionId(7), "CAMA-1", "Cama 1", Bed())).CanWrite);
+        }
+
+        // The commands hand the rules the view and the section of the envelope, as RackCommandSupport.DecodeView reads them.
+        var code = WorkspaceHostSource.Code(Commands);
+        Assert.Contains("embed?.View, embed?.Section ?? -1", Method(code, "public void ReadCama()"), StringComparison.Ordinal);
+        Assert.Contains("CamaDoorRules.PlanApply(embed?.Kind, embed?.View, embed?.Section ?? -1, embed?.Design, pending.Write)", Method(code, "public void WriteCama()"), StringComparison.Ordinal);
     }
 
     // ------------------------------------------------------------------ the wiring (AutoCAD cannot run here)

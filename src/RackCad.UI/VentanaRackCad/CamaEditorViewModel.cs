@@ -310,7 +310,8 @@ namespace RackCad.UI.VentanaRackCad
 
         public bool IsNameReadOnly => !CanEdit;
 
-        public bool CanDiscard => _dirty && CanEdit;
+        /// <summary>«Descartar» also takes away a value refused in its field, with no change in the draft (point 3 of the review).</summary>
+        public bool CanDiscard => (_dirty || _refused.Count > 0) && CanEdit;
 
         /// <summary>The chip of the head, as the other editors of the window (a new cama says «Sin insertar» in its item of «Nuevo»).</summary>
         public string StatusText => _writing ? "Escribiendo" : _dirty ? "Modificado" : "Limpio";
@@ -367,6 +368,12 @@ namespace RackCad.UI.VentanaRackCad
         public int MarkedCount => MarkedKeys().Count;
 
         public bool HasMarks => MarkedCount > 0;
+
+        /// <summary>
+        /// The BOM of the draft for the page «BOM y lista de racks» (a copy), with the rule of «Calculado» and the scheme (CM-S5, point 4 of the
+        /// review): while a value is marked, there is none, and the page shows the one of the drawing.
+        /// </summary>
+        public RackCad.Application.Bom.BillOfMaterials DraftBom() => HasMarks ? null : _draft.Bom();
 
         // ------------------------------------------------------------------ «Calculado» and «Esquema de la cama»
 
@@ -649,8 +656,18 @@ namespace RackCad.UI.VentanaRackCad
             SetConfirmingClose(false);
             SetRestoreOpen(false);
             _propertiesTab?.Lock(true);
+            ForgetRefusalsThatDoNotApply(); // point 6 of the review: what is written is the draft, with no hidden mark left behind
             Say(_isNewRack ? "Insertando la cama en el dibujo: AutoCAD pide el punto de inserción…" : "Escribiendo la cama en el dibujo…", error: false);
             Rebuild();
+        }
+
+        // The pallet and the brakes do not apply to a Pushback: a value refused there is forgotten when the cama becomes Pushback or is written
+        // (point 6 of the review: it came back, marked, after a write in Pushback, when the cama became Dinámica again).
+        private void ForgetRefusalsThatDoNotApply()
+        {
+            if (_draft.IsDynamic) return;
+            _refused.Remove(CamaDraftRules.PalletKey);
+            _refused.Remove(CamaDraftRules.BrakesKey);
         }
 
         /// <summary>What the editor says while AutoCAD writes it: «Dejar de esperar» only until the command takes the write (M-11).</summary>
@@ -909,6 +926,7 @@ namespace RackCad.UI.VentanaRackCad
             _draft.SetBedType(type, out var note);
             // Question 8: the pallet that was empty is now a value of the draft; a mark of the pallet goes with it.
             if (note != null) _refused.Remove(CamaDraftRules.PalletKey);
+            ForgetRefusalsThatDoNotApply(); // point 6 of the review
             _choiceErrors.Clear();
             Say(note ?? string.Empty, error: false);
             Rebuild();

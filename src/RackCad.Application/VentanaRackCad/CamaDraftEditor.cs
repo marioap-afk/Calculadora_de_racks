@@ -317,6 +317,7 @@ namespace RackCad.Application.VentanaRackCad
         {
             _bed = CamaDraftRules.Copy(bed) ?? CamaDraftRules.Defaults(Catalog);
             Name = name ?? string.Empty;
+            _palletBeforeFill = null;
         }
 
         /// <summary>What is wrong with the bed now, by the key of its field; empty when it can be written.</summary>
@@ -326,7 +327,8 @@ namespace RackCad.Application.VentanaRackCad
         public CamaLayout Layout() => Problems().Count > 0 ? null : CamaDraftRules.Layout(_bed, Catalog);
 
         /// <summary>«Tipo de cama». A Pushback keeps its pallet and its brakes (they do not apply); a Pushback with no pallet that becomes
-        /// Dinámica takes 48 in and says so in <paramref name="note"/> (question 8).</summary>
+        /// Dinámica takes 48 in and says so in <paramref name="note"/> (question 8). Back to Pushback with the 48 in nobody wrote, it gets
+        /// the pallet it had again (point 2 of the review: Pushback → Dinámica → Pushback left the cama «Modificado» and vetoed the close).</summary>
         public void SetBedType(FlowBedType type, out string note)
         {
             note = null;
@@ -334,10 +336,21 @@ namespace RackCad.Application.VentanaRackCad
             _bed.BedType = type;
             if (type == FlowBedType.Dynamic && !(_bed.PalletDepth > 0.0))
             {
+                _palletBeforeFill = _bed.PalletDepth;
                 _bed.PalletDepth = CamaDraftRules.DefaultPalletDepth;
                 note = CamaDraftRules.PalletFilledText;
+                return;
+            }
+
+            if (type == FlowBedType.Pushback && _palletBeforeFill.HasValue)
+            {
+                _bed.PalletDepth = _palletBeforeFill.Value; // the 48 in were never written: SetPalletDepth forgets this
+                _palletBeforeFill = null;
             }
         }
+
+        // The pallet the bed had before it took the 48 in of question 8, while nobody wrote another one.
+        private double? _palletBeforeFill;
 
         /// <summary>«Rodillo»: a roller of the catalog; refused when the pitch written by hand is smaller than it.</summary>
         public string SetRoller(string rollerId)
@@ -360,8 +373,10 @@ namespace RackCad.Application.VentanaRackCad
         public string SetPalletDepth(double value)
         {
             var error = CamaDraftRules.PalletDepthError(value);
-            if (error == null) _bed.PalletDepth = value;
-            return error;
+            if (error != null) return error;
+            _bed.PalletDepth = value;
+            _palletBeforeFill = null; // written by the user: back to Pushback it keeps it
+            return null;
         }
 
         /// <summary>«Paso de rodillos»: null is the pitch of the roller (question 4 for a value).</summary>

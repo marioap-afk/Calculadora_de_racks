@@ -219,14 +219,50 @@ public class CamaDraftRulesTests
         Assert.Equal("Pasó a Dinámica: la profundidad de tarima estaba vacía y toma 48 in, el valor por defecto del editor clásico.", note);
         Assert.Empty(draft.Problems());
 
-        // A Pushback keeps its pallet (it does not apply), and back to Dinámica it is the same value, with nothing to say.
+        // Back to Pushback, the 48 in nobody wrote go (point 2 of the review). A pallet written is kept by a Pushback (it does not apply),
+        // and back to Dinámica it is the same value, with nothing to say.
         draft.SetBedType(FlowBedType.Pushback, out note);
         Assert.Null(note);
-        Assert.Equal(48.0, draft.PalletDepth);
+        Assert.Equal(0.0, draft.PalletDepth);
+        draft.SetBedType(FlowBedType.Dynamic, out note);
+        Assert.NotNull(note);
         Assert.Null(draft.SetPalletDepth(30.0));
+        draft.SetBedType(FlowBedType.Pushback, out note);
+        Assert.Equal(30.0, draft.PalletDepth);
         draft.SetBedType(FlowBedType.Dynamic, out note);
         Assert.Null(note);
         Assert.Equal(30.0, draft.PalletDepth);
+    }
+
+    [Fact]
+    public void PushbackDinamicaPushbackGivesThePalletBackWhenNobodyWroteIt()
+    {
+        // Point 2 of the review: the 48 in of question 8 were never written, so back to Pushback the bed is the one it was (not «Modificado»).
+        var catalog = Catalog;
+        var bed = CamaDraftRules.Defaults(catalog);
+        bed.BedType = FlowBedType.Pushback;
+        bed.PalletDepth = 0.0;
+        var draft = new CamaDraftEditor(catalog, bed, "Cama 2");
+        var before = draft.Json;
+
+        draft.SetBedType(FlowBedType.Dynamic, out _);
+        Assert.Equal(48.0, draft.PalletDepth);
+        draft.SetBedType(FlowBedType.Pushback, out _);
+        Assert.Equal(0.0, draft.PalletDepth);
+        Assert.Equal(before, draft.Json);
+
+        // Written by the user in between, the pallet is the user's: back to Pushback it stays.
+        draft.SetBedType(FlowBedType.Dynamic, out _);
+        Assert.Null(draft.SetPalletDepth(60.0));
+        draft.SetBedType(FlowBedType.Pushback, out _);
+        Assert.Equal(60.0, draft.PalletDepth);
+
+        // A refused value does not count as written; «Descartar» (LoadFrom) forgets the memory too.
+        draft.LoadFrom(bed, "Cama 2");
+        draft.SetBedType(FlowBedType.Dynamic, out _);
+        Assert.NotNull(draft.SetPalletDepth(0.0));
+        draft.SetBedType(FlowBedType.Pushback, out _);
+        Assert.Equal(before, draft.Json);
     }
 
     [Fact]

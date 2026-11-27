@@ -3368,6 +3368,7 @@ no cambia (dolor 13).
 | CM-S12 | La tarjeta «Cama» de «Nuevo» conserva su nombre, como las de Selectivo y Dinámico (el prototipo la llamaba «Cama (editor clásico)») | `RackCadWindowViewModel.NewSystems` |
 | CM-S13 | Una cama nueva abierta desde la biblioteca lleva su documento al insertarse (sus campos desconocidos llegan al dibujo, I-11), a diferencia de RACKSELECTIVONUEVO y RACKDINAMICONUEVO (UT-S10) | `RackCadWindowViewModel.SourceDesignJsonOf` |
 | CM-S14 | La capacidad del rodillo (110 / 150 kg del catálogo) es solo una pista: el cálculo de rodillos por capacidad y de frenos N-1 sigue siendo futuro (memoria del dominio); la regla de hoy, paso fijo y freno cada N o por la tarima, no cambia | `CamaEditorViewModel.Rebuild` |
+| CM-S15 | **Mezclar builds (para el smoke; punto 7 de la revisión).** Un DLL anterior a esta parte que hace RACKEDITAR sobre una cama con «Freno cada N» conserva `BrakeEveryRollers` como campo desconocido del documento (I-11), pero dibuja sin él: pone los frenos por la tarima. El bloque queda entonces con unos frenos y el documento con otro valor, así que el BOM de un build nuevo (que lee el documento) cuenta los frenos cada N mientras el dibujo tiene otros. En el smoke, la cama con «Freno cada N» se escribe y se edita con el mismo DLL; un RACKEDITAR con un DLL viejo se vuelve a escribir con «Actualizar» del nuevo | `FlowBedDocument.BrakeEveryRollers` |
 
 **Ediciones a archivos compartidos** (marcadas `T5 cm`, casi todas de una línea: en `OpensHere` e `IsEditorAlive` la condición sigue en una segunda línea, `NewText` es un método nuevo de cuatro líneas y `A14CamaDoorCommands` una declaración nueva con su comentario; lo nuevo va en archivos propios):
 - `src/RackCad.UI/VentanaRackCad/RackCadWindowViewModel.cs`: `DoorRequest` gana `IsCama`; en el constructor `WireCamaDoor(door)`;
@@ -3454,7 +3455,50 @@ completas. Los tres censos de arriba fallaron con la primera Core focal, que es 
   ratón y la escala con un riel largo); la pestaña «Propiedades» escrita tras el redibujo.
 - RACKEDITAR de una cama sigue con el editor clásico (D-03) hasta que el clásico se retire al final de I-64; QUICKCAMA no cambia.
 - La pregunta 5 dejaba abierto si hace falta «Insertar otra copia…»: no se construyó (CM-S3).
-- Para el Owner: CM-S1 a CM-S14.
+- Para el Owner: CM-S1 a CM-S15.
 - **Para integrar:** `RackCadWindowViewModel.cs`, `RackCadWindowViewModel.Drafts.cs`, `RackCadWindowView.xaml(.cs)`, `RackCadRackDoorPort.cs`
   y los tres censos los tocan también las otras partes de la tanda: cada línea de esta parte lleva `T5 cm`. Los números de los censos de
   órdenes se suman con los de las otras partes (esta añade 3).
+
+### Quinta tanda, cm: correcciones de la revisión (sobre `bddc2203`)
+
+En `D:\w5cm`, sobre el commit `bddc2203` de la sesión con esta parte. Sin commit, sin push, sin AutoCAD. Los siete puntos de la revisión
+independiente, cada uno con su prueba; los puntos 1 a 6, además, con su comprobación en rojo.
+
+| Punto | Qué pasaba | Qué se hizo | Prueba |
+|---|---|---|---|
+| 1 | La poda de la cama decía su propia línea y la poda que corría después la pisaba: al cerrarse un dibujo con una cama y un Dinámico modificados, solo se nombraba el Dinámico | Las podas ya no dicen nada: cada una da los nombres de lo que pierde a `LostOnPrune` (nuevo, `RackCadWindowViewModel.Prune.cs`), y `PruneDeadSessionsAndSayLost`, lo que llama `Present`, dice UNA línea con todos al terminar `PruneDeadSessions` (ordenados como los nombra el veto del cierre). Usan el punto de entrada las podas de Cabecera, Cama, «Variables» (como «Variables») y la de Dinámico y Selectivo | `RackCadCamaWindowTests.AClosedDrawingNamesEveryDraftItLostInOneLine` |
+| 2 | Pushback → Dinámica → Pushback dejaba la cama «Modificado» (la tarima se quedaba en los 48 in de la pregunta 8) y vetaba el cierre | El borrador recuerda la tarima de antes del relleno y la devuelve al volver a Pushback si nadie escribió otra; escribirla, o «Descartar», olvida ese recuerdo | `CamaDraftRulesTests.PushbackDinamicaPushbackGivesThePalletBackWhenNobodyWroteIt`, `CamaEditorTests.PushbackDinamicaPushbackWithNothingWrittenIsLimpioAgain`, `RackCadCamaWindowTests.PushbackDinamicaPushbackDoesNotVetoTheClose`; y `APushbackWithNoPallet…` cambia con nota |
+| 3 | «Descartar» estaba apagado con solo un valor rechazado (el borrador sin cambios) | `CanDiscard => (_dirty \|\| _refused.Count > 0) && CanEdit` | `CamaEditorTests.DescartarIsOfferedWithOnlyAValueRefusedAndTakesItAway` |
+| 4 | El BOM del borrador de la página «BOM y lista de racks» contaba con el último valor válido aunque hubiera un valor marcado (contra CM-S5) | Con marcas no hay BOM del borrador (`CamaEditorViewModel.DraftBom()` devuelve null) y la página muestra el del dibujo | en `RackCadCamaWindowTests.ThePageOfTheBomShowsTheBomOfTheDraftOfACamaWithChanges` |
+| 5 | Faltaba la guarda de la vista de EditCama (`RackCommandSupport.DecodeView(embed).HasAddress`) | `CamaDoorRules.AnswerForOpen` y `PlanApply` reciben la vista y la sección del sobre y comprueban `RackViewCodec.Decode(kind, view, section).HasAddress` después del tipo y antes del diseño, con el texto del clásico: «Descriptor de vista de cama inválido.» (en el plan, «… No se escribió nada.»). Las órdenes les pasan `embed?.View` y `embed?.Section ?? -1`, como `DecodeView`. **Hallazgo:** con el tipo «cama» el códec de hoy siempre da una dirección (coaccionada, «CamaDescriptorIgnored», cuando el descriptor no es el canónico), así que la guarda es paridad con EditCama y defensa ante un cambio del códec; su rechazo se prueba con la sobrecarga interna que recibe la vista ya decodificada | `CamaDoorTests.AViewThatDoesNotDecodeIsRefusedAsEditCamaRefusesItAndTheDescriptorsOfACamaDecode` |
+| 6 | Un rechazo viejo de la tarima o del freno (escrito en Dinámica) sobrevivía a una escritura en Pushback y volvía, marcado, al pasar otra vez a Dinámica | Se olvida al pasar a Pushback y al escribir (`ForgetRefusalsThatDoNotApply`) | `CamaEditorTests.AnOldRefusalOfThePalletDoesNotComeBackAfterAWriteInPushback`; `GuardarEnBibliotecaNamesTheFieldOfAValueThatWasNotApplied` cambia con nota (ya no vuelve) |
+| 7 | La consecuencia de mezclar builds no estaba escrita | CM-S15 (arriba, junto a CM-S14): un DLL anterior que hace RACKEDITAR conserva `BrakeEveryRollers` como campo desconocido pero dibuja sin él, y el BOM nuevo cuenta los frenos cada N mientras el bloque tiene otros. Para el smoke | — |
+
+**Ediciones de esta corrección:**
+- **A archivos compartidos** (marcadas `T5 cm`):
+  - `RackCadWindowViewModel.cs`: en `PruneDeadSessions`, el `Say` de Dinámico y Selectivo pasa a `lost.ForEach(LostOnPrune)` (una línea en lugar de dos); en `Present`, `Contained(PruneDeadSessionsAndSayLost)` en lugar de `Contained(PruneDeadSessions)`.
+  - `RackCadWindowViewModel.Cabecera.cs` (parte cb): el `Say` de su poda pasa a `lost.ForEach(LostOnPrune)`.
+  - `RackCadWindowViewModel.Variables.cs` (parte va): el `Say` de su poda pasa a `LostOnPrune("«Variables»")`. El texto cambia: la línea común («Se cerró el dibujo de «Variables» con cambios sin escribir en la ventana: …») sustituye a «Se cerró un dibujo con cambios sin escribir en «Variables»: …», que ninguna prueba fijaba.
+- **Archivo nuevo:** `src/RackCad.UI/VentanaRackCad/RackCadWindowViewModel.Prune.cs`.
+- **Archivos de la parte:** `CamaDraftEditor.cs`, `CamaDoor.cs`, `RackCadCamaDoorCommands.cs`, `CamaEditorViewModel.cs`, `RackCadWindowViewModel.Cama.cs` y las pruebas.
+
+**El punto de entrada de las podas, para integrar** (las otras partes de la tanda añaden las suyas): la poda de un sistema va en
+`PruneDeadSessions`, en una línea como las demás, y por cada borrador con trabajo que olvida llama `LostOnPrune(nombre)`, con el mismo
+nombre que le da el veto del cierre (D-08). Ninguna poda llama `Say`: lo dice `PruneDeadSessionsAndSayLost`, una vez.
+
+**Comprobación en rojo** (`hs65\t5\cm\red2.py`, salida en `red-out-3.txt`; copias fuera del worktree en `red-backup-2\`; cada archivo
+vuelto a sus bytes con el mismo SHA-256): ocho piezas, y cada una hace fallar su prueba:
+- R1, la poda de la cama dice otra vez su propia línea: falla la de las dos camas del dibujo cerrado;
+- R2 y R2b, la tarima no vuelve al pasar a Pushback: fallan dos de Core y dos de UI (la del editor y la del veto);
+- R3, «Descartar» exige un cambio del borrador: falla la suya;
+- R4, el BOM del borrador ignora las marcas: falla la del BOM;
+- R5 y R5b, la lectura o el plan sin la guarda de la vista: falla la suya en cada caso;
+- R6, el rechazo viejo no se olvida: fallan dos.
+
+Después se buscaron restos en `git diff` y se recompiló la solución con `--no-incremental`.
+
+**Los números:**
+- **UI completa:** 2991 correctas, 0 con error, 48 omitidas (3039, 28 min): las 2986 de `bddc2203` más las 5 nuevas (3 en `CamaEditorTests` y 2 en `RackCadCamaWindowTests`; la del BOM y las dos cambiadas no añaden casos).
+- **Core, focales** (las clases de la cama y las guardas y censos de la ventana, la puerta, el Plugin, la persistencia y el códec de vistas): 567 correctas, 0 con error, 1 omitida (las 565 de la entrega más las 2 nuevas de Core: `PushbackDinamicaPushback…` y `AViewThatDoesNotDecode…`). Core Full no se volvió a correr (el encargo pide las focales); por cuenta, 19324 / 0 / 403.
+- **Build Debug de la solución (Plugin incluido), `--no-incremental`:** 0 errores.

@@ -76,7 +76,7 @@ namespace RackCad.UI.Tests
             public void AnswerLastRead(string? design = null, string name = "Cama 1")
             {
                 var request = CamaReads.Last();
-                ReadCama(CamaDoorRules.AnswerForOpen(request.RequestId, request.RackId, RackEmbedDocument.KindCama, name, design ?? Design(Bed())));
+                ReadCama(CamaDoorRules.AnswerForOpen(request.RequestId, request.RackId, RackEmbedDocument.KindCama, name, null, -1, design ?? Design(Bed())));
             }
 
             public void AnswerLastWrite(bool written, string message, string? name = null)
@@ -234,7 +234,7 @@ namespace RackCad.UI.Tests
             Assert.True(rig.Window.IsWaitingForAutoCad);
 
             // Another number, or the read of Dinámico with the same number, is not for this request.
-            rig.Door.ReadCama(CamaDoorRules.AnswerForOpen(request.RequestId + 9, "CAMA-1", RackEmbedDocument.KindCama, "Cama 1", Design(Bed())));
+            rig.Door.ReadCama(CamaDoorRules.AnswerForOpen(request.RequestId + 9, "CAMA-1", RackEmbedDocument.KindCama, "Cama 1", null, -1, Design(Bed())));
             rig.Door.Read(new RackDesignRead(request.RequestId, "CAMA-1", true, "dynamic", "X", "{}", null));
             Assert.Null(rig.Window.ActiveCamaEditor);
 
@@ -338,6 +338,43 @@ namespace RackCad.UI.Tests
             rig.Present(8);
             Assert.Empty(rig.Window.CamaEditors);
             Assert.Equal("Se cerró el dibujo de Cama 1 con cambios sin escribir en la ventana: esos cambios se perdieron.", rig.Window.ActionMessage);
+        }
+
+        [Fact]
+        public void AClosedDrawingNamesEveryDraftItLostInOneLine()
+        {
+            // Point 1 of the review: the prune of the cama said its own line and the prune of Dinámico, after it, overwrote it.
+            using var rig = new Rig();
+            var cama = rig.OpenEditor();
+            Write(cama.LaneField, "100");
+            rig.Window.StartNewDynamic();
+            rig.Window.NewDynamicEditor!.Name = "Din X";
+
+            rig.Summary.Dead.Add(Session);
+            rig.Present(8);
+
+            Assert.Empty(rig.Window.CamaEditors);
+            Assert.Empty(rig.Window.DynamicEditors);
+            Assert.Equal("Se cerró el dibujo de Cama 1, Din X (Borrador 1, Dinámico nuevo) con cambios sin escribir en la ventana: esos cambios se perdieron.",
+                rig.Window.ActionMessage);
+            Assert.True(rig.Window.ActionFailed);
+        }
+
+        [Fact]
+        public void PushbackDinamicaPushbackDoesNotVetoTheClose()
+        {
+            // Point 2 of the review: back to Pushback with the 48 in nobody wrote, the cama has nothing to lose (D-08).
+            using var rig = new Rig();
+            var bed = Bed();
+            bed.BedType = FlowBedType.Pushback;
+            bed.PalletDepth = 0.0;
+            var editor = rig.OpenEditor(Design(bed));
+
+            editor.TypeField.SelectedValue = "Dynamic";
+            Assert.Equal("Cama 1", rig.Window.UnwrittenWorkOf(Session));
+            editor.TypeField.SelectedValue = "Pushback";
+            Assert.Null(rig.Window.UnwrittenWorkOf(Session));
+            Assert.Equal("Abierto en la ventana", rig.Window.RackList.Groups.SelectMany(g => g.Items).Single(i => i.RackId == "CAMA-1").StatusText);
         }
 
         [Fact]
@@ -513,6 +550,13 @@ namespace RackCad.UI.Tests
             Assert.Equal(editor.Layout!.Brakes.Count, bom.Lines.Single(l => l.Category == "Freno").Quantity);
             Assert.Equal(new[] { ("CAMA-1", "Cama 1") }, host.UnwrittenDraftsOf(Session).ToArray());
             Assert.Equal(10, editor.Draft.BrakeEveryRollers); // seeing it does not change the draft
+
+            // Point 4 of the review (CM-S5): with a value marked there is no BOM of the draft; the page shows the one of the drawing.
+            Write(editor.LaneField, "0");
+            Assert.True(host.HasUnwrittenDraft(Session, "CAMA-1"));
+            Assert.Null(host.DraftBomOf(Session, "CAMA-1"));
+            Write(editor.LaneField, "96");
+            Assert.NotNull(host.DraftBomOf(Session, "CAMA-1"));
 
             // A new cama is not in the drawing: the page does not show it (BM-S7).
             rig.Window.StartNewCama();

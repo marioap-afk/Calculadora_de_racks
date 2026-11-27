@@ -321,21 +321,19 @@ namespace RackCad.UI.VentanaRackCad
         private IEnumerable<string> UnwrittenCamaNames(SessionId session)
             => _camaDrafts.Where(p => p.Key.Session == session && (p.Value.Editor.IsDirty || p.Value.Editor.IsWriting)).Select(p => CamaNameOf(p.Value));
 
-        // The camas of a drawing that was closed are forgotten, and work that was lost is said.
+        // The camas of a drawing that was closed are forgotten; work that was lost goes to the one line of the prune (point 1 of the review:
+        // a Say here was overwritten by the prunes that run after it).
         private void PruneCamaDrafts(IWorkspaceBrowserSummaryPort port)
         {
             var dead = _camaDrafts.Where(p => !IsAlive(port, p.Key.Session)).ToList();
             if (dead.Count == 0) return;
-            var lost = new List<string>();
             foreach (var pair in dead)
             {
-                if (pair.Value.Editor.IsDirty || pair.Value.Editor.IsWriting) lost.Add(CamaNameOf(pair.Value));
+                if (pair.Value.Editor.IsDirty || pair.Value.Editor.IsWriting) LostOnPrune(CamaNameOf(pair.Value));
                 if (_inFlight != null && _inFlight.Session == pair.Key.Session) AbandonInFlight();
                 ForgetCama(pair.Key, pair.Value);
             }
 
-            if (lost.Count > 0)
-                Say("Se cerró el dibujo de " + string.Join(", ", lost) + " con cambios sin escribir en la ventana: esos cambios se perdieron.", failed: true);
             RaiseWaiting();
             RaiseDynamic();
         }
@@ -450,9 +448,10 @@ namespace RackCad.UI.VentanaRackCad
 
         private bool IsCamaEditorAlive(object editor) => _camaDrafts.Values.Any(e => ReferenceEquals(e.Editor, editor));
 
-        // The BOM of the draft of a cama of the drawing with changes: the one of its handler, on a copy (null when the draft has a mark).
+        // The BOM of the draft of a cama of the drawing with changes: the one of its handler, on a copy; none while a value is marked
+        // (CM-S5, point 4 of the review: a value refused in its field is marked, and the BOM does not count with the last valid one).
         private BillOfMaterials CamaDraftBomOf(SessionId session, string rackId)
-            => _camaDrafts.TryGetValue((session, rackId), out var cama) && !cama.Editor.IsNewRack && cama.Editor.IsDirty ? cama.Editor.Draft.Bom() : null;
+            => _camaDrafts.TryGetValue((session, rackId), out var cama) && !cama.Editor.IsNewRack && cama.Editor.IsDirty ? cama.Editor.DraftBom() : null;
 
         // Whether a cama of the drawing has changes not written in the window; null when the rack is not a cama of the window.
         private bool? HasUnwrittenCama(SessionId session, string rackId)
