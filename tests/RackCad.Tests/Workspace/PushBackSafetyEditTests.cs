@@ -318,20 +318,42 @@ namespace RackCad.Tests
             Same(w, c, copy => PushBackSafetyEdit.LateralToRule(copy.Safety, Catalog), d => Classic.LateralToRule(d));
         }
 
+        // T6 seg: the pieces of the BOM of safety of a family.
+        private static int BomOf(PushBackDraftEditor draft, string type)
+            => SafetyBom(draft).Where(line => PushBackSafetyEdit.Variants(Catalog, type).Any(v => string.Equals(v.Id, line.Item1, StringComparison.OrdinalIgnoreCase))).Sum(line => line.Item3);
+
         [Fact]
-        public void ALateralLeftWithNoPostKeepsItsVariantWhereTheClassicDropsItAndDrawsTheSame()
+        public void ALateralLeftWithNoPostKeepsItsVariantAsTheClassicAndDrawsNothing()
         {
-            // Declared (C2-07, as the fourth batch): every post on «No lleva» keeps the variant; the classic «Aceptar» drops the family.
+            // C2-07, as the fourth batch: every post on «No lleva» keeps the variant. T6 seg (the Owner, 2026-11-27, «Guardarla como la
+            // ventana»): the classic «Aceptar» keeps it too now (it dropped the family: PB-S17, difference 3).
             var (w, c) = Pair(OneWay);
-            var copy = w.CopySafety();
-            for (var post = 0; post < copy.PostCount; post++) PushBackSafetyEdit.SetLateralPost(copy.Safety, Catalog, post, SafetySide.None, copy.PostCount);
-            w.ReplaceSafety(copy);
-            Assert.True(w.Recompose(), w.LastError);
-            for (var post = 0; post < copy.PostCount; post++) Classic.Lateral(c, post, SafetySide.None);
-            Assert.True(c.Recompose(), c.LastError);
-            Assert.NotNull(PushBackSafetyEdit.Of(w.State.SafetySelections, Catalog, SelectiveSafetyDefaults.LateralType));
-            Assert.Null(PushBackSafetyEdit.Of(c.State.SafetySelections, Catalog, SelectiveSafetyDefaults.LateralType));
-            Assert.Equal(SafetyBom(c), SafetyBom(w));
+            var posts = w.CopySafety().PostCount;
+            for (var post = 0; post < posts; post++)
+            {
+                var at = post;
+                Same(w, c, copy => PushBackSafetyEdit.SetLateralPost(copy.Safety, Catalog, at, SafetySide.None, copy.PostCount), d => Classic.Lateral(d, at, SafetySide.None));
+            }
+
+            Assert.NotNull(PushBackSafetyEdit.Of(c.State.SafetySelections, Catalog, SelectiveSafetyDefaults.LateralType));
+            Assert.Equal(0, BomOf(w, SelectiveSafetyDefaults.LateralType));
+        }
+
+        [Fact]
+        public void ADesviadorLeftWithNoLevelKeepsItsVariantAsTheClassicAndDrawsNothing()
+        {
+            // C2-07 (PB-S17, difference 3). T6 seg: «Ninguno» of the classic grid and «Aceptar» keep the family too now.
+            var (w, c) = Pair(OneWay);
+            var levels = w.DesviadorLevelsPerPost();
+            Same(w, c, copy => PushBackSafetyEdit.SetDesviadorAll(copy.Safety, Catalog, levels, on: false),
+                d => Classic.Desviador(d, off =>
+                {
+                    for (var post = 0; post < levels.Count; post++)
+                        for (var level = 0; level < levels[post]; level++) off.Add((post, level));
+                }));
+            Assert.NotNull(PushBackSafetyEdit.Of(c.State.SafetySelections, Catalog, SelectiveSafetyDefaults.DesviadorType));
+            Assert.Empty(PushBackDiverterPlan.Resolve(w.System, Catalog));
+            Assert.Equal(0, BomOf(w, SelectiveSafetyDefaults.DesviadorType));
         }
 
         // ================================================================== desviador
@@ -399,6 +421,15 @@ namespace RackCad.Tests
             Assert.Equal(SafetySide.Left, desviador.Side);
             var designed = PushBackSafetyEdit.Of(w.Design.Structure.SafetySelections, Catalog, SelectiveSafetyDefaults.DesviadorType);
             Assert.Equal((SafetySide.Left, (SafetySide?)SafetySide.Left), (designed.Side, designed.AuthoredSide));
+
+            // T6 seg (the Owner, 2026-11-27, «Guardarla como la ventana»): the variant chosen and «Aceptar» WITHOUT «Configurar…» writes the
+            // same; before, the classic dropped the new desviador (PB-S17, difference 6).
+            var (w2, c2) = Pair(OneWay);
+            Same(w2, c2, copy => RackCadSafetyEdit.Remove(copy.Safety, Catalog, SelectiveSafetyDefaults.DesviadorType),
+                d => RackCadSafetyEdit.Remove(d.State.SafetySelections, Catalog, SelectiveSafetyDefaults.DesviadorType));
+            Same(w2, c2, copy => PushBackSafetyEdit.SetVariant(copy.Safety, Catalog, SelectiveSafetyDefaults.DesviadorType, id, copy.PostCount, w2.DesviadorLevelsPerPost()),
+                d => Classic.NewDesviadorWithoutGrid(d, id));
+            Assert.Equal(Canonical(w), Canonical(w2));
         }
 
         [Fact]
@@ -494,6 +525,8 @@ namespace RackCad.Tests
         /// </summary>
         private static class Classic
         {
+            // T6 seg (the Owner, 2026-11-27, «Guardarla como la ventana»): the OK of SelectiveSafetyWindow keeps a family left with nothing and a
+            // new desviador without its grid, as the window (OkLateral, NewDesviadorWithoutGrid, DesviadorVariant and Grid below).
             private const string None = PushBackDefaults.NonePieceId;
 
             private static int PostCount(PushBackDraftEditor d) => Math.Max(2, d.Composite.Of(d.Composite.ActiveSide).Structure.Count + 1);
@@ -834,13 +867,12 @@ namespace RackCad.Tests
             public static void LateralToRule(PushBackDraftEditor d)
                 => OkLateral(d, Of(d.State.SafetySelections, SelectiveSafetyDefaults.LateralType), new List<SafetyPostSide>());
 
-            // The OK of the dialog for the row of the lateral (useDynamicSafetyDefaults): a new selection, or none when nothing draws.
+            // The OK of the dialog for the row of the lateral (useDynamicSafetyDefaults): a new selection. T6 seg: also when nothing draws
+            // (every post on «Ninguno»), as the window; before, «Aceptar» dropped the family then.
             private static void OkLateral(PushBackDraftEditor d, SelectiveSafetySelection existing, List<SafetyPostSide> overrides)
             {
                 var index = d.State.SafetySelections.IndexOf(existing);
                 d.State.SafetySelections.RemoveAt(index);
-                var draws = overrides.Any(p => p.Side != SafetySide.None) || overrides.Count == 0;
-                if (!draws) return;
                 var selection = new SelectiveSafetySelection { ElementId = existing.ElementId, Side = SafetySide.None, Quantity = 1 };
                 foreach (var p in overrides) selection.PostSides.Add(new SafetyPostSide { PostIndex = p.PostIndex, Side = p.Side });
                 d.State.SafetySelections.Insert(index, selection);
@@ -868,19 +900,27 @@ namespace RackCad.Tests
                 => Grid(d, elementId, GridSide, SelectiveSafetyDefaults.DesviadorLongitud, SelectiveSafetyDefaults.DesviadorPrimerNivelAltura, false,
                     new List<SelectiveGridCell>(), null, null);
 
+            // T6 seg: a new desviador, its variant chosen and «Aceptar» WITHOUT «Configurar…» (SelectiveSafetyWindow.OnOk; before, it dropped
+            // the family): the defaults of its row (18 in, its first level at 18 in, every cell on; a new desviador of Push Back is not read by
+            // post, newDesviadorByPost is false) and the side its grid would return (showDesviadorSide: false, so the one of the low end).
+            public static void NewDesviadorWithoutGrid(PushBackDraftEditor d, string elementId)
+                => d.State.SafetySelections.Add(new SelectiveSafetySelection
+                {
+                    ElementId = elementId, Quantity = 1, Side = GridSide,
+                    DesviadorLongitud = SelectiveSafetyDefaults.DesviadorLongitud, DesviadorPrimerNivelAltura = SelectiveSafetyDefaults.DesviadorPrimerNivelAltura,
+                });
+
             // The list of an existing desviador changed and «Aceptar» without «Configurar…» (SelectiveSafetyWindow): the row is seeded from the
-            // selection (its side Left or Right, else Both; its measures and its cells as they are) and its level counts from
-            // SelectiveDesviadorPlan.Build(resolvedSystem: null, …), so AllCellsOff sees no level and the row is written whole.
+            // selection (its side Left or Right, else Both; its measures and its cells as they are) and is written whole. T6 seg: its cells all
+            // off no longer drop it (before, only its empty level counts, from SelectiveDesviadorPlan.Build(resolvedSystem: null, …), kept it).
             public static void DesviadorVariant(PushBackDraftEditor d, string elementId)
             {
                 var existing = Of(d.State.SafetySelections, SelectiveSafetyDefaults.DesviadorType);
                 var side = existing.Side == SafetySide.Left || existing.Side == SafetySide.Right ? existing.Side : SafetySide.Both;
-                var levelCounts = SelectiveDesviadorPlan.Build(null, Catalog, existing).LevelCounts;
                 var off = existing.DesviadorOffCells?.Where(c => c != null).Select(c => new SelectiveGridCell { Frente = c.Frente, Level = c.Level }).ToList()
                           ?? new List<SelectiveGridCell>();
                 var index = d.State.SafetySelections.IndexOf(existing);
                 d.State.SafetySelections.RemoveAt(index);
-                if (SelectiveSafetyGrid.AllCellsOff(levelCounts, off)) return;
                 var selection = new SelectiveSafetySelection
                 {
                     ElementId = elementId, Quantity = 1, Side = side,
@@ -906,7 +946,7 @@ namespace RackCad.Tests
 
                 var index = existing == null ? -1 : d.State.SafetySelections.IndexOf(existing);
                 if (index >= 0) d.State.SafetySelections.RemoveAt(index);
-                if (SelectiveSafetyGrid.AllCellsOff(levels, persisted)) return;
+                // T6 seg: every cell off keeps the family (before, «Aceptar» dropped it: SelectiveSafetyGrid.AllCellsOff).
                 var selection = new SelectiveSafetySelection { ElementId = elementId, Quantity = 1, Side = side, DesviadorLongitud = longitud, DesviadorPrimerNivelAltura = first };
                 selection.Desviador.CellsByPost = cellsByPost;
                 foreach (var cell in persisted) selection.DesviadorOffCells.Add(new SelectiveGridCell { Frente = cell.Frente, Level = cell.Level });

@@ -6,7 +6,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using RackCad.Application.Catalogs;
-using RackCad.Application.Systems.Dynamic;
 using RackCad.Application.Systems.Selective;
 using RackCad.Domain.Systems.Selective;
 using RackCad.UI.Controls;
@@ -547,7 +546,11 @@ namespace RackCad.UI
 
                     if (row.Variant != null)
                     {
-                        row.Variant.SelectionChanged += (s, e) => RefreshVariantControls(row);
+                        row.Variant.SelectionChanged += (s, e) =>
+                        {
+                            TakeDefaultsWhenChosen(row, e); // T6 seg
+                            RefreshVariantControls(row);
+                        };
                         RefreshVariantControls(row);
                     }
 
@@ -579,6 +582,29 @@ namespace RackCad.UI
             if (row.DefensaButton != null) row.DefensaButton.IsEnabled = enabled;
             if (row.GuiaButton != null) row.GuiaButton.IsEnabled = enabled;
             if (row.ParrillaButton != null) row.ParrillaButton.IsEnabled = enabled;
+        }
+
+        /// <summary>
+        /// T6 seg (I-64, sexta tanda; answer of the Owner of 2026-11-27, «Guardarla como la ventana»): a family whose variant goes from
+        /// «Ninguno» to a variant, with nothing of its own in its row, takes the defaults the RackCad window gives a new family
+        /// (<c>RackCadSafetyEdit.Fresh</c>), in sight: the bota its general side «Ambas»; the protector lateral of a Selectivo the two posts of
+        /// the ends, as its «Por poste…» seeds them (<see cref="OrillaDefaults"/>). The other families already hold their defaults in the row,
+        /// and «Aceptar» writes them (<see cref="OnOk"/>). Another variant of a family already chosen changes only the variant, as the window.
+        /// </summary>
+        private void TakeDefaultsWhenChosen(Row row, SelectionChangedEventArgs e)
+        {
+            var from = e?.RemovedItems?.OfType<CatalogOption>().FirstOrDefault();
+            if (from != null && !string.IsNullOrWhiteSpace(from.Id)) return;
+            if (string.IsNullOrWhiteSpace(SelectedElementId(row))) return;
+            if (row.IsBota && row.Side != null && row.Side.SelectedIndex <= (int)SafetySide.None && (row.PostSides?.Count ?? 0) == 0)
+            {
+                row.Side.SelectedIndex = (int)SafetySide.Both;
+            }
+            else if (row.IsLateral && !useDynamicSafetyDefaults && (row.PostSides?.Count ?? 0) == 0)
+            {
+                row.PostSides = OrillaDefaults(postCount);
+                if (row.PerPost != null) row.PerPost.Content = PerPostLabel(row.PostSides.Count);
+            }
         }
 
         private static string PerPostLabel(int overrides)
@@ -686,6 +712,12 @@ namespace RackCad.UI
         /// </summary>
         internal Func<SafetyTopeGridWindow, bool?> TopeDialog;
 
+        /// <summary>
+        /// T6 seg (I-64, sexta tanda) — seam de prueba de la rejilla del DESVIADOR, con el patron de <see cref="TopeDialog"/>: sustituye
+        /// UNICAMENTE la modalizacion; la rejilla que recibe es la real, construida con los argumentos que ve el usuario.
+        /// </summary>
+        internal Func<SafetyDesviadorGridWindow, bool?> DesviadorDialog;
+
         /// <summary>El selector de VARIANTE de la fila de BOTA (seam de prueba); null si la familia no es exclusiva.</summary>
         /// <summary>Test seam: el vocabulario que la fila de la BOTA ofrece en ESTE anfitrion (I-43, gate 8.6H).</summary>
         internal IReadOnlyList<string> BootRowOptionsForTest => BootRowLabels;
@@ -764,7 +796,8 @@ namespace RackCad.UI
                 desviadorLevelsPerPost != null || fallbackLevelsArePerPost,
                 showSide: ShowDesviadorSide,
                 allowBlankColumns: allowBlankFrontColumns) { Owner = this };
-            if (dialog.ShowDialog() != true)
+            var accepted = DesviadorDialog != null ? DesviadorDialog(dialog) : dialog.ShowDialog(); // T6 seg: test seam
+            if (accepted != true)
             {
                 return;
             }
@@ -827,6 +860,10 @@ namespace RackCad.UI
             }
         }
 
+        // T6 seg (I-64, sexta tanda; answer of the Owner of 2026-11-27, «Guardarla como la ventana»): «Aceptar» writes what the RackCad window
+        // writes. A family whose variant is chosen is kept with its defaults although its «Configurar…» or «Por poste…» was not opened, and a
+        // family left with nothing (every cell, level, post or end off) keeps its variant and its measures (C2-07 of the window): nothing is
+        // drawn or counted, as before, but «Aceptar» no longer drops it without a word. Only «Ninguno» in its list takes a family out.
         private void OnOk(bool modal)
         {
             var result = new List<SelectiveSafetySelection>();
@@ -840,21 +877,14 @@ namespace RackCad.UI
 
                 if (row.IsTope)
                 {
-                    if (row.TopeConfigured)
+                    // T6 seg: without «Configurar…» the row holds the defaults (shared, both sides, saque 3 in, every cell).
+                    var selection = new SelectiveSafetySelection { ElementId = elementId, Side = row.TopeSide, Quantity = 1, TopeShared = row.TopeShared, TopeSaque = row.TopeSaque, TopeFrontal = row.TopeFrontal, TopeFondo = row.TopeFondo };
+                    foreach (var c in row.TopeOffCells)
                     {
-                        // Disabled when every (frente,level) cell is off.
-                        if (!SelectiveSafetyGrid.AllCellsOff(levelsPerFrente, row.TopeOffCells))
-                        {
-                            var selection = new SelectiveSafetySelection { ElementId = elementId, Side = row.TopeSide, Quantity = 1, TopeShared = row.TopeShared, TopeSaque = row.TopeSaque, TopeFrontal = row.TopeFrontal, TopeFondo = row.TopeFondo };
-                            foreach (var c in row.TopeOffCells)
-                            {
-                                if (c != null) selection.TopeOffCells.Add(new SelectiveGridCell { Frente = c.Frente, Level = c.Level });
-                            }
-
-                            result.Add(selection);
-                        }
+                        if (c != null) selection.TopeOffCells.Add(new SelectiveGridCell { Frente = c.Frente, Level = c.Level });
                     }
 
+                    result.Add(selection);
                     continue;
                 }
 
@@ -862,20 +892,18 @@ namespace RackCad.UI
                 {
                     // The grid drives the BOM regardless of the view toggles (a deck counts even if you hide both views),
                     // so gate ONLY on being configured — the per-view toggles gate the drawing, not BOM membership.
+                    // T6 seg: the parrilla has no list of variant here, so its «Configurar…» is what chooses it; once chosen, every cell off
+                    // keeps it (the «En ninguna» of the window).
                     if (row.ParrillaConfigured)
                     {
-                        // Disabled when every (frente,level) cell is off.
-                        if (!SelectiveSafetyGrid.AllCellsOff(levelsPerFrente, row.ParrillaOffCells))
+                        // Side = Both makes EnabledOfType treat it as "drawn"; the per-view toggles gate the actual draw.
+                        var selection = new SelectiveSafetySelection { ElementId = elementId, Side = SafetySide.Both, Quantity = 1, ParrillaFrontal = row.ParrillaFrontal, ParrillaLateral = row.ParrillaLateral, ParrillaFrente = row.ParrillaFrente, ParrillaCantidad = row.ParrillaCantidad };
+                        foreach (var c in row.ParrillaOffCells)
                         {
-                            // Side = Both makes EnabledOfType treat it as "drawn"; the per-view toggles gate the actual draw.
-                            var selection = new SelectiveSafetySelection { ElementId = elementId, Side = SafetySide.Both, Quantity = 1, ParrillaFrontal = row.ParrillaFrontal, ParrillaLateral = row.ParrillaLateral, ParrillaFrente = row.ParrillaFrente, ParrillaCantidad = row.ParrillaCantidad };
-                            foreach (var c in row.ParrillaOffCells)
-                            {
-                                if (c != null) selection.ParrillaOffCells.Add(new SelectiveGridCell { Frente = c.Frente, Level = c.Level });
-                            }
-
-                            result.Add(selection);
+                            if (c != null) selection.ParrillaOffCells.Add(new SelectiveGridCell { Frente = c.Frente, Level = c.Level });
                         }
+
+                        result.Add(selection);
                     }
 
                     continue;
@@ -883,26 +911,23 @@ namespace RackCad.UI
 
                 if (row.IsDesviador)
                 {
-                    if (row.DesviadorConfigured
-                        && !SelectiveSafetyGrid.AllCellsOff(row.DesviadorLevelCounts, row.DesviadorOffCells))
+                    // T6 seg: a new desviador without «Configurar…» is written as its grid accepts it untouched: the defaults of the row and
+                    // the side the grid returns (with no selector, Push Back, the one of the low end).
+                    var selection = new SelectiveSafetySelection
                     {
-                        var selection = new SelectiveSafetySelection
-                        {
-                            ElementId = elementId,
-                            Quantity = 1,
-                            Side = row.DesviadorSide,
-                            DesviadorLongitud = row.DesviadorLongitud,
-                            DesviadorPrimerNivelAltura = row.DesviadorPrimerNivelAltura
-                        };
-                        selection.Desviador.CellsByPost = row.DesviadorCellsByPost;
-                        foreach (var cell in row.DesviadorOffCells)
-                        {
-                            if (cell != null) selection.DesviadorOffCells.Add(new SelectiveGridCell { Frente = cell.Frente, Level = cell.Level });
-                        }
-
-                        result.Add(selection);
+                        ElementId = elementId,
+                        Quantity = 1,
+                        Side = row.DesviadorConfigured || ShowDesviadorSide ? row.DesviadorSide : SafetyDesviadorGridWindow.LowEndSide,
+                        DesviadorLongitud = row.DesviadorLongitud,
+                        DesviadorPrimerNivelAltura = row.DesviadorPrimerNivelAltura
+                    };
+                    selection.Desviador.CellsByPost = row.DesviadorCellsByPost;
+                    foreach (var cell in row.DesviadorOffCells)
+                    {
+                        if (cell != null) selection.DesviadorOffCells.Add(new SelectiveGridCell { Frente = cell.Frente, Level = cell.Level });
                     }
 
+                    result.Add(selection);
                     continue;
                 }
 
@@ -929,58 +954,42 @@ namespace RackCad.UI
                         }
                     }
 
-                    var drawsSomewhere = Enumerable.Range(0, postCount)
-                        .Select(post => DynamicForkliftDefensePlan.ForSelection(selection, post, postCount))
-                        .Any(setting => setting.DrawsExit || setting.DrawsEntrance);
-                    if (drawsSomewhere)
-                    {
-                        result.Add(selection);
-                    }
-
+                    // T6 seg: every end off keeps the family (the window keeps it too).
+                    result.Add(selection);
                     continue;
                 }
 
                 if (row.IsGuia)
                 {
-                    if (!SelectiveSafetyGrid.AllCellsOff(levelsPerFrente, row.GuiaOffCells))
+                    // T6 seg: every cell off keeps the family (T4S-10 of the window).
+                    var selection = new SelectiveSafetySelection
                     {
-                        var selection = new SelectiveSafetySelection
+                        ElementId = elementId,
+                        Quantity = 1,
+                        Side = SafetySide.None
+                    };
+                    foreach (var cell in row.GuiaOffCells ?? new List<SelectiveGridCell>())
+                    {
+                        if (cell != null)
                         {
-                            ElementId = elementId,
-                            Quantity = 1,
-                            Side = SafetySide.None
-                        };
-                        foreach (var cell in row.GuiaOffCells ?? new List<SelectiveGridCell>())
-                        {
-                            if (cell != null)
+                            selection.GuiaEntradaOffCells.Add(new SelectiveGridCell
                             {
-                                selection.GuiaEntradaOffCells.Add(new SelectiveGridCell
-                                {
-                                    Frente = cell.Frente,
-                                    Level = cell.Level
-                                });
-                            }
+                                Frente = cell.Frente,
+                                Level = cell.Level
+                            });
                         }
-
-                        result.Add(selection);
                     }
 
+                    result.Add(selection);
                     continue;
                 }
 
                 if (row.IsBota || row.IsLateral)
                 {
-                    // A bota has a general side; a lateral is per-post only (Side stays None).
+                    // A bota has a general side; a lateral is per-post only (Side stays None). T6 seg: a bota or a protector lateral that
+                    // draws nowhere (the general side in «Ninguno» and no post, or every post on «Ninguno») keeps its variant, as the window.
                     var side = row.IsBota ? (SafetySide)Math.Max(0, row.Side.SelectedIndex) : SafetySide.None;
                     var overrides = row.PostSides ?? new List<SafetyPostSide>();
-                    var drawsSomewhere = side != SafetySide.None
-                                         || overrides.Any(p => p != null && p.Side != SafetySide.None)
-                                         || (row.IsLateral && useDynamicSafetyDefaults && overrides.Count == 0);
-                    if (!drawsSomewhere)
-                    {
-                        continue; // nothing draws for this element
-                    }
-
                     var selection = new SelectiveSafetySelection { ElementId = elementId, Side = side, Quantity = 1 };
                     foreach (var post in overrides)
                     {

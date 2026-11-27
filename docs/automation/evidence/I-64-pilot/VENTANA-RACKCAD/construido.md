@@ -4956,3 +4956,180 @@ tercero (`773f0a6e`), integradas en un segundo merge de la rama pb.
 
 - La validación del Owner de los supuestos de la quinta tanda y de O-5.
 - La limpieza de los worktrees y las ramas locales de la quinta tanda, con aviso al Owner.
+
+## Sexta tanda, seg: los diálogos clásicos de seguridad guardan como la ventana (2026-11-27)
+
+**Rama:** local `architecture/workspace-persistente-rackcad-t6-seg` (worktree `D:\w6seg`), sobre `f02f519b`. Sin commit, sin push y sin
+AutoCAD. Respuesta del Owner del 2026-11-27, literal: «Guardarla como la ventana». Los dolores 3, 4 y 6 del inventario del grupo
+«seguridad» (`protos\seguridad\inventario.md`). El editor clásico se queda: el arreglo está en el propio diálogo clásico.
+
+**El defecto.** El «Aceptar» del diálogo clásico «Elementos de seguridad» (`SelectiveSafetyWindow.OnOk`, el de RACKEDITAR de Selectivo,
+de Dinámico y de Push Back) descartaba sin avisar lo que la ventana guarda. Líneas de la base `f02f519b`, en
+`src/RackCad.UI/SelectiveSafetyWindow.cs`:
+- **Dolor 3, elegir la variante no bastaba:**
+  - el tope sin «Configurar…» (`if (row.TopeConfigured)`, :843) y el desviador sin «Configurar…» (`row.DesviadorConfigured`, :886);
+  - la bota, cuyo lado general parte de «Ninguno» (:512), sin cambiarlo y sin postes (`drawsSomewhere`, :976-982);
+  - el protector lateral de Selectivo sin «Por poste…» (el mismo `drawsSomewhere`; sus extremos solo los sembraba «Por poste…», :595).
+- **Dolor 4, todo apagado quitaba la familia,** con su variante y sus medidas: `AllCellsOff` del tope (:846), de la parrilla (:868), del
+  desviador (:887) y de la guía (:945); `drawsSomewhere` de la defensa (:932-935) y de la bota y el protector lateral (:976-982).
+- La ventana guarda en todos esos casos: `RackCadSafetyEdit.Fresh` y `PushBackSafetyEdit.SetVariant` para una familia nueva, y C2-07,
+  T4S-10, T4S-11 y PB-S17 3 para una familia sin nada. Por eso, además, RACKEDITAR sobre un rack que la ventana dejó así le quitaba la
+  familia con solo «Aceptar».
+
+**El arreglo** (solo `SelectiveSafetyWindow.cs`):
+- `OnOk` ya no pide «Configurar…» al tope ni al desviador, ni quita una familia que no dibuja nada. Solo «Ninguno» de su lista la quita.
+- Un desviador nuevo sin «Configurar…» se escribe como su rejilla lo acepta sin tocar: los valores de su fila y el lado que la rejilla
+  devuelve. En Push Back, sin selector, es el del extremo bajo (`SafetyDesviadorGridWindow.LowEndSide`, PB-003), como escribe la ventana.
+- `TakeDefaultsWhenChosen` (nuevo): cuando la lista de una familia pasa de «Ninguno» a una variante y su fila no tiene nada propio, la
+  fila toma, a la vista, lo que la ventana da a una familia nueva:
+  - la bota, el lado general «Ambas»;
+  - el protector lateral de Selectivo, los dos extremos (`OrillaDefaults`), y su botón dice «Por poste (2)…».
+
+  Las demás familias ya tenían sus valores por defecto en la fila. Cambiar de una variante a otra no toca la fila, como `SetVariant` de la
+  ventana.
+- La parrilla no cambia en el dolor 3: no tiene lista de variante en el clásico (no es una familia exclusiva), así que su «Configurar…» es
+  lo que la elige. Una vez elegida, todas sus celdas apagadas la conservan.
+- Un seam de prueba nuevo, `DesviadorDialog`, con el patrón de `TopeDialog`: sustituye solo la modalización de la rejilla del desviador.
+- Sin uso, sale el `using RackCad.Application.Systems.Dynamic`. El comentario de la clase `RackCadSafetyEdit` (Application) ya no dice que
+  el clásico quita la familia.
+
+**Dolor 6 (Dinámico pierde una defensa igual a la automática): ya no pasa; no se tocó nada.**
+- La cuarta tanda (T4S-14) abrió la rejilla de defensas de Dinámico con la columna «Auto» (`SelectiveSafetyWindow.EditDefensa`,
+  `autoPerEnd: true`, :713 de la base). Con ella, la rejilla guarda siempre un extremo propio (`var stores = autoPerEnd || …`,
+  `SafetyDefensaGridWindow.cs:682-684`).
+- La heurística que lo perdía queda solo para `autoPerEnd: false`, que ya nadie pasa: las dos construcciones de la rejilla
+  (`SelectiveSafetyWindow.EditDefensa` y `RackPushBackSystemWindow.ShowDefenseDialog`) pasan `true`. No se borró: es de la parte pb.
+- Una prueba lo deja medido: en P3, un poste de orilla, «Auto» desmarcado guarda sus 12 in como propios, y con un frente más siguen siendo
+  12 (`Dinamico_an_own_defense_equal_to_the_automatic_one_is_kept_by_the_classic_grid`, verde también en la base).
+
+**Lo que el clásico guarda ahora y antes descartaba:**
+
+| Sistema | Caso | Lo que guarda «Aceptar» |
+|---|---|---|
+| Selectivo, Dinámico | Bota elegida sin tocar su lado | La variante, con lado y colocación «Ambas» (el lado pasa a «Ambas» al elegirla) |
+| Selectivo, Dinámico | Bota con el lado general en «Ninguno» y sin postes, o con todos en «Ninguno» | La variante, con lado «Ninguno»: no dibuja |
+| Selectivo | Protector lateral elegido sin «Por poste…» | La variante, en P1 «Izquierda» y en el último poste «Derecha» |
+| Selectivo | Protector lateral sin ningún poste | La variante, sin postes: no dibuja |
+| Dinámico, Push Back | Protector lateral con todos los postes en «Ninguno» | La variante, con esos postes: no dibuja |
+| Selectivo | Tope elegido sin «Configurar…» | Uno central compartido, «Ambas», saque 3 in, sin frontal, todas las celdas |
+| Selectivo | Tope o parrilla con todas las celdas apagadas | La variante y sus medidas: no dibuja ni cuenta |
+| Selectivo, Dinámico | Desviador elegido sin «Configurar…» | 18 in, primer nivel a 18 in, todas las celdas, «Ambas» (Dinámico: por poste) |
+| Push Back | Desviador elegido sin «Configurar…» | Lo mismo, en el lado del extremo bajo (Izquierdo), como su rejilla |
+| Selectivo, Dinámico, Push Back | Desviador con todos sus niveles apagados | La variante y sus medidas: no dibuja ni cuenta |
+| Dinámico | Guía con todas las celdas apagadas | La variante: no dibuja ni cuenta |
+| Dinámico | Defensa con todos sus extremos apagados | La variante, con sus registros: no dibuja ni cuenta |
+
+Dejan de ser diferencias declaradas: la del clásico en C2-07, T4S-10 y T4S-11, y las 3 y 6 de PB-S17 (lo demás de PB-S17 es de la parte pb).
+
+**Los supuestos** (para la validación del Owner):
+
+| Id | Supuesto | Por qué |
+|---|---|---|
+| T6seg-S1 | En el clásico, elegir la variante de la bota (Selectivo y Dinámico) pone su lado general en «Ambas», a la vista; la del protector lateral de Selectivo pone los dos extremos, y su botón dice «Por poste (2)…». Solo al pasar de «Ninguno» a una variante con la fila vacía: cambiar de una variante a otra no toca la fila, y si la fila ya tenía algo (tras «Ninguno» y otra vez una variante en el mismo diálogo) se queda lo que muestra | Que lo que «Aceptar» guarda esté a la vista antes de aceptar. Es lo que la ventana da a una familia nueva (`Fresh`) |
+| T6seg-S2 | Un tope o un desviador elegidos sin «Configurar…» se guardan con los valores de la rejilla aceptada sin tocar. El botón sigue diciendo «Configurar…» hasta que se abre | La ventana los guarda igual; el texto del botón no cambió |
+| T6seg-S3 | Una familia sin nada (celdas, niveles, postes o extremos apagados) conserva su variante y sus medidas en el clásico. No se dibuja ni se cuenta nada, como antes. Solo «Ninguno» de su lista la quita | La respuesta del Owner y C2-07 |
+| T6seg-S4 | La parrilla, que en el clásico no tiene lista de variante, se sigue eligiendo con su «Configurar…». Con todas sus celdas apagadas se queda, así que en el clásico ya no hay gesto que la quite del todo (la ventana tiene «Sin variante»). El dibujo y el BOM son los de sin parrilla | Apagarla toda era su único «quitar» en el clásico. Se eligió guardar como la ventana, que conserva «En ninguna» |
+| T6seg-S5 | El botón «Elementos de seguridad (n)…» de los editores clásicos de Selectivo y Dinámico cuenta las familias elegidas, también las que no dibujan nada: cuentan por su cantidad 1 (`SafetyDraws`, `DynamicEditorSafety.Draws`). En los casos de T6seg-S3 el número sube respecto de antes. No se tocó | Es el conteo de siempre de lo que hay en la lista. Que cuente solo lo que dibuja sería otro cambio |
+
+**Las transcripciones del clásico:**
+- **Push Back:** la clase `Classic` de `PushBackSafetyEditTests` sigue al clásico corregido, con comentarios `T6 seg`. Son tres
+  cambios y una pieza nueva:
+  - `OkLateral` guarda también el protector lateral que no dibuja;
+  - `Grid` guarda también un desviador sin celdas;
+  - `DesviadorVariant` ya no mira `AllCellsOff`;
+  - **nueva:** `NewDesviadorWithoutGrid`, la variante elegida y «Aceptar» sin «Configurar…».
+
+  La defensa de esa clase es de la parte pb y no se tocó.
+- **Selectivo y Dinámico no tienen transcripción:** sus pruebas abren el diálogo real, como la equivalencia de T4S-01
+  (`RackCadSafetyPanelTests`) y las referencias de `SelectiveSafetyTabTests` y `DynamicSafetyTabTests`, y siguen en verde.
+- No hubo que debilitar ninguna guarda.
+
+**Las pruebas:**
+- **`ClassicSafetyAcceptTests`** (UI, nueva, 24 casos). Usa el diálogo real, construido como lo construye su editor clásico
+  (`RackCadSelectiveSafetyDialog.Build`, `RackCadModalDialogs.BuildDynamicSafetyDialog` y el seam `SafetyWindowDialog` del editor clásico
+  de Push Back).
+  - **Dolor 3, Selectivo:** bota, protector lateral, tope y desviador.
+    - Se elige solo la variante y «Aceptar».
+    - La familia está, y el diseño es byte a byte el de la ventana tras elegir la misma variante en «Variante y medidas».
+  - **Dolor 3, Dinámico:** las cinco familias, de la misma forma. La bota y el desviador fallaban en la base; el protector lateral, la guía
+    y la defensa ya pasaban.
+  - **Los valores a la vista** (T6seg-S1):
+    - la bota pasa de «Ninguno» a «Ambas», y otra variante deja «Izquierda»;
+    - «Ninguno» y otra vez la variante devuelve «Ambas»;
+    - el protector lateral pasa a «Por poste (2)…».
+  - **Un diálogo sin tocar no guarda nada:** la parrilla no tiene lista de variante.
+  - **Dolor 4, Selectivo:** tope, parrilla, desviador, protector lateral y bota.
+    - La ventana los deja sin nada: «En ninguna», «En ninguno», «No lleva» en cada poste, o el lado general en «Ninguno».
+    - El BOM de la familia es 0.
+    - RACKEDITAR sobre eso, con «Aceptar» sin tocar, da el mismo diseño, byte a byte.
+  - **Dolor 4, Dinámico:**
+    - guía, protector lateral, bota y defensa, de la misma forma;
+    - el desviador, con «Ninguno» en su rejilla real (seam `DesviadorDialog`): conserva su variante, sus medidas y su lectura por poste, y
+      su BOM es 0.
+  - **Push Back:**
+    - un desviador nuevo elegido sin «Configurar…» queda con `Side` y `AuthoredSide` Izquierdo, 18 in y 18 in, sin celdas apagadas, como lo
+      escribe la ventana;
+    - el protector lateral con los cuatro postes en «Ninguno» y el desviador con todas las celdas apagadas conservan su variante, y no se
+      coloca ningún desviador.
+  - **Dolor 6:** la prueba de la defensa de arriba.
+- **`PushBackSafetyEditTests`** (Core), contra la transcripción corregida:
+  - `ALateralLeftWithNoPostKeepsItsVariantAsTheClassicAndDrawsNothing` (antes
+    `…WhereTheClassicDropsItAndDrawsTheSame`): ahora cada paso es `Same`, y el clásico conserva la familia.
+  - `ADesviadorLeftWithNoLevelKeepsItsVariantAsTheClassicAndDrawsNothing` (nueva).
+  - `ANewDesviadorComesAsItsGridAcceptsItOnTheSideOfTheLowEnd` recorre además el camino sin «Configurar…».
+- **En la base** (con solo el seam): de las 24, fallan 19 y pasan 5. Las 5 son la de la parrilla sin tocar, las tres de Dinámico que ya se
+  guardaban y la del dolor 6.
+
+**Comprobación en rojo:**
+- Siete piezas rotas a propósito, una a una, con `S\hs65\t6\seg\tools\red.py`. Las salidas están en `red-out.txt` y `red-log.txt`, en
+  la misma carpeta.
+- El script guarda antes una copia de cada original FUERA del worktree, compila, corre la clase focal y restaura el archivo desde sus
+  bytes.
+- Las siete volvieron con la misma huella SHA-256 (`08c607d4…` y `c2dc1542…`). En `git diff` no quedó ningún resto.
+- Cada pieza hizo fallar sus pruebas:
+  - **R1, el arreglo entero revertido** (solo queda el seam): fallan 19 de 24, las mismas que en la base.
+  - **R2, sin los valores al elegir la variante:** fallan 4, la bota de Selectivo y de Dinámico, el protector lateral de Selectivo y la de
+    los valores a la vista.
+  - **R3, el desviador nuevo con el lado de su fila y no el de su rejilla:** falla la del desviador nuevo de Push Back.
+  - **R4, otra vez «Configurar…» para el tope y el desviador:** fallan 4, el tope y el desviador de Selectivo, el de Dinámico y el de Push
+    Back.
+  - **R5, de vuelta las condiciones de «todo apagado»** (celdas, extremos y postes): fallan 11, todas las del dolor 4.
+  - **C1, la transcripción que vuelve a quitar el protector lateral que no dibuja:** falla la del protector lateral (Core).
+  - **C2, la transcripción que vuelve a quitar el desviador sin celdas:** falla la del desviador sin niveles (Core).
+
+**Archivos:**
+- `src/RackCad.UI/SelectiveSafetyWindow.cs`: el arreglo y el seam.
+- `src/RackCad.Application/VentanaRackCad/RackCadSafetyEdit.cs`: un comentario, marcado `T6 seg`.
+- `tests/RackCad.UI.Tests/ClassicSafetyAcceptTests.cs`: nuevo.
+- `tests/RackCad.Tests/Workspace/PushBackSafetyEditTests.cs`: la transcripción y tres pruebas, marcadas `T6 seg`.
+  - **Para integrar:** la parte pb toca la misma clase `Classic` (también `Grid`, `OkLateral`, `NewDesviador` y su resumen). Mis cambios
+    allí son de pocas líneas, cada uno con su comentario `T6 seg`, y la nota de la clase va en su cuerpo, no en el resumen.
+- **Dos avisos de la revisión de pb, comprobados:**
+  - **Push Back de dos sentidos.** El «Aceptar» corregido ya no lee niveles para decidir nada: ni `levelsPerFrente`, que es del lado
+    activo y por frente, ni `desviadorLevelsPerPost`. Una familia nueva sin configurar toma los valores de su fila, sin celdas apagadas, y
+    «todo apagado» ya no se mira. Así, la corrección de pb de `DesviadorLevelsPerPost` (el lado más alto) no choca con este arreglo, y el
+    rack de dos sentidos no vuelve a depender del lado activo por aquí. Las pruebas de Push Back de esta parte son de un sentido.
+  - **Las familias que el diálogo no muestra** (la defensa de Push Back, con `includeDefensa: false`, y la bota, en sus secciones) no se
+    conservan ni se tocan: el resultado sale solo de las filas del diálogo, como antes. Nada de este arreglo depende de cómo arranca
+    `ApplyDefenseSections`.
+- `docs/automation/evidence/I-64-pilot/VENTANA-RACKCAD/construido.md`: esta sección.
+
+**Los números** (sobre las fuentes finales):
+- **UI completa:** 3134 correctas, 0 con error y 48 omitidas, de 3182. Es la base (3110/0/48) más las 24 de `ClassicSafetyAcceptTests`.
+  Corrió con `--blame` y terminó entera.
+- **Core Full:** 19484 correctas, 0 con error y 403 omitidas, de 19887. Es la base (19483/0/403) más la prueba nueva de
+  `PushBackSafetyEditTests`.
+  - La primera pasada se anuló: «Proceso de host de pruebas bloqueado», con la máquina cargada por las otras partes. Llevaba 19384
+    correctas, 0 con error y 400 omitidas.
+  - Se repitió entera con `--blame-hang`, sin bloqueo.
+  - Tras quitar un comentario del resumen de `Classic` (sin cambio de código), `PushBackSafetyEditTests` se volvió a compilar y a pasar:
+    22 de 22.
+- **Solución en Debug** (Plugin incluido), compilada con `--no-incremental`: 0 errores. Las del Plugin son las 2 MSB3277 de siempre. Mi
+  archivo de pruebas tenía una advertencia xUnit2013, corregida.
+- **Las focales, durante el trabajo:** las clases de UI que tocan los diálogos de seguridad (Push Back, «Safety», las de la bota y el tope
+  de Selectivo, `DialogWindow*`, el censo de ventanas y `BlankFront*`): 892 correctas, 0 con error y 8 omitidas, de 900.
+
+**Para el Owner:**
+- Los supuestos T6seg-S1 a T6seg-S5. Sobre todo T6seg-S4, la parrilla: con todo apagado se queda, y en el clásico no hay forma de
+  quitarla del todo.
+- El dolor 6 ya no pasa desde T4S-14. No hay nada que validar, salvo T4S-14 mismo, que seguía pendiente.
