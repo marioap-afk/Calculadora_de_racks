@@ -24,6 +24,7 @@ namespace RackCad.Application.Systems.Larguero
     {
         public const string NoSectionText = "Elige una sección de la lista.";
         public const string NoPeralteText = "Elige el peralte del larguero.";
+        public const string NoCatalogPeraltesText = "El catálogo no da los peraltes de este larguero (columna peraltes de secciones.csv).";
         public const string NoLengthText = "Escribe una longitud a corte mayor que 0 (en pulgadas).";
         public const string NoMensulaText = "Elige la ménsula.";
         public const string AiscMensulaText = "Elige la ménsula: una sección AISC no trae ménsula en el catálogo.";
@@ -38,8 +39,11 @@ namespace RackCad.Application.Systems.Larguero
             Missing = missing;
         }
 
-        /// <summary>The name the larguero would take: «Larguero 96 in · P3», or «Larguero 96 in · C10X15.3» with an AISC section; empty while the
-        /// section, its peralte or the length are missing.</summary>
+        /// <summary>
+        /// The name the larguero would take: «Larguero 96 in · P3», or «Larguero 96 in · C10X15.3» with an AISC section (its designation, so it
+        /// needs no peralte). Empty exactly when something it needs is in <see cref="Missing"/>: the section, the length, or the peralte of a
+        /// larguero of RackCad (review of part «lg», point 2: the page never says «sin terminar» and «completo» at once).
+        /// </summary>
         public string ProposedName { get; }
 
         public IReadOnlyList<LargueroSummaryLine> Lines { get; }
@@ -82,6 +86,13 @@ namespace RackCad.Application.Systems.Larguero
                 if (effectivePeralte == null) missing.Add(NoPeralteText);
                 lines.Add(new LargueroSummaryLine("Peralte", effectivePeralte == null ? "falta" : LargueroSectionNaming.Number(effectivePeralte.Value) + " in"));
             }
+            else if (section.Source == LargueroSectionSource.RackCad)
+            {
+                // A larguero of RackCad needs a peralte (the PERALTE grip of its block); a row that declares none cannot be completed.
+                effectivePeralte = null;
+                missing.Add(NoCatalogPeraltesText);
+                lines.Add(new LargueroSummaryLine("Peralte", "falta: el catálogo no da los peraltes de este larguero"));
+            }
             else
             {
                 effectivePeralte = section.Depth;
@@ -123,7 +134,7 @@ namespace RackCad.Application.Systems.Larguero
                 lines.Add(new LargueroSummaryLine("Calibre", section.Gauge));
             }
 
-            var name = effectivePeralte == null || length == null
+            var name = length == null || (section.Source == LargueroSectionSource.RackCad && effectivePeralte == null)
                 ? string.Empty
                 : "Larguero " + LargueroSectionNaming.Number(length.Value) + " in · "
                   + (section.Source == LargueroSectionSource.Aisc ? section.Name : "P" + LargueroSectionNaming.Number(effectivePeralte.Value));
@@ -142,8 +153,9 @@ namespace RackCad.Application.Systems.Larguero
         }
 
         // The bill of materials, with THE recipe of a larguero (LargueroBomBuilder.Component, the one Selectivo uses too): the quantities, the
-        // categories and the lengths come from it; the descriptions are the names of this page (the section by its type, the ménsula). The
-        // larguero is described as the classic BOM describes it (LargueroBomBuilder.DescribeBeam): its section and « · P<peralte>».
+        // categories and the lengths come from it; the descriptions are the names of THIS page (the section by its type, the ménsula), not the
+        // ones of the classic BOM (LargueroBomBuilder.DescribeBeam says the label of the row, «Larguero escalón … con ménsula …»). The larguero
+        // is its section and « · P<peralte>» (review of part «lg», point 6).
         private static IReadOnlyList<LargueroBomPreviewLine> BomOf(LargueroSectionOption section, double? peralte, double? length,
             MensulaCatalogEntry mensula, RackCatalog catalog)
         {

@@ -51,10 +51,12 @@ namespace RackCad.Application.Systems.Larguero
             Gauge = string.IsNullOrWhiteSpace(gauge) ? null : gauge.Trim();
             Aisc = aisc;
             // What the search compares, once (the filter runs on every keystroke over about a thousand sections).
-            SearchKeys = LargueroSectionNaming.SearchKey(SourceLabel) + "|" + LargueroSectionNaming.SearchKey(Id);
+            // Its type and the aliases of the type too (review of part «lg», point 4): «tubo» finds the PTR, «CPS» the channels of AISC.
+            SearchKeys = LargueroSectionNaming.SearchKey(SourceLabel) + "|" + LargueroSectionNaming.SearchKey(Id) + "|"
+                         + LargueroSectionNaming.SearchKey(TypeLabel) + "|" + LargueroSectionNaming.SearchKey(LargueroSectionNaming.AliasesOf(TypeLabel));
         }
 
-        /// <summary>The name in the catalog and the id, as the search compares them.</summary>
+        /// <summary>The name in the catalog, the id, the type and its aliases, as the search compares them.</summary>
         internal string SearchKeys { get; }
 
         public LargueroSectionSource Source { get; }
@@ -132,8 +134,11 @@ namespace RackCad.Application.Systems.Larguero
     /// <summary>
     /// The names of the sections of a larguero (LG-01): every section is called by its type. A larguero of RackCad gets its type and its name
     /// from its row: the column <c>family</c> when it says something other than «Larguero», else the words of its name («escalón», «tubo»,
-    /// «canal»); its name is the name of the row without «Larguero» in front and without «con ménsula …» behind, because the ménsula is chosen
-    /// apart. An AISC section is called by its designation, and its type comes from its family. Pure; one place to change it.
+    /// «canal», «PTR», «CPS»); its name is the name of the row without «Larguero» in front and without «con ménsula …» behind, because the
+    /// ménsula is chosen apart. An AISC section is called by its designation, and its type comes from its family, with the name of the Mexican
+    /// market (review of part «lg», point 4): C is «Canal CPS», S is «Viga S (IPS)», W is «Viga W (IPR)» and HSS is «Tubo rectangular (PTR)».
+    /// The cold-formed channel of RackCad («Canal») and the hot-rolled CPS are two types, and so are the round tube of RackCad («Tubo
+    /// redondo») and the PTR. Pure; one place to change it.
     /// </summary>
     public static class LargueroSectionNaming
     {
@@ -141,17 +146,23 @@ namespace RackCad.Application.Systems.Larguero
         public const string AiscCatalog = "Perfiles AISC";
 
         public const string Escalon = "Escalón";
-        public const string Tube = "Tubo";
+        public const string RoundTube = "Tubo redondo";
+        public const string RectangularTube = "Tubo rectangular (PTR)";
         public const string Channel = "Canal";
+        public const string ChannelCps = "Canal CPS";
         public const string Angle = "Ángulo";
-        public const string BeamW = "Viga W";
+        public const string BeamW = "Viga W (IPR)";
         public const string BeamS = "Viga S (IPS)";
         public const string Other = "Otro";
 
         /// <summary>The types in the order the filter offers them; a type the catalog adds (its column <c>family</c>) goes after, by name.</summary>
-        public static IReadOnlyList<string> TypeOrder { get; } = new[] { Escalon, Tube, Channel, Angle, BeamW, BeamS, Other };
+        public static IReadOnlyList<string> TypeOrder { get; } =
+            new[] { Escalon, RoundTube, RectangularTube, Channel, ChannelCps, Angle, BeamW, BeamS, Other };
 
         public static string CatalogLabel(LargueroSectionSource source) => source == LargueroSectionSource.Aisc ? AiscCatalog : RackCadCatalog;
+
+        /// <summary>The words a type is also searched by, beyond its name: «HSS» for the PTR (its AISC name).</summary>
+        public static string AliasesOf(string type) => type == RectangularTube ? "HSS" : string.Empty;
 
         /// <summary>The type of an AISC family.</summary>
         public static string TypeOf(StructuralSectionFamily family)
@@ -160,14 +171,17 @@ namespace RackCad.Application.Systems.Larguero
             {
                 case StructuralSectionFamily.W: return BeamW;
                 case StructuralSectionFamily.S: return BeamS;
-                case StructuralSectionFamily.Channel: return Channel;
+                case StructuralSectionFamily.Channel: return ChannelCps;
                 case StructuralSectionFamily.Angle: return Angle;
-                case StructuralSectionFamily.HssRectangular: return Tube;
+                case StructuralSectionFamily.HssRectangular: return RectangularTube;
                 default: return Other;
             }
         }
 
-        /// <summary>The type of a larguero of RackCad: its column <c>family</c> when it is not «Larguero», else the words of its name and id.</summary>
+        /// <summary>
+        /// The type of a larguero of RackCad: its column <c>family</c> when it is not «Larguero», else the words of its name and id. A tube is
+        /// round unless its name says PTR, rectangular or cuadrado; a channel is the cold-formed «Canal» unless its name says CPS.
+        /// </summary>
         public static string TypeOf(BeamProfileCatalogEntry beam)
         {
             if (beam == null) return Other;
@@ -180,7 +194,10 @@ namespace RackCad.Application.Systems.Larguero
 
             var words = Fold((beam.Label ?? string.Empty) + " " + (beam.Id ?? string.Empty));
             if (words.Contains("ESCALON", StringComparison.Ordinal)) return Escalon;
-            if (words.Contains("TUBO", StringComparison.Ordinal)) return Tube;
+            if (words.Contains("PTR", StringComparison.Ordinal)) return RectangularTube;
+            if (words.Contains("TUBO", StringComparison.Ordinal))
+                return words.Contains("RECTANGULAR", StringComparison.Ordinal) || words.Contains("CUADRAD", StringComparison.Ordinal) ? RectangularTube : RoundTube;
+            if (words.Contains("CPS", StringComparison.Ordinal)) return ChannelCps;
             if (words.Contains("CANAL", StringComparison.Ordinal)) return Channel;
             return Other;
         }
@@ -207,16 +224,34 @@ namespace RackCad.Application.Systems.Larguero
             return Capitalize(name);
         }
 
-        /// <summary>A number of the page: invariant, up to three decimals («3», «3.5», «1.9»).</summary>
-        public static string Number(double value) => value.ToString("0.###", CultureInfo.InvariantCulture);
+        /// <summary>
+        /// A number of the page, invariant: up to three decimals («3», «3.5», «1.9») when that is the exact value, else every digit it needs to
+        /// read back the same (review of part «lg», point 3: a peralte of the catalog with more decimals must come back exactly as it is).
+        /// </summary>
+        public static string Number(double value)
+        {
+            var text = value.ToString("0.###", CultureInfo.InvariantCulture);
+            return double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out var back) && back.Equals(value)
+                ? text
+                : value.ToString(CultureInfo.InvariantCulture);
+        }
 
-        /// <summary>Upper case without accents, one character per character (so an index of the folded text is an index of the text).</summary>
+        /// <summary>
+        /// Upper case without accents, one character per character (so an index of the folded text is an index of the text). A half of a pair
+        /// of surrogates (a character outside the BMP, an emoji) goes as it is: it cannot be normalized alone (review of part «lg», point 5).
+        /// </summary>
         internal static string Fold(string text)
         {
             if (string.IsNullOrEmpty(text)) return string.Empty;
             var builder = new StringBuilder(text.Length);
             foreach (var ch in text)
             {
+                if (char.IsSurrogate(ch))
+                {
+                    builder.Append(ch);
+                    continue;
+                }
+
                 var decomposed = ch.ToString().Normalize(NormalizationForm.FormD);
                 builder.Append(char.ToUpperInvariant(decomposed.Length > 0 ? decomposed[0] : ch));
             }
@@ -296,16 +331,16 @@ namespace RackCad.Application.Systems.Larguero
             var i = 0;
             while (i < text.Length)
             {
-                if (char.IsDigit(text[i]))
+                if (IsAsciiDigit(text[i]))
                 {
                     var whole = ReadDecimal(text, ref i);
                     // «1-1/4» (a whole and a fraction) and «1/4» (a fraction): the designations of HSS and L.
-                    if (i + 1 < text.Length && text[i] == '-' && char.IsDigit(text[i + 1]) && HasFractionAhead(text, i + 1))
+                    if (i + 1 < text.Length && text[i] == '-' && IsAsciiDigit(text[i + 1]) && HasFractionAhead(text, i + 1))
                     {
                         i++;
                         whole += ReadFraction(text, ref i);
                     }
-                    else if (i + 1 < text.Length && text[i] == '/' && char.IsDigit(text[i + 1]))
+                    else if (i + 1 < text.Length && text[i] == '/' && IsAsciiDigit(text[i + 1]))
                     {
                         i++;
                         var denominator = ReadDecimal(text, ref i);
@@ -317,7 +352,7 @@ namespace RackCad.Application.Systems.Larguero
                 else
                 {
                     var start = i;
-                    while (i < text.Length && !char.IsDigit(text[i])) i++;
+                    while (i < text.Length && !IsAsciiDigit(text[i])) i++;
                     tokens.Add(new Token(text.Substring(start, i - start)));
                 }
             }
@@ -325,11 +360,13 @@ namespace RackCad.Application.Systems.Larguero
             return tokens;
         }
 
+        private static bool IsAsciiDigit(char ch) => ch >= '0' && ch <= '9';
+
         private static bool HasFractionAhead(string text, int at)
         {
             var i = at;
-            while (i < text.Length && char.IsDigit(text[i])) i++;
-            return i + 1 < text.Length && text[i] == '/' && char.IsDigit(text[i + 1]);
+            while (i < text.Length && IsAsciiDigit(text[i])) i++;
+            return i + 1 < text.Length && text[i] == '/' && IsAsciiDigit(text[i + 1]);
         }
 
         private static double ReadFraction(string text, ref int i)
@@ -343,11 +380,11 @@ namespace RackCad.Application.Systems.Larguero
         private static double ReadDecimal(string text, ref int i)
         {
             var start = i;
-            while (i < text.Length && char.IsDigit(text[i])) i++;
-            if (i + 1 < text.Length && text[i] == '.' && char.IsDigit(text[i + 1]))
+            while (i < text.Length && IsAsciiDigit(text[i])) i++;
+            if (i + 1 < text.Length && text[i] == '.' && IsAsciiDigit(text[i + 1]))
             {
                 i++;
-                while (i < text.Length && char.IsDigit(text[i])) i++;
+                while (i < text.Length && IsAsciiDigit(text[i])) i++;
             }
 
             return double.Parse(text.Substring(start, i - start), NumberStyles.Float, CultureInfo.InvariantCulture);
@@ -359,12 +396,18 @@ namespace RackCad.Application.Systems.Larguero
 
     /// <summary>
     /// The sections a larguero can be made of, from the two catalogs (LG-02): the largueros of RackCad (secciones.csv, rol LARGUERO) and the
-    /// enabled AISC sections. Ordered by type («Escalón», «Tubo», «Canal», «Ángulo», «Viga W», «Viga S (IPS)»), then the catalog (RackCad
+    /// enabled AISC sections. Ordered by type (<see cref="LargueroSectionNaming.TypeOrder"/>), then the catalog (RackCad
     /// first), then the natural order of the name. Filtered by catalog, by type and by text. Pure: the caller loads the catalogs.
     /// </summary>
     public sealed class LargueroSectionCatalog
     {
-        private LargueroSectionCatalog(IReadOnlyList<LargueroSectionOption> all) => All = all;
+        private LargueroSectionCatalog(IReadOnlyList<LargueroSectionOption> all, LargueroSectionOption firstOfRackCad = null)
+        {
+            All = all;
+            _firstOfRackCad = firstOfRackCad;
+        }
+
+        private readonly LargueroSectionOption _firstOfRackCad;
 
         public static LargueroSectionCatalog Empty { get; } = new LargueroSectionCatalog(Array.Empty<LargueroSectionOption>());
 
@@ -387,6 +430,9 @@ namespace RackCad.Application.Systems.Larguero
                     beam.Label, PeralteList.Parse(beam.Peraltes), null, beam.Mensula, beam.Gauge, null));
             }
 
+            // The default is the first larguero in the order of the catalog (review of part «lg», point 7), not the first of the list by type.
+            var firstOfRackCad = options.FirstOrDefault();
+
             foreach (var group in options.GroupBy(o => LargueroSectionNaming.Fold(o.Name)).Where(g => g.Count() > 1))
                 foreach (var option in group)
                     option.Name = option.Name + " (" + option.Id + ")";
@@ -405,7 +451,7 @@ namespace RackCad.Application.Systems.Larguero
                 .ThenBy(o => o.TypeLabel, StringComparer.Ordinal)
                 .ThenBy(o => o.Source)
                 .ThenBy(o => o.Name, LargueroNaturalOrder.Instance)
-                .ToList());
+                .ToList(), firstOfRackCad);
         }
 
         /// <summary>How many sections a catalog has (null: both).</summary>
@@ -421,7 +467,7 @@ namespace RackCad.Application.Systems.Larguero
                 .ToList();
 
         /// <summary>
-        /// The sections of a catalog (null: both) and of a type (null or empty: every type) whose name, name in the catalog or id contain
+        /// The sections of a catalog (null: both) and of a type (null or empty: every type) whose name, name in the catalog, id or type contain
         /// <paramref name="text"/>, without case, accents or the separators a user does not type. Blank text is no filter.
         /// </summary>
         public IReadOnlyList<LargueroSectionOption> Filter(LargueroSectionSource? source, string type, string text)
@@ -439,8 +485,11 @@ namespace RackCad.Application.Systems.Larguero
         public LargueroSectionOption Find(LargueroSectionSource source, string id) =>
             All.FirstOrDefault(o => o.Source == source && string.Equals(o.Id, id, StringComparison.OrdinalIgnoreCase));
 
-        /// <summary>The section a new larguero starts with: the first larguero of RackCad of the list (the default of the classic editor), or the first section.</summary>
-        public LargueroSectionOption Default => All.FirstOrDefault(o => o.Source == LargueroSectionSource.RackCad) ?? All.FirstOrDefault();
+        /// <summary>
+        /// The section a new larguero starts with: the first larguero of RackCad in the order of the catalog (<c>BeamProfiles[0]</c> with an
+        /// id, review of part «lg», point 7), or the first section of the list when the catalog has no larguero.
+        /// </summary>
+        public LargueroSectionOption Default => _firstOfRackCad ?? All.FirstOrDefault();
 
         private static int TypeRank(string type)
         {

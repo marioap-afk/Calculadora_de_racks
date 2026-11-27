@@ -3354,7 +3354,7 @@ Prototipo `largueros` (preguntas 1 a 13) y las notas del Owner, que mandan sobre
 | LG-S05 | Una sección elegida que el filtro oculta **sigue elegida**, y la página lo dice («La sección elegida, «Tubo 1.9"», no coincide con el filtro: sigue elegida.»). El inspector clásico elegía la primera visible sin decirlo | `LargueroWorkbenchViewModel.OutsideFilterText` |
 | LG-S06 | El peralte de una sección AISC es el de su catálogo, fijo: d de W, C y S; el alto de un HSS; el ala larga de un L. Al cambiar de sección, el peralte elegido se queda si la nueva lo admite; si no, el primero de la nueva | `LargueroSectionCatalog.DepthOf`, `ChooseSection` |
 | LG-S07 | La ménsula sigue a la sección (la de su fila; ninguna con una sección AISC) hasta que el usuario elige una; desde entonces se conserva al cambiar de sección. «Volver a los valores por defecto» la vuelve a seguir | `LargueroWorkbenchViewModel.ChooseSection` |
-| LG-S08 | El nombre previsto de LG-05 con una sección AISC lleva su designación en lugar de «P<peralte>»: «Larguero 96 in · C10X15.3». En la lista de materiales el larguero se describe como en el BOM clásico (`DescribeBeam`: «Escalón calibre 14 · P3»). Sin ménsula elegida, la lista no pone la de la fila | `LargueroDraftSummary` |
+| LG-S08 | El nombre previsto de LG-05 con una sección AISC lleva su designación en lugar de «P<peralte>»: «Larguero 96 in · C10X15.3». En la lista de materiales el larguero lleva los nombres de esta página («Escalón calibre 14 · P3»), no los de `DescribeBeam` (corregido en la revisión, punto 6). Sin ménsula elegida, la lista no pone la de la fila | `LargueroDraftSummary` |
 | LG-S09 | La lista es una `ListBox` virtualizada de 320 px de alto, con su propio desplazamiento dentro de la página (el doble desplazamiento del dolor 19 sigue; aceptado en un borrador) | `LargueroWorkbenchView.xaml` |
 | LG-S10 | Los catálogos se leen la primera vez que se abre la página, no al abrir la ventana. El AISC con el mismo proveedor que RACKSECCION y Cantilever (`CsvStructuralSectionCatalogProvider` sobre `CatalogDirectory`) | `RackCadWindowViewModel.Larguero.cs` |
 | LG-S11 | Dos bloques XAML en `RackCadWindowView.xaml` y no uno: la tarjeta va dentro de «Nuevo» y la página es hermana de las demás páginas en la rejilla del centro | `RackCadWindowView.xaml` |
@@ -3410,7 +3410,7 @@ Prototipo `largueros` (preguntas 1 a 13) y las notas del Owner, que mandan sobre
 - **Una mirada a la página:** con una prueba temporal (ya borrada) se dibujó la ventana con WPF real (`RenderTargetBitmap`) en «Nuevo», en
   la página a 1200 px, con «Perfiles AISC › Canal» y en 640 px (`hs65\t5\lg\render-*.png`, scratchpad de la sesión). Corrigió dos cosas
   antes de las pruebas finales: en estrecho, el título y los botones de la cabecera de la página se pisaban (ahora van en una sola fila que
-  se parte), y la lista de materiales decía «Larguero: Larguero 96 in · P3» (ahora «Larguero: Escalón calibre 14 · P3», como el BOM clásico).
+  se parte), y la lista de materiales decía «Larguero: Larguero 96 in · P3» (ahora «Larguero: Escalón calibre 14 · P3», con los nombres de esta página).
 - **Comprobación en rojo:** diecinueve piezas rotas a propósito, una a una, con script (`hs65\t5\lg\red.py` en el scratchpad de la sesión;
   salida en `red-out.txt`, `red-summary.txt` y `red-logs\`). Antes de cada rotura el script copia el archivo FUERA del worktree
   (`hs65\t5\lg\red-backup\`); después lo restaura con sus bytes, con fecha nueva, y comprueba su SHA-256: las 20 restauraciones, iguales.
@@ -3445,3 +3445,62 @@ Prototipo `largueros` (preguntas 1 a 13) y las notas del Owner, que mandan sobre
   - **Build Debug de la solución (Plugin incluido):** 0 errores; las advertencias son las MSB3277 de las referencias de AutoCAD y las de los
     analizadores de xunit, que ya estaban.
   - Las dos suites corrieron a la vez (33 min la UI, 32 min Core).
+
+### Quinta tanda, lg: correcciones de la revisión (sobre `855a935c`)
+
+Worktree `D:\w5lg`, sobre el commit `855a935c` de la sesión. Sin commit, sin push, sin AutoCAD. Los ocho puntos de la revisión independiente,
+cada uno con su prueba; los puntos 1 a 3, además, con su comprobación en rojo.
+
+| Punto | Qué se hizo | Prueba |
+|---|---|---|
+| 1 [MEDIO] Catálogos leídos una sola vez | Cada vez que se abre la página se vuelven a llamar los dos cargadores (`LargueroWorkbenchViewModel.Reload`, desde `OpenLargueroWorkbench`). Los dos proveedores tienen caché por la firma de sus archivos: sin cambios dan la misma instancia y la página no se reconstruye. Si cambió una instancia (un CSV editado en Excel) o lo que la página dice de los catálogos, se reconstruye y conserva la sección por (catálogo, id), los filtros, la búsqueda, la longitud, el peralte (si la sección lo admite) y la ménsula (si sigue en el catálogo). Una sección que salió del catálogo se dice («La sección elegida, «Tubo 1.9"», ya no está en el catálogo: elige otra.») y no se elige otra en su lugar. Una relectura que falla conserva la última lectura buena y lo dice («…no se pudo volver a leer (…): la página sigue con la última lectura.»). Si antes no había ninguna sección que elegir, la página empieza con la de por defecto. **De paso:** el catálogo de RackCad se lee con el proveedor (`JsonRackCatalogProvider.FromBaseDirectory().Load()`, seam `LargueroRackCatalogLoader`), que lanza, y no con `UiSupport.LoadCatalogSafe`, que daba un catálogo vacío en silencio. Así «El catálogo de RackCad no se pudo leer (…).» sale de verdad, en lugar de su consecuencia («no trae largueros») | `RackCadLargueroWorkbenchTests`: `EveryOpeningReadsTheCatalogsAgainAndKeepsWhatWasChosen`, `ASectionThatLeftTheCatalogIsSaidAndAReadingThatFailsKeepsTheLastOne`, `ACatalogOfRackCadThatCannotBeReadIsSaid` |
+| 2 [MEDIO-BAJO] «Sin terminar» y «completo» a la vez | El nombre de un larguero con sección AISC es su designación («Larguero 96 in · C10X15.3») y no necesita peralte: sale aunque el catálogo no dé la profundidad. Un larguero de RackCad cuya fila no declara peraltes no se puede completar, y `Missing` lo dice: «El catálogo no da los peraltes de este larguero (columna peraltes de secciones.csv).». Resultado: el nombre queda vacío exactamente cuando algo de lo que necesita está en `Missing` | Core: `TheNameAndWhatIsMissingNeverContradictEachOther` (los dos casos y un barrido de todas las secciones reales, con y sin longitud, peralte y ménsula); UI: `ALargueroWhoseRowDeclaresNoPeralteSaysWhyItIsNotComplete` |
+| 3 [BAJO] Peralte con más de 3 decimales | `LargueroSectionNaming.Number` da hasta tres decimales cuando ese es el valor exacto y, si no, todos los dígitos que hacen falta para volver a leerlo igual. Las opciones del peralte, el resumen y el nombre leen el mismo double del catálogo | Core: `APeralteWithMoreThanThreeDecimalsCompletesTheLarguero`; UI: `APeralteWithMoreThanThreeDecimalsIsOfferedAsItIsAndCompletesTheLarguero` |
+| 4 Búsqueda y tipos | Las claves de búsqueda incluyen el tipo y sus alias, así que «tubo» encuentra los PTR, como dice la pista. La pista dice ahora «por tipo» y pone de ejemplo «PTR», «CPS» e «IPR». Tipos con los nombres del mercado mexicano: C de AISC → «Canal CPS», HSS → «Tubo rectangular (PTR)», W → «Viga W (IPR)», S → «Viga S (IPS)». El canal in-n-out de RackCad (formado en frío) es «Canal», otro tipo distinto del CPS (laminado en caliente). El tubo de 1.9" de RackCad es «Tubo redondo», otro tipo distinto del PTR. Supuestos LG-S02 y LG-S03, al día abajo | Core: `TheSearchSeesTheTypeAndTheNamesOfTheMarket`, `TheWordsOfALargueroOfRackCadSayItsTypeWhenTheCatalogDoesNot` y las de tipos, al día; UI: la búsqueda «tubo» y «CPS» en `TheSectionIsChosenWithTheFilterByCatalogAndType` |
+| 5 [BAJO] `Fold` fuera del BMP | Una mitad de par sustituto va tal cual. **De paso:** el orden natural solo toma como número los dígitos ASCII. Un dígito de otra escritura (٣) hacía que `double.Parse` lanzara | Core: `ACharacterOutsideTheBmpOrADigitOfAnotherScriptDoesNotThrow` |
+| 6 Texto del BOM clásico | La nota de la página dice «La receta del BOM de Selectivo (un perfil y 2 ménsulas por larguero), con los nombres de esta página.». El comentario del código y LG-S08 ya no dicen que se describe «como el BOM clásico»: `DescribeBeam` da el nombre de la fila («Larguero escalón calibre 14 con ménsula 3 remaches · P3»), y la página da el suyo («Escalón calibre 14 · P3») | Core: aserto en `TheSummaryOfALargueroOfRackCadUsesTheRecipeOfTheLargueroAndTakesTheAutomaticName` (no es `DescribeBeam`); UI: el texto de la nota en la prueba de vista |
+| 7 Valor por defecto | `LargueroSectionCatalog.Default` es el primer larguero en el orden del catálogo (`BeamProfiles[0]` con id), no el primero de la lista por tipo. Supuesto LG-S13 | Core: `TheDefaultIsTheFirstLargueroInTheOrderOfTheCatalog` |
+| 8 Texto de la tarjeta | «…Todavía no lo guarda ni lo dibuja; para guardarlo, usa la tarjeta «Larguero».» | UI: el texto de la tarjeta en la prueba de vista |
+
+**Supuestos al día** (sustituyen a los de arriba con el mismo número):
+
+| Id | Supuesto | Dónde se cambia |
+|---|---|---|
+| LG-S02 | Tipos, en este orden: «Escalón», «Tubo redondo», «Tubo rectangular (PTR)», «Canal», «Canal CPS», «Ángulo», «Viga W (IPR)», «Viga S (IPS)» y «Otro». En AISC: HSS → PTR, C → CPS, W → IPR, S → IPS, L → «Ángulo». **«Viga W (IPR)»** sigue por analogía a «Viga S (IPS)»: la revisión nombraba IPR solo como alias de búsqueda. «Canal» es el canal formado en frío de RackCad (in-n-out); «Canal CPS», el laminado en caliente | `LargueroSectionNaming` |
+| LG-S03 | Las palabras de un larguero de RackCad sin `family` propia: «escalón» → «Escalón»; «PTR», o «tubo» con «rectangular» o «cuadrado» → «Tubo rectangular (PTR)»; «tubo» → «Tubo redondo»; «CPS» → «Canal CPS»; «canal» → «Canal». La columna `family` manda cuando no dice «Larguero» | `LargueroSectionNaming.TypeOf` |
+| LG-S08 | Con una sección AISC, el nombre previsto lleva su designación y no necesita el peralte. La lista de materiales usa los nombres de esta página, no los de `DescribeBeam`. Sin ménsula elegida, no pone la de la fila | `LargueroDraftSummary` |
+| LG-S10 | Cada apertura de la página relee los dos catálogos. El de RackCad, con su proveedor, que dice el fallo, y no con `LoadCatalogSafe` | `RackCadWindowViewModel.Larguero.cs`, `LargueroWorkbenchViewModel.Reload` |
+| LG-S12 (nuevo) | Al releer, la sección se conserva por (catálogo, id). Una que salió del catálogo se dice y no se sustituye. Una relectura que falla sigue con la última lectura buena y lo dice. Sin ninguna sección antes, la de por defecto | `LargueroWorkbenchViewModel.Reload` y `Read` |
+| LG-S13 (nuevo) | El valor por defecto es `BeamProfiles[0]`, como pidió la revisión. **Diferencia con el clásico:** el combo de `RackLargueroWindow` ordena por rótulo (`UiSupport.ToOptions`, `CurrentCultureIgnoreCase`) y toma el primero de ese orden. Con el catálogo de hoy los dos dan `LARGUERO_ESCALON_CAL14_3_REMACHES`. Si el Owner quiere la regla exacta del clásico, es una línea | `LargueroSectionCatalog.Build` |
+
+**Ediciones a archivos compartidos en esta vuelta:** `RackCadWindowView.xaml`, una línea dentro del bloque `<!-- T5 lg -->` de «Nuevo» (el
+texto de la tarjeta, punto 8). `RackCadWindowViewModel.cs` no cambió. Lo demás va en los archivos de la parte: `LargueroSections.cs`,
+`LargueroDraftSummary.cs`, `LargueroWorkbenchViewModel.cs`, `LargueroWorkbenchView.xaml`, `RackCadWindowViewModel.Larguero.cs` y las dos
+clases de prueba.
+
+**Comprobación en rojo de los puntos 1 a 3:** nueve piezas rotas a propósito, una a una, con el mismo script (`hs65\t5\lg\red.py`, piezas
+R20 a R28; salida en `red-rev-out.txt` y `red-logs\`). Antes de cada rotura, una copia del archivo FUERA del worktree; las nueve
+restauraciones, con el mismo SHA-256. Cada pieza hace fallar su prueba:
+1. R20, volver a abrir la página no relee los catálogos: fallan 3 (las tres del punto 1);
+2. R21, la relectura no conserva la sección elegida (toma la de por defecto): fallan 2;
+3. R22, la relectura reconstruye aunque nada cambió: falla 1;
+4. R23, el catálogo de RackCad se lee otra vez con `LoadCatalogSafe`: falla 1;
+5. R24, el fallo de lectura del catálogo de RackCad no se dice: falla 1;
+6. R25, una relectura que falla pierde la última lectura buena: falla 1;
+7. R26, el nombre vuelve a exigir el peralte a una sección AISC: falla 1 (Core);
+8. R27, un larguero sin peraltes en el catálogo no dice por qué falta: falla 1 (Core);
+9. R28, los números vuelven a redondearse a tres decimales: falla 1 (Core).
+
+Después: ningún resto en `git diff` ni en los archivos de la parte, y la solución recompilada con `--no-incremental`.
+
+**Las pruebas, al día:** `LargueroSectionsTests` (Core) pasa de 17 a 23 casos y `RackCadLargueroWorkbenchTests` (UI), de 18 a 23. Las
+existentes cambian solo por los tipos nuevos (punto 4) y por el texto del BOM (punto 6), cada cambio con su nota en el código.
+
+**Los números,** con la solución recompilada con `--no-incremental` en Debug:
+- **UI completa:** 2984 correctas, 0 con error, 48 omitidas (3032): las 2979 de `855a935c` más las 5 nuevas.
+- **Core, las clases focales** (`LargueroSectionsTests`, `BeamCatalogTests`, `RackCadWindowListTests`, `NamespaceFolderGuardTests`,
+  `WorkspacePaletteHostSourceGuardTests`, `RackCadWindowCloseAdvisorTests`, `ProjectVariablesConformanceTests`, `CantileverSourceGuardTests`
+  y `MainMenuStructuralSectionAccessGuardTests`): 265 de 265. Core Full no se volvió a correr (el encargo pide las focales); por cuenta,
+  19315 / 0 / 403 (las 19309 de `855a935c` más las 6 nuevas).
+- **Build Debug de la solución (Plugin incluido):** 0 errores; 83 advertencias, las mismas de antes (MSB3277 de AutoCAD y analizadores de
+  xunit).

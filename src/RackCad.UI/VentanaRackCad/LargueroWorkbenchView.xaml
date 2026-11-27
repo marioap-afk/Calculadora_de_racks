@@ -93,7 +93,7 @@
                         <StackPanel Margin="0,0,10,4">
                             <TextBlock Text="Buscar" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
                             <TextBox x:Name="LargueroSearchBox" Width="170" Padding="4,3" Margin="0,2,0,0" AutomationProperties.Name="Buscar sección"
-                                     ToolTip="Por nombre, por su nombre en el catálogo o por id: «escalón», «tubo», «w10x33», «hss4x4»…"
+                                     ToolTip="Por nombre, por su nombre en el catálogo, por tipo o por id: «escalón», «tubo», «PTR», «CPS», «IPR», «w10x33», «hss4x4»…"
                                      Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
                     </WrapPanel>
@@ -188,7 +188,7 @@
                     </ItemsControl>
 
                     <TextBlock Text="Lista de materiales" FontWeight="SemiBold" Margin="0,8,0,2" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
-                    <TextBlock Style="{StaticResource UtOptional}" Text="La receta que usa también el BOM de Selectivo: un perfil y 2 ménsulas por larguero." />
+                    <TextBlock x:Name="LargueroBomNote" Style="{StaticResource UtOptional}" Text="La receta del BOM de Selectivo (un perfil y 2 ménsulas por larguero), con los nombres de esta página." />
                     <ItemsControl x:Name="LargueroBomLines" ItemsSource="{Binding BomLines}" Focusable="False" AutomationProperties.Name="Lista de materiales del larguero">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>

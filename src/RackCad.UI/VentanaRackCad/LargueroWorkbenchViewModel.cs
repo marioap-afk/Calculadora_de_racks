@@ -98,7 +98,6 @@ namespace RackCad.UI.VentanaRackCad
 
         private RackCatalog _catalog = new RackCatalog();
         private LargueroSectionCatalog _sections = LargueroSectionCatalog.Empty;
-        private string _catalogNotice = string.Empty;
 
         private string _catalogFilter = AllKey;
         private string _typeFilter = AllKey;
@@ -129,7 +128,7 @@ namespace RackCad.UI.VentanaRackCad
             _goHome = goHome;
             _openClassic = openClassic;
             _failed = failed;
-            Load();
+            Apply(Read());
             ResetToDefaults();
         }
 
@@ -151,48 +150,115 @@ namespace RackCad.UI.VentanaRackCad
         // ------------------------------------------------------------------ the catalogs
 
         /// <summary>What could not be read of the catalogs, said at the top of the page (dolor 7: a catalog that fails is never simulated).</summary>
-        public string CatalogNotice => _catalogNotice;
+        public string CatalogNotice => string.Join(" ", new[] { _readNotice, _lostNotice }.Where(n => n.Length > 0));
 
-        public bool HasCatalogNotice => _catalogNotice.Length > 0;
+        public bool HasCatalogNotice => CatalogNotice.Length > 0;
 
         /// <summary>The sections the page offers.</summary>
         public LargueroSectionCatalog Sections => _sections;
 
-        private void Load()
+        // The instances of the last reading that worked: a reading that fails on a reopening keeps them (the page keeps its work).
+        private RackCatalog _lastGoodRack;
+        private StructuralSectionCatalog _lastGoodAisc;
+        private StructuralSectionCatalog _aisc;
+        private string _readNotice = string.Empty;
+        private string _lostNotice = string.Empty;
+
+        /// <summary>
+        /// Reads the two catalogs again (review of part «lg», point 1: «editar el CSV en Excel y volver a abrir» picks the edit up). The two
+        /// providers cache by the signature of their files, so a reading with nothing changed gives the same instances and costs nothing: the
+        /// page is rebuilt only when an instance (or what the page says of the catalogs) changed. The section chosen is kept by its catalog and
+        /// its id; the filters, the search, the length, the peralte (when the section still admits it) and the ménsula (when it is still in the
+        /// catalog) too. A section that is no longer in the catalog is said, and none is chosen in its place.
+        /// </summary>
+        public void Reload()
+        {
+            var read = Read();
+            if (ReferenceEquals(read.Rack, _catalog) && ReferenceEquals(read.Aisc, _aisc) && read.Notice == _readNotice) return;
+
+            var previous = _section;
+            var hadSections = _sections.All.Count > 0;
+            Apply(read);
+            _lostNotice = string.Empty;
+            // With nothing to choose before (catalogs that gave no section), the page starts as a new one: the default section. With nothing
+            // chosen among sections that were there (one that left the catalog), none is chosen in silence.
+            _section = previous != null ? _sections.Find(previous.Source, previous.Id) : hadSections ? null : _sections.Default;
+            if (previous != null && _section == null)
+                _lostNotice = "La sección elegida, «" + previous.Name + "», ya no está en el catálogo: elige otra.";
+            RefreshTypes(raise: false);
+            RefreshRows(raise: false);
+            RefreshMensulaOptions(raise: false);
+            if (_section == null || !PeralteOptions.Contains(_peralte)) _peralte = PeralteOptions.FirstOrDefault();
+            if (_mensula != null && _mensulaOptions.All(o => !string.Equals(o.Key, _mensula, StringComparison.OrdinalIgnoreCase)))
+                _mensula = null; // the ménsula chosen is no longer in the catalog: the summary asks for one
+            if (_mensula == null && !_mensulaChosen) _mensula = DefaultMensulaOf(_section);
+            RaiseCatalogs();
+        }
+
+        private (RackCatalog Rack, StructuralSectionCatalog Aisc, string Notice) Read()
         {
             var notices = new List<string>();
+            RackCatalog rack;
+            var rackRead = true;
             try
             {
-                _catalog = _rackCatalog() ?? new RackCatalog();
+                rack = _rackCatalog() ?? new RackCatalog();
+                _lastGoodRack = rack;
             }
             catch (Exception ex)
             {
-                _catalog = new RackCatalog();
-                notices.Add("El catálogo de RackCad no se pudo leer: " + ex.Message);
+                rackRead = false;
+                rack = _lastGoodRack ?? new RackCatalog();
+                notices.Add(_lastGoodRack == null
+                    ? "El catálogo de RackCad no se pudo leer (" + ex.Message.Trim() + ")."
+                    : "El catálogo de RackCad no se pudo volver a leer (" + ex.Message.Trim() + "): la página sigue con la última lectura.");
             }
 
-            StructuralSectionCatalog aisc = null;
+            StructuralSectionCatalog aisc;
             try
             {
                 aisc = _aiscCatalog();
                 if (aisc == null) notices.Add("El catálogo de perfiles AISC no está disponible: solo se ofrecen los largueros de RackCad.");
+                else _lastGoodAisc = aisc;
             }
             catch (Exception ex)
             {
-                notices.Add("El catálogo de perfiles AISC no se pudo leer (" + ex.Message.Trim() + "): solo se ofrecen los largueros de RackCad.");
+                aisc = _lastGoodAisc;
+                notices.Add(_lastGoodAisc == null
+                    ? "El catálogo de perfiles AISC no se pudo leer (" + ex.Message.Trim() + "): solo se ofrecen los largueros de RackCad."
+                    : "El catálogo de perfiles AISC no se pudo volver a leer (" + ex.Message.Trim() + "): la página sigue con la última lectura.");
             }
 
-            if (_catalog.BeamProfiles.Count == 0) notices.Add("El catálogo de RackCad no trae largueros (secciones.csv, rol LARGUERO).");
-            if (_catalog.Mensulas.Count == 0) notices.Add("El catálogo de RackCad no trae ménsulas (mensulas.csv): no hay ménsula que elegir.");
+            if (rackRead && rack.BeamProfiles.Count == 0) notices.Add("El catálogo de RackCad no trae largueros (secciones.csv, rol LARGUERO).");
+            if (rackRead && rack.Mensulas.Count == 0) notices.Add("El catálogo de RackCad no trae ménsulas (mensulas.csv): no hay ménsula que elegir.");
+            return (rack, aisc, string.Join(" ", notices));
+        }
 
-            _sections = LargueroSectionCatalog.Build(_catalog, aisc);
-            _catalogNotice = string.Join(" ", notices);
+        private void Apply((RackCatalog Rack, StructuralSectionCatalog Aisc, string Notice) read)
+        {
+            _catalog = read.Rack;
+            _aisc = read.Aisc;
+            _readNotice = read.Notice;
+            _sections = LargueroSectionCatalog.Build(_catalog, _aisc);
             _catalogOptions = new[]
             {
                 new LargueroChoiceOption(AllKey, "Todos los catálogos (" + Count(_sections.CountOf(null)) + ")"),
                 new LargueroChoiceOption(RackCadKey, LargueroSectionNaming.RackCadCatalog + " (" + Count(_sections.CountOf(LargueroSectionSource.RackCad)) + ")"),
                 new LargueroChoiceOption(AiscKey, LargueroSectionNaming.AiscCatalog + " (" + Count(_sections.CountOf(LargueroSectionSource.Aisc)) + ")"),
             };
+        }
+
+        private void RaiseCatalogs()
+        {
+            OnPropertyChanged(nameof(CatalogNotice));
+            OnPropertyChanged(nameof(HasCatalogNotice));
+            OnPropertyChanged(nameof(Sections));
+            OnPropertyChanged(nameof(CatalogOptions));
+            OnPropertyChanged(nameof(SelectedCatalog));
+            OnPropertyChanged(nameof(TypeOptions));
+            OnPropertyChanged(nameof(SelectedType));
+            RaiseRows();
+            RaiseSection();
         }
 
         // ------------------------------------------------------------------ the filter of the sections (LG-02)
@@ -307,6 +373,8 @@ namespace RackCad.UI.VentanaRackCad
             get
             {
                 if (_section == null) return string.Empty;
+                if (!_section.HasPeralteChoice && _section.Source == LargueroSectionSource.RackCad)
+                    return LargueroDraftSummary.NoCatalogPeraltesText;
                 if (!_section.HasPeralteChoice)
                     return _section.Depth.HasValue
                         ? LargueroSectionNaming.Number(_section.Depth.Value) + " in: el peralte de la sección, del catálogo AISC."
@@ -403,6 +471,7 @@ namespace RackCad.UI.VentanaRackCad
             _search = string.Empty;
             _length = DefaultLengthText;
             _mensulaChosen = false;
+            _lostNotice = string.Empty;
             _section = null;
             _peralte = null;
             _mensula = null;
@@ -421,6 +490,8 @@ namespace RackCad.UI.VentanaRackCad
                 RefreshMensulaOptions(raise: false);
             }
 
+            OnPropertyChanged(nameof(CatalogNotice));
+            OnPropertyChanged(nameof(HasCatalogNotice));
             OnPropertyChanged(nameof(CatalogOptions));
             OnPropertyChanged(nameof(SelectedCatalog));
             OnPropertyChanged(nameof(TypeOptions));

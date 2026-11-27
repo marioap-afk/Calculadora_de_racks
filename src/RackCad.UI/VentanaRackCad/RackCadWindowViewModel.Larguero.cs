@@ -10,7 +10,8 @@ namespace RackCad.UI.VentanaRackCad
     /// a ménsula, a DRAFT IN CONSTRUCTION (LG-01 to LG-03 of the Owner). It is a page of the window (<see cref="RackCadWindowPage.Larguero"/>),
     /// under «Nuevo» in the side column, and not a «Borrador N» of the drawing: a larguero is a component of the library, not a rack, it is
     /// never inserted and its work never vetoes the close of a drawing (assumption LG-S01). Its view-model is made the first time the page
-    /// opens, when it reads the two catalogs, and it lives as long as the window. Nothing here reads or writes the drawing.
+    /// opens and lives as long as the window; every opening reads the two catalogs again (review of part «lg», point 1). Nothing here reads
+    /// or writes the drawing.
     /// </summary>
     public sealed partial class RackCadWindowViewModel
     {
@@ -19,6 +20,13 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>The neutral catalog of structural sections the page reads (the one of RACKSECCION); the tests give theirs.</summary>
         internal Func<StructuralSectionCatalog> LargueroSectionsLoader { get; set; } = LoadStructuralSections;
 
+        /// <summary>
+        /// The catalog of RackCad the page reads: the provider itself, which caches by the signature of the files and THROWS when it cannot
+        /// read them, so the page says it (review of part «lg», point 1). Not <c>UiSupport.LoadCatalogSafe</c>, which gives an empty catalog
+        /// in silence. The tests give theirs.
+        /// </summary>
+        internal Func<RackCatalog> LargueroRackCatalogLoader { get; set; } = LoadRackCatalog;
+
         /// <summary>«Nuevo › Larguero» is shown.</summary>
         public bool IsLargueroPage => _page == RackCadWindowPage.Larguero;
 
@@ -26,8 +34,8 @@ namespace RackCad.UI.VentanaRackCad
         public LargueroWorkbenchViewModel LargueroWorkbench => _largueroWorkbench;
 
         /// <summary>
-        /// «Larguero en esta ventana» of «Nuevo»: shows the page (made, and its catalogs read, the first time). What was chosen stays while the
-        /// window lives. Contained, as every action of the window.
+        /// «Larguero en esta ventana» of «Nuevo»: shows the page (made the first time). Every opening reads the catalogs again: an edit of a
+        /// CSV shows up, and what was chosen stays (<see cref="LargueroWorkbenchViewModel.Reload"/>). Contained, as every action of the window.
         /// </summary>
         public void OpenLargueroWorkbench()
         {
@@ -35,9 +43,13 @@ namespace RackCad.UI.VentanaRackCad
             {
                 if (_largueroWorkbench == null)
                 {
-                    _largueroWorkbench = new LargueroWorkbenchViewModel(_catalog, LargueroSectionsLoader,
+                    _largueroWorkbench = new LargueroWorkbenchViewModel(() => LargueroRackCatalogLoader(), () => LargueroSectionsLoader(),
                         () => ShowPage(RackCadWindowPage.Nuevo), () => Run(RackCadClassicAction.NewLarguero), ShowError);
                     OnPropertyChanged(nameof(LargueroWorkbench));
+                }
+                else
+                {
+                    _largueroWorkbench.Reload();
                 }
 
                 ShowPage(RackCadWindowPage.Larguero);
@@ -49,6 +61,8 @@ namespace RackCad.UI.VentanaRackCad
 
         // The side column marks «Nuevo» while its page «Larguero» is shown (the crumb «Nuevo › Larguero»).
         private bool IsUnderNuevo(RackCadWindowPage section) => section == RackCadWindowPage.Nuevo && _page == RackCadWindowPage.Larguero;
+
+        private static RackCatalog LoadRackCatalog() => JsonRackCatalogProvider.FromBaseDirectory().Load();
 
         private static StructuralSectionCatalog LoadStructuralSections() =>
             new CsvStructuralSectionCatalogProvider(CatalogDirectory.Resolve()).Load();
