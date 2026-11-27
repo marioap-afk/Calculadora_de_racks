@@ -236,7 +236,8 @@ namespace RackCad.Plugin.VentanaRackCad
                 }
 
                 RackMenuCommands.DispatchInsertion(document,
-                    RackCad.UI.Systems.Dynamic.DynamicDraftOutcome.NewRackRequest(pending.RackId, pending.Name, pending.Design, pending.System, pending.Views));
+                    RackCad.UI.Systems.Dynamic.DynamicDraftOutcome.NewRackRequest(pending.RackId, pending.Name, pending.Design, pending.System, pending.Views,
+                        pending.SourceDesignJson)); // T6 lib (UT-S10): a design of the library carries its project, as the classic editor
                 var placed = RackCommandSupport.FindRackBlocks(document, pending.RackId);
                 door?.AnswerWrite(RackDoorRules.AnswerForNewRack(pending.RequestId, pending.RackId, placed.Count, placed.Count > 0 ? placed[0].Embed?.Name : null));
             }

@@ -14,11 +14,12 @@ namespace RackCad.Application.VentanaRackCad
     /// as for Dinámico and Selectivo: the views to insert («Insertar vista…», RACKCANTILEVERINSERTAR: first the draft in the views that
     /// exist, then the new ones as linked copies), a new line of the window (<paramref name="NewRack"/>, RACKCANTILEVERNUEVO: inserted with
     /// those views, the identity the window gave it and, with no name, the automatic one of I-60) and the properties of the tab
-    /// «Propiedades» (written by «Actualizar» only, VA-S10). Only an update when there are no views.
+    /// «Propiedades» (written by «Actualizar» only, VA-S10). Only an update when there are no views. T6 lib: <paramref name="SourceDesignJson"/>
+    /// is the design of the library a new line was opened from (<see cref="RackLibrarySourceDesign"/>).
     /// </summary>
     public sealed record CantileverDoorWrite(long RequestId, SessionId Session, string RackId, string Name, CantileverLineDesign Design,
         CantileverLineAssembly Line, string DesignJson, IReadOnlyList<RackViewAddress> InsertViews = null, bool NewRack = false,
-        RackPropertiesWrite Properties = null)
+        RackPropertiesWrite Properties = null, string SourceDesignJson = null) // T6 lib (UT-S10)
     {
         public bool Inserts => InsertViews != null && InsertViews.Count > 0;
     }

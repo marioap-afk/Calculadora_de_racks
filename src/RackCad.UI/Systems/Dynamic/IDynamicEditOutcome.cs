@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using RackCad.Application.Systems.Shared;
+using RackCad.Application.VentanaRackCad;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.Shared;
 using RackCad.UI.Editor;
@@ -60,13 +61,17 @@ namespace RackCad.UI.Systems.Dynamic
         /// <summary>
         /// A new Dinámico of the RackCad window as the request of a new rack, the one the classic editor hands to the dispatch of «Nuevo»:
         /// its identity (given by the window), its name (empty for the automatic name of I-60) and the views to insert, in this order.
+        /// T6 lib (UT-S10): with <paramref name="sourceDesignJson"/>, the design of the library it was opened from, the request carries that
+        /// project as the classic editor opened from the library carries it (<c>SourceProjectToInsert</c>), so its unknown fields reach the
+        /// drawing (I-11).
         /// </summary>
         public static RackInsertionRequest NewRackRequest(string rackId, string rackName, DynamicRackDesign design, DynamicRackSystem system,
-            IReadOnlyList<RackViewAddress> views)
+            IReadOnlyList<RackViewAddress> views, string sourceDesignJson = null)
         {
             if (views == null || views.Count == 0) return null;
             var first = RackViewCodec.Encode(RackSystemKind.PalletFlow, views[0]);
-            var request = new DynamicInsertionRequest(system, design, rackId, rackName, first.View, first.Section, null);
+            var request = new DynamicInsertionRequest(system, design, rackId, rackName, first.View, first.Section,
+                RackLibrarySourceDesign.Read(sourceDesignJson, RackSystemKind.PalletFlow));
             request.SetViews(views);
             return request;
         }

@@ -21,9 +21,11 @@ namespace RackCad.Application.VentanaRackCad
     /// first writes the draft in the views that exist and then inserts those views as linked copies of the rack (the same identity);
     /// without them it only updates. With <paramref name="NewRack"/> (a new Dinámico made in the window, step 4) the rack is not in the
     /// drawing yet: AutoCAD inserts it with those views, with the identity the window gave it and the automatic name of I-60.
+    /// T6 lib: <paramref name="SourceDesignJson"/> is the design of the library a new rack was opened from (<see cref="RackLibrarySourceDesign"/>).
     /// </summary>
     public sealed record RackDoorWrite(long RequestId, SessionId Session, string RackId, string Name, DynamicRackDesign Design, DynamicRackSystem System,
-        IReadOnlyList<RackViewAddress> InsertViews = null, bool NewRack = false, RackPropertiesWrite Properties = null) // T4 va: Properties (VA-07)
+        IReadOnlyList<RackViewAddress> InsertViews = null, bool NewRack = false, RackPropertiesWrite Properties = null, // T4 va: Properties (VA-07)
+        string SourceDesignJson = null) // T6 lib (UT-S10)
     {
         /// <summary>The write also inserts views.</summary>
         public bool Inserts => InsertViews != null && InsertViews.Count > 0;

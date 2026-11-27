@@ -44,7 +44,7 @@ namespace RackCad.UI.Tests
     /// Propiedades; «Cantilever en esta ventana» as a draft of «Nuevo», «Insertar vista…» with the panel of the views, the BOM of the draft and
     /// «Guardar en biblioteca…»; and the views with real WPF.
     /// </summary>
-    public class RackCadCantileverWindowTests
+    public partial class RackCadCantileverWindowTests // T6 lib: partial (RackCadCantileverWindowTests.Lib.cs: UT-S10)
     {
         private static readonly SessionId Session = new(7);
         private const string ColumnW = "AISC-W-W10X33";

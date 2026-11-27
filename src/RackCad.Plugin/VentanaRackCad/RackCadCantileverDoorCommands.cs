@@ -199,7 +199,8 @@ namespace RackCad.Plugin.VentanaRackCad
                     return;
                 }
 
-                RackMenuCommands.DispatchInsertion(document, CantileverDraftOutcome.NewRackRequest(write.RackId, write.Name, write.Design, write.Line, views));
+                RackMenuCommands.DispatchInsertion(document, CantileverDraftOutcome.NewRackRequest(write.RackId, write.Name, write.Design, write.Line, views,
+                    write.SourceDesignJson)); // T6 lib (UT-S10): a design of the library carries its project, as the classic editor
                 var placed = RackCommandSupport.FindRackBlocks(document, pending.RackId);
                 door?.AnswerWrite(RackDoorRules.AnswerForNewRack(pending.RequestId, pending.RackId, placed.Count, placed.Count > 0 ? placed[0].Embed?.Name : null));
             }

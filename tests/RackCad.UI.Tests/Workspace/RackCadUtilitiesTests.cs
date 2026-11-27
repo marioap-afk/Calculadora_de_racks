@@ -34,7 +34,7 @@ namespace RackCad.UI.Tests
     /// designs, «Abrir RackCad al iniciar AutoCAD», «Acerca de RackCad»), the additions of «Nuevo», and the views with real WPF. The folder
     /// of the library is a temporary folder of each test: nothing reads or writes the settings of the machine.
     /// </summary>
-    public class RackCadUtilitiesTests
+    public partial class RackCadUtilitiesTests // T6 lib: partial (RackCadUtilitiesTests.Lib.cs: UT-S10, the unknown fields at the insertion)
     {
         // ------------------------------------------------------------------ the doubles
 

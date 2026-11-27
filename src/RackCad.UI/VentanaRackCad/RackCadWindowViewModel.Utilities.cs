@@ -154,6 +154,12 @@ namespace RackCad.UI.VentanaRackCad
             return true;
         }
 
+        // T6 lib (UT-S10): the design of the library a new Dinámico, Push Back or Cantilever was opened from, for «Insertar en el dibujo…», so
+        // its unknown fields and its version reach the drawing as the classic editor opened from the library takes them; null for any other
+        // draft. A cama sends its own document (SourceDesignJsonOf).
+        private string LibrarySourceDesignOf(object editor)
+            => _librarySources.TryGetValue(editor, out var project) ? RackLibrarySourceDesign.Of(project) : null;
+
         /// <summary>Where a draft opened from the library comes from, as its editor says it first («Borrador N: … nuevo en esta ventana, …»).</summary>
         internal static string LibraryOrigin(string name) => "del diseño «" + name + "» de la biblioteca";
 

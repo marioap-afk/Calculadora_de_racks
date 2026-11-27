@@ -4956,3 +4956,142 @@ tercero (`773f0a6e`), integradas en un segundo merge de la rama pb.
 
 - La validación del Owner de los supuestos de la quinta tanda y de O-5.
 - La limpieza de los worktrees y las ramas locales de la quinta tanda, con aviso al Owner.
+
+## Sexta tanda, lib: los campos desconocidos al insertar desde la biblioteca (UT-S10, CM-S13)
+
+**Rama:** local `architecture/workspace-persistente-rackcad-t6-lib`, sobre `f02f519b` (worktree `D:\w6lib`). Sin commit, sin push, sin
+AutoCAD. No se tocó el formato del larguero (parte lg) ni código clásico.
+
+**El defecto.** Un Dinámico, un Push Back o una línea Cantilever abiertos de la biblioteca en la ventana («Abrir» de «Biblioteca de
+diseños», `OpenDesignAsNewRack`) e insertados con «Insertar en el dibujo…» llegaban al dibujo sin los campos JSON que esta versión no
+conoce y con la versión de esquema de esta versión. El clásico abierto desde la biblioteca sí los lleva (I-11, matriz B5):
+- su ventana da el proyecto del archivo (`SourceProjectToInsert`) a la petición de inserción (`EditorModules.cs` 85, 124 y 162);
+- el despacho de «Nuevo» se lo pasa a `RackViewBatchProducts` (`RackMenuCommands.cs` 174, 216 y 229);
+- y este escribe el diseño interior de cada vista nueva con `WithSourceMetadataFrom` de ese proyecto (`RackViewBatchProducts.cs` 68, 96
+  y 140).
+
+**La causa.**
+- Las tres peticiones del rack nuevo de la ventana se hacían con `sourceProject: null`: `DynamicDraftOutcome.NewRackRequest`,
+  `PushBackDoorInsertion.NewRackRequest` y `CantileverDraftOutcome.NewRackRequest`.
+- Las escrituras de la puerta (`RackDoorWrite`, `PushBackDoorWrite`, `CantileverDoorWrite`) no tenían cómo llevar el origen.
+- La ventana sí guardaba el proyecto del archivo (`_librarySources`, desde UT-04), pero solo lo usaba para «Guardar en biblioteca…» y,
+  en la cama, para insertar (`SourceDesignJsonOf`, CM-S13).
+
+**Sistema por sistema** («anidado» = la carga del proyecto; se conserva solo donde I-11 la conserva):
+
+| Sistema | Qué lleva el bloque | El clásico desde la biblioteca | La ventana, antes | La ventana, ahora |
+|---|---|---|---|---|
+| Dinámico | el proyecto | la raíz (campos desconocidos y versión); `DynamicSystem` no conserva campos propios (límite de I-11) | nada | lo mismo que el clásico |
+| Push Back | el proyecto | la raíz y la carga `PushBack` (sus campos y su versión) | nada | lo mismo que el clásico |
+| Cantilever | el proyecto | la raíz y la carga `Cantilever` | nada | lo mismo que el clásico |
+| Cama | su `FlowBedDocument` | la carga `FlowBed`; la raíz no tiene dónde ir | lo mismo (CM-S13) | sin cambio |
+| Selectivo | su `SelectivePalletDesignDocument`, no el proyecto | nada | nada | sin cambio (pregunta 1) |
+| Cabecera | el proyecto | la raíz, si el archivo la trae | no se abre en la ventana: va a su clásico por RACKBIBLIOTECAABRIR | sin cambio |
+
+- **Selectivo, por qué no es un defecto de la ventana.** La ventana hace lo mismo que el clásico, y I-11 no lo promete:
+  - `SelectiveInsertionRequest` no tiene origen (`RackInsertionRequest.cs` 263);
+  - el clásico abierto de la biblioteca guarda el proyecto solo para «Guardar en biblioteca» (`RackSelectiveWindow.xaml.cs` 3322-3330
+    y 3358) y dibuja desde el dominio (`RackMenuCommands.cs` 190-202);
+  - el bloque lleva un `SelectivePalletDesignDocument` nuevo (`RackViewBatchProducts.cs` 35 y 47), no el proyecto: la raíz del archivo
+    no tiene dónde ir;
+  - y el contrato de I-11 lo excluye: «El interior del selectivo es un `SelectivePalletDesignDocument` (no es uno de los cuatro límites;
+    solo su envelope se preserva)» (`docs/initiatives/I-11-persistencia-uniforme.md` 215-216 y 241-247).
+  - Desde I-47, ese documento tiene `ExtensionData` (`SelectivePalletDesignDocument.cs` 138-151), pero para el diseño del dibujo; la
+    biblioteca es «un artefacto DERIVADO» (I-47 G15, `RackSelectiveWindow.xaml.cs` 3348). UT-S10 decía «Es una diferencia declarada con el
+    clásico»: para el Selectivo era inexacto.
+- **Cabecera:** la ventana no la abre (`OpensHere`, `RackCadWindowViewModel.Utilities.cs` 102-106). Va a su clásico, que da el proyecto
+  a la inserción (`EditorModules.cs` 207, `RackMenuCommands.cs` 160-161). Una cabecera guardada con `RackFrameProjectStore` queda fuera de
+  I-11 por decisión del Owner (`docs/automation/decisions/I-11.md`).
+
+**El arreglo** (como la cama: el documento del diseño de la biblioteca viaja en JSON con la escritura de la puerta).
+- **`RackLibrarySourceDesign`** (Application, archivo nuevo):
+  - `Of(project)` es el JSON del proyecto del archivo tal como el almacén lo vuelve a escribir: la raíz con sus campos desconocidos y su
+    versión, sin degradarla, y la carga de Push Back y de Cantilever con los suyos;
+  - `Read(json, kind)` es el proyecto que el clásico da al despacho; si no es un proyecto legible de ese sistema, null, y el rack se
+    escribe como antes.
+- **Las escrituras** ganan `SourceDesignJson`, opcional y al final, como `CamaDoorWrite`: `RackDoorWrite`, `PushBackDoorWrite` y
+  `CantileverDoorWrite`.
+- **La ventana** lo llena solo para un rack nuevo que se abrió de la biblioteca (`LibrarySourceDesignOf`). Mandan null:
+  - un rack del dibujo («Actualizar», «Insertar vista…»);
+  - un borrador de «Nuevo»;
+  - una copia de un borrador («Duplicar»).
+- **Las tres `NewRackRequest`** ganan `sourceDesignJson`, opcional, y lo leen con `Read`: la petición lleva el proyecto, como la del clásico.
+- **El Plugin:**
+  - RACKDINAMICONUEVO pasa el JSON a `NewRackRequest`; la puerta lo guarda en `PendingWrite`;
+  - RACKPUSHBACKNUEVO y RACKCANTILEVERNUEVO también lo pasan; su puerta ya guardaba la escritura entera (`with`).
+  - El despacho (`RackMenuCommands.DispatchInsertion`, `RackViewBatchProducts`) no cambia: es el del clásico.
+
+**Ediciones a archivos compartidos**, marcadas `T6 lib`, de una o dos líneas cada una:
+- UI:
+  - `RackCadWindowViewModel.cs` (`WriteDynamic`), `.PushBack.cs` (`WritePushBack`) y `.Cantilever.cs` (la escritura de una línea): el
+    argumento `SourceDesignJson:`;
+  - `RackCadWindowViewModel.Utilities.cs`: `LibrarySourceDesignOf`, nuevo;
+  - `IDynamicEditOutcome.cs`, `ICantileverEditOutcome.cs` y `PushBackDoorInsertion.cs`: el parámetro.
+- Application: `RackCadRackDoor.cs`, `PushBackDoor.cs` y `CantileverDoor.cs`, el miembro nuevo.
+- Plugin:
+  - `RackCadRackDoorPort.cs`: `PendingWrite` y la rama del rack nuevo;
+  - `RackCadRackDoorCommands.cs`, `RackCadPushBackDoorCommands.cs` y `RackCadCantileverDoorCommands.cs`: el argumento.
+- Pruebas: `RackCadUtilitiesTests` y `RackCadCantileverWindowTests` pasan a `partial`; lo nuevo va en sus `.Lib.cs`.
+- Ningún censo ni guarda cambia: no hay órdenes nuevas.
+
+**Supuestos** (prefijo T6lib-S, para el Owner):
+
+| Id | Decisión o supuesto | Dónde se cambia |
+|---|---|---|
+| T6lib-S1 | Cambia lo que se guarda en el dibujo, no lo que se ve. Un Dinámico, un Push Back o una línea Cantilever de la biblioteca, insertados desde la ventana, conservan los campos desconocidos y la versión de su archivo, como en el clásico (B5). UT-S10 queda resuelto para esos tres | `RackLibrarySourceDesign`, `LibrarySourceDesignOf` |
+| T6lib-S2 | El Selectivo no cambia: ni el clásico ni la ventana llevan algo del archivo al dibujo (arriba). Pregunta 1 | — |
+| T6lib-S3 | Solo el borrador que abrió «Abrir» de la biblioteca lleva su archivo. Su copia con «Duplicar» no lo lleva, ni al insertarse ni al «Guardar en biblioteca…». Es así en todos los sistemas, también en la cama (CM-S13). Pregunta 2 | `_librarySources`, `DuplicateCore` |
+| T6lib-S4 | El origen viaja como copia en JSON, igual que en la cama, y no como el objeto: lo que espera en la puerta es de la puerta (M-22). El Plugin lo lee de nuevo con el almacén | `RackLibrarySourceDesign.Read` |
+
+**Las pruebas:**
+- UI (`RackCad.UI.Tests`), 5 nuevas. El archivo de la biblioteca trae un campo desconocido y la versión 2.7 en la raíz, y un campo
+  desconocido en su carga (con la versión 1.9 en Push Back y Cantilever):
+  - `RackCadUtilitiesTests.Lib.cs`:
+    - un Dinámico, por «Abrir» de la página y «Insertar en el dibujo…»: la escritura lleva el diseño; la petición de RACKDINAMICONUEVO
+      lleva el proyecto; el diseño interior es el del clásico, con la raíz y sin el anidado;
+    - un Dinámico nuevo de «Nuevo» no lleva nada;
+    - una cabecera de la biblioteca va a su clásico por la puerta numerada.
+  - `RackCadPushBackEditorTests.Lib.cs`: lo mismo con un Push Back (la raíz y la carga `PushBack`). Ya en el dibujo, su «Actualizar»
+    no manda origen.
+  - `RackCadCantileverWindowTests.Lib.cs`: lo mismo con una línea Cantilever (la raíz y la carga `Cantilever`). Una línea nueva de
+    «Nuevo» no manda origen.
+- Core (`RackLibrarySourceDesignTests`), 3 nuevas:
+  - el viaje, y el diseño interior igual al del clásico, con el origen y sin él;
+  - nada viaja sin diseño, y no se lee el de otro sistema ni lo que no es un proyecto;
+  - por la fuente: las tres órdenes NUEVO pasan el JSON a `NewRackRequest`, y la puerta del Dinámico lo guarda.
+
+**Comprobación en rojo:** doce piezas rotas a propósito, una a una, con un script (`hs65\t6\lib\red\` del scratchpad de la sesión).
+- Antes de romper nada, cada archivo se copió fuera del worktree. Después de cada prueba se restauró con sus bytes (SHA-256 comprobado) y
+  con la hora de ahora, para que el build siguiente lo compilara.
+- En cada caso falla al menos una prueba, y en el rojo solo fallan las pruebas de esta parte:
+  1. R1, la conducta de la base: la ventana no manda el diseño (`LibrarySourceDesignOf` da null). Fallan 3 de UI: Dinámico, Push Back y
+     Cantilever.
+  2. R2: `RackLibrarySourceDesign.Read` no devuelve el proyecto. Fallan 3 de UI y 2 de Core.
+  3. R3: RACKDINAMICONUEVO no pasa el JSON. Falla 1 de Core (por la fuente).
+  4. R4: la puerta no guarda el JSON del Dinámico nuevo. Falla 1 de Core.
+  5. R5: RACKPUSHBACKNUEVO no pasa el JSON. Falla 1 de Core.
+  6. R6: RACKCANTILEVERNUEVO no pasa el JSON. Falla 1 de Core.
+  7. R7, R8 y R9: cada `NewRackRequest` ignora el JSON. Falla la prueba de UI de su sistema.
+  8. R10, R11 y R12: cada escritura de la ventana (`WriteDynamic`, `WritePushBack`, la de la línea) no lo lleva. Falla la prueba de UI de
+     su sistema.
+- Después: ningún resto en `git diff` (`if (false)`, `true ||`, `=> null;`, `SourceDesignJson: null`). Ningún carácter de control en los
+  archivos cambiados. La solución se recompiló con `--no-incremental` antes de las suites completas.
+
+**Los números** (suites completas con `--no-build`, sobre la solución recompilada con `--no-incremental`):
+- **UI completa:** 3115 correctas, 0 con error y 48 omitidas (3163). Es la base `f02f519b`, 3110/0/48, más las 5 nuevas.
+- **Core Full:** 19486 correctas, 0 con error y 403 omitidas (19889). Es la base, 19483/0/403, más las 3 de `RackLibrarySourceDesignTests`.
+- **Build Debug de la solución (Plugin incluido),** con `--no-incremental`: 0 errores. Las únicas advertencias son las MSB3277 de las
+  referencias de AutoCAD, que ya estaban.
+
+**Lo que comprobará el smoke en AutoCAD:**
+- poner en un archivo de la biblioteca de un Dinámico, de un Push Back y de una línea Cantilever un campo desconocido y una versión menor
+  superior, en la raíz y en la carga;
+- «Abrir» en la ventana e «Insertar en el dibujo…»;
+- leer el `Design` del bloque nuevo: conserva la raíz y, en Push Back y Cantilever, la carga, como B5 de I-11.
+
+**Preguntas para el Owner:**
+1. **Selectivo:** ¿un Selectivo de la biblioteca debe llevar al dibujo los campos desconocidos de su diseño (`SelectivePalletDesignDocument`,
+   que los conserva desde I-47)? Sería una promesa nueva, más allá de I-11, en el clásico y en la ventana. La raíz del archivo no tiene
+   dónde ir en el bloque.
+2. **«Duplicar»:** ¿la copia de un borrador abierto de la biblioteca debe heredar su archivo de origen (al insertarse y al «Guardar en
+   biblioteca…»), en todos los sistemas, también en la cama?
