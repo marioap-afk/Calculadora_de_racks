@@ -107,7 +107,7 @@ namespace RackCad.UI.VentanaRackCad
         // The one request of the door that waits for AutoCAD, for the two systems (Selectivo E1-B): its number, the session and the rack it
         // was made for (at the time it was made, not when the answer arrives), for a write what was sent, and whether it is a Selectivo.
         private sealed record DoorRequest(long Id, bool IsWrite, SessionId Session, string RackId, string SentJson, string SentName, bool Started = false,
-            bool IsSelective = false, bool IsCabecera = false, bool IsVariables = false, bool IsBom = false); // T4 cb: IsCabecera, a cabecera of its own; T4 va: IsVariables, the page «Variables»; T4 bom: IsBom, the read of the page «BOM y lista de racks»
+            bool IsSelective = false, bool IsCabecera = false, bool IsVariables = false, bool IsBom = false, bool IsCama = false); // T4 cb: IsCabecera, a cabecera of its own; T4 va: IsVariables, the page «Variables»; T4 bom: IsBom, the read of the page «BOM y lista de racks»; T5 cm: IsCama, a cama de rodamiento
 
         private sealed class DraftKeyComparer : IEqualityComparer<(SessionId Session, string RackId)>
         {
@@ -164,6 +164,7 @@ namespace RackCad.UI.VentanaRackCad
 
             if (_selectiveDoor != null) _selectiveDoor.SelectiveRead += OnSelectiveRead;
             WireCabeceraDoor(door); // T4 cb: the door of a cabecera of its own
+            WireCamaDoor(door); // T5 cm: the door of a cama de rodamiento (RackCadWindowViewModel.Cama.cs)
             InitializeVariables(); // T4 va: the door of the page «Variables» (RackCadWindowViewModel.Variables.cs)
 
             RackList = new RackListViewModel(panel.BrowserSummaryPort, panel.PilotEditPort, panel.Browser, DraftStateOf);
@@ -367,7 +368,7 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>While an editor of the window is shown (Dinámico or Selectivo), the user may look at the panel of the rack (state and navigation) instead.</summary>
         public bool ShowPanel
         {
-            get => _showPanel || (ActiveDynamicEditor == null && ActiveSelectiveEditor == null && ActiveCabeceraEditor == null); // T4 cb
+            get => _showPanel || (ActiveDynamicEditor == null && ActiveSelectiveEditor == null && ActiveCabeceraEditor == null && ActiveCamaEditor == null); // T4 cb; T5 cm
             set
             {
                 if (_showPanel == value) return;
@@ -380,7 +381,7 @@ namespace RackCad.UI.VentanaRackCad
         public string PanelToggleText => _showPanel ? "Volver al editor" : "Ver el estado y la navegación del rack";
 
         /// <summary>The active rack has an editor of the window (Dinámico or Selectivo): the page offers to look at the panel instead.</summary>
-        public bool HasRackEditor => HasDynamicEditor || HasSelectiveEditor || HasCabeceraEditor; // T4 cb
+        public bool HasRackEditor => HasDynamicEditor || HasSelectiveEditor || HasCabeceraEditor || HasCamaEditor; // T4 cb; T5 cm
 
         // ------------------------------------------------------------------ the Selectivo of the window (Selectivo E1-B)
 
@@ -676,6 +677,7 @@ namespace RackCad.UI.VentanaRackCad
 
             const string StoppedWrite = "Se dejó de esperar a AutoCAD: si la orden llega a correr, no escribirá nada. El borrador sigue sin escribir.";
             if (request.IsWrite && request.IsCabecera) StopCabeceraWrite(request, StoppedWrite); // T4 cb
+            else if (request.IsWrite && request.IsCama) StopCamaWrite(request, StoppedWrite); // T5 cm
             else if (request.IsVariables) StopWaitingVariables(request); // T4 va
             else if (request.IsWrite && !request.IsSelective && _dynamicDrafts.TryGetValue((request.Session, request.RackId), out var entry))
             {
@@ -708,7 +710,7 @@ namespace RackCad.UI.VentanaRackCad
             Contained(() =>
             {
                 var request = _inFlight;
-                if (read == null || request == null || request.IsWrite || request.IsSelective || request.IsCabecera || read.RequestId != request.Id) return; // T4 cb
+                if (read == null || request == null || request.IsWrite || request.IsSelective || request.IsCabecera || request.IsCama || read.RequestId != request.Id) return; // T4 cb; T5 cm
                 _inFlight = null;
                 RaiseWaiting();
 
@@ -858,6 +860,7 @@ namespace RackCad.UI.VentanaRackCad
 
                 // The write of a Selectivo (Selectivo E1-B): the same answer for the draft of its session and rack. T4 cb: and of a cabecera.
                 if (request.IsCabecera) CabeceraWritten(request, written);
+                else if (request.IsCama) CamaWritten(request, written); // T5 cm
                 else if (request.IsSelective)
                 {
                     if (_selectiveDrafts.TryGetValue((request.Session, request.RackId), out var selective))
@@ -923,6 +926,7 @@ namespace RackCad.UI.VentanaRackCad
         {
             var names = UnwrittenDynamicNames(session)
                 .Concat(UnwrittenCabeceraNames(session)) // T4 cb
+                .Concat(UnwrittenCamaNames(session)) // T5 cm
                 .Concat(_selectiveDrafts
                     .Where(p => p.Key.Session == session && (p.Value.Editor.IsDirty || p.Value.Editor.IsWriting))
                     .Select(p => SelectiveNameOf(p.Value)))
@@ -969,6 +973,7 @@ namespace RackCad.UI.VentanaRackCad
 
             ForgetDimensionStylesOfDeadSessions(session => IsAlive(port, session));
             PruneCabeceraDrafts(port); // T4 cb
+            PruneCamaDrafts(port); // T5 cm
             PruneVariables(port); // T4 va
             if (_dynamicDrafts.Count == 0 && _selectiveDrafts.Count == 0) return;
 
@@ -1068,7 +1073,7 @@ namespace RackCad.UI.VentanaRackCad
                 writing = selective.Editor.IsWriting;
                 dirty = selective.Editor.IsDirty;
             }
-            else if (!CabeceraDraftState(session, rackId, out writing, out dirty)) // T4 cb
+            else if (!CabeceraDraftState(session, rackId, out writing, out dirty) && !CamaDraftState(session, rackId, out writing, out dirty)) // T4 cb; T5 cm
             {
                 return null;
             }
@@ -1100,6 +1105,7 @@ namespace RackCad.UI.VentanaRackCad
                 else if (_inFlight.IsSelective && _selectiveDrafts.TryGetValue((_inFlight.Session, _inFlight.RackId), out var selective))
                     selective.Editor.WriteTaken();
                 else if (_inFlight.IsCabecera) CabeceraWriteTaken(_inFlight); // T4 cb
+                else if (_inFlight.IsCama) CamaWriteTaken(_inFlight); // T5 cm
                 else if (!_inFlight.IsSelective && _dynamicDrafts.TryGetValue((_inFlight.Session, _inFlight.RackId), out var dynamic))
                     dynamic.Editor.WriteTaken();
                 RaiseWaiting();
@@ -1120,6 +1126,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(SelectiveEditors));
             OnPropertyChanged(nameof(ShowSelectiveOffer));
             RaiseCabecera(); // T4 cb
+            RaiseCama(); // T5 cm
             OnPropertyChanged(nameof(HasRackEditor));
             OnPropertyChanged(nameof(ShowPanel));
             OnPropertyChanged(nameof(PanelToggleText));
@@ -1136,6 +1143,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(ShowNewDynamicEditor));
             OnPropertyChanged(nameof(CanStartNewDynamic));
             RaiseNewSelective(); // E2 P3
+            RaiseNewCama(); // T5 cm
         }
 
         private static string RefusalText(RackCadClassicResult result)

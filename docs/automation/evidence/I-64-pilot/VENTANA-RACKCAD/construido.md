@@ -3271,3 +3271,190 @@ mismo que `Path`.
   - `RackCadVariablesPageTests`: la relectura tras escribir, rechazada como Busy (nueva), y la fila alineada con los encabezados.
 - **Comprobación en rojo:** con cada corrección deshecha, su prueba falla (las cuatro piezas). Restauradas con la misma huella.
 - **UI completa:** 2961 / 0 / 48 (2960 + 1). Core no cambia: solo cambió la UI.
+
+## Quinta tanda, cm: las camas de rodamiento en la ventana (2026-11-26)
+
+**Rama:** local `architecture/workspace-persistente-rackcad-t5-cm`, sobre `041e1799` (worktree `D:\w5cm`). Sin commit, sin push, sin AutoCAD.
+Prototipo `camas` (preguntas 1 a 8): el Owner aceptó las ocho propuestas sin nota (`owner-decisions-2026-11-26.md`). No se borró código
+clásico: RACKEDITAR de una cama sigue abriendo `RackFlowBedWindow` (D-03), «Nuevo» conserva la tarjeta «Cama» (RACKNUEVO Cama) y QUICKCAMA
+no cambia (dolor 13).
+
+**Lo que se construyó:**
+- **El editor de la cama en la ventana** (`CamaEditorViewModel` y `CamaEditorView`, UI), sobre un borrador puro (`CamaDraftEditor` y
+  `CamaDraftRules`, Application, `VentanaRackCad/CamaDraftEditor.cs`):
+  - **Una sola página (pregunta 1):** «Lo esencial» (Tipo de cama, Rodillo, Profundidad de la cama, Profundidad de tarima), «Calculado»
+    (Riel, Rodillos, Frenos, Paso —en otro color y «Manual (en «Avanzado»)» cuando es manual— y Tope), «Esquema de la cama» y «Avanzado»
+    plegado (Paso de rodillos, Freno cada N rodillos), cuyo resumen dice qué es manual también plegado (dolor 7). Al final, la pestaña
+    «Propiedades» (VA-07), así que el editor tiene dos pestañas: «Cama» y «Propiedades» (CM-S2).
+  - **La cabecera:** el nombre (con lo que significa vacío), Limpio / Modificado / Escribiendo, «N valores cambiados», UN botón que escribe
+    («Actualizar», o «Insertar en el dibujo…» en una cama nueva), «Descartar», «Restaurar layout…», «Cerrar el editor» (pregunta en línea
+    con cambios) y «Más» › «Guardar en biblioteca…». La línea de debajo dice que la cama es de una sola vista, así que no tiene «Insertar
+    vista…», y que «Actualizar» redibuja su bloque y todas sus copias (pregunta 5).
+  - **Una sola forma de confirmar:** un campo, al salir o con Enter; una lista, al elegir. Salir de un campo sin cambiar su texto no hace
+    nada. «Actualizar vista» no existe: todo se recalcula solo (dolores 3 y 4).
+  - **Los valores no válidos (dolor 5):** cada uno se queda en su campo, marcado (borde y texto en rojo), todos a la vez; el borrador no lo
+    toma (la regla de la ventana) y el botón que escribe se apaga con el motivo: «Corrige el valor marcado para actualizar.», «Corrige los 2
+    valores marcados para actualizar.» (en una cama nueva, «… para insertarla.»). Mientras haya alguno, «Calculado» y el esquema dicen que
+    hay que corregir (CM-S5). Se quita escribiéndolo bien, volviendo a escribir el que tenía, con «Descartar» o con «Restaurar layout…».
+  - **Pregunta 4, el paso:** la regla de la cama de Dinámico: un entero de pulgadas y no menor que el rodillo («Los rodillos se cuelgan en
+    los troqueles: …», «El paso no puede ser menor que el rodillo: mínimo 2 in.»). Una cama del dibujo con un paso así (el clásico aceptaba
+    2.5, o 1 con el rodillo de 1.9) se abre marcada, con «Avanzado» abierto, y «Actualizar» pide corregirla. Un rodillo mayor que el paso
+    manual se rechaza bajo su lista y el rodillo no cambia.
+  - **Pregunta 3, «Freno cada N rodillos»:** en «Avanzado»; vacío = por la profundidad de tarima, como siempre. **Cambio declarado** del
+    documento de la cama: `FlowBedDocument.BrakeEveryRollers`, que el constructor ya leía (paso 3 de Dinámico) y el documento no guardaba.
+    Solo se escribe con valor (`JsonIgnore` `WhenWritingNull`): una cama sin él se escribe byte a byte como antes (prueba con el texto
+    exacto), y un build anterior lo guarda como campo desconocido sin usarlo. El BOM del manejador lo lee del dibujo (prueba).
+  - **Pregunta 6, «Restaurar layout…»:** en línea, con «Paso de rodillos manual (4 in)» y «Freno cada N rodillos (8)», marcadas; una
+    casilla sin valor se apaga. Sin nada manual lo dice («No hay nada manual que quitar: …») y no se abre. Va al borrador.
+  - **Pregunta 7, la pendiente:** la cama suelta sigue horizontal; no hay nada que construir.
+  - **Pregunta 8, de Pushback a Dinámica:** con la tarima vacía (como la guarda el clásico) toma 48 in y lo dice. Una Pushback conserva su
+    tarima y su «Freno cada N» (campos apagados, «No aplica en Pushback… Conserva su valor.»; CM-S7).
+  - **Las reglas de la geometría no cambian:** «Calculado», el esquema, sus posiciones y el BOM salen de los mismos `FlowBedLateralBuilder`
+    y `FlowBedBomBuilder` que el dibujo. Con los valores por defecto del clásico: 42 rodillos y 1 freno a 56 in; Pushback de 96 in, 45
+    rodillos; rodillo de 2.5, 29 rodillos y 1 freno (pruebas). La capacidad del catálogo (110 / 150 kg) sale como pista del rodillo
+    (CM-S14).
+  - **El esquema (pregunta 2):** una línea a escala, plegable, abierta por defecto: el riel, la zona del tope, los rodillos y los frenos
+    donde los pone el constructor, y las marcas de la escala (cada 12, 24, 48 o 96 in según el largo); la leyenda; la lista de posiciones
+    («Rodillos 1 a 23: de 7 a 51 in, cada 2 in.», «Freno 1: a 56 in.», cortada a ocho líneas y «… y N líneas más.»); y la nota de que se
+    mide desde el troquel del tope y no lleva cotas. Lo dibuja un elemento propio (`CamaSchemaStrip`) con los tokens del shell, y su nombre
+    de UI Automation es el texto del esquema («Esquema de la cama: tope, 42 rodillos y 1 freno (a 56 in) en 96 in de riel.»).
+- **La puerta** (`CamaDoor.cs` en Application; `RackCadRackDoorPort.Cama.cs` y `RackCadCamaDoorCommands.cs` en el Plugin), con las reglas
+  de las otras: número de petición, la petición guardada antes de entregar la orden, otro dibujo, «Dejar de esperar» (`Abandon`),
+  `RequestStarted`, la copia de la cama que espera es de la puerta, y la comparación de las vistas hermanas (M-02):
+  - `RACKCAMAABRIR` (`NoUndoMarker | NoHistory`): lee la cama con la regla pura `CamaDoorRules.AnswerForOpen` (la de EditCama: otro tipo o
+    datos inválidos no abren) y las propiedades del rack (VA-07).
+  - `RACKCAMAAPLICAR`: planea otra vez sobre el dibujo (`PlanApply`), redibuja el bloque en sitio con `RackCamaCommands.ApplyCamaUpdate`
+    (nombre en blanco = el del sobre, I-61; el documento de origen viaja, I-11) y escribe después la pestaña «Propiedades». Un «U» lo
+    deshace. «Escrito» solo si se redibujó (`AnswerForApply`).
+  - `RACKCAMANUEVO`: inserta la cama nueva con el despacho de «Nuevo» (`DispatchInsertion` con `FlowBedInsertionRequest`: el jig y el
+    nombre automático de I-60), sin insertar sobre una identidad que ya existe, y cuenta los bloques colocados (`AnswerForNewCama`).
+  - `ApplyCamaUpdate` es una **copia** de la mitad de dibujo de EditCama, no una extracción (CM-S11): la guarda I-61 lee el texto de
+    EditCama; una guarda de fuente nueva fija que las dos hacen los mismos pasos en el mismo orden.
+- **En la ventana** (`RackCadWindowViewModel.Cama.cs`, `RackCadWindowView.Cama.cs`):
+  - **«Editar aquí» de una cama de la lista** (dolor 15), con su recuadro en la página del rack (`RackCadCamaOfferPanel`). El editor se abre
+    con la respuesta de ESA petición; la lista lo marca («Abierto en la ventana», «Modificado (editor de la ventana)»); «Actualizar» envía
+    una copia, el editor se bloquea mientras AutoCAD escribe, «Limpio» solo si se redibujó; el borrador de otro dibujo no se escribe; la
+    poda de un dibujo cerrado dice lo que se perdió; y el dibujo no se cierra con una cama sin escribir (D-08).
+  - **«Cama en esta ventana»** de «Nuevo» (`RackCadNewCamaButton`): un borrador más («Borrador N · Cama», SD-06) por el punto de entrada
+    (`OpenAsNewDraft(RackCadDraftSeed.Defaults(Cama))`), con su caso en los seis métodos de `RackCadWindowViewModel.Drafts.cs`. «Insertar
+    en el dibujo…» envía RACKCAMANUEVO; «Borrador N» nunca se envía como nombre. Insertada, la cama toma el nombre del dibujo, sale de la
+    lista de borradores, «Nuevo» vuelve a su inicio y el aviso pide releer la lista; al abrirla, es el mismo editor, con «Actualizar»
+    (D-10, CM-S4). Sin colocar, sigue como borrador. «Duplicar» y «Descartar el borrador» funcionan como en los otros sistemas.
+  - **Biblioteca:** «Abrir» abre una cama aquí, como borrador, con el nombre de la entrada (como el clásico abierto desde la biblioteca), y al
+    insertarla lleva el documento del diseño, con sus campos desconocidos (CM-S13). «Más» › «Guardar en biblioteca…» guarda lo que ve el
+    editor, borrador incluido, con los campos desconocidos de su origen (del dibujo o de la biblioteca, I-11, como el clásico); un valor
+    marcado lo detiene y se nombra.
+  - **BOM:** la página «BOM y lista de racks» muestra el BOM del borrador de una cama del dibujo con cambios (BM-02: el del manejador,
+    sobre una copia); una cama nueva no, porque no está en el dibujo (BM-S7). «Ver su BOM» ya estaba en la página del rack.
+- **El clásico** (`RackFlowBedWindow`) no muestra «Freno cada N», pero lo conserva al escribir o guardar una cama que lo trae, como el
+  clásico de Dinámico conserva la cama de un frente (prueba).
+- **Los avisos de los borradores** dicen «Cama nueva» (y «Cabecera nueva»), no «Cama nuevo» (`RackCadDraftNaming.NewText`, CM-S9).
+
+**Decisiones y supuestos para el Owner** (prefijo CM-S; cada uno en un solo sitio):
+
+| Id | Decisión o supuesto | Dónde se cambia |
+|---|---|---|
+| CM-S1 | Los nombres de las órdenes, que el prototipo dejaba [PENDIENTE]: `RACKCAMAABRIR`, `RACKCAMAAPLICAR`, `RACKCAMANUEVO`, por analogía con Dinámico | `RackCadRackDoorPort.Cama.cs`, `RackCadCamaDoorCommands.cs` |
+| CM-S2 | La nota de VA-07 («una pestaña en cada rack») manda sobre la pregunta 1 («sin pestañas»): la página de la cama es la pestaña «Cama», y «Propiedades» va al final | `CamaEditorView.xaml` |
+| CM-S3 | «Insertar en el dibujo…» de una cama nueva no abre el panel de vistas: la cama no tiene vistas que elegir (DG-07, pregunta 5); envía RACKCAMANUEVO, que pide el punto con el jig. No hay «Insertar otra copia…» (la pregunta 5 lo dejaba abierto): COPY de AutoCAD, o «Duplicar» de un borrador | `CamaEditorViewModel.RequestWrite` |
+| CM-S4 | Insertada una cama nueva, «Nuevo» vuelve a su inicio y el mismo editor es el de la cama del dibujo cuando se abre de la lista (D-10, como Selectivo y Dinámico); el prototipo la dejaba abierta en su página. La ventana no relee la lista sola | `RackCadWindowViewModel.Cama.cs`, `CamaWritten` |
+| CM-S5 | Un valor rechazado no entra al borrador (la regla de la ventana; el prototipo lo guardaba y la cama pasaba a «Modificado»), pero se queda en su campo, marcado, y apaga el botón que escribe. Con algún valor marcado, «Calculado» y el esquema no calculan con el último valor válido: dicen «Corrige…» | `CamaEditorViewModel.CommitField`, `MarkedKeys` |
+| CM-S6 | Un paso escrito igual al del rodillo (2 in con el de 1.9) se guarda como manual, como lo escribió el usuario (la cama de Dinámico lo guarda vacío para no cambiar su línea del BOM; el BOM de una cama no lleva el paso) | `CamaDraftEditor.SetPitch` |
+| CM-S7 | Una Pushback conserva su profundidad de tarima y su «Freno cada N» (el prototipo: «conserva su valor»); el clásico escribe 0 de tarima en una Pushback. No cambian ni el dibujo ni el BOM (el constructor no los lee en una Pushback) | `CamaDraftEditor.SetBedType` |
+| CM-S8 | El nombre previsto («Cama 3») no se muestra: no se sabe sin leer el dibujo (P3-02). El campo dice «Vacío = el nombre automático al insertarla («Cama N», I-60).» | `CamaEditorViewModel.NameHint` |
+| CM-S9 | «Cama nueva» y «Cabecera nueva» en los avisos de los borradores (antes «… nuevo» para todo sistema) | `RackCadDraftNaming.NewText` |
+| CM-S10 | El esquema es un elemento propio dibujado con los tokens del shell; su escala sigue la del prototipo (12 in hasta 120 in de riel, luego 24, 48 y 96) | `CamaSchemaStrip`, `CamaEditorViewModel.SchemaTickStep` |
+| CM-S11 | `ApplyCamaUpdate` es una copia de la mitad de dibujo de EditCama, con guarda de fuente de los pasos (como CB4-09) | `RackCamaCommands.Door.cs`, `CamaDoorTests` |
+| CM-S12 | La tarjeta «Cama» de «Nuevo» conserva su nombre, como las de Selectivo y Dinámico (el prototipo la llamaba «Cama (editor clásico)») | `RackCadWindowViewModel.NewSystems` |
+| CM-S13 | Una cama nueva abierta desde la biblioteca lleva su documento al insertarse (sus campos desconocidos llegan al dibujo, I-11), a diferencia de RACKSELECTIVONUEVO y RACKDINAMICONUEVO (UT-S10) | `RackCadWindowViewModel.SourceDesignJsonOf` |
+| CM-S14 | La capacidad del rodillo (110 / 150 kg del catálogo) es solo una pista: el cálculo de rodillos por capacidad y de frenos N-1 sigue siendo futuro (memoria del dominio); la regla de hoy, paso fijo y freno cada N o por la tarima, no cambia | `CamaEditorViewModel.Rebuild` |
+
+**Ediciones a archivos compartidos** (marcadas `T5 cm`, casi todas de una línea: en `OpensHere` e `IsEditorAlive` la condición sigue en una segunda línea, `NewText` es un método nuevo de cuatro líneas y `A14CamaDoorCommands` una declaración nueva con su comentario; lo nuevo va en archivos propios):
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowViewModel.cs`: `DoorRequest` gana `IsCama`; en el constructor `WireCamaDoor(door)`;
+  `ShowPanel` y `HasRackEditor` cuentan el editor de la cama; una rama en `StopWaiting`, `OnDesignWritten` y `OnRequestStarted`; una
+  condición en `OnDesignRead` y en `DraftStateOf`; una línea en `UnwrittenWorkOf`, `PruneDeadSessions`, `RaiseDynamic` y `RaiseNewDynamic`.
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowViewModel.Drafts.cs`: el caso de la cama en los seis métodos por sistema, y «Cama nueva» en
+  el texto de «Descartar el borrador» y en el de un borrador abierto de un diseño (`OpenedText`).
+- `src/RackCad.UI/VentanaRackCad/RackCadDrafts.cs`: `NoticeName` usa `NewText` (nuevo, cuatro líneas).
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowViewModel.Utilities.cs`: el mapa del menú clásico («Diseñar cama de rodamiento»),
+  `OpensHere`, el editor de `OpenDesignAsNewRack` e `IsEditorAlive`.
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowViewModel.Bom.cs`: `DraftBomOf`, `HasUnwrittenDraft` y `UnwrittenDraftsOf`.
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowView.xaml`: tres líneas, cada una un control de esta parte: el recuadro «Editar aquí» de la
+  cama (tras el de la cabecera), el anfitrión `NewCamaRackHost` (tras el del Selectivo nuevo) y «Cama en esta ventana» (tras «Dinámico en
+  esta ventana»).
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowView.xaml.cs`: `WireCamaView()` en el constructor y `if (ShowCamaContent()) return;` en
+  `ShowRackContent`.
+- `src/RackCad.Plugin/VentanaRackCad/RackCadRackDoorPort.cs`: `AbandonCama(requestId)` en `Abandon`.
+- `src/RackCad.Plugin/RackCamaCommands.cs`: la clase pasa a `partial` (EditCama no cambia).
+- `src/RackCad.Application/Persistence/FlowBedDocument.cs`: `BrakeEveryRollers` (pregunta 3, cambio declarado).
+- `src/RackCad.UI/Systems/FlowBed/RackFlowBedWindow.xaml.cs` (el clásico de la cama): conserva `BrakeEveryRollers`.
+- **Archivos nuevos:** Application: `VentanaRackCad/CamaDraftEditor.cs`, `VentanaRackCad/CamaDoor.cs`; UI: `CamaEditorViewModel.cs`,
+  `CamaEditorView.xaml(.cs)`, `CamaSchemaStrip.cs`, `RackCadWindowViewModel.Cama.cs`, `RackCadWindowView.Cama.cs`,
+  `RackCadCamaOfferPanel.xaml(.cs)`, `RackCadNewCamaButton.xaml(.cs)`; Plugin: `VentanaRackCad/RackCadCamaDoorCommands.cs`,
+  `VentanaRackCad/RackCadRackDoorPort.Cama.cs`, `RackCamaCommands.Door.cs`; y las pruebas.
+
+**Censos y guardas que cambian, con su nota:**
+- `SelectiveEditorOpenTests.GUARDA_EL_CENSO_DE_COMANDOS_NO_CAMBIA`: de 57 a 60 (RACKCAMAABRIR, RACKCAMAAPLICAR, RACKCAMANUEVO).
+- `CustomPropertiesCommandGuardTests`: `A14CamaDoorCommands` entra en la base.
+- `RackCadWindowListTests.TheFoldersOfTheWindowKeepTheirLayers`: `RackCadCamaDoorCommands.cs` es un archivo de órdenes de la puerta, como
+  el de la cabecera, y `ApplyCamaUpdate` entra en la lista de lo que ningún otro archivo de la puerta puede llamar.
+- Las tres fallaron con la primera Core focal (su rojo) y pasan con la nota.
+
+**Las pruebas:**
+- Core, `tests/RackCad.Tests/Workspace/CamaDraftRulesTests.cs` (nuevo, 21 casos): los valores por defecto (42 rodillos y 1 freno a 56 in,
+  las mismas instancias que el constructor, las líneas de posiciones), Pushback y el rodillo de 2.5, el freno cada N, el corte a nueve
+  líneas y el riel sin rodillos, el documento sin «Freno cada N» igual byte a byte y con él guardado y leído por el BOM, el paso
+  (pregunta 4, nueve casos), la cama leída con un paso no válido, los problemas según el tipo, el rodillo rechazado, de Pushback a Dinámica
+  (pregunta 8), «Restaurar layout…» (pregunta 6), las comprobaciones de los valores y el BOM del borrador.
+- Core, `tests/RackCad.Tests/Workspace/CamaDoorTests.cs` (nuevo, 9): las reglas (`AnswerForOpen`, `PlanApply`, `AnswerForApply`,
+  `AnswerForNewCama`, `RefusalForNewCama`) y el cableado sobre la fuente: las tres órdenes en su orden (sin Deshacer en la lectura,
+  «escrito» solo por la regla), la mitad de dibujo con los mismos pasos que EditCama y los huecos de la puerta con su copia y su `Abandon`.
+- UI, `tests/RackCad.UI.Tests/Workspace/CamaEditorTests.cs` (nuevo, 12): el editor sin la ventana (lo que calcula y el esquema, el
+  borrador y «Descartar», los valores marcados y el motivo, la pregunta 4, la 8, el rodillo rechazado, la 6, «Cerrar el editor», la
+  escritura y su base, la cama nueva y su inserción, el freno cada N con Pushback y «Guardar en biblioteca» con un valor sin aplicar).
+- UI, `tests/RackCad.UI.Tests/Workspace/RackCadCamaWindowTests.cs` (nuevo, 12), con una puerta doble de la cama: la oferta solo con esa
+  puerta y la respuesta solo de su petición; «Actualizar» con una copia, la orden que la tomó, la respuesta no escrita y la escrita, D-08
+  y la marca de la lista; «Dejar de esperar» y la respuesta tardía; el borrador de otro dibujo y la poda; «Cerrar el editor»; la cama leída
+  con un paso no válido; la cama nueva de «Nuevo» (borrador, veto por su etiqueta, sin colocar, colocada con su nombre y el mismo editor
+  al abrirla de la lista); «Duplicar» y «Descartar el borrador»; la biblioteca (guardar con los campos desconocidos y abrir como borrador,
+  que viaja con su documento); el BOM del borrador; y con WPF real (STA): la página del rack con su recuadro y el editor, «Nuevo» con su
+  botón y el editor de la cama nueva, y el editor con sus dos pestañas, el esquema, ningún texto con el nombre de un tipo (F-1), nombres
+  de automatización únicos, un campo que se confirma al perder el foco y «Restaurar layout…» en línea.
+- UI, `FlowBedEditorWindowTests` (+1): el clásico conserva «Freno cada N» desde el dibujo y desde la biblioteca, y una cama nueva no lo tiene.
+
+**Comprobación en rojo:** diecinueve piezas rotas a propósito, una a una, con script (`hs65\t5\cm\red.py` en el scratchpad de la sesión;
+salida en `red-out-1.txt` y `red-out-2.txt`). Antes de cada rotura, el script guarda una copia del original fuera del worktree
+(`hs65\t5\cm\red-backup\`); tras cada una compila y corre las clases focales (Core: `CamaDraftRulesTests` y `CamaDoorTests`; UI:
+`CamaEditorTests`, `RackCadCamaWindowTests` y `FlowBedEditorWindowTests`) y devuelve el archivo a sus bytes (SHA-256 comprobado). Las
+diecinueve hicieron fallar al menos una prueba:
+- C1, el documento escribe «Freno cada N» también vacío; C2, el paso no se comprueba entero; C3, de Pushback a Dinámica sin los 48 in;
+  C4, la puerta guarda la cama de la ventana y no su copia; C5, la mitad de dibujo sin el nombre del bloque; C6, RACKCAMAABRIR con marca
+  de Deshacer;
+- U1, un valor rechazado no marca el editor (fallan 3); U2, el veto del cierre sin las camas (fallan 2); U3, la cama sin borrador de
+  «Nuevo» (fallan 5); U4, la cama nueva colocada sigue nueva; U5, la página del rack no aloja el editor; U6, el BOM no ve el borrador; U7,
+  la biblioteca abre la cama en el clásico; U8, «Restaurar layout…» ignora sus casillas; U9, el clásico pierde «Freno cada N»; U10, una
+  cama leída con un problema en «Avanzado» no lo abre; U11, «Dejar de esperar» no devuelve la cama; U12, un valor rechazado no se queda en
+  su campo; U13, un valor rechazado en la tarima de una Pushback detiene el guardado.
+
+Después se buscaron restos en `git diff` (ningún `if (false`) y se recompiló la solución con `--no-incremental` antes de las suites
+completas. Los tres censos de arriba fallaron con la primera Core focal, que es su rojo.
+
+**Los números** (fuentes finales, solución en Debug recompilada con `--no-incremental`):
+- **UI completa:** 2986 correctas, 0 con error, 48 omitidas (3034, 32 min): la base `041e1799` (2961 / 0 / 48) más las 25 nuevas (12 + 12 + 1).
+- **Core Full:** 19322 correctas, 0 con error, 403 omitidas (19725, 32 min): la base (19292 / 0 / 403) más las 30 nuevas (21 + 9); los censos cambiados no añaden casos.
+- **Build Debug de la solución (Plugin incluido):** 0 errores; las advertencias son las MSB3277 de las referencias de AutoCAD y las de los
+  analizadores de xunit, que ya estaban.
+- Focales: Core de la cama 30/30; guardas y censos de Core que leen la ventana, la puerta, el Plugin y la persistencia 565/0/1; UI de la
+  cama y del clásico 30/30; UI de la ventana, los borradores, las utilidades, el BOM, la cabecera, el panel de vistas y los censos de
+  ventanas y de la ayuda 255/0/4.
+
+**Lo que queda abierto:**
+- **El smoke en AutoCAD:** que `RACKCAMAABRIR` no deje nada en Deshacer; `RACKCAMAAPLICAR` con el bloque y sus copias, y su «U»;
+  `RACKCAMANUEVO` con el jig, el nombre automático y la cancelación de la colocación; el editor y el esquema en la paleta (anchos, foco,
+  ratón y la escala con un riel largo); la pestaña «Propiedades» escrita tras el redibujo.
+- RACKEDITAR de una cama sigue con el editor clásico (D-03) hasta que el clásico se retire al final de I-64; QUICKCAMA no cambia.
+- La pregunta 5 dejaba abierto si hace falta «Insertar otra copia…»: no se construyó (CM-S3).
+- Para el Owner: CM-S1 a CM-S14.
+- **Para integrar:** `RackCadWindowViewModel.cs`, `RackCadWindowViewModel.Drafts.cs`, `RackCadWindowView.xaml(.cs)`, `RackCadRackDoorPort.cs`
+  y los tres censos los tocan también las otras partes de la tanda: cada línea de esta parte lleva `T5 cm`. Los números de los censos de
+  órdenes se suman con los de las otras partes (esta añade 3).

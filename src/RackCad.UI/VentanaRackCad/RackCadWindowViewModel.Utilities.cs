@@ -87,7 +87,7 @@ namespace RackCad.UI.VentanaRackCad
             new RackCadMenuPlace("Diseñar sistema Push Back", "Tarjeta «Push Back»"),
             new RackCadMenuPlace("Diseñar línea Cantilever", "Tarjeta «Cantilever»"),
             new RackCadMenuPlace("Diseñar cabecera", "Tarjeta «Cabecera»"),
-            new RackCadMenuPlace("Diseñar cama de rodamiento", "Tarjeta «Cama»"),
+            new RackCadMenuPlace("Diseñar cama de rodamiento", "«Cama en esta ventana» y la tarjeta «Cama» (editor clásico)"), // T5 cm
             new RackCadMenuPlace("Diseñar larguero", "Tarjeta «Larguero»"),
             new RackCadMenuPlace("Generar perfil estructural", "Tarjeta «Perfil estructural»"),
             new RackCadMenuPlace("Abrir de la biblioteca de diseños", "Sección «Biblioteca de diseños», sin ventana aparte"),
@@ -100,7 +100,8 @@ namespace RackCad.UI.VentanaRackCad
         // A design of Selectivo or Dinámico opens here when the window can make a new rack of that system; the others (and those two
         // without their door) open in their classic editor.
         private bool OpensHere(RackSystemKind kind) =>
-            (kind == RackSystemKind.SelectiveRack && CanStartNewSelective) || (kind == RackSystemKind.PalletFlow && CanStartNewDynamic);
+            (kind == RackSystemKind.SelectiveRack && CanStartNewSelective) || (kind == RackSystemKind.PalletFlow && CanStartNewDynamic)
+            || (kind == RackSystemKind.Cama && CanStartNewCama); // T5 cm: a cama opens here as a draft too
 
         private void OpenLibraryDesign(RackCadLibraryRow row)
         {
@@ -144,7 +145,7 @@ namespace RackCad.UI.VentanaRackCad
             var opening = OpenAsNewDraft(RackCadDraftSeed.FromLibrary(project, name, LibraryOrigin(name)));
             if (opening == null || !opening.Opened) return false;
 
-            object editor = project.Kind == RackSystemKind.SelectiveRack ? NewSelectiveEditor : NewDynamicEditor;
+            object editor = project.Kind == RackSystemKind.SelectiveRack ? NewSelectiveEditor : project.Kind == RackSystemKind.Cama ? NewCamaEditor : NewDynamicEditor; // T5 cm
             if (editor != null) _librarySources[editor] = project;
             return true;
         }
@@ -241,7 +242,8 @@ namespace RackCad.UI.VentanaRackCad
         }
 
         private bool IsEditorAlive(object editor) =>
-            _selectiveDrafts.Values.Any(e => ReferenceEquals(e.Editor, editor)) || _dynamicDrafts.Values.Any(e => ReferenceEquals(e.Editor, editor));
+            _selectiveDrafts.Values.Any(e => ReferenceEquals(e.Editor, editor)) || _dynamicDrafts.Values.Any(e => ReferenceEquals(e.Editor, editor))
+            || IsCamaEditorAlive(editor); // T5 cm
 
         // ------------------------------------------------------------------ «Ejecutar» of the help (UT-10)
 
