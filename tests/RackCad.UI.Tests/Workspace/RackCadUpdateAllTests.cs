@@ -211,7 +211,7 @@ namespace RackCad.UI.Tests
             {
             }
 
-            public string ImportOutside(IReadOnlyCollection<string> blocks) => null;
+            public string ImportOutside(IReadOnlyCollection<string> blocks) => null!; // null: imported (the contract of the port)
 
             public void Finish(bool committed)
             {
