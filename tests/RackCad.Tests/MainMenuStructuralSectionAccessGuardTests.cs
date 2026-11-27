@@ -79,7 +79,12 @@ namespace RackCad.Tests
         public void TheMenuAndTheCommandRunTheSameFlow()
         {
             Assert.Contains("StructuralSectionCommandFlow.Run(document)", CodeOnly(Menu), StringComparison.Ordinal);
-            Assert.Contains("StructuralSectionCommandFlow.Run(", CodeOnly(Command), StringComparison.Ordinal);
+
+            // T7 per (I-64, septima tanda; el Owner: «Abren la ventana»): RACKSECCION abre la pagina «Perfil estructural» de la ventana RackCad, y
+            // la pagina dibuja por RACKSECCIONINSERTAR con la materializacion del MISMO flujo (Place). Reapuntada, no debilitada: sigue habiendo un
+            // solo flujo; el menu lo corre entero, la puerta de la ventana corre su materializacion, y RACKSECCION no reimplementa nada.
+            Assert.Contains("StructuralSectionCommandFlow.Place(", CodeOnly(ReadPlugin("RackSeccionCommands.Ventana.cs")), StringComparison.Ordinal);
+            Assert.DoesNotContain("StructuralSectionCommandFlow", CodeOnly(Command), StringComparison.Ordinal);
         }
 
         [Theory]
@@ -156,10 +161,12 @@ namespace RackCad.Tests
         public void TheCommandIsNowAThinEntryPoint()
         {
             // RACKSECCION sigue existiendo y sigue siendo el camino directo; lo que ya no tiene es el flujo.
+            // T7 per (el Owner: «Abren la ventana»): el camino directo lleva a la pagina «Perfil estructural» de la ventana RackCad, por el
+            // patron de sus atajos; sigue sin modal y sin flujo propio.
             var command = CodeOnly(Command);
 
-            Assert.Contains("[CommandMethod(\"RACKSECCION\")]", command, StringComparison.Ordinal);
-            Assert.Contains("StructuralSectionCommandFlow.Run(AcApplication.DocumentManager.MdiActiveDocument)",
+            Assert.Contains("[CommandMethod(\"RACKSECCION\", RackCadWindowShortcuts.WindowFlags)]", command, StringComparison.Ordinal);
+            Assert.Contains("RackCadWindowShortcuts.Open(document, new RackCadShortcutAsk(RackCadShortcutTarget.StructuralSection, null, null))",
                 command, StringComparison.Ordinal);
             Assert.DoesNotContain("ShowModalWindow", command, StringComparison.Ordinal);
         }

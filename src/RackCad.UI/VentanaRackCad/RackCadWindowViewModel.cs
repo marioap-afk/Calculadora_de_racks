@@ -29,6 +29,8 @@ namespace RackCad.UI.VentanaRackCad
         Larguero, // T5 lg: «Nuevo › Larguero», the draft in construction (LG-01 to LG-03); under «Nuevo», not a section of the column
 
         Almacen, // T5 al: «Almacén» (prototype «almacen», question 1)
+
+        PerfilEstructural, // T7 per: «Nuevo › Perfil estructural», the inspector of RACKSECCION; under «Nuevo», not a section of the column
     }
 
     /// <summary>One section of the side column as the window shows it: a plain value.</summary>
@@ -113,7 +115,8 @@ namespace RackCad.UI.VentanaRackCad
         // was made for (at the time it was made, not when the answer arrives), for a write what was sent, and whether it is a Selectivo.
         private sealed record DoorRequest(long Id, bool IsWrite, SessionId Session, string RackId, string SentJson, string SentName, bool Started = false,
             bool IsSelective = false, bool IsCabecera = false, bool IsVariables = false, bool IsBom = false,
-            bool IsWarehouse = false, bool IsCama = false, bool IsCantilever = false, bool IsPushBack = false, bool IsReread = false); // T6 st: IsReread, the read of «Volver a leer del dibujo», which replaces an editor with changes. T5 pb: IsPushBack, a Push Back of the window. T5 ct: IsCantilever, a Cantilever line. T5 cm: IsCama, a cama of its own. T5 al: IsWarehouse, the page «Almacén». T4 cb: IsCabecera, a cabecera of its own; T4 va: IsVariables, the page «Variables»; T4 bom: IsBom, the read of the page «BOM y lista de racks»
+            bool IsWarehouse = false, bool IsCama = false, bool IsCantilever = false, bool IsPushBack = false, bool IsReread = false,
+            bool IsSection = false); // T7 per: IsSection, «Insertar en el dibujo…» of the page «Perfil estructural». T6 st: IsReread, the read of «Volver a leer del dibujo», which replaces an editor with changes. T5 pb: IsPushBack, a Push Back of the window. T5 ct: IsCantilever, a Cantilever line. T5 cm: IsCama, a cama of its own. T5 al: IsWarehouse, the page «Almacén». T4 cb: IsCabecera, a cabecera of its own; T4 va: IsVariables, the page «Variables»; T4 bom: IsBom, the read of the page «BOM y lista de racks»
 
         private sealed class DraftKeyComparer : IEqualityComparer<(SessionId Session, string RackId)>
         {
@@ -196,11 +199,12 @@ namespace RackCad.UI.VentanaRackCad
                 new RackCadNewSystemCard(RackCadClassicAction.NewHeader, "Cabecera", "Configurador de cabeceras (componente)."),
                 new RackCadNewSystemCard(RackCadClassicAction.NewFlowBed, "Cama", "Camas de rodamiento: riel, rodillos y frenos."),
                 new RackCadNewSystemCard(RackCadClassicAction.NewLarguero, "Larguero", "Larguero (perfil y ménsulas); vista y BOM."),
-                new RackCadNewSystemCard(RackCadClassicAction.StructuralSection, "Perfil estructural", "Perfiles W, HSS, C y L del catálogo AISC."),
+                new RackCadNewSystemCard(RackCadClassicAction.StructuralSection, "Perfil estructural", "Perfiles W, HSS, C, L y S del catálogo AISC, en esta ventana."), // T7 per: opens the page
             };
             WireBom(); // T4 bom
             WireWarehouse(); // T5 al: the page «Almacén» (RackCadWindowViewModel.Warehouse.cs)
             WireShortcuts(); // T6 rl: RACKVARIABLES and RACKPROPIEDADES open their page (RackCadWindowViewModel.Shortcuts.cs)
+            WireStructuralSection(); // T7 per: «Nuevo › Perfil estructural» (RackCadWindowViewModel.StructuralSection.cs)
             RebuildSections();
             Present();
         }
@@ -368,6 +372,7 @@ namespace RackCad.UI.VentanaRackCad
             get
             {
                 if (_inFlight == null) return string.Empty;
+                if (_inFlight.IsSection) return StructuralSectionWaitingText; // T7 per: the page «Perfil estructural»
                 if (IsUpdateAllRequest(_inFlight)) return UpdateAllWaitingText; // T6 at
                 if (_inFlight.Started) return _inFlight.IsVariables ? VariablesWriteTakenText : _inFlight.IsBom ? BomTakenText : _inFlight.IsWarehouse ? WarehouseTakenText : WriteTakenText; // T4 va, bom; T5 al
                 var what = _inFlight.IsVariables ? (_inFlight.IsWrite ? "Esperando a que AutoCAD escriba las variables." : "Esperando a que AutoCAD lea las variables.")
@@ -672,6 +677,12 @@ namespace RackCad.UI.VentanaRackCad
         {
             var request = _inFlight;
             if (request == null) return;
+            if (request.Started && request.IsSection) // T7 per: AutoCAD asks the point of the page «Perfil estructural»
+            {
+                Say(StructuralSectionDoorRules.TakenText, failed: true);
+                return;
+            }
+
             if (request.Started)
             {
                 Say(request.IsBom ? BomTakenText : request.IsWarehouse ? WarehouseTakenText : WriteTakenText, failed: true); // T4 bom; T5 al
@@ -696,6 +707,7 @@ namespace RackCad.UI.VentanaRackCad
             else if (request.IsWrite && request.IsCantilever) StopCantileverWrite(request, StoppedWrite); // T5 ct
             else if (request.IsVariables) StopWaitingVariables(request); // T4 va
             else if (request.IsPushBack) StopPushBackWrite(request, StoppedWrite); // T5 pb
+            else if (request.IsSection) StructuralSectionStopped(StructuralSectionDoorRules.StoppedText); // T7 per: the page «Perfil estructural» says it
             else if (request.IsWrite && !request.IsSelective && _dynamicDrafts.TryGetValue((request.Session, request.RackId), out var entry))
             {
                 entry.Editor.EndWriting();
@@ -992,6 +1004,7 @@ namespace RackCad.UI.VentanaRackCad
                 AbandonInFlight();
                 if (orphan.IsBom) BomStopped(); // T4 bom
                 else if (orphan.IsWarehouse) WarehouseStopped(orphan); // T5 al
+                else if (orphan.IsSection) StructuralSectionStopped(StructuralSectionDoorRules.DrawingClosedText); // T7 per
                 else if (!orphan.IsWrite) Say("Se cerró el dibujo del rack que se estaba leyendo: no se abrió nada.", failed: true);
             }
 
@@ -1247,6 +1260,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(IsConfiguracionPage));
             OnUtilityPageShown(page); // T4 ut: «Órdenes y atajos», the folder of the library, the settings
             RaiseLargueroPage(); // T5 lg: «Nuevo › Larguero»
+            StructuralSectionPageShown(page); // T7 per: «Nuevo › Perfil estructural», which reads the catalogue when shown
             if (page == RackCadWindowPage.Bom) Contained(BomPageShown); // T4 bom: the first time for a drawing, it reads it
             WarehousePageShown(page); // T5 al: «Almacén», the first time for a drawing, reads the planta of its seed
         }

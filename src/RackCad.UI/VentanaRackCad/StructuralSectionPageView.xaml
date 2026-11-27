@@ -1,0 +1,101 @@
+<UserControl x:Class="RackCad.UI.VentanaRackCad.StructuralSectionPageView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:RackCad.UI.VentanaRackCad"
+             AutomationProperties.Name="Perfil estructural"
+             FontFamily="Segoe UI"
+             FontSize="12">
+    <!-- T7 per (I-64, séptima tanda; the Owner: «Igual que la clásica»): «Nuevo › Perfil estructural» of the RackCad window. Its data context is
+         StructuralSectionPageViewModel. The inspector itself is the one of the classic window «Secciones estructurales» (RACKSECCION): the code
+         places the very controls of StructuralSectionInspectorControls in the three hosts below (parameters, preview, information); this file
+         only lays them out for a palette and adds «Insertar en el dibujo…» and the answer of AutoCAD. -->
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/RackCad.UI;component/VentanaRackCad/RackCadUtilityStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <ScrollViewer x:Name="SectionPageScroll" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="14,10">
+            <!-- The crumb: «Nuevo › Perfil estructural». -->
+            <WrapPanel Margin="0,0,0,2">
+                <Button x:Name="SectionCrumbNuevoButton" Content="Nuevo" Style="{StaticResource UtLinkButton}"
+                        AutomationProperties.Name="Volver a Nuevo desde Perfil estructural" Click="OnHomeClick" />
+                <TextBlock Text=" › Perfil estructural" VerticalAlignment="Center" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+            </WrapPanel>
+
+            <TextBlock x:Name="SectionPageTitle" Text="Perfil estructural" Style="{StaticResource UtPageTitle}" />
+            <TextBlock x:Name="SectionIntroText" Style="{StaticResource UtText}" Text="{x:Static local:StructuralSectionPageViewModel.IntroText}" />
+
+            <!-- Fail closed, as RACKSECCION: a catalogue that does not validate is said here, and nothing is offered to insert. -->
+            <Border x:Name="SectionCatalogNoticePanel" Style="{StaticResource UtWarning}"
+                    Visibility="{Binding HasCatalogNotice, Converter={StaticResource UtFlagToVisibility}}">
+                <TextBlock x:Name="SectionCatalogNoticeText" Text="{Binding CatalogNotice}" Style="{StaticResource UtPlain}" />
+            </Border>
+
+            <!-- Wide, the preview goes beside the parameters; narrow, below them (see OnLayoutSizeChanged). -->
+            <Grid x:Name="SectionLayout" SizeChanged="OnLayoutSizeChanged"
+                  Visibility="{Binding HasState, Converter={StaticResource UtFlagToVisibility}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="SectionParametersColumn" Width="300" />
+                    <ColumnDefinition x:Name="SectionPreviewColumn" Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition x:Name="SectionPreviewRow" Height="0" />
+                </Grid.RowDefinitions>
+
+                <Border x:Name="SectionParametersPanel" Grid.Row="0" Grid.Column="0" BorderThickness="1" CornerRadius="6"
+                        BorderBrush="{DynamicResource ShellBorderBrush}" Background="{DynamicResource ShellSurfaceBrush}">
+                    <ContentControl x:Name="SectionParametersHost" Focusable="False" />
+                </Border>
+                <Border x:Name="SectionPreviewPanel" Grid.Row="0" Grid.Column="1" Margin="10,0,0,0" BorderThickness="1" CornerRadius="6"
+                        BorderBrush="{DynamicResource ShellBorderBrush}" Background="{DynamicResource ShellSurfaceBrush}"
+                        AutomationProperties.Name="Vista previa del perfil estructural">
+                    <ContentControl x:Name="SectionPreviewHost" Focusable="False" />
+                </Border>
+            </Grid>
+
+            <!-- Summary and weight, fidelity, the warning of ADR-0023 and the diagnostics: the lines of the classic window. -->
+            <ContentControl x:Name="SectionInformationHost" Focusable="False" Margin="0,4,0,0"
+                            Visibility="{Binding HasState, Converter={StaticResource UtFlagToVisibility}}" />
+
+            <!-- «Insertar en el dibujo…»: the door of the window (RACKSECCIONINSERTAR); its reason when it is off. -->
+            <WrapPanel Margin="0,6,0,4">
+                <Button x:Name="SectionInsertButton" Content="Insertar en el dibujo…" Padding="14,5" Margin="0,0,10,4" VerticalAlignment="Center"
+                        Style="{StaticResource PrimaryButtonStyle}" IsEnabled="{Binding CanInsert}" ToolTipService.ShowOnDisabled="True"
+                        ToolTip="Pide el punto de inserción en AutoCAD y dibuja la sección como en RACKSECCION; un «U» la deshace."
+                        AutomationProperties.Name="Insertar el perfil estructural en el dibujo" Click="OnInsertClick" />
+                <TextBlock x:Name="SectionInsertReasonText" Text="{Binding InsertReason}" TextWrapping="Wrap" MaxWidth="520" VerticalAlignment="Center"
+                           Margin="0,0,0,4" Foreground="{DynamicResource ShellTextSecondaryBrush}"
+                           Visibility="{Binding HasInsertReason, Converter={StaticResource UtFlagToVisibility}}" />
+            </WrapPanel>
+
+            <!-- The answer of AutoCAD: what was drawn (or why not), the units advisory and the report of the flow, verbatim. -->
+            <Border x:Name="SectionStatusPanel"
+                    Visibility="{Binding HasStatus, Converter={StaticResource UtFlagToVisibility}}" AutomationProperties.Name="Respuesta de AutoCAD">
+                <Border.Style>
+                    <Style TargetType="Border" BasedOn="{StaticResource UtBanner}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding StatusFailed}" Value="True">
+                                <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusErrorBrush}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <StackPanel>
+                    <TextBlock x:Name="SectionStatusText" Text="{Binding StatusText}" Style="{StaticResource UtPlain}" FontWeight="SemiBold" />
+                    <TextBlock x:Name="SectionUnitsText" Text="{Binding UnitsText}" Style="{StaticResource UtPlain}" Margin="0,6,0,0"
+                               Foreground="{DynamicResource ShellStatusWarningBrush}"
+                               Visibility="{Binding HasUnitsNotice, Converter={StaticResource UtFlagToVisibility}}" />
+                    <TextBlock x:Name="SectionReportLabel" Text="En la línea de órdenes:" Margin="0,8,0,2" Foreground="{DynamicResource ShellTextSecondaryBrush}"
+                               Visibility="{Binding HasReport, Converter={StaticResource UtFlagToVisibility}}" />
+                    <TextBlock x:Name="SectionReportText" Text="{Binding ReportText}" Style="{StaticResource UtMono}"
+                               Visibility="{Binding HasReport, Converter={StaticResource UtFlagToVisibility}}" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -7947,3 +7947,247 @@ Quedan para la prueba guiada del Owner sobre el SHA final, o como limitación de
   - el proyecto UI en Release: 0 advertencias.
   - La UI completa la corre el CI.
 - **En AutoCAD:** pendiente. El DLL que el Owner tiene cargado es el de `0a34fe71`; el nuevo se compila cuando cierre AutoCAD.
+
+## Séptima tanda, per: la página «Perfil estructural» (2026-11-27)
+
+**Rama:** local `architecture/workspace-persistente-rackcad-t7-per`, sobre `8362d3de` (worktree `D:\w7per`). Sin commit, sin push, sin AutoCAD ni
+control de pantalla.
+
+**La orden del Owner (2026-11-27):** «Falta la ventana de cabecera en I-64, igual la de Perfil estructural». Sus respuestas: 2) «Igual que la
+clásica»: una página «Perfil estructural» en la ventana, con lo mismo que «Secciones estructurales» de RACKSECCION, sin bloquear AutoCAD, aparte
+de «Larguero»; 3) «Abren la ventana»: RACKSECCION abre la página y la clásica sigue en el menú clásico (RACKMENU). El editor clásico se queda: no
+se borró código clásico.
+
+### Lo que se construyó
+
+- **La página «Nuevo › Perfil estructural»** (`RackCadWindowPage.PerfilEstructural`, bajo «Nuevo» como «Larguero»: la columna marca «Nuevo» y la
+  miga dice «Nuevo › Perfil estructural»):
+  - **los mismos controles que la clásica, sin copiarlos.** Los controles del inspector se EXTRAJERON de la ventana clásica a
+    `src/RackCad.UI/StructuralSections/StructuralSectionInspectorControls.cs` (búsqueda, familia, lista, longitud, vista, detalle, representación,
+    rotación, espejo, eje y envolvente; la vista previa `StructuralSectionPreview`; las líneas de resumen y peso, fidelidad, la advertencia de
+    ADR-0023 y los diagnósticos), con los mismos textos, el mismo orden, los mismos valores por defecto y los mismos manejadores. La ventana
+    clásica y la página los construyen sobre su propio `StructuralSectionInspectorState`, que no cambió;
+  - **la ventana clásica sigue igual:** título, tamaño por los tokens del arquetipo B, el mismo `RackBoundedEditorShell` con las mismas
+    instancias en sus zonas, «Insertar»/«Cerrar» con Intro y Esc, el foco inicial en la búsqueda, «Insertar» apagado sin selección con su motivo,
+    y su contrato de salida (`Result`, `AcceptedSection`). Sus pruebas de caracterización (I-39A) y de contrato (I-39C) pasan sin tocarse;
+  - **la vista** (`StructuralSectionPageView.xaml(.cs)`): coloca esos controles en la página (parámetros de 300 px a la izquierda y la vista
+    previa a la derecha; con menos de 620 px, la vista previa baja), las líneas de fidelidad debajo, «Insertar en el dibujo…» con su motivo cuando
+    está apagado, y la respuesta de AutoCAD;
+  - **el modelo** (`StructuralSectionPageViewModel.cs`): lee el catálogo al mostrarse, con el proveedor de RACKSECCION y **fallando cerrado** como
+    él (un catálogo que no valida se dice y no se ofrece nada); con el mismo catálogo (caché por firma) se queda lo elegido;
+  - **el anfitrión** (`RackCadWindowViewModel.StructuralSection.cs`): la puerta, la espera, «Dejar de esperar», la respuesta y la poda de un
+    dibujo cerrado, como las demás páginas.
+- **«Insertar en el dibujo…»:** una petición numerada de la puerta de la ventana (UNA en vuelo para toda la ventana), con la sección y el plan
+  que construyó el estado (como «Insertar» de la clásica: `State.BuildPlan()`), inmutables:
+  - **Application** (`src/RackCad.Application/VentanaRackCad/StructuralSectionDoor.cs`, nuevo): `StructuralSectionInsertRequest`,
+    `StructuralSectionInserted`, la puerta `IRackCadStructuralSectionDoorPort` y las reglas y textos `StructuralSectionDoorRules`;
+  - **la puerta** (`src/RackCad.Plugin/VentanaRackCad/RackCadRackDoorPort.StructuralSection.cs`, nuevo): guarda la petición ANTES de entregar la
+    orden, con el dibujo activo; «Dejar de esperar» la suelta (`AbandonStructuralSection`); sin transacciones ni bloqueos;
+  - **la orden RACKSECCIONINSERTAR** (`src/RackCad.Plugin/RackSeccionCommands.Ventana.cs`, nueva; sin marcas: una entrada de Deshacer): toma la
+    petición, dice que la tomó (es orden propia de la ventana, T6 st), comprueba el dibujo y llama a **`StructuralSectionCommandFlow.Place`**;
+    responde a la página y escribe en la línea de órdenes el mismo informe que la clásica;
+  - **lo común, extraído** (`StructuralSectionCommandFlow.Place`): el aviso de unidades, el punto antes de crear nada, definición y referencia en
+    UNA transacción, una regeneración y el informe (`Describe`). `Run` (la clásica) llama a `Place` con lo que aceptó el inspector y escribe su
+    informe: la clásica dibuja y dice exactamente lo mismo que antes. Ni la orden nueva ni la página calculan geometría (ADR-0022 §7);
+  - **`RackUnitsGuard.WarnIfNotInches`** devuelve si avisó (antes `void`), para que la página lo diga también. Los demás llamadores no cambian.
+- **La respuesta vuelve a la página:** qué se dibujó («AutoCAD insertó «W12X26» como el bloque «…». Es una sección suelta, sin datos de rack: no
+  sale en la lista de la ventana ni se reabre. Un «U» la deshace.»), el aviso de unidades si saltó, y «En la línea de órdenes:» con el informe del
+  flujo, literal (longitud, vista, curvas, peso, la advertencia de ADR-0023 y la fidelidad con sus diagnósticos). Cancelar el punto: «No se
+  insertó nada: se canceló el punto de inserción. El dibujo no cambió.» Desde otra página, el mensaje de la ventana lo repite.
+- **La tarjeta «Perfil estructural» de «Nuevo»** abre la página (`OpenNewSystem`); las demás tarjetas siguen corriendo su acción clásica.
+- **RACKSECCION abre la página** con el patrón de rl (`RackCadWindowShortcuts.Open`, `RackCadShortcutTarget.StructuralSection`, las marcas
+  `NoUndoMarker | UsePickSet | Redraw`): no lee nada del dibujo, no corre lecturas dentro de sí y no deja paso en Deshacer. La línea de órdenes:
+  «RackCad: «Nuevo» › «Perfil estructural» en la ventana RackCad.» (con el aviso del catálogo si no se pudo leer).
+- **La clásica sigue en RACKMENU:** «Generar perfil estructural» corre `StructuralSectionCommandFlow.Run`, sin cambios.
+- **La ayuda:** «En la ventana» de RACKSECCION lleva a «Nuevo › Perfil estructural»; su resumen dice que abre la página y dónde está la clásica
+  (y nombra la familia S). `README.md`, `docs/guias/despliegue.md` y la sección 9 de `docs/guias/geometria-secciones-estructurales.md`, al día.
+- **Lo dibujado sigue siendo una sección suelta**, sin datos de rack: no entra en la lista ni se reabre (la misma materialización del clásico).
+- **No se trajo nada de Larguero** (`architecture/workspace-persistente-rackcad-t6-lg` se leyó para la forma de la puerta). La página «Larguero»
+  no cambia; solo la línea que marca «Nuevo» en la columna cuenta también esta página.
+
+### Supuestos para el Owner
+
+| Id | Supuesto o decisión | Dónde se cambia |
+|---|---|---|
+| T7per-S1 | RACKSECCION (no tiene alias) abre la página con las marcas de los atajos: no deja paso en Deshacer y conserva la selección. «Ejecutar» de RACKSECCION en «Órdenes y atajos» abre la página también; la clásica está solo en RACKMENU, «Generar perfil estructural» | `RackSeccionCommands.cs` |
+| T7per-S2 | La tarjeta «Perfil estructural» abre la página directamente; no hay un botón «… en esta ventana» aparte, como en los sistemas. Su texto pasa a «Perfiles W, HSS, C, L y S del catálogo AISC, en esta ventana.» (antes no nombraba la S) | `RackCadWindowViewModel.cs` (`NewSystems`) |
+| T7per-S3 | El botón de la página dice «Insertar en el dibujo…», como el resto de la ventana (la clásica dice «Insertar»). La clásica tiene «Cerrar»; la página vuelve con la miga «Nuevo» | `StructuralSectionPageView.xaml` |
+| T7per-S4 | La página no necesita un dibujo para ver perfiles; «Insertar en el dibujo…» sí (y la puerta): sin dibujo, apagado con «Abre o crea un dibujo para insertar la sección.» | `StructuralSectionPageViewModel.InsertRefusal` |
+| T7per-S5 | El catálogo se lee cada vez que se muestra la página. Con el mismo catálogo se quedan la sección y los valores elegidos; si un archivo cambió, el estado vuelve a los valores por defecto; si no valida o no se puede leer, la página lo dice (las palabras del clásico, con acentos) y no ofrece nada | `StructuralSectionPageViewModel.Shown` |
+| T7per-S6 | Mientras AutoCAD pide el punto, la página sigue editable: lo que se cambie ya no llega a esa inserción (la petición lleva su plan). «Insertar en el dibujo…» queda apagado hasta la respuesta, con el texto de la espera | `StructuralSectionPageViewModel` |
+| T7per-S7 | La respuesta en la página: el titular, el aviso de unidades con palabras de la página y el informe del flujo literal bajo «En la línea de órdenes:» (sin acentos y con «vista CrossSection», como lo escribe la clásica). La respuesta anterior se borra al pedir otra inserción | `StructuralSectionDoorRules`, `StructuralSectionPageView.xaml` |
+| T7per-S8 | El punto se pide con el texto de la clásica, «Punto de insercion de la seccion:», sin cambios | `StructuralSectionInsertService` |
+| T7per-S9 | En la página, los controles del inspector se nombran para la automatización por su etiqueta y « (perfil estructural)»; la clásica sigue sin nombres | `StructuralSectionPageView.NameTheControls` |
+| T7per-S10 | La página no recuerda nada entre sesiones de AutoCAD (la clásica tampoco): cada AutoCAD empieza con los valores por defecto | — |
+
+### Las ediciones a archivos compartidos (pequeñas, marcadas `T7 per`)
+
+- `RackCadWindowViewModel.cs`: el valor `PerfilEstructural` de la página; `IsSection` en `DoorRequest` (una línea partida en dos); el texto de la
+  tarjeta; `WireStructuralSection()` en el constructor; una línea en `WaitingText`; dos ramas en `StopWaiting`; una en `PruneDeadSessions`; una en
+  `ShowPage`.
+- `RackCadWindowViewModel.Larguero.cs`: `IsUnderNuevo` cuenta también esta página.
+- `RackCadWindowViewModel.Shortcuts.cs`: una rama en `OnShortcutAsked` (RACKSECCION).
+- `RackCadWindowView.xaml(.cs)`: el anfitrión de la página, la línea del constructor y `OnNewSystemClick` llama a `OpenNewSystem`.
+- `RackCadShortcuts.cs` (Application): el destino `StructuralSection` y su línea de órdenes. **Para integrar con cab:** si cab añade un destino
+  para RACKCABECERA, los dos van al final del enum y en `CommandLineText`; se suman.
+- `RackCadRackDoorPort.cs`: una línea en `Abandon`.
+- `RackCadHelpViewModel.cs` y `RackCommandReference.cs`: la entrada de RACKSECCION.
+
+### Censos y guardas que cambian, con su nota
+
+Ninguna se debilitó: se reapuntaron con la misma dureza y su nota, o subieron su censo con el nombre exacto.
+
+- `CustomPropertiesCommandGuardTests` (I-54 G7): el censo por nombre gana `A14StructuralSectionDoorCommands = { "RACKSECCIONINSERTAR" }`.
+  RACKSECCION sigue en el censo de apertura (cambia lo que abre, no su nombre).
+- `SelectiveEditorOpenTests.GUARDA_EL_CENSO_DE_COMANDOS_NO_CAMBIA`: 71 → 72 registros (`+1: RACKSECCIONINSERTAR`). **Para integrar con cab:** si cab
+  añade órdenes, los dos aumentos se suman.
+- `StructuralSectionPluginSourceGuardTests.TheCommandIsRegisteredAsRackseccion`: RACKSECCION con `RackCadWindowShortcuts.WindowFlags` y el destino
+  de la página; los dos caminos que dibujan siguen en el MISMO flujo: RACKMENU corre `Run(document)` y la orden de la página `Place(`.
+- `StructuralSectionPluginSourceGuardTests.TheCommandOpensTheInspectorAndInsertsExactlyTheAcceptedPlan`: el plan aceptado es el que recibe
+  `Place(document, window.AcceptedSection, window.Result)`, y `Place` inserta el plan recibido (`StructuralSectionInsertService.Insert(document, plan)`).
+- `MainMenuStructuralSectionAccessGuardTests.TheMenuAndTheCommandRunTheSameFlow`: el menú corre el flujo; la orden de la ventana, `Place`; el código de
+  RACKSECCION ya no nombra el flujo.
+- `MainMenuStructuralSectionAccessGuardTests.TheCommandIsNowAThinEntryPoint`: RACKSECCION es `RackCadWindowShortcuts.Open(...StructuralSection...)`, sin
+  modal y sin flujo propio.
+- Sin cambios y en verde: `ExactlyOnePlaceInThePluginOwnsEachPieceOfTheFlow` (la orden nueva no nombra el inspector, la inserción, el peso ni la
+  fidelidad), `TheAdvisoryFiresOnceAndOnlyAfterTheUserConfirmed` (un solo aviso, tras `if (window.Result == null)`),
+  `CancellingTheInspectorMaterialisesNothing`, las de una transacción, el punto antes de crear, el regen canónico y «no es un rack», las de
+  `RackUnitsGuardSourceTests` y las del censo de ventanas (`StructuralSectionInspectorWindow` sigue siendo la única ventana B de secciones).
+
+### Las pruebas nuevas
+
+- **Core**, `tests/RackCad.Tests/Workspace/StructuralSectionDoorTests.cs` (nuevo, 7):
+  - las reglas: una petición solo con su sección y su propio plan; los textos de lo insertado, cancelado, fallido y rechazado, con el informe y las
+    unidades; la línea de órdenes de RACKSECCION;
+  - por la fuente: RACKSECCION abre la ventana y la clásica sigue en RACKMENU (dos registros, uno por archivo); RACKSECCIONINSERTAR en su orden
+    (tomar, decir, dibujo, rechazo, `Place`, responder, escribir) y sin nada propio que materialice; `Run` y `Place` del flujo y la guarda de
+    unidades que devuelve si avisó; la puerta que guarda antes de entregar y suelta al abandonar.
+- **UI**, `tests/RackCad.UI.Tests/Workspace/RackCadStructuralSectionPageTests.cs` (nuevo, 15):
+  - la tarjeta abre la página con el estado del clásico y sin correr nada clásico; volver a mostrarla conserva lo elegido; el catálogo que no valida
+    o no se lee (falla cerrada) y el que vuelve a leerse;
+  - «Insertar en el dibujo…»: la petición con el plan del estado y su sección; la espera y su texto; tomada (el punto); la respuesta, solo la de su
+    petición; cancelada, fallida y rechazada; «Dejar de esperar»; el dibujo cerrado; la respuesta durante la llamada (M-22); la puerta que dice
+    «ocupado»; apagada sin selección, con otra petición en vuelo, sin dibujo y sin puerta;
+  - RACKSECCION dentro de su orden (sin lecturas ni peticiones) y con el catálogo que falla; la ayuda;
+  - WPF en STA: el clic en la tarjeta; la página con LOS MISMOS controles que la clásica (forma, orden, elementos y valores por defecto), la misma
+    vista previa y las mismas líneas de fidelidad, también con una S (ADR-0023); el botón que sigue la selección, la petición y la respuesta en
+    pantalla, la miga; la vista previa que baja en una ventana estrecha y los nombres de automatización únicos.
+
+### Comprobación en rojo
+
+Treinta y dos piezas rotas a propósito, una a una, con script (`hs65\t7\per\red.py` en el scratchpad de la sesión; salida en `red-out.txt` y
+`red-out-2.txt`). Antes de cada rotura, el script guarda una copia del archivo FUERA del worktree (`red-orig`). Las piezas de UI y de Application
+recompilan su proyecto de pruebas; las del Plugin no lo necesitan, porque las guardas de Core leen la fuente como texto. Después corre la clase de
+la pieza y devuelve el archivo a sus bytes, con el mismo SHA-256 (comprobado en las 32). Al final recompila los dos proyectos de pruebas.
+
+- **Una nota honrada:** en la primera pasada, las ocho piezas del Plugin corrieron con los binarios de la pieza anterior (A2, que no se recompiló al
+  restaurarse, porque las del Plugin no compilan), así que sumaban un fallo ajeno (`ARequestIsInsertedOnlyWithASectionAndItsOwnPlan`). Se
+  repitieron con los binarios restaurados (`red-out-2.txt`); la tabla es la de esa segunda pasada.
+- Tras restaurar, sin restos en `git diff` ni en los archivos nuevos (`if (false`, `true ||`, líneas `;` sueltas), y sin caracteres de control ni
+  invisibles.
+
+| Pieza | Qué se rompió | Fallan |
+|---|---|---|
+| U1 | La tarjeta «Perfil estructural» corre la acción clásica | 11: `ACatalogueThatDoesNotValidateIsSaidAndNothingIsOfferedAsRackSeccionFailsClosed`, `AClosedDrawingDropsTheInsertionThatWaited` y 9 más |
+| U2 | Un catálogo que falla conserva el estado anterior | 1: `ACatalogueThatDoesNotValidateIsSaidAndNothingIsOfferedAsRackSeccionFailsClosed` |
+| U3 | «Insertar en el dibujo…» manda otro plan que el del estado | 7: `AClosedDrawingDropsTheInsertionThatWaited`, `ADoorThatRefusesSaysWhyAndNothingWaits` y 5 más |
+| U4 | La página no sabe el número antes de entregar (M-22) | 4: `AnAnswerDuringTheCallReachesThePage`, `InsertarHandsTheDoorThePlanTheStateBuiltWithItsSectionAndTheWindowWaits` y 2 más |
+| U5 | Se acepta la respuesta de otra petición | 1: `OnlyTheAnswerOfItsRequestCountsAndACancelledPointOrAFailureSayWhy` |
+| U6 | «Dejar de esperar» no se lo dice a la página | 1: `DejarDeEsperarBeforeAutoCadTookItForgetsTheRequestAndALateAnswerIsIgnored` |
+| U7 | Un dibujo cerrado no se lo dice a la página | 1: `AClosedDrawingDropsTheInsertionThatWaited` |
+| U8 | La barra de espera habla de un rack | 1: `InsertarHandsTheDoorThePlanTheStateBuiltWithItsSectionAndTheWindowWaits` |
+| U9 | Con el punto pedido, «Dejar de esperar» habla de un rack | 1: `InsertarHandsTheDoorThePlanTheStateBuiltWithItsSectionAndTheWindowWaits` |
+| U10 | RACKSECCION cae en «Variables» | 1: `RackSeccionOpensThePageInsideTheCommandAndSendsNothing` |
+| U11 | La ayuda lleva RACKSECCION a «Nuevo» | 1: `TheHelpTakesRackSeccionToThePageAndSaysWhereTheClassicIs` |
+| U12 | La página no llena la lista de sus controles | 2: `TheButtonFollowsTheSelectionSendsTheRequestAndThePageShowsTheAnswer`, `ThePageShowsTheControlsOfTheClassicWindowOverItsStateWithTheSamePreviewAndFidelity` |
+| U13 | La clásica deja de apagar «Insertar» sin selección | 1: `ElInspectorApagaInsertarSinSeleccionYLoDICE` |
+| U14 | Los controles extraídos pierden «Mostrar envolvente» | 3: `NarrowThePreviewGoesBelowTheParametersAndTheNamesOfThePageAreUnique`, `TheCapturePanelKeepsItsControlsInOrder` y 1 más |
+| U15 | «Insertar en el dibujo…» sin selección | 2: `InsertarSaysWhyItIsOffWithNoSelectionNoDrawingAnotherRequestOrNoDoor`, `TheButtonFollowsTheSelectionSendsTheRequestAndThePageShowsTheAnswer` |
+| U16 | «Insertar en el dibujo…» con otra petición en vuelo | 1: `InsertarSaysWhyItIsOffWithNoSelectionNoDrawingAnotherRequestOrNoDoor` |
+| U17 | La columna no marca «Nuevo» con la página | 1: `TheCardOfNuevoOpensThePageWithTheInspectorOfRackSeccionAndRunsNothingClassic` |
+| U18 | Los controles de la página sin nombre | 1: `NarrowThePreviewGoesBelowTheParametersAndTheNamesOfThePageAreUnique` |
+| U19 | Estrecha, la vista previa no baja | 1: `NarrowThePreviewGoesBelowTheParametersAndTheNamesOfThePageAreUnique` |
+| U20 | El clic en la tarjeta corre la acción clásica | 1: `ThePageShowsTheControlsOfTheClassicWindowOverItsStateWithTheSamePreviewAndFidelity` |
+| A1 | La línea de órdenes de RACKSECCION no nombra la página | 1: `RackSeccionSaysInTheCommandLineThatTheWindowShowsThePage` |
+| A2 | Un plan de otra sección se acepta | 1: `ARequestIsInsertedOnlyWithASectionAndItsOwnPlan` |
+| P1 | RACKSECCIONINSERTAR materializa por su cuenta (sin `Place`) | 3: `TheMenuAndTheCommandRunTheSameFlow`, `TheDoorCommandDrawsTheApprovedPlanWithTheMaterializationOfRackSeccionInOneUndoStep` y 1 más |
+| P2 | RACKSECCION sin las marcas de la ventana | 3: `TheCommandIsNowAThinEntryPoint`, `RackSeccionOpensTheWindowAndTheClassicInspectorStaysInTheClassicMenu` y 1 más |
+| P3 | RACKSECCION abre el inspector clásico | 4: `TheCommandIsNowAThinEntryPoint`, `TheMenuAndTheCommandRunTheSameFlow` y 2 más |
+| P4 | La clásica avisa de las unidades dos veces | 2: `TheAdvisoryFiresOnceAndOnlyAfterTheUserConfirmed`, `TheFlowPlacesTheApprovedPlanOnceForTheClassicAndThePage` |
+| P5 | La guarda de unidades no dice que avisó | 1: `TheFlowPlacesTheApprovedPlanOnceForTheClassicAndThePage` |
+| P6 | La puerta no guarda la petición antes de entregarla | 1: `TheDoorOfThePageKeepsTheRequestBeforeHandingItOverAndForgetsItWhenAbandoned` |
+| P7 | «Dejar de esperar» no suelta la petición en la puerta | 1: `TheDoorOfThePageKeepsTheRequestBeforeHandingItOverAndForgetsItWhenAbandoned` |
+| P8 | La orden inserta en otro dibujo | 1: `TheDoorCommandDrawsTheApprovedPlanWithTheMaterializationOfRackSeccionInOneUndoStep` |
+| C1 | El censo por nombre sin RACKSECCIONINSERTAR | 1: `TGrd08_ElCensoDeComandosEsElDeAperturaMasRackPropiedadesRprRackProyectarYRpy` |
+| C2 | El censo de registros sigue en 71 | 1: `GUARDA_EL_CENSO_DE_COMANDOS_NO_CAMBIA` |
+
+### Números
+
+Sobre las fuentes finales, tras la comprobación en rojo.
+
+- **UI completa:** 3385 correctas, 0 con error, 48 omitidas (3433): la base, unas 3370, más las 15 nuevas. 21 min.
+- **Core Full:** 19645 correctas, 0 con error, 403 omitidas (20048): la base 19638 más las 7 nuevas. 14 min.
+- **Clases focales durante el trabajo:** Core, 292 de 292 (las clases nuevas, las guardas reapuntadas, los censos, los atajos, las unidades, la
+  lista de la ventana y las utilidades); UI, 479 de 479 con 10 omitidas (la página, la ventana, las utilidades y la ayuda, el censo de la ayuda,
+  «Variables», «Larguero», «Almacén», el menú clásico, el censo de ventanas, el inspector clásico y su caracterización, el arquetipo B, los
+  borradores de «Nuevo», la marca «El dibujo cambió» y «Actualizar todo»).
+- **Solución en Debug (Plugin incluido), con `--no-incremental`:** 0 errores; ninguna advertencia `MSB`, `CS`, `NU` ni `NETSDK` (solo los
+  analizadores de xUnit de siempre, ninguno de los archivos de esta parte).
+- **Solución en Release:** 0 errores y 0 advertencias `MSB`, `CS`, `NU` ni `NETSDK`. Una advertencia de xUnit de la clase nueva de UI
+  (`xUnit2029`) se corrigió y la clase volvió a pasar (15 de 15).
+
+### Para integrar
+
+- **Con cab** (en paralelo, `D:\w7cab`):
+  - los dos tocan `RackCadShortcutTarget` y `RackCadShortcutRules.CommandLineText` (si cab añade RACKCABECERA) y `OnShortcutAsked`: entradas
+    al final, se suman;
+  - los dos suben `SelectiveEditorOpenTests` (71 → 72 por esta parte) y el `Baseline` de `CustomPropertiesCommandGuardTests`: los aumentos se
+    suman;
+  - `RackCadWindowView.xaml.cs` (`OnNewSystemClick` llama ahora a `OpenNewSystem`): si cab cambia la tarjeta «Cabecera», puede hacerlo en
+    `OpenNewSystem`, que ya despacha por tarjeta;
+  - `DoorRequest` gana `IsSection` en una línea nueva al final de sus parámetros.
+- **Con la rama de Largueros** (`t6-lg`, otra iniciativa): esta parte no toca la página «Larguero»; `IsUnderNuevo` cuenta las dos páginas bajo
+  «Nuevo». Si `t6-lg` se integra, su perfil suelto (RACKLARGUEROINSERTAR) y esta página insertan el mismo bloque por dos caminos: conviene que
+  su perfil llame también a `StructuralSectionCommandFlow.Place`.
+
+### Lo que comprobará el smoke en AutoCAD
+
+Con el DLL Debug de `D:\w7per`, un dibujo en pulgadas y otro en milímetros.
+
+1. **RACKSECCION** en la línea de órdenes: se abre la ventana RackCad en «Nuevo › Perfil estructural»; la columna marca «Nuevo»; la línea de órdenes
+   dice «RackCad: «Nuevo» › «Perfil estructural» en la ventana RackCad.». La lista de Deshacer no gana ninguna entrada por RACKSECCION. Con la página
+   abierta, AutoCAD no se bloquea (ZOOM, PAN, seleccionar).
+2. **Lo mismo que la clásica:** RACKMENU → «Generar perfil estructural» abre la clásica; en las dos, buscar «W12X26», familia «S / IPS», longitud 144,
+   vista «Isometrica», «Simplificada», rotación 30, «Espejo», «Mostrar eje» y «Mostrar envolvente»: los mismos controles, la misma vista previa y
+   las mismas líneas de peso y fidelidad; con una S, la advertencia de ADR-0023 en rojo. Una longitud o una rotación inválidas se pintan en ámbar y
+   no cambian lo aplicado.
+3. **«Insertar en el dibujo…»** con W12X26: la línea de órdenes pide «Punto de insercion de la seccion:»; la barra de la ventana dice «AutoCAD pide
+   el punto de inserción…» y «Dejar de esperar» se apaga. Indicar el punto: aparece el bloque `RACKCAD_SECCION_…`; la página dice «AutoCAD insertó
+   «W12X26» como el bloque «…»…» y, bajo «En la línea de órdenes:», el mismo informe que escribe la clásica (longitud, vista, curvas, peso,
+   fidelidad).
+4. **Un solo «U»:** deshace la inserción entera (la referencia y la definición del bloque); la lista de Deshacer tiene una sola entrada
+   RACKSECCIONINSERTAR.
+5. **Esc en el punto:** no queda nada en el dibujo (tampoco una definición de bloque: PURGE no la ofrece); la página dice «No se insertó nada: se
+   canceló el punto de inserción. El dibujo no cambió.».
+6. **En el dibujo en milímetros:** el aviso de unidades de siempre en la línea de órdenes antes del punto, y «Aviso de unidades: …» en la página.
+7. **Es una sección suelta:** no aparece en la lista de racks de la ventana (tampoco tras «Volver a leer la lista») y RACKEDITAR no la reabre.
+   Un editor de la ventana abierto en ese dibujo no se marca «posiblemente desactualizado» por la inserción (es orden propia).
+8. **«Dejar de esperar»:** con texto a medio escribir en la línea de órdenes, pulsar «Insertar en el dibujo…»: la ventana espera; «Dejar de esperar»
+   la suelta y la página lo dice; si la orden llega a correr después, no inserta nada.
+9. **La clásica sigue igual:** RACKMENU → «Generar perfil estructural» inserta como antes, con su aviso de unidades y su informe, y un «U».
+10. **Las otras puertas:** la tarjeta «Perfil estructural» de «Nuevo» abre la página; «Órdenes y atajos» → RACKSECCION: «En la ventana» lleva a la
+    página y «Ejecutar» también la abre. La miga «Nuevo» vuelve.
+11. **Ventana estrecha** (acoplada): la vista previa baja bajo los parámetros; ancha, va a su lado.
+12. **Otra petición en vuelo** (por ejemplo «Editar aquí» de un rack sin responder): «Insertar en el dibujo…» apagado con «La ventana espera otra
+    respuesta de AutoCAD…».
+13. **Un catálogo que no valida** (en una copia de prueba de la instalación, no en la del Owner): RACKSECCION abre la página con el aviso y sin nada
+    que insertar, y la línea de órdenes lo dice; la clásica de RACKMENU falla cerrada como siempre.
+
+### Preguntas para el Owner
+
+- **Q-per-1 (T7per-S3):** ¿el botón de la página se llama «Insertar en el dibujo…», como en el resto de la ventana, o «Insertar», como en la clásica?
+  Recomendación: «Insertar en el dibujo…» (la ventana entera usa ese nombre y pide un punto después).
+- **Q-per-2 (T7per-S7):** el informe que la página muestra es el de la línea de órdenes, literal: sin acentos y con «vista CrossSection» (el nombre
+  interno de la vista). ¿Se deja así, o se pule (acentos y «vista Sección») en las dos, la clásica incluida? Recomendación: dejarlo literal en esta
+  tanda («igual que la clásica») y pulirlo en el flujo en una tanda aparte, porque cambia también la línea de órdenes de la clásica.
+- **Q-per-3 (T7per-S10):** ¿la página debe recordar entre sesiones la última sección y longitud? Recomendación: no por ahora (la clásica no lo hace).

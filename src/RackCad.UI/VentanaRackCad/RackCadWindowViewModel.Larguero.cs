@@ -60,7 +60,8 @@ namespace RackCad.UI.VentanaRackCad
         private void RaiseLargueroPage() => OnPropertyChanged(nameof(IsLargueroPage));
 
         // The side column marks «Nuevo» while its page «Larguero» is shown (the crumb «Nuevo › Larguero»).
-        private bool IsUnderNuevo(RackCadWindowPage section) => section == RackCadWindowPage.Nuevo && _page == RackCadWindowPage.Larguero;
+        private bool IsUnderNuevo(RackCadWindowPage section) =>
+            section == RackCadWindowPage.Nuevo && (_page == RackCadWindowPage.Larguero || _page == RackCadWindowPage.PerfilEstructural); // T7 per: and «Nuevo › Perfil estructural»
 
         private static RackCatalog LoadRackCatalog() => JsonRackCatalogProvider.FromBaseDirectory().Load();
 

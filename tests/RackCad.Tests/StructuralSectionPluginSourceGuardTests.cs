@@ -145,10 +145,14 @@ namespace RackCad.Tests
         [Fact]
         public void TheCommandIsRegisteredAsRackseccion()
         {
-            Assert.Contains("[CommandMethod(\"RACKSECCION\")]", CommandEntryPoint, StringComparison.Ordinal);
-
-            // Y sigue llegando al MISMO flujo, ahora compartido con el menu principal (I-36C).
-            Assert.Contains("StructuralSectionCommandFlow.Run(", CommandEntryPoint, StringComparison.Ordinal);
+            // T7 per (I-64, septima tanda; el Owner, 2026-11-27: «Abren la ventana»): RACKSECCION abre la pagina «Perfil estructural» de la
+            // ventana RackCad, con las marcas de sus atajos (no escribe, asi que no deja paso en Deshacer). La guarda se REAPUNTA, no se debilita:
+            // el registro sigue siendo uno, y los dos caminos que dibujan siguen llegando al MISMO flujo: «Generar perfil estructural» de RACKMENU
+            // lo corre entero (I-36C) y la pagina dibuja por RACKSECCIONINSERTAR con su materializacion (Place).
+            Assert.Contains("[CommandMethod(\"RACKSECCION\", RackCadWindowShortcuts.WindowFlags)]", CommandEntryPoint, StringComparison.Ordinal);
+            Assert.Contains("RackCadShortcutTarget.StructuralSection", CommandEntryPoint, StringComparison.Ordinal);
+            Assert.Contains("StructuralSectionCommandFlow.Run(document)", ReadSource("src", "RackCad.Plugin", "RackMenuCommands.cs"), StringComparison.Ordinal);
+            Assert.Contains("StructuralSectionCommandFlow.Place(", ReadSource("src", "RackCad.Plugin", "RackSeccionCommands.Ventana.cs"), StringComparison.Ordinal);
         }
 
         [Fact]
@@ -183,7 +187,11 @@ namespace RackCad.Tests
 
             // Cancel leaves nothing behind, and the plan handed to AutoCAD is the very object the preview drew.
             Assert.Contains("if (window.Result == null)", source, StringComparison.Ordinal);
-            Assert.Contains("StructuralSectionInsertService.Insert(document, window.Result)", source, StringComparison.Ordinal);
+
+            // T7 per: the insert moved into Place, the one materialisation the page «Perfil estructural» of the RackCad window shares. Re-aimed,
+            // not weakened: the plan the user accepted is the one Place receives, and Place inserts the plan it received, untouched.
+            Assert.Contains("Place(document, window.AcceptedSection, window.Result)", source, StringComparison.Ordinal);
+            Assert.Contains("StructuralSectionInsertService.Insert(document, plan)", source, StringComparison.Ordinal);
         }
 
         [Fact]

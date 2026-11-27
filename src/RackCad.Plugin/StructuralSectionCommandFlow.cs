@@ -21,6 +21,11 @@ namespace RackCad.Plugin
     /// correction: the fail-closed catalogue load, the units advisory, the transaction, the regen and the
     /// fidelity message would each have to be fixed twice, and nothing would notice when only one was.
     ///
+    /// T7 per (I-64, séptima tanda; the Owner, 2026-11-27: «Abren la ventana»): RACKSECCION now opens the page «Perfil estructural» of the
+    /// RackCad window, and the classic inspector stays behind «Generar perfil estructural» of RACKMENU, which runs <see cref="Run"/>. The
+    /// page inserts through its own command (RACKSECCIONINSERTAR), which calls <see cref="Place"/>: the materialisation this flow ran inline
+    /// until then, extracted so the two surfaces draw with one owner and the classic draws exactly as before.
+    ///
     /// It computes NO geometry. The picture the user approved in the preview and the entities that reach the
     /// drawing are the same plan object (ADR-0022 §7).
     ///
@@ -61,11 +66,29 @@ namespace RackCad.Plugin
                 return; // cancelled: nothing was loaded into the drawing and nothing has to be undone
             }
 
-            // I-05: warn once if the drawing is not in inches. The plan is in inches and nothing converts it.
-            RackUnitsGuard.WarnIfNotInches(document);
+            var placement = Place(document, window.AcceptedSection, window.Result);
+            editor.WriteMessage("\n" + placement.Report);
+        }
 
-            var outcome = StructuralSectionInsertService.Insert(document, window.Result);
-            editor.WriteMessage("\n" + Describe(outcome, window.AcceptedSection, window.Result));
+        /// <summary>
+        /// T7 per (I-64, séptima tanda): the ONE materialisation of a plan the user APPROVED, extracted from <see cref="Run"/> so the page
+        /// «Perfil estructural» of the RackCad window (RACKSECCIONINSERTAR) draws exactly what this flow draws: the units advisory, the point
+        /// asked before anything is created, definition and reference in one transaction, the one regen, and the report the user reads. It
+        /// computes no geometry: <paramref name="plan"/> is the object the preview drew.
+        ///
+        /// The caller writes the report where its user reads it (both write it to the command line, as before); a cancelled point is a
+        /// placement that placed nothing.
+        /// </summary>
+        internal static StructuralSectionPlacement Place(
+            Document document,
+            StructuralSectionDefinition section,
+            StructuralSectionRepresentationPlan plan)
+        {
+            // I-05: warn once if the drawing is not in inches. The plan is in inches and nothing converts it.
+            var unitsWarned = RackUnitsGuard.WarnIfNotInches(document);
+
+            var outcome = StructuralSectionInsertService.Insert(document, plan);
+            return new StructuralSectionPlacement(outcome, Describe(outcome, section, plan), unitsWarned);
         }
 
         /// <summary>What the user reads afterwards: what was drawn, how faithful it is and what it weighs.</summary>
@@ -123,6 +146,26 @@ namespace RackCad.Plugin
 
             return message;
         }
+    }
+
+    /// <summary>
+    /// T7 per: what <see cref="StructuralSectionCommandFlow.Place"/> did: the outcome of the insert, the report the user reads (the very text
+    /// the classic flow writes to the command line) and whether the units advisory fired.
+    /// </summary>
+    internal sealed class StructuralSectionPlacement
+    {
+        internal StructuralSectionPlacement(StructuralSectionInsertOutcome outcome, string report, bool unitsWarned)
+        {
+            Outcome = outcome;
+            Report = report;
+            UnitsWarned = unitsWarned;
+        }
+
+        public StructuralSectionInsertOutcome Outcome { get; }
+
+        public string Report { get; }
+
+        public bool UnitsWarned { get; }
     }
 
     /// <summary>What an insert did. Mirrors <c>HeaderPlacementResult</c> without borrowing a rack's vocabulary.</summary>

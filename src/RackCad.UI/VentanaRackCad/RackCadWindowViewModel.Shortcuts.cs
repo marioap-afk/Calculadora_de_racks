@@ -56,6 +56,7 @@ namespace RackCad.UI.VentanaRackCad
                 ask.Taken = true;
                 _propertiesAsked = null;
                 if (ask.Target == RackCadShortcutTarget.RackProperties) ShowRackPropertiesByShortcut(ask);
+                else if (ask.Target == RackCadShortcutTarget.StructuralSection) ShowStructuralSectionByShortcut(ask); // T7 per: RACKSECCION
                 else ShowVariablesByShortcut(ask);
             });
         }

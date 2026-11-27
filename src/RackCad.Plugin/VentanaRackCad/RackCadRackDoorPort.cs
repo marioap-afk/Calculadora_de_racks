@@ -177,6 +177,7 @@ namespace RackCad.Plugin.VentanaRackCad
             AbandonCantilever(requestId); // T5 ct: the door of a Cantilever line (RackCadRackDoorPort.Cantilever.cs)
             AbandonPushBack(requestId); // T5 pb: the door of a Push Back (RackCadRackDoorPort.PushBack.cs)
             AbandonUpdateAll(requestId); // T6 at: «Actualizar todo» (RackCadRackDoorPort.UpdateAll.cs)
+            AbandonStructuralSection(requestId); // T7 per: the page «Perfil estructural» (RackCadRackDoorPort.StructuralSection.cs)
         }
 
         /// <summary>The read of a Selectivo that waits, taken once by its command; null when there is none.</summary>

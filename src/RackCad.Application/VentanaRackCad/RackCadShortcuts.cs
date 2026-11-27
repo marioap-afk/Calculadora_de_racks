@@ -15,6 +15,9 @@ namespace RackCad.Application.VentanaRackCad
 
         /// <summary>RACKPROPIEDADES and RPR with «Proyecto»: the tab «Propiedades del proyecto» of the page «Variables».</summary>
         ProjectProperties,
+
+        /// <summary>T7 per: RACKSECCION, the page «Perfil estructural» (it reads nothing of the drawing: the page reads the catalog).</summary>
+        StructuralSection,
     }
 
     /// <summary>
@@ -105,6 +108,7 @@ namespace RackCad.Application.VentanaRackCad
             var page = ask == null ? "la ventana RackCad"
                 : ask.Target == RackCadShortcutTarget.Variables ? "«Variables» en la ventana RackCad"
                 : ask.Target == RackCadShortcutTarget.ProjectProperties ? "«Variables» › «Propiedades del proyecto» en la ventana RackCad"
+                : ask.Target == RackCadShortcutTarget.StructuralSection ? "«Nuevo» › «Perfil estructural» en la ventana RackCad" // T7 per
                 : "«Propiedades» del rack en la ventana RackCad";
             if (ask == null || !ask.Taken) return "RackCad: " + NotOpenedText;
             var said = (ask.Said ?? string.Empty).Trim();
