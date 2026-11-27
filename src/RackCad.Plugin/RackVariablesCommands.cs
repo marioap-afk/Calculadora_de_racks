@@ -3,6 +3,7 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.Persistence;
 using RackCad.Application.ProjectVariables;
+using RackCad.Application.VentanaRackCad;
 using RackCad.UI;
 using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
@@ -25,13 +26,33 @@ namespace RackCad.Plugin
     /// After every operation it re-reads the drawing. The window is not the authority and never holds a model
     /// that outlives one write: the DWG is the source of truth, so the loop goes back to it every time.
     /// </para>
+    /// <para>
+    /// T6 rl (answer of the Owner, 2026-11-27: «La ventana, ya»; VA-S2 completed): RACKVARIABLES and RVA open the page «Variables» of the
+    /// RackCad window, reading the drawing inside themselves the first time (<see cref="RackCadWindowShortcuts"/>). The classic window above
+    /// stays, as <see cref="RackVariablesClassic"/>, in the classic menu (RACKMENU).
+    /// </para>
     /// </summary>
     public sealed class RackVariablesCommands
     {
-        [CommandMethod("RVA")] public void AliasRackVariables() => RackVariables();     // RACKVARIABLES
+        [CommandMethod("RVA", RackCadWindowShortcuts.WindowFlags)] public void AliasRackVariables() => RackVariables();     // RACKVARIABLES
 
-        [CommandMethod("RACKVARIABLES")]
+        [CommandMethod("RACKVARIABLES", RackCadWindowShortcuts.WindowFlags)]
         public void RackVariables()
+        {
+            try
+            {
+                var document = AcApplication.DocumentManager.MdiActiveDocument;
+                if (document == null) return;
+                RackCadWindowShortcuts.Open(document, new RackCadShortcutAsk(RackCadShortcutTarget.Variables, null, null));
+            }
+            catch (System.Exception ex)
+            {
+                RackCommandSupport.Report(ex);
+            }
+        }
+
+        /// <summary>The classic window of the project variables (I-47 G16), from «Variables de proyecto (ventana clásica)» of RACKMENU.</summary>
+        internal void RackVariablesClassic()
         {
             try
             {

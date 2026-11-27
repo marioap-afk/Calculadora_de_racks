@@ -151,5 +151,11 @@ namespace RackCad.Application.VentanaRackCad
         event Action<WarehouseReading> WarehouseRead;
 
         event Action<WarehousePlaced> WarehousePlaced;
+
+        /// <summary>T6 rl: RLY or RR ask the page what to read; the window answers in the ask, during the call, inside the command.</summary>
+        event Action<WarehousePageAsk> WarehousePageAsked;
+
+        /// <summary>T6 rl: the reading RLY or RR made inside themselves for what the page asked (no request of the door: no number).</summary>
+        event Action<WarehousePageAsk, WarehouseReading> WarehouseShortcutRead;
     }
 }

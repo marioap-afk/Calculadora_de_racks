@@ -89,7 +89,8 @@
                             IsEnabled="{Binding IsLoaded}" AutomationProperties.Name="Comprobar el borrador de Variables" Click="OnCheckClick" />
                     <Button x:Name="RereadButton" Content="Volver a leer del dibujo" Margin="0,0,8,4" Padding="10,3" Style="{StaticResource SecondaryButtonStyle}"
                             IsEnabled="{Binding CanRead}" AutomationProperties.Name="Volver a leer las variables del dibujo" Click="OnReadClick" />
-                    <Button x:Name="ClassicButton" Content="Abrir la ventana clásica (RACKVARIABLES)" Margin="0,0,8,4" Padding="10,3"
+                    <!-- T6 rl: RACKVARIABLES opens this page; the classic window stays in the classic menu. -->
+                    <Button x:Name="ClassicButton" Content="Abrir el menú clásico (RACKMENU), con la ventana clásica de Variables" Margin="0,0,8,4" Padding="10,3"
                             Style="{StaticResource SecondaryButtonStyle}" AutomationProperties.Name="Abrir la ventana clásica de Variables" Click="OnClassicClick" />
                 </WrapPanel>
                 <TextBlock x:Name="UpdateBlockedText" Text="{Binding UpdateBlockedText}" Style="{StaticResource HintText}" />

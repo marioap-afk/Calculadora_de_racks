@@ -112,7 +112,7 @@ namespace RackCad.Application.VentanaRackCad
     /// to show the result before anything is written, and RACKALMACENCOLOCAR uses the SAME rules over the reading it makes again (question
     /// 5), so what is placed is what the scheme showed. The validation is the one of the classic windows, said field by field.
     /// </summary>
-    public static class WarehouseLayoutRules
+    public static partial class WarehouseLayoutRules // T6 rl: partial (WarehouseLayoutRules.Shortcut.cs, RLY and RR)
     {
         public const string ReadCommand = "RACKALMACENLEER";
         public const string PlaceCommand = "RACKALMACENCOLOCAR";
@@ -466,6 +466,12 @@ namespace RackCad.Application.VentanaRackCad
             if (reading == null) return "RackCad: no se leyó nada para la ventana RackCad.";
             var number = " (" + ReadCommand + ", petición n.º " + reading.RequestId.ToString(CultureInfo.InvariantCulture) + ")";
             if (!reading.IsRead) return "RackCad: " + Lower(reading.Failure) + number;
+            return "RackCad: " + ReadingSummary(reading) + number + ".";
+        }
+
+        // T6 rl: what a reading read (the seed and the site), shared by RACKALMACENLEER and by RLY and RR (ShortcutCommandLineText).
+        private static string ReadingSummary(WarehouseReading reading)
+        {
             var seed = reading.Seed != null
                 ? "planta de «" + DisplayName(reading.SeedName) + "» leída, " + Number(reading.Seed.FootprintX) + " × " + Number(reading.Seed.FootprintY)
                   + " in, " + Plural(reading.PlantaCount, "planta", "plantas") + " en el dibujo"
@@ -475,7 +481,7 @@ namespace RackCad.Application.VentanaRackCad
                     ? "; sitio de la capa " + reading.Site.Layer + ": contorno de " + Plural(reading.Site.Boundary.Count, "vértice", "vértices") + " y "
                       + Plural(reading.Site.Obstacles?.Count ?? 0, "obstáculo", "obstáculos")
                     : "; capa " + reading.Site.Layer + ": sin contorno";
-            return "RackCad: " + seed + site + number + ".";
+            return seed + site;
         }
 
         /// <summary>The site of the reading when it is the one of <paramref name="layer"/> (a layer chosen after the reading is not read yet).</summary>

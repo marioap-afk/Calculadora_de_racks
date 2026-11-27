@@ -2,6 +2,7 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.CustomProperties;
+using RackCad.Application.VentanaRackCad;
 using RackCad.UI;
 using RackCad.UI.Shell;
 using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
@@ -27,15 +28,69 @@ namespace RackCad.Plugin
     /// After every operation it goes back to the drawing: the window never holds a model that outlives one write, and the
     /// result of the last operation travels to the next window and to the command line. Closing the window ends the command.
     /// </para>
+    /// <para>
+    /// T6 rl (answer of the Owner, 2026-11-27: «La ventana, ya»; VA-S2 completed): RACKPROPIEDADES and RPR open the tab «Propiedades» of the
+    /// editor of the rack in the RackCad window (the rack selected before the command, else the one picked at the same question), or the
+    /// tab «Propiedades del proyecto» with «Proyecto» (<see cref="RackCadWindowShortcuts"/>). The classic window above stays, as
+    /// <see cref="RackPropiedadesClassic"/>, in the classic menu (RACKMENU).
+    /// </para>
     /// </summary>
     public sealed class RackPropiedadesCommands
     {
         private const string ProjectKeyword = "Proyecto";
 
-        [CommandMethod("RPR")] public void AliasRackPropiedades() => RackPropiedades();     // RACKPROPIEDADES
+        [CommandMethod("RPR", RackCadWindowShortcuts.WindowFlags)] public void AliasRackPropiedades() => RackPropiedades();     // RACKPROPIEDADES
 
-        [CommandMethod("RACKPROPIEDADES")]
+        [CommandMethod("RACKPROPIEDADES", RackCadWindowShortcuts.WindowFlags)]
         public void RackPropiedades()
+        {
+            try
+            {
+                var document = AcApplication.DocumentManager.MdiActiveDocument;
+                if (document == null)
+                {
+                    return;
+                }
+
+                // The rack selected before the command; with none (or several), the question of the classic window.
+                var rackId = RackCadShortcutRules.DesignatedRack(RackCadWindowShortcuts.SelectedRackIds(document), out var note);
+                var target = RackCadShortcutTarget.RackProperties;
+                if (rackId == null)
+                {
+                    if (note != null) document.Editor.WriteMessage("\nRackCad: " + note);
+                    var options = new PromptEntityOptions(RackCadShortcutRules.PropertiesPrompt, ProjectKeyword);
+                    options.SetRejectMessage("\nEse objeto no es un bloque.");
+                    options.AddAllowedClass(typeof(BlockReference), exactMatch: false);
+                    var pick = document.Editor.GetEntity(options);
+                    if (pick.Status == PromptStatus.Keyword)
+                    {
+                        target = RackCadShortcutTarget.ProjectProperties;
+                    }
+                    else if (pick.Status != PromptStatus.OK)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        rackId = RackCadWindowShortcuts.RackIdOf(document, pick.ObjectId);
+                        if (rackId == null)
+                        {
+                            Tell(document, EditorStatusMessage.Warning("El bloque elegido no es un rack de RackCad."));
+                            return;
+                        }
+                    }
+                }
+
+                RackCadWindowShortcuts.Open(document, new RackCadShortcutAsk(target, rackId, null));
+            }
+            catch (System.Exception ex)
+            {
+                RackCommandSupport.Report(ex);
+            }
+        }
+
+        /// <summary>The classic window of the custom properties (I-54 G7), from «Propiedades personalizadas (ventana clásica)» of RACKMENU.</summary>
+        internal void RackPropiedadesClassic()
         {
             try
             {

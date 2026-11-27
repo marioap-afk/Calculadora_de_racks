@@ -82,6 +82,8 @@ namespace RackCad.UI.VentanaRackCad
                 _warehouseDoor.WarehouseRead += OnWarehouseRead;
                 _warehouseDoor.WarehousePlaced += OnWarehousePlaced;
                 _door.RequestStarted += OnWarehouseRequestStarted;
+                _warehouseDoor.WarehousePageAsked += OnWarehousePageAsked; // T6 rl: RLY and RR
+                _warehouseDoor.WarehouseShortcutRead += OnWarehouseShortcutRead;
             }
 
             // The seeds follow the list, the drafts and the door; «Llevar al almacén…» follows the active rack.
@@ -130,8 +132,55 @@ namespace RackCad.UI.VentanaRackCad
         private void WarehousePageShown(RackCadWindowPage page)
         {
             OnPropertyChanged(nameof(IsAlmacenPage));
-            if (page == RackCadWindowPage.Almacen) Contained(Warehouse.Shown);
+            if (page == RackCadWindowPage.Almacen) Contained(() => Warehouse.Shown(mayRead: !_warehouseByShortcut)); // T6 rl: RLY and RR read inside themselves
             else Contained(Warehouse.CommitValues); // correction 6: the values typed are remembered when the page is left
+        }
+
+        // ------------------------------------------------------------------ T6 rl: RLY and RR (AL-S14)
+
+        // RLY or RR show the page: it sends nothing (the command reads inside itself).
+        private bool _warehouseByShortcut;
+
+        // RLY or RR ask what to read, during the call and inside their command: the window pulls the state of the host (the drawing where the
+        // command runs), the page takes their tab and their seed and says what to read. With nothing to read, the page is shown now.
+        private void OnWarehousePageAsked(WarehousePageAsk ask)
+        {
+            Contained(() =>
+            {
+                if (ask == null) return;
+                Refresh();
+                ask.Taken = true;
+                ask.Read = Warehouse.AskedByShortcut(ask.Mode, ask.DesignatedRackId, ask.DesignationNote, out var note);
+                ask.Note = note;
+                if (ask.Read == null) ShowWarehouseByShortcut();
+            });
+        }
+
+        // The reading RLY or RR made for what the page asked: the page takes it and is shown with it; nothing is sent.
+        private void OnWarehouseShortcutRead(WarehousePageAsk ask, WarehouseReading reading)
+        {
+            Contained(() =>
+            {
+                if (ask?.Read == null || reading == null) return;
+                Warehouse.DeliverByShortcut(ask.Read.Session, reading);
+                ShowWarehouseByShortcut();
+            });
+        }
+
+        private void ShowWarehouseByShortcut()
+        {
+            _warehouseByShortcut = true;
+            try
+            {
+                if (IsAlmacenPage) Warehouse.Shown(mayRead: false);
+                else ShowPage(RackCadWindowPage.Almacen);
+            }
+            finally
+            {
+                _warehouseByShortcut = false;
+            }
+
+            RaiseTakeToWarehouse();
         }
 
         // RACKALMACENLEER or RACKALMACENCOLOCAR took the request (Started): from now the command is the page's own.

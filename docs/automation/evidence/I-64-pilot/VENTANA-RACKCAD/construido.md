@@ -4956,3 +4956,207 @@ tercero (`773f0a6e`), integradas en un segundo merge de la rama pb.
 
 - La validación del Owner de los supuestos de la quinta tanda y de O-5.
 - La limpieza de los worktrees y las ramas locales de la quinta tanda, con aviso al Owner.
+
+## Sexta tanda, rl: RLY y RR abren «Almacén»; RACKVARIABLES y RACKPROPIEDADES abren la ventana (2026-11-27)
+
+**Rama:** local `architecture/workspace-persistente-rackcad-t6-rl`, sobre `f02f519b` (worktree `D:\w6rl`). Sin commit, sin push, sin AutoCAD.
+Tres encargos: el de la parte (AL-S14, respuesta del Owner «La página «Almacén»») y dos añadidos por el coordinador: A) «La ventana, ya»
+para RACKVARIABLES y RACKPROPIEDADES (VA-S2 completo); B) «la ventana recuerda» su tamaño y su posición (A-14 §3). B **no se construyó**: las
+guardas de F1-T3B fijan lo contrario (ver «B: lo que lo impide»). No se borró código clásico.
+
+### rl: RLY y RR abren la página «Almacén» (AL-S14)
+
+**Lo que había:** RLY y RR eran órdenes propias (`[CommandMethod("RLY")]`, `[CommandMethod("RR")]`) que llamaban al cuerpo de RACKLAYOUT y de
+RACKRELLENAR. No son la misma orden que la completa, así que se cambian solo los atajos (la opción prudente del encargo): RACKLAYOUT y
+RACKRELLENAR siguen abriendo sus diálogos clásicos, sin cambios. El menú clásico (RACKMENU) nunca tuvo el layout: el diálogo clásico sigue
+por la orden completa y por «Ejecutar» de «Órdenes y atajos», que ejecuta la orden completa.
+
+**Lo que se construyó:**
+- **Las órdenes** (`RackLayoutCommands.Ventana.cs`): RLY y RR se mudan a este archivo con `NoUndoMarker | UsePickSet | Redraw` (como RL y RB) y
+  llaman a `OpenWarehousePage(Grid | Fill)`:
+  1. el rack designado es el de la selección hecha antes del atajo (`SelectedRacks`: cada referencia seleccionada, por los datos de su
+     definición, como RACKLAYOUT lee el rack que se elige; `WarehouseLayoutRules.DesignatedSeed`);
+  2. abre la ventana (`ShowRackCadWindow`) y le pregunta, durante la llamada, qué leer (`WarehousePageAsk`, evento `WarehousePageAsked`);
+  3. lee dentro de su propia orden lo que la página pidió, con la lectura de RACKALMACENLEER (`ReadWarehouse`, `useSelection: true`: si lo
+     seleccionado es la planta, es la semilla, AL-S2);
+  4. entrega la lectura (`WarehouseShortcutRead`) y deja su línea en la línea de órdenes (`ShortcutCommandLineText`). Ninguna orden sale de la
+     ventana: la puerta no recibe ninguna petición.
+- **La página** (`WarehousePageViewModel.AskedByShortcut` / `DeliverByShortcut`): toma la pestaña del atajo; el rack designado como semilla o,
+  sin designar, la que toma a mano (la que ya tenía; si no, el rack activo con planta; si no, el primero con planta); la capa de sus valores
+  y la planta leída antes. La lectura del atajo es orden propia (no deja «Puede no estar al día»), y no toca una lectura o una colocación de
+  la página que espera su respuesta. La ventana la muestra sin leer nada (`Shown(mayRead: false)`).
+- **La ayuda** («Órdenes y atajos» y RACKAYUDA): los resúmenes de RACKLAYOUT y RACKRELLENAR dicen que el atajo abre «Almacén» y la orden
+  completa el diálogo clásico; «En la ventana» de los dos lleva a «Almacén» (antes decía «Solo como orden», que la quinta tanda no actualizó).
+  `docs/guias/despliegue.md`, la misma frase en sus dos filas.
+
+**Supuestos para el Owner:**
+
+| Id | Supuesto o decisión | Dónde se cambia |
+|---|---|---|
+| T6rl-S1 | Solo cambian los atajos: RLY y RR abren «Almacén»; RACKLAYOUT y RACKRELLENAR abren los diálogos clásicos, como antes. Al revés (las completas a la ventana y los atajos al clásico) sería un cambio de dos atributos | `RackLayoutCommands.Ventana.cs` |
+| T6rl-S2 | «Designado» = seleccionado en AutoCAD antes del atajo. El atajo no pregunta por la línea de órdenes: sin selección, la página toma su semilla como a mano. Con varios racks seleccionados no toma ninguno y la página lo dice («Hay 2 racks seleccionados en AutoCAD: RLY no tomó ninguno como semilla…») | `WarehouseLayoutRules.DesignatedSeed` |
+| T6rl-S3 | El atajo lee siempre, también si la página ya tenía lectura: queda «Lectura al día». A mano, volver a la página no relee | `AskedByShortcut` |
+| T6rl-S4 | Mientras la página espera a AutoCAD (su lectura o su colocación), el atajo no lee ni cambia la semilla y lo dice, como «Llevar al almacén…» (corrección 7 de la quinta tanda); sí cambia de pestaña | `AskedByShortcut`, `ShortcutWaitText` |
+| T6rl-S5 | RLY y RR ya no avisan de las unidades (I-05) al empezar: no insertan nada. El aviso sigue al «Colocar» (AL-S10) | `OpenWarehousePage` |
+| T6rl-S6 | La línea de órdenes: «RackCad: «Almacén» › «Rejilla» en la ventana RackCad: planta de «…» leída, … in, N plantas en el dibujo; sitio …», sin número de petición, tras la línea «ventana abierta» de RACKPANEL | `ShortcutCommandLineText` |
+| T6rl-S7 | «Ejecutar» de RACKLAYOUT y RACKRELLENAR en «Órdenes y atajos» sigue ejecutando la orden completa (el diálogo clásico); «En la ventana» lleva a «Almacén», sin elegir pestaña | `RackCadHelpViewModel.WindowOf` |
+
+### A: RACKVARIABLES y RACKPROPIEDADES abren su página en la ventana («La ventana, ya»)
+
+**Lo que se construyó:**
+- **RACKVARIABLES y RVA** abren la sección «Variables», como un clic: la primera vez para el dibujo se lee, dentro de la orden; ya leída, no se
+  relee; un borrador con cambios se queda (VA-S2 completo).
+- **RACKPROPIEDADES y RPR:** el rack seleccionado antes de la orden (uno); si no hay, o hay varios, la misma pregunta del clásico
+  («Selecciona un rack o [Proyecto]»). Abren la página del rack y la pestaña «Propiedades» de su editor: con el editor abierto, al momento;
+  si no, con «Editar aquí», cuya lectura corre dentro de la orden, y la pestaña cuando respondió. Con «Proyecto», «Variables» › «Propiedades
+  del proyecto».
+- **El mecanismo** (`RackCadWindowShortcuts`, `RackCadRackDoorPort.Shortcut.cs`, `RackCadWindowViewModel.Shortcuts.cs`):
+  1. la orden abre la ventana y le pregunta (`ShortcutAsked`);
+  2. la ventana usa sus propios gestos («Editar aquí», la primera lectura de «Variables»), que piden su lectura a la puerta;
+  3. mientras la orden pregunta, la puerta guarda esa petición como siempre, pero NO la entrega a AutoCAD: solo anota su orden (`KeptInline`,
+     en `Send`; solo las seis lecturas de `RackCadShortcutRules.InlineReads`; cualquier otra petición, escrituras incluidas, se rechaza como
+     durante cualquier orden);
+  4. la orden corre esa lectura dentro de sí (el mismo método de RACKSELECTIVOABRIR, RACKDINAMICOABRIR, RACKPUSHBACKABRIR,
+     RACKCANTILEVERABRIR, RACKCAMAABRIR o RACKVARIABLESLEER), que toma la petición y responde por la puerta;
+  5. dice a la ventana que terminó (`ShortcutDone`): la ventana muestra la pestaña.
+- **Las ventanas clásicas siguen en el menú clásico:** RACKMENU gana dos botones tras «Abrir de la biblioteca de diseños», «Variables de
+  proyecto (ventana clásica)» y «Propiedades personalizadas (ventana clásica)». Son acciones tipadas (`MainMenuAction.ProjectVariablesClassic`,
+  `CustomPropertiesClassic`) que el host corre al cerrarse el menú: los mismos bucles de antes, con su nombre nuevo (`RackVariablesClassic`,
+  `RackPropiedadesClassic`, sin registrar).
+- **«Más…» de «Variables»:** el botón de la ventana clásica pasa a «Abrir el menú clásico (RACKMENU), con la ventana clásica de Variables»
+  (antes ejecutaba RACKVARIABLES, que ahora abriría la misma página).
+- **La ayuda:** los resúmenes de RACKVARIABLES y RACKPROPIEDADES dicen que abren la ventana y que la clásica sigue en RACKMENU (el de
+  RACKPROPIEDADES sigue sin nombrar variables ni fórmulas: su guarda); «En la ventana» de RACKPROPIEDADES: «Página del rack: su pestaña
+  «Propiedades»». `docs/guias/despliegue.md`, la fila de RACKVARIABLES.
+
+**Supuestos para el Owner:**
+
+| Id | Supuesto o decisión | Dónde se cambia |
+|---|---|---|
+| T6rl-S8 | Las cuatro órdenes llevan `NoUndoMarker \| UsePickSet \| Redraw`: no dejan paso en Deshacer (la lectura corre dentro de ellas) y conservan la selección, que designa el rack. Antes no llevaban marcas: escribían en su propio bucle | `RackCadWindowShortcuts.WindowFlags` |
+| T6rl-S9 | RACKPROPIEDADES sin selección pregunta lo mismo que el clásico; con varios racks seleccionados, lo dice y pregunta | `RackPropiedades()`, `RackCadShortcutRules.DesignatedRack` |
+| T6rl-S10 | Una cabecera suelta no tiene pestaña «Propiedades» en la ventana: la ventana lo dice y remite a la ventana clásica del menú. Un rack que la lista no tiene: «pulsa «Volver a leer la lista» y vuelve a escribir RACKPROPIEDADES» | `ShowRackPropertiesByShortcut` |
+| T6rl-S11 | Con otra petición de la ventana en vuelo, RACKPROPIEDADES abre la página del rack pero no su editor, y lo dice; RACKVARIABLES muestra la página sin leerla | `ShowRackPropertiesByShortcut`, `ShowVariablesByShortcut` |
+| T6rl-S12 | Las ventanas clásicas, en RACKMENU con dos botones nuevos (el menú clásico no tenía Variables ni Propiedades). «Más…» de «Variables» abre RACKMENU | `RackMainMenuWindow.xaml`, `RackMenuCommands.RackMenu` |
+| T6rl-S13 | Dos mecanismos para lo mismo: RLY y RR usan su pregunta y su entrega propias (`WarehousePageAsk`); RACKVARIABLES y RACKPROPIEDADES, la lectura guardada en la puerta. El segundo sirve también para «Almacén» (RACKALMACENLEER sería una lectura más de la lista); unificarlos es un cambio pequeño, para la planeación | — |
+
+**Guardas reapuntadas, con su nota (ninguna otra comprobación se quitó):**
+- `CustomPropertiesCommandGuardTests` (I-54 G7): las dos expresiones del atributo de RACKPROPIEDADES y RPR, y el original de tres mutaciones,
+  llevan ahora `RackCadWindowShortcuts.WindowFlags`. Siguen: los dos únicos registros, el alias que llama al mismo método, la pregunta, la
+  palabra clave, el bucle del Rack y del Proyecto por el borde, una sola lectura de la elección, la ventana dos veces, nada de autoridad,
+  bloques, barrido ni transacciones en el archivo.
+- `ProjectVariablesWorkspaceTests.GUARDA_EXISTE_UN_COMANDO_PERMANENTE`: el registro de RACKVARIABLES lleva las marcas; además, el bucle clásico
+  sigue en el archivo y RACKMENU lo corre. Las demás guardas de G16 pasan sin cambios (el bucle clásico es el mismo).
+- `PushBackEditAllNameWritersGuardTests.CT_PBT1B_15…`: el censo de los archivos del Plugin que nombran PushBack pasa de 19 a 20 con
+  `RackCadWindowShortcuts.cs` (corre RACKPUSHBACKABRIR dentro de RACKPROPIEDADES); no escribe ningún `Name`: las siete asignaciones y su orden
+  no cambian. Lo encontró la Core Full.
+- El censo de órdenes no cambia (70; ningún nombre nuevo: RLY y RR cambian de archivo, como RL y RB en BM-11). El censo de la ayuda tampoco
+  (los mismos pares orden/atajo). Las de las carpetas de la ventana pasan: la parte nueva de la puerta no bloquea, no abre transacciones ni
+  entrega órdenes; las órdenes y su ayudante viven en la raíz del Plugin.
+
+### B: «la ventana recuerda» su tamaño y su posición — no construido, lo que lo impide
+
+La A-14 §3 (2026-11-23) aprueba que la ventana recuerde su tamaño, su posición y su estado acoplado o flotante. Las guardas de F1-T3B
+(`WorkspacePaletteHostSourceGuardTests`, INV-F1-T3B-02/06 y F1-T3B-HOST-UI-C1) fijan exactamente lo contrario, y cualquier forma de construirlo
+las rompe:
+- `ThePaletteIsBuiltWithOnlyTheTitleRackCadAndNoToolIdentifier` y `TheFirstPlacementAddsNoPersistenceIdentity…`: la paleta se construye con
+  `new PaletteSet("RackCad")`, sin `Guid`, y no tiene identidad persistida. El mecanismo propio de AutoCAD (que guarda tamaño, posición y
+  acople en el perfil) necesita un GUID estable;
+- `ThePaletteHasNoLoadNorSaveHandlers`: sin `Load` ni `Save`;
+- `ThePaletteHostNeverReadsOrWritesTheDrawingNorTheCommandLineNorTheDisk` y la misma lista de F1-T3B-HOST-UI-C1: sin `UserSettings`,
+  `System.IO` ni registro, así que la configuración de RackCad tampoco vale desde el host (y solo el host puede nombrar `PaletteSet`);
+- `RepeatedShowNeverReappliesTheFirstPlacement…`: `Show()` es exactamente `_palette.Visible = true;` y la geometría (`Location`, `Size`, `Dock`)
+  solo se toca en la primera colocación; la comprobación de «fuera de la pantalla» al mostrar la rompe;
+- `TheFirstPlacementAddsNoPersistenceIdentity…`: exactamente dos suscripciones y nada de `SizeChanged` ni `PaletteSetMoved`.
+La regla del encargo es no debilitar ninguna guarda y explicarlo. **Pregunta para la sesión/Owner:** ¿se reapuntan esas guardas a la decisión
+de la A-14 §3? La propuesta, lista para construir:
+1. `new PaletteSet("RackCad", PaletteId)` con un GUID fijo en el host; AutoCAD guarda y repone tamaño, posición y acople en el perfil, sin
+   `Load`/`Save` propios y sin tocar el disco. La primera colocación de hoy queda como la de la primera vez (se aplica antes del primer
+   `Visible`; si AutoCAD la repone después, gana lo guardado: lo comprueba el smoke).
+2. Al mostrarla, si está flotante y su barra de título no cae en ninguna área de trabajo de los monitores de ahora, vuelve al rectángulo de la
+   primera colocación en el monitor principal (una regla pura en Application, con pruebas sin AutoCAD).
+3. Las guardas, reapuntadas con la misma dureza: exactamente ese GUID; `Show()` = `Visible` + esa comprobación; la geometría, solo en la
+   primera colocación y en esa comprobación; siguen sin `Load`/`Save`, sin disco y con dos suscripciones.
+4. Smoke: cerrar AutoCAD con la paleta flotante en el segundo monitor y reabrirla (misma posición y tamaño); acoplada a la izquierda (sigue
+   acoplada); desconectar el segundo monitor (aparece en el principal); `UT-S06` («Acerca de» dice que la recuerda) cuando funcione.
+
+### Pruebas
+
+- **Core**, `tests/RackCad.Tests/Workspace/WarehouseShortcutTests.cs` (nuevo, 6): el rack designado (ninguno, uno por cualquier vista y mayúsculas,
+  varios con su nota en RLY y en RR); la pregunta; las líneas de órdenes del atajo y la de RACKALMACENLEER, que no cambió al compartir su
+  resumen; por la fuente, RLY y RR con sus marcas en `RackLayoutCommands.Ventana.cs` y fuera de los archivos clásicos, RACKLAYOUT y RACKRELLENAR
+  como únicos registros de los suyos y con sus ventanas, y el orden de `OpenWarehousePage` (designar, abrir, preguntar, leer con la selección,
+  entregar, decir) sin petición de la puerta, sin `SendStringToExecute`, sin escribir y sin el aviso de unidades.
+- **Core**, `tests/RackCad.Tests/Workspace/RackCadShortcutTests.cs` (nuevo, 5): las seis lecturas que corren dentro de la orden y nada más (ni
+  escrituras ni otras lecturas); el rack de RACKPROPIEDADES y la pregunta del clásico; la línea de órdenes; por la fuente, las cuatro órdenes y
+  sus bucles clásicos, RACKMENU que los corre, `Open` (abrir, preguntar guardando, correr, decir), `RunRead` con exactamente esas seis y sus
+  métodos, y `Send` que guarda antes de mirar el comando en curso y de entregar.
+- **UI**, `RackCadWarehousePageTests` (+8): RLY con un rack seleccionado (pestaña, semilla, una lectura del atajo y ninguna de la puerta, el
+  resto de RLY como orden propia, AL-S15); RR con la capa recordada y otra semilla antes; sin selección, la semilla a mano y luego la que tiene
+  con su planta; varios racks; la página que espera (en este dibujo y en otro, donde la página mostrada no intenta leer); sin planta y con la
+  lectura fallida; la ventana sin la puerta.
+- **UI**, `RackCadVariablesPageTests` (+5): RACKVARIABLES (una lectura, la de la orden; después, ninguna); «Proyecto»; RACKPROPIEDADES con el editor
+  cerrado («Editar aquí» y la pestaña al responder) y abierto (la pestaña, sin lectura); lo que dice sin rack en la lista, con otra petición en
+  vuelo y con la lectura rechazada; la ventana sin la puerta.
+- **UI**, `RackMainMenuStructuralSectionTests` (+2 casos): los dos botones clásicos, tras la biblioteca, con su manejador y su acción tipada.
+- **UI**, `RackCadUtilitiesTests` (+1): la ayuda de RACKLAYOUT y RACKRELLENAR («En la ventana», el resumen, «Ejecutar» sigue siendo la completa).
+
+### Comprobación en rojo
+
+Dieciséis piezas rotas a propósito, una a una, con script (`hs65\t6\rl\red.py` en el scratchpad de la sesión; salida en `red-out-1.txt` y
+`red-out.txt`). Antes de cada rotura, el script guarda una copia del archivo FUERA del worktree (`red-orig`). Después compila, corre la clase de
+la pieza y devuelve el archivo a sus bytes, con el mismo SHA-256 (lo comprueba en los dieciséis casos).
+
+Hubo dos pasadas:
+- en la primera, cinco piezas no se aplicaron (el script buscaba `\n` en archivos con CRLF) y no guardaba el nombre de la prueba que fallaba;
+- en la segunda se aplicaron esas cinco, y A2 otra vez, ya con nombres.
+Tras la última, sin restos en `git diff`.
+
+| Pieza | Qué se rompió | Resultado |
+|---|---|---|
+| R1 | el atajo no toma el rack designado | fallan 3: `RlyOpensRejilla…`, `RrOpensRellenarUnArea…` y `AShortcutWhoseReadingHasNoSeedOrFailed…` |
+| R2 | la lectura del atajo no cuenta como orden propia | falla `RlyOpensRejilla…` (el resto de RLY la marcaba «Puede no estar al día») |
+| R3 | el atajo lee aunque la página espere a AutoCAD | fallan `WhileThePageWaitsForAutoCad…` y `WhileARequestOfThePageWaitsInAnotherDrawing…` |
+| R4 | la página mostrada por el atajo intenta leer (`mayRead: true`) | falla 1 en su clase, la que lo vigila: `WhileARequestOfThePageWaitsInAnotherDrawing…` (primera pasada, sin nombre) |
+| R5 | el atajo pide la capa por defecto y no la de los valores | falla 1 en su clase: `RrOpensRellenarUnArea…` (primera pasada) |
+| R6 | varios racks seleccionados designan el primero | falla 1 en su clase: `TheSeedIsTheOneRackSelected…` (primera pasada) |
+| R7 | RLY sigue llamando a RACKLAYOUT | falla 1 en su clase: `RlyAndRrOpenThePageOnTheirTab…` (primera pasada) |
+| R8 | la ayuda no lleva RACKLAYOUT a «Almacén» | falla `TheHelpSaysThatRlyAndRrOpenAlmacen…` |
+| A1 | `Send` entrega la lectura a AutoCAD también durante la orden | falla `TheCommandRunsInsideItselfTheRead…` (la de la fuente) |
+| A2 | RACKPROPIEDADES no recuerda el rack cuya pestaña mostrar | fallan `RackPropiedadesOpensTheTabPropiedades…` y `RackPropiedadesSaysWhy…` |
+| A3 | con el editor abierto no se muestra la pestaña | falla 1 en su clase: `RackPropiedadesOpensTheTabPropiedades…` (primera pasada) |
+| A4 | «Proyecto» no elige «Propiedades del proyecto» | falla 1 en su clase: `RackPropiedadesWithProyecto…` (primera pasada) |
+| A5 | con otra petición en vuelo no dice por qué | falla 1 en su clase: `RackPropiedadesSaysWhy…` (primera pasada) |
+| A6 | cualquier orden corre dentro del comando | falla 1 en su clase: `OnlyTheReadsOfTheWindowRunInsideTheCommand` (primera pasada) |
+| A7 | el botón clásico de Variables no pide su acción | falla 1 en su clase: el caso de Variables de `TheClassicWindowsOfVariablesAndProperties…` (primera pasada) |
+| A8 | RACKVARIABLES sin las marcas de la ventana | falla 1: la guarda reapuntada `GUARDA_EXISTE_UN_COMANDO_PERMANENTE` (primera pasada) |
+
+### Números
+
+Solución en Debug recompilada con `--no-incremental` sobre las fuentes finales, tras la comprobación en rojo.
+- **Build Debug de la solución (Plugin incluido):** 0 errores. Las advertencias son las de siempre (MSB3277 y los analizadores de xunit);
+  ninguna sale de los archivos de esta parte.
+- **Clases focales:** Core, 451 de 451 (las dos clases nuevas, las guardas reapuntadas y las de órdenes, ayuda, ventana, unidades, paleta y
+  BOM). UI, 236 de 236, con 3 omitidas (Almacén, Variables, utilidades, ayuda, menú clásico, diálogos, ventana, BOM y la pestaña «Propiedades»).
+- **UI completa:** 3126 correctas, 0 con error, 48 omitidas (3174): la base 3110 / 0 / 48 más las 16 nuevas (8 + 5 + 2 + 1); 36 min, a la vez
+  que la Core.
+- **Core Full:** 19493 correctas, 1 con error, 403 omitidas (19897); 45 min.
+  - El error era el censo de `PushBackEditAllNameWritersGuardTests`, que se reapuntó (ver «Guardas»).
+  - Esa clase, otra vez: 1 de 1 (la Core Full no se repitió tras este cambio, que es solo el literal del censo en la prueba).
+  - Cuenta final: 19494 / 0 / 403, es decir, la base 19483 más las 11 nuevas (6 + 5).
+
+### Para integrar
+
+- **Archivos compartidos** (cambios marcados `T6 rl`): `RackCadWindowViewModel.cs` (una línea en el constructor, `WireShortcuts()`);
+  `RackCadRackDoorPort.cs` (una línea en `Send` y el comentario de la clase); `RackCommandReference.cs` (cuatro resúmenes);
+  `RackCadHelpViewModel.cs` (tres entradas de `WindowOf`); `RackMenuCommands.cs` (dos ramas en `RackMenu`); `RackMainMenuWindow.xaml(.cs)` y
+  `MainMenuAction.cs` (dos botones y dos acciones); `CustomPropertiesCommandGuardTests.cs` y `ProjectVariablesWorkspaceTests.cs` (las guardas
+  reapuntadas); `PushBackEditAllNameWritersGuardTests.cs` (el censo, de 19 a 20: si otra parte añade un archivo del Plugin que nombre PushBack,
+  los dos aumentos se suman); `docs/guias/despliegue.md`.
+- **Con st:** RLY, RR, RACKVARIABLES y RACKPROPIEDADES solo leen (`NoUndoMarker`), como RL y RB; la señal de «orden ajena» no debería marcar
+  los editores por ellas. Las lecturas que corren dentro de RACKPROPIEDADES son las de «Editar aquí», que ya son propias.
+- **Con at:** `KeptInline` rechaza cualquier escritura durante estas órdenes, también RACKACTUALIZARTODO.
+- **Para el smoke en AutoCAD:** RLY con la planta (y con otra vista) seleccionada, sin selección y con dos racks; RR con una capa recordada; que
+  ninguna de las cuatro deja paso en Deshacer y que conservan la selección; RACKPROPIEDADES con un Selectivo, un Push Back y una cabecera, con
+  y sin el editor abierto, y con «Proyecto»; RACKVARIABLES la primera vez y la segunda; los dos botones de RACKMENU (las ventanas clásicas
+  escriben y un «U» las deshace como antes).

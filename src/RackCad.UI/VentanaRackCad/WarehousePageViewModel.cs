@@ -597,13 +597,13 @@ namespace RackCad.UI.VentanaRackCad
         /// The page was shown by a gesture of the user (the section, «Llevar al almacén…»): the values are loaded the first time, the seed of
         /// the drawing is chosen, and the planta is read when the drawing has no reading of it (or «Llevar al almacén…» asked).
         /// </summary>
-        internal void Shown()
+        internal void Shown(bool mayRead = true) // T6 rl: RLY and RR show it with the reading they made, and nothing is read here
         {
             LoadValues();
             var state = EnsureState();
             Recompute();
             if (state == null) return;
-            if ((_readOnShow || CurrentReading == null) && state.SeedRackId != null && !IsReading && !IsWriting)
+            if (mayRead && (_readOnShow || CurrentReading == null) && state.SeedRackId != null && !IsReading && !IsWriting)
             {
                 _readOnShow = false;
                 TryRead();
@@ -622,6 +622,74 @@ namespace RackCad.UI.VentanaRackCad
             _mode = WarehouseLayoutMode.Grid;
             _fitAsk = false;
             _readOnShow = true;
+            Recompute();
+        }
+
+        /// <summary>
+        /// T6 rl (AL-S14): RLY or RR, typed by the user, ask what to read, inside their command: their tab; the rack designated by the
+        /// selection as the seed, or the seed the page takes by hand; the layer of the values; and the planta read before. Null when there is
+        /// nothing to read (no drawing, no seed, or the page waits for AutoCAD), with <paramref name="note"/> for the command line. Their read
+        /// is the page's own: it does not change the drawing.
+        /// </summary>
+        internal WarehouseReadRequest AskedByShortcut(WarehouseLayoutMode mode, string designatedRackId, string designationNote, out string note)
+        {
+            note = null;
+            LoadValues();
+            _mode = mode;
+            _fitAsk = false;
+            if (!_session.HasValue)
+            {
+                note = "Abre o crea un dibujo para usar «Almacén».";
+                Say(note, true);
+                Recompute();
+                return null;
+            }
+
+            if (HasRequestInFlight)
+            {
+                // As «Llevar al almacén…» (correction 7): the read or the placement that waits keeps its seed.
+                note = WarehouseLayoutRules.ShortcutWaitText(mode);
+                Say(note, true);
+                Recompute();
+                return null;
+            }
+
+            var state = EnsureState(designatedRackId);
+            if (!string.IsNullOrWhiteSpace(designatedRackId)) state.SeedRackId = designatedRackId.Trim();
+            Say(designationNote ?? string.Empty, false);
+            if (state.SeedRackId == null)
+            {
+                note = "Elige el rack semilla: los racks con planta del dibujo.";
+                Recompute();
+                return null;
+            }
+
+            _ownCommandPending = true;
+            var previous = state.Reading;
+            var preferred = previous?.Seed != null && string.Equals(previous.SeedRackId, state.SeedRackId, StringComparison.OrdinalIgnoreCase)
+                ? previous.Seed.ReferenceHandle
+                : null;
+            Recompute();
+            return new WarehouseReadRequest(0, _session.Value, state.SeedRackId, _values.Layer, preferred);
+        }
+
+        /// <summary>
+        /// T6 rl: the reading RLY or RR made inside themselves for what the page asked. It is no answer of the door: a read or a placement of
+        /// the page that waits keeps waiting for its own. The shortcut still runs: until the drawing is at rest, it is the page's own command.
+        /// </summary>
+        internal void DeliverByShortcut(SessionId session, WarehouseReading reading)
+        {
+            if (reading == null) return;
+            _ownCommandPending = true;
+            if (!_drawings.TryGetValue(session, out var state))
+            {
+                state = new DrawingState { SeedRackId = reading.SeedRackId };
+                _drawings[session] = state;
+            }
+
+            state.Reading = reading;
+            state.Stale = false;
+            state.MustReread = false;
             Recompute();
         }
 

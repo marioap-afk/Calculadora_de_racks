@@ -28,6 +28,15 @@ namespace RackCad.UI
         /// The generator already exists —catalogue, geometry, inspector, preview and materialisation— and this
         /// action only makes it reachable from the menu. It does not describe a second generator.
         /// </summary>
-        GenerateStructuralSection = 1
+        GenerateStructuralSection = 1,
+
+        /// <summary>
+        /// T6 rl: the classic window of the project variables, which RACKVARIABLES opened until the Owner sent it to the RackCad window
+        /// (2026-11-27, «La ventana, ya»). The host runs that same classic loop.
+        /// </summary>
+        ProjectVariablesClassic = 2,
+
+        /// <summary>T6 rl: the classic window of the custom properties, which RACKPROPIEDADES opened until then. The host runs that same loop.</summary>
+        CustomPropertiesClassic = 3
     }
 }

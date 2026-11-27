@@ -62,6 +62,19 @@ namespace RackCad.Plugin
                     return;
                 }
 
+                // T6 rl: RACKVARIABLES and RACKPROPIEDADES open the RackCad window; their classic windows stay in this menu, the same loops.
+                if (menu.RequestedAction == MainMenuAction.ProjectVariablesClassic)
+                {
+                    new RackVariablesCommands().RackVariablesClassic();
+                    return;
+                }
+
+                if (menu.RequestedAction == MainMenuAction.CustomPropertiesClassic)
+                {
+                    new RackPropiedadesCommands().RackPropiedadesClassic();
+                    return;
+                }
+
                 DispatchInsertion(document, menu.InsertionRequest);
             }
             catch (System.Exception ex)

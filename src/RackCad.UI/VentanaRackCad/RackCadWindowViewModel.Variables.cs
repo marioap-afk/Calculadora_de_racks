@@ -48,7 +48,7 @@ namespace RackCad.UI.VentanaRackCad
             page.ReadRequested += ReadVariables;
             page.UpdateRequested += UpdateVariables;
             page.OpenRackRequested += OpenRack;
-            page.ClassicRequested += () => Run(RackCadClassicAction.Variables);
+            page.ClassicRequested += () => Run(RackCadClassicAction.ClassicMenu); // T6 rl: RACKVARIABLES opens this page; the classic window is in RACKMENU
             page.PropertyChanged += (_, e) =>
             {
                 if (e.PropertyName != nameof(VariablesPageViewModel.IsDirty) && e.PropertyName != nameof(VariablesPageViewModel.IsWriting)) return;

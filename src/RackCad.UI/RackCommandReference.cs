@@ -43,14 +43,15 @@ namespace RackCad.UI
 
             new RackCommandInfo("Editar y copiar", "RACKEDITAR", "RED", "Reabrir el editor de un rack dibujado; al confirmar redibuja todas sus vistas y, si lo pides, inserta una o varias vistas nuevas ligadas al mismo rack."),
             new RackCommandInfo("Editar y copiar", "RACKDUPLICAR", "RD", "Copiar un rack como INDEPENDIENTE, estilo COPY: punto base → destinos (múltiple por defecto)."),
-            new RackCommandInfo("Editar y copiar", "RACKPROPIEDADES", "RPR", "Propiedades personalizadas estables (nombre y valor) de un rack o del Proyecto; lo que no se puede escribir se ve en solo lectura con su motivo, y las vistas de un rack que difieren se pueden unificar."),
+            new RackCommandInfo("Editar y copiar", "RACKPROPIEDADES", "RPR", "Propiedades personalizadas estables (nombre y valor) de un rack o del Proyecto; lo que no se puede escribir se ve en solo lectura con su motivo, y las vistas de un rack que difieren se pueden unificar. RACKPROPIEDADES y RPR abren la pestaña «Propiedades» del rack en la ventana RackCad (con «Proyecto», «Propiedades del proyecto»); la ventana clásica sigue en el menú clásico (RACKMENU)."), // T6 rl
             // Cuarta tanda (va), VA-10, y (ut), UT-11: RACKVARIABLES (alias RVA) no estaba en la ayuda; en la ventana RackCad es la sección
             // «Variables». Las dos partes la añadieron: al integrarlas queda UNA entrada, con el texto de va.
-            new RackCommandInfo("Editar y copiar", "RACKVARIABLES", "RVA", "Variables de proyecto del dibujo (longitudes con nombre, valor o fórmula) y sus referencias rotas. En la ventana RackCad, la sección «Variables» las edita sin bloquear AutoCAD."),
+            new RackCommandInfo("Editar y copiar", "RACKVARIABLES", "RVA", "Variables de proyecto del dibujo (longitudes con nombre, valor o fórmula) y sus referencias rotas. RACKVARIABLES y RVA abren la sección «Variables» de la ventana RackCad, que las edita sin bloquear AutoCAD; la ventana clásica sigue en el menú clásico (RACKMENU)."), // T6 rl
             new RackCommandInfo("Editar y copiar", "RACKPROYECTAR", "RPY", "Proyectar racks ya dibujados a otra clase de vista (Frontal, Lateral o Planta) con orientación Proyectada (por defecto: la referencia gira entera para seguir a su vista origen) o Predeterminada: punto base → destino. Crea vistas enlazadas del mismo rack, no copias: el rack sigue siendo el mismo y el BOM no cambia (para copiar, RACKDUPLICAR)."),
 
-            new RackCommandInfo("Almacén (layout)", "RACKLAYOUT", "RLY", "Replica un rack en una rejilla: filas × columnas + pasillos + numeración; back-to-back y verificar encaje."),
-            new RackCommandInfo("Almacén (layout)", "RACKRELLENAR", "RR", "Auto-rellena el área con racks: contorno + columnas en la capa RACKCAD_SITIO; calcula la rejilla máxima que cabe."),
+            // Sexta tanda (rl, AL-S14): los atajos abren la página «Almacén» de la ventana RackCad; las órdenes completas, los diálogos clásicos.
+            new RackCommandInfo("Almacén (layout)", "RACKLAYOUT", "RLY", "Replica un rack en una rejilla: filas × columnas + pasillos + numeración; back-to-back y verificar encaje. El atajo RLY abre «Almacén» › «Rejilla» en la ventana RackCad, con el rack seleccionado como semilla; RACKLAYOUT abre el diálogo clásico."),
+            new RackCommandInfo("Almacén (layout)", "RACKRELLENAR", "RR", "Auto-rellena el área con racks: contorno + columnas en la capa RACKCAD_SITIO; calcula la rejilla máxima que cabe. El atajo RR abre «Almacén» › «Rellenar un área» en la ventana RackCad, con el rack seleccionado como semilla; RACKRELLENAR abre el diálogo clásico."),
 
             new RackCommandInfo("Reportes", "RACKLISTA", "RL", "Tabla de todos los racks del dibujo (nombre, tipo, vistas, nº de copias) con zoom."),
             new RackCommandInfo("Reportes", "RACKBOMTOTAL", "RB", "BOM consolidado de TODO el dibujo (por rack × copias + gran total por componente)."),
