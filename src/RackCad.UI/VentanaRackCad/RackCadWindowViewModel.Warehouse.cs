@@ -122,7 +122,8 @@ namespace RackCad.UI.VentanaRackCad
                 Panel.PresentedSession,
                 Panel.PresentedBlock,
                 _inFlight != null && _inFlight.IsWarehouse,
-                session => port == null || IsAlive(port, session));
+                session => port == null || IsAlive(port, session),
+                Panel.PresentedDrawingChangeCount); // T6 st: only a command that changed the drawing makes «Almacén» possibly out of date
             RaiseTakeToWarehouse();
         }
 

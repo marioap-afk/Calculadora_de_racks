@@ -276,6 +276,8 @@
                         </Style>
                     </TextBlock.Style>
                 </TextBlock>
+                <!-- T6 st (O-5, M-16): «El dibujo cambió desde que se leyó», «Volver a leer del dibujo» and the question of «Actualizar». -->
+                <local:RackEditorDrawingChangePanel x:Name="DrawingChangePanel" DataContext="{Binding DrawingChange}" />
                 <!-- «Cerrar el editor» with changes: the inline question. -->
                 <Border x:Name="CloseConfirmPanel" Style="{StaticResource QuestionPanel}"
                         Visibility="{Binding IsConfirmingClose, Converter={StaticResource FlagToVisibility}}">

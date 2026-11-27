@@ -154,6 +154,8 @@
                         </WrapPanel>
                     </StackPanel>
                 </Border>
+                <!-- T6 st (O-5, M-16): «El dibujo cambió desde que se leyó», «Volver a leer del dibujo» and the question of «Actualizar». -->
+                <local:RackEditorDrawingChangePanel x:Name="DrawingChangePanel" DataContext="{Binding DrawingChange}" />
                 <TextBlock x:Name="UpdateBlockedText" Text="{Binding UpdateBlockedText}" Style="{StaticResource ReservedText}"
                            Foreground="{DynamicResource ShellTextSecondaryBrush}" />
                 <TextBlock x:Name="MessageText" Text="{Binding Message}" Margin="0,4,0,0">

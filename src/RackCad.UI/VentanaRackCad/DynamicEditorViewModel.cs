@@ -778,6 +778,7 @@ namespace RackCad.UI.VentanaRackCad
                 return;
             }
 
+            if (DrawingChange.AsksBeforeWrite()) return; // T6 st: the drawing changed and the draft has changes: it asks first, inline
             _update(this);
         }
 
@@ -819,6 +820,7 @@ namespace RackCad.UI.VentanaRackCad
                 if (!string.IsNullOrEmpty(drawing)) return drawing;
                 var other = OtherRequestBlockedText;
                 if (!string.IsNullOrEmpty(other)) return other;
+                if (_drawingChange?.IsChanged == true) return _drawingChange.InsertBlockedText; // T6 st: it would write the draft over the drawing
                 if (_editor.Design == null) return "No hay un borrador válido que escribir.";
                 if (!string.IsNullOrEmpty(_editor.LastError)) return _editor.LastError;
                 return string.Empty;
@@ -936,6 +938,7 @@ namespace RackCad.UI.VentanaRackCad
         {
             _baselineJson = writtenJson;
             _baselineName = (writtenName ?? string.Empty).Trim();
+            _drawingChange?.Clear(); // T6 st: what was written is the drawing now
             Say(message, error: false);
             UpdateDirty();
             RaiseState();
@@ -1105,6 +1108,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(InsertViewBlockedText));
             RaiseStateIns(); // T4 ins: the button and the panel «Insertar vista…»
             RefreshSafetyPanel(); // T4 seg: what can be edited, in the table and the inspector
+            _drawingChange?.Refresh(); // T6 st: the notice follows the changes of the draft
         }
 
         // The lists keep their items: a recomposition refreshes them in place, so the focus, the box being written and the button under

@@ -800,6 +800,7 @@ namespace RackCad.UI.VentanaRackCad
                 return;
             }
 
+            if (DrawingChange.AsksBeforeWrite()) return; // T6 st: the drawing changed and the draft has changes: it asks first, inline
             _update(this);
         }
 
@@ -866,6 +867,7 @@ namespace RackCad.UI.VentanaRackCad
         {
             _baselineJson = writtenJson;
             _baselineName = (writtenName ?? string.Empty).Trim();
+            _drawingChange?.Clear(); // T6 st: what was written is the drawing now
             Say(message, error: false);
             UpdateDirty();
             RaiseState();
@@ -990,6 +992,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(InsertViewBlockedText));
             RaiseStateIns();
             RaiseRestore();
+            _drawingChange?.Refresh(); // T6 st: the notice follows the changes of the draft
         }
 
         // The lists keep their items: a recomposition refreshes them in place, so the focus and the button under the mouse survive it.

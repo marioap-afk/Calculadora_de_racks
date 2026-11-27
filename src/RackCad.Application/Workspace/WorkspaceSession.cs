@@ -32,11 +32,20 @@ namespace RackCad.Application.Workspace
         /// <summary>Number of distinct pending hint kinds, the own ones included; zero when nothing awaits a drain.</summary>
         public int PendingHintCount => _pending.Count + _ownPending.Count;
 
+        /// <summary>
+        /// How many changes of the database of the drawing the session received (an object appended, erased, modified, unappended or
+        /// reappended; the bookkeeping of the associative framework is not one), own or not, in memory (I-64 T6 st). It only counts: it
+        /// reads nothing and drains nothing. The RackCad window compares it around a command to tell whether that command changed the
+        /// drawing (the Owner, 2026-11-27: only the commands that change the drawing make a reading possibly out of date).
+        /// </summary>
+        public long DrawingChangeCount { get; private set; }
+
         /// <summary>Queues a hint. Constant cost, no reads. False when the session is destroyed.</summary>
         public bool EnqueueHint(HintKind kind)
         {
             if (IsDestroyed) return false;
             _pending.Add(kind);
+            if (kind == HintKind.DatabaseObjectChanged) DrawingChangeCount++; // T6 st
             return true;
         }
 
@@ -45,6 +54,7 @@ namespace RackCad.Application.Workspace
         {
             if (IsDestroyed) return false;
             _ownPending.Add(kind);
+            if (kind == HintKind.DatabaseObjectChanged) DrawingChangeCount++; // T6 st
             return true;
         }
 

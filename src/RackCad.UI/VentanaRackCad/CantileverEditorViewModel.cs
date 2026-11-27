@@ -246,6 +246,7 @@ namespace RackCad.UI.VentanaRackCad
                 return;
             }
 
+            if (DrawingChange.AsksBeforeWrite()) return; // T6 st: the drawing changed and the draft has changes: it asks first, inline
             _update?.Invoke(this);
         }
 
@@ -333,6 +334,7 @@ namespace RackCad.UI.VentanaRackCad
         public void MarkWritten(string message, string sentJson)
         {
             _draft.MarkWritten(sentJson);
+            _drawingChange?.Clear(); // T6 st: what was written is the drawing now
             ReadBase();
             Say(message, error: false);
             Rebuild();
@@ -700,6 +702,7 @@ namespace RackCad.UI.VentanaRackCad
             RaiseArms();
             RaiseBracing();
             RaiseWindowState();
+            _drawingChange?.Refresh(); // T6 st: the notice follows the changes of the draft
         }
 
         // ------------------------------------------------------------------ the items of the fields

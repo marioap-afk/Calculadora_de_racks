@@ -93,6 +93,7 @@ namespace RackCad.UI.VentanaRackCad
         private (long Id, SessionId Session)? _reading;
         private Placing _placing;
         private bool _ownCommandPending;
+        private readonly RackCadCommandWatch _commands = new RackCadCommandWatch(); // T6 st: the command that runs and whether it changed the drawing
         private bool _readOnShow;
 
         private WarehouseLayoutValues _values = WarehouseLayoutValues.Defaults;
@@ -626,7 +627,7 @@ namespace RackCad.UI.VentanaRackCad
         }
 
         /// <summary>The window presented a snapshot: the page follows the drawing and the commands, and sends nothing on its own.</summary>
-        internal void Present(SessionId? session, WorkspaceActionBlock block, bool warehouseInFlight, Func<SessionId, bool> isAlive)
+        internal void Present(SessionId? session, WorkspaceActionBlock block, bool warehouseInFlight, Func<SessionId, bool> isAlive, long databaseChanges = 0)
         {
             if (isAlive != null)
             {
@@ -646,21 +647,18 @@ namespace RackCad.UI.VentanaRackCad
             }
 
             // A command after the reading that is not the page's own (its read or its placement, from the moment the command took the
-            // request until the drawing is at rest again) may have changed the drawing.
+            // request until the drawing is at rest again) and that changed the drawing. T6 st (the Owner, 2026-11-27: «Afinarlo»): it is said
+            // when the command ends, and only when the database of the drawing changed meanwhile (RackCadCommandWatch); a ZOOM changes nothing.
             var commandRuns = block == WorkspaceActionBlock.CommandActive || block == WorkspaceActionBlock.ModalActive;
-            if (commandRuns)
+            var ended = _commands.Observe(session, block, databaseChanges, out _);
+            if (ended != null && ended.ChangedTheDrawing && !_ownCommandPending
+                && _drawings.TryGetValue(ended.Session, out var state) && state.Reading != null && !state.Stale)
             {
-                var state = Current;
-                if (!_ownCommandPending && state?.Reading != null && !state.Stale)
-                {
-                    state.Stale = true;
-                    changed = true;
-                }
+                state.Stale = true;
+                changed = true;
             }
-            else if (!warehouseInFlight)
-            {
-                _ownCommandPending = false;
-            }
+
+            if (!commandRuns && !warehouseInFlight) _ownCommandPending = false;
 
             if (changed)
             {

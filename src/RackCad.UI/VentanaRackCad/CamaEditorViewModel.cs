@@ -196,7 +196,7 @@ namespace RackCad.UI.VentanaRackCad
     /// window does not accept opens marked (question 4). A new cama of «Nuevo» is written with «Insertar en el dibujo…»: AutoCAD asks for
     /// the point (question 5: a cama has one view, so there is no «Insertar vista…»). Nothing here writes the drawing.
     /// </summary>
-    public sealed class CamaEditorViewModel : ObservableObject
+    public sealed partial class CamaEditorViewModel : ObservableObject // T6 st: partial (CamaEditorViewModel.DrawingChange.cs)
     {
         private const string WaitingWriteText = "AutoCAD está escribiendo la cama: espera a que termine o pulsa «Dejar de esperar».";
         private const string TakenWriteText = "AutoCAD ya tomó la escritura de la cama: espera a que termine, o termina o cancela la orden en AutoCAD; la ventana recibirá su respuesta.";
@@ -508,6 +508,7 @@ namespace RackCad.UI.VentanaRackCad
                 return;
             }
 
+            if (!_isNewRack && DrawingChange.AsksBeforeWrite()) return; // T6 st: the drawing changed and the draft has changes: it asks first, inline
             if (_isNewRack) _insertNew(this);
             else _update(this);
         }
@@ -703,6 +704,7 @@ namespace RackCad.UI.VentanaRackCad
             }
 
             _baselineName = (writtenName ?? string.Empty).Trim();
+            _drawingChange?.Clear(); // T6 st: what was written is the drawing now
             Say(message, error: false);
             UpdateDirty();
             RaiseState();
@@ -1148,6 +1150,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(PrimaryBlockedText));
             OnPropertyChanged(nameof(PrimaryLabel));
             OnPropertyChanged(nameof(WritingText));
+            _drawingChange?.Refresh(); // T6 st: the notice follows the changes of the draft
         }
 
         private void RaiseMore()

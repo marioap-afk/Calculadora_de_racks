@@ -4956,3 +4956,174 @@ tercero (`773f0a6e`), integradas en un segundo merge de la rama pb.
 
 - La validación del Owner de los supuestos de la quinta tanda y de O-5.
 - La limpieza de los worktrees y las ramas locales de la quinta tanda, con aviso al Owner.
+
+## Sexta tanda, st: el editor de la ventana tras una orden ajena (O-5, M-16)
+
+**Rama:** local `architecture/workspace-persistente-rackcad-t6-st`, sobre `f02f519b` (worktree `D:\w6st`). Sin commit, sin push, sin AutoCAD.
+
+**Órdenes del Owner (2026-11-27, literales):**
+- sobre O-5: «Avisar y ofrecer releer». **M-16 queda resuelto con esa decisión**, para los seis editores de la ventana (Selectivo, Dinámico,
+  Push Back, Cantilever, cama y cabecera). El editor clásico no se toca;
+- sobre el BOM y «Almacén», que decían «Puede no estar al día» tras cualquier orden, incluso un ZOOM: «Afinarlo», que solo avise con órdenes
+  que cambian el dibujo. La misma señal afinada sirve para los editores, para el BOM (BM-S1) y para «Almacén» (AL-S7).
+
+**El defecto (O-5 del smoke de la quinta tanda):** tras un «U» (o RACKEDITAR, un MOVE…), el editor de la ventana seguía «Limpio» con lo que se
+deshizo, y un «Actualizar» posterior lo volvía a escribir sin aviso. La causa: la señal de una orden ajena (`MarkDraftsPossiblyStale` del
+drenaje) solo marca los borradores del piloto (`WorkspaceHostCore.MarkPilotDraftsPossiblyStale`), y el estado de los editores de la ventana
+(`DraftStateOf`) solo miraba `IsWriting`/`IsDirty`.
+
+### La señal
+
+- **Cuándo corre una orden:** la que ya seguía el BOM (BM-01). Cada presentación del host dice si en el dibujo de la ventana corre una orden
+  (el panel toma su instantánea dentro de CommandWillStart y otra vez al volver al reposo) o un modal de RackCad. `RackCadCommandWatch` sigue
+  cada orden desde su primera presentación hasta que el dibujo vuelve al reposo, o hasta que la ventana presenta otro dibujo.
+- **Si cambió el dibujo (afinado):** el primer recurso de la lista del encargo, el hint `DatabaseObjectChanged`. El modelo de sesión no lo hacía
+  llegar a la ventana (el drenaje lo junta con `CommandEnded` en `MarkDraftsPossiblyStale` y solo lo usa el piloto). El cambio mínimo:
+  - `WorkspaceSession.DrawingChangeCount`: cuenta, en memoria, cada `DatabaseObjectChanged` que la sesión recibe (los ajenos en `EnqueueHint` y
+    los de la mutación propia del piloto en `EnqueueOwnHint`). Es un evento de objeto (añadido, borrado, modificado, des-añadido o re-añadido);
+    la contabilidad asociativa ya no llega (IC-10). No se drena, no lee nada y no cambia nada más de la sesión;
+  - `WorkspaceHostSnapshot.DrawingChangeCount` (último parámetro, con valor por omisión 0): el de la sesión activa, que pone
+    `WorkspaceHostCore.GetSnapshot`;
+  - `WorkspacePanelViewModel.PresentedDrawingChangeCount`: el de la última instantánea presentada.
+  - Una orden **cambió el dibujo** si ese número se movió mientras corría. Un ZOOM, un PAN o un REGEN no cambian ningún objeto; un «U», un ERASE,
+    un MOVE o RACKEDITAR sí.
+  - No se tocaron `EventBridgeCore`, `AutoCadEventBridge`, el controlador, la paleta, `TryDrain` ni las guardas (ver «Riesgo y guardas»).
+- **Lo propio, con la puerta numerada:** la puerta entrega UNA petición numerada a la vez, y su orden la toma (contesta dentro de sí o dice que
+  la tomó, `RequestStarted`). Una orden que empezó con una petición de la puerta esperando, sin tomar, para el mismo dibujo, y que la tomó, es
+  la orden de la puerta: las …ABRIR de «Editar aquí», las …APLICAR, …INSERTAR y …NUEVO, y las lecturas sin marca del BOM, de «Variables» y de
+  «Almacén». No marca, aunque escriba. **Todo lo demás es ajeno:** una orden sin petición esperando; una que terminó sin tomar la petición que
+  esperaba (la orden de la puerta no había corrido y el usuario corrió otra); o una durante la cual la ventana dejó de esperar.
+- **La regla:** al terminar una orden ajena que cambió el dibujo, se marcan los editores de ese dibujo. La marca no lee nada: ninguna orden sale
+  de la ventana sin un gesto del usuario. Un borrador nuevo de «Nuevo» no está en el dibujo y nunca se marca.
+- **El BOM y «Almacén»** (`RackBomPageViewModel.Present`, `WarehousePageViewModel.Present`): cada página sigue las órdenes con su propio
+  `RackCadCommandWatch` y conserva su regla de lo propio (su lectura desde que la orden la tomó; para el BOM, también RACKLISTA y RACKBOMTOTAL).
+  Ahora dicen «Puede no estar al día» **al terminar** la orden y solo si cambió el dibujo; un «Actualizar» de un editor sigue contando (cambia el
+  dibujo).
+
+### Lo que se ve
+
+- **El aviso** (`RackEditorDrawingChangePanel`, el mismo control en los seis editores, bajo su cabecera), con el texto de
+  `RackEditorDrawingChange`:
+  - limpio: «El dibujo cambió desde que se leyó (corrió una orden en AutoCAD). Lo que muestra el editor puede no ser lo que hay ahora en el
+    dibujo: pulsa «Volver a leer del dibujo».»;
+  - con cambios sin escribir: «El dibujo cambió desde que se leyó (corrió una orden en AutoCAD). Tienes cambios sin escribir: «Actualizar»
+    escribirá el borrador encima de lo que hay en el dibujo. «Volver a leer del dibujo» descarta tus cambios y lee lo que hay ahora.»
+- **«Volver a leer del dibujo»** es la lectura de «Editar aquí» de su sistema (la puerta …ABRIR), con el gesto del usuario, para el rack del
+  editor y en su dibujo. Su respuesta sustituye el editor aunque tenga cambios (la petición lleva `IsReread`); «Editar aquí» sin ese gesto
+  sigue sin sustituir un borrador con cambios, como antes. Ningún editor tenía un «Volver a leer» propio: el «Descartar» de los seis vuelve a
+  lo último leído o escrito, no relee el dibujo.
+- **«Actualizar» con cambios** sobre un dibujo marcado pregunta antes, en línea, con el patrón de las preguntas de los editores: «¿Escribir el
+  borrador encima de lo que hay ahora en el dibujo? Si la orden que corrió cambió este rack, ese cambio se pierde.» · «Escribir encima» /
+  «Cancelar». Un editor limpio no tiene nada que escribir, así que no pregunta.
+- **La lista de racks:** «Abierto en la ventana (posiblemente obsoleto)» o «Modificado (editor de la ventana) (posiblemente obsoleto)», con la
+  marca «Obsoleto», las palabras que ya usa el piloto (`RackListViewModel`, «(posiblemente obsoleto)»). `RackListViewModel` no se tocó: el estado
+  sale de `DraftStateOf` de la ventana.
+- **La marca se quita** al volver a leer (el editor nuevo no la tiene) y con una escritura propia que AutoCAD hizo (`MarkWritten` de los seis
+  editores). Una escritura que AutoCAD no hizo la deja.
+
+### Supuestos para el Owner
+
+| Id | Supuesto | Por qué |
+|---|---|---|
+| T6st-S1 | La marca (y el «Puede no estar al día» del BOM y de «Almacén») aparece al **terminar** la orden, con el dibujo de vuelta al reposo, no al empezar. La hora de «corrió una orden a las…» es la del final | «Una orden ajena terminada»; y si cambió el dibujo solo se sabe al final |
+| T6st-S2 | «Cambiar el dibujo» = un evento de objeto de su base de datos mientras corría la orden (añadido, borrado, modificado…), no de la contabilidad asociativa. Una variable de sistema no lo es. Un ZOOM o un PAN en el espacio modelo no cambian objetos; **dentro de una ventana gráfica de una presentación** (MSPACE) sí, porque la ventana gráfica es un objeto, y marcan. Un cambio de capa sí marca: cambia el dibujo. **Por comprobar en AutoCAD** (el smoke): ZOOM, PAN y REGEN no marcan; «U», ERASE y MOVE sí | Es lo que el host ya distingue (`DatabaseObjectChanged`, IC-10), sin una lista de órdenes que mantener |
+| T6st-S3 | Lo propio se distingue con la puerta numerada: solo la orden que tomó la petición que esperaba es de la ventana. Una orden ajena que cambió el dibujo marca aunque no toque los racks abiertos (un LINE, un cambio de capa): la ventana no sabe qué objetos cambió. Marcan también, si cambian el dibujo, las órdenes clásicas que lanza la ventana («Abrir en editor clásico», las tarjetas de «Nuevo»), la actualización del piloto del panel y un modal de RackCad. RACKLISTA y RACKBOMTOTAL solo leen: no marcan | La puerta es lo único que identifica una orden sin leer su nombre; marcar de más solo cuesta un aviso y una relectura, y marcar de menos es el defecto |
+| T6st-S4 | Si la ventana presenta otro dibujo antes de que termine la orden, no sabe si cambió el suyo: lo marca (la respuesta prudente de antes). Un cambio de la base de datos sin orden (con el dibujo en reposo) no marca | El número es de la sesión activa; un cambio sin orden no es «una orden de AutoCAD» |
+| T6st-S5 | «Insertar vista…» espera mientras el editor está marcado: «El dibujo cambió desde que se leyó: pulsa «Volver a leer del dibujo» antes de insertar vistas.» (con cambios: «…escribe antes el borrador con «Actualizar», o vuelve a leer del dibujo, para insertar vistas.») | Insertar escribe primero el borrador en las vistas que hay, también sin cambios: sería el mismo «escribir encima» sin aviso |
+| T6st-S6 | «Volver a leer del dibujo» con cambios los descarta sin otra pregunta: el aviso ya lo dice, y el botón es el gesto | Como «Descartar», que tampoco pregunta |
+| T6st-S7 | Las órdenes que corren con la paleta **oculta** no se ven (la ventana no se presenta mientras está oculta): ni los editores, ni el BOM, ni «Almacén» se marcan. Es el hueco declarado de BM-S1 | Cubrirlo con el número pide contar los cambios fuera de una orden vista, y entonces los cambios diferidos tras una escritura propia marcarían de más; queda como pregunta |
+| T6st-S8 | Volver a leer crea un editor nuevo: la pestaña y la selección vuelven a las de un editor recién abierto | Es la lectura de «Editar aquí», sin un camino de recarga en su sitio para cada sistema |
+
+**BM-S1 y AL-S7 quedan afinados** por T6st-S1 a S4: «Puede no estar al día» = terminó una orden que no es la propia y que cambió el dibujo.
+
+**Preguntas para el Owner:**
+1. Una escritura de «Variables» (RACKVARIABLESAPLICAR, de la puerta) puede redibujar racks cuyo editor está abierto. Por la orden («las de la
+   puerta NO marcan») no los marca. Un borrador con cambios ya está protegido (VA-04 avisa en la página y su «Actualizar» se negaría, S-04). Uno
+   limpio queda con los valores de antes. ¿Debe marcarlos?
+2. La paleta oculta (T6st-S7): ¿basta el hueco declarado, o se quiere marcar al volver a mostrarla si el dibujo cambió mientras tanto (con el
+   riesgo de marcar de más tras una escritura propia)?
+3. M-02 de la segunda revisión (la LISTA dice «puede no estar al día» tras cualquier orden, incluso un ZOOM) es la misma pregunta para la lista,
+   pero viene del drenaje (`TryDrain`: todo `CommandEnded` invalida el caché) y la lista es de la parte ui: no se tocó. ¿Se afina igual?
+
+### Riesgo y guardas del cambio en el modelo de sesión
+
+- **El cambio:** una propiedad de solo lectura y dos incrementos en `WorkspaceSession`, un campo con valor por omisión al final de
+  `WorkspaceHostSnapshot` y una línea en `WorkspaceHostCore.GetSnapshot`. `EventBridgeCore`, `TryDrain`, los hints, el drenaje, el alcance de la
+  mutación propia y los adaptadores del Plugin no cambian.
+- **Riesgo:** bajo. Coste constante por evento de objeto (un `long`), sin lectura ni efecto. Todos los `new WorkspaceHostSnapshot(...)` de siete
+  argumentos siguen compilando (valen 0). La igualdad del registro incluye el número; ninguna prueba compara instantáneas enteras.
+- **Guardas:** ninguna se editó ni se debilitó. Una saltó durante el trabajo: `WorkspaceModelBoundaryTests.ThereIsNoPerTabStateOrPerTabSubscriptions`
+  prohíbe «Tab» (sin mayúsculas) en las propiedades de `WorkspaceSession`, y el primer nombre, `DatabaseChangeCount`, lo contiene
+  («Da**tab**ase»). Se renombró a `DrawingChangeCount`. Pasan las de frontera del modelo (`WorkspaceModelBoundaryTests`,
+  `WorkspaceBrowserBoundaryTests`, `WorkspaceNavigationEchoTests`, `WorkspaceNavigationAuthorityTests`), la de la instantánea
+  (`WorkspaceHostPortGuardTests.TheSnapshotTheUiReceivesHoldsOnlyValuesAndSessionKeys`), las de fuente del host y las tres de copia completa
+  (no se tocó ningún original de sus listas).
+
+### Archivos
+
+**Nuevos** (`T6 st`):
+- `RackCadCommandWatch.cs`: una orden desde su inicio hasta su fin, y si cambió el dibujo.
+- `RackEditorDrawingChange.cs`: la marca, los textos, «Volver a leer del dibujo», la pregunta de «Actualizar» y el motivo de «Insertar vista…».
+- `RackEditorDrawingChangePanel.xaml(.cs)`: el aviso, el botón y la pregunta en línea; nombres de automatización únicos («Volver a leer este
+  rack del dibujo», «Escribir el borrador encima del dibujo», «No escribir encima del dibujo»).
+- `RackCadWindowViewModel.DrawingChange.cs`: la señal de los editores, lo propio (`IsOwn`), la marca de los seis diccionarios, el estado de la
+  lista y la relectura.
+- Un parcial `.DrawingChange.cs` por editor: `DynamicEditorViewModel`, `SelectiveEditorViewModel`, `PushBackEditorViewModel`,
+  `CantileverEditorViewModel`, `CamaEditorViewModel` y `CabeceraEditorViewModel` (las dos últimas pasan a `partial`).
+- Pruebas: `tests/RackCad.UI.Tests/Workspace/RackCadDrawingChangeTests.cs` y `tests/RackCad.Tests/Workspace/WorkspaceDrawingChangeCountTests.cs`.
+
+**Ediciones a archivos existentes** (marcadas `T6 st`, una o pocas líneas cada una):
+- Application: `WorkspaceSession.cs`, `WorkspaceHostSnapshot.cs`, `WorkspaceHostCore.cs` (arriba).
+- UI: `WorkspacePanelViewModel.cs` (`PresentedDrawingChangeCount`).
+- `RackCadWindowViewModel.cs`: `IsReread` en `DoorRequest`; `IsReread: _rereading` en «Editar aquí» de Selectivo y Dinámico; la condición
+  «no se reemplazó» con `!request.IsReread`; `ForgetCommandRunRequest` en «Dejar de esperar»; el estado «(posiblemente obsoleto)» en
+  `DraftStateOf`; `Contained(PresentDrawingChange)` en `Present`.
+- `RackCadWindowViewModel.Cabecera.cs`, `.Cama.cs`, `.Cantilever.cs`, `.PushBack.cs`: `IsReread` en su «Editar aquí» y en su condición.
+- `RackCadWindowViewModel.Bom.cs` y `.Warehouse.cs`: el número de cambios a `Present` de la página.
+- `RackBomPageViewModel.cs` y `WarehousePageViewModel.cs`: la regla afinada en `Present`.
+- Los seis editores: una línea en `RequestWrite` (`AsksBeforeWrite`), en `MarkWritten` (`Clear`) y en `RaiseState` (`Refresh`); en los cuatro
+  que insertan vistas, una en `InsertViewBlockedText`.
+- Las seis vistas de editor: el control `DrawingChangePanel` bajo la cabecera.
+- Pruebas existentes al día: `RackCadBomPageTests` y `RackCadWarehousePageTests`. Su doble del host cuenta ahora los cambios: una orden de esas
+  pruebas cambia el dibujo mientras corre (un MOVE), salvo que diga que no (un ZOOM). Tres pruebas comprobaban el aviso al EMPEZAR la orden y
+  ahora lo comprueban al terminar (T6st-S1), con una línea más que presenta el reposo: `ACommandAfterTheReadingSaysItMayBeOutOfDate…` (dos
+  veces), `AReadingMayBeOutOfDateAfterACommandThatIsNotItsOwn` e `InTheOrderOfAutoCadTheOwnReadAndTheOwnPlacement…`. Ninguna otra aserción cambió.
+
+### Pruebas
+
+`RackCadDrawingChangeTests` (UI), con el doble de la puerta de los seis sistemas y el doble del puerto del host (que cuenta los cambios):
+- **La señal:** una orden ajena que cambia el dibujo marca al terminar y no lee nada (×6); un ZOOM no marca y un «U» o un ERASE sí (×6); las
+  órdenes de la puerta no marcan, aunque escriban: «Editar aquí» y «Actualizar» con la orden corriendo dentro de la llamada (M-22), y «Editar
+  aquí» de otro rack del mismo dibujo; una orden de otro dibujo no marca y una del suyo sí; una orden que no tomó la petición que esperaba, o
+  durante la cual la ventana dejó de esperar, es ajena; un modal de RackCad cuenta; un borrador de «Nuevo» no se marca; un cambio sin orden no
+  marca, y otro dibujo presentado durante la orden sí (T6st-S4).
+- **El aviso y el botón en los seis editores:** el modelo (`VolverALeerDelDibujoIsTheReadOfEditarAqui…`, ×6; con cambios, los descarta, ×6) y la
+  vista WPF real en STA (`EveryEditorViewShowsTheNotice…`, ×6: oculto sin la marca, visible con ella, el botón lee por la puerta de su sistema).
+  «Editar aquí» sin el gesto sigue sin sustituir un borrador con cambios; el botón se apaga mientras AutoCAD escribe y, con otra petición
+  esperando, dice por qué.
+- **La confirmación de «Actualizar»:** pregunta, «Cancelar» no escribe, «Escribir encima» escribe una vez y la respuesta escrita quita la marca
+  (×6; la vista, `EveryEditorViewAsksInline…`, ×6); una escritura no hecha deja la marca y «Descartar» quita la pregunta.
+- **«Insertar vista…»** espera con la marca en Dinámico, Selectivo, Push Back y Cantilever.
+- **El BOM y «Almacén»:** `AZoomLeavesTheBomUpToDateAndAUOrAnEraseDoesNot` y `AZoomLeavesTheReadingUpToDateAndAUOrAnEraseDoesNot`.
+- **Core:** `WorkspaceDrawingChangeCountTests`: los cinco eventos de objeto cuentan, propios o no; una orden, una selección o la contabilidad
+  asociativa no; el drenaje no lo pone a cero; la instantánea lleva el de la sesión activa, cada dibujo el suyo, y 0 sin dibujo.
+- **RED sobre la base** (las 13 primeras, solo con la API que ya existía): 12 fallaron. La lista seguía en «Abierto en la ventana» tras la orden
+  ajena (×6) y «Actualizar» escribía sin preguntar: 1 escritura donde se esperaban 0 (×6).
+- **Comprobación en rojo** (copias del original fuera del worktree, restauradas después; `git diff` sin restos):
+  - sin `Contained(PresentDrawingChange)` en `Present` (la señal): fallaron las 56 de `RackCadDrawingChangeTests` (todas necesitan la marca en
+    algún paso);
+  - sin `ended.ChangedTheDrawing` (la señal afinada) en la ventana, en el BOM y en «Almacén», y a la vez sin `AsksBeforeWrite` en
+    `RequestWrite` de Dinámico (la confirmación): 12 de 116 fallaron, justo las esperadas: `AZoomThatChangesNothingDoesNotMark…` (×6),
+    `AZoomLeavesTheBomUpToDate…`, `AZoomLeavesTheReadingUpToDate…`, y las cuatro de la confirmación de Dinámico
+    (`ActualizarOfADraftWithChanges…`, `ActualizarWithChangesAsksInline…`, `EveryEditorViewAsksInline…` y `AWriteThatAutoCadDidNotDo…`);
+  - con `IsOwn` siempre falso (lo propio): falló `TheCommandsOfTheDoorOfTheWindowDoNotMark…` (1 de 56);
+  - sin los dos incrementos de `WorkspaceSession` (el número): fallaron las 2 de `WorkspaceDrawingChangeCountTests`; las 19 de
+    `WorkspaceModelBoundaryTests` siguieron en verde.
+
+### Números
+
+- **UI completa:** 3168 correctas, 0 con error, 48 omitidas (total 3216; la base daba 3110/0/48: +56 de `RackCadDrawingChangeTests` y +2 del BOM
+  y de «Almacén»).
+- **Core Full:** 19485 correctas, 0 con error, 403 omitidas (total 19888; la base daba 19483/0/403: +2 de `WorkspaceDrawingChangeCountTests`).
+- **La solución en Debug** (Plugin incluido): 0 errores; el Plugin se volvió a compilar tras los últimos comentarios, con 0 errores.
+- Archivos tocados sin caracteres de control (escaneo de los 43 cambiados o nuevos).

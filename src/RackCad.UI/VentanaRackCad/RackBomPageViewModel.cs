@@ -901,7 +901,7 @@ namespace RackCad.UI.VentanaRackCad
         /// The window presented a snapshot: the page follows its drawing, says the BOM may be out of date after a command that is not its own
         /// read (BM-01) and forgets the drawings that were closed. It never sends a read: only a gesture of the user does (correction 4).
         /// </summary>
-        internal void Present(SessionId? session, WorkspaceActionBlock block, bool bomInFlight, Func<SessionId, bool> isAlive)
+        internal void Present(SessionId? session, WorkspaceActionBlock block, bool bomInFlight, Func<SessionId, bool> isAlive, long databaseChanges = 0)
         {
             if (isAlive != null)
             {
@@ -922,24 +922,25 @@ namespace RackCad.UI.VentanaRackCad
                 RebuildData();
             }
 
-            // Any command that ran in the drawing after the reading (a write of the window too) may have changed it. The read itself does not
-            // count, and only it: RACKBOMLEER from the moment it says it took the request (Started) — or RACKLISTA / RACKBOMTOTAL, which read
-            // inside themselves — until the drawing is at rest again after its answer (correction 1 of the review).
+            // Any command that ran in the drawing after the reading (a write of the window too) and changed it makes the BOM possibly out of
+            // date. T6 st (the Owner, 2026-11-27: «Afinarlo»): it is said when the command ends, and only when the database of the drawing changed
+            // meanwhile (RackCadCommandWatch); a ZOOM, a PAN or a REGEN change nothing. The read itself does not count, and only it: RACKBOMLEER
+            // from the moment it says it took the request (Started) — or RACKLISTA / RACKBOMTOTAL, which read inside themselves — until the
+            // drawing is at rest again after its answer (correction 1 of the review).
             var commandRuns = block == WorkspaceActionBlock.CommandActive || block == WorkspaceActionBlock.ModalActive;
-            if (commandRuns)
+            var ended = _commands.Observe(session, block, databaseChanges, out _);
+            if (ended != null && ended.ChangedTheDrawing && !_ownCommandPending
+                && _drawings.TryGetValue(ended.Session, out var state) && state.Reading != null && !state.Stale)
             {
-                var state = Current;
-                if (!_ownCommandPending && state?.Reading != null && !state.Stale)
-                {
-                    MarkStale(state, StaleCause.Command);
-                    RaiseAll();
-                }
+                MarkStale(state, StaleCause.Command);
+                RaiseAll();
             }
-            else if (!bomInFlight)
-            {
-                _ownCommandPending = false;
-            }
+
+            if (!commandRuns && !bomInFlight) _ownCommandPending = false;
         }
+
+        // T6 st: the command that runs in the drawing, from its start to its end, and whether it changed the database meanwhile.
+        private readonly RackCadCommandWatch _commands = new RackCadCommandWatch();
 
         private void MarkStale(DrawingState state, StaleCause cause)
         {

@@ -1442,6 +1442,7 @@ namespace RackCad.UI.VentanaRackCad
                 return;
             }
 
+            if (DrawingChange.AsksBeforeWrite()) return; // T6 st: the drawing changed and the draft has changes: it asks first, inline
             _update(this);
         }
 
@@ -1515,6 +1516,7 @@ namespace RackCad.UI.VentanaRackCad
         {
             _baselineJson = writtenJson;
             _baselineName = (writtenName ?? string.Empty).Trim();
+            _drawingChange?.Clear(); // T6 st: what was written is the drawing now
             ResetAllPosts(); // T5 pp: what AutoCAD wrote starts the row «Todos los postes» again from the peralte of the rack
             Say(message, error: false);
             UpdateDirty();
@@ -1744,6 +1746,7 @@ namespace RackCad.UI.VentanaRackCad
             RaiseSafetyState(); // E2 seguridad
             RaiseStateIns(); // T4 ins: the button and the panel «Insertar vista…», «Aplicar tramos»
             RaiseAllPosts(); // T5 pp: the row «Todos los postes» of «Postes y cabeceras»
+            _drawingChange?.Refresh(); // T6 st: the notice follows the changes of the draft
         }
 
         // ------------------------------------------------------------------ internals: the lists, refreshed in place

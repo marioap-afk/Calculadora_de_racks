@@ -276,7 +276,7 @@ namespace RackCad.UI.VentanaRackCad
     /// «Restaurar estándar…», and that only writes the draft of that rack. No modal window: every question is inline.
     /// </para>
     /// </summary>
-    public sealed class CabeceraEditorViewModel : ObservableObject
+    public sealed partial class CabeceraEditorViewModel : ObservableObject // T6 st: partial (CabeceraEditorViewModel.DrawingChange.cs)
     {
         public const string DefaultNewPanelClear = "44";
         private const string Varies = "Varía";
@@ -456,6 +456,7 @@ namespace RackCad.UI.VentanaRackCad
         public void RequestWrite()
         {
             if (!CanUpdate) return;
+            if (DrawingChange.AsksBeforeWrite()) return; // T6 st: the drawing changed and the draft has changes: it asks first, inline
             _update(this);
         }
 
@@ -503,6 +504,7 @@ namespace RackCad.UI.VentanaRackCad
             _writing = false;
             _writeTaken = false;
             if (written) _editor.MarkWritten(sentJson);
+            if (written) _drawingChange?.Clear(); // T6 st: what was written is the drawing now
             Say(message, !written);
             Rebuild();
         }
@@ -1150,6 +1152,8 @@ namespace RackCad.UI.VentanaRackCad
             {
                 OnPropertyChanged(name);
             }
+
+            _drawingChange?.Refresh(); // T6 st: the notice follows the changes of the draft
         }
 
         private IReadOnlyList<object> BuildEssentials()

@@ -113,7 +113,7 @@ namespace RackCad.UI.VentanaRackCad
         // was made for (at the time it was made, not when the answer arrives), for a write what was sent, and whether it is a Selectivo.
         private sealed record DoorRequest(long Id, bool IsWrite, SessionId Session, string RackId, string SentJson, string SentName, bool Started = false,
             bool IsSelective = false, bool IsCabecera = false, bool IsVariables = false, bool IsBom = false,
-            bool IsWarehouse = false, bool IsCama = false, bool IsCantilever = false, bool IsPushBack = false); // T5 pb: IsPushBack, a Push Back of the window. T5 ct: IsCantilever, a Cantilever line. T5 cm: IsCama, a cama of its own. T5 al: IsWarehouse, the page «Almacén». T4 cb: IsCabecera, a cabecera of its own; T4 va: IsVariables, the page «Variables»; T4 bom: IsBom, the read of the page «BOM y lista de racks»
+            bool IsWarehouse = false, bool IsCama = false, bool IsCantilever = false, bool IsPushBack = false, bool IsReread = false); // T6 st: IsReread, the read of «Volver a leer del dibujo», which replaces an editor with changes. T5 pb: IsPushBack, a Push Back of the window. T5 ct: IsCantilever, a Cantilever line. T5 cm: IsCama, a cama of its own. T5 al: IsWarehouse, the page «Almacén». T4 cb: IsCabecera, a cabecera of its own; T4 va: IsVariables, the page «Variables»; T4 bom: IsBom, the read of the page «BOM y lista de racks»
 
         private sealed class DraftKeyComparer : IEqualityComparer<(SessionId Session, string RackId)>
         {
@@ -433,7 +433,7 @@ namespace RackCad.UI.VentanaRackCad
 
             // The request waits BEFORE it is handed over: AutoCAD may run the command, and answer, during the call (M-22).
             var id = ++_lastRequestId;
-            _inFlight = new DoorRequest(id, false, session.Value, rack, null, null, IsSelective: true);
+            _inFlight = new DoorRequest(id, false, session.Value, rack, null, null, IsSelective: true, IsReread: _rereading); // T6 st
             Say("Leyendo el rack en AutoCAD…", failed: false);
             RaiseWaiting();
 
@@ -486,7 +486,7 @@ namespace RackCad.UI.VentanaRackCad
                 }
 
                 var key = (request.Session, request.RackId);
-                if (_selectiveDrafts.TryGetValue(key, out var existing) && (existing.Editor.IsDirty || existing.Editor.IsWriting))
+                if (_selectiveDrafts.TryGetValue(key, out var existing) && ((existing.Editor.IsDirty && !request.IsReread) || existing.Editor.IsWriting)) // T6 st
                 {
                     Say("Este rack ya tiene un borrador con cambios en la ventana: no se reemplazó.", failed: false);
                     RaiseDynamic();
@@ -641,7 +641,7 @@ namespace RackCad.UI.VentanaRackCad
 
             // The request waits BEFORE it is handed over: AutoCAD may run the command, and answer, during the call (M-22).
             var id = ++_lastRequestId;
-            _inFlight = new DoorRequest(id, false, session.Value, rack, null, null);
+            _inFlight = new DoorRequest(id, false, session.Value, rack, null, null, IsReread: _rereading); // T6 st
             Say("Leyendo el rack en AutoCAD…", failed: false);
             RaiseWaiting();
 
@@ -676,6 +676,7 @@ namespace RackCad.UI.VentanaRackCad
             }
 
             _inFlight = null;
+            ForgetCommandRunRequest(request.Id); // T6 st: a command that runs now did not take it: it is not known to be the one of the door
             try
             {
                 _door?.Abandon(request.Id);
@@ -747,7 +748,7 @@ namespace RackCad.UI.VentanaRackCad
                 }
 
                 var key = (request.Session, request.RackId);
-                if (_dynamicDrafts.TryGetValue(key, out var existing) && (existing.Editor.IsDirty || existing.Editor.IsWriting))
+                if (_dynamicDrafts.TryGetValue(key, out var existing) && ((existing.Editor.IsDirty && !request.IsReread) || existing.Editor.IsWriting)) // T6 st
                 {
                     Say("Este rack ya tiene un borrador con cambios en la ventana: no se reemplazó.", failed: false);
                     RaiseDynamic();
@@ -1099,6 +1100,8 @@ namespace RackCad.UI.VentanaRackCad
             }
 
             if (writing) return ("Escribiendo en el dibujo", "Modificado", true);
+            if (IsDrawingChanged(session, rackId)) // T6 st: a command that is not of the window changed the drawing since the editor read it
+                return dirty ? ("Modificado (editor de la ventana)" + PossiblyStaleSuffix, "Obsoleto", true) : ("Abierto en la ventana" + PossiblyStaleSuffix, "Obsoleto", false);
             return dirty ? ("Modificado (editor de la ventana)", "Modificado", true) : ("Abierto en la ventana", "Limpio", false);
         }
 
@@ -1330,6 +1333,7 @@ namespace RackCad.UI.VentanaRackCad
             }
 
             Contained(PruneDeadSessionsAndSayLost); // T5 cm: the prunes, then ONE line with what they lost
+            Contained(PresentDrawingChange); // T6 st: a command that is not of the window and changed the drawing marks the editors of its drawing
             Contained(PresentVariables); // T4 va
             Contained(FollowSelectionOfTheActiveRack);
             Contained(PresentBom); // T4 bom

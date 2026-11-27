@@ -176,11 +176,16 @@ namespace RackCad.UI.Tests
 
             public RackBomPageViewModel Bom => Window.Bom;
 
-            public void Present(long session = 7, WorkspaceActionBlock block = WorkspaceActionBlock.None)
+            // T6 st (the Owner, 2026-11-27: «Afinarlo»): the changes of the database of the drawing, as the host presents them. A command of
+            // these tests changes the drawing while it runs (a MOVE), unless it says it does not (a ZOOM).
+            private long _changes;
+
+            public void Present(long session = 7, WorkspaceActionBlock block = WorkspaceActionBlock.None, bool changesTheDrawing = true)
             {
                 Host.Snapshot = new WorkspaceHostSnapshot(WorkspaceHostStatus.Ready, new SessionId(session), true,
-                    new WorkspaceActionAvailability(block == WorkspaceActionBlock.None, false, block), SelectionContext.None, false, false);
+                    new WorkspaceActionAvailability(block == WorkspaceActionBlock.None, false, block), SelectionContext.None, false, false, _changes);
                 Window.Refresh();
+                if (block != WorkspaceActionBlock.None && changesTheDrawing) _changes++;
             }
 
             // The page shown (a click), RACKBOMLEER taking the request and answering, and the drawing at rest again once it ended.
@@ -395,6 +400,8 @@ namespace RackCad.UI.Tests
 
             rig.Now = At.AddMinutes(9);
             rig.Present(block: WorkspaceActionBlock.CommandActive); // a MOVE of the user
+            Assert.Equal("Al día", rig.Bom.ChipText); // T6 st: it is said when the command ends, if it changed the drawing
+            rig.Present();
             Assert.Equal("Puede no estar al día", rig.Bom.ChipText);
             Assert.Equal("Modificado", rig.Bom.ChipKind);
             Assert.True(rig.Bom.ShowStale);
@@ -418,10 +425,35 @@ namespace RackCad.UI.Tests
             rig.Present();
             rig.Bom.Recalculate();
             rig.Present(block: WorkspaceActionBlock.CommandActive);
+            rig.Present(); // T6 st: the command ends (it never took the read) having changed the drawing
             Assert.Equal("Leído a las 10:54 · corrió una orden a las 10:54", rig.Bom.ReadText);
             rig.Bom.StopWaiting();
             Assert.True(rig.Bom.ShowStale);
             Assert.StartsWith("El BOM es de las 10:54 y a las 10:54 corrió una orden en el dibujo.", rig.Bom.StaleText);
+        }
+
+        // T6 st (the Owner, 2026-11-27: «Afinarlo»): a command that changes nothing of the drawing (a ZOOM, a PAN, a REGEN) leaves the BOM «Al día»;
+        // a «U» or an ERASE does not, and it is said when the command ends.
+        [Fact]
+        public void AZoomLeavesTheBomUpToDateAndAUOrAnEraseDoesNot()
+        {
+            var rig = new Rig();
+            rig.Open();
+            Assert.Equal("Al día", rig.Bom.ChipText);
+
+            rig.Present(block: WorkspaceActionBlock.CommandActive, changesTheDrawing: false); // ZOOM
+            rig.Present();
+            Assert.Equal("Al día", rig.Bom.ChipText);
+            Assert.False(rig.Bom.ShowStale);
+            Assert.False(rig.Bom.RecalculateIsPrimary);
+
+            rig.Now = At.AddMinutes(3);
+            rig.Present(block: WorkspaceActionBlock.CommandActive); // «U» (or ERASE)
+            Assert.Equal("Al día", rig.Bom.ChipText);
+            rig.Present();
+            Assert.Equal("Puede no estar al día", rig.Bom.ChipText);
+            Assert.Equal("Leído a las 10:42 · corrió una orden a las 10:45", rig.Bom.ReadText);
+            Assert.Single(rig.Door.BomReads); // nothing is read on its own
         }
 
         // Correction 1 of the review (the BOM that came out «Al día» and was exported with no question): a read that is abandoned, or that is

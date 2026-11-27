@@ -80,7 +80,7 @@ namespace RackCad.UI.VentanaRackCad
 
             // The request waits BEFORE it is handed over: AutoCAD may run the command, and answer, during the call (M-22).
             var id = ++_lastRequestId;
-            _inFlight = new DoorRequest(id, false, session.Value, rack, null, null, IsCabecera: true);
+            _inFlight = new DoorRequest(id, false, session.Value, rack, null, null, IsCabecera: true, IsReread: _rereading); // T6 st
             Say("Leyendo la cabecera en AutoCAD…", failed: false);
             RaiseWaiting();
 
@@ -131,7 +131,7 @@ namespace RackCad.UI.VentanaRackCad
                 }
 
                 var key = (request.Session, request.RackId);
-                if (_cabeceraDrafts.TryGetValue(key, out var existing) && (existing.Editor.IsDirty || existing.Editor.IsWriting))
+                if (_cabeceraDrafts.TryGetValue(key, out var existing) && ((existing.Editor.IsDirty && !request.IsReread) || existing.Editor.IsWriting)) // T6 st
                 {
                     Say("Esta cabecera ya tiene un borrador con cambios en la ventana: no se reemplazó.", failed: false);
                     RaiseCabecera();
