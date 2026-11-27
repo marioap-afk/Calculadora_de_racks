@@ -67,4 +67,27 @@ public class WorkspaceDrawingChangeCountTests
         rig.CloseActive(100);
         Assert.Equal(0, rig.Host.GetSnapshot().DrawingChangeCount);
     }
+
+    // Review of 5114345e, M-1: the snapshot carries the commands that started in the active session, as the bridge counts them for the update of
+    // the pilot (ForeignCommandStartsOf); the RackCad window takes a command as the one of its door only when exactly one started.
+    [Fact]
+    public void TheSnapshotCarriesTheCommandStartsOfTheActiveSessionAndZeroWithoutADocument()
+    {
+        var rig = new WorkspaceHostRig().WithDocument(100);
+        rig.Host.OpenPanel();
+        var first = rig.ActiveSession;
+        Assert.Equal(0, rig.Host.GetSnapshot().CommandStartCount);
+
+        rig.Bridge.Core.NoteForeignCommandStart(first);
+        rig.Bridge.Core.NoteForeignCommandStart(first);
+        Assert.Equal(2, rig.Host.GetSnapshot().CommandStartCount);
+
+        rig.Activate(200);
+        Assert.Equal(0, rig.Host.GetSnapshot().CommandStartCount);
+        rig.Activate(100);
+        Assert.Equal(2, rig.Host.GetSnapshot().CommandStartCount);
+
+        rig.CloseActive(100);
+        Assert.Equal(0, rig.Host.GetSnapshot().CommandStartCount);
+    }
 }

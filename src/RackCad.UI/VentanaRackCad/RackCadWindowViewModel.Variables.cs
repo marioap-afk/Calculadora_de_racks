@@ -179,8 +179,8 @@ namespace RackCad.UI.VentanaRackCad
             });
         }
 
-        // The answer to «Actualizar»: written, the clean editors of the racks it redrew are closed (they hold what was read before) and
-        // the page reads the drawing again; not written, the draft stays with the reason.
+        // The answer to «Actualizar»: written, the clean editors of the racks it redrew are marked «El dibujo cambió» (they hold what was read
+        // before; T6 st, they were closed) and the page reads the drawing again; not written, the draft stays with the reason.
         private void OnVariablesWritten(VariablesDoorWritten written)
         {
             Contained(() =>
@@ -193,21 +193,19 @@ namespace RackCad.UI.VentanaRackCad
                 page.EndWriting(written);
                 if (!written.Written) return;
 
-                var closed = new List<string>();
+                // T6 st (review of 5114345e, A1; the Owner: «Sí, marcarlo»): the clean editors of the racks it redrew are marked «El dibujo
+                // cambió», with «Volver a leer del dibujo», instead of being closed.
+                var marked = new List<string>();
                 foreach (var rack in written.RedrawnRackIds ?? Array.Empty<string>())
                 {
-                    var key = (request.Session, rack);
-                    if (_selectiveDrafts.TryGetValue(key, out var entry) && !entry.Editor.IsDirty && !entry.Editor.IsWriting)
-                    {
-                        closed.Add(SelectiveNameOf(entry));
-                        ForgetSelective(key, entry);
-                    }
+                    if (MarkRedrawnByVariables(request.Session, rack) && _selectiveDrafts.TryGetValue((request.Session, rack), out var entry))
+                        marked.Add(SelectiveNameOf(entry));
                 }
 
-                if (closed.Count > 0)
+                if (marked.Count > 0)
                 {
-                    page.Say(page.Message + " Se cerró el editor de " + string.Join(", ", closed)
-                             + ", que mostraba lo que había antes: vuelve a abrirlo con «Editar aquí».", false);
+                    page.Say(page.Message + " El editor de " + string.Join(", ", marked)
+                             + " muestra lo que había antes: pulsa en él «Volver a leer del dibujo».", false);
                     RaiseDynamic();
                 }
 

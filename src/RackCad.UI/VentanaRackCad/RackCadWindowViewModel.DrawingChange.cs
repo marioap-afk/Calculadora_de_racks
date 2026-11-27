@@ -42,20 +42,23 @@ namespace RackCad.UI.VentanaRackCad
         private bool _rereading;
 
         // From Present: a command started, runs or ended in the drawing of the window. When one ends that changed the drawing and is not the
-        // command of the door, the editors of its drawing are marked.
+        // command of the door, the editors of its drawing are marked; the same for a drawing found changed by commands the window did not see
+        // (the palette hidden, the review of 5114345e A2) and, when another drawing was presented before a command ended, when its drawing
+        // comes back (M-2).
         private void PresentDrawingChange()
         {
             var session = Panel.PresentedSession;
-            var ended = _editorsWatch.Observe(session, Panel.PresentedBlock, Panel.PresentedDrawingChangeCount, out var started);
-            if (ended != null)
+            var step = _editorsWatch.Observe(session, Panel.PresentedBlock, Panel.PresentedDrawingChangeCount, Panel.PresentedCommandStartCount,
+                () => IsOwn(_commandRequest));
+            foreach (var verdict in step.Verdicts)
             {
-                var own = IsOwn(_commandRequest);
-                _commandRequest = null;
-                if (ended.ChangedTheDrawing && !own) MarkDrawingChanged(ended.Session);
+                if (verdict.ChangedTheDrawing && !verdict.Own) MarkDrawingChanged(verdict.Session);
             }
 
-            if (started)
-                _commandRequest = _inFlight != null && _inFlight.Session == session.Value && !_inFlight.Started ? _inFlight.Id : (long?)null;
+            if (step.Started.HasValue)
+                _commandRequest = _inFlight != null && _inFlight.Session == step.Started.Value && !_inFlight.Started ? _inFlight.Id : (long?)null;
+            else if (_editorsWatch.Running == null)
+                _commandRequest = null;
         }
 
         // The command took the request of the door that waited when it started: it answered (the request no longer waits) or said it took it.
@@ -88,6 +91,17 @@ namespace RackCad.UI.VentanaRackCad
             foreach (var pair in _cabeceraDrafts.Where(p => p.Key.Session == session).ToList())
                 marked += Mark(pair.Value.Editor.DrawingChange, pair.Key, EditCabeceraHere);
             if (marked > 0) RackList.RefreshStates();
+        }
+
+        // Review of 5114345e, A1 (the Owner: «Sí, marcarlo»): a write of «Variables» redrew the rack, so its clean Selectivo editor shows what
+        // was there before. It is marked, with «Volver a leer del dibujo», where VA closed it. An editor with changes stays protected as before
+        // (VA-04 in the page, S-04 in its «Actualizar»). True when it was marked.
+        private bool MarkRedrawnByVariables(SessionId session, string rackId)
+        {
+            var key = (session, rackId);
+            if (!_selectiveDrafts.TryGetValue(key, out var entry) || entry.Editor.IsNewRack || entry.Editor.IsDirty || entry.Editor.IsWriting) return false;
+            Mark(entry.Editor.DrawingChange, key, EditSelectiveHere);
+            return true;
         }
 
         private int Mark(RackEditorDrawingChange change, (SessionId Session, string RackId) key, Action editHere)

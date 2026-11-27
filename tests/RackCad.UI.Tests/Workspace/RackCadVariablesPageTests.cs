@@ -506,13 +506,15 @@ namespace RackCad.UI.Tests
         }
 
         [Fact]
-        public void TheCleanEditorOfARackTheWriteRedrewIsClosedSoItIsReadAgain()
+        // T6 st (review of 5114345e, A1; the Owner: «Sí, marcarlo»): the clean editor of a rack the write redrew is no longer closed: it is
+        // marked «El dibujo cambió», with «Volver a leer del dibujo», which reads it again.
+        public void TheCleanEditorOfARackTheWriteRedrewIsMarkedSoItIsReadAgain()
         {
             var rig = new Rig();
             rig.Window.OpenRack("SEL-1");
             rig.Window.EditSelectiveHere();
             rig.Door.AnswerLastSelectiveRead(bound: true);
-            Assert.Single(rig.Window.SelectiveEditors);
+            var editor = Assert.Single(rig.Window.SelectiveEditors);
 
             var page = rig.ShowAndRead();
             Define(page, "12");
@@ -520,8 +522,17 @@ namespace RackCad.UI.Tests
             var write = rig.Door.VariablesWrites.Single();
             rig.Door.AnswerVariablesWrite(new VariablesDoorWritten(write.RequestId, true, "ok", new[] { RackId }, 1));
 
-            Assert.Empty(rig.Window.SelectiveEditors);
-            Assert.EndsWith("Se cerró el editor de Selectivo A, que mostraba lo que había antes: vuelve a abrirlo con «Editar aquí».", page.Message);
+            Assert.Same(editor, Assert.Single(rig.Window.SelectiveEditors));
+            Assert.True(editor.DrawingChange.IsChanged);
+            Assert.Equal(RackEditorDrawingChange.CleanText, editor.DrawingChange.Text);
+            Assert.EndsWith("El editor de Selectivo A muestra lo que había antes: pulsa en él «Volver a leer del dibujo».", page.Message);
+
+            // «Volver a leer del dibujo» of the editor: the read of «Editar aquí» (the page reads the drawing again meanwhile: one request at a time).
+            rig.Door.AnswerVariablesRead(ReadOf(rig.Door.VariablesReads.Last().RequestId, 12.0));
+            rig.Window.OpenRack("SEL-1");
+            Assert.True(editor.DrawingChange.CanReread);
+            editor.DrawingChange.Reread();
+            Assert.Equal(2, rig.Door.SelectiveReads.Count);
         }
 
         [Fact]

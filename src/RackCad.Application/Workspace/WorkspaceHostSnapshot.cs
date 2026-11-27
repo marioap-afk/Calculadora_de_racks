@@ -34,7 +34,9 @@ namespace RackCad.Application.Workspace
     /// <summary>
     /// A plain-value picture of the panel state for the UI. It holds no host object. <paramref name="DrawingChangeCount"/> (I-64 T6 st) is
     /// <see cref="WorkspaceSession.DrawingChangeCount"/> of the active session (zero without one): the RackCad window compares it around a
-    /// command to tell whether the command changed the drawing.
+    /// command to tell whether the command changed the drawing. <paramref name="CommandStartCount"/> (T6 st, M-1 of the review) is how many
+    /// commands started in that session, as the bridge counts them for the update of the pilot (<c>ForeignCommandStartsOf</c>): the window
+    /// takes a command as the one of its door only when exactly one command started while it ran.
     /// </summary>
     public sealed record WorkspaceHostSnapshot(
         WorkspaceHostStatus Status,
@@ -44,7 +46,8 @@ namespace RackCad.Application.Workspace
         SelectionContext Selection,
         bool PickFirstDisabled,
         bool InstrumentationEnabled,
-        long DrawingChangeCount = 0);
+        long DrawingChangeCount = 0,
+        int CommandStartCount = 0);
 
     /// <summary>Answer to a selection-context request: the verdict, and the context only when accepted.</summary>
     public sealed record WorkspaceSelectionResponse(RequestDecision Decision, SelectionContext? Context);

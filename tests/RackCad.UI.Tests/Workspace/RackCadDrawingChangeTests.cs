@@ -34,7 +34,7 @@ namespace RackCad.UI.Tests
 
         /// <summary>A door that reads and writes the six systems of the window, as the door of the Plugin does.</summary>
         private sealed class Door : IRackCadSelectiveDoorPort, IRackCadCabeceraDoorPort, IRackCadCamaDoorPort, IRackCadCantileverDoorPort,
-            IRackCadPushBackDoorPort
+            IRackCadPushBackDoorPort, IRackCadBomPort, IRackCadWarehousePort, IRackCadVariablesDoorPort // M-4: the reads and writes of the pages
         {
             public List<(string Kind, RackDoorRequest Request)> Reads { get; } = new();
 
@@ -62,6 +62,43 @@ namespace RackCad.UI.Tests
             public event Action<CantileverDesignRead>? CantileverRead;
 
             public event Action<RackDesignRead>? PushBackRead;
+
+            // The answers of the BOM and of «Almacén» are not needed: what is own is that their command took the request (RequestStarted).
+            public event Action<RackBomReading>? BomRead { add { } remove { } }
+
+            public event Action<RackBomTab, RackBomReading>? BomPageAsked { add { } remove { } }
+
+            public event Action<WarehouseReading>? WarehouseRead { add { } remove { } }
+
+            public event Action<WarehousePlaced>? WarehousePlaced { add { } remove { } }
+
+            public event Action<VariablesDoorRead>? VariablesRead;
+
+            public event Action<VariablesDoorWritten>? VariablesWritten;
+
+            /// <summary>The requests of the pages: «BOM y lista de racks», «Almacén» and «Variables» (M-4 of the review).</summary>
+            public List<(string Kind, long RequestId)> PageRequests { get; } = new();
+
+            private RackCadClassicResult PageRequestOf(string kind, long requestId)
+            {
+                PageRequests.Add((kind, requestId));
+                if (Answer.IsStarted) During?.Invoke(requestId);
+                return Answer;
+            }
+
+            public RackCadClassicResult RequestBomRead(RackBomRequest request) => PageRequestOf("BOM", request.RequestId);
+
+            public RackCadClassicResult RequestWarehouseRead(WarehouseReadRequest request) => PageRequestOf("Almacén", request.RequestId);
+
+            public RackCadClassicResult RequestWarehousePlace(WarehousePlaceRequest request) => PageRequestOf("Almacén colocar", request.RequestId);
+
+            public RackCadClassicResult RequestVariables(VariablesDoorRequest request) => PageRequestOf("Variables leer", request.RequestId);
+
+            public RackCadClassicResult RequestVariablesUpdate(VariablesDoorWrite write) => PageRequestOf("Variables escribir", write.RequestId);
+
+            public void AnswerVariablesRead(VariablesDoorRead read) => VariablesRead?.Invoke(read);
+
+            public void AnswerVariablesWrite(VariablesDoorWritten written) => VariablesWritten?.Invoke(written);
 
             private RackCadClassicResult ReadOf(string kind, RackDoorRequest request)
             {
@@ -158,7 +195,7 @@ namespace RackCad.UI.Tests
 
         private static readonly BrowserRackListEntry[] Listed =
         {
-            new("SEL-1", "Selectivo A", RackEmbedDocument.KindSelective, new[] { "frontal" }),
+            new("SEL-1", "Selectivo A", RackEmbedDocument.KindSelective, new[] { "frontal", "planta" }), // the planta: the seed of «Almacén» (M-4)
             new("DIN-1", "DIN 1", RackEmbedDocument.KindDynamic, new[] { "lateral" }),
             new("PB-1", "PB 1", RackEmbedDocument.KindPushBack, new[] { "lateral" }),
             new("CAN-1", "Cantilever 1", RackEmbedDocument.KindCantilever, new[] { "frontal" }),
@@ -252,21 +289,42 @@ namespace RackCad.UI.Tests
 
             public RackCadWindowViewModel Window { get; }
 
-            // The changes of the database each session received (WorkspaceSession.DrawingChangeCount), as the host presents them.
+            // The changes of the database each session received (WorkspaceSession.DrawingChangeCount) and the commands that started in it
+            // (WorkspaceHostSnapshot.CommandStartCount, M-1 of the review), as the host presents them.
             private readonly Dictionary<long, long> _changes = new();
+            private readonly Dictionary<long, int> _starts = new();
+            private bool _running;
 
             /// <summary>The database of the drawing of a session changes (an object appended, erased, modified…).</summary>
             public void ChangeTheDatabase(long session = 7) => _changes[session] = ChangesOf(session) + 1;
 
+            /// <summary>One more command starts in the drawing while another runs (a script, a macro, <c>(command …)</c>): no presentation.</summary>
+            public void AnotherCommandStarts(long session = 7) => _starts[session] = StartsOf(session) + 1;
+
+            /// <summary>Commands ran in the drawing while nothing was presented (the palette was hidden), changing it or not.</summary>
+            public void CommandsWhilePaletteHidden(long session = 7, bool changesTheDrawing = true)
+            {
+                AnotherCommandStarts(session);
+                if (changesTheDrawing) ChangeTheDatabase(session);
+            }
+
             private long ChangesOf(long session) => _changes.TryGetValue(session, out var count) ? count : 0;
 
-            /// <summary>What the host presents: the drawing of a session, at rest or with a command running, and the changes of its database.</summary>
+            private int StartsOf(long session) => _starts.TryGetValue(session, out var count) ? count : 0;
+
+            /// <summary>
+            /// What the host presents: the drawing of a session, at rest or with a command running, and its two counts. The bridge counts the
+            /// start of a command after the panel presented it (CommandWillStart), so a start is counted after its presentation.
+            /// </summary>
             public void Present(long session = 7, WorkspaceActionBlock block = WorkspaceActionBlock.None)
             {
                 Host.Snapshot = new WorkspaceHostSnapshot(WorkspaceHostStatus.Ready, new SessionId(session), true,
                     new WorkspaceActionAvailability(block == WorkspaceActionBlock.None, false, block), SelectionContext.None, false, false,
-                    ChangesOf(session));
+                    ChangesOf(session), StartsOf(session));
                 Window.Refresh();
+                var runs = block == WorkspaceActionBlock.CommandActive;
+                if (runs && !_running) AnotherCommandStarts(session);
+                _running = runs;
             }
 
             /// <summary>
@@ -498,20 +556,167 @@ namespace RackCad.UI.Tests
         }
 
         [Fact]
-        public void TheChangesOfTheDatabaseOutsideACommandDoNotMarkAndAnotherDrawingPresentedDuringACommandDoes()
+        public void ShowingThePaletteAgainMarksTheEditorsOnlyWhenCommandsChangedTheDrawingMeanwhile()
         {
+            // Review of 5114345e, A2 (the Owner: «Sí, al volver a mostrarla»).
             var rig = new Rig();
             var editor = (DynamicEditorViewModel)rig.Open(Dynamic);
 
-            // A change counted at rest (no command ran) is not a command of AutoCAD: nothing is said.
-            rig.ChangeTheDatabase();
+            rig.CommandsWhilePaletteHidden(changesTheDrawing: false); // a ZOOM while the palette was hidden
             rig.Present();
             Assert.False(editor.DrawingChange.IsChanged);
 
-            // A command whose drawing stops being presented before it ends: the window cannot tell, and says it may have changed.
-            rig.Present(block: WorkspaceActionBlock.CommandActive);
-            rig.Present(session: 8);
+            rig.ChangeTheDatabase(); // a change with no command (the bookkeeping around one): not a command of AutoCAD
+            rig.Present();
+            Assert.False(editor.DrawingChange.IsChanged);
+
+            rig.CommandsWhilePaletteHidden(); // an ERASE while the palette was hidden
+            rig.Present();
             Assert.True(editor.DrawingChange.IsChanged);
+            Assert.Equal("Abierto en la ventana (posiblemente obsoleto)", rig.Item("DIN-1").StatusText);
+        }
+
+        [Fact]
+        public void ACommandLeftForAnotherDrawingIsJudgedWhenItsDrawingIsPresentedAgain()
+        {
+            // Review of 5114345e, M-2: the verdict waits for the drawing; it is no longer marked at once.
+            var rig = new Rig();
+            var editor = (DynamicEditorViewModel)rig.Open(Dynamic);
+
+            rig.Present(block: WorkspaceActionBlock.CommandActive); // a ZOOM, and the user goes to drawing 8 before it ends
+            rig.Present(session: 8);
+            Assert.False(editor.DrawingChange.IsChanged);
+            rig.Present();
+            Assert.False(editor.DrawingChange.IsChanged); // it changed nothing
+
+            rig.Present(block: WorkspaceActionBlock.CommandActive); // an ERASE
+            rig.ChangeTheDatabase();
+            rig.Present(session: 8);
+            Assert.False(editor.DrawingChange.IsChanged);
+            rig.Present();
+            Assert.True(editor.DrawingChange.IsChanged);
+        }
+
+        [Fact]
+        public void ACommandOfTheDoorRunTogetherWithAnotherCommandIsNotOwn()
+        {
+            // Review of 5114345e, M-1: a script, a macro (^C^C), (command …) or the command of the door right after another one run as ONE.
+            var rig = new Rig();
+            var selective = (SelectiveEditorViewModel)rig.Open(Selective);
+            rig.Door.During = _ =>
+            {
+                rig.Present(block: WorkspaceActionBlock.CommandActive); // a command of a script that changes the drawing…
+                rig.ChangeTheDatabase();
+                rig.AnotherCommandStarts(); // …and RACKDINAMICOABRIR right after it, with no rest between them
+                rig.Door.AnswerLastRead();
+                rig.Present();
+            };
+            rig.Window.OpenRack("DIN-1");
+            rig.Window.EditDynamicHere();
+
+            Assert.NotNull(rig.Active(Dynamic));
+            Assert.True(selective.DrawingChange.IsChanged);
+        }
+
+        // Review of 5114345e, M-4: every command of the door of the window is own, also when it changes the drawing; none marks the editors.
+        [Theory]
+        [InlineData("BOM")]
+        [InlineData("Almacén")]
+        [InlineData("Variables")]
+        [InlineData("Insertar")]
+        [InlineData("Nuevo")]
+        public void NoCommandOfTheDoorMarksTheEditorsEvenWhenItChangesTheDrawing(string command)
+        {
+            var rig = new Rig();
+            var dynamic = (DynamicEditorViewModel)rig.Open(Dynamic);
+            var selective = (SelectiveEditorViewModel)rig.Open(Selective);
+            var planta = RackCad.Application.Systems.Shared.RackViewAddress.Whole(RackCad.Application.Systems.Shared.DimensionViewKind.Planta);
+
+            // The command takes its request (it says so, RequestStarted), may ask for a point, changes the drawing and answers, in one run.
+            void Run(Action<long> answer) => rig.Door.During = id =>
+            {
+                rig.Door.During = null;
+                rig.Present(block: WorkspaceActionBlock.CommandActive);
+                rig.Door.Start(id);
+                rig.ChangeTheDatabase();
+                answer(id);
+                rig.Present();
+            };
+
+            switch (command)
+            {
+                case "BOM":
+                    Run(_ => { });
+                    rig.Window.ShowPage(RackCadWindowPage.Bom); // RACKBOMLEER (BomTaken)
+                    Assert.Equal("BOM", rig.Door.PageRequests.Single().Kind);
+                    break;
+                case "Almacén":
+                    Run(_ => { });
+                    rig.Window.ShowPage(RackCadWindowPage.Almacen); // RACKALMACENLEER (OnWarehouseRequestStarted)
+                    Assert.Equal("Almacén", rig.Door.PageRequests.Single().Kind);
+                    break;
+                case "Variables":
+                    rig.Window.ShowPage(RackCadWindowPage.Variables);
+                    rig.Door.AnswerVariablesRead(VariablesReadOf(rig.Door.PageRequests.Single().RequestId));
+                    var page = rig.Window.VariablesPage!;
+                    page.InspectorDefinition = "12";
+                    page.CommitInspectorDefinition();
+                    Run(id => rig.Door.AnswerVariablesWrite(new VariablesDoorWritten(id, true, "ok", Array.Empty<string>(), 0)));
+                    page.RequestWrite(); // RACKVARIABLESAPLICAR
+                    Assert.Equal("Variables escribir", rig.Door.PageRequests[1].Kind);
+                    break;
+                case "Insertar":
+                    rig.Window.OpenRack("DIN-1");
+                    Run(_ => rig.Door.AnswerLastWrite(true));
+                    dynamic.InsertWith(planta); // RACKDINAMICOINSERTAR: the views of the rack, then the point of the new one
+                    Assert.Equal(Dynamic, rig.Door.Writes.Single().Kind);
+                    break;
+                case "Nuevo":
+                    rig.Window.StartNewDynamic();
+                    var draft = rig.Window.NewDynamicEditor!;
+                    Run(_ => rig.Door.AnswerLastWrite(true));
+                    draft.InsertWith(planta); // RACKDINAMICONUEVO: the point of the new rack
+                    Assert.Equal(Dynamic, rig.Door.Writes.Single().Kind);
+                    Assert.False(draft.DrawingChange.IsChanged);
+                    break;
+            }
+
+            Assert.False(dynamic.DrawingChange.IsChanged, command);
+            Assert.False(selective.DrawingChange.IsChanged, command);
+        }
+
+        // The drawing of «Variables»: «Holgura estándar» (10 in) and the Selectivo A that uses it (as RackCadVariablesPageTests reads it).
+        private static VariablesDoorRead VariablesReadOf(long requestId)
+        {
+            var authored = SelectiveWindowFixtures.Store.Deserialize(SelectiveWindowFixtures.Authored(SelectiveWindowFixtures.Structure(), bound: true));
+            var entries = new List<RackCad.Application.ProjectVariables.ProjectVariableScanEntry>
+            {
+                RackCad.Application.ProjectVariables.ProjectVariableScanEntry.Selective("D1", "SEL-1", authored, 1),
+            };
+            return new VariablesDoorRead(requestId, true, SelectiveWindowFixtures.Register(10.0), entries,
+                new CustomPropertiesStore().Read(CustomPropertiesPayload.Absent()), null);
+        }
+
+        // Review of 5114345e, A3 (the Owner: «Sí, afinarlo»): the host forgets the list after any command (a ZOOM too); the list says it may be
+        // out of date only when the database of the drawing changed since it was read.
+        [Fact]
+        public void TheListIsNotSaidOutOfDateAfterAZoomAndItIsAfterAnErase()
+        {
+            var rig = new Rig();
+            Assert.Equal(string.Empty, rig.Window.RackList.StatusText);
+            rig.Summary.ListResponder = (_, userRequested) => userRequested ? BrowserRackList.Ready(Listed) : BrowserRackList.Outdated();
+
+            rig.ForeignCommand(changesTheDrawing: false); // ZOOM
+            Assert.Equal(string.Empty, rig.Window.RackList.StatusText);
+            Assert.Equal(Listed.Length, rig.Window.RackList.RackCount);
+
+            rig.ForeignCommand(); // ERASE
+            Assert.Equal("La lista puede no estar al día: pulsa «Volver a leer la lista».", rig.Window.RackList.StatusText);
+
+            rig.Window.RackList.Reload(); // «Volver a leer la lista»
+            Assert.Equal(string.Empty, rig.Window.RackList.StatusText);
+            rig.ForeignCommand(changesTheDrawing: false);
+            Assert.Equal(string.Empty, rig.Window.RackList.StatusText);
         }
 
         // ------------------------------------------------------------------ the notice and «Volver a leer del dibujo», in the six editors

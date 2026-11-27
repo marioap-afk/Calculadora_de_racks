@@ -1325,7 +1325,7 @@ namespace RackCad.UI.VentanaRackCad
         {
             try
             {
-                RackList.Present(Panel.PresentedSession, Panel.PresentedCanRead, Panel.PresentedBlock);
+                RackList.Present(Panel.PresentedSession, Panel.PresentedCanRead, Panel.PresentedBlock, Panel.PresentedDrawingChangeCount); // T6 st: A3
             }
             catch (Exception ex)
             {

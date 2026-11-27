@@ -123,7 +123,8 @@ namespace RackCad.UI.VentanaRackCad
                 Panel.PresentedBlock,
                 _inFlight != null && _inFlight.IsWarehouse,
                 session => port == null || IsAlive(port, session),
-                Panel.PresentedDrawingChangeCount); // T6 st: only a command that changed the drawing makes «Almacén» possibly out of date
+                Panel.PresentedDrawingChangeCount, // T6 st: only a command that changed the drawing makes «Almacén» possibly out of date
+                Panel.PresentedCommandStartCount); // T6 st (M-1): own only with exactly one command
             RaiseTakeToWarehouse();
         }
 

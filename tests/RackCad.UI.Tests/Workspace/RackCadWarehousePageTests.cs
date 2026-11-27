@@ -152,16 +152,30 @@ namespace RackCad.UI.Tests
 
             public WarehouseReadRequest LastRead => Door.Reads.Last();
 
-            // T6 st (the Owner, 2026-11-27: «Afinarlo»): the changes of the database of the drawing, as the host presents them. A command of
-            // these tests changes the drawing while it runs (a MOVE), unless it says it does not (a ZOOM).
-            private long _changes;
+            // T6 st (the Owner, 2026-11-27: «Afinarlo»; review of 5114345e, M-1): what the host presents of each drawing, the changes of its
+            // database and the commands that started in it. A command of these tests changes the drawing while it runs (a MOVE), unless it says
+            // it does not (a ZOOM); the bridge counts its start after the panel presented it (CommandWillStart).
+            private readonly Dictionary<long, (long Changes, int Starts)> _counts = new();
+            private bool _running;
+
+            private (long Changes, int Starts) CountsOf(long session) => _counts.TryGetValue(session, out var counts) ? counts : (0, 0);
+
+            /// <summary>Commands ran in the drawing while nothing was presented (the palette hidden), changing it or not.</summary>
+            public void CommandsWhilePaletteHidden(long session = 7, bool changesTheDrawing = true)
+            {
+                var (changes, starts) = CountsOf(session);
+                _counts[session] = (changes + (changesTheDrawing ? 1 : 0), starts + 1);
+            }
 
             public void Present(long session = 7, WorkspaceActionBlock block = WorkspaceActionBlock.None, bool changesTheDrawing = true)
             {
+                var (changes, starts) = CountsOf(session);
                 Host.Snapshot = new WorkspaceHostSnapshot(WorkspaceHostStatus.Ready, new SessionId(session), true,
-                    new WorkspaceActionAvailability(block == WorkspaceActionBlock.None, false, block), SelectionContext.None, false, false, _changes);
+                    new WorkspaceActionAvailability(block == WorkspaceActionBlock.None, false, block), SelectionContext.None, false, false, changes, starts);
                 Window.Refresh();
-                if (block != WorkspaceActionBlock.None && changesTheDrawing) _changes++;
+                var runs = block == WorkspaceActionBlock.CommandActive;
+                _counts[session] = (changes + (runs && changesTheDrawing ? 1 : 0), starts + (runs && !_running ? 1 : 0));
+                _running = runs;
             }
 
             // RACKALMACENLEER: it takes the last read, answers with what it read and ends (the drawing at rest again).
@@ -258,7 +272,7 @@ namespace RackCad.UI.Tests
             rig.Present(session: 8);
             rig.Present();
             Assert.Single(rig.Door.Reads);
-            Assert.Equal("Puede no estar al día", rig.Page.ChipText); // coming back to a drawing
+            Assert.Equal("Lectura al día", rig.Page.ChipText); // coming back to a drawing where nothing ran (T6 st, review of 5114345e, M-2)
         }
 
         [Fact]
@@ -561,8 +575,6 @@ namespace RackCad.UI.Tests
 
             rig.Present();
             rig.Present(block: WorkspaceActionBlock.CommandActive); // a MOVE of the user
-            Assert.Equal("Lectura al día", rig.Page.ChipText); // T6 st: it is said when the command ends, if it changed the drawing
-            rig.Present();
             Assert.Equal("Puede no estar al día", rig.Page.ChipText);
             Assert.True(rig.Page.ShowStale);
             Assert.True(rig.Page.CanPlace); // «Colocar» reads again before it writes (question 5)
@@ -779,12 +791,12 @@ namespace RackCad.UI.Tests
             Assert.True(rig.Page.CanPlace);
 
             rig.Present(block: WorkspaceActionBlock.CommandActive); // a command of the user
-            rig.Present(); // T6 st: it ends, having changed the drawing
             Assert.Equal("Puede no estar al día", rig.Page.ChipText);
         }
 
-        // T6 st (the Owner, 2026-11-27: «Afinarlo»): a command that changes nothing of the drawing (a ZOOM, a PAN, a REGEN) leaves the reading up to
-        // date; a «U» or an ERASE does not.
+        // T6 st (the Owner, 2026-11-27: «Afinarlo»; review of 5114345e, I-3): while a command runs the reading may be out of date (provisionally);
+        // when it ends, a command that changed nothing of the drawing (a ZOOM, a PAN, a REGEN) leaves it up to date again, and a «U» or an ERASE
+        // does not.
         [Fact]
         public void AZoomLeavesTheReadingUpToDateAndAUOrAnEraseDoesNot()
         {
@@ -793,6 +805,7 @@ namespace RackCad.UI.Tests
             Assert.Equal("Lectura al día", rig.Page.ChipText);
 
             rig.Present(block: WorkspaceActionBlock.CommandActive, changesTheDrawing: false); // ZOOM
+            Assert.Equal("Puede no estar al día", rig.Page.ChipText); // while it runs
             rig.Present();
             Assert.Equal("Lectura al día", rig.Page.ChipText);
             Assert.False(rig.Page.ShowStale);
@@ -802,6 +815,32 @@ namespace RackCad.UI.Tests
             Assert.Equal("Puede no estar al día", rig.Page.ChipText);
             Assert.True(rig.Page.ShowStale);
             Assert.Single(rig.Door.Reads); // nothing is read on its own
+        }
+
+        // Review of 5114345e, M-2 and A2: coming back to a drawing, or showing the palette again, makes the reading possibly out of date only when
+        // commands changed the drawing meanwhile.
+        [Fact]
+        public void ComingBackOrShowingThePaletteAgainSaysItOnlyWhenCommandsChangedTheDrawing()
+        {
+            var rig = new Rig();
+            rig.Open();
+            rig.Present(8);
+            rig.Present(7);
+            Assert.Equal("Lectura al día", rig.Page.ChipText);
+
+            rig.Present(8);
+            rig.CommandsWhilePaletteHidden(7);
+            rig.Present(7);
+            Assert.Equal("Puede no estar al día", rig.Page.ChipText);
+
+            var again = new Rig();
+            again.Open();
+            again.CommandsWhilePaletteHidden(changesTheDrawing: false); // a ZOOM while the palette was hidden
+            again.Present();
+            Assert.Equal("Lectura al día", again.Page.ChipText);
+            again.CommandsWhilePaletteHidden(); // an ERASE
+            again.Present();
+            Assert.Equal("Puede no estar al día", again.Page.ChipText);
         }
 
         // AL-S15: selecting the planta in AutoCAD is part of the page (question 3): the window stays on «Almacén» and sends nothing.

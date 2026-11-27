@@ -16,7 +16,12 @@ namespace RackCad.UI.VentanaRackCad
         // «Escribir encima» of the question: the write of «Actualizar», with its checks again.
         private void WriteOverTheDrawing()
         {
-            if (!CanUpdate) return;
+            if (!CanUpdate)
+            {
+                Say(UpdateBlockedText, true); // review of 5114345e, M-6: as the other five
+                return;
+            }
+
             _update(this);
         }
     }

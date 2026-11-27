@@ -256,6 +256,9 @@ namespace RackCad.UI.VentanaRackCad
             public bool Stale;
             public DateTime StaleAt;
             public StaleCause Cause;
+
+            // T6 st (I-3): the mark of a command that runs, which goes away when it ends having changed nothing.
+            public bool Provisional;
         }
 
         // Why the reading may be out of date: a command ran after it, the user came back to the drawing, or a read was not completed.
@@ -901,7 +904,8 @@ namespace RackCad.UI.VentanaRackCad
         /// The window presented a snapshot: the page follows its drawing, says the BOM may be out of date after a command that is not its own
         /// read (BM-01) and forgets the drawings that were closed. It never sends a read: only a gesture of the user does (correction 4).
         /// </summary>
-        internal void Present(SessionId? session, WorkspaceActionBlock block, bool bomInFlight, Func<SessionId, bool> isAlive, long databaseChanges = 0)
+        internal void Present(SessionId? session, WorkspaceActionBlock block, bool bomInFlight, Func<SessionId, bool> isAlive, long databaseChanges = 0,
+            int commandStarts = 0)
         {
             if (isAlive != null)
             {
@@ -916,30 +920,55 @@ namespace RackCad.UI.VentanaRackCad
                 _afterRead = null;
                 _exported = null;
                 Say(string.Empty, false);
-                if (previous.HasValue && Current?.Reading != null && !Current.Stale) MarkStale(Current, StaleCause.Return);
+                // T6 st (review of 5114345e, M-2): coming back to a drawing says «Volviste a este dibujo» only when commands changed it meanwhile
+                // (the verdict of RackCadCommandWatch, below); before, it was said every time.
 
                 // A drawing never read stays «Sin leer» with «Calcular»: changing drawing is no gesture, so nothing is sent (correction 4).
                 RebuildData();
             }
 
             // Any command that ran in the drawing after the reading (a write of the window too) and changed it makes the BOM possibly out of
-            // date. T6 st (the Owner, 2026-11-27: «Afinarlo»): it is said when the command ends, and only when the database of the drawing changed
-            // meanwhile (RackCadCommandWatch); a ZOOM, a PAN or a REGEN change nothing. The read itself does not count, and only it: RACKBOMLEER
-            // from the moment it says it took the request (Started) — or RACKLISTA / RACKBOMTOTAL, which read inside themselves — until the
-            // drawing is at rest again after its answer (correction 1 of the review).
+            // date. The read itself does not count, and only it: RACKBOMLEER from the moment it says it took the request (Started) — or
+            // RACKLISTA / RACKBOMTOTAL, which read inside themselves — until the drawing is at rest again after its answer (correction 1 of the
+            // review). T6 st (the Owner, 2026-11-27: «Afinarlo»; review of 5114345e, I-3, M-1, M-2): the BOM is said possibly out of date as soon
+            // as a command starts (provisionally: an export during a COPY asks), and when the command ends the mark stays only if the database
+            // of the drawing changed meanwhile (a ZOOM, a PAN or a REGEN change nothing) and the command was not the read (exactly one command).
             var commandRuns = block == WorkspaceActionBlock.CommandActive || block == WorkspaceActionBlock.ModalActive;
-            var ended = _commands.Observe(session, block, databaseChanges, out _);
-            if (ended != null && ended.ChangedTheDrawing && !_ownCommandPending
-                && _drawings.TryGetValue(ended.Session, out var state) && state.Reading != null && !state.Stale)
+            var step = _commands.Observe(session, block, databaseChanges, commandStarts, () => _ownCommandPending);
+            var raise = false;
+            foreach (var verdict in step.Verdicts)
             {
-                MarkStale(state, StaleCause.Command);
-                RaiseAll();
+                if (!_drawings.TryGetValue(verdict.Session, out var state) || state.Reading == null) continue;
+                if (verdict.Kind != RackCadChangeKind.Command)
+                {
+                    if (!state.Stale) MarkStale(state, verdict.Kind == RackCadChangeKind.Return ? StaleCause.Return : StaleCause.Command);
+                }
+                else if (verdict.ChangedTheDrawing && !verdict.Own)
+                {
+                    if (!state.Stale) MarkStale(state, StaleCause.Command);
+                }
+                else if (state.Stale && state.Provisional)
+                {
+                    state.Stale = false; // the command changed nothing, or it was the read: the provisional mark goes away
+                }
+
+                state.Provisional = false;
+                raise = true;
             }
 
+            if (step.Started is SessionId started && !_ownCommandPending && _drawings.TryGetValue(started, out var running)
+                && running.Reading != null && !running.Stale)
+            {
+                MarkStale(running, StaleCause.Command);
+                running.Provisional = true;
+                raise = true;
+            }
+
+            if (raise) RaiseAll();
             if (!commandRuns && !bomInFlight) _ownCommandPending = false;
         }
 
-        // T6 st: the command that runs in the drawing, from its start to its end, and whether it changed the database meanwhile.
+        // T6 st: the commands that run in the drawings, from their start to their end, and whether they changed the database meanwhile.
         private readonly RackCadCommandWatch _commands = new RackCadCommandWatch();
 
         private void MarkStale(DrawingState state, StaleCause cause)
@@ -1001,6 +1030,7 @@ namespace RackCad.UI.VentanaRackCad
             _ownCommandPending = false;
             if (request.HasValue && _drawings.TryGetValue(request.Value.Session, out var state) && state.Reading != null && !state.Stale)
                 MarkStale(state, StaleCause.Stopped);
+            else if (request.HasValue && _drawings.TryGetValue(request.Value.Session, out var marked)) marked.Provisional = false; // T6 st: a read left unfinished keeps the mark
             if (message != null) Say(message, true);
             else if (abandoned && request.HasValue)
                 Say("Se dejó de esperar la lectura n.º " + request.Value.Id.ToString(CultureInfo.InvariantCulture) + " del BOM: si la orden llega a correr, no cambiará nada.", false);
@@ -1025,6 +1055,7 @@ namespace RackCad.UI.VentanaRackCad
             state.Reading = reading;
             state.ReadAt = Now;
             state.Stale = false;
+            state.Provisional = false; // T6 st
             state.Cause = StaleCause.Command;
             var after = readByRunningCommand ? null : _afterRead;
             if (!readByRunningCommand) _afterRead = null;

@@ -5127,3 +5127,139 @@ drenaje) solo marca los borradores del piloto (`WorkspaceHostCore.MarkPilotDraft
 - **Core Full:** 19485 correctas, 0 con error, 403 omitidas (total 19888; la base daba 19483/0/403: +2 de `WorkspaceDrawingChangeCountTests`).
 - **La solución en Debug** (Plugin incluido): 0 errores; el Plugin se volvió a compilar tras los últimos comentarios, con 0 errores.
 - Archivos tocados sin caracteres de control (escaneo de los 43 cambiados o nuevos).
+
+### Correcciones de la revisión (sobre 5114345e)
+
+Las tres respuestas del Owner del 2026-11-27 y los hallazgos de la revisión independiente, en una sola ronda. Sin commit (la sesión lo hace).
+
+**A. Las respuestas del Owner:**
+- **A1. «Variables» y los editores limpios («Sí, marcarlo»).** Cambia una conducta declarada en VA: hasta aquí, una escritura de «Variables»
+  CERRABA los editores limpios de Selectivo de los racks que redibujó («Se cerró el editor de…»).
+  - Ahora los marca «El dibujo cambió», con «Volver a leer del dibujo» (`MarkRedrawnByVariables`). La página dice «El editor de … muestra lo
+    que había antes: pulsa en él «Volver a leer del dibujo».».
+  - Un editor con cambios sigue protegido como antes (VA-04 en la página, S-04 en su «Actualizar»).
+  - La escritura misma es de la puerta y no marca por la señal.
+- **A2. La paleta oculta («Sí, al volver a mostrarla»).** Va en la ventana, con los números por sesión, sin tocar `WorkspacePaletteHost`:
+  - al presentarse de nuevo un dibujo sin que se viera ninguna orden, si en ese dibujo **empezaron órdenes y cambió la base de datos**, sus
+    editores se marcan (y el BOM y «Almacén» dicen «Puede no estar al día»);
+  - un cambio sin ninguna orden (lo que rodea a una orden, campos) no marca: así no marcan de más los cambios que llegan tras una escritura
+    propia;
+  - cierra el hueco de T6st-S7 y de BM-S1.
+- **A3. La lista tras un ZOOM («Sí, afinarlo»).** Sin tocar `TryDrain`:
+  - `RackListViewModel` recuerda `DrawingChangeCount` de su última lectura de cada dibujo, y cuando el host contesta que la olvidó
+    (`Outdated`), solo dice «La lista puede no estar al día…» si el número se movió;
+  - si no se movió, la lista que tiene es la del dibujo y no dice nada;
+  - son tres líneas marcadas `T6 st` en el archivo y un bloque nuevo junto a `RefreshStates` (la parte ui tocó otras líneas del mismo
+    archivo).
+  - **M-02 de la segunda revisión queda resuelto.**
+
+**B. Los hallazgos:**
+- **I-2:** no se tocó el puente ni `SubjectOf`. T6st-S2 añade sus casos al smoke (abajo).
+- **I-3 (el BOM decía «Al día» con una orden en curso que ya había cambiado el dibujo):**
+  - el BOM y «Almacén» se marcan **de forma provisional al EMPEZAR** la orden, como antes, y la marca se quita al terminar si el número no se
+    movió o si la orden era la suya;
+  - una lectura del BOM que se deja de esperar durante la orden deja la marca fija (como antes);
+  - la hora de «corrió una orden a las…» vuelve a ser la del inicio. El afinado del ZOOM se conserva.
+- **M-1 (órdenes fundidas):**
+  - la instantánea lleva `CommandStartCount`, el número de inicios de orden de la sesión, que el puente ya cuenta para el piloto
+    (`ForeignCommandStartsOf`, leído en `WorkspaceHostCore.GetSnapshot` a través de `IWorkspaceBridgeLink`, sin tocar el puente);
+  - una orden es propia (de la puerta, o la lectura del BOM o de «Almacén») solo si empezó **exactamente una** mientras corría. Un script,
+    una macro `^C^C`, `(command …)` o la orden de la puerta justo tras otra, sin reposo entre ellas, son ajenas.
+- **M-2:** con los mismos números se resuelven «Otro dibujo» (T6st-S4) y la regla «Volviste a este dibujo» del BOM y de «Almacén»:
+  - si la ventana presenta otro dibujo antes de que termine la orden, el veredicto espera a que ese dibujo vuelva a presentarse;
+  - volver a un dibujo dice «Puede no estar al día» solo si en él empezaron órdenes y cambió la base de datos. Antes lo decía siempre.
+  - Es el mismo mecanismo de A2 (`RackCadCommandWatch`, rehecho: veredictos `Command`, `Unseen` y `Return`).
+- **M-3, M-5:** declarados (T6st-S9 y S10).
+- **M-4:** una prueba parametrizada por orden de la puerta, con cambios en el dibujo; ninguna marca.
+- **M-6:**
+  - la pregunta en línea usa el estilo `QuestionPanel` de las otras preguntas (copiado en el control, que no hereda los recursos de cada
+    vista);
+  - la cabecera dice `UpdateBlockedText` cuando «Escribir encima» no puede, como los otros cinco.
+- **M-7:** por orden del coordinador (tras la pausa que pidió el Owner) no se corrieron las suites completas en esta ronda, para no saturar la
+  máquina: solo las focales y la solución en Debug. La sesión las corre sobre la rama integrada.
+- Los nombres que usará at (`DrawingChange.IsChanged`, `AsksBeforeWrite`, `MarkWritten` → `Clear`) no cambiaron.
+
+**Supuestos al día** (sustituyen a los de arriba con el mismo número; los demás siguen):
+
+| Id | Supuesto | Por qué |
+|---|---|---|
+| T6st-S1 | Los **editores** se marcan al terminar la orden. El **BOM y «Almacén»** se marcan provisionalmente al empezar (I-3), con la hora del inicio, y la marca se quita al terminar si la orden no cambió el dibujo o era la suya | En el editor nada se escribe mientras corre la orden (la puerta contesta ocupada); en el BOM se puede exportar durante una COPY |
+| T6st-S2 | «Cambiar el dibujo» = un evento de objeto de su base de datos mientras corría la orden (no la contabilidad asociativa; una variable de sistema no lo es). **Comprobaciones del smoke (I-2), para decidir después si marcan de más:** ZOOM y PAN en el espacio modelo y DENTRO de una ventana gráfica de una presentación (la ventana gráfica es un objeto: se espera que marque); QSAVE; cambiar de pestaña Modelo/presentación; FIELDEVAL o una regeneración con campos; una matriz asociativa (editarla, y una orden que la recalcule); REGEN; LAYER (marca: cambia el dibujo) | Es lo que el host ya distingue (`DatabaseObjectChanged`, IC-10), sin una lista de órdenes; no se toca el puente ni `SubjectOf` (F4) |
+| T6st-S4 | Si la ventana presenta otro dibujo antes de que termine la orden, el veredicto espera a que ese dibujo vuelva a presentarse y lo dan los números (M-2). Un cambio de la base de datos sin ninguna orden no marca | El número es de la sesión; un cambio sin orden no es «una orden de AutoCAD» |
+| T6st-S7 | Con la paleta oculta, las órdenes no se ven; al presentarse de nuevo el dibujo, si empezaron órdenes en él y cambió la base de datos, se marcan los editores y el BOM y «Almacén» dicen «Puede no estar al día» (A2). Un ZOOM con la paleta oculta no marca | La respuesta del Owner, sin tocar los manejadores de la paleta |
+| T6st-S9 | **M-3:** con el panel en error, o la sesión degradada, a mitad de una orden: la ventana no presenta el dibujo (o lo presenta como degradado), así que la orden se deja y su veredicto espera a que el dibujo vuelva a presentarse sano. Una sesión degradada no recibe eventos: sus números no se mueven y una orden de entonces no marca | La degradación ya apaga la sincronización de esa sesión (F1); no se reabre aquí |
+| T6st-S10 | **M-5:** mientras se edita una cabecera embebida de un Selectivo (`SelectiveEditorView.Cabecera.cs:42`, la vista del Selectivo cambia su contenido por el de la cabecera), no se ve el aviso del Selectivo; vuelve a verse al volver al editor del rack. La cabecera embebida nunca se marca (es una copia del borrador) | La vista de la cabecera embebida no tiene la cabecera del rack |
+| T6st-S11 | **M-1:** una orden es de la puerta solo si tomó la petición y empezó exactamente una. Una orden transparente durante una de la puerta (un `'ZOOM` mientras se coloca una vista) cuenta como segunda y la vuelve ajena: marca si cambió el dibujo. Las órdenes `EXECUTEFUNCTION` (el contexto de órdenes de la paleta y del piloto) no se cuentan como inicios | Es la cuenta del puente, sin cambiarla; marcar de más solo cuesta un aviso |
+| T6st-S12 | **A1:** una escritura de «Variables» marca los editores limpios de Selectivo de los racks que redibujó, en lugar de cerrarlos (VA). La marca va con «Volver a leer del dibujo»; la página lo dice | La respuesta del Owner, «Sí, marcarlo» |
+| T6st-S13 | **A3:** la lista solo dice «puede no estar al día» si cambió la base de datos desde su lectura (`DrawingChangeCount`); con el mismo número, la lista que tiene es la del dibujo aunque el host la haya olvidado tras un ZOOM | La respuesta del Owner, «Sí, afinarlo»; la lista sigue sabiendo que hay que releer cuando el dibujo cambió |
+
+**Archivos de la ronda** (marcados `T6 st`):
+- Application:
+  - `WorkspaceHostSnapshot.cs`: `CommandStartCount`, último parámetro con 0 por omisión;
+  - `WorkspaceHostCore.cs`: una línea en `GetSnapshot`, con `_bridge.ForeignCommandStartsOf(id) ?? 0`. El puente, `EventBridgeCore` y
+    `IWorkspaceBridgeLink` no cambian.
+- UI:
+  - `WorkspacePanelViewModel.cs`: `PresentedCommandStartCount`;
+  - `RackCadCommandWatch.cs`: rehecho, con un estado por dibujo y los veredictos;
+  - `RackCadWindowViewModel.DrawingChange.cs`: los veredictos y `MarkRedrawnByVariables`;
+  - `RackCadWindowViewModel.Variables.cs`: marca en lugar de cerrar;
+  - `RackCadWindowViewModel.cs`: el número a la lista;
+  - `.Bom.cs` y `.Warehouse.cs`: los dos números;
+  - `RackBomPageViewModel.cs` y `WarehousePageViewModel.cs`: lo provisional, los veredictos y la regla «Return» por los números;
+  - `RackListViewModel.cs`: A3;
+  - `RackEditorDrawingChangePanel.xaml`: `QuestionPanel`;
+  - `CabeceraEditorViewModel.DrawingChange.cs`: `UpdateBlockedText`.
+- Pruebas:
+  - `RackCadDrawingChangeTests`: el doble cuenta los inicios y las páginas; pruebas de A2, M-1, M-2, M-4 y A3; la de «un cambio sin orden»
+    pasa a la de la paleta oculta;
+  - `RackCadBomPageTests` y `RackCadWarehousePageTests`: el doble cuenta los inicios por dibujo. Vuelven a sus aserciones originales las
+    cuatro que 5114345e había pasado al final de la orden. ZOOM provisional; COPY con «Exportar» (I-3); lectura fundida (M-1, BOM); vuelta y
+    paleta oculta (M-2, A2);
+  - `RackCadVariablesPageTests`: el editor limpio se marca y se relee (A1);
+  - `WorkspaceDrawingChangeCountTests`: la instantánea lleva los inicios.
+
+**Pruebas de la ronda:**
+- `RackCadDrawingChangeTests` (64, antes 56):
+  - `ShowingThePaletteAgainMarksTheEditors…` (A2): un ZOOM y un cambio sin orden no marcan, un ERASE con la paleta oculta sí;
+  - `ACommandLeftForAnotherDrawingIsJudged…` (M-2): sin marca al irse, y al volver el veredicto lo dan los números;
+  - `ACommandOfTheDoorRunTogetherWithAnotherCommandIsNotOwn` (M-1);
+  - `NoCommandOfTheDoorMarksTheEditors…` (M-4), ×5: la lectura del BOM, la de «Almacén», la escritura de «Variables», INSERTAR y NUEVO,
+    cada una tomando su petición, con un punto y cambiando el dibujo;
+  - `TheListIsNotSaidOutOfDateAfterAZoomAndItIsAfterAnErase` (A3).
+- `RackCadBomPageTests` (+3):
+  - `ExportingDuringACopyThatRunsAsks…` (I-3);
+  - `TheReadRunTogetherWithAnotherCommand…` (M-1);
+  - `ComingBackOrShowingThePaletteAgain…` (M-2, A2);
+  - el ZOOM, con la marca provisional mientras corre.
+- `RackCadWarehousePageTests` (+1): `ComingBackOrShowingThePaletteAgain…`, y el ZOOM provisional.
+- `RackCadVariablesPageTests`: `TheCleanEditorOfARackTheWriteRedrewIsMarkedSoItIsReadAgain` (A1; antes `…IsClosed…`).
+- `WorkspaceDrawingChangeCountTests` (+1): `TheSnapshotCarriesTheCommandStartsOfTheActiveSession…`.
+- **Pruebas que fijaban la conducta de antes, al día** (con una línea y una nota cada una):
+  - `RackCadWindowTests.AnOutdatedListIsKeptAndSaysSo…` y `…ComingBackToADrawingShowsTheListReadThere…`: la orden que hizo olvidar la lista
+    cambia ahora el dibujo (A3);
+  - `RackCadBomPageTests.TheReadingsAreKeptPerDrawingAndComingBackToOne…`: volver sin órdenes dice «Al día», y con órdenes que cambiaron el
+    dibujo, «Volviste a este dibujo» (M-2);
+  - `RackCadWarehousePageTests.TheSectionIsBetweenTheBomAndTheLibrary…`: volver sin órdenes deja «Lectura al día» (M-2).
+- **Comprobación en rojo de la ronda** (copias fuera del worktree, restauradas; `git diff` sin restos): seis reversiones a la vez, cada una
+  en una parte distinta. Fallaron 12 de 186, justo las suyas:
+  - sin el veredicto `Unseen`/`Return` (A2, M-2): las de la paleta oculta (editores, BOM, «Almacén») y la vuelta del BOM;
+  - sin «exactamente una orden» (M-1): la de la puerta fundida y la lectura fundida del BOM;
+  - sin el veredicto que espera al dibujo (M-2): `ACommandLeftForAnotherDrawing…`;
+  - sin la marca provisional del BOM (I-3): la COPY con «Exportar», el ZOOM del BOM y la original de BM-01, que comprueba el aviso al
+    empezar;
+  - sin la marca de «Variables» (A1): la de «Variables»;
+  - sin el número de la lista (A3): la de la lista.
+  - En Core, sin `CommandStartCount` en `GetSnapshot`, falló la prueba de los inicios.
+
+**Números de la ronda:**
+
+- **Focales UI** (`RackCadDrawingChangeTests`, `RackCadBomPageTests`, `RackCadWarehousePageTests`, `RackCadVariablesPageTests`,
+  `RackCadWindowTests`): 186 correctas, 0 con error, 0 omitidas.
+- **Focales Core** (`WorkspaceDrawingChangeCountTests` y las guardas del modelo, del puerto, del host, del piloto y de copia completa:
+  `WorkspaceHostPortGuardTests`, `WorkspaceModelBoundaryTests`, `WorkspaceHostSourceGuardTests`, `WorkspaceHostDrainTests`,
+  `WorkspacePilotEditGuardTests`, `WorkspaceFullCopyGuardTests`, `WorkspaceBrowserBoundaryTests`): 289 correctas, 0 con error, 7 omitidas.
+- **La solución en Debug** (Plugin incluido): 0 errores.
+- **Suites completas:** no se corrieron en esta ronda (M-7). Las de 5114345e daban UI 3168/0/48 y Core Full 19485/0/403; esta ronda añade
+  8 pruebas a `RackCadDrawingChangeTests`, 3 al BOM, 1 a «Almacén» y 1 a Core (se esperan UI 3180/0/48 y Core 19486/0/403).
+- Sin caracteres de control ni finales de línea mezclados en los 21 archivos de la ronda; las copias de la comprobación en rojo, restauradas
+  e idénticas.

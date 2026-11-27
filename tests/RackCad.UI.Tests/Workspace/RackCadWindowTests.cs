@@ -617,6 +617,8 @@ namespace RackCad.UI.Tests
             var rig = new Rig();
             rig.Summary.ListResponder = (_, user) => user ? BrowserRackList.Ready(rig.Racks) : BrowserRackList.Outdated();
 
+            // T6 st (review of 5114345e, A3): the host forgot the list after a command that changed the drawing (its count moved since the read).
+            rig.Host.Snapshot = WorkspacePanelFixtures.Ready(session: 7) with { DrawingChangeCount = 1 };
             rig.Window.Refresh();
             Assert.Equal(6, rig.List.RackCount);
             Assert.Equal("La lista puede no estar al día: pulsa «Volver a leer la lista».", rig.List.StatusText);
@@ -647,7 +649,8 @@ namespace RackCad.UI.Tests
             Assert.Equal(new[] { "Otro dibujo" }, Names(rig.List));
             Assert.Equal(string.Empty, rig.List.StatusText);
 
-            rig.Host.Snapshot = WorkspacePanelFixtures.Ready(session: 7);
+            // T6 st (review of 5114345e, A3): the command that ended in 7 changed it (its count moved since the read).
+            rig.Host.Snapshot = WorkspacePanelFixtures.Ready(session: 7) with { DrawingChangeCount = 1 };
             rig.Window.Refresh();
             Assert.Equal(6, rig.List.RackCount);
             Assert.DoesNotContain("Otro dibujo", Names(rig.List));

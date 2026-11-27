@@ -10,6 +10,13 @@
                 <ResourceDictionary Source="/RackCad.UI;component/Themes/AppStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="FlagToVisibility" />
+            <!-- Review of 5114345e, M-6: the style of the inline questions of the editors (CantileverEditorView, CabeceraEditorView). -->
+            <Style x:Key="QuestionPanel" TargetType="Border">
+                <Setter Property="Margin" Value="0,6,0,0" />
+                <Setter Property="Padding" Value="8" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusWarningBrush}" />
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <Border x:Name="NoticePanel" Margin="0,6,0,0" Padding="8" BorderThickness="1" CornerRadius="4"
@@ -24,7 +31,7 @@
                         ToolTip="Lee otra vez el rack del dibujo de AutoCAD, como «Editar aquí»." Click="OnRereadClick" />
             </WrapPanel>
             <!-- «Actualizar» with changes over a drawing that changed: the inline question. -->
-            <Border x:Name="ConfirmPanel" Margin="0,8,0,0" Padding="8" BorderThickness="1" BorderBrush="{DynamicResource ShellStatusWarningBrush}"
+            <Border x:Name="ConfirmPanel" Style="{StaticResource QuestionPanel}"
                     Visibility="{Binding IsConfirmingUpdate, Converter={StaticResource FlagToVisibility}}">
                 <StackPanel>
                     <TextBlock x:Name="ConfirmLine" Text="{Binding ConfirmText}" TextWrapping="Wrap" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
