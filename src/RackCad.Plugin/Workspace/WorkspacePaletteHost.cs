@@ -135,19 +135,25 @@ namespace RackCad.Plugin.Workspace
 
         // T6 rl (A-14 §3; SM-03 of Smoke-1 was a palette off the screen): a floating palette whose title bar is on no work area of the monitors
         // of now (one was removed, or the scaling changed), or larger than the work area that holds it, is brought back onto a screen and cut to
-        // it. In device pixels, the units of Location, Size and the work areas of the screens, so monitors with different scaling compare
-        // alike. A docked palette is AutoCAD's. A failure is contained and logged: the panel is still shown.
+        // it. In device pixels, the units of Size, of the screen point of the root control and of the work areas of the screens, so monitors
+        // with different scaling compare alike. A docked palette is AutoCAD's. A failure is contained and logged: the panel is still shown.
+        // T6 smoke (2026-11-27): the getter of PaletteSet.Location of AutoCAD 2025 gives the RIGHT edge as its Y (a floating palette at
+        // 60,60-1350,920 read {X=60,Y=1350}), so every RACKCAD sent a palette that was on the screen to 80,80 and the position the user left
+        // was lost on the next session. The corner of the palette is therefore read where WPF shows the RackCad window, its top-left on the
+        // screen; Location is only written. A window not on a screen yet has no corner: nothing is measured and nothing is moved.
         private void KeepOnScreen()
         {
             try
             {
                 if (_palette.Dock != DockSides.None) return;
-                var location = _palette.Location;
+                if (System.Windows.PresentationSource.FromVisual(_root) == null) return;
+                var corner = _root.PointToScreen(new System.Windows.Point(0, 0));
                 var size = _palette.Size;
                 var areas = new System.Collections.Generic.List<ScreenRect>();
                 foreach (var screen in System.Windows.Forms.Screen.AllScreens) areas.Add(RectOf(screen.WorkingArea));
                 var primary = System.Windows.Forms.Screen.PrimaryScreen;
-                var kept = RackCadPalettePlacement.KeepOnScreen(new ScreenRect(location.X, location.Y, size.Width, size.Height), areas,
+                var kept = RackCadPalettePlacement.KeepOnScreen(
+                    new ScreenRect((int)System.Math.Round(corner.X), (int)System.Math.Round(corner.Y), size.Width, size.Height), areas,
                     primary == null ? default : RectOf(primary.WorkingArea));
                 if (kept is not ScreenRect target) return;
                 _palette.Size = new System.Drawing.Size(target.Width, target.Height);

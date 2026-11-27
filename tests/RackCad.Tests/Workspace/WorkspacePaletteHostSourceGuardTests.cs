@@ -806,13 +806,21 @@ public class WorkspacePaletteHostSourceGuardTests
         foreach (var pattern in GeometryPatterns)
             Assert.True(Src.Count(code, pattern) == Src.Count(placement, pattern) + Src.Count(screen, pattern), "geometry outside the first placement and the screen rule: " + pattern);
 
-        // The screen rule moves only a FLOATING palette, by the pure rule, in device pixels (Location, Size and the work areas of the
-        // screens), and only when the rule says so; it never docks, never re-applies the first placement and never changes the minimum.
-        InOrderIn(screen, "if (_palette.Dock != DockSides.None) return;", "_palette.Location", "_palette.Size",
+        // The screen rule moves only a FLOATING palette, by the pure rule, in device pixels (the screen corner of the root control, Size and
+        // the work areas of the screens), and only when the rule says so; it never docks, never re-applies the first placement and never
+        // changes the minimum.
+        InOrderIn(screen, "if (_palette.Dock != DockSides.None) return;", "System.Windows.PresentationSource.FromVisual(_root) == null) return;",
+            "_root.PointToScreen(new System.Windows.Point(0, 0))", "_palette.Size",
             "System.Windows.Forms.Screen.AllScreens", "screen.WorkingArea", "System.Windows.Forms.Screen.PrimaryScreen",
             "RackCadPalettePlacement.KeepOnScreen(", "if (kept is not ScreenRect target) return;",
             "_palette.Size = new System.Drawing.Size(target.Width, target.Height);", "_palette.Location = new System.Drawing.Point(target.Left, target.Top);");
         Assert.DoesNotMatch(new Regex(@"\.Dock\s*=(?!=)|DeviceIndependent|InitializeFloatingPosition|MinimumSize|ApplyInitialPlacement"), screen);
+
+        // T6 smoke (2026-11-27): AutoCAD 2025 reads the RIGHT edge as the Y of PaletteSet.Location ({X=60,Y=1350} for a palette at
+        // 60,60-1350,920), which sent every shown palette to 80,80. The rule only WRITES Location; it never reads it, nor its X or Y.
+        Assert.Equal(1, Src.Count(screen, @"_palette\.Location\b"));
+        Assert.Equal(1, Src.Count(screen, @"_palette\.Location\s*=(?!=)"));
+        Assert.DoesNotMatch(new Regex(@"\bLocation\.(?:X|Y)\b|\blocation\b"), screen);
     }
 
     private static void InOrderIn(string body, params string[] steps)
