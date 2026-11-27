@@ -39,11 +39,23 @@ namespace RackCad.UI.VentanaRackCad
         public bool ShowTakeToWarehouse => _warehouseDoor != null && Panel.Browser.ActiveRackId != null;
 
         /// <summary>The active rack has a planta (by the last reading of the list) and the page is not placing.</summary>
-        public bool CanTakeToWarehouse => ShowTakeToWarehouse && ActiveRackHasPlanta && !(Warehouse?.IsWriting ?? false);
+        /// <summary>
+        /// The active rack has a planta (by the last reading of the list) and the page has no request in flight: a read or a placement that
+        /// waits would swallow the gesture (correction 7 of the review).
+        /// </summary>
+        public bool CanTakeToWarehouse => ShowTakeToWarehouse && ActiveRackHasPlanta && !(Warehouse?.HasRequestInFlight ?? false);
 
-        public string TakeToWarehouseReason => ShowTakeToWarehouse && !ActiveRackHasPlanta
-            ? "Sin vista en planta: insértala con «Insertar vista…» (o RACKEDITAR) para usar este rack como semilla."
-            : string.Empty;
+        public string TakeToWarehouseReason
+        {
+            get
+            {
+                if (!ShowTakeToWarehouse) return string.Empty;
+                if (!ActiveRackHasPlanta) return "Sin vista en planta: insértala con «Insertar vista…» (o RACKEDITAR) para usar este rack como semilla.";
+                return Warehouse?.HasRequestInFlight == true
+                    ? "«Almacén» espera a AutoCAD (lee la planta o coloca): espera a que termine."
+                    : string.Empty;
+            }
+        }
 
         private bool ActiveRackHasPlanta => HasPlanta(Panel.Browser.ActiveRackId);
 
@@ -90,7 +102,9 @@ namespace RackCad.UI.VentanaRackCad
 
         private void OnWindowChangedForWarehouse(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IsWaitingForAutoCad)) Contained(Warehouse.Refresh); // another request of the window waits, or not
+            if (e.PropertyName != nameof(IsWaitingForAutoCad)) return;
+            Contained(Warehouse.Refresh); // another request of the window waits, or not
+            RaiseTakeToWarehouse(); // correction 7: «Llevar al almacén…» waits for the request of the page
         }
 
         private void RaiseTakeToWarehouse()
@@ -117,6 +131,7 @@ namespace RackCad.UI.VentanaRackCad
         {
             OnPropertyChanged(nameof(IsAlmacenPage));
             if (page == RackCadWindowPage.Almacen) Contained(Warehouse.Shown);
+            else Contained(Warehouse.CommitValues); // correction 6: the values typed are remembered when the page is left
         }
 
         // RACKALMACENLEER or RACKALMACENCOLOCAR took the request (Started): from now the command is the page's own.
@@ -145,10 +160,12 @@ namespace RackCad.UI.VentanaRackCad
                 {
                     Warehouse.ReadingStopped("La lectura n.º " + request.Id.ToString(CultureInfo.InvariantCulture)
                         + " no es del dibujo para el que se pidió (el dibujo activo cambió): no se usó. Pulsa «Volver a leer» en el dibujo que quieras.");
+                    RaiseTakeToWarehouse();
                     return;
                 }
 
                 Warehouse.Deliver(request.Session, reading);
+                RaiseTakeToWarehouse(); // correction 7: the page no longer waits
             });
         }
 
@@ -224,6 +241,7 @@ namespace RackCad.UI.VentanaRackCad
             if (_inFlight != null && _inFlight.Id == id) _inFlight = null;
             Warehouse.ReadingStopped(null);
             RaiseWaiting();
+            RaiseTakeToWarehouse();
             return RefusalText(result);
         }
 

@@ -486,6 +486,20 @@ namespace RackCad.Application.VentanaRackCad
             return string.Equals((site.Layer ?? string.Empty).Trim(), (layer ?? string.Empty).Trim(), StringComparison.OrdinalIgnoreCase) ? site : null;
         }
 
+        /// <summary>
+        /// Correction 2 of the review: the references go to the current layer of the drawing (as RACKRELLENAR places them, without a layer
+        /// of their own; the computation does not change). When it is the layer of the site, the next reading of the site takes them as
+        /// obstacles; the page says it before «Colocar». Empty otherwise.
+        /// </summary>
+        public static string CurrentLayerWarning(WarehouseReading reading, string siteLayer)
+        {
+            var current = (reading?.CurrentLayer ?? string.Empty).Trim();
+            var site = (siteLayer ?? string.Empty).Trim();
+            if (current.Length == 0 || !string.Equals(current, site, StringComparison.OrdinalIgnoreCase)) return string.Empty;
+            return "La capa actual del dibujo es «" + current + "», la del sitio: los racks se colocan en la capa actual, así que la próxima "
+                   + "lectura del sitio los tomaría como obstáculos. Cambia la capa actual en AutoCAD antes de «Colocar».";
+        }
+
         public static string SiteNotReadText(string layer) =>
             "Sin leer el sitio de la capa «" + (layer ?? string.Empty).Trim() + "»: pulsa «Volver a leer».";
 

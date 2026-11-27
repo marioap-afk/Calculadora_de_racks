@@ -97,6 +97,7 @@ namespace RackCad.UI.VentanaRackCad
 
         private WarehouseLayoutValues _values = WarehouseLayoutValues.Defaults;
         private bool _valuesLoaded;
+        private bool _unsaved; // a value typed and not saved yet (correction 6)
         private WarehouseLayoutMode _mode = WarehouseLayoutMode.Grid;
         private bool _fitOpen;
         private bool _fitAsk;
@@ -122,6 +123,10 @@ namespace RackCad.UI.VentanaRackCad
             public string SeedRackId;
             public WarehouseReading Reading;
             public bool Stale;
+
+            // Correction 1 of the review: AutoCAD placed, but the page has no reading of the drawing after it. Until a new reading,
+            // «Colocar» is off: a second one would put another grid on top of the first one.
+            public bool MustReread;
         }
 
         private sealed record Placing(long Id, SessionId Session, WarehousePlaceRequest Request, bool Started);
@@ -198,6 +203,7 @@ namespace RackCad.UI.VentanaRackCad
                 if (IsReading) return "AutoCAD está leyendo la planta.";
                 if (_host.OtherRequestWaiting) return "La ventana espera otra respuesta de AutoCAD: espera a que termine.";
                 if (SeedRackId == null) return "Elige el rack semilla.";
+                if (Current?.MustReread == true) return MustRereadText; // correction 1
                 return _assessment.BlockedReason ?? string.Empty;
             }
         }
@@ -329,31 +335,34 @@ namespace RackCad.UI.VentanaRackCad
             }
         }
 
+        /// <summary>Correction 2 of the review: the current layer of the drawing is the layer of the site (said before «Colocar»).</summary>
+        public string CurrentLayerWarning => IsFillTab ? WarehouseLayoutRules.CurrentLayerWarning(CurrentReading, _values.Layer) : string.Empty;
+
         public string InsideWarning => IsFillTab && _assessment.Fill?.SeedInside == true
             ? "La planta de " + DisplayName(NameOfSeed()) + " está dentro del área a rellenar: el relleno no la tiene en cuenta y una copia puede quedar encima. Muévela o bórrala después."
             : string.Empty;
 
         // ------------------------------------------------------------------ the values (two-way: each change is the user's)
 
-        public string RowsText { get => _values.Rows; set => SetValues(_values with { Rows = value ?? string.Empty }); }
+        public string RowsText { get => _values.Rows; set => SetValues(_values with { Rows = value ?? string.Empty }, save: false); }
 
-        public string ColsText { get => _values.Cols; set => SetValues(_values with { Cols = value ?? string.Empty }); }
+        public string ColsText { get => _values.Cols; set => SetValues(_values with { Cols = value ?? string.Empty }, save: false); }
 
-        public string AisleRowsText { get => _values.AisleRows; set => SetValues(_values with { AisleRows = value ?? string.Empty }); }
+        public string AisleRowsText { get => _values.AisleRows; set => SetValues(_values with { AisleRows = value ?? string.Empty }, save: false); }
 
-        public string AisleColsText { get => _values.AisleCols; set => SetValues(_values with { AisleCols = value ?? string.Empty }); }
+        public string AisleColsText { get => _values.AisleCols; set => SetValues(_values with { AisleCols = value ?? string.Empty }, save: false); }
 
         public bool BackToBack { get => _values.BackToBack; set => SetValues(_values with { BackToBack = value }); }
 
-        public string BackGapText { get => _values.BackGap; set => SetValues(_values with { BackGap = value ?? string.Empty }); }
+        public string BackGapText { get => _values.BackGap; set => SetValues(_values with { BackGap = value ?? string.Empty }, save: false); }
 
-        public string BuildingXText { get => _values.BuildingX; set => SetValues(_values with { BuildingX = value ?? string.Empty }); }
+        public string BuildingXText { get => _values.BuildingX; set => SetValues(_values with { BuildingX = value ?? string.Empty }, save: false); }
 
-        public string BuildingYText { get => _values.BuildingY; set => SetValues(_values with { BuildingY = value ?? string.Empty }); }
+        public string BuildingYText { get => _values.BuildingY; set => SetValues(_values with { BuildingY = value ?? string.Empty }, save: false); }
 
-        public string WallClearanceText { get => _values.WallClearance; set => SetValues(_values with { WallClearance = value ?? string.Empty }); }
+        public string WallClearanceText { get => _values.WallClearance; set => SetValues(_values with { WallClearance = value ?? string.Empty }, save: false); }
 
-        public string ColumnClearanceText { get => _values.ColumnClearance; set => SetValues(_values with { ColumnClearance = value ?? string.Empty }); }
+        public string ColumnClearanceText { get => _values.ColumnClearance; set => SetValues(_values with { ColumnClearance = value ?? string.Empty }, save: false); }
 
         /// <summary>«Probar también la orientación girada 90°», shown off with back to back, which does not try it (dolor 7).</summary>
         public bool TryRotatedShown
@@ -417,6 +426,9 @@ namespace RackCad.UI.VentanaRackCad
 
         public bool FitOpen => _fitOpen || _assessment.Errors.ContainsKey(WarehouseLayoutRules.FieldBuildingX) || _assessment.Errors.ContainsKey(WarehouseLayoutRules.FieldBuildingY);
 
+        /// <summary>The mark of «Verificar encaje»: open or closed.</summary>
+        public string FitChevron => FitOpen ? "▾" : "▸";
+
         public string FitSummary => _assessment.Grid != null && _assessment.Grid.FitChecked
             ? "Edificio " + WarehouseLayoutRules.Number(_assessment.Grid.BuildingX) + " × " + WarehouseLayoutRules.Number(_assessment.Grid.BuildingY) + " in"
             : "Sin verificar";
@@ -425,7 +437,9 @@ namespace RackCad.UI.VentanaRackCad
 
         public IReadOnlyList<string> LayerOptions => _layerOptions;
 
-        public string SelectedLayer => _values.Layer;
+        /// <summary>The layer chosen, as the list of the drawing writes it (a layer of AutoCAD compares without case, correction 8).</summary>
+        public string SelectedLayer =>
+            _layerOptions.FirstOrDefault(l => string.Equals(l, _values.Layer, StringComparison.OrdinalIgnoreCase)) ?? _values.Layer;
 
         public string SiteLine
         {
@@ -501,7 +515,7 @@ namespace RackCad.UI.VentanaRackCad
         public void ChooseLayer(string layer)
         {
             var next = (layer ?? string.Empty).Trim();
-            if (next.Length == 0 || IsWriting || string.Equals(next, _values.Layer, StringComparison.Ordinal)) return;
+            if (next.Length == 0 || IsWriting || string.Equals(next, _values.Layer, StringComparison.OrdinalIgnoreCase)) return; // correction 8: the same layer
             SetValues(_values with { Layer = next });
             TryRead();
         }
@@ -702,6 +716,7 @@ namespace RackCad.UI.VentanaRackCad
 
             state.Reading = reading;
             state.Stale = false;
+            state.MustReread = false;
             Recompute();
         }
 
@@ -727,16 +742,31 @@ namespace RackCad.UI.VentanaRackCad
             if (placed == null) return;
             _placing = null;
             _ownCommandPending = true;
-            if (placed.Reading != null && placed.Reading.IsRead && _drawings.TryGetValue(session, out var state)
-                && string.Equals(placed.Reading.SeedRackId, state.SeedRackId, StringComparison.OrdinalIgnoreCase))
+            _drawings.TryGetValue(session, out var state);
+            var readAfter = placed.Reading != null && placed.Reading.IsRead && state != null
+                            && string.Equals(placed.Reading.SeedRackId, state.SeedRackId, StringComparison.OrdinalIgnoreCase);
+            if (readAfter)
             {
                 state.Reading = placed.Reading;
                 state.Stale = false;
+                state.MustReread = false;
+            }
+            else if (placed.Placed && state != null)
+            {
+                // Correction 1: placed, with no reading after it (it failed, or it is of another seed): what the page shows is the drawing
+                // before; it says so and asks for «Volver a leer» before anything else is placed.
+                state.Stale = true;
+                state.MustReread = true;
             }
 
-            Say(placed.Message ?? string.Empty, !placed.Placed);
+            var message = placed.Message ?? string.Empty;
+            if (placed.Placed && !readAfter) message = (message + " " + MustRereadText).Trim();
+            Say(message, !placed.Placed);
             Recompute();
         }
+
+        internal const string MustRereadText =
+            "La página no pudo volver a leer el dibujo después de colocar: pulsa «Volver a leer» antes de colocar otra vez.";
 
         /// <summary>A request of the page is in flight (read or placement), for the window.</summary>
         internal bool HasRequestInFlight => _reading.HasValue || _placing != null;
@@ -755,7 +785,14 @@ namespace RackCad.UI.VentanaRackCad
                 return;
             }
 
-            if (IsWriting || IsReading) return;
+            if (IsWriting) return;
+            if (IsReading)
+            {
+                // Correction 7 of the review: a read asked while another one runs is not lost in silence.
+                Say("AutoCAD todavía está leyendo la planta: cuando termine, pulsa «Volver a leer» para leer lo que elegiste.", false);
+                return;
+            }
+
             var seed = SeedRackId;
             if (seed == null)
             {
@@ -795,13 +832,22 @@ namespace RackCad.UI.VentanaRackCad
             Recompute();
         }
 
-        private void SetValues(WarehouseLayoutValues next)
+        // A value typed in a box is kept unsaved until the box loses the focus, «Colocar» or the page is left (correction 6 of the review:
+        // the settings are not read and written again on every key); a switch, a choice or a layer is saved at once.
+        private void SetValues(WarehouseLayoutValues next, bool save = true)
         {
             if (next == null || IsWriting || next == _values) return;
             _values = next;
             _fitAsk = false;
-            Save();
+            if (save) Save();
+            else _unsaved = true;
             Recompute();
+        }
+
+        /// <summary>A box of the page lost the focus, or the page was left: the values typed are remembered now (question 6).</summary>
+        public void CommitValues()
+        {
+            if (_unsaved) Save();
         }
 
         private void LoadValues()
@@ -820,6 +866,7 @@ namespace RackCad.UI.VentanaRackCad
 
         private void Save()
         {
+            _unsaved = false;
             try
             {
                 _host.SaveValues(_values);

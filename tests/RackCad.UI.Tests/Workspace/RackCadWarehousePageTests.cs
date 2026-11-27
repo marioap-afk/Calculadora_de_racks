@@ -577,8 +577,18 @@ namespace RackCad.UI.Tests
             Assert.Equal("MUROS", rig.LastRead.Layer);
             Assert.True(rig.Page.CanReset);
 
+            // Correction 6 of the review: a value typed is not saved on every key; it is when its box loses the focus (CommitValues).
+            var saves = rig.Settings.Saves;
+            rig.Page.AisleRowsText = "1";
+            rig.Page.AisleRowsText = "12";
             rig.Page.AisleRowsText = "120";
+            Assert.Equal(saves, rig.Settings.Saves);
+            Assert.Equal("96", rig.Settings.WarehouseValues!.AisleRows);
+            rig.Page.CommitValues();
+            Assert.Equal(saves + 1, rig.Settings.Saves);
             Assert.Equal("120", rig.Settings.WarehouseValues!.AisleRows);
+            rig.Page.CommitValues();
+            Assert.Equal(saves + 1, rig.Settings.Saves); // nothing new to save
 
             rig.Page.Reset();
             Assert.Equal(WarehouseLayoutValues.Defaults, rig.Page.Values);
@@ -626,6 +636,143 @@ namespace RackCad.UI.Tests
             rig.Window.OpenRack("PB-1");
             rig.Window.TakeActiveRackToWarehouse();
             Assert.Equal(2, rig.Door.Reads.Count);
+        }
+
+        // ------------------------------------------------------------------ the corrections of the review
+
+        // Correction 1: AutoCAD placed but the reading after it failed: the page says it was placed and «Colocar» waits for «Volver a leer»,
+        // so a second «Colocar» cannot put another grid on top.
+        [Fact]
+        public void APlacementWhoseReadingAfterFailedSaysItWasPlacedAndAsksToReadAgain()
+        {
+            var rig = new Rig();
+            rig.Open();
+            rig.Page.Place();
+            var place = rig.Door.Places.Single();
+            rig.Door.Start(place.RequestId);
+            rig.Door.Placed(new WarehousePlaced(place.RequestId, true, "Layout colocado: 3 racks nuevos (4 × 1, enlazados) y 4 etiquetas en la capa RACKCAD_LAYOUT. Un «U» en AutoCAD lo deshace.", 3,
+                WarehouseReading.Failed(place.RequestId, RackId, "No se pudo volver a leer el dibujo después de colocar: fallo.")));
+            rig.Present();
+
+            Assert.False(rig.Page.MessageIsError);
+            Assert.StartsWith("Layout colocado: 3 racks nuevos", rig.Page.Message, StringComparison.Ordinal);
+            Assert.EndsWith(WarehousePageViewModel.MustRereadText, rig.Page.Message, StringComparison.Ordinal);
+            Assert.False(rig.Page.CanPlace);
+            Assert.Equal(WarehousePageViewModel.MustRereadText, rig.Page.PlaceBlockedText);
+            Assert.Equal("Puede no estar al día", rig.Page.ChipText);
+            Assert.True(rig.Page.CanRead);
+
+            rig.Page.Read();
+            rig.AnswerRead(r => Reading(r, plantas: 4));
+            Assert.True(rig.Page.CanPlace);
+            Assert.Equal("Lectura al día", rig.Page.ChipText);
+            Assert.StartsWith("Ya hay 4 plantas de Selectivo A", rig.Page.MultiWarning, StringComparison.Ordinal);
+        }
+
+        // Correction 2: on the layer of the site, the references placed would be read as obstacles next time: said before «Colocar».
+        [Fact]
+        public void TheCurrentLayerOnTheLayerOfTheSiteIsSaidBeforePlacing()
+        {
+            var rig = new Rig();
+            rig.Window.ShowPage(RackCadWindowPage.Almacen);
+            rig.AnswerRead(r => Reading(r) with { CurrentLayer = "RACKCAD_SITIO" });
+            Assert.Equal(string.Empty, rig.Page.CurrentLayerWarning); // «Rejilla» does not read the site
+            rig.Page.ShowFill();
+            Assert.StartsWith("La capa actual del dibujo es «RACKCAD_SITIO», la del sitio:", rig.Page.CurrentLayerWarning, StringComparison.Ordinal);
+            Assert.True(rig.Page.CanPlace); // the computation of today: it warns, it does not block
+
+            rig.Page.Read();
+            rig.AnswerRead(r => Reading(r) with { CurrentLayer = "0" });
+            Assert.Equal(string.Empty, rig.Page.CurrentLayerWarning);
+        }
+
+        // Correction 6: the values typed are remembered when the page is left too; a switch or a choice at once.
+        [Fact]
+        public void TheValuesTypedAreRememberedWhenThePageIsLeftAndASwitchAtOnce()
+        {
+            var rig = new Rig();
+            rig.Open();
+            var saves = rig.Settings.Saves;
+            rig.Page.RowsText = "7";
+            Assert.Equal(saves, rig.Settings.Saves);
+            rig.Window.ShowPage(RackCadWindowPage.Bom);
+            Assert.Equal(saves + 1, rig.Settings.Saves);
+            Assert.Equal("7", rig.Settings.WarehouseValues!.Rows);
+
+            rig.Window.ShowPage(RackCadWindowPage.Almacen);
+            rig.Page.BackToBack = true;
+            Assert.Equal(saves + 2, rig.Settings.Saves);
+            rig.Page.ChooseIndependent();
+            Assert.Equal(saves + 3, rig.Settings.Saves);
+            Assert.True(rig.Settings.WarehouseValues!.Independent);
+        }
+
+        // Correction 7: while the page reads, «Llevar al almacén…» waits and says why; a seed chosen meanwhile is not lost in silence.
+        [Fact]
+        public void LlevarAlAlmacenWaitsForTheReadOfThePageAndAChoiceDuringItIsSaid()
+        {
+            var rig = new Rig();
+            rig.Window.ShowPage(RackCadWindowPage.Almacen); // reads Selectivo A
+            rig.Window.OpenRack("PB-1");
+            Assert.False(rig.Window.CanTakeToWarehouse);
+            Assert.Equal("«Almacén» espera a AutoCAD (lee la planta o coloca): espera a que termine.", rig.Window.TakeToWarehouseReason);
+            rig.Window.ShowPage(RackCadWindowPage.Almacen);
+            rig.Page.ChooseSeed("SEL-2");
+            Assert.Single(rig.Door.Reads);
+            Assert.Equal("AutoCAD todavía está leyendo la planta: cuando termine, pulsa «Volver a leer» para leer lo que elegiste.", rig.Page.Message);
+
+            rig.AnswerRead();
+            rig.Window.OpenRack("PB-1");
+            Assert.True(rig.Window.CanTakeToWarehouse);
+            Assert.Equal(string.Empty, rig.Window.TakeToWarehouseReason);
+        }
+
+        // Correction 8: a layer of AutoCAD compares without case: the list shows the one of the drawing chosen, and choosing it reads nothing.
+        [Fact]
+        public void TheLayerChosenIsTheOneOfTheDrawingWhateverItsCase()
+        {
+            var rig = new Rig();
+            rig.Window.ShowPage(RackCadWindowPage.Almacen);
+            rig.AnswerRead(r => Reading(r) with { Layers = new[] { "0", "Rackcad_Sitio" }, Site = Site("Rackcad_Sitio") });
+            Assert.Equal(new[] { "0", "Rackcad_Sitio" }, rig.Page.LayerOptions);
+            Assert.Equal("Rackcad_Sitio", rig.Page.SelectedLayer);
+            rig.Page.ShowFill();
+            Assert.Equal(string.Empty, rig.Page.SiteError);
+            rig.Page.ChooseLayer("Rackcad_Sitio");
+            Assert.Single(rig.Door.Reads);
+        }
+
+        // Correction 9: in AutoCAD the command starts (CommandWillStart) BEFORE it says it took the request. The reading before it may be
+        // marked meanwhile; the answer brings one up to date, and only a command after the rest counts again.
+        [Fact]
+        public void InTheOrderOfAutoCadTheOwnReadAndTheOwnPlacementLeaveTheReadingUpToDate()
+        {
+            var rig = new Rig();
+            rig.Open();
+
+            rig.Page.Read();
+            var read = rig.LastRead;
+            rig.Present(block: WorkspaceActionBlock.CommandActive); // RACKALMACENLEER begins
+            rig.Door.Start(read.RequestId);
+            rig.Present(block: WorkspaceActionBlock.CommandActive);
+            rig.Door.Read(Reading(read));
+            rig.Present(block: WorkspaceActionBlock.CommandActive); // still RACKALMACENLEER, after its answer
+            rig.Present(); // CommandEnded
+            Assert.Equal("Lectura al día", rig.Page.ChipText);
+
+            rig.Page.Place();
+            var place = rig.Door.Places.Single();
+            rig.Present(block: WorkspaceActionBlock.CommandActive); // RACKALMACENCOLOCAR begins
+            rig.Door.Start(place.RequestId);
+            rig.Present(block: WorkspaceActionBlock.CommandActive);
+            rig.Door.Placed(new WarehousePlaced(place.RequestId, true, "Layout colocado.", 3, Reading(read, plantas: 4) with { RequestId = place.RequestId }));
+            rig.Present(block: WorkspaceActionBlock.CommandActive);
+            rig.Present();
+            Assert.Equal("Lectura al día", rig.Page.ChipText);
+            Assert.True(rig.Page.CanPlace);
+
+            rig.Present(block: WorkspaceActionBlock.CommandActive); // a command of the user
+            Assert.Equal("Puede no estar al día", rig.Page.ChipText);
         }
 
         // AL-S15: selecting the planta in AutoCAD is part of the page (question 3): the window stays on «Almacén» and sends nothing.
@@ -836,6 +983,51 @@ namespace RackCad.UI.Tests
                 Assert.Equal(Visibility.Visible, view.StaleBanner.Visibility);
                 Click(view.ReadNowButton);
                 Assert.Equal(2, rig.Door.Reads.Count);
+            }));
+        }
+
+        [Fact]
+        public void TheHeaderOfVerificarEncajeHasItsSummaryAtTheRightAndAFieldSavesWhenItLosesTheFocus()
+        {
+            StaTestRunner.Run(() => WithBindingErrors(() =>
+            {
+                var rig = new Rig();
+                rig.Window.ShowPage(RackCadWindowPage.Almacen);
+                rig.AnswerRead(r => Reading(r) with { Layers = new[] { "0", "Rackcad_Sitio" }, Site = Site("Rackcad_Sitio") });
+                var view = new WarehousePageView(rig.Page);
+                Lay(view);
+
+                // Correction 5: the content stretches; the summary sits at the right edge of the button, the title at the left.
+                var button = view.FitToggleButton;
+                var summaryRight = view.FitSummaryText.TranslatePoint(new Point(view.FitSummaryText.ActualWidth, 0), button).X;
+                var chevronLeft = view.FitChevronText.TranslatePoint(new Point(0, 0), button).X;
+                Assert.True(button.ActualWidth > 300, button.ActualWidth.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                Assert.True(summaryRight > button.ActualWidth - 20, summaryRight + " of " + button.ActualWidth);
+                Assert.True(chevronLeft < 20, chevronLeft.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                Assert.Equal("▸", view.FitChevronText.Text);
+                Click(button);
+                Lay(view);
+                Assert.Equal("▾", view.FitChevronText.Text);
+
+                // Correction 6: typing does not save; the box losing the focus does.
+                var saves = rig.Settings.Saves;
+                view.RowsBox.Text = "5";
+                Assert.Equal(saves, rig.Settings.Saves);
+                view.RowsBox.RaiseEvent(new System.Windows.Input.KeyboardFocusChangedEventArgs(System.Windows.Input.Keyboard.PrimaryDevice, 0, view.RowsBox, null)
+                {
+                    RoutedEvent = System.Windows.Input.Keyboard.LostKeyboardFocusEvent,
+                });
+                Assert.Equal(saves + 1, rig.Settings.Saves);
+                Assert.Equal("5", rig.Settings.WarehouseValues!.Rows);
+
+                // Correction 8: the list shows the layer of the drawing chosen, whatever the case of the value.
+                Click(view.FillTabButton);
+                Lay(view);
+                Assert.Equal("Rackcad_Sitio", view.LayerCombo.SelectedItem);
+                Assert.Single(rig.Door.Reads);
+
+                // Correction 2: the warning of the current layer has its place in «Sitio».
+                Assert.Equal(Visibility.Collapsed, view.CurrentLayerWarningText.Visibility);
             }));
         }
 

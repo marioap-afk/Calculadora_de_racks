@@ -3358,7 +3358,7 @@ RACKRELLENAR y RR siguen abriendo sus diálogos (pregunta 10) y su cuerpo no cam
 | AL-S2 | **Pregunta 3:** la semilla es la planta seleccionada en AutoCAD; sin selección, la que la página leyó antes (su handle); si no, la única. Con varias y ninguna elegida, o con varias seleccionadas, la lectura no tiene semilla y dice qué hacer | `ReadSeedFacts` en `RackLayoutCommands.Ventana.cs` |
 | AL-S3 | **Pregunta 5, la marca:** en «Rejilla», la planta (handle de la referencia y de su definición, origen, huella, desfase, giro, escala, el hash de su diseño, si su tipo se conoce y si tiene datos embebidos); en «Rellenar un área», además el sitio (contorno, obstáculos e ignorados). No cuenta cuántas plantas hay | `WarehouseLayoutRules.Fingerprint` |
 | AL-S4 | La lista de capas es la de las capas propias del dibujo (sin las dependientes de un xref), por nombre, con la elegida aunque no exista | `ReadLayerNames`, `WarehousePageViewModel.BuildLayers` |
-| AL-S5 | Los valores se guardan en cada cambio (tal como se escriben, también uno no válido) y se cargan la primera vez que se muestra la página | `WarehousePageViewModel.SetValues`, `LoadValues` |
+| AL-S5 | Los valores se guardan tal como se escriben (también uno no válido) y se cargan la primera vez que se muestra la página. **Corregido en la revisión (punto 6):** lo escrito en una caja se guarda al perder el foco, al colocar, al restablecer y al salir de la página; un interruptor, una elección o una capa, al momento | `WarehousePageViewModel.SetValues`, `CommitValues`, `LoadValues` |
 | AL-S6 | Las semillas salen de la lista de la columna (sus vistas, como IN-03): un rack con planta insertada después no se ofrece hasta «Volver a leer la lista» | `RacksOfTheList` |
 | AL-S7 | «Puede no estar al día» = corrió una orden que no es la propia, como BM-S1 (también volver a un dibujo) | `WarehousePageViewModel.Present` |
 | AL-S8 | La lectura lee siempre la planta, el sitio de la capa elegida y las capas, también en «Rejilla» | `ReadWarehouse` |
@@ -3481,3 +3481,53 @@ la pieza y devuelve el archivo a sus bytes, con el mismo SHA-256 (lo comprueba).
 - **Para integrar:** `RackCadWindowViewModel.cs` (once líneas marcadas), `RackCadWindowView.xaml` (dos bloques), `RackListViewModel.cs` (una
   línea), `RackCadRackDoorPort.cs` (una línea) y los tres censos de órdenes los tocan también las otras partes de la tanda (pb, ct, cm):
   el censo de `SelectiveEditorOpenTests` suma sus órdenes a las 59 de esta parte.
+
+### Quinta tanda, al: correcciones de la revisión (sobre `1fd0f38d`)
+
+En `D:\w5al`, sobre el commit `1fd0f38d` de la parte (lo hizo el coordinador). Sin commit, sin push, sin AutoCAD. Los nueve puntos de la
+revisión independiente, cada uno con su prueba; los puntos 1, 4 y 6 (y además el 5, el 7 y el 8) con comprobación en rojo.
+
+| Punto | Qué pasaba | Qué se hizo | Prueba |
+|---|---|---|---|
+| 1 | Un fallo después de escribir (la regeneración o la lectura posterior) salía como «No se pudo colocar» con `Placed=false`: «Colocar» seguía encendido y un segundo «Colocar» apilaba otra rejilla | `PlaceGrid` y `PlaceFill` ganan `regen = true` (RACKLAYOUT y RACKRELLENAR regeneran igual); RACKALMACENCOLOCAR las llama con `regen: false`. Un solo `try` cubre hasta la confirmación de la transacción; desde ahí la regeneración, la lectura posterior y la línea de órdenes tienen su propio `try`, y la respuesta es siempre `Placed=true` (con una lectura fallida si no se pudo leer). La página dice que se colocó y, sin la lectura de después, apaga «Colocar» con «La página no pudo volver a leer el dibujo después de colocar: pulsa «Volver a leer» antes de colocar otra vez.» (`MustReread`, hasta la lectura siguiente) | UI `APlacementWhoseReadingAfterFailedSaysItWasPlacedAndAsksToReadAgain`; Core, la fuente de RACKALMACENCOLOCAR (ninguna respuesta `false` tras colocar, los dos `try`, `regen: false`, y `if (regen)` en las dos mitades) |
+| 2 | Las referencias se colocan en la capa actual; si es la del sitio, la siguiente lectura las toma como obstáculos | Sin cambiar el cálculo (pregunta 9): la lectura trae la capa actual (`WarehouseReading.CurrentLayer`, de `Database.Clayer`) y, en «Rellenar un área», la página lo dice en «Sitio» antes de «Colocar» (`WarehouseLayoutRules.CurrentLayerWarning`). No bloquea | Core `TheCurrentLayerOfTheDrawingOnTheLayerOfTheSiteIsSaidBeforeColocar`; UI `TheCurrentLayerOnTheLayerOfTheSiteIsSaidBeforePlacing` y la vista |
+| 3 | Pasadas repetidas en «Colocar» | La relectura de comparación no lee las capas, y en «Rejilla» tampoco el sitio (la marca no lo usa). La lectura de después no vuelve a recorrer la tabla de bloques: es la de comparación (colocar no toca la semilla) con las plantas recontadas por lo colocado (una copia enlazada es una planta más; una independiente, un rack propio), el sitio de antes salvo que la capa actual sea la del sitio (entonces se relee) o que no se hubiera leído («Rejilla»: una vez, aquí), y las capas. `ReadWarehouse` gana `readSite` y `readLayers` | Core, la fuente: `readSite: !grid, readLayers: false`, un solo `FindRackBlocks` en el archivo, `AfterPlacing` sin `ReadSeedFacts` y con el recuento |
+| 4 | La relectura de «el dibujo cambió» pedía la selección en una orden sin `UsePickSet` | RACKALMACENCOLOCAR lleva `UsePickSet \| Redraw` (sin `NoUndoMarker`: un «U» lo deshace), coherente con AL-S2: la lectura nueva se hace como la de la página, con la planta seleccionada | Core, la fuente: los indicadores de la orden y `useSelection: true` en esa relectura |
+| 5 | «Verificar encaje (opcional)» salía centrado (la plantilla de `SecondaryButtonStyle` centra su contenido, como F-3) | Un estilo propio, `DisclosureButton`, cuya plantilla respeta `HorizontalContentAlignment` (estirado), y un `DockPanel` con la marca ▸/▾, el título a la izquierda y el resumen a la derecha, como el prototipo | UI, la vista: el resumen termina en el borde derecho del botón, la marca empieza en el izquierdo, y la marca cambia al abrir |
+| 6 | Cada tecla releía y reescribía `settings.json`; `UserSettings` perdía los campos que no conoce; un tipo equivocado en `WarehouseLayout` ponía el archivo entero en cuarentena | Lo escrito en una caja se guarda al perder el foco (`CommitValues`, desde `LostKeyboardFocus` de la vista), al colocar, al restablecer y al salir de la página; un interruptor, una elección o una capa, al momento. `UserSettings` gana `[JsonExtensionData]` (el patrón de I-11): los campos de otra versión sobreviven a una carga y un guardado. `WarehouseLayout` se lee con `LenientWarehouseLayoutConverter`: un valor ilegible solo deja esa sección en los valores de las ventanas clásicas, con su línea en el registro, y el archivo no va a cuarentena; un archivo que no es JSON sigue yendo (I-03) | Core `WarehouseLayoutSettingsTests` (nuevo, 3 pruebas con 6 casos): un campo desconocido sobrevive; cuatro secciones ilegibles (número por texto, texto por interruptor, un texto y una lista) no ponen en cuarentena y dejan el resto; un archivo que no es JSON sí. UI: la prueba de los valores (teclear no guarda, `CommitValues` sí y una vez), `TheValuesTypedAreRememberedWhenThePageIsLeftAndASwitchAtOnce` y la vista (la caja que pierde el foco guarda) |
+| 7 | «Llevar al almacén…» durante una lectura no leía nada | Se apaga mientras la página espera a AutoCAD (lectura o colocación), con su motivo; y una semilla o una capa elegidas mientras la página lee lo dicen: «AutoCAD todavía está leyendo la planta: cuando termine, pulsa «Volver a leer» para leer lo que elegiste.» | UI `LlevarAlAlmacenWaitsForTheReadOfThePageAndAChoiceDuringItIsSaid` |
+| 8 | La lista de capas quedaba sin elegir cuando la capa solo difería en mayúsculas | `SelectedLayer` es la capa de la lista equivalente sin distinguir mayúsculas, y elegirla no relee (las capas de AutoCAD no distinguen mayúsculas) | UI `TheLayerChosenIsTheOneOfTheDrawingWhateverItsCase` y la vista |
+| 9 | La prueba de «Puede no estar al día» usaba otro orden que AutoCAD | Caso nuevo con el orden real (la orden empieza, `CommandWillStart`, antes de decir que tomó la petición), para la lectura y para la colocación: la respuesta deja la lectura al día, y solo una orden después del reposo vuelve a marcarla. El código no cambió | UI `InTheOrderOfAutoCadTheOwnReadAndTheOwnPlacementLeaveTheReadingUpToDate` |
+
+**Ediciones de esta corrección:**
+- **A archivos compartidos:** `src/RackCad.Application/Settings/UserSettings.cs` (`[JsonConverter]` en `WarehouseLayout`, `ExtensionData` y dos
+  `using`); `src/RackCad.Plugin/RackLayoutCommands.cs` y `RackLayoutCommands.Fill.cs` (`regen = true` en `PlaceGrid` y `PlaceFill`, una
+  línea cada una más la firma).
+- **En los archivos de la parte:** `WarehouseLayoutPreferences.cs` (el convertidor), `WarehouseLayoutDoor.cs` (`CurrentLayer`),
+  `WarehouseLayoutRules.cs` (`CurrentLayerWarning`), `RackLayoutCommands.Ventana.cs`, `WarehousePageViewModel.cs`, `WarehousePageView.xaml(.cs)`
+  y `RackCadWindowViewModel.Warehouse.cs`.
+- **Pruebas:** `WarehouseLayoutPageTests` (Core, de 17 a 18, y la de la fuente de RACKALMACENCOLOCAR reescrita), `WarehouseLayoutSettingsTests`
+  (Core, nuevo, 6 casos) y `RackCadWarehousePageTests` (UI, de 19 a 26).
+
+**Comprobación en rojo** (`hs65\t5\al\red2.py` en el scratchpad de la sesión, con la mecánica de `red.py`; salida en `red2-out.txt`): nueve
+piezas rotas a propósito, una a una. Antes de cada rotura se guarda una copia del archivo fuera del worktree; después se compila, se corre
+la clase y se devuelve el archivo a sus bytes, con el mismo SHA-256 (lo comprueba el script). Tras la última, sin restos en `git diff`.
+1. (R1a) la página no espera «Volver a leer» tras colocar sin lectura: falla `APlacementWhoseReadingAfterFailed…`;
+2. (R1b) la lectura de después sin su propio `try`: falla la de la fuente de RACKALMACENCOLOCAR;
+3. (R4) RACKALMACENCOLOCAR sin `UsePickSet`: falla la de la fuente;
+4. (R6a) cada tecla guarda los ajustes: fallan 3 (la de los valores, la de salir de la página y la de la vista);
+5. (R6b) sin el convertidor de `WarehouseLayout`: fallan los 4 casos de la sección ilegible (el archivo va a cuarentena);
+6. (R6c) sin `[JsonExtensionData]`: falla la del campo de otra versión;
+7. (R5) «Verificar encaje» con `SecondaryButtonStyle`: falla la de la vista (el resumen queda centrado);
+8. (R7) «Llevar al almacén…» encendido durante la lectura: falla `LlevarAlAlmacenWaits…`;
+9. (R8) la capa que distingue mayúsculas: fallan 2 (la del modelo y la de la vista).
+
+**Los números** (solución en Debug recompilada con `--no-incremental`, sobre las fuentes finales, tras la comprobación en rojo):
+- **Clases focales:** Core (`WarehouseLayoutPageTests`, `WarehouseLayoutSettingsTests`, `UserSettingsStoreTests`, `SelectiveTargetPreferenceTests`,
+  `RackUnitsGuardSourceTests`, `KindHandlerGuardSourceTests`, `SelectiveDuplicationFailClosedTests`, `DiagnosticsNegativeTests`,
+  `RackCadUtilitiesCoreTests`): 144 de 144; UI `RackCadWarehousePageTests`: 26 de 26.
+- **UI completa:** 2987 correctas, 0 con error, 48 omitidas (3035): las 2980 de `1fd0f38d` más las 7 nuevas; 21 min.
+- **Core Full** (se tocó `UserSettings`): 19317 correctas, 0 con error, 403 omitidas (19720): las 19310 de `1fd0f38d` más la prueba nueva de
+  `WarehouseLayoutPageTests` y los 6 casos de `WarehouseLayoutSettingsTests`; 14 min.
+- **Build Debug de la solución (Plugin incluido):** 0 errores; las advertencias son las de siempre (MSB3277 y los analizadores de xunit) y
+  ninguna sale de los archivos de esta parte.

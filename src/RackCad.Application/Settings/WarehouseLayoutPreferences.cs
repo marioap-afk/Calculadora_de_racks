@@ -1,3 +1,8 @@
+using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using RackCad.Application.Diagnostics;
+
 namespace RackCad.Application.Settings
 {
     /// <summary>
@@ -32,5 +37,42 @@ namespace RackCad.Application.Settings
         public string ColumnClearance { get; set; }
 
         public bool? TryRotated { get; set; }
+    }
+
+    /// <summary>
+    /// T5 al (correction 6 of the review): reads <see cref="UserSettings.WarehouseLayout"/> without ever failing the whole file. The value is
+    /// consumed whatever it is; an object that this build can read becomes the section, anything else (a field of another type, a value
+    /// that is no object) is null, the values of the classic windows, and is logged. The rest of the settings load as before and the file
+    /// is never quarantined for it. It writes the section as it is.
+    /// </summary>
+    public sealed class LenientWarehouseLayoutConverter : JsonConverter<WarehouseLayoutPreferences>
+    {
+        public override WarehouseLayoutPreferences Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            using var document = JsonDocument.ParseValue(ref reader);
+            var element = document.RootElement;
+            if (element.ValueKind == JsonValueKind.Null) return null;
+            try
+            {
+                if (element.ValueKind != JsonValueKind.Object) throw new JsonException("WarehouseLayout no es un objeto.");
+                return element.Deserialize<WarehouseLayoutPreferences>(options);
+            }
+            catch (Exception ex) when (ex is JsonException || ex is InvalidOperationException || ex is NotSupportedException)
+            {
+                RackLog.Exception("UserSettings: la sección WarehouseLayout no se pudo leer; se usan los valores de las ventanas clásicas", ex);
+                return null;
+            }
+        }
+
+        public override void Write(Utf8JsonWriter writer, WarehouseLayoutPreferences value, JsonSerializerOptions options)
+        {
+            if (value == null)
+            {
+                writer.WriteNullValue();
+                return;
+            }
+
+            JsonSerializer.Serialize(writer, value, options);
+        }
     }
 }

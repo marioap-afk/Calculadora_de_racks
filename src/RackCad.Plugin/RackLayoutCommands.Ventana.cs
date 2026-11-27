@@ -77,8 +77,12 @@ namespace RackCad.Plugin
             }
         }
 
+        // «Colocar» keeps the selection made before it (correction 4 of the review): when the drawing changed, the reading it hands back is
+        // made as the page reads, and the seed is the planta selected in AutoCAD (AL-S2). It has an undo marker: one «U» undoes it.
+        private const CommandFlags WarehousePlaceFlags = CommandFlags.UsePickSet | CommandFlags.Redraw;
+
         /// <summary>«Colocar» of the page «Almacén»: reads again, compares, and places the grid or the fill (one command, one «U»).</summary>
-        [CommandMethod("RACKALMACENCOLOCAR")]
+        [CommandMethod("RACKALMACENCOLOCAR", WarehousePlaceFlags)]
         public void RackAlmacenColocar()
         {
             var door = RackCadRackDoorPort.Current;
@@ -94,6 +98,10 @@ namespace RackCad.Plugin
 
             door?.Started(pending.RequestId);
             var request = pending.Request;
+            var grid = request.Mode == WarehouseLayoutMode.Grid;
+            WarehouseReading fresh;
+            WarehousePlacePlan plan;
+            int placed;
             try
             {
                 if (pending.Document != RackCadRackDoorPort.KeyOf(document))
@@ -102,10 +110,11 @@ namespace RackCad.Plugin
                     return;
                 }
 
-                // The planta of the request, and only it (its handle): what the page showed is what is compared and placed.
-                var fresh = ReadWarehouse(document, request.RequestId, request.SeedRackId, request.Layer, request.SeedHandle,
-                    useSelection: false, onlyPreferred: true, out var seed, out var embed);
-                var plan = WarehouseLayoutRules.PlanPlace(request, fresh);
+                // The planta of the request, and only it (its handle): what the page showed is what is compared and placed. The grid does
+                // not read the site (its mark does not use it) and neither reads the layers (correction 3 of the review).
+                fresh = ReadWarehouse(document, request.RequestId, request.SeedRackId, request.Layer, request.SeedHandle,
+                    useSelection: false, onlyPreferred: true, out var seed, out var embed, readSite: !grid, readLayers: false);
+                plan = WarehouseLayoutRules.PlanPlace(request, fresh);
                 if (!plan.CanPlace)
                 {
                     // The drawing changed: the page is given the new reading, made as the page reads (question 5).
@@ -121,50 +130,103 @@ namespace RackCad.Plugin
                 // I-05: an insertion path warns once, before the first modification of the drawing.
                 RackUnitsGuard.WarnIfNotInches(document);
 
-                var grid = request.Mode == WarehouseLayoutMode.Grid;
-                var independent = grid && request.Values.Independent;
-                var placed = grid
-                    ? PlaceGrid(document, plan.Assessment.Grid.Plan, seed, embed, independent)
-                    : PlaceFill(document, plan.Assessment.Fill.Result, seed);
+                // The halves of RACKLAYOUT and RACKRELLENAR, which commit their one transaction; the regeneration comes after, apart.
+                placed = grid
+                    ? PlaceGrid(document, plan.Assessment.Grid.Plan, seed, embed, request.Values.Independent, regen: false)
+                    : PlaceFill(document, plan.Assessment.Fill.Result, seed, regen: false);
+            }
+            catch (System.Exception ex)
+            {
+                // Nothing was committed: a failure before or inside the transaction of the placement leaves the drawing as it was.
+                RackCommandSupport.Report(ex);
+                door?.AnswerWarehousePlace(new WarehousePlaced(request.RequestId, false, "No se pudo colocar: " + ex.Message, 0, null));
+                return;
+            }
 
-                // The reading after placing, in this same command: the page follows without a second command.
-                var after = ReadWarehouse(document, request.RequestId, request.SeedRackId, request.Layer, request.SeedHandle,
-                    useSelection: false, onlyPreferred: false, out _, out _);
-                door?.AnswerWarehousePlace(new WarehousePlaced(request.RequestId, true,
-                    WarehouseLayoutRules.PlacedText(request.Mode, placed, plan.Assessment.Grid, independent), placed, after));
+            // From here the racks ARE in the drawing (correction 1 of the review): whatever fails now, the answer says they were placed, so
+            // the page never offers to place them again on top. The regeneration and the reading after it have their own try.
+            var independent = grid && request.Values.Independent;
+            var message = WarehouseLayoutRules.PlacedText(request.Mode, placed, plan.Assessment.Grid, independent);
+            try
+            {
+                document.Editor.Regen();
+            }
+            catch (System.Exception ex)
+            {
+                RackLog.Exception("RackLayoutCommands.RackAlmacenColocar (regenerar tras colocar)", ex);
+            }
+
+            WarehouseReading after;
+            try
+            {
+                after = AfterPlacing(document, request, fresh, placed, independent);
+            }
+            catch (System.Exception ex)
+            {
+                RackLog.Exception("RackLayoutCommands.RackAlmacenColocar (leer tras colocar)", ex);
+                after = WarehouseReading.Failed(request.RequestId, request.SeedRackId, "No se pudo volver a leer el dibujo después de colocar: " + ex.Message);
+            }
+
+            door?.AnswerWarehousePlace(new WarehousePlaced(request.RequestId, true, message, placed, after));
+            try
+            {
                 document.Editor.WriteMessage("\n" + WarehouseLayoutRules.CommandLineText(request.Mode, placed, plan.Assessment.Grid, independent));
             }
             catch (System.Exception ex)
             {
-                RackCommandSupport.Report(ex);
-                door?.AnswerWarehousePlace(new WarehousePlaced(request.RequestId, false, "No se pudo colocar: " + ex.Message, 0, null));
+                RackLog.Exception("RackLayoutCommands.RackAlmacenColocar (línea de órdenes)", ex);
             }
         }
 
         /// <summary>
+        /// The reading after placing, without a second pass over the block table (correction 3 of the review): the seed is the one read
+        /// just before (placing does not touch it), with its plantas counted again by what was placed (a linked copy is one more planta of
+        /// the rack; an independent one is a rack of its own); the site of the fill is the one read before, unless the references went to
+        /// its layer (the current layer: then it is read again); the grid reads the site once, here; and the layers, which may now have
+        /// RACKCAD_LAYOUT.
+        /// </summary>
+        private static WarehouseReading AfterPlacing(Document document, WarehousePlaceRequest request, WarehouseReading fresh, int placed, bool independent)
+        {
+            var layers = ReadLayerNames(document, out var current);
+            var site = fresh.Site;
+            if (site == null || string.Equals(current, site.Layer, StringComparison.OrdinalIgnoreCase)) site = ReadSiteFacts(document, request.Layer);
+            return fresh with
+            {
+                PlantaCount = fresh.PlantaCount + (independent ? 0 : placed),
+                Site = site,
+                Layers = layers,
+                CurrentLayer = current,
+            };
+        }
+
+        /// <summary>
         /// ONE reading for the page: the seed (<paramref name="onlyPreferred"/>: only the planta of that handle, for «Colocar»), its site and
-        /// the layers. <paramref name="seed"/> and <paramref name="embed"/> are what <c>PlaceGrid</c> and <c>PlaceFill</c> need.
+        /// the layers. <paramref name="seed"/> and <paramref name="embed"/> are what <c>PlaceGrid</c> and <c>PlaceFill</c> need. Without
+        /// <paramref name="readSite"/> or <paramref name="readLayers"/>, those passes are not made (correction 3 of the review).
         /// </summary>
         private static WarehouseReading ReadWarehouse(
             Document document, long requestId, string rackId, string layer, string preferredHandle, bool useSelection, bool onlyPreferred,
-            out PlantaSeed seed, out RackEmbedDocument embed)
+            out PlantaSeed seed, out RackEmbedDocument embed, bool readSite = true, bool readLayers = true)
         {
             var facts = ReadSeedFacts(document, rackId, preferredHandle, useSelection, onlyPreferred, out seed, out embed, out var plantas,
                 out var name, out var problem);
+            var site = readSite ? ReadSiteFacts(document, layer) : null;
+            string current = null;
+            IReadOnlyList<string> layers = readLayers ? ReadLayerNames(document, out current) : Array.Empty<string>();
+            return new WarehouseReading(requestId, null, rackId, name, plantas, facts, problem, site, layers, current);
+        }
 
+        // The site of a layer, as RACKRELLENAR reads it (ReadSiteFromLayer, its two passes over the model space).
+        private static WarehouseSiteFacts ReadSiteFacts(Document document, string layer)
+        {
             var layerName = string.IsNullOrWhiteSpace(layer) ? WarehouseLayoutRules.DefaultSiteLayer : layer.Trim();
-            WarehouseSiteFacts site;
             if (ReadSiteFromLayer(document, layerName, 0.0, out var boundary, out var obstacles, out var ignored, out var siteProblem))
             {
-                site = new WarehouseSiteFacts(layerName, null, boundary,
+                return new WarehouseSiteFacts(layerName, null, boundary,
                     obstacles.Select(o => new WarehouseObstacleFact(o.X, o.Y, o.Width, o.Depth, o.Label)).ToList(), ignored);
             }
-            else
-            {
-                site = new WarehouseSiteFacts(layerName, WarehouseLayoutRules.Sentence(siteProblem), null, Array.Empty<WarehouseObstacleFact>(), 0);
-            }
 
-            return new WarehouseReading(requestId, null, rackId, name, plantas, facts, problem, site, ReadLayerNames(document));
+            return new WarehouseSiteFacts(layerName, WarehouseLayoutRules.Sentence(siteProblem), null, Array.Empty<WarehouseObstacleFact>(), 0);
         }
 
         // The seed: the model-space references of the plantas of the rack; the one selected in AutoCAD, else the one of the handle, else the
@@ -303,13 +365,16 @@ namespace RackCad.Plugin
             return ids;
         }
 
-        // The layers of the drawing for the list «Capa del sitio» (question 8): the drawing's own, by name.
-        private static List<string> ReadLayerNames(Document document)
+        // The layers of the drawing for the list «Capa del sitio» (question 8): the drawing's own, by name; and the current one (CLAYER),
+        // where the references are placed (correction 2 of the review).
+        private static List<string> ReadLayerNames(Document document, out string current)
         {
             var names = new List<string>();
+            current = null;
             using (document.LockDocument())
             using (var transaction = document.Database.TransactionManager.StartTransaction())
             {
+                if (transaction.GetObject(document.Database.Clayer, OpenMode.ForRead) is LayerTableRecord active) current = active.Name;
                 var table = (LayerTable)transaction.GetObject(document.Database.LayerTableId, OpenMode.ForRead);
                 foreach (ObjectId id in table)
                 {

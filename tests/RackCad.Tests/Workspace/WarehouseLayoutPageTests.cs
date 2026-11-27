@@ -302,6 +302,21 @@ public class WarehouseLayoutPageTests
         Assert.Equal("A1, B1 y 2 más", WarehouseLayoutRules.ListText(new[] { "A1", "B1", "C1", "D1" }, 2));
     }
 
+    [Fact]
+    public void TheCurrentLayerOfTheDrawingOnTheLayerOfTheSiteIsSaidBeforeColocar()
+    {
+        // Correction 2 of the review: the references go to the current layer, and on the layer of the site the next reading takes them
+        // as obstacles. The computation does not change; the page says it.
+        var onSite = Reading() with { CurrentLayer = "rackcad_sitio" };
+        Assert.StartsWith("La capa actual del dibujo es «rackcad_sitio», la del sitio:", WarehouseLayoutRules.CurrentLayerWarning(onSite, "RACKCAD_SITIO"), StringComparison.Ordinal);
+        Assert.Equal(string.Empty, WarehouseLayoutRules.CurrentLayerWarning(Reading() with { CurrentLayer = "0" }, "RACKCAD_SITIO"));
+        Assert.Equal(string.Empty, WarehouseLayoutRules.CurrentLayerWarning(Reading(), "RACKCAD_SITIO"));
+        Assert.Equal(WarehouseLayoutRules.Fingerprint(Reading(), WarehouseLayoutMode.Fill), WarehouseLayoutRules.Fingerprint(onSite, WarehouseLayoutMode.Fill));
+
+        // And the command reads it with the layers.
+        Assert.Contains("document.Database.Clayer", WorkspaceHostSource.Code(Commands));
+    }
+
     // ------------------------------------------------------------------ the door, by its source
 
     private const string Commands = "src/RackCad.Plugin/RackLayoutCommands.Ventana.cs";
@@ -322,7 +337,8 @@ public class WarehouseLayoutPageTests
         var start = code.IndexOf(signature, StringComparison.Ordinal);
         Assert.True(start >= 0, signature);
         var next = code.IndexOf("[CommandMethod(", start + signature.Length, StringComparison.Ordinal);
-        var helpers = code.IndexOf("private static WarehouseReading ReadWarehouse(", start, StringComparison.Ordinal);
+        var helpers = new[] { "private static WarehouseReading ReadWarehouse(", "private static WarehouseReading AfterPlacing(" }
+            .Select(h => code.IndexOf(h, start, StringComparison.Ordinal)).Where(i => i > start).DefaultIfEmpty(-1).Min();
         var end = new[] { next, helpers }.Where(i => i > start).DefaultIfEmpty(code.Length).Min();
         return code.Substring(start, end - start);
     }
@@ -355,12 +371,36 @@ public class WarehouseLayoutPageTests
     public void RackAlmacenColocarReadsAgainComparesAndPlacesWithTheHalvesOfTheClassicCommands()
     {
         var code = WorkspaceHostSource.Code(Commands);
-        Assert.Contains("[CommandMethod(\"RACKALMACENCOLOCAR\")]", code); // an undo marker: one «U» undoes it
-        InOrder(Body(code, "public void RackAlmacenColocar()"),
+        // Correction 4 of the review: «Colocar» keeps the selection (the reading it gives when the drawing changed sees it, AL-S2), and it
+        // keeps its undo marker (no NoUndoMarker): one «U» undoes it.
+        Assert.Contains("private const CommandFlags WarehousePlaceFlags = CommandFlags.UsePickSet | CommandFlags.Redraw;", code);
+        Assert.Contains("[CommandMethod(\"RACKALMACENCOLOCAR\", WarehousePlaceFlags)]", code);
+        var body = Body(code, "public void RackAlmacenColocar()");
+        InOrder(body,
             "RackCadRackDoorPort.TakePendingWarehousePlace()", "door?.Started(pending.RequestId);", "pending.Document != RackCadRackDoorPort.KeyOf(document)",
-            "onlyPreferred: true", "WarehouseLayoutRules.PlanPlace(request, fresh)", "if (!plan.CanPlace)", "door?.AnswerWarehousePlace(",
-            "RackUnitsGuard.WarnIfNotInches(document);", "PlaceGrid(document, plan.Assessment.Grid.Plan, seed, embed, independent)",
-            "PlaceFill(document, plan.Assessment.Fill.Result, seed)", "var after = ReadWarehouse(", "door?.AnswerWarehousePlace(new WarehousePlaced(request.RequestId, true,");
+            "onlyPreferred: true", "WarehouseLayoutRules.PlanPlace(request, fresh)", "if (!plan.CanPlace)", "useSelection: true", "door?.AnswerWarehousePlace(",
+            "RackUnitsGuard.WarnIfNotInches(document);", "PlaceGrid(document, plan.Assessment.Grid.Plan, seed, embed, request.Values.Independent, regen: false)",
+            "PlaceFill(document, plan.Assessment.Fill.Result, seed, regen: false)", "document.Editor.Regen();", "after = AfterPlacing(",
+            "door?.AnswerWarehousePlace(new WarehousePlaced(request.RequestId, true,");
+
+        // Correction 1: once placed, nothing answers «no se colocó»: the regeneration and the reading after it have their own try, and the
+        // only answer that says false after the placement is gone.
+        var placedAt = body.IndexOf("regen: false)", StringComparison.Ordinal);
+        Assert.DoesNotContain("new WarehousePlaced(request.RequestId, false", body.Substring(body.IndexOf("document.Editor.Regen();", placedAt, StringComparison.Ordinal)));
+        Assert.Matches(new System.Text.RegularExpressions.Regex(@"try\s*\{\s*document\.Editor\.Regen\(\);\s*\}\s*catch"), body);
+        Assert.Matches(new System.Text.RegularExpressions.Regex(@"try\s*\{\s*after = AfterPlacing\([^;]*;\s*\}\s*catch"), body);
+        Assert.Contains("after = WarehouseReading.Failed(", body);
+        foreach (var half in new[] { "src/RackCad.Plugin/RackLayoutCommands.cs", "src/RackCad.Plugin/RackLayoutCommands.Fill.cs" })
+            Assert.Contains("if (regen) document.Editor.Regen();", WorkspaceHostSource.Code(half)); // RACKLAYOUT and RACKRELLENAR regenerate as before
+
+        // Correction 3: the fresh read of the grid reads no site and no read of «Colocar» reads the layers; after placing, the block table
+        // is not scanned again (one FindRackBlocks in the file, the one of the seed).
+        Assert.Contains("readSite: !grid, readLayers: false", body);
+        Assert.Single(System.Text.RegularExpressions.Regex.Matches(code, @"RackCommandSupport\.FindRackBlocks\("));
+        var after = code.Substring(code.IndexOf("private static WarehouseReading AfterPlacing(", StringComparison.Ordinal));
+        after = after.Substring(0, after.IndexOf("private static WarehouseReading ReadWarehouse(", StringComparison.Ordinal));
+        Assert.DoesNotContain("ReadSeedFacts(", after);
+        Assert.Contains("PlantaCount = fresh.PlantaCount + (independent ? 0 : placed)", after);
     }
 
     [Fact]

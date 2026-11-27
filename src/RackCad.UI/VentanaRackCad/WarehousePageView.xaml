@@ -87,6 +87,35 @@
                 <Setter Property="MinWidth" Value="80" />
             </Style>
             <!-- A tab or a segmented choice: a flat button whose chosen state is set by its own trigger. -->
+            <!-- Correction 5 of the review: the header of «Verificar encaje» is a flat button whose content stretches (SecondaryButtonStyle
+                 centres it), with the title at the left and the summary at the right, as the prototype. -->
+            <Style x:Key="DisclosureButton" TargetType="Button">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderBrush" Value="{DynamicResource ShellBorderBrush}" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="Padding" Value="10,5" />
+                <Setter Property="Cursor" Value="Hand" />
+                <Setter Property="Foreground" Value="{DynamicResource ShellTextPrimaryBrush}" />
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="bd" Property="Background" Value="{DynamicResource ShellWindowBackgroundBrush}" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="bd" Property="Opacity" Value="0.5" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
             <Style x:Key="ChoiceButton" TargetType="Button" BasedOn="{StaticResource SecondaryButtonStyle}">
                 <Setter Property="Padding" Value="12,4" />
                 <Setter Property="Margin" Value="0,0,6,0" />
@@ -364,6 +393,7 @@
                         <TextBlock x:Name="SiteLineText" Text="{Binding SiteLine}" Style="{StaticResource OptionalText}" Margin="0,6,0,0"
                                    Foreground="{DynamicResource ShellTextPrimaryBrush}" />
                         <TextBlock x:Name="SiteErrorText" Text="{Binding SiteError}" Style="{StaticResource ErrorText}" />
+                        <TextBlock x:Name="CurrentLayerWarningText" Text="{Binding CurrentLayerWarning}" Style="{StaticResource NoteText}" />
                         <TextBlock Style="{StaticResource FieldHint}" Margin="0,6,0,8"
                                    Text="El contorno es la polilínea cerrada más grande de la capa; sus arcos se muestrean en 16 cuerdas. Lo demás de la capa (círculos, rectángulos, bloques) son columnas u obstáculos, por su rectángulo envolvente; líneas, textos y cotas se ignoran." />
                         <UniformGrid Columns="2">
@@ -473,13 +503,15 @@
 
                     <!-- Verificar encaje (RACKLAYOUT) -->
                     <StackPanel Visibility="{Binding IsGridTab, Converter={StaticResource FlagToVisibility}}" Margin="0,12,0,0">
-                        <Button x:Name="FitToggleButton" Click="OnFitToggleClick" HorizontalContentAlignment="Stretch"
-                                AutomationProperties.Name="Verificar encaje (opcional)" Style="{StaticResource SecondaryButtonStyle}" Padding="10,4">
-                            <TextBlock>
-                                <Run Text="Verificar encaje (opcional)" FontWeight="SemiBold" />
-                                <Run Text=" · " />
-                                <Run Text="{Binding FitSummary, Mode=OneWay}" />
-                            </TextBlock>
+                        <Button x:Name="FitToggleButton" Click="OnFitToggleClick" AutomationProperties.Name="Verificar encaje (opcional)"
+                                Style="{StaticResource DisclosureButton}">
+                            <DockPanel LastChildFill="True">
+                                <TextBlock x:Name="FitSummaryText" DockPanel.Dock="Right" Text="{Binding FitSummary}" Margin="12,0,0,0"
+                                           VerticalAlignment="Center" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                <TextBlock x:Name="FitChevronText" Text="{Binding FitChevron}" Width="14" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                <TextBlock Text="Verificar encaje (opcional)" FontWeight="SemiBold" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                            </DockPanel>
                         </Button>
                         <StackPanel x:Name="FitPanel" Visibility="{Binding FitOpen, Converter={StaticResource FlagToVisibility}}" Margin="0,8,0,0">
                             <UniformGrid Columns="2">

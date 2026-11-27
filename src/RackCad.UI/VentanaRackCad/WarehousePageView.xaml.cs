@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace RackCad.UI.VentanaRackCad
 {
@@ -25,7 +26,14 @@ namespace RackCad.UI.VentanaRackCad
             DataContext = viewModel;
             SizeChanged += OnSizeChanged;
             _viewModel.PropertyChanged += OnViewModelPropertyChanged;
+            // Correction 6 of the review: a value typed is remembered when its box loses the focus, not on every key.
+            AddHandler(Keyboard.LostKeyboardFocusEvent, new KeyboardFocusChangedEventHandler(OnFieldLostFocus), handledEventsToo: true);
             SyncChoices();
+        }
+
+        private void OnFieldLostFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            if (e.OriginalSource is TextBox) Contained(_viewModel.CommitValues);
         }
 
         public WarehousePageViewModel ViewModel => _viewModel;

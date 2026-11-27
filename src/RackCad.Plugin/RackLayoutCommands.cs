@@ -221,7 +221,7 @@ namespace RackCad.Plugin
             return seed;
         }
 
-        private static int PlaceGrid(Document document, WarehouseGridPlan plan, PlantaSeed seed, RackEmbedDocument embed, bool independent)
+        private static int PlaceGrid(Document document, WarehouseGridPlan plan, PlantaSeed seed, RackEmbedDocument embed, bool independent, bool regen = true) // T5 al: regen
         {
             var database = document.Database;
             var placed = 0;
@@ -274,7 +274,7 @@ namespace RackCad.Plugin
                 transaction.Commit();
             }
 
-            document.Editor.Regen();
+            if (regen) document.Editor.Regen(); // T5 al: the window regenerates after it knows the placement was committed
             return placed;
         }
 

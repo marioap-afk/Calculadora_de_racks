@@ -91,7 +91,8 @@ namespace RackCad.Application.VentanaRackCad
     /// <summary>
     /// T5 al: what AutoCAD read for the page «Almacén», for the request of that number: the seed (or why there is none, with the count of
     /// its plantas, question 7), the site of the layer asked and the layers of the drawing (question 8). <see cref="Failure"/> says why
-    /// nothing could be read at all.
+    /// nothing could be read at all. <paramref name="CurrentLayer"/> is the current layer of the drawing (CLAYER), where AutoCAD places the
+    /// new references (correction 2 of the review: on the layer of the site they would be read as obstacles next time).
     /// </summary>
     public sealed record WarehouseReading(
         long RequestId,
@@ -102,7 +103,8 @@ namespace RackCad.Application.VentanaRackCad
         WarehouseSeedFacts Seed,
         string SeedProblem,
         WarehouseSiteFacts Site,
-        IReadOnlyList<string> Layers)
+        IReadOnlyList<string> Layers,
+        string CurrentLayer = null)
     {
         public bool IsRead => Failure == null;
 
