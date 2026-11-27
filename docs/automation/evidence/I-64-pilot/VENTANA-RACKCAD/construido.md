@@ -4457,6 +4457,7 @@ Posterior») y SG-09. No se borró código clásico: RACKPUSHBACK, RPB, RACKEDIT
 |---|---|---|
 | PB-S01 | El borrador es el estado editable del borrador completo y la pasada de la Seat; la ventana no tiene recomposición propia. Un cambio de cálculo no se pidió ni se hizo: la regla asimétrica de la cama, PB-002 del desviador por poste y las cabeceras como cortes son las de siempre | `PushBackDraftEditor` |
 | PB-S02 | La selección de la matriz es del editor (celdas, primaria y ancla), no la de la matriz de cada lado: con «Ambos lados» una celda que solo tiene B se puede elegir, y los gestos se escriben en cada lado donde la celda existe | `PushBackEditorViewModel` (`_selected`) |
+| PB-S18 | Junto a PB-S02 (revisión de `01e76902`, punto 4): «Dejar el frente en blanco» y «Activar» deciden **lado por lado**. Con «Ambos lados», un frente en blanco en A y presente en B ofrece «Dejar en blanco» y deja B en blanco. El clásico (`SetFrontActive`) sale antes si el lado activo ya está como se pide, y con «Ambos» el activo es A: su casilla sale marcada y el único gesto es reactivar los dos. El rechazo es el del clásico, palabra por palabra, en cualquier rack: «Al menos un frente del rack debe permanecer activo.» | `PushBackDraftEditor.SetBlank`, `PushBackEditorViewModel.IsPrimaryFrontBlank` |
 | PB-S03 | **Hecho** (subsección «PB-S03: la seguridad poste por poste»): la tabla «Seguridad por poste» editable y el inspector «Variante y medidas» de la cuarta tanda, con «Entrada/Salida / Posterior» por lado (I-42) para botas y defensa; lo que escribe es lo del diálogo clásico para la misma elección, comprobado en Core contra una transcripción del clásico | `PushBackSafetyEdit`, `RackCadSafetyPanel.PushBack.cs` |
 | PB-S04 | **Falta** la pregunta 9 («Comprobar con el dibujo» y el conflicto con «Conservar mi borrador» / «Descartar y volver a leer»): como Dinámico y Selectivo (M-16), el editor no detecta un cambio del dibujo mientras se edita | — |
 | PB-S05 | El panel del piloto de Push Back sigue como está (su campo, «Editar todo», «Instrumentación»): sus guardas de F1-F4B fijan su contenido. Si el piloto tiene un borrador del mismo rack, son dos borradores; el del piloto queda «posiblemente obsoleto» después de un «Actualizar» de la ventana | — |
@@ -4552,7 +4553,7 @@ Posterior») y SG-09. No se borró código clásico: RACKPUSHBACK, RPB, RACKEDIT
 - **El smoke en AutoCAD:** que RACKPUSHBACKABRIR no deje paso en Deshacer; que un «U» deshaga RACKPUSHBACKAPLICAR entero; «Insertar
   vista…» de un rack de dos sentidos con los cortes de B; un borrador insertado con su nombre automático y reabierto con «Editar aquí»;
   RACKEDITAR abre lo que escribió la ventana igual que antes; la paleta real (anchos, foco).
-- **Para el Owner:** PB-S02, PB-S08, PB-S09, PB-S10, PB-S12, PB-S13, PB-S16 y PB-S17 (con el defecto del clásico de su punto 5).
+- **Para el Owner:** PB-S02 y PB-S18, PB-S08, PB-S09, PB-S10, PB-S12, PB-S13, PB-S16 y PB-S17 (con el defecto del clásico de su punto 5).
 - **Para integrar:** las ediciones de una línea de arriba; los censos de órdenes (`SelectiveEditorOpenTests`, `CustomPropertiesCommandGuardTests`)
   y `RackCadWindowListTests` también los tocan las otras partes que añaden puertas.
 
@@ -4587,9 +4588,12 @@ autoridad de seguridad), con las vistas compartidas (`RackCadSafetyTableView`, `
   - una medida escrita es propia y se queda.
 - **El desviador:**
   - va por poste (PB-002); sus niveles son los del lado más alto cuando hay lado B;
-  - no tiene lado que elegir (PB-003);
+  - no tiene lado que elegir (PB-003): se escribe en el lado que devuelve la rejilla de Push Back, el del extremo bajo (Izquierdo);
   - la longitud y el primer nivel se validan en su campo;
-  - uno nuevo llega como lo acepta su rejilla sin tocar nada (18 in y el primer nivel a 18 in, en todas las celdas).
+  - uno nuevo llega como lo acepta su rejilla sin tocar nada (18 in y el primer nivel a 18 in, en todas las celdas, en el lado del
+    extremo bajo);
+  - cambiar la variante de uno que ya existe cambia solo la variante: sus medidas y sus celdas se escriben como las tiene su fila, como el
+    «Aceptar» del clásico sin «Configurar…».
 - **La tabla se cuenta como el BOM de Push Back** (`PushBackSafetyRows`):
   - las botas de cada lado, de `PushBackBootPlan`;
   - los desviadores, de `PushBackDiverterPlan`;
@@ -4607,7 +4611,9 @@ en un rack de un sentido. Familia por familia:
 - **Defensa:** las dos secciones (`BuildDefenseSection`, `DefensePieceIdOf`) y su «Aceptar» (`ApplyDefenseSections`,
   `EnsureDefenseSelection`).
   - El tipo de cada lado va a su estado.
-  - La familia existe mientras un lado tiene tipo, o solo como portadora de los postes con los dos en «Ninguno».
+  - La familia existe mientras un lado tiene tipo, o solo como portadora de los postes con los dos en «Ninguno». Sin tipo en ningún lado y
+    sin nada propio en ningún poste, la familia sale y un poste no tiene dónde guardar una decisión (el clásico tampoco la escribe): las
+    casillas de la tabla quedan deshabilitadas hasta elegir un tipo.
   - Se reconstruye con una pieza, sin lado y restringida al extremo bajo.
   - Un rack de un sentido toma la rejilla de dos extremos; uno con lado B funde cara a cara; una línea que ya no existe no deja registro.
   - Cada registro pasa por la rejilla como ella lo muestra: un extremo automático no guarda longitud, y una longitud se relee con «0.##».
@@ -4618,18 +4624,21 @@ en un rack de un sentido. Familia por familia:
   - las celdas apagadas en el orden de la rejilla, y después las dormidas de una columna sin niveles (I-33);
   - una celda más allá de los niveles de su poste se va;
   - la longitud y el primer nivel como los muestra la rejilla;
-  - el lado que la rejilla conserva y una pieza.
+  - el lado que la rejilla devuelve en Push Back (Izquierdo: se abre con `showDesviadorSide: false` y elige su `LowEndSide`) y una pieza.
+  - El cambio de variante de uno que ya existe no pasa por la rejilla: es la fila del diálogo (`PushBackSafetyEdit.DesviadorRow`), con sus
+    medidas sin validar y todas sus celdas apagadas, también las que quedan por encima de los niveles de su poste.
 
-**Comprobado en Core** con `PushBackSafetyEditTests` (18 casos), que usa una transcripción del clásico independiente de
+**Comprobado en Core** con `PushBackSafetyEditTests` (21 casos), que usa una transcripción del clásico independiente de
 `PushBackSafetyEdit` (la clase `Classic` de la prueba, con las líneas de origen nombradas):
 - Cada prueba toma dos borradores del mismo rack: la ventana edita uno, la transcripción escribe el otro como su «Aceptar».
 - Los dos diseños tienen que ser iguales y el BOM de seguridad también, y distintos del de antes, para que ninguna prueba quede vacía. La
   lista de seguridad se lee en un orden (supuesto PB-S17, 2).
 - Casos de botas: el poste, la general, «Ninguno» y la vuelta, la matriz de `pb-06-seguridad` y los dos lados.
 - Casos de defensa: «Posterior» encendida, una medida, apagada, la automática, «Todas automáticas», «Ninguno» con los postes en espera,
-  cada cara con lado B y la defensa leída de un dibujo.
+  «Ninguno» sin nada propio (la familia sale y un poste no tiene dónde guardarse), cada cara con lado B y la defensa leída de un dibujo.
 - Casos de protector lateral: el poste desde la regla, «No lleva» y la vuelta a la regla.
-- Casos de desviador: niveles y medidas, uno nuevo, el cambio de variante y con lado B.
+- Casos de desviador: niveles y medidas, una medida no válida, uno nuevo (en el lado del extremo bajo), el cambio de variante sin la rejilla
+  (una celda por encima de los niveles de su poste y una medida no válida se quedan) y con lado B.
 - Las filas de la tabla, contadas como el BOM, en los dos tipos de rack.
 
 **Diferencias con el clásico, declaradas** (supuesto PB-S17):
@@ -4687,8 +4696,9 @@ Las seis observaciones de la revisión independiente, en el mismo worktree. Cada
    evaluar B, `WhySlotCannotBeRemoved` veía A ya ausente. Además era más estricto que el clásico.
    - Ahora va por la ruta del clásico (`SetFrontActive`): cada lado que cambia pasa por `PushBackCompositeEditorState.SetSlotPresent`,
      que deja un lado entero en blanco mientras el otro sostiene el rack. El gesto se escribe cuando algún lado lo tomó (`applied |=`).
-   - Solo se rechaza cuando ningún lado lo tomó: «Al menos un frente del rack debe permanecer activo.», el texto del clásico. Un rack de
-     un sentido conserva el suyo.
+   - Solo se rechaza cuando ningún lado lo tomó: «Al menos un frente del rack debe permanecer activo.», el texto del clásico. (Un rack de
+     un sentido decía otro, sin «del rack»; la revisión de `01e76902` lo unificó con el del clásico, y PB-S18 declara la decisión lado
+     por lado.)
    - Código: `PushBackDraftEditor.SetBlank(sides, front, blank)` y `PushBackEditorViewModel.SetFrontBlank`.
    - Pruebas: Core `PushBackReviewCorrectionsTests` (los dos lados; B entero en blanco mientras A sostiene; una ranura ausente en B puesta
      en blanco en A; el último frente del rack) y UI `BlankWithBothSidesIsWrittenInTheTwoSidesAsTheClassicWindowDoes`.
@@ -4720,7 +4730,7 @@ Las seis observaciones de la revisión independiente, en el mismo worktree. Cada
 
 **Las pruebas nuevas:**
 - Core:
-  - `PushBackSafetyEditTests` (19): PB-S03, contra la transcripción del clásico;
+  - `PushBackSafetyEditTests`: PB-S03, contra la transcripción del clásico (su cuenta, en la subsección PB-S03);
   - `PushBackReviewCorrectionsTests` (3): los puntos 1 y 4;
   - `PushBackWindowDrawingMirrorGuardTests` (3): el punto 5.
   - En `PushBackDraftEditorTests` cambió el texto que busca una guarda (punto 5); no hay casos nuevos.
@@ -4763,10 +4773,90 @@ Las seis observaciones de la revisión independiente, en el mismo worktree. Cada
 - **UI completa:** 2988 correctas, 0 con error, 48 omitidas (3036). Son las 2977 de la primera entrega más las 11 nuevas.
 - **Plugin en Debug:** 0 errores; 2 advertencias, las MSB3277 de las referencias de AutoCAD que ya estaban.
 
+### Correcciones de la revisión de PB-S03 (sobre `01e76902`)
+
+Los seis hallazgos de la revisión independiente, en el mismo worktree, sin commit. Los de código tienen su prueba y su pieza en rojo.
+
+1. **Cambio de variante de un desviador que ya existe** (media-baja).
+   - Antes pasaba por la rejilla (`WriteDesviador`): una longitud o un primer nivel no válidos quedaban en 18 in, y se borraban las celdas
+     apagadas por encima de los niveles de su poste.
+   - Ahora `SetVariant` escribe la fila del diálogo, como el «Aceptar» del clásico sin «Configurar…» (`PushBackSafetyEdit.DesviadorRow`):
+     la otra variante, una pieza, el lado que tenía (Izquierdo o Derecho; si no, Ambos), las medidas sin validar, la lectura por poste y
+     todas las celdas apagadas. En el clásico la fila conserva todo porque sus niveles salen de `SelectiveDesviadorPlan.Build(null, …)`,
+     vacíos, y `AllCellsOff` da falso.
+   - **Supuesto medido:** se reconstruye la fila; no se muta solo el `ElementId` de la selección. Un desviador recién nacido guarda
+     `AuthoredSide = Ambos` (la seguridad por defecto pasa por la autoridad). El clásico escribe una fila nueva, y la autoridad le pone el
+     lado de la fila (Izquierdo). Mutar solo el id conservaría «Ambos»: la pieza R1x lo mide. Lo que muestra la fila solo cambia en la variante.
+   - Prueba Core `AVariantChangeOfADesviadorWritesItsRowAsTheClassicAcceptWithoutItsGrid`, contra la transcripción nueva
+     `Classic.DesviadorVariant`. Recorre tres pasos:
+     - la variante sobre el desviador recién nacido;
+     - N4 de P2 apagado, los frentes de P2 bajados a 3 niveles y la variante otra vez: la celda se queda;
+     - una longitud de 7 in y la variante otra vez: los 7 in se quedan.
+   - La prueba que se llamaba «…AndAVariantChangeKeepsTheRow» no cambiaba ninguna variante. Ahora se llama
+     `ANewDesviadorComesAsItsGridAcceptsItOnTheSideOfTheLowEnd` y comprueba lo que dice (punto 2).
+2. **Lado de un desviador nuevo** (baja).
+   - `WriteDesviador` escribe ahora `PushBackSafetyEdit.DesviadorGridSide` (Izquierdo). Es el lado que devuelve la rejilla del clásico de
+     Push Back: se abre con `showDesviadorSide: false`, elige su `LowEndSide` y `BuildResult` lo devuelve.
+   - Un desviador nuevo, y cualquiera que pase por la rejilla, queda en el diseño con `Side` y `AuthoredSide` en Izquierdo, como en el clásico.
+   - `RackCadSafetyEdit.Fresh` no cambió, así que Selectivo y Dinámico siguen igual: sus pruebas de seguridad, en verde.
+   - La transcripción modela el lado que fuerza la rejilla (`Classic.GridSide`), no el de la ventana ni el guardado, en `Classic.Desviador`
+     y en `Classic.NewDesviador`.
+3. **Defensa con los dos lados en «Ninguno» y sin familia** (baja).
+   - **Elegido: deshabilitar.** Es el patrón del panel: la casilla de la defensa ya tiene `IsEnabled` ligado en su plantilla y la medida
+     `IsReadOnly`, como mientras AutoCAD escribe.
+   - `PushBackSafetyEdit.DefenseHoldsPosts` dice si una decisión tiene dónde escribirse: un lado con tipo, o la familia como portadora.
+   - Si no la tiene:
+     - cada casilla queda deshabilitada y su medida, de solo lectura, con «Sin tipo: elige uno para decidirla»;
+     - un clic que llegue igual (por código) no escribe y dice por qué, con un mensaje de error visible.
+   - La nota del inspector dice ahora lo que pasa: «"Ninguno" en el tipo conserva lo que cada poste tiene de propio… Si ningún lado tiene
+     tipo y ningún poste tiene nada propio, la defensa sale del rack y sus casillas quedan deshabilitadas; al elegir un tipo vuelven las
+     automáticas.» El aviso de «Ninguno» lo dice también cuando no había nada propio.
+   - Pruebas:
+     - Core `WithNoTypeOfDefenseAndNothingByPostADecisionOfAPostHasNowhereToGoAsInTheClassic`, también contra la transcripción: el clásico
+       tampoco escribe nada;
+     - UI `WithNoTypeOfDefenseAndNothingByPostItsBoxesAreDisabledUntilATypeIsChosen`.
+4. **«Dejar el frente en blanco»** (baja).
+   - Sin cambio de comportamiento: la decisión lado por lado queda declarada como **PB-S18**, junto a PB-S02 en la tabla y en «Para el
+     Owner».
+   - El rechazo es el del clásico (`SetFrontActive`) en cualquier rack: «Al menos un frente del rack debe permanecer activo.».
+   - Prueba ajustada: `PushBackDraftEditorTests.LevelsAndPositionsGoThroughTheStateOfEachSideAndABlankFrontKeepsItsLevels`, en un rack
+     de un sentido.
+5. **Textos.**
+   - El comentario de `Canonical` dice lo que hace: el diseño serializado, con la lista de seguridad en un orden; el estado editable no se
+     compara.
+   - La cuenta de `PushBackSafetyEditTests` queda en un solo sitio, la subsección PB-S03, ya con los dos casos nuevos.
+6. **El nombre del título de las botas.**
+   - `RackCadSafetyPanelViewModel.BootsHeadName`: con lado B dice «Botas del lado A: ver su tipo y sus medidas», como «Botas del lado B: …».
+   - Sin lado B, y en Selectivo y Dinámico, sigue el de siempre.
+   - La XAML compartida lo liga: una línea de `RackCadSafetyTableView.xaml`, marcada `T5 pb`.
+   - Prueba: las dos vistas de Push Back (WPF real).
+
+**Comprobación en rojo:**
+- Siete piezas, una a una, con `hs65\t5\pb\red3.py` del scratchpad de la sesión; su salida está en `red3-log.txt` y `red3-out.txt`.
+- El script guarda antes una copia FUERA del worktree, compila, corre las clases focales y restaura.
+- Las siete volvieron con el mismo SHA-256, y en `git diff` no quedó ningún resto.
+- Cada pieza hizo fallar su prueba:
+  - R1, la variante otra vez por la rejilla (el código de `01e76902`): falla la del cambio de variante (la celda de P2).
+  - R1x, solo el `ElementId` (la medición del supuesto del punto 1): la primera versión de la prueba **sobrevivió**, porque el desviador
+    ya había pasado por la rejilla. Se añadió el paso sobre el desviador recién nacido, y ahora falla por `AuthoredSide` (Ambos frente a
+    Izquierdo).
+  - R2, el lado de la selección en lugar del de la rejilla: falla la del desviador nuevo (`AuthoredSide`).
+  - R3 (Core), la defensa siempre con portador: fallan la de Core y la de UI.
+  - R3 (panel), las casillas siempre habilitadas: falla la de UI.
+  - R4, el texto de un sentido: falla `PushBackDraftEditorTests`.
+  - R6, el nombre fijo del título de las botas: falla la vista de dos sentidos.
+
+**Los números** (sobre las fuentes finales, solo la rama pb):
+- **Core Full:** 19358 correctas, 0 con error, 403 omitidas (19761), compilado con `--no-incremental`. Son las 19356 de antes más las 2
+  nuevas.
+- **UI completa:** 2989 correctas, 0 con error, 48 omitidas (3037). Son las 2988 de antes más la nueva.
+- **Plugin en Debug** (la solución entera): 0 errores; 2 advertencias, las MSB3277 de siempre.
+
 ## Quinta tanda: integración en la rama de Selectivo (sesión, 2026-11-26/27)
 
 Las seis partes se integraron con `merge --no-ff`, cada una con su commit y el de las correcciones de su revisión independiente. Push
-Back lleva además PB-S03, la seguridad poste por poste, en un segundo commit; su revisión independiente sigue en curso.
+Back lleva además PB-S03, la seguridad poste por poste, en un segundo commit, y las correcciones de su revisión independiente en un
+tercero (`773f0a6e`), integradas en un segundo merge de la rama pb.
 
 | Orden | Parte | Commit de la parte | Correcciones | Merge |
 |---|---|---|---|---|
@@ -4775,7 +4865,8 @@ Back lleva además PB-S03, la seguridad poste por poste, en un segundo commit; s
 | 3 | al («Almacén») | `1fd0f38d` | `b1217383` | `359628a0` |
 | 4 | cm (camas de rodamiento) | `bddc2203` | `2bb19604` | `cdc50113` |
 | 5 | ct (Cantilever) | `44c0a439` | `5c0acdba` | `bec64511` |
-| 6 | pb (Push Back) | `24adfee7` | `01e76902` (con PB-S03) | este commit |
+| 6 | pb (Push Back) | `24adfee7` | `01e76902` (con PB-S03) | `dac8a3a3` (CI verde, run 45937475349) |
+| 7 | pb, correcciones de la revisión de PB-S03 | — | `773f0a6e` | este commit |
 
 ### Lo que cambió al juntar las partes
 
@@ -4794,13 +4885,12 @@ Back lleva además PB-S03, la seguridad poste por poste, en un segundo commit; s
 
 ### Números sobre la integración
 
-- UI completa: 3109 / 0 / 48.
-- Core Full: 19481 / 0 / 403.
-- Solución en Debug (Plugin incluido): 0 errores.
+- UI completa: 3109 / 0 / 48 en `dac8a3a3`; 3110 / 0 / 48 con las correcciones de PB-S03 (+1).
+- Core Full: 19481 / 0 / 403 en `dac8a3a3`; 19483 / 0 / 403 con las correcciones de PB-S03 (+2).
+- Solución en Debug (Plugin incluido), con `--no-incremental`: 0 errores.
 
 ### Pendiente
 
-- La revisión independiente de PB-S03 y sus correcciones.
 - El smoke de la quinta tanda en AutoCAD.
-- La validación del Owner de los supuestos de cada parte: PP-S, LG-S, AL-S, CM-S, CT5 y PB-S. PB-S17 incluye un defecto del diálogo
-  clásico de Push Back con «Auto» en dos sentidos, que pide decisión del Owner.
+- La validación del Owner de los supuestos de cada parte: PP-S, LG-S, AL-S, CM-S, CT5 y PB-S (con PB-S18, nuevo en las correcciones
+  de PB-S03). PB-S17 incluye un defecto del diálogo clásico de Push Back con «Auto» en dos sentidos, que pide decisión del Owner.

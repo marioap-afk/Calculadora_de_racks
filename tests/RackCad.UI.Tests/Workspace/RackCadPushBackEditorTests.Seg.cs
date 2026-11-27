@@ -138,6 +138,53 @@ namespace RackCad.UI.Tests
         }
 
         [Fact]
+        public void WithNoTypeOfDefenseAndNothingByPostItsBoxesAreDisabledUntilATypeIsChosen()
+        {
+            // Review of 01e76902, point 3: a rack of one way, its defense all automatic, «Tipo de defensa» to «Ninguno». The family leaves the
+            // rack (nothing by post to keep), so a post has nowhere to keep a decision, as in the classic: its boxes are disabled and say why.
+            var editor = NewDraft(new Rig());
+            var panel = editor.SafetyPanel;
+            Assert.Empty(Family(editor, "DEFENSA").DefensaPosts);
+            Assert.True(panel.Table[1].DefenseExit.IsEnabled);
+            panel.Pick("DEFENSA");
+            Assert.Contains(panel.Inspector.Notes, n => n.Contains("sus casillas quedan deshabilitadas", StringComparison.Ordinal));
+            Choose(panel.Inspector.Variant, PushBackDefaults.NonePieceId);
+            Assert.False(editor.MessageIsError, editor.Message);
+            Assert.Contains("la defensa sale del rack", editor.Message);
+            Assert.Null(Family(editor, "DEFENSA"));
+
+            Assert.Equal(editor.Draft.SafetyPostCount, panel.Table.Count(r => r.DefenseExit.HasDefense));
+            foreach (var row in panel.Table.Take(panel.Table.Count - 1))
+            {
+                foreach (var end in new[] { row.DefenseExit, row.DefenseEntrance }.Where(e => e.HasDefense))
+                {
+                    Assert.False(end.IsEnabled);
+                    Assert.True(end.Length.IsReadOnly);
+                    Assert.Equal(RackCadSafetyPanelViewModel.DefenseWithoutTypeSub, end.Sub);
+                }
+            }
+
+            // A click that reaches the box anyway writes nothing and says why; the box shows the table again.
+            var json = editor.Draft.DesignJson();
+            var exit = panel.Table[1].DefenseExit;
+            Assert.True(exit.IsOn); // the automatic length that comes back with a type
+            exit.IsOn = false;
+            Assert.True(editor.MessageIsError);
+            Assert.Equal(RackCadSafetyPanelViewModel.DefenseWithoutTypeText, editor.Message);
+            Assert.True(panel.Table[1].DefenseExit.IsOn);
+            Assert.Equal(json, editor.Draft.DesignJson());
+
+            // A type again: the automatic ones come back and the boxes can be decided.
+            var piece = PushBackSafetyEdit.Variants(editor.Draft.Catalog, "DEFENSA").First().Id.Trim();
+            Choose(panel.Inspector.Variant, piece);
+            Assert.True(panel.Table[1].DefenseExit.IsEnabled);
+            Assert.StartsWith("Automática · ", panel.Table[1].DefenseExit.Sub);
+            panel.Table[1].DefenseExit.IsOn = false;
+            Assert.False(editor.MessageIsError, editor.Message);
+            Assert.False(Family(editor, "DEFENSA").DefensaPosts.Single(r => r.PostIndex == 1).ExitAuto);
+        }
+
+        [Fact]
         public void ATwoSidedPushBackHasTheBotasAndTheDefenseOfEachSide()
         {
             var editor = new Rig().OpenEditor("PB-2", "pb-20-ab", "PB 2");
@@ -233,6 +280,7 @@ namespace RackCad.UI.Tests
                 Assert.False(IsShown(table.GuidesHead));
                 Assert.Equal("Defensa Entrada/Salida (in)", table.DefenseExitHead.Content);
                 Assert.Equal("Defensa Posterior (in)", table.DefenseEntranceHead.Content);
+                Assert.Equal("Botas: ver su variante y sus medidas", Name(table.BootsHead)); // one way: the name of always
                 Assert.DoesNotContain(Descendants<TextBlock>(view), t => (t.Text ?? string.Empty).StartsWith("RackCad.", StringComparison.Ordinal)); // F-1
                 var names = Descendants<Control>(table.RowList).Where(c => IsShown(c) && (c is ComboBox || c is Button || c is CheckBox || c is TextBox))
                     .Select(c => Name(c)).Where(n => !string.IsNullOrEmpty(n)).ToList();
@@ -273,6 +321,8 @@ namespace RackCad.UI.Tests
                 var table = view.SafetyTable;
                 Assert.True(IsShown(table.BootsBHead));
                 Assert.Equal("Botas · lado A", table.BootsHead.Content);
+                Assert.Equal("Botas del lado A: ver su tipo y sus medidas", Name(table.BootsHead)); // review of 01e76902, point 6
+                Assert.Equal("Botas del lado B: ver su tipo y sus medidas", Name(table.BootsBHead));
                 Assert.Equal("Defensa lado B (in)", table.DefenseEntranceHead.Content);
                 Assert.Contains(Descendants<ComboBox>(table.RowList), c => Name(c) == "Botas del lado B en P1");
                 Assert.Empty(errors.Messages);

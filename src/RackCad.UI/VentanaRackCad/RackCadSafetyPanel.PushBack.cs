@@ -56,6 +56,9 @@ namespace RackCad.UI.VentanaRackCad
 
         public string BootsHeader => TwoSided ? "Botas · lado A" : "Botas";
 
+        /// <summary>The name of the title of the botas: of side A with a side B (review of 01e76902, point 6); the one of always otherwise.</summary>
+        public string BootsHeadName => TwoSided ? "Botas del lado A: ver su tipo y sus medidas" : "Botas: ver su variante y sus medidas";
+
         public string DefenseExitHeader => !IsPushBack ? "Defensa salida (in)" : TwoSided ? "Defensa lado A (in)" : "Defensa Entrada/Salida (in)";
 
         public string DefenseEntranceHeader => !IsPushBack ? "Defensa entrada (in)" : TwoSided ? "Defensa lado B (in)" : "Defensa Posterior (in)";
@@ -87,6 +90,7 @@ namespace RackCad.UI.VentanaRackCad
             var sideB = hasBoots && copy.TwoSided ? PushBackSafetyEdit.BootSide(copy, catalog, PushBackSide.B) : null;
             var defenseA = hasDefense ? PushBackSafetyEdit.DefenseSide(copy, catalog, PushBackSide.A) : null;
             var defenseB = hasDefense && copy.TwoSided ? PushBackSafetyEdit.DefenseSide(copy, catalog, PushBackSide.B) : null;
+            var defenseHolds = hasDefense && PushBackSafetyEdit.DefenseHoldsPosts(copy, catalog);
 
             var keys = rows.Select(r => r.Post).Concat(new[] { "Total" }).ToList();
             if (!_table.Select(r => r.Post).SequenceEqual(keys, StringComparer.Ordinal))
@@ -105,8 +109,8 @@ namespace RackCad.UI.VentanaRackCad
                 SetPushBackSideGuard(item, row, lateral, copy.PostCount, edit);
                 SetPushBackDeflectors(item, row, desviador, host.SafetyDesviadorLevels, edit);
                 item.Separators = "—";
-                SetPushBackDefense(item.DefenseExit, row, copy, defenseA, resolvedDefense, farEnd: false, row.DefenseExit, edit);
-                SetPushBackDefense(item.DefenseEntrance, row, copy, copy.TwoSided ? defenseB : defenseA, resolvedDefense, farEnd: true, row.DefenseEntrance, edit);
+                SetPushBackDefense(item.DefenseExit, row, copy, defenseA, resolvedDefense, farEnd: false, row.DefenseExit, edit, defenseHolds);
+                SetPushBackDefense(item.DefenseEntrance, row, copy, copy.TwoSided ? defenseB : defenseA, resolvedDefense, farEnd: true, row.DefenseEntrance, edit, defenseHolds);
                 item.Guides = "—";
             }
 
@@ -123,6 +127,7 @@ namespace RackCad.UI.VentanaRackCad
 
             OnPropertyChanged(nameof(ShowsBootsB));
             OnPropertyChanged(nameof(BootsHeader));
+            OnPropertyChanged(nameof(BootsHeadName));
             OnPropertyChanged(nameof(DefenseExitHeader));
             OnPropertyChanged(nameof(DefenseEntranceHeader));
             OnPropertyChanged(nameof(DefenseExitHeadName));
@@ -221,9 +226,11 @@ namespace RackCad.UI.VentanaRackCad
         }
 
         // One end of the defense of a post: in a rack of one way «Entrada/Salida» (the near end) and «Posterior» (the far one), both of the
-        // section of the rack; in a composite, the face of each side (A the near one, B the far one).
+        // section of the rack; in a composite, the face of each side (A the near one, B the far one). With no type on any side and no family
+        // to carry the posts (holds false), a decision has nowhere to go, as in the classic «Aceptar»: the box and its length are disabled,
+        // the cell says why, and a write that reaches it anyway says it too (review of 01e76902, point 3).
         private void SetPushBackDefense(RackCadSafetyDefenseCell cell, RackCadSafetyRow row, PushBackSafetyCopy copy, PushBackDefenseSideDraft section,
-            SelectiveSafetySelection resolved, bool farEnd, bool drawn, bool edit)
+            SelectiveSafetySelection resolved, bool farEnd, bool drawn, bool edit, bool holds)
         {
             if (section == null || !row.FramePost.HasValue)
             {
@@ -263,25 +270,43 @@ namespace RackCad.UI.VentanaRackCad
                         value = number;
                     }
 
+                    if (!holds) return DefenseWithoutTypeText;
                     return WritePushBack(c =>
                     {
                         PushBackSafetyEdit.SetDefenseLength(c, _host.SafetyCatalog, section.Side, post, farEnd, value);
                         return null;
                     }, null);
                 },
-                !edit || !on);
-            var sub = section.IsNone ? "Sin tipo en este lado: en espera"
+                !edit || !on || !holds);
+            var sub = !holds ? DefenseWithoutTypeSub
+                : section.IsNone ? "Sin tipo en este lado: en espera"
                 : !on ? (auto ? "Automática · sin defensa" : "Sin defensa")
                 : own ? "Propia"
                 : "Automática · " + Num(automatic) + " in";
-            if (on && !drawn && !section.IsNone) sub += " · no se dibuja aquí";
-            cell.Set(true, on, edit, "Defensa en " + endName + " en " + row.Post, length, string.Empty, sub, own,
-                value => WritePushBackOrSay(c =>
+            if (holds && on && !drawn && !section.IsNone) sub += " · no se dibuja aquí";
+            cell.Set(true, on, edit && holds, "Defensa en " + endName + " en " + row.Post, length, string.Empty, sub, own,
+                value =>
                 {
-                    PushBackSafetyEdit.SetDefenseOn(c, _host.SafetyCatalog, section.Side, post, farEnd, value);
-                    return null;
-                }, null));
+                    if (!holds)
+                    {
+                        Say(DefenseWithoutTypeText, error: true);
+                        RefreshPushBackTable();
+                        return;
+                    }
+
+                    WritePushBackOrSay(c =>
+                    {
+                        PushBackSafetyEdit.SetDefenseOn(c, _host.SafetyCatalog, section.Side, post, farEnd, value);
+                        return null;
+                    }, null);
+                });
         }
+
+        /// <summary>The cell of an end of the defense with no type on any side and nothing by post to keep (review of 01e76902, point 3).</summary>
+        internal const string DefenseWithoutTypeSub = "Sin tipo: elige uno para decidirla";
+
+        /// <summary>Why such a cell does not change: there is nothing to write the decision on, as in the classic dialog.</summary>
+        internal const string DefenseWithoutTypeText = "Sin tipo de defensa en ningún lado: un poste no tiene dónde guardar su decisión. Elige un tipo en «Variante y medidas» y se podrá decidir aquí.";
 
         // The automatic length of one end: 12 in at an edge post and 36 in at an intermediate one; the far end of a rack of one way has none
         // (PB-009), the far face of a composite is the aisle of side B.
@@ -327,6 +352,15 @@ namespace RackCad.UI.VentanaRackCad
                 string PieceOf(PushBackSide side) => boots
                     ? PushBackSafetyEdit.BootSide(copy, catalog, side).PieceId
                     : PushBackSafetyEdit.DefenseSide(copy, catalog, side).PieceId;
+
+                // The defense leaves the rack when no side keeps a type and no post has anything of its own (review of 01e76902, point 3).
+                bool DefenseLeaves(PushBackSide side) => !boots
+                    && copy.Sides.Where(s => s != side).All(s => PushBackSafetyEdit.DefenseSide(copy, catalog, s).IsNone)
+                    && PushBackSafetyEdit.DefenseSide(copy, catalog, side).Posts.Count == 0;
+                string NoneNotice(PushBackSide side) => name + (copy.TwoSided ? " del lado " + Letter(side) : string.Empty) + ": «Ninguno». "
+                    + (DefenseLeaves(side)
+                        ? "Ningún poste tenía nada propio: la defensa sale del rack y vuelve, automática, al elegir otra vez un tipo."
+                        : "Lo que tenía cada poste se conserva y vuelve al elegir otra vez un tipo.");
                 SelectiveChoiceItem TypeItem(PushBackSide side, string key)
                     => new SelectiveChoiceItem(key, (boots ? "Tipo de protector" : "Tipo de defensa") + (copy.TwoSided ? " · lado " + Letter(side) : string.Empty),
                         typeOptions, PieceOf(side), side == PushBackSide.A ? "Del catálogo de seguridad (seguridad.csv)." : string.Empty,
@@ -335,9 +369,7 @@ namespace RackCad.UI.VentanaRackCad
                             if (boots) PushBackSafetyEdit.SetBootPiece(c, catalog, side, value);
                             else PushBackSafetyEdit.SetDefensePiece(c, catalog, side, value);
                             return null;
-                        }, PushBackDefenseSidesIsNone(value)
-                            ? name + (copy.TwoSided ? " del lado " + Letter(side) : string.Empty) + ": «Ninguno». Lo que tenía cada poste se conserva y vuelve al elegir otra vez un tipo."
-                            : null), !edit);
+                        }, PushBackDefenseSidesIsNone(value) ? NoneNotice(side) : null), !edit);
                 variant = TypeItem(PushBackSide.A, "variant");
                 if (copy.TwoSided) fields.Add(TypeItem(PushBackSide.B, "typeB"));
 
@@ -392,7 +424,8 @@ namespace RackCad.UI.VentanaRackCad
                               + Num(DynamicForkliftDefensePlan.IntermediateLength) + " in en los intermedios. Se recalcula al añadir o quitar frentes.");
                     if (!copy.TwoSided) notes.Add("En «Posterior» la automática es sin defensa (PB-009): marca su casilla para ponerla.");
                     notes.Add("Al marcar una casilla se propone la medida de la regla, como en el diálogo clásico: queda como propia. Vacíala para volver a la automática.");
-                    notes.Add("«Ninguno» en el tipo conserva lo de cada poste: vuelve al elegir otra vez un tipo.");
+                    notes.Add("«Ninguno» en el tipo conserva lo que cada poste tiene de propio: vuelve al elegir otra vez un tipo. Si ningún lado tiene tipo y "
+                              + "ningún poste tiene nada propio, la defensa sale del rack y sus casillas quedan deshabilitadas; al elegir un tipo vuelven las automáticas.");
                 }
             }
             else

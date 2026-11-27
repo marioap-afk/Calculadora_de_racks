@@ -228,7 +228,7 @@ namespace RackCad.Tests
             Assert.Null(draft.SetBlank(PushBackSide.A, 1, true));
             draft.SetLevels(new[] { 1 }, 2);
             Assert.Equal(5, draft.Side(PushBackSide.A).Structure.Fronts[1].LoadLevels); // dormant (I-33)
-            Assert.Equal("Al menos un frente debe permanecer activo.", draft.SetBlank(PushBackSide.A, 0, true));
+            Assert.Equal("Al menos un frente del rack debe permanecer activo.", draft.SetBlank(PushBackSide.A, 0, true)); // the words of the classic (review of 01e76902, point 4)
             Assert.True(draft.Recompose(), draft.LastError);
         }
 
