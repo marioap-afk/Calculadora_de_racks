@@ -1336,7 +1336,8 @@ namespace RackCad.UI.Systems.Selective
             var parrillaPlan = resolved != null ? SelectiveParrillaPlan.Cells(resolved, catalog) : null;
 
             var dialog = new SelectiveSafetyWindow(catalog?.SafetyElements ?? new List<SafetyElementCatalogEntry>(), safetySelections, MaxFrenteCount() + 1, levelsPerFrente, depthCount, parrillaPlan, catalog, resolved) { Owner = this };
-            if (dialog.ShowDialog() != true)
+            var accepted = SafetyWindowDialog != null ? SafetyWindowDialog(dialog) : dialog.ShowDialog(); // T6 seg: test seam
+            if (accepted != true)
             {
                 return;
             }
@@ -1350,10 +1351,23 @@ namespace RackCad.UI.Systems.Selective
         private static bool SafetyDraws(SelectiveSafetySelection s)
             => s != null && (s.Quantity > 0 || s.Side != SafetySide.None || s.PostSides.Any(p => p != null && p.Side != SafetySide.None));
 
-        /// <summary>Reflect the number of chosen safety accessories on the button label.</summary>
+        /// <summary>
+        /// T6 seg (I-64, sexta tanda) — seam de prueba de «Elementos de seguridad…», como el <c>SafetyWindowDialog</c> del editor clásico de Push
+        /// Back: sustituye UNICAMENTE el <c>ShowDialog</c>; el dialogo que recibe es el real, construido con los argumentos que ve el usuario.
+        /// </summary>
+        internal Func<SelectiveSafetyWindow, bool?> SafetyWindowDialog;
+
+        /// <summary>
+        /// Reflect the number of chosen safety accessories on the button label. T6 seg (the Owner, 2026-11-27: «Solo lo que dibuja»): only the
+        /// ones that place something in the drawing; one kept with everything off is not counted. The levels are the ones the dialog opens
+        /// with, from the last resolution (none yet: it counts, as before).
+        /// </summary>
         private void UpdateSafetyButton()
         {
-            var count = safetySelections.Count(SafetyDraws);
+            var levels = lastSystem != null ? SelectiveSafetyGrid.LevelCounts(lastSystem) : new List<int>();
+            var count = safetySelections.Count(s => SafetyDraws(s) && SelectiveSafetyWindow.PlacesSomething(s, catalog?.SafetyElements, levels,
+                desviador => SelectiveDesviadorPlan.Build(lastSystem, catalog, desviador).LevelCounts, MaxFrenteCount() + 1,
+                lateralFollowsTheRuleOfTheEnds: false));
             SafetyButton.Content = count > 0
                 ? "Elementos de seguridad (" + count.ToString(CultureInfo.InvariantCulture) + ")…"
                 : "Elementos de seguridad…";
@@ -2782,6 +2796,7 @@ namespace RackCad.UI.Systems.Selective
             }
 
             lastSystem = system;
+            UpdateSafetyButton(); // T6 seg: the count reads the levels of this resolution
             // The frontal preview shows the fondo being edited (each fondo has its own levels); fondo 0 is the default.
             lastInstances = builder.Build(SelectiveDepthLayout.FondoSystemView(system, selectedFondo), catalog);
             UpdateSummary();

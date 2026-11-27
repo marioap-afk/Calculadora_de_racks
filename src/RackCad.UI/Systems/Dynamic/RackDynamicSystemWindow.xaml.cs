@@ -682,7 +682,8 @@ namespace RackCad.UI.Systems.Dynamic
                 allowBlankFrontColumns: true,
                 // El Dinámico SÍ elige cara de pasillo: el selector queda visible (default explícito por claridad).
                 showDesviadorSide: true) { Owner = this };
-            if (dialog.ShowDialog() != true)
+            var accepted = SafetyWindowDialog != null ? SafetyWindowDialog(dialog) : dialog.ShowDialog(); // T6 seg: test seam
+            if (accepted != true)
             {
                 return;
             }
@@ -703,9 +704,20 @@ namespace RackCad.UI.Systems.Dynamic
             Recompose();
         }
 
+        /// <summary>
+        /// T6 seg (I-64, sexta tanda) — seam de prueba de «Elementos de seguridad…», como el <c>SafetyWindowDialog</c> del editor clásico de Push
+        /// Back: sustituye UNICAMENTE el <c>ShowDialog</c>; el dialogo que recibe es el real, construido con los argumentos que ve el usuario.
+        /// </summary>
+        internal Func<SelectiveSafetyWindow, bool?> SafetyWindowDialog;
+
+        // T6 seg (the Owner, 2026-11-27: «Solo lo que dibuja»): only the families that place something in the drawing; one kept with everything
+        // off is not counted. The levels and the posts are the ones the dialog opens with.
         private void UpdateSafetyButton()
         {
-            var count = safetySelections.Count(DynamicEditorSafety.Draws);
+            var posts = Math.Max(2, (system?.Fronts.Count ?? matrix.Count) + 1);
+            var levels = SafetyLevelsPerFrente();
+            var count = safetySelections.Count(s => DynamicEditorSafety.Draws(s) && SelectiveSafetyWindow.PlacesSomething(s, catalog?.SafetyElements,
+                levels, _ => DesviadorLevelsPerPost(), posts, lateralFollowsTheRuleOfTheEnds: true));
             SafetyButton.Content = count > 0
                 ? "Elementos de seguridad (" + count.ToString(CultureInfo.InvariantCulture) + ")…"
                 : "Elementos de seguridad…";

@@ -13,6 +13,7 @@ using RackCad.Application.Systems.PushBack;
 using RackCad.Application.Systems.Selective;
 using RackCad.Application.VentanaRackCad;
 using RackCad.Domain.Systems.Dynamic;
+using RackCad.Domain.Systems.PushBack;
 using RackCad.Domain.Systems.Selective;
 using RackCad.Domain.Systems.Shared;
 using RackCad.UI.Systems.PushBack;
@@ -105,16 +106,6 @@ namespace RackCad.UI.Tests
             {
                 dialog.Close();
             }
-        }
-
-        // «Aceptar» of the desviador grid, from inside the seam: its real BuildResult (the OnOk also sets DialogResult, which needs ShowDialog).
-        private static bool? Accepted(SafetyDesviadorGridWindow grid)
-        {
-            var built = grid.BuildResult();
-            if (built == null) return false;
-            typeof(SafetyDesviadorGridWindow).GetProperty(nameof(SafetyDesviadorGridWindow.Result))!
-                .GetSetMethod(nonPublic: true)!.Invoke(grid, new object[] { built });
-            return true;
         }
 
         // ================================================================== Selectivo
@@ -397,7 +388,7 @@ namespace RackCad.UI.Tests
                 {
                     grid = window;
                     window.Model.SetAll(false); // «Ninguno» of the grid
-                    return Accepted(window);
+                    return window.BuildResult(); // its «Aceptar»
                 };
                 try
                 {
@@ -578,7 +569,7 @@ namespace RackCad.UI.Tests
                             try
                             {
                                 grid.Model.SetAll(false);
-                                return Accepted(grid);
+                                return grid.BuildResult(); // its «Aceptar»
                             }
                             finally
                             {
@@ -591,6 +582,255 @@ namespace RackCad.UI.Tests
                     Assert.NotNull(desviador); // dolor 4 (PB-S17, difference 3)
                     Assert.NotEmpty(desviador!.DesviadorOffCells);
                     Assert.Empty(PushBackDiverterPlan.Resolve(w.LastComputation.System, w.Session.Catalog));
+                }
+                finally
+                {
+                    w.Close();
+                }
+            });
+        }
+
+        // ================================================================== corrections of the review (on 794a599c)
+
+        // Two sides, both with storage in each front, seen from side A (the active one); side B one level taller on its first front, so the
+        // levels of the active side are not the levels of the rack.
+        private static RackPushBackSystemWindow TwoSidedPushBack()
+        {
+            var w = PushBack();
+            w.State.SetFrontCount(2);
+            ((CheckBox)w.FindName("SideBPresentCheck")).IsChecked = true;
+            w.UpdateLayout();
+            var b = w.CompositeState.Of(PushBackSide.B).Structure;
+            for (var front = 0; front < Math.Min(w.CompositeState.SlotCount, b.Count); front++) b.Fronts[front].IsActive = true;
+            b.Fronts[0].LoadLevels = w.CompositeState.Of(PushBackSide.A).Structure.Fronts[0].LoadLevels + 1;
+            w.State.SetFrontCount(2); // the model changed from outside: a recompute is asked
+            w.UpdateLayout();
+            Assert.True(w.CompositeState.SideBPresent);
+            Assert.Equal(PushBackSide.A, w.CompositeState.ActiveSide);
+            return w;
+        }
+
+        // Point 4 of the review: a two-sided Push Back from side A. Nothing in «Aceptar» reads the levels of the active side any more.
+        [Fact]
+        public void PushBack_two_sided_from_side_A_a_new_desviador_has_no_cell_off_and_its_grid_all_off_keeps_it()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var w = TwoSidedPushBack();
+                try
+                {
+                    w.SafetyDialog = current => current.Where(s => !IsOf(s, Desviador)).Select(s => s.DeepCopy()).ToList();
+                    EditorWindowTestSupport.ClickNamed(w, "SafetyButton");
+                    w.SafetyDialog = null;
+                    Assert.Null(Designed(w, Desviador));
+
+                    // A new desviador, «Aceptar» without «Configurar…»: every cell on, on the side of the low end.
+                    PushBackAccepts(w, dialog => Choose(dialog, Desviador));
+                    var desviador = Designed(w, Desviador);
+                    Assert.NotNull(desviador);
+                    Assert.Empty(desviador!.DesviadorOffCells);
+                    Assert.Equal(SafetySide.Left, desviador.Side);
+
+                    // Its grid, opened from side A, with every cell off: the family stays, with every cell the grid showed off.
+                    IReadOnlyList<int>? shown = null;
+                    PushBackAccepts(w, dialog =>
+                    {
+                        dialog.DesviadorDialog = grid =>
+                        {
+                            try
+                            {
+                                grid.Model.SetAll(false);
+                                var result = grid.BuildResult();
+                                shown = result?.LevelCounts;
+                                return result;
+                            }
+                            finally
+                            {
+                                grid.Close();
+                            }
+                        };
+                        Click(ButtonWithTip(dialog, DesviadorTip));
+                    });
+                    Assert.NotNull(shown);
+                    var off = Designed(w, Desviador);
+                    Assert.NotNull(off);
+                    Assert.Equal(desviador.ElementId, off!.ElementId);
+                    Assert.Equal(shown!.Sum(), off.DesviadorOffCells.Count);
+                }
+                finally
+                {
+                    w.Close();
+                }
+            });
+        }
+
+        private const string ParrillaTip = "Parrilla / deck:";
+
+        private static Button RemoveParrilla(SelectiveSafetyWindow dialog)
+            => SafetyDialogTestSupport.Descendants(dialog).OfType<Button>().Single(b => Equals(b.Content, "Quitar"));
+
+        // Point 2 of the review (the Owner: «Sí, como la ventana»): the parrilla with every cell off keeps its place, so «Quitar» takes it out,
+        // as «Sin variante» in the window.
+        [Fact]
+        public void Selectivo_Quitar_takes_out_a_parrilla_that_every_cell_off_would_keep()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var vm = SelectiveEditor(TwoFondos());
+                var untouched = RackCadSelectiveSafetyDialog.Build(vm.Draft);
+                try
+                {
+                    Assert.False(RemoveParrilla(untouched).IsEnabled); // nothing to take out yet
+                }
+                finally
+                {
+                    untouched.Close();
+                }
+
+                var panel = Panel(vm);
+                WindowChooses(panel, Parrilla);
+                WindowLeavesWithNothing(panel, Parrilla);
+                var dialog = RackCadSelectiveSafetyDialog.Build(vm.Draft);
+                try
+                {
+                    var remove = RemoveParrilla(dialog);
+                    var configure = ButtonWithTip(dialog, ParrillaTip);
+                    Assert.True(remove.IsEnabled);
+                    Assert.StartsWith("Configurado", (string)configure.Content);
+                    Click(remove);
+                    Assert.False(remove.IsEnabled);
+                    Assert.Equal("Configurar…", configure.Content);
+                    dialog.BuildResultForTest();
+                    Assert.Null(Family(dialog.Result, Parrilla));
+                }
+                finally
+                {
+                    dialog.Close();
+                }
+            });
+        }
+
+        // Point 2 of the review: the drawing and the BOM take the FIRST parrilla of the list, so with two in the catalog one with every cell off
+        // must not hide another one that draws. Today the catalog has one (PARRILLA_GENERICA): the second one is made up for the test.
+        [Fact]
+        public void Selectivo_a_parrilla_with_every_cell_off_does_not_hide_another_one_that_draws()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var elements = Catalog.SafetyElements.ToList();
+                var first = Id(Parrilla);
+                var second = new SafetyElementCatalogEntry { Id = "PARRILLA_DE_PRUEBA", DisplayName = "Parrilla de prueba", Type = Parrilla };
+                elements.Insert(elements.FindIndex(e => string.Equals(e.Id, first, StringComparison.OrdinalIgnoreCase)) + 1, second);
+                var levels = new[] { 2, 2 };
+
+                SelectiveSafetySelection Deck(string id, bool everyCellOff)
+                {
+                    var deck = new SelectiveSafetySelection { ElementId = id, Quantity = 1, Side = SafetySide.Both };
+                    if (everyCellOff)
+                    {
+                        for (var front = 0; front < levels.Length; front++)
+                            for (var level = 0; level < levels[front]; level++) deck.ParrillaOffCells.Add(new SelectiveGridCell { Frente = front, Level = level });
+                    }
+
+                    return deck;
+                }
+
+                IReadOnlyList<SelectiveSafetySelection> Classic(params SelectiveSafetySelection[] current)
+                    => Accept(new SelectiveSafetyWindow(elements, current, postCount: 3, levelsPerFrente: levels, fondoCount: 1, parrillaPlan: null,
+                        catalog: Catalog, resolvedSystem: null));
+
+                // Alone, with every cell off, it keeps its place (T6seg-S4).
+                Assert.Equal(new[] { first }, Classic(Deck(first, everyCellOff: true)).Select(s => s.ElementId));
+
+                // The first one off and the second one drawing: the first one goes, and the drawing and the BOM take the second one.
+                var two = Classic(Deck(first, everyCellOff: true), Deck(second.Id, everyCellOff: false));
+                Assert.Equal(new[] { second.Id }, two.Select(s => s.ElementId));
+                Assert.Equal(second.Id, SelectiveSafetyFamilies.SelectedOfType(two, elements, Parrilla)!.ElementId);
+            });
+        }
+
+        private static string SafetyButtonText(Window editor) => (string)((Button)editor.FindName("SafetyButton")).Content;
+
+        // Points 3 and 8 of the review, through the classic editor of Selectivo itself (RackSelectiveWindow.Safety_Click and the rack it
+        // saves): the families «Aceptar» keeps now pass the filter of what is saved, and «Elementos de seguridad (n)…» counts only what draws
+        // (the Owner: «Solo lo que dibuja»).
+        [Fact]
+        public void Selectivo_classic_editor_saves_what_Aceptar_keeps_and_counts_only_what_draws()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var w = SelectiveWindowTestSupport.Open();
+                Offscreen(w);
+                try
+                {
+                    // Through «Elementos de seguridad…»: the tope and the desviador chosen (they draw), the bota chosen and put on «Ninguno».
+                    w.SafetyWindowDialog = dialog =>
+                    {
+                        Choose(dialog, Tope);
+                        Choose(dialog, Desviador);
+                        Choose(dialog, Bota);
+                        BootSide(dialog).SelectedItem = "Ninguno";
+                        dialog.BuildResultForTest();
+                        return true;
+                    };
+                    EditorWindowTestSupport.ClickNamed(w, "SafetyButton");
+                    w.SafetyWindowDialog = null;
+                    Assert.Equal("Elementos de seguridad (2)…", SafetyButtonText(w));
+                    var design = w.BuildDesignForTest(out var error);
+                    Assert.True(design != null, error);
+                    foreach (var type in new[] { Tope, Desviador, Bota }) Assert.NotNull(Family(design!.SafetySelections, type));
+
+                    // A rack the window left with its tope in no cell: the classic editor opens it, keeps the tope and does not count it.
+                    var vm = SelectiveEditor(TwoFondos());
+                    var panel = Panel(vm);
+                    WindowChooses(panel, Tope);
+                    WindowChooses(panel, Desviador);
+                    WindowLeavesWithNothing(panel, Tope);
+                    w.LoadExisting(SelectivePalletDesignDocument.From(vm.Draft.Design, null, null));
+                    Assert.Equal("Elementos de seguridad (1)…", SafetyButtonText(w));
+                    var opened = w.BuildDesignForTest(out error);
+                    Assert.True(opened != null, error);
+                    Assert.NotNull(Family(opened!.SafetySelections, Tope));
+                    Assert.NotNull(Family(opened.SafetySelections, Desviador));
+                }
+                finally
+                {
+                    w.Close();
+                }
+            });
+        }
+
+        // Points 3 and 8 of the review, through the classic editor of Dinámico (RackDynamicSystemWindow.Safety_Click and the design it
+        // builds): a new rack has its five families; the bota put on «Ninguno» is kept and not counted.
+        [Fact]
+        public void Dinamico_classic_editor_saves_what_Aceptar_keeps_and_counts_only_what_draws()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var w = new RackCad.UI.Systems.Dynamic.RackDynamicSystemWindow();
+                Offscreen(w);
+                try
+                {
+                    var families = 0;
+                    w.SafetyWindowDialog = dialog =>
+                    {
+                        SafetyDialogTestSupport.Descendants(dialog).OfType<ComboBox>()
+                            .Single(c => (c.ToolTip as string ?? string.Empty).StartsWith("Dónde va la bota", StringComparison.Ordinal))
+                            .SelectedIndex = 0; // «Ninguno»
+                        dialog.BuildResultForTest();
+                        families = dialog.Result.Count;
+                        return true;
+                    };
+                    EditorWindowTestSupport.ClickNamed(w, "SafetyButton");
+                    w.SafetyWindowDialog = null;
+                    Assert.True(families >= 2);
+                    Assert.Equal("Elementos de seguridad (" + (families - 1) + ")…", SafetyButtonText(w));
+                    var design = w.BuildDesignForTest(out var ok);
+                    Assert.True(ok);
+                    var bota = Family(design.SafetySelections, Bota);
+                    Assert.NotNull(bota);
+                    Assert.Equal(SafetySide.None, bota!.Side);
+                    Assert.Equal(families, design.SafetySelections.Count);
                 }
                 finally
                 {
