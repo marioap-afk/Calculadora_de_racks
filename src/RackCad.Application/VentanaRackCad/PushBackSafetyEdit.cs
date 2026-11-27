@@ -147,7 +147,8 @@ namespace RackCad.Application.VentanaRackCad
     /// <item>Protector lateral: the per-post window and the «Aceptar» of the dialog (<c>SafetyPerPostWindow</c>, <c>OnOk</c>): the posts in
     /// their order, no general side.</item>
     /// <item>Desviador: the grid (<c>SafetyDesviadorGridWindow</c>): its cells by post (PB-002), the dormant ones of a blank front kept, its
-    /// measures validated, no side (PB-003).</item>
+    /// measures validated, the side it returns (Left: no selector, PB-003). The variant of an existing one is the row of the dialog, without
+    /// the grid.</item>
     /// </list>
     /// What differs is declared in construido.md: an edit writes ONE family (the classic «Aceptar» rebuilds them all), the order of the list
     /// stays, and a family left with nothing keeps its variant (C2-07). Pure: no WPF and no AutoCAD.
@@ -354,6 +355,18 @@ namespace RackCad.Application.VentanaRackCad
             => WriteDefense(copy, catalog, side, s => s.PieceId = TypeListId(catalog, SelectiveSafetyDefaults.DefensaType, pieceId));
 
         /// <summary>
+        /// Whether a decision on the defense of a post has somewhere to be written (review of 01e76902, point 3): a side has a type, or the
+        /// family is there to carry the intent by post with every side in «Ninguno». With no type and no family the classic «Aceptar» writes
+        /// nothing for the posts (<c>ApplyDefenseSections</c> has no carrier), so the window offers no box to click there.
+        /// </summary>
+        public static bool DefenseHoldsPosts(PushBackSafetyCopy copy, RackCatalog catalog)
+        {
+            if (copy == null) throw new ArgumentNullException(nameof(copy));
+            return copy.Sides.Any(side => !DefenseSide(copy, catalog, side).IsNone)
+                   || !string.IsNullOrWhiteSpace(Of(copy.Safety, catalog, SelectiveSafetyDefaults.DefensaType)?.ElementId);
+        }
+
+        /// <summary>
         /// The box of one end of the defense of a post (the casilla of the classic grid): on is a length of its own, the one the rule gives that
         /// post (12 in at an edge post, 36 in at an intermediate one), as the classic grid proposes it; off is no defense at that end.
         /// <paramref name="farEnd"/> is the «Posterior» of a rack of one way; in a composite each side has its own face (A the near one).
@@ -498,12 +511,19 @@ namespace RackCad.Application.VentanaRackCad
         // ================================================================== the desviador (its grid, PB-002 and PB-003)
 
         /// <summary>
+        /// The side the classic grid of the desviador of Push Back returns, whatever the desviador had: the dialog opens it with
+        /// <c>showDesviadorSide: false</c> (PB-003), so the grid selects its <c>LowEndSide</c> (Left) and <c>BuildResult</c> returns it
+        /// (<c>SafetyDesviadorGridWindow</c>). Review of 01e76902, point 2.
+        /// </summary>
+        public const SafetySide DesviadorGridSide = SafetySide.Left;
+
+        /// <summary>
         /// One gesture on the desviador, written as the «Aceptar» of its classic grid and of the dialog (<c>SafetyDesviadorGridWindow</c>,
         /// <c>OnOk</c>): the grid opens with the cells of the desviador (one column per post, its levels), the gesture changes it, and the family is
-        /// written again with its variant, one, the side the grid keeps (Left or Right, else both: Push Back has no selector, PB-003), the
-        /// longitud and the first level as the grid shows them (an invalid one is the default 18 in), the reading by post it had, and the off
-        /// cells in the order of the grid (post by post, level by level) followed by the ones kept on a column with no level (a blank front,
-        /// I-33); a cell beyond the levels of its post goes.
+        /// written again with its variant, one, the side the grid of Push Back returns (<see cref="DesviadorGridSide"/>: it has no selector,
+        /// PB-003), the longitud and the first level as the grid shows them (an invalid one is the default 18 in), the reading by post it had,
+        /// and the off cells in the order of the grid (post by post, level by level) followed by the ones kept on a column with no level (a
+        /// blank front, I-33); a cell beyond the levels of its post goes.
         /// </summary>
         public static void WriteDesviador(List<SelectiveSafetySelection> safety, RackCatalog catalog, IReadOnlyList<int> levelsPerPost,
             Action<SelectiveSafetySelection> gesture)
@@ -531,7 +551,7 @@ namespace RackCad.Application.VentanaRackCad
             {
                 ElementId = grid.ElementId,
                 Quantity = 1,
-                Side = grid.Side == SafetySide.Left || grid.Side == SafetySide.Right ? grid.Side : SafetySide.Both,
+                Side = DesviadorGridSide,
                 DesviadorLongitud = grid.DesviadorLongitud,
                 DesviadorPrimerNivelAltura = grid.DesviadorPrimerNivelAltura,
             };
@@ -561,8 +581,9 @@ namespace RackCad.Application.VentanaRackCad
 
         /// <summary>
         /// The variant of the protector lateral or of the desviador, as the list of the classic dialog: a family already chosen keeps its row and
-        /// is written again with the other variant; a new one comes as «Aceptar» writes it with nothing else changed (the lateral with the rule
-        /// of the ends; the desviador through its grid, on every cell, 18 in, its first level at 18 in). «Sin variante» is the shared
+        /// is written again with the other variant (the desviador as the «Aceptar» without «Configurar…»: <see cref="DesviadorRow"/>, not through
+        /// its grid); a new one comes as «Aceptar» writes it with nothing else changed (the lateral with the rule of the ends; the desviador
+        /// through its grid, on every cell, 18 in, its first level at 18 in, on <see cref="DesviadorGridSide"/>). «Sin variante» is the shared
         /// <see cref="RackCadSafetyEdit.Remove"/> (the «Ninguno» of the list). Returns the selection afterwards.
         /// </summary>
         public static SelectiveSafetySelection SetVariant(List<SelectiveSafetySelection> safety, RackCatalog catalog, string type, string elementId,
@@ -570,7 +591,15 @@ namespace RackCad.Application.VentanaRackCad
         {
             var variant = Variants(catalog, type).FirstOrDefault(v => string.Equals(v.Id, (elementId ?? string.Empty).Trim(), StringComparison.OrdinalIgnoreCase))
                           ?? throw new ArgumentException("«" + elementId + "» no es una variante de " + type + " en el catálogo.", nameof(elementId));
+            var isDesviador = SelectiveSafetyDefaults.IsType(type, SelectiveSafetyDefaults.DesviadorType);
             var current = Of(safety, catalog, type);
+            if (current != null && isDesviador)
+            {
+                // Review of 01e76902, point 1: only the variant changes; its measures and its cells are written as the row holds them.
+                Replace(safety, current, DesviadorRow(current, variant.Id));
+                return Of(safety, catalog, type);
+            }
+
             if (current == null)
             {
                 current = RackCadSafetyEdit.Fresh(type, variant.Id, RackCadSafetySystem.PushBack, postCount);
@@ -585,12 +614,35 @@ namespace RackCad.Application.VentanaRackCad
             {
                 Replace(safety, current, RebuiltLateral(current.ElementId, current.PostSides));
             }
-            else if (SelectiveSafetyDefaults.IsType(type, SelectiveSafetyDefaults.DesviadorType))
+            else if (isDesviador)
             {
                 WriteDesviador(safety, catalog, levelsPerPost, null);
             }
 
             return Of(safety, catalog, type);
+        }
+
+        /// <summary>
+        /// What the «Aceptar» of the classic dialog writes for the row of an existing desviador whose list changed and whose grid was not
+        /// opened (<c>SelectiveSafetyWindow</c>: the row is seeded from the selection, and its level counts come from
+        /// <c>SelectiveDesviadorPlan.Build(null, …)</c>, empty, so <c>AllCellsOff</c> is false and the row stays whole): the other variant, one,
+        /// the side it had (Left or Right, else both), the longitud and the first level as they are (not validated), the reading by post and every
+        /// off cell, also one beyond the levels of its post. Only the variant changes in what the row shows.
+        /// </summary>
+        public static SelectiveSafetySelection DesviadorRow(SelectiveSafetySelection existing, string elementId)
+        {
+            if (existing == null) throw new ArgumentNullException(nameof(existing));
+            var row = new SelectiveSafetySelection
+            {
+                ElementId = elementId,
+                Quantity = 1,
+                Side = existing.Side == SafetySide.Left || existing.Side == SafetySide.Right ? existing.Side : SafetySide.Both,
+                DesviadorLongitud = existing.DesviadorLongitud,
+                DesviadorPrimerNivelAltura = existing.DesviadorPrimerNivelAltura,
+            };
+            row.Desviador.CellsByPost = existing.Desviador.CellsByPost;
+            foreach (var cell in existing.DesviadorOffCells.Where(c => c != null)) row.DesviadorOffCells.Add(new SelectiveGridCell { Frente = cell.Frente, Level = cell.Level });
+            return row;
         }
 
         // The selection takes the place of the one it replaces.

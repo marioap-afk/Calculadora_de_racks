@@ -298,7 +298,9 @@ namespace RackCad.Application.VentanaRackCad
         /// «En blanco» of a front in the sides the selection writes, by the path of the classic window (<c>SetFrontActive</c>, review of
         /// 24adfee7, point 1): each side that changes goes through <see cref="PushBackCompositeEditorState.SetSlotPresent"/>, which lets a side
         /// stay entirely blank while the other one holds the rack, and the gesture is written when ANY side took it (<c>applied |=</c>). Null when
-        /// it was written (or nothing had to change), or why not.
+        /// it was written (or nothing had to change), or why not, in the words of the classic window for any rack (review of 01e76902, point 4).
+        /// Declared (PB-S18): the window decides side by side; the classic returns first when the ACTIVE side (A with «Ambos») is already as
+        /// asked.
         /// </summary>
         public string SetBlank(IEnumerable<PushBackSide> sides, int front, bool blank)
         {
@@ -313,7 +315,7 @@ namespace RackCad.Application.VentanaRackCad
             }
 
             if (!needed || applied) return null;
-            return IsTwoSided ? "Al menos un frente del rack debe permanecer activo." : "Al menos un frente debe permanecer activo.";
+            return "Al menos un frente del rack debe permanecer activo.";
         }
 
         /// <summary>«Rack de dos sentidos (lado B)»: declares or removes the side B; removing it keeps its configuration dormant.</summary>

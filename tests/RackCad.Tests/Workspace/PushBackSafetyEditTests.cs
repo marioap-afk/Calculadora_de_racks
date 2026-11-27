@@ -58,7 +58,8 @@ namespace RackCad.Tests
             return draft;
         }
 
-        // The design with its safety in one order (by element id), and the safety of the editable state the same way.
+        // The design of the last valid recomposition, serialized, with its list of safety in one order (by element id). Only the design: the
+        // editable state is not compared (what it keeps is what the design writes, once it recomposes).
         private static string Canonical(PushBackDraftEditor draft)
         {
             var store = new RackProjectStore();
@@ -217,6 +218,31 @@ namespace RackCad.Tests
             Assert.Equal(PushBackDefaults.NonePieceId, w.Side(PushBackSide.A).DefensePieceId);
             Assert.Empty(PushBackDefensePlan.Resolve(w.System, Catalog));
             Assert.Single(PushBackSafetyEdit.Of(w.State.SafetySelections, Catalog, SelectiveSafetyDefaults.DefensaType).DefensaPosts); // the carrier keeps the intent
+            Assert.True(PushBackSafetyEdit.DefenseHoldsPosts(w.CopySafety(), Catalog));
+        }
+
+        [Fact]
+        public void WithNoTypeOfDefenseAndNothingByPostADecisionOfAPostHasNowhereToGoAsInTheClassic()
+        {
+            // Review of 01e76902, point 3: every end automatic and the type «Ninguno»: the family goes (nothing by post to carry), and a post
+            // decided then is written nowhere, in the window as in the classic «Aceptar» (no carrier). The table disables its boxes.
+            var (w, c) = Pair(OneWay);
+            Assert.True(PushBackSafetyEdit.DefenseHoldsPosts(w.CopySafety(), Catalog));
+            Same(w, c, copy => PushBackSafetyEdit.SetDefensePiece(copy, Catalog, PushBackSide.A, PushBackDefaults.NonePieceId),
+                d => Classic.Defense(d, PushBackSide.A, null, PushBackDefaults.NonePieceId));
+            Assert.Null(PushBackSafetyEdit.Of(w.State.SafetySelections, Catalog, SelectiveSafetyDefaults.DefensaType));
+            Assert.False(PushBackSafetyEdit.DefenseHoldsPosts(w.CopySafety(), Catalog));
+
+            Same(w, c, copy => PushBackSafetyEdit.SetDefenseOn(copy, Catalog, PushBackSide.A, 1, farEnd: false, on: false),
+                d => Classic.Defense(d, PushBackSide.A, rows => Classic.Check(rows[1], farEnd: false, on: false)), changes: false);
+            Assert.Null(PushBackSafetyEdit.Of(w.State.SafetySelections, Catalog, SelectiveSafetyDefaults.DefensaType));
+
+            // A type again: the automatic ones come back, and a post can be decided again.
+            var piece = PushBackSafetyEdit.Variants(Catalog, SelectiveSafetyDefaults.DefensaType).First().Id;
+            Same(w, c, copy => PushBackSafetyEdit.SetDefensePiece(copy, Catalog, PushBackSide.A, piece),
+                d => Classic.Defense(d, PushBackSide.A, null, Classic.Combo(SelectiveSafetyDefaults.DefensaType, piece)));
+            Assert.True(PushBackSafetyEdit.DefenseHoldsPosts(w.CopySafety(), Catalog));
+            Assert.NotEmpty(PushBackDefensePlan.Resolve(w.System, Catalog));
         }
 
         [Fact]
@@ -356,7 +382,7 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void ANewDesviadorComesAsItsGridAcceptsItAndAVariantChangeKeepsTheRow()
+        public void ANewDesviadorComesAsItsGridAcceptsItOnTheSideOfTheLowEnd()
         {
             var (w, c) = Pair(OneWay);
             var id = PushBackSafetyEdit.Variants(Catalog, SelectiveSafetyDefaults.DesviadorType).First().Id;
@@ -367,6 +393,64 @@ namespace RackCad.Tests
             var desviador = PushBackSafetyEdit.Of(w.State.SafetySelections, Catalog, SelectiveSafetyDefaults.DesviadorType);
             Assert.Equal(SelectiveSafetyDefaults.DesviadorLongitud, desviador.DesviadorLongitud);
             Assert.Equal(SelectiveSafetyDefaults.DesviadorPrimerNivelAltura, desviador.DesviadorPrimerNivelAltura);
+
+            // Review of 01e76902, point 2: the grid of Push Back has no side to choose and returns the one of the low end, so the design
+            // keeps Left as the side the user wrote (AuthoredSide), as after the classic «Configurar…» and «Aceptar».
+            Assert.Equal(SafetySide.Left, desviador.Side);
+            var designed = PushBackSafetyEdit.Of(w.Design.Structure.SafetySelections, Catalog, SelectiveSafetyDefaults.DesviadorType);
+            Assert.Equal((SafetySide.Left, (SafetySide?)SafetySide.Left), (designed.Side, designed.AuthoredSide));
+        }
+
+        [Fact]
+        public void AVariantChangeOfADesviadorWritesItsRowAsTheClassicAcceptWithoutItsGrid()
+        {
+            // Review of 01e76902, point 1: the list of the row changed and «Aceptar» without «Configurar…». The classic writes the row as it
+            // holds it, so a cell off above the levels its post has now, and a measure that is not valid, stay; only the variant changes.
+            var (w, c) = Pair(OneWay);
+            var first = PushBackSafetyEdit.Of(w.State.SafetySelections, Catalog, SelectiveSafetyDefaults.DesviadorType).ElementId;
+            var other = PushBackSafetyEdit.Variants(Catalog, SelectiveSafetyDefaults.DesviadorType)
+                .First(v => !string.Equals(v.Id, first, StringComparison.OrdinalIgnoreCase)).Id;
+
+            // On the desviador the rack is born with (it never went through the grid): the classic writes a new row, so the side the user
+            // wrote is the one of the row now, as after any «Aceptar»; mutating only the id of the selection would keep the one it had.
+            Same(w, c, copy => PushBackSafetyEdit.SetVariant(copy.Safety, Catalog, SelectiveSafetyDefaults.DesviadorType, other, copy.PostCount, w.DesviadorLevelsPerPost()),
+                d => Classic.DesviadorVariant(d, other));
+            (first, other) = (other, first);
+
+            foreach (var draft in new[] { w, c })
+            {
+                draft.SetLevels(new[] { 0, 1 }, 4);
+                Assert.True(draft.Recompose(), draft.LastError);
+            }
+
+            Assert.Equal(4, w.DesviadorLevelsPerPost()[1]);
+            Same(w, c, copy => PushBackSafetyEdit.SetDesviador(copy.Safety, Catalog, w.DesviadorLevelsPerPost(), 1, 3, on: false),
+                d => Classic.Desviador(d, off => off.Add((1, 3)))); // N4 of P2 off
+            foreach (var draft in new[] { w, c })
+            {
+                draft.SetLevels(new[] { 0, 1 }, 3); // P2 has three levels now: its N4 is beyond them
+                Assert.True(draft.Recompose(), draft.LastError);
+            }
+
+            Assert.Equal(3, w.DesviadorLevelsPerPost()[1]);
+            Same(w, c, copy => PushBackSafetyEdit.SetVariant(copy.Safety, Catalog, SelectiveSafetyDefaults.DesviadorType, other, copy.PostCount, w.DesviadorLevelsPerPost()),
+                d => Classic.DesviadorVariant(d, other));
+            var changed = PushBackSafetyEdit.Of(w.State.SafetySelections, Catalog, SelectiveSafetyDefaults.DesviadorType);
+            Assert.Equal(other, changed.ElementId);
+            Assert.Contains(changed.DesviadorOffCells, cell => cell.Frente == 1 && cell.Level == 3);
+
+            // A measure that is not valid is not the default one here: the grid did not open.
+            foreach (var draft in new[] { w, c })
+            {
+                PushBackSafetyEdit.Of(draft.State.SafetySelections, Catalog, SelectiveSafetyDefaults.DesviadorType).DesviadorLongitud = 7.0;
+                Assert.True(draft.Recompose(), draft.LastError);
+            }
+
+            Same(w, c, copy => PushBackSafetyEdit.SetVariant(copy.Safety, Catalog, SelectiveSafetyDefaults.DesviadorType, first, copy.PostCount, w.DesviadorLevelsPerPost()),
+                d => Classic.DesviadorVariant(d, first));
+            var back = PushBackSafetyEdit.Of(w.State.SafetySelections, Catalog, SelectiveSafetyDefaults.DesviadorType);
+            Assert.Equal((first, 7.0), (back.ElementId, back.DesviadorLongitud));
+            Assert.Contains(back.DesviadorOffCells, cell => cell.Frente == 1 && cell.Level == 3);
         }
 
         // ================================================================== the rows of the table, counted as the BOM
@@ -405,7 +489,8 @@ namespace RackCad.Tests
         /// applied), <c>BuildBootSection</c>/<c>PushBackBootSection</c>/<c>ApplyBootSections</c>/<c>BootCarrierId</c>,
         /// <c>BuildDefenseSection</c>/<c>DefensePieceIdOf</c>/<c>PushBackDefenseSection.Configure</c>/<c>ApplyDefenseSections</c>/
         /// <c>EnsureDefenseSelection</c>, the grid <c>SafetyDefensaGridWindow</c> (its two-end OK and its face OK), the per-post window and the
-        /// OK of <c>SelectiveSafetyWindow</c> (protector lateral) and <c>SafetyDesviadorGridWindow.BuildResult</c>.
+        /// OK of <c>SelectiveSafetyWindow</c> (protector lateral, and the row of a desviador whose variant changed without its grid) and
+        /// <c>SafetyDesviadorGridWindow.BuildResult</c> (with the side it returns in Push Back).
         /// </summary>
         private static class Classic
         {
@@ -765,19 +850,46 @@ namespace RackCad.Tests
 
             private static double Effective(double value, double fallback) => SelectiveDesviadorPlan.IsValidEvenAbove8(value) ? value : fallback;
 
+            // The side the grid returns in Push Back: the dialog opens it with showDesviadorSide: false, so its list starts on
+            // SideIndex(LowEndSide) whatever the desviador had (SafetyDesviadorGridWindow, LowEndSide = Left) and BuildResult reads it back.
+            private const SafetySide GridSide = SafetySide.Left;
+
             public static void Desviador(PushBackDraftEditor d, Action<HashSet<(int Post, int Level)>> toggle, double? longitud = null)
             {
                 var existing = Of(d.State.SafetySelections, SelectiveSafetyDefaults.DesviadorType);
-                Grid(d, existing.ElementId, existing.Side == SafetySide.Left || existing.Side == SafetySide.Right ? existing.Side : SafetySide.Both,
+                Grid(d, existing.ElementId, GridSide,
                     longitud ?? Effective(existing.DesviadorLongitud, SelectiveSafetyDefaults.DesviadorLongitud),
                     Effective(existing.DesviadorPrimerNivelAltura, SelectiveSafetyDefaults.DesviadorPrimerNivelAltura),
                     existing.Desviador.CellsByPost, existing.DesviadorOffCells.Where(c => c != null).ToList(), toggle, existing);
             }
 
-            // A new desviador: the variant chosen, «Configurar…» and «Aceptar» with nothing changed (Side Both, 18 in, every cell on).
+            // A new desviador: the variant chosen, «Configurar…» and «Aceptar» with nothing changed (the side of the grid, 18 in, every cell on).
             public static void NewDesviador(PushBackDraftEditor d, string elementId)
-                => Grid(d, elementId, SafetySide.Both, SelectiveSafetyDefaults.DesviadorLongitud, SelectiveSafetyDefaults.DesviadorPrimerNivelAltura, false,
+                => Grid(d, elementId, GridSide, SelectiveSafetyDefaults.DesviadorLongitud, SelectiveSafetyDefaults.DesviadorPrimerNivelAltura, false,
                     new List<SelectiveGridCell>(), null, null);
+
+            // The list of an existing desviador changed and «Aceptar» without «Configurar…» (SelectiveSafetyWindow): the row is seeded from the
+            // selection (its side Left or Right, else Both; its measures and its cells as they are) and its level counts from
+            // SelectiveDesviadorPlan.Build(resolvedSystem: null, …), so AllCellsOff sees no level and the row is written whole.
+            public static void DesviadorVariant(PushBackDraftEditor d, string elementId)
+            {
+                var existing = Of(d.State.SafetySelections, SelectiveSafetyDefaults.DesviadorType);
+                var side = existing.Side == SafetySide.Left || existing.Side == SafetySide.Right ? existing.Side : SafetySide.Both;
+                var levelCounts = SelectiveDesviadorPlan.Build(null, Catalog, existing).LevelCounts;
+                var off = existing.DesviadorOffCells?.Where(c => c != null).Select(c => new SelectiveGridCell { Frente = c.Frente, Level = c.Level }).ToList()
+                          ?? new List<SelectiveGridCell>();
+                var index = d.State.SafetySelections.IndexOf(existing);
+                d.State.SafetySelections.RemoveAt(index);
+                if (SelectiveSafetyGrid.AllCellsOff(levelCounts, off)) return;
+                var selection = new SelectiveSafetySelection
+                {
+                    ElementId = elementId, Quantity = 1, Side = side,
+                    DesviadorLongitud = existing.DesviadorLongitud, DesviadorPrimerNivelAltura = existing.DesviadorPrimerNivelAltura,
+                };
+                selection.Desviador.CellsByPost = existing.Desviador.CellsByPost;
+                foreach (var cell in off) selection.DesviadorOffCells.Add(new SelectiveGridCell { Frente = cell.Frente, Level = cell.Level });
+                d.State.SafetySelections.Insert(index, selection);
+            }
 
             private static void Grid(PushBackDraftEditor d, string elementId, SafetySide side, double longitud, double first, bool cellsByPost,
                 List<SelectiveGridCell> stored, Action<HashSet<(int Post, int Level)>> toggle, SelectiveSafetySelection existing)

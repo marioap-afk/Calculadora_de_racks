@@ -98,9 +98,9 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Width="110" Text="Poste" Style="{StaticResource HeadText}" />
                         <StackPanel Width="190">
-                            <!-- T5 pb: the words of the head come from the panel («Botas · lado A» in a Push Back of two sides). -->
+                            <!-- T5 pb: the words of the head come from the panel («Botas · lado A» in a Push Back of two sides), its name too. -->
                             <Button x:Name="BootsHead" Content="{Binding BootsHeader}" Click="OnHeadClick" Tag="BOTA"
-                                    AutomationProperties.Name="Botas: ver su variante y sus medidas">
+                                    AutomationProperties.Name="{Binding BootsHeadName}">
                                 <Button.Style>
                                     <Style TargetType="Button" BasedOn="{StaticResource HeadButton}">
                                         <Style.Triggers>
