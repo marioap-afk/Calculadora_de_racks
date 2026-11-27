@@ -30,9 +30,10 @@ namespace RackCad.Application.VentanaRackCad
         /// <summary>
         /// What the editor says (the message of the Owner's request says how many own peraltes it took away), the base plates that keep their
         /// own peralte, and what «Descartar» does for that rack: a rack of the drawing goes back to what was last read or written, a new
-        /// Selectivo to the defaults.
+        /// Selectivo to how it opened (T6 ui, UT-S11). T6 ui (point 8): with <paramref name="canDiscard"/> false (the draft is again what the
+        /// drawing has, so «Descartar» is off) it says nothing of «Descartar»; <paramref name="copy"/>, a copy of «Duplicar» (correction 1).
         /// </summary>
-        public string NoticeFor(bool newRack)
+        public string NoticeFor(bool newRack, bool canDiscard = true, bool copy = false)
         {
             if (Refused) return Edit.Error;
             var peralte = Num(Peralte) + " in";
@@ -43,8 +44,8 @@ namespace RackCad.Application.VentanaRackCad
                 ? "ningún poste tenía peralte propio"
                 : "se " + (Removed.Count == 1 ? "quitó 1 peralte propio" : "quitaron " + Removed.Count.ToString(CultureInfo.InvariantCulture) + " peraltes propios")
                   + " (" + string.Join(", ", Removed.Select(r => "P" + (r.Post + 1).ToString(CultureInfo.InvariantCulture) + ": " + Num(r.Peralte) + " in")) + ")";
-            return "Peralte de " + peralte + " en todos los postes del borrador: " + removed + "." + plates + " "
-                   + (newRack ? SelectiveLayoutRestoreResult.NewRackDiscardText : SelectiveLayoutRestoreResult.DiscardText);
+            return "Peralte de " + peralte + " en todos los postes del borrador: " + removed + "." + plates
+                   + (canDiscard ? " " + SelectiveLayoutRestoreResult.DiscardTextOf(newRack, copy) : string.Empty);
         }
 
         internal static SelectivePeralteForAllPosts Refuse(string error)

@@ -768,6 +768,63 @@ namespace RackCad.UI.Tests
             }));
         }
 
+        // T6 ui (O-2 of the smoke of the fifth batch): before a ménsula is chosen its list was an empty grey box, like a disabled one. The empty
+        // list says «Elige la ménsula» inside the box, in the colour of the text, and the clicks go through to the list.
+        private static List<TextBlock> PromptsOver(ComboBox box, string text)
+        {
+            var parent = (DependencyObject)System.Windows.Media.VisualTreeHelper.GetParent(box);
+            var bounds = new Rect(box.TranslatePoint(new Point(0, 0), (UIElement)parent), box.RenderSize);
+            return Descendants<TextBlock>(parent)
+                .Where(t => Shown(t) && t.Text == text && !IsInside(t, box))
+                .Where(t => bounds.Contains(new Rect(t.TranslatePoint(new Point(0, 0), (UIElement)parent), t.RenderSize)))
+                .ToList();
+        }
+
+        private static bool IsInside(DependencyObject element, DependencyObject ancestor)
+        {
+            for (var node = System.Windows.Media.VisualTreeHelper.GetParent(element); node != null; node = System.Windows.Media.VisualTreeHelper.GetParent(node))
+                if (node == ancestor) return true;
+            return false;
+        }
+
+        [Fact]
+        public void AnEmptyListOfMensulasLooksActiveAndAsksForOne() // T6 ui (O-2)
+        {
+            StaTestRunner.Run(() => WithBindingErrors(() =>
+            {
+                var rig = new Rig();
+                var view = new RackCadWindowView(rig.Window);
+                rig.Window.OpenLargueroWorkbench();
+                Lay(view);
+                var page = view.LargueroPage;
+                var workbench = rig.Window.LargueroWorkbench!;
+                var box = page.LargueroMensulaBox;
+
+                // The larguero of RackCad comes with its ménsula: nothing to ask.
+                Assert.NotNull(workbench.SelectedMensula);
+                Assert.Empty(PromptsOver(box, "Elige la ménsula"));
+
+                // An AISC section has no ménsula until one is chosen: the box is active and asks for one.
+                page.LargueroCatalogFilter.SelectedValue = "aisc";
+                page.LargueroTypeFilter.SelectedValue = "Canal CPS";
+                Lay(view);
+                page.LargueroSectionList.SelectedItem = Row(workbench, "C10X15.3");
+                Lay(view);
+                Assert.Null(workbench.SelectedMensula);
+                Assert.Null(box.SelectedItem);
+                Assert.True(box.IsEnabled);
+                var prompt = Assert.Single(PromptsOver(box, "Elige la ménsula"));
+                Assert.False(prompt.IsHitTestVisible);
+                Assert.Same(page.TryFindResource("ShellTextPrimaryBrush"), prompt.Foreground);
+
+                // Chosen, the prompt goes away.
+                box.SelectedValue = "MENSULA_3_REMACHES_CAL_10";
+                Lay(view);
+                Assert.Equal("MENSULA_3_REMACHES_CAL_10", workbench.SelectedMensula);
+                Assert.Empty(PromptsOver(box, "Elige la ménsula"));
+            }));
+        }
+
         [Fact]
         public void NarrowTheSummaryGoesBelowTheSectionsAndAFailingCatalogIsSaidOnThePage()
         {

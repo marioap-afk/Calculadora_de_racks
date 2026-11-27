@@ -201,10 +201,12 @@ namespace RackCad.UI.Tests
         public void ForANewSelectivoTheNoticeSaysThatDiscardGoesBackToTheDefaults()
         {
             // M-4 of the review of the entrega 2: a new Selectivo of «Nuevo» was never read nor written, and its «Descartar» goes back to the
-            // defaults of the classic editor (P3-05), so the notices say that, not «lo último que se leyó o se escribió».
-            const string NewTail = "«Descartar» vuelve a los valores por defecto.";
+            // defaults of the classic editor (P3-05), so the notices say that, not «lo último que se leyó o se escribió». T6 ui (UT-S11 and
+            // point 10 of the Owner): they say that it goes back to how the draft opened, which is also true of a draft of the library.
+            const string NewTail = "«Descartar» vuelve a como se abrió el borrador.";
             var vm = SelectiveEditorViewModel.ForNewRack(SelectiveDraftEditor.CreateNew(UiSupport.LoadCatalogSafe()), "nuevo-1");
             var defaults = Json(vm.Draft.Design);
+            Write(Field(vm.CellFields, "cHeight"), "72"); // T6 ui (point 8): another change, so «Descartar» stays on after the restore
             Write(Field(vm.FrontFields, "fHeight"), "200");
             Assert.Equal(200.0, vm.Draft.Front(0, 0)!.HeightOverride);
 
@@ -216,7 +218,7 @@ namespace RackCad.UI.Tests
 
             vm.Discard();
             Assert.Equal(defaults, Json(vm.Draft.Design));
-            Assert.Equal("Borrador descartado.", vm.Message);
+            Assert.Equal("Cambios descartados: el borrador vuelve a como se abrió.", vm.Message); // T6 ui (point 10)
 
             // The same for what reducing the fronts drops (S-09): an own peralte of a post that no longer exists.
             Write(vm.PostRows[2].Field, "4.5");
@@ -225,12 +227,50 @@ namespace RackCad.UI.Tests
             Assert.Equal("Al reducir los frentes se quitaron 1 peralte propio de los postes que ya no existen, como en el editor clásico. "
                          + "Volver a subirlos no los recupera; " + NewTail, vm.Message);
 
-            // Inserted, it is a rack of the drawing: «Descartar» goes back to what was written again.
+            // Inserted, it is a rack of the drawing: «Descartar» goes back to what was written again. T6 ui (point 8): the draft keeps another
+            // change (a pallet height), so «Descartar» is on and the notice names it.
             vm.MarkInserted("Selectivo 1");
+            Write(Field(vm.CellFields, "cHeight"), "72");
             Write(Field(vm.FrontFields, "fHeight"), "200");
             vm.OpenRestore();
             vm.ConfirmRestore();
+            Assert.True(vm.CanDiscard);
             Assert.EndsWith(Tail, vm.Message);
+        }
+
+        // T6 ui (point 8; smoke of the entrega 2): a restore that leaves the draft as the drawing named «Descartar» with the button off. The
+        // notices of the draft name «Descartar» only while it can be pressed: «Restaurar layout…», «Aplicar a todos» and fewer fronts.
+        [Fact]
+        public void ANoticeThatLeavesTheDraftAsTheDrawingDoesNotNameDiscard()
+        {
+            var vm = SelectiveEditor(PlainOf(Personalised()));
+            Assert.False(vm.CanDiscard);
+
+            // «Restaurar layout…» takes away the one manual value, written only in the draft.
+            Write(Field(vm.FrontFields, "fHeight"), "200");
+            Assert.True(vm.CanDiscard);
+            vm.OpenRestore();
+            vm.ConfirmRestore();
+            Assert.False(vm.CanDiscard);
+            Assert.Equal("Limpio", vm.StatusText);
+            Assert.Equal("Layout restaurado en el borrador: 1 valor manual quitado (1 altura manual).", vm.Message);
+
+            // «Aplicar a todos» takes away the one own peralte, written only in the draft.
+            Write(vm.PostRows[1].Field, "4.5");
+            Assert.True(vm.CanDiscard);
+            vm.ApplyPeralteToAllPosts();
+            Assert.False(vm.CanDiscard);
+            Assert.Equal("Peralte de 3 in en todos los postes del borrador: se quitó 1 peralte propio (P2: 4.5 in).", vm.Message);
+
+            // One more front with an own peralte on its new post, and back to two fronts: the draft is the drawing again.
+            Write(Field(vm.Essentials, "fronts"), "3");
+            Write(vm.PostRows[3].Field, "4.5");
+            Write(Field(vm.Essentials, "fronts"), "2");
+            // T6 ui, correction 3 of the review: the state after the change, not the one before it (LossText after UpdateDirty).
+            Assert.False(vm.CanDiscard);
+            Assert.Equal("Limpio", vm.StatusText);
+            Assert.Equal("Al reducir los frentes se quitaron 1 peralte propio de los postes que ya no existen, como en el editor clásico. "
+                         + "Volver a subirlos no los recupera.", vm.Message);
         }
 
         [Fact]

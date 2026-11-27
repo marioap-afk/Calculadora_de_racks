@@ -166,6 +166,7 @@ namespace RackCad.Plugin.VentanaRackCad
 
                 // The document of a design of the library carries its unknown fields to the new cama (I-11); null for the defaults.
                 var source = new FlowBedConfigurationStore().DeserializeDocument(pending.Write.SourceDesignJson);
+                // T6 ui (O-3): the dispatch of «Nuevo» names the cama in the prompt of the jig (RackJigPrompt.ForSystem).
                 RackMenuCommands.DispatchInsertion(document,
                     new RackCad.UI.Editor.FlowBedInsertionRequest(pending.Write.Bed, pending.RackId, pending.Write.Name, source));
                 var placed = RackCommandSupport.FindRackBlocks(document, pending.RackId);

@@ -331,6 +331,64 @@ namespace RackCad.Tests
             Assert.Empty(station.Levels);
         }
 
+        // ---- T6 ui (O-4 b del smoke de la quinta tanda): lo que la ventana muestra, con sus nombres ------------
+        // El aviso decía «Nivel 1, lado PositiveY: … Aumenta VerticalPunchCount: mas troqueles…». El lado se llama +Y / −Y y el campo
+        // «Troqueles verticales», como en la ventana, y los mensajes llevan sus acentos.
+
+        private static readonly System.Text.RegularExpressions.Regex InternalText = new(
+            @"\b(PositiveY|NegativeY|VerticalPunchCount|VerticalEndOffset|pitch|conexion|reticula|indices?|maximo|minimo|diseno|omision|numero|valido" +
+            @"|practicamente|proyeccion|estan|recibio|colocacion|orientacion|mas|necesitaria|caeria|compartirian)\b");
+
+        [Theory]
+        [MemberData(nameof(InvalidConnections))]
+        public void AnInvalidConnectionIsSaidWithTheNamesOfTheWindow(CantileverArmTemplateDesign arm, string code)
+        {
+            foreach (var faceMode in new[] { CantileverStationFaceMode.Single, CantileverStationFaceMode.Double })
+            {
+                var station = Resolve(Design(faceMode, defaultArm: arm));
+                var messages = station.Diagnostics.Where(d => d.IsBlocking).Select(d => d.Message).ToList();
+
+                Assert.NotEmpty(messages);
+                foreach (var message in messages)
+                    Assert.False(InternalText.IsMatch(message), code + ": «" + InternalText.Match(message).Value + "» en " + message);
+            }
+        }
+
+        // T6 ui, correction 5 of the review (sobre 331f9f18): the messages of the resolvers of the station, its levels and its arms and plate
+        // (what the window lists in «Para que la línea se resuelva»), read as text: no word of the user without its accent, no internal name.
+        [Theory]
+        [InlineData("src/RackCad.Application/Systems/Cantilever/CantileverStationResolver.cs")]
+        [InlineData("src/RackCad.Application/Systems/Cantilever/CantileverStationLevelLayoutResolver.cs")]
+        [InlineData("src/RackCad.Application/Systems/Cantilever/CantileverArmConnectionMetricsResolver.cs")]
+        public void TheMessagesOfTheStationHaveTheirAccentsAndTheNamesOfTheWindow(string path)
+        {
+            var literals = System.Text.RegularExpressions.Regex.Matches(WorkspaceHostSource.Code(path), "\"(?:[^\"\\\\]|\\\\.)*\"")
+                .Select(m => m.Value).ToList();
+            Assert.NotEmpty(literals);
+            var leftovers = literals.Where(l => InternalText.IsMatch(l)
+                || System.Text.RegularExpressions.Regex.IsMatch(l, @"\b(estacion|configuracion|combinacion|seccion|asi|resolvio|uso|patron|conexion|elevacion|ultima|minima|dimensiono)\b"))
+                .ToList();
+            Assert.True(leftovers.Count == 0, string.Join(" | ", leftovers));
+            Assert.DoesNotContain(literals, l => l.Contains("placa de conexion", StringComparison.Ordinal));
+        }
+
+        [Fact]
+        public void ThePlateThatDoesNotHoldTheBodySaysTheSideAndTheFieldOfTheWindow()
+        {
+            var single = Resolve(Design(defaultArm: ArmTemplate(section: ArmChannel, count: 2)));
+            var message = single.Diagnostics.First(d => d.Code == CantileverDiagnostics.ArmPlateTooShortForBody).Message;
+
+            Assert.StartsWith("Nivel 1, lado +Y: La placa de montaje llega a z = ", message, StringComparison.Ordinal);
+            Assert.EndsWith(
+                " in en el plano de conexión. Aumenta «Troqueles verticales»: más troqueles extienden la placa hacia arriba. "
+                + "La placa NO se estira sin más agujeros.",
+                message, StringComparison.Ordinal);
+
+            var both = Resolve(Design(CantileverStationFaceMode.Double, defaultArm: ArmTemplate(section: ArmChannel, count: 2)));
+            Assert.Contains(both.Diagnostics, d => d.Code == CantileverDiagnostics.ArmPlateTooShortForBody
+                && d.Message.StartsWith("Nivel 1, lado −Y: ", StringComparison.Ordinal));
+        }
+
         [Fact]
         public void TheAuthorityDoesNotCLAMPTheRowCount()
         {

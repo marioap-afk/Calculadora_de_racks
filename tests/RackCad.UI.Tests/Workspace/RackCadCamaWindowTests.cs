@@ -417,6 +417,31 @@ namespace RackCad.UI.Tests
         // ------------------------------------------------------------------ a new cama of «Nuevo»
 
         [Fact]
+        public void DiscardingADraftOfNuevoSaysThatItGoesBackToHowItOpened() // T6 ui, point 10 (decided by the Owner on 2026-11-27)
+        {
+            using var rig = new Rig();
+            rig.Window.StartNewCama();
+            var editor = Assert.IsType<CamaEditorViewModel>(rig.Window.NewCamaEditor);
+            Write(editor.LaneField, "110");
+            Assert.True(editor.IsDirty);
+
+            editor.Discard();
+
+            Assert.False(editor.IsDirty);
+            Assert.Equal("Cambios descartados: el borrador vuelve a como se abrió.", editor.Message);
+
+            // T6 ui, correction 1 of the review: the copy of a modified draft goes back to how its original opened.
+            Write(editor.LaneField, "110");
+            Assert.True(rig.Window.DuplicateDraft(rig.Window.ActiveDraft!).Opened);
+            var copy = Assert.IsType<CamaEditorViewModel>(rig.Window.NewCamaEditor);
+            Assert.NotSame(editor, copy);
+            Assert.True(copy.IsDirty);
+            copy.Discard();
+            Assert.False(copy.IsDirty);
+            Assert.Equal("Cambios descartados: la copia vuelve a como se abrió su original.", copy.Message);
+        }
+
+        [Fact]
         public void CamaEnEstaVentanaIsADraftOfNuevoThatIsInsertedWithItsOwnCommandAndThenIsACamaOfTheDrawing()
         {
             using var rig = new Rig();

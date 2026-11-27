@@ -740,7 +740,7 @@ namespace RackCad.UI.VentanaRackCad
             _propertiesTab?.Reset(); // T4 va: «Descartar» drops the properties written in the tab too (VA-07)
             _confirmingClose = false;
             Say(RackId == null || _isNewRack
-                ? "Borrador descartado."
+                ? RackCadDraftNaming.DiscardedTextOf(_isCopy) // T6 ui (point 10; correction 1: a copy)
                 : "Borrador descartado: se muestra lo último que se leyó del dibujo o se escribió en él desde este editor.", error: false);
             Rebuild();
         }

@@ -578,6 +578,24 @@ namespace RackCad.UI.Tests
             Assert.Equal("Limpio", editor.StatusText);
         }
 
+        // T6 ui (point 8): a restore that leaves the line as the drawing has it does not name «Descartar», which is off.
+        [Fact]
+        public void ARestoreThatLeavesTheLineAsTheDrawingDoesNotNameDiscard()
+        {
+            var rig = new Rig();
+            var editor = rig.OpenEditor();
+            editor.ClickCell(new CantileverLineCell(2, 2, CantileverArmSide.PositiveY), false, false);
+            Write(editor.InspectorItems, "insp.cut", "60");
+            Assert.True(editor.CanDiscard);
+
+            editor.OpenRestore();
+            editor.RestoreMarked();
+
+            Assert.False(editor.CanDiscard);
+            Assert.Equal("Limpio", editor.StatusText);
+            Assert.Equal("Layout restaurado en el borrador: 1 casilla.", editor.Message);
+        }
+
         // ------------------------------------------------------------------ a new line of «Nuevo», «Insertar vista…», the BOM and the library
 
         [Fact]
@@ -684,6 +702,56 @@ namespace RackCad.UI.Tests
             Assert.True(editor.Draft.IsResolved);
             Assert.NotEqual(design.Id.ToString(), editor.RackId); // a new identity
             Assert.Contains("del diseño «Linea de la nave» de la biblioteca", editor.Message, StringComparison.Ordinal);
+        }
+
+        // T6 ui, point 10 (decided by the Owner on 2026-11-27) and point 5 (UT-S11): «Descartar» of a draft says the words of every draft, and
+        // the line under the name does not say «valores por defecto» for a line opened from the library.
+        [Fact]
+        public void DiscardingADraftSaysThatItGoesBackToHowItOpenedAndALineOfTheLibraryIsNotCalledTheDefaults()
+        {
+            var rig = new Rig();
+            rig.Window.StartNewCantilever();
+            var fresh = rig.Window.NewCantileverEditor!;
+            Write(fresh.LevelItems, "ClearHeight", "20");
+            Assert.True(fresh.IsDirty);
+            fresh.Discard();
+            Assert.Equal("Cambios descartados: el borrador vuelve a como se abrió.", fresh.Message);
+
+            var design = LineOfTheDrawing();
+            Assert.True(rig.Window.OpenDesignAsNewRack(RackProject.ForCantilever(design), "Linea de la nave"));
+            var library = rig.Window.NewCantileverEditor!;
+            Assert.Equal("Sin cambios desde que se abrió.", library.DiffText);
+            Write(library.StructureItems, "Spacing", "120");
+            Assert.Equal("Con cambios desde que se abrió.", library.DiffText);
+            library.Discard();
+            Assert.Equal("Cambios descartados: el borrador vuelve a como se abrió.", library.Message);
+            Assert.DoesNotContain("valores por defecto", library.DiffText, StringComparison.Ordinal);
+        }
+
+        // T6 ui, correction 1 of the review (sobre 331f9f18): a copy of a draft compares with the base of its original. A copy of a draft
+        // with changes is born «Modificado» without anybody touching it: the line under its name says so, and «Descartar» says where it goes.
+        [Fact]
+        public void TheCopyOfADraftSaysThatItComparesWithHowItsOriginalOpened()
+        {
+            var rig = new Rig();
+            rig.Window.StartNewCantilever();
+            var original = rig.Window.NewCantileverEditor!;
+            Assert.True(rig.Window.DuplicateDraft(rig.Window.ActiveDraft!).Opened);
+            var clean = rig.Window.NewCantileverEditor!;
+            Assert.NotSame(original, clean);
+            Assert.False(clean.IsDirty);
+            Assert.Equal("Sin cambios respecto de cómo se abrió su original.", clean.DiffText);
+
+            rig.Window.OpenDraft(rig.Window.Drafts.Single(d => d.RackId == original.RackId));
+            Write(original.LevelItems, "ClearHeight", "20");
+            Assert.True(rig.Window.DuplicateDraft(rig.Window.ActiveDraft!).Opened);
+            var copy = rig.Window.NewCantileverEditor!;
+            Assert.True(copy.IsDirty);
+            Assert.Equal("Con cambios respecto de cómo se abrió su original.", copy.DiffText);
+
+            copy.Discard();
+            Assert.Equal("Cambios descartados: la copia vuelve a como se abrió su original.", copy.Message);
+            Assert.Equal("Sin cambios respecto de cómo se abrió su original.", copy.DiffText);
         }
 
         [Fact]
@@ -1030,6 +1098,43 @@ namespace RackCad.UI.Tests
                 Assert.Equal(CantileverDraftEditor.ComponentArm, editor.SelectedComponent);
                 Assert.Empty(errors.Messages);
             }));
+        }
+
+        // T6 ui (O-4 a of the smoke of the fifth batch): «Ir a «Línea» › «Niveles»» opened the group, but the group is at the end of the tab and
+        // stayed out of view; the operator had to scroll down to it. Now it is also brought into view.
+        [Fact]
+        public void GoingToTheLevelsOpensTheGroupAndBringsItIntoView()
+        {
+            StaTestRunner.Run(() => WithBindingErrors(errors =>
+            {
+                var rig = new Rig();
+                rig.Window.StartNewCantilever();
+                var editor = rig.Window.NewCantileverEditor!;
+                var view = new CantileverEditorView(editor);
+                Lay(view, 1290, 860);
+                Assert.Same(view.ArmsTab, view.Tabs.SelectedItem);
+                Assert.False(view.LevelsExpander.IsExpanded);
+
+                var go = Descendants<Button>(view.MissingList)
+                    .Single(b => b.DataContext is CantileverMissingItem item && item.Component == CantileverDraftEditor.ComponentLevels);
+                Click(go);
+                Lay(view, 1290, 860);
+
+                Assert.Same(view.LineTab, view.Tabs.SelectedItem);
+                Assert.True(view.LevelsExpander.IsExpanded);
+                var scroll = Descendants<ScrollViewer>(view.Tabs).First(s => IsAncestorOf(s, view.LevelsExpander));
+                Assert.True(scroll.ScrollableHeight > 0, "the tab must be taller than its view for the check to mean anything");
+                var top = view.LevelsExpander.TranslatePoint(new Point(0, 0), scroll).Y;
+                Assert.True(top >= 0 && top < scroll.ViewportHeight, "the group «Niveles» starts at " + top + " in a view of " + scroll.ViewportHeight);
+                Assert.Empty(errors.Messages);
+            }));
+        }
+
+        private static bool IsAncestorOf(DependencyObject ancestor, DependencyObject element)
+        {
+            for (var node = System.Windows.Media.VisualTreeHelper.GetParent(element); node != null; node = System.Windows.Media.VisualTreeHelper.GetParent(node))
+                if (node == ancestor) return true;
+            return false;
         }
 
         [Fact]

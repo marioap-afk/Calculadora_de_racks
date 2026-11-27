@@ -86,7 +86,7 @@ namespace RackCad.Application.Systems.Cantilever
             {
                 diagnostics.Add(CantileverDiagnostic.Blocking(
                     CantileverDiagnostics.StationNoLevels,
-                    "Una estacion necesita al menos un nivel."));
+                    "Una estación necesita al menos un nivel."));
                 return CantileverStationAssembly.Blocked(faceMode, singleSide, diagnostics);
             }
 
@@ -94,7 +94,7 @@ namespace RackCad.Application.Systems.Cantilever
             {
                 diagnostics.Add(CantileverDiagnostic.Blocking(
                     CantileverDiagnostics.ParameterNotPositive,
-                    "El claro libre solicitado debe ser un numero positivo; se recibio " +
+                    "El claro libre solicitado debe ser un número positivo; se recibió " +
                     Format(design.RequestedClearHeight) + "."));
                 return CantileverStationAssembly.Blocked(faceMode, singleSide, diagnostics);
             }
@@ -120,7 +120,7 @@ namespace RackCad.Application.Systems.Cantilever
             {
                 diagnostics.Add(CantileverDiagnostic.Blocking(
                     CantileverDiagnostics.StationColumnBaseBlocked,
-                    "La configuracion de columna y base no resuelve, asi que la estacion no tiene reticula " +
+                    "La configuración de columna y base no resuelve, así que la estación no tiene retícula " +
                     "de troqueles sobre la que colocar niveles."));
                 return CantileverStationAssembly.Blocked(faceMode, singleSide, diagnostics);
             }
@@ -171,8 +171,8 @@ namespace RackCad.Application.Systems.Cantilever
             {
                 diagnostics.Add(CantileverDiagnostic.Blocking(
                     CantileverDiagnostics.StationNotEnoughColumnPunches,
-                    "La columna resolvio " + available + " elevaciones regulares y el layout usa hasta el " +
-                    "indice " + layout.HighestUsedPunchIndex + "."));
+                    "La columna resolvió " + available + " elevaciones regulares y el layout usa hasta el " +
+                    "índice " + layout.HighestUsedPunchIndex + "."));
                 return CantileverStationAssembly.Blocked(faceMode, singleSide, diagnostics);
             }
 
@@ -201,7 +201,7 @@ namespace RackCad.Application.Systems.Cantilever
                     {
                         diagnostics.Add(CantileverDiagnostic.Blocking(
                             CantileverDiagnostics.StationArmBlocked,
-                            "El brazo del nivel " + (plan.LevelIndex + 1) + " en el lado " + cell.Side +
+                            "El brazo del nivel " + (plan.LevelIndex + 1) + " en el lado " + CantileverDiagnosticText.Side(cell.Side) + // T6 ui (O-4 b)
                             " no resuelve."));
                         diagnostics.AddRange(arm.Diagnostics.Where(d => d.IsBlocking));
                         return CantileverStationAssembly.Blocked(faceMode, singleSide, diagnostics);
@@ -276,9 +276,9 @@ namespace RackCad.Application.Systems.Cantilever
                     {
                         diagnostics.Add(CantileverDiagnostic.Blocking(
                             CantileverDiagnostics.CombinationNotEligible,
-                            "La combinacion seccion '" + section.SectionId.Value + "' con arreglo '" +
-                            body.Arrangement + "' no esta registrada para el nivel " + (level + 1) +
-                            " en el lado " + side + "."));
+                            "La combinación sección '" + section.SectionId.Value + "' con arreglo '" +
+                            body.Arrangement + "' no está registrada para el nivel " + (level + 1) +
+                            " en el lado " + CantileverDiagnosticText.Side(side) + ".")); // T6 ui (O-4 b)
                         return null;
                     }
 
@@ -286,7 +286,7 @@ namespace RackCad.Application.Systems.Cantilever
                     {
                         diagnostics.Add(CantileverDiagnostic.Blocking(
                             CantileverDiagnostics.ArmArrangementNotSupported,
-                            "El arreglo '" + body.Arrangement + "' no tiene regla de colocacion."));
+                            "El arreglo '" + body.Arrangement + "' no tiene regla de colocación."));
                         return null;
                     }
 
@@ -340,7 +340,7 @@ namespace RackCad.Application.Systems.Cantilever
                     {
                         diagnostics.Add(CantileverDiagnostic.Blocking(
                             CantileverDiagnostics.ParameterNotPositive,
-                            "La altura manual de la columna debe ser un numero positivo; se recibio " +
+                            "La altura manual de la columna debe ser un número positivo; se recibió " +
                             Format(manual) + "."));
                         return null;
                     }
@@ -350,9 +350,9 @@ namespace RackCad.Application.Systems.Cantilever
                         diagnostics.Add(CantileverDiagnostic.Blocking(
                             CantileverDiagnostics.StationManualHeightBelowMinimum,
                             "La altura manual de " + Format(manual) + " in queda " +
-                            Format(minimum - manual) + " in por debajo de la minima que los niveles exigen (" +
+                            Format(minimum - manual) + " in por debajo de la mínima que los niveles exigen (" +
                             Format(minimum) + " in). Aumenta la altura, reduce el claro o quita un nivel: la " +
-                            "estacion NO recorta niveles ni reduce el claro por su cuenta."));
+                            "estación NO recorta niveles ni reduce el claro por su cuenta."));
                         return null;
                     }
 
@@ -361,7 +361,7 @@ namespace RackCad.Application.Systems.Cantilever
                 default:
                     diagnostics.Add(CantileverDiagnostic.Blocking(
                         CantileverDiagnostics.StationHeightModeNotSupported,
-                        "El modo de altura '" + height.Mode + "' no esta declarado."));
+                        "El modo de altura '" + height.Mode + "' no está declarado."));
                     return null;
             }
         }
@@ -399,7 +399,7 @@ namespace RackCad.Application.Systems.Cantilever
 
                     if (arm?.ConnectionPattern == null)
                     {
-                        diagnostics.Add(Mismatch(level, cell.Side, "no hay patron de conexion resuelto"));
+                        diagnostics.Add(Mismatch(level, cell.Side, "no hay patrón de conexión resuelto")); // T6 ui (correction 5): accents
                         continue;
                     }
 
@@ -412,16 +412,16 @@ namespace RackCad.Application.Systems.Cantilever
                     {
                         diagnostics.Add(Mismatch(
                             level, cell.Side,
-                            "el indice inferior resuelto es " + pattern.LowerColumnPunchIndex +
-                            " y el layout uso " + cell.LowerPunchIndex));
+                            "el índice inferior resuelto es " + pattern.LowerColumnPunchIndex +
+                            " y el layout usó " + cell.LowerPunchIndex));
                     }
 
                     if (actual.UpperPunchIndex != cell.UpperPunchIndex)
                     {
                         diagnostics.Add(Mismatch(
                             level, cell.Side,
-                            "el indice superior resuelto es " + actual.UpperPunchIndex +
-                            " y el layout uso " + cell.UpperPunchIndex));
+                            "el índice superior resuelto es " + actual.UpperPunchIndex +
+                            " y el layout usó " + cell.UpperPunchIndex));
                     }
 
                     if (pattern.VerticalPunchCount != cell.VerticalPunchCount)
@@ -429,12 +429,12 @@ namespace RackCad.Application.Systems.Cantilever
                         diagnostics.Add(Mismatch(
                             level, cell.Side,
                             "la cantidad de troqueles resuelta es " + pattern.VerticalPunchCount +
-                            " y el layout uso " + cell.VerticalPunchCount));
+                            " y el layout usó " + cell.VerticalPunchCount));
                     }
 
-                    Compare(level, cell.Side, "la primera elevacion",
+                    Compare(level, cell.Side, "la primera elevación",
                         pattern.FirstElevation, cell.FirstElevation, diagnostics);
-                    Compare(level, cell.Side, "la ultima elevacion",
+                    Compare(level, cell.Side, "la última elevación",
                         pattern.LastElevation, cell.LastElevation, diagnostics);
                     Compare(level, cell.Side, "el borde inferior de la placa",
                         pattern.PlateBottomZ, cell.PlateBottomZ, diagnostics);
@@ -517,9 +517,9 @@ namespace RackCad.Application.Systems.Cantilever
             {
                 diagnostics.Add(CantileverDiagnostic.Blocking(
                     CantileverDiagnostics.StationFinalPassDiffersFromLayout,
-                    "La altura minima que la estacion uso es " + Format(minimumColumnHeight) +
+                    "La altura mínima que la estación usó es " + Format(minimumColumnHeight) +
                     " in y la ocupacion final resuelta exige " + Format(required) +
-                    " in. La estacion no se construye con una altura que no corresponde a lo que resolvio."));
+                    " in. La estación no se construye con una altura que no corresponde a lo que resolvió."));
             }
         }
 
@@ -557,9 +557,10 @@ namespace RackCad.Application.Systems.Cantilever
         {
             if (Math.Abs(resolvedValue - predicted) > FinalPassTolerance)
             {
+                // T6 ui (correction 5): «resuelta» did not agree with «el borde…» or «el claro libre».
                 diagnostics.Add(Mismatch(
                     level, side,
-                    what + " resuelta es " + Format(resolvedValue) + " in y el layout predijo " +
+                    what + " es " + Format(resolvedValue) + " in en el pase final y el layout predijo " +
                     Format(predicted) + " in"));
             }
         }
@@ -569,8 +570,8 @@ namespace RackCad.Application.Systems.Cantilever
             CantileverDiagnostic.Blocking(
                 CantileverDiagnostics.StationFinalPassDiffersFromLayout,
                 "El pase final difiere del layout en el nivel " + (level.LevelIndex + 1) + ", lado " +
-                side + ": " + detail + ". La estacion no se construye con un resultado que no coincide " +
-                "con el que dimensiono la columna.");
+                CantileverDiagnosticText.Side(side) + ": " + detail + ". La estación no se construye con un resultado que no coincide " + // T6 ui
+                "con el que dimensionó la columna.");
 
         private static string Format(double value) =>
             value.ToString("0.####", CultureInfo.InvariantCulture);

@@ -236,7 +236,8 @@ namespace RackCad.UI.VentanaRackCad
                 return Done;
             });
             // A new Selectivo of «Nuevo» was never read nor written: its «Descartar» goes back to the defaults (M-4 of the review of E2).
-            if (error == null && result != null) Say(result.NoticeFor(_isNewRack), error: false);
+            // T6 ui (point 8): a restore that leaves the draft as the drawing has it does not name «Descartar», which is then off.
+            if (error == null && result != null) Say(result.NoticeFor(_isNewRack, CanDiscard, _isCopy), error: false); // T6 ui: and a copy
 
             // T6 bom (point 3 of the review of 9dd5baa5): what the user can do when the restore would leave a «medio frente» with no room.
             if (error != null && error.StartsWith(SelectiveDraftEditor.BrokenSplitsRefusalStart, StringComparison.Ordinal))

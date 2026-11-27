@@ -671,6 +671,54 @@ namespace RackCad.UI.Tests
             Assert.Equal("Se cerró el dibujo de Borrador 2 (Selectivo nuevo) con cambios sin escribir en la ventana: esos cambios se perdieron.", rig.Window.ActionMessage);
         }
 
+        // T6 ui, point 10 (decided by the Owner on 2026-11-27): «Descartar» of a draft leaves it as it opened (the defaults, the design of the
+        // library or, in a copy, the base of its original), and every system says it with the same words. And UT-S11 (point 5): the notices
+        // of a new Selectivo said that «Descartar» goes back to the defaults, also for a draft opened from the library.
+        private const string DiscardedDraftText = "Cambios descartados: el borrador vuelve a como se abrió.";
+
+        [Fact]
+        public void DiscardingADraftSaysThatItGoesBackToHowItOpened()
+        {
+            var rig = new Rig();
+            var selective = rig.NewSelective();
+            Edit(selective);
+            selective.Discard();
+            Assert.Equal(DiscardedDraftText, selective.Message);
+
+            var dynamic = rig.NewDynamic();
+            Edit(dynamic);
+            dynamic.Discard();
+            Assert.Equal(DiscardedDraftText, dynamic.Message);
+
+            var library = rig.Window.OpenAsNewDraft(RackCadDraftSeed.FromLibrary(
+                RackProject.ForSelectiveRack(SelectivePalletDesignDocument.From(TwoFondos(), null, "Nave lib")), "Nave lib"));
+            Assert.True(library.Opened, library.Reason);
+            var fromLibrary = rig.Window.NewSelectiveEditor!;
+            var opened = Json(fromLibrary.Draft.Design);
+            Edit(fromLibrary);
+            fromLibrary.Discard();
+            Assert.Equal(opened, Json(fromLibrary.Draft.Design));
+            Assert.Equal(DiscardedDraftText, fromLibrary.Message);
+        }
+
+        [Fact]
+        public void TheNoticesOfADraftOpenedFromTheLibrarySayThatDiscardGoesBackToHowItOpened()
+        {
+            var rig = new Rig();
+            var library = rig.Window.OpenAsNewDraft(RackCadDraftSeed.FromLibrary(
+                RackProject.ForSelectiveRack(SelectivePalletDesignDocument.From(TwoFondos(), null, "Nave lib")), "Nave lib"));
+            Assert.True(library.Opened, library.Reason);
+            var editor = rig.Window.NewSelectiveEditor!;
+            Write(Field(editor.FrontFields, "fHeight"), "200");
+
+            editor.OpenRestore();
+            Assert.True(editor.IsRestoreOpen, editor.Message);
+            editor.ConfirmRestore();
+
+            Assert.EndsWith("«Descartar» vuelve a como se abrió el borrador.", editor.Message, StringComparison.Ordinal);
+            Assert.DoesNotContain("valores por defecto", editor.Message, StringComparison.Ordinal);
+        }
+
         // Point 1, the rest: a copy of a draft with nothing changed has nothing to lose; a copy of a design of the library goes back to it.
         [Fact]
         public void TheCopyOfADraftIsModifiedExactlyWhenItsOriginalWas()
@@ -704,6 +752,47 @@ namespace RackCad.UI.Tests
             Assert.Equal(DynamicJson(dynamic.Draft.Design), DynamicJson(dynamicCopy.Draft.Design));
             dynamicCopy.Discard();
             Assert.Equal(DynamicJson(RackCad.Application.VentanaRackCad.DynamicDraftEditor.CreateNew(Catalog()).Design), DynamicJson(dynamicCopy.Draft.Design));
+        }
+
+        // T6 ui, correction 1 of the review (sobre 331f9f18): the copy of a modified draft is born «Modificado» over the base of its original,
+        // and «Descartar» takes it back to that base (how its ORIGINAL opened), not to how the copy opened. Its texts say so; a draft that is
+        // not a copy keeps the text of the Owner.
+        private const string DiscardedCopyText = "Cambios descartados: la copia vuelve a como se abrió su original.";
+
+        [Fact]
+        public void TheTextsOfDiscardOfACopySayThatItGoesBackToHowItsOriginalOpened()
+        {
+            var rig = new Rig();
+            var original = rig.NewSelective();
+            Edit(original);
+            Assert.True(rig.Window.DuplicateDraft(rig.Window.Drafts[0]).Opened);
+            var copy = rig.Window.NewSelectiveEditor!;
+            Assert.True(copy.IsDirty);
+
+            // The notice of «Restaurar layout…» of the copy, which keeps the changes of its original.
+            Write(Field(copy.FrontFields, "fHeight"), "200");
+            copy.OpenRestore();
+            copy.ConfirmRestore();
+            Assert.True(copy.CanDiscard);
+            Assert.Equal("Layout restaurado en el borrador: 1 valor manual quitado (1 altura manual). «Descartar» vuelve a como se abrió el original de la copia.",
+                copy.Message);
+
+            copy.Discard();
+            Assert.Equal(DiscardedCopyText, copy.Message);
+            Assert.Equal(Json(SelectiveDraftEditor.CreateNew(Catalog()).Design), Json(copy.Draft.Design));
+
+            rig.Window.OpenDraft(rig.Window.Drafts.Single(d => d.RackId == original.RackId));
+            original.Discard();
+            Assert.Equal(DiscardedDraftText, original.Message);
+
+            // A Dinámico too.
+            var dynamic = rig.NewDynamic();
+            Edit(dynamic);
+            rig.Window.DuplicateDraft(rig.Window.ActiveDraft!);
+            var dynamicCopy = rig.Window.NewDynamicEditor!;
+            Assert.True(dynamicCopy.IsDirty);
+            dynamicCopy.Discard();
+            Assert.Equal(DiscardedCopyText, dynamicCopy.Message);
         }
 
         // Point 2: what AutoCAD answers to a draft that is not on screen is said in the message of the window too, with its label.

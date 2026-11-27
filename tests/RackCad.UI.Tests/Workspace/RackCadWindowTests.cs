@@ -675,6 +675,80 @@ namespace RackCad.UI.Tests
         }
 
         [Fact]
+        public void AReadOfTheUserThatTheHostDoesNotDoSaysWhyAndKeepsTheList() // T6 ui (1)
+        {
+            // The list was read (Ready) and then went possibly out of date, the text of the smoke of the fifth batch.
+            var rig = new Rig();
+            rig.Summary.ListResponder = (_, user) => user ? BrowserRackList.Ready(rig.Racks) : BrowserRackList.Outdated();
+            rig.Window.Refresh();
+            const string outdated = "La lista puede no estar al día: pulsa «Volver a leer la lista».";
+            Assert.Equal(outdated, rig.List.StatusText);
+
+            // «Volver a leer la lista»: the host is busy with a command (its check comes after the one of the window).
+            rig.Summary.ListResponder = (_, user) => user
+                ? BrowserRackList.Without(BrowserSummaryStatus.Busy, "A command is in progress.")
+                : BrowserRackList.Outdated();
+            rig.Summary.ListCalls.Clear();
+            rig.List.Reload();
+            Assert.Equal(new[] { true }, rig.Summary.ListCalls.Select(c => c.UserRequested).ToArray());
+            Assert.Equal("El dibujo no se puede leer ahora (hay un comando en curso); vuelve a intentarlo al terminar.", rig.List.StatusText);
+            Assert.Equal(6, rig.List.RackCount);
+
+            // The host rejects it: the request is not of the active drawing (it changed or it was closed).
+            rig.Summary.ListResponder = (_, user) => user
+                ? BrowserRackList.Without(BrowserSummaryStatus.Rejected, "The request does not belong to the active document.")
+                : BrowserRackList.Outdated();
+            rig.List.Reload();
+            Assert.Equal(
+                "La lista no se volvió a leer: el dibujo de la ventana no es el dibujo activo de AutoCAD (cambió o se cerró). "
+                + "Vuelve a intentarlo con el dibujo a la vista.",
+                rig.List.StatusText);
+            Assert.Equal(6, rig.List.RackCount);
+            Assert.Equal("Mostrando 6 de 6", rig.List.ShownText);
+
+            // A port that does not offer the list.
+            rig.Summary.ListResponder = (_, user) => user ? BrowserRackList.NotOffered : BrowserRackList.Outdated();
+            rig.List.Reload();
+            Assert.Equal("La lista de racks no está disponible.", rig.List.StatusText);
+            Assert.Equal(6, rig.List.RackCount);
+
+            // Read again when the host can: the reason goes away.
+            rig.Summary.ListResponder = (_, _) => BrowserRackList.Ready(rig.Racks);
+            rig.List.Reload();
+            Assert.Equal(string.Empty, rig.List.StatusText);
+        }
+
+        [Fact]
+        public void AReadOfTheUserThatTheHostAnswersBusyBeforeAnyListSaysWhyInsteadOfReading() // T6 ui (1)
+        {
+            // A drawing whose list was never read: «Leyendo la lista del dibujo…» would be false, nothing is being read.
+            var rig = new Rig();
+            rig.Summary.ListResponder = (_, _) => BrowserRackList.Without(BrowserSummaryStatus.Busy, "A command is in progress.");
+            rig.Host.Snapshot = WorkspacePanelFixtures.Ready(session: 8);
+            rig.Window.Refresh();
+            Assert.Equal("Leyendo la lista del dibujo…", rig.List.StatusText);
+
+            rig.List.Reload();
+
+            Assert.Equal("El dibujo no se puede leer ahora (hay un comando en curso); vuelve a intentarlo al terminar.", rig.List.StatusText);
+            Assert.Equal(0, rig.List.RackCount);
+        }
+
+        [Fact]
+        public void APresentationThatTheHostAnswersBusyOrRejectedStillChangesNoText() // T6 ui (1): only the read of the user says why
+        {
+            var rig = new Rig();
+            rig.Summary.ListResponder = (_, _) => BrowserRackList.Without(BrowserSummaryStatus.Rejected, "The request does not belong to the active document.");
+            rig.Window.Refresh();
+            Assert.Equal(string.Empty, rig.List.StatusText);
+
+            rig.Summary.ListResponder = (_, _) => BrowserRackList.Without(BrowserSummaryStatus.Busy, "A command is in progress.");
+            rig.Window.Refresh();
+            Assert.Equal(string.Empty, rig.List.StatusText);
+            Assert.Equal(6, rig.List.RackCount);
+        }
+
+        [Fact]
         public void AProtectedCleanDraftIsAChangeNotWrittenAndLooksLikeOne()
         {
             var rig = new Rig();

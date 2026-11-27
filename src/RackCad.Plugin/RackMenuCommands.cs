@@ -1,6 +1,7 @@
 using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.Persistence;
 using RackCad.Application.Systems.Shared;
+using RackCad.Application.Views.Placement; // T6 ui (O-3): RackJigPrompt
 using RackCad.Application.Views.Preparation;
 using RackCad.Application.Views.Policy;
 using RackCad.Plugin.KindHandlers;
@@ -150,6 +151,9 @@ namespace RackCad.Plugin
         {
             if (request == null) return;
 
+            // T6 ui (O-3, «Todas» of the Owner): the jig names what this request inserts (a cabecera keeps «de la cabecera»; a Cantilever
+            // names its own); RACKNUEVO, the menu, RACKBIBLIOTECA and every «…NUEVO» of the window dispatch here.
+            using var jigPrompt = RackJigPrompt.Scope(RackJigPrompt.ForSystem(request.Kind));
             {
                 // I-05: an insertion is about to happen (any non-null request). Warn once if the drawing is not in
                 // inches, before dispatching to the per-system draw calls (before the first DWG modification).
@@ -282,6 +286,8 @@ namespace RackCad.Plugin
                     return;
                 }
 
+                // T6 ui (O-3): «Insertar» of the classic editor names the view of the rack in the prompt of the jig (a cabecera keeps its text).
+                using var jigPrompt = RackJigPrompt.Scope(RackJigPrompt.ForEnvelopeKind(embed.Kind));
                 handler.Edit(document, blockId, embed);
             }
             catch (System.Exception ex)

@@ -338,6 +338,32 @@ namespace RackCad.UI.Tests
 
         // ------------------------------------------------------------------ the editor
 
+        // T6 ui, point 10 (decided by the Owner on 2026-11-27): «Descartar» of a draft of «Nuevo» says the words of every draft.
+        [Fact]
+        public void DiscardingADraftOfNuevoSaysThatItGoesBackToHowItOpened()
+        {
+            var rig = new Rig();
+            rig.Window.StartNewPushBack();
+            var editor = rig.Window.NewPushBackEditor!;
+            Write(Field(editor.Essentials, "fronts"), "3");
+            Assert.Equal(3, editor.Columns.Count);
+
+            editor.Discard();
+
+            Assert.Single(editor.Columns);
+            Assert.Equal("Cambios descartados: el borrador vuelve a como se abrió.", editor.Message);
+
+            // T6 ui, correction 1 of the review: the copy of a modified draft goes back to how its original opened.
+            Write(Field(editor.Essentials, "fronts"), "3");
+            Assert.True(rig.Window.DuplicateDraft(rig.Window.ActiveDraft!).Opened);
+            var copy = rig.Window.NewPushBackEditor!;
+            Assert.NotSame(editor, copy);
+            Assert.True(copy.IsDirty);
+            copy.Discard();
+            Assert.Single(copy.Columns);
+            Assert.Equal("Cambios descartados: la copia vuelve a como se abrió su original.", copy.Message);
+        }
+
         [Fact]
         public void TheMatrixSelectsWithItsGesturesAndTheInspectorWritesTheSelection()
         {

@@ -33,6 +33,7 @@ namespace RackCad.Plugin
         [CommandMethod("RACKSELECTIVO")]
         public void RackSelectivo()
         {
+            using var jigPrompt = RackJigPrompt.Scope(RackJigPrompt.SelectiveView); // T6 ui (O-3): the jig names the view of the Selectivo
             try
             {
                 var window = new RackSelectiveWindow(canInsertInAutoCad: true);

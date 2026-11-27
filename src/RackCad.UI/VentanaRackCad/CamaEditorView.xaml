@@ -145,6 +145,9 @@
                     </Border>
                     <TextBlock x:Name="DiffText" Text="{Binding DiffText}" Margin="0,16,12,4" VerticalAlignment="Top"
                                Style="{StaticResource OptionalText}" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                    <!-- T6 ui (point 9): the buttons are ONE group, beside the name while they fit, or together on the next line (at about
+                         950 px «Más» went alone to a second line). -->
+                    <WrapPanel x:Name="HeadButtons">
                     <Button x:Name="PrimaryButton" Content="{Binding PrimaryLabel}" Margin="0,12,8,4" Padding="14,4" VerticalAlignment="Top"
                             Style="{StaticResource PrimaryButtonStyle}" IsEnabled="{Binding CanPrimary}"
                             AutomationProperties.Name="{Binding PrimaryAutomationName}" Click="OnPrimaryClick" />
@@ -157,24 +160,27 @@
                     <Button x:Name="CloseEditorButton" Content="Cerrar el editor" Margin="0,12,8,4" Padding="12,4" VerticalAlignment="Top"
                             Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanEdit}"
                             AutomationProperties.Name="Cerrar el editor de esta cama" Click="OnCloseEditorClick" />
-                    <!-- «Más» (UT-04): its entries open under the button, inline (no popup, O-D of the smoke). -->
+                    <!-- «Más» (UT-04): its entries open inline (no popup, O-D of the smoke), in a row under the head (T6 ui). -->
                     <StackPanel x:Name="MoreBlock" Margin="0,12,8,4" VerticalAlignment="Top">
                         <Button x:Name="MoreButton" Content="Más" Padding="12,4" HorizontalAlignment="Left" Style="{StaticResource SecondaryButtonStyle}"
                                 AutomationProperties.Name="Más acciones de la cama" AutomationProperties.ItemStatus="{Binding MoreItemStatus}"
                                 Click="OnMoreClick" />
-                        <Border x:Name="MorePanel" Margin="0,4,0,0" Padding="6" BorderThickness="1" CornerRadius="4" MaxWidth="280"
-                                BorderBrush="{DynamicResource ShellBorderBrush}" Background="{DynamicResource ShellSurfaceBrush}"
-                                Visibility="{Binding IsMoreOpen, Converter={StaticResource FlagToVisibility}}">
-                            <StackPanel>
-                                <Button x:Name="SaveToLibraryButton" Content="Guardar en biblioteca…" HorizontalContentAlignment="Left" Padding="10,3"
-                                        Style="{StaticResource SecondaryButtonStyle}" AutomationProperties.Name="Guardar la cama en la biblioteca de diseños"
-                                        Click="OnSaveToLibraryClick" />
-                                <TextBlock x:Name="SaveToLibraryBlockedText" Text="{Binding SaveToLibraryBlockedText}" Style="{StaticResource OptionalText}"
-                                           Margin="0,4,0,0" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
-                            </StackPanel>
-                        </Border>
                     </StackPanel>
+                    </WrapPanel>
                 </WrapPanel>
+                <!-- T6 ui (correction 2 of the review): the entries of «Más» are a row of their own under the head, as the question of
+                     «Cerrar el editor»: open, they no longer move the group of the buttons to another line. -->
+                <Border x:Name="MorePanel" HorizontalAlignment="Left" Margin="0,4,0,0" Padding="6" BorderThickness="1" CornerRadius="4" MaxWidth="280"
+                        BorderBrush="{DynamicResource ShellBorderBrush}" Background="{DynamicResource ShellSurfaceBrush}"
+                        Visibility="{Binding IsMoreOpen, Converter={StaticResource FlagToVisibility}}">
+                    <StackPanel>
+                        <Button x:Name="SaveToLibraryButton" Content="Guardar en biblioteca…" HorizontalContentAlignment="Left" Padding="10,3"
+                                Style="{StaticResource SecondaryButtonStyle}" AutomationProperties.Name="Guardar la cama en la biblioteca de diseños"
+                                Click="OnSaveToLibraryClick" />
+                        <TextBlock x:Name="SaveToLibraryBlockedText" Text="{Binding SaveToLibraryBlockedText}" Style="{StaticResource OptionalText}"
+                                   Margin="0,4,0,0" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                    </StackPanel>
+                </Border>
                 <TextBlock x:Name="SubLineText" Text="{Binding SubLine}" TextWrapping="Wrap" Margin="0,2,0,0" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
                 <!-- «Cerrar el editor» with changes: the inline question, with what is lost. -->
                 <Border x:Name="CloseConfirmPanel" Margin="0,6,0,0" Padding="8" BorderThickness="1"

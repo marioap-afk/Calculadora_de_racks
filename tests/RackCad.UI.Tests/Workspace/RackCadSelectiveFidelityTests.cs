@@ -527,6 +527,73 @@ namespace RackCad.UI.Tests
             Assert.Equal("Fondo 2", Assert.Single(two.PostHeights).Title);
         }
 
+        // T6 ui (point 6; construido.md, risks of the polish of the entrega 1): with two tarimas in equal parts, «Distinta del resto» marked
+        // half of the cells. The «usual» content was the first of the most common ones, also when another one was as common, so one half was
+        // «distinct» from a rest that was the other half. A cell is distinct only from a content that most cells of the view have.
+        [Theory]
+        [InlineData(2)] // two tarimas, half and half
+        [InlineData(3)] // three tarimas, a third each: none is had by most cells
+        public void WithoutAContentThatMostCellsHaveNoCellIsDistinctFromTheRest(int tarimas)
+        {
+            var design = Structure();
+            design.Bays.Clear();
+            var sizes = new[] { (40.0, 60.0), (44.0, 55.0), (48.0, 50.0) };
+            for (var t = 0; t < tarimas; t++) design.Bays.Add(Bay(2, frente: sizes[t].Item1, alto: sizes[t].Item2));
+            design.PostPeraltes.Clear();
+            for (var post = 0; post <= tarimas; post++) design.PostPeraltes.Add(0.0);
+            var vm = SelectiveEditor(design);
+
+            var cells = vm.Rows.SelectMany(r => r.Cells).ToList();
+            Assert.Equal(2 * tarimas, cells.Count);
+            Assert.DoesNotContain(cells, c => c.IsModified);
+            Assert.DoesNotContain(cells, c => c.IsDistinct);
+            Assert.DoesNotContain(cells, c => c.AccessibleText.Contains("distinta del resto", StringComparison.Ordinal));
+        }
+
+        // T6 ui (S8): three tarimas in 3, 2 and 2 cells: none is had by more than half of the cells, so no cell is marked.
+        [Fact]
+        public void ThreeTwoAndTwoCellsHaveNoMajorityAndNoCellIsDistinct()
+        {
+            var design = Structure();
+            design.Bays.Clear();
+            design.Bays.Add(Bay(3, frente: 40.0, alto: 60.0));
+            design.Bays.Add(Bay(2, frente: 44.0, alto: 55.0));
+            design.Bays.Add(Bay(2, frente: 48.0, alto: 50.0));
+            design.PostPeraltes.Clear();
+            for (var post = 0; post < 4; post++) design.PostPeraltes.Add(0.0);
+            var vm = SelectiveEditor(design);
+
+            var cells = vm.Rows.SelectMany(r => r.Cells).Where(c => c.Exists).ToList();
+            Assert.Equal(7, cells.Count);
+            Assert.DoesNotContain(cells, c => c.IsDistinct);
+        }
+
+        // T6 ui, correction 4 of the review (sobre 331f9f18): in «Todos los fondos» the majority was counted over the cells of every fondo
+        // (fondo, front, level), but the matrix marks its cell when ANY fondo differs. Fondo 1 with 4 × 2 cells of A and fondo 2 with 3 × 2 of
+        // B: A was the majority (8 of 14) and 6 of the 8 cells of the matrix were marked. The majority is counted over the cells of the
+        // matrix, each with what it shows (the contents of its fondos): the 6 cells that hold A and B are the rest, and only F4 (A alone) is
+        // distinct.
+        [Fact]
+        public void InEveryFondoTheMajorityIsCountedOverTheCellsOfTheMatrix()
+        {
+            var design = Structure();
+            design.Bays.Clear();
+            for (var front = 0; front < 4; front++) design.Bays.Add(Bay(2, frente: 40.0, alto: 60.0));
+            design.PostPeraltes.Clear();
+            for (var post = 0; post < 5; post++) design.PostPeraltes.Add(0.0);
+            design.DepthCount = 2;
+            design.SeparatorLengths.Add(10.0);
+            design.ExtraFondoBays.Add(Enumerable.Range(0, 3).Select(_ => Bay(2, frente: 44.0, alto: 55.0)).ToList());
+            design.ExtraFondoDepths.Add(40.0);
+            design.CabeceraFondoOverrides.Add(0.0);
+            var vm = SelectiveEditor(design);
+            vm.FondoScopeIndex = 0; // «Todos los fondos»
+
+            var cells = vm.Rows.SelectMany(r => r.Cells).Where(c => c.Exists).ToList();
+            Assert.Equal(8, cells.Count);
+            Assert.Equal(new[] { (3, 0), (3, 1) }, cells.Where(c => c.IsDistinct).Select(c => (c.FrontIndex, c.LevelIndex)).OrderBy(p => p).ToArray());
+        }
+
         [Fact]
         public void TheCellsCarryTheMarksOfTheLegendModifiedDistinctAndManual()
         {

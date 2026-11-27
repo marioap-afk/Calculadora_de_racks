@@ -109,6 +109,21 @@ namespace RackCad.UI.VentanaRackCad
             + " borradores sin insertar en este dibujo: inserta o descarta alguno antes de empezar otro.";
 
         /// <summary>
+        /// T6 ui (point 10, decided by the Owner on 2026-11-27): what the editor of a draft says after «Descartar», in every system. The draft
+        /// stays and goes back to how it opened: the defaults or the design of the library.
+        /// </summary>
+        public const string DiscardedText = "Cambios descartados: el borrador vuelve a como se abrió.";
+
+        /// <summary>
+        /// T6 ui (correction 1 of the review): the same for a copy of «Duplicar», which opens over the base of its original with the design of
+        /// its original as a change (a copy of a modified draft is born «Modificado»), so «Descartar» takes it to how its ORIGINAL opened.
+        /// </summary>
+        public const string CopyDiscardedText = "Cambios descartados: la copia vuelve a como se abrió su original.";
+
+        /// <summary>The text after «Descartar» of a draft, or of a copy (T6 ui).</summary>
+        public static string DiscardedTextOf(bool copy) => copy ? CopyDiscardedText : DiscardedText;
+
+        /// <summary>
         /// The number of a new draft of a drawing: the lowest one that no draft of that drawing uses now (supuesto ND-02), so a drawing
         /// with «Borrador 1» and «Borrador 3» gets «Borrador 2», and one with none starts again at «Borrador 1».
         /// </summary>

@@ -106,8 +106,19 @@ namespace RackCad.UI.VentanaRackCad
 
         private void OnMissingGoClick(object sender, RoutedEventArgs e) => Contained(() =>
         {
-            if ((sender as FrameworkElement)?.DataContext is CantileverMissingItem item) _viewModel.GoTo(item);
+            if ((sender as FrameworkElement)?.DataContext is not CantileverMissingItem item) return;
+            _viewModel.GoTo(item);
+            if (_viewModel.LevelsOpen && item.Component == RackCad.Application.VentanaRackCad.CantileverDraftEditor.ComponentLevels)
+                BringLevelsIntoView();
         });
+
+        // T6 ui (O-4 a): the group «Niveles» is at the end of «Línea», out of view in the palette. «Ir a» brings it into view once the tab
+        // and the open group are laid out (the content of a tab joins the tree when the tab is selected).
+        private void BringLevelsIntoView()
+        {
+            Tabs.UpdateLayout();
+            LevelsExpander.BringIntoView();
+        }
 
         // The name just typed goes to the draft before a write, as with «Actualizar».
         private void CommitName() => NameBox.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();

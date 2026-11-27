@@ -2,6 +2,7 @@ using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.Diagnostics;
 using RackCad.Application.Persistence;
 using RackCad.Application.VentanaRackCad;
+using RackCad.Application.Views.Placement; // T6 ui (O-3): RackJigPrompt
 using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace RackCad.Plugin.VentanaRackCad
@@ -143,6 +144,7 @@ namespace RackCad.Plugin.VentanaRackCad
         [CommandMethod("RACKDINAMICOINSERTAR")]
         public void InsertViews()
         {
+            using var jigPrompt = RackJigPrompt.Scope(RackJigPrompt.DynamicView); // T6 ui (O-3): the jig names the view of the Dinámico
             var door = RackCadRackDoorPort.Current;
             var document = AcApplication.DocumentManager.MdiActiveDocument;
             if (document == null) return;
@@ -402,6 +404,7 @@ namespace RackCad.Plugin.VentanaRackCad
         [CommandMethod("RACKSELECTIVOINSERTAR")]
         public void InsertSelectiveViews()
         {
+            using var jigPrompt = RackJigPrompt.Scope(RackJigPrompt.SelectiveView); // T6 ui (O-3): the jig names the view of the Selectivo
             var door = RackCadRackDoorPort.Current;
             var document = AcApplication.DocumentManager.MdiActiveDocument;
             if (document == null) return;

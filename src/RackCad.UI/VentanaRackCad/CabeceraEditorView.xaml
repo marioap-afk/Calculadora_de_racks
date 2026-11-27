@@ -125,6 +125,9 @@
                             BorderBrush="{DynamicResource ShellBorderBrush}">
                         <TextBlock x:Name="StandaloneStatusText" Text="{Binding StatusText}" FontWeight="SemiBold" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
                     </Border>
+                    <!-- T6 ui (correction 6 of the review): the buttons are ONE group, beside the name while they fit, or together on the next
+                         line («Cerrar el editor» went alone to a second line at about 700 px). -->
+                    <WrapPanel x:Name="StandaloneHeadButtons">
                     <Button x:Name="UpdateButton" Content="Actualizar" Margin="0,12,8,4" Padding="14,4" VerticalAlignment="Top"
                             Style="{StaticResource PrimaryButtonStyle}" IsEnabled="{Binding CanUpdate}"
                             AutomationProperties.Name="Actualizar el dibujo con la cabecera" Click="OnUpdateClick" />
@@ -134,6 +137,7 @@
                             AutomationProperties.Name="Restaurar el estándar de la cabecera" Click="OnRestoreClick" />
                     <Button x:Name="CloseEditorButton" Content="Cerrar el editor" Style="{StaticResource HeadButton}" IsEnabled="{Binding CanClose}"
                             AutomationProperties.Name="Cerrar el editor de esta cabecera" Click="OnCloseEditorClick" />
+                    </WrapPanel>
                 </WrapPanel>
                 <!-- The cabecera of a post inside the editor of its rack: back to the rack, apply to its draft, copy to other posts. -->
                 <WrapPanel x:Name="EmbeddedHead" Visibility="{Binding IsEmbedded, Converter={StaticResource FlagToVisibility}}">
@@ -145,6 +149,7 @@
                             BorderBrush="{DynamicResource ShellBorderBrush}">
                         <TextBlock x:Name="EmbeddedStatusText" Text="{Binding StatusText}" FontWeight="SemiBold" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
                     </Border>
+                    <WrapPanel x:Name="EmbeddedHeadButtons"> <!-- T6 ui (correction 6): the buttons of the cabecera of a post, one group too -->
                     <Button x:Name="ApplyButton" Content="Aplicar al borrador" Margin="0,12,8,4" Padding="14,4" VerticalAlignment="Top"
                             Style="{StaticResource PrimaryButtonStyle}" IsEnabled="{Binding CanApply}"
                             AutomationProperties.Name="Aplicar la cabecera al borrador del rack" Click="OnApplyClick" />
@@ -154,6 +159,7 @@
                             AutomationProperties.Name="Descartar los cambios de la cabecera" Click="OnDiscardClick" />
                     <Button x:Name="EmbeddedRestoreButton" Content="Restaurar estándar…" Style="{StaticResource HeadButton}" IsEnabled="{Binding CanRestore}"
                             AutomationProperties.Name="Restaurar el estándar de la cabecera del poste" Click="OnRestoreClick" />
+                    </WrapPanel>
                 </WrapPanel>
                 <!-- Correction 2 of the review: why «Copiar a otros postes…» is not offered (a calculated cabecera with no change). -->
                 <TextBlock x:Name="CopyBlockedText" Text="{Binding CopyBlockedText}" Style="{StaticResource OptionalText}"
