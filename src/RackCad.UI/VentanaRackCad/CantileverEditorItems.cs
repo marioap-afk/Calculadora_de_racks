@@ -369,12 +369,18 @@ namespace RackCad.UI.VentanaRackCad
         private string _to;
         private bool _braced;
 
-        internal CantileverSegmentRowItem(int index, string from, string to, bool braced, Action changed)
+        // Correction 1 of the review: the exact elevations the row was made with, kept while its text is the one shown for them.
+        private readonly double? _fromValue;
+        private readonly double? _toValue;
+
+        internal CantileverSegmentRowItem(int index, CantileverSegmentRow row, Action changed)
         {
             Index = index;
-            _from = from ?? string.Empty;
-            _to = to ?? string.Empty;
-            _braced = braced;
+            _from = row.From ?? string.Empty;
+            _to = row.To ?? string.Empty;
+            _braced = row.Braced;
+            _fromValue = row.FromValue;
+            _toValue = row.ToValue;
             _changed = changed;
         }
 
@@ -428,7 +434,7 @@ namespace RackCad.UI.VentanaRackCad
 
         public string RemoveName => "Quitar el tramo " + Number;
 
-        internal CantileverSegmentRow ToRow() => new(_from, _to, _braced);
+        internal CantileverSegmentRow ToRow() => new(_from, _to, _braced, _fromValue, _toValue);
     }
 
     /// <summary>One tramo of the diagram of the sequence, top to bottom.</summary>

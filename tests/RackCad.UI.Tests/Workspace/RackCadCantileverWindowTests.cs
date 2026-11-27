@@ -732,6 +732,157 @@ namespace RackCad.UI.Tests
             Assert.True(other.IsDirty);
             Assert.True(other.Draft.IsResolved);
             Assert.Equal(2, rig.Window.Drafts.Count);
+            Assert.NotEqual(editor.Draft.Design.Id, other.Draft.Design.Id); // correction 5: an identity of its own (DuplicateWithNewIdentity)
+            Assert.Null(other.Draft.Design.Name);
+
+            // The copy of a draft with no change (a design of the library) is clean, as its original.
+            var design = LineOfTheDrawing();
+            Assert.True(rig.Window.OpenDesignAsNewRack(RackProject.ForCantilever(design), "Linea A"));
+            var library = rig.Window.NewCantileverEditor!;
+            Assert.False(library.IsDirty);
+            var item = rig.Window.Drafts.Single(d => d.Title == "Linea A");
+            Assert.True(rig.Window.DuplicateDraft(item).Opened);
+            var copyOfLibrary = rig.Window.NewCantileverEditor!;
+            Assert.NotSame(library, copyOfLibrary);
+            Assert.False(copyOfLibrary.IsDirty);
+            Assert.NotEqual(design.Id, copyOfLibrary.Draft.Design.Id);
+        }
+
+        // ------------------------------------------------------------------ corrections of the review
+
+        // Correction 4: the rule of RACKEDITAR: the editor shows and writes the name of the envelope; the inner name is not touched.
+        [Fact]
+        public void TheEditorShowsAndWritesTheNameOfTheEnvelopeAndLeavesTheInnerNameAlone()
+        {
+            var rig = new Rig();
+            rig.Window.OpenRack("CAN-1");
+            rig.Window.EditCantileverHere();
+            var inner = LineOfTheDrawing();
+            inner.Name = null;
+            rig.Door.AnswerLastRead("Cantilever 1", inner);
+            var editor = rig.Window.ActiveCantileverEditor!;
+            Assert.Equal("Cantilever 1", editor.Name);
+            Assert.Null(editor.Draft.Design.Name);
+            Assert.False(editor.IsDirty);
+
+            Write(editor.StructureItems, "Spacing", "120");
+            editor.RequestWrite();
+            var write = rig.Door.CantileverWrites.Last();
+            Assert.Equal("Cantilever 1", write.Name);
+            Assert.Null(write.Design.Name); // a design with no name is not given one
+            rig.Door.AnswerLastWrite(true, "AutoCAD redibujó 3 vistas del rack con el borrador.");
+            Assert.False(editor.IsDirty);
+
+            // An inner name that differs from the envelope: the editor shows the one of the envelope, as RACKEDITAR.
+            var other = new Rig();
+            other.Window.OpenRack("CAN-1");
+            other.Window.EditCantileverHere();
+            var named = LineOfTheDrawing();
+            named.Name = "Interno";
+            other.Door.AnswerLastRead("Cantilever 1", named);
+            Assert.Equal("Cantilever 1", other.Window.ActiveCantileverEditor!.Name);
+            Assert.Equal("Interno", other.Window.ActiveCantileverEditor!.Draft.Design.Name);
+        }
+
+        // Correction 1, in the editor: «Empezar desde la regla» with a clear of 20 in (a column of 106.666… in), «Con tensores» changed and
+        // «Aplicar secuencia»: the line still resolves, with the exact elevations of the rule.
+        [Fact]
+        public void ApplyingTheSequenceOfTheRuleInTheTableKeepsTheLineResolved()
+        {
+            var rig = new Rig();
+            var editor = rig.OpenEditor();
+            Write(editor.LevelItems, "ClearHeight", "20");
+            Assert.False(editor.HasMissing);
+            editor.LayoutChoice.Choose("Advanced");
+            Assert.True(editor.IsAdvanced);
+            var exact = editor.Draft.SavedSegments.Select(s => (s.StartElevation, s.EndElevation)).ToList();
+
+            editor.SegmentRows[0].Braced = !editor.SegmentRows[0].Braced;
+            editor.ApplySegments();
+            Assert.Equal(string.Empty, editor.SegmentError);
+            Assert.False(editor.HasMissing, string.Join(" | ", editor.MissingItems.Select(m => m.Message)));
+            Assert.Equal(exact, editor.Draft.SavedSegments.Select(s => (s.StartElevation, s.EndElevation)).ToList());
+
+            // «Dividir» halves the exact tramo, and the halves still meet the next tramo exactly.
+            editor.SplitSegment(editor.SegmentRows[editor.SegmentRows.Count - 1]);
+            editor.ApplySegments();
+            Assert.False(editor.HasMissing, string.Join(" | ", editor.MissingItems.Select(m => m.Message)));
+            Assert.Equal(exact[exact.Count - 1].EndElevation, editor.Draft.SavedSegments.Last().EndElevation);
+        }
+
+        // Correction 3: the names of UI Automation of every field and button of each tab and panel are unique (and none is empty).
+        [Fact]
+        public void EveryFieldAndButtonOfEachTabAndPanelHasAUniqueName()
+        {
+            StaTestRunner.Run(() => WithBindingErrors(errors =>
+            {
+                var rig = new Rig();
+                var editor = rig.OpenEditor();
+                var view = new CantileverEditorView(editor);
+                Lay(view);
+
+                void Check(string where)
+                {
+                    foreach (var expander in Descendants<Expander>(view)) expander.IsExpanded = true;
+                    Lay(view);
+                    var elements = Descendants<Control>(view)
+                        .Where(c => c is TextBox || c is CheckBox || c is ComboBox || c is Button)
+                        .Where(c => Shown(c, view))
+                        .Where(c => !IsInside<RackPropertiesTabView>(c))
+                        .ToList();
+                    var names = elements.Select(Name).ToList();
+                    Assert.DoesNotContain(names, string.IsNullOrWhiteSpace);
+                    var repeated = names.GroupBy(n => n).Where(g => g.Count() > 1).Select(g => g.Key).ToList();
+                    Assert.True(repeated.Count == 0, where + ": " + string.Join(" | ", repeated));
+                }
+
+                foreach (var tab in view.Tabs.Items.OfType<TabItem>().Where(t => t != view.RackPropertiesTabItem))
+                {
+                    view.Tabs.SelectedItem = tab;
+                    Lay(view);
+                    if (tab == view.ComponentsTab)
+                    {
+                        foreach (var component in editor.ComponentTabs.Select(t => t.Key).ToList())
+                        {
+                            editor.SelectComponent(component);
+                            Check("Componentes › " + component);
+                        }
+                    }
+                    else
+                    {
+                        Check(tab.Header?.ToString() ?? string.Empty);
+                    }
+                }
+
+                // The inspector: the two thicknesses are told apart (they were two «Espesor»).
+                view.Tabs.SelectedItem = view.ArmsTab;
+                Lay(view);
+                var boxes = Descendants<TextBox>(view.InspectorPanel).Select(Name).ToList();
+                Assert.Contains("Placa de montaje: espesor", boxes);
+                Assert.Contains("Placa de extremo: espesor", boxes);
+                Assert.Empty(errors.Messages);
+            }));
+        }
+
+        // Whether the element and every element above it is visible (Visibility, not IsVisible: there is no window in the test).
+        private static bool Shown(DependencyObject element, DependencyObject root)
+        {
+            for (var current = element; current != null && current != root; current = System.Windows.Media.VisualTreeHelper.GetParent(current))
+            {
+                if (current is UIElement ui && ui.Visibility != Visibility.Visible) return false;
+            }
+
+            return true;
+        }
+
+        private static bool IsInside<T>(DependencyObject element) where T : DependencyObject
+        {
+            for (var current = System.Windows.Media.VisualTreeHelper.GetParent(element); current != null; current = System.Windows.Media.VisualTreeHelper.GetParent(current))
+            {
+                if (current is T) return true;
+            }
+
+            return false;
         }
 
         // ------------------------------------------------------------------ the views (real WPF)

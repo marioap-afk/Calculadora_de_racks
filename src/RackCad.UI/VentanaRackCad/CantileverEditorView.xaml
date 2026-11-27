@@ -246,8 +246,10 @@
                                 BorderBrush="{DynamicResource ShellBorderBrush}" Background="{DynamicResource ShellSurfaceBrush}"
                                 Visibility="{Binding IsMoreOpen, Converter={StaticResource FlagToVisibility}}">
                             <StackPanel>
+                                <!-- Correction 6 of the review: an entry of «Más» reads from the left (the row template; SecondaryButtonStyle centers). -->
                                 <Button x:Name="SaveToLibraryButton" Content="Guardar en biblioteca…" HorizontalContentAlignment="Left" Padding="10,3"
-                                        Style="{StaticResource SecondaryButtonStyle}" AutomationProperties.Name="Guardar la línea en la biblioteca de diseños"
+                                        Style="{StaticResource RowButton}" BorderBrush="{DynamicResource ShellBorderBrush}"
+                                        AutomationProperties.Name="Guardar la línea en la biblioteca de diseños"
                                         Click="OnSaveToLibraryClick" />
                                 <TextBlock x:Name="SaveToLibraryBlockedText" Text="{Binding SaveToLibraryBlockedText}" Style="{StaticResource OptionalText}"
                                            Margin="0,4,0,0" Foreground="{DynamicResource ShellTextSecondaryBrush}" />

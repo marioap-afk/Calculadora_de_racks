@@ -308,14 +308,14 @@ namespace RackCad.UI.VentanaRackCad
             });
             Sync(InspectorPlateItems, new object[]
             {
-                ArmField("insp.plate", "Espesor", "in", selection, CantileverArmField.PlateThickness, null, ro || empty),
+                ArmField("insp.plate", "Placa de montaje: espesor", "in", selection, CantileverArmField.PlateThickness, null, ro || empty),
                 ArmField("insp.punches", "Troqueles verticales", "", selection, CantileverArmField.VerticalPunches, "Mín. 2. Al cambiar la sección se vuelve a sugerir.", ro || empty),
                 ArmField("insp.margin", "Margen vertical", "in", selection, CantileverArmField.VerticalMargin, "Por omisión, 2 in.", ro || empty),
             });
             Sync(InspectorEndItems, new object[]
             {
-                ArmChoice("insp.end", "Tipo", selection, CantileverArmField.EndPlate, EndOptions, null, ro || empty),
-                ArmField("insp.endT", "Espesor", "in", selection, CantileverArmField.EndPlateThickness, none ? "Sin placa de extremo." : null, ro || none),
+                ArmChoice("insp.end", "Placa de extremo: tipo", selection, CantileverArmField.EndPlate, EndOptions, null, ro || empty),
+                ArmField("insp.endT", "Placa de extremo: espesor", "in", selection, CantileverArmField.EndPlateThickness, none ? "Sin placa de extremo." : null, ro || none),
                 ArmField("insp.stop", "Altura extra de tope", "in", selection, CantileverArmField.ExtraStopHeight, allStop ? null : "Solo con «Placa con tope».", ro || !allStop),
             });
             var scopes = new List<(string Value, string Label)>

@@ -80,7 +80,12 @@ namespace RackCad.Application.VentanaRackCad
     public sealed record CantileverRestoreBox(string Key, string Label, int Count, IReadOnlyList<string> Losses);
 
     /// <summary>One row of the advanced sequence as the table writes it: the elevations as text, and whether the panel is braced.</summary>
-    public sealed record CantileverSegmentRow(string From, string To, bool Braced);
+    /// <remarks>
+    /// Correction 1 of the review: a row read from the design keeps its exact elevations (<paramref name="FromValue"/>,
+    /// <paramref name="ToValue"/>), and «Aplicar secuencia» uses them while the text is still the one shown for them (<c>Keep</c> of the
+    /// classic editor). Otherwise a sequence of the rule whose top is 106.666… in would be written as 106.6667 and pass the top of the column.
+    /// </remarks>
+    public sealed record CantileverSegmentRow(string From, string To, bool Braced, double? FromValue = null, double? ToValue = null);
 
     /// <summary>
     /// The copies «Actualizar», «Insertar vista…» and «Insertar en el dibujo…» hand to AutoCAD: a deep copy of the design and the line resolved
@@ -131,6 +136,8 @@ namespace RackCad.Application.VentanaRackCad
         // The base as a design too: the store refuses to read a line without its sections (RackDesignValidation.IsUsableCantilever), and a
         // new line has none, so «Descartar» goes back to this copy and never reads the JSON.
         private CantileverLineDesign _baseline;
+        private string _name;
+        private string _baselineName;
 
         public CantileverDraftEditor(StructuralSectionCatalog catalogue)
         {
@@ -156,7 +163,12 @@ namespace RackCad.Application.VentanaRackCad
         /// <summary>The line of the draft resolves: it can be written in the drawing.</summary>
         public bool IsResolved => _computation != null && _computation.IsValid;
 
-        public string Name => string.IsNullOrWhiteSpace(_design.Name) ? null : _design.Name.Trim();
+        /// <summary>
+        /// The name of the line as RACKEDITAR shows and writes it (correction 4 of the review): the one of the envelope
+        /// (<c>LoadExisting(…, embed.Name, …)</c>), the identity of the session, not the inner name of the design. Renaming writes both, as
+        /// the classic editor does (<c>Name_Changed</c>); a design with no name is not given one otherwise.
+        /// </summary>
+        public string Name => _name;
 
         /// <summary>The JSON of the draft, as the inner design of the block (a <see cref="RackProject"/> of Cantilever).</summary>
         public string DesignJson => Serialize(_design);
@@ -164,7 +176,7 @@ namespace RackCad.Application.VentanaRackCad
         /// <summary>The base of «Modificado»: what was read from the drawing or last written; the defaults (or the library) for a new line.</summary>
         public string BaselineJson => _baselineJson;
 
-        public bool IsDirty => !string.Equals(DesignJson, _baselineJson, StringComparison.Ordinal);
+        public bool IsDirty => !string.Equals(DesignJson, _baselineJson, StringComparison.Ordinal) || !string.Equals(_name, _baselineName, StringComparison.Ordinal);
 
         /// <summary>A copy of the base of «Modificado» (to mark the cells whose arm changed, and for «Duplicar»).</summary>
         public CantileverLineDesign BaselineDesign => _baseline.DeepCopy();
@@ -172,15 +184,18 @@ namespace RackCad.Application.VentanaRackCad
         /// <summary>What the last write said that is not an error (a base the column could not follow), or null.</summary>
         public string Notice { get; private set; }
 
-        /// <summary>Loads a design (a copy: the caller keeps its own) with its name, as the base of «Modificado».</summary>
+        /// <summary>
+        /// Loads a design (a copy: the caller keeps its own) as the base of «Modificado», with the name of the line (the one of the envelope for a
+        /// line of the drawing, of the entry for a design of the library). The inner name of the design is not touched.
+        /// </summary>
         public void Load(CantileverLineDesign design, string name)
         {
-            var copy = (design ?? new CantileverLineDesign()).DeepCopy();
-            if (name != null) copy.Name = string.IsNullOrWhiteSpace(name) ? null : name.Trim();
-            _design = copy;
+            _design = (design ?? new CantileverLineDesign()).DeepCopy();
+            _name = Trimmed(name);
             _computation = Build(_design);
             _baselineJson = DesignJson;
             _baseline = _design.DeepCopy();
+            _baselineName = _name;
             Notice = null;
         }
 
@@ -201,6 +216,7 @@ namespace RackCad.Application.VentanaRackCad
         public void Discard()
         {
             _design = _baseline.DeepCopy();
+            _name = _baselineName;
             _computation = Build(_design);
             Notice = null;
         }
@@ -221,6 +237,7 @@ namespace RackCad.Application.VentanaRackCad
             }
 
             _baseline = (sent ?? _design).DeepCopy();
+            _baselineName = _name;
         }
 
         /// <summary>
@@ -244,11 +261,20 @@ namespace RackCad.Application.VentanaRackCad
 
         // ------------------------------------------------------------------ the name
 
-        public string SetName(string name) => Edit(next =>
+        /// <summary>Renames the line: the name of the line and the inner name of the design, as <c>Name_Changed</c> of the classic editor.</summary>
+        public string SetName(string name)
         {
-            next.Name = string.IsNullOrWhiteSpace(name) ? null : name.Trim();
-            return null;
-        });
+            var next = Trimmed(name);
+            var refused = Edit(d =>
+            {
+                d.Name = next;
+                return null;
+            });
+            if (refused == null) _name = next;
+            return refused;
+        }
+
+        private static string Trimmed(string name) => string.IsNullOrWhiteSpace(name) ? null : name.Trim();
 
         // ------------------------------------------------------------------ the values of the line, of its pieces and of its bracing
 
@@ -334,6 +360,8 @@ namespace RackCad.Application.VentanaRackCad
                     return NonNegative(text, "El claro entre niveles", (d, v) => Topology(d).RequestedClearHeight = v);
                 case CantileverLineField.TopClearFactor:
                     if (!TryNumber(text, out var factor)) return "El factor de claro superior debe ser un número, de 1/3 (0.3333) o más.";
+                    // Correction 2 of the review: what the field shows for 1/3 («0.3333») is 1/3, stored exact.
+                    if (string.Equals(Num(factor), Num(CantileverStationDefaults.TopClearFactor), StringComparison.Ordinal)) factor = CantileverStationDefaults.TopClearFactor;
                     if (factor < CantileverStationDefaults.TopClearFactor - 1e-9) return "El factor de claro superior no puede ser menor que 1/3 (0.3333).";
                     return Edit(d => { Topology(d).TopClearFactor = factor; return null; });
                 case CantileverLineField.PlantaArms:
@@ -540,7 +568,7 @@ namespace RackCad.Application.VentanaRackCad
             var segments = new List<CantileverPanelSegmentDesign>(rows.Count);
             for (var i = 0; i < rows.Count; i++)
             {
-                if (!TryNumber(rows[i].From, out var from) || !TryNumber(rows[i].To, out var to) || from < 0.0)
+                if (!Keep(rows[i].From, rows[i].FromValue, out var from) || !Keep(rows[i].To, rows[i].ToValue, out var to) || from < 0.0)
                     return "Tramo " + Int(i + 1) + ": escribe «Desde» y «Hasta» en pulgadas, de 0 o más.";
                 if (!(to > from)) return "Tramo " + Int(i + 1) + ": «Hasta» tiene que estar por encima de «Desde».";
                 segments.Add(new CantileverPanelSegmentDesign
@@ -562,7 +590,23 @@ namespace RackCad.Application.VentanaRackCad
         /// <summary>The tramos of the design as rows of the table.</summary>
         public static IReadOnlyList<CantileverSegmentRow> RowsOf(IEnumerable<CantileverPanelSegmentDesign> segments) =>
             (segments ?? Enumerable.Empty<CantileverPanelSegmentDesign>()).Where(s => s != null)
-            .Select(s => new CantileverSegmentRow(Num(s.StartElevation), Num(s.EndElevation), s.BracingMode != CantileverPanelBracingMode.None)).ToList();
+            .Select(s => new CantileverSegmentRow(Num(s.StartElevation), Num(s.EndElevation), s.BracingMode != CantileverPanelBracingMode.None,
+                s.StartElevation, s.EndElevation)).ToList();
+
+        /// <summary>
+        /// <c>Keep</c> of the classic editor: the exact value a row was read with, while its text is still the one shown for it; otherwise the
+        /// number the text says.
+        /// </summary>
+        public static bool Keep(string text, double? original, out double value)
+        {
+            if (original.HasValue && string.Equals((text ?? string.Empty).Trim(), Num(original.Value), StringComparison.Ordinal))
+            {
+                value = original.Value;
+                return true;
+            }
+
+            return TryNumber(text, out value);
+        }
 
         // ------------------------------------------------------------------ «Restaurar layout…» (CT-07)
 

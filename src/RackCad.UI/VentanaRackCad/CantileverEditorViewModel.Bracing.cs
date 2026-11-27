@@ -206,9 +206,9 @@ namespace RackCad.UI.VentanaRackCad
         {
             if (!CanEditSegments) return;
             var rows = SegmentRows.Select(r => r.ToRow()).ToList();
-            var top = rows.Count == 0 ? 0.0 : UiSupport.TryNum(rows[rows.Count - 1].To, out var t) ? t : 0.0;
+            var top = rows.Count == 0 ? 0.0 : CantileverDraftEditor.Keep(rows[rows.Count - 1].To, rows[rows.Count - 1].ToValue, out var t) ? t : 0.0;
             var height = _draft.Design.Bracing?.BracedPanelHeight ?? CantileverLineDefaults.BracedPanelHeight;
-            rows.Add(new CantileverSegmentRow(CantileverDraftEditor.Num(top), CantileverDraftEditor.Num(top + height), true));
+            rows.Add(new CantileverSegmentRow(CantileverDraftEditor.Num(top), CantileverDraftEditor.Num(top + height), true, top, top + height));
             SetRows(rows);
         }
 
@@ -219,15 +219,15 @@ namespace RackCad.UI.VentanaRackCad
             var rows = SegmentRows.Select(r => r.ToRow()).ToList();
             var i = row.Index;
             if (i < 0 || i >= rows.Count) return;
-            if (!UiSupport.TryNum(rows[i].From, out var a) || !UiSupport.TryNum(rows[i].To, out var b) || !(b > a))
+            if (!CantileverDraftEditor.Keep(rows[i].From, rows[i].FromValue, out var a) || !CantileverDraftEditor.Keep(rows[i].To, rows[i].ToValue, out var b) || !(b > a))
             {
                 SetSegmentError("Tramo " + row.Number + ": escribe antes «Desde» y «Hasta» para dividirlo.");
                 return;
             }
 
-            var mid = CantileverDraftEditor.Num(a + (b - a) / 2.0);
-            rows[i] = new CantileverSegmentRow(rows[i].From, mid, rows[i].Braced);
-            rows.Insert(i + 1, new CantileverSegmentRow(mid, CantileverDraftEditor.Num(b), rows[i].Braced));
+            var mid = a + (b - a) / 2.0;
+            rows[i] = new CantileverSegmentRow(CantileverDraftEditor.Num(a), CantileverDraftEditor.Num(mid), rows[i].Braced, a, mid);
+            rows.Insert(i + 1, new CantileverSegmentRow(CantileverDraftEditor.Num(mid), CantileverDraftEditor.Num(b), rows[i].Braced, mid, b));
             SetRows(rows);
         }
 
@@ -256,7 +256,7 @@ namespace RackCad.UI.VentanaRackCad
         private void FillRows(IReadOnlyList<CantileverSegmentRow> rows)
         {
             SegmentRows.Clear();
-            for (var i = 0; i < rows.Count; i++) SegmentRows.Add(new CantileverSegmentRowItem(i, rows[i].From, rows[i].To, rows[i].Braced, OnRowsChanged));
+            for (var i = 0; i < rows.Count; i++) SegmentRows.Add(new CantileverSegmentRowItem(i, rows[i], OnRowsChanged));
         }
 
         // A row was written: the table differs from the tramos of the draft until it is applied or discarded.

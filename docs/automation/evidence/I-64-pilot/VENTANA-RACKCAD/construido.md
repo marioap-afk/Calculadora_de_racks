@@ -3340,7 +3340,7 @@ clásico: RCT, RACKCANTILEVER, RACKEDITAR y la tarjeta «Cantilever» de «Nuevo
 | CT5-04 | Las opciones son segmentos y la sección se elige en una lista de la página (como mucho 40 filas; se escribe para acotar), sin desplegables | `CantileverChoiceItem`, `CantileverSectionPickerItem` |
 | CT5-05 | «Aplicar secuencia» comprueba cada fila (números, «Hasta» sobre «Desde», al menos un tramo); si los tramos son un arriostramiento válido lo decide el resolvedor al recalcular, como en el clásico, y la lista lo dice | `CantileverDraftEditor.ApplySegments` |
 | CT5-06 | «Restaurar layout…» vuelve a la regla y conserva los valores como datos dormidos (la altura manual, la cantidad manual, los tramos), como los conserva el clásico | `CantileverDraftEditor.Restore` |
-| CT5-07 | El nombre que se muestra es el del diseño interior, como lo conserva el clásico; una línea sin él muestra el del sobre | `RackCadWindowViewModel.OnCantileverRead` |
+| CT5-07 | **Corregido en la revisión (punto 4).** La regla de RACKEDITAR (`LoadExisting(…, embed.Name, …)`): el editor muestra y escribe el nombre del sobre; el nombre interior del diseño no se toca, y a un diseño sin nombre no se le escribe uno. Renombrar escribe los dos, como `Name_Changed` del clásico. Un diseño de la biblioteca toma el nombre de su entrada, como `LoadDesignForNew` | `CantileverDraftEditor.Name`, `Load`, `SetName`; `RackCadWindowViewModel.OnCantileverRead` |
 | CT5-08 | **No construido (pregunta 8):** «Insertar pieza suelta…» por RACKCANTILEVERPIEZA. El panel lo dice; la pieza suelta sigue en los configuradores del clásico (RCT). Reproducir las vistas de cada configurador (el brazo a 96 in y en el troquel 0, dolor 14) es una entrega propia | `CantileverEditorViewModel.PieceNote` |
 | CT5-09 | `ApplyCantileverEdit` es una extracción, no una copia (a diferencia de CB4-09): RACKEDITAR la llama con su ventana y su cuerpo no cambió | `RackCantileverCommands.cs` |
 | CT5-10 | Dolor 12, declarado como M-28 de Dinámico: cada vista se redibuja en su transacción y una que falla no detiene a las demás; toda la orden es un «U» | `ApplyCantileverEdit` |
@@ -3452,8 +3452,48 @@ clásico: RCT, RACKCANTILEVER, RACKEDITAR y la tarjeta «Cantilever» de «Nuevo
   - B-1: una vista insertada con cambios que se vuelve a abrir igual que sus hermanas;
   - que RACKEDITAR siga igual tras la extracción;
   - el editor en la paleta: anchos, foco, ratón en la matriz y la lista de secciones.
-- **Para el Owner:** CT5-01, CT5-03, CT5-05, CT5-07 y CT5-12.
+- **Para el Owner:** CT5-01, CT5-03, CT5-05 y CT5-12.
 - **Para integrar:**
   - las otras partes también tocan `RackCadWindowViewModel.cs`, `.Drafts.cs`, `RackCadWindowView.xaml(.cs)` y `RackCadRackDoorPort.cs`; las
     ediciones de esta parte son las de la lista de arriba;
   - el censo de órdenes suma las 4 de esta parte a las de las demás.
+
+### Quinta tanda, ct: correcciones de la revisión
+
+Sobre `44c0a439` (el commit de la sesión con esta parte), en `D:\w5ct`. Sin commit, sin push y sin AutoCAD. Son los seis puntos de la
+revisión independiente; cada uno tiene su prueba, y los puntos 1 a 5 también su comprobación en rojo.
+
+| Punto | Qué se hizo | Prueba |
+|---|---|---|
+| 1 [MEDIA-ALTA] | «Aplicar secuencia» redondeaba cada cota a 4 decimales. Con un claro de 20 in (columna de 106.666… in), «Empezar desde la regla», un cambio de «Con tensores» y «Aplicar», el último tramo pasaba la punta por 1e-9 y la línea quedaba bloqueada. Ahora cada fila guarda sus cotas exactas (`CantileverSegmentRow.FromValue`, `ToValue`, desde `RowsOf`) y `CantileverDraftEditor.Keep` las usa mientras el texto siga siendo `Num(original)`, como `Keep` del clásico. «Dividir» y «Agregar tramo arriba» parten de las cotas exactas | Core: `ApplyingTheSequenceOfTheRuleKeepsItsExactElevationsAndTheLineStillResolves`. UI: `ApplyingTheSequenceOfTheRuleInTheTableKeepsTheLineResolved`, también con «Dividir» |
+| 2 [MEDIA-BAJA] | El factor de claro superior rechazaba «0.3333», el valor que su propio mensaje muestra. Ahora un texto cuyo redondeo de pantalla es `Num(1/3)` guarda 1/3 exacto; «0.3332» se sigue rechazando | Core: `TheTopClearFactorAcceptsTheThirdItShowsAndStoresItExact` |
+| 3 [BAJA] | Había dos «Espesor» en el inspector y dos en el brazo por omisión, y dos «Tipo» en «Componentes» (la placa de extremo y el tensor). Ahora: «Placa de montaje: espesor», «Placa de extremo: espesor», «Placa de extremo: tipo» y «Tipo de tensor» | UI: `EveryFieldAndButtonOfEachTabAndPanelHasAUniqueName`. Recorre cada pestaña y cada panel de «Componentes» con los expansores abiertos, y mira cada campo, casilla, lista y botón visibles (menos la pestaña «Propiedades», que es la vista compartida de `va`) |
+| 4 [BAJA] | CT5-07 corregido con la regla del clásico. El editor muestra y escribe el nombre del sobre (`LoadExisting(…, embed.Name, …)`) y no toca el nombre interior: a un diseño sin nombre no se le escribe uno. Renombrar escribe los dos, como `Name_Changed`. «Modificado» cuenta también el nombre, y «Descartar» lo devuelve. El supuesto CT5-07 queda al día en su tabla | Core: `TheNameIsTheOneOfTheEnvelopeAndTheInnerNameIsWrittenOnlyByARename`. UI: `TheEditorShowsAndWritesTheNameOfTheEnvelopeAndLeavesTheInnerNameAlone` |
+| 5 [BAJA] | «Duplicar» conservaba `Line.Id`. Ahora la copia se hace con `DuplicateWithNewIdentity()`, y su base toma la misma identidad nueva y queda sin nombre. Así la copia está «Modificado» exactamente cuando lo estaba su original | UI: `ADuplicateOfACantileverDraftIsAnotherDraftWithTheSameDesign`, ampliada: identidad nueva, y la copia de un borrador sin cambios (un diseño de la biblioteca) sale limpia |
+| 6 [COSMÉTICO] | «Guardar en biblioteca…» de «Más» quedaba centrado. Ahora usa la plantilla de fila de la vista (`RowButton`, alineado a la izquierda y con borde). Dinámico tiene lo mismo y no se tocó | La prueba de vista de siempre (nombres y enlaces) |
+
+**Comprobación en rojo** (`S\hs65\t5\ct\red.py`, piezas RV1 a RV5; salida en `red-log-rv.txt`): cinco piezas rotas a propósito, una a una,
+con una copia de cada original fuera del worktree. En todas falla al menos una prueba:
+- RV1, la cota que se guarda redondeada a 4 decimales: fallan 1 de Core y 1 de UI;
+- RV2, «0.3333» rechazado: falla 1 de Core;
+- RV3, los dos espesores del inspector con el mismo nombre: falla la de unicidad;
+- RV4, el nombre interior antes que el del sobre: falla 1 de UI;
+- RV5, la copia sin identidad nueva: falla 1 de UI.
+
+Cada archivo volvió a sus bytes (SHA-256 comprobado por el script), y no quedaron restos en `git diff`. Después se recompiló la solución con
+`--no-incremental`.
+
+**Archivos de las correcciones:**
+- `CantileverDraftEditor.cs` (Application);
+- en la UI: `CantileverEditorItems.cs`, `CantileverEditorViewModel.cs`, `.Arms.cs` y `.Bracing.cs`, `CantileverEditorView.xaml` y
+  `RackCadWindowViewModel.Cantilever.cs`;
+- las dos clases de prueba.
+
+Ningún archivo compartido cambia en esta vuelta.
+
+**Los números:**
+- **Clases focales de Core** (`CantileverDraftEditorTests`, que pasa de 31 a 34, y las guardas y censos que tocan esta parte):
+  217 de 217. Core Full no se volvió a correr (el encargo pide las focales): por cuenta, 19327 / 0 / 403 (19324 más las 3 nuevas).
+- **UI completa:** 2984 correctas, 0 con error y 48 omitidas (3032): las 2981 de la entrega más las 3 nuevas. `RackCadCantileverWindowTests` pasa de 20 a 23.
+- **Build Debug de la solución (Plugin incluido),** con `--no-incremental`: 0 errores. Las advertencias son las MSB3277 de las referencias de
+  AutoCAD y las de los analizadores de xunit, que ya estaban.

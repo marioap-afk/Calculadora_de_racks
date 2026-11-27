@@ -186,9 +186,10 @@ namespace RackCad.UI.VentanaRackCad
 
                 if (existing != null) ForgetCantilever(key, existing);
 
-                // The name of the inner design, as the classic editor keeps it; a line with none shows the one of the envelope.
+                // Correction 4 of the review: the rule of RACKEDITAR (LoadExisting(…, embed.Name, …)): the editor shows and writes the name of
+                // the envelope; the inner name of the design is not touched (a design with no name is not given one).
                 var draft = new CantileverDraftEditor(catalogue);
-                draft.Load(design, string.IsNullOrWhiteSpace(design.Name) ? read.Name : null);
+                draft.Load(design, read.Name);
                 var editor = new CantileverEditorViewModel(draft, request.RackId, UpdateCantilever);
                 editor.LoadProperties(read.Properties); // the tab «Propiedades» (VA-07)
                 WireCantilever(editor);
@@ -238,7 +239,7 @@ namespace RackCad.UI.VentanaRackCad
                     return null;
                 }
 
-                draft.Load(design, seed.Name ?? string.Empty);
+                draft.Load(design, seed.Name); // the name of the entry, as LoadDesignForNew(…, entry.Name, …); the inner one is not touched
             }
 
             var editor = new CantileverEditorViewModel(draft, rackId, UpdateCantilever, isNewRack: true);
@@ -485,10 +486,15 @@ namespace RackCad.UI.VentanaRackCad
         // For «Duplicar»: the last valid design as a project (a copy), and the base of its «Modificado», which the copy keeps.
         private static (RackProject Base, RackProject Copied) CopyOfCantilever(CantileverEditorViewModel editor)
         {
+            // Correction 5 of the review: the copy has an identity of its own (DuplicateWithNewIdentity), the base and the copy the same one,
+            // so the copy is «Modificado» exactly when its original was.
             var snapshot = editor.Draft.SnapshotForWrite();
-            var copied = snapshot != null ? snapshot.Design : editor.Draft.Design.DeepCopy();
+            var copied = (snapshot != null ? snapshot.Design : editor.Draft.Design).DuplicateWithNewIdentity();
             copied.Name = null;
-            return (RackProject.ForCantilever(editor.Draft.BaselineDesign), RackProject.ForCantilever(copied));
+            var baseDesign = editor.Draft.BaselineDesign;
+            baseDesign.Id = copied.Id;
+            baseDesign.Name = null; // the copy has no name (ND-07), and neither has its base
+            return (RackProject.ForCantilever(baseDesign), RackProject.ForCantilever(copied));
         }
 
         // ------------------------------------------------------------------ the BOM of the draft (BM-02, SD-02) and the library (UT-04)

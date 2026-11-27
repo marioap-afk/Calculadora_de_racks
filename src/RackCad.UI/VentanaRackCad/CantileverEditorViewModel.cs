@@ -584,14 +584,14 @@ namespace RackCad.UI.VentanaRackCad
             });
             Sync(DefaultArmPlateItems, new object[]
             {
-                ArmField("def.plate", "Espesor", "in", null, CantileverArmField.PlateThickness, null, ro),
+                ArmField("def.plate", "Placa de montaje: espesor", "in", null, CantileverArmField.PlateThickness, null, ro),
                 ArmField("def.punches", "Troqueles verticales", "", null, CantileverArmField.VerticalPunches, "Mín. 2. Al cambiar la sección se vuelve a sugerir.", ro),
                 ArmField("def.margin", "Margen vertical", "in", null, CantileverArmField.VerticalMargin, "Por omisión, 2 in.", ro),
             });
             Sync(DefaultArmEndItems, new object[]
             {
-                ArmChoice("def.end", "Tipo", null, CantileverArmField.EndPlate, EndOptions, null, ro),
-                ArmField("def.endT", "Espesor", "in", null, CantileverArmField.EndPlateThickness,
+                ArmChoice("def.end", "Placa de extremo: tipo", null, CantileverArmField.EndPlate, EndOptions, null, ro),
+                ArmField("def.endT", "Placa de extremo: espesor", "in", null, CantileverArmField.EndPlateThickness,
                     end == CantileverArmEndPlateMode.None ? "Sin placa de extremo." : null, ro || end == CantileverArmEndPlateMode.None),
                 ArmField("def.stop", "Altura extra de tope", "in", null, CantileverArmField.ExtraStopHeight,
                     end != CantileverArmEndPlateMode.Stop ? "Solo con «Placa con tope»." : null, ro || end != CantileverArmEndPlateMode.Stop),
@@ -603,7 +603,7 @@ namespace RackCad.UI.VentanaRackCad
             var cold = (d.Bracing?.BraceKind ?? CantileverBraceBodyKind.ColdRolledRound) == CantileverBraceBodyKind.ColdRolledRound;
             Sync(BraceItems, new object[]
             {
-                Choice(CantileverLineField.BraceKind, "Tipo", BraceOptions, null, ro),
+                Choice(CantileverLineField.BraceKind, "Tipo de tensor", BraceOptions, null, ro),
                 cold
                     ? Field(CantileverLineField.BraceDiameter, "Diámetro de la varilla", "in", null, ro)
                     : Picker("tens.section", "Sección del tensor estructural", BraceChoices, CantileverLineField.BraceSection, "Canal (C) o ángulo (L).", ro),

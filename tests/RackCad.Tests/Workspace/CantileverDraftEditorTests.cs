@@ -349,6 +349,80 @@ public class CantileverDraftEditorTests
         Assert.Equal(120.0, draft.Design.ColumnCentreSpacing);
     }
 
+    // ------------------------------------------------------------------ corrections of the review
+
+    // Correction 1: a sequence of the rule whose elevations do not fit in 4 decimals (a clear of 20 in: a column of 106.666… in) is applied
+    // with its exact values while the text of the row is the one shown for them (Keep of the classic editor), and the line still resolves.
+    [Fact]
+    public void ApplyingTheSequenceOfTheRuleKeepsItsExactElevationsAndTheLineStillResolves()
+    {
+        var draft = Resolved();
+        Assert.Null(draft.Write(CantileverLineField.ClearHeight, "20"));
+        Assert.True(draft.IsResolved, string.Join(" | ", draft.Missing.Select(m => m.Message)));
+        var height = draft.Computation.Line.ColumnHeight;
+        Assert.True(Math.Abs(height - Math.Round(height, 4)) > 1e-9, "the scenario needs a column that 4 decimals do not write: " + height);
+
+        Assert.Null(draft.ToAdvanced(recover: false));
+        var exact = draft.SavedSegments.Select(s => (s.StartElevation, s.EndElevation)).ToList();
+        Assert.Contains(exact, e => Math.Abs(e.EndElevation - Math.Round(e.EndElevation, 4)) > 1e-9);
+
+        // «Con tensores» of a tramo changed, and applied: the elevations are the exact ones, and the line resolves.
+        var rows = CantileverDraftEditor.RowsOf(draft.SavedSegments).ToList();
+        rows[0] = rows[0] with { Braced = !rows[0].Braced };
+        Assert.Null(draft.ApplySegments(rows));
+        Assert.Equal(exact, draft.SavedSegments.Select(s => (s.StartElevation, s.EndElevation)).ToList());
+        Assert.True(draft.IsResolved, string.Join(" | ", draft.Missing.Select(m => m.Message)));
+
+        // A text the user changed is the number it says; the text shown for the value («12.5» for 12.4999999) keeps the value.
+        Assert.True(CantileverDraftEditor.Keep("12.6", 12.4999999, out var typed));
+        Assert.Equal(12.6, typed);
+        Assert.True(CantileverDraftEditor.Keep("12.5", 12.4999999, out var shown));
+        Assert.Equal(12.4999999, shown);
+        Assert.True(CantileverDraftEditor.Keep(CantileverDraftEditor.Num(106.0 + 2.0 / 3.0), 106.0 + 2.0 / 3.0, out var kept));
+        Assert.Equal(106.0 + 2.0 / 3.0, kept);
+    }
+
+    // Correction 2: what the field shows for 1/3 («0.3333», the text of its own message) is 1/3, stored exact; less is refused.
+    [Fact]
+    public void TheTopClearFactorAcceptsTheThirdItShowsAndStoresItExact()
+    {
+        var draft = Resolved();
+        Assert.Null(draft.Write(CantileverLineField.TopClearFactor, "0.5"));
+        Assert.Null(draft.Write(CantileverLineField.TopClearFactor, "0.3333"));
+        Assert.Equal(CantileverStationDefaults.TopClearFactor, draft.Design.StationTopology.TopClearFactor);
+        Assert.Equal("0.3333", draft.TextOf(CantileverLineField.TopClearFactor));
+        Assert.NotNull(draft.Write(CantileverLineField.TopClearFactor, "0.3332"));
+        Assert.Equal(CantileverStationDefaults.TopClearFactor, draft.Design.StationTopology.TopClearFactor);
+    }
+
+    // Correction 4: the rule of RACKEDITAR: the name of the line is the one of the envelope; the inner name is not touched, and renaming
+    // writes both (Name_Changed of the classic editor).
+    [Fact]
+    public void TheNameIsTheOneOfTheEnvelopeAndTheInnerNameIsWrittenOnlyByARename()
+    {
+        var line = Resolved().Design.DeepCopy();
+        line.Name = "Interno";
+        var draft = NewDraft();
+        draft.Load(line, "Sobre");
+        Assert.Equal("Sobre", draft.Name);
+        Assert.Equal("Interno", draft.Design.Name);
+        Assert.False(draft.IsDirty);
+        Assert.Equal(("Sobre", "Interno"), (draft.SnapshotForWrite()!.Name, draft.SnapshotForWrite()!.Design.Name));
+
+        line.Name = null;
+        draft.Load(line, "Sobre");
+        Assert.Null(draft.Design.Name); // a design with no name is not given one
+        Assert.Null(draft.SnapshotForWrite()!.Design.Name);
+
+        Assert.Null(draft.SetName("Nave B"));
+        Assert.Equal(("Nave B", "Nave B"), (draft.Name, draft.Design.Name));
+        Assert.True(draft.IsDirty);
+        draft.Discard();
+        Assert.Equal("Sobre", draft.Name);
+        Assert.Null(draft.Design.Name);
+        Assert.False(draft.IsDirty);
+    }
+
     [Fact]
     public void TheNameIsTheNameOfTheDesignTrimmedAndAnEmptyOneIsNoName()
     {
