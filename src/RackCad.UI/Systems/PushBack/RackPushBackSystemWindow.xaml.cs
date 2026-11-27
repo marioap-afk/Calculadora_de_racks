@@ -1476,9 +1476,26 @@ namespace RackCad.UI.Systems.PushBack
         /// <remarks>
         /// I-33: los conteos salen de la AUTORIDAD compartida. Un frente en blanco aporta CERO, y un poste cuyos unicos
         /// vecinos estan en blanco tambien, de modo que su columna del desviador se dibuja SIN celdas.
+        /// <para>
+        /// T6 pb (PB-S17, punto 4): en un rack de DOS sentidos, los niveles de los DOS lados, poste a poste el mayor. El desviador es POR
+        /// POSTE y el dibujo lo pone en las camas de los dos lados (<see cref="PushBackDiverterPlan"/>), con una sola celda apagada por poste
+        /// y nivel. Con los del lado activo, abierta desde el lado mas bajo la rejilla no ofrecia los niveles que solo tiene el otro: no se
+        /// podia apagar un desviador dibujado, y «Aceptar» perdia una celda apagada alli. Un rack de un sentido no cambia.
+        /// </para>
         /// </remarks>
         internal IReadOnlyList<int> DesviadorLevelsPerPost()
-            => DynamicFrontActivation.EffectiveLevelsPerPost(state.Structure.EffectiveLevelCounts());
+        {
+            if (!composite.SideBPresent)
+            {
+                return DynamicFrontActivation.EffectiveLevelsPerPost(state.Structure.EffectiveLevelCounts());
+            }
+
+            var perSide = new[] { PushBackSide.A, PushBackSide.B }
+                .Select(side => DynamicFrontActivation.EffectiveLevelsPerPost(composite.Of(side).Structure.EffectiveLevelCounts()))
+                .ToList();
+            var posts = perSide.Max(levels => levels.Count);
+            return Enumerable.Range(0, posts).Select(post => perSide.Max(levels => post < levels.Count ? levels[post] : 0)).ToList();
+        }
 
         // ---- Advanced: per-module editing (I-35 / PB-011) ---------------------------------------------------------
 

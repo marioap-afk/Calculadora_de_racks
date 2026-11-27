@@ -4956,3 +4956,118 @@ tercero (`773f0a6e`), integradas en un segundo merge de la rama pb.
 
 - La validación del Owner de los supuestos de la quinta tanda y de O-5.
 - La limpieza de los worktrees y las ramas locales de la quinta tanda, con aviso al Owner.
+
+## Sexta tanda, pb: los defectos del diálogo clásico de seguridad de Push Back (PB-S17)
+
+- **Orden del Owner (2026-11-27):** «Arregla los defectos, aún no hay que borrar el editor clásico, […] hay que arreglar lo de pushback y
+  hazme las preguntas requeridas». El editor clásico se queda: sus defectos se corrigen en él.
+- Sobre `f02f519b`, en la rama local `architecture/workspace-persistente-rackcad-t6-pb`; sin commit, sin push, sin AutoCAD.
+- De los seis puntos de PB-S17 (subsección «PB-S03: la seguridad poste por poste»), el **5** y el **4** son defectos del clásico y se
+  arreglaron en él. El 1, el 2, el 3 y el 6 son diferencias de diseño y no se tocaron: quedan como preguntas (abajo).
+
+### Punto 5: «Auto» en una cara de un rack de dos sentidos (el defecto principal)
+
+- **El defecto, reproducido:** en un Push Back de dos sentidos, volver a «Auto» la defensa de un poste en la rejilla de un lado no hacía
+  nada si la otra cara de ese poste ya era automática. La decisión anterior, una medida o «apagado», se quedaba.
+- **Causa:**
+  - `SafetyDefensaGridWindow.BuildFaceResult` quitaba de su resultado la fila que quedaba automática en las dos caras.
+  - Ese resultado no sustituye la lista: `PushBackDefenseSection.Configure` lo funde por su cara (`PushBackDefenseSides.Merge`,
+    `PushBackDefenseSection.cs:217`), y la fusión solo escribe los postes que vienen en él. El poste ausente conservaba su cara de antes.
+- **Arreglo:** `BuildFaceResult` ya no quita esas filas (`SafetyDefensaGridWindow.cs:542-546`, marcado `T6 pb`).
+  - La fusión escribe el «Auto» y después retira las filas automáticas en las dos caras (`PushBackDefenseSides.cs:177`), así que lo
+    guardado queda igual de limpio.
+  - El modo de una cara solo lo abre la sección de defensa de un Push Back de dos sentidos. Selectivo, Dinámico y el Push Back de un
+    sentido usan el «Aceptar» de dos extremos, que no cambió.
+  - La ventana ya escribía esto: ahora el clásico escribe lo mismo que la ventana.
+- **Prueba** (UI, WPF real en STA: la ventana clásica, «Elementos de seguridad» y la rejilla real de la sección; solo se sustituye el
+  `ShowDialog`): `PushBackClassicSafetyDefectsTests.AutoAgainOnTheFaceOfASideWhoseOtherFaceIsAutomaticGoesBackToTheRule`.
+  - Un compuesto de tres ranuras. En la defensa del lado A, el poste 2 apagado: queda un registro propio y la planta cambia.
+  - Otra vez, «Auto» en ese poste: no queda ningún registro y la planta dibuja lo de antes.
+  - Sobre la base falló: el registro `{PostIndex 1, ExitAuto false, ExitLength 0}` seguía.
+
+### Punto 4: los niveles del desviador en un rack de dos sentidos
+
+- **El defecto, reproducido:**
+  - La rejilla del desviador recibía los niveles por poste del lado ACTIVO (`RackPushBackSystemWindow.DesviadorLevelsPerPost`).
+  - El desviador es por poste (PB-002), y el dibujo lo pone en las camas de los DOS lados (`PushBackDiverterPlan.Resolve`), con una sola
+    celda apagada por poste y nivel.
+  - Abierta desde el lado más bajo, la rejilla no ofrecía los niveles que solo tiene el otro: un desviador dibujado no se podía apagar, y
+    «Aceptar» perdía una celda apagada allí (una columna más corta no es dormida, `SafetyDormantCells`).
+  - Lo escrito dependía del lado activo, aunque I-42 (ronda 7D) fijó que «Elementos de seguridad» ofrece lo mismo desde A que desde B.
+- **Por qué es un defecto y no una diferencia de diseño:** el comentario de PB-002 en el propio método dice que la cuenta es la misma regla
+  que usa el dibujo. El defecto que PB-002 corrigió es exactamente ese: celdas que el usuario ve dibujadas y no puede apagar. En un rack
+  de dos sentidos el dibujo usa los dos lados.
+- **Arreglo:** con lado B, poste a poste el mayor de los dos lados (`RackPushBackSystemWindow.xaml.cs:1486`, marcado `T6 pb`), como
+  `PushBackDraftEditor.DesviadorLevelsPerPost` de la ventana. Un rack de un sentido sigue con el código de antes.
+- **Prueba** (UI, STA): `PushBackClassicSafetyDefectsTests.TheDesviadorGridOfATwoSidedRackHasTheLevelsTheDrawingPlacesFromEitherSide`.
+  - El frente 2 del lado B con un cuarto nivel; el lado A con tres. El dibujo pone un desviador en N4 de los postes 2 y 3.
+  - La cuenta del clásico desde A es la del dibujo, y la misma que desde B.
+  - La rejilla real, abierta como la abre «Configurar…» desde A, ofrece la celda N4 del poste 2 y conserva su «apagado» al aceptar.
+  - Sobre la base falló: `[3, 3, 3, 3]` desde A, frente a `[3, 4, 4, 3]` del dibujo.
+
+### La transcripción `Classic` y las pruebas de la ventana
+
+- `PushBackSafetyEditTests.Classic` sigue al clásico corregido:
+  - `FaceGrid` ya no quita la fila automática en las dos caras;
+  - la rejilla del desviador toma sus niveles de `Levels`, la transcripción de `DesviadorLevelsPerPost` corregido.
+- La prueba que medía la pérdida (`BackToAutoOnAFaceWhoseOtherFaceIsAutomaticIsWrittenWhereTheClassicGridLosesIt`) pasa a
+  `BackToAutoOnAFaceWhoseOtherFaceIsAutomaticIsWrittenAsTheCorrectedClassicGrid`. La ventana y el clásico escriben lo mismo en la cara de
+  A, en la de B y con «Todas automáticas», que antes solo se medía en la ventana.
+- Nueva: `TheDesviadorOfATwoSidedRackWithMoreLevelsOnSideBIsWrittenAsTheCorrectedClassicFromSideA`, sobre el rack del punto 4. Desde A,
+  la celda N4 del poste 2 se apaga igual en los dos, y apagar después otra celda desde A la conserva.
+- La ventana no cambia de conducta. Sus comentarios (`PushBackSafetyEdit`, `PushBackDraftEditor.Seg`) ya no declaran estas dos
+  diferencias, y `RackCadPushBackEditorTests` (con `.Seg`) sigue en verde.
+
+### Los otros puntos de PB-S17: diferencias de diseño, para el Owner
+
+No se tocaron. Ninguno pierde lo que el usuario decidió.
+1. **Una familia por edición.** El «Aceptar» del clásico (`Safety_Click`, `RackPushBackSystemWindow.xaml.cs:2609-2622`) vacía la lista y
+   la reconstruye con todo lo que muestra el diálogo: es cómo trabaja un diálogo modal. Lo que reescribe es lo que el diálogo muestra.
+2. **El orden de la lista.** El clásico deja primero las familias del diálogo, después la defensa (`:2934`) y después las botas (`:2743`).
+   Cada familia tiene una sola selección, y el dibujo y el BOM la buscan por su tipo: el orden no cambia nada visible.
+3. **Una familia que se queda sin nada.** El clásico no escribe el protector lateral sin ningún poste que dibuje
+   (`SelectiveSafetyWindow.cs:976-981`) ni el desviador con todas sus celdas apagadas (`:886-887`). El dibujo y el BOM son los mismos. Es
+   el diálogo compartido de Selectivo, Dinámico y Push Back: cambiarlo tocaría los tres. La ventana conserva la variante (C2-07).
+4. **(Punto 6) Un desviador nuevo.** El clásico solo lo escribe tras «Configurar…» (`SelectiveSafetyWindow.cs:886`, con el botón
+   «Configurar…» a la vista, `:637-642`), como el tope y la parrilla del mismo diálogo, desde `a9f1c137`. La ventana lo escribe al elegir la
+   variante. También es del diálogo compartido.
+
+### Supuestos para el Owner
+
+| Id | Supuesto | Dónde |
+|---|---|---|
+| T6pb-S1 | En el clásico de un Push Back de dos sentidos, «Auto» en un poste de la rejilla de un lado devuelve esa cara a su automático aunque la otra cara ya lo sea. Si las dos quedan automáticas, el registro del poste sale de lo guardado. Antes se quedaba la decisión anterior | `SafetyDefensaGridWindow.BuildFaceResult` |
+| T6pb-S2 | En el clásico de un Push Back de dos sentidos, la rejilla del desviador muestra en cada poste los niveles del lado más alto, se abra Seguridad desde A o desde B. Desde el lado más bajo aparecen celdas nuevas (las que el dibujo ya ponía), y una celda apagada allí ya no se pierde al aceptar | `RackPushBackSystemWindow.DesviadorLevelsPerPost` |
+
+### Comprobación en rojo
+
+- Script `hs65\t6\pb\red\red.sh` del scratchpad de la sesión, con su salida en `red-out.txt` y `red-log.txt`.
+- Antes de romper, las copias originales y las corregidas se guardaron FUERA del worktree. Cada pieza pone la copia rota, compila, corre la
+  clase focal y restaura la corregida.
+- Las cuatro volvieron con el mismo SHA-256, y en `git diff` no quedó ningún resto (`if (false)`, `true ||`).
+- Cada pieza hizo fallar su prueba, y solo esa:
+  - R1, `BuildFaceResult` de `f02f519b`: falla la del punto 5 (UI).
+  - R2, `DesviadorLevelsPerPost` de `f02f519b`: falla la del punto 4 (UI).
+  - R3, la transcripción `FaceGrid` sin corregir: falla `BackToAutoOnAFaceWhoseOtherFaceIsAutomaticIsWrittenAsTheCorrectedClassicGrid`
+    (Core).
+  - R4, la transcripción de los niveles con el lado activo: falla
+    `TheDesviadorOfATwoSidedRackWithMoreLevelsOnSideBIsWrittenAsTheCorrectedClassicFromSideA` (Core).
+
+### Archivos
+
+- Cambiados, marcados `T6 pb`:
+  - `src/RackCad.UI/SafetyDefensaGridWindow.cs` (`BuildFaceResult`);
+  - `src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs` (`DesviadorLevelsPerPost`);
+  - solo comentarios: `src/RackCad.Application/VentanaRackCad/PushBackSafetyEdit.cs` y `PushBackDraftEditor.Seg.cs`;
+  - `tests/RackCad.Tests/Workspace/PushBackSafetyEditTests.cs` (la transcripción y las pruebas).
+- Nuevo: `tests/RackCad.UI.Tests/PushBackClassicSafetyDefectsTests.cs`.
+- No se tocó ningún archivo compartido de la ventana (`RackCadWindowViewModel*`, `RackCadWindowView*`), ningún censo y ninguna guarda.
+
+### Números
+
+Sobre las fuentes finales, solo la rama pb:
+- **Core Full:** 19484 correctas, 0 con error, 403 omitidas (19887), compilado con `--no-incremental`. Son las 19483 de la base más la
+  nueva de `PushBackSafetyEditTests`; la reescrita no añade casos.
+- **UI completa:** 3112 correctas, 0 con error, 48 omitidas (3160). Son las 3110 de la base más las 2 de `PushBackClassicSafetyDefectsTests`.
+- **Solución en Debug** (Plugin incluido), con `--no-incremental`: 0 errores. En el Plugin, las dos MSB3277 de siempre
+  (`Microsoft.VisualBasic` y `System.Drawing`).

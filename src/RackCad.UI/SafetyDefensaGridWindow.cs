@@ -539,7 +539,10 @@ namespace RackCad.UI
                 SetEnd(record, face.IsFarEnd, auto ? 0.0 : (on ? length : 0.0), auto);
             }
 
-            result.RemoveAll(record => record.ExitAuto && record.EntranceAuto);
+            // T6 pb (PB-S17, punto 5): una fila que queda automatica en las DOS caras NO se quita aqui. Este resultado no sustituye la
+            // lista: la seccion lo FUNDE por su cara (PushBackDefenseSides.Merge), y la fusion lee una fila ausente como «sin decision».
+            // Quitarla antes perdia el «Auto» de esta cara cuando la otra ya era automatica, y la medida anterior se quedaba. La fusion
+            // retira despues las filas automaticas en las dos caras, asi que el documento queda igual de limpio.
             Result = result.OrderBy(record => record.PostIndex).ToList();
             Accepted = true;
         }
