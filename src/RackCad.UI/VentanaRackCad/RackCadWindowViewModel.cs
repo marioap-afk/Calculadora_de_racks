@@ -25,6 +25,8 @@ namespace RackCad.UI.VentanaRackCad
 
         /// <summary>«Órdenes y atajos», behind «Ayuda» of the header (T4 ut, UT-09): a page of the window, not a section of the column.</summary>
         Ayuda,
+
+        Larguero, // T5 lg: «Nuevo › Larguero», the draft in construction (LG-01 to LG-03); under «Nuevo», not a section of the column
     }
 
     /// <summary>One section of the side column as the window shows it: a plain value.</summary>
@@ -1204,6 +1206,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(IsBibliotecaPage));
             OnPropertyChanged(nameof(IsConfiguracionPage));
             OnUtilityPageShown(page); // T4 ut: «Órdenes y atajos», the folder of the library, the settings
+            RaiseLargueroPage(); // T5 lg: «Nuevo › Larguero»
             if (page == RackCadWindowPage.Bom) Contained(BomPageShown); // T4 bom: the first time for a drawing, it reads it
         }
 
@@ -1346,7 +1349,7 @@ namespace RackCad.UI.VentanaRackCad
         private void RebuildSections()
         {
             var sections = new List<RackCadWindowSection>(SectionOrder.Count);
-            foreach (var (page, label) in SectionOrder) sections.Add(new RackCadWindowSection(page, label, page == _page));
+            foreach (var (page, label) in SectionOrder) sections.Add(new RackCadWindowSection(page, label, page == _page || IsUnderNuevo(page))); // T5 lg: «Nuevo» while «Larguero»
             _sections = sections;
             OnPropertyChanged(nameof(Sections));
         }

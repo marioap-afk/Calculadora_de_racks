@@ -3271,3 +3271,177 @@ mismo que `Path`.
   - `RackCadVariablesPageTests`: la relectura tras escribir, rechazada como Busy (nueva), y la fila alineada con los encabezados.
 - **Comprobación en rojo:** con cada corrección deshecha, su prueba falla (las cuatro piezas). Restauradas con la misma huella.
 - **UI completa:** 2961 / 0 / 48 (2960 + 1). Core no cambia: solo cambió la UI.
+
+## Quinta tanda, lg: «Nuevo › Larguero», borrador en construcción (LG-01 a LG-03)
+
+**Rama:** local `architecture/workspace-persistente-rackcad-t5-lg`, sobre `041e1799` (worktree `D:\w5lg`). Sin commit, sin push, sin AutoCAD.
+Prototipo `largueros` (preguntas 1 a 13) y las notas del Owner, que mandan sobre él:
+
+- **LG-01** (sobre la pregunta 1): la sección de largueros es para CREAR largueros a partir de secciones y ménsulas. Una sección puede ser la
+  de un larguero de línea que ya existe, pero se llama por su tipo («Escalón», «Tubo», «Canal CPS…»), no «Larguero escalón…». Se elige la
+  ménsula.
+- **LG-02** (sobre la pregunta 2, «¿una página o dos?»): una sola página, con un filtro de secciones según el catálogo.
+- **LG-03** (sobre la pregunta 3, el larguero en el dibujo): déjalo WIP.
+
+**Lo que se construyó:**
+- **«Nuevo» › «Componentes en esta ventana» › «Larguero en esta ventana · en construcción».** Abre la página «Nuevo › Larguero» en el centro
+  de la ventana. La columna marca «Nuevo» mientras se ve; la miga «Nuevo» vuelve a su inicio. La página dice arriba lo que es: la ficha
+  «En construcción» y la banda «Borrador en construcción» («…Todavía no lo guarda en la biblioteca ni lo dibuja: nada sale de aquí. Para
+  guardar un larguero hoy, usa «Abrir el editor clásico».»).
+- **La sección, en una sola página (LG-02),** de dos catálogos: los largueros de RackCad (`secciones.csv`, rol LARGUERO, 8) y las secciones
+  AISC habilitadas (1011). Filtros «Catálogo» (Todos / Largueros de RackCad / Perfiles AISC, con su cuenta), «Tipo» (los del catálogo
+  elegido, con su cuenta) y «Buscar» (nombre, nombre en el catálogo o id, sin mayúsculas, acentos ni separadores). La lista va agrupada por
+  tipo, con una cabecera por tipo que no se puede elegir, y en orden natural (W10X12 antes que W10X100; L…1-1/8 antes que …1-1/4). Cada
+  fila dice su catálogo y su detalle: los peraltes, el calibre y la ménsula de su fila (RackCad), o el peso y el peralte (AISC).
+- **Cada sección se llama por su tipo (LG-01):** «Escalón calibre 14», «Escalón con ángulo», «Escalón de ajuste infinito», «Escalón invertido
+  calibre 14», «Escalón invertido con ángulo», «Escalón troquel redondo», «Tubo 1.9"» e «In n out de canal de 6"» (tipo «Canal»); una
+  sección AISC, por su designación («C10X15.3»). Los tipos unen los dos catálogos: «Escalón», «Tubo», «Canal», «Ángulo», «Viga W» y
+  «Viga S (IPS)». La fila conserva al lado el nombre del catálogo y su id.
+- **El peralte, la longitud a corte y la ménsula.** Un larguero de RackCad elige entre los peraltes de su fila; una sección AISC tiene el
+  suyo, del catálogo, fijo. La longitud a corte se escribe en pulgadas; un valor que no es un número mayor que 0 se marca en su campo y el
+  resumen lo pide. La ménsula se elige de `mensulas.csv` (LG-01); sigue a la sección (la de su fila, o ninguna con una sección AISC) hasta
+  que el usuario elige una.
+- **El resumen:** el nombre que tomaría (LG-05: «Larguero 96 in · P3»), la sección y su tipo, el catálogo con el nombre y el id de la fila,
+  el peralte, la longitud, la ménsula (alto y calibre, y si es la de su fila), el calibre (RackCad) o el peso del perfil (AISC, como
+  RACKSECCION: «15.3 lb/ft (22.8 kg/m) · 122.4 lb (55.5 kg) a 96 in»), la lista de materiales con la receta única del larguero
+  (`LargueroBomBuilder.Component`: el larguero, su perfil ×1 y sus ménsulas ×2) y lo que falta («Falta: Elige la ménsula: una sección AISC
+  no trae ménsula en el catálogo.»).
+- **«Volver a los valores por defecto»:** los del editor clásico (el primer larguero, peralte 3, 96 in y su ménsula).
+- **«Abrir el editor clásico»:** la tarjeta clásica «Larguero» (RACKNUEVO Larguero), un gesto del usuario por la misma puerta de las
+  tarjetas. Es el que guarda un larguero hoy.
+- **«Lo que falta para terminar esta página»,** plegado al final de la página: la lista de abajo, para quien la pruebe.
+- **Un catálogo que falla se dice arriba, no se simula** (dolor 7): el AISC que no se puede leer (falla cerrado, como RACKSECCION y
+  Cantilever) deja solo los largueros de RackCad; un catálogo de RackCad sin largueros o sin ménsulas también se dice.
+
+**Qué no se construyó (LG-03) y el camino de escritura:**
+- **Nada se escribe en el dibujo ni en la biblioteca,** y ninguna orden sale de la página salvo «Abrir el editor clásico». No hay orden
+  nueva ni puerta numerada: no hacían falta.
+- **El único camino de escritura existente del prototipo** es «Insertar en el dibujo…» del perfil estructural, que hoy es RACKSECCION (un
+  bloque suelto, con su ventana modal). No se trajo a esta página: con LG-02 («una sola página») la página del perfil estructural del
+  prototipo no se construyó, y la tarjeta «Perfil estructural» de «Nuevo» sigue abriendo RACKSECCION como antes. Declarado: el clásico de
+  RACKSECCION no se tocó.
+- **La tarjeta clásica «Larguero»** sigue en «Nuevo» y sigue abriendo `RackLargueroWindow` (RACKNUEVO Larguero): la página no guarda, así
+  que no la sustituye. El código clásico no se tocó.
+
+**Ediciones a archivos compartidos** (marcadas `T5 lg`):
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowViewModel.cs`, tres líneas:
+  1. el valor `Larguero` al final de `RackCadWindowPage`;
+  2. en `ShowPage`, `RaiseLargueroPage();` tras `OnUtilityPageShown(page)`;
+  3. en `RebuildSections`, la sección activa es `page == _page || IsUnderNuevo(page)` («Nuevo» marcado con la página del larguero).
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowView.xaml`, **dos** bloques `<!-- T5 lg -->` (supuesto LG-S11):
+  1. en «Nuevo», tras la banda «Paso intermedio…» y antes de `RackCadNuevoExtras`: el título «Componentes en esta ventana» y el botón
+     `LargueroHereButton`;
+  2. al final de la rejilla del centro, tras `AyudaPage`: `LargueroPageHost`, con la página `LargueroPage` (`DataContext="{Binding LargueroWorkbench}"`).
+- **No se tocaron** `RackCadWindowView.xaml.cs`, `RackCadWindowViewModel.Drafts.cs`, `RackCadRackDoorPort.cs`, `RackMenuCommands`, el
+  Plugin, los editores, los catálogos ni el código clásico.
+
+**Archivos nuevos:**
+- Application: `src/RackCad.Application/Systems/Larguero/LargueroSections.cs` (`LargueroSectionSource`, `LargueroSectionOption`,
+  `LargueroSectionNaming`, `LargueroNaturalOrder`, `LargueroSectionType`, `LargueroSectionCatalog`) y `LargueroDraftSummary.cs`
+  (`LargueroDraftSummary`, `LargueroSummaryLine`, `LargueroBomPreviewLine`). Puros.
+- UI: `LargueroWorkbenchViewModel.cs` (con `LargueroChoiceOption` y `LargueroSectionRow`), `LargueroWorkbenchView.xaml(.cs)`,
+  `RackCadWindowViewModel.Larguero.cs` y `RackCadWindowView.Larguero.cs`, en `src/RackCad.UI/VentanaRackCad/`.
+- Pruebas: `tests/RackCad.Tests/LargueroSectionsTests.cs` y `tests/RackCad.UI.Tests/Workspace/RackCadLargueroWorkbenchTests.cs`.
+
+**Supuestos para el Owner** (prefijo LG-S, cada uno en un solo sitio):
+
+| Id | Supuesto | Dónde se cambia |
+|---|---|---|
+| LG-S01 | La página es de la ventana (`RackCadWindowPage.Larguero`), bajo «Nuevo», y **no un «Borrador N»** del dibujo: un larguero es un componente de la biblioteca, no un rack, no se inserta y no tiene puerta que lo escriba. Por eso no cuenta en la cabecera ni en la lista de borradores, no veta el cierre de un dibujo (D-08) y no depende del dibujo (abre sin dibujo y sigue igual al cambiar de dibujo). Hay una página por ventana; lo elegido se conserva mientras vive la ventana | `RackCadWindowViewModel.Larguero.cs` |
+| LG-S02 | Los tipos unen los dos catálogos: «Escalón», «Tubo», «Canal», «Ángulo», «Viga W» y «Viga S (IPS)». De AISC: HSS → «Tubo», C → «Canal», L → «Ángulo», W → «Viga W», S → «Viga S (IPS)». El «Canal CPS…» de la nota cae en «Canal» cuando el catálogo tenga su fila | `LargueroSectionNaming.TypeOf` |
+| LG-S03 | El tipo de un larguero de RackCad sale de su columna `family` cuando no dice «Larguero»; si no, de las palabras de su nombre y su id («escalón», «tubo», «canal»). Su nombre es el del catálogo sin «Larguero» delante ni «con ménsula …» detrás, con la palabra del tipo escrita como el tipo («Larguero escalon troquel redondo» → «Escalón troquel redondo»). Dos largueros con el mismo nombre por tipo llevan su id. No se añadió una columna `tipo` a `secciones.csv`: hoy el Owner puede fijar el tipo en Excel con la columna `family` | `LargueroSectionNaming.TypeOf`, `NameOf`; `LargueroSectionCatalog.Build` |
+| LG-S04 | «Tipo» es una lista desplegable con su cuenta, no los botones de familia del prototipo (pregunta 12), porque los tipos cambian con el catálogo. La página arranca en «Largueros de RackCad». Un tipo que el catálogo nuevo no tiene vuelve a «Todos los tipos» | `LargueroWorkbenchViewModel.RefreshTypes`, `ResetToDefaults` |
+| LG-S05 | Una sección elegida que el filtro oculta **sigue elegida**, y la página lo dice («La sección elegida, «Tubo 1.9"», no coincide con el filtro: sigue elegida.»). El inspector clásico elegía la primera visible sin decirlo | `LargueroWorkbenchViewModel.OutsideFilterText` |
+| LG-S06 | El peralte de una sección AISC es el de su catálogo, fijo: d de W, C y S; el alto de un HSS; el ala larga de un L. Al cambiar de sección, el peralte elegido se queda si la nueva lo admite; si no, el primero de la nueva | `LargueroSectionCatalog.DepthOf`, `ChooseSection` |
+| LG-S07 | La ménsula sigue a la sección (la de su fila; ninguna con una sección AISC) hasta que el usuario elige una; desde entonces se conserva al cambiar de sección. «Volver a los valores por defecto» la vuelve a seguir | `LargueroWorkbenchViewModel.ChooseSection` |
+| LG-S08 | El nombre previsto de LG-05 con una sección AISC lleva su designación en lugar de «P<peralte>»: «Larguero 96 in · C10X15.3». En la lista de materiales el larguero se describe como en el BOM clásico (`DescribeBeam`: «Escalón calibre 14 · P3»). Sin ménsula elegida, la lista no pone la de la fila | `LargueroDraftSummary` |
+| LG-S09 | La lista es una `ListBox` virtualizada de 320 px de alto, con su propio desplazamiento dentro de la página (el doble desplazamiento del dolor 19 sigue; aceptado en un borrador) | `LargueroWorkbenchView.xaml` |
+| LG-S10 | Los catálogos se leen la primera vez que se abre la página, no al abrir la ventana. El AISC con el mismo proveedor que RACKSECCION y Cantilever (`CsvStructuralSectionCatalogProvider` sobre `CatalogDirectory`) | `RackCadWindowViewModel.Larguero.cs` |
+| LG-S11 | Dos bloques XAML en `RackCadWindowView.xaml` y no uno: la tarjeta va dentro de «Nuevo» y la página es hermana de las demás páginas en la rejilla del centro | `RackCadWindowView.xaml` |
+
+**Lo que falta para terminarlo** (para el Owner; la página lo lista también, plegado):
+1. **«Guardar en la biblioteca…» (pregunta 6).** `LargueroDesign` guarda solo `BeamProfileId` (un larguero de RackCad), `Peralte`, `Length` y
+   `MensulaOverride`. Una sección AISC necesita guardar también su catálogo y su id: es un cambio del formato del diseño (`.rackcad.json`,
+   I-11) y de `RackDesignValidation`. Decisión del Owner: ¿un campo nuevo (catálogo + id de sección) o un diseño de larguero nuevo?
+2. **Dibujarlo (LG-03, pregunta 3).** No hay un bloque del larguero completo (el perfil con sus 2 ménsulas). ¿Se inserta como pieza suelta,
+   como el perfil estructural, con una puerta numerada propia? Para una sección AISC haría falta la geometría de RACKSECCION y, con la
+   familia S, su advertencia de ADR-0023.
+3. **La vista (pregunta 8):** el alzado esquemático con el peralte y la ménsula a escala. Sigue [PENDIENTE] cómo se apoya la ménsula en el
+   poste.
+4. **«Exportar el BOM»** a Excel y CSV en «Más» (pregunta 7).
+5. **El nombre del larguero** (un campo con el automático de la pregunta 5 como sugerencia) y **abrir aquí un larguero de la biblioteca**
+   (hoy, «Abrir» de la biblioteca lo lleva al editor clásico por RACKBIBLIOTECAABRIR).
+6. **El perfil estructural (RACKSECCION) y la «sola página»:** decidir si el inspector se funde en esta página (filtro «Perfiles AISC» +
+   «Insertar en el dibujo…») o sigue como herramienta aparte. Hoy sigue clásico, con su tarjeta.
+7. **Que Selectivo y Dinámico elijan un larguero hecho aquí** (pregunta 4): otra iniciativa.
+8. **Los nombres y tipos de los largueros de RackCad** salen de su nombre (LG-S03); una columna `tipo` (o `family` con el tipo) en
+   `secciones.csv` los fijaría.
+9. **El smoke en AutoCAD:** la página en la paleta real (anchos, foco, desplazamiento de la lista con mil secciones).
+10. **Quitar la tarjeta clásica «Larguero»** cuando la página guarde (el clásico desaparece al final de I-64).
+
+**Las pruebas:**
+- `tests/RackCad.Tests/LargueroSectionsTests.cs` (Core, nueva, 17 casos), sobre los catálogos reales y catálogos pequeños hechos en la
+  prueba:
+  - los 8 largueros llamados por su tipo, sin «Larguero» ni «ménsula» en el nombre, con el nombre del catálogo al lado;
+  - la columna `family` manda cuando dice otra cosa que «Larguero» (con «Canal CPS 4"»), y un tipo del catálogo va antes de «Otro»;
+  - dos largueros con la misma sección llevan su id;
+  - las secciones AISC por familia, con su peralte y su peso;
+  - el orden por tipo, catálogo y orden natural (seis pares), y los tipos que unen los dos catálogos;
+  - el filtro por catálogo, tipo y texto, sin acentos ni separadores;
+  - un catálogo que no se lee;
+  - el resumen: la receta de `LargueroBomBuilder.Component`, el nombre previsto, una sección AISC sin y con ménsula, y lo que falta.
+- `tests/RackCad.UI.Tests/Workspace/RackCadLargueroWorkbenchTests.cs` (UI, nueva, 18 casos):
+  - la tarjeta abre la página bajo «Nuevo», con los valores del clásico; la miga vuelve; la página conserva lo elegido;
+  - no es un borrador: ni la lista de borradores, ni la cabecera, ni la puerta; solo «Abrir el editor clásico» corre una acción
+    (RACKNUEVO Larguero);
+  - abre sin dibujo y sigue igual al cambiar de dibujo;
+  - el filtro por catálogo y tipo, la búsqueda y «Ninguna sección coincide…»;
+  - el filtro que oculta la sección elegida; un nulo o una cabecera no son elecciones;
+  - una sección AISC (peralte fijo, ménsula que falta) y la ménsula que sigue a la sección hasta que el usuario elige;
+  - la longitud no válida (cuatro casos);
+  - «Volver a los valores por defecto»;
+  - los nombres de automatización únicos y con posición;
+  - el catálogo AISC que falla, el de RackCad sin largueros ni ménsulas, y un fallo contenido en el mensaje de la ventana;
+  - con WPF real (STA) y sin errores de enlace: la tarjeta, la página, los filtros, la lista (cabeceras apagadas, nombres), el resumen, el
+    campo marcado, los botones y la miga; y en estrecho, el resumen debajo y el aviso del catálogo.
+- **Censos y guardas:** ninguno cambió. La página es un `UserControl` (fuera del censo de ventanas de ADR-0029); los archivos nuevos de
+  `VentanaRackCad` no nombran AutoCAD, el Plugin, `LockDocument` ni `SendStringToExecute` (guarda de capas de `RackCadWindowListTests`), y
+  el código de Application no usa `System.IO.Path`.
+- **Una mirada a la página:** con una prueba temporal (ya borrada) se dibujó la ventana con WPF real (`RenderTargetBitmap`) en «Nuevo», en
+  la página a 1200 px, con «Perfiles AISC › Canal» y en 640 px (`hs65\t5\lg\render-*.png`, scratchpad de la sesión). Corrigió dos cosas
+  antes de las pruebas finales: en estrecho, el título y los botones de la cabecera de la página se pisaban (ahora van en una sola fila que
+  se parte), y la lista de materiales decía «Larguero: Larguero 96 in · P3» (ahora «Larguero: Escalón calibre 14 · P3», como el BOM clásico).
+- **Comprobación en rojo:** diecinueve piezas rotas a propósito, una a una, con script (`hs65\t5\lg\red.py` en el scratchpad de la sesión;
+  salida en `red-out.txt`, `red-summary.txt` y `red-logs\`). Antes de cada rotura el script copia el archivo FUERA del worktree
+  (`hs65\t5\lg\red-backup\`); después lo restaura con sus bytes, con fecha nueva, y comprueba su SHA-256: las 20 restauraciones, iguales.
+  Tras cada pieza se compiló y corrió su clase focal (Core: `LargueroSectionsTests`; UI: `RackCadLargueroWorkbenchTests`):
+  1. R1, el nombre conserva «Larguero» delante: fallan 4;
+  2. R2, el nombre conserva «con ménsula …» detrás: fallan 4;
+  3. R3, el tipo no mira la columna `family`: falla 1;
+  4. R4, el filtro no mira el catálogo: falla 1;
+  5. R5, el filtro no mira el tipo: fallan 2;
+  6. R6, orden ordinal en lugar de natural: falla 1;
+  7. R7, dos largueros con la misma sección se leen igual: falla 1;
+  8. R8, una sección AISC sin ménsula cuenta como completa: fallan 2;
+  9. R9, la lista de materiales pone la ménsula de la fila sin ménsula elegida: **sobrevivió** en la primera vuelta (ninguna prueba miraba
+     la lista de un larguero de RackCad sin ménsula del catálogo); se añadió el aserto a `TheSummarySaysWhatIsMissing` y en la segunda vuelta
+     falla 1;
+  10. R10, la ménsula no sigue a la sección: fallan 4;
+  11. R11, un filtro que oculta la sección elegida la cambia por la primera visible: falla 1;
+  12. R12, un tipo que el catálogo nuevo no tiene se queda en el filtro: falla 1;
+  13. R13, la columna no marca «Nuevo» con la página del larguero: falla 1;
+  14. R14, `ShowPage` no avisa de la página del larguero: falla 1 (la de la vista: la página no se muestra);
+  15. R15, una longitud de 0 vale: falla 1 (el caso «0» de la teoría);
+  16. R16, el catálogo AISC que falla no se dice: fallan 2;
+  17. R17, las cabeceras de tipo de la lista se pueden elegir (vista): falla 1;
+  18. R18, la tarjeta de «Nuevo» no abre la página (vista): falla 1;
+  19. R19 (segunda vuelta, tras precalcular las claves de la búsqueda), la búsqueda no mira el nombre en el catálogo ni el id: falla 1.
+
+  Después se buscaron restos en `git diff` y en los archivos nuevos (`// R…`, `if (false`, `Where(o => true)`): ninguno. Se recompiló la
+  solución con `--no-incremental` antes de las suites completas.
+- **Los números,** sobre las fuentes finales, con la solución recompilada con `--no-incremental` en Debug:
+  - **UI completa:** 2979 correctas, 0 con error, 48 omitidas (3027): la base 2961 / 0 / 48 más las 18 nuevas.
+  - **Core Full:** 19309 correctas, 0 con error, 403 omitidas (19712): la base 19292 / 0 / 403 más las 17 nuevas.
+  - **Build Debug de la solución (Plugin incluido):** 0 errores; las advertencias son las MSB3277 de las referencias de AutoCAD y las de los
+    analizadores de xunit, que ya estaban.
+  - Las dos suites corrieron a la vez (33 min la UI, 32 min Core).
