@@ -162,6 +162,9 @@ namespace RackCad.UI.VentanaRackCad
                 case RackSystemKind.PalletFlow:
                     hasDoor = _door != null;
                     return true;
+                case RackSystemKind.PushBack: // T5 pb
+                    hasDoor = _pushBackDoor != null;
+                    return true;
                 default:
                     hasDoor = false;
                     return false;
@@ -176,6 +179,7 @@ namespace RackCad.UI.VentanaRackCad
             {
                 case RackSystemKind.SelectiveRack: return CreateSelectiveDraft(seed, session, rackId, label, out failure);
                 case RackSystemKind.PalletFlow: return CreateDynamicDraft(seed, session, rackId, label, out failure);
+                case RackSystemKind.PushBack: return CreatePushBackDraft(seed, session, rackId, label, out failure); // T5 pb
                 default:
                     failure = RackCadDraftNaming.NoEditorText(seed.Kind);
                     return null;
@@ -399,6 +403,7 @@ namespace RackCad.UI.VentanaRackCad
                     return selective.IsNewRack && _selectiveDrafts.TryGetValue((entry.Session, entry.RackId), out var s) && ReferenceEquals(s.Editor, selective);
                 case DynamicEditorViewModel dynamic:
                     return dynamic.IsNewRack && _dynamicDrafts.TryGetValue((entry.Session, entry.RackId), out var d) && ReferenceEquals(d.Editor, dynamic);
+                case PushBackEditorViewModel pushBack: return IsLivePushBack(pushBack, entry.Session, entry.RackId); // T5 pb
                 default:
                     return false;
             }
@@ -410,6 +415,7 @@ namespace RackCad.UI.VentanaRackCad
             {
                 case SelectiveEditorViewModel selective: return (selective.Name, selective.IsDirty, selective.IsWriting);
                 case DynamicEditorViewModel dynamic: return (dynamic.Name, dynamic.IsDirty, dynamic.IsWriting);
+                case PushBackEditorViewModel pushBack: return (pushBack.Name, pushBack.IsDirty, pushBack.IsWriting); // T5 pb
                 default: return (null, false, false);
             }
         }
@@ -430,6 +436,7 @@ namespace RackCad.UI.VentanaRackCad
                     var dynamicCopy = dynamic.Draft.SnapshotForWrite();
                     var dynamicBase = dynamic.BaselineDesignJson == null ? null : new RackProjectStore().Deserialize(dynamic.BaselineDesignJson);
                     return (dynamicBase?.DynamicDesign == null ? null : dynamicBase, dynamicCopy == null ? null : RackProject.ForDynamic(dynamicCopy.Design));
+                case PushBackEditorViewModel pushBack: return CopyOfPushBack(pushBack); // T5 pb
                 default:
                     return (null, null);
             }
@@ -445,6 +452,9 @@ namespace RackCad.UI.VentanaRackCad
                     break;
                 case DynamicEditorViewModel dynamic:
                     CloseDynamicEditor(dynamic);
+                    break;
+                case PushBackEditorViewModel pushBack: // T5 pb
+                    ClosePushBackEditor(pushBack);
                     break;
             }
         }

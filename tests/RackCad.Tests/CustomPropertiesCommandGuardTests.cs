@@ -109,8 +109,15 @@ namespace RackCad.Tests
         /// </summary>
         internal static readonly string[] A14BomCommands = { "RACKBOMLEER" };
 
+        /// <summary>
+        /// Lo que la quinta tanda de la ventana RackCad (parte «pb», T5 pb) anade, EXACTAMENTE: la puerta de un Push Back, que lee sin marca de
+        /// Deshacer y escribe, inserta vistas o inserta un rack nuevo en una orden cada una, sin alias, en
+        /// <c>src/RackCad.Plugin/VentanaRackCad/RackCadPushBackDoorCommands.cs</c>. La base se fija de nuevo con estos cuatro nombres.
+        /// </summary>
+        internal static readonly string[] A14PushBackDoorCommands = { "RACKPUSHBACKABRIR", "RACKPUSHBACKAPLICAR", "RACKPUSHBACKINSERTAR", "RACKPUSHBACKNUEVO" };
+
         /// <summary>El censo vigente: apertura, G7, G15, I-65, el panel de F1 y el descarte de F4-T3C2, cada nombre una vez.</summary>
-        internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).Concat(I65Commands).Concat(F1PanelCommands).Concat(F4PanelDiscardCommands).Concat(A14WindowCommands).Concat(A14DynamicDoorCommands).Concat(A14SelectiveDoorCommands).Concat(A14UtilityCommands).Concat(A14CabeceraDoorCommands).Concat(A14VariablesDoorCommands).Concat(A14BomCommands).ToArray();
+        internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).Concat(I65Commands).Concat(F1PanelCommands).Concat(F4PanelDiscardCommands).Concat(A14WindowCommands).Concat(A14DynamicDoorCommands).Concat(A14SelectiveDoorCommands).Concat(A14UtilityCommands).Concat(A14CabeceraDoorCommands).Concat(A14VariablesDoorCommands).Concat(A14BomCommands).Concat(A14PushBackDoorCommands).ToArray(); // T5 pb
 
         // ================================================================ censo
 

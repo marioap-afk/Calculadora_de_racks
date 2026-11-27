@@ -100,7 +100,8 @@ namespace RackCad.UI.VentanaRackCad
         // A design of Selectivo or Dinámico opens here when the window can make a new rack of that system; the others (and those two
         // without their door) open in their classic editor.
         private bool OpensHere(RackSystemKind kind) =>
-            (kind == RackSystemKind.SelectiveRack && CanStartNewSelective) || (kind == RackSystemKind.PalletFlow && CanStartNewDynamic);
+            (kind == RackSystemKind.SelectiveRack && CanStartNewSelective) || (kind == RackSystemKind.PalletFlow && CanStartNewDynamic)
+            || (kind == RackSystemKind.PushBack && CanStartNewPushBack); // T5 pb: a Push Back opens as a draft of the window
 
         private void OpenLibraryDesign(RackCadLibraryRow row)
         {
@@ -144,7 +145,7 @@ namespace RackCad.UI.VentanaRackCad
             var opening = OpenAsNewDraft(RackCadDraftSeed.FromLibrary(project, name, LibraryOrigin(name)));
             if (opening == null || !opening.Opened) return false;
 
-            object editor = project.Kind == RackSystemKind.SelectiveRack ? NewSelectiveEditor : NewDynamicEditor;
+            object editor = project.Kind == RackSystemKind.SelectiveRack ? NewSelectiveEditor : project.Kind == RackSystemKind.PushBack ? NewPushBackEditor : NewDynamicEditor; // T5 pb
             if (editor != null) _librarySources[editor] = project;
             return true;
         }

@@ -224,6 +224,7 @@ namespace RackCad.UI.VentanaRackCad
         BillOfMaterials IRackBomPageHost.DraftBomOf(SessionId session, string rackId)
         {
             if (string.IsNullOrWhiteSpace(rackId)) return null;
+            if (PushBackDraftBom(session, rackId) is BillOfMaterials pushBack) return pushBack; // T5 pb
 
             // The BOM of a draft is the one of its handler, computed on copies here (SD-02 / BM-02: the BOM of the draft of the classic):
             // a Selectivo over a system resolved from a COPY of its last valid design (ResolveCopy: the BOM imposes on what it reads), a
@@ -246,6 +247,7 @@ namespace RackCad.UI.VentanaRackCad
         bool IRackBomPageHost.HasUnwrittenDraft(SessionId session, string rackId)
         {
             if (string.IsNullOrWhiteSpace(rackId)) return false;
+            if (HasUnwrittenPushBack(session, rackId)) return true; // T5 pb
             if (_selectiveDrafts.TryGetValue((session, rackId), out var selective)) return !selective.Editor.IsNewRack && selective.Editor.IsDirty;
             return _dynamicDrafts.TryGetValue((session, rackId), out var dynamic) && !dynamic.Editor.IsNewRack && dynamic.Editor.IsDirty;
         }
@@ -258,6 +260,7 @@ namespace RackCad.UI.VentanaRackCad
                 .Concat(_dynamicDrafts
                     .Where(p => p.Key.Session == session && !p.Value.Editor.IsNewRack && p.Value.Editor.IsDirty)
                     .Select(p => (p.Key.RackId, !string.IsNullOrWhiteSpace(p.Value.Editor.Name) ? p.Value.Editor.Name.Trim() : RackList.NameOf(p.Key.RackId))))
+                .Concat(UnwrittenPushBackDrafts(session)) // T5 pb
                 .OrderBy(d => d.Item2, RackListViewModel.NaturalNameComparer.Instance)
                 .ToList();
             return drafts;

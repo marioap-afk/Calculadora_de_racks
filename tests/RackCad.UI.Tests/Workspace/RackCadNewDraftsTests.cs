@@ -613,8 +613,9 @@ namespace RackCad.UI.Tests
             }
 
             Refused(rig.Window.OpenAsNewDraft(null!), "No hay un diseño que abrir como borrador.");
+            // T5 pb: Push Back has an editor in the window now; without the door of Push Back (this door is the one of Selectivo) it is refused for the door.
             Refused(rig.Window.OpenAsNewDraft(RackCadDraftSeed.Defaults(RackSystemKind.PushBack)),
-                "Push Back todavía no tiene editor en la ventana: se abre con su editor clásico.");
+                "Aquí no se puede crear un rack en el dibujo.");
             Refused(rig.Window.OpenAsNewDraft(RackCadDraftSeed.Defaults(RackSystemKind.Selective)),
                 "Cabecera todavía no tiene editor en la ventana: se abre con su editor clásico.");
             Refused(rig.Window.OpenAsNewDraft(RackCadDraftSeed.FromProject(RackProject.ForSelectiveRack(null!))), "El diseño no tiene un Selectivo que abrir.");

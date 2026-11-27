@@ -42,6 +42,7 @@ namespace RackCad.UI.VentanaRackCad
             SizeChanged += OnSizeChanged;
             ApplySideCollapsed();
             ShowVariablesPage(); // T4 va (RackCadWindowView.Variables.cs)
+            BuildPushBackChrome(); // T5 pb (RackCadWindowView.PushBack.cs)
         }
 
         /// <summary>Below this width the two columns do not fit: the side column is hidden on its own until the window is wider again.</summary>
@@ -91,6 +92,7 @@ namespace RackCad.UI.VentanaRackCad
             if (e.PropertyName == nameof(RackCadWindowViewModel.NewDynamicEditor)) ShowNewContent();
             if (e.PropertyName == nameof(RackCadWindowViewModel.NewSelectiveEditor)) ShowNewSelectiveContent();
             if (e.PropertyName == nameof(RackCadWindowViewModel.VariablesPage)) ShowVariablesPage(); // T4 va
+            OnPushBackPropertyChanged(e.PropertyName); // T5 pb
         }
 
         // E2 P3: «Nuevo» hosts the editor of the new Selectivo being made here; the view is the one the page of the rack shows once it is
@@ -174,6 +176,7 @@ namespace RackCad.UI.VentanaRackCad
             foreach (var gone in _selectiveViews.Keys.Where(editor => !liveSelective.Contains(editor)).ToList()) _selectiveViews.Remove(gone);
 
             if (ShowCabeceraContent()) return; // T4 cb: the editor of a cabecera of its own
+            if (ShowPushBackContent()) return; // T5 pb: the editor of a Push Back
             var active = _viewModel.ActiveDynamicEditor;
             var activeSelective = active == null ? _viewModel.ActiveSelectiveEditor : null;
             if ((active == null && activeSelective == null) || _viewModel.ShowPanel)
