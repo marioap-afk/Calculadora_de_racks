@@ -7824,3 +7824,88 @@ Diez partes, cada una con su revisión independiente y sus correcciones. Cada me
   - F4B cerrada como reemplazada;
   - ADR, HANDOFF y ROADMAP;
   - el merge a `main`.
+
+## Sexta tanda: smoke en AutoCAD (sesión, 2026-11-27, 12:21 a 13:15)
+
+- **Orden del Owner:** «Haz la prueba en autocad». AutoCAD estaba cerrado. La comprobación se hizo en dos tramos, con un arreglo entre ellos.
+- **DLL del primer tramo:** Debug de esta rama en `265bee31` (CI verde, run 46047726415), compilado sobre el árbol limpio.
+  - SHA-256 (prefijo): Plugin `DF8E6B6A9E47D785`, UI `E571B727DD02D137`, Application `AF55B79C6B3BD20E`, Domain `B8436BCC72FA3434`.
+- **DLL del segundo tramo:** Debug en `25ab972c`, el arreglo de la paleta (abajo). Solo cambia el Plugin: `303193222EEC9DB8`. UI,
+  Application y Domain son los mismos bytes que en el primer tramo.
+- **Carga:** NETLOAD «Load Once» en cada arranque; FILEDIA a 0 solo para la ruta y de vuelta a 1.
+- **Dibujo:** una copia de trabajo de `smoke-sel-prep.dwg` (huella `2FA0BC027C615D53`). Se cerró siempre sin guardar. Al final, la copia
+  conserva la misma huella y la fecha del 25-nov.
+- **Diagnóstico:** se cargó una sola vez un DLL de diagnóstico propio de la sesión (`RcDiag`, fuera del repo). Es de solo lectura: lee por
+  reflexión lo que devuelve la paleta y las áreas de trabajo de las pantallas. No escribe en el dibujo ni en la paleta.
+- **Dejado como estaba:** la paleta, a 80,80 con unos 600 × 600 (lo que guarda el perfil); FILEDIA en 1; la configuración del usuario, sin
+  tocar a mano; ningún diseño guardado en la biblioteca.
+
+### Resultados (OBSERVADO)
+
+| Paso | Parte | Resultado | Observación |
+|---|---|---|---|
+| S6-1 | at | PASA | SEL-A › «Avanzado» › «Todos los postes»: peralte 5 con «Aplicar a todos», sin «Actualizar». El botón pasó a «Actualizar todo (1)». DIN 1 › «Rack»: peralte 4 → «Actualizar todo (2)». Al pulsarlo: «AutoCAD escribió 2 borradores en una sola operación. Un «U» en AutoCAD lo deshace todo», con SEL-A (Selectivo) y DIN 1 (Dinámico) en «Escrito». |
+| S6-2 | at | PASA | Un solo «U» deshizo RACKACTUALIZARTODO. Leído por COM después del «U»: `PostPeralte` 3 en SEL-A y 3 en DIN 1 (los valores de antes). |
+| S6-3 | st | PASA | Tras ese «U», el editor abierto de DIN 1 quedó marcado («El dibujo cambió desde que se leyó…») y seguía mostrando 4. En la lista, SEL-A y DIN 1 llevaban la marca roja. «Volver a leer del dibujo» quitó el aviso y DIN 1 volvió a verde. |
+| S6-4 | st | PASA | ZOOM › Extensión con el editor de DIN 1 abierto y limpio: no lo marcó. |
+| S6-5 | rl | PASA | RACKVARIABLES abrió la página «Variables» dentro de la ventana. |
+| S6-6 | rl | PASA | RLY abrió «Almacén» › «Rejilla» dentro de la ventana. |
+| S6-7 | pr, ui | PASA | «Nuevo» › «Push Back en esta ventana» › «Propiedades»: «Zona» = «T6». «Insertar en el dibujo…» con solo la frontal: AutoCAD pidió «Punto de insercion de la vista Push Back» (ya no «de la cabecera», O-3 de la quinta tanda). En el sobre de «Push Back 1 - frontal entrada-salida» está la propiedad «Zona». Ver O-1. |
+| S6-8 | pr | PASA | Un solo «U» deshizo RACKPUSHBACKNUEVO, con la vista y sus propiedades. Entre la inserción y el «U» hubo una lectura por COM, y esta vez no dejó un paso vacío (ver O-1 de la quinta tanda). |
+| S6-9 | b1 | PASA | PB 1 › «Editar aquí» › F1 N1, «Claro sobre la tarima» de 6 a 8, sin «Actualizar» → «Insertar vista…» › «Planta» → «AutoCAD redibujó 1 vista del rack con el borrador e insertó 1 vista nueva» (RACKPUSHBACKINSERTAR, «COMPLETED (1/1)»). Leído por COM: los sobres de «PB 1 - lateral 1» y «PB 1 - planta» llevan el mismo `Design`, idéntico byte a byte (`ClearHeight` 8, 6, 6). Solo cambian `View` y `Section`. El editor quedó en «Limpio». |
+| S6-10 | rl | FALLA → arreglado en `25ab972c` | La paleta no recordaba su posición. Se dejó en 60,60 (1290 × 860) y se cerró AutoCAD; el perfil guardó `FloatInfo` 60,60. Al reabrir, volvió en 80,80 con el tamaño correcto. Dentro de una misma sesión, un segundo RACKCAD también la llevaba de 60,60 a 80,80. Causa y arreglo: S6-R1. |
+| S6-11 | rl | PASA (sobre `25ab972c`) | Con la paleta en 60,60 al cerrar, al reabrir AutoCAD el primer RACKCAD la mostró en 60,60 con 1290 × 860, y un segundo RACKCAD no la movió. |
+| S6-12 | rl | PASA (sobre `25ab972c`) | Regla de pantalla dentro de la sesión: con la paleta en 100,1200 (fuera de la pantalla), RACKCAD la trajo a 80,80 con su tamaño. |
+| S6-13 | rl | PASA (sobre `25ab972c`) | Regla de pantalla al abrir la sesión: AutoCAD guardó la paleta con 1198 de alto, más que el área de trabajo (1032). Al reabrir, el primer RACKCAD la recortó a 66,0–1356,1032. Ver O-2. |
+| S6-14 | st | OBSERVACIÓN | Cambiar a Layout1 y volver a Model (CTAB) con el editor de SEL-A abierto y limpio: lo marcó, y la lista pasó a «puede no estar al día». «Volver a leer del dibujo» quitó la marca. Ver O-3. |
+
+### S6-R1: la paleta volvía a 80,80 (causa medida y arreglo)
+
+- **Lo medido con el diagnóstico:**
+  - la paleta estaba en 60,60–1350,920, y `PaletteSet.Location` devolvió `{X=60, Y=1350}`;
+  - `DeviceIndependentLocation` devolvió lo mismo;
+  - `Size` devolvió bien 1290 × 860;
+  - con DPI 96, el área de trabajo de la pantalla principal es 0,0–1920,1032.
+
+  En AutoCAD 2025, el getter da el borde **derecho** como Y.
+- **Consecuencia:** `KeepOnScreen` (T6 rl) creía que la barra de título estaba por debajo de la pantalla y llevaba la paleta a la principal,
+  a 80 de la esquina. Pasaba en cada `Show()`, también en el primero de la sesión. Por eso se perdía la posición guardada. El setter de
+  `Location` sí funciona.
+- **Arreglo (`25ab972c`):**
+  - La regla ya no lee `Location`: toma la esquina donde WPF muestra la ventana RackCad (`_root.PointToScreen`), en píxeles de dispositivo
+    como `Size` y las áreas de trabajo. Solo escribe `Location`.
+  - Si la ventana no está en pantalla (`PresentationSource` nulo), no mide ni mueve.
+  - Sin `DllImport` ni reflexión: las invariantes de F1-T3B siguen.
+  - La guarda de la fuente fija que la regla nunca lee `Location`.
+- **Números:** Core Full 19638 / 0 / 403 sobre `25ab972c`. El Plugin en Debug, con sus dependencias: 0 errores y 0 advertencias. El
+  arreglo no toca la UI.
+
+### Observaciones
+
+- **O-1 (de la prueba, no de RackCad):** el valor de la propiedad quedó como «T6» seguido de una tabulación. La tecla Tab del operador entró
+  en el campo de valor, que admite varias líneas. No es un defecto de pr.
+- **O-2 (cosmético, rl):** cuando la regla mueve la paleta, la deja unos 6 px a la derecha de donde estaba el marco (S6-13: 66 en lugar
+  de 60), porque mide la esquina del contenido y no la del marco. Solo pasa cuando la paleta estaba fuera de alcance.
+- **O-3 (st, para el Owner):** la señal cuenta cualquier objeto del dibujo añadido, borrado o modificado. Cambiar de presentación modifica
+  objetos (la presentación y sus ventanas), así que marca los editores aunque ningún rack haya cambiado. El aviso es conservador, coherente
+  con lo diseñado (O-5: «Avisar y ofrecer releer») y no pierde nada. Afinarlo exigiría filtrar por objetos de RackCad en el puente de
+  eventos, que está bajo las invariantes de F1. QSAVE no se probó, para no guardar la copia.
+- **O-4 (de la herramienta):** AutoCAD no guarda en el perfil una posición flotante fuera de la pantalla; se queda con la última válida.
+  Por eso S6-13 usó una paleta más alta que el área de trabajo en lugar de una fuera de la pantalla.
+- **O-5 (del equipo):** a mitad del smoke, Windows avisó de batería baja (5 %); el cargador se conectó y no se perdió nada.
+
+### Lo que este smoke no cubrió
+
+- **at:**
+  - cero escrituras si uno falla;
+  - un bloque importado en segundo lugar;
+  - el renombrado;
+  - las definiciones huérfanas;
+  - el tiempo con muchos racks.
+- **pr:** cancelar la colocación.
+- **bom:** el aviso al abrir un medio frente que no cabe.
+- **seg:** el «Aceptar» del clásico.
+- **b1:** el escenario B y el frontal B.
+- **st:** PAN, QSAVE y matrices.
+
+Quedan para la prueba guiada del Owner sobre el SHA final, o como limitación declarada si el Owner no las pide.
