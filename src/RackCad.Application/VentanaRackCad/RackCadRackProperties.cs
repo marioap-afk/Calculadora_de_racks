@@ -90,6 +90,13 @@ namespace RackCad.Application.VentanaRackCad
         public const string NewRackKeptText = " Siguen en su pestaña «Propiedades»: escríbelas con «Actualizar».";
 
         /// <summary>
+        /// Correction M-1 of the review of T6 pr: the note of the tab when the rows of a draft were kept after an insertion that could not
+        /// read the drawing again. «Actualizar» writes them only over a collection with no property (<see cref="NewRackFingerprint"/>).
+        /// </summary>
+        public const string NotReadAfterInsertionText =
+            "No se pudieron volver a leer del dibujo tras la inserción y estas filas no se escribieron. «Actualizar» las escribe solo si en el dibujo sigue sin haber propiedades.";
+
+        /// <summary>
         /// The tab «Propiedades» of a draft of «Nuevo» (T6 pr; VA-S9, answered by the Owner on 2026-11-27: «Sí, y se escriben al
         /// insertarlo»): the rack is not in the drawing, so nothing is read; the tab is writable and empty, and its draft is written by the
         /// command that inserts the rack (the NUEVO commands of the door), in the same command, after the insertion.
@@ -99,29 +106,39 @@ namespace RackCad.Application.VentanaRackCad
                 NewRack: true);
 
         /// <summary>
-        /// The fingerprint the draft of a NEW rack is written over (T6 pr): the authority of the rack that the same command has just
-        /// inserted, while it is one writable collection with no property (nothing was written on it). Null, with the reason, otherwise: the
-        /// draft is never written over properties the editor did not see, nor over a collection the authority keeps read only.
+        /// The tab of a rack just inserted whose properties were not written and could not be read again (correction M-1 of the review of
+        /// T6 pr): writable, with no base and no fingerprint, so the rows of the draft are kept («Modificado», D-08) and its «Actualizar»
+        /// writes them only over a collection with no property, as at the insertion; <see cref="RackPropertiesRead.Reason"/> is its note.
+        /// </summary>
+        public static RackPropertiesRead NotReadAfterInsertion()
+            => new RackPropertiesRead(true, false, NotReadAfterInsertionText, Array.Empty<CustomPropertyDraftEntry>(),
+                Array.Empty<RackPropertiesViewSummary>(), 0, null);
+
+        /// <summary>
+        /// The fingerprint a draft with no fingerprint is written over (T6 pr): the one of a NEW rack, or rows kept without a read (M-1).
+        /// It is the authority of the rack as it is now (for a new rack, the one the same command has just inserted), while it is one
+        /// writable collection with no property. Null, with the reason, otherwise: the draft is never written over properties the editor
+        /// did not see, nor over a collection the authority keeps read only. The reasons name no system (M-2): a cama or a line too.
         /// </summary>
         public static string NewRackFingerprint(RackCustomPropertiesAuthorityResult inserted, out string refusal)
         {
             refusal = null;
             if (inserted == null)
             {
-                refusal = "no se pudieron leer las del rack nuevo.";
+                refusal = "no se pudieron leer del dibujo.";
                 return null;
             }
 
             if (inserted.Outcome != RackCustomPropertiesAuthorityOutcome.Single || inserted.Collection == null || !inserted.Collection.CanWrite
                 || inserted.Collection.Document == null)
             {
-                refusal = string.IsNullOrWhiteSpace(inserted.Error) ? "el rack nuevo no admite que se escriban." : inserted.Error.Trim();
+                refusal = string.IsNullOrWhiteSpace(inserted.Error) ? "el dibujo no admite que se escriban." : inserted.Error.Trim();
                 return null;
             }
 
             if (inserted.Collection.Document.Entries.Count > 0)
             {
-                refusal = "el rack nuevo ya tenía propiedades al insertarse y no se escriben encima.";
+                refusal = "en el dibujo ya hay propiedades que el editor no leyó, y no se escriben encima.";
                 return null;
             }
 
@@ -131,8 +148,8 @@ namespace RackCad.Application.VentanaRackCad
         /// <summary>
         /// The answer of «Insertar en el dibujo…» with the tab of the new rack (T6 pr). Only when AutoCAD placed the rack; it always carries
         /// what the drawing holds then (<paramref name="after"/>), so the tab goes on from the rack of the drawing: with nothing to write the
-        /// message does not change; written, it says so; not written, it says why and, when the rack can hold them (its tab is writable),
-        /// that they stay in its tab to write with «Actualizar».
+        /// message does not change; written, it says so; not written, it says why and, when the tab keeps them (the rack can hold them, or
+        /// it could not be read again: M-1), that they stay in its tab to write with «Actualizar».
         /// </summary>
         public static RackDesignWritten AnswerForNewRack(RackDesignWritten inserted, RackPropertiesWrite write, string error, RackPropertiesRead after)
         {
@@ -141,7 +158,7 @@ namespace RackCad.Application.VentanaRackCad
             if (error == null) return inserted with { Message = inserted.Message + NewRackWrittenText, Properties = after };
             return inserted with
             {
-                Message = inserted.Message + " Pero sus propiedades no se escribieron: " + error.Trim() + (after != null && after.Writable ? NewRackKeptText : string.Empty),
+                Message = inserted.Message + " Pero sus propiedades no se escribieron: " + error.Trim() + (after == null || after.Writable ? NewRackKeptText : string.Empty),
                 PropertiesError = error.Trim(),
                 Properties = after,
             };

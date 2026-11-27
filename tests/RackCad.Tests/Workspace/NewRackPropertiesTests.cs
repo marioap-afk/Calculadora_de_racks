@@ -85,7 +85,7 @@ namespace RackCad.Tests
             // The rack already holds properties.
             var holding = Authority("H1", View("H1", properties: Props(Entry(IdA, "Zona", "B"))), View("H2", properties: Props(Entry(IdA, "Zona", "B")), view: "planta"));
             Assert.Null(RackPropertiesRules.NewRackFingerprint(holding, out var refusal));
-            Assert.Equal("el rack nuevo ya tenía propiedades al insertarse y no se escriben encima.", refusal);
+            Assert.Equal("en el dibujo ya hay propiedades que el editor no leyó, y no se escriben encima.", refusal); // review M-2: no «rack»
 
             // Its views differ.
             var divergent = Authority("H1", View("H1", properties: Props(Entry(IdA, "Zona", "B"))), View("H2", view: "planta"));
@@ -101,7 +101,16 @@ namespace RackCad.Tests
 
             // Nothing read.
             Assert.Null(RackPropertiesRules.NewRackFingerprint(null, out refusal));
-            Assert.Equal("no se pudieron leer las del rack nuevo.", refusal);
+            Assert.Equal("no se pudieron leer del dibujo.", refusal);
+
+            // Review M-2: the reasons this part writes name no system (a cama and a line take them too).
+            var cama = Authority("H1", View("H1", kind: "cama", view: "lateral", properties: Props(Entry(IdA, "Zona", "B"))));
+            Assert.Null(RackPropertiesRules.NewRackFingerprint(cama, out refusal));
+            Assert.DoesNotContain("rack", refusal, StringComparison.OrdinalIgnoreCase);
+            var line = Authority("H1", View("H1", kind: "cantilever", properties: Props(Entry(IdA, "Zona", "B"))));
+            Assert.Null(RackPropertiesRules.NewRackFingerprint(line, out refusal));
+            Assert.DoesNotContain("rack", refusal, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("rack", RackPropertiesRules.NotReadAfterInsertionText, StringComparison.OrdinalIgnoreCase);
         }
 
         [Fact]
@@ -133,9 +142,43 @@ namespace RackCad.Tests
             var lost = RackPropertiesRules.AnswerForNewRack(placed, NewRackWrite(), "x.", readOnly);
             Assert.Equal(placed.Message + " Pero sus propiedades no se escribieron: x.", lost.Message);
 
+            // Review M-1: not written and not read again, the tab keeps them too (over no base) and the answer says so.
+            var unread = RackPropertiesRules.AnswerForNewRack(placed, NewRackWrite(), "x.", null);
+            Assert.Equal(placed.Message + " Pero sus propiedades no se escribieron: x. Siguen en su pestaña «Propiedades»: escríbelas con «Actualizar».", unread.Message);
+            Assert.Null(unread.Properties);
+            Assert.Equal("x.", unread.PropertiesError);
+
             // Not placed: the answer does not change (the draft stays in «Nuevo» with its properties).
             var refused = RackDoorRules.AnswerForNewRack(4, RackA, 0, null);
             Assert.Same(refused, RackPropertiesRules.AnswerForNewRack(refused, NewRackWrite(), null, after));
+        }
+
+        [Fact]
+        public void RowsKeptWithoutAReadHaveNoBaseAndAreWrittenOnlyWhereThereIsNoPropertyYet()
+        {
+            // Review M-1: the tab of rows kept after an insertion that could not read the drawing again.
+            var kept = RackPropertiesRules.NotReadAfterInsertion();
+            Assert.True(kept.Writable);
+            Assert.False(kept.NewRack);
+            Assert.False(kept.Divergent);
+            Assert.Null(kept.Fingerprint);
+            Assert.Empty(kept.Entries);
+            Assert.Equal(RackPropertiesRules.NotReadAfterInsertionText, kept.Reason);
+
+            // Its write (no fingerprint) passes only over a collection with no property, as at the insertion.
+            var write = NewRackWrite();
+            var empty = Authority("H1", Inserted());
+            Assert.True(RackPropertiesRules.Plan(empty, write with { Fingerprint = RackPropertiesRules.NewRackFingerprint(empty, out _) }).IsPlanned);
+            var holding = Authority("H1", View("H1", properties: Props(Entry(IdA, "Zona", "B"))));
+            Assert.Null(RackPropertiesRules.NewRackFingerprint(holding, out _));
+            Assert.False(RackPropertiesRules.Plan(holding, write).IsPlanned);
+
+            // «Actualizar» at the door takes that rule for a write with no fingerprint, before the edge, and the fingerprint of the tab otherwise.
+            var body = WorkspaceHostSource.BodyOf(WorkspaceHostSource.Code(Door), @"internal\s+static\s+RackDesignWritten\s+WithRackProperties\s*\(");
+            var rule = body.IndexOf("var fingerprint = write.Fingerprint ?? RackPropertiesRules.NewRackFingerprint(read.Authority, out error);", StringComparison.Ordinal);
+            var edge = body.IndexOf("CustomPropertiesExecutor.ExecuteRackDraft(document, read.Selection, fingerprint, write.Entries, write.UnifiedFrom)", StringComparison.Ordinal);
+            Assert.True(rule >= 0 && edge > rule, "WithRackProperties no decide con la regla de Application antes del borde");
+            Assert.Equal(1, WorkspaceHostSource.Count(body, @"\bExecuteRackDraft\b"));
         }
 
         // ------------------------------------------------------------------ the commands of the door, on their source

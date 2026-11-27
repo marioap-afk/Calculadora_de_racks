@@ -39,9 +39,15 @@ namespace RackCad.Plugin
                 }
                 else
                 {
-                    var result = CustomPropertiesExecutor.ExecuteRackDraft(document, read.Selection, write.Fingerprint, write.Entries, write.UnifiedFrom);
-                    if (!result.IsPlanned) error = result.Error;
-                    else after = Read(document, blocks[0].BlockId); // what the drawing holds now (the ids the creates minted)
+                    // T6 pr, review M-1: a draft with no fingerprint (rows kept after an insertion that could not read the drawing again) is
+                    // written only over a collection with no property, as at the insertion (RackPropertiesRules.NewRackFingerprint).
+                    var fingerprint = write.Fingerprint ?? RackPropertiesRules.NewRackFingerprint(read.Authority, out error);
+                    if (fingerprint != null)
+                    {
+                        var result = CustomPropertiesExecutor.ExecuteRackDraft(document, read.Selection, fingerprint, write.Entries, write.UnifiedFrom);
+                        if (!result.IsPlanned) error = result.Error;
+                        else after = Read(document, blocks[0].BlockId); // what the drawing holds now (the ids the creates minted)
+                    }
                 }
             }
             catch (System.Exception ex)
@@ -74,7 +80,7 @@ namespace RackCad.Plugin
                     var read = blocks.Count == 0 ? null : CustomPropertiesExecutor.ReadRack(document, blocks[0].BlockId);
                     if (read == null || !read.HasRack)
                     {
-                        error = "el rack nuevo no está en el dibujo.";
+                        error = "no se encontró en el dibujo tras la inserción."; // review M-2: no «el rack nuevo» for a cama or a line
                     }
                     else
                     {

@@ -94,6 +94,13 @@ namespace RackCad.UI.Tests
                 => DesignWritten?.Invoke(RackPropertiesRules.AnswerForNewRack(RackDoorRules.AnswerForNewRack(sent.RequestId, sent.RackId, 1, "Rack 9"),
                     sent.Properties, error, after));
 
+            /// <summary>What a NUEVO command answers when nothing was placed (the jig cancelled): the rule of the door, which the properties do not change.</summary>
+            public void NotPlaced(Sent sent, bool cama)
+                => DesignWritten?.Invoke(RackPropertiesRules.AnswerForNewRack(cama
+                        ? CamaDoorRules.AnswerForNewCama(sent.RequestId, sent.RackId, 0, null)
+                        : RackDoorRules.AnswerForNewRack(sent.RequestId, sent.RackId, 0, null),
+                    sent.Properties, null, null));
+
             public void Written(Sent sent, RackPropertiesRead? after)
                 => DesignWritten?.Invoke(new RackDesignWritten(sent.RequestId, sent.RackId, true, "Escrito. También escribió sus propiedades.", Properties: after));
 
@@ -351,7 +358,82 @@ namespace RackCad.UI.Tests
             other.Door.Written(other.Door.Writes.Single(), null);
             Assert.False(second.Tab.IsNewRack);
             Assert.False(second.Tab.IsEditable);
-            Assert.Equal("Las propiedades de este rack no se leyeron con el editor: siguen en RACKPROPIEDADES.", second.Tab.ReadOnlyText);
+            Assert.Equal("Las propiedades no se leyeron con el editor: para editarlas aquí, vuelve a leerlo del dibujo.", second.Tab.ReadOnlyText);
+            Assert.DoesNotContain("RACKPROPIEDADES", second.Tab.ReadOnlyText, StringComparison.Ordinal); // review: the part rl makes it open this window
+        }
+
+        // ------------------------------------------------------------------ corrections of the review (on b447675e)
+
+        [Theory]
+        [MemberData(nameof(Systems))]
+        public void ACancelledInsertionKeepsTheRowsInTheDraftAndTheNextOneSendsThemAgain(Sys system)
+        {
+            // Point 1 of the review: the jig cancelled (nothing placed) leaves the draft as it was, rows included.
+            var rig = new Rig();
+            var draft = rig.Start(system);
+            var tab = draft.Tab;
+            Add(tab, "Zona", "A");
+            draft.Insert();
+            var first = Assert.Single(rig.Door.Writes);
+            Assert.False(tab.CanEditProperties);
+
+            rig.Door.NotPlaced(first, system == Sys.Cama);
+            Assert.True(draft.IsNewRack());
+            Assert.True(tab.IsNewRack);
+            Assert.True(tab.IsEditable);
+            Assert.True(tab.CanEditProperties);
+            var row = Assert.Single(tab.Properties);
+            Assert.Equal(("Zona", "A", "Nueva"), (row.Name, row.Value, row.Tag));
+            Assert.True(draft.IsDirty());
+            Assert.Equal("Sin insertar, con cambios", Assert.Single(rig.Window.Drafts).StatusText);
+            Assert.Contains("Borrador 1", rig.Window.UnwrittenWorkOf(Session));
+
+            // The next «Insertar en el dibujo…» sends them again, with no fingerprint.
+            draft.Insert();
+            Assert.Equal(2, rig.Door.Writes.Count);
+            var second = rig.Door.Writes[1];
+            Assert.True(second.NewRack);
+            Assert.Equal(first.RackId, second.RackId);
+            Assert.Null(second.Properties!.Fingerprint);
+            var entry = Assert.Single(second.Properties.Entries);
+            Assert.Equal(((string?)null, "Zona", "A"), ((string?)entry.Id, entry.Name, entry.Value));
+        }
+
+        [Theory]
+        [MemberData(nameof(Systems))]
+        public void RowsNotWrittenWhenTheDrawingCouldNotBeReadAgainStayInTheDraftAndActualizarSendsThemOverNoBase(Sys system)
+        {
+            // M-1 of the review: the rack is in the drawing, its properties are not, and the command could not read it again.
+            var rig = new Rig();
+            var draft = rig.Start(system);
+            var tab = draft.Tab;
+            Add(tab, "Zona", "A");
+            draft.Insert();
+            rig.Door.Placed(rig.Door.Writes.Single(), null, "x.");
+
+            Assert.False(draft.IsNewRack());
+            Assert.False(tab.IsNewRack);
+            Assert.True(tab.IsEditable);
+            Assert.Equal(RackPropertiesRules.NotReadAfterInsertionText, tab.PropertiesNote);
+            var row = Assert.Single(tab.Properties);
+            Assert.Equal(("Zona", "A", "Nueva"), (row.Name, row.Value, row.Tag));
+            Assert.True(tab.IsDirty);
+            Assert.True(draft.IsDirty()); // «Modificado»
+            Assert.NotNull(rig.Window.UnwrittenWorkOf(Session)); // D-08: the drawing does not close with them
+            Assert.Contains("Pero sus propiedades no se escribieron: x." + RackPropertiesRules.NewRackKeptText, rig.Window.ActionMessage, StringComparison.Ordinal);
+
+            // «Actualizar» sends them with no fingerprint: the door writes them only where there is no property yet.
+            draft.Update();
+            var update = rig.Door.Writes.Last();
+            Assert.False(update.NewRack);
+            Assert.Null(update.Properties!.Fingerprint);
+            var entry = Assert.Single(update.Properties.Entries);
+            Assert.Equal(("Zona", "A"), (entry.Name, entry.Value));
+
+            // Written then, the tab goes on from what the drawing holds, clean.
+            rig.Door.Written(update, Read((IdA, "Zona", "A")));
+            Assert.False(tab.IsDirty);
+            Assert.False(draft.IsDirty());
         }
 
         [Theory]
