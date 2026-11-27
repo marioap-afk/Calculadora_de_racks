@@ -99,6 +99,7 @@ namespace RackCad.UI.VentanaRackCad
                 if (drawing.Length > 0) return drawing;
                 if (SegmentsPending) return "Aplica o descarta antes la secuencia.";
                 if (!_draft.IsResolved) return "La línea no se resuelve: completa antes lo que falta.";
+                if (_isNewRack && PropertiesBlockUpdate) return PropertiesTab.BlockedText; // T6 pr: «Insertar en el dibujo…» writes them (VA-S9)
                 return string.Empty;
             }
         }
@@ -310,7 +311,7 @@ namespace RackCad.UI.VentanaRackCad
 
         public void PropertiesWritten(RackDesignWritten written)
         {
-            if (written != null && written.Written && written.PropertiesError == null) _propertiesTab?.Written(written.Properties);
+            _propertiesTab?.Answered(written); // T6 pr: also the answer of «Insertar en el dibujo…» of a new line (VA-S9)
             Rebuild();
         }
 

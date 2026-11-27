@@ -37,7 +37,7 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>The answer of a write: when the properties were written, the tab goes on from what the drawing holds now.</summary>
         public void PropertiesWritten(RackDesignWritten written)
         {
-            if (written != null && written.Written && written.PropertiesError == null) _propertiesTab?.Written(written.Properties);
+            _propertiesTab?.Answered(written); // T6 pr: also the answer of «Insertar en el dibujo…» of a new rack (VA-S9)
         }
 
         private void OnPropertiesTabChanged()
@@ -45,6 +45,7 @@ namespace RackCad.UI.VentanaRackCad
             UpdateDirty();
             OnPropertyChanged(nameof(CanUpdate));
             OnPropertyChanged(nameof(UpdateBlockedText));
+            if (_isNewRack) RaiseState(); // T6 pr: a wrong property stops «Insertar en el dibujo…» of a new rack (InsertViewBlockedText)
         }
     }
 }

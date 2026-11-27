@@ -244,7 +244,7 @@ namespace RackCad.UI.VentanaRackCad
             {
                 result = _pushBackDoor.RequestPushBackUpdate(new PushBackDoorWrite(id, entry.Session, editor.RackId, snapshot.Name, snapshot.Design, snapshot.System,
                              insertViews == null ? null : new List<RackViewAddress>(insertViews), NewRack: editor.IsNewRack,
-                             Properties: insertViews == null && !editor.IsNewRack ? editor.PropertiesWrite() : null))
+                             Properties: insertViews == null || editor.IsNewRack ? editor.PropertiesWrite() : null)) // T6 pr: and a new rack's (VA-S9)
                          ?? RackCadClassicResult.Without(RackCadClassicStatus.Failed, "sin respuesta.");
             }
             catch (Exception ex)

@@ -136,7 +136,7 @@ namespace RackCad.Plugin.VentanaRackCad
                 return Send(
                     NewCommand + " ",
                     document => _pendingNew = new PendingWrite(write.RequestId, write.RackId.Trim(), write.Name, write.Design, write.System, KeyOf(document),
-                        new List<RackViewAddress>(write.InsertViews)),
+                        new List<RackViewAddress>(write.InsertViews), Properties: write.Properties), // T6 pr: the tab of the new rack (VA-S9)
                     () => _pendingNew = null);
             }
 

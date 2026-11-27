@@ -568,7 +568,7 @@ namespace RackCad.UI.VentanaRackCad
                 result = _selectiveDoor.RequestSelectiveUpdate(new SelectiveDoorWrite(id, entry.Session, editor.RackId, snapshot.Name, snapshot.Design,
                              snapshot.System, snapshot.LinkedPropertyFinalStates,
                              insertViews == null ? null : new List<RackViewAddress>(insertViews), NewRack: editor.IsNewRack,
-                             Properties: insertViews == null && !editor.IsNewRack ? editor.PropertiesWrite() : null)) // T4 va (VA-07)
+                             Properties: insertViews == null || editor.IsNewRack ? editor.PropertiesWrite() : null)) // T4 va (VA-07); T6 pr: and a new rack's (VA-S9)
                          ?? RackCadClassicResult.Without(RackCadClassicStatus.Failed, "sin respuesta.");
             }
             catch (Exception ex)
@@ -836,7 +836,7 @@ namespace RackCad.UI.VentanaRackCad
             {
                 result = _door.RequestDynamicUpdate(new RackDoorWrite(id, entry.Session, editor.RackId, snapshot.Name, snapshot.Design, snapshot.System,
                         insertViews == null ? null : new List<RackViewAddress>(insertViews), NewRack: editor.IsNewRack,
-                        Properties: insertViews == null && !editor.IsNewRack ? editor.PropertiesWrite() : null)) // T4 va (VA-07)
+                        Properties: insertViews == null || editor.IsNewRack ? editor.PropertiesWrite() : null)) // T4 va (VA-07); T6 pr: and a new rack's (VA-S9)
                     ?? RackCadClassicResult.Without(RackCadClassicStatus.Failed, "sin respuesta.");
             }
             catch (Exception ex)

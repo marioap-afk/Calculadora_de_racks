@@ -201,7 +201,8 @@ namespace RackCad.Plugin.VentanaRackCad
 
                 RackMenuCommands.DispatchInsertion(document, CantileverDraftOutcome.NewRackRequest(write.RackId, write.Name, write.Design, write.Line, views));
                 var placed = RackCommandSupport.FindRackBlocks(document, pending.RackId);
-                door?.AnswerWrite(RackDoorRules.AnswerForNewRack(pending.RequestId, pending.RackId, placed.Count, placed.Count > 0 ? placed[0].Embed?.Name : null));
+                door?.AnswerWrite(RackPropertiesDoorData.WithNewRackProperties(document, pending.RackId, write.Properties,
+                    RackDoorRules.AnswerForNewRack(pending.RequestId, pending.RackId, placed.Count, placed.Count > 0 ? placed[0].Embed?.Name : null))); // T6 pr: and its properties (VA-S9)
             }
             catch (System.Exception ex)
             {

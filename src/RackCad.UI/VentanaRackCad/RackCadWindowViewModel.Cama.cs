@@ -225,7 +225,7 @@ namespace RackCad.UI.VentanaRackCad
             try
             {
                 result = _camaDoor.RequestCamaWrite(new CamaDoorWrite(id, entry.Session, editor.RackId, name, bed, editor.IsNewRack,
-                             editor.IsNewRack ? null : editor.PropertiesWrite(), source))
+                             editor.PropertiesWrite(), source)) // T6 pr: a new cama sends its tab too (VA-S9)
                          ?? RackCadClassicResult.Without(RackCadClassicStatus.Failed, "sin respuesta.");
             }
             catch (Exception ex)
