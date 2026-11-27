@@ -402,7 +402,8 @@ namespace RackCad.Plugin
                 ? RackCommandSupport.EraseViewBlocks(document, staleViewBlocks)
                 : 0;
 
-            if (staleViewBlocks.Count > 0 && survivors == 0)
+            // T6 b1: with «Insertar» the obsolete views of a line with no survivor wait for the first new view (RackInsertRedrawOutcome).
+            if (staleViewBlocks.Count > 0 && survivors == 0 && window.UpdateOnly)
             {
                 editor.WriteMessage("\nRackCad: todas las vistas Cantilever quedaron obsoletas; no se elimino el ultimo vinculo de la linea.");
             }
@@ -420,8 +421,17 @@ namespace RackCad.Plugin
 
             if (!window.UpdateOnly)
             {
-                RackViewBatchExecution.Run(document, batchProducts, batchRequest,
-                    _ => RackCad.Application.Views.Batch.RackViewBatchRedrawResult.Applied());
+                // T6 b1 (I-02 of the review of B-1): the queue places the new views only when every view that remains was redrawn.
+                var batch = RackViewBatchExecution.Run(document, batchProducts, batchRequest,
+                    _ => RackCad.Application.Views.Batch.RackInsertRedrawOutcome.Of(
+                        blocks.Count, staleViewBlocks.Count, Redrawn(updated), erasedPhantoms));
+                if (RackCad.Application.Views.Batch.RackInsertRedrawOutcome.ErasesStaleAfterPlacement(blocks.Count, staleViewBlocks.Count))
+                {
+                    erasedPhantoms = batch.Report.PlacedCount > 0 ? RackCommandSupport.EraseViewBlocks(document, staleViewBlocks) : 0;
+                    editor.WriteMessage("\nRackCad: " + RackCad.Application.Views.Batch.RackInsertRedrawOutcome.StaleAfterPlacementText(
+                        staleViewBlocks.Count, erasedPhantoms, batch.Report.PlacedCount));
+                }
+
                 return (Redrawn(updated), erasedPhantoms); // T5 ct: what it did, for the window
             }
 

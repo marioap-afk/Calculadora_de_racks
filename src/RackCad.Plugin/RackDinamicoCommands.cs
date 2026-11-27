@@ -329,8 +329,18 @@ namespace RackCad.Plugin
 
             if (!window.UpdateOnly)
             {
-                RackViewBatchExecution.Run(document, batchProducts, batchRequest,
-                    _ => RackCad.Application.Views.Batch.RackViewBatchRedrawResult.Applied());
+                // T6 b1 (I-02 of the review of B-1): the queue places the new views only when every view that remains was redrawn; the
+                // obsolete views of a rack with no survivor wait for the first new view (RackInsertRedrawOutcome).
+                var batch = RackViewBatchExecution.Run(document, batchProducts, batchRequest,
+                    _ => RackCad.Application.Views.Batch.RackInsertRedrawOutcome.Of(
+                        blocks.Count, staleViewBlocks.Count, updatedLateral + updatedFrontal + updatedPlanta, erasedPhantoms));
+                if (RackCad.Application.Views.Batch.RackInsertRedrawOutcome.ErasesStaleAfterPlacement(blocks.Count, staleViewBlocks.Count))
+                {
+                    erasedPhantoms = batch.Report.PlacedCount > 0 ? RackCommandSupport.EraseViewBlocks(document, staleViewBlocks) : 0;
+                    editor.WriteMessage("\nRackCad: " + RackCad.Application.Views.Batch.RackInsertRedrawOutcome.StaleAfterPlacementText(
+                        staleViewBlocks.Count, erasedPhantoms, batch.Report.PlacedCount));
+                }
+
                 return (updatedLateral + updatedFrontal + updatedPlanta, erasedPhantoms);
             }
 

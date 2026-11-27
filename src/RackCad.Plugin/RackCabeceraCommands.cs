@@ -360,8 +360,10 @@ namespace RackCad.Plugin
             // requested view via the jig. "Actualizar" (UpdateOnly) inserts nothing.
             if (!window.UpdateOnly)
             {
+                // T6 b1 (I-02 of the review of B-1): the queue places the new view only when every view of the cabecera was redrawn (a
+                // cabecera has no obsolete views).
                 RackViewBatchExecution.Run(document, batchProducts, batchRequest,
-                    _ => RackCad.Application.Views.Batch.RackViewBatchRedrawResult.Applied());
+                    _ => RackCad.Application.Views.Batch.RackInsertRedrawOutcome.Of(lateralBlocks.Count + plantaBlocks.Count, 0, updated, 0));
                 return;
             }
 

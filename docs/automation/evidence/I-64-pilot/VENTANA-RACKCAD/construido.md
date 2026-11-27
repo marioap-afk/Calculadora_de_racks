@@ -4956,3 +4956,286 @@ tercero (`773f0a6e`), integradas en un segundo merge de la rama pb.
 
 - La validación del Owner de los supuestos de la quinta tanda y de O-5.
 - La limpieza de los worktrees y las ramas locales de la quinta tanda, con aviso al Owner.
+
+## Sexta tanda, b1: B-1 en el clásico de Push Back y de Cabecera (2026-11-27)
+
+**Rama:** local `architecture/workspace-persistente-rackcad-t6-b1`, sobre `f02f519b` (worktree `D:\w6b1`). El commit de la parte es
+`dc0ada4c`, hecho por la sesión; las correcciones de su revisión, al final de esta sección, van sin commit. Sin push y sin AutoCAD. La orden
+del Owner del 2026-11-27: arreglar los defectos sin borrar el editor clásico; el arreglo va en el propio clásico y en la rama de I-64, no en
+`main`.
+
+**1. B-1 en Push Back: CORREGIDO, en RACKEDITAR «Insertar» y en «Insertar vista…» de la ventana.**
+- **El defecto (confirmado en esta base con una prueba, sin AutoCAD):**
+  - «Insertar» con el borrador modificado redibuja con el borrador las vistas que hay, y coloca la vista nueva con el diseño y el nombre
+    ANTERIORES en su sobre. La geometría de la vista nueva sí es la del borrador.
+  - Las vistas hermanas quedan divergentes: la ventana ya no abre el rack (M-02, «Las vistas de este rack no tienen el mismo diseño…»), y
+    RACKEDITAR abre un diseño u otro según la vista elegida.
+- **La causa (OBSERVADO, leído en el código):**
+  - `RackViewBatchProducts.PushBack` pasaba a la cola de ID18, como fuente, la vista elegida tal como estaba en el dibujo (`source`, línea 96
+    de la base).
+  - `RackProductPreparer.PrepareExisting` compone el sobre de la vista nueva con la identidad, el nombre y el diseño de esa fuente
+    (`RackProductPrepare.cs`, 156 a 163), y su geometría con el sistema editado. Es el mecanismo de B-1 de Dinámico.
+  - Las dos mitades de dibujo que insertan llaman a esa fábrica con el mismo `design, id, name` con que redibujan las vistas que hay (tres
+    `BuildPushBackPayload(design, id, name, …)` en cada una):
+    - RACKEDITAR «Insertar»: `RackPushBackCommands.EditPushBack` (`RackPushBackCommands.cs:250`);
+    - «Insertar vista…» de la ventana: RACKPUSHBACKINSERTAR → `RackPushBackWindowDrawing.Apply` (`RackCadPushBackDoorCommands.cs:173` y
+      `RackPushBackWindowDrawing.cs:114`).
+  - **Por tanto, el camino de la ventana también tenía B-1.** El mismo arreglo lo corrige.
+- **El arreglo:**
+  - La regla de Dinámico y Cantilever en la fábrica: `RackInsertedViewSource.Edited(source, rackId, rackName, serialized)`, con el mismo
+    `serialized` que la fábrica ya daba como diseño de un rack nuevo.
+  - Un rack nuevo (el menú, RACKPUSHBACKNUEVO, la biblioteca) no tiene fuente: `Edited(null)` sigue siendo `null`, y la cola usa
+    `NewRackCreationContext` como antes.
+  - `EditPushBack` y `RackPushBackWindowDrawing.Apply` no cambian. Siguen iguales `PushBackWindowDrawingMirrorGuardTests` y las guardas de
+    F4B que fijan su texto.
+
+**2. B-1 en Cabecera: CORREGIDO, en RACKEDITAR «Insertar».**
+- **La causa, la misma:** `RackViewBatchProducts.Header` pasaba `source` (línea 117 de la base), y `RackCabeceraCommands.EditCabecera`
+  redibuja la lateral y la planta con `BuildCabeceraPayload(config, id, name, …)`.
+- **El arreglo, el mismo:** la regla, con `Project(RackProject.ForSelective(configuration), innerSource)`.
+- **La puerta de cabeceras de la ventana no tiene B-1 (OBSERVADO, con una guarda): no inserta vistas.**
+  - Tiene dos órdenes: RACKCABECERAABRIR, que lee, y RACKCABECERAAPLICAR (`RackCadCabeceraDoorCommands.cs:20` y `:67`).
+  - La segunda solo redibuja en sitio con `ApplyCabeceraUpdate` (`RackCabeceraCommands.Door.cs:21`), sin cola de ID18.
+  - «Insertar vista…» de una cabecera no existe en la ventana (DG-07). Una cabecera nueva va por `DispatchInsertion`, sin fuente.
+
+**3. Selectivo: no tiene B-1 (comprobado con pruebas; no se tocó).**
+- **«Insertar varias…» del clásico sobre un rack del dibujo:**
+  - `InsertBatch_Click` (`RackSelectiveWindow.xaml.cs:2548`) manda todas las vistas en una petición, y `EditSelective` las pasa a
+    `InsertSelectiveViews` (`RackSelectivoCommands.cs:132`).
+  - Esa mitad usa UN `SelectiveInsertPort`: cada vista se prepara con `TryPrepare` desde la misma fuente, compuesta con el borrador
+    reconciliado (`curedSource`, `RackSelectivoInsertIntegration.cs:145`).
+  - Las hermanas se redibujan con el mismo `authoredJson` (`PrepareMember`, línea 209).
+- **`SelectiveNew`:** solo lo llama `DispatchInsertion`, para un rack nuevo (`RackMenuCommands.cs:195`), y sin fuente. Todas sus vistas
+  salen del mismo documento autorado y de su serialización, y no hay vistas que redibujar.
+
+**Supuestos para la validación del Owner:**
+
+| Id | Supuesto | Por qué |
+|---|---|---|
+| T6b1-S1 | **Lo que se guarda.** Con «Insertar» de RACKEDITAR (Push Back y Cabecera) o con «Insertar vista…» de Push Back en la ventana, la vista nueva guarda en su sobre el diseño y el nombre del borrador, iguales byte a byte a los de las vistas redibujadas. Sin cambios en el editor, la vista nueva lleva el diseño re-serializado, como sus hermanas (que se reescriben de todos modos), y no el texto crudo de la vista elegida | La regla de Dinámico (nota 1 de `review-b1.md`) y de Cantilever (CT-11) |
+| T6b1-S2 | **Un texto de la línea de órdenes, en un caso límite, solo en Cabecera.** «Insertar» desde RACKEDITAR sobre una cabecera legada sin identidad (Id vacío o en blanco), que toma la de la ventana, sigue rechazado antes de tocar la geometría con «no se preparo la cola ID18; no se modifico ningun bloque.». Lo que sigue cambia: antes, `RACK_ID_INVALID`; ahora, `AUTHORED_UNREADABLE: …` (la puerta AUTH-13). En Push Back no ocurre (corregido en la revisión, M-1): el preflight de los sobres de `EditPushBack` rechaza antes de la cola toda vista cuya identidad no es la del rack, y la ventana encuentra las vistas por esa identidad | M-04 de `review-b1.md`: el mismo cambio que ya tuvo Dinámico |
+
+**Las pruebas (Core):**
+- **`tests/RackCad.Tests/Workspace/PushBackCabeceraInsertedViewDesignTests.cs` (nueva, 10 casos):**
+  - **Push Back, con la regla:**
+    - el dibujo: un Push Back con la lateral de P1 y la planta; el borrador: el tope posterior de F1 N2 apagado y el rack renombrado;
+    - se compone como las dos mitades (el proyecto de `PushBackDoorRules.PlanApply` y el nombre de `PushBackDoorRules.Named`, los mismos
+      valores que usa RACKEDITAR) y como la fábrica, con el comparador AUTH-13 y el preparador reales;
+    - la vista nueva (frontal posterior A) lleva el diseño editado, igual byte a byte al de las redibujadas, con el tope apagado, la identidad
+      y el nombre nuevo; `RackSiblingDesigns` da `Same`.
+  - **Push Back, lo que fue B-1:** con la vista elegida tal como estaba, la vista nueva lleva el diseño y el nombre de antes, y las hermanas
+    dan `Divergent`.
+  - **Push Back, la vista legada sin identidad** (Id vacío y en blanco, T6b1-S2): antes, `RACK_ID_INVALID` en la aceptación; ahora la
+    rechaza la puerta AUTH-13 (`AUTHORED_UNREADABLE`) antes de resolver y de preparar, con la vista elegida como evidencia o sin ninguna.
+    **Retirada en las correcciones de la revisión (M-1):** Push Back no llega a ese camino; la sustituye una guarda del preflight.
+  - **Push Back, la guarda de fuente (falla en la base):**
+    - la fábrica pasa `RackInsertedViewSource.Edited(source, rackId, rackName, serialized)` con el mismo `serialized`;
+    - `EditPushBack` y `RackPushBackWindowDrawing.Apply` le dan el `design, id, name, embed, project` con que redibujan (tres
+      `BuildPushBackPayload` en cada una);
+    - RACKPUSHBACKINSERTAR llama a `Apply` con el borrador de la ventana.
+  - **Cabecera, los mismos cuatro:**
+    - con la regla: la lateral; RACKEDITAR con 6 in más de fondo y la cabecera renombrada; «Insertar» › planta;
+    - lo que fue B-1;
+    - la vista legada sin identidad;
+    - la guarda de fuente (falla en la base), que fija además que la puerta de cabeceras no inserta: dos órdenes, `ApplyCabeceraUpdate`, y
+      ni cola ni `TryAuthorize`.
+- **`tests/RackCad.Tests/Workspace/SelectiveBatchInsertedViewDesignTests.cs` (nueva, 3 casos).** Pasan en la base, porque Selectivo está
+  bien:
+  - «Insertar varias…» sobre un rack del dibujo (la frontal con 60 in; el borrador con 72; la planta y la lateral de cada poste): un
+    puerto, una fuente y una preparación por vista; todas llevan el borrador y son hermanas (`Same`) de la frontal redibujada;
+  - un Selectivo nuevo de varias vistas (frontal, planta y laterales) preparado como `SelectiveNew`: todas con el mismo diseño
+    serializado, la misma identidad y el mismo nombre (`Same`);
+  - la guarda de fuente de los dos caminos:
+    - «Insertar varias…» → `RequestInsertViews` → `InsertSelectiveViews`: un `SelectiveInsertPort`, `TryPrepare` por vista, y la cola
+      coloca lo preparado;
+    - `SelectiveNew`, sin fuente, y llamado solo desde el `case SelectiveInsertionRequest` de `DispatchInsertion` (un rack nuevo).
+- **Ningún censo ni guarda cambia.** La regla ya está en los censos de `RackEmbedComposer.Compose` (T-GRD-02 y T-ENV-12), y la fábrica no
+  compone ningún sobre nuevo.
+
+**Comprobación en rojo:** tres piezas rotas a propósito, una a una, con script (`S\hs65\t6\b1\red.sh`; la salida, en `red-out.txt`).
+Antes de romper cada archivo se guardó una copia fuera del worktree, y después volvió a sus bytes con el mismo SHA-256 (lo comprueba el
+script). Tras cada pieza se ejecutaron las clases focales: las dos nuevas, `SelectiveInsertedViewDesignTests`,
+`RackInsertedViewDesignTests` y `CantileverDraftEditorTests` (54 casos).
+1. **Push Back:** la fábrica pasa a la cola la vista elegida tal como estaba (B-1 de la base). Falla 1: la guarda de Push Back.
+2. **Cabecera:** lo mismo en `.Header`. Falla 1: la guarda de Cabecera.
+3. **La regla:** `RackInsertedViewSource.Edited` devuelve la vista elegida tal como estaba. Fallan 9: las 6 de comportamiento nuevas de
+   Push Back y de Cabecera (la vista nueva con la regla y las cuatro de la vista legada sin identidad) y 3 de Dinámico y Cantilever.
+
+Sobre la base, antes de la corrección, las dos guardas de fuente fallaban y las demás pasaban, porque prueban la regla y lo que fue B-1.
+`git diff` no tiene restos de las piezas.
+
+**Los números** (la solución en Debug, recompilada con `--no-incremental` sobre las fuentes finales):
+- **UI completa:** 3110 correctas, 0 con error y 48 omitidas (3158), las mismas que la base: esta parte no toca la UI.
+- **Core Full:** 19496 correctas, 0 con error y 403 omitidas (19899): las 19483 de la base más las 13 nuevas (10 de Push Back y Cabecera y 3
+  de Selectivo).
+- **Plugin Debug:** 0 errores. Las advertencias MSB3277 de las referencias de AutoCAD ya estaban.
+
+**Lo que queda abierto:**
+- **El smoke en AutoCAD:**
+  - RACKEDITAR sobre un Push Back y sobre una cabecera: un cambio, y «Insertar» una vista;
+  - «Insertar vista…» de Push Back en la ventana con el borrador modificado;
+  - en los tres, leer por COM que la vista nueva lleva el diseño y el nombre del borrador, y que la ventana vuelve a abrir el rack.
+- **Preexistente, no de esta parte:** I-02 de `review-b1.md`. Si falla el redibujo de una vista que existe, la cola coloca igual la vista
+  nueva (`_ => Applied()`): la garantía de B-1 solo vale cuando todos los redibujos salen bien. **Corregido en las correcciones de la
+  revisión, abajo.**
+- **Para integrar:** de los archivos compartidos, esta parte solo toca `RackViewBatchProducts.cs`, en dos bloques marcados `T6 b1`. Los
+  dos archivos de prueba son nuevos.
+
+### Correcciones de la revisión (sobre `dc0ada4c`)
+
+Sobre el commit de la parte, sin commit (la sesión lo hace). Sin AutoCAD. Las mismas reglas: prueba que falla, arreglo, comprobación en rojo
+y supuestos declarados.
+
+**1. I-02: la cola colocaba la vista nueva aunque una vista existente no se hubiera redibujado (CORREGIDO).**
+- **Escenario A, la causa (OBSERVADO, leído en el código):**
+  - en las cinco mitades de dibujo que insertan, la respuesta del redibujo a la cola era siempre `_ => Applied()`: `EditPushBack`,
+    `RackPushBackWindowDrawing.Apply`, `EditCabecera`, `ApplyDynamicEdit` y `ApplyCantileverEdit`;
+  - `ViewBlockDraw.RedrawInPlace` convierte cualquier excepción en un fallo, y los bucles solo dejan de contar esa vista (Cantilever atrapa
+    la excepción de `RedefineBlock` y sigue);
+  - la cola colocaba entonces las vistas nuevas, con el borrador (B-1), junto a una vista con el diseño de antes: hermanas divergentes.
+- **El arreglo: una regla pura en Application, `RackInsertRedrawOutcome`** (`src/RackCad.Application/Views/Batch/RackInsertRedrawOutcome.cs`):
+  - `Of(vistas, obsoletas, redibujadas, borradas)` da `Applied()` solo si se redibujaron todas las que quedan (las vistas menos las
+    obsoletas ya borradas, o menos todas las obsoletas cuando esperan a la primera vista nueva, punto siguiente);
+  - si no, da el corte del plan que ya existía (`RolledBack`, `RackViewBatchPlan.cs` 359-361) con un diagnóstico propio:
+    «REDRAW_INCOMPLETE: no se pudo redibujar N de las M vistas que ya había del rack, así que no se colocó ninguna vista nueva (sus hermanas
+    quedarían con diseños distintos). Lo que sí se redibujó con el borrador no se deshizo: «U» deshace la orden entera, y «Actualizar»
+    vuelve a intentarlo.»;
+  - **por qué no un tipo nuevo:** la máquina de estados de ID18 (I-55) es un contrato con sus pruebas, y su corte `RolledBack` ya hace lo
+    que hace falta (no colocar nada). La palabra «ROLLED_BACK» de la línea «RackCad ID18: REDRAW_ROLLED_BACK (0/N).» engañaría, así que
+    el diagnóstico que la sigue dice lo contrario: lo redibujado no se deshizo (T6b1-S3);
+  - las cinco mitades pasan a la cola esa regla, con sus cuentas, calculadas después del bucle y del borrado: en Cabecera, laterales más
+    plantas y ninguna obsoleta.
+- **Escenario B: todas las vistas que había quedaban obsoletas (decisión: opción (a), con el borrado después de colocar).**
+  - **Antes:** con `survivors == 0`, las obsoletas no se borraban ni se redibujaban, y la cola colocaba la vista nueva. Con B-1 corregido,
+    la vista nueva lleva el borrador y las conservadas el diseño de antes: `Divergent`, y la puerta M-02 rechaza después la ventana. Ejemplo:
+    un Push Back cuya única vista es la lateral de un poste que el cambio elimina, e «Insertar» la planta. Dinámico y Cantilever tenían el
+    mismo efecto.
+  - **Ahora:** con «Insertar», esas vistas obsoletas esperan a la primera vista nueva (`ErasesStaleAfterPlacement`).
+    - La cola coloca las vistas nuevas con el borrador.
+    - Si colocó al menos una, la mitad de dibujo borra después las obsoletas y lo dice: «todas las vistas que había quedaban obsoletas con
+      el cambio; tras colocar la vista nueva se borró 1.».
+    - Si no colocó ninguna, no borra nada y lo dice: «no se colocó ninguna vista nueva, así que las vistas que el cambio deja obsoletas se
+      conservan y el rack no cambió.».
+  - **Por qué (a) y no (b):**
+    - con (b), rechazar, el usuario quedaba atascado: «Actualizar» tampoco aplica ese cambio, porque no borra el último vínculo;
+    - (a) contando la vista nueva como superviviente antes de colocarla borraría las obsoletas primero, y una colocación cancelada (Esc en
+      el jig) dejaría el rack sin ninguna vista;
+    - borrar después de colocar nunca deja el rack sin vistas, y es la regla de Selectivo (`DeferToFirstPlacement`).
+  - «Actualizar» no cambia: sigue diciendo que todas las vistas quedaron obsoletas y que no se eliminó el último vínculo. Ese aviso ahora
+    solo sale con «Actualizar» (`&& window.UpdateOnly`), en Push Back (las dos mitades) y en Cantilever.
+  - **La ventana:** `RackDoorRules.AnswerForInsert` toma el borrador como escrito cuando no se redibujó ninguna vista, se borraron
+    obsoletas y se insertaron vistas nuevas (solo puede ser este caso, porque con la regla la cola no coloca si falta un redibujo). Dice:
+    «AutoCAD insertó 1 vista nueva con el borrador y borró 1 vista que ya no existe con el cambio.». Antes decía que el borrador seguía sin
+    escribir y aconsejaba «Actualizar» (T6b1-S4).
+- Selectivo no tiene I-02: su redibujo de hermanas es transaccional (`RackSiblingRedrawRun`), y un fallo vuelve atrás antes de colocar.
+
+**2. M-1: T6b1-S2 no ocurre en Push Back (CORREGIDO, el texto y la prueba).**
+- En `EditPushBack`, con una vista sin identidad, la identidad es la de la ventana, y el preflight de los sobres (antes de la fábrica de la
+  cola) rechaza toda vista cuya identidad no es esa: «una vista ligada de este rack no es Push Back o pertenece a otro sistema». La
+  ventana encuentra las vistas por la identidad del rack.
+- T6b1-S2 dice ahora que vale solo para Cabecera. La teoría de Push Back que probaba ese camino inalcanzable se retiró; la sustituye una
+  guarda: el preflight de los sobres está antes de la fábrica en las dos mitades, y la puerta busca las vistas por la identidad.
+
+**3. M-2 (CORREGIDO).**
+- Un caso nuevo de Push Back de dos sentidos (`pb-20-ab`, con el tope de F1 N1 apagado): desde la lateral elegida, la cola prepara el corte
+  `PushBackCut(EntradaSalida, B)` y la lateral del último poste con corte.
+  - `Edited` no cambia la vista ni la sección de la fuente: siguen siendo las de la lateral elegida.
+  - Las vistas nuevas toman las suyas de la dirección pedida: frontal con la sección de entrada/salida de B
+    (`EncodeSection(EntradaSalida, B)`) y lateral con el índice del poste.
+  - Las dos llevan el borrador, la identidad y el nombre, y son hermanas (`Same`) de las redibujadas.
+  - El preparador de la prueba construye ahora el plan de cada clase de vista como `RackViewBatchProducts.PushBackPlan`.
+- Las guardas de conteo (`[CommandMethod(` de la puerta de cabeceras, `BuildPushBackPayload` y `BuildCabeceraPayload`, el puerto único de
+  «Insertar varias…») llevan un mensaje que dice qué protegen y qué hacer si cambian.
+
+**4. M-3 (ACEPTADO, como en Dinámico y Cantilever).**
+- `RackInsertedViewSource.Edited` compone con `RackEmbedComposer.Compose`, que rechaza una fuente con una clave de `ExtensionData` igual a
+  un miembro declarado (`RequireNoDeclaredMemberInExtensionData`).
+- Con un sobre así, «Insertar» de Push Back y de Cabecera falla ahora al construir la fábrica de la cola. Eso ocurre siempre antes de
+  tocar la geometría: la fábrica se construye antes de `PrepareAll`, y los dos van antes del primer redibujo.
+- Antes del arreglo de B-1, esa vista fallaba al componer su propio redibujo, ya dentro del bucle. Además, el lector crudo de AUTH-13
+  rechaza los miembros desconocidos.
+
+**5. M-4 (CORREGIDO).** La sección y el informe decían «Sin commit»; ahora dicen que el commit de la parte es `dc0ada4c`.
+
+**6. El frontal del lado B de un Push Back que deja de tener dos sentidos (OBSERVADO con una prueba; CORREGIDO).**
+- **La causa:**
+  - el bucle de las frontales de `EditPushBack` y de `RackPushBackWindowDrawing.Apply` no evaluaba la disponibilidad;
+  - el constructor de frontales de un rack de un sentido ignora el lado (`PushBackSystemFrontalBuilder.BuildPlan`: «solo tiene lado A»);
+  - y la sección se reescribe tal como venía (I-42).
+  - Así, al quitar el lado B, la frontal de B se redibujaba con la geometría de A bajo el descriptor de B. Es el hecho que el piloto de
+    F4B ya había medido y declarado como limitación (V2-20, M-08: «un rack de un sentido que ya trae un frontal con `Section` 2, que deja
+    RACKEDITAR al quitar B»).
+  - El panel la clasifica como `FrontalBOfOneWay` y dice «usa RACKEDITAR».
+- **La prueba** (dominio, sin AutoCAD): `pb-20-ab` con el lado B quitado en el borrador.
+  - El corte de entrada/salida de B pasa de disponible a `VariantNotPresent` con los hechos que calcula la mitad de dibujo.
+  - El plan de ese corte en el rack de un sentido es idéntico, pieza a pieza, al del lado A.
+  - La disposición del piloto da `FrontalBOfOneWay`.
+- **El arreglo, en las dos mitades (la guarda espejo sigue igual):** la frontal que no está disponible es obsoleta, como la lateral de un
+  poste que ya no existe. No se redibuja, y se borra con las demás obsoletas: en el acto si queda alguna vista, o tras la primera vista
+  nueva con «Insertar» (punto 1). Con eso, «usa RACKEDITAR» del panel lo resuelve (T6b1-S5).
+
+**Supuestos nuevos para la validación del Owner:**
+
+| Id | Supuesto | Por qué |
+|---|---|---|
+| T6b1-S3 | **Un texto nuevo en la línea de órdenes.** Si falla el redibujo de una vista que ya había, «Insertar» no coloca ninguna vista nueva. La línea dice «RackCad ID18: REDRAW_ROLLED_BACK (0/N). REDRAW_INCOMPLETE: …», con lo que pasó y con que lo ya redibujado no se deshizo. La ventana recibe la respuesta de siempre para «redibujó, pero no insertó» | La máquina de estados de ID18 no se toca; el diagnóstico corrige lo que «ROLLED_BACK» sugiere |
+| T6b1-S4 | **Lo que se guarda y un texto de la ventana.** Con «Insertar», si todas las vistas que había quedan obsoletas con el cambio, la vista nueva se coloca con el borrador y después se borran las obsoletas; si se cancela la colocación, no cambia nada. La ventana lo da por escrito: «AutoCAD insertó N vistas nuevas con el borrador y borró M vistas que ya no existen con el cambio.». Vale para Push Back, Dinámico y Cantilever, en RACKEDITAR y en la ventana; en Selectivo, solo el texto de la ventana, porque ya borraba con la primera colocación | Opción (a) del escenario B, con el borrado después de colocar |
+| T6b1-S5 | **Lo que se guarda.** Al quitar el lado B de un Push Back (RACKEDITAR o la ventana), sus frontales de B son obsoletas: se borran, y ya no se redibujan con la geometría de A | El punto 6; la regla de las laterales obsoletas |
+
+**Las pruebas (Core):**
+- **`tests/RackCad.Tests/Workspace/InsertRedrawCompletenessTests.cs` (nueva):**
+  - la regla, con nueve combinaciones: todo redibujado; un redibujo fallido; todos fallidos; una obsoleta borrada; una superviviente sin
+    redibujar; una obsoleta que no se pudo borrar; el escenario B con una y con dos; nada;
+  - cuándo esperan las obsoletas (cinco casos) y los textos;
+  - **por la cola real de ID18** (`RackViewBatchPlan`, con un puerto de prueba):
+    - con la respuesta de antes (`Applied()`), un redibujo fallido coloca las dos vistas nuevas: el defecto reproducido;
+    - con la regla, `REDRAW_ROLLED_BACK`, ninguna colocación y el diagnóstico `REDRAW_INCOMPLETE`;
+    - el escenario B coloca;
+  - la respuesta de la ventana en el escenario B, y que las demás no cambian;
+  - **guardas de fuente** (fallan sobre `dc0ada4c`):
+    - las cinco mitades pasan `RackInsertRedrawOutcome.Of(…)` con sus cuentas, y ninguna `Applied()`;
+    - las cuatro con obsoletas las borran después de la cola cuando ninguna sobrevive, y lo dicen;
+    - solo «Actualizar» dice que se conservó el último vínculo;
+    - el bucle de frontales de las dos mitades de Push Back descarta la frontal no disponible antes de redibujarla;
+  - **el punto 6, en el dominio:** lo de arriba.
+- **`PushBackCabeceraInsertedViewDesignTests`:** −2 (la teoría inalcanzable), +2 (la guarda del preflight y el caso de dos sentidos), y
+  mensajes en las guardas de conteo. **`SelectiveBatchInsertedViewDesignTests`:** el mensaje de su guarda de conteo.
+
+**Comprobación en rojo:**
+- Siete piezas, una a una, con script: `S\hs65\t6\b1\corr\red.sh`, con `mutate.py` para cambiar el texto exacto y la salida en
+  `red-out.txt`.
+- Antes de cada pieza se guardaron copias de los siete archivos fuera del worktree, y después volvieron a sus bytes con el mismo SHA-256
+  (lo comprueba el script). `git diff` no tiene restos.
+- Clases focales: `InsertRedrawCompletenessTests`, `PushBackWindowDrawingMirrorGuardTests`, `PushBackCabeceraInsertedViewDesignTests`,
+  `RackCadWindowListTests` y `SelectiveDoorInsertionTests` (119 casos).
+
+0. **La base:** las cinco mitades y la respuesta de la ventana tal como están en `dc0ada4c`, con la regla presente pero sin usar. Fallan 15:
+   - las cinco guardas de la respuesta a la cola;
+   - las cuatro del borrado tras la primera vista nueva;
+   - las dos de la frontal no disponible;
+   - las tres del aviso del último vínculo;
+   - la de la respuesta de la ventana en el escenario B.
+
+   Las dos de la cola real pasan, porque reproducen lo de antes: con `Applied()`, un redibujo fallido coloca las dos vistas.
+1. **La regla siempre deja colocar** (el escenario A, como era): fallan 6.
+2. **Las obsoletas nunca esperan a la primera vista nueva** (el escenario B, como era): fallan 5.
+3. **Cantilever vuelve a responder `Applied()`:** falla 1, su guarda.
+4. **La copia de la ventana de Push Back redibuja la frontal no disponible:** fallan 2, la guarda espejo y la de la frontal.
+5. **La ventana no da por escrito el escenario B:** falla 1.
+6. **RACKEDITAR de Push Back nunca borra tras la primera vista nueva** (solo el clásico): fallan 2, la guarda espejo y la del borrado.
+
+**Los números** (la solución en Debug, recompilada con `--no-incremental` sobre las fuentes finales):
+- **UI completa:** 3110 correctas, 0 con error y 48 omitidas (3158), las mismas: estas correcciones no tocan la UI. `AnswerForInsert`
+  está en Application y se prueba en Core.
+- **Core Full:** 19529 correctas, 0 con error y 403 omitidas (19932). Son las 19496 de `dc0ada4c` más las 33 de
+  `InsertRedrawCompletenessTests`; `PushBackCabeceraInsertedViewDesignTests` queda igual (−2 +2).
+- **Plugin Debug:** 0 errores. Las advertencias MSB3277 de las referencias de AutoCAD ya estaban.
+
+**Lo que queda abierto:**
+- **Pregunta para el Owner (preexistente, no se tocó):** con un redibujo fallido, la ventana da el borrador por escrito si se redibujó alguna
+  vista (`AnswerForApply` y `AnswerForInsert` cuentan las redibujadas, no las que faltan). La línea de órdenes da el motivo. Con
+  «Actualizar» pasa lo mismo. Cambiarlo tocaría lo que la ventana da por escrito en los cuatro sistemas.
+- **El smoke en AutoCAD de estas correcciones:**
+  - el escenario B: la única lateral obsoleta, e «Insertar» la planta, una vez colocándola y otra cancelando el jig;
+  - quitar el lado B con una frontal de B en el dibujo, con «Actualizar» y con «Insertar»;
+  - un redibujo fallido no se puede provocar a mano: queda cubierto por las pruebas de la regla y de la cola real.

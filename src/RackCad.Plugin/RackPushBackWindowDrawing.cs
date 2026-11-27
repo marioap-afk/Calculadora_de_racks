@@ -149,6 +149,14 @@ namespace RackCad.Plugin
                 }
                 else if (decoded.Address.Kind == DimensionViewKind.Frontal)
                 {
+                    // T6 b1 (point 6 of the review of dc0ada4c): a frontal cut of side B of a rack that is no longer two-way is stale, as a
+                    // lateral of a post that no longer exists; it is never redrawn with the geometry of side A under the descriptor of B.
+                    if (RackViewAvailability.Evaluate(decoded, availabilityFacts).Status != RackViewAvailabilityStatus.Available)
+                    {
+                        staleViewBlocks.Add(viewBlock.BlockId);
+                        continue;
+                    }
+
                     var end = decoded.Address.Variant.PushBackEnd == RackPushBackEnd.Posterior
                         ? PushBackFrontalEnd.Posterior
                         : PushBackFrontalEnd.EntradaSalida;
@@ -214,7 +222,8 @@ namespace RackCad.Plugin
             var erasedPhantoms = staleViewBlocks.Count > 0 && survivors > 0
                 ? RackCommandSupport.EraseViewBlocks(document, staleViewBlocks)
                 : 0;
-            if (staleViewBlocks.Count > 0 && survivors == 0)
+            // T6 b1: with «Insertar» the obsolete views of a rack with no survivor wait for the first new view (RackInsertRedrawOutcome).
+            if (staleViewBlocks.Count > 0 && survivors == 0 && updateOnly)
             {
                 editor.WriteMessage("\nRackCad: todas las vistas Push Back quedaron obsoletas; no se elimino el ultimo vinculo del rack.");
             }
@@ -232,8 +241,17 @@ namespace RackCad.Plugin
 
             if (!updateOnly)
             {
-                RackViewBatchExecution.Run(document, batchProducts, batchRequest,
-                    _ => RackCad.Application.Views.Batch.RackViewBatchRedrawResult.Applied());
+                // T6 b1 (I-02 of the review of B-1): the queue places the new views only when every view that remains was redrawn.
+                var batch = RackViewBatchExecution.Run(document, batchProducts, batchRequest,
+                    _ => RackCad.Application.Views.Batch.RackInsertRedrawOutcome.Of(
+                        blocks.Count, staleViewBlocks.Count, updatedLateral + updatedFrontal + updatedPlanta, erasedPhantoms));
+                if (RackCad.Application.Views.Batch.RackInsertRedrawOutcome.ErasesStaleAfterPlacement(blocks.Count, staleViewBlocks.Count))
+                {
+                    erasedPhantoms = batch.Report.PlacedCount > 0 ? RackCommandSupport.EraseViewBlocks(document, staleViewBlocks) : 0;
+                    editor.WriteMessage("\nRackCad: " + RackCad.Application.Views.Batch.RackInsertRedrawOutcome.StaleAfterPlacementText(
+                        staleViewBlocks.Count, erasedPhantoms, batch.Report.PlacedCount));
+                }
+
                 return (updatedLateral + updatedFrontal + updatedPlanta, erasedPhantoms);
             }
 
