@@ -43,6 +43,7 @@ namespace RackCad.UI.VentanaRackCad
             SizeChanged += OnSizeChanged;
             ApplySideCollapsed();
             ShowVariablesPage(); // T4 va (RackCadWindowView.Variables.cs)
+            WireCamaView(); // T5 cm (RackCadWindowView.Cama.cs)
         }
 
         /// <summary>Below this width the two columns do not fit: the side column is hidden on its own until the window is wider again.</summary>
@@ -175,6 +176,7 @@ namespace RackCad.UI.VentanaRackCad
             foreach (var gone in _selectiveViews.Keys.Where(editor => !liveSelective.Contains(editor)).ToList()) _selectiveViews.Remove(gone);
 
             if (ShowCabeceraContent()) return; // T4 cb: the editor of a cabecera of its own
+            if (ShowCamaContent()) return; // T5 cm: the editor of a cama de rodamiento
             var active = _viewModel.ActiveDynamicEditor;
             var activeSelective = active == null ? _viewModel.ActiveSelectiveEditor : null;
             if ((active == null && activeSelective == null) || _viewModel.ShowPanel)

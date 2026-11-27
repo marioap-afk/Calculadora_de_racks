@@ -123,6 +123,34 @@ namespace RackCad.UI.Tests
             Assert.Equal(string.Empty, name);
         }
 
+        [Fact]
+        public void T5cm_ABrakeEveryNRollersTheClassicDoesNotShowIsKeptWhenItWritesAndANewBedHasNone()
+        {
+            // T5 cm (question 3 of the prototype «camas»): the editor of the window writes «Freno cada N rodillos»; the classic does not show
+            // it, but writes it back as it read it (from the drawing or the library), as the classic Dinámico keeps the bed of a front.
+            var (fromDrawing, fromLibrary, fresh) = StaTestRunner.Run(() =>
+            {
+                var withBrakes = ValidConfig();
+                withBrakes.BrakeEveryRollers = 6;
+
+                var drawn = new RackFlowBedWindow(canInsertInAutoCad: true);
+                drawn.LoadExisting(withBrakes, "GUID-CAMA", "Cama A");
+                EditorWindowTestSupport.ClickNamed(drawn, "InsertButton");
+
+                var library = new RackFlowBedWindow(canInsertInAutoCad: true);
+                library.LoadForNew(withBrakes, "Cama plantilla");
+                EditorWindowTestSupport.ClickNamed(library, "InsertButton");
+
+                var plain = new RackFlowBedWindow(canInsertInAutoCad: true);
+                EditorWindowTestSupport.ClickNamed(plain, "InsertButton");
+                return (drawn.FlowBedToInsert?.BrakeEveryRollers, library.FlowBedToInsert?.BrakeEveryRollers, plain.FlowBedToInsert?.BrakeEveryRollers);
+            });
+
+            Assert.Equal(6, fromDrawing);
+            Assert.Equal(6, fromLibrary);
+            Assert.Null(fresh);
+        }
+
         // ---- Helpers ----
 
         /// <summary>The config the real handler produced must match the fixture field by field, not just be non-null.</summary>

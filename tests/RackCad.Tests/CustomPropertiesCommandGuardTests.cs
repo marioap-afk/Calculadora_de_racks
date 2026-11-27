@@ -116,8 +116,15 @@ namespace RackCad.Tests
         /// </summary>
         internal static readonly string[] A14WarehouseCommands = { "RACKALMACENCOLOCAR", "RACKALMACENLEER" };
 
+        /// <summary>
+        /// T5 cm (I-64, quinta tanda): la puerta de la ventana a una cama de rodamiento, que la lee sin marca de Deshacer, la escribe con la
+        /// mitad de dibujo de «Actualizar» de RACKEDITAR e inserta una cama nueva de «Nuevo», sin alias, en
+        /// <c>src/RackCad.Plugin/VentanaRackCad/RackCadCamaDoorCommands.cs</c>. La base se fija de nuevo con estos tres nombres.
+        /// </summary>
+        internal static readonly string[] A14CamaDoorCommands = { "RACKCAMAABRIR", "RACKCAMAAPLICAR", "RACKCAMANUEVO" };
+
         /// <summary>El censo vigente: apertura, G7, G15, I-65, el panel de F1 y el descarte de F4-T3C2, cada nombre una vez.</summary>
-        internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).Concat(I65Commands).Concat(F1PanelCommands).Concat(F4PanelDiscardCommands).Concat(A14WindowCommands).Concat(A14DynamicDoorCommands).Concat(A14SelectiveDoorCommands).Concat(A14UtilityCommands).Concat(A14CabeceraDoorCommands).Concat(A14VariablesDoorCommands).Concat(A14BomCommands).Concat(A14WarehouseCommands).ToArray(); // T5 al: A14WarehouseCommands
+        internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).Concat(I65Commands).Concat(F1PanelCommands).Concat(F4PanelDiscardCommands).Concat(A14WindowCommands).Concat(A14DynamicDoorCommands).Concat(A14SelectiveDoorCommands).Concat(A14UtilityCommands).Concat(A14CabeceraDoorCommands).Concat(A14VariablesDoorCommands).Concat(A14BomCommands).Concat(A14WarehouseCommands).Concat(A14CamaDoorCommands).ToArray(); // T5 al: A14WarehouseCommands; T5 cm: A14CamaDoorCommands
 
         // ================================================================ censo
 

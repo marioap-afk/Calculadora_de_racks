@@ -506,6 +506,7 @@
                                            Text="Este rack es una cabecera. Puedes editarla aquí, con el editor de cabeceras nuevo, sin bloquear AutoCAD. RACKEDITAR sigue siendo el configurador clásico." />
                             </DockPanel>
                         </Border>
+                        <local:RackCadCamaOfferPanel x:Name="CamaOfferPanel" DockPanel.Dock="Top" Margin="10,8,10,0" Visibility="{Binding ShowCamaOffer, Converter={StaticResource FlagToVisibility}}" /> <!-- T5 cm: «Editar aquí» of a cama -->
                         <!-- T4 bom (BM-10): «Ver su BOM» opens «BOM y lista de racks» with this rack chosen; the editors of the window have no BOM. -->
                         <Button x:Name="ShowBomOfRackButton" DockPanel.Dock="Top" HorizontalAlignment="Left" Margin="10,6,10,0" Padding="10,3"
                                 Style="{StaticResource SecondaryButtonStyle}" Content="Ver su BOM" AutomationProperties.Name="Ver el BOM de este rack"
@@ -534,6 +535,7 @@
                     <!-- E2 P3: Nuevo with a new Selectivo being made here, as the new Dinámico: its editor, until «Insertar en el dibujo…». -->
                     <ContentControl x:Name="NewSelectiveRackHost" Focusable="False"
                                     Visibility="{Binding ShowNewSelectiveEditor, Converter={StaticResource FlagToVisibility}}" />
+                    <ContentControl x:Name="NewCamaRackHost" Focusable="False" Visibility="{Binding ShowNewCamaEditor, Converter={StaticResource FlagToVisibility}}" /> <!-- T5 cm: a new cama of «Nuevo» -->
 
                     <ScrollViewer x:Name="NuevoPage" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
                                   Visibility="{Binding ShowNuevoCards, Converter={StaticResource FlagToVisibility}}">
@@ -558,6 +560,7 @@
                                     <TextBlock Text="El editor nuevo, sin bloquear AutoCAD. Se inserta con «Insertar en el dibujo…»." TextWrapping="Wrap" />
                                 </StackPanel>
                             </Button>
+                            <local:RackCadNewCamaButton x:Name="NewCamaHereBlock" /> <!-- T5 cm: «Cama en esta ventana» -->
                             <TextBlock Style="{StaticResource PageText}"
                                        Text="Elige el sistema: se abre su editor en AutoCAD y, al insertarlo, el rack aparece en la lista." />
                             <ItemsControl x:Name="NewSystemList" ItemsSource="{Binding NewSystems}" AutomationProperties.Name="Sistemas">

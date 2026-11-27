@@ -247,7 +247,7 @@ namespace RackCad.UI.VentanaRackCad
             if (dead.Count == 0) return;
             var lost = dead.Any(p => p.Value.IsDirty || p.Value.IsWriting);
             foreach (var pair in dead) _variablesPages.Remove(pair.Key);
-            if (lost) Say("Se cerró un dibujo con cambios sin escribir en «Variables»: esos cambios se perdieron.", failed: true);
+            if (lost) LostOnPrune("«" + VariablesName + "»"); // T5 cm: said once, with what the other prunes lost (RackCadWindowViewModel.Prune.cs)
             OnPropertyChanged(nameof(VariablesPage));
         }
 

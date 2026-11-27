@@ -132,8 +132,12 @@ namespace RackCad.UI.VentanaRackCad
         /// </summary>
         public static string NoticeName(int number, string systemLabel, string name)
             => string.IsNullOrWhiteSpace(name)
-                ? Label(number) + " (" + systemLabel + " nuevo)"
-                : name.Trim() + " (" + Label(number) + ", " + systemLabel + " nuevo)";
+                ? Label(number) + " (" + NewText(systemLabel) + ")" // T5 cm: «Cama nueva»
+                : name.Trim() + " (" + Label(number) + ", " + NewText(systemLabel) + ")";
+
+        /// <summary>T5 cm: «Selectivo nuevo», «Dinámico nuevo», and «Cama nueva» / «Cabecera nueva» (feminine in Spanish).</summary>
+        public static string NewText(string systemLabel)
+            => systemLabel + (string.Equals(systemLabel, "Cama", StringComparison.Ordinal) || string.Equals(systemLabel, "Cabecera", StringComparison.Ordinal) ? " nueva" : " nuevo");
 
         /// <summary>The system as the window says it, for the kinds of the library.</summary>
         public static string SystemLabel(RackSystemKind kind)

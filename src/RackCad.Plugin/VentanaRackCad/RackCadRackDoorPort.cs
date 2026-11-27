@@ -171,6 +171,7 @@ namespace RackCad.Plugin.VentanaRackCad
             AbandonVariables(requestId); // T4 va: the page «Variables» (RackCadRackDoorPort.Variables.cs)
             AbandonBomRead(requestId); // T4 bom
             AbandonWarehouse(requestId); // T5 al: the page «Almacén» (RackCadRackDoorPort.Warehouse.cs)
+            AbandonCama(requestId); // T5 cm: the door of a cama (RackCadRackDoorPort.Cama.cs)
         }
 
         /// <summary>The read of a Selectivo that waits, taken once by its command; null when there is none.</summary>

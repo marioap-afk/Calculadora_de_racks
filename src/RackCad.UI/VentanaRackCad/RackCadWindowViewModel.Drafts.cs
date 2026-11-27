@@ -162,6 +162,7 @@ namespace RackCad.UI.VentanaRackCad
                 case RackSystemKind.PalletFlow:
                     hasDoor = _door != null;
                     return true;
+                case RackSystemKind.Cama: hasDoor = _camaDoor != null; return true; // T5 cm
                 default:
                     hasDoor = false;
                     return false;
@@ -176,6 +177,7 @@ namespace RackCad.UI.VentanaRackCad
             {
                 case RackSystemKind.SelectiveRack: return CreateSelectiveDraft(seed, session, rackId, label, out failure);
                 case RackSystemKind.PalletFlow: return CreateDynamicDraft(seed, session, rackId, label, out failure);
+                case RackSystemKind.Cama: return CreateCamaDraft(seed, session, rackId, label, out failure); // T5 cm
                 default:
                     failure = RackCadDraftNaming.NoEditorText(seed.Kind);
                     return null;
@@ -272,7 +274,7 @@ namespace RackCad.UI.VentanaRackCad
         // What the editor of a draft opened from a design says first: what it is, where it comes from and what the load had to change.
         private static string OpenedText(string label, RackCadDraftSeed seed, string loadNotice, string linkedNote)
         {
-            var text = label + ": " + RackCadDraftNaming.SystemLabel(seed.Kind) + " nuevo en esta ventana"
+            var text = label + ": " + RackCadDraftNaming.NewText(RackCadDraftNaming.SystemLabel(seed.Kind)) + " en esta ventana" // T5 cm: «Cama nueva»
                        + (seed.Origin == null ? ", con el diseño abierto" : ", " + seed.Origin) + ". Todavía no está en el dibujo.";
             if (!string.IsNullOrWhiteSpace(loadNotice)) text += " " + loadNotice.Trim();
             if (!string.IsNullOrWhiteSpace(linkedNote)) text += " " + linkedNote;
@@ -384,7 +386,7 @@ namespace RackCad.UI.VentanaRackCad
         private void ForgetDraft(DraftEntry entry)
         {
             ForgetDraftEditor(entry);
-            Say("Se descartó " + entry.Item.Title + " (" + entry.Item.SystemLabel + " nuevo): no estaba en el dibujo.", failed: false);
+            Say("Se descartó " + entry.Item.Title + " (" + RackCadDraftNaming.NewText(entry.Item.SystemLabel) + "): no estaba en el dibujo.", failed: false); // T5 cm: «Cama nueva»
             RaiseDynamic();
         }
 
@@ -399,6 +401,7 @@ namespace RackCad.UI.VentanaRackCad
                     return selective.IsNewRack && _selectiveDrafts.TryGetValue((entry.Session, entry.RackId), out var s) && ReferenceEquals(s.Editor, selective);
                 case DynamicEditorViewModel dynamic:
                     return dynamic.IsNewRack && _dynamicDrafts.TryGetValue((entry.Session, entry.RackId), out var d) && ReferenceEquals(d.Editor, dynamic);
+                case CamaEditorViewModel cama: return IsLiveCama(entry, cama); // T5 cm
                 default:
                     return false;
             }
@@ -410,6 +413,7 @@ namespace RackCad.UI.VentanaRackCad
             {
                 case SelectiveEditorViewModel selective: return (selective.Name, selective.IsDirty, selective.IsWriting);
                 case DynamicEditorViewModel dynamic: return (dynamic.Name, dynamic.IsDirty, dynamic.IsWriting);
+                case CamaEditorViewModel cama: return (cama.Name, cama.IsDirty, cama.IsWriting); // T5 cm
                 default: return (null, false, false);
             }
         }
@@ -430,6 +434,7 @@ namespace RackCad.UI.VentanaRackCad
                     var dynamicCopy = dynamic.Draft.SnapshotForWrite();
                     var dynamicBase = dynamic.BaselineDesignJson == null ? null : new RackProjectStore().Deserialize(dynamic.BaselineDesignJson);
                     return (dynamicBase?.DynamicDesign == null ? null : dynamicBase, dynamicCopy == null ? null : RackProject.ForDynamic(dynamicCopy.Design));
+                case CamaEditorViewModel cama: return CopyOfCama(cama); // T5 cm
                 default:
                     return (null, null);
             }
@@ -446,6 +451,7 @@ namespace RackCad.UI.VentanaRackCad
                 case DynamicEditorViewModel dynamic:
                     CloseDynamicEditor(dynamic);
                     break;
+                case CamaEditorViewModel cama: CloseCamaEditor(cama); break; // T5 cm
             }
         }
 
