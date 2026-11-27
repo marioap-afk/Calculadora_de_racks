@@ -36,7 +36,8 @@ namespace RackCad.Plugin.VentanaRackCad
 
         /// <summary>A write that waits for its command: the number, the copies of the draft and the drawing it is for.</summary>
         internal sealed record PendingWrite(long RequestId, string RackId, string Name, DynamicRackDesign Design, DynamicRackSystem System, long Document,
-            IReadOnlyList<RackViewAddress> Views = null, RackPropertiesWrite Properties = null); // T4 va: Properties (VA-07)
+            IReadOnlyList<RackViewAddress> Views = null, RackPropertiesWrite Properties = null, // T4 va: Properties (VA-07)
+            string SourceDesignJson = null); // T6 lib (UT-S10): the design of the library a new Dinámico was opened from
 
         /// <summary>A write of a Selectivo that waits for its command: the request (copies of the draft and its final linked states) and the drawing.</summary>
         internal sealed record PendingSelectiveWrite(SelectiveDoorWrite Write, long Document)
@@ -136,7 +137,7 @@ namespace RackCad.Plugin.VentanaRackCad
                 return Send(
                     NewCommand + " ",
                     document => _pendingNew = new PendingWrite(write.RequestId, write.RackId.Trim(), write.Name, write.Design, write.System, KeyOf(document),
-                        new List<RackViewAddress>(write.InsertViews)),
+                        new List<RackViewAddress>(write.InsertViews), SourceDesignJson: write.SourceDesignJson), // T6 lib (UT-S10)
                     () => _pendingNew = null);
             }
 

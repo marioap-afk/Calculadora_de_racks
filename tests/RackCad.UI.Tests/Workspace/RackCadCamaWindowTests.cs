@@ -24,7 +24,7 @@ namespace RackCad.UI.Tests
     /// writes, a draft of another drawing, the prune of a closed drawing and the veto of the close (D-08); «Cama en esta ventana» as a draft
     /// of «Nuevo» (SD-06) inserted with RACKCAMANUEVO; the library (open as a draft, save the editor) and the BOM of the draft.
     /// </summary>
-    public class RackCadCamaWindowTests
+    public partial class RackCadCamaWindowTests // T6 lib: partial (RackCadCamaWindowTests.Lib.cs: T6lib-S3)
     {
         private static readonly SessionId Session = new(7);
 

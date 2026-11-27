@@ -836,7 +836,8 @@ namespace RackCad.UI.VentanaRackCad
             {
                 result = _door.RequestDynamicUpdate(new RackDoorWrite(id, entry.Session, editor.RackId, snapshot.Name, snapshot.Design, snapshot.System,
                         insertViews == null ? null : new List<RackViewAddress>(insertViews), NewRack: editor.IsNewRack,
-                        Properties: insertViews == null && !editor.IsNewRack ? editor.PropertiesWrite() : null)) // T4 va (VA-07)
+                        Properties: insertViews == null && !editor.IsNewRack ? editor.PropertiesWrite() : null, // T4 va (VA-07)
+                        SourceDesignJson: editor.IsNewRack ? LibrarySourceDesignOf(editor) : null)) // T6 lib (UT-S10)
                     ?? RackCadClassicResult.Without(RackCadClassicStatus.Failed, "sin respuesta.");
             }
             catch (Exception ex)
