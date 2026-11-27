@@ -109,7 +109,9 @@ namespace RackCad.UI.VentanaRackCad
 
         public string DiffText => _writing
             ? "AutoCAD está escribiendo…"
-            // T6 ui (point 5, UT-S11): a new line can come from the library or be a copy, not only from the defaults of the classic editor.
+            // T6 ui (point 5, UT-S11): a new line can come from the library, not only from the defaults of the classic editor. Correction 1
+            // of the review: a copy compares with how its ORIGINAL opened (a copy of a modified line is born with changes).
+            : _isNewRack && _isCopy ? (_dirty ? "Con cambios respecto de cómo se abrió su original." : "Sin cambios respecto de cómo se abrió su original.")
             : _isNewRack ? (_dirty ? "Con cambios desde que se abrió." : "Sin cambios desde que se abrió.")
             : _dirty ? (SegmentsPending ? "Cambios sin escribir · secuencia sin aplicar." : "Cambios sin escribir.") : "Sin cambios que escribir.";
 
@@ -260,7 +262,7 @@ namespace RackCad.UI.VentanaRackCad
             _propertiesTab?.Reset();
             ResetSegmentRows();
             CloseLayoutQuestions();
-            Say(_isNewRack ? RackCadDraftNaming.DiscardedText /* T6 ui (point 10) */ : "Borrador descartado: el editor vuelve a lo último que se leyó o se escribió.", error: false);
+            Say(_isNewRack ? RackCadDraftNaming.DiscardedTextOf(_isCopy) /* T6 ui (point 10; correction 1) */ : "Borrador descartado: el editor vuelve a lo último que se leyó o se escribió.", error: false);
             Rebuild();
         }
 
@@ -359,10 +361,14 @@ namespace RackCad.UI.VentanaRackCad
         internal bool TakeDesignAsEdit(CantileverLineDesign design)
         {
             if (!_draft.TakeAsEdit(design)) return false;
+            _isCopy = true; // T6 ui (correction 1 of the review): only a copy of «Duplicar» takes a design as an edit
             SelectFirstCell();
             Rebuild();
             return true;
         }
+
+        // T6 ui: a copy of «Duplicar»: it compares with, and «Descartar» goes back to, how its original opened; its texts say so.
+        private bool _isCopy;
 
         // ------------------------------------------------------------------ tab «Línea»
 

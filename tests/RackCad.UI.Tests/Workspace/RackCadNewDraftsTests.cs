@@ -754,6 +754,47 @@ namespace RackCad.UI.Tests
             Assert.Equal(DynamicJson(RackCad.Application.VentanaRackCad.DynamicDraftEditor.CreateNew(Catalog()).Design), DynamicJson(dynamicCopy.Draft.Design));
         }
 
+        // T6 ui, correction 1 of the review (sobre 331f9f18): the copy of a modified draft is born «Modificado» over the base of its original,
+        // and «Descartar» takes it back to that base (how its ORIGINAL opened), not to how the copy opened. Its texts say so; a draft that is
+        // not a copy keeps the text of the Owner.
+        private const string DiscardedCopyText = "Cambios descartados: la copia vuelve a como se abrió su original.";
+
+        [Fact]
+        public void TheTextsOfDiscardOfACopySayThatItGoesBackToHowItsOriginalOpened()
+        {
+            var rig = new Rig();
+            var original = rig.NewSelective();
+            Edit(original);
+            Assert.True(rig.Window.DuplicateDraft(rig.Window.Drafts[0]).Opened);
+            var copy = rig.Window.NewSelectiveEditor!;
+            Assert.True(copy.IsDirty);
+
+            // The notice of «Restaurar layout…» of the copy, which keeps the changes of its original.
+            Write(Field(copy.FrontFields, "fHeight"), "200");
+            copy.OpenRestore();
+            copy.ConfirmRestore();
+            Assert.True(copy.CanDiscard);
+            Assert.Equal("Layout restaurado en el borrador: 1 valor manual quitado (1 altura manual). «Descartar» vuelve a como se abrió el original de la copia.",
+                copy.Message);
+
+            copy.Discard();
+            Assert.Equal(DiscardedCopyText, copy.Message);
+            Assert.Equal(Json(SelectiveDraftEditor.CreateNew(Catalog()).Design), Json(copy.Draft.Design));
+
+            rig.Window.OpenDraft(rig.Window.Drafts.Single(d => d.RackId == original.RackId));
+            original.Discard();
+            Assert.Equal(DiscardedDraftText, original.Message);
+
+            // A Dinámico too.
+            var dynamic = rig.NewDynamic();
+            Edit(dynamic);
+            rig.Window.DuplicateDraft(rig.Window.ActiveDraft!);
+            var dynamicCopy = rig.Window.NewDynamicEditor!;
+            Assert.True(dynamicCopy.IsDirty);
+            dynamicCopy.Discard();
+            Assert.Equal(DiscardedCopyText, dynamicCopy.Message);
+        }
+
         // Point 2: what AutoCAD answers to a draft that is not on screen is said in the message of the window too, with its label.
         [Fact]
         public void TheAnswerToADraftThatIsNotOnScreenIsSaidInTheWindowWithItsLabel()

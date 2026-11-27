@@ -144,6 +144,7 @@ namespace RackCad.Plugin.VentanaRackCad
         [CommandMethod("RACKDINAMICOINSERTAR")]
         public void InsertViews()
         {
+            using var jigPrompt = RackJigPrompt.Scope(RackJigPrompt.DynamicView); // T6 ui (O-3): the jig names the view of the Dinámico
             var door = RackCadRackDoorPort.Current;
             var document = AcApplication.DocumentManager.MdiActiveDocument;
             if (document == null) return;
@@ -401,6 +402,7 @@ namespace RackCad.Plugin.VentanaRackCad
         [CommandMethod("RACKSELECTIVOINSERTAR")]
         public void InsertSelectiveViews()
         {
+            using var jigPrompt = RackJigPrompt.Scope(RackJigPrompt.SelectiveView); // T6 ui (O-3): the jig names the view of the Selectivo
             var door = RackCadRackDoorPort.Current;
             var document = AcApplication.DocumentManager.MdiActiveDocument;
             if (document == null) return;
@@ -463,16 +465,11 @@ namespace RackCad.Plugin.VentanaRackCad
                 }
 
                 RackUnitsGuard.WarnIfNotInches(document);
-                int placed;
-                using (RackJigPrompt.Scope(RackJigPrompt.SelectiveView)) // T6 ui (O-3): the jig names the view of the Selectivo, not a cabecera
-                {
-                    placed = RackSelectivoCommands.InsertSelectiveViews(
-                        document, blockId, embed, plan.Saved, registry,
-                        new RackCad.UI.Systems.Selective.SelectiveDraftOutcome(write.RackId, write.Name, write.Design, write.System,
-                            write.LinkedPropertyFinalStates),
-                        views);
-                }
-
+                var placed = RackSelectivoCommands.InsertSelectiveViews(
+                    document, blockId, embed, plan.Saved, registry,
+                    new RackCad.UI.Systems.Selective.SelectiveDraftOutcome(write.RackId, write.Name, write.Design, write.System,
+                        write.LinkedPropertyFinalStates),
+                    views);
                 if (placed < 0)
                 {
                     door?.AnswerWrite(SelectiveDoorInsertion.AnswerForInsert(pending.RequestId, pending.RackId, 0, 0, 0));

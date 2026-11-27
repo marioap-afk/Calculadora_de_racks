@@ -8,6 +8,7 @@ using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.Persistence;
 using RackCad.Application.Systems.PushBack;
 using RackCad.Application.Systems.Shared;
+using RackCad.Application.Views.Placement; // T6 ui (O-3): RackJigPrompt
 using RackCad.Domain.Systems.PushBack;
 using RackCad.Domain.Systems.Shared;
 using RackCad.Plugin.Drawing;
@@ -36,6 +37,7 @@ namespace RackCad.Plugin
         [CommandMethod("RACKPUSHBACK")]
         public void RackPushBack()
         {
+            using var jigPrompt = RackJigPrompt.Scope(RackJigPrompt.PushBackView); // T6 ui (O-3): the jig names the view of the Push Back
             var document = AcApplication.DocumentManager.MdiActiveDocument;
             if (document == null)
             {

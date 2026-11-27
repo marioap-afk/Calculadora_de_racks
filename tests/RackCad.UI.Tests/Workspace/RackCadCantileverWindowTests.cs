@@ -728,6 +728,32 @@ namespace RackCad.UI.Tests
             Assert.DoesNotContain("valores por defecto", library.DiffText, StringComparison.Ordinal);
         }
 
+        // T6 ui, correction 1 of the review (sobre 331f9f18): a copy of a draft compares with the base of its original. A copy of a draft
+        // with changes is born «Modificado» without anybody touching it: the line under its name says so, and «Descartar» says where it goes.
+        [Fact]
+        public void TheCopyOfADraftSaysThatItComparesWithHowItsOriginalOpened()
+        {
+            var rig = new Rig();
+            rig.Window.StartNewCantilever();
+            var original = rig.Window.NewCantileverEditor!;
+            Assert.True(rig.Window.DuplicateDraft(rig.Window.ActiveDraft!).Opened);
+            var clean = rig.Window.NewCantileverEditor!;
+            Assert.NotSame(original, clean);
+            Assert.False(clean.IsDirty);
+            Assert.Equal("Sin cambios respecto de cómo se abrió su original.", clean.DiffText);
+
+            rig.Window.OpenDraft(rig.Window.Drafts.Single(d => d.RackId == original.RackId));
+            Write(original.LevelItems, "ClearHeight", "20");
+            Assert.True(rig.Window.DuplicateDraft(rig.Window.ActiveDraft!).Opened);
+            var copy = rig.Window.NewCantileverEditor!;
+            Assert.True(copy.IsDirty);
+            Assert.Equal("Con cambios respecto de cómo se abrió su original.", copy.DiffText);
+
+            copy.Discard();
+            Assert.Equal("Cambios descartados: la copia vuelve a como se abrió su original.", copy.Message);
+            Assert.Equal("Sin cambios respecto de cómo se abrió su original.", copy.DiffText);
+        }
+
         [Fact]
         public void TheTabPropiedadesIsPartOfTheDraftAndOnlyActualizarSendsIt()
         {

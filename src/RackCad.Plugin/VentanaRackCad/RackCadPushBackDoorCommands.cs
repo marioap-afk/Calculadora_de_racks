@@ -78,7 +78,11 @@ namespace RackCad.Plugin.VentanaRackCad
 
         /// <summary>«Insertar vista…» of the window: the draft in the views that exist, then the new views placed as linked copies.</summary>
         [CommandMethod("RACKPUSHBACKINSERTAR")]
-        public void InsertPushBackViews() => Write(RackCadRackDoorPort.TakePendingPushBackInsert(), "RACKPUSHBACKINSERTAR", "ninguna vista pendiente de insertar");
+        public void InsertPushBackViews()
+        {
+            using var jigPrompt = RackJigPrompt.Scope(RackJigPrompt.PushBackView); // T6 ui (O-3): the jig names the view of the Push Back
+            Write(RackCadRackDoorPort.TakePendingPushBackInsert(), "RACKPUSHBACKINSERTAR", "ninguna vista pendiente de insertar");
+        }
 
         /// <summary>A new Push Back of the window: the insertion of a new rack, by the dispatch of «Nuevo» (RACKNUEVO).</summary>
         [CommandMethod("RACKPUSHBACKNUEVO")]
@@ -112,12 +116,9 @@ namespace RackCad.Plugin.VentanaRackCad
                 }
 
                 var write = pending.Write;
-                using (RackJigPrompt.Scope(RackJigPrompt.PushBackView)) // T6 ui (O-3): the jig names the view of the Push Back, not a cabecera
-                {
-                    RackMenuCommands.DispatchInsertion(document,
-                        RackCad.UI.VentanaRackCad.PushBackDoorInsertion.NewRackRequest(write.RackId, write.Name, write.Design, write.System, write.InsertViews));
-                }
-
+                // T6 ui (O-3): the dispatch of «Nuevo» names the view of the Push Back in the prompt of the jig (RackJigPrompt.ForSystem).
+                RackMenuCommands.DispatchInsertion(document,
+                    RackCad.UI.VentanaRackCad.PushBackDoorInsertion.NewRackRequest(write.RackId, write.Name, write.Design, write.System, write.InsertViews));
                 var placed = RackCommandSupport.FindRackBlocks(document, pending.RackId);
                 door?.AnswerWrite(RackDoorRules.AnswerForNewRack(pending.RequestId, pending.RackId, placed.Count, placed.Count > 0 ? placed[0].Embed?.Name : null));
             }

@@ -192,7 +192,7 @@ namespace RackCad.Application.Systems.Cantilever
             {
                 diagnostics.Add(CantileverDiagnostic.Blocking(
                     CantileverDiagnostics.StationNoLevels,
-                    "Una estacion necesita al menos un nivel."));
+                    "Una estación necesita al menos un nivel."));
                 return new CantileverStationLevelLayout(levels, 0.0, 0.0, diagnostics);
             }
 
@@ -202,7 +202,7 @@ namespace RackCad.Application.Systems.Cantilever
             {
                 diagnostics.Add(CantileverDiagnostic.Blocking(
                     CantileverDiagnostics.StationGridNotIncreasing,
-                    "La reticula de troqueles no crece: su pitch debe ser finito y positivo, y se recibio " +
+                    "La retícula de troqueles no crece: su paso debe ser finito y positivo, y se recibió " +
                     Format(grid.Pitch) + "."));
                 return new CantileverStationLevelLayout(levels, 0.0, 0.0, diagnostics);
             }
@@ -257,7 +257,7 @@ namespace RackCad.Application.Systems.Cantilever
                 diagnostics.Add(CantileverDiagnostic.Blocking(
                     CantileverDiagnostics.StationTopClearFactorTooSmall,
                     "El factor de margen superior debe ser finito y al menos " +
-                    Format(CantileverStationDefaults.TopClearFactor) + "; se recibio " + Format(factor) + "."));
+                    Format(CantileverStationDefaults.TopClearFactor) + "; se recibió " + Format(factor) + "."));
                 return 0.0;
             }
 
@@ -307,8 +307,8 @@ namespace RackCad.Application.Systems.Cantilever
             {
                 diagnostics.Add(CantileverDiagnostic.Blocking(
                     CantileverDiagnostics.StationPunchIndexDomainOverflow,
-                    "El nivel " + (levelIndex + 1) + " tendria que empezar en el indice " + floor +
-                    ", fuera del dominio de la reticula."));
+                    "El nivel " + (levelIndex + 1) + " tendría que empezar en el índice " + floor +
+                    ", fuera del dominio de la retícula."));
                 return null;
             }
 
@@ -350,8 +350,8 @@ namespace RackCad.Application.Systems.Cantilever
             {
                 diagnostics.Add(CantileverDiagnostic.Blocking(
                     CantileverDiagnostics.StationPunchIndexDomainOverflow,
-                    "El nivel " + (levelIndex + 1) + " caeria en el indice " + candidate +
-                    ", fuera del dominio de la reticula."));
+                    "El nivel " + (levelIndex + 1) + " caería en el índice " + candidate +
+                    ", fuera del dominio de la retícula."));
                 return null;
             }
 
@@ -504,7 +504,7 @@ namespace RackCad.Application.Systems.Cantilever
             {
                 diagnostics.Add(CantileverDiagnostic.Blocking(
                     CantileverDiagnostics.StationPunchIndexDomainOverflow,
-                    "El indice " + highestPunchIndex + " no esta definido en la reticula."));
+                    "El índice " + highestPunchIndex + " no está definido en la retícula."));
                 return null;
             }
 

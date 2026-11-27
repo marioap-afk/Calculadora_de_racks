@@ -232,7 +232,7 @@ namespace RackCad.UI.VentanaRackCad
             });
             // A new Selectivo of «Nuevo» was never read nor written: its «Descartar» goes back to the defaults (M-4 of the review of E2).
             // T6 ui (point 8): a restore that leaves the draft as the drawing has it does not name «Descartar», which is then off.
-            if (error == null && result != null) Say(result.NoticeFor(_isNewRack, CanDiscard), error: false);
+            if (error == null && result != null) Say(result.NoticeFor(_isNewRack, CanDiscard, _isCopy), error: false); // T6 ui: and a copy
             return error;
         }
 

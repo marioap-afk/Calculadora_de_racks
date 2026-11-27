@@ -9,6 +9,7 @@ using RackCad.Application.Persistence;
 using RackCad.Application.RackFrames;
 using RackCad.Application.Systems.Dynamic;
 using RackCad.Application.Systems.Shared;
+using RackCad.Application.Views.Placement; // T6 ui (O-3): RackJigPrompt
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.Shared;
 using RackCad.Plugin.Drawing;
@@ -32,6 +33,7 @@ namespace RackCad.Plugin
         [CommandMethod("RACKSISTEMADINAMICO")]
         public void RackSistemaDinamico()
         {
+            using var jigPrompt = RackJigPrompt.Scope(RackJigPrompt.DynamicView); // T6 ui (O-3): the jig names the view of the Dinámico
             var document = AcApplication.DocumentManager.MdiActiveDocument;
 
             if (document == null)

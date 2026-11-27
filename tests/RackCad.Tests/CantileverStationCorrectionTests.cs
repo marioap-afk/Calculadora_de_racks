@@ -354,6 +354,24 @@ namespace RackCad.Tests
             }
         }
 
+        // T6 ui, correction 5 of the review (sobre 331f9f18): the messages of the resolvers of the station, its levels and its arms and plate
+        // (what the window lists in «Para que la línea se resuelva»), read as text: no word of the user without its accent, no internal name.
+        [Theory]
+        [InlineData("src/RackCad.Application/Systems/Cantilever/CantileverStationResolver.cs")]
+        [InlineData("src/RackCad.Application/Systems/Cantilever/CantileverStationLevelLayoutResolver.cs")]
+        [InlineData("src/RackCad.Application/Systems/Cantilever/CantileverArmConnectionMetricsResolver.cs")]
+        public void TheMessagesOfTheStationHaveTheirAccentsAndTheNamesOfTheWindow(string path)
+        {
+            var literals = System.Text.RegularExpressions.Regex.Matches(WorkspaceHostSource.Code(path), "\"(?:[^\"\\\\]|\\\\.)*\"")
+                .Select(m => m.Value).ToList();
+            Assert.NotEmpty(literals);
+            var leftovers = literals.Where(l => InternalText.IsMatch(l)
+                || System.Text.RegularExpressions.Regex.IsMatch(l, @"\b(estacion|configuracion|combinacion|seccion|asi|resolvio|uso|patron|conexion|elevacion|ultima|minima|dimensiono)\b"))
+                .ToList();
+            Assert.True(leftovers.Count == 0, string.Join(" | ", leftovers));
+            Assert.DoesNotContain(literals, l => l.Contains("placa de conexion", StringComparison.Ordinal));
+        }
+
         [Fact]
         public void ThePlateThatDoesNotHoldTheBodySaysTheSideAndTheFieldOfTheWindow()
         {

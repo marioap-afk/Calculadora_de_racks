@@ -550,6 +550,50 @@ namespace RackCad.UI.Tests
             Assert.DoesNotContain(cells, c => c.AccessibleText.Contains("distinta del resto", StringComparison.Ordinal));
         }
 
+        // T6 ui (S8): three tarimas in 3, 2 and 2 cells: none is had by more than half of the cells, so no cell is marked.
+        [Fact]
+        public void ThreeTwoAndTwoCellsHaveNoMajorityAndNoCellIsDistinct()
+        {
+            var design = Structure();
+            design.Bays.Clear();
+            design.Bays.Add(Bay(3, frente: 40.0, alto: 60.0));
+            design.Bays.Add(Bay(2, frente: 44.0, alto: 55.0));
+            design.Bays.Add(Bay(2, frente: 48.0, alto: 50.0));
+            design.PostPeraltes.Clear();
+            for (var post = 0; post < 4; post++) design.PostPeraltes.Add(0.0);
+            var vm = SelectiveEditor(design);
+
+            var cells = vm.Rows.SelectMany(r => r.Cells).Where(c => c.Exists).ToList();
+            Assert.Equal(7, cells.Count);
+            Assert.DoesNotContain(cells, c => c.IsDistinct);
+        }
+
+        // T6 ui, correction 4 of the review (sobre 331f9f18): in «Todos los fondos» the majority was counted over the cells of every fondo
+        // (fondo, front, level), but the matrix marks its cell when ANY fondo differs. Fondo 1 with 4 × 2 cells of A and fondo 2 with 3 × 2 of
+        // B: A was the majority (8 of 14) and 6 of the 8 cells of the matrix were marked. The majority is counted over the cells of the
+        // matrix, each with what it shows (the contents of its fondos): the 6 cells that hold A and B are the rest, and only F4 (A alone) is
+        // distinct.
+        [Fact]
+        public void InEveryFondoTheMajorityIsCountedOverTheCellsOfTheMatrix()
+        {
+            var design = Structure();
+            design.Bays.Clear();
+            for (var front = 0; front < 4; front++) design.Bays.Add(Bay(2, frente: 40.0, alto: 60.0));
+            design.PostPeraltes.Clear();
+            for (var post = 0; post < 5; post++) design.PostPeraltes.Add(0.0);
+            design.DepthCount = 2;
+            design.SeparatorLengths.Add(10.0);
+            design.ExtraFondoBays.Add(Enumerable.Range(0, 3).Select(_ => Bay(2, frente: 44.0, alto: 55.0)).ToList());
+            design.ExtraFondoDepths.Add(40.0);
+            design.CabeceraFondoOverrides.Add(0.0);
+            var vm = SelectiveEditor(design);
+            vm.FondoScopeIndex = 0; // «Todos los fondos»
+
+            var cells = vm.Rows.SelectMany(r => r.Cells).Where(c => c.Exists).ToList();
+            Assert.Equal(8, cells.Count);
+            Assert.Equal(new[] { (3, 0), (3, 1) }, cells.Where(c => c.IsDistinct).Select(c => (c.FrontIndex, c.LevelIndex)).OrderBy(p => p).ToArray());
+        }
+
         [Fact]
         public void TheCellsCarryTheMarksOfTheLegendModifiedDistinctAndManual()
         {

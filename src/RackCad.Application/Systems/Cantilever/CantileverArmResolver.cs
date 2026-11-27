@@ -258,11 +258,12 @@ namespace RackCad.Application.Systems.Cantilever
 
                 diagnostics.Add(CantileverDiagnostic.Info(
                     CantileverDiagnostics.ArmSquareCutAtSlopedPlate,
-                    "El perfil va cortado a escuadra y la placa de conexion es un plano vertical, asi que la " +
+                    // T6 ui (correction 5 of the review): the name of the window («Placa de montaje») and the accents.
+                    "El perfil va cortado a escuadra y la placa de montaje es un plano vertical, así que la " +
                     "cara de arranque NO queda a ras: penetra hasta " + Format(intrusion) +
                     " in por su parte alta y deja hasta " + Format(clearance) +
-                    " in de holgura por la baja. Es una aproximacion visual declarada; resolver un corte " +
-                    "inclinado o una preparacion de extremo sigue fuera de alcance."));
+                    " in de holgura por la baja. Es una aproximación visual declarada; resolver un corte " +
+                    "inclinado o una preparación de extremo sigue fuera de alcance."));
             }
 
             var bodyPlan = CantileverArmBodyPlan.Create(
@@ -301,7 +302,7 @@ namespace RackCad.Application.Systems.Cantilever
             ICollection<CantileverDiagnostic> diagnostics)
         {
             RequirePositive(body.CutLength, "la longitud de corte del brazo", diagnostics);
-            RequirePositive(mount.Thickness, "el espesor de la placa de conexion", diagnostics);
+            RequirePositive(mount.Thickness, "el espesor de la placa de montaje", diagnostics); // T6 ui: the name of the window
 
             ValidateEndPlate(end, diagnostics);
         }
@@ -328,18 +329,18 @@ namespace RackCad.Application.Systems.Cantilever
                     break;
 
                 case CantileverArmEndPlateMode.Cap:
-                    RequirePositive(end.Thickness, "el espesor de la placa final", diagnostics);
+                    RequirePositive(end.Thickness, "el espesor de la placa de extremo", diagnostics); // T6 ui: «Placa de extremo», as the window
                     RequireFiniteZero(end.ExtraStopHeight, end.Mode, diagnostics);
                     break;
 
                 case CantileverArmEndPlateMode.Stop:
-                    RequirePositive(end.Thickness, "el espesor de la placa final", diagnostics);
+                    RequirePositive(end.Thickness, "el espesor de la placa de extremo", diagnostics); // T6 ui
 
                     if (!GeometryTolerance.IsFinite(end.ExtraStopHeight) || end.ExtraStopHeight <= 0.0)
                     {
                         diagnostics.Add(CantileverDiagnostic.Blocking(
                             CantileverDiagnostics.ArmStopWithoutHeight,
-                            "Un tope necesita una altura adicional finita y positiva; se recibio " +
+                            "Un tope necesita una «Altura extra de tope» finita y positiva; se recibió " + // T6 ui: the name of the window
                             Format(end.ExtraStopHeight) + "."));
                     }
 
@@ -490,7 +491,9 @@ namespace RackCad.Application.Systems.Cantilever
             {
                 diagnostics.Add(CantileverDiagnostic.Blocking(
                     CantileverDiagnostics.ParameterNotPositive,
-                    "El valor de " + what + " debe ser un numero positivo; se recibio " + Format(value) + "."));
+                    // T6 ui (correction 5): accents, and «del espesor», not «de el espesor».
+                    "El valor " + (what.StartsWith("el ", StringComparison.Ordinal) ? "del " + what.Substring(3) : "de " + what) +
+                    " debe ser un número positivo; se recibió " + Format(value) + "."));
             }
         }
 

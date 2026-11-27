@@ -5142,3 +5142,139 @@ Medidos sobre las fuentes restauradas, con la solución recompilada en Debug con
 - **8, la seguridad sin diálogo:** ver «Queda» del punto 8.
 - **5, el Cantilever nuevo:** «Sin cambios desde que se abrió.» pierde la información «valores por defecto del editor clásico» en una línea
   nueva desde «Nuevo». Si se quiere, la ventana puede decir de dónde viene el borrador (sabe si es de la biblioteca o una copia).
+
+### Sexta tanda, ui: correcciones de la revisión (sobre `331f9f18`)
+
+Vienen de la revisión independiente de la parte ui y de la respuesta del Owner sobre O-3. Sin commit (lo hace la sesión).
+
+#### O-3, respuesta del Owner: «Todas», en la ventana y en el clásico
+
+- **Arreglo:** cada orden que inserta otra cosa que una cabecera abre el ámbito de lo que inserta (`using var jigPrompt =
+  RackJigPrompt.Scope(…)`), y RACKCABECERA sigue con «de la cabecera».
+  - **En el despacho de «Nuevo» (`RackMenuCommands.DispatchInsertion`):** `RackJigPrompt.ForSystem(request.Kind)`. Cubre RACKNUEVO, el menú,
+    RACKBIBLIOTECA y todas las «…NUEVO» de la ventana (RACKSELECTIVONUEVO, RACKDINAMICONUEVO, RACKPUSHBACKNUEVO y RACKCAMANUEVO). Las dos
+    puertas que tenían su propio ámbito (cama y Push Back) ya no lo abren. Una cabecera (`RackSystemKind.Selective`) y Cantilever, que nombra
+    el suyo, no cambian.
+  - **En RACKEDITAR:** `RackJigPrompt.ForEnvelopeKind(embed.Kind)` alrededor del editor del rack, que cubre su mitad «Insertar».
+  - **En la ventana:** RACKSELECTIVOINSERTAR, RACKDINAMICOINSERTAR y RACKPUSHBACKINSERTAR.
+  - **En el clásico directo:** RACKSELECTIVO, RACKPUSHBACK, RACKSISTEMADINAMICO y QUICKCAMA.
+  - **Textos:** «Punto de insercion de la cama: », «…de la vista Selectivo: », «…de la vista Push Back: » y «…de la vista Dinamico: ».
+  - Un ámbito sin texto (el de una cabecera) conserva el que había abierto.
+- **Pruebas (`RackJigPromptTests`):**
+  - la guarda que fija el conjunto completo de archivos que abren un ámbito, y que RACKCABECERA no lo nombra;
+  - una teoría de 9 órdenes que abren su ámbito antes de su trabajo;
+  - las tablas `ForSystem` (7) y `ForEnvelopeKind` (8);
+  - el ámbito sin texto.
+- **Supuesto T6ui-S3 (revisado):** los cuatro textos, sin tildes como todos los avisos del jig («insercion», «Dinamico»), y las órdenes de
+  arriba.
+
+#### 1. «Descartar» de una copia («Duplicar»)
+
+- **Causa:** la copia de un borrador modificado nace «Modificado» sobre la base de su original, y su «Descartar» vuelve a esa base. Los
+  textos decían «el borrador vuelve a como se abrió», «vuelve a como se abrió el borrador» y, en Cantilever, «Con cambios desde que se
+  abrió.» en una copia recién abierta sin tocar.
+- **Arreglo:**
+  - Cada editor sabe que es una copia porque solo una copia toma un diseño como cambio (`TakeDesignAsEdit`).
+  - El texto del Owner se queda para un borrador.
+  - Una copia dice «Cambios descartados: la copia vuelve a como se abrió su original.» (`RackCadDraftNaming.CopyDiscardedText`), en los
+    cinco editores.
+  - Los avisos de Selectivo de una copia dicen ««Descartar» vuelve a como se abrió el original de la copia.»
+    (`SelectiveLayoutRestoreResult.CopyDiscardText`, `DiscardTextOf`).
+  - En Cantilever, una copia dice «Sin cambios respecto de cómo se abrió su original.» o «Con cambios respecto de cómo se abrió su
+    original.».
+- **Pruebas:** `RackCadNewDraftsTests` (una nueva, junto a `TheCopyOfADraftIsModifiedExactlyWhenItsOriginalWas`: Selectivo con su aviso
+  de «Restaurar layout…», el original con el texto del Owner, y Dinámico); `RackCadCantileverWindowTests` (una nueva: la copia limpia y la
+  modificada); `RackCadPushBackEditorTests` y `RackCadCamaWindowTests` (la copia, en la prueba del punto 10).
+- **Supuesto T6ui-S11:** los textos de la copia.
+
+#### 2. «Más» abierto saltaba de línea el grupo
+
+- **Causa:** las entradas de «Más» (`MorePanel`) estaban dentro del grupo `HeadButtons`; abiertas, el grupo crecía y se iba entero a la
+  línea siguiente.
+- **Arreglo (los cinco editores):** `MorePanel` es una fila propia bajo la cabecera, alineada a la izquierda, como `CloseConfirmPanel`.
+- **Prueba (`RackCadEditorHeadTests`):** cada editor a 1036, 950, 846 y 696 px, también como borrador de «Nuevo» (con «Insertar en el
+  dibujo…») y con «Más» abierto. Los botones no se mueven al abrirlo, y sus entradas quedan debajo.
+- **Supuesto T6ui-S12:** las entradas de «Más» ya no se abren debajo del botón, sino en una fila bajo la cabecera (cambia UT-S01).
+
+#### 3. La prueba del orden `Rebuild` / `UpdateDirty`
+
+- `SelectiveRestorePanelTests`: la aserción `Assert.Equal(vm.CanDiscard, …)` pasaba también con el orden viejo. Ahora fija `CanDiscard`
+  falso, «Limpio» y el mensaje exacto («…Volver a subirlos no los recupera.»).
+
+#### 4. «Distinta del resto» en «Todos los fondos»
+
+- **Causa:** la mayoría se contaba sobre las celdas de cada fondo (fondo, frente, nivel), pero la matriz marca su celda si difiere cualquier
+  fondo. Con el fondo 1 de 4 × 2 celdas con A y el fondo 2 de 3 × 2 con B, A era la mayoría (8 de 14) y se marcaban 6 de 8.
+- **Arreglo (`SelectiveEditorViewModel`):** la mayoría se cuenta sobre las celdas de la matriz. Cada una cuenta con lo que muestra: los
+  contenidos distintos de sus fondos. En ese caso, las 6 celdas con A y B son el resto, y solo F4 (A sola) es distinta.
+- **Pruebas (`RackCadSelectiveFidelityTests`):** ese caso (solo F4, 2 celdas), y 3/2/2 sin mayoría, sin marcas.
+- **Supuesto T6ui-S8 (revisado):** la mayoría estricta, sobre las celdas de la matriz; con 3/2/2 no se marca ninguna.
+
+#### 5. Cantilever, lo que quedaba
+
+- **Arreglo:**
+  - **`CantileverStationResolver`:** los detalles del pase final, con tildes («patrón de conexión», «índice», «usó», «elevación»). La
+    comparación dice «… es X in en el pase final y el layout predijo Y in»: «resuelta» no concordaba con «el borde…» ni con «el claro
+    libre». También con tildes el resto de sus mensajes («estación», «configuración», «número», «recibió», «mínima», «colocación»…).
+  - **`CantileverStationLevelLayoutResolver`:** los mensajes que quedaban, con tildes, y «paso» por «pitch».
+  - **`CantileverArmResolver`:** «placa de montaje» por «placa de conexion», y «placa de extremo» por «placa final», como la ventana. «Altura
+    extra de tope», con tildes. «El valor del espesor…», donde decía «El valor de el espesor…».
+  - **`CantileverDraftEditor.SideLabel`:** delega en `CantileverDiagnosticText.Side`, un solo sitio.
+- **Pruebas:**
+  - `CantileverStationCorrectionTests`: los literales de los resolvers de estación, niveles y placa, leídos como texto, sin palabras sin tilde
+    ni nombres internos (3).
+  - `CantileverArmTests`: los mensajes de las placas (1).
+
+#### 6. La cabecera del editor de Cabecera
+
+- **Arreglo (`CabeceraEditorView.xaml`):** los botones de la cabecera suelta (`StandaloneHeadButtons`) y los de la cabecera de un poste
+  (`EmbeddedHeadButtons`) son un grupo, como en los otros cinco editores.
+- **Prueba (`RackCadEditorHeadTests`):** la cabecera suelta a 1036, 950, 846 y 696 px, con sus botones en una línea.
+
+#### Fuera de esta parte
+
+- La lista que avisa tras un ZOOM es de la parte st. No se tocó el drenaje.
+
+#### La comprobación en rojo
+
+- **Cómo:**
+  - una copia, fuera del worktree, de las fuentes cambiadas desde `331f9f18`;
+  - esas fuentes devueltas a `331f9f18`, menos `RackJigPrompt.cs`, el tipo que usan las pruebas;
+  - además, `LossText` puesto otra vez antes de `UpdateDirty`, para probar la corrección 3 por sí sola;
+  - las pruebas de las correcciones;
+  - las copias de vuelta, con `git diff` idéntico al de antes (`cmp`) y sin restos.
+- **UI:** fallan 22 de 51:
+  - la copia en Selectivo, Dinámico, Cantilever, Push Back y Cama (5);
+  - la prueba de la corrección 3, con el orden viejo (1);
+  - «Distinta del resto» en «Todos los fondos» (1);
+  - la cabecera con «Más» abierto en los cinco editores a 1036, 950 y 696 px (15);
+  - la cabecera de Cabecera a 696 px (1).
+- **Pasan las que también deben pasar sobre `331f9f18`:** las cabeceras con «Más» cerrado, la de «Más» abierto a 846 px (el grupo ya iba
+  entero a la segunda línea), la de Cabecera a 1036, 950 y 846 px, 3/2/2 sin mayoría y el texto del Owner para un borrador.
+- **Core:** fallan 14 de 37:
+  - las 9 órdenes y el censo de O-3;
+  - los literales de los resolvers de estación y de niveles (el de la placa ya estaba corregido en `331f9f18`);
+  - los 2 de `CantileverArmTests`.
+  - Pasan las pruebas puras de `RackJigPrompt`, con el tipo en su sitio.
+
+#### Números
+
+Por orden de la sesión (hay otros agentes en la máquina), aquí no se corrieron las suites completas: las corre la sesión sobre la rama
+integrada.
+
+- **Solución en Debug, Plugin incluido:** 0 errores.
+- **UI, focales:** 420 correctas, 0 con error. Son 15 clases:
+  - `RackCadEditorHeadTests`, `RackCadNewDraftsTests`, `RackCadCantileverWindowTests`, `RackCadPushBackEditorTests`, `RackCadCamaWindowTests`;
+  - `SelectiveRestorePanelTests`, `RackCadSelectiveFidelityTests`, `CabeceraEditorTests`, `RackCadUtilitiesTests`, `PostPeralteForAllPostsTests`;
+  - `RackCadSelectiveInsertTests`, `RackCadWindowTests`, `RackCadLargueroWorkbenchTests`, `RackCadDynamicEditorTests`, `RackCadSelectiveWindowTests`.
+- **Core, focales:** 1581 correctas, 0 con error y 4 omitidas (1585):
+  - todo Cantilever, `RackJigPromptTests`, `SelectivePeralteForAllPostsTests` y `SelectiveLayoutRestore*`;
+  - las guardas que leen los archivos del Plugin tocados (`RackCadWindowListTests`, `RackViewPlacementGuardTests`, `G9bInsertWiringGuardTests`,
+    `InsertRedrawLayerAccessCharacterizationTests`, `PushBackWindowDrawingMirrorGuardTests`, `I60RackNameWiringGuardTests` y las demás de la
+    lista).
+- **Pruebas nuevas de estas correcciones:**
+  - UI, 28: 24 en `RackCadEditorHeadTests` (ahora 44), 1 en `RackCadNewDraftsTests`, 1 en `RackCadCantileverWindowTests` y 2 en
+    `RackCadSelectiveFidelityTests`.
+  - Core, 26: 22 en `RackJigPromptTests` (ahora 32), 3 en `CantileverStationCorrectionTests` y 1 en `CantileverArmTests`.
+  - Sobre 3144 / 19505 de `331f9f18`, la UI completa debería dar 3172 y Core Full 19531, sin contar lo que traigan otras partes.
+- **Archivos:** sin caracteres de control y con CRLF (los tres que la herramienta escribió en LF, devueltos con `unix2dos`).

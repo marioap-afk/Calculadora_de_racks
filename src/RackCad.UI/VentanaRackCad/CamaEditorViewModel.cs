@@ -529,7 +529,7 @@ namespace RackCad.UI.VentanaRackCad
             _propertiesTab?.Reset();
             SetRestoreOpen(false);
             SetConfirmingClose(false);
-            Say(_isNewRack ? RackCadDraftNaming.DiscardedText /* T6 ui (point 10) */ : "Borrador descartado: se muestra lo último que se leyó del dibujo o se escribió en él desde este editor.", error: false);
+            Say(_isNewRack ? RackCadDraftNaming.DiscardedTextOf(_isCopy) /* T6 ui (point 10; correction 1) */ : "Borrador descartado: se muestra lo último que se leyó del dibujo o se escribió en él desde este editor.", error: false);
             OnPropertyChanged(nameof(Name));
             Rebuild();
             UpdateDirty();
@@ -748,10 +748,14 @@ namespace RackCad.UI.VentanaRackCad
         {
             if (bed == null || !CanEdit) return false;
             _draft.LoadFrom(bed, _draft.Name);
+            _isCopy = true; // T6 ui (correction 1 of the review): only a copy of «Duplicar» takes a design as an edit
             Rebuild();
             UpdateDirty();
             return true;
         }
+
+        // T6 ui: a copy of «Duplicar»: its «Descartar» goes back to how its original opened, and its text says so.
+        private bool _isCopy;
 
         // ------------------------------------------------------------------ the tab «Propiedades» (VA-07)
 

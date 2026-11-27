@@ -24,9 +24,13 @@ namespace RackCad.UI.VentanaRackCad
             if (design == null || !CanEdit) return false;
             if (!_editor.LoadFrom(design, _openedStates, _editor.Name, _variableNames)) return false;
 
+            _isCopy = true; // T6 ui (correction 1 of the review): only a copy of «Duplicar» takes a design as an edit
             UpdateDirty();
             Rebuild();
             return true;
         }
+
+        // T6 ui: a copy of «Duplicar»: its «Descartar» goes back to how its original opened, and its texts say so.
+        private bool _isCopy;
     }
 }

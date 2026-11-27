@@ -352,6 +352,16 @@ namespace RackCad.UI.Tests
 
             Assert.Single(editor.Columns);
             Assert.Equal("Cambios descartados: el borrador vuelve a como se abrió.", editor.Message);
+
+            // T6 ui, correction 1 of the review: the copy of a modified draft goes back to how its original opened.
+            Write(Field(editor.Essentials, "fronts"), "3");
+            Assert.True(rig.Window.DuplicateDraft(rig.Window.ActiveDraft!).Opened);
+            var copy = rig.Window.NewPushBackEditor!;
+            Assert.NotSame(editor, copy);
+            Assert.True(copy.IsDirty);
+            copy.Discard();
+            Assert.Single(copy.Columns);
+            Assert.Equal("Cambios descartados: la copia vuelve a como se abrió su original.", copy.Message);
         }
 
         [Fact]

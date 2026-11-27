@@ -1427,7 +1427,7 @@ namespace RackCad.UI.VentanaRackCad
             _propertiesTab?.Reset(); // T4 va: «Descartar» drops the properties written in the tab too (VA-07)
             _confirmingClose = false;
             Say(_isNewRack
-                ? RackCadDraftNaming.DiscardedText // T6 ui (point 10)
+                ? RackCadDraftNaming.DiscardedTextOf(_isCopy) // T6 ui (point 10; correction 1: a copy)
                 : "Borrador descartado: se muestra lo último que se leyó del dibujo o se escribió en él desde este editor.", error: false);
             Rebuild();
             OnPropertyChanged(nameof(IsConfirmingClose));
@@ -1702,7 +1702,7 @@ namespace RackCad.UI.VentanaRackCad
             // T6 ui (point 8): «Descartar» is named only while it is on (the draft may be again what the drawing has).
             return "Al reducir " + what + " se quitaron " + string.Join(" y ", parts) + " de los postes que ya no existen, como en el editor clásico. "
                    + (CanDiscard
-                       ? "Volver a subirlos no los recupera; " + (_isNewRack ? SelectiveLayoutRestoreResult.NewRackDiscardText : SelectiveLayoutRestoreResult.DiscardText)
+                       ? "Volver a subirlos no los recupera; " + SelectiveLayoutRestoreResult.DiscardTextOf(_isNewRack, _isCopy) // T6 ui: and a copy
                        : "Volver a subirlos no los recupera.");
         }
 
@@ -1861,10 +1861,15 @@ namespace RackCad.UI.VentanaRackCad
                 }
             }
 
-            var contents = now.Values.GroupBy(v => v.Content, StringComparer.Ordinal).OrderByDescending(g => g.Count()).ToList();
             // T6 ui (point 6): «the content most cells have» is one that MORE THAN HALF of the cells have. Without it (two tarimas half and
             // half, three in thirds) the first of the most common contents was taken, and the other half of the cells was «distinct».
-            var usual = contents.Count > 1 && contents[0].Count() * 2 > now.Count ? contents[0].Key : null;
+            // T6 ui (correction 4 of the review): the cells are those of the MATRIX, each with what it shows, the different contents of its
+            // fondos: in «Todos los fondos» the majority was counted over every fondo and a cell was marked when any fondo differed from it.
+            string Shown(int front, int level) => string.Join("\n", scope.Where(k => now.ContainsKey((k, front, level)))
+                .Select(k => now[(k, front, level)].Content).Distinct(StringComparer.Ordinal).OrderBy(c => c, StringComparer.Ordinal));
+            var matrixCells = now.Keys.Select(key => (key.Front, key.Level)).Distinct().ToList();
+            var contents = matrixCells.GroupBy(p => Shown(p.Front, p.Level), StringComparer.Ordinal).OrderByDescending(g => g.Count()).ToList();
+            var usual = contents.Count > 1 && contents[0].Count() * 2 > matrixCells.Count ? contents[0].Key : null;
 
             foreach (var row in _rows)
             {
@@ -1895,7 +1900,7 @@ namespace RackCad.UI.VentanaRackCad
                     var holders = scope.Where(k => now.ContainsKey((k, f, l))).Select(k => now[(k, f, l)]).ToList();
                     var modified = scope.Any(k => now.TryGetValue((k, f, l), out var held)
                                                   && (!_baselineCells.TryGetValue((k, f, l), out var was) || !string.Equals(was, held.State, StringComparison.Ordinal)));
-                    var distinct = usual != null && holders.Any(h => !string.Equals(h.Content, usual, StringComparison.Ordinal));
+                    var distinct = usual != null && !string.Equals(Shown(f, l), usual, StringComparison.Ordinal); // T6 ui (correction 4)
                     var manual = holders.Any(h => h.Manual);
                     var states = new List<string>();
                     if (onFloor) states.Add("en el piso, sin larguero");

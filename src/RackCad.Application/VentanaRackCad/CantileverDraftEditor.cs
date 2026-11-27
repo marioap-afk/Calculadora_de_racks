@@ -711,7 +711,7 @@ namespace RackCad.Application.VentanaRackCad
         public static string CellTitle(CantileverLineCell cell) =>
             "E" + Int(cell.StationIndex + 1) + " · N" + Int(cell.LevelIndex + 1) + " " + SideLabel(cell.Side);
 
-        public static string SideLabel(CantileverArmSide side) => side == CantileverArmSide.NegativeY ? "−Y" : "+Y";
+        public static string SideLabel(CantileverArmSide side) => CantileverDiagnosticText.Side(side); // T6 ui (correction 5): one place
 
         /// <summary>The designation of the catalogue (HSS4X4X1/4, C4X4.5) for an id, or the id when the catalogue does not have it (dolor 6).</summary>
         public string Designation(string sectionId)

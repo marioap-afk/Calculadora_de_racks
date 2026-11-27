@@ -783,7 +783,7 @@ namespace RackCad.UI.VentanaRackCad
             _confirmingClose = false;
             CloseRestore();
             Say(RackId == null || _isNewRack
-                ? RackCadDraftNaming.DiscardedText // T6 ui (point 10)
+                ? RackCadDraftNaming.DiscardedTextOf(_isCopy) // T6 ui (point 10; correction 1: a copy)
                 : "Borrador descartado: se muestra lo último que se leyó del dibujo o se escribió en él desde este editor.", error: false);
             NormalizeSelection();
             Rebuild();

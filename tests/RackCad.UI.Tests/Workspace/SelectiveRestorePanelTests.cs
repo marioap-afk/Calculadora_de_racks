@@ -266,8 +266,11 @@ namespace RackCad.UI.Tests
             Write(Field(vm.Essentials, "fronts"), "3");
             Write(vm.PostRows[3].Field, "4.5");
             Write(Field(vm.Essentials, "fronts"), "2");
-            Assert.StartsWith("Al reducir los frentes se quitaron 1 peralte propio", vm.Message, StringComparison.Ordinal);
-            Assert.Equal(vm.CanDiscard, vm.Message.Contains("«Descartar»", StringComparison.Ordinal));
+            // T6 ui, correction 3 of the review: the state after the change, not the one before it (LossText after UpdateDirty).
+            Assert.False(vm.CanDiscard);
+            Assert.Equal("Limpio", vm.StatusText);
+            Assert.Equal("Al reducir los frentes se quitaron 1 peralte propio de los postes que ya no existen, como en el editor clásico. "
+                         + "Volver a subirlos no los recupera.", vm.Message);
         }
 
         [Fact]
