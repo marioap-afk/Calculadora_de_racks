@@ -12,8 +12,8 @@ namespace RackCad.UI.VentanaRackCad
     /// <item>«Avanzado» › «Postes y cabeceras» has a row «Todos los postes»: a peralte and «Aplicar a todos», which makes it the peralte of
     /// the rack and takes every own peralte away (<see cref="SelectiveDraftEditor.SetPeralteForAllPosts"/>), in the draft; the message says
     /// how many own peraltes it took away. Leaving the box writes nothing: only the button (or Enter in the box) does.</item>
-    /// <item>«Rack» › «Lo esencial» has the group «Poste» with «Peralte del poste» (before, only in «Poste y anotaciones», which starts
-    /// folded): «Para todos los postes», and which posts keep an own one.</item>
+    /// <item>«Rack» › «Lo esencial» has the group «Peralte de poste» with «Peralte del poste» (before, only in «Poste y anotaciones», which
+    /// starts folded): «Para todos los postes», and which posts keep an own one.</item>
     /// </list>
     /// What is written goes to the draft; the drawing changes with «Actualizar» (or «Insertar en el dibujo…» for a new rack), no new command.
     /// </summary>
@@ -46,21 +46,25 @@ namespace RackCad.UI.VentanaRackCad
 
         public bool IsAllPostsReadOnly => !CanEdit;
 
-        /// <summary>What «Aplicar a todos» will do, with the own peraltes it will take away.</summary>
+        /// <summary>What «Aplicar a todos» will do, with the own peraltes it will take away and the base plates that keep theirs.</summary>
         public string AllPostsHint
         {
             get
             {
                 var own = _editor.OwnPostPeraltes();
-                if (own.Count == 0) return "Pone este peralte como el del rack, para todos los postes. Ningún poste tiene peralte propio.";
-                return "Pone este peralte como el del rack y quita " + (own.Count == 1 ? "el peralte propio de " : "los " + own.Count.ToString(CultureInfo.InvariantCulture) + " peraltes propios: ")
-                       + string.Join(", ", own.Select(o => "P" + (o.Post + 1).ToString(CultureInfo.InvariantCulture) + " (" + Num(o.Peralte) + " in)")) + ".";
+                var hint = own.Count == 0
+                    ? "Pone este peralte como el del rack, para todos los postes. Ningún poste tiene peralte propio."
+                    : "Pone este peralte como el del rack y quita " + (own.Count == 1 ? "el peralte propio de " : "los " + own.Count.ToString(CultureInfo.InvariantCulture) + " peraltes propios: ")
+                      + string.Join(", ", own.Select(o => "P" + (o.Post + 1).ToString(CultureInfo.InvariantCulture) + " (" + Num(o.Peralte) + " in)")) + ".";
+                return WithPlates(hint); // correction 3 of the review
             }
         }
 
         /// <summary>
         /// «Aplicar a todos»: the peralte of the row becomes the one of the rack and no post keeps an own one, in the draft. A value that is
-        /// not a number greater than zero is refused in the row and writes nothing.
+        /// not a number greater than zero is refused in the row and writes nothing; so is one that a «medio frente» would no longer fit
+        /// (correction 1 of the review). With the row as it shows the peralte of the rack (the user wrote nothing, or wrote what it shows), the
+        /// peralte of the rack is applied as it is, not rounded to what the box shows (correction 2).
         /// </summary>
         public void ApplyPeralteToAllPosts()
         {
@@ -70,7 +74,9 @@ namespace RackCad.UI.VentanaRackCad
                 return;
             }
 
-            if (!UiSupport.TryNum(AllPostsPeralteText, out var peralte) || !(peralte > 0.0) || double.IsInfinity(peralte))
+            var shown = _allPostsText == null || string.Equals(_allPostsText.Trim(), Num(_editor.PostPeralte), System.StringComparison.Ordinal);
+            var peralte = _editor.PostPeralte;
+            if (!shown && (!UiSupport.TryNum(_allPostsText, out peralte) || !(peralte > 0.0) || double.IsInfinity(peralte)))
             {
                 AllPostsError = SelectiveDraftEditor.InvalidAllPostsPeralteText;
                 return;
@@ -96,21 +102,38 @@ namespace RackCad.UI.VentanaRackCad
             Say(result.NoticeFor(_isNewRack), error: false);
         }
 
-        // «Lo esencial» › «Poste»: the peralte of the rack, the same write as the box of «Poste y anotaciones» had (the own peraltes stay).
+        // «Lo esencial» › «Peralte de poste»: the peralte of the rack, the same write as the box of «Poste y anotaciones» had (the own peraltes
+        // stay), and refused when a «medio frente» would no longer fit (correction 1 of the review).
         private DynamicFieldItem RackPeralteEssential() =>
-            Number("peralte", "Peralte del poste", "in", _editor.PostPeralte, v => v > 0.0, "El peralte de poste debe ser un número mayor que cero.", v =>
-            {
-                _editor.PostPeralte = v;
-                return Done;
-            }, RackPeralteHint());
+            Number("peralte", "Peralte del poste", "in", _editor.PostPeralte, v => v > 0.0, SelectiveDraftEditor.InvalidAllPostsPeralteText,
+                v => _editor.SetRackPostPeralte(v), RackPeralteHint());
 
         private string RackPeralteHint()
         {
             var own = _editor.OwnPostPeraltes();
-            if (own.Count == 0) return "Para todos los postes. Un peralte propio, poste por poste, en «Avanzado».";
-            return "Para todos los postes salvo " + (own.Count == 1 ? "el de peralte propio: P" : "los de peralte propio: P")
-                   + string.Join(", P", own.Select(o => (o.Post + 1).ToString(CultureInfo.InvariantCulture)))
-                   + ". «Aplicar a todos», en «Avanzado», " + (own.Count == 1 ? "lo quita." : "los quita.");
+            var hint = own.Count == 0
+                ? "Para todos los postes. Un peralte propio, poste por poste, en «Avanzado»."
+                : "Para todos los postes salvo " + (own.Count == 1 ? "el de peralte propio: P" : "los de peralte propio: P")
+                  + string.Join(", P", own.Select(o => (o.Post + 1).ToString(CultureInfo.InvariantCulture)))
+                  + ". «Aplicar a todos», en «Avanzado», " + (own.Count == 1 ? "lo quita." : "los quita.");
+            return WithPlates(hint); // correction 3 of the review
+        }
+
+        // Correction 3 of the review: the base plates of custom cabeceras with a peralte of their own do not follow the post; say which.
+        private string WithPlates(string hint)
+        {
+            var plates = SelectiveDraftEditor.OwnPlatePeralteText(_editor.CabecerasWithOwnPlatePeralte());
+            return plates.Length == 0 ? hint : hint + " " + plates;
+        }
+
+        // Correction 4 of the review: «Descartar» and what AutoCAD wrote start the row again from the peralte of the rack, with no reason.
+        private void ResetAllPosts()
+        {
+            _allPostsText = null;
+            _allPostsShown = null;
+            _allPostsError = string.Empty;
+            OnPropertyChanged(nameof(AllPostsError));
+            OnPropertyChanged(nameof(AllPostsPeralteText));
         }
 
         // After a recomposition, and when the state changes: the row follows the peralte of the rack unless the user wrote another one.

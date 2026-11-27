@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Automation.Peers;
+using RackCad.Domain.RackFrames;
 using System.Windows.Controls;
 using System.Windows.Input;
 using RackCad.Application.Persistence;
@@ -24,7 +25,7 @@ namespace RackCad.UI.Tests
     /// todos los postes, tienes que ir uno por uno, no sé si sea el mismo caso en el dinámico, hay que arreglar eso».
     /// <list type="bullet">
     /// <item>Selectivo: «Avanzado» › «Postes y cabeceras» › «Todos los postes» + «Aplicar a todos» makes one peralte the one of the rack and
-    /// takes the own ones away, in the draft, and says how many; «Lo esencial» › «Poste» shows the peralte of the rack «para todos los
+    /// takes the own ones away, in the draft, and says how many; «Lo esencial» › «Peralte de poste» shows the peralte of the rack «para todos los
     /// postes» without unfolding «Poste y anotaciones».</item>
     /// <item>Dinámico: ONE peralte for the rack (every cabecera, the custom ones too): «Lo esencial» shows it with the same text.</item>
     /// </list>
@@ -192,14 +193,14 @@ namespace RackCad.UI.Tests
             Assert.Equal("2.75", vm.AllPostsPeralteText);
         }
 
-        // ------------------------------------------------------------------ Selectivo: «Lo esencial» › «Poste»
+        // ------------------------------------------------------------------ Selectivo: «Lo esencial» › «Peralte de poste»
 
         [Fact]
         public void TheEssentialsShowThePeralteForEveryPostAndWhichPostsKeepAnOwnOne()
         {
             var vm = SelectiveEditor(TwoOwnPeraltes());
 
-            var group = vm.EssentialGroups.Single(g => g.Title == "Poste");
+            var group = vm.EssentialGroups.Single(g => g.Title == "Peralte de poste");
             var peralte = Assert.IsType<DynamicFieldItem>(Assert.Single(group.Fields));
             Assert.Same(Field(vm.Essentials, "peralte"), peralte);
             Assert.Equal(("Peralte del poste", "in", "3"), (peralte.Label, peralte.Unit, peralte.Text));
@@ -222,6 +223,136 @@ namespace RackCad.UI.Tests
             Assert.Equal(4.0, vm.Draft.PostPeralte);
         }
 
+        // ------------------------------------------------------------------ the corrections of the review (Selectivo)
+
+        [Fact]
+        public void ACustomCabeceraStaysCustomAndItsBasePlatesWithTheirOwnPeralteAreSaid()
+        {
+            // PP-S4 and correction 3: P2 carries a custom cabecera of 120 in whose left base plate has a peralte of its own (6 in).
+            var design = TwoOwnPeraltes();
+            var custom = Custom(120.0);
+            custom.LeftBasePlate.PeralteOverride = 6.0;
+            foreach (var cabecera in new[] { null, custom, null }) design.PostCabeceras.Add(cabecera!);
+            var vm = SelectiveEditor(design);
+            const string Plates = "La cabecera personalizada de P2 tiene placas base con peralte propio: no cambian con el poste.";
+            Assert.EndsWith(" " + Plates, vm.AllPostsHint);
+            Assert.EndsWith(" " + Plates, Field(vm.Essentials, "peralte").Hint);
+
+            vm.AllPostsPeralteText = "4";
+            vm.ApplyPeralteToAllPosts();
+
+            Assert.Equal("Peralte de 4 in en todos los postes del borrador: se quitaron 2 peraltes propios (P1: 5 in, P3: 6 in). " + Plates + " " + Tail, vm.Message);
+            Assert.True(vm.Draft.HasCustomCabecera(0, 1));
+            Assert.Contains("personalizada", vm.PostRows[1].Cabecera);
+            Assert.Equal(120.0, vm.Draft.System!.PostCabeceras[1]!.Height);
+            Assert.Equal(6.0, vm.Draft.System.PostCabeceras[1]!.LeftBasePlate.PeralteOverride);
+            Assert.All(Enumerable.Range(0, 3), post => Assert.Equal(4.0, SelectivePostGeometry.PostPeralteAt(vm.Draft.System!, post)));
+        }
+
+        // Structure with F2 split in two tramos that leave «rest» in for the last one with the 3 in of the rack (DG-10).
+        private static SelectivePalletDesign SplitF2(double rest)
+        {
+            var probe = SelectiveEditor();
+            var fit = SelectiveSegmentFit.Of(probe.Draft.System!, probe.Draft.Catalog, new[] { 0 }, 1, new[] { 10.0 }, 2);
+            var design = Structure();
+            design.Bays[1].Segments.Add(new SelectiveSegment { Length = fit.Width - fit.PostOverhead - rest, Loaded = true });
+            design.Bays[1].Segments.Add(new SelectiveSegment { Length = 0.0, Loaded = true });
+            return design;
+        }
+
+        private static double RestOfF2(SelectiveEditorViewModel vm)
+        {
+            var segments = vm.Draft.Front(0, 1)!.Segments;
+            return SelectiveSegmentFit.Of(vm.Draft.System!, vm.Draft.Catalog, new[] { 0 }, 1, segments.Take(1).Select(s => s.Length).ToList(), 2).Remainder;
+        }
+
+        [Fact]
+        public void APeralteThatAMedioFrenteNoLongerFitsIsRefusedInTheRowAndInTheEssentials()
+        {
+            // Correction 1: 0.6 in left for the last tramo of F2 at 3 in; at 4 in the intermediate post takes 1 in more and nothing is left.
+            var vm = SelectiveEditor(SplitF2(rest: 0.6));
+            Assert.Equal(0.6, RestOfF2(vm), 6);
+            var before = Json(vm.Draft.Design);
+            const string Refusal = "No se aplicó el peralte de 4 in: el medio frente de F2 dejaría de caber, porque cada poste intermedio ocupa más con más peralte. No cabe: ";
+
+            vm.AllPostsPeralteText = "4";
+            vm.ApplyPeralteToAllPosts();
+
+            Assert.StartsWith(Refusal, vm.AllPostsError);
+            Assert.EndsWith(" Ajusta antes sus tramos en «Matriz» (inspector del frente).", vm.AllPostsError);
+            Assert.Equal(before, Json(vm.Draft.Design));
+            Assert.False(vm.IsDirty);
+            Assert.Equal(5.0, vm.Draft.PostPeralteOverride(0)); // nothing of the write stays
+            Assert.Equal(0.6, RestOfF2(vm), 6);
+
+            // The box of «Lo esencial»: the same rule, the reason in the field.
+            var peralte = Field(vm.Essentials, "peralte");
+            Write(peralte, "4");
+            Assert.StartsWith(Refusal, peralte.Error);
+            Assert.Equal(3.0, vm.Draft.PostPeralte);
+            Assert.False(vm.IsDirty);
+
+            // A peralte the split still fits is applied.
+            vm.AllPostsPeralteText = "3.5";
+            vm.ApplyPeralteToAllPosts();
+            Assert.Equal(string.Empty, vm.AllPostsError);
+            Assert.Equal(3.5, vm.Draft.PostPeralte);
+            Assert.Equal(0.1, RestOfF2(vm), 6);
+            Assert.True(vm.Draft.Front(0, 1)!.IsSplit);
+        }
+
+        [Fact]
+        public void ApplyingTheRowAsItShowsThePeralteOfTheRackDoesNotRoundIt()
+        {
+            // Correction 2: a rack of 3.1496 in shows «3.15»; applying it as it shows is the peralte of the rack, not 3.15.
+            var design = Structure();
+            design.PostPeralte = 3.1496;
+            design.PostPeraltes[0] = 0.0;
+            var vm = SelectiveEditor(design);
+            Assert.Equal("3.15", vm.AllPostsPeralteText);
+
+            vm.ApplyPeralteToAllPosts();
+            Assert.Equal("Todos los postes ya tienen 3.15 in y ninguno tiene peralte propio: el borrador no cambió.", vm.Message);
+            Assert.Equal(3.1496, vm.Draft.PostPeralte);
+            Assert.False(vm.IsDirty);
+
+            // Writing exactly what it shows is the same; with an own peralte, it goes and the rack keeps its 3.1496 in.
+            Write(vm.PostRows[0].Field, "5");
+            vm.AllPostsPeralteText = "3.15";
+            vm.ApplyPeralteToAllPosts();
+            Assert.Equal(3.1496, vm.Draft.PostPeralte);
+            Assert.Null(vm.Draft.PostPeralteOverride(0));
+            Assert.False(vm.IsDirty); // back to what was read
+
+            // Another value is that value.
+            vm.AllPostsPeralteText = "3.2";
+            vm.ApplyPeralteToAllPosts();
+            Assert.Equal(3.2, vm.Draft.PostPeralte);
+        }
+
+        [Fact]
+        public void DiscardAndWhatAutoCadWroteStartTheRowAgainFromThePeralteOfTheRack()
+        {
+            // Correction 4: what was written in the row, and its reason, do not survive «Descartar» nor the answer of «Actualizar».
+            var vm = SelectiveEditor(TwoOwnPeraltes());
+            vm.AllPostsPeralteText = "0";
+            vm.ApplyPeralteToAllPosts();
+            Assert.NotEqual(string.Empty, vm.AllPostsError);
+
+            vm.Discard();
+            Assert.Equal(string.Empty, vm.AllPostsError);
+            Assert.Equal("3", vm.AllPostsPeralteText);
+
+            Write(Field(vm.CellFields, "cHeight"), "72");
+            vm.AllPostsPeralteText = "4.5"; // written, not applied
+            vm.BeginWriting();
+            vm.EndWriting();
+            vm.MarkWritten("Escrito.", Json(vm.Draft.Design), vm.Name);
+            Assert.Equal("3", vm.AllPostsPeralteText);
+            Assert.Equal(string.Empty, vm.AllPostsError);
+            Assert.Equal(3.0, vm.Draft.PostPeralte);
+        }
+
         // ------------------------------------------------------------------ Dinámico
 
         private static DynamicRackDesign DynamicStructure()
@@ -239,12 +370,15 @@ namespace RackCad.UI.Tests
             return design;
         }
 
-        private static DynamicEditorViewModel DynamicEditor(Action<DynamicEditorViewModel>? update = null)
+        private static DynamicEditorViewModel DynamicEditor(Action<DynamicEditorViewModel>? update = null, Action<DynamicRackDesign>? drawing = null)
         {
             var recomposed = new DynamicDraftEditor(UiSupport.LoadCatalogSafe());
             recomposed.LoadFrom(DynamicStructure(), "DIN 1");
             Assert.True(recomposed.Recompose(), recomposed.LastError);
-            var json = new RackProjectStore().Serialize(RackProject.ForDynamic(recomposed.Design));
+            var store = new RackProjectStore();
+            var read = store.Deserialize(store.Serialize(RackProject.ForDynamic(recomposed.Design)))!.DynamicDesign;
+            drawing?.Invoke(read); // what the drawing holds besides (a custom cabecera of a module)
+            var json = store.Serialize(RackProject.ForDynamic(read));
             var draft = new DynamicDraftEditor(UiSupport.LoadCatalogSafe());
             draft.LoadFrom(new RackProjectStore().Deserialize(json)!.DynamicDesign, "DIN 1");
             return new DynamicEditorViewModel(draft, "DIN-1", update ?? (_ => { }));
@@ -280,6 +414,34 @@ namespace RackCad.UI.Tests
             peralte.Commit();
             Assert.Equal("El peralte de poste debe ser un número mayor que cero.", peralte.Error);
             Assert.Equal(4.5, vm.Draft.PostPeralte);
+        }
+
+        [Fact]
+        public void TheDynamicPeralteGoesToACustomCabeceraOfAModuleButNotToItsBasePlateWithItsOwnPeralte()
+        {
+            // Point 7 of the review: the first cabecera is custom (its own peralte, 2.5 in, and a left base plate of 9 in of its own).
+            var vm = DynamicEditor(drawing: design =>
+            {
+                var custom = design.Modules.First(m => m.IsHeader);
+                custom.UseCalculatedHeaderConfiguration = false;
+                custom.HeaderConfiguration.PostPeralte = 2.5;
+                custom.HeaderConfiguration.LeftBasePlate.PeralteOverride = 9.0;
+            });
+            var customModule = vm.Draft.System!.Modules.First(m => m.IsHeader);
+            Assert.False(customModule.UseCalculatedHeaderConfiguration);
+            Assert.Equal("Para todos los postes, también los de las cabeceras personalizadas. 1 cabecera tiene placas base con peralte propio: no cambian con el poste.",
+                vm.Essentials.Single(f => f.Key == "peralte").Hint);
+
+            var peralte = vm.Essentials.Single(f => f.Key == "peralte");
+            peralte.Text = "4.5";
+            peralte.Commit();
+
+            Assert.Equal(string.Empty, peralte.Error);
+            Assert.All(HeaderPeraltes(vm), p => Assert.Equal(4.5, p)); // the custom cabecera too
+            var after = vm.Draft.System!.Modules.First(m => m.IsHeader);
+            Assert.False(after.UseCalculatedHeaderConfiguration); // it stays custom
+            Assert.Equal(9.0, after.AssociatedFrameConfiguration.LeftBasePlate.PeralteOverride); // its plate keeps its own peralte
+            Assert.EndsWith("no cambian con el poste.", vm.Essentials.Single(f => f.Key == "peralte").Hint);
         }
 
         // ------------------------------------------------------------------ the views (real WPF)
@@ -357,6 +519,15 @@ namespace RackCad.UI.Tests
 
         private static string Name(UIElement element) => UIElementAutomationPeer.CreatePeerForElement(element).GetName();
 
+        private static IEnumerable<AutomationPeer> PeersUnder(AutomationPeer peer)
+        {
+            foreach (var child in peer.GetChildren() ?? new List<AutomationPeer>())
+            {
+                yield return child;
+                foreach (var nested in PeersUnder(child)) yield return nested;
+            }
+        }
+
         [Fact]
         public void TheRowAllPostsOfAdvancedAppliesWithItsButtonOrEnterAndLeavingTheBoxWritesNothing()
         {
@@ -368,7 +539,14 @@ namespace RackCad.UI.Tests
                 view.Tabs.SelectedItem = view.AdvancedTab;
                 Lay(view);
 
-                Assert.Equal("Todos los postes", System.Windows.Automation.AutomationProperties.GetName(view.AllPostsRow));
+                // Correction 6 of the review: the row is a group of the tree of UI Automation, with its name, and its box and button are in it.
+                var group = UIElementAutomationPeer.CreatePeerForElement(view.AllPostsRow);
+                Assert.NotNull(group);
+                Assert.Equal(AutomationControlType.Group, group.GetAutomationControlType());
+                Assert.Equal("Todos los postes", group.GetName());
+                var inGroup = PeersUnder(group).Select(p => p.GetName()).ToList();
+                Assert.Contains("Todos los postes: peralte", inGroup);
+                Assert.Contains("Aplicar el peralte a todos los postes", inGroup);
                 Assert.Equal("Todos los postes: peralte", Name(view.AllPostsPeralteBox));
                 Assert.Equal("Aplicar el peralte a todos los postes", Name(view.ApplyAllPostsButton));
                 Assert.Equal("Aplicar a todos", view.ApplyAllPostsButton.Content);
@@ -436,7 +614,7 @@ namespace RackCad.UI.Tests
                 Lay(view);
 
                 Assert.False(view.PostExpander.IsExpanded);
-                Assert.Contains(Descendants<TextBlock>(view.EssentialsList), t => t.Text == "Poste");
+                Assert.Contains(Descendants<TextBlock>(view.EssentialsList), t => t.Text == "Peralte de poste");
                 var box = Descendants<TextBox>(view.EssentialsList).Single(b => Name(b) == "Peralte del poste");
                 Assert.False(IsInside(box, view.PostExpander));
                 Assert.Equal("3", box.Text);
@@ -452,6 +630,11 @@ namespace RackCad.UI.Tests
                 Lay(view);
                 Assert.DoesNotContain(Descendants<TextBox>(view.AnnotationList), b => Name(b) == "Peralte del poste");
                 Assert.Contains(Descendants<ContentPresenter>(view.AnnotationList), c => c.Content is SelectiveChoiceItem choice && choice.Key == "post");
+
+                // Correction 5 of the review: the group of «Lo esencial» is not named «Poste», the name of the list of the expander.
+                var named = Descendants<FrameworkElement>(view.Tabs).Select(e => System.Windows.Automation.AutomationProperties.GetName(e)).ToList();
+                Assert.Single(named, n => n == "Poste");
+                Assert.Single(named, n => n == "Peralte de poste");
             });
         }
 

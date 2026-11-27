@@ -1009,14 +1009,16 @@
                         </WrapPanel>
                         <!-- T5 pp (the request of the Owner, 2026-11-26): the row «Todos los postes», one peralte and «Aplicar a todos», which
                              makes it the peralte of the rack and takes every own peralte away, in the draft. Leaving the box writes nothing:
-                             the button (or Enter in the box) does. -->
-                        <Border x:Name="AllPostsRow" Margin="0,6,0,2" Padding="8,6" BorderThickness="1" CornerRadius="4" HorizontalAlignment="Left"
-                                BorderBrush="{DynamicResource ShellBorderBrush}" Background="{DynamicResource ShellSurfaceBrush}"
-                                AutomationProperties.Name="Todos los postes">
+                             the button (or Enter in the box) does. Correction 6 of the review: a GroupBox, so the group reaches UI Automation
+                             with its name (a Border has no automation peer). -->
+                        <GroupBox x:Name="AllPostsRow" Margin="0,6,0,2" Padding="6,4" HorizontalAlignment="Left"
+                                  BorderBrush="{DynamicResource ShellBorderBrush}" Background="{DynamicResource ShellSurfaceBrush}"
+                                  Foreground="{DynamicResource ShellTextPrimaryBrush}" AutomationProperties.Name="Todos los postes">
+                            <GroupBox.Header>
+                                <TextBlock Text="Todos los postes" FontWeight="SemiBold" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                            </GroupBox.Header>
                             <StackPanel>
                                 <WrapPanel>
-                                    <TextBlock Text="Todos los postes" FontWeight="SemiBold" Margin="0,0,10,0" VerticalAlignment="Center"
-                                               Foreground="{DynamicResource ShellTextPrimaryBrush}" />
                                     <TextBlock Text="Peralte" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
                                     <TextBox x:Name="AllPostsPeralteBox" Width="80" Padding="4,3" VerticalAlignment="Center"
                                              Text="{Binding AllPostsPeralteText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -1032,7 +1034,7 @@
                                 <TextBlock x:Name="AllPostsErrorText" Text="{Binding AllPostsError}" Style="{StaticResource OptionalText}" Margin="0,2,0,0"
                                            Foreground="{DynamicResource ShellStatusErrorBrush}" />
                             </StackPanel>
-                        </Border>
+                        </GroupBox>
                         <!-- T5 pp (end) -->
                         <Grid Margin="0,6,0,2">
                             <Grid.ColumnDefinitions>
@@ -1084,7 +1086,7 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                         <TextBlock TextWrapping="Wrap" Margin="0,6,0,0" Foreground="{DynamicResource ShellTextSecondaryBrush}"
-                                   Text="Peralte propio vacío = el del rack («Rack» › «Lo esencial» › «Poste», o «Todos los postes» arriba). Uno igual al del rack se guarda como «el del rack»." /> <!-- T5 pp: where the peralte of the rack is now -->
+                                   Text="Peralte propio vacío = el del rack («Rack» › «Lo esencial» › «Peralte de poste», o «Todos los postes» arriba). Uno igual al del rack se guarda como «el del rack»." /> <!-- T5 pp: where the peralte of the rack is now -->
                         <TextBlock x:Name="CabeceraNoteText" TextWrapping="Wrap" Margin="0,8,0,0" Foreground="{DynamicResource ShellTextSecondaryBrush}"
                                    Text="«Editar cabecera…» abre aquí mismo el editor de cabeceras, sobre una copia: «Aplicar al borrador» la pasa a este rack y el dibujo cambia con «Actualizar». «Copiar a otros postes…» está dentro de ese editor; «Volver a la calculada» quita la personalizada." />
                         <!-- T4 cb (end) -->

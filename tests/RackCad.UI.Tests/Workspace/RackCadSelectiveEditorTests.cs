@@ -497,7 +497,7 @@ namespace RackCad.UI.Tests
             Assert.Null(vm.Draft.Fondo(1)!.CabeceraDepthOverride);
             Write(vm.FondoRows[1].Cabecera, "38");
             Assert.Equal(38.0, vm.Draft.Fondo(1)!.CabeceraDepthOverride);
-            // The post is in «Poste y anotaciones» (the approved draft); T5 pp: its peralte, for every post, in «Lo esencial» › «Poste».
+            // The post is in «Poste y anotaciones» (the approved draft); T5 pp: its peralte, for every post, in «Lo esencial» › «Peralte de poste».
             Write(Field(vm.Essentials, "peralte"), "3.5");
             Assert.Equal(3.5, vm.Draft.PostPeralte);
 
