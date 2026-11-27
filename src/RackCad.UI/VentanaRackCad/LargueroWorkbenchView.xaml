@@ -1,0 +1,248 @@
+<UserControl x:Class="RackCad.UI.VentanaRackCad.LargueroWorkbenchView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:RackCad.UI.VentanaRackCad"
+             AutomationProperties.Name="Larguero, borrador en construcción"
+             FontFamily="Segoe UI"
+             FontSize="12">
+    <!-- «Nuevo › Larguero» of the RackCad window (I-64 A-14, line D, quinta tanda, part «lg»): a DRAFT IN CONSTRUCTION (LG-03 of the Owner).
+         A larguero is made from a section and a ménsula (LG-01); the section is chosen in this one page with a filter by catalog and by type
+         (LG-02) and is called by its type. Its data context is LargueroWorkbenchViewModel. It reads only the catalogs: nothing is saved and
+         nothing is written to the drawing. -->
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/RackCad.UI;component/VentanaRackCad/RackCadUtilityStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="LgFieldLabel" TargetType="TextBlock">
+                <Setter Property="Margin" Value="0,8,0,2" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="Foreground" Value="{DynamicResource ShellTextPrimaryBrush}" />
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="14,10">
+            <!-- The crumb: «Nuevo › Larguero». -->
+            <WrapPanel Margin="0,0,0,2">
+                <Button x:Name="LargueroCrumbNuevoButton" Content="Nuevo" Style="{StaticResource UtLinkButton}"
+                        AutomationProperties.Name="Volver a Nuevo" Click="OnHomeClick" />
+                <TextBlock Text=" › Larguero" VerticalAlignment="Center" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+            </WrapPanel>
+
+            <!-- One wrap for the title, its chip and the buttons: narrow, the buttons go to the next line and the title keeps its width. -->
+            <WrapPanel>
+                <TextBlock Text="Larguero" Style="{StaticResource UtPageTitle}" Margin="0,0,10,4" VerticalAlignment="Center" />
+                <Border x:Name="LargueroWipChip" CornerRadius="10" BorderThickness="1" Padding="8,1" Margin="0,0,16,4" VerticalAlignment="Center"
+                        BorderBrush="{DynamicResource ShellStatusWarningBrush}" AutomationProperties.Name="En construcción">
+                    <TextBlock Text="En construcción" FontWeight="SemiBold" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                </Border>
+                <Button x:Name="LargueroResetButton" Content="Volver a los valores por defecto" Padding="10,3" Margin="0,0,8,4" VerticalAlignment="Center"
+                        Style="{StaticResource SecondaryButtonStyle}" AutomationProperties.Name="Volver el larguero a los valores por defecto"
+                        Click="OnResetClick" />
+                <Button x:Name="LargueroClassicButton" Content="Abrir el editor clásico" Padding="10,3" Margin="0,0,8,4" VerticalAlignment="Center"
+                        Style="{StaticResource SecondaryButtonStyle}" AutomationProperties.Name="Abrir el editor clásico del larguero"
+                        ToolTip="El editor de hoy (RACKNUEVO Larguero): el que guarda un larguero en la biblioteca." Click="OnClassicClick" />
+            </WrapPanel>
+
+            <!-- LG-03: the page says what it is, at the top. -->
+            <Border x:Name="LargueroWipBanner" Style="{StaticResource UtWarning}" AutomationProperties.Name="Borrador en construcción">
+                <StackPanel>
+                    <TextBlock x:Name="LargueroWipTitleText" Text="{x:Static local:LargueroWorkbenchViewModel.WipTitle}" FontWeight="SemiBold"
+                               Style="{StaticResource UtPlain}" />
+                    <TextBlock x:Name="LargueroWipText" Text="{x:Static local:LargueroWorkbenchViewModel.WipText}" Style="{StaticResource UtPlain}" />
+                </StackPanel>
+            </Border>
+
+            <!-- A catalog that could not be read is said here, not simulated (dolor 7). -->
+            <Border x:Name="LargueroCatalogNoticePanel" Style="{StaticResource UtWarning}"
+                    Visibility="{Binding HasCatalogNotice, Converter={StaticResource UtFlagToVisibility}}">
+                <TextBlock x:Name="LargueroCatalogNoticeText" Text="{Binding CatalogNotice}" Style="{StaticResource UtPlain}" />
+            </Border>
+
+            <!-- Wide, the summary goes beside the sections; narrow, below them (see OnLayoutSizeChanged). -->
+            <Grid x:Name="LargueroLayout" SizeChanged="OnLayoutSizeChanged">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition x:Name="SummaryColumn" Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition x:Name="SummaryRow" Height="0" />
+                </Grid.RowDefinitions>
+
+                <!-- LG-01 / LG-02: the section, by catalog and by type. -->
+                <StackPanel x:Name="LargueroSectionPanel" Grid.Column="0">
+                    <TextBlock Text="Sección" Style="{StaticResource UtBlockTitle}" Margin="0,0,0,2" />
+                    <TextBlock Style="{StaticResource UtText}"
+                               Text="Elige el catálogo y el tipo. Cada sección se llama por su tipo («Escalón», «Tubo», «Canal»…); la ménsula se elige aparte." />
+                    <WrapPanel>
+                        <StackPanel Margin="0,0,10,4">
+                            <TextBlock Text="Catálogo" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                            <ComboBox x:Name="LargueroCatalogFilter" MinWidth="200" Margin="0,2,0,0" AutomationProperties.Name="Catálogo de las secciones"
+                                      ItemsSource="{Binding CatalogOptions}" DisplayMemberPath="Label" SelectedValuePath="Key"
+                                      SelectedValue="{Binding SelectedCatalog, Mode=TwoWay}" />
+                        </StackPanel>
+                        <StackPanel Margin="0,0,10,4">
+                            <TextBlock Text="Tipo" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                            <ComboBox x:Name="LargueroTypeFilter" MinWidth="170" Margin="0,2,0,0" AutomationProperties.Name="Tipo de sección"
+                                      ItemsSource="{Binding TypeOptions}" DisplayMemberPath="Label" SelectedValuePath="Key"
+                                      SelectedValue="{Binding SelectedType, Mode=TwoWay}" />
+                        </StackPanel>
+                        <StackPanel Margin="0,0,10,4">
+                            <TextBlock Text="Buscar" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                            <TextBox x:Name="LargueroSearchBox" Width="170" Padding="4,3" Margin="0,2,0,0" AutomationProperties.Name="Buscar sección"
+                                     ToolTip="Por nombre, por su nombre en el catálogo, por tipo o por id: «escalón», «tubo», «PTR», «CPS», «IPR», «w10x33», «hss4x4»…"
+                                     Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                    </WrapPanel>
+                    <TextBlock x:Name="LargueroShownText" Text="{Binding ShownText}" Margin="0,2,0,4" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+
+                    <!-- One list with its own scroll, virtualized: «Perfiles AISC» has about a thousand sections. -->
+                    <ListBox x:Name="LargueroSectionList" MaxHeight="320" AutomationProperties.Name="Secciones"
+                             ItemsSource="{Binding Rows}" SelectedItem="{Binding SelectedRow, Mode=TwoWay}"
+                             VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             BorderBrush="{DynamicResource ShellBorderBrush}" Background="{DynamicResource ShellSurfaceBrush}">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                <Setter Property="AutomationProperties.Name" Value="{Binding AccessibleName}" />
+                                <Setter Property="IsEnabled" Value="{Binding IsSection}" />
+                                <Setter Property="Padding" Value="6,3" />
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Label}" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource ShellTextPrimaryBrush}">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsHeader}" Value="True">
+                                                        <Setter Property="FontWeight" Value="SemiBold" />
+                                                        <Setter Property="Margin" Value="0,4,0,0" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                    <TextBlock Text="{Binding Detail}" TextWrapping="Wrap" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <TextBlock x:Name="LargueroNoMatchText" Text="{Binding NoMatchText}" Style="{StaticResource UtOptional}" />
+                    <TextBlock x:Name="LargueroOutsideFilterText" Text="{Binding OutsideFilterText}" Style="{StaticResource UtOptional}" />
+                </StackPanel>
+
+                <!-- The peralte, the length to cut, the ménsula and the summary. -->
+                <StackPanel x:Name="LargueroSummaryPanel" Grid.Column="1" Width="340" Margin="12,0,0,0">
+                    <TextBlock Text="Medidas y ménsula" Style="{StaticResource UtBlockTitle}" Margin="0,0,0,0" />
+
+                    <TextBlock Text="Peralte (in)" Style="{StaticResource LgFieldLabel}" />
+                    <ComboBox x:Name="LargueroPeralteBox" AutomationProperties.Name="Peralte del larguero"
+                              ItemsSource="{Binding PeralteOptions}" SelectedItem="{Binding SelectedPeralte, Mode=TwoWay}"
+                              Visibility="{Binding HasPeralteChoice, Converter={StaticResource UtFlagToVisibility}}" />
+                    <TextBlock x:Name="LargueroPeralteHint" Text="{Binding PeralteHint}" Style="{StaticResource UtOptional}" />
+
+                    <TextBlock Text="Longitud a corte (in)" Style="{StaticResource LgFieldLabel}" />
+                    <TextBox x:Name="LargueroLengthBox" Padding="4,3" AutomationProperties.Name="Longitud a corte del larguero, en pulgadas"
+                             Text="{Binding LengthText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <TextBox.Style>
+                            <Style TargetType="TextBox">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding HasLengthError}" Value="True">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusErrorBrush}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
+                    <TextBlock x:Name="LargueroLengthError" Text="{Binding LengthError}" Style="{StaticResource UtError}" />
+                    <TextBlock Text="La medida del perfil, sin las ménsulas." Style="{StaticResource UtOptional}" />
+
+                    <TextBlock Text="Ménsula" Style="{StaticResource LgFieldLabel}" />
+                    <ComboBox x:Name="LargueroMensulaBox" AutomationProperties.Name="Ménsula del larguero"
+                              ItemsSource="{Binding MensulaOptions}" DisplayMemberPath="Label" SelectedValuePath="Key"
+                              SelectedValue="{Binding SelectedMensula, Mode=TwoWay}" />
+                    <TextBlock x:Name="LargueroMensulaHint" Text="{Binding MensulaHint}" Style="{StaticResource UtOptional}" />
+
+                    <TextBlock Text="Resumen" Style="{StaticResource UtBlockTitle}" />
+                    <TextBlock x:Name="LargueroProposedName" Text="{Binding ProposedName}" FontWeight="SemiBold" Style="{StaticResource UtPlain}" />
+                    <ItemsControl x:Name="LargueroSummaryLines" ItemsSource="{Binding SummaryLines}" Margin="0,4,0,0" Focusable="False"
+                                  AutomationProperties.Name="Resumen del larguero">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="110" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="{Binding Label, Mode=OneTime}" Foreground="{DynamicResource ShellTextSecondaryBrush}" TextWrapping="Wrap" />
+                                    <TextBlock Grid.Column="1" Text="{Binding Value, Mode=OneTime}" Foreground="{DynamicResource ShellTextPrimaryBrush}" TextWrapping="Wrap" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <TextBlock Text="Lista de materiales" FontWeight="SemiBold" Margin="0,8,0,2" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                    <TextBlock x:Name="LargueroBomNote" Style="{StaticResource UtOptional}" Text="La receta del BOM de Selectivo (un perfil y 2 ménsulas por larguero), con los nombres de esta página." />
+                    <ItemsControl x:Name="LargueroBomLines" ItemsSource="{Binding BomLines}" Focusable="False" AutomationProperties.Name="Lista de materiales del larguero">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="52" />
+                                        <ColumnDefinition Width="92" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" TextWrapping="Wrap" Foreground="{DynamicResource ShellTextPrimaryBrush}">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="FontWeight" Value="SemiBold" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsPiece, Mode=OneTime}" Value="True">
+                                                        <Setter Property="FontWeight" Value="Normal" />
+                                                        <Setter Property="Margin" Value="12,0,0,0" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                        <Run Text="{Binding Component, Mode=OneTime}" /><Run Text=": " /><Run Text="{Binding Description, Mode=OneTime}" />
+                                    </TextBlock>
+                                    <TextBlock Grid.Column="1" Text="{Binding LengthText, Mode=OneTime}" TextAlignment="Right" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                    <TextBlock Grid.Column="2" Text="{Binding QuantityText, Mode=OneTime}" TextAlignment="Right" TextWrapping="Wrap"
+                                               Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock x:Name="LargueroMissingText" Text="{Binding MissingText}" Style="{StaticResource UtError}" Margin="0,6,0,0" />
+                    <TextBlock x:Name="LargueroCompleteText" Text="{Binding CompleteText}" Style="{StaticResource UtOptional}" Margin="0,6,0,0" />
+                </StackPanel>
+            </Grid>
+
+            <!-- For the Owner: what is missing to finish this page. -->
+            <Expander x:Name="LargueroPendingExpander" Margin="0,12,0,0" AutomationProperties.Name="Lo que falta para terminar esta página">
+                <Expander.Header>
+                    <TextBlock Text="Lo que falta para terminar esta página" FontWeight="SemiBold" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                </Expander.Header>
+                <ItemsControl x:Name="LargueroPendingList" Margin="18,6,0,0" Focusable="False"
+                              ItemsSource="{x:Static local:LargueroWorkbenchViewModel.PendingItems}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <BulletDecorator Margin="0,0,0,4">
+                                <BulletDecorator.Bullet>
+                                    <TextBlock Text="•" Margin="0,0,6,0" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                </BulletDecorator.Bullet>
+                                <TextBlock Text="{Binding}" TextWrapping="Wrap" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                            </BulletDecorator>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Expander>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
