@@ -9,9 +9,11 @@ using RackCad.Application.Workspace;
 namespace RackCad.UI.VentanaRackCad
 {
     /// <summary>One line of the list of «Actualizar todo» when it ends: the draft, its system, how it ended and why.</summary>
-    public sealed record UpdateAllResultRow(string Name, string SystemLabel, string OutcomeText, string Cause, bool Failed)
+    /// <remarks>Review of c4985a2e, minor 6: the position makes the name of every line unique, also for two racks with the same name.</remarks>
+    public sealed record UpdateAllResultRow(int Position, string Name, string SystemLabel, string OutcomeText, string Cause, bool Failed)
     {
-        public string AccessibleName => Name + " (" + SystemLabel + "): " + OutcomeText + (string.IsNullOrWhiteSpace(Cause) ? string.Empty : ". " + Cause);
+        public string AccessibleName => Position.ToString(System.Globalization.CultureInfo.InvariantCulture) + ". " + Name + " (" + SystemLabel + "): "
+                                        + OutcomeText + (string.IsNullOrWhiteSpace(Cause) ? string.Empty : ". " + Cause);
     }
 
     /// <summary>
@@ -90,9 +92,17 @@ namespace RackCad.UI.VentanaRackCad
                 if (!Panel.PresentedSession.HasValue) return "No hay un dibujo abierto.";
                 if (_inFlight != null) return IsUpdateAllRequest(_inFlight) ? "«Actualizar todo» está escribiendo." : DoorBusyText;
                 if (_confirmingUpdateAll) return "Responde antes a la pregunta de «Actualizar todo».";
-                return UpdateAllEligibility.BlockedText;
+                var eligibility = UpdateAllEligibility;
+
+                // Review of c4985a2e, minor 5: a value typed in a field counts when it is confirmed (Intro, or leaving the field); the button
+                // that is off because of it says so.
+                return eligibility.Included.Count == 0 && eligibility.Blockers.Count == 0 ? NothingToWriteText : eligibility.BlockedText;
             }
         }
+
+        /// <summary>The motive of the button when nothing has changes, with what to do when a value was just typed.</summary>
+        public const string NothingToWriteText = UpdateAllText.NothingToWrite
+            + " Un valor que acabas de escribir cuenta cuando pulsas Intro o sales de su campo.";
 
         /// <summary>The tip of the button: what it does, or why it is off.</summary>
         public string UpdateAllToolTip
@@ -135,7 +145,8 @@ namespace RackCad.UI.VentanaRackCad
 
         public bool UpdateAllResultFailed => _updateAllResultFailed;
 
-        public bool ShowUpdateAllPanel => _confirmingUpdateAll || HasUpdateAllResults || HasUpdateAllBlockers;
+        // Review of c4985a2e, minor 2: what prevents it shows only after the click (before it, the tip of the button says it).
+        public bool ShowUpdateAllPanel => _confirmingUpdateAll || HasUpdateAllResults;
 
         // ------------------------------------------------------------------ the gestures
 
@@ -310,7 +321,11 @@ namespace RackCad.UI.VentanaRackCad
                                      "AutoCAD no dijo nada de este borrador: sigue sin escribir.");
                     if (item.Item.System == UpdateAllSystem.Variables && result.IsWritten) variables = result.VariablesWritten;
                     WrittenOf(item, result);
-                    rows.Add(RowOf(item.Item, result));
+                    rows.Add(RowOf(rows.Count + 1, item.Item, result));
+
+                    // Review of c4985a2e, minor 1: unknown until it is read again from the drawing or discarded (condition 4).
+                    if (result.Outcome == UpdateAllOutcome.Unknown) _updateAllUnknown[(request.Session, item.Item.RackId)] = item.Editor;
+                    else _updateAllUnknown.Remove((request.Session, item.Item.RackId));
                 }
 
                 var allWritten = written.Committed && rows.All(r => !r.Failed);
@@ -335,7 +350,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(HeaderText));
         }
 
-        private static UpdateAllResultRow RowOf(UpdateAllItem item, UpdateAllItemResult result)
+        private static UpdateAllResultRow RowOf(int position, UpdateAllItem item, UpdateAllItemResult result)
         {
             var outcome = result.Outcome switch
             {
@@ -347,7 +362,12 @@ namespace RackCad.UI.VentanaRackCad
                 _ => "Se desconoce",
             };
             var cause = result.Outcome == UpdateAllOutcome.Applied ? null : UpdateAllText.Sentence(result.Cause);
-            return new UpdateAllResultRow(string.IsNullOrWhiteSpace(item.Name) ? "sin nombre" : item.Name.Trim(), SystemLabel(item.System), outcome, cause,
+
+            // Review of c4985a2e, minor 6: the line says «No aplicado» once; its cause starts with what failed.
+            const string NotApplied = "No aplicado: ";
+            if (cause != null && cause.StartsWith(NotApplied, StringComparison.Ordinal))
+                cause = char.ToUpper(cause[NotApplied.Length], System.Globalization.CultureInfo.CurrentCulture) + cause.Substring(NotApplied.Length + 1);
+            return new UpdateAllResultRow(position, string.IsNullOrWhiteSpace(item.Name) ? "sin nombre" : item.Name.Trim(), SystemLabel(item.System), outcome, cause,
                 !result.IsWritten);
         }
 
@@ -383,6 +403,7 @@ namespace RackCad.UI.VentanaRackCad
                 _updateAllSent = null;
             }
 
+            PruneUnknown(); // review of c4985a2e, minor 1
             WatchUpdateAllSources();
             OnPropertyChanged(nameof(ShowUpdateAll));
             OnPropertyChanged(nameof(UpdateAllLabel));
@@ -442,9 +463,32 @@ namespace RackCad.UI.VentanaRackCad
             }
         }
 
-        // Why the own «Actualizar» of a draft with changes cannot write now; empty when it can.
-        private static string BlockedOf(bool dirty, bool canUpdate, string blockedText)
-            => !dirty || canUpdate ? string.Empty : string.IsNullOrWhiteSpace(blockedText) ? "Su «Actualizar» no puede escribir ahora." : blockedText;
+        // Why a draft with changes cannot go now; empty when it can: its own «Actualizar» is blocked, or the confirmation of the last
+        // «Actualizar todo» failed for it (review of c4985a2e, minor 1: «Se desconoce» is a state of condition 4 until it is read again from
+        // the drawing or discarded; a new editor, or one that is clean again, no longer carries it).
+        private string BlockedOf(SessionId session, string rackId, object editor, bool dirty, bool canUpdate, string blockedText)
+        {
+            if (!dirty) return string.Empty;
+            if (_updateAllUnknown.TryGetValue((session, rackId), out var unknown) && ReferenceEquals(unknown, editor)) return UnknownText;
+            return canUpdate ? string.Empty : string.IsNullOrWhiteSpace(blockedText) ? "Su «Actualizar» no puede escribir ahora." : blockedText;
+        }
+
+        private const string UnknownText =
+            "No se sabe si el último «Actualizar todo» lo escribió (falló la confirmación de AutoCAD): vuelve a leerlo del dibujo o descarta el borrador.";
+
+        // The drafts whose state is unknown after a confirmation that failed, by drawing and rack (null: the page «Variables»), with the
+        // editor they were for; a mark whose editor changed or is clean again is forgotten.
+        private readonly Dictionary<(SessionId Session, string RackId), object> _updateAllUnknown = new(DraftKeyComparer.Instance);
+
+        private void PruneUnknown()
+        {
+            if (_updateAllUnknown.Count == 0) return;
+            var alive = AllUpdateAllEntries().Where(e => e.Candidate.IsDirty).Select(e => e.Source).ToList();
+            foreach (var pair in _updateAllUnknown.ToList())
+            {
+                if (!alive.Any(source => ReferenceEquals(source, pair.Value))) _updateAllUnknown.Remove(pair.Key);
+            }
+        }
 
         private IEnumerable<UpdateAllEntry> EntriesOf(SessionId session)
         {
@@ -452,7 +496,7 @@ namespace RackCad.UI.VentanaRackCad
             {
                 yield return new UpdateAllEntry(
                     new UpdateAllCandidate(UpdateAllSystem.Variables, null, VariablesName, page.IsDirty, page.IsWriting, false,
-                        BlockedOf(page.IsDirty, page.CanUpdate, page.UpdateBlockedText), IsStale(session, null)),
+                        BlockedOf(session, null, page, page.IsDirty, page.CanUpdate, page.UpdateBlockedText), IsStale(session, null)),
                     id =>
                     {
                         var write = page.BuildWrite(id);
@@ -468,7 +512,7 @@ namespace RackCad.UI.VentanaRackCad
                 var name = SelectiveNameOf(pair.Value);
                 yield return new UpdateAllEntry(
                     new UpdateAllCandidate(UpdateAllSystem.Selective, editor.RackId, name, editor.IsDirty, editor.IsWriting, editor.IsNewRack,
-                        BlockedOf(editor.IsDirty, editor.CanUpdate, editor.UpdateBlockedText), IsStale(session, editor.RackId)),
+                        BlockedOf(session, editor.RackId, editor, editor.IsDirty, editor.CanUpdate, editor.UpdateBlockedText), IsStale(session, editor.RackId)),
                     id =>
                     {
                         var snapshot = editor.Draft.SnapshotForWrite();
@@ -487,7 +531,7 @@ namespace RackCad.UI.VentanaRackCad
                 var name = PushBackNameOf(pair.Value);
                 yield return new UpdateAllEntry(
                     new UpdateAllCandidate(UpdateAllSystem.PushBack, editor.RackId, name, editor.IsDirty, editor.IsWriting, editor.IsNewRack,
-                        BlockedOf(editor.IsDirty, editor.CanUpdate, editor.UpdateBlockedText), IsStale(session, editor.RackId)),
+                        BlockedOf(session, editor.RackId, editor, editor.IsDirty, editor.CanUpdate, editor.UpdateBlockedText), IsStale(session, editor.RackId)),
                     id =>
                     {
                         var snapshot = editor.Draft.SnapshotForWrite();
@@ -506,7 +550,7 @@ namespace RackCad.UI.VentanaRackCad
                 var name = DynamicNameOf(editor);
                 yield return new UpdateAllEntry(
                     new UpdateAllCandidate(UpdateAllSystem.Dynamic, editor.RackId, name, editor.IsDirty, editor.IsWriting, editor.IsNewRack,
-                        BlockedOf(editor.IsDirty, editor.CanUpdate, editor.UpdateBlockedText), IsStale(session, editor.RackId)),
+                        BlockedOf(session, editor.RackId, editor, editor.IsDirty, editor.CanUpdate, editor.UpdateBlockedText), IsStale(session, editor.RackId)),
                     id =>
                     {
                         var snapshot = editor.Draft.SnapshotForWrite();
@@ -525,7 +569,7 @@ namespace RackCad.UI.VentanaRackCad
                 var name = CantileverNameOf(pair.Value);
                 yield return new UpdateAllEntry(
                     new UpdateAllCandidate(UpdateAllSystem.Cantilever, editor.RackId, name, editor.IsDirty, editor.IsWriting, editor.IsNewRack,
-                        BlockedOf(editor.IsDirty, editor.CanUpdate, editor.UpdateBlockedText), IsStale(session, editor.RackId)),
+                        BlockedOf(session, editor.RackId, editor, editor.IsDirty, editor.CanUpdate, editor.UpdateBlockedText), IsStale(session, editor.RackId)),
                     id =>
                     {
                         var snapshot = editor.Draft.SnapshotForWrite();
@@ -544,7 +588,7 @@ namespace RackCad.UI.VentanaRackCad
                 var name = CabeceraNameOf(pair.Value);
                 yield return new UpdateAllEntry(
                     new UpdateAllCandidate(UpdateAllSystem.Cabecera, editor.RackId, name, editor.IsDirty, editor.IsWriting, false,
-                        BlockedOf(editor.IsDirty, editor.CanUpdate, editor.UpdateBlockedText), IsStale(session, editor.RackId)),
+                        BlockedOf(session, editor.RackId, editor, editor.IsDirty, editor.CanUpdate, editor.UpdateBlockedText), IsStale(session, editor.RackId)),
                     id =>
                     {
                         // As UpdateCabecera: the inner name goes as it is (blank too), and what is sent is the base of «Limpio».
@@ -564,7 +608,7 @@ namespace RackCad.UI.VentanaRackCad
                 var name = CamaNameOf(pair.Value);
                 yield return new UpdateAllEntry(
                     new UpdateAllCandidate(UpdateAllSystem.Cama, editor.RackId, name, editor.IsDirty, editor.IsWriting, editor.IsNewRack,
-                        BlockedOf(editor.IsDirty, editor.CanUpdate, editor.PrimaryBlockedText), IsStale(session, editor.RackId)),
+                        BlockedOf(session, editor.RackId, editor, editor.IsDirty, editor.CanUpdate, editor.PrimaryBlockedText), IsStale(session, editor.RackId)),
                     id =>
                     {
                         // As WriteCama: a copy of the bed, the trimmed name, and what is sent as the base of «Limpio».

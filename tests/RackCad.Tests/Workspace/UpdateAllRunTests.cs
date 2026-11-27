@@ -62,9 +62,26 @@ public sealed class UpdateAllRunTests
 
         public int CancelAfterApplies { get; set; } = -1;
 
+        /// <summary>The blocks of the library a draft needs that the drawing lacks, until they are imported (review of c4985a2e, I-2).</summary>
+        public Dictionary<string, string[]> Lacking { get; } = new(StringComparer.OrdinalIgnoreCase);
+
+        public string ImportError { get; set; }
+
+        /// <summary>The import «works» but the drawing still lacks them (the library could not give them).</summary>
+        public bool ImportGivesNothing { get; set; }
+
         public int Applies { get; private set; }
 
         public bool Open { get; private set; }
+
+        public string ImportOutside(IReadOnlyCollection<string> blocks)
+        {
+            Assert.False(Open, "the library is imported with no transaction open");
+            Calls.Add("import " + string.Join(",", blocks));
+            if (ImportError != null) return ImportError;
+            if (!ImportGivesNothing) Lacking.Clear();
+            return null;
+        }
 
         private static string Key(UpdateAllItem item) => item.RackId ?? "Variables";
 
@@ -97,7 +114,8 @@ public sealed class UpdateAllRunTests
             if (item.System == UpdateAllSystem.Variables)
                 return new UpdateAllApplied(true, null, VariablesAnswer: VariablesDoorRules.AnswerForWrite(1, true, VariablesRedraw, 2, false, null));
             Warn.TryGetValue(Key(item), out var warning);
-            return new UpdateAllApplied(true, null, warning, RackDoorRules.AnswerForApply(1, item.RackId, 2, 0));
+            Lacking.TryGetValue(Key(item), out var lacking);
+            return new UpdateAllApplied(true, null, warning, RackDoorRules.AnswerForApply(1, item.RackId, 2, 0), PendingImports: lacking);
         }
 
         public void Commit()
@@ -353,6 +371,74 @@ public sealed class UpdateAllRunTests
         Assert.Equal("No se escribió nada: " + UpdateAllText.NothingToWrite, nothing.Message);
     }
 
+    // ------------------------------------------------------------------ corrections of the review of c4985a2e
+
+    // B-1: a view that was not redrawn (the helpers swallow its failure), views that are not the ones that must remain, or views that do not
+    // carry one design after the write: the rack is not written, so the set is not confirmed.
+    [Fact]
+    public void ARackHalfWrittenIsNotWrittenInsideTheSet()
+    {
+        Assert.Null(UpdateAllVerification.AfterRackWrite(3, 3, 0, 3, true, null));
+        Assert.Null(UpdateAllVerification.AfterRackWrite(3, 2, 1, 2, true, null));
+
+        Assert.Equal("AutoCAD no redibujó 1 vista de las 3 del rack (la línea de órdenes dice cuál): el rack quedaría a medias.",
+            UpdateAllVerification.AfterRackWrite(3, 2, 0, 3, true, null));
+        Assert.Equal("AutoCAD no redibujó 2 vistas de las 2 del rack (la línea de órdenes dice cuál): el rack quedaría a medias.",
+            UpdateAllVerification.AfterRackWrite(2, 0, 0, 2, true, null));
+        Assert.Equal("Releído tras escribirlo, el rack tiene 3 vistas y debían quedar 2: el rack quedaría a medias.",
+            UpdateAllVerification.AfterRackWrite(3, 2, 1, 3, true, null));
+        Assert.Equal("Releído tras escribirlo, sus vistas no llevan el mismo diseño: el rack quedaría a medias. La vista lateral es distinta.",
+            UpdateAllVerification.AfterRackWrite(3, 3, 0, 3, false, "La vista lateral es distinta."));
+        Assert.Equal("Releído tras escribirlo, sus vistas no llevan el mismo diseño: el rack quedaría a medias.",
+            UpdateAllVerification.AfterRackWrite(1, 1, 0, 1, false, null));
+        Assert.Equal("Releído tras escribirlo, el rack tiene 0 vistas y debían quedar 1: el rack quedaría a medias.",
+            UpdateAllVerification.AfterRackWrite(1, 1, 0, 0, false, null));
+    }
+
+    // I-2: nothing is imported inside the transaction. A pass whose drafts need blocks the drawing lacks is discarded, they are imported with
+    // no transaction open, and the set is re-read and written again; only that second pass is confirmed.
+    [Fact]
+    public void BlocksTheDrawingLacksAreImportedOutsideTheTransactionAndTheSetIsWrittenAgain()
+    {
+        var host = new Host();
+        host.Lacking["C-1"] = new[] { "BOTA_B" };
+        host.Lacking["D-1"] = new[] { "TOPE_A", "BOTA_B" };
+        var answer = UpdateAllRun.Execute(Write(Dynamic("D-1", "DIN 1"), Cama("C-1")), host);
+
+        Assert.Equal(new[]
+        {
+            "begin", "check D-1", "check C-1", "apply D-1", "apply C-1", "rollback", "import BOTA_B,TOPE_A",
+            "begin", "check D-1", "check C-1", "apply D-1", "apply C-1", "commit", "finish committed",
+        }, host.Calls);
+        Assert.True(answer.Committed);
+        Assert.All(answer.Items, r => Assert.Equal(UpdateAllOutcome.Applied, r.Outcome));
+    }
+
+    [Fact]
+    public void AnImportThatFailsOrBlocksStillLackingAfterItWriteNothingAndNameTheDraftsThatNeedThem()
+    {
+        var failing = new Host { ImportError = "la importación falló (el registro de RackCad dice por qué)." };
+        failing.Lacking["C-1"] = new[] { "BOTA_B" };
+        var answer = UpdateAllRun.Execute(Write(Dynamic("D-1", "DIN 1"), Cama("C-1")), failing);
+        Assert.False(answer.Committed);
+        Assert.DoesNotContain("commit", failing.Calls);
+        Assert.Equal(1, failing.Calls.Count(c => c == "begin"));
+        Assert.Equal(new[] { UpdateAllOutcome.NotAppliedOtherFailed, UpdateAllOutcome.Failed }, answer.Items.Select(r => r.Outcome).ToArray());
+        Assert.Equal("No se pudieron importar los bloques de la biblioteca que necesita (BOTA_B): la importación falló (el registro de RackCad dice por qué).",
+            answer.Items[1].Cause);
+        Assert.StartsWith("No se escribió nada: falló «C-1». ", answer.Message);
+
+        var lacking = new Host { ImportGivesNothing = true };
+        lacking.Lacking["D-1"] = new[] { "TOPE_A" };
+        answer = UpdateAllRun.Execute(Write(Dynamic("D-1", "DIN 1"), Cama("C-1")), lacking);
+        Assert.False(answer.Committed);
+        Assert.Equal(2, lacking.Calls.Count(c => c == "begin"));
+        Assert.Single(lacking.Calls, c => c.StartsWith("import", StringComparison.Ordinal));
+        Assert.DoesNotContain("commit", lacking.Calls);
+        Assert.Equal(new[] { UpdateAllOutcome.Failed, UpdateAllOutcome.NotAppliedOtherFailed }, answer.Items.Select(r => r.Outcome).ToArray());
+        Assert.Equal("Necesita bloques de la biblioteca que siguen sin estar en el dibujo tras importarlos (TOPE_A).", answer.Items[0].Cause);
+    }
+
     // ------------------------------------------------------------------ the command, by its source (AutoCAD code)
 
     private static string Source(params string[] relative)
@@ -414,6 +500,65 @@ public sealed class UpdateAllRunTests
         Assert.Single(System.Text.RegularExpressions.Regex.Matches(transaction, @"_transaction\.Commit\(\)"));
         Assert.Contains("_transaction.Abort()", transaction, StringComparison.Ordinal);
         Assert.DoesNotContain("StartOpenCloseTransaction", transaction, StringComparison.Ordinal);
+    }
+
+    // The corrections of the review of c4985a2e that live in AutoCAD code, by their source.
+    [Fact]
+    public void TheSetReReadsEveryRackAfterItsWriteImportsOutsideItsTransactionAndPurgesAfterTheCommit()
+    {
+        var command = WorkspaceHostSource.CodeOnly(Source("src", "RackCad.Plugin", "VentanaRackCad", "RackCadUpdateAllCommands.cs"));
+
+        // B-1: after the apply and the tab «Propiedades», the rack is read again inside the transaction and checked by the pure rule.
+        var written = command.Substring(command.IndexOf("private UpdateAllApplied RackWritten(", StringComparison.Ordinal));
+        written = written.Substring(0, written.IndexOf("\n        }", StringComparison.Ordinal));
+        Assert.True(written.IndexOf("RackPropertiesDoorData.WithRackProperties(", StringComparison.Ordinal)
+                    < written.IndexOf("RackCommandSupport.FindRackBlocks(_document, rackId)", StringComparison.Ordinal));
+        Assert.True(written.IndexOf("RackCommandSupport.FindRackBlocks(_document, rackId)", StringComparison.Ordinal)
+                    < written.IndexOf("UpdateAllVerification.AfterRackWrite(", StringComparison.Ordinal));
+        Assert.Contains("RackSiblingDesigns.Compare(rackId, Views(after))", written, StringComparison.Ordinal);
+        Assert.Equal(6, System.Text.RegularExpressions.Regex.Matches(command, @"return RackWritten\(write\.RackId, views, ").Count);
+
+        // I-2: the scope opens with the transaction and is always left; the import is outside (no transaction open); the purge after the commit.
+        Assert.Contains("_transaction = RackUpdateAllTransaction.Begin(_document);\n            RackUpdateAllScope.Enter();", command.Replace("\r\n", "\n"), StringComparison.Ordinal);
+        var dispose = command.Substring(command.IndexOf("public void Dispose()", StringComparison.Ordinal));
+        Assert.Contains("RackUpdateAllScope.Exit();", dispose.Substring(0, dispose.IndexOf('}')), StringComparison.Ordinal);
+        var import = command.Substring(command.IndexOf("public string ImportOutside(", StringComparison.Ordinal));
+        import = import.Substring(0, import.IndexOf("\n        }", StringComparison.Ordinal));
+        Assert.True(import.IndexOf("RackUpdateAllTransaction.AnyOpen(_document)", StringComparison.Ordinal)
+                    < import.IndexOf("BlockLibraryImporter.EnsureBlocks(_document.Database, blocks)", StringComparison.Ordinal));
+        var finish = command.Substring(command.IndexOf("public void Finish(bool committed)", StringComparison.Ordinal));
+        finish = finish.Substring(0, finish.IndexOf("\n        }", StringComparison.Ordinal));
+        Assert.True(finish.IndexOf("RackUpdateAllScope.Exit();", StringComparison.Ordinal)
+                    < finish.IndexOf("LateralHeaderDrawer.PurgeUnreferenced(_document.Database, purge)", StringComparison.Ordinal));
+        Assert.Contains("if (committed && purge.Count > 0)", finish, StringComparison.Ordinal);
+
+        var importer = WorkspaceHostSource.CodeOnly(Source("src", "RackCad.Plugin", "Drawing", "BlockLibraryImporter.cs"));
+        var ensure = importer.Substring(importer.IndexOf("public static int EnsureForPlan(", StringComparison.Ordinal));
+        Assert.True(ensure.IndexOf("RackUpdateAllScope.IsActive", StringComparison.Ordinal) < ensure.IndexOf("LibraryBlockAvailabilityFlow.Observe(", StringComparison.Ordinal));
+        var observe = importer.Substring(importer.IndexOf("private static void ObserveForTheSet(", StringComparison.Ordinal));
+        observe = observe.Substring(0, observe.IndexOf("\n        }", StringComparison.Ordinal));
+        Assert.DoesNotContain("WblockCloneObjects", observe, StringComparison.Ordinal);
+
+        var drawer = WorkspaceHostSource.CodeOnly(Source("src", "RackCad.Plugin", "Drawing", "LateralHeaderDrawer.cs"));
+        var purge = drawer.Substring(drawer.IndexOf("internal static void PurgeUnreferenced(", StringComparison.Ordinal));
+        Assert.True(purge.IndexOf("RackUpdateAllScope.DeferPurge(candidates);", StringComparison.Ordinal) < purge.IndexOf("db.Purge(ids)", StringComparison.Ordinal));
+
+        // Minor 3: the blocks neither the drawing nor the library has are a notice of the draft in every system (Apply, not only the cama).
+        var apply = command.Substring(command.IndexOf("public UpdateAllApplied Apply(", StringComparison.Ordinal));
+        apply = apply.Substring(0, apply.IndexOf("\n        }", StringComparison.Ordinal));
+        Assert.Contains("RackUpdateAllScope.BeginDraft();", apply, StringComparison.Ordinal);
+        Assert.Contains("RackUpdateAllScope.DraftMissing", apply, StringComparison.Ordinal);
+        Assert.DoesNotContain("HasMissingBlocks", command, StringComparison.Ordinal);
+
+        // Minor 4: a set that is not confirmed says on the command line that the lines of the drawing halves were undone.
+        Assert.Contains("\"lo que dicen las líneas anteriores se deshizo. \" + answer.Message", command, StringComparison.Ordinal);
+
+        // I-2: UpgradeOpen only on an object that is not open for write already. I-1: the erasures count once the transaction is confirmed.
+        Assert.Contains("if (!def.IsWriteEnabled) def.UpgradeOpen();", Source("src", "RackCad.Plugin", "Drawing", "RackBlockRenamer.cs"), StringComparison.Ordinal);
+        Assert.Contains("if (!dictionary.IsWriteEnabled) dictionary.UpgradeOpen();", Source("src", "RackCad.Plugin", "CustomPropertiesData.cs"), StringComparison.Ordinal);
+        var support = Source("src", "RackCad.Plugin", "RackCommandSupport.cs");
+        Assert.Contains("                        transaction.Commit();\n                        erased = erasing;", support, StringComparison.Ordinal);
+        Assert.DoesNotContain("erased++", support, StringComparison.Ordinal);
     }
 
     [Fact]

@@ -5058,9 +5058,9 @@ ventanas; tampoco hay `SendStringToExecute`. Ninguna escribe archivos ni configu
 | Id | Decisión | Por qué |
 |---|---|---|
 | T6at-S1 | Las funciones de aplicar de cada sistema abren sus transacciones, que quedan **anidadas** en la exterior. La condición 1 de la A-14 dice «ninguna lectura ni unidad abre otra transacción» | El encargo pide reusar las funciones de aplicar de las órdenes APLICAR. La forma estricta sería la de `ProjectVariableMutationExecutor`: preparar fuera, mutar con fachadas que reciben la transacción del llamador (`RedrawInTransaction`) y regenerar al final. Exige reescribir el aplicar de los seis sistemas: queda para la planeación |
-| T6at-S2 | La importación de bloques de la biblioteca ocurre **dentro** de la transacción exterior; el importador dice que se llame fuera. Si una importación lanza dentro del conjunto, el conjunto falla: «No se pudieron importar bloques de la biblioteca dentro de «Actualizar todo»… Escribe este borrador con su «Actualizar»» | El importador se traga la excepción y la pieza se queda fuera sin aviso. Con el contador, el fallo deja de ser silencioso y sigue siendo todo o nada. Si la transacción se aborta, lo importado puede quedarse: es el residuo de biblioteca de OM-5 que admite la A-14. Solo el smoke dice si `WblockCloneObjects` funciona con la transacción abierta |
+| T6at-S2 | **Corregido en la revisión de `c4985a2e` (I-2).** Dentro de la transacción no se importa nada: lo que falta se importa fuera de ella y el conjunto se vuelve a escribir. Ver «Correcciones de la revisión (sobre `c4985a2e`)» | El importador debe correr fuera de la transacción del dibujo |
 | T6at-S3 | Cada aplicar regenera, como hoy, dentro de la transacción; «Actualizar todo» regenera una vez más al final, tras confirmar o abortar | Quitar esas regeneraciones exige tocar las seis funciones. Cuesta una regeneración por rack, lo mismo que N «Actualizar»; el smoke lo mide |
-| T6at-S4 | Un rack cuenta como escrito con la regla de su propio «Actualizar» (al menos una vista redibujada, I-08 y M-28; la cama, redibujada). Las vistas que no se redibujaron ni se borraron dan «Escrito, con avisos» («faltantes», D-13) | Es lo que el rack ya garantiza solo; un criterio más estricto podría rechazar casos que hoy se escriben bien, y no se puede comprobar sin AutoCAD |
+| T6at-S4 | **Corregido en la revisión de `c4985a2e` (B-1).** Un rack cuenta como escrito solo si se redibujaron o borraron todas sus vistas y, releído dentro de la transacción, sus vistas son las que deben quedar y llevan un mismo diseño. Si no, falla el conjunto | Los ayudantes del redibujo se tragan el fallo de una vista, y el rack quedaría a medias dentro de una operación que se confirma |
 | T6at-S5 | Si la pestaña «Propiedades» de un rack no se puede escribir, falla el conjunto entero. En el «Actualizar» de un rack, el rack queda escrito y las propiedades no | Todo o nada sobre lo authored: en un conjunto, un rack escrito a medias también es «a medias» |
 | T6at-S6 | **«Variables» entra** (decisión Q-02), la primera. Si redibujaría un rack que también va en el conjunto, no se escribe nada y se nombran los dos. Un Selectivo se vuelve a planear sobre el registro releído tras «Variables» (`PlanSelectiveApply`), y si ya no coincide, falla el conjunto. Sus dos transacciones (VA-S7) quedan dentro de la exterior: en el conjunto son todo o nada | Así ningún borrador de rack se escribe resuelto contra variables viejas: los que «Variables» redibuja no pueden ir en el conjunto (y la ventana ya los bloquea con VA-04), y los demás no dependen de lo que cambia. La comprobación de la orden es la autoridad |
 | T6at-S7 | **Cancelar:** «Dejar de esperar» hasta que la orden toma la petición; después, ESC en AutoCAD (`HostApplicationServices.UserBreak`), que se mira antes de cada escritura y antes de confirmar. Cancelado, no se escribe nada | La paleta no puede atender clics mientras la orden corre: es el mismo hilo de AutoCAD |
@@ -5069,7 +5069,7 @@ ventanas; tampoco hay `SendStringToExecute`. Ninguna escribe archivos ni configu
 | T6at-S10 | La condición 3 de la A-14 (texto pendiente en un borrador no abierto) la cubren los bloqueos de cada editor (la secuencia sin aplicar de Cantilever, los tramos de Selectivo, los valores marcados) y el foco de WPF, que confirma el campo al pulsar el botón de la cabecera | No se conoce un camino que deje texto conservado en un borrador no abierto, como ya decía la A-14 |
 | T6at-S11 | La pregunta «posiblemente desactualizado» es de «Actualizar todo» (su panel) y nombra los borradores marcados; la marca y el «Actualizar» por rack son de la parte st | El encargo: no construir la marca, dejar el punto (`UpdateAllStaleProbe`) |
 | T6at-S12 | Cada borrador del conjunto lleva el número de la petición de «Actualizar todo», y su escritura es la que mandaría su «Actualizar», con la pestaña «Propiedades» | Así la orden escribe lo mismo que cada APLICAR, y las pruebas lo comparan campo por campo |
-| T6at-S13 | **El coste de N barridos** (condición 2 de la A-14): sin una captura compartida, cada borrador se busca en el dibujo en su relectura (`FindRackBlocks`) y otra vez en su aplicar, como en su APLICAR, y cada Selectivo relee el registro de variables. Son al menos 2N barridos | La captura compartida es una mecánica posible, no congelada; el smoke mide el tiempo con 43 a 70 racks y los umbrales los fijan Coordinator y Owner (D-18) |
+| T6at-S13 | **Corregido en la revisión de `c4985a2e` (menor 7).** El coste de N barridos: de 5 a 9 barridos por rack, más dos lecturas del registro de variables por Selectivo. Si hace falta importar bloques, el conjunto se lee y se escribe dos veces | La captura compartida es una mecánica posible, no congelada; el smoke mide el tiempo con 43 a 70 racks y los umbrales los fijan Coordinator y Owner (D-18) |
 
 ### Para integrar con st (aviso a la sesión)
 
@@ -5210,6 +5210,8 @@ el archivo se restauró de sus bytes y se comprobó igual por su huella. Al fina
 
 ### Preguntas para el Owner
 
+Respondidas el 2026-11-27: ver «Las respuestas del Owner» en «Correcciones de la revisión (sobre `c4985a2e`)».
+
 - **Q-at-1 (T6at-S1):** ¿se acepta «Actualizar todo» con las transacciones de cada sistema anidadas en la exterior, o se pide la forma
   estricta de la A-14 (una sola transacción, sin transacciones de las unidades)? La segunda exige reescribir el aplicar de los seis sistemas
   en la forma de `ProjectVariableMutationExecutor`.
@@ -5217,3 +5219,116 @@ el archivo se restauró de sus bytes y se comprobó igual por su huella. Al fina
   escrito, como en su «Actualizar»?
 - **Q-at-3 (T6at-S6):** ¿«Variables» dentro de «Actualizar todo», como se construyó, o fuera hasta su propia A-n?
 - **Q-at-4 (T6at-S9):** sin un «Comprobar ahora» por rack, ¿basta que el editor diga «vuelve a leerlo del dibujo»?
+
+### Correcciones de la revisión (sobre `c4985a2e`)
+
+La revisión independiente de la parte at sobre `c4985a2e` (el commit de la sesión) dio un bloqueante, dos importantes y nueve menores.
+Las correcciones van sobre ese commit, sin commit propio.
+
+#### Las respuestas del Owner (2026-11-27)
+
+| Pregunta | Respuesta, literal | Lo que queda |
+|---|---|---|
+| Q-at-1 (T6at-S1) | «Aceptar las anidadas» | Las transacciones de cada sistema quedan anidadas en la exterior. No hay que reescribir el aplicar de los seis sistemas |
+| Q-at-2 (T6at-S5) | «Falla todo el conjunto» | Si la pestaña «Propiedades» de un rack no se puede escribir, falla el conjunto, como se construyó |
+| Q-at-3 (T6at-S6) | «Incluir Variables» | «Variables» entra, la primera, como se construyó |
+| Q-at-4 (T6at-S9) | «Basta «vuelve a leerlo»» | Tras una confirmación que falla, «Se desconoce» con «vuelve a leerlo del dibujo». Además lo impide el siguiente «Actualizar todo» (menor 1) |
+
+#### Punto por punto
+
+| Punto | Qué pasaba | Qué se hizo |
+|---|---|---|
+| **B-1** (bloqueante) | Si el redibujo de una vista fallaba, los ayudantes se tragaban la excepción (`SystemBlockWriter.RedrawInPlace`, `LateralHeaderDrawService.RedrawInPlace`; Cantilever sigue con la vista siguiente). El rack salía «Escrito, con avisos» y la transacción exterior se confirmaba con el rack a medias | Tras cada aplicar, y tras su pestaña «Propiedades», el rack se relee dentro de la transacción (`FindRackBlocks`) y se compara (`RackSiblingDesigns.Compare`). Lo juzga una regla pura, `UpdateAllVerification.AfterRackWrite`: cada vista se redibujó o se borró, quedan las que deben quedar y llevan un mismo diseño. Si no, falla el conjunto. Las vistas que faltan ya no son un aviso. **T6at-S4 rehecho** |
+| **I-1** | `RackCommandSupport.EraseViewBlocks` subía el recuento antes de confirmar. Si fallaba a mitad, la transacción se deshacía, pero el recuento contaba las vistas | Cuenta en una variable propia y la devuelve tras el `Commit`. Solo cambia el caso de fallo del «Actualizar» por rack (T6at-S15). La relectura de B-1 también lo cubre |
+| **I-2, la importación** | La biblioteca se importaba dentro de la transacción exterior, en contra de su regla («OUTSIDE the drawing transaction»). La tabla de bloques puede quedar abierta para escritura tras el primer rack, y `WblockCloneObjects` fallaría en uno posterior | Mientras la transacción exterior está abierta, `BlockLibraryImporter.EnsureForPlan` no importa (`RackUpdateAllScope`, nuevo, en `Systems/Shared`). Anota lo que falta en el dibujo: lo que la biblioteca tiene va a importarse; lo que no tiene es un aviso del borrador. Si una pasada necesita bloques: (1) se deshace; (2) `ImportOutside` los importa sin ninguna transacción abierta, como hace cada aplicar antes de la suya; (3) el conjunto se relee y se escribe otra vez. Si siguen faltando, o la importación falla, fallan los borradores que los necesitan (T6at-S16) |
+| **I-2, la purga** | `PurgeUnreferenced`, que debe correr sobre el dibujo confirmado, corría dentro de la transacción exterior | Con el ámbito activo, los ayudantes solo juntan los candidatos. La orden purga una vez, tras el `Commit` de la exterior y en la misma orden (un «U») |
+| **I-2, `UpgradeOpen`** | Fallaría sobre objetos ya abiertos para escritura en la transacción exterior: la definición que se acaba de redibujar (`RackBlockRenamer.SyncName`) y el NOD que abrió el registro de variables (`CustomPropertiesData.Write`) | `if (!x.IsWriteEnabled) x.UpgradeOpen();` en los dos. El «Actualizar» por rack no cambia |
+| Menor 1 | «Se desconoce» no impedía el siguiente «Actualizar todo» | Se guarda (dibujo, rack) con su editor. Mientras ese editor siga modificado, es un bloqueo con su motivo: «No se sabe si el último «Actualizar todo» lo escribió…». Se quita al releer (cerrar y abrir con «Editar aquí» da otro editor) o al descartar (T6at-S17) |
+| Menor 2 | El aviso de lo que lo impide salía sin pulsar nada | Sale solo tras el clic, en el panel. Antes, la pista del botón da el motivo (T6at-S18) |
+| Menor 3 | Los bloques de biblioteca que faltan solo avisaban en la cama | El ámbito anota, por borrador, lo que no tienen ni el dibujo ni la biblioteca. En los seis sistemas es «Escrito, con avisos»: «Faltan en la biblioteca de bloques X: se escribió sin esas piezas, como en su «Actualizar»» (T6at-S19) |
+| Menor 4 | La línea de órdenes decía «… actualizado…» por cada aplicar aunque el conjunto se deshiciera | La última línea lo dice: «RackCad «Actualizar todo»: lo que dicen las líneas anteriores se deshizo. No se escribió nada: …». Los mensajes de cada aplicar no se suprimen: habría que tocar las seis funciones (T6at-S14) |
+| Menor 5 | La condición 3: un valor escrito sin salir del campo no cuenta hasta Intro o hasta salir del campo. Si es el único cambio, el botón sale apagado | El motivo lo dice: «No hay borradores con cambios sin escribir en este dibujo. Un valor que acabas de escribir cuenta cuando pulsas Intro o sales de su campo.» Añadido al smoke |
+| Menor 6 | La fila repetía «No aplicado. No aplicado: falló otro rack…», y dos racks con el mismo nombre daban el mismo nombre accesible | La causa empieza por lo que falló («Falló otro rack del conjunto.»), y cada fila lleva su posición: «1. PB 1 (Push Back): …» |
+| Menor 7 | T6at-S13 contaba mal | De 5 a 9 barridos por rack: de 4 a 8 con «Propiedades», más la relectura de B-1. Más dos lecturas del registro por Selectivo, y el doble si hay que importar. Corregido en la tabla |
+| Menor 8 | R4 no fallaba en UI: el borrador de «Nuevo» de la prueba no estaba modificado | `CleanDraftsNewDraftsAndDraftsOfAnotherDrawingDoNotGo` lo modifica |
+| Menor 9 | Las suites completas eran previas al commit | Vueltas a correr sobre el árbol final (abajo) |
+
+#### Los supuestos nuevos
+
+| Id | Decisión | Por qué |
+|---|---|---|
+| T6at-S14 | Dentro de «Actualizar todo» siguen saliendo los mensajes de línea de órdenes de cada aplicar. Si el conjunto no se confirma, la última línea dice que se deshizo | Suprimirlos exige tocar las seis funciones de aplicar, compartidas con RACKEDITAR |
+| T6at-S15 | `EraseViewBlocks` devuelve las borradas solo tras confirmar. En el «Actualizar» de un rack, un borrado que falla a mitad ya no se anuncia como hecho | Era un recuento falso. El caso de éxito no cambia |
+| T6at-S16 | Si una pasada necesita bloques de la biblioteca que el dibujo no tiene, se deshace, se importan fuera y se repite. El coste se dobla solo en ese caso. Un bloque que sigue faltando tras importarlo falla sus borradores | Es la fase previa que pedía la revisión, sin calcular a mano lo que necesita cada sistema: se ven exactamente los planos de cada aplicar. Lo importado se queda aunque el conjunto falle (el residuo de biblioteca de OM-5) |
+| T6at-S17 | «Se desconoce» impide el siguiente «Actualizar todo» mientras el mismo editor siga modificado. Releer (otro editor) o descartar lo quita | La condición 4 de la A-14: un estado que pide acción del usuario |
+| T6at-S18 | Lo que impide «Actualizar todo» solo sale en el panel tras el clic | Ningún aviso sin un gesto; la pista del botón lo dice antes |
+| T6at-S19 | El aviso de bloques que faltan nombra las claves de la biblioteca, en los seis sistemas | Es lo mismo que el «Actualizar» de cada rack deja fuera, ahora dicho |
+
+#### Para integrar con st (preparado)
+
+- **RACKACTUALIZARTODO es una orden propia de la puerta.** No debe marcar «El dibujo cambió». La sesión la añade a lo que st cuenta como propio, junto a las APLICAR: es la constante `RackCadRackDoorPort.UpdateAllCommand`.
+- **La marca:** `UpdateAllStaleProbe` se conecta a `DrawingChange.IsChanged` y `AsksBeforeWrite`: (dibujo, rack) → la marca del editor de ese rack.
+- **El camino de éxito ya pasa por lo mismo que el «Actualizar» de cada editor, así que st quita su marca igual:**
+  - Push Back, Cantilever, cama y cabecera, por sus `…Written`;
+  - Dinámico y Selectivo, por su `MarkWritten`, en `WrittenOf`;
+  - «Variables», por `EndWriting`.
+
+#### Lo que comprobará además el smoke en AutoCAD
+
+- Un rack que importe un bloque de la biblioteca, colocado en SEGUNDO lugar del conjunto. Se importa fuera de la transacción, el conjunto se escribe en la segunda pasada, y un solo «U» lo deshace.
+- Renombrar un rack y mirar el nombre de sus bloques (`SyncName` con la definición ya abierta).
+- Tras confirmar, contar las definiciones huérfanas (la purga diferida) y comprobar que ninguna vista pierde geometría.
+- La condición 3: escribir en un campo sin salir de él y pulsar «Actualizar todo». La pista dice el motivo; al salir del campo, el botón se enciende.
+- Las vistas de cada sistema tras escribir. Si un sistema dejara a propósito una vista sin tocar, ahora el conjunto lo rechazaría (B-1): comprobarlo con racks de cada sistema y todas sus vistas.
+
+#### Pruebas nuevas y cambiadas
+
+- **Core, `UpdateAllRunTests`:**
+  - `ARackHalfWrittenIsNotWrittenInsideTheSet` (B-1: la regla pura);
+  - `BlocksTheDrawingLacksAreImportedOutsideTheTransactionAndTheSetIsWrittenAgain` y `AnImportThatFailsOrBlocksStillLackingAfterItWriteNothingAndNameTheDraftsThatNeedThem` (I-2);
+  - `TheSetReReadsEveryRackAfterItsWriteImportsOutsideItsTransactionAndPurgesAfterTheCommit`: por su fuente, la relectura, el ámbito, la importación fuera, la purga tras el `Commit`, `UpgradeOpen`, el recuento de borradas y los menores 3 y 4.
+- **UI, `RackCadUpdateAllTests`:**
+  - «Se desconoce» lo impide hasta descartar o releer;
+  - el aviso solo tras el clic;
+  - el borrador de «Nuevo» modificado;
+  - las filas con su posición y sin repetir;
+  - el motivo con la pista del valor escrito.
+
+#### Comprobación en rojo
+
+Cinco piezas rotas a propósito, una a una, con una copia del original fuera del worktree. Tras cada una corrieron `UpdateAllRunTests`
+(17) y `RackCadUpdateAllTests` (16), y el archivo se restauró de sus bytes y se comprobó por su huella. Al final, `git diff` no tiene
+restos.
+
+| Rotura | Lo que falla |
+|---|---|
+| R6. B-1: la regla pura da por escrito un rack a medias | Core: `ARackHalfWrittenIsNotWrittenInsideTheSet` |
+| R7. I-2: se confirma aunque falten bloques por importar | Core: `BlocksTheDrawingLacksAreImportedOutsideTheTransactionAndTheSetIsWrittenAgain` y `AnImportThatFailsOrBlocksStillLackingAfterItWriteNothingAndNameTheDraftsThatNeedThem` |
+| R8. Menor 1: «Se desconoce» no impide el siguiente | UI: `AConfirmationThatFailsLeavesEveryDraftUnknownAndToBeReadAgain` |
+| R9. Menor 2: el aviso sale sin el clic | UI: `ADraftWhoseActualizarIsBlockedPreventsItWithItsCauseAndNothingGoes` |
+| R4, repetida (menor 8): un borrador de «Nuevo» entra | Core: `ModifiedDraftsGoCleanOnesAndNewOnesDoNotAndVariablesGoFirstThenTheSystemsOfTheListThenTheName`. UI, ahora también: `CleanDraftsNewDraftsAndDraftsOfAnotherDrawingDoNotGo` |
+
+#### Los números
+
+Por orden de la sesión (pausa del Owner, para no saturar la máquina), **no se corrieron las suites completas**: las correrá la sesión sobre
+la rama integrada. Las completas sobre `c4985a2e` (antes de estas correcciones) dieron UI 3126 / 0 / 48 y Core Full 19496 / 0 / 403.
+
+- **Focales de Core, sobre el árbol final: 657 correctas, 0 con error.**
+  - Las clases: `UpdateAllRunTests` (17) y las guardas de los archivos tocados del Plugin y de los censos.
+    - Caller-owned: `CallerOwned*`.
+    - Biblioteca de bloques: `SharedViewFoundationF1*`, `I59F3*`.
+    - Propiedades: `CustomPropertiesEdgeGuardTests`, `CustomPropertiesProjectTests`, `CustomPropertiesCommandGuardTests`.
+    - Push Back: `PushBackViewEraseGuardTests`, `PushBackEditAllNameWritersGuardTests`, `PushBackClassicCharacterizationPluginGuardTests`,
+      `PushBackRoundTripSourceGuardTests`, `PushBackPluginSourceGuardTests`, `PushBackDraftEditorTests`,
+      `PushBackWindowDrawingMirrorGuardTests`.
+    - Dibujo y redibujo: `RackDefinitionCreatorGuardTests`, `ProjectVariableMutationExecutorTests`, `SelectiveDuplicationFailClosedTests`,
+      `DrawServicePlanBaselineTests`, `I55G15Auth15ConsumerTests`.
+    - Cantilever: `CantileverPluginSourceGuardTests`, `CantileverDraftEditorTests`.
+    - Cama y cabecera: `I61CamaEditWiringGuardTests`, `CabeceraDoorTests`, `CamaDoorTests`.
+    - Censos y ventana: `NamespaceFolderGuardTests`, `RackCadWindowListTests`, `SelectiveEditorOpenTests`.
+- **Focales de UI, sobre el árbol final:** `RackCadUpdateAllTests` (16), `RackCadVariablesPageTests` y `RackCadWindowTests`: 74
+  correctas, 0 con error.
+- **Lo que suman a las completas:** Core, +4 (13 a 17 en `UpdateAllRunTests`); UI, +0 (las pruebas de los menores amplían las 16
+  existentes). Esperado tras integrar: Core 19500 / 0 / 403 y UI 3126 / 0 / 48, sobre la base de esta parte.
+- **Solución en Debug (Plugin incluido), sobre el árbol final:** 0 errores, 2 advertencias, las MSB3277 de siempre. Con `--no-incremental`,
+  antes de la pausa y sobre el mismo código, también 0 errores.

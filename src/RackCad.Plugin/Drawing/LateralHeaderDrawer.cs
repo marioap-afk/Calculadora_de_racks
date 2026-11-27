@@ -199,6 +199,14 @@ namespace RackCad.Plugin.Drawing
                 return;
             }
 
+            // T6 at (review of c4985a2e, I-2): inside the one transaction of «Actualizar todo» the drawing is not committed yet; the purge
+            // waits for the outer commit (RACKACTUALIZARTODO runs it once, in the same command).
+            if (RackCad.Plugin.Systems.Shared.RackUpdateAllScope.IsActive)
+            {
+                RackCad.Plugin.Systems.Shared.RackUpdateAllScope.DeferPurge(candidates);
+                return;
+            }
+
             try
             {
                 using (var tr = db.TransactionManager.StartTransaction())

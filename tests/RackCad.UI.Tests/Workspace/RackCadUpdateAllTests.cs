@@ -211,6 +211,8 @@ namespace RackCad.UI.Tests
             {
             }
 
+            public string ImportOutside(IReadOnlyCollection<string> blocks) => null;
+
             public void Finish(bool committed)
             {
             }
@@ -510,7 +512,7 @@ namespace RackCad.UI.Tests
             Assert.True(rig.Window.ShowUpdateAll);
             Assert.Equal("Actualizar todo (0)", rig.Window.UpdateAllLabel);
             Assert.False(rig.Window.CanUpdateAll);
-            Assert.Equal(UpdateAllText.NothingToWrite, rig.Window.UpdateAllBlockedText);
+            Assert.Equal(RackCadWindowViewModel.NothingToWriteText, rig.Window.UpdateAllBlockedText); // with the hint of a value just typed (review of c4985a2e, minor 5)
 
             var editor = rig.OpenAndChange(system);
             Assert.Equal("Actualizar todo (1)", rig.Window.UpdateAllLabel);
@@ -597,7 +599,7 @@ namespace RackCad.UI.Tests
             Assert.Equal(7, rows.Count);
             var failed = Assert.Single(rows, r => r.OutcomeText == "No se pudo escribir");
             Assert.Equal(("PB 1", "Push Back", "AutoCAD no redibujó ninguna vista del rack."), (failed.Name, failed.SystemLabel, failed.Cause));
-            Assert.All(rows.Where(r => r != failed), r => Assert.Equal(("No aplicado", UpdateAllText.OtherFailed), (r.OutcomeText, r.Cause)));
+            Assert.All(rows.Where(r => r != failed), r => Assert.Equal(("No aplicado", "Falló otro rack del conjunto."), (r.OutcomeText, r.Cause)));
             Assert.Contains("falló otro rack del conjunto", MessageOf(editors[0]));
             Assert.Contains("este borrador no se pudo escribir", MessageOf(editors[1]));
 
@@ -634,14 +636,35 @@ namespace RackCad.UI.Tests
         public void AConfirmationThatFailsLeavesEveryDraftUnknownAndToBeReadAgain()
         {
             var rig = new Rig();
-            var dynamic = rig.OpenAndChange(UpdateAllSystem.Dynamic);
+            var dynamic = (DynamicEditorViewModel)rig.OpenAndChange(UpdateAllSystem.Dynamic);
+            var cama = (CamaEditorViewModel)rig.OpenAndChange(UpdateAllSystem.Cama);
             rig.Window.RequestUpdateAll();
             rig.Door.AnswerLastUpdateAll(new Units { CommitThrows = true });
 
             Assert.Equal("Modificado", StatusOf(dynamic));
             Assert.Contains("No se sabe si AutoCAD lo escribió", MessageOf(dynamic));
             Assert.StartsWith("No se sabe qué escribió AutoCAD", rig.Window.UpdateAllResultText);
-            Assert.Equal("Se desconoce", Assert.Single(rig.Window.UpdateAllResults).OutcomeText);
+            Assert.All(rig.Window.UpdateAllResults, r => Assert.Equal("Se desconoce", r.OutcomeText));
+
+            // Review of c4985a2e, minor 1: unknown is a state of condition 4: it prevents the next «Actualizar todo» until each draft is read
+            // again from the drawing or discarded.
+            Assert.False(rig.Window.CanUpdateAll);
+            Assert.Equal(new[] { "DIN 1", "Cama 1" }, rig.Window.UpdateAllEligibility.Blockers.Select(b => b.Candidate.Name).ToArray());
+            Assert.Contains("No se sabe si el último «Actualizar todo» lo escribió", rig.Window.UpdateAllBlockedText);
+            rig.Window.RequestUpdateAll();
+            Assert.Single(rig.Door.UpdateAll);
+
+            dynamic.Discard();
+            Assert.Equal("Limpio", StatusOf(dynamic));
+            Assert.Equal(new[] { "Cama 1" }, rig.Window.UpdateAllEligibility.Blockers.Select(b => b.Candidate.Name).ToArray());
+
+            // Read again: the editor is closed and opened with «Editar aquí» (a new editor of the same rack carries no mark).
+            cama.RequestClose();
+            cama.ConfirmClose();
+            var reread = (CamaEditorViewModel)rig.OpenAndChange(UpdateAllSystem.Cama);
+            Assert.NotSame(cama, reread);
+            Assert.Empty(rig.Window.UpdateAllEligibility.Blockers);
+            Assert.True(rig.Window.CanUpdateAll, rig.Window.UpdateAllBlockedText);
         }
 
         // ------------------------------------------------------------------ elegibility in the window
@@ -652,7 +675,11 @@ namespace RackCad.UI.Tests
             var rig = new Rig();
             rig.Open(UpdateAllSystem.PushBack); // clean
             var cantilever = rig.OpenAndChange(UpdateAllSystem.Cantilever);
-            rig.Window.StartNewPushBack(); // a draft of «Nuevo», not inserted
+            rig.Window.StartNewPushBack(); // a draft of «Nuevo», not inserted, and with changes (review of c4985a2e, minor 8)
+            var fresh = Assert.IsType<PushBackEditorViewModel>(rig.Window.NewPushBackEditor);
+            Write(Field(fresh.CellFields, "cFront"), "45");
+            Assert.True(fresh.IsDirty);
+            Assert.True(fresh.IsNewRack);
             Assert.Equal("Actualizar todo (1)", rig.Window.UpdateAllLabel);
 
             // Another drawing: its drafts wait for their drawing, and this one has none.
@@ -660,7 +687,7 @@ namespace RackCad.UI.Tests
             Assert.Equal("Actualizar todo (0)", rig.Window.UpdateAllLabel);
             rig.Window.RequestUpdateAll();
             Assert.Empty(rig.Door.UpdateAll);
-            Assert.Equal(UpdateAllText.NothingToWrite, rig.Window.UpdateAllResultText);
+            Assert.Equal(RackCadWindowViewModel.NothingToWriteText, rig.Window.UpdateAllResultText);
 
             rig.Present(7);
             rig.Window.RequestUpdateAll();
@@ -682,12 +709,16 @@ namespace RackCad.UI.Tests
             Assert.Equal("Actualizar todo (1)", rig.Window.UpdateAllLabel);
             Assert.False(rig.Window.CanUpdateAll);
             Assert.True(rig.Window.HasUpdateAllBlockers);
-            Assert.True(rig.Window.ShowUpdateAllPanel);
-            Assert.Equal("«Actualizar todo» no puede escribir mientras este borrador no se corrija: «Cama 1»: " + cama.PrimaryBlockedText + " No se escribiría nada.",
-                rig.Window.UpdateAllBlockersText);
+            var why = "«Actualizar todo» no puede escribir mientras este borrador no se corrija: «Cama 1»: " + cama.PrimaryBlockedText + " No se escribiría nada.";
+            Assert.Equal(why, rig.Window.UpdateAllBlockersText);
+            Assert.Equal(why, rig.Window.UpdateAllToolTip);
 
+            // Review of c4985a2e, minor 2: the notice shows only after the click (before it, the tip of the button says why).
+            Assert.False(rig.Window.ShowUpdateAllPanel);
             rig.Window.RequestUpdateAll();
             Assert.Empty(rig.Door.UpdateAll);
+            Assert.True(rig.Window.ShowUpdateAllPanel);
+            Assert.Equal(why, rig.Window.UpdateAllResultText);
             Assert.True(rig.Window.UpdateAllResultFailed);
 
             // Corrected, it goes with the others.
@@ -850,7 +881,7 @@ namespace RackCad.UI.Tests
                     Assert.Equal(Visibility.Visible, view.UpdateAllButton.Visibility);
                     Assert.Equal("Actualizar todo (0)", view.UpdateAllButton.Content);
                     Assert.False(view.UpdateAllButton.IsEnabled);
-                    Assert.Equal(UpdateAllText.NothingToWrite, view.UpdateAllButton.ToolTip);
+                    Assert.Equal(RackCadWindowViewModel.NothingToWriteText, view.UpdateAllButton.ToolTip);
                     Assert.Equal("Actualizar todo: escribir en el dibujo todos los borradores con cambios", Name(view.UpdateAllButton));
                     Assert.Equal(Visibility.Collapsed, view.UpdateAllPanel.Visibility);
 
@@ -877,8 +908,8 @@ namespace RackCad.UI.Tests
                     Assert.Equal(Visibility.Visible, view.UpdateAllResultPanel.Visibility);
                     Assert.StartsWith("No se escribió nada: falló «Cama 1».", view.UpdateAllResultText.Text);
                     var lines = Descendants<TextBlock>(view.UpdateAllResultList).Select(t => Name(t)).ToList();
-                    Assert.Equal(new[] { "PB 1 (Push Back): No aplicado. No aplicado: falló otro rack del conjunto.",
-                        "Cama 1 (Cama): No se pudo escribir. AutoCAD no redibujó ninguna vista del rack." }, lines);
+                    Assert.Equal(new[] { "1. PB 1 (Push Back): No aplicado. Falló otro rack del conjunto.",
+                        "2. Cama 1 (Cama): No se pudo escribir. AutoCAD no redibujó ninguna vista del rack." }, lines);
                     Assert.DoesNotContain(Descendants<TextBlock>(view.UpdateAllPanel), t => (t.Text ?? string.Empty).StartsWith("RackCad.", StringComparison.Ordinal));
 
                     // Narrow, the header still holds the button.

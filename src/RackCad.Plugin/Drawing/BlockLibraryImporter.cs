@@ -30,6 +30,14 @@ namespace RackCad.Plugin.Drawing
             }
 
             var requirements = RackBlockRequirementExtractors.HeaderRun.Extract(plan);
+            if (RackCad.Plugin.Systems.Shared.RackUpdateAllScope.IsActive)
+            {
+                // T6 at (review of c4985a2e, I-2): inside the one transaction of «Actualizar todo» nothing is imported (the rule above).
+                // What the drawing lacks is recorded; the command imports it OUTSIDE and writes the set again.
+                ObserveForTheSet(db, requirements.Select(requirement => requirement.Key));
+                return 0;
+            }
+
             var result = LibraryBlockAvailabilityFlow.Observe(
                 requirements,
                 allowImport: true,
@@ -132,12 +140,56 @@ namespace RackCad.Plugin.Drawing
             }
         }
 
+        // T6 at (review of c4985a2e, I-2): what the drawing lacks, split into what the library has (imported later, OUTSIDE the transaction
+        // of the set) and what it does not have either (left out, as in the «Actualizar» of the rack). It only reads: the block table of the
+        // drawing through the transaction of the set, the library through the shared side database.
+        private static void ObserveForTheSet(Database db, IEnumerable<string> keys)
+        {
+            var wanted = keys.Where(key => !string.IsNullOrWhiteSpace(key)).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+            if (wanted.Count == 0) return;
+
+            var lacking = new List<string>();
+            using (var transaction = db.TransactionManager.StartTransaction())
+            {
+                var blockTable = (BlockTable)transaction.GetObject(db.BlockTableId, OpenMode.ForRead);
+                lacking.AddRange(wanted.Where(name => !blockTable.Has(name)));
+                transaction.Commit();
+            }
+
+            if (lacking.Count == 0) return;
+            var available = new List<string>();
+            var path = LibraryPath;
+            if (File.Exists(path))
+            {
+                try
+                {
+                    var source = BlockLibraryDatabaseCache.Acquire(path);
+                    if (source != null)
+                    {
+                        using (var sourceTransaction = source.TransactionManager.StartTransaction())
+                        {
+                            var sourceTable = (BlockTable)sourceTransaction.GetObject(source.BlockTableId, OpenMode.ForRead);
+                            available.AddRange(lacking.Where(name => sourceTable.Has(name)));
+                            sourceTransaction.Commit();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    RackLog.Exception("Consultar la biblioteca de bloques («Actualizar todo»)", ex);
+                }
+            }
+
+            RackCad.Plugin.Systems.Shared.RackUpdateAllScope.Observed(available,
+                lacking.Where(name => !available.Contains(name, StringComparer.OrdinalIgnoreCase)));
+        }
+
         private static int _importFailures;
 
         /// <summary>
         /// T6 at (I-64, sexta tanda): how many imports failed with an exception since the plugin loaded. Nothing here changes how an import
-        /// behaves; «Actualizar todo» compares the count before and after each draft, so an import that fails inside its one transaction
-        /// (where the per-rack «Actualizar» never imports) is a failure of the set, not a piece silently left out.
+        /// behaves; «Actualizar todo» compares the count before and after its import (outside its transaction), so an import that fails is a
+        /// failure of the set, not a piece silently left out.
         /// </summary>
         internal static int ImportFailures => System.Threading.Volatile.Read(ref _importFailures);
 

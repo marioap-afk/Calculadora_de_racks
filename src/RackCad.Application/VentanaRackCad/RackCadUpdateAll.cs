@@ -233,9 +233,52 @@ namespace RackCad.Application.VentanaRackCad
     /// What the write of one draft did, inside the one operation: whether it wrote (by the rule of its own «Actualizar»), why not, a notice,
     /// and the answer of its system.
     /// </summary>
-    public sealed record UpdateAllApplied(bool Written, string Reason, string Warning = null, RackDesignWritten Answer = null, VariablesDoorWritten VariablesAnswer = null)
+    /// <remarks>
+    /// <paramref name="PendingImports"/> (review of c4985a2e, I-2): the blocks of the library the draft needs and the drawing does not have
+    /// yet. Nothing is imported inside the transaction: the composition discards the pass, the host imports them OUTSIDE, and the set is
+    /// re-read and written again.
+    /// </remarks>
+    public sealed record UpdateAllApplied(bool Written, string Reason, string Warning = null, RackDesignWritten Answer = null, VariablesDoorWritten VariablesAnswer = null,
+        IReadOnlyList<string> PendingImports = null)
     {
         public static UpdateAllApplied Failed(string reason) => new UpdateAllApplied(false, reason);
+
+        public bool NeedsImports => PendingImports != null && PendingImports.Count > 0;
+    }
+
+    /// <summary>
+    /// The pure rule of «escrito» for a rack inside «Actualizar todo» (review of c4985a2e, B-1). The drawing helpers swallow the failure of
+    /// one view (the redraw of that view returns a failure and the rack goes on), so the rule of the «Actualizar» of a rack (at least one view
+    /// redrawn) could leave a rack half written in an operation that is confirmed. Inside the set a rack counts as written only when every
+    /// view it had was redrawn or erased and, read again inside the transaction, the views that remain are those and carry one design.
+    /// </summary>
+    public static class UpdateAllVerification
+    {
+        /// <summary>Why the rack is not wholly written; null when it is.</summary>
+        public static string AfterRackWrite(int viewsBefore, int redrawn, int erased, int viewsAfter, bool viewsCoincide, string siblingsReason)
+        {
+            var missing = viewsBefore - redrawn - erased;
+            if (missing > 0)
+            {
+                return "AutoCAD no redibujó " + UpdateAllText.Count(missing, "vista", "vistas") + " de las "
+                       + viewsBefore.ToString(CultureInfo.InvariantCulture) + " del rack (la línea de órdenes dice cuál): el rack quedaría a medias.";
+            }
+
+            var expected = viewsBefore - erased;
+            if (viewsAfter != expected)
+            {
+                return "Releído tras escribirlo, el rack tiene " + UpdateAllText.Count(viewsAfter, "vista", "vistas") + " y debían quedar "
+                       + expected.ToString(CultureInfo.InvariantCulture) + ": el rack quedaría a medias.";
+            }
+
+            if (!viewsCoincide)
+            {
+                return "Releído tras escribirlo, sus vistas no llevan el mismo diseño: el rack quedaría a medias."
+                       + (string.IsNullOrWhiteSpace(siblingsReason) ? "" : " " + UpdateAllText.Sentence(siblingsReason));
+            }
+
+            return null;
+        }
     }
 
     /// <summary>
@@ -262,6 +305,12 @@ namespace RackCad.Application.VentanaRackCad
 
         /// <summary>Discards everything the operation wrote (also when nothing was written; idempotent).</summary>
         void Rollback();
+
+        /// <summary>
+        /// Imports the blocks of the library a pass needed (review of c4985a2e, I-2), with NO transaction open, as the «Actualizar» of every
+        /// rack imports before its own transaction. Null when they were imported; otherwise why not.
+        /// </summary>
+        string ImportOutside(IReadOnlyCollection<string> blocks);
 
         /// <summary>The progress while the operation lasts: a step of a total, and its draft (null at the end).</summary>
         void Progress(string step, int done, int total, UpdateAllItem item);
@@ -333,94 +382,131 @@ namespace RackCad.Application.VentanaRackCad
         {
             var items = write.Items;
             var total = items.Count;
-            try
-            {
-                port.Begin();
-                state.Begun = true;
-            }
-            catch (Exception ex)
-            {
-                return Refused(write, "AutoCAD no pudo empezar la operación: " + ex.Message);
-            }
+            UpdateAllApplied[] applied;
 
-            // 1. The re-read of every draft, inside the transaction and before any write. Every refusal is said with its cause.
-            var checks = new UpdateAllCheck[total];
-            var refusals = new string[total];
-            for (var index = 0; index < total; index++)
+            // A pass: the re-read and the writes inside one transaction. A pass whose drafts need blocks of the library the drawing lacks is
+            // discarded, they are imported OUTSIDE any transaction (review of c4985a2e, I-2), and a second pass re-reads and writes the set.
+            for (var pass = 1; ; pass++)
             {
-                port.Progress("Comprobando", index, total, items[index]);
-                UpdateAllCheck check;
                 try
                 {
-                    check = port.Preflight(items[index]) ?? UpdateAllCheck.Refused("La comprobación no respondió.");
+                    port.Begin();
+                    state.Begun = true;
                 }
                 catch (Exception ex)
                 {
-                    check = UpdateAllCheck.Refused("No se pudo comprobar: " + ex.Message);
+                    return Refused(write, "AutoCAD no pudo empezar la operación: " + ex.Message);
                 }
 
-                checks[index] = check;
-                if (!check.CanWrite) refusals[index] = string.IsNullOrWhiteSpace(check.Reason) ? "No se puede escribir." : check.Reason.Trim();
-            }
+                // 1. The re-read of every draft, inside the transaction and before any write. Every refusal is said with its cause.
+                var checks = new UpdateAllCheck[total];
+                var refusals = new string[total];
+                for (var index = 0; index < total; index++)
+                {
+                    port.Progress("Comprobando", index, total, items[index]);
+                    UpdateAllCheck check;
+                    try
+                    {
+                        check = port.Preflight(items[index]) ?? UpdateAllCheck.Refused("La comprobación no respondió.");
+                    }
+                    catch (Exception ex)
+                    {
+                        check = UpdateAllCheck.Refused("No se pudo comprobar: " + ex.Message);
+                    }
 
-            // 2. The page «Variables» is written first: a rack it would redraw must not be written over it with a draft resolved
-            // against the variables of before (decision Q-02). Both are named.
-            for (var index = 0; index < total; index++)
-            {
-                if (items[index].System != UpdateAllSystem.Variables || refusals[index] != null) continue;
-                var redrawn = new HashSet<string>(checks[index].RedrawnRackIds ?? Array.Empty<string>(), StringComparer.OrdinalIgnoreCase);
-                var overlap = Enumerable.Range(0, total)
-                    .Where(other => items[other].System != UpdateAllSystem.Variables && items[other].RackId != null && redrawn.Contains(items[other].RackId))
-                    .ToList();
-                if (overlap.Count == 0) continue;
-                refusals[index] = "redibujaría " + UpdateAllText.List(overlap.Select(o => UpdateAllText.Quoted(items[o].Name)))
-                                  + ", que también " + (overlap.Count == 1 ? "tiene" : "tienen") + " un borrador sin escribir: escribe o descarta antes uno de los dos.";
-                foreach (var other in overlap)
-                    refusals[other] ??= "«Variables» también lo redibuja: escribe o descarta antes uno de los dos.";
-            }
+                    checks[index] = check;
+                    if (!check.CanWrite) refusals[index] = string.IsNullOrWhiteSpace(check.Reason) ? "No se puede escribir." : check.Reason.Trim();
+                }
 
-            if (refusals.Any(r => r != null))
-            {
-                port.Rollback();
-                return Answer(write, false, "No se escribió nada: " + FailureSummary(items, refusals),
-                    Enumerable.Range(0, total).Select(i => refusals[i] != null
-                        ? NotWritten(write.RequestId, items[i], UpdateAllOutcome.Failed, refusals[i])
-                        : NotWritten(write.RequestId, items[i], UpdateAllOutcome.NotAppliedOtherFailed, UpdateAllText.OtherFailed)).ToList());
-            }
+                // 2. The page «Variables» is written first: a rack it would redraw must not be written over it with a draft resolved
+                // against the variables of before (decision Q-02). Both are named.
+                for (var index = 0; index < total; index++)
+                {
+                    if (items[index].System != UpdateAllSystem.Variables || refusals[index] != null) continue;
+                    var redrawn = new HashSet<string>(checks[index].RedrawnRackIds ?? Array.Empty<string>(), StringComparer.OrdinalIgnoreCase);
+                    var overlap = Enumerable.Range(0, total)
+                        .Where(other => items[other].System != UpdateAllSystem.Variables && items[other].RackId != null && redrawn.Contains(items[other].RackId))
+                        .ToList();
+                    if (overlap.Count == 0) continue;
+                    refusals[index] = "redibujaría " + UpdateAllText.List(overlap.Select(o => UpdateAllText.Quoted(items[o].Name)))
+                                      + ", que también " + (overlap.Count == 1 ? "tiene" : "tienen") + " un borrador sin escribir: escribe o descarta antes uno de los dos.";
+                    foreach (var other in overlap)
+                        refusals[other] ??= "«Variables» también lo redibuja: escribe o descarta antes uno de los dos.";
+                }
 
-            // 3. The writes, in order; a cancellation is only heard before the confirmation.
-            var applied = new UpdateAllApplied[total];
-            for (var index = 0; index < total; index++)
-            {
-                if (Cancelled(port))
+                if (refusals.Any(r => r != null))
                 {
                     port.Rollback();
-                    return CancelledAnswer(write);
-                }
-
-                port.Progress("Escribiendo", index, total, items[index]);
-                UpdateAllApplied result;
-                try
-                {
-                    result = port.Apply(items[index], checks[index]) ?? UpdateAllApplied.Failed("La escritura no respondió.");
-                }
-                catch (Exception ex)
-                {
-                    result = UpdateAllApplied.Failed("No se pudo escribir: " + ex.Message);
-                }
-
-                if (!result.Written)
-                {
-                    port.Rollback();
-                    var cause = string.IsNullOrWhiteSpace(result.Reason) ? "No se pudo escribir." : result.Reason.Trim();
-                    return Answer(write, false,
-                        "No se escribió nada: falló " + UpdateAllText.Quoted(items[index].Name) + ". " + UpdateAllText.Sentence(cause),
-                        Enumerable.Range(0, total).Select(i => i == index
-                            ? NotWritten(write.RequestId, items[i], UpdateAllOutcome.Failed, cause)
+                    return Answer(write, false, "No se escribió nada: " + FailureSummary(items, refusals),
+                        Enumerable.Range(0, total).Select(i => refusals[i] != null
+                            ? NotWritten(write.RequestId, items[i], UpdateAllOutcome.Failed, refusals[i])
                             : NotWritten(write.RequestId, items[i], UpdateAllOutcome.NotAppliedOtherFailed, UpdateAllText.OtherFailed)).ToList());
                 }
 
-                applied[index] = result;
+                // 3. The writes, in order; a cancellation is only heard before the confirmation.
+                applied = new UpdateAllApplied[total];
+                for (var index = 0; index < total; index++)
+                {
+                    if (Cancelled(port))
+                    {
+                        port.Rollback();
+                        return CancelledAnswer(write);
+                    }
+
+                    port.Progress("Escribiendo", index, total, items[index]);
+                    UpdateAllApplied result;
+                    try
+                    {
+                        result = port.Apply(items[index], checks[index]) ?? UpdateAllApplied.Failed("La escritura no respondió.");
+                    }
+                    catch (Exception ex)
+                    {
+                        result = UpdateAllApplied.Failed("No se pudo escribir: " + ex.Message);
+                    }
+
+                    if (!result.Written)
+                    {
+                        port.Rollback();
+                        var cause = string.IsNullOrWhiteSpace(result.Reason) ? "No se pudo escribir." : result.Reason.Trim();
+                        return Answer(write, false,
+                            "No se escribió nada: falló " + UpdateAllText.Quoted(items[index].Name) + ". " + UpdateAllText.Sentence(cause),
+                            Enumerable.Range(0, total).Select(i => i == index
+                                ? NotWritten(write.RequestId, items[i], UpdateAllOutcome.Failed, cause)
+                                : NotWritten(write.RequestId, items[i], UpdateAllOutcome.NotAppliedOtherFailed, UpdateAllText.OtherFailed)).ToList());
+                    }
+
+                    applied[index] = result;
+                }
+
+                // 3b. Blocks of the library the drawing lacks: nothing was imported inside the transaction. The pass is discarded, they are
+                // imported outside it, and the set is read and written again; if they are still lacking, the drafts that need them fail.
+                var pending = applied.Where(a => a.NeedsImports).SelectMany(a => a.PendingImports)
+                    .Distinct(StringComparer.OrdinalIgnoreCase).OrderBy(k => k, StringComparer.OrdinalIgnoreCase).ToList();
+                if (pending.Count == 0) break;
+                port.Rollback();
+                var needing = applied;
+                if (pass >= 2)
+                {
+                    return ImportFailed(write, needing, "Necesita bloques de la biblioteca que siguen sin estar en el dibujo tras importarlos ("
+                                                        + string.Join(", ", pending) + ").");
+                }
+
+                port.Progress("Importando bloques de la biblioteca", 0, pending.Count, null);
+                string importError;
+                try
+                {
+                    importError = port.ImportOutside(pending);
+                }
+                catch (Exception ex)
+                {
+                    importError = ex.Message;
+                }
+
+                if (importError != null)
+                {
+                    return ImportFailed(write, needing, "No se pudieron importar los bloques de la biblioteca que necesita ("
+                                                        + string.Join(", ", pending) + "): " + UpdateAllText.Sentence(importError));
+                }
             }
 
             if (Cancelled(port))
@@ -472,6 +558,19 @@ namespace RackCad.Application.VentanaRackCad
             {
                 // The transaction is discarded when the host disposes it anyway.
             }
+        }
+
+        // The drafts that needed the blocks fail with the cause; the others are not applied.
+        private static UpdateAllWritten ImportFailed(UpdateAllWrite write, UpdateAllApplied[] applied, string cause)
+        {
+            var items = write.Items;
+            var failed = Enumerable.Range(0, items.Count).Where(i => applied[i] != null && applied[i].NeedsImports).ToList();
+            return Answer(write, false,
+                "No se escribió nada: " + (failed.Count == 1 ? "falló " : "fallaron ") + UpdateAllText.List(failed.Select(i => UpdateAllText.Quoted(items[i].Name)))
+                + ". " + UpdateAllText.Sentence(cause),
+                Enumerable.Range(0, items.Count).Select(i => failed.Contains(i)
+                    ? NotWritten(write.RequestId, items[i], UpdateAllOutcome.Failed, cause)
+                    : NotWritten(write.RequestId, items[i], UpdateAllOutcome.NotAppliedOtherFailed, UpdateAllText.OtherFailed)).ToList());
         }
 
         private static UpdateAllWritten CancelledAnswer(UpdateAllWrite write)

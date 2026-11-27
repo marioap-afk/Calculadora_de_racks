@@ -61,17 +61,26 @@ namespace RackCad.Plugin.VentanaRackCad
                 answer = UpdateAllRun.Refused(pending.Write, "No se pudo escribir: " + ex.Message);
             }
 
-            document.Editor.WriteMessage("\nRackCad: " + answer.Message);
+            // The drawing halves of every system write their own lines («… actualizado…») as they go; when the set is not confirmed,
+            // this last line says that none of that stayed (review of c4985a2e, minor 4).
+            document.Editor.WriteMessage("\nRackCad «Actualizar todo»: " + (answer.Committed
+                ? answer.Message
+                : "lo que dicen las líneas anteriores se deshizo. " + answer.Message));
             door?.AnswerUpdateAll(answer);
         }
     }
 
     /// <summary>
     /// The host of «Actualizar todo» in AutoCAD. Every check is the one of the APLICAR command of its system, and every write calls the same
-    /// apply function, with the rule of that command for «written» (at least one view redrawn, I-08; the cama redrawn). What it adds, for
-    /// the set: a view that was not redrawn is a notice («faltantes», D-13); a tab «Propiedades» that could not be written, or an import of
-    /// the block library that failed inside the transaction, is a failure of the set (all or nothing over what is authored). Variables are
-    /// written first and a Selectivo is planned again over the register after them.
+    /// apply function. What it adds, for the set (corrections of the review of c4985a2e):
+    /// <list type="bullet">
+    /// <item>B-1: a rack counts as written only when every view was redrawn or erased and, read again inside the transaction, its views
+    /// carry one design (<see cref="UpdateAllVerification.AfterRackWrite"/>); a tab «Propiedades» that could not be written fails it too.</item>
+    /// <item>I-2: while the transaction is open the scope (<see cref="RackUpdateAllScope"/>) keeps the library from importing and the purge
+    /// for after the commit; the blocks a pass needed are imported here, OUTSIDE any transaction, and the set is written again.</item>
+    /// <item>The blocks neither the drawing nor the library has are a notice of the draft, for every system («Escrito, con avisos»).</item>
+    /// </list>
+    /// Variables are written first and a Selectivo is planned again over the register after them.
     /// </summary>
     internal sealed class RackCadUpdateAllUnits : IUpdateAllUnitPort, System.IDisposable
     {
@@ -95,6 +104,18 @@ namespace RackCad.Plugin.VentanaRackCad
             if (RackUpdateAllTransaction.AnyOpen(_document))
                 throw new System.InvalidOperationException("AutoCAD tiene otra operación abierta en el dibujo.");
             _transaction = RackUpdateAllTransaction.Begin(_document);
+            RackUpdateAllScope.Enter();
+        }
+
+        // I-2: what a discarded pass needed, imported with no transaction open (the importer clones only what the drawing lacks). An import
+        // that throws is counted by the importer and fails the set; one the library cannot give is seen again by the next pass.
+        public string ImportOutside(IReadOnlyCollection<string> blocks)
+        {
+            if (_transaction != null || RackUpdateAllTransaction.AnyOpen(_document))
+                return "AutoCAD tiene una operación abierta en el dibujo y la biblioteca solo se importa fuera de ella.";
+            var failures = BlockLibraryImporter.ImportFailures;
+            BlockLibraryImporter.EnsureBlocks(_document.Database, blocks);
+            return BlockLibraryImporter.ImportFailures != failures ? "la importación falló (el registro de RackCad dice por qué)." : null;
         }
 
         public bool CancelRequested() => HostApplicationServices.Current.UserBreak();
@@ -120,24 +141,36 @@ namespace RackCad.Plugin.VentanaRackCad
             _transaction = null;
         }
 
+        // The scope forgets what the discarded pass observed and deferred (its ids belong to nothing now).
         public void Rollback()
         {
             var transaction = _transaction;
             _transaction = null;
-            transaction?.Abort();
+            try
+            {
+                transaction?.Abort();
+            }
+            finally
+            {
+                if (RackUpdateAllScope.IsActive) RackUpdateAllScope.ClearPass();
+            }
         }
 
+        // After the commit: the purge the helpers deferred, once, on the committed drawing and in the same command (one «U»); then one
+        // regeneration for the set. After a rollback, only the regeneration.
         public void Finish(bool committed)
         {
             StopMeter();
-
-            // One regeneration for the set, after the operation is confirmed or discarded: the drawing shows what it holds now.
+            var purge = RackUpdateAllScope.TakePurge();
+            RackUpdateAllScope.Exit();
+            if (committed && purge.Count > 0) LateralHeaderDrawer.PurgeUnreferenced(_document.Database, purge);
             _document.Editor.Regen();
         }
 
         public void Dispose()
         {
             Rollback();
+            RackUpdateAllScope.Exit(); // never left active: outside the command the helpers import and purge as always
             StopMeter();
         }
 
@@ -230,17 +263,21 @@ namespace RackCad.Plugin.VentanaRackCad
 
         // ------------------------------------------------------------------ the writes, inside the one transaction
 
+        // What the library observed during this draft (the scope): blocks to import outside the transaction, and blocks neither the drawing
+        // nor the library has, a notice of the draft in every system (as the «Actualizar» of the rack leaves those pieces out).
         public UpdateAllApplied Apply(UpdateAllItem item, UpdateAllCheck check)
         {
-            var imports = BlockLibraryImporter.ImportFailures;
+            RackUpdateAllScope.BeginDraft();
             var applied = ApplyOne(item, check);
-            if (applied.Written && BlockLibraryImporter.ImportFailures != imports)
-            {
-                return UpdateAllApplied.Failed("No se pudieron importar bloques de la biblioteca dentro de «Actualizar todo» (el registro de RackCad dice por qué). "
-                                               + "Escribe este borrador con su «Actualizar».");
-            }
+            if (!applied.Written) return applied;
 
-            return applied;
+            var pending = RackUpdateAllScope.DraftPending;
+            var missing = RackUpdateAllScope.DraftMissing;
+            var notice = missing.Count == 0 ? null
+                : "Faltan en la biblioteca de bloques " + string.Join(", ", missing) + ": se escribió sin esas piezas, como en su «Actualizar».";
+            var warning = string.IsNullOrWhiteSpace(applied.Warning) ? notice
+                : notice == null ? applied.Warning : applied.Warning.TrimEnd() + " " + notice;
+            return applied with { Warning = warning, PendingImports = pending.Count == 0 ? null : new List<string>(pending) };
         }
 
         private UpdateAllApplied ApplyOne(UpdateAllItem item, UpdateAllCheck check)
@@ -258,7 +295,7 @@ namespace RackCad.Plugin.VentanaRackCad
                     var project = new RackProjectStore().Deserialize(embed.Design);
                     var (redrawn, erased) = RackDinamicoCommands.ApplyDynamicEdit(_document, blockId, embed, project,
                         new RackCad.UI.Systems.Dynamic.DynamicDraftOutcome(write.RackId, write.Name, write.Design, write.System));
-                    return RackWritten(write.RackId, write.Properties, RackDoorRules.AnswerForApply(_requestId, write.RackId, redrawn, erased), Missing(views, redrawn, erased));
+                    return RackWritten(write.RackId, views, redrawn, erased, write.Properties, RackDoorRules.AnswerForApply(_requestId, write.RackId, redrawn, erased));
                 }
 
                 case UpdateAllSystem.Selective:
@@ -271,7 +308,7 @@ namespace RackCad.Plugin.VentanaRackCad
                     if (!plan.CanWrite) return UpdateAllApplied.Failed(plan.Reason);
                     var (redrawn, erased) = RackSelectivoCommands.ApplySelectiveEdit(_document, blockId, embed, plan.Saved, registry,
                         new RackCad.UI.Systems.Selective.SelectiveDraftOutcome(write.RackId, write.Name, write.Design, write.System, write.LinkedPropertyFinalStates));
-                    return RackWritten(write.RackId, write.Properties, RackDoorRules.AnswerForApply(_requestId, write.RackId, redrawn, erased), Missing(views, redrawn, erased));
+                    return RackWritten(write.RackId, views, redrawn, erased, write.Properties, RackDoorRules.AnswerForApply(_requestId, write.RackId, redrawn, erased));
                 }
 
                 case UpdateAllSystem.PushBack:
@@ -280,7 +317,7 @@ namespace RackCad.Plugin.VentanaRackCad
                     var plan = (PushBackApplyPlan)state.Plan;
                     var system = PushBackDoorRules.Named(write.System, write.Name, embed.Name);
                     var (redrawn, erased) = RackPushBackWindowDrawing.Apply(_document, blockId, embed, plan.Project, write.Design, system, write.RackId, null);
-                    return RackWritten(write.RackId, write.Properties, RackDoorRules.AnswerForApply(_requestId, write.RackId, redrawn, erased), Missing(views, redrawn, erased));
+                    return RackWritten(write.RackId, views, redrawn, erased, write.Properties, RackDoorRules.AnswerForApply(_requestId, write.RackId, redrawn, erased));
                 }
 
                 case UpdateAllSystem.Cantilever:
@@ -289,19 +326,18 @@ namespace RackCad.Plugin.VentanaRackCad
                     var plan = (CantileverApplyPlan)state.Plan;
                     var (redrawn, erased) = RackCantileverCommands.ApplyCantileverEdit(_document, blockId, embed, plan.Project,
                         new CantileverDraftOutcome(write.RackId, write.Name, write.Design, write.Line));
-                    return RackWritten(write.RackId, write.Properties, RackDoorRules.AnswerForApply(_requestId, write.RackId, redrawn, erased), Missing(views, redrawn, erased));
+                    return RackWritten(write.RackId, views, redrawn, erased, write.Properties, RackDoorRules.AnswerForApply(_requestId, write.RackId, redrawn, erased));
                 }
 
                 case UpdateAllSystem.Cama:
                 {
                     var write = item.Cama;
                     var plan = (CamaApplyPlan)state.Plan;
+                    // One block, redrawn in place (its missing pieces are the notice of Apply, as in the other systems).
                     var result = RackCamaCommands.ApplyCamaUpdate(_document, blockId, embed, plan.Source, write.Bed, write.RackId, write.Name);
-                    var warning = result != null && result.Success && result.HasMissingBlocks
-                        ? "Faltan bloques de la biblioteca en la cama: " + string.Join(", ", result.MissingBlocks) + "."
-                        : null;
-                    return RackWritten(write.RackId, write.Properties,
-                        CamaDoorRules.AnswerForApply(_requestId, write.RackId, result != null && result.Success, result?.ErrorMessage), warning);
+                    var success = result != null && result.Success;
+                    return RackWritten(write.RackId, views, success ? 1 : 0, 0, write.Properties,
+                        CamaDoorRules.AnswerForApply(_requestId, write.RackId, success, result?.ErrorMessage));
                 }
 
                 case UpdateAllSystem.Cabecera:
@@ -311,7 +347,7 @@ namespace RackCad.Plugin.VentanaRackCad
                     var plan = (CabeceraApplyPlan)state.Plan;
                     var name = string.IsNullOrWhiteSpace(write.Cabecera.Name) ? embed.Name : write.Cabecera.Name;
                     var (redrawn, erased) = RackCabeceraCommands.ApplyCabeceraUpdate(_document, plan.Project, write.Cabecera, write.RackId, name);
-                    return RackWritten(write.RackId, null, RackDoorRules.AnswerForApply(_requestId, write.RackId, redrawn, erased), Missing(views, redrawn, erased));
+                    return RackWritten(write.RackId, views, redrawn, erased, null, RackDoorRules.AnswerForApply(_requestId, write.RackId, redrawn, erased));
                 }
 
                 default:
@@ -319,23 +355,20 @@ namespace RackCad.Plugin.VentanaRackCad
             }
         }
 
-        // The answer of the APLICAR command of the system, then the tab «Propiedades» as that command writes it (VA-07). For the set, a tab
-        // that could not be written is a failure: the rack would be written and its properties not.
-        private UpdateAllApplied RackWritten(string rackId, RackPropertiesWrite properties, RackDesignWritten answer, string warning)
+        // The answer of the APLICAR command of the system, then the tab «Propiedades» as that command writes it (VA-07), then B-1: the rack
+        // read again inside the transaction. A tab that could not be written, a view that was not redrawn (the helpers swallow its failure)
+        // or views that do not carry one design fail the set: the rack would be half written in an operation that is confirmed.
+        private UpdateAllApplied RackWritten(string rackId, int viewsBefore, int redrawn, int erased, RackPropertiesWrite properties, RackDesignWritten answer)
         {
             if (!answer.Written) return UpdateAllApplied.Failed(answer.Message);
             var withProperties = RackPropertiesDoorData.WithRackProperties(_document, rackId, properties, answer);
             if (!string.IsNullOrWhiteSpace(withProperties.PropertiesError))
                 return UpdateAllApplied.Failed("Las propiedades del rack no se pudieron escribir: " + withProperties.PropertiesError);
-            return new UpdateAllApplied(true, null, warning, withProperties);
-        }
 
-        // «Faltantes» (D-13): views of the rack that were neither redrawn nor erased.
-        private static string Missing(int views, int redrawn, int erased)
-        {
-            var missing = views - redrawn - erased;
-            return missing <= 0 ? null
-                : "AutoCAD no redibujó " + UpdateAllText.Count(missing, "vista", "vistas") + " de " + views + "; la línea de órdenes dice cuáles.";
+            var after = RackCommandSupport.FindRackBlocks(_document, rackId);
+            var siblings = after.Count == 0 ? null : RackSiblingDesigns.Compare(rackId, Views(after));
+            var broken = UpdateAllVerification.AfterRackWrite(viewsBefore, redrawn, erased, after.Count, siblings != null && siblings.Coincide, siblings?.Reason);
+            return broken != null ? UpdateAllApplied.Failed(broken) : new UpdateAllApplied(true, null, null, withProperties);
         }
 
         // What RACKVARIABLESAPLICAR writes: the register and every rack that changes in one execution, then the project collection. In the

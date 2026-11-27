@@ -364,8 +364,8 @@
                     </DockPanel>
                 </Border>
 
-                <!-- T6 at: «Actualizar todo»: the question when a draft may be out of date, what prevents it, and the list when it ends
-                     (every draft with how it ended and why, or «No aplicado: falló otro rack del conjunto»). -->
+                <!-- T6 at: «Actualizar todo»: the question when a draft may be out of date and, after the click, what prevented it or the
+                     list when it ends (every draft with how it ended and why, or that another rack of the set failed). -->
                 <Border x:Name="UpdateAllPanel" DockPanel.Dock="Top" Margin="10,8,10,0" Padding="10,6" BorderThickness="1" CornerRadius="6"
                         Background="{DynamicResource ShellSurfaceBrush}"
                         Visibility="{Binding ShowUpdateAllPanel, Converter={StaticResource FlagToVisibility}}">
@@ -374,9 +374,6 @@
                             <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusSuccessBrush}" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding UpdateAllResultFailed}" Value="True">
-                                    <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusWarningBrush}" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding HasUpdateAllBlockers}" Value="True">
                                     <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusWarningBrush}" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding IsConfirmingUpdateAll}" Value="True">
@@ -398,9 +395,6 @@
                                         AutomationProperties.Name="Cancelar «Actualizar todo»" Click="OnCancelUpdateAllClick" />
                             </WrapPanel>
                         </StackPanel>
-                        <TextBlock x:Name="UpdateAllBlockersText" Text="{Binding UpdateAllBlockersText}" TextWrapping="Wrap"
-                                   Foreground="{DynamicResource ShellTextPrimaryBrush}"
-                                   Visibility="{Binding HasUpdateAllBlockers, Converter={StaticResource FlagToVisibility}}" />
                         <DockPanel x:Name="UpdateAllResultPanel" Visibility="{Binding HasUpdateAllResults, Converter={StaticResource FlagToVisibility}}">
                             <Button DockPanel.Dock="Right" Content="Entendido" Padding="8,2" Margin="8,0,0,0" VerticalAlignment="Top"
                                     Style="{StaticResource SecondaryButtonStyle}" AutomationProperties.Name="Quitar la lista de «Actualizar todo»"
