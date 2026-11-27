@@ -8,11 +8,14 @@ using RackCad.Domain.Systems.Selective;
 
 namespace RackCad.Application.VentanaRackCad
 {
-    /// <summary>The two systems whose safety the RackCad window edits without the classic dialog (T4 seg, SG-09: Push Back stays out).</summary>
+    /// <summary>The systems whose safety the RackCad window edits without the classic dialog (T4 seg; T5 pb adds Push Back, SG-09).</summary>
     public enum RackCadSafetySystem
     {
         Selective,
         Dynamic,
+
+        /// <summary>T5 pb (PB-S03, SG-09): Push Back adopts the table and the inspector, with its own authority (<see cref="PushBackSafetyEdit"/>).</summary>
+        PushBack,
     }
 
     /// <summary>The two ends of a Dinámico forklift defense: the exit (salida, the low end) and the entrance (entrada, the high end).</summary>
@@ -50,7 +53,9 @@ namespace RackCad.Application.VentanaRackCad
     {
         /// <summary>The families the window edits for each system, in the order of the prototype.</summary>
         public static IReadOnlyList<string> FamiliesOf(RackCadSafetySystem system)
-            => system == RackCadSafetySystem.Dynamic
+            => system == RackCadSafetySystem.PushBack // T5 pb: the families Push Back admits (PushBackSafetyAuthority); its rear tope has its own card
+                ? new[] { SelectiveSafetyDefaults.BotaType, SelectiveSafetyDefaults.LateralType, SelectiveSafetyDefaults.DesviadorType, SelectiveSafetyDefaults.DefensaType }
+                : system == RackCadSafetySystem.Dynamic
                 ? new[] { SelectiveSafetyDefaults.GuiaType, SelectiveSafetyDefaults.BotaType, SelectiveSafetyDefaults.LateralType, SelectiveSafetyDefaults.DesviadorType, SelectiveSafetyDefaults.DefensaType }
                 : new[] { SelectiveSafetyDefaults.TopeType, SelectiveSafetyDefaults.ParrillaType, SelectiveSafetyDefaults.BotaType, SelectiveSafetyDefaults.LateralType, SelectiveSafetyDefaults.DesviadorType };
 

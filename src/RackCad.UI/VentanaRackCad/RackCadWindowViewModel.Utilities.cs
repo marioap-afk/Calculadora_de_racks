@@ -102,7 +102,8 @@ namespace RackCad.UI.VentanaRackCad
         private bool OpensHere(RackSystemKind kind) =>
             (kind == RackSystemKind.SelectiveRack && CanStartNewSelective) || (kind == RackSystemKind.PalletFlow && CanStartNewDynamic)
             || (kind == RackSystemKind.Cama && CanStartNewCama) // T5 cm: a cama opens here as a draft too
-            || (kind == RackSystemKind.Cantilever && CanStartNewCantilever); // T5 ct
+            || (kind == RackSystemKind.Cantilever && CanStartNewCantilever) // T5 ct
+            || (kind == RackSystemKind.PushBack && CanStartNewPushBack); // T5 pb: a Push Back opens as a draft of the window
 
         private void OpenLibraryDesign(RackCadLibraryRow row)
         {
@@ -147,7 +148,8 @@ namespace RackCad.UI.VentanaRackCad
             if (opening == null || !opening.Opened) return false;
 
             object editor = project.Kind == RackSystemKind.SelectiveRack ? NewSelectiveEditor : project.Kind == RackSystemKind.Cama ? NewCamaEditor // T5 cm
-                : project.Kind == RackSystemKind.Cantilever ? NewCantileverEditor : NewDynamicEditor; // T5 ct
+                : project.Kind == RackSystemKind.Cantilever ? NewCantileverEditor // T5 ct
+                : project.Kind == RackSystemKind.PushBack ? NewPushBackEditor : NewDynamicEditor; // T5 pb
             if (editor != null) _librarySources[editor] = project;
             return true;
         }

@@ -30,6 +30,9 @@ namespace RackCad.Application.VentanaRackCad
 
         public int Boots { get; init; }
 
+        /// <summary>T5 pb: the botas of side B of a Push Back at this post (<see cref="Boots"/> is then the botas of side A).</summary>
+        public int BootsB { get; init; }
+
         /// <summary>The bota of the near face (Selectivo «Izquierda», Dinámico «Salida»).</summary>
         public bool BootNear { get; init; }
 

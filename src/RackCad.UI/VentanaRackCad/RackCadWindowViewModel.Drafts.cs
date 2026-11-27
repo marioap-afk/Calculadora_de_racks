@@ -166,6 +166,9 @@ namespace RackCad.UI.VentanaRackCad
                 case RackSystemKind.Cantilever: // T5 ct
                     hasDoor = _cantileverDoor != null;
                     return true;
+                case RackSystemKind.PushBack: // T5 pb
+                    hasDoor = _pushBackDoor != null;
+                    return true;
                 default:
                     hasDoor = false;
                     return false;
@@ -182,6 +185,7 @@ namespace RackCad.UI.VentanaRackCad
                 case RackSystemKind.PalletFlow: return CreateDynamicDraft(seed, session, rackId, label, out failure);
                 case RackSystemKind.Cama: return CreateCamaDraft(seed, session, rackId, label, out failure); // T5 cm
                 case RackSystemKind.Cantilever: return CreateCantileverDraft(seed, session, rackId, label, out failure); // T5 ct
+                case RackSystemKind.PushBack: return CreatePushBackDraft(seed, session, rackId, label, out failure); // T5 pb
                 default:
                     failure = RackCadDraftNaming.NoEditorText(seed.Kind);
                     return null;
@@ -407,6 +411,7 @@ namespace RackCad.UI.VentanaRackCad
                     return dynamic.IsNewRack && _dynamicDrafts.TryGetValue((entry.Session, entry.RackId), out var d) && ReferenceEquals(d.Editor, dynamic);
                 case CamaEditorViewModel cama: return IsLiveCama(entry, cama); // T5 cm
                 case CantileverEditorViewModel cantilever: return IsLiveCantilever(entry.Session, entry.RackId, cantilever); // T5 ct
+                case PushBackEditorViewModel pushBack: return IsLivePushBack(pushBack, entry.Session, entry.RackId); // T5 pb
                 default:
                     return false;
             }
@@ -420,6 +425,7 @@ namespace RackCad.UI.VentanaRackCad
                 case DynamicEditorViewModel dynamic: return (dynamic.Name, dynamic.IsDirty, dynamic.IsWriting);
                 case CamaEditorViewModel cama: return (cama.Name, cama.IsDirty, cama.IsWriting); // T5 cm
                 case CantileverEditorViewModel cantilever: return (cantilever.Name, cantilever.IsDirty, cantilever.IsWriting); // T5 ct
+                case PushBackEditorViewModel pushBack: return (pushBack.Name, pushBack.IsDirty, pushBack.IsWriting); // T5 pb
                 default: return (null, false, false);
             }
         }
@@ -442,6 +448,7 @@ namespace RackCad.UI.VentanaRackCad
                     return (dynamicBase?.DynamicDesign == null ? null : dynamicBase, dynamicCopy == null ? null : RackProject.ForDynamic(dynamicCopy.Design));
                 case CamaEditorViewModel cama: return CopyOfCama(cama); // T5 cm
                 case CantileverEditorViewModel cantilever: return CopyOfCantilever(cantilever); // T5 ct
+                case PushBackEditorViewModel pushBack: return CopyOfPushBack(pushBack); // T5 pb
                 default:
                     return (null, null);
             }
@@ -461,6 +468,9 @@ namespace RackCad.UI.VentanaRackCad
                 case CamaEditorViewModel cama: CloseCamaEditor(cama); break; // T5 cm
                 case CantileverEditorViewModel cantilever: // T5 ct
                     CloseCantileverEditor(cantilever);
+                    break;
+                case PushBackEditorViewModel pushBack: // T5 pb
+                    ClosePushBackEditor(pushBack);
                     break;
             }
         }

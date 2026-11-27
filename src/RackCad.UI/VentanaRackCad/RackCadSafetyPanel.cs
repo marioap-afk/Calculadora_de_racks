@@ -204,7 +204,7 @@ namespace RackCad.UI.VentanaRackCad
     /// draft at once (a list, a level, a box) or when the field is left (a measure), as the rest of the editor; a value refused stays in its
     /// field and writes nothing. «Actualizar» writes the drawing.
     /// </summary>
-    public sealed class RackCadSafetyPanelViewModel : ObservableObject
+    public sealed partial class RackCadSafetyPanelViewModel : ObservableObject // T5 pb: partial (RackCadSafetyPanel.PushBack.cs)
     {
         /// <summary>The code of «General (…)» in the list of the bota of a post.</summary>
         internal const string General = "g";
@@ -227,7 +227,7 @@ namespace RackCad.UI.VentanaRackCad
 
         public bool IsDynamic => _host.SafetySystem == RackCadSafetySystem.Dynamic;
 
-        public bool IsSelective => !IsDynamic;
+        public bool IsSelective => _host.SafetySystem == RackCadSafetySystem.Selective; // T5 pb: Push Back is neither
 
         /// <summary>The rows of the table, one per post, and «Total» last (the foot of the approved prototype).</summary>
         public IReadOnlyList<RackCadSafetyRowItem> Table => _table;
@@ -248,7 +248,8 @@ namespace RackCad.UI.VentanaRackCad
         public string PostHelp => "Cada fila es un poste. Lo que cambias va al borrador en el momento (una medida, al salir del campo), y «Actualizar» lo dibuja. "
                                   + "Pulsa el título de una columna para ver su variante y sus medidas en «Variante y medidas».";
 
-        public string PostFoot => IsDynamic
+        public string PostFoot => IsPushBack ? PushBackPostFoot // T5 pb
+            : IsDynamic
             ? "Contado como el BOM: un protector lateral reemplaza las botas de su poste; con «Salida y entrada», un desviador cuenta dos piezas; cada celda con guía, una pareja."
             : "Contado como el BOM: un protector lateral reemplaza las botas de su poste; con «" + RackCadSafetyWords.Side(RackCadSafetySystem.Selective, SafetySide.Both)
               + "», un desviador cuenta dos piezas.";
@@ -281,6 +282,7 @@ namespace RackCad.UI.VentanaRackCad
 
         private void RefreshTable()
         {
+            if (IsPushBack) { RefreshPushBackTable(); return; } // T5 pb: its botas and its defense are by side (RackCadSafetyPanel.PushBack.cs)
             var system = _host.SafetySystem;
             var safety = _host.CopySafetyForPanel();
             var catalog = _host.SafetyCatalog;
@@ -456,6 +458,7 @@ namespace RackCad.UI.VentanaRackCad
 
         private void RefreshInspector()
         {
+            if (IsPushBack) { RefreshPushBackInspector(); return; } // T5 pb: the families with the authority of Push Back
             var system = _host.SafetySystem;
             var catalog = _host.SafetyCatalog;
             var safety = _host.CopySafetyForPanel();
@@ -907,14 +910,20 @@ namespace RackCad.UI.VentanaRackCad
     internal static class RackCadSafetyWords
     {
         public static string Side(RackCadSafetySystem system, SafetySide side)
-            => system == RackCadSafetySystem.Dynamic
+            => system == RackCadSafetySystem.PushBack ? Placement(BootPlacements.From(side)) // T5 pb: «Entrada/Salida / Posterior»
+            : system == RackCadSafetySystem.Dynamic
                 ? side switch { SafetySide.Left => "Salida", SafetySide.Right => "Entrada", SafetySide.Both => "Salida y entrada", _ => "Ninguna" }
                 : side switch { SafetySide.Left => SelectiveSafetyView.Left, SafetySide.Right => SelectiveSafetyView.Right, SafetySide.Both => SelectiveSafetyView.BothSides, _ => "Ninguna" };
 
         public static string SideGuard(RackCadSafetySystem system, SafetySide side)
             => side == SafetySide.None ? "No lleva"
-                : system == RackCadSafetySystem.Selective && side == SafetySide.Both ? "Ambos (frente-puente)"
+                : system != RackCadSafetySystem.Dynamic && side == SafetySide.Both ? "Ambos (frente-puente)" // T5 pb: also Push Back
+                : system == RackCadSafetySystem.PushBack ? Side(RackCadSafetySystem.Selective, side) // T5 pb: its guide, «Izquierda / Derecha»
                 : Side(system, side);
+
+        /// <summary>T5 pb: the placements of a bota of Push Back, as its classic section names them (I-42 S1B).</summary>
+        public static string Placement(BootPlacement placement)
+            => placement switch { BootPlacement.EntryExit => "Entrada/Salida", BootPlacement.Rear => "Posterior", BootPlacement.Both => "Ambas", _ => "Ninguno" };
 
         public static string DeflectorSide(RackCadSafetySystem system, SafetySide side, int fondos)
         {

@@ -78,6 +78,10 @@
             <Style x:Key="SelectiveOnly" TargetType="FrameworkElement">
                 <Setter Property="Visibility" Value="{Binding DataContext.IsSelective, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource FlagToVisibility}}" />
             </Style>
+            <!-- T5 pb: the columns of the defense, in a Dinámico and in a Push Back. -->
+            <Style x:Key="DefenseColumns" TargetType="FrameworkElement">
+                <Setter Property="Visibility" Value="{Binding DataContext.ShowsDefense, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource FlagToVisibility}}" />
+            </Style>
             <Style x:Key="DynamicOnly" TargetType="FrameworkElement">
                 <Setter Property="Visibility" Value="{Binding DataContext.IsDynamic, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource FlagToVisibility}}" />
             </Style>
@@ -94,8 +98,25 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Width="110" Text="Poste" Style="{StaticResource HeadText}" />
                         <StackPanel Width="190">
-                            <Button x:Name="BootsHead" Content="Botas" Click="OnHeadClick" Tag="BOTA"
+                            <!-- T5 pb: the words of the head come from the panel («Botas · lado A» in a Push Back of two sides). -->
+                            <Button x:Name="BootsHead" Content="{Binding BootsHeader}" Click="OnHeadClick" Tag="BOTA"
                                     AutomationProperties.Name="Botas: ver su variante y sus medidas">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource HeadButton}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding BootsPicked}" Value="True">
+                                                <Setter Property="BorderBrush" Value="{DynamicResource ShellSelectionPrimaryBrush}" />
+                                                <Setter Property="BorderThickness" Value="2" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </StackPanel>
+                        <!-- T5 pb: the botas of side B of a Push Back of two sides. -->
+                        <StackPanel Width="190" Visibility="{Binding ShowsBootsB, Converter={StaticResource FlagToVisibility}}">
+                            <Button x:Name="BootsBHead" Content="Botas · lado B" Click="OnHeadClick" Tag="BOTA"
+                                    AutomationProperties.Name="Botas del lado B: ver su tipo y sus medidas">
                                 <Button.Style>
                                     <Style TargetType="Button" BasedOn="{StaticResource HeadButton}">
                                         <Style.Triggers>
@@ -140,10 +161,11 @@
                         </StackPanel>
                         <TextBlock x:Name="SeparatorsHead" Width="100" Text="Separadores entre fondos" Style="{StaticResource HeadText}"
                                    Visibility="{Binding IsSelective, Converter={StaticResource FlagToVisibility}}" />
-                        <StackPanel x:Name="DefenseHeads" Orientation="Horizontal" Visibility="{Binding IsDynamic, Converter={StaticResource FlagToVisibility}}">
+                        <!-- T5 pb: the defense also in a Push Back, with its words («Entrada/Salida» and «Posterior», or one end per side). -->
+                        <StackPanel x:Name="DefenseHeads" Orientation="Horizontal" Visibility="{Binding ShowsDefense, Converter={StaticResource FlagToVisibility}}">
                             <StackPanel Width="150">
-                                <Button x:Name="DefenseExitHead" Content="Defensa salida (in)" Click="OnHeadClick" Tag="DEFENSA"
-                                        AutomationProperties.Name="Defensas en salida: ver su variante y sus medidas">
+                                <Button x:Name="DefenseExitHead" Content="{Binding DefenseExitHeader}" Click="OnHeadClick" Tag="DEFENSA"
+                                        AutomationProperties.Name="{Binding DefenseExitHeadName}">
                                     <Button.Style>
                                         <Style TargetType="Button" BasedOn="{StaticResource HeadButton}">
                                             <Style.Triggers>
@@ -157,8 +179,8 @@
                                 </Button>
                             </StackPanel>
                             <StackPanel Width="150">
-                                <Button x:Name="DefenseEntranceHead" Content="Defensa entrada (in)" Click="OnHeadClick" Tag="DEFENSA"
-                                        AutomationProperties.Name="Defensas en entrada: ver su variante y sus medidas">
+                                <Button x:Name="DefenseEntranceHead" Content="{Binding DefenseEntranceHeader}" Click="OnHeadClick" Tag="DEFENSA"
+                                        AutomationProperties.Name="{Binding DefenseEntranceHeadName}">
                                     <Button.Style>
                                         <Style TargetType="Button" BasedOn="{StaticResource HeadButton}">
                                             <Style.Triggers>
@@ -171,7 +193,8 @@
                                     </Button.Style>
                                 </Button>
                             </StackPanel>
-                            <TextBlock x:Name="GuidesHead" Width="80" Text="Guías de entrada" Style="{StaticResource HeadText}" />
+                            <TextBlock x:Name="GuidesHead" Width="80" Text="Guías de entrada" Style="{StaticResource HeadText}"
+                                       Visibility="{Binding ShowsGuides, Converter={StaticResource FlagToVisibility}}" />
                         </StackPanel>
                     </StackPanel>
                 </Border>
@@ -201,6 +224,16 @@
                                     </StackPanel>
                                     <!-- Botas -->
                                     <StackPanel Width="190" Margin="0,0,8,0" DataContext="{Binding Boots}">
+                                        <ComboBox DataContext="{Binding Choice}" ItemsSource="{Binding Options}" DisplayMemberPath="Label" SelectedValuePath="Value"
+                                                  SelectedValue="{Binding SelectedValue, Mode=TwoWay}" IsEnabled="{Binding IsEnabled}"
+                                                  AutomationProperties.Name="{Binding Label}"
+                                                  Visibility="{Binding DataContext.HasChoice, RelativeSource={RelativeSource AncestorType=StackPanel}, Converter={StaticResource FlagToVisibility}}" />
+                                        <TextBlock Text="{Binding Text}" Style="{StaticResource OptionalText}" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                        <TextBlock Text="{Binding Sub}" Style="{StaticResource CellSub}" />
+                                    </StackPanel>
+                                    <!-- T5 pb: Botas del lado B (a Push Back of two sides) -->
+                                    <StackPanel Width="190" Margin="0,0,8,0" DataContext="{Binding BootsB}"
+                                                Visibility="{Binding DataContext.ShowsBootsB, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource FlagToVisibility}}">
                                         <ComboBox DataContext="{Binding Choice}" ItemsSource="{Binding Options}" DisplayMemberPath="Label" SelectedValuePath="Value"
                                                   SelectedValue="{Binding SelectedValue, Mode=TwoWay}" IsEnabled="{Binding IsEnabled}"
                                                   AutomationProperties.Name="{Binding Label}"
@@ -239,10 +272,10 @@
                                     <!-- Separadores entre fondos (Selectivo) -->
                                     <TextBlock Width="100" Text="{Binding Separators}" Style="{StaticResource SelectiveOnly}" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
                                     <!-- Defensa salida / entrada and Guías de entrada (Dinámico) -->
-                                    <StackPanel Orientation="Horizontal" Style="{StaticResource DynamicOnly}">
+                                    <StackPanel Orientation="Horizontal" Style="{StaticResource DefenseColumns}">
                                         <ContentControl Width="150" Content="{Binding DefenseExit}" ContentTemplate="{StaticResource DefenseCellTemplate}" Focusable="False" />
                                         <ContentControl Width="150" Content="{Binding DefenseEntrance}" ContentTemplate="{StaticResource DefenseCellTemplate}" Focusable="False" />
-                                        <TextBlock Width="80" Text="{Binding Guides}" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                        <TextBlock Width="80" Text="{Binding Guides}" Style="{StaticResource DynamicOnly}" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
                                     </StackPanel>
                                 </StackPanel>
                             </Border>

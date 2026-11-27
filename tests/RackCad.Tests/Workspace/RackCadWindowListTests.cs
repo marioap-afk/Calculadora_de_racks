@@ -292,11 +292,14 @@ public class RackCadWindowListTests
             // the register through RackSelectivoCommands.ReadProjectVariables and report through RackCommandSupport, as the door to a rack.
             // Quinta tanda (ct): the commands of the door of a Cantilever line (RackCadCantileverDoorCommands) are commands of the door too; the
             // drawing half they call (ApplyCantileverEdit) is reached by no other file of the door.
+            // Quinta tanda (pb): the commands of the door of a Push Back (RackCadPushBackDoorCommands) are commands of the door too; they draw
+            // with RackPushBackWindowDrawing (the drawing half of RACKEDITAR) and DispatchInsertion, which only the commands reach (T5 pb).
             if (!path.EndsWith("RackCadRackDoorCommands.cs", StringComparison.Ordinal) && !path.EndsWith("RackCadCabeceraDoorCommands.cs", StringComparison.Ordinal)
                 && !path.EndsWith("RackCadVariablesDoorCommands.cs", StringComparison.Ordinal)
                 && !path.EndsWith("RackCadCamaDoorCommands.cs", StringComparison.Ordinal) // T5 cm: the commands of the door of a cama, as those of the cabecera
-                && !path.EndsWith("RackCadCantileverDoorCommands.cs", StringComparison.Ordinal)) // T5 ct
-                Assert.DoesNotMatch(new System.Text.RegularExpressions.Regex(@"\bRackCommandSupport\.|\bApplyDynamicEdit\b|\bApplySelectiveEdit\b|\bApplyCabeceraUpdate\b|\bApplyCamaUpdate\b|\bApplyCantileverEdit\b|\bInsertSelectiveViews\b|\bDispatchInsertion\b|\bReadProjectVariables\b|\[CommandMethod"), code); // T5 cm: ApplyCamaUpdate
+                && !path.EndsWith("RackCadCantileverDoorCommands.cs", StringComparison.Ordinal) // T5 ct
+                && !path.EndsWith("RackCadPushBackDoorCommands.cs", StringComparison.Ordinal)) // T5 pb
+                Assert.DoesNotMatch(new System.Text.RegularExpressions.Regex(@"\bRackCommandSupport\.|\bApplyDynamicEdit\b|\bApplySelectiveEdit\b|\bApplyCabeceraUpdate\b|\bApplyCamaUpdate\b|\bApplyCantileverEdit\b|\bInsertSelectiveViews\b|\bDispatchInsertion\b|\bReadProjectVariables\b|\bRackPushBackWindowDrawing\b|\[CommandMethod"), code); // T5 cm: ApplyCamaUpdate
         }
     }
 

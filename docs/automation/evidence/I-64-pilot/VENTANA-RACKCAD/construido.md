@@ -4376,3 +4376,431 @@ Ningún archivo compartido cambia en esta vuelta.
 - **UI completa:** 2984 correctas, 0 con error y 48 omitidas (3032): las 2981 de la entrega más las 3 nuevas. `RackCadCantileverWindowTests` pasa de 20 a 23.
 - **Build Debug de la solución (Plugin incluido),** con `--no-incremental`: 0 errores. Las advertencias son las MSB3277 de las referencias de
   AutoCAD y las de los analizadores de xunit, que ya estaban.
+
+## Quinta tanda, pb: Push Back en la ventana (2026-11-26)
+
+**Rama:** local `architecture/workspace-persistente-rackcad-t5-pb`, sobre `041e1799` (worktree `D:\w5pb`). Sin commit, sin push, sin AutoCAD.
+Prototipo `pushback` (las doce preguntas aceptadas sin nota) y, para la seguridad, SG-02 (nota del Owner: Push Back = «Entrada/Salida /
+Posterior») y SG-09. No se borró código clásico: RACKPUSHBACK, RPB, RACKEDITAR y el «Editar todo» del panel del piloto siguen igual.
+
+**Lo que se construyó:**
+- **El borrador** (`PushBackDraftEditor`, Application, `VentanaRackCad/PushBackDraftEditor.cs`). No añade modelo: el estado es el
+  `PushBackEditableState` del borrador completo del piloto (los dos lados, la intención compuesta, la cola dormida, la autoridad de módulos
+  y los valores del rack) y cada recomposición es la pasada de la ventana clásica como código de producto (`PushBackEditableStateSeat.Pass`).
+  - Un rack nuevo es la secuencia de la ventana clásica al abrirse (LoadNew, pasada, seguridad por defecto, pasada); uno leído, la de
+    RACKEDITAR (`LoadExisting`). Una prueba de Core ata las dos con el comparador del estado, sobre todo el corpus de `Fixtures/I64`.
+  - Un diseño abierto y no tocado se escribe como se leyó (los canónicos, byte a byte); una recomposición sin cambios no lo cambia.
+  - Los gestos del inspector escriben las celdas y los frentes de la selección en los lados que pide el selector (`EditSides`), solo
+    donde la celda existe en ese lado; «Lo esencial» escribe los dos lados (`allSides`). Los niveles y los carriles pasan por el estado de
+    cada lado (`AdjustLevels`, `AdjustPositions`), así que los peraltes posteriores y los topes siguen al nuevo número.
+  - Un gesto que no se recompone se deshace con una copia profunda del estado (`Capture` / `Restore`); el último sistema válido se queda.
+  - «Actualizar» recibe copias: el diseño por su JSON y el sistema resuelto otra vez de esa copia (`SnapshotForWrite`).
+- **La puerta** (`PushBackDoor.cs` en Application; `RackCadRackDoorPort.PushBack.cs`, `RackCadPushBackDoorCommands.cs` y
+  `RackPushBackWindowDrawing.cs` en el Plugin), con las reglas de las otras: petición numerada guardada ANTES de entregar la orden, el
+  dibujo de la petición, «Dejar de esperar», `RequestStarted`, la poda de un dibujo cerrado y la comparación de las vistas hermanas.
+  - `RACKPUSHBACKABRIR` (`NoUndoMarker | NoHistory`): el diseño de la primera vista y las propiedades del rack (VA-07). Un Push Back de un
+    sentido que guarda la mitad dormida de un lado B (`DormantCompositeTail`) no se abre aquí, como no lo admite el borrador completo del
+    piloto: dice «usa RACKEDITAR».
+  - `RACKPUSHBACKAPLICAR`: la mitad de dibujo de «Actualizar» de RACKEDITAR con el borrador; un «U» la deshace. Después escribe la pestaña
+    «Propiedades». «Escrito» solo si redibujó alguna vista (`RackDoorRules.AnswerForApply`).
+  - `RACKPUSHBACKINSERTAR` («Insertar vista…»): primero el borrador en las vistas que hay, después las nuevas, enlazadas, con el lote de ID18.
+  - `RACKPUSHBACKNUEVO` («Insertar en el dibujo…» de un borrador): el despacho de «Nuevo» (`DispatchInsertion`) con la identidad de la
+    ventana y el nombre automático de I-60 (`PushBackDoorInsertion.NewRackRequest`).
+- **El editor** (`PushBackEditorViewModel` y sus parciales `.Ins.cs` y `.More.cs`; `PushBackEditorView.xaml(.cs)`), con las pestañas Rack,
+  Matriz (la inicial), Extremos y seguridad, Avanzado y Propiedades, y la cabecera Limpio / Modificado / Escribiendo con «Actualizar»,
+  «Insertar vista…», «Descartar», «Restaurar layout…», «Cerrar el editor» y «Más» › «Guardar en biblioteca…».
+  - **Rack:** «Lo esencial» del rack entero (profundidad, ancho, alto y peso de tarima, frentes, carriles por frente, niveles, posiciones de
+    fondo, alto del 1er nivel, claro sobre la tarima, tolerancia) con «Varía»; «Dos sentidos (lado B)» (la casilla, el hueco y el separador
+    central con su aviso); «Calculado»; «Poste y anotaciones», plegado (poste, cotas, unidad del peso, peralte de poste, escala, las tres
+    casillas, «Mostrar cotas en» y «Tarimas de referencia» con «En todas» / «En ninguna»).
+  - **Matriz:** frente × nivel con la tarima en la celda, «T» (tope posterior), «M» (largo o posiciones de fondo propios) y, con lado B,
+    «A» / «B» / «C» (las camas) y «varía» donde los lados difieren; clic, Ctrl+clic, Mayús+clic, F1…, N1… y «Todo». Encima, con lado B,
+    «Lado A / Lado B / Ambos lados». El inspector: «Tarima», «Fondo de la celda» (posiciones de fondo propias y «Dibujar tarima»), «Tope
+    posterior», «Camas en A y B» (con lado B), «Largueros» (plegado: los dos largueros y sus peraltes del catálogo, el peralte posterior y el
+    largo manual) y el frente (plegado: «En blanco», carriles, niveles, posiciones de fondo, «Empieza en la posición», alto del 1er nivel).
+  - **Extremos y seguridad:** la tarjeta «Tope posterior» (cuántas celdas, «En todas las celdas» / «En ninguna», el tipo y el saque de cada
+    lado), «Seguridad por poste» editable con «Variante y medidas» (PB-S03, en su subsección) y «Extremos» con lo que coloca cada familia
+    contado como el BOM del borrador.
+  - **Avanzado:** «Parámetros del rack» (altura de cabecera, altura del poste derivado, altura del refuerzo, separadores y separación, y
+    «Reforzar poste derivado»), «Módulos» con la longitud editable de cada módulo y la cabecera «Calculada» / «Personalizada» de solo
+    lectura, y, con lado B, «Estructura longitudinal por lado» (propuesta, efectiva y ajuste manual).
+  - **Propiedades:** la pestaña de VA-07, la misma de Selectivo y Dinámico.
+- **La ventana** (`RackCadWindowViewModel.PushBack.cs`, `RackCadWindowView.PushBack.cs`):
+  - «Editar aquí» en la página de un Push Back de la lista, con su puerta; la página aloja el editor y «Ver el estado y la navegación del
+    rack» alterna con el panel del piloto (pregunta 10: la navegación queda en el panel);
+  - «Nuevo» › «Push Back en esta ventana»: un «Borrador N» más (SD-06), con «Duplicar», «Descartar el borrador» y «Abrir» de la lista;
+  - la Biblioteca abre un Push Back como borrador (`OpenDesignAsNewRack`), y «Guardar en biblioteca…» lo guarda como el clásico
+    (`RackProject.ForPushBack`);
+  - el BOM de la página `bom` ve el borrador con cambios («Borrador del editor», `PushBackBomBuilder` sobre una copia);
+  - D-08: un Push Back con cambios sin escribir, o escribiéndose, veta el cierre del dibujo y la poda lo nombra.
+
+**Las preguntas del prototipo:**
+
+| # | Estado |
+|---|---|
+| 1. Tope en la matriz | Hecho: «T» en la celda, la casilla del inspector (tres estados: con «varía», un clic lo pone en todas) y «En todas / En ninguna» |
+| 2. Dos sentidos | Hecho: «Lado A / Lado B / Ambos lados» solo con lado B, empieza en «Lado A»; «varía» en «Ambos»; un nivel de un solo lado dice «(A)» o «(B)» |
+| 3. Camas en A y B | Hecho: una lista con «Encontradas (dos camas)», «Solo A», «Solo B», «Corrida A → B», «Corrida B → A»; la celda lleva A, B o C |
+| 4. Vocabulario | Hecho (ver los rótulos de arriba) |
+| 5. Campos duplicados | Hecho: no se muestran «Fondos base», «Peralte IN/OUT base», los espejos ni los selectores «Frente» / «Nivel»; sus valores siguen en el modelo |
+| 6. «Restaurar layout…» | Hecho: seis casillas marcadas, «Ver lo que se pierde», «Restaurar lo marcado» al borrador |
+| 7. Módulos sin «Confirmar» | Hecho: la longitud va al borrador al salir del campo; vacía = la calculada (conserva una cabecera personalizada) |
+| 8. Lados de bota y defensa | Hecho: «Entrada/Salida» y «Posterior», por lado, en la tabla y en el inspector (PB-S03) |
+| 9. Comprobar con el dibujo | **No construido** (PB-S04) |
+| 10. Lo que sobra del piloto | La navegación queda en el panel («Ver el estado y la navegación del rack»); «Instrumentación» a Configuración, **no construido** (PB-S05) |
+| 11. Poste derivado por línea y «Reutilizar» | Hecho como dice: de solo lectura en la tabla de módulos; su edición, con el editor de cabeceras |
+| 12. «Dibujar tarima» por celda | Hecho: en el inspector, y «Tarimas de referencia» en «Rack» › «Poste y anotaciones» |
+
+**Decisiones y supuestos** (prefijo PB-S, para el Owner):
+
+| Id | Decisión o supuesto | Dónde se cambia |
+|---|---|---|
+| PB-S01 | El borrador es el estado editable del borrador completo y la pasada de la Seat; la ventana no tiene recomposición propia. Un cambio de cálculo no se pidió ni se hizo: la regla asimétrica de la cama, PB-002 del desviador por poste y las cabeceras como cortes son las de siempre | `PushBackDraftEditor` |
+| PB-S02 | La selección de la matriz es del editor (celdas, primaria y ancla), no la de la matriz de cada lado: con «Ambos lados» una celda que solo tiene B se puede elegir, y los gestos se escriben en cada lado donde la celda existe | `PushBackEditorViewModel` (`_selected`) |
+| PB-S03 | **Hecho** (subsección «PB-S03: la seguridad poste por poste»): la tabla «Seguridad por poste» editable y el inspector «Variante y medidas» de la cuarta tanda, con «Entrada/Salida / Posterior» por lado (I-42) para botas y defensa; lo que escribe es lo del diálogo clásico para la misma elección, comprobado en Core contra una transcripción del clásico | `PushBackSafetyEdit`, `RackCadSafetyPanel.PushBack.cs` |
+| PB-S04 | **Falta** la pregunta 9 («Comprobar con el dibujo» y el conflicto con «Conservar mi borrador» / «Descartar y volver a leer»): como Dinámico y Selectivo (M-16), el editor no detecta un cambio del dibujo mientras se edita | — |
+| PB-S05 | El panel del piloto de Push Back sigue como está (su campo, «Editar todo», «Instrumentación»): sus guardas de F1-F4B fijan su contenido. Si el piloto tiene un borrador del mismo rack, son dos borradores; el del piloto queda «posiblemente obsoleto» después de un «Actualizar» de la ventana | — |
+| PB-S06 | La mitad de dibujo de la puerta repite la de `EditPushBack` paso a paso (mismos servicios y mismo orden), sin extraerla: unas veinte guardas de F4B fijan el cuerpo de ese método. Se unen al retirar el clásico | `RackPushBackWindowDrawing` |
+| PB-S07 | La XAML compartida de la ventana no cambia: la oferta «Editar aquí», «Push Back en esta ventana» y el anfitrión del borrador se crean en código, junto a los de los otros sistemas | `RackCadWindowView.PushBack.cs` |
+| PB-S08 | «Posiciones de fondo» de «Lo esencial» escribe todos los frentes de los dos lados y no toca el «Fondos base» del rack (pregunta 5: sale de la pantalla sin borrar su valor; el reparto de fondos lo dan los frentes) | `BuildEssentials` |
+| PB-S09 | Un hueco negativo y un ajuste de estructura menor que 2 se rechazan en su campo; el clásico los guarda y bloquea la salida. El separador central con hueco 0 sí se guarda y bloquea «Actualizar» con el diagnóstico del clásico | `BuildTwoWayFields`, `BuildStructure` |
+| PB-S10 | Un Push Back de un sentido con la cola dormida de un lado B no se abre en la ventana | `PushBackDoorRules.AnswerForOpen` |
+| PB-S11 | «Insertar vista…» ofrece los cortes del lado B solo con lado B; la planta, un lateral por poste con corte y los dos cortes de cada lado | `InsertOptions` |
+| PB-S12 | «Cerrar el editor» con cambios pregunta «Descartar y cerrar» / «Seguir editando», como Dinámico; el prototipo añadía «Actualizar y cerrar» | `PushBackEditorView.xaml` |
+| PB-S13 | Al cambiar un larguero, su peralte se queda si el catálogo lo admite para el nuevo y toma el primero que admite si no, como las listas del clásico | `KeepAllowed` |
+| PB-S14 | El nombre que llevan las vistas lo pone `PushBackDoorRules.Named` (el del borrador, o el del sobre si está vacío, como RACKEDITAR): ningún archivo nuevo del Plugin escribe un `Name` | `PushBackDoorRules.Named` |
+| PB-S15 | El tipo de tope «Ninguno (no se dibuja)» es una opción de la lista, como en la sección del diálogo clásico | `BuildTopeChoices` |
+| PB-S16 | El protector lateral de Push Back conserva «Izquierda / Derecha / Ambos (frente-puente)» de su guía, como el diálogo clásico: «Entrada/Salida / Posterior» nombra caras, y el protector va siempre en «Entrada/Salida» | `RackCadSafetyWords.SideGuard` |
+| PB-S17 | Las seis diferencias con el «Aceptar» del clásico de la subsección PB-S03 (una familia por edición; el orden de la lista; la variante que se queda sin nada; los niveles del desviador del lado más alto; volver a «Auto» en una cara de un compuesto, que el clásico pierde; un desviador nuevo sin «Configurar…»). La quinta es un defecto del clásico, para el Owner | `PushBackSafetyEdit` |
+
+**Ediciones a archivos compartidos** (de una línea, marcadas `T5 pb`):
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowViewModel.cs`: `DoorRequest.IsPushBack`; `WirePushBackDoor(door)` en el constructor;
+  `ShowPanel` y `HasRackEditor` cuentan el editor de Push Back; una rama en `StopWaiting`, otra en `OnDesignWritten` y otra en
+  `OnRequestStarted`; `OnDesignRead` ignora una petición de Push Back; `UnwrittenWorkOf` y `PruneDeadSessions` llaman a lo suyo; una
+  condición en `DraftStateOf`; `RaisePushBack()` al final de `RaiseNewDynamic`.
+- `RackCadWindowViewModel.Drafts.cs`: el caso `PushBack` en los seis métodos por sistema.
+- `RackCadWindowViewModel.Bom.cs`: una línea en `DraftBomOf`, `HasUnwrittenDraft` y `UnwrittenDraftsOf`.
+- `RackCadWindowViewModel.Utilities.cs`: `OpensHere` admite Push Back; `OpenDesignAsNewRack` elige su editor.
+- `RackCadWindowViewModel.Ins.cs`: una línea en `RefreshInsertPanels`.
+- `RackCadWindowView.xaml.cs`: una línea en el constructor, en `OnViewModelPropertyChanged` y en `ShowRackContent`.
+- `src/RackCad.Plugin/VentanaRackCad/RackCadRackDoorPort.cs`: una línea en `Abandon`.
+- **La XAML de la ventana no cambia** (PB-S07).
+
+**Archivos nuevos:**
+- Application: `VentanaRackCad/PushBackDraftEditor.cs` y `VentanaRackCad/PushBackDoor.cs`.
+- UI: `PushBackEditorViewModel.cs`, `PushBackEditorViewModel.Ins.cs`, `PushBackEditorViewModel.More.cs`, `PushBackEditorView.xaml(.cs)`,
+  `PushBackDoorInsertion.cs`, `RackCadWindowViewModel.PushBack.cs` y `RackCadWindowView.PushBack.cs`, en `VentanaRackCad`.
+- Plugin: `VentanaRackCad/RackCadRackDoorPort.PushBack.cs`, `VentanaRackCad/RackCadPushBackDoorCommands.cs` y `RackPushBackWindowDrawing.cs`.
+- Pruebas: `tests/RackCad.Tests/Workspace/PushBackDraftEditorTests.cs` y `tests/RackCad.UI.Tests/Workspace/RackCadPushBackEditorTests.cs`.
+
+**Censos y guardas cambiados,** cada uno con su nota en el código:
+- `SelectiveEditorOpenTests.GUARDA_EL_CENSO_DE_COMANDOS_NO_CAMBIA`: de 57 a 61.
+- `CustomPropertiesCommandGuardTests`: `A14PushBackDoorCommands` (las cuatro órdenes) en la base.
+- `RackCadWindowListTests.TheFoldersOfTheWindowKeepTheirLayers`: `RackCadPushBackDoorCommands.cs` es un archivo de órdenes de la puerta,
+  y `RackPushBackWindowDrawing` entra en la lista de lo que solo las órdenes alcanzan.
+- `PushBackEditAllNameWritersGuardTests.CT_PBT1B_15`: el censo de archivos del Plugin que nombran Push Back pasa de 15 a 19 (las cuatro
+  piezas de la puerta); las siete asignaciones de `Name` y su orden no cambian.
+- `RackCadNewDraftsTests.OpenAsNewDraftRefusesWhatTheWindowCannotOpenAndSaysWhy`: Push Back ya tiene editor; sin su puerta se rechaza por la
+  puerta («Aquí no se puede crear un rack en el dibujo.»).
+
+**Las pruebas:**
+- Core, `PushBackDraftEditorTests` (39 casos): la carga igual a la de RACKEDITAR en todo el corpus (canónicos, antiguos y A/B) y sin cambios
+  al recomponer; los canónicos byte a byte; el rack nuevo y su relectura; la copia para AutoCAD; las celdas en los lados de la selección
+  y «Lo esencial» en los dos; las camas y el tope de una corrida; el tope en el diseño; el fondo propio y la tarima (una propiedad cada
+  vez) y el fondo de una corrida; niveles y carriles por el estado de cada lado y el frente en blanco; la longitud de un módulo y su
+  vuelta a la calculada; «Restaurar layout» por partes; el recálculo rechazado; el lado B que nace ausente y queda dormido; las reglas de
+  la puerta; y, por el texto, las órdenes (sin marca de Deshacer en la lectura, `Started` antes de dibujar, comparación y plan antes de
+  la mitad de dibujo), la mitad de dibujo (preflight antes del primer redibujo, `regen: false`, una sola regeneración, sin escritores de
+  `Name`) y la puerta (la petición antes de la orden, `Abandon`).
+- UI, `RackCadPushBackEditorTests` (16): la oferta y solo la respuesta de su número; el rack que la puerta rechaza; «Actualizar» con copias,
+  bloqueado mientras escribe, `Started`, «escrito» y «Descartar» a lo escrito; «Dejar de esperar» y la respuesta tardía; otro dibujo y el
+  dibujo cerrado; «Cerrar el editor»; la selección y el inspector; el valor rechazado; el tope en la matriz y el inspector; los dos lados y
+  las camas; un módulo y «Restaurar layout…»; el borrador de «Nuevo» insertado como rack nuevo con su nombre automático; «Insertar vista…»;
+  la Biblioteca y el BOM del borrador; y con WPF real (STA), sin errores de enlace: la vista del editor (cinco pestañas, «Matriz» la
+  inicial, celdas con nombres únicos, el selector de lados, ningún nombre de tipo en pantalla, nombres únicos de la cabecera, «Restaurar
+  layout…» en línea, el inspector debajo en estrecho) y la ventana (la oferta, el editor alojado, el panel y vuelta, «Push Back en esta
+  ventana» con su anfitrión).
+- **Comprobación en rojo:** doce piezas rotas a propósito, una a una, con script (`hs65\t5\pb\red.py` del scratchpad de la sesión; salida en
+  `red-core-log.txt`, `red-ui-log.txt` y `red-out.txt`). El script guarda antes una copia del original FUERA del worktree, compila, corre la
+  clase focal y restaura; las doce volvieron con el mismo SHA-256, y después se buscó en `git diff` cualquier resto (`if (false)`): no
+  quedó ninguno. Cada pieza hizo fallar su prueba:
+  1. la copia para AutoCAD es el diseño vivo: falla la de «Actualizar» con copias;
+  2. la respuesta de la lectura se toma sin mirar su número: falla la de la oferta;
+  3. un valor rechazado no devuelve el estado: **sobrevivió** en la primera pasada (el diseño publicado es el último válido, así que no
+     cambiaba); la prueba se reforzó (el campo vuelve a su valor y el gesto siguiente recompone) y ahora falla;
+  4. las celdas se escriben en los dos lados con cualquier selector: falla la de los lados (Core);
+  5. el veto del cierre sin Push Back: falla la de «Actualizar» (D-08);
+  6. la longitud de un módulo sin confirmar en la sesión: fallan 2 (Core);
+  7. `RACKPUSHBACKABRIR` con marca de Deshacer: falla la guarda de la orden (Core);
+  8. «Restaurar layout» que no devuelve los fondos propios: falla la de «Restaurar layout» (Core);
+  9. el tope dibujado sin mirar las camas: falla la de las camas (Core);
+  10. la puerta abre un rack con la cola dormida: falla la de la lectura de la puerta (Core);
+  11. el selector de lados no cambia lo que se escribe: fallan 2 (los dos lados y la vista);
+  12. el rack nuevo que AutoCAD insertó sigue siendo nuevo: falla la del borrador de «Nuevo».
+
+**Los números** (sobre las fuentes finales):
+- **Core Full:** 19331 correctas, 0 con error, 403 omitidas (19734), compilado con `--no-incremental`: la base (19292) más las 39 de
+  `PushBackDraftEditorTests`. La primera pasada, antes de ajustar los censos, dio 19327 / 4 / 403: los cuatro de arriba.
+- **UI completa:** 2977 correctas, 0 con error, 48 omitidas (3025): la base (2961) más las 16 de `RackCadPushBackEditorTests`; la prueba
+  cambiada de `RackCadNewDraftsTests` no añade casos. Se corrió dos veces, antes y después de reforzar la prueba de la pieza 3, con el
+  mismo resultado.
+- **Plugin en Debug:** 0 errores; 2 advertencias, las MSB3277 de las referencias de AutoCAD que ya estaban.
+
+**Lo que queda abierto:**
+- **Falta para terminar Push Back en la ventana:** «Comprobar con el dibujo» y el conflicto (PB-S04, pregunta 9); «Instrumentación» a «Configuración» y retirar «Editar todo» del panel del piloto (PB-S05,
+  pregunta 10); el editor de cabeceras de Push Back (otra iniciativa, pregunta 11).
+- **El smoke en AutoCAD:** que RACKPUSHBACKABRIR no deje paso en Deshacer; que un «U» deshaga RACKPUSHBACKAPLICAR entero; «Insertar
+  vista…» de un rack de dos sentidos con los cortes de B; un borrador insertado con su nombre automático y reabierto con «Editar aquí»;
+  RACKEDITAR abre lo que escribió la ventana igual que antes; la paleta real (anchos, foco).
+- **Para el Owner:** PB-S02, PB-S08, PB-S09, PB-S10, PB-S12, PB-S13, PB-S16 y PB-S17 (con el defecto del clásico de su punto 5).
+- **Para integrar:** las ediciones de una línea de arriba; los censos de órdenes (`SelectiveEditorOpenTests`, `CustomPropertiesCommandGuardTests`)
+  y `RackCadWindowListTests` también los tocan las otras partes que añaden puertas.
+
+### PB-S03: la seguridad poste por poste
+
+Sobre `24adfee7`, con las mismas reglas (sin commit, sin push, sin AutoCAD). «Extremos y seguridad» de Push Back lleva ahora la tabla
+«Seguridad por poste» editable y el inspector «Variante y medidas» de la cuarta tanda (SG-09: Push Back adopta este diseño sin tocar su
+autoridad de seguridad), con las vistas compartidas (`RackCadSafetyTableView`, `RackCadSafetyInspectorView`) y el modelo compartido
+(`RackCadSafetyPanelViewModel`, con un parcial nuevo para Push Back). El aviso de PB-S03 (`SafetyPendingText`) se quitó.
+
+- **Las familias** son las que admite su autoridad (`PushBackSafetyAuthority`): botas, protector lateral, desviadores y defensa
+  (`RackCadSafetyEdit.FamiliesOf(PushBack)`). El tope posterior sigue en su tarjeta y en la «T» de «Matriz».
+- **El vocabulario** (SG-02 y pregunta 8 del prototipo): las botas y la defensa dicen «Entrada/Salida» y «Posterior», **por lado**.
+  - Botas: «General (…)», «Ninguno», «Entrada/Salida», «Posterior» y «Ambas», como la sección del clásico; la general muestra
+    «, automática» mientras nadie la elige.
+  - Defensa, en un rack de un sentido: «Defensa Entrada/Salida (in)» y «Defensa Posterior (in)».
+  - Defensa, con lado B: «Defensa lado A (in)» y «Defensa lado B (in)», cada una la «Entrada/Salida» de su lado.
+  - El protector lateral conserva «Izquierda / Derecha / Ambos (frente-puente)» de su guía (supuesto PB-S16).
+- **Por lado** (I-42), con lado B:
+  - dos columnas, «Botas · lado A» y «Botas · lado B»;
+  - en el inspector de las botas: «Tipo de protector · lado A» y «· lado B» (con «Ninguno (este lado no lleva)»), «Ubicación general» de
+    cada lado (elegida o automática) y «Todos los postes al general» de cada lado;
+  - en el de la defensa: «Tipo de defensa» de cada lado y «Todas automáticas» de cada lado.
+- **«Ninguno» en el tipo de un lado** no pregunta nada: no se pierde nada, la ubicación y los postes quedan dormidos y vuelven al elegir
+  otra vez un tipo, como en el clásico. «Sin variante» del protector lateral o del desviador pregunta antes qué se pierde (SG-06), como la
+  cuarta tanda, y «Descartar» lo recupera.
+- **La defensa de un poste:**
+  - la casilla encendida pone la medida de la regla como propia (12 in en un poste de orilla, 36 in en uno intermedio), como la propone la
+    rejilla del clásico;
+  - una medida vacía es la automática (el «Auto» del clásico); en «Posterior» de un rack de un sentido, la automática es sin defensa
+    (PB-009);
+  - una medida escrita es propia y se queda.
+- **El desviador:**
+  - va por poste (PB-002); sus niveles son los del lado más alto cuando hay lado B;
+  - no tiene lado que elegir (PB-003);
+  - la longitud y el primer nivel se validan en su campo;
+  - uno nuevo llega como lo acepta su rejilla sin tocar nada (18 in y el primer nivel a 18 in, en todas las celdas).
+- **La tabla se cuenta como el BOM de Push Back** (`PushBackSafetyRows`):
+  - las botas de cada lado, de `PushBackBootPlan`;
+  - los desviadores, de `PushBackDiverterPlan`;
+  - el protector lateral y los dos extremos de la defensa, de la planta compartida (con el tipo de cada cara y si la línea la tiene);
+  - el pie «Total» suma las filas.
+
+**Lo que escribe es lo del diálogo clásico para la misma elección.** `PushBackSafetyEdit` (Application, puro) trabaja sobre una copia
+(`PushBackSafetyCopy`: la lista, el tipo de defensa de cada lado, la bota resuelta de la última recomposición y las caras de cada lado), y
+`PushBackDraftEditor.ReplaceSafety` la devuelve: la lista, el tipo de defensa del lado A y, con lado B, el del lado B, que el clásico no toca
+en un rack de un sentido. Familia por familia:
+- **Botas:** las dos secciones (`BuildBootSection`, `PushBackBootSection`) y su «Aceptar» (`ApplyBootSections`, `BootCarrierId`). La
+  selección se reconstruye con su portador, una pieza, sin lado general, la configuración entera de cada lado, el lado B vacío en un rack
+  de un sentido y `BootSidesDeclared`. Un poste pasa por la rejilla por poste (los postes con decisión propia, en su orden), y la general
+  solo se elige cuando cambia, como su lista.
+- **Defensa:** las dos secciones (`BuildDefenseSection`, `DefensePieceIdOf`) y su «Aceptar» (`ApplyDefenseSections`,
+  `EnsureDefenseSelection`).
+  - El tipo de cada lado va a su estado.
+  - La familia existe mientras un lado tiene tipo, o solo como portadora de los postes con los dos en «Ninguno».
+  - Se reconstruye con una pieza, sin lado y restringida al extremo bajo.
+  - Un rack de un sentido toma la rejilla de dos extremos; uno con lado B funde cara a cara; una línea que ya no existe no deja registro.
+  - Cada registro pasa por la rejilla como ella lo muestra: un extremo automático no guarda longitud, y una longitud se relee con «0.##».
+- **Protector lateral:** la ventana por poste y el «Aceptar» del diálogo. Abierta sobre la regla, la ventana muestra los dos extremos; el
+  poste toma su valor («No lleva» se escribe); la familia se reescribe con los postes en su orden y sin lado general. «Volver a la regla de
+  los extremos» es la ventana con todos los postes en «(por defecto)».
+- **Desviador:** la rejilla (`SafetyDesviadorGridWindow.BuildResult`):
+  - las celdas apagadas en el orden de la rejilla, y después las dormidas de una columna sin niveles (I-33);
+  - una celda más allá de los niveles de su poste se va;
+  - la longitud y el primer nivel como los muestra la rejilla;
+  - el lado que la rejilla conserva y una pieza.
+
+**Comprobado en Core** con `PushBackSafetyEditTests` (18 casos), que usa una transcripción del clásico independiente de
+`PushBackSafetyEdit` (la clase `Classic` de la prueba, con las líneas de origen nombradas):
+- Cada prueba toma dos borradores del mismo rack: la ventana edita uno, la transcripción escribe el otro como su «Aceptar».
+- Los dos diseños tienen que ser iguales y el BOM de seguridad también, y distintos del de antes, para que ninguna prueba quede vacía. La
+  lista de seguridad se lee en un orden (supuesto PB-S17, 2).
+- Casos de botas: el poste, la general, «Ninguno» y la vuelta, la matriz de `pb-06-seguridad` y los dos lados.
+- Casos de defensa: «Posterior» encendida, una medida, apagada, la automática, «Todas automáticas», «Ninguno» con los postes en espera,
+  cada cara con lado B y la defensa leída de un dibujo.
+- Casos de protector lateral: el poste desde la regla, «No lleva» y la vuelta a la regla.
+- Casos de desviador: niveles y medidas, uno nuevo, el cambio de variante y con lado B.
+- Las filas de la tabla, contadas como el BOM, en los dos tipos de rack.
+
+**Diferencias con el clásico, declaradas** (supuesto PB-S17):
+1. Una edición escribe **una familia**. El «Aceptar» del clásico reconstruye todas las del diálogo a la vez; las demás no cambian su
+   diseño.
+2. **El orden de la lista se conserva.** El clásico deja primero las familias del diálogo, después la defensa y después las botas.
+3. **Una familia que se queda sin nada conserva su variante:** el protector lateral con todos los postes en «No lleva», o el desviador sin
+   ningún nivel. El clásico la quita; el dibujo y el BOM son los mismos (C2-07, como la cuarta tanda; la prueba lo mide).
+4. **Los niveles del desviador son los del lado más alto.** La rejilla del clásico muestra los del lado activo, así que aceptarla desde el
+   lado más bajo quita las celdas apagadas de los niveles que solo tiene el otro.
+5. **Volver a «Auto» en una cara cuya otra cara es automática**, en un rack con lado B: la rejilla de una cara del clásico quita esa fila
+   (automática en los dos extremos) antes de fundirla, así que pierde el gesto y la medida se queda. Se midió en Core
+   (`BackToAutoOnAFaceWhoseOtherFaceIsAutomaticIsWrittenWhereTheClassicGridLosesIt`). La ventana escribe el gesto. **Es un defecto del
+   clásico, para el Owner;** no se tocó el clásico.
+6. **Un desviador o un protector lateral nuevos llegan con elegir la variante.** El desviador del clásico pide además «Configurar…».
+
+**Archivos.**
+- Nuevos:
+  - Application: `VentanaRackCad/PushBackSafetyEdit.cs`, `VentanaRackCad/PushBackSafetyRows.cs` y `VentanaRackCad/PushBackDraftEditor.Seg.cs`.
+  - UI: `VentanaRackCad/RackCadSafetyPanel.PushBack.cs` y `VentanaRackCad/PushBackEditorViewModel.Seg.cs`.
+  - Pruebas: `tests/RackCad.Tests/Workspace/PushBackSafetyEditTests.cs` y `tests/RackCad.UI.Tests/Workspace/RackCadPushBackEditorTests.Seg.cs`.
+- Míos, cambiados:
+  - `PushBackDraftEditor.cs` (parcial);
+  - `PushBackEditorViewModel.cs` (una línea en `Rebuild`; sin `SafetyPendingText`);
+  - `PushBackEditorView.xaml` (la pestaña con la tabla y el inspector, en su `Grid`, como Dinámico);
+  - `RackCadPushBackEditorTests.cs` (parcial).
+
+**Ediciones a los modelos y vistas compartidos de seg,** pequeñas y marcadas `T5 pb`:
+- `RackCadSafetyEdit.cs`: el valor `PushBack` del enum y sus familias en `FamiliesOf`.
+- `RackCadSafetyRows.cs`: `RackCadSafetyRow.BootsB`.
+- `RackCadSafetyPanel.cs`:
+  - la clase pasa a `partial`;
+  - `IsSelective` es solo Selectivo: antes era «no Dinámico», y Push Back no es ninguno de los dos;
+  - `PostFoot` tiene el texto de Push Back;
+  - una línea al principio de `RefreshTable` y otra de `RefreshInspector` llevan a Push Back a su parcial;
+  - en `RackCadSafetyWords`, `Side` y `SideGuard` tienen la rama de Push Back, y hay un `Placement` nuevo.
+- `RackCadSafetyPanelItems.cs`: `RackCadSafetyRowItem.BootsB`.
+- `RackCadSafetyTableView.xaml`:
+  - el título de las botas sale del panel;
+  - hay una columna para las botas del lado B;
+  - las columnas de la defensa salen también en Push Back, con sus títulos del panel (los nombres de Dinámico no cambian);
+  - las guías, solo en Dinámico;
+  - un estilo nuevo, `DefenseColumns`.
+
+**Un fallo que encontró la prueba de la vista** (no llegó a ningún commit): la escritura del parcial devolvía
+`host?.WritePushBackSafety(...) ?? "…"`. Como una escritura correcta responde `null`, toda escritura correcta salía en el campo como error.
+Se corrigió, y es la pieza S9 de la comprobación en rojo.
+
+### Correcciones de la revisión (sobre `24adfee7`)
+
+Las seis observaciones de la revisión independiente, en el mismo worktree. Cada una tiene su prueba, y las tres primeras su pieza en rojo
+(también la 4, la 5 y la 6).
+
+1. **«Dejar el frente en blanco» con «Ambos lados» siempre se rechazaba** (CONFIRMADO). El lado A se ponía en blanco primero y, al
+   evaluar B, `WhySlotCannotBeRemoved` veía A ya ausente. Además era más estricto que el clásico.
+   - Ahora va por la ruta del clásico (`SetFrontActive`): cada lado que cambia pasa por `PushBackCompositeEditorState.SetSlotPresent`,
+     que deja un lado entero en blanco mientras el otro sostiene el rack. El gesto se escribe cuando algún lado lo tomó (`applied |=`).
+   - Solo se rechaza cuando ningún lado lo tomó: «Al menos un frente del rack debe permanecer activo.», el texto del clásico. Un rack de
+     un sentido conserva el suyo.
+   - Código: `PushBackDraftEditor.SetBlank(sides, front, blank)` y `PushBackEditorViewModel.SetFrontBlank`.
+   - Pruebas: Core `PushBackReviewCorrectionsTests` (los dos lados; B entero en blanco mientras A sostiene; una ranura ausente en B puesta
+     en blanco en A; el último frente del rack) y UI `BlankWithBothSidesIsWrittenInTheTwoSidesAsTheClassicWindowDoes`.
+2. **El BOM del borrador se saltaba la puerta de salida** (PLAUSIBLE). `PushBackDraftBom` devuelve ahora `null` con
+   `Draft.IsOutputBlocked` o con `LastError`, como `OutputBlockedReason` del BOM del dibujo (I-42). Prueba UI
+   `TheBomOfADraftThatTheGateBlocksIsNotCounted`: una estructura manual de 1 fondo, que bloquea la salida.
+3. **«Descartar» de un rack que se abrió sin recomponerse no volvía atrás** (CONFIRMADO).
+   - El editor recibe el JSON leído (`readDesignJson`, desde `OnPushBackRead`). Mientras el borrador no tiene un diseño que recomponga, ese
+     JSON es su base de «Modificado» y lo que «Descartar» carga otra vez, aunque no recomponga.
+   - Al recomponer, el borrador queda «Modificado» frente al dibujo hasta «Actualizar».
+   - Prueba UI: `DescartarOfARackReadWithoutADesignOfItsOwnLoadsWhatWasRead`.
+   - Ningún diseño del corpus abre así, y tampoco las variantes probadas: o recomponen, o la carga misma lo rechaza. Por eso la prueba
+     construye el editor sobre un borrador sin diseño.
+4. **`TopeDrawnAt` ignoraba el tipo «Ninguno»** (CONFIRMADO). Ahora mira `!Side(side).RearTopeConfig().IsNone`, así que la «T» de la
+   matriz y el resumen dicen lo mismo que «Extremos». Prueba Core `TheTopeOfTheMatrixFollowsTheTypeNoneOfItsSide`: la intención se queda,
+   dormida.
+5. **Una guarda que ata la copia de la mitad que dibuja** (PB-S06).
+   - `RackPushBackWindowDrawing.Apply` lleva ahora, desde la preflight hasta el final, el cuerpo de `EditPushBack` copiado tal cual, con
+     cuatro diferencias declaradas: la entrada de la ventana en lugar de la ventana clásica, las respuestas con las cuentas, el prefijo del
+     payload y las palabras del mensaje final. Lleva también su propio `IsValidPushBackDescriptor`.
+   - `PushBackWindowDrawingMirrorGuardTests` compara los dos cuerpos normalizados (sin comentarios ni espacios) y las dos comprobaciones
+     del descriptor. Tiene su autoprueba: tres cambios en un solo lado la hacen fallar.
+   - La guarda del texto de la primera entrega busca ahora `!IsValidPushBackDescriptor(viewBlock.Embed)` antes del primer redibujo.
+6. **PB-S10 solo se aplicaba en la puerta** (BAJA). `CreatePushBackDraft` rechaza también un diseño con la mitad dormida de un lado B, de
+   la biblioteca o de «Duplicar», con el aviso de la puerta. Prueba UI
+   `NuevoFromADesignWithTheDormantHalfOfASideBIsRefusedWithTheWordsOfTheDoor` (`pb-21-cola`).
+
+### PB-S03 y la revisión: pruebas, comprobación en rojo y números
+
+**Las pruebas nuevas:**
+- Core:
+  - `PushBackSafetyEditTests` (19): PB-S03, contra la transcripción del clásico;
+  - `PushBackReviewCorrectionsTests` (3): los puntos 1 y 4;
+  - `PushBackWindowDrawingMirrorGuardTests` (3): el punto 5.
+  - En `PushBackDraftEditorTests` cambió el texto que busca una guarda (punto 5); no hay casos nuevos.
+- UI, `RackCadPushBackEditorTests.Seg.cs` (11, la clase pasa a `partial`):
+  - de PB-S03, el modelo (las palabras y la tabla contada, la defensa con su medida de la regla y la vacía automática, los dos lados,
+    «Ninguno» sin pregunta y «Sin variante» con pregunta y «Descartar», bloqueado mientras AutoCAD escribe);
+  - de PB-S03, la vista con WPF real (columnas, nombres únicos, sin errores de enlace ni nombres de tipo; escribe desde sus celdas; el
+    inspector al lado y debajo en estrecho) y la del rack de dos sentidos;
+  - de la revisión, los puntos 1, 2, 3 y 6.
+
+**Comprobación en rojo:**
+- Dieciocho piezas rotas a propósito, una a una, con script: `hs65\t5\pb\red2.py` del scratchpad de la sesión, con su salida en
+  `red2-log.txt` y `red2-out.txt`.
+- El script guarda antes una copia del original FUERA del worktree, compila, corre las clases focales (Core, UI o las dos) y restaura.
+- Las dieciocho volvieron con el mismo SHA-256, y después se buscó en `git diff` cualquier resto: no quedó ninguno.
+- Cada pieza hizo fallar su prueba:
+  - S1, las botas sin `BootSidesDeclared`: fallan 6 (Core).
+  - S2, la general elegida aunque no cambie: falla la de la general.
+  - S3, la defensa de un compuesto sin fundir cara a cara: falla la de las dos caras.
+  - S4, la casilla encendida como automática: fallan 3 (una medida de la regla, la defensa leída y las filas).
+  - S5, el protector lateral sin los extremos al salir de la regla: falla la de la ventana por poste.
+  - S6, la longitud del desviador sin validar como la rejilla: **sobrevivió** en la primera pasada, porque un desviador nuevo ya nace con
+    18 in. Se añadió la prueba de una medida no válida (`AMeasureOfTheDesviadorThatIsNotValidIsTheDefaultOneThroughItsGrid`), y ahora
+    falla.
+  - S7, las filas sin las botas del lado B: falla la de las filas.
+  - S8, el tipo de defensa del lado A sin escribir: fallan 5.
+  - S9, una escritura correcta dicha como error: falla la del modelo (UI).
+  - S10, sin la columna del lado B: fallan 2 (UI).
+  - S11, Push Back leído como Selectivo: fallan 2 (UI).
+  - S12, la tabla compartida para Push Back: fallan 5 (UI).
+  - V1, «En blanco» rechazado con «Ambos lados»: fallan 2 en Core y 1 en UI.
+  - V2, el BOM sin la puerta de salida: falla la del BOM (UI).
+  - V3, «Descartar» sin la base leída: falla la de «Descartar» (UI).
+  - V4, la «T» que no mira «Ninguno»: falla la del tope (Core).
+  - V5, la copia de la mitad que dibuja sin el aviso de unidades: falla la guarda espejo.
+  - V6, «Nuevo» con la cola dormida: falla la de «Nuevo» (UI).
+
+**Los números** (sobre las fuentes finales):
+- **Core Full:** 19356 correctas, 0 con error, 403 omitidas (19759), compilado con `--no-incremental`. Son las 19331 de la primera entrega más las 25 nuevas.
+- **UI completa:** 2988 correctas, 0 con error, 48 omitidas (3036). Son las 2977 de la primera entrega más las 11 nuevas.
+- **Plugin en Debug:** 0 errores; 2 advertencias, las MSB3277 de las referencias de AutoCAD que ya estaban.
+
+## Quinta tanda: integración en la rama de Selectivo (sesión, 2026-11-26/27)
+
+Las seis partes se integraron con `merge --no-ff`, cada una con su commit y el de las correcciones de su revisión independiente. Push
+Back lleva además PB-S03, la seguridad poste por poste, en un segundo commit; su revisión independiente sigue en curso.
+
+| Orden | Parte | Commit de la parte | Correcciones | Merge |
+|---|---|---|---|---|
+| 1 | pp (peralte de todos los postes, pedido del Owner) | `ad70515c` | `b49907d6` | `a74a00b7` |
+| 2 | lg («Nuevo › Larguero», WIP) | `855a935c` | `5f96b9d4` | `bf07b251` |
+| 3 | al («Almacén») | `1fd0f38d` | `b1217383` | `359628a0` |
+| 4 | cm (camas de rodamiento) | `bddc2203` | `2bb19604` | `cdc50113` |
+| 5 | ct (Cantilever) | `44c0a439` | `5c0acdba` | `bec64511` |
+| 6 | pb (Push Back) | `24adfee7` | `01e76902` (con PB-S03) | este commit |
+
+### Lo que cambió al juntar las partes
+
+- **`DoorRequest`** lleva `IsWarehouse`, `IsCama`, `IsCantilever` e `IsPushBack`. La ventana atiende cama, Cantilever y Push Back en los
+  mismos sitios: `ShowPanel`, `HasRackEditor`, `OnDesignRead`, `OnDesignWritten`, `StopWaiting`, `OnRequestStarted`, `DraftStateOf`,
+  `UnwrittenWorkOf`, el BOM del borrador, `OpensHere`/`IsEditorAlive` de la biblioteca, los seis métodos de los borradores y
+  `Abandon` de la puerta.
+- **La poda:** la de Cantilever y la de Push Back pasan a `LostOnPrune`, el aviso único de cm. Cerrar un dibujo con cambios sin escribir
+  en varios sistemas da una sola línea con todos los nombres, sin que un aviso pise al otro.
+- **Censos:**
+  - la base de órdenes suma las de al, cm, ct y pb;
+  - el censo de órdenes del Plugin pasa de 57 a 70;
+  - la guarda de capas de `RackCadWindowListTests` exime en UNA condición las órdenes de las puertas de cama, Cantilever y Push Back, y
+    prohíbe fuera de ellas `ApplyCamaUpdate`, `ApplyCantileverEdit` y `RackPushBackWindowDrawing`.
+- **`RackCadLargueroWorkbenchTests`** cuenta la sección «Almacén».
+
+### Números sobre la integración
+
+- UI completa: 3109 / 0 / 48.
+- Core Full: 19481 / 0 / 403.
+- Solución en Debug (Plugin incluido): 0 errores.
+
+### Pendiente
+
+- La revisión independiente de PB-S03 y sus correcciones.
+- El smoke de la quinta tanda en AutoCAD.
+- La validación del Owner de los supuestos de cada parte: PP-S, LG-S, AL-S, CM-S, CT5 y PB-S. PB-S17 incluye un defecto del diálogo
+  clásico de Push Back con «Auto» en dos sentidos, que pide decisión del Owner.

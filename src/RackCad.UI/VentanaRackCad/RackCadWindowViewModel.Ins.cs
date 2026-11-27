@@ -48,6 +48,7 @@ namespace RackCad.UI.VentanaRackCad
             foreach (var entry in _dynamicDrafts.Values) entry.Editor.RefreshInsertState();
             foreach (var entry in _selectiveDrafts.Values) entry.Editor.RefreshInsertState();
             RefreshCantileverInsertPanels(); // T5 ct
+            RefreshPushBackInsertPanels(); // T5 pb
         }
     }
 }

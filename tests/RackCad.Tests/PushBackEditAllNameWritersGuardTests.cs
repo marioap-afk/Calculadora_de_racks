@@ -159,10 +159,13 @@ namespace RackCad.Tests
 
             log.Add("autoprueba-escritor-fuera-de-DrawPushBackView=" + (WriterInsideDrawPushBackView(outside) ? "pasa" : "falla"));
 
+            // T5 pb (I-64, quinta tanda): the census of the files of the Plugin that name PushBack grows from 15 to 19 with the door of Push Back
+            // of the RackCad window (RackCadPushBackDoorCommands.cs, RackCadRackDoorPort.PushBack.cs, the line of Abandon in RackCadRackDoorPort.cs)
+            // and its drawing half (RackPushBackWindowDrawing.cs). None of them writes a Name: the seven assignments and the order do not change.
             Assert.Equal(
                 new[]
                 {
-                    "archivos=15",
+                    "archivos=19", // T5 pb
                     "asignaciones=7",
                     "RackMenuCommands.cs: header.Configuration.Name = Systems.Shared.RackNewRackName.Resolve( document, global::RackCad.Domain.Systems.Shared.RackSystemKind.Selective, header.Configuration.Name);",
                     "RackMenuCommands.cs: dynamic.System.Name = dynamicName;",
