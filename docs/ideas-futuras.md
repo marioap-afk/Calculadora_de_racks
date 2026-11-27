@@ -2184,3 +2184,18 @@ Son los menores de la revisión independiente del código de PB-T3c, intento 1. 
 **Dos lecciones de PB-T4e:**
 - **Una lista vacía es una forma del alcance propia.** El RED solo añade las clases de las CT, sin esqueleto, y el GREEN es el texto literal de `src/`. La cadena la lee del contrato (INV-PBT4E-02 y 07), deja intactas las formas de PB-T4b, PB-T4c y PB-T4d, y para limpia en lo que depende de la versión hasta su seco sobre el contrato emitido.
 - **El participante falso de la propia sesión** (la lección de I-61) volvió a salir en la preparación de la verificación: la línea de órdenes de la sesión llevaba la ruta del worktree, y la medida de los procesos contó 2 participantes. Repetida desde el scratchpad, dio 0/0, antes de lanzar. **La mejora:** que la preparación avise cuando la línea de órdenes de quien la llama nombra el worktree, o lanzarla siempre desde el scratchpad.
+
+## I-64 sexta tanda — el aviso de st al cambiar de presentación (2026-11-27, registrado sin corregir)
+
+- **Lo observado (smoke de la sexta tanda, S6-14 y O-3 en construido.md):** cambiar de Model a Layout1 y volver (CTAB), con un editor
+  de la ventana abierto y limpio, lo marca con «El dibujo cambió desde que se leyó…». La lista pasa a «puede no estar al día».
+- **Por qué:**
+  - La señal de st (`RackCadCommandWatch`) solo conoce dos contadores de la sesión: los objetos del dibujo añadidos, borrados o
+    modificados (`DrawingChangeCount`) y las órdenes que empezaron (`CommandStartCount`).
+  - Cambiar de presentación modifica objetos (la presentación y sus ventanas), así que cuenta como un cambio.
+  - ZOOM, PAN y REGEN no modifican objetos y no marcan.
+- **Decisión del Owner (2026-11-27):** «Dejarlo así». Es un aviso de más, no se pierde nada: «Volver a leer del dibujo» lo quita.
+- **La mejora, si se quiere más adelante:** que solo cuenten los cambios que pueden tocar un rack. Hay dos caminos:
+  - filtrar en el puente de eventos los objetos que no son de RackCad (bajo las invariantes de F1);
+  - pasar el nombre de la orden en la instantánea y no contar las de presentación y guardado (CTAB, LAYOUT, QSAVE, PLOT…).
+- **Sin medir:** QSAVE, PLOT y las matrices.

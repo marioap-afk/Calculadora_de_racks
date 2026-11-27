@@ -7909,3 +7909,11 @@ Diez partes, cada una con su revisión independiente y sus correcciones. Cada me
 - **st:** PAN, QSAVE y matrices.
 
 Quedan para la prueba guiada del Owner sobre el SHA final, o como limitación declarada si el Owner no las pide.
+
+### Decisión del Owner sobre O-3 (2026-11-27)
+
+- **La pregunta:** cambiar de presentación marca los editores abiertos aunque ningún rack cambió.
+- **La respuesta:** «Dejarlo así».
+  - Se acepta como aviso conservador en I-64.
+  - Queda anotado como mejora futura en `docs/ideas-futuras.md`.
+  - No cambia el código: la punta de esta rama tras el smoke es la de la prueba guiada del Owner.
