@@ -644,7 +644,42 @@ namespace RackCad.UI.Tests
             rig.Door.SelectiveReadAnswer(SelectiveDesignRead.Refused(rig.Door.SelectiveReads.Single().RequestId, RackId, null, null, "El rack no está en el dibujo."));
             rig.Door.Done(refused);
             Assert.Null(rig.Window.ActiveSelectiveEditor);
-            Assert.StartsWith("no se abrió el editor del rack. No se pudo abrir el rack: El rack no está en el dibujo.", refused.Said, StringComparison.Ordinal);
+            // T6rl-S14 (correction 1 of the review): a rack whose editor does not open is one the classic window still serves: said in the
+            // command line and in the window.
+            Assert.Equal("no se abrió el editor del rack. No se pudo abrir el rack: El rack no está en el dibujo. " + RackCadShortcutRules.ClassicPropertiesText, refused.Said);
+            Assert.Equal("No se pudo abrir el rack: El rack no está en el dibujo. " + RackCadShortcutRules.ClassicPropertiesText, rig.Window.ActionMessage);
+            Assert.True(rig.Window.ActionFailed);
+            Assert.Equal("Usa «Propiedades personalizadas (ventana clásica)» del menú clásico (RACKMENU).", RackCadShortcutRules.ClassicPropertiesText);
+        }
+
+        // Correction 4 of the review: «Variables» is shown and not read (its read was refused). The Refresh of the ask reads nothing, so the
+        // one read of RACKPROPIEDADES is the one of «Editar aquí» (before, «Variables» took it and the rack said «la ventana espera…»), and
+        // RACKVARIABLES with the page already shown reads it once.
+        [Fact]
+        public void AnUnreadPageOfVariablesTakesNoReadWhileACommandAsks()
+        {
+            var rig = new Rig();
+            rig.Door.Answer = RackCadClassicResult.Without(RackCadClassicStatus.Busy, "x");
+            rig.Window.ShowPage(RackCadWindowPage.Variables);
+            rig.Door.Answer = RackCadClassicResult.Started();
+            Assert.Single(rig.Door.VariablesReads); // the refused one of the click
+            Assert.True(rig.Window.VariablesPage!.IsNotLoaded);
+
+            var ask = rig.Door.Ask(RackCadShortcutTarget.RackProperties, RackId);
+            Assert.Null(ask.Said);
+            Assert.Single(rig.Door.VariablesReads);
+            Assert.Single(rig.Door.SelectiveReads);
+            rig.Door.AnswerLastSelectiveRead(bound: false);
+            rig.Door.Done(ask);
+            Assert.Equal(SelectiveEditorViewModel.PropertiesTabIndex, rig.Window.ActiveSelectiveEditor!.SelectedTab);
+
+            rig.Window.ShowPage(RackCadWindowPage.Variables); // shown by hand: it reads (the window was free)
+            Assert.Equal(2, rig.Door.VariablesReads.Count);
+            rig.Door.AnswerVariablesRead(VariablesDoorRead.Refused(rig.Door.VariablesReads.Last().RequestId, "x"));
+            Assert.True(rig.Window.VariablesPage!.IsNotLoaded);
+            var variables = rig.Door.Ask(RackCadShortcutTarget.Variables); // the page already shown: read once, by the command
+            Assert.Null(variables.Said);
+            Assert.Equal(3, rig.Door.VariablesReads.Count);
         }
 
         // A window whose door does not take these commands (the doubles before T6): nothing is taken, and the command says it.

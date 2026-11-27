@@ -118,6 +118,73 @@ public class RackCadShortcutTests
         InOrder(collect, "_inlineReads = collected;", "ask();", "finally", "_inlineReads = null;");
     }
 
+    // Correction 3 of the review: the guard of I-54 G7 reads the classic loop now; the path of the registered command (the rack of the
+    // selection and the rack of the prompt) only reads: ForRead, nothing that writes, and one read of the reference.
+    [Fact]
+    public void TheRackOfTheCommandIsReadOnlyFromTheDataOfItsDefinition()
+    {
+        var shortcuts = WorkspaceHostSource.Code("src/RackCad.Plugin/RackCadWindowShortcuts.cs");
+        var rackIdOf = WorkspaceHostSource.BodyOf(shortcuts, @"internal static string RackIdOf\(Document document, ObjectId referenceId\)");
+        Assert.Equal(1, WorkspaceHostSource.Count(rackIdOf, @"\bInDocumentTransaction\s*\.\s*Run\s*\("));
+        InOrder(rackIdOf, "InDocumentTransaction.Run(document,", "OpenMode.ForRead", "RackBlockData.Read(transaction, reference.BlockTableRecord)",
+            "new RackEmbedStore().Deserialize(json)", "catch (System.Exception ex)");
+
+        var window = WorkspaceHostSource.Code("src/RackCad.Plugin/RackLayoutCommands.Ventana.cs");
+        var selected = WorkspaceHostSource.BodyOf(window, @"internal static List<WarehouseSelectedRack> SelectedRacks\(Document document\)");
+        Assert.Equal(1, WorkspaceHostSource.Count(selected, @"\bStartTransaction\s*\("));
+        Assert.Equal(1, WorkspaceHostSource.Count(selected, @"\bOpenMode\.ForRead\b"));
+
+        foreach (var body in new[] { rackIdOf, selected, shortcuts })
+        {
+            Assert.DoesNotMatch(new Regex(@"OpenMode\.ForWrite|OpenMode\.ForNotify|\bUpgradeOpen\b|\bWrite\s*\(|\bAppendEntity\b|\bErase\s*\(|SetImpliedSelection"), body);
+        }
+
+        Assert.Equal(2, WorkspaceHostSource.Count(shortcuts, @"\bOpenMode\.ForRead\b|\bInDocumentTransaction\s*\.\s*Run\s*\(") ); // the one read of RackIdOf
+    }
+
+    // ------------------------------------------------------------------ B of the part: the palette stays on a screen (A-14 §3)
+
+    private static readonly ScreenRect Primary = new(0, 0, 1920, 1040); // 1920 × 1080 with the taskbar
+    private static readonly ScreenRect Second = new(1920, 0, 2560, 1400); // a second monitor to the right, of another scaling (in pixels)
+
+    [Fact]
+    public void APaletteWhoseTitleIsOnAScreenAndThatFitsStaysWhereItIs()
+    {
+        var areas = new[] { Primary, Second };
+        Assert.Null(RackCadPalettePlacement.KeepOnScreen(new ScreenRect(100, 100, 600, 600), areas, Primary));
+        Assert.Null(RackCadPalettePlacement.KeepOnScreen(new ScreenRect(2200, 50, 900, 1200), areas, Primary)); // on the second monitor
+        Assert.Null(RackCadPalettePlacement.KeepOnScreen(new ScreenRect(1700, 10, 600, 600), areas, Primary)); // across both: title on the second
+        Assert.Null(RackCadPalettePlacement.KeepOnScreen(new ScreenRect(-450, 10, 600, 600), areas, Primary)); // 150 of the title on the primary
+        Assert.Null(RackCadPalettePlacement.KeepOnScreen(new ScreenRect(100, 600, 600, 600), areas, Primary)); // its bottom below the screen: still reachable
+    }
+
+    [Fact]
+    public void APaletteOffTheScreensGoesBackToThePrimaryOneCutToIt()
+    {
+        // SM-03: the second monitor is gone; the palette was on it.
+        Assert.Equal(new ScreenRect(80, 80, 600, 600),
+            RackCadPalettePlacement.KeepOnScreen(new ScreenRect(2200, 50, 600, 600), new[] { Primary }, Primary));
+        // Its title above the screen, or too little of it at the left edge.
+        Assert.Equal(new ScreenRect(80, 80, 600, 600), RackCadPalettePlacement.KeepOnScreen(new ScreenRect(100, -20, 600, 600), new[] { Primary }, Primary));
+        Assert.Equal(new ScreenRect(80, 80, 600, 600), RackCadPalettePlacement.KeepOnScreen(new ScreenRect(-500, 10, 600, 600), new[] { Primary }, Primary));
+        // Saved larger than the primary work area (it was on the big second monitor): cut to the area, and as near the corner as fits.
+        Assert.Equal(new ScreenRect(0, 0, 1920, 1040), RackCadPalettePlacement.KeepOnScreen(new ScreenRect(2000, 0, 2400, 1300), new[] { Primary }, Primary));
+        Assert.Equal(new ScreenRect(80, 0, 1800, 1040), RackCadPalettePlacement.KeepOnScreen(new ScreenRect(2000, 0, 1800, 1300), new[] { Primary }, Primary));
+    }
+
+    [Fact]
+    public void APaletteLargerThanTheScreenThatHoldsItsTitleIsCutToItThere()
+    {
+        var areas = new[] { Primary, Second };
+        // On the primary, taller than its work area: cut and moved inside it, left where it was.
+        Assert.Equal(new ScreenRect(300, 0, 600, 1040), RackCadPalettePlacement.KeepOnScreen(new ScreenRect(300, 200, 600, 1300), areas, Primary));
+        // On the second, wider than it: cut to it.
+        Assert.Equal(new ScreenRect(1920, 100, 2560, 800), RackCadPalettePlacement.KeepOnScreen(new ScreenRect(2000, 100, 3000, 800), areas, Primary));
+        // A primary area that is not first in the list, and empty areas, count as they are.
+        Assert.Null(RackCadPalettePlacement.KeepOnScreen(new ScreenRect(100, 100, 600, 600), new[] { new ScreenRect(0, 0, 0, 0), Second }, Primary));
+        Assert.Null(RackCadPalettePlacement.KeepOnScreen(new ScreenRect(100, 100, 600, 600), Array.Empty<ScreenRect>(), default));
+    }
+
     private static void InOrder(string body, params string[] steps)
     {
         var at = -1;

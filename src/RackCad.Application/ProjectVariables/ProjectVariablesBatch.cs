@@ -392,7 +392,7 @@ namespace RackCad.Application.ProjectVariables
                 if (!repair.IsSuccess || repair.Plan.RackMutations.Count != 1)
                 {
                     errors.Add(new ProjectVariableDraftError(rack, ProjectVariableDraftField.Repair,
-                        "No se puede reparar este rack: vuelve a leer la página; si sigue igual, revísalo con RACKVARIABLES."));
+                        "No se puede reparar este rack: vuelve a leer la página; si sigue igual, revísalo con «Variables de proyecto (ventana clásica)» del menú clásico (RACKMENU).")); // T6 rl: RACKVARIABLES opens this very page
                     continue;
                 }
 

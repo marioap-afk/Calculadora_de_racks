@@ -6,8 +6,9 @@ del DWG y se recupera al abrirlo de nuevo.
 
 ## Administrar variables con `RACKVARIABLES`
 
-Ejecuta `RACKVARIABLES` —alias `RVA`— para abrir **Variables de proyecto**. Cada variable muestra su nombre,
-tipo, definición, valor evaluado y los racks que la consumen.
+Ejecuta `RACKVARIABLES` —alias `RVA`— para abrir la sección **«Variables»** de la ventana RackCad, que no bloquea
+AutoCAD. La ventana clásica **Variables de proyecto** sigue en el menú clásico: `RACKMENU` › «Variables de proyecto
+(ventana clásica)». Cada variable muestra su nombre, tipo, definición, valor evaluado y los racks que la consumen.
 
 - Escribe un número para guardar una definición literal.
 - Empieza con `=` para guardar una fórmula, por ejemplo `=Holgura General + 2`.
@@ -50,7 +51,8 @@ al retirar el vínculo.
   valores y no transfiere el registro entre dibujos.
 - Una lectura ilegible, referencia rota, ciclo o cambio concurrente falla cerrado: RackCad no inventa cero, no
   recorta el resultado y no reemplaza silenciosamente la última definición confirmada.
-- **Referencias rotas** en `RACKVARIABLES` permite reparar explícitamente quitando los vínculos reparables del rack.
+- **Referencias rotas** en `RACKVARIABLES` (en la ventana RackCad o en su ventana clásica de `RACKMENU`) permite reparar
+  explícitamente quitando los vínculos reparables del rack.
   La acción exige confirmación y deja gobernando el literal almacenado; la geometría puede cambiar.
 
 Las referencias entre propiedades de racks distintos, la transferencia o fusión de variables entre dibujos y

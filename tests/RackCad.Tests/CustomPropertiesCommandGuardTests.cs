@@ -329,6 +329,9 @@ namespace RackCad.Tests
 
             // T6 rl (Owner, 2026-11-27, «La ventana, ya»): the two registrations carry the flags of the commands that open the window (no undo
             // marker, the selection kept: it designates the rack); the loop of the classic window stays in this file, RackPropiedadesClassic.
+            // Correction 3 of the review: what this guard reads now is that classic loop (the one the classic menu runs) and the registration;
+            // the registered command opens the window, and its path (RackIdOf, SelectedRacks, the inline read of the door) is guarded by
+            // RackCadShortcutTests, which fixes that it only reads.
             if (!Regex.IsMatch(text, @"\[CommandMethod\(""RACKPROPIEDADES"", RackCadWindowShortcuts\.WindowFlags\)\]\s*public\s+void\s+RackPropiedades\s*\(\s*\)\s*\{"))
             {
                 violations.Add("RACKPROPIEDADES no es el metodo publico RackPropiedades()");

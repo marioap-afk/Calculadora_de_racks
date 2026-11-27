@@ -122,6 +122,10 @@ namespace RackCad.Application.VentanaRackCad
         public const string NotInTheListText =
             "La lista de la ventana no tiene ese rack: pulsa «Volver a leer la lista» y vuelve a escribir RACKPROPIEDADES.";
 
+        /// <summary>T6rl-S14: where the classic window is, for a rack the window cannot open (correction 1 of the review).</summary>
+        public const string ClassicPropertiesText =
+            "Usa «Propiedades personalizadas (ventana clásica)» del menú clásico (RACKMENU).";
+
         public const string BusyText =
             "La ventana espera otra respuesta de AutoCAD: cuando termine, vuelve a escribir la orden.";
     }

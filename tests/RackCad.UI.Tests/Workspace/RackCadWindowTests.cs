@@ -767,12 +767,13 @@ namespace RackCad.UI.Tests
                 Assert.True(rig.Window.ShowVariablesClassicStep);
                 rig.Window.ShowPage(RackCadWindowPage.Variables);
                 Lay(view);
-                var variables = Descendants<Button>(view.VariablesPage).Single(b => (b.Tag as string) == "Variables");
+                // T6 rl: RACKVARIABLES opens this section now, so the step opens the classic menu, where the classic window of Variables is.
+                var variables = Descendants<Button>(view.VariablesPage).Single(b => (b.Tag as string) == "ClassicMenu");
                 Click(variables);
 
                 Click(view.ClassicMenuButton);
 
-                Assert.Equal(new[] { RackCadClassicAction.NewCantilever, RackCadClassicAction.Variables, RackCadClassicAction.ClassicMenu }, rig.Classic.Runs);
+                Assert.Equal(new[] { RackCadClassicAction.NewCantilever, RackCadClassicAction.ClassicMenu, RackCadClassicAction.ClassicMenu }, rig.Classic.Runs);
             });
         }
 

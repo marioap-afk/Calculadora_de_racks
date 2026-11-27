@@ -5160,3 +5160,142 @@ Solución en Debug recompilada con `--no-incremental` sobre las fuentes finales,
   ninguna de las cuatro deja paso en Deshacer y que conservan la selección; RACKPROPIEDADES con un Selectivo, un Push Back y una cabecera, con
   y sin el editor abierto, y con «Proyecto»; RACKVARIABLES la primera vez y la segunda; los dos botones de RACKMENU (las ventanas clásicas
   escriben y un «U» las deshace como antes).
+
+### Sexta tanda, rl: correcciones de la revisión (sobre `2c9345c6`)
+
+Corrige la revisión independiente de la parte y aplica la respuesta del Owner sobre B («Sí, cambiarlas», 2026-11-27). Hecho en `D:\w6rl`, sobre
+el commit `2c9345c6` del coordinador. Sin commit, sin push, sin AutoCAD.
+
+**A. «La ventana recuerda» su tamaño, su posición y su acople (A-14 §3; las guardas de F1-T3B, reapuntadas por el Owner)**
+
+- **La identidad:** `new PaletteSet("RackCad", PaletteId)`, con `PaletteId` un GUID constante (`4dc6f19b-296f-424d-8e74-82c7312e2c6a`) que no
+  debe cambiar nunca. AutoCAD guarda bajo él, en el perfil del usuario, el tamaño, la posición y el acople, y los repone en la sesión
+  siguiente. El host no escribe nada.
+- **La incógnita** (¿AutoCAD repone el estado en el constructor o al primer `Visible`?), tratada sin depender de la respuesta:
+  - un `Load` mínimo, suscrito justo después de construir la paleta (antes que nada), que solo anota que había estado guardado
+    (`_restoredByAutoCad`); sin `Save`;
+  - `ApplyInitialPlacement` sigue en el constructor (antes del primer `Visible`) y no coloca nada si llegó ese `Load`.
+  - Si AutoCAD repone al primer `Visible`, lo guardado se pone encima de la primera colocación, que queda como la de la primera vez.
+  - Si repone antes de `Visible` y avisa con `Load`, la primera colocación no se aplica.
+  - **El único caso que no cubre:** AutoCAD repone dentro del propio `new PaletteSet(...)` y lanza su `Load` antes de que exista ninguna
+    suscripción. Entonces la primera colocación pisaría lo guardado: se vería en el smoke, porque la paleta no recordaría nada.
+  - La vía alternativa, si pasa: colocar en el primer `Show()` después de `Visible`, solo si no llegó `Load`. No la elegí: en el caso de reponer
+    al primer `Visible` sin `Load`, pisaría lo guardado.
+- **La comprobación de pantalla** (`KeepOnScreen`, desde `Show()` tras `Visible`; SM-03 del Smoke-1 fue una paleta fuera de la pantalla):
+  - solo con la paleta flotante;
+  - en píxeles de dispositivo: `Location`, `Size` y `Screen.WorkingArea` de cada monitor (`System.Windows.Forms.Screen`), así que los monitores
+    con escalas distintas se comparan en las mismas unidades;
+  - la regla pura es `RackCadPalettePlacement.KeepOnScreen` (Application):
+    - su barra de título (32 px) en un área de trabajo, con al menos 120 px de ancho, y no mayor que esa área: se queda;
+    - mayor que el área que tiene su título: se recorta a esa área y se mete dentro;
+    - con el título en ningún área (un monitor que ya no está, o que cambió): va al área principal, a 80 px de su esquina, recortada a ella;
+  - un fallo se contiene y se registra.
+- El Plugin gana `<UseWindowsForms>true</UseWindowsForms>`, para `Screen`; nada más lo usa.
+- **Efectos, declarados (T6rl-S16; el caso no cubierto de arriba es T6rl-S17, para el smoke):**
+  - AutoCAD guarda ese estado en el perfil del usuario: es por perfil, y queda un resto tras desinstalar RackCad;
+  - el GUID es fijo: cambiarlo olvidaría, para todos, dónde estaba la paleta.
+  - UT-S06 («Acerca de» no dice que la recuerda) sigue igual hasta que el smoke lo confirme.
+- **Guardas reapuntadas en `WorkspacePaletteHostSourceGuardTests`, con la misma dureza, citando la A-14 §3:**
+  - `ThePaletteIsBuiltWithTheTitleRackCadAndOneConstantIdentity` (antes «…NoToolIdentifier»): exactamente
+    `new PaletteSet("RackCad", PaletteId)` y la constante con ese GUID; dos `Guid` (el tipo y su constructor) y dos `PaletteId` en todo el
+    archivo; sin `NewGuid`, `Guid.Parse`, `toolID` ni otra asignación;
+  - `ThePaletteHasOnlyTheMinimalLoadThatNotesAndNoSave` (antes «…NoLoadNorSaveHandlers»):
+    - una sola suscripción `_palette.Load += OnPaletteLoad;`;
+    - el cuerpo exacto del manejador (anotar y contener);
+    - una sola asignación de la marca;
+    - fuera de ese `Load`, nada de `Load`, `Save`, `Saving`, `PalettePersist` ni `ConfigurationSection`;
+  - `TheFirstPlacementAddsNoPersistenceIdentity…` sale solo `\bGuid\b`. `Load` y lo demás siguen prohibidos en el código sin el `Load` mínimo,
+    igual que registro, `UserSettings`, disco, perfil, `SizeChanged` y los movimientos. Las suscripciones son exactamente tres;
+  - `RepeatedShowNeverReappliesTheFirstPlacement…`:
+    - el orden del constructor: construir, `Load` (sin nada entre medias), `AddVisual`, la primera colocación, y después las otras dos
+      suscripciones;
+    - `Show()` es exactamente `_palette.Visible = true; KeepOnScreen();`, y `KeepOnScreen` se declara y se llama una vez;
+    - la geometría solo se toca en la primera colocación y en la regla de pantalla;
+    - la regla, en orden: solo flotante, `Location`, `Size`, `Screen` y su `WorkingArea`, la regla pura, y `Size`/`Location` solo si la regla
+      lo dice. Nunca acopla, ni toca la colocación ni el mínimo;
+  - `TheFirstCreationConfigures…`: además, la primera instrucción de la colocación es `if (_restoredByAutoCad) return;`;
+  - `TheHostSubscribesTo…`: tres suscripciones, la tercera el `Load`;
+  - `EveryEntryOfThePaletteHost…`: también `OnPaletteLoad` y `KeepOnScreen`, contenidos y registrados;
+  - sin cambios: `ExactlyOnePaletteSetIsConstructed…` (`:80-92`), `ThePaletteHostHasNoTimer…` (`:244-252`) y
+    `ThePaletteHostPublicSurface…` (`:285-301`).
+  - Fuera de ese archivo, la misma decisión movía dos guardas más del host. Las reapunté con su nota, sin quitarles nada:
+    - `WorkspaceBrowserHostGuardTests.ThePaletteHostOnlyPassesTheSummaryPort…`: tres suscripciones, una de ellas el `Load` exacto;
+    - `WorkspaceNavigationHostTests.ThePaletteHostOnlyGainsTheNavigationPort…`: su lista exacta de `using` gana
+      `RackCad.Application.VentanaRackCad` (la regla pura), y tiene tres suscripciones.
+  - Los comentarios del host (`WorkspacePaletteHost.cs`, la clase y la primera colocación) y la cabecera del bloque de la prueba, al día.
+- **Smoke en AutoCAD:**
+  1. la primera vez (perfil sin estado guardado): la paleta sale acoplada a la derecha, 600 × 600, como hoy;
+  2. flotante en el segundo monitor, cerrar AutoCAD y abrirlo: misma posición y tamaño;
+  3. acoplada a la izquierda: sigue acoplada a la izquierda;
+  4. con el segundo monitor desconectado, o con la escala cambiada: aparece en el principal, recortada si hace falta;
+  5. guardada más grande que el área de trabajo: se recorta;
+  6. comprobar que el estado guardado no lo pisa la primera colocación (el caso no cubierto de arriba).
+
+**B. Hallazgos de la revisión**
+
+| Punto | Qué pasaba | Qué se hizo | Prueba |
+|---|---|---|---|
+| 1 (importante) | RACKPROPIEDADES ya no ofrecía la ventana clásica para racks que esta sí atendía: un Selectivo con una referencia rota a una variable, o vistas con diseños distintos. El editor de la ventana no se abre, y la orden solo decía «no se abrió el editor» | **T6rl-S14:** en esa rama, la línea de órdenes y el aviso de la ventana añaden «Usa «Propiedades personalizadas (ventana clásica)» del menú clásico (RACKMENU).» (`RackCadShortcutRules.ClassicPropertiesText`) | UI, `RackPropiedadesSaysWhy…` (el texto exacto de la línea de órdenes y del aviso) |
+| 2 (importante) | Remedios que mandaban al usuario al mismo sitio donde está | Donde habla la ventana, la clásica de RACKMENU (ver abajo) | — (no había pruebas que fijaran esos textos) |
+| 3 | La guarda de I-54 G7 vigila ahora el bucle clásico, no la orden registrada | Una nota en `CustomPropertiesCommandGuardTests`. Guarda nueva `RackCadShortcutTests.TheRackOfTheCommandIsReadOnlyFromTheDataOfItsDefinition`: `RackIdOf` con un único `InDocumentTransaction.Run`, `ForRead`, los datos de la definición y su `catch`; `SelectedRacks` con una transacción y un `ForRead`; ni `ForWrite`, `ForNotify`, `UpgradeOpen`, `Write(`, `AppendEntity`, `Erase(` ni `SetImpliedSelection` en ellos ni en el ayudante | Core, la guarda nueva |
+| 4 | El `Refresh()` de la pregunta presentaba «Variables», que se lee sola si está a la vista sin leer. Esa lectura se quedaba la única de la orden, y RACKPROPIEDADES decía «la ventana espera…» aunque la lectura corría dentro | Mientras la orden pregunta (`_shortcutAsking`), `PresentVariables` no lee. RACKVARIABLES llama a la lectura de la página también cuando ya estaba a la vista, y lee como mucho una vez | UI `AnUnreadPageOfVariablesTakesNoReadWhileACommandAsks` |
+| 5 | Textos: el nombre de automatización del botón clásico de «Variables», y el paso intermedio de la ventana sin puerta, que ejecutaba RACKVARIABLES y volvía a la propia ventana | El nombre: «Abrir el menú clásico, con la ventana clásica de Variables». El paso intermedio abre RACKMENU (`Tag="ClassicMenu"`, «Abrir el menú clásico») y dice dónde está la ventana clásica | UI `ACardOfNuevoAndAButtonOfAPage…` (el paso ejecuta `ClassicMenu`) |
+| 6 | La Core Full no se repitió tras reapuntar el censo | Repetida (ver los números) | — |
+
+**Los remedios del punto 2** (T6rl-S15; marcados `T6 rl`):
+- `ProjectVariablesBatch.cs` (dicho dentro de la página «Variables»): «…si sigue igual, revísalo con «Variables de proyecto (ventana clásica)» del
+  menú clásico (RACKMENU).»
+- `RackPropertiesTabViewModel.ReadOnlyText` (dentro de la propia pestaña): «…siguen en «Propiedades personalizadas (ventana clásica)» del menú
+  clásico (RACKMENU).»
+  - **Para integrar con pr:** pr cambia también este texto. Mi cambio es solo el final de la frase; se queda la versión de pr si ya nombra
+    dónde están.
+- `RackProjectionRemedy.cs`:
+  - propiedades divergentes o ilegibles: RACKPROPIEDADES (la pestaña «Propiedades» del rack en la ventana) o, si su editor no se abre, la
+    clásica de RACKMENU;
+  - referencia rota: RACKVARIABLES («Referencias rotas», «Reparar» en la ventana) o la clásica de RACKMENU.
+  - Sin acentos ni comillas angulares, como el resto del archivo: `RackProjectionRemedyTests.EVERY_REMEDY_CARRIES_A_MESSAGE_WITHOUT_ACCENTS` lo
+    exige, y la primera versión lo rompió.
+- `RackSiblingCustomPropertiesGate.cs`: el mismo código `CUSTOM_PROPERTIES_DIVERGENT`, con los dos sitios, también sin acentos.
+- Las guías: `docs/guias/variables-y-formulas.md` (RACKVARIABLES abre la sección de la ventana, y la clásica sigue en RACKMENU; «Referencias
+  rotas», en las dos) y `docs/guias/vistas-ligadas-y-proyeccion.md` (unificar, en las dos).
+
+**Pruebas nuevas y cambiadas:**
+- Core, `RackCadShortcutTests` (+4):
+  - la guarda de solo lectura del punto 3;
+  - tres de la regla de pantalla: se queda donde está en una pantalla, también entre dos, con 150 px del título en la principal o con su pie
+    fuera; vuelve a la principal desde un monitor que ya no está, desde encima de la pantalla o con poco título a la vista, recortada si era
+    más grande; recortada dentro de la pantalla que tiene su título; un área vacía y ninguna.
+- Core, `WorkspacePaletteHostSourceGuardTests`: las dos renombradas y las reapuntadas de arriba (el número de pruebas no cambia).
+- UI, `RackCadVariablesPageTests` (+1, `AnUnreadPageOfVariablesTakesNoReadWhileACommandAsks`); `RackPropiedadesSaysWhy…` comprueba T6rl-S14.
+- UI, `RackCadWindowTests.ACardOfNuevoAndAButtonOfAPage…`: el paso intermedio ejecuta `ClassicMenu`.
+
+**Comprobación en rojo:** nueve piezas rotas a propósito, una a una, con la mecánica de `red.py` (`hs65\t6\rl\red2.py` en el scratchpad de la
+sesión; salida en `red2-out.txt`). Antes de cada rotura, una copia del archivo fuera del worktree; después, la compilación, la clase de la
+pieza y la restauración con el mismo SHA-256, comprobada en los nueve casos. Sin restos en `git diff`.
+
+| Pieza | Qué se rompió | Falla |
+|---|---|---|
+| K1 | la primera colocación sin su compuerta `_restoredByAutoCad` | `TheFirstCreationConfiguresAnExplicitDeviceIndependentPlacement…` |
+| K2 | `Show()` sin `KeepOnScreen()` | `RepeatedShowNeverReappliesTheFirstPlacement…` |
+| K3 | el `Load` que no anota solo la marca | `ThePaletteHasOnlyTheMinimalLoadThatNotesAndNoSave` |
+| K4 | la regla deja una paleta mayor que su pantalla | `APaletteLargerThanTheScreenThatHoldsItsTitleIsCutToItThere` |
+| K5 | la regla deja una paleta fuera de las pantallas | `APaletteOffTheScreensGoesBackToThePrimaryOneCutToIt` |
+| K6 | RACKPROPIEDADES sin remitir a la clásica (T6rl-S14) | `RackPropiedadesSaysWhyWhenTheRackCannotBeOpened` |
+| K7 | «Variables» lee sola mientras la orden pregunta | `AnUnreadPageOfVariablesTakesNoReadWhileACommandAsks` |
+| K8 | RACKVARIABLES no lee la página ya a la vista | `AnUnreadPageOfVariablesTakesNoReadWhileACommandAsks` |
+| K9 | `RackIdOf` abre la referencia para escribir | `TheRackOfTheCommandIsReadOnlyFromTheDataOfItsDefinition` |
+
+**Los números** (sobre las fuentes finales, tras la comprobación en rojo):
+- **Build Debug de la solución (Plugin incluido)**, con `--no-incremental`: 0 errores. Las advertencias son las de siempre (MSB3277 y los
+  analizadores de xunit); ninguna sale de los archivos de esta corrección.
+- **Clases focales:**
+  - Core: 822 de 822, con 6 omitidas. Incluye:
+    - las guardas del host (paleta, navegación, navegador, aviso de cierre, piloto, órdenes y puente);
+    - `RackCadShortcutTests`, `WarehouseShortcutTests` y `RackProjectionRemedyTests`;
+    - las guardas de I-54 G7 y de G16;
+    - las de Variables, la lista de la ventana, el censo de Push Back, el de órdenes y el menú clásico.
+  - UI: 162 de 162 (Variables, la ventana, la pestaña «Propiedades», Almacén, utilidades y el menú clásico).
+- **Las suites completas no se corrieron:** por orden del coordinador, tras la pausa que pidió el Owner, para no saturar la máquina. Las corre
+  la sesión sobre la rama integrada, también el censo de Push Back reapuntado antes, que quedaba por confirmar en la Core Full.
+  - Las cuentas esperadas: UI 3127 / 0 / 48 (3126 + 1) y Core 19498 / 0 / 403 (19494 + 4).
+- Una Core Full y una UI completa empezadas antes de la pausa se detuvieron sin resultado.

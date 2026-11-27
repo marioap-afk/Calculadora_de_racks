@@ -71,7 +71,7 @@ namespace RackCad.UI.VentanaRackCad
         public bool IsNotDivergent => !IsDivergent && IsEditable;
 
         public string ReadOnlyText => _read == null
-            ? "Las propiedades de este rack no se leyeron con el editor: siguen en RACKPROPIEDADES."
+            ? "Las propiedades de este rack no se leyeron con el editor: siguen en «Propiedades personalizadas (ventana clásica)» del menú clásico (RACKMENU)." // T6 rl: RACKPROPIEDADES opens this very tab
             : !IsEditable && !IsDivergent ? _read.Reason ?? string.Empty : string.Empty;
 
         public bool IsReadOnly => !IsEditable && !IsDivergent;

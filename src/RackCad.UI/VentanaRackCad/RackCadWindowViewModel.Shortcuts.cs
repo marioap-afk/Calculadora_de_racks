@@ -22,6 +22,9 @@ namespace RackCad.UI.VentanaRackCad
         // The rack whose tab «Propiedades» is shown when the read of its «Editar aquí», asked by RACKPROPIEDADES, answers.
         private (SessionId Session, string RackId)? _propertiesAsked;
 
+        // A command asks the window (correction 4 of the review): the presentation of the pages reads nothing on its own meanwhile.
+        private bool _shortcutAsking;
+
         // Called once by the constructor.
         private void WireShortcuts()
         {
@@ -37,7 +40,19 @@ namespace RackCad.UI.VentanaRackCad
             Contained(() =>
             {
                 if (ask == null) return;
-                Refresh();
+
+                // Correction 4 of the review: pulling the state of the host presents the pages, and «Variables» reads on its own when it is
+                // shown and not read; while the command asks, it does not, so the one read of the command is the one of what it opens.
+                _shortcutAsking = true;
+                try
+                {
+                    Refresh();
+                }
+                finally
+                {
+                    _shortcutAsking = false;
+                }
+
                 ask.Taken = true;
                 _propertiesAsked = null;
                 if (ask.Target == RackCadShortcutTarget.RackProperties) ShowRackPropertiesByShortcut(ask);
@@ -61,7 +76,13 @@ namespace RackCad.UI.VentanaRackCad
                     var here = Panel.PresentedSession == asked.Session
                                && string.Equals(Panel.Browser.ActiveRackId, asked.RackId, StringComparison.OrdinalIgnoreCase);
                     if (!here || !ShowPropertiesTabOfActiveEditor())
-                        ask.Said = "no se abrió el editor del rack. " + (string.IsNullOrWhiteSpace(ActionMessage) ? string.Empty : ActionMessage.Trim());
+                    {
+                        // T6rl-S14 (correction 1 of the review): a rack whose editor does not open (a broken reference to a variable, views
+                        // with different designs) is one the classic window still serves: the window says where it is.
+                        var why = string.IsNullOrWhiteSpace(ActionMessage) ? string.Empty : ActionMessage.Trim() + " ";
+                        ask.Said = "no se abrió el editor del rack. " + why + RackCadShortcutRules.ClassicPropertiesText;
+                        if (here) Say(why + RackCadShortcutRules.ClassicPropertiesText, failed: true);
+                    }
                 }
             });
         }
@@ -71,6 +92,7 @@ namespace RackCad.UI.VentanaRackCad
         private void ShowVariablesByShortcut(RackCadShortcutAsk ask)
         {
             ShowPage(RackCadWindowPage.Variables);
+            VariablesPageShown(); // also when it was already the page shown (the Refresh of the ask read nothing); reads at most once
             if (ask.Target == RackCadShortcutTarget.ProjectProperties && VariablesPage is VariablesPageViewModel shown)
                 shown.SelectedTab = ProjectPropertiesTabIndex;
 

@@ -979,10 +979,11 @@ public class WorkspaceNavigationHostTests
         // I-64 F4-T3B1 (INV-F4T3B1-01, G-01): the fifth argument is the edit port of the pilot of the controller, and nothing else.
         Assert.Matches(@"new\s+WorkspacePanelViewModel\s*\(\s*_controller\.Port\s*,\s*_controller\.SetInstrumentationEnabled\s*,\s*_controller\.Navigation\s*,\s*_controller\.BrowserSummary\s*,\s*_controller\.PilotEdit\s*\)", host);
         Assert.Equal(
-            // I-64 A-14: the RackCad window and its door to the classic commands.
-            new[] { "Autodesk.AutoCAD.Windows", "RackCad.Application.Diagnostics", "RackCad.Application.Workspace", "RackCad.Plugin.VentanaRackCad", "RackCad.UI.VentanaRackCad", "RackCad.UI.Workspace" },
+            // I-64 A-14: the RackCad window and its door to the classic commands. T6 rl (A-14 §3, «la ventana recuerda», re-pointed by the Owner
+            // on 2026-11-27): RackCad.Application.VentanaRackCad, for the pure rule that keeps the palette on a screen (RackCadPalettePlacement).
+            new[] { "Autodesk.AutoCAD.Windows", "RackCad.Application.Diagnostics", "RackCad.Application.VentanaRackCad", "RackCad.Application.Workspace", "RackCad.Plugin.VentanaRackCad", "RackCad.UI.VentanaRackCad", "RackCad.UI.Workspace" },
             Regex.Matches(host, @"^\s*using\s+([\w.]+)\s*;", RegexOptions.Multiline).Select(m => m.Groups[1].Value).ToArray());
-        Assert.Equal(2, Src.Count(host, @"\+="));
+        Assert.Equal(3, Src.Count(host, @"\+=")); // T6 rl: the minimal Load of the identity of the palette (WorkspacePaletteHostSourceGuardTests)
         Assert.DoesNotMatch(new Regex(@"IWorkspaceNavigationPort|WorkspaceNavigation|NavigationEcho|NavigationTargets|NavigationAction"), host);
         // I-64 A-14: the window has two columns, so it starts wider and its minimum is wider.
         Assert.Matches(@"private\s+const\s+double\s+InitialWidth\s*=\s*600\s*;", host);

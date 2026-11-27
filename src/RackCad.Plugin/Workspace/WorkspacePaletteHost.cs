@@ -1,5 +1,6 @@
 using Autodesk.AutoCAD.Windows;
 using RackCad.Application.Diagnostics;
+using RackCad.Application.VentanaRackCad;
 using RackCad.Application.Workspace;
 using RackCad.Plugin.VentanaRackCad;
 using RackCad.UI.VentanaRackCad;
@@ -12,9 +13,13 @@ namespace RackCad.Plugin.Workspace
     /// lazily, the first time RACKCAD, RK or RACKPANEL shows the window, and it lives until AutoCAD ends: nothing is created when
     /// the plugin loads and nothing is released on terminate.
     ///
-    /// The palette is built with only its title (no tool identifier, so it has no persisted identity) and with no
-    /// load or save handlers: the host persists nothing. It is placed once, when the process creates it: a size, a floating
-    /// rectangle on screen and an initial dock to the right (F1-T3B-HOST-UI-C1); showing it again never moves it. Closing the palette hides it; the host mirrors that to the
+    /// T6 rl (A-14 §3, «la ventana recuerda», approved by the Owner on 2026-11-23; the guards of F1-T3B re-pointed by the Owner on
+    /// 2026-11-27): the palette is built with its title and ONE stable identity (<see cref="PaletteId"/>, a constant that never changes), so
+    /// AutoCAD saves its size, its position and whether it is docked in the profile of the user, and puts them back in the next session. The
+    /// host writes nothing itself: its only handler of persistence is a minimal <c>Load</c> that notes that AutoCAD had a saved state, and
+    /// there is no <c>Save</c>. The first placement of F1-T3B-HOST-UI-C1 (a size, a floating rectangle on screen and an initial dock to the
+    /// right) is applied once, when the process creates the palette, and only when AutoCAD restored nothing; showing the palette never applies
+    /// it again, and only brings a floating palette back onto a screen when it would be out of reach (<see cref="KeepOnScreen"/>). Closing the palette hides it; the host mirrors that to the
     /// controller. Exactly one root control of the UI project is added: since I-64 A-14 it is the RackCad window, which shows the
     /// workspace panel as the page of the rack; its view-models are fed only by the ports of the controller, by the neutral delegate
     /// of the instrumentation switch and by the door to the classic commands.
@@ -39,6 +44,13 @@ namespace RackCad.Plugin.Workspace
         private const double FloatingLeft = 80;
         private const double FloatingTop = 80;
 
+        // T6 rl (A-14 §3): the identity under which AutoCAD saves the state of the palette in the profile of the user. It never changes: a new
+        // value would forget, for every user, where the palette was.
+        private static readonly System.Guid PaletteId = new System.Guid("4dc6f19b-296f-424d-8e74-82c7312e2c6a");
+
+        // T6 rl: AutoCAD had a saved state for this identity (its Load came): the first placement is not applied over it.
+        private bool _restoredByAutoCad;
+
         private readonly WorkspaceController _controller;
         private readonly PaletteSet _palette;
         private readonly WorkspacePanelViewModel _viewModel;
@@ -55,16 +67,17 @@ namespace RackCad.Plugin.Workspace
             _controller.WindowCloseAdvisor.SetWindowWork(_window.UnwrittenWorkOf);
             _root = new RackCadWindowView(_window);
 
-            _palette = new PaletteSet("RackCad");
+            _palette = new PaletteSet("RackCad", PaletteId);
+            _palette.Load += OnPaletteLoad; // T6 rl: as soon as the palette exists, before anything can make AutoCAD restore it
             _palette.Style = PaletteSetStyles.ShowPropertiesMenu | PaletteSetStyles.ShowAutoHideButton | PaletteSetStyles.ShowCloseButton;
             _palette.DockEnabled = DockSides.Left | DockSides.Right;
             _palette.KeepFocus = true;
             _palette.AddVisual("RackCad", _root);
 
-            // Once per process, before the palette is ever shown: Show() never repeats it.
+            // Once per process, before the palette is ever shown: Show() never repeats it. It places nothing over a state AutoCAD restored.
             ApplyInitialPlacement();
 
-            // The subscriptions are the last step: once they exist nothing can fail any more.
+            // The two other subscriptions are the last step: once they exist nothing can fail any more.
             _palette.StateChanged += OnPaletteStateChanged;
             _controller.StateChanged += OnControllerStateChanged;
 
@@ -78,21 +91,24 @@ namespace RackCad.Plugin.Workspace
         /// <summary>Whether the first RACKPANEL already created the host.</summary>
         public static bool IsCreated => Holder.IsCreated;
 
-        /// <summary>Shows the palette (docked or floating, wherever the user left it). Repeating it creates nothing new.</summary>
+        /// <summary>Shows the palette (docked or floating, wherever the user left it), on a screen. Repeating it creates nothing new.</summary>
         public void Show()
         {
             _palette.Visible = true;
+            KeepOnScreen();
         }
 
         // The first placement, applied once when the process creates the palette (F1-T3B-HOST-UI-C1, D-01): Smoke-1 showed that a
         // palette created with no size and no position can float off the screen. It gets a size and a minimum size, a floating
-        // rectangle on screen for when the user undocks it, and an initial dock to the right. AutoCAD keeps any later move or dock
-        // of the user for the rest of the process; nothing is persisted, because the palette still has no identity. A failure is
-        // contained and logged: the panel is still shown.
+        // rectangle on screen for when the user undocks it, and an initial dock to the right. T6 rl (A-14 §3): AutoCAD saves any later
+        // move, size or dock of the user under the identity of the palette and restores it in the next session; so the placement is applied
+        // only when AutoCAD restored nothing (no Load came). If AutoCAD restores the state at the first Visible instead, it lays it over
+        // these values, which are then only those of the first time. A failure is contained and logged: the panel is still shown.
         private void ApplyInitialPlacement()
         {
             try
             {
+                if (_restoredByAutoCad) return; // T6 rl: AutoCAD put back where the user left it
                 _palette.DeviceIndependentMinimumSize = new System.Drawing.Size(MinimumWidth, MinimumHeight);
                 _palette.DeviceIndependentSize = new System.Windows.Size(InitialWidth, InitialHeight);
                 _palette.InitializeFloatingPosition(new System.Windows.Rect(FloatingLeft, FloatingTop, InitialWidth, InitialHeight));
@@ -103,6 +119,47 @@ namespace RackCad.Plugin.Workspace
                 LogFault("WorkspacePaletteHost.ApplyInitialPlacement", ex);
             }
         }
+
+        // T6 rl (A-14 §3): AutoCAD restores the state it saved for the identity of the palette; the host only notes that there was one.
+        private void OnPaletteLoad(object sender, PalettePersistEventArgs e)
+        {
+            try
+            {
+                _restoredByAutoCad = true;
+            }
+            catch (System.Exception ex)
+            {
+                LogFault("WorkspacePaletteHost.OnPaletteLoad", ex);
+            }
+        }
+
+        // T6 rl (A-14 §3; SM-03 of Smoke-1 was a palette off the screen): a floating palette whose title bar is on no work area of the monitors
+        // of now (one was removed, or the scaling changed), or larger than the work area that holds it, is brought back onto a screen and cut to
+        // it. In device pixels, the units of Location, Size and the work areas of the screens, so monitors with different scaling compare
+        // alike. A docked palette is AutoCAD's. A failure is contained and logged: the panel is still shown.
+        private void KeepOnScreen()
+        {
+            try
+            {
+                if (_palette.Dock != DockSides.None) return;
+                var location = _palette.Location;
+                var size = _palette.Size;
+                var areas = new System.Collections.Generic.List<ScreenRect>();
+                foreach (var screen in System.Windows.Forms.Screen.AllScreens) areas.Add(RectOf(screen.WorkingArea));
+                var primary = System.Windows.Forms.Screen.PrimaryScreen;
+                var kept = RackCadPalettePlacement.KeepOnScreen(new ScreenRect(location.X, location.Y, size.Width, size.Height), areas,
+                    primary == null ? default : RectOf(primary.WorkingArea));
+                if (kept is not ScreenRect target) return;
+                _palette.Size = new System.Drawing.Size(target.Width, target.Height);
+                _palette.Location = new System.Drawing.Point(target.Left, target.Top);
+            }
+            catch (System.Exception ex)
+            {
+                LogFault("WorkspacePaletteHost.KeepOnScreen", ex);
+            }
+        }
+
+        private static ScreenRect RectOf(System.Drawing.Rectangle area) => new ScreenRect(area.X, area.Y, area.Width, area.Height);
 
         // The palette was shown or hidden (closing it hides it): the controller mirrors the panel visibility.
         private void OnPaletteStateChanged(object sender, PaletteSetStateEventArgs e)
