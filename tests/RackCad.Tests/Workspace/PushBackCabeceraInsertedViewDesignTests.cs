@@ -91,9 +91,13 @@ public class PushBackCabeceraInsertedViewDesignTests
         var preparer = new RackProductPreparer<PushBackDesign, PushBackSystem, HeaderRunPlan>(
             RackResolvePorts.PushBack<PushBackDesign, PushBackSystem>(_ => system),
             RackViewPreparationPorts.PushBack<PushBackSystem, HeaderRunPlan>(
-                (resolved, target) => new PushBackSystemFrontalBuilder().BuildPlan(resolved, catalog,
-                    target.Variant.PushBackEnd == RackPushBackEnd.Posterior ? PushBackFrontalEnd.Posterior : PushBackFrontalEnd.EntradaSalida,
-                    target.Variant.PushBackSide == RackPushBackSide.B ? PushBackSide.B : PushBackSide.A),
+                (resolved, target) => target.Kind == DimensionViewKind.Planta
+                    ? new PushBackSystemPlantaBuilder().BuildPlan(resolved, catalog)
+                    : target.Kind == DimensionViewKind.Frontal
+                        ? new PushBackSystemFrontalBuilder().BuildPlan(resolved, catalog,
+                            target.Variant.PushBackEnd == RackPushBackEnd.Posterior ? PushBackFrontalEnd.Posterior : PushBackFrontalEnd.EntradaSalida,
+                            target.Variant.PushBackSide == RackPushBackSide.B ? PushBackSide.B : PushBackSide.A)
+                        : new PushBackSystemLateralBuilder().Build(resolved, catalog, target.Variant.Index),
                 _ => true,
                 RackBlockRequirementExtractors.HeaderRun),
             (resolved, target) => PushBackViewFrameAdapter.Resolve(resolved, catalog, target),
@@ -162,48 +166,76 @@ public class PushBackCabeceraInsertedViewDesignTests
         Assert.Equal(RackSiblingDesignsOutcome.Divergent, Siblings(redrawn.Append(asRead.Product.Envelope)));
     }
 
-    // M-04 of the review of B-1 in Dinámico, now in Push Back: RACKEDITAR takes the identity of the window when the picked view has none
-    // (EditPushBack: window.RackId when embed.Id is blank). Before, the queue refused it at the acceptance (RACK_ID_INVALID); with the edited
-    // source the acceptance takes it and the AUTH-13 gate refuses it, whatever the scan gave as evidence. Refused before any geometry, both.
-    [Theory]
-    [InlineData("")]
-    [InlineData("   ")]
-    public void ALegacyPushBackWithoutIdentityIsStillRefusedBeforeAnyGeometryNowByTheAuthoredGate(string legacyId)
+    // M-1 of the review of dc0ada4c: a Push Back view without identity never reaches the queue, so T6b1-S2 is a Cabecera matter only. In
+    // RACKEDITAR the identity is the one of the window (window.RackId) when the picked view has none, and the preflight of the envelopes, which
+    // runs before the factory of the queue, refuses every view whose identity is not that one; the window finds the views by the identity of
+    // the rack (FindRackBlocks), so the picked view always has it.
+    [Fact]
+    public void APushBackViewWithoutIdentityIsRefusedByThePreflightOfTheEnvelopesBeforeTheQueue()
     {
-        const string WindowId = "7c2e9b4d-1a3f-4e5b-9d6c-8f0a1b2c3d4e";
-        var (drawn, edit) = PushBackDrafts();
-        var lateral = View(RackEmbedDocument.KindPushBack, legacyId, PushBackName, drawn.DesignJson, RackEmbedDocument.ViewLateral, 0);
-        var serialized = new RackProjectStore().Serialize(RackProject.ForPushBack(edit.Design).WithSourceMetadataFrom(new RackProjectStore().Deserialize(lateral.Design)));
-        var facts = new PushBackViewAvailabilityFacts(
-            new PushBackSystemLateralBuilder().Cortes(edit.System, Catalog).Select(c => c.PostIndex), edit.System.IsComposite);
-        var request = new RackProductViewRequest(RackViewProductOperation.InsertSibling, RackSystemKind.PushBack,
-            RackViewAddress.PushBackCut(RackPushBackEnd.Posterior, RackPushBackSide.A), facts);
-        var withPicked = Before(WindowId, ("2A1", lateral));
-        var withoutSiblings = new RackAuthoredInput(WindowId, new List<RackAuthoredSibling>(), true, "PushBackCabeceraInsertedViewDesignTests");
-
-        // The picked view as the drawing held it (before T6 b1): refused at the acceptance.
-        var asRead = RackProductIntentAcceptance.Accept(new ExistingRackViewIntent<RackAuthoredInput>(
-            new ExistingRackContext<RackAuthoredInput>(lateral, withPicked), request));
-        Assert.False(asRead.IsAccepted);
-        Assert.Equal("RACK_ID_INVALID", asRead.CauseCode);
-
-        // The edited source: accepted, and refused by the AUTH-13 gate with either evidence.
-        foreach (var before in new[] { withPicked, withoutSiblings })
+        foreach (var (file, signature) in new[]
+                 {
+                     ("src/RackCad.Plugin/RackPushBackCommands.cs", @"internal\s+static\s+void\s+EditPushBack\s*\("),
+                     ("src/RackCad.Plugin/RackPushBackWindowDrawing.cs", @"internal\s+static\s+\(int\s+Redrawn,\s*int\s+Erased\)\s+Apply\s*\("),
+                 })
         {
-            var accepted = RackProductIntentAcceptance.Accept(new ExistingRackViewIntent<RackAuthoredInput>(
-                new ExistingRackContext<RackAuthoredInput>(RackInsertedViewSource.Edited(lateral, WindowId, PushBackRenamed, serialized), before), request));
-            Assert.True(accepted.IsAccepted, accepted.CauseCode);
-            var preparer = new RackProductPreparer<PushBackDesign, PushBackSystem, HeaderRunPlan>(
-                RackResolvePorts.PushBack<PushBackDesign, PushBackSystem>(_ => throw new InvalidOperationException("resolved before the gate")),
-                RackViewPreparationPorts.PushBack<PushBackSystem, HeaderRunPlan>(
-                    (_, __) => throw new InvalidOperationException("prepared before the gate"), _ => true, RackBlockRequirementExtractors.HeaderRun),
-                (resolved, target) => PushBackViewFrameAdapter.Resolve(resolved, Catalog, target),
-                (_, __) => PushBackRenamed);
-            var result = preparer.PrepareExisting(accepted.Intent, RackAuthoredComparatorPorts.PushBack());
-            Assert.False(result.IsSuccess);
-            Assert.Equal("AUTHORED_UNREADABLE", result.CauseCode);
-            Assert.Null(result.Product);
+            var body = WorkspaceHostSource.BodyOf(WorkspaceHostSource.Code(file), signature);
+            var preflight = body.IndexOf("!string.Equals(viewBlock.Embed.Id, id, StringComparison.OrdinalIgnoreCase)", StringComparison.Ordinal);
+            var queue = body.IndexOf("RackViewBatchProducts.PushBack(", StringComparison.Ordinal);
+            Assert.True(preflight >= 0 && preflight < queue, file + ": the preflight of the envelopes runs before the factory of the queue");
         }
+
+        var door = WorkspaceHostSource.BodyOf(WorkspaceHostSource.Code("src/RackCad.Plugin/VentanaRackCad/RackCadPushBackDoorCommands.cs"),
+            @"private\s+static\s+void\s+Write\s*\(");
+        Assert.Contains("RackCommandSupport.FindRackBlocks(document, pending.RackId)", door, StringComparison.Ordinal);
+    }
+
+    // M-2 of the review of dc0ada4c: a two-way Push Back. The rule changes the identity, the name and the design of the source, never its view
+    // or its section; the new views take theirs from the address asked for: the frontal cut of entrance/exit of side B and a lateral cut.
+    [Fact]
+    public void ATwoWayPushBackTakesTheCutOfSideBAndALateralCutWithTheDraftAndTheirOwnViewAndSection()
+    {
+        var catalog = Catalog;
+        var draft = new PushBackDraftEditor(catalog);
+        var fixture = new RackEmbedStore().Deserialize(PilotKit.Text("pb-20-ab"));
+        Assert.True(draft.LoadFrom(new RackProjectStore().Deserialize(fixture.Design)!.PushBackDesign, PushBackName), draft.LastError);
+        Assert.True(draft.IsTwoSided);
+        var drawn = draft.SnapshotForWrite()!;
+        draft.SetTope(new[] { (0, 0) }, false);
+        Assert.True(draft.Recompose(), draft.LastError);
+        var edit = draft.SnapshotForWrite()!;
+        Assert.True(edit.System.IsComposite);
+        Assert.NotEqual(drawn.DesignJson, edit.DesignJson);
+
+        var lateral = View(RackEmbedDocument.KindPushBack, RackId, PushBackName, drawn.DesignJson, RackEmbedDocument.ViewLateral, 0);
+        var planta = View(RackEmbedDocument.KindPushBack, RackId, PushBackName, drawn.DesignJson, RackEmbedDocument.ViewPlanta, -1);
+        var serialized = new RackProjectStore().Serialize(RackProject.ForPushBack(edit.Design).WithSourceMetadataFrom(new RackProjectStore().Deserialize(lateral.Design)));
+        var source = RackInsertedViewSource.Edited(lateral, RackId, PushBackRenamed, serialized);
+        Assert.Equal((lateral.View, lateral.Section), (source.View, source.Section));
+        var redrawn = new[] { PushBackRedrawn(lateral, edit.Design, PushBackRenamed), PushBackRedrawn(planta, edit.Design, PushBackRenamed) };
+        var cuts = new PushBackSystemLateralBuilder().Cortes(edit.System, catalog).Select(c => c.PostIndex).ToList();
+        var post = cuts.Last();
+        Assert.True(post > 0, "the rack must have a lateral cut other than the one picked");
+
+        var cutB = PreparePushBack(source, Before(RackId, ("2A1", lateral), ("2A2", planta)), edit.System,
+            RackViewAddress.PushBackCut(RackPushBackEnd.EntradaSalida, RackPushBackSide.B), PushBackRenamed);
+        var cutPost = PreparePushBack(source, Before(RackId, ("2A1", lateral), ("2A2", planta)), edit.System,
+            RackViewAddress.Post(post), PushBackRenamed);
+
+        Assert.True(cutB.IsSuccess, cutB.CauseCode + ": " + cutB.Diagnostic);
+        Assert.True(cutPost.IsSuccess, cutPost.CauseCode + ": " + cutPost.Diagnostic);
+        Assert.Equal((RackEmbedDocument.ViewFrontal, PushBackSystemFrontalBuilder.EncodeSection(PushBackFrontalEnd.EntradaSalida, PushBackSide.B)),
+            (cutB.Product.Envelope.View, cutB.Product.Envelope.Section));
+        Assert.Equal((RackEmbedDocument.ViewLateral, post), (cutPost.Product.Envelope.View, cutPost.Product.Envelope.Section));
+        foreach (var inserted in new[] { cutB.Product.Envelope, cutPost.Product.Envelope })
+        {
+            Assert.Equal(serialized, inserted.Design);
+            Assert.Equal((RackId, PushBackRenamed), (inserted.Id, inserted.Name));
+        }
+
+        Assert.Equal(RackSiblingDesignsOutcome.Same, Siblings(redrawn.Append(cutB.Product.Envelope).Append(cutPost.Product.Envelope)));
+        // The picked envelope of the drawing is not changed.
+        Assert.Equal((RackEmbedDocument.ViewLateral, 0, PushBackName, drawn.DesignJson), (lateral.View, lateral.Section, lateral.Name, lateral.Design));
     }
 
     // RackViewBatchProducts.PushBack gives the queue the edited source, with the same serialized design it gives as the design of a new rack;
@@ -220,12 +252,16 @@ public class PushBackCabeceraInsertedViewDesignTests
         var classic = WorkspaceHostSource.BodyOf(WorkspaceHostSource.Code("src/RackCad.Plugin/RackPushBackCommands.cs"),
             @"internal\s+static\s+void\s+EditPushBack\s*\(");
         Assert.Contains("RackViewBatchProducts.PushBack(document, system, design, id, name, embed, project, authorized.AuthoredInput)", classic, StringComparison.Ordinal);
-        Assert.Equal(3, Regex.Matches(classic, @"BuildPushBackPayload\(design,\s*id,\s*name,").Count);
+        Assert.True(Regex.Matches(classic, @"BuildPushBackPayload\(design,\s*id,\s*name,").Count == 3,
+            "EditPushBack redraws the planta, the frontal and the lateral with the design, the identity and the name it hands the queue. If a "
+            + "kind of view is added or removed, change the count and check that the new redraw also takes design, id and name.");
 
         var window = WorkspaceHostSource.BodyOf(WorkspaceHostSource.Code("src/RackCad.Plugin/RackPushBackWindowDrawing.cs"),
             @"internal\s+static\s+\(int\s+Redrawn,\s*int\s+Erased\)\s+Apply\s*\(");
         Assert.Contains("RackViewBatchProducts.PushBack(document, system, design, id, name, embed, project, authorized.AuthoredInput)", window, StringComparison.Ordinal);
-        Assert.Equal(3, Regex.Matches(window, @"RackPushBackCommands\.BuildPushBackPayload\(design,\s*id,\s*name,").Count);
+        Assert.True(Regex.Matches(window, @"RackPushBackCommands\.BuildPushBackPayload\(design,\s*id,\s*name,").Count == 3,
+            "RackPushBackWindowDrawing.Apply redraws the planta, the frontal and the lateral with the design, the identity and the name it hands "
+            + "the queue, as EditPushBack (PushBackWindowDrawingMirrorGuardTests). If a kind of view is added or removed, change it in both.");
 
         // RACKPUSHBACKINSERTAR («Insertar vista…» of the window) runs that half with the draft the window sent and the project of the picked view.
         var door = WorkspaceHostSource.BodyOf(WorkspaceHostSource.Code("src/RackCad.Plugin/VentanaRackCad/RackCadPushBackDoorCommands.cs"),
@@ -381,10 +417,15 @@ public class PushBackCabeceraInsertedViewDesignTests
         var commands = WorkspaceHostSource.Code("src/RackCad.Plugin/RackCabeceraCommands.cs");
         var edit = WorkspaceHostSource.BodyOf(commands, @"internal\s+static\s+void\s+EditCabecera\s*\(");
         Assert.Matches(@"RackViewBatchProducts\.Header\(\s*document,\s*config,\s*id,\s*name,\s*embed,\s*project,\s*authorized\.AuthoredInput\)", edit);
-        Assert.Equal(2, Regex.Matches(edit, @"BuildCabeceraPayload\(config,\s*id,\s*name,").Count);
+        Assert.True(Regex.Matches(edit, @"BuildCabeceraPayload\(config,\s*id,\s*name,").Count == 2,
+            "EditCabecera redraws its lateral and its planta with the cabecera, the identity and the name it hands the queue. If another redraw "
+            + "is added, change the count and check that it takes config, id and name too.");
 
         var door = WorkspaceHostSource.Code("src/RackCad.Plugin/VentanaRackCad/RackCadCabeceraDoorCommands.cs");
-        Assert.Equal(2, Regex.Matches(door, @"\[CommandMethod\(").Count);
+        Assert.True(Regex.Matches(door, @"\[CommandMethod\(").Count == 2,
+            "The door of a cabecera has two commands, RACKCABECERAABRIR and RACKCABECERAAPLICAR, and neither inserts a view. If a command is "
+            + "added (for example, «Insertar vista…» of a cabecera, DG-07), it must prepare its new view with RackViewBatchProducts.Header (B-1) "
+            + "and answer the queue with RackInsertRedrawOutcome (I-02); then change this count.");
         Assert.Contains("RackCabeceraCommands.ApplyCabeceraUpdate(", door, StringComparison.Ordinal);
         Assert.DoesNotContain("RackViewBatch", door, StringComparison.Ordinal);
         var update = WorkspaceHostSource.Code("src/RackCad.Plugin/RackCabeceraCommands.Door.cs");

@@ -200,10 +200,22 @@ namespace RackCad.Application.VentanaRackCad
         /// <summary>
         /// The answer of RACKDINAMICOINSERTAR («Insertar vista…»): the draft is written when the views that exist were redrawn with it, as
         /// for RACKDINAMICOAPLICAR; then the answer says how many new views were inserted (none when the placement was cancelled). When no
-        /// view was redrawn the draft stays not written, even if a view was inserted, so «Actualizar» can still write it in all of them.
+        /// view was redrawn the draft stays not written, even if a view was inserted, so «Actualizar» can still write it in all of them; except
+        /// when every view that existed was obsolete and was erased after the new ones were placed (T6 b1): then the new views are the rack.
         /// </summary>
         public static RackDesignWritten AnswerForInsert(long requestId, string rackId, int redrawn, int erased, int inserted)
         {
+            // T6 b1 (review of dc0ada4c, scenario B): every view that existed was obsolete with the change and was erased after the new
+            // ones were placed (RackInsertRedrawOutcome.ErasesStaleAfterPlacement). The new views carry the draft and no other view is left,
+            // so the draft is written. With the redraw gate of T6 b1 the queue places nothing when a view that remains was not redrawn, so
+            // no view redrawn, views erased and views inserted can only be this case.
+            if (redrawn <= 0 && erased > 0 && inserted > 0)
+            {
+                return new RackDesignWritten(requestId, rackId, true,
+                    "AutoCAD insertó " + Count(inserted, "vista nueva", "vistas nuevas") + " con el borrador y borró "
+                    + Count(erased, "vista que ya no existe", "vistas que ya no existen") + " con el cambio.");
+            }
+
             var applied = AnswerForApply(requestId, rackId, redrawn, erased);
             if (!applied.Written)
             {

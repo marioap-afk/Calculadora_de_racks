@@ -197,7 +197,9 @@ public class SelectiveBatchInsertedViewDesignTests
         var edit = WorkspaceHostSource.BodyOf(commands, @"internal\s+static\s+void\s+EditSelective\s*\(");
         Assert.Contains("InsertSelectiveViews(document, blockId, embed, saved, registry, window, window.InsertionRequest.Views);", edit, StringComparison.Ordinal);
         var half = WorkspaceHostSource.BodyOf(commands, @"internal static int InsertSelectiveViews\(");
-        Assert.Equal(1, Regex.Matches(half, @"new\s+SelectiveInsertPort\(").Count);
+        Assert.True(Regex.Matches(half, @"new\s+SelectiveInsertPort\(").Count == 1,
+            "«Insertar varias…» prepares every view with ONE port, so all of them share its source composed with the draft. A port per view "
+            + "would need each one composed with the same authoredJson; check B-1 before changing this.");
         Assert.Matches(@"foreach\s*\(var\s+address\s+in\s+requested\)", half);
         Assert.Contains("port.TryPrepare(address, membership, out var product, out var diagnostic)", half, StringComparison.Ordinal);
         Assert.Contains(".Success(prepared[item.Address])", half, StringComparison.Ordinal);
