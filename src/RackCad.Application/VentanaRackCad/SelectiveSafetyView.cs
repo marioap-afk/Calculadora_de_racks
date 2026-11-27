@@ -238,8 +238,8 @@ namespace RackCad.Application.VentanaRackCad
 
         /// <summary>
         /// «En todas las celdas» / «En ninguna» of a family card: every larguero of the classic grid on or off, in every fondo. A family
-        /// with every cell off keeps its variant (so «En todas las celdas» brings it back) and places nothing; the classic «Aceptar»
-        /// drops it instead (declared difference: the drawing and the BOM are the same).
+        /// with every cell off keeps its variant (so «En todas las celdas» brings it back) and places nothing. T6 seg (the Owner, 2026-11-27):
+        /// the classic «Aceptar» keeps it too now.
         /// </summary>
         public static SelectiveSafetyEdit WriteAll(SelectiveDraftEditor editor, string type, bool on)
         {

@@ -46,7 +46,8 @@ namespace RackCad.Application.VentanaRackCad
     /// (<see cref="SelectiveSafetySelection.Side"/> / <see cref="SelectiveSafetySelection.PostSides"/> and
     /// <see cref="SelectiveBotaConfig.Placement"/> / <see cref="SelectiveBotaConfig.Posts"/>, the same ordinals), a protector lateral is a per-post
     /// list, a desviador and the grids keep their off cells. What differs is declared: an edit here works IN PLACE on the selection (its other
-    /// fields stay), and a family whose cells are all off keeps its variant (C2-07), where the classic «Aceptar» drops it.
+    /// fields stay). A family whose cells are all off keeps its variant (C2-07); T6 seg (the Owner, 2026-11-27): the classic «Aceptar» keeps it
+    /// too now, and keeps a family chosen with nothing else with the defaults of <see cref="Fresh"/>.
     /// </para>
     /// </summary>
     public static class RackCadSafetyEdit

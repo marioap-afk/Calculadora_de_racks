@@ -624,8 +624,8 @@ namespace RackCad.Application.VentanaRackCad
 
         /// <summary>
         /// What the «Aceptar» of the classic dialog writes for the row of an existing desviador whose list changed and whose grid was not
-        /// opened (<c>SelectiveSafetyWindow</c>: the row is seeded from the selection, and its level counts come from
-        /// <c>SelectiveDesviadorPlan.Build(null, …)</c>, empty, so <c>AllCellsOff</c> is false and the row stays whole): the other variant, one,
+        /// opened (<c>SelectiveSafetyWindow</c>: the row is seeded from the selection and written whole; T6 seg: «Aceptar» no longer drops a
+        /// row whose cells are all off): the other variant, one,
         /// the side it had (Left or Right, else both), the longitud and the first level as they are (not validated), the reading by post and every
         /// off cell, also one beyond the levels of its post. Only the variant changes in what the row shows.
         /// </summary>
