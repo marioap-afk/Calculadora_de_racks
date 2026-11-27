@@ -4891,6 +4891,68 @@ tercero (`773f0a6e`), integradas en un segundo merge de la rama pb.
 
 ### Pendiente
 
-- El smoke de la quinta tanda en AutoCAD.
+- El smoke de la quinta tanda en AutoCAD: hecho, en la sección siguiente.
 - La validación del Owner de los supuestos de cada parte: PP-S, LG-S, AL-S, CM-S, CT5 y PB-S (con PB-S18, nuevo en las correcciones
   de PB-S03). PB-S17 incluye un defecto del diálogo clásico de Push Back con «Auto» en dos sentidos, que pide decisión del Owner.
+
+## Quinta tanda: smoke en AutoCAD (sesión, 2026-11-26, 23:08 a 23:52)
+
+- **Orden del Owner:** «Continúa con la siguiente fase», con el plan anunciado en el chat: la prueba en AutoCAD cuando terminaran CI y la
+  revisión de PB-S03. AutoCAD estaba cerrado.
+- **DLL:** Debug de esta rama en `468261f1` (CI verde, run 45943267227), compilado con `--no-incremental`. El commit solo añadió números a
+  construido.md sobre el árbol compilado.
+  - SHA-256 (prefijo): Plugin `4E93750F2A10DB1D`, UI `3BD01D37F6A7ED60`, Application `8A40866221FA2359`, Domain `13CF722A4061AB03`.
+  - Cargado con NETLOAD «Load Once»; FILEDIA a 0 solo para la ruta y de vuelta a 1.
+- **Dibujo:** una copia de trabajo de `smoke-sel-prep.dwg` (huella `2FA0BC027C615D53`). No se guardó: tras `_QUIT` → «No», la copia y el
+  original siguen con la misma huella.
+- **Dejado como estaba:** la paleta, a su tamaño; la configuración del usuario, sin tocar; no se guardó ningún diseño en la biblioteca.
+
+### Resultados (OBSERVADO)
+
+| Paso | Parte | Resultado | Observación |
+|---|---|---|---|
+| P-1 | pp | PASA | SEL-A › «Rack»: «Peralte de poste» en «Lo esencial», «Para todos los postes». «Avanzado» › fila «Todos los postes»: con un peralte propio de 4 in en P2, «Aplicar a todos» con 5 → «Peralte de 5 in en todos los postes del borrador: se quitó 1 peralte propio (P2: 4 in)». «Actualizar» redibujó las 2 vistas. Leído en el sobre: `PostPeralte` 5 y `PostPeraltes` [0,0,0]. Tras el «U», 3 y [0,0,0]. Ver O-1. |
+| P-2 | pp | PASA | DIN 1 › «Rack» › «Lo esencial»: «Peralte de poste», «Para todos los postes, también los de las cabeceras personalizadas». De 3 a 4 → «Actualizar» redibujó su vista; un solo «U» deshizo RACKDINAMICOAPLICAR. |
+| L-1 | lg | PASA | «Nuevo» › «Larguero en esta ventana · en construcción»: la marca «En construcción» y el aviso de borrador. Catálogo «Perfiles AISC (1011)» + «C6» → «Mostrando 3 de 1019», agrupados en «Canal CPS»; C6X10.5 con su peralte de catálogo; sin ménsula, «Falta: Elige la ménsula». Con ménsula: «El larguero está completo», la lista de materiales (1 perfil, 2 ménsulas por larguero). No escribió nada: la cabecera siguió en «todo escrito». Ver O-2. |
+| A-1 | al | PASA | Con la planta de SEL-A en el dibujo y la lista releída: «Almacén» leyó la semilla (RACKALMACENLEER, 42.78 × 203 in, sin contorno en RACKCAD_SITIO), con el esquema A1, B1, C1, D1 y «3 racks nuevos». LINE, «Volver a leer» y «U» → LINE: la lectura no deja paso en Deshacer. |
+| A-2 | al | PASA | «Colocar 3 racks» → «3 racks nuevos (4 × 1, enlazados) y 4 etiquetas en la capa RACKCAD_LAYOUT». Un solo «U» deshizo RACKALMACENCOLOCAR, y la página pasó a «Puede no estar al día · El dibujo cambió desde la lectura». También avisó de que ya había 4 plantas de SEL-A, de que la semilla es la que esté seleccionada y de que repetir el layout lo deja encima. |
+| C-1 | cm | PASA | «Cama en esta ventana» (42 rodillos, 1 freno) → «Insertar en el dibujo…» → el jig → «AutoCAD insertó la cama nueva «Cama 1»» (I-60), 45 piezas. Ver O-3. |
+| C-2 | cm | PASA | «Cama 1» de la lista: fondo de 96 a 72 (30 rodillos) → «Actualizar» → «todas sus copias reflejan el cambio». Un solo «U» deshizo RACKCAMAAPLICAR. |
+| T-1 | ct | PASA | «Cantilever en esta ventana»: «Para que la línea se resuelva (6 cosas)» con sus «Ir a…». Columna W10X12, base de 48, brazo W10X12 de 36 y claro de 60. El brazo no cabía en la placa con 2 troqueles: el aviso lo dijo y con 3 se resolvió (2 estaciones, 48.5 in). «Insertar con 3 vistas» (frontal, lateral · estación 1 y planta, en ese orden) → «Cantilever 1», «COMPLETED (3/3)». Ver O-4. |
+| T-2 | ct | PASA | «Cantilever 1»: brazo de 36 a 30 → «Actualizar» redibujó 3 vistas. Un solo «U» deshizo RACKCANTILEVERAPLICAR. Tras cerrar el editor: LINE, «Editar aquí» (leyó 36, lo que quedó tras el «U») y «U» → LINE: RACKCANTILEVERABRIR no deja paso en Deshacer. |
+| B-1 | pb | PASA | «Push Back en esta ventana» → «Insertar con 3 vistas» (frontal entrada/salida A, lateral · poste 1 y planta) → «Push Back 1» con 3 vistas. |
+| B-2 | pb | PASA | PB 1 › «Editar aquí» → «Actualizar» → «sistema Push Back actualizado desde la ventana RackCad». Un solo «U» deshizo RACKPUSHBACKAPLICAR. Tras cerrar el editor: LINE, «Editar aquí» y «U» → LINE: RACKPUSHBACKABRIR no deja paso en Deshacer. |
+| B-3 | pb | PASA | PB 1 › «Extremos y seguridad» › «Seguridad por poste»: el desviador N2 de P2 apagado (total de 6 a 5) → «Actualizar»; tras el «U», un REDO. En el sobre: `DesviadorOffCells` [{Frente 1, Level 1}], `Side` y `AuthoredSide` Izquierdo (corrección 2 de PB-S03). RACKEDITAR abrió PB 1 en el editor clásico sin error y se canceló. |
+| G-1 | todas | PASA | Las páginas nuevas en la paleta real (1290 × 860 px): ningún nombre de tipo a la vista. |
+
+### Observaciones
+
+- **O-1 (de la herramienta, no de RackCad):** tras «Actualizar» de SEL-A, el primer «U» deshizo un paso vacío y el segundo deshizo
+  RACKSELECTIVOAPLICAR. Entre los dos había leído el sobre por COM, y esa lectura deja un «Group of commands» en Deshacer. En DIN 1, sin
+  COM de por medio, un solo «U» deshizo RACKDINAMICOAPLICAR. Desde ahí el smoke no lee por COM entre una escritura y su «U». Los
+  «Group of commands» sueltos de la lista de Deshacer son los de O-1 de la cuarta tanda (las lecturas de la paleta) y los de COM.
+- **O-2 (cosmético, lg):** antes de elegir la ménsula, su lista vacía se ve gris, como deshabilitada, aunque se abre y deja elegir.
+- **O-3 (cosmético, anterior):** el aviso de la línea de órdenes al insertar una cama o un Push Back nuevos, o la planta de SEL-A, dice
+  «Punto de inserción de la cabecera». El Cantilever dice «de la vista Cantilever».
+- **O-4 (ct):**
+  - «Ir a «Línea» › «Niveles»» del claro cambia de pestaña y abre el grupo (`LevelsOpen`). El grupo, sin embargo, queda al final de la
+    pestaña, fuera de la vista: hay que bajar hasta él. Un clic del operador en su cabecera lo plegó y otro lo volvió a abrir.
+  - El aviso de la placa muestra nombres internos («lado PositiveY», «Aumenta VerticalPunchCount»). Viene del dominio de I-37C
+    (`CantileverArmConnectionMetricsResolver.cs:355`, 2026-07) y no de esta tanda.
+- **O-5 (limitación declarada M-16, anterior a la quinta tanda, con consecuencia):** tras un «U», el editor de la ventana sigue en
+  «Limpio» con lo que se deshizo. SEL-A siguió mostrando 5 in con el dibujo en 3. Ningún editor de la ventana recibe la señal de una
+  orden ajena: `MarkDraftsPossiblyStale` solo marca los borradores del piloto. Si después se edita otra cosa y se pulsa «Actualizar», se
+  vuelve a escribir lo deshecho sin aviso. «Cerrar el editor» y «Editar aquí» leen el dibujo de nuevo. Para el Owner.
+- **Falso hallazgo del operador, retirado:** «Volver a leer la lista» parecía no releer, sin mensaje. Una revisión de solo lectura no
+  encontró nada de la quinta tanda en ese camino. Invocado por UI Automation, el botón releyó en el acto: 8 racks, con «Cama 1»,
+  «Cantilever 1», «Push Back 1» y la planta de SEL-A. Los clics del operador caían a la derecha del botón, más estrecho de lo que se
+  midió en una captura reducida. Lo mismo pasó con un campo del Cantilever: el clic caía debajo. Con la captura a tamaño completo, los dos
+  funcionaron.
+  - Lo que sí queda de esa revisión, anterior a T5 (`fa00d092`, V-10): un «Busy» o un «Rejected» del host a una relectura pedida por el
+    usuario no cambia el texto de la lista, que se queda en «puede no estar al día». No pasó en este smoke, pero si pasa, el usuario no
+    sabe por qué. Una prueba sin AutoCAD lo reproduciría con un doble que conteste «Busy» a la relectura.
+
+### Pendiente
+
+- La validación del Owner de los supuestos de la quinta tanda y de O-5.
+- La limpieza de los worktrees y las ramas locales de la quinta tanda, con aviso al Owner.
