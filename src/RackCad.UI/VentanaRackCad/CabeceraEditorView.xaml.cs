@@ -53,6 +53,11 @@ namespace RackCad.UI.VentanaRackCad
 
         private void OnUpdateClick(object sender, RoutedEventArgs e) => Contained(() => { CommitFocusedText(); _viewModel.RequestWrite(); });
 
+        // T7 cab: «Insertar vista…» / «Insertar en el dibujo…» opens the panel; «Insertar N vistas» writes, with the name just typed.
+        private void OnInsertViewClick(object sender, RoutedEventArgs e) => Contained(() => { CommitFocusedText(); _viewModel.InsertView(); });
+
+        private void OnInsertPanelInserting(object sender, EventArgs e) => Contained(CommitFocusedText);
+
         private void OnDiscardClick(object sender, RoutedEventArgs e) => Contained(_viewModel.Discard);
 
         private void OnRestoreClick(object sender, RoutedEventArgs e) => Contained(() => { CommitFocusedText(); _viewModel.OpenRestore(); });

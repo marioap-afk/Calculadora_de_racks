@@ -182,6 +182,9 @@ public class InsertRedrawCompletenessTests
             "RackInsertRedrawOutcome.Of(blocks.Count, staleViewBlocks.Count, Redrawn(updated), erasedPhantoms)" },
         { "src/RackCad.Plugin/RackCabeceraCommands.cs", @"internal\s+static\s+void\s+EditCabecera\s*\(",
             "RackInsertRedrawOutcome.Of(lateralBlocks.Count + plantaBlocks.Count, 0, updated, 0)" },
+        // T7 cab: the sixth, «Insertar vista…» of a cabecera of the window (RACKCABECERAINSERTAR), a copy of the «Insertar» of EditCabecera.
+        { "src/RackCad.Plugin/RackCabeceraCommands.Door.cs", @"internal\s+static\s+\(int\s+Redrawn,\s*int\s+Erased\)\s+ApplyCabeceraInsert\s*\(",
+            "RackInsertRedrawOutcome.Of(lateralBlocks.Count + plantaBlocks.Count, 0, updated, 0)" },
     };
 
     private static string Flat(string code) => Regex.Replace(code, @"\s+", " ").Replace("( ", "(").Replace(" )", ")");

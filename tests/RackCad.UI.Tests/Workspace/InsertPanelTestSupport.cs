@@ -26,6 +26,13 @@ namespace RackCad.UI.Tests
             return Choose(editor.InsertPanel, views);
         }
 
+        /// <summary>T7 cab: «Insertar vista…» (or «Insertar en el dibujo…») of a cabecera of its own with these views, in this order.</summary>
+        public static RackViewInsertPanelViewModel? InsertWith(this CabeceraEditorViewModel editor, params RackViewAddress[] views)
+        {
+            editor.InsertView();
+            return Choose(editor.InsertPanel, views);
+        }
+
         /// <summary>Leaves marked exactly these views, in this order (the seed of a new rack is taken out first).</summary>
         public static void Mark(this RackViewInsertPanelViewModel panel, params RackViewAddress[] views)
         {

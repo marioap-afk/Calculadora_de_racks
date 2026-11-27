@@ -161,7 +161,175 @@ public class CabeceraDoorTests
         var abandon = Method(port, "private static void AbandonCabecera(long requestId)");
         Assert.Contains("_pendingCabeceraRead = null", abandon, StringComparison.Ordinal);
         Assert.Contains("_pendingCabeceraWrite = null", abandon, StringComparison.Ordinal);
+        Assert.Contains("_pendingCabeceraInsert = null", abandon, StringComparison.Ordinal); // T7 cab
+        Assert.Contains("_pendingCabeceraNew = null", abandon, StringComparison.Ordinal); // T7 cab
         Assert.Contains("AbandonCabecera(requestId);", Method(WorkspaceHostSource.Code(MainPort), "public void Abandon(long requestId)"), StringComparison.Ordinal);
+
+        // T7 cab: the rule of the door refuses first; a new cabecera and «Insertar vista…» have their own commands and slots, and the request
+        // that waits keeps its own copy of the views.
+        Assert.Contains("CabeceraInsertCommand = \"RACKCABECERAINSERTAR\"", port, StringComparison.Ordinal);
+        Assert.Contains("CabeceraNewCommand = \"RACKCABECERANUEVO\"", port, StringComparison.Ordinal);
+        var update = Method(port, "public RackCadClassicResult RequestCabeceraUpdate(CabeceraDoorWrite write)");
+        InOrder(update, "CabeceraDoorRules.RefusalOf(write)", "write.NewRack ? CabeceraNewCommand : write.Inserts ? CabeceraInsertCommand : CabeceraWriteCommand",
+            "new List<RackViewAddress>(write.InsertViews)", "SetCabeceraPending(write, null)");
+        var slots = Method(port, "private static void SetCabeceraPending(CabeceraDoorWrite write, PendingCabeceraWrite pending)");
+        InOrder(slots, "if (write.NewRack) _pendingCabeceraNew = pending;", "else if (write.Inserts) _pendingCabeceraInsert = pending;", "else _pendingCabeceraWrite = pending;");
+    }
+
+    // ================================================================== T7 cab (séptima tanda): «Nuevo» › Cabecera, «Insertar vista…», «Propiedades»
+
+    private static readonly RackCad.Application.Systems.Shared.RackViewAddress[] Lateral =
+        { RackCad.Application.Systems.Shared.RackViewAddress.Whole(RackCad.Application.Systems.Shared.DimensionViewKind.Lateral) };
+
+    [Fact]
+    public void TheRuleOfTheDoorRefusesAWriteWithNoCabeceraAndANewOneWithNoViews()
+    {
+        var header = Header("Cabecera 1");
+        var session = new SessionId(7);
+        Assert.Null(CabeceraDoorRules.RefusalOf(new CabeceraDoorWrite(1, session, "CAB-1", "Cabecera 1", header)));
+        Assert.Null(CabeceraDoorRules.RefusalOf(new CabeceraDoorWrite(1, session, "CAB-1", "", header, Lateral, NewRack: true)));
+        Assert.Equal("No hay una cabecera válida que escribir.", CabeceraDoorRules.RefusalOf(null!));
+        Assert.Equal("No hay una cabecera válida que escribir.", CabeceraDoorRules.RefusalOf(new CabeceraDoorWrite(1, session, " ", "", header)));
+        Assert.Equal("No hay una cabecera válida que escribir.", CabeceraDoorRules.RefusalOf(new CabeceraDoorWrite(1, session, "CAB-1", "", null!)));
+        Assert.Equal("Elige al menos una vista para insertar la cabecera.",
+            CabeceraDoorRules.RefusalOf(new CabeceraDoorWrite(1, session, "CAB-1", "", header, NewRack: true)));
+        Assert.Equal("Elige al menos una vista para insertar la cabecera.",
+            CabeceraDoorRules.RefusalOf(new CabeceraDoorWrite(1, session, "CAB-1", "", header, Array.Empty<RackCad.Application.Systems.Shared.RackViewAddress>(), NewRack: true)));
+        Assert.True(new CabeceraDoorWrite(1, session, "CAB-1", "", header, Lateral).Inserts);
+        Assert.False(new CabeceraDoorWrite(1, session, "CAB-1", "", header).Inserts);
+    }
+
+    [Fact]
+    public void TheReadCarriesThePropertiesOfTheRackForTheTabPropiedadesAndTheWriteWritesThem()
+    {
+        var properties = new RackPropertiesRead(true, false, null, Array.Empty<RackCad.Application.CustomProperties.CustomPropertyDraftEntry>(),
+            Array.Empty<RackPropertiesViewSummary>(), 1, "fp");
+        var read = CabeceraDoorRules.AnswerForOpen(3, "CAB-1", RackEmbedDocument.KindCabecera, "Cabecera 4", Envelope(Header()), properties);
+        Assert.True(read.Opens, read.Reason);
+        Assert.Same(properties, read.Properties);
+        Assert.Null(CabeceraDoorRules.AnswerForOpen(3, "CAB-1", RackEmbedDocument.KindCabecera, "Cabecera 4", Envelope(Header())).Properties);
+
+        // The command reads them from the first view, after comparing the views; RACKCABECERAAPLICAR writes the tab after the redraw (VA-07).
+        var code = WorkspaceHostSource.Code(Commands);
+        InOrder(Method(code, "public void ReadCabecera()"), "RackSiblingDesigns.Compare(pending.RackId, Views(blocks))", "var (blockId, embed) = blocks[0];",
+            "CabeceraDoorRules.AnswerForOpen(", "RackPropertiesDoorData.Read(document, blockId)");
+        InOrder(Method(code, "public void WriteCabecera()"), "RackCabeceraCommands.ApplyCabeceraUpdate(",
+            "RackPropertiesDoorData.WithRackProperties(document, pending.RackId, pending.Write.Properties,", "RackDoorRules.AnswerForApply(");
+    }
+
+    [Fact]
+    public void InsertarVistaTakesItsRequestChecksAsTheWriteAndInsertsWithTheDrawingHalfOfInsertar()
+    {
+        var code = WorkspaceHostSource.Code(Commands);
+        Assert.Contains("[CommandMethod(\"RACKCABECERAINSERTAR\")]", code, StringComparison.Ordinal);
+        var insert = Method(code, "public void InsertCabeceraViews()");
+        InOrder(insert,
+            "RackCadRackDoorPort.TakePendingCabeceraInsert()",
+            "door?.Started(pending.RequestId)",
+            "pending.Document != RackCadRackDoorPort.KeyOf(document)",
+            "RackCommandSupport.FindRackBlocks(document, pending.RackId)",
+            "RackSiblingDesigns.Compare(pending.RackId, Views(blocks))",
+            "var (blockId, embed) = blocks[0];",
+            "CabeceraDoorRules.PlanApply(",
+            "var name = string.IsNullOrWhiteSpace(cabecera.Name) ? embed.Name : cabecera.Name;",
+            "RackCabeceraCommands.ApplyCabeceraInsert(document, blockId, embed, plan.Project, cabecera, pending.RackId, name,",
+            "pending.Write.InsertViews",
+            "RackCommandSupport.FindRackBlocks(document, pending.RackId).Count - (blocks.Count - erased)",
+            "RackDoorRules.AnswerForInsert(pending.RequestId, pending.RackId, redrawn, erased, inserted)");
+        Assert.DoesNotMatch(new Regex(@"new\s+RackDesignWritten\s*\([^;]*,\s*true\s*,"), insert);
+        Assert.DoesNotMatch(new Regex(@"cabecera\.Name\s*=[^=]"), insert);
+        Assert.DoesNotContain("WithRackProperties", insert, StringComparison.Ordinal); // VA-S10: «Insertar vista…» writes no properties, as the other doors
+    }
+
+    [Fact]
+    public void ANewCabeceraIsInsertedByTheDispatchOfNuevoWithTheIdentityOfTheWindowAndThenItsProperties()
+    {
+        var code = WorkspaceHostSource.Code(Commands);
+        Assert.Contains("[CommandMethod(\"RACKCABECERANUEVO\")]", code, StringComparison.Ordinal);
+        var nuevo = Method(code, "public void InsertNewCabecera()");
+        InOrder(nuevo,
+            "RackCadRackDoorPort.TakePendingCabeceraNew()",
+            "door?.Started(pending.RequestId)",
+            "pending.Document != RackCadRackDoorPort.KeyOf(document)",
+            "RackCommandSupport.FindRackBlocks(document, pending.RackId).Count > 0",
+            "RackMenuCommands.DispatchInsertion(document,",
+            "RackCad.UI.VentanaRackCad.CabeceraDoorInsertion.NewRackRequest(write.RackId, write.Cabecera, write.InsertViews)",
+            "var placed = RackCommandSupport.FindRackBlocks(document, pending.RackId);",
+            "RackPropertiesDoorData.WithNewRackProperties(document, pending.RackId, write.Properties,",
+            "RackDoorRules.AnswerForNewRack(pending.RequestId, pending.RackId, placed.Count,");
+        Assert.DoesNotMatch(new Regex(@"new\s+RackDesignWritten\s*\([^;]*,\s*true\s*,"), nuevo);
+
+        // The request of a new rack is the one of the classic configurator opened from «Nuevo»: the cabecera, the identity of the window, no
+        // project, and every view in its order (the dispatch names it with I-60 and places the batch).
+        var insertion = WorkspaceHostSource.Code("src/RackCad.UI/VentanaRackCad/CabeceraDoorInsertion.cs");
+        InOrder(insertion, "if (cabecera == null || views == null || views.Count == 0) return null;",
+            "new HeaderInsertionRequest(cabecera, sourceProject: null, rackId, views[0]);", "request.SetViews(views);");
+    }
+
+    [Fact]
+    public void TheDrawingHalfOfInsertarVistaRunsTheStepsOfInsertarOfRackEditarInTheSameOrder()
+    {
+        // T7 cab: a copy of the branch !window.UpdateOnly of EditCabecera (RACKEDITAR does not change, CB4-09): the same steps, in the same order.
+        var classic = Flat(Method(WorkspaceHostSource.Code(Classic), "internal static void EditCabecera("));
+        var half = Flat(Method(WorkspaceHostSource.Code(Half), "internal static (int Redrawn, int Erased) ApplyCabeceraInsert("));
+        var steps = new[]
+        {
+            "RackUnsupportedSiblingInsert.TryAuthorize(document, blockId, embed, id, out",
+            "authorized.Blocks.ToList()",
+            "lateralBlocks = blocks.Where(b => !RackCommandSupport.IsPlantaView(b.Embed)).ToList();",
+            "plantaBlocks = blocks.Where(b => RackCommandSupport.IsPlantaView(b.Embed)).ToList();",
+            "if (lateralBlocks.Count == 0 && plantaBlocks.All(b => b.BlockId != blockId) && !RackCommandSupport.IsPlantaView(embed))",
+            "lateralBlocks.Add((blockId, embed));",
+            "RackCommandSupport.PreflightInnerSources(",
+            "RackUnitsGuard.WarnIfNotInches(document);",
+            "RackViewBatchProducts.Header( document, config, id, name, embed, project, authorized.AuthoredInput);",
+            "RackCad.Application.Views.Preparation.RackProductSourceKind.ExistingRack,",
+            ".PrepareAll(batchRequest, out var batchDiagnostic)",
+            "new LateralHeaderDrawService().RedrawInPlace(",
+            "BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewLateral, lat.Embed, preflight.ResolvedByBlock[lat.BlockId]), regen: false);",
+            "RackBlockRenamer.SyncName(document, lat.BlockId, RackViewBaseName.LinkedBase(baseName));",
+            "new PlantaHeaderDrawService().RedrawInPlace(",
+            "BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewPlanta, pb.Embed, preflight.ResolvedByBlock[pb.BlockId]), regen: false);",
+            "RackBlockRenamer.SyncName(document, pb.BlockId, RackViewBaseName.LinkedPlanta(baseName));",
+            "document.Editor.Regen();",
+            "RackViewBatchExecution.Run(document, batchProducts, batchRequest,",
+            "RackInsertRedrawOutcome.Of(lateralBlocks.Count + plantaBlocks.Count, 0, updated, 0)",
+        };
+        InOrder(classic, steps.Select(Flat).ToArray());
+        InOrder(half, steps.Select(Flat).ToArray());
+
+        // The declared differences: the identity is the one of the envelope (the request is only a fallback), the views are the ones of the
+        // window, and it answers its counts; nothing writes the name of the cabecera and nothing is modal.
+        Assert.Contains("var id = string.IsNullOrWhiteSpace(embed.Id) ? rackId : embed.Id;", half, StringComparison.Ordinal);
+        Assert.Contains("RackSystemKind.Selective, id, insertViews);", half, StringComparison.Ordinal);
+        Assert.Contains("return (updated, 0);", half, StringComparison.Ordinal);
+        Assert.DoesNotMatch(new Regex(@"config\.Name\s*=[^=]"), half);
+        Assert.DoesNotContain("ShowModalWindow", half, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void RackCabeceraOpensTheWindowAndTheClassicConfiguratorStaysReachableFromTheClassicMenu()
+    {
+        // The Owner on 2026-11-27: «Abren la ventana». RACKCABECERA and its alias open «Nuevo» › «Cabecera en esta ventana», with the flags of
+        // the shortcuts of rl (they read nothing and write nothing); the body of the classic stays, not registered.
+        var code = WorkspaceHostSource.Code(Classic);
+        Assert.Contains("[CommandMethod(\"RCB\", RackCadWindowShortcuts.WindowFlags)] public void AliasRackCabecera() => RackCabecera();", code, StringComparison.Ordinal);
+        Assert.Contains("[CommandMethod(\"RACKCABECERA\", RackCadWindowShortcuts.WindowFlags)]", code, StringComparison.Ordinal);
+        Assert.Single(Regex.Matches(code, @"\[CommandMethod\(""RACKCABECERA"""));
+        var open = Method(code, "public void RackCabecera()");
+        Assert.Contains("RackCadWindowShortcuts.Open(document, new RackCad.Application.VentanaRackCad.RackCadShortcutAsk(", open, StringComparison.Ordinal);
+        Assert.Contains("RackCad.Application.VentanaRackCad.RackCadShortcutTarget.NewCabecera, null, null));", Flat(open), StringComparison.Ordinal);
+        Assert.DoesNotContain("ShowModalWindow", open, StringComparison.Ordinal);
+        Assert.DoesNotContain("DrawAndPlace", open, StringComparison.Ordinal);
+        InOrder(Method(code, "internal void RackCabeceraClassic()"), "new HardcodedStandardRackFrameService().CreateDefault()",
+            "new RackFrameConfiguratorWindow(configuration, canInsertInAutoCad: true)", "AcApplication.ShowModalWindow(window);", "DrawAndPlace(");
+
+        // The classic menu opens the configurator with its button «Diseñar cabecera», through the registry of modules (not RACKCABECERA).
+        Assert.Contains("private void DesignHeader_Click(object sender, RoutedEventArgs e) => LaunchDesignModule(RackSystemKind.Selective);",
+            WorkspaceHostSource.Code("src/RackCad.UI/RackMainMenuWindow.xaml.cs"), StringComparison.Ordinal);
+        var module = Method(WorkspaceHostSource.Code("src/RackCad.UI/Editor/EditorModules.cs"), "public sealed class HeaderEditorModule : IRackEditorModule");
+        InOrder(module, "public RackInsertionRequest OpenForNew(RackEditorLaunchContext context)", "new HardcodedStandardRackFrameService().CreateDefault()",
+            "new RackFrameConfiguratorWindow(configuration, context.CanInsertInAutoCad)");
     }
 
     private static string Flat(string text) => Regex.Replace(text, @"\s+", " ");

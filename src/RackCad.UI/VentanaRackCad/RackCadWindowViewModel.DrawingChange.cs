@@ -88,7 +88,7 @@ namespace RackCad.UI.VentanaRackCad
                 marked += Mark(pair.Value.Editor.DrawingChange, pair.Key, EditCantileverHere);
             foreach (var pair in _camaDrafts.Where(p => p.Key.Session == session && !p.Value.Editor.IsNewRack).ToList())
                 marked += Mark(pair.Value.Editor.DrawingChange, pair.Key, EditCamaHere);
-            foreach (var pair in _cabeceraDrafts.Where(p => p.Key.Session == session).ToList())
+            foreach (var pair in _cabeceraDrafts.Where(p => p.Key.Session == session && !p.Value.Editor.IsNewRack).ToList()) // T7 cab: a new one is not in the drawing
                 marked += Mark(pair.Value.Editor.DrawingChange, pair.Key, EditCabeceraHere);
             if (marked > 0) RackList.RefreshStates();
         }

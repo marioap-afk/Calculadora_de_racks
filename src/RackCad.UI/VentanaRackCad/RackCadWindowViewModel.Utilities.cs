@@ -86,7 +86,7 @@ namespace RackCad.UI.VentanaRackCad
             new RackCadMenuPlace("Diseñar sistema dinámico (Pallet Flow)", "«Dinámico en esta ventana» y la tarjeta «Dinámico»"),
             new RackCadMenuPlace("Diseñar sistema Push Back", "Tarjeta «Push Back»"),
             new RackCadMenuPlace("Diseñar línea Cantilever", "Tarjeta «Cantilever»"),
-            new RackCadMenuPlace("Diseñar cabecera", "Tarjeta «Cabecera»"),
+            new RackCadMenuPlace("Diseñar cabecera", "«Cabecera en esta ventana» y la tarjeta «Cabecera» (configurador clásico)"), // T7 cab
             new RackCadMenuPlace("Diseñar cama de rodamiento", "«Cama en esta ventana» y la tarjeta «Cama» (editor clásico)"), // T5 cm
             new RackCadMenuPlace("Diseñar larguero", "Tarjeta «Larguero»"),
             new RackCadMenuPlace("Generar perfil estructural", "Tarjeta «Perfil estructural»"),

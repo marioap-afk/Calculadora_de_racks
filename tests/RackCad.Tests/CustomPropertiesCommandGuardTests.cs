@@ -94,7 +94,9 @@ namespace RackCad.Tests
         /// Deshacer y la escribe con la mitad de dibujo de «Actualizar» de RACKEDITAR, sin alias, en
         /// <c>src/RackCad.Plugin/VentanaRackCad/RackCadCabeceraDoorCommands.cs</c>. La base se fija de nuevo con estos dos nombres.
         /// </summary>
-        internal static readonly string[] A14CabeceraDoorCommands = { "RACKCABECERAABRIR", "RACKCABECERAAPLICAR" };
+        /// La septima tanda (T7 cab) anade «Insertar vista…» de una cabecera (RACKCABECERAINSERTAR) y la cabecera nueva de la ventana
+        /// (RACKCABECERANUEVO), en el mismo archivo y sin alias. RACKCABECERA y RCB siguen en el censo de apertura: abren la ventana, no cambian de nombre.
+        internal static readonly string[] A14CabeceraDoorCommands = { "RACKCABECERAABRIR", "RACKCABECERAAPLICAR", "RACKCABECERAINSERTAR", "RACKCABECERANUEVO" };
 
         /// <summary>
         /// Lo que la cuarta tanda de la ventana RackCad (va) anade, EXACTAMENTE: la puerta de la pagina «Variables», que lee el registro sin

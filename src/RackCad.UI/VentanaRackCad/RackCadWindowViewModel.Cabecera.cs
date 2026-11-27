@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using RackCad.Application.Persistence;
+using RackCad.Application.RackFrames;
 using RackCad.Application.Systems.Shared;
 using RackCad.Application.VentanaRackCad;
 using RackCad.Application.Workspace;
+using RackCad.Domain.RackFrames;
 
 namespace RackCad.UI.VentanaRackCad
 {
@@ -14,14 +16,22 @@ namespace RackCad.UI.VentanaRackCad
     /// with its numbered door, as Dinámico and Selectivo: «Editar aquí» asks AutoCAD to read it (RACKCABECERAABRIR, no undo marker), the
     /// editor of cabeceras opens on the answer to THAT request, and «Actualizar» hands a COPY to RACKCABECERAAPLICAR, which redraws its views
     /// in place. The one request in flight, «Dejar de esperar», the request the command already took, a draft of another drawing, the prune
-    /// of a closed drawing and the veto of the close (D-08) are the rules of the window. «Nuevo › Cabecera en esta ventana» waits for the
-    /// drafts of the part «new»; «Insertar vista…» of a cabecera waits for the panel of the part «ins» (DG-07).
+    /// of a closed drawing and the veto of the close (D-08) are the rules of the window.
+    /// <para>T7 cab (I-64, séptima tanda; the Owner on 2026-11-27: «Las dos»), what was missing (DG-07):</para>
+    /// <list type="bullet">
+    /// <item>«Nuevo» › «Cabecera en esta ventana» is a draft («Borrador N», SD-06) by the one entry point of the drafts
+    /// (<see cref="OpenAsNewDraft"/>), with the defaults of the classic configurator, inserted with RACKCABECERANUEVO (one «U»);</item>
+    /// <item>«Insertar vista…» of a cabecera of the drawing is RACKCABECERAINSERTAR (the cabecera in the views that exist, then the new ones,
+    /// B-1 and the rule of the incomplete redraw);</item>
+    /// <item>the tab «Propiedades» (VA-07), read with «Editar aquí» and written with «Actualizar» and, for a new one, at its insertion (VA-S9);</item>
+    /// <item>RACKCABECERA and RCB open «Cabecera en esta ventana» (<see cref="IRackCadShortcutPort"/>, the pattern of rl).</item>
+    /// </list>
     /// </summary>
     public sealed partial class RackCadWindowViewModel
     {
         private IRackCadCabeceraDoorPort _cabeceraDoor;
 
-        // The cabeceras of their own opened in the window, with the key and the life of the other drafts.
+        // The cabeceras of their own opened in the window (and, T7 cab, the new ones of «Nuevo»), with the key and the life of the other drafts.
         private readonly Dictionary<(SessionId Session, string RackId), CabeceraDraftEntry> _cabeceraDrafts = new(DraftKeyComparer.Instance);
 
         private sealed class CabeceraDraftEntry
@@ -51,10 +61,11 @@ namespace RackCad.UI.VentanaRackCad
         public bool IsCabeceraRack =>
             string.Equals(RackList.KindOf(Panel.Browser.ActiveRackId), RackEmbedDocument.KindCabecera, StringComparison.OrdinalIgnoreCase);
 
-        /// <summary>The editor of the active cabecera in the window, when it was opened here; null otherwise.</summary>
+        /// <summary>The editor of the active cabecera in the window, when it was opened here; null otherwise (and for a new one of «Nuevo»).</summary>
         public CabeceraEditorViewModel ActiveCabeceraEditor =>
             Panel.PresentedSession.HasValue && Panel.Browser.ActiveRackId != null
             && _cabeceraDrafts.TryGetValue((Panel.PresentedSession.Value, Panel.Browser.ActiveRackId), out var entry)
+            && !entry.Editor.IsNewRack // T7 cab
                 ? entry.Editor
                 : null;
 
@@ -65,6 +76,102 @@ namespace RackCad.UI.VentanaRackCad
 
         /// <summary>«Editar aquí» of a cabecera: a cabecera with no editor open yet, and a door that reads and writes a cabecera.</summary>
         public bool ShowCabeceraOffer => IsCabeceraRack && ActiveCabeceraEditor == null && _cabeceraDoor != null;
+
+        // ------------------------------------------------------------------ T7 cab: «Nuevo» › «Cabecera en esta ventana»
+
+        /// <summary>The new cabecera that «Nuevo» shows: the editor of the active draft when it is a cabecera; null otherwise.</summary>
+        public CabeceraEditorViewModel NewCabeceraEditor => ActiveDraftEditor as CabeceraEditorViewModel;
+
+        public bool ShowNewCabeceraEditor => IsNuevoPage && NewCabeceraEditor != null;
+
+        /// <summary>A new cabecera can be made here: the window has the door of the cabecera and a drawing.</summary>
+        public bool CanStartNewCabecera => _cabeceraDoor != null && Panel.PresentedSession.HasValue;
+
+        /// <summary>«Cabecera en esta ventana» of «Nuevo» (and RACKCABECERA): a new draft («Borrador N») with the defaults of the classic configurator.</summary>
+        public RackCadDraftOpening StartNewCabecera() => OpenAsNewDraft(RackCadDraftSeed.Defaults(RackCad.Domain.Systems.Shared.RackSystemKind.Selective));
+
+        // The new draft of «Nuevo» of a cabecera (a case of CreateDraftEditor): the defaults of RACKCABECERA, or a design (the copy of «Duplicar»).
+        private CabeceraEditorViewModel CreateCabeceraDraft(RackCadDraftSeed seed, SessionId session, string rackId, string label, out string failure)
+        {
+            failure = null;
+            var store = new RackFrameProjectStore();
+            RackFrameConfiguration opened;
+            if (seed.Project == null)
+            {
+                // T7cab-S1, S2: the template of RACKCABECERA (HardcodedStandardRackFrameService, the standard «STD-3P» with its post, height and
+                // depth), with no name: at the insertion it takes «Cabecera N» (I-60), as the other drafts. The classic configurator shows the
+                // name of the template, which I-60 also takes as no name.
+                opened = new HardcodedStandardRackFrameService(_catalog()).CreateDefault();
+                opened.Name = string.Empty;
+            }
+            else
+            {
+                opened = seed.Project.Header == null ? null : store.DeepCopy(seed.Project.Header);
+                if (opened == null)
+                {
+                    failure = "El diseño no tiene una cabecera que abrir.";
+                    return null;
+                }
+
+                if (!string.IsNullOrWhiteSpace(seed.Name)) opened.Name = seed.Name.Trim();
+            }
+
+            CabeceraDraftEditor draft;
+            try
+            {
+                draft = new CabeceraDraftEditor(opened, _catalog(), CabeceraTemplates.Load(), CabeceraDraftContext.Standalone);
+            }
+            catch (Exception ex) when (ex is ArgumentException || ex is InvalidOperationException)
+            {
+                failure = "No se pudo abrir la cabecera como borrador: " + ex.Message;
+                return null;
+            }
+
+            var editor = CabeceraEditorViewModel.ForNewRack(draft, rackId, UpdateCabecera);
+            if (seed.Edit != null)
+            {
+                // «Duplicar»: the frame of the original as an edit; the copy keeps its own name (none), as the copies of the other systems.
+                var edited = seed.Edit.Header == null ? null : store.DeepCopy(seed.Edit.Header);
+                if (edited != null) edited.Name = opened.Name;
+                if (edited == null || !editor.TakeDesignAsEdit(edited))
+                {
+                    failure = "No se pudo copiar el diseño.";
+                    return null;
+                }
+            }
+
+            WireCabecera(editor);
+            _cabeceraDrafts[(session, rackId)] = new CabeceraDraftEntry(session, editor, null);
+            if (seed.Project != null) editor.SayOpened(OpenedText(label, seed, null, null));
+            return editor;
+        }
+
+        // A draft of «Nuevo» of a cabecera is live while its editor is a new rack in the dictionary.
+        private bool IsLiveCabecera(SessionId session, string rackId, CabeceraEditorViewModel editor)
+            => editor.IsNewRack && _cabeceraDrafts.TryGetValue((session, rackId), out var entry) && ReferenceEquals(entry.Editor, editor);
+
+        // For «Duplicar»: the frame of a draft as a project, and the base of its «Modificado» (what its «Descartar» goes back to).
+        private static (RackProject Base, RackProject Copied) CopyOfCabecera(CabeceraEditorViewModel editor)
+        {
+            var store = new RackFrameProjectStore();
+            var baseline = string.IsNullOrWhiteSpace(editor.Editor.BaselineJson) ? null : store.Deserialize(editor.Editor.BaselineJson);
+            var copy = editor.Editor.Snapshot();
+            return (baseline == null ? null : RackProject.ForSelective(baseline), copy == null ? null : RackProject.ForSelective(copy));
+        }
+
+        // ------------------------------------------------------------------ the editors of the window
+
+        // What every cabecera editor of its own gets: the writes, the panel «Insertar vista…» and the close.
+        private void WireCabecera(CabeceraEditorViewModel editor)
+        {
+            editor.PropertyChanged += OnCabeceraEditorChanged;
+            editor.CloseRequested += CloseCabeceraEditor;
+            editor.ExistingViewKinds = () => RackList.ViewKindsOf(editor.RackId); // T7 cab: DG-04
+            editor.OtherRequestText = OtherRequestText;
+            editor.OtherDrawingText = () => OtherDrawingText(_cabeceraDrafts.Values.FirstOrDefault(e => ReferenceEquals(e.Editor, editor))?.Session);
+            editor.InsertViewsAction = InsertCabeceraViews;
+            editor.InsertNewAction = InsertNewCabecera;
+        }
 
         /// <summary>«Editar aquí» of a cabecera: asks AutoCAD to read it (RACKCABECERAABRIR); the one request of the door is shared.</summary>
         public void EditCabeceraHere()
@@ -141,8 +248,8 @@ namespace RackCad.UI.VentanaRackCad
                 if (existing != null) ForgetCabecera(key, existing);
                 var draft = new CabeceraDraftEditor(header, _catalog(), CabeceraTemplates.Load(), CabeceraDraftContext.Standalone);
                 var editor = CabeceraEditorViewModel.Standalone(draft, request.RackId, UpdateCabecera);
-                editor.PropertyChanged += OnCabeceraEditorChanged;
-                editor.CloseRequested += CloseCabeceraEditor;
+                editor.LoadProperties(read.Properties); // T7 cab: the tab «Propiedades» (VA-07)
+                WireCabecera(editor); // T7 cab: and «Insertar vista…»
                 _cabeceraDrafts[key] = new CabeceraDraftEntry(request.Session, editor, RackList.ListedNameOf(request.RackId));
                 _showPanel = false;
                 Say(string.Empty, failed: false);
@@ -152,14 +259,32 @@ namespace RackCad.UI.VentanaRackCad
 
         private void OnCabeceraEditorChanged(object sender, PropertyChangedEventArgs e)
         {
+            RefreshDraftOf(sender, e.PropertyName); // T7 cab: the item of a draft follows its name and its state
             if (e.PropertyName != nameof(CabeceraEditorViewModel.IsDirty) && e.PropertyName != nameof(CabeceraEditorViewModel.IsWriting)) return;
             RackList.RefreshStates();
             OnPropertyChanged(nameof(HeaderText));
         }
 
-        // «Actualizar» of a cabecera of its own: a COPY of the cabecera goes to AutoCAD (RACKCABECERAAPLICAR); the editor is locked until the
-        // answer arrives or the window stops waiting.
-        private void UpdateCabecera(CabeceraEditorViewModel editor)
+        private void UpdateCabecera(CabeceraEditorViewModel editor) => WriteCabecera(editor, null);
+
+        // T7 cab: «Insertar vista…» of a cabecera of the drawing: the same write, with the views to insert after it.
+        private void InsertCabeceraViews(CabeceraEditorViewModel editor, IReadOnlyList<RackViewAddress> views)
+        {
+            if (views == null || views.Count == 0) return;
+            WriteCabecera(editor, views);
+        }
+
+        // T7 cab: «Insertar en el dibujo…» of a new cabecera: the same write, as the insertion of a new rack with those views.
+        private void InsertNewCabecera(CabeceraEditorViewModel editor, IReadOnlyList<RackViewAddress> views)
+        {
+            if (views == null || views.Count == 0 || !editor.IsNewRack) return;
+            WriteCabecera(editor, views);
+        }
+
+        // «Actualizar», «Insertar vista…» and «Insertar en el dibujo…» of a cabecera of its own: a COPY of the cabecera goes to AutoCAD
+        // (RACKCABECERAAPLICAR, RACKCABECERAINSERTAR, RACKCABECERANUEVO); the editor is locked until the answer arrives or the window stops
+        // waiting.
+        private void WriteCabecera(CabeceraEditorViewModel editor, IReadOnlyList<RackViewAddress> insertViews)
         {
             if (_cabeceraDoor == null)
             {
@@ -171,7 +296,7 @@ namespace RackCad.UI.VentanaRackCad
             if (entry == null) return;
             if (!Panel.PresentedSession.HasValue || entry.Session != Panel.PresentedSession.Value)
             {
-                editor.MarkWritten(false, "Este borrador es de otro dibujo: vuelve a ese dibujo para escribirlo.");
+                editor.MarkWritten(false, OtherDrawingWriteText);
                 return;
             }
 
@@ -183,9 +308,10 @@ namespace RackCad.UI.VentanaRackCad
 
             var copy = editor.Editor.Snapshot();
             // Correction 7 of the review: the inner name goes as it is (blank too); the command names the blocks as RACKEDITAR does, with
-            // the name of the envelope when the inner one is blank. What is sent is the base of «Limpio» once it is written.
+            // the name of the envelope when the inner one is blank (a new cabecera takes «Cabecera N», I-60). What is sent is the base of
+            // «Limpio» once it is written.
             var name = copy.Name;
-            var sent = new RackCad.Application.Persistence.RackFrameProjectStore().Serialize(copy);
+            var sent = new RackFrameProjectStore().Serialize(copy);
             var id = ++_lastRequestId;
             _inFlight = new DoorRequest(id, true, entry.Session, editor.RackId, sent, name, IsCabecera: true);
             editor.SetWriting(true);
@@ -194,7 +320,9 @@ namespace RackCad.UI.VentanaRackCad
             RackCadClassicResult result;
             try
             {
-                result = _cabeceraDoor.RequestCabeceraUpdate(new CabeceraDoorWrite(id, entry.Session, editor.RackId, name, copy))
+                result = _cabeceraDoor.RequestCabeceraUpdate(new CabeceraDoorWrite(id, entry.Session, editor.RackId, name, copy,
+                             insertViews == null ? null : new List<RackViewAddress>(insertViews), NewRack: editor.IsNewRack, // T7 cab
+                             Properties: insertViews == null || editor.IsNewRack ? editor.PropertiesWrite() : null)) // T7 cab: VA-07, VA-S9 (not «Insertar vista…», VA-S10)
                          ?? RackCadClassicResult.Without(RackCadClassicStatus.Failed, "sin respuesta.");
             }
             catch (Exception ex)
@@ -202,22 +330,42 @@ namespace RackCad.UI.VentanaRackCad
                 result = RackCadClassicResult.Without(RackCadClassicStatus.Failed, ex.Message);
             }
 
-            if (result.IsStarted) return;
+            if (result.IsStarted)
+            {
+                editor.WriteHandedOver(); // T7 cab: the panel of «Insertar vista…» does not come back
+                return;
+            }
+
             if (_inFlight != null && _inFlight.Id == id) _inFlight = null;
             RaiseWaiting();
             editor.MarkWritten(false, RefusalText(result));
         }
 
-        // The answer to the write of a cabecera: written = «Limpio» on what was sent; else it stays «Modificado» with the reason.
+        // The answer to the write of a cabecera: written = «Limpio» on what was sent; else it stays «Modificado» with the reason. T7 cab: the
+        // tab «Propiedades» follows, and a new cabecera that AutoCAD placed is a cabecera of the drawing now.
         private void CabeceraWritten(DoorRequest request, RackDesignWritten written)
         {
-            if (_cabeceraDrafts.TryGetValue((request.Session, request.RackId), out var entry)) entry.Editor.MarkWritten(written.Written, written.Message, request.SentJson);
+            if (!_cabeceraDrafts.TryGetValue((request.Session, request.RackId), out var entry)) return;
+            var editor = entry.Editor;
+            editor.WriteHandedOver();
+            editor.MarkWritten(written.Written, written.Message, request.SentJson);
+            if (!written.Written) EchoHiddenDraft(editor, written.Message, failed: true);
+            editor.PropertiesWritten(written);
+
+            if (written.Written && editor.IsNewRack)
+            {
+                editor.MarkInserted(written.Name);
+                Say(written.Message, failed: false);
+                RaiseDynamic();
+            }
         }
 
         // «Dejar de esperar» of a write of a cabecera: the editor can be edited again, with its draft still not written.
         private void StopCabeceraWrite(DoorRequest request, string text)
         {
-            if (_cabeceraDrafts.TryGetValue((request.Session, request.RackId), out var entry)) entry.Editor.MarkWritten(false, text);
+            if (!_cabeceraDrafts.TryGetValue((request.Session, request.RackId), out var entry)) return;
+            entry.Editor.MarkWritten(false, text);
+            EchoHiddenDraft(entry.Editor, text, failed: false); // T7 cab: a draft not on screen says it in the window too
         }
 
         private void CabeceraWriteTaken(DoorRequest request)
@@ -247,8 +395,12 @@ namespace RackCad.UI.VentanaRackCad
             _cabeceraDrafts.Remove(key);
         }
 
-        private static string CabeceraNameOf(CabeceraDraftEntry entry)
-            => !string.IsNullOrWhiteSpace(entry.Editor.Name) ? entry.Editor.Name.Trim() : entry.ListedName ?? entry.Editor.RackId;
+        // The name of a cabecera in the notices; T7 cab: a draft of «Nuevo» by its own name, «Borrador N (Cabecera nueva)».
+        private string CabeceraNameOf(CabeceraDraftEntry entry) =>
+            DraftNoticeName(entry.Editor) is string draft ? draft
+            : !string.IsNullOrWhiteSpace(entry.Editor.Name) ? entry.Editor.Name.Trim()
+            : entry.Editor.IsNewRack ? "una cabecera nueva"
+            : entry.ListedName ?? entry.Editor.RackId;
 
         // D-08: the cabeceras of the session with changes not written (or being written).
         private IEnumerable<string> UnwrittenCabeceraNames(SessionId session)
@@ -282,6 +434,12 @@ namespace RackCad.UI.VentanaRackCad
             return true;
         }
 
+        // T7 cab: the open panels «Insertar vista…» of the cabecera editors follow the door (one line of RefreshInsertPanels).
+        private void RefreshCabeceraInsertPanels()
+        {
+            foreach (var entry in _cabeceraDrafts.Values) entry.Editor.RefreshInsertState();
+        }
+
         private void RaiseCabecera()
         {
             OnPropertyChanged(nameof(IsCabeceraRack));
@@ -289,6 +447,15 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(HasCabeceraEditor));
             OnPropertyChanged(nameof(CabeceraEditors));
             OnPropertyChanged(nameof(ShowCabeceraOffer));
+            RaiseNewCabecera(); // T7 cab
+        }
+
+        // T7 cab: one line of RaiseNewDynamic: the new cabecera of «Nuevo» follows the drafts and the page.
+        private void RaiseNewCabecera()
+        {
+            OnPropertyChanged(nameof(NewCabeceraEditor));
+            OnPropertyChanged(nameof(ShowNewCabeceraEditor));
+            OnPropertyChanged(nameof(CanStartNewCabecera));
         }
     }
 }

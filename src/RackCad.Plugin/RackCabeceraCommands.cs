@@ -24,12 +24,37 @@ namespace RackCad.Plugin
     /// <summary>Cabecera (lateral header) commands + their draw/edit/payload helpers, plus their short aliases.</summary>
     public sealed partial class RackCabeceraCommands // T4 cb: partial (the drawing half of the door, RackCabeceraCommands.Door.cs)
     {
-        [CommandMethod("RCB")] public void AliasRackCabecera() => RackCabecera();          // RACKCABECERA
+        [CommandMethod("RCB", RackCadWindowShortcuts.WindowFlags)] public void AliasRackCabecera() => RackCabecera(); // RACKCABECERA
         [CommandMethod("QCB")] public void AliasQuickCabecera() => QuickCabecera();        // QUICKCABECERA
 
-        /// <summary>Shortcut straight to the header configurator module.</summary>
-        [CommandMethod("RACKCABECERA")]
+        /// <summary>
+        /// T7 cab (I-64, séptima tanda; the Owner on 2026-11-27: «Abren la ventana»): RACKCABECERA and RCB open the RackCad window in «Nuevo» ›
+        /// «Cabecera en esta ventana», a new draft with the defaults of the classic configurator, with the pattern of the shortcuts of rl
+        /// (<see cref="RackCadWindowShortcuts"/>): the command is the gesture, it reads nothing and writes nothing. The classic configurator
+        /// stays in the classic menu (RACKMENU, «Diseñar cabecera») and in the card «Cabecera» of «Nuevo» (RACKNUEVO Cabecera).
+        /// </summary>
+        [CommandMethod("RACKCABECERA", RackCadWindowShortcuts.WindowFlags)]
         public void RackCabecera()
+        {
+            try
+            {
+                var document = AcApplication.DocumentManager.MdiActiveDocument;
+                if (document == null) return;
+                RackCadWindowShortcuts.Open(document, new RackCad.Application.VentanaRackCad.RackCadShortcutAsk(
+                    RackCad.Application.VentanaRackCad.RackCadShortcutTarget.NewCabecera, null, null));
+            }
+            catch (System.Exception ex)
+            {
+                RackCommandSupport.Report(ex);
+            }
+        }
+
+        /// <summary>
+        /// The body of RACKCABECERA until T7 cab: the classic configurator, modal, and the placement of its first view. The classic editor
+        /// stays (order of the Owner, 2026-11-27): the classic menu opens the same configurator with its button «Diseñar cabecera» through the
+        /// registry of modules (<c>HeaderEditorModule</c>), and this method is kept, not registered, as RACKVARIABLES kept its classic loop.
+        /// </summary>
+        internal void RackCabeceraClassic()
         {
             try
             {

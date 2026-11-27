@@ -282,6 +282,7 @@ namespace RackCad.UI.VentanaRackCad
         private const string Varies = "Varía";
         private const string WaitingWriteText = "AutoCAD está escribiendo la cabecera: espera a que termine o pulsa «Dejar de esperar».";
         private const string TakenWriteText = "AutoCAD ya tomó la escritura de la cabecera: espera a que termine, o termina o cancela la orden en AutoCAD; la ventana recibirá su respuesta.";
+        internal const string NewRackUpdateText = "Una cabecera nueva se escribe en el dibujo con «Insertar en el dibujo…»."; // T7 cab
 
         private static readonly Geometry SingleRight = Frozen("M0,100 L100,0");
         private static readonly Geometry SingleLeft = Frozen("M100,100 L0,0");
@@ -395,7 +396,7 @@ namespace RackCad.UI.VentanaRackCad
 
         public bool CanEdit => !_writing;
 
-        public bool IsDirty => _editor.IsDirty;
+        public bool IsDirty => _editor.IsDirty || PropertiesDirty; // T7 cab: the tab «Propiedades» is part of the draft (VA-07)
 
         public bool IsCustom => _editor.Changes().Count > 0 || (_wasCustom && !IsDirty);
 
@@ -415,19 +416,23 @@ namespace RackCad.UI.VentanaRackCad
 
         public string SubLine => IsEmbedded
             ? "Editas una copia de la cabecera de " + (_editor.Context.Where ?? Title) + " de " + HostName + ". «Aplicar al borrador» la pasa al rack, que queda «Modificado»; el dibujo cambia con «Actualizar» de " + HostName + ". Nada aquí escribe en AutoCAD."
-            : "Cabecera · plantilla «" + (_editor.Template?.Name ?? string.Empty) + "». Lee y escribe por su puerta (RACKCABECERAABRIR / RACKCABECERAAPLICAR), sin bloquear AutoCAD.";
+            : _isNewRack // T7 cab: a new cabecera of «Nuevo»
+                ? "Cabecera nueva · plantilla «" + (_editor.Template?.Name ?? string.Empty) + "». Todavía no está en el dibujo: se coloca con «Insertar en el dibujo…», sin bloquear AutoCAD."
+                : "Cabecera · plantilla «" + (_editor.Template?.Name ?? string.Empty) + "». Lee y escribe por su puerta (RACKCABECERAABRIR / RACKCABECERAAPLICAR), sin bloquear AutoCAD.";
 
         // ------------------------------------------------------------------ the head: standalone
 
-        public bool CanUpdate => IsStandalone && !_writing && IsDirty && _update != null;
+        public bool CanUpdate => IsStandalone && !_writing && IsDirty && _update != null && !_isNewRack && !PropertiesBlockUpdate; // T7 cab
 
         public string UpdateBlockedText
         {
             get
             {
                 if (!IsStandalone) return string.Empty;
+                if (_isNewRack) return NewRackUpdateText; // T7 cab
                 if (_writing) return _writeTaken ? TakenWriteText : WaitingWriteText;
                 if (_update == null) return "La ventana no tiene la puerta de AutoCAD para escribir la cabecera.";
+                if (PropertiesBlockUpdate) return PropertiesTab.BlockedText; // T7 cab: VA-07
                 return string.Empty;
             }
         }
@@ -484,6 +489,7 @@ namespace RackCad.UI.VentanaRackCad
         {
             _writing = writing;
             if (!writing) _writeTaken = false;
+            _propertiesTab?.Lock(writing); // T7 cab: the tab is not edited while AutoCAD writes
             if (writing) CloseInlinePanels(except: null);
             Rebuild();
         }
@@ -503,6 +509,7 @@ namespace RackCad.UI.VentanaRackCad
         {
             _writing = false;
             _writeTaken = false;
+            _propertiesTab?.Lock(false); // T7 cab
             if (written) _editor.MarkWritten(sentJson);
             if (written) _drawingChange?.Clear(); // T6 st: what was written is the drawing now
             Say(message, !written);
@@ -718,10 +725,13 @@ namespace RackCad.UI.VentanaRackCad
         {
             if (!CanDiscard) return;
             _editor.Discard();
+            _propertiesTab?.Reset(); // T7 cab: the rows of the tab are part of the draft
             _sidesTogether = _editor.SidesAreEqual;
             CloseInlinePanels(except: null);
             CleanSelection();
-            Say(IsEmbedded ? "Cambios descartados: la copia vuelve a la cabecera de " + (_editor.Context.Where ?? Title) + " como está en el borrador del rack." : "Borrador descartado: se muestra lo último que se leyó del dibujo o se escribió en él.", false);
+            Say(IsEmbedded ? "Cambios descartados: la copia vuelve a la cabecera de " + (_editor.Context.Where ?? Title) + " como está en el borrador del rack."
+                : _isNewRack ? RackCadDraftNaming.DiscardedTextOf(_isCopy) // T7 cab: a draft of «Nuevo», as the other systems (T6 ui)
+                : "Borrador descartado: se muestra lo último que se leyó del dibujo o se escribió en él.", false);
             Rebuild();
         }
 
@@ -1154,6 +1164,7 @@ namespace RackCad.UI.VentanaRackCad
             }
 
             _drawingChange?.Refresh(); // T6 st: the notice follows the changes of the draft
+            RaiseNewRack(); // T7 cab: «Insertar vista…», «Insertar en el dibujo…» and the panel
         }
 
         private IReadOnlyList<object> BuildEssentials()

@@ -486,6 +486,9 @@ public sealed class UpdateAllRunTests
                  })
             Assert.Single(System.Text.RegularExpressions.Regex.Matches(command, System.Text.RegularExpressions.Regex.Escape(apply)));
 
+        // T7 cab: a cabecera of its own writes its tab «Propiedades» too, as RACKCABECERAAPLICAR (it had none until the séptima tanda).
+        Assert.Matches(@"RackCabeceraCommands\.ApplyCabeceraUpdate\(_document, plan\.Project, write\.Cabecera, write\.RackId, name\);\s*return RackWritten\(write\.RackId, views, redrawn, erased, write\.Properties,", command);
+
         // Push Back is written in place only: no views to insert inside the set.
         Assert.Contains("RackPushBackWindowDrawing.Apply(_document, blockId, embed, plan.Project, write.Design, system, write.RackId, null)", command, StringComparison.Ordinal);
 

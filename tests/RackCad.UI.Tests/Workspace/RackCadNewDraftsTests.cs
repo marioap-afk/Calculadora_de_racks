@@ -616,8 +616,12 @@ namespace RackCad.UI.Tests
             // T5 pb: Push Back has an editor in the window now; without the door of Push Back (this door is the one of Selectivo) it is refused for the door.
             Refused(rig.Window.OpenAsNewDraft(RackCadDraftSeed.Defaults(RackSystemKind.PushBack)),
                 "Aquí no se puede crear un rack en el dibujo.");
+            // T7 cab: the cabecera has an editor in the window now; without the door of the cabecera (this door is the one of Selectivo) it is
+            // refused for the door. A system with no editor in the window yet (Larguero, WIP for another initiative) says so.
             Refused(rig.Window.OpenAsNewDraft(RackCadDraftSeed.Defaults(RackSystemKind.Selective)),
-                "Cabecera todavía no tiene editor en la ventana: se abre con su editor clásico.");
+                "Aquí no se puede crear un rack en el dibujo.");
+            Refused(rig.Window.OpenAsNewDraft(RackCadDraftSeed.Defaults(RackSystemKind.Larguero)),
+                "Larguero todavía no tiene editor en la ventana: se abre con su editor clásico.");
             Refused(rig.Window.OpenAsNewDraft(RackCadDraftSeed.FromProject(RackProject.ForSelectiveRack(null!))), "El diseño no tiene un Selectivo que abrir.");
             Refused(rig.Window.OpenAsNewDraft(RackCadDraftSeed.FromProject(RackProject.ForDynamic((RackCad.Domain.Systems.Dynamic.DynamicRackDesign)null!))),
                 "El diseño no tiene un Dinámico que abrir.");

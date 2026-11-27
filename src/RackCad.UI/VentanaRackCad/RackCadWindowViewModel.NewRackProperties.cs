@@ -25,6 +25,7 @@ namespace RackCad.UI.VentanaRackCad
                 case CamaEditorViewModel cama: return cama.PropertiesTab;
                 case CantileverEditorViewModel cantilever: return cantilever.PropertiesTab;
                 case PushBackEditorViewModel pushBack: return pushBack.PropertiesTab;
+                case CabeceraEditorViewModel cabecera: return cabecera.IsStandalone ? cabecera.PropertiesTab : null; // T7 cab: a cabecera of its own (a draft of «Nuevo» too)
                 default: return null;
             }
         }

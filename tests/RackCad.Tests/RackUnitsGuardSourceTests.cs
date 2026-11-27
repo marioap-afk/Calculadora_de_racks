@@ -108,7 +108,8 @@ namespace RackCad.Tests
         [InlineData("RackSelectivoCommands.cs", 2)]   // RACKSELECTIVO (new) + EditSelective (insert-new-view)
         [InlineData("RackDinamicoCommands.cs", 2)]    // RACKSISTEMADINAMICO (new) + EditDynamic (insert-new-view)
         [InlineData("RackCamaCommands.cs", 1)]        // QUICKCAMA (new); EditCama never inserts -> no guard
-        [InlineData("RackCabeceraCommands.cs", 3)]    // RACKCABECERA + QUICKCABECERA (new) + EditCabecera (insert-new-view)
+        [InlineData("RackCabeceraCommands.cs", 3)]    // RACKCABECERA (its classic body, RackCabeceraClassic, T7 cab) + QUICKCABECERA (new) + EditCabecera (insert-new-view)
+        [InlineData("RackCabeceraCommands.Door.cs", 1)] // T7 cab: ApplyCabeceraInsert (RACKCABECERAINSERTAR), once; ApplyCabeceraUpdate never warns
         [InlineData("RackLayoutCommands.cs", 1)]      // RACKLAYOUT
         [InlineData("RackLayoutCommands.Fill.cs", 1)] // RACKRELLENAR
         [InlineData("RackLayoutCommands.Ventana.cs", 1)] // T5 al: RACKALMACENCOLOCAR, once, before it places (RACKALMACENLEER only reads)

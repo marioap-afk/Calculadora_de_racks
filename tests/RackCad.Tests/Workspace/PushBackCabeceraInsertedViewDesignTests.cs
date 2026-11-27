@@ -421,15 +421,29 @@ public class PushBackCabeceraInsertedViewDesignTests
             "EditCabecera redraws its lateral and its planta with the cabecera, the identity and the name it hands the queue. If another redraw "
             + "is added, change the count and check that it takes config, id and name too.");
 
+        // T7 cab (séptima tanda, the Owner: «Las dos»): the door of a cabecera has four commands now. RACKCABECERAABRIR reads and
+        // RACKCABECERAAPLICAR redraws in place (ApplyCabeceraUpdate, no queue). The two that insert follow what this guard asked for:
+        // RACKCABECERAINSERTAR («Insertar vista…», DG-07) prepares its new views with RackViewBatchProducts.Header from the edited source (B-1)
+        // and answers the queue with RackInsertRedrawOutcome (I-02), in its drawing half ApplyCabeceraInsert; RACKCABECERANUEVO inserts a NEW
+        // cabecera by the dispatch of «Nuevo» (no source, NewRackCreationContext), as the classic configurator opened from «Nuevo».
         var door = WorkspaceHostSource.Code("src/RackCad.Plugin/VentanaRackCad/RackCadCabeceraDoorCommands.cs");
-        Assert.True(Regex.Matches(door, @"\[CommandMethod\(").Count == 2,
-            "The door of a cabecera has two commands, RACKCABECERAABRIR and RACKCABECERAAPLICAR, and neither inserts a view. If a command is "
-            + "added (for example, «Insertar vista…» of a cabecera, DG-07), it must prepare its new view with RackViewBatchProducts.Header (B-1) "
-            + "and answer the queue with RackInsertRedrawOutcome (I-02); then change this count.");
+        Assert.True(Regex.Matches(door, @"\[CommandMethod\(").Count == 4,
+            "The door of a cabecera has four commands: RACKCABECERAABRIR, RACKCABECERAAPLICAR, RACKCABECERAINSERTAR and RACKCABECERANUEVO. If a "
+            + "command that inserts is added, it must prepare its new view with RackViewBatchProducts.Header (B-1) and answer the queue with "
+            + "RackInsertRedrawOutcome (I-02), or insert a new rack by DispatchInsertion; then change this count.");
         Assert.Contains("RackCabeceraCommands.ApplyCabeceraUpdate(", door, StringComparison.Ordinal);
-        Assert.DoesNotContain("RackViewBatch", door, StringComparison.Ordinal);
-        var update = WorkspaceHostSource.Code("src/RackCad.Plugin/RackCabeceraCommands.Door.cs");
+        Assert.Contains("RackCabeceraCommands.ApplyCabeceraInsert(", door, StringComparison.Ordinal);
+        Assert.Single(Regex.Matches(door, @"RackMenuCommands\.DispatchInsertion\("));
+        Assert.DoesNotContain("RackViewBatch", door, StringComparison.Ordinal); // the commands prepare no queue: their drawing halves do
+        var halves = WorkspaceHostSource.Code("src/RackCad.Plugin/RackCabeceraCommands.Door.cs");
+        var update = WorkspaceHostSource.BodyOf(halves, @"internal\s+static\s+\(int\s+Redrawn,\s*int\s+Erased\)\s+ApplyCabeceraUpdate\s*\(");
         Assert.DoesNotContain("RackViewBatch", update, StringComparison.Ordinal);
         Assert.DoesNotContain("TryAuthorize", update, StringComparison.Ordinal);
+        var insert = WorkspaceHostSource.BodyOf(halves, @"internal\s+static\s+\(int\s+Redrawn,\s*int\s+Erased\)\s+ApplyCabeceraInsert\s*\(");
+        Assert.Matches(@"RackViewBatchProducts\.Header\(\s*document,\s*config,\s*id,\s*name,\s*embed,\s*project,\s*authorized\.AuthoredInput\)", insert);
+        Assert.True(Regex.Matches(insert, @"BuildCabeceraPayload\(config,\s*id,\s*name,").Count == 2,
+            "ApplyCabeceraInsert redraws the lateral and the planta with the cabecera, the identity and the name it hands the queue, as EditCabecera.");
+        Assert.Contains("RackInsertRedrawOutcome.Of(lateralBlocks.Count + plantaBlocks.Count, 0, updated, 0)", insert, StringComparison.Ordinal);
+        Assert.Equal(2, Regex.Matches(halves, @"internal\s+static\s+\(int\s+Redrawn,\s*int\s+Erased\)").Count); // the two halves, nothing else
     }
 }

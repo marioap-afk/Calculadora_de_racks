@@ -347,7 +347,8 @@ namespace RackCad.Plugin.VentanaRackCad
                     var plan = (CabeceraApplyPlan)state.Plan;
                     var name = string.IsNullOrWhiteSpace(write.Cabecera.Name) ? embed.Name : write.Cabecera.Name;
                     var (redrawn, erased) = RackCabeceraCommands.ApplyCabeceraUpdate(_document, plan.Project, write.Cabecera, write.RackId, name);
-                    return RackWritten(write.RackId, views, redrawn, erased, null, RackDoorRules.AnswerForApply(_requestId, write.RackId, redrawn, erased));
+                    return RackWritten(write.RackId, views, redrawn, erased, write.Properties, // T7 cab: its tab «Propiedades», as RACKCABECERAAPLICAR
+                        RackDoorRules.AnswerForApply(_requestId, write.RackId, redrawn, erased));
                 }
 
                 default:

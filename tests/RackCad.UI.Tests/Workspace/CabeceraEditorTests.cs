@@ -525,7 +525,9 @@ namespace RackCad.UI.Tests
                 var view = new CabeceraEditorView(vm);
                 Lay(view);
 
-                Assert.Equal(new[] { "Cabecera", "Alzado", "Postes y placas", "Avanzado" }, view.Tabs.Items.OfType<TabItem>().Select(t => (string)t.Header).ToArray());
+                // T7 cab: a cabecera of its own has the tab «Propiedades» at the end (VA-07), as the editors of the other systems.
+                Assert.Equal(new[] { "Cabecera", "Alzado", "Postes y placas", "Avanzado", "Propiedades" }, view.Tabs.Items.OfType<TabItem>().Select(t => (string)t.Header).ToArray());
+                Assert.Equal(Visibility.Visible, view.RackPropertiesTabItem.Visibility);
                 Assert.Same(view.AlzadoTab, view.Tabs.SelectedItem);
                 Assert.Equal(Visibility.Visible, view.StandaloneHead.Visibility);
                 Assert.Equal(Visibility.Collapsed, view.EmbeddedHead.Visibility);
@@ -547,7 +549,7 @@ namespace RackCad.UI.Tests
 
                 var named = new UIElement[]
                 {
-                    view.UpdateButton, view.DiscardButton, view.RestoreButton, view.CloseEditorButton, view.AddPanelButton, view.SplitButton, view.CombineButton,
+                    view.UpdateButton, view.InsertViewButton, view.DiscardButton, view.RestoreButton, view.CloseEditorButton, view.AddPanelButton, view.SplitButton, view.CombineButton, // T7 cab: InsertViewButton
                     view.PanelsStandardButton, view.DuplicateButton, view.DeleteButton, view.SelectPanelsButton, view.SelectHorizontalsButton, view.SelectAllButton,
                     view.RestoreConfirmButton, view.RestoreCancelButton, view.CloseYesButton, view.CloseNoButton, view.RegenYesButton, view.RegenNoButton,
                 }.Select(Name).ToList();

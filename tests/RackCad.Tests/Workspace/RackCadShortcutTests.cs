@@ -20,11 +20,16 @@ public class RackCadShortcutTests
     [Fact]
     public void OnlyTheReadsOfTheWindowRunInsideTheCommand()
     {
-        Assert.Equal(new[] { "RACKVARIABLESLEER", "RACKSELECTIVOABRIR", "RACKDINAMICOABRIR", "RACKPUSHBACKABRIR", "RACKCANTILEVERABRIR", "RACKCAMAABRIR" },
+        // T7 cab: the cabecera of its own has the tab «Propiedades» now, so the read of its «Editar aquí» is one of them (the rule of the list:
+        // the reads of «Editar aquí» of the editors with that tab); its writes are not.
+        Assert.Equal(new[] { "RACKVARIABLESLEER", "RACKSELECTIVOABRIR", "RACKDINAMICOABRIR", "RACKPUSHBACKABRIR", "RACKCANTILEVERABRIR", "RACKCAMAABRIR",
+                "RACKCABECERAABRIR" },
             RackCadShortcutRules.InlineReads);
         Assert.Equal("RACKSELECTIVOABRIR", RackCadShortcutRules.InlineReadOf("RACKSELECTIVOABRIR "));
         Assert.Equal("RACKVARIABLESLEER", RackCadShortcutRules.InlineReadOf(" rackvariablesleer "));
-        foreach (var write in new[] { "RACKSELECTIVOAPLICAR ", "RACKVARIABLESAPLICAR ", "RACKDINAMICOINSERTAR ", "RACKALMACENCOLOCAR ", "RACKBOMLEER ", "RACKCABECERAABRIR ", "", null })
+        Assert.Equal("RACKCABECERAABRIR", RackCadShortcutRules.InlineReadOf("RACKCABECERAABRIR "));
+        foreach (var write in new[] { "RACKSELECTIVOAPLICAR ", "RACKVARIABLESAPLICAR ", "RACKDINAMICOINSERTAR ", "RACKALMACENCOLOCAR ", "RACKBOMLEER ",
+                     "RACKCABECERAAPLICAR ", "RACKCABECERAINSERTAR ", "RACKCABECERANUEVO ", "", null })
             Assert.Null(RackCadShortcutRules.InlineReadOf(write));
     }
 
@@ -54,6 +59,14 @@ public class RackCadShortcutTests
             RackCadShortcutRules.CommandLineText(new RackCadShortcutAsk(RackCadShortcutTarget.Variables, null!, null!) { Taken = true }));
         Assert.Equal("RackCad: «Variables» › «Propiedades del proyecto» en la ventana RackCad.",
             RackCadShortcutRules.CommandLineText(new RackCadShortcutAsk(RackCadShortcutTarget.ProjectProperties, null!, null!) { Taken = true }));
+
+        // T7 cab: RACKCABECERA and RCB.
+        Assert.Equal("RackCad: «Nuevo» › «Cabecera en esta ventana» en la ventana RackCad: Borrador 2, con los valores por defecto del configurador "
+                     + "clásico; se coloca con «Insertar en el dibujo…» y, si no le pones nombre, toma el automático.",
+            RackCadShortcutRules.CommandLineText(new RackCadShortcutAsk(RackCadShortcutTarget.NewCabecera, null!, null!)
+                { Taken = true, Said = RackCadShortcutRules.NewCabeceraText("Borrador 2") }));
+        Assert.Equal("RackCad: no se pudo abrir la ventana RackCad.",
+            RackCadShortcutRules.CommandLineText(new RackCadShortcutAsk(RackCadShortcutTarget.NewCabecera, null!, null!)));
     }
 
     // ------------------------------------------------------------------ the commands, by their source
@@ -100,7 +113,8 @@ public class RackCadShortcutTests
         Assert.Equal(RackCadShortcutRules.InlineReads, cases);
         foreach (var call in new[] { "new RackCadVariablesDoorCommands().ReadVariables()", "new RackCadRackDoorCommands().ReadSelectiveDesign()",
                      "new RackCadRackDoorCommands().ReadDesign()", "new RackCadPushBackDoorCommands().ReadPushBack()",
-                     "new RackCadCantileverDoorCommands().ReadCantilever()", "new RackCadCamaDoorCommands().ReadCama()" })
+                     "new RackCadCantileverDoorCommands().ReadCantilever()", "new RackCadCamaDoorCommands().ReadCama()",
+                     "new RackCadCabeceraDoorCommands().ReadCabecera()" }) // T7 cab
             Assert.Contains(call, run);
 
         // The door: while a command asks, a read of the list is kept and noted, any other request refused as during any command; the hand
