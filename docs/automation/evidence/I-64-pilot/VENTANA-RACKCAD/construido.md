@@ -7917,3 +7917,33 @@ Quedan para la prueba guiada del Owner sobre el SHA final, o como limitación de
   - Se acepta como aviso conservador en I-64.
   - Queda anotado como mejora futura en `docs/ideas-futuras.md`.
   - No cambia el código: la punta de esta rama tras el smoke es la de la prueba guiada del Owner.
+
+## Prueba guiada del Owner sobre `0a34fe71`: G-1, «Calculado» de Dinámico con 10 frentes (2026-11-27)
+
+- **Lo que vio el Owner** (captura en el chat): en un Dinámico nuevo con 10 frentes, en un monitor vertical, el bloque «Calculado» de la
+  pestaña «Rack» se desordenó.
+  - El valor de «Altura por poste» (P1 204 · P2 204 · …) ocupaba todo el ancho y se cortaba a la derecha.
+  - Su etiqueta se partía letra a letra con ancho casi cero: quedaba un hueco en blanco.
+  - «Subida de la cama» salía en vertical, una letra por línea.
+- **Causa:** la plantilla de «Calculado» de Dinámico ponía el valor a la derecha (`DockPanel.Dock="Right"`) sin partirlo. Un valor largo se
+  quedaba con todo el ancho y la etiqueta, la que sí se parte, se quedaba sin sitio. El monitor vertical solo lo hace más visible, porque
+  la paleta es más estrecha.
+- **Los otros sistemas:**
+  - Push Back y Selectivo ya partían el valor, con un máximo de 300 px, así que no se desbordaban. En una paleta estrecha, sin embargo,
+    apretaban la etiqueta.
+  - Cabecera y Cantilever usan el mismo patrón, pero sus valores son cortos (no listan poste a poste). No se tocaron.
+- **Arreglo:**
+  - en Dinámico, Push Back y Selectivo, la fila es una rejilla de dos columnas: la etiqueta conserva su ancho (hasta 180 px) y el valor
+    ocupa el resto, partido y a la derecha;
+  - con espacio de sobra se ve como antes;
+  - en Dinámico, cada «P1 204» y «F1 14» lleva un espacio que no se parte, así que el valor solo se parte entre las piezas, en « · ».
+- **Prueba nueva** (UI, WPF real en STA): `DynamicSafetyTabTests.TenFrontsInANarrowPaletteWrapTheValuesAndKeepTheLabelsWhole`.
+  - Un Dinámico con 10 frentes, dispuesto a 420 px de ancho.
+  - Cada etiqueta ocupa como mucho dos líneas, y cada valor queda al lado de su etiqueta y dentro de la lista.
+  - Las listas por poste y por frente se parten, y «P11» va en una sola pieza.
+  - **Comprobación en rojo:** sin el arreglo, la etiqueta «Altura por poste» medía 255 px de alto (unas 16 líneas de 16 px).
+- **Números:**
+  - las pruebas de UI de los editores de Dinámico, Selectivo y Push Back: 144 / 0 / 0;
+  - el proyecto UI en Release: 0 advertencias.
+  - La UI completa la corre el CI.
+- **En AutoCAD:** pendiente. El DLL que el Owner tiene cargado es el de `0a34fe71`; el nuevo se compila cuando cierre AutoCAD.

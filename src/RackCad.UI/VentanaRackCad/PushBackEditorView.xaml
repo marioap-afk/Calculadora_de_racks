@@ -297,11 +297,17 @@
                         <ItemsControl x:Name="CalculatedList" ItemsSource="{Binding Calculated}" MaxWidth="520" HorizontalAlignment="Left">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <DockPanel Margin="0,1">
-                                        <TextBlock Text="{Binding Value}" DockPanel.Dock="Right" FontWeight="SemiBold" Margin="16,0,0,0" TextWrapping="Wrap" MaxWidth="300"
-                                                   Foreground="{DynamicResource ShellTextPrimaryBrush}" />
-                                        <TextBlock Text="{Binding Label}" TextWrapping="Wrap" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
-                                    </DockPanel>
+                                    <!-- Guided test of the Owner (2026-11-27), as Dinámico: the label keeps its own width (up to 180) and the value takes
+                                         the rest, wrapped, at the right; in a narrow palette the label is no longer squeezed by a value of 300. -->
+                                    <Grid Margin="0,1">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="{Binding Label}" TextWrapping="Wrap" MaxWidth="180" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                        <TextBlock Grid.Column="1" Text="{Binding Value}" TextWrapping="Wrap" TextAlignment="Right" HorizontalAlignment="Right"
+                                                   FontWeight="SemiBold" Margin="16,0,0,0" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                    </Grid>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>

@@ -1378,6 +1378,9 @@ namespace RackCad.UI.VentanaRackCad
             return -1;
         }
 
+        // A non-breaking space (U+00A0), written by its code so the source shows no invisible character.
+        private static readonly string NoBreak = ((char)0x00A0).ToString();
+
         private IReadOnlyList<DynamicCalcItem> BuildCalculated()
         {
             var system = _editor.System;
@@ -1386,11 +1389,13 @@ namespace RackCad.UI.VentanaRackCad
             // load (the map of the code of step 3).
             var posts = _editor.PostHeights;
             var rises = _editor.FrontRises;
+            // Guided test of the Owner (2026-11-27): with 10 fronts the lists by post and by front are long. Each «P1 204» and «F1 14» is one
+            // piece (a non-breaking space inside it), so the value wraps only between the pieces, at « · ».
             var items = new List<DynamicCalcItem>
             {
                 new("Altura de cabecera", Num(_editor.HeaderHeight) + " in" + (_editor.ManualHeaderHeight.HasValue ? " (manual)" : " (la más alta)")),
-                new("Altura por poste", posts.Count == 0 ? "—" : string.Join(" · ", posts.Select((h, i) => "P" + (i + 1) + " " + Num(h))) + " in"),
-                new("Subida de la cama", rises.Count == 0 ? "—" : string.Join(" · ", rises.Select((r, i) => "F" + (i + 1) + " " + Num(r))) + " in"),
+                new("Altura por poste", posts.Count == 0 ? "—" : string.Join(" · ", posts.Select((h, i) => "P" + (i + 1) + NoBreak + Num(h))) + NoBreak + "in"),
+                new("Subida de la cama", rises.Count == 0 ? "—" : string.Join(" · ", rises.Select((r, i) => "F" + (i + 1) + NoBreak + Num(r))) + NoBreak + "in"),
                 new("Posiciones de fondo del rack", _editor.PalletsDeep.ToString(CultureInfo.InvariantCulture)),
                 new("Niveles máximos", _editor.Matrix.MaxLoadLevels().ToString(CultureInfo.InvariantCulture)),
                 new("Módulos", system == null ? "—" : system.Modules.Count.ToString(CultureInfo.InvariantCulture)),

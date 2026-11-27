@@ -509,6 +509,49 @@ namespace RackCad.UI.Tests
         }
 
         [Fact]
+        public void TenFrontsInANarrowPaletteWrapTheValuesAndKeepTheLabelsWhole()
+        {
+            // Guided test of the Owner (2026-11-27), on a portrait monitor: with 10 fronts the list by post took the whole width of
+            // «Calculado», its label and «Subida de la cama» wrapped letter by letter and the value was cut at the right.
+            StaTestRunner.Run(() =>
+            {
+                var vm = Editor();
+                var fronts = vm.Essentials.First(f => f.Key == "fronts");
+                fronts.Text = "10";
+                fronts.Commit();
+                vm.SelectedTab = 0;
+                var view = new DynamicEditorView(vm);
+                view.Measure(new System.Windows.Size(420, 900));
+                view.Arrange(new System.Windows.Rect(0, 0, 420, 900));
+                view.UpdateLayout();
+
+                var labels = Descendants<System.Windows.Controls.TextBlock>(view.CalculatedList).Where(t => t.Name == "CalculatedLabel").ToList();
+                var values = Descendants<System.Windows.Controls.TextBlock>(view.CalculatedList).Where(t => t.Name == "CalculatedValue").ToList();
+                Assert.Equal(labels.Count, values.Count);
+                var line = labels.Single(t => t.Text == "Módulos").ActualHeight;
+                Assert.True(line > 0);
+                var list = BoundsIn(view.CalculatedList, view);
+
+                for (var i = 0; i < labels.Count; i++)
+                {
+                    // A label is whole: at most two lines, never one letter per line.
+                    Assert.True(labels[i].ActualHeight <= line * 2.2, labels[i].Text + ": " + labels[i].ActualHeight + " for a line of " + line);
+                    // A value is beside its label, inside the list: nothing is cut at the right.
+                    Assert.True(BoundsIn(values[i], view).Left - BoundsIn(labels[i], view).Right >= 8.0, labels[i].Text);
+                    Assert.True(BoundsIn(values[i], view).Right <= list.Right + 0.5, labels[i].Text + ": " + BoundsIn(values[i], view) + " / " + list);
+                }
+
+                // The lists by post and by front wrap, between their pieces: «P11 …» is one piece.
+                var posts = values[labels.FindIndex(t => t.Text == "Altura por poste")];
+                var rises = values[labels.FindIndex(t => t.Text == "Subida de la cama")];
+                Assert.Contains("P11" + (char)0x00A0, posts.Text);
+                Assert.Contains("F10" + (char)0x00A0, rises.Text);
+                Assert.True(posts.ActualHeight > line * 1.5, "the list by post is on one line: " + posts.ActualHeight);
+                Assert.True(rises.ActualHeight > line * 1.5, "the list by front is on one line: " + rises.ActualHeight);
+            });
+        }
+
+        [Fact]
         public void TheMarkOfTheGuideIsABadgeInItsOwnColor()
         {
             StaTestRunner.Run(() =>
