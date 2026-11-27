@@ -75,6 +75,11 @@ namespace RackCad.UI.VentanaRackCad
         private const string NothingManualText = "No hay nada manual que quitar: el layout ya es el que sale de las tarimas.";
         private const string RestorePeralteBlockedText = "Los peraltes propios son de todo el rack: elige «Todos los fondos» para restaurarlos.";
 
+        // T6 bom (point 3 of the review of 9dd5baa5): the restore would leave a «medio frente» with no room (T6bom-S3). With «Medio frente»
+        // unchecked, checking it takes those tramos away; checked, the split is in a fondo out of the scope (the restore follows the view).
+        internal const string BrokenSplitRestoreText = " Para restaurar igual, marca también «Medio frente»: quita esos tramos.";
+        internal const string BrokenSplitOutOfScopeRestoreText = " Para restaurar igual, elige «Todos los fondos»: «Medio frente» quita también esos tramos.";
+
         private bool _restoreOpen;
         private bool _restoreLossesExpanded;
         private IReadOnlyList<SelectiveRestoreBoxItem> _restoreBoxes;
@@ -232,6 +237,14 @@ namespace RackCad.UI.VentanaRackCad
             });
             // A new Selectivo of «Nuevo» was never read nor written: its «Descartar» goes back to the defaults (M-4 of the review of E2).
             if (error == null && result != null) Say(result.NoticeFor(_isNewRack), error: false);
+
+            // T6 bom (point 3 of the review of 9dd5baa5): what the user can do when the restore would leave a «medio frente» with no room.
+            if (error != null && error.StartsWith(SelectiveDraftEditor.BrokenSplitsRefusalStart, StringComparison.Ordinal))
+            {
+                error += options.HalfFront ? BrokenSplitOutOfScopeRestoreText : BrokenSplitRestoreText;
+                Say(error, error: true);
+            }
+
             return error;
         }
 
