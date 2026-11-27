@@ -113,6 +113,8 @@ namespace RackCad.Tests
         /// T5 al (I-64, quinta tanda, «Almacén»): la puerta de la pagina «Almacén» de la ventana, que lee la planta y el sitio sin marca de
         /// Deshacer y coloca la rejilla o el relleno en una orden, sin alias, en <c>src/RackCad.Plugin/RackLayoutCommands.Ventana.cs</c>.
         /// RACKLAYOUT, RLY, RACKRELLENAR y RR siguen con sus ventanas clasicas (pregunta 10 del prototipo).
+        /// T6 rl (AL-S14): RLY y RR abren la pagina «Almacén» y se mudan a ese archivo; siguen en el censo de apertura (cambian de archivo,
+        /// no de nombre). RACKLAYOUT y RACKRELLENAR siguen con sus ventanas clasicas.
         /// </summary>
         internal static readonly string[] A14WarehouseCommands = { "RACKALMACENCOLOCAR", "RACKALMACENLEER" };
 
@@ -206,10 +208,10 @@ namespace RackCad.Tests
 
         public static TheoryData<string, string, string> CommandMutations() => new TheoryData<string, string, string>
         {
-            { "un alias de mas", "[CommandMethod(\"RPR\")]", "[CommandMethod(\"RPR\")] [CommandMethod(\"RPRO\")]" },
-            { "el alias con otra grafia", "[CommandMethod(\"RPR\")]", "[CommandMethod(\"rpr\")]" },
+            { "un alias de mas", "[CommandMethod(\"RPR\", RackCadWindowShortcuts.WindowFlags)]", "[CommandMethod(\"RPR\", RackCadWindowShortcuts.WindowFlags)] [CommandMethod(\"RPRO\")]" },
+            { "el alias con otra grafia", "[CommandMethod(\"RPR\", RackCadWindowShortcuts.WindowFlags)]", "[CommandMethod(\"rpr\", RackCadWindowShortcuts.WindowFlags)]" },
             { "el alias con su propio comportamiento", "=> RackPropiedades();", "=> RackPropiedadesProyecto();" },
-            { "un comando por alcance", "[CommandMethod(\"RACKPROPIEDADES\")]", "[CommandMethod(\"RACKPROPIEDADESPROYECTO\")]" },
+            { "un comando por alcance", "[CommandMethod(\"RACKPROPIEDADES\", RackCadWindowShortcuts.WindowFlags)]", "[CommandMethod(\"RACKPROPIEDADESPROYECTO\", RackCadWindowShortcuts.WindowFlags)]" },
             { "decide con la autoridad", "var read = CustomPropertiesExecutor.ReadRack(document, definitionId);", "var read = CustomPropertiesExecutor.ReadRack(document, definitionId); RackCustomPropertiesAuthority.Evaluate(null, null, null);" },
             { "confirma en Application sin el borde", "var preflight = CustomPropertiesPreflight.ForRack(read.Authority, intent);", "var preflight = CustomPropertiesPreflight.ForRack(read.Authority, intent); CustomPropertiesCommit.ForRack(null, null, null, null, null);" },
             { "escribe el bloque", "var result = CustomPropertiesExecutor.ExecuteRack(document, read.Selection, displayed, intent);", "var result = CustomPropertiesExecutor.ExecuteRack(document, read.Selection, displayed, intent); RackBlockData.Write(null, ObjectId.Null, null);" },
@@ -325,12 +327,17 @@ namespace RackCad.Tests
                 violations.Add("los registros no son exactamente RACKPROPIEDADES y RPR: " + string.Join(", ", registrations));
             }
 
-            if (!Regex.IsMatch(text, @"\[CommandMethod\(""RACKPROPIEDADES""\)\]\s*public\s+void\s+RackPropiedades\s*\(\s*\)\s*\{"))
+            // T6 rl (Owner, 2026-11-27, «La ventana, ya»): the two registrations carry the flags of the commands that open the window (no undo
+            // marker, the selection kept: it designates the rack); the loop of the classic window stays in this file, RackPropiedadesClassic.
+            // Correction 3 of the review: what this guard reads now is that classic loop (the one the classic menu runs) and the registration;
+            // the registered command opens the window, and its path (RackIdOf, SelectedRacks, the inline read of the door) is guarded by
+            // RackCadShortcutTests, which fixes that it only reads.
+            if (!Regex.IsMatch(text, @"\[CommandMethod\(""RACKPROPIEDADES"", RackCadWindowShortcuts\.WindowFlags\)\]\s*public\s+void\s+RackPropiedades\s*\(\s*\)\s*\{"))
             {
                 violations.Add("RACKPROPIEDADES no es el metodo publico RackPropiedades()");
             }
 
-            if (!Regex.IsMatch(text, @"\[CommandMethod\(""RPR""\)\]\s*public\s+void\s+\w+\s*\(\s*\)\s*=>\s*RackPropiedades\s*\(\s*\)\s*;"))
+            if (!Regex.IsMatch(text, @"\[CommandMethod\(""RPR"", RackCadWindowShortcuts\.WindowFlags\)\]\s*public\s+void\s+\w+\s*\(\s*\)\s*=>\s*RackPropiedades\s*\(\s*\)\s*;"))
             {
                 violations.Add("RPR no es una llamada al mismo RackPropiedades()");
             }

@@ -2,6 +2,8 @@
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
+    <!-- T6 rl (A-14 §3): the work areas of the monitors (System.Windows.Forms.Screen), in device pixels, keep the palette on a screen. -->
+    <UseWindowsForms>true</UseWindowsForms>
     <OutputType>Library</OutputType>
     <AutoCADInstallDir Condition="'$(AutoCADInstallDir)' == ''">C:\Program Files\Autodesk\AutoCAD 2025</AutoCADInstallDir>
     <UseAutoCADNuGetReferences Condition="'$(UseAutoCADNuGetReferences)' == ''">false</UseAutoCADNuGetReferences>

@@ -697,10 +697,18 @@ namespace RackCad.Tests
             => File.ReadAllText(Path.Combine(
                 RepoRoot().FullName, "src", "RackCad.Plugin", "RackVariablesCommands.cs"));
 
+        /// <summary>
+        /// T6 rl (Owner, 2026-11-27, «La ventana, ya»; VA-S2 completed) re-points the registration: RACKVARIABLES is still the permanent
+        /// command, with the flags of the commands that open the RackCad window (it opens the page «Variables»), and the loop of the classic
+        /// window stays in this file (<c>RackVariablesClassic</c>), reached from the classic menu (RACKMENU).
+        /// </summary>
         [Fact]
         public void GUARDA_EXISTE_UN_COMANDO_PERMANENTE()
         {
-            Assert.Contains("[CommandMethod(\"RACKVARIABLES\")]", Command());
+            Assert.Contains("[CommandMethod(\"RACKVARIABLES\", RackCadWindowShortcuts.WindowFlags)]", Command());
+            Assert.Contains("internal void RackVariablesClassic()", Command());
+            Assert.Contains("new RackVariablesCommands().RackVariablesClassic();", File.ReadAllText(Path.Combine(
+                RepoRoot().FullName, "src", "RackCad.Plugin", "RackMenuCommands.cs")));
         }
 
         [Fact]

@@ -124,6 +124,34 @@ namespace RackCad.UI.Tests
             Assert.Null(request);
         }
 
+        // T6 rl (Owner, 2026-11-27, «La ventana, ya»): RACKVARIABLES and RACKPROPIEDADES open the RackCad window; their classic windows stay
+        // in this menu, after the library, as typed actions the host runs once the menu closed (they write the drawing).
+        [Theory]
+        [InlineData("Variables de proyecto (ventana clásica)", MainMenuAction.ProjectVariablesClassic, "OpenVariablesClassic_Click")]
+        [InlineData("Propiedades personalizadas (ventana clásica)", MainMenuAction.CustomPropertiesClassic, "OpenPropertiesClassic_Click")]
+        public void TheClassicWindowsOfVariablesAndPropertiesStayInTheMenuAsTypedActions(string title, MainMenuAction expected, string handler)
+        {
+            var (action, closed, request, afterLibrary, handlers) = StaTestRunner.Run(() =>
+            {
+                var window = new RackMainMenuWindow(canInsertInAutoCad: true);
+                var wasClosed = false;
+                window.Closed += (_, __) => wasClosed = true;
+                var buttons = OptionButtons(window);
+                var titles = buttons.Select(TitleOf).ToList();
+                var button = buttons.First(b => TitleOf(b) == title);
+                var names = ClickHandlerNames(button).ToArray();
+                button.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+                return (window.RequestedAction, wasClosed, window.InsertionRequest,
+                    titles.IndexOf(title) > titles.IndexOf("Abrir de la biblioteca de diseños"), names);
+            });
+
+            Assert.Equal(expected, action);
+            Assert.True(closed);
+            Assert.Null(request);
+            Assert.True(afterLibrary);
+            Assert.Contains(handler, handlers);
+        }
+
         [Fact]
         public void AFreshMenuAsksForNothing()
         {

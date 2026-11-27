@@ -199,6 +199,7 @@ namespace RackCad.UI.VentanaRackCad
             };
             WireBom(); // T4 bom
             WireWarehouse(); // T5 al: the page «Almacén» (RackCadWindowViewModel.Warehouse.cs)
+            WireShortcuts(); // T6 rl: RACKVARIABLES and RACKPROPIEDADES open their page (RackCadWindowViewModel.Shortcuts.cs)
             RebuildSections();
             Present();
         }

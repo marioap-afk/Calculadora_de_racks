@@ -822,6 +822,24 @@ namespace RackCad.UI.Tests
             Assert.DoesNotContain("configuración", help.Intro, StringComparison.OrdinalIgnoreCase);
         }
 
+        // T6 rl (AL-S14): the shortcuts RLY and RR open «Almacén» of the window; the full commands keep the classic windows, and «Ejecutar» runs
+        // the full command (the classic one), as before.
+        [Fact]
+        public void TheHelpSaysThatRlyAndRrOpenAlmacenAndTheFullCommandsTheClassicWindows()
+        {
+            var rows = RackCadHelpViewModel.AllRows.ToDictionary(r => r.Command);
+            Assert.Equal(("RLY", "Almacén", RackCadWindowPage.Almacen), (rows["RACKLAYOUT"].Alias, rows["RACKLAYOUT"].WindowText, rows["RACKLAYOUT"].WindowPage!.Value));
+            Assert.Equal(("RR", "Almacén", RackCadWindowPage.Almacen), (rows["RACKRELLENAR"].Alias, rows["RACKRELLENAR"].WindowText, rows["RACKRELLENAR"].WindowPage!.Value));
+            Assert.EndsWith("El atajo RLY abre «Almacén» › «Rejilla» en la ventana RackCad, con el rack seleccionado como semilla; RACKLAYOUT abre el diálogo clásico.", rows["RACKLAYOUT"].Summary, StringComparison.Ordinal);
+            Assert.EndsWith("El atajo RR abre «Almacén» › «Rellenar un área» en la ventana RackCad, con el rack seleccionado como semilla; RACKRELLENAR abre el diálogo clásico.", rows["RACKRELLENAR"].Summary, StringComparison.Ordinal);
+
+            using var rig = new Rig();
+            rig.Window.Help.GoTo(rows["RACKRELLENAR"]);
+            Assert.True(rig.Window.IsAlmacenPage);
+            rig.Window.Help.Run(rows["RACKLAYOUT"]);
+            Assert.Equal(new[] { "RACKLAYOUT" }, rig.Classic.HelpRuns);
+        }
+
         [Fact]
         public void TheCommandsTheHelpRunsAreExactlyItsListWithoutRackCad()
         {

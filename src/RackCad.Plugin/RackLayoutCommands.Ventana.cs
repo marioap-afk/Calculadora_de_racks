@@ -28,8 +28,14 @@ namespace RackCad.Plugin
     /// halves as RACKLAYOUT and RACKRELLENAR (<c>PlaceGrid</c>, <c>PlaceFill</c>: one transaction, one regen). It is one command, so one «U»
     /// undoes it all. Its answer carries the reading made after placing, in the same command (F-2 of the fourth batch).</item>
     /// </list>
-    /// Without a request, or for a request of another drawing, they do nothing. RACKLAYOUT, RLY, RACKRELLENAR and RR keep their classic
-    /// windows (question 10, until the Owner validates the page in AutoCAD).
+    /// Without a request, or for a request of another drawing, they do nothing. RACKLAYOUT and RACKRELLENAR keep their classic windows.
+    /// <para>
+    /// T6 rl (AL-S14; answer of the Owner, 2026-11-27: «La página «Almacén»»): the shortcuts RLY and RR open the page, RLY on «Rejilla» and RR
+    /// on «Rellenar un área», with the rack selected in AutoCAD before them as the seed; without one, the page takes the seed it takes by hand.
+    /// The gesture is the shortcut the user typed, so the command reads the drawing INSIDE itself, with the read of RACKALMACENLEER (no undo
+    /// marker, the selection kept), and hands the reading to the page: no second command leaves the window (the lesson of the fourth batch,
+    /// as RL and RB). They write nothing and do not warn about the units: the warning stays at «Colocar» (AL-S10).
+    /// </para>
     /// </summary>
     public sealed partial class RackLayoutCommands
     {
@@ -387,6 +393,105 @@ namespace RackCad.Plugin
 
             names.Sort(StringComparer.CurrentCultureIgnoreCase);
             return names;
+        }
+
+        // ------------------------------------------------------------------ T6 rl: RLY and RR open the page «Almacén» (AL-S14)
+
+        // The read of the shortcut keeps no undo step and keeps the selection made before it (the seed, AL-S2), as RL and RB.
+        private const CommandFlags WarehouseShortcutFlags = CommandFlags.NoUndoMarker | CommandFlags.UsePickSet | CommandFlags.Redraw;
+
+        /// <summary>T6 rl: RLY opens «Almacén» › «Rejilla» of the window. RACKLAYOUT keeps its classic window.</summary>
+        [CommandMethod("RLY", WarehouseShortcutFlags)] public void AliasRackLayout() => OpenWarehousePage(WarehouseLayoutMode.Grid);
+
+        /// <summary>T6 rl: RR opens «Almacén» › «Rellenar un área» of the window. RACKRELLENAR keeps its classic window.</summary>
+        [CommandMethod("RR", WarehouseShortcutFlags)] public void AliasRackRellenar() => OpenWarehousePage(WarehouseLayoutMode.Fill);
+
+        // The rack selected before the shortcut designates the seed; the window shows the page and says what to read (during the call); the
+        // command reads it here and hands the reading over. No command is handed to AutoCAD: the read is this command's own.
+        private static void OpenWarehousePage(WarehouseLayoutMode mode)
+        {
+            try
+            {
+                var document = AcApplication.DocumentManager.MdiActiveDocument;
+                if (document == null) return;
+
+                var designated = WarehouseLayoutRules.DesignatedSeed(SelectedRacks(document), mode, out var note);
+                Workspace.WorkspacePanelCommand.ShowRackCadWindow();
+                var door = RackCadRackDoorPort.Current;
+                var ask = new WarehousePageAsk(mode, designated, note);
+                door?.AskWarehousePage(ask);
+                if (door == null || !ask.Taken)
+                {
+                    document.Editor.WriteMessage("\nRackCad: no se pudo abrir la página «Almacén» de la ventana.");
+                    return;
+                }
+
+                WarehouseReading reading = null;
+                if (ask.Read != null)
+                {
+                    try
+                    {
+                        reading = ReadWarehouse(document, 0, ask.Read.SeedRackId, ask.Read.Layer, ask.Read.PreferredSeedHandle,
+                            useSelection: true, onlyPreferred: false, out _, out _);
+                    }
+                    catch (System.Exception ex)
+                    {
+                        RackLog.Exception("RackLayoutCommands.OpenWarehousePage", ex);
+                        reading = WarehouseReading.Failed(0, ask.Read.SeedRackId, "No se pudo leer el dibujo: " + ex.Message);
+                    }
+
+                    door.AnswerWarehouseShortcut(ask, reading);
+                }
+
+                document.Editor.WriteMessage("\n" + WarehouseLayoutRules.ShortcutCommandLineText(mode, reading, ask.Note ?? note));
+            }
+            catch (System.Exception ex)
+            {
+                RackCommandSupport.Report(ex);
+            }
+        }
+
+        // The racks of the selection made in AutoCAD before the shortcut (UsePickSet): each reference of a rack block, by the data of its
+        // definition, as RACKLAYOUT reads the rack it picks; with whether it is the planta. Empty when nothing of a rack is selected, or when
+        // the selection cannot be read (then the page takes the seed it takes by hand).
+        internal static List<WarehouseSelectedRack> SelectedRacks(Document document) // RACKPROPIEDADES uses it too (RackCadWindowShortcuts)
+        {
+            var racks = new List<WarehouseSelectedRack>();
+            var ids = SelectedIds(document.Editor);
+            if (ids.Count == 0) return racks;
+
+            try
+            {
+                using (document.LockDocument())
+                using (var transaction = document.Database.TransactionManager.StartTransaction())
+                {
+                    var store = new RackEmbedStore();
+                    var embeds = new Dictionary<ObjectId, RackEmbedDocument>();
+                    foreach (var id in ids)
+                    {
+                        if (id.IsNull || id.IsErased) continue;
+                        if (!(transaction.GetObject(id, OpenMode.ForRead) is BlockReference reference)) continue;
+                        var definitionId = reference.BlockTableRecord;
+                        if (!embeds.TryGetValue(definitionId, out var embed))
+                        {
+                            embed = store.Deserialize(Systems.Shared.RackBlockData.Read(transaction, definitionId));
+                            embeds[definitionId] = embed;
+                        }
+
+                        if (embed == null || string.IsNullOrWhiteSpace(embed.Id)) continue;
+                        racks.Add(new WarehouseSelectedRack(embed.Id.Trim(), embed.Name, RackCommandSupport.IsPlantaView(embed)));
+                    }
+
+                    transaction.Commit();
+                }
+            }
+            catch (System.Exception ex)
+            {
+                RackLog.Exception("La selección previa para RLY / RR", ex);
+                racks.Clear();
+            }
+
+            return racks;
         }
     }
 }

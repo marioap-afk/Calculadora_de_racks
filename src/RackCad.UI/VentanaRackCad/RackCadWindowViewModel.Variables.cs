@@ -48,7 +48,7 @@ namespace RackCad.UI.VentanaRackCad
             page.ReadRequested += ReadVariables;
             page.UpdateRequested += UpdateVariables;
             page.OpenRackRequested += OpenRack;
-            page.ClassicRequested += () => Run(RackCadClassicAction.Variables);
+            page.ClassicRequested += () => Run(RackCadClassicAction.ClassicMenu); // T6 rl: RACKVARIABLES opens this page; the classic window is in RACKMENU
             page.PropertyChanged += (_, e) =>
             {
                 if (e.PropertyName != nameof(VariablesPageViewModel.IsDirty) && e.PropertyName != nameof(VariablesPageViewModel.IsWriting)) return;
@@ -71,7 +71,7 @@ namespace RackCad.UI.VentanaRackCad
         {
             if (_variablesDoor == null) return;
             OnPropertyChanged(nameof(VariablesPage));
-            if (IsVariablesPage) VariablesPageShown();
+            if (IsVariablesPage && !_shortcutAsking) VariablesPageShown(); // T6 rl: not while a command asks the window (RackCadWindowViewModel.Shortcuts.cs)
         }
 
         // afterOwnWrite (smoke T4, F-2): the read that follows «Actualizar» is asked inside the answer of RACKVARIABLESAPLICAR, while that

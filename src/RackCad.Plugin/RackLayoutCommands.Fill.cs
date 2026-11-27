@@ -20,7 +20,7 @@ namespace RackCad.Plugin
     /// with as many copies of a rack as fit — the first working, deterministic version of the layout optimizer.</summary>
     public sealed partial class RackLayoutCommands
     {
-        [CommandMethod("RR")]  public void AliasRackRellenar() => RackRellenar();          // RACKRELLENAR
+        // T6 rl (AL-S14): the shortcut RR opens the page «Almacén» of the RackCad window (RackLayoutCommands.Ventana.cs); RACKRELLENAR stays.
 
         /// <summary>
         /// Auto-fill: pick a rack (its PLANTA view is used), read the site geometry from a layer (the largest CLOSED

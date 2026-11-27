@@ -20,7 +20,7 @@ namespace RackCad.Plugin.VentanaRackCad
     /// The Selectivo has its own two commands (Selectivo E1-A), with the same rules, and the two of its second delivery: «Insertar vista…»
     /// (RACKSELECTIVOINSERTAR) and the new Selectivo of the window (RACKSELECTIVONUEVO), each in its own slot.
     /// </summary>
-    public sealed partial class RackCadRackDoorPort : IRackCadSelectiveDoorPort // T4 cb, va, bom: partial (RackCadRackDoorPort.Cabecera.cs, .Variables.cs, .Bom.cs)
+    public sealed partial class RackCadRackDoorPort : IRackCadSelectiveDoorPort // T4 cb, va, bom: partial (RackCadRackDoorPort.Cabecera.cs, .Variables.cs, .Bom.cs); T6 rl: .Shortcut.cs
     {
         internal const string ReadCommand = "RACKDINAMICOABRIR";
         internal const string WriteCommand = "RACKDINAMICOAPLICAR";
@@ -267,6 +267,7 @@ namespace RackCad.Plugin.VentanaRackCad
                 var document = AcApplication.DocumentManager.MdiActiveDocument;
                 if (document == null)
                     return RackCadClassicResult.Without(RackCadClassicStatus.NoDocument, "No hay un dibujo activo.");
+                if (KeptInline(text, document, keep, out var inline)) return inline; // T6 rl: a typed command runs this read inside itself
                 if (!string.IsNullOrEmpty(document.CommandInProgress) || !document.Editor.IsQuiescent)
                     return RackCadClassicResult.Without(RackCadClassicStatus.Busy, "Hay un comando en curso.");
 

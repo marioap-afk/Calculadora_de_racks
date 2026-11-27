@@ -28,7 +28,7 @@ namespace RackCad.Application.Views.Insertion
                 if (canonical == null) canonical = current;
                 else if (!string.Equals(canonical, current, StringComparison.Ordinal))
                     return RackInsertGateResult.Reject(
-                        "CUSTOM_PROPERTIES_DIVERGENT: usa RACKPROPIEDADES para unificar las vistas antes de insertar otra.");
+                        "CUSTOM_PROPERTIES_DIVERGENT: unifica las vistas antes de insertar otra, con RACKPROPIEDADES (la pestana Propiedades del rack en la ventana RackCad) o, si su editor no se abre, con Propiedades personalizadas (ventana clasica) del menu clasico RACKMENU."); // T6 rl
             }
 
             return RackInsertGateResult.Proceed();

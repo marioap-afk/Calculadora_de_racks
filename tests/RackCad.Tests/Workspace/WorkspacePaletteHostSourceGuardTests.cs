@@ -91,21 +91,47 @@ public class WorkspacePaletteHostSourceGuardTests
         Assert.Equal(new[] { HostPath }, Src.AllProduct().Where(f => Regex.IsMatch(f.Code, @"\bPaletteSet\b")).Select(f => f.Path).ToArray());
     }
 
-    [Fact]
-    public void ThePaletteIsBuiltWithOnlyTheTitleRackCadAndNoToolIdentifier()
-    {
-        var code = Host();
+    // T6 rl: A-14 §3 («la ventana recuerda» su tamaño, su posición y su acople), approved by the Owner on 2026-11-23, and the answer of the
+    // Owner of 2026-11-27 («Sí, cambiarlas») re-point the invariants of F1-T3B that the palette persisted nothing. The guards keep their
+    // hardness: exactly one constant identity, exactly one minimal Load that only notes, no Save, no disk, no registry, no settings.
+    internal const string PaletteIdPattern =
+        @"private\s+static\s+readonly\s+System\.Guid\s+PaletteId\s*=\s*new\s+System\.Guid\s*\(\s*""4dc6f19b-296f-424d-8e74-82c7312e2c6a""\s*\)\s*;";
 
-        Assert.Matches(@"\bnew\s+PaletteSet\s*\(\s*""RackCad""\s*\)", code);
-        Assert.DoesNotMatch(new Regex(@"\bGuid\b|toolID|ToolId|new\s+PaletteSet\s*\(\s*""[^""]*""\s*,"), code);
+    private const string LoadSubscription = @"_palette\.Load\s*\+=\s*OnPaletteLoad\s*;";
+
+    private const string LoadSignature = @"private\s+void\s+OnPaletteLoad\s*\(\s*object\s+sender\s*,\s*PalettePersistEventArgs\s+e\s*\)";
+
+    // The code of the host without the one allowed Load (its subscription and its handler), to check that nothing else persists.
+    private static string WithoutTheMinimalLoad(string code)
+    {
+        var handler = Src.BodyOf(code, LoadSignature);
+        return Regex.Replace(code.Replace(handler, string.Empty), LoadSubscription, string.Empty);
     }
 
     [Fact]
-    public void ThePaletteHasNoLoadNorSaveHandlers()
+    public void ThePaletteIsBuiltWithTheTitleRackCadAndOneConstantIdentity()
     {
         var code = Host();
 
-        Assert.DoesNotMatch(new Regex(@"\bLoad\b|\bSave\b|\bSaving\b|PalettePersist|\.Load\s*\+=|\.Save\s*\+="), code);
+        Assert.Matches(@"\bnew\s+PaletteSet\s*\(\s*""RackCad""\s*,\s*PaletteId\s*\)", code);
+        Assert.Equal(1, Src.Count(code, @"\bnew\s+PaletteSet\s*\("));
+        Assert.Matches(PaletteIdPattern, code);
+        Assert.Equal(2, Src.Count(code, @"\bGuid\b")); // the type and its constructor, in the one constant
+        Assert.Equal(2, Src.Count(code, @"\bPaletteId\b")); // declared once, used once
+        Assert.DoesNotMatch(new Regex(@"toolID|ToolId|NewGuid|Guid\.Parse|PaletteId\s*=(?!\s*new\s+System\.Guid)"), code);
+    }
+
+    [Fact]
+    public void ThePaletteHasOnlyTheMinimalLoadThatNotesAndNoSave()
+    {
+        var code = Host();
+
+        Assert.Equal(1, Src.Count(code, LoadSubscription));
+        var handler = Src.BodyOf(code, LoadSignature);
+        var statements = Regex.Replace(handler.Substring(handler.IndexOf('{') + 1).TrimEnd().TrimEnd('}'), @"\s+", " ").Trim();
+        Assert.Equal("try { _restoredByAutoCad = true; } catch (System.Exception ex) { LogFault(\"WorkspacePaletteHost.OnPaletteLoad\", ex); }", statements);
+        Assert.Equal(1, Src.Count(code, @"\b_restoredByAutoCad\s*=\s*true\b"));
+        Assert.DoesNotMatch(new Regex(@"\bLoad\b|\bSave\b|\bSaving\b|PalettePersist|\.Load\s*\+=|\.Save\s*\+=|ConfigurationSection"), WithoutTheMinimalLoad(code));
     }
 
     [Fact]
@@ -205,10 +231,12 @@ public class WorkspacePaletteHostSourceGuardTests
     {
         var code = Host();
 
-        Assert.Equal(2, Src.Count(code, @"\+="));
+        // T6 rl (A-14 §3, re-pointed by the Owner on 2026-11-27): the minimal Load of the identity is the third and last one.
+        Assert.Equal(3, Src.Count(code, @"\+="));
         Assert.Equal(0, Src.Count(code, @"-="));
         Assert.Matches(@"_controller\.StateChanged\s*\+=\s*OnControllerStateChanged\s*;", code);
         Assert.Matches(@"_palette\.StateChanged\s*\+=\s*OnPaletteStateChanged\s*;", code);
+        Assert.Matches(LoadSubscription, code);
     }
 
     [Fact]
@@ -228,7 +256,11 @@ public class WorkspacePaletteHostSourceGuardTests
     {
         var code = Host();
 
-        foreach (var signature in new[] { @"private\s+void\s+OnPaletteStateChanged\s*\(", @"private\s+void\s+OnControllerStateChanged\s*\(\s*\)" })
+        foreach (var signature in new[]
+                 {
+                     @"private\s+void\s+OnPaletteStateChanged\s*\(", @"private\s+void\s+OnControllerStateChanged\s*\(\s*\)",
+                     LoadSignature, KeepOnScreenSignature, // T6 rl
+                 })
         {
             var body = Src.BodyOf(code, signature);
             Assert.Contains("try", body);
@@ -673,13 +705,17 @@ public class WorkspacePaletteHostSourceGuardTests
     // Smoke-1 R20261013T011654Z-184b stopped at SM-03: the palette, created with no size and no position, floated, became
     // unusable and left the screen before the Owner could see the panel. The palette is now placed ONCE, when the process
     // creates it: a device-independent size and minimum size, a floating rectangle that fits a 1024 x 768 primary screen and
-    // an initial dock to the right. Show() only shows it, so any move or dock of the user is kept for the rest of the process;
-    // nothing is persisted (no identity, no handlers of persistence, no registry, no profile).
+    // an initial dock to the right. Show() only shows it, so any move or dock of the user is kept for the rest of the process.
+    // T6 rl (A-14 §3, «la ventana recuerda», approved by the Owner on 2026-11-23; re-pointed by the Owner on 2026-11-27): the palette has
+    // ONE constant identity, so AutoCAD saves its size, its position and its dock in the profile of the user and restores them in the next
+    // session; the first placement is applied only when AutoCAD restored nothing (no Load came), and Show() only shows it and brings a
+    // floating palette back onto a screen (SM-03). The host itself still persists nothing: no Save, no registry, no settings, no disk.
 
     private const string PlacementSignature = @"private\s+void\s+ApplyInitialPlacement\s*\(\s*\)";
     private const string ConstructorSignature = @"private\s+WorkspacePaletteHost\s*\(\s*\)";
+    private const string KeepOnScreenSignature = @"private\s+void\s+KeepOnScreen\s*\(\s*\)";
 
-    // The geometry members of the palette: they may be touched only inside the first placement.
+    // The geometry members of the palette: they may be touched only inside the first placement and the screen rule of Show().
     private static readonly string[] GeometryPatterns =
     {
         @"\.Dock\s*=(?!=)", @"\bDeviceIndependentSize\b", @"\bDeviceIndependentMinimumSize\b", @"\bDeviceIndependentLocation\b",
@@ -728,6 +764,10 @@ public class WorkspacePaletteHostSourceGuardTests
         Assert.Contains("try", placement);
         Assert.Contains("catch (System.Exception", placement);
         Assert.Contains("LogFault(", placement);
+
+        // T6 rl (A-14 §3): it places nothing over a state AutoCAD restored; its first statement is that gate.
+        var first = Regex.Replace(placement.Substring(placement.IndexOf("try", StringComparison.Ordinal)), @"\s+", " ");
+        Assert.StartsWith("try { if (_restoredByAutoCad) return;", first, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -739,22 +779,51 @@ public class WorkspacePaletteHostSourceGuardTests
         var show = Src.BodyOf(code, @"public\s+void\s+Show\s*\(\s*\)");
 
         // The placement runs once per process: one declaration and one call, the call in the constructor, after the root
-        // control is added and before the subscriptions (which stay the last step).
+        // control is added and before the subscriptions to the controller and to the visibility (which stay the last step). T6 rl: the
+        // minimal Load is subscribed first, right after the palette is built, so a Load before the placement is noted.
         Assert.Equal(2, Src.Count(code, @"\bApplyInitialPlacement\s*\("));
         Assert.Equal(1, Src.Count(constructor, @"\bApplyInitialPlacement\s*\(\s*\)\s*;"));
+        var built = constructor.IndexOf("new PaletteSet(", StringComparison.Ordinal);
+        var load = Regex.Match(constructor, LoadSubscription).Index;
         var add = constructor.IndexOf("AddVisual", StringComparison.Ordinal);
         var place = constructor.IndexOf("ApplyInitialPlacement", StringComparison.Ordinal);
-        var subscribe = constructor.IndexOf("+=", StringComparison.Ordinal);
-        Assert.True(add >= 0 && place > add && subscribe > place, "the placement goes after AddVisual and before the subscriptions");
+        var visibility = constructor.IndexOf("_palette.StateChanged +=", StringComparison.Ordinal);
+        var notice = constructor.IndexOf("_controller.StateChanged +=", StringComparison.Ordinal);
+        Assert.True(built >= 0 && load > built && add > load && place > add && visibility > place && notice > visibility,
+            "the Load right after the palette is built; the placement after AddVisual and before the other two subscriptions");
+        var betweenBuiltAndLoad = constructor.Substring(built, load - built);
+        Assert.Single(Regex.Matches(betweenBuiltAndLoad, ";")); // nothing between building the palette and subscribing its Load
 
-        // Show() only shows: it never touches the geometry, so a repeated RACKPANEL never resets what the user moved or docked.
+        // Show() shows, then brings a floating palette back onto a screen (T6 rl, SM-03); it never re-applies the first placement, so a
+        // repeated RACKPANEL never resets what the user moved or docked.
         var showStatements = Regex.Replace(show.Substring(show.IndexOf('{') + 1).TrimEnd().TrimEnd('}'), @"\s+", " ").Trim();
-        Assert.Equal("_palette.Visible = true;", showStatements);
+        Assert.Equal("_palette.Visible = true; KeepOnScreen();", showStatements);
         Assert.Equal(1, Src.Count(code, @"\.Visible\s*=(?!=)"));
+        Assert.Equal(2, Src.Count(code, @"\bKeepOnScreen\s*\(\s*\)")); // declared once, called once, from Show()
 
-        // Every geometry member of the palette is touched only inside the first placement.
+        // Every geometry member of the palette is touched only inside the first placement and the screen rule.
+        var screen = Src.BodyOf(code, KeepOnScreenSignature);
         foreach (var pattern in GeometryPatterns)
-            Assert.True(Src.Count(code, pattern) == Src.Count(placement, pattern), "geometry outside the first placement: " + pattern);
+            Assert.True(Src.Count(code, pattern) == Src.Count(placement, pattern) + Src.Count(screen, pattern), "geometry outside the first placement and the screen rule: " + pattern);
+
+        // The screen rule moves only a FLOATING palette, by the pure rule, in device pixels (Location, Size and the work areas of the
+        // screens), and only when the rule says so; it never docks, never re-applies the first placement and never changes the minimum.
+        InOrderIn(screen, "if (_palette.Dock != DockSides.None) return;", "_palette.Location", "_palette.Size",
+            "System.Windows.Forms.Screen.AllScreens", "screen.WorkingArea", "System.Windows.Forms.Screen.PrimaryScreen",
+            "RackCadPalettePlacement.KeepOnScreen(", "if (kept is not ScreenRect target) return;",
+            "_palette.Size = new System.Drawing.Size(target.Width, target.Height);", "_palette.Location = new System.Drawing.Point(target.Left, target.Top);");
+        Assert.DoesNotMatch(new Regex(@"\.Dock\s*=(?!=)|DeviceIndependent|InitializeFloatingPosition|MinimumSize|ApplyInitialPlacement"), screen);
+    }
+
+    private static void InOrderIn(string body, params string[] steps)
+    {
+        var at = -1;
+        foreach (var step in steps)
+        {
+            var next = body.IndexOf(step, at + 1, StringComparison.Ordinal);
+            Assert.True(next > at, "out of order or missing: " + step);
+            at = next;
+        }
     }
 
     [Fact]
@@ -762,14 +831,17 @@ public class WorkspacePaletteHostSourceGuardTests
     {
         var code = Host();
 
-        Assert.Matches(@"\bnew\s+PaletteSet\s*\(\s*""RackCad""\s*\)", code);
-        Assert.DoesNotMatch(new Regex(@"\bGuid\b|toolID|ToolId|\bLoad\b|\bSave\b|\bSaving\b|PalettePersist"), code);
+        // T6 rl (A-14 §3, re-pointed by the Owner on 2026-11-27): the identity is the one constant (ThePaletteIsBuiltWith…), and the only
+        // handler of persistence is the minimal Load (ThePaletteHasOnlyTheMinimalLoad…). Only \bGuid\b leaves this list; Load and the rest
+        // stay forbidden in the code without that one Load.
+        Assert.Matches(@"\bnew\s+PaletteSet\s*\(\s*""RackCad""\s*,\s*PaletteId\s*\)", code);
+        Assert.DoesNotMatch(new Regex(@"toolID|ToolId|\bLoad\b|\bSave\b|\bSaving\b|PalettePersist"), WithoutTheMinimalLoad(code));
         Assert.DoesNotMatch(
             new Regex(@"Registry|UserSettings|settings\.json|System\.IO|\bFile\.|Environment\.SetEnvironmentVariable|SetSystemVariable|SetEnvironmentVariable|TRUSTEDPATHS|SECURELOAD|CPROFILE|\bProfiles?\b|ApplicationPlugins|PackageContents|LOADCTRLS|DemandLoad|Preferences"),
             code);
 
-        // The placement follows no move nor size of the user and keeps nothing: still exactly the two subscriptions of T3B.
-        Assert.Equal(2, Src.Count(code, @"\+="));
+        // The placement follows no move nor size of the user and keeps nothing itself: the two subscriptions of T3B and the minimal Load.
+        Assert.Equal(3, Src.Count(code, @"\+="));
         Assert.DoesNotMatch(new Regex(@"PaletteSetMoved|PaletteSetHostMoved|PaletteSetEnterSizeMove|SizeChanged|PaletteSetDestroy"), code);
 
         // No new file carries the placement: the plugin workspace folder keeps its six files of F1 and holds, since I-64

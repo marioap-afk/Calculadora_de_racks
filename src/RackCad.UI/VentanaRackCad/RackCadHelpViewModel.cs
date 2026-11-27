@@ -56,6 +56,9 @@ namespace RackCad.UI.VentanaRackCad
                 ["RACKSECCION"] = ("Nuevo", RackCadWindowPage.Nuevo),
                 ["RACKEDITAR"] = ("Página del rack: «Editar aquí» (Selectivo y Dinámico)", null),
                 ["RACKVARIABLES"] = ("Variables", RackCadWindowPage.Variables),
+                ["RACKPROPIEDADES"] = ("Página del rack: su pestaña «Propiedades»", null), // T6 rl
+                ["RACKLAYOUT"] = ("Almacén", RackCadWindowPage.Almacen), // T6 rl: RLY opens it on «Rejilla»
+                ["RACKRELLENAR"] = ("Almacén", RackCadWindowPage.Almacen), // T6 rl: RR opens it on «Rellenar un área»
                 ["RACKLISTA"] = ("BOM y lista de racks", RackCadWindowPage.Bom),
                 ["RACKBOMTOTAL"] = ("BOM y lista de racks", RackCadWindowPage.Bom),
                 ["RACKAYUDA"] = ("Es esta página", null),

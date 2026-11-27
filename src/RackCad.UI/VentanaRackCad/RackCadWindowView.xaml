@@ -650,12 +650,13 @@
                             <TextBlock Text="Variables" Style="{StaticResource PageTitle}" />
                             <TextBlock Style="{StaticResource PageText}"
                                        Text="Las variables del dibujo (nombre, expresión y valor) y los racks que las usan." />
+                            <!-- T6 rl: RACKVARIABLES opens this section now; the classic window of Variables is in the classic menu. -->
                             <Border Style="{StaticResource Banner}">
                                 <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource ShellTextPrimaryBrush}"
-                                           Text="Paso intermedio: se abre la ventana actual de Variables. La meta es editarlas aquí." />
+                                           Text="Paso intermedio: la ventana clásica de Variables está en el menú clásico (RACKMENU), «Variables de proyecto (ventana clásica)». La meta es editarlas aquí." />
                             </Border>
-                            <Button Content="Abrir Variables" HorizontalAlignment="Left" Padding="12,4"
-                                    Style="{StaticResource PrimaryButtonStyle}" Tag="Variables" Click="OnClassicActionClick" />
+                            <Button Content="Abrir el menú clásico" HorizontalAlignment="Left" Padding="12,4"
+                                    Style="{StaticResource PrimaryButtonStyle}" Tag="ClassicMenu" Click="OnClassicActionClick" />
                         </StackPanel>
                     </ScrollViewer>
 

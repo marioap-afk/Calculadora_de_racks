@@ -217,7 +217,10 @@ public class WorkspaceBrowserHostGuardTests
             @"new\s+WorkspacePanelViewModel\s*\(\s*_controller\.Port\s*,\s*_controller\.SetInstrumentationEnabled\s*,\s*_controller\.Navigation\s*,\s*_controller\.BrowserSummary\s*,\s*_controller\.PilotEdit\s*\)",
             host);
         Assert.DoesNotMatch(new Regex(@"IWorkspaceBrowserSummaryPort|BrowserRackSummar|WorkspaceBrowser"), host);
-        Assert.Equal(2, Src.Count(host, @"\+="));
+        // T6 rl (A-14 §3, «la ventana recuerda», re-pointed by the Owner on 2026-11-27): the third subscription is the minimal Load of the
+        // identity of the palette (WorkspacePaletteHostSourceGuardTests fixes it); still none to the browser.
+        Assert.Equal(3, Src.Count(host, @"\+="));
+        Assert.Matches(@"_palette\.Load\s*\+=\s*OnPaletteLoad\s*;", host);
     }
 
     [Fact]

@@ -80,5 +80,15 @@ namespace RackCad.Plugin.VentanaRackCad
         internal void AnswerWarehouseRead(WarehouseReading reading) => Raise(() => WarehouseRead?.Invoke(reading));
 
         internal void AnswerWarehousePlace(WarehousePlaced placed) => Raise(() => WarehousePlaced?.Invoke(placed));
+
+        public event Action<WarehousePageAsk> WarehousePageAsked;
+
+        public event Action<WarehousePageAsk, WarehouseReading> WarehouseShortcutRead;
+
+        /// <summary>T6 rl: RLY or RR ask the page «Almacén» what to read; the window answers in the ask, during the call.</summary>
+        internal void AskWarehousePage(WarehousePageAsk ask) => Raise(() => WarehousePageAsked?.Invoke(ask));
+
+        /// <summary>T6 rl: RLY or RR read the drawing inside themselves: the window shows the page, on their tab, with that reading.</summary>
+        internal void AnswerWarehouseShortcut(WarehousePageAsk ask, WarehouseReading reading) => Raise(() => WarehouseShortcutRead?.Invoke(ask, reading));
     }
 }

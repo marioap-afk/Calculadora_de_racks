@@ -284,7 +284,7 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>«Abrir» of a rack that uses a variable, or «Ir a…» of a conflict: the window opens its page.</summary>
         public event Action<string> OpenRackRequested;
 
-        /// <summary>«Más» › «Abrir la ventana clásica (RACKVARIABLES)».</summary>
+        /// <summary>«Más» › «Abrir el menú clásico (RACKMENU), con la ventana clásica de Variables» (T6 rl: RACKVARIABLES opens this page).</summary>
         public event Action ClassicRequested;
 
         public ObservableCollection<VariableRowItem> Rows { get; } = new();

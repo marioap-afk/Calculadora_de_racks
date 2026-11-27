@@ -136,6 +136,21 @@
                     </StackPanel>
                 </Button>
 
+                <!-- T6 rl: RACKVARIABLES and RACKPROPIEDADES open the RackCad window; their classic windows stay here. -->
+                <Button Style="{StaticResource MenuButton}" Click="OpenVariablesClassic_Click">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource OptionTitle}" Text="Variables de proyecto (ventana clásica)" />
+                        <TextBlock Style="{StaticResource OptionCaption}" Text="La ventana de antes de RACKVARIABLES. RACKVARIABLES y RVA abren «Variables» en la ventana RackCad." />
+                    </StackPanel>
+                </Button>
+
+                <Button Style="{StaticResource MenuButton}" Click="OpenPropertiesClassic_Click">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource OptionTitle}" Text="Propiedades personalizadas (ventana clásica)" />
+                        <TextBlock Style="{StaticResource OptionCaption}" Text="La ventana de antes de RACKPROPIEDADES: un rack o el Proyecto. RACKPROPIEDADES y RPR abren su pestaña en la ventana RackCad." />
+                    </StackPanel>
+                </Button>
+
                 <Button Style="{StaticResource MenuButton}" IsEnabled="False">
                     <StackPanel>
                         <TextBlock Style="{StaticResource OptionTitle}" Text="Diseñar drive-in" />

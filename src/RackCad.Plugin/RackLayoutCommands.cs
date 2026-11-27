@@ -17,11 +17,12 @@ using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace RackCad.Plugin
 {
-    /// <summary>RACKLAYOUT / RACKRELLENAR: array or auto-fill a rack's PLANTA view into a warehouse grid; plus their aliases.</summary>
+    /// <summary>
+    /// RACKLAYOUT / RACKRELLENAR: array or auto-fill a rack's PLANTA view into a warehouse grid, with their classic windows. T6 rl (AL-S14): their
+    /// shortcuts RLY and RR open the page «Almacén» of the RackCad window instead (<c>RackLayoutCommands.Ventana.cs</c>).
+    /// </summary>
     public sealed partial class RackLayoutCommands
     {
-        [CommandMethod("RLY")] public void AliasRackLayout() => RackLayout();              // RACKLAYOUT
-
         private const string LayoutLabelLayer = "RACKCAD_LAYOUT";
 
         /// <summary>

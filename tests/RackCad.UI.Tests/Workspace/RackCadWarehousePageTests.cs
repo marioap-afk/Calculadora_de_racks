@@ -87,6 +87,29 @@ namespace RackCad.UI.Tests
             public void Placed(WarehousePlaced placed) => WarehousePlaced?.Invoke(placed);
 
             public void AnswerLastSelectiveRead() => SelectiveRead?.Invoke(SelectiveWindowFixtures.Read(SelectiveReads.Last().RequestId, SelectiveReads.Last().RackId));
+
+            // T6 rl: RLY and RR.
+            public event Action<WarehousePageAsk>? WarehousePageAsked;
+
+            public event Action<WarehousePageAsk, WarehouseReading>? WarehouseShortcutRead;
+
+            /// <summary>What RLY or RR read inside themselves, for what the page asked.</summary>
+            public List<WarehouseReadRequest> ShortcutReads { get; } = new();
+
+            // RLY or RR as the command runs them (OpenWarehousePage): ask the page, read what it asked inside the command, hand the reading.
+            public WarehousePageAsk Shortcut(WarehouseLayoutMode mode, string? designated = null, string? note = null,
+                Func<WarehouseReadRequest, WarehouseReading>? read = null)
+            {
+                var ask = new WarehousePageAsk(mode, designated!, note!);
+                WarehousePageAsked?.Invoke(ask);
+                if (ask.Taken && ask.Read != null)
+                {
+                    ShortcutReads.Add(ask.Read);
+                    WarehouseShortcutRead?.Invoke(ask, (read ?? (r => RackCadWarehousePageTests.Reading(r)))(ask.Read));
+                }
+
+                return ask;
+            }
         }
 
         /// <summary>The settings of the user, in memory: what the page saved last.</summary>
@@ -791,6 +814,178 @@ namespace RackCad.UI.Tests
             rig.Window.ShowPage(RackCadWindowPage.Bom);
             rig.Select("SEL-2");
             Assert.True(rig.Window.IsRackPage);
+        }
+
+        // ------------------------------------------------------------------ T6 rl: RLY and RR open the page (AL-S14)
+
+        // RLY with a rack selected in AutoCAD: «Almacén» › «Rejilla» with that rack as the seed, read inside the shortcut (the gesture): no
+        // request of the door, and the rest of the shortcut is the page's own command.
+        [Fact]
+        public void RlyOpensRejillaWithTheSelectedRackAsTheSeedReadInsideItsCommandAndSendsNothing()
+        {
+            var rig = new Rig();
+            rig.Select("PB-1"); // the selection, followed: the page of the rack
+            Assert.True(rig.Window.IsRackPage);
+
+            var ask = rig.Door.Shortcut(WarehouseLayoutMode.Grid, designated: "PB-1");
+            Assert.True(ask.Taken);
+            Assert.Null(ask.Note);
+            var read = Assert.Single(rig.Door.ShortcutReads);
+            Assert.Equal((0L, Session, "PB-1", "RACKCAD_SITIO", (string?)null), (read.RequestId, read.Session, read.SeedRackId, read.Layer, read.PreferredSeedHandle));
+            Assert.True(rig.Window.IsAlmacenPage);
+            Assert.True(rig.Page.IsGridTab);
+            Assert.Equal("PB-1", rig.Page.SelectedSeedId);
+            Assert.Equal("Lectura al día", rig.Page.ChipText);
+            Assert.Equal("Colocar 3 racks", rig.Page.PlaceText);
+            Assert.True(rig.Page.CanPlace);
+            Assert.Empty(rig.Door.Reads); // no RACKALMACENLEER: the read was the shortcut's own
+            Assert.False(rig.Window.IsWaitingForAutoCad);
+
+            rig.Present(block: WorkspaceActionBlock.CommandActive); // the rest of RLY
+            Assert.Equal("Lectura al día", rig.Page.ChipText);
+            rig.Present();
+            rig.Select("PB-1"); // AL-S15: the selection keeps «Almacén»
+            Assert.True(rig.Window.IsAlmacenPage);
+            Assert.Equal("Lectura al día", rig.Page.ChipText);
+            Assert.Empty(rig.Door.Reads);
+
+            rig.Present(block: WorkspaceActionBlock.CommandActive); // a command of the user, after it
+            Assert.Equal("Puede no estar al día", rig.Page.ChipText);
+        }
+
+        // RR: «Rellenar un área», with the layer of the values remembered (the page asks it, the shortcut reads its site). The rack selected
+        // replaces the seed the page had.
+        [Fact]
+        public void RrOpensRellenarUnAreaWithTheSelectedRackAndTheLayerOfTheValues()
+        {
+            var rig = new Rig(saved: WarehouseLayoutValues.Defaults with { Layer = "MUROS" });
+            rig.Open(); // by hand: Selectivo A
+            Assert.Equal(RackId, rig.Page.SelectedSeedId);
+            rig.Window.ShowPage(RackCadWindowPage.Nuevo);
+            rig.Present(block: WorkspaceActionBlock.CommandActive); // RR runs
+            rig.Door.Shortcut(WarehouseLayoutMode.Fill, designated: "SEL-2");
+
+            var read = Assert.Single(rig.Door.ShortcutReads);
+            Assert.Equal(("SEL-2", "MUROS", (string?)null), (read.SeedRackId, read.Layer, read.PreferredSeedHandle));
+            Assert.True(rig.Window.IsAlmacenPage);
+            Assert.True(rig.Page.IsFillTab);
+            Assert.Equal("SEL-2", rig.Page.SelectedSeedId);
+            Assert.Equal("No encontré una polilínea CERRADA en la capa 'MUROS' que sirva de contorno del sitio.", rig.Page.SiteError);
+            Assert.Single(rig.Door.Reads); // only the one of the click on the section
+        }
+
+        // Without a selection, the shortcut reads the seed the page takes by hand (as the first click on the section), and later the one the
+        // page has, with the planta it read before.
+        [Fact]
+        public void WithoutASelectionTheShortcutReadsTheSeedThePageTakesByHand()
+        {
+            var rig = new Rig();
+            rig.Present(block: WorkspaceActionBlock.CommandActive);
+            rig.Door.Shortcut(WarehouseLayoutMode.Grid);
+            Assert.Equal(RackId, rig.Door.ShortcutReads.Single().SeedRackId); // the first rack with planta of the column
+            Assert.Equal("Lectura al día", rig.Page.ChipText);
+            rig.Present();
+
+            rig.Page.ChooseSeed("PB-1");
+            rig.AnswerRead();
+            rig.Window.ShowPage(RackCadWindowPage.Nuevo);
+            rig.Present(block: WorkspaceActionBlock.CommandActive);
+            rig.Door.Shortcut(WarehouseLayoutMode.Fill);
+            var again = rig.Door.ShortcutReads.Last();
+            Assert.Equal(("PB-1", "2A1"), (again.SeedRackId, again.PreferredSeedHandle));
+            Assert.True(rig.Window.IsAlmacenPage);
+            Assert.True(rig.Page.IsFillTab);
+            Assert.Single(rig.Door.Reads); // only the one of «Rack semilla»
+        }
+
+        // Several racks selected: none is taken; the page keeps its seed and says why.
+        [Fact]
+        public void SeveralRacksSelectedTakeNoneAndThePageSaysSo()
+        {
+            var rig = new Rig();
+            var designated = WarehouseLayoutRules.DesignatedSeed(
+                new[] { new WarehouseSelectedRack("SEL-2", "Selectivo B", true), new WarehouseSelectedRack("PB-1", "Push Back 1", false) },
+                WarehouseLayoutMode.Grid, out var note);
+            Assert.Null(designated);
+
+            var ask = rig.Door.Shortcut(WarehouseLayoutMode.Grid, designated, note);
+            Assert.Equal(RackId, rig.Door.ShortcutReads.Single().SeedRackId);
+            Assert.Null(ask.Note);
+            Assert.Equal(note, rig.Page.Message);
+            Assert.False(rig.Page.MessageIsError);
+        }
+
+        // While the page waits for AutoCAD (a read or a placement), the shortcut reads nothing, keeps the seed of the request and says why, as
+        // «Llevar al almacén…» (correction 7); the answer that waits still counts.
+        [Fact]
+        public void WhileThePageWaitsForAutoCadTheShortcutReadsNothingAndSaysWhy()
+        {
+            var rig = new Rig();
+            rig.Window.ShowPage(RackCadWindowPage.Almacen); // RACKALMACENLEER of Selectivo A waits
+            rig.Window.ShowPage(RackCadWindowPage.Nuevo);
+
+            var ask = rig.Door.Shortcut(WarehouseLayoutMode.Fill, designated: "PB-1");
+            Assert.True(ask.Taken);
+            Assert.Null(ask.Read);
+            Assert.Equal(WarehouseLayoutRules.ShortcutWaitText(WarehouseLayoutMode.Fill), ask.Note);
+            Assert.Equal(ask.Note, rig.Page.Message);
+            Assert.True(rig.Window.IsAlmacenPage);
+            Assert.Equal(RackId, rig.Page.SelectedSeedId);
+            Assert.Single(rig.Door.Reads);
+            Assert.Empty(rig.Door.ShortcutReads);
+
+            rig.AnswerRead();
+            Assert.Equal("Lectura al día", rig.Page.ChipText);
+            Assert.Equal(RackId, rig.Page.SelectedSeedId);
+        }
+
+        // The read that waits is of another drawing: the shortcut in this one reads nothing either, and the page, shown by the shortcut, tries
+        // no read of its own (its reason stays, not the refusal of the door).
+        [Fact]
+        public void WhileARequestOfThePageWaitsInAnotherDrawingTheShortcutSaysWhyAndThePageTriesNothing()
+        {
+            var rig = new Rig();
+            rig.Window.ShowPage(RackCadWindowPage.Almacen); // RACKALMACENLEER of drawing 7 waits
+            rig.Window.ShowPage(RackCadWindowPage.Nuevo);
+            rig.Host.Snapshot = WorkspacePanelFixtures.Ready(session: 8); // RLY in drawing 8
+
+            var ask = rig.Door.Shortcut(WarehouseLayoutMode.Grid, designated: "PB-1");
+            Assert.Null(ask.Read);
+            Assert.True(rig.Window.IsAlmacenPage);
+            Assert.Equal(WarehouseLayoutRules.ShortcutWaitText(WarehouseLayoutMode.Grid), rig.Page.Message);
+            Assert.Single(rig.Door.Reads);
+        }
+
+        // A rack selected without planta, or a read that failed: the page opens with it and says why, and nothing is placed or sent.
+        [Fact]
+        public void AShortcutWhoseReadingHasNoSeedOrFailedOpensThePageAndSaysWhy()
+        {
+            var rig = new Rig();
+            const string noPlanta = "Cantilever 1 no tiene vista en planta: insértala con «Insertar vista…» (o RACKEDITAR) para usarlo como semilla.";
+            rig.Door.Shortcut(WarehouseLayoutMode.Grid, designated: "CAN-1",
+                read: r => new WarehouseReading(r.RequestId, null, r.SeedRackId, "Cantilever 1", 0, null, noPlanta, Site(r.Layer), new[] { "0" }));
+            Assert.Equal("CAN-1", rig.Page.SelectedSeedId);
+            Assert.Contains(rig.Page.SeedOptions, o => o.RackId == "CAN-1" && o.Label == "Cantilever 1"); // by the name of its reading
+            Assert.Equal(noPlanta, rig.Page.SeedProblem);
+            Assert.False(rig.Page.CanPlace);
+
+            rig.Door.Shortcut(WarehouseLayoutMode.Grid, designated: "SEL-2",
+                read: r => WarehouseReading.Failed(r.RequestId, r.SeedRackId, "No se pudo leer el dibujo: fallo."));
+            Assert.Equal("No se pudo leer", rig.Page.ChipText);
+            Assert.Equal("No se pudo leer el dibujo: fallo.", rig.Page.SeedProblem);
+            Assert.Empty(rig.Door.Reads);
+            Assert.Empty(rig.Door.Places);
+        }
+
+        // A window without the door of the page does not take the shortcut: the command says it could not open the page.
+        [Fact]
+        public void AWindowWithoutTheDoorOfThePageDoesNotTakeTheShortcut()
+        {
+            var rig = new Rig(withDoor: false);
+            var ask = rig.Door.Shortcut(WarehouseLayoutMode.Grid, designated: "PB-1");
+            Assert.False(ask.Taken);
+            Assert.False(rig.Window.IsAlmacenPage);
+            Assert.Empty(rig.Door.ShortcutReads);
         }
 
         // ------------------------------------------------------------------ the views, with real WPF
