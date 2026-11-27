@@ -521,6 +521,7 @@ namespace RackCad.UI.VentanaRackCad
             ("Estructura", new[] { "fronts", "rLevels", "fondos", "rCount" }),
             ("Tarima", new[] { "rWidth", "rHeight", "depth", "cabecera" }),
             ("Larguero y holguras", new[] { "rBeam", "rPeralte", "tolerance", "clearance" }),
+            ("Peralte de poste", new[] { "peralte" }), // T5 pp: the peralte of every post, seen without unfolding «Poste y anotaciones»; not «Poste» (the list of the expander has that name)
         };
 
         private static readonly SelectivePalletDesignStore Store = new SelectivePalletDesignStore();
@@ -735,13 +736,14 @@ namespace RackCad.UI.VentanaRackCad
 
         /// <summary>
         /// «Lo esencial» of the rack, as the approved draft has it: the fronts, levels, fondos and pallets per level, the pallet (width,
-        /// height, depth; and the depth of the cabecera with one fondo), the larguero and its peralte and the holguras. Every field writes the
-        /// WHOLE rack, in every fondo, whatever the fondos of the view of «Matriz» are: the same write as «Todo» of the matrix with «Todos los
-        /// fondos». In the order of <see cref="EssentialGroups"/>.
+        /// height, depth; and the depth of the cabecera with one fondo), the larguero and its peralte, the holguras, and (T5 pp) the peralte
+        /// of the post. Every field writes the WHOLE rack, in every fondo, whatever the fondos of the view of «Matriz» are: the same write as
+        /// «Todo» of the matrix with «Todos los fondos». In the order of <see cref="EssentialGroups"/>.
         /// </summary>
         public IReadOnlyList<object> Essentials => _essentials;
 
-        /// <summary>«Lo esencial» in the groups of the approved draft: «Estructura», «Tarima» and «Larguero y holguras» (the same field items).</summary>
+        /// <summary>«Lo esencial» in the groups of the approved draft: «Estructura», «Tarima» and «Larguero y holguras» (the same field items);
+        /// T5 pp adds «Peralte de poste».</summary>
         public IReadOnlyList<SelectiveFieldGroup> EssentialGroups => _essentialGroups;
 
         /// <summary>The line under «Lo esencial» (the approved draft).</summary>
@@ -754,7 +756,8 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>The separation of each gap between consecutive fondos (none with one fondo): the column «Separación al siguiente» of <see cref="FondoRows"/>.</summary>
         public IReadOnlyList<DynamicFieldItem> SeparatorFields => _fondoRows.Where(r => r.Separator != null).Select(r => r.Separator).ToList();
 
-        /// <summary>«Poste y anotaciones»: the post and its peralte, the annotation scale and the dimensions (the approved draft).</summary>
+        /// <summary>«Poste y anotaciones»: the post, the annotation scale and the dimensions (the approved draft; T5 pp: the peralte of the
+        /// post is in «Lo esencial» › «Peralte de poste»).</summary>
         public IReadOnlyList<object> AnnotationFields => _annotationFields;
 
         /// <summary>The summary of the folded «Poste y anotaciones» (the approved draft): «Poste 3 in · cotas: Estándar · con tarimas».</summary>
@@ -1411,6 +1414,7 @@ namespace RackCad.UI.VentanaRackCad
             _segmentKey = null;
             _segmentsPending = false;
             _droppedSegments = null;
+            ResetAllPosts(); // T5 pp: «Descartar» drops what was written in the row «Todos los postes» and its reason
             if (baseline != null && !_editor.LoadFrom(baseline, _openedStates, _baselineName, _variableNames))
             {
                 _loadError = string.IsNullOrWhiteSpace(_editor.LastError) ? "sin detalle." : _editor.LastError;
@@ -1511,6 +1515,7 @@ namespace RackCad.UI.VentanaRackCad
         {
             _baselineJson = writtenJson;
             _baselineName = (writtenName ?? string.Empty).Trim();
+            ResetAllPosts(); // T5 pp: what AutoCAD wrote starts the row «Todos los postes» again from the peralte of the rack
             Say(message, error: false);
             UpdateDirty();
 
@@ -1541,6 +1546,7 @@ namespace RackCad.UI.VentanaRackCad
             _baselineName = (_editor.Name ?? string.Empty).Trim();
             _designDirty = false;
             TakeBaselineCells();
+            ResetAllPosts(); // T5 pp: a new baseline starts the row «Todos los postes» from the peralte of the rack
             _segmentsPending = MeasurePendingSegments();
             _dirty = _segmentsPending;
             RaiseState();
@@ -1737,6 +1743,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(InsertViewBlockedText));
             RaiseSafetyState(); // E2 seguridad
             RaiseStateIns(); // T4 ins: the button and the panel «Insertar vista…», «Aplicar tramos»
+            RaiseAllPosts(); // T5 pp: the row «Todos los postes» of «Postes y cabeceras»
         }
 
         // ------------------------------------------------------------------ internals: the lists, refreshed in place
@@ -2173,6 +2180,7 @@ namespace RackCad.UI.VentanaRackCad
             list.Add(peralte);
             list.Add(Holgura("tolerance", "Holgura horizontal", "A los lados de cada tarima.", Tolerance, _editor.PalletTolerance, v => _editor.PalletTolerance = v));
             list.Add(Holgura("clearance", "Holgura vertical", "Sobre cada tarima.", Clearance, _editor.VerticalClearance, v => _editor.VerticalClearance = v));
+            list.Add(RackPeralteEssential()); // T5 pp: «Poste» › «Peralte del poste», para todos los postes
             return list;
         }
 
@@ -2223,11 +2231,7 @@ namespace RackCad.UI.VentanaRackCad
                     _editor.PostId = value;
                     return Done;
                 }), !CanEdit),
-            Number("peralte", "Peralte del poste", "in", _editor.PostPeralte, v => v > 0.0, "El peralte de poste debe ser un número mayor que cero.", v =>
-            {
-                _editor.PostPeralte = v;
-                return Done;
-            }, "Va a todas las cabeceras. Un poste con peralte propio, en «Avanzado»."),
+            // T5 pp: «Peralte del poste» is in «Lo esencial» › «Peralte de poste» now (RackPeralteEssential), seen without unfolding this expander.
             Number("scale", "Escala de texto", string.Empty, _editor.AnnotationScale, v => v > 0.0, "La escala de texto debe ser mayor que cero.", v =>
             {
                 _editor.AnnotationScale = v;
