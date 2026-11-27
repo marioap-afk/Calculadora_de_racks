@@ -259,7 +259,9 @@ namespace RackCad.Application.Workspace
                 WorkspaceHostPolicy.Actions(conditions),
                 hasDocument ? session!.Selection : SelectionContext.None,
                 hasDocument && _pickFirstOff.Contains(id),
-                _instrumentation.Enabled);
+                _instrumentation.Enabled,
+                hasDocument ? session!.DrawingChangeCount : 0, // T6 st: the changes of the database the session received, in memory
+                hasDocument ? _bridge.ForeignCommandStartsOf(id) ?? 0 : 0); // T6 st (M-1): the commands that started in the session
         }
 
         /// <summary>The verdict for a request: it is checked against the document that would execute it. No side effects.</summary>

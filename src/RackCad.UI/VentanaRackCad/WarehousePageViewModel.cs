@@ -93,6 +93,7 @@ namespace RackCad.UI.VentanaRackCad
         private (long Id, SessionId Session)? _reading;
         private Placing _placing;
         private bool _ownCommandPending;
+        private readonly RackCadCommandWatch _commands = new RackCadCommandWatch(); // T6 st: the command that runs and whether it changed the drawing
         private bool _readOnShow;
 
         private WarehouseLayoutValues _values = WarehouseLayoutValues.Defaults;
@@ -123,6 +124,9 @@ namespace RackCad.UI.VentanaRackCad
             public string SeedRackId;
             public WarehouseReading Reading;
             public bool Stale;
+
+            // T6 st (I-3): the mark of a command that runs, which goes away when it ends having changed nothing.
+            public bool Provisional;
 
             // Correction 1 of the review: AutoCAD placed, but the page has no reading of the drawing after it. Until a new reading,
             // «Colocar» is off: a second one would put another grid on top of the first one.
@@ -694,7 +698,8 @@ namespace RackCad.UI.VentanaRackCad
         }
 
         /// <summary>The window presented a snapshot: the page follows the drawing and the commands, and sends nothing on its own.</summary>
-        internal void Present(SessionId? session, WorkspaceActionBlock block, bool warehouseInFlight, Func<SessionId, bool> isAlive)
+        internal void Present(SessionId? session, WorkspaceActionBlock block, bool warehouseInFlight, Func<SessionId, bool> isAlive, long databaseChanges = 0,
+            int commandStarts = 0)
         {
             if (isAlive != null)
             {
@@ -709,26 +714,35 @@ namespace RackCad.UI.VentanaRackCad
                 _fitAsk = false;
                 _message = string.Empty;
                 _messageIsError = false;
-                if (previous.HasValue && Current?.Reading != null) Current.Stale = true; // coming back to a drawing: maybe not up to date
+                // T6 st (review of 5114345e, M-2): coming back to a drawing makes its reading possibly out of date only when commands changed it
+                // meanwhile (the verdict of RackCadCommandWatch, below); before, every time.
                 changed = true;
             }
 
             // A command after the reading that is not the page's own (its read or its placement, from the moment the command took the
-            // request until the drawing is at rest again) may have changed the drawing.
+            // request until the drawing is at rest again) may have changed the drawing. T6 st (the Owner, 2026-11-27: «Afinarlo»; review of
+            // 5114345e, I-3, M-1, M-2): it is said as soon as a command starts (provisionally), and when the command ends it stays only if the
+            // database of the drawing changed meanwhile (a ZOOM changes nothing) and the command was not the page's own (exactly one command).
             var commandRuns = block == WorkspaceActionBlock.CommandActive || block == WorkspaceActionBlock.ModalActive;
-            if (commandRuns)
+            var step = _commands.Observe(session, block, databaseChanges, commandStarts, () => _ownCommandPending);
+            foreach (var verdict in step.Verdicts)
             {
-                var state = Current;
-                if (!_ownCommandPending && state?.Reading != null && !state.Stale)
-                {
-                    state.Stale = true;
-                    changed = true;
-                }
+                if (!_drawings.TryGetValue(verdict.Session, out var state) || state.Reading == null) continue;
+                if (verdict.Kind != RackCadChangeKind.Command || (verdict.ChangedTheDrawing && !verdict.Own)) state.Stale = true;
+                else if (state.Stale && state.Provisional) state.Stale = false; // it changed nothing, or it was the page's own
+                state.Provisional = false;
+                changed = true;
             }
-            else if (!warehouseInFlight)
+
+            if (step.Started is SessionId started && !_ownCommandPending && _drawings.TryGetValue(started, out var running)
+                && running.Reading != null && !running.Stale)
             {
-                _ownCommandPending = false;
+                running.Stale = true;
+                running.Provisional = true;
+                changed = true;
             }
+
+            if (!commandRuns && !warehouseInFlight) _ownCommandPending = false;
 
             if (changed)
             {
@@ -784,6 +798,7 @@ namespace RackCad.UI.VentanaRackCad
 
             state.Reading = reading;
             state.Stale = false;
+            state.Provisional = false; // T6 st
             state.MustReread = false;
             Recompute();
         }
@@ -817,6 +832,7 @@ namespace RackCad.UI.VentanaRackCad
             {
                 state.Reading = placed.Reading;
                 state.Stale = false;
+                state.Provisional = false; // T6 st
                 state.MustReread = false;
             }
             else if (placed.Placed && state != null)
@@ -824,6 +840,7 @@ namespace RackCad.UI.VentanaRackCad
                 // Correction 1: placed, with no reading after it (it failed, or it is of another seed): what the page shows is the drawing
                 // before; it says so and asks for «Volver a leer» before anything else is placed.
                 state.Stale = true;
+                state.Provisional = false; // T6 st: it must be read again, whatever the counts say
                 state.MustReread = true;
             }
 

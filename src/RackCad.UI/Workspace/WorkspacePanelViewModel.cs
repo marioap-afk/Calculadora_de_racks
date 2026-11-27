@@ -43,6 +43,8 @@ namespace RackCad.UI.Workspace
         private SelectionContextKind _presentedKind = SelectionContextKind.None;
         private bool _presentedCanRead;
         private WorkspaceActionBlock _presentedBlock = WorkspaceActionBlock.NotStarted;
+        private long _presentedDatabaseChanges; // T6 st
+        private int _presentedCommandStarts; // T6 st (M-1)
         private string _errorMessage = string.Empty;
         private bool _instrumentationEnabled;
         private string _instrumentationSummary = string.Empty;
@@ -162,6 +164,15 @@ namespace RackCad.UI.Workspace
         /// <summary>What blocked the actions in the last presented snapshot.</summary>
         public WorkspaceActionBlock PresentedBlock => _state == WorkspacePanelState.Error ? WorkspaceActionBlock.Degraded : _presentedBlock;
 
+        /// <summary>
+        /// T6 st: the changes of the database of the drawing that its session received, in the last presented snapshot (the RackCad window
+        /// compares it around a command: only a command that changed the drawing makes a reading possibly out of date).
+        /// </summary>
+        public long PresentedDrawingChangeCount => _presentedDatabaseChanges;
+
+        /// <summary>T6 st (M-1 of the review): the commands that started in the session of the last presented snapshot.</summary>
+        public int PresentedCommandStartCount => _presentedCommandStarts;
+
         // ------------------------------------------------------------------ the only entries that ask the port
 
         /// <summary>
@@ -254,6 +265,8 @@ namespace RackCad.UI.Workspace
             _presentedKind = context.Kind;
             _presentedCanRead = snapshot.Actions.CanReadDrawing;
             _presentedBlock = snapshot.Actions.Block;
+            _presentedDatabaseChanges = snapshot.DrawingChangeCount; // T6 st
+            _presentedCommandStarts = snapshot.CommandStartCount; // T6 st (M-1)
             Browser.Present(_presentedSession, context, _presentedCanRead, _presentedBlock, _actionBlockText);
             PresentNavigation();
 

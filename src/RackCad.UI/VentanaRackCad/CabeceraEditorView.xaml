@@ -178,6 +178,10 @@
                     </TextBlock.Style>
                 </TextBlock>
 
+                <!-- T6 st (O-5, M-16): «El dibujo cambió desde que se leyó», «Volver a leer del dibujo» and the question of «Actualizar» (a
+                     cabecera of its own; an embedded one is never marked). -->
+                <local:RackEditorDrawingChangePanel x:Name="DrawingChangePanel" DataContext="{Binding DrawingChange}" />
+
                 <Border x:Name="CloseConfirmPanel" Style="{StaticResource QuestionPanel}" Visibility="{Binding IsConfirmingClose, Converter={StaticResource FlagToVisibility}}">
                     <StackPanel>
                         <TextBlock Text="¿Cerrar el editor?" FontWeight="SemiBold" Foreground="{DynamicResource ShellTextPrimaryBrush}" />

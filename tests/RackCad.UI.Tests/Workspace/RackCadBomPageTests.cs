@@ -176,11 +176,30 @@ namespace RackCad.UI.Tests
 
             public RackBomPageViewModel Bom => Window.Bom;
 
-            public void Present(long session = 7, WorkspaceActionBlock block = WorkspaceActionBlock.None)
+            // T6 st (the Owner, 2026-11-27: «Afinarlo»; review of 5114345e, M-1): what the host presents of each drawing, the changes of its
+            // database and the commands that started in it. A command of these tests changes the drawing while it runs (a MOVE), unless it says
+            // it does not (a ZOOM); the bridge counts its start after the panel presented it (CommandWillStart).
+            private readonly Dictionary<long, (long Changes, int Starts)> _counts = new();
+            private bool _running;
+
+            private (long Changes, int Starts) CountsOf(long session) => _counts.TryGetValue(session, out var counts) ? counts : (0, 0);
+
+            /// <summary>Commands ran in the drawing while nothing was presented (the palette hidden), changing it or not.</summary>
+            public void CommandsWhilePaletteHidden(long session = 7, bool changesTheDrawing = true)
             {
+                var (changes, starts) = CountsOf(session);
+                _counts[session] = (changes + (changesTheDrawing ? 1 : 0), starts + 1);
+            }
+
+            public void Present(long session = 7, WorkspaceActionBlock block = WorkspaceActionBlock.None, bool changesTheDrawing = true)
+            {
+                var (changes, starts) = CountsOf(session);
                 Host.Snapshot = new WorkspaceHostSnapshot(WorkspaceHostStatus.Ready, new SessionId(session), true,
-                    new WorkspaceActionAvailability(block == WorkspaceActionBlock.None, false, block), SelectionContext.None, false, false);
+                    new WorkspaceActionAvailability(block == WorkspaceActionBlock.None, false, block), SelectionContext.None, false, false, changes, starts);
                 Window.Refresh();
+                var runs = block == WorkspaceActionBlock.CommandActive;
+                _counts[session] = (changes + (runs && changesTheDrawing ? 1 : 0), starts + (runs && !_running ? 1 : 0));
+                _running = runs;
             }
 
             // The page shown (a click), RACKBOMLEER taking the request and answering, and the drawing at rest again once it ended.
@@ -424,6 +443,96 @@ namespace RackCad.UI.Tests
             Assert.StartsWith("El BOM es de las 10:54 y a las 10:54 corrió una orden en el dibujo.", rig.Bom.StaleText);
         }
 
+        // T6 st (the Owner, 2026-11-27: «Afinarlo»; review of 5114345e, I-3): while a command runs the BOM may be out of date (provisionally);
+        // when it ends, a command that changed nothing of the drawing (a ZOOM, a PAN, a REGEN) leaves it «Al día» again, and a «U» or an ERASE
+        // does not.
+        [Fact]
+        public void AZoomLeavesTheBomUpToDateAndAUOrAnEraseDoesNot()
+        {
+            var rig = new Rig();
+            rig.Open();
+            Assert.Equal("Al día", rig.Bom.ChipText);
+
+            rig.Present(block: WorkspaceActionBlock.CommandActive, changesTheDrawing: false); // ZOOM
+            Assert.Equal("Puede no estar al día", rig.Bom.ChipText); // while it runs
+            rig.Present();
+            Assert.Equal("Al día", rig.Bom.ChipText);
+            Assert.False(rig.Bom.ShowStale);
+            Assert.False(rig.Bom.RecalculateIsPrimary);
+
+            rig.Now = At.AddMinutes(3);
+            rig.Present(block: WorkspaceActionBlock.CommandActive); // «U» (or ERASE)
+            Assert.Equal("Puede no estar al día", rig.Bom.ChipText);
+            rig.Present();
+            Assert.Equal("Puede no estar al día", rig.Bom.ChipText);
+            Assert.Equal("Leído a las 10:42 · corrió una orden a las 10:45", rig.Bom.ReadText);
+            Assert.Single(rig.Door.BomReads); // nothing is read on its own
+        }
+
+        // Review of 5114345e, I-3: «Exportar» during a COPY that already appended its objects asks, as with any BOM that may be out of date.
+        [Fact]
+        public void ExportingDuringACopyThatRunsAsksAndTheMarkStaysWhenItEnds()
+        {
+            var rig = new Rig();
+            rig.Open();
+            rig.Present(block: WorkspaceActionBlock.CommandActive); // COPY: its objects are appended while it runs
+
+            rig.Bom.ExportDrawing(excel: true);
+            Assert.True(rig.Bom.HasAsk);
+            Assert.Empty(rig.Files.Written);
+            rig.Bom.AskCancel();
+
+            rig.Present();
+            Assert.Equal("Puede no estar al día", rig.Bom.ChipText);
+            rig.Bom.ExportDrawing(excel: true);
+            Assert.True(rig.Bom.HasAsk);
+        }
+
+        // Review of 5114345e, M-1: a read of the page run together with another command (a script, a macro) is not only the read: when that
+        // other command changed the drawing, the BOM may be out of date.
+        [Fact]
+        public void TheReadRunTogetherWithAnotherCommandThatChangedTheDrawingLeavesTheBomPossiblyOutOfDate()
+        {
+            var rig = new Rig();
+            rig.Open();
+            rig.Bom.Recalculate();
+            rig.Present(block: WorkspaceActionBlock.CommandActive); // a command of a script (it changes the drawing)…
+            rig.CommandsWhilePaletteHidden(); // …and RACKBOMLEER right after it, in the same run: one more command start
+            rig.Door.StartLastBomRead();
+            rig.Door.AnswerLastBomRead(Drawing());
+            Assert.Equal("Al día", rig.Bom.ChipText); // the reading that answered
+            rig.Present();
+            Assert.Equal("Puede no estar al día", rig.Bom.ChipText);
+        }
+
+        // Review of 5114345e, M-2 and A2: coming back to a drawing, or showing the palette again, says the BOM may be out of date only when
+        // commands changed the drawing meanwhile.
+        [Fact]
+        public void ComingBackOrShowingThePaletteAgainSaysItOnlyWhenCommandsChangedTheDrawing()
+        {
+            var rig = new Rig();
+            rig.Open();
+            rig.Present(8);
+            rig.Present(7);
+            Assert.Equal("Al día", rig.Bom.ChipText);
+
+            rig.Present(8);
+            rig.CommandsWhilePaletteHidden(7); // the palette was hidden and the user went back to drawing 7 and ran an ERASE there
+            rig.Present(7);
+            Assert.Equal("Puede no estar al día", rig.Bom.ChipText);
+            Assert.StartsWith("Volviste a este dibujo", rig.Bom.StaleText);
+
+            var again = new Rig();
+            again.Open();
+            again.CommandsWhilePaletteHidden(changesTheDrawing: false); // a ZOOM while the palette was hidden
+            again.Present();
+            Assert.Equal("Al día", again.Bom.ChipText);
+            again.CommandsWhilePaletteHidden(); // an ERASE while the palette was hidden
+            again.Present();
+            Assert.Equal("Puede no estar al día", again.Bom.ChipText);
+            Assert.StartsWith("El BOM es de las 10:42 y a las 10:42 corrió una orden en el dibujo.", again.Bom.StaleText);
+        }
+
         // Correction 1 of the review (the BOM that came out «Al día» and was exported with no question): a read that is abandoned, or that is
         // not handed over, leaves nothing counted as the read, and the reading the drawing had is said to be possibly out of date.
         [Fact]
@@ -472,6 +581,11 @@ namespace RackCad.UI.Tests
 
             rig.Present(7);
             Assert.Equal(4, rig.Bom.Rows.Count);
+            Assert.Equal("Al día", rig.Bom.ChipText); // T6 st (review of 5114345e, M-2): nothing ran in it meanwhile
+
+            rig.Present(8);
+            rig.CommandsWhilePaletteHidden(7); // commands changed drawing 7 while the window presented 8
+            rig.Present(7);
             Assert.Equal("Puede no estar al día", rig.Bom.ChipText);
             Assert.StartsWith("Volviste a este dibujo: el BOM es de las 10:42", rig.Bom.StaleText);
 

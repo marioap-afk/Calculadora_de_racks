@@ -99,6 +99,7 @@ namespace RackCad.UI.VentanaRackCad
                 var other = OtherRequestBlockedText;
                 if (!string.IsNullOrEmpty(other)) return other;
                 if (_segmentsPending) return PendingSegmentsText;
+                if (_drawingChange?.IsChanged == true) return _drawingChange.InsertBlockedText; // T6 st: it would write the draft over the drawing
                 if (_editor.Design == null) return "No hay un borrador válido que escribir.";
                 if (!string.IsNullOrEmpty(_editor.LastError)) return _editor.LastError;
                 if (_isNewRack && PropertiesBlockUpdate) return PropertiesTab.BlockedText; // T6 pr: «Insertar en el dibujo…» writes them (VA-S9)

@@ -56,6 +56,7 @@ namespace RackCad.UI.VentanaRackCad
                 if (!string.IsNullOrEmpty(drawing)) return drawing;
                 var other = _otherRequestText?.Invoke() ?? string.Empty;
                 if (!string.IsNullOrEmpty(other)) return other;
+                if (_drawingChange?.IsChanged == true) return _drawingChange.InsertBlockedText; // T6 st: it would write the draft over the drawing
                 if (_draft.Design == null) return "No hay un borrador válido que escribir.";
                 if (!string.IsNullOrEmpty(_draft.LastError)) return _draft.LastError;
                 if (_draft.IsOutputBlocked) return "No se puede dibujar: " + _draft.OutputStatus;

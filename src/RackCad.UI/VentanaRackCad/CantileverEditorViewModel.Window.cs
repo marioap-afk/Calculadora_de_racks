@@ -100,6 +100,7 @@ namespace RackCad.UI.VentanaRackCad
                 if (SegmentsPending) return "Aplica o descarta antes la secuencia.";
                 if (!_draft.IsResolved) return "La línea no se resuelve: completa antes lo que falta.";
                 if (_isNewRack && PropertiesBlockUpdate) return PropertiesTab.BlockedText; // T6 pr: «Insertar en el dibujo…» writes them (VA-S9)
+                if (_drawingChange?.IsChanged == true) return _drawingChange.InsertBlockedText; // T6 st: it would write the draft over the drawing
                 return string.Empty;
             }
         }

@@ -74,7 +74,9 @@ namespace RackCad.UI.VentanaRackCad
                 Panel.PresentedSession,
                 Panel.PresentedBlock,
                 _inFlight != null && _inFlight.IsBom,
-                session => port == null || IsAlive(port, session));
+                session => port == null || IsAlive(port, session),
+                Panel.PresentedDrawingChangeCount, // T6 st: only a command that changed the drawing makes the BOM possibly out of date
+                Panel.PresentedCommandStartCount); // T6 st (M-1): own only with exactly one command
         }
 
         // The page was shown (from ShowPage, a gesture of the user): the first time for a drawing, it is read.

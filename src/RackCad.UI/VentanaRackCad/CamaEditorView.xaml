@@ -190,6 +190,8 @@
                         </WrapPanel>
                     </StackPanel>
                 </Border>
+                <!-- T6 st (O-5, M-16): «El dibujo cambió desde que se leyó», «Volver a leer del dibujo» and the question of «Actualizar». -->
+                <local:RackEditorDrawingChangePanel x:Name="DrawingChangePanel" DataContext="{Binding DrawingChange}" />
                 <!-- «Restaurar layout…» (question 6): the two boxes, marked, of what was written by hand. -->
                 <Border x:Name="RestorePanel" Margin="0,6,0,0" Padding="8" BorderThickness="1"
                         BorderBrush="{DynamicResource ShellStatusWarningBrush}"

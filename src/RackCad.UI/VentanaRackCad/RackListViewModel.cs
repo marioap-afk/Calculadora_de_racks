@@ -181,8 +181,9 @@ namespace RackCad.UI.VentanaRackCad
         /// The window presented a snapshot: the list follows its session and, while the drawing can be read and nothing blocks the actions,
         /// asks the port for the list (the host answers from memory or, when it must read, only during a drain).
         /// </summary>
-        public void Present(SessionId? session, bool canReadDrawing, WorkspaceActionBlock block)
+        public void Present(SessionId? session, bool canReadDrawing, WorkspaceActionBlock block, long drawingChanges = 0) // T6 st: drawingChanges
         {
+            _drawingChanges = drawingChanges; // T6 st
             _session = session;
             _canRead = canReadDrawing;
             _block = block;
@@ -205,6 +206,17 @@ namespace RackCad.UI.VentanaRackCad
             Load(userRequested: false);
             Rebuild();
         }
+
+        // T6 st (review of 5114345e, A3; the Owner: «Sí, afinarlo»): the changes of the database of the drawing as last presented
+        // (WorkspaceHostSnapshot.DrawingChangeCount) and as they were when the list of each drawing was read. The host forgets the list after any
+        // command (a ZOOM too, TryDrain); the list says it may be out of date only when the database changed since it was read.
+        private long _drawingChanges;
+        private readonly Dictionary<SessionId, long> _readChanges = new();
+
+        private bool UnchangedSinceRead() =>
+            _session.HasValue && _readChanges.TryGetValue(_session.Value, out var read) && read == _drawingChanges;
+
+        private string ReadStatusText() => _racks.Count == 0 ? "Este dibujo no tiene racks de RackCad." : string.Empty;
 
         /// <summary>The state of a draft may have changed (an edit, an update, a discard): the marks and the counts are shown again.</summary>
         public void RefreshStates() => Rebuild();
@@ -318,11 +330,12 @@ namespace RackCad.UI.VentanaRackCad
                     _racks = list.Racks ?? Array.Empty<BrowserRackListEntry>();
                     _listSession = _session;
                     Remember(_session.Value, _racks);
+                    _readChanges[_session.Value] = _drawingChanges; // T6 st
                     SetStatus(_racks.Count == 0 ? "Este dibujo no tiene racks de RackCad." : string.Empty);
                     break;
                 case BrowserSummaryStatus.Busy:
                     if (list.IsOutdated && _listSession != null)
-                        SetStatus(OutdatedText);
+                        SetStatus(UnchangedSinceRead() ? ReadStatusText() : OutdatedText); // T6 st: only when the drawing changed since the read
                     else if (_listSession == null) SetStatus(list.IsOutdated ? "Pulsa «Volver a leer la lista»." : "Leyendo la lista del dibujo…");
                     break;
                 case BrowserSummaryStatus.Failed:

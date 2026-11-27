@@ -125,7 +125,7 @@ namespace RackCad.UI.VentanaRackCad
 
             // The request waits BEFORE it is handed over: AutoCAD may run the command, and answer, during the call (M-22).
             var id = ++_lastRequestId;
-            _inFlight = new DoorRequest(id, false, session.Value, rack, null, null, IsCantilever: true);
+            _inFlight = new DoorRequest(id, false, session.Value, rack, null, null, IsCantilever: true, IsReread: _rereading); // T6 st
             Say("Leyendo la línea en AutoCAD…", failed: false);
             RaiseWaiting();
 
@@ -177,7 +177,7 @@ namespace RackCad.UI.VentanaRackCad
                 }
 
                 var key = (request.Session, request.RackId);
-                if (_cantileverDrafts.TryGetValue(key, out var existing) && (existing.Editor.IsDirty || existing.Editor.IsWriting))
+                if (_cantileverDrafts.TryGetValue(key, out var existing) && ((existing.Editor.IsDirty && !request.IsReread) || existing.Editor.IsWriting)) // T6 st
                 {
                     Say("Esta línea ya tiene un borrador con cambios en la ventana: no se reemplazó.", failed: false);
                     RaiseDynamic();
