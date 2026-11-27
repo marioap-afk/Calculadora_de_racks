@@ -72,6 +72,11 @@ namespace RackCad.UI.Tests
 
             public event Action<WarehousePlaced>? WarehousePlaced { add { } remove { } }
 
+            // T6 integration (st + rl): the shortcuts RLY and RR of the part rl; this door never asks for the page.
+            public event Action<WarehousePageAsk>? WarehousePageAsked { add { } remove { } }
+
+            public event Action<WarehousePageAsk, WarehouseReading>? WarehouseShortcutRead { add { } remove { } }
+
             public event Action<VariablesDoorRead>? VariablesRead;
 
             public event Action<VariablesDoorWritten>? VariablesWritten;
