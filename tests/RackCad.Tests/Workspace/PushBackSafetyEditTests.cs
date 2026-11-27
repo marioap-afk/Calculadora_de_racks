@@ -262,32 +262,57 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void BackToAutoOnAFaceWhoseOtherFaceIsAutomaticIsWrittenWhereTheClassicGridLosesIt()
+        public void BackToAutoOnAFaceWhoseOtherFaceIsAutomaticIsWrittenAsTheCorrectedClassicGrid()
         {
-            // Declared: the face grid of the classic drops the row that became automatic at both ends before it merges it, so the classic keeps
-            // the length; the window writes the gesture. Measured on the same rack, with the same gestures.
+            // T6 pb (PB-S17, point 5): the face grid of the classic dropped the row that became automatic at both ends before the section
+            // merged it, so the classic kept the length. Corrected in the classic (SafetyDefensaGridWindow.BuildFaceResult): the two write the
+            // gesture. Measured on the same rack, with the same gestures.
             var (w, c) = Pair(TwoSided);
             Same(w, c, copy => PushBackSafetyEdit.SetDefenseLength(copy, Catalog, PushBackSide.A, 0, farEnd: false, length: 30.0),
                 d => Classic.Defense(d, PushBackSide.A, rows => Classic.Type(rows[0], farEnd: false, 30.0)));
-
-            var copyW = w.CopySafety();
-            PushBackSafetyEdit.SetDefenseLength(copyW, Catalog, PushBackSide.A, 0, farEnd: false, length: null);
-            w.ReplaceSafety(copyW);
-            Assert.True(w.Recompose(), w.LastError);
-            Classic.Defense(c, PushBackSide.A, rows => Classic.Auto(rows[0], farEnd: false));
-            Assert.True(c.Recompose(), c.LastError);
-
+            Same(w, c, copy => PushBackSafetyEdit.SetDefenseLength(copy, Catalog, PushBackSide.A, 0, farEnd: false, length: null),
+                d => Classic.Defense(d, PushBackSide.A, rows => Classic.Auto(rows[0], farEnd: false)));
             Assert.Empty(PushBackSafetyEdit.Of(w.State.SafetySelections, Catalog, SelectiveSafetyDefaults.DefensaType).DefensaPosts);
-            var kept = PushBackSafetyEdit.Of(c.State.SafetySelections, Catalog, SelectiveSafetyDefaults.DefensaType).DefensaPosts.Single();
-            Assert.Equal((0, false, 30.0), (kept.PostIndex, kept.ExitAuto, kept.ExitLength));
 
-            // «Todas automáticas» of the side gives every face of the side back, also there.
-            var all = w.CopySafety();
-            PushBackSafetyEdit.SetDefenseOn(all, Catalog, PushBackSide.A, 1, farEnd: false, on: false);
-            PushBackSafetyEdit.SetDefenseLength(all, Catalog, PushBackSide.A, 0, farEnd: false, length: 25.0);
-            Assert.Equal(2, PushBackSafetyEdit.Of(all.Safety, Catalog, SelectiveSafetyDefaults.DefensaType).DefensaPosts.Count);
-            PushBackSafetyEdit.DefenseAllAutomatic(all, Catalog, PushBackSide.A);
-            Assert.Empty(PushBackSafetyEdit.Of(all.Safety, Catalog, SelectiveSafetyDefaults.DefensaType).DefensaPosts);
+            // The same on the far face (side B), and «Todas automáticas» of a side: every «Auto» of its grid marked.
+            Same(w, c, copy => PushBackSafetyEdit.SetDefenseOn(copy, Catalog, PushBackSide.B, 2, farEnd: true, on: false),
+                d => Classic.Defense(d, PushBackSide.B, rows => Classic.Check(rows[2], farEnd: true, on: false)));
+            Same(w, c, copy => PushBackSafetyEdit.SetDefenseLength(copy, Catalog, PushBackSide.B, 2, farEnd: true, length: null),
+                d => Classic.Defense(d, PushBackSide.B, rows => Classic.Auto(rows[2], farEnd: true)));
+            Same(w, c, copy => PushBackSafetyEdit.SetDefenseOn(copy, Catalog, PushBackSide.A, 1, farEnd: false, on: false),
+                d => Classic.Defense(d, PushBackSide.A, rows => Classic.Check(rows[1], farEnd: false, on: false)));
+            Same(w, c, copy => PushBackSafetyEdit.SetDefenseLength(copy, Catalog, PushBackSide.A, 0, farEnd: false, length: 25.0),
+                d => Classic.Defense(d, PushBackSide.A, rows => Classic.Type(rows[0], farEnd: false, 25.0)));
+            Assert.Equal(2, PushBackSafetyEdit.Of(w.State.SafetySelections, Catalog, SelectiveSafetyDefaults.DefensaType).DefensaPosts.Count);
+            Same(w, c, copy => PushBackSafetyEdit.DefenseAllAutomatic(copy, Catalog, PushBackSide.A),
+                d => Classic.Defense(d, PushBackSide.A, rows => { foreach (var row in rows.Where(r => r.Applies)) Classic.Auto(row, farEnd: false); }));
+            Assert.Empty(PushBackSafetyEdit.Of(w.State.SafetySelections, Catalog, SelectiveSafetyDefaults.DefensaType).DefensaPosts);
+        }
+
+        [Fact]
+        public void WithBothSidesInNoneTheLastOwnDecisionBackToAutoTakesTheFamilyOutAsTheWindow()
+        {
+            // T6 pb (review of 2f1e9e4e, M3, declared in T6pb-S1): the two sides in «Ninguno», the family only carries the decision of post 2
+            // of side A. «Auto» on it: the section of B still holds the record it opened with, so this «Aceptar» keeps the family with no
+            // record; the next «Aceptar» has nothing by post on either side and the family goes. The same in the window; nothing is drawn.
+            var (w, c) = Pair(TwoSided);
+            Same(w, c, copy => PushBackSafetyEdit.SetDefenseOn(copy, Catalog, PushBackSide.A, 1, farEnd: false, on: false),
+                d => Classic.Defense(d, PushBackSide.A, rows => Classic.Check(rows[1], farEnd: false, on: false)));
+            Same(w, c, copy => PushBackSafetyEdit.SetDefensePiece(copy, Catalog, PushBackSide.A, PushBackDefaults.NonePieceId),
+                d => Classic.Defense(d, PushBackSide.A, null, PushBackDefaults.NonePieceId));
+            Same(w, c, copy => PushBackSafetyEdit.SetDefensePiece(copy, Catalog, PushBackSide.B, PushBackDefaults.NonePieceId),
+                d => Classic.Defense(d, PushBackSide.B, null, PushBackDefaults.NonePieceId));
+            Assert.Single(PushBackSafetyEdit.Of(c.State.SafetySelections, Catalog, SelectiveSafetyDefaults.DefensaType).DefensaPosts);
+            Assert.Empty(PushBackDefensePlan.Resolve(c.System, Catalog));
+
+            Same(w, c, copy => PushBackSafetyEdit.SetDefenseLength(copy, Catalog, PushBackSide.A, 1, farEnd: false, length: null),
+                d => Classic.Defense(d, PushBackSide.A, rows => Classic.Auto(rows[1], farEnd: false)));
+            Assert.Empty(PushBackSafetyEdit.Of(c.State.SafetySelections, Catalog, SelectiveSafetyDefaults.DefensaType).DefensaPosts);
+
+            Same(w, c, copy => PushBackSafetyEdit.WriteDefense(copy, Catalog, PushBackSide.A, _ => { }), d => Classic.Defense(d, PushBackSide.A, null));
+            Assert.Null(PushBackSafetyEdit.Of(c.State.SafetySelections, Catalog, SelectiveSafetyDefaults.DefensaType));
+            Assert.Empty(PushBackDefensePlan.Resolve(c.System, Catalog));
+            Assert.Equal(SafetyBom(c), SafetyBom(w));
         }
 
         [Fact]
@@ -379,6 +404,73 @@ namespace RackCad.Tests
             var levels = w.DesviadorLevelsPerPost();
             Same(w, c, copy => PushBackSafetyEdit.SetDesviador(copy.Safety, Catalog, levels, 2, 0, on: false),
                 d => Classic.Desviador(d, off => off.Add((2, 0))));
+        }
+
+        [Fact]
+        public void TheDesviadorOfATwoSidedRackWithMoreLevelsOnSideBIsWrittenAsTheCorrectedClassicFromSideA()
+        {
+            // T6 pb (PB-S17, point 4): front 2 of side B has a fourth level, side A three, and the classic is on side A. The drawing places a
+            // desviador at N4 of posts 2 and 3 (the beds of B); the corrected classic grid has those levels from either side, as the window.
+            var (w, c) = Pair(TwoSided);
+            foreach (var draft in new[] { w, c })
+            {
+                draft.Side(PushBackSide.B).AdjustLevels(1, 1);
+                Assert.True(draft.Recompose(), draft.LastError);
+                Assert.Equal(PushBackSide.A, draft.Composite.ActiveSide);
+            }
+
+            var levels = w.DesviadorLevelsPerPost();
+            Assert.Equal(new[] { 3, 4, 4 }, levels);
+            Assert.Contains(PushBackDiverterPlan.Resolve(w.System, Catalog), d => d.PostLine == 1 && d.Level == 4);
+            Same(w, c, copy => PushBackSafetyEdit.SetDesviador(copy.Safety, Catalog, levels, 1, 3, on: false),
+                d => Classic.Desviador(d, off => off.Add((1, 3))));
+            Assert.DoesNotContain(PushBackDiverterPlan.Resolve(c.System, Catalog), d => d.PostLine == 1 && d.Level == 4);
+
+            // Another cell from side A: the one at N4 stays off (the classic grid of side A dropped it on «Aceptar»).
+            Same(w, c, copy => PushBackSafetyEdit.SetDesviador(copy.Safety, Catalog, levels, 0, 0, on: false),
+                d => Classic.Desviador(d, off => off.Add((0, 0))));
+            Assert.Contains(PushBackSafetyEdit.Of(c.State.SafetySelections, Catalog, SelectiveSafetyDefaults.DesviadorType).DesviadorOffCells,
+                cell => cell.Frente == 1 && cell.Level == 3);
+        }
+
+        [Fact]
+        public void AColumnDormantOnTheActiveSideTakesTheLevelsOfTheOtherSideAndDropsAnOffCellAboveThem()
+        {
+            // T6 pb (review of 2f1e9e4e, M2, declared in T6pb-S2). Front 1 of side A has four levels and the desviador of N4 of post 1 is off.
+            // Front 1 of A goes blank: on side A post 1 has no level (a dormant column), on side B it has three. The grid from side A has the
+            // three of B there, so that column is no longer dormant and the off cell at N4 (above them) goes on «Aceptar», in the window as in
+            // the corrected classic (the classic of before kept it from side A, and dropped it from side B). Nothing changes in the drawing
+            // while the front is blank; when it comes back, the desviador of N4 of post 1 is drawn again.
+            var (w, c) = Pair(TwoSided);
+            foreach (var draft in new[] { w, c })
+            {
+                draft.SetLevels(new[] { 0 }, 4);
+                Assert.True(draft.Recompose(), draft.LastError);
+            }
+
+            Assert.Equal(new[] { 4, 4, 3 }, w.DesviadorLevelsPerPost());
+            Same(w, c, copy => PushBackSafetyEdit.SetDesviador(copy.Safety, Catalog, w.DesviadorLevelsPerPost(), 0, 3, on: false),
+                d => Classic.Desviador(d, off => off.Add((0, 3))));
+            foreach (var draft in new[] { w, c })
+            {
+                Assert.Null(draft.SetBlank(PushBackSide.A, 0, true));
+                Assert.True(draft.Recompose(), draft.LastError);
+            }
+
+            Assert.Equal(3, w.DesviadorLevelsPerPost()[0]);
+            Assert.Contains(PushBackSafetyEdit.Of(c.State.SafetySelections, Catalog, SelectiveSafetyDefaults.DesviadorType).DesviadorOffCells,
+                cell => cell.Frente == 0 && cell.Level == 3);
+            Same(w, c, copy => PushBackSafetyEdit.SetDesviador(copy.Safety, Catalog, w.DesviadorLevelsPerPost(), 2, 0, on: false),
+                d => Classic.Desviador(d, off => off.Add((2, 0))));
+            Assert.DoesNotContain(PushBackSafetyEdit.Of(c.State.SafetySelections, Catalog, SelectiveSafetyDefaults.DesviadorType).DesviadorOffCells,
+                cell => cell.Frente == 0 && cell.Level == 3);
+
+            foreach (var draft in new[] { w, c })
+            {
+                Assert.Null(draft.SetBlank(PushBackSide.A, 0, false));
+                Assert.True(draft.Recompose(), draft.LastError);
+                Assert.Contains(PushBackDiverterPlan.Resolve(draft.System, Catalog), d => d.PostLine == 0 && d.Level == 4);
+            }
         }
 
         [Fact]
@@ -490,7 +582,10 @@ namespace RackCad.Tests
         /// <c>BuildDefenseSection</c>/<c>DefensePieceIdOf</c>/<c>PushBackDefenseSection.Configure</c>/<c>ApplyDefenseSections</c>/
         /// <c>EnsureDefenseSelection</c>, the grid <c>SafetyDefensaGridWindow</c> (its two-end OK and its face OK), the per-post window and the
         /// OK of <c>SelectiveSafetyWindow</c> (protector lateral, and the row of a desviador whose variant changed without its grid) and
-        /// <c>SafetyDesviadorGridWindow.BuildResult</c> (with the side it returns in Push Back).
+        /// <c>SafetyDesviadorGridWindow.BuildResult</c> (with the side it returns in Push Back) on the levels of
+        /// <c>RackPushBackSystemWindow.DesviadorLevelsPerPost</c>. T6 pb: it follows the classic as corrected in the sixth batch (PB-S17, points
+        /// 4 and 5): the face grid keeps a row automatic at both ends for the merge, and the desviador grid of a rack of two sides has the
+        /// higher of the two sides at each post.
         /// </summary>
         private static class Classic
         {
@@ -729,6 +824,8 @@ namespace RackCad.Tests
                     var check = farEnd ? row.EntranceCheck : row.ExitCheck;
                     var auto = (farEnd ? row.EntranceAuto : row.ExitAuto) == true && check == (farEnd ? row.EntranceWasDrawn : row.ExitWasDrawn);
                     var length = !auto && check ? Num(farEnd ? row.EntranceLength : row.ExitLength) : 0.0;
+                    // T6 pb (review of 2f1e9e4e, M6): BuildFaceResult refuses a length ≤ 0 on an end that is on and not automatic, as TwoEndGrid.
+                    Assert.True(auto || !check || length > 0.0);
                     var record = result.FirstOrDefault(r => r.PostIndex == row.Post);
                     if (record == null)
                     {
@@ -741,7 +838,7 @@ namespace RackCad.Tests
                     else { record.ExitLength = value; record.ExitAuto = auto; }
                 }
 
-                result.RemoveAll(r => r.ExitAuto && r.EntranceAuto);
+                // T6 pb (PB-S17, point 5): BuildFaceResult no longer drops a row automatic at both ends; the merge of the section does.
                 return result.OrderBy(r => r.PostIndex).ToList();
             }
 
@@ -806,7 +903,7 @@ namespace RackCad.Tests
                     return;
                 }
 
-                var merged = PushBackDefenseSides.Copy(selection.DefensaPosts);
+                var merged = new List<SafetyPostDefense>(); // T6 pb (review of 2f1e9e4e, M1): from an empty list, as the window
                 merged = PushBackDefenseSides.Merge(merged, a.Posts, PushBackSide.A);
                 if (b != null) merged = PushBackDefenseSides.Merge(merged, b.Posts, PushBackSide.B);
                 merged.RemoveAll(r => r.PostIndex < 0 || r.PostIndex >= a.PostCount);
@@ -891,10 +988,21 @@ namespace RackCad.Tests
                 d.State.SafetySelections.Insert(index, selection);
             }
 
+            // RackPushBackSystemWindow.DesviadorLevelsPerPost: the active side in a rack of one way; with a side B, post by post the higher of
+            // the two sides (T6 pb, PB-S17 point 4: before, the active side only).
+            private static IReadOnlyList<int> Levels(PushBackDraftEditor d)
+            {
+                if (!d.Composite.SideBPresent)
+                    return DynamicFrontActivation.EffectiveLevelsPerPost(d.Composite.Of(d.Composite.ActiveSide).Structure.EffectiveLevelCounts());
+                var perSide = new[] { PushBackSide.A, PushBackSide.B }
+                    .Select(side => DynamicFrontActivation.EffectiveLevelsPerPost(d.Composite.Of(side).Structure.EffectiveLevelCounts())).ToList();
+                return Enumerable.Range(0, perSide.Max(l => l.Count)).Select(p => perSide.Max(l => p < l.Count ? l[p] : 0)).ToList();
+            }
+
             private static void Grid(PushBackDraftEditor d, string elementId, SafetySide side, double longitud, double first, bool cellsByPost,
                 List<SelectiveGridCell> stored, Action<HashSet<(int Post, int Level)>> toggle, SelectiveSafetySelection existing)
             {
-                var levels = DynamicFrontActivation.EffectiveLevelsPerPost(d.Composite.Of(d.Composite.ActiveSide).Structure.EffectiveLevelCounts());
+                var levels = Levels(d);
                 var off = new HashSet<(int Post, int Level)>(stored.Where(c => c.Frente >= 0 && c.Frente < levels.Count && c.Level >= 0 && c.Level < levels[c.Frente])
                     .Select(c => (c.Frente, c.Level)));
                 toggle?.Invoke(off);

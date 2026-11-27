@@ -20,7 +20,8 @@ namespace RackCad.Application.VentanaRackCad
 
         /// <summary>
         /// The levels of the desviador grid at each post (PB-002, the rule of the drawing: the tallest front next to the post), of the tallest
-        /// side when the rack has two (the classic grid shows the side being edited; the window shows every level a desviador can be drawn at).
+        /// side when the rack has two: every level a desviador can be drawn at, as the classic grid since the sixth batch (T6 pb, PB-S17 point 4;
+        /// before, the classic showed the side being edited).
         /// </summary>
         public IReadOnlyList<int> DesviadorLevelsPerPost()
         {

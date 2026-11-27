@@ -388,8 +388,8 @@ namespace RackCad.Application.VentanaRackCad
                     return;
                 }
 
-                // Declared: written on the records of the side itself. The face grid of the classic drops a row that became automatic at both
-                // ends BEFORE it merges it, so there its «Auto» is lost when the other face is automatic too (the length stays).
+                // Written on the records of the side itself: the face grid of the classic with every «Auto» marked, merged by its section
+                // (T6 pb, PB-S17 point 5: the classic no longer drops a row automatic at both ends before the merge, so it writes the same).
                 var result = PushBackDefenseSides.Copy(s.Posts);
                 foreach (var record in result.Where(r => copy.HasFace(s.Side, r.PostIndex))) PushBackDefenseSides.Set(record, s.Side, 0.0, auto: true);
                 result.RemoveAll(r => r.ExitAuto && r.EntranceAuto);
@@ -429,9 +429,9 @@ namespace RackCad.Application.VentanaRackCad
                 }
 
                 // A composite: the grid of ONE face (the near one for A, the far one for B). Its result keeps the other face as it was, and a
-                // line where the side has no face of attack is a row it does not offer (nothing to decide there). Declared: the result is
-                // written on the records of the side itself; the classic merges it after dropping the rows automatic at both ends, so its
-                // «Auto» on a face whose other face is automatic is lost there (the length stays). Every other gesture writes the same.
+                // line where the side has no face of attack is a row it does not offer (nothing to decide there). The result is written on
+                // the records of the side itself, as the section of the classic merges its grid (T6 pb, PB-S17 point 5: also «Auto» on a face
+                // whose other face is automatic, which the classic lost before the sixth batch).
                 if (!copy.HasFace(s.Side, post)) return;
                 var face = PushBackDefenseSides.IsFarEnd(s.Side);
                 var faceResult = PushBackDefenseSides.Copy(s.Posts);
