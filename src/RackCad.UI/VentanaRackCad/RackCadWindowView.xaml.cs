@@ -37,6 +37,7 @@ namespace RackCad.UI.VentanaRackCad
             PanelView.BrowserEmptyText.Visibility = Visibility.Collapsed;
             RackPageHost.Content = PanelView;
             BomPage.Content = new RackBomPageView(viewModel.Bom); // T4 bom: the page «BOM y lista de racks»
+            WarehousePage.Content = new WarehousePageView(viewModel.Warehouse); // T5 al: the page «Almacén»
 
             _viewModel.PropertyChanged += OnViewModelPropertyChanged;
             SizeChanged += OnSizeChanged;
@@ -218,6 +219,8 @@ namespace RackCad.UI.VentanaRackCad
         private void OnPanelToggleClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.ShowPanel = !_viewModel.ShowPanel);
 
         private void OnShowBomOfRackClick(object sender, RoutedEventArgs e) => Contained(_viewModel.ShowBomOfActiveRack); // T4 bom
+
+        private void OnTakeToWarehouseClick(object sender, RoutedEventArgs e) => Contained(_viewModel.TakeActiveRackToWarehouse); // T5 al
 
         // Hiding the side column keeps its width, so showing it again gives it back as the user left it.
         private void ApplySideCollapsed()

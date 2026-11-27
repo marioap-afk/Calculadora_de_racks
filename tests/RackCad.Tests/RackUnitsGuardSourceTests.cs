@@ -111,6 +111,7 @@ namespace RackCad.Tests
         [InlineData("RackCabeceraCommands.cs", 3)]    // RACKCABECERA + QUICKCABECERA (new) + EditCabecera (insert-new-view)
         [InlineData("RackLayoutCommands.cs", 1)]      // RACKLAYOUT
         [InlineData("RackLayoutCommands.Fill.cs", 1)] // RACKRELLENAR
+        [InlineData("RackLayoutCommands.Ventana.cs", 1)] // T5 al: RACKALMACENCOLOCAR, once, before it places (RACKALMACENLEER only reads)
         [InlineData("Views/RackProjectionCommandPort.cs", 1)] // RACKPROYECTAR / RPY: una vez, tras los puntos y antes de importar o escribir
         public void EachInsertionPath_CallsTheGuard_OncePerOperation_NoAliasDoubleWarn(string file, int expectedCalls)
         {

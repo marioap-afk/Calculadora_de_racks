@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using RackCad.Application.Diagnostics;
 using RackCad.Application.Persistence;
 
@@ -32,6 +34,20 @@ namespace RackCad.Application.Settings
         /// without the field (every one written before) reads false.
         /// </summary>
         public bool OpenRackCadOnStartup { get; set; }
+
+        /// <summary>
+        /// T5 al: the last values of the page «Almacén» of the RackCad window (question 6); null = never saved. Read leniently (correction
+        /// 6 of the review): a section that cannot be read is null (the values of the classic windows) and never quarantines the file.
+        /// </summary>
+        [JsonConverter(typeof(LenientWarehouseLayoutConverter))]
+        public WarehouseLayoutPreferences WarehouseLayout { get; set; } // T5 al
+
+        /// <summary>
+        /// T5 al (correction 6 of the review): the fields this build does not know (another version of RackCad wrote them), kept verbatim
+        /// across a load and a save, as the documents of I-11 keep theirs.
+        /// </summary>
+        [JsonExtensionData]
+        public Dictionary<string, JsonElement> ExtensionData { get; set; } // T5 al
     }
 
     /// <summary>
